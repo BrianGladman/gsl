@@ -88,10 +88,15 @@ C
 */
 int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
 {
-  const double lolim = 5.0 * DBL_MIN + 1.0;
-  const double uplim = 0.2 * DBL_MIN - 1.0;
+  const double lolim = 5.0 * DBL_MIN;
+  const double uplim = 0.2 * DBL_MAX;
 
-  if(x < 0.0 || y < 0.0 || x + y < lolim) {
+  if(errtol < GSL_MACH_EPS) {
+    *result = 0.0;
+    return GSL_EBADTOL;
+  }
+  else if(x < 0.0 || y < 0.0 || x + y < lolim) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(gslMAX(x, y) < uplim) { 
@@ -165,10 +170,14 @@ C
 */
 int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * result)
 {
-  const double lolim = 2.0/pow(DBL_MAX, 2./3.) + 1.0;
-  const double uplim = pow(0.1*errtol/DBL_MIN, 2./3.) - 1.0;
+  const double lolim = 2.0/pow(DBL_MAX, 2./3.);
+  const double uplim = pow(0.1*errtol/DBL_MIN, 2./3.);
 
-  if(gslMIN(x,y) < 0.0 || gslMIN(x+y,z) < lolim) {
+  if(errtol < GSL_MACH_EPS) {
+    *result = 0.0;
+    return GSL_EBADTOL;
+  }
+  else if(gslMIN(x,y) < 0.0 || gslMIN(x+y,z) < lolim) {
     return GSL_EDOM;
   }
   else if(gslMAX3(x,y,z) < uplim) {
@@ -260,13 +269,19 @@ C                           1.D-1    3.D-7
 */
 int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * result)
 {
-  const double lolim = 5.0 * DBL_MIN + 1.0;
-  const double uplim = 0.2 * DBL_MIN - 1.0;
+  const double lolim = 5.0 * DBL_MIN;
+  const double uplim = 0.2 * DBL_MAX;
 
-  if(x < 0.0 || y < 0.0 || z < 0.0) {
+  if(errtol < GSL_MACH_EPS) {
+    *result = 0.0;
+    return GSL_EBADTOL;
+  }
+  else if(x < 0.0 || y < 0.0 || z < 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x+y < lolim || x + z < lolim || y+z < lolim) {
+  else if(x+y < lolim || x+z < lolim || y+z < lolim) {
+    * result = 0.0;
     return GSL_EDOM;
   }
   else if(gslMAX3(x,y,z) < uplim) { 
@@ -296,11 +311,12 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
     }
     e2 = xndev * yndev - zndev * zndev;
     e3 = xndev * yndev * zndev;
-    s = 1.0 + (c1 * e2 - 0.10 - c2 * e3) * e2 + c3 * e3;
+    s = 1.0 + (c1 * e2 - 0.1 - c2 * e3) * e2 + c3 * e3;
     *result = s / sqrt(mu);
     return GSL_SUCCESS;
   }
   else {
+    *result = 0.0;
     return GSL_EDOM;
   }
 }
@@ -359,13 +375,19 @@ C
 */
 int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol, double * result)
 {
-  const double lolim =       pow(5.0 * DBL_MIN + 1.0, 1./3.);
-  const double uplim = 0.3 * pow(0.2 * DBL_MIN - 1.0, 1./3.);
+  const double lolim =       pow(5.0 * DBL_MIN, 1.0/3.0);
+  const double uplim = 0.3 * pow(0.2 * DBL_MAX, 1.0/3.0);
 
-  if(x < 0.0 || y < 0.0 || y < 0.0) {
+  if(errtol < GSL_MACH_EPS) {
+    *result = 0.0;
+    return GSL_EBADTOL;
+  }
+  else if(x < 0.0 || y < 0.0 || y < 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(x + y < lolim || x + z < lolim || y + z < lolim || p < lolim) {
+    *result = 0.0;
     return GSL_EDOM;
   }
   else if(gslMAX4(x,y,z,p) < uplim) {
@@ -517,7 +539,7 @@ int gsl_sf_ellint_Ecomp_impl(double k, double prec, double * result)
   double y = 1.0 - k*k;
   double rf, rd;
   int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, prec, &rf);
-  int rdstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, prec, &rf);
+  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, prec, &rf);
   if(rfstatus == GSL_SUCCESS && rdstatus == GSL_SUCCESS) {
     *result = rf - k*k/3.0 * rd;
     return GSL_SUCCESS;

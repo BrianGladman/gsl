@@ -569,6 +569,35 @@ int check_dilog(void)
   return status;
 }
 
+int check_ellint(void)
+{
+  double p;
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_Kcomp( 0.5, 1.0e-3), 1.8540746773013719184 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Kcomp(0.01, 1.0e-3), 1.5747455615173559527 ) > 1.0e-10 );
+  gsl_test(s, "  ellint_Kcomp");
+  printf("%24.18g  %24.28g\n",
+  gsl_sf_ellint_Kcomp( 0.5, 1.0e-3),
+  gsl_sf_ellint_Kcomp(0.01, 1.0e-3)
+  );
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_ellint_Ecomp( 0.5, 1.0e-10), 1.3506438810476755025 ) > 1.0e-10 );
+  s += ( frac_diff( gsl_sf_ellint_Ecomp(0.01, 1.0e-10), 1.5668619420216682912 ) > 1.0e-10 );
+  gsl_test(s, "  ellint_Ecomp");
+  printf("%24.18g  %24.28g\n",
+  gsl_sf_ellint_Ecomp( 0.5, 1.0e-10),
+  gsl_sf_ellint_Ecomp(0.01, 1.0e-10)
+  );
+  status += s;
+
+  return status;
+}
+
 int check_erf(void)
 {
   int status = 0;
@@ -771,6 +800,37 @@ int check_hyperg(void)
   s += ( frac_diff(gsl_sf_hyperg_2F0(8,   8, -0.02),   0.3299059284994299    ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_hyperg_2F0(50, 50, -0.02),   2.688995263773233e-13 ) > 1.e-14 );
   gsl_test(s, "  gsl_sf_hyperg_2F0");
+  status += s;
+
+  return status;
+}
+
+int check_jac(void)
+{
+  double u, m;
+  double sn, cn, dn;
+  int stat_ej;
+  int status = 0;
+  int s;
+  
+  u = 0.5;
+  m = 0.5;
+  s = 0;
+  stat_ej = gsl_sf_elljac_impl(u, m, &sn, &cn, &dn);
+  s += ( frac_diff( sn, 0.4707504736556572833 ) > 1.0e-14 );
+  s += ( frac_diff( cn, 0.8822663948904402865 ) > 1.0e-14 );
+  s += ( frac_diff( dn, 0.9429724257773856873 ) > 1.0e-14 );
+  gsl_test(s, "  elljac(0.5|0.5)");
+  status += s;
+
+  u = 2.0;
+  m = 0.999999;
+  s = 0;
+  stat_ej = gsl_sf_elljac_impl(u, m, &sn, &cn, &dn);
+  s += ( frac_diff( sn, 0.96402778575700186570 ) > 1.0e-14 );
+  s += ( frac_diff( cn, 0.26580148285600686381 ) > 1.0e-14 );
+  s += ( frac_diff( dn, 0.26580323105264131136 ) > 1.0e-14 );
+  gsl_test(s, "  elljac(2.0|0.999999)");
   status += s;
 
   return status;
@@ -1141,6 +1201,8 @@ int main(int argc, char * argv[])
   gsl_test(check_debye(),      "Debye Functions");
   gsl_test(check_dilog(),      "Dilogarithm");
 
+  gsl_test(check_ellint(),     "Elliptic Integrals");
+  gsl_test(check_jac(),        "Jacobi Elliptic Functions");
   gsl_test(check_erf(),        "Error Functions");
 
   gsl_test(check_gamma(),      "Gamma Functions");
