@@ -11,7 +11,7 @@ eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}' && eval 'exec perl -S $0 $
 #
 # Modified by Brian Gough to support 'htmlhelp' format
 #
-$THISPROG = "texi2html 1.54";			# program name and version
+$THISPROG = "texi2html 1.54+ (gsl)";	# program name and version
 # This version of texi2html is currently maintained at
 # ftp://ftp.cs.umb.edu/pub/tex/texi2html by kb@cs.umb.edu.
 
