@@ -9,7 +9,7 @@
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Pl_impl(int l, double x, double * result, double * harvest);
+int     gsl_sf_legendre_Pl_impl(int l, double x, double * result);
 int     gsl_sf_legendre_Pl_e(int l, double x, double * result);
 double  gsl_sf_legendre_Pl(int l, double x);
 
@@ -50,7 +50,7 @@ double gsl_sf_legendre_P5(double x);
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int     gsl_sf_legendre_Plm_impl(int l, int m, double one_m_x, double one_p_x, double * result, double * harvest);
+int     gsl_sf_legendre_Plm_impl(int l, int m, double x, double * result);
 int     gsl_sf_legendre_Plm_e(int l, int m, double x, double * result);
 double  gsl_sf_legendre_Plm(int l, int m, double x);
 
@@ -60,6 +60,7 @@ double  gsl_sf_legendre_Plm(int l, int m, double x);
  *
  * exceptions: 
  */
+int gsl_sf_legendre_Plm_array_impl(int lmax, int m, double x, double * result_array);
 int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array);
 
 
@@ -75,7 +76,7 @@ int gsl_sf_legendre_Plm_array_e(int lmax, int m, double x, double * result_array
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_sphPlm_impl(int l, int m, double one_m_x, double one_p_x, double * result, double * harvest);
+int     gsl_sf_legendre_sphPlm_impl(int l, int m, double x, double * result);
 int     gsl_sf_legendre_sphPlm_e(int l, int m, double x, double * result);
 double  gsl_sf_legendre_sphPlm(int l, int m, double x);
 
@@ -86,10 +87,11 @@ double  gsl_sf_legendre_sphPlm(int l, int m, double x);
  *
  * exceptions: 
  */
+int gsl_sf_legendre_sphPlm_array_impl(int lmax, int m, double x, double * result_array);
 int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_array);
 
 
-/* size of result_array[] needed for the array versions
+/* size of result_array[] needed for the array versions of Plm
  * (lmax - m + 1)
  */
 int gsl_sf_legendre_array_size(const int lmax, const int m);
