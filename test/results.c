@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if HAVE_VPRINTF
+#ifdef HAVE_VPRINTF
 #ifdef __STDC__
 #include <stdarg.h>
 #else
