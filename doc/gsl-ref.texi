@@ -1,4 +1,5 @@
 \input texinfo @c -*-texinfo-*-
+
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
@@ -450,6 +451,7 @@ int main(int argc, char *argv[])
 
 @tex
 \input epsf
+
 % nine, eight and six point fonts
 \font\ninerm=cmr9   \font\eightrm=cmr8   \font\sixrm=cmr6
 \font\ninei=cmmi9   \font\eighti=cmmi8   \font\sixi=cmmi6
@@ -466,7 +468,7 @@ temperatures}
 \centerline{\nineit the optimal solution is can fluctuate, but at lower
 temperatures it converges.}
 \centerline{\nineit This was generated with the simple instruction}
-\centerline{\ninett gnuplot> plot '<../siman/siman\_test | grep -v "\^{}\#"' using 1:3 with lines}
+\centerline{\eighttt gnuplot> plot '<../siman/siman\_test | grep -v "\^{}\#"' using 1:3 with lines}
 \smallskip
 @end tex
 
