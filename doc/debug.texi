@@ -109,7 +109,7 @@ point or from signed to unsigned integers can all cause hard-to-find
 problems.  For many non-numerical programs compiling with @code{gcc}'s
 warning option @code{-Wall} provides . However, for numerical programs
 @code{-Wall} is not enough. If you are unconvinced take a look at this
-program which contains two common errors that occur in numerical code,
+program which contains an error that can occur in numerical code,
 
 @example
 #include <math.h>
@@ -119,10 +119,9 @@ double f (int x) ;
 
 int main ()
 @{
-  double x ;
   double a = 1.5 ;
   double y = f(a) ;
-  printf("x = %g, sqrt(1.5) = %g\n", x, y) ;  
+  printf("a = %g, sqrt(a) = %g\n", a, y) ;  
   return 0 ;
 @}
 
@@ -131,28 +130,24 @@ double f(x) @{
 @}
 @end example
 @noindent
-This code compiles cleanly with @code{-Wall} but produces some very
-strange output,
+This code compiles cleanly with @code{-Wall} but produces some strange
+output,
 
 @example
 bjg|zeke> gcc -Wall tmp.c -lm
 bjg|zeke> ./a.out 
-x = -1.99849, sqrt(1.5) = 1
+a = 1.5, sqrt(a) = 1
 @end example
 @noindent
-Note that adding @code{-ansi} does not help here, since the program is
-valid ANSI C. What is happening is that the variable @var{x} is declared
-but not initialized. In C an uninitialized variable is not necessarily
-zero -- it is undefined, it contains whatever happens to be in its
-memory location, in this case @code{-1.99849}.  Also, the prototype for
-the function @code{f(int x)} is not consistent with the function call
-@code{f(y)}, where @code{y} is a floating point number. This results in
-the argument being silently converted to an integer. This is valid C,
-but in a numerical program it could also be a programming error so we
-would like to be warned about it. (If we genuinely wanted to convert
-@code{y} to an integer then we could use an explicit cast,
-@code{(int)y}).  @footnote{The unitialized variable would be caught if
-we used @code{-O -Wall}}
+Note that adding @code{-ansi} does not help here, since the program does
+not contain any invalid constructs. What is happening is that the
+prototype for the function @code{f(int x)} is not consistent with the
+function call @code{f(y)}, where @code{y} is a floating point
+number. This results in the argument being silently converted to an
+integer. This is valid C, but in a numerical program it also likely to
+be a programming error so we would like to be warned about it. (If we
+genuinely wanted to convert @code{y} to an integer then we could use an
+explicit cast, @code{(int)y}).  
 
 Fortunately GCC provides many additional warnings which can alert you to
 common problems. You just have to remember to use them. Here is a set
@@ -221,8 +216,10 @@ will be a compiler error to attempt to overwrite them.
 Warn if any functions that return structures or unions are defined or
 called. Some older compilers might have problems with such a construct.
 @item -fshort-enums 
-This option makes the type of @code{enum} as short as possible.
-FIXME: I can't remember why this is needed.
+This option makes the type of @code{enum} as short as possible. Normally
+this makes them different from an @code{int}. Consequently any attempts
+to assign a pointer-to-int to a pointer-to-enum will generate a
+cast-alignment warning.
 @item -fno-common
 This option prevents global variables being simultaneously defined in
 different object files (you get an error at link time). Such a variable
@@ -253,17 +250,14 @@ bjg|zeke> gcc -ansi -pedantic -Werror -W -Wall -Wtraditional
 cc1: warnings being treated as errors
 tmp.c:7: warning: function declaration isn't a prototype
 tmp.c: In function `main':
-tmp.c:10: warning: passing arg 1 of `f' as integer rather than floating 
-due to prototype
-tmp.c:8: warning: `x' might be used uninitialized in this function
+tmp.c:9: warning: passing arg 1 of `f' as integer rather than floating due to prototype
 tmp.c: In function `f':
-tmp.c:15: warning: type of `x' defaults to `int'
-tmp.c:16: warning: passing arg 1 of `sqrt' as floating rather than integer 
-due to prototype
+tmp.c:14: warning: type of `x' defaults to `int'
+tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer due to prototype
 make: *** [tmp] Error 1
 @end example
 @noindent
-Both the errors are caught, plus the fact that we should have defined
-main as @code{int main (void)} in ANSI C. Clearly there is some work to
-do before this program is ready to run.
+The error in the prototype is flagged, plus the fact that we should have
+defined main as @code{int main (void)} in ANSI C. Clearly there is some
+work to do before this program is ready to run.
 
