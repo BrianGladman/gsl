@@ -1,3 +1,6 @@
+* Jim McElwaine for very useful comments and discussions
+  about the dilogarithm and related functions.
+
 * Simone Piccardi <piccardi@fi.infn.it> for extensions to the
 histogram routines, and providing the ntuple code
 
