@@ -240,7 +240,7 @@ int gsl_matrix_float_set_col(gsl_matrix_float * m, const size_t j, const gsl_vec
 
 /* inline functions if you are using GCC */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline 
 float
 gsl_matrix_float_get(const gsl_matrix_float * m, const size_t i, const size_t j)

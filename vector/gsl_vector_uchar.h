@@ -162,7 +162,7 @@ int gsl_vector_uchar_add_constant (gsl_vector_uchar * a, const double x);
 
 int gsl_vector_uchar_isnull (const gsl_vector_uchar * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 unsigned char

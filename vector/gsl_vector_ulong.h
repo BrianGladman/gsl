@@ -162,7 +162,7 @@ int gsl_vector_ulong_add_constant (gsl_vector_ulong * a, const double x);
 
 int gsl_vector_ulong_isnull (const gsl_vector_ulong * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 unsigned long

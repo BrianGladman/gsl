@@ -162,7 +162,7 @@ int gsl_vector_float_add_constant (gsl_vector_float * a, const double x);
 
 int gsl_vector_float_isnull (const gsl_vector_float * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 float

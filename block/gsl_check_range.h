@@ -37,6 +37,21 @@ __BEGIN_DECLS
 
 GSL_VAR int gsl_check_range;
 
+/* Turn range checking on by default, unless the user defines
+   GSL_RANGE_CHECK_OFF, or defines GSL_RANGE_CHECK to 0 explicitly */
+
+#ifdef GSL_RANGE_CHECK_OFF
+# ifndef GSL_RANGE_CHECK
+#  define GSL_RANGE_CHECK 0
+# else
+#  error "cannot set both GSL_RANGE_CHECK and GSL_RANGE_CHECK_OFF"
+# endif
+#else
+# ifndef GSL_RANGE_CHECK
+#  define GSL_RANGE_CHECK 1
+# endif
+#endif
+
 __END_DECLS
 
 #endif /* __GSL_CHECK_RANGE_H__ */

@@ -162,7 +162,7 @@ int gsl_vector_long_add_constant (gsl_vector_long * a, const double x);
 
 int gsl_vector_long_isnull (const gsl_vector_long * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 long

@@ -240,7 +240,7 @@ int gsl_matrix_uchar_set_col(gsl_matrix_uchar * m, const size_t j, const gsl_vec
 
 /* inline functions if you are using GCC */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline 
 unsigned char
 gsl_matrix_uchar_get(const gsl_matrix_uchar * m, const size_t i, const size_t j)

@@ -162,7 +162,7 @@ int gsl_vector_short_add_constant (gsl_vector_short * a, const double x);
 
 int gsl_vector_short_isnull (const gsl_vector_short * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 short

@@ -69,7 +69,7 @@ int gsl_combination_valid (gsl_combination * c);
 int gsl_combination_next (gsl_combination * c);
 int gsl_combination_prev (gsl_combination * c);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 size_t

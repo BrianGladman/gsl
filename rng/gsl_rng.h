@@ -152,7 +152,7 @@ double gsl_rng_uniform_pos (const gsl_rng * r);
 unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
 
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline unsigned long int gsl_rng_get (const gsl_rng * r);
 
 extern inline unsigned long int

@@ -178,7 +178,7 @@ int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const 
 
 int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 gsl_complex_float

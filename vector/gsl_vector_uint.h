@@ -162,7 +162,7 @@ int gsl_vector_uint_add_constant (gsl_vector_uint * a, const double x);
 
 int gsl_vector_uint_isnull (const gsl_vector_uint * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 unsigned int

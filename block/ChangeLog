@@ -1,3 +1,8 @@
+2004-06-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_check_range.h: provide backwards-compatible support for
+	GSL_RANGE_CHECK_OFF and GSL_RANGE_CHECK
+
 Sat Jul 15 21:45:10 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION): changed GSL_EDOM to GSL_EINVAL for

@@ -240,7 +240,7 @@ int gsl_matrix_set_col(gsl_matrix * m, const size_t j, const gsl_vector * v);
 
 /* inline functions if you are using GCC */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline 
 double
 gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)

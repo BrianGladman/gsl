@@ -178,7 +178,7 @@ int gsl_vector_complex_swap_elements (gsl_vector_complex * v, const size_t i, co
 
 int gsl_vector_complex_isnull (const gsl_vector_complex * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 gsl_complex

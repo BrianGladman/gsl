@@ -228,7 +228,7 @@ int gsl_matrix_complex_float_get_col(gsl_vector_complex_float * v, const gsl_mat
 int gsl_matrix_complex_float_set_row(gsl_matrix_complex_float * m, const size_t i, const gsl_vector_complex_float * v);
 int gsl_matrix_complex_float_set_col(gsl_matrix_complex_float * m, const size_t j, const gsl_vector_complex_float * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline 
 gsl_complex_float

@@ -76,7 +76,7 @@ size_t gsl_permutation_inversions (const gsl_permutation * p);
 size_t gsl_permutation_linear_cycles (const gsl_permutation * p);
 size_t gsl_permutation_canonical_cycles (const gsl_permutation * q);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 size_t

@@ -240,7 +240,7 @@ int gsl_matrix_ushort_set_col(gsl_matrix_ushort * m, const size_t j, const gsl_v
 
 /* inline functions if you are using GCC */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline 
 unsigned short
 gsl_matrix_ushort_get(const gsl_matrix_ushort * m, const size_t i, const size_t j)

@@ -66,7 +66,7 @@ typedef unsigned int gsl_mode_t;
 #define GSL_PREC_SINGLE  1
 #define GSL_PREC_APPROX  2
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline unsigned int GSL_MODE_PREC(gsl_mode_t mt);
 
 extern inline unsigned int

@@ -1,5 +1,10 @@
 * What is new in gsl-1.5:
 
+** The macro HAVE_INLINE is now tested with #ifdef instead of #if as
+in versions prior to 1.4, to match the documentation, and the macro
+GSL_RANGE_CHECK_OFF now works correctly.  An alternative macro
+GSL_RANGE_CHECK={0,1} can be used to control range-checking.
+
 ** Fixed a potential array overflow in gsl_ran_landau.
 
 ** Fixed a small discrepancy in the tolerance calculation of the

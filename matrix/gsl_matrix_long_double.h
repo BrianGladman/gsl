@@ -240,7 +240,7 @@ int gsl_matrix_long_double_set_col(gsl_matrix_long_double * m, const size_t j, c
 
 /* inline functions if you are using GCC */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline 
 long double
 gsl_matrix_long_double_get(const gsl_matrix_long_double * m, const size_t i, const size_t j)

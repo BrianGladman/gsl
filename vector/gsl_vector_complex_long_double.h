@@ -178,7 +178,7 @@ int gsl_vector_complex_long_double_swap_elements (gsl_vector_complex_long_double
 
 int gsl_vector_complex_long_double_isnull (const gsl_vector_complex_long_double * v);
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 
 extern inline
 gsl_complex_long_double

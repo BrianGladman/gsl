@@ -38,7 +38,7 @@ __BEGIN_DECLS
 gsl_complex gsl_complex_rect (double x, double y);  /* r= real+i*imag */
 gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 
-#if HAVE_INLINE
+#ifdef HAVE_INLINE
 extern inline gsl_complex
 gsl_complex_rect (double x, double y)
 {                               /* return z = x + i y */
