@@ -48,15 +48,15 @@ check_PROGRAMS = siman_test
 lib_LIBRARIES = libgsl_siman.a
 
 siman_test_SOURCES = siman_test.c
-siman_test_LDADD = libgsl_siman.a -L../random -lgslrandom
+siman_test_LDADD = libgsl_siman.a -L$(srcdir)/random -lgslrandom
 siman_test_DEPENDENCIES = libgsl_siman.a
 
 libgsl_siman_a_SOURCES = siman.c
 
 include_HEADERS = gsl_siman.h
 
-INCLUDES = -I. -I../random
-check_INCLUDES = -I. -I../random
+INCLUDES = -I. -I$(srcdir)/random
+check_INCLUDES = -I. -I$(srcdir)/random
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 LIBRARIES =  $(lib_LIBRARIES)
