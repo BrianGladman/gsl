@@ -86,6 +86,7 @@ libgslspecfunc_a_SOURCES = 	\
 	fermi_dirac.c		\
 	gegenbauer.c		\
 	gamma.c			\
+	hyperg_1F1.c		\
 	hyperg_2F1.c		\
 	laguerre.c		\
 	legendre_con.c		\

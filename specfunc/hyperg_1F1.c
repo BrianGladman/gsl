@@ -3,6 +3,7 @@
  */
 #include <math.h>
 #include <gsl_math.h>
+#include <gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_hyperg.h"
 
@@ -108,7 +109,7 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
 
   if(fabs(b-a) < locEPS) {
-    *result = 
+    return gsl_sf_exp_impl(x, result);  /* exp(x) */
   }
 
   /* If a is a negative integer, then the series truncates
@@ -142,29 +143,29 @@ int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       return GSL_EDOM;
     }
     else {
-      double Ex;
-
-      if(x > GSL_LOG_DBL_MAX) {
-        *result = 0.0; /* FIXME: probably indeterminate */
-	return GSL_EOVRFLW;
+      double Ex, Kummer_1F1;
+      int stat_E = gsl_sf_exp_impl(x, &Ex);
+      int stat_K = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
+      int stat;
+      if(stat_E != GSL_SUCCESS) {
+        *result = 0.0;
+	stat    = stat_E;
       }
-      else if(x < GSL_LOG_DBL_MIN) {
-        *result = 0.0; /* FIXME: probably indeterminate */
-	return GSL_EUNDRFLW;
+      else if(stat_K == GSL_ELOSS || prec > locEPS) {
+        *result = Ex * Kummer_1F1;
+	stat    = GSL_ELOSS;
+      }
+      else if(stat_K != GSL_SUCCESS) {
+        *result = 0.0;
+	stat    = stat_K;
       }
       else {
-        double Kummer_1F1;
-        int stat = hyperg_1F1_series(bma, b, -x, &Kummer_1F1, &prec);
-        Ex = exp(x);
         *result = Ex * Kummer_1F1;
-        if(prec > locEPS)
-          return GSL_ELOSS;
-        else
-          return stat;
+	stat = GSL_SUCCESS;
       }
     }
   }
-    
+
   
   /* Now we have dealt with any special negative integer cases,
    * including the error cases, so we are left with a well-behaved
