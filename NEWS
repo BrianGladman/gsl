@@ -26,7 +26,14 @@ check" in the specfunc directory you will see what tests still fail.
 ** Most Alpha specific problems have been fixed. In particular the
 random number generators rand48 and ranf now work on the Alpha
 
-** Additional random number distributions: Rayleigh distribution
+** Additional random number distributions: 
+   Rayleigh distribution
+   n-dimensional spherical distribution 
+     (ie, points at random on an n-dimensional sphere)
+   Gaussian tail distribution 
+     (ie, choosing values from a gaussian distribution subject to a 
+      constraint that they be larger than some fixed value, eg 5 sigmas)
+   Walker's algorithm for arbitrary discrete distributions
 
 * Will be new in gsl-0.4:
 
