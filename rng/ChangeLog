@@ -1,3 +1,8 @@
+Fri Aug 31 17:49:37 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mt.c (mt_1998_set): added the original (buggy) MT19937 seeding
+ 	routine as mt19937_1998 for compatibility.
+
 Wed May  2 15:35:38 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ran1.c (ran1_get_double): use float constants for comparison

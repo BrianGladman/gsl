@@ -150,6 +150,28 @@ mt_set (void *vstate, unsigned long int s)
   state->mti = i;
 }
 
+/* This is the original version of the seeding procedure, no longer
+   used but available for compatibility with the original MT19937. */
+
+static void
+mt_1998_set (void *vstate, unsigned long int s)
+{
+  mt_state_t *state = (mt_state_t *) vstate;
+  int i;
+
+  if (s == 0)
+    s = 4357;	/* the default seed is 4357 */
+
+  state->mt[0] = s & 0xffffffffUL;
+
+#define LCG(n) ((69069 * n) & 0xffffffffUL)
+
+  for (i = 1; i < N; i++)
+    state->mt[i] = LCG (state->mt[i - 1]);
+
+  state->mti = i;
+}
+
 static const gsl_rng_type mt_type =
 {"mt19937",			/* name */
  0xffffffffUL,			/* RAND_MAX  */
@@ -159,7 +181,17 @@ static const gsl_rng_type mt_type =
  &mt_get,
  &mt_get_double};
 
+static const gsl_rng_type mt_1998_type =
+{"mt19937_1998",		/* name */
+ 0xffffffffUL,			/* RAND_MAX  */
+ 0,			        /* RAND_MIN  */
+ sizeof (mt_state_t),
+ &mt_1998_set,
+ &mt_get,
+ &mt_get_double};
+
 const gsl_rng_type *gsl_rng_mt19937 = &mt_type;
+const gsl_rng_type *gsl_rng_mt19937_1998 = &mt_1998_type;
 
 /* MT19937 is the default generator, so define that here too */
 

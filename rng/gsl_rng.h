@@ -62,6 +62,7 @@ extern const gsl_rng_type *gsl_rng_gfsr4;
 extern const gsl_rng_type *gsl_rng_minstd;
 extern const gsl_rng_type *gsl_rng_mrg;
 extern const gsl_rng_type *gsl_rng_mt19937;
+extern const gsl_rng_type *gsl_rng_mt19937_1998;
 extern const gsl_rng_type *gsl_rng_r250;
 extern const gsl_rng_type *gsl_rng_ran0;
 extern const gsl_rng_type *gsl_rng_ran1;

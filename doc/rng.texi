@@ -380,6 +380,11 @@ Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
 generator". @cite{ACM Transactions on Modeling and Computer
 Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
 @end itemize
+@noindent
+The generator @code{gsl_rng_19937} uses the corrected version of the
+seeding procedure published later by the two authors above.  The
+original seeding procedure suffered from low-order periodicity, but can
+be used by selecting the alternate generator @code{gsl_rng_mt19937_1998}.
 @end deffn
 
 @deffn {Generator} gsl_rng_ranlxs0
