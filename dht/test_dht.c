@@ -40,7 +40,7 @@ test_dht_exact(void)
    * function represented by the samples {1,2,3}
    * need not be very nice. Like in any spectral
    * application, you really have to have some
-   * a-priori knowledge of the underlying functions.
+   * a-priori knowledge of the underlying function.
    */
   if(fabs( f_in[0]-1.0)/1.0 > 2.0e-05) stat++;
   if(fabs( f_in[1]-2.0)/2.0 > 2.0e-05) stat++;
