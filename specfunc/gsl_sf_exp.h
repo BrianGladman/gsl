@@ -116,10 +116,14 @@ int gsl_sf_exp_mult_err_e(double x, double dx, double y, double dy, gsl_sf_resul
 int gsl_sf_exp_mult_err_e10_impl(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
 int gsl_sf_exp_mult_err_e10_e(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
 
+__END_DECLS
+
 
 #ifdef HAVE_INLINE
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+
+__BEGIN_DECLS
 
 extern inline
 int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
@@ -140,11 +144,11 @@ int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }  
 }
-#endif /* HAVE_INLINE */
 
 
 __END_DECLS
 
+#endif /* HAVE_INLINE */
+
+
 #endif /* __GSL_SF_EXP_H__ */
-
-
