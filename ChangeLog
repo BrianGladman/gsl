@@ -1,3 +1,8 @@
+Sun Apr  5 19:49:17 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* err/errno.c (gsl_error): now takes gsl_errno as an argument
+ 	(this is useful for doing conditional breakpoints)
+
 Wed Mar 18 10:27:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_complex.h: the typedef for 'complex' has been renamed to
