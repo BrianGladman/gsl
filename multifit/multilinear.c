@@ -53,7 +53,7 @@ gsl_multifit_linear (gsl_matrix * X,
 #endif
 
 int
-gsl_multifit_wlinear (gsl_matrix * X,
+gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
                       const gsl_vector * y,
                       gsl_vector * c,
@@ -91,13 +91,18 @@ gsl_multifit_wlinear (gsl_matrix * X,
       
       size_t i, j;
 
+      gsl_matrix * A = gsl_matrix_alloc (M, N);
       gsl_matrix * Q = gsl_matrix_alloc (N, N);
+      gsl_matrix * QSI = gsl_matrix_alloc (N, N);
       gsl_vector * S = gsl_vector_alloc (N);
       gsl_vector * t = gsl_vector_alloc (M);
       gsl_vector * xt = gsl_vector_alloc (N);
      
+
       /* Scale X,  A = sqrt(w) X */
       
+      gsl_matrix_memcpy (A, X);
+
       for (i = 0; i < M; i++)
         {
           double wi = gsl_vector_get (w, i);
@@ -106,14 +111,14 @@ gsl_multifit_wlinear (gsl_matrix * X,
           
           for (j = 0; j < N; j++)
             {
-              gsl_vector row = gsl_matrix_row (X, i);
+              gsl_vector row = gsl_matrix_row (A, i);
               gsl_vector_scale (&row, sqrt(wi));
             }
         }
       
       /* Decompose A into U S Q^T */
      
-      gsl_linalg_SV_decomp (X, Q, S);
+      gsl_linalg_SV_decomp (A, Q, S);
       
       /* Solve sqrt(w) y = A c for c, by first computing t = sqrt(w) y */
 
@@ -125,29 +130,31 @@ gsl_multifit_wlinear (gsl_matrix * X,
           gsl_vector_set (t, i, sqrt(wi) * yi);
         }
       
-      gsl_blas_dgemv (CblasTrans, 1.0, X, t, 0.0, xt) ;
+      gsl_blas_dgemv (CblasTrans, 1.0, A, t, 0.0, xt) ;
       
       /* Scale the matrix Q,  Q' = Q S^-1 */
 
+      gsl_matrix_memcpy (QSI, Q);
+
       for (j = 0 ; j < N ; j++)
         {
-          gsl_vector column = gsl_matrix_column (Q, j);
+          gsl_vector column = gsl_matrix_column (QSI, j);
           double alpha = gsl_vector_get (S, j);
           if (alpha != 0) alpha = 1.0 / alpha;
           gsl_vector_scale (&column, alpha);
         }
       
-      gsl_blas_dgemv (CblasNoTrans, 1.0, Q, xt, 0.0, c);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
       
       /* Form covariance matrix cov = (Q S^-1) (Q S^-1)^T */
 
       for (i = 0; i < N; i++) 
         {
-          gsl_vector row_i = gsl_matrix_row (Q, i);
+          gsl_vector row_i = gsl_matrix_row (QSI, i);
 
           for (j = i; j < N ; j++)
             {
-              gsl_vector row_j = gsl_matrix_row (Q, j);
+              gsl_vector row_j = gsl_matrix_row (QSI, j);
               
               double s;
               
@@ -157,6 +164,25 @@ gsl_multifit_wlinear (gsl_matrix * X,
               gsl_matrix_set (cov, j, i, s);
             }
         }
+
+      /* Compute chisq, from residual r = y - X c */
+
+      {
+        double r2 = 0;
+        
+        for (i = 0; i < M; i++) 
+          {
+            double yi = gsl_vector_get (y, i);
+            double wi = gsl_vector_get (w, i);
+            const gsl_vector row = gsl_matrix_const_row (X, i);
+            double y_est, ri;
+            gsl_blas_ddot (&row, c, &y_est) ;
+            ri = yi - y_est ;
+            r2 += wi * ri * ri;
+          }
+      
+        *chisq = r2;
+      }
 
       return GSL_SUCCESS;
     }

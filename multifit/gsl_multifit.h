@@ -38,7 +38,7 @@
 __BEGIN_DECLS
 
 int
-gsl_multifit_wlinear (gsl_matrix * X,
+gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
                       const gsl_vector * y,
                       gsl_vector * c,

@@ -55,6 +55,8 @@ main (void)
                               -0.511041056535807E-01,
                               1829.15146461355 };
 
+    double expected_chisq = 836424.055505915;
+
     gsl_vector_set_all (w, 1.0);
 
     gsl_multifit_wlinear (&X, w, &y, c, cov, &chisq);
@@ -66,6 +68,8 @@ main (void)
     gsl_test_rel (gsl_vector_get(c,4), expected_c[4], 1e-10, "longley gsl_fit_wmultilinear c4") ;
     gsl_test_rel (gsl_vector_get(c,5), expected_c[5], 1e-10, "longley gsl_fit_wmultilinear c5") ;
     gsl_test_rel (gsl_vector_get(c,6), expected_c[6], 1e-10, "longley gsl_fit_wmultilinear c6") ;
+
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "longley gsl_fit_wmultilinear chisq") ;
 
 
     gsl_matrix_fprintf (stdout, cov, "%g");
