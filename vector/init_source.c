@@ -48,7 +48,7 @@ FUNCTION(gsl_vector,calloc) (const size_t n)
 
   for (i = 0 ; i < n; i++)  /* initialize vector to zero */
     {
-      v->data[i] = 0 ;
+      v->data[i] = ZERO ;
     }
 
   return v ;

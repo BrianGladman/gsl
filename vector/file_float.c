@@ -3,4 +3,6 @@
 
 #define BASE float
 #define IN_FORMAT "%g"
+
 #include "file_source.c"
+#include "fprintf_block.c"

@@ -1,3 +1,7 @@
+Sun Apr 26 14:10:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added support for complex vectors
+
 Mon Apr  6 15:06:38 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* make range checking the default, you have to define

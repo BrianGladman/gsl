@@ -61,7 +61,7 @@ int main (void)
   }
 
   {
-    FILE * f = fopen("test.dat","w") ;
+    FILE * f = fopen("test.txt","w") ;
     
     for (i = 0 ; i < N ; i++) {
       gsl_vector_float_set(v,i,(float)i) ;
@@ -76,7 +76,7 @@ int main (void)
 
   {
     int status = 0 ;
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     
     gsl_vector_float_fscanf(f, w) ;
 
