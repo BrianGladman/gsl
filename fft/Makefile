@@ -1,0 +1,362 @@
+# Generated automatically from Makefile.in by configure.
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
+
+# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy, distribute and modify it.
+
+
+SHELL = /bin/sh
+
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
+
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/gsl
+pkglibdir = $(libdir)/gsl
+pkgincludedir = $(includedir)/gsl
+
+top_builddir = ..
+
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = s,x,x,
+RANLIB = ranlib
+PACKAGE = gsl
+VERSION = 0.3
+CC = gcc
+
+noinst_LIBRARIES = libfft.a
+
+bin_PROGRAMS = test benchmark errs
+
+test_LDADD = libfft.a
+errs_LDADD = libfft.a
+benchmark_LDADD = libfft.a
+
+test_DEPENDENCIES = libfft.a
+benchmark_DEPENDENCIES = libfft.a
+
+test_SOURCES = test.c test.h 
+benchmark_SOURCES = benchmark.c 
+
+libfft_a_SOURCES = \
+autotest.c autotest.h \
+compare.c compare.h \
+gsl_complex.h \
+dft_complex.c \
+gsl_dft_complex.h \
+errno.c gsl_errno.h \
+ \
+gsl_fft.h \
+benchmark.c \
+ \
+complex.c \
+gsl_fft_complex.h \
+complex_init.c \
+complex_pass_2.c \
+complex_pass_3.c \
+complex_pass_4.c \
+complex_pass_5.c \
+complex_pass_6.c \
+complex_pass_n.c \
+complex_radix2.c \
+ \
+factorize.c \
+ \
+halfcomplex.c \
+gsl_fft_halfcomplex.h \
+halfcomplex_init.c \
+halfcomplex_pass_2.c \
+halfcomplex_pass_3.c \
+halfcomplex_pass_4.c \
+halfcomplex_pass_5.c \
+halfcomplex_pass_n.c \
+halfcomplex_unpack.c \
+ \
+real.c \
+gsl_fft_real.h \
+real_init.c \
+real_pass_2.c \
+real_pass_3.c \
+real_pass_4.c \
+real_pass_5.c \
+real_pass_n.c \
+real_unpack.c \
+ \
+test_signals.c \
+ \
+gsl_math.h
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_CLEAN_FILES = 
+LIBRARIES =  $(noinst_LIBRARIES)
+
+
+DEFS =  -DHAVE_LIBM=1  -I. -I$(srcdir) 
+CPPFLAGS = 
+LDFLAGS = 
+LIBS = -lm 
+libfft_a_LIBADD = 
+libfft_a_OBJECTS =  autotest.o compare.o dft_complex.o errno.o \
+benchmark.o complex.o complex_init.o complex_pass_2.o complex_pass_3.o \
+complex_pass_4.o complex_pass_5.o complex_pass_6.o complex_pass_n.o \
+complex_radix2.o factorize.o halfcomplex.o halfcomplex_init.o \
+halfcomplex_pass_2.o halfcomplex_pass_3.o halfcomplex_pass_4.o \
+halfcomplex_pass_5.o halfcomplex_pass_n.o halfcomplex_unpack.o real.o \
+real_init.o real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o \
+real_pass_n.o real_unpack.o test_signals.o
+AR = ar
+PROGRAMS =  $(bin_PROGRAMS)
+
+test_OBJECTS =  test.o
+test_LDFLAGS = 
+benchmark_OBJECTS =  benchmark.o
+benchmark_LDFLAGS = 
+errs_SOURCES = errs.c
+errs_OBJECTS =  errs.o
+errs_DEPENDENCIES =  libfft.a
+errs_LDFLAGS = 
+CFLAGS = -g -O2
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
+
+TAR = tar
+DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/compare.P \
+.deps/complex.P .deps/complex_init.P .deps/complex_pass_2.P \
+.deps/complex_pass_3.P .deps/complex_pass_4.P .deps/complex_pass_5.P \
+.deps/complex_pass_6.P .deps/complex_pass_n.P .deps/complex_radix2.P \
+.deps/dft_complex.P .deps/errno.P .deps/errs.P .deps/factorize.P \
+.deps/halfcomplex.P .deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
+.deps/halfcomplex_pass_3.P .deps/halfcomplex_pass_4.P \
+.deps/halfcomplex_pass_5.P .deps/halfcomplex_pass_n.P \
+.deps/halfcomplex_unpack.P .deps/real.P .deps/real_init.P \
+.deps/real_pass_2.P .deps/real_pass_3.P .deps/real_pass_4.P \
+.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_unpack.P \
+.deps/test.P .deps/test_signals.P
+SOURCES = $(libfft_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) errs.c
+OBJECTS = $(libfft_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) errs.o
+
+default: all
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu fft/Makefile
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-noinstLIBRARIES:
+
+clean-noinstLIBRARIES:
+	test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+
+distclean-noinstLIBRARIES:
+
+maintainer-clean-noinstLIBRARIES:
+
+.c.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	rm -f *.o core
+
+clean-compile:
+
+distclean-compile:
+	rm -f *.tab.c
+
+maintainer-clean-compile:
+
+libfft.a: $(libfft_a_OBJECTS) $(libfft_a_DEPENDENCIES)
+	rm -f libfft.a
+	$(AR) cru libfft.a $(libfft_a_OBJECTS) $(libfft_a_LIBADD)
+	$(RANLIB) libfft.a
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(bindir)
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	list="$(bin_PROGRAMS)"; for p in $$list; do \
+	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
+benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
+	$(LINK) $(benchmark_LDFLAGS) $(benchmark_OBJECTS) $(benchmark_LDADD) $(LIBS)
+
+errs: $(errs_OBJECTS) $(errs_DEPENDENCIES)
+	$(LINK) $(errs_LDFLAGS) $(errs_OBJECTS) $(errs_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES)
+	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+	tags=; \
+	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
+	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = fft
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+
+MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+-include .deps/.P
+.deps/.P:
+	test -d .deps || mkdir .deps
+	echo > $@
+
+-include $(DEP_FILES)
+$(DEP_FILES): .deps/.P
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+
+maintainer-clean-depend:
+	rm -rf .deps
+
+.deps/%.P: $(srcdir)/%.c
+	@echo "Computing dependencies for $<..."
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+info:
+dvi:
+check: all
+	$(MAKE)
+installcheck:
+install-exec: install-binPROGRAMS
+	$(NORMAL_INSTALL)
+
+install-data: 
+	$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-binPROGRAMS
+
+all: $(LIBRARIES) $(PROGRAMS) Makefile
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+installdirs:
+	$(mkinstalldirs)  $(bindir)
+
+
+mostlyclean-generic:
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
+		mostlyclean-binPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
+
+clean:  clean-noinstLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
+
+distclean:  distclean-noinstLIBRARIES distclean-compile \
+		distclean-binPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
+	rm -f config.status
+
+maintainer-clean:  maintainer-clean-noinstLIBRARIES \
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: default mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
+clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,211 @@
+#include <math.h>
+#include <gsl_complex.h>
+#include <gsl_fft_real.h>
+
+int
+gsl_fft_real_pass_4 (const double from[],
+		     double to[],
+		     const unsigned int product,
+		     const unsigned int n,
+		     const complex twiddle1[],
+		     const complex twiddle2[],
+		     const complex twiddle3[])
+{
+  unsigned int k, k1;
+
+  const unsigned int factor = 4;
+  const unsigned int m = n / factor;
+  const unsigned int q = n / product;
+  const unsigned int product_1 = product / factor;
+
+  for (k1 = 0; k1 < q; k1++)
+    {
+      double z0_real, z1_real, z2_real, z3_real;
+      double x0_real, x1_real, x1_imag, x2_real;
+
+      {
+	const unsigned int from0 = k1 * product_1;
+	const unsigned int from1 = from0 + m;
+	const unsigned int from2 = from1 + m;
+	const unsigned int from3 = from2 + m;
+
+	z0_real = from[from0];
+	z1_real = from[from1];
+	z2_real = from[from2];
+	z3_real = from[from3];
+      }
+
+      /* compute x = W(4) z */
+      {
+	/* t1 = z0 + z2 */
+	const double t1_real = z0_real + z2_real;
+
+	/* t2 = z1 + z3 */
+	const double t2_real = z1_real + z3_real;
+
+	/* t3 = z0 - z2 */
+	const double t3_real = z0_real - z2_real;
+
+	/* t4 = - (z1 - z3) */
+	const double t4_real = -(z1_real - z3_real);
+
+	/* x0 = t1 + t2 */
+	x0_real = t1_real + t2_real;
+
+	/* x1 = t3 + i t4 */
+	x1_real = t3_real;
+	x1_imag = t4_real;
+
+	/* x2 = t1 - t2 */
+	x2_real = t1_real - t2_real;
+      }
+
+      {
+	const unsigned int to0 = product * k1;
+	const unsigned int to1 = to0 + 2 * product_1 - 1;
+	const unsigned int to2 = to1 + 2 * product_1;
+
+	to[to0] = x0_real;
+	to[to1] = x1_real;
+	to[to1 + 1] = x1_imag;
+	to[to2] = x2_real;
+      }
+    }
+
+  if (product_1 == 1)
+    return 0;
+
+  for (k = 1; k < (product_1 + 1) / 2; k++)
+    {
+      double w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
+      w1_real = twiddle1[k - 1].real;
+      w1_imag = -twiddle1[k - 1].imag;
+      w2_real = twiddle2[k - 1].real;
+      w2_imag = -twiddle2[k - 1].imag;
+      w3_real = twiddle3[k - 1].real;
+      w3_imag = -twiddle3[k - 1].imag;
+
+      for (k1 = 0; k1 < q; k1++)
+	{
+	  double z0_real, z0_imag, z1_real, z1_imag, z2_real, z2_imag,
+	    z3_real, z3_imag;
+	  double x0_real, x0_imag, x1_real, x1_imag, x2_real, x2_imag,
+	    x3_real, x3_imag;
+
+	  {
+	    const unsigned int from0 = k1 * product_1 + 2 * k - 1;
+	    const unsigned int from1 = from0 + m;
+	    const unsigned int from2 = from1 + m;
+	    const unsigned int from3 = from2 + m;
+
+	    const double f0_real = from[from0];
+	    const double f0_imag = from[from0 + 1];
+	    const double f1_real = from[from1];
+	    const double f1_imag = from[from1 + 1];
+	    const double f2_real = from[from2];
+	    const double f2_imag = from[from2 + 1];
+	    const double f3_real = from[from3];
+	    const double f3_imag = from[from3 + 1];
+
+	    z0_real = f0_real;
+	    z0_imag = f0_imag;
+	    z1_real = w1_real * f1_real - w1_imag * f1_imag;
+	    z1_imag = w1_real * f1_imag + w1_imag * f1_real;
+	    z2_real = w2_real * f2_real - w2_imag * f2_imag;
+	    z2_imag = w2_real * f2_imag + w2_imag * f2_real;
+	    z3_real = w3_real * f3_real - w3_imag * f3_imag;
+	    z3_imag = w3_real * f3_imag + w3_imag * f3_real;
+	  }
+
+	  /* compute x = W(4) z */
+	  {
+	    /* t1 = z0 + z2 */
+	    const double t1_real = z0_real + z2_real;
+	    const double t1_imag = z0_imag + z2_imag;
+
+	    /* t2 = z1 + z3 */
+	    const double t2_real = z1_real + z3_real;
+	    const double t2_imag = z1_imag + z3_imag;
+
+	    /* t3 = z0 - z2 */
+	    const double t3_real = z0_real - z2_real;
+	    const double t3_imag = z0_imag - z2_imag;
+
+	    /* t4 = - (z1 - z3) */
+	    const double t4_real = -(z1_real - z3_real);
+	    const double t4_imag = -(z1_imag - z3_imag);
+
+	    /* x0 = t1 + t2 */
+	    x0_real = t1_real + t2_real;
+	    x0_imag = t1_imag + t2_imag;
+
+	    /* x1 = t3 + i t4 */
+	    x1_real = t3_real - t4_imag;
+	    x1_imag = t3_imag + t4_real;
+
+	    /* x2 = t1 - t2 */
+	    x2_real = t1_real - t2_real;
+	    x2_imag = t1_imag - t2_imag;
+
+	    /* x3 = t3 - i t4 */
+	    x3_real = t3_real + t4_imag;
+	    x3_imag = t3_imag - t4_real;
+	  }
+
+	  {
+	    const unsigned int to0 = k1 * product + 2 * k - 1;
+	    const unsigned int to1 = to0 + 2 * product_1;
+	    const unsigned int to2 = 2 * product_1 - 2 * k + k1 * product - 1;
+	    const unsigned int to3 = to2 + 2 * product_1;
+
+	    to[to0] = x0_real;
+	    to[to0 + 1] = x0_imag;
+
+	    to[to1] = x1_real;
+	    to[to1 + 1] = x1_imag;
+
+	    to[to3] = x2_real;
+	    to[to3 + 1] = -x2_imag;
+
+	    to[to2] = x3_real;
+	    to[to2 + 1] = -x3_imag;
+	  }
+	}
+    }
+
+  if (product_1 % 2 == 1)
+    return 0;
+
+  for (k1 = 0; k1 < q; k1++)
+    {
+      double t1, t2;
+      double x0, x1, x2, x3;
+
+      {
+	const unsigned int from0 = k1 * product_1 + product_1 - 1;
+	const unsigned int from1 = from0 + m;
+	const unsigned int from2 = from1 + m;
+	const unsigned int from3 = from2 + m;
+
+	x0 = from[from0];
+	x1 = from[from1];
+	x2 = from[from2];
+	x3 = from[from3];
+      }
+
+      t1 = (1.0 / sqrt (2.0)) * (x1 - x3);
+      t2 = (1.0 / sqrt (2.0)) * (x1 + x3);
+
+      {
+	const unsigned int to0 = k1 * product + 2 * k - 1;
+	const unsigned int to1 = to0 + 2 * product_1;
+
+	to[to0] = x0 + t1;
+	to[to0 + 1] = -x2 - t2;
+
+	to[to1] = x0 - t1;
+	to[to1 + 1] = x2 - t2;
+      }
+    }
+  return 0;
+}
