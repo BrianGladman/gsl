@@ -106,3 +106,16 @@ top-level dir where gsl_math.h and gsl_complex.h are located.
 ---------- fixing Makefile.am
 
 The SUBDIRS and SUBLIBS variables have to be updated manually.
+
+----------- Notes on making a release
+
+* Edit the version number in configure.in. Regenerate everything. make
+dist, unpack somewhere and then configure, make, make check.
+
+* Make a KNOWN-PROBLEMS file. Run scripts/mkknownproblems.sh.
+
+* Make html docs using texi2html in cvs, 
+
+    cd doc ; mkdir html ; cd html
+    ../texi2html -verbose -split_chapter -expandinfo ~/gsl/doc/gsl-ref.texi
+    cvs -d sourceware.cygnus.com:/cvs/gsl  import -m 'this is release 0.123' htdocs/ref texi2html release-0-123
