@@ -21,6 +21,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram.h>
 
+#include "find.c"
+
 double
 gsl_histogram_get (const gsl_histogram * h, size_t i)
 {
@@ -48,6 +50,20 @@ gsl_histogram_get_range (const gsl_histogram * h, size_t i,
 
   *lower = h->range[i];
   *upper = h->range[i + 1];
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_histogram_find (const gsl_histogram * h,
+		    const double x, size_t * i)
+{
+  int status = find (h->n, h->range, x, i);
+
+  if (status)
+    {
+      GSL_ERROR ("x not found in range of h", GSL_EDOM);
+    }
 
   return GSL_SUCCESS;
 }

@@ -17,32 +17,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <config.h>
-#include <stdlib.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_histogram.h>
+/* determines whether to optimize for linear ranges  */
+#define LINEAR_OPT 1
 
-typedef int cmp_fn_t (const void *, const void *);
-static int compare_range (const double *x, const double *range);
+static int find (const size_t n, const double range[], 
+                 const double x, size_t * i);
 
-int
-gsl_histogram_find (const gsl_histogram * h,
-		    const double x, size_t * i)
+static int
+find (const size_t n, const double range[], const double x, size_t * i)
 {
-  int status = gsl_histogram_find_impl (h->n, h->range, x, i);
+  size_t i_linear, lower, upper, mid;
 
-  if (status)
-    {
-      GSL_ERROR ("x not found in range of h", GSL_EDOM);
-    }
-
-  return GSL_SUCCESS;
-}
-
-int
-gsl_histogram_find_impl (const size_t n, const double range[],
-			 const double x, size_t * i)
-{
   if (x < range[0])
     {
       return -1;
@@ -53,33 +38,49 @@ gsl_histogram_find_impl (const size_t n, const double range[],
       return +1;
     }
 
-  {
-    double *p = (double *) bsearch (&x, range, n, sizeof (double),
-				    (cmp_fn_t *) compare_range);
-    if (p == 0)
-      {
-	GSL_ERROR ("x not found in range", GSL_ESANITY);
-      }
+  /* optimize for linear case */
 
-    *i = (p - range);
+#ifdef LINEAR_OPT
+  {
+    double u =  (x - range[0]) / (range[n] - range[0]);
+    i_linear = u * n;
   }
+
+  if (x >= range[i_linear] && x < range[i_linear + 1])
+    {
+      *i = i_linear;
+      return 0;
+    }
+#endif
+
+  /* perform binary search */
+
+  upper = n ;
+  lower = 0 ;
+
+  while (upper - lower > 1)
+    {
+      mid = (upper + lower) / 2 ;
+      
+      if (x >= range[mid])
+        {
+          lower = mid ;
+        }
+      else
+        {
+          upper = mid ;
+        }
+    }
+
+  *i = lower ;
+
+  /* sanity check the result */
+
+  if (x < range[lower] || x >= range[lower + 1])
+    {
+      GSL_ERROR ("x not found in range", GSL_ESANITY);
+    }
 
   return 0;
 }
 
-static int
-compare_range (const double *x, const double *range)
-{
-  if (*x < *range)
-    {
-      return -1;
-    }
-  else if (*x >= *(range + 1))
-    {
-      return +1;
-    }
-  else
-    {
-      return 0;
-    }
-}

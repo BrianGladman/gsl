@@ -17,48 +17,29 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <config.h>
-#include <stdlib.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_histogram.h>
-#include <gsl/gsl_histogram2d.h>
+#include "find.c"
 
-int
-gsl_histogram2d_find (const gsl_histogram2d * h,
-		      const double x, const double y,
-		      size_t * i, size_t * j)
+static int
+find2d (const size_t nx, const double xrange[],
+        const size_t ny, const double yrange[],
+        const double x, const double y,
+        size_t * i, size_t * j);
+
+
+static int
+find2d (const size_t nx, const double xrange[],
+        const size_t ny, const double yrange[],
+        const double x, const double y,
+        size_t * i, size_t * j)
 {
-  int status = gsl_histogram_find_impl (h->nx, h->xrange, x, i);
-
-  if (status)
-    {
-      GSL_ERROR ("x not found in range of h", GSL_EDOM);
-    }
-
-  status = gsl_histogram_find_impl (h->ny, h->yrange, y, j);
-
-  if (status)
-    {
-      GSL_ERROR ("y not found in range of h", GSL_EDOM);
-    }
-
-  return GSL_SUCCESS;
-}
-
-
-int
-gsl_histogram2d_find_impl (const gsl_histogram2d * h,
-			   const double x, const double y,
-			   size_t * i, size_t * j)
-{
-  int status = gsl_histogram_find_impl (h->nx, h->xrange, x, i);
+  int status = find (nx, xrange, x, i);
 
   if (status)
     {
       return status;
     }
 
-  status = gsl_histogram_find_impl (h->ny, h->yrange, y, j);
+  status = find (ny, yrange, y, j);
 
   if (status)
     {

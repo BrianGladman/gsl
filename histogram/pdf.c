@@ -22,6 +22,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram.h>
 
+#include "find.c"
+
 double
 gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
 {
@@ -37,7 +39,7 @@ gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r)
       r = 0.0;
     }
 
-  status = gsl_histogram_find_impl (p->n, p->sum, r, &i);
+  status = find (p->n, p->sum, r, &i);
 
   if (status)
     {

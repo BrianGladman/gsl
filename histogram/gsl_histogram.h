@@ -54,8 +54,6 @@ int gsl_histogram_increment (gsl_histogram * h, double x);
 int gsl_histogram_accumulate (gsl_histogram * h, double x, double weight);
 int gsl_histogram_find (const gsl_histogram * h, 
 			const double x, size_t * i);
-int gsl_histogram_find_impl (const size_t n, const double range[],
-			     const double x, size_t * i);
 
 double gsl_histogram_get (const gsl_histogram * h, size_t i);
 int gsl_histogram_get_range (const gsl_histogram * h, size_t i, 

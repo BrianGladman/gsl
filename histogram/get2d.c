@@ -21,6 +21,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram2d.h>
 
+#include "find2d.c"
+
 double
 gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j)
 {
@@ -72,6 +74,28 @@ gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
 
   *ylower = h->yrange[j];
   *yupper = h->yrange[j + 1];
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_histogram2d_find (const gsl_histogram2d * h,
+		      const double x, const double y,
+		      size_t * i, size_t * j)
+{
+  int status = find (h->nx, h->xrange, x, i);
+
+  if (status)
+    {
+      GSL_ERROR ("x not found in range of h", GSL_EDOM);
+    }
+
+  status = find (h->ny, h->yrange, y, j);
+
+  if (status)
+    {
+      GSL_ERROR ("y not found in range of h", GSL_EDOM);
+    }
 
   return GSL_SUCCESS;
 }

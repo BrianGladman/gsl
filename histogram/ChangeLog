@@ -1,3 +1,11 @@
+Mon Jan 22 13:55:13 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* find.c (find): optimize for the linear case, include own binary
+ 	search for speed
+
+	* add.c (gsl_histogram_accumulate): fix check of array bound for
+ 	index
+
 Sun May 28 12:23:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test2d.c (main): use binary mode "b" when reading and writing

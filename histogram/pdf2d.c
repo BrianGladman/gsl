@@ -23,6 +23,8 @@
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_histogram2d.h>
 
+#include "find.c"
+
 int
 gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
 			    double r1, double r2,
@@ -44,7 +46,7 @@ gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
       r1 = 0.0;
     }
 
-  status = gsl_histogram_find_impl (p->nx * p->ny, p->sum, r1, &k);
+  status = find (p->nx * p->ny, p->sum, r1, &k);
 
   if (status)
     {

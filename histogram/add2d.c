@@ -18,9 +18,12 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_histogram2d.h>
+
+#include "find2d.c"
 
 int
 gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y)
@@ -38,7 +41,7 @@ gsl_histogram2d_accumulate (gsl_histogram2d * h,
 
   size_t i = 0, j = 0;
 
-  int status = gsl_histogram2d_find_impl (h, x, y, &i, &j);
+  int status = find2d (h->nx, h->xrange, h->ny, h->yrange, x, y, &i, &j);
 
   if (status)
     {

@@ -61,8 +61,6 @@ int gsl_histogram2d_accumulate (gsl_histogram2d * h,
 				double x, double y, double weight);
 int gsl_histogram2d_find (const gsl_histogram2d * h, 
 			  const double x, const double y, size_t * i, size_t * j);
-int gsl_histogram2d_find_impl (const gsl_histogram2d * h, 
-			       const double x, const double y, size_t * i, size_t * j);
 
 double gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j);
 int gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
