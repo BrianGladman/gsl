@@ -10,10 +10,20 @@ gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
 			    double * x, double * y)
 {
   size_t k ;
-  int status = gsl_histogram_find_impl (p->nx * p->ny, p->sum, r1, &k) ;
+  int status ;
+
+  if (r1 == 1.0) {  /* special case prob = 1 */
+    const size_t nx = p->nx ;
+    const size_t ny = p->ny ;
+    *x = p->xrange[nx] ;
+    *y = p->yrange[ny-1] + r2 * (p->yrange[ny] - p->yrange[ny-1]) ;
+    return 0 ;
+  }
+
+  status = gsl_histogram_find_impl (p->nx * p->ny, p->sum, r1, &k) ;
 
   if (status) {
-    return status ;
+    GSL_ERROR ("cannot find r1 in cumulative pdf", EDOM) ;
   } else {
     size_t i = k / p->ny ;
     size_t j = k - (i * p->ny) ;

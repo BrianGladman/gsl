@@ -7,9 +7,17 @@ double
 gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, const double r)
 {
   size_t i ;
-  int status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i) ;
+  int status ;
+
+  if (r == 1.0) {  /* special case prob = 1 */
+    const size_t n = p->nbins ;
+    return p->range[n] ;
+  }
+
+  status = gsl_histogram_find_impl (p->nbins, p->sum, r, &i) ;
+
   if (status) {
-    return 0 ;
+    GSL_ERROR_RETURN ("cannot find r in cumulative pdf", EDOM, 0) ;
   } else {
     double delta = (r - p->sum[i])/(p->sum[i+1] - p->sum[i]) ;
     double x = p->range[i] + delta * (p->range[i+1] - p->range[i]) ;

@@ -22,7 +22,7 @@ int main (void)
 
     for (i = 0; i < 100000 ; i++)
       {
-	double u = ((double) rand ()) / RAND_MAX;
+	double u = ((double) rand ()) / (1+RAND_MAX);
 	double x = gsl_histogram_pdf_sample (p, u) ;
 	gsl_histogram_increment (hh, x) ;
       }
@@ -38,12 +38,18 @@ int main (void)
 
 	if (ya == 0) {
 	  if (y != 0) 
-	    status = 1 ;
+	    {
+	      printf("%d: %g vs %g\n", i, y, ya);
+	      status = 1 ;
+	    }
 	} else {
 	  double err = 1/sqrt(gsl_histogram_get (hh, i)) ;
-	  double sigma = fabs((y-ya)/(y*err)) ;
+	  double sigma = fabs((y-ya)/(ya*err)) ;
 	  if (sigma > 3) 
-	    status = 1 ;
+	    {
+	      status = 1 ;
+	      printf("%g vs %g err=%g sigma=%g\n", y, ya, err, sigma) ;
+	    }
 	}
       }
     gsl_test(status, "gsl_histogram_pdf_sample works") ;

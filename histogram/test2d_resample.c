@@ -26,13 +26,14 @@ int main (void)
     
     for (i = 0; i < 100000 ; i++)
       {
-	double u = ((double) rand ()) / RAND_MAX;
-	double v = ((double) rand ()) / RAND_MAX;
+	double u = ((double) rand ()) / (1+RAND_MAX);
+	double v = ((double) rand ()) / (1+RAND_MAX);
 	double x, y ;
-	gsl_histogram2d_pdf_sample (p, u, v, &x, &y) ;
-	gsl_histogram2d_increment (hh, x, y) ;
+	status = gsl_histogram2d_pdf_sample (p, u, v, &x, &y) ;
+	status = gsl_histogram2d_increment (hh, x, y) ;
       }
 
+    status = 0 ;
     for (i = 0 ; i < 20 ; i++)
       {
 	for (j = 0; j < 20; j++)
@@ -47,7 +48,10 @@ int main (void)
 
 	    if (ya == 0) {
 	      if (z != 0) 
+		{
 		  status = 1 ;
+		  printf("(%d,%d): %g vs %g\n", i,j, z, ya) ;
+		}
 	    } else {
 	      double err = 1/sqrt(gsl_histogram2d_get (hh, i, j)) ;
 	      double sigma = fabs((z-ya)/(ya*err)) ;
