@@ -60,6 +60,8 @@ C            LARGEST POSSIBLE VALUE.
 C     B. THE SEQUENCE OF NUMBERS GENERATED DEPENDS ON THE INITIAL
 C          INPUT 'JD' AS WELL AS THE VALUE OF 'MDIG'.
 C          IF MDIG=16 ONE SHOULD FIND THAT
+   Editors Note: set the seed using 152 in order to get uni(305)
+   -jt
 C            THE FIRST EVALUATION
 C              Z=UNI(305) GIVES Z=.027832881...
 C            THE SECOND EVALUATION
@@ -76,88 +78,112 @@ C***END PROLOGUE  UNI
 
   **/
 
+#include <config.h>
 #include <stdlib.h>
-#include "uni32.h"
+#include <gsl_rng.h>
 
-static const long MDIG=32;                /* Machine digits in int */
-static const long m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
-static const long m2 = 65536;             /* 2^(MDIG/2) */
+unsigned long int uni32_get (void * vstate);
+void uni32_set (void * state, unsigned int s);
+void uni32_set_with_state (void * vstate, const void * vinit_state,
+			  unsigned int s);
 
-#define gsl_ran_uni32_RANDMAX 2147483647    /* m1 */
+static const int MDIG=32;                /* Machine digits in int */
+static const int m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
+static const int m2 = 65536;             /* 2^(MDIG/2) */
 
 typedef struct {
-    unsigned long m[17];
     int i,j;
-} gsl_ran_uni32_randomState;
+    unsigned long m[17];
+} uni32_state_t;
 
-static void
-gsl_ran_uni32_printState_p(gsl_ran_uni32_randomState *s)
+inline unsigned long uni32_get (void * vstate)
 {
-    int n;
-    printf("%d, %d,  {\n",s->i,s->j);
-    for (n=0; n<16; ++n) {
-	printf("%lu,%c",s->m[n],(n%5==4 ? '\n' : ' '));
-    }
-    printf("%lu }\n",s->m[16]);
-}
+    uni32_state_t * state = (uni32_state_t *) vstate;
+    const int i = state->i ;
+    const int j = state->j ;
 
-inline unsigned long gsl_ran_uni32_random_wstate(void *vState)
-{
-    long k;                     /* important k not be unsigned */
-    gsl_ran_uni32_randomState *theState;
-    theState = (gsl_ran_uni32_randomState *)vState;
+    /* important k not be unsigned */
+    long k = state->m[i] - state->m[j];
 
-    k = theState->m[theState->i] - theState->m[theState->j];
     if (k < 0) k += m1;
-    theState->m[theState->j] = k;
+    state->m[j] = k;
     
-    if (--(theState->i) == -1) theState->i=16;
-    if (--(theState->j) == -1) theState->j=16;
+    if (i == 0) 
+      {
+	state->i = 16 ;
+      } 
+    else
+      {
+	(state->i)-- ;
+      }
+
+    if (j == 0) 
+      {
+	state->j = 16 ;
+      } 
+    else
+      {
+	(state->j)-- ;
+      }
 
     return k;
-
 }
 
-void gsl_ran_uni32_seed_wstate(void *vState, int jd)
-{
-    int i,jseed,k0,k1,j0,j1;
-    gsl_ran_uni32_randomState *theState;
-    theState = (gsl_ran_uni32_randomState *)vState;
-    
-    /* For this routine, the seeding is very elaborate! */
-    /* A flaw in this approach is that seeds 1,2 give exactly the
-       same random number sequence!  */
-
-    jd = (jd > 0 ? jd : -jd);       /* absolute value */
-    jseed = (jd < m1 ? jd : m1);    /* seed should be less than m1 */
-                                    /* and odd */
-    jseed -= (jseed % 2 == 0 ? 1 : 0);
-
-    k0 = 9069%m2;
-    k1 = 9069/m2;
-    j0 = jseed%m2;
-    j1 = jseed/m2;
-
-    for (i=0; i<17; ++i) {
-        jseed = j0*k0;
-        j1 = (jseed/m2 + j0*k1 + j1*k0) % (m2/2);
-        j0 = jseed%m2;
-        theState->m[i] = j0+m2*j1;
-    }
-    theState->i=4;
-    theState->j=16;
-
-    return;
-}
-
-
-static gsl_ran_uni32_randomState state = {
-    { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
-      19049, 10949, 19693, 29746, 26748, 2796,  23890,
-      29168, 31924, 16499 },
-    4, 16
+static const uni32_state_t init_state = {
+  4, 16,  { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
+	    19049, 10949, 19693, 29746, 26748, 2796,  23890,
+	    29168, 31924, 16499 }
 };
-#include "uni32-state.c"
+
+void uni32_set(void * state, unsigned int s)
+{
+  uni32_set_with_state (state, &init_state, s) ;
+}
+
+void uni32_set_with_state (void * vstate, const void * vinit_state, 
+			 unsigned int s)
+{
+  int i,seed,k0,k1,j0,j1;
+  
+  uni32_state_t * state = (uni32_state_t *) vstate;
+  
+  *state = *(const uni32_state_t *) vinit_state ;
+    
+  /* For this routine, the seeding is very elaborate! */
+  /* A flaw in this approach is that seeds 1,2 give exactly the
+     same random number sequence!  */
+  
+  s = 2*s+1;                    /* enforce seed be odd */
+  seed = (s < m1 ? s : m1);    /* seed should be less than m1 */
+  
+  k0 = 9069%m2;
+  k1 = 9069/m2;
+  j0 = seed%m2;
+  j1 = seed/m2;
+  
+  for (i=0; i<17; ++i) {
+    seed = j0*k0;
+    j1 = (seed/m2 + j0*k1 + j1*k0) % (m2/2);
+    j0 = seed%m2;
+    state->m[i] = j0+m2*j1;
+  }
+  state->i=4;
+  state->j=16;
+  
+  return;
+}
+
+static const gsl_rng_type uni32_type = { "gsl-uni32",  /* name */
+					 2147483647,  /* RAND_MAX */
+					 sizeof(uni32_state_t), 
+					 &uni32_set, 
+					 &uni32_get } ;
+
+const gsl_rng_type * gsl_rng_uni32 (void) { return &uni32_type ; }
+
+
+
+
 
 
     

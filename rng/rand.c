@@ -117,65 +117,68 @@ C
 
   **/
 
+#include <config.h>
 #include <stdlib.h>
-#include "rand.h"
+#include <gsl_rng.h>
+
+unsigned long int rand_get (void * vstate);
+void rand_set (void * state, unsigned int s);
+void rand_set_with_state (void * vstate, const void * vinit_state,
+			  unsigned int s);
 
 typedef struct {
-    long x0,x1;
-} gsl_ran_rand_randomState;
+    long int x0, x1;
+} rand_state_t ;
 
-static void
-gsl_ran_rand_printState_p(gsl_ran_rand_randomState *s)
-{
-    printf("%ldL, %ldL\n",
-	   s->x0,s->x1);
-}
-
-#define gsl_ran_rand_RANDMAX 4194304
-
-static const long P=4194304;
-static const long a1=1536;
-static const long a0=1029;
+static const long P = 4194304;
+static const long a1 = 1536;
+static const long a0 = 1029;
 static const long a1ma0 = 507;
 static const long c = 1731;
 
-inline unsigned long gsl_ran_rand_random_wstate(void *vState)
+unsigned long int rand_get (void *vstate)
 {
     long y0,y1;
-    gsl_ran_rand_randomState *theState;
-    theState = (gsl_ran_rand_randomState *)vState;
+    rand_state_t * state = (rand_state_t *) vstate ;
 
-    y0 = a0*theState->x0;
-    y1 = a1*theState->x1 + a1ma0*(theState->x0-theState->x1) + y0;
+    y0 = a0 * state->x0;
+    y1 = a1 * state->x1 + a1ma0 * (state->x0 - state->x1) + y0;
     y0 = y0 + c;
-    theState->x0 = y0 % 2048;
-    y1 = y1 + (y0-theState->x0)/2048;
-    theState->x1 = y1 % 2048;
+    state->x0 = y0 % 2048;
+    y1 = y1 + (y0 - state->x0)/2048;
+    state->x1 = y1 % 2048;
       
-    return theState->x1*2048 + theState->x0;
+    return state->x1 * 2048 + state->x0;
 }
 
-void gsl_ran_rand_seed_wstate(void *vState, int jd)
+static const rand_state_t init_state = { 0L, 256L };
+
+void rand_set(void * state, unsigned int s)
 {
-    gsl_ran_rand_randomState *theState;
-    theState = (gsl_ran_rand_randomState *)vState;
-    
-    /* Only eight seeds are permitted.  This is pretty limiting, but
-     * at least we are guaranteed that the eight sequences are different */
-    jd = (jd>0) ? jd : -jd;
-    jd = jd%8;
-
-    jd *= P/8;
-    theState->x0 = jd % 2048;
-    theState->x1 = (jd - theState->x0)/2048;
+  rand_set_with_state(state, &init_state, s) ;
 }
 
-
-static gsl_ran_rand_randomState state = { 0L, 256L };
-
-#include "rand-state.c"
-
-
+void rand_set_with_state(void * vstate, const void * vinit_state, 
+			 unsigned int s)
+{
+  rand_state_t * state = (rand_state_t *) vstate;
+  
+  *state = *(const rand_state_t *) vinit_state ;
     
-    
-    
+  /* Only eight seeds are permitted.  This is pretty limiting, but
+     at least we are guaranteed that the eight sequences are different */
+
+  s = s % 8;
+  s *= P/8;
+
+  state->x0 = s % 2048;
+  state->x1 = (s - state->x0)/2048;
+}
+
+static const gsl_rng_type rand_type = { "gsl-rand",  /* name */
+					4194304,  /* RAND_MAX */
+					sizeof(rand_state_t), 
+					&rand_set, 
+					&rand_get } ;
+
+const gsl_rng_type * gsl_rng_rand (void) { return &rand_type ; }
