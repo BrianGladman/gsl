@@ -289,8 +289,44 @@ function T = test_matmat (S, j, order, transA, transB)
     T.A = random_matrix(T.m, T.k) + I * random_matrix(T.m, T.k);
     T.B = random_matrix(T.k, T.n) + I * random_matrix(T.k, T.n);
   endif
+endfunction
 
-  
+
+function T = test_symatmat (S, j, order, side)
+  T.m = fix(j/4)+1;
+  T.n = fix(j/2)+1;
+
+  if (side == 141)
+    T.k = T.m;
+  else
+    T.k = T.n;
+  endif
+
+  T.lda = T.k;
+
+  if (order == 101)
+    T.ldc = T.n;
+  else
+    T.ldc = T.m;
+  endif
+
+  if (order == 101)
+    T.ldb = T.n;
+  else
+    T.ldb = T.m;
+  endif
+
+  if (S.complex == 0)
+    T.C = random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.k, T.k);
+    T.B = random_matrix(T.m, T.n);
+  else
+    T.C = random_matrix(T.m, T.n) + I * random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.k, T.k) + I * random_matrix(T.k, T.k);
+    T.B = random_matrix(T.m, T.n) + I * random_matrix(T.m, T.n);
+  endif
 endfunction
 
 
@@ -1220,6 +1256,31 @@ function CC = blas_gemm (order, transA, transB,  M, N, K, alpha, \
 endfunction
 
 
+function CC = blas_symm (order, side, uplo,  M, N, alpha, \
+                         A, lda, B, ldb, beta, C, ldc)
+  c = matrix (order, C, ldc, M, N);
+
+  if (side == 141)
+    a = trmatrix (order, uplo, 131, A, lda, M);
+  else
+    a = trmatrix (order, uplo, 131, A, lda, N);
+  endif
+
+  t = triu(a,1) + tril(a,-1);
+  a = t + t.' + diag(diag(a));  # symmetrise
+
+  b = matrix (order, B, ldb, M, N);
+
+  if (side == 141)
+    c = alpha * a * b + beta * c;
+  else
+    c = alpha * b * a + beta * c;
+  endif
+
+  CC = mout(order, C, ldc, M, N, c);
+endfunction
+
+
 ######################################################################
 
                                 # testing functions
@@ -1906,6 +1967,32 @@ function test_gemm (S, fn, order, transA, transB, M, N, K, alpha, A, \
   end_block();
 endfunction
 
+
+function test_symm (S, fn, order, side, uplo, M, N, alpha, A, \
+                    lda, B, ldb, beta, C, ldc)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "side", side);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "M", M);
+  define(S, "int", "N", N);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "scalar", "beta", beta);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "B", B);
+  define(S, "int", "ldb", ldb);
+  define(S, "matrix", "C", C);
+  define(S, "int", "ldc", ldc);
+
+  CC = feval(strcat("blas_", fn), order, side, uplo, M, N, \
+             alpha, A, lda, B, ldb, beta, C, ldc);
+  define(S, "matrix", "C_expected", CC);
+  call("cblas_", S.prefix, fn, "(order, side, uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc)");
+  test(S, "matrix", "C", "C_expected", strcat(S.prefix, fn), C);
+  end_block();
+endfunction
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -2458,18 +2545,37 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     for transA = trans(S)
+#       for transB = trans(S)
+#         for alpha = coeff(S)
+#           for beta = coeff(S)
+#             for order = [101, 102]
+#               T = test_matmat(S, j, order, transA, transB);
+#               test_gemm (S, "gemm", order, transA, transB, T.m, T.n,
+#                          T.k, alpha, 
+#                          T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+    
 for j = 1:n
-  for i = [s,d,c,z]
+  for i = [s,d] #,c,z]
     S = context(i);
-    for transA = trans(S)
-      for transB = trans(S)
+    for uplo = [121, 122]
+      for side = [141, 142]
         for alpha = coeff(S)
           for beta = coeff(S)
             for order = [101, 102]
-              T = test_matmat(S, j, order, transA, transB);
-              test_gemm (S, "gemm", order, transA, transB, T.m, T.n,
-                         T.k, alpha, 
-                         T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+              T = test_symatmat(S, j, order, side);
+              test_symm (S, "symm", order, side, uplo, T.m, T.n,
+                         alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
             endfor
           endfor
         endfor
@@ -2477,5 +2583,4 @@ for j = 1:n
     endfor
   endfor
 endfor
-    
     
