@@ -68,17 +68,20 @@ VERSION = @VERSION@
 CFLAGS=-g -Wall
 
 check_PROGRAMS = siman_test siman_tsp
-lib_LIBRARIES = libgsl_siman.a
+lib_LIBRARIES = libgslsiman.a
+
+TESTS = siman_test_driver.sh
+EXTRA_DIST = siman_test_driver.sh
 
 siman_test_SOURCES = siman_test.c
-siman_test_LDADD = libgsl_siman.a -L../random -lgslrandom
-siman_test_DEPENDENCIES = libgsl_siman.a
+siman_test_LDADD = libgslsiman.a -L../random -lgslrandom
+siman_test_DEPENDENCIES = libgslsiman.a
 
 siman_tsp_SOURCES = siman_tsp.c
-siman_tsp_LDADD = libgsl_siman.a -L../random -lgslrandom
-siman_tsp_DEPENDENCIES = libgsl_siman.a
+siman_tsp_LDADD = libgslsiman.a -L../random -lgslrandom
+siman_tsp_DEPENDENCIES = libgslsiman.a
 
-libgsl_siman_a_SOURCES = siman.c
+libgslsiman_a_SOURCES = siman.c
 
 include_HEADERS = gsl_siman.h
 
@@ -94,8 +97,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libgsl_siman_a_LIBADD = 
-libgsl_siman_a_OBJECTS =  siman.o
+libgslsiman_a_LIBADD = 
+libgslsiman_a_OBJECTS =  siman.o
 AR = ar
 siman_test_OBJECTS =  siman_test.o
 siman_test_LDFLAGS = 
@@ -113,8 +116,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/siman.P .deps/siman_test.P .deps/siman_tsp.P
-SOURCES = $(libgsl_siman_a_SOURCES) $(siman_test_SOURCES) $(siman_tsp_SOURCES)
-OBJECTS = $(libgsl_siman_a_OBJECTS) $(siman_test_OBJECTS) $(siman_tsp_OBJECTS)
+SOURCES = $(libgslsiman_a_SOURCES) $(siman_test_SOURCES) $(siman_tsp_SOURCES)
+OBJECTS = $(libgslsiman_a_OBJECTS) $(siman_test_OBJECTS) $(siman_tsp_OBJECTS)
 
 default: all
 
@@ -173,10 +176,10 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libgsl_siman.a: $(libgsl_siman_a_OBJECTS) $(libgsl_siman_a_DEPENDENCIES)
-	-rm -f libgsl_siman.a
-	$(AR) cru libgsl_siman.a $(libgsl_siman_a_OBJECTS) $(libgsl_siman_a_LIBADD)
-	$(RANLIB) libgsl_siman.a
+libgslsiman.a: $(libgslsiman_a_OBJECTS) $(libgslsiman_a_DEPENDENCIES)
+	-rm -f libgslsiman.a
+	$(AR) cru libgslsiman.a $(libgslsiman_a_OBJECTS) $(libgslsiman_a_LIBADD)
+	$(RANLIB) libgslsiman.a
 
 mostlyclean-checkPROGRAMS:
 
@@ -271,10 +274,35 @@ maintainer-clean-depend:
 	$(MKDEP) $< >$@.tmp \
 	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
 	  && rm -f $@.tmp
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info:
 dvi:
 check: all $(check_PROGRAMS)
-	$(MAKE)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
@@ -336,10 +364,10 @@ distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

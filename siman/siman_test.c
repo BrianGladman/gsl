@@ -207,7 +207,8 @@ int main(int argc, char *argv[])
   return 0;
 
   if (argc != 2) {
-    fprintf(stderr, "usage: %s [D1, D2, D3, CA]\n", argv[0]);
+/*     fprintf(stderr, "usage: %s [D1, D2, D3, CA]\n", argv[0]); */
+    fprintf(stderr, "usage: %s [D1 | D2 | D3]\n", argv[0]);
     return 1;
   }
 
