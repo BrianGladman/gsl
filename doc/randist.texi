@@ -383,10 +383,10 @@ given above.
 \centerline{\input rand-laplace.tex}
 @end tex
 
-@deftypefun double gsl_cdf_laplace_P (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_laplace_Q (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_laplace_Pinv (const double @var{P}, const double @var{a})
-@deftypefunx double gsl_cdf_laplace_Qinv (const double @var{Q}, const double @var{a})
+@deftypefun double gsl_cdf_laplace_P (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_laplace_Q (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_laplace_Pinv (double @var{P}, double @var{a})
+@deftypefunx double gsl_cdf_laplace_Qinv (double @var{Q}, double @var{a})
 These functions compute the cumulative distribution functions
 @math{P(x)}, @math{Q(x)} and their inverses for the Laplace
 distribution with width @var{a}.
@@ -470,10 +470,10 @@ given above.
 \centerline{\input rand-cauchy.tex}
 @end tex
 
-@deftypefun double gsl_cdf_cauchy_P (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_cauchy_Q (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_cauchy_Pinv (const double @var{P}, const double @var{a})
-@deftypefunx double gsl_cdf_cauchy_Qinv (const double @var{Q}, const double @var{a})
+@deftypefun double gsl_cdf_cauchy_P (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Q (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Pinv (double @var{P}, double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Qinv (double @var{Q}, double @var{a})
 These functions compute the cumulative distribution functions
 @math{P(x)}, @math{Q(x)} and their inverses for the Cauchy
 distribution with scale parameter @var{a}.
@@ -515,10 +515,10 @@ formula given above.
 \centerline{\input rand-rayleigh.tex}
 @end tex
 
-@deftypefun double gsl_cdf_rayleigh_P (const double @var{x}, const double @var{sigma})
-@deftypefunx double gsl_cdf_rayleigh_Q (const double @var{x}, const double @var{sigma})
-@deftypefunx double gsl_cdf_rayleigh_Pinv (const double @var{P}, const double @var{sigma})
-@deftypefunx double gsl_cdf_rayleigh_Qinv (const double @var{Q}, const double @var{sigma})
+@deftypefun double gsl_cdf_rayleigh_P (double @var{x}, double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Q (double @var{x}, double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Pinv (double @var{P}, double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Qinv (double @var{Q}, double @var{sigma})
 These functions compute the cumulative distribution functions
 @math{P(x)}, @math{Q(x)} and their inverses for the Rayleigh
 distribution with scale parameter @var{sigma}.
@@ -1131,10 +1131,10 @@ formula given above.
 \centerline{\input rand-logistic.tex}
 @end tex
 
-@deftypefun double gsl_cdf_logistic_P (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_logistic_Q (const double @var{x}, const double @var{a})
-@deftypefunx double gsl_cdf_logistic_Pinv (const double @var{P}, const double @var{a})
-@deftypefunx double gsl_cdf_logistic_Qinv (const double @var{Q}, const double @var{a})
+@deftypefun double gsl_cdf_logistic_P (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_logistic_Q (double @var{x}, double @var{a})
+@deftypefunx double gsl_cdf_logistic_Pinv (double @var{P}, double @var{a})
+@deftypefunx double gsl_cdf_logistic_Qinv (double @var{Q}, double @var{a})
 These functions compute the cumulative distribution functions
 @math{P(x)}, @math{Q(x)} and their inverses for the logistic
 distribution with scale parameter @var{a}.
