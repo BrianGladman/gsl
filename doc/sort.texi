@@ -34,10 +34,10 @@ stable ordering of equal elements. Documentation for @code{qsort} is
 available in the @cite{GNU C Library Reference Manual}.
 
 The functions described in this section are defined in the header file
-@file{gsl_sort.h}.
+@file{gsl_heapsort.h}.
 
 @cindex comparison functions, definition
-@deftypefun void gsl_sort (void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+@deftypefun void gsl_heapsort (void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
 This function sorts the @var{count} members of the array @var{array},
 each of size @var{size}, into ascending order using the comparision
@@ -66,7 +66,7 @@ compare_doubles (const double * a, const double * b)
 The appropriate function call to perform the sort is,
 
 @example
-gsl_sort (array, size, sizeof(double), compare_doubles);
+gsl_heapsort (array, size, sizeof(double), compare_doubles);
 @end example
 
 Note that unlike @code{qsort} the heapsort algorithm cannot be made into
@@ -77,7 +77,7 @@ which destroys the initial ordering.
 @end deftypefun
 
 @cindex indirect sorting
-@deftypefun int gsl_sort_index (gsl_permutation * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+@deftypefun int gsl_heapsort_index (gsl_permutation * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
 This function indirectly sorts the @var{count} members of the array
 @var{array}, each of size @var{size}, into ascending order using the
@@ -93,26 +93,33 @@ changed.
 @node Sorting vectors
 @section Sorting vectors
 
-The following functions will sort the elements of a vector, either
-directly or indirectly. They are defined for all real and integer vector
+The following functions will sort the elements of an array or vector,
+either directly or indirectly. They are defined for all real and integer
 types using the normal suffix rules. For example, the @code{float}
-versions of these functions are @code{gsl_sort_vector_float} and
-@code{gsl_sort_vector_float_index}. Their prototypes are available in
-the header files @file{gsl_sort_vector_float.h}. The complete set of
-prototypes can be included using the header file
+versions of the array functions are @code{gsl_sort_float} and
+@code{gsl_sort_float_index}. The corresponding vector functions are
+@code{gsl_sort_vector_float} and @code{gsl_sort_vector_float_index}. The
+prototypes are available in the header files @file{gsl_sort_float.h}
+@file{gsl_sort_vector_float.h}. The complete set of prototypes can be
+included using the header files @file{gsl_sort.h} and
 @file{gsl_sort_vector.h}.
 
-There are no functions for sorting complex vectors, since the ordering
-of complex numbers is not uniquely defined. To sort a complex vector by
-magnitude compute a real vector containing the the magnitudes of the
-complex elements, and sort this vector indirectly. The resulting index
-gives the appropriate ordering of the original complex vector.
+There are no functions for sorting complex arrays or vectors, since the
+ordering of complex numbers is not uniquely defined. To sort a complex
+vector by magnitude compute a real vector containing the the magnitudes
+of the complex elements, and sort this vector indirectly. The resulting
+index gives the appropriate ordering of the original complex vector.
 
 @cindex sorting vector elements
 @cindex vector, sorting elements of
 @deftypefun void gsl_sort_vector (gsl_vector * @var{v})
 This function sorts the elements of the vector @var{v} into ascending
 numerical order.
+@end deftypefun
+
+@deftypefun void gsl_sort (double * @var{data}, size_t @var{stride}, size_t @var{n})
+This function sorts the @var{n} elements of the array @var{data} with
+stride @var{stride} into ascending numerical order.
 @end deftypefun
 
 @cindex indirect sorting, of vector elements
@@ -125,6 +132,18 @@ have been stored in that position if the vector had been sorted in
 place. The first element of @var{p} gives the index of the least element
 in @var{v}, and the last element of @var{p} gives the index of the
 greatest element in @var{v}. The vector @var{v} is not changed.
+@end deftypefun
+
+
+@deftypefun int gsl_sort_index (size_t * @var{p}, const double * @var{data}, size_t @var{stride}, size_t @var{n})
+
+This function indirectly sorts the @var{n} elements of the array
+@var{data} with stride @var{stride} into ascending order, storing the
+resulting permutation in @var{p}. The array @var{p} must be allocated to
+a sufficient length to store the @var{n} elements of the permutation.
+The elements of @var{p} give the index of the array element which would
+have been stored in that position if the array had been sorted in place.
+The array @var{data} is not changed.
 @end deftypefun
 
 @node Sorting Examples

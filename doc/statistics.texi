@@ -55,10 +55,10 @@ overflow.
 @node Mean and standard deviation and variance
 @section Mean, Standard Deviation and Variance
 
-@deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_mean} returns the arithmetic mean of
-@var{data}, an array of length @var{n}.
+@var{data}, an array of length @var{n} with stride @var{stride}.
 
 The sample mean is an unbiased estimator of the population mean and is
 denoted by 
@@ -99,10 +99,10 @@ subject to large fluctuations.
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_est_variance (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_est_variance (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_est_variance} returns the estimated
-variance of @var{data}, an array of length @var{n}.
+variance of @var{data}, an array of length @var{n} with stride @var{stride}.
 
 This is an unbiased estimator of
 @c{$\sigma^2$}
@@ -155,7 +155,7 @@ can pass it directly to @code{gsl_stats_est_variance_with_mean}.
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 
 The function @code{gsl_stats_est_variance_with_mean} returns the sample
 variance of @var{data} relative to the given value of @var{mean}.  The
@@ -179,16 +179,16 @@ $$
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_est_sd (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_est_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 
 The standard deviation is defined as the square root of the
 variance. These functions return the square root of the corresponding
 variance functions above.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_variance_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_variance_with_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 
 These functions compute an unbiased estimate of the variance when the
 population mean of a distribution is known @emph{a priori}.
@@ -217,8 +217,8 @@ $$
 @noindent
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_sd_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_sd_with_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 
 The functions @code{gsl_stats_sd} and @code{gsl_stats_sd_with_mean}
 calculate the standard deviation, which is simply the square root of the
@@ -228,10 +228,11 @@ corresponding variance function.
 @node Absolute deviation
 @section Absolute deviation
 
-@deftypefn Statistics double gsl_stats_absdev (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_absdev (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_absdev} computes the absolute deviation
-from the mean of @var{data}, an array of length @var{n}.
+from the mean of @var{data}, an array of length @var{n} with stride
+@var{stride}.
 
 The absolute deviation from the mean is defined as
 
@@ -262,7 +263,7 @@ Both these functions compute the mean of @var{data} via a call to
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_absdev_with_mean (const double @var{data[]}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_absdev_with_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 
 The function @code{gsl_stats_absdev_with_mean} computes the absolute
 deviation of the array @var{data} relative to the given value of
@@ -292,9 +293,10 @@ median).
 @node Higher moments (skewness and kurtosis)
 @section Higher moments (skewness and kurtosis)
 
-@deftypefn Statistics double gsl_stats_skew (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_skew (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 The functions @code{gsl_stats_skew} and @code{gsl_stats_int_skew}
-compute the skewness of @var{data}, an array of length @var{n}.
+compute the skewness of @var{data}, an array of length @var{n} with
+stride @var{stride}.
 
 The skewness is defined as 
 
@@ -327,7 +329,7 @@ Both these functions compute the mean and standard deviation of
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
 
 The function @code{gsl_stats_skew_with_mean_and_sd} computes the
 skewness of the array @var{data} using the given values of the mean
@@ -352,10 +354,10 @@ These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_kurtosis (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_kurtosis} computes the kurtosis of
-@var{data}, an array of length @var{n}.
+@var{data}, an array of length @var{n} with stride @var{stride}.
 
 The kurtosis is defined as 
 
@@ -385,7 +387,7 @@ distribution by the -3 in the definition.
 
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double @var{data[]}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
 
 The function @code{gsl_stats_kurtosis_with_mean_and_sd} computes the
 kurtosis of the array @var{data} using the given values of the mean
@@ -414,11 +416,11 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @node Maximum and Minimum values
 @section Maximum and Minimum values
 
-@deftypefn Statistics double gsl_stats_max (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_max (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_max} returns the maximum value in
-@var{data}, an array of length @var{n}. The maximum value is defined as
-the value of the element 
+@var{data}, an array of length @var{n} with stride @var{stride}. 
+The maximum value is defined as the value of the element 
 @c{$x_i$}
 @math{x_i} which satisfies 
 @c{$x_i \ge x_j$}
@@ -428,13 +430,13 @@ for all @math{j}.
 If you want instead to find the element with the largest absolute
 magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
-
 @end deftypefn
-@deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{n})
+
+@deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_min} returns the minimum value in
-@var{data}, an array of length @var{n}.  The minimum value is defined as
-the value of the element 
+@var{data}, an array of length @var{n} with stride @var{stride}.  
+The minimum value is defined as the value of the element 
 @c{$x_i$}
 @math{x_i} which satisfies 
 @c{$x_i \le x_j$}
@@ -446,11 +448,19 @@ magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_max_index (const double @var{data[]}, size_t @var{n})
+
+@deftypefn Statistics void gsl_stats_minmax (double * @var{min}, double * @var{max}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+
+The function @code{gsl_stats_minmax} finds both the minimum and maximum
+values @var{min}, @var{max} in @var{data} in a single pass.
+@end deftypefn
+
+
+@deftypefn Statistics size_t gsl_stats_max_index (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_max_index} returns the index of the maximum
-value in @var{data}, an array of length @var{n}. The maximum value is
-defined as the value of the element 
+value in @var{data}, an array of length @var{n} with stride @var{stride}. 
+The maximum value is defined as the value of the element 
 @c{$x_i$}
 @math{x_i} which satisfies 
 @c{$x_i \ge x_j$}
@@ -459,16 +469,23 @@ elements then the first one is chosen.
 
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_min_index (const double @var{data[]}, size_t @var{n})
+@deftypefn Statistics size_t gsl_stats_min_index (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_min_index} returns the index of the minimum
-value in @var{data}, a double-precision array of length @var{n}. The
-minimum value is defined as the value of the element 
+value in @var{data}, a double-precision array of length @var{n} with 
+stride @var{stride}. The minimum value is defined as the value of the element 
 @c{$x_i$}
 @math{x_i} which satisfies
 @c{$x_i \ge x_j$} 
 @math{x_i >= x_j} for all @math{j}. When there are several
 equal minimum elements then the first one is chosen.
+@end deftypefn
+
+@deftypefn Statistics void gsl_stats_minmax_index (size_t * @var{min_index}, size_t * @var{max_index}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+
+The function @code{gsl_stats_min_index} returns the indexes
+@var{min_index}, @var{max_index} of the minimum and maximum values in
+@var{data} in a single pass.
 @end deftypefn
 
 @node Median and Percentiles
@@ -478,24 +495,13 @@ The median and percentile functions described in this section operate on
 sorted data. For convenience we use @dfn{quantiles}, measured on a scale
 of 0 to 1, instead of percentiles (which use a scale of 0 to 100).
 
-@deftypefn Statistics void gsl_stats_sort_data (double @var{data[]}, size_t @var{n})
-
-The function @code{gsl_stats_sort_data} sorts the elements of
-@var{data}, an array of length @var{n}, into ascending numerical order
-in-place (i.e. after sorting, the minimum value of data is in
-@var{data[0]} and the maximum value is in @var{data[n-1]}). The system
-@code{qsort} function is used to perform the sorting.
-
-The function @code{gsl_stats_int_sort_data} sorts an integer array.
-@end deftypefn
-
-@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data[]}, size_t @var{stride}, size_t @var{n})
 
 The function @code{gsl_stats_median_from_sorted_data} returns the median
-value of @var{sorted_data}, an array of length @var{n} with its elements
-in ascending numerical order. There are no checks to see whether the
-data are sorted, so the function @code{gsl_stats_sort_data} should
-always be used first.
+value of @var{sorted_data}, an array of length @var{n} with stride
+@var{stride}. The elements of the array must be in ascending numerical
+order. There are no checks to see whether the data are sorted, so the
+function @code{gsl_sort} should always be used first.
 
 When the array has an odd number of elements the median is the value of
 element @math{(n-1)/2}. When the array has an even number of elements
@@ -508,31 +514,31 @@ interpolation the function @code{gsl_stats_int_median_from_sorted_data}
 always returns a floating-point number.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_quantile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{n}, double @var{f})
-@deftypefnx Statistics double gsl_stats_int_quantile_from_sorted_data (const int @var{sorted_data[]}, size_t @var{n}, double @var{f})
+@deftypefn Statistics double gsl_stats_quantile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{stride}, size_t @var{n}, double @var{f})
+@deftypefnx Statistics double gsl_stats_int_quantile_from_sorted_data (const int @var{sorted_data[]}, size_t @var{stride}, size_t @var{n}, double @var{f})
 
-The function @code{gsl_stats_median_from_sorted_data} returns a
-quantile value of @var{sorted_data}, a double-precision array of
-length @var{n} with its elements in ascending numerical order.  The
-quantile is determined by the @var{f}, a fraction between 0 and 1. For
-example, to compute the value of the 75th percentile @var{f} should have
-the value 0.75.
+The function @code{gsl_stats_median_from_sorted_data} returns a quantile
+value of @var{sorted_data}, a double-precision array of length @var{n}
+with stride @var{stride}. The elements of the array must be in ascending
+numerical order. The quantile is determined by the @var{f}, a fraction
+between 0 and 1. For example, to compute the value of the 75th
+percentile @var{f} should have the value 0.75.
 
 There are no checks to see whether the data are sorted, so the function
-@code{gsl_stats_sort_data} should always be used first.
+@code{gsl_sort} should always be used first.
 
 The quantile is found by interpolation, using the formula
 
 @tex
 \beforedisplay
 $$
-\hbox{quantile} = (1 - \delta) \hbox{data[i]} + \delta \hbox{data[i+1]}
+\hbox{quantile} = (1 - \delta) x_i + \delta x_{i+1}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-quantile = (1 - \delta) data[i] + \delta data[i+1]
+quantile = (1 - \delta) x_i + \delta x_@{i+1@}
 @end example
 @end ifinfo
 
@@ -545,8 +551,8 @@ where @math{i} is
 @c{$(n-1)f - i$}.
 @math{(n-1)f - i}.
 
-Thus the minimum value of the array (@var{data[0]}) is given by @var{f}
-equal to zero, the maximum value (@var{data[n-1]}) is given by @var{f}
+Thus the minimum value of the array (@var{data[0*stride]}) is given by @var{f}
+equal to zero, the maximum value (@var{data[(n-1)*stride]}) is given by @var{f}
 equal to one and the median value is given by @var{f} equal to 0.5.
 
 The function @code{gsl_stats_int_quantile_from_sorted_data} returns a
@@ -585,10 +591,10 @@ int main()
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@} ;
   double mean, variance, largest, smallest;
 
-  mean     = gsl_stats_mean(data, 5);
-  variance = gsl_stats_variance(data, 5);
-  largest  = gsl_stats_max(data, 5);
-  smallest = gsl_stats_min(data, 5);
+  mean     = gsl_stats_mean(data, 1, 5);
+  variance = gsl_stats_variance(data, 1, 5);
+  largest  = gsl_stats_max(data, 1, 5);
+  smallest = gsl_stats_min(data, 1, 5);
 
   printf("The dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
@@ -615,6 +621,7 @@ Here is an example using sorted data,
 
 @example
 #include <stdio.h>
+#include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
 
 int main()
@@ -625,14 +632,14 @@ int main()
   printf("The original dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
-  gsl_stats_sort_data(data, 5) ;
+  gsl_sort (data, 1, 5) ;
 
   printf("The sorted dataset is %g, %g, %g, %g, %g\n",
         data[0], data[1], data[2], data[3], data[4]);
 
-  median   = gsl_stats_median_from_sorted_data(data, 5);
-  upperq   = gsl_stats_quantile_from_sorted_data(data, 5, 0.75);
-  lowerq   = gsl_stats_quantile_from_sorted_data(data, 5, 0.25);
+  median   = gsl_stats_median_from_sorted_data(data, 1, 5);
+  upperq   = gsl_stats_quantile_from_sorted_data(data, 1, 5, 0.75);
+  lowerq   = gsl_stats_quantile_from_sorted_data(data, 1, 5, 0.25);
 
   printf("The median is %g\n", median) ;
   printf("The upper quartile is %g\n", upperq) ;

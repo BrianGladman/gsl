@@ -5,7 +5,7 @@ the software on many different platforms.
 Tru64, AIX, IRIX, fixes for odes, and testing
 
 * Thomas Walter <walter@pctc.chemie.uni-erlangen.de> for heapsort
-routines and bug reports
+routines, bug reports and useful suggestions
 
 * Barak Pearlmutter <bap@cs.unm.edu>
 

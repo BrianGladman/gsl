@@ -1,3 +1,7 @@
+** A new sort directory has been added for sorting objects and vectors.
+
+** Statistics functions now support a stride argument for generality
+
 ** gsl_vector_copy (dest, src) has been renamed gsl_vector_cpy (dest, src);
 
 ** All header files are now in installed as pkginclude headers in a
