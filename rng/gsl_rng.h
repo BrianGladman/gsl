@@ -108,6 +108,7 @@ extern const gsl_rng_type *gsl_rng_ranlxs2;
 extern const gsl_rng_type *gsl_rng_ranmar;
 extern const gsl_rng_type *gsl_rng_slatec;
 extern const gsl_rng_type *gsl_rng_taus;
+extern const gsl_rng_type *gsl_rng_taus2;
 extern const gsl_rng_type *gsl_rng_transputer;
 extern const gsl_rng_type *gsl_rng_tt800;
 extern const gsl_rng_type *gsl_rng_uni;

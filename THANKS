@@ -149,3 +149,6 @@ for linear algebra, additional tridiagonal solvers
 * <zunda@24i.net> for bug report
 
 * "Christian T. Steigies" <cts@debian.org> for documentation bug report
+
+* Atakan Gurkan <ato@northwestern.edu> for bug reports and patches for the 
+random number generators.

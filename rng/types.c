@@ -83,6 +83,7 @@ gsl_rng_types_setup (void)
   ADD(gsl_rng_ranmar);
   ADD(gsl_rng_slatec);
   ADD(gsl_rng_taus);
+  ADD(gsl_rng_taus2);
   ADD(gsl_rng_transputer);
   ADD(gsl_rng_tt800);
   ADD(gsl_rng_uni);

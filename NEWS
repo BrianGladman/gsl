@@ -1,5 +1,9 @@
 * What is new in gsl-1.2:
 
+** A new random number generator gsl_rng_taus2 has been added to
+correct flaws in the seeding procedure of gsl_rng_taus, as described
+in an erratum to the original paper of P. L'Ecuyer.
+
 ** The KNOWN-PROBLEMS file of "make check" failures has been replaced
 by a BUGS file, since we now require "make check" to work correctly
 for stable releases.

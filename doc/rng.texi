@@ -570,6 +570,7 @@ Computer Simulation} 3, 87-98 (1993).
 @end deffn
 
 @deffn {Generator} gsl_rng_taus
+@deffnx {Generator} gsl_rng_taus2
 @cindex Tausworthe random number generator
 This is a maximally equidistributed combined Tausworthe generator by
 L'Ecuyer.  The sequence is,
@@ -630,6 +631,19 @@ information see,
 P. L'Ecuyer, "Maximally Equidistributed Combined Tausworthe
 Generators", @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
 @end itemize
+@noindent
+The generator @code{gsl_rng_taus2} uses the same algorithm as
+@code{gsl_rng_taus} but with an improved seeding procedure described in
+the paper,
+
+@itemize @asis
+@item
+P. L'Ecuyer, "Tables of Maximally Equidistributed Combined LFSR
+Generators", @cite{Mathematics of Computation}, 68, 225 (1999), 261--269
+@end itemize
+@noindent
+The generator @code{gsl_rng_taus2} should now be used in preference to
+@code{gsl_rng_taus}.
 @end deffn
 
 @deffn {Generator} gsl_rng_gfsr4

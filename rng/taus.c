@@ -20,7 +20,6 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_rng.h>
-#include <stdio.h>
 
 /* This is a maximally equidistributed combined Tausworthe
    generator. The sequence is,
@@ -53,7 +52,26 @@
    This is available on the net from L'Ecuyer's home page,
 
    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/tausme.ps
-   ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/tausme.ps */
+   ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/tausme.ps 
+
+   Update: April 2002
+
+   There is an erratum in the paper "Tables of Maximally
+   Equidistributed Combined LFSR Generators", Mathematics of
+   Computation, 68, 225 (1999), 261--269:
+   http://www.iro.umontreal.ca/~lecuyer/myftp/papers/tausme2.ps
+
+	... the k_j most significant bits of z_j must be non-
+	zero, for each j. (Note: this restriction also applies to the 
+	computer code given in [4], but was mistakenly not mentioned in
+	that paper.)
+   
+   This affects the seeding procedure by imposing the requirement
+   s1 > 1, s2 > 7, s3 > 15.
+
+   The generator taus2 has been added to satisfy this requirement.
+   The original taus generator is unchanged.
+*/
 
 static inline unsigned long int taus_get (void *vstate);
 static double taus_get_double (void *vstate);
@@ -109,6 +127,33 @@ taus_set (void *vstate, unsigned long int s)
   return;
 }
 
+static void
+taus2_set (void *vstate, unsigned long int s)
+{
+  taus_state_t *state = (taus_state_t *) vstate;
+
+  if (s == 0)
+    s = 1;	/* default seed is 1 */
+
+#define LCG(n) ((69069 * n) & 0xffffffffUL)
+  state->s1 = LCG (s);
+  if (state->s1 < 2) state->s1 += 2UL;
+  state->s2 = LCG (state->s1);
+  if (state->s2 < 8) state->s1 += 8UL;
+  state->s3 = LCG (state->s2);
+  if (state->s3 < 8) state->s3 += 16UL;
+
+  /* "warm it up" */
+  taus_get (state);
+  taus_get (state);
+  taus_get (state);
+  taus_get (state);
+  taus_get (state);
+  taus_get (state);
+  return;
+}
+
+
 static const gsl_rng_type taus_type =
 {"taus",			/* name */
  0xffffffffUL,			/* RAND_MAX */
@@ -119,3 +164,14 @@ static const gsl_rng_type taus_type =
  &taus_get_double};
 
 const gsl_rng_type *gsl_rng_taus = &taus_type;
+
+static const gsl_rng_type taus2_type =
+{"taus2",			/* name */
+ 0xffffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
+ sizeof (taus_state_t),
+ &taus2_set,
+ &taus_get,
+ &taus_get_double};
+
+const gsl_rng_type *gsl_rng_taus2 = &taus2_type;
