@@ -27,9 +27,10 @@ __BEGIN_DECLS
 typedef struct
 {
   const char * name;
+  unsigned int max_dimension;
   size_t (*state_size) (unsigned int dimension);
   int (*init_state) (void * state, unsigned int dimension);
-  int (*get) (void * state, double *);
+  int (*get) (void * state, unsigned int dimension, double *);
 }
 gsl_qrng_type;
 
@@ -97,7 +98,7 @@ int gsl_qrng_get (const gsl_qrng * r, double *);
 extern inline int gsl_qrng_get (const gsl_qrng * r, double * v);
 extern inline int gsl_qrng_get (const gsl_qrng * r, double * v)
 {
-  return (r->type->get) (r->state, v);
+  return (r->type->get) (r->state, r->dimension, v);
 }
 
 #endif /* HAVE_INLINE */

@@ -33,7 +33,7 @@ gsl_qrng_alloc (const gsl_qrng_type * T, unsigned int dimension)
 
   r->type = T;
 
-  gsl_qrng_init (r);
+  T->init_state(r->state, r->dimension);
 
   return r;
 }
@@ -89,7 +89,7 @@ gsl_qrng_clone (const gsl_qrng * q)
 int
 gsl_qrng_get (const gsl_qrng * r, double * v)
 {
-  return (r->type->get) (r->state, v);
+  return (r->type->get) (r->state, r->dimension, v);
 }
 
 

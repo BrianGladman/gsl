@@ -5,10 +5,11 @@ pkginclude_HEADERS = gsl_qrng.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslqrng_la_SOURCES = \
-	gsl_qrng.h	\
-	qrng.c 		\
-	niederreiter-2.c
+libgslqrng_la_SOURCES = 	\
+	gsl_qrng.h		\
+	qrng.c 			\
+	niederreiter-2.c	\
+	sobol.c
 
 
 test_SOURCES = test.c
