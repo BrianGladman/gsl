@@ -29,39 +29,31 @@ gsl_eigen_sort_impl(gsl_vector * eval,
   else {
     int N = eval->size;
     int i;
-    double tmp;
-    gsl_vector * tmp_vec_1 = gsl_vector_alloc(N);
-    gsl_vector * tmp_vec_2 = gsl_vector_alloc(N);
 
     for(i=0; i<N-1; i++) {
       int j;
       int k = i;
-      tmp = eval->data[k];
+      double tmp = gsl_vector_get(eval, k);
 
       /* search for something to swap */
       for(j=i+1; j<N; j++) {
-        int test = (sort_type == GSL_EIGEN_SORT_VALUE ? eval->data[j] <= tmp : fabs(eval->data[j]) <= fabs(tmp));
+        const double eval_j = gsl_vector_get(eval,j);
+        const int test = (sort_type == GSL_EIGEN_SORT_VALUE ? eval_j <= tmp : fabs(eval_j) <= fabs(tmp));
         if(test) {
           k = j;
-          tmp = eval->data[k];
+          tmp = gsl_vector_get(eval, k);
         }
       }
 
       if(k != i) {
         /* swap eigenvalues */
-        eval->data[k] = eval->data[i];
-        eval->data[i] = tmp;
+	gsl_vector_swap(eval, i, k);
 
-        /* swap eigenvectors */ /* matrix should probably export row/col swap ops */
-        gsl_matrix_copy_col(tmp_vec_1, evec, i);
-	gsl_matrix_copy_col(tmp_vec_2, evec, k);
-	gsl_matrix_set_col(evec, i, tmp_vec_2);
-	gsl_matrix_set_col(evec, k, tmp_vec_1);
+        /* swap eigenvectors */
+	gsl_matrix_swap_cols(evec, i, k);
       }
     }
 
-    gsl_vector_free(tmp_vec_1);
-    gsl_vector_free(tmp_vec_2);
     return GSL_SUCCESS;
   }
 }
