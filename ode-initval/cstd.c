@@ -90,14 +90,14 @@ std_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[
   const double a_dydt  = state->a_dydt;
 
   const double S = 0.9;
-  const double h_old = fabs(*h);
+  const double h_old = *h;
 
   double rmax = DBL_MIN;
   size_t i;
 
   for(i=0; i<dim; i++) {
     const double D0 = 
-      eps_rel * (a_y * fabs(y[i]) + a_dydt * h_old * fabs(yp[i])) + eps_abs;
+      eps_rel * (a_y * fabs(y[i]) + a_dydt * fabs(h_old * yp[i])) + eps_abs;
     const double r  = fabs(yerr[i]) / fabs(D0);
     rmax = GSL_MAX_DBL(r, rmax);
   }
@@ -105,18 +105,26 @@ std_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[
   if(rmax > 1.1) {
     /* decrease step, no more than factor of 5, but a fraction S more
        than scaling suggests (for better accuracy) */
-    double h_new = h_old * S / pow(rmax, 1.0/ord);
-    *h = GSL_MAX_DBL(0.2 * h_old, h_new);
-    /* printf("rmax = %g\n", rmax); */
+    double r =  S / pow(rmax, 1.0/ord);
+    
+    if (r < 0.2)
+      r = 0.2;
+
+    *h = r * h_old;
 
     return GSL_ODEIV_HADJ_DEC;
   }
   else if(rmax < 0.5) {
     /* increase step, no more than factor of 5 */
-    double f = S / pow(rmax, 1.0/(ord+1.0));
-    double h_new = h_old * (f > 1.0 ? f : 1.0);
-    *h = GSL_MIN_DBL(5.0 * h_old, h_new);
-    /* printf("rmax = %g\n", rmax); */
+    double r = S / pow(rmax, 1.0/(ord+1.0));
+
+    if (r > 5.0)
+      r = 5.0;
+
+    if (r < 1.0)  /* don't allow any decrease caused by S<1 */
+      r = 1.0;
+        
+    *h = r * h_old;
 
     return GSL_ODEIV_HADJ_INC;
   }

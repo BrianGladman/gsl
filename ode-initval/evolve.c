@@ -143,7 +143,7 @@ gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
 
 try_step:
     
-  if (h0 > dt)
+  if ((dt >= 0.0 && h0 > dt) || (dt < 0.0 && h0 < dt))
     {
       h0 = dt;
       final_step = 1;

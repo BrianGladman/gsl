@@ -1,3 +1,10 @@
+Wed Oct  3 13:19:28 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cstd.c (std_control_hadjust): allow for negative step-sizes
+
+	* evolve.c (gsl_odeiv_evolve_apply): allow for integrating
+ 	backwards in time
+
 Sat Sep 29 21:02:36 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bsimp.c: use the condition |D^-1 Delta| >> 1 to detect
