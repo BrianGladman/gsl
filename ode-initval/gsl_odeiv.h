@@ -195,6 +195,12 @@ gsl_odeiv_control * gsl_odeiv_control_standard_new(double eps_abs, double eps_re
 gsl_odeiv_control * gsl_odeiv_control_y_new(double eps_abs, double eps_rel);
 gsl_odeiv_control * gsl_odeiv_control_yp_new(double eps_abs, double eps_rel);
 
+/* This controller computes errors using different absolute errors for
+ * each component
+ *
+ *    D0 = eps_abs * scale_abs[i] + eps_rel * (a_y |y| + a_dydt h |y'|)
+ * /
+gsl_odeiv_control * gsl_odeiv_control_scaled_new(double eps_abs, double eps_rel, double a_y, double a_dydt, const double scale_abs[], size_t dim);
 
 /* General evolution object.
  */

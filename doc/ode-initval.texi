@@ -282,6 +282,30 @@ solution @math{y'_i(t)} .  This is equivalent to the standard control
 object with @var{a_y}=0 and @var{a_dydt}=1.
 @end deftypefun
 
+
+@deftypefun {gsl_odeiv_control *} gsl_odeiv_control_scaled_new (double @var{eps_abs}, double @var{eps_rel}, double @var{a_y}, double @var{a_dydt}, const double @var{scale_abs}[], size_t @var{dim})
+This function creates a new control object which uses the same algorithm
+as @code{gsl_odeiv_control_standard_new} but with an absolute error
+which is scaled for each component by the array @var{scale_abs}.
+The formula for @math{D_i} for this control object is,
+
+@tex
+\beforedisplay
+$$
+D_i = \epsilon_{abs} s_i + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+D_i = eps_abs * s_i + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
+@end example
+@end ifinfo
+@noindent
+where @math{s_i} is the @math{i}-th component of the array @var{scale_abs}.
+The same error control heuristic is used by the Matlab @sc{ode} suite. 
+@end deftypefun
+
 @deftypefun {gsl_odeiv_control *} gsl_odeiv_control_alloc (const gsl_odeiv_control_type * @var{T})
 This function returns a pointer to a newly allocated instance of a
 control function of type @var{T}.  This function is only needed for

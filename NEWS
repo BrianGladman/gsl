@@ -1,4 +1,9 @@
-* What is new in gsl-1.2:
+* What is new in gsl-1.3:
+
+** Ordinary differential equations can now be solved using a different
+absolute error for each component with gsl_odeiv_control_scaled_new().
+
+* What was new in gsl-1.2:
 
 ** Added new functions for combining permutations, converting between
 cyclic and linear representations, and counting cycles and inversions.

@@ -30,8 +30,7 @@ typedef struct
   double eps_rel;
   double a_y;
   double a_dydt;
-  double * scale_y;
-  double * scale_dydt;
+  double * scale_abs;
 }
 sc_control_state_t;
 
@@ -90,8 +89,7 @@ sc_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[]
   const double eps_rel = state->eps_rel;
   const double a_y     = state->a_y;
   const double a_dydt  = state->a_dydt;
-  const double * scale_y     = state->scale_y;
-  const double * scale_dydt  = state->scale_dydt;
+  const double * scale_abs = state->scale_abs;
 
   const double S = 0.9;
   const double h_old = *h;
@@ -101,9 +99,8 @@ sc_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[]
 
   for(i=0; i<dim; i++) {
     const double D0 = 
-      eps_rel * (a_y * scale_y[i] * fabs(y[i]) 
-                 + a_dydt * scale_dydt[i] * fabs(h_old * yp[i])) 
-      + eps_abs;
+      eps_rel * (a_y * fabs(y[i]) + a_dydt * fabs(h_old * yp[i])) 
+      + eps_abs * scale_abs[i];
     const double r  = fabs(yerr[i]) / fabs(D0);
     rmax = GSL_MAX_DBL(r, rmax);
   }
@@ -145,8 +142,7 @@ static void
 sc_control_free (void * vstate)
 {
   sc_control_state_t *state = (sc_control_state_t *) vstate;
-  free (state->scale_y);
-  free (state->scale_dydt);
+  free (state->scale_abs);
   free (state);
 }
 
@@ -163,7 +159,7 @@ const gsl_odeiv_control_type *gsl_odeiv_control_scaled = &sc_control_type;
 gsl_odeiv_control *
 gsl_odeiv_control_scaled_new(double eps_abs, double eps_rel,
                              double a_y, double a_dydt,
-                             const double scale_y[], const double scale_dydt[],
+                             const double scale_abs[],
                              size_t dim)
 {
   gsl_odeiv_control * c = 
@@ -180,28 +176,16 @@ gsl_odeiv_control_scaled_new(double eps_abs, double eps_rel,
   {
     sc_control_state_t * s = (sc_control_state_t *) c->state;
     
-    s->scale_y = malloc(dim * sizeof(double));
+    s->scale_abs = malloc(dim * sizeof(double));
     
-    if (s->scale_y == 0)
+    if (s->scale_abs == 0)
       {
         free (s);
-        GSL_ERROR_NULL ("failed to allocate space for scale_y", 
+        GSL_ERROR_NULL ("failed to allocate space for scale_abs", 
                         GSL_ENOMEM);
       }
 
-    s->scale_dydt = malloc(dim * sizeof(double));
-
-    if (s->scale_dydt == 0)
-      {
-        free (s->scale_y);
-        free (s);
-        GSL_ERROR_NULL ("failed to allocate space for scale_dydt", 
-                        GSL_ENOMEM);
-      }
-
-
-    memcpy(s->scale_y, scale_y, dim * sizeof(double));
-    memcpy(s->scale_dydt, scale_dydt, dim * sizeof(double));
+    memcpy(s->scale_abs, scale_abs, dim * sizeof(double));
   }
   
   return c;
