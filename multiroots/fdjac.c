@@ -1,12 +1,13 @@
+#include <config.h>
 #include <gsl_multiroots.h>
 
 int
-gsl_multimin_fdjacobian (gsl_multiroot_function * F,
-			 const gsl_vector * x0, const gsl_vector * f0,
-			 gsl_matrix * jacobian)
+gsl_multiroots_fdjacobian (gsl_multiroot_function * F,
+                           const gsl_vector * x, const gsl_vector * f,
+                           double epsrel, gsl_matrix * jacobian)
 {
-  const size_t n = x0->size;
-  const size_t m = f0->size;
+  const size_t n = x->size;
+  const size_t m = f->size;
   const size_t n1 = jacobian->size1;
   const size_t n2 = jacobian->size2;
 
@@ -16,6 +17,7 @@ gsl_multimin_fdjacobian (gsl_multiroot_function * F,
     }
 
   {
+    size_t i,j;
     gsl_vector *x1, *f1;
 
     x1 = gsl_vector_alloc (n);
@@ -38,22 +40,22 @@ gsl_multimin_fdjacobian (gsl_multiroot_function * F,
 
     for (j = 0; j < n; j++)
       {
-	double xj = gsl_vector_get (x0, j);
-	double dx = eps * fabs (xj);
+	double xj = gsl_vector_get (x, j);
+	double dx = epsrel * fabs (xj);
 
 	if (dx == 0)
 	  {
-	    dx = eps;
+	    dx = epsrel;
 	  }
 
 	gsl_vector_set (x1, j, xj + dx);
-	GSL_MULTIROOT_FN_EVAL (F, x, f1);
+	GSL_MULTIROOT_FN_EVAL (F, x1, f1);
 	gsl_vector_set (x1, j, xj);
 
 	for (i = 0; i < m; i++)
 	  {
 	    double g1 = gsl_vector_get (f1, i);
-	    double g0 = gsl_vector_get (f0, i);
+	    double g0 = gsl_vector_get (f, i);
 	    gsl_matrix_set (jacobian, i, j, (g1 - g0) / dx);
 	  }
       }
@@ -61,4 +63,6 @@ gsl_multimin_fdjacobian (gsl_multiroot_function * F,
     gsl_vector_free (x1);
     gsl_vector_free (f1);
   }
+  
+  return GSL_SUCCESS;
 }
