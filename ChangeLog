@@ -1,3 +1,9 @@
+2004-03-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl/Makefile.am (header-links): use test -r instead of test -e
+	(to avoid problem on Solaris as described in autoconf
+	documentation)
+
 2003-12-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: define _GNU_SOURCE when looking for fenv.h
