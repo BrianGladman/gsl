@@ -22,7 +22,7 @@ please report them.
 For installation problems on specific platforms see the MACHINES file.
 
 Until we have set up a separate bug reporting address, please report
-bugs to the GSL discussion list gsl-discuss@sourceware.cygnus.com
+bugs to the GSL discussion list gsl-discuss@sources.redhat.com
 
 If you are interested in participating in GSL development, please send
 mail to Mark Galassi -- rosalia@lanl.gov

@@ -3,10 +3,10 @@
 The GSL hacker needs some stuff that the end users don't:
 
 * you must have a recent automake (1.3 or greater) from
-ftp://sourceware.cygnus.com/pub/automake/
+ftp://sources.redhat.com/pub/automake/
 
 * you must have the latest autoconf from
-ftp://sourceware.cygnus.com/pub/automake/
+ftp://sources.redhat.com/pub/automake/
 
 * you must have a recent libtool (1.3 or greater) from
 ftp://ftp.gnu.org/gnu/libtool/
@@ -20,23 +20,23 @@ repository try (bash syntax):
 
 # PEOPLE WITH CVS WRITE ACCESS:
 export CVS_RSH=ssh
-cvs -d sourceware.cygnus.com:/cvs/gsl checkout gsl
+cvs -d sources.redhat.com:/cvs/gsl checkout gsl
 [from now on you can just do "cvs update" in the gsl directory]
 
 # ANONYMOUS CVS USERS
-cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl login
+cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl login
      (password is ``anoncvs'')
-cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl checkout gsl
+cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl checkout gsl
 cd gsl ; ./autogen.sh   (to create auto-generated files)
 [from now on you can just do "cvs update" in the gsl directory]
 
 # PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
 point your web browser to
-  http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/gsl?cvsroot=gsl
+  http://sources.redhat.com/cgi-bin/cvsweb.cgi/gsl?cvsroot=gsl
 
 # PEOPLE WHO JUST WANT A WORKING VERSION
 grab the latest bundled release at
-  ftp://sourceware.cygnus.com/pub/gsl/
+  ftp://sources.redhat.com/pub/gsl/
 
 Let me know (rosalia@lanl.gov) if any of these steps don't work.  I
 have tried them out on swift and they seem to work.
@@ -65,7 +65,7 @@ Before submitting a patch you may want to search the mailing list
 archive for related information. There is a search facility for the
 mailing list available at,
 
-  http://sourceware.cygnus.com/ml/gsl-discuss/
+  http://sources.redhat.com/ml/gsl-discuss/
 
 ---------- some special targets
 
