@@ -228,7 +228,7 @@ gsl_fit_mul (const double *x, size_t xstride,
       m_dxdy += (dx * dy - m_dxdy) / (i + 1.0);
     }
 
-  /* In terms of y = a + b x */
+  /* In terms of y =  b x */
 
   {
     double s2 = 0, d2 = 0;
@@ -301,7 +301,7 @@ gsl_fit_wmul (const double *x, size_t xstride,
 	}
     }
 
-  /* In terms of y = a + b x */
+  /* In terms of y = b x */
 
   {
     double d2 = 0;
