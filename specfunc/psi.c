@@ -367,7 +367,7 @@ int gsl_sf_psi_int_impl(const int n, gsl_sf_result * result)
   }
   else if(n <= PSI_TABLE_NMAX) {
     result->val = psi_table[n];
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -379,7 +379,7 @@ int gsl_sf_psi_int_impl(const int n, gsl_sf_result * result)
     const double ni2 = (1.0/n)*(1.0/n);
     const double ser = ni2 * (c2 + ni2 * (c3 + ni2 * (c4 + ni2*c5)));
     result->val = log(n) - 0.5/n + ser;
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -413,13 +413,13 @@ int gsl_sf_psi_impl(const double x, gsl_sf_result * result)
         result->val  = log(y) - 0.5/x + result_c.val - M_PI * c/s;
         result->err  = GSL_DBL_EPSILON * fabs(result->val);
 	result->err += result_c.err;
-	result->err += M_PI*x*GSL_DBL_EPSILON/(s*s);
+	result->err += M_PI*fabs(x)*GSL_DBL_EPSILON/(s*s);
 	return GSL_SUCCESS;
       }
     }
     else {
       result->val = log(y) - 0.5/x + result_c.val;
-      result->err = GSL_DBL_EPSILON * result->val + result_c.err;
+      result->err = GSL_DBL_EPSILON * fabs(result->val) + result_c.err;
       return GSL_SUCCESS;
     }
   }
@@ -477,7 +477,7 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
   else if(ay > 1000.0) {
     /* [Abramowitz+Stegun, 6.3.19] */
     const double yi2 = 1.0/(ay*ay);
-    const double lny = log(y);
+    const double lny = log(y); /* FIXME: y < 0 ?? */
     const double sum = yi2 * (1.0/12.0 + 1.0/120.0 * yi2 + 1.0/252.0 * yi2*yi2);
     result->val = lny + sum;
     result->err = GSL_DBL_EPSILON * lny;
@@ -493,7 +493,7 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
                              yi2 * (1.0/240.0 +
                                yi2 * (1.0/132.0 + 691.0/32760.0 * yi2)))));
     result->val = lny + sum;
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(ay > 1.0){
@@ -502,8 +502,9 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
     const double v  = y2*(1.0/(1.0+y2) + 0.5/(4.0+y2));
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&r1py_cs, x, &result_c);
-    result->val = result_c.val - M_EULER + v;
-    result->err = result_c.err + GSL_DBL_EPSILON * v;
+    result->val  = result_c.val - M_EULER + v;
+    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(v);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -534,8 +535,9 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
     }
 
     v = y2 * (sum + p);
-    result->val = -M_EULER + v;
-    result->err = GSL_DBL_EPSILON * (M_EULER + v);
+    result->val  = -M_EULER + v;
+    result->err  = GSL_DBL_EPSILON * (M_EULER + v);
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

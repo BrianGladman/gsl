@@ -4,6 +4,7 @@
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel.h"
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
@@ -68,21 +69,18 @@ int gsl_sf_bessel_J0_impl(const double x, gsl_sf_result * result)
     return gsl_sf_cheb_eval_impl(&bj0_cs, 0.125*y*y - 1.0, result);
   }
   else {
-    /* The leading term in the cos() is y, which we assume
-     * is exact. Therefore, the error in the cos() evaluation
-     * is bounded.
-     */
-    double z = 32.0/(y*y) - 1.0;
-    double ampl;
-    double theta;
+    const double z = 32.0/(y*y) - 1.0;
     gsl_sf_result ca;
     gsl_sf_result ct;
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &ca);
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &ct);
-    ampl  = (0.75 + ca.val) / sqrt(y);
-    theta = y - M_PI_4 +  ct.val/y;
-    result->val = ampl * cos(theta);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    gsl_sf_result cp;
+    const int stat_ca = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &ca);
+    const int stat_ct = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &ct);
+    const int stat_cp = gsl_sf_bessel_cos_pi4_impl(y, ct.val/y, &cp);
+    const double sqrty = sqrt(y);
+    const double ampl  = (0.75 + ca.val) / sqrty;
+    result->val  = ampl * cp.val;
+    result->err  = fabs(cp.val) * ca.err/sqrty + fabs(ampl) * cp.err;
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

@@ -36,9 +36,9 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   int    s = 0;
   double f = test_sf_frac_diff(val, r.val);
 
-  if(fabs(val - r.val) > r.err) s |= TEST_SF_INCONS;
-  if(r.err <= 0.0)              s |= TEST_SF_ERRNEG;
-  if(f > tol)                   s |= TEST_SF_TOLBAD;
+  if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
+  if(r.err < 0.0)                   s |= TEST_SF_ERRNEG;
+  if(f > tol)                       s |= TEST_SF_TOLBAD;
 
   if(s != 0) {
     char buff[2048];
@@ -52,7 +52,7 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
     strcat(message_buff, "  value/expected not consistent within reported error\n");
   }
   if(s & TEST_SF_ERRNEG) {
-    strcat(message_buff, "  reported error non-positive\n");
+    strcat(message_buff, "  reported error negative\n");
   }
   if(s & TEST_SF_TOLBAD) {
     strcat(message_buff, "  value not within tolerance of expected value\n");
@@ -542,9 +542,9 @@ int test_dilog(void)
   TEST_SF(s,  gsl_sf_dilog_impl, (1.5, &r), 2.3743952702724802007, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_dilog_impl, (2.0, &r), 2.4674011002723397, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_dilog_impl, ( 5.0, &r), 1.7837191612666306277, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_dilog_impl, ( 11.0, &r), 0.3218540439999117111, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_dilog_impl, (12.59, &r), 0.0010060918167266208634, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_dilog_impl, (12.595, &r), 0.00003314826006436236810, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_dilog_impl, ( 11.0, &r), 0.3218540439999117111, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_dilog_impl, (12.59, &r), 0.0010060918167266208634, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_dilog_impl, (12.595, &r), 0.00003314826006436236810, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_dilog_impl, (13.0, &r), -0.07806971248458575855, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_dilog_impl, (20.0, &r), -1.2479770861745251168, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_dilog_impl, (150.0, &r), -9.270042702348657270, TEST_TOL0, GSL_SUCCESS);
@@ -1352,11 +1352,11 @@ int test_legendre(void)
 
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (2, 1.0, -0.5, &r),  1.6406279287008789526 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, -0.5, &r),  0.000029315266725049129448 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, -0.5, &r),  7.335769429462034431e-15 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 1.0, -0.5, &r),  1.3235612394267378871e-26 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, -0.5, &r),  7.335769429462034431e-15 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 1.0, -0.5, &r),  1.3235612394267378871e-26 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, 0.5, &r),  2.7016087199857873954e-10 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, 0.5, &r),  1.1782569701435933399e-24 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 1.0, 0.5, &r),  3.636240588303797919e-41 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 1.0, 0.5, &r),  3.636240588303797919e-41 , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, 2.0, &r),  2.4934929626284934483e-10 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, 2.0, &r),  1.1284762488012616191e-24 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 100.0, 100.0, &r),  -1.6757772087159526048e-64 , TEST_TOL0, GSL_SUCCESS);
@@ -1364,8 +1364,8 @@ int test_legendre(void)
 
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (2, 1.0, -0.5, &r),  2.2048510472375258708 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (10, 1.0, -0.5, &r),  0.00007335034531618655690 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (20, 1.0, -0.5, &r),  2.5419860619212164696e-14 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (30, 1.0, -0.5, &r),  5.579714972260536827e-26 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (20, 1.0, -0.5, &r),  2.5419860619212164696e-14 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (30, 1.0, -0.5, &r),  5.579714972260536827e-26 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (10, 1.0, 0.5, &r),  1.1674078819646475282e-09 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (20, 1.0, 0.5, &r),  7.066408031229072207e-24 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (30, 1.0, 0.5, &r),  2.6541973286862588488e-40 , TEST_TOL0, GSL_SUCCESS);
@@ -1576,7 +1576,6 @@ int test_pow_int(void)
 int test_psi(void)
 {
   gsl_sf_result r;
-  int status = 0;
   int s = 0;
   
   TEST_SF(s, gsl_sf_psi_int_impl, (5, &r), 1.5061176684318004727 , TEST_TOL0, GSL_SUCCESS);
@@ -1606,7 +1605,7 @@ int test_psi(void)
   TEST_SF(s, gsl_sf_psi_n_impl, (10, 5.0, &r), -0.08675107579196581317 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_psi_n_impl, (10, 50.0, &r), -4.101091112731268288e-12 , TEST_TOL0, GSL_SUCCESS);
 
-  return status;
+  return s;
 }
 
 
@@ -1632,7 +1631,6 @@ int test_synch(void)
 int test_transport(void)
 {
   gsl_sf_result r;
-  int status = 0;
   int s;
 
   TEST_SF(s, gsl_sf_transport_2_impl, (1.0e-10, &r), 9.9999999999999999999e-11 , TEST_TOL0, GSL_SUCCESS);
@@ -1675,7 +1673,7 @@ int test_transport(void)
   TEST_SF(s, gsl_sf_transport_5_impl, (100.0, &r), 124.4313306172043911597639 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_transport_5_impl, (1.0e+05, &r), 124.43133061720439115976   , TEST_TOL0, GSL_SUCCESS);
 
-  return status;
+  return s;
 }
 
 

@@ -4,6 +4,7 @@
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel.h"
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
@@ -76,18 +77,19 @@ int gsl_sf_bessel_Y0_impl(const double x, gsl_sf_result * result)
     /* Leading behaviour of phase is x, which is exact,
      * so the error is bounded.
      */
-    double z  = 32.0/(x*x) - 1.0;
-    double ampl;
-    double theta;
+    const double z  = 32.0/(x*x) - 1.0;
     gsl_sf_result c1;
     gsl_sf_result c2;
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &c1);
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &c2);
-    ampl  = (0.75 + c1.val) / sqrt(x);
-    theta = x - M_PI_4 +  c2.val/x;
-    result->val = ampl * sin(theta);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    gsl_sf_result sp;
+    const int stat_c1 = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm0_cs,  z, &c1);
+    const int stat_c2 = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth0_cs, z, &c2);
+    const int stat_sp = gsl_sf_bessel_sin_pi4_impl(x, c2.val/x, &sp);
+    const double sqrtx = sqrt(x);
+    const double ampl  = (0.75 + c1.val) / sqrtx;
+    result->val  = ampl * sp.val;
+    result->err  = fabs(sp.val) * c1.err/sqrtx + fabs(ampl) * sp.err;
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_3(stat_sp, stat_c1, stat_c2);
   }
   else {
     result->val = 0.0;

@@ -93,17 +93,18 @@ int gsl_sf_bessel_Y1_impl(const double x, gsl_sf_result * result)
     return status;
   }
   else if(x < xmax) {
-    double z  = 32.0/(x*x) - 1.0;
-    double ampl;
-    double theta;
+    const double z = 32.0/(x*x) - 1.0;
     gsl_sf_result ca;
     gsl_sf_result ct;
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm1_cs,  z, &ca);
-    gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth1_cs, z, &ct);
-    ampl  = (0.75 + ca.val) / sqrt(x);
-    theta = x - 3.0*M_PI_4 +  ct.val/x;
-    result->val = ampl * sin (theta);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    gsl_sf_result cp;
+    const int stat_ca = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bm1_cs,  z, &ca);
+    const int stat_ct = gsl_sf_cheb_eval_impl(&_bessel_amp_phase_bth1_cs, z, &ct);
+    const int stat_cp = gsl_sf_bessel_cos_pi4_impl(x, ct.val/x, &cp);
+    const double sqrtx = sqrt(x);
+    const double ampl  = (0.75 + ca.val) / sqrtx;
+    result->val  = -ampl * cp.val;
+    result->err  = fabs(cp.val) * ca.err/sqrtx + fabs(ampl) * cp.err;
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {

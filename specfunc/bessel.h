@@ -39,4 +39,14 @@ gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
                                        double * K_nu, double * K_nup1,
 				       double * Kp_nu);
 
+
+/* These are of use in calculating the oscillating
+ * Bessel functions.
+ *   cos(y - pi/4 + eps)
+ *   sin(y - pi/4 + eps)
+ */
+int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result);
+int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result);
+
+
 #endif /* !_BESSEL_H_ */

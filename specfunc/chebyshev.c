@@ -202,7 +202,7 @@ gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs,
   }
   else {
     result->val = y*d - dd + 0.5 * cs->c[0];
-    result->err = fabs(cs->c[cs->order]);
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(cs->c[cs->order]);
     return GSL_SUCCESS;
   }
 }
@@ -239,7 +239,7 @@ gsl_sf_cheb_eval_mode_impl(const gsl_sf_cheb_series * cs,
   }
   else {
     result->val = y*d - dd + 0.5 * cs->c[0];
-    result->err = fabs(cs->c[eval_order]);
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(cs->c[eval_order]);
     return GSL_SUCCESS;
   }
 }
@@ -269,7 +269,7 @@ gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, const double x,
   }
   else {
     result->val = y*d - dd + 0.5 * cs->cp[0];
-    result->err = fabs(cs->cp[cs->order]);
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(cs->cp[cs->order]);
     return GSL_SUCCESS;
   }
 }
@@ -299,7 +299,7 @@ gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, const double x,
   }
   else {
     result->val = y*d - dd + 0.5 * cs->ci[0];
-    result->err = fabs(cs->ci[cs->order]);
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(cs->ci[cs->order]);
     return GSL_SUCCESS;
   }
 }

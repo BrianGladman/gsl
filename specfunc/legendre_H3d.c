@@ -47,12 +47,12 @@ legendre_H3d_lnnorm(const int ell, const double lambda, double * result)
     return GSL_SUCCESS;
   }
   else {
-    double lg_r;
-    double lg_theta;
+    gsl_sf_result lg_r;
+    gsl_sf_result lg_theta;
     gsl_sf_result ln_sinh;
     gsl_sf_lngamma_complex_impl(ell+1.0, lambda, &lg_r, &lg_theta);
     gsl_sf_lnsinh_impl(M_PI * abs_lam, &ln_sinh);
-    *result = log(abs_lam) + ln_sinh.val + 2.0*lg_r - M_LNPI;
+    *result = log(abs_lam) + ln_sinh.val + 2.0*lg_r.val - M_LNPI;
     return GSL_SUCCESS;
   }
 }
@@ -352,10 +352,10 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
   else if((ell*ell+lsq)/sqrt(1.0+lsq)/(cosh_eta*cosh_eta) < 5.0*GSL_ROOT3_DBL_EPSILON) {
     /* Large argument.
      */
-    double P;
+    gsl_sf_result P;
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(-ell-0.5, lambda, cosh_eta, &P, &lm);
-    if(P == 0.0) {
+    if(P.val == 0.0) {
       result->val = 0.0;
       result->err = 0.0;
       return stat_P;
@@ -369,20 +369,20 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre_val = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
       lnpre_err = lnsh.err + GSL_DBL_EPSILON * fabs(lnpre_val);
-      stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P, 0.0, result);
+      stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }
   else if(abs_lam > 1000.0*ell*ell) {
     /* Large degree.
      */
-    double P;
+    gsl_sf_result P;
     double lm;
     int stat_P = gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(ell+0.5,
                                                            lambda,
                                                            cosh_eta, eta,
                                                            &P, &lm);
-    if(P == 0.0) {
+    if(P.val == 0.0) {
       result->val = 0.0;
       result->err = 0.0;
       return stat_P;
@@ -396,7 +396,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre_val = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - log(abs_lam);
       lnpre_err = lnsh.err + GSL_DBL_EPSILON * fabs(lnpre_val);
-      stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P, 0.0, result);
+      stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, 0.0, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }

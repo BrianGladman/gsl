@@ -509,6 +509,54 @@ gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
 }
 
 
+int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result)
+{
+  const double sy = sin(y);
+  const double cy = cos(y);
+  const double s = sy + cy;
+  const double d = sy - cy;
+  const double abs_sum = fabs(cy) + fabs(sy);
+  double seps;
+  double ceps;
+  if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
+    const double e2 = eps*eps;
+    seps = eps * (1.0 + e2/6.0 * (1.0 + e2/20.0));
+    ceps = 1.0 - e2/2.0 * (1.0 - e2/12.0);
+  }
+  else {
+    seps = sin(eps);
+    ceps = cos(eps);
+  }
+  result->val = (ceps * s - seps * d)/ M_SQRT2;
+  result->err = 2.0 * GSL_DBL_EPSILON * (fabs(ceps) + fabs(seps)) * abs_sum / M_SQRT2;
+  return GSL_SUCCESS;
+}
+
+
+int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result)
+{
+  const double sy = sin(y);
+  const double cy = cos(y);
+  const double s = sy + cy;
+  const double d = sy - cy;
+  const double abs_sum = fabs(cy) + fabs(sy);
+  double seps;
+  double ceps;
+  if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
+    const double e2 = eps*eps;
+    seps = eps * (1.0 + e2/6.0 * (1.0 + e2/20.0));
+    ceps = 1.0 - e2/2.0 * (1.0 - e2/12.0);
+  }
+  else {
+    seps = sin(eps);
+    ceps = cos(eps);
+  }
+  result->val = (ceps * d + seps * s)/ M_SQRT2;
+  result->err = 2.0 * GSL_DBL_EPSILON * (fabs(ceps) + fabs(seps)) * abs_sum / M_SQRT2;
+  return GSL_SUCCESS;
+}
+
+
 /************************************************************************
  *                                                                      *
   Asymptotic approximations 8.11.5, 8.12.5, and 8.42.7 from
