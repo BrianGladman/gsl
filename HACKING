@@ -180,7 +180,7 @@ available to avoid too many messages)
 4) Literature search (this is discussed in the Design document).
 
 5) If you have good internet access register an for account on
-http://savannah.gnu.org/ and upload your an SSH public key so that you
+http://savannah.gnu.org/ and upload your SSH public key so that you
 can be given access to the development cvs repository.  Send your
 savannah username to Brian Gough to get onto the list of developers.
 
@@ -193,8 +193,8 @@ extension to gsl-1.2 use:
 
 You can then use cvs add to add new files, etc.  
 
-Always remember the to use '-r myproject' on any checkouts so you end
-up working on the main branch, only on your own private branch!
+Always remember to use '-r myproject' on any checkouts so that you
+don't work on the main branch, only on your own private branch!
 
 To verify your patch you should make a new temporary directory and do,
 
