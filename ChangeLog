@@ -1,3 +1,7 @@
+Tue Feb 15 18:55:05 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added directory for permutation objects, permutation/
+
 Sun Dec  5 14:20:43 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added multidimensional minimisation directory, multimin/

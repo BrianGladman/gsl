@@ -1,3 +1,8 @@
+Wed Feb 16 14:43:42 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (pkginclude_HEADERS): added missing
+ 	pkginclude_HEADERS for float functions.
+
 Mon Feb 14 15:11:55 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* made all internal functions static (required a slight
