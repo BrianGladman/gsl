@@ -29,25 +29,25 @@ typedef struct
   }
 steepest_descent_state_t;
 
-int 
+static int 
 steepest_descent_alloc(void *vstate, size_t n)
 {
   return GSL_SUCCESS;
 }
 
-int 
+static int 
 steepest_descent_restart(void *vstate)
 {
   return GSL_SUCCESS;
 }
 
-void
+static void
 steepest_descent_free(void *vstate)
 {
   /* nothing */
 }
 
-int 
+static int 
 steepest_descent_direction(void *state,gsl_multimin_fdf_history *h ,gsl_vector * dir) 
 {
   size_t i;

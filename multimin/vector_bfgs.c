@@ -32,7 +32,7 @@ typedef struct
   }
 vector_bfgs_state_t;
 
-int 
+static int 
 vector_bfgs_direction(void *vstate,gsl_multimin_fdf_history *h ,
 		      gsl_vector * dir) 
 {
@@ -91,7 +91,7 @@ vector_bfgs_direction(void *vstate,gsl_multimin_fdf_history *h ,
     }
 }
 
-int
+static int
 vector_bfgs_alloc(void *vstate, size_t n)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *)vstate;
@@ -113,7 +113,7 @@ vector_bfgs_alloc(void *vstate, size_t n)
   return GSL_SUCCESS;
 }
 
-int
+static int
 vector_bfgs_restart(void *vstate)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *)vstate;
@@ -122,7 +122,7 @@ vector_bfgs_restart(void *vstate)
   return GSL_SUCCESS;
 }
 
-void
+static void
 vector_bfgs_free(void *vstate)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *)vstate;

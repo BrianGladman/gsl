@@ -69,13 +69,13 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 #define GSL_MULTIMIN_FN_EVAL_F_DF(F,x,y,g) (*((F)->fdf))(x,(F)->params,(y),(g))
 
 int gsl_multimin_diff (const gsl_multimin_function * f,
-                       gsl_vector * x, gsl_vector * g);
+                       const gsl_vector * x, gsl_vector * g);
 
 /* wrapper for using a vector input function as a real input function */
 typedef struct 
 {
   gsl_multimin_function f;
-  gsl_vector * starting_point;
+  const gsl_vector * starting_point;
   gsl_vector * direction;
   gsl_vector * evaluation_point;
 }
@@ -83,12 +83,12 @@ gsl_multimin_to_single;
 
 gsl_multimin_to_single *
 gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
-			     gsl_vector * starting_point,
+			     const gsl_vector * starting_point,
 			     gsl_vector * direction);
 int
 gsl_multimin_to_single_set(gsl_multimin_to_single *w,
 			   const gsl_multimin_function *f,
-			   gsl_vector * starting_point,
+			   const gsl_vector * starting_point,
 			   gsl_vector * direction);
 
 void
@@ -102,12 +102,12 @@ gsl_multimin_to_single_function_free(gsl_function *f);
 
 gsl_multimin_to_single *
 gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *f,
-				 gsl_vector * starting_point,
+				 const gsl_vector * starting_point,
 				 gsl_vector * direction);
 int
 gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
 			       const gsl_multimin_function_fdf *f,
-			       gsl_vector * starting_point,
+			       const gsl_vector * starting_point,
 			       gsl_vector * direction);
 
 void

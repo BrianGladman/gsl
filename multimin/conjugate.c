@@ -33,7 +33,7 @@ typedef struct
   }
 conjugate_state_t;
 
-int
+static int
 gamma_polak_ribiere(const gsl_multimin_fdf_history *h,double *value)
 {
   double scalar;
@@ -61,7 +61,7 @@ gamma_polak_ribiere(const gsl_multimin_fdf_history *h,double *value)
     }
 }
 
-int
+static int
 gamma_fletcher_reeves(const gsl_multimin_fdf_history *h,double *value)
 {
   double scalar;
@@ -82,7 +82,7 @@ gamma_fletcher_reeves(const gsl_multimin_fdf_history *h,double *value)
     }
 }
 
-int
+static int
 conjugate_alloc(void *vstate, size_t n)
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;
@@ -104,7 +104,7 @@ conjugate_alloc(void *vstate, size_t n)
   return GSL_SUCCESS;
 }
 
-int
+static int
 conjugate_alloc_pr(void *vstate, size_t n)
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;
@@ -113,7 +113,7 @@ conjugate_alloc_pr(void *vstate, size_t n)
   return conjugate_alloc(state,n);
 }
 
-int
+static int
 conjugate_alloc_fr(void *vstate, size_t n)
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;
@@ -122,7 +122,7 @@ conjugate_alloc_fr(void *vstate, size_t n)
   return conjugate_alloc(state,n);
 }
 
-int
+static int
 conjugate_restart(void *vstate)
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;
@@ -131,7 +131,7 @@ conjugate_restart(void *vstate)
   return GSL_SUCCESS;
 }
 
-void
+static void
 conjugate_free(void *vstate)
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;
@@ -140,7 +140,7 @@ conjugate_free(void *vstate)
   /*gsl_vector_free(state->delta_gradient);*/
 }
 
-int 
+static int 
 conjugate_direction(void *vstate,gsl_multimin_fdf_history *h ,gsl_vector * dir) 
 {
   conjugate_state_t *state = (conjugate_state_t *)vstate;

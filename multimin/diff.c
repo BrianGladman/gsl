@@ -22,7 +22,7 @@
 
 int
 gsl_multimin_diff (const gsl_multimin_function * f,
-		   gsl_vector * x, gsl_vector * g)
+		   const gsl_vector * x, gsl_vector * g)
 {
   /* This is nearly identical to gsl_diff_central except that the
      multimin functions are used to restrict a function requiring

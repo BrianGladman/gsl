@@ -1,5 +1,10 @@
 Mon Apr 23 13:22:31 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* gsl_multimin.h diff.c: made starting_point const throughout to
+ 	avoid compiler warnings
+
+	* made internal functions static
+
 	* gsl_multimin.h: added missing prototype for gsl_multimin_diff
 
 Tue Apr 17 22:15:37 2001  Brian Gough  <bjg@network-theory.co.uk>

@@ -59,7 +59,7 @@ double gsl_multimin_to_single_eval(double x, void * oparams)
 
 gsl_multimin_to_single *
 gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
-			     gsl_vector * starting_point,
+			     const gsl_vector * starting_point,
 			     gsl_vector * direction) {
   gsl_multimin_to_single *wrapper;
   const size_t n = f->n ;
@@ -99,7 +99,7 @@ gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
 int
 gsl_multimin_to_single_set(gsl_multimin_to_single *w,
 			   const gsl_multimin_function *f,
-			   gsl_vector * starting_point,
+			   const gsl_vector * starting_point,
 			   gsl_vector * direction) {
   if (w->evaluation_point->size != starting_point->size 
       || w->evaluation_point->size != direction->size) {
@@ -146,7 +146,7 @@ gsl_multimin_to_single_function_free(gsl_function *f)
 
 gsl_multimin_to_single *
 gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *fdf,
-				 gsl_vector * starting_point,
+				 const gsl_vector * starting_point,
 				 gsl_vector * direction) {
   gsl_multimin_function f;
 
@@ -160,7 +160,7 @@ gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *fdf,
 int
 gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
 			       const gsl_multimin_function_fdf *fdf,
-			       gsl_vector * starting_point,
+			       const gsl_vector * starting_point,
 			       gsl_vector * direction) {
   gsl_multimin_function f;
 
