@@ -117,7 +117,7 @@ gsl_fft_halfcomplex_wavetable_alloc (size_t n)
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  w->scratch = (double *) malloc (n * 2 * sizeof (double));
 
   if (w->scratch == NULL)
     {

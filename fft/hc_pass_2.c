@@ -7,8 +7,10 @@
 #include "fft_halfcomplex.h"
 
 int
-gsl_fft_halfcomplex_pass_2 (const double from[],
-			    double to[],
+gsl_fft_halfcomplex_pass_2 (const double in[],
+			    const size_t istride,
+			    double out[],
+			    const size_t ostride,
 			    const size_t product,
 			    const size_t n,
 			    const gsl_complex twiddle[])
@@ -26,14 +28,14 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 
   for (k1 = 0; k1 < product_1; k1++)
     {
-      const double r0 = from[2 * k1 * q];
-      const double r1 = from[2 * k1 * q + 2 * q - 1];
+      const double r0 = VECTOR(in,istride,2 * k1 * q);
+      const double r1 = VECTOR(in,istride,2 * k1 * q + 2 * q - 1);
 
       const double s0 = r0 + r1;
       const double s1 = r0 - r1;
 
-      to[q * k1] = s0;
-      to[q * k1 + m] = s1;
+      VECTOR(out,ostride,q * k1) = s0;
+      VECTOR(out,ostride,q * k1 + m) = s1;
     }
 
   if (q == 1)
@@ -41,7 +43,6 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 
   for (k = 1; k < (q + 1) / 2; k++)
     {
-
       const double w_real = GSL_REAL(twiddle[k - 1]);
       const double w_imag = GSL_IMAG(twiddle[k - 1]);
 
@@ -50,11 +51,11 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 	  const size_t from0 = 2 * k1 * q + 2 * k - 1;
 	  const size_t from1 = 2 * k1 * q - 2 * k + 2 * q - 1;
 
-	  const double z0_real = from[from0];
-	  const double z0_imag = from[from0 + 1];
+	  const double z0_real = VECTOR(in,istride,from0);
+	  const double z0_imag = VECTOR(in,istride,from0 + 1);
 
-	  const double z1_real = from[from1];
-	  const double z1_imag = from[from1 + 1];
+	  const double z1_real = VECTOR(in,istride,from1);
+	  const double z1_imag = VECTOR(in,istride,from1 + 1);
 
 	  /* compute x = W(2) z */
 
@@ -69,11 +70,11 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 	  const size_t to0 = k1 * q + 2 * k - 1;
 	  const size_t to1 = to0 + m;
 
-	  to[to0] = x0_real;
-	  to[to0 + 1] = x0_imag;
+	  VECTOR(out,ostride,to0) = x0_real;
+	  VECTOR(out,ostride,to0 + 1) = x0_imag;
 
-	  to[to1] = w_real * x1_real - w_imag * x1_imag;
-	  to[to1 + 1] = w_imag * x1_real + w_real * x1_imag;
+	  VECTOR(out,ostride,to1) = w_real * x1_real - w_imag * x1_imag;
+	  VECTOR(out,ostride,to1 + 1) = w_imag * x1_real + w_real * x1_imag;
 
 	}
     }
@@ -87,8 +88,8 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
       const size_t to0 = k1 * q + q - 1;
       const size_t to1 = to0 + m;
 
-      to[to0] = 2 * from[from0];
-      to[to1] = -2 * from[from0 + 1];
+      VECTOR(out,ostride,to0) = 2 * VECTOR(in,istride,from0);
+      VECTOR(out,ostride,to1) = -2 * VECTOR(in,istride,from0 + 1);
     }
   return 0;
 }

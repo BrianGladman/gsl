@@ -7,8 +7,10 @@
 #include "fft_halfcomplex.h"
 
 int
-gsl_fft_halfcomplex_pass_n (const double from[],
-			    double to[],
+gsl_fft_halfcomplex_pass_n (const double in[],
+			    const size_t istride,
+			    double out[],
+			    const size_t ostride,
 			    const size_t factor,
 			    const size_t product,
 			    const size_t n,
@@ -61,22 +63,22 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 	      if (e2 == 0)
 		{
 		  size_t from_idx = factor * k1 * q;
-		  z_real = from[from_idx];
+		  z_real = VECTOR(in,istride,from_idx);
 		  z_imag = 0.0;
 		  sum_real += w_real * z_real - w_imag * z_imag;
 		}
 	      else if (e2 == factor - e2)
 		{
 		  size_t from_idx = factor * q * k1 + 2 * e2 * q - 1;
-		  z_real = from[from_idx];
+		  z_real = VECTOR(in,istride,from_idx);
 		  z_imag = 0.0;
 		  sum_real += w_real * z_real;
 		}
 	      else
 		{
 		  size_t from_idx = factor * q * k1 + 2 * e2 * q - 1;
-		  z_real = from[from_idx];
-		  z_imag = from[from_idx + 1];
+		  z_real = VECTOR(in,istride,from_idx);
+		  z_imag = VECTOR(in,istride,from_idx + 1);
 		  sum_real += 2 * (w_real * z_real - w_imag * z_imag);
 		}
 
@@ -84,7 +86,7 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 	  {
 	    const size_t to_idx = q * k1 + e1 * m;
-	    to[to_idx] = sum_real;
+	    VECTOR(out,ostride,to_idx) = sum_real;
 	  }
 	}
     }
@@ -128,14 +130,14 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 		  if (e2 < factor - e2)
 		    {
 		      const size_t from0 = factor * k1 * q + 2 * k + 2 * e2 * q - 1;
-		      z_real = from[from0];
-		      z_imag = from[from0 + 1];
+		      z_real = VECTOR(in,istride,from0);
+		      z_imag = VECTOR(in,istride,from0 + 1);
 		    }
 		  else
 		    {
 		      const size_t from0 = factor * k1 * q - 2 * k + 2 * (factor - e2) * q - 1;
-		      z_real = from[from0];
-		      z_imag = -from[from0 + 1];
+		      z_real = VECTOR(in,istride,from0);
+		      z_imag = -VECTOR(in,istride,from0 + 1);
 		    }
 
 		  sum_real += w_real * z_real - w_imag * z_imag;
@@ -156,8 +158,8 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 	      {
 		const size_t to0 = k1 * q + 2 * k + e1 * m - 1;
-		to[to0] = w_real * sum_real - w_imag * sum_imag;
-		to[to0 + 1] = w_real * sum_imag + w_imag * sum_real;
+		VECTOR(out,ostride,to0) = w_real * sum_real - w_imag * sum_imag;
+		VECTOR(out,ostride,to0 + 1) = w_real * sum_imag + w_imag * sum_real;
 	      }
 
 	    }
@@ -219,15 +221,15 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 		if (e2 == factor - e2 - 1)
 		  {
 		    const size_t from0 = factor * k1 * q + q + 2 * e2 * q - 1;
-		    z_real = from[from0];
+		    z_real = VECTOR(in,istride,from0);
 		    z_imag = 0.0;
 		    sum_real += w_real * z_real - w_imag * z_imag;
 		  }
 		else
 		  {
 		    const size_t from0 = factor * k1 * q + q + 2 * e2 * q - 1;
-		    z_real = from[from0];
-		    z_imag = from[from0 + 1];
+		    z_real = VECTOR(in,istride,from0);
+		    z_imag = VECTOR(in,istride,from0 + 1);
 		    sum_real += 2 * (w_real * z_real - w_imag * z_imag);
 		  }
 
@@ -235,7 +237,7 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 
 	    {
 	      const size_t to0 = k1 * q + q + e1 * m - 1;
-	      to[to0] = sum_real;
+	      VECTOR(out,ostride,to0) = sum_real;
 	    }
 	  }
       }

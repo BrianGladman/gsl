@@ -4,25 +4,24 @@
 
 #include <gsl_errno.h>
 #include <gsl_complex.h>
+#include <gsl_vector.h>
 #include <gsl_fft_halfcomplex.h>
 
 #include "fft_halfcomplex.h"
 
 int
-gsl_fft_halfcomplex_backward (double *data,
-			      const size_t n,
+gsl_fft_halfcomplex_backward (gsl_vector * data,
 			      const gsl_fft_halfcomplex_wavetable * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, n, wavetable) ;
+  int status = gsl_fft_halfcomplex (data, wavetable) ;
   return status ;
 }
 
 int
-gsl_fft_halfcomplex_inverse (double * data,
-			     const size_t n,
+gsl_fft_halfcomplex_inverse (gsl_vector * data,
 			     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, n, wavetable);
+  int status = gsl_fft_halfcomplex (data, wavetable);
 
   if (status)
     {
@@ -32,29 +31,43 @@ gsl_fft_halfcomplex_inverse (double * data,
   /* normalize inverse fft with 1/n */
 
   {
+    const size_t n = data->size ;
+    const size_t stride = data->stride ;
+    double * const out = data->data ;
+
     const double norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
-	data[i] *= norm;
+	out[stride*i] *= norm;
       }
   }
   return status;
 }
 
 int
-gsl_fft_halfcomplex (double *data,
-		     const size_t n,
+gsl_fft_halfcomplex (gsl_vector * data,
 		     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
-
   size_t factor, product, q, state;
   size_t i;
   size_t nf;
   int product_1;
   int tskip;
-  double *from, *to, *scratch;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
+
+  const size_t n = data->size ;
+
+  double * const a = data->data;
+  double * const b = wavetable->scratch;
+
+  const size_t astride = data->stride ;
+  const size_t bstride = 1 ;
+
+  double * in = a;
+  size_t istride = astride;
+  double * out = b;
+  size_t ostride = bstride;
 
   if (n == 0)
     {
@@ -72,13 +85,8 @@ gsl_fft_halfcomplex (double *data,
     }
 
   nf = wavetable->nf;
-
-  scratch = (double *) (wavetable->scratch);
   product = 1;
-
   state = 0;
-  from = data;
-  to = scratch;
 
   for (i = 0; i < nf; i++)
     {
@@ -91,36 +99,42 @@ gsl_fft_halfcomplex (double *data,
 
       if (state == 0)
 	{
-	  from = data;
-	  to = scratch;
+	  in = a;
+	  istride = astride;
+	  out = b;
+	  ostride = bstride;
 	  state = 1;
 	}
       else
 	{
-	  from = scratch;
-	  to = data;
+	  in = b;
+	  istride = bstride;
+	  out = a;
+	  ostride = astride;
 	  state = 0;
 	}
 
       if (factor == 2)
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_halfcomplex_pass_2 (from, to, product, n, twiddle1);
+	  gsl_fft_halfcomplex_pass_2 (in, istride, out, ostride, 
+				      product, n, twiddle1);
 	}
       else if (factor == 3)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
-	  gsl_fft_halfcomplex_pass_3 (from, to, product, n, twiddle1,
-				      twiddle2);
+	  gsl_fft_halfcomplex_pass_3 (in, istride, out, ostride,
+				      product, n, twiddle1, twiddle2);
 	}
       else if (factor == 4)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
-	  gsl_fft_halfcomplex_pass_4 (from, to, product, n, twiddle1,
-				      twiddle2, twiddle3);
+	  gsl_fft_halfcomplex_pass_4 (in, istride, out, ostride,
+				      product, n, twiddle1, twiddle2, 
+				      twiddle3);
 	}
       else if (factor == 5)
 	{
@@ -128,20 +142,24 @@ gsl_fft_halfcomplex (double *data,
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
 	  twiddle4 = twiddle3 + tskip;
-	  gsl_fft_halfcomplex_pass_5 (from, to, product, n, twiddle1,
-				      twiddle2, twiddle3, twiddle4);
+	  gsl_fft_halfcomplex_pass_5 (in, istride, out, ostride,
+				      product, n, twiddle1, twiddle2, 
+				      twiddle3, twiddle4);
 	}
       else
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_halfcomplex_pass_n (from, to, factor, product, n,
-				      twiddle1);
+	  gsl_fft_halfcomplex_pass_n (in, istride, out, ostride,
+				      factor, product, n, twiddle1);
 	}
     }
 
   if (state == 1)		/* copy results back from scratch to data */
     {
-      memcpy (data, scratch, n * sizeof (double));
+      for (i = 0; i < n; i++)
+	{
+	  a[istride*i] = b[ostride*i] ;
+	}
     }
 
   return 0;
