@@ -69,10 +69,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc {NEWS,ChangeLog,INSTALL,README,AUTHORS,THANKS,BUGS}
-%doc /usr/info/gsl-ref*
+%doc /usr/info/*
 /usr/bin/gsl-config
 /usr/bin/gsl-histogram
 /usr/bin/gsl-randist
 /usr/lib
 /usr/include/gsl
 /usr/share/aclocal/gsl.m4
+/usr/share/man
