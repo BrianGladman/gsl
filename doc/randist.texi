@@ -1002,7 +1002,7 @@ uniform random number between 0 and @math{2\pi} and let @var{x} and
 have been expensive in the old days, but with modern hardware
 implementations, this is sometimes the fastest way to go.  This is the
 case for my home Pentium (but not the case for my Sun Sparcstation 20 at
-work).  Once can avoid the trig evaluations by choosing @var{x} and
+work).  One can avoid the trig evaluations by choosing @var{x} and
 @var{y} in the interior of a unit circle (choose them at random from the
 interior of the enclosing square, and then reject those that are outside
 the unit circle), and then dividing by @c{$\sqrt{x^2 + y^2}$}
@@ -1464,7 +1464,7 @@ where @c{($n_1$, $n_2$, $\ldots$, $n_K$)}
 @math{(n_1, n_2, ..., n_K)} 
 are nonnegative integers with 
 @c{$\sum_{k=1}^{K} n_k =N$} 
-@math{sum_@{k=1,K@} n_k = N},
+@math{sum_@{k=1@}^K n_k = N},
 and
 @c{$(p_1, p_2, \ldots, p_K)$} 
 @math{(p_1, p_2, ..., p_K)}
@@ -1534,7 +1534,7 @@ from a negative binomial distribution with parameters @var{p} and
 @node The Pascal Distribution
 @section The Pascal Distribution
 
-@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{k})
+@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
 This function returns a random integer from the Pascal distribution.  The
 Pascal distribution is simply a negative binomial distribution with an
 integer value of @math{n}.
