@@ -289,14 +289,13 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
   size_t n = y1->size;
   size_t i;
   size_t hi = 0, s_hi = 0, lo = 0;
-  double dhi, dlo;
+  double dhi, ds_hi, dlo;
   int status;
   double val, val2;
 
   /* get index of highest, second highest and lowest point */
 
-  dhi = gsl_vector_get (y1, 0);
-  dlo = dhi;
+  dhi = ds_hi = dlo = gsl_vector_get (y1, 0);
 
   for (i = 1; i < n; i++)
     {
@@ -308,9 +307,15 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
 	}
       else if (val > dhi)
 	{
+	  ds_hi = dhi;
 	  s_hi = hi;
 	  dhi = val;
 	  hi = i;
+	}
+      else if (val > ds_hi)
+	{
+	  ds_hi = val;
+	  s_hi = i;
 	}
     }
 

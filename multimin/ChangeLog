@@ -1,5 +1,8 @@
 2003-04-17  Brian Gough  <bjg@network-theory.co.uk>
 
+	* simplex.c (nmsimplex_iterate): bug fix to find the second
+	highest point correctly
+
 	* vector_bfgs.c (vector_bfgs_iterate): no need to update g0norm on
 	each downhill step, since g0norm is the norm for the initial
 	gradient.
