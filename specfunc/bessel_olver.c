@@ -9,6 +9,8 @@
 #include "airy_impl.h"
 #include "bessel.h"
 
+#define CubeRoot2_ 1.25992104989487316476721060728
+
 
 /* Chebyshev fit for f(x) = A_2(2/(x+1)) / (1+x) */
 static double A2_gt1_data[28] = {
@@ -166,139 +168,206 @@ static struct gsl_sf_ChebSeries B2_gt1_cs = {
 };
 
 
-static double olver_B0_lt1(double t, double zeta)
+static double olver_B0(double z, double abs_zeta)
 {
-  return -5./(48.*zeta*zeta) + t*(-3 + 5.*t*t)/(24.*sqrt(zeta));
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return CubeRoot2_ * (1./70.  + 2./225.*(1-z));
+  }
+  else if(z < 1.) {
+    double t = 1./sqrt((1-z)*(1+z));
+    return -5./(48.*abs_zeta*abs_zeta) + t*(-3 + 5.*t*t)/(24.*sqrt(abs_zeta));
+  }
+  else {
+    double t = 1./sqrt((z-1)*(z+1));
+    return -5./(48.*abs_zeta*abs_zeta) + t*( 3 + 5.*t*t)/(24.*sqrt(abs_zeta));
+  }
 }
 
-static double olver_B0_gt1(double t, double minus_zeta)
+static double olver_B1(double z, double abs_zeta)
 {
-  double mz2 = minus_zeta*minus_zeta;
-  return -5./(48.*mz2) + t*(3 + 5.*t*t)/(24.*sqrt(minus_zeta));
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    /* FIXME */
+  }
+  else if(z < 1.) {
+    return 0.; /* FIXME */
+  }
+  else {
+    return gsl_sf_cheb_eval(2./z - 1., &B1_gt1_cs);
+  }
 }
 
-static double olver_A1_lt1(double t, double zeta)
+static double olver_B2(double z, double abs_zeta)
 {
-  double rz = sqrt(zeta);
-  double t2 = t*t;
-  double term1 = t2*(81. - 462.*t2 + 385.*t2*t2)/1152.;
-  double term2 = -455./(4608.*zeta*zeta*zeta);
-  double term3 = 7.*t*(-3 + 5.*t2)/(1152.*rz*rz*rz);
-  return term1 + term2 + term3;
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    /* FIXME */
+  }
+  else if(z < 1.) {
+    return 0.; /* FIXME */
+  }
+  else {
+    double x  = 2./z - 1.;
+    double f2 = (1+x)*(1+x);
+    return f2 * gsl_sf_cheb_eval(x,&B2_gt1_cs);
+  }
 }
 
-static double olver_A1_gt1(double t, double minus_zeta)
+static double olver_A1(double z, double abs_zeta)
 {
-  double rz = sqrt(minus_zeta);
-  double t2 = t*t;
-  double term1 = -t2*(81. + 462.*t2 + 385.*t2*t2)/1152.;
-  double term2 =  455./(4608.*minus_zeta*minus_zeta*minus_zeta);
-  double term3 = -7.*t*(3 + 5.*t2)/(1152.*rz*rz*rz);
-  return term1 + term2 + term3;
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+    return -1./255. - 71./38500. * (1-z);
+  }
+  else if(z < 1.){
+    double t = 1./sqrt((1-z)*(1+z));
+    double rz = sqrt(abs_zeta);
+    double t2 = t*t;
+    double term1 =  t2*(81. - 462.*t2 + 385.*t2*t2)/1152.;
+    double term2 = -455./(4608.*abs_zeta*abs_zeta*abs_zeta);
+    double term3 =  7.*t*(-3 + 5.*t2)/(1152.*rz*rz*rz);
+    return term1 + term2 + term3;
+  }
+  else {
+    double t = 1./sqrt((z-1)*(z+1));
+    double rz = sqrt(abs_zeta);
+    double t2 = t*t;
+    double term1 = -t2*(81. + 462.*t2 + 385.*t2*t2)/1152.;
+    double term2 =  455./(4608.*abs_zeta*abs_zeta*abs_zeta);
+    double term3 = -7.*t*( 3 + 5.*t2)/(1152.*rz*rz*rz);
+    return term1 + term2 + term3;
+  }
 }
 
-static double olver_Asum_lt1(double nu, double z, double t, double zeta)
+static double olver_A2(double z, double abs_zeta)
 {
-  double A1 = olver_A1_lt1(t, zeta);
-  return 1. + A1/(nu*nu);
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+  }
+  else if(z < 1.){
+  }
+  else {
+    double x  = 2./z -1.;
+    return (1+x) * gsl_sf_cheb_eval(x, &A2_gt1_cs);
+  }
+  
 }
 
-static double olver_Bsum_lt1(double nu, double z, double t, double zeta)
+static double olver_A3(double z, double abs_zeta)
 {
-  double B0 = olver_B0_lt1(t, zeta);
-  return B0;
+  if(fabs(1.-z) < 10.*GSL_SQRT_MACH_EPS) {
+  }
+  else if(z < 1.){
+  }
+  else {
+    double x = 2./z -1.;
+    double f = (1+x)*(1+x)*(1+x);
+    return f * gsl_sf_cheb_eval(x, &A3_gt1_cs);
+  }
+  
 }
 
-static double olver_Asum_gt1(double nu, double z, double t, double minus_zeta)
+static double olver_Asum(double nu, double z, double abs_zeta)
 {
-  double x = 2./z - 1.;
-  double f1 = 1.+x;
-  double f2 = f1*f1*f1;
-  double A1 = olver_A1_gt1(t, minus_zeta);
-  double A2 = f1 * gsl_sf_cheb_eval(x, &A2_gt1_cs);
-  double A3 = f2 * gsl_sf_cheb_eval(x, &A3_gt1_cs);
   double nu2 = nu*nu;
+  double A1 = olver_A1(z, abs_zeta);
+  double A2 = olver_A2(z, abs_zeta);
+  double A3 = olver_A3(z, abs_zeta);
   return 1. + A1/nu2 + A2/(nu2*nu2) + A3/(nu2*nu2*nu2);
 }
 
-static double olver_Bsum_gt1(double nu, double z, double t, double minus_zeta)
+static double olver_Bsum(double nu, double z, double abs_zeta)
 {
-  double x = 2./z - 1.;
-  double f1 = 1.+x;
-  double f2 = f1*f1;
-  double B0 = olver_B0_gt1(t, minus_zeta);
-  double B1 =      gsl_sf_cheb_eval(x,&B1_gt1_cs);
-  double B2 = f2 * gsl_sf_cheb_eval(x,&B2_gt1_cs);
   double nu2 = nu*nu;
+  double B0 = olver_B0(z, abs_zeta);
+  double B1 = olver_B1(z, abs_zeta);
+  double B2 = olver_B2(z, abs_zeta);
   return B0 + B1/nu2 + B2/(nu2*nu2);
 }
 
 
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
 {
-  double pre;
-  double asum, bsum;
-  double ai, aip;
-  double z = x/nu;
-  double crnu = pow(nu, 1./3.);
-  double rt   = sqrt(fabs(1.-z)*(1+z));
+  if(x <= 0. || nu <= 0.) {
+    return GSL_EDOM;
+  }  
+  else {
+    double zeta, abs_zeta;
+    double arg;
+    double pre;
+    double asum, bsum;
+    double ai, aip;
+    double z = x/nu;
+    double crnu = pow(nu, 1./3.);
+    double rt   = sqrt(fabs(1.-z)*(1+z));
+    
+    if(fabs(1-z) < GSL_SQRT_MACH_EPS) {
+      /* z near 1 */
+      pre  = CubeRoot2_*(0.5 + 2./5.*(1-z) + 51./175.*(1-z)*(1-z));
+      zeta = CubeRoot2_*(1-z)*(1. + 3./10.*(1-z));
+      abs_zeta = fabs(zeta);
+    }
+    else if(z < 1.) {
+      /* z < 1 */
+      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
+      zeta = abs_zeta;
+      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+    }
+    else {
+      /* z > 1 */
+      abs_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
+      zeta = -abs_zeta;
+      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+    }
 
-  if(z < 1.) {
-    double zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
-    double arg  = crnu*crnu *zeta;
-    pre  = sqrt(sqrt(4.*zeta/(rt*rt)));
-    asum = olver_Asum_lt1(nu, z, 1./rt, zeta);
-    bsum = olver_Bsum_lt1(nu, z, 1./rt, zeta);
+    asum = olver_Asum(nu, z, abs_zeta);
+    bsum = olver_Bsum(nu, z, abs_zeta);
+    arg  = crnu*crnu * zeta;
     gsl_sf_airy_Ai_impl(arg, &ai);
     gsl_sf_airy_Ai_deriv_impl(arg, &aip);
-  }
-  else if(z > 1.) {
-    double minus_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
-    double arg  = crnu*crnu *(-minus_zeta);
-    pre  = sqrt(sqrt(4.*minus_zeta/(rt*rt)));
-    asum = olver_Asum_gt1(nu, z, 1./rt, minus_zeta);
-    bsum = olver_Bsum_gt1(nu, z, 1./rt, minus_zeta);
-    gsl_sf_airy_Ai_impl(arg, &ai);
-    gsl_sf_airy_Ai_deriv_impl(arg, &aip);
-  }
 
-  *result = pre * (ai*asum/crnu + aip*bsum/(nu*crnu*crnu));
-  return GSL_SUCCESS;
+    *result = pre * (ai*asum/crnu + aip*bsum/(nu*crnu*crnu));
+    return GSL_SUCCESS;
+  }
 }
 
 int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
 {
-  double pre;
-  double asum, bsum;
-  double bi, bip;
-  double z = x/nu;
-  double crnu = pow(nu, 1./3.);
-  double rt   = sqrt(fabs(1.-z)*(1+z));
-
-  if(z < 1.) {
-    int status1, status2;
-    double zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
-    double arg  = crnu*crnu *zeta;
-    pre  = sqrt(sqrt(4.*zeta/(rt*rt)));
-    asum = olver_Asum_lt1(nu, z, 1./rt, zeta);
-    bsum = olver_Bsum_lt1(nu, z, 1./rt, zeta);
-    status1 = gsl_sf_airy_Bi_impl(arg, &bi);
-    status2 = gsl_sf_airy_Bi_deriv_impl(arg, &bip);
-    if(status1 != GSL_SUCCESS || status2 != GSL_SUCCESS) {
-      /* Bi(x) or Bi'(x) overflowed */
-      return GSL_EOVRFLW;
+  if(x <= 0. || nu <= 0.) {
+    return GSL_EDOM;
+  }  
+  else {
+    double zeta, abs_zeta;
+    double arg;
+    double pre;
+    double asum, bsum;
+    double bi, bip;
+    double z = x/nu;
+    double crnu = pow(nu, 1./3.);
+    double rt   = sqrt(fabs(1.-z)*(1+z));
+    
+    if(fabs(1-z) < GSL_SQRT_MACH_EPS) {
+      /* z near 1 */
+      pre  = CubeRoot2_*(0.5 + 2./5.*(1-z) + 51./175.*(1-z)*(1-z));
+      zeta = CubeRoot2_*(1-z)*(1. + 3./10.*(1-z));
+      abs_zeta = fabs(zeta);
     }
-  }
-  else if(z > 1.) {
-    double minus_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
-    double arg  = crnu*crnu *(-minus_zeta);
-    pre  = sqrt(sqrt(4.*minus_zeta/(rt*rt)));
-    asum = olver_Asum_gt1(nu, z, 1./rt, minus_zeta);
-    bsum = olver_Bsum_gt1(nu, z, 1./rt, minus_zeta);
+    else if(z < 1.) {
+      /* z < 1 */
+      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
+      zeta = abs_zeta;
+      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+    }
+    else {
+      /* z > 1 */
+      abs_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
+      zeta = -abs_zeta;
+      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+    }
+
+    asum = olver_Asum(nu, z, abs_zeta);
+    bsum = olver_Bsum(nu, z, abs_zeta);
+    arg  = crnu*crnu * zeta;
     gsl_sf_airy_Bi_impl(arg, &bi);
     gsl_sf_airy_Bi_deriv_impl(arg, &bip);
-  }
 
-  *result = -pre * (bi*asum/crnu + bip*bsum/(nu*crnu*crnu));
-  return GSL_SUCCESS;
+    *result = -pre * (bi*asum/crnu + bip*bsum/(nu*crnu*crnu));
+    return GSL_SUCCESS;
+  }
 }
