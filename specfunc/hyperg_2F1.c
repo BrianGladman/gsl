@@ -335,24 +335,65 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     double pre1, pre2, F1, F2;
     double status_F1, status_F2;
     double prec_F1, prec_F2;
-    double lng_c   = gsl_sf_lngamma(c);
-    double ln_pre1 = lng_c + gsl_sf_lngamma( d) - gsl_sf_lngamma(c-a) - gsl_sf_lngamma(c-b);
-    double ln_pre2 = lng_c + gsl_sf_lngamma(-d) - gsl_sf_lngamma(a)   - gsl_sf_lngamma(b) + d*log(1.0-x);
-    if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
-      *result = 0.0; /* FIXME: should be Inf */
-      return GSL_EOVRFLW;
+    {
+      /* these gamma functions appear in the denominator, so we
+         catch their harmless domain errors and set the terms to zero
+      */
+      double ln_g1ca, ln_g1cb, ln_g2a, ln_g2b;
+      int stat_1ca = gsl_sf_lngamma_impl(c-a, &ln_g1ca);
+      int stat_1cb = gsl_sf_lngamma_impl(c-b, &ln_g1ca);
+      int stat_2a  = gsl_sf_lngamma_impl(a, &ln_g2a);
+      int stat_2b  = gsl_sf_lngamma_impl(b, &ln_g2b);
+      int ok1 = (stat_1ca == GSL_SUCCESS && stat_1cb == GSL_SUCCESS);
+      int ok2 = (stat_2a  == GSL_SUCCESS && stat_2b  == GSL_SUCCESS);
+      
+      double ln_gc, ln_gd, ln_gmd;
+      gsl_sf_lngamma_impl( c, &ln_gc);
+      gsl_sf_lngamma_impl( d, &ln_gd);
+      gsl_sf_lngamma_impl(-d, &ln_gmd);
+      
+      if(ok1 && ok2) {
+	double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
+        double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
+	if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
+          *result = 0.0; /* FIXME: should be Inf */
+          return GSL_EOVRFLW;
+        }
+        pre1 = exp(ln_pre1);
+        pre2 = exp(ln_pre2);
+      }
+      else if(ok1 && !ok2) {
+	double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
+	if(ln_pre1 > GSL_LOG_DBL_MAX) {
+	  *result = 0.0; /* FIXME: should be Inf */
+          return GSL_EOVRFLW;
+	}
+	pre1 = exp(ln_pre1);
+	pre2 = 0.0;
+      }
+      else if(!ok1 && ok2) {
+	double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
+	if(ln_pre2 > GSL_LOG_DBL_MAX) {
+	  *result = 0.0; /* FIXME: should be Inf */
+          return GSL_EOVRFLW;
+	}
+        pre1 = 0.0;
+	pre2 = exp(ln_pre2);
+      }
+      else {
+        pre1 = 0.0;
+	pre2 = 0.0;
+	*result = 0.0;
+	return GSL_EUNDRFLW;
+      }
     }
-    pre1 = exp(ln_pre1);
-    pre2 = exp(ln_pre2);
     status_F1 = hyperg_2F1_series(  a,   b, 1.0-d, 1.0-x, &F1, &prec_F1);
     status_F2 = hyperg_2F1_series(c-a, c-b, 1.0+d, 1.0-x, &F2, &prec_F2);
     *result = pre1*F1 + pre2*F2;
-    if(prec_F1 > locEPS || prec_F2 > locEPS) {
+    if(prec_F1 > locEPS || prec_F2 > locEPS)
       return GSL_ELOSS;
-    }
-    else {
+    else
       return GSL_SUCCESS;
-    }
   }
   
   if(x > 0.75 && d_integer) {
@@ -380,16 +421,15 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     /* FIXME: F1= ...  F2= ... */
   }
   
-  /* default case */
+
   {
+    /* default case */
     double prec;
     int status = hyperg_2F1_series(a, b, c, x, result, &prec);
-    if(prec > locEPS) {
+    if(prec > locEPS)
       return GSL_ELOSS;
-    }
-    else {
+    else
       return GSL_SUCCESS;
-    }
   }
 }
 
