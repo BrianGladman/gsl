@@ -172,9 +172,9 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
       GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
     }
 
-  v->data = base->data + offset ;
+  v->data = base->data + base->stride * offset ;
   v->size = n;
-  v->stride = stride;
+  v->stride = base->stride * stride;
 
   return GSL_SUCCESS;
 }
