@@ -35,5 +35,9 @@ To use GSL in a multi-threaded application you may need to recompile
 the library with another option, such as /MD.  See the Microsoft
 Visual C++ Manual for details on link options.
 
+Programs need to be compiled with the following option selected,
+
+  Project Settings, C/C++, Category: Customize, Disable Language Extensions.
+
 The initial scripts were provided by José Miguel Buenaposada
 (jmbuena@dia.fi.upm.es) and subsequently modified by Brian Gough
