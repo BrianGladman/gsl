@@ -1,3 +1,8 @@
+Mon Aug 10 22:12:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* rng-dump.c: program to write out 3 million random numbers,
+ 	suitable for testing with DIEHARD.
+
 Tue Aug  4 19:51:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* default.c (gsl_rng_env_setup): send default/enviroment output to

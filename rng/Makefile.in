@@ -85,10 +85,13 @@ taus.c transputer.c tt.c uni.c uni32.c vax.c zuf.c
 test_SOURCES = test.c
 test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
 TESTS = test
-check_PROGRAMS = test benchmark
+check_PROGRAMS = test benchmark rng-dump
 
 benchmark_SOURCES = benchmark.c 
 benchmark_LDADD = libgslrng.a ../err/libgslerr.a
+
+rng_dump_SOURCES = rng-dump.c 
+rng_dump_LDADD = libgslrng.a ../err/libgslerr.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -111,6 +114,9 @@ test_LDFLAGS =
 benchmark_OBJECTS =  benchmark.o
 benchmark_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a
 benchmark_LDFLAGS = 
+rng_dump_OBJECTS =  rng-dump.o
+rng_dump_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a
+rng_dump_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -127,10 +133,11 @@ DEP_FILES =  .deps/benchmark.P .deps/cmrg.P .deps/default.P \
 .deps/minstd.P .deps/mrg.P .deps/mt.P .deps/r250.P .deps/ran0.P \
 .deps/ran1.P .deps/ran2.P .deps/ran3.P .deps/rand.P .deps/rand48.P \
 .deps/random.P .deps/randu.P .deps/ranf.P .deps/ranlux.P .deps/ranmar.P \
-.deps/rng.P .deps/slatec.P .deps/taus.P .deps/test.P .deps/transputer.P \
-.deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P .deps/zuf.P
-SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES)
-OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS)
+.deps/rng-dump.P .deps/rng.P .deps/slatec.P .deps/taus.P .deps/test.P \
+.deps/transputer.P .deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P \
+.deps/zuf.P
+SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) $(rng_dump_SOURCES)
+OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) $(rng_dump_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -190,6 +197,10 @@ test: $(test_OBJECTS) $(test_DEPENDENCIES)
 benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
 	@rm -f benchmark
 	$(LINK) $(benchmark_LDFLAGS) $(benchmark_OBJECTS) $(benchmark_LDADD) $(LIBS)
+
+rng-dump: $(rng_dump_OBJECTS) $(rng_dump_DEPENDENCIES)
+	@rm -f rng-dump
+	$(LINK) $(rng_dump_LDFLAGS) $(rng_dump_OBJECTS) $(rng_dump_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
