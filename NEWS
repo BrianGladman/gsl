@@ -1,5 +1,9 @@
 * What is new in gsl-0.7+:
 
+** The convention for alloc and set functions has changed so that they
+are orthogonal. After allocating an object it is now necessary to
+initialize it.
+
 ** There is a new module for estimating numerical derivatives of functions
 
 ** There is a new module for handling data with ntuples
