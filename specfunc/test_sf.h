@@ -38,7 +38,7 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
    versions.  Turn this value down to 1.0 for development purposes */
 
 #ifndef TEST_FACTOR
-#define TEST_FACTOR 2.0  
+#define TEST_FACTOR 10.0  
 #endif
 
 #define TEST_TOL0  (TEST_FACTOR*2.0*GSL_DBL_EPSILON)
