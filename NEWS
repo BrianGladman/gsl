@@ -5,15 +5,21 @@ We need to do a better job with the NEWS file!
 ** The NEWS file now uses outline mode, like the Emacs NEWS file
 
 ** The statistics directory now has functions for computing the
-lag1-autocorrelation
+lag1-autocorrelation and an extra set of numerical accuracy tests from
+NIST as part of 'make check'.
 
 ** The simulated annealing routines no longer set the random number
 seed with the time of day.  You'll need to reseed the generator
-yourself if you want to make subsequent runs use different random
-numbers.
+yourself if you want subsequent runs to use different random numbers.
 
 ** Work is in progress on a reimplementation of QUADPACK in the
 `integration' subdirectory, but it is not finished yet.
+
+** You can now set the IEEE arithmetic mode for your programs from the
+environment variable GSL_IEEE_MODE by calling the function
+gsl_ieee_env_setup(). Currently this only works with the Linux kernel,
+HP-UX, SunOS4 and Solaris.
+
 
 * This covers changes made *after* the gsl-0.2 snapshot
 

@@ -2,11 +2,11 @@ IEEE Interface Notes
 --------------------
 
 The IEEE standard defines different types of rounding modes and
-exception handling but it does not specify a standard API for setting
+exception handling but it does not specify an API for controlling
 these features. Each platform has its own way of accessing them. The
-functions in this directory present a uniform interface for each
-platform. In order to do this only the "lowest-common-denominator"
-features are supported.
+functions in this directory present a uniform interface to the various
+systems in use today. In order to do this only the
+"lowest-common-denominator" features are supported.
 
 This directory offers support for 
 
@@ -48,9 +48,9 @@ How to add IEEE support for other platforms
 -------------------------------------------
 
 The platform support is in the files fp-linux.c, fp-hpux.c,
-fp-solaris.c, fp-sunos4.c. This is the file that sets the IEEE mode
-based on the arguments above. Look at these files to determine which
-is closest to want you want. Write the corresponding source file (e.g.
+fp-solaris.c, fp-sunos4.c, etc. Each of these files sets the IEEE mode
+based on the arguments above. Look at the files to determine which is
+closest to want you want. Write the corresponding source file (e.g.
 fp-mysystem.c for the examples below).
 
 The file is chosen from the preprocessor definitions in fp.c. Add an
@@ -113,8 +113,8 @@ host-identifier,
       esac
 	
 This should be all that's needed. If your system doesn't support one
-of the basic features you can use the error macro GSL_ERROR with and
-error number of GSL_EUNSUP.
+of the basic features you can use the error macro GSL_ERROR with an
+error number of GSL_EUNSUP. e.g.
 
     GSL_ERROR ("MYSYS only supports single precision rounding", GSL_EUNSUP);
  
