@@ -26,14 +26,6 @@ Making all in blas
 *** ../../blas/source_iamax_c.h:27: warning: `result' might be used uninitialized in this function
     echo timestamp > blas_raw_native.lo
 --------
-Making all in linalg
-    gcc -DHAVE_CONFIG_H -I. -I../../linalg -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/qr.pp -c ../../linalg/qr.c -o qr.o
-*** ../../linalg/qr.c: In function `gsl_linalg_QR_QTvec':
-*** ../../linalg/qr.c:274: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
-*** ../../linalg/qr.c: In function `gsl_linalg_QR_unpack':
-*** ../../linalg/qr.c:318: warning: passing arg 1 of `gsl_matrix_column' discards `const' from pointer target type
-    echo timestamp > qr.lo
---------
 Making all in specfunc
     gcc -DHAVE_CONFIG_H -I. -I../../specfunc -I.. -I.. -g -O2 -Wall -Wp,-MD,.deps/bessel_Jnu.pp -c ../../specfunc/bessel_Jnu.c -o bessel_Jnu.o
 *** ../../specfunc/bessel_Jnu.c: In function `gsl_sf_bessel_Jnu_impl':
@@ -71,19 +63,11 @@ Making all in monte
 Making check in blas
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_blas_raw.c
 *** ../../blas/test_blas_raw.c: In function `test_tbsv':
-*** ../../blas/test_blas_raw.c:1402: warning: unused variable `tmp_d'
+*** ../../blas/test_blas_raw.c:1403: warning: unused variable `tmp_d'
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_cases.c
 --------
 Making check in specfunc
-    PASS:   gsl_sf_conicalP_1_impl(200.0, 10.0, &r)
-*** FAIL:   gsl_sf_conicalP_1_impl(1000.0, 100.0, &r)
-      ../../specfunc/test_legendre.c 215
---------
-    PASS:   gsl_sf_legendre_Ql_impl(1000, 1.1, &r)
-*** FAIL: Legendre Functions
-    PASS:   gsl_sf_log_impl(0.1, &r)
---------
-    PASS: Result Methods
+    PASS:   gsl_sf_laguerre_n_impl(1, -2.0, 1.0, &r)
 *** FAIL: test
     ===================
 --------
@@ -94,28 +78,83 @@ Making check in specfunc
 *** make[1]: Target `check' not remade because of errors.
     make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/specfunc'
 --------
+Making check in siman
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/siman'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/siman'
+--------
 Making check in monte
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/vegas_test.c
 *** ../../monte/vegas_test.c: In function `fconst':
-*** ../../monte/vegas_test.c:217: warning: unused variable `i'
-*** ../../monte/vegas_test.c:216: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 	../block/libgslblock.la	../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/vegas_test.c:219: warning: unused variable `i'
+*** ../../monte/vegas_test.c:218: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/miser_test.c
 *** ../../monte/miser_test.c: In function `main':
-*** ../../monte/miser_test.c:62: warning: unused variable `chisq'
+*** ../../monte/miser_test.c:63: warning: unused variable `chisq'
 *** ../../monte/miser_test.c: In function `fconst':
-*** ../../monte/miser_test.c:208: warning: unused variable `i'
-*** ../../monte/miser_test.c:207: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/miser_test.c:210: warning: unused variable `i'
+*** ../../monte/miser_test.c:209: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
     gcc -DHAVE_CONFIG_H -I. -I../../monte -I.. -I.. -I../..    -g -O2 -Wall -c ../../monte/plain_test.c
 *** ../../monte/plain_test.c: In function `main':
-*** ../../monte/plain_test.c:62: warning: unused variable `chisq'
+*** ../../monte/plain_test.c:63: warning: unused variable `chisq'
 *** ../../monte/plain_test.c: In function `fconst':
-*** ../../monte/plain_test.c:206: warning: unused variable `i'
-*** ../../monte/plain_test.c:205: warning: unused variable `prod'
-    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
+*** ../../monte/plain_test.c:209: warning: unused variable `i'
+*** ../../monte/plain_test.c:208: warning: unused variable `prod'
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
+--------
+    PASS: vegas(f2), dim=7, err=0.0097, chisq=0.7997 (1.00714 observed vs 1 expected)
+*** FAIL: vegas(f2), dim=9, err=0.0003, chisq=0.6418 (0.499681001846611295 observed vs 1 expected)
+    Testing Tsuda's function
+--------
+    PASS: vegas(f3), dim=9, err=0.0004, chisq=1.4636 (0.999834 observed vs 1 expected)
+*** FAIL: vegas_test
+    GSL_IEEE_MODE="double-precision,mask-denormalized,mask-underflow"
+--------
+    PASS: miser(f2), dim=7, err=0.0371 (1.00238 observed vs 1 expected)
+*** FAIL: miser(f2), dim=9, err=0.0927 (0.895824771461299685 observed vs 1 expected)
+    Testing Tsuda's function
+--------
+    PASS: miser(f3), dim=9, err=0.0171 (1.004 observed vs 1 expected)
+*** FAIL: miser_test
+    GSL_IEEE_MODE="double-precision,mask-denormalized,mask-underflow"
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/monte'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/monte'
+--------
+Making check in ode-initval
+    PASS:   Evolve: stiff, rk4imp
+*** FAIL: test
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/ode-initval'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/ode-initval'
+--------
+Making check in roots
+    PASS: GSL_IS_REAL(1.0) is 1
+*** FAIL: test
+    ===================
+--------
+    ===================
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/roots'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/roots'
 --------
 Making check in doc
     make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
