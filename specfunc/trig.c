@@ -45,7 +45,7 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
       return GSL_EDOM;
     }
   }
-  return gsl_sf_angle_restrict_symm_impl(lszi, GSL_MACH_EPS * 1.e5);
+  return gsl_sf_angle_restrict_symm_impl(lszi, GSL_SQRT_MACH_EPS);
 }
 
 int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
@@ -93,40 +93,28 @@ int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, do
 int gsl_sf_rect_to_polar_impl(const double x, const double y, double * r, double * theta)
 {
   *r = hypot(x, y);
-  if(*r > 0.) {
+  if(*r > 0.0) {
     *theta = atan2(y, x);
     return GSL_SUCCESS;
   }
   else {
-    *theta = 0.;
+    *theta = 0.0;
     return GSL_EDOM;
   }
 }
 
 int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
-{
-/*
-  int status;
-  double x;
-  
-  if(fabs(*theta) * GSL_MACH_EPS >  precision) {
-    status = GSL_ELOSS;
-  }
-  else {
-    status = GSL_SUCCESS;
-  }
-  
-  x = *theta/(2.*M_PI);
-  *theta = (x - floor(x)) * 2.*M_PI;
-  if(*theta > M_PI) *theta -= 2.*M_PI;
-  return status;
-*/
+{   
   const double P1 = 4.0 * 7.85398125648498535156e-1;
   const double P2 = 4.0 * 3.77489470793079817668e-8;
   const double P3 = 4.0 * 2.69515142907905952645e-15;
-  double t = *theta;
-  double y = floor(t/M_PI);
-  *theta = ((t - y*P1) - y*P2) - y*P3;
+  const double TwoPi = 2.0*(P1 + P2 + P3);
+  const double t = *theta;
+  const double y = 2.0*floor(t/TwoPi);
+  double r = ((t - y*P1) - y*P2) - y*P3;
+  if(r >  M_PI) r -= TwoPi;
+  if(r < -M_PI) r += TwoPi;
+  *theta = r;
   if(t > 1.0/GSL_SQRT_MACH_EPS)
     return GSL_ELOSS;
   else
@@ -135,19 +123,17 @@ int gsl_sf_angle_restrict_symm_impl(double * theta, const double precision)
 
 int gsl_sf_angle_restrict_pos_impl(double * theta, const double precision)
 {
-  int status;
-  double x;
-
-  if(fabs(*theta) * GSL_MACH_EPS >  precision) {
-    status = GSL_ELOSS;
-  }
-  else {
-    status = GSL_SUCCESS;
-  }
-  
-  x = *theta/(2.*M_PI);
-  *theta = (x - floor(x)) * 2.*M_PI;
-  return status;
+  const double P1 = 4.0 * 7.85398125648498535156e-1;
+  const double P2 = 4.0 * 3.77489470793079817668e-8;
+  const double P3 = 4.0 * 2.69515142907905952645e-15;
+  const double TwoPi = 2.0*(P1 + P2 + P3);
+  const double t = *theta;
+  const double y = 2.0*floor(t/TwoPi);
+  *theta = ((t - y*P1) - y*P2) - y*P3;
+  if(t > 1.0/GSL_SQRT_MACH_EPS)
+    return GSL_ELOSS;
+  else
+    return GSL_SUCCESS;
 }
 
 

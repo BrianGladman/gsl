@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>
 #include <gsl_sf.h>
@@ -406,6 +407,69 @@ int check_hyperg(void)
   return status;
 }
 
+int check_trig(void)
+{
+  double theta;
+  int status = 0;
+  int s;
+
+  theta = 5.0*M_PI + M_PI/2.0;
+  gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, 3.0/2.0*M_PI ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_pos_impl: theta =  11/2 Pi");
+  status += s;
+
+  theta = -5.0*M_PI - M_PI/2.0;
+  gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_pos_impl: theta = -11/2 Pi");
+  status += s;
+
+  theta = 5.0*M_PI + M_PI/2.0;
+  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, -M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  11/2 Pi");
+  status += s;
+
+  theta = -5.0*M_PI - M_PI/2.0;
+  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -11/2 Pi");
+  status += s;
+
+  theta =  5.0*M_PI - M_PI/2.0;
+  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -9/2 Pi");
+  status += s;
+
+  theta =  3.0/2.0*M_PI;
+  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, -M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  3/2 Pi");
+  status += s;
+
+  theta = -3.0/2.0*M_PI;
+  gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
+  s = 0;
+  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -3/2 Pi");
+  status += s;
+
+  for(theta=1000.0; theta < 1.e20 ; theta *= 10.0) {
+    double nyak = 2.0*M_PI*theta + 0.5*M_PI;
+    gsl_sf_angle_restrict_symm_impl(&nyak, 1.0);
+    printf("%24.20g   %24.20g   %24.20g\n", theta, nyak, (nyak-0.5*M_PI)/(nyak+0.5*M_PI));
+  }
+  return status;
+}
+
 int check_zeta(void)
 {
   int status = 0;
@@ -454,6 +518,7 @@ int main(int argc, char * argv[])
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
 
+  gsl_test(check_trig(),       "Trigonometric and Related Functions");
   gsl_test(check_zeta(),       "Zeta Functions");
 
   gsl_test_summary();
