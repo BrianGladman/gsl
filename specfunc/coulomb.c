@@ -10,13 +10,14 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coulomb.h"
 
-extern int gsl_sf_lnfact_impl(int, double *);
 
-#define Max(a, b) ((a) > (b) ? (a) : (b))
+#define locMax(a, b) ((a) > (b) ? (a) : (b))
 
 
 /* normalization for hydrogenic wave functions */
-/* static */ double R_norm(const int n, const int l, const double Z)
+static
+double
+R_norm(const int n, const int l, const double Z)
 {
   int i;
   double A = 2.*Z/n;
@@ -27,7 +28,8 @@ extern int gsl_sf_lnfact_impl(int, double *);
   return sqrt(term1) * exp(-0.5*(ln_a-ln_b));
 }
 
-int gsl_sf_hydrogenicR_1_impl(const double Z, const double r, double * result)
+int
+gsl_sf_hydrogenicR_1_impl(const double Z, const double r, double * result)
 {
   if(Z > 0. && r >= 0.) {
     double A = 2.*Z;
@@ -41,7 +43,8 @@ int gsl_sf_hydrogenicR_1_impl(const double Z, const double r, double * result)
   }
 }
 
-int gsl_sf_hydrogenicR_2_impl(const int l, const double Z, const double r, double * result)
+int
+gsl_sf_hydrogenicR_2_impl(const int l, const double Z, const double r, double * result)
 {
   if(Z > 0. && r >= 0.) {
     double term1 = 0.25*Z*Z*Z;
@@ -67,7 +70,8 @@ int gsl_sf_hydrogenicR_2_impl(const int l, const double Z, const double r, doubl
   }
 }
 
-int gsl_sf_hydrogenicR_impl(const int n, const int l, const double Z, const double r, double * result)
+int
+gsl_sf_hydrogenicR_impl(const int n, const int l, const double Z, const double r, double * result)
 {
   if(n < 1 || l > n-1 || Z <= 0.) {
     return GSL_EDOM;
@@ -87,7 +91,9 @@ int gsl_sf_hydrogenicR_impl(const int n, const int l, const double Z, const doub
 
 
 /* the L=0 normalization constant */
-static double C0sq(double eta)
+static
+double
+C0sq(double eta)
 {
   double twopieta = 2.*M_PI*eta;
 
@@ -110,44 +116,47 @@ static double C0sq(double eta)
    very accurately determined. However the modulus is, and that
    is all that we need to calculate C_L.
  */
-static double CLeta(double L, double eta)
+static
+double
+CLeta(double L, double eta)
 {
   double ln1; /* log of numerator Gamma function */
   double ln2; /* log of denominator Gamma function */
 
   if(fabs(eta) < GSL_MACH_EPS) {
-    ln1 = gsl_sf_lngamma(L+1.);
+    gsl_sf_lngamma_impl(L+1., &ln1);
   }
   else {
-    double p1;  /* phase of numerator Gamma -- not used */
-    gsl_sf_lngamma_complex_e(L+1., eta, &ln1, &p1);
+    double p1;                 /* phase of numerator Gamma -- not used */
+    gsl_sf_lngamma_complex_impl(L+1., eta, &ln1, &p1); /* should be ok */
   }
-  ln2 = gsl_sf_lngamma(2.*L+2.);
+  gsl_sf_lngamma_impl(2.*L+2., &ln2);
   
   return exp(L*M_LN2 - 0.5*eta*M_PI + ln1 - ln2);
 }
 
 
-double gsl_sf_coulomb_CL(double lam, double eta)
+int
+gsl_sf_coulomb_CL_impl(double lam, double eta, double * result)
 {
   if(lam <= -1.) {
-    char buff[100];
-    sprintf(buff,"coulomb_CL: lam= %g <= -1", lam);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
+    *result = 0.0;
+    return GSL_EDOM;
   }
   if(fabs(lam) < 10.*GSL_MACH_EPS) {
-    /* saves a calculation of complex_lngamma(),
-       otherwise not necessary
-     */
-    return sqrt(C0sq(eta));
+    /* saves a calculation of complex_lngamma(), otherwise not necessary */
+    *result = sqrt(C0sq(eta));
+    return GSL_SUCCESS;
   }
   else {
-    return CLeta(lam, eta);
+    *result = CLeta(lam, eta);
+    return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_coulomb_CL_list(double lam_min, int count, double eta, double * cl)
+int
+gsl_sf_coulomb_CL_list_impl(double lam_min, int count, double eta, double * cl)
 {
   int ell;
   cl[0] = gsl_sf_coulomb_CL(lam_min, eta);
@@ -179,9 +188,11 @@ int gsl_sf_coulomb_CL_list(double lam_min, int count, double eta, double * cl)
 
 
 /* zero argument calculation of coulomb wave functions */
-static void coulfg_zero_x(double eta, double xlmin, double xlmax,
-			  double *fc, double *gc, double *fcp, double *gcp,
-			  int mode)
+static
+int
+coulfg_zero_x(double eta, double xlmin, double xlmax,
+              double *fc, double *gc, double *fcp, double *gcp,
+              int mode)
 {
   double delta_lam = xlmax - xlmin + CFG_ACC;
   int  i_delta_lam = (int)delta_lam;
@@ -190,9 +201,7 @@ static void coulfg_zero_x(double eta, double xlmin, double xlmax,
   for(i=0; i<=i_delta_lam; i++) { fc[i] = 0.; }
   if(mode==Mode_FGp || mode==Mode_FG) {
     if(fabs(xlmin) > GSL_MACH_EPS || fabs(xlmax) > GSL_MACH_EPS) {
-      GSL_ERROR("coulfg_zero_x: x=0.0: G,Gprime undefined for L>0",
-	      	GSL_EDOM
-	      	);
+      return GSL_EDOM;
     }
     else {
       gc[0] = 1./sqrt(C0sq(eta));
@@ -214,9 +223,11 @@ static void coulfg_zero_x(double eta, double xlmin, double xlmax,
    based on expansion in terms of spherical Bessel functions
    [Abramowitz and Stegun 14.4.5]
  */
-static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
-			      double *fc, double *gc, double *fcp, double *gcp,
-			      int mode)
+static
+int
+coulfg_small_args(double x, double eta, double xlmin, double xlmax,
+                  double * fc, double * gc, double * fcp, double * gcp,
+                  int mode)
 {
   int i;
   double delta_lam = xlmax - xlmin + CFG_ACC;
@@ -230,14 +241,13 @@ static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
    */
   double * cl = (double *)malloc((i_delta_lam+1)*sizeof(double));
   if(cl == 0){
-    GSL_ERROR("coulfg_small_args: out of memory", GSL_ENOMEM);
-    return;
+    return GSL_ENOMEM;
   }
-  gsl_sf_coulomb_CL_list(xlmin, i_delta_lam+1, eta, cl);
+  gsl_sf_coulomb_CL_list_impl(xlmin, i_delta_lam+1, eta, cl);
   for(i=0; i<=i_delta_lam; i++) { 
-    fc[i] = cl[i] * pow(x,i+1);
+    fc[i] = cl[i] * gsl_sf_pow_int(x,i+1);
     if(mode==Mode_FGp || mode==Mode_FG) {
-      gc[i] = 1./(2.*i+1.) /cl[i] /pow(x,i);
+      gc[i] = 1./(2.*i+1.) /cl[i] /gsl_sf_pow_int(x,i);
     }
     if(mode==Mode_FGp) {
       fcp[i] = fc[i] * (i+1.)/x;
@@ -245,8 +255,8 @@ static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
     }
   }
   free(cl);
+  return GSL_SUCCESS;
 }
-
 
 
 
@@ -268,8 +278,10 @@ int coul_wave_overflow_exp(void) { return over_exp_; }
 
 
 #define ALOGE  0.4342945
-static void jwkb(double x, double eta, double xl,
-		 double *fjwkb, double *gjwkb, int *iexp)
+static
+void
+jwkb(double x, double eta, double xl,
+     double *fjwkb, double *gjwkb, int *iexp)
 {
   /*
     COMPUTES JWKB APPROXIMATIONS TO COULOMB FUNCTIONS FOR XL.GE. 0
@@ -293,11 +305,14 @@ static void jwkb(double x, double eta, double xl,
 
     /* scale the results if the exponent would be an overflow */
     if(*iexp > 300)  {
+      /*
       char buff[100];
       sprintf(buff,"coul: overflow in G: scale all F,G by 10^%d", *iexp);
-      GSL_ERROR(buff, GSL_EFAILED);
+      */
+      /* GSL_ERROR(buff, GSL_EFAILED); */
       over_exp_ = *iexp;
       *gjwkb = pow(10., phi10 - *iexp);
+      return GSL_EOVRFLW;
     }
     if(*iexp <= 300) {
       *gjwkb = exp(-phi);
@@ -306,9 +321,11 @@ static void jwkb(double x, double eta, double xl,
     *fjwkb = 0.5/(gh * *gjwkb);
   }
   else {
-    GSL_ERROR("jwkb: called above turning point: INTERNAL ERROR",
+    return GSL_EFAILED;
+    /* GSL_ERROR("jwkb: called above turning point: INTERNAL ERROR",
 	      GSL_EFAILED
 	      );
+	      */
   }
 }
 #undef ALOGE
@@ -375,11 +392,13 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
    pointer if you like.
  */
 
-static void coulfg(double x, double eta, double xlmin, double xlmax,
-		   double *fc, double *gc, double *fcp, double *gcp,
-		   int mode)
+static
+int
+coulfg(double x, double eta, double xlmin, double xlmax,
+       double *fc, double *gc, double *fcp, double *gcp,
+       int mode)
 {
-  double acch  = sqrt(CFG_ACC);
+  double acch = sqrt(CFG_ACC);
 
   double delta_lam = xlmax - xlmin + CFG_ACC;
   int  i_delta_lam = (int)delta_lam;
@@ -390,17 +409,21 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
   double gjwkb = 0.0;
 
   if(xlmin <= -1. || xlmax < xlmin) {
+    /*
     char buff[100];
     sprintf(buff, "coulfg: problem with lambda inputs: %g %g", xlmax, xlmin);
     GSL_ERROR(buff, GSL_EDOM);
-    return;
+    */
+    return GSL_EDOM;
   }
 
-  if(x < 0.) {
+  if(x < 0.0) {
     int i;
+    /*
     char buff[100];
     sprintf(buff,"coulfg: x= %g   < 0", x);
     GSL_ERROR(buff, GSL_EDOM);
+    */
     for(i=0; i<=i_delta_lam; i++) {
       fc[i] = 0.;
       if(mode==Mode_FGp || mode==Mode_FG) {
@@ -411,6 +434,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
 	gcp[i] = 0.;
       }
     }
+    return GSL_EDOM;
   }
   else if(x == 0.) {
     coulfg_zero_x(eta, xlmin, xlmax, fc, gc, fcp, gcp, mode);
@@ -419,10 +443,16 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
     coulfg_small_args(x, eta, xlmin, xlmax, fc, gc, fcp, gcp, mode);
   }
   else if(x < acch) {
+    /*
     char buff[100];
     sprintf(buff,"coulfg: x= %g  eta= %g  x.eta= %g  not yet implemented",
 	    x, eta, x*eta);
     GSL_ERROR(buff, GSL_EDOM);
+    */
+    /* This is the case when eta is very large.
+       There must be something easy we can do here.
+    */
+    return GSL_EFAILED;
   }
   else {
     /* check if x is below the turning point */
@@ -462,12 +492,15 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
     C = F;
 
     if(fabs(delta_lam - floor(delta_lam+0.5)) > 100.*CFG_ACC) {
-      char buff[100];
       /*
+      char buff[100];
       sprintf(buff, "coulfg: xlmax-xlmin= %25.18g  not an integer",
 	      delta_lam);
       GSL_ERROR_MESSAGE(buff, GSL_EDOM);
       */
+      /* Be more intelligient here. Change the prototype
+         to take a double and an integer.
+       */
     }
 
     /* Compute first continued fraction, evaluating F_prime()/F()
@@ -488,10 +521,12 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
       if(D < 0.) fcl = -fcl;
       pk = pk1;
       if( pk > px ) {
+        /*
 	char buff[100];
 	sprintf(buff, "coulfg: first continued fraction not converging");
 	GSL_ERROR(buff, GSL_EFAILED);
-	return;
+	*/
+	return GSL_ERUNAWAY;
       }
     }
     while(fabs(df-1.) > CFG_ACC);
@@ -529,11 +564,14 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
     /*
       NOW WE HAVE REACHED LAMBDA = xlmin = XLM
       EVALUATE CF2 = P + I.Q	 AGAIN USING STEED'S ALGORITHM
+      
+      CF2 is the second continued fraction...
      */
     
     if(xlturn) jwkb(x, eta, Max(xlmin,0.), &fjwkb, &gjwkb, &iexp);
     
     /* if(iexp != 1) fprintf(stderr,"iexp= %d\n", iexp); */
+    /* FIXME: have to do something about this overflow business */
 
     if(iexp > 1 || gjwkb > 1.0/(acch*100.)) {
       /* ARRIVE HERE IF G(xlmin) > 10**6 OR iexp > 70 and xlturn = true */
@@ -581,10 +619,12 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
 	dq = dp*B  + dq*A;
 	dp = C;
 	if(pk > ta) {
+	  /*
 	  char buff[100];
 	  sprintf(buff,"coulfg: second continued fraction not converging");
 	  GSL_ERROR(buff, GSL_EFAILED);
-	  return;
+	  */
+	  return GSL_ERUNAWAY;
 	}
       }
       while(fabs(dp)+fabs(dq) >= (fabs(P)+fabs(Q))*CFG_ACC);
@@ -594,7 +634,11 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
        */
       gam = (F - P)/Q;
       if(Q <= CFG_ACC4*fabs(P)) {
+        /*
 	GSL_ERROR("coulfg: final Q < abs(P)*CFG_ACC*1e4", GSL_EFAILED);
+	*/
+	return GSL_EFAILED;
+	/* Not sure what this condition is */
       }
       W	= 1.0/sqrt((F - P)*gam + Q);
     }
@@ -604,7 +648,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
      */
     alpha = 0.0;
     beta  = 1.0;
-    fcm   = ( fcl > 0. ? W : -W) * beta; /* fcm   = DSIGN(W,fcl)*beta; */
+    fcm   = ( fcl > 0. ? W : -W) * beta;  /* fcm   = DSIGN(W,fcl)*beta; */
     fc[M1] = fcm;
 
     if(mode == Mode_FGp || mode == Mode_FG) {
@@ -653,9 +697,10 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
 
 
 
-void gsl_sf_coulomb_wave_F(double x, double eta,
-		     double lam_min, double lam_max,
-		     double * fc)
+int
+gsl_sf_coulomb_wave_F_impl(double x, double eta,
+		           double lam_min, double lam_max,
+                           double * fc)
 {
   coulfg(x, eta, lam_min, lam_max,
 	 fc, (double *) 0, (double *) 0, (double *) 0,
@@ -663,9 +708,11 @@ void gsl_sf_coulomb_wave_F(double x, double eta,
 	 );
 }
 
-void gsl_sf_coulomb_wave_FG(double x, double eta,
-		     double lam_min, double lam_max,
-		     double * fc, double * gc)
+
+int
+gsl_sf_coulomb_wave_FG(double x, double eta,
+                       double lam_min, double lam_max,
+                       double * fc, double * gc)
 {
   coulfg(x, eta, lam_min, lam_max,
 	 fc, gc, (double *) 0, (double *) 0,
