@@ -17,7 +17,8 @@ int main (void)
   gsl_test(v->size != N, "gsl_vector_float_alloc returns valid size") ;
 
   for (i = 0 ; i < N ; i++) {
-    gsl_vector_float_set(v,i,(float)i) ;
+    float x = i ;
+    gsl_vector_float_set(v,i,x) ;
   } ;
 
   { 

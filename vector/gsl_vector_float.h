@@ -38,7 +38,7 @@ extern inline
 float
 gsl_vector_float_get(const gsl_vector_float * v, const size_t i)
 {
-#ifdef GSL_RANGE_CHECK_OFF
+#ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0) ;
@@ -51,7 +51,7 @@ extern inline
 void
 gsl_vector_float_set(gsl_vector_float * v, const size_t i, const float x)
 {
-#ifdef GSL_RANGE_CHECK_OFF
+#ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;

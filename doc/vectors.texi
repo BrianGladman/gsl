@@ -1,15 +1,17 @@
  The functions described in this chapter provide a simple vector and
 matrix interface to ordinary C arrays. By writing your functions in
 terms of vectors and matrices you can pass a single structure containing
-both their data and dimensions without needing additional function
-arguments.
+both data and dimensions without needing additional function arguments.
+
 
 @menu
-* The vector struct::    
+* The vector struct::           
 * Vector allocation::           
 * Accessing vector elements::   
 * Reading and writing vectors::  
-* Examples of vectors::         
+* Example programs for vectors::  
+* The matrix struct::           
+* Matrix allocation::           
 @end menu
 
 @node The vector struct
@@ -46,7 +48,7 @@ the function @code{gsl_vector_calloc} if you want to ensure that all the
 elements are initialized to zero.
 
 A null pointer is returned if insufficient memory is available to store
-a vector of size @var{n}.
+the vector.
 
 @end deftypefun
 
@@ -60,7 +62,7 @@ elements of the vector to zero.
 @deftypefun void gsl_vector_free (gsl_vector * v)
 @deftypefunx void gsl_vector_float_free (gsl_vector_float * v)
 @deftypefunx void gsl_vector_int_free (gsl_vector_int * v)
-These functions free a vector previously allocated with
+These functions free a vector @var{v} previously allocated with
 @code{gsl_vector_alloc} or @code{gsl_vector_calloc}.
 @end deftypefun
 
@@ -69,7 +71,7 @@ These functions free a vector previously allocated with
 
 Unlike @sc{fortran}, the C language does not provide support for range
 checking of vectors and matrices. However, the functions
-@code{gsl_vector_get} and @code{gsl_vector_set} can perform this check
+@code{gsl_vector_get} and @code{gsl_vector_set} can perform range checking
 for you and report an error if you attempt to access elements outside
 the allowed range.
 
@@ -78,7 +80,12 @@ defined in @file{gsl_vector.h} and declared @code{extern inline} to
 eliminate function-call overhead. If necessary you can turn off range
 checking completely without modifying any source files by recompiling
 your program with the preprocessor definition
-@code{GSL_RANGE_CHECK_OFF}.
+@code{GSL_RANGE_CHECK_OFF}. Provided your compiler supports inline
+functions the effect of turning off range checking is to replace calls
+to @code{gsl_vector_get(v,i)} by @code{v->data[i]} and and calls to
+@code{gsl_vector_set(v,i,x)} by @code{v->data[i] = x}. Thus there should
+be no performance penalty at all for using the library functions when
+range checking is turned off.
 
 @deftypefun double gsl_vector_get (const gsl_vector * v, size_t i)
 @deftypefunx float gsl_vector_float_get (const gsl_vector_float * v, size_t i)
@@ -97,22 +104,52 @@ These functions set the value of the @var{i}th element of a vector
 @end deftypefun
 
 @node Reading and writing vectors
-@section  Reading and writing vectors
+@section Reading and writing vectors
 
-@deftypefun int gsl_vector_fread (FILE * stream, gsl_vector * v)
-This function reads from the open file @var{stream}. The vector @var{v}
-must be preallocated with the correct length. The function uses the size
-of @var{v} to determine how many bytes to read. The function returns 0
-for success and @code{GSL_EFAILED} to indicate that there was a problem
-reading from the file.
-@end deftypefun
+The library provides functions for reading and writing vectors to a file
+as binary or formatted data (text).
 
 @deftypefun int gsl_vector_fwrite (FILE * stream, const gsl_vector * v)
-This function writes the elements of the vector @var{v} on 
+This function writes the elements of the vector @var{v} to the stream
+@var{stream} in binary format. The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file. Since the
+data is written in the native binary format it may not be portable
+between different architectures.
 @end deftypefun
 
-@node Examples of vectors
-@section Examples of vectors
+@deftypefun int gsl_vector_fread (FILE * stream, gsl_vector * v)
+This function reads into the vector @var{v} from the open stream
+@var{stream} in binary format. The vector @var{v} must be preallocated
+with the correct length since the function uses the size of @var{v} to
+determine how many bytes to read. The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file. The
+data is assumed to have been written in the native binary format on the
+same architecture.
+@end deftypefun
+
+@deftypefun int gsl_vector_fprintf (FILE * stream, const gsl_vector * v, const char * format)
+This function writes the elements of the vector @var{v} line-by-line to
+the stream @var{stream} using the format specifier @var{format}, which
+should be one of the @code{%g}, @code{%e} or @code{%f} formats for
+floating point numbers and @code{%d} for integers. The function returns
+0 for success and @code{GSL_EFAILED} if there was a problem writing to
+the file.
+@end deftypefun
+
+@deftypefun int gsl_vector_fscanf (FILE * stream, gsl_vector * v)
+This function reads formatted data from the stream @var{stream} into the
+vector @var{v}. The vector @var{v} must be preallocated with the correct
+length since the function uses the size of @var{v} to determine how many
+numbers to read.  The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.
+@end deftypefun
+
+@node Example programs for vectors
+@section Example programs for vectors
+
+This program shows how to allocate, initialize and read from a vector
+using the functions @code{gsl_vector_alloc}, @code{gsl_vector_set} and
+@code{gsl_vector_get}.
 
 @example
 #include <stdio.h>
@@ -121,9 +158,7 @@ This function writes the elements of the vector @var{v} on
 int main ()
 @{
   int i; 
-  gsl_vector * v;
-  
-  v = gsl_vector_alloc (3) ;
+  gsl_vector * v = gsl_vector_alloc (3) ;
   
   for (i = 0; i < 3; i++)
     @{
@@ -136,6 +171,11 @@ int main ()
     @}
 @}
 @end example
+@c
+@noindent
+Here is the output from the program. The final loop attempts to read
+outside the range of the vector @code{v}, and the error is trapped by
+the range-checking code in @code{gsl_vector_get}.
 
 @example
 v_0 = 1.23
@@ -144,4 +184,127 @@ v_2 = 3.23
 gsl: vector_source.c:12: ERROR: index out of range
 IOT trap/Abort (core dumped)
 @end example
+@c
+@noindent
+The next program shows how to write a vector to a file.
 
+@example
+#include <stdio.h>
+#include <gsl_vector.h>
+
+int main ()
+@{
+  int i; 
+  gsl_vector * v = gsl_vector_calloc (100) ;
+  
+  for (i = 0; i < 100; i++)
+    @{
+      gsl_vector_set (v, i, 1.23 + i);
+    @}
+
+  @{  
+     FILE * f = fopen("test.dat", "w") ;
+     gsl_vector_fprintf (f, v, "%.5g");
+     fclose (f);
+  @}
+@}
+@end example
+@c
+@noindent
+After running this program the file @file{test.dat} should contain the
+elements of @code{v}, written using the format specifier
+@code{%.5g}. The vector could then be read back in using the function
+@code{gsl_vector_fscanf (f, v)}.
+
+@node The matrix struct
+@section The matrix struct
+
+Matrices are defined by a @code{gsl_matrix} structure which contains
+threes members, the two dimensions of the matrix and a pointer to a
+block of memory where the elements of the matrix are stored. The
+@code{gsl_matrix} structure is very simple and looks like this,
+
+@example
+typedef struct
+@{
+  size_t size1;
+  size_t size2;
+  double * data;
+@} gsl_matrix ;
+@end example
+@c
+@noindent
+The library also defines two other types of matrices, for @code{floats}
+and @code{ints} which have the names @code{gsl_matrix_float} and
+@code{gsl_matrix_int}.
+
+@node Matrix allocation
+@section Matrix allocation
+
+@deftypefun {gsl_matrix *} gsl_matrix_alloc (size_t n1, size_t n2)
+@deftypefunx {gsl_matrix_float *} gsl_matrix_float_alloc (size_t n1, size_t n2)
+@deftypefunx {gsl_matrix_int *} gsl_matrix_int_alloc (size_t n1, size_t n2)
+
+These functions allocate memory for a matrix and its @var{n1} @var{n2}
+elements, returning a pointer to a newly initialized matrix struct.  The
+elements of the matrix are not initialized and so their values are
+undefined. Use the function @code{gsl_matrix_calloc} if you want to
+ensure that all the elements are initialized to zero.
+
+A null pointer is returned if insufficient memory is available to store
+the matrix.
+
+@end deftypefun
+
+@deftypefun {gsl_matrix *} gsl_matrix_calloc (size_t n1, size_t n2)
+@deftypefunx {gsl_matrix_float *} gsl_matrix_float_calloc (size_t n1, size_t n2)
+@deftypefunx {gsl_matrix_int *} gsl_matrix_int_calloc (size_t n1, size_t n2)
+
+These functions allocate memory for a matrix and initialize all the
+elements of the matrix to zero.
+@end deftypefun
+
+@deftypefun void gsl_matrix_free (gsl_matrix * m)
+@deftypefunx void gsl_matrix_float_free (gsl_matrix_float * m)
+@deftypefunx void gsl_matrix_int_free (gsl_matrix_int * m)
+These functions free a matrix @var{m} previously allocated with
+@code{gsl_matrix_alloc} or @code{gsl_matrix_calloc}.
+@end deftypefun
+
+@node Accessing matrix elements
+@section Accessing matrix elements
+
+The functions for accessing the elements of a matrix use the same range
+checking system as vectors. You turn off range checking by recompiling
+your program with the preprocessor definition
+@code{GSL_RANGE_CHECK_OFF}.
+
+The elements of the matrix are stored in "C-order", where the second
+index moves continuously through memory. More precisely, the element
+accessed by the function @code{gsl_matrix_get(m,i,j)} and
+@code{gsl_matrix_set(m,i,j,x)} is 
+
+@example
+m->data[i * n2 + j]
+@end example
+@c 
+@noindent
+where @var{n2} is the second dimension of the matrix.
+
+@deftypefun double gsl_matrix_get (const gsl_matrix * m, size_t i, size_t j)
+@deftypefunx float gsl_matrix_float_get (const gsl_matrix_float * m, size_t i, size_t j)
+@deftypefunx int gsl_matrix_int_get (const gsl_matrix_int * m, size_t i, size_t j)
+These functions return the (@var{i},@var{j})th element of a matrix
+@var{m}. If @var{i} or @var{j} lie outside the allowed range of 0 to
+@var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
+is returned.
+@end deftypefun
+
+@deftypefun void gsl_matrix_set (gsl_matrix * m, size_t i, size_t j, double x)
+@deftypefunx void gsl_matrix_float_set (gsl_matrix_float * m, size_t i, size_t j, float x)
+@deftypefunx void gsl_matrix_int_set (gsl_matrix_int * m, size_t i, size_t j, int x)
+These functions set the value of the (@var{i},@var{j})th element of a
+matrix @var{m} to @var{x}. If @var{i} or @var{j} lies outside the
+allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
+handler is invoked.
+@end deftypefun
