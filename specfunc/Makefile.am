@@ -10,6 +10,7 @@ include_HEADERS = \
 	gsl_sf_chebyshev.h  	\
 	gsl_sf_coulomb.h	\
 	gsl_sf_dilog.h      	\
+	gsl_sf_ellint.h        	\
 	gsl_sf_erf.h        	\
 	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
@@ -61,6 +62,7 @@ libgslspecfunc_a_SOURCES = 	\
 	chebyshev.c		\
 #	coulomb.c		\ doesn't work yet
 	dilog.c			\
+	ellint.c		\
 	erfc.c			\
 	expint.c		\
 	fermi_dirac.c		\
