@@ -1,3 +1,8 @@
+Tue Apr 17 22:13:58 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fsolver.c (gsl_min_fminimizer_alloc): removed unnecessary status
+ 	variable
+
 Mon Apr  2 14:54:33 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* brent.c (brent_init): fixed incorrect value for golden ratio

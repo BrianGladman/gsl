@@ -64,8 +64,6 @@ gsl_min_fminimizer_set (gsl_min_fminimizer * s,
 gsl_min_fminimizer *
 gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * T) 
 {
-  int status;
-
   gsl_min_fminimizer * s = 
     (gsl_min_fminimizer *) malloc (sizeof (gsl_min_fminimizer));
 
