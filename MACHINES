@@ -28,10 +28,8 @@ used for resolving any symbol". This is harmless and the warnings can
 be ignored.
 
 You may get warnings about " /usr/bin/ld: arg list too long" when
-building shared libraries.  If so, the build can be restricted to
-static libraries only,
-
-% ./configure --enable-shared=no
+building shared libraries.  If so, try increasing the ncargs kernel
+parameter with the systune(1m) command.
 
 DOS
 ---
