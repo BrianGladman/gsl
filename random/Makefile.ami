@@ -39,7 +39,7 @@ switch.c gsl_ran_switch.h: switch.xc makeswitch
 ## permits him/her to contribute to the project!!
 ##
 EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
-	makeam Makefile.ami
+	makeam Makefile.ami $(BUILT_SOURCES)
 
 CLEANFILES= tmp.out tmp.in
 
