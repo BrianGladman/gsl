@@ -9,6 +9,8 @@ void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
 
+#define N 10000
+
 int
 main (void)
 {
@@ -16,10 +18,10 @@ main (void)
 
   /* specific tests of known results for 10000 iterations with seed = 1*/
 
-  rng_test (gsl_rng_minstd,1,10000,1043618065); 
   rng_test (gsl_rng_bad_rand,1,10000,1910041713); 
   rng_test (gsl_rng_bad_randu,1,10000,1623524161); 
   rng_test (gsl_rng_cmrg,1,10000,1477798470); 
+  rng_test (gsl_rng_minstd,1,10000,1043618065); 
   rng_test (gsl_rng_mrg,1,10000,1711374253); 
   rng_test (gsl_rng_taus,1,10000,676146779);
   rng_test (gsl_rng_vax,1,10000,3051034865UL); 
@@ -45,43 +47,57 @@ main (void)
 
   /* Test save/restore functions */
 
+  rng_state_test (gsl_rng_bad_rand);
+  rng_state_test (gsl_rng_bad_randu);
   rng_state_test (gsl_rng_cmrg);
-  rng_state_test (gsl_rng_mrg);
   rng_state_test (gsl_rng_minstd);
+  rng_state_test (gsl_rng_mrg);
+  rng_state_test (gsl_rng_mt19937);
   rng_state_test (gsl_rng_rand);
+  rng_state_test (gsl_rng_ranlux);
+  rng_state_test (gsl_rng_ranlux389);
   rng_state_test (gsl_rng_taus);
+  rng_state_test (gsl_rng_tt800);
   rng_state_test (gsl_rng_uni);
   rng_state_test (gsl_rng_uni32);
+  rng_state_test (gsl_rng_vax);
   rng_state_test (gsl_rng_zuf);
-  rng_state_test (gsl_rng_ranlux);
-  rng_state_test (gsl_rng_mt19937);
-  rng_state_test (gsl_rng_tt800);
 
+  rng_parallel_state_test (gsl_rng_bad_rand);
+  rng_parallel_state_test (gsl_rng_bad_randu);
   rng_parallel_state_test (gsl_rng_cmrg);
-  rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_minstd);
+  rng_parallel_state_test (gsl_rng_mrg);
+  rng_parallel_state_test (gsl_rng_mt19937);
   rng_parallel_state_test (gsl_rng_rand);
+  rng_parallel_state_test (gsl_rng_ranlux);
+  rng_parallel_state_test (gsl_rng_ranlux389);
   rng_parallel_state_test (gsl_rng_taus);
+  rng_parallel_state_test (gsl_rng_tt800);
   rng_parallel_state_test (gsl_rng_uni);
   rng_parallel_state_test (gsl_rng_uni32);
+  rng_parallel_state_test (gsl_rng_vax);
   rng_parallel_state_test (gsl_rng_zuf);
-  rng_parallel_state_test (gsl_rng_ranlux);
-  rng_parallel_state_test (gsl_rng_mt19937);
-  rng_parallel_state_test (gsl_rng_tt800);
 
-  /* generic statistical tests */
+  /* generic statistical tests (these are just to make sure that we
+     don't get any crazy results back from the generator, i.e. they
+     aren't a test of the algorithm, just the implementation) */
 
+  generic_rng_test (gsl_rng_bad_rand);
+  generic_rng_test (gsl_rng_bad_randu);
   generic_rng_test (gsl_rng_cmrg);
-  generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_minstd);
+  generic_rng_test (gsl_rng_mrg);
+  generic_rng_test (gsl_rng_mt19937);
   generic_rng_test (gsl_rng_rand);
+  generic_rng_test (gsl_rng_ranlux);
+  generic_rng_test (gsl_rng_ranlux389);
   generic_rng_test (gsl_rng_taus);
+  generic_rng_test (gsl_rng_tt800);
   generic_rng_test (gsl_rng_uni);
   generic_rng_test (gsl_rng_uni32);
+  generic_rng_test (gsl_rng_vax);
   generic_rng_test (gsl_rng_zuf);
-  generic_rng_test (gsl_rng_ranlux);
-  generic_rng_test (gsl_rng_mt19937);
-  generic_rng_test (gsl_rng_tt800);
 
   return gsl_test_summary ();
 }
@@ -116,21 +132,21 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 void
 rng_state_test (const gsl_rng_type * T)
 {
-  unsigned long int test_a[1000], test_b[1000] ;
+  unsigned long int test_a[N], test_b[N] ;
 
   int i ;
 
   gsl_rng * r = gsl_rng_alloc (T);
   gsl_rng * r_save = gsl_rng_alloc (T) ;
 
-  for (i = 0; i < 1000; ++i)
+  for (i = 0; i < N; ++i)
     {
-      gsl_rng_get (r) ;   /* throw away 1000 iterations */
+      gsl_rng_get (r) ;   /* throw away N iterations */
     }
 
   gsl_rng_cpy(r_save, r) ;  /* save the intermediate state */
 
-  for (i = 0; i < 1000; ++i)
+  for (i = 0; i < N; ++i)
     {
       test_a[i] = gsl_rng_get (r) ;
     }
@@ -138,18 +154,18 @@ rng_state_test (const gsl_rng_type * T)
   gsl_rng_cpy(r, r_save) ;  /* restore the intermediate state */
   gsl_rng_free(r_save) ;
 
-  for (i = 0; i < 1000; ++i)
+  for (i = 0; i < N; ++i)
     {
       test_b[i] = gsl_rng_get (r) ;
     }
 
   { 
     int status = 0 ;
-    for (i = 0; i < 1000; ++i)
+    for (i = 0; i < N; ++i)
       {
 	status |= (test_b[i] != test_a[i]) ;
       }
-    gsl_test (status, "%s, random number state consistency, 1000 iterations",
+    gsl_test (status, "%s, random number state consistency",
 	      gsl_rng_name(r)) ;
   }
   
@@ -160,21 +176,21 @@ rng_state_test (const gsl_rng_type * T)
 void
 rng_parallel_state_test (const gsl_rng_type * T)
 {
-  unsigned long int test_a[1000], test_b[1000] ;
+  unsigned long int test_a[N], test_b[N] ;
 
   int i ;
 
   gsl_rng * r1 = gsl_rng_alloc (T);
   gsl_rng * r2 = gsl_rng_alloc (T) ;
 
-  for (i = 0; i < 1000; ++i)
+  for (i = 0; i < N; ++i)
     {
-      gsl_rng_get (r1) ;   /* throw away 1000 iterations */
+      gsl_rng_get (r1) ;   /* throw away N iterations */
     }
 
   gsl_rng_cpy(r2, r1) ;  /* save the intermediate state */
 
-  for (i = 0; i < 1000; ++i)
+  for (i = 0; i < N; ++i)
     {
       test_a[i] = gsl_rng_get (r1) ; /* check that there is no hidden state */
       test_b[i] = gsl_rng_get (r2) ;
@@ -182,12 +198,12 @@ rng_parallel_state_test (const gsl_rng_type * T)
 
   { 
     int status = 0 ;
-    for (i = 0; i < 1000; ++i)
+    for (i = 0; i < N; ++i)
       {
 	status |= (test_b[i] != test_a[i]) ;
       }
-    gsl_test (status, "%s, parallel random number state consistency, "
-	      "1000 iterations", gsl_rng_name(r1)) ;
+    gsl_test (status, "%s, parallel random number state consistency", 
+	      gsl_rng_name(r1)) ;
   }
 
   gsl_rng_free (r1) ;
@@ -229,7 +245,7 @@ generic_rng_test (const gsl_rng_type * T)
        the theoretical max.  */
 
     status = (kmax > ran_max)
-      || (3 * expected_uncovered < actual_uncovered && actual_uncovered > 1);
+      || (actual_uncovered > 4 * expected_uncovered  && actual_uncovered > 1);
 
     gsl_test (status,
 	      "%s, observed vs theoretical maximum (%lu vs %lu)",
