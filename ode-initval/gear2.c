@@ -138,11 +138,13 @@ gear2_step(void * state, unsigned int dim, double t, double h, double y[], doubl
      * frequent step size changes will cause the method
      * to stutter.
      */
-    int status = gsl_odeiv_step_impl(s->primer, t, h, y, yerr, dydt);
-    s->primed = 1;
+    int status;
+    memcpy(s->yim1, y, dim * sizeof(double));
+    status = gsl_odeiv_step_impl(s->primer, t, h, y, yerr, dydt);
 
-    /* Make note of step size. */
+    /* Make note of step size and indicate readiness for a Gear step. */
     s->last_h = h;
+    s->primed = 1;
 
     return status;
   }

@@ -82,7 +82,6 @@ int test_stepper_linear(gsl_odeiv_step * stepper, double h, double base_prec)
   double yerr[2];
   double t;
   double del;
-  double delmax = 0.0;
   int count = 0;
 
   y[0] = 1.0;
@@ -90,9 +89,8 @@ int test_stepper_linear(gsl_odeiv_step * stepper, double h, double base_prec)
 
   for(t=0.0; t<4.0; t += h) {
     gsl_odeiv_step_impl(stepper, t, h, y, yerr, &rhs_func_lin);
-    if(count % 100 == 0) {
+    /* if(count % 100 == 0) */ {
       del = fabs((y[1] - (t+h))/y[1]);
-      delmax = GSL_MAX_DBL(del, delmax);
       if(del > (count+1.0) * base_prec) {
         printf("  LINEAR(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], t+h, del);
 	s++;
@@ -319,12 +317,12 @@ int test_stepper_rk8pd(void)
   gsl_odeiv_step_reset(stepper);
 
 
-  s = test_stepper_sin(stepper, 0.2, GSL_SQRT_DBL_EPSILON);
+  s = test_stepper_sin(stepper, 0.25, GSL_SQRT_DBL_EPSILON);
   gsl_test(s, "  SIN");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_exp(stepper, 0.2, GSL_SQRT_DBL_EPSILON);
+  s = test_stepper_exp(stepper, 0.25, GSL_SQRT_DBL_EPSILON);
   gsl_test(s, "  EXP");
   stat += s;
   gsl_odeiv_step_reset(stepper);
@@ -341,22 +339,22 @@ int test_stepper_rk4imp(void)
   int stat = 0;
   int s;
 
-  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-02, GSL_DBL_EPSILON);
   gsl_test(s, "  LINEAR");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_sin(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  s = test_stepper_sin(stepper, 4.0e-04, GSL_DBL_EPSILON);
   gsl_test(s, "  SIN");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_exp(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  s = test_stepper_exp(stepper, 1.0e-03, GSL_DBL_EPSILON);
   gsl_test(s, "  EXP");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_stiff(stepper, 2.0e-04, GSL_DBL_EPSILON);
+  s = test_stepper_stiff(stepper, 1.0e-03, GSL_DBL_EPSILON);
   gsl_test(s, "  STIFF");
   stat += s;
 
@@ -401,24 +399,35 @@ int test_stepper_gear2(void)
   int stat = 0;
   int s;
 
-  s = test_stepper_linear(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  s = test_stepper_linear(stepper, 1.0e-03, GSL_DBL_EPSILON);
   gsl_test(s, "  LINEAR");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_sin(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  s = test_stepper_sin(stepper, 4.0e-04, GSL_SQRT_DBL_EPSILON);
   gsl_test(s, "  SIN");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_exp(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  s = test_stepper_exp(stepper, 2.0e-04,  1.0e+05 * GSL_DBL_EPSILON);
   gsl_test(s, "  EXP");
   stat += s;
   gsl_odeiv_step_reset(stepper);
 
-  s = test_stepper_stiff(stepper, 2.0e-04, 20.0 * GSL_DBL_EPSILON);
+  s = test_stepper_stiff(stepper, 2.0e-04, 1.0e+05 * GSL_DBL_EPSILON);
   gsl_test(s, "  STIFF");
   stat += s;
+
+
+  s = test_stepper_exp(stepper, 3.0e-03,  GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  EXP");
+  stat += s;
+  gsl_odeiv_step_reset(stepper);
+
+  s = test_stepper_stiff(stepper, 1.0e-03, GSL_SQRT_DBL_EPSILON);
+  gsl_test(s, "  STIFF");
+  stat += s;
+
 
   gsl_odeiv_step_free(stepper);
   return stat;
@@ -435,7 +444,7 @@ int main()
   gsl_test(test_stepper_rk8pd(),   "Runge-Kutta 8(9), Prince-Dormand");
   gsl_test(test_stepper_rk4imp(),  "Runge-Kutta 4, Gaussian implicit");
   gsl_test(test_stepper_gear1(),   "Gear 1");
-/*  gsl_test(test_stepper_gear2(),   "Gear 2"); */
+  gsl_test(test_stepper_gear2(),   "Gear 2");
 
   return gsl_test_summary();
 }
