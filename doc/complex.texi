@@ -9,7 +9,7 @@ done for the csc,sec,cot,csch,sech,coth functions).
 For multiple-valued functions the branch cuts have been chosen to follow
 the conventions of Abramowitz and Stegun in the @cite{Handbook of
 Mathematical Functions}. The functions return principal values which are
-are the same as those is GNU Calc, which in turn are the same as those
+the same as those is GNU Calc, which in turn are the same as those
 in @cite{Common Lisp, The Language (Second Edition)} @footnote{The first
 edition of @cite{Common Lisp, The Language} used different definitions
 from the second edition.} and the HP-28/48 series of calculators.

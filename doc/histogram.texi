@@ -548,14 +548,14 @@ The counts for each bin are stored in an array pointed to by @var{bin}.
 The bins are floating-point numbers, so you can increment them by
 non-integer values if necessary.  The array @var{bin} stores the two
 dimensional array of bins in a single block of memory according to the
-mapping @var{bin(i,j)} = @code{bin[i * ny + j]}.
+mapping @code{bin(i,j)} = @code{bin[i * ny + j]}.
 @end table
 @end deftp
 @comment 
 @noindent
-The range for @var{bin(i,j)} is given by @var{xrange[i]} to
-@var{xrange[i+1]} in the x-direction and @var{yrange[j]} to
-@var{yrange[j+1]} in the y-direction.  Each bin is inclusive at the lower
+The range for @code{bin(i,j)} is given by @code{xrange[i]} to
+@code{xrange[i+1]} in the x-direction and @code{yrange[j]} to
+@code{yrange[j+1]} in the y-direction.  Each bin is inclusive at the lower
 end and exclusive at the upper end.  Mathematically this means that the
 bins are defined by the following inequality,
 

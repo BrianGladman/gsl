@@ -559,8 +559,8 @@ quantile = (1 - \delta) x_i + \delta x_@{i+1@}
 where @math{i} is @code{floor}(@math{(n - 1)f}) and @math{\delta} is
 @math{(n-1)f - i}.
 
-Thus the minimum value of the array (@var{data[0*stride]}) is given by
-@var{f} equal to zero, the maximum value (@var{data[(n-1)*stride]}) is
+Thus the minimum value of the array (@code{data[0*stride]}) is given by
+@var{f} equal to zero, the maximum value (@code{data[(n-1)*stride]}) is
 given by @var{f} equal to one and the median value is given by @var{f}
 equal to 0.5.  Since the algorithm for computing quantiles involves
 interpolation this function always returns a floating-point number, even
