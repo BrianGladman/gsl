@@ -1627,7 +1627,7 @@ gsl_blas_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
@@ -1650,7 +1650,7 @@ gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
@@ -1676,18 +1676,18 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_csyrk (CblasRowMajor, Uplo, Trans, INT (N), INT (MA),
+  cblas_csyrk (CblasRowMajor, Uplo, Trans, INT (N), INT (K),
                GSL_COMPLEX_P (&alpha), A->data, INT (A->tda),
                GSL_COMPLEX_P (&beta), C->data, INT (C->tda));
   return GSL_SUCCESS;
@@ -1701,7 +1701,7 @@ gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
@@ -1727,7 +1727,7 @@ gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
@@ -1751,7 +1751,7 @@ gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
+  const size_t K = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
