@@ -9,7 +9,9 @@ approach:
 
 Put the source building makefile stuff into the file GNUmakefile,
 and build it with something like 'make sources'.  Then cvs commit
-those sources.
+all those sources every time one of the template changes.  That's
+probably not too often.  It is possible with this approach that
+we can even avoid the Makefile.ami and just work with Makefile.am
 
 
 ==================================================================
