@@ -83,7 +83,6 @@ Invalid argument.  This is used to indicate various kinds of problems
 with passing the wrong argument to a library function (like EINVAL in the C
 library). 
 @end deftypefn
-
 @noindent
 Here is an example of some code which checks the return value of a
 function where an error might be reported,
@@ -107,6 +106,21 @@ which are a power of two.  If the variable @code{length} is not a power
 of two then the call to the library function will return
 @code{GSL_EINVAL}, indicating that the length argument is invalid.  The
 @code{else} clause catches any other possible errors.
+
+The error codes can be converted into an error message using the
+function @code{gsl_strerror}.
+
+@deftypefun {const char *} gsl_strerror (const int @var{gsl_errno})
+This function returns a pointer to a string describing the error code
+@var{gsl_errno}. For example,
+
+@example
+printf("error: %s\n", gsl_strerror (status)) ;
+@end example
+@noindent
+would print an error message like @code{error: output range error} for a
+status value of @code{GSL_ERANGE}.
+@end deftypefun
 
 @node Error handlers
 @section Error handlers

@@ -193,6 +193,12 @@ not recommended for general use.
 * Complex Numbers::             
 * Roots of Polynomials::        
 * Special Functions::           
+* Vectors and Matrices::        
+* Permutations::                
+* Sorting::                     
+* BLAS Support::                
+* Linear Algebra::              
+* Eigensystems::                
 * Fast Fourier Transforms::     
 * Numerical Integration::       
 * Random Number Generation::    
@@ -209,18 +215,12 @@ not recommended for general use.
 * Chebyshev Approximations::    
 * Series Acceleration::         
 * Discrete Hankel Transforms::  
-* Vectors and Matrices::        
-* Permutations::                
-* Sorting::                     
-* BLAS Support::                
-* Linear Algebra::              
-* Eigensystems::                
 * One dimensional Root-Finding::  
 * One dimensional Minimization::  
-* Fitting::                     
-* Nonlinear Fitting::           
 * Multidimensional Root-Finding::  
 * Multidimensional Minimization::  
+* Fitting::                     
+* Nonlinear Fitting::           
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
@@ -267,11 +267,35 @@ will be announced for general use.
 @chapter Roots of Polynomials
 @include poly.texi
 
-@node Special Functions, Fast Fourier Transforms, Roots of Polynomials, Top
+@node Special Functions, Vectors and Matrices, Roots of Polynomials, Top
 @chapter Special Functions
 @include specfunc.texi
 
-@node Fast Fourier Transforms, Numerical Integration, Special Functions, Top
+@node Vectors and Matrices, Permutations, Special Functions, Top
+@chapter Vectors and Matrices
+@include vectors.texi
+
+@node   Permutations, Sorting, Vectors and Matrices, Top
+@chapter Permutations
+@include permutation.texi
+
+@node  Sorting, BLAS Support, Permutations, Top
+@chapter Sorting
+@include sort.texi
+
+@node BLAS Support, Linear Algebra, Sorting, Top
+@chapter BLAS Support
+@include blas.texi
+
+@node Linear Algebra, Eigensystems, BLAS Support, Top
+@chapter Linear Algebra
+@include linalg.texi
+
+@node Eigensystems, Fast Fourier Transforms, Linear Algebra, Top
+@chapter Eigensystems
+@include eigen.texi
+
+@node Fast Fourier Transforms, Numerical Integration, Eigensystems, Top
 @chapter Fast Fourier Transforms (FFTs)
 @include fft.texi
 
@@ -331,59 +355,35 @@ will be announced for general use.
 @chapter Series Acceleration
 @include sum.texi
 
-@node  Discrete Hankel Transforms, Vectors and Matrices, Series Acceleration, Top
+@node  Discrete Hankel Transforms, One dimensional Root-Finding, Series Acceleration, Top
 @chapter Discrete Hankel Transforms
 @include dht.texi
 
-@node Vectors and Matrices, Permutations, Discrete Hankel Transforms, Top
-@chapter Vectors and Matrices
-@include vectors.texi
-
-@node   Permutations, Sorting, Vectors and Matrices, Top
-@chapter Permutations
-@include permutation.texi
-
-@node  Sorting, BLAS Support, Permutations, Top
-@chapter Sorting
-@include sort.texi
-
-@node BLAS Support, Linear Algebra, Sorting, Top
-@chapter BLAS Support
-@include blas.texi
-
-@node Linear Algebra, Eigensystems, BLAS Support, Top
-@chapter Linear Algebra
-@include linalg.texi
-
-@node Eigensystems, One dimensional Root-Finding, Linear Algebra, Top
-@chapter Eigensystems
-@include eigen.texi
-
-@node  One dimensional Root-Finding, One dimensional Minimization, Eigensystems, Top
+@node  One dimensional Root-Finding, One dimensional Minimization, Discrete Hankel Transforms, Top
 @chapter One dimensional Root-Finding
 @include roots.texi
 
-@node   One dimensional Minimization, Fitting, One dimensional Root-Finding, Top
+@node   One dimensional Minimization, Multidimensional Root-Finding, One dimensional Root-Finding, Top
 @chapter One dimensional Minimization
 @include min.texi
 
-@node Fitting, Nonlinear Fitting, One dimensional Minimization, Top
-@chapter Fitting
-@include fitting.texi
-
-@node Nonlinear Fitting, Multidimensional Root-Finding, Fitting, Top
-@chapter Nonlinear Fitting
-@include multifit.texi
-
-@node  Multidimensional Root-Finding, Multidimensional Minimization, Nonlinear Fitting, Top
+@node  Multidimensional Root-Finding, Multidimensional Minimization, One dimensional Minimization, Top
 @chapter Multidimensional Root-Finding
 @include multiroots.texi
 
-@node   Multidimensional Minimization, Physical Constants, Multidimensional Root-Finding, Top
+@node   Multidimensional Minimization, Fitting, Multidimensional Root-Finding, Top
 @chapter Multidimensional Minimization
 @include multimin.texi
 
-@node  Physical Constants, IEEE floating-point arithmetic, Multidimensional Minimization, Top
+@node Fitting, Nonlinear Fitting, Multidimensional Minimization, Top
+@chapter Fitting
+@include fitting.texi
+
+@node Nonlinear Fitting, Physical Constants, Fitting, Top
+@chapter Nonlinear Fitting
+@include multifit.texi
+
+@node  Physical Constants, IEEE floating-point arithmetic, Nonlinear Fitting, Top
 @chapter Physical Constants
 @include const.texi
 
@@ -414,10 +414,11 @@ Wrote the statistical routines and the relevant chapter in this
 manual.
 
 @item Brian Gough
-FFT, revised CBLAS Level 2 & 3, integration, random number generators
-and distributions, root finding, minimization, fitting, polynomial
-solvers, complex numbers, physical constants, permutations, vector and
-matrix functions, histograms, statistics, ieee-utils.
+FFTs, numerical integration, random number generators and distributions,
+root finding, minimization and fitting, polynomial solvers, complex
+numbers, physical constants, permutations, vector and matrix functions,
+histograms, statistics, ieee-utils, revised CBLAS Level 2 & 3, matrix
+decompositions and eigensystems.
 
 @item Reid Priedhorsky
 Wrote the root finding package and the relevant chapter in this manual.

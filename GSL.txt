@@ -57,7 +57,7 @@ Rossi <rossi@ufrmd.dauphine.fr>
 
 %%redhat:
 
-%%repository:
+%%repository: http://sources.redhat.com/gsl/
 
 %%related: 
 
@@ -75,19 +75,23 @@ Rossi <rossi@ufrmd.dauphine.fr>
 
 %%version: 
 
-%%announce-list:
+%%announce-list: <gsl-announce@sources.redhat.com>
+Send email to gsl-announce-subscribe@sources.redhat.com to subscribe
 
 %%announce-news:
 
-%%help-list: 
+%%help-list: <gsl-discuss@sources.redhat.com>
+Send email to gsl-discuss-subscribe@sources.redhat.com to subscribe
 
 %%help-news:
 
-%%dev-list: 
+%%dev-list: <gsl-discuss@sources.redhat.com>
+Send email to gsl-discuss-subscribe@sources.redhat.com to subscribe
 
 %%dev-news:
 
-%%bug-list: 
+%%bug-list: <gsl-discuss@sources.redhat.com>
+Send email to gsl-discuss-subscribe@sources.redhat.com to subscribe
 
 %%bug-database: 
 
