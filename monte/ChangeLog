@@ -1,3 +1,12 @@
+Mon May 15 15:26:22 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vegas_test.c (main): added gsl_ieee_env_setup() to allow change
+ 	of precision in tests
+
+	* miser_test.c (main): ditto
+
+	* plain_test.c (main): ditto
+
 Fri Feb 26 14:49:56 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* Makefile.am: removed ..._LDFLAGS = -static since this is

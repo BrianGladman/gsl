@@ -27,19 +27,13 @@ TESTS_ENVIRONMENT = #$(SHELL) -x
 
 vegas_test_SOURCES = vegas_test.c gsl_monte_vegas.h gsl_monte.h
 
-vegas_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la \
-	../block/libgslblock.la	../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+vegas_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 miser_test_SOURCES = miser_test.c gsl_monte_miser.h gsl_monte.h
 
-miser_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la \
-		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+miser_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 plain_test_SOURCES = plain_test.c gsl_monte_plain.h gsl_monte.h
 
-plain_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la \
-		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+plain_test_LDADD = libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la ../block/libgslblock.la	../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
-
-strict:
-	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

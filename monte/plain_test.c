@@ -31,6 +31,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_monte_plain.h>
@@ -74,6 +75,8 @@ int main()
   gsl_test_verbose(1);
 
   gsl_set_error_handler (&my_error_handler);
+
+  gsl_ieee_env_setup (); 
 
   printf("testing allocation/innput checks\n");
 
