@@ -179,6 +179,7 @@ not recommended for general use.
 * Preliminaries::               
 * Using the library::           
 * Error handling in GSL::       
+* Mathematical Functions::      
 * Complex Numbers::             
 * Vectors and Matrices::        
 * BLAS Support::                
@@ -227,12 +228,16 @@ allowing wrappers to be written for very high level languages.
 @cindex usage, compiling application programs
 @include usage.texi
 
-@node Error handling in GSL, Complex Numbers, Using the library, Top
+@node Error handling in GSL, Mathematical Functions, Using the library, Top
 @chapter Error handling in GSL
 @cindex Errors
 @include err.texi
 
-@node Complex Numbers, Vectors and Matrices, Error handling in GSL, Top
+@node  Mathematical Functions, Complex Numbers, Error handling in GSL, Top
+@chapter Mathematical Functions
+@include math.texi
+
+@node Complex Numbers, Vectors and Matrices, Mathematical Functions, Top
 @chapter Complex Numbers
 @include complex.texi
 

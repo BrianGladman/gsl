@@ -1,3 +1,8 @@
+Wed Apr 26 17:46:48 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* math.texi: added a chapter on the elementary functions and
+ 	constants in gsl_math.h
+
 Tue Apr  4 21:45:27 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* upgraded texinfo.tex to texinfo-4.0
