@@ -48,6 +48,8 @@ gsl_strerror (const int gsl_errno)
       return "roundoff error" ;
     case GSL_EBADLEN:
       return "matrix/vector sizes are not conformant" ;
+    case GSL_ENOTSQR:
+      return "matrix not square" ;
     case GSL_ESING:
       return "singularity or extremely bad function behavior detected" ;
     case GSL_EUNSUP:
