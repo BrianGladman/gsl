@@ -1,3 +1,4 @@
+
   size_t i;
 
   if(incX == 1 && incY == 1) {

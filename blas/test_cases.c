@@ -1,6 +1,11 @@
 
 #include "test_cases.h"
 
+const float   vector_4_zero_f[] = { 0.0, 0.0, 0.0, 0.0 };
+const double  vector_4_zero_d[] = { 0.0, 0.0, 0.0, 0.0 };
+
+const float   vector_4_zero_c[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+const double  vector_4_zero_z[] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
 const float   vector_4_f[] = { -2.0, -1.0, 0.0, 3.0 };
 const double  vector_4_d[] = { -2.0, -1.0, 0.0, 3.0 };

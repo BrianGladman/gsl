@@ -3,6 +3,11 @@
 
 #include <gsl_complex.h>
 
+extern const float   vector_4_zero_f[];
+extern const double  vector_4_zero_d[];
+
+extern const float   vector_4_zero_c[];
+extern const double  vector_4_zero_z[];
 
 extern const float   vector_4_f[];
 extern const double  vector_4_d[];
