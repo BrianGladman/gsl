@@ -15,7 +15,7 @@ gsl_ieee_printf_float (const float * x) {
   gsl_ieee_float_rep r ;
   gsl_ieee_float_to_rep(x, &r) ;
 
-  /* output is compatible with bc (with ibase=2), mant*2^expb */  
+  /* output is compatible with GNU bc (with ibase=2), mant*2^expb */  
 
   switch (r.type)
     {

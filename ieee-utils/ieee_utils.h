@@ -10,4 +10,4 @@ void sprint_byte(int i, char *s) ;
 void make_float_bigendian (float * x) ;
 void make_double_bigendian (double * x) ;
 
-int determine_ieee_type (int exponent, int max_exponent, int non_zero);
+int determine_ieee_type (int non_zero, int exponent, int max_exponent);

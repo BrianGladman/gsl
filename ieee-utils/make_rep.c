@@ -48,7 +48,7 @@ gsl_ieee_float_to_rep (const float * x, gsl_ieee_float_rep * r)
 
   non_zero = u.ieee.byte[0] || u.ieee.byte[1] || (u.ieee.byte[2] & 0x7f);
 
-  r->type = determine_ieee_type (e, non_zero, 255) ;
+  r->type = determine_ieee_type (non_zero, e, 255) ;
 }
 
 void 
@@ -90,7 +90,7 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
 	      || u.ieee.byte[3] || u.ieee.byte[4] || u.ieee.byte[5] 
 	      || (u.ieee.byte[6] & 0x0f)) ;
 
-  r->type = determine_ieee_type (e, non_zero, 2047) ;
+  r->type = determine_ieee_type (non_zero, e, 2047) ;
 }
 
 /* A table of character representations of nybbles */
@@ -121,7 +121,7 @@ sprint_byte(int i, char *s)
 } 
 
 int 
-determine_ieee_type (int exponent, int max_exponent, int non_zero)
+determine_ieee_type (int non_zero, int exponent, int max_exponent)
 {
   if (exponent == max_exponent)
     {
