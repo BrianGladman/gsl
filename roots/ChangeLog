@@ -1,3 +1,15 @@
+Thu Aug 20 10:21:15 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* roots.h (_WITHIN_TOL): added extra parens in macro definition,
+ 	for safety
+
+	* falsepos.c (gsl_root_falsepos): removed test for absolute
+ 	equality and replaced by a flag indicating which variables
+ 	changed.
+
+	* test.c (main): simplified the tests, removed command line
+ 	arguments (can use the debugger to select which ones to run)
+
 Mon Jun 15 22:22:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* started to eliminate void * arguments for function types (they
