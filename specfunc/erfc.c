@@ -4,8 +4,9 @@
  *  This algorithm is from:
  *    Hart et al, Computer Approximations, John Wiley and Sons, New York (1968)
  **/
-
 #include <math.h>
+#include "gsl_sf_erf.h"
+
 
 static inline double erfc8_sum(double x)
 {
@@ -108,7 +109,7 @@ static inline double erfcasympsum(double x)
     return e;
 }
 
-double gsl_erfc_asymptotic(double x)
+double gsl_sf_erfc_asymptotic(double x)
 {
     /* valid as x->infty */
     double e;
@@ -117,7 +118,7 @@ double gsl_erfc_asymptotic(double x)
     return 0.564189583547756287*e;
 }
 
-double gsl_log_erfc_asymptotic(double x)
+double gsl_sf_log_erfc_asymptotic(double x)
 {
     double e;
     e = erfcasympsum(x);
@@ -125,7 +126,7 @@ double gsl_log_erfc_asymptotic(double x)
     return e;
 }
 
-double gsl_log_erfc(double x)
+double gsl_sf_log_erfc(double x)
 {
     if (x > 5) {
         return log_erfc8(x);
@@ -134,7 +135,7 @@ double gsl_log_erfc(double x)
     }
 }
 
-double gsl_erfc(double x)
+double gsl_sf_erfc(double x)
 {
     double e;
     if (x < 0) {
@@ -165,7 +166,7 @@ static inline double erfseries(double x)
     return 2*0.564189583547756287*e;
 }
 
-double gsl_erf(double x)
+double gsl_sf_erf(double x)
 {
     if (fabs(x) < 1.0) 
         return erfseries(x);
@@ -174,13 +175,13 @@ double gsl_erf(double x)
 }
 
 
-double gsl_Z(double x)
+double gsl_sf_Z(double x)
 {
     const double oneover_sqrt_twopi = .39894228040143267794;
     exp(-x*x/2.0)*oneover_sqrt_twopi;
 }
 
-double gsl_Q(double x)
+double gsl_sf_Q(double x)
 {
     /* Abramowitz+Stegun, 26.2.17 */
     const double p=0.2316419;

@@ -24,6 +24,12 @@ gsl_no_error_handler (const char * reason, const char * file, int line) {
 }
 
 void
+gsl_message(const char * reason, const char * file, int line)
+{
+  fprintf(stderr, "\n%s:%d: error: %s\n", file, line, reason);
+}
+
+void
 gsl_error (const char *reason, const char *file, int line)
 {
   if (gsl_error_handler)
@@ -32,6 +38,6 @@ gsl_error (const char *reason, const char *file, int line)
       return;
     }
 
-  fprintf (stderr, "\n%s:%d: error: %s\n", file, line, reason);
+  gsl_message(reason, file, line);
   abort ();
 }

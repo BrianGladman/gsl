@@ -1,35 +1,42 @@
 #include <stdlib.h>
 #include <math.h>
-#include "constants.h"
-#include "memory.h"
-#include "error.h"
-#include "chebyshev.h"
+#include <gsl_errno.h>
+#include "gsl_sf_chebyshev.h"
+
+/* FIXME: I hate this. This should be included from elsewhere. */
+#define constPi_ 3.14159265358979323846264338328
 
 
-struct ChebSeries * cheb_calc(double (*func)(double),
-			      double a, double b,
-			      int order)
+struct gsl_sf_ChebSeries * gsl_sf_cheb_new( double (*func)(double),
+    	    	    	    	    	    double a, double b,
+			      	    	    int order)
 {
   int k, j;
   double bma = 0.5 * (b - a);
   double bpa = 0.5 * (b + a);
   double fac = 2./(order +1.);
-  double * f = new_vector_d(order+1);
-
-  struct ChebSeries * cs = (struct ChebSeries *)
-    malloc(sizeof(struct ChebSeries));
-  if(cs == 0) {
-    char buff[100];
-    sprintf(buff, "cheb_calc: allocation failure");
-    push_error(buff, Error_Alloc_);
-    return 0;
+  double * f = malloc((order+1) * sizeof(double));
+  struct gsl_sf_ChebSeries * cs = (struct gsl_sf_ChebSeries *)
+    malloc(sizeof(struct gsl_sf_ChebSeries));
+  
+  if(cs == 0 || f == 0) {
+    GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory",
+	    	     GSL_ENOMEM,
+	    	     0
+	    	     );
   }
 
   cs->order = order;
   cs->a = a;
   cs->b = b;
-  cs->c = new_vector_d(order+1);
-
+  cs->c = malloc((order+1) * sizeof(double));
+  if(cs->c == 0) {
+    GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory",
+	    	     GSL_ENOMEM,
+	    	     0
+	    	     );
+  }
+  
   for(k = 0; k<=order; k++) {
     double y = cos(constPi_ * (k+0.5)/(order+1));
     f[k] = func(y*bma + bpa);
@@ -41,13 +48,13 @@ struct ChebSeries * cheb_calc(double (*func)(double),
     cs->c[j] = fac * sum;
   }
 
-  free_vector(f);
+  free(f);
 
   return cs;
 }
 
 
-double cheb_eval(double x, const struct ChebSeries * cs)
+double gs_sf_cheb_eval(double x, const struct gsl_sf_ChebSeries * cs)
 {
   int j;
   double d  = 0.;
@@ -65,10 +72,10 @@ double cheb_eval(double x, const struct ChebSeries * cs)
 }
 
 
-void free_cheb(struct ChebSeries * cs)
+void gsl_sf_cheb_free(struct gsl_sf_ChebSeries * cs)
 {
   if(cs != 0) {
-    if(cs->c != 0) free_vector(cs);
+    if(cs->c != 0) free(cs->c);
     free(cs);
   }
 }

@@ -1,8 +1,8 @@
 #include <math.h>
-#include "gsl_specfunc.h"
+#include "gsl_sf.h"
 
 
-double pow_int(double x, int n)
+double gsl_sf_pow_int(double x, int n)
 {
   double value = 1;
 

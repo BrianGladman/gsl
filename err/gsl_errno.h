@@ -31,6 +31,9 @@ void (*gsl_set_error_handler (void (*new_handler) (const char *reason, const cha
 
 void gsl_no_error_handler (const char *reason, const char * file, int line) ;
 
+void gsl_message(const char * message, const char * file, int line);
+
+
 #define GSL_ERROR(reason, errno) \
        do { \
        gsl_errno = errno ; \
@@ -45,3 +48,7 @@ void gsl_no_error_handler (const char *reason, const char * file, int line) ;
        return value ; \
        } while (0)
 
+#define GSL_MESSAGE(message) \
+       do { \
+       gsl_message (message, __FILE__, __LINE__) ; \
+       } while (0)

@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <math.h>
-#include "chebyshev.h"
-#include "constants.h"
-#include "error.h"
-#include "airy.h"
+#include <gsl_errno.h>
+#include "gsl_sf_chebyshev.h"
+#include "gsl_sf_airy.h"
+
+/* FIXME: I hate this. This should be included from elsewhere. */
+#define constPi_ 3.14159265358979323846264338328
 
 
 /* chebyshev expansions for Airy modulus and phase
@@ -190,25 +192,25 @@ static double ath2_data[32] = {
 };
 
 
-struct ChebSeries am21_cs = {
+struct gsl_sf_ChebSeries am21_cs = {
   am21_data,
   39,
   -1, 1
 };
 
-struct ChebSeries ath1_cs = {
+struct gsl_sf_ChebSeries ath1_cs = {
   ath1_data,
   35,
   -1, 1
 };
 
-struct ChebSeries am22_cs = {
+struct gsl_sf_ChebSeries am22_cs = {
   am22_data,
   32,
   -1, 1
 };
 
-struct ChebSeries ath2_cs = {
+struct gsl_sf_ChebSeries ath2_cs = {
   ath2_data,
   31,
   -1, 1
@@ -224,18 +226,18 @@ static void airy_mod_phase(double x, double * mod, double * phase)
 
   if(x < -2.0) {
     double z = 16.0/(x*x*x) + 1.0;
-    *mod   = 0.3125 + cheb_eval(z, &am21_cs);
-    *phase = -0.625 + cheb_eval(z, &ath1_cs);
+    *mod   = 0.3125 + gsl_sf_cheb_eval(z, &am21_cs);
+    *phase = -0.625 + gsl_sf_cheb_eval(z, &ath1_cs);
   }
   else if(x <= -1.0) {
     double z = (16.0/(x*x*x) + 9.0)/7.0;
-    *mod   = 0.3125 + cheb_eval(z, &am22_cs);
-    *phase = -0.625 + cheb_eval(z, &ath2_cs);
+    *mod   = 0.3125 + gsl_sf_cheb_eval(z, &am22_cs);
+    *phase = -0.625 + gsl_sf_cheb_eval(z, &ath2_cs);
   }
   else {
     char buff[50];
     sprintf(buff,"airy_mod_phase: x= %g  > -1", x);
-    push_error(buff, Error_Domain_);
+    GSL_MESSAGE(buff); /* GSL_ERROR() is stupid; functions should not just die */
     *mod = 0.;
     *phase = 0.;
     return;
@@ -286,12 +288,12 @@ double ai_data_g[8] = {
    .00000000000000001
 };
 
-struct ChebSeries aif_cs = {
+struct gsl_sf_ChebSeries aif_cs = {
   ai_data_f,
   8,
   -1, 1
 };
-struct ChebSeries aig_cs = {
+struct gsl_sf_ChebSeries aig_cs = {
   ai_data_g,
   7,
   -1, 1
@@ -363,23 +365,23 @@ static double data_big2[10] = {
   .0000000000000000011
 };
 
-static struct ChebSeries bif_cs = {
+static struct gsl_sf_ChebSeries bif_cs = {
   data_bif,
   8,
   -1, 1
 };
-static struct ChebSeries big_cs = {
+static struct gsl_sf_ChebSeries big_cs = {
   data_big,
   7,
   -1, 1
 };
 
-static struct ChebSeries bif2_cs = {
+static struct gsl_sf_ChebSeries bif2_cs = {
   data_bif2,
   9,
   -1, 1
 };
-static struct ChebSeries big2_cs = {
+static struct gsl_sf_ChebSeries big2_cs = {
   data_big2,
   9,
   -1, 1
@@ -507,19 +509,19 @@ static double data_bip2[29] = {
 };
 
 
-static struct ChebSeries cs_aip = {
+static struct gsl_sf_ChebSeries cs_aip = {
   data_aip,
   33,
   -1, 1
 };
 
-static struct ChebSeries cs_bip = {
+static struct gsl_sf_ChebSeries cs_bip = {
   data_bip,
   23,
   -1, 1
 };
 
-static struct ChebSeries cs_bip2 = {
+static struct gsl_sf_ChebSeries cs_bip2 = {
   data_bip2,
   28,
   -1, 1
@@ -537,7 +539,7 @@ static double airy_aie(double x)
   else {
     double sqx = sqrt(x);
     double z = 2.0/(x*sqx) - 1.0;
-    return (.28125 + cheb_eval(z, &cs_aip))/sqrt(sqx);
+    return (.28125 + gsl_sf_cheb_eval(z, &cs_aip))/sqrt(sqx);
   }
 }
 
@@ -555,17 +557,17 @@ static double airy_bie(double x)
   else if(x < 4.0) {
     double sqx = sqrt(x);
     double z   = ATR/(x*sqx) + BTR;
-    return (0.625 + cheb_eval(z, &cs_bip))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(z, &cs_bip))/sqrt(sqx);
   }
   else {
     double sqx = sqrt(x);
     double z = 16.0/(x*sqx) - 1.0;
-    return (0.625 + cheb_eval(z, &cs_bip2))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(z, &cs_bip2))/sqrt(sqx);
   }
 }
 
 
-double airy_Ai(double x)
+double sl_sf_airy_Ai(double x)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -574,7 +576,7 @@ double airy_Ai(double x)
   }
   else if(x <= 1.0) {
     double z = x*x*x;
-    return 0.375 + (cheb_eval(z, &aif_cs) - x*(0.25 + cheb_eval(z, &aig_cs)));
+    return 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
   }
   else {
     return airy_aie(x) * exp(-2.0*x*sqrt(x)/3.0);
@@ -582,7 +584,7 @@ double airy_Ai(double x)
 }
 
 
-double airy_Bi(double x)
+double gsl_sf_airy_Bi(double x)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -591,11 +593,11 @@ double airy_Bi(double x)
   }
   else if(x < 1.0) {
     double z = x*x*x;
-    return 0.625 + cheb_eval(z, &bif_cs) + x*(0.4375 + cheb_eval(z, &big_cs));
+    return 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
   }
   else if(x <= 2.) {
     double z = (2.0*x*x*x - 9.0)/7.0;
-    return 1.125 + cheb_eval(z, &bif2_cs) + x*(0.625 + cheb_eval(z, &big2_cs));
+    return 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
   }
   else {
     return airy_bie(x) * exp(2.0*x*sqrt(x)/3.0);
@@ -603,7 +605,7 @@ double airy_Bi(double x)
 }
 
 
-double airy_Bi_scaled(double x)
+double gsl_sf_airy_Bi_scaled(double x)
 {
   if(x <= 0.) {
     return airy_Bi(x);
@@ -611,13 +613,13 @@ double airy_Bi_scaled(double x)
   else if(x < 1.0) {
     double scale = exp(2.0*x*sqrt(x)/3.0);
     double z = x*x*x;
-    double bi= 0.625 + cheb_eval(z,&bif_cs) + x*(0.4375 +cheb_eval(z,&big_cs));
+    double bi= 0.625 + gsl_sf_cheb_eval(z,&bif_cs) + x*(0.4375 +gsl_sf_cheb_eval(z,&big_cs));
     return bi/scale;
   }
   else if(x <= 2.) {
     double scale = exp(2.0*x*sqrt(x)/3.0);
     double z = (2.0*x*x*x - 9.0)/7.0;
-    double bi =  1.125 +cheb_eval(z,&bif2_cs) +x*(0.625+cheb_eval(z,&big2_cs));
+    double bi =  1.125 +gsl_sf_cheb_eval(z,&bif2_cs) +x*(0.625+gsl_sf_cheb_eval(z,&big2_cs));
     return bi/scale;
   }
   else {
