@@ -1,7 +1,8 @@
+#include <config.h>
 #include <stdlib.h>
 #include <math.h>
 #include <gsl_rng.h>
-#include "gsl_randist.h"
+#include <gsl_randist.h>
 
 /* Inline swap and copy functions for moving objects around */
 
