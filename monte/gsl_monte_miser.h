@@ -16,9 +16,10 @@ typedef struct {
   unsigned long min_calls_per_bisection;
   double dither;
   double estimate_frac;
-  double ALPHA;
+  double alpha;
   int estimate_style;
   int depth;
+  int verbose;
   int init_done;
   int check_done;
   gsl_rng *ranf;

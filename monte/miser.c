@@ -43,6 +43,8 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
   double var, best_var;
   double vol;
 
+  double beta; 
+
   gsl_vector *sigma_l, *sigma_r;
   gsl_vector_int *hits_l, *hits_r;
   gsl_vector *x, *x_mid;
@@ -210,29 +212,31 @@ int gsl_monte_miser_integrate(gsl_monte_miser_state* state,
     best_var = DBL_MAX;
     i_bisect = -1;
     weight_l = weight_r = 1.0;
-
+    
+    beta = 2.0/(1.0 + state->alpha);
     for (i = 0; i < num_dim; i++) {
       if (sigma_l->data[i] >= 0 && sigma_r->data[i] >= 0) {
 	/* estimates are okay */
-	var = pow(sigma_l->data[i], state->ALPHA) + 
-	  pow(sigma_r->data[i], state->ALPHA);
+	var = pow(sigma_l->data[i], beta) + pow(sigma_r->data[i], beta);
 	if (var <= best_var) {
 	  best_var = var;
 	  i_bisect = i;
-	  weight_l = pow(sigma_l->data[i], state->ALPHA);
-	  weight_r = pow(sigma_r->data[i], state->ALPHA);
+	  weight_l = pow(sigma_l->data[i], beta);
+	  weight_r = pow(sigma_r->data[i], beta);
 	}
       }
       else {
 	char warning[100];
-	if (sigma_l->data[i] < 0) 
+	if ((sigma_l->data[i] < 0) && (state->verbose > 0) ) {
 	  /* FIXME: Get a proper error code here */
 	  sprintf(warning, "no points in left-half space(%lu)!?", i);
 	  GSL_WARNING(warning, GSL_ESANITY);
-	if (sigma_r->data[i] < 0) 
+	}
+	if ((sigma_r->data[i] < 0) && (state->verbose > 0) ) {
 	  /* FIXME: Get a proper error code here */
 	  sprintf(warning, "no points in right-half space(%lu)!?", i);
 	  GSL_WARNING(warning, GSL_ESANITY);
+	}
       }
     }
 
@@ -334,7 +338,13 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
 	    calls);
     GSL_ERROR(warning, GSL_EINVAL);
   }
-  
+
+  if ( state->alpha < 0 ) {
+    sprintf(warning, "alpha less than zero (currently %f) does not make sense!",
+	    state->alpha);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+
   state->check_done = 1;
 
   return GSL_SUCCESS;
@@ -351,8 +361,9 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state)
   state->min_calls = 15;
   state->min_calls_per_bisection = 60;
   state->estimate_frac =  0.1;
-  state->ALPHA = 2.0/3.0; 
+  state->alpha = 2.0; 
   state->dither = 0.0;
+  state->verbose = 0;
   state->estimate_style = ESTIMATE_STYLE_NR;
   state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
 
