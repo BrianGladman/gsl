@@ -144,8 +144,8 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
 void testy(void)
 {
   double y, prec;
-  double a = 50.0;
-  double b = 50.3;
+  double a = 30.0;
+  double b = 40.0;
   double c = 1.0;
   double x = 0.8;
   int stat = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
@@ -398,11 +398,17 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
   }
   
   if(x > 0.75 && d_integer) {
-#if 0
+    int i;
     double ad = fabs(d);
     double ln_pre1, ln_pre2, pre1, pre2;
     double F1, F2;
     double d1, d2;
+    double sum1 = 0.0, sum2 = 0.0;
+    double lng_ad, lng_c;
+    double lng_ad1, lng_ad2, lng_bd1, lng_bd2;
+    int stat_ad, stat_c;
+    int stat_ad1, stat_ad2, stat_bd1, stat_bd2;
+    double ln_omx = log(1.0 - x);
     if(d >= 0.0) {
       d1 = d;
       d2 = 0.0;
@@ -411,8 +417,17 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
       d1 = 0.0;
       d2 = d;
     }
-    ln_pre1 = gsl_sf_lngamma(ad) + gsl_sf_lngamma(c) + d2*log(1.0-x) - gsl_sf_lngamma(a+d1) - gsl_sf_lngamma(b+d1);
-    ln_pre2 = gsl_sf_lngamma(c) + d1*log(1.0-x) - gsl_sf_lngamma(a+d2) - gsl_sf_lngamma(b+d2);
+    stat_ad  = gsl_sf_lngamma_impl(ad,   &lng_ad);
+    stat_c   = gsl_sf_lngamma_impl(c,    &lng_c);
+    stat_ad1 = gsl_sf_lngamma_impl(a+d1, &lng_ad1);
+    stat_ad2 = gsl_sf_lngamma_impl(a+d1, &lng_ad2);
+    stat_bd1 = gsl_sf_lngamma_impl(a+d1, &lng_bd1);
+    stat_bd2 = gsl_sf_lngamma_impl(a+d1, &lng_bd2);
+    
+    
+    ln_pre1 = lng_ad + lng_c + d2*ln_omx - lng_ad1 - lng_bd1;
+    ln_pre2 =          lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
+
     if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
       *result = 0.0; /* FIXME: should be Inf (?) */
       return GSL_EOVRFLW;
@@ -420,12 +435,40 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
     pre1 = exp(ln_pre1);
     pre2 = exp(ln_pre2);
     
-    /* FIXME: F1= ...  F2= ... */
-#endif
     {
-      double prec;
-      return hyperg_2F1_luke(a, b, c, x, result, &prec);
+      /* F1 sum */
+      double term = 1.0;;
+      for(i=0; i<ad; i++) {
+        sum1 += term;
+	term *= (a + d2 + i) * (b + d2 + i) / (1.0 + d2 + i) / (i+1) * (1.0-x);
+      }
     }
+    
+    {
+      /* F2 sum */
+      double term;
+      double Psi;
+      double ln_dkfact;
+      double p1 = -M_EULER;
+      double p2, p3, p4;
+      gsl_lnfact_impl(ad, &ln_dkfact);
+      term = exp(-ln_dkfact);
+      gsl_sf_psi_impl(1 + ad, &p2);
+      gsl_sf_psi_impl(a + d1, &p3);
+      gsl_sf_psi_impl(b + d1, &p4);
+      Psi = p1 + p2 - p3 - p4 - log(1.0-x);
+      for(i=0; i<ad; i++) {
+        sum2 += term * Psi;
+	term *= (a + d1 + i) * (b + d1 + i) / (ad + i + 1) / (i+1) * (1.0-x);
+	Psi  +=  1.0/(2.0 + i) + 1.0/(2.0 + ad + i)
+	        -1.0/(a + d1 + 1 + i) - 1.0/(b + d1 + 1 + i);
+      }
+    }
+    
+    F1 = pre1 * sum1;
+    F2 = pre2 * sum2;
+    
+    
   }
   
 
