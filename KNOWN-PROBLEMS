@@ -17,21 +17,43 @@ only the relevant parts, because the complete output is huge (over 10
 megabytes).
 
 -------------------------------------------------------------------------------
+*** VERSION: 0.7+
 
 
 ===========================================================================
 Running make
 
-*** make: *** No targets.  Stop.
+--------
+Making all in specfunc
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_Jnu.c  -fPIC -DPIC -o .libs/bessel_Jnu.lo
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_Jnu.c: In function `gsl_sf_bessel_Jnu_e':
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_Jnu.c:122: warning: `Ynp1' might be used uninitialized in this function
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_Jnu.c -o bessel_Jnu.o >/dev/null 2>&1
+--------
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_i.c  -fPIC -DPIC -o .libs/bessel_i.lo
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_i.c: In function `gsl_sf_bessel_il_scaled_e':
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_i.c:247: warning: `iellm1' might be used uninitialized in this function
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/bessel_i.c -o bessel_i.o >/dev/null 2>&1
+--------
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/gegenbauer.c  -fPIC -DPIC -o .libs/gegenbauer.lo
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/gegenbauer.c: In function `gsl_sf_gegenpoly_n_e':
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/gegenbauer.c:128: warning: `gk' might be used uninitialized in this function
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/gegenbauer.c -o gegenbauer.o >/dev/null 2>&1
+--------
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c  -fPIC -DPIC -o .libs/legendre_poly.lo
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c: In function `gsl_sf_legendre_Plm_e':
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c:266: warning: `p_ell' might be used uninitialized in this function
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c: In function `gsl_sf_legendre_sphPlm_e':
+*** /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c:429: warning: `y_ell' might be used uninitialized in this function
+    gcc -DHAVE_CONFIG_H -I. -I/home/bjg/gsl-0.7+/scripts/../specfunc -I.. -I.. -g -O2 -Wall -c /home/bjg/gsl-0.7+/scripts/../specfunc/legendre_poly.c -o legendre_poly.o >/dev/null 2>&1
+--------
 
 
 ===========================================================================
 Running make check
 
-*** make: *** No rule to make target `check'.
 
 
 ===========================================================================
 Running make check in double-precision
 
-*** make: *** No rule to make target `check'.
