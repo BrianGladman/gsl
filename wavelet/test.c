@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -163,9 +164,11 @@ test_1d (size_t N, size_t stride, const gsl_wavelet_type * T, size_t member)
                 gsl_wavelet_name (w), member, N, stride);
     }
 
-  free (data);
+  gsl_wavelet_workspace_free (work);
   gsl_wavelet_free (w);
+  gsl_vector_free (vdelta);
   gsl_vector_free (v2);
+  free (data);
 }
 
 
@@ -260,6 +263,8 @@ test_2d (size_t N, size_t tda, const gsl_wavelet_type * T, size_t member, int ty
     }
   
   free (data);
+  gsl_wavelet_workspace_free (work);
   gsl_wavelet_free (w);
   gsl_matrix_free (m2);
+  gsl_matrix_free (mdelta);
 }
