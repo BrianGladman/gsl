@@ -454,7 +454,8 @@ psi_x(const double x, gsl_sf_result * result)
 
 /* generic polygamma; assumes n >= 0 and x > 0
  */
-static psi_n_xg0(const int n, const double x, gsl_sf_result * result)
+static int
+psi_n_xg0(const int n, const double x, gsl_sf_result * result)
 {
   if(n == 0) {
     return gsl_sf_psi_e(x, result);
