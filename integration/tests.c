@@ -60,10 +60,8 @@ double book9 (double x) {
   return exp(20*(x-1)) * sin(pow(2.0,alpha) * x) ;
 }
 
-/* integ(book10,x,0,1) = pi cos(2^(alpha-1)) J_0(2^(alpha-1))  */
-
 double book10 (double x) {
-  return cos(pow(2.0,alpha)*x)/sqrt(x*(1-x)) ;
+  return 1/sqrt(x*(1-x)) ;
 }
 
 double book11 (double x) {
