@@ -34,8 +34,8 @@ FUNCTION (test, text) (void)
     for (i = 0; i < N; i++)
       {
 	BASE x;
-	GSL_REAL (x) = i;
-	GSL_IMAG (x) = i + 1;
+	GSL_REAL (x) = (ATOMIC)i;
+	GSL_IMAG (x) = (ATOMIC)(i + 1);
 	FUNCTION (gsl_vector, set) (v, i, x);
       };
 

@@ -178,7 +178,7 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    BASE expected = 0.1331;
+    BASE expected = (BASE)0.1331;
     gsl_test  (FUNCTION(gsl_stats,max) (groupa, stridea, na) != expected,
 	       NAME(gsl_stats) "_max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
                FUNCTION(gsl_stats,max) (groupa, stridea, na), expected);
@@ -186,7 +186,7 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 
   {
     BASE min = FUNCTION(gsl_stats,min) (groupa, stridea, na);
-    BASE expected = 0.0242;
+    BASE expected = (BASE)0.0242;
     gsl_test (min != expected,
 	      NAME(gsl_stats) "_min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
 	      min, expected);
@@ -194,8 +194,8 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 
   {
     BASE min, max;
-    BASE expected_max = 0.1331;
-    BASE expected_min = 0.0242;
+    BASE expected_max = (BASE)0.1331;
+    BASE expected_min = (BASE)0.0242;
     
     FUNCTION(gsl_stats,minmax) (&min, &max, groupa, stridea, na);
  

@@ -35,8 +35,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       BASE x = ZERO;
-      GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1234;
+      GSL_REAL (x) = (ATOMIC)i;
+      GSL_IMAG (x) = (ATOMIC)(i + 1234);
       FUNCTION (gsl_vector, set) (v, i, x);
     };
 
@@ -55,8 +55,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       BASE x, y;
-      GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1234;
+      GSL_REAL (x) = (ATOMIC)i;
+      GSL_IMAG (x) = (ATOMIC)(i + 1234);
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
@@ -72,8 +72,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N / 2; i++)
     {
       BASE x, y;
-      GSL_REAL (x) = 2 * i;
-      GSL_IMAG (x) = 2 * i + 1234;
+      GSL_REAL (x) = (ATOMIC)(2 * i);
+      GSL_IMAG (x) = (ATOMIC)(2 * i + 1234);
       y = FUNCTION (gsl_vector, get) (v, i);
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
@@ -83,8 +83,8 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N / 2; i++)
     {
       BASE x;
-      GSL_REAL (x) = i ;
-      GSL_IMAG (x) = i + 1234;
+      GSL_REAL (x) = (ATOMIC)i ;
+      GSL_IMAG (x) = (ATOMIC)(i + 1234);
       FUNCTION (gsl_vector, set) (v, i, x);
     };
 
@@ -105,14 +105,14 @@ FUNCTION (test, func) (void)
   for (i = 0; i < N; i++)
     {
       BASE x = ZERO;
-      GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1234;
+      GSL_REAL (x) = (ATOMIC)i;
+      GSL_IMAG (x) = (ATOMIC)(i + 1234);
       FUNCTION (gsl_vector, set) (v, i, x);
     };
 
 
   {
-    BASE x, y ;
+    BASE x, y, r, s ;
     GSL_REAL(x) = 2 ;
     GSL_IMAG(x) = 2 + 1234;
     GSL_REAL(y) = 5 ;
@@ -120,13 +120,19 @@ FUNCTION (test, func) (void)
 
     FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
     
-    status = ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),y) ;
-    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),x) ;
+    r = FUNCTION(gsl_vector,get)(v,2);
+    s = FUNCTION(gsl_vector,get)(v,5);
+
+    status = ! GSL_COMPLEX_EQ(r,y) ;
+    status |= ! GSL_COMPLEX_EQ(s,x) ;
     
     FUNCTION (gsl_vector,swap_elements) (v, 2, 5) ;
     
-    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,2),x) ;
-    status |= ! GSL_COMPLEX_EQ(FUNCTION(gsl_vector,get)(v,5),y) ;
+    r = FUNCTION(gsl_vector,get)(v,2);
+    s = FUNCTION(gsl_vector,get)(v,5);
+
+    status |= ! GSL_COMPLEX_EQ(r,x) ;
+    status |= ! GSL_COMPLEX_EQ(s,y) ;
   }
 
   gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements correctly") ;
@@ -137,11 +143,13 @@ FUNCTION (test, func) (void)
   
   for (i = 0; i < N; i++)
     {
-      BASE x ;
-      GSL_REAL(x) = N - i - 1 ;
-      GSL_IMAG(x) = N - i - 1 + 1234;
+      BASE x,r ;
+      GSL_REAL(x) = (ATOMIC)(N - i - 1) ;
+      GSL_IMAG(x) = (ATOMIC)(N - i - 1 + 1234);
 
-      status |= !GSL_COMPLEX_EQ(FUNCTION (gsl_vector, get) (v, i),x);
+      r = FUNCTION (gsl_vector, get) (v, i);
+
+      status |= !GSL_COMPLEX_EQ(r,x);
     }
 
   gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
@@ -163,8 +171,8 @@ FUNCTION (test, binary) (void)
     for (i = 0; i < N; i++)
       {
 	BASE x = ZERO;
-	GSL_REAL (x) = N - i;
-	GSL_IMAG (x) = N - i + 1;
+	GSL_REAL (x) = (ATOMIC)(N - i);
+	GSL_IMAG (x) = (ATOMIC)(N - i + 1);
 	FUNCTION (gsl_vector, set) (v, i, x);
       };
 
@@ -200,8 +208,8 @@ FUNCTION (test, trap) (void)
 {
   TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc) (N);
 
-  BASE z = {{1.2, 3.4}};
-  BASE z1 = {{4.5, 6.7}};
+  BASE z = {{(ATOMIC)1.2, (ATOMIC)3.4}};
+  BASE z1 = {{(ATOMIC)4.5, (ATOMIC)6.7}};
 
   size_t j = 0;
 
