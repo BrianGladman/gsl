@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <ieeefp.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_errno.h>
 
@@ -21,6 +22,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("solaris only supports extended precision rounding (??) "
 		 "(double precision is not supported)",
+		 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
       break ;
