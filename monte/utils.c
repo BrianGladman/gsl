@@ -3,12 +3,15 @@
 #include <gsl_errno.h>
 
 #include "utils.h"
-#include "source.h"
 
-#undef BASE
+#define BASE_DOUBLE
+#include "templates_on.h"
 #include "init_source.c"
-#undef BASE
+#include "templates_off.h"
+#undef BASE_DOUBLE
 
-#define BASE int
+#define BASE_INT
+#include "templates_on.h"
 #include "init_source.c"
-#undef BASE
+#include "templates_off.h"
+#undef BASE_INT
