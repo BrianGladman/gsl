@@ -1,3 +1,7 @@
+Mon Sep  3 10:32:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mt.c (mt_1998_set): renamed macro to avoid duplicate definition
+
 Fri Aug 31 17:49:37 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mt.c (mt_1998_set): added the original (buggy) MT19937 seeding

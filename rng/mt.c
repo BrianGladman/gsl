@@ -164,10 +164,10 @@ mt_1998_set (void *vstate, unsigned long int s)
 
   state->mt[0] = s & 0xffffffffUL;
 
-#define LCG(n) ((69069 * n) & 0xffffffffUL)
+#define LCG1998(n) ((69069 * n) & 0xffffffffUL)
 
   for (i = 1; i < N; i++)
-    state->mt[i] = LCG (state->mt[i - 1]);
+    state->mt[i] = LCG1998 (state->mt[i - 1]);
 
   state->mti = i;
 }
