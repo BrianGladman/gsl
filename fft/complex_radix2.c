@@ -114,12 +114,14 @@ gsl_fft_complex_radix2 (complex data[],
 
   result = gsl_fft_binary_logn(n) ;
 
-  if (result == -1) {
-    GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
-    return -1;
-  } else {
-    logn = result ;
-  }
+  if (result == -1) 
+    {
+      GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
+    } 
+  else 
+    {
+      logn = result ;
+    }
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
@@ -221,12 +223,14 @@ gsl_fft_complex_radix2_dif (complex data[],
 
   result = gsl_fft_binary_logn(n) ;
 
-  if (result == -1) {
-    GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
-    return -1;
-  } else {
-    logn = result ;
-  }
+  if (result == -1) 
+    {
+      GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
+    } 
+  else 
+    {
+      logn = result ;
+    }
 
   /* apply fft recursion */
 

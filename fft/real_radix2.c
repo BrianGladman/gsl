@@ -21,12 +21,14 @@ gsl_fft_real_radix2 (double data[],
 
   result = gsl_fft_binary_logn(n) ;
 
-  if (result == -1) {
-    GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
-    return -1;
-  } else {
-    logn = result ;
-  }
+  if (result == -1) 
+    {
+      GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
+    } 
+  else 
+    {
+      logn = result ;
+    }
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
