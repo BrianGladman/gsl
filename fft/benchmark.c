@@ -73,7 +73,7 @@ main (int argc, char *argv[])
     }
   while (end < start + resolution && status == 0);
 
-  printf ("gsl_fft_complex_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+  printf ("n = %d gsl_fft_complex_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
 
   start = clock ();
   i = 0;
@@ -85,7 +85,7 @@ main (int argc, char *argv[])
     }
   while (end < start + resolution && status == 0);
 
-  printf ("gsl_fft_complex_goldrader_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+  printf ("n = %d gsl_fft_complex_goldrader_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
 
 
   start = clock ();
@@ -98,7 +98,7 @@ main (int argc, char *argv[])
     }
   while (end < start + resolution && status == 0);
 
-  printf ("gsl_fft_complex_rodriguez_bitreverse_order %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+  printf ("n = %d gsl_fft_complex_rodriguez_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
 
 
   
@@ -115,7 +115,7 @@ main (int argc, char *argv[])
 
   if (status == 0)
     {
-      printf ("gsl_fft_complex_radix2_forward %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+      printf ("n = %d gsl_fft_complex_radix2_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
     }
   else
     {
@@ -138,7 +138,7 @@ main (int argc, char *argv[])
 
   if (status == 0)
     {
-      printf ("gsl_fft_complex_forward %d %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+      printf ("n = %d gsl_fft_complex_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
     }
   else
     {
