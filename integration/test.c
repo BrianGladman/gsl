@@ -92,7 +92,7 @@ int main (void)
     gsl_integration_qk51 (book1, 0.0, 1.0, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk51(book1) smooth result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-5,"qk51(book1) smooth abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk51(book1) smooth abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk51(book1) smooth resabs") ;    
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk51(book1) smooth resasc") ;
   }
@@ -244,7 +244,7 @@ int main (void)
     gsl_integration_qk21 (book3, 0.3, 2.71, 
 			  &result, &abserr, &resabs, &resasc) ;
     gsl_test_rel(result,exp_result,1e-15,"qk21(book3) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-5,"qk21(book3) oscill abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-7,"qk21(book3) oscill abserr") ;
     gsl_test_rel(resabs,exp_resabs,1e-15,"qk21(book3) oscill resabs") ;
     gsl_test_rel(resasc,exp_resasc,1e-15,"qk21(book3) oscill resasc") ;
   }
