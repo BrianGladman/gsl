@@ -119,7 +119,10 @@ gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
   }
   else if(l == 2) {
     result->val = 0.5 * (3.0*x*x - 1.0);
-    result->err = 3.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = GSL_DBL_EPSILON * (fabs(3.0*x*x) + 1.0);
+    /*result->err = 3.0 * GSL_DBL_EPSILON * fabs(result->val);
+      removed this old bogus estimate [GJ]
+      */
     return GSL_SUCCESS;
   }
   else if(x == 1.0) {
