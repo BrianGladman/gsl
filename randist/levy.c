@@ -39,7 +39,15 @@ gsl_ran_levy (const gsl_rng * r, const double mu, const double a)
   while (v == 0);
   
   t = sin(a * u) / pow(cos(u), 1/a) ;
-  s = pow(cos((1 - a)*u) / v, (1-a)/a) ;
+
+  if (a == 1)
+    {
+      s = 1 ;
+    }
+  else 
+    {
+      s = pow(cos((1 - a)*u) / v, (1-a)/a) ;
+    }
   
   return mu * t * s;
 }
