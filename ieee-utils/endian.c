@@ -76,7 +76,7 @@ void setup_dynamic_endianness(int *b0,int *b1,int *b2,int *b3,
 
   for(i=0 ; i<8 ; i++)
     {
-      if(u.c[i]<0 || u.c[i]>7) flag=1 ;
+      if(u.c[i]>7) flag=1 ;
     }
 
   for(i=0 ; i<7 ; i++)
