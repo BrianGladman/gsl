@@ -3,13 +3,15 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include <gsl_config.h>
 #include <gsl_complex.h>
 
 typedef struct
 {
   size_t size;
   gsl_complex * data;
-} gsl_vector_complex ;
+} 
+gsl_vector_complex ;
 
 gsl_vector_complex * gsl_vector_complex_alloc (size_t n);
 gsl_vector_complex * gsl_vector_complex_calloc (size_t n);
@@ -34,7 +36,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#ifdef HAVE_INLINE
 extern inline 
 gsl_complex
 gsl_vector_complex_get(const gsl_vector_complex * v, const size_t i)

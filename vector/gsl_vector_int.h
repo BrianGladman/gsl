@@ -3,12 +3,14 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include <gsl_config.h>
 
 typedef struct
 {
   size_t size;
   int * data;
-} gsl_vector_int ;
+} 
+gsl_vector_int ;
 
 gsl_vector_int * gsl_vector_int_alloc (size_t n);
 gsl_vector_int * gsl_vector_int_calloc (size_t n);
@@ -33,7 +35,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#ifdef HAVE_INLINE
 extern inline 
 int
 gsl_vector_int_get(const gsl_vector_int * v, const size_t i)

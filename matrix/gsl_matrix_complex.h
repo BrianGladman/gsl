@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include <gsl_config.h>
 #include <gsl_complex.h>
 
 typedef struct
@@ -29,7 +30,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#ifdef HAVE_INLINE
 extern inline 
 gsl_complex
 gsl_matrix_complex_get(const gsl_matrix_complex * m, 

@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include <gsl_config.h>
 
 typedef struct
 {
@@ -28,7 +29,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#ifdef HAVE_INLINE
 extern inline 
 float
 gsl_matrix_float_get(const gsl_matrix_float * m, 

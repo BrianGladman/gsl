@@ -1,5 +1,8 @@
 @BOTTOM@
 
+/* Define if you have inline */
+#undef HAVE_INLINE
+
 /* Define if you have PACKAGE */
 #undef PACKAGE
 

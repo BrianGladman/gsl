@@ -3,13 +3,13 @@
 
 #include <stdlib.h>
 #include <gsl_errno.h>
+#include <gsl_config.h>
 
 typedef struct
 {
   size_t size1;
   size_t size2;
   double * data;
-  
 } gsl_matrix ;
 
 gsl_matrix * gsl_matrix_alloc (size_t n1, size_t n2);
@@ -28,7 +28,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#ifdef HAVE_INLINE
 extern inline 
 double
 gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)
