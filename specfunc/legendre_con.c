@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "legendre.h"
 #include "gsl_sf_poly.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_ellint.h"
@@ -280,93 +281,6 @@ forward_recurse_neg_mu_xlt1(const double mu, const double tau, const double x,
   return GSL_SUCCESS;
 }
 
-#if 0
-void test_recurse(void)
-{
-  /*
-  double mu_min = 0.0;
-  double tau    = 5.0;
-  double x      = -0.5;
-  int N = 1000;
-  double y_n   =  3.815801082323749413e+241;
-  double y_np1 =  6.602600486662392861e+241;
-  double y_0, y_1;
-  backward_recurse_pos_mu_xlt1(mu_min, tau, x,
-                               N,
-                               y_n, y_np1,
-			       &y_0, &y_1);
-  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
-  exit(0);
-  */
-
-  /*
-  double mu_min = 0.0;
-  double tau    = 5.0;
-  double x      = -0.5;
-  int N = 1000;
-  double y_n;
-  double y_np1;
-  double y_0 = 6693.103933518211835;
-  double y_1 = 35192.90653374874763;
-  forward_recurse_pos_mu_xlt1(mu_min, tau, x,
-                               N,
-                               y_0, y_1,
-			       &y_n, &y_np1);
-  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_0, y_1, y_n, y_np1);
-  exit(0);
-  */
-
-  /*
-  double mu  = 1.0/3.0;
-  double tau = 5.0;
-  double x   = 3.0;
-  int N = 500;
-  double y_n   =   2.5799943898780086603e-79 ;
-  double y_np1 =  -1.8208744513179016911e-79 ;
-  double y_0, y_1;
-  backward_recurse_neg_mu_xgt1(mu, tau, x,
-                               N,
-                               y_n, y_np1,
-			       &y_0, &y_1);
-  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
-  exit(0);
-  */
-
-  /*
-  double mu  = 1.0/3.0;
-  double tau = 5.0;
-  double x   = 0.5;
-  int N = 20;
-  double y_n   = ;
-  double y_np1 = ;
-  double y_0, y_1;
-  backward_recurse_neg_mu_xlt1(mu, tau, x,
-                               N,
-                               y_n, y_np1,
-			       &y_0, &y_1);
-  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
-  exit(0);
-  */
-  
-  /*
-  double mu_min = 1.0/3.0;
-  double tau    = 5.0;
-  double x      = -0.5;
-  int N = 1000;
-  double y_n;
-  double y_np1;
-  double y_0 =  2906.1619891014585047;
-  double y_1 = -206.00701262658096387;
-  forward_recurse_neg_mu_xlt1(mu_min, tau, x,
-                              N,
-                              y_0, y_1,
-			      &y_n, &y_np1);
-  printf("%24.18g   %24.18g   %24.18g  %24.18g\n", y_0, y_1, y_n, y_np1);
-  exit(0);
-  */
-}
-#endif /* 0 */
-
 
 /* Implementation of large negative mu asymptotic
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
@@ -424,9 +338,8 @@ static double olver_U3(double beta2, double p)
  *
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
-static
 int
-conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
+gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x, double * result)
 {
   double beta  = tau/mu;
   double beta2 = beta*beta;
@@ -453,7 +366,6 @@ conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
     return lg_stat;
   }
 }
-
 
 
 /* Implementation of large tau asymptotic
@@ -498,10 +410,9 @@ static double olver_A1_th(double mu, double theta, double x)
  * tau -> Inf 
  * [Olver, p. 469]
  */
-static
 int
-conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                   const double x, double * result)
+gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
+                                          const double x, double * result)
 {
   double xi = acosh(x);
   double xi_pre;
@@ -543,10 +454,9 @@ conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
  * tau -> Inf 
  * [Olver, p. 473]
  */
-static
 int
-conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                   const double x, double * result)
+gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
+                                          const double x, double * result)
 {
   double theta = acos(x);
   double th_pre;

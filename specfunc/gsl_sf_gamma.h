@@ -89,6 +89,15 @@ int     gsl_sf_lnfact_e(unsigned int n, double * result);
 double  gsl_sf_lnfact(unsigned int n);
 
 
+/* log(n!!) 
+ *
+ * exceptions: none
+ */
+int     gsl_sf_lndoublefact_impl(unsigned int n, double * result);
+int     gsl_sf_lndoublefact_e(unsigned int n, double * result);
+double  gsl_sf_lndoublefact(unsigned int n);
+
+
 /* log(n choose m)
  *
  * exceptions: GSL_EDOM 

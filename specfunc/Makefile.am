@@ -39,7 +39,8 @@ noinst_HEADERS = \
 	bessel_amp_phase.h	\
 	bessel_temme.h		\
 	bessel.h		\
-	hyperg.h
+	hyperg.h		\
+	legendre.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 

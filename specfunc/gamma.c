@@ -818,6 +818,26 @@ int gsl_sf_lnfact_impl(const unsigned int n, double * result)
   }
 }
 
+int gsl_sf_lndoublefact_impl(const unsigned int n, double * result)
+{
+  if(n <= DOUB_FACT_TABLE_MAX){
+    *result = log(doub_fact_table[n].f);
+    return GSL_SUCCESS;
+  }
+  else if(GSL_IS_ODD(n)) {
+    double lg;
+    gsl_sf_lngamma_impl(0.5*(n+2.0), &lg);
+    *result = 0.5*(n+1.0) * M_LN2 - 0.5*M_LNPI + lg;
+    return GSL_SUCCESS;
+  }
+  else {
+    double lg;
+    gsl_sf_lngamma_impl(0.5*n+1.0, &lg);
+    *result = 0.5*n*M_LN2 + lg;
+    return GSL_SUCCESS;
+  }
+}
+
 int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result)
 {
   double nf, mf, nmmf;
@@ -888,6 +908,15 @@ int gsl_sf_doublefact_e(const unsigned int n, double * result)
   int status = gsl_sf_doublefact_impl(n, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_doublefact_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_lndoublefact_e(const unsigned int n, double * result)
+{
+  int status = gsl_sf_lndoublefact_impl(n, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_lndoublefact_e", status);
   }
   return status;
 }
@@ -1012,6 +1041,15 @@ double gsl_sf_doublefact(const unsigned int n)
   return y;
 }
 
+double gsl_sf_lndoublefact(const unsigned int n)
+{
+  double y;
+  int status = gsl_sf_lndoublefact_impl(n, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_lndoublefact", status);
+  }
+  return y;
+}
 
 double gsl_sf_lnchoose(unsigned int n, unsigned int m)
 {

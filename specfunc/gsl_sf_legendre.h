@@ -198,9 +198,9 @@ double  gsl_sf_legendre_H3d_1(double lambda, double eta);
  *
  * Flat-Lim legendre_H3d_l(l,lambda,eta) = j_l(lambda*eta)
  */
-int     gsl_sf_legendre_H3d_l_impl(int l, double lambda, double eta, double * result);
-int     gsl_sf_legendre_H3d_l_e(int l, double lambda, double eta, double * result);
-double  gsl_sf_legendre_H3d_l(int l, double lambda, double eta);
+int     gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, double * result);
+int     gsl_sf_legendre_H3d_e(int l, double lambda, double eta, double * result);
+double  gsl_sf_legendre_H3d(int l, double lambda, double eta);
 
 
 /*

@@ -4,10 +4,16 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "legendre.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_legendre.h"
 
+
+/* See [Abbott+Schaefer, Ap.J. 308, 546 (1986)] for
+ * enough details to follow what is happening here.
+ */
 
 
 /* Logarithm of normalization factor, Log[N(ell,lambda)].
@@ -30,9 +36,57 @@ legendre_H3d_lnnorm(const int ell, const double lambda, double * result)
     double ln_sinh;
     gsl_sf_lngamma_complex_impl(ell+1.0, lambda, &lg_r, &lg_theta);
     gsl_sf_lnsinh_impl(M_PI * abs_lam, &ln_sinh);
-    *result = log(abs_lam) + ln_sinh + 2.0*lg_r;
+    *result = log(abs_lam) + ln_sinh + 2.0*lg_r - M_LNPI;
     return GSL_SUCCESS;
   }
+}
+
+
+/* Calculate series for small eta*lambda.
+ * Assumes eta > 0, lambda != 0.
+ */
+static
+int
+legendre_H3d_series(const int ell, const double lambda, const double eta, double * result)
+{
+  const int nmax = 5000;
+  const double shheta = sinh(0.5*eta);
+  double term = 1.0;
+  double sum  = 1.0;
+  double sgn  = 1.0;
+  double lnsheta;
+  double lnN;
+  double lndf;
+  double lnpre;
+  int stat_e;
+  int n;
+
+  gsl_sf_lnsinh_impl(eta, &lnsheta);
+  gsl_sf_lndoublefact_impl((unsigned int)(2*ell + 1), &lndf);
+  legendre_H3d_lnnorm(ell, lambda, &lnN);
+  lnpre = 0.5*lnN + ell*lnsheta - log(lambda) - lndf;
+
+  term /= (ell + 0.5);
+
+  for(n=1; n<nmax; n++) {
+    double Cn_term = (lambda*lambda + (double)(ell+n)*(ell+n));
+    double Dn_term = (ell + n + 0.5);
+    sgn   = -sgn;
+    term *= (Cn_term/Dn_term);
+    term /= n;
+    term *= sgn * (shheta * shheta);
+    sum  += term;
+    if(fabs(term/sum) < 10.0 * GSL_MACH_EPS) break;
+  }
+
+  stat_e = gsl_sf_exp_sgn_impl(lnpre + log(fabs(sum)), sum, result);
+
+  if(stat_e == GSL_EOVRFLW)
+    return GSL_EOVRFLW;
+  else if(n == nmax)
+    return GSL_EMAXITER;
+  else
+    return stat_e;
 }
 
 
@@ -65,7 +119,7 @@ legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta, doub
     Bnm2 = Bnm1;
     Anm1 = An;
     Bnm1 = Bn;
-    an = (lambda*lambda + ((double)ell + n)*((double)ell + n));
+    an = -(lambda*lambda + ((double)ell + n)*((double)ell + n));
     bn = 2.0*ell + 2.0*n + 1.0;
     An = bn*Anm1 + an*Anm2;
     Bn = bn*Bnm1 + an*Bnm2;
@@ -86,7 +140,7 @@ legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta, doub
     if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
   }
 
-  *result = -fn; /* note overall sign */
+  *result = fn;
 
   if(n == maxiter)
     return GSL_EMAXITER;
@@ -149,7 +203,7 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, double * resul
     *result = sinh_term/sqrt(lsqp1) * (term1 + term2) / eta;
     return GSL_SUCCESS;
   }
-  else if(1) {
+  else {
     double sin_term;     /*  sin(xi)/xi     */
     double cos_term;     /*  cos(xi)        */
     double coth_term;    /*  eta/tanh(eta)  */
@@ -170,31 +224,7 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, double * resul
       coth_term = eta/tanh(eta);
       sinh_term = eta/sinh(eta);
     }
-    *result = sinh_term/sqrt(lsqp1) * (sin_term*coth_term - cos_term) /eta;
-    return GSL_SUCCESS;
-  }
-  else {
-    double sin_term;     /*  sin(xi)/xi            */
-    double cos_term;     /*  sin(xi)/xi - cos(xi)  */
-    double coth_term;    /*  coth(eta) - 1/eta     */
-    double sinh_term;    /*  eta/sinh(eta)         */
-    if(xi < GSL_ROOT5_MACH_EPS) {
-      sin_term = 1.0 - xi*xi/6.0 * (1.0 - 0.05*xi*xi);
-      cos_term = 1.0/3.0 * xi*xi * (1.0 - xi*xi/10.0*(1.0 - xi*xi/28.0));
-    }
-    else {
-      sin_term = sin(xi)/xi;
-      cos_term = sin_term - cos(xi);
-    }
-    if(eta < GSL_ROOT5_MACH_EPS) {
-      coth_term = 1.0/3.0 * eta * (1.0 - eta*eta/15.0 * (1.0 - 2.0*eta*eta/21.0));
-      sinh_term = 1.0 - eta*eta/6.0 * (1.0 - 7.0/60.0*eta*eta);
-    }
-    else {
-      coth_term = 1.0/tanh(eta) - 1.0/eta;
-      sinh_term = eta/sinh(eta);
-    }
-    *result = sinh_term/sqrt(lsqp1) * (coth_term * sin_term - cos_term/eta);
+    *result = sinh_term/sqrt(lsqp1) * (sin_term*coth_term - cos_term) / eta;
     return GSL_SUCCESS;
   }
 }
@@ -203,18 +233,24 @@ gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, double * resul
 int
 gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, double * result)
 {
-  if(eta == 0.0) {
-    if(ell == 0)
-      *result = 1.0;
-    else
-      *result = 0.0;
-    return GSL_SUCCESS;
+  const double abs_lam = fabs(lambda);
+  const double xi      = abs_lam * eta;
+
+  if(eta < 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
   }
   else if(ell == 0) {
     return gsl_sf_legendre_H3d_0_impl(lambda, eta, result);
   }
   else if(ell == 1) {
     return gsl_sf_legendre_H3d_1_impl(lambda, eta, result);
+  }
+  else if(xi < 1.0) {
+    return legendre_H3d_series(ell, lambda, eta, result);
+  }
+  else if(abs_lam > 1000.0*ell*ell) {
+    
   }
   else {
     const double coth_eta = 1.0/tanh(eta);
@@ -227,11 +263,11 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     for(lp=ell; lp>0; lp--) {
       double root_term_0 = sqrt(lambda*lambda + (double)lp*lp);
       double root_term_1 = sqrt(lambda*lambda + (lp+1.0)*(lp+1.0));
-      Hlm1 = -((2.0*lp + 1.0)*coth_eta*Hl + root_term_1 * Hlp1)/root_term_0;
+      Hlm1 = ((2.0*lp + 1.0)*coth_eta*Hl - root_term_1 * Hlp1)/root_term_0;
       Hlp1 = Hl;
       Hl   = Hlm1;
     }
-    
+
     if(fabs(Hlm1) > fabs(Hl)) {
       double H0;
       int stat_H0 = gsl_sf_legendre_H3d_0_impl(lambda, eta, &H0);
@@ -298,6 +334,15 @@ gsl_sf_legendre_H3d_1_e(const double lambda, const double eta, double * result)
   return status;
 }
 
+int
+gsl_sf_legendre_H3d_e(const int l, const double lambda, const double eta, double * result)
+{
+  int status = gsl_sf_legendre_H3d_impl(l, lambda, eta, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_H3d_e", status);
+  }
+  return status;
+}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
@@ -318,6 +363,17 @@ gsl_sf_legendre_H3d_1(const double lambda, const double eta)
 {
   double y;
   int status = gsl_sf_legendre_H3d_1_impl(lambda, eta, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_legendre_H3d_1", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_legendre_H3d(const int l, const double lambda, const double eta)
+{
+  double y;
+  int status = gsl_sf_legendre_H3d_impl(l, lambda, eta, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_legendre_H3d_1", status);
   }
