@@ -659,10 +659,35 @@ gsl_sf_complex_spence_e(
   const double oms_y =     - s_y;
   const int stat_dl = gsl_sf_complex_dilog_xy_e(oms_x, oms_y, real_sp, imag_sp);
 
+/*
   const double ntp = floor(fabs(omega)/(2.0*M_PI));
   const double sgn = ( omega < 0.0 ? -1.0 : 1.0 );
   imag_sp->val += sgn * 2.0*M_PI*ntp;
   imag_sp->err *= ntp + 1.0;
+*/
+
+/*
+  first McElwaine code
+  const double ntp = floor((omega+M_PI)/(2.0*M_PI));
+  imag_sp->val -= 2.0*M_PI*ntp*log(1+A);
+  imag_sp->err *= fabs(ntp) + 1.0;
+*/
+
+
+  /* second McElwaine code   |z| < 1... ???? */
+  /*
+  const double ntp  = floor((omega+M_PI)/(2.0*M_PI));
+  imag_sp->val -= M_PI*ntp*log(oms_x*oms_x+s_y*s_y);
+  real_sp->val += 2*M_PI*ntp*atan2(oms_y,oms_x);
+  imag_sp->err *= fabs(ntp) + 1.0;
+  */
+
+  /* second McElwaine code   |z| > 1... ???? */
+  const double ntp  = floor((omega+M_PI)/(2.0*M_PI));
+  const double kk   = floor(omega/(2.0*M_PI));
+  imag_sp->val -= M_PI*ntp*log(oms_x*oms_x+s_y*s_y);
+  real_sp->val += 2*M_PI*(ntp*atan2(oms_y,oms_x) + M_PI*kk*(kk+1));
+  imag_sp->err *= fabs(ntp) + 1.0;
 
   return stat_dl;
 }
