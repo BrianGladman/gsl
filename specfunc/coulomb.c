@@ -576,8 +576,13 @@ coulomb_lam_min_values(double lam_min,
       /* WKB detects a large G value. Do not attempt
        * the continued fraction.
        */
-      *F_lam_min  = Fp_sign_lam_min * fjwkb;
+      double F_ratio_lam_min = *Fp_lam_min / *F_lam_min;
+      if(! keep_Fmin_values) {
+        *F_lam_min  = F_sign_lam_min * fjwkb;
+        *Fp_lam_min = F_ratio_lam_min * *F_lam_min;
+      }
       *G_lam_min  = gjwkb;
+      *Gp_lam_min = *G_lam_min * (F_ratio_lam_min - 1.0/(*G_lam_min * *F_lam_min));
       *F_exponent = -exponent;
       *G_exponent =  exponent;
       return GSL_EOVRFLW;
@@ -615,10 +620,13 @@ coulomb_lam_min_values(double lam_min,
   else {
     if(x_less_turn) {
       /* Fallback on WKB values if CF2 claims it failed. */
+      double F_ratio_lam_min = *Fp_lam_min / *F_lam_min;
       if(! keep_Fmin_values) {
         *F_lam_min  = F_sign_lam_min * fjwkb;
+        *Fp_lam_min = F_ratio_lam_min * *F_lam_min;
       }
       *G_lam_min  = gjwkb;
+      *Gp_lam_min = *G_lam_min * (F_ratio_lam_min - 1.0/(*G_lam_min * *F_lam_min));
       return GSL_SUCCESS;
     }
     else {
@@ -680,14 +688,7 @@ coulomb_small_args(double lam_min, int kmax,
                            &Fp_lam_min, &Gp_lam_min,
 		           &F_e, &G_e
                            );
-#if 0
-    /* continued fraction to get the ratio (G' + i F')/(G + i F) */
-    stat_CF2 = coulomb_CF2(lam_min, eta, x, &P, &Q);
-  
-    /* solve for the values of G,G' at lam_min */
-    G_lam_min  = (Fp_lam_min - P * F_lam_min)/Q;
-    Gp_lam_min = P*G_lam_min - Q*F_lam_min;
-#endif
+
     /* forward recurrence to get gc[] and gcp[] */
     coulomb_G_recur(lam_min,  kmax, eta, x, G_lam_min, Gp_lam_min, gc, gcp);
   }
