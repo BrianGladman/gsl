@@ -74,6 +74,7 @@ include_HEADERS = \
 	gsl_sf_coulomb.h	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_erf.h        	\
+	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gamma.h      	\
 	gsl_sf_laguerre.h   	\
@@ -114,6 +115,7 @@ libgslspecfunc_a_SOURCES = 	\
 	coulomb.c		\
 	dilog.c			\
 	erfc.c			\
+	expint.c		\
 	fermi_dirac.c		\
 	gamma.c			\
 	laguerre.c		\
@@ -139,9 +141,9 @@ libgslspecfunc_a_LIBADD =
 libgslspecfunc_a_OBJECTS =  airy.o bessel.o bessel_I0.o bessel_I1.o \
 bessel_In.o bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o bessel_K1.o \
 bessel_Kn.o bessel_Y0.o bessel_Y1.o bessel_Yn.o bessel_amp_phase.o \
-bessel_j.o chebyshev.o coulomb.o dilog.o erfc.o fermi_dirac.o gamma.o \
-laguerre.o legendre.o legendre_assoc.o log.o pow_int.o psi.o sig2lamp.o \
-t-erf.o trig.o
+bessel_j.o chebyshev.o coulomb.o dilog.o erfc.o expint.o fermi_dirac.o \
+gamma.o laguerre.o legendre.o legendre_assoc.o log.o pow_int.o psi.o \
+sig2lamp.o t-erf.o trig.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -162,10 +164,10 @@ DEP_FILES =  .deps/airy.P .deps/bessel.P .deps/bessel_I0.P \
 .deps/bessel_Jn.P .deps/bessel_K0.P .deps/bessel_K1.P .deps/bessel_Kn.P \
 .deps/bessel_Y0.P .deps/bessel_Y1.P .deps/bessel_Yn.P \
 .deps/bessel_amp_phase.P .deps/bessel_j.P .deps/chebyshev.P \
-.deps/coulomb.P .deps/dilog.P .deps/erfc.P .deps/fermi_dirac.P \
-.deps/gamma.P .deps/laguerre.P .deps/legendre.P .deps/legendre_assoc.P \
-.deps/log.P .deps/pow_int.P .deps/psi.P .deps/sig2lamp.P .deps/t-erf.P \
-.deps/test_sf.P .deps/trig.P
+.deps/coulomb.P .deps/dilog.P .deps/erfc.P .deps/expint.P \
+.deps/fermi_dirac.P .deps/gamma.P .deps/laguerre.P .deps/legendre.P \
+.deps/legendre_assoc.P .deps/log.P .deps/pow_int.P .deps/psi.P \
+.deps/sig2lamp.P .deps/t-erf.P .deps/test_sf.P .deps/trig.P
 SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)
 OBJECTS = $(libgslspecfunc_a_OBJECTS) $(test_sf_OBJECTS)
 

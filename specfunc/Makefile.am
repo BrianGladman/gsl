@@ -11,6 +11,7 @@ include_HEADERS = \
 	gsl_sf_coulomb.h	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_erf.h        	\
+	gsl_sf_expint.h        	\
 	gsl_sf_fermi_dirac.h	\
 	gsl_sf_gamma.h      	\
 	gsl_sf_laguerre.h   	\
@@ -52,6 +53,7 @@ libgslspecfunc_a_SOURCES = 	\
 	coulomb.c		\
 	dilog.c			\
 	erfc.c			\
+	expint.c		\
 	fermi_dirac.c		\
 	gamma.c			\
 	laguerre.c		\
