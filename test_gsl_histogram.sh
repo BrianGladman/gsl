@@ -1,6 +1,8 @@
 #! /bin/sh
 
 cat > test.exp.1.tmp <<EOF
+# mean = 2.75
+# sigma = 1.08972
 1 2 1
 2 3 2
 3 4 0
