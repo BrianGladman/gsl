@@ -577,7 +577,7 @@ and diagonal of @var{C} are used.
 These functions compute a rank-2k update of the hermitian matrix @var{C},
 @math{C = \alpha A B^H + \alpha^* B A^H + \beta C} when @var{Trans} is
 @code{CblasNoTrans} and @math{C = \alpha A^H B + \alpha^* B^H A + \beta C} when
-@var{Trans} is @code{CblasTrans}.  Since the matrix @var{C} is hermitian
+@var{Trans} is @code{CblasConjTrans}.  Since the matrix @var{C} is hermitian
 only its upper half or lower half need to be stored.  When @var{Uplo} is
 @code{CblasUpper} then the upper triangle and diagonal of @var{C} are
 used, and when @var{Uplo} is @code{CblasLower} then the lower triangle
