@@ -124,7 +124,7 @@ my_f (double x, size_t dim, void * p) @{
 gsl_monte_function F;
 struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
 
-F.function = &my_f;
+F.f = &my_f;
 F.dim = 2;
 F.params = &params;
 @end example
@@ -133,7 +133,7 @@ The function @math{f(x)} can be evaluated using the following macro,
 
 @example
 #define GSL_MONTE_FN_EVAL(F,x) 
-    (*((F)->function))(x,(F)->dim,(F)->params)
+    (*((F)->f))(x,(F)->dim,(F)->params)
 @end example
 
 @node PLAIN Monte Carlo
