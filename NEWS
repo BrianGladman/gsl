@@ -1,5 +1,7 @@
 * Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
 
+** IEEE modes support on Tru64
+
 ** We have added the second generation RANLUX generators RANLXS and RANLXD
 
 ** Minimization algorithms are available (one-dimensional)

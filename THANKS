@@ -4,3 +4,6 @@ Bernd Petrovitsch <bernd@ict.tuwien.ac.at>
 
 Nelson H. F. Beebe <beebe@math.utah.edu>: references and testing the
 software on many different platforms.
+
+Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu>: IEEE support for Tru64
+and testing
