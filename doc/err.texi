@@ -46,13 +46,22 @@ of error.  The return value is analogous to the value of the variable
 and decide what action to take, including ignoring the error if it is
 not considered serious.
 
-In addition to reporting errors the library also has an error handler
-function.  The error handler is called by library functions when they
-report an error, just before they return to the caller.  The purpose of
-the handler is to provide a function where a breakpoint can be set that
-will catch library errors when running under the debugger.  It is not
-intended for use in production programs, which should handle any errors
-using the return codes.
+In addition to reporting errors by return codes the library also has an
+error handler function @code{gsl_error}.  This function is called by
+other library functions when they report an error, just before they
+return to the caller.  The default behavior of the error handler is to
+print a message and abort the program,
+
+@example
+gsl: file.c:67: ERROR: invalid argument supplied by user
+Default GSL error handler invoked.
+Aborted
+@end example
+
+The purpose of the @code{gsl_error} handler is to provide a function
+where a breakpoint can be set that will catch library errors when
+running under the debugger.  It is not intended for use in production
+programs, which should handle any errors using the return codes.
 
 @node Error Codes
 @section Error Codes
@@ -109,7 +118,7 @@ status value of @code{GSL_ERANGE}.
 @cindex Error handlers
 
 The default behavior of the GSL error handler is to print a short
-message and call @code{abort()}.  When the default is in use programs
+message and call @code{abort()}.  When this default is in use programs
 will stop with a core-dump whenever a library routine reports an error.
 This is intended as a fail-safe default for programs which do not check
 the return status of library routines (we don't encourage you to write
