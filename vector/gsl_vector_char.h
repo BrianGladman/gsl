@@ -50,7 +50,7 @@ gsl_vector_char_ptr (const gsl_vector_char * v, const size_t i)
       GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return v->data + i;
+  return v->data + i * v->stride;
 }
 
 extern inline
