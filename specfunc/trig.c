@@ -72,6 +72,10 @@ int gsl_sf_lnsinh_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
+  else if(x < GSL_ROOT6_MACH_EPS) {
+    *result = log(x) + x*x/6.0*(1.0 - x*x/30.0*(1.0 - 4.0/63.0*x*x));
+    return GSL_SUCCESS;
+  }
   else if(x < -0.5*GSL_LOG_MACH_EPS) {
     *result = x + log(0.5*(1.0 - exp(-2.0*x)));
     return GSL_SUCCESS;

@@ -8,6 +8,11 @@
 #include "gsl_sf_log.h"
 
 
+#define locMAX(a,b) ((a) > (b) ? (a) : (b))
+#define locMIN(a,b) ((a) < (b) ? (a) : (b))
+
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* Chebyshev expansion for log(2 + t/2), -1<t<1
@@ -82,8 +87,11 @@ int gsl_sf_log_abs_impl(const double x, double * result)
 int gsl_sf_complex_log_impl(const double zr, const double zi, double * lnr, double * theta)
 {
   if(zr != 0.0 || zi != 0.0) {
-    double r2 = zr*zr + zi*zi;
-    *lnr = 0.5*log(r2);
+    double ax = fabs(zr);
+    double ay = fabs(zi);
+    double min = locMIN(ax, ay);
+    double max = locMAX(ax, ay);
+    *lnr   = log(max) + 0.5 * log(1.0 + (min/max)*(min/max));
     *theta = atan2(zi, zr);
     return GSL_SUCCESS;
   }

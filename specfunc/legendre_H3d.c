@@ -19,6 +19,7 @@
 /* Logarithm of normalization factor, Log[N(ell,lambda)].
  * N(ell,lambda) = Product[ lambda^2 + n^2, {n,0,ell} ]
  *               = |Gamma(ell + 1 + I lambda)|^2  lambda sinh(Pi lambda) / Pi
+ * Assumes ell >= 0.
  */
 static
 int
@@ -29,6 +30,21 @@ legendre_H3d_lnnorm(const int ell, const double lambda, double * result)
   if(abs_lam == 0.0) {
     *result = 0.0;
     return GSL_EDOM;
+  }
+  else if(lambda > (ell + 1.0)/GSL_ROOT3_MACH_EPS) {
+    /* There is a cancellation between the sinh(Pi lambda)
+     * term and the log(gamma(ell + 1 + i lambda) in the
+     * result below, so we show some care and save some digits.
+     * Note that the above guarantees that lambda is large,
+     * since ell >= 0. We use Stirling and a simple expansion
+     * of sinh.
+     */
+    double rat = (ell+1.0)/lambda;
+    double ln_lam2ell2  = 2.0*log(lambda) + log(1.0 + rat*rat);
+    double lg_corrected = -2.0*(ell+1.0) + M_LNPI + (ell+0.5)*ln_lam2ell2 + 1.0/(288.0*lambda*lambda);
+    double angle_terms  = lambda * 2.0 * rat * (1.0 - rat*rat/3.0);
+    *result = log(abs_lam) + lg_corrected + angle_terms - M_LNPI;
+    return GSL_SUCCESS;
   }
   else {
     double lg_r;
@@ -44,6 +60,17 @@ legendre_H3d_lnnorm(const int ell, const double lambda, double * result)
 
 /* Calculate series for small eta*lambda.
  * Assumes eta > 0, lambda != 0.
+ *
+ * This is just the defining hypergeometric for the Legendre function.
+ *
+ * P^{mu}_{-1/2 + I lam}(z) = 1/Gamma(l+3/2) ((z+1)/(z-1)^(mu/2)
+ *                            2F1(1/2 - I lam, 1/2 + I lam; l+3/2; (1-z)/2)
+ * We use
+ *       z = cosh(eta)
+ * (z-1)/2 = sinh^2(eta/2)
+ *
+ * And recall
+ * H3d = sqrt(Pi Norm /(2 lam^2 sinh(eta))) P^{-l-1/2}_{-1/2 + I lam}(cosh(eta))
  */
 static
 int
@@ -51,30 +78,27 @@ legendre_H3d_series(const int ell, const double lambda, const double eta, double
 {
   const int nmax = 5000;
   const double shheta = sinh(0.5*eta);
+  const double ln_zp1 = M_LN2 + log(1.0 + shheta*shheta);
+  const double ln_zm1 = M_LN2 + 2.0*log(shheta);
+  const double zeta = -shheta*shheta;
+  double lg_lp32;
   double term = 1.0;
   double sum  = 1.0;
-  double sgn  = 1.0;
   double lnsheta;
   double lnN;
-  double lndf;
-  double lnpre;
+  double lnpre, lnprepow;
   int stat_e;
   int n;
 
+  gsl_sf_lngamma_impl(ell + 3.0/2.0, &lg_lp32);
   gsl_sf_lnsinh_impl(eta, &lnsheta);
-  gsl_sf_lndoublefact_impl((unsigned int)(2*ell + 1), &lndf);
   legendre_H3d_lnnorm(ell, lambda, &lnN);
-  lnpre = 0.5*lnN + ell*lnsheta - log(lambda) - lndf;
-
-  term /= (ell + 0.5);
+  lnprepow = 0.5*(ell + 0.5) * (ln_zm1 - ln_zp1);
+  lnpre = lnprepow + 0.5*(lnN + M_LNPI - M_LN2 - lnsheta) - lg_lp32 - log(fabs(lambda));
 
   for(n=1; n<nmax; n++) {
-    double Cn_term = (lambda*lambda + (double)(ell+n)*(ell+n));
-    double Dn_term = (ell + n + 0.5);
-    sgn   = -sgn;
-    term *= (Cn_term/Dn_term);
-    term /= n;
-    term *= sgn * (shheta * shheta);
+    double aR = n - 0.5;
+    term *= (aR*aR + lambda*lambda)*zeta/(ell + n + 0.5)/n;
     sum  += term;
     if(fabs(term/sum) < 10.0 * GSL_MACH_EPS) break;
   }
@@ -272,6 +296,11 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     *result = 0.0;
     return GSL_EDOM;
   }
+  else if(eta > GSL_LOG_DBL_MAX) {
+    /* cosh(eta) is too big. */
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
   else if(ell == 0) {
     return gsl_sf_legendre_H3d_0_impl(lambda, eta, result);
   }
@@ -285,11 +314,11 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
   else if(xi < 1.0) {
     return legendre_H3d_series(ell, lambda, eta, result);
   }
-  else if((ell*ell+lsq)/sqrt(1.0+lsq)/(cosh_eta*cosh_eta) < GSL_ROOT3_MACH_EPS) {
+  else if((ell*ell+lsq)/sqrt(1.0+lsq)/(cosh_eta*cosh_eta) < 5.0*GSL_ROOT3_MACH_EPS) {
     double P;
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(-ell-0.5, lambda, cosh_eta, &P, &lm);
-        if(lm == 0.0 || P == 0.0) {
+    if(P == 0.0) {
       *result = P;
       return stat_P;
     }
@@ -301,7 +330,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
-      stat_e = gsl_sf_exp_sgn_impl(lnP + lm, P, result);
+      stat_e = gsl_sf_exp_sgn_impl(lnpre + lnP + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }
@@ -312,7 +341,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
                                                            lambda,
                                                            cosh_eta, eta,
                                                            &P, &lm);
-    if(lm == 0.0 || P == 0.0) {
+    if(P == 0.0) {
       *result = P;
       return stat_P;
     }
@@ -324,7 +353,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
-      stat_e = gsl_sf_exp_sgn_impl(lnP + lm, P, result);
+      stat_e = gsl_sf_exp_sgn_impl(lnpre + lnP + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }
@@ -348,13 +377,13 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
       double H0;
       int stat_H0 = gsl_sf_legendre_H3d_0_impl(lambda, eta, &H0);
       *result = GSL_SQRT_DBL_MIN/Hl * H0;
-      return stat_H0;
+      return GSL_ERROR_SELECT_2(stat_H0, stat_CF1);
     }
     else {
       double H1;
       int stat_H1 = gsl_sf_legendre_H3d_1_impl(lambda, eta, &H1);
       *result = GSL_SQRT_DBL_MIN/Hlp1 * H1;
-      return stat_H1;
+      return GSL_ERROR_SELECT_2(stat_H1, stat_CF1);
     }
   }
 }

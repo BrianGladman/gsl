@@ -10,7 +10,7 @@
  * Returns the real part of Log[Gamma[x]] when x < 0,
  * i.e. Log[|Gamma[x]|].
  *
- * exceptions: GSL_EDOM
+ * exceptions: GSL_EDOM, GSL_EROUND
  */
 int     gsl_sf_lngamma_impl(double x, double * result);
 int     gsl_sf_lngamma_e(double x, double * result);
@@ -22,7 +22,7 @@ double  gsl_sf_lngamma(double);
  * the sign of Gamma[x] as well as Log[|Gamma[x]|] for x < 0.
  * So Gamma[x] = sgn * Exp[result_lg].
  *
- * exceptions: GSL_EDOM
+ * exceptions: GSL_EDOM, GSL_EROUND
  */
 int     gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double *sgn);
 int     gsl_sf_lngamma_sgn_e(double x, double * result_lg, double * sgn);
@@ -31,7 +31,7 @@ int     gsl_sf_lngamma_sgn_e(double x, double * result_lg, double * sgn);
 /* Gamma(x), x not a negative integer
  * Uses real Lanczos method.
  *
- * exceptions: GSL_EDOM, GSL_EOVRFLW
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EROUND
  */
 int     gsl_sf_gamma_impl(double x, double * result);
 int     gsl_sf_gamma_e(double x, double * result);
@@ -41,7 +41,7 @@ double  gsl_sf_gamma(double x);
 /* 1/Gamma(x)
  * Uses real Lanczos method.
  *
- * exceptions: GSL_EUNDRFLW
+ * exceptions: GSL_EUNDRFLW, GSL_EROUND
  */
 int     gsl_sf_gammainv_impl(double x, double * result);
 int     gsl_sf_gammainv_e(double x, double * result);
@@ -49,13 +49,17 @@ double  gsl_sf_gammainv(double x);
 
 
 /* Log[Gamma(z)] for z complex, z not a negative integer
- * Uses complex Lanczos method.
+ * Uses complex Lanczos method. Note that the phase part (arg)
+ * is not well-determined when |z| is very large, due
+ * to inevitable roundoff in restricting to (-Pi,Pi].
+ * This will raise the GSL_ELOSS exception when it occurs.
+ * The absolute value part (lnr), however, never suffers.
  *
  * Calculates:
  *   lnr = log|Gamma(z)|
  *   arg = arg(Gamma(z))  in (-Pi, Pi]
  *
- * exceptions: GSL_EDOM
+ * exceptions: GSL_EDOM, GSL_ELOSS
  */
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg);
 int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg);

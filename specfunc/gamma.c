@@ -12,7 +12,6 @@
 #include "gsl_sf_gamma.h"
 
 #define LogRootTwoPi_  0.9189385332046727418
-#define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
@@ -553,7 +552,9 @@ static double lanczos_7_c[9] = {
 /* complex version of Lanczos method; this is not safe for export
  * since it becomes bad in the left half-plane
  */
-static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
+static
+int
+lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
 {
   int k;
   double log1_r,    log1_i;
@@ -578,7 +579,7 @@ static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * 
   /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
   *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
   *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
-  gsl_sf_angle_restrict_symm_impl(yi);
+  return gsl_sf_angle_restrict_symm_impl(yi);
 }
 
 
@@ -628,6 +629,37 @@ lngamma_sgn_sing(int N, double eps, double * lng, double * sgn)
     return GSL_SUCCESS;
   }
 }
+
+
+/* This gets bad near the negative half axis. However, this
+ * region can be avoided by use of the reflection formula, as usual.
+ * Only the first two terms of the series are kept.
+ */
+#if 0
+static
+int
+lngamma_complex_stirling(const double zr, const double zi, double * lg_r, double * arg)
+{
+  double re_zinv,  im_zinv;
+  double re_zinv2, im_zinv2;
+  double re_zinv3, im_zinv3;
+  double re_zhlnz, im_zhlnz;
+  double r, lnr, theta;
+  gsl_sf_complex_log_impl(zr, zi, &lnr, &theta);  /* z = r e^{i theta} */
+  r = exp(lnr);
+  re_zinv =  (zr/r)/r;
+  im_zinv = -(zi/r)/r;
+  re_zinv2 = re_zinv*re_zinv - im_zinv*im_zinv;
+  re_zinv2 = 2.0*re_zinv*im_zinv;
+  re_zinv3 = re_zinv2*re_zinv - im_zinv2*im_zinv;
+  re_zinv3 = re_zinv2*im_zinv + im_zinv2*re_zinv;
+  re_zhlnz = (zr - 0.5)*lnr - zi*theta;
+  im_zhlnz = zi*lnr + zr*theta;
+  *lg_r = re_zhlnz - zr + 0.5*(M_LN2+M_LNPI) + re_zinv/12.0 - re_zinv3/360.0;
+  *arg  = im_zhlnz - zi + 1.0/12.0*im_zinv - im_zinv3/360.0;
+  return GSL_SUCCESS;
+}
+#endif /* 0 */
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -734,7 +766,6 @@ int
 gsl_sf_gammainv_impl(const double x, double * result)
 {
   double lng, sgn;
-  double g;
   int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
   if(stat_lng == GSL_EDOM) {
     *result = 0.0;
@@ -745,9 +776,7 @@ gsl_sf_gammainv_impl(const double x, double * result)
     return stat_lng;
   }
   else {
-    int stat_exp = gsl_sf_exp_impl(-lng, &g);
-    *result = sgn * g;
-    return stat_exp;
+    return gsl_sf_exp_sgn_impl(-lng, sgn, result);
   }
 }
 
@@ -755,23 +784,23 @@ gsl_sf_gammainv_impl(const double x, double * result)
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
 {
   if(zr <= 0.5) {
-    /* transform to right half plane using reflection;
-     * in fact we do a little better by stopping at 1/2
+    /* Transform to right half plane using reflection;
+     * in fact we do a little better by stopping at 1/2.
      */
-    int status;
-    double x = 1.-zr;
+    double x = 1.0-zr;
     double y = -zi;
     double a, b;
     double lnsin_r, lnsin_i;
+
+    int stat_l = lngamma_lanczos_complex(x, y, &a, &b);
+    int stat_s = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
     
-    lngamma_lanczos_complex(x, y, &a, &b);
-    status = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
-    
-    if(status == GSL_SUCCESS) {
-      *lnr = LogPi_ - lnsin_r - a;
+    if(stat_s == GSL_SUCCESS) {
+      int stat_r;
+      *lnr = M_LNPI - lnsin_r - a;
       *arg =        - lnsin_i - b;
-      gsl_sf_angle_restrict_symm_impl(arg);
-      return GSL_SUCCESS;
+      stat_r = gsl_sf_angle_restrict_symm_impl(arg);
+      return GSL_ERROR_SELECT_2(stat_r, stat_l);
     }
     else {
       return GSL_EDOM;
@@ -779,8 +808,7 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
   }
   else {
     /* otherwise plain vanilla Lanczos */
-    lngamma_lanczos_complex(zr, zi, lnr, arg);
-    return GSL_SUCCESS;
+    return lngamma_lanczos_complex(zr, zi, lnr, arg);
   }
 }
 

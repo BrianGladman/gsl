@@ -392,7 +392,15 @@ static double olver_B0_xi(double mu, double xi)
 static double olver_A1_xi(double mu, double xi, double x)
 {
   double B = olver_B0_xi(mu, xi);
-  double psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) - 1.0/(xi*xi));
+  double psi;
+  if(fabs(x - 1.0) < GSL_ROOT4_MACH_EPS) {
+    double y = x - 1.0;
+    double s = -1.0/3.0 + y*(2.0/15.0 - y *(61.0/945.0 - 452.0/14175.0*y));
+    psi = (4.0*mu*mu - 1.0)/16.0 * s;
+  }
+  else {
+    psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) - 1.0/(xi*xi));
+  }
   return 0.5*xi*xi*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
 }
 
@@ -407,7 +415,15 @@ static double olver_B0_th(double mu, double theta)
 static double olver_A1_th(double mu, double theta, double x)
 {
   double B = olver_B0_th(mu, theta);
-  double psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) + 1.0/(theta*theta));
+  double psi;
+  if(fabs(x - 1.0) < GSL_ROOT4_MACH_EPS) {
+    double y = 1.0 - x;
+    double s = -1.0/3.0 + y*(2.0/15.0 - y *(61.0/945.0 - 452.0/14175.0*y));
+    psi = (4.0*mu*mu - 1.0)/16.0 * s;
+  }
+  else {
+    psi = (4.0*mu*mu - 1.0)/16.0 * (1.0/(x*x-1.0) + 1.0/(theta*theta));
+  }
   return -0.5*theta*theta*B*B + (mu+0.5)*B - psi + mu/6.0*(0.25 - mu*mu);
 }
 
@@ -444,7 +460,7 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
   arg = tau*xi;
   gsl_sf_bessel_Jnu_impl(mu + 1.0,   arg, &J_mup1);
   gsl_sf_bessel_Jnu_impl(mu,         arg, &J_mu);
-  J_mum1 = -J_mup1 + 2.0*mu/arg;      /* careful of mu < 1 */
+  J_mum1 = -J_mup1 + 2.0*mu/arg*J_mu;      /* careful of mu < 1 */
 
   sumA = 1.0 - olver_A1_xi(-mu, xi, x)/(tau*tau);
   sumB = olver_B0_xi(-mu, xi);
@@ -541,7 +557,7 @@ conicalP_hyperg_large_x(const double mu, const double tau, const double y,
 {
   const double d1 = (1.0 + tau*tau);
   const double d2 = (4.0 + tau*tau);
-  const double A = (3.0/16.0 - mu*(0.5 - mu) + 0.25*(1.0 - 0.5*mu))/d1;
+  const double A = (3.0/16.0 - mu*(0.5 - 0.25*mu) + 0.25*tau*tau*(1.0 - 2.0*mu))/d1;
   const double B = tau*(5.0/16.0 - 0.25*mu*mu + 0.25*tau*tau)/d1;
   const double C = (35.0/8.0 - mu *(3.0 - 0.5*mu) + tau*tau*(1.0 - 0.5*mu))/d2;
   const double D = tau*(13.0/16.0 + mu*(0.5 - 0.25*mu) + 0.25*tau*tau)/d2;
@@ -580,9 +596,9 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
   double lnpre_const = 0.5*M_LN2 - 0.5*M_LNPI;
   double lnpre_comm = (mu-0.5)*log(x) - 0.5*mu*(log(x+1.0) + log(x-1.0));
 
-  /*  result = pre*|F|*|f| * cos(angle - tau * log(x))
+  /*  result = pre*|F|*|f| * cos(angle - tau * (log(x)+M_LN2))
    */
-  double c = cos(angle - tau*log(x));
+  double c = cos(angle - tau*(log(x) + M_LN2));
   int status = GSL_ERROR_SELECT_3(stat_gd, stat_gn, stat_F);
   if(c == 0.0) {
     *result = 0.0;
