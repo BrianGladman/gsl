@@ -43,11 +43,11 @@ int jac_exp (double t, const double y[], double *dfdy, double dfdt[],
 int rhs_stiff (double t, const double y[], double f[], void *params);
 int jac_stiff (double t, const double y[], double *dfdy, double dfdt[],
                void *params);
-int test_stepper_linear (const gsl_odeiv_step_type * T, double h,
+void test_stepper_linear (const gsl_odeiv_step_type * T, double h,
                          double base_prec);
-int test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec);
-int test_stepper_exp (const gsl_odeiv_step_type * T, double h, double base_prec);
-int test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec);
+void test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec);
+void test_stepper_exp (const gsl_odeiv_step_type * T, double h, double base_prec);
+void test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec);
 void test_evolve_system_flat (gsl_odeiv_step * step,
                               const gsl_odeiv_system * sys,
                               double t0, double t1, double hstart,
@@ -213,7 +213,7 @@ gsl_odeiv_system rhs_func_stiff = {
 };
 
 
-int
+void
 test_stepper_linear (const gsl_odeiv_step_type * T, double h,
 		     double base_prec)
 {
@@ -248,12 +248,10 @@ test_stepper_linear (const gsl_odeiv_step_type * T, double h,
 	    gsl_odeiv_step_name (stepper), delmax);
 
   gsl_odeiv_step_free (stepper);
-
-  return s;
 }
 
 
-int
+void
 test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec)
 {
   int s = 0;
@@ -327,16 +325,14 @@ test_stepper_sin (const gsl_odeiv_step_type * T, double h, double base_prec)
 	      sin (t), del);
     }
 
-  gsl_odeiv_step_free (stepper);
-
   gsl_test (s, "%s, sine [pi,100.5*pi], max absolute error = %g",
 	    gsl_odeiv_step_name (stepper), delmax);
 
-  return s;
+  gsl_odeiv_step_free (stepper);
 }
 
 
-int
+void
 test_stepper_exp (const gsl_odeiv_step_type * T, double h, double base_prec)
 {
   int s = 0;
@@ -366,16 +362,13 @@ test_stepper_exp (const gsl_odeiv_step_type * T, double h, double base_prec)
       count++;
     }
 
-  gsl_odeiv_step_free (stepper);
-
   gsl_test (s, "%s, exponential [0,20], max relative error = %g",
 	    gsl_odeiv_step_name (stepper), delmax);
 
-  return s;
+  gsl_odeiv_step_free (stepper);
 }
 
-
-int
+void
 test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec)
 {
   int s = 0;
@@ -415,12 +408,10 @@ test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec)
       count++;
     }
 
-  gsl_odeiv_step_free (stepper);
-
   gsl_test (s, "%s, stiff [0,20], max relative error = %g",
 	    gsl_odeiv_step_name (stepper), delmax);
 
-  return s;
+  gsl_odeiv_step_free (stepper);
 }
 
 void
@@ -451,10 +442,10 @@ test_evolve_system_flat (gsl_odeiv_step * step,
       s++;
     }
 
-  gsl_odeiv_evolve_free (e);
-
   gsl_test (s, "%s, %s, evolve, no control, max relative error = %g",
 	    gsl_odeiv_step_name (step), desc, frac);
+
+  gsl_odeiv_evolve_free (e);
 }
 
 
@@ -491,12 +482,12 @@ test_evolve_system (const gsl_odeiv_step_type * T,
       s++;
     }
 
+  gsl_test (s, "%s, %s, evolve, standard control, relative error = %g",
+	    gsl_odeiv_step_name (step), desc, frac);
+
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);
   gsl_odeiv_step_free (step);
-
-  gsl_test (s, "%s, %s, evolve, standard control, relative error = %g",
-	    gsl_odeiv_step_name (step), desc, frac);
 }
 
 
