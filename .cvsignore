@@ -7,7 +7,6 @@ _libs
 aclocal.m4
 config.cache
 config.h
-config.h.in
 config.h.win32
 config.log
 config.status
