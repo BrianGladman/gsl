@@ -1,3 +1,12 @@
+* Subtle bug(?) in BLAS. If uninitialized memory is passed with a
+multiplier of zero then it is accessed and multiplied by zero. This
+would be ok, except that the memory could contain NaN or Inf. Should
+check for zero multiplier and explicitly handle it.
+  
+  Don't pass uninitialized memory!  You might want to have infinities
+  and NANs in a vector and special casing the multiplier == 0 would 
+  lose the correct IEEE properties for these quantities
+
 * Upgrade to texinfo-4.0.  
 
 * Definitions of macros which are negative numbers should use
