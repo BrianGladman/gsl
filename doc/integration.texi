@@ -140,17 +140,17 @@ estimate of the error in the approximation.
 @cindex Modified Clenshaw-Curtis quadrature
 For integrands with weight functions the algorithms use Clenshaw-Curtis
 quadrature rules.  A Clenshaw-Curtis rule begins with an @math{n}-th
-order Chebyschev polynomial approximation to the integrand.  This
+order Chebyshev polynomial approximation to the integrand.  This
 polynomial can be integrated exactly to give an approximation to the
-integral of the original function.  The Chebyschev expansion can be
+integral of the original function.  The Chebyshev expansion can be
 extended to higher orders to improve the approximation.  The presence of
 singularities (or other behavior) in the integrand can cause slow
-convergence in the Chebyschev approximation.  The modified
+convergence in the Chebyshev approximation.  The modified
 Clenshaw-Curtis rules used in @sc{quadpack} separate out several common
 weight functions which cause slow convergence.  These weight functions
-are integrated analytically against the Chebyschev polynomials to
-precompute @dfn{modified Chebyschev moments}.  Combining the moments with
-the Chebyschev approximation to the function gives the desired
+are integrated analytically against the Chebyshev polynomials to
+precompute @dfn{modified Chebyshev moments}.  Combining the moments with
+the Chebyshev approximation to the function gives the desired
 integral.  The use of analytic integration for the singular part of the
 function allows exact cancellations and substantially improves the
 overall convergence behavior of the integration.
@@ -413,7 +413,7 @@ integration rule.
 The QAWS algorithm is designed for integrands with algebraic-logarithmic
 singularities at the end-points of an integration region.  In order to
 work efficiently the algorithm requires a precomputed table of
-Chebyschev moments.
+Chebyshev moments.
 
 @deftypefun {gsl_integration_qaws_table *} gsl_integration_qaws_table_alloc (double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
 
@@ -519,7 +519,7 @@ Gauss-Kronrod integration rule is used.
 @cindex oscillatory functions, numerical integration of
 The QAWO algorithm is designed for integrands with an oscillatory
 factor, @math{\sin(\omega x)} or @math{\cos(\omega x)}.  In order to
-work efficiently the algorithm requires a table of Chebyschev moments
+work efficiently the algorithm requires a table of Chebyshev moments
 which must be pre-computed with calls to the functions below.
 
 @deftypefun {gsl_integration_qawo_table *} gsl_integration_qawo_table_alloc (double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine}, size_t @var{n})
