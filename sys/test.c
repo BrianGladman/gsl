@@ -201,7 +201,7 @@ main (void)
     }
   }
 
-  /* Test for isinf, isnan, isreal*/
+  /* Test for isinf, isnan, finite*/
 
   {
     double zero, one, inf, nan;
@@ -220,6 +220,9 @@ main (void)
     
     s = gsl_isinf(inf);
     gsl_test_int (s, 1, "gsl_isinf(inf)");
+
+    s = gsl_isinf(-inf);
+    gsl_test_int (s, -1, "gsl_isinf(-inf)");
     
     s = gsl_isinf(nan);
     gsl_test_int (s, 0, "gsl_isinf(nan)");
@@ -238,17 +241,17 @@ main (void)
     gsl_test_int (s, 1, "gsl_isnan(nan)");
 
 
-    s = gsl_isreal(zero);
-    gsl_test_int (s, 1, "gsl_isreal(0)");
+    s = gsl_finite(zero);
+    gsl_test_int (s, 1, "gsl_finite(0)");
     
-    s = gsl_isreal(one);
-    gsl_test_int (s, 1, "gsl_isreal(1)");
+    s = gsl_finite(one);
+    gsl_test_int (s, 1, "gsl_finite(1)");
     
-    s = gsl_isreal(inf);
-    gsl_test_int (s, 0, "gsl_isreal(inf)");
+    s = gsl_finite(inf);
+    gsl_test_int (s, 0, "gsl_finite(inf)");
     
-    s = gsl_isreal(nan);
-    gsl_test_int (s, 0, "gsl_isreal(nan)");
+    s = gsl_finite(nan);
+    gsl_test_int (s, 0, "gsl_finite(nan)");
   }
 
   return gsl_test_summary ();

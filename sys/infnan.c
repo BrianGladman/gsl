@@ -22,8 +22,35 @@
 
 int gsl_isnan (const double x);
 int gsl_isinf (const double x);
-int gsl_isreal (const double x);
+int gsl_finite (const double x);
 
+#if defined(_MSC_VER) /* Microsoft Visual C++ */
+#include <float.h>
+int
+gsl_isnan (const double x)
+{
+  return _isnan(x);
+}
+
+int
+gsl_isinf (const double x)
+{
+  int fpc = _fpclass(x);
+
+  if (fpc == _FPCLASS_PINF)
+    return +1;
+  else if (fpc == _FPCLASS_NINF)
+    return -1;
+  else 
+    return 0;
+}
+
+int
+gsl_finite (const double x)
+{
+  return _finite(x);
+}
+#else
 int
 gsl_isnan (const double x)
 {
@@ -34,18 +61,23 @@ gsl_isnan (const double x)
 int
 gsl_isinf (const double x)
 {
-  if (x > DBL_MAX)
+  double y = x - x;
+  int s = (y != y);
+
+  if (s && x > 0)
     return +1;
-  else if (x < -DBL_MAX)
+  else if (s && x < 0)
     return -1;
   else
     return 0;
 }
 
 int
-gsl_isreal (const double x)
+gsl_finite (const double x)
 {
   const double y = x - x;
   int status = (y == y);
   return status;
 }
+#endif
+

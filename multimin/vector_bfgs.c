@@ -19,6 +19,7 @@
 
 /* vector_bfgs.c -- Limited memory Broyden-Fletcher-Goldfarb-Shanno conjugate gradient method */
 
+#include <config.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_blas_types.h>
 #include <gsl/gsl_blas.h>

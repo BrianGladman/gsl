@@ -2,6 +2,7 @@
    See http://www.nist.gov/itl/div898/strd/index.html for more
    information. */
 
+#include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_multifit.h>

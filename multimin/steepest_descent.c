@@ -19,6 +19,7 @@
 
 /* steepest_descent.c -- the dumb steepest descent algorithm */
 
+#include <config.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_blas_types.h>
 #include <gsl/gsl_blas.h>

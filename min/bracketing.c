@@ -19,6 +19,7 @@
 
 /* bracketing.c -- find an initial bracketing interval for a function to minimize */
 
+#include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_min.h>

@@ -21,6 +21,7 @@
 /* GSL implementation of BLAS operations for vectors and dense
  * matrices.  Note that GSL native storage is row-major.  */
 
+#include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_cblas.h>

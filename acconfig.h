@@ -103,3 +103,7 @@
 #define isnan gsl_isnan
 #endif
 
+#ifndef HAVE_ISNAN
+#define finite gsl_finite
+#endif
+

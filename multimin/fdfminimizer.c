@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multimin.h>
 
@@ -93,7 +94,7 @@ gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
 {
   gsl_vector_memcpy(h->x,x);
   GSL_MULTIMIN_FN_EVAL_F_DF(fdf,h->x,&(h->f),h->g);
-  if (!GSL_IS_REAL(h->f))
+  if (!finite(h->f))
     GSL_ERROR("function not continuous", GSL_EBADFUNC);
   return GSL_SUCCESS;
 }
@@ -121,7 +122,7 @@ gsl_multimin_fdf_history_step(gsl_multimin_fdf_history *h,
   h->f1 = h->f;
   gsl_multimin_compute_evaluation_point(h->x,h->x1,step,direction);
   GSL_MULTIMIN_FN_EVAL_F_DF(fdf,h->x,&(h->f),h->g);
-  if (!GSL_IS_REAL(h->f))
+  if (!finite(h->f))
     GSL_ERROR("function not continuous", GSL_EBADFUNC);
   return GSL_SUCCESS;
 }
@@ -318,7 +319,7 @@ gsl_multimin_fdf_minimizer_bracket(gsl_multimin_fdf_minimizer *s,
   bracket.lower = 0.0;
   f_lower = s->history->f;
   f_upper = GSL_FN_EVAL(s->f_directional,first_step);
-  if (!GSL_IS_REAL(f_upper))
+  if (!finite(f_upper))
     GSL_ERROR("function not continuous", GSL_EBADFUNC);
   status =  (s->bracketing)(s->f_directional,&minimum,
 			    &f_minimum,&bracket,&f_lower,&f_upper,eval_max);

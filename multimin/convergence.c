@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <config.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_blas_types.h>
 #include <gsl/gsl_blas.h>

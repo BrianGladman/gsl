@@ -105,7 +105,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
   state->f = f_new ;
   state->df = df_new ;
 
-  if (!GSL_IS_REAL (f_new))
+  if (!finite (f_new))
     {
       GSL_ERROR ("function not continuous", GSL_EBADFUNC);
     }
@@ -126,7 +126,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
         *root = x_1 - u * u / v ;  /* accelerated value */
     }
 
-  if (!GSL_IS_REAL (df_new))
+  if (!finite (df_new))
     {
       GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
     }

@@ -20,6 +20,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <config.h>
 #include <string.h>
 #include "odeiv_util.h"
 

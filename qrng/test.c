@@ -1,6 +1,7 @@
 /* Author: G. Jungman
  * RCS:    $Id$
  */
+#include <config.h>
 #include <gsl/gsl_ieee_utils.h>
 
 #include "gsl_qrng.h"

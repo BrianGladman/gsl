@@ -6,6 +6,7 @@
  *   [Bratley+Fox, TOMS 14, 88 (1988)]
  *   [Antonov+Saleev, USSR Comput. Maths. Math. Phys. 19, 252 (1980)]
  */
+#include <config.h>
 #include "gsl_qrng.h"
 
 
