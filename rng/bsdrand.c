@@ -19,11 +19,7 @@
 unsigned long int bsdrand_get (void *vstate);
 void bsdrand_set (void *state, unsigned long int s);
 
-static const unsigned long int m = 2147483648UL;
-static const long int a = 1103515245;
-static const long int c = 12345;
-
-typedef struct
+1typedef struct
   {
     unsigned long int x;
   }
@@ -36,7 +32,7 @@ bsdrand_get (void *vstate)
 
   /* The following line relies on unsigned 32-bit arithmetic */
 
-  state->x = (a * state->x + c) & 0x7fffffffUL;
+  state->x = (1103515245 * state->x + 12345) & 0x7fffffffUL;
 
   return state->x;
 }
@@ -55,12 +51,9 @@ bsdrand_set (void *vstate, unsigned long int s)
 static const gsl_rng_type bsdrand_type =
 {"bsdrand",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
- 0,         			/* RAND_MIN */
+ 0,				/* RAND_MIN */
  sizeof (bsdrand_state_t),
  &bsdrand_set,
  &bsdrand_get};
 
 const gsl_rng_type *gsl_rng_bsdrand = &bsdrand_type;
-
-
-
