@@ -5,11 +5,11 @@ failed you can find out what the precise cause of failure was. You can
 also define your own error handling functions to modify the default
 behavior of the library.
 
-Note: In this context we use the word @dfn{error} to mean something
-very different from a bug. An error report from the library just means
-that the library was not able to compute what you asked, to the level of
-precision you specified. In the case of problems caused by bugs, consult
-the chapter on @pxref{Debugging Numerical Programs}.
+Note: In this context we use the word @dfn{error} to mean something very
+different from a bug. An error report from the library just means that
+the library was not able to compute what you asked, to the level of
+precision you specified. In the case of problems caused by bugs,
+@pxref{Debugging Numerical Programs}.
 
 @menu
 * Error Reporting ::            
