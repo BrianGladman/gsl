@@ -6,191 +6,61 @@ This chapter describes the GSL special function library.
 * Airy Functions::
 * Bessel Functions:: 
 * Chebyshev Polynomials::
+* Clausen Functions::
 * Coulomb Wave Functions::
+* Coupling Coefficients (3j 6j 9j)::
+* Dawson Function::
+* Debye Functions::
 * Dilogarithm::
+* Elementary Operations::
+* Elliptic Integrals::
+* Elliptic Functions (Jacobi)::
 * Error Function::
+* Exponential Function::
+* Exponential Integrals::
 * Fermi-Dirac Function::
 * Gamma Function::
+* Gegenbauer Functions::
+* Hypergeometric Functions::
 * Laguerre Functions::
 * Legendre Functions and Spherical Harmonics::
-* Logarithm (Complex)::
+* Logarithm and Related Functions::
+* Polynomial Manipulation::
 * Power Function::
 * Psi (DiGamma) Function::
-* Trigonometric Functions (Complex)::
+* Synchrotron Functions::
+* Transport Functions::
+* Trigonometric Functions::
+* Zeta Functions::
 @end menu
 
-@comment
-@node Airy Functions
-@section Airy Functions
-@cindex Airy functions
-@cindex Ai(x)
-@cindex Bi(x)
 
-The Airy functions @math{Ai(x)} and @math{Bi(x)} are defined
-by the integral representations
-
-@tex
-\beforedisplay
-$$
-\eqalign{
-Ai(x) & = {1\over\pi} \int_0^\infty \cos( {1\over 3} t^3 + xt ) dt, \cr
-Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt) dt.
-}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-Ai(x) = @{1 / \pi@} \int_0^\infty \cos(@{1/3@} t^3 + xt ) dt,
-Bi(x) = @{1 / \pi@} \int_0^\infty (e^@{-t^3/3@} + \sin(@{1/3@} t^3 + xt) dt.
-@end example
-@end ifinfo
-@noindent
-They are linearly independent solutions of the equation 
-@c{$f(x)'' = x f(x)$}
-@math{f(x)'' = x f(x)}.
-
-Being functions of a single variable, they are quite easy to
-evaluate in production code, using fits to Chebyshev polynomials
-in various regions. Such fits provide a uniform approximation over
-the full domain of the function. The GSL implementation is 
-a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
-
-@deftypefun double gsl_sf_airy_Ai(double x)
-
-@deftypefunx double gsl_sf_airy_Bi(double x)
-
-@deftypefunx double gsl_sf_airy_Bi_scaled(double x)
-
-@end deftypefun
-
-
-@comment
-@node Bessel Functions
-@section Bessel Functions
-@cindex Bessel functions
-
-
-@comment
-@node Chebyshev Polynomials
-@section Chebyshev Polynomials
-@cindex Chebyshev polynomials
-
-The Chebyshev polynomials 
-@c{$T_n(x) = \cos(n \arccos x)$}
-@math{T_n(x) = \cos(n \arccos x)} provide an 
-orthogonal basis of polynomials on the interval @math{[-1,1]},
-with the weight function 
-@c{$1 \over \sqrt{1-x^2}$}
-@math{1 \over \sqrt@{1-x^2@}}. The first few such
-polynomials are
-
-@tex
-\beforedisplay
-$$
-\eqalign{
- T_0(x) & = 1, \cr
- T_1(x) & = x, \cr
- T_2(x) & = 2 x^2 - 1.
-}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
- T_0(x) = 1,
- T_1(x) = x,
- T_2(x) = 2 x^2 - 1.
-@end example
-@end ifinfo
-
-By construction, 
-@c{$T_n(x)$}
-@math{T_n(x)} has precisely @math{n} zeroes
-in the interval @math{[-1,1]}, located at
-@c{$x_k^{(n)} = \cos({\pi \over n} (k-1/2))$}
-@math{x_k^@{(n)@} = \cos(@{\pi \over n@} (k-1/2))}. It is the
-nature of these zeroes and the behaviour of the set of polynomials at
-these special points which makes the Chebyshev polynomials
-especially useful in numerical approximation of functions.
-
-@comment
-@node Coulomb Wave Functions
-@section Coulomb Wave Functions
-@cindex Coulomb wave functions
-
-
-@comment
-@node Dilogarithm
-@section Dilogarithm
-@cindex dilogarithm
-
-
-@comment
-@node Error Function
-@section Error Function
-@cindex error function
-@cindex erf(x)
-@cindex erfc(x)
-
-@comment
-@node Fermi-Dirac Function
-@section Fermi-Dirac Function
-@cindex Fermi-Dirac function
-
-
-@comment
-@node Gamma Function
-@section Gamma Function
-@cindex gamma function
-
-@comment
-@node Laguerre Functions
-@section Laguerre Functions
-@cindex Laguerre functions
-
-
-@comment
-@node Legendre Functions and Spherical Harmonics
-@section Legendre Functions and Spherical Harmonics
-@cindex Legendre functions
-@cindex spherical harmonics
-
-
-@comment
-@node Logarithm (Complex)
-@section Logarithm (Complex)
-@cindex logarithm
-
-
-@comment
-@node Power Function
-@section Power Function
-@cindex power function
-@cindex integer powers
-
-A common complaint about the standard C library is its lack of
-a function for calculating (small) integer powers. GSL provides
-a simple function to fill this gap.
-
-@deftypefun double gsl_sf_pow_int(double x, int n)
-@end deftypefun
-
-@example
-#include <gsl_sf_pow_int.h>
-double y = gsl_sf_pow_int(3., 12)
-@end example
-
-@comment
-@node Psi (DiGamma) Function
-@section Psi (DiGamma) Function
-@cindex psi function
-@cindex digamma function
-
-
-@comment
-@node Trigonometric Functions (Complex)
-@section Trigonometric Functions (Complex)
-@cindex trigonometric functions 
-@cindex sine
-@cindex cosine
+@include specfunc-airy.texi
+@include specfunc-bessel.texi
+@include specfunc-chebyshev.texi
+@include specfunc-clausen.texi
+@include specfunc-coulomb.texi
+@include specfunc-coupling.texi
+@include specfunc-dawson.texi
+@include specfunc-debye.texi
+@include specfunc-dilog.texi
+@include specfunc-elementary.texi
+@include specfunc-ellint.texi
+@include specfunc-elljac.texi
+@include specfunc-erf.texi
+@include specfunc-exp.texi
+@include specfunc-expint.texi
+@include specfunc-fermi-dirac.texi
+@include specfunc-gamma.texi
+@include specfunc-gegenbauer.texi
+@include specfunc-hyperg.texi
+@include specfunc-laguerre.texi
+@include specfunc-legendre.texi
+@include specfunc-log.texi
+@include specfunc-poly.texi
+@include specfunc-pow-int.texi
+@include specfunc-psi.texi
+@include specfunc-synchrotron.texi
+@include specfunc-transport.texi
+@include specfunc-trig.texi
+@include specfunc-zeta.texi

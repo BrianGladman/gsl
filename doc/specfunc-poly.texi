@@ -1,0 +1,4 @@
+@comment
+@node Polynomial Manipulation
+@section Polynomial Manipulation
+@cindex polynomial manipulation

@@ -1,0 +1,17 @@
+@comment
+@node Power Function
+@section Power Function
+@cindex power function
+@cindex integer powers
+
+A common complaint about the standard C library is its lack of
+a function for calculating (small) integer powers. GSL provides
+a simple function to fill this gap.
+
+@deftypefun double gsl_sf_pow_int(double x, int n)
+@end deftypefun
+
+@example
+#include <gsl_sf_pow_int.h>
+double y = gsl_sf_pow_int(3., 12)
+@end example

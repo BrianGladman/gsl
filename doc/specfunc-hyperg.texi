@@ -1,0 +1,5 @@
+@comment
+@node Hypergeometric Functions
+@section Hypergeometric Functions
+@cindex hypergeometric functions
+@cindex confluent hypergeometric functions

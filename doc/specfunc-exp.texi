@@ -1,0 +1,6 @@
+@comment
+@node Exponential Function
+@section Exponential Function
+@cindex exponential function
+@cindex exp
+

@@ -1,0 +1,5 @@
+@comment
+@node Legendre Functions and Spherical Harmonics
+@section Legendre Functions and Spherical Harmonics
+@cindex Legendre functions
+@cindex spherical harmonics

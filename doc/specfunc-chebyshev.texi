@@ -1,0 +1,42 @@
+@comment
+@node Chebyshev Polynomials
+@section Chebyshev Polynomials
+@cindex Chebyshev polynomials
+
+The Chebyshev polynomials 
+@c{$T_n(x) = \cos(n \arccos x)$}
+@math{T_n(x) = \cos(n \arccos x)} provide an 
+orthogonal basis of polynomials on the interval @math{[-1,1]},
+with the weight function 
+@c{$1 \over \sqrt{1-x^2}$}
+@math{1 \over \sqrt@{1-x^2@}}. The first few such
+polynomials are
+
+@tex
+\beforedisplay
+$$
+\eqalign{
+ T_0(x) & = 1, \cr
+ T_1(x) & = x, \cr
+ T_2(x) & = 2 x^2 - 1.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+ T_0(x) = 1,
+ T_1(x) = x,
+ T_2(x) = 2 x^2 - 1.
+@end example
+@end ifinfo
+
+By construction, 
+@c{$T_n(x)$}
+@math{T_n(x)} has precisely @math{n} zeroes
+in the interval @math{[-1,1]}, located at
+@c{$x_k^{(n)} = \cos({\pi \over n} (k-1/2))$}
+@math{x_k^@{(n)@} = \cos(@{\pi \over n@} (k-1/2))}. It is the
+nature of these zeroes and the behaviour of the set of polynomials at
+these special points which makes the Chebyshev polynomials
+especially useful in numerical approximation of functions.

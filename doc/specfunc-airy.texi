@@ -1,0 +1,45 @@
+@comment
+@node Airy Functions
+@section Airy Functions
+@cindex Airy functions
+@cindex Ai(x)
+@cindex Bi(x)
+
+The Airy functions @math{Ai(x)} and @math{Bi(x)} are defined
+by the integral representations
+
+@tex
+\beforedisplay
+$$
+\eqalign{
+Ai(x) & = {1\over\pi} \int_0^\infty \cos( {1\over 3} t^3 + xt ) dt, \cr
+Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt) dt.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+Ai(x) = @{1 / \pi@} \int_0^\infty \cos(@{1/3@} t^3 + xt ) dt,
+Bi(x) = @{1 / \pi@} \int_0^\infty (e^@{-t^3/3@} + \sin(@{1/3@} t^3 + xt) dt.
+@end example
+@end ifinfo
+@noindent
+They are linearly independent solutions of the equation 
+@c{$f(x)'' = x f(x)$}
+@math{f(x)'' = x f(x)}.
+
+Being functions of a single variable, they are quite easy to
+evaluate in production code, using fits to Chebyshev polynomials
+in various regions. Such fits provide a uniform approximation over
+the full domain of the function. The GSL implementation is 
+a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
+
+@deftypefun double gsl_sf_airy_Ai(double x)
+
+@deftypefunx double gsl_sf_airy_Bi(double x)
+
+@deftypefunx double gsl_sf_airy_Bi_scaled(double x)
+
+@end deftypefun
+

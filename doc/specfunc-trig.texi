@@ -1,0 +1,4 @@
+@comment
+@node Trigonometric Functions
+@section Trigonometric Functions
+@cindex Trigonometric functions

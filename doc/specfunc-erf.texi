@@ -1,0 +1,6 @@
+@comment
+@node Error Function
+@section Error Function
+@cindex error function
+@cindex erf(x)
+@cindex erfc(x)

@@ -1,0 +1,5 @@
+@comment
+@node Psi (DiGamma) Function
+@section Psi (DiGamma) Function
+@cindex psi function
+@cindex digamma function

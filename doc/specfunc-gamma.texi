@@ -1,0 +1,4 @@
+@comment
+@node Gamma Function
+@section Gamma Function
+@cindex gamma function

@@ -1,0 +1,4 @@
+@comment
+@node Synchrotron Functions
+@section Synchrotron Functions
+@cindex Synchrotron functions

@@ -1,0 +1,4 @@
+@comment
+@node Gegenbauer Functions
+@section Gegenbauer Functions
+@cindex Gegenbauer functions
