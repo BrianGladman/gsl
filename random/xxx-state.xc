@@ -13,6 +13,10 @@ void gsl_ran_xxx_seed(int s)
 {
     gsl_ran_xxx_seed_wstate((void *)&state,s);
 }
+inline void gsl_ran_xxx_printState(void *s)
+{
+    gsl_ran_xxx_printState_p((gsl_ran_xxx_randomState *)s);
+}
 inline unsigned long gsl_ran_xxx_random(void)
 {
     return gsl_ran_xxx_random_wstate((void *)&state);

@@ -33,6 +33,9 @@ inline void *gsl_ran_getRandomState() {
 inline void gsl_ran_setRandomState(void *vState) {
     gsl_ran_xxx_setRandomState(vState);
 }
+inline void gsl_ran_printState(void *vState) {
+     gsl_ran_xxx_printState(vState);
+}
 
 
 
