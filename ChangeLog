@@ -1,3 +1,7 @@
+2000-10-26  Mark Galassi  <rosalia@galassi.org>
+
+	* ltconfig, ltmain.sh: removed these auto-generated files.
+
 2000-10-26  Mark Galassi  <rosalia@lanl.gov>
 
 	* stamp-h.in: removed this file because it is auto-generated.
