@@ -1,5 +1,8 @@
 * What is new in gsl-1.2:
 
+** Fixed a bug in gsl_linalg_solv_symm_cyc_tridiag which caused it to
+produce incorrect results.
+
 ** The function gsl_min_fminimizer_minimum has been renamed to
 gsl_min_fminimizer_x_minimum for consistency (the old function name is
 still available but is deprecated).  Additional functions have been

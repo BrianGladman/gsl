@@ -142,3 +142,6 @@ constants
 * Nicolas Darnis <ndarnis@cvf.fr> additional permutation functions
 
 * Jeff Spirko <spirko@lehigh.edu> patch for 1d minimization
+
+* David Necas (Yeti) <yeti@physics.muni.cz> bug reports and patches
+for linear algebra

@@ -164,7 +164,7 @@ solve_cyc_tridiag(
 	}
       alpha[N - 2] = diag[d_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * gamma[N - 3];
       gamma[N - 2] = (offdiag[o_stride * (N - 2)] - offdiag[o_stride * (N - 3)] * delta[N - 3]) / alpha[N - 2];
-      alpha[N - 1] = diag[d_stride * (N - 1)] - sum - offdiag[o_stride * (N - 2)] * gamma[N - 2] * gamma[N - 2];
+      alpha[N - 1] = diag[d_stride * (N - 1)] - sum - alpha[(N - 2)] * gamma[N - 2] * gamma[N - 2];
 
       /* update */
       z[0] = b[0];
