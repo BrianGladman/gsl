@@ -19,6 +19,7 @@ platforms.
 @menu
 * Sorting objects::             
 * Sorting vectors::             
+* Sorting Examples::            
 * Sorting References and Further Reading::  
 @end menu
 
@@ -32,16 +33,18 @@ should be used whenever possible, as it will be faster and can provide
 stable ordering of equal elements. Documentation for @code{qsort} is
 available in the @cite{GNU C Library Reference Manual}.
 
-This function is defined in the header file @file{gsl_sort.h}.
+The functions described in this section are defined in the header file
+@file{gsl_sort.h}.
 
+@cindex comparison functions, definition
 @deftypefun void gsl_sort (void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
 This function sorts the @var{count} members of the array @var{array},
 each of size @var{size}, into ascending order using the comparision
 function @var{compare}. The type of the comparison function is defined by,
-@cindex comparison functions, definition
+
 @example
-typedef int (*gsl_comparison_fn_t) (const void * a, const void * b)
+int (*gsl_comparison_fn_t) (const void * a, const void * b)
 @end example
 @noindent
 A comparison function should return a negative integer if the first
@@ -87,7 +90,6 @@ index of the greatest element in @var{array}. The array itself is not
 changed.
 @end deftypefun
 
-
 @node Sorting vectors
 @section Sorting vectors
 
@@ -125,6 +127,9 @@ in @var{v}, and the last element of @var{p} gives the index of the
 greatest element in @var{v}. The vector @var{v} is not changed.
 @end deftypefun
 
+@node Sorting Examples
+@section Examples
+
 The following example shows how to use the permutation @var{p} to print
 the elements of the vector @var{v} in ascending order,
 
@@ -148,8 +153,9 @@ for (i = 0; i < p->size; i++)
 @}
 @end example
 @noindent
-which is available as the function @code{gsl_permutation_invert(rank,p)}.
-The following example prints the rank of each element of the vector @var{v},
+This is available directly from the function
+@code{gsl_permutation_invert(rank,p)}. The following example prints the
+rank of each element of the vector @var{v},
 
 @example
 gsl_permutation * rank = gsl_permutation_alloc(p->size);
@@ -164,10 +170,9 @@ for (i = 0; i < v->size; i++)
 @}
 @end example
 
-
 @node Sorting References and Further Reading
 @section References and Further Reading
-
+@noindent
 The subject of sorting is covered extensively in Knuth's
 @cite{Sorting and Searching},
 

@@ -1,51 +1,161 @@
 @cindex permutations
 
 This chapter describes functions for creating and manipulating
-permutations.
+permutations. A permutation is represented by an array @math{p_i} of
+@var{n} integers in the range 0 .. @math{n-1}, where each value occurs
+once and only once. For example, the array @math{(0,1,3,2)} represents a
+permutation of length 4 which exchanges the last two elements. The
+identity permutation of length 4 is @math{(0,1,2,3)}. The application of
+a permutation @math{p} to a vector @math{v} yields a new vector
+@math{v'} where @math{v'_i = v_@{p_i@}}.
 
 These functions are defined in the header file @file{gsl_permutation.h}.
 
+@menu
+* The Permutation struct::      
+* Permutation allocation::      
+* Permutation functions::       
+* Reading and writing permutations::  
+* Permutation Examples::        
+* Permutation References and Further Reading::  
+@end menu
+
+@node The Permutation struct
+@section The Permutation struct
+
+A permutation is stored by a structure containing two members, the size
+of the permutation and a pointer to the permutation array. The elements
+of the permutation array are all of type @code{size_t}. The
+@code{gsl_permutation} structure looks like this,
+
+@example
+typedef struct
+@{
+  size_t size;
+  size_t * data;
+@} gsl_permutation ;
+@end example
+@comment
+@noindent
+
+@node Permutation allocation
+@section Permutation allocation
+
 @deftypefun {gsl_permutation *} gsl_permutation_alloc (size_t @var{n})
+This function allocates memory for a new permutation of size @var{n}.
+The permutation is not initialized and its elements are undefined. Use
+the function @code{gsl_permutation_calloc} if you want to create a
+permutation which is initialized to the identity. A null pointer is
+returned if insufficient memory is available to create the permutation.
 @end deftypefun
 
 @deftypefun {gsl_permutation *} gsl_permutation_calloc (size_t @var{n})
+This function allocates memory for a new permutation of size @var{n} and
+initializes it to the identity.
 @end deftypefun
 
 @deftypefun void gsl_permutation_init (gsl_permutation * @var{p})
+This function initializes the permutation @var{p} to the identity, i.e.
+(0,1,2,...,n-1).
 @end deftypefun
 
 @deftypefun void gsl_permutation_free (gsl_permutation * @var{p})
+This function frees all the memory used by the permutation @var{p}.
 @end deftypefun
 
-@deftypefun int gsl_permutation_fread (FILE * @var{stream}, gsl_permutation * @var{p})
-@end deftypefun
+@node Permutation functions
+@section Permutation functions
 
-@deftypefun int gsl_permutation_fwrite (FILE * @var{stream}, const gsl_permutation * @var{p})
-@end deftypefun
+The following functions can be used to access and manipulate
+permutations.
 
-@deftypefun int gsl_permutation_fscanf (FILE * @var{stream}, gsl_permutation * @var{p})
-@end deftypefun
-
-@deftypefun int gsl_permutation_fprintf (FILE * @var{stream}, const gsl_permutation * @var{p}, const char *@var{format})
+@deftypefun size_t gsl_permutation_get (const gsl_permutation * @var{p}, const size_t @var{i})
+This function returns the value of the @var{i}-th element of the
+permutation @var{p}. If @var{i} lies outside the allowed range of 0 to
+@var{n}-1 then the error handler is invoked and 0 is returned.
 @end deftypefun
 
 @deftypefun size_t gsl_permutation_size (const gsl_permutation * @var{p})
+This function returns the size of the permutation @var{p}.
 @end deftypefun
 
 @deftypefun {size_t *} gsl_permutation_data (const gsl_permutation * @var{p})
-@end deftypefun
-
-@deftypefun size_t gsl_permutation_get (const gsl_permutation * @var{p}, const size_t @var{i})
+This function returns a pointer to the array of elements in the
+permutation @var{p}.
 @end deftypefun
 
 @deftypefun int gsl_permutation_swap (gsl_permutation * @var{p}, const size_t @var{i}, const size_t @var{j})
-@end deftypefun
-
-@deftypefun int gsl_permutation_valid (gsl_permutation * @var{p})
+This function exchanges the @var{i}-th and @var{j}-th elements of the
+permutation @var{p}.
 @end deftypefun
 
 @deftypefun void gsl_permutation_reverse (gsl_permutation * @var{p})
+This function reverses the elements of the permutation @var{p}.
 @end deftypefun
 
 @deftypefun int gsl_permutation_invert (gsl_permutation * @var{inv}, const gsl_permutation * @var{p})
+This function computes the inverse of the permuation @var{p}, storing
+the result in @var{inv}.
 @end deftypefun
+
+@deftypefun int gsl_permutation_valid (gsl_permutation * @var{p})
+This function checks that the permutation @var{p} is valid. The @var{n}
+elements should contain each of the numbers 0 .. @var{n}-1 once and only
+once.
+@end deftypefun
+
+@node Reading and writing permutations
+@section Reading and writing permutations
+
+The library provides functions for reading and writing permutations to a
+file as binary data or formatted text.
+
+@deftypefun int gsl_permutation_fwrite (FILE * @var{stream}, const gsl_permutation * @var{p})
+This function writes the elements of the permutation @var{p} to the
+stream @var{stream} in binary format. The return value is 0 for success
+and @code{GSL_EFAILED} if there was a problem writing to the file. Since
+the data is written in the native binary format it may not be portable
+between different architectures.
+@end deftypefun
+
+@deftypefun int gsl_permutation_fread (FILE * @var{stream}, gsl_permutation * @var{p})
+This function reads into the permutation @var{p} from the open stream
+@var{stream} in binary format. The permutation @var{p} must be
+preallocated with the correct length since the function uses the size of
+@var{p} to determine how many bytes to read. The return value is 0 for
+success and @code{GSL_EFAILED} if there was a problem reading from the
+file. The data is assumed to have been written in the native binary
+format on the same architecture.
+@end deftypefun
+
+@deftypefun int gsl_permutation_fprintf (FILE * @var{stream}, const gsl_permutation * @var{p}, const char *@var{format})
+This function writes the elements of the permutation @var{p}
+line-by-line to the stream @var{stream} using the format specifier
+@var{format}, which should be suitable for a type of @var{size_t}. On a
+GNU system the type modifier @code{Z} represents @code{size_t}, so
+@code{"%Zu\n"} is a suitable format. The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file.
+@end deftypefun
+
+@deftypefun int gsl_permutation_fscanf (FILE * @var{stream}, gsl_permutation * @var{p})
+This function reads formatted data from the stream @var{stream} into the
+permutation @var{p}. The permutation @var{p} must be preallocated with
+the correct length since the function uses the size of @var{p} to
+determine how many numbers to read. The function returns 0 for success
+and @code{GSL_EFAILED} if there was a problem reading from the file.
+@end deftypefun
+
+@node Permutation Examples
+@section Examples
+
+@node Permutation References and Further Reading
+@section References and Further Reading
+@noindent
+The subject of permutations is covered extensively in Knuth's
+@cite{Sorting and Searching},
+
+@itemize @asis
+@item
+Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
+Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
+@end itemize

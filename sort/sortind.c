@@ -72,7 +72,7 @@ gsl_sort_index (gsl_permutation * permutation, const void *data, size_t count, s
 
   if (count == 0)
     {
-      return GSL_SUCCESS; /* No data to sort */
+      return GSL_SUCCESS;	/* No data to sort */
     }
 
   gsl_permutation_init (permutation);	/* set permutation to identity */

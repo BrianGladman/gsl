@@ -1,6 +1,7 @@
 /*
  * Implement Heap sort -- direct and indirect sorting
  * Based on descriptions in Sedgewick "Algorithms in C"
+ *
  * Copyright (C) 1999  Thomas Walter
  *
  * 18 February 2000: Modified for GSL by Brian Gough

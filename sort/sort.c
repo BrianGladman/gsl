@@ -1,11 +1,10 @@
 /*
  * Implement Heap sort -- direct and indirect sorting
  * Based on descriptions in Sedgewick "Algorithms in C"
+ *
  * Copyright (C) 1999  Thomas Walter
  *
  * 18 February 2000: Modified for GSL by Brian Gough
- *
- * $Id$
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -27,8 +26,7 @@ static inline void downheap (void *data, const size_t size, const size_t N, size
 
 /* Inline swap function for moving objects around */
 
-static inline
-void 
+static inline void
 swap (void *base, size_t size, size_t i, size_t j)
 {
   register char *a = size * i + (char *) base;
@@ -56,19 +54,19 @@ downheap (void *data, const size_t size, const size_t N, size_t k, gsl_compariso
     {
       size_t j = 2 * k;
 
-      if (j < N && CMP(data,size,j,j+1) < 0)
-        {
+      if (j < N && CMP (data, size, j, j + 1) < 0)
+	{
 	  j++;
 	}
-      
-      if (CMP(data,size,k,j) < 0)
-        {
-          swap (data, size, j, k) ;
-        }
+
+      if (CMP (data, size, k, j) < 0)
+	{
+	  swap (data, size, j, k);
+	}
       else
-        {
-          break ;
-        }
+	{
+	  break;
+	}
 
       k = j;
     }
@@ -86,7 +84,7 @@ gsl_sort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
 
   if (count == 0)
     {
-      return ; /* No data to sort */
+      return;			/* No data to sort */
     }
 
   /* We have n_data elements, last element is at 'n_data-1', first at
@@ -114,4 +112,3 @@ gsl_sort (void *data, size_t count, size_t size, gsl_comparison_fn_t compare)
       downheap (data, size, N, 0, compare);
     }
 }
-
