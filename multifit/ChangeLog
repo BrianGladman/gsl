@@ -1,5 +1,7 @@
 Mon Oct  8 19:25:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c (main): added extra nist tests
+
 	* lmutil.c (compute_rptdx): fixed bug, permutation in rptdx vector
  	 was incorrectly applied
 

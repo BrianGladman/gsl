@@ -1,14 +1,35 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_multifit_nlin.h>
+const size_t enso_N = 168;
+const size_t enso_P = 9;
 
-#define N 168
-#define P 9
+double enso_x0[9] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
 
-static double F[N] = {
+double enso_x[9] = {
+  1.0510749193E+01, 
+  3.0762128085E+00,
+  5.3280138227E-01,
+  4.4311088700E+01,
+ -1.6231428586E+00,
+  5.2554493756E-01,
+  2.6887614440E+01,
+  2.1232288488E-01,
+  1.4966870418E+00
+};
+
+double enso_sumsq = 7.8853978668E+02;
+
+double enso_sigma[9] = {
+ 1.7488832467E-01,
+ 2.4310052139E-01,
+ 2.4354686618E-01,
+ 9.4408025976E-01,
+ 2.8078369611E-01,
+ 4.8073701119E-01,
+ 4.1612939130E-01,
+ 5.1460022911E-01,
+ 2.5434468893E-01
+};
+
+double enso_F[168] = {
     12.90000, 
     11.30000, 
     10.60000, 
@@ -183,15 +204,15 @@ static double F[N] = {
 int
 enso_f (const gsl_vector * x, void *params, gsl_vector * f)
 {
-  double b[P];
+  double b[9];
   size_t i;
 
-  for (i = 0; i < P; i++)
+  for (i = 0; i < 9; i++)
     {
       b[i] = gsl_vector_get(x, i);
     }
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < 168; i++)
     {
       double t = (i + 1.0);
       double y;
@@ -203,7 +224,7 @@ enso_f (const gsl_vector * x, void *params, gsl_vector * f)
       y += b[7] * cos(2*M_PI*t/b[6]);
       y += b[8] * sin(2*M_PI*t/b[6]);
 
-      gsl_vector_set (f, i, F[i] - y);
+      gsl_vector_set (f, i, enso_F[i] - y);
     }
 
   return GSL_SUCCESS;
@@ -212,15 +233,15 @@ enso_f (const gsl_vector * x, void *params, gsl_vector * f)
 int
 enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
 {
-  double b[P];
+  double b[9];
   size_t i;
 
-  for (i = 0; i < P; i++)
+  for (i = 0; i < 9; i++)
     {
       b[i] = gsl_vector_get(x, i);
     }
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < 168; i++)
     {
       double t = (i + 1.0);
 
@@ -252,62 +273,7 @@ enso_fdf (const gsl_vector * x, void *params,
   return GSL_SUCCESS;
 }
 
-gsl_multifit_function_fdf
-make_fdf (int (* f) (const gsl_vector *, void *, gsl_vector *),
-          int (* df) (const gsl_vector *, void *, gsl_matrix *),
-          int (* fdf) (const gsl_vector *, void *, gsl_vector *, gsl_matrix *),
-          size_t n,
-          size_t p,
-          void * params);
 
 
-void
-test_enso (void)
-{
-  const gsl_multifit_fdfsolver_type *T;
-  gsl_multifit_fdfsolver *s;
 
-  int status;
-  size_t iter = 0;
-
-  gsl_multifit_function_fdf f = make_fdf (&enso_f, &enso_df, &enso_fdf,
-                                          N, P, 0);
-
-  double x_init[P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
-  gsl_vector_view x = gsl_vector_view_array (x_init, P);
-
-  T = gsl_multifit_fdfsolver_lmsder;
-  s = gsl_multifit_fdfsolver_alloc (T, N, P);
-  gsl_multifit_fdfsolver_set (s, &f, &x.vector);
-
-  do
-    {
-      status = gsl_multifit_fdfsolver_iterate (s);
-      printf("iter = %d  status = %d  |f| = %.5e x = \n", iter, status, gsl_blas_dnrm2 (s->f));
-      gsl_vector_fprintf(stdout, s->x, "%.8e");
-      iter++;
-    }
-  while (iter < 1000);
-  
-#ifdef COV
-  {
-    size_t i, j;
-    gsl_matrix * covar = gsl_matrix_alloc (p, p);
-    gsl_multifit_covar (s->J, 0.0, covar);
-
-    for (i = 0; i < p; i++) 
-      {
-        for (j = 0; j < p; j++)
-          {
-            gsl_test_rel (gsl_matrix_get(covar,i,j), cov[i][j], 1e-7, 
-                          "gsl_multifit_covar cov(%d,%d)", i, j) ;
-          }
-      }
-
-    gsl_matrix_free (covar);
-  }
-#endif
-
-  gsl_multifit_fdfsolver_free (s);
-}
 
