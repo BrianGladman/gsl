@@ -17,6 +17,7 @@ introduces its conventions.
 * Support for different numeric types::  
 * Compatibility with C++::      
 * Aliasing of arrays::          
+* Thread-safety::               
 * Code Reuse::                  
 @end menu
 
@@ -438,6 +439,25 @@ then the results of such functions will be undefined.  If the arguments
 will not be modified (for example, if a function prototype declares them
 as @code{const} arguments) then overlapping or aliased memory regions
 can be safely used.
+
+@node Thread-safety
+@section Thread-safety
+
+The library can be used in multi-threaded programs.  All the functions
+are thread-safe, in the sense that they do not use static variables.
+Memory is always associated with objects and not with functions.  For
+functions which use @dfn{workspace} objects as temporary storage the
+workspaces should be allocated on a per-thread basis.  For functions
+which use @dfn{table} objects as read-only memory the tables can be used
+by multiple threads simultaneously.  Table arguments are always declared
+@code{const} in function prototypes, to indicate that they may be
+safely accessed by different threads.
+
+There are a small number of static global variables which are used to
+control the overall behavior of the library (e.g. whether to use
+range-checking, the function to call on fatal error, etc).  These
+variables are set directly by the user, so they should be initialized
+once at program startup and not modified by different threads.
 
 @node Code Reuse
 @section Code Reuse
