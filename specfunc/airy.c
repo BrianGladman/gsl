@@ -7,6 +7,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
+#define PREC_TEST(estimate, goal, err_bits) ( gsl_prec_eps[goal]*(2 << err_bits) < estimate ? GSL_ELOSS : GSL_SUCCESS )
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -223,10 +225,13 @@ static gsl_sf_cheb_series ath2_cs = {
 
 
 /* Airy modulus and phase for x < -1 */
-static int airy_mod_phase(const double x, double * mod, double * phase)
+static int airy_mod_phase(const double x, double * mod, double * phase,
+                          const gsl_prec_t goal, const unsigned int err_bits)
 {
   double m, p;
   double sqx;
+  double x32;
+  double prec_estimate;
 
   if(x < -2.0) {
     double z = 16.0/(x*x*x) + 1.0;
@@ -239,15 +244,19 @@ static int airy_mod_phase(const double x, double * mod, double * phase)
     p = -0.625  + gsl_sf_cheb_eval(&ath2_cs, z);
   }
   else {
-    *mod = 0.;
-    *phase = 0.;
+    *mod   = 0.0;
+    *phase = 0.0;
     return GSL_EDOM;
   }
 
   sqx = sqrt(-x);
-  *mod = sqrt(m/sqx);
-  *phase = M_PI_4 - x*sqx * p;
-  return GSL_SUCCESS;
+  x32 = x*sqx;
+  prec_estimate = fabs(x32) * GSL_DBL_EPSILON;
+
+  *mod   = sqrt(m/sqx);
+  *phase = M_PI_4 - x32 * p;
+
+  return PREC_TEST(prec_estimate, goal, err_bits);
 }
 
 
@@ -600,7 +609,10 @@ static gsl_sf_cheb_series bip2_cs = {
 };
 
 
-/* should only be called for x >= 1.0 */
+/* assumes x >= 1.0 */
+#ifdef HAVE_INLINE
+inline
+#endif
 static double airy_aie(const double x)
 {
   double sqx = sqrt(x);
@@ -608,7 +620,7 @@ static double airy_aie(const double x)
   return (0.28125 + gsl_sf_cheb_eval(&aip_cs, z))/sqrt(sqx);
 }
 
-/* should only be called for x >= 2.0 */
+/* assumes x >= 2.0 */
 static double airy_bie(const double x)
 {
   const double ATR =  8.7506905708484345;
@@ -629,17 +641,20 @@ static double airy_bie(const double x)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_airy_Ai_impl(const double x, double * result)
+int gsl_sf_airy_Ai_impl(const double x, double * result,
+                        const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x < -1.0) {
     double mod, theta;
-    airy_mod_phase(x, &mod, &theta);
+    int status = airy_mod_phase(x, &mod, &theta, goal, err_bits);
     *result = mod * cos(theta);
-    return GSL_SUCCESS;
+    return status;
   }
   else if(x <= 1.0) {
-    double z = x*x*x;
-    *result = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
+    const double z = x*x*x;
+    const double c0 = gsl_sf_cheb_eval(&aif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&aig_cs, z);
+    *result = 0.375 + (c0 - x*(0.25 + c1));
     return GSL_SUCCESS;
   }
   else {
@@ -652,24 +667,28 @@ int gsl_sf_airy_Ai_impl(const double x, double * result)
 }
 
 
-int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
+int gsl_sf_airy_Ai_scaled_impl(const double x, double * result,
+                               const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x < -1.0) {
     double mod, theta;
-    airy_mod_phase(x, &mod, &theta);
+    int status = airy_mod_phase(x, &mod, &theta, goal, err_bits);
     *result = mod * cos(theta);
-    return GSL_SUCCESS;
+    return status;
   }
   else if(x <= 0.0) {
-    double z = x*x*x;
-    *result  = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
+    const double z = x*x*x;
+    const double c0 = gsl_sf_cheb_eval(&aif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&aig_cs, z);
+    *result  = 0.375 + (c0 - x*(0.25 + c1));
     return GSL_SUCCESS;
   }
    else if(x <= 1.0) {
-    double z = x*x*x;
-    double scale = exp(2.0/3.0 * sqrt(z));
-    *result  = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
-    *result *= scale;
+    const double z = x*x*x;
+    const double scale = exp(2.0/3.0 * sqrt(z));
+    const double c0 = gsl_sf_cheb_eval(&aif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&aig_cs, z);
+    *result = scale * (0.375 + (c0 - x*(0.25 + c1)));
     return GSL_SUCCESS;
   }
   else {
@@ -679,26 +698,31 @@ int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
 }
 
 
-int gsl_sf_airy_Bi_impl(const double x, double * result)
+int gsl_sf_airy_Bi_impl(const double x, double * result,
+                        const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x < -1.0) {
     double mod, theta;
-    airy_mod_phase(x, &mod, &theta);
+    int status = airy_mod_phase(x, &mod, &theta, goal, err_bits);
     *result = mod * sin(theta);
-    return GSL_SUCCESS;
+    return status;
   }
   else if(x < 1.0) {
-    double z = x*x*x;
-    *result = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
+    const double z = x*x*x;
+    const double c0 = gsl_sf_cheb_eval(&bif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&big_cs, z);
+    *result = 0.625 + c0 + x*(0.4375 + c1);
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {
-    double z = (2.0*x*x*x - 9.0)/7.0;
-    *result = 1.125 + gsl_sf_cheb_eval(&bif2_cs, z) + x*(0.625 + gsl_sf_cheb_eval(&big2_cs, z));
+    const double z = (2.0*x*x*x - 9.0)/7.0;
+    const double c0 = gsl_sf_cheb_eval(&bif2_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&big2_cs, z);
+    *result = 1.125 + c0 + x*(0.625 + c1);
     return GSL_SUCCESS;
   }
   else {
-    double y = 2.0*x*sqrt(x)/3.0;
+    const double y = 2.0*x*sqrt(x)/3.0;
 
     if(y > GSL_LOG_DBL_MAX - 1.0) {
       *result = 0.0; /* FIXME: should be Inf */
@@ -712,32 +736,37 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
 }
 
 
-int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
+int gsl_sf_airy_Bi_scaled_impl(const double x, double * result,
+                               const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x < -1.0) {
     double mod, theta;
-    airy_mod_phase(x, &mod, &theta);
+    int status = airy_mod_phase(x, &mod, &theta, goal, err_bits);
     *result = mod * sin(theta);
-    return GSL_SUCCESS;
+    return status;
   }
   else if(x < 0.0) {
-    double z = x*x*x;
-    *result  = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
+    const double z = x*x*x;
+    const double c0 = gsl_sf_cheb_eval(&bif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&big_cs, z);
+    *result  = 0.625 + c0 + x*(0.4375 + c1);
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    double z = x*x*x;
-    double s = exp(-2.0/3.0 * sqrt(z));
-    *result  = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
-    *result *= s;
+    const double z = x*x*x;
+    const double s = exp(-2.0/3.0 * sqrt(z));
+    const double c0 = gsl_sf_cheb_eval(&bif_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&big_cs, z);
+    *result  = s * (0.625 + c0 + x*(0.4375 + c1));
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {
-    double x3 = x*x*x;
-    double z = (2.0*x3 - 9.0)/7.0;
-    double s = exp(-2.0/3.0 * sqrt(x3));
-    *result  = 1.125 + gsl_sf_cheb_eval(&bif2_cs, z) + x*(0.625 + gsl_sf_cheb_eval(&big2_cs, z));
-    *result *= s;
+    const double x3 = x*x*x;
+    const double z = (2.0*x3 - 9.0)/7.0;
+    const double s = exp(-2.0/3.0 * sqrt(x3));
+    const double c0 = gsl_sf_cheb_eval(&bif2_cs, z);
+    const double c1 = gsl_sf_cheb_eval(&big2_cs, z);
+    *result  = s * (1.125 + c0 + x*(0.625 + c1));
     return GSL_SUCCESS;
   }
   else {
@@ -749,36 +778,40 @@ int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_airy_Ai_e(const double x, double * result)
+int gsl_sf_airy_Ai_e(const double x, double * result,
+                     const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_airy_Ai_impl(x, result);
+  int status = gsl_sf_airy_Ai_impl(x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Ai_e", status);
   }
   return status;
 }
 
-int gsl_sf_airy_Ai_scaled_e(const double x, double * result)
+int gsl_sf_airy_Ai_scaled_e(const double x, double * result,
+                            const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_airy_Ai_scaled_impl(x, result);
+  int status = gsl_sf_airy_Ai_scaled_impl(x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Ai_scaled_e", status);
   }
   return status;
 }
 
-int gsl_sf_airy_Bi_e(const double x, double * result)
+int gsl_sf_airy_Bi_e(const double x, double * result,
+                     const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_airy_Bi_impl(x, result);
+  int status = gsl_sf_airy_Bi_impl(x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Bi_e", status);
   }
   return status;
 }
 
-int gsl_sf_airy_Bi_scaled_e(const double x, double * result)
+int gsl_sf_airy_Bi_scaled_e(const double x, double * result,
+                            const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_airy_Bi_scaled_impl(x, result);
+  int status = gsl_sf_airy_Bi_scaled_impl(x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_airy_Bi_scaled_e", status);
   }
@@ -788,40 +821,40 @@ int gsl_sf_airy_Bi_scaled_e(const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_airy_Ai(const double x)
+double gsl_sf_airy_Ai(const double x, const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_airy_Ai_impl(x, &y);
+  int status = gsl_sf_airy_Ai_impl(x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_airy_Ai", status);
   }
   return y;
 }
 
-double gsl_sf_airy_Bi(const double x)
+double gsl_sf_airy_Bi(const double x, const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_airy_Bi_impl(x, &y);
+  int status = gsl_sf_airy_Bi_impl(x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_airy_Bi", status);
   }
   return y;
 }
 
-double gsl_sf_airy_Ai_scaled(const double x)
+double gsl_sf_airy_Ai_scaled(const double x, const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_airy_Ai_scaled_impl(x, &y);
+  int status = gsl_sf_airy_Ai_scaled_impl(x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_airy_Ai_scaled", status);
   }
   return y;
 }
 
-double gsl_sf_airy_Bi_scaled(const double x)
+double gsl_sf_airy_Bi_scaled(const double x, const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_airy_Bi_scaled_impl(x, &y);
+  int status = gsl_sf_airy_Bi_scaled_impl(x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_airy_Bi_scaled", status);
   }
