@@ -8,7 +8,6 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   gsl_vector *tau = state->tau;
   gsl_vector *diag = state->diag;
   gsl_vector *work1 = state->work1;
-  gsl_vector *work2 = state->work2;
   gsl_permutation *perm = state->perm;
 
   int signum;
