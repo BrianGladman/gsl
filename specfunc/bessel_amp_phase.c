@@ -10,7 +10,7 @@
 
 /* chebyshev expansions for amplitude and phase
    functions used in bessel evaluations
-   
+
    These are the same for J0,Y0 and for J1,Y1, so
    they sit outside those functions.
 */

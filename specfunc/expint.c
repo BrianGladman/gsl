@@ -335,11 +335,31 @@ int gsl_sf_expint_E2_impl(const double x, double * result)
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x <= xmax) {
+  else if(x < 100.0) {
     double E1;
     int stat_E1 = gsl_sf_expint_E1_impl(x, &E1);
     *result = exp(-x) - x*E1;
     return stat_E1;
+  }
+  else if(x < xmax) {
+    const double c1 = -2.0;
+    const double c2 =  6.0;
+    const double c3 = -24.0;
+    const double c4 =  120.0;
+    const double c5 = -720.0;
+    const double c6 =  5040.0;
+    const double c7 = -40320.0;
+    const double c8 =  362880.0;
+    const double c9 = -3628800.0;
+    const double c10 =  39916800.0;
+    const double c11 = -479001600.0;
+    const double c12 =  6227020800.0;
+    const double c13 = -87178291200.0;
+    const double y = 1.0/x;
+    const double sum6 = c6+y*(c7+y*(c8+y*(c9+y*(c10+y*(c11+y*(c12+y*c13))))));
+    const double sum  = y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*sum6)))));
+    *result = exp(-x) * (1.0 + sum)/x;
+    return GSL_SUCCESS;
   }
   else {
     *result = 0.0;

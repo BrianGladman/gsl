@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
 
@@ -24,8 +25,8 @@
 
 static double by0_data[13] = {
   -0.011277839392865573,
-  -0.12834523756042035,
-  -0.10437884799794249,
+  -0.128345237560420350,
+  -0.104378847997942490,
    0.023662749183969695,
   -0.002090391647700486,
    0.000103975453939057,
@@ -52,34 +53,28 @@ static gsl_sf_cheb_series by0_cs = {
 int gsl_sf_bessel_Y0_impl(const double x, double * result)
 {
   const double two_over_pi = 2.0/M_PI;
-  const double ln_half     = -M_LN2;
-  const double x_small     = 2.0 * GSL_SQRT_MACH_EPS;
-  const double xmax        = 1.0/GSL_MACH_EPS;
+  const double xmax        = 1.0 / GSL_DBL_EPSILON;
 
   if (x <= 0.0) {
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < x_small){
-    double J0;
-    int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
-    *result = two_over_pi*(ln_half + log(x))*J0
-	      + 0.375 + gsl_sf_cheb_eval(&by0_cs, -1.0);
-    return stat_J0;
-  }
   else if(x < 4.0) {
     double J0;
     int stat_J0 = gsl_sf_bessel_J0_impl(x, &J0);
-    *result = two_over_pi*(ln_half + log(x))*J0
-	      + 0.375 + gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
+    double c = gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
+    *result  = two_over_pi*(-M_LN2 + log(x))*J0 + 0.375 + c;
     return stat_J0;
   }
   else if(x < xmax) {
-    double z     = 32.0/(x*x) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z)) / sqrt(x);
-    double theta = x - M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z) / x;
-    *result = ampl * sin (theta);
-    return GSL_SUCCESS;
+    double z  = 32.0/(x*x) - 1.0;
+    double c1 = gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z);
+    double c2 = gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z);
+    double ampl  = (0.75 + c1) / sqrt(x);
+    double theta = x - M_PI_4 +  c2/x;
+    int stat_sin = gsl_sf_angle_restrict_pos_impl(&theta);
+    *result = ampl * sin(theta);
+    return stat_sin;
   }
   else {
     *result = 0.0;

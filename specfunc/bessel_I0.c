@@ -37,8 +37,8 @@
 
 static double bi0_data[12] = {
   -.07660547252839144951,
-  1.927337953993808270,
-   .2282644586920301339, 
+  1.92733795399380827000,
+   .22826445869203013390, 
    .01304891466707290428,
    .00043442709008164874,
    .00000942265768600193,
@@ -130,7 +130,7 @@ int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
 {
   double y = fabs(x);
 
-  if(y < 2.0 * GSL_SQRT_MACH_EPS) {
+  if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
     *result = 1.0;
   }
   else if(y <= 3.0) {
@@ -147,11 +147,9 @@ int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
 
 int gsl_sf_bessel_I0_impl(const double x, double * result)
 {
-  const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
-  const double xmax    = GSL_LOG_DBL_MAX - 1.;   /* alog (r1mach(2)) */
   double y = fabs(x);
 
-  if(y < x_small) {
+  if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
     *result = 1.0;
     return GSL_SUCCESS;
   }
@@ -159,7 +157,7 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
     *result = 2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0);
     return GSL_SUCCESS;
   }
-  else if(y < xmax) {
+  else if(y < GSL_LOG_DBL_MAX - 1.0) {
     double b_scaled;
     gsl_sf_bessel_I0_scaled_impl(x, &b_scaled);
     *result = exp(y) * b_scaled;

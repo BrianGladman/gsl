@@ -127,9 +127,9 @@ static gsl_sf_cheb_series ai12_cs = {
 
 int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
 {
-  static double xmin    = 2.0 * DBL_MIN;
-  static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
-  double y = fabs(x);
+  const double xmin    = 2.0 * GSL_DBL_MIN;
+  const double x_small = ROOT_EIGHT * GSL_SQRT_DBL_EPSILON;
+  const double y = fabs(x);
 
   if(y == 0.0) {
     *result = 0.0;
@@ -149,12 +149,12 @@ int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
   }
   else if(y <= 8.0) {
     double b = (0.375 + gsl_sf_cheb_eval(&ai1_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
-    *result = ( x > 0.0 ? b : -b) /* fortran_sign(b, x) */;
+    *result = ( x > 0.0 ? b : -b);
     return GSL_SUCCESS;
   }
   else {
     double b = (0.375 + gsl_sf_cheb_eval(&ai12_cs, 16.0/y-1.0)) / sqrt(y);
-    *result = ( x > 0. ? b : -b) /* fortran_sign(b, x) */;
+    *result = ( x > 0.0 ? b : -b);
     return GSL_SUCCESS;
   }
 }
@@ -162,10 +162,9 @@ int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
 
 int gsl_sf_bessel_I1_impl(const double x, double * result)
 {
-  static double xmin    = 2.0 * DBL_MIN;
-  static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
-  static double xmax    = GSL_LOG_DBL_MAX; /* alog (r1mach(2)) */
-  double y = fabs(x);
+  const double xmin    = 2.0 * GSL_DBL_MIN;
+  const double x_small = ROOT_EIGHT * GSL_SQRT_DBL_EPSILON;
+  const double y = fabs(x);
 
   if(y == 0.0) {
     *result = 0.0;
@@ -183,7 +182,7 @@ int gsl_sf_bessel_I1_impl(const double x, double * result)
     *result = x * (0.875 + gsl_sf_cheb_eval(&bi1_cs, y*y/4.5-1.0));
     return GSL_SUCCESS;
   }
-  else if(y < xmax) {
+  else if(y < GSL_LOG_DBL_MAX) {
     *result = exp(y) * gsl_sf_bessel_I1_scaled(x);
     return GSL_SUCCESS;
   }

@@ -133,7 +133,7 @@ int gsl_sf_debye_1_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*GSL_SQRT_DBL_EPSILON) {
     *result = 1.0 - 0.25*x + x*x/36.0;
     return GSL_SUCCESS;
   }
@@ -143,7 +143,7 @@ int gsl_sf_debye_1_impl(const double x, double * result)
     *result = c - 0.25 * x;
     return GSL_SUCCESS;
   }
-  else if(x < -(M_LN2 + GSL_LOG_MACH_EPS)) {
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
     int nexp = floor(xcut/x);
     double ex  = exp(-x);
     double sum = 0.0;
@@ -179,7 +179,7 @@ int gsl_sf_debye_2_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*M_SQRT2*GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     *result = 1.0 - x/3.0 + x*x/24.0;
     return GSL_SUCCESS;
   }
@@ -189,7 +189,7 @@ int gsl_sf_debye_2_impl(const double x, double * result)
     *result = c - x/3.0;
     return GSL_SUCCESS;
   }
-  else if(x < -(M_LN2 + GSL_LOG_MACH_EPS)) {
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
     int nexp = floor(xcut/x);
     double ex  = exp(-x);
     double xk  = nexp * x;
@@ -230,7 +230,7 @@ int gsl_sf_debye_3_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*M_SQRT2*GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     *result = 1.0 - 3.0*x/8.0 + x*x/20.0;
     return GSL_SUCCESS;
   }
@@ -240,7 +240,7 @@ int gsl_sf_debye_3_impl(const double x, double * result)
     *result = c - 0.375*x;
     return GSL_SUCCESS;
   }
-  else if(x < -(M_LN2 + GSL_LOG_MACH_EPS)) {
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
     int nexp = floor(xcut/x);
     double ex  = exp(-x);
     double xk  = nexp * x;
@@ -282,7 +282,7 @@ int gsl_sf_debye_4_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*M_SQRT2*GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     *result = 1.0 - 2.0*x/5.0 + x*x/18.0;
     return GSL_SUCCESS;
   }
@@ -292,7 +292,7 @@ int gsl_sf_debye_4_impl(const double x, double * result)
     *result = c - 2.0*x/5.0;
     return GSL_SUCCESS;
   }
-  else if(x < -(M_LN2 + GSL_LOG_MACH_EPS)) {
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
     int nexp = floor(xcut/x);
     double ex  = exp(-x);
     double xk  = nexp * x;

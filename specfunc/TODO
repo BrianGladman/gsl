@@ -50,10 +50,10 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_I0.c
-    OK:
+    OK: Sun Nov 22 07:39:29 EST 1998 
 
   - bessel_I1.c
-    OK:
+    OK: Sun Nov 22 07:43:15 EST 1998 
 
   - bessel_In.c
     OK:
@@ -74,13 +74,13 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_K0.c
-    OK:
+    OK: Sun Nov 22 08:14:44 EST 1998 
 
   - bessel_K1.c
-    OK:
+    OK: Sun Nov 22 08:21:41 EST 1998 
 
   - bessel_Kn.c
-    OK:
+    OK: Sun Nov 22 08:26:14 EST 1998 
 
   - bessel_Knu.c
     OK:
@@ -107,7 +107,7 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_k.c
-    OK:
+    OK: Sun Nov 22 08:35:28 EST 1998 
 
   - bessel_olver.c
     OK:
@@ -140,7 +140,7 @@ The following should be finished before a 1.0 level release.
     OK: Sat Nov 21 01:02:25 EST 1998 
 
   - debye.c
-    OK:
+    OK: Sun Nov 22 08:39:10 EST 1998 
 
   - dilog.c
     OK:
@@ -161,7 +161,7 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - expint.c
-    OK:
+    OK: Sun Nov 22 09:12:16 EST 1998 
 
   - expint3.c
     OK: Sat Nov 21 01:30:15 EST 1998 
@@ -211,7 +211,7 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - log.c
-    OK:
+    OK: Sun Nov 22 05:39:38 EST 1998 
 
   - poch.c
     OK:
@@ -220,22 +220,22 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - pow_int.c
-    OK:
+    OK: Sun Nov 22 05:41:20 EST 1998 
 
   - psi.c
     OK:
 
   - shint.c
-    OK:
+    OK: Sun Nov 22 06:00:09 EST 1998 
 
   - sinint.c
-    OK:
+    OK: Sun Nov 22 06:41:36 EST 1998 
 
   - synchrotron.c
-    OK:
+    OK: Sun Nov 22 07:02:09 EST 1998 
 
   - transport.c
-    OK:
+    OK: Sun Nov 22 06:46:06 EST 1998 
 
   - trig.c
     OK:

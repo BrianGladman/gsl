@@ -20,7 +20,7 @@
  */
 static int bessel_kl_scaled_small_x(int l, const double x, double * result)
 {
-  const int lmax = 15;
+  const int lmax = 18;
   int i;
   double num_fact;
   double den = gsl_sf_pow_int(x, l+1);
@@ -43,7 +43,7 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
       t_power *= t;
       delta = t_power*t_coeff;
       sum += delta;
-      if(fabs(delta/sum) < GSL_MACH_EPS) break;
+      if(fabs(delta/sum) < GSL_DBL_EPSILON) break;
     }
     gsl_sf_bessel_il_scaled_impl(l, x, &ipos_term);
     ineg_term =  sgn * num_fact/den * sum;
@@ -74,7 +74,7 @@ int gsl_sf_bessel_k1_scaled_impl(const double x, double * result)
   if(x <= 0.0) {
     return GSL_EDOM;
   }
-  else if(1.0/DBL_MAX > 0.0 && 2.0*x*x < M_PI/DBL_MAX) {
+  else if(1.0/GSL_DBL_MAX > 0.0 && 2.0*x*x < M_PI/GSL_DBL_MAX) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
@@ -110,19 +110,6 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, double * result)
   if(l < 0 || x <= 0.0) {
     return GSL_EDOM;
   }
-  else if(x < 3.0) {
-    return bessel_kl_scaled_small_x(l, x, result);
-  }
-  else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
-    int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
-    return status;
-  }
-  else if(GSL_MIN(0.29/(l*l+1.), 0.5/(l*l+1.+x*x)) < GSL_ROOT3_MACH_EPS) {
-    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
-    return status;
-  }
   else if(l == 0) {
     return gsl_sf_bessel_k0_scaled_impl(x, result);
   }
@@ -131,6 +118,19 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, double * result)
   }
   else if(l == 2) {
     return gsl_sf_bessel_k2_scaled_impl(x, result);
+  }
+  else if(x < 3.0) {
+    return bessel_kl_scaled_small_x(l, x, result);
+  }
+  else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1)) {
+    int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, result);
+    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
+    return status;
+  }
+  else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < GSL_ROOT3_DBL_EPSILON) {
+    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
+    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
+    return status;
   }
   else {
     /* recurse upward */

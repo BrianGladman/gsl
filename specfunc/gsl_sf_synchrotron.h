@@ -6,7 +6,7 @@
 
 
 /* First synchrotron function:
- *   synch1(x) = x Integral[ K_{5/3}(t), {t, x, Infinity}]
+ *   synchrotron_1(x) = x Integral[ K_{5/3}(t), {t, x, Infinity}]
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
@@ -16,7 +16,7 @@ double  gsl_sf_synchrotron_1(double x);
 
 
 /* Second synchroton function:
- *   synch2(x) = x * K_{2/3}(x)
+ *   synchrotron_2(x) = x * K_{2/3}(x)
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */

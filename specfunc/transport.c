@@ -162,7 +162,7 @@ gsl_sf_transport_2_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+  else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     *result = x;
     return GSL_SUCCESS;
   }
@@ -171,11 +171,11 @@ gsl_sf_transport_2_impl(const double x, double * result)
     *result = x * gsl_sf_cheb_eval(&transport2_cs, t);
     return GSL_SUCCESS;
   }
-  else if(x < -GSL_LOG_MACH_EPS) {
-    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+  else if(x < -GSL_LOG_DBL_EPSILON) {
+    int    numexp = (int)((-GSL_LOG_DBL_EPSILON)/x) + 1;
     double sumexp = transport_sumexp(numexp, 2, exp(-x), x);
     double t = 2.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -183,11 +183,11 @@ gsl_sf_transport_2_impl(const double x, double * result)
     }
     return GSL_SUCCESS;
   }
-  else if(x < 2.0/GSL_MACH_EPS) {
+  else if(x < 2.0/GSL_DBL_EPSILON) {
     int    numexp = 1;
     double sumexp = transport_sumexp(numexp, 2, 1.0, x);
     double t = 2.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -197,7 +197,7 @@ gsl_sf_transport_2_impl(const double x, double * result)
   }
   else {
     double t = 2.0 * log(x) - x;
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -221,7 +221,7 @@ gsl_sf_transport_3_impl(const double x, double * result)
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+  else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     *result = 0.5*x*x;
     if(*result == 0.0)
       return GSL_EUNDRFLW;
@@ -234,11 +234,11 @@ gsl_sf_transport_3_impl(const double x, double * result)
     *result = x2 * gsl_sf_cheb_eval(&transport3_cs, t);
     return GSL_SUCCESS;
   }
-  else if(x < -GSL_LOG_MACH_EPS) {
-    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+  else if(x < -GSL_LOG_DBL_EPSILON) {
+    int    numexp = (int)((-GSL_LOG_DBL_EPSILON)/x) + 1;
     double sumexp = transport_sumexp(numexp, 3, exp(-x), x);
     double t = 3.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -246,11 +246,11 @@ gsl_sf_transport_3_impl(const double x, double * result)
     }
     return GSL_SUCCESS;
   }
-  else if(x < 3.0/GSL_MACH_EPS) {
+  else if(x < 3.0/GSL_DBL_EPSILON) {
     int    numexp = 1;
     double sumexp = transport_sumexp(numexp, 3, 1.0, x);
     double t = 3.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -260,7 +260,7 @@ gsl_sf_transport_3_impl(const double x, double * result)
   }
   else {
     double t = 3.0 * log(x) - x;
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -284,7 +284,7 @@ gsl_sf_transport_4_impl(const double x, double * result)
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+  else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     *result = x*x*x/3.0;
     if(*result == 0.0)
       return GSL_EUNDRFLW;
@@ -297,11 +297,11 @@ gsl_sf_transport_4_impl(const double x, double * result)
     *result = x2*x * gsl_sf_cheb_eval(&transport4_cs, t);
     return GSL_SUCCESS;
   }
-  else if(x < -GSL_LOG_MACH_EPS) {
-    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+  else if(x < -GSL_LOG_DBL_EPSILON) {
+    int    numexp = (int)((-GSL_LOG_DBL_EPSILON)/x) + 1;
     double sumexp = transport_sumexp(numexp, 4, exp(-x), x);
     double t = 4.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -309,11 +309,11 @@ gsl_sf_transport_4_impl(const double x, double * result)
     }
     return GSL_SUCCESS;
   }
-  else if(x < 3.0/GSL_MACH_EPS) {
+  else if(x < 3.0/GSL_DBL_EPSILON) {
     int    numexp = 1;
     double sumexp = transport_sumexp(numexp, 4, 1.0, x);
     double t = 4.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -323,7 +323,7 @@ gsl_sf_transport_4_impl(const double x, double * result)
   }
   else {
     double t = 4.0 * log(x) - x;
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -347,7 +347,7 @@ gsl_sf_transport_5_impl(const double x, double * result)
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+  else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     *result = x*x*x*x/4.0;
     if(*result == 0.0)
       return GSL_EUNDRFLW;
@@ -360,11 +360,11 @@ gsl_sf_transport_5_impl(const double x, double * result)
     *result = x2*x2 * gsl_sf_cheb_eval(&transport5_cs, t);
     return GSL_SUCCESS;
   }
-  else if(x < -GSL_LOG_MACH_EPS) {
-    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+  else if(x < -GSL_LOG_DBL_EPSILON) {
+    int    numexp = (int)((-GSL_LOG_DBL_EPSILON)/x) + 1;
     double sumexp = transport_sumexp(numexp, 5, exp(-x), x);
     double t = 5.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -372,11 +372,11 @@ gsl_sf_transport_5_impl(const double x, double * result)
     }
     return GSL_SUCCESS;
   }
-  else if(x < 3.0/GSL_MACH_EPS) {
+  else if(x < 3.0/GSL_DBL_EPSILON) {
     int    numexp = 1;
     double sumexp = transport_sumexp(numexp, 5, 1.0, x);
     double t = 5.0 * log(x) - x + log(sumexp);
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {
@@ -386,7 +386,7 @@ gsl_sf_transport_5_impl(const double x, double * result)
   }
   else {
     double t = 5.0 * log(x) - x;
-    if(t < GSL_LOG_MACH_EPS) {
+    if(t < GSL_LOG_DBL_EPSILON) {
       *result = val_infinity;
     }
     else {

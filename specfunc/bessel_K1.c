@@ -114,28 +114,19 @@ static gsl_sf_cheb_series ak12_cs = {
 
 int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
 {
-  const double xmin    = 2.0*DBL_MIN;
-  const double x_small = 2.0*GSL_SQRT_MACH_EPS; 
-
   if(x <= 0.0) {
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < xmin) {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
-  }
-  else if(x < x_small) {
-    double I1;
-    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
-    *result = exp(x) * (log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x);
-    return stat_I1;
+  else if(x < 2.0*GSL_DBL_MIN) {
+    *result = 0.0; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
   }
   else if(x <= 2.0) {
-    double y = x*x;
+    double c = gsl_sf_cheb_eval(&bk1_cs, 0.5*x*x-1.0);
     double I1;
     int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
-    *result = exp(x) * (log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x);
+    *result = exp(x) * ((log(x)-M_LN2)*I1 + (0.75 + c)/x);
     return stat_I1;
   }
   else if(x <= 8.0) {
@@ -150,45 +141,25 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
 
 int gsl_sf_bessel_K1_impl(const double x, double * result)
 {
-  const double xmin    = 2.0*DBL_MIN;
-  const double x_small = 2.0*GSL_SQRT_MACH_EPS;
-  const double xmax    = GSL_LOG_DBL_MAX
-                         - 0.5 * GSL_LOG_DBL_MAX*log(GSL_LOG_DBL_MAX)/(GSL_LOG_DBL_MAX+0.5)
-			 - 0.01;
-  /*
-    xmax = -alog(r1mach(1))
-    xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
-  */
-
   if(x <= 0.0) {
     return GSL_EDOM;
   }
-  else if(x < xmin) {
+  else if(x < 2.0*GSL_DBL_MIN) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x < x_small) {
-    double I1;
-    int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
-    *result = log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x; 
-    return stat_I1;
-  }
   else if(x <= 2.0) {
-    double y = x*x;
+    double c = gsl_sf_cheb_eval(&bk1_cs, 0.5*x*x-1.0);
     double I1;
     int stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
-    *result = log(0.5*x)*I1 + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
+    *result = (log(x)-M_LN2)*I1 + (0.75 + c)/x;
     return stat_I1;
-  }
-  else if(x < xmax) {
-    double K1_scaled;
-    int stat_K1 = gsl_sf_bessel_K1_scaled_impl(x, &K1_scaled);
-    *result = exp(-x) * K1_scaled;
-    return stat_K1;
   }
   else {
-    *result = 0.0;
-    return GSL_EUNDRFLW;
+    double K1_scaled;
+    int stat_K1 = gsl_sf_bessel_K1_scaled_impl(x, &K1_scaled);
+    int stat_e  = gsl_sf_exp_mult_impl(-x, K1_scaled, result);
+    return GSL_ERROR_SELECT_2(stat_e, stat_K1);
   }
 }
 

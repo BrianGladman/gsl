@@ -78,7 +78,7 @@ static int bessel_Kn_scaled_small_x(const int n, const double x, double * result
 int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
 {
   n = abs(n); /* K(-n, z) = K(n, z) */
-  
+
   if(x <= 0.0) return GSL_EDOM;
 
   if(n == 0) {
@@ -90,10 +90,10 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
   else if(x <= 5.0) {
     return bessel_Kn_scaled_small_x(n, x, result);
   }
-  else if(GSL_ROOT3_MACH_EPS * x > 0.25 * (n*n + 1)) {
+  else if(GSL_ROOT3_DBL_EPSILON * x > 0.25 * (n*n + 1)) {
     return gsl_sf_bessel_Knu_scaled_asympx_impl((double)n, x, result);
   }
-  else if(GSL_MIN(0.29/(n*n), 0.5/(n*n + x*x)) < GSL_ROOT3_MACH_EPS) {
+  else if(GSL_MIN(0.29/(n*n), 0.5/(n*n + x*x)) < GSL_ROOT3_DBL_EPSILON) {
     return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
   }
   else {
@@ -103,8 +103,8 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
     double b_jm1;
     double b_j;
     double b_jp1;
-    gsl_sf_bessel_K0_scaled_impl(x, &b_jm1);
-    gsl_sf_bessel_K1_scaled_impl(x, &b_j);
+    int stat_0 = gsl_sf_bessel_K0_scaled_impl(x, &b_jm1);
+    int stat_1 = gsl_sf_bessel_K1_scaled_impl(x, &b_j);
 
     for(j=1; j<n; j++) {
       b_jp1 = b_jm1 + j * two_over_x * b_j;
@@ -113,7 +113,7 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
     } 
     
     *result = b_j; 
-    return GSL_SUCCESS;
+    return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
 }
 
@@ -156,7 +156,7 @@ int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const dou
 	 */
         int j;
 	for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
-        return GSL_ERROR_SELECT_2(GSL_EOVRFLW, stat);
+        return GSL_EOVRFLW;
       }
     }
 

@@ -57,7 +57,7 @@ static gsl_sf_cheb_series synchrotron2_cs = {
   7
 };
 
-static double synchrotrona_data[23] = {
+static double synchrotron1a_data[23] = {
   2.1329305161355000985,
   0.741352864954200240e-01,
   0.86968099909964198e-02,
@@ -82,8 +82,8 @@ static double synchrotrona_data[23] = {
   0.41e-17,
   0.7e-18
 };
-static gsl_sf_cheb_series synchrotrona_cs = {
-  synchrotrona_data,
+static gsl_sf_cheb_series synchrotron1a_cs = {
+  synchrotron1a_data,
   22,
   -1.0, 1.0,
   (double *)0,
@@ -176,7 +176,7 @@ int gsl_sf_synchrotron_1_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*M_SQRT2 * GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*M_SQRT2 * GSL_SQRT_DBL_EPSILON) {
     *result = 2.14952824153447863671 * pow(x, 1.0/3.0);
     return GSL_SUCCESS;
   }
@@ -193,7 +193,7 @@ int gsl_sf_synchrotron_1_impl(const double x, double * result)
   else if(x < -8.0*GSL_LOG_DBL_MIN/7.0) {
     const double c0 = 0.2257913526447274323630976; /* log(sqrt(pi/2)) */
     const double t = (12.0 - x) / (x + 4.0);
-    const double cheb1 = gsl_sf_cheb_eval(&synchrotrona_cs, t);
+    const double cheb1 = gsl_sf_cheb_eval(&synchrotron1a_cs, t);
     const double y = c0 - x + log(sqrt(x) * cheb1);
     return gsl_sf_exp_impl(y, result);
   }
@@ -210,7 +210,7 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*M_SQRT2*GSL_SQRT_MACH_EPS) {
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     *result = 1.07476412076723931836 * pow(x, 1.0/3.0);
     return GSL_SUCCESS;
   }
@@ -227,8 +227,9 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
     const double c0 = 0.22579135264472743236;   /* log(sqrt(pi/2)) */
     double t = (10.0 - x) / (x + 2.0);
     double cheb1 = gsl_sf_cheb_eval(&synchrotron2a_cs, t);
-    double y = c0 - x + log(sqrt(x) * cheb1);
-    return gsl_sf_exp_impl(y, result);
+    int stat_e = gsl_sf_exp_impl(c0 - x, result);
+    *result *= sqrt(x) * cheb1;
+    return stat_e;
   }
   else {
     *result = 0.0;

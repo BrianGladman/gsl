@@ -202,8 +202,8 @@ static void fg_asymp(const double x, double * f, double * g)
       xmaxg = 1.0/sqrt(r1mach(1))
       xbnd = sqrt(50.0)
   */
-  const double xbig  = 1.0/GSL_SQRT_MACH_EPS;
-  const double xmaxf = 1.0/DBL_MIN;
+  const double xbig  = 1.0/GSL_SQRT_DBL_EPSILON;
+  const double xmaxf = 1.0/GSL_DBL_MIN;
   const double xmaxg = 1.0/GSL_SQRT_DBL_MIN;
   const double xbnd  = 7.07106781187;
 
@@ -296,7 +296,7 @@ int gsl_sf_Si_impl(const double x, double * result)
 {
   double ax   = fabs(x);
   
-  if(ax < GSL_SQRT_MACH_EPS) {
+  if(ax < GSL_SQRT_DBL_EPSILON) {
     *result = x;
     return GSL_SUCCESS;
   }
@@ -305,6 +305,9 @@ int gsl_sf_Si_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
+    /* Note there is no loss pf precision
+     * here bcause of the leading constant.
+     */
     double f, g;
     fg_asymp(ax, &f, &g);
     *result = 0.5 * M_PI - f*cos(ax) - g*sin(ax);
@@ -321,13 +324,17 @@ int gsl_sf_Ci_impl(const double x, double * result)
   if(x <= 0.0) {
     return GSL_EDOM;
   }
-  else if(x <= 4.) {
+  else if(x <= 4.0) {
     double y = -1.0;
     if (x > xsml) y = (x*x-8.0)*0.125;
     *result = log(x) - 0.5 + gsl_sf_cheb_eval(&ci_cs, y);
     return GSL_SUCCESS;
   }
   else {
+    /* There is a possible loss of precision
+     * here in the trigonometric evaluation,
+     * so we check the argument restriction.
+     */
     double f, g;
     double arg = x;
     int status = gsl_sf_angle_restrict_pos_impl(&arg);

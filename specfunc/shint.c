@@ -41,7 +41,7 @@ static gsl_sf_cheb_series shi_cs = {
 
 int gsl_sf_Shi_impl(const double x, double * result)
 {
-  const double xsml = GSL_SQRT_MACH_EPS;  /* sqrt (r1mach(3)) */
+  const double xsml = GSL_SQRT_DBL_EPSILON;  /* sqrt (r1mach(3)) */
   const double ax   = fabs(x);
 
   if(ax < xsml) {
