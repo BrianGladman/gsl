@@ -10,6 +10,7 @@
 int test_bessel(void)
 {
   gsl_sf_result r;
+  int i;
   double J[100];
   double Y[100];
   double I[100];
@@ -442,6 +443,44 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_zero_Jnu_impl, ( 12.0, 22,  &r), 86.345496520534055, TEST_TOL6, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_zero_Jnu_impl, (100.0, 22,  &r), 199.82150220122519, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_zero_Jnu_impl, (500.0, 22,  &r), 649.34132440891735, TEST_TOL2, GSL_SUCCESS);
+
+  sa = 0;
+  for(i=0; i<100; i++) {
+    J[i] = i/10.0;
+  }
+  gsl_sf_bessel_sequence_Jnu_impl(2.0, GSL_MODE_DEFAULT, 100, J);
+  sa += ( test_sf_frac_diff(J[1],  0.0012489586587999188454 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff(J[20], 0.3528340286156377192 ) > TEST_TOL4 );
+  sa += ( test_sf_frac_diff(J[50], 0.0465651162777522155 ) > TEST_TOL4 );
+  gsl_test(sa, "  gsl_sf_sequence_Jnu_impl(2)");
+  s += sa;
+
+  sa = 0;
+  for(i=0; i<100; i++) {
+    J[i] = i;
+  }
+  gsl_sf_bessel_sequence_Jnu_impl(12.0, GSL_MODE_DEFAULT, 100, J);
+  sa += ( test_sf_frac_diff(J[1],   4.999718179448405289e-13 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff(J[5],   7.627813166084551355e-05 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff(J[7],   2.655620035894568062e-03 ) > TEST_TOL3 );
+  sa += ( test_sf_frac_diff(J[10],  6.337025497015601509e-02 ) > TEST_TOL3 );
+  sa += ( test_sf_frac_diff(J[15],  0.23666584405476805591 ) > TEST_TOL3 );
+  sa += ( test_sf_frac_diff(J[30],  0.14825335109966010021 ) > TEST_TOL3 );
+  sa += ( test_sf_frac_diff(J[70],  0.04109913716555364262 ) > TEST_TOL4 );
+  sa += ( test_sf_frac_diff(J[99], -0.0015052760501176728  ) > TEST_TOL5 );
+  gsl_test(sa, "  gsl_sf_sequence_Jnu_impl(12)");
+  s += sa;
+
+  sa = 0;
+  for(i=0; i<100; i++) {
+    J[i] = i * 20;
+  }
+  gsl_sf_bessel_sequence_Jnu_impl(1000.0, GSL_MODE_DEFAULT, 100, J);
+  sa += ( test_sf_frac_diff(J[50],  0.04473067294796404088 ) > TEST_TOL5 );
+  sa += ( test_sf_frac_diff(J[99],  0.01400619760349853902 ) > TEST_TOL6 );
+  gsl_test(sa, "  gsl_sf_sequence_Jnu_impl(1000)");
+  s += sa;
+
 
   return s;
 }

@@ -95,6 +95,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_temme.c		\
 	bessel_y.c		\
 	bessel_zero.c		\
+	bessel_sequence.c	\
 	beta.c			\
 	chebyshev.c		\
 	clausen.c		\

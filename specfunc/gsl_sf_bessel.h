@@ -4,6 +4,8 @@
 #ifndef GSL_SF_BESSEL_H_
 #define GSL_SF_BESSEL_H_
 
+#include <stdlib.h>
+#include <gsl_mode.h>
 #include <gsl_precision.h>
 #include <gsl_sf_result.h>
 
@@ -429,6 +431,18 @@ int gsl_sf_bessel_Jnu_e(double nu, double x, gsl_sf_result * result);
  */
 int gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result);
 int gsl_sf_bessel_Ynu_e(double nu, double x, gsl_sf_result * result);
+
+
+/* Regular cylindrical Bessel function J_nu(x)
+ * evaluated at a series of x values. The array
+ * contains the x values. They are assumed to be
+ * strictly ordered and positive. The array is
+ * over-written with the values of J_nu(x_i).
+ *
+ * exceptions: GSL_EDOM, GSL_EINVAL
+ */
+int gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double * v);
+int gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v);
 
 
 /* Scaled modified cylindrical Bessel functions
