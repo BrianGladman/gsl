@@ -90,6 +90,18 @@ struct _xy_table
     size_t n;
   };
 
+xy_table make_xy_table (double x[], double y[], size_t n);
+
+xy_table
+make_xy_table (double x[], double y[], size_t n)
+{
+  xy_table t;
+  t.x = x;
+  t.y = y;
+  t.n = n;
+  return t;
+}
+
 static int
 test_interp (
   const xy_table * data_table,
@@ -131,7 +143,6 @@ test_interp (
   return status;
 }
 
-
 static int
 test_linear (void)
 {
@@ -144,10 +155,10 @@ test_linear (void)
   double test_dy[6] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
   double test_iy[6] = { 0.0, 0.125, 0.5, 9.0/8.0, 25.0/8.0, 9.0/2.0 };
 
-  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
-  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
-  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
-  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
+  xy_table data_table = make_xy_table(data_x, data_y, 4);
+  xy_table test_table = make_xy_table(test_x, test_y, 6);
+  xy_table test_d_table = make_xy_table(test_x, test_dy, 6);
+  xy_table test_i_table = make_xy_table(test_x, test_iy, 6);
 
   s = test_interp (&data_table, &gsl_interp_factory_linear, &test_table, &test_d_table, &test_i_table);
   gsl_test (s, "linear interpolation");
@@ -167,10 +178,10 @@ test_cspline_natural (void)
   double test_dy[4] = { 1.0, 1.0, 1.0, 1.0 };
   double test_iy[4] = { 0.0, 0.125, 0.5, 2.0 };
 
-  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
-  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
-  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
-  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
+  xy_table data_table = make_xy_table(data_x, data_y, 3);
+  xy_table test_table = make_xy_table(test_x, test_y, 4);
+  xy_table test_d_table = make_xy_table(test_x, test_dy, 4);
+  xy_table test_i_table = make_xy_table(test_x, test_iy, 4);
 
   s = test_interp (&data_table, &gsl_interp_factory_cspline_natural, &test_table, &test_d_table, &test_i_table);
   gsl_test (s, "natural cspline interpolation");
@@ -190,10 +201,10 @@ test_akima_natural (void)
   double test_dy[4] = { 1.0, 1.0, 1.0, 1.0 };
   double test_iy[4] = { 0.0, 0.125, 0.5, 2.0 };
 
-  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
-  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
-  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
-  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
+  xy_table data_table = make_xy_table(data_x, data_y, 5);
+  xy_table test_table = make_xy_table(test_x, test_y, 4);
+  xy_table test_d_table = make_xy_table(test_x, test_dy, 4);
+  xy_table test_i_table = make_xy_table(test_x, test_iy, 4);
 
   s = test_interp (&data_table, &gsl_interp_factory_akima_natural, &test_table, &test_d_table, &test_i_table);
   gsl_test (s, "natural akima interpolation");
