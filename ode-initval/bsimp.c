@@ -387,7 +387,7 @@ bsimp_step_local(
   }
 
   /* LU decomposition for the linear system. */
-  gsl_la_decomp_LU_Crout_impl(step->a_mat, step->p_vec, &signum);
+  gsl_la_decomp_LU_impl(step->a_mat, step->p_vec, &signum);
 
 
   /* Initial step. */
