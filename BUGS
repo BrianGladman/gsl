@@ -264,6 +264,13 @@ gsl_vector      *v      = gsl_vector_calloc(3);
         return 0;
 }
 ----------------------------------------------------------------------
-Last assigned bug number = 32
+BUG#33 -- odes do not propage error codes consistently
+
+error codes from user functions should be propagated unchanged not
+replaced with EBADFUNC.  Possibly this is also the case in
+min/multimin/roots/multiroots.
+
+----------------------------------------------------------------------
+Last assigned bug number = 33
 
  
