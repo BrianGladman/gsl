@@ -2,7 +2,7 @@ This file is the GSL bug tracking system.  The CVS version of this
 file should be kept up-to-date.
 
 ----------------------------------------------------------------------
-BUG#1 -- gsl_sf_hyperg_2F1_e fails for some arguments STATUS: open
+BUG#1 -- gsl_sf_hyperg_2F1_e fails for some arguments 
 
 From: keith.briggs@bt.com
 To: gsl-discuss@sources.redhat.com
@@ -36,7 +36,7 @@ differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
 ----------------------------------------------------------------------
-BUG#3 -- gsl_sf_bessel_Jn fails for large argument STATUS: open
+BUG#3 -- gsl_sf_bessel_Jn fails for large argument 
 
 From: Rodolphe Conan <rconan@eso.org>
 To: gsl list <gsl-discuss@sources.redhat.com>
@@ -52,7 +52,7 @@ Rodolphe Conan writes:
 One of the continued fraction computations is breaking down
 
 ----------------------------------------------------------------------
-BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes STATUS: open
+BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes 
 
 From: David Necas (Yeti) <yeti@physics.muni.cz>
 To: Brian Gough <bjg@network-theory.co.uk>
@@ -70,7 +70,7 @@ only bunches of NaN's). They should return some error code instead.
 
 ----------------------------------------------------------------------
 
-BUG#5 -- broken error terms for implicit odes STATUS: open
+BUG#5 -- broken error terms for implicit odes 
 
 The error terms for the implicit ode integrators are broken.  They
 have 'FIXME' entries still in the code.  Only the bsimp error term is
@@ -78,7 +78,7 @@ implemented.
 
 ----------------------------------------------------------------------
 
-BUG#7 -- gsl_sf_coupling_3j loses accuracy for large arguments STATUS: open
+BUG#7 -- gsl_sf_coupling_3j loses accuracy for large arguments 
 
 From: Filip Floegel <floegel@itp.uni-hannover.de>
 Subject: gsl_sf_coupling_3j
@@ -115,7 +115,7 @@ http://www.ks.uiuc.edu/Publications/Papers/
 
 ----------------------------------------------------------------------
 
-BUG#8 -- inexact coefficients in rk8pd.c STATUS: open
+BUG#8 -- inexact coefficients in rk8pd.c 
 
 From: Luc Maisonobe <Luc.Maisonobe@c-s.fr>
 To: gsl-discuss@sources.redhat.com
@@ -171,7 +171,7 @@ literal constants of rksuite) and to add the reference to the article.
 
 ----------------------------------------------------------------------
 
-BUG#9 -- problem with multimin example STATUS: open
+BUG#9 -- problem with multimin example 
 
 From: Thomas Kunert <kunert@physik.tu-dresden.de>
 To: gsl-discuss@sources.redhat.com
@@ -188,7 +188,7 @@ Subject: Re: multimin example
 It's true that there is a problem there, but I don't know why.
 
 ----------------------------------------------------------------------
-BUG#10 -- gsl_sf_fermi_dirac_int error estimates STATUS: open
+BUG#10 -- gsl_sf_fermi_dirac_int error estimates 
 
 Some of the error estimates on gsl_sf_fermi_dirac_int are much too
 large.  The value itself is pretty accurate.
@@ -224,7 +224,7 @@ Exact     = 2.692738498...e+20
 
 ----------------------------------------------------------------------
 
-BUG#11 -- SVD does not handle N=1 STATUS: open
+BUG#11 -- SVD does not handle N=1 
 
 From: Tiago de Paula Peixoto <count0@fissionauthority.com>
 To: gsl-discuss@sources.redhat.com
@@ -295,8 +295,3 @@ int main()
 }
 
 ----------------------------------------------------------------------
-
-BUG#12
-
-The arguments for Wigner 6j are in the wrong order (a,b,e,d,c,f)
-depending on what convention you use.
