@@ -1,3 +1,17 @@
+* gfsr: for consistency (Charles A. Wemple).  Make this change in 2.0
+
+ 127a142
+>   state->nd = i-1;
+133,134c148,149
+<   for (i=0; i<32; ++i) {
+<       int k=7+i*3;
+---
+>   for (i=0; i<32; i++) {
+>       int k=7*i+3;
+141d155
+<   state->nd = i;
+
+
 * Sort out "const" in prototypes, it looks odd since there are consts
 for many functions which modify the state.  (Applies to both qrng and rng)
 
