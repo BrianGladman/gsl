@@ -1,3 +1,8 @@
+Tue Jun 12 11:52:23 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_errno.h (GSL_STATUS_UPDATE): added macro for updating
+ 	status value multiple times
+
 Fri Apr 27 18:18:59 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_errno.h (GSL_ERROR_NULL): added macro which returns NULL,
