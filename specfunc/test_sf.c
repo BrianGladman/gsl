@@ -414,6 +414,34 @@ int check_coupling(void)
   return status;
 }
 
+int check_dawson(void)
+{
+  int status = 0;
+  int s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dawson(1.0e-15), 1.0e-15) > 1.0e-14 );
+  gsl_test(s, "  dawson(1.0e-15)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_dawson(0.5), 0.4244363835020222959 ) > 1.0e-14 );
+  printf("%24.18g\n", gsl_sf_dawson(0.5));
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dawson(2.0), 0.30134038892379196603 ) > 1.0e-14 );
+  gsl_test(s, "  dawson(2.0)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_dawson(1000), 0.0005000002500003750009 ) > 1.0e-14 );
+  gsl_test(s, "  dawson(1000)");
+  status += s;
+  
+  return status;
+}
+
 int check_debye(void)
 {
   double y;
@@ -1298,6 +1326,7 @@ int main(int argc, char * argv[])
   gsl_test(check_coulomb(),    "Coulomb Wave Functions");
   gsl_test(check_coupling(),   "Coupling Coefficients");
 
+  gsl_test(check_dawson(),     "Dawson Integral");
   gsl_test(check_debye(),      "Debye Functions");
   gsl_test(check_dilog(),      "Dilogarithm");
 

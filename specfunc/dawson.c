@@ -209,7 +209,7 @@ gsl_sf_dawson_impl(double x, double * result)
   const double xbig = 1.0/(M_SQRT2*GSL_SQRT_MACH_EPS);  /* sqrt(0.5/eps) */
   const double xmax = 0.1 * DBL_MAX;
 
-  const double y = abs(x);
+  const double y = fabs(x);
   
   if(y < xsml) {
     *result = x;
@@ -224,7 +224,7 @@ gsl_sf_dawson_impl(double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y < xbig) {
-    *result = 0.5 + gsl_sf_cheb_eval(&dawa_cs, 32.0/(y*y) - 1.0);
+    *result = (0.5 + gsl_sf_cheb_eval(&dawa_cs, 32.0/(y*y) - 1.0)) / x;
     return GSL_SUCCESS;
   }
   else if(y < xmax) {

@@ -10,6 +10,7 @@
 #include <gsl_sf_clausen.h>
 #include <gsl_sf_coupling.h>
 #include <gsl_sf_coulomb.h>
+#include <gsl_sf_dawson.h>
 #include <gsl_sf_debye.h>
 #include <gsl_sf_dilog.h>
 #include <gsl_sf_ellint.h>
