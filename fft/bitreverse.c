@@ -5,10 +5,10 @@
 #include "bitreverse.h"
 
 int 
-fft_complex_bitreverse_order (double data[], 
-			      const size_t stride,
-			      const size_t n,
-			      size_t logn)
+FUNCTION(fft_complex,bitreverse_order) (BASE data[], 
+					const size_t stride,
+					const size_t n,
+					size_t logn)
 {
   /* This is the Goldrader bit-reversal algorithm */
 
@@ -23,8 +23,8 @@ fft_complex_bitreverse_order (double data[],
 
       if (i < j)
 	{
-	  const double tmp_real = REAL(data,stride,i);
-	  const double tmp_imag = IMAG(data,stride,i);
+	  const BASE tmp_real = REAL(data,stride,i);
+	  const BASE tmp_imag = IMAG(data,stride,i);
 	  REAL(data,stride,i) = REAL(data,stride,j);
 	  IMAG(data,stride,i) = IMAG(data,stride,j);
 	  REAL(data,stride,j) = tmp_real;
@@ -45,8 +45,10 @@ fft_complex_bitreverse_order (double data[],
 
 
 int 
-fft_bitreverse_order (double data[], const size_t stride, const size_t n,
-		      size_t logn)
+FUNCTION(fft_real,bitreverse_order) (BASE data[], 
+				const size_t stride, 
+				const size_t n,
+				size_t logn)
 {
   /* This is the Goldrader bit-reversal algorithm */
 
@@ -61,7 +63,7 @@ fft_bitreverse_order (double data[], const size_t stride, const size_t n,
 
       if (i < j)
 	{
-	  const double tmp = VECTOR(data,stride,i);
+	  const BASE tmp = VECTOR(data,stride,i);
 	  VECTOR(data,stride,i) = VECTOR(data,stride,j);
 	  VECTOR(data,stride,j) = tmp;
 	}

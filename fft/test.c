@@ -15,7 +15,7 @@
 #include <gsl_test.h>
 
 #include "complex_internal.h"
-#include "fft_signals.h"
+#include "signals.h"
 
 #include "compare.h"
 
@@ -60,7 +60,7 @@ void check_complex (size_t n)
   double *complex_data, *complex_tmp;
   double *fft_complex_data, *fft_complex_tmp;
 
-  gsl_fft_complex_wavetable * cw ;
+  gsl_fft_wavetable_complex * cw ;
   gsl_fft_real_wavetable * rw ;
   gsl_fft_halfcomplex_wavetable * hcw ;
 
@@ -72,11 +72,11 @@ void check_complex (size_t n)
 
   gsl_set_error_handler (NULL);	/* abort on any errors */
 
-  cw = gsl_fft_complex_wavetable_alloc (n);
-  gsl_test (cw == 0, "gsl_fft_complex_wavetable_alloc, n = %d", n);
+  cw = gsl_fft_wavetable_complex_alloc (n);
+  gsl_test (cw == 0, "gsl_fft_wavetable_complex_alloc, n = %d", n);
   
   status = gsl_fft_complex_init (n, cw);
-  gsl_test (status, "gsl_fft_complex_wavetable_init, n = %d", n);
+  gsl_test (status, "gsl_fft_wavetable_complex_init, n = %d", n);
   
   /* the wavetable generation is also performed by gsl_fft_complex_init
      but test it here too */
@@ -203,8 +203,8 @@ void check_complex (size_t n)
     };
   gsl_test (status, "gsl_fft_complex_forward with signal_exp, n = %d", n);
   
-  gsl_fft_complex_wavetable_free (cw);
-  gsl_test (status, "gsl_fft_complex_wavetable_free, n = %d", n);
+  gsl_fft_wavetable_complex_free (cw);
+  gsl_test (status, "gsl_fft_wavetable_complex_free, n = %d", n);
   
   /* check for memory leaks here if mstats available */
   

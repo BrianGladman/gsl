@@ -38,7 +38,7 @@ main (void)
   double * real_data = &real_x ;
   double * complex_data = &complex_x  ; 
 
-  gsl_fft_complex_wavetable * cw;
+  gsl_fft_wavetable_complex * cw;
   gsl_fft_real_wavetable * rw;
   gsl_fft_halfcomplex_wavetable * hcw;
 
@@ -46,8 +46,8 @@ main (void)
 
   /* n = 0 in alloc */
 
-  cw = gsl_fft_complex_wavetable_alloc (0);
-  gsl_test (cw != 0, "trap for n = 0 in gsl_fft_complex_wavetable_alloc");
+  cw = gsl_fft_wavetable_complex_alloc (0);
+  gsl_test (cw != 0, "trap for n = 0 in gsl_fft_wavetable_complex_alloc");
 
   rw = gsl_fft_real_wavetable_alloc (0);
   gsl_test (rw != 0, "trap for n = 0 in gsl_fft_real_wavetable_alloc" );
@@ -58,7 +58,7 @@ main (void)
   /* n = 0 in wavetable_init */
 
   status = gsl_fft_complex_init (0, cw);
-  gsl_test (!status, "trap for n = 0 in gsl_fft_complex_wavetable_init");
+  gsl_test (!status, "trap for n = 0 in gsl_fft_wavetable_complex_init");
 
   status = gsl_fft_real_init (0, rw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_real_wavetable_init");
@@ -78,7 +78,7 @@ main (void)
   status = gsl_fft_halfcomplex_generate_wavetable (0, hcw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex_generate_wavetable");
 
-  cw = gsl_fft_complex_wavetable_alloc (10);
+  cw = gsl_fft_wavetable_complex_alloc (10);
   hcw = gsl_fft_halfcomplex_wavetable_alloc (10);
   rw = gsl_fft_real_wavetable_alloc (10);
 

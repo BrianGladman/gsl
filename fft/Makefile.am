@@ -8,7 +8,6 @@ noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h \
 fft_signals.h c_main.c c_init.c c_pass_2.c c_pass_3.c c_pass_4.c c_pass_5.c \
 c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c
 
-
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
 TESTS = test test_radix2 test_trap

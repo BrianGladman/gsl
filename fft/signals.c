@@ -8,7 +8,7 @@
 #include <gsl_dft_complex.h>
 
 #include "complex_internal.h"
-#include "fft_signals.h"
+#include "signals.h"
 
 int
 fft_signal_complex_pulse (const size_t k,

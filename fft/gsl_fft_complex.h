@@ -16,7 +16,7 @@ typedef struct
     gsl_complex * trig;
     double * scratch;
   }
-gsl_fft_complex_wavetable;
+gsl_fft_wavetable_complex;
 
   /*  Power of 2 routines  */
 
@@ -54,37 +54,37 @@ int gsl_fft_complex_bitreverse_order (double data[][],
 				      size_t n,
 				      size_t n_bits);
 
-  /*  Mixed Radix general-N routines  */
+/*  Mixed Radix general-N routines  */
 
 int gsl_fft_complex_forward (double data[], size_t stride, size_t n,
-			     const gsl_fft_complex_wavetable * wavetable);
+			     const gsl_fft_wavetable_complex * wavetable);
 
 int gsl_fft_complex_backward (double data[], size_t stride, size_t n,
-			      const gsl_fft_complex_wavetable * wavetable);
+			      const gsl_fft_wavetable_complex * wavetable);
 
 int gsl_fft_complex_inverse (double data[], size_t stride, size_t n,
-			     const gsl_fft_complex_wavetable * wavetable);
+			     const gsl_fft_wavetable_complex * wavetable);
 
 int
 gsl_fft_complex_transform (double data[], size_t stride, size_t n,
-			   const gsl_fft_complex_wavetable * wavetable,
+			   const gsl_fft_wavetable_complex * wavetable,
 			   gsl_fft_direction sign);
 
 int
 gsl_fft_complex_init (size_t n,
-		      gsl_fft_complex_wavetable * wavetable);
+		      gsl_fft_wavetable_complex * wavetable);
 
 int
 gsl_fft_complex_generate_wavetable (size_t n,
-				    gsl_fft_complex_wavetable * wavetable);
+				    gsl_fft_wavetable_complex * wavetable);
 
-gsl_fft_complex_wavetable * gsl_fft_complex_wavetable_alloc (size_t n);
+gsl_fft_wavetable_complex * gsl_fft_wavetable_complex_alloc (size_t n);
 
 void
-  gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
+gsl_fft_wavetable_complex_free (gsl_fft_wavetable_complex * wavetable);
 
 int
-gsl_fft_complex_wavetable_cpy (gsl_fft_complex_wavetable * dest,
-			       gsl_fft_complex_wavetable * src) ;
+gsl_fft_wavetable_complex_cpy (gsl_fft_wavetable_complex * dest,
+			   gsl_fft_wavetable_complex * src) ;
 
 #endif /* GSL_FFT_COMPLEX_H */

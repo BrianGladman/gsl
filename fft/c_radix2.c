@@ -9,26 +9,29 @@
 #include "bitreverse.h"
 
 int
-gsl_fft_complex_radix2_forward (double data[], const size_t stride, const size_t n)
+FUNCTION(gsl_fft_complex,radix2_forward) (TYPE(gsl_complex_packed_array) data,
+					  const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = forward;
-  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_backward (double data[], const size_t stride, const size_t n)
+FUNCTION(gsl_fft_complex,radix2_backward) (TYPE(gsl_complex_packed_array) data,
+					   const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_inverse (double data[], const size_t stride, const size_t n)
+FUNCTION(gsl_fft_complex,radix2_inverse) (TYPE(gsl_complex_packed_array) data,
+					  const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
+  int status = FUNCTION(gsl_fft_complex,radix2) (data, stride, n, sign);
 
   if (status)
     {
@@ -51,54 +54,13 @@ gsl_fft_complex_radix2_inverse (double data[], const size_t stride, const size_t
 }
 
 
-int
-gsl_fft_complex_radix2_dif_forward (double data[], const size_t stride, const size_t n)
-{
-  gsl_fft_direction sign = forward;
-  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
-  return status;
-}
 
 int
-gsl_fft_complex_radix2_dif_backward (double data[], const size_t stride, const size_t n)
+FUNCTION(gsl_fft_complex,radix2_transform) (TYPE(gsl_complex_packed_array) data,
+					    const size_t stride, 
+					    const size_t n,
+					    const gsl_fft_direction sign)
 {
-  gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
-  return status;
-}
-
-int
-gsl_fft_complex_radix2_dif_inverse (double data[], const size_t stride, const size_t n)
-{
-  gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
-
-  if (status)
-    {
-      return status;
-    }
-
-  /* normalize inverse fft with 1/n */
-
-  {
-    const double norm = 1.0 / n;
-    size_t i;
-    for (i = 0; i < n; i++)
-      {
-	REAL(data,stride,i) *= norm;
-	IMAG(data,stride,i) *= norm;
-      }
-  }
-
-  return status;
-}
-
-
-int
-gsl_fft_complex_radix2 (double data[], const size_t stride, const size_t n,
-			const gsl_fft_direction sign)
-{
-
   int result ;
   size_t dual;
   size_t bit; 
@@ -125,7 +87,7 @@ gsl_fft_complex_radix2 (double data[], const size_t stride, const size_t n,
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
-  status = fft_complex_bitreverse_order(data, stride, n, logn) ;
+  status = FUNCTION(fft_complex,bitreverse_order) (data, stride, n, logn) ;
 
   /* apply fft recursion */
 
@@ -202,10 +164,59 @@ gsl_fft_complex_radix2 (double data[], const size_t stride, const size_t n,
 }
 
 
+int
+FUNCTION(gsl_fft_complex,radix2_dif_forward) (TYPE(gsl_complex_packed_array) data, 
+					      const size_t stride, 
+					      const size_t n)
+{
+  gsl_fft_direction sign = forward;
+  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+  return status;
+}
 
 int
-gsl_fft_complex_radix2_dif (double data[], const size_t stride, const size_t n,
-			    const gsl_fft_direction sign)
+FUNCTION(gsl_fft_complex,radix2_dif_backward) (TYPE(gsl_complex_packed_array) data,
+					       const size_t stride, 
+					       const size_t n)
+{
+  gsl_fft_direction sign = backward;
+  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+  return status;
+}
+
+int
+FUNCTION(gsl_fft_complex,radix2_dif_inverse) (TYPE(gsl_complex_packed_array) data, 
+					      const size_t stride, 
+					      const size_t n)
+{
+  gsl_fft_direction sign = backward;
+  int status = FUNCTION(gsl_fft_complex,radix2_dif) (data, stride, n, sign);
+
+  if (status)
+    {
+      return status;
+    }
+
+  /* normalize inverse fft with 1/n */
+
+  {
+    const double norm = 1.0 / n;
+    size_t i;
+    for (i = 0; i < n; i++)
+      {
+	REAL(data,stride,i) *= norm;
+	IMAG(data,stride,i) *= norm;
+      }
+  }
+
+  return status;
+}
+
+int
+FUNCTION(gsl_fft_complex,radix2_dif) (TYPE(gsl_complex_packed_array) data, 
+				      const size_t stride, 
+				      const size_t n,
+				      const gsl_fft_direction sign)
 {
   int result ;
   size_t dual;
@@ -281,7 +292,7 @@ gsl_fft_complex_radix2_dif (double data[], const size_t stride, const size_t n,
   /* bit reverse the ordering of output data for decimation in
      frequency algorithm */
   
-  status = fft_complex_bitreverse_order(data, stride, n, logn) ;
+  status = FUNCTION(fft_complex,bitreverse_order)(data, stride, n, logn) ;
 
   return 0;
 

@@ -16,7 +16,7 @@
 
 #include "complex_internal.h"
 #include "bitreverse.h"
-#include "fft_signals.h"
+#include "signals.h"
 
 #include "compare.h"
 

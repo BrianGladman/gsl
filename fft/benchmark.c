@@ -22,7 +22,7 @@ int
 main (int argc, char *argv[])
 {
   double *data, *fft_data;
-  gsl_fft_complex_wavetable * cw;
+  gsl_fft_wavetable_complex * cw;
   unsigned int i, logn;
   int result;
   int status;
@@ -42,7 +42,7 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  cw = gsl_fft_complex_wavetable_alloc (n);
+  cw = gsl_fft_wavetable_complex_alloc (n);
   status = gsl_fft_complex_init (n, cw);
   status = gsl_fft_complex_generate_wavetable (n, cw);
 
