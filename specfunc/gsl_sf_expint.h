@@ -1,6 +1,6 @@
 /* specfunc/gsl_sf_expint.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ __BEGIN_DECLS
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_expint_E1_e(const double x, gsl_sf_result * result);
-double     gsl_sf_expint_E1(const double x);
+double  gsl_sf_expint_E1(const double x);
 
 
 /* E_2(x) := Re[ Integrate[ Exp[-xt]/t^2, {t,1,Infinity}] ]
@@ -52,7 +52,25 @@ double     gsl_sf_expint_E1(const double x);
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_expint_E2_e(const double x, gsl_sf_result * result);
-double     gsl_sf_expint_E2(const double x);
+double  gsl_sf_expint_E2(const double x);
+
+
+/* E_1_scaled(x) := exp(x) E_1(x)
+ *
+ * x != 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_expint_E1_scaled_e(const double x, gsl_sf_result * result);
+double  gsl_sf_expint_E1_scaled(const double x);
+
+
+/* E_2_scaled(x) := exp(x) E_2(x)
+ *
+ * x != 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_expint_E2_scaled_e(const double x, gsl_sf_result * result);
+double  gsl_sf_expint_E2_scaled(const double x);
 
 
 /* Ei(x) := - PV Integrate[ Exp[-t]/t, {t,-x,Infinity}]
@@ -62,7 +80,16 @@ double     gsl_sf_expint_E2(const double x);
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_expint_Ei_e(const double x, gsl_sf_result * result);
-double     gsl_sf_expint_Ei(const double x);
+double  gsl_sf_expint_Ei(const double x);
+
+
+/* Ei_scaled(x) := exp(-x) Ei(x)
+ *
+ * x != 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_expint_Ei_scaled_e(const double x, gsl_sf_result * result);
+double  gsl_sf_expint_Ei_scaled(const double x);
 
 
 /* Shi(x) := Integrate[ Sinh[t]/t, {t,0,x}]
@@ -70,7 +97,7 @@ double     gsl_sf_expint_Ei(const double x);
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_Shi_e(const double x, gsl_sf_result * result);
-double     gsl_sf_Shi(const double x);
+double  gsl_sf_Shi(const double x);
 
 
 /* Chi(x) := Re[ M_EULER + log(x) + Integrate[(Cosh[t]-1)/t, {t,0,x}] ]
@@ -79,7 +106,7 @@ double     gsl_sf_Shi(const double x);
  * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_Chi_e(const double x, gsl_sf_result * result);
-double     gsl_sf_Chi(const double x);
+double  gsl_sf_Chi(const double x);
 
 
 /* Ei_3(x) := Integral[ Exp[-t^3], {t,0,x}]
@@ -88,7 +115,7 @@ double     gsl_sf_Chi(const double x);
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_expint_3_e(const double x, gsl_sf_result * result);
-double     gsl_sf_expint_3(double x);
+double  gsl_sf_expint_3(double x);
 
 
 /* Si(x) := Integrate[ Sin[t]/t, {t,0,x}]
@@ -96,7 +123,7 @@ double     gsl_sf_expint_3(double x);
  * exceptions: none
  */
 int     gsl_sf_Si_e(const double x, gsl_sf_result * result);
-double     gsl_sf_Si(const double x);
+double  gsl_sf_Si(const double x);
 
 
 /* Ci(x) := -Integrate[ Cos[t]/t, {t,x,Infinity}]
@@ -105,7 +132,7 @@ double     gsl_sf_Si(const double x);
  * exceptions: GSL_EDOM 
  */
 int     gsl_sf_Ci_e(const double x, gsl_sf_result * result);
-double     gsl_sf_Ci(const double x);
+double  gsl_sf_Ci(const double x);
 
 
 /* AtanInt(x) := Integral[ Arctan[t]/t, {t,0,x}]
@@ -113,8 +140,8 @@ double     gsl_sf_Ci(const double x);
  *
  * exceptions:
  */
-int gsl_sf_atanint_e(const double x, gsl_sf_result * result);
-double gsl_sf_atanint(const double x);
+int     gsl_sf_atanint_e(const double x, gsl_sf_result * result);
+double  gsl_sf_atanint(const double x);
 
 
 __END_DECLS

@@ -1,6 +1,6 @@
 /* specfunc/expint.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,10 +281,10 @@ static cheb_series AE14_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-
-int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
+/* implementation for E1, allowing for scaling by exp(x) */
+static
+int expint_E1_impl(const double x, gsl_sf_result * result, const int scale)
 {
   const double xmaxt = -GSL_LOG_DBL_MIN;      /* XMAXT = -LOG (R1MACH(1)) */
   const double xmax  = xmaxt - log(xmaxt);    /* XMAX = XMAXT - LOG(XMAXT) */
@@ -295,7 +295,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
     OVERFLOW_ERROR(result);
   }
   else if(x <= -10.0) {
-    const double s = exp(-x)/x;
+    const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_c;
     cheb_eval_e(&AE11_cs, 20.0/x+1.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
@@ -304,7 +304,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x <= -4.0) {
-    const double s = exp(-x)/x;
+    const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_c;
     cheb_eval_e(&AE12_cs, (40.0/x+7.0)/3.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
@@ -314,10 +314,11 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   }
   else if(x <= -1.0) {
     const double ln_term = -log(fabs(x));
+    const double scale_factor = ( scale ? exp(x) : 1.0 );
     gsl_sf_result result_c;
     cheb_eval_e(&E11_cs, (2.0*x+5.0)/3.0, &result_c);
-    result->val  = ln_term + result_c.val;
-    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->val  = scale_factor * (ln_term + result_c.val);
+    result->err  = scale_factor * (result_c.err + GSL_DBL_EPSILON * fabs(ln_term));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -326,15 +327,16 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   }
   else if(x <= 1.0) {
     const double ln_term = -log(fabs(x));
+    const double scale_factor = ( scale ? exp(x) : 1.0 );
     gsl_sf_result result_c;
     cheb_eval_e(&E12_cs, x, &result_c);
-    result->val  = ln_term - 0.6875 + x + result_c.val;
-    result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
+    result->val  = scale_factor * (ln_term - 0.6875 + x + result_c.val);
+    result->err  = scale_factor * (result_c.err + GSL_DBL_EPSILON * fabs(ln_term));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
-    const double s = exp(-x)/x;
+    const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_c;
     cheb_eval_e(&AE13_cs, (8.0/x-5.0)/3.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
@@ -343,7 +345,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x <= xmax) {
-    const double s = exp(-x)/x;
+    const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_c;
     cheb_eval_e(&AE14_cs, 8.0/x-1.0, &result_c);
     result->val  = s * (1.0 +  result_c.val);
@@ -357,7 +359,8 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
+static
+int expint_E2_impl(const double x, gsl_sf_result * result, const int scale)
 {
   const double xmaxt = -GSL_LOG_DBL_MIN;
   const double xmax  = xmaxt - log(xmaxt);
@@ -368,15 +371,16 @@ int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
     OVERFLOW_ERROR(result);
   }
   else if(x < 100.0) {
-    const double ex = exp(-x);
+    const double ex = ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_E1;
-    int stat_E1 = gsl_sf_expint_E1_e(x, &result_E1);
+    int stat_E1 = expint_E1_impl(x, &result_E1, scale);
     result->val  = ex - x*result_E1.val;
     result->err  = fabs(x) * (GSL_DBL_EPSILON*ex + result_E1.err);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_E1;
   }
   else if(x < xmax) {
+    const double s = ( scale ? 1.0 : exp(-x) );
     const double c1  = -2.0;
     const double c2  =  6.0;
     const double c3  = -24.0;
@@ -393,13 +397,41 @@ int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
     const double y = 1.0/x;
     const double sum6 = c6+y*(c7+y*(c8+y*(c9+y*(c10+y*(c11+y*(c12+y*c13))))));
     const double sum  = y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*sum6)))));
-    result->val = exp(-x) * (1.0 + sum)/x;
+    result->val = s * (1.0 + sum)/x;
     result->err = 2.0 * (x + 1.0) * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {
     UNDERFLOW_ERROR(result);
   }
+}
+
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
+
+
+int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
+{
+  return expint_E1_impl(x, result, 0);
+}
+
+
+int gsl_sf_expint_E1_scaled_e(const double x, gsl_sf_result * result)
+{
+  return expint_E1_impl(x, result, 1);
+}
+
+
+int gsl_sf_expint_E2_e(const double x, gsl_sf_result * result)
+{
+  return expint_E2_impl(x, result, 0);
+}
+
+
+int gsl_sf_expint_E2_scaled_e(const double x, gsl_sf_result * result)
+{
+  return expint_E2_impl(x, result, 1);
 }
 
 
@@ -413,6 +445,19 @@ int gsl_sf_expint_Ei_e(const double x, gsl_sf_result * result)
     return status;
   }
 }
+
+
+int gsl_sf_expint_Ei_scaled_e(const double x, gsl_sf_result * result)
+{
+  /* CHECK_POINTER(result) */
+
+  {
+    int status = gsl_sf_expint_E1_scaled_e(-x, result);
+    result->val = -result->val;
+    return status;
+  }
+}
+
 
 #if 0
 static double recurse_En(int n, double x, double E1)
@@ -437,12 +482,27 @@ double gsl_sf_expint_E1(const double x)
   EVAL_RESULT(gsl_sf_expint_E1_e(x, &result));
 }
 
+double gsl_sf_expint_E1_scaled(const double x)
+{
+  EVAL_RESULT(gsl_sf_expint_E1_scaled_e(x, &result));
+}
+
 double gsl_sf_expint_E2(const double x)
 {
   EVAL_RESULT(gsl_sf_expint_E2_e(x, &result));
 }
 
+double gsl_sf_expint_E2_scaled(const double x)
+{
+  EVAL_RESULT(gsl_sf_expint_E2_scaled_e(x, &result));
+}
+
 double gsl_sf_expint_Ei(const double x)
+{
+  EVAL_RESULT(gsl_sf_expint_Ei_e(x, &result));
+}
+
+double gsl_sf_expint_Ei_scaled(const double x)
 {
   EVAL_RESULT(gsl_sf_expint_Ei_e(x, &result));
 }
