@@ -131,15 +131,22 @@ gsl_rng_uniform_pos (const gsl_rng * r)
 unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
-  unsigned long int max = r->max;
-  unsigned long int scale = max / n;
+  unsigned long int offset = r->min;
+  unsigned long int range = r->max - offset;
+  unsigned long int scale = range / n;
   unsigned long int k;
+
+  if (n > range) /*FIXME: test this and move it into gsl_rng.h */
+    {
+      GSL_ERROR_RETURN ("n exceeds maximum value of generator",
+			GSL_EINVAL, 0) ;
+    }
 
   do
     {
-      k = ((r->get) (r->state)) / scale;
+      k = (((r->get) (r->state)) - offset) / scale;
     }
-  while (k < n);
+  while (k > n);
 
   return k;
 }
