@@ -33,39 +33,45 @@
 #include "dogleg.c"
 
 typedef struct
-  {
-    size_t iter;
-    size_t ncfail;
-    size_t ncsuc;
-    size_t nslow1;
-    size_t nslow2;
-    double fnorm;
-    double delta;
-    gsl_matrix *J;
-    gsl_matrix *q;
-    gsl_matrix *r;
-    gsl_vector *tau;
-    gsl_vector *diag;
-    gsl_vector *qtf;
-    gsl_vector *newton;
-    gsl_vector *gradient;
-    gsl_vector *x_trial;
-    gsl_vector *f_trial;
-    gsl_vector *df;
-    gsl_vector *qtdf;
-    gsl_vector *rdx;
-    gsl_vector *w;
-    gsl_vector *v;
-  }
+{
+  size_t iter;
+  size_t ncfail;
+  size_t ncsuc;
+  size_t nslow1;
+  size_t nslow2;
+  double fnorm;
+  double delta;
+  gsl_matrix *J;
+  gsl_matrix *q;
+  gsl_matrix *r;
+  gsl_vector *tau;
+  gsl_vector *diag;
+  gsl_vector *qtf;
+  gsl_vector *newton;
+  gsl_vector *gradient;
+  gsl_vector *x_trial;
+  gsl_vector *f_trial;
+  gsl_vector *df;
+  gsl_vector *qtdf;
+  gsl_vector *rdx;
+  gsl_vector *w;
+  gsl_vector *v;
+}
 hybrid_state_t;
 
 static int hybrid_alloc (void *vstate, size_t n);
-static int hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-static int hybrids_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-static int set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale);
-static int hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static int hybrid_set (void *vstate, gsl_multiroot_function * func,
+		       gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static int hybrids_set (void *vstate, gsl_multiroot_function * func,
+			gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+static int set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+		gsl_vector * f, gsl_vector * dx, int scale);
+static int hybrid_iterate (void *vstate, gsl_multiroot_function * func,
+			   gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static void hybrid_free (void *vstate);
-static int iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale);
+static int iterate (void *vstate, gsl_multiroot_function * func,
+		    gsl_vector * x, gsl_vector * f, gsl_vector * dx,
+		    int scale);
 
 static int
 hybrid_alloc (void *vstate, size_t n)
@@ -73,7 +79,7 @@ hybrid_alloc (void *vstate, size_t n)
   hybrid_state_t *state = (hybrid_state_t *) vstate;
   gsl_matrix *J, *q, *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
-   *df, *qtdf, *rdx, *w, *v;
+    *df, *qtdf, *rdx, *w, *v;
 
   J = gsl_matrix_calloc (n, n);
 
@@ -334,21 +340,24 @@ hybrid_alloc (void *vstate, size_t n)
 }
 
 static int
-hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+	    gsl_vector * f, gsl_vector * dx)
 {
   int status = set (vstate, func, x, f, dx, 0);
-  return status ;
+  return status;
 }
 
 static int
-hybrids_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+hybrids_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+	     gsl_vector * f, gsl_vector * dx)
 {
   int status = set (vstate, func, x, f, dx, 1);
-  return status ;
+  return status;
 }
 
 static int
-set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale)
+set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+     gsl_vector * f, gsl_vector * dx, int scale)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
 
@@ -359,16 +368,18 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
   gsl_vector *diag = state->diag;
 
   int status;
-  
+
   status = GSL_MULTIROOT_FN_EVAL (func, x, f);
+
   if (status)
-    { 
+    {
       return status;
     }
 
-  status = gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J) ;
+  status = gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J);
+
   if (status)
-    { 
+    {
       return status;
     }
 
@@ -395,32 +406,36 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
   /* Factorize J into QR decomposition */
 
   status = gsl_linalg_QR_decomp (J, tau);
+
   if (status)
-    { 
+    {
       return status;
     }
+
   status = gsl_linalg_QR_unpack (J, tau, q, r);
-  if (status)
 
   return status;
 }
 
 static int
-hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+		gsl_vector * f, gsl_vector * dx)
 {
   int status = iterate (vstate, func, x, f, dx, 0);
   return status;
 }
 
 static int
-hybrids_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+hybrids_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+		 gsl_vector * f, gsl_vector * dx)
 {
   int status = iterate (vstate, func, x, f, dx, 1);
   return status;
 }
 
 static int
-iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale)
+iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+	 gsl_vector * f, gsl_vector * dx, int scale)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
 
@@ -472,12 +487,12 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
   {
     int status = GSL_MULTIROOT_FN_EVAL (func, x_trial, f_trial);
 
-    if (status != GSL_SUCCESS) 
+    if (status != GSL_SUCCESS)
       {
-        return GSL_EBADFUNC;
+	return GSL_EBADFUNC;
       }
   }
-  
+
   /* Set df = f_trial - f */
 
   compute_df (f_trial, f, df);
@@ -549,21 +564,21 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
 
   if (state->ncfail == 2)
     {
-      gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J) ;
+      gsl_multiroot_fdjacobian (func, x, f, GSL_SQRT_DBL_EPSILON, J);
 
       state->nslow2++;
 
       if (state->iter == 1)
 	{
-          if (scale)
-            compute_diag (J, diag);
+	  if (scale)
+	    compute_diag (J, diag);
 	  state->delta = compute_delta (diag, x);
 	}
       else
-        {
-          if (scale)
-            update_diag (J, diag);
-        }
+	{
+	  if (scale)
+	    update_diag (J, diag);
+	}
 
       /* Factorize J into QR decomposition */
 
@@ -623,8 +638,7 @@ hybrid_free (void *vstate)
   gsl_matrix_free (state->J);
 }
 
-static const gsl_multiroot_fsolver_type hybrid_type =
-{
+static const gsl_multiroot_fsolver_type hybrid_type = {
   "hybrid",			/* name */
   sizeof (hybrid_state_t),
   &hybrid_alloc,
@@ -633,8 +647,7 @@ static const gsl_multiroot_fsolver_type hybrid_type =
   &hybrid_free
 };
 
-static const gsl_multiroot_fsolver_type hybrids_type =
-{
+static const gsl_multiroot_fsolver_type hybrids_type = {
   "hybrids",			/* name */
   sizeof (hybrid_state_t),
   &hybrid_alloc,
@@ -644,4 +657,5 @@ static const gsl_multiroot_fsolver_type hybrids_type =
 };
 
 const gsl_multiroot_fsolver_type *gsl_multiroot_fsolver_hybrid = &hybrid_type;
-const gsl_multiroot_fsolver_type *gsl_multiroot_fsolver_hybrids = &hybrids_type;
+const gsl_multiroot_fsolver_type *gsl_multiroot_fsolver_hybrids =
+  &hybrids_type;

@@ -1,3 +1,7 @@
+Sat Jan 26 17:11:34 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hybrid.c (set): fix broken 'if' statement
+
 Thu Jan 10 19:26:55 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hybrid.c dnewton.c: return status values for user-function
