@@ -22,3 +22,9 @@ gsl-randist
 gsl-histogram
 gsl.pc
 gmon.out
+autom4te.cache
+config.guess
+config.sub
+depcomp
+ltmain.sh
+stamp-h1
