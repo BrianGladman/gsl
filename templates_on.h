@@ -13,8 +13,8 @@
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
-#define ZERO {{0,0}}
-#define ONE {{1,0}}
+#define ZERO {{0.0L,0.0L}}
+#define ONE {{1.0L,0.0L}}
 
 #elif defined(BASE_GSL_COMPLEX)
 #define BASE gsl_complex
@@ -47,8 +47,8 @@
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0.0L
+#define ONE 1.0L
 
 #elif defined(BASE_DOUBLE)
 #define BASE double
