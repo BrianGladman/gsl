@@ -139,8 +139,8 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   }
 
   if (copyfunc) {
-    destructor(&x);
-    destructor(&new_x);
+    destructor(x);
+    destructor(new_x);
   } else {
     free (x);
     free (new_x);

@@ -1,3 +1,9 @@
+2002-02-07  Mark Galassi  <rosalia@galassi.org>
+
+	* siman.c (gsl_siman_solve): bug fix in the destructor for x and
+	new_x which was being called on &x and &new_x instead of x and
+	new_x; thanks to Karsten Howes <karsten@videotron.ca>
+
 Thu Jul 12 21:50:07 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_siman.h: changed renamed gsl_Efunc_t to gsl_siman_Efunc_t,
