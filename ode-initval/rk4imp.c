@@ -44,8 +44,12 @@ static
 gsl_odeiv_step *
 rk4imp_create(unsigned int dimension)
 {
-  gsl_odeiv_step_rk4imp * rk4imp = (gsl_odeiv_step_rk4imp *) malloc(sizeof(gsl_odeiv_step_rk4imp));
-  if(rk4imp_step != 0 && dimension > 0) {
+  gsl_odeiv_step_rk4imp * rk4imp;
+
+  if(dimension == 0) return 0;
+
+  rk4imp = (gsl_odeiv_step_rk4imp *) malloc(sizeof(gsl_odeiv_step_rk4imp));
+  if(rk4imp_step != 0) {
     rk4imp->dimension = dimension;
     rk4imp->_step  = rk4imp_step;
     rk4imp->_free  = rk4imp_free;

@@ -38,6 +38,8 @@ gsl_odeiv_step_factory;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
 extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear1;
+extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
 
 
 /* stepper methods */
