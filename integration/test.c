@@ -3,6 +3,7 @@
 #include <gsl_integration.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>
+#include <gsl_ieee_utils.h>
 
 #include "tests.h"
 
@@ -13,6 +14,7 @@ void my_error_handler (const char *reason, const char *file,
 
 int main (void)
 {
+  gsl_ieee_env_setup () ;
 
   gsl_set_error_handler (&my_error_handler); 
 
@@ -570,31 +572,52 @@ int main (void)
 
     int iord[7] = { 2, 5, 4, 3, 6, 1, 7 } ;
 
+    double exp_result2 = -7.238969575482960828E-01 ;
+    double exp_abserr2 = 1.2858054644274593e-14 ;
+    int exp_neval2  =     31;
+    int exp_ier2    =     GSL_EROUND;
+    int exp_last2   =     0;
+
     alpha = 1.3 ;
     status = gsl_integration_qage (book3, 0.3, 2.71, 1e-14, 0.0, 
 				   GSL_INTEG_GAUSS31, w, &last, 
 				   &result, &abserr, &neval) ;
 
-    gsl_test_rel(result,exp_result,1e-15,"qage(book3,31pt) oscill result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book3,31pt) oscill abserr") ;
-    gsl_test_int((int)neval,exp_neval,"qage(book3,31pt) oscill neval") ;  
-    gsl_test_int((int)last,exp_last,"qage(book3,31pt) oscill last") ;  
-    gsl_test_int(status,exp_ier,"qage(book3,31pt) oscill status") ;
+    if ((int)neval == exp_neval) 
+      {
+	/* These are the results of running with an extended precision
+	   fpu such as the pentium (the extra precision leads to a
+	   different branch being taken in the code) */
 
-    for (i = 0; i < 7 ; i++) 
-	gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book3,31pt) oscill alist") ;
-
-    for (i = 0; i < 7 ; i++) 
-	gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book3,31pt) oscill blist") ;
-
-    for (i = 0; i < 7 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book3,31pt) oscill rlist") ;
-
-    for (i = 0; i < 7 ; i++) 
-	gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book3,31pt) oscill elist") ;
-
-    for (i = 0; i < 7 ; i++) 
-	gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book3,31pt) oscill iord");
+	gsl_test_rel(result,exp_result,1e-15,"qage(book3,31pt) extended oscill result");
+	gsl_test_rel(abserr,exp_abserr,1e-6,"qage(book3,31pt) extended oscill abserr") ;
+	gsl_test_int((int)neval,exp_neval,"qage(book3,31pt) extended oscill neval") ;  
+	gsl_test_int((int)last,exp_last,"qage(book3,31pt) extended oscill last") ;  
+	gsl_test_int(status,exp_ier,"qage(book3,31pt) extended oscill status") ;
+	
+	for (i = 0; i < 7 ; i++) 
+	  gsl_test_rel(w->alist[i],a[i],1e-15,"qage(book3,31pt) extended oscill alist");
+	
+	for (i = 0; i < 7 ; i++) 
+	  gsl_test_rel(w->blist[i],b[i],1e-15,"qage(book3,31pt) extended oscill blist");
+	
+	for (i = 0; i < 7 ; i++) 
+	  gsl_test_rel(w->rlist[i],r[i],1e-15,"qage(book3,31pt) extended oscill rlist");
+	
+	for (i = 0; i < 7 ; i++) 
+	  gsl_test_rel(w->elist[i],e[i],1e-6,"qage(book3,31pt) extended oscill elist");
+	
+	for (i = 0; i < 7 ; i++) 
+	  gsl_test_int((int)w->iord[i],iord[i]-1,"qage(book3,31pt) extended oscill iord");
+      } 
+    else
+      {
+	gsl_test_rel(result,exp_result2,1e-15,"qage(book3,31pt) oscill result");
+	gsl_test_rel(abserr,exp_abserr2,1e-6,"qage(book3,31pt) oscill abserr");
+	gsl_test_int((int)neval,exp_neval2,"qage(book3,31pt) oscill neval") ;  
+	gsl_test_int((int)last,exp_last2,"qage(book3,31pt) oscill last") ;  
+	gsl_test_int(status,exp_ier2,"qage(book3,31pt) oscill status") ;
+      }
 
     gsl_integration_workspace_free (w) ;
 
@@ -759,5 +782,5 @@ int main (void)
 void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (1) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }
