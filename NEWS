@@ -2,7 +2,12 @@ We need to do a better job with the NEWS file!
 
 * Will be new in gsl-0.3g:
 
-** The NEWS file now uses outline mode, like the Emacs NEWS file
+** The FFT allocation functions now return a pointer to a newly allocated
+   wavetable struct, instead of taking the pointer to an existing struct
+   as an argument. 
+   
+   e.g. status = gsl_fft_wavetable_alloc(n, w)
+   is now    w = gsl_fft_wavetable_alloc(n) in accordance with usual practice
 
 ** The statistics directory now has functions for computing the
 lag1-autocorrelation and an extra set of numerical accuracy tests from
@@ -19,6 +24,8 @@ yourself if you want subsequent runs to use different random numbers.
 environment variable GSL_IEEE_MODE by calling the function
 gsl_ieee_env_setup(). Currently this only works with the Linux kernel,
 HP-UX, SunOS4 and Solaris.
+
+** The NEWS file now uses outline mode, like the Emacs NEWS file
 
 
 * This covers changes made *after* the gsl-0.2 snapshot
