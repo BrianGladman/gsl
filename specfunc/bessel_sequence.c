@@ -77,7 +77,7 @@ gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v
     gsl_sf_result J0, J1;
     double Jp, J;
     double x;
-    int i = 0;
+    size_t i = 0;
 
     /* Calculate the first point. */
     x = v[0];
