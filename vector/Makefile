@@ -16,7 +16,7 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ..
-prefix = /packages
+prefix = /usr/local
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -43,7 +43,7 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/bin/install -c
+INSTALL = /users/bjg/gnu/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL_PROGRAM}
@@ -55,8 +55,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i586-pc-linux-gnu
-host_triplet = i586-pc-linux-gnu
+host_alias = hppa1.1-hp-hpux9.05
+host_triplet = hppa1.1-hp-hpux9.05
 CC = gcc
 CPP = gcc -E
 LN_S = ln -s
@@ -64,8 +64,8 @@ MAKEINFO = makeinfo
 PACKAGE = gsl
 RANLIB = ranlib
 VERSION = 0.3c-interim
-full_top_builddir = /home/rosalia/devo/gsl
-full_top_srcdir = /home/rosalia/devo/gsl
+full_top_builddir = /users/bjg/gsl
+full_top_srcdir = /users/bjg/gsl
 
 lib_LIBRARIES = libgslvector.a 
 
@@ -112,7 +112,7 @@ test_OBJECTS =  test.o
 test_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o
 test_trap_LDFLAGS = 
-CFLAGS = -g -O2
+CFLAGS = -O2
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)

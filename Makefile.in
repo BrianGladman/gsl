@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.2f from Makefile.am
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -31,6 +31,8 @@ infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
+
+DISTDIR =
 
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -86,13 +88,13 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-default: all
+all: all-recursive-am all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -127,16 +129,17 @@ maintainer-clean-hdr:
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
 	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -284,12 +287,10 @@ install: install-recursive install-data-am
 
 uninstall: uninstall-recursive uninstall-am
 
-all: all-recursive-am all-am
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs: installdirs-recursive
-	$(mkinstalldirs)  $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -327,9 +328,9 @@ maintainer-clean:  maintainer-clean-recursive maintainer-clean-am
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f config.status
 
-.PHONY: default mostlyclean-hdr distclean-hdr clean-hdr \
-maintainer-clean-hdr uninstall-includeHEADERS install-includeHEADERS \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
+uninstall-includeHEADERS install-includeHEADERS install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
