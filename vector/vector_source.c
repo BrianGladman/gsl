@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef HIDE_INLINE_STATIC
 BASE
 FUNCTION (gsl_vector, get) (const TYPE (gsl_vector) * v, const size_t i)
 {
@@ -79,3 +80,4 @@ FUNCTION (gsl_vector, const_ptr) (const TYPE (gsl_vector) * v, const size_t i)
 
   return (const BASE *) (v->data + MULTIPLICITY * i * v->stride);
 }
+#endif

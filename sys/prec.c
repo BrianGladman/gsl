@@ -60,11 +60,11 @@ const double gsl_prec_root6_eps[_GSL_PREC_T_NUM] = {
   GSL_ROOT6_SFLT_EPSILON
 };
 
+typedef unsigned int gsl_mode_t;
 
+#ifndef HIDE_INLINE_STATIC
 /* We need this somewhere, in case the inline is ignored.
  */
-
-typedef unsigned int gsl_mode_t;
 
 unsigned int GSL_MODE_PREC(gsl_mode_t mt);
 
@@ -73,4 +73,4 @@ GSL_MODE_PREC(gsl_mode_t mt)
 { 
   return  (mt & (unsigned int)7); 
 }
-
+#endif

@@ -511,6 +511,13 @@ gsl_sf_legendre_sphPlm_array(const int lmax, int m, const double x, double * res
   }
 }
 
+#ifndef HIDE_INLINE_STATIC
+int
+gsl_sf_legendre_array_size(const int lmax, const int m)
+{
+  return lmax-m+1;
+}
+#endif
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 

@@ -105,6 +105,7 @@ exprel_n_CF(const int N, const double x, gsl_sf_result * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
+#ifndef HIDE_INLINE_STATIC
 int gsl_sf_exp_e(const double x, gsl_sf_result * result)
 {
   if(x > GSL_LOG_DBL_MAX) {
@@ -119,7 +120,7 @@ int gsl_sf_exp_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
 }
-
+#endif
 
 int gsl_sf_exp_e10_e(const double x, gsl_sf_result_e10 * result)
 {

@@ -35,6 +35,7 @@ gsl_permutation_data (const gsl_permutation * p)
   return p->data ;
 }
 
+#ifndef HIDE_INLINE_STATIC
 size_t
 gsl_permutation_get (const gsl_permutation * p, const size_t i)
 {
@@ -48,6 +49,7 @@ gsl_permutation_get (const gsl_permutation * p, const size_t i)
 
   return p->data[i];
 }
+#endif
 
 int
 gsl_permutation_swap (gsl_permutation * p, const size_t i, const size_t j)

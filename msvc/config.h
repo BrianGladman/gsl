@@ -10,7 +10,7 @@
 #define HAVE_VPRINTF
 
 /* Define as __inline if that's what the C compiler calls it.  */
-#define inline
+#define inline __inline
 
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 /* #undef size_t */
@@ -67,7 +67,10 @@
 #undef VERSION
 
 /* Define if you have inline */
-/* #define HAVE_INLINE */
+#define HAVE_INLINE
+
+/* Define if you need to hide the static definitions of inline functions */
+#define HIDE_INLINE_STATIC
 
 /* Define if you have the ansi CLOCKS_PER_SEC clock rate */
 #define HAVE_CLOCKS_PER_SEC

@@ -100,6 +100,7 @@ gsl_rng_set (const gsl_rng * r, unsigned long int seed)
   (r->type->set) (r->state, seed);
 }
 
+#ifndef HIDE_INLINE_STATIC
 unsigned long int
 gsl_rng_get (const gsl_rng * r)
 {
@@ -147,6 +148,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   return k;
 }
+#endif
 
 unsigned long int
 gsl_rng_max (const gsl_rng * r)

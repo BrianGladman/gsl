@@ -84,13 +84,13 @@ gsl_qrng_clone (const gsl_qrng * q)
   return r;
 }
 
-
+#ifndef HIDE_INLINE_STATIC
 int
 gsl_qrng_get (const gsl_qrng * r, double x[])
 {
   return (r->type->get) (r->state, r->dimension, x);
 }
-
+#endif
 
 const char *
 gsl_qrng_name (const gsl_qrng * r)

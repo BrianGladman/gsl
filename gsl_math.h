@@ -122,6 +122,10 @@ __BEGIN_DECLS
 #define GSL_MAX(a,b) ((a) > (b) ? (a) : (b))
 #define GSL_MIN(a,b) ((a) < (b) ? (a) : (b))
 
+/* function versions of the above, in case they are needed */
+double gsl_max (double a, double b);
+double gsl_min (double a, double b);
+
 /* inline-friendly strongly typed versions */
 #ifdef HAVE_INLINE
 

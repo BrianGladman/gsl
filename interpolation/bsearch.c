@@ -22,9 +22,9 @@
  */
 #include <config.h>
 #include <stdlib.h>
-
 #include <gsl/gsl_interp.h>
 
+#ifndef HIDE_INLINE_STATIC
 size_t
 gsl_interp_bsearch (
   const double x_array[], double x,
@@ -45,3 +45,4 @@ gsl_interp_bsearch (
 
   return ilo;
 }
+#endif

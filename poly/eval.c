@@ -23,6 +23,8 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] Tue May  5 12:19:56 MDT 1998 */
+
+#ifndef HIDE_INLINE_STATIC
 double 
 gsl_poly_eval(const double c[], const int len, const double x)
 {
@@ -31,3 +33,4 @@ gsl_poly_eval(const double c[], const int len, const double x)
   for(i=len-1; i>0; i--) ans = c[i-1] + x * ans;
   return ans;
 }
+#endif

@@ -157,7 +157,6 @@ int gsl_sf_exp_e(const double x, gsl_sf_result * result)
   }  
 }
 
-
 __END_DECLS
 
 #endif /* HAVE_INLINE */
