@@ -5,9 +5,10 @@ This chapter describes functions for creating and manipulating
 are stored in files. Their values can be extracted in any combination
 and @dfn{booked} in an histogram using a selection function.
 
-The values to be stored are contained in a user-defined data structure,
-and an ntuple is created associating it to a file.  The values are then
-written to this file (normally inside a loop) using ntuple functions.
+The values to be stored are held in a user-defined data structure, and
+an ntuple is created associating this data structure with a file.  The
+values are then written to the file (normally inside a loop) using
+the ntuple functions described below.
 
 A histogram can be created from ntuple data by providing a selection
 function and a value function.  The selection function specifies whether
@@ -102,18 +103,25 @@ associated allocated memory.
 
 Once an ntuple has been created its contents can be histogrammed in
 various ways using the function @code{gsl_ntuple_project}.  Two
-user-defined functions must be provided, a @dfn{selection function} to
-determine which ntuple rows are selected for histogramming, and a
-@dfn{value function} to compute scalar values for those ntuple rows.
-These functions are defined by the following structs,
+user-defined functions must be provided, a function to select events and
+a function to compute scalar values. The selection function and the
+value function both accept the ntuple row as a first argument and other
+parameters as a second argument.
 
+The @dfn{selection function} determines which ntuple rows are selected
+for histogramming.  It is defined by the following struct,
 @example
 typedef struct @{
   int (* function) (void * ntuple_data, void * params);
   void * params;
 @} gsl_ntuple_select_fn;
 @end example
+@noindent
+The struct element @var{function} should return a non-zero value for
+each ntuple row that is to be included in the histogram.
 
+The @dfn{value function} computes scalar values for those ntuple rows
+selected by the selection function,
 @example
 typedef struct @{
   double (* function) (void * ntuple_data, void * params);
@@ -121,8 +129,8 @@ typedef struct @{
 @} gsl_ntuple_value_fn;
 @end example
 @noindent
-and accept the ntuple row as a first argument and other parameters as a
-second argument.
+In this case the struct element @var{function} should return the value
+to be added to the histogram for the ntuple row.  
 
 @deftypefun int gsl_ntuple_project (gsl_histogram * @var{h}, gsl_ntuple * @var{ntuple}, gsl_ntuple_value_fn *@var{value_func}, gsl_ntuple_select_fn *@var{select_func})
 This function updates the histogram @var{h} from the ntuple @var{ntuple}
@@ -141,7 +149,7 @@ data in the same histogram.
 The following example programs demonstrate the use of ntuples in
 managing a large dataset.  The first program creates a set of 100,000
 simulated "events", each with 3 associated values @math{(x,y,z)}.  These
-are generated from uniform gaussian variates, for demonstration
+are generated from gaussian variates with unit variance, for demonstration
 purposes,  and written to the ntuple file @file{test.dat}.
 
 @example
@@ -214,7 +222,7 @@ main (void)
   int i;
 
   gsl_ntuple *ntuple = gsl_ntuple_open ("test.dat", &ntuple_row,
-					sizeof (ntuple_row));
+                                        sizeof (ntuple_row));
 
   gsl_histogram *h = gsl_histogram_calloc_uniform (100, 0., 10.);
 

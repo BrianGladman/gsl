@@ -8,13 +8,14 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = test
 
-check_PROGRAMS = test #tmp
-
-#tmp_SOURCES= tmp.c
-#tmp_LDADD = libgslmonte.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+check_PROGRAMS = test #demo
 
 test_SOURCES = test.c 
-
 test_LDADD = libgslmonte.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 noinst_HEADERS = test_main.c
+
+#demo_SOURCES= demo.c
+#demo_LDADD = libgslmonte.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+
+
