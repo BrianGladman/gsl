@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** The Chebyshev functions are now available as an independent module
+in their own directory.
+
 ** The error handling conventions have been unified across the
 library.  This simplifies the use of the special functions.
 
