@@ -14,9 +14,9 @@ INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err -I$(top_
 bin_PROGRAMS = gsl-randist
 
 gsl_randist_SOURCES = gsl-randist.c
-gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
+gsl_randist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../utils/libutils.a
 
 test_SOURCES = test.c
-test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a  ../utils/libutils.a
 TESTS = test
 check_PROGRAMS = test

@@ -1,3 +1,7 @@
+Mon Aug 31                James Theiler <jt@lanl.gov>
+
+	* Makefile.am: added ../utils/libutils.a to some LDADD's
+
 Mon Aug 17 14:31:55 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_randist.h: renamed discrete probability distribution
