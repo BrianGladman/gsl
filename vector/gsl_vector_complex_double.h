@@ -29,20 +29,20 @@ struct gsl_vector_complex_struct
 
 typedef struct gsl_vector_complex_struct gsl_vector_complex;
 
-gsl_vector_complex *gsl_vector_complex_alloc (size_t n);
-gsl_vector_complex *gsl_vector_complex_calloc (size_t n);
+gsl_vector_complex *gsl_vector_complex_alloc (const size_t n);
+gsl_vector_complex *gsl_vector_complex_calloc (const size_t n);
 
 gsl_vector_complex 
 *gsl_vector_complex_alloc_from_block (gsl_block_complex * b, 
-                                            size_t offset, 
-                                            size_t n, 
-                                            size_t stride);
+                                            const size_t offset, 
+                                            const size_t n, 
+                                            const size_t stride);
 
 gsl_vector_complex 
 *gsl_vector_complex_alloc_from_vector (gsl_vector_complex * v, 
-                                             size_t offset, 
-                                             size_t n, 
-                                             size_t stride);
+                                             const size_t offset, 
+                                             const size_t n, 
+                                             const size_t stride);
 
 void gsl_vector_complex_free (gsl_vector_complex * v);
 
@@ -54,9 +54,9 @@ gsl_complex
 *gsl_vector_complex_ptr (const gsl_vector_complex * v, size_t i);
 
 gsl_complex 
-gsl_vector_complex_get (const gsl_vector_complex * v, size_t i);
+gsl_vector_complex_get (const gsl_vector_complex * v, const size_t i);
 
-void gsl_vector_complex_set (gsl_vector_complex * v, size_t i,
+void gsl_vector_complex_set (gsl_vector_complex * v, const size_t i,
                                    gsl_complex z);
 
 void gsl_vector_complex_set_zero (gsl_vector_complex * v);
@@ -77,7 +77,7 @@ int gsl_vector_complex_memcpy (gsl_vector_complex * dest, const gsl_vector_compl
 
 int gsl_vector_complex_reverse (gsl_vector_complex * v);
 
-int gsl_vector_complex_swap (gsl_vector_complex * v, size_t i, size_t j);
+int gsl_vector_complex_swap (gsl_vector_complex * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_isnull (gsl_vector_complex * v);
 

@@ -48,3 +48,5 @@ functions
 
 * Christopher Gabriel <cgabriel@firenze.linux.it> for help with
   gsl-config.
+
+* C M Murphy <C.M.Murphy@bath.ac.uk> patch to fix up consts in header files

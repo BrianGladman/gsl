@@ -141,7 +141,7 @@ void gsl_blas_raw_drotmg (double d1[], double d2[], double b1[],
 void gsl_blas_raw_srot (size_t N,
                         float X[], size_t incX,
                         float Y[], size_t incY,
-                        float c, float s);
+                        const float c, const float s);
 void gsl_blas_raw_drot (size_t N,
                         double X[], size_t incX,
                         double Y[], size_t incY,

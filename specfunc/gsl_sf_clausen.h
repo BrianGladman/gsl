@@ -26,7 +26,7 @@ __BEGIN_DECLS
  *   Cl_2(theta) = Im[ Li_2(e^(i theta)) ]
  */
 int gsl_sf_clausen_impl(double x, gsl_sf_result * result);
-int gsl_sf_clausen_e(double x, gsl_sf_result * result);
+int gsl_sf_clausen_e(const double x, gsl_sf_result * result);
 
 
 __END_DECLS

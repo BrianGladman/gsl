@@ -86,7 +86,7 @@ const char * gsl_root_fdfsolver_name (const gsl_root_fdfsolver * s);
 double gsl_root_fdfsolver_root (const gsl_root_fdfsolver * s);
 
 int
-gsl_root_test_interval (gsl_interval x, double epsabs, double epsrel);
+gsl_root_test_interval (const gsl_interval x, double epsabs, double epsrel);
 
 int
 gsl_root_test_residual (double f, double epsabs);

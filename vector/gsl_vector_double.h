@@ -27,18 +27,18 @@ struct gsl_vector_struct
 
 typedef struct gsl_vector_struct gsl_vector;
 
-gsl_vector *gsl_vector_alloc (size_t n);
-gsl_vector *gsl_vector_calloc (size_t n);
+gsl_vector *gsl_vector_alloc (const size_t n);
+gsl_vector *gsl_vector_calloc (const size_t n);
 
 gsl_vector *gsl_vector_alloc_from_block (gsl_block * b,
-                                                     size_t offset, 
-                                                     size_t n, 
-                                                     size_t stride);
+                                                     const size_t offset, 
+                                                     const size_t n, 
+                                                     const size_t stride);
 
 gsl_vector *gsl_vector_alloc_from_vector (gsl_vector * v,
-                                                      size_t offset, 
-                                                      size_t n, 
-                                                      size_t stride);
+                                                      const size_t offset, 
+                                                      const size_t n, 
+                                                      const size_t stride);
 
 void gsl_vector_free (gsl_vector * v);
 
@@ -63,7 +63,7 @@ int gsl_vector_memcpy (gsl_vector * dest, const gsl_vector * src);
 
 int gsl_vector_reverse (gsl_vector * v);
 
-int gsl_vector_swap (gsl_vector * v, size_t i, size_t j);
+int gsl_vector_swap (gsl_vector * v, const size_t i, const size_t j);
 
 int gsl_vector_isnull (gsl_vector * v);
 

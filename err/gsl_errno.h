@@ -58,7 +58,7 @@ void gsl_warning (const char * reason, const char * file, int line,
 void gsl_stream_printf (const char *label, const char *file,
 			int line, const char *reason);
 
-const char * gsl_strerror (int gsl_errno);
+const char * gsl_strerror (const int gsl_errno);
 
 typedef void gsl_error_handler_t (const char * reason, const char * file,
 				  int line, int gsl_errno);

@@ -19,9 +19,9 @@
 
 __BEGIN_DECLS
 
-int gsl_fft_halfcomplex_float_radix2_backward (float data[], size_t stride, size_t n);
-int gsl_fft_halfcomplex_float_radix2_inverse (float data[], size_t stride, size_t n);
-int gsl_fft_halfcomplex_float_radix2_transform (float data[], size_t stride, size_t n);
+int gsl_fft_halfcomplex_float_radix2_backward (float data[], const size_t stride, const size_t n);
+int gsl_fft_halfcomplex_float_radix2_inverse (float data[], const size_t stride, const size_t n);
+int gsl_fft_halfcomplex_float_radix2_transform (float data[], const size_t stride, const size_t n);
 
 typedef struct
   {
@@ -34,13 +34,13 @@ typedef struct
   }
 gsl_fft_wavetable_halfcomplex_float;
 
-int gsl_fft_halfcomplex_float_backward (float data[], size_t stride, size_t n,
+int gsl_fft_halfcomplex_float_backward (float data[], const size_t stride, const size_t n,
 					const gsl_fft_wavetable_halfcomplex_float * wavetable);
 
-int gsl_fft_halfcomplex_float_inverse (float data[], size_t stride, size_t n,
+int gsl_fft_halfcomplex_float_inverse (float data[], const size_t stride, const size_t n,
 				       const gsl_fft_wavetable_halfcomplex_float * wavetable);
 
-int gsl_fft_halfcomplex_float_transform (float data[], size_t stride, size_t n,
+int gsl_fft_halfcomplex_float_transform (float data[], const size_t stride, const size_t n,
 				   const gsl_fft_wavetable_halfcomplex_float * wavetable);
 
 gsl_fft_wavetable_halfcomplex_float * gsl_fft_halfcomplex_float_alloc (size_t n);
@@ -51,12 +51,12 @@ gsl_fft_halfcomplex_float_free (gsl_fft_wavetable_halfcomplex_float * wavetable)
 int
 gsl_fft_halfcomplex_float_unpack (const float halfcomplex_coefficient[],
 				  float complex_coefficient[],
-				  size_t stride, size_t n);
+				  const size_t stride, const size_t n);
 
 int
 gsl_fft_halfcomplex_float_radix2_unpack (const float halfcomplex_coefficient[],
 					 float complex_coefficient[],
-					 size_t stride, size_t n);
+					 const size_t stride, const size_t n);
 
 __END_DECLS
 

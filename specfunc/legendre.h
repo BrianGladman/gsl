@@ -23,7 +23,7 @@ gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x,
  */
 int
 gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
-                                          const double x, const double acosh_x,
+                                          const double x, double acosh_x,
                                           gsl_sf_result * result, double * ln_multiplier);
 
 

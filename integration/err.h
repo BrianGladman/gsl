@@ -1,3 +1,3 @@
-double rescale_error (double err, double result_abs, double result_asc) ;
+double rescale_error (double err, const double result_abs, const double result_asc) ;
 
 

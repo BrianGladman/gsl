@@ -24,8 +24,8 @@ struct gsl_block_float_struct
 
 typedef struct gsl_block_float_struct gsl_block_float;
 
-gsl_block_float *gsl_block_float_alloc (size_t n);
-gsl_block_float *gsl_block_float_calloc (size_t n);
+gsl_block_float *gsl_block_float_alloc (const size_t n);
+gsl_block_float *gsl_block_float_calloc (const size_t n);
 void gsl_block_float_free (gsl_block_float * b);
 
 int gsl_block_float_fread (FILE * stream, gsl_block_float * b);
@@ -33,10 +33,10 @@ int gsl_block_float_fwrite (FILE * stream, const gsl_block_float * b);
 int gsl_block_float_fscanf (FILE * stream, gsl_block_float * b);
 int gsl_block_float_fprintf (FILE * stream, const gsl_block_float * b, const char *format);
 
-int gsl_block_float_raw_fread (FILE * stream, float * b, size_t n, size_t stride);
-int gsl_block_float_raw_fwrite (FILE * stream, const float * b, size_t n, size_t stride);
-int gsl_block_float_raw_fscanf (FILE * stream, float * b, size_t n, size_t stride);
-int gsl_block_float_raw_fprintf (FILE * stream, const float * b, size_t n, size_t stride, const char *format);
+int gsl_block_float_raw_fread (FILE * stream, float * b, const size_t n, const size_t stride);
+int gsl_block_float_raw_fwrite (FILE * stream, const float * b, const size_t n, const size_t stride);
+int gsl_block_float_raw_fscanf (FILE * stream, float * b, const size_t n, const size_t stride);
+int gsl_block_float_raw_fprintf (FILE * stream, const float * b, const size_t n, const size_t stride, const char *format);
 
 size_t gsl_block_float_size (const gsl_block_float * b);
 float * gsl_block_float_data (const gsl_block_float * b);

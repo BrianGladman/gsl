@@ -8,12 +8,12 @@
 
 
 int
-gsl_sf_bessel_Y_temme(double nu, double x,
+gsl_sf_bessel_Y_temme(const double nu, const double x,
                       gsl_sf_result * Y_nu,
                       gsl_sf_result * Y_nup1);
 
 int
-gsl_sf_bessel_K_scaled_temme(double nu, double x,
+gsl_sf_bessel_K_scaled_temme(const double nu, const double x,
                              double * K_nu, double * K_nup1, double * Kp_nu);
 
 

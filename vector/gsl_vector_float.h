@@ -27,18 +27,18 @@ struct gsl_vector_float_struct
 
 typedef struct gsl_vector_float_struct gsl_vector_float;
 
-gsl_vector_float *gsl_vector_float_alloc (size_t n);
-gsl_vector_float *gsl_vector_float_calloc (size_t n);
+gsl_vector_float *gsl_vector_float_alloc (const size_t n);
+gsl_vector_float *gsl_vector_float_calloc (const size_t n);
 
 gsl_vector_float *gsl_vector_float_alloc_from_block (gsl_block_float * b,
-                                                     size_t offset, 
-                                                     size_t n, 
-                                                     size_t stride);
+                                                     const size_t offset, 
+                                                     const size_t n, 
+                                                     const size_t stride);
 
 gsl_vector_float *gsl_vector_float_alloc_from_vector (gsl_vector_float * v,
-                                                      size_t offset, 
-                                                      size_t n, 
-                                                      size_t stride);
+                                                      const size_t offset, 
+                                                      const size_t n, 
+                                                      const size_t stride);
 
 void gsl_vector_float_free (gsl_vector_float * v);
 
@@ -63,7 +63,7 @@ int gsl_vector_float_memcpy (gsl_vector_float * dest, const gsl_vector_float * s
 
 int gsl_vector_float_reverse (gsl_vector_float * v);
 
-int gsl_vector_float_swap (gsl_vector_float * v, size_t i, size_t j);
+int gsl_vector_float_swap (gsl_vector_float * v, const size_t i, const size_t j);
 
 int gsl_vector_float_isnull (gsl_vector_float * v);
 

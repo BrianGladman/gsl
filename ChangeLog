@@ -1,3 +1,8 @@
+Mon Apr  3 15:43:25 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* applied patch from C M Murphy <C.M.Murphy@bath.ac.uk> to fix up
+ 	missing consts in header files.
+
 Sat Apr  1 20:12:34 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_math.h: added some missing extra constants from BSD

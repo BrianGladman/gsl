@@ -27,7 +27,7 @@ __BEGIN_DECLS
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result);
-int gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_0F1_e(const double c, const double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function  for integer parameters.
@@ -35,8 +35,8 @@ int gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result);
  *
  * exceptions: 
  */
-int gsl_sf_hyperg_1F1_int_impl(int m, int n, double x, gsl_sf_result * result);
-int gsl_sf_hyperg_1F1_int_e(int m, int n, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_1F1_int_impl(const int m, const int n, const double x, gsl_sf_result * result);
+int gsl_sf_hyperg_1F1_int_e(const int m, const int n, double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function.
@@ -44,7 +44,7 @@ int gsl_sf_hyperg_1F1_int_e(int m, int n, double x, gsl_sf_result * result);
  *
  * exceptions:
  */
-int gsl_sf_hyperg_1F1_impl(double a, double b, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x, gsl_sf_result * result);
 int gsl_sf_hyperg_1F1_e(double a, double b, double x, gsl_sf_result * result);
 
 
@@ -53,8 +53,8 @@ int gsl_sf_hyperg_1F1_e(double a, double b, double x, gsl_sf_result * result);
  *
  * exceptions:
  */
-int gsl_sf_hyperg_U_int_impl(int m, int n, double x, gsl_sf_result * result);
-int gsl_sf_hyperg_U_int_e(int m, int n, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_int_impl(const int m, const int n, const double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_int_e(const int m, const int n, const double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function for integer parameters.
@@ -62,7 +62,7 @@ int gsl_sf_hyperg_U_int_e(int m, int n, double x, gsl_sf_result * result);
  *
  * exceptions:
  */
-int gsl_sf_hyperg_U_int_e10_impl(int m, int n, double x, gsl_sf_result_e10 * result);
+int gsl_sf_hyperg_U_int_e10_impl(const int m, const int n, const double x, gsl_sf_result_e10 * result);
 int gsl_sf_hyperg_U_int_e10_e(int m, int n, double x, gsl_sf_result_e10 * result);
 
 
@@ -71,8 +71,8 @@ int gsl_sf_hyperg_U_int_e10_e(int m, int n, double x, gsl_sf_result_e10 * result
  *
  * exceptions:
  */
-int gsl_sf_hyperg_U_impl(double a, double b, double x, gsl_sf_result * result);
-int gsl_sf_hyperg_U_e(double a, double b, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_impl(const double a, const double b, const double x, gsl_sf_result * result);
+int gsl_sf_hyperg_U_e(const double a, const double b, const double x, gsl_sf_result * result);
 
 
 /* Confluent hypergeometric function.
@@ -80,7 +80,7 @@ int gsl_sf_hyperg_U_e(double a, double b, double x, gsl_sf_result * result);
  *
  * exceptions:
  */
-int gsl_sf_hyperg_U_e10_impl(double a, double b, double x, gsl_sf_result_e10 * result);
+int gsl_sf_hyperg_U_e10_impl(const double a, const double b, const double x, gsl_sf_result_e10 * result);
 int gsl_sf_hyperg_U_e10_e(double a, double b, double x, gsl_sf_result_e10 * result);
 
 
@@ -89,7 +89,7 @@ int gsl_sf_hyperg_U_e10_e(double a, double b, double x, gsl_sf_result_e10 * resu
  *
  * exceptions:
  */
-int gsl_sf_hyperg_2F1_impl(double a, double b, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_impl(double a, double b, const double c, const double x, gsl_sf_result * result);
 int gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, gsl_sf_result * result);
 
 
@@ -99,7 +99,7 @@ int gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, gsl_sf_result * 
  *
  * exceptions:
  */
-int gsl_sf_hyperg_2F1_conj_impl(double aR, double aI, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c, const double x, gsl_sf_result * result);
 int gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, gsl_sf_result * result);
 
 
@@ -109,7 +109,7 @@ int gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, gsl_sf_re
  *
  * exceptions:
  */
-int gsl_sf_hyperg_2F1_renorm_impl(double a, double b, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c, const double x, gsl_sf_result * result);
 int gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, gsl_sf_result * result);
 
 
@@ -119,7 +119,7 @@ int gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, gsl_sf_re
  *
  * exceptions:
  */
-int gsl_sf_hyperg_2F1_conj_renorm_impl(double aR, double aI, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_conj_renorm_impl(const double aR, const double aI, const double c, const double x, gsl_sf_result * result);
 int gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, gsl_sf_result * result);
 
 
@@ -129,8 +129,8 @@ int gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, gs
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, gsl_sf_result * result);
-int     gsl_sf_hyperg_2F0_e(double a, double b, double x, gsl_sf_result * result);
+int     gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x, gsl_sf_result * result);
+int     gsl_sf_hyperg_2F0_e(const double a, const double b, const double x, gsl_sf_result * result);
 
 
 __END_DECLS

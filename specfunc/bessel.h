@@ -11,34 +11,34 @@
  *   sign = -1  ==> Jnu
  *   sign = +1  ==> Inu
  */
-int gsl_sf_bessel_IJ_taylor_impl(double nu, double x,
-                                 int sign,
-                                 int kmax,
-				 double threshold,
+int gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
+                                 const int sign,
+                                 const int kmax,
+				 const double threshold,
                                  gsl_sf_result * result
                                  );
 
-int gsl_sf_bessel_Jnu_asympx_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Ynu_asympx_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, gsl_sf_result * result);
 
-int gsl_sf_bessel_Inu_scaled_asympx_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_scaled_asympx_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result);
 
-int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result);
 
 
 /* ratio = J_{nu+1}(x) / J_nu(x)
  * sgn   = sgn(J_nu(x))
  */
 int
-gsl_sf_bessel_J_CF1(double nu, double x, double * ratio, double * sgn);
+gsl_sf_bessel_J_CF1(const double nu, const double x, double * ratio, double * sgn);
 
 
 /* ratio = I_{nu+1}(x) / I_nu(x)
  */
 int
-gsl_sf_bessel_I_CF1_ser(double nu, double x, double * ratio);
+gsl_sf_bessel_I_CF1_ser(const double nu, const double x, double * ratio);
 
 
 /* Evaluate the Steed method continued fraction CF2 for
@@ -46,12 +46,12 @@ gsl_sf_bessel_I_CF1_ser(double nu, double x, double * ratio);
  * (J' + i Y')/(J + i Y) := P + i Q
  */
 int
-gsl_sf_bessel_JY_steed_CF2(double nu, double x,
+gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
                            double * P, double * Q);
 
 
 int
-gsl_sf_bessel_JY_mu_restricted(double mu, double x,
+gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
                                gsl_sf_result * Jmu, gsl_sf_result * Jmup1,
                                gsl_sf_result * Ymu, gsl_sf_result * Ymup1);
 

@@ -30,10 +30,10 @@ typedef struct {
   double * sum ;
 } gsl_histogram2d_pdf ;
 
-gsl_histogram2d * gsl_histogram2d_calloc (size_t nx, size_t ny);
-gsl_histogram2d * gsl_histogram2d_calloc_uniform (size_t nx, size_t ny,
-					     double xmin, double xmax,
-					     double ymin, double ymax);
+gsl_histogram2d * gsl_histogram2d_calloc (const size_t nx, const size_t ny);
+gsl_histogram2d * gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny,
+					     const double xmin, const double xmax,
+					     const double ymin, const double ymax);
 
 void gsl_histogram2d_free (gsl_histogram2d * h);
 
@@ -41,14 +41,14 @@ int gsl_histogram2d_increment (gsl_histogram2d * h, double x, double y);
 int gsl_histogram2d_accumulate (gsl_histogram2d * h, 
 				double x, double y, double weight);
 int gsl_histogram2d_find (const gsl_histogram2d * h, 
-			  double x, double y, size_t * i, size_t * j);
+			  const double x, const double y, size_t * i, size_t * j);
 int gsl_histogram2d_find_impl (const gsl_histogram2d * h, 
-			       double x, double y, size_t * i, size_t * j);
+			       const double x, const double y, size_t * i, size_t * j);
 
-double gsl_histogram2d_get (const gsl_histogram2d * h, size_t i, size_t j);
-int gsl_histogram2d_get_xrange (const gsl_histogram2d * h, size_t i,
+double gsl_histogram2d_get (const gsl_histogram2d * h, const size_t i, const size_t j);
+int gsl_histogram2d_get_xrange (const gsl_histogram2d * h, const size_t i,
 				double * xlower, double * xupper);
-int gsl_histogram2d_get_yrange (const gsl_histogram2d * h, size_t j,
+int gsl_histogram2d_get_yrange (const gsl_histogram2d * h, const size_t j,
 				double * ylower, double * yupper);
 
 				     

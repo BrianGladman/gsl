@@ -34,7 +34,7 @@ typedef struct
 gsl_integration_workspace;
 
 gsl_integration_workspace *
-  gsl_integration_workspace_alloc (size_t n);
+  gsl_integration_workspace_alloc (const size_t n);
 
 void
   gsl_integration_workspace_free (gsl_integration_workspace * w);
@@ -188,8 +188,8 @@ int gsl_integration_qagp (const gsl_function * f,
 			  double *result, double *abserr);
 
 int gsl_integration_qawc (gsl_function *f,
-			  double a, double b, double c,
-			  double epsabs, double epsrel, size_t limit,
+			  const double a, const double b, const double c,
+			  const double epsabs, const double epsrel, const size_t limit,
 			  gsl_integration_workspace * workspace,
 			  double * result, double * abserr);
 

@@ -19,16 +19,16 @@
 
 __BEGIN_DECLS
 
-int gsl_dft_complex_forward (const double data[], size_t stride, size_t n,
+int gsl_dft_complex_forward (const double data[], const size_t stride, const size_t n,
 			     double result[]);
 
-int gsl_dft_complex_backward (const double data[], size_t stride, size_t n,
+int gsl_dft_complex_backward (const double data[], const size_t stride, const size_t n,
 			      double result[]);
 
-int gsl_dft_complex_inverse (const double data[], size_t stride, size_t n,
+int gsl_dft_complex_inverse (const double data[], const size_t stride, const size_t n,
 			     double result[]);
 
-int gsl_dft_complex_transform (const double data[], size_t stride, size_t n,
+int gsl_dft_complex_transform (const double data[], const size_t stride, const size_t n,
 		     double result[], const gsl_fft_direction sign);
 
 __END_DECLS

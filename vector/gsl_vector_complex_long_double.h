@@ -29,20 +29,20 @@ struct gsl_vector_complex_long_double_struct
 
 typedef struct gsl_vector_complex_long_double_struct gsl_vector_complex_long_double;
 
-gsl_vector_complex_long_double *gsl_vector_complex_long_double_alloc (size_t n);
-gsl_vector_complex_long_double *gsl_vector_complex_long_double_calloc (size_t n);
+gsl_vector_complex_long_double *gsl_vector_complex_long_double_alloc (const size_t n);
+gsl_vector_complex_long_double *gsl_vector_complex_long_double_calloc (const size_t n);
 
 gsl_vector_complex_long_double 
 *gsl_vector_complex_long_double_alloc_from_block (gsl_block_complex_long_double * b, 
-                                            size_t offset, 
-                                            size_t n, 
-                                            size_t stride);
+                                            const size_t offset, 
+                                            const size_t n, 
+                                            const size_t stride);
 
 gsl_vector_complex_long_double 
 *gsl_vector_complex_long_double_alloc_from_vector (gsl_vector_complex_long_double * v, 
-                                             size_t offset, 
-                                             size_t n, 
-                                             size_t stride);
+                                             const size_t offset, 
+                                             const size_t n, 
+                                             const size_t stride);
 
 void gsl_vector_complex_long_double_free (gsl_vector_complex_long_double * v);
 
@@ -54,9 +54,9 @@ gsl_complex_long_double
 *gsl_vector_complex_long_double_ptr (const gsl_vector_complex_long_double * v, size_t i);
 
 gsl_complex_long_double 
-gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v, size_t i);
+gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v, const size_t i);
 
-void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, size_t i,
+void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, const size_t i,
                                    gsl_complex_long_double z);
 
 void gsl_vector_complex_long_double_set_zero (gsl_vector_complex_long_double * v);
@@ -77,7 +77,7 @@ int gsl_vector_complex_long_double_memcpy (gsl_vector_complex_long_double * dest
 
 int gsl_vector_complex_long_double_reverse (gsl_vector_complex_long_double * v);
 
-int gsl_vector_complex_long_double_swap (gsl_vector_complex_long_double * v, size_t i, size_t j);
+int gsl_vector_complex_long_double_swap (gsl_vector_complex_long_double * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_long_double_isnull (gsl_vector_complex_long_double * v);
 

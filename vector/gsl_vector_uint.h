@@ -27,18 +27,18 @@ struct gsl_vector_uint_struct
 
 typedef struct gsl_vector_uint_struct gsl_vector_uint;
 
-gsl_vector_uint *gsl_vector_uint_alloc (size_t n);
-gsl_vector_uint *gsl_vector_uint_calloc (size_t n);
+gsl_vector_uint *gsl_vector_uint_alloc (const size_t n);
+gsl_vector_uint *gsl_vector_uint_calloc (const size_t n);
 
 gsl_vector_uint *gsl_vector_uint_alloc_from_block (gsl_block_uint * b,
-                                                     size_t offset, 
-                                                     size_t n, 
-                                                     size_t stride);
+                                                     const size_t offset, 
+                                                     const size_t n, 
+                                                     const size_t stride);
 
 gsl_vector_uint *gsl_vector_uint_alloc_from_vector (gsl_vector_uint * v,
-                                                      size_t offset, 
-                                                      size_t n, 
-                                                      size_t stride);
+                                                      const size_t offset, 
+                                                      const size_t n, 
+                                                      const size_t stride);
 
 void gsl_vector_uint_free (gsl_vector_uint * v);
 
@@ -63,7 +63,7 @@ int gsl_vector_uint_memcpy (gsl_vector_uint * dest, const gsl_vector_uint * src)
 
 int gsl_vector_uint_reverse (gsl_vector_uint * v);
 
-int gsl_vector_uint_swap (gsl_vector_uint * v, size_t i, size_t j);
+int gsl_vector_uint_swap (gsl_vector_uint * v, const size_t i, const size_t j);
 
 int gsl_vector_uint_isnull (gsl_vector_uint * v);
 

@@ -29,27 +29,32 @@ struct gsl_matrix_struct
 } ;
 
 gsl_matrix * 
-gsl_matrix_alloc (size_t n1, size_t n2);
+gsl_matrix_alloc (const size_t n1, const size_t n2);
 
 gsl_matrix * 
-gsl_matrix_calloc (size_t n1, size_t n2);
+gsl_matrix_calloc (const size_t n1, const size_t n2);
 
 gsl_matrix * 
-gsl_matrix_alloc_from_block (gsl_block * b, size_t offset, 
-                                   size_t n1, size_t n2, size_t d2);
+gsl_matrix_alloc_from_block (gsl_block * b, 
+                                   const size_t offset, 
+                                   const size_t n1, 
+                                   const size_t n2, 
+                                   const size_t d2);
 
 gsl_matrix * 
 gsl_matrix_alloc_from_matrix (gsl_matrix * m,
-                                    size_t k1, size_t k2,
-                                    size_t n1, size_t n2);
+                                    const size_t k1, 
+                                    const size_t k2,
+                                    const size_t n1, 
+                                    const size_t n2);
 
 gsl_vector * 
 gsl_vector_alloc_row_from_matrix (gsl_matrix * m,
-                                        size_t i);
+                                        const size_t i);
 
 gsl_vector * 
 gsl_vector_alloc_col_from_matrix (gsl_matrix * m,
-                                        size_t j);
+                                        const size_t j);
 
 void gsl_matrix_free (gsl_matrix * m);
 
@@ -57,33 +62,33 @@ void gsl_matrix_set_zero (gsl_matrix * m);
 void gsl_matrix_set_identity (gsl_matrix * m);
 void gsl_matrix_set_all (gsl_matrix * m, double x);
 
-double * gsl_matrix_ptr(const gsl_matrix * m, size_t i, size_t j);
-double   gsl_matrix_get(const gsl_matrix * m, size_t i, size_t j);
-void    gsl_matrix_set(gsl_matrix * m, size_t i, size_t j, double x);
+double * gsl_matrix_ptr(const gsl_matrix * m, const size_t i, const size_t j);
+double   gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j);
+void    gsl_matrix_set(gsl_matrix * m, const size_t i, const size_t j, double x);
 
 int gsl_matrix_fread (FILE * stream, gsl_matrix * m) ;
 int gsl_matrix_fwrite (FILE * stream, const gsl_matrix * m) ;
 int gsl_matrix_fscanf (FILE * stream, gsl_matrix * m);
 int gsl_matrix_fprintf (FILE * stream, const gsl_matrix * m, const char * format);
  
-int gsl_matrix_get_row(gsl_vector * v, const gsl_matrix * m, size_t i);
-int gsl_matrix_get_col(gsl_vector * v, const gsl_matrix * m, size_t j);
-int gsl_matrix_set_row(gsl_matrix * m, size_t i, const gsl_vector * v);
-int gsl_matrix_set_col(gsl_matrix * m, size_t j, const gsl_vector * v);
+int gsl_matrix_get_row(gsl_vector * v, const gsl_matrix * m, const size_t i);
+int gsl_matrix_get_col(gsl_vector * v, const gsl_matrix * m, const size_t j);
+int gsl_matrix_set_row(gsl_matrix * m, const size_t i, const gsl_vector * v);
+int gsl_matrix_set_col(gsl_matrix * m, const size_t j, const gsl_vector * v);
 
-int gsl_matrix_swap_rows(gsl_matrix * m, size_t i, size_t j);
-int gsl_matrix_swap_cols(gsl_matrix * m, size_t i, size_t j);
-int gsl_matrix_swap_rowcol(gsl_matrix * m, size_t i, size_t j);
+int gsl_matrix_swap_rows(gsl_matrix * m, const size_t i, const size_t j);
+int gsl_matrix_swap_cols(gsl_matrix * m, const size_t i, const size_t j);
+int gsl_matrix_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j);
 
 int gsl_matrix_memcpy(gsl_matrix * dest, const gsl_matrix * src);
 
-int gsl_vector_view_row_from_matrix (gsl_vector * v, gsl_matrix * m, size_t i);
-int gsl_vector_view_col_from_matrix (gsl_vector * v, gsl_matrix * m, size_t j);
+int gsl_vector_view_row_from_matrix (gsl_vector * v, gsl_matrix * m, const size_t i);
+int gsl_vector_view_col_from_matrix (gsl_vector * v, gsl_matrix * m, const size_t j);
 
 int gsl_matrix_view_from_vector (gsl_matrix * m, 
                                        gsl_vector * base,
-                                       size_t offset, 
-                                       size_t n1, size_t n2, size_t d2);
+                                       const size_t offset, 
+                                       const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 

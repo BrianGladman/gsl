@@ -24,16 +24,16 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_airy_Ai_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Ai_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_impl(const double x, const gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* Airy function Bi(x)
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_airy_Bi_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Bi_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* scaled Ai(x):
@@ -42,8 +42,8 @@ int gsl_sf_airy_Bi_e(double x, gsl_mode_t mode, gsl_sf_result * result);
  *
  * exceptions: none
  */
-int gsl_sf_airy_Ai_scaled_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Ai_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* scaled Bi(x):
@@ -52,24 +52,24 @@ int gsl_sf_airy_Ai_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * result);
  *
  * exceptions: none
  */
-int gsl_sf_airy_Bi_scaled_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Bi_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* derivative Ai'(x)
  *
  * exceptions: GSL_EUNDRFLW
  */
-int gsl_sf_airy_Ai_deriv_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Ai_deriv_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* derivative Bi'(x)
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_airy_Bi_deriv_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Bi_deriv_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* scaled derivative Ai'(x):
@@ -78,8 +78,8 @@ int gsl_sf_airy_Bi_deriv_e(double x, gsl_mode_t mode, gsl_sf_result * result);
  *
  * exceptions: none
  */
-int gsl_sf_airy_Ai_deriv_scaled_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Ai_deriv_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Ai_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* scaled derivative:
@@ -88,8 +88,8 @@ int gsl_sf_airy_Ai_deriv_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * res
  *
  * exceptions: none
  */
-int gsl_sf_airy_Bi_deriv_scaled_impl(double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_airy_Bi_deriv_scaled_e(double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_airy_Bi_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* Zeros of Ai(x)

@@ -27,18 +27,18 @@ struct gsl_vector_ushort_struct
 
 typedef struct gsl_vector_ushort_struct gsl_vector_ushort;
 
-gsl_vector_ushort *gsl_vector_ushort_alloc (size_t n);
-gsl_vector_ushort *gsl_vector_ushort_calloc (size_t n);
+gsl_vector_ushort *gsl_vector_ushort_alloc (const size_t n);
+gsl_vector_ushort *gsl_vector_ushort_calloc (const size_t n);
 
 gsl_vector_ushort *gsl_vector_ushort_alloc_from_block (gsl_block_ushort * b,
-                                                     size_t offset, 
-                                                     size_t n, 
-                                                     size_t stride);
+                                                     const size_t offset, 
+                                                     const size_t n, 
+                                                     const size_t stride);
 
 gsl_vector_ushort *gsl_vector_ushort_alloc_from_vector (gsl_vector_ushort * v,
-                                                      size_t offset, 
-                                                      size_t n, 
-                                                      size_t stride);
+                                                      const size_t offset, 
+                                                      const size_t n, 
+                                                      const size_t stride);
 
 void gsl_vector_ushort_free (gsl_vector_ushort * v);
 
@@ -63,7 +63,7 @@ int gsl_vector_ushort_memcpy (gsl_vector_ushort * dest, const gsl_vector_ushort 
 
 int gsl_vector_ushort_reverse (gsl_vector_ushort * v);
 
-int gsl_vector_ushort_swap (gsl_vector_ushort * v, size_t i, size_t j);
+int gsl_vector_ushort_swap (gsl_vector_ushort * v, const size_t i, const size_t j);
 
 int gsl_vector_ushort_isnull (gsl_vector_ushort * v);
 

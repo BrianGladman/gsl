@@ -27,32 +27,32 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_transport_2_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_2_e(double x, gsl_sf_result * result);
+int     gsl_sf_transport_2_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_transport_2_e(const double x, gsl_sf_result * result);
 
 
 /* J(3,x)
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int     gsl_sf_transport_3_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_3_e(double x, gsl_sf_result * result);
+int     gsl_sf_transport_3_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_transport_3_e(const double x, gsl_sf_result * result);
 
 
 /* J(4,x)
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int     gsl_sf_transport_4_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_4_e(double x, gsl_sf_result * result);
+int     gsl_sf_transport_4_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_transport_4_e(const double x, gsl_sf_result * result);
 
 
 /* J(5,x)
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int     gsl_sf_transport_5_impl(double x, gsl_sf_result * result);
-int     gsl_sf_transport_5_e(double x, gsl_sf_result * result);
+int     gsl_sf_transport_5_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_transport_5_e(const double x, gsl_sf_result * result);
 
 
 __END_DECLS

@@ -29,27 +29,32 @@ struct gsl_matrix_char_struct
 } ;
 
 gsl_matrix_char * 
-gsl_matrix_char_alloc (size_t n1, size_t n2);
+gsl_matrix_char_alloc (const size_t n1, const size_t n2);
 
 gsl_matrix_char * 
-gsl_matrix_char_calloc (size_t n1, size_t n2);
+gsl_matrix_char_calloc (const size_t n1, const size_t n2);
 
 gsl_matrix_char * 
-gsl_matrix_char_alloc_from_block (gsl_block_char * b, size_t offset, 
-                                   size_t n1, size_t n2, size_t d2);
+gsl_matrix_char_alloc_from_block (gsl_block_char * b, 
+                                   const size_t offset, 
+                                   const size_t n1, 
+                                   const size_t n2, 
+                                   const size_t d2);
 
 gsl_matrix_char * 
 gsl_matrix_char_alloc_from_matrix (gsl_matrix_char * m,
-                                    size_t k1, size_t k2,
-                                    size_t n1, size_t n2);
+                                    const size_t k1, 
+                                    const size_t k2,
+                                    const size_t n1, 
+                                    const size_t n2);
 
 gsl_vector_char * 
 gsl_vector_char_alloc_row_from_matrix (gsl_matrix_char * m,
-                                        size_t i);
+                                        const size_t i);
 
 gsl_vector_char * 
 gsl_vector_char_alloc_col_from_matrix (gsl_matrix_char * m,
-                                        size_t j);
+                                        const size_t j);
 
 void gsl_matrix_char_free (gsl_matrix_char * m);
 
@@ -57,33 +62,33 @@ void gsl_matrix_char_set_zero (gsl_matrix_char * m);
 void gsl_matrix_char_set_identity (gsl_matrix_char * m);
 void gsl_matrix_char_set_all (gsl_matrix_char * m, char x);
 
-char * gsl_matrix_char_ptr(const gsl_matrix_char * m, size_t i, size_t j);
-char   gsl_matrix_char_get(const gsl_matrix_char * m, size_t i, size_t j);
-void    gsl_matrix_char_set(gsl_matrix_char * m, size_t i, size_t j, char x);
+char * gsl_matrix_char_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
+char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
+void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, char x);
 
 int gsl_matrix_char_fread (FILE * stream, gsl_matrix_char * m) ;
 int gsl_matrix_char_fwrite (FILE * stream, const gsl_matrix_char * m) ;
 int gsl_matrix_char_fscanf (FILE * stream, gsl_matrix_char * m);
 int gsl_matrix_char_fprintf (FILE * stream, const gsl_matrix_char * m, const char * format);
  
-int gsl_matrix_char_get_row(gsl_vector_char * v, const gsl_matrix_char * m, size_t i);
-int gsl_matrix_char_get_col(gsl_vector_char * v, const gsl_matrix_char * m, size_t j);
-int gsl_matrix_char_set_row(gsl_matrix_char * m, size_t i, const gsl_vector_char * v);
-int gsl_matrix_char_set_col(gsl_matrix_char * m, size_t j, const gsl_vector_char * v);
+int gsl_matrix_char_get_row(gsl_vector_char * v, const gsl_matrix_char * m, const size_t i);
+int gsl_matrix_char_get_col(gsl_vector_char * v, const gsl_matrix_char * m, const size_t j);
+int gsl_matrix_char_set_row(gsl_matrix_char * m, const size_t i, const gsl_vector_char * v);
+int gsl_matrix_char_set_col(gsl_matrix_char * m, const size_t j, const gsl_vector_char * v);
 
-int gsl_matrix_char_swap_rows(gsl_matrix_char * m, size_t i, size_t j);
-int gsl_matrix_char_swap_cols(gsl_matrix_char * m, size_t i, size_t j);
-int gsl_matrix_char_swap_rowcol(gsl_matrix_char * m, size_t i, size_t j);
+int gsl_matrix_char_swap_rows(gsl_matrix_char * m, const size_t i, const size_t j);
+int gsl_matrix_char_swap_cols(gsl_matrix_char * m, const size_t i, const size_t j);
+int gsl_matrix_char_swap_rowcol(gsl_matrix_char * m, const size_t i, const size_t j);
 
 int gsl_matrix_char_memcpy(gsl_matrix_char * dest, const gsl_matrix_char * src);
 
-int gsl_vector_char_view_row_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, size_t i);
-int gsl_vector_char_view_col_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, size_t j);
+int gsl_vector_char_view_row_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, const size_t i);
+int gsl_vector_char_view_col_from_matrix (gsl_vector_char * v, gsl_matrix_char * m, const size_t j);
 
 int gsl_matrix_char_view_from_vector (gsl_matrix_char * m, 
                                        gsl_vector_char * base,
-                                       size_t offset, 
-                                       size_t n1, size_t n2, size_t d2);
+                                       const size_t offset, 
+                                       const size_t n1, const size_t n2, const size_t d2);
 
 extern int gsl_check_range ;
 

@@ -24,8 +24,8 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int     gsl_sf_synchrotron_1_impl(double x, gsl_sf_result * result);
-int     gsl_sf_synchrotron_1_e(double x, gsl_sf_result * result);
+int     gsl_sf_synchrotron_1_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result);
 
 
 /* Second synchroton function:
@@ -33,8 +33,8 @@ int     gsl_sf_synchrotron_1_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-int     gsl_sf_synchrotron_2_impl(double x, gsl_sf_result * result);
-int     gsl_sf_synchrotron_2_e(double x, gsl_sf_result * result);
+int     gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result);
+int     gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result);
 
 
 __END_DECLS

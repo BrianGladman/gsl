@@ -23,38 +23,38 @@ __BEGIN_DECLS
 
 
 int gsl_fft_complex_radix2_forward (gsl_complex_packed_array data,
-                                    size_t stride,
-                                    size_t n);
+                                    const size_t stride,
+                                    const size_t n);
 
 int gsl_fft_complex_radix2_backward (gsl_complex_packed_array data,
-                                     size_t stride,
-                                     size_t n);
+                                     const size_t stride,
+                                     const size_t n);
 
 int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array data,
-                                    size_t stride,
-                                    size_t n);
+                                    const size_t stride,
+                                    const size_t n);
 
 int gsl_fft_complex_radix2_transform (gsl_complex_packed_array data,
-                                      size_t stride,
-                                      size_t n,
-                                      gsl_fft_direction sign);
+                                      const size_t stride,
+                                      const size_t n,
+                                      const gsl_fft_direction sign);
 
 int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array data,
-                                        size_t stride,
-                                        size_t n);
+                                        const size_t stride,
+                                        const size_t n);
 
 int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array data,
-                                         size_t stride,
-                                         size_t n);
+                                         const size_t stride,
+                                         const size_t n);
 
 int gsl_fft_complex_radix2_dif_inverse (gsl_complex_packed_array data,
-                                        size_t stride,
-                                        size_t n);
+                                        const size_t stride,
+                                        const size_t n);
 
 int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array data,
-                                          size_t stride,
-                                          size_t n,
-                                          gsl_fft_direction sign);
+                                          const size_t stride,
+                                          const size_t n,
+                                          const gsl_fft_direction sign);
 
 int gsl_fft_complex_bitreverse_order (gsl_complex_packed_array data,
                                       size_t stride,
@@ -84,24 +84,24 @@ int gsl_fft_complex_memcpy (gsl_fft_wavetable_complex * dest,
 
 
 int gsl_fft_complex_forward (gsl_complex_packed_array data,
-                             size_t stride,
-                             size_t n,
+                             const size_t stride,
+                             const size_t n,
                              const gsl_fft_wavetable_complex * wavetable);
 
 int gsl_fft_complex_backward (gsl_complex_packed_array data,
-                              size_t stride,
-                              size_t n,
+                              const size_t stride,
+                              const size_t n,
                               const gsl_fft_wavetable_complex * wavetable);
 
 int gsl_fft_complex_inverse (gsl_complex_packed_array data,
-                             size_t stride,
-                             size_t n,
+                             const size_t stride,
+                             const size_t n,
                              const gsl_fft_wavetable_complex * wavetable);
 
 int gsl_fft_complex_transform (gsl_complex_packed_array data,
-                               size_t stride, size_t n,
+                               const size_t stride, const size_t n,
                                const gsl_fft_wavetable_complex * wavetable,
-                               gsl_fft_direction sign);
+                               const gsl_fft_direction sign);
 
 __END_DECLS
 

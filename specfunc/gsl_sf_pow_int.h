@@ -36,8 +36,8 @@ double gsl_sf_pow_9(const double x);
  * Does not check for overflow/underflow.
  */
 int     gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result);
-int     gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result);
-double  gsl_sf_pow_int(double x, int n);
+int     gsl_sf_pow_int_e(const double x, const int n, gsl_sf_result * result);
+double  gsl_sf_pow_int(const double x, const int n);
 
 
 #ifdef HAVE_INLINE

@@ -49,8 +49,8 @@ typedef struct gsl_sf_cheb_series_struct gsl_sf_cheb_series;
  * Return 0 on failure.
  */
 gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
-				     double a, double b,
-				     int order
+				     const double a, const double b,
+				     const int order
                                      );
 
 /* Calculate a Chebyshev series, but do not allocate
@@ -68,14 +68,14 @@ int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double));
 /* Evaluate a Chebyshev series at a given point.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
 int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
 
 
 /* Evaluate a Chebyshev series at a given point, to (at most) the given order.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs, const int order, const double x, gsl_sf_result * result);
 int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
 
 
@@ -84,13 +84,13 @@ int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl
  * order for other modes.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_mode_impl(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_cheb_eval_mode_impl(const gsl_sf_cheb_series * cs, const double x, gsl_mode_t mode, gsl_sf_result * result);
 int gsl_sf_cheb_eval_mode_e(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode, gsl_sf_result * result);
 
 
 /* Evaluate derivative of a Chebyshev series at a given point.
  */
-int gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
 int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
 
 
@@ -99,7 +99,7 @@ int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
  * the left end-point, ie it is precisely
  *       Integrate[cs(t; a,b), {t, a, x}]
  */
-int gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
 int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
 
 

@@ -29,20 +29,20 @@ struct gsl_vector_complex_float_struct
 
 typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;
 
-gsl_vector_complex_float *gsl_vector_complex_float_alloc (size_t n);
-gsl_vector_complex_float *gsl_vector_complex_float_calloc (size_t n);
+gsl_vector_complex_float *gsl_vector_complex_float_alloc (const size_t n);
+gsl_vector_complex_float *gsl_vector_complex_float_calloc (const size_t n);
 
 gsl_vector_complex_float 
 *gsl_vector_complex_float_alloc_from_block (gsl_block_complex_float * b, 
-                                            size_t offset, 
-                                            size_t n, 
-                                            size_t stride);
+                                            const size_t offset, 
+                                            const size_t n, 
+                                            const size_t stride);
 
 gsl_vector_complex_float 
 *gsl_vector_complex_float_alloc_from_vector (gsl_vector_complex_float * v, 
-                                             size_t offset, 
-                                             size_t n, 
-                                             size_t stride);
+                                             const size_t offset, 
+                                             const size_t n, 
+                                             const size_t stride);
 
 void gsl_vector_complex_float_free (gsl_vector_complex_float * v);
 
@@ -54,9 +54,9 @@ gsl_complex_float
 *gsl_vector_complex_float_ptr (const gsl_vector_complex_float * v, size_t i);
 
 gsl_complex_float 
-gsl_vector_complex_float_get (const gsl_vector_complex_float * v, size_t i);
+gsl_vector_complex_float_get (const gsl_vector_complex_float * v, const size_t i);
 
-void gsl_vector_complex_float_set (gsl_vector_complex_float * v, size_t i,
+void gsl_vector_complex_float_set (gsl_vector_complex_float * v, const size_t i,
                                    gsl_complex_float z);
 
 void gsl_vector_complex_float_set_zero (gsl_vector_complex_float * v);
@@ -77,7 +77,7 @@ int gsl_vector_complex_float_memcpy (gsl_vector_complex_float * dest, const gsl_
 
 int gsl_vector_complex_float_reverse (gsl_vector_complex_float * v);
 
-int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, size_t i, size_t j);
+int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_float_isnull (gsl_vector_complex_float * v);
 

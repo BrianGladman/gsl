@@ -27,9 +27,9 @@ __BEGIN_DECLS
  *
  * exceptions: none
  */
-int gsl_sf_laguerre_1_impl(double a, double x, gsl_sf_result * result);
-int gsl_sf_laguerre_2_impl(double a, double x, gsl_sf_result * result);
-int gsl_sf_laguerre_3_impl(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result);
+int gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result);
+int gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result);
 int gsl_sf_laguerre_1_e(double a, double x, gsl_sf_result * result);
 int gsl_sf_laguerre_2_e(double a, double x, gsl_sf_result * result);
 int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result);

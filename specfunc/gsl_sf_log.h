@@ -23,16 +23,16 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_e(double x, gsl_sf_result * result);
+int gsl_sf_log_impl(const double x, gsl_sf_result * result);
+int gsl_sf_log_e(const double x, gsl_sf_result * result);
 
 
 /* Log(|x|)
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_abs_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_abs_e(double x, gsl_sf_result * result);
+int gsl_sf_log_abs_impl(const double x, gsl_sf_result * result);
+int gsl_sf_log_abs_e(const double x, gsl_sf_result * result);
 
 
 /* Complex Logarithm
@@ -41,24 +41,24 @@ int gsl_sf_log_abs_e(double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_complex_log_impl(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
-int gsl_sf_complex_log_e(double zr, double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
+int gsl_sf_complex_log_impl(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
+int gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
 
 
 /* Log(1 + x)
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_1plusx_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_1plusx_e(double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result);
 
 
 /* Log(1 + x) - x
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_1plusx_mx_impl(double x, gsl_sf_result * result);
-int gsl_sf_log_1plusx_mx_e(double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result);
+int gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result);
 
 
 #ifdef HAVE_INLINE

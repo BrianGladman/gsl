@@ -5,8 +5,8 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-static double gamma_large (const gsl_rng * r, double a);
-static double gamma_frac (const gsl_rng * r, double a);
+static double gamma_large (const gsl_rng * r, const double a);
+static double gamma_frac (const gsl_rng * r, const double a);
 
 /* The Gamma distribution of order a>0 is defined by:
 

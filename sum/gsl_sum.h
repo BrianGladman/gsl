@@ -33,7 +33,7 @@ __BEGIN_DECLS
  */
 
 int gsl_sum_levin_u_accel (const double * array, 
-			   size_t array_size,
+			   const size_t array_size,
 			   double * q_num,
 			   double * q_den,
 			   double * dq_num,
@@ -44,7 +44,7 @@ int gsl_sum_levin_u_accel (const double * array,
 			   double * sum_plain,
 			   double * precision);
 
-int gsl_sum_levin_u_trunc_accel (const double * array, size_t array_size,
+int gsl_sum_levin_u_trunc_accel (const double * array, const size_t array_size,
 				 double * q_num, double * q_den,
 				 double * sum_accel, 
 				 size_t * n_used,
@@ -71,9 +71,9 @@ int gsl_sum_levin_u_trunc_accel (const double * array, size_t array_size,
 
 
 int gsl_sum_levin_u_accel_minmax (const double * array, 
-				  size_t array_size,
-				  size_t min_terms, 
-				  size_t max_terms,
+				  const size_t array_size,
+				  const size_t min_terms, 
+				  const size_t max_terms,
 				  double * q_num,
 				  double * q_den,
 				  double * dq_num,
@@ -85,9 +85,9 @@ int gsl_sum_levin_u_accel_minmax (const double * array,
 				  double * precision);
 
 int gsl_sum_levin_u_trunc_accel_minmax (const double * array, 
-					size_t array_size,
-					size_t min_terms, 
-					size_t max_terms,
+					const size_t array_size,
+					const size_t min_terms, 
+					const size_t max_terms,
 					double * q_num,
 					double * q_den,
 					double * sum_accel,
@@ -113,9 +113,9 @@ int gsl_sum_levin_u_trunc_accel_minmax (const double * array,
  */
 
 int
-gsl_sum_levin_u_step (double term,
-		      size_t n,
-		      size_t nmax,
+gsl_sum_levin_u_step (const double term,
+		      const size_t n,
+		      const size_t nmax,
 		      double *q_num,
 		      double *q_den,
 		      double *dq_num,
@@ -124,8 +124,8 @@ gsl_sum_levin_u_step (double term,
 		      double *sum_accel,
 		      double *sum_plain);
 
-int gsl_sum_levin_u_trunc_step(double term,
-			       size_t n,
+int gsl_sum_levin_u_trunc_step(const double term,
+			       const size_t n,
 			       double * q_num,
 			       double * q_den,
 			       double * sum_accel,

@@ -19,8 +19,8 @@ extern const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bth1_cs;
  *
  * assumes x > 0
  */
-int gsl_sf_bessel_asymp_Mnu_impl(double nu, double x, double * result);
-int gsl_sf_bessel_asymp_thetanu_corr_impl(double nu, double x, double * result); /* w/o x term */
+int gsl_sf_bessel_asymp_Mnu_impl(const double nu, const double x, double * result);
+int gsl_sf_bessel_asymp_thetanu_corr_impl(const double nu, const double x, double * result); /* w/o x term */
 
 
 #endif /* !_BESSEL_AMP_PHASE_H_ */

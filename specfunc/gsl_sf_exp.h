@@ -24,24 +24,24 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_exp_impl(double x, gsl_sf_result * result);
-int gsl_sf_exp_e(double x, gsl_sf_result * result);
+int gsl_sf_exp_impl(const double x, gsl_sf_result * result);
+int gsl_sf_exp_e(const double x, gsl_sf_result * result);
 
 
 /* Exp(x)
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_exp_e10_impl(double x, gsl_sf_result_e10 * result);
-int gsl_sf_exp_e10_e(double x, gsl_sf_result_e10 * result);
+int gsl_sf_exp_e10_impl(const double x, gsl_sf_result_e10 * result);
+int gsl_sf_exp_e10_e(const double x, gsl_sf_result_e10 * result);
 
 
 /* Exponentiate and multiply by a given factor:  y * Exp(x)
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_exp_mult_impl(double x, double y, gsl_sf_result * result);
-int gsl_sf_exp_mult_e(double x, double y, gsl_sf_result * result);
+int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result);
+int gsl_sf_exp_mult_e(const double x, const double y, gsl_sf_result * result);
 
 
 /* Exponentiate and multiply by a given factor:  y * Exp(x)
@@ -56,16 +56,16 @@ int gsl_sf_exp_mult_e10_e(const double x, const double y, gsl_sf_result_e10 * re
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_expm1_impl(double x, gsl_sf_result * result);
-int gsl_sf_expm1_e(double x, gsl_sf_result * result);
+int gsl_sf_expm1_impl(const double x, gsl_sf_result * result);
+int gsl_sf_expm1_e(const double x, gsl_sf_result * result);
 
 
 /* (exp(x)-1)/x = 1 + x/2 + x^2/(2*3) + x^3/(2*3*4) + ...
  *
  * exceptions: GSL_EOVRFLW
  */
-int gsl_sf_exprel_impl(double x, gsl_sf_result * result);
-int gsl_sf_exprel_e(double x, gsl_sf_result * result);
+int gsl_sf_exprel_impl(const double x, gsl_sf_result * result);
+int gsl_sf_exprel_e(const double x, gsl_sf_result * result);
 
 
 /* 2(exp(x)-1-x)/x^2 = 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + ...
@@ -73,7 +73,7 @@ int gsl_sf_exprel_e(double x, gsl_sf_result * result);
  * exceptions: GSL_EOVRFLW
  */
 int gsl_sf_exprel_2_impl(double x, gsl_sf_result * result);
-int gsl_sf_exprel_2_e(double x, gsl_sf_result * result);
+int gsl_sf_exprel_2_e(const double x, gsl_sf_result * result);
 
 
 /* Similarly for the N-th generalization of
@@ -83,19 +83,19 @@ int gsl_sf_exprel_2_e(double x, gsl_sf_result * result);
  *             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...
  *             = 1F1(1,1+N,x)
  */
-int gsl_sf_exprel_n_impl(int n, double x, gsl_sf_result * result);
-int gsl_sf_exprel_n_e(int n, double x, gsl_sf_result * result);
+int gsl_sf_exprel_n_impl(const int n, const double x, gsl_sf_result * result);
+int gsl_sf_exprel_n_e(const int n, const double x, gsl_sf_result * result);
 
 
 /* Exponentiate a quantity with an associated error.
  */
-int gsl_sf_exp_err_impl(double x, double dx, gsl_sf_result * result);
-int gsl_sf_exp_err_e(double x, double dx, gsl_sf_result * result);
+int gsl_sf_exp_err_impl(const double x, const double dx, gsl_sf_result * result);
+int gsl_sf_exp_err_e(const double x, const double dx, gsl_sf_result * result);
 
 
 /* Exponentiate a quantity with an associated error.
  */
-int gsl_sf_exp_err_e10_impl(double x, double dx, gsl_sf_result_e10 * result);
+int gsl_sf_exp_err_e10_impl(const double x, const double dx, gsl_sf_result_e10 * result);
 int gsl_sf_exp_err_e10_e(double x, double dx, gsl_sf_result_e10 * result);
 
 
@@ -104,8 +104,8 @@ int gsl_sf_exp_err_e10_e(double x, double dx, gsl_sf_result_e10 * result);
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_exp_mult_err_impl(double x, double dx, double y, double dy, gsl_sf_result * result);
-int gsl_sf_exp_mult_err_e(double x, double dx, double y, double dy, gsl_sf_result * result);
+int gsl_sf_exp_mult_err_impl(const double x, const double dx, const double y, const double dy, gsl_sf_result * result);
+int gsl_sf_exp_mult_err_e(const double x, const double dx, const double y, const double dy, gsl_sf_result * result);
 
 
 /* Exponentiate and multiply by a given factor:  y * Exp(x),
@@ -113,8 +113,8 @@ int gsl_sf_exp_mult_err_e(double x, double dx, double y, double dy, gsl_sf_resul
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_exp_mult_err_e10_impl(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
-int gsl_sf_exp_mult_err_e10_e(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
+int gsl_sf_exp_mult_err_e10_impl(const double x, const double dx, const double y, const double dy, gsl_sf_result_e10 * result);
+int gsl_sf_exp_mult_err_e10_e(const double x, const double dx, const double y, const double dy, gsl_sf_result_e10 * result);
 
 __END_DECLS
 
