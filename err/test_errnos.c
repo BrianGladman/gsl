@@ -15,7 +15,6 @@ int
 main (void)
 {
   int i, j, n = 0 ;
-  int status ;
 
   struct { 
     int number; 
@@ -43,21 +42,20 @@ main (void)
     {
       if (verbose) printf ("%s = %d\n", errors[i].name, errors[i].number) ;
     }
-  
-  for (i = 0 ; i < n ; i++) 
+
+  for (i = 0; i < n; i++)
     {
-      status = (errors[i].number == 0)  ;
-      gsl_test (status, "%s is non-zero", errors[i].name) ;
-
-      for (j = 0 ; j < i ; j++) 
+      int status = 0;
+      for (j = 0; j < n; j++)
 	{
-	  status = (errors[i].number == errors[j].number) ;
-	  gsl_test (status, "%s is distinct from %s", 
-		    errors[j].name, errors[i].name) ;
+	  if (j != i)
+	    status |= (errors[i].number == errors[j].number);
 	}
+
+      gsl_test (status, "%s is distinct from other error values",
+		errors[i].name);
     }
-
+  
   return gsl_test_summary ();
-
 }
 

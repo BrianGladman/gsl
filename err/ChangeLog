@@ -1,3 +1,10 @@
+Wed Apr 15 21:59:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added a stream handler, for the error stream
+
+	* completely reorganized the files, but the functions are
+ 	relatively unchanged
+
 Wed Apr  8 13:55:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h (GSL_ERROR_RETURN_NOTHING): added an error macro

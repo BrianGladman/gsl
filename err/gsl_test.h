@@ -1,5 +1,5 @@
-#ifndef _GSL_TEST_H
-#define _GSL_TEST_H
+#ifndef GSL_TEST_H
+#define GSL_TEST_H
 
 #include <config.h>
 
@@ -15,4 +15,4 @@ int
   gsl_test_summary (void) ;
 
 
-#endif /* _GSL_TEST_H */
+#endif /* GSL_TEST_H */

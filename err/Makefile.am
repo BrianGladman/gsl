@@ -2,7 +2,7 @@ noinst_LIBRARIES = libgslerr.a libgsltest.a
 
 include_HEADERS = gsl_errno.h gsl_message.h gsl_test.h
 
-libgslerr_a_SOURCES = errno.c
+libgslerr_a_SOURCES = error.c stream.c message.c warn.c
 libgsltest_a_SOURCES = test.c
 
 check_PROGRAMS = test_errnos
