@@ -17,10 +17,14 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 
-#VERSION=0.3a-interim
-#AC_SUBST(VERSION)
-#PACKAGE=gsl
-#AC_SUBST(PACKAGE)
+dnl some magic to get a full path to the working directory
+full_top_srcdir=`cd $srcdir; pwd`
+full_top_builddir=`pwd`
+echo srcdir is $srcdir
+echo full_top_srcdir is $full_top_srcdir
+echo full_top_builddir is $full_top_builddir
+AC_SUBST(full_top_srcdir)
+AC_SUBST(full_top_builddir)
 
 dnl Checks for header files.
 

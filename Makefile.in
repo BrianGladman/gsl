@@ -64,6 +64,8 @@ MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+full_top_builddir = @full_top_builddir@
+full_top_srcdir = @full_top_srcdir@
 
 SUBDIRS = utils err random randist fft roots specfunc statistics siman integration doc
 
