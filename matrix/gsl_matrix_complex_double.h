@@ -65,7 +65,7 @@ int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, size_t i, size_t j);
 
 int gsl_matrix_complex_copy(gsl_matrix_complex * dest, const gsl_matrix_complex * src);
 
-int gsl_vector_complex_view_rol_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, size_t i);
+int gsl_vector_complex_view_row_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, size_t i);
 int gsl_vector_complex_view_col_from_matrix (gsl_vector_complex * v, gsl_matrix_complex * m, size_t j);
 
 

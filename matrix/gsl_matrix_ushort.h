@@ -61,7 +61,7 @@ int gsl_matrix_ushort_swap_rowcol(gsl_matrix_ushort * m, size_t i, size_t j);
 
 int gsl_matrix_ushort_copy(gsl_matrix_ushort * dest, const gsl_matrix_ushort * src);
 
-int gsl_vector_ushort_view_rol_from_matrix (gsl_vector_ushort * v, gsl_matrix_ushort * m, size_t i);
+int gsl_vector_ushort_view_row_from_matrix (gsl_vector_ushort * v, gsl_matrix_ushort * m, size_t i);
 int gsl_vector_ushort_view_col_from_matrix (gsl_vector_ushort * v, gsl_matrix_ushort * m, size_t j);
 
 extern int gsl_check_range ;
