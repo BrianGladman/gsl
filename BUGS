@@ -321,3 +321,26 @@ signalled in the initialisation.  For example, akima interpolation
 does not have this problem.
 
 ----------------------------------------------------------------------
+BUG#26 - underflow in gsl_sf_legendre_sphPlm_array
+
+there is a potential underflow in legendre_poly.c in the lines
+
+      lnpre = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
+      y_mm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
+
+for large negative values of lnpre.
+
+  #include <math.h>
+  #include <stdio.h>
+  #include <gsl/gsl_sf.h>
+
+  int main (void) {
+   int lmax=2000, l=1997, m=796;
+   double Xlm[2005];
+   double cx = 0.921;
+   int status = gsl_sf_legendre_sphPlm_array(lmax,m,cx,Xlm);
+   double v = Xlm[l-m];
+   printf("cx= %.5e l=%d m=%d  Plm=%.18e status=%d\n",cx,l,m,v, status);
+  }
+
+----------------------------------------------------------------------
