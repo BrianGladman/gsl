@@ -82,7 +82,7 @@ qrstep (const size_t n, double d[], double sd[], double gc[], double gs[])
 {
   double x, z;
   double ak, bk, zk, ap, bp, aq, bq;
-  int k;
+  size_t k;
 
   double mu = trailing_eigenvalue (n, d, sd);
 
