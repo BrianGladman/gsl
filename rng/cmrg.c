@@ -5,7 +5,9 @@
 /*  From:
     P. L'Ecuyer, "Combined Multiple Recursive Random Number Generators,"
     to appear in Operations Research, 1996.
-    (Preprint obtained as file compmrg.ps from L'Ecuyer's web page.)  */
+    (Preprint obtained as file combmrg.ps from L'Ecuyer's web page.
+    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps)
+*/
 
 unsigned long int cmrg_get (void * vstate);
 void cmrg_set (void * state, unsigned int s);

@@ -41,7 +41,7 @@ unsigned long int zuf_get (void *vstate)
       }
     else 
       {
-	(state->n)++ ;
+	state->n = n + 1 ;
       }
     
     return t;

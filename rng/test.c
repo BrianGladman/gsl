@@ -9,6 +9,14 @@ int
 main (void)
 {
   gsl_rng_env_setup() ;
+
+  /* specific tests of known results */
+
+  rng_test (gsl_rng_cmrg,0,1,result);
+
+
+  /* generic statistical tests */
+
   generic_rng_test (gsl_rng_cmrg);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_rand);
