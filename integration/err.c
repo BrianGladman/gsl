@@ -24,7 +24,7 @@ double rescale_error (double err,
       }
   if (result_abs > DBL_MIN / (50 * DBL_EPSILON))
     {
-      double min_err = (DBL_EPSILON * 50) * result_abs ;
+      double min_err = 50 * DBL_EPSILON * result_abs ;
 
       if (min_err > err) 
 	{

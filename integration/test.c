@@ -8,6 +8,7 @@ int main (void)
 {
   double result, abserr, resabs, resasc ;
   size_t neval ;
+  int status ;
 
   gsl_integration_qk15(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
 
@@ -45,7 +46,7 @@ int main (void)
 
   printf("qng: result = %.18g, abserr = %.18g, neval = %d\n",
 	 result, abserr, neval) ;
-
+#ifdef JUNK
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
     size_t iord[1000] ;
@@ -57,17 +58,19 @@ int main (void)
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
   }
+#endif
 
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
     size_t iord[1000] ;
     size_t last;
     result = 0 ; abserr=0; neval=0  ;
-    gsl_integration_qagse(f, 0.0, 1.0, 0.0, 1e-10, 6, 1000,
+    status = gsl_integration_qagse(f, 0.0, 1.0, 0.0, 1e-2, 1000,
 			 alist, blist, rlist, elist, iord, &last,
 			 &result, &abserr, &neval) ;
     printf("qagse: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
+    printf("status=%d\n",status) ;
   }
 
 
@@ -75,7 +78,7 @@ int main (void)
 } 
 
 double f (double x) {
-  return pow(1/(1e3 + fabs(x-0.4)),2) ;
+  return log(x)/sqrt(x) ;
 }
 
 

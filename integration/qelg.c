@@ -24,16 +24,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
   const size_t nres_orig = *nres ;
   *result = current ;
   *nres = (*nres) + 1 ;
-
-  if (nres_orig == 0)
-    {
-      printf("nuking\n") ;
-      res3la[0] = 0 ;
-      res3la[1] = 0 ;
-      res3la[2] = 0 ;
-      for (i=1;i<50;i++) {epstab[i] = 0.12345 ; } ;
-    }
- 
+  *abserr = DBL_MAX ;
   if ((*n) < 2) 
     {
       *result = current ;
@@ -43,6 +34,8 @@ gsl_integration_qelg (size_t * n, double epstab[],
   
   epstab[(*n)+2] = epstab[(*n)] ;
   epstab[(*n)] = DBL_MAX ;
+  
+  printf("QELG: outside loop, newelm = %d, n_orig = %d\n", newelm, n_orig) ;
 
   for (i = 0; i < newelm ; i++)
     {
@@ -61,12 +54,14 @@ gsl_integration_qelg (size_t * n, double epstab[],
       
       double e3, delta1, err1, tol1, ss ;
 
+      printf("QELG: in loop, i = %d, newelm = %d\n", i,newelm) ;
+
       if (err2 <= tol2 && err3 <= tol3)
         {
           /* If e0, e1 and e2 are equal to within machine accuracy,
            convergence is assumed.  */
 
-	  printf("err2 <= tol2 && err3 <= tol3\n") ;
+	  printf("QELG: err2 <= tol2 && err3 <= tol3\n") ;
 
           *result = res ;
           absolute = err2 + err3 ;
@@ -84,22 +79,28 @@ gsl_integration_qelg (size_t * n, double epstab[],
       /* If two elements are very close to each other, omit a part of
          the table by adjusting the value of n */
       
+      printf("QELG: err1 = %g tol1 = %g\n",err1,tol1) ;
+      printf("QELG: err2 = %g tol2 = %g\n",err2,tol2) ;
+      printf("QELG: err3 = %g tol3 = %g\n",err3,tol3) ;
+
       if (err1 <= tol1 || err2 <= tol2 || err3 <= tol3)
         {
-	  printf("err1 <= tol1 || err2 <= tol2 || err3 <= tol3\n") ;
+	  printf("QELG: err1 <= tol1 || err2 <= tol2 || err3 <= tol3\n") ;
           n_final = 2*i ;
           break ;
         }
       
       ss = (1/delta1 + 1/delta2) - 1/delta3 ;
-      
+
+      printf("QELG: ss = %g\n",ss) ;
+
       /* Test to detect irregular behaviour in the table, and
          eventually omit a part of the table by adjusting the value of
          n. */
 
       if (fabs(ss*e1) <= 0.0001) 
         {
-	  printf("fabs(ss*e1) <= 0.0001\n");
+	  printf("QELG: fabs(ss*e1) <= 0.0001\n");
           n_final = 2*i ;
           break ;
         }
@@ -112,9 +113,11 @@ gsl_integration_qelg (size_t * n, double epstab[],
 
       {
 	const double error = err2 + fabs(res - e2) + err3 ;
-      
+	printf("QELG: *abserr = %g, error = %g\n", *abserr, error) ;
+
 	if (error <= *abserr) 
 	  {
+	    printf("QELG: setting *abserr to %g\n",error) ;
 	    *abserr = error ;
 	    *result = res ;
 	  } 
@@ -129,7 +132,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
     if (n_final == limexp)
       {
 	n_final = 2 * (limexp/2)  ;
-	printf("nfinal reduced to %d\n",n_final) ;
+	printf("QELG: nfinal reduced to %d\n",n_final) ;
       }
   }
   
@@ -137,7 +140,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
     {
       for (i = 0 ; i <= newelm ; i++)
 	{
-	  printf("A:copying epstab[%d] into epstab[%d]\n",i*2+3,i*2+1) ;
+	  printf("QELG: A:copying epstab[%d] into epstab[%d]\n",i*2+3,i*2+1) ;
 	  epstab[1+i*2] = epstab[i*2+3] ;
 	}
     }
@@ -145,7 +148,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
     {
       for (i = 0 ; i <= newelm ; i++)
 	{
-	  printf("A:copying epstab[%d] into epstab[%d]\n",i*2+2,i*2) ;
+	  printf("QELG: A:copying epstab[%d] into epstab[%d]\n",i*2+2,i*2) ;
 	  epstab[i*2] = epstab[i*2+2] ;
 	}
     }
@@ -154,7 +157,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
     printf ("n_orig = %d, n_final = %d\n",n_orig,n_final) ;
     for (i = 0 ; i <= n_final ; i++)
       {
-	printf("B:copying epstab[%d] into epstab[%d]\n",n_orig-n_final+i,i) ;
+	printf("QELG: B:copying epstab[%d] into epstab[%d]\n",n_orig-n_final+i,i) ;
         epstab[i] = epstab[n_orig - n_final + i] ;
       }
   }
@@ -163,6 +166,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
 
   if (nres_orig < 3) 
     {
+      printf("QELG: setting term %d to %g\n",nres_orig, *result) ;
       res3la[nres_orig] = *result ;
       *abserr = DBL_MAX ;
     } 
@@ -170,17 +174,23 @@ gsl_integration_qelg (size_t * n, double epstab[],
     {  /* Compute error estimate */
       *abserr = (fabs(*result - res3la[2]) + fabs(*result - res3la[1])
 		+ fabs(*result - res3la[0])) ;
-      printf("error estimate computed as %g\n",*abserr) ;
-      printf("result = %g\n", *result) ;
-      printf("term1 = %g\n", res3la[2]) ;
-      printf("term2 = %g\n", res3la[1]) ;
-      printf("term3 = %g\n", res3la[0]) ;
+      printf("QELG: error estimate computed as %g\n",*abserr) ;
+      printf("QELG: result = %g\n", *result) ;
+      printf("QELG: term1 = %g\n", res3la[2]) ;
+      printf("QELG: term2 = %g\n", res3la[1]) ;
+      printf("QELG: term3 = %g\n", res3la[0]) ;
       res3la[0] = res3la[1] ;
       res3la[1] = res3la[2] ;
       res3la[2] = *result ;
     }
 
-  *abserr = max(*abserr, 5*DBL_EPSILON*fabs(*result)) ;
+  *abserr = max(*abserr, 5 * DBL_EPSILON * fabs(*result)) ;
+
+#ifdef JUN
+  for (i= 0; i<32; i++) {
+    printf("QELG: TAB i = %d, epstab[i] = %g\n",i,epstab[i])  ;
+  } ;
+#endif
   return ;
 }
     

@@ -44,6 +44,8 @@ gsl_integration_qage_impl (double (*f)(double x),
   elist[0] = q_abserr ;
   iord[0] = 0 ;
 
+  printf("result = %.18g abserr = %.18g\n",q_result,q_abserr) ;
+
   /* Test on accuracy */
 
   tolerance = max(epsabs, epsrel * fabs(q_result)) ;
@@ -99,14 +101,21 @@ gsl_integration_qage_impl (double (*f)(double x),
       double defab1, defab2 ;
       double resabs = 0 ;
 
+      printf("splitting [%g,%g] into [%g,%g] and [%g,%g]\n",left,right,a1,b1,a2,b2) ;
+
       q (f, a1, b1, &area1, &error1, &resabs, &defab1) ;
       q (f, a2, b2, &area2, &error2, &resabs, &defab2) ;
       
       area12 = area1 + area2;
       error12 = error1 + error2;
 
+      printf("errsum = %.18g\n", errsum) ;
       errsum += (error12 - maxerr_value) ;
       area += area12 - rlist[maxerr_index] ;
+
+      printf("error1 = %.10g error2 = %.10g\n",error1, error2) ;
+      printf("errsum = %.18g\n", errsum) ;
+      printf("result = %.15f abserr = %.16g\n", area, errsum) ;
       
       if (defab1 != error1 && defab2 != error2) 
 	{

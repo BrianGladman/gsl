@@ -95,7 +95,6 @@ int
 gsl_integration_qagse (double (*f)(double x),
 		      double a, double b,
 		      double epsabs, double epsrel,
-		      int key,
 		      size_t limit,
 		      double alist[], double blist[], double rlist[], 
 		      double elist[], size_t iord[], size_t * last,
