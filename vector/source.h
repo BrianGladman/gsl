@@ -2,21 +2,101 @@
    and assume that we are using doubles.
 
    If BASE is defined we used function names like gsl_BASE_name()
-   e.g. gsl_int_name()  and use BASE as the base datatype      */
+   and use BASE as the base datatype      */
 
-#ifndef ZERO
-#define ZERO 0
+#if   defined(BASE_GSL_COMPLEX_LONG)
+#define BASE gsl_complex_long
+#define SHORT complex_long
+#define ATOMIC long double
+#define MULTIPLICITY 2
+
+#elif defined(BASE_GSL_COMPLEX)
+#define BASE gsl_complex
+#define SHORT complex
+#define ATOMIC double
+#define MULTIPLICITY 2
+
+#elif defined(BASE_GSL_COMPLEX_FLOAT)
+#define BASE gsl_complex_float
+#define SHORT complex_float
+#define ATOMIC float
+#define MULTIPLICITY 2
+
+#elif defined(BASE_LONG_DOUBLE)
+#define BASE long double
+#define SHORT long_double
+#define ATOMIC long double
+#define MULTIPLICITY 1
+
+#elif defined(BASE_DOUBLE)
+#define BASE double
+#define SHORT
+#define ATOMIC double
+#define MULTIPLICITY 1
+
+#elif defined(BASE_FLOAT)
+#define BASE float
+#define SHORT float
+#define ATOMIC float
+#define MULTIPLICITY 1
+
+#elif defined(BASE_ULONG)
+#define BASE unsigned long
+#define SHORT ulong
+#define ATOMIC unsigned long
+#define MULTIPLICITY 1
+
+#elif defined(BASE_LONG)
+#define BASE long
+#define SHORT long
+#define ATOMIC long
+#define MULTIPLICITY 1
+
+#elif defined(BASE_UINT)
+#define BASE unsigned int
+#define SHORT uint
+#define ATOMIC unsigned int
+#define MULTIPLICITY 1
+
+#elif defined(BASE_INT)
+#define BASE int
+#define SHORT int
+#define ATOMIC int
+#define MULTIPLICITY 1
+
+#elif defined(BASE_USHORT)
+#define BASE unsigned short
+#define SHORT ushort
+#define ATOMIC unsigned short
+#define MULTIPLICITY 1
+
+#elif defined(BASE_SHORT)
+#define BASE short
+#define SHORT short
+#define ATOMIC short
+#define MULTIPLICITY 1
+
+#elif defined(BASE_UCHAR)
+#define BASE unsigned char
+#define SHORT uchar
+#define ATOMIC unsigned char
+#define MULTIPLICITY 1
+
+#elif defined(BASE_CHAR)
+#define BASE char
+#define SHORT char
+#define ATOMIC char
+#define MULTIPLICITY 1
+
+#else
+#error unknown BASE_ directive in source.h
 #endif
 
-#ifndef BASE  /* default to double */
-#define BASE double
+#if defined(BASE_DOUBLE)
 #define CONCAT2(a,b) a ## _ ## b 
 #define FUNCTION(dir,name) CONCAT2(dir,name)
 #define TYPE(dir) dir
 #else
-#ifndef SHORT
-#define SHORT BASE
-#endif
 #define CONCAT2x(a,b) a ## _ ## b 
 #define CONCAT2(a,b) CONCAT2x(a,b)
 #define CONCAT3x(a,b,c) a ## _ ## b ## _ ## c

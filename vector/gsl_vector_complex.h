@@ -10,51 +10,59 @@ typedef struct
 {
   size_t size;
   size_t stride;
-  gsl_complex * data;
+  double * data;
 } 
 gsl_vector_complex ;
+
 
 gsl_vector_complex * gsl_vector_complex_alloc (size_t n);
 gsl_vector_complex * gsl_vector_complex_calloc (size_t n);
 void gsl_vector_complex_free (gsl_vector_complex * v);
 
-gsl_complex gsl_vector_complex_get(const gsl_vector_complex * v, size_t i);
-void gsl_vector_complex_set(gsl_vector_complex * v, size_t i, gsl_complex x);
+gsl_complex * gsl_vector_complex_getp(const gsl_vector_complex * v, size_t i);
+void gsl_vector_complex_set(gsl_vector_complex * v, size_t i, const gsl_complex * x);
 
 int gsl_vector_complex_fread (FILE * stream, gsl_vector_complex * v) ;
 int gsl_vector_complex_fwrite (FILE * stream, const gsl_vector_complex * v) ;
 int gsl_vector_complex_fscanf (FILE * stream, gsl_vector_complex * v);
 int gsl_vector_complex_fprintf (FILE * stream, const gsl_vector_complex * v,
-			      const char * format);
+			        const char * format);
 
-int gsl_block_complex_fread (FILE * stream, gsl_complex * data, size_t n) ;
-int gsl_block_complex_fwrite (FILE * stream, const gsl_complex * data, size_t n) ;
-int gsl_block_complex_fscanf (FILE * stream, gsl_complex * data, size_t n);
-int gsl_block_complex_fprintf (FILE * stream, const gsl_complex * data, size_t n,
-			     const char * format);
+int gsl_block_complex_fread (FILE * stream, double * data, size_t n) ;
+int gsl_block_complex_fwrite (FILE * stream, const double * data, size_t n) ;
+int gsl_block_complex_fscanf (FILE * stream, double * data, size_t n);
+int gsl_block_complex_fprintf (FILE * stream, const double * data, size_t n,
+			       const char * format);
 
 extern int gsl_check_range ;
 
-/* inline functions if you are using GCC */
+#ifndef  GSL_VECTOR_COMPLEX_REAL
+#define  GSL_VECTOR_COMPLEX_REAL(z, i)  (z->dat[2*i])
+#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  (z->dat[2*i + 1])
+#endif
+
+#define GSL_COMPLEX_AT(zv, i)  ((gsl_complex *)  &(zv->dat[2*i]))
+
+
+/* inline functions if you are using GCC or otherwise enlightened cc */
 
 #ifdef HAVE_INLINE
 extern inline 
-gsl_complex
-gsl_vector_complex_get(const gsl_vector_complex * v, const size_t i)
+gsl_complex *
+gsl_vector_complex_getp(const gsl_vector_complex * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  static const gsl_complex gsl_complex_zero = {0, 0} ;
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, gsl_complex_zero);
+      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return v->data[i] ;
+  return GSL_COMPLEX_AT(v, i);
 } 
 
 extern inline 
 void
-gsl_vector_complex_set(gsl_vector_complex * v, const size_t i, const gsl_complex x)
+gsl_vector_complex_set(gsl_vector_complex * v, const size_t i, const gsl_complex * x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size) /* size_t is unsigned, can't be negative */
@@ -62,9 +70,12 @@ gsl_vector_complex_set(gsl_vector_complex * v, const size_t i, const gsl_complex
       GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
     }
 #endif
-  v->data[i] = x ; 
+  GSL_VECTOR_COMPLEX_REAL(v, i) = GSL_COMPLEX_P_REAL(z);
+  GSL_VECTOR_COMPLEX_IMAG(v, i) = GSL_COMPLEX_P_IMAG(z);
 }
-#endif
+
+#endif /* HAVE_INLINE */
+
 
 #endif /* GSL_VECTOR_COMPLEX_H */
 

@@ -2,7 +2,11 @@ lib_LIBRARIES = libgslvector.a
 
 check_PROGRAMS = test test_float test_int test_complex test_trap 
 
-include_HEADERS = gsl_vector.h gsl_vector_float.h gsl_vector_int.h \
+include_HEADERS = 		\
+	gsl_vector.h		\
+	gsl_vector_double.h	\
+	gsl_vector_float.h	\
+	gsl_vector_int.h	\
 	gsl_vector_complex.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
@@ -28,24 +32,4 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c
 
-libgslvector_a_SOURCES = \
-source.h \
-init.c \
-vector.c \
-file.c \
-gsl_vector.h \
-init_int.c \
-vector_int.c \
-file_int.c \
-gsl_vector_int.h \
-init_float.c \
-vector_float.c \
-file_float.c \
-gsl_vector_float.h \
-init_complex.c \
-vector_complex.c \
-file_complex.c \
-gsl_vector_complex.h
-
-
-
+libgslvector_a_SOURCES = init.c file.c vector.c 

@@ -21,7 +21,7 @@ FUNCTION(gsl_vector,alloc) (const size_t n)
 			GSL_ENOMEM, 0);
     }
 
-  v->data = (BASE *) malloc(n * sizeof(BASE)) ;
+  v->data = (ATOMIC *) malloc(MULTIPLICITY * n * sizeof(ATOMIC)) ;
 
   if (v->data == 0) 
     {
@@ -46,9 +46,9 @@ FUNCTION(gsl_vector,calloc) (const size_t n)
   if (v == 0) 
     return 0 ;
 
-  for (i = 0 ; i < n; i++)  /* initialize vector to zero */
+  for (i = 0 ; i < MULTIPLICTY * n; i++)  /* initialize vector to zero */
     {
-      v->data[i] = ZERO ;
+      v->data[i] = 0.0 ;
     }
 
   return v ;
