@@ -182,6 +182,7 @@ simulated annealing
 * "Fabian Jakobs" <fabian.jakobs@web.de> fixed a bug in
 gsl_linalg_bidiag_unpack_B, and documentation bug-fix for blas
 
-* "Gavin Crooks" <gec@threeplusone.com> documentation bug fix
+* "Gavin Crooks" <gec@threeplusone.com> documentation bug fix,
+dirichlet distribution
 
 *  Gert Van den Eynde <gvdeynde@sckcen.be> gsl_ldexp, gsl_frexp, gsl_fcmp

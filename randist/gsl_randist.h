@@ -54,6 +54,10 @@ double gsl_ran_cauchy_pdf (const double x, const double a);
 double gsl_ran_chisq (const gsl_rng * r, const double nu);
 double gsl_ran_chisq_pdf (const double x, const double nu);
 
+void gsl_ran_dirichlet (const gsl_rng * r, const size_t K, const double alpha[], double theta[]);
+double
+gsl_ran_dirichlet_pdf (const size_t K, const double alpha[], const double theta[]);
+
 double gsl_ran_erlang (const gsl_rng * r, const double a, const double n);
 double gsl_ran_erlang_pdf (const double x, const double a, const double n);
 
