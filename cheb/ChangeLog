@@ -1,3 +1,7 @@
+2004-08-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): make the hard-coded tolerances a variable, ftol
+
 2003-06-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added some tests for the coefficients

@@ -7,3 +7,4 @@ libtoolize --automake
 aclocal
 automake --add-missing --gnu
 autoconf
+echo "Now use ./configure --enable-maintainer-mode"

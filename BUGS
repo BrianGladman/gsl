@@ -298,3 +298,29 @@ executables in TESTS.  This is an automake problem, but can be worked
 around by adding the extensions $(EXEEXT) manually to each executable
 in the TEST= lines in */Makefile.am.  He supplied a patch to do this.
 ----------------------------------------------------------------------
+BUG#23 - potential slight inaccuracy in histogram ranges
+
+Damir Herman <herman@ncbi.nlm.nih.gov> points out that the expression
+
+      h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
+
+in setting histgram ranges (1d,2d) may be inaccurate (i.e. != xmax)
+for i=n due to cancellation error in the subtraction. It needs to be
+rewritten as f*xmin+(1-f)*xmax or similar.
+----------------------------------------------------------------------
+BUG#24 - unequal stride error in gsl_vector_swap
+
+From: Ewald Stamp <stamp@math.hu-berlin.de>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] bug in vector/swap_source.c
+Date: Sat, 14 Aug 2004 04:02:28 +0200
+
+Hi,
+
+there is small error in FUNCTION (gsl_vector, swap), line 27:
+
+26:  const size_t s1 = MULTIPLICITY * v->stride ;
+27:  const size_t s2 = MULTIPLICITY * v->stride ;
+
+this should be: s2 = ... w->stride
+----------------------------------------------------------------------
