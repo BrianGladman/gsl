@@ -365,17 +365,40 @@ this function.
 
 @deftypefn Statistics size_t gsl_stats_max_index (const double data[], const size_t n)
 @deftypefnx Statistics size_t gsl_stats_int_max_index (const int data[], const size_t n)
+
+The function @code{gsl_stats_max_index} returns the index of the maximum
+value in @var{data}, a double-precision array of length @var{n}. The
+function @code{gsl_stats_int_stats_max} returns the index of the maximum
+value of an integer array. The maximum value is defined as the value of
+the element @math{x_i} which satisfies @math{x_i >= x_j} for all
+@math{j}. When there are several equal maximum elements then the first
+one is chosen.
+
 @end deftypefn
 
 @deftypefn Statistics size_t gsl_stats_min_index (const double data[], const size_t n)
 @deftypefnx Statistics size_t gsl_stats_int_min_index (const int data[], const size_t n)
+
+The function @code{gsl_stats_min_index} returns the index of the minimum
+value in @var{data}, a double-precision array of length @var{n}. The
+function @code{gsl_stats_int_stats_min} returns the index of the minimum
+value of an integer array. The minimum value is defined as the value of
+the element @math{x_i} which satisfies @math{x_i >= x_j} for all
+@math{j}. When there are several equal minimum elements then the first
+one is chosen.
 @end deftypefn
 
 @node Median and Percentiles
 @section Median and Percentiles
 
+The median and percentile functions described in this section operate on 
+
+@deftypefn Statistics void gsl_stats_sort_data (double data[], const size_t n)
+@deftypefn Statistics int gsl_stats_int_sort_data (int data[], const size_t n)
+
 @node Statistical tests
 @section Statistical tests
+
 
 
 @node Example programs
