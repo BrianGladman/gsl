@@ -16,7 +16,7 @@ while (<LIB>) {
     my ($address, $type, $fn) = split(' ', $_);
     if ($type eq 'T') {
         print "\t$fn\n";
-    } elsif ($type eq 'D') {
+    } elsif ($type eq 'D' or $type eq 'R' or $type eq 'C') {
         print "\t$fn DATA\n";
     }
 }

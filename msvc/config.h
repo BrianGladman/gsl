@@ -33,11 +33,23 @@
 /* Define if you have the expm1 function.  */
 #undef HAVE_EXPM1
 
+/* Define if you have the frexp function.  */
+#define HAVE_FREXP
+
 /* Define if you have the hypot function.  */
 #undef HAVE_HYPOT
 
+/* Define if you have the isfinite function.  */
+#undef HAVE_ISFINITE
+
 /* Define if you have the isinf function.  */
 #undef HAVE_ISINF
+
+/* Define if you have the isnan function.  */
+#undef HAVE_ISNAN
+
+/* Define if you have the ldexp function.  */
+#define HAVE_LDEXP
 
 /* Define if you have the log1p function.  */
 #undef HAVE_LOG1P
@@ -104,6 +116,7 @@
 #undef HAVE_FREEBSD_IEEE_INTERFACE
 #undef HAVE_OS2EMX_IEEE_INTERFACE
 #undef HAVE_NETBSD_IEEE_INTERFACE
+#undef HAVE_OPENBSD_IEEE_INTERFACE
 #undef HAVE_DARWIN_IEEE_INTERFACE
 
 /* Define this if we need to include /usr/include/float.h explicitly
@@ -176,8 +189,21 @@
 #define isnan gsl_isnan
 #endif
 
-#ifndef HAVE_ISFINITE
+#ifndef HAVE_LDEXP
+#define ldexp gsl_ldexp
+#endif
+
+#ifndef HAVE_FREXP
+#define frexp gsl_frexp
+#endif
+
+
+#ifndef HAVE_FINITE
+#ifdef HAVE_ISFINITE
+#define finite isfinite
+#else
 #define finite gsl_finite
+#endif
 #endif
 
 #ifdef __GNUC__

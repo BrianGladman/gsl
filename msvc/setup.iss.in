@@ -24,7 +24,6 @@ CompressLevel=9
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; DestName: "README.txt";  Flags: isreadme;
-Source: "GSLBOOK.pdf"; DestDir: "{app}"; DestName: "GSLBOOK.pdf";
 Source: "..\Copying"; DestDir: "{app}"; DestName: "Copying.txt";
 Source: "..\NEWS"; DestDir: "{app}"; DestName: "NEWS.txt";
 Source: "..\THANKS"; DestDir: "{app}"; DestName: "THANKS.txt";

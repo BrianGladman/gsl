@@ -146,6 +146,9 @@ configure, make, make check.
 * Preparing a windows version (Microsoft Visual C).
 
    - Prepare the unix distribution tar file gsl-VERSION.tar.gz
+   - Make sure there is a copy of texi2html in doc/
+   - Compile the library and put the lib{gsl,gslcblas}.a  into msvc/usr/lib
+   - Run "make update" in msvc/ to update the exports file
    - Use the script,
    ./script/windists.sh gsl-VERSION.tar.gz
    to create a corresponding zip file
