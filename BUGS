@@ -70,3 +70,9 @@ only bunches of NaN's). They should return some error code instead.
 
 ----------------------------------------------------------------------
 
+BUG#5 -- STATUS: reproducible, not yet fixed
+
+The error terms for the implicit ode integrators are broken.  They
+have 'FIXME' entries still in the code.  Only the bsimp error term is
+implemented.
+
