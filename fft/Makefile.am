@@ -47,7 +47,9 @@ complex_pass_n.c \
 complex_radix2.c \
  \
 factorize.c \
+factorize.h \
 bitreverse.c \
+bitreverse.h \
  \
 halfcomplex.c \
 gsl_fft_halfcomplex.h \
@@ -72,3 +74,4 @@ real_radix2.c \
 real_unpack.c \
  \
 signals.c
+
