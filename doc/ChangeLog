@@ -1,3 +1,9 @@
+Mon Apr  7 12:54:30 MDT 2003  G. Jungman
+
+    * specfunc-gamma.texi: added entry for gsl_sf_gamma_inc_(),
+    gsl_sf_gamma_inc()
+
+
 2000-10-26  Mark Galassi  <rosalia@lanl.gov>
 
 	* gsl-ref.texi: small changes to update the author list.
