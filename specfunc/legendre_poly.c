@@ -125,7 +125,7 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
     /* B00 = 1/8 (1 - th cot(th) / th^2
      * pre = sqrt(th/sin(th))
      */
-    if(th < GSL_ROOT4_MACH_EPS) {
+    if(th < GSL_ROOT4_DBL_EPSILON) {
       B00 = (1.0 + th*th/15.0)/24.0;
       pre = 1.0 + th*th/12.0;
     }

@@ -23,7 +23,7 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
     GSL_ERROR_RETURN("gsl_sf_cheb_new: null interval, a>=b", GSL_EDOM, 0);
   }
 #if 0
-  else if(fabs(b-a) < 1.0e+6 * GSL_MACH_EPS) {
+  else if(fabs(b-a) < 1.0e+6 * GSL_DBL_EPSILON) {
     /* FIXME: arbitrary nonsense */
     GSL_ERROR_RETURN("gsl_sf_cheb_new: interval close to null", GSL_EFAILED, 0);
   }

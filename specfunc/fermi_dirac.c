@@ -12,7 +12,7 @@
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
 
-#define locEPS        (1000.0*GSL_DBL_EPSILON)
+#define locEPS  (1000.0*GSL_DBL_EPSILON)
 
 
 /* Chebyshev fit for F_{1}(t);  -1 < t < 1, -1 < x < 1
@@ -998,7 +998,8 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   const int itmax = 200;
   gsl_sf_result lg;
   int stat_lg = gsl_sf_lngamma_impl(j + 2.0, &lg);
-  double seqn = 0.5;
+  double seqn_val = 0.5;
+  double seqn_err = 0.0;
   double xm2  = (1.0/x)/x;
   double xgam = 1.0;
   double add = DBL_MAX;
@@ -1008,7 +1009,6 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   gsl_sf_result ex_arg;
   gsl_sf_result ex;
   int stat_fneg;
-  int stat_ser;
   int stat_e;
   int n;
   for(n=1; n<=itmax; n++) {
@@ -1018,10 +1018,11 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
     xgam = xgam * xm2 * (j + 1.0 - (2*n-2)) * (j + 1.0 - (2*n-1));
     add  = eta.val * xgam;
     if(!j_integer && fabs(add) > fabs(add_previous)) break;
-    if(fabs(add/seqn) < GSL_DBL_EPSILON) break;
-    seqn += add;
+    if(fabs(add/seqn_val) < GSL_DBL_EPSILON) break;
+    seqn_val += add;
+    seqn_err += 2.0 * GSL_DBL_EPSILON * fabs(add);
   }
-  stat_ser = ( fabs(add) > locEPS*fabs(seqn) ? GSL_ELOSS : GSL_SUCCESS );
+  seqn_err += fabs(add);
 
   stat_fneg = fd_neg(j, -x, &fneg);
   ln_x = log(x);
@@ -1029,11 +1030,12 @@ fd_asymp(const double j, const double x, gsl_sf_result * result)
   ex_arg.err = fabs((j+1.0)*ln_x) + lg.err + GSL_DBL_EPSILON * fabs(ex_arg.val);
   stat_e    = gsl_sf_exp_err_impl(ex_arg.val, ex_arg.err, &ex);
   cos_term  = cos(j*M_PI);
-  result->val  = cos_term * fneg.val + 2.0 * seqn * ex.val;
-  result->err  = fabs(2.0 * seqn) * ex.err;
+  result->val  = cos_term * fneg.val + 2.0 * seqn_val * ex.val;
+  result->err  = fabs(2.0 * ex.err * seqn_val);
+  result->err += fabs(2.0 * ex.val * seqn_err);
   result->err += fabs(cos_term) * fneg.err;
   result->err += 4.0 * GSL_DBL_EPSILON * fabs(result->val);
-  return GSL_ERROR_SELECT_4(stat_e, stat_ser, stat_fneg, stat_lg);
+  return GSL_ERROR_SELECT_3(stat_e, stat_fneg, stat_lg);
 }
 
 
@@ -1145,9 +1147,12 @@ fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
 {
   const int nmax = 2000;
   double pre;
-  double lnpre;
-  double sum_even = 1.0;
-  double sum_odd  = 0.0;
+  double lnpre_val;
+  double lnpre_err;
+  double sum_even_val = 1.0;
+  double sum_even_err = 0.0;
+  double sum_odd_val  = 0.0;
+  double sum_odd_err  = 0.0;
   int stat_sum;
   int stat_e;
   int stat_h = GSL_SUCCESS;
@@ -1157,80 +1162,58 @@ fd_UMseries_int(const int j, const double x, gsl_sf_result * result)
     double p = gsl_sf_pow_int(x, j+1);
     gsl_sf_result g;
     gsl_sf_fact_impl(j+1, &g); /* Gamma(j+2) */
-    lnpre = 0.0;
+    lnpre_val = 0.0;
+    lnpre_err = 0.0;
     pre   = p/g.val;
   }
   else {
+    double lnx = log(x);
     gsl_sf_result lg;
     gsl_sf_lngamma_impl(j + 2.0, &lg);
-    lnpre = (j+1.0)*log(x) - lg.val;
+    lnpre_val = (j+1.0)*lnx - lg.val;
+    lnpre_err = 2.0 * GSL_DBL_EPSILON * fabs((j+1.0)*lnx) + lg.err;
     pre = 1.0;
   }
 
   /* Add up the odd terms of the sum.
    */
   for(n=1; n<nmax; n+=2) {
-    double del;
+    double del_val;
+    double del_err;
     gsl_sf_result U;
     gsl_sf_result M;
-    int stat_h_local;
-
-    stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
-    if(stat_h_local == GSL_ELOSS) {
-      stat_h = GSL_ELOSS;
-    }
-    else if(stat_h_local != GSL_SUCCESS) {
-      stat_h = stat_h_local;
-      break;
-    }
-
-    stat_h_local = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
-    if(stat_h_local == GSL_ELOSS) {
-      stat_h = GSL_ELOSS;
-    }
-    else if(stat_h_local != GSL_SUCCESS) {
-      stat_h = stat_h_local;
-      break;
-    }
-
-    del = ((j+1.0)*U.val - M.val);
-    sum_odd += del;
-    if(fabs(del/sum_odd) < GSL_DBL_EPSILON) break;
+    int stat_h_U = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
+    int stat_h_F = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
+    stat_h = GSL_ERROR_SELECT_3(stat_h, stat_h_U, stat_h_F);
+    del_val = ((j+1.0)*U.val - M.val);
+    del_err = (fabs(j+1.0)*U.err + M.err);
+    sum_odd_val += del_val;
+    sum_odd_err += del_err;
+    if(fabs(del_val/sum_odd_val) < GSL_DBL_EPSILON) break;
   }
 
   /* Add up the even terms of the sum.
    */
   for(n=2; n<nmax; n+=2) {
-    double del;
+    double del_val;
+    double del_err;
     gsl_sf_result U;
     gsl_sf_result M;
-    int stat_h_local;
-
-    stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
-    if(stat_h_local == GSL_ELOSS) {
-      stat_h = GSL_ELOSS;
-    }
-    else if(stat_h_local != GSL_SUCCESS) {
-      stat_h = stat_h_local;
-      break;
-    }
-
-    stat_h_local = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
-    if(stat_h_local == GSL_ELOSS) {
-      stat_h = GSL_ELOSS;
-    }
-    else if(stat_h_local != GSL_SUCCESS) {
-      stat_h = stat_h_local;
-      break;
-    }
-
-    del = ((j+1.0)*U.val - M.val);
-    sum_even -= del;
-    if(fabs(del/sum_even) < GSL_DBL_EPSILON) break;
+    int stat_h_U = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
+    int stat_h_F = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
+    stat_h = GSL_ERROR_SELECT_3(stat_h, stat_h_U, stat_h_F);
+    del_val = ((j+1.0)*U.val - M.val);
+    del_err = (fabs(j+1.0)*U.err + M.err);
+    sum_even_val -= del_val;
+    sum_even_err += del_err;
+    if(fabs(del_val/sum_even_val) < GSL_DBL_EPSILON) break;
   }
 
-  stat_sum = ( n == nmax ? GSL_EMAXITER : GSL_SUCCESS );
-  stat_e   = gsl_sf_exp_mult_impl(lnpre, pre*(sum_even + sum_odd), result);
+  stat_sum = ( n >= nmax ? GSL_EMAXITER : GSL_SUCCESS );
+  stat_e   = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err,
+                                      pre*(sum_even_val + sum_odd_val),
+				      pre*(sum_even_err + sum_odd_err),
+				      result);
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_ERROR_SELECT_3(stat_e, stat_h, stat_sum);

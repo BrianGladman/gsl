@@ -10,7 +10,7 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_hyperg.h"
 
-#define locEPS          (1000.0*GSL_DBL_EPSILON)
+#define locEPS (1000.0*GSL_DBL_EPSILON)
 
 
 /* Assumes c != negative integer.
@@ -80,10 +80,10 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
                        double x,
 		       gsl_sf_result * result)
 {
-  if(fabs(c) < GSL_DBL_EPSILON) {
-    result->err = 1.0;
-    result->val = 0.0; /* FIXME: ?? */
-    return GSL_ELOSS;
+  if(c == 0.0) {
+    result->val = 0.0; /* FIXME: should be Inf */
+    result->err = 0.0;
+    return GSL_EDOM;
   }
   else {
     double sum_pos = 1.0;

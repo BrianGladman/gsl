@@ -1055,62 +1055,48 @@ hyperg_U_bge1(const double a, const double b, const double x,
     Uap1 *= exp(lm_0-lm_max);
     Ua   *= exp(lm_1-lm_max);
 
-    if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
-       && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
-      ) {
+    /* Downward recursion on a.
+     */
+    for(ap=a0; ap>a+0.1; ap -= 1.0) {
+      Uam1 = ap*(b0-ap-1.0)*Uap1 + (x+2.0*ap-b0)*Ua;
+      Uap1 = Ua;
+      Ua   = Uam1;
+      RESCALE_2(Ua,Uap1,scale_factor,scale_count);
+    }
 
-      /* Downward recursion on a.
+    if(b < 2.0) {
+      /* b == b0, so no recursion necessary
        */
-      for(ap=a0; ap>a+0.1; ap -= 1.0) {
-        Uam1 = ap*(b0-ap-1.0)*Uap1 + (x+2.0*ap-b0)*Ua;
-	Uap1 = Ua;
-	Ua   = Uam1;
-	RESCALE_2(Ua,Uap1,scale_factor,scale_count);
-      }
-
-      if(b < 2.0) {
-        /* b == b0, so no recursion necessary
-	 */
-	result->val  = Ua;
-	result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ua);
-	result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ua);
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
-	result->err *= fabs(lm_0-lm_max) + 1.0;
-	result->err *= fabs(lm_1-lm_max) + 1.0;
-	*ln_multiplier = lm_max + scale_count * log(scale_factor);
-      }
-      else {
-        /* Upward recursion on b.
-         */
-        double Ubm1 = Ua;                                 /* U(a,b0)   */
-        double Ub   = (a*(b0-a-1.0)*Uap1 + (a+x)*Ua)/x;   /* U(a,b0+1) */
-        double Ubp1;
-        double bp;
-        for(bp=b0+1.0; bp<b-0.1; bp += 1.0) {
-          Ubp1 = ((1.0+a-bp)*Ubm1 + (bp+x-1.0)*Ub)/x;
-          Ubm1 = Ub;
-          Ub   = Ubp1;
-	  RESCALE_2(Ub,Ubm1,scale_factor,scale_count);
-        }
-        result->val = Ub;
-	result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ub);
-	result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ub);
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-b0) + fabs(a-a0) + 1.0) * fabs(Ub);
-	result->err *= fabs(lm_0-lm_max) + 1.0;
-	result->err *= fabs(lm_1-lm_max) + 1.0;	
-        *ln_multiplier = lm_max + scale_count * log(scale_factor);
-      }
-      if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
-        return GSL_ELOSS;
-      else
-        return GSL_SUCCESS;
+      result->val  = Ua;
+      result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ua);
+      result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ua);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
+      result->err *= fabs(lm_0-lm_max) + 1.0;
+      result->err *= fabs(lm_1-lm_max) + 1.0;
+      *ln_multiplier = lm_max + scale_count * log(scale_factor);
     }
     else {
-      result->val = 0.0;
-      result->err = 0.0;
-      *ln_multiplier = 0.0;
-      return GSL_EFAILED;
+      /* Upward recursion on b.
+       */
+      double Ubm1 = Ua; 				/* U(a,b0)   */
+      double Ub   = (a*(b0-a-1.0)*Uap1 + (a+x)*Ua)/x;	/* U(a,b0+1) */
+      double Ubp1;
+      double bp;
+      for(bp=b0+1.0; bp<b-0.1; bp += 1.0) {
+    	Ubp1 = ((1.0+a-bp)*Ubm1 + (bp+x-1.0)*Ub)/x;
+    	Ubm1 = Ub;
+    	Ub   = Ubp1;
+        RESCALE_2(Ub,Ubm1,scale_factor,scale_count);
+      }
+      result->val = Ub;
+      result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ub);
+      result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ub);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-b0) + fabs(a-a0) + 1.0) * fabs(Ub);
+      result->err *= fabs(lm_0-lm_max) + 1.0;
+      result->err *= fabs(lm_1-lm_max) + 1.0; 
+      *ln_multiplier = lm_max + scale_count * log(scale_factor);
     }
+    return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
   else if(b >= 2*a + x) {
     /* Recurse forward from a near zero.
@@ -1190,26 +1176,11 @@ hyperg_U_bge1(const double a, const double b, const double x,
 
       stat_U0 = hyperg_U_small_a_bgt0(a0, b, x, &U0, &lm_0);
 
-      if(stat_U0 == GSL_SUCCESS) {
-        result->val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
-	result->err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + CF1_count + 1.0) * fabs(result->val);
-	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
-	return stat_CF1;
-      }
-      else if(stat_U0 == GSL_ELOSS) {
-        result->val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
-	result->err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + CF1_count + 1.0) * fabs(result->val);
-	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
-	return GSL_ELOSS;
-      }
-      else {
-        result->val = 0.0;
-	result->err = 0.0;
-	*ln_multiplier = 0.0;
-	return stat_U0;
-      }
+      result->val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
+      result->err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + CF1_count + 1.0) * fabs(result->val);
+      *ln_multiplier = lm_0 - scale_count * log(scale_factor);
+      return GSL_ERROR_SELECT_2(stat_U0, stat_CF1);
     }
     else {
       /* Recurse backward to near the b=2a+x line, then

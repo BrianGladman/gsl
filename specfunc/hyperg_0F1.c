@@ -9,119 +9,7 @@
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_hyperg.h"
 
-#define locEPS        (1000.0*GSL_MACH_EPS)
-
-
-#if 0
-static
-int
-hyperg_0F1_series(double c, double x, double * result, double * prec)
-{
-  double cn  = c;
-  double n   = 1.0;
-  double sum = 1.0;
-  double del = 1.0;
-  double abs_del = 1.0;
-  double max_abs_del = 1.0;
-  double err;
-  int n_min = 20;
-  int n_max = 200;
-  int n_far = 0;
-  double special_term = 0.0;
-  const double rintc = floor(c + 0.5);
-
-  /* Figure out if there is a large contribution
-   * hiding far out in the sum because c is
-   * near a negative integer.
-   * The constant to which we compare tells how
-   * many significant figures can be lost when
-   * near termination if we do not do some
-   * special handling.
-   */
-  if(c < 0.0 && fabs(c - rintc) < 0.001) {
-    double ln_term;
-    double ln_poch;
-    double ln_fact;
-    int stat_exp;
-    int stat_poch;
-    double sign = (x < 0.0 && GSL_IS_ODD(n_far) ? -1.0 : 1.0);
-    n_far = rintc;
-    gsl_sf_lnfact_impl(n_far, &ln_fact);
-    stat_poch = gsl_sf_lnpoch_impl(c, n_far, &ln_poch);
-    if(stat_poch != GSL_SUCCESS) {
-      /* pochammer probably blew up, so there is no big contribution */
-      special_term = 0.0;
-      n_far = 0;
-    }
-    else {
-      ln_term   = n_far * log(fabs(x)) - ln_fact - ln_poch;
-      stat_exp  = gsl_sf_exp_impl(ln_term, &special_term);
-      if(stat_exp == GSL_SUCCESS) {
-        special_term *= sign;
-      }
-      else if(stat_exp == GSL_EUNDRFLW) {
-        special_term = 0.0;
-        n_far = 0;
-      }
-      else {
-        *result = 0.0;
-        return stat_exp;
-      }
-    }
-  }
-
-  while(abs_del/fabs(sum) > GSL_MACH_EPS || n < n_min) {
-    double u, abs_u;
-
-    if(cn == 0.0) {
-      *result = 0.0;
-      return GSL_EDOM;
-    }
-    if(n > n_max) {
-      max_abs_del *= GSL_MACH_EPS;
-      err     = fabs(GSL_MACH_EPS * n + max_abs_del);
-      *prec   = err/(err + fabs(sum));
-      *result = sum;
-      if(*prec > locEPS)
-        return GSL_ELOSS;
-      else
-        return GSL_SUCCESS;
-    }
-    
-    u = x/(cn*n);
-    abs_u = fabs(u);
-    if(abs_u > 1.0 && max_abs_del > DBL_MAX/abs_u) {
-      *prec   = 1.0;
-      *result = sum;
-      return GSL_ELOSS;
-    }
-    del *= u;
-
-    sum += del;
-    abs_del = fabs(del);
-    max_abs_del = GSL_MAX(abs_del, max_abs_del);
-
-    cn += 1.0;
-    n  += 1.0;
-  }
-
-  /* If the sum stopped before getting to the
-   * distant large contribution, then include it now.
-   */
-  if(n_far > n) {
-    sum += special_term;
-  }
-
-  max_abs_del *= GSL_MACH_EPS;
-  err     = fabs(GSL_MACH_EPS * n + max_abs_del);
-  *prec   = err/(err + fabs(sum));
-  *result = sum;
-  if(*prec > locEPS)
-    return GSL_ELOSS;
-  else
-    return GSL_SUCCESS;
-}
-#endif /* 0 */
+#define locEPS  (1000.0*GSL_DBL_EPSILON)
 
 
 /* Evaluate bessel_I(nu, x), allowing nu < 0.
@@ -181,7 +69,7 @@ hyperg_0F1_bessel_J(const double nu, const double x, gsl_sf_result * result)
     int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
     int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
     result->val  = c * J.val - s * Y.val;
-    result->err  = fabs(c * J. err) + fabs(s * Y.err);
+    result->err  = fabs(c * J.err) + fabs(s * Y.err);
     result->err += fabs(anu * M_PI) * GSL_DBL_EPSILON * fabs(J.val + Y.val);
     return GSL_ERROR_SELECT_2(stat_Y, stat_J);
   }
@@ -224,8 +112,10 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
       return stat_J;
     }
     else {
-      double ln_pre = lg_c.val + log(-x)*0.5*(1.0-c);
-      return gsl_sf_exp_mult_err_impl(ln_pre, GSL_DBL_EPSILON * fabs(ln_pre),
+      const double tl = log(-x)*0.5*(1.0-c);
+      double ln_pre_val = lg_c.val + tl;
+      double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
+      return gsl_sf_exp_mult_err_impl(ln_pre_val, ln_pre_err,
                                       sgn*Jcm1.val, Jcm1.err,
 				      result);
     }
@@ -252,8 +142,10 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
       return stat_I;
     }
     else {
-      double ln_pre = log(x)*0.5*(1.0-c) + lg_c.val;
-      return gsl_sf_exp_mult_err_impl(ln_pre, GSL_DBL_EPSILON * fabs(ln_pre),
+      const double tl = log(x)*0.5*(1.0-c);
+      const double ln_pre_val = lg_c.val + tl;
+      const double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
+      return gsl_sf_exp_mult_err_impl(ln_pre_val, ln_pre_err,
                                       sgn*Icm1.val, Icm1.err,
 				      result);
     }
