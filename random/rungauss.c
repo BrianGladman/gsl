@@ -1,7 +1,7 @@
 /* $Id$ */
 /* Driver routine for the uniform random number generators */
 #include <stdio.h>
-#include "gsl_random.h"
+#include "gsl_ran.h"
 
 int
 main(int argc, char **argv)
@@ -19,11 +19,11 @@ main(int argc, char **argv)
     if (argc > 1) n = atoi(argv[1]);
     if (argc > 2) {
         randseed = atoi(argv[2]);
-        GSL_seed(randseed);
+        gsl_ran_seed(randseed);
     }
 
     for (i=0; i<n; ++i) {
-        printf("%.10f\n",GSL_gauss());
+        printf("%.10f\n",gsl_ran_gaussian());
     }    
     return 0;
 }

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "gsl_random.h"
+#include "gsl_ran.h"
 
-inline double GSL_gauss_wstate(GSL_gaussRandomState *gState)
+inline double gsl_ran_gaussian_wstate(gsl_ran_gaussianRandomState *gState)
 {
     /* if the state includes a value from the last call,
        then just return that */
@@ -15,13 +15,13 @@ inline double GSL_gauss_wstate(GSL_gaussRandomState *gState)
     }
 
     if (gState->randomState == (void *)0) {
-        gState->randomState = GSL_getRandomState();
+        gState->randomState = gsl_ran_getRandomState();
     }
 
     do {
         /* choose x,y in uniform square */
-        x = -1.0+2.0*GSL_uniform_wstate(gState->randomState);
-        y = -1.0+2.0*GSL_uniform_wstate(gState->randomState);
+        x = -1.0+2.0*gsl_ran_uniform_wstate(gState->randomState);
+        y = -1.0+2.0*gsl_ran_uniform_wstate(gState->randomState);
         rr = x*x+y*y;
     } while( rr > 1.0 && !(x==0 && y==0) );
 
@@ -30,33 +30,33 @@ inline double GSL_gauss_wstate(GSL_gaussRandomState *gState)
     gState->ng = 1;             /* indicate we have an extra one now */
     return y*rr;                /* return the other */
 }
-void GSL_copyGaussState(GSL_gaussRandomState *t, GSL_gaussRandomState *f)
+void gsl_ran_copyGaussState(gsl_ran_gaussianRandomState *t, gsl_ran_gaussianRandomState *f)
 {
     t->randomState = f->randomState;
     t->ng = f->ng;
     t->g = f->g;
 }
 
-static GSL_gaussRandomState gstate = {0, 0.0, (void *)0};
+static gsl_ran_gaussianRandomState gstate = {0, 0.0, (void *)0};
 
-double GSL_gauss() 
+double gsl_ran_gaussian() 
 {
-    return GSL_gauss_wstate(&gstate);
+    return gsl_ran_gaussian_wstate(&gstate);
 }
-GSL_gaussRandomState *GSL_getGaussState(void)
+gsl_ran_gaussianRandomState *gsl_ran_getGaussState(void)
 {
-    GSL_gaussRandomState *theState;
-    theState = (GSL_gaussRandomState *)calloc(1,sizeof(GSL_gaussRandomState));
-    GSL_copyGaussState(theState,&gstate);
-    theState->randomState = GSL_getRandomState();
-    GSL_copyRandomState(theState->randomState,gstate.randomState);
+    gsl_ran_gaussianRandomState *theState;
+    theState = (gsl_ran_gaussianRandomState *)calloc(1,sizeof(gsl_ran_gaussianRandomState));
+    gsl_ran_copyGaussState(theState,&gstate);
+    theState->randomState = gsl_ran_getRandomState();
+    gsl_ran_copyState(theState->randomState,gstate.randomState);
     return theState;
 }
-void GSL_setGaussState(GSL_gaussRandomState *theState)
+void gsl_ran_setGaussState(gsl_ran_gaussianRandomState *theState)
 {
-    GSL_copyGaussState(&gstate,theState);
-    gstate.randomState = GSL_getRandomState();
-    GSL_copyRandomState(gstate.randomState,theState->randomState);
+    gsl_ran_copyGaussState(&gstate,theState);
+    gstate.randomState = gsl_ran_getRandomState();
+    gsl_ran_copyState(gstate.randomState,theState->randomState);
 }
 
     

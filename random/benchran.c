@@ -2,7 +2,7 @@
 /* Benchmark routine for the uniform random number generators */
 #include <stdio.h>
 #include <stdlib.h>
-#include "gsl_random.h"
+#include "gsl_ran.h"
 
 int
 main(int argc, char **argv)
@@ -20,11 +20,11 @@ main(int argc, char **argv)
     if (argc > 1) n = atoi(argv[1]);
     if (argc > 2) randseed = atoi(argv[2]);
 
-    GSL_seed(randseed);
+    gsl_ran_seed(randseed);
 
     sum=0;
     for (i=0; i<n; ++i)
-        sum += GSL_uniform();
+        sum += gsl_ran_uniform();
     sum /= n;
     printf("Average of %d uniform random numbers: %.10f\n",n,sum);
     return 0;

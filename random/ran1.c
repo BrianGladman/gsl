@@ -1,10 +1,10 @@
 /* The NR interface */
-#include "gsl_random.h"
+#include "gsl_ran.h"
 float ran1(long *idum)
 {
     if (*idum < 0) {
         *idum = -(*idum);
-        GSL_seed(*idum);
+        gsl_ran_seed(*idum);
     }
-    return GSL_uniform();
+    return gsl_ran_uniform();
 }

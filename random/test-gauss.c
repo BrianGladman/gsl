@@ -1,9 +1,9 @@
 /* $Id$ */
-/* Test routine for the gaussian random number generators */
+/* Test routine for the gaussianian random number generators */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "gsl_random.h"
+#include "gsl_ran.h"
 
 int
 main(int argc, char **argv)
@@ -12,7 +12,7 @@ main(int argc, char **argv)
     unsigned long r,rmax;
     double sum,sigma;
     int randseed=17;
-    GSL_gaussRandomState *tmpState;
+    gsl_ran_gaussianRandomState *tmpState;
 
     if (argc == 1) {
         printf("Usage: %s <n> [seed]\n",argv[0]);
@@ -24,12 +24,12 @@ main(int argc, char **argv)
     if (argc > 1) n = atoi(argv[1]);
     if (argc > 2) {
         randseed = atoi(argv[2]);
-        GSL_seed(randseed);
+        gsl_ran_seed(randseed);
     }
 
     sum=0;
     for (i=0; i<n; ++i)
-        sum += GSL_gauss();
+        sum += gsl_ran_gaussian();
     sum /= n;
     /* expect sum to have variance == n */
     /* so average should have variance == 1/n */
@@ -38,21 +38,21 @@ main(int argc, char **argv)
 
     printf("Testing getRandomState/setRandomState:\n");
     printf("The following sets of numbers should be identical.\n");
-    tmpState = GSL_getGaussState();
+    tmpState = gsl_ran_getGaussState();
     for (i=0; i<5; ++i)
-        printf("%c %.6f",(i==0 ? '(' : ','),GSL_gauss());
+        printf("%c %.6f",(i==0 ? '(' : ','),gsl_ran_gaussian());
     printf(" )\n");
-    GSL_setGaussState(tmpState); 
+    gsl_ran_setGaussState(tmpState); 
     for (i=0; i<5; ++i)
-        /* GSL_gauss() doesn't influence tmpState */
-        printf("%c %.6f",(i==0 ? '(' : ','),GSL_gauss());
+        /* gsl_ran_gaussian() doesn't influence tmpState */
+        printf("%c %.6f",(i==0 ? '(' : ','),gsl_ran_gaussian());
     printf(" )\n");
 
     for (i=0; i<5; ++i) {
-        printf("%c %.6f",(i==0 ? '(' : ','),GSL_gauss_wstate(tmpState));
+        printf("%c %.6f",(i==0 ? '(' : ','),gsl_ran_gaussian_wstate(tmpState));
         /* these should not influence tmpState */
-        GSL_uniform();
-        GSL_gauss();
+        gsl_ran_uniform();
+        gsl_ran_gaussian();
     }
     printf(" )\n");
     
