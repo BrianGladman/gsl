@@ -97,7 +97,7 @@ gear1_alloc (size_t dim)
   return state;
 }
 
-int
+static int
 gear1_step (double *y, gear1_state_t *state, 
 	    const double h, const double t, 
 	    const size_t dim, const gsl_odeiv_system *sys)

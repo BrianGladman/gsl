@@ -1,3 +1,22 @@
+2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_evolve_xsin): changed description from "failures"
+	to "errors"
+
+2004-12-22  Brian Gough  <bjg@network-theory.co.uk>
+
+	* rk2simp.c (rk2simp_step): added missing static declaration
+
+	* gear1.c (gear1_step): added missing static declaration
+
+	* gear2.c (gear2_step): added missing static declaration
+
+	* rk4imp.c (rk4imp_step): added missing static declaration
+
+	* rk4.c (rk4_step): added missing static declaration
+
+	* rk2imp.c (rk2imp_step): added missing static declaration
+
 2004-12-01  Brian Gough  <bjg@network-theory.co.uk>
 
 	* updated all solvers to ensure correct handling of error codes

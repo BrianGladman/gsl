@@ -140,7 +140,7 @@ rk4imp_alloc (size_t dim)
   return state;
 }
 
-int
+static int
 rk4imp_step (double *y, rk4imp_state_t *state, 
 	     const double h, const double t, 
 	     const size_t dim, const gsl_odeiv_system *sys)

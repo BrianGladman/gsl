@@ -157,7 +157,7 @@ rk2simp_alloc (size_t dim)
 }
 
 
-int
+static int
 rk2simp_step (double *y, rk2simp_state_t * state,
               const double h, const double t,
               const size_t dim, const gsl_odeiv_system * sys)
