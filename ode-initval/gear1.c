@@ -17,10 +17,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Gear 1 */
+/* Gear 1. This is the implicit Euler a.k.a backward Euler method. */
 
 /* Author:  G. Jungman
  */
+
+/* Error estimation by step doubling, see eg. Ascher, U.M., Petzold,
+   L.R., Computer methods for ordinary differential and
+   differential-algebraic equations, SIAM, Philadelphia, 1998.
+   The method is also described in eg. this reference.
+*/
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +41,8 @@ typedef struct
 {
   double *k;
   double *y0;
+  double *y0_orig;
+  double *y_onestep;
 }
 gear1_state_t;
 
@@ -64,7 +73,74 @@ gear1_alloc (size_t dim)
       GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
     }
 
+  state->y0_orig = (double *) malloc (dim * sizeof (double));
+
+  if (state->y0_orig == 0)
+    {
+      free (state->y0);
+      free (state->k);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y0_orig", GSL_ENOMEM);
+    }
+
+  state->y_onestep = (double *) malloc (dim * sizeof (double));
+
+  if (state->y_onestep == 0)
+    {
+      free (state->y0_orig);
+      free (state->y0);
+      free (state->k);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y_onestep", GSL_ENOMEM);
+    }
+
   return state;
+}
+
+int
+gear1_step (double *y, gear1_state_t *state, 
+	    const double h, const double t, 
+	    const size_t dim, int *status, const gsl_odeiv_system *sys)
+{
+  /* Makes an implicit Euler advance with step size h.
+     y0 is the initial values of variables y. 
+
+     The implicit matrix equations to solve are:
+
+     k = y0 + h * f(t + h, k)
+
+     y = y0 + h * f(t + h, k)
+  */
+
+  const int iter_steps = 3;
+  int nu;
+  size_t i;
+  double *y0 = state->y0;
+  double *k = state->k;
+
+  /* Iterative solution of k = y0 + h * f(t + h, k)
+
+     Note: This method does not check for convergence of the
+     iterative solution! 
+  */
+
+  for (nu = 0; nu < iter_steps; nu++) 
+    {
+      int s = GSL_ODEIV_FN_EVAL(sys, t + h, y, k);
+      GSL_STATUS_UPDATE(status, s);
+
+      if (s != GSL_SUCCESS)
+	{
+	  return GSL_EBADFUNC;
+	}     
+
+      for (i=0; i<dim; i++) 
+	{
+	  y[i] = y0[i] + h * k[i];
+	}
+    }
+  
+  return GSL_SUCCESS;
 }
 
 static int
@@ -80,35 +156,81 @@ gear1_apply(void * vstate,
 {
   gear1_state_t *state = (gear1_state_t *) vstate;
 
-  const int iter_steps = 3;
   int status = 0;
-  int nu;
   size_t i;
+  int s = 0;
 
-  double * const k = state->k;
-  double * const y0 = state->y0;
+  double *y0 = state->y0;
+  double *y0_orig = state->y0_orig;
+  double *y_onestep = state->y_onestep;
 
-  DISCARD_POINTER(dydt_in); /* prevent warning about unused parameter */
+  /* initialization */
 
   DBL_MEMCPY(y0, y, dim);
 
-  /* iterative solution */
-  for(nu=0; nu<iter_steps; nu++) {
-    int s = GSL_ODEIV_FN_EVAL(sys, t + h, y, k);
-    GSL_STATUS_UPDATE(&status, s);
-    for(i=0; i<dim; i++) {
-      y[i] = y0[i] + h * k[i];
+  /* Save initial values for possible failures */
+
+  DBL_MEMCPY (y0_orig, y, dim);
+
+  /* First traverse h with one step (save to y_onestep) */
+
+  DBL_MEMCPY (y_onestep, y, dim);
+
+  s = gear1_step (y_onestep, state, h, t, dim, &status, sys);
+
+  if (s != GSL_SUCCESS) 
+    {
+      return s;
     }
-  }
 
-  /* fudge the error estimate */
-  for(i=0; i<dim; i++) {
-    yerr[i] = h * h * k[i];
-  }
+ /* Then with two steps with half step length (save to y) */ 
+  
+  s = gear1_step (y, state, h / 2.0, t, dim, &status, sys);
 
-  if(dydt_out != NULL) {
-    DBL_MEMCPY(dydt_out, k, dim);
+  if (s != GSL_SUCCESS) 
+    {
+      /* Restore original y vector */
+      DBL_MEMCPY (y, y0_orig, dim);
+      
+      return s;
+    }
+
+  DBL_MEMCPY (y0, y, dim);
+
+  s = gear1_step (y, state, h / 2.0, t + h / 2.0, dim, &status, sys);
+
+  if (s != GSL_SUCCESS) 
+    {
+      /* Restore original y vector */
+      DBL_MEMCPY (y, y0_orig, dim);
+      
+      return s;
+    }
+  
+  /* Cleanup update */
+
+  if (dydt_out != NULL) {
+    
+    s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+    GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	/* Restore original y vector */
+	DBL_MEMCPY (y, y0_orig, dim);
+	
+	return GSL_EBADFUNC;
+      } 
   }
+  
+  /* Error estimation */
+
+  /* Note: No coefficient of 0.5 for better reliability */
+
+  for (i = 0; i < dim; i++) 
+    {
+      yerr[i] = (y[i] - y_onestep[i]);
+    }
 
   return status;
 }
@@ -118,9 +240,10 @@ gear1_reset (void *vstate, size_t dim)
 {
   gear1_state_t *state = (gear1_state_t *) vstate;
 
-  DBL_ZERO_MEMSET (state->k, dim);
+  DBL_ZERO_MEMSET (state->y_onestep, dim);
+  DBL_ZERO_MEMSET (state->y0_orig, dim);
   DBL_ZERO_MEMSET (state->y0, dim);
-
+  DBL_ZERO_MEMSET (state->k, dim);
   return GSL_SUCCESS;
 }
 
@@ -129,21 +252,23 @@ gear1_order (void *vstate)
 {
   gear1_state_t *state = (gear1_state_t *) vstate;
   state = 0; /* prevent warnings about unused parameters */
-  return 2;
+  return 1;
 }
 
 static void
 gear1_free (void *vstate)
 {
   gear1_state_t *state = (gear1_state_t *) vstate;
-  free (state->k);
+  free (state->y_onestep);
+  free (state->y0_orig);
   free (state->y0);
+  free (state->k);
   free (state);
 }
 
 static const gsl_odeiv_step_type gear1_type = { "gear1",        /* name */
-  1,                            /* can use dydt_in */
-  0,                            /* gives exact dydt_out */
+  0,                            /* can use dydt_in? */
+  1,                            /* gives exact dydt_out? */
   &gear1_alloc,
   &gear1_apply,
   &gear1_reset,

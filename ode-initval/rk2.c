@@ -21,6 +21,10 @@
 
 /* Author:  G. Jungman
  */
+
+/* Reference: Abramowitz & Stegun, section 25.5. Runge-Kutta 2nd (25.5.7)
+   and 3rd (25.5.8) order methods */
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +70,7 @@ rk2_alloc (size_t dim)
     }
 
   state->k3 = (double *) malloc (dim * sizeof (double));
-
+  
   if (state->k3 == 0)
     {
       free (state->k2);
@@ -112,6 +116,7 @@ rk2_apply (void *vstate,
   double *const ytmp = state->ytmp;
 
   /* k1 step */
+  /* k1 = f(t,y) */
 
   if (dydt_in != NULL)
     {
@@ -121,41 +126,87 @@ rk2_apply (void *vstate,
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
       GSL_STATUS_UPDATE (&status, s);
+
+      if (s != GSL_SUCCESS)
+	{
+	  return GSL_EBADFUNC;
+	}
     }
+
+  /* k2 step */
+  /* k2 = f(t + 0.5*h, y + 0.5*k1) */
 
   for (i = 0; i < dim; i++)
     {
       ytmp[i] = y[i] + 0.5 * h * k1[i];
     }
 
-  /* k2 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k2);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
 
+  /* k3 step */
+  /* for 3rd order estimates, is used for error estimation
+     k3 = f(t + h, y - k1 + 2*k2) */
+ 
   for (i = 0; i < dim; i++)
     {
       ytmp[i] = y[i] + h * (-k1[i] + 2.0 * k2[i]);
     }
 
-  /* k3 step */
-
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k3);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
 
-  /* final sum and error estimate */
+  /* final sum */
+  
+  for (i = 0; i < dim; i++)
+    {
+      /* Save original values if derivative evaluation below fails */
+      ytmp[i] = y[i];
+
+      {
+	const double ksum3 = (k1[i] + 4.0 * k2[i] + k3[i]) / 6.0;
+	y[i] += h * ksum3;
+      }
+    }
+  
+  /* Derivatives at output */
+
+  if (dydt_out != NULL)
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+      GSL_STATUS_UPDATE (&status, s);
+      
+      if (s != GSL_SUCCESS)
+	{
+	  /* Restore original values */
+	  DBL_MEMCPY (y, ytmp, dim);
+	  
+	  return GSL_EBADFUNC;
+	}
+    }
+
+  /* Error estimation */
+
   for (i = 0; i < dim; i++)
     {
       const double ksum3 = (k1[i] + 4.0 * k2[i] + k3[i]) / 6.0;
-      y[i] += h * ksum3;
       yerr[i] = h * (k2[i] - ksum3);
-      if (dydt_out)
-        dydt_out[i] = ksum3;
     }
-
+  
   return status;
 }
 
@@ -192,8 +243,8 @@ rk2_free (void *vstate)
 }
 
 static const gsl_odeiv_step_type rk2_type = { "rk2",    /* name */
-  1,                            /* can use dydt_in */
-  0,                            /* gives exact dydt_out */
+  1,                           /* can use dydt_in */
+  1,                           /* gives exact dydt_out */
   &rk2_alloc,
   &rk2_apply,
   &rk2_reset,

@@ -1,5 +1,10 @@
 * What will be new in gsl-1.6:
 
+** Added new semi-implicit ode-initval solver, gsl_odeiv_step_rk2simp.
+
+** Improved error estimates in ode-initval solvers, and provide exact
+derivatives on output.
+
 ** Added missing function definition for gsl_sf_psi_1.
 
 ** Added cumulative distribution function for exponential power

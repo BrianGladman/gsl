@@ -162,6 +162,7 @@ typedef struct
 {
   double *k[13];
   double *ytmp;
+  double *y0;
 }
 rk8pd_state_t;
 
@@ -184,6 +185,15 @@ rk8pd_alloc (size_t dim)
       GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
     }
 
+  state->y0 = (double *) malloc (dim * sizeof (double));
+
+  if (state->y0 == 0)
+    {
+      free (state->ytmp);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
+    }
+
   for (i = 0; i < 13; i++)
     {
       state->k[i] = (double *) malloc (dim * sizeof (double));
@@ -194,6 +204,7 @@ rk8pd_alloc (size_t dim)
             {
               free (state->k[j]);
             }
+          free (state->y0);
           free (state->ytmp);
           free (state);
           GSL_ERROR_NULL ("failed to allocate space for k's", GSL_ENOMEM);
@@ -220,6 +231,7 @@ rk8pd_apply (void *vstate,
   int status = 0;
 
   double *const ytmp = state->ytmp;
+  double *const y0 = state->y0;
   /* Note that k1 is stored in state->k[0] due to zero-based indexing */
   double *const k1 = state->k[0];
   double *const k2 = state->k[1];
@@ -235,6 +247,8 @@ rk8pd_apply (void *vstate,
   double *const k12 = state->k[11];
   double *const k13 = state->k[12];
 
+  DBL_MEMCPY (y0, y, dim);
+
   /* k1 step */
   if (dydt_in != NULL)
     {
@@ -244,6 +258,11 @@ rk8pd_apply (void *vstate,
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
       GSL_STATUS_UPDATE (&status, s);
+
+      if (s != GSL_SUCCESS)
+	{
+	  return GSL_EBADFUNC;
+	}
     }
 
   for (i = 0; i < dim; i++)
@@ -253,7 +272,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[0] * h, ytmp, k2);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b3[0] * k1[i] + b3[1] * k2[i]);
 
@@ -261,7 +286,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[1] * h, ytmp, k3);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b4[0] * k1[i] + b4[2] * k3[i]);
 
@@ -269,7 +300,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[2] * h, ytmp, k4);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b5[0] * k1[i] + b5[2] * k3[i] + b5[3] * k4[i]);
 
@@ -277,7 +314,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[3] * h, ytmp, k5);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b6[0] * k1[i] + b6[3] * k4[i] + b6[4] * k5[i]);
 
@@ -285,7 +328,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[4] * h, ytmp, k6);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b7[0] * k1[i] + b7[3] * k4[i] + b7[4] * k5[i] +
@@ -295,7 +344,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[5] * h, ytmp, k7);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b8[0] * k1[i] + b8[3] * k4[i] + b8[4] * k5[i] +
@@ -305,7 +360,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[6] * h, ytmp, k8);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b9[0] * k1[i] + b9[3] * k4[i] + b9[4] * k5[i] +
@@ -315,7 +376,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[7] * h, ytmp, k9);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b10[0] * k1[i] + b10[3] * k4[i] + b10[4] * k5[i] +
@@ -326,7 +393,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[8] * h, ytmp, k10);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b11[0] * k1[i] + b11[3] * k4[i] + b11[4] * k5[i] +
@@ -337,7 +410,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[9] * h, ytmp, k11);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b12[0] * k1[i] + b12[3] * k4[i] + b12[4] * k5[i] +
@@ -348,7 +427,13 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k12);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b13[0] * k1[i] + b13[3] * k4[i] + b13[4] * k5[i] +
@@ -360,9 +445,40 @@ rk8pd_apply (void *vstate,
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k13);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
   }
 
-  /* final sum and error estimate */
+  /* final sum  */
+  for (i = 0; i < dim; i++)
+    {
+      const double ksum8 =
+        Abar[0] * k1[i] + Abar[5] * k6[i] + Abar[6] * k7[i] +
+        Abar[7] * k8[i] + Abar[8] * k9[i] + Abar[9] * k10[i] +
+        Abar[10] * k11[i] + Abar[11] * k12[i] + Abar[12] * k13[i];
+      y[i] += h * ksum8;
+    }
+
+  /* Evaluate dydt_out[]. */
+
+  if (dydt_out != NULL)
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+      GSL_STATUS_UPDATE (&status, s);
+      
+      if (s != GSL_SUCCESS)
+	{
+	  /* Restore initial values */
+	  DBL_MEMCPY (y, y0, dim);
+	  
+	  return GSL_EBADFUNC;
+	}
+    }
+
+  /* error estimate */
   for (i = 0; i < dim; i++)
     {
       const double ksum8 =
@@ -372,10 +488,7 @@ rk8pd_apply (void *vstate,
       const double ksum7 =
         A[0] * k1[i] + A[5] * k6[i] + A[6] * k7[i] + A[7] * k8[i] +
         A[8] * k9[i] + A[9] * k10[i] + A[10] * k11[i] + A[11] * k12[i];
-      y[i] += h * ksum8;
       yerr[i] = h * (ksum7 - ksum8);
-      if (dydt_out != NULL)
-        dydt_out[i] = ksum8;
     }
 
   return status;
@@ -393,6 +506,7 @@ rk8pd_reset (void *vstate, size_t dim)
       DBL_ZERO_MEMSET (state->k[i], dim);
     }
 
+  DBL_ZERO_MEMSET (state->y0, dim);
   DBL_ZERO_MEMSET (state->ytmp, dim);
 
   return GSL_SUCCESS;
@@ -416,13 +530,14 @@ rk8pd_free (void *vstate)
     {
       free (state->k[i]);
     }
+  free (state->y0);
   free (state->ytmp);
   free (state);
 }
 
 static const gsl_odeiv_step_type rk8pd_type = { "rk8pd",        /* name */
   1,                            /* can use dydt_in */
-  0,                            /* gives exact dydt_out */
+  1,                            /* gives exact dydt_out */
   &rk8pd_alloc,
   &rk8pd_apply,
   &rk8pd_reset,

@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_odeiv.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslodeiv_la_SOURCES = control.c cstd.c cscal.c evolve.c step.c rk2.c rk2imp.c rk4.c rk4imp.c rkf45.c rk8pd.c rkck.c bsimp.c gear1.c gear2.c
+libgslodeiv_la_SOURCES = control.c cstd.c cscal.c evolve.c step.c rk2.c rk2imp.c rk2simp.c rk4.c rk4imp.c rkf45.c rk8pd.c rkck.c bsimp.c gear1.c gear2.c
 
 noinst_HEADERS = odeiv_util.h
 

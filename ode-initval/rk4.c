@@ -17,10 +17,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Runge-Kutta 4, Classical */
+/* Runge-Kutta 4th order, Classical */
 
 /* Author:  G. Jungman
  */
+
+/* Reference: Abramowitz & Stegun, section 25.5. equation 25.5.10 
+
+   Error estimation by step doubling, see eg. Ascher, U.M., Petzold,
+   L.R., Computer methods for ordinary differential and
+   differential-algebraic equations, SIAM, Philadelphia, 1998.
+*/
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,8 +40,10 @@
 typedef struct
 {
   double *k;
+  double *k1;
   double *y0;
   double *ytmp;
+  double *y_onestep;
 }
 rk4_state_t;
 
@@ -55,11 +65,21 @@ rk4_alloc (size_t dim)
       GSL_ERROR_NULL ("failed to allocate space for k", GSL_ENOMEM);
     }
 
+  state->k1 = (double *) malloc (dim * sizeof (double));
+
+  if (state->k1 == 0)
+    {
+      free (state);
+      free (state->k);
+      GSL_ERROR_NULL ("failed to allocate space for k1", GSL_ENOMEM);
+    }
+
   state->y0 = (double *) malloc (dim * sizeof (double));
 
   if (state->y0 == 0)
     {
       free (state->k);
+      free (state->k1);
       free (state);
       GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
     }
@@ -70,11 +90,105 @@ rk4_alloc (size_t dim)
     {
       free (state->y0);
       free (state->k);
+      free (state->k1);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
+    }
+
+  state->y_onestep = (double *) malloc (dim * sizeof (double));
+
+  if (state->y_onestep == 0)
+    {
+      free (state->ytmp);
+      free (state->y0);
+      free (state->k);
+      free (state->k1);
       free (state);
       GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
     }
 
   return state;
+}
+
+int
+rk4_step (double *y, const rk4_state_t *state,
+	  const double h, const double t, const size_t dim,
+	  int *status, const gsl_odeiv_system *sys)
+{
+  /* Makes a Runge-Kutta 4th order advance with step size h. */
+  
+  /* initial values of variables y. */
+  const double *y0 = state->y0;
+  
+  /* work space */
+  double *ytmp = state->ytmp;
+
+  /* Runge-Kutta coefficients. Contains values of coefficient k1
+     in the beginning 
+  */
+  double *k = state->k;
+
+  size_t i;
+
+  /* k1 step */
+
+  for (i = 0; i < dim; i++)
+    {
+      y[i] += h / 6.0 * k[i];
+      ytmp[i] = y0[i] + 0.5 * h * k[i];
+    }
+
+  /* k2 step */
+  {
+    int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
+    GSL_STATUS_UPDATE (status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
+  }
+
+  for (i = 0; i < dim; i++)
+    {
+      y[i] += h / 3.0 * k[i];
+      ytmp[i] = y0[i] + 0.5 * h * k[i];
+    }
+
+  /* k3 step */
+  {
+    int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
+    GSL_STATUS_UPDATE (status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
+  }
+
+  for (i = 0; i < dim; i++)
+    {
+      y[i] += h / 3.0 * k[i];
+      ytmp[i] = y0[i] + h * k[i];
+    }
+
+  /* k4 step */
+  {
+    int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k);
+    GSL_STATUS_UPDATE (status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	return GSL_EBADFUNC;
+      }
+  }
+
+  for (i = 0; i < dim; i++)
+    {
+      y[i] += h / 6.0 * k[i];
+    }
+
+  return *status;
 }
 
 
@@ -95,14 +209,10 @@ rk4_apply (void *vstate,
   int status = 0;
 
   double *const k = state->k;
+  double *const k1 = state->k1;
   double *const y0 = state->y0;
   double *const ytmp = state->ytmp;
-
-
-  /* Copy the starting value. We will write over
-   * the y[] vector, using it for scratch and
-   * then filling it with the final result.
-   */
+  double *const y_onestep = state->y_onestep;
 
   DBL_MEMCPY (y0, y, dim);
 
@@ -114,51 +224,103 @@ rk4_apply (void *vstate,
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y0, k);
       GSL_STATUS_UPDATE (&status, s);
+
+      if (s != GSL_SUCCESS)
+	{
+	  return GSL_EBADFUNC;
+	}
     }
 
-  for (i = 0; i < dim; i++)
-    {
-      y[i] = h / 6.0 * k[i];    /* use y[] to store delta_y */
-      ytmp[i] = y0[i] + 0.5 * h * k[i];
-    }
+  /* Error estimation is done by step doubling procedure */
 
-  /* k2 step */
+  /* Save first point derivatives*/
+  
+  DBL_MEMCPY (k1, k, dim);
+
+  /* First traverse h with one step (save to y_onestep) */
+
+  DBL_MEMCPY (y_onestep, y, dim);
+
   {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
-    GSL_STATUS_UPDATE (&status, s);
+    int s = rk4_step (y_onestep, state, h, t, dim, &status, sys);
+    if (s != GSL_SUCCESS) {
+      return s;
+    }
   }
 
-  for (i = 0; i < dim; i++)
-    {
-      y[i] += h / 3.0 * k[i];
-      ytmp[i] = y0[i] + 0.5 * h * k[i];
-    }
+  /* Then with two steps with half step length (save to y) */ 
 
-  /* k3 step */
+  DBL_MEMCPY (k, k1, dim);
+
   {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, k);
-    GSL_STATUS_UPDATE (&status, s);
+    int s = rk4_step (y, state, h/2.0, t, dim, &status, sys);
+    if (s != GSL_SUCCESS)
+      {
+	/* Restore original values */
+	DBL_MEMCPY (y, y0, dim);
+	
+	return s;
+    }
   }
 
-  for (i = 0; i < dim; i++)
-    {
-      y[i] += h / 3.0 * k[i];
-      ytmp[i] = y0[i] + h * k[i];
-    }
-
-  /* k4 step, error estimate, and final sum */
+  /* Update before second step */
   {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp, k);
+    int s = GSL_ODEIV_FN_EVAL (sys, t + h/2.0, y, k);
     GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	/* Restore original values */
+	DBL_MEMCPY (y, y0, dim);
+
+	return GSL_EBADFUNC;
+      }
+  }
+  
+  /* Save original y0 to k1 for possible failures */
+  DBL_MEMCPY (k1, y0, dim);
+
+  /* Update y0 for second step */
+  DBL_MEMCPY (y0, y, dim);
+
+  {
+    int s = rk4_step (y, state, h/2.0, t + h/2.0, dim, &status, sys);
+    if (s != GSL_SUCCESS)
+      {
+	/* Restore original values */
+	DBL_MEMCPY (y, k1, dim);
+	
+	return s;
+      }
   }
 
+  /* Derivatives at output */
+
+  if (dydt_out != NULL) {
+    int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+    GSL_STATUS_UPDATE (&status, s);
+
+    if (s != GSL_SUCCESS)
+      {
+	/* Restore original values */
+	DBL_MEMCPY (y, k1, dim);
+
+	return GSL_EBADFUNC;
+      }
+  }
+  
+  /* Error estimation
+
+     yerr = C * 0.5 * | y(onestep) - y(twosteps) | / (2^order - 1)
+
+     constant C is approximately 8.0 to ensure 90% of samples lie within
+     the error (assuming a gaussian distribution with prior p(sigma)=1/sigma.)
+
+  */
+
   for (i = 0; i < dim; i++)
     {
-      y[i] += h / 6.0 * k[i];
-      yerr[i] = h * y[i];
-      y[i] += y0[i];
-      if (dydt_out != NULL)
-        dydt_out[i] = k[i];
+      yerr[i] = 8.0 * 0.5 * (y[i] - y_onestep[i]) / 15.0;
     }
 
   return status;
@@ -170,8 +332,10 @@ rk4_reset (void *vstate, size_t dim)
   rk4_state_t *state = (rk4_state_t *) vstate;
 
   DBL_ZERO_MEMSET (state->k, dim);
+  DBL_ZERO_MEMSET (state->k1, dim);
   DBL_ZERO_MEMSET (state->y0, dim);
   DBL_ZERO_MEMSET (state->ytmp, dim);
+  DBL_ZERO_MEMSET (state->y_onestep, dim);
 
   return GSL_SUCCESS;
 }
@@ -189,14 +353,16 @@ rk4_free (void *vstate)
 {
   rk4_state_t *state = (rk4_state_t *) vstate;
   free (state->k);
+  free (state->k1);
   free (state->y0);
   free (state->ytmp);
+  free (state->y_onestep);
   free (state);
 }
 
 static const gsl_odeiv_step_type rk4_type = { "rk4",    /* name */
   1,                            /* can use dydt_in */
-  0,                            /* gives exact dydt_out */
+  1,                            /* gives exact dydt_out */
   &rk4_alloc,
   &rk4_apply,
   &rk4_reset,

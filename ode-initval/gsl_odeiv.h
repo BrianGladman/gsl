@@ -114,6 +114,7 @@ GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rkf45;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rkck;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk8pd;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk2imp;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk2simp;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk4imp;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_bsimp;
 GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_gear1;

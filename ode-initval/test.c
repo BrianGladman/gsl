@@ -1,17 +1,17 @@
 /* ode-initval/test_odeiv.c
- * 
+ *
  * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -441,10 +441,10 @@ test_stepper_err (const gsl_odeiv_step_type * T, double h, double base_prec)
       gsl_odeiv_step_apply (stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
       dy_t = y[1] - y1_t;
       del = fabs (dy_t - dy_exp);
-      
-      if (t > 0.1 && t < 0.2) { 
+
+      if (t > 0.1 && t < 0.2) {
         int stat = (del > 10.0*fabs(yerr[1]) + GSL_DBL_EPSILON*fabs(y[1]));
-                
+
         if (stat != 0)
           {
             delmax = del;
@@ -460,7 +460,7 @@ test_stepper_err (const gsl_odeiv_step_type * T, double h, double base_prec)
       count++;
     }
 
-  gsl_test (s, "%s, sine [0,pi], accurary of estimate error = %g vs %g",
+  gsl_test (s, "%s, sine [0,pi], accuracy of estimate error = %g vs %g",
 	    gsl_odeiv_step_name (stepper), delmax, errmax);
 
   gsl_odeiv_step_free (stepper);
@@ -626,23 +626,25 @@ main (void)
   p[0].h = 1.0e-03;
   p[1].type = gsl_odeiv_step_rk2imp;
   p[1].h = 1.0e-03;
-  p[2].type = gsl_odeiv_step_rk4;
+  p[2].type = gsl_odeiv_step_rk2simp;
   p[2].h = 1.0e-03;
-  p[3].type = gsl_odeiv_step_rk4imp;
+  p[3].type = gsl_odeiv_step_rk4;
   p[3].h = 1.0e-03;
-  p[4].type = gsl_odeiv_step_rkf45;
+  p[4].type = gsl_odeiv_step_rk4imp;
   p[4].h = 1.0e-03;
-  p[5].type = gsl_odeiv_step_rk8pd;
+  p[5].type = gsl_odeiv_step_rkf45;
   p[5].h = 1.0e-03;
-  p[6].type = gsl_odeiv_step_rkck;
+  p[6].type = gsl_odeiv_step_rk8pd;
   p[6].h = 1.0e-03;
-  p[7].type = gsl_odeiv_step_bsimp;
-  p[7].h = 0.1;
-  p[8].type = gsl_odeiv_step_gear1;
-  p[8].h = 1.0e-03;
-  p[9].type = gsl_odeiv_step_gear2;
+  p[7].type = gsl_odeiv_step_rkck;
+  p[7].h = 1.0e-03;
+  p[8].type = gsl_odeiv_step_bsimp;
+  p[8].h = 0.1;
+  p[9].type = gsl_odeiv_step_gear1;
   p[9].h = 1.0e-03;
-  p[10].type = 0;
+  p[10].type = gsl_odeiv_step_gear2;
+  p[10].h = 1.0e-03;
+  p[11].type = 0;
 
   gsl_ieee_env_setup ();
 

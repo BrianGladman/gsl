@@ -1,3 +1,15 @@
+2004-11-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* evolve.c (gsl_odeiv_evolve_apply): check for internal stepper
+	failure (Tuomo Keskitalo)
+
+	* bsimp.c: gives exact dydt_out (Tuomo Keskitalo)
+
+	* rk2simp.c: new semi-implicit solver (Tuomo Keskitalo)
+
+	* gear1.c rkf45.c rkck.c rk8pd.c rk4imp.c rk2imp.c rk2.c rk4.c:
+	fix error estimate, exact derivatives on output (Tuomo Keskitalo)
+
 2004-05-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bsimp.c (bsimp_apply): fix prototype of function to match

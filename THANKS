@@ -318,3 +318,5 @@ division by zero
 
 * Giulio Bottazzi <bottazzi@sssup.it> cdf for exponential power
 distribution, bug reports
+
+* Tuomo Keskitalo <Tuomo.Keskitalo@HUT.Fi> many improvements to ode-initval

@@ -171,6 +171,13 @@ try_step:
                               dydt);
     }
 
+  /* Check for stepper internal failure */
+
+  if (step_status != GSL_SUCCESS) 
+    {
+      return step_status;
+    }
+
   e->count++;
   e->last_step = h0;
 

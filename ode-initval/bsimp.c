@@ -511,7 +511,7 @@ bsimp_free (void * vstate)
 static const gsl_odeiv_step_type bsimp_type = { 
   "bsimp",                      /* name */
   1,                            /* can use dydt_in */
-  0,                            /* gives exact dydt_out */
+  1,                            /* gives exact dydt_out */
   &bsimp_alloc,
   &bsimp_apply,
   &bsimp_reset,
