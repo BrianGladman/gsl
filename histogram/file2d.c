@@ -39,7 +39,7 @@ gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
 }
 
 int
-gsl_histogram2d_fprintf (FILE * stream, gsl_histogram2d * h,
+gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h,
 			 const char * format)
 {
   size_t i, j ;

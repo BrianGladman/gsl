@@ -39,7 +39,7 @@ void gsl_histogram_reset (gsl_histogram * h);
 
 int gsl_histogram_fread (FILE * stream, gsl_histogram * h);
 int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h) ;
-int gsl_histogram_fprintf (FILE * stream, gsl_histogram * h, 
+int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, 
 			   const char * format);
 int gsl_histogram_fscanf (FILE * stream, gsl_histogram * h);
 
