@@ -1,3 +1,11 @@
+Sat Sep  9 16:45:15 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added an owner field for indicating whether the underlying
+ 	memory is owned by the vector. Changed the meaning of the block
+ 	field to always be the address of the underlying block, even for
+ 	subviews (previously the block field was set to NULL in this
+ 	case).
+
 Sun Jul 16 10:39:39 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION): added gsl_vector_view function for

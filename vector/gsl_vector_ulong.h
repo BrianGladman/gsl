@@ -42,6 +42,7 @@ struct gsl_vector_ulong_struct
   size_t stride;
   unsigned long *data;
   gsl_block_ulong *block;
+  int owner;
 };
 
 typedef struct gsl_vector_ulong_struct gsl_vector_ulong;

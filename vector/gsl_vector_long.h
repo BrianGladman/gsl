@@ -42,6 +42,7 @@ struct gsl_vector_long_struct
   size_t stride;
   long *data;
   gsl_block_long *block;
+  int owner;
 };
 
 typedef struct gsl_vector_long_struct gsl_vector_long;

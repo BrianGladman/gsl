@@ -42,6 +42,7 @@ struct gsl_vector_ushort_struct
   size_t stride;
   unsigned short *data;
   gsl_block_ushort *block;
+  int owner;
 };
 
 typedef struct gsl_vector_ushort_struct gsl_vector_ushort;

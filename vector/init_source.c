@@ -51,6 +51,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
   v->size = n;
   v->stride = 1;
   v->block = block;
+  v->owner = 1;
 
   return v;
 }
@@ -110,7 +111,8 @@ FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block,
   v->data = block->data + MULTIPLICITY * offset ;
   v->size = n;
   v->stride = stride;
-  v->block = 0;
+  v->block = block;
+  v->owner = 0;
 
   return v;
 }
@@ -150,7 +152,8 @@ FUNCTION (gsl_vector, alloc_from_vector) (TYPE(gsl_vector) * w,
   v->data = w->data + MULTIPLICITY * w->stride * offset ;
   v->size = n;
   v->stride = stride * w->stride;
-  v->block = 0;
+  v->block = w->block;
+  v->owner = 0;
 
   return v;
 }
@@ -159,7 +162,7 @@ FUNCTION (gsl_vector, alloc_from_vector) (TYPE(gsl_vector) * w,
 void
 FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
 {
-  if (v->block)
+  if (v->owner)
     {
       FUNCTION(gsl_block, free) (v->block) ;
     }
@@ -196,6 +199,7 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
   v->data = base->data + MULTIPLICITY * base->stride * offset ;
   v->size = n;
   v->stride = base->stride * stride;
+  v->block = base->block;
 
   return GSL_SUCCESS;
 }
@@ -204,7 +208,7 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 TYPE(gsl_vector)
 FUNCTION(gsl_vector, view) (ATOMIC * base, size_t n)
 {
-  TYPE(gsl_vector) v = {0, 0, 0, 0};
+  TYPE(gsl_vector) v = {0, 0, 0, 0, 0};
 
   if (n == 0)
     {
@@ -216,6 +220,7 @@ FUNCTION(gsl_vector, view) (ATOMIC * base, size_t n)
   v.size = n;
   v.stride = 1;
   v.block = 0;
+  v.owner = 0;
 
   return v;
 }

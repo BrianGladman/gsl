@@ -45,6 +45,7 @@ struct gsl_matrix_uchar_struct
   size_t tda;
   unsigned char * data;
   gsl_block_uchar * block;
+  int owner;
 } ;
 
 gsl_matrix_uchar * 

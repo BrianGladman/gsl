@@ -46,6 +46,7 @@ struct gsl_matrix_complex_long_double_struct
   size_t tda;
   long double * data;
   gsl_block_complex_long_double * block;
+  int owner;
 } ;
 
 

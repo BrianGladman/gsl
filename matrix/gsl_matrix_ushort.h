@@ -45,6 +45,7 @@ struct gsl_matrix_ushort_struct
   size_t tda;
   unsigned short * data;
   gsl_block_ushort * block;
+  int owner;
 } ;
 
 gsl_matrix_ushort * 

@@ -22,7 +22,7 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * matrix,
                                   const size_t i, const size_t j,
                                   const size_t m, const size_t n)
 {
-  TYPE(gsl_matrix) s = {0, 0, 0, 0};
+  TYPE(gsl_matrix) s = {0, 0, 0, 0, 0};
 
   if (i >= matrix->size1)
     {
@@ -53,6 +53,8 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * matrix,
   s.size1 = m;
   s.size2 = n;
   s.tda = matrix->tda;
+  s.block = matrix->block;
+  s.owner = 0;
 
   return s;
 }
@@ -70,6 +72,8 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
   v.data = m->data + i * MULTIPLICITY * m->tda;
   v.size = m->size2;
   v.stride = 1;
+  v.block = m->block;
+  v.owner = 0;
 
   return v;
 }
@@ -87,6 +91,8 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
   v.data = m->data + j * MULTIPLICITY;
   v.size = m->size1;
   v.stride = m->tda;
+  v.block = m->block;
+  v.owner = 0;
 
   return v;
 }
@@ -99,6 +105,8 @@ FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
   v.data = m->data;
   v.size = GSL_MIN(m->size1,m->size2);
   v.stride = m->tda + 1;
+  v.block = m->block;
+  v.owner = 0;
 
   return v;
 }

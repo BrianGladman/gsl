@@ -57,6 +57,7 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
   m->size2 = n2;
   m->tda = n2; 
   m->block = block;
+  m->owner = 1;
 
   return m;
 }
@@ -123,7 +124,8 @@ FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block,
   m->size1 = n1;
   m->size2 = n2;
   m->tda = d2;
-  m->block = 0;
+  m->block = block;
+  m->owner = 0;
 
   return m;
 }
@@ -171,7 +173,8 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
   m->size1 = n1;
   m->size2 = n2;
   m->tda = mm->tda;
-  m->block = 0;
+  m->block = mm->block;
+  m->owner = 0;
 
   return m;
 }
@@ -179,7 +182,7 @@ FUNCTION (gsl_matrix, alloc_from_matrix) (TYPE(gsl_matrix) * mm,
 void
 FUNCTION (gsl_matrix, free) (TYPE (gsl_matrix) * m)
 {
-  if (m->block)
+  if (m->owner)
     {
       FUNCTION(gsl_block, free) (m->block);
     }
@@ -244,7 +247,7 @@ FUNCTION (gsl_matrix, set_all) (TYPE (gsl_matrix) * m, BASE x)
 TYPE (gsl_matrix)
 FUNCTION (gsl_matrix, view) (ATOMIC * array, const size_t n1, const size_t n2)
 {
-  TYPE(gsl_matrix) m = {0, 0, 0, 0, 0};
+  TYPE(gsl_matrix) m = {0, 0, 0, 0, 0, 0};
 
   if (n1 == 0)
     {
@@ -262,6 +265,7 @@ FUNCTION (gsl_matrix, view) (ATOMIC * array, const size_t n1, const size_t n2)
   m.size2 = n2;
   m.tda = n2; 
   m.block = 0;
+  m.owner = 0;
 
   return m;
 }

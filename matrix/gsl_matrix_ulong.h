@@ -45,6 +45,7 @@ struct gsl_matrix_ulong_struct
   size_t tda;
   unsigned long * data;
   gsl_block_ulong * block;
+  int owner;
 } ;
 
 gsl_matrix_ulong * 

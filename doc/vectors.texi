@@ -230,6 +230,7 @@ typedef struct
   size_t stride;
   double * data;
   gsl_block * block;
+  int owner;
 @} gsl_vector ;
 @end example
 @comment
@@ -239,10 +240,12 @@ valid indices runs from 0 to @code{size-1}.  The @var{stride} is the
 step-size from one element to the next in physical memory, measured in
 units of the appropriate datatype.  The pointer @var{data} gives the
 location of the first element of the vector in memory.  The pointer
-@var{block} stores the location of the memory block owned by the vector
-(if any).  This block will be deallocated when the vector is freed.  If
-the vector is only a view of another object then the pointer @var{block}
-is null.
+@var{block} stores the location of the memory block in which the vector
+elements are located (if any).  If the vector owns this block then
+the owner field is set to one and the block will be deallocated when the
+vector is freed.  If the vector is only a view of another object then
+the owner field is zero and any underlying block will not be
+deallocated.
 
 The functions for allocating and accessing vectors are defined in
 @file{gsl_vector.h}
@@ -723,6 +726,7 @@ typedef struct
   size_t tda;
   double * data;
   gsl_block * block;
+  int owner;
 @} gsl_matrix ;
 @end example
 @comment
@@ -751,9 +755,11 @@ in turn.
 Each unused memory location is represented by ``@code{XX}''.  The
 pointer @var{data} gives the location of the first element of the matrix
 in memory.  The pointer @var{block} stores the location of the memory
-block owned by the matrix (if any).  This block will be deallocated when
-the matrix is freed.  If the matrix is only a view of another object
-then the pointer @var{block} is null.
+block in which the elements of the matrix are located (if any).  If the
+matrix owns this block then the owner field is set to one and the block
+will be deallocated when the matrix is freed.  If the matrix is only a
+view of another object then the owner field is zero and any underlying
+block will not be freed.
 
 The functions for allocating and accessing matrices are defined in
 @file{gsl_matrix.h}

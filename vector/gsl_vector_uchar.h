@@ -42,6 +42,7 @@ struct gsl_vector_uchar_struct
   size_t stride;
   unsigned char *data;
   gsl_block_uchar *block;
+  int owner;
 };
 
 typedef struct gsl_vector_uchar_struct gsl_vector_uchar;

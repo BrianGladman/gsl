@@ -46,6 +46,7 @@ struct gsl_matrix_complex_float_struct
   size_t tda;
   float * data;
   gsl_block_complex_float * block;
+  int owner;
 } ;
 
 

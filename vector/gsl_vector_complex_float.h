@@ -44,6 +44,7 @@ struct gsl_vector_complex_float_struct
   size_t stride;
   float *data;
   gsl_block_complex_float *block;
+  int owner;
 };
 
 typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;

@@ -1,3 +1,11 @@
+Sat Sep  9 16:47:16 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added an owner field for indicating whether the underlying
+ 	memory is owned by the vector. Changed the meaning of the block
+ 	field to always be the address of the underlying block, even for
+ 	subviews (previously the block field was set to NULL in this
+ 	case).
+
 Thu Aug 17 19:46:22 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* swap_source.c (FUNCTION): added function

@@ -45,6 +45,7 @@ struct gsl_matrix_char_struct
   size_t tda;
   char * data;
   gsl_block_char * block;
+  int owner;
 } ;
 
 gsl_matrix_char * 

@@ -20,7 +20,7 @@
 QUALIFIED_TYPE(gsl_vector)
 FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n)
 {
-  TYPE(gsl_vector) s = {0, 0, 0, 0};
+  TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
 
   if (n == 0)
     {
@@ -35,6 +35,8 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
   s.data = v->data +  MULTIPLICITY * v->stride * offset ;
   s.size = n;
   s.stride = v->stride;
+  s.block = v->block;
+  s.owner = 0;
 
   return s;
 }
@@ -42,7 +44,7 @@ FUNCTION(gsl_vector, subvector) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, 
 QUALIFIED_TYPE(gsl_vector)
 FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, size_t offset, size_t n, size_t stride)
 {
-  TYPE(gsl_vector) s = {0, 0, 0, 0};
+  TYPE(gsl_vector) s = {0, 0, 0, 0, 0};
 
   if (n == 0)
     {
@@ -62,6 +64,8 @@ FUNCTION(gsl_vector, subvector_with_stride) (QUALIFIED_TYPE(gsl_vector) * v, siz
   s.data = v->data + MULTIPLICITY * v->stride * offset ;
   s.size = n;
   s.stride = v->stride * stride;
+  s.block = v->block;
+  s.owner = 0;
 
   return s;
 }
