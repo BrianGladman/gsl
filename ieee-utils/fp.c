@@ -12,8 +12,15 @@
 #include "fp-sunos4.c"
 #elif defined(HAVE_SOLARIS_IEEE_INTERFACE)
 #include "fp-solaris.c"
+#elif defined(HAVE_IRIX_IEEE_INTERFACE)
+#include "fp-irix.c"
+#elif defined(HAVE_AIX_IEEE_INTERFACE)
+#include "fp-aix.c"
 #elif defined(HAVE_TRU64_IEEE_INTERFACE)
 #include "fp-tru64.c"
 #else
 #include "fp-unknown.c" 
 #endif
+
+
+
