@@ -190,6 +190,7 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 #
 %style_map = (
 	      'asis', '',		# ??
+              'acronym', '',
 	      'b', 'B',
 	      'cite', 'CITE',
 	      'code', 'CODE',
@@ -1802,7 +1803,9 @@ sub do_email {
     ($address,$text) = split(/,/, "$_[0]");
     $text =~ s/(^\s+)|(\s+$)//;	# trim leading and trailing white space
     $text = $address unless $text;
-    &anchor('', "mailto:${address}", "<TT>${text}</TT>")
+    $text =~ s/$;0/ at /g;  # convert @ to at (BJG)
+    #&anchor('', "mailto:${address}", "<TT>${text}</TT>")
+    "<TT>${text}</TT>";
 }
 
 sub do_image {
