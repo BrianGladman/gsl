@@ -178,15 +178,15 @@ int
 legendre_H3d_CF1_ser(const int ell, const double lambda, const double coth_eta, double * result)
 {
   const int maxk = 20000;
-  double tk = 1.0;
-  double sum = 1.0;
+  double tk   = 1.0;
+  double sum  = 1.0;
   double rhok = 0.0;
   int k;
  
   for(k=1; k<maxk; k++) {
     double tlk = (2.0*ell + 1.0 + 2.0*k);
     double l1k = (ell + 1.0 + k);
-    double ak = - (lambda*lambda + l1k*l1k)/(tlk*(tlk+2.0)*coth_eta*coth_eta);
+    double ak = -(lambda*lambda + l1k*l1k)/(tlk*(tlk+2.0)*coth_eta*coth_eta);
     rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
     tk  *= rhok;
     sum += tk;

@@ -26,14 +26,102 @@
 #define RECURSE_SMALL  (1.0e+5*DBL_MIN)
 
 
-/* Continued fraction for f_{n+1}/f_n
- * f_n := P^{-mu-n}_{-1/2 + I tau}(x),  x >= 1.0
+/* Continued fraction for f_{ell+1}/f_ell
+ * f_ell := P^{-mu-ell}_{-1/2 + I tau}(x),  x < 1.0
+ *
+ * Uses standard CF method from Temme's book.
  */
 static
 int
-conicalP_negmu_xgt1_CF1(const double mu, const int n, const double tau,
+conicalP_negmu_xlt1_CF1(const double mu, const int ell, const double tau,
                         const double x, double * result)
 {
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = 1.0;
+  double b1 = 2.0*(mu + ell + 1.0) * xi;
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = tau*tau + (mu - 0.5 + ell + n)*(mu - 0.5 + ell + n);
+    bn = 2.0*(ell + mu + n) * xi;
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 3.0*GSL_MACH_EPS) break;
+  }
+
+  *result = fn;
+
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Continued fraction for f_{ell+1}/f_ell
+ * f_ell := P^{-mu-ell}_{-1/2 + I tau}(x),  x >= 1.0
+ *
+ * Uses Gautschi (Euler) equivalent series.
+ */
+static
+int
+conicalP_negmu_xgt1_CF1(const double mu, const int ell, const double tau,
+                        const double x, double * result)
+{ 
+  const int maxk = 20000;
+  const double gamma = 1.0-1.0/(x*x);
+  double tk   = 1.0;
+  double sum  = 1.0;
+  double rhok = 0.0;
+  int k;
+ 
+  for(k=1; k<maxk; k++) {
+    double tlk = 2.0*(ell + mu + k);
+    double l1k = (ell + mu - 0.5 + 1.0 + k);
+    double ak = -(tau*tau + l1k*l1k)/(tlk*(tlk+2.0)) * gamma;
+    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
+    tk  *= rhok;
+    sum += tk;
+    if(fabs(tk/sum) < 3.0*GSL_MACH_EPS) break;
+  }
+
+  *result = sqrt(x-1.0)*sqrt(x+1.0) / (x*(2.0*(ell+mu+1.0))) * sum;
+
+  if(k == maxk)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
 }
 
 
@@ -1134,7 +1222,7 @@ int gsl_sf_conicalP_mhalf_impl(const double lambda, const double x, double * res
 int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
                                  const double x,
                                  double * result
-				 )
+                                 )
 {
   if(x <= -1.0 || l < -1) {
     *result = 0.0;
@@ -1171,28 +1259,51 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    double c = 1.0/sqrt(1.0-x*x);
+    const double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
+    double rat;
+    double Phf;
+    int stat_CF1 = conicalP_negmu_xlt1_CF1(0.5, l, lambda, x, &rat);
+    int stat_Phf = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
+    double Pellp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pell   = GSL_SQRT_DBL_MIN;
     double Pellm1;
-    double Pell;
-    double Pellp1;
     int ell;
-    int stat_0 = gsl_sf_conicalP_half_impl(lambda, x, &Pellm1);  /* P^( 1/2) */
-    int stat_1 = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pell);   /* P^(-1/2) */
-    int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
 
-    for(ell=0; ell<l; ell++) {
+    for(ell=l; ell>=0; ell--) {
       double d = (ell+1.0)*(ell+1.0) + lambda*lambda;
-      Pellp1 = (Pellm1 - (2.0*ell+1.0)*c*x * Pell) / d;
-      Pellm1 = Pell;
-      Pell   = Pellp1;
+      Pellm1 = (2.0*ell+1.0)*xi * Pell + d * Pellp1;
+      Pellp1 = Pell;
+      Pell   = Pellm1;
     }
 
-    *result = Pell;
+    *result = GSL_SQRT_DBL_MIN * Phf / Pell;
+    return GSL_ERROR_SELECT_2(stat_Phf, stat_CF1);
+  }
+  else if(x == 1.0) {
+    *result = 0.0;
     return GSL_SUCCESS;
   }
   else {
     /* x > 1.0 */
-    
+    const double xi = x/(sqrt(x-1.0)*sqrt(x+1.0));
+    double rat;
+    double Phf;
+    int stat_CF1 = conicalP_negmu_xgt1_CF1(0.5, l, lambda, x, &rat);
+    int stat_Phf = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
+    double Pellp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pell   = GSL_SQRT_DBL_MIN;
+    double Pellm1;
+    int ell;
+
+    for(ell=l; ell>=0; ell--) {
+      double d = (ell+1.0)*(ell+1.0) + lambda*lambda;
+      Pellm1 = (2.0*ell+1.0)*xi * Pell - d * Pellp1;
+      Pellp1 = Pell;
+      Pell   = Pellm1;
+    }
+
+    *result = GSL_SQRT_DBL_MIN * Phf / Pell;
+    return GSL_ERROR_SELECT_2(stat_Phf, stat_CF1);
   }
 }
 
