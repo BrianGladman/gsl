@@ -751,14 +751,35 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double F_lam_F, G_lam_F;
     double F_lam_G, G_lam_G;
     double exp_lam_F, exp_lam_G;
-    int stat_lam_F = coulomb_jwkb(lam_F, eta, x, &F_lam_F, &G_lam_F, &exp_lam_F);
-    int stat_lam_G = coulomb_jwkb(lam_G, eta, x, &F_lam_G, &G_lam_G, &exp_lam_G);
+    int stat_lam_F;
+    int stat_lam_G;
+    int stat_CF1_lam_F;
+    int stat_CF1_lam_G;
     double Fp_over_F_lam_F;
     double Fp_over_F_lam_G;
     double F_sign_lam_F;
     double F_sign_lam_G;
-    int stat_CF1_lam_F = coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
-    int stat_CF1_lam_G = coulomb_CF1(lam_G, eta, x, &F_sign_lam_G, &Fp_over_F_lam_G);
+
+    stat_lam_F = coulomb_jwkb(lam_F, eta, x, &F_lam_F, &G_lam_F, &exp_lam_F);
+    if(k_lam_G == 0) {
+      stat_lam_G = stat_lam_F;
+      F_lam_G = F_lam_F;
+      G_lam_G = G_lam_F;
+    }
+    else {
+      stat_lam_G = coulomb_jwkb(lam_G, eta, x, &F_lam_G, &G_lam_G, &exp_lam_G);
+    }
+
+    stat_CF1_lam_F = coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F);
+    if(k_lam_G == 0) {
+      stat_CF1_lam_G  = stat_CF1_lam_F;
+      F_sign_lam_G    = F_sign_lam_F;
+      Fp_over_F_lam_G = Fp_over_F_lam_F;
+    }
+    else {
+      stat_CF1_lam_G = coulomb_CF1(lam_G, eta, x, &F_sign_lam_G, &Fp_over_F_lam_G);
+    }
+
     *F = F_lam_F;
     *G = G_lam_G;
     *Fp = Fp_over_F_lam_F * F_lam_F;
