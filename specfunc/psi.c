@@ -368,41 +368,14 @@ static double psi_1_table[PSI_1_TABLE_NMAX+1] = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
-
-int gsl_sf_psi_int_e(const int n, gsl_sf_result * result)
-{
-  /* CHECK_POINTER(result) */
-
-  if(n <= 0) {
-    DOMAIN_ERROR(result);
-  }
-  else if(n <= PSI_TABLE_NMAX) {
-    result->val = psi_table[n];
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
-  }
-  else {
-    /* Abramowitz+Stegun 6.3.18 */
-    const double c2 = -1.0/12.0;
-    const double c3 =  1.0/120.0;
-    const double c4 = -1.0/252.0;
-    const double c5 =  1.0/240.0;
-    const double ni2 = (1.0/n)*(1.0/n);
-    const double ser = ni2 * (c2 + ni2 * (c3 + ni2 * (c4 + ni2*c5)));
-    result->val  = log(n) - 0.5/n + ser;
-    result->err  = GSL_DBL_EPSILON * (fabs(log(n)) + fabs(0.5/n) + fabs(ser));
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
-  }
-}
-
-
-int gsl_sf_psi_e(const double x, gsl_sf_result * result)
+/* digamma for x both positive and negative; we do both
+ * cases here because of the way we use even/odd parts
+ * of the function
+ */
+static int
+psi_x(const double x, gsl_sf_result * result)
 {
   const double y = fabs(x);
-
-  /* CHECK_POINTER(result) */
 
   if(x == 0.0 || x == -1.0 || x == -2.0) {
     DOMAIN_ERROR(result);
@@ -475,6 +448,67 @@ int gsl_sf_psi_e(const double x, gsl_sf_result * result)
       return cheb_eval_e(&psi_cs, 2.0*v-1.0, result);
     }
   }
+}
+
+
+
+/* generic polygamma; assumes n >= 0 and x > 0
+ */
+static psi_n_xg0(const int n, const double x, gsl_sf_result * result)
+{
+  if(n == 0) {
+    return gsl_sf_psi_e(x, result);
+  }
+  else {
+    /* Abramowitz + Stegun 6.4.10 */
+    gsl_sf_result ln_nf;
+    gsl_sf_result hzeta;
+    int stat_hz = gsl_sf_hzeta_e(n+1.0, x, &hzeta);
+    int stat_nf = gsl_sf_lnfact_e((unsigned int) n, &ln_nf);
+    int stat_e  = gsl_sf_exp_mult_err_e(ln_nf.val, ln_nf.err,
+                                           hzeta.val, hzeta.err,
+                                           result);
+    if(GSL_IS_EVEN(n)) result->val = -result->val;
+    return GSL_ERROR_SELECT_3(stat_e, stat_nf, stat_hz);
+  }
+}
+
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_psi_int_e(const int n, gsl_sf_result * result)
+{
+  /* CHECK_POINTER(result) */
+
+  if(n <= 0) {
+    DOMAIN_ERROR(result);
+  }
+  else if(n <= PSI_TABLE_NMAX) {
+    result->val = psi_table[n];
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
+    /* Abramowitz+Stegun 6.3.18 */
+    const double c2 = -1.0/12.0;
+    const double c3 =  1.0/120.0;
+    const double c4 = -1.0/252.0;
+    const double c5 =  1.0/240.0;
+    const double ni2 = (1.0/n)*(1.0/n);
+    const double ser = ni2 * (c2 + ni2 * (c3 + ni2 * (c4 + ni2*c5)));
+    result->val  = log(n) - 0.5/n + ser;
+    result->err  = GSL_DBL_EPSILON * (fabs(log(n)) + fabs(0.5/n) + fabs(ser));
+    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+}
+
+
+int gsl_sf_psi_e(const double x, gsl_sf_result * result)
+{
+  /* CHECK_POINTER(result) */
+  return psi_x(x, result);
 }
 
 
@@ -583,15 +617,64 @@ int gsl_sf_psi_1_int_e(const int n, gsl_sf_result * result)
 }
 
 
+int gsl_sf_psi_1_e(const double x, gsl_sf_result * result)
+{
+  /* CHECK_POINTER(result) */
+
+  if(x == 0.0 || x == -1.0 || x == -2.0) {
+    DOMAIN_ERROR(result);
+  }
+  else if(x > 0.0)
+  {
+    return psi_n_xg0(1, x, result);
+  }
+  else if(x > -5.0)
+  {
+    /* Abramowitz + Stegun 6.4.6 */
+    int M = -floor(x);
+    double fx = x + M;
+    double sum = 0.0;
+    int m;
+
+    if(fx == 0.0)
+      DOMAIN_ERROR(result);
+
+    for(m = 0; m < M; ++m)
+      sum += 1.0/((x+m)*(x+m));
+
+    int stat_psi = psi_n_xg0(1, fx, result);
+    result->val += sum;
+    result->err += M * GSL_DBL_EPSILON * sum;
+    return stat_psi;
+  }
+  else
+  {
+    /* Abramowitz + Stegun 6.4.7 */
+    const double sin_px = sin(M_PI * x);
+    const double d = M_PI*M_PI/(sin_px*sin_px);
+    gsl_sf_result r;
+    int stat_psi = psi_n_xg0(1, 1.0-x, &r);
+    result->val = d - r.val;
+    result->err = r.err + 2.0*GSL_DBL_EPSILON*d;
+    return stat_psi;
+  }
+}
+
+
 int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
-  if(n < 0 || x <= 0.0) {
-    DOMAIN_ERROR(result);
-  }
-  else if(n == 0) {
+  if(n == 0)
+  {
     return gsl_sf_psi_e(x, result);
+  }
+  else if(n == 1)
+  {
+    return gsl_sf_psi_1_e(x, result);
+  }
+  else if(n < 0 || x <= 0.0) {
+    DOMAIN_ERROR(result);
   }
   else {
     gsl_sf_result ln_nf;

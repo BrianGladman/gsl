@@ -43,22 +43,22 @@ __BEGIN_DECLS
  */
 
 
-/* Di-Gamma Function  psi(n)
+/* Di-Gamma Function  psi(n) = psi(0,n)
  *
  * n > 0
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_psi_int_e(const int n, gsl_sf_result * result);
-double     gsl_sf_psi_int(const int n);
+double  gsl_sf_psi_int(const int n);
 
 
-/* Di-Gamma Function psi(x)
+/* Di-Gamma Function psi(x) = psi(0, x)
  *
- * x != 0.0
+ * x != 0.0, -1.0, -2.0, ...
  * exceptions: GSL_EDOM, GSL_ELOSS
  */
 int     gsl_sf_psi_e(const double x, gsl_sf_result * result);
-double     gsl_sf_psi(const double x);
+double  gsl_sf_psi(const double x);
 
 
 /* Di-Gamma Function Re[psi(1 + I y)]
@@ -66,7 +66,7 @@ double     gsl_sf_psi(const double x);
  * exceptions: none
  */
 int     gsl_sf_psi_1piy_e(const double y, gsl_sf_result * result);
-double     gsl_sf_psi_1piy(const double y);
+double  gsl_sf_psi_1piy(const double y);
 
 
 /* Tri-Gamma Function psi^(1)(n)
@@ -75,7 +75,16 @@ double     gsl_sf_psi_1piy(const double y);
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_psi_1_int_e(const int n, gsl_sf_result * result);
-double     gsl_sf_psi_1_int(const int n);
+double  gsl_sf_psi_1_int(const int n);
+
+
+/* Tri-Gamma Function psi^(1)(x)
+ *
+ * x != 0.0, -1.0, -2.0, ...
+ * exceptions: GSL_EDOM, GSL_ELOSS
+ */
+int     gsl_sf_psi_1_e(const double x, gsl_sf_result * result);
+double  gsl_sf_psi_1(const double x);
 
 
 /* Poly-Gamma Function psi^(n)(x)
@@ -84,7 +93,7 @@ double     gsl_sf_psi_1_int(const int n);
  * exceptions: GSL_EDOM
  */
 int     gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result);
-double     gsl_sf_psi_n(const int n, const double x);
+double  gsl_sf_psi_n(const int n, const double x);
 
 
 __END_DECLS
