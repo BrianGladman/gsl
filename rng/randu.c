@@ -20,8 +20,8 @@
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */
 
-unsigned long int bad_randu_get (void *vstate);
-void bad_randu_set (void *state, unsigned long int s);
+unsigned long int randu_get (void *vstate);
+void randu_set (void *state, unsigned long int s);
 
 static const long int a = 65539;
 static const unsigned long int m = 2147483648UL;
@@ -30,12 +30,12 @@ typedef struct
   {
     unsigned long int x;
   }
-bad_randu_state_t;
+randu_state_t;
 
 unsigned long int
-bad_randu_get (void *vstate)
+randu_get (void *vstate)
 {
-  bad_randu_state_t *state = (bad_randu_state_t *) vstate;
+  randu_state_t *state = (randu_state_t *) vstate;
 
   /* The following line relies on unsigned 32-bit arithmetic */
 
@@ -45,9 +45,9 @@ bad_randu_get (void *vstate)
 }
 
 void
-bad_randu_set (void *vstate, unsigned long int s)
+randu_set (void *vstate, unsigned long int s)
 {
-  bad_randu_state_t *state = (bad_randu_state_t *) vstate;
+  randu_state_t *state = (randu_state_t *) vstate;
 
   if (s == 0)
     s = 1;	/* default seed is 1 */
@@ -57,12 +57,12 @@ bad_randu_set (void *vstate, unsigned long int s)
   return;
 }
 
-static const gsl_rng_type bad_randu_type =
-{"bad-randu",			/* name */
+static const gsl_rng_type randu_type =
+{"randu",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
  1,       			/* RAND_MIN */
- sizeof (bad_randu_state_t),
- &bad_randu_set,
- &bad_randu_get};
+ sizeof (randu_state_t),
+ &randu_set,
+ &randu_get};
 
-const gsl_rng_type *gsl_rng_bad_randu = &bad_randu_type;
+const gsl_rng_type *gsl_rng_randu = &randu_type;

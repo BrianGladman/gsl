@@ -16,8 +16,8 @@
    The rand() generator is not very good -- the low bits of successive
    numbers are correlated. */
 
-unsigned long int bad_rand_get (void *vstate);
-void bad_rand_set (void *state, unsigned long int s);
+unsigned long int bsdrand_get (void *vstate);
+void bsdrand_set (void *state, unsigned long int s);
 
 static const unsigned long int m = 2147483648UL;
 static const long int a = 1103515245;
@@ -27,12 +27,12 @@ typedef struct
   {
     unsigned long int x;
   }
-bad_rand_state_t;
+bsdrand_state_t;
 
 unsigned long int
-bad_rand_get (void *vstate)
+bsdrand_get (void *vstate)
 {
-  bad_rand_state_t *state = (bad_rand_state_t *) vstate;
+  bsdrand_state_t *state = (bsdrand_state_t *) vstate;
 
   /* The following line relies on unsigned 32-bit arithmetic */
 
@@ -43,21 +43,24 @@ bad_rand_get (void *vstate)
 
 
 void
-bad_rand_set (void *vstate, unsigned long int s)
+bsdrand_set (void *vstate, unsigned long int s)
 {
-  bad_rand_state_t *state = (bad_rand_state_t *) vstate;
+  bsdrand_state_t *state = (bsdrand_state_t *) vstate;
 
   state->x = s;
 
   return;
 }
 
-static const gsl_rng_type bad_rand_type =
-{"bad-rand",			/* name */
+static const gsl_rng_type bsdrand_type =
+{"bsdrand",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
  0,         			/* RAND_MIN */
- sizeof (bad_rand_state_t),
- &bad_rand_set,
- &bad_rand_get};
+ sizeof (bsdrand_state_t),
+ &bsdrand_set,
+ &bsdrand_get};
 
-const gsl_rng_type *gsl_rng_bad_rand = &bad_rand_type;
+const gsl_rng_type *gsl_rng_bsdrand = &bsdrand_type;
+
+
+

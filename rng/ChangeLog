@@ -1,3 +1,9 @@
+Fri Jul  3 15:55:34 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* renamed bad_randu.c to randu.c
+
+	* renamed bad_rand.c to bsdrand.c
+
 Mon Jun 29 18:11:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added implementations of the numerical recipes algorithms ran0,

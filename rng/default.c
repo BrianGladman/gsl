@@ -23,20 +23,20 @@ gsl_rng_env_setup (void)
 
       /* check GSL_RNG_TYPE against the names of all the generators */
 
-      check (&gsl_rng_default, gsl_rng_bad_rand, p);
-      check (&gsl_rng_default, gsl_rng_bad_randu, p);
+      check (&gsl_rng_default, gsl_rng_bsdrand, p);
       check (&gsl_rng_default, gsl_rng_cmrg, p);
       check (&gsl_rng_default, gsl_rng_minstd, p);
       check (&gsl_rng_default, gsl_rng_mrg, p);
       check (&gsl_rng_default, gsl_rng_mt19937, p);
+      check (&gsl_rng_default, gsl_rng_r250, p);
       check (&gsl_rng_default, gsl_rng_ran0, p);
       check (&gsl_rng_default, gsl_rng_ran1, p);
       check (&gsl_rng_default, gsl_rng_ran2, p);
       check (&gsl_rng_default, gsl_rng_ran3, p);
       check (&gsl_rng_default, gsl_rng_rand, p);
+      check (&gsl_rng_default, gsl_rng_randu, p);
       check (&gsl_rng_default, gsl_rng_ranlux, p);
       check (&gsl_rng_default, gsl_rng_ranlux389, p);
-      check (&gsl_rng_default, gsl_rng_r250, p);
       check (&gsl_rng_default, gsl_rng_taus, p);
       check (&gsl_rng_default, gsl_rng_tt800, p);
       check (&gsl_rng_default, gsl_rng_uni, p);

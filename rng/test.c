@@ -21,8 +21,8 @@ main (void)
 
   /* specific tests of known results for 10000 iterations with seed = 1 */
 
-  rng_test (gsl_rng_bad_rand, 1, 10000, 1910041713);
-  rng_test (gsl_rng_bad_randu, 1, 10000, 1623524161);
+  rng_test (gsl_rng_bsdrand, 1, 10000, 1910041713);
+  rng_test (gsl_rng_randu, 1, 10000, 1623524161);
   rng_test (gsl_rng_cmrg, 1, 10000, 719452880);
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
   rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
@@ -62,20 +62,20 @@ main (void)
 
   /* Test save/restore functions */
 
-  rng_state_test (gsl_rng_bad_rand);
-  rng_state_test (gsl_rng_bad_randu);
+  rng_state_test (gsl_rng_bsdrand);
   rng_state_test (gsl_rng_cmrg);
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
   rng_state_test (gsl_rng_mt19937);
+  rng_state_test (gsl_rng_r250);
   rng_state_test (gsl_rng_ran0);
   rng_state_test (gsl_rng_ran1);
   rng_state_test (gsl_rng_ran2);
   rng_state_test (gsl_rng_ran3);
   rng_state_test (gsl_rng_rand);
+  rng_state_test (gsl_rng_randu);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
-  rng_state_test (gsl_rng_r250);
   rng_state_test (gsl_rng_taus);
   rng_state_test (gsl_rng_tt800);
   rng_state_test (gsl_rng_uni);
@@ -83,20 +83,20 @@ main (void)
   rng_state_test (gsl_rng_vax);
   rng_state_test (gsl_rng_zuf);
 
-  rng_parallel_state_test (gsl_rng_bad_rand);
-  rng_parallel_state_test (gsl_rng_bad_randu);
+  rng_parallel_state_test (gsl_rng_bsdrand);
   rng_parallel_state_test (gsl_rng_cmrg);
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_mt19937);
+  rng_parallel_state_test (gsl_rng_r250);
   rng_parallel_state_test (gsl_rng_ran0);
   rng_parallel_state_test (gsl_rng_ran1);
   rng_parallel_state_test (gsl_rng_ran2);
   rng_parallel_state_test (gsl_rng_ran3);
   rng_parallel_state_test (gsl_rng_rand);
+  rng_parallel_state_test (gsl_rng_randu);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
-  rng_parallel_state_test (gsl_rng_r250);
   rng_parallel_state_test (gsl_rng_taus);
   rng_parallel_state_test (gsl_rng_tt800);
   rng_parallel_state_test (gsl_rng_uni);
@@ -108,20 +108,20 @@ main (void)
      don't get any crazy results back from the generator, i.e. they
      aren't a test of the algorithm, just the implementation) */
 
-  generic_rng_test (gsl_rng_bad_rand);
-  generic_rng_test (gsl_rng_bad_randu);
+  generic_rng_test (gsl_rng_bsdrand);
   generic_rng_test (gsl_rng_cmrg);
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_mt19937);
+  generic_rng_test (gsl_rng_r250);
   generic_rng_test (gsl_rng_ran0);
   generic_rng_test (gsl_rng_ran1);
   generic_rng_test (gsl_rng_ran2);
   generic_rng_test (gsl_rng_ran3);
   generic_rng_test (gsl_rng_rand);
+  generic_rng_test (gsl_rng_randu);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
-  generic_rng_test (gsl_rng_r250);
   generic_rng_test (gsl_rng_taus);
   generic_rng_test (gsl_rng_tt800);
   generic_rng_test (gsl_rng_uni);

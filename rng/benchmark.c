@@ -12,8 +12,8 @@ int sum;
 int
 main (void)
 {
-  benchmark (gsl_rng_bad_rand);
-  benchmark (gsl_rng_bad_randu);
+  benchmark (gsl_rng_bsdrand);
+  benchmark (gsl_rng_randu);
   benchmark (gsl_rng_cmrg);
   benchmark (gsl_rng_minstd);
   benchmark (gsl_rng_mrg);
