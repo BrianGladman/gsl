@@ -80,160 +80,87 @@ int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 		    unsigned long num_dim, unsigned long calls,
 		    double* tot_int, double* tot_sig, double* chi_sq)
 {
-  int j;
+  int i, j, k;
   int status;
 
-
-  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
-
-  init_array(state->y_bin, GSL_V_BINS_MAX, num_dim);
-  for (j = 0; j < num_dim; ++j)
-    state->y_bin[1][j] = 1.;
-  state->bins_prev = 1;
-  state->vol = 1;
-  for (j = 0; j < num_dim; ++j) {
-    state->delx[j] = xu[j] - xl[j];
-    state->vol *= state->delx[j];
-  }
-
-  if (state->verbose >= 0 ) {
-    vegas_open_log();
-    prn_lim(xl, xu, num_dim);
-  }
-  status |= gsl_monte_vegas1(state, fxn, xl, xu, num_dim, calls, 
-			    tot_int, tot_sig, chi_sq);
-
-
-
-  if (state->verbose >= 0 ) {
-    vegas_close_log();
-  }
-
-  return status;
-}
-
-int gsl_monte_vegas1(gsl_monte_vegas_state *state,
-		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq)
-{
-  int status;
-
-  state->wtd_int_sum = 0;
-  state->sum_wgts = 0;
-  state->chi_sum = 0;
-  state->it_num = 1;
-
-  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
-
-  status |= gsl_monte_vegas2(state, fxn, xl, xu, num_dim, calls,
-			     tot_int, tot_sig, chi_sq);
-  return status;
-}
-
-int gsl_monte_vegas2(gsl_monte_vegas_state *state,
-		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq)
-{
-
-  /* At this point, the calculation is divided into three possible
-     cases: mode = MODE_IMPORTANCE_ONLY: obtained only by user choice
-     at the beginning.  There is only one box, and the number of bins
-     is set to GSL_V_BINS_MAX.  The points are distributed over the whole
-     grid randomly, but the bins adjust to emphasize the regions where
-     the function is largest.  mode = MODE_IMPORTANCE or
-     MODE_STRATIFIED is decided by a test - if it is not possible to
-     have at least 2 bins/box with the maximal number of boxes, then
-     MODE_STRATIFIED is chosen.  Generally, this happens for low
-     dimensions where the vegas algorithm has little to offer.
-     Choosing MODE_IMPORTANCE concentrates increments where the
-     integrand is largest and MODE_STATIFIED where the error is
-     largest.
-
-     In addition to the bin structure, the volume is divided into
-     boxes, with a equal number of calls (calls_per_box) going into
-     each box.  In both cases, the number of calls is given by calls =
-     (calls_per_box * boxes)^num_dim and because we round things to
-     integers is usually a bit smaller than the nominal number
-     specified.  For MODE_IMPORTANCE, the number of bins in each
-     dimension is GSL_V_BINS_MAX, while the number of boxes in each
-     dimension is smaller (because of the above-mentioned
-     restriction).  Thus, each box contains several (not necessarily
-     an integral number) bins.  For MODE_STRATIFIED, bins is an
-     integer multiple of boxes, and bins is smaller than GSL_V_BINS_MAX.  
-*/
-
-  int    i, j, k;
-  int status;
-
-  status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
-
-  state->bins = GSL_V_BINS_MAX;
-  state->boxes = 1;
-  if (state->mode != MODE_IMPORTANCE_ONLY) {
-    state->boxes = floor( pow(calls/2.0, 1.0/num_dim) ); 
-    state->mode = MODE_IMPORTANCE;
-    if ((2 * state->boxes - GSL_V_BINS_MAX) >= 0) {
-      state->mode = MODE_STRATIFIED;
-      i = state->boxes / GSL_V_BINS_MAX;
-      if ( state->boxes % GSL_V_BINS_MAX ) 
-	++i;
-      state->bins = state->boxes / i;
-      state->boxes = i * state->bins;
-    }
-  }
-
-  k = floor( pow( (double) state->boxes, (double) num_dim) );
-  state->calls_per_box = myMAX(calls/k, 2);
-  calls = state->calls_per_box * k;
-
-  /* total volume of x-space/(avg num of calls/bin) */
-  state->jac = state->vol * pow( (double) state->bins, (double) num_dim) / calls;
-
-  /* If the number of bins changes from the previous invocation, bins
-     are expanded or contracted accordingly, while preserving bin
-     density */
-
-  if (state->bins != state->bins_prev) {
-    double weight[GSL_V_BINS_MAX+1], tot_weight;
-
-    /* weight is ratio of bin sizes */
-    tot_weight = (double) state->bins_prev / state->bins;
-    for (i = 1; i <= state->bins_prev; ++i)
-      weight[i] = 1;
-    for (j = 0; j < num_dim; ++j)
-      adjust_bins(state, state->y_bin, weight, tot_weight, j, 
-		  state->bins_prev, state->bins);
-    state->bins_prev = state->bins;
-  }
-
-  if (state->verbose >= 0) {
-    prn_head(state, num_dim, calls, state->it_num, state->bins, state->boxes);
-  }
-
-  status |= gsl_monte_vegas3(state, fxn, xl, xu, num_dim, calls, 
-			     tot_int, tot_sig, chi_sq);
-  return status;
-}
-
-int gsl_monte_vegas3(gsl_monte_vegas_state *state,
-		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq)
-{
-
-  /* Start of iteration  */
-
-  int    i, j, k;
-  int status = 0;
-
-  double cum_int, cum_sig;
+  double cum_int = 1.0;
+  double cum_sig = 1.0;
 
   gsl_rng *r;
   status = gsl_monte_vegas_validate(state, xl, xu, num_dim, calls);
   r = state->ranf;
 
+  if (state->stage == 0) {
+    init_array(state->y_bin, GSL_V_BINS_MAX, num_dim);
+    for (j = 0; j < num_dim; ++j)
+      state->y_bin[1][j] = 1.;
+    state->bins_prev = 1;
+    state->vol = 1;
+    for (j = 0; j < num_dim; ++j) {
+      state->delx[j] = xu[j] - xl[j];
+      state->vol *= state->delx[j];
+    }
+    
+    if (state->verbose >= 0 ) {
+      vegas_open_log();
+      prn_lim(xl, xu, num_dim);
+    }
+  } /* stage == 0 */
+  
+  if (state->stage <= 1) {
+    state->wtd_int_sum = 0;
+    state->sum_wgts = 0;
+    state->chi_sum = 0;
+    state->it_num = 1;
+  } /* stage <= 1 */
+
+  if (state->stage <= 2) {
+    state->bins = GSL_V_BINS_MAX;
+    state->boxes = 1;
+    if (state->mode != MODE_IMPORTANCE_ONLY) {
+      state->boxes = floor( pow(calls/2.0, 1.0/num_dim) ); 
+      state->mode = MODE_IMPORTANCE;
+      if ((2 * state->boxes - GSL_V_BINS_MAX) >= 0) {
+	state->mode = MODE_STRATIFIED;
+	i = state->boxes / GSL_V_BINS_MAX;
+	if ( state->boxes % GSL_V_BINS_MAX ) 
+	  ++i;
+	state->bins = state->boxes / i;
+	state->boxes = i * state->bins;
+      }
+    }
+    
+    k = floor( pow( (double) state->boxes, (double) num_dim) );
+    state->calls_per_box = myMAX(calls/k, 2);
+    calls = state->calls_per_box * k;
+    
+    /* total volume of x-space/(avg num of calls/bin) */
+    state->jac = state->vol *
+      pow( (double) state->bins, (double) num_dim) / calls;
+    
+    /* If the number of bins changes from the previous invocation, bins
+       are expanded or contracted accordingly, while preserving bin
+       density */
+    
+    if (state->bins != state->bins_prev) {
+      double weight[GSL_V_BINS_MAX+1], tot_weight;
+      
+      /* weight is ratio of bin sizes */
+      tot_weight = (double) state->bins_prev / state->bins;
+      for (i = 1; i <= state->bins_prev; ++i)
+	weight[i] = 1;
+      for (j = 0; j < num_dim; ++j)
+	adjust_bins(state, state->y_bin, weight, tot_weight, j, 
+		    state->bins_prev, state->bins);
+      state->bins_prev = state->bins;
+    }
+
+    if (state->verbose >= 0) {
+      prn_head(state, num_dim, calls, state->it_num, state->bins, state->boxes);
+    }
+  } /* stage <= 2 */
+
+  
   state->it_start = state->it_num;
   cum_int = 1.;
   cum_sig = 1.;
@@ -371,8 +298,13 @@ int gsl_monte_vegas3(gsl_monte_vegas_state *state,
        (state->acc*fabs(cum_int) > cum_sig) ) {
     /* should throw an error of some kind */
   }
-  return status;
 
+  /* final stuff */
+  if (state->verbose >= 0 ) {
+    vegas_close_log();
+  }
+
+  return status;
 }
 
 /* Adjust bin boundaries so that each bin has the same number of
@@ -511,5 +443,8 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
 
 void gsl_monte_vegas_free (gsl_monte_vegas_state* s)
 {
+  if (s == (gsl_monte_vegas_state*) NULL )
+    GSL_ERROR_RETURN_NOTHING("Attempt to free null pointer", GSL_EFAULT);
+
   free (s);
 }
