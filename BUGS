@@ -351,3 +351,21 @@ leading coefficients being zero more gracefully.  Currently the
 leading coefficient is assumed to be non-zero.
 
 ----------------------------------------------------------------------
+BUG#28 - underflow for small parameters in gsl_ran_gamma
+
+The function gsl_ran_gamma does not handle the case of small
+parameters well, a<<1, returning 0 (probably via underflow).
+
+#include <stdio.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+
+int main() {
+  gsl_rng *rng;
+  double x;
+  gsl_rng_env_setup();
+  rng = gsl_rng_alloc (gsl_rng_default);
+  x = gsl_ran_gamma(rng, 1e-3, 1.0);
+  printf("%.18e\n", x);
+}
+----------------------------------------------------------------------
