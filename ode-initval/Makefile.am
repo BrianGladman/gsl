@@ -5,7 +5,7 @@ check_PROGRAMS = test_odeiv
 pkginclude_HEADERS = \
 	gsl_odeiv.h
 
-noinst_HEADERS = 
+noinst_HEADERS = odeiv_util.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../vector -I$(srcdir)/../matrix
