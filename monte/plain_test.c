@@ -49,14 +49,15 @@ int main()
   gsl_test_verbose(1);
 
   printf("Testing constant function and normalization\n");
-  for (num_dim = 9; num_dim < 10; num_dim++) {
-    calls *= 1.8;
+  for (num_dim = 1; num_dim < 10; num_dim++) {
+    calls *= 1.2;
     gsl_monte_plain(r, fconst, xl, xu2, num_dim, calls, &res, &err);
     gsl_test_rel(res, pow(2, num_dim), tol, 
-		 "plain(f0), calls=%d, dim=%d, err=%.4f", 
+		 "plain(fconst), calls=%d, dim=%d, err=%.4f", 
 		 calls, num_dim, err); 
   }
 
+  calls = 1000;
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
