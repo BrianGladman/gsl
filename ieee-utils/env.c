@@ -1,5 +1,4 @@
 #include <config.h>
-#include <string.h>
 #include <stdlib.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_errno.h>
@@ -14,7 +13,7 @@ gsl_ieee_env_setup (void)
   if (p == 0)  /* GSL_IEEE_MODE environment variable is not set */
     return ;
 
-  if (strlen(p) == 0) /* GSL_IEEE_MODE environment variable is empty */
+  if (*p == '\0') /* GSL_IEEE_MODE environment variable is empty */
     return ;
 
   gsl_ieee_read_mode_string (p, &precision, &rounding, &exception_mask) ;
