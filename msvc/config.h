@@ -174,3 +174,8 @@
 #define finite gsl_finite
 #endif
 
+#ifdef __GNUC__
+#define DISCARD_POINTER(p) do { ; } while(p ? 0 : 0);
+#else
+#define DISCARD_POINTER(p) /* ignoring discarded pointer */
+#endif
