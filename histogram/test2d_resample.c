@@ -3,6 +3,8 @@
 #include <gsl_histogram2d.h>
 #include <gsl_test.h>
 
+#include "urand.c"
+
 int
 main (void)
 {
@@ -33,8 +35,8 @@ main (void)
 
     for (i = 0; i < N; i++)
       {
-	double u = ((double) rand ()) / RAND_MAX;
-	double v = ((double) rand ()) / RAND_MAX;
+	double u = urand();
+	double v = urand();
 	double x, y;
 	status = gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
 	status = gsl_histogram2d_increment (hh, x, y);

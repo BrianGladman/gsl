@@ -1,3 +1,7 @@
+Fri Aug  6 11:19:37 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* removed dependence on rand() and RAND_MAX
+
 1999-08-05  Mark Galassi  <rosalia@lanl.gov>
 
 	* gsl-histogram.c (main): fixed a simple logic bug.  Thanks to

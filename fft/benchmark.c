@@ -14,6 +14,7 @@
 
 #include "complex_internal.h"
 #include "bitreverse.h"
+#include "urand.c"
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
@@ -51,8 +52,8 @@ main (int argc, char *argv[])
 
   for (i = 0; i < n; i++)
     {
-      REAL(data,1,i) = ((double) rand ()) / RAND_MAX;
-      IMAG(data,1,i) = ((double) rand ()) / RAND_MAX;
+      REAL(data,1,i) = urand ();
+      IMAG(data,1,i) = urand ();
     }
 
 

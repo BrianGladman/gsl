@@ -10,6 +10,8 @@
 
 #include "complex_internal.h"
 
+#include "urand.c"
+
 #define BASE_DOUBLE
 #include "templates_on.h"
 #include "signals_source.c"

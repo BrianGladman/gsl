@@ -13,7 +13,7 @@ hc_pass_4.c hc_pass_5.c hc_pass_n.c hc_radix2.c hc_unpack.c \
 real.c real_init.c real_pass_2.c real_pass_3.c \
 real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c \
 compare_source.c dft_source.c hc_main.c real_main.c \
-test_complex.c test_real.c test_trap.c
+test_complex.c test_real.c test_trap.c urand.c
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 

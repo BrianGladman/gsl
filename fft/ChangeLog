@@ -1,3 +1,7 @@
+Fri Aug  6 11:20:25 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	*  removed dependence on rand() and RAND_MAX
+
 Sun Feb 14 17:31:21 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* started converting header files to use gsl_complex_packed_array

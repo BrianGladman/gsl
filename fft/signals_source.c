@@ -230,8 +230,8 @@ FUNCTION(fft_signal,complex_noise) (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      REAL(data,stride,i) = ((double) rand ()) / RAND_MAX;
-      IMAG(data,stride,i) = ((double) rand ()) / RAND_MAX;
+      REAL(data,stride,i) = urand();
+      IMAG(data,stride,i) = urand();
     }
 
   /* compute the dft */
@@ -257,7 +257,7 @@ FUNCTION(fft_signal,real_noise) (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      REAL(data,stride,i) = ((double) rand ()) / RAND_MAX;
+      REAL(data,stride,i) = urand();
       IMAG(data,stride,i) = 0.0;
     }
 

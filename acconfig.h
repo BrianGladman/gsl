@@ -20,19 +20,6 @@
 #define CLOCKS_PER_SEC HAVE_GUESSED_CLOCKS_PER_SEC
 #endif
 
-/* Define if you have ansi rand() */
-#undef HAVE_RAND
-
-/* Define if you have ansi RAND_MAX */
-#undef HAVE_RAND_MAX
-
-/* Defined if configure has guessed a missing ansi RAND_MAX */
-#undef HAVE_GUESSED_RAND_MAX
-
-#ifndef HAVE_RAND_MAX
-#define RAND_MAX HAVE_GUESSED_RAND_MAX
-#endif
-
 /* Defined if you have ansi EXIT_SUCCESS and EXIT_FAILURE in stdlib.h */
 #undef HAVE_EXIT_SUCCESS_AND_FAILURE
 

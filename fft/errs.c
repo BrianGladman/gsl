@@ -15,6 +15,8 @@
 #include "compare.h"
 #include "complex_internal.h"
 
+#include "urand.c"
+
 int verbose = 0;
 
 size_t tests = 0;
@@ -54,8 +56,8 @@ main (int argc, char *argv[])
 
       for (i = 0; i < n; i++)
 	{
-	  REAL(complex_data,1,i) = ((double) rand ()) / RAND_MAX;
-	  IMAG(complex_data,1,i) = ((double) rand ()) / RAND_MAX;
+	  REAL(complex_data,1,i) = urand();
+	  IMAG(complex_data,1,i) = urand();
 	}
 
       memcpy (complex_tmp, complex_data, n * 2 * sizeof (double));

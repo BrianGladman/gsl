@@ -11,6 +11,7 @@ TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
 
 gsl_histogram_SOURCES = gsl-histogram.c
 gsl_histogram_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
+noinst_HEADERS = urand.c
 
 test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
 test2d_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a

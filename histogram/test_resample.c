@@ -3,6 +3,8 @@
 #include <gsl_histogram.h>
 #include <gsl_test.h>
 
+#include "urand.c"
+
 int
 main (void)
 {
@@ -23,7 +25,7 @@ main (void)
 
     for (i = 0; i < 100000; i++)
       {
-	double u = ((double) rand ()) / RAND_MAX;
+	double u = urand();
 	double x = gsl_histogram_pdf_sample (p, u);
 	gsl_histogram_increment (hh, x);
       }

@@ -1,3 +1,9 @@
+Fri Aug  6 11:15:58 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: removed need to configure for rand() and RAND_MAX
+ 	by providing a simple random number generator in the directories
+ 	that used rand().
+
 1999-08-05  Mark Galassi  <rosalia@lanl.gov>
 
 	* Makefile.am: put the THANKS file into the distribution.
@@ -15,6 +21,12 @@
 	adding the author to the AUTHORS file.  The THANKS file should
 	include everyone who sent in patches.  They should also be
 	mentioned in the ChangeLog entry.
+
+Sat May  8 21:06:31 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: now check for "extern inline" using a modified
+ 	version of AC_C_INLINE, since we use "extern inline" but only
+ 	checked for "inline", and some compilers only support the latter.
 
 Sun Apr 11 20:40:35 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
