@@ -65,7 +65,7 @@ generic_rng_test (const gsl_rng_type * (*f) (void))
     int i, status;
 
     for (i = 0; i < n; ++i)
-      sum += gsl_rng_get (r) / (double) ran_max;
+      sum += gsl_rng_get_uni (r);
 
     sum /= n;
 
@@ -82,3 +82,4 @@ generic_rng_test (const gsl_rng_type * (*f) (void))
 
 
 }
+

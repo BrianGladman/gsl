@@ -52,6 +52,40 @@ gsl_rng_alloc (const gsl_rng_type * (*f)(void))
   return reference_to_generator (r);
 }
 
+
+gsl_rng *
+gsl_rng_clone (const gsl_rng * q)
+{
+  gsl_rng_internal * r = (gsl_rng_internal *) malloc(sizeof(gsl_rng)) ;
+
+  if (r == 0) 
+    {
+      GSL_ERROR_RETURN ("failed to allocate space for rng struct",
+			GSL_ENOMEM, 0);
+    } ;
+
+  r->state = malloc(q->size) ;
+
+  if (r->state == 0) 
+    {
+      free(r) ; /* exception in constructor, avoid memory leak */
+
+      GSL_ERROR_RETURN ("failed to allocate space for rng state",
+			GSL_ENOMEM, 0);
+    } ;
+
+  r->name = q->name ;
+  r->max = q->max ;
+  r->size = q->size ;
+  r->set = q->set ;
+  r->get = q->get ;
+
+  memcpy(r->state, q->state, q->size) ;
+
+  return reference_to_generator (r);
+}
+
+
 static gsl_rng * reference_to_generator (gsl_rng_internal * r)
 {
   gsl_rng * r_const = (gsl_rng *) r ;
@@ -66,6 +100,14 @@ void gsl_rng_set (const gsl_rng * r, unsigned int seed)
 unsigned long int gsl_rng_get (const gsl_rng * r)
 {
   return (r->get)(r->state) ;
+}
+
+double gsl_rng_get_uni (const gsl_rng * r)
+{
+  unsigned long int k = (r->get)(r->state) ;
+  unsigned long int max = r->max ;
+
+  return k / (1.0 + max) ;
 }
 
 unsigned long int gsl_rng_max (const gsl_rng * r)
