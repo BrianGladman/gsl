@@ -48,14 +48,18 @@ for (I = problems ; I->f != 0; I++)
 
  sd = sqrt(sumd2 / (TRIALS-1.0)) ;
  
- if (sd < TRIALS * GSL_DBL_EPSILON * mean)
+ if (sd < TRIALS * GSL_DBL_EPSILON * fabs (mean))
    {
-     sd = 0 ;
+     sd = 0;
    }
 
  for (i = 0; i < TRIALS; i++)
    {
-     
+     if (sd == 0 && fabs(error[i]) < GSL_DBL_EPSILON * fabs(result[i]))
+       {
+         error[i] = 0.0;
+       }
+
      gsl_test_factor (error[i], sd, 5.0,
                       NAME ", %s, abserr[%d] vs sd", I->description, i);
    }
