@@ -43,12 +43,12 @@ gsl_eigen_sort(gsl_vector * eval,
     return GSL_EBADLEN;
   }
   else {
-    int N = eval->size;
-    int i;
+    unsigned int N = eval->size;
+    unsigned int i;
 
     for(i=0; i<N-1; i++) {
-      int j;
-      int k = i;
+      unsigned int j;
+      unsigned int k = i;
       double tmp = gsl_vector_get(eval, k);
 
       /* search for something to swap */

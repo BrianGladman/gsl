@@ -193,8 +193,10 @@ void
 FUNCTION (gsl_matrix, set_identity) (TYPE (gsl_matrix) * m)
 {
   size_t i, j;
-  size_t p = m->size1 ;
-  size_t q = m->size2 ;
+  ATOMIC * const data = m->data;
+  const size_t p = m->size1 ;
+  const size_t q = m->size2 ;
+  const size_t tda = m->tda ;
 
   const BASE zero = ZERO;
   const BASE one = ONE;
@@ -203,7 +205,7 @@ FUNCTION (gsl_matrix, set_identity) (TYPE (gsl_matrix) * m)
     {
       for (j = 0; j < q; j++)
         {
-          FUNCTION(gsl_matrix, set) (m, i, j, (i == j) ? one : zero) ;
+          *(BASE *) (data + MULTIPLICITY * (i * tda + j)) = ((i == j) ? one : zero);
         }
     }
 }
@@ -212,8 +214,10 @@ void
 FUNCTION (gsl_matrix, set_zero) (TYPE (gsl_matrix) * m)
 {
   size_t i, j;
-  size_t p = m->size1 ;
-  size_t q = m->size2 ;
+  ATOMIC * const data = m->data;
+  const size_t p = m->size1 ;
+  const size_t q = m->size2 ;
+  const size_t tda = m->tda ;
 
   const BASE zero = ZERO;
 
@@ -221,7 +225,7 @@ FUNCTION (gsl_matrix, set_zero) (TYPE (gsl_matrix) * m)
     {
       for (j = 0; j < q; j++)
         {
-          FUNCTION(gsl_matrix, set) (m, i, j, zero) ;
+          *(BASE *) (data + MULTIPLICITY * (i * tda + j)) = zero;
         }
     }
 }
@@ -230,14 +234,16 @@ void
 FUNCTION (gsl_matrix, set_all) (TYPE (gsl_matrix) * m, BASE x)
 {
   size_t i, j;
-  size_t p = m->size1 ;
-  size_t q = m->size2 ;
+  ATOMIC * const data = m->data;
+  const size_t p = m->size1 ;
+  const size_t q = m->size2 ;
+  const size_t tda = m->tda ;
 
   for (i = 0; i < p; i++)
     {
       for (j = 0; j < q; j++)
         {
-          FUNCTION(gsl_matrix, set) (m, i, j, x);
+          *(BASE *) (data + MULTIPLICITY * (i * tda + j)) = x;
         }
     }
 }

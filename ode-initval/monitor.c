@@ -28,11 +28,11 @@
 static int
 dump_step(void * self, double t, unsigned int dim, const double y[], const double yerr[])
 {
-  int i;
+  unsigned int i;
   gsl_odeiv_evolve_mon * m = (gsl_odeiv_evolve_mon *) self;
   fprintf(m->f, "%20.16g", t);
   for(i=0; i<dim; i++) {
-    fprintf(m->f, "  %22.18g", y[i]);
+    fprintf(m->f, "  %22.18g %22.18g", y[i], yerr[i]);
   }
   fprintf(m->f, "\n");
   return GSL_SUCCESS;

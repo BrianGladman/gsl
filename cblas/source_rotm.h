@@ -43,6 +43,7 @@
     return;
   } else {
     BLAS_ERROR("unrecognized value of P[0]");
+    return;
   }
 
   for (n = 0; n < N; n++) {

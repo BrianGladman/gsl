@@ -53,7 +53,7 @@ gsl_cheb_eval_n (const gsl_cheb_series * cs, const size_t n, const double x)
   double d1 = 0.0;
   double d2 = 0.0;
 
-  int eval_order = GSL_MIN_INT (n, cs->order);
+  size_t eval_order = GSL_MIN (n, cs->order);
 
   double y = (2.0 * x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
@@ -119,7 +119,7 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
 
   double absc = 0.0;
 
-  int eval_order = GSL_MIN_INT (n, cs->order);
+  size_t eval_order = GSL_MIN (n, cs->order);
 
   for (i = eval_order; i >= 1; i--)
     {

@@ -40,7 +40,7 @@
 
 inline static void
 jac_rotate(gsl_matrix * a,
-           int i, int j, int k, int l,
+           unsigned int i, unsigned int j, unsigned int k, unsigned int l,
            double * g, double * h,
            double s, double tau)
 {
@@ -67,9 +67,8 @@ gsl_eigen_jacobi(gsl_matrix * a,
     return GSL_EBADLEN;
   }
   else {
-    const int n = a->size1;
-    unsigned int i;
-    int j, iq, ip;
+    const unsigned int n = a->size1;
+    unsigned int i, j, iq, ip;
     double t, s;
 
     REAL * b = (REAL *) malloc(n * sizeof(REAL));
@@ -193,9 +192,9 @@ gsl_eigen_invert_jacobi(const gsl_matrix * a,
     return GSL_EBADLEN;
   }
   else {
-    const int n = a->size1;
+    const unsigned int n = a->size1;
     unsigned int nrot;
-    int i,j,k,l;
+    unsigned int i,j,k,l;
 
     /* This is annoying because I do not want
      * the error handling in these functions.

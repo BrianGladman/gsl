@@ -83,7 +83,8 @@ main (void)
   gsl_vector *g = gsl_vector_calloc (p);
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
 
-  double y[n], sigma[n];
+  double * y = malloc(n * sizeof(double));
+  double * sigma = malloc(n * sizeof(double));
 
   struct data d = { n, y, sigma};
   
