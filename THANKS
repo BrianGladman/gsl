@@ -330,3 +330,7 @@ instability in interpolation integrate function
 histogram range calculations
 
 * John Salmon <jsalmon@thesalmons.org> bug report for gsl_cheb_eval_n_err
+
+* Dirk Eddelbuettel <edd@debian.org> for bug reports and testing, and
+maintaining the Debian package for GSL.
+
