@@ -61,7 +61,7 @@ find a root in an area where there is more than one.}
 
 All GSL root finding functions follow the same general template:
 
-@deftypefun double gsl_root_template (@var{f}, [@var{df},]@*[@w{@var{lower_bound}}, @w{@var{upper_bound}}, | @var{guess}, [@var{guess2},]]@*@var{epsilon}, @w{@var{max_iterations}}@w{[, @var{max_step_size}])}
+@deftypefun int gsl_root_template (@var{root}, @var{f}, @var{df}, @var{fdf},@*@w{@var{lower_bound}}, @w{@var{upper_bound}}, @var{guess}, @var{guess2},@*@var{epsilon}, @w{@var{max_iterations}}, @var{max_step_size})
 @end deftypefun
 
 Note that no GSL root finding functions accept all of these arguments.
@@ -74,6 +74,9 @@ node
 @end ifinfo
 for information on which arguments that function accepts.
 
+The header file @w{@file{gsl_roots.h}} contains prototypes for GSL root
+finding functions and some other useful declarations.
+
 The following 
 @iftex
 subsections
@@ -81,13 +84,11 @@ subsections
 @ifinfo
 nodes
 @end ifinfo
-explain how to use GSL root finding functions in your code, the specific
-meaning of each argument, and which error codes are possible.
+explain how the specific meaning of each argument and which error codes
+are possible.
 
 @menu
-* Making the Root Finding Functions Available to Your Programs::
-                                       Proper @code{#include}ing and linking
-* Root Finder Return Values::          What GSL root finders return and when
+* Root Finder Return Values::          Signaling an error, @code{root}
 * Providing the Function to Search::   @code{f}, @code{df}
 * Search Bounds and Guesses::          @code{lower_bound}, @code{upper_bound}, @code{guess},
                                          @code{guess2}
@@ -98,46 +99,27 @@ meaning of each argument, and which error codes are possible.
 @end menu
 
 
-@node Making the Root Finding Functions Available to Your Programs
-@subsection Making the Root Finding Functions Available to Your Programs
-@cindex root finding, include files
-@cindex root finding, linking
-@cindex linking root finding functions
-@cindex include files for root finding functions
-@cindex root finding, making functions available to your programs
-
-Declarations of GSL root finding functions and associated crud is in
-@w{@file{gsl_roots.h}}; you should include it in your programs which make
-use of GSL root finding services.
-
-The library @w{@file{libgslroots.*}} contains code for the GSL root finding
-functions; use @samp{-lgslroots} on the command line to link it in.
-Alternately, you could just link the main GSL library (@w{@file{libgsl.*}},
-@samp{-lgsl}); this might be the better way to go if you are using other
-GSL functions as well. (@strong{FIXME: How correct is this?})
-
-Once you've @code{#include}d and linked, you're all set. Call GSL root
-finding functions as they're described in this manual.
-
-@strong{FIXME: Anything else?}
-
-
 @node Root Finder Return Values
 @subsection Root Finder Return Values
 
-Depending on whether a GSL root finding function succeeded or failed, it
-will return the location of a root or the special value @code{NAN} (IEEE
-Not-A-Number).
+Since the return value of GSL root finding functions is reserved for the
+error status, you must provide storage for the location of the found
+root. 
 
-If the function succeeded in finding a root to the desired precision in
-the specified number of iterations, it will return the location of that
-root.
+@deftypevr {Function Argument} {double *} root
+@vindex @r{root finding,} root @r{(function argument)}
+A pointer to a place for the GSL root finder to store the location of
+the found root. This must be a valid pointer; GSL root finders will not
+allocate any memory for you.
+@end deftypevr
 
-If the function failed, it will return @code{NAN} (defined in the ANSI
-standard header file @file{math.h} @strong{FIXME: Is this true?}) and
-set @w{@code{gsl_errno}} to a diagnostic value. @xref{Root Finder Error
-Codes}, for a list of possible @w{@code{gsl_errno}} values and their
-meanings.
+If a GSL root finder succeeds, it will return @code{0} and store the
+location of the found root in @w{@code{*root}}.
+
+If a GSL root finder fails, it will return @code{-1} and set
+@w{@code{gsl_errno}} to a diagnostic value. @xref{Root Finder Error
+Codes}, for a discussion of possible error codes. Nothing useful will be
+stored in @w{@code{*root}}.
 
 The final values of @w{@code{lower_bound}}, @w{@code{upper_bound}},
 @code{guess}, and/or @code{guess2} are very often useful for diagnosing
@@ -148,13 +130,53 @@ arguments are the values they held @emph{before} the error.)
 
 @node Providing the Function to Search
 @subsection Providing the Function to Search
-@vindex @r{root finding,} f @r{(function argument)}
-@vindex @r{root finding,} df @r{(function argument)}
+@cindex root finding, providing the function to search
+@cindex root finding, @t{f} and @t{df} vs. @t{fdf}
 
 You must provide a continous function of one variable for the GSL root
 finder(s) to operate on, and, sometimes, its first derivative.
 
+Often, it is much faster to calculate @math{f(x)} and @math{@{d \over
+dx@} f(x)} simultaneously. GSL allows you to do this; root finding
+functions which require a derivative accept all of @code{f}, @code{df},
+and @code{fdf} (see below). However, you can only provide @code{f} and
+@code{df} @strong{or} @code{fdf} simultaneously, never all three and
+never only @code{f} or @code{df}. Set the alternatives which you are not
+providing to the null pointer.
+
+For example,
+
+@smallexample
+@group
+gsl_root_newton( ... my_f, my_df, NULL, ... );
+gsl_root_newton( ... NULL, NULL, my_fdf, ... );
+@end group
+@end smallexample
+
+@noindent
+are correct, but
+
+@smallexample
+@group
+gsl_root_newton( ... my_f, my_df, my_fdf, ... );
+gsl_root_newton( ... my_f, NULL, my_fdf, ... );
+gsl_root_newton( ... my_f, NULL, NULL, ... );
+gsl_root_newton( ... NULL, NULL, NULL, ... );
+@end group
+@end smallexample
+
+@noindent
+are not.
+
+Recall that when passing pointers to functions, you give the name of the
+function you are passing. For example:
+
+@smallexample
+function_which_takes_a_function_pointer (my_function);
+@end smallexample
+
 @deftypevr {Function Argument} double {@t{(*} f@t{)(double)}}
+@vindex @r{root finding,} f @r{(function argument)}
 A pointer to the function whose root you are searching for. It is called
 by the root finding function many times during its search. It must be
 continous within the search region (@pxref{Search Bounds and Guesses}).
@@ -164,7 +186,7 @@ Here is an example function which you could pass to a GSL root finder:
 @smallexample
 @group
 double
-my_function (double x) @{
+my_f (double x) @{
    double y;
    
    y = sin (2 * x) + 2 * cos (x);
@@ -173,36 +195,56 @@ my_function (double x) @{
 @end group
 @end smallexample
 
-Recall that when passing pointers to functions, you give the name of the
-function you are passing. For example:
-
-@smallexample
-function_which_takes_a_function_pointer (my_function);
-@end smallexample
-
 @end deftypevr
 
 @deftypevr {Function Argument} double {@t{(*} df@t{)(double)}}
+@vindex @r{root finding,} df @r{(function argument)}
 A pointer to the first derivative of the function whose root you are
 searching for.
 
-@emph{Please note:} If your function's first derivative is not
-available, you should not approximate it numerically; it is almost
-always faster to use an algorithm which does not require it.
-(@strong{FIXME: Is this a valid statement?})
-
 If we were looking for a root of the function in the previous example,
-this is what we would use for @code{dfn}:
+this is what we would use for @code{df}:
 
 @smallexample
 @group
 double
-my_functions_first_derivative (double x) @{
+my_df (double x) @{
    double yprime;
 
    yprime = 2 * cos (2 * x) - 2 * sin (x);
    return (yprime);
 @} 
+@end group
+@end smallexample
+
+@end deftypevr
+
+@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *, double)}}
+A pointer to a function which calculates both the value of the function
+under search and the value of its first derivative. Because many terms
+of a function and its derivative are the same, it is often faster to use
+this method (as opposed to providing @math{f(x)} and @math{f'(x)}
+separately). However, it is more complicated.
+
+It stores @math{f(x)} in its first argument and @math{f'(x)} in its
+second.
+
+@strong{FIXME: should we create a type for this?}
+
+Here's an example where @math{f(x) = 2\sin(2x)\cos(x)}:
+
+@smallexample
+@group
+void
+my_fdf (double * y, double * yprime, double x) @{
+   double sin2x, cosx;
+
+   sin2x = sin (2 * x);
+   cosx = cos (x);
+
+   *y = 2 * sin2x * cos (x);
+   *yprime = 2 * sin2x * -sin (x) + 2 * cos (2 * x) * cosx);
+@}
 @end group
 @end smallexample
 
@@ -242,12 +284,11 @@ threshold. If it isn't, chug away for a few more iterations and repeat
 the process; if it is, depending on your temperament, your program could
 renice itself to a lower priority and mail back apologies before
 continuing, or it could mailbomb everyone who complained, spawn copies
-of itself endlessly, and dump garbage to @w{@file{/dev/audio}} and
-@w{@file{/dev/console}}. (The latter approach is not recommended.)
+of itself endlessly, and dump garbage to @w{@file{/dev/audio}}. (The
+latter approach is not recommended.)
 
-Note that these arguments must be valid pointers; GSL will not allocate
-any memory for you. We recommend that you use the @code{&} operator on
-declared variables because it is less messy than @code{malloc}.
+Note that these arguments must be valid pointers; GSL root finders will
+not allocate any memory for you.
 
 @deftypevr {Function Argument} {double *} lower_bound
 @deftypevrx {Function Argument} {double *} upper_bound
@@ -315,30 +356,32 @@ finding function accepts the following arguments:
 
 @deftypevr {Function Argument} double epsilon
 @vindex @r{root finding,} epsilon @r{(function argument)}
-The maximum permissible error in GSL root finder answers. This must be
-greater than (@strong{FIXME: or equal to?}) @w{@code{DBL_EPSILON}},
+The maximum permissible error in GSL root finder answers. For the root
+finding algorithm to converge, @code{epsilon} must be greater than the
+absolute value of the root position divided by @w{@code{DBL_EPSILON}},
 specified in the file @w{@file{float.h}} of the @sc{ansi} C Library,
 which is the smallest positive @math{x} such that the relation @math{1 +
-x \neq 1} holds true. With a 64-bit @code{double}, this is around
-@math{10^@{-16@}} (@strong{FIXME: is that correct? should we give this
-information?})
+x \neq 1} holds true. With a 64-bit @code{double},
+@w{@code{DBL_EPSILON}} is around @math{10^@{-16@}}. Note that GSL does
+no error checking for this; if the root finder does not converge, make
+sure you are not asking for more precision than the computer is capable
+of giving you.
 
 For the sake of efficient resource use, it is a good idea to not ask for
 more precision than you need, especially if your function is costly to
 evaluate.
 @end deftypevr
 
-@deftypevr {Function Argument} int max_iterations
+@deftypevr {Function Argument} {unsigned int} max_iterations
 @vindex @r{root finding,} max_iterations @r{(function argument)}
 The maximum number of iterations a root finder is allowed to perform.
 This must be greater than or equal to 1, as performing a negative number
 of iterations is extremely difficult and not doing any iterations is
 rather useless.
 
-@strong{FIXME: There must be a good rule of thumb for setting the number of
-iterations.} Do not set @w{@code{max_iterations}} too large. If there is
-a problem, you want to know about it as soon as possible; you don't want
-your program chugging away for many cycles in error.
+Do not set @w{@code{max_iterations}} too large. If there is a problem,
+you want to know about it as soon as possible; you don't want your
+program chugging away for many cycles in error.
 @end deftypevr
 
 In addition, GSL root finding functions which extrapolate (Newton's
@@ -352,7 +395,7 @@ This is to prevents the algorithm from landing on a place where the test
 function's derivative is very small and zooming off to infinity or into
 a different solution basin.
 
-For example, if while solving @math{sin(x) = 0}, @math{x_n} of Newton's
+For example, if while solving @math{\sin(x) = 0}, @math{x_n} of Newton's
 Method (@pxref{Newtons Method}) landed on @math{1.570700000}
 (@math{\pi/2 \approx 1.570796327}), then @math{x_@{n+1@}}
 would be approximately @math{-10000}, which is definitely not what we
@@ -370,7 +413,7 @@ derivatives directly, when extrapolating it approximates them
 numerically.
 
 Do not set @w{@code{max_step_size}} too large; that will defeat its
-purpose. In the @math{sin(x) = 0} example, @math{\pi} would be a good
+purpose. In the @math{\sin(x) = 0} example, @math{\pi} would be a good
 value for @w{@code{max_step_size}}; any step larger than that would
 certainly be headed astray. A good understanding of the problem is
 especially important for @w{@code{max_step_size}}.
@@ -381,16 +424,15 @@ especially important for @w{@code{max_step_size}}.
 @subsection Root Finder Error Codes
 @cindex root finding, error codes
 
-When successful, GSL root finding functions return the location of the
-found root; on error, they return @code{NAN} (defined in
-@w{@file{math.h}} @strong{FIXME: true?}) and set the global variable
-@w{@code{gsl_errno}} to a diagnostic value. (@xref{Error handling in
-GSL}, for a general discussion of GSL error handling.)
+When successful, GSL root finding functions return @code{0}; on error,
+they return @code{-1} and set the global variable @w{@code{gsl_errno}}
+to a diagnostic value. (@xref{Error handling in GSL}, for a general
+discussion of GSL error handling.)
 
 Often, one of @code{*guess}, @code{*guess2}, @w{@code{*lower_bound}}, or
-@w{@code{*upper_bound}} (@pxref{Search Bounds and Guesses}) will always
-be the value that caused the anamalous behavior. One may examine the
-values of these arguments to help determine why a root finder failed.
+@w{@code{*upper_bound}} (@pxref{Search Bounds and Guesses}) will be the
+value that caused the anamalous behavior. One may examine the values of
+these arguments to help determine why a root finder failed.
 
 GSL root finders may set @w{@code{gsl_errno}} to the following values:
 
@@ -401,7 +443,7 @@ these conditions is true:
 
 @itemize @bullet
 @item 
-@code{epsilon} is too small or @w{@code{max_iterations}} is less than 1.
+@w{@code{max_iterations}} is equal to 0.
 @xref{Search Stopping Parameters}.
 
 @item
@@ -416,6 +458,10 @@ The lower bound of the search interval is not less than the upper bound.
 @math{f(lower\_bound)} and @math{f(upper\_bound)} do not differ in sign,
 and the function that you are using requires that they do.
 @end itemize
+
+@item
+You provided an invalid combination of @code{f}, @code{df}, and
+@code{fdf}. @xref{Providing the Function to Search}.
 
 @item GSL_EBADFUNC
 The function under search (or its derivative) did not return a valid
@@ -448,9 +494,6 @@ the hybrid functions are a good bet. The @value{GSL} provides two
 hybrids: one which does not require the first derivative of the function
 under search and one which does.
 
-@strong{FIXME: how to set lower_bound and upper_bound on error from within
-Newton or Secant, which use guesses?}
-
 @deftypefun double gsl_root_hybrid (@w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_hybrid
 
@@ -466,7 +509,7 @@ error codes.
 
 @end deftypefun
 
-@deftypefun double gsl_root_hybrid_d (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun double gsl_root_hybrid_d (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_hybrid
 
 Search for a zero using a combination of false position (@pxref{False
@@ -480,10 +523,6 @@ error codes.
 @math{f(lower\_bound)} and @math{f(upper\_bound)} must differ in sign.
 
 @end deftypefun
-
-@strong{FIXME: it seems rather limiting that @math{f(lower\_bound)} and
-@math{f(upper\_bound)} must differ in sign; look into removing this
-restriction.}
 
 
 @node Bisection
@@ -501,7 +540,7 @@ Intermediate Value Theorem to contain a root: where @math{a} and
 sign from @math{f(b)}. (If you're a bit fuzzy on the Intermediate Value
 Theorem, consult any elementary calculus textbook.)
 
-Each iteration, bisection chops its interval in half, and discards the
+Each iteration, bisection chops its interval in half and discards the
 interval which does not contain a root. Once the interval is smaller
 than the requested epsilon, iteration stops and the root location is
 returned.
@@ -690,7 +729,7 @@ Several iterations of Newton's Method, where @math{g_n} is the
 Newton's Method.)
 @end ifinfo
 
-@deftypefun double gsl_root_newton (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun double gsl_root_newton (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_newton
 
 Search for a zero of @code{f} using Newton's Method, with @code{*guess}
