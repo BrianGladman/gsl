@@ -24,125 +24,136 @@
 #include <gsl/gsl_linalg.h>
 
 /* Fit
-
-   y = X c
-
-   where X is an M x N matrix of M observations for N variables.
-
-   */
+ *
+ *  y = X c
+ *
+ *  where X is an M x N matrix of M observations for N variables.
+ *
+ */
 
 int
 gsl_multifit_linear (const gsl_matrix * X,
-                     const gsl_vector * y,
-                     gsl_vector * c,
-                     gsl_matrix * cov,
-                     double * chisq,
-                     gsl_multifit_linear_workspace * work)
+		     const gsl_vector * y,
+		     gsl_vector * c,
+		     gsl_matrix * cov,
+		     double *chisq, gsl_multifit_linear_workspace * work)
 {
-
-  if (X->size1 != y->size) 
+  if (X->size1 != y->size)
     {
-      GSL_ERROR ("number of observations in y does not match rows of matrix X",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("number of observations in y does not match rows of matrix X",
+	 GSL_EBADLEN);
     }
-  else if (X->size2 != c->size) 
+  else if (X->size2 != c->size)
     {
       GSL_ERROR ("number of parameters c does not match columns of matrix X",
-                 GSL_EBADLEN);
+		 GSL_EBADLEN);
     }
   else if (cov->size1 != cov->size2)
     {
       GSL_ERROR ("covariance matrix is not square", GSL_ENOTSQR);
     }
-  else if (c->size != cov->size1) 
+  else if (c->size != cov->size1)
     {
-      GSL_ERROR ("number of parameters does not match size of covariance matrix",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("number of parameters does not match size of covariance matrix",
+	 GSL_EBADLEN);
     }
   else if (X->size1 != work->n || X->size2 != work->p)
     {
-      GSL_ERROR ("size of workspace does not match size of observation matrix",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("size of workspace does not match size of observation matrix",
+	 GSL_EBADLEN);
     }
-  else 
+  else
     {
       const size_t n = X->size1;
       const size_t p = X->size2;
-      
+
       size_t i, j;
 
-      gsl_matrix * A = work->A;
-      gsl_matrix * Q = work->Q;
-      gsl_matrix * QSI = work->QSI;
-      gsl_vector * S = work->S;
-      gsl_vector * xt = work->xt;
+      gsl_matrix *A = work->A;
+      gsl_matrix *Q = work->Q;
+      gsl_matrix *QSI = work->QSI;
+      gsl_vector *S = work->S;
+      gsl_vector *xt = work->xt;
+      gsl_vector *D = work->D;
 
-      /* Copy X to workspace,  A =  X */
-      
+      /* Copy X to workspace,  A <= X */
+
       gsl_matrix_memcpy (A, X);
-      
+
+      /* Balance the columns of the matrix A */
+
+      gsl_linalg_balance_columns (A, D);
+
       /* Decompose A into U S Q^T */
-     
-      gsl_linalg_SV_decomp (A, Q, S);
-      
+
+      gsl_linalg_SV_decomp_mod (A, QSI, Q, S, xt);
+
       /* Solve y = A c for c */
-      
-      gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt) ;
-      
+
+      gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
+
       /* Scale the matrix Q,  Q' = Q S^-1 */
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0 ; j < p ; j++)
-        {
-          gsl_vector column = gsl_matrix_column (QSI, j);
-          double alpha = gsl_vector_get (S, j);
-          if (alpha != 0) alpha = 1.0 / alpha;
-          gsl_vector_scale (&column, alpha);
-        }
-      
+      for (j = 0; j < p; j++)
+	{
+	  gsl_vector column = gsl_matrix_column (QSI, j);
+	  double alpha = gsl_vector_get (S, j);
+	  if (alpha != 0)
+	    alpha = 1.0 / alpha;
+	  gsl_vector_scale (&column, alpha);
+	}
+
       gsl_vector_set_zero (c);
 
       gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
-      
+
+      /* Unscale the balancing factors */
+
+      gsl_vector_div (c, D);
 
       /* Compute chisq, from residual r = y - X c */
 
       {
-        double s2 = 0, r2 = 0;
-        
-        for (i = 0; i < n; i++) 
-          {
-            double yi = gsl_vector_get (y, i);
-            const gsl_vector row = gsl_matrix_const_row (X, i);
-            double y_est, ri;
-            gsl_blas_ddot (&row, c, &y_est) ;
-            ri = yi - y_est ;
-            r2 +=  ri * ri;
-          }
+	double s2 = 0, r2 = 0;
 
-        s2 = r2 / (n - p);
+	for (i = 0; i < n; i++)
+	  {
+	    double yi = gsl_vector_get (y, i);
+	    const gsl_vector row = gsl_matrix_const_row (X, i);
+	    double y_est, ri;
+	    gsl_blas_ddot (&row, c, &y_est);
+	    ri = yi - y_est;
+	    r2 += ri * ri;
+	  }
 
-        *chisq = r2;
+	s2 = r2 / (n - p);
 
-        /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
-        
-        for (i = 0; i < p; i++) 
-          {
-            gsl_vector row_i = gsl_matrix_row (QSI, i);
-            
-            for (j = i; j < p ; j++)
-              {
-                gsl_vector row_j = gsl_matrix_row (QSI, j);
-                
-                double s;
-                
-                gsl_blas_ddot (&row_i,  &row_j, &s);
-                
-                gsl_matrix_set (cov, i, j, s * s2);
-                gsl_matrix_set (cov, j, i, s * s2);
-              }
-          }
+	*chisq = r2;
+
+	/* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
+
+	for (i = 0; i < p; i++)
+	  {
+	    gsl_vector row_i = gsl_matrix_row (QSI, i);
+	    double d_i = gsl_vector_get (D, i);
+
+	    for (j = i; j < p; j++)
+	      {
+		gsl_vector row_j = gsl_matrix_row (QSI, j);
+		double d_j = gsl_vector_get (D, j);
+		double s;
+
+		gsl_blas_ddot (&row_i, &row_j, &s);
+
+		gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
+		gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+	      }
+	  }
       }
 
       return GSL_SUCCESS;
@@ -151,149 +162,159 @@ gsl_multifit_linear (const gsl_matrix * X,
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,
-                      const gsl_vector * w,
-                      const gsl_vector * y,
-                      gsl_vector * c,
-                      gsl_matrix * cov,
-                      double * chisq,
-                      gsl_multifit_linear_workspace * work)
+		      const gsl_vector * w,
+		      const gsl_vector * y,
+		      gsl_vector * c,
+		      gsl_matrix * cov,
+		      double *chisq, gsl_multifit_linear_workspace * work)
 {
-  if (X->size1 != y->size) 
+  if (X->size1 != y->size)
     {
-      GSL_ERROR ("number of observations in y does not match rows of matrix X",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("number of observations in y does not match rows of matrix X",
+	 GSL_EBADLEN);
     }
-  else if (X->size2 != c->size) 
+  else if (X->size2 != c->size)
     {
       GSL_ERROR ("number of parameters c does not match columns of matrix X",
-                 GSL_EBADLEN);
+		 GSL_EBADLEN);
     }
   else if (w->size != y->size)
     {
       GSL_ERROR ("number of weights does not match number of observations",
-                 GSL_EBADLEN);
+		 GSL_EBADLEN);
     }
   else if (cov->size1 != cov->size2)
     {
       GSL_ERROR ("covariance matrix is not square", GSL_ENOTSQR);
     }
-  else if (c->size != cov->size1) 
+  else if (c->size != cov->size1)
     {
-      GSL_ERROR ("number of parameters does not match size of covariance matrix",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("number of parameters does not match size of covariance matrix",
+	 GSL_EBADLEN);
     }
   else if (X->size1 != work->n || X->size2 != work->p)
     {
-      GSL_ERROR ("size of workspace does not match size of observation matrix",
-                 GSL_EBADLEN);
+      GSL_ERROR
+	("size of workspace does not match size of observation matrix",
+	 GSL_EBADLEN);
     }
-  else 
+  else
     {
       const size_t n = X->size1;
       const size_t p = X->size2;
-      
+
       size_t i, j;
 
-      gsl_matrix * A = work->A;
-      gsl_matrix * Q = work->Q;
-      gsl_matrix * QSI = work->QSI;
-      gsl_vector * S = work->S;
-      gsl_vector * t = work->t;
-      gsl_vector * xt = work->xt;
+      gsl_matrix *A = work->A;
+      gsl_matrix *Q = work->Q;
+      gsl_matrix *QSI = work->QSI;
+      gsl_vector *S = work->S;
+      gsl_vector *t = work->t;
+      gsl_vector *xt = work->xt;
+      gsl_vector *D = work->D;
 
       /* Scale X,  A = sqrt(w) X */
-      
+
       gsl_matrix_memcpy (A, X);
 
       for (i = 0; i < n; i++)
-        {
-          double wi = gsl_vector_get (w, i);
+	{
+	  double wi = gsl_vector_get (w, i);
 
-          if (wi < 0) 
-            wi = 0;
-          
-          {
-            gsl_vector row = gsl_matrix_row (A, i);
-            gsl_vector_scale (&row, sqrt(wi));
-          }
-        }
-      
+	  if (wi < 0)
+	    wi = 0;
+
+	  {
+	    gsl_vector row = gsl_matrix_row (A, i);
+	    gsl_vector_scale (&row, sqrt (wi));
+	  }
+	}
+
+      /* Balance the columns of the matrix A */
+
+      gsl_linalg_balance_columns (A, D);
+
       /* Decompose A into U S Q^T */
-     
-      gsl_linalg_SV_decomp (A, Q, S);
-      
+
+      gsl_linalg_SV_decomp_mod (A, QSI, Q, S, xt);
+
       /* Solve sqrt(w) y = A c for c, by first computing t = sqrt(w) y */
 
       for (i = 0; i < n; i++)
-        {
-          double wi = gsl_vector_get (w, i);
-          double yi = gsl_vector_get (y, i);
-          if (wi < 0) wi = 0;
-          gsl_vector_set (t, i, sqrt(wi) * yi);
-        }
-      
-      gsl_blas_dgemv (CblasTrans, 1.0, A, t, 0.0, xt) ;
-      
+	{
+	  double wi = gsl_vector_get (w, i);
+	  double yi = gsl_vector_get (y, i);
+	  if (wi < 0)
+	    wi = 0;
+	  gsl_vector_set (t, i, sqrt (wi) * yi);
+	}
+
+      gsl_blas_dgemv (CblasTrans, 1.0, A, t, 0.0, xt);
+
       /* Scale the matrix Q,  Q' = Q S^-1 */
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0 ; j < p ; j++)
-        {
-          gsl_vector column = gsl_matrix_column (QSI, j);
-          double alpha = gsl_vector_get (S, j);
-          if (alpha != 0) alpha = 1.0 / alpha;
-          gsl_vector_scale (&column, alpha);
-        }
-      
+      for (j = 0; j < p; j++)
+	{
+	  gsl_vector column = gsl_matrix_column (QSI, j);
+	  double alpha = gsl_vector_get (S, j);
+	  if (alpha != 0)
+	    alpha = 1.0 / alpha;
+	  gsl_vector_scale (&column, alpha);
+	}
+
       gsl_vector_set_zero (c);
 
       /* Solution */
 
       gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
-      
-      
+
+      /* Unscale the balancing factors */
+
+      gsl_vector_div (c, D);
+
       /* Form covariance matrix cov = (Q S^-1) (Q S^-1)^T */
 
-      for (i = 0; i < p; i++) 
-        {
-          gsl_vector row_i = gsl_matrix_row (QSI, i);
+      for (i = 0; i < p; i++)
+	{
+	  gsl_vector row_i = gsl_matrix_row (QSI, i);
+	  double d_i = gsl_vector_get (D, i);
 
-          for (j = i; j < p ; j++)
-            {
-              gsl_vector row_j = gsl_matrix_row (QSI, j);
-              
-              double s;
-              
-              gsl_blas_ddot (&row_i,  &row_j, &s);
+	  for (j = i; j < p; j++)
+	    {
+	      gsl_vector row_j = gsl_matrix_row (QSI, j);
+	      double d_j = gsl_vector_get (D, j);
+	      double s;
 
-              gsl_matrix_set (cov, i, j, s);
-              gsl_matrix_set (cov, j, i, s);
-            }
-        }
+	      gsl_blas_ddot (&row_i, &row_j, &s);
+
+	      gsl_matrix_set (cov, i, j, s / (d_i * d_j));
+	      gsl_matrix_set (cov, j, i, s / (d_i * d_j));
+	    }
+	}
 
       /* Compute chisq, from residual r = y - X c */
 
       {
-        double r2 = 0;
-        
-        for (i = 0; i < n; i++) 
-          {
-            double yi = gsl_vector_get (y, i);
-            double wi = gsl_vector_get (w, i);
-            const gsl_vector row = gsl_matrix_const_row (X, i);
-            double y_est, ri;
-            gsl_blas_ddot (&row, c, &y_est) ;
-            ri = yi - y_est ;
-            r2 += wi * ri * ri;
-          }
-      
-        *chisq = r2;
+	double r2 = 0;
+
+	for (i = 0; i < n; i++)
+	  {
+	    double yi = gsl_vector_get (y, i);
+	    double wi = gsl_vector_get (w, i);
+	    const gsl_vector row = gsl_matrix_const_row (X, i);
+	    double y_est, ri;
+	    gsl_blas_ddot (&row, c, &y_est);
+	    ri = yi - y_est;
+	    r2 += wi * ri * ri;
+	  }
+
+	*chisq = r2;
       }
 
       return GSL_SUCCESS;
     }
 }
-  
-  
-

@@ -47,6 +47,7 @@ typedef struct
   gsl_vector * S;
   gsl_vector * t;
   gsl_vector * xt;
+  gsl_vector * D;
 } 
 gsl_multifit_linear_workspace;
 

@@ -1,3 +1,12 @@
+Tue Jun 19 23:18:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multilinear.c: perform column scaling before doing fit to
+ 	improve accuracy
+	(gsl_multifit_linear): use modified Golub-Reinsch SVD for greater
+ 	speed
+	(gsl_multifit_wlinear): use modified Golub-Reinsch SVD for greater
+ 	speed
+
 Wed Jun  6 13:32:22 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lmder.c covar.c lmiterate.c lmset.c: updated to use new QR
