@@ -158,7 +158,7 @@ void (*gsl_siman_print_t) (void *xp)
 @end deftp
 
 @deftp {Data Type} gsl_siman_copy_t
-This function type should copy the configuration @var{dest} into @var{source}.
+This function type should copy the configuration @var{source} into @var{dest}.
 @example
 void (*gsl_siman_copy_t) (void *source, void *dest)
 @end example
