@@ -435,25 +435,27 @@ test_stepper_err (const gsl_odeiv_step_type * T, double h, double base_prec)
       int stat;
       double y1_t = y[1];
       double sin_th = sin(t+h);
+      /* next line gives dy_exp = sin(t+h) - sin(t) */
       double dy_exp = cos(t)*sin(h)-2*sin(t)*pow(sin(h/2),2.0);
       double dy_t;
       gsl_odeiv_step_apply (stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
       dy_t = y[1] - y1_t;
-      del = fabs (dy_t - dy_exp);// + (fabs(y[1]) + fabs(y1_t))*GSL_DBL_EPSILON;
+      del = fabs (dy_t - dy_exp);
       
       if (t > 0.1 && t < 0.2) { 
-        int stat = (del > 10.0*yerr[1]);
+        int stat = (del > 10.0*fabs(yerr[1]) + GSL_DBL_EPSILON*fabs(y[1]));
                 
         if (stat != 0)
           {
             delmax = del;
-            errmax = yerr[1];
+            errmax = fabs(yerr[1]);
 
             printf ("SIN(%.18e) %.5e %.5e %e %e %e\n", t + h, y[1],
                     dy_t, dy_exp, del, yerr[1]);
+
+            s += stat;
             break;
           }
-        s += stat;
       }
       count++;
     }

@@ -262,9 +262,10 @@ rkf45_apply (void *vstate,
 
   /* difference between 4th and 5th order */
   for (i = 0; i < dim; i++)
-    yerr[i] =
-      h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i] + ec[5] * k5[i] +
-           ec[6] * k6[i]);
+      yerr[i] =
+        h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i] + ec[5] * k5[i] +
+             ec[6] * k6[i]);
+     
 
   return status;
 }
