@@ -15,9 +15,9 @@ TESTS = test test_nist
 
 test_SOURCES = test.c
 test_LDADD = libgslstatistics.la ../sort/libgslsort.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-test_DEPENDENCIES = libgslstatistics.la
+
 
 test_nist_SOURCES = test_nist.c
 test_nist_LDADD = libgslstatistics.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-test_nist_DEPENDENCIES = libgslstatistics.la
+
 

@@ -22,13 +22,6 @@ test2d_resample_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils
 test_trap_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
 test2d_trap_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
 
-test_DEPENDENCIES = libgslhistogram.la
-test2d_DEPENDENCIES = libgslhistogram.la
-test_resample_DEPENDENCIES = libgslhistogram.la
-test2d_resample_DEPENDENCIES = libgslhistogram.la
-test_trap_DEPENDENCIES = libgslhistogram.la
-test2d_trap_DEPENDENCIES = libgslhistogram.la
-
 test_SOURCES = test.c
 test2d_SOURCES = test2d.c
 test_resample_SOURCES = test_resample.c

@@ -14,4 +14,3 @@ TESTS = test
 
 test_SOURCES = test.c test_funcs.c test.h
 test_LDADD = libgslmin.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la ../sys/libgslsys.la
-test_DEPENDENCIES = libgslmin.la

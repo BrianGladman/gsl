@@ -11,10 +11,8 @@ TESTS = test test_static
 test_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_static_LDADD = libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslmatrix.la
 test_SOURCES = test.c
 
-test_static_DEPENDENCIES = libgslmatrix.la
 test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat

@@ -11,9 +11,6 @@ TESTS = test test_static
 test_LDADD = libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 test_static_LDADD = libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslvector.la
-test_static_DEPENDENCIES = libgslvector.la
-
 test_SOURCES = test.c
 test_static_SOURCES = test_static.c
 

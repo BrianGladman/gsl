@@ -10,8 +10,6 @@ TESTS = test
 
 test_LDADD = libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
-test_DEPENDENCIES = libgslblock.la
-
 test_SOURCES = test.c
 
 CLEANFILES = test.txt test.dat

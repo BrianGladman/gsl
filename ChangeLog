@@ -1,3 +1,8 @@
+Wed Jun  6 18:10:18 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* removed explicit dependencies from Makefile.am's since automake
+ 	now handles these automatically
+
 Tue May 29 12:40:08 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: added missing wildcard to end of hpux11* to match

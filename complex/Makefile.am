@@ -12,4 +12,4 @@ check_PROGRAMS = test
 
 test_SOURCES = test.c results.h results1.h
 test_LDADD = libgslcomplex.la ../err/libgslerr.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la  ../utils/libutils.la
-test_DEPENDENCIES = libgslcomplex.la
+

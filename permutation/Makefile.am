@@ -13,7 +13,7 @@ TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c
-test_DEPENDENCIES = libgslpermutation.la
+
 test_LDADD = libgslpermutation.la ../vector/libgslvector.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 #CLEANFILES = test.txt test.dat

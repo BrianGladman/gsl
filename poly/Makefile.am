@@ -15,4 +15,4 @@ check_PROGRAMS = test
 
 test_SOURCES = test.c
 test_LDADD = libgslpoly.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-test_DEPENDENCIES = libgslpoly.la
+

@@ -11,7 +11,7 @@ TESTS = test
 check_PROGRAMS = test
 
 test_LDADD = libgslsum.la ../ieee-utils/libgslieeeutils.la ../sys/libgslsys.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-test_DEPENDENCIES = libgslsum.la
+
 test_SOURCES = test.c
 
 

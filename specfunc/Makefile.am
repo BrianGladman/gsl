@@ -57,7 +57,7 @@ test_LDADD = libgslspecfunc.la \
 	../err/libgslerr.la \
 	../test/libgsltest.la \
         ../utils/libutils.la
-test_DEPENDENCIES = libgslspecfunc.la
+
 test_SOURCES = test_sf.c		\
 		  test_sf.h		\
 		  test_airy.c		\

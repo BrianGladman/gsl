@@ -8,15 +8,12 @@ EXTRA_DIST = siman_test_driver.sh
 
 test_SOURCES = test.c
 test_LDADD = libgslsiman.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
-test_DEPENDENCIES = libgslsiman.la
 
 siman_test_SOURCES = siman_test.c
 siman_test_LDADD = libgslsiman.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
-siman_test_DEPENDENCIES = libgslsiman.la
 
 siman_tsp_SOURCES = siman_tsp.c
 siman_tsp_LDADD = libgslsiman.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
-siman_tsp_DEPENDENCIES = libgslsiman.la
 
 CLEANFILES = siman_test.lout1 siman_test.lout2
 
