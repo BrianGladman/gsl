@@ -758,6 +758,36 @@ int test_jac(void)
   gsl_test(s, "  gsl_sf_elljac_e(0.5|0.5)");
   s += sa;
 
+  u = 1.0;
+  m = 0.3;
+  sa = 0;
+  stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
+  sa += ( test_sf_frac_diff( sn, 0.8187707145344889190 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( cn, 0.5741206467465548795 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( dn, 0.8938033089590823040 ) > TEST_TOL0 );
+  gsl_test(sa, "  gsl_sf_elljac_e(1.0|0.3)");
+  s += sa;
+
+  u = 1.0;
+  m = 0.6;
+  sa = 0;
+  stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
+  sa += ( test_sf_frac_diff( sn, 0.7949388393365780943 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( cn, 0.6066895760718277578 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( dn, 0.7879361300438814425 ) > TEST_TOL0 );
+  gsl_test(sa, "  gsl_sf_elljac_e(1.0|0.6)");
+  s += sa;
+
+  u = 3.0;
+  m = 0.6;
+  sa = 0;
+  stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
+  sa += ( test_sf_frac_diff( sn,  0.7432676860864044186 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( cn, -0.6689941306317733154 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( dn,  0.8176379933025723259 ) > TEST_TOL0 );
+  gsl_test(sa, "  gsl_sf_elljac_e(3.0|0.6)");
+  s += sa;
+
   u = 2.0;
   m = 0.999999;
   sa = 0;
@@ -766,6 +796,17 @@ int test_jac(void)
   sa += ( test_sf_frac_diff( cn, 0.26580148285600686381 ) > TEST_TOL0 );
   sa += ( test_sf_frac_diff( dn, 0.26580323105264131136 ) > TEST_TOL0 );
   gsl_test(sa, "  gsl_sf_elljac_e(2.0|0.999999)");
+  s += sa;
+
+  /* test supplied by Ivan Panchenko */
+  u = 1.69695970624443;
+  m = 0.270378013104138;
+  sa = 0;
+  stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
+  sa += ( test_sf_frac_diff( sn, 1.0 ) > TEST_TOL0 );
+  sa += ( fabs(cn) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff( dn, 0.8541791304497336 ) > TEST_TOL1 );
+  gsl_test(sa, "  gsl_sf_elljac_e(1.69695970624443|0.270378013104138)");
   s += sa;
 
   return s;
