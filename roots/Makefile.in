@@ -98,7 +98,7 @@ PROGRAMS =  $(noinst_PROGRAMS)
 
 test_OBJECTS =  test.o
 test_LDFLAGS = 
-CFLAGS = @CFLAGS@ -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Waggregate-return -Wstrict-prototypes -Wnested-externs
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
