@@ -1,3 +1,10 @@
+Fri Feb 26 14:49:56 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* Makefile.am: removed ..._LDFLAGS = -static since this is
+ 	specific to gcc
+
+
+
 Wed Nov 18 10:59:56 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* use standard headers templates_on.h and templates_off.h instead

@@ -1,3 +1,16 @@
+Sun Feb 28 20:37:31 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* gsl_mode.h: added prototype for GSL_MODE_PREC(mt)
+
+Tue Feb 23 14:18:39 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* gsl_math.h (GSL_FDF_EVAL_F): improved names of macros
+
+Sat Feb 20 12:14:07 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* split out polynomial root finding algorithms into a new poly/
+ 	directory
+
 1999-02-25  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: upped the version to 0.4.1; this is ready for

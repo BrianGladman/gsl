@@ -1,3 +1,11 @@
+Sun Feb 28 20:41:18 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* gsl-randist.c (main): change cfree() to free(), which is
+ 	standard.
+
+	* discrete.c (gsl_ran_discrete_preproc): removed warning, pTotal
+ 	is now initialized to zero.
+
 1999-01-31  James Theiler <jt@lanl.gov>
 	* gauss.c added a new function gsl_ran_ugaussian_tail() which
 	provides random numbers out on the tail of a gaussian.  I also

@@ -15,3 +15,6 @@ parameters (e.g. negative variance etc)
 5. Add the triangular distribution.
 
 x6. Add the Rayleigh distribution. DONE
+
+7. fix error handling in discrete.c to use GSL_ERROR(), do the same
+for memory management
