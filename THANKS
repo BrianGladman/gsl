@@ -215,3 +215,5 @@ memory allocation
 * Maarten De Munck <indigo@kotnet.org> bug fix for vector/matrix get
 
 * Axel Hutt <hutt@wias-berlin.de> bug fix for QAWC integration
+
+* Martin Jansche <jansche@ling.ohio-state.edu> bug reports
