@@ -23,6 +23,7 @@
 #define GSL_ETOL      13  /* user specified an invalid tolerance */
 #define GSL_EUNDRFLW  14  /* underflow */
 #define GSL_EOVRFLW   15  /* overflow  */
+#define GSL_ELOSS     16  /* loss of accuracy */
 
 
 /* just to make things slightly clearer */

@@ -19,4 +19,9 @@ double gsl_sf_lngamma(double);
 void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg);
 
 
+/* log(Gamma(n)) for integer n
+ */
+double gsl_sf_lngamma_int(int);
+
+
 #endif /* GSL_GAMMAFUNCTION_H_ */

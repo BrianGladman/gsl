@@ -48,12 +48,12 @@ static struct gsl_sf_ChebSeries bj0_cs = {
 
 double gsl_sf_bessel_J0(double x)
 {
-  const double x_small = 2. * GSL_SQRT_MACH_EPS;
-  const double xmax = 1./GSL_MACH_EPS;
+  const double xmin = 2. * GSL_SQRT_MACH_EPS;
+  const double xmax = 1./GSL_SQRT_MACH_EPS;
 
   double y = fabs(x);
 
-  if(y < x_small) {
+  if(y < xmin) {
     return 1.;
   }
   else if(y <= 4.0) {
@@ -66,6 +66,8 @@ double gsl_sf_bessel_J0(double x)
     return ampl * cos(theta);
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_J0: |x| too large", GSL_EOVRFLW, 0.);
+    double M     = gsl_sf_bessel_asymp_Mnu(0., y);
+    double theta = gsl_sf_bessel_asymp_thetanu(0., y);
+    return M * cos(theta);
   }
 }

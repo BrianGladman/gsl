@@ -13,7 +13,7 @@ void gsl_sf_complex_log(double zr, double zi, double * lnr, double * theta)
     *theta = atan2(zi, zr);
   }
   else {
-    GSL_MESSAGE("gsl_sf_complex_log: z=0.0");
+    /* GSL_MESSAGE("gsl_sf_complex_log: z=0.0"); */ /* FIXME */
     *lnr = 0.;
     *theta = 0.;
   }

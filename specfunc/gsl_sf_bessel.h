@@ -4,10 +4,16 @@
 #ifndef GSL_BESSEL_H_
 #define GSL_BESSEL_H_
 
-/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x), J_n(x) */
-double gsl_sf_bessel_J0(double x);
-double gsl_sf_bessel_J1(double x);
-double gsl_sf_bessel_J(int n, double x);
+/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x), J_n(x)
+ */
+double gsl_sf_bessel_J0(double x);          /* no error can occur  */
+double gsl_sf_bessel_J1(double x);          /* no error can occur  */
+double gsl_sf_bessel_J(int n, double x);    /* underflow can occur */
+
+/* Evaluate regular cylindrical Bessel function J_n(x)
+ * Return GSL_SUCCESS on success, GSL_EUNDRFLW on underflow.
+ */
+int gsl_sf_bessel_J_e(int n, double x, double * result);
 
 /* Evaluate regular modified cylindrical Bessel functions I_0(x), I_1(x), I_n(x) */
 double gsl_sf_bessel_I0(double x);

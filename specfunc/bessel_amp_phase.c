@@ -137,3 +137,4 @@ const struct gsl_sf_ChebSeries _bessel_amp_phase_bth1_cs = {
   23,
   -1, 1
 };
+

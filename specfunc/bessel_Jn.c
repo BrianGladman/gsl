@@ -37,6 +37,107 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 #include "gsl_sf_bessel.h"
 
 
+int gsl_sf_bessel_Jn_e(int n, double x, double * result)
+{
+  int sign = 1;
+
+  if(n < 0) {
+    /* reduce to case n >= 0 */
+    n = -n;
+    if(GSL_IS_ODD(n)) sign = -1;
+  }  
+
+  if(x < 0.) {
+    /* reduce to case x >= 0. */
+    x = -x;
+    if(GSL_IS_ODD(n)) sign = -sign;
+  }
+
+  if(n == 0) {
+    *result = sign * gsl_sf_bessel_J0(x);
+    return GSL_SUCCESS;
+  }
+  else if(n == 1) {
+    *result = sign * gsl_sf_bessel_J1(x);
+    return GSL_SUCCESS;
+  }
+  else if(n == 2) {
+    if(x == 0.) {
+      *result = 0.;
+      return GSL_SUCCESS;
+    }
+    else if(x < GSL_SQRT_MACH_EPS) {
+      *result = 0.25*x*x;
+      if(*result == 0.) {
+        return GSL_EUNDRFLW;
+      }
+      else {
+	return GSL_SUCCESS;
+      }      
+    }
+    else {
+      *result = sign * (2.0 * gsl_sf_bessel_J1(x) / x  -  gsl_sf_bessel_J0(x));
+      return GSL_SUCCESS;
+    }    
+  }
+  else {
+    if(x == 0.) {
+      *result = 0.;
+      return GSL_SUCCESS;
+    }
+    else if(x < GSL_SQRT_MACH_EPS * n) {
+      *result = gsl_sf_pow_int(0.5*x, n);
+      if(*result == 0.) {
+	return GSL_EUNDRFLW;
+      }
+      else {
+	return GSL_SUCCESS;
+      }
+    }
+    else {
+      double ans;
+      double pkm2, pkm1, r;
+
+      /* continued fraction [Abramowitz+Stegun, 9.1.73] */
+      int k = 60;
+      double pk = 2 * (n + k);
+      double xk = x * x;
+      double result = pk;
+
+      do {
+	pk -= 2.0;
+	result = pk - (xk/result);
+      }
+      while(--k > 0);
+
+      result = x/result;
+
+      /* backward recurrence */
+      pk = 1.0;
+      pkm1 = 1.0/result;
+      k = n-1;
+      r = 2 * k;
+
+      do {
+	pkm2 = (pkm1 * r  -  pk * x) / x;
+	pk = pkm1;
+	pkm1 = pkm2;
+	r -= 2.0;
+      }
+      while( --k > 0 );
+
+      if(fabs(pk) > fabs(pkm1)) {
+	result = gsl_sf_bessel_J1(x)/pk;
+      }
+      else {
+	result = gsl_sf_bessel_J0(x)/pkm1;
+      }
+
+      result = sign * result;
+    }
+  }
+}
+
 double gsl_sf_bessel_Jn(int n, double x )
 {
   double result;
@@ -50,8 +151,8 @@ double gsl_sf_bessel_Jn(int n, double x )
 
   if(x < 0.) {
     /* reduce to case x >= 0. */
-    if(GSL_IS_ODD(n)) sign = -sign;
     x = -x;
+    if(GSL_IS_ODD(n)) sign = -sign;
   }
 
   if(n == 0) {
@@ -61,7 +162,7 @@ double gsl_sf_bessel_Jn(int n, double x )
     result = sign * gsl_sf_bessel_J1(x);
   }
   else if(n == 2) {
-    if(x < GSL_SQRT_MACH_EPS) {
+    if(x < 2. * GSL_SQRT_MACH_EPS) {
       /* underflow */
       result = 0.;
     }

@@ -4,8 +4,79 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_gamma.h"
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+
+/* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
+ * [Abramowitz+Stegun, 9.1.10]
+ */
+int gsl_sf_bessel_Jnu_taylorsum_e(double nu, double x, int kmax, double * result)
+{
+  int k;
+  double y = -0.25 * x*x;
+  
+  double kfact  = 1.;
+  double nuprod = 1.;
+  double yprod  = 1.;
+  double ans    = 1.;
+  double delta;
+ 
+  for(k=1; k<=kmax; k++) {
+    nuprod *= (nu + k);
+    kfact  *= k;
+    yprod  *= y;
+    delta = yprod / (kfact * nuprod);
+    ans += delta;
+  }
+  
+  *result = ans;
+  
+  if(delta > 10. * GSL_MACH_EPS) {
+    return GSL_ELOSS;
+  }
+  else {
+    return GSL_SUCCESS;
+  }
+}
+
+
+/* Taylor expansion for J_nu(x)
+ * nu >= 0.0 and x >= 0.0
+ * Return:
+ *   GSL_SUCCESS on success
+ *   GSL_EDOM    if nu < 0.0 or x < 0.0
+ *   GSL_ELOSS   if loss of accuracy
+ */
+int gsl_sf_bessel_Jnu_taylor_e(double nu, double x, int kmax, double * result)
+{
+  if(nu < 0.0 || x < 0.0) {
+    return GSL_EDOM;
+  }
+  else {
+    double ts;
+    double p   = (nu == 0. ? 1. :  pow(0.5*x, nu));
+    double pre = pow(0.5*x, nu) / exp(gsl_sf_lngamma(nu+1.));
+    int status = gsl_sf_bessel_Jnu_taylorsum_e(nu, x, kmax, &ts);
+    *result = pre * ts;
+    return status;
+  }
+}
+
+int gsl_sf_bessel_Jn_taylor_e(int n, double x, int kmax, double * result)
+{
+  if(n < 0 || x < 0.0) {
+    return GSL_EDOM;
+  }  
+  else {
+    double ts;
+    double pre = gsl_sf_pow_int(0.5*x, n) / exp(gsl_sf_lngamma(n+1.));
+    int status = gsl_sf_bessel_Jnu_taylorsum_e(n, x, kmax, &ts);
+    *result = pre * ts;
+    return status;
+  }
+}
 
 /************************************************************************
  *                                                                      *
