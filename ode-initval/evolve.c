@@ -124,7 +124,12 @@ gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
 
   if (e->dimension != step->dimension)
     {
-      GSL_ERROR ("step dimension must match evolvution size", GSL_EINVAL);
+      GSL_ERROR ("step dimension must match evolution size", GSL_EINVAL);
+    }
+
+  if ((dt < 0.0 && h0 > 0.0) || (dt > 0.0 && h0 < 0.0))
+    {
+      GSL_ERROR ("step direction must match interval direction", GSL_EINVAL);
     }
 
   /* No need to copy if we cannot control the step size. */

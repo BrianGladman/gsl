@@ -1,5 +1,8 @@
 Wed Oct  3 13:19:28 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* evolve.c (gsl_odeiv_evolve_apply): report error if step
+ 	direction does not match interval direction
+
 	* cstd.c (std_control_hadjust): allow for negative step-sizes
 
 	* evolve.c (gsl_odeiv_evolve_apply): allow for integrating
