@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration doc
+SUBDIRS = utils err random vector matrix randist fft roots specfunc statistics siman integration histogram doc
 
 include_HEADERS = gsl_complex.h gsl_math.h
 
