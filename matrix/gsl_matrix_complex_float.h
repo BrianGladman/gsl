@@ -59,6 +59,7 @@ void gsl_matrix_complex_float_free (gsl_matrix_complex_float * m);
 
 void gsl_matrix_complex_float_set_zero (gsl_matrix_complex_float * m);
 void gsl_matrix_complex_float_set_identity (gsl_matrix_complex_float * m);
+void gsl_matrix_complex_float_set_all (gsl_matrix_complex_float * m, gsl_complex_float x);
 
 gsl_complex_float * gsl_matrix_complex_float_ptr(const gsl_matrix_complex_float * m, size_t i, size_t j);
 gsl_complex_float gsl_matrix_complex_float_get(const gsl_matrix_complex_float * m, size_t i, size_t j);

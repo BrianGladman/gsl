@@ -180,3 +180,33 @@ FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
 }
 
 
+void
+FUNCTION (gsl_vector, set_all) (TYPE (gsl_vector) * v, BASE x)
+{
+  ATOMIC * const data = v->data;
+  const size_t n = v->size;
+  const size_t stride = v->stride;
+
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      *(BASE *) (data + MULTIPLICITY * i * stride) = x;
+    }
+}
+
+void
+FUNCTION (gsl_vector, set_zero) (TYPE (gsl_vector) * v)
+{
+  ATOMIC * const data = v->data;
+  const size_t n = v->size;
+  const size_t stride = v->stride;
+  const BASE zero = ZERO ;
+
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      *(BASE *) (data + MULTIPLICITY * i * stride) = zero;
+    }
+}

@@ -59,6 +59,7 @@ gsl_vector_complex_get (const gsl_vector_complex * v, size_t i);
 void gsl_vector_complex_set (gsl_vector_complex * v, size_t i,
                                    gsl_complex z);
 
+void gsl_vector_complex_set_zero (gsl_vector_complex * v);
 void gsl_vector_complex_set_all (gsl_vector_complex * v,
                                        gsl_complex z);
 

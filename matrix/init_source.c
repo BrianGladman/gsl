@@ -204,3 +204,20 @@ FUNCTION (gsl_matrix, set_zero) (TYPE (gsl_matrix) * m)
         }
     }
 }
+
+void
+FUNCTION (gsl_matrix, set_all) (TYPE (gsl_matrix) * m, BASE x)
+{
+  size_t i, j;
+  size_t p = m->size1 ;
+  size_t q = m->size2 ;
+
+  for (i = 0; i < p; i++)
+    {
+      for (j = 0; j < q; j++)
+        {
+          FUNCTION(gsl_matrix, set) (m, i, j, x);
+        }
+    }
+}
+

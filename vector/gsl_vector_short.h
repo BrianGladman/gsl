@@ -50,6 +50,7 @@ short *gsl_vector_short_ptr (const gsl_vector_short * v, const size_t i);
 short gsl_vector_short_get (const gsl_vector_short * v, const size_t i);
 void gsl_vector_short_set (gsl_vector_short * v, const size_t i, short x);
 
+void gsl_vector_short_set_zero (gsl_vector_short * v);
 void gsl_vector_short_set_all (gsl_vector_short * v, short x);
 
 int gsl_vector_short_fread (FILE * stream, gsl_vector_short * v);

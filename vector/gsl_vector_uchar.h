@@ -50,6 +50,7 @@ unsigned char *gsl_vector_uchar_ptr (const gsl_vector_uchar * v, const size_t i)
 unsigned char gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i);
 void gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x);
 
+void gsl_vector_uchar_set_zero (gsl_vector_uchar * v);
 void gsl_vector_uchar_set_all (gsl_vector_uchar * v, unsigned char x);
 
 int gsl_vector_uchar_fread (FILE * stream, gsl_vector_uchar * v);

@@ -55,6 +55,7 @@ void gsl_matrix_ushort_free (gsl_matrix_ushort * m);
 
 void gsl_matrix_ushort_set_zero (gsl_matrix_ushort * m);
 void gsl_matrix_ushort_set_identity (gsl_matrix_ushort * m);
+void gsl_matrix_ushort_set_all (gsl_matrix_ushort * m, unsigned short x);
 
 unsigned short * gsl_matrix_ushort_ptr(const gsl_matrix_ushort * m, size_t i, size_t j);
 unsigned short   gsl_matrix_ushort_get(const gsl_matrix_ushort * m, size_t i, size_t j);

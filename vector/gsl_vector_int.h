@@ -50,6 +50,7 @@ int *gsl_vector_int_ptr (const gsl_vector_int * v, const size_t i);
 int gsl_vector_int_get (const gsl_vector_int * v, const size_t i);
 void gsl_vector_int_set (gsl_vector_int * v, const size_t i, int x);
 
+void gsl_vector_int_set_zero (gsl_vector_int * v);
 void gsl_vector_int_set_all (gsl_vector_int * v, int x);
 
 int gsl_vector_int_fread (FILE * stream, gsl_vector_int * v);

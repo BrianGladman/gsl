@@ -55,6 +55,7 @@ void gsl_matrix_int_free (gsl_matrix_int * m);
 
 void gsl_matrix_int_set_zero (gsl_matrix_int * m);
 void gsl_matrix_int_set_identity (gsl_matrix_int * m);
+void gsl_matrix_int_set_all (gsl_matrix_int * m, int x);
 
 int * gsl_matrix_int_ptr(const gsl_matrix_int * m, size_t i, size_t j);
 int   gsl_matrix_int_get(const gsl_matrix_int * m, size_t i, size_t j);

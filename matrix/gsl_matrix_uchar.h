@@ -55,6 +55,7 @@ void gsl_matrix_uchar_free (gsl_matrix_uchar * m);
 
 void gsl_matrix_uchar_set_zero (gsl_matrix_uchar * m);
 void gsl_matrix_uchar_set_identity (gsl_matrix_uchar * m);
+void gsl_matrix_uchar_set_all (gsl_matrix_uchar * m, unsigned char x);
 
 unsigned char * gsl_matrix_uchar_ptr(const gsl_matrix_uchar * m, size_t i, size_t j);
 unsigned char   gsl_matrix_uchar_get(const gsl_matrix_uchar * m, size_t i, size_t j);

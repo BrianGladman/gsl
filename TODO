@@ -1,5 +1,13 @@
 TODO  -- see also individual TODO files in each directory
 
+* Go through the matrix and vector functions systematically and decide
+what should be provided outside of BLAS.
+
+* Make sure that all #defines are fully wrapped in ()'s, especially
+the outermost layer which may have been missed. Everything should be
+of the form #define foo(x) (....) so there is no possibility of bad
+parsing.
+
 * Add Lattice Method and Quasi-random Method to monte carlo integration
 
 * Standardize function names, in particular VERB vs NOUN (e.g. _invert
@@ -90,7 +98,8 @@ fft.
 
 * Some header files for physical constants (speed of light, etc),
 using data from the Particle Data Book. (e.g. gsl_physics.h, could
-also have gsl_chemistry.h, gsl_astro.h, etc)
+also have gsl_chemistry.h, gsl_astro.h, etc). See "astroconst" for
+ideas, http://apps.freshmeat.net/homepage/953508686/
 
 * Switch to library interface versioning for libtool (eventually).
 

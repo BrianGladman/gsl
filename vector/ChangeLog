@@ -1,3 +1,7 @@
+Tue Mar 21 21:15:10 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vector_source.c (FUNCTION): added set_zero function
+
 Thu Feb 24 16:19:55 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added missing prototypes for gsl_vector_complex_..._reverse

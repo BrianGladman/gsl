@@ -59,6 +59,7 @@ gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v, si
 void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, size_t i,
                                    gsl_complex_long_double z);
 
+void gsl_vector_complex_long_double_set_zero (gsl_vector_complex_long_double * v);
 void gsl_vector_complex_long_double_set_all (gsl_vector_complex_long_double * v,
                                        gsl_complex_long_double z);
 
@@ -87,7 +88,7 @@ extern int gsl_check_range;
 extern inline
 gsl_complex_long_double
 gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v,
-                                    const size_t i)
+			      const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size)

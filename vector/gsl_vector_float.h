@@ -50,6 +50,7 @@ float *gsl_vector_float_ptr (const gsl_vector_float * v, const size_t i);
 float gsl_vector_float_get (const gsl_vector_float * v, const size_t i);
 void gsl_vector_float_set (gsl_vector_float * v, const size_t i, float x);
 
+void gsl_vector_float_set_zero (gsl_vector_float * v);
 void gsl_vector_float_set_all (gsl_vector_float * v, float x);
 
 int gsl_vector_float_fread (FILE * stream, gsl_vector_float * v);

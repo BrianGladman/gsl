@@ -50,6 +50,7 @@ long double *gsl_vector_long_double_ptr (const gsl_vector_long_double * v, const
 long double gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i);
 void gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x);
 
+void gsl_vector_long_double_set_zero (gsl_vector_long_double * v);
 void gsl_vector_long_double_set_all (gsl_vector_long_double * v, long double x);
 
 int gsl_vector_long_double_fread (FILE * stream, gsl_vector_long_double * v);

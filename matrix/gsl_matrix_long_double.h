@@ -55,6 +55,7 @@ void gsl_matrix_long_double_free (gsl_matrix_long_double * m);
 
 void gsl_matrix_long_double_set_zero (gsl_matrix_long_double * m);
 void gsl_matrix_long_double_set_identity (gsl_matrix_long_double * m);
+void gsl_matrix_long_double_set_all (gsl_matrix_long_double * m, long double x);
 
 long double * gsl_matrix_long_double_ptr(const gsl_matrix_long_double * m, size_t i, size_t j);
 long double   gsl_matrix_long_double_get(const gsl_matrix_long_double * m, size_t i, size_t j);

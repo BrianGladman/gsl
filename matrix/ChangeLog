@@ -1,3 +1,7 @@
+Tue Mar 21 21:15:22 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* matrix_source.c (FUNCTION): added set_all and set_zero functions
+
 Sat Mar 11 11:19:05 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION): added gsl_matrix_identity to set a
