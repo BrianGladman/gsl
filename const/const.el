@@ -132,6 +132,8 @@
          ("rd"            "RAD")
 
          ("1.98892e30 kg"       "SOLAR_MASS")
+         ("0.5291772083e-10 m"  "BOHR_RADIUS")
+         ("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
          )
        )
 

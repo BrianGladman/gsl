@@ -45,6 +45,12 @@ library.
 @item GSL_CONST_MKS_SPEED_OF_LIGHT
 The speed of light in vacuum, @math{c}.
 
+@item GSL_CONST_MKS_VACUUM_PERMEABILITY
+The permeability of free space, @math{\mu_0}
+
+@item GSL_CONST_MKS_VACUUM_PERMITTIVITY
+The permittivity of free space, @math{\epsilon_0}.
+
 @item GSL_CONST_NUM_AVOGADRO
 Avogadro's number, @math{N_a}.
 
@@ -130,6 +136,9 @@ The electromagnetic fine structure constant @math{\alpha}.
 
 @item GSL_CONST_MKS_RYDBERG
 The Rydberg constant, @math{Ry}.
+
+@item GSL_CONST_MKS_BOHR_RADIUS
+The Bohr radius, @math{a_0}.
 
 @item GSL_CONST_MKS_ANGSTROM
 The length of 1 angstrom.

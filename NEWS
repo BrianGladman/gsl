@@ -1,10 +1,15 @@
-* What will be new in gsl-1.1:
+* What is new in gsl-1.1:
+
+** Constants now include Bohr Radius and Vacuum Permittivity
+
+** Range checking is now turned off when building the library, but is
+still on by default when compiling user applications.
 
 ** A combinations directory has been added for generating combinations (n,k)
 
 ** The gamma function now returns exact values for integer arguments
 
-** Fixed bug in gsl_sf_hyperg_1F1_int
+** Fixed bugs in gsl_sf_hyperg_1F1_int and gsl_sf_hyperg_1F1
 
 ** Fixed internal error handling in gsl_sf_laguerre_n to allow
 recovery from overflow.

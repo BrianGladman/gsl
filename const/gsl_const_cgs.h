@@ -112,5 +112,7 @@
 #define GSL_CONST_CGS_ROENTGEN (2.58e-7) /* A s / g */
 #define GSL_CONST_CGS_RAD (1e2) /* cm^2 / s^2 */
 #define GSL_CONST_CGS_SOLAR_MASS (1.98892e33) /* g */
+#define GSL_CONST_CGS_BOHR_RADIUS (5.291772083e-9) /* cm */
+#define GSL_CONST_CGS_VACUUM_PERMITTIVITY (8.854187817e-21) /* A^2 s^4 / g cm^3 */
 
 #endif /* __GSL_CONST_CGS__ */
