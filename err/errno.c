@@ -24,9 +24,17 @@ gsl_empty_error_handler (const char * reason, const char * file, int line) {
 }
 
 void
-gsl_message(const char * reason, const char * file, int line)
+gsl_message(const char * reason, const char * file, int line, unsigned int mask)
 {
-  fprintf(stderr, "\n%s:%d: error: %s\n", file, line, reason);
+  if(mask & GSL_MESSAGE_MASK) {
+    fprintf(stderr, "\ngsl: %s:%d: MESSAGE: %s\n", file, line, reason);
+  }
+}
+
+void
+gsl_warning(const char * reason, const char * file, int line)
+{
+  fprintf(stderr, "\ngsl: %s:%d: WARNING: %s\n", file, line, reason);
 }
 
 void
