@@ -42,7 +42,10 @@ gsl_sf_hyperg_1F1_large_b_impl(double a, double b, double x, double * result);
  * Assumes a > 0 is small, x > 0, and |x|<|b|.
  */
 int
-gsl_sf_hyperg_U_large_b_impl(double a, double b, double x, double * result);
+gsl_sf_hyperg_U_large_b_impl(double a, double b, double x,
+                             double * result,
+                             double * ln_multiplier
+                             );
 
 
 /* Implementation of 2F0 asymptotic series.

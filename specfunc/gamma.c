@@ -635,7 +635,11 @@ lngamma_sgn_sing(int N, double eps, double * lng, double * sgn)
 
 int gsl_sf_lngamma_impl(double x, double * result)
 {
-  if(x >= 0.5) {
+  if(x == 1.0 || x == 2.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x >= 0.5) {
     return lngamma_lanczos(x, result);
   }
   else {

@@ -449,12 +449,24 @@ hyperg_U_small_ab(const double a, const double b, const double x, double * resul
  */
 static
 int
-hyperg_U_small_a_bgt0(const double a, const double b, const double x, double * result)
+hyperg_U_small_a_bgt0(const double a, const double b, const double x,
+                      double * result,
+		      double * ln_multiplier
+		      )
 {
-  if(   (b > 5000.0 && x < 0.90 * fabs(b))
-     || (b >  500.0 && x < 0.50 * fabs(b))
-     ) {
-    return gsl_sf_hyperg_U_large_b_impl(a, b, x, result);
+  if(a == 0.0) {
+    *result = 1.0;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(   (b > 5000.0 && x < 0.90 * fabs(b))
+          || (b >  500.0 && x < 0.50 * fabs(b))
+    ) {
+    int stat = gsl_sf_hyperg_U_large_b_impl(a, b, x, result, ln_multiplier);
+    if(stat == GSL_EOVRFLW)
+      return GSL_SUCCESS;
+    else
+      return stat;
   }
   else if(b > 15.0) {
     /* Recurse up from b near 1.
@@ -476,6 +488,7 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x, double * r
         Ub   = Ubp1;
       }
       *result = Ub;
+      *ln_multiplier = 0.0;
       if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
         return GSL_ELOSS;
       else
@@ -483,10 +496,12 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x, double * r
     }
     else {
       *result = 0.0;
+      *ln_multiplier = 0.0;
       return GSL_EFAILED;
     }
   }
   else {
+    *ln_multiplier = 0.0;
     return hyperg_U_small_ab(a, b, x, result);
   }
 }
@@ -496,6 +511,7 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x, double * r
  * and U(a+1,b+1,x).
  * Assumes b > a+1.
  */
+#if 0
 static
 int
 hyperg_U_diag_recurse(const double a, const double b, const double x,
@@ -541,34 +557,74 @@ hyperg_U_diag_recurse(const double a, const double b, const double x,
     return GSL_EFAILED;
   }
 }
+#endif /* 0 */
+
+
+/* We use this to keep track of large
+ * dynamic ranges in the recursions.
+ * This can be important because sometimes
+ * we want to calculate a very large and
+ * a very small number and the answer is
+ * the product, of order 1. This happens,
+ * for instance, when we apply a Kummer
+ * transform to make b positive and
+ * both x and b are large.
+ */
+#define RESCALE_2(u0,u1,factor,count)      \
+do {                                       \
+  double au0 = fabs(u0);                   \
+  if(au0 > factor) {                       \
+    u0 /= factor;                          \
+    u1 /= factor;                          \
+    count++;                               \
+  }                                        \
+  else if(au0 < 1.0/factor) {              \
+    u0 *= factor;                          \
+    u1 *= factor;                          \
+    count--;                               \
+  }                                        \
+} while (0)
+
 
 
 static
 int
-hyperg_U_bge1(const double a, const double b, const double x, double * result)
+hyperg_U_bge1(const double a, const double b, const double x,
+              double * result,
+	      double * ln_multiplier)
 {
+  *ln_multiplier = 0.0;
+
   if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
-    *result = asymp * pow(x, -a);
+    *result = asymp;
+    *ln_multiplier = -a*log(x);  /* log(pow(x, -a)) */
     return stat_asymp;
   }
   else if(fabs(a) <= 1.0) {
-    return hyperg_U_small_a_bgt0(a, b, x, result);
+    return hyperg_U_small_a_bgt0(a, b, x, result, ln_multiplier);
   }
-  else if(fabs(a) < 5.0 && b < 5.0) {
+  else if(fabs(a) < 5.0 && b < 5.0 && x < 2.0) {
     return hyperg_U_series(a, b, x, result);
   }
   else if(a < 0.0) {
     /* Recurse backward.
      */
+    const double scale_factor = GSL_SQRT_DBL_MAX;
+    int scale_count = 0;
+    double lm_0, lm_1, lm_max;
     double a0 = a - floor(a) - 1.0;
     double Uap1;
     double Ua;
     double Uam1;
     double ap;
-    int stat_0 = hyperg_U_small_a_bgt0(a0+1.0, b, x, &Uap1);
-    int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua);
+    int stat_0 = hyperg_U_small_a_bgt0(a0+1.0, b, x, &Uap1, &lm_0);
+    int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
+    lm_max = locMAX(lm_0, lm_1);
+    Uap1 *= exp(lm_0-lm_max);
+    Ua   *= exp(lm_1-lm_max);
+
     if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
        && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
       ) {
@@ -576,8 +632,10 @@ hyperg_U_bge1(const double a, const double b, const double x, double * result)
         Uam1 = ap*(b-ap-1.0)*Uap1 + (x+2.0*ap-b)*Ua;
 	Uap1 = Ua;
 	Ua   = Uam1;
+	RESCALE_2(Ua,Uap1,scale_factor,scale_count);
       }
       *result = Ua;
+      *ln_multiplier = lm_max + scale_count * log(scale_factor);
       if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
         return GSL_ELOSS;
       else
@@ -585,74 +643,183 @@ hyperg_U_bge1(const double a, const double b, const double x, double * result)
     }
     else {
       *result = 0.0;
+      *ln_multiplier = 0.0;
       return GSL_EFAILED;
     }
   }
-  else if(a > 0.0 && b > a + 1.0) {
-    /* Recurse forward along a diagonal.
+  else if(b >= 2*a + x) {
+    /* Recurse forward from a near zero.
+     * Note that we cannot cross the singularity at
+     * the line b=a+1, because the only way we could
+     * be in that little wedge is if a < 1. But we
+     * have already dealt with the small a case.
      */
-    double Uab;
-    double Uap1bp1;
-    int stat = hyperg_U_diag_recurse(a, b, x, &Uab, &Uap1bp1);
-    *result = Uab;
-    return stat;
-  }
-  else {
-    /* Recurse along a diagonal near the b=a+1 line from a=a0,
-     * until reaching the appropriate value of b, at a=a1.
-     * Then recurse forward on a.
-     */
-    double N    = ceil(a - b + 1.0);
-    double epsb = N - (a - b + 1.0);
-    double a1   = b - 1.0 - epsb;
-    int stat_d;
+    const double scale_factor = GSL_SQRT_DBL_MAX;
+    int scale_count = 0;
+    double lm_0, lm_1, lm_max;
+    double a0 = a - floor(a);
     double Uam1;
     double Ua;
     double Uap1;
     double ap;
-
-    if(epsb == 1.0 || epsb == 0.0) {
-      /* Cannot sit on the line b=a+1,
-       * because of the singularity in the recursion.
-       * So choose a1 such that b = a1 + 1.
-       * Then evaluate explicitly.
-       */
-      double powx;
-      int stat_pow;
-      if(epsb == 1.0) {
-        a1  += 1.0;
-	epsb = 0.0;
+    int stat_0 = hyperg_U_small_a_bgt0(a0-1.0, b, x, &Uam1, &lm_0);
+    int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
+    lm_max = locMAX(lm_0, lm_1);
+    Uam1 *= exp(lm_0-lm_max);
+    Ua   *= exp(lm_1-lm_max);
+    
+    if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
+       && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
+      ) {
+      for(ap=a0; ap<a-0.1; ap += 1.0) {
+        Uap1 = -(Uam1 + (b-2.0*ap-x)*Ua)/(ap*(1.0+ap-b));
+        Uam1 = Ua;
+        Ua   = Uap1;
+        RESCALE_2(Ua,Uam1,scale_factor,scale_count);
       }
-      stat_pow = gsl_sf_exp_impl((1.0-b)*log(x), &powx);
-      if(stat_pow == GSL_SUCCESS) {
-	double ru;
-	double r;
-	stat_d = hyperg_U_CF1(b-1.0,b,0,x,&ru);
-	r = ru / (b-1.0);
-        Uam1 = powx;       /* U(b-1,b,x) */
-        Ua   = Uam1 * r;   /* U(b,b,x)   */
+      *result = Ua;
+      *ln_multiplier = lm_max + scale_count * log(scale_factor);
+      if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
+        return GSL_ELOSS;
+      else
+        return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      *ln_multiplier = 0.0;
+      return GSL_EFAILED;
+    }
+  }
+  else {
+    if(b <= x) {
+      /* Recurse backward to a near zero.
+       */
+      const double scale_factor = GSL_SQRT_DBL_MAX;
+      int scale_count = 0;
+      double lm_0;
+      double a0 = a - floor(a);
+      double Uap1;
+      double Ua;
+      double Uam1;
+      double U0;
+      int stat_U0;
+      double ap;
+      double ru;
+      double r;
+      int stat_CF1 = hyperg_U_CF1(a, b, 0, x, &ru);
+      r = ru/a;
+      Ua   = GSL_SQRT_DBL_MIN;
+      Uap1 = r * Ua;
+      for(ap=a; ap>a0+0.1; ap -= 1.0) {
+        Uam1 = -((b-2.0*ap-x)*Ua + ap*(1.0+ap-b)*Uap1);
+        Uap1 = Ua;
+        Ua   = Uam1;
+	RESCALE_2(Ua,Uap1,scale_factor,scale_count);
+      }
+      
+      stat_U0 = hyperg_U_small_a_bgt0(a0, b, x, &U0, &lm_0);
+
+      if(stat_U0 == GSL_SUCCESS) {
+        *result = GSL_SQRT_DBL_MIN*(U0/Ua);
+	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
+	return stat_CF1;
+      }
+      else if(stat_U0 == GSL_ELOSS) {
+        *result = GSL_SQRT_DBL_MIN*(U0/Ua);
+	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
+	return GSL_ELOSS;
       }
       else {
         *result = 0.0;
-	return stat_pow;
+	*ln_multiplier = 0.0;
+	return stat_U0;
       }
     }
     else {
-      double Ua1b;
-      double Ua1p1bp1;
-      stat_d = hyperg_U_diag_recurse(a1, b, x, &Ua1b, &Ua1p1bp1);
-      Uam1 = Ua1b;
-      Ua   = (x*Ua1p1bp1 - Ua1b)/(b-a1-1.0);
+      /* Recurse backward to near the b=2a+x line, then
+       * forward from a near zero to get the normalization.
+       */
+      const double scale_factor = GSL_SQRT_DBL_MAX;
+      int scale_count_for = 0;
+      int scale_count_bck = 0;
+      double eps = a - floor(a);
+      double a0 = ( eps == 0.0 ? 1.0 : eps );
+      double a1 = a0 + ceil(0.5*(b-x) - a0);
+      double Ua1_bck;
+      double Ua1_for;
+      int stat_for;
+      int stat_bck;
+      double lm_for;
+
+      {
+        /* Recurse back to determine U(a1,b), sans normalization.
+         */
+        double Uap1;
+        double Ua;
+        double Uam1;
+        double ap;
+        double ru;
+        double r;
+        int stat_CF1 = hyperg_U_CF1(a, b, 0, x, &ru);
+        r = ru/a;
+        Ua   = GSL_SQRT_DBL_MIN;
+        Uap1 = r * Ua;
+        for(ap=a; ap>a1+0.1; ap -= 1.0) {
+          Uam1 = -((b-2.0*ap-x)*Ua + ap*(1.0+ap-b)*Uap1);
+          Uap1 = Ua;
+          Ua   = Uam1;
+	  RESCALE_2(Ua,Uap1,scale_factor,scale_count_bck);
+        }
+        Ua1_bck = Ua;
+        stat_bck = stat_CF1;
+      }
+      {
+        /* Recurse forward to determine U(a1,b) with
+         * absolute normalization.
+         */
+	double lm_0, lm_1;
+        double Uam1;
+        double Ua;
+        double Uap1;
+        double ap;
+        int stat_0 = hyperg_U_small_a_bgt0(a0-1.0, b, x, &Uam1, &lm_0);
+        int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
+	lm_for = locMAX(lm_0, lm_1);
+	Uam1 *= exp(lm_0 - lm_for);
+	Ua   *= exp(lm_1 - lm_for);
+
+        if(   (stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
+           && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
+          ) {
+          for(ap=a0; ap<a1-0.1; ap += 1.0) {
+            Uap1 = -(Uam1 + (b-2.0*ap-x)*Ua)/(ap*(1.0+ap-b));
+            Uam1 = Ua;
+            Ua   = Uap1;
+	    RESCALE_2(Ua,Uam1,scale_factor,scale_count_for);
+          }
+          Ua1_for = Ua;
+          if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
+            stat_for = GSL_ELOSS;
+          else 
+            stat_for = GSL_SUCCESS;
+        }
+        else {
+          *result = 0.0;
+	  *ln_multiplier = 0.0;
+	  return GSL_EFAILED;
+        }
+      }
+
+      *result = GSL_SQRT_DBL_MIN*Ua1_for/Ua1_bck;
+      *ln_multiplier = lm_for + (scale_count_for - scale_count_bck)*log(scale_factor);
+
+      if(stat_bck == GSL_EFAILED || stat_for == GSL_EFAILED)
+        return GSL_EFAILED;
+      else if(stat_bck == GSL_ELOSS || stat_for == GSL_ELOSS)
+        return GSL_ELOSS;
+      else 
+        return GSL_SUCCESS;
     }
-    
-    for(ap=a1+1; ap<a-0.1; ap += 1.0) {
-      Uap1 = -((b-2.0*ap-x)*Ua + Uam1)/(ap*(1.0+ap-b));
-      Uam1 = Ua;
-      Ua   = Uap1;
-    }
-    
-    *result = Ua;
-    return stat_d;
   }
 }
 
@@ -666,20 +833,35 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(b >= 1.0) {
-    return hyperg_U_bge1(a, b, x, result);
+  else if(a == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
   }
   else {
-    /* Use the reflection formula
-     * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
-     */
-    double ap = 1.0 + a - b;
-    double bp = 2.0 - b;
+    double ln_multiplier;
+    double ln_pre;
     double U;
-    int stat_U = hyperg_U_bge1(ap, bp, x, &U);
-    if((stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS) && U != 0.0) {
-      double lnU = log(fabs(U));
-      int stat_e = gsl_sf_exp_sgn_impl(lnU + (1.0-b)*log(x), U, result);
+    int stat_U;
+    if(b >= 1.0) {
+      /* Use b >= 1 fucntion.
+       */
+      stat_U = hyperg_U_bge1(a, b, x, &U, &ln_multiplier);
+      ln_pre = 0.0;
+    }
+    else {
+      /* Use the reflection formula
+       * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
+       */
+      double ap = 1.0 + a - b;
+      double bp = 2.0 - b;
+      stat_U = hyperg_U_bge1(ap, bp, x, &U, &ln_multiplier);
+      ln_pre = (1.0-b)*log(x);
+    }
+
+    if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+      double ln_U = log(fabs(U));
+      double ln_r = ln_U + ln_pre + ln_multiplier;
+      int stat_e = gsl_sf_exp_sgn_impl(ln_r, U, result);
       if(stat_e == GSL_SUCCESS)
         return stat_U;
       else
@@ -691,7 +873,6 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     }
   }
 }
-
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/

@@ -108,7 +108,10 @@ gsl_sf_hyperg_1F1_large_b_impl(const double a, const double b, const double x, d
 
 
 int
-gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x, double * result)
+gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
+                             double * result,
+			     double * ln_multiplier
+			     )
 {
   double N   = floor(b);  /* b = N + eps */
   double eps = b - N;
@@ -116,7 +119,7 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x, dou
   if(fabs(eps) < GSL_SQRT_MACH_EPS) {
     double lnpre;
     double M;
-    if(b > 0.0) {
+    if(b > 1.0) {
       double lg_bm1;
       double lg_a;
       gsl_sf_lngamma_impl(b-1.0, &lg_bm1);
@@ -133,11 +136,13 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x, dou
       gsl_sf_hyperg_1F1_large_b_impl(a, b, x, &M);
     }
     if(lnpre > GSL_LOG_DBL_MAX-10.0) {
-      *result = 0.0;
+      *result = M;
+      *ln_multiplier = lnpre;
       return GSL_EOVRFLW;
     }
     else {
       *result = exp(lnpre) * M;
+      *ln_multiplier = 0.0;
       return GSL_SUCCESS;
     }
   }
@@ -148,6 +153,7 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x, dou
     double lg_a,     sgn_a;
     double M1, M2;
     double lnpre1, lnpre2;
+    double sgpre1, sgpre2;
     gsl_sf_hyperg_1F1_large_b_impl(    a,     b, x, &M1);
     gsl_sf_hyperg_1F1_large_b_impl(1.0-a, 2.0-b, x, &M2);
 
@@ -159,13 +165,20 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x, dou
 
     lnpre1 = lg_1mb - lg_1pamb;
     lnpre2 = lg_bm1 - lg_a - (1.0-b)*log(x) - x;
+    sgpre1 = sgn_1mb * sgn_1pamb;
+    sgpre2 = sgn_bm1 * sgn_a;
 
     if(lnpre1 > GSL_LOG_DBL_MAX-10.0 || lnpre2 > GSL_LOG_DBL_MAX-10.0) {
-      *result = 0.0;
+      double max_lnpre = locMAX(lnpre1,lnpre2);
+      double lp1 = lnpre1-max_lnpre;
+      double lp2 = lnpre2-max_lnpre;
+      *result = sgpre1*exp(lp1)*M1 + sgpre2*exp(lp2)*M2;
+      *ln_multiplier = max_lnpre;
       return GSL_EOVRFLW;
     }
     else {
-      *result = exp(lnpre1) * M1 + exp(lnpre2)*M2;
+      *result = sgpre1*exp(lnpre1)*M1 + sgpre2*exp(lnpre2)*M2;
+      *ln_multiplier = 0.0;
       return GSL_SUCCESS;
     }
   }
