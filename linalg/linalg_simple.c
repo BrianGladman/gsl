@@ -448,13 +448,21 @@ gsl_la_solve_HH_impl(gsl_matrix * matrix,
 
 
 
-#define ROTATE(a,i,j,k,l)                       \
-do {                                            \
-  g = gsl_matrix_get(a, i, j);                  \
-  h = gsl_matrix_get(a, k, l);                  \
-  gsl_matrix_set(a, i, j, g - s*(h + g*tau));   \
-  gsl_matrix_set(a, k, l, h + s*(g - h*tau));   \
-} while(0);
+#ifdef HAVE_INLINE
+inline
+#endif
+static void
+jac_rotate(gsl_matrix * a,
+           int i, int j, int k, int l,
+           double * g, double * h,
+           double s, double tau)
+{
+  *g = gsl_matrix_get(a, i, j);
+  *h = gsl_matrix_get(a, k, l);
+  gsl_matrix_set(a, i, j, (*g) - s*((*h) + (*g)*tau));
+  gsl_matrix_set(a, k, l, (*h) + s*((*g) - (*h)*tau));
+}
+
 
 int
 gsl_la_eigen_jacobi_impl(gsl_matrix * a,
@@ -483,7 +491,6 @@ gsl_la_eigen_jacobi_impl(gsl_matrix * a,
 
     REAL * b = (REAL *) malloc(n * sizeof(REAL));
     REAL * z = (REAL *) malloc(n * sizeof(REAL));
-
     if(b == 0 || z == 0) {
       if(b != 0) free(b);
       if(z != 0) free(z);
@@ -563,16 +570,16 @@ gsl_la_eigen_jacobi_impl(gsl_matrix * a,
 	    gsl_matrix_set(a, ip, iq, 0.0);
 
             for(j=0; j<=ip-1; j++){
-              ROTATE(a,j,ip,j,iq)
+              jac_rotate(a, j, ip, j, iq, &g, &h, s, tau);
             }
             for(j=ip+1; j<=iq-1; j++){
-              ROTATE(a,ip,j,j,iq)
+              jac_rotate(a, ip, j, j, iq, &g, &h, s, tau);
             }
             for(j=iq+1; j<n; j++){
-              ROTATE(a,ip,j,iq,j)
+              jac_rotate(a, ip, j, iq, j, &g, &h, s, tau);
             }
             for (j=0; j<n; j++){
-              ROTATE(evec,j,ip,j,iq)
+              jac_rotate(evec, j, ip, j, iq, &g, &h, s, tau);
             }
             ++(*nrot);
           }
@@ -590,7 +597,6 @@ gsl_la_eigen_jacobi_impl(gsl_matrix * a,
     return GSL_EMAXITER;
   }
 }
-#undef ROTATE
 
 
 int
