@@ -37,6 +37,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
+	bessel_temme.h		\
 	bessel.h
 
 
@@ -74,6 +75,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_j.c		\
 	bessel_k.c		\
 	bessel_olver.c		\
+	bessel_temme.c		\
 	bessel_y.c		\
 	chebyshev.c		\
 	clausen.c		\

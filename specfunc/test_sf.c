@@ -215,22 +215,32 @@ int check_bessel(void)
   status += s;
   
   s = 0;
-  s += ( frac_diff(gsl_sf_bessel_Jnu(0.0001,10.0),  -0.2459270166445205       ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(0.0001,10.0), -0.2459270166445205        ) > 1.e-12 );
   s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0, 0.001),  0.0004999999375000026     ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_bessel_Jnu( 1.0,   1.0),  0.4400505857449335160     ) > 1.e-14 );
   s += ( frac_diff(gsl_sf_bessel_Jnu(30.0,   1.0),  3.482869794251482902e-42  ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Jnu(30.0, 100.0),  0.08146012958117222297    ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Jnu(10.0,   1.0),  2.6306151236874532070e-10 ) > 1.e-13 );
-  s += ( frac_diff(gsl_sf_bessel_Jnu(10.0, 100.0),  -0.05473217693547201474   ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(10.0, 100.0), -0.05473217693547201474    ) > 1.e-13 );
   gsl_test(s, "  gsl_sf_bessel_Jnu");
   status += s;
 
   s = 0;
-  gsl_sf_bessel_InuKnu_scaled_impl(2.0/3.0, 1.0, nmax, &I, &K, &Ip, &Kp);
-  s += ( frac_diff(I[0], 0.29707048038646619444 )  > 1.e-12 );
-  s += ( frac_diff(K[0], 1.3441225759440271958  )  > 1.e-12 );
-  gsl_test(s, "  gsl_sf_bessel_InuKnu_scaled");
-  printf("%22.18g  %22.18g\n", I[0], K[0]);
+  gsl_sf_bessel_InuKnu_scaled_impl(2.0/3.0, 1.0, nmax, I, K, Ip, Kp);
+  s += ( frac_diff(I[0],   0.29707048038646619444 )  > 1.e-14 );
+  s += ( frac_diff(K[0],   1.34412257594402719580 )  > 1.e-14 );
+  s += ( frac_diff(Ip[0],  0.28253264285031000758 )  > 1.e-14 );
+  s += ( frac_diff(Kp[0], -2.08785974121992957970 )  > 1.e-14 );
+  gsl_test(s, "  gsl_sf_bessel_InuKnu_scaled(2/3, 1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_bessel_InuKnu_scaled_impl(2.0/3.0, 10.0, nmax, I, K, Ip, Kp);
+  s += ( frac_diff(I[0],   0.12486837734060854253 )  > 1.e-14 );
+  s += ( frac_diff(K[0],   0.40002677679332597120 )  > 1.e-14 );
+  s += ( frac_diff(Ip[0],  0.11876072362703613430 )  > 1.e-14 );
+  s += ( frac_diff(Kp[0], -0.42038289946419128720 )  > 1.e-14 );
+  gsl_test(s, "  gsl_sf_bessel_InuKnu_scaled(2/3, 10)");
   status += s;
 
   return status;
