@@ -28,6 +28,26 @@ int     gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double *sgn);
 int     gsl_sf_lngamma_sgn_e(double x, double * result_lg, double * sgn);
 
 
+/* Gamma(x), x not a negative integer
+ * Uses real Lanczos method.
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int     gsl_sf_gamma_impl(double x, double * result);
+int     gsl_sf_gamma_e(double x, double * result);
+double  gsl_sf_gamma(double x);
+
+
+/* 1/Gamma(x)
+ * Uses real Lanczos method.
+ *
+ * exceptions: GSL_EUNDRFLW
+ */
+int     gsl_sf_gammainv_impl(double x, double * result);
+int     gsl_sf_gammainv_e(double x, double * result);
+double  gsl_sf_gammainv(double x);
+
+
 /* Log[Gamma(z)] for z complex, z not a negative integer
  * Uses complex Lanczos method.
  *
@@ -88,8 +108,8 @@ double  gsl_sf_choose(unsigned int n, unsigned int m);
 
 
 /* Logarithm of Pochammer (Apell) symbol
- *   log( (a)_n )
- *   where (a)_n := Gamma[a + n]/Gamma[a]
+ *   log( (a)_x )
+ *   where (a)_x := Gamma[a + x]/Gamma[a]
  *
  * a > 0, a+x > 0
  *
@@ -101,16 +121,28 @@ double  gsl_sf_lnpoch(double a, double x);
 
 
 /* Logarithm of Pochammer (Apell) symbol, with sign information.
- *   result = log( |(a)_n| )
- *   sgn    = sgn( (a)_n )
- *   where (a)_n := Gamma[a + n]/Gamma[a]
+ *   result = log( |(a)_x| )
+ *   sgn    = sgn( (a)_x )
+ *   where (a)_x := Gamma[a + x]/Gamma[a]
  *
  * a != neg integer, a+x != neg integer
  *
  * exceptions:  GSL_EDOM
  */
-int     gsl_sf_lnpoch_sgn_impl(double a, double x, double * result, double * sgn);
-int     gsl_sf_lnpoch_sgn_e(double a, double x, double * result, double * sgn);
+int gsl_sf_lnpoch_sgn_impl(double a, double x, double * result, double * sgn);
+int gsl_sf_lnpoch_sgn_e(double a, double x, double * result, double * sgn);
+
+
+/* Pochammer (Apell) symbol
+ *   (a)_x := Gamma[a + x]/Gamma[x]
+ *
+ * a != neg integer, a+x != neg integer
+ *
+ * exceptions:  GSL_EDOM, GSL_EOVRFLW
+ */
+int     gsl_sf_poch_impl(double a, double x, double * result);
+int     gsl_sf_poch_e(double a, double x, double * result);
+double  gsl_sf_poch(double a, double x);
 
 
 /* Relative Pochammer (Apell) symbol

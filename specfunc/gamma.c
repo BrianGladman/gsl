@@ -5,6 +5,7 @@
 #include <math.h>
 #include <gsl_errno.h>
 #include <gsl_math.h>
+#include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
@@ -649,6 +650,42 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
   }
 }
 
+
+int
+gsl_sf_gamma_impl(const double x, double * result)
+{
+  double lng, sgn;
+  double g;
+  int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
+  if(stat_lng != GSL_SUCCESS) {
+    *result = 0.0;
+    return stat_lng;
+  }
+  else {
+    int stat_exp = gsl_sf_exp_impl(lng, &g);
+    *result = sgn * g;
+    return stat_exp;
+  }
+}
+
+
+int
+gsl_sf_gammainv_impl(const double x, double * result)
+{
+  double lng, sgn;
+  double g;
+  int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
+  if(stat_lng != GSL_SUCCESS) {
+    *result = 0.0;
+    return stat_lng;
+  }
+  else {
+    int stat_exp = gsl_sf_exp_impl(-lng, &g);
+    *result = sgn * g;
+    return stat_exp;
+  }
+}
+
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
 {
   if(zr <= 0.5) {
@@ -798,6 +835,26 @@ int gsl_sf_lngamma_e(const double x, double * result)
   return status;
 }
 
+
+int gsl_sf_gamma_e(const double x, double * result)
+{
+  int status = gsl_sf_gamma_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_gamma_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_gammainv_e(const double x, double * result)
+{
+  int status = gsl_sf_gammainv_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_gammainv_e", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
 {
   int status = gsl_sf_lngamma_complex_impl(zr, zi, lnr, arg);
@@ -835,6 +892,26 @@ double gsl_sf_lngamma(const double x)
   int status = gsl_sf_lngamma_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_lngamma", status);
+  }
+  return y;
+}
+
+double gsl_sf_gamma(const double x)
+{
+  double y;
+  int status = gsl_sf_gamma_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_gamma", status);
+  }
+  return y;
+}
+
+double gsl_sf_gammainv(const double x)
+{
+  double y;
+  int status = gsl_sf_gammainv_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_gammainv", status);
   }
   return y;
 }

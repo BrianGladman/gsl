@@ -66,6 +66,26 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
 }
 
 
+int
+gsl_sf_poch_impl(const double a, const double x, double * result)
+{
+  double lnpoch;
+  double sgn;
+  int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
+  if(stat_lnpoch != GSL_SUCCESS) {
+    *result = 0.0;
+    return stat_lnpoch;
+  }
+  else {
+    double abspoch;
+    int stat_exp = gsl_sf_exp_impl(lnpoch, &abspoch);
+    *result = sgn * abspoch;
+    return stat_exp;
+  }
+}
+
+
+
 /* Based on SLATEC DPOCH1(). */
 
 const static double bern[21] = {
@@ -253,6 +273,17 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x, double * result, double * sg
 }
 
 
+int
+gsl_sf_poch_e(const double a, const double x, double * result)
+{
+  int status = gsl_sf_poch_impl(a, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_poch", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_pochrel_e(const double a, const double x, double * result)
 {
   int status = gsl_sf_pochrel_impl(a, x, result);
@@ -273,6 +304,16 @@ double gsl_sf_lnpoch(const double a, const double x)
   return y;
 }
 
+
+double gsl_sf_poch(const double a, const double x)
+{
+  double y;
+  int status = gsl_sf_poch_impl(a, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_poch", status);
+  }
+  return y;
+}
 
 double gsl_sf_pochrel(const double a, const double x)
 {

@@ -1160,6 +1160,13 @@ int check_gamma(void)
   status += s;
 
   s = 0;
+  s += ( frac_diff( gsl_sf_gamma(10.0),   362880.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_gamma(-10.5), -2.640121820547716316e-07 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_gamma(-11.2),  8.200835193555368332e-08 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_gamma");
+  status += s;
+
+  s = 0;
   zr = 5.0;
   zi = 2.0;
   gsl_sf_lngamma_complex_impl(zr, zi, &lg_r, &lg_i);
@@ -1231,6 +1238,13 @@ int check_gamma(void)
   s += ( frac_diff( gsl_sf_lnpoch(5,2), 3.401197381662155375 ) > 1.0e-14 );
   s += ( frac_diff( gsl_sf_lnpoch(5,0.01), 0.015072234709399379065 ) > 1.0e-10 );
   gsl_test(s, "  gsl_sf_lnpoch");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_poch(7,3), 504.0 ) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_poch(5,2),  30.0) > 1.0e-14 );
+  s += ( frac_diff( gsl_sf_poch(5,0.01), 1.0151863936613682753 ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_poch");
   status += s;
 
   s = 0;

@@ -5,8 +5,11 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"
+#include "gsl_sf_gamma.h"
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_hyperg.h"
 
+#define locMAX(a,b)  ((a) > (b) ? (a) : (b))
 
 
 /* Large x asymptotic for  x^a U(a,b,x)
@@ -84,9 +87,80 @@ d9chu(const double a, const double b, const double x, double * result)
 }
 
 
-#if 0
+/* Evaluate finite sum which appears below.
+ */
+static
+int
+hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
+                    double * result)
+{
+  int i;
+  double sum;
+
+  if(N <= 0) {
+    double t = 1.0;
+    double poch;
+    int stat_poch;
+
+    sum = 1.0;
+    for(i=1; i<= -N; i++) {
+      double xi1 = i - 1;
+      t   *= (a+xi1)*x/((b+xi1)*(xi1+1.0));
+      sum += t;
+    }
+
+    stat_poch = gsl_sf_poch_impl(1.0+a-b, -a, &poch);
+
+    if(stat_poch == GSL_SUCCESS || stat_poch == GSL_EUNDRFLW) {
+      sum *= poch;
+      *result = sum;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return stat_poch;
+    }
+  }
+  else {
+    int M = N - 2;
+    if(M < 0) {
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else {
+      double gbm1;
+      double gamr;
+      int stat_gbm1;
+      int stat_gamr;
+      double t = 1.0;
+
+      sum = 1.0;
+      for(i=1; i<=M; i++) {
+        t   *= (a-b+i)*x/((1.0-b+i)*i);
+        sum += t;
+      }
+
+      stat_gbm1 = gsl_sf_gamma_impl(b-1.0, &gbm1);
+      stat_gamr = gsl_sf_gammainv_impl(a,  &gamr);
+
+      if(stat_gbm1 == GSL_SUCCESS) {
+        sum = sum * gbm1 * gamr * pow(x,1.0-N) * xeps;
+	*result = sum;
+	return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0;
+        return stat_gbm1;
+      }
+    }
+  }
+}
+
+
+
 /* Based on SLATEC DCHU() [W. Fullerton]
- * -  C This routine is not valid when 1+A-B is close to zero if X is small.
+ *
+ * If fixed up the window for 1+a-b near zero. [GJ]
  */
 int
 gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
@@ -105,9 +179,14 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     return stat_d9;
   }  
   else if(fabs(1.0 + a - b) < SQRT_EPS) {
-    /* ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X */
-    *result = 0.0;
-    return GSL_EFAILED;
+    /* ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X
+     */
+    /* We can however do the following:
+     * U(a,b,x) = U(a,a+1,x) when 1+a-b=0
+     * and U(a,a+1,x) = x^(-a).
+     */
+    double lnr = -a * log(x);
+    return gsl_sf_exp_impl(lnr, result);
   }
   else {
     double aintb = ( b < 0.0 ? (int)(b-0.5) : (int)(b+0.5) );
@@ -116,121 +195,117 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     
     double lnx  = log(x);
     double xeps = exp(-beps*lnx);
-    
-    double sum;
-   
+
     /* Evaluate finite sum.
      */
-    if(N <= 0) {
-      double t = 1.0;
-      int i;
-      sum = 1.0;
-      for(i=1; i<= -N; i++) {
-	double xi1 = i - 1;
-	t   *= (a+xi1)*x/((b+xi1)*(xi1+1.0));
-	sum += t;
-      }
-      sum = sum * DPOCH(1.0+a-b, -a);
-    }
-    else {
-      int M = N - 2;
-      if(M < 0) {
-        sum = 0.0;
-      }
-      else {
-        double t = 1.0;
-	sum = 1.0;
-	for(i=1; i<=M; i++) {
-	  t   *= (a-b+i)*x/((1.0-b+i)*i);
-	  sum += t;
-	}
-	sum = sum * DGAMMA(b-1.0) * DGAMR(a) * pow(x,1.0-N) * xeps;
-      }
-    }
-      
+    double sum;
+    int stat_sum = hyperg_U_finite_sum(N, a, b, x, xeps, &sum);
 
-    /* Evaluate infinite sum.
-     */
-    istrt = 0;
-    if(N < 1) istrt = 1 - N;
-    xi = istrt;
-    
-    factor = (-1.0)**N * DGAMR(1.0D0+A-B) * X**ISTRT;
-    if(beps != 0.0) factor *= beps*M_PI/sin(beps*M_PI);
-    
-    POCHAI = DPOCH (A, XI);
-    GAMRI1 = DGAMR (XI+1.0D0);
-    GAMRNI = DGAMR (AINTB+XI);
-    B0 = FACTOR * DPOCH(A,XI-BEPS) * GAMRNI * DGAMR(XI+1.0-BEPS);
 
+    /* Evaluate infinite sum. */
+
+    int istrt = ( N < 1 ? 1-N : 0 );
+    double xi = istrt;
+
+    double powx;
+    double gamr;
+    int stat_gamr = gsl_sf_gammainv_impl(1.0+a-b, &gamr);
+    int stat_powx = gsl_sf_pow_int_impl(x, istrt);
+    double sarg   = beps*M_PI;
+    double sfact  = ( sarg != 0.0 ? sarg/sin(sarg) : 1.0 );
+    double factor = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * gamr * powx;
+   
+    double pochai;
+    double gamri1;
+    double gamrni;
+    int stat_pochai = gsl_sf_poch_impl(a, xi, &pochai);
+    int stat_gamri1 = gsl_sf_gammainv_impl(xi + 1.0, &gamri1);
+    int stat_gamrni = gsl_sf_gammainv_impl(aintb + xi, &gamrni);
+
+    double pochaxibeps;
+    double gamrxi1beps;
+    int stat_pochaxibeps = gsl_sf_poch_impl(a, xi-beps, &pochaxibeps);
+    int stat_gamrxi1beps = gsl_sf_gammainv_impl(xi + 1.0 - beps, &gamrxi1beps);
+    double b0 = factor * pochaxibeps * gamrni * gamrxi1beps;
 
     if(fabs(xeps-1.0) < 0.5) {
-/*    
-    C
-C X**(-BEPS) IS CLOSE TO 1.0D0, SO WE MUST BE CAREFUL IN EVALUATING THE
-C DIFFERENCES.
-C
-*/
-      PCH1AI = DPOCH1 (A+XI, -BEPS);
-      PCH1I = DPOCH1 (XI+1.0D0-BEPS, BEPS);
-      C0 = FACTOR * POCHAI * GAMRNI * GAMRI1 * (
-       -DPOCH1(B+XI,-BEPS) + PCH1AI - PCH1I + BEPS*PCH1AI*PCH1I);
+      /*
+       C  X**(-BEPS) IS CLOSE TO 1.0D0, SO WE MUST BE
+       C  CAREFUL IN EVALUATING THE DIFFERENCES.
+       */
+      int i;
+      double pch1ai;
+      double pch1i;
+      double poch1bxibeps;
+      int stat_pch1ai = gsl_sf_pochrel_impl(a + xi, -beps, &pch1ai);
+      int stat_pch1i  = gsl_sf_pochrel_impl(xi + 1.0, -beps, &pch1i);
+      int stat_poch1bxibeps = gsl_sf_pochrel_impl(b+xi, -beps, &poch1bxibeps);
+      double c0 = factor * pochai * gamrni * gamri1
+                  * (-poch1bxibeps + pch1ai - pch1i + beps*pch1ai*pch1i);
 
-/*C
-C XEPS1 = (1.0 - X**(-BEPS))/BEPS = (X**(-BEPS) - 1.0)/(-BEPS)
-*/
-      XEPS1 = ALNX*DEXPRL(-BEPS*ALNX);
+      /*
+       C  XEPS1 = (1.0 - X**(-BEPS))/BEPS = (X**(-BEPS) - 1.0)/(-BEPS)
+       */
+      double dexprl;
+      int stat_dexprl = gsl_sf_expm1_impl(-beps*lnx, &dexprl);
+      double xeps1 = lnx * dexprl / (-beps*lnx);
 
-      DCHU = SUM + C0 + XEPS1*B0;
-      XN = N;
+      double dchu = sum + c0 + xeps1*b0;
+      double xn = N;
       
       for(i=1; i<1000; i++) {
+        double xi  = istrt + i;
+        double xi1 = istrt + i - 1;
+	double tmp = (a-1.0)*(xn+2.0*xi-1.0) + xi*(xi-beps);
+	double t;
+        b0 = (a+xi1-beps)*b0*x/((xn+xi1)*(xi-beps));
+        c0 = (a+xi1)*c0*x/((b+xi1)*xi) - tmp * b0 / (xi*(b+xi1)*(a+xi1-beps));
+        t = c0 + xeps1*b0;
+	dchu += t;
+        if (fabs(t) < EPS*fabs(dchu)) break;
+      }
      
-        XI = ISTRT + I;
-        XI1 = ISTRT + I - 1;
-        B0 = (A+XI1-BEPS)*B0*X/((XN+XI1)*(XI-BEPS));
-        C0 = (A+XI1)*C0*X/((B+XI1)*XI)
-     	 - ((A-1.0D0)*(XN+2.D0*XI-1.0D0) + XI*(XI-BEPS)) * B0
-     	 / (XI*(B+XI1)*(A+XI1-BEPS));
-        T = C0 + XEPS1*B0;
-        DCHU = DCHU + T;
-        IF (ABS(T).LT.EPS*ABS(DCHU)) GO TO 130
-     }
-     /*
-      CALL XERMSG ('SLATEC', 'DCHU',
-     +   'NO CONVERGENCE IN 1000 TERMS OF THE ASCENDING SERIES', 3, 2)
-     */
+      *result = dchu;
+      if(i == 1000) {
+        return GSL_EMAXITER;
+      }
+      else {
+        return GSL_SUCCESS;
+      }
     }
     else {
-    /*
-    C
-C X**(-BEPS) IS VERY DIFFERENT FROM 1.0, SO THE STRAIGHTFORWARD
-C FORMULATION IS STABLE.
-C
-*/
-      A0 = FACTOR * POCHAI * DGAMR(B+XI) * GAMRI1 / BEPS;
-      B0 = XTOEPS * B0 / BEPS;
+      /*
+       C  X**(-BEPS) IS VERY DIFFERENT FROM 1.0, SO THE
+       C  STRAIGHTFORWARD FORMULATION IS STABLE.
+       */
+      int i;
+      double dchu;
+      double dgamrbxi;
+      int stat_dgamrbxi = gsl_sf_gammainv_impl(b+xi, &dgamrbxi);
+      double a0 = factor * pochai * dgamrbxi * gamri1 / beps;
+      b0 = xeps * b0 / beps;
 
-      DCHU = SUM + A0 - B0;
+      dchu = sum + a0 - b0;
       
       for(i=1; i<1000; i++) {
-      
-        XI = ISTRT + I;
-        XI1 = ISTRT + I - 1;
-        A0 = (A+XI1)*A0*X/((B+XI1)*XI);
-        B0 = (A+XI1-BEPS)*B0*X/((AINTB+XI1)*(XI-BEPS));
-        T = A0 - B0;
-        DCHU = DCHU + T;
-        IF (ABS(T).LT.EPS*ABS(DCHU)) GO TO 130
-	
+        double xi = istrt + i;
+        double xi1 = istrt + i - 1;
+	double t;
+        a0 = (a+xi1)*a0*x/((b+xi1)*xi);
+        b0 = (a+xi1-beps)*b0*x/((aintb+xi1)*(xi-beps));
+        t = a0 - b0;
+        dchu += t;
+        if(fabs(t) < EPS*fabs(dchu)) break;
       }
-      /*
-      CALL XERMSG ('SLATEC', 'DCHU',
-     +   'NO CONVERGENCE IN 1000 TERMS OF THE ASCENDING SERIES', 3, 2)  
-      */
+      
+      *result = dchu;
+      if(i == 1000) {
+        return GSL_EMAXITER;
+      }
+      else {
+        return GSL_SUCCESS;
+      }
     }
-
-    /* 130  RETURN */
   }
 }
-#endif
+
