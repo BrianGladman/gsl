@@ -1,3 +1,8 @@
+Fri Jun  1 17:04:52 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* getset_source.c: made these routines work with the current
+ 	matrix struct, previously they would give incorrect results
+
 Mon May 14 22:43:39 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* matrix_source.c (FUNCTION): removed unnecessary inline from

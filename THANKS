@@ -94,3 +94,6 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 * Zeger Knops <zeger@cs.uu.nl> for bug fix
 
 * Rodney Sparapani <rsparapa@mcw.edu> for Darwin support
+
+* Ramin Nakisa <raminnakisa@yahoo.com> for bug reports
+

@@ -7,28 +7,36 @@ FUNCTION (gsl_matrix, get_row) (TYPE (gsl_vector) * v,
                                  const TYPE (gsl_matrix) * m,
 				 const size_t i)
 {
-  const size_t column_length = m->size1;
-  const size_t row_length = m->size2;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  const size_t tda = m->tda;
 
-  if (i >= column_length)
+  if (i >= M)
     {
       GSL_ERROR ("row index is out of range", GSL_EINVAL);
     }
 
-  if (v->size != row_length)
+  if (v->size != N)
     {
       GSL_ERROR ("matrix row size and vector length are not equal",
 		 GSL_EBADLEN);
     }
 
   {
-    ATOMIC *row_data = m->data + MULTIPLICITY * i * row_length;
+    ATOMIC *v_data = v->data;
+    const ATOMIC *row_data = m->data + MULTIPLICITY * i * tda;
     const size_t stride = v->stride ;
     size_t j;
 
-    for (j = 0; j < MULTIPLICITY * row_length; j++)
+    for (j = 0; j < N; j++)
       {
-	v->data[stride * j] = row_data[j];
+        unsigned int k;
+
+        for (k = 0; k < MULTIPLICITY; k++)
+          {
+            v_data[MULTIPLICITY * stride * j + k] 
+              = row_data[MULTIPLICITY * j + k];
+          }
       }
   }
 
@@ -40,15 +48,16 @@ FUNCTION (gsl_matrix, get_col) (TYPE (gsl_vector) * v,
                                  const TYPE (gsl_matrix) * m,
 				 const size_t j)
 {
-  const size_t column_length = m->size1;
-  const size_t row_length = m->size2;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  const size_t tda = m->tda;
 
-  if (j >= row_length)
+  if (j >= N)
     {
       GSL_ERROR ("column index is out of range", GSL_EINVAL);
     }
 
-  if (v->size != column_length)
+  if (v->size != M)
     {
       GSL_ERROR ("matrix column size and vector length are not equal",
 		 GSL_EBADLEN);
@@ -56,17 +65,19 @@ FUNCTION (gsl_matrix, get_col) (TYPE (gsl_vector) * v,
 
 
   {
-    ATOMIC *column_data = m->data + MULTIPLICITY * j;
+    ATOMIC *v_data = v->data;
+    const ATOMIC *column_data = m->data + MULTIPLICITY * j;
     const size_t stride = v->stride ;
     size_t i;
 
-    for (i = 0; i < row_length; i++)
+    for (i = 0; i < M; i++)
       {
-	size_t k;
+	unsigned int k;
+
 	for (k = 0; k < MULTIPLICITY; k++)
 	  {
-	    v->data[stride * MULTIPLICITY * j + k] =
-	      column_data[MULTIPLICITY * i * row_length + k];
+	    v_data[stride * MULTIPLICITY * i + k] =
+	      column_data[MULTIPLICITY * i * tda + k];
 	  }
       }
   }
@@ -79,15 +90,16 @@ FUNCTION (gsl_matrix, set_row) (TYPE (gsl_matrix) * m,
 				const size_t i,
 				const TYPE (gsl_vector) * v)
 {
-  const size_t column_length = m->size1;
-  const size_t row_length = m->size2;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  const size_t tda = m->tda;
 
-  if (i >= column_length)
+  if (i >= M)
     {
       GSL_ERROR ("row index is out of range", GSL_EINVAL);
     }
 
-  if (v->size != row_length)
+  if (v->size != N)
     {
       GSL_ERROR ("matrix row size and vector length are not equal",
 		 GSL_EBADLEN);
@@ -95,13 +107,19 @@ FUNCTION (gsl_matrix, set_row) (TYPE (gsl_matrix) * m,
 
   {
     const ATOMIC *v_data = v->data;
-    ATOMIC *row_data = m->data + MULTIPLICITY * i * row_length;
+    ATOMIC *row_data = m->data + MULTIPLICITY * i * tda;
     const size_t stride = v->stride ;
     size_t j;
 
-    for (j = 0; j < MULTIPLICITY * row_length; j++)
+    for (j = 0; j < N; j++)
       {
-	row_data[j] = v_data[stride * j];
+        unsigned int k;
+
+        for (k = 0; k < MULTIPLICITY; k++)
+          {
+            row_data[MULTIPLICITY*j + k] 
+              = v_data[MULTIPLICITY * stride * j + k];
+          }
       }
   }
 
@@ -113,15 +131,16 @@ FUNCTION (gsl_matrix, set_col) (TYPE (gsl_matrix) * m,
 				const size_t j,
 				const TYPE (gsl_vector) * v)
 {
-  const size_t column_length = m->size1;
-  const size_t row_length = m->size2;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  const size_t tda = m->tda;
 
-  if (j >= row_length)
+  if (j >= N)
     {
       GSL_ERROR ("column index is out of range", GSL_EINVAL);
     }
 
-  if (v->size != column_length)
+  if (v->size != M)
     {
       GSL_ERROR ("matrix column size and vector length are not equal",
 		 GSL_EBADLEN);
@@ -133,9 +152,15 @@ FUNCTION (gsl_matrix, set_col) (TYPE (gsl_matrix) * m,
     const size_t stride = v->stride ;
     size_t i;
 
-    for (i = 0; i < column_length; i++)
+    for (i = 0; i < M; i++)
       {
-	column_data[MULTIPLICITY * i * row_length] = v_data[stride * i];
+        unsigned int k;
+
+        for (k = 0; k < MULTIPLICITY; k++)
+          {
+            column_data[MULTIPLICITY * i * tda + k] 
+              = v_data[MULTIPLICITY * stride * i + k];
+          }
       }
   }
 
@@ -149,9 +174,9 @@ FUNCTION (gsl_vector, alloc_row_from_matrix) (TYPE(gsl_matrix) * m,
 {
   TYPE (gsl_vector) * v;
 
-  const size_t column_length = m->size1;
+  const size_t M = m->size1;
 
-  if (i >= column_length)
+  if (i >= M)
     {
       GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, 0);
     }
@@ -178,9 +203,9 @@ FUNCTION (gsl_vector, alloc_col_from_matrix) (TYPE(gsl_matrix) * m,
 {
   TYPE (gsl_vector) * v;
 
-  const size_t row_length = m->size2;
+  const size_t N = m->size2;
 
-  if (j >= row_length)
+  if (j >= N)
     {
       GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, 0);
     }
