@@ -12,4 +12,7 @@
 int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta);
 
 
+int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta);
+
+
 #endif /* GSL_SF_LOG_H_ */

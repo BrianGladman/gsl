@@ -17,6 +17,7 @@ include_HEADERS = \
 	gsl_sf_laguerre.h   	\
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
+	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
 	gsl_sf_trig.h
@@ -24,28 +25,7 @@ include_HEADERS = \
 
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
-	bessel.h		\
-	airy_impl.h		\
-	bessel_I0_impl.h	\
-	bessel_I1_impl.h	\
-	bessel_In_impl.h	\
-	bessel_J0_impl.h	\
-	bessel_J1_impl.h	\
-	bessel_Jn_impl.h	\
-	bessel_K0_impl.h	\
-	bessel_K1_impl.h	\
-	bessel_Kn_impl.h	\
-	bessel_Y0_impl.h	\
-	bessel_Y1_impl.h	\
-	bessel_Yn_impl.h	\
-	expint_impl.h		\
-	gamma_impl.h		\
-	legendre_impl.h		\
-	log_impl.h		\
-	psi_impl.h		\
-	shint_impl.h		\
-	sinint_impl.h		\
-	trig_impl.h
+	bessel.h
 	
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
@@ -62,27 +42,16 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel.c		\
 	bessel.h                \
 	bessel_I0.c		\
-	bessel_I0_impl.h	\
 	bessel_I1.c		\
-	bessel_I1_impl.h	\
 	bessel_In.c		\
-	bessel_In_impl.h	\
 	bessel_J0.c		\
-	bessel_J0_impl.h	\
 	bessel_J1.c		\
-	bessel_J1_impl.h	\
 	bessel_Jn.c		\
-	bessel_Jn_impl.h	\
 	bessel_K0.c		\
-	bessel_K0_impl.h	\
 	bessel_K1.c		\
-	bessel_K1_impl.h	\
 	bessel_Kn.c		\
-	bessel_Kn_impl.h	\
 	bessel_Y0.c		\
-	bessel_Y0_impl.h	\
 	bessel_Y1.c		\
-	bessel_Y1_impl.h	\
 	bessel_Yn.c		\
 	bessel_amp_phase.c	\
         bessel_amp_phase.h      \
@@ -100,15 +69,13 @@ libgslspecfunc_a_SOURCES = 	\
 	legendre_assoc.c	\
 	legendre_poly.c		\
 	log.c			\
+	poly.c			\
 	pow_int.c		\
 	psi.c			\
         recurse.h               \
 	shint.c			\
-	expint_impl.h		\
-	shint_impl.h		\
 	sig2lamp.c		\
 	sinint.c		\
-	sinint_impl.h		\
 	t-erf.c			\
 	trig.c
 

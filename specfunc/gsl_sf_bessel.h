@@ -150,4 +150,40 @@ void asymp_sphbesselj_meissel(double l, double x,
 
 
 
+
+int gsl_sf_bessel_I0_scaled_impl(double x, double * result);
+int gsl_sf_bessel_I0_impl(double x, double * result);
+
+int gsl_sf_bessel_I1_scaled_impl(double x, double * result);
+int gsl_sf_bessel_I1_impl(double x, double * result);
+
+int gsl_sf_bessel_In_scaled_impl(int n, double x, double * result);
+int gsl_sf_bessel_In_impl(int n, double x, double * result);
+
+int gsl_sf_bessel_In_scaled_array_impl(int nmax, double x, double * result_array);
+int gsl_sf_bessel_In_array_impl(int nmax, double x, double * result_array);
+
+
+int gsl_sf_bessel_J0_impl(double x, double * result);
+int gsl_sf_bessel_J1_impl(double x, double * result);
+
+int gsl_sf_bessel_K0_scaled_impl(double x, double * result);
+int gsl_sf_bessel_K0_impl(double x, double * result);
+
+int gsl_sf_bessel_K1_scaled_impl(double x, double * result);
+int gsl_sf_bessel_K1_impl(double x, double * result);
+
+int gsl_sf_bessel_Kn_scaled_impl(int n, double x, double * result);
+int gsl_sf_bessel_Kn_impl(int n, double x, double * result);
+
+int gsl_sf_bessel_Kn_scaled_array_impl(int nmax, double x, double * result_array);
+int gsl_sf_bessel_Kn_array_impl(int nmax, double x, double * result_array);
+
+int gsl_sf_bessel_Y0_impl(double x, double * result);
+
+int gsl_sf_bessel_Y1_impl(double x, double * result);
+
+int gsl_sf_bessel_Yn_impl(int n, double x, double * result);
+
+
 #endif /* !GSL_BESSEL_H_ */

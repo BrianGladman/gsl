@@ -85,4 +85,13 @@ int gsl_sf_conical_sph_reg_array_e(int l, double lambda, double x, double * resu
 double gsl_sf_conical_sph_reg(int l, double lambda, double x);  /* domain */
 
 
+int gsl_sf_legendre_Pl_impl(int l, double x, double * result, double * harvest);
+
+int gsl_sf_legendre_Plm_impl(int l, int m, double one_m_x, double one_p_x, double * result, double * harvest);
+
+int gsl_sf_legendre_Plm_impl(int l, int m, double one_m_x, double one_p_x, double * result, double * harvest);
+
+int gsl_sf_conical_xlt1_large_mu_impl(double mu, double tau, double x, double * result);
+
+
 #endif /* !GSL_LEGENDRE_H_ */

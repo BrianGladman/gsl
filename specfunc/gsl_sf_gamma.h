@@ -39,4 +39,14 @@ double gsl_sf_lnchoose(unsigned int n, unsigned int m);  /* domain */
 double gsl_sf_choose(unsigned int n, unsigned int m);    /* domain, overflow */
 
 
+int gsl_sf_lngamma_impl(double x, double * result);
+int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg);
+
+int gsl_sf_fact_impl(int n, double * result);
+int gsl_sf_lnfact_impl(int n, double * result);
+
+int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result);
+int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result);
+
+
 #endif /* !GSL_GAMMAFUNCTION_H_ */

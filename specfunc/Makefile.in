@@ -88,34 +88,14 @@ include_HEADERS = \
 	gsl_sf_laguerre.h   	\
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
+	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
 	gsl_sf_trig.h
 
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
-	bessel.h		\
-	airy_impl.h		\
-	bessel_I0_impl.h	\
-	bessel_I1_impl.h	\
-	bessel_In_impl.h	\
-	bessel_J0_impl.h	\
-	bessel_J1_impl.h	\
-	bessel_Jn_impl.h	\
-	bessel_K0_impl.h	\
-	bessel_K1_impl.h	\
-	bessel_Kn_impl.h	\
-	bessel_Y0_impl.h	\
-	bessel_Y1_impl.h	\
-	bessel_Yn_impl.h	\
-	expint_impl.h		\
-	gamma_impl.h		\
-	legendre_impl.h		\
-	log_impl.h		\
-	psi_impl.h		\
-	shint_impl.h		\
-	sinint_impl.h		\
-	trig_impl.h
+	bessel.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
 
@@ -131,27 +111,16 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel.c		\
 	bessel.h                \
 	bessel_I0.c		\
-	bessel_I0_impl.h	\
 	bessel_I1.c		\
-	bessel_I1_impl.h	\
 	bessel_In.c		\
-	bessel_In_impl.h	\
 	bessel_J0.c		\
-	bessel_J0_impl.h	\
 	bessel_J1.c		\
-	bessel_J1_impl.h	\
 	bessel_Jn.c		\
-	bessel_Jn_impl.h	\
 	bessel_K0.c		\
-	bessel_K0_impl.h	\
 	bessel_K1.c		\
-	bessel_K1_impl.h	\
 	bessel_Kn.c		\
-	bessel_Kn_impl.h	\
 	bessel_Y0.c		\
-	bessel_Y0_impl.h	\
 	bessel_Y1.c		\
-	bessel_Y1_impl.h	\
 	bessel_Yn.c		\
 	bessel_amp_phase.c	\
         bessel_amp_phase.h      \
@@ -168,15 +137,13 @@ libgslspecfunc_a_SOURCES = 	\
 	legendre_assoc.c	\
 	legendre_poly.c		\
 	log.c			\
+	poly.c			\
 	pow_int.c		\
 	psi.c			\
         recurse.h               \
 	shint.c			\
-	expint_impl.h		\
-	shint_impl.h		\
 	sig2lamp.c		\
 	sinint.c		\
-	sinint_impl.h		\
 	t-erf.c			\
 	trig.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -195,8 +162,8 @@ bessel_I1.o bessel_In.o bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o \
 bessel_K1.o bessel_Kn.o bessel_Y0.o bessel_Y1.o bessel_Yn.o \
 bessel_amp_phase.o bessel_j.o bessel_olver.o chebyshev.o dilog.o erfc.o \
 expint.o fermi_dirac.o gamma.o laguerre.o legendre.o legendre_assoc.o \
-legendre_poly.o log.o pow_int.o psi.o shint.o sig2lamp.o sinint.o \
-t-erf.o trig.o
+legendre_poly.o log.o poly.o pow_int.o psi.o shint.o sig2lamp.o \
+sinint.o t-erf.o trig.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -219,7 +186,7 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_amp_phase.P .deps/bessel_j.P .deps/bessel_olver.P \
 .deps/chebyshev.P .deps/dilog.P .deps/erfc.P .deps/expint.P \
 .deps/fermi_dirac.P .deps/gamma.P .deps/laguerre.P .deps/legendre.P \
-.deps/legendre_assoc.P .deps/legendre_poly.P .deps/log.P \
+.deps/legendre_assoc.P .deps/legendre_poly.P .deps/log.P .deps/poly.P \
 .deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
 .deps/sinint.P .deps/t-erf.P .deps/test_sf.P .deps/trig.P
 SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)
