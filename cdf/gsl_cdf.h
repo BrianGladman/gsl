@@ -82,6 +82,9 @@ double gsl_cdf_exponential_Q (const double x, const double mu);
 double gsl_cdf_exponential_Pinv (const double P, const double mu);
 double gsl_cdf_exponential_Qinv (const double Q, const double mu);
 
+double gsl_cdf_exppow_P (const double x, const double a, const double b);
+double gsl_cdf_exppow_Q (const double x, const double a, const double b);
+
 double gsl_cdf_tdist_P (const double x, const double nu);
 double gsl_cdf_tdist_Q (const double x, const double nu);
 

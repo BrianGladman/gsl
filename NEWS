@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** Added cumulative distribution function for exponential power
+distribution.
+
 ** Fixed the function gsl_sf_expint_scaled to call
 gsl_sf_expint_scaled_e instead of gsl_sf_expint_scaled_e.
 

@@ -1,3 +1,7 @@
+2004-10-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* exppow.c: added exppow distribution
+
 2004-10-01  Brian Gough  <bjg@network-theory.co.uk>
 
 	* beta.c (gsl_cdf_beta_P, gsl_cdf_beta_P): return consistent

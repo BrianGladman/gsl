@@ -40,6 +40,7 @@ void test_ugaussian (void);
 void test_ugaussianinv (void);
 void test_exponential (void);
 void test_exponentialinv (void);
+void test_exppow (void);
 void test_tdist (void);
 void test_fdist (void);
 void test_gamma (void);
@@ -61,6 +62,7 @@ main (void)
   
   test_ugaussian ();
   test_exponential ();
+  test_exppow ();
   test_tdist (); 
   test_fdist (); 
   test_gamma ();
@@ -217,6 +219,28 @@ void test_exponentialinv (void) {
   TEST (gsl_cdf_exponential_Qinv, (0.86, 0.7), 1.05576022814208545e-1, TEST_TOL0);
   TEST (gsl_cdf_exponential_Qinv, (0.99999, 0.7), 7.00003500023333508e-6, TEST_TOL6);
 }
+
+
+
+void test_exppow (void)
+{
+  TEST (gsl_cdf_exppow_P, (-1000.0, 0.7, 1.8), 0.0, TEST_TOL6);
+  TEST (gsl_cdf_exppow_P, (-0.1, 0.7, 1.8), 0.4205349082867515493458053850, TEST_TOL0);
+  TEST (gsl_cdf_exppow_P, (-1e-32, 0.7, 1.8), 0.4999999999999999999999999999, TEST_TOL0);
+
+  TEST (gsl_cdf_exppow_P, (0.1, 0.7, 1.8), 0.5794650917132484506541946149, TEST_TOL0);
+  TEST (gsl_cdf_exppow_P, (1e-32, 0.7, 1.8), 0.5, TEST_TOL0);
+  TEST (gsl_cdf_exppow_P, (1000.0, 0.7, 1.8), 0.9999999999999999999999956212, TEST_TOL6);
+
+  TEST (gsl_cdf_exppow_Q, (-1000.0, 0.7, 1.8), 0.9999999999999999999999956212, TEST_TOL6);
+  TEST (gsl_cdf_exppow_Q, (-0.1, 0.7, 1.8), 0.5794650917132484506541946149, TEST_TOL0);
+  TEST (gsl_cdf_exppow_Q, (-1e-32, 0.7, 1.8), 0.5, TEST_TOL0);
+
+  TEST (gsl_cdf_exppow_Q, (0.1, 0.7, 1.8), 0.4205349082867515493458053850, TEST_TOL0);
+  TEST (gsl_cdf_exppow_Q, (1e-32, 0.7, 1.8), 0.4999999999999999999999999999, TEST_TOL0);
+  TEST (gsl_cdf_exppow_Q, (1000.0, 0.7, 1.8), 0.0, TEST_TOL6);
+}
+
 
   /* Tests for student's T distribution */
 
