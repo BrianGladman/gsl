@@ -1,3 +1,8 @@
+2004-11-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* psi.c (gsl_sf_psi_1): added missing function definition
+	gsl_sf_psi_1
+
 2004-10-11  Brian Gough  <bjg@network-theory.co.uk>
 
 	* expint.c (gsl_sf_expint_Ei_scaled): fixed call to incorrect

@@ -717,6 +717,11 @@ double gsl_sf_psi_1_int(const int n)
   EVAL_RESULT(gsl_sf_psi_1_int_e(n, &result));
 }
 
+double gsl_sf_psi_1(const double x)
+{
+  EVAL_RESULT(gsl_sf_psi_1_e(x, &result));
+}
+
 double gsl_sf_psi_n(const int n, const double x)
 {
   EVAL_RESULT(gsl_sf_psi_n_e(n, x, &result));

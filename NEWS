@@ -1,5 +1,7 @@
 * What will be new in gsl-1.6:
 
+** Added missing function definition for gsl_sf_psi_1.
+
 ** Added cumulative distribution function for exponential power
 distribution.
 
