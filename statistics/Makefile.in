@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.2c from Makefile.am
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -32,6 +32,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -49,12 +51,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
@@ -76,11 +78,11 @@ noinst_PROGRAMS = test test_int
 
 TESTS = test test_int
 
-test_SOURCES = test.c
+test_SOURCES = test.c test.h
 test_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslstatistics.a
 
-test_int_SOURCES = test_int.c
+test_int_SOURCES = test_int.c test.h
 test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_int_DEPENDENCIES = libgslstatistics.a
 
@@ -96,17 +98,17 @@ ttest.c \
 sort.c \
 median.c \
 percentiles.c \
-int_mean.c \
-int_variance.c  \
-int_absdev.c \
-int_skew.c \
-int_kurtosis.c \
-int_pooled_variance.c \
-int_minmax.c \
-int_ttest.c \
-int_sort.c \
-int_median.c \
-int_percentiles.c
+mean_int.c \
+variance_int.c  \
+absdev_int.c \
+skew_int.c \
+kurtosis_int.c \
+pooled_variance_int.c \
+minmax_int.c \
+ttest_int.c \
+sort_int.c \
+median_int.c \
+percentiles_int.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -120,9 +122,9 @@ LIBS = @LIBS@
 libgslstatistics_a_LIBADD = 
 libgslstatistics_a_OBJECTS =  mean.o variance.o absdev.o skew.o \
 kurtosis.o pooled_variance.o minmax.o ttest.o sort.o median.o \
-percentiles.o int_mean.o int_variance.o int_absdev.o int_skew.o \
-int_kurtosis.o int_pooled_variance.o int_minmax.o int_ttest.o \
-int_sort.o int_median.o int_percentiles.o
+percentiles.o mean_int.o variance_int.o absdev_int.o skew_int.o \
+kurtosis_int.o pooled_variance_int.o minmax_int.o ttest_int.o \
+sort_int.o median_int.o percentiles_int.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -135,31 +137,31 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/absdev.P .deps/int_absdev.P .deps/int_kurtosis.P \
-.deps/int_mean.P .deps/int_median.P .deps/int_minmax.P \
-.deps/int_percentiles.P .deps/int_pooled_variance.P .deps/int_skew.P \
-.deps/int_sort.P .deps/int_ttest.P .deps/int_variance.P \
-.deps/kurtosis.P .deps/mean.P .deps/median.P .deps/minmax.P \
-.deps/percentiles.P .deps/pooled_variance.P .deps/skew.P .deps/sort.P \
-.deps/test.P .deps/test_int.P .deps/ttest.P .deps/variance.P
+DEP_FILES =  .deps/absdev.P .deps/absdev_int.P .deps/kurtosis.P \
+.deps/kurtosis_int.P .deps/mean.P .deps/mean_int.P .deps/median.P \
+.deps/median_int.P .deps/minmax.P .deps/minmax_int.P \
+.deps/percentiles.P .deps/percentiles_int.P .deps/pooled_variance.P \
+.deps/pooled_variance_int.P .deps/skew.P .deps/skew_int.P .deps/sort.P \
+.deps/sort_int.P .deps/test.P .deps/test_int.P .deps/ttest.P \
+.deps/ttest_int.P .deps/variance.P .deps/variance_int.P
 SOURCES = $(libgslstatistics_a_SOURCES) $(test_SOURCES) $(test_int_SOURCES)
 OBJECTS = $(libgslstatistics_a_OBJECTS) $(test_OBJECTS) $(test_int_OBJECTS)
 
-default: all
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu statistics/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -175,32 +177,35 @@ maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(libdir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 	@$(POST_INSTALL)
 	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(RANLIB) $(libdir)/$$p"; \
-	    $(RANLIB) $(libdir)/$$p; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(libdir)/$$p; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.o core
+	-rm -f *.o core *.core
 
 clean-compile:
 
@@ -233,28 +238,34 @@ test_int: $(test_int_OBJECTS) $(test_int_DEPENDENCIES)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -282,12 +293,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = $(CC) -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
--include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
-	echo > $@
 
 -include $(DEP_FILES)
 
@@ -300,13 +306,16 @@ distclean-depend:
 maintainer-clean-depend:
 	-rm -rf .deps
 
-.deps/%.P: %.c
-	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -348,12 +357,10 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -390,7 +397,7 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
@@ -403,20 +410,6 @@ install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-int:
-	perl convert_double_to_int.pl gsl_statistics.h > gsl_statistics_int.h 
-	perl convert_double_to_int.pl mean.c > int_mean.c
-	perl convert_double_to_int.pl variance.c > int_variance.c
-	perl convert_double_to_int.pl absdev.c > int_absdev.c
-	perl convert_double_to_int.pl minmax.c > int_minmax.c
-	perl convert_double_to_int.pl pooled_variance.c > int_pooled_variance.c
-	perl convert_double_to_int.pl ttest.c > int_ttest.c
-	perl convert_double_to_int.pl skew.c > int_skew.c
-	perl convert_double_to_int.pl kurtosis.c > int_kurtosis.c
-	perl convert_double_to_int.pl sort.c > int_sort.c
-	perl convert_double_to_int.pl median.c > int_median.c
-	perl convert_double_to_int.pl percentiles.c > int_percentiles.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
