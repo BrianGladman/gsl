@@ -103,6 +103,7 @@ libgslspecfunc_a_SOURCES = 	\
 	hyperg_U.c		\
 	hyperg.c		\
 	laguerre.c		\
+	legendre_H3d.c		\
 	legendre_con.c		\
 	legendre_poly.c		\
 	log.c			\

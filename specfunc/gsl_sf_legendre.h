@@ -155,6 +155,56 @@ int gsl_sf_conical_sph_reg_array_impl(int lmax, double lambda, double x, double 
 int gsl_sf_conical_sph_reg_array_e(int lmax, double lambda, double x, double * result_array);
 
 
+/* The following spherical functions are specializations
+ * of Legendre functions which give the regular eigenfunctions
+ * of the Laplacian on a 3-dimensional hyperbolic space.
+ * Of particular interest is the flat limit, which is
+ * Flat-Lim := {lambda->Inf, eta->0, lambda*eta fixed}.
+ *
+ * Flat-Lim legendre_H3d(eta) := 
+ *
+ */
+  
+/* Zeroth radial eigenfunction of the Laplacian on the
+ * 3-dimensional hyperbolic space.
+ *
+ * legendre_H3d_0(lambda,eta) := 
+ * 
+ * Noramlization:
+ * Flat-Lim legendre_H3d_0(lambda,eta) = j_0(lambda*eta)
+ *
+ * legendre_H3d_0(lambda,eta) := sin(lambda*eta)/(lambda*sinh(eta))
+ */
+int     gsl_sf_legendre_H3d_0_impl(double lambda, double eta, double * result);
+int     gsl_sf_legendre_H3d_0_e(double lambda, double eta, double * result);
+double  gsl_sf_legendre_H3d_0(double lambda, double eta);
+
+
+/* First radial eigenfunction of the Laplacian on the
+ * 3-dimensional hyperbolic space.
+ *
+ * legendre_H3d_1(lambda,eta) :=
+ *    1/sqrt(lambda^2 + 1)/(lambda*eta)
+ *    (coth(eta) sin(lambda*eta) - lambda cos(lambda*eta))
+ * 
+ * Normalization:
+ * Flat-Lim legendre_H3d_1(lambda,eta) = j_1(lambda*eta)
+ *
+ */
+int     gsl_sf_legendre_H3d_1_impl(double lambda, double eta, double * result);
+int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, double * result);
+double  gsl_sf_legendre_H3d_1(double lambda, double eta);
+
+
+/* l'th radial eigenfunction of the Laplacian on the
+ * 3-dimensional hyperbolic space. Normalized so that
+ *
+ * Flat-Lim legendre_H3d_l(l,lambda,eta) = j_l(lambda*eta)
+ */
+int     gsl_sf_legendre_H3d_l_impl(int l, double lambda, double eta, double * result);
+int     gsl_sf_legendre_H3d_l_e(int l, double lambda, double eta, double * result);
+double  gsl_sf_legendre_H3d_l(int l, double lambda, double eta);
+
 
 /*
 int gsl_sf_conical_xlt1_large_mu_impl(double mu, double tau, double x, double * result);

@@ -173,6 +173,7 @@ libgslspecfunc_a_SOURCES = 	\
 	hyperg_U.c		\
 	hyperg.c		\
 	laguerre.c		\
+	legendre_H3d.c		\
 	legendre_con.c		\
 	legendre_poly.c		\
 	log.c			\
@@ -207,8 +208,9 @@ bessel_temme.o bessel_y.o chebyshev.o clausen.o coupling.o coulomb.o \
 coulomb_bound.o dawson.o debye.o dilog.o ellint.o elljac.o erfc.o exp.o \
 expint.o expint3.o fermi_dirac.o gegenbauer.o gamma.o hyperg_0F1.o \
 hyperg_2F0.o hyperg_1F1.o hyperg_2F1.o hyperg_U.o hyperg.o laguerre.o \
-legendre_con.o legendre_poly.o log.o poch.o poly.o pow_int.o psi.o \
-shint.o sinint.o synchrotron.o transport.o trig.o zeta.o
+legendre_H3d.o legendre_con.o legendre_poly.o log.o poch.o poly.o \
+pow_int.o psi.o shint.o sinint.o synchrotron.o transport.o trig.o \
+zeta.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -238,9 +240,9 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/exp.P .deps/expint.P .deps/expint3.P .deps/fermi_dirac.P \
 .deps/gamma.P .deps/gegenbauer.P .deps/hyperg.P .deps/hyperg_0F1.P \
 .deps/hyperg_1F1.P .deps/hyperg_2F0.P .deps/hyperg_2F1.P \
-.deps/hyperg_U.P .deps/laguerre.P .deps/legendre_con.P \
-.deps/legendre_poly.P .deps/log.P .deps/poch.P .deps/poly.P \
-.deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sinint.P \
+.deps/hyperg_U.P .deps/laguerre.P .deps/legendre_H3d.P \
+.deps/legendre_con.P .deps/legendre_poly.P .deps/log.P .deps/poch.P \
+.deps/poly.P .deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sinint.P \
 .deps/synchrotron.P .deps/test_sf.P .deps/transport.P .deps/trig.P \
 .deps/zeta.P
 SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)

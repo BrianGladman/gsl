@@ -3474,6 +3474,43 @@ int check_jac(void)
   return status;
 }
 
+int check_legendre(void)
+{
+  double y;
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0e-06, 1.0e-06), 0.9999999999998333333     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 0.0),         1.0                       ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 1.0),         0.7160229153604338713     ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 100.0),      -3.767437313149604566e-44  ) > 1.0e-14 );  
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0, 500.0),      -6.665351935878582205e-218 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(100.0, 1.0),      -0.004308757035378200029   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(100.0, 10.0),      7.508054627912986427e-07  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1000.0, 1.0),      0.0007036067909088818319  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0e+08, 1.0),     7.927485371429105968e-09  ) > 1.0e-12 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_0(1.0e+08, 100.0),  -3.627118904186918957e-52  ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_legendre_H3d_0");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0e-06, 1.0e-06), 3.333333333334777778e-07 ) > 1.0e-12 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0, 1.0e-10),	    4.714045207910316829e-11 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0, 1.0),	    0.3992174901512888174    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0, 100.0),	   -0.009678061007283418085  ) > 1.0e-14 );  
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0, 500.0),	    0.0005884223983976093338 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(100.0, 1.0),	   -0.008689241867058656105  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(100.0, 10.0),	   -0.0005540825774149942943 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1000.0, 1.0),	   -0.0005612930736306603435 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0e+08, 1.0),     3.633851015884396951e-09 ) > 1.0e-12 );
+  s += ( frac_diff(gsl_sf_legendre_H3d_1(1.0e+08, 100.0),  -8.731196275519162084e-11 ) > 1.0e-10 );
+  gsl_test(s, "  gsl_sf_legendre_H3d_1");
+  status += s;
+
+  return status;
+}
+
 int check_log(void)
 {
   double x, y;
@@ -3958,6 +3995,7 @@ int main(int argc, char * argv[])
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");
 
+  gsl_test(check_legendre(),   "Legendre Functions");
   gsl_test(check_log(),        "Logarithm");
   gsl_test(check_poly(),       "Polynomial Evaluation");
   gsl_test(check_pow_int(),    "Integer Powers");

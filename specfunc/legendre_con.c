@@ -886,40 +886,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
   }
 }
 
-int gsl_sf_hyper_0_impl(const double lambda, const double x, double * result)
-{
-  *result = sin(lambda*x)/(lambda*sinh(x));
-}
 
-int gsl_sf_hyper_1_impl(const double lambda, const double x, double * result)
-{
-  *result = sin(lambda*x)/(lambda*sinh(x)) 
-	  /sqrt(lambda*lambda+1.) * (1./tanh(x) - lambda/tan(lambda*x));
-}
-
-int gsl_sf_hyper_array_impl(int lmax, double lambda, double x, double * result, double * harvest)
-{
-  double X = 1./tanh(x);
-  double y2, y1, y0;
-  int ell;
-
-  gsl_sf_hyper_0_impl(lambda, x, &y2);
-  gsl_sf_hyper_1_impl(lambda, x, &y1);
-
-  harvest[0] = y2;
-  harvest[1] = y1;
-
-  for(ell=2; ell<=lmax; ell++) {
-    double a = sqrt(lambda*lambda + ell*ell);
-    double b = sqrt(lambda*lambda + (ell-1)*(ell-1));
-    y0 = ((2*ell-1)*X*y1 - b*y2) / a;
-    y2 = y1;
-    y1 = y0;
-    harvest[ell] = y0;
-  }
-  
-  *result = y0;
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
