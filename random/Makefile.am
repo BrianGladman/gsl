@@ -65,17 +65,17 @@ test-shuffle.o: shuffle.c
 
 bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss poisson test-poisson bench-poisson test-switch 
 
-lib_LIBRARIES= gslrandom gslrantaus gslranmrg gslrancmrg gslranuni gslranuni32 gslranzuf gslranrand 
+lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
 
-gslrantaus_SOURCES= taus.c taus-gen.c gauss.c 
-gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c 
-gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c 
-gslranuni_SOURCES= uni.c uni-gen.c gauss.c 
-gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c 
-gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c 
-gslranrand_SOURCES= rand.c rand-gen.c gauss.c 
+libgslrantaus_a_SOURCES= taus.c taus-gen.c gauss.c 
+libgslranmrg_a_SOURCES= mrg.c mrg-gen.c gauss.c 
+libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c gauss.c 
+libgslranuni_a_SOURCES= uni.c uni-gen.c gauss.c 
+libgslranuni32_a_SOURCES= uni32.c uni32-gen.c gauss.c 
+libgslranzuf_a_SOURCES= zuf.c zuf-gen.c gauss.c 
+libgslranrand_a_SOURCES= rand.c rand-gen.c gauss.c 
 
-gslrandom_SOURCES= switch.c shuffle.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c gauss.c poisson.c 
+libgslrandom_a_SOURCES= switch.c shuffle.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c gauss.c poisson.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
 test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
