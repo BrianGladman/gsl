@@ -1,7 +1,8 @@
 Thu Dec  2 20:39:02 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c: fixed bug, block element needs to be null in
- 	gsl_vector_alloc_from_vector to maintain correct ownership
+ 	gsl_vector_alloc_from_vector to maintain correct ownership,
+	added gsl_vector_view_from_vector (Thanks to Fabrice Rossi)
 
 Tue Oct 19 14:13:14 1999  Brian Gough  <bjg@network-theory.co.uk>
 

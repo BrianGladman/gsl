@@ -30,6 +30,10 @@ gsl_vector_ushort *gsl_vector_ushort_alloc_from_vector (gsl_vector_ushort * v,
 
 void gsl_vector_ushort_free (gsl_vector_ushort * v);
 
+int gsl_vector_ushort_view_from_vector (gsl_vector_ushort *v, 
+                                       gsl_vector_ushort *base,
+                                       size_t offset, size_t n, size_t stride);
+
 unsigned short *gsl_vector_ushort_ptr (const gsl_vector_ushort * v, const size_t i);
 unsigned short gsl_vector_ushort_get (const gsl_vector_ushort * v, const size_t i);
 void gsl_vector_ushort_set (gsl_vector_ushort * v, const size_t i, unsigned short x);

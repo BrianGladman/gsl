@@ -147,5 +147,36 @@ FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
   free (v);
 }
 
+int
+FUNCTION(gsl_vector, view_from_vector) (TYPE(gsl_vector) * v,
+                                        TYPE(gsl_vector) * base,
+                                        size_t offset, size_t n, size_t stride)
+{
+  if (n == 0)
+    {
+      GSL_ERROR ("vector length n must be positive integer", GSL_EDOM);
+    }
+
+  if (stride == 0)
+    {
+      GSL_ERROR ("stride must be positive integer", GSL_EDOM);
+    }
+
+  if (base->size <= offset + (n - 1) * stride)
+    {
+      GSL_ERROR ("vector would extend past end of vector", GSL_EDOM);
+    }
+
+  if (v->block != 0)
+    {
+      GSL_ERROR ("vector already has memory allocated to it", GSL_ENOMEM);
+    }
+
+  v->data = base->data + offset ;
+  v->size = n;
+  v->stride = stride;
+
+  return GSL_SUCCESS;
+}
 
 

@@ -34,7 +34,7 @@ FUNCTION (gsl_vector, set) (TYPE (gsl_vector) * v, const size_t i, BASE x)
 void
 FUNCTION (gsl_vector, set_all) (TYPE (gsl_vector) * v, BASE x)
 {
-  const ATOMIC * data = v->data;
+  ATOMIC * const data = v->data;
   const size_t n = v->size;
   const size_t stride = v->stride;
 

@@ -30,6 +30,10 @@ gsl_vector_uchar *gsl_vector_uchar_alloc_from_vector (gsl_vector_uchar * v,
 
 void gsl_vector_uchar_free (gsl_vector_uchar * v);
 
+int gsl_vector_uchar_view_from_vector (gsl_vector_uchar *v, 
+                                       gsl_vector_uchar *base,
+                                       size_t offset, size_t n, size_t stride);
+
 unsigned char *gsl_vector_uchar_ptr (const gsl_vector_uchar * v, const size_t i);
 unsigned char gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i);
 void gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x);

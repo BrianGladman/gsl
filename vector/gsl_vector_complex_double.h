@@ -34,6 +34,10 @@ gsl_vector_complex
 
 void gsl_vector_complex_free (gsl_vector_complex * v);
 
+int gsl_vector_complex_view_from_vector (gsl_vector_complex *v, 
+                                               gsl_vector_complex *base,
+                                               size_t offset, size_t n, size_t stride);
+
 gsl_complex 
 *gsl_vector_complex_ptr (const gsl_vector_complex * v, size_t i);
 
