@@ -364,6 +364,8 @@ will be announced for general use.
 @node Contributors to GSL, Copying, Debugging Numerical Programs, Top
 @appendix Contributors to GSL
 
+(See the AUTHORS file in the distribution for up-to-date information.)
+
 @table @strong
 @item Mark Galassi
 Conceived GSL (with James Theiler) and wrote the design document.  Wrote
@@ -378,16 +380,17 @@ Wrote the statistical routines and the relevant chapter in this
 manual.
 
 @item Brian Gough
-Wrote the FFT package and the relevant chapter in this manual.  Also
-wrote the error handling infrastructure.
+FFT package, error handling, vector and matrix functions,
+histograms, some parts of statistics, ieee-utils, integration, rng
+directory and random number distributions, 1d & multidimensional
+root finding, minimization, polynomial solvers
 
 @item Reid Priedhorsky
 Wrote the root finding package and the relevant chapter in this manual.
 
 @item Gerard Jungman
-Wrote the special function library, discrete hankel transforms,
-the rudimentary linear algebra functions, and the original version
-of the acceleration (Levin U) transforms.
+series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
+Hankel Transforms.
 
 @item Mike Booth
 Wrote the Monte Carlo library.
@@ -397,7 +400,13 @@ Wrote the initial complex arithmetic functions.
 
 @item  Thomas Walter 
 Wrote the initial heapsort routines and cholesky decomposition.
+
+@item  Fabrice Rossi
+Multidimensional minimization.
+
 @end table
+
+
 
 
 @node Copying, Concept Index, Contributors to GSL, Top
