@@ -28,6 +28,7 @@ cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl login
      (password is ``anoncvs'')
 cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/gsl checkout gsl
 cd gsl ; ./autogen.sh   (to create auto-generated files)
+./configure --enable-maintainer-mode
 [from now on you can just do "cvs update" in the gsl directory]
 
 # PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
@@ -154,3 +155,28 @@ configure, make, make check.
    - Run MAKE_CHECK.bat (should give 0 errors)
    - Compile the file setup.iss with INNO Setup 2 (free software)
      to create a self-extracting installer.
+
+----------------------------------------------------------------------
+
+Notes for Volunteers
+====================
+
+1) Study the GSL Design Document at http://sources.redhat.com/gsl/
+It contains the project coding standards and other useful information.
+
+2) Make sure you are allowed to release code under the GPL. It may be
+necessary to get a written disclaimer from your employer to confirm
+it.  You don't need to assign copyright to us, but you need to check
+that you are allowed to release GPL software -- otherwise the work
+will be wasted.
+
+3) Tell Brian Gough (bjg@network-theory.co.uk) what you plan to do
+(I'll make sure nobody else starts on it)
+
+4) Literature search (this is discussed in the Design document).
+
+5) Post on gsl-discuss@sources.redhat.com to keep us updated of your
+progress.  Make patches available somewhere for people to try out.
+Code goes into GSL when it is stable and well-tested, and has
+documentation.
+
