@@ -1102,7 +1102,7 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
     int stat_1 = gsl_sf_conicalP_0_impl(lambda, x, &Pk);    /* P^0 */
     int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
 
-    for(k=1; k<m; k++) {
+    for(k=0; k<m; k++) {
       double d = (k+0.5)*(k+0.5) + lambda*lambda;
       Pkp1 = (Pkm1 - 2.0*k*c*x * Pk) / d;
       Pkm1 = Pk;
@@ -1123,7 +1123,7 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
     double Pkm1;
     int k;
 
-    for(k=m; k>=0; k--) {
+    for(k=m; k>0; k--) {
       double d = (k+0.5)*(k+0.5) + lambda*lambda;
       Pkm1 = 2.0*k*xi * Pk + d * Pkp1;
       Pkp1 = Pk;
@@ -1149,7 +1149,7 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
     double Pkm1;
     int k;
 
-    for(k=m; k>=-1; k--) {
+    for(k=m; k>-1; k--) {
       double d = (k+0.5)*(k+0.5) + lambda*lambda;
       Pkm1 = 2.0*k*xi * Pk - d * Pkp1;
       Pkp1 = Pk;
@@ -1219,6 +1219,15 @@ int gsl_sf_conicalP_sph_reg_e(const int l, const double lambda, const double x, 
   return status;
 }
 
+int gsl_sf_conicalP_cyl_reg_e(const int m, const double lambda, const double x, double * result)
+{
+  int status = gsl_sf_conicalP_cyl_reg_impl(m, lambda, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_conicalP_cyl_reg_e", status);
+  }
+  return status;
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -1269,6 +1278,17 @@ double gsl_sf_conicalP_sph_reg(const int l, const double lambda, const double x)
   int status = gsl_sf_conicalP_sph_reg_impl(l, lambda, x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_conicalP_sph_reg", status);
+  }
+  return y;
+}
+
+
+double gsl_sf_conicalP_cyl_reg(const int m, const double lambda, const double x)
+{
+  double y;
+  int status = gsl_sf_conicalP_cyl_reg_impl(m, lambda, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_conicalP_cyl_reg", status);
   }
   return y;
 }

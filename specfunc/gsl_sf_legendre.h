@@ -133,7 +133,7 @@ int gsl_sf_legendre_sphPlm_array_e(int lmax, int m, double x, double * result_ar
 int gsl_sf_legendre_array_size(const int lmax, const int m);
 
 
-/* Irregular (Spherical) Conical Function
+/* Irregular Spherical Conical Function
  * P^{1/2}_{-1/2 + I lambda}(x)
  *
  * x > -1.0
@@ -144,7 +144,7 @@ int     gsl_sf_conicalP_half_e(double lambda, double x, double * result);
 double  gsl_sf_conicalP_half(double lambda, double x);
 
 
-/* Regular (Spherical) Conical Function
+/* Regular Spherical Conical Function
  * P^{-1/2}_{-1/2 + I lambda}(x)
  *
  * x > -1.0
@@ -177,7 +177,7 @@ int     gsl_sf_conicalP_1_e(double lambda, double x, double * result);
 double  gsl_sf_conicalP_1(double lambda, double x);
 
 
-/* Regular (Spherical) Conical Function
+/* Regular Spherical Conical Function
  * P^{-1/2-l}_{-1/2 + I lambda}(x)
  *
  * x > -1.0, l >= -1
@@ -188,7 +188,7 @@ int     gsl_sf_conicalP_sph_reg_e(int l, double lambda, double x, double * resul
 double  gsl_sf_conicalP_sph_reg(int l, double lambda, double x);
 
 
-/* Regular (Cylindrical) Conical Function
+/* Regular Cylindrical Conical Function
  * P^{-m}_{-1/2 + I lambda}(x)
  *
  * x > -1.0, m >= -1
@@ -199,7 +199,7 @@ int     gsl_sf_conicalP_cyl_reg_e(int m, double lambda, double x, double * resul
 double  gsl_sf_conicalP_cyl_reg(int m, double lambda, double x);
 
 
-/* Regular (Spherical) Conical Function
+/* Regular Spherical Conical Function
  * P^{-1/2-l}_{-1/2 + I lambda}(x)
  * l=0,...,lmax
  *

@@ -4801,6 +4801,7 @@ int check_legendre(void)
   gsl_test(s, "  gsl_sf_conicalP_1(1000.0)");
   status += s;
 
+
   s = 0;
   y = gsl_sf_conicalP_sph_reg(2, 1.0, -0.5);
   s += ( frac_diff(y, 1.6406279287008789526 ) > 1.0e-12 );
@@ -4859,6 +4860,67 @@ int check_legendre(void)
   y = gsl_sf_conicalP_sph_reg(30, 100.0, 100.0);
   s += ( frac_diff(y, -1.6757772087159526048e-64 ) > 1.0e-11 );
   gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(30, 100.0, 100.0)");
+  status += s;
+
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(2, 1.0, -0.5);
+  s += ( frac_diff(y, 2.2048510472375258708 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(2, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(10, 1.0, -0.5);
+  s += ( frac_diff(y, 0.00007335034531618655690 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(10, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(20, 1.0, -0.5);
+  s += ( frac_diff(y, 2.5419860619212164696e-14 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(20, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(30, 1.0, -0.5);
+  s += ( frac_diff(y, 5.579714972260536827e-26 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(30, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(10, 1.0, 0.5);
+  s += ( frac_diff(y, 1.1674078819646475282e-09 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(10, 1.0, 0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(20, 1.0, 0.5);
+  s += ( frac_diff(y, 7.066408031229072207e-24 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(20, 1.0, 0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(30, 1.0, 0.5);
+  s += ( frac_diff(y, 2.6541973286862588488e-40 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(30, 1.0, 0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(10, 1.0, 2.0);
+  s += ( frac_diff(y, 1.0736109751890863051e-09 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(10, 1.0, 2.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(20, 1.0, 2.0);
+  s += ( frac_diff(y, 6.760965304863386741e-24 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(20, 1.0, 2.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_cyl_reg(30, 100.0, 100.0);
+  s += ( frac_diff(y, -4.268753482520651007e-63 ) > 1.0e-11 );
+  gsl_test(s, "  gsl_sf_conicalP_cyl_reg_impl(30, 100.0, 100.0)");
   status += s;
 
   s = 0;
