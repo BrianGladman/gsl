@@ -24,7 +24,7 @@ well as the code) is still evolving - the code at a faster rate.
 
 We begin by establishing some notation.  Let @math{I(f)} denote the
 integral of the function @math{f} (for convenience, we take @math{I(1)=1})
-We will write the montecarlo estimate of the integral as
+We will write the Monte Carlo estimate of the integral as
 @math{E(f; N)} for the
 @equation
   E(f; N) = @{1 \over N @} \sum_i^N f(x_i).
@@ -97,10 +97,10 @@ the total number of points alloted to the estimate.
 
 @subsection VEGAS
 Vegas takes another approach to obtaining good results, namely it
-tries to sample points from the probabilty distribution described
+tries to sample points from the probability distribution described
 by the function @math{f}.  More precisely, suppose we estimate
 the integral of @math{f} with points distributed according to
-a probabilty distribution described by the function @math{g}.  If
+a probability distribution described by the function @math{g}.  If
 we call the new estimate @math{E_g(f; N)} we have
 @equation
 E_g(f; N) = E(f/g; N)
@@ -112,12 +112,17 @@ Var_g(f; N) = Var(f/g; N)
 It is clear from this that if @math{g = |f|/I(|f|)} then the variance 
 @math{V_g(f; N)} vanishes.
 This it was what Vegas attempts to do.  It makes several passes,
-histogramming @math{f}, and each time using the histogram to define the
+histograming @math{f}, and each time using the histogram to define the
 sampling distribution for the next pass.  This basic idea again has the
 problem that the number of histogram bins grows like @math{K^d}.  The
 compromise that Vegas (ie, Peter Lepage) adopts is to assume that
-@math{g} factorizes: @math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2)
-\ldots} so that the number of bins required is only @math{d K}.
+@math{g} factors: @math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2)
+\ldots} so that the number of bins required is only @math{d K}.  In
+this case, it is not hard to show that the optimal distribution is
+@begin equation
+g_1(x_1) = [\int dx_1 \ldots dx_n 
+        @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^(1/2)
+@end equation
 
 FIXME: There is more to say, but it will have to wait.
 
@@ -149,9 +154,9 @@ have
         ...)
 @end deftypefun
 
-Notice the ellipses in last argument to the actual integration routine.
+Notice the ellipses in the last argument to the actual integration routine.
 This is because the vegas algorithm (and perhaps others in the future)
-return extra information -- in the case of vegas, it is the @math{\chi^2}
+returns extra information -- in the case of vegas, it is the @math{\chi^2}
 of the result.  
 
 In addition to the common function interface, the routines also share
@@ -173,7 +178,7 @@ PLAIN: None
 MISER:
 @deftypevr {Control} double alpha
 alpha controls how the variances for the two sub-regions are combined.
-The Numberical Recipes gang argue that for recursive sampling there
+The Numerical Recipes gang argue that for recursive sampling there
 is no reason to expect that the variance should scale like @math{1/N} and
 so they allow the scaling to depend on @math{\alpha}
 @equation 
@@ -260,9 +265,9 @@ main ()
   s->verbose = 0; /* default, we prefer to remain ignorant! */
   s->stage = 0; /* default.  Start at the beginning */
   s->acc = -1.0 /* default. don't terminate when accuracy is reached */
-  s->max_it_num = 5 /* default.  Do five iterations before quiting */
+  s->max_it_num = 5 /* default.  Do five iterations before quitting */
   
-  status = gsl_monte_vegas_integrat(s, f0, xl, xu, dimension, calls,
+  status = gsl_monte_vegas_integrate(s, f0, xl, xu, dimension, calls,
                                     &res, &err, &chisq);
   if (status)
     printf("oops!\n");
