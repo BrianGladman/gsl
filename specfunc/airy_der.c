@@ -579,7 +579,7 @@ static struct gsl_sf_ChebSeries aph0_cs = {
 static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
 {
   const double pi34 = 2.3561944901923449288469825374596271631;
-  const double eta  = 0.1 * GSL_MACH_EPS;              /* 0.1*r1mach(3) */
+  /* const double eta  = 0.1 * GSL_MACH_EPS;              */ /* 0.1*r1mach(3) */
   const double xsml = -(5.0396842/GSL_ROOT3_MACH_EPS); /* -(128.0/r1mach(3))**0.3333 */
   double sqrtx;
   double a, p;
@@ -616,7 +616,7 @@ static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
 /* checked OK [GJ] Sun Apr 19 19:06:29 EDT 1998 */
 int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
 {
-  const double eta   = 0.1 * GSL_MACH_EPS;	         /* 0.1*r1mach(3) */
+  /* const double eta   = 0.1 * GSL_MACH_EPS;	      */   /* 0.1*r1mach(3) */
   const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;   /* sqrt (eta) */
   const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS;  /* eta**0.3333 */
   const double x32sml= 1.3104 * x3sml*x3sml;
@@ -689,7 +689,7 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
   const double atr =  8.7506905708484345;   /* 16./(sqrt(8)-1) */
   const double btr = -2.0938363213560543;   /* -(sqrt(8)+1)/(sqrt(8)-1) */
 
-  const double eta   = 0.1 * GSL_MACH_EPS;              /* 0.1*r1mach(3) */
+  /* const double eta   = 0.1 * GSL_MACH_EPS;         */     /* 0.1*r1mach(3) */
   const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;  /* sqrt (eta) */
   const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS; /* eta**0.3333 */
   const double x32sml= 1.3104 * x3sml*x3sml;
@@ -733,7 +733,7 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
 /* checked OK [GJ] Sun Apr 19 19:07:15 EDT 1998 */
 int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
 {
-  const double eta = 0.1 * GSL_MACH_EPS;                  /* 0.1*r1mach(3) */
+  /* const double eta = 0.1 * GSL_MACH_EPS;          */        /* 0.1*r1mach(3) */
   const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;    /* sqrt (eta) */
   const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS;   /* eta**0.3333 */
   const double xmax  = pow(1.5*GSL_LOG_DBL_MAX, 0.6666);  /* (1.5*alog(r1mach(2)))**0.6666 */

@@ -1,6 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <stdlib.h>
 #include <gsl_errno.h>
 #include "gsl_sf_laguerre.h"
 
@@ -121,7 +122,7 @@ double gsl_sf_laguerre_n(int n, double a, double x)
   double y;
   int status = gsl_sf_laguerre_n_impl(n, a, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_laguerre_n_e", status);
+    GSL_WARNING("gsl_sf_laguerre_n", status);
   }
   return y;
 }

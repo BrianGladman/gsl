@@ -28,7 +28,7 @@ int gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, double * result);
  * for a n = (0, 1, 2, ... nmax)
  */
 
-
+int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
 
 int gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_array);
 

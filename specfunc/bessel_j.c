@@ -101,8 +101,8 @@ int gsl_sf_bessel_jl_impl(const int l, const double x, double * result)
     double jellp1, jell, jellm1;
     const int LMAX = 31;
     int ell;
-    gsl_sf_bessel_asymp_Jnu_Olver_impl(LMAX + 1 + 0.5, x, &jellp1);
-    gsl_sf_bessel_asymp_Jnu_Olver_impl(LMAX     + 0.5, x, &jell);
+    gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX + 1 + 0.5, x, &jellp1);
+    gsl_sf_bessel_Jnu_asymp_Olver_impl(LMAX	  + 0.5, x, &jell);
     jellp1 *= rt_term;
     jell   *= rt_term;
     for(ell = LMAX; ell >= l+1; ell--) {

@@ -127,13 +127,13 @@ double gsl_sf_bessel_yl(int l, double x);
  * Exp[-|x|] i_0(x), Exp[-|x|] i_1(x), Exp[-|x|] i_2(x)
  */
  
-int gsl_sf_bessel_i0_e(double x, double * result);   /* none */
-int gsl_sf_bessel_i1_e(double x, double * result);   /* GSL_EUNDRFLW */
-int gsl_sf_bessel_i2_e(double x, double * result);   /* GSL_EUNDRFLW */
+int gsl_sf_bessel_i0_scaled_e(double x, double * result);   /* none */
+int gsl_sf_bessel_i1_scaled_e(double x, double * result);   /* GSL_EUNDRFLW */
+int gsl_sf_bessel_i2_scaled_e(double x, double * result);   /* GSL_EUNDRFLW */
 
-double gsl_sf_bessel_i0(double x);   /* none      */
-double gsl_sf_bessel_i1(double x);   /* underflow */
-double gsl_sf_bessel_i2(double x);   /* underflow */
+double gsl_sf_bessel_i0_scaled(double x);   /* none	 */
+double gsl_sf_bessel_i1_scaled(double x);   /* underflow */
+double gsl_sf_bessel_i2_scaled(double x);   /* underflow */
 
 
 /* Regular scaled modified spherical Bessel functions
@@ -141,10 +141,10 @@ double gsl_sf_bessel_i2(double x);   /* underflow */
  * i_l(x) = Exp[-|x|] Sqrt[Pi/(2x)] BesselI[l+1/2,x]
  */
  
-int gsl_sf_bessel_il_e(int l, double x, double * result);
-int gsl_sf_bessel_il_array_e(int lmax, double x, double * result_array);
+int gsl_sf_bessel_il_scaled_e(int l, double x, double * result);
+int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array);
 
-double gsl_sf_bessel_il(int l, double x);
+double gsl_sf_bessel_il_scaled(int l, double x);
 
 
 /* Irregular modified spherical Bessel functions k_0(x), k_1(x), k_2(x) */

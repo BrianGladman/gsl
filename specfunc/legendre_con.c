@@ -94,7 +94,7 @@ static int conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * 
 
 static double olver_B0_xi(double mu, double xi)
 {
-  return (1. - 4.*mu*mu)/(8.*xi) * (coth(xi) - 1./xi);
+  return (1. - 4.*mu*mu)/(8.*xi) * (1./tanh(xi) - 1./xi);
 }
 static double olver_A1_xi(double mu, double xi, double x)
 {
@@ -104,7 +104,7 @@ static double olver_A1_xi(double mu, double xi, double x)
 }
 static double olver_B0_th(double mu, double theta)
 {
-  return -(1. - 4.*mu*mu)/(8.*theta) * (cot(theta) - 1./theta);
+  return -(1. - 4.*mu*mu)/(8.*theta) * (1./tan(theta) - 1./theta);
 }
 static double olver_A1_th(double mu, double theta, double x)
 {
@@ -208,8 +208,8 @@ static int conicalP_xlt1_hyperg_A(double mu, double tau, double x, double * resu
 
   /* FIXME: error handling */
 
-  gsl_sf_lngamma_complex(0.75 + 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
-  gsl_sf_lngamma_complex(0.25 + 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
+  gsl_sf_lngamma_complex_impl(0.75 + 0.5*mu, -0.5*tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex_impl(0.25 + 0.5*mu, -0.5*tau, &ln_g2, &arg_g2);
   
   pre1 =        exp(-2.0*ln_g1);
   pre2 = -2.0*x*exp(-2.0*ln_g2);
@@ -233,8 +233,8 @@ static int conicalP_xnear1_hyperg_B(double mu, double tau, double x, double * re
   /* FIXME: error handling */
 
   ln_g0 = gsl_sf_lngamma(1.0 - mu);
-  gsl_sf_lngamma_complex(0.5-mu, tau, &ln_g1, &arg_g1);
-  gsl_sf_lngamma_complex(0.5+mu, tau, &ln_g2, &arg_g2);
+  gsl_sf_lngamma_complex_impl(0.5-mu, tau, &ln_g1, &arg_g1);
+  gsl_sf_lngamma_complex_impl(0.5+mu, tau, &ln_g2, &arg_g2);
 
   ln_pre = mu*M_LN2 - 0.5*mu*log(fabs(x*x-1.0)) - ln_g0;
   

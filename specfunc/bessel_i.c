@@ -109,8 +109,8 @@ int gsl_sf_bessel_il_scaled_impl(const int l, const double x, double * result)
     int ell;
     const int LMAX = sqrt(locMax(0.5/GSL_ROOT3_MACH_EPS - x*x,
                           0.29/GSL_ROOT3_MACH_EPS));
-    gsl_sf_bessel_asymp_Inu_asymp_unif_impl(LMAX + 1 + 0.5, x, &iellp1);
-    gsl_sf_bessel_asymp_Inu_asymp_unif_impl(LMAX     + 0.5, x, &iell);
+    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX + 1 + 0.5, x, &iellp1);
+    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX     + 0.5, x, &iell);
     iellp1 *= rt_term;
     iell   *= rt_term;
     for(ell = LMAX; ell >= l+1; ell--) {

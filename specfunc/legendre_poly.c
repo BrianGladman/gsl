@@ -97,8 +97,9 @@ static int legendre_Plm_recurse(const int l, const int m,
     }
 
     *result = p_ell;
-    return GSL_SUCCESS;
   }
+  
+  return GSL_SUCCESS;
 }
 
 /* assumes:  -1 <= x <= 1, 0 <= l, 0 <= m <= l */
@@ -259,9 +260,6 @@ int gsl_sf_legendre_sphPlm_impl(const int l, int m,
                                 double * result, double * harvest
 				)
 {
-  int i;
-  double x = 0.5 * (one_p_x - one_m_x);
-
   /* check args */
   if(m < 0 || l < m || one_m_x < 0.0 || one_p_x < 0.0) {
     return GSL_EDOM;

@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"

@@ -110,3 +110,40 @@ gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_a
   
   return GSL_SUCCESS;
 }
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+
+int
+gsl_sf_gegenpoly_n_e(int n, double lambda, double x, double * result)
+{
+  int status = gsl_sf_gegenpoly_n_impl(n, lambda, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_gegenpoly_n_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array)
+{
+  int status = gsl_sf_gegenpoly_n_impl(nmax, lambda, x, result_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_gegenpoly_array_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
+
+double
+gsl_sf_gegenpoly_n(int n, double lambda, double x)
+{
+  double y;
+  int status = gsl_sf_gegenpoly_n_impl(n, lambda, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_gegenpoly_n", status);
+  }
+  return y;
+}

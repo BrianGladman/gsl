@@ -4,8 +4,10 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_bessel.h"
 #include "bessel.h"
+#include "gsl_sf_gamma.h"
+#include "gsl_sf_psi.h"
+#include "gsl_sf_bessel.h"
 
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 
@@ -89,15 +91,12 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
     return bessel_Kn_scaled_small_x(n, x, result);
   }
   else if(GSL_ROOT3_MACH_EPS * x > 0.25 * (n*n + 1)) {
-  printf("asymp: ");
     return gsl_sf_bessel_Knu_scaled_asympx_impl((double)n, x, result);
   }
   else if(Min( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
-  printf("aunif: ");
     return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
   }
   else {
-  int vvv = printf("recur: ");
     /* Upward recurrence. [Gradshteyn + Ryzhik, 8.471.1] */
     int j;
     double two_over_x = 2.0/x;

@@ -6,6 +6,8 @@
 #include <gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
+#include "gsl_sf_gamma.h"
+#include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"
 
 
@@ -138,7 +140,7 @@ int gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
   }
 }
 
-int gsl_sf_bessel_Yn_array_impl(const nmax, const double x, double * result_array)
+int gsl_sf_bessel_Yn_array_impl(const int nmax, const double x, double * result_array)
 {
   if(nmax < 1 || x <= 0.0) {
     return GSL_EDOM;

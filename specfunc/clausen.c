@@ -57,7 +57,7 @@ int gsl_sf_clausen_impl(double x, double *result)
   }
 
   /* Argument reduction to [0, 2pi) */
-  status_red = gsl_sf_angle_restrict_pos(&x, 100.0*GSL_MACH_EPS);
+  status_red = gsl_sf_angle_restrict_pos_impl(&x, 100.0*GSL_MACH_EPS);
   if(status_red != GSL_SUCCESS) {
     *result = 0.0;
     return status_red;

@@ -211,7 +211,6 @@ int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_ar
 /* checked OK [GJ] Sun May  3 16:18:04 EDT 1998 */
 int gsl_sf_bessel_In_impl(int n, const double x, double * result)
 {
-  int j;
   double ax = fabs(x);
   
   n = abs(n);  /* I(-n, z) = I(n, z) */
@@ -241,7 +240,6 @@ int gsl_sf_bessel_In_array_impl(int n, const double x, double * result_array)
     return GSL_EOVRFLW;
   }
   else {
-    double y;
     double eax = exp(ax);
     int status = gsl_sf_bessel_In_scaled_array_impl(n, x, result_array);
     for(j=0; j<=n; j++) result_array[j] *= eax;

@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_psi.h"
 #include "gsl_sf_hyperg.h"
 
 #define locMAX(a, b)    ((a) > (b) ? (a) : (b))
