@@ -1,9 +1,17 @@
 #ifndef _GSL_COMPLEX_H
 #define _GSL_COMPLEX_H
 
-typedef double * gsl_complex_packed_array ;
-typedef float * gsl_complex_packed_array_float  ;
-typedef long double * gsl_complex_packed_array_long_double ;
+
+/* two consecutive built-in types as a complex number */
+typedef double *       gsl_complex_packed ;
+typedef float *        gsl_complex_packed_float  ;
+typedef long double *  gsl_complex_packed_long_double ;
+
+/* 2N consecutive built-in types as N complex numbers */
+typedef double *       gsl_complex_packed_array ;
+typedef float *        gsl_complex_packed_array_float  ;
+typedef long double *  gsl_complex_packed_array_long_double ;
+
 
 typedef struct
   {
