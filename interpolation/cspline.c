@@ -100,12 +100,12 @@ cspline_init (void * vstate, const double xa[], const double ya[],
 
   size_t i;
   size_t num_points = size;
-  size_t max_index = num_points - 1;	/* Engeln-Mullges + Uhlig "n" */
-  size_t sys_size = max_index - 1;   /* linear system is sys_size x sys_size */
-  
+  size_t max_index = num_points - 1;  /* Engeln-Mullges + Uhlig "n" */
+  size_t sys_size = max_index - 1;    /* linear system is sys_size x sys_size */
+
   state->c[0] = 0.0;
   state->c[max_index] = 0.0;
-  
+
   for (i = 0; i < sys_size; i++)
     {
       const double h_i   = xa[i + 1] - xa[i];
@@ -116,17 +116,17 @@ cspline_init (void * vstate, const double xa[], const double ya[],
       state->diag[i] = 2.0 * (h_ip1 + h_i);
       state->g[i] = 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i);
     }
-  
+
   {
     gsl_vector_view g_vec = gsl_vector_view_array(state->g, sys_size);
     gsl_vector_view diag_vec = gsl_vector_view_array(state->diag, sys_size);
     gsl_vector_view offdiag_vec = gsl_vector_view_array(state->offdiag, sys_size);
     gsl_vector_view solution_vec = gsl_vector_view_array ((state->c) + 1, sys_size);
-    
+
     int status = gsl_linalg_solve_symm_tridiag(&diag_vec.vector, 
                                                &offdiag_vec.vector, 
                                                &g_vec.vector, 
-                                               &solution_vec.vector);
+                                           &solution_vec.vector);
     return status;
   }
 }
@@ -433,7 +433,7 @@ cspline_eval_integ (const void * vstate,
 static const gsl_interp_type cspline_type = 
 {
   "cspline", 
-  2,
+  3,
   &cspline_alloc,
   &cspline_init,
   &cspline_eval,
