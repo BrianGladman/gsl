@@ -365,6 +365,9 @@ None have been contributed yet.
 @cindex estimated standard deviation
 @cindex estimated variance
 @cindex t-test
+@cindex range
+@cindex min
+@cindex max
 
 [contributed by Jim Davies]
 
@@ -411,12 +414,32 @@ analysis of Psychological experiment data.
 @code{dest_sd} returns the estimated standard deviation of an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double iipvariance(int *array1, int *array2, int size1, int size2)
+@deftypefn Statistics double iipvariance (int *array1, int *array2, int size1, int size2)
 @code{iipvariance} returns the pooled variance of two arrays of integers.
 @end deftypefn
 
 @deftypefn Statistics double iittest (int *array1, int *array2, int size1, int size2);
-@code{iittestf} returns the t statistic from two arrays of integers.
+@code{iittest} returns the t statistic from two arrays of integers.
+@end deftypefn
+
+@deftypefn Statistics double ddttest (double *array1, double *array2, int size1, int size2);
+@code{ddttest} returns the t statistic from two arrays of doubles.
+@end deftypefn
+
+@deftypefn Statistics int imax (int *array1, int size);
+@code{imax} returns the highest number in an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double dmax (double *array1, int size);
+@code{dmax} returns the highest number in an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics int imin (int *array1, int size);
+@code{imin} returns the lowest number in an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double dmin (double *array1, int size);
+@code{imin} returns the lowest number in an array of doubles.
 @end deftypefn
 
 
