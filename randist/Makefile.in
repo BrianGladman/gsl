@@ -82,10 +82,10 @@ include_HEADERS= gsl_randist.h
 
 INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err
 
-bin_PROGRAMS = gsl-dist
+#bin_PROGRAMS = gsl-dist
 
-gsl_dist_SOURCES = gsl-dist.c
-gsl_dist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
+#gsl_dist_SOURCES = gsl-dist.c
+#gsl_dist_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a
 
 test_SOURCES = test.c
 test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
@@ -107,12 +107,6 @@ chisq.o erlang.o exponential.o fdist.o flat.o gamma.o gauss.o \
 geometric.o levy.o logistic.o lognormal.o nbinomial.o pareto.o \
 poisson.o shuffle.o sphere.o tdist.o twosidedexp.o weibull.o
 AR = ar
-PROGRAMS =  $(bin_PROGRAMS)
-
-gsl_dist_OBJECTS =  gsl-dist.o
-gsl_dist_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
-../specfunc/libgslspecfunc.a ../err/libgslerr.a
-gsl_dist_LDFLAGS = 
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrandist.a ../rng/libgslrng.a \
 ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
@@ -132,14 +126,14 @@ GZIP = --best
 DEP_FILES =  .deps/bernoulli.P .deps/beta.P .deps/binomial.P \
 .deps/cauchy.P .deps/chisq.P .deps/erlang.P .deps/exponential.P \
 .deps/fdist.P .deps/flat.P .deps/gamma.P .deps/gauss.P \
-.deps/geometric.P .deps/gsl-dist.P .deps/levy.P .deps/logistic.P \
-.deps/lognormal.P .deps/nbinomial.P .deps/pareto.P .deps/poisson.P \
-.deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/test.P \
-.deps/twosidedexp.P .deps/weibull.P
-SOURCES = $(libgslrandist_a_SOURCES) $(gsl_dist_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslrandist_a_OBJECTS) $(gsl_dist_OBJECTS) $(test_OBJECTS)
+.deps/geometric.P .deps/levy.P .deps/logistic.P .deps/lognormal.P \
+.deps/nbinomial.P .deps/pareto.P .deps/poisson.P .deps/shuffle.P \
+.deps/sphere.P .deps/tdist.P .deps/test.P .deps/twosidedexp.P \
+.deps/weibull.P
+SOURCES = $(libgslrandist_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslrandist_a_OBJECTS) $(test_OBJECTS)
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: Makefile $(LIBRARIES) $(HEADERS)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .o .s
@@ -204,31 +198,6 @@ libgslrandist.a: $(libgslrandist_a_OBJECTS) $(libgslrandist_a_DEPENDENCIES)
 	$(AR) cru libgslrandist.a $(libgslrandist_a_OBJECTS) $(libgslrandist_a_LIBADD)
 	$(RANLIB) libgslrandist.a
 
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
-	done
-
 mostlyclean-checkPROGRAMS:
 
 clean-checkPROGRAMS:
@@ -237,10 +206,6 @@ clean-checkPROGRAMS:
 distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
-
-gsl-dist: $(gsl_dist_OBJECTS) $(gsl_dist_DEPENDENCIES)
-	@rm -f gsl-dist
-	$(LINK) $(gsl_dist_LDFLAGS) $(gsl_dist_OBJECTS) $(gsl_dist_LDADD) $(LIBS)
 
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
@@ -356,7 +321,7 @@ dvi:
 check: all $(check_PROGRAMS)
 	$(MAKE) check-TESTS
 installcheck:
-install-exec: install-libLIBRARIES install-binPROGRAMS
+install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -365,13 +330,12 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(bindir) \
-		$(DATADIR)$(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -389,32 +353,28 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-binPROGRAMS mostlyclean-checkPROGRAMS \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS \
-		clean-checkPROGRAMS clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-checkPROGRAMS \
-		distclean-tags distclean-depend distclean-generic clean
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-checkPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
-distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
-uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-checkPROGRAMS \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \

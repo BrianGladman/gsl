@@ -173,5 +173,24 @@ dnl
 dnl extern double hypot(double, double);
 dnl
 
+AC_MSG_CHECKING([whether printf works with long double])
+AC_TRY_RUN([
+#include <stdlib.h>
+#include <stdio.h>
+int main (void) 
+{ 
+long double x = 1.234 ; fprintf(stderr,"%Lg\n",x) ; exit (0) ; 
+}],
+ac_cv_func_longdouble_printf=yes, 
+ac_cv_func_longdouble_printf=no, 
+ac_cv_func_longdouble_printf=no) 
+
+if test $ac_cv_func_longdouble_printf = yes; then
+  AC_DEFINE(HAVE_LONGDOUBLE_PRINTF)
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+
 dnl
 AC_OUTPUT(err/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile statistics/Makefile roots/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile blas/Makefile Makefile)

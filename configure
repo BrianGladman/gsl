@@ -2033,6 +2033,45 @@ esac
 
 
 
+echo $ac_n "checking whether printf works with long double""... $ac_c" 1>&6
+echo "configure:2038: checking whether printf works with long double" >&5
+if test "$cross_compiling" = yes; then
+  ac_cv_func_longdouble_printf=no
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2043 "configure"
+#include "confdefs.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+int main (void) 
+{ 
+long double x = 1.234 ; fprintf(stderr,"%Lg\n",x) ; exit (0) ; 
+}
+EOF
+if { (eval echo configure:2053: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+then
+  ac_cv_func_longdouble_printf=yes
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+  ac_cv_func_longdouble_printf=no
+fi
+rm -fr conftest*
+fi
+ 
+
+if test $ac_cv_func_longdouble_printf = yes; then
+  cat >> confdefs.h <<\EOF
+#define HAVE_LONGDOUBLE_PRINTF 1
+EOF
+
+  echo "$ac_t""yes" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
