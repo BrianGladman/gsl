@@ -15,10 +15,18 @@ The following should be finished before a 1.0 level release.
   DONE: Sat Nov  7 15:47:35 MST 1998 [GJ]
 
 * Make hyperg_1F1() work right.
+  This is the last remaining source of test failures.
+  The problem is with an unstable recursion in certain cases.
+  Look for the recursion with the variable named "start_pair";
+  this is stupid hack to keep track of when the recursion
+  result is going the wrong way for awhile by remembering the
+  minimum value. An error estimate is amde from that. But it
+  is just a hack. Somethign must be done abou that case.
 
 * Clean-up Coulomb wave functions. This does not
   mean completing a fully controlled low-energy
   evaluation, which is a larger project.
+  DONE: Sun May 16 13:49:47 MDT 1999 [GJ]
 
 * Clean-up the Fermi-Dirac code. The full Fermi-Dirac
   functions can probably wait until a later release,
@@ -47,210 +55,438 @@ The following should be finished before a 1.0 level release.
 
 
   - airy.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - airy_der.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
+
+  - airy_zero.c
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - atanint.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_I0.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_I1.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_In.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_Inu.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_J0.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
     
   - bessel_J1.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
     
   - bessel_Jn.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_Jnu.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_K0.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_K1.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_Kn.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_Knu.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_Y0.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
     
   - bessel_Y1.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
     
   - bessel_Yn.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_Ynu.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_amp_phase.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_i.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_j.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_k.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - bessel_olver.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
+
+  - bessel_sequence.c
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_temme.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - bessel_y.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
+
+  - bessel_zero.c
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - beta.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - chebyshev.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - clausen.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - coulomb.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - coulomb_bound.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - coupling.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - dawson.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - debye.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - dilog.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - elementary.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - ellint.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - elljac.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - erfc.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - exp.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - expint.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - expint3.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - fermi_dirac.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - gamma.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - gamma_inc.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - gegenbauer.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - hyperg.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - hyperg_0F1.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - hyperg_1F1.c
 
   - hyperg_2F0.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - hyperg_2F1.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - hyperg_U.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - laguerre.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - legendre_H3d.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - legendre_Qn.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - legendre_con.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - legendre_poly.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - log.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - poch.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - poly.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - pow_int.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - psi.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
+
+  - result.c
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - shint.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - sinint.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - synchrotron.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - transport.c
-    OK: 
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS: 
 
   - trig.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
   - zeta.c
-    OK:
+    INTERFACES:
+    ERRORESTIM:
+    DEPRECATED:
+    PASSTESTS:
 
 
 
