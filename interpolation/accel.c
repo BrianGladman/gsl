@@ -22,21 +22,34 @@
  */
 #include <config.h>
 #include <stdlib.h>
+#include <gsl/gsl_errno.h>
 #include "gsl_interp.h"
 
 gsl_interp_accel *
-gsl_interp_accel_new (void)
+gsl_interp_accel_alloc (void)
 {
   gsl_interp_accel *a = (gsl_interp_accel *) malloc (sizeof (gsl_interp_accel));
-  if (a != 0)
+  if (a == 0)
     {
-      a->cache = 0;
-      a->hit_count = 0;
-      a->miss_count = 0;
+      GSL_ERROR_NULL("could not allocate space for gsl_interp_accel", GSL_ENOMEM);
     }
+
+  a->cache = 0;
+  a->hit_count = 0;
+  a->miss_count = 0;
+
   return a;
 }
 
+int
+gsl_interp_accel_reset (gsl_interp_accel * a)
+{
+  a->cache = 0;
+  a->hit_count = 0;
+  a->miss_count = 0;
+
+  return GSL_SUCCESS;
+}
 
 size_t
 gsl_interp_accel_find (gsl_interp_accel * a, const double xa[], size_t len, double x)
@@ -65,8 +78,5 @@ gsl_interp_accel_find (gsl_interp_accel * a, const double xa[], size_t len, doub
 void
 gsl_interp_accel_free (gsl_interp_accel * a)
 {
-  if (a != 0)
-    {
-      free (a);
-    }
+  free (a);
 }

@@ -76,10 +76,13 @@ extern const gsl_interp_factory   gsl_interp_factory_akima_periodic;
 
 
 gsl_interp_accel *
-gsl_interp_accel_new(void);
+gsl_interp_accel_alloc(void);
 
 size_t
 gsl_interp_accel_find(gsl_interp_accel * a, const double x_array[], size_t size, double x);
+
+int
+gsl_interp_accel_reset (gsl_interp_accel * a);
 
 void
 gsl_interp_accel_free(gsl_interp_accel * a);

@@ -114,7 +114,7 @@ test_interp (
   int status = 0;
   size_t i;
 
-  gsl_interp_accel *a = gsl_interp_accel_new ();
+  gsl_interp_accel *a = gsl_interp_accel_alloc ();
   gsl_interp *interp = factory->create (data_table->x,
 					    data_table->y,
 					    data_table->n);
