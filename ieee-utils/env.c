@@ -41,11 +41,11 @@ gsl_ieee_env_setup (void)
 
   gsl_ieee_set_mode (precision, rounding, exception_mask) ;
   
-  printf("GSL_IEEE_MODE=\"") ;
+  fprintf(stderr, "GSL_IEEE_MODE=\"") ;
 
   /* Print string with a preceeding comma if the list has already begun */
 
-#define PRINTC(x) do {if(comma) printf(","); printf(x); comma++ ;} while(0)
+#define PRINTC(x) do {if(comma) fprintf(stderr,","); fprintf(stderr,x); comma++ ;} while(0)
   
   switch (precision) 
     {
@@ -105,7 +105,7 @@ gsl_ieee_env_setup (void)
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     PRINTC("trap-inexact") ;
   
-  printf("\"\n") ;
+  fprintf(stderr,"\"\n") ;
 }
 
 
