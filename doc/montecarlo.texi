@@ -1,9 +1,9 @@
 @cindex Monte Carlo integration
 
 This chapter describes routines for multidimensional Monte Carlo
-integration.  These include the traditional Monte Carlo method of pure
-random sampling and adaptive algorithms such as @sc{vegas} and
-@sc{miser}, which use importance sampling and stratified sampling.
+integration.  These include the traditional Monte Carlo method and
+adaptive algorithms such as @sc{vegas} and @sc{miser}, which use
+importance sampling and stratified sampling.
 
 Each algorithm computes an estimate of a definite integral of the form,
 
@@ -43,26 +43,13 @@ All of the Monte Carlo integration routines use the same interface.
 There is an allocator to allocate memory to hold control variables and
 workspace, a routine to initialize those control variables, the
 integrator itself, and a function to free the space when done.  Each
-integration function requires a random number generator to be supplied.
-
-
-
-
-Notice the ellipses in the last argument to the actual integration routine.
-This is because the vegas algorithm (and perhaps others in the future)
-returns extra information -- in the case of vegas, it is the @math{\chi^2}
-of the result.  
-
-In addition to the common function interface, the routines also share
-the state variables 
-@deftypevr {Control} gsl_rng* ranf
-which determines which random number generator will be used.
-@end deftypevr
-and
-@deftypevr {Control} int verbose
-which says whether to print information about the calculation (though
-the actual use depends on the algorithm).
-@end deftypevr
+integration function requires a random number generator to be supplied,
+and returns an estimate of the integral and its standard deviation.  The
+accuracy of the result is determined by the number of function calls
+specified by the user.  If a known level of accuracy is required this
+can be achieved by calling the integrator several times and averaging
+the results, or by estimating the number of calls required from the
+results of an initial run with a small number of calls.
 
 @node PLAIN (or Simple) Monte Carlo
 @section PLAIN (or Simple) Monte Carlo
@@ -150,16 +137,31 @@ $$
 That's all there is to simple Monte Carlo.
 
 @deftypefun {gsl_monte_plain_state *} gsl_monte_plain_alloc (size_t @var{dim})
-
+This function allocates and initializes a workspace for Monte Carlo
+integration in @var{dim} dimensions.  The workspace is used to maintain
+the state of the integration.
 @end deftypefun
 
 @deftypefun int gsl_monte_plain_init (gsl_monte_plain_state* @var{s})
+This function initializes a previously allocated integration state.
+This allows an existing workspace to be reused for different
+integrations.
 @end deftypefun
 
 @deftypefun int gsl_monte_plain_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_plain_state * @var{s}, double * @var{result}, double * @var{abserr})
+This routines uses the plain Monte Carlo algorithm to integrate the
+function @var{f} over the @var{dim}-dimensional hypercubic region
+defined by the lower and upper limits in the arrays @var{xl} and
+@var{xu}, each of size @var{dim}.  The integration uses a fixed number
+of function calls @var{calls}, and obtains random sampling points using
+the random number generator @var{r}. A previously allocated workspace
+@var{s} must be supplied.  The result of the integration is returned in
+@var{result}, with an estimated absolute error @var{abserr}.
 @end deftypefun
 
 @deftypefun void gsl_monte_plain_free (gsl_monte_plain_state* @var{s}), 
+This function frees the memory associated with the integrator state
+@var{s}.
 @end deftypefun
 
 @node MISER
@@ -242,6 +244,35 @@ described above), and so on.  Since by assumption one does not know the
 variance @math{Var_L(f)} in the various sub-regions, it is estimated
 using some fraction of the total number of points alloted to the
 estimate.
+
+@deftypefun {gsl_monte_miser_state *} gsl_monte_miser_alloc (size_t @var{dim})
+This function allocates and initializes a workspace for Monte Carlo
+integration in @var{dim} dimensions.  The workspace is used to maintain
+the state of the integration.
+@end deftypefun
+
+@deftypefun int gsl_monte_miser_init (gsl_monte_miser_state* @var{s})
+This function initializes a previously allocated integration state.
+This allows an existing workspace to be reused for different
+integrations.
+@end deftypefun
+
+@deftypefun int gsl_monte_miser_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_miser_state * @var{s}, double * @var{result}, double * @var{abserr})
+This routines uses the @sc{miser} Monte Carlo algorithm to integrate the
+function @var{f} over the @var{dim}-dimensional hypercubic region
+defined by the lower and upper limits in the arrays @var{xl} and
+@var{xu}, each of size @var{dim}.  The integration uses a fixed number
+of function calls @var{calls}, and obtains random sampling points using
+the random number generator @var{r}. A previously allocated workspace
+@var{s} must be supplied.  The result of the integration is returned in
+@var{result}, with an estimated absolute error @var{abserr}.
+@end deftypefun
+
+@deftypefun void gsl_monte_miser_free (gsl_monte_miser_state* @var{s}), 
+This function frees the memory associated with the integrator state
+@var{s}.
+@end deftypefun
+
 
 MISER:
 @deftypevr {Control} double alpha
@@ -350,6 +381,36 @@ a fractional number of bins, but if bins/box is less than two,
 Vegas switches to a kind variance reduction (rather than importance
 sampling). 
 
+
+@deftypefun {gsl_monte_vegas_state *} gsl_monte_vegas_alloc (size_t @var{dim})
+This function allocates and initializes a workspace for Monte Carlo
+integration in @var{dim} dimensions.  The workspace is used to maintain
+the state of the integration.
+@end deftypefun
+
+@deftypefun int gsl_monte_vegas_init (gsl_monte_vegas_state* @var{s})
+This function initializes a previously allocated integration state.
+This allows an existing workspace to be reused for different
+integrations.
+@end deftypefun
+
+@deftypefun int gsl_monte_vegas_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_vegas_state * @var{s}, double * @var{result}, double * @var{abserr})
+This routines uses the @sc{vegas} Monte Carlo algorithm to integrate the
+function @var{f} over the @var{dim}-dimensional hypercubic region
+defined by the lower and upper limits in the arrays @var{xl} and
+@var{xu}, each of size @var{dim}.  The integration uses a fixed number
+of function calls @var{calls}, and obtains random sampling points using
+the random number generator @var{r}. A previously allocated workspace
+@var{s} must be supplied.  The result of the integration is returned in
+@var{result}, with an estimated absolute error @var{abserr}.
+@end deftypefun
+
+@deftypefun void gsl_monte_vegas_free (gsl_monte_vegas_state* @var{s}), 
+This function frees the memory associated with the integrator state
+@var{s}.
+@end deftypefun
+
+
 VEGAS:
 @deftypevr {Control} double alpha
 For Vegas, @code{alpha} controls the stiffness of the rebinning algorithm:
@@ -384,18 +445,11 @@ uses strict stratified sampling (more precisely, stratified sampling is
 chosen if there are fewer than 2 bins per box).
 @end deftypevr
 
-
-
-
-
-
-
-
 @node Monte Carlo Examples
 @section Examples
 
-The following examples use the Monte Carlo routines to estimate the
-value of a 3-dimensional integral which occurs in the theory of
+The following example program uses the Monte Carlo routines to estimate
+the value of a 3-dimensional integral which occurs in the theory of
 random-walks.  The integral is given by,
 
 @tex
@@ -422,54 +476,124 @@ The analytic value of this integral is @math{\Gamma(1/4)^4/(4 \pi^3) =
 a random walk on a body-centered cubic lattice in three dimensions.
 
 @example
-#include <math.h>
-#include <stdio.h>
-
+#include <stdlib.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_monte.h>
+#include <gsl/gsl_monte_plain.h>
+#include <gsl/gsl_monte_miser.h>
 #include <gsl/gsl_monte_vegas.h>
 
-double f0(double x[]) 
+/* Computation of the integral,
+
+      I = int (dx dy dz)/(2pi)^3  1/(1-cos(x)cos(y)cos(z))
+
+   over (-pi,-pi,-pi) to (+pi, +pi, +pi).  The exact answer is
+   Gamma(1/4)^4/(4 pi^3).  This example is taken from C.Itzykson,
+   J.M.Drouffe, "Statistical Field Theory - Volume 1", Section 1.1,
+   p21, which cites the original paper M.L.Glasser, I.J.Zucker,
+   Proc.Natl.Acad.Sci.USA 74 1800 (1977) */
+
+double exact = 1.3932039296856768591842462603255;
+
+double
+g (double *k, size_t dim, void *params)
 @{
-  int i;
-  double product = 1.0;
-
-  for (i = 0; i < 10; i++) 
-    product *= x[i];
-
-  return product;
+  double A = 1.0 / (M_PI * M_PI * M_PI);
+  return A / (1.0 - cos (k[0]) * cos (k[1]) * cos (k[2]));
 @}
 
-main () 
+void
+display_results (char *title, double result, double error)
 @{
-  double xl[10] = @{0, 0, 0, 0, 0, 0, 0, 0, 0, 0@};
-  double xu[10] = @{1, 1, 1, 1, 1, 1, 1, 1, 1, 1@};
+  printf ("%s ==================\n", title);
+  printf ("result = % .6f\n", result);
+  printf ("sigma  = % .6f\n", error);
+  printf ("exact  = % .6f\n", exact);
+  printf ("error  = % .6f = %.1g sigma\n", result - exact,
+	  fabs (result - exact) / error);
+@}
 
-  double res = 0;
-  double err = 0;
-  double chisq = 0;
-  int status = 0;
-  unsigned long calls = 10000;
-  unsigned long dimension = 10;
+int
+main ()
+@{
+  double res, err;
 
-  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(10);
-  gsl_monte_vegas_init(s);
+  double xl[3] = @{ 0, 0, 0 @};
+  double xu[3] = @{ M_PI, M_PI, M_PI @};
 
-  s->alpha = 1.5; /* default */
-  s->verbose = 0; /* default, we prefer to remain ignorant! */
-  s->stage = 0; /* default.  Start at the beginning */
-  s->acc = -1.0; /* default. don't terminate when accuracy is reached */
-  s->max_it_num = 5; /* default.  Do five iterations before quitting */
-  
-  status = gsl_monte_vegas_integrate(s, f0, xl, xu, dimension, calls,
-                                    &res, &err, &chisq);
-  if (status)
-    printf("oops!\n");
-  else
-    printf("vegas(f0) = %f +- %f with \"chisq\" %f\n", res, err, chisq);
+  gsl_rng *r;
 
+  gsl_monte_function G = @{ &g, 3, 0 @};
+
+  size_t calls = 100000;
+
+  gsl_rng_env_setup ();
+
+  r = gsl_rng_alloc (gsl_rng_default);
+
+  @{
+    gsl_monte_plain_state *s = gsl_monte_plain_alloc (3);
+    gsl_monte_plain_integrate (&G, xl, xu, 3, 5 * calls, r, s, &res, &err);
+    gsl_monte_plain_free (s);
+
+    display_results ("plain", res, err);
+  @}
+
+  @{
+    gsl_monte_miser_state *s = gsl_monte_miser_alloc (3);
+    gsl_monte_miser_integrate (&G, xl, xu, 3, 5 * calls, r, s, &res, &err);
+    gsl_monte_miser_free (s);
+
+    display_results ("miser", res, err);
+  @}
+
+  @{
+    gsl_monte_vegas_state *s = gsl_monte_vegas_alloc (3);
+
+    gsl_monte_vegas_integrate (&G, xl, xu, 3, 10000, r, s, &res, &err);
+    display_results ("vegas warm-up", res, err);
+
+    printf ("converging...\n");
+
+    do
+      @{
+	gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+	printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
+		res, err, s->chisq);
+      @}
+    while (fabs (s->chisq - 1.0) > 0.5);
+
+    display_results ("vegas final", res, err);
+
+    gsl_monte_vegas_free (s);
+  @}
 @}
 @end example
 
+@example
+plain ==================
+result =  1.385867
+sigma  =  0.007938
+exact  =  1.393204
+error  = -0.007337 = 0.9 sigma
+miser ==================
+result =  1.390656
+sigma  =  0.003743
+exact  =  1.393204
+error  = -0.002548 = 0.7 sigma
+vegas warm-up ==================
+result =  1.386925
+sigma  =  0.002651
+exact  =  1.393204
+error  = -0.006278 = 2 sigma
+converging...
+result =  1.392957 sigma =  0.000452 chisq/dof = 1.1
+vegas final ==================
+result =  1.392957
+sigma  =  0.000452
+exact  =  1.393204
+error  = -0.000247 = 0.5 sigma
+@end example
 
 @node Monte Carlo Integration References and Further Reading
 @section References and Further Reading

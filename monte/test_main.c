@@ -19,9 +19,9 @@ for (I = problems ; I->f != 0; I++)
       
       I->f->dim = I->dim;
       
-      status =  MONTE_INTEGRATE (I->f, I->xl, I->xu, 
-                                 I->dim, I->calls, r, s,
-                                 &res, &err);
+      MONTE_INTEGRATE (I->f, I->xl, I->xu, 
+                       I->dim, I->calls, r, s,
+                       &res, &err);
       
       gsl_test_abs (res, I->expected_result, 
                     5 * GSL_MAX(err, 1024*GSL_DBL_EPSILON), 
@@ -49,8 +49,14 @@ for (I = problems ; I->f != 0; I++)
 
  sd = sqrt(sumd2 / (TRIALS-1.0)) ;
  
+ if (sd < GSL_DBL_EPSILON * mean)
+   {
+     sd = 0 ;
+   }
+
  for (i = 0; i < TRIALS; i++)
    {
+     
      gsl_test_factor (error[i], sd, 5.0,
                       NAME ", %s, abserr[%d] vs sd", I->description, i);
    }

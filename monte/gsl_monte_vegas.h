@@ -62,17 +62,11 @@ typedef struct {
   double * d;
 
   /* control variables */
-  double acc;
   double alpha;
   int mode;
   int verbose;
-  int max_it_num;
+  int iterations;
   int stage;
-
-  int it_start;
-  int it_num;
-  int samples;
-  int calls_per_box;
 
   /* scratch variables preserved between calls to vegas1/2/3  */
   double jac;
@@ -80,6 +74,14 @@ typedef struct {
   double sum_wgts;
   double chi_sum;
   double chisq;
+
+  double result;
+  double sigma;
+
+  int it_start;
+  int it_num;
+  int samples;
+  int calls_per_box;
 
   FILE * ostream;
 

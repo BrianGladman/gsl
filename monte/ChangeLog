@@ -1,3 +1,9 @@
+Fri Dec 22 21:43:04 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* miser.c: removed max-min estimation method for subvolumes. We
+ 	will use the standard variance method and try to use a sufficient
+ 	number of points to estimate the variance reliably.
+
 Wed Dec 20 21:32:40 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vegas.c: tidied up the algorithm, deal with cases of sigma = 0

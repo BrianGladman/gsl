@@ -9,3 +9,11 @@ bisection to ensure that the error does not occur.
 many boxes and then summing (I know this is ridiculous for any
 realistic case, but it shows up on the tests when integrating a
 constant!).
+
+* VEGAS gives a negative chisq for some cases where there are wildly
+inconsistent values.  Calculation should be improved so that chisq>=0.
+
+Also, when there are inconsistent values it might make sense to scale
+the error by chisq, as is often done experimentally -- at least that
+way the error would be increased.
+

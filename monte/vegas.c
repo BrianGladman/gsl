@@ -110,7 +110,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 			   double *result, double *abserr)
 {
   double cum_int, cum_sig;
-  int i, k;
+  int i, k, it;
 
   if (dim != state->dim)
     {
@@ -213,7 +213,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
   state->chisq = 0.0;
 
-  for (; state->it_num <= state->max_it_num; ++state->it_num)
+  for (it = 0; it < state->iterations; it++)
     {
       double intgrl = 0.0, intgrl_sq = 0.0;
       double sig = 0.0;
@@ -223,9 +223,11 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       double *x = state->x;
       coord *bin = state->bin;
 
+      state->it_num = state->it_start + it;
+
       reset_grid_values (state);
       init_box_coord (state, state->box);
-
+      
       do
 	{
           double m = 0, q = 0;
@@ -277,7 +279,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
         }
       else if (state->sum_wgts > 0) 
         {
-          wgt = state->sum_wgts / state->it_num;
+          wgt = state->sum_wgts / state->samples;
         }
       else 
         {
@@ -285,6 +287,9 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
         }
         
      intgrl_sq = intgrl * intgrl;
+
+     state->result = intgrl;
+     state->sigma  = sqrt(sig);
 
      if (wgt > 0.0)
        {
@@ -304,7 +309,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
        }
      else
        {
-         cum_int += (intgrl - cum_int) / state->it_num;
+         cum_int += (intgrl - cum_int) / (it + 1.0);
          cum_sig = 0.0;
        }         
 
@@ -314,7 +319,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 	  print_res (state,
 		     state->it_num, intgrl, sqrt (sig), cum_int, cum_sig,
 		     state->chisq);
-	  if (state->it_num == state->max_it_num && state->verbose > 0)
+	  if (it + 1 == state->iterations && state->verbose > 0)
 	    {
 	      print_grid (state, dim);
 	    }
@@ -335,7 +340,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
     }
 
   /* By setting stage to 1 further calls will generate independent
-     estimates based on the same grid. */
+     estimates based on the same grid, although it may be rebinned. */
 
   state->stage = 1;  
 
@@ -466,11 +471,12 @@ gsl_monte_vegas_init (gsl_monte_vegas_state * state)
   state->stage = 0;
   state->alpha = 1.5;
   state->verbose = -1;
-  state->max_it_num = 5;
+  state->iterations = 5;
   state->mode = GSL_VEGAS_MODE_IMPORTANCE;
   state->chisq = 0;
   state->bins = state->bins_max;
   state->ostream = stdout;
+
   return GSL_SUCCESS;
 }
 
@@ -773,7 +779,7 @@ print_head (gsl_monte_vegas_state * state,
 {
   fprintf (state->ostream,
 	   "\nnum_dim=%lu, calls=%lu, it_num=%d, max_it_num=%d ",
-	   num_dim, calls, it_num, state->max_it_num);
+	   num_dim, calls, it_num, state->iterations);
   fprintf (state->ostream,
 	   "verb=%d, alph=%.2f,\nmode=%d, bins=%d, boxes=%d\n",
 	   state->verbose, state->alpha, state->mode, bins, boxes);
@@ -813,8 +819,8 @@ print_dist (gsl_monte_vegas_state * state, unsigned long dim)
       fprintf (state->ostream, "      x   g\n");
       for (i = 0; i < state->bins; i++)
 	{
-	  fprintf (state->ostream, "%11.2e - %11.2e", COORD (state, i, j),
-                   COORD(state,i+1,j));
+	  fprintf (state->ostream, "weight [%11.2e , %11.2e] = ", 
+                   COORD (state, i, j), COORD(state,i+1,j));
 	  fprintf (state->ostream, " %11.2e\n", VALUE (state, i, j));
 
 	}

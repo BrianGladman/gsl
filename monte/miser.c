@@ -144,9 +144,9 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
 
   estimate_calls = GSL_MAX (min_calls, calls * (state->estimate_frac));
 
-  if (estimate_calls <= dim)
+  if (estimate_calls < 4 * dim)
     {
-      GSL_ERROR ("estimate calls is close to dim!", GSL_ESANITY);
+      GSL_ERROR ("insufficient calls to sample all halfspaces", GSL_ESANITY);
     }
 
   /* Flip coins to bisect the integration region with some fuzz */
@@ -530,7 +530,7 @@ int
 gsl_monte_miser_init (gsl_monte_miser_state * s)
 {
   /* We use 8 points in each halfspace to estimate the variance. There are
-     2*dim halfspaces, and each requires a minimum of 2 points. */
+     2*dim halfspaces. A variance estimate requires a minimum of 2 points. */
   s->min_calls = 16 * s->dim;
   s->min_calls_per_bisection = 32 * s->min_calls;
   s->estimate_frac = 0.1;
@@ -557,64 +557,6 @@ gsl_monte_miser_free (gsl_monte_miser_state * s)
   free (s->x);
   free (s);
 }
-
-#ifdef JUNK
-void
-estimate_maxmin (gsl_monte_function * f,
-		 const double xl[], const double xu[],
-		 size_t dim, size_t calls,
-		 gsl_rng * r,
-		 gsl_monte_miser_state * state,
-		 double *result, double *abserr,
-		 const double xmid[], double sigma_l[], double sigma_r[])
-{
-  /* NR way */
-
-  for (i = 0; i < dim; i++)
-    {
-      fmin_l[i] = fmin_r[i] = GSL_DBL_MAX;
-      fmax_l[i] = fmax_r[i] = -GSL_DBL_MAX;
-    }
-
-  for (n = 0; n < calls; n++)
-    {
-      for (i = 0; i < dim; i++)
-	{
-	  state->x[i] = xl[i] + gsl_rng_uniform_pos (r) * (xu[i] - xl[i]);
-	}
-
-      fval = GSL_MONTE_FN_EVAL (f, x);
-
-      for (i = 0; i < dim; i++)
-	{
-	  if (x[i] <= xmid[i])
-	    {
-	      fmin_l[i] = GSL_MIN (fmin_l[i], fval);
-	      fmax_l[i] = GSL_MAX (fmax_l[i], fval);
-	    }
-	  else
-	    {
-	      fmin_r[i] = GSL_MIN (fmin_r[i], fval);
-	      fmax_r[i] = GSL_MAX (fmax_r[i], fval);
-	    }
-	}
-    }
-
-  for (i = 0; i < dim; i++)
-    {
-      if (fmax_l[i] >= fmin_l[i] && fmax_r[i] >= fmin_r[i])
-	{
-	  sigma_l[i] = GSL_MAX (GSL_MACH_EPS, fmax_l[i] - fmin_l[i]);
-	  sigma_r[i] = GSL_MAX (GSL_MACH_EPS, fmax_r[i] - fmin_r[i]);
-	}
-      else
-	{
-	  /* must be that no points landed in one of the half-regions */
-	  sigma_l[i] = sigma_r[i] = -1;
-	}
-    }
-}
-#endif
 
 static int
 estimate_corrmc (gsl_monte_function * f,

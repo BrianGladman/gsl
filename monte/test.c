@@ -42,8 +42,8 @@
 #define TSUDA
 
 //#define PLAIN
-#define MISER
-//#define VEGAS
+//#define MISER
+#define VEGAS
 
 double xl[11]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 double xu[11]  = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -229,9 +229,9 @@ main ()
 #define NAME "vegas"
 #define MONTE_STATE gsl_monte_vegas_state
 #define MONTE_ALLOC gsl_monte_vegas_alloc
-#define MONTE_INTEGRATE gsl_monte_vegas_integrate
+#define MONTE_INTEGRATE(f,xl,xu,dim,calls,r,s,res,err) { gsl_monte_vegas_integrate(f,xl,xu,dim,calls,r,s,res,err) ; if (s->chisq < 0.5 || s->chisq > 2) gsl_monte_vegas_integrate(f,xl,xu,dim,calls,r,s,res,err); }
 #define MONTE_FREE gsl_monte_vegas_free
-#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * GSL_MAX(expected,1e-10), NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * (expected == 0 ? 1.0/I->calls : expected), NAME ", %s, abserr[%d] (obs %g vs exp %g)", I->description, i, err, expected)
 #include "test_main.c"
 #undef NAME
 #undef MONTE_STATE

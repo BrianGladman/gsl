@@ -14,25 +14,25 @@
    J.M.Drouffe, "Statistical Field Theory - Volume 1", Section 1.1,
    p21, which cites the original paper M.L.Glasser, I.J.Zucker,
    Proc.Natl.Acad.Sci.USA 74 1800 (1977) */
-   
+
 double exact = 1.3932039296856768591842462603255;
 
 double
 g (double *k, size_t dim, void *params)
 {
   double A = 1.0 / (M_PI * M_PI * M_PI);
-  return A / (1.0 - cos(k[0]) * cos(k[1]) * cos(k[2])) ;
+  return A / (1.0 - cos (k[0]) * cos (k[1]) * cos (k[2]));
 }
 
 void
-display_results (char * title, double result, double error)
+display_results (char *title, double result, double error)
 {
   printf ("%s ==================\n", title);
   printf ("result = % .6f\n", result);
   printf ("sigma  = % .6f\n", error);
   printf ("exact  = % .6f\n", exact);
-  printf ("error  = % .6f = %g sigma\n", result - exact, 
-          fabs(result - exact)/error);
+  printf ("error  = % .6f = %.1g sigma\n", result - exact,
+	  fabs (result - exact) / error);
 }
 
 int
@@ -49,35 +49,44 @@ main ()
 
   size_t calls = 100000;
 
-  gsl_rng_env_setup();
+  gsl_rng_env_setup ();
 
   r = gsl_rng_alloc (gsl_rng_default);
 
   {
     gsl_monte_plain_state *s = gsl_monte_plain_alloc (3);
-    gsl_monte_plain_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+    gsl_monte_plain_integrate (&G, xl, xu, 3, 5 * calls, r, s, &res, &err);
     gsl_monte_plain_free (s);
 
-    display_results("plain", res, err);
+    display_results ("plain", res, err);
   }
 
   {
     gsl_monte_miser_state *s = gsl_monte_miser_alloc (3);
-    gsl_monte_miser_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+    gsl_monte_miser_integrate (&G, xl, xu, 3, 5 * calls, r, s, &res, &err);
     gsl_monte_miser_free (s);
 
-    display_results("miser", res, err);
+    display_results ("miser", res, err);
   }
 
   {
     gsl_monte_vegas_state *s = gsl_monte_vegas_alloc (3);
-    gsl_monte_vegas_integrate (&G, xl, xu, 3, 1000, r, s, &res, &err);
-    display_results("vegas warm-up", res, err);
-    s->max_it_num = 10;
-    s->stage = 3;
-    gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
-    display_results("vegas full", res, err);
+
+    gsl_monte_vegas_integrate (&G, xl, xu, 3, 10000, r, s, &res, &err);
+    display_results ("vegas warm-up", res, err);
+
+    printf ("converging...\n");
+
+    do
+      {
+	gsl_monte_vegas_integrate (&G, xl, xu, 3, calls, r, s, &res, &err);
+	printf ("result = % .6f sigma = % .6f chisq/dof = %.1f\n",
+		res, err, s->chisq);
+      }
+    while (fabs (s->chisq - 1.0) > 0.5);
+
+    display_results ("vegas final", res, err);
+
     gsl_monte_vegas_free (s);
   }
-
 }
