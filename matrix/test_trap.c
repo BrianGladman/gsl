@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define GSL_CHECK_RANGE
+#undef GSL_RANGE_CHECK_OFF
 #define GSL_WARNINGS_OFF
 
 #include <gsl_matrix.h>
@@ -19,7 +19,6 @@ int main (void)
   size_t i = 0, j = 0;
   double x; 
   
-  gsl_check_range = 1 ;
   gsl_warnings_off = 1 ;
 
   gsl_set_error_handler (&my_error_handler);

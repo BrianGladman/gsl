@@ -1,0 +1,5 @@
+Mon Apr  6 15:06:38 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* make range checking the default, you have to define
+ 	GSL_RANGE_CHECK_OFF to turn it off
+
