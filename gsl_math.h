@@ -129,6 +129,9 @@ GSL_MIN_LDBL (long double a, long double b)
 #endif /* HAVE_INLINE */
 
 
+/* Functions from sys directory */
+double gsl_log1p (const double x);
+
 #ifdef HAVE_INLINE
 extern inline double gsl_hypot (const double x, const double y);
 
@@ -153,6 +156,8 @@ extern inline double gsl_hypot (const double x, const double y) {
 #else
 double gsl_hypot (const double x, const double y);
 #endif
+
+
 
 /* Definition of an arbitrary function with parameters */
 
@@ -213,9 +218,11 @@ typedef struct gsl_interval_struct gsl_interval;
 #endif
 
 #ifdef INF
-#define GSL_INF INF
+#define GSL_POSINF INF
+#define GSL_NEGINF (-INF)
 #else
-#define GSL_INF (1.0/0.0)
+#define GSL_POSINF (+1.0/0.0)
+#define GSL_NEGINF (-1.0/0.0)
 #endif
 
 __END_DECLS
