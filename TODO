@@ -11,11 +11,7 @@ requirements.
 * Complex polynomial solvers (Got Newton-Mueller from
 jotahtin@cc.hut.fi, still to add (BJG)).
 
-* Reorganize siman and monte interfaces to allow iterative use.
-
-* Add n-tuple support
-
-* Convert histograms to use linear scales
+* Reorganize siman interfaces to allow iterative use.
 
 * Finalize error handling scheme and sort out __impl vs _e vs no
 suffix.  Add a GSL_ERROR_MODE environment variable for choosing error
@@ -55,7 +51,6 @@ of make strict targets, since it's better to define a shell alias to
 do that.  Files with strict target are 
 
     specfunc/Makefile.am
-    sum/Makefile.am
 
 * Make all internal functions static, and have all exported functions
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
