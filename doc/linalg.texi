@@ -1,1 +1,25 @@
 This chapter describes functions for solving linear systems.
+
+@deftypefun int gsl_la_decomp_SV_impl (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, double @var{tolerance})
+@end deftypefun
+
+@deftypefun int gsl_la_decomp_LU_impl (gsl_matrix * @var{matrix}, gsl_vector_int * @var{permutation}, int * @var{signum})
+@end deftypefun
+
+@deftypefun int gsl_la_solve_LU_impl (const gsl_matrix * @var{lu_matrix}, const gsl_vector_int * @var{permutation}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@end deftypefun
+
+@deftypefun int gsl_la_solve_HH_impl(gsl_matrix * @var{matrix}, gsl_vector * @var{vec})
+@end deftypefun
+
+@deftypefun int gsl_la_solve_symm_tridiag_impl(const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@end deftypefun
+
+@deftypefun int gsl_la_solve_symm_cyc_tridiag_impl(const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@end deftypefun
+
+
+
+
+
+

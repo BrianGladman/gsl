@@ -3,22 +3,39 @@
 
 #include <stdlib.h>
 #include <gsl_math.h>
+#include <gsl_vector.h>
+#include <gsl_matrix.h>
+
+/* Definition of vector-valued functions with parameters based on gsl_vector */
+
+struct gsl_multiroot_function
+{
+  int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
+  size_t n;
+  void * params;
+}
+
+typedef struct gsl_multiroot_function_struct gsl_multiroot_function ;
+
+#define GSL_MULTIROOT_FN_EVAL(F,x,y) (*((F)->f)(x,(F)->params,(y)))
 
 typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_function * f, double * root, gsl_interval * x);
-    int (*iterate) (void *state, gsl_function * f, double * root, gsl_interval * x);
+    int (*set) (void *state, gsl_multiroot_function * f, );
+    int (*iterate) (void *state, gsl_multiroot_function * f, double * root);
   }
 gsl_multiroot_fsolver_type;
 
 typedef struct
   {
     const gsl_multiroot_fsolver_type * type;
-    gsl_function * function ;
-    double root ;
-    gsl_interval interval ;
+    gsl_multiroot_function * function ;
+    gsl_vector * x ;
+    gsl_vector * f ;
+    gsl_matrix * jacobian ;
+    gsl_vector * dx ;
     void *state;
   }
 gsl_multiroot_fsolver;
@@ -27,8 +44,8 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_function_fdf * f, double * root);
-    int (*iterate) (void *state, gsl_function_fdf * f, double * root);
+    int (*set) (void *state, gsl_multiroot_function_fdf * f, double * root);
+    int (*iterate) (void *state, gsl_multiroot_function_fdf * f, double * root);
   }
 gsl_multiroot_fdfsolver_type;
 

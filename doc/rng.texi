@@ -1187,7 +1187,6 @@ which offer the best performance are @code{taus}, @code{gfsr4} and
 
 @node Random Number References and Further Reading
 @section Random Number References and Further Reading
-@noindent
 
 The subject of random number generation and testing is reviewed
 extensively in Knuth's @cite{Seminumerical Algorithms}.
@@ -1198,7 +1197,6 @@ Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
 @noindent
-
 Further information is available in the review paper written by Pierre
 L'Ecuyer, available at
 @url{ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/handsim.ps}.

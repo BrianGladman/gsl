@@ -1,4 +1,6 @@
+@cindex blocks
 @cindex vectors
+@cindex matrices
 
 The functions described in this chapter provide a simple vector and
 matrix interface to ordinary C arrays. By writing your functions in
@@ -188,6 +190,8 @@ block data address = 0x804b0d8
 
 @node The vector struct
 @section The vector struct
+@cindex vectors
+@cindex stride, of vector index
 
 Vectors are defined by a @code{gsl_vector} structure which describes a
 slice of a block. A vector represents a @dfn{view} of an area of memory,
@@ -486,6 +490,9 @@ elements of @code{v}, written using the format specifier
 @node The matrix struct
 @section The matrix struct
 @cindex matrices
+@cindex physical dimension, matrices
+@cindex trailing dimension, matrices
+@cindex leading dimension, matrices
 
 Matrices are defined by a @code{gsl_matrix} structure which describes a
 generalized slice of a block. Like a vector it represents a @dfn{view}
@@ -792,8 +799,7 @@ using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
 int main ()
 @{
   int i, j; 
-  gsl_block * b = gsl_block_alloc (10*3);
-  gsl_matrix * m = gsl_matrix_alloc (b, 0, 10, 3, 3) ;
+  gsl_matrix * m = gsl_matrix_alloc (10, 3) ;
   
   for (i = 0; i < 10; i++)
     for (j = 0; j < 3; j++)
@@ -833,10 +839,8 @@ The next program shows how to write a matrix to a file.
 int main ()
 @{
   int i, j, differences = 0; 
-  gsl_block * bm = gsl_block_calloc (100*100);
-  gsl_block * ba = gsl_block_calloc (100*100);
-  gsl_matrix * m = gsl_matrix_alloc (bm, 0, 100, 100, 100) ;
-  gsl_matrix * a = gsl_matrix_alloc (ba, 0, 100, 100, 100) ;
+  gsl_matrix * m = gsl_matrix_alloc (100, 100) ;
+  gsl_matrix * a = gsl_matrix_alloc (100, 100) ;
   
   for (i = 0; i < 100; i++)
     for (j = 0 ; j < 100; j++)

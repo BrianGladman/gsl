@@ -1,1 +1,12 @@
 This chapter describes functions for computing eigenvalues and eigenvectors.
+
+@deftypefun int gsl_eigen_jacobi_impl (gsl_matrix * @var{matrix}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, unsigned int @var{max_rot}, unsigned int * @var{nrot})
+@end deftypefun
+
+@deftypefun int gsl_la_invert_jacobi_impl (const gsl_matrix * @var{matrix}, gsl_matrix * @var{ainv}, unsigned int @var{max_rot})
+@end deftypefun
+
+@deftypefun int gsl_eigen_sort_impl (gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+@end deftypefun
+
+

@@ -1968,8 +1968,6 @@ Luc Devroye, @cite{Non-Uniform Random Variate Generation},
 Springer-Verlag, ISBN 0-387-96305-7.
 @end itemize
 @noindent
-
-@noindent
 The subject of random variate generation is also reviewed by Knuth, who
 describes algorithms for all the major distributions.
 

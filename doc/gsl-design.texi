@@ -467,25 +467,64 @@ arithmetic.
 @node Function Names
 @section Function Names
 
-
+Each module has a name, which prefixes any function names in that module,
+e.g. the module gsl_fft has function names like gsl_fft_init
 
 @node Object-orientation
 @section Object-orientation
 
+The algorithms should be object oriented, but only to the extent that is
+easy in portable ANSI C.  The use of casting or other tricks to simulate
+inheritance is not desirable, and the user should not have to be aware
+of anything like that. This means many types of patterns are ruled
+out. However, this is not considered a problem -- they are too
+complicated for the library.  
+
+Note: it is possible to define an abstract base class easily in C, using
+function pointers. See the rng directory for an example. 
+
 @node Minimal structs
 @section Minimal structs
+
+We prefer to make structs which are minimal. For example, if a certain
+type of problem can be solved by several classes of algorithm (e.g. with
+and without derivative information) it is better to make separate types
+of struct to handle those cases.  i.e. run time type identification is
+not desirable.
 
 @node Algorithm decomposition
 @section Algorithm decomposition
 
+Iterative algorithms should be decomposed into an INITIALIZE, ITERATE,
+TEST form, so that the user can control the progress of the iteration.
+
 @node Memory allocation and ownership
 @section Memory allocation and ownership
+
+Functions which allocate memory on the heap should end in _alloc
+(e.g. gsl_foo_alloc) and be deallocated by a corresponding _free function
+(gsl_foo_free).
+
+Be sure to free any memory allocated by your function if you have to
+return an error in a partially initialized object.
 
 @node Memory layout
 @section Memory layout
 
+We use flat blocks of memory to store matrices and vectors, not C-style
+pointer-to-pointer arrays.  The matrices are stored in row-major order
+-- i.e. the column index moves continuously through memory. 
+
 @node Exceptions and Error handling
 @section Exceptions and Error handling
+
+The basic error handling procedure is the return code (see gsl_errno.h
+for a list of allowed values). Use the GSL_ERROR macro to mark an
+error. The current definition of this macro is not ideal but it can be
+changed at compile time. 
+
+Be sure to free any memory allocated by your function if you return an
+error (in particular for errors in partially initialized objects).
 
 @node Persistence
 @section Persistence
@@ -569,6 +608,11 @@ which should be made @code{const} when that is meaningful.
 @node Pseudo-templates
 @section Pseudo-templates
 
+There are some pseudo-template macros available in @file{templates_on.h}
+and @file{templates_off.h}. See a directory link @file{block} for
+details on how to use them.  Use sparingly, they are a bit of a
+nightmare, but unavoidable in places.
+
 @node Test programs
 @section Test programs
 
@@ -587,6 +631,24 @@ output PASS/FAIL line, so that any failure can be uniquely identified.
 
 @node Compilation
 @section Compilation
+
+Make sure everything compiles cleanly. Use the strict compilation
+options for extra checking.
+
+@example
+make CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion 
+  -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings 
+  -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes 
+  -Wnested-externs -Dinline= -g -O4"
+@end example
+@noindent
+Also use checkergcc to check for memory problems on the stack and the
+heap. It's the best memory checking tool.  If checkergcc isn't available
+then Electric Fence will check the heap, which is better than nothing.
+
+Make sure that the library will also compile with C++ compilers
+(g++). This should not be too much of a problem if you have been writing
+in ANSI C.
 
 @node Thread-safety
 @section Thread-safety

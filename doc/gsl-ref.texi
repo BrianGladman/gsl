@@ -289,7 +289,7 @@ allowing wrappers to be written for very high level languages.
 
 @node Eigensystems, Histograms, Linear Algebra, Top
 @chapter Eigensystems
-@include linalg.texi
+@include eigen.texi
 
 @node Histograms, Numerical Integration, Eigensystems, Top
 @chapter Histograms

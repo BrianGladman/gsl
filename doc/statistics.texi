@@ -347,9 +347,7 @@ skew = @{1 \over N@}
      \sum @{( x_i - mean \over sd )@}^3
 @end example
 @end ifinfo
-
 @noindent
-
 These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
@@ -408,9 +406,7 @@ kurtosis = @{1 \over N@}
   ( \sum @{(x_i - mean \over sd )@}^4 ) - 3
 @end example
 @end ifinfo
-
 @noindent
-
 These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
