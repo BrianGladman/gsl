@@ -1,3 +1,12 @@
+1998-08-31  James Theiler  <jt@lanl.gov>
+
+	* Makefile.am (SUBDIRS): added utils directory
+
+	* configure.in (AC_OUTPUT): added utils/Makefile 
+
+	* configure.in (AC_REPLACE_FUNCS): added strtol, strtoul; removed
+	strerror since it's already hardcoded into the err/ directory
+
 1998-08-30  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: upped release number to 0.4; about to tag and make
