@@ -16,12 +16,6 @@
 unsigned long int vax_get (void *vstate);
 void vax_set (void *state, unsigned long int s);
 
-static const long int a = 69069;
-static const long int c = 1;
-static const unsigned long int m = 4294967295UL;
-static const long int q = 62183;
-static const long int r = 49669;
-
 typedef struct
   {
     unsigned long int x;
@@ -33,7 +27,7 @@ vax_get (void *vstate)
 {
   vax_state_t *state = (vax_state_t *) vstate;
 
-  state->x = (a * state->x + c) & 0xffffffffUL;
+  state->x = (69069 * state->x + 1) & 0xffffffffUL;
 
   return state->x;
 }
@@ -54,7 +48,7 @@ vax_set (void *vstate, unsigned long int s)
 static const gsl_rng_type vax_type =
 {"vax",				/* name */
  0xffffffffUL,			/* RAND_MAX */
- 0,			        /* RAND_MIN */
+ 0,				/* RAND_MIN */
  sizeof (vax_state_t),
  &vax_set,
  &vax_get};
