@@ -22,12 +22,11 @@ main (int argc, char **argv)
   n = atoi (argv[3]);
 
   {
-    int status;
     double x;
 
     gsl_histogram * h = gsl_histogram_alloc (n);
             
-    gsl_histogram_set_uniform (h, a, b);
+    gsl_histogram_set_ranges_uniform (h, a, b);
 
     while (fscanf (stdin, "%lg", &x) == 1)
       {

@@ -16,7 +16,6 @@ int
 main (void)
 {
   struct data ntuple_row;
-  int i;
 
   gsl_ntuple *ntuple 
     = gsl_ntuple_open ("test.dat", &ntuple_row,

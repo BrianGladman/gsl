@@ -62,7 +62,7 @@ void P1(void *xp)
 int
 main(int argc, char *argv[])
 {
-  gsl_rng_type * T;
+  const gsl_rng_type * T;
   gsl_rng * r;
 
   double x_initial = 15.5;

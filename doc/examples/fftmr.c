@@ -22,7 +22,7 @@ main (void)
       IMAG(data,i) = 0.0;
     }
 
-  data[0].real = 1.0;
+  data[0] = 1.0;
 
   for (i = 1; i <= 10; i++)
     {

@@ -4,9 +4,9 @@
 int
 main (void)
 {
-  double c  = GSL_CONST_MKS_SPEED_OF_LIGHT;
-  double au = GSL_CONST_MKS_ASTRONOMICAL_UNIT;
-  double minutes = GSL_CONST_MKS_MINUTE;
+  double c  = GSL_CONST_MKSA_SPEED_OF_LIGHT;
+  double au = GSL_CONST_MKSA_ASTRONOMICAL_UNIT;
+  double minutes = GSL_CONST_MKSA_MINUTE;
 
   /* distance stored in meters */
   double r_earth = 1.00 * au;  

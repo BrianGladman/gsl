@@ -25,4 +25,6 @@ main (void)
     }
 
   gsl_matrix_free (m);
+
+  return 0;
 }

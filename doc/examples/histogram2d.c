@@ -35,8 +35,7 @@ main (void)
       double u = gsl_rng_uniform (r);
       double v = gsl_rng_uniform (r);
        
-      int status 
-       = gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
+      gsl_histogram2d_pdf_sample (p, u, v, &x, &y);
       
       printf ("%g %g\n", x, y);
     }

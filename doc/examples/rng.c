@@ -14,7 +14,7 @@ main (void)
   r = gsl_rng_alloc (T);
   
   printf ("generator type: %s\n", gsl_rng_name (r));
-  printf ("seed = %u\n", gsl_rng_default_seed);
-  printf ("first value = %u\n", gsl_rng_get (r));
+  printf ("seed = %lu\n", gsl_rng_default_seed);
+  printf ("first value = %lu\n", gsl_rng_get (r));
   return 0;
 }
