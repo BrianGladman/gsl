@@ -21,18 +21,14 @@ With these settings you should be able to compile and link the program
 main.c in this directory.
 
 For the default installation you should build the workspace using the
-project configuration 'ReleaseDLL'.  Only the DLL 'Release' version of
-GSL is supplied by default.
+project configuration 'ReleaseML' compiled with the single-threaded
+/ML option.  Only the /ML 'Release' version of GSL is supplied by
+default.
 
-If you want to use the 'ReleaseML', 'ReleaseMT', 'DebugML' or
-'DebugMT' configurations you will need to compile the corresponding
+If you want to use the 'ReleaseMT', 'ReleaseDLL', 'DebugMT' or
+'DebugDLL' configurations you will need to compile the corresponding
 versions the library yourself, following the instructions in main
 README.txt file.
-
-To run the program compiled with 'ReleaseDLL' option you will need to
-make sure the DLL files libgsl.dll and libgslcblas.dll are available
-in the C:\Windows\System directory, or copy them into the same
-directory as the executable.
 
 The output from the program should be the same as using GSL on Unix,
 

@@ -24,6 +24,7 @@ CompressLevel=9
 
 [Files]
 Source: "README.txt"; DestDir: "{app}"; DestName: "README.txt";  Flags: isreadme;
+Source: "GSLBOOK.pdf"; DestDir: "{app}"; DestName: "GSLBOOK.pdf";
 Source: "..\Copying"; DestDir: "{app}"; DestName: "Copying.txt";
 Source: "..\NEWS"; DestDir: "{app}"; DestName: "NEWS.txt";
 Source: "..\THANKS"; DestDir: "{app}"; DestName: "THANKS.txt";
@@ -40,15 +41,15 @@ Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.def"; DestDir: "{app}\src"; Flags: recursesubdirs;
 ;
-Source: "..\GSLDLL\Release\libgsl.dll"; DestDir: "{sys}"; DestName: "libgsl.dll"
-Source: "..\GSLDLL\Release\libgslcblas.dll"; DestDir: "{sys}"; DestName: "libgslcblas.dll";
-Source: "..\GSLDLL\Release\libgsl.exp"; DestDir: "{app}\lib"; DestName: "libgsl.exp"
-Source: "..\GSLDLL\Release\libgslcblas.exp"; DestDir: "{app}\lib"; DestName: "libgslcblas.exp";
-Source: "..\GSLDLL\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgsl.lib"
-Source: "..\GSLDLL\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblas.lib";
+;;Source: "..\GSLDLL\Release\libgsl.dll"; DestDir: "{sys}"; DestName: "libgsl.dll"
+;;Source: "..\GSLDLL\Release\libgslcblas.dll"; DestDir: "{sys}"; DestName: "libgslcblas.dll";
+;;Source: "..\GSLDLL\Release\libgsl.exp"; DestDir: "{app}\lib"; DestName: "libgsl.exp"
+;;Source: "..\GSLDLL\Release\libgslcblas.exp"; DestDir: "{app}\lib"; DestName: "libgslcblas.exp";
+;;Source: "..\GSLDLL\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgsl.lib"
+;;Source: "..\GSLDLL\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblas.lib";
 
-;;Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
-;;Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
+Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslML.lib"
+Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
 ;;Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
 ;;Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
 ;;Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
@@ -70,6 +71,7 @@ Name: "{userdesktop}\GNU Scientific Library @VERSION@"; Filename: "{app}"; Worki
 Name: "{group}\README"; Filename: "{app}\README.txt"
 Name: "{group}\NEWS"; Filename: "{app}\NEWS.txt"
 Name: "{group}\LICENSE"; Filename: "{app}\COPYING.txt"
+Name: "{group}\GSLBOOK"; Filename: "{app}\GSLBOOK.txt"
 
 [Messages]
 SetupLdrStartupMessage=This will install the %1. Do you wish to continue?
