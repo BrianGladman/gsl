@@ -1,17 +1,17 @@
 /* specfunc/gamma_inc.c
- * 
+ *
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -65,7 +65,7 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     result->err += gstar.err/fabs(gstar.val) * fabs(result->val);
     return GSL_SUCCESS;
   }
-    
+
 }
 
 
@@ -154,7 +154,11 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   double R;
   double c0, c1;
 
-  gsl_sf_erfc_e(eta*M_SQRT2*rta, &erfc);
+  /* This used to say erfc(eta*M_SQRT2*rta), which is wrong.
+   * The sqrt(2) is in the denominator. Oops.
+   * Fixed: [GJ] Mon Nov 15 13:25:32 MST 2004
+   */
+  gsl_sf_erfc_e(eta*rta/M_SQRT2, &erfc);
 
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     c0 = -1.0/3.0 + eps*(1.0/12.0 - eps*(23.0/540.0 - eps*(353.0/12960.0 - eps*589.0/30240.0)));
@@ -172,6 +176,9 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   result->val  = 0.5 * erfc.val + R;
   result->err  = GSL_DBL_EPSILON * fabs(R * 0.5 * a*eta*eta) + 0.5 * erfc.err;
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+
+  /* FIXME: This can be removed when we implement c1. */
+  result->err += fabs(2.0*R/a);
 
   return stat_ln;
 }
@@ -201,7 +208,7 @@ gamma_inc_F_CF(const double a, const double x, gsl_sf_result * result)
   double Dn = 1.0;
   int n;
 
-  /* n == 1 has a_1, b_1, b_0 independent of a,x, 
+  /* n == 1 has a_1, b_1, b_0 independent of a,x,
      so that has been done by hand                */
   for ( n = 2 ; n < nmax ; n++ )
   {
@@ -242,7 +249,7 @@ gamma_inc_F_CF(const double a, const double x, gsl_sf_result * result)
  *
  * Hans E. Plesser, 2002-01-22 (hans dot plesser at itf dot nlh dot no):
  *
- * Since the Gautschi equivalent series method for CF evaluation may lead 
+ * Since the Gautschi equivalent series method for CF evaluation may lead
  * to singularities, I have replaced it with the modified Lentz algorithm
  * given in
  *
@@ -250,8 +257,8 @@ gamma_inc_F_CF(const double a, const double x, gsl_sf_result * result)
  * Coulomb and Bessel Functions of Complex Arguments and Order
  * J Computational Physics 64:490-509 (1986)
  *
- * In consequence, gamma_inc_Q_CF_protected() is now obsolete and has been 
- * removed. 
+ * In consequence, gamma_inc_Q_CF_protected() is now obsolete and has been
+ * removed.
  *
  * Identification of terms between the above equation for F(a, x) and
  * the first equation in the appendix of Thompson&Barnett is as follows:
@@ -372,7 +379,7 @@ gamma_inc_Q_series(const double a, const double x, gsl_sf_result * result)
       sum += (a+1.0)/(a+n+1.0)*t;
       if(fabs(t/sum) < GSL_DBL_EPSILON) break;
     }
-    
+
     if(n == nmax)
       stat_sum = GSL_EMAXITER;
     else
@@ -491,7 +498,7 @@ gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
        * it is somewhat pointless to try this there;
        * the function is rapidly decreasing for
        * x large and x > a, and it will just
-       * underflow in that region anyway. We 
+       * underflow in that region anyway. We
        * catch that case in the standard
        * large-x method.
        */
@@ -502,7 +509,7 @@ gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
     }
   }
   else {
-    if(a < 0.8*x) {
+    if(0.8*a < x) {
       /* Continued fraction again. The convergence
        * is a little slower here, but that is fine.
        * We have to trade that off against the slow
@@ -590,7 +597,7 @@ gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result)
 
 int
 gsl_sf_gamma_inc_e(const double a, const double x, gsl_sf_result * result)
-{  
+{
   if(x < 0.0) {
     DOMAIN_ERROR(result);
   }
