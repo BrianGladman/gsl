@@ -193,3 +193,13 @@ ends with the new position:
              d = (z < midpoint) ? tolerance : -tolerance ;
            }
 
+----------------------------------------------------------------------
+BUG#17 -- ode failures
+
+When an ODE function returns an error code the higher level ode
+functions should recover transparently and not modify the state, so
+that the step can be retried cleanly with a different value of h.
+Currently the solver may partially modify the state, if the error
+occurs in the middle of an RK step calculation for example.
+
+----------------------------------------------------------------------
