@@ -1,3 +1,4 @@
+@cindex polynomials, roots of
 This chapter describes functions for solving polynomial equations. There
 are routines for finding real and complex roots of quadratic and cubic
 equations using analytic methods. The functions are defined in the
@@ -10,6 +11,7 @@ header file @code{gsl_poly.h}.
 
 @node  Quadratic equations
 @section Quadratic equations
+@cindex quadratic equation, solving
 
 @deftypefun int gsl_poly_solve_quadratic (double @var{a}, double @var{b}, double @var{c}, double *@var{x0}, double *@var{x1})
 This function finds the real roots of the quadratic equation,
@@ -76,6 +78,7 @@ modified.
 
 @node Cubic equations
 @section Cubic equations
+@cindex cubic equation, solving
 
 @deftypefun int gsl_poly_solve_cubic (double @var{a}, double @var{b}, double @var{c}, double *@var{x0}, double *@var{x1}, double *@var{x2})
 

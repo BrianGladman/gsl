@@ -49,6 +49,7 @@ The functions described in this section are declared in
 * The Hypergeometric Distribution::  
 * The Logarithmic Distribution::  
 * Shuffling and Sampling::      
+* Random Number Distribution References and Further Reading::  
 @end menu
 
 @page
@@ -1881,3 +1882,45 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end example
 
 @end deftypefn
+
+
+@node Random Number Distribution References and Further Reading
+@section Random Number Distribution References and Further Reading
+
+For an encyclopaedic coverage of the subject readers are advised to
+consult the book @cite{Non-Uniform Random Variate Generation} by Luc
+Devroye. It covers every imaginable distribution and provides hundreds
+of algorithms.
+
+@itemize @asis
+@item
+Luc Devroye, @cite{Non-Uniform Random Variate Generation},
+Springer-Verlag, ISBN 0-387-96305-7.
+@end itemize
+@noindent
+
+@noindent
+The subject of random variate generation is also reviewed by Knuth, who
+describes algorithms for all the major distributions.
+
+@itemize @asis
+@item
+Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
+Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
+@end itemize
+
+@noindent
+The Particle Data Group provides a short review of techniques for
+generating distributions of random numbers in the ``Monte Carlo''
+section of its Annual Review of Particle Physics.
+
+@itemize @asis
+@item
+@cite{Review of Particle Properties}
+R.M. Barnett et al., Physical Review D54, 1 (1996)
+@url{http://pdg.lbl.gov/}.
+@end itemize
+
+@noindent
+The Review of Particle Physics is available online in postscript and pdf
+format.
