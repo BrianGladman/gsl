@@ -1,17 +1,34 @@
 We need to do a better job with the NEWS file!
 
-This covers changes made *after* the gsl-0.2 snapshot
+* Will be new in gsl-0.3g:
 
-* Added several new modules: histogram, integration, matrix, specfunc
-  and vectors.
+** The NEWS file now uses outline mode, like the Emacs NEWS file
 
-* Changed libgsl_statisctics.a to libgslstatistics.a and
-  libgsl_siman.a to libgslsiman.a, since most of the packages don't
-  have the underscore.  Users will have to remove the old files,
-  unless they do a "make uninstall" on the previous release before
-  they install this new one.
+** The simulated annealing routines no longer set the random number
+seed with the time of day.  You'll need to reseed the generator
+yourself if you want to make subsequent runs use different random
+numbers.
 
-* Changes to the random number suite
+** Work is in progress on a reimplementation of QUADPACK in the
+`integration' subdirectory, but it is not finished yet.
+
+* This covers changes made *after* the gsl-0.2 snapshot
 
-** Incorporated the gauss, poisson and exponential distributions in
-   the standard libgslrandom.a
+** Added several new modules: histogram, integration, matrix, specfunc
+and vectors.
+
+** Changed libgsl_statisctics.a to libgslstatistics.a and
+libgsl_siman.a to libgslsiman.a, since most of the packages don't have
+the underscore.  Users will have to remove the old files, unless they
+do a "make uninstall" on the previous release before they install this
+new one.
+
+** Changes to the random number suite
+Incorporated the gauss, poisson and exponential distributions in
+the standard libgslrandom.a
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:
