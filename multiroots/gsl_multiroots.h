@@ -39,6 +39,7 @@ typedef struct
     gsl_multiroot_function * function ;
     gsl_vector * x ;
     gsl_vector * f ;
+    gsl_vector * dx ;
     void *state;
   }
 gsl_multiroot_fsolver;
@@ -54,9 +55,7 @@ int gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s,
 int gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s);
 
 const char * gsl_multiroot_fsolver_name (const gsl_multiroot_fsolver * s);
-double gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s);
-gsl_interval gsl_multiroot_fsolver_interval (const gsl_multiroot_fsolver * s);
-
+gsl_vector * gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s);
 
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
@@ -80,18 +79,19 @@ typedef struct
   {
     const char *name;
     size_t size;
-    int (*set) (void *state, gsl_multiroot_function_fdf * f, gsl_vector * x);
-    int (*iterate) (void *state, gsl_multiroot_function_fdf * f, gsl_vector * x);
+    int (*set) (void *state, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+    int (*iterate) (void *state, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
   }
 gsl_multiroot_fdfsolver_type;
 
 typedef struct
   {
     const gsl_multiroot_fdfsolver_type * type;
-    gsl_function_fdf * fdf ;
+    gsl_multiroot_function_fdf * fdf ;
     gsl_vector * x;
     gsl_vector * f;
-    gsl_matrix * g;
+    gsl_matrix * J;
+    gsl_vector * dx;
     void *state;
   }
 gsl_multiroot_fdfsolver;
@@ -99,11 +99,13 @@ gsl_multiroot_fdfsolver;
 
 gsl_multiroot_fdfsolver *
 gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * T, 
-                               gsl_function_fdf * fdf, double root);
+                               gsl_multiroot_function_fdf * fdf,
+                               gsl_vector * x);
 
 int
 gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * s, 
-                             gsl_function_fdf * fdf, double root);
+                             gsl_multiroot_function_fdf * fdf,
+                             gsl_vector * x);
 
 int
 gsl_multiroot_fdfsolver_iterate (gsl_multiroot_fdfsolver * s);
@@ -112,7 +114,7 @@ void
 gsl_multiroot_fdfsolver_free (gsl_multiroot_fdfsolver * s);
 
 const char * gsl_multiroot_fdfsolver_name (const gsl_multiroot_fdfsolver * s);
-double gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * s);
+gsl_vector * gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * s);
 
 int
 gsl_multiroot_test_interval (gsl_interval x, double epsabs, double epsrel);

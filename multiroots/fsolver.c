@@ -54,18 +54,18 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 }
 
 int
-gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s, gsl_function * f, gsl_vector * x)
+gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s, gsl_multiroot_function * f, gsl_vector * x)
 {
   s->function = f;
-  s->root = x;
+  s->x = x;
 
-  return (s->type->set) (s->state, s->function, s->root);
+  return (s->type->set) (s->state, s->function, s->x);
 }
 
 int
 gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s)
 {
-  return (s->type->iterate) (s->state, s->function, s->root);
+  return (s->type->iterate) (s->state, s->function, s->x);
 }
 
 void
@@ -81,8 +81,8 @@ gsl_multiroot_fsolver_name (const gsl_multiroot_fsolver * s)
   return s->type->name;
 }
 
-double
+gsl_vector *
 gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s)
 {
-  return s->root;
+  return s->x;
 }
