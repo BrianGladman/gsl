@@ -5,7 +5,7 @@ for (I = problems ; I->f != 0; I++)
   
   gsl_rng * r;
 
-  if (I->dim > 5)
+  if (I->dim > 3)
     {
       continue ;
     }
