@@ -108,7 +108,7 @@ The generator is automatically initialized with the default seed,
 either directly or usubf the environment variable @code{GSL_RNG_SEED},
 @pxref{Random number environment variables}.
 
-The defined generator types are,
+Some of the defined generator types are,
 
 @example
 gsl_rng_cmrg, gsl_rng_minstd, gsl_rng_mrg, gsl_rng_mt19937,
@@ -149,11 +149,11 @@ either as integers or double precision floating point numbers. To obtain
 non-uniform distributions @pxref{Random Number Distributions}.
 
 @deftypefn Random {unsigned long int} gsl_rng_get (const gsl_rng * @var{r})
-This function returns a random integer from the generator @var{r}.  All
+This function returns a random integer from the generator @var{r}.  The
+minimum and maximum values depend on the algorithm used, but all
 integers in the range [@var{min},@var{max}] are equally likely.  The
-maximum and minimum values, @var{max} and @var{min}, depend on the
-algorithm used. They can determined using the auxilliary functions
-@code{gsl_rng_max (r)} and @code{gsl_rng_min (r)}.
+values of @var{min} and @var{max} can determined using the auxilliary
+functions @code{gsl_rng_max (r)} and @code{gsl_rng_min (r)}.
 @end deftypefn
 
 @deftypefn Random double gsl_rng_uniform (const gsl_rng * @var{r})
@@ -531,7 +531,7 @@ period for this generator is astronomical; it is
 @math{(2^K)^D \approx 10^@{93334@}}
 where @math{K=32} is the number of bits in the word, and D is the longest
 lag.  This would also mean that any one random number could 
-easily be zero; ie @math{0 \le r \lt 2^@{32@}}.
+easily be zero; ie @math{0 \le r < 2^@{32@}}.
 
 Ziff doesn't say so, but it seems to me that the bits are
 completely independent here, so one could use this as an efficient
@@ -1954,7 +1954,7 @@ main ()
 Example output from the program, three 10-step random walks from the origin.
 
 @tex
-%\centerline{\input random-walk.tex}      
+\centerline{\input random-walk.tex}      
 @end tex
 
 

@@ -51,8 +51,8 @@ roots this will be. @emph{In most cases, no error will be reported if
 you try to find a root in an area where there is more than one.}
 
 Care must be taken when a function may have a root of second-order or
-higher multiplicity (such as @math{f(x) = (x-c)^2} or @math{f(x) =
-(x-c)^3}).  Routines which maintain a strict bound on the root should
+higher multiplicity (such as @math{f(x) = (x-x_0)^2} or @math{f(x) =
+(x-x_0)^3}).  Routines which maintain a strict bound on the root should
 not have problems with odd-multiplicity roots (e.g. cubic, quintic,
 @dots{}), since they make use only of the occurrence zero-crossings and
 not the behavior of the function. However it is impossible to use these
@@ -102,14 +102,7 @@ be stored in @code{*root} if the function failed.
 You must provide a continous function of one variable for the root
 finder(s) to operate on, and, sometimes, its first derivative.
 
-Recall that when passing pointers to functions, you give the name of the
-function you are passing. For example:
-
-@smallexample
-foo = i_take_a_function_pointer(my_function);
-@end smallexample
-
-@deftypevr {Function Argument} double {@t{(*} f@t{)(double)}}
+@deftp {Data Type} gsl_function 
 @vindex @r{root finding,} f @r{(function argument)}
 A pointer to the function whose root you are searching for. It is called
 by the root finding function many times during its search. It must be
@@ -118,17 +111,24 @@ continous within the region of interest.
 Here is an example function which you could pass to a root finder:
 
 @smallexample
-@group
+struct my_f_params @{ double a ; double b ; double c ; @} ;
+
+gsl_function f ;
+struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
+
+f.function = &my_f ;
+f.params = &params ;
+
 double
-my_f (double x) @{
-   return sin (2 * x) + 2 * cos (x);
+my_f (double x, void * p) @{
+   struct my_f_params * params = *(struct my_f_params *)p ;
+   return (params->a) * x * x + (params->b) * x + params->c ;
 @}
-@end group
 @end smallexample
 
-@end deftypevr
+@end deftp
 
-@deftypevr {Function Argument} double {@t{(*} df@t{)(double)}}
+@deftp {Data Type} gsl_function_fdf
 @vindex @r{root finding,} df @r{(function argument)}
 A pointer to the first derivative of the function whose root you are
 searching for.
@@ -145,9 +145,6 @@ my_df (double x) @{
 @end group
 @end smallexample
 
-@end deftypevr
-
-@deftypevr {Function Argument} void {@t{(*} fdf@t{)(double *, double *, double, int, int)}}
 A pointer to a function which calculates both the value of the function
 under search and the value of its first derivative. Because many terms
 of a function and its derivative are the same, it is often faster to use
@@ -177,7 +174,7 @@ my_fdf (double * y, double * yprime, double x,
 @end group
 @end smallexample
 
-@end deftypevr
+@end deftp
 
  Low level functions return errors and roots and are provided functions
 to search in the same manner as the high level functions; see @ref{Root
@@ -395,7 +392,7 @@ of the end. The midpoint of each interval is also indicated.
 bisection.)
 @end ifinfo
 
-@deftypefun int gsl_root_bisection (double * @var{root}, double (* @var{f})(double), double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations}, double @var{max_deltay})
+@deftypefun int gsl_root_bisection (double * @var{root}, gsl_function * @var{f}, double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations})
 @findex @r{root finding,} gsl_root_bisection
 
 Search for a zero of @code{f} using bisection. Returns @code{0} if
@@ -421,9 +418,6 @@ Parameters}.
 @item max_iterations
 The maximum allowed number of iterations. @xref{Search Stopping
 Parameters}.
-@item max_deltay
-The maximum allowed difference between @code{f(*lower_bound)} and
-@code{f(*upper_bound)}. @xref{Search Stopping Parameters}.
 @end table
 
 @end deftypefun
@@ -448,7 +442,7 @@ interval which does not contain a root. Once the interval is smaller
 than the requested epsilon, iteration stops and the root location is
 returned.
 
-@deftypefun int gsl_root_brent (double * @var{root}, double (* @var{f})(double), double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations})
+@deftypefun int gsl_root_brent (double * @var{root}, gsl_function * @var{f}, double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations})
 
 Search for a zero of @code{f} using Brent's method. Returns @code{0} if
 successful, @code{-1} on error (@pxref{Root Finder Error
@@ -530,7 +524,7 @@ position of the beginning of the interval and @math{b_n} is the
 false position.)
 @end ifinfo
 
-@deftypefun int gsl_root_falsepos (double * @var{root}, double (* @var{f})(double), double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations}, double @var{max_deltay})
+@deftypefun int gsl_root_falsepos (double * @var{root}, gsl_function * @var{f}, double * @var{lower_bound}, double * @var{upper_bound}, double @var{rel_epsilon}, double @var{abs_epsilon}, unsigned int @var{max_iterations})
 @findex @r{root finding,} gsl_root_falsepos
 
 Search for a zero of @code{f} using false position. Return @code{0} if
@@ -609,7 +603,7 @@ guess.
 Secant Method.)
 @end ifinfo
 
-@deftypefun int gsl_root_secant (double * @var{root}, double (* @var{f})(double), double * @var{guess}, double * @var{guess2}, double @var{epsilon}, unsigned int @var{max_iterations}, double @var{max_step_size})
+@deftypefun int gsl_root_secant (double * @var{root}, gsl_function * @var{f}, double * @var{guess}, double * @var{guess2}, double @var{epsilon}, unsigned int @var{max_iterations}, double @var{max_step_size})
 @findex @r{root finding,} gsl_root_secant
 
 Search for a zero of @code{f} using Secant Method, with @code{*guess}
@@ -659,10 +653,10 @@ Several iterations of Newton's Method, where @math{g_n} is the
 Newton's Method.)
 @end ifinfo
 
-@deftypefun int gsl_root_newton (double * @var{root}, void (* @var{fdf})(double *, double *, double, int, int), double * @var{guess}, double @var{epsilon}, unsigned int @var{max_iterations}, double @var{max_step_size})
+@deftypefun int gsl_root_newton (double * @var{root}, gsl_function_fdf * @var{fdf}, double * @var{guess}, double @var{epsilon}, unsigned int @var{max_iterations}, double @var{max_step_size})
 @findex @r{root finding,} gsl_root_newton
 
-Search for a zero of @code{f} using Newton's Method, with @code{*guess}
+Search for a zero of @code{fdf} using Newton's Method, with @code{*guess}
 being the guess.
 
 @xref{Root Finder Error Handling}, for a discussion of possible

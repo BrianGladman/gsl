@@ -112,9 +112,10 @@ of two then the call to the library function will return
 @section Error handlers
 @cindex Error handlers
 
-In addition to reporting errors the library also provides a simple error
-handler. The error handler is called by library functions when they are
-about to report an error (for example, just before they return).
+In addition to reporting errors the library also provides an optional
+error handler. The error handler is called by library functions when
+they are about to report an error (for example, just before they
+return).
 
 The default behavior of the error handler is to print a short message
 and call @code{abort()} whenever an error is reported by the library. If

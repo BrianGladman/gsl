@@ -60,8 +60,7 @@ by the Foundation.
 @address @email{jt@@nis.lanl.gov}
 @author
 @author Brian Gough 
-@address Theoretical Particle Physics Group, Los Alamos National Laboratory
-@address @email{bjg@@vvv.lanl.gov}
+@address @email{bjg@@netsci.freeserve.co.uk}
 @author
 @author Reid Priedhorsky 
 @address Mathematical Modeling and Analysis Group, Los Alamos National Laboratory

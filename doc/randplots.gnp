@@ -294,4 +294,17 @@ set title "Negative Binomial Distribution"
 p(x)= (P**n)*((1-P)**(int(x)))*gamma(n+int(x))/gamma(n)/gamma(int(x)+1.0) + 1e-5
 plot P=0.5,n=3, p(x+0.5) title "$p=0.5,n=3$"
 
+######################################################################
+
+set xrange [-5:5]
+set yrange [-5:5]
+set xtics 1
+set ytics 1
+set output "random-walk.tex"
+set title "Random walk"
+set xzeroaxis
+set yzeroaxis
+set nokey
+plot "rand-walk.dat" using 1:2 with linesp
+
 
