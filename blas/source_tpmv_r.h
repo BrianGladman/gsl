@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
 #include "matrix_access.h"
 

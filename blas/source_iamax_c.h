@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   BASE_TYPE max = 0.0;
   CBLAS_INDEX n;

@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   ACC_TYPE r = INIT_VAL;
   size_t n;

@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   const int nonunit = (Diag == CblasNonUnit);
   size_t ix, jx;

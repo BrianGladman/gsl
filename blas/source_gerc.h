@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   size_t i, j;
   const BASE_TYPE conj = -1.0;

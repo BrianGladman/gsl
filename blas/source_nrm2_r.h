@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   BASE_TYPE scale = 0.0;
   BASE_TYPE ssq   = 1.0;

@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   BASE_TYPE rr = 0.0;
   BASE_TYPE ri = 0.0;

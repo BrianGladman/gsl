@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   if (fabs(REAL0(alpha)) + fabs(IMAG0(alpha)) != 0.0 ) {
     size_t i;

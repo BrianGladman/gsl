@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include "matrix_access.h"
 #define ACCESS_UP M_STANDARD_ACCESS
 #define ACCESS_LO M_STANDARD_ACCESS

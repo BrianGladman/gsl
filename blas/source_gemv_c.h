@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   size_t i, j;
   size_t lenX, lenY;
@@ -12,8 +16,8 @@
   }
 
   for(i=0; i<lenY; i++) {
-    BASE_TYPE tmpR = REAL(Y, incY, i) * REAL0(beta) - IMAG(Y, incY, i) * IMAG0(beta);
-    BASE_TYPE tmpI = REAL(Y, incY, i) * IMAG0(beta) - IMAG(Y, incY, i) * REAL0(beta);
+    const BASE_TYPE tmpR = REAL(Y, incY, i) * REAL0(beta) - IMAG(Y, incY, i) * IMAG0(beta);
+    const BASE_TYPE tmpI = REAL(Y, incY, i) * IMAG0(beta) - IMAG(Y, incY, i) * REAL0(beta);
     REAL(Y, incY, i) = tmpR;
     IMAG(Y, incY, i) = tmpI;
   }

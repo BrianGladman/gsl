@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   size_t i, j, k;
   size_t ix, iy, jx, jy;

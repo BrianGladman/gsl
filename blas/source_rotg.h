@@ -1,11 +1,15 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
-  BASE_TYPE roe   = ( fabs(*a) > fabs(*b) ? *a : *b );
-  BASE_TYPE scale = fabs(*a) + fabs(*b);
+  const BASE_TYPE roe   = ( fabs(*a) > fabs(*b) ? *a : *b );
+  const BASE_TYPE scale = fabs(*a) + fabs(*b);
   BASE_TYPE r, z;
 
   if( scale != 0.0 ) {
-    BASE_TYPE aos = *a/scale;
-    BASE_TYPE bos = *b/scale;
+    const BASE_TYPE aos = *a/scale;
+    const BASE_TYPE bos = *b/scale;
     r = scale * sqrt(aos*aos + bos*bos);
     r = GSL_SIGN(roe) * r;
     *c = *a/r;

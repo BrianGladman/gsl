@@ -1,38 +1,52 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   size_t i, j;
+  size_t k = 0;
+  const BASE_TYPE aR = REAL0(alpha);
+  const BASE_TYPE aI = IMAG0(alpha);
+  const BASE_TYPE conj = -1.0;
 
   if(Uplo == CblasUpper) {
-    size_t k = 0;
     for(i=0; i<N; i++) {
+      const BASE_TYPE XiR = REAL(X, incX, i);
+      const BASE_TYPE XiI = IMAG(X, incX, i);
+      const BASE_TYPE YiR = REAL(Y, incY, i);
+      const BASE_TYPE YiI = IMAG(Y, incY, i);
       for(j=i; j<N; j++) {
-        BASE_TYPE tmp1R = REAL(X, incX, i) * REAL(Y, incY, j) - IMAG(X, incX, i) * IMAG(Y, incY, j);
-	BASE_TYPE tmp1I = REAL(X, incX, i) * IMAG(Y, incY, j) + IMAG(X, incX, i) * REAL(Y, incY, j);
-	BASE_TYPE tmp2R = REAL(X, incX, j) * REAL(Y, incY, i) - IMAG(X, incX, j) * IMAG(Y, incY, i);
-	BASE_TYPE tmp2I = REAL(X, incX, j) * IMAG(Y, incY, i) + IMAG(X, incX, j) * REAL(Y, incY, i);
-	BASE_TYPE tmpR  = REAL0(alpha) * tmp1R - IMAG0(alpha) * tmp1I
-	                + REAL0(alpha) * tmp2R + IMAG0(alpha) * tmp2I;
-	BASE_TYPE tmpI  = REAL0(alpha) * tmp1I + IMAG0(alpha) * tmp1R
-	                + REAL0(alpha) * tmp2I - IMAG0(alpha) * tmp2R;
-        REAL(Ap, 1, k) += tmpR;
-	IMAG(Ap, 1, k) += tmpI;
+	const BASE_TYPE XjR = REAL(X, incX, j);
+	const BASE_TYPE XjI = IMAG(X, incX, j);
+	const BASE_TYPE YjR = REAL(Y, incY, j);
+	const BASE_TYPE YjI = IMAG(Y, incY, j);
+        const BASE_TYPE tmpijR = XiR * YjR - conj * XiI * YjI;
+	const BASE_TYPE tmpijI = XiI * YjR + conj * XiR * YjI;
+	const BASE_TYPE tmpjiR = XjR * YiR - conj * XjI * YiI;
+	const BASE_TYPE tmpjiI = XjR * YiI + conj * XjI * YiR;
+        REAL(Ap, 1, k) += aR*tmpijR - aI*tmpijI + aR*tmpjiR - conj*aI*tmpjiI;
+	IMAG(Ap, 1, k) += aR*tmpijI + aI*tmpijR + aR*tmpjiI + conj*aI*tmpjiR;
 	k++;
       }
     }
   }
   else {
-    size_t k = 0;
     for(i=0; i<N; i++) {
+      const BASE_TYPE XiR = REAL(X, incX, i);
+      const BASE_TYPE XiI = IMAG(X, incX, i);
+      const BASE_TYPE YiR = REAL(Y, incY, i);
+      const BASE_TYPE YiI = IMAG(Y, incY, i);
       for(j=0; j<=i; j++) {
-        BASE_TYPE tmp1R = REAL(X, incX, i) * REAL(Y, incY, j) - IMAG(X, incX, i) * IMAG(Y, incY, j);
-	BASE_TYPE tmp1I = REAL(X, incX, i) * IMAG(Y, incY, j) + IMAG(X, incX, i) * REAL(Y, incY, j);
-	BASE_TYPE tmp2R = REAL(X, incX, j) * REAL(Y, incY, i) - IMAG(X, incX, j) * IMAG(Y, incY, i);
-	BASE_TYPE tmp2I = REAL(X, incX, j) * IMAG(Y, incY, i) + IMAG(X, incX, j) * REAL(Y, incY, i);
-	BASE_TYPE tmpR  = REAL0(alpha) * tmp1R - IMAG0(alpha) * tmp1I
-	                + REAL0(alpha) * tmp2R + IMAG0(alpha) * tmp2I;
-	BASE_TYPE tmpI  = REAL0(alpha) * tmp1I + IMAG0(alpha) * tmp1R
-	                + REAL0(alpha) * tmp2I - IMAG0(alpha) * tmp2R;
-        REAL(Ap, 1, k) += tmpR;
-	IMAG(Ap, 1, k) -= tmpI; /* -= for lower triangle due to conjugate */
+	const BASE_TYPE XjR = REAL(X, incX, j);
+	const BASE_TYPE XjI = IMAG(X, incX, j);
+	const BASE_TYPE YjR = REAL(Y, incY, j);
+	const BASE_TYPE YjI = IMAG(Y, incY, j);
+        const BASE_TYPE tmpijR = XiR * YjR - conj * XiI * YjI;
+	const BASE_TYPE tmpijI = XiI * YjR + conj * XiR * YjI;
+	const BASE_TYPE tmpjiR = XjR * YiR - conj * XjI * YiI;
+	const BASE_TYPE tmpjiI = XjR * YiI + conj * XjI * YiR;
+        REAL(Ap, 1, k) += aR*tmpijR - aI*tmpijI + aR*tmpjiR - conj*aI*tmpjiI;
+	IMAG(Ap, 1, k) += aR*tmpijI + aI*tmpijR + aR*tmpjiI + conj*aI*tmpjiR;
 	k++;
       }
     }

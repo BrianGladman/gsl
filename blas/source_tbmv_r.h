@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   int nounit = ( Diag == CblasNonUnit );
   size_t i;
@@ -26,16 +30,16 @@
     }
     else {
       size_t ix = (N-1)*incX;
-      for(i=N-1; i+1>=1; i--) {
+      for(i=0; i<N; i++) {
         BASE_TYPE temp = 0.0;
-	const size_t j_min = ( K>i ? 0 : i-K );
+	const size_t j_min = ( K>N-1-i ? 0 : N-1-i-K );
 	size_t jx = j_min * incX;
-        for(j=j_min; j<i; j++) {
-	  temp += X[jx] * A[lda * i + j];
+        for(j=j_min; j<N-1-i; j++) {
+	  temp += X[jx] * A[lda * (N-1-i) + j];
 	  jx += incX;
 	}
 	if(nounit) {
-	  X[ix] = temp + X[ix] * A[lda * i + i];
+	  X[ix] = temp + X[ix] * A[lda * (N-1-i) + N-1-i];
 	}
 	else {
 	  X[ix] += temp;
@@ -49,16 +53,16 @@
 
     if(Uplo == CblasUpper) {
       size_t ix = (N-1)*incX;
-      for(i=N-1; i+1>=1; i--) {
+      for(i=0; i<N; i++) {
         BASE_TYPE temp = 0.0;
-	const size_t j_min = ( K>i ? 0 : i-K );
+	const size_t j_min = ( K>N-1-i ? 0 : N-1-i-K );
 	size_t jx = j_min * incX;
-        for(j=j_min; j<i; j++) {
-          temp += X[jx] * A[lda * j + i];
+        for(j=j_min; j<N-1-i; j++) {
+          temp += X[jx] * A[lda * j + N-1-i];
           jx += incX;
         }
 	if(nounit) {
-          X[ix] = temp + X[ix] * A[lda * i + i];
+          X[ix] = temp + X[ix] * A[lda * (N-1-i) + (N-1-i)];
         }
 	else {
           X[ix] += temp;

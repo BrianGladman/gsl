@@ -1,10 +1,14 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   BASE_TYPE scale = 0.0;
   BASE_TYPE ssq   = 1.0;
   size_t n;
   for(n=0; n<N; n++) {
-    BASE_TYPE axi = fabs(REAL(X,incX,n));
-    BASE_TYPE ayi = fabs(IMAG(X,incX,n));
+    const BASE_TYPE axi = fabs(REAL(X,incX,n));
+    const BASE_TYPE ayi = fabs(IMAG(X,incX,n));
     if(scale < axi) {
       ssq   = 1.0 + ssq*(scale/axi)*(scale/axi);
       scale = axi;

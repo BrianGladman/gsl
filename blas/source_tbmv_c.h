@@ -1,3 +1,7 @@
+/*
+ * Author:  G. Jungman
+ * RCS:     $Id$
+ */
 
   int nounit = ( Diag == CblasNonUnit );
   size_t i;
