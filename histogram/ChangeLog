@@ -1,3 +1,8 @@
+Mon Apr 16 20:13:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* get2d.c (gsl_histogram2d_get): removed unnecessary reference to
+ 	find2d
+
 Mon Jan 22 13:55:13 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* find.c (find): optimize for the linear case, include own binary
