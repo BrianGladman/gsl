@@ -210,3 +210,36 @@ specfunc/legendre_poly.c.  They are tested and part of the public API
 so they should be documented.
 
 ----------------------------------------------------------------------
+BUG#30 - incorrect result from gsl_sf_elljac_e
+
+The function gsl_sf_elljac_e returns an incorrect result in the first
+case below, due propagated inaccuracies from cancellation error.  The
+correct result should be dn(3K)=sqrt(2) but the returned result is
+1.0.
+
+#include <stdio.h>
+#include <math.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_sf_elljac.h>
+#include <gsl/gsl_sf_ellint.h>
+     
+int main (void)
+{
+  double m = 0.5;
+  double phi = M_PI_2;
+  double sn;
+  double cn;
+  double dn1,dn2;
+  double K;
+  int ignore;
+  
+  K = gsl_sf_ellint_F(M_PI_2,sqrt(m), GSL_PREC_DOUBLE);
+  ignore = gsl_sf_elljac_e(3*K, m, &sn, &cn, &dn1);
+  ignore = gsl_sf_elljac_e(3*K+0.00000001, m, &sn, &cn, &dn2);
+  
+  printf("%.18e\n", dn1);
+  printf("%.18e\n", dn2);
+  return 0;
+}
+
+----------------------------------------------------------------------
