@@ -92,7 +92,7 @@ main(int argc, char ** argv)
     printf("  cos(x) [-3, 0] ... ");
     gsl_test_root_bisection(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
                             &num_failed); 
-    printf("  x^{20} - 1 [0.1, 2] ... ");
+    printf("  x^20 - 1 [0.1, 2] ... ");
     gsl_test_root_bisection(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
                             &num_failed); 
     printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
@@ -104,7 +104,7 @@ main(int argc, char ** argv)
     printf("  x exp(-x) [-1/3, 2] ... ");
     gsl_test_root_bisection(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
                             &num_passed, &num_failed);
-    printf("  (x - 1)^{19} [pi/10, 2] ... ");
+    printf("  (x - 1)^7 [pi/10, 2] ... ");
     gsl_test_root_bisection(gsl_test_root_hairy_6, M_PI/10.0, 2.0, 1.0,
                             &num_passed, &num_failed);
   }
@@ -135,7 +135,7 @@ main(int argc, char ** argv)
     printf("  x exp(-x) [-1/3, 2] ... ");
     gsl_test_root_falsepos(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
                            &num_passed, &num_failed);
-    printf("  (x - 1)^{19} [pi/10, 2] ... ");
+    printf("  (x - 1)^7 [pi/10, 2] ... ");
     gsl_test_root_falsepos(gsl_test_root_hairy_6, M_PI/10.0, 2.0, 1.0,
                            &num_passed, &num_failed);
   }
@@ -156,10 +156,10 @@ main(int argc, char ** argv)
     printf("  cos(x) {-2.5, -3.0} ... ");
     gsl_test_root_secant(cos, -2.5, -3.0, -M_PI/2.0, &num_passed, &num_failed,
                          SUCC);
-    printf("  x^{20} - 1 {0.9, 0.91} ... ");
+    printf("  x^20 - 1 {0.9, 0.91} ... ");
     gsl_test_root_secant(gsl_test_root_hairy_1, 0.9, 0.91, 1.0, &num_passed,
                          &num_failed, SUCC); 
-    printf("  x^{20} - 1 {1.1, 1.11} ... ");
+    printf("  x^20 - 1 {1.1, 1.11} ... ");
     gsl_test_root_secant(gsl_test_root_hairy_1, 1.1, 1.11, 1.0, &num_passed,
                          &num_failed, SUCC); 
     printf("  sqrt(abs(x)) * sgn(x) {1, 1.01} ... ");
@@ -174,7 +174,7 @@ main(int argc, char ** argv)
     printf("  1 / (1 + exp(-x)) {0, 0.01} ... ");
     gsl_test_root_secant(gsl_test_root_hairy_5, 0.0, 0.01, 0.0, &num_passed,
                          &num_failed, FAIL);
-    printf("  (x - 1)^{19} {0, 0.01} ... ");
+    printf("  (x - 1)^7 {0, 0.01} ... ");
     gsl_test_root_secant(gsl_test_root_hairy_6, 0.0, 0.01, 1.0, &num_passed,
                          &num_failed, SUCC);
   }
@@ -182,7 +182,42 @@ main(int argc, char ** argv)
   /* Test Newton's Method if so instructed. */
   if (strchr(argv[1], 'n')) {
     printf("Testing `gsl_root_newton':\n");
-    printf("  (not implemented yet)\n");
+    printf("  sin(x) {3.4} ... ");
+    gsl_test_root_newton(sin_fdf, 3.4, M_PI, &num_passed, &num_failed, SUCC); 
+    printf("  sin(x) {-3.3} ... ");
+    gsl_test_root_newton(sin_fdf, -3.3, -M_PI, &num_passed, &num_failed, SUCC);
+    printf("  sin(x) {0.5} ... ");
+    gsl_test_root_newton(sin_fdf, 0.5, 0.0, &num_passed, &num_failed, SUCC); 
+    printf("  cos(x) {0.6} ... ");
+    gsl_test_root_newton(cos_fdf, 0.6, M_PI/2.0, &num_passed, &num_failed,
+                         SUCC); 
+    printf("  cos(x) {-2.5} ... ");
+    gsl_test_root_newton(cos_fdf, -2.5, -M_PI/2.0, &num_passed, &num_failed,
+                         SUCC);
+    printf("  x^{20} - 1 {0.9} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_1_fdf, 0.9, 1.0, &num_passed,
+                         &num_failed, SUCC); 
+    printf("  x^{20} - 1 {1.1} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_1_fdf, 1.1, 1.0, &num_passed,
+                         &num_failed, SUCC); 
+    printf("  sqrt(abs(x)) * sgn(x) {1.001} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_2_fdf, 1.001, 0.0, &num_passed,
+                         &num_failed, SUCC);
+    printf("  x^2 - 1e-8 {1} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_3_fdf, 1.0, sqrt(1e-8),
+                         &num_passed, &num_failed, SUCC);
+    printf("  x exp(-x) {2} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_4_fdf, 2.0, 0.0, &num_passed,
+                         &num_failed, FAIL);
+    printf("  x exp(-x) {-2} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_4_fdf, -2.0, 0.0, &num_passed,
+                         &num_failed, SUCC);
+    printf("  1 / (1 + exp(-x)) {0} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_5_fdf, 0.0, 0.0, &num_passed,
+                         &num_failed, FAIL);
+    printf("  (x - 1)^7 {0} ... ");
+    gsl_test_root_newton(gsl_test_root_hairy_6_fdf, 0.0, 1.0, &num_passed,
+                         &num_failed, SUCC);
   }
 
   /* now summarize the results */
@@ -390,7 +425,54 @@ gsl_test_root_secant(double (* f)(double), double guess1, double guess2,
   }
 }
 
+/* Using gsl_root_newton, find the root of the function pointed to by fdf,
+   with guess guess. Check if f succeeded and that it was accurate enough. */
+void
+gsl_test_root_newton(void (* fdf)(double *, double *, double, int, int),
+                     double guess, double cor_root, int * num_passed,
+                     int * num_failed, int failure_desired)
+{
+  int err;
+  double root;
+  
+  err = gsl_root_newton(&root, fdf, &guess, TEST_REL_EPSILON, TEST_ABS_EPSILON,
+                        TEST_MAX_ITERATIONS, TEST_MAX_STEP_SIZE);
+  /* Were we supposed to fail? */
+  if (failure_desired) {
+    /* Did it not fail? */
+    if (err == GSL_SUCCESS) {
+      printf("failed (succeeded)\n");
+      (void)(*num_failed)++;
+    }
+    /* It failed. */
+    else {
+      printf("ok (error %d)\n", gsl_errno);
+      (void)(*num_passed)++;
+    }
+  }
+  /* We were supposed to succeed. */
+  else {
+    /* Was there was an error? */
+    if (err != GSL_SUCCESS) {
+      printf("failed (error %d, %s)\n", gsl_errno, g_reason);
+      (void)(*num_failed)++;
+    }
+    /* Was it not accurate enough? */
+    else if (!_WITHIN_TOL(root, cor_root, TEST_REL_EPSILON,
+                          TEST_ABS_EPSILON)) {
+      printf("failed (inaccurate)\n");
+      (void)(*num_failed)++;
+    }
+    /* The test passed. */
+    else {
+      printf("ok\n");
+      (void)(*num_passed)++;
+    }
+  }
+}
+
 /* f(x) = x^{20} - 1 */
+/* f'(x) = 20x^{19} */
 /* zero at x = 1 or -1 */
 double
 gsl_test_root_hairy_1(double x)
@@ -398,8 +480,17 @@ gsl_test_root_hairy_1(double x)
   return pow(x, 20.0) - 1;
 }
 
+void
+gsl_test_root_hairy_1_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_1(x);
+  *yprime = 20.0 * pow(x, 19.0);
+}
+
 /* f(x) = sqrt(abs(x))*sgn(x) */
-/* zero at ?? */
+/* f'(x) = 1 / sqrt(abs(x) */
+/* zero at x = 0 */
 double
 gsl_test_root_hairy_2(double x)
 {
@@ -415,7 +506,17 @@ gsl_test_root_hairy_2(double x)
   return sqrt(fabs(x))*delta;
 }
 
+void
+gsl_test_root_hairy_2_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_2(x);
+  *yprime = 1 / sqrt(fabs(x));
+}
+
+
 /* f(x) = x^2 - 1e-8 */
+/* f'(x) = 2x */
 /* zero at x = sqrt(1e-8) or -sqrt(1e-8) */
 double
 gsl_test_root_hairy_3(double x)
@@ -423,7 +524,16 @@ gsl_test_root_hairy_3(double x)
   return pow(x, 2.0) - 1e-8;
 }
 
+void
+gsl_test_root_hairy_3_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_3(x);
+  *yprime = 2 * x;
+}
+
 /* f(x) = x exp(-x) */
+/* f'(x) = exp(-x) - x exp(-x) */
 /* zero at x = 0 */
 double
 gsl_test_root_hairy_4(double x)
@@ -431,7 +541,16 @@ gsl_test_root_hairy_4(double x)
   return x * exp(-x);
 }
 
+void
+gsl_test_root_hairy_4_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_4(x);
+  *yprime = exp(-x) - x * exp(-x);
+}
+
 /* f(x) = 1/(1+exp(x)) */
+/* f'(x) = -exp(x) / (1 + exp(x))^2 */
 /* no roots! */
 double
 gsl_test_root_hairy_5(double x)
@@ -439,10 +558,46 @@ gsl_test_root_hairy_5(double x)
   return 1 / (1 + exp(x));
 }
 
-/* f(x) = (x - 1)^19 */
+void
+gsl_test_root_hairy_5_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_5(x);
+  *yprime = -exp(x) / pow(1 + exp(x), 2.0);
+}
+
+/* f(x) = (x - 1)^7 */
+/* f'(x) = 7 * (x - 1)^6 */
 /* zero at x = 1 */
 double
 gsl_test_root_hairy_6(double x)
 {
-  return pow(x - 1, 19.0);
+  return pow(x - 1, 7.0);
 }
+
+void
+gsl_test_root_hairy_6_fdf(double * y, double * yprime, double x, int y_wanted,
+                          int yprime_wanted)
+{
+  *y = gsl_test_root_hairy_6(x);
+  *yprime = 7.0 * pow(x - 1, 6.0);
+}
+
+/* sin(x) packaged up nicely. */
+void
+sin_fdf(double * y, double * yprime, double x, int y_wanted,
+        int yprime_wanted)
+{
+  *y = sin(x);
+  *yprime = cos(x);
+}
+
+/* cos(x) packaged up nicely. */
+void
+cos_fdf(double * y, double * yprime, double x, int y_wanted,
+        int yprime_wanted)
+{
+  *y = cos(x);
+  *yprime = -sin(x);
+}
+

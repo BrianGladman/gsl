@@ -30,7 +30,7 @@ gsl_root_secant(double * root, double (* f)(double), double * guess1,
     int status;
     
     /* Validate arguments. */
-    if (_gsl_root_validate_sm_args(root, f, guess1, guess2, rel_epsilon,
+    if (_gsl_root_validate_sn_args(root, f, guess1, guess2, rel_epsilon,
                                    abs_epsilon, max_iterations, max_step_size))
       return GSL_FAILURE; /* GSL_ERROR was already called. */
     

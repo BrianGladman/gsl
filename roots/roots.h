@@ -7,6 +7,9 @@
 
 /* Constant Macros */
 
+/* Constant to pass to _BARF_FDFPCALL. */
+#define WANTED     1
+
 /* Something to indicate clearly that we want to ignore maximum delta-y
    restrictions. */
 #define _IGNORE_DELTAY -1.0
@@ -20,7 +23,19 @@
 do { \
   y = (*f)(x); \
   if (!GSL_ISREAL(y)) \
-    GSL_ERROR("function under search not continous", GSL_EBADFUNC); \
+    GSL_ERROR("function not continuous", GSL_EBADFUNC); \
+} while (0)
+
+/* Call the pointed-to function, put results etc. in the right place, and barf
+   if something went wrong. y and yprime should be pointers to double; x is a
+   double; y_wanted or yprime_wanted are integers of some kind. */
+#define _BARF_FDFPCALL(fdf, y, yprime, x, y_wanted, yprime_wanted) \
+do { \
+  (*fdf)(y, yprime, x, y_wanted, yprime_wanted); \
+  if ((y_wanted) && !GSL_ISREAL(*(y))) \
+    GSL_ERROR("function not continuous", GSL_EBADFUNC); \
+  if ((yprime_wanted) && !GSL_ISREAL(*(yprime))) \
+    GSL_ERROR("function not differentiable", GSL_EBADFUNC); \
 } while (0)
 
 /* Return the minumum absolute value of its two arguments. */
@@ -82,7 +97,7 @@ _gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
                             double max_deltay);
 
 int
-_gsl_root_validate_sm_args(void * root, void * f, double * where1,
+_gsl_root_validate_sn_args(void * root, void * f, double * where1,
                            double * where2, double rel_epsilon,
                            double abs_epsilon, unsigned int max_iterations,
                            double max_step_size);

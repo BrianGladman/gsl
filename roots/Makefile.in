@@ -72,7 +72,7 @@ noinst_HEADERS = roots.h
 
 INCLUDES = -I$(srcdir)/../err
 
-TESTS = test-macros test-bisection test-falsepos test-secant
+TESTS = test-macros test-bisection test-falsepos test-secant test-newton
 
 test_LDADD = libroots.a ../err/liberr.a
 
@@ -80,7 +80,7 @@ test_DEPENDENCIES = libroots.a
 
 test_SOURCES = test.c test.h
 
-libroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c
+libroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c newton.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -92,7 +92,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libroots_a_LIBADD = 
-libroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o
+libroots_a_OBJECTS =  utility.o bisection.o falsepos.o secant.o newton.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -110,8 +110,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/secant.P \
-.deps/test.P .deps/utility.P
+DEP_FILES =  .deps/bisection.P .deps/falsepos.P .deps/newton.P \
+.deps/secant.P .deps/test.P .deps/utility.P
 SOURCES = $(libroots_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libroots_a_OBJECTS) $(test_OBJECTS)
 

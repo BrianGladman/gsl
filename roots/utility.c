@@ -46,7 +46,7 @@ _gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
    GSL_SUCCESS if all arguments are okay, complain appropriately (i.e. call
    GSL_ERROR and return GSL_FAILURE) otherwise. */
 int
-_gsl_root_validate_sm_args(void * root, void * f, double * guess1,
+_gsl_root_validate_sn_args(void * root, void * f, double * guess1,
                            double * guess2, double rel_epsilon,
                            double abs_epsilon, unsigned int max_iterations,
                            double max_step_size)
