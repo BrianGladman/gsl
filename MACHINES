@@ -119,5 +119,37 @@ versions of GCC.  GSL now includes an autoconf test which detects the
 problem.
 
 
+Solaris
+-------
 
+The Solaris C compiler (cc) has problems compiling the vector and
+matrix code, giving the error message
 
+  "./reim_source.c", line 35: left operand must be modifiable lvalue: op "="
+
+correspoding to a line containing a return statement.  This seems to
+be due to a misinterpretation of the C90 standard, Section 6.6.6.4,
+
+    If a return statement with an expression is executed the value of
+    the expression is returned to the caller as the value of the
+    function call expression.  If the expression has a type different
+    from that of the function in which it appears, it is converted as
+    if it were assigned to an object of that type.
+
+It looks like they are applying the second rule, since the '=' sign in
+the error message indicates assignment.  This results in an error,
+since the return type is a struct containing a const element.
+However, the expression type is the same as the function type, so this
+rule should not be applied here.
+
+The same code works with Tru64 Unix, IRIX, HP-UX, AIX and Microsoft
+compilers, and with gcc -ansi.
+
+I am going to assume this is a bug in the Solaris compiler.
+
+There is no simple way to work around this problem, as it involves an
+inherent part of the design of the vector/matrix library.
+
+I am not an expert by any means on the C standard or Solaris Compilers
+so any further information or tips would be useful, please send them
+to gsl-discuss@sources.redhat.com.
