@@ -91,7 +91,7 @@ is a global minimum of the function in question.
 This function returns a pointer to a a newly allocated instance of a
 minimizer of type @var{T} for the function @var{fdf}.  For example,
 the following code creates an instance of a steepest descent
-minimizer using a brent minimizer for the line search.
+minimizer using a Brent minimizer for the line search.
 
 @example
 s = gsl_multimin_fdf_minimizer_alloc(
@@ -224,14 +224,15 @@ differ by more than some minimum distance.
 @node Multimin Algorithms
 @section Algorithms
 
-There are several minimization algorithms available in the multimin
+There are several minimization methods available in the multimin
 package.  Each of the algorithms relies on knowing the value of the
-function and its gradient at each evaluation point, but the choice of
-which algorithm is the best to use depends on the exact details of the
-problem at hand.  It is possible, likely even, that the best approach
-would be to start out with one algorithm and switch to another as the
-estimate of the minimum narrows in toward the true minimum.
+function and its gradient at each evaluation point. The choice of which
+algorithm is the best to use depends on the details of the problem.  It
+is sometimes the case that the best approach is to start out with one
+algorithm and switch to another when the estimate of the minimum
+approaches the true minimum.
 
+@deffn {Minimization Method} gsl_multimin_fdf_minimizer_steepest_descent
 The steepest descent method is the most straightforward of the
 available algorithms.  When a point is examined during the hunt for
 the minimum, the gradient is calculated at that point and the next
@@ -242,14 +243,22 @@ the direction of the old gradient, the new direction of steepest
 descent will be orthogonal to the old direction.  While this method is
 robust and does not depend in detail on the shape of the function in
 the neighborhood of the minimum, it can sometimes be slow to converge.
+@end deffn
 
-The next two methods that are available are both conjugate gradient
-methods.  The conjugate gradient method uses information from previous
-iterations to build up a more complete picture of the curvature of the
-function in the neighborhood of the minimum.  During each iteration,
-the gradient at the current evaluation point and a scaled gradient
-from the previous iteration are combined to produce the new search
-direction. 
+The remaining methods use the conjugate gradient algorithm.  The
+conjugate gradient algorithm uses information from previous iterations
+to build up a more complete picture of the curvature of the function in
+the neighborhood of the minimum.  During each iteration, the gradient at
+the current evaluation point and a scaled gradient from the previous
+iteration are combined to produce the new search direction.
+
+@deffn {Minimization Method} gsl_multimin_fdf_minimizer_conjugate_pr
+The Polak-Ribiere conjugate gradient algorithm.
+@end deffn
+
+@deffn {Minimization Method} gsl_multimin_fdf_minimizer_conjugate_fr
+The Fletcher-Reeves conjugate gradient algorithm.
+@end deffn
 
 The Polak-Ribiere method and the Fletcher-Reeves method differ in the
 way in which they calculate the scaling coefficient.  Both work well
@@ -258,6 +267,11 @@ objective function that it is well approximated by a quadratic
 hypersurface.  Some references suggest starting out with the steepest
 descent algorithm and switching to one of the conjugate gradient
 methods as the estimate of the minimum improves.
+
+@deffn {Minimization Method} gsl_multimin_fdf_minimizer_vector_bfgs
+The Broyden-Fletcher-Goldfarb-Shanno conjugate gradient method.
+@end deffn
+
 
 @node Multimin Examples
 @section Examples

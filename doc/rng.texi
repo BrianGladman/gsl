@@ -1,13 +1,13 @@
 @cindex random number generators
 
-The @value{GSL} provides a large collection of random number generators
-which can be accessed through a uniform interface.  Environment variables
-allow you to select different generators and seeds at runtime, so that
-you can easily switch between generators without needing to recompile
-your program.  Each instance of a generator keeps track of its own state,
-allowing the generators to be used in multi-threaded programs.
-Additional functions are available for transforming uniform random
-numbers into samples from continuous or discrete probability
+The library provides a large collection of random number generators
+which can be accessed through a uniform interface.  Environment
+variables allow you to select different generators and seeds at runtime,
+so that you can easily switch between generators without needing to
+recompile your program.  Each instance of a generator keeps track of its
+own state, allowing the generators to be used in multi-threaded
+programs.  Additional functions are available for transforming uniform
+random numbers into samples from continuous or discrete probability
 distributions such as the Gaussian, log-normal or Poisson distributions.
 
 These functions are declared in the header file @file{gsl_rng.h}.

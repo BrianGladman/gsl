@@ -98,12 +98,12 @@ estimate the matrix @math{J} or @c{$J^{-1}$}
 @deftypefun {gsl_multiroot_fsolver *} gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * @var{T}, size_t @var{n})
 This function returns a pointer to a a newly allocated instance of a
 solver of type @var{T} for a system of @var{n} dimensions.
-For example, the following code creates an instance of a Brent solver, 
+For example, the following code creates an instance of a Newton solver, 
 to solve a 3-dimensional system of equations.
 
 @example
 const gsl_multiroot_fsolver_type * T 
-    = gsl_multiroot_fsolver_brent;
+    = gsl_multiroot_fsolver_newton;
 
 gsl_multiroot_fsolver * s 
     = gsl_multiroot_fsolver_alloc (T, 3);

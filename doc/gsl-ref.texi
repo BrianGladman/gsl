@@ -616,7 +616,9 @@ fi
 
 @comment htmlhelp: @bye
 
+@iftex
 @normalbottom
+@end iftex
 
 @node Concept Index, Function Index, GNU Free Documentation License, Top
 @unnumbered Concept Index
