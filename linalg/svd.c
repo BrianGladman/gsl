@@ -56,108 +56,134 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
   const size_t N = A->size2;
   const size_t K = GSL_MIN (M, N);
 
-  gsl_vector f = gsl_vector_subvector (work, 0, K - 1);
-
-  /* bidiagonalize matrix A, unpack A into U V S */
-
-  gsl_linalg_bidiag_decomp (A, S, &f);
-  gsl_linalg_bidiag_unpack2 (A, S, &f, V);
-
-  /* apply reduction steps to B=(S,Sd) */
-
-  chop_small_elements (S, &f);
-
-  /* Progressively reduce the matrix until it is diagonal */
-
-  b = N - 1;
-
-  while (b > 0)
+  if (M < N)
     {
-      if (gsl_vector_get (&f, b - 1) == 0.0)
-	{
-	  b--;
-	  continue;
-	}
-
-      /* Find the largest unreduced block (a,b) starting from b
-         and working backwards */
-
-      a = b - 1;
-
-      while (a > 0)
-	{
-	  if (gsl_vector_get (&f, a - 1) == 0.0)
-	    {
-	      break;
-	    }
-
-	  a--;
-	}
-
-      {
-	const size_t n_block = b - a + 1;
-	gsl_vector S_block = gsl_vector_subvector (S, a, n_block);
-	gsl_vector f_block = gsl_vector_subvector (&f, a, n_block - 1);
-
-	gsl_matrix U_block =
-	  gsl_matrix_submatrix (A, 0, a, A->size1, n_block);
-	gsl_matrix V_block =
-	  gsl_matrix_submatrix (V, 0, a, V->size1, n_block);
-
-	qrstep (&S_block, &f_block, &U_block, &V_block);
-
-	/* remove any small off-diagonal elements */
-
-	chop_small_elements (&S_block, &f_block);
-      }
+      GSL_ERROR ("svd of MxN matrix, M<N, is not implemented", GSL_EUNIMPL);
+    }
+  else if (V->size1 != N)
+    {
+      GSL_ERROR ("square matrix V must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
+  else if (V->size1 != V->size2)
+    {
+      GSL_ERROR ("matrix V must be square", GSL_ENOTSQR);
+    }
+  else if (S->size != N)
+    {
+      GSL_ERROR ("length of vector S must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
+  else if (work->size != N)
+    {
+      GSL_ERROR ("length of workspace must match second dimension of matrix A",
+		 GSL_EBADLEN);
     }
 
+  
+  {
+    gsl_vector f = gsl_vector_subvector (work, 0, K - 1);
+    
+    /* bidiagonalize matrix A, unpack A into U V S */
+    
+    gsl_linalg_bidiag_decomp (A, S, &f);
+    gsl_linalg_bidiag_unpack2 (A, S, &f, V);
+    
+    /* apply reduction steps to B=(S,Sd) */
+    
+    chop_small_elements (S, &f);
+    
+    /* Progressively reduce the matrix until it is diagonal */
+    
+    b = N - 1;
+    
+    while (b > 0)
+      {
+        if (gsl_vector_get (&f, b - 1) == 0.0)
+          {
+            b--;
+            continue;
+          }
+        
+        /* Find the largest unreduced block (a,b) starting from b
+           and working backwards */
+        
+        a = b - 1;
+        
+        while (a > 0)
+          {
+            if (gsl_vector_get (&f, a - 1) == 0.0)
+              {
+                break;
+              }
+            
+            a--;
+          }
+        
+        {
+          const size_t n_block = b - a + 1;
+          gsl_vector S_block = gsl_vector_subvector (S, a, n_block);
+          gsl_vector f_block = gsl_vector_subvector (&f, a, n_block - 1);
+          
+          gsl_matrix U_block =
+            gsl_matrix_submatrix (A, 0, a, A->size1, n_block);
+          gsl_matrix V_block =
+            gsl_matrix_submatrix (V, 0, a, V->size1, n_block);
+          
+          qrstep (&S_block, &f_block, &U_block, &V_block);
+          
+          /* remove any small off-diagonal elements */
+          
+          chop_small_elements (&S_block, &f_block);
+        }
+      }
+  }
   /* Make singular values positive by reflections if necessary */
-
+  
   for (j = 0; j < K; j++)
     {
       double Sj = gsl_vector_get (S, j);
-
+      
       if (Sj < 0.0)
-	{
-	  for (i = 0; i < N; i++)
-	    {
-	      double Vij = gsl_matrix_get (V, i, j);
-	      gsl_matrix_set (V, i, j, -Vij);
-	    }
-
-	  gsl_vector_set (S, j, -Sj);
-	}
+        {
+          for (i = 0; i < N; i++)
+            {
+              double Vij = gsl_matrix_get (V, i, j);
+              gsl_matrix_set (V, i, j, -Vij);
+            }
+          
+          gsl_vector_set (S, j, -Sj);
+        }
     }
-
+  
   /* Sort singular values into decreasing order */
-
+  
   for (i = 0; i < K; i++)
     {
       double Si = gsl_vector_get (S, i);
       size_t i_max = i;
-
+      
       for (j = i + 1; j < K; j++)
-	{
-	  double Sj = gsl_vector_get (S, j);
-
-	  if (Sj > Si)
-	    {
+        {
+          double Sj = gsl_vector_get (S, j);
+          
+          if (Sj > Si)
+            {
 	      i_max = j;
 	    }
 	}
-
+      
       if (i_max != i)
 	{
 	  /* swap eigenvalues */
 	  gsl_vector_swap_elements (S, i, i_max);
-
+          
 	  /* swap eigenvectors */
 	  gsl_matrix_swap_columns (A, i, i_max);
 	  gsl_matrix_swap_columns (V, i, i_max);
 	}
     }
-
+  
   return GSL_SUCCESS;
 }
 
@@ -173,6 +199,39 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
 
   const size_t M = A->size1;
   const size_t N = A->size2;
+
+  if (M < N)
+    {
+      GSL_ERROR ("svd of MxN matrix, M<N, is not implemented", GSL_EUNIMPL);
+    }
+  else if (V->size1 != N)
+    {
+      GSL_ERROR ("square matrix V must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
+  else if (V->size1 != V->size2)
+    {
+      GSL_ERROR ("matrix V must be square", GSL_ENOTSQR);
+    }
+  else if (X->size1 != N)
+    {
+      GSL_ERROR ("square matrix X must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
+  else if (X->size1 != X->size2)
+    {
+      GSL_ERROR ("matrix X must be square", GSL_ENOTSQR);
+    }
+  else if (S->size != N)
+    {
+      GSL_ERROR ("length of vector S must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
+  else if (work->size != N)
+    {
+      GSL_ERROR ("length of workspace must match second dimension of matrix A",
+		 GSL_EBADLEN);
+    }
 
   /* Convert A into an upper triangular matrix R */
 
