@@ -6,12 +6,11 @@
 
 #include <config.h>
 #include <stdio.h>              /* defines NULL */
-#include <string.h>             /* for strdup() */
 #include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
 #include "gsl_ran_switch.h"
 
 typedef struct {
-    char *name;
+    const char *name;
     unsigned long (*random_wstate)(void *);
     double (*uniform_wstate)(void *);
     double (*max)();
@@ -34,7 +33,7 @@ gsl_ran_newAlgorithm()
     gsl_ran_use_default();
 }
 
-char *gsl_ran_name() {
+const char * gsl_ran_name() {
     if (A==NULL) gsl_ran_newAlgorithm();
     return A->name;
 }
@@ -93,7 +92,7 @@ void gsl_ran_use_default() {
 void gsl_ran_use_XXX() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("XXX");
+    A->name = "XXX";
     A->random_wstate = gsl_ran_XXX_random_wstate;
     A->uniform_wstate = gsl_ran_XXX_uniform_wstate;
     A->max = gsl_ran_XXX_max;

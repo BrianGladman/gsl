@@ -1,15 +1,16 @@
+/* $Id$ */
 /* Switch between various algorithms at run-time, using the function
    gsl_ran_use_xxx() to start using xxx.  The function gsl_ran_name()
    returns the name of the algorithm currently in use.
    */
 
+#include <config.h>
 #include <stdio.h>              /* defines NULL */
-#include <string.h>             /* for strdup() */
 #include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
 #include "gsl_ran_switch.h"
 
 typedef struct {
-    char *name;
+    const char *name;
     unsigned long (*random_wstate)(void *);
     double (*uniform_wstate)(void *);
     double (*max)();
@@ -32,7 +33,7 @@ gsl_ran_newAlgorithm()
     gsl_ran_use_default();
 }
 
-char *gsl_ran_name() {
+const char * gsl_ran_name() {
     if (A==NULL) gsl_ran_newAlgorithm();
     return A->name;
 }
@@ -91,7 +92,7 @@ void gsl_ran_use_default() {
 void gsl_ran_use_taus() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("taus");
+    A->name = "taus";
     A->random_wstate = gsl_ran_taus_random_wstate;
     A->uniform_wstate = gsl_ran_taus_uniform_wstate;
     A->max = gsl_ran_taus_max;
@@ -106,7 +107,7 @@ void gsl_ran_use_taus() {
 void gsl_ran_use_mrg() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("mrg");
+    A->name = "mrg";
     A->random_wstate = gsl_ran_mrg_random_wstate;
     A->uniform_wstate = gsl_ran_mrg_uniform_wstate;
     A->max = gsl_ran_mrg_max;
@@ -121,7 +122,7 @@ void gsl_ran_use_mrg() {
 void gsl_ran_use_cmrg() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("cmrg");
+    A->name = "cmrg";
     A->random_wstate = gsl_ran_cmrg_random_wstate;
     A->uniform_wstate = gsl_ran_cmrg_uniform_wstate;
     A->max = gsl_ran_cmrg_max;
@@ -136,7 +137,7 @@ void gsl_ran_use_cmrg() {
 void gsl_ran_use_uni() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("uni");
+    A->name = "uni";
     A->random_wstate = gsl_ran_uni_random_wstate;
     A->uniform_wstate = gsl_ran_uni_uniform_wstate;
     A->max = gsl_ran_uni_max;
@@ -151,7 +152,7 @@ void gsl_ran_use_uni() {
 void gsl_ran_use_uni32() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("uni32");
+    A->name = "uni32";
     A->random_wstate = gsl_ran_uni32_random_wstate;
     A->uniform_wstate = gsl_ran_uni32_uniform_wstate;
     A->max = gsl_ran_uni32_max;
@@ -166,7 +167,7 @@ void gsl_ran_use_uni32() {
 void gsl_ran_use_zuf() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("zuf");
+    A->name = "zuf";
     A->random_wstate = gsl_ran_zuf_random_wstate;
     A->uniform_wstate = gsl_ran_zuf_uniform_wstate;
     A->max = gsl_ran_zuf_max;
@@ -181,7 +182,7 @@ void gsl_ran_use_zuf() {
 void gsl_ran_use_rand() {
     if (A==NULL) gsl_ran_newAlgorithm();
 
-    A->name = strdup("rand");
+    A->name = "rand";
     A->random_wstate = gsl_ran_rand_random_wstate;
     A->uniform_wstate = gsl_ran_rand_uniform_wstate;
     A->max = gsl_ran_rand_max;
