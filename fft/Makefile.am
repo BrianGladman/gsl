@@ -36,31 +36,31 @@ gsl_fft.h \
  \
 complex.c \
 gsl_fft_complex.h \
-complex_init.c \
-complex_pass_2.c \
-complex_pass_3.c \
-complex_pass_4.c \
-complex_pass_5.c \
-complex_pass_6.c \
-complex_pass_7.c \
-complex_pass_n.c \
-complex_radix2.c \
+c_init.c \
+c_pass_2.c \
+c_pass_3.c \
+c_pass_4.c \
+c_pass_5.c \
+c_pass_6.c \
+c_pass_7.c \
+c_pass_n.c \
+c_radix2.c \
  \
 factorize.c \
 factorize.h \
 bitreverse.c \
 bitreverse.h \
  \
-halfcomplex.c \
+hc.c \
 gsl_fft_halfcomplex.h \
-halfcomplex_init.c \
-halfcomplex_pass_2.c \
-halfcomplex_pass_3.c \
-halfcomplex_pass_4.c \
-halfcomplex_pass_5.c \
-halfcomplex_pass_n.c \
-halfcomplex_radix2.c \
-halfcomplex_unpack.c \
+hc_init.c \
+hc_pass_2.c \
+hc_pass_3.c \
+hc_pass_4.c \
+hc_pass_5.c \
+hc_pass_n.c \
+hc_radix2.c \
+hc_unpack.c \
  \
 real.c \
 gsl_fft_real.h \
