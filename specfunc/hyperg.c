@@ -27,6 +27,7 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
   double del = 1.0;
   double abs_del = 1.0;
   double max_abs_del = 1.0;
+  double sum_err = 0.0;
   
   while(abs_del/fabs(sum) > GSL_DBL_EPSILON) {
     double u, abs_u;
@@ -36,10 +37,10 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
       result->err = 0.0;
       return GSL_EDOM;
     }
-    if(an == 0.0 || n > 200.0) {
+    if(an == 0.0 || n > 400.0) {
       result->val  = sum;
-      result->err  = GSL_DBL_EPSILON * fabs(n + max_abs_del);
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(sum);
+      result->err  = sum_err;
+      result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum);
       return GSL_SUCCESS;
     }
 
@@ -52,7 +53,6 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     }
     del *= u;
     sum += del;
-
     if(fabs(sum) > SUM_LARGE) {
       result->val = sum;
       result->err = fabs(sum);
@@ -60,7 +60,8 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     }
 
     abs_del = fabs(del);
-    max_abs_del = GSL_MAX(abs_del, max_abs_del);
+    max_abs_del = GSL_MAX_DBL(abs_del, max_abs_del);
+    sum_err += 2.0*GSL_DBL_EPSILON*abs_del;
 
     an += 1.0;
     bn += 1.0;
@@ -68,8 +69,8 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
   }
 
   result->val  = sum;
-  result->err  = GSL_DBL_EPSILON * fabs(n + max_abs_del);
-  result->err += 2.0 * GSL_DBL_EPSILON * fabs(sum);
+  result->err  = sum_err;
+  result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum);
 
   return GSL_SUCCESS;
 }

@@ -684,8 +684,8 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, gsl_sf_r
       }
       result->val  = Mb;
       result->err  = (fabs(r_Mbp1.err/r_Mbp1.val) + fabs(r_Mb.err/r_Mb.val)) * fabs(Mb);
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(b_del) * fabs(Mb);
-      return GSL_ERROR_SELECT_2(stat_0, stat_1);;
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b_del)+1.0) * fabs(Mb);
+      return GSL_ERROR_SELECT_2(stat_0, stat_1);
     }
     else {
       return hyperg_1F1_large2bm4a(a, b, x, result);
@@ -1471,15 +1471,23 @@ hyperg_1F1_ab_pos(const double a, const double b,
         double Ma   = M1;
         double Map1;
         double ap;
+	double start_pair = fabs(M0) + fabs(M1);
+	double minim_pair = DBL_MAX;
+	double pair_ratio;
+	double rat_0 = fabs(r_M0.err/r_M0.val);
+	double rat_1 = fabs(r_M1.err/r_M1.val);
         for(ap=b+eps; ap<a-0.1; ap += 1.0) {
           Map1 = ((b-ap)*Mam1 + (2.0*ap-b+x)*Ma)/ap;
 	  Mam1 = Ma;
 	  Ma   = Map1;
+	  minim_pair = GSL_MIN_DBL(fabs(Mam1) + fabs(Ma), minim_pair);
         }
+	pair_ratio = start_pair/minim_pair;
         result->val  = Ma;
-	result->err  = fabs(r_M0.err/r_M0.val) * fabs(Ma);
-	result->err += fabs(r_M1.err/r_M1.val) * fabs(Ma);
+	result->err  = rat_0 * fabs(Ma);
+	result->err += rat_1 * fabs(Ma);
 	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Ma);
+	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Ma);
 	if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
 	  return GSL_ELOSS;
 	else
@@ -1509,14 +1517,22 @@ hyperg_1F1_ab_pos(const double a, const double b,
 
       if(stat_0 == GSL_SUCCESS && stat_1 == GSL_SUCCESS) {
         double n;
+	double start_pair = fabs(Mn) + fabs(Mnm1);
+	double minim_pair = DBL_MAX;
+	double pair_ratio;
+	double rat_0 = fabs(r_Mnm1.err/r_Mnm1.val);
+	double rat_1 = fabs(r_Mn.err/r_Mn.val);
         for(n=eps+1.0; n<a-0.1; n++) {
           Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
           Mnm1 = Mn;
           Mn   = Mnp1;
+	  minim_pair = GSL_MIN_DBL(fabs(Mn) + fabs(Mnm1), minim_pair);
         }
+	pair_ratio = start_pair/minim_pair;
         result->val  = Mn;
-	result->err  = (fabs(r_Mnm1.err/r_Mnm1.val) + fabs(r_Mn.err/r_Mn.val)) * fabs(Mn);
+	result->err  = (rat_0 + rat_1) * fabs(Mn);
 	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a)+1.0) * fabs(Mn);
+	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Mn);
         return GSL_SUCCESS;
       }
       else {
@@ -1547,14 +1563,22 @@ hyperg_1F1_ab_pos(const double a, const double b,
          && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
 	) {
         double n;
+	double start_pair = fabs(Manp1) + fabs(Man);
+	double minim_pair = DBL_MAX;
+	double pair_ratio;
+	double rat_0 = fabs(r_Manp1.err/r_Manp1.val);
+	double rat_1 = fabs(r_Man.err/r_Man.val);
         for(n=a+eps-1.0; n>b+0.1; n -= 1.0) {
           Manm1 = (-n*(1-n-x)*Man - x*(n-a)*Manp1)/(n*(n-1.0));
           Manp1 = Man;
           Man = Manm1;
+	  minim_pair = GSL_MIN_DBL(fabs(Manp1) + fabs(Man), minim_pair);
         }
+	pair_ratio = start_pair/minim_pair;
         result->val  = Man;
-	result->err  = (fabs(r_Manp1.err/r_Manp1.val) + fabs(r_Man.err/r_Man.val)) * fabs(Man);
+	result->err  = (rat_0 + rat_1) * fabs(Man);
 	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-a)+1.0) * fabs(Man);
+	result->err += 2.0 * (rat_0 + rat_1) * pair_ratio*pair_ratio * fabs(Man);
 	return GSL_ERROR_SELECT_2(stat_0, stat_1);
       }
       else {

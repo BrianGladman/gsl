@@ -353,5 +353,5 @@ int test_coulomb(void)
   status += s;
 
 
-  return s;
+  return status;
 }

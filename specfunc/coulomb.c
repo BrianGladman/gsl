@@ -312,8 +312,8 @@ coulomb_FG_series(const double lam, const double eta, const double x,
       double max_abs_dB = GSL_MAX(abs_dB, B_abs_del_prev);
       double abs_A = fabs(A_sum);
       double abs_B = fabs(B_sum);
-      if(   max_abs_dA/(max_abs_dA + abs_A) < 10.0*GSL_DBL_EPSILON
-         && max_abs_dB/(max_abs_dB + abs_B) < 10.0*GSL_DBL_EPSILON
+      if(   max_abs_dA/(max_abs_dA + abs_A) < 4.0*GSL_DBL_EPSILON
+         && max_abs_dB/(max_abs_dB + abs_B) < 4.0*GSL_DBL_EPSILON
          ) break;
     }
     A_abs_del_prev = abs_dA;
@@ -326,16 +326,17 @@ coulomb_FG_series(const double lam, const double eta, const double x,
   }
 
   FA.val = A_sum * ClamA.val * pow_x * x;
-  FA.err = A_sum * ClamA.err * pow_x * x + 2.0*GSL_DBL_EPSILON*fabs(FA.val);
+  FA.err = fabs(A_sum) * ClamA.err * pow_x * x + 2.0*GSL_DBL_EPSILON*fabs(FA.val);
   FB.val = B_sum * ClamB.val / pow_x;
-  FB.err = B_sum * ClamB.err / pow_x + 2.0*GSL_DBL_EPSILON*fabs(FB.val);
+  FB.err = fabs(B_sum) * ClamB.err / pow_x + 2.0*GSL_DBL_EPSILON*fabs(FB.val);
 
   F->val = FA.val;
   F->err = FA.err;
+
   G->val = (FA.val * cos_phi_lam - FB.val)/sin_phi_lam;
   G->err = (FA.err * fabs(cos_phi_lam) + FB.err)/fabs(sin_phi_lam);
 
-  if(m == max_iter)
+  if(m >= max_iter)
     return GSL_EMAXITER;
   else
     return GSL_ERROR_SELECT_2(stat_A, stat_B);
@@ -707,7 +708,7 @@ old_coulomb_CF1(const double lambda,
 static
 int
 coulomb_CF2(const double lambda, const double eta, const double x,
-            double * result_P, double * result_Q
+            double * result_P, double * result_Q, int * count
             )
 {
   int status = GSL_SUCCESS;
@@ -736,7 +737,9 @@ coulomb_CF2(const double lambda, const double eta, const double x,
   double pk =  0.0;
   double P  =  0.0;
   double Q  =  1.0 - eta*x_inv;
-  
+
+  *count = 0;
+ 
   do {
     P += dp;
     Q += dq;
@@ -758,6 +761,7 @@ coulomb_CF2(const double lambda, const double eta, const double x,
       status = GSL_ERUNAWAY;
       break;
     }
+    ++(*count);
   }
   while(fabs(dp)+fabs(dq) > (fabs(P)+fabs(Q))*CF2_acc);
 
@@ -988,13 +992,17 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		              );
 
     F->val  = F_lam_F;
-    F->err  = 2.0 * CF1_count * GSL_DBL_EPSILON * fabs(F->val);
+    F->err  = 8.0 * (CF1_count+1) * GSL_DBL_EPSILON * fabs(F->val);
+
     Fp->val = Fp_lam_F;
-    Fp->err = 2.0 * CF1_count * GSL_DBL_EPSILON * fabs(Fp->val);
+    Fp->err = 8.0 * (CF1_count+1) * GSL_DBL_EPSILON * fabs(Fp->val);
+
     G->val  = G_lam_G;
-    G->err  = 2.0 * CF1_count * GSL_DBL_EPSILON * fabs(G->val);
+    G->err  = 8.0 * (CF1_count+1) * GSL_DBL_EPSILON * fabs(G->val);
+
     Gp->val = Gp_lam_G;
-    Gp->err = 2.0 * CF1_count * GSL_DBL_EPSILON * fabs(Gp->val);
+    Gp->err = 8.0 * (CF1_count+1) * GSL_DBL_EPSILON * fabs(Gp->val);
+
     *exp_F = 0.0;
     *exp_G = 0.0;
 
@@ -1092,6 +1100,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     double F_scale;
 
     int CF1_count;
+    int CF2_count;
     int stat_CF1 = coulomb_CF1(lam_F, eta, x, &F_sign_lam_F, &Fp_over_F_lam_F, &CF1_count);
     int stat_CF2;
     int stat_Fr;
@@ -1099,6 +1108,8 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 
     int F_recur_count;
     int G_recur_count;
+
+    double err_amplify;
 
     F_lam_F  = SMALL;
     Fp_lam_F = Fp_over_F_lam_F * F_lam_F;
@@ -1110,7 +1121,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		              );
     Fp_over_F_lam_min = Fp_lam_min_unnorm / F_lam_min_unnorm;
 
-    stat_CF2 = coulomb_CF2(lam_min, eta, x, &P_lam_min, &Q_lam_min);
+    stat_CF2 = coulomb_CF2(lam_min, eta, x, &P_lam_min, &Q_lam_min, &CF2_count);
 
     alpha = Fp_over_F_lam_min - P_lam_min;
     gamma = alpha/Q_lam_min;
@@ -1129,17 +1140,19 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 		              &G_lam_G, &Gp_lam_G
 		              );
 
+    err_amplify = CF1_count + CF2_count + F_recur_count + 1;
+
     F->val  = F_lam_F;
-    F->err  = 8.0*(CF1_count+F_recur_count+1)*GSL_DBL_EPSILON * fabs(F->val);
+    F->err  = 8.0*err_amplify*GSL_DBL_EPSILON * fabs(F->val);
 
     Fp->val = Fp_lam_F;
-    Fp->err = 8.0*(CF1_count+F_recur_count+1)*GSL_DBL_EPSILON * fabs(Fp->val);
+    Fp->err = 8.0*err_amplify*GSL_DBL_EPSILON * fabs(Fp->val);
 
     G->val  = G_lam_G;
-    G->err  = 8.0*(CF1_count+G_recur_count+1)*GSL_DBL_EPSILON * fabs(G->val);
+    G->err  = 8.0*err_amplify*GSL_DBL_EPSILON * fabs(G->val);
 
     Gp->val = Gp_lam_G;
-    Gp->err = 8.0*(CF1_count+G_recur_count+1)*GSL_DBL_EPSILON * fabs(Gp->val);
+    Gp->err = 8.0*err_amplify*GSL_DBL_EPSILON * fabs(Gp->val);
 
     *exp_F = 0.0;
     *exp_G = 0.0;
