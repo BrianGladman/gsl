@@ -301,12 +301,18 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
 int
 gsl_sf_poch_impl(const double a, const double x, double * result)
 {
-  double lnpoch;
-  double sgn;
-  int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
-  int stat_exp    = gsl_sf_exp_impl(lnpoch, result);
-  *result *= sgn;
-  return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double lnpoch;
+    double sgn;
+    int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
+    int stat_exp    = gsl_sf_exp_impl(lnpoch, result);
+    *result *= sgn;
+    return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
+  }
 }
 
 

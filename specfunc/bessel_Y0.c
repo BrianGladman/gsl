@@ -53,7 +53,7 @@ static gsl_sf_cheb_series by0_cs = {
 int gsl_sf_bessel_Y0_impl(const double x, double * result)
 {
   const double two_over_pi = 2.0/M_PI;
-  const double xmax        = 1.0 / GSL_DBL_EPSILON;
+  const double xmax        = 1.0/GSL_DBL_EPSILON;
 
   if (x <= 0.0) {
     *result = 0.0;
@@ -71,10 +71,11 @@ int gsl_sf_bessel_Y0_impl(const double x, double * result)
     double c1 = gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z);
     double c2 = gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z);
     double ampl  = (0.75 + c1) / sqrt(x);
-    double theta = x - M_PI_4 +  c2/x;
-    int stat_sin = gsl_sf_angle_restrict_pos_impl(&theta);
+    double alpha = x;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
+    double theta = alpha - M_PI_4 +  c2/x;
     *result = ampl * sin(theta);
-    return stat_sin;
+    return stat_red;
   }
   else {
     *result = 0.0;

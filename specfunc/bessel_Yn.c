@@ -73,7 +73,7 @@ static int bessel_Yn_small_x(const int n, const double x, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Mon May  4 00:10:56 EDT 1998 */
+
 int
 gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 {
@@ -84,7 +84,7 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
     n = -n;
     if(GSL_IS_ODD(n)) sign = -1;
   }
-  
+
   if(n == 0) {
     double b0 = 0.;
     int status = gsl_sf_bessel_Y0_impl(x, &b0);
@@ -99,6 +99,7 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
   }
   else {
     if(x <= 0.0) {
+      *result = 0.0;
       return GSL_EDOM;
     }
     if(x < 5.0) {
@@ -107,19 +108,13 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
       *result = sign * b;
       return status;
     }
-    else if(GSL_ROOT3_MACH_EPS * x > (n*n + 1)) {
-      double b = 0.0;
+    else if(GSL_ROOT3_DBL_EPSILON * x > (n*n + 1.0)) {
+      double b;
       int status = gsl_sf_bessel_Ynu_asympx_impl((double)n, x, &b);
       *result = sign * b;
       return status;
     }
-    else if(x > 700.0*n) {
-      double ampl  = gsl_sf_bessel_asymp_Mnu((double)n, x);
-      double theta = gsl_sf_bessel_asymp_thetanu((double)n, x);
-      *result = sign * ampl * sin(theta);
-      return GSL_SUCCESS;
-    }
-    else if(n > 30) {
+    else if(n > 50) {
       double b0 = 0.0;
       int status = gsl_sf_bessel_Ynu_asymp_Olver_impl((double)n, x, &b0);
       *result = sign * b0;

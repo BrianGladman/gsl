@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
 
@@ -54,8 +55,8 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
 {
   const double two_over_pi = 2.0/M_PI;
   const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
-  const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
-  const double xmax    = 1.0/GSL_MACH_EPS;
+  const double x_small = 2.0 * GSL_SQRT_DBL_EPSILON;
+  const double xmax    = 1.0/GSL_DBL_EPSILON;
   
   if(x <= 0.0) {
     *result = 0.0;
@@ -81,11 +82,15 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
       return status;
   }
   else if(x < xmax) {
-    double z     = 32.0/(x*x) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z)) / sqrt(x);
-    double theta = x - 3.0*M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z) / x;
+    double z  = 32.0/(x*x) - 1.0;
+    double ca = gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z);
+    double ct = gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z);
+    double ampl  = (0.75 + ca) / sqrt(x);
+    double alpha = x;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
+    double theta = alpha - 3.0*M_PI_4 +  ct/x;
     *result = ampl * sin (theta);
-    return GSL_SUCCESS;
+    return stat_red;
   }
   else {
     *result = 0.0;

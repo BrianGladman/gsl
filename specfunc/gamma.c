@@ -1260,6 +1260,49 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
   }
 }
 
+
+int gsl_sf_taylorcoeff_impl(const int n, const double x, double * result)
+{
+  if(x < 0.0 || n < 0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(n == 0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    const double log2pi = M_LNPI + M_LN2;
+    const double ln_test = n*(log(x)+1.0) + 1.0 - (n+0.5)*log(n+1.0) + 0.5*log2pi;
+
+    if(ln_test < GSL_LOG_DBL_MIN+1.0) {
+      *result = 0.0;
+      return GSL_EUNDRFLW;
+    }
+    else if(ln_test > GSL_LOG_DBL_MAX-1.0) {
+      *result = 0.0; /* FIXME: should be Inf */
+      return GSL_EOVRFLW;
+    }
+    else {
+      double product = 1.0;
+      int k;
+      for(k=1; k<=n; k++) {
+        product *= (x/k);
+      }
+      *result = product;
+      if(*result == 0.0)
+        return GSL_EUNDRFLW;
+      else
+        return GSL_SUCCESS;
+    }    
+  }
+}
+
+
 int gsl_sf_fact_impl(const unsigned int n, double * result)
 {
   if(n <= FACT_TABLE_MAX){
@@ -1446,6 +1489,17 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
   return status;
 }
 
+
+int gsl_sf_taylorcoeff_e(const int n, const double x, double * result)
+{
+  int status = gsl_sf_taylorcoeff_impl(n, x, result);
+  if(status != GSL_SUCCESS) {;
+    GSL_ERROR("gsl_sf_taylorcoeff_e", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_choose_e(unsigned int n, unsigned int m, double * r)
 {
   int status = gsl_sf_choose_impl(n, m, r);
@@ -1455,6 +1509,7 @@ int gsl_sf_choose_e(unsigned int n, unsigned int m, double * r)
   return status;
 }
 
+
 int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, double * r)
 {
   int status = gsl_sf_lnchoose_impl(n, m, r);
@@ -1463,7 +1518,6 @@ int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, double * r)
   }
   return status;
 }
-
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
@@ -1504,6 +1558,16 @@ double gsl_sf_gammainv(const double x)
   int status = gsl_sf_gammainv_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_gammainv", status);
+  }
+  return y;
+}
+
+double gsl_sf_taylorcoeff(const int n, const double x)
+{
+  double y;
+  int status = gsl_sf_taylorcoeff_impl(n, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_taylorcoeff", status);
   }
   return y;
 }

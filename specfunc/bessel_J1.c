@@ -52,20 +52,18 @@ static gsl_sf_cheb_series bj1_cs = {
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_J1_impl(const double x, double * result)
-{ 
-  const double xmin = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
-  const double xmax = 1.0/GSL_SQRT_MACH_EPS;
+{
   double y = fabs(x);
   
   if(y == 0.0) {
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(y < 2.*DBL_MIN) {
+  else if(y < 2.0*DBL_MIN) {
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
-  else if(y < xmin) {
+  else if(y < ROOT_EIGHT * GSL_SQRT_DBL_EPSILON) {
     *result = 0.5*x;
     return GSL_SUCCESS;
   }
@@ -73,18 +71,16 @@ int gsl_sf_bessel_J1_impl(const double x, double * result)
     *result = x * (0.25 + gsl_sf_cheb_eval(&bj1_cs, 0.125*y*y-1.0));
     return GSL_SUCCESS;
   }
-  else if(y < xmax) {
-    double z     = 32.0/(y*y) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z)) / sqrt(y);
-    double theta = y - 3.0*M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z) / y;
-    *result = (x < 0.0 ? -ampl : ampl) /* fortran_sign(ampl, x) */ * cos (theta);
-    return GSL_SUCCESS;
-  }
   else {
-    double ampl  = gsl_sf_bessel_asymp_Mnu(1.0, y);
-    double theta = gsl_sf_bessel_asymp_thetanu(1.0, y);
-    *result = ampl * cos(theta);
-    return GSL_SUCCESS;
+    double z  = 32.0/(y*y) - 1.0;
+    double ca = gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z);
+    double ct = gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z);
+    double ampl  = (0.75 + ca) / sqrt(y);
+    double alpha = y;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&alpha);
+    double theta = alpha - 3.0*M_PI_4 + ct/y;
+    *result = (x < 0.0 ? -ampl : ampl) * cos (theta);
+    return stat_red;
   }
 }
 

@@ -77,6 +77,16 @@ int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg
 int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg);
 
 
+/* x^n / n!
+ *
+ * x >= 0.0, n >= 0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_taylorcoeff_impl(int n, double x, double * result);
+int     gsl_sf_taylorcoeff_e(int n, double x, double * result);
+double  gsl_sf_taylorcoeff(int n, double x);
+
+
 /* n!
  *
  * exceptions: GSL_EDOM, GSL_OVRFLW

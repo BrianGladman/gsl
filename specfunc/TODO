@@ -62,10 +62,10 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_J0.c
-    OK:
+    OK: Mon Nov 23 14:41:35 MST 1998 
     
   - bessel_J1.c
-    OK:
+    OK: Mon Nov 23 14:42:08 MST 1998 
     
   - bessel_Jn.c
     OK:
@@ -86,10 +86,10 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_Y0.c
-    OK:
+    OK: Mon Nov 23 12:35:06 MST 1998 
     
   - bessel_Y1.c
-    OK:
+    OK: Mon Nov 23 12:35:09 MST 1998 
     
   - bessel_Yn.c
     OK:

@@ -6,9 +6,13 @@
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "bessel.h"
 #include "gsl_sf_airy.h"
+#include "gsl_sf_elementary.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_trig.h"
+#include "bessel_amp_phase.h"
+#include "bessel.h"
 
 #define CubeRoot2_  1.25992104989487316476721060728
 
@@ -159,6 +163,7 @@ static double debye_u6_im(const double * tpow)
 #endif
 
 
+#if 0
 /* [Abramowitz+Stegun, 9.3.17] */
 static double debye_L(const double nu, const double * tpow)
 {
@@ -166,7 +171,10 @@ static double debye_L(const double nu, const double * tpow)
   double nu4 = nu2*nu2;
   return 1. + debye_u2_im(tpow)/nu2 + debye_u4_im(tpow)/nu4;
 }
+#endif
 
+
+#if 0
 /* [Abramowitz+Stegun, 9.3.18] */
 static double debye_M(const double nu, const double * tpow)
 {
@@ -174,6 +182,7 @@ static double debye_M(const double nu, const double * tpow)
   double nu5 = nu3*nu*nu;
   return debye_u1_im(tpow)/nu + debye_u3_im(tpow)/nu3 + debye_u5_im(tpow)/nu5;
 }
+#endif
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -189,7 +198,6 @@ static double debye_M(const double nu, const double * tpow)
  *
  * Checks: nu >= 0; x >= 0
  *
- * checked OK [GJ] Sun May  3 22:34:46 EDT 1998 
  */
 int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
                                       const int sign,
@@ -217,22 +225,35 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
   }
   else {
     /* nu > 0 and x > 0 */
-    double lg;
-    double ln_pre;
+    double pre;
     double sum;
     int stat_sum = Inu_Jnu_taylorsum(nu, x, sign, kmax, threshold, &sum);
-    gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
-    ln_pre = nu*log(0.5*x) - lg;
+    int stat_pre;
+    int stat_m;
 
-    /* Overflow is presumed not to be an issue here. */
-    if(ln_pre > GSL_LOG_DBL_MIN + 1.0) {
-      *result = sum * exp(ln_pre);
-      return stat_sum;
+    /* prefactor = (x/2)^nu / Gamma(nu+1)
+     */
+    if(nu > INT_MAX-1) {
+      double ln_pre;
+      double lg;
+      gsl_sf_lngamma_impl(nu+1.0, &lg);  /* ok by construction */
+      ln_pre = nu*log(0.5*x) - lg;
+      stat_pre = gsl_sf_exp_impl(ln_pre, &pre);
     }
     else {
-      *result = 0.0;
-      return GSL_EUNDRFLW;
+      /* y^nu / Gamma(nu+1) = y^N /N! y^f / (N+1)_f */
+      int    N = (int)floor(nu + 0.5);
+      double f = nu - N;
+      double poch_factor;
+      double tc_factor;
+      int stat_poch = gsl_sf_poch_impl(N+1.0, f, &poch_factor);
+      int stat_tc   = gsl_sf_taylorcoeff_impl(N, 0.5*x, &tc_factor);
+      pre = tc_factor * pow(0.5*x,f) / poch_factor;
+      stat_pre = GSL_ERROR_SELECT_2(stat_tc, stat_poch);
     }
+
+    stat_m = gsl_sf_multiply_impl(pre, sum, result);
+    return GSL_ERROR_SELECT_3(stat_m, stat_pre, stat_sum);
   }
 }
 
@@ -263,37 +284,22 @@ int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * resu
 }
 
 /* x >> nu*nu+1
- * error ~ O( ((nu*nu+1)/x)^3 )
- *
- * empirical error analysis:
- *   choose  GSL_ROOT3_MACH_EPS * x > (nu*nu + 1)
- *
- * This is not especially useful. When the argument gets
- * large enough for this to apply, the cos() and sin()
- * start loosing digits. However, this seems inevitable
- * for this particular method.
- *
- * checked OK [GJ] Mon May  4 00:06:52 EDT 1998 
  */
 int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * result)
 {
-  double mu   = 4.0*nu*nu;
-  double mum1 = mu-1.0;
-  double mum9 = mu-9.0;
-  double chi = x - (0.5*nu + 0.25)*M_PI;
-  double P   = 1. - mum1*mum9/(128.0*x*x);
-  double Q   = mum1/(8.0*x);
-  *result = sqrt(2.0/(M_PI*x)) * (sin(chi)*P + cos(chi)*Q);
-  return GSL_SUCCESS;
+  double ampl;
+  double theta;
+  double alpha = x;
+  double beta  = 0.5*nu*M_PI;
+  int stat_a = gsl_sf_bessel_asymp_Mnu_impl(nu, x, &ampl);
+  int stat_t = gsl_sf_bessel_asymp_thetanu_corr_impl(nu, x, &theta);
+  int stat_red1 = gsl_sf_angle_restrict_pos_impl(&alpha);
+  int stat_red2 = gsl_sf_angle_restrict_pos_impl(&beta);
+  *result = ampl * sin(alpha-beta+theta);
+  return GSL_ERROR_SELECT_4(stat_red1, stat_red2, stat_t, stat_a);
 }
 
 /* x >> nu*nu+1
- * error ~ O( ((nu*nu+1)/x)^3 )
- *
- * empirical error analysis:
- *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
- *
- * checked OK [GJ] Sun May  3 21:40:12 EDT 1998 
  */
 int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
@@ -305,12 +311,6 @@ int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double
 }
 
 /* x >> nu*nu+1
- * error ~ O( ((nu*nu+1)/x)^3 )
- *
- * empirical error analysis:
- *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
- *
- * checked OK [GJ] Sun May  3 21:37:16 EDT 1998 
  */
 int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
@@ -320,6 +320,7 @@ int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double
   *result = sqrt(M_PI/(2.0*x)) * (1.0 + mum1/(8.0*x) + mum1*mum9/(128.0*x*x));
   return GSL_SUCCESS;
 }
+
 
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
  *
@@ -358,6 +359,7 @@ int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double
  *
  * This is superseded by the Olver uniform asymptotics.
  */
+#if 0
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
   int i;
@@ -377,6 +379,8 @@ int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double *
   *result = pre * sum;
   return GSL_SUCCESS;
 }
+#endif /* 0 */
+
 
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
  *
@@ -385,6 +389,7 @@ int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double *
  *
  * This is superseded by the Olver uniform asymptotics.
  */
+#if 0
 int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
   int i;
@@ -404,6 +409,7 @@ int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double *
   *result = -pre * sum;
   return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
 /* nu -> Inf; x > nu   [Abramowitz+Stegun, 9.3.15]
@@ -415,6 +421,7 @@ int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double *
  *
  * This is superseded by the Olver uniform asymptotics.
  */
+#if 0
 int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(const double nu, const double x, double * result)
 {
   int i;
@@ -432,6 +439,8 @@ int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(const double nu, const double x, doub
   *result = pre * (L*cos(Psi) + M*sin(Psi));
   return GSL_SUCCESS;
 }
+#endif /* 0 */
+
 
 /* nu -> Inf; x > nu   [Abramowitz+Stegun, 9.3.16]
  *
@@ -440,6 +449,7 @@ int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(const double nu, const double x, doub
  *
  * This is superseded by the Olver uniform asymptotics.
  */
+#if 0
 int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(const double nu, const double x, double * result)
 {
   int i;
@@ -457,6 +467,7 @@ int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(const double nu, const double x, doub
   *result = pre * (L*sin(Psi) - M*cos(Psi));
   return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
 /* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7]
@@ -498,7 +509,7 @@ int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, do
   double root_term = sqrt(1.0 + z*z);
   double pre = 1.0/sqrt(2.0*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.0+root_term));
-  double ex  = ( z < 1.0/GSL_ROOT3_MACH_EPS ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1.0 - 1.0/(12.0*z*z))) );
+  double ex  = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? exp(nu*(-z + eta)) : exp(-0.5*nu/z*(1.0 - 1.0/(12.0*z*z))) );
   double t = 1.0/root_term;
   double sum;
   double tpow[16];
@@ -524,7 +535,7 @@ int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, do
   double root_term = sqrt(1.0 + z*z);
   double pre = sqrt(M_PI/(2.0*nu*root_term));
   double eta = root_term + log(z/(1.0+root_term));
-  double ex  = ( z < 1.0/GSL_ROOT3_MACH_EPS ? exp(nu*(z - eta)) : exp(0.5*nu/z*(1.0 + 1.0/(12.0*z*z))) );
+  double ex  = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? exp(nu*(z - eta)) : exp(0.5*nu/z*(1.0 + 1.0/(12.0*z*z))) );
   double t = 1.0/root_term;
   double sum;
   double tpow[16];
@@ -627,7 +638,7 @@ gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
     temp = p*dlr - q*dli;
     q = p*dli + q*dlr;
     p = temp;
-    if(fabs(dlr-1.0)+fabs(dli) < GSL_MACH_EPS) break;
+    if(fabs(dlr-1.0)+fabs(dli) < GSL_DBL_EPSILON) break;
   }
 
   *P = p;
@@ -684,7 +695,7 @@ gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
     hi += delhi;
     dels = Qi*delhi;
     s += dels;
-    if(fabs(dels/s) < GSL_MACH_EPS) break;
+    if(fabs(dels/s) < GSL_DBL_EPSILON) break;
   }
   
   hi *= -a1;
