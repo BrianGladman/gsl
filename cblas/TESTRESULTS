@@ -1,0 +1,893 @@
+These are the results of CBLAS test suite on netlib.
+
+There is a discrepancy in the results for ISAMAX, but this seems to be
+due to a bug in the test suite not implementing the draft standard
+correctly.  If you manually compare the results from the GSL CBLAS
+ISAMAX routine with the definition in the CBLAS standards document you
+will see that the GSL routine is correct.
+
+Error exits are not tested below -- these are not implement in GSL yet.
+Row major and column major ARE tested though, so there are two runs
+for each of the level 2 and level 3 routines.
+
+Brian Gough
+13/4/01
+
+----------------------------------------------------------------------
+
+=== LEVEL  TYPE s ===
+ Real CBLAS Test Program Results
+
+
+ Test of subprogram number  1         CBLAS_SDOT     
+                                    ----- PASS -----
+
+ Test of subprogram number  2         CBLAS_SAXPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  3         CBLAS_SROTG    
+                                    ----- PASS -----
+
+ Test of subprogram number  4         CBLAS_SROT     
+                                    ----- PASS -----
+
+ Test of subprogram number  5         CBLAS_SCOPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  6         CBLAS_SSWAP    
+                                    ----- PASS -----
+
+ Test of subprogram number  7         CBLAS_SNRM2    
+                                    ----- PASS -----
+
+ Test of subprogram number  8         CBLAS_SASUM    
+                                    ----- PASS -----
+
+ Test of subprogram number  9         CBLAS_SSCAL    
+                                    ----- PASS -----
+
+ Test of subprogram number 10         CBLAS_ISAMAX   
+                                       FAIL
+
+ CASE  N INCX INCY MODE                                COMP                                TRUE     DIFFERENCE
+
+   10  1    1 9999 9999                                   0                                   1          -1
+   10  2    1 9999 9999                                   1                                   2          -1
+   10  3    1 9999 9999                                   1                                   2          -1
+   10  4    1 9999 9999                                   2                                   3          -1
+   10  1    2 9999 9999                                   0                                   1          -1
+   10  2    2 9999 9999                                   1                                   2          -1
+   10  3    2 9999 9999                                   1                                   2          -1
+   10  4    2 9999 9999                                   2                                   3          -1
+=== LEVEL  TYPE d ===
+ Real CBLAS Test Program Results
+
+
+ Test of subprogram number  1         CBLAS_DDOT     
+                                    ----- PASS -----
+
+ Test of subprogram number  2         CBLAS_DAXPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  3         CBLAS_DROTG    
+                                    ----- PASS -----
+
+ Test of subprogram number  4         CBLAS_DROT     
+                                    ----- PASS -----
+
+ Test of subprogram number  5         CBLAS_DCOPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  6         CBLAS_DSWAP    
+                                    ----- PASS -----
+
+ Test of subprogram number  7         CBLAS_DNRM2    
+                                    ----- PASS -----
+
+ Test of subprogram number  8         CBLAS_DASUM    
+                                    ----- PASS -----
+
+ Test of subprogram number  9         CBLAS_DSCAL    
+                                    ----- PASS -----
+
+ Test of subprogram number 10         CBLAS_IDAMAX   
+                                       FAIL
+
+ CASE  N INCX INCY MODE                                COMP                                TRUE     DIFFERENCE
+
+   10  1    1 9999 9999                                   0                                   1          -1
+   10  2    1 9999 9999                                   1                                   2          -1
+   10  3    1 9999 9999                                   1                                   2          -1
+   10  4    1 9999 9999                                   2                                   3          -1
+   10  1    2 9999 9999                                   0                                   1          -1
+   10  2    2 9999 9999                                   1                                   2          -1
+   10  3    2 9999 9999                                   1                                   2          -1
+   10  4    2 9999 9999                                   2                                   3          -1
+=== LEVEL  TYPE c ===
+ Complex CBLAS Test Program Results
+
+
+ Test of subprogram number  1         CBLAS_CDOTC    
+                                    ----- PASS -----
+
+ Test of subprogram number  2         CBLAS_CDOTU    
+                                    ----- PASS -----
+
+ Test of subprogram number  3         CBLAS_CAXPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  4         CBLAS_CCOPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  5         CBLAS_CSWAP    
+                                    ----- PASS -----
+
+ Test of subprogram number  6         CBLAS_SCNRM2   
+                                    ----- PASS -----
+
+ Test of subprogram number  7         CBLAS_SCASUM   
+                                    ----- PASS -----
+
+ Test of subprogram number  8         CBLAS_CSCAL    
+                                    ----- PASS -----
+
+ Test of subprogram number  9         CBLAS_CSSCAL   
+                                    ----- PASS -----
+
+ Test of subprogram number 10         CBLAS_ICAMAX   
+                                       FAIL
+
+ CASE  N INCX INCY MODE                                COMP                                TRUE     DIFFERENCE
+
+   10  1    1 9999 9999                                   0                                   1          -1
+   10  2    1 9999 9999                                   1                                   2          -1
+   10  3    1 9999 9999                                   1                                   2          -1
+   10  4    1 9999 9999                                   1                                   2          -1
+   10  1    2 9999 9999                                   0                                   1          -1
+   10  2    2 9999 9999                                   1                                   2          -1
+   10  3    2 9999 9999                                   1                                   2          -1
+   10  4    2 9999 9999                                   1                                   2          -1
+=== LEVEL  TYPE z ===
+ Complex CBLAS Test Program Results
+
+
+ Test of subprogram number  1         CBLAS_ZDOTC    
+                                    ----- PASS -----
+
+ Test of subprogram number  2         CBLAS_ZDOTU    
+                                    ----- PASS -----
+
+ Test of subprogram number  3         CBLAS_ZAXPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  4         CBLAS_ZCOPY    
+                                    ----- PASS -----
+
+ Test of subprogram number  5         CBLAS_ZSWAP    
+                                    ----- PASS -----
+
+ Test of subprogram number  6         CBLAS_DZNRM2   
+                                    ----- PASS -----
+
+ Test of subprogram number  7         CBLAS_DZASUM   
+                                    ----- PASS -----
+
+ Test of subprogram number  8         CBLAS_ZSCAL    
+                                    ----- PASS -----
+
+ Test of subprogram number  9         CBLAS_ZDSCAL   
+                                    ----- PASS -----
+
+ Test of subprogram number 10         CBLAS_IZAMAX   
+                                       FAIL
+
+ CASE  N INCX INCY MODE                                COMP                                TRUE     DIFFERENCE
+
+   10  1    1 9999 9999                                   0                                   1          -1
+   10  2    1 9999 9999                                   1                                   2          -1
+   10  3    1 9999 9999                                   1                                   2          -1
+   10  4    1 9999 9999                                   1                                   2          -1
+   10  1    2 9999 9999                                   0                                   1          -1
+   10  2    2 9999 9999                                   1                                   2          -1
+   10  3    2 9999 9999                                   1                                   2          -1
+   10  4    2 9999 9999                                   1                                   2          -1
+=== LEVEL 2 TYPE s ===
+ TESTS OF THE REAL             LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0    .9
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ SGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ SGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ SSYMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ SSBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ SSPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ STRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ STPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ STPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ SGER   PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ SSYR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ SSPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ SSYR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ SSPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE s ===
+ TESTS OF THE REAL             LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0    .9
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ SGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ SGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ SSYMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ SSBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ SSPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ STRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ STPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ STBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ STPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ SGER   PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ SSYR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ SSPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ SSYR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ SSPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE d ===
+ TESTS OF THE DOUBLE PRECISION LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0    .9
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ DGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ DGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ DSYMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ DSBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ DSPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ DTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ DTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ DTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DGER   PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ DSYR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ DSPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ DSYR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ DSPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE d ===
+ TESTS OF THE DOUBLE PRECISION LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0    .9
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ DGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ DGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ DSYMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ DSBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ DSPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ DTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ DTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ DTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ DGER   PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ DSYR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ DSPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ DSYR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ DSPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE c ===
+ TESTS OF THE COMPLEX          LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ CGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ CGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ CHEMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ CHBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ CHPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ CTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ CTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ CTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CGERC  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ CGERU  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ CHER   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ CHPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ CHER2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ CHPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE c ===
+ TESTS OF THE COMPLEX          LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ CGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ CGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ CHEMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ CHBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ CHPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ CTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ CTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ CTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ CGERC  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ CGERU  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ CHER   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ CHPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ CHER2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ CHPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE z ===
+ TESTS OF THE COMPLEX*16      LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ ZGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ ZGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ ZHEMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ ZHBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ ZHPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ ZTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ ZTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ ZTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZGERC  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ ZGERU  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ ZHER   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ ZHPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ ZHER2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ ZHPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 2 TYPE z ===
+ TESTS OF THE COMPLEX*16      LEVEL 2 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR K                   0     1     2     4
+   FOR INCX AND INCY       1     2    -1    -2
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ ZGEMV  PASSED THE COMPUTATIONAL TESTS (  3460 CALLS)
+
+ ZGBMV  PASSED THE COMPUTATIONAL TESTS ( 13828 CALLS)
+
+ ZHEMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ ZHBMV  PASSED THE COMPUTATIONAL TESTS (  5761 CALLS)
+
+ ZHPMV  PASSED THE COMPUTATIONAL TESTS (  1441 CALLS)
+
+ ZTRMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTBMV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ ZTPMV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTRSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZTBSV  PASSED THE COMPUTATIONAL TESTS (   961 CALLS)
+
+ ZTPSV  PASSED THE COMPUTATIONAL TESTS (   241 CALLS)
+
+ ZGERC  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ ZGERU  PASSED THE COMPUTATIONAL TESTS (   388 CALLS)
+
+ ZHER   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ ZHPR   PASSED THE COMPUTATIONAL TESTS (   121 CALLS)
+
+ ZHER2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ ZHPR2  PASSED THE COMPUTATIONAL TESTS (   481 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE s ===
+ TESTS OF THE REAL             LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0   1.3
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ SGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ SSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ STRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ STRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ SSYRK  PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ SSYR2K PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE s ===
+ TESTS OF THE REAL             LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0   1.3
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ SGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ SSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ STRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ STRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ SSYRK  PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ SSYR2K PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE d ===
+ TESTS OF THE DOUBLE PRECISION LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0   1.3
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ DGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ DSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ DTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ DTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ DSYRK  PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ DSYR2K PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE d ===
+ TESTS OF THE DOUBLE PRECISION LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA              .0   1.0    .7
+   FOR BETA               .0   1.0   1.3
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ DGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ DSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ DTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ DTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ DSYRK  PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ DSYR2K PASSED THE COMPUTATIONAL TESTS (  1944 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE c ===
+ TESTS OF THE COMPLEX          LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   1     5     0     1     2     3
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ CGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ CHEMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ CTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ CHERK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYRK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CHER2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYR2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE c ===
+ TESTS OF THE COMPLEX          LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   1     5     0     1     2     3
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  1.2E-07
+
+ CGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ CHEMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ CTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ CHERK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYRK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CHER2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ CSYR2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE z ===
+TESTS OF THE COMPLEX*16        LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ ROW-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ ZGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ ZHEMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ ZTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ ZHERK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYRK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZHER2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYR2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ END OF TESTS
+
+
+=== LEVEL 3 TYPE z ===
+TESTS OF THE COMPLEX*16        LEVEL 3 BLAS
+
+ THE FOLLOWING PARAMETER VALUES WILL BE USED:
+   FOR N                   0     1     2     3     5     9
+   FOR ALPHA          (  .0,  .0)  ( 1.0,  .0)  (  .7, -.9)  
+   FOR BETA           (  .0,  .0)  ( 1.0,  .0)  ( 1.3,-1.1)  
+
+ ERROR-EXITS WILL NOT BE TESTED
+
+ ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN   16.00
+
+ COLUMN-MAJOR DATA LAYOUT IS TESTED
+
+ RELATIVE MACHINE PRECISION IS TAKEN TO BE  2.2E-16
+
+ ZGEMM  PASSED THE COMPUTATIONAL TESTS ( 17496 CALLS)
+
+ ZHEMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYMM  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZTRMM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ ZTRSM  PASSED THE COMPUTATIONAL TESTS (  2592 CALLS)
+
+ ZHERK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYRK  PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZHER2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ ZSYR2K PASSED THE COMPUTATIONAL TESTS (  1296 CALLS)
+
+ END OF TESTS
+
+
