@@ -64,7 +64,6 @@ double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
                           int two_jd, int two_je, int two_jf
                           );
 
-
 /* Racah W coefficients:
  *
  *   W(a b c d; e f) = (-1)^{a+b+c+d} / a b e \

@@ -103,93 +103,79 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
+
 int
-gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
-                     int two_ma, int two_mb, int two_mc,
-                     gsl_sf_result * result)
+gsl_sf_coupling_3j_e (int two_ja, int two_jb, int two_jc,
+                      int two_ma, int two_mb, int two_mc,
+                      gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
   if(two_ja < 0 || two_jb < 0 || two_jc < 0) {
     DOMAIN_ERROR(result);
   }
-  else if(   triangle_selection_fails(two_ja, two_jb, two_jc)
-          || m_selection_fails(two_ja, two_jb, two_jc, two_ma, two_mb, two_mc)
+  else if (   triangle_selection_fails(two_ja, two_jb, two_jc)
+           || m_selection_fails(two_ja, two_jb, two_jc, two_ma, two_mb, two_mc)
      ) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
   }
   else {
-    gsl_sf_result n1_a, n1_b, n3_a, n3_b;
-    gsl_sf_result d1_a, d1_b, d2_a, d2_b, d3_a, d3_b;
-    gsl_sf_result n1, n2, n3;
-    gsl_sf_result d1, d2, d3;
-    double norm;
-    double sign = (GSL_IS_ODD((two_ja - two_jb - two_mc)/2) ? -1.0 : 1.0);
-    int tk, tkmin, tkmax;
-    double sum_pos = 0.0;
-    double sum_neg = 0.0;
-    double phase;
-    int status = 0;
-    status += gsl_sf_fact_e((two_jc + two_ja - two_jb)/2, &n1_a);
-    status += gsl_sf_fact_e((two_jc - two_ja + two_jb)/2, &n1_b);
-    status += gsl_sf_fact_e((two_ja + two_jb - two_jc)/2, &n2);
-    status += gsl_sf_fact_e((two_jc - two_mc)/2, &n3_a);
-    status += gsl_sf_fact_e((two_jc + two_mc)/2, &n3_b);
-    status += gsl_sf_fact_e((two_ja + two_jb + two_jc)/2 + 1, &d1);
-    status += gsl_sf_fact_e((two_ja - two_ma)/2, &d2_a);
-    status += gsl_sf_fact_e((two_ja + two_ma)/2, &d2_b);
-    status += gsl_sf_fact_e((two_jb - two_mb)/2, &d3_a);
-    status += gsl_sf_fact_e((two_jb + two_mb)/2, &d3_b);
+    int jca  = (-two_ja + two_jb + two_jc) / 2,
+        jcb  = ( two_ja - two_jb + two_jc) / 2,
+        jcc  = ( two_ja + two_jb - two_jc) / 2,
+        jmma = ( two_ja - two_ma) / 2,
+        jmmb = ( two_jb - two_mb) / 2,
+        jmmc = ( two_jc - two_mc) / 2,
+        jpma = ( two_ja + two_ma) / 2,
+        jpmb = ( two_jb + two_mb) / 2,
+        jpmc = ( two_jc + two_mc) / 2,
+        jsum = ( two_ja + two_jb + two_jc) / 2,
+        kmin = locMax3 (0, jpmb - jmmc, jmma - jpmc),
+        kmax = locMin3 (jcc, jmma, jpmb),
+        k, sign = GSL_IS_ODD (kmin - jpma + jmmb) ? -1 : 1,
+        status = 0;
+    double sum_pos = 0.0, sum_neg = 0.0, norm, term;
+    gsl_sf_result bc1, bc2, bc3, bcn1, bcn2, bcd1, bcd2, bcd3, bcd4;
 
-    if(status != 0) {
-      OVERFLOW_ERROR(result);
-    }
-
-    n1.val = n1_a.val * n1_b.val;
-    n3.val = n3_a.val * n3_b.val;
-    d2.val = d2_a.val * d2_b.val;
-    d3.val = d3_a.val * d3_b.val;
-
-    norm = sign * sqrt(n1.val*n2.val*n3.val)/sqrt(d1.val*d2.val*d3.val);
-
-    tkmin = GSL_MAX(0, two_jb - two_ja - two_mc);
-    tkmax = GSL_MIN(two_jc - two_ja + two_jb, two_jc - two_mc);
+    status += gsl_sf_choose_e (two_ja, jcc , &bcn1);
+    status += gsl_sf_choose_e (two_jb, jcc , &bcn2);
+    status += gsl_sf_choose_e (jsum+1, jcc , &bcd1);
+    status += gsl_sf_choose_e (two_ja, jmma, &bcd2);
+    status += gsl_sf_choose_e (two_jb, jmmb, &bcd3);
+    status += gsl_sf_choose_e (two_jc, jpmc, &bcd4);
     
-    phase = GSL_IS_ODD((tkmin + two_jb + two_mb)/2) ? -1.0 : 1.0;
-
-    for(tk=tkmin; tk<=tkmax; tk += 2) {
-      double term;
-
-      status = 0;
-      status += gsl_sf_fact_e((two_jb + two_jc + two_ma - tk)/2, &n1);
-      status += gsl_sf_fact_e((two_ja - two_ma + tk)/2, &n2);
-      status += gsl_sf_fact_e(tk/2, &d1_a);
-      status += gsl_sf_fact_e((two_jc - two_ja + two_jb - tk)/2, &d1_b);
-      status += gsl_sf_fact_e((two_jc - two_mc - tk)/2, &d2);
-      status += gsl_sf_fact_e((two_ja - two_jb + two_mc + tk)/2, &d3);
-
-      if(status != 0) {
-        OVERFLOW_ERROR(result);
-      }
-
-      d1.val = d1_a.val * d1_b.val;
-
-      term = phase * n1.val * n2.val / (d1.val * d2.val * d3.val);
-      phase = -phase;
-
-      if(norm*term >= 0.0) {
-        sum_pos += norm*term;
-      }
-      else {
-        sum_neg -= norm*term;
-      }
+    if (status != 0) {
+      OVERFLOW_ERROR (result);
     }
+    
+    norm = sqrt (bcn1.val * bcn2.val)
+           / sqrt (bcd1.val * bcd2.val * bcd3.val * bcd4.val * ((double) two_jc + 1.0));
 
+    for (k = kmin; k <= kmax; k++) {
+      status += gsl_sf_choose_e (jcc, k, &bc1);
+      status += gsl_sf_choose_e (jcb, jmma - k, &bc2);
+      status += gsl_sf_choose_e (jca, jpmb - k, &bc3);
+      
+      if (status != 0) {
+        OVERFLOW_ERROR (result);
+      }
+      
+      term = bc1.val * bc2.val * bc3.val;
+      
+      if (sign < 0) {
+        sum_neg += norm * term;
+      } else {
+        sum_pos += norm * term;
+      }
+      
+      sign = -sign;
+    }
+    
     result->val  = sum_pos - sum_neg;
     result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
-    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax - tkmin) * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * (kmax - kmin) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
