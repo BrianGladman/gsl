@@ -55,3 +55,5 @@ functions
 * C M Murphy <C.M.Murphy@bath.ac.uk> patch to fix up consts in header files
 
 * Bracy H. Elton for correcting a reference in the FFT Algorithms document
+
+* Tadhg O'Meara <tadhg@net-cs.ucd.ie> for finding a bug in gsl-randist

@@ -1,3 +1,11 @@
+Wed May 10 14:55:43 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-randist.c (main): fixed bug for lognormal (it was calling
+ 	exppow)  Tadhg O'Meara <tadhg@net-cs.ucd.ie>
+
+	* gsl-randist.c (main): print out all the dimensions for dir-nd,
+ 	not just the first
+
 Tue Apr 25 20:45:14 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* shuffle.c (gsl_ran_sample): lifted the restriction that sampling

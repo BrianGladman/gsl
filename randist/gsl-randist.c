@@ -33,10 +33,10 @@ void error (const char * s);
 int
 main (int argc, char *argv[])
 {
-  size_t i;
+  size_t i,j;
   size_t n = 0;
   double mu = 0, nu = 0, nu1 = 0, nu2 = 0, sigma = 0, a = 0, b = 0, p = 0;
-  double sigmax = 0, sigmay = 0, rho = 0;
+  double zeta = 0, sigmax = 0, sigmay = 0, rho = 0;
   double x = 0, y =0, z=0  ;
   unsigned int N = 0, t = 0, n1 = 0, n2 = 0 ;
   unsigned long int seed = 0 ;
@@ -235,8 +235,16 @@ main (int argc, char *argv[])
       ARGS(1, "n1 = number of dimensions of hypersphere"); 
       INT_ARG(n1) ;
       xarr = malloc(n1*sizeof(double));
-      /* We only output the first coordinate */ 
-      OUTPUT1(gsl_ran_dir_nd (r, n1, xarr), xarr[0]);
+
+      for(i = 0; i < n; i++) { 
+        gsl_ran_dir_nd (r, n1, xarr) ; 
+        for (j = 0; j < n1; j++) { 
+          if (j) putchar(' '); 
+          printf("%g", xarr[j]) ; 
+        } 
+        putchar('\n'); 
+      } ;
+
       free(xarr);
     }  
   else if (NAME("geometric"))
@@ -295,9 +303,9 @@ main (int argc, char *argv[])
   else if (NAME("lognormal"))
     {
       ARGS(2, "zeta = location parameter, sigma = scale parameter");
-      DBL_ARG(mu) ;
+      DBL_ARG(zeta) ;
       DBL_ARG(sigma) ;
-      OUTPUT(gsl_ran_exppow (r, mu, sigma));
+      OUTPUT(gsl_ran_lognormal (r, zeta, sigma));
     }
   else if (NAME("negative-binomial"))
     {
@@ -316,9 +324,9 @@ main (int argc, char *argv[])
   else if (NAME("pascal"))
     {
       ARGS(2, "p = probability, n = order (integer)");
-      DBL_ARG(mu) ;
+      DBL_ARG(p) ;
       INT_ARG(N) ;
-      INT_OUTPUT(gsl_ran_pascal (r, mu, N));
+      INT_OUTPUT(gsl_ran_pascal (r, p, N));
     }
   else if (NAME("poisson"))
     {
