@@ -71,7 +71,17 @@ int gsl_sf_bessel_Jn_taylor_e(int n, double x, int kmax, double * result)
   }  
   else {
     double ts;
-    double pre = gsl_sf_pow_int(0.5*x, n) / exp(gsl_sf_lngamma(n+1.));
+    double pre;
+    double nfact;
+    int status = gsl_sf_fact_e(n, &nfact);
+    if(status == GSL_SUCCESS) {
+      pre = gsl_sf_pow_int(0.5*x, n) / nfact;
+      gsl_sf_bessel_Jnu_taylorsum_e(n, x, kmax, &ts);
+      *result = pre * ts;
+    }
+    else {
+      *result = 0.;
+      GSL_ERROR(
     int status = gsl_sf_bessel_Jnu_taylorsum_e(n, x, kmax, &ts);
     *result = pre * ts;
     return status;

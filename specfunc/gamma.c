@@ -147,7 +147,7 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
 #define FACT_TABLE_MAX  170
 #define FACT_TABLE_SIZE (FACT_TABLE_MAX+1)
 static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
-    { 0,  0.0,     0      },
+    { 0,  1.0,     1L     },
     { 1,  1.0,     1L     },
     { 2,  2.0,     2L     },
     { 3,  6.0,     6L     },
