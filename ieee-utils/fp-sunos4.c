@@ -1,4 +1,6 @@
 #include <sys/ieeefp.h>
+#include <floatingpoint.h>
+#include <signal.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_errno.h>
 
@@ -41,24 +43,60 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     }
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    ieee_flags ("set", "exception", "invalid", out) ;
+    {
+      ieee_handler ("set", "invalid", SIGFPE_IGNORE) ;
+    }
+  else 
+    {
+      ieee_handler ("set", "invalid", SIGFPE_ABORT) ;
+    }
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    GSL_ERROR ("sunos4 does not support the denormalized operand exception",
-	       GSL_EUNSUP) ;
+    {
+      ieee_handler ("set", "denormalized", SIGFPE_IGNORE) ;
+    }
+  else
+    {
+      GSL_ERROR ("sunos4 does not support the denormalized operand\n"
+		 "exception. Use 'mask-denormalized' to work around this.\n",
+		 GSL_EUNSUP) ;
+    }
+
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    ieee_flags ("set", "exception", "division", out) ;
-
+    {
+      ieee_handler ("set", "division", SIGFPE_IGNORE) ;
+    } 
+  else
+    {
+      ieee_handler ("set", "division", SIGFPE_ABORT) ;
+    }
+  
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    ieee_flags ("set", "exception", "overflow", out) ;
+    {
+      ieee_handler ("set", "overflow", SIGFPE_IGNORE) ;
+    }
+  else 
+    {
+      ieee_handler ("set", "overflow", SIGFPE_ABORT) ;
+    }
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    ieee_flags ("set", "exception", "underflow", out) ;
+    {
+      ieee_handler ("set", "underflow", SIGFPE_IGNORE) ;
+    }
+  else
+    {
+      ieee_handler ("set", "underflow", SIGFPE_ABORT) ;
+    }
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      ieee_flags ("set", "exception", "inexact", out) ;
+      ieee_handler ("set", "inexact", SIGFPE_ABORT) ;
+    }
+  else
+    {
+      ieee_handler ("set", "inexact", SIGFPE_IGNORE) ;
     }
 
   return GSL_SUCCESS ;

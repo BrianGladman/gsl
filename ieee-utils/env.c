@@ -56,6 +56,10 @@ gsl_ieee_env_setup (void)
     {
       printf("mask-all;") ;
     }
+  else if ((exception_mask & GSL_IEEE_MASK_ALL) == 0)
+    {
+      printf("trap-common;") ;
+    }
   else 
     {
       if (exception_mask & GSL_IEEE_MASK_INVALID)

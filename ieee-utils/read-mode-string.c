@@ -65,10 +65,10 @@ gsl_ieee_read_mode_string (const char * description,
 		 "  round-to-nearest round-down round-up round-to-zero\n"
 		 "  mask-invalid mask-denormalized mask-overflow "
 		 "mask-underflow\n"
-		 "  trap-inexact\n"
-		 "  mask-all\n"
-		 "\nseparated by semicolons. "
-		 "(e.g. GSL_IEEE_MODE=\"extended;round-to-nearest\")",
+		 "  mask-all trap-common  trap-inexact\n"
+		 "\n"
+		 "separated by semicolons. "
+		 "(e.g. GSL_IEEE_MODE=\"round-down;mask-underflow\")",
 		 GSL_EINVAL) ;
 
     if (new_precision) 
@@ -162,10 +162,14 @@ lookup_string (const char * p, int * precision, int * rounding,
     {
       *exception_mask = GSL_IEEE_TRAP_INEXACT ;
     }
-  else if (strcmp(p,"default") == 0) 
+  else if (strcmp(p,"trap-common") == 0) 
     {
       return 0 ;
     }
+  else
+    {
+      return 1 ;
+    }
 
-  return 1 ;
+  return 0 ;
 }
