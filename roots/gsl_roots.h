@@ -16,6 +16,10 @@
 
 /* Macros */
 
+#ifndef HAVE_ISINF
+#define isinf(x) (x == HUGE_VAL)
+#endif /* HAVE_ISINF */
+
 /* Return nonzero if x is a real number, i.e. non NaN or infinite. */
 /* FIXME: Is this correct way to check if something is real? */
 #define GSL_ISREAL(x) (((x) == (x)) && !isinf (x))

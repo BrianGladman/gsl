@@ -11,7 +11,7 @@ include_HEADERS = \
 
 noinst_HEADERS = bessel_amp_phase.h
 
-INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../integration
+INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../integration -I$(top_srcdir)
 
 TESTS = test_trap test_radix2 test
 
