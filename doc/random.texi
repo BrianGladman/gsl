@@ -921,6 +921,61 @@ Useful integral:
 
 @end itemize
 
+@deftypefn Random void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigmax}, double @var{sigmay}, double @var{rho}, double * @var{x}, double * @var{y})
+@cindex Gaussian random numbers
+This function returns a gaussian random number, with mean zero and
+variance one. The probability distribution for gaussian random numbers
+is,
+@c
+@equation
+p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2 / 2) dx
+@end equation
+@noindent
+for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
+transformation @math{z = \mu + \sigma x} on the numbers returned by
+@code{gsl_ran_gaussian} to obtain the general normal distribution,
+@c
+@equation
+p(z) dz = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(z-\mu)^2 / 2\sigma^2) dz
+@end equation
+@noindent
+@end deftypefn
+@tex
+\centerline{\input rand-bivariate-gaussian.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{\mu}, Variance = @math{\sigma^2}, Skewness = 0, Excess = 0
+
+@item
+Cumulants, @math{\kappa_1=\mu}, @math{\kappa_2=\sigma^2},
+@math{\kappa_n=0} for @math{n>2}
+
+@item
+Characteristic function, @math{\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @}(1 - \hbox@{erf@}((x-m)/\sqrt@{2\sigma^2@}))}
+@item
+Confidence limits:
+
+@math{p(|x-\mu| < \sigma) = 0.683},
+@math{p(|x-\mu| < 2\sigma) = 0.954},
+@math{p(|x-\mu| < 3\sigma) = 0.9973}
+
+@item
+Useful integral:
+@equation
+\int_@{-\infty@}^@{+\infty@} x^@{2n@} p(x) dx 
+= 2^n \sigma^@{2n+1@} \Gamma(n+ @{1 \over 2@}) / \sqrt\pi
+@end equation
+
+@end itemize
+
+
 @page
 @subsection The Cauchy Distribution
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
@@ -1125,21 +1180,45 @@ if @math{a \le x < b} and 0 otherwise.
 @end tex
 
 @page
-@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a})
+@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gamma distribution random numbers
 This function returns a random number from the gamma
 distribution.  The distribution function is
 @c
 @equation
-p(x) dx = @{1 \over \Gamma(a)@} x^@{a-1@} e^@{-x@} dx
+p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
 @end equation
-If @math{X} and @math{Y} are independent gamma-distributed random
-variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
-distribution of order @math{a+b}.
+@c If @math{X} and @math{Y} are independent gamma-distributed random
+@c variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
+@c distribution of order @math{a+b}.
 @end deftypefn
 @tex
 \centerline{\input rand-gamma.tex}
 @end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{ab}, Variance = @math{ab^2}, Skewness = FIXME, Excess = FIXME
+
+@item
+Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
+@item
+Confidence limits:
+
+@item
+Useful integral:
+
+@end itemize
+
 
 @page
 @deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
@@ -1188,19 +1267,43 @@ for @math{x > 0}
 @end tex
 
 @page
-@deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a})
+@deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Lognormal random numbers
-This function returns a random number from the pareto
-distribution of order @var{a}.  The distribution function is
+This function returns a random number from the pareto distribution of
+order @var{a}.  The distribution function is,
 @c
 @equation
-p(x) dx = a / x^@{a+1@} dx
+p(x) dx = a b^a / x^@{a+1@} dx
 @end equation
 for @math{x \ge 1}
 @end deftypefn
 @tex
 \centerline{\input rand-pareto.tex}
 @end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{ab/(a-1)}, Variance = @math{a b^2/((a-2)(a-1)^2)}, Skewness = FIXME, Excess = FIXME, Mode = @math{b}
+
+@item
+Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = 1 - b^2 / x}
+@item
+Confidence limits:
+
+@item
+Useful integral:
+
+@end itemize
+
 
 @deftypefn Random double gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @cindex 2D random direction vector
@@ -1332,6 +1435,38 @@ for @math{n \ge 1}.
 \centerline{\input rand-geometric.tex}
 @end tex
 
+@page
+@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+@cindex Binomial random numbers
+This function returns a random integer from the negative binomial
+distribution, the number of failures occurring before @var{t} successes
+are obtained in independent trials with probability @var{p} of
+success. The probability distribution for negative binomial random numbers is,
+@c
+@equation
+p(n) = @{(t + n - 1)! \over n! (t - 1)! @} p^t (1-p)^n
+@end equation
+@end deftypefn
+@tex
+\centerline{\input rand-nbinomial.tex}
+@end tex
+
+@page
+@deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
+@cindex Geometric random numbers
+This function returns a random integer from the hypergeometric
+distribution. The probability distribution for hypergeometric
+random numbers is,
+@c
+@equation
+p(n) =  choose(n1,n) choose(n2, t-n) / choose(n1+n2,n)
+@end equation
+@end deftypefn
+@tex
+\centerline{\input rand-hypergeometric.tex}
+@end tex
+
+
 @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
 @code{gsl_ran_poisson_array} places an array of @var{N}
 poisson--distributed random numbers with mean @var{mu} into the array
@@ -1367,6 +1502,14 @@ Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
 @noindent
+
+@itemize @asis
+@item
+Luc Devroye, @cite{Non-uniform Random Variate Generation},
+Springer-Verlag, ISBN 0-387-96305-7.
+@end itemize
+@noindent
+
 
 
 See the pLab home page (http://random.mat.sbg.ac.at/) for a lot of information

@@ -18,6 +18,22 @@ p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
 plot sigma=1.0, p(x) title "$\sigma=1$", \
 	sigma=2.0, p(x) title "$\sigma=2$"
 
+set xrange [-2:2]
+set yrange [-2:2]
+set ytics 1
+set xtics 1
+set output "rand-bivariate-gaussian.tex"
+set title "Bivariate Gaussian Distribution"
+set isosamples 30
+p(x,y)=1/sqrt(2*pi*sqrt(1-rho**2))*exp(-(x**2 + y**2 - 2*rho*x*y)/(2*(1-rho**2)))
+#set cntrparam cspline
+set noclabel
+set contour
+set view 0,0
+set nosurface
+splot rho=0.9, p(x,y) title "$\sigma_x=1, \sigma_y=1, \rho=0.9$"
+
+
 set xrange [-5:5]
 set yrange [0:0.4]
 set output "rand-cauchy.tex"
@@ -183,4 +199,21 @@ set title "Geometric Distribution"
 p(x)=P*(1-P)**int(x)
 plot P=0.5, p(x) title "$p=0.5$"
 
+set xrange [0:10]
+set yrange [0:0.7]
+set ytics 0.1
+set xtics 1
+set output "rand-hypergeometric.tex"
+set title "Hypergeometric Distribution"
+choose(a,b)=gamma(a+1)/(gamma(b+1)*gamma(a-b+1))
+p(x)=choose(n1,int(x))*choose(n2,t-int(x))/choose(n1+n2,t)
+plot n1=5, n2=20, t=3, p(x) title "$n1=5, n2=20, t=3$"
 
+set xrange [0:10]
+set yrange [0:0.3]
+set xtics 1
+set ytics 0.1
+set output "rand-nbinomial.tex"
+set title "Negative Binomial Distribution"
+p(x)= (P**n)*((1-P)**(int(x)))*gamma(n+int(x))/gamma(n)/gamma(int(x)+1.0) + 1e-5
+plot P=0.5,n=3, p(x) title "$p=0.5,n=3$"
