@@ -4,6 +4,7 @@
 #include <gsl_errno.h>
 #include <gsl_math.h>
 #include "gsl_sf_erf.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_gamma.h"
 
@@ -82,8 +83,8 @@ gamma_inc_Q_large_x(const double a, const double x, double * result)
   int n;
   for(n=1; n<nmax; n++) {
     term *= (a-n)/x;
-    if(fabs(last/term) > 1.0) break;
-    if(fabs(term/sum) < GSL_MACH_EPS) break;
+    if(fabs(term/last) > 1.0) break;
+    if(fabs(term/sum)  < GSL_MACH_EPS) break;
     sum  += term;
     last  = term;
   }
@@ -99,6 +100,7 @@ gamma_inc_Q_large_x(const double a, const double x, double * result)
 
 /* Uniform asymptotic for x near a, a and x large.
  * See [Temme, p. 285]
+ * FIXME: need c1 coefficient
  */
 static
 int
@@ -134,6 +136,156 @@ gamma_inc_Q_asymp_unif(const double a, const double x, double * result)
 }
 
 
+/* Continued fraction for Q.
+ *
+ * Q(a,x) = D(a,x) a/x F(a,x)
+ *             1   (1-a)/x  1/x  (2-a)/x   2/x  (3-a)/x
+ *  F(a.x) =  ---- ------- ----- -------- ----- -------- ...
+ *            1 +   1 +     1 +   1 +      1 +   1 +
+ *
+ * Uses Gautschi equivalent series method for the CF evaluation.
+ */
+static
+int
+gamma_inc_Q_CF(const double a, const double x, double * result)
+{
+  const int kmax = 5000;
+
+  double D;
+  const int stat_D = gamma_inc_D(a, x, &D);
+  const double pre = D * a/x;
+
+  double sum  = 1.0;
+  double tk   = 1.0;
+  double rhok = 0.0;
+  int k;
+
+  for(k=1; k<kmax; k++) {
+    double ak;
+    if(GSL_IS_ODD(k))
+      ak = (k-a)/x;
+    else
+      ak = 0.5*k/x;
+    rhok  = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
+    tk   *= rhok;
+    sum  += tk;
+    if(fabs(tk/sum) < GSL_MACH_EPS) break;
+  }
+
+  *result = pre * sum;
+  if(k == kmax)
+    return GSL_EMAXITER;
+  else
+    return stat_D;
+}
+
+
+/* Useful for small a and x. Handles the subtraction analytically.
+ */
+static
+int
+gamma_inc_Q_series(const double a, const double x, double * result)
+{
+  double term1;  /* 1 - x^a/Gamma(a+1) */
+  double sum;    /* 1 + (a+1)/(a+2)(-x)/2! + (a+1)/(a+3)(-x)^2/3! + ... */
+  int stat_sum;
+
+  {
+    /* Evaluate series for 1 - x^a/Gamma(a+1), small a
+     */
+    const double pg21 = -2.404113806319188570799476;  /* PolyGamma[2,1] */
+    const double lnx  = log(x);
+    const double el   = M_EULER+lnx;
+    const double c1 = -el;
+    const double c2 = M_PI*M_PI/12.0 - 0.5*el*el;
+    const double c3 = el*(M_PI*M_PI/12.0 - el*el/6.0) + pg21/6.0;
+    const double c4 = -0.04166666666666666667
+                       * (-1.758243446661483480 + lnx)
+                       * (-0.764428657272716373 + lnx)
+		       * ( 0.723980571623507657 + lnx)
+		       * ( 4.107554191916823640 + lnx);
+    const double c5 = -0.0083333333333333333
+                       * (-2.06563396085715900 + lnx)
+		       * (-1.28459889470864700 + lnx)
+		       * (-0.27583535756454143 + lnx)
+		       * ( 1.33677371336239618 + lnx)
+		       * ( 5.17537282427561550 + lnx);
+    const double c6 = -0.0013888888888888889
+                       * (-2.30814336454783200 + lnx)
+                       * (-1.65846557706987300 + lnx)
+                       * (-0.88768082560020400 + lnx)
+                       * ( 0.17043847751371778 + lnx)
+                       * ( 1.92135970115863890 + lnx)
+                       * ( 6.22578557795474900 + lnx);
+    const double c7 = -0.00019841269841269841
+                       * (-2.5078657901291800 + lnx)
+                       * (-1.9478900888958200 + lnx)
+                       * (-1.3194837322612730 + lnx)
+                       * (-0.5281322700249279 + lnx)
+                       * ( 0.5913834939078759 + lnx)
+                       * ( 2.4876819633378140 + lnx)
+                       * ( 7.2648160783762400 + lnx);
+    const double c8 = -0.00002480158730158730
+                       * (-2.677341544966400 + lnx)
+                       * (-2.182810448271700 + lnx)
+                       * (-1.649350342277400 + lnx)
+                       * (-1.014099048290790 + lnx)
+                       * (-0.191366955370652 + lnx)
+                       * ( 0.995403817918724 + lnx)
+                       * ( 3.041323283529310 + lnx)
+                       * ( 8.295966556941250 + lnx);
+    const double c9 = -2.75573192239859e-6
+                       * (-2.8243487670469080 + lnx)
+                       * (-2.3798494322701120 + lnx)
+                       * (-1.9143674728689960 + lnx)
+                       * (-1.3814529102920370 + lnx)
+                       * (-0.7294312810261694 + lnx)
+                       * ( 0.1299079285269565 + lnx)
+                       * ( 1.3873333251885240 + lnx)
+                       * ( 3.5857258865210760 + lnx)
+                       * ( 9.3214237073814600 + lnx);
+    const double c10 = -2.75573192239859e-7
+                       * (-2.9540329644556910 + lnx)
+                       * (-2.5491366926991850 + lnx)
+                       * (-2.1348279229279880 + lnx)
+                       * (-1.6741881076349450 + lnx)
+                       * (-1.1325949616098420 + lnx)
+                       * (-0.4590034650618494 + lnx)
+                       * ( 0.4399352987435699 + lnx)
+                       * ( 1.7702236517651670 + lnx)
+                       * ( 4.1231539047474080 + lnx)
+                       * ( 10.342627908148680 + lnx);
+
+    term1 = a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*(c8+a*(c9+a*c10)))))))));
+  }
+
+  {
+    /* Evaluate the sum.
+     */
+    const int nmax = 5000;
+    double t = 1.0;
+    int n;
+    sum = 1.0;
+
+    for(n=1; n<nmax; n++) {
+      t *= -x/(n+1.0);
+      sum += (a+1.0)/(a+n+1.0)*t;
+      if(fabs(t/sum) < GSL_MACH_EPS) break;
+    }
+    
+    if(n == nmax)
+      stat_sum = GSL_EMAXITER;
+    else
+      stat_sum = GSL_SUCCESS;
+  }
+
+  *result = term1 + (1.0 - term1) * a/(a+1.0) * x * sum;
+  return stat_sum;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_gamma_inc_Q_impl(const double a, const double x, double * result)
 {
@@ -144,6 +296,18 @@ gsl_sf_gamma_inc_Q_impl(const double a, const double x, double * result)
   else if(x == 0.0) {
     *result = 1.0;
     return GSL_SUCCESS;
+  }
+  else if(x < 0.5*a) {
+    double P;
+    int stat_P = gamma_inc_P_series(a, x, &P);
+    *result = 1.0 - P;
+    return stat_P;
+  }
+  else if(a < 0.25 && x < 10.0) {
+    return gamma_inc_Q_series(a, x, result);
+  }
+  else if(x < 100.0 && x > a) {
+    return gamma_inc_Q_CF(a, x, result);
   }
   else if(a > 1.0e+05 && (x-a)*(x-a) < a) {
     return gamma_inc_Q_asymp_unif(a, x, result);
@@ -170,6 +334,9 @@ gsl_sf_gamma_inc_P_impl(const double a, const double x, double * result)
   else if(x == 0.0) {
     *result = 0.0;
     return GSL_SUCCESS;
+  }
+  else if(x < 30.0 || x < 0.5*a) {
+    return gamma_inc_P_series(a, x, result);
   }
   else if(a > 1.0e+05 && (x-a)*(x-a) < a) {
     double Q;

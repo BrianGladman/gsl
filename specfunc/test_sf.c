@@ -1501,7 +1501,7 @@ int check_gamma(void)
   s = 0;
   y = gsl_sf_gamma_inc_P(10.0, 10.01);
   s += ( frac_diff(y, 0.5433207586693410570 ) > 1.0e-12 );
-  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 1.01)");
+  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 10.01)");
   status += s;
 
   s = 0;
@@ -1513,13 +1513,13 @@ int check_gamma(void)
   s = 0;
   y = gsl_sf_gamma_inc_P(1000.0, 1000.1);
   s += ( frac_diff(y, 0.5054666401440661753 ) > 1.0e-12 );
-  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 1000.1)");
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1000.0, 1000.1)");
   status += s;
 
   s = 0;
   y = gsl_sf_gamma_inc_P(1000.0, 2000.0);
   s += ( frac_diff(y, 1.0 ) > 1.0e-12 );
-  gsl_test(s, "  gsl_sf_gamma_inc_P(1000.0, 10000.0)");
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1000.0, 2000.0)");
   status += s;
 
 
@@ -1536,9 +1536,22 @@ int check_gamma(void)
   status += s;
 
   s = 0;
+  y = gsl_sf_gamma_inc_Q(0.001, 2.0);
+  s += ( frac_diff(y, 0.00004897691783098147880 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 2.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(0.001, 5.0);
+  s += ( frac_diff(y, 1.1509813397308608541e-06 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 5.0)");
+  status += s;
+
+  s = 0;
   y = gsl_sf_gamma_inc_Q(0.001, 10.0);
   s += ( frac_diff(y, 4.169307817190261516e-09 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 10.0)");
+  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
@@ -1562,7 +1575,8 @@ int check_gamma(void)
   s = 0;
   y = gsl_sf_gamma_inc_Q(10.0, 10.01);
   s += ( frac_diff(y, 0.4566792413306589430 ) > 1.0e-12 );
-  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 1.01)");
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 10.01)");
+  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
@@ -1574,7 +1588,7 @@ int check_gamma(void)
   s = 0;
   y = gsl_sf_gamma_inc_Q(1000.0, 1000.1);
   s += ( frac_diff(y, 0.4945333598559338247 ) > 1.0e-12 );
-  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 1000.1)");
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(1000.0, 1000.1)");
   status += s;
 
   s = 0;
