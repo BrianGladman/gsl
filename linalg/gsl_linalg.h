@@ -194,7 +194,13 @@ int gsl_linalg_complex_LU_invert (const gsl_matrix_complex * LU,
                                   const gsl_permutation * p,
                                   gsl_matrix_complex * inverse);
 
+gsl_complex gsl_linalg_complex_LU_det (gsl_matrix_complex * LU,
+                                       int signum);
 
+double gsl_linalg_complex_LU_lndet (gsl_matrix_complex * LU);
+
+gsl_complex gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * LU,
+                                          int signum);
 
 /* QR decomposition */
 
