@@ -36,7 +36,7 @@ gsl_dft_complex_inverse (const complex data[],
 
   {
     const double norm = 1.0 / n;
-    int i;
+    unsigned int i;
     for (i = 0; i < n; i++)
       {
 	result[i].real *= norm;
@@ -53,7 +53,7 @@ gsl_dft_complex (const complex data[],
 		 const gsl_fft_direction sign)
 {
 
-  int i, j, exponent;
+  unsigned int i, j, exponent;
   const double d_theta = 2.0 * ((int) sign) * M_PI / (double) n;
 
   for (i = 0; i < n; i++)

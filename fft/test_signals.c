@@ -16,7 +16,7 @@ gsl_fft_test_signal_complex_pulse (const unsigned int k,
 				   complex data[],
 				   complex fft[])
 {
-  int j;
+  unsigned int j;
 
   if (n == 0)
     {
@@ -57,7 +57,7 @@ gsl_fft_test_signal_complex_constant (const unsigned int n,
 				      complex data[],
 				      complex fft[])
 {
-  int j;
+  unsigned int j;
 
   if (n == 0)
     {
@@ -96,7 +96,7 @@ gsl_fft_test_signal_complex_exp (const int k,
 				 complex data[],
 				 complex fft[])
 {
-  int j;
+  unsigned int j;
 
   if (n == 0)
     {
@@ -154,7 +154,7 @@ gsl_fft_test_signal_complex_exppair (const int k1,
 				     complex data[],
 				     complex fft[])
 {
-  int j;
+  unsigned int j;
 
   if (n == 0)
     {
@@ -223,7 +223,8 @@ gsl_fft_test_signal_complex_noise (const unsigned int n,
 				   complex data[],
 				   complex fft[])
 {
-  int i, status;
+  unsigned int i;
+  int status;
 
   if (n == 0)
     {
@@ -248,7 +249,8 @@ gsl_fft_test_signal_real_noise (const unsigned int n,
 				complex data[],
 				complex fft[])
 {
-  int i, status;
+  unsigned int i;
+  int status;
 
   if (n == 0)
     {

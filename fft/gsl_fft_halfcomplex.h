@@ -5,6 +5,10 @@
 #include <gsl_complex.h>
 #include <gsl_fft.h>
 
+int
+gsl_fft_halfcomplex_radix2 (double data[],
+			    const unsigned int n) ;
+
 typedef struct
   {
     unsigned int n;

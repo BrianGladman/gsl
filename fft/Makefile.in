@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1m from Makefile.am
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -32,23 +32,18 @@ pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ..
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
-
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-host_alias = @host_alias@
 host_triplet = @host@
-CC = @CC@
+host_alias = @host_alias@
+RANLIB = @RANLIB@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
 VERSION = @VERSION@
+CC = @CC@
 
 noinst_LIBRARIES = libfft.a 
 
@@ -98,6 +93,7 @@ complex_pass_n.c \
 complex_radix2.c \
  \
 factorize.c \
+bitreverse.c \
  \
 halfcomplex.c \
 gsl_fft_halfcomplex.h \
@@ -107,6 +103,7 @@ halfcomplex_pass_3.c \
 halfcomplex_pass_4.c \
 halfcomplex_pass_5.c \
 halfcomplex_pass_n.c \
+halfcomplex_radix2.c \
 halfcomplex_unpack.c \
  \
 real.c \
@@ -117,6 +114,7 @@ real_pass_3.c \
 real_pass_4.c \
 real_pass_5.c \
 real_pass_n.c \
+real_radix2.c \
 real_unpack.c \
  \
 test_signals.c \
@@ -136,11 +134,12 @@ libfft_a_LIBADD =
 libfft_a_OBJECTS =  autotest.o compare.o dft_complex.o benchmark.o \
 complex.o complex_init.o complex_pass_2.o complex_pass_3.o \
 complex_pass_4.o complex_pass_5.o complex_pass_6.o complex_pass_n.o \
-complex_radix2.o factorize.o halfcomplex.o halfcomplex_init.o \
-halfcomplex_pass_2.o halfcomplex_pass_3.o halfcomplex_pass_4.o \
-halfcomplex_pass_5.o halfcomplex_pass_n.o halfcomplex_unpack.o real.o \
-real_init.o real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o \
-real_pass_n.o real_unpack.o test_signals.o
+complex_radix2.o factorize.o bitreverse.o halfcomplex.o \
+halfcomplex_init.o halfcomplex_pass_2.o halfcomplex_pass_3.o \
+halfcomplex_pass_4.o halfcomplex_pass_5.o halfcomplex_pass_n.o \
+halfcomplex_radix2.o halfcomplex_unpack.o real.o real_init.o \
+real_pass_2.o real_pass_3.o real_pass_4.o real_pass_5.o real_pass_n.o \
+real_radix2.o real_unpack.o test_signals.o
 AR = ar
 PROGRAMS =  $(bin_PROGRAMS)
 
@@ -164,22 +163,24 @@ HEADERS =  $(include_HEADERS)
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-GZIP = --best
-DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/compare.P \
-.deps/complex.P .deps/complex_init.P .deps/complex_pass_2.P \
-.deps/complex_pass_3.P .deps/complex_pass_4.P .deps/complex_pass_5.P \
-.deps/complex_pass_6.P .deps/complex_pass_n.P .deps/complex_radix2.P \
-.deps/dft_complex.P .deps/errs.P .deps/factorize.P .deps/halfcomplex.P \
-.deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
-.deps/halfcomplex_pass_3.P .deps/halfcomplex_pass_4.P \
-.deps/halfcomplex_pass_5.P .deps/halfcomplex_pass_n.P \
+DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/bitreverse.P \
+.deps/compare.P .deps/complex.P .deps/complex_init.P \
+.deps/complex_pass_2.P .deps/complex_pass_3.P .deps/complex_pass_4.P \
+.deps/complex_pass_5.P .deps/complex_pass_6.P .deps/complex_pass_n.P \
+.deps/complex_radix2.P .deps/dft_complex.P .deps/errs.P \
+.deps/factorize.P .deps/halfcomplex.P .deps/halfcomplex_init.P \
+.deps/halfcomplex_pass_2.P .deps/halfcomplex_pass_3.P \
+.deps/halfcomplex_pass_4.P .deps/halfcomplex_pass_5.P \
+.deps/halfcomplex_pass_n.P .deps/halfcomplex_radix2.P \
 .deps/halfcomplex_unpack.P .deps/real.P .deps/real_init.P \
 .deps/real_pass_2.P .deps/real_pass_3.P .deps/real_pass_4.P \
-.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_unpack.P \
-.deps/test.P .deps/test_radix2.P .deps/test_signals.P .deps/test_trap.P
+.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_radix2.P \
+.deps/real_unpack.P .deps/test.P .deps/test_radix2.P \
+.deps/test_signals.P .deps/test_trap.P
 SOURCES = $(libfft_a_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) errs.c
 OBJECTS = $(libfft_a_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) errs.o
 
@@ -187,8 +188,8 @@ default: all
 
 .SUFFIXES:
 .SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu fft/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu fft/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -237,7 +238,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(bindir)
 	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
@@ -271,7 +272,7 @@ install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
 	@list="$(include_HEADERS)"; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
+	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
@@ -358,7 +359,6 @@ check-TESTS: $(TESTS)
 	  echo "========================"; \
 	else \
 	  echo "$$failed of $$all tests failed"; \
-	  exit 1; \
 	fi
 info:
 dvi:

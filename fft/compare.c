@@ -15,7 +15,7 @@ compare_complex_results (const char *name_a, const complex a[],
 			 unsigned int n,
 			 const double allowed_ticks)
 {
-  int i;
+  unsigned int i;
   double ticks, max_ticks = 0;
   double dr, di;
   const char *flag;

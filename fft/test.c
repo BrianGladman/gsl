@@ -51,7 +51,8 @@ main (int argc, char *argv[])
 
 void check_complex (unsigned int n) 
 {
-  int i, status ;
+  unsigned int i ;
+  int status ;
 
   double *real_data, *real_tmp;
   double *fft_real_data, *fft_real_tmp;
@@ -220,7 +221,7 @@ void check_complex (unsigned int n)
   status = 0;
   for (i = 0; i < n; i++)
     {
-      gsl_fft_test_signal_complex_exp (i, n, 1.0, 0.0, complex_data,
+      gsl_fft_test_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
 				       fft_complex_data);
       gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
       status |= compare_complex_results ("analytic", fft_complex_data,

@@ -47,6 +47,7 @@ complex_pass_n.c \
 complex_radix2.c \
  \
 factorize.c \
+bitreverse.c \
  \
 halfcomplex.c \
 gsl_fft_halfcomplex.h \
@@ -56,6 +57,7 @@ halfcomplex_pass_3.c \
 halfcomplex_pass_4.c \
 halfcomplex_pass_5.c \
 halfcomplex_pass_n.c \
+halfcomplex_radix2.c \
 halfcomplex_unpack.c \
  \
 real.c \
@@ -66,6 +68,7 @@ real_pass_3.c \
 real_pass_4.c \
 real_pass_5.c \
 real_pass_n.c \
+real_radix2.c \
 real_unpack.c \
  \
 test_signals.c \

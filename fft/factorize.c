@@ -134,3 +134,34 @@ gsl_fft_factorize (const unsigned int n,
 
   return factor_sum;
 }
+
+
+int gsl_fft_binary_logn (const unsigned int n)
+{
+  unsigned int ntest ;
+  unsigned int binary_logn = 0 ;
+  unsigned int k = 1;
+
+  while (k < n)
+    {
+      k *= 2;
+      binary_logn++;
+    }
+
+  ntest = (1 << binary_logn) ;
+
+  if (n != ntest )
+    {
+      /* n is not a power of 2 */
+      return -1 ; 
+    } 
+  else 
+    {
+      return binary_logn;
+    }
+      
+}
+
+
+
+

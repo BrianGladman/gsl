@@ -20,7 +20,8 @@ main (int argc, char *argv[])
 {
   complex *data, *fft_data;
   gsl_fft_complex_wavetable complex_wavetable;
-  int i, status;
+  unsigned int i;
+  int status;
   clock_t start, end;
   int resolution = CLOCKS_PER_SEC;
   unsigned int n = 1;

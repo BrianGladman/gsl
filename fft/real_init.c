@@ -43,7 +43,7 @@ int
 gsl_fft_real_generate_wavetable (unsigned int n,
 				 gsl_fft_real_wavetable * wavetable)
 {
-  int i;
+  unsigned int i;
   double d_theta;
   unsigned int t, product, product_1, q;
 

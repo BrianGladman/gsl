@@ -99,8 +99,10 @@ gsl_fft_complex_radix2 (complex data[],
 			const gsl_fft_direction sign)
 {
 
-  int dual;
-  int bit; unsigned int logn = 0;
+  int result ;
+  unsigned int dual;
+  unsigned int bit; 
+  unsigned int logn = 0;
   int status;
 
   if (n == 1) /* identity operation */
@@ -110,11 +112,13 @@ gsl_fft_complex_radix2 (complex data[],
 
   /* make sure that n is a power of 2 */
 
-  logn = gsl_fft_binary_logn(n) ;
+  result = gsl_fft_binary_logn(n) ;
 
-  if (logn == -1) {
+  if (result == -1) {
     GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
     return -1;
+  } else {
+    logn = result ;
   }
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
@@ -177,8 +181,9 @@ gsl_fft_complex_radix2_dif (complex data[],
 			    const unsigned int n,
 			    const gsl_fft_direction sign)
 {
-  int dual;
-  int bit; 
+  int result ;
+  unsigned int dual;
+  unsigned int bit; 
   unsigned int logn = 0;
   int status;
 
@@ -189,11 +194,13 @@ gsl_fft_complex_radix2_dif (complex data[],
 
   /* make sure that n is a power of 2 */
 
-  logn = gsl_fft_binary_logn(n) ;
+  result = gsl_fft_binary_logn(n) ;
 
-  if (logn == -1) {
+  if (result == -1) {
     GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
     return -1;
+  } else {
+    logn = result ;
   }
 
   /* apply fft recursion */
@@ -251,60 +258,3 @@ gsl_fft_complex_radix2_dif (complex data[],
   return 0;
 
 }
-
-
-int gsl_fft_binary_logn (const unsigned int n)
-{
-  int binary_logn = 0 ;
-  unsigned int k = 1;
-
-  while (k < n)
-    {
-      k *= 2;
-      binary_logn++;
-    }
-
-  if (n != (1 << binary_logn))
-    {
-      /* n is not a power of 2 */
-      return -1 ; 
-    } 
-  else 
-    {
-      return binary_logn;
-    }
-      
-}
-
-
-int gsl_fft_complex_bitreverse_order (complex data[], 
-				      const unsigned int n,
-				      const unsigned int logn)
-{
-  unsigned int i;
-
-  for (i = 0; i < n; i++)
-    {
-      unsigned int j = 0;
-      unsigned int i_tmp = i;
-      unsigned int bit;
-
-      for (bit = 0; bit < logn; bit++)
-	{
-	  j <<= 1;		/* reverse shift i into j */
-	  j |= i_tmp & 1;
-	  i_tmp >>= 1;
-	}
-      
-      if (i < j)
-	{
-	  const complex data_tmp = data[i];
-	  data[i] = data[j];
-	  data[j] = data_tmp;
-	}
-    }
-  return 0;
-}
-
-
-

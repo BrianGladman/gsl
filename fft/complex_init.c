@@ -42,7 +42,7 @@ int
 gsl_fft_complex_generate_wavetable (unsigned int n,
 				    gsl_fft_complex_wavetable * wavetable)
 {
-  int i;
+  unsigned int i;
   double d_theta;
   unsigned int t, product, product_1, q;
 

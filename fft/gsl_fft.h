@@ -24,6 +24,18 @@ int
 		     unsigned int *n_factors,
 		     unsigned int factors[]);
 
+int gsl_fft_binary_logn (const unsigned int n) ;
+
+int gsl_fft_complex_bitreverse_order (complex data[], 
+				      const unsigned int n,
+				      const unsigned int logn) ;
+
+int gsl_fft_real_bitreverse_order (double data[], 
+				   const unsigned int n,
+				   const unsigned int logn) ;
+
+
+
 typedef enum
   {
     forward = -1, backward = +1   
