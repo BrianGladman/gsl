@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.2a from Makefile.am
+# Makefile.in generated automatically by automake 1.2c from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,6 +9,10 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+#####################################################################
+
+#####################################################################
 
 
 SHELL = /bin/sh
@@ -66,21 +70,17 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 ALLRAN= taus mrg cmrg uni uni32 zuf rand
-FAVORITERAN= taus
 
-INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
 
-EXTRA_DIST= xxx-switch.xc makeswitch xxx-gen.xc xxx-state.xc \
-	makeam Makefile.ami $(BUILT_SOURCES)
+EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
+	makeam makesrc Makefile.ami 
 
 CLEANFILES= tmp.out tmp.in
 
-noinst_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
-
-TESTS = test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand 
+bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
 
 lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
 
@@ -101,7 +101,7 @@ taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
 taus_LDADD=               taus-gen.o
 test_taus_SOURCES=        testran.c
 test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
-test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_taus_LDADD=          taus.o taus-gen.o
 bench_taus_SOURCES=       benchran.c
 bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
 bench_taus_LDADD=         taus.o taus-gen.o
@@ -110,7 +110,7 @@ mrg_DEPENDENCIES=        mrg-state.c mrg.h mrg-gen.o
 mrg_LDADD=               mrg-gen.o
 test_mrg_SOURCES=        testran.c
 test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
-test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_mrg_LDADD=          mrg.o mrg-gen.o
 bench_mrg_SOURCES=       benchran.c
 bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
 bench_mrg_LDADD=         mrg.o mrg-gen.o
@@ -119,7 +119,7 @@ cmrg_DEPENDENCIES=        cmrg-state.c cmrg.h cmrg-gen.o
 cmrg_LDADD=               cmrg-gen.o
 test_cmrg_SOURCES=        testran.c
 test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
-test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_cmrg_LDADD=          cmrg.o cmrg-gen.o
 bench_cmrg_SOURCES=       benchran.c
 bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
 bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
@@ -128,7 +128,7 @@ uni_DEPENDENCIES=        uni-state.c uni.h uni-gen.o
 uni_LDADD=               uni-gen.o
 test_uni_SOURCES=        testran.c
 test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
-test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni_LDADD=          uni.o uni-gen.o
 bench_uni_SOURCES=       benchran.c
 bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
 bench_uni_LDADD=         uni.o uni-gen.o
@@ -137,7 +137,7 @@ uni32_DEPENDENCIES=        uni32-state.c uni32.h uni32-gen.o
 uni32_LDADD=               uni32-gen.o
 test_uni32_SOURCES=        testran.c
 test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
-test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_uni32_LDADD=          uni32.o uni32-gen.o
 bench_uni32_SOURCES=       benchran.c
 bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
 bench_uni32_LDADD=         uni32.o uni32-gen.o
@@ -146,7 +146,7 @@ zuf_DEPENDENCIES=        zuf-state.c zuf.h zuf-gen.o
 zuf_LDADD=               zuf-gen.o
 test_zuf_SOURCES=        testran.c
 test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
-test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_zuf_LDADD=          zuf.o zuf-gen.o
 bench_zuf_SOURCES=       benchran.c
 bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
 bench_zuf_LDADD=         zuf.o zuf-gen.o
@@ -155,12 +155,10 @@ rand_DEPENDENCIES=        rand-state.c rand.h rand-gen.o
 rand_LDADD=               rand-gen.o
 test_rand_SOURCES=        testran.c
 test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
-test_rand_LDADD=          rand.o rand-gen.o ../err/libgsltest.a ../utils/libutils.a
+test_rand_LDADD=          rand.o rand-gen.o
 bench_rand_SOURCES=       benchran.c
 bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o
-
-BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -189,7 +187,7 @@ libgslranzuf_a_OBJECTS =  zuf.o zuf-gen.o
 libgslranrand_a_LIBADD = 
 libgslranrand_a_OBJECTS =  rand.o rand-gen.o
 AR = ar
-PROGRAMS =  $(noinst_PROGRAMS)
+PROGRAMS =  $(bin_PROGRAMS)
 
 taus_OBJECTS =  ran.o taus.o
 taus_LDFLAGS = 
@@ -247,13 +245,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg-state.P \
-.deps/cmrg.P .deps/mrg-gen.P .deps/mrg-state.P .deps/mrg.P .deps/ran.P \
-.deps/rand-gen.P .deps/rand-state.P .deps/rand.P .deps/switch.P \
-.deps/taus-gen.P .deps/taus-state.P .deps/taus.P .deps/test-switch.P \
-.deps/testran.P .deps/uni-gen.P .deps/uni-state.P .deps/uni.P \
-.deps/uni32-gen.P .deps/uni32-state.P .deps/uni32.P .deps/zuf-gen.P \
-.deps/zuf-state.P .deps/zuf.P
+DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg.P \
+.deps/mrg-gen.P .deps/mrg.P .deps/ran.P .deps/rand-gen.P .deps/rand.P \
+.deps/switch.P .deps/taus-gen.P .deps/taus.P .deps/test-switch.P \
+.deps/testran.P .deps/uni-gen.P .deps/uni.P .deps/uni32-gen.P \
+.deps/uni32.P .deps/zuf-gen.P .deps/zuf.P
 SOURCES = $(libgslrandom_a_SOURCES) $(libgslrantaus_a_SOURCES) $(libgslranmrg_a_SOURCES) $(libgslrancmrg_a_SOURCES) $(libgslranuni_a_SOURCES) $(libgslranuni32_a_SOURCES) $(libgslranzuf_a_SOURCES) $(libgslranrand_a_SOURCES) $(taus_SOURCES) $(test_taus_SOURCES) $(bench_taus_SOURCES) $(mrg_SOURCES) $(test_mrg_SOURCES) $(bench_mrg_SOURCES) $(cmrg_SOURCES) $(test_cmrg_SOURCES) $(bench_cmrg_SOURCES) $(uni_SOURCES) $(test_uni_SOURCES) $(bench_uni_SOURCES) $(uni32_SOURCES) $(test_uni32_SOURCES) $(bench_uni32_SOURCES) $(zuf_SOURCES) $(test_zuf_SOURCES) $(bench_zuf_SOURCES) $(rand_SOURCES) $(test_rand_SOURCES) $(bench_rand_SOURCES) $(test_switch_SOURCES)
 OBJECTS = $(libgslrandom_a_OBJECTS) $(libgslrantaus_a_OBJECTS) $(libgslranmrg_a_OBJECTS) $(libgslrancmrg_a_OBJECTS) $(libgslranuni_a_OBJECTS) $(libgslranuni32_a_OBJECTS) $(libgslranzuf_a_OBJECTS) $(libgslranrand_a_OBJECTS) $(taus_OBJECTS) $(test_taus_OBJECTS) $(bench_taus_OBJECTS) $(mrg_OBJECTS) $(test_mrg_OBJECTS) $(bench_mrg_OBJECTS) $(cmrg_OBJECTS) $(test_cmrg_OBJECTS) $(bench_cmrg_OBJECTS) $(uni_OBJECTS) $(test_uni_OBJECTS) $(bench_uni_OBJECTS) $(uni32_OBJECTS) $(test_uni32_OBJECTS) $(bench_uni32_OBJECTS) $(zuf_OBJECTS) $(test_zuf_OBJECTS) $(bench_zuf_OBJECTS) $(rand_OBJECTS) $(test_rand_OBJECTS) $(bench_rand_OBJECTS) $(test_switch_OBJECTS)
 
@@ -272,7 +268,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
@@ -305,63 +301,79 @@ uninstall-libLIBRARIES:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	rm -f *.o core
+	-rm -f *.o core
 
 clean-compile:
 
 distclean-compile:
-	rm -f *.tab.c
+	-rm -f *.tab.c
 
 maintainer-clean-compile:
 
 libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
-	rm -f libgslrandom.a
+	-rm -f libgslrandom.a
 	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
 	$(RANLIB) libgslrandom.a
 
 libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
-	rm -f libgslrantaus.a
+	-rm -f libgslrantaus.a
 	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
 	$(RANLIB) libgslrantaus.a
 
 libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
-	rm -f libgslranmrg.a
+	-rm -f libgslranmrg.a
 	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
 	$(RANLIB) libgslranmrg.a
 
 libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
-	rm -f libgslrancmrg.a
+	-rm -f libgslrancmrg.a
 	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
 	$(RANLIB) libgslrancmrg.a
 
 libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
-	rm -f libgslranuni.a
+	-rm -f libgslranuni.a
 	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
 	$(RANLIB) libgslranuni.a
 
 libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
-	rm -f libgslranuni32.a
+	-rm -f libgslranuni32.a
 	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
 	$(RANLIB) libgslranuni32.a
 
 libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
-	rm -f libgslranzuf.a
+	-rm -f libgslranzuf.a
 	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
 	$(RANLIB) libgslranzuf.a
 
 libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
-	rm -f libgslranrand.a
+	-rm -f libgslranrand.a
 	$(AR) cru libgslranrand.a $(libgslranrand_a_OBJECTS) $(libgslranrand_a_LIBADD)
 	$(RANLIB) libgslranrand.a
 
-mostlyclean-noinstPROGRAMS:
+mostlyclean-binPROGRAMS:
 
-clean-noinstPROGRAMS:
-	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-distclean-noinstPROGRAMS:
+distclean-binPROGRAMS:
 
-maintainer-clean-noinstPROGRAMS:
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
 
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
 	@rm -f taus
@@ -481,7 +493,7 @@ mostlyclean-tags:
 clean-tags:
 
 distclean-tags:
-	rm -f TAGS ID
+	-rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -492,6 +504,7 @@ subdir = random
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu random/Makefile
 	@for file in $(DISTFILES); do \
@@ -501,7 +514,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+MKDEP = $(CC) -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include .deps/.P
@@ -517,7 +530,7 @@ clean-depend:
 distclean-depend:
 
 maintainer-clean-depend:
-	rm -rf .deps
+	-rm -rf .deps
 
 .deps/%.P: %.c
 	@echo "Computing dependencies for $<..."
@@ -526,37 +539,12 @@ maintainer-clean-depend:
 	$(MKDEP) $< >$@.tmp \
 	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
 	  && rm -f $@.tmp
-check-TESTS: $(TESTS)
-	@failed=0; all=0; \
-	srcdir=$(srcdir); export srcdir; \
-	for tst in $(TESTS); do \
-	  if test -f $$tst; then dir=.; \
-	  else dir="$(srcdir)"; fi; \
-	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
-	    all=`expr $$all + 1`; \
-	    echo "PASS: $$tst"; \
-	  elif test $$? -ne 77; then \
-	    all=`expr $$all + 1`; \
-	    failed=`expr $$failed + 1`; \
-	    echo "FAIL: $$tst"; \
-	  fi; \
-	done; \
-	if test "$$failed" -eq 0; then \
-	  banner="All $$all tests passed"; \
-	else \
-	  banner="$$failed of $$all tests failed"; \
-	fi; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"; \
-	test "$$failed" -eq 0
 info:
 dvi:
 check: all
-	$(MAKE) check-TESTS
+	$(MAKE)
 installcheck:
-install-exec: install-libLIBRARIES
+install-exec: install-libLIBRARIES install-binPROGRAMS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -565,117 +553,97 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
 all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(includedir)
+	$(mkinstalldirs)  $(libdir) $(bindir) $(includedir)
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-binPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
+clean:  clean-libLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
 		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-noinstPROGRAMS distclean-tags \
-		distclean-depend distclean-generic clean
-	rm -f config.status
+		distclean-binPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
+	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile \
-		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+		maintainer-clean-compile maintainer-clean-binPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
-distclean-noinstPROGRAMS clean-noinstPROGRAMS \
-maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-binPROGRAMS \
+distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
+uninstall-binPROGRAMS install-binPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
-install-exec install-data install uninstall all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
-switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
-	./makeswitch $(ALLRAN) 
+switch.c gsl_ran_switch.h:
+	./makesrc --switch
 
-tooclean: clean
-	/bin/rm -f $(BUILT_SOURCES)
+taus.h taus-state.c taus-gen.c: makesrc
+	./makesrc taus
+
+mrg.h mrg-state.c mrg-gen.c: makesrc
+	./makesrc mrg
+
+cmrg.h cmrg-state.c cmrg-gen.c: makesrc
+	./makesrc cmrg
+
+uni.h uni-state.c uni-gen.c: makesrc
+	./makesrc uni
+
+uni32.h uni32-state.c uni32-gen.c: makesrc
+	./makesrc uni32
+
+zuf.h zuf-state.c zuf-gen.c: makesrc
+	./makesrc zuf
+
+rand.h rand-state.c rand-gen.c: makesrc
+	./makesrc rand
+
+tooclean:
 	/bin/rm -rf .deps
-
-Makefile.am: Makefile.ami makeam
-	cat Makefile.ami   | egrep -v '^###' > Makefile.am
-	./makeam $(ALLRAN) >> Makefile.am
-
-taus-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_taus_/g xxx-state.xc > $@
-taus.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_taus_/g gsl_ran.h > $@
-taus-gen.c: xxx-gen.xc
-	sed s/XXX/taus/g xxx-gen.xc > $@
-mrg-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_mrg_/g xxx-state.xc > $@
-mrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_mrg_/g gsl_ran.h > $@
-mrg-gen.c: xxx-gen.xc
-	sed s/XXX/mrg/g xxx-gen.xc > $@
-cmrg-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_cmrg_/g xxx-state.xc > $@
-cmrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_cmrg_/g gsl_ran.h > $@
-cmrg-gen.c: xxx-gen.xc
-	sed s/XXX/cmrg/g xxx-gen.xc > $@
-uni-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_uni_/g xxx-state.xc > $@
-uni.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni_/g gsl_ran.h > $@
-uni-gen.c: xxx-gen.xc
-	sed s/XXX/uni/g xxx-gen.xc > $@
-uni32-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_uni32_/g xxx-state.xc > $@
-uni32.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni32_/g gsl_ran.h > $@
-uni32-gen.c: xxx-gen.xc
-	sed s/XXX/uni32/g xxx-gen.xc > $@
-zuf-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_zuf_/g xxx-state.xc > $@
-zuf.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_zuf_/g gsl_ran.h > $@
-zuf-gen.c: xxx-gen.xc
-	sed s/XXX/zuf/g xxx-gen.xc > $@
-rand-state.c: xxx-state.xc
-	sed s/gsl_ran_XXX_/gsl_ran_rand_/g xxx-state.xc > $@
-rand.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_rand_/g gsl_ran.h > $@
-rand-gen.c: xxx-gen.xc
-	sed s/XXX/rand/g xxx-gen.xc > $@
+	/bin/rm -f taus.h taus-state.c taus-gen.c
+	/bin/rm -f mrg.h mrg-state.c mrg-gen.c
+	/bin/rm -f cmrg.h cmrg-state.c cmrg-gen.c
+	/bin/rm -f uni.h uni-state.c uni-gen.c
+	/bin/rm -f uni32.h uni32-state.c uni32-gen.c
+	/bin/rm -f zuf.h zuf-state.c zuf-gen.c
+	/bin/rm -f rand.h rand-state.c rand-gen.c
+	/bin/rm -f switch.c gsl_ran_switch.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
