@@ -23,7 +23,8 @@ the end of that list).
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that
-aren't tested.
+aren't tested. Actually GCOV does a better job -- use that for
+coverage testing.
 
 * We need support for general N-d arrays. Currently we have only
 vectors and matrices, which are two-dimensional.

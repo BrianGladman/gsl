@@ -2,13 +2,39 @@ We need to do a better job with the NEWS file!
 
 * Will be new in gsl-0.3g:
 
+** A single libgsl.a file is built in the top level directory and
+installed, instead of multiple .a files for each subdirectory.
+
+** The parts of the complex struct gsl_complex, .real and .imag, are
+not supported anymore. The macros GSL_REAL(z) and GSL_IMAG(z) do the
+same job. All complex numbers are considered as packed arrays of
+floating point numbers, for portability since the layout of structs or
+arrays of structs is not guaranteed.
+
+** The interface for matrices and vectors has changed. Vectors now
+support strides, and can be used to access rows and columns of a
+matrix. Many more types are available (float, double, long double,
+int, long, sort, char, signed and unsigned, plus complex floats,
+doubles and long doubles) due to improvements in our preprocessor
+template system.
+
 ** The random number generators have a completely new thread-safe
 interface and have moved from the random directory to the rng
-directory. Any program using random numbers will have to be updated.
+directory. Any program using random numbers will have to be
+updated. You can also choose generators and seeds using the
+environment variables GSL_RNG_TYPE and GSL_RNG_SEED.
 
-** The FFT allocation functions now return a pointer to a newly allocated
-   wavetable struct, instead of taking the pointer to an existing struct
-   as an argument. 
+** Some additional random number distributions have been added in the
+randist directory. The available distributiosn are: bernoulli, beta,
+binomial, cauchy, chisq, erlang, exponential, fdist, flat, gamma,
+gauss, geometric, levy, logistic, lognormal, nbinomial, pareto,
+poisson, sphere, tdist, twosidedexp, weibull.
+
+** The FFT interface has be extended to support strides, but the
+implementation hasn't been finished for all the cases yet, The FFT
+allocation functions now return a pointer to a newly allocated
+wavetable struct, instead of taking the pointer to an existing struct
+as an argument.
    
    e.g. status = gsl_fft_wavetable_alloc(n, w)
    is now    w = gsl_fft_wavetable_alloc(n) in accordance with usual practice
@@ -24,10 +50,19 @@ yourself if you want subsequent runs to use different random numbers.
 ** Work is in progress on a reimplementation of QUADPACK in the
 `integration' subdirectory, but it is not finished yet.
 
+** Work is in progress on a reimplementation of VEGAS in the
+`monte' subdirectory, but it is not finished yet.
+
+** Work has started on a portable blas system in the `blas'
+subdirectory.
+
 ** You can now set the IEEE arithmetic mode for your programs from the
 environment variable GSL_IEEE_MODE by calling the function
 gsl_ieee_env_setup(). Currently this only works with the Linux kernel,
 HP-UX, SunOS4 and Solaris.
+
+** There are some simple spline interpolation functions in the `interp'
+subdir.
 
 ** The NEWS file now uses outline mode, like the Emacs NEWS file
 
