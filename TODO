@@ -14,6 +14,8 @@ requirements.
 * 1st-line support on the mailing lists (e.g. checking that bugs are
 reproducible, and that all relevant information is supplied)
 
+* Modified Ei(x) function (see specfunc/TODO)
+
 * Eigensystems for non-symmetric matrices
 
 * Quasi-random number distributions 

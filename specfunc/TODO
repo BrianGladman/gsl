@@ -5,6 +5,36 @@ errata.
 unnecessary from performance point of view since the speed difference
 is negligible.
 
+* From: "Alexander Babansky" <babansky@mail.ru>
+To: "Brian Gough" <bjg@network-theory.co.uk>
+Subject: Re: gsl-1.2
+Date: Sun, 3 Nov 2002 14:15:15 -0500
+
+Hi Brian,
+May I suggest you to add another function to gsl-1.2 ?
+It's a modified Ei(x) function:
+
+Em(x)=exp(-x)*Ei(x);
+
+As u  might know, Ei(x) raises as e^x on the negative interval.
+Therefore, Ei(100) is very very large.
+But Ei(100)*exp(-100) = 0.010;
+
+Unfortunately, if u try x=800 u'll get overflow in Ei(800).
+but Ei(800)*exp(-800) should be around 0.0001;
+
+Modified function Em(x) is used in cos, sin integrals such as:
+int_0^\infinity dx sin(bx)/(x^2+z^2)=(1/2z)*(Em(bz)-Em(-bz));
+
+int_0^\infinity dx x cos(bx)/(x^2+z^2)=(1/2)*(Em(bz)+Em(-bz));
+
+One of possible ways to add it to the library is:
+Em(x) = - PV int_0^\infinity e^(-t)/(t+x) dt
+
+Sincerely,
+Alex
+
+
 ----------------------------------------------------------------------
 
 The following should be finished before a 1.0 level release.
