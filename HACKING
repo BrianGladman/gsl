@@ -1,52 +1,51 @@
-
                          Hacking on GSL
 
 The GSL hacker needs some stuff that the end users don't:
 
-* you must have the latest automake (1.3 or greater) from
-ftp://ftp.cygnus.com/pub/tromey/
+* you must have a recent automake (1.3 or greater) from
+ftp://sourceware.cygnus.com/pub/automake/
 
 * you must have the latest autoconf from
-ftp://prep.ai.mit.edu/u2/emacs/ (notice the studly use of the old
-/u2/emacs path!)
+ftp://sourceware.cygnus.com/pub/automake/
 
-* you must have the latest texinfo with Brian's mathematical hacks;
-you can get that from /u/bjg/texinfo-3.9-math.tar.gz on the NIS
-division computers.
+* you must have the texinfo 3.11 with Brian's mathematical hacks; it
+is in ftp://sourceware.cygnus.com/pub/gsl/
 
-* you must have the latest CVS (1.9 right now) from
+* you must have a recent CVS (at least 1.9) from
 ftp://prep.ai.mit.edu/u2/emacs/
 
 Once you have this stuff, you can get the repository and start
 working from your own machine.  To do the initial checkout of the
 repository try (bash syntax):
 
+# PEOPLE WITH CVS WRITE ACCESS:
 export CVS_RSH=ssh
-cvs -d your-login@sarastro.lanl.gov:/n/projects/cvs/ checkout gsl
+cvs -d sourceware.cygnus.com:/cvs/gsl checkout gsl
+[from now on you can just do "cvs update" in the gsl directory]
 
-at this point you can "cd gsl" and start mucking around with
-"./configure --prefix=whatever; make install".  Once you are in the
-gsl directory, future CVS commands will not need the -d option, so you
-can just do
+# ANONYMOUS CVS USERS
+cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl login
+     (password is ``anoncvs'')
+cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl checkout gsl
+[from now on you can just do "cvs update" in the gsl directory]
 
-cvs update		(to make sure you get other people's new stuff)
-cvs commit		(to check in your changes)
-cvs add filename	(to add a file to the repository)
+# PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
+point your web browser to
+  http://sourceware.cygnus.com/cgi-bin/cvsweb.cgi/gsl?cvsroot=gsl
 
----------
+# PEOPLE WHO JUST WANT A WORKING VERSION
+grab the latest bundled release at
+  ftp://sourceware.cygnus.com/pub/gsl/
 
-Let me know if any of these steps don't work.  I have tried them out
-on swift and they seem to work.
+Let me know (rosalia@cygnus.com) if any of these steps don't work.  I
+have tried them out on swift and they seem to work.
 
-You also need something like
+---------- submitting patches
 
-export CVSUMASK=0
+The best way to send us a patch is to compile from an anonymous CVS
+checkout and to use a nice cvs diff option, like "cvs rdiff -u".
 
-in your ~/.bashrc and a file ~/.ssh/environment which contains
-
-ENV=.bashrc
-
-----------
+---------- some special targets
 
 To check for ansi compliance try, 'make strict'. This compiles with the
 following CFLAGS:
@@ -58,7 +57,7 @@ following CFLAGS:
     -Dinline=''
 
 I recommend having a bash alias,
-	
+
     makestrict () { make $* CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline= -g -O4" } ;
 
 which lets you type things like
@@ -72,7 +71,7 @@ If you can compile your code with
 
 then that's a good test for portability.
 
-----------
+---------- warning about picking up old header files
 
 When compiling the library it's important to use the local copies of
 the header files, and not ones that have been installed previously in
@@ -89,7 +88,7 @@ INCLUDES = -I$(srcdir)/..
 srcdir is always your working dir, and so $(srcdir)/.. is the
 top-level dir where gsl_math.h and gsl_complex.h are located.
 
-----------
+---------- fixing Makefile.am
 
 To rebuild the top-level Makefile.am use
 

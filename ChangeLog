@@ -1,3 +1,10 @@
+1998-12-05  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: made the version be 0.4after so it's clear that
+	snapshots will be post-0.4.
+
+	* HACKING: updated a bit to work with the new CVS repository.
+
 Mon Nov 23 16:09:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_config.h: removed, it was an unnecessary hack just for
