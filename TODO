@@ -5,9 +5,14 @@ We are looking for volunteers to do the following tasks.
 Consult the TODO files in each directory first for specific
 requirements.
 
-* Volunteer(s) for first line support on the mailing lists
-(e.g. checking that bugs are reproducible, and that all relevant
-information is supplied)
+* Fix error terms in implicit ODE solvers rk2imp, rk4imp, gear1, gear2.
+
+* PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
+
+* GSDV -- GNU Scientific Data Visualisation (Gtk widgets for GSL datatypes)
+
+* First line support on the mailing lists (e.g. checking that bugs are
+reproducible, and that all relevant information is supplied)
 
 * Eigensystems for non-symmetric matrices
 
