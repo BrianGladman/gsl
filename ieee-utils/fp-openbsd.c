@@ -75,8 +75,6 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   mode = FP_X_INV | FP_X_DZ | FP_X_OFL | FP_X_UFL;
 #ifdef FP_X_DNML
   mode = mode | FP_X_DNML
-#else
-
 #endif
 
   if (exception_mask & GSL_IEEE_MASK_INVALID)
