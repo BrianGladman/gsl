@@ -1,0 +1,4 @@
+1998-02-02  Mark Galassi  <rosalia@cygnus.com>
+
+	* Makefile.am (TESTS): added $(srcdir) before these scripts, since
+	the TESTS target picks things from the build directory.
