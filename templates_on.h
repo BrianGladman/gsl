@@ -82,8 +82,8 @@
 #define IN_FORMAT "%lu"
 #define OUT_FORMAT "%lu"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0UL
+#define ONE 1UL
 
 #elif defined(BASE_LONG)
 #define BASE long
@@ -93,8 +93,8 @@
 #define IN_FORMAT "%ld"
 #define OUT_FORMAT "%ld"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0L
+#define ONE 1L
 
 #elif defined(BASE_UINT)
 #define BASE unsigned int
@@ -104,8 +104,8 @@
 #define IN_FORMAT "%u"
 #define OUT_FORMAT "%u"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0U
+#define ONE 1U
 
 #elif defined(BASE_INT)
 #define BASE int
@@ -126,8 +126,8 @@
 #define IN_FORMAT "%hu"
 #define OUT_FORMAT "%hu"
 #define ATOMIC_IO ATOMIC
-#define ZERO 0
-#define ONE 1
+#define ZERO 0U
+#define ONE 1U
 
 #elif defined(BASE_SHORT)
 #define BASE short
@@ -148,8 +148,8 @@
 #define IN_FORMAT "%u"
 #define OUT_FORMAT "%u"
 #define ATOMIC_IO unsigned int
-#define ZERO 0
-#define ONE 1
+#define ZERO 0U
+#define ONE 1U
 
 #elif defined(BASE_CHAR)
 #define BASE char

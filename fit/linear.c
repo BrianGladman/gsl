@@ -109,9 +109,9 @@ gsl_fit_linear (const double *x, const size_t xstride,
    chisq   --  weighted sum of squares of residuals */
 
 int
-gsl_fit_wlinear (const double *x, size_t xstride,
-		 const double *w, size_t wstride,
-		 const double *y, size_t ystride,
+gsl_fit_wlinear (const double *x, const size_t xstride,
+		 const double *w, const size_t wstride,
+		 const double *y, const size_t ystride,
 		 const size_t n,
 		 double *c0, double *c1,
 		 double *cov_00, double *cov_01, double *cov_11,
@@ -260,9 +260,9 @@ gsl_fit_mul (const double *x, const size_t xstride,
 
 
 int
-gsl_fit_wmul (const double *x, size_t xstride,
-	      const double *w, size_t wstride,
-	      const double *y, size_t ystride,
+gsl_fit_wmul (const double *x, const size_t xstride,
+	      const double *w, const size_t wstride,
+	      const double *y, const size_t ystride,
 	      const size_t n, 
               double *c1, double *cov_11, double *chisq)
 {

@@ -238,7 +238,7 @@ FUNCTION(test_complex,bitreverse_order) (size_t stride, size_t n)
 
   memcpy (tmp, data, 2 * n * stride * sizeof(BASE)) ;
 
-  logn = 0 ; while (n > (1<<logn)) {logn++ ; } ;
+  logn = 0 ; while (n > (1U<<logn)) {logn++ ; } ;
 
   /* do a naive bit reversal as a baseline for testing the other routines */
 

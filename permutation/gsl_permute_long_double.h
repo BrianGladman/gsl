@@ -36,8 +36,8 @@
 
 __BEGIN_DECLS
 
-int gsl_permute_long_double (const size_t * p, long double * data, size_t stride, size_t n);
-int gsl_permute_long_double_inverse (const size_t * p, long double * data, size_t stride, size_t n);
+int gsl_permute_long_double (const size_t * p, long double * data, const size_t stride, const size_t n);
+int gsl_permute_long_double_inverse (const size_t * p, long double * data, const size_t stride, const size_t n);
 
 __END_DECLS
 

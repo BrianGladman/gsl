@@ -36,8 +36,8 @@
 
 __BEGIN_DECLS
 
-int gsl_permute_char (const size_t * p, char * data, size_t stride, size_t n);
-int gsl_permute_char_inverse (const size_t * p, char * data, size_t stride, size_t n);
+int gsl_permute_char (const size_t * p, char * data, const size_t stride, const size_t n);
+int gsl_permute_char_inverse (const size_t * p, char * data, const size_t stride, const size_t n);
 
 __END_DECLS
 

@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "..\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /Za /W3 /GX /O2 /I "..\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od  /I "..\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD CPP /nologo /Za /W3 /Gm /GX /ZI /Od  /I "..\msvc" /I "." /I ".." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -89,23 +89,6 @@ LIB32=link.exe -lib
 SOURCE=..\version.c
 
 
-
-!IF  "$(CFG)" == "libgsl - Win32 Release"
-
-# PROP Intermediate_Dir "Release\libgsl"
-
-!ELSEIF  "$(CFG)" == "libgsl - Win32 Debug"
-
-# PROP Intermediate_Dir "Debug\libgsl"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\complex_internal.h
-
-# PROP Exclude_From_Build 1
 
 !IF  "$(CFG)" == "libgsl - Win32 Release"
 
@@ -3127,6 +3110,23 @@ SOURCE=..\cblas\izamax.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\cblas\xerbla.c
+
+
+
+!IF  "$(CFG)" == "libgsl - Win32 Release"
+
+# PROP Intermediate_Dir "Release\libgslcblas"
+
+!ELSEIF  "$(CFG)" == "libgsl - Win32 Debug"
+
+# PROP Intermediate_Dir "Debug\libgslcblas"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\cblas\tests.c
 
 # PROP Exclude_From_Build 1
@@ -5526,6 +5526,23 @@ SOURCE=..\fft\real_main.c
 # Begin Source File
 
 SOURCE=..\fft\urand.c
+
+# PROP Exclude_From_Build 1
+
+!IF  "$(CFG)" == "libgsl - Win32 Release"
+
+# PROP Intermediate_Dir "Release\libgslfft"
+
+!ELSEIF  "$(CFG)" == "libgsl - Win32 Debug"
+
+# PROP Intermediate_Dir "Debug\libgslfft"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\fft\complex_internal.h
 
 # PROP Exclude_From_Build 1
 

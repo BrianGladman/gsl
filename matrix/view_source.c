@@ -92,7 +92,9 @@ FUNCTION(gsl_matrix, view_from_vector) (TYPE(gsl_matrix) * m,
 int
 FUNCTION(gsl_matrix, view_from_array) (TYPE(gsl_matrix) * m,
                                        ATOMIC * base,
-                                       size_t offset, size_t n1, size_t n2)
+                                       const size_t offset, 
+                                       const size_t n1, 
+                                       const size_t n2)
 {
   if (n1 == 0)
     {

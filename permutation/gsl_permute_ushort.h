@@ -36,8 +36,8 @@
 
 __BEGIN_DECLS
 
-int gsl_permute_ushort (const size_t * p, unsigned short * data, size_t stride, size_t n);
-int gsl_permute_ushort_inverse (const size_t * p, unsigned short * data, size_t stride, size_t n);
+int gsl_permute_ushort (const size_t * p, unsigned short * data, const size_t stride, const size_t n);
+int gsl_permute_ushort_inverse (const size_t * p, unsigned short * data, const size_t stride, const size_t n);
 
 __END_DECLS
 
