@@ -886,9 +886,13 @@ the ANSI standard rather than a specific platform.
 
 All objects (blocks of memory, etc) should be measured in terms of a
 @code{size_t} type.  Therefore any iterations (e.g. @code{for(i=0; i<N;
-i++)}) should also use an index of type @code{size_t}.  If you need to
-write a descending loop you have to be careful because @code{size_t} is
-unsigned, so instead of
+i++)}) should also use an index of type @code{size_t}.  
+
+Don't mix @code{int} and @code{size_t}.  They are @emph{not}
+interchangeable.
+
+If you need to write a descending loop you have to be careful because
+@code{size_t} is unsigned, so instead of
 
 @example
 for (i = N - 1; i >= 0; i--) @{ ... @} /* DOESN'T WORK */
@@ -1071,6 +1075,20 @@ The tests should be deterministic.  Use the @code{gsl_test} functions
 provided to perform separate tests for each feature with a separate
 output PASS/FAIL line, so that any failure can be uniquely identified.
 
+Use realistic test cases with 'high entropy'.  Tests on simple values
+such as 1 or 0 may not reveal bugs.  For example, a test using a value
+of @math{x=1} will not pick up a missing factor of @math{x} in the code.
+Similarly, a test using a value of @math{x=0} will not pick any missing
+terms involving @math{x} in the code.  Use values like @math{2.385} to
+avoid silent failures. 
+
+If your test uses multiple values make sure there are no simple
+relations between them that could allow bugs to be missed through silent
+cancelations.
+
+If you need some random floats to put in the test programs use @code{od -f
+/dev/random} as a source of inspiration.
+
 Don't use @code{sprintf} to create output strings in the tests.  It can
 cause hard to find bugs in the test programs themselves.  The functions
 @code{gsl_test_...}  support format string arguments so use these
@@ -1238,6 +1256,9 @@ different precisions.
 Don't use the letter @code{l} as a variable name --- it is difficult to
 distinguish from the number @code{1}. (This seems to be a favorite in
 old Fortran programs).
+
+Final tip: one perfect routine is better than any number of routines
+containing errors.
 
 @node Copying,  , Design, Top
 @unnumbered Copying
