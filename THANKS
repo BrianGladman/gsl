@@ -242,3 +242,4 @@ for random number generators
 usage of MINPACK routines
 
 * Mario Pernici <Mario.Pernici@mi.infn.it> bug fix for gsl_combination_valid
+and new function gsl_permutation_memcpy

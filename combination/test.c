@@ -88,6 +88,22 @@ main (void)
     gsl_test (s1, "gsl_combination_valid on the last combination");
   }
 
+  {
+    gsl_combination * d = gsl_combination_alloc (6,3);
+    gsl_combination_memcpy (d, c);
+
+    status = 0;
+
+    for (j = 0; j < 3; j++)
+      {
+        status |= (d->data[j] != c->data[j]);
+      }
+
+    gsl_test (status, "gsl_combination_memcpy, 6 choose 3 combination");
+    gsl_combination_free(d);
+  }
+
+
   /* Now test combinations in reverse order */
 
   gsl_combination_init_last (c);
@@ -129,6 +145,21 @@ main (void)
   {
     int s1 = gsl_combination_valid (c);
     gsl_test (s1, "gsl_combination_valid on the first combination");
+  }
+
+  {
+    gsl_combination * d = gsl_combination_alloc (6,3);
+    gsl_combination_memcpy (d, c);
+
+    status = 0;
+
+    for (j = 0; j < 3; j++)
+      {
+        status |= (d->data[j] != c->data[j]);
+      }
+
+    gsl_test (status, "gsl_combination_memcpy, 6 choose 3 combination");
+    gsl_combination_free(d);
   }
 
   gsl_combination_free (c);
@@ -192,6 +223,28 @@ main (void)
   c->data[2] = 0;
   s = gsl_combination_valid (c);
   gsl_test (!s, "gsl_combination_valid on an invalid combination (1,2,0)");
+
+  {
+    gsl_combination * d = gsl_combination_alloc (6,4);
+    int s = gsl_combination_memcpy (d, c);
+    gsl_test (status, "gsl_combination_memcpy, (6,4) vs (6,3)");
+    gsl_combination_free(d);
+  }
+
+  {
+    gsl_combination * d = gsl_combination_alloc (7,3);
+    int s = gsl_combination_memcpy (d, c);
+    gsl_test (status, "gsl_combination_memcpy, (7,3) vs (6,3)");
+    gsl_combination_free(d);
+  }
+
+  {
+    gsl_combination * d = gsl_combination_alloc (7,2);
+    int s = gsl_combination_memcpy (d, c);
+    gsl_test (status, "gsl_combination_memcpy, (7,2) vs (6,3)");
+    gsl_combination_free(d);
+  }
+
 
   gsl_combination_free (c);
 

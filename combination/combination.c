@@ -164,3 +164,28 @@ gsl_combination_prev (gsl_combination * c)
     }
   return GSL_SUCCESS;
 }
+
+int
+gsl_combination_memcpy (gsl_combination * dest, const gsl_combination * src)
+{
+   const size_t src_n = src->n;
+   const size_t src_k = src->k;
+   const size_t dest_n = dest->n;
+   const size_t dest_k = dest->k;
+
+   if (src_n != dest_n || src_k != dest_k)
+     {
+       GSL_ERROR ("combination lengths are not equal", GSL_EBADLEN);
+     }
+   
+   {
+     size_t j;
+     
+     for (j = 0; j < src_k; j++)
+       {
+         dest->data[j] = src->data[j];
+       }
+   }
+   
+   return GSL_SUCCESS;
+}

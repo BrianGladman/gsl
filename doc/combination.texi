@@ -74,6 +74,12 @@ lexicographically last combination, i.e.  @math{(n-k,n-k+1,...,n-1)}.
 This function frees all the memory used by the combination @var{c}.
 @end deftypefun
 
+@deftypefun int gsl_combination_memcpy (gsl_combination * @var{dest}, const gsl_combination * @var{src})
+This function copies the elements of the combination @var{src} into the
+combination @var{dest}.  The two combinations must have the same sizes.
+@end deftypefun
+
+
 @node Accessing combination elements
 @section Accessing combination elements
 

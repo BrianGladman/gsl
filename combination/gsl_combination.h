@@ -51,6 +51,7 @@ gsl_combination *gsl_combination_calloc (const size_t n, const size_t k);
 void gsl_combination_init_first (gsl_combination * c);
 void gsl_combination_init_last (gsl_combination * c);
 void gsl_combination_free (gsl_combination * c);
+int gsl_combination_memcpy (gsl_combination * dest, const gsl_combination * src); 
 
 int gsl_combination_fread (FILE * stream, gsl_combination * c);
 int gsl_combination_fwrite (FILE * stream, const gsl_combination * c);
