@@ -584,12 +584,13 @@ test_QR_decomp_dim(const gsl_matrix * m, double eps)
   gsl_matrix * q  = gsl_matrix_alloc(M,M);
   gsl_matrix * r  = gsl_matrix_alloc(M,N);
   gsl_vector * w  = gsl_vector_alloc(N);
+  gsl_vector * work  = gsl_vector_alloc(M);
   gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
 
   gsl_matrix_memcpy(qr,m);
 
   s += gsl_linalg_QR_decomp(qr, d, w);
-  s += gsl_linalg_QR_unpack(qr, d, q, r);
+  s += gsl_linalg_QR_unpack(qr, d, q, r, work);
   
   /* compute a = q r */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
@@ -605,6 +606,7 @@ test_QR_decomp_dim(const gsl_matrix * m, double eps)
       s += foo;
     }
   }
+  gsl_vector_free(work);
   gsl_vector_free(w);
   gsl_vector_free(d);
   gsl_matrix_free(qr);
@@ -753,12 +755,13 @@ test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
   gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
   gsl_vector * norm = gsl_vector_alloc(N);
   gsl_vector * w = gsl_vector_alloc(N);
+  gsl_vector * work = gsl_vector_alloc(M);
   gsl_permutation * perm = gsl_permutation_alloc(N);
 
   gsl_matrix_memcpy(qr,m);
 
   s += gsl_linalg_QRPT_decomp(qr, d, perm, &signum, norm, w);
-  s += gsl_linalg_QR_unpack(qr, d, q, r);
+  s += gsl_linalg_QR_unpack(qr, d, q, r, work);
 
   /* compute a = q r */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
@@ -881,7 +884,7 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
     }
 
   s += gsl_linalg_QR_decomp(qr2, d, work);
-  s += gsl_linalg_QR_unpack(qr2, d, q2, r2);
+  s += gsl_linalg_QR_unpack(qr2, d, q2, r2, w);
 
   /* compute w = Q^T u */
       

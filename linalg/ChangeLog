@@ -1,5 +1,8 @@
 Wed Jun  6 12:36:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* householdercomplex.c: split out complex functions into a
+ 	separate file to reduce linking dependencies
+
 	* qrpt.c (gsl_linalg_QRPT_decomp): provide workspace as an
  	argument, to avoid allocating it on each call
 	(gsl_linalg_QRPT_decomp2): provide workspace as an argument, to

@@ -182,7 +182,8 @@ int gsl_linalg_QR_Qvec (const gsl_matrix * QR,
 int gsl_linalg_QR_unpack (const gsl_matrix * QR,
 			  const gsl_vector * tau,
 			  gsl_matrix * Q,
-			  gsl_matrix * R);
+			  gsl_matrix * R,
+                          gsl_vector * work);
 
 int gsl_linalg_R_solve (const gsl_matrix * R,
                         const gsl_vector * b,

@@ -290,7 +290,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   state->w = w;
 
-  work1 = gsl_vector_calloc (n);
+  work1 = gsl_vector_calloc (p);
 
   if (work1 == 0)
     {

@@ -382,7 +382,7 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
 /*  Form the orthogonal matrix Q from the packed QR matrix */
 
 int
-gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * R)
+gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * R, gsl_vector * work)
 {
   const size_t M = QR->size1;
   const size_t N = QR->size2;
@@ -399,14 +399,16 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
     {
       GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
     }
+  else if (work->size != M)
+    {
+      GSL_ERROR ("size of workspace must be M", GSL_EBADLEN);
+    }
   else
     {
       size_t i, j, k;
 
       /* use first column of R as temporary workspace of length M for
          applying householder transformations */
-
-      gsl_vector work = gsl_matrix_column (R, 0);
 
       /* Initialize Q to the identity */
 
@@ -420,7 +422,7 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
             const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
 	    gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
 	    double ti = gsl_vector_get (tau, i);
-	    gsl_linalg_householder_hm (ti, &h, &m, &work);
+	    gsl_linalg_householder_hm (ti, &h, &m, work);
 	  }
 	}
 

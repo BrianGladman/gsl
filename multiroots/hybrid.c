@@ -74,7 +74,7 @@ hybrid_alloc (void *vstate, size_t n)
   hybrid_state_t *state = (hybrid_state_t *) vstate;
   gsl_matrix *J, *q, *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
-   *df, *qtdf, *rdx, *w, *v;
+   *df, *qtdf, *rdx, *w, *v, *work;
 
   J = gsl_matrix_calloc (n, n);
 
@@ -411,7 +411,7 @@ set (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector * f
   /* Factorize J into QR decomposition */
 
   gsl_linalg_QR_decomp (J, tau, work);
-  gsl_linalg_QR_unpack (J, tau, q, r);
+  gsl_linalg_QR_unpack (J, tau, q, r, work);
 
   return GSL_SUCCESS;
 }
@@ -580,7 +580,7 @@ iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x, gsl_vector
       /* Factorize J into QR decomposition */
 
       gsl_linalg_QR_decomp (J, tau, work);
-      gsl_linalg_QR_unpack (J, tau, q, r);
+      gsl_linalg_QR_unpack (J, tau, q, r, work);
 
       return GSL_SUCCESS;
     }
@@ -618,6 +618,7 @@ hybrid_free (void *vstate)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
 
+  gsl_vector_free (state->work);
   gsl_vector_free (state->v);
   gsl_vector_free (state->w);
   gsl_vector_free (state->rdx);

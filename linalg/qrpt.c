@@ -209,14 +209,24 @@ gsl_linalg_QRPT_decomp2 (const gsl_matrix * A, gsl_matrix * q, gsl_matrix * r, g
     {
       GSL_ERROR ("norm size must be N", GSL_EBADLEN);
     }
-  else if (work->size != N)
+  else if (work->size != GSL_MAX(M, N))
     {
-      GSL_ERROR ("workspace size must be N", GSL_EBADLEN);
+      GSL_ERROR ("workspace size must be MAX(M,N)", GSL_EBADLEN);
     }
 
   gsl_matrix_memcpy (r, A);
-  gsl_linalg_QRPT_decomp (r, tau, p, signum, norm, work);
-  gsl_linalg_QR_unpack (r, tau, q, r);
+
+  {
+    gsl_vector work_N = gsl_vector_subvector(work, 0, N);
+    gsl_linalg_QRPT_decomp (r, tau, p, signum, norm, &work_N);
+  }
+
+  /* FIXME:  aliased arguments depends on behavior of unpack routine! */
+
+  {
+    gsl_vector work_M = gsl_vector_subvector(work, 0, M);
+    gsl_linalg_QR_unpack (r, tau, q, r, &work_M);
+  }
 
   return GSL_SUCCESS;
 }
