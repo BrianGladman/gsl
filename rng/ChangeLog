@@ -1,3 +1,8 @@
+Mon Jun 29 18:11:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added implementations of the numerical recipes algorithms ran0,
+ 	ran1, ran2, ran3
+	
 Sun Jun 28 11:51:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_rng.h: added gsl_rng_uniform_pos which guarantees positive

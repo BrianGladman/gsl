@@ -78,7 +78,7 @@ INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c \
                       cmrg.c mrg.c rand.c taus.c uni.c uni32.c zuf.c \
-		      minstd.c mt.c tt.c r250.c \
+		      minstd.c mt.c tt.c r250.c ran0.c ran1.c ran2.c ran3.c \
                       bad_rand.c bad_randu.c vax.c ranlux.c \
                       default.c
 
@@ -101,8 +101,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrng_a_LIBADD = 
 libgslrng_a_OBJECTS =  rng.o cmrg.o mrg.o rand.o taus.o uni.o uni32.o \
-zuf.o minstd.o mt.o tt.o r250.o bad_rand.o bad_randu.o vax.o ranlux.o \
-default.o
+zuf.o minstd.o mt.o tt.o r250.o ran0.o ran1.o ran2.o ran3.o bad_rand.o \
+bad_randu.o vax.o ranlux.o default.o
 AR = ar
 test_OBJECTS =  test.o
 test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
@@ -124,9 +124,9 @@ TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/bad_rand.P .deps/bad_randu.P .deps/benchmark.P \
 .deps/cmrg.P .deps/default.P .deps/minstd.P .deps/mrg.P .deps/mt.P \
-.deps/r250.P .deps/rand.P .deps/ranlux.P .deps/rng.P .deps/taus.P \
-.deps/test.P .deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P \
-.deps/zuf.P
+.deps/r250.P .deps/ran0.P .deps/ran1.P .deps/ran2.P .deps/ran3.P \
+.deps/rand.P .deps/ranlux.P .deps/rng.P .deps/taus.P .deps/test.P \
+.deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P .deps/zuf.P
 SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES)
 OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS)
 

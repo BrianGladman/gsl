@@ -38,6 +38,10 @@ extern const gsl_rng_type *gsl_rng_mt19937;
 extern const gsl_rng_type *gsl_rng_rand;
 extern const gsl_rng_type *gsl_rng_ranlux;
 extern const gsl_rng_type *gsl_rng_ranlux389;
+extern const gsl_rng_type *gsl_rng_ran0;
+extern const gsl_rng_type *gsl_rng_ran1;
+extern const gsl_rng_type *gsl_rng_ran2;
+extern const gsl_rng_type *gsl_rng_ran3;
 extern const gsl_rng_type *gsl_rng_r250;
 extern const gsl_rng_type *gsl_rng_taus;
 extern const gsl_rng_type *gsl_rng_tt800;
@@ -87,11 +91,14 @@ extern inline double
 gsl_rng_uniform_pos (const gsl_rng * r)
 {
   unsigned long int max = r->max;
-  unsigned long int k = (r->get) (r->state);
-
+  unsigned long int k;
+  
+  do 
+    {
+      k = (r->get) (r->state);
+    }
   while (k == 0) 
-    k = (r->get) (r->state);
-
+    
   return k / ((double) max);
 }
 

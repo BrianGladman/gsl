@@ -29,6 +29,10 @@ gsl_rng_env_setup (void)
       check (&gsl_rng_default, gsl_rng_minstd, p);
       check (&gsl_rng_default, gsl_rng_mrg, p);
       check (&gsl_rng_default, gsl_rng_mt19937, p);
+      check (&gsl_rng_default, gsl_rng_ran0, p);
+      check (&gsl_rng_default, gsl_rng_ran1, p);
+      check (&gsl_rng_default, gsl_rng_ran2, p);
+      check (&gsl_rng_default, gsl_rng_ran3, p);
       check (&gsl_rng_default, gsl_rng_rand, p);
       check (&gsl_rng_default, gsl_rng_ranlux, p);
       check (&gsl_rng_default, gsl_rng_ranlux389, p);

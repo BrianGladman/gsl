@@ -12,7 +12,7 @@ int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_ma
 int rng_sum_test (gsl_rng * r, double *sigma);
 
 #define N  10000
-#define N2 100000
+#define N2 200000
 
 int
 main (void)
@@ -45,10 +45,20 @@ main (void)
   rng_test (gsl_rng_uni32, 1, 10000, 1155229825);
   rng_test (gsl_rng_zuf, 1, 10000, 3970);
 
+  /* The tests below were made by running the original code and
+     getting the expected value from that. An analytic calculation
+     would be preferable. */
+
   rng_test (gsl_rng_r250, 1, 10000, 1100653588);
 
   rng_test (gsl_rng_mt19937, 4357, 1000, 1309179303);
   rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
+
+  rng_test (gsl_rng_ran0, 0, 10000, 1115320064);
+  rng_test (gsl_rng_ran1, 0, 10000, 1491066076);
+  rng_test (gsl_rng_ran2, 0, 10000, 1701364455);
+  rng_test (gsl_rng_ran3, 0, 10000, 186340785);
+
 
   /* Test save/restore functions */
 
@@ -58,6 +68,10 @@ main (void)
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
   rng_state_test (gsl_rng_mt19937);
+  rng_state_test (gsl_rng_ran0);
+  rng_state_test (gsl_rng_ran1);
+  rng_state_test (gsl_rng_ran2);
+  rng_state_test (gsl_rng_ran3);
   rng_state_test (gsl_rng_rand);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
@@ -75,6 +89,10 @@ main (void)
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_mt19937);
+  rng_parallel_state_test (gsl_rng_ran0);
+  rng_parallel_state_test (gsl_rng_ran1);
+  rng_parallel_state_test (gsl_rng_ran2);
+  rng_parallel_state_test (gsl_rng_ran3);
   rng_parallel_state_test (gsl_rng_rand);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
@@ -96,6 +114,10 @@ main (void)
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_mt19937);
+  generic_rng_test (gsl_rng_ran0);
+  generic_rng_test (gsl_rng_ran1);
+  generic_rng_test (gsl_rng_ran2);
+  generic_rng_test (gsl_rng_ran3);
   generic_rng_test (gsl_rng_rand);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
@@ -287,7 +309,7 @@ rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
      the theoretical max.  */
 
   status = (max > ran_max)
-    || (actual_uncovered > 4 * expected_uncovered && actual_uncovered > 1);
+    || (actual_uncovered > 5 * expected_uncovered && actual_uncovered > 1);
 
   return status;
 }
