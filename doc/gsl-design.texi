@@ -45,8 +45,8 @@ by the Foundation.
 @title GNU Scientific Library -- Design document
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
-@author Mark Galassi @footnote{Space Data Systems group, Los Alamos National Laboratory}
-@author @email{rosalia@@nis.lanl.gov}
+@author Mark Galassi @footnote{Cygnus Solutions and Los Alamos National Laboratory}
+@author @email{rosalia@@cygnus.com}
 @author
 @author Jim Davies @footnote{Space Data Systems Group, Los Alamos National Laboratory and Department of Computer Science, Georgia Institute of Technology}
 @author @email{jimmyd@@nis.lanl.gov}
