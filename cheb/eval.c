@@ -139,7 +139,7 @@ gsl_cheb_eval_n_err (const gsl_cheb_series * cs,
 
   /* Combine truncation error and numerical error */
 
-  *abserr = fabs (cs->c[cs->order]) + absc * GSL_DBL_EPSILON;
+  *abserr = fabs (cs->c[eval_order]) + absc * GSL_DBL_EPSILON;
 
   return GSL_SUCCESS;
 }
