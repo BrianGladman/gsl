@@ -771,8 +771,7 @@ the arguments @code{(x,y)} and parameters @code{(a,b)}. The solver
 method.
 
 @example
-int
-main (void)
+int main (void)
 @{
   const gsl_multiroot_fsolver_type *T;
   gsl_multiroot_fsolver *s;
@@ -815,6 +814,7 @@ main (void)
 
   gsl_multiroot_fsolver_free (s);
   gsl_vector_free (x);
+  return 0;
 @}
 @end example
 @noindent
@@ -916,8 +916,7 @@ The main program now makes calls to the corresponding @code{fdfsolver}
 versions of the functions,
 
 @example
-int
-main (void)
+int main (void)
 @{
   const gsl_multiroot_fdfsolver_type *T;
   gsl_multiroot_fdfsolver *s;
@@ -963,6 +962,7 @@ main (void)
 
   gsl_multiroot_fdfsolver_free (s);
   gsl_vector_free (x);
+  return 0;
 @}
 @end example
 @noindent

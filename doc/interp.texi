@@ -228,8 +228,7 @@ spline functions.  It computes a cubic spline interpolation of the
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spline.h>
 
-int
-main (void)
+int main (void)
 @{
   int i;
   double xi, yi, x[10], y[10];
@@ -261,6 +260,7 @@ main (void)
     gsl_spline_free (spline);
     gsl_interp_accel_free(acc);
   @}
+  return 0;
 @}
 @end example
 @noindent

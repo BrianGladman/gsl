@@ -1642,8 +1642,7 @@ Poisson distribution with a mean of 3.
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-int
-main (void)
+int main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
@@ -1670,6 +1669,7 @@ main (void)
     @}
 
   printf("\n");
+  return 0;
 @}
 @end example
 
@@ -1730,6 +1730,7 @@ int main (void)
       x += dx; y += dy; 
       printf("%g %g\n", x, y);
     @}
+  return 0;
 @}
 @end example
 

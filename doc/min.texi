@@ -380,8 +380,7 @@ double fn1 (double x, void * params)
   return cos(x) + 1.0;
 @}
 
-int
-main (void)
+int main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
@@ -429,6 +428,7 @@ main (void)
     @}
   while (status == GSL_CONTINUE && iter < max_iter);
 
+  return status;
 @}
 @end example
 

@@ -66,8 +66,7 @@ double f (double x, void * params)
   return pow (x, 1.5);
 @}
 
-int
-main (void)
+int main (void)
 @{
   gsl_function F;
   double result, abserr;
@@ -86,6 +85,8 @@ main (void)
   printf("x = 0.0\n");
   printf("f'(x) = %.10f +/- %.5f\n", result, abserr);
   printf("exact = %.10f\n", 0.0);
+
+  return 0;
 @}
 @end example
 @noindent

@@ -656,8 +656,7 @@ display_results (char *title, double result, double error)
           fabs (result - exact) / error);
 @}
 
-int
-main (void)
+int main (void)
 @{
   double res, err;
 
@@ -716,6 +715,7 @@ main (void)
 
     gsl_monte_vegas_free (s);
   @}
+  return 0;
 @}
 @end smallexample
 @noindent

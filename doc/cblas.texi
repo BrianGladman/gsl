@@ -494,8 +494,7 @@ changed to @code{CblasColMajor}.
 #include <stdio.h>
 #include <gsl/gsl_cblas.h>
 
-int
-main (void)
+int main (void)
 @{
   int lda = 3;
 
@@ -521,7 +520,8 @@ main (void)
 
   printf("[ %g, %g\n", C[0], C[1]);
   printf("  %g, %g ]\n", C[2], C[3]);
-  
+
+  return 0;  
 @}
 @end example
 @noindent

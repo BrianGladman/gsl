@@ -538,8 +538,7 @@ over a range of 40 timesteps. The initial guess for the parameters is
 chosen as (0.0, 1.0, 0.0).
 
 @example
-int
-main (void)
+int main (void)
 @{
   const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
@@ -626,6 +625,7 @@ main (void)
   printf ("status = %s\n", gsl_strerror (status));
 
   gsl_multifit_fdfsolver_free (s);
+  return 0;
 @}
 
 int

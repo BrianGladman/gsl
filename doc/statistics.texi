@@ -687,6 +687,7 @@ int main(void)
   printf("The estimated variance is %g\n", variance);
   printf("The largest value is %g\n", largest);
   printf("The smallest value is %g\n", smallest);
+  return 0;
 @}
 @end example
 
@@ -737,6 +738,7 @@ int main(void)
   printf("The median is %g\n", median);
   printf("The upper quartile is %g\n", upperq);
   printf("The lower quartile is %g\n", lowerq);
+  return 0;
 @}
 @end example
 

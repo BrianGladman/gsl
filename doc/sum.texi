@@ -137,8 +137,7 @@ summation of the series converge slowly.
 
 #define N 20
 
-int 
-main (void)
+int main (void)
 @{
   double t[N];
   double sum_accel, err;
@@ -176,6 +175,7 @@ main (void)
          sum_accel - zeta_2);
 
   gsl_sum_levin_u_free (w);
+  return 0;
 @}
 @end example
 @noindent

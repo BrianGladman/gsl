@@ -144,8 +144,7 @@ f (double x, void *p)
     return 0.75;
 @}
 
-int
-main (void)
+int main (void)
 @{
   int i, n = 10000; 
 
@@ -168,6 +167,8 @@ main (void)
     @}
 
   gsl_cheb_free (cs);
+
+  return 0;
 @}
 @end example
 

@@ -230,8 +230,7 @@ finds its inverse.
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_permutation.h>
 
-int 
-main (void) 
+int main (void) 
 @{
   const size_t N = 10;
   const gsl_rng_type * T;
@@ -258,6 +257,8 @@ main (void)
   gsl_permutation_invert (p_inv, p);
   gsl_permutation_fprintf (stdout, p_inv, " %u");
   printf("\n");
+
+  return 0;
 @}
 @end example
 @noindent
@@ -281,8 +282,7 @@ permutations, starting from the identity,
 #include <stdio.h>
 #include <gsl/gsl_permutation.h>
 
-int 
-main (void) 
+int main (void) 
 @{
   gsl_permutation * p = gsl_permutation_alloc (3);
 
@@ -294,6 +294,8 @@ main (void)
       printf("\n");
    @}
   while (gsl_permutation_next(p) == GSL_SUCCESS);
+
+  return 0;
 @}
 @end example
 @noindent

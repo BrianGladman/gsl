@@ -182,6 +182,8 @@ int main (void)
 
   printf(" d ="); gsl_ieee_printf_double(&d); 
   printf("\n");
+
+  return 0;
 @}
 @end example
 
@@ -367,6 +369,7 @@ int main (void)
     @}  
   while (sum != oldsum);
 
+  return 0;
 @}
 @end example
 

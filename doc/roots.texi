@@ -685,8 +685,8 @@ Several iterations of Newton's Method, where @math{g_n} is the
 @cindex Secant Method algorithm for finding roots
 @cindex root finding, Secant Method algorithm
 
-The @dfn{secant method} is a simplified version of Newton's method
-which can be useful when computation of the derivative is costly.
+The @dfn{secant method} is a simplified version of Newton's method does
+not require the computation of the derivative on every step.
 
 On its first iteration the algorithm begins with Newton's method, using
 the derivative to compute a first step,
@@ -727,9 +727,12 @@ x_@{i+1@} = x_i f(x_i) / f'_@{est@} where
 
 @noindent
 When the derivative does not change significantly in the vicinity of the
-root the secant method gives a useful saving.  As with all methods of
-computing a numerical derivative the estimate can suffer from
-cancellation errors if the separation of the points becomes too small.
+root the secant method gives a useful saving.  Asymptotically the secant
+method is faster than Newton's method whenever the cost of evaluating
+the derivative is more than 0.44 times the cost of evaluating the
+function itself.  As with all methods of computing a numerical
+derivative the estimate can suffer from cancellation errors if the
+separation of the points becomes too small.
 
 On single roots, the method has a convergence of order @math{(1 + \sqrt
 5)/2} (approximately @math{1.62}).  It converges linearly for multiple
@@ -881,8 +884,7 @@ with solution @math{x = \sqrt 5 = 2.236068...}
 #include "demo_fn.h"
 #include "demo_fn.c"
 
-int
-main (void)
+int main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
@@ -926,7 +928,7 @@ main (void)
               x_upper - x_lower);
     @}
   while (status == GSL_CONTINUE && iter < max_iter);
-
+  return status;
 @}
 @end example
 
@@ -983,8 +985,7 @@ instead.
 #include "demo_fn.h"
 #include "demo_fn.c"
 
-int
-main (void)
+int main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
@@ -1023,7 +1024,7 @@ main (void)
               iter, x, x - r_expected, x - x0);
     @}
   while (status == GSL_CONTINUE && iter < max_iter);
-
+  return status;
 @}
 @end example
 

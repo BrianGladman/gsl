@@ -272,8 +272,7 @@ the special functions, in this case to compute the Bessel function
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
-int
-main (void)
+int main (void)
 @{
   double x = 5.0;
   gsl_sf_result result;
@@ -287,6 +286,7 @@ main (void)
          "      +/- % .18f\n", 
          result.val, result.err);
   printf("exact   = %.18f\n", expected);
+  return status;
 @}
 @end example
 @noindent
@@ -307,8 +307,7 @@ status are not accessible.
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
-int
-main (void)
+int main (void)
 @{
   double x = 5.0;
   double expected = -0.17759677131433830434739701;
@@ -317,6 +316,7 @@ main (void)
 
   printf("J0(5.0) = %.18f\n", y);
   printf("exact   = %.18f\n", expected);
+  return 0;
 @}
 @end example
 @noindent

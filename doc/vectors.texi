@@ -175,6 +175,7 @@ int main (void)
   printf("block data address = %#x\n", b->data);
 
   gsl_block_free (b);
+  return 0;
 @}
 @end example
 @comment
@@ -760,6 +761,8 @@ int main (void)
     @{
       printf("v_%d = %g\n", i, gsl_vector_get (v, i));
     @}
+
+  return 0;
 @}
 @end example
 @comment
@@ -798,6 +801,7 @@ int main (void)
      gsl_vector_fprintf (f, v, "%.5g");
      fclose (f);
   @}
+  return 0;
 @}
 @end example
 @comment
@@ -1530,6 +1534,8 @@ int main (void)
     for (j = 0; j < 3; j++)
       printf("m(%d,%d) = %g\n", i, j, 
              gsl_matrix_get (m, i, j));
+
+  return 0;
 @}
 @end example
 @comment
@@ -1589,7 +1595,7 @@ int main (void)
       @}
 
   printf("differences = %d (should be zero)\n", k);
-
+  return (k > 0);
 @}
 @end example
 @comment
@@ -1608,8 +1614,7 @@ computes the column-norms of a matrix.
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 
-int
-main (void)
+int main (void)
 @{
   size_t i,j;
 

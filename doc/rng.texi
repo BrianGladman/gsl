@@ -287,8 +287,7 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 
 gsl_rng * r;  /* global generator */
 
-int 
-main (void)
+int main (void)
 @{
   const gsl_rng_type * T;
 
@@ -300,6 +299,7 @@ main (void)
   printf("generator type: %s\n", gsl_rng_name (r));
   printf("seed = %u\n", gsl_rng_default_seed);
   printf("first value = %u\n", gsl_rng_get (r));
+  return 0;
 @}
 @end example
 

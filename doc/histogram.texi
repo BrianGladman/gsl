@@ -603,8 +603,7 @@ read it prints out the accumulated histogram using
 #include <stdlib.h>
 #include <gsl/gsl_histogram.h>
 
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 @{
   double a, b;
   size_t n;
@@ -1159,14 +1158,14 @@ out.
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_histogram2d.h>
 
-int
-main (void)
+int main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
 
-  gsl_histogram2d * h 
-    = gsl_histogram2d_calloc_uniform (10, 10, 
+  gsl_histogram2d * h = gsl_histogram2d_alloc (10, 10)
+
+  gsl_histogram2d_set_ranges_uniform (h, 
                                       0.0, 1.0,
                                       0.0, 1.0);
 

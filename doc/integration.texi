@@ -787,8 +787,7 @@ double f (double x, void * params) @{
   return f;
 @}
 
-int 
-main (void)
+int main (void)
 @{
   gsl_integration_workspace * w 
     = gsl_integration_workspace_alloc(1000);
@@ -809,6 +808,8 @@ main (void)
   printf("estimated error = % .18f\n", error);
   printf("actual error    = % .18f\n", result - expected);
   printf("intervals =  %d\n", w->size);
+
+  return 0;
 @}
 @end example
 

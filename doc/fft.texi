@@ -304,6 +304,7 @@ int main (void)
               IMAG(data,i)/sqrt(128));
     @}
 
+  return 0;
 @}
 @end example
 @noindent
@@ -582,7 +583,7 @@ int main (void)
 
   gsl_fft_complex_wavetable_free (wavetable);
   gsl_fft_complex_workspace_free (workspace);
-
+  return 0;
 @}
 @end example
 
@@ -1011,6 +1012,7 @@ int main (void)
     @}
 
   gsl_fft_real_workspace_free (work);
+  return 0;
 @}
 @end example
 

@@ -277,8 +277,7 @@ associated one standard-deviation error bars.
 #include <stdio.h>
 #include <gsl/gsl_fit.h>
 
-int
-main (void)
+int main (void)
 @{
   int i, n = 4;
   double x[4] = @{ 1970, 1980, 1990, 2000 @};
@@ -317,6 +316,7 @@ main (void)
       printf("hi : %g %g\n", xf, yf + yf_err);
       printf("lo : %g %g\n", xf, yf - yf_err);
     @}
+  return 0;
 @}
 @end example
 @noindent
@@ -381,8 +381,7 @@ value @var{y}.
 #include <stdio.h>
 #include <gsl/gsl_multifit.h>
 
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 @{
   int i, n;
   double xi, yi, ei, chisq;
@@ -449,6 +448,7 @@ main (int argc, char **argv)
               COV(2,0), COV(2,1), COV(2,2));
     printf("# chisq = %g\n", chisq);
   @}
+  return 0;
 @}
 @end example
 @noindent
@@ -480,6 +480,7 @@ int main (void)
 
       printf("%g %g %g\n", x, y0 + dy, sigma);
     @}
+  return 0;
 @}
 @end example
 @noindent

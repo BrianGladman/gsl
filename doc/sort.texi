@@ -278,8 +278,7 @@ array,
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_sort_double.h>
 
-int 
-main (void)
+int main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
@@ -307,7 +306,7 @@ main (void)
     @{
       printf ("%d: %.18f\n", i, small[i]);
     @}
-
+  return 0;
 @}
 @end example
 The output lists the 5 smallest values, in ascending order,

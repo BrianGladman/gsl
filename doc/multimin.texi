@@ -174,8 +174,7 @@ my_fdf (const gsl_vector *x, void *params,
   my_df(x, params, df);
 @}
 
-int
-main(void)
+int main(void)
 @{
   gsl_multimin_function_fdf my_func;
 
@@ -325,8 +324,7 @@ const double EPSABS = 1e-4;
 const double EPSREL = 1e-4;
 const unsigned int MAX_ITER = 10000;
 
-int
-main (void)
+int main (void)
 @{
   size_t i = 0, j = 0;
   int status;

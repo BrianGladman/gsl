@@ -169,8 +169,7 @@ struct data
   double z;
 @};
 
-int
-main (void)
+int main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
@@ -197,6 +196,7 @@ main (void)
     @}
   
   gsl_ntuple_close(ntuple);
+  return 0;
 @}
 @end example
 @noindent
@@ -222,8 +222,7 @@ struct data
 int sel_func (void *ntuple_data, void *params);
 double val_func (void *ntuple_data, void *params);
 
-int
-main (void)
+int main (void)
 @{
   struct data ntuple_row;
   int i;
@@ -231,14 +230,13 @@ main (void)
   gsl_ntuple *ntuple 
     = gsl_ntuple_open ("test.dat", &ntuple_row,
                        sizeof (ntuple_row));
-
-  gsl_histogram *h 
-    = gsl_histogram_calloc_uniform (100, 0., 10.);
+  double lower = 1.5;
 
   gsl_ntuple_select_fn S;
   gsl_ntuple_value_fn V;
 
-  double lower = 1.5;
+  gsl_histogram *h = gsl_histogram_alloc (100);
+  gsl_histogram_set_range_uniform(h, 0.0, 10.0);
 
   S.function = &sel_func;
   S.params = &lower;
@@ -253,6 +251,7 @@ main (void)
   gsl_histogram_free (h);
 
   gsl_ntuple_close (ntuple);
+  return 0;
 @}
 
 int
