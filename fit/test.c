@@ -102,7 +102,7 @@ main (void)
     }
 
   {
-    double c0, c1, cov00, cov01, cov11, sumsq;
+    double c1, cov11, sumsq;
        
     double expected_c1 = 2.07438016528926; 
     double expected_cov11 = pow(0.165289256198347E-01, 2.0);  
@@ -116,7 +116,7 @@ main (void)
   }
 
   {
-    double c0, c1, cov00, cov01, cov11, sumsq;
+    double c1, cov11, sumsq;
        
     double expected_c1 = 2.07438016528926; 
     double expected_cov11 = 2.14661371686165e-05; /* computed from octave */
@@ -138,7 +138,7 @@ main (void)
     }
 
   {
-    double c0, c1, cov00, cov01, cov11, sumsq;
+    double c1, cov11, sumsq;
        
     double expected_c1 = 0.727272727272727; 
     double expected_cov11 = pow(0.420827318078432E-01, 2.0);  
@@ -152,7 +152,7 @@ main (void)
   }
 
   {
-    double c0, c1, cov00, cov01, cov11, sumsq;
+    double c1, cov11, sumsq;
        
     double expected_c1 = 0.727272727272727; 
     double expected_cov11 = 1.29870129870130e-02 ; /* computed from octave */
