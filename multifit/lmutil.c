@@ -122,12 +122,11 @@ compute_rptdx (const gsl_matrix * r, const gsl_permutation * p,
     {
       double sum = 0;
 
-      for (j = 0; j < N; j++)
+      for (j = i; j < N; j++)
 	{
 	  size_t pj = gsl_permutation_get (p, j);
 
-	  if (pj >= i)
-	    sum += gsl_matrix_get (r, i, pj) * gsl_vector_get (dx, j);
+          sum += gsl_matrix_get (r, i, j) * gsl_vector_get (dx, pj);
 	}
 
       gsl_vector_set (rptdx, i, sum);

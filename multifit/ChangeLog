@@ -1,5 +1,8 @@
 Mon Oct  8 19:25:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* lmutil.c (compute_rptdx): fixed bug, permutation in rptdx vector
+ 	 was incorrectly applied
+
 	* lmpar.c (compute_newton_direction): fixed bug, permutation of
  	newton direction vector was incorrect (should have been inverse
  	permutation)
