@@ -232,7 +232,7 @@ functions
 * Andrew Howard <ahoward@pollux.usc.edu> bug report for gsl_ran_discrete
 
 * Mario Pernici <Mario.Pernici@mi.infn.it> bug report for
-gsl_permutation_canonical_to_linear
+gsl_permutation_canonical_to_linear, linalg bug reports.
 
 * Heiko Bauke <Heiko.Bauke@Physik.Uni-Magdeburg.DE> bug reports and patches
 for random number generators
@@ -252,4 +252,6 @@ minimisers.
 
 * Krzysztof Pachucki <krp@fuw.edu.pl> bug report for gsl_sf_hypergU_int
 
+* Carsten Svaneborg <svanebor@mpip-mainz.mpg.de> documentation bug report
 
+* Liguo Song <liguo.song@vanderbilt.edu> documentation bug report

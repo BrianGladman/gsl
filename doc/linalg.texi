@@ -323,8 +323,8 @@ matrix @math{Q} is related to these components by, @math{Q = Q_k ... Q_2
 Q_1} where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
-as used by @sc{lapack}.  On output the norms of each column of @var{R}
-are stored in the vector @var{norm}.
+as used by @sc{lapack}.  The vector @var{norm} is workspace of length
+@var{N} used for column pivoting.
 
 The algorithm used to perform the decomposition is Householder QR with
 column pivoting (Golub & Van Loan, @cite{Matrix Computations}, Algorithm
