@@ -34,7 +34,7 @@ These functions evaluate the Legendre polynomial @c{$P_l(x)$}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_Pl_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_legendre_Pl_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 This function computes an array of Legendre polynomials
 @math{P_l(x)} for @math{l = 0, \dots, lmax}, 
 @c{$|x| \le 1$}
@@ -96,7 +96,7 @@ These routines compute the associated Legendre polynomial
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_Plm_array (int @var{lmax}, int @var{m}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_legendre_Plm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
 This function computes an array of Legendre polynomials
 @math{P_l^m(x)} for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
@@ -118,7 +118,7 @@ that occur for the standard normalization of @math{P_l^m(x)}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_sphPlm_array (int @var{lmax}, int @var{m}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_legendre_sphPlm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
 This function computes an array of normalized associated Legendre functions
 @c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
 @math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$}
@@ -203,7 +203,7 @@ These routines compute the Regular Cylindrical Conical Function
 The following spherical functions are specializations of Legendre
 functions which give the regular eigenfunctions of the Laplacian on a
 3-dimensional hyperbolic space.  Of particular interest is the flat
-limit, @math{lambda \to \infty}, @math{\eta \to 0}, @math{\lambda\eta}
+limit, @math{\lambda \to \infty}, @math{\eta \to 0}, @math{\lambda\eta}
 fixed.
   
 @deftypefun double gsl_sf_legendre_H3d_0 (double @var{lambda}, double @var{eta})
@@ -220,11 +220,10 @@ In the flat limit this takes the form
 
 @deftypefun double gsl_sf_legendre_H3d_1 (double @var{lambda}, double @var{eta})
 @deftypefunx int gsl_sf_legendre_H3d_1_e (double @var{lambda}, double @var{eta}, gsl_sf_result * @var{result})
-These routines comput eht first radial eigenfunction of the Laplacian on
+These routines compute the first radial eigenfunction of the Laplacian on
 the 3-dimensional hyperbolic space,
-@math{legendre_H3d_1(\lambda,\eta) :=
-   1/sqrt(lambda^2 + 1) sin(lam eta)/(lam sinh(eta))
-   (coth(eta) - lambda cot(lambda*eta))}
+@c{$legendre_H3d_1(\lambda,\eta) := 1/\sqrt{\lambda^2 + 1} sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))$}
+@math{legendre_H3d_1(\lambda,\eta) := 1/\sqrt@{\lambda^2 + 1@} sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))}
 for @c{$\eta \ge 0$}
 @math{\eta >= 0}.
 In the flat limit this takes the form @math{legendre_H3d_1(\lambda,\eta)
@@ -242,9 +241,9 @@ Laplacian on the 3-dimensional hyperbolic space @c{$\eta \ge 0$}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_H3d_array (int @var{lmax}, double @var{lambda}, double @var{eta}, double * @var{result_array})
+@deftypefun int gsl_sf_legendre_H3d_array (int @var{lmax}, double @var{lambda}, double @var{eta}, double @var{result_array}[])
 This function computes an array of radial eigenfunctions
-@math{H3d(l)(\lambda, \eta, x)} for @c{$0 \le l \le lmax$}
+@math{H3d(l)(\lambda, \eta)} for @c{$0 \le l \le lmax$}
 @math{0 <= l <= lmax}.
 @comment Exceptional Return Values:
 @end deftypefun

@@ -41,11 +41,11 @@ exponent(s) are returned through exp_F, exp_G. These are such that
 @deftypefun int gsl_sf_coulomb_wave_FG (double @var{eta}, double @var{x}, double @var{lam_F}, int @var{k_lam_G}, gsl_sf_result * @var{F}, gsl_sf_result * @var{Fp}, gsl_sf_result * @var{G}, gsl_sf_result * @var{Gp}, double * @var{exp_F}, double * @var{exp_G})
 @end deftypefun
 
-@deftypefun int gsl_sf_coulomb_wave_F_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double * @var{fc_array}, double * @var{F_exponent})
+@deftypefun int gsl_sf_coulomb_wave_F_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double * @var{F_exponent})
 F_L(eta,x)
 @end deftypefun
 
-@deftypefun int gsl_sf_coulomb_wave_FG_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double * @var{fc_array}, double * @var{gc_array}, double * @var{F_exponent}, double * @var{G_exponent})
+@deftypefun int gsl_sf_coulomb_wave_FG_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double @var{gc_array}[], double * @var{F_exponent}, double * @var{G_exponent})
 F_L(eta,x), G_L(eta,x)
 @end deftypefun
 
@@ -53,7 +53,7 @@ F_L(eta,x), G_L(eta,x)
 F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x)
 @end deftypefun
 
-@deftypefun int gsl_sf_coulomb_wave_sphF_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double * @var{fc_array}, double * @var{F_exponent})
+@deftypefun int gsl_sf_coulomb_wave_sphF_array (double @var{lam_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double @var{F_exponent}[])
 Coulomb wave function divided by the argument,
 F(xi, eta)/xi.  This is the function which reduces to
 spherical Bessel functions in the limit eta->0.

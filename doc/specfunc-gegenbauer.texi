@@ -32,7 +32,7 @@ These functions evaluate the Gegenbauer polynomial @c{$C^{(\lambda)}_n(x)$}
 @end deftypefun
 
 
-@deftypefun int gsl_sf_gegenpoly_array (int @var{nmax}, double @var{lambda}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_gegenpoly_array (int @var{nmax}, double @var{lambda}, double @var{x}, double @var{result_array}[])
 This function computes an array of Gegenbauer polynomials
 @c{$C^{(\lambda)}_n(x)$} 
 @math{C^@{(\lambda)@}_n(x)} for @math{n = 0, 1, 2, \dots, nmax}, subject

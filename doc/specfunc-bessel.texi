@@ -34,7 +34,7 @@ order @var{n}, @math{J_n(x)}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_Jn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_Jn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the regular cylindrical Bessel
 functions @math{J_n(x)} for @math{n} from @var{nmin} to @var{nmax}
 inclusive, storing the results in the array @var{result_array}.
@@ -65,7 +65,7 @@ order @var{n}, @math{Y_n(x)}, for @math{x>0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_Yn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_Yn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the irregular cylindrical Bessel
 functions @math{Y_n(x)} for @math{n} from @var{nmin} to @var{nmax}
 inclusive, storing the results in the array @var{result_array}.  The
@@ -97,7 +97,7 @@ of order @var{n}, @math{I_n(x)}.
 @comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_In_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_In_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the regular modified cylindrical
 Bessel functions @math{I_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
@@ -129,7 +129,7 @@ function of order @var{n}, @math{\exp(-|x|) I_n(x)}
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_In_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_In_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the scaled regular cylindrical
 Bessel functions @math{\exp(-|x|) I_n(x)} for @math{n} from
 @var{nmin} to @var{nmax} inclusive, storing the results in the array
@@ -167,7 +167,7 @@ function of order @var{n}, @math{K_n(x)}, for @math{x > 0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_Kn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_Kn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the irregular modified cylindrical
 Bessel functions @math{K_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
@@ -202,7 +202,7 @@ function of order @var{n}, @math{\exp(x) K_n(x)}, for @math{x>0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_Kn_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_Kn_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the scaled irregular cylindrical
 Bessel functions @math{\exp(x) K_n(x)} for @math{n} from
 @var{nmin} to @var{nmax} inclusive, storing the results in the array
@@ -247,7 +247,7 @@ order @var{l}, @math{j_l(x)}, for @c{$l \geq 0$}
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_jl_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_jl_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the regular spherical Bessel
 functions @math{j_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
@@ -304,7 +304,7 @@ order @var{l}, @math{y_l(x)}, for @c{$l \geq 0$}
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_yl_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_yl_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the irregular spherical Bessel
 functions @math{y_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
@@ -348,7 +348,7 @@ function of order @var{l}, @math{ \exp(-|x|) i_l(x) }
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_il_scaled_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_il_scaled_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the scaled regular modified
 cylindrical Bessel functions @math{\exp(-|x|) i_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
@@ -396,7 +396,7 @@ function of order @var{l}, @math{\exp(x) k_l(x)}, for @math{x>0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_kl_scaled_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+@deftypefun int gsl_sf_bessel_kl_scaled_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 This routine computes the values of the scaled irregular modified
 spherical Bessel functions @math{\exp(x) k_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}

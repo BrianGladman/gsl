@@ -3,84 +3,87 @@
 @section Trigonometric Functions
 @cindex Trigonometric functions
 
-
-
 @subsection Trigonometric Functions
 
-These simple trogonometric functions are important
-because we want to control the error estimate, and trying
-to guess the error for the standard library implementation
-every time it is used would be a little goofy.
+These simple trigonometric functions are important because we want to
+control the error estimate, and it is to determine the error for the
+standard library implementations.
 
 @deftypefun double gsl_sf_sin (double @var{x})
 @deftypefunx int gsl_sf_sin_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the sine function @math{\sin(x)}.
 @comment Exceptional Return Values:
 @end deftypefun
 
 @deftypefun double gsl_sf_cos (double @var{x})
 @deftypefunx int gsl_sf_cos_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the cosine function @math{\cos(x)}.
 @comment Exceptional Return Values:
 @end deftypefun
-
 
 @deftypefun double gsl_sf_hypot (double @var{x}, double @var{y})
 @deftypefunx int gsl_sf_hypot_e (double @var{x}, double @var{y}, gsl_sf_result * @var{result})
+These routines compute the hypotenuse function @c{$\sqrt{x^2 + y^2}$}
+@math{\sqrt@{x^2 + y^2@}} avoiding overflow and underflow.
 @comment Exceptional Return Values:
 @end deftypefun
 
-
 @deftypefun int gsl_sf_complex_sin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{szr}, gsl_sf_result * @var{szi})
-Sin(z) 
+This function computes the complex sine, @math{Sin(z_r + i z_i)} storing
+the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
-
 @deftypefun int gsl_sf_complex_cos_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{czr}, gsl_sf_result * @var{czi})
-Cos(z) 
+This function computes the complex cosine, @math{Cos(z_r + i z_i)} storing
+the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
 
 @deftypefun int gsl_sf_complex_logsin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{lszr}, gsl_sf_result * @var{lszi})
-Log(Sin(z)) 
+This function computes the logarithm of the complex sine,
+@math{Log(Sin(z_r + i z_i))} storing the real and imaginary parts in
+@var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 
-
 @deftypefun double gsl_sf_sinc (double @var{x})
 @deftypefunx int gsl_sf_sinc_e (double @var{x}, gsl_sf_result * @var{result})
-Sinc(x) = sin(pi x) / (pi x) 
+These routines compute @math{sinc(x) = \sin(\pi x) / (\pi x)} for any
+value of @var{x}.
 @comment Exceptional Return Values: none
 @end deftypefun
-
 
 @deftypefun double gsl_sf_lnsinh (double @var{x})
 @deftypefunx int gsl_sf_lnsinh_e (double @var{x}, gsl_sf_result * @var{result})
-Log(Sinh(x)) 
-Domain: x > 0 
+These routines @math{\log(\sinh(x))} for @math{x > 0}.
+@comment Domain: x > 0 
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-
 @deftypefun double gsl_sf_lncosh (double @var{x})
 @deftypefunx int gsl_sf_lncosh_e (double @var{x}, gsl_sf_result * @var{result})
-Log(Cosh(x)) 
+These routines compute @math{\log(\cosh(x))} for any @var{x}.
 @comment Exceptional Return Values: none
 @end deftypefun
-
 
 
 @subsection Conversion Functions
 
 
-@deftypefun int gsl_sf_polar_to_rect_e (double @var{r}, double @var{theta}, gsl_sf_result * @var{x}, gsl_sf_result * @var{y}); 
-Convert polar to rectlinear coordinates. 
+@deftypefun int gsl_sf_polar_to_rect (double @var{r}, double @var{theta}, gsl_sf_result * @var{x}, gsl_sf_result * @var{y}); 
+This function converts the polar coordinates (@var{r},@var{theta}) to
+rectlinear coordinates (@var{x},@var{y}), @math{x = (r\cos(\theta)},
+@math{y = r\sin(\theta)}.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
 
-@deftypefun int gsl_sf_rect_to_polar_e (double @var{x}, double @var{y}, gsl_sf_result * @var{r}, gsl_sf_result * @var{theta})
-Convert rectilinear to polar coordinates.
-Return argument in range [-pi, pi]. 
+@deftypefun int gsl_sf_rect_to_polar (double @var{x}, double @var{y}, gsl_sf_result * @var{r}, gsl_sf_result * @var{theta})
+This function converts the rectilinear coordinates (@var{x},@var{y}) to
+polar coordinates (@var{r},@var{theta}), such that @math{x =
+(r\cos(\theta)}, @math{y = r\sin(\theta)}.  The argument @var{theta}
+lies in the range @math{[-\pi, \pi]}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
@@ -91,28 +94,32 @@ Return argument in range [-pi, pi].
 
 @deftypefun double gsl_sf_angle_restrict_symm (double @var{theta})
 @deftypefunx int gsl_sf_angle_restrict_symm_e (double * @var{theta})
-Force an angle to lie in the range (-pi,pi].
+These routines force the angle @var{theta} to lie in the range
+@math{(-\pi,\pi]}.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
-
 
 @deftypefun double gsl_sf_angle_restrict_pos (double @var{theta})
 @deftypefunx int gsl_sf_angle_restrict_pos_e (double * @var{theta})
-Force an angle to lie in the range [0, 2pi).
+These routines force the angle @var{theta} to lie in the range @math{[0,
+2\pi)}.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
-
 
 
 @subsection Trigonometric Functions With Error Estimate
 
-
 @deftypefun double gsl_sf_sin_err (double @var{x}, double @var{dx})
 @deftypefunx int gsl_sf_sin_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
+These routines compute the sine of an angle with an associated error,
+@c{$\sin(x \pm dx)$}
+@math{\sin(x \pm dx)}.
 @end deftypefun
-
 
 @deftypefun double gsl_sf_cos_err (double @var{x}, double @var{dx})
 @deftypefunx int gsl_sf_cos_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
+These routines compute the cosine of an angle with an associated error,
+@c{$\cos(x \pm dx)$}
+@math{\cos(x \pm dx)}.
 @end deftypefun
 

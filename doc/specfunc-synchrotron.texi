@@ -4,22 +4,22 @@
 @cindex Synchrotron functions
 
 
-
-The first synchrotron function is defined by the integral representation
-@math{ synchrotron_1(x) = x \int_x^\infty dt K_(5/3)(t) }.
-
 @deftypefun double gsl_sf_synchrotron_1 (double @var{x})
 @deftypefunx int gsl_sf_synchrotron_1_e (double @var{x}, gsl_sf_result * @var{result})
-Domain: x >= 0.0
+These routines compute the first synchrotron function 
+@c{$x \int_x^\infty dt K_{5/3}(t)$}
+@math{x \int_x^\infty dt K_@{5/3@}(t)} for @c{$x \ge 0$}
+@math{x >= 0}.
+@comment Domain: x >= 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
-
-
-The second synchroton function is defined by
-@math{ synchrotron_2(x) = x * K_(2/3)(x) }.
  
 @deftypefun double gsl_sf_synchrotron_2 (double @var{x})
 @deftypefunx int gsl_sf_synchrotron_2_e (double @var{x}, gsl_sf_result * @var{result})
-Domain: x >= 0.0
+These routines comput the second synchroton function 
+@c{$x K_{2/3}(x)$}
+@math{x K_@{2/3@}(x)} for @c{$x \ge 0$}
+@math{x >= 0}.
+@comment Domain: x >= 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun

@@ -1,0 +1,110 @@
+@cindex Chebyshev series
+@cindex fitting, using Chebyshev polynomials
+@cindex interpolation, using Chebyshev polynomials
+
+This chapter describes routines for computing Chebyshev approximations
+to univariate functions.  A Chebyshev approximation is a truncation of
+the series @math{f(x) = \sum c_n T_n(x)}, where the Chebyshev
+polynomials @math{T_n(x) = \cos(n \arccos x)} provide an orthogonal
+basis of polynomials on the interval @math{[-1,1]}, with the weight
+function @c{$1 \over \sqrt{1-x^2}$} 
+@math{1 \over \sqrt@{1-x^2@}}.  The first few such polynomials are,
+
+@tex
+\beforedisplay
+$$
+\eqalign{
+ T_0(x) & = 1, \cr
+ T_1(x) & = x, \cr
+ T_2(x) & = 2 x^2 - 1.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+ T_0(x) = 1,
+ T_1(x) = x,
+ T_2(x) = 2 x^2 - 1.
+@end example
+@end ifinfo
+
+@menu
+* The gsl_cheb_series struct::  
+* Creation and Calculation of Chebyshev Series::  
+* Chebyshev Series Evaluation::  
+* Derivatives and Integrals::   
+@end menu
+
+@node The gsl_cheb_series struct
+@section The gsl_cheb_series struct
+
+@example
+typedef struct
+@{
+  double * c;   /* coefficients                */
+  int order;    /* order of expansion          */
+  double a;     /* lower interval point        */
+  double b;     /* upper interval point        */
+  int order_sp;
+@} gsl_cheb_struct
+@end example
+
+@node Creation and Calculation of Chebyshev Series
+@section Creation and Calculation of Chebyshev Series
+
+@deftypefun {gsl_cheb_series *} gsl_cheb_alloc (const size_t @var{n})
+This function allocates space for a Chebyshev series of order @var{n}
+and returns a pointer to a new @code{gsl_cheb_series} struct.
+@end deftypefun
+
+@deftypefun void gsl_cheb_free (gsl_cheb_series * @var{cs})
+This function frees a previously allocated Chebyshev series @var{cs}.
+@end deftypefun
+
+@deftypefun int gsl_cheb_init (gsl_cheb_series * @var{cs}, const gsl_function * @var{f}, const double @var{a}, const double @var{b})
+This function computes the Chebyshev approximation @var{cs} for the
+function @var{f} over the range @math{(a,b)} to the previously specified
+order.  The computation of the Chebyshev approximation is an
+@math{O(n^2)} process, and requires @math{n} function evaluations.
+@end deftypefun
+
+@node Chebyshev Series Evaluation
+@section Chebyshev Series Evaluation
+
+@deftypefun double gsl_cheb_eval (const gsl_cheb_series * @var{cs}, double @var{x})
+This function evaluates the Chebyshev series @var{cs} at a given point @var{x}.
+@end deftypefun
+
+@deftypefun int gsl_cheb_eval_err (const gsl_cheb_series * @var{cs}, const double @var{x}, double * @var{result}, double * @var{abserr})
+This function computes the Chebyshev series @var{cs} at a given point
+@var{x}, estimating both the series @var{result} and its absolute error
+@var{abserr}.
+@end deftypefun
+
+@deftypefun double gsl_cheb_eval_n (const gsl_cheb_series * @var{cs}, size_t @var{order}, double @var{x})
+Evaluate a Chebyshev series at a given point, to (at most) the given order.
+@end deftypefun
+
+@deftypefun int gsl_cheb_eval_n_err (const gsl_cheb_series * @var{cs}, const size_t @var{order}, const double @var{x}, double * @var{result}, double * @var{abserr})
+@end deftypefun
+
+@deftypefun double gsl_cheb_eval_mode (const gsl_cheb_series * @var{cs}, double @var{x}, gsl_mode_t @var{mode})
+@end deftypefun
+
+@deftypefun int gsl_cheb_eval_mode_err (const gsl_cheb_series * @var{cs}, const double @var{x}, gsl_mode_t @var{mode}, double * @var{result}, double * @var{abserr})
+Evaluate a Chebyshev series at a given point, using the default
+order for double precision mode(s) and the single precision
+order for other modes.
+@end deftypefun
+
+
+@node Derivatives and Integrals
+@section Derivatives and Integrals
+
+@deftypefun int gsl_cheb_calc_deriv (gsl_cheb_series * @var{deriv}, const gsl_cheb_series * @var{cs})
+@end deftypefun
+
+@deftypefun int gsl_cheb_calc_integ (gsl_cheb_series * @var{integ}, const gsl_cheb_series * @var{cs})
+@end deftypefun
+
