@@ -97,18 +97,33 @@ Euler's constant, @math{\gamma}
 
 @defmac GSL_POSINF
 This macro contains the IEEE representation of positive infinity,
-@math{+\infty}. It is computed from the expression @code{+1.0/0.0}
+@math{+\infty}. It is computed from the expression @code{+1.0/0.0}.
 @end defmac
 
 @defmac GSL_NEGINF
 This macro contains the IEEE representation of negative infinity,
-@math{-\infty}. It is computed from the expression @code{-1.0/0.0}
+@math{-\infty}. It is computed from the expression @code{-1.0/0.0}.
 @end defmac
 
 @defmac GSL_NAN
 This macro contains the IEEE representation of the Not-a-Number symbol,
 @code{NaN}. It is computed from the ratio @code{0.0/0.0}.
 @end defmac
+
+@deftypefun int gsl_isnan (const double @var{x})
+This function returns 1 if @var{x} is not-a-number.
+@end deftypefun
+
+@deftypefun int gsl_isinf (const double @var{x})
+This function returns +1 if @var{x} is positive infinity, -1 if @var{x}
+is negative infinity and 0 otherwise.
+@end deftypefun
+
+@deftypefun int gsl_finite (const double @var{x})
+This function returns 1 if @var{x} is a real number, and 0 if it is
+infinite or not-a-number.
+@end deftypefun
+
 
 @node Elementary Functions
 @section Elementary Functions
@@ -168,6 +183,7 @@ alternative to the standard math function @code{asinh(x)}.
 This function computes the value of @math{\arctanh(x)}. It provides an
 alternative to the standard math function @code{atanh(x)}.
 @end deftypefun
+
 
 @node Small integer powers
 @section Small integer powers

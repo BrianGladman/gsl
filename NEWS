@@ -1,5 +1,11 @@
 * What is new in gsl-0.7+:
 
+** Portable versions of the isinf, isnan and finite functions are
+available as gsl_isinf(x), gsl_isnan(x) and gsl_finite(x).
+
+** The definitions of GSL_POSINF, GSL_NEGINF and GSL_NAN no longer
+cause divisions by zero during compilation.
+
 ** The gsl_interp_obj has been renamed to gsl_interp
 
 ** The poly_eval and pow_int functions have been moved from the
