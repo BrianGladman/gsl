@@ -96,6 +96,7 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
 	  || GSL_IS_ODD(two_ja + two_ma)
 	  || GSL_IS_ODD(two_jb + two_mb)
 	  || GSL_IS_ODD(two_jc + two_mc)
+          || (two_ma + two_mb + two_mc) != 0
 	  );
 }
 
