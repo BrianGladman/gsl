@@ -3,10 +3,21 @@ lib_LIBRARIES = libgslspecfunc.a
 # noinst_PROGRAMS = 
 
 include_HEADERS = \
-	gsl_sf.h 	    gsl_sf_chebyshev.h  gsl_sf_gamma.h      gsl_sf_pow_int.h \
-	gsl_sf_airy.h       gsl_sf_dilog.h      gsl_sf_laguerre.h   gsl_sf_trig.h \
-	gsl_sf_bessel.h     gsl_sf_erf.h        gsl_sf_log.h \
-	gsl_sf_legendre.h   gsl_specfunc.h
+	gsl_sf.h 	    	\
+	gsl_specfunc.h		\
+	gsl_sf_airy.h       	\
+	gsl_sf_bessel.h     	\
+	gsl_sf_chebyshev.h  	\
+	gsl_sf_coulomb.h	\
+	gsl_sf_dilog.h      	\
+	gsl_sf_erf.h        	\
+	gsl_sf_fermi_dirac.h	\
+	gsl_sf_gamma.h      	\
+	gsl_sf_laguerre.h   	\
+	gsl_sf_legendre.h	\
+	gsl_sf_log.h 		\
+	gsl_sf_pow_int.h 	\
+	gsl_sf_trig.h
 
 
 noinst_HEADERS = bessel_amp_phase.h
@@ -44,8 +55,10 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_Y1.c		\
 	bessel_amp_phase.c	\
 	chebyshev.c		\
+	coulomb.c		\
 	dilog.c			\
 	erfc.c			\
+	fermi_dirac.c		\
 	gamma.c			\
 	laguerre.c		\
 	legendre.c		\

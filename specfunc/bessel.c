@@ -308,9 +308,10 @@ void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
       FP += del;
       if(D < 0.) F = -F;
       if(B > end) {
-	char buff[100];
-	sprintf(buff, "gsl_sf_bessel_j_steed: continued fraction not converging");
-	GSL_ERROR_MESSAGE(buff, GSL_EFAILED);
+	GSL_ERROR_MESSAGE(
+		"gsl_sf_bessel_j_steed: continued fraction not converging",
+		GSL_EFAILED
+		);
       }
     }
     while(fabs(del) >= fabs(FP) * ACC);
@@ -326,7 +327,7 @@ void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
       jl_x[lmax] = F;
       for(LP = 1; LP<=lmax; LP++) {
 	jl_x[L-1] = PL * jl_x[L] + XP2;
-	FP = PL*jl_x[L-1]         - jl_x[L];
+	FP = PL*jl_x[L-1] - jl_x[L];
 	XP2 = FP;
 	PL -= x_inv;
 	--L;
