@@ -280,3 +280,5 @@ gsl_ran_hypergeometric_pdf
 * Paul Sydney <sydney@maui.net> bug report and patch for min/brent.c
 
 * Alexei Podtelezhnikov <apodtele@mccammon.ucsd.edu> patch for sphere.c
+
+* Neil Bushong <bushong@mh-4426b.ucsd.edu> documentation typo bug report

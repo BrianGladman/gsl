@@ -114,7 +114,7 @@ computed and stored in @var{residual}.
 @cindex inverse of a matrix, by LU decomposition
 @cindex matrix inverse
 @deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
-@deftypefunx int gsl_complex_linalg_LU_invert (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix_complex * @var{inverse})
+@deftypefunx int gsl_linalg_complex_LU_invert (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_matrix_complex * @var{inverse})
 These functions compute the inverse of a matrix @math{A} from its
 @math{LU} decomposition (@var{LU},@var{p}), storing the result in the
 matrix @var{inverse}. The inverse is computed by solving the system
