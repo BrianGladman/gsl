@@ -19,6 +19,11 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+  for(x=-5; x < 10.; x += .02) {
+    
+  }
+  
+/*
   struct gsl_sf_ChebSeries * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 15);
   
   for(x=-M_PI; x<M_PI; x += 0.1) {
@@ -33,7 +38,7 @@ int main(int argc, char * argv[])
 	   );
   }
   exit(0);
-
+*/
 /*
   for(x=xmin; x<xmax; x += dx) {
     y = gsl_sf_Shi(x);

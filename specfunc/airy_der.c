@@ -8,6 +8,7 @@
 #include "gsl_sf_airy.h"
 
 
+
 /* based on SLATEC aide.f, bide.f, aid.f, bid.f, r9admp.f */
  
 /* 
@@ -607,6 +608,9 @@ static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
   return GSL_SUCCESS;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
 {
   const double eta   = 0.1 * GSL_MACH_EPS;	         /* 0.1*r1mach(3) */
@@ -668,7 +672,10 @@ int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
     double s = 0.;
     int status = gsl_sf_airy_Ai_deriv_scaled_impl(x, &s);
     *result = s * exp(-2.0*x*sqrt(x)/3.0);
-    return status;
+    if(*result == 0.)
+      return GSL_EUNDRFLW;
+    else
+      return status;
   }
 }
 
@@ -751,6 +758,89 @@ int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
+    *result = 0.; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_airy_Ai_deriv_scaled_e(const double x, double * result)
+{
+  int status = gsl_sf_airy_Ai_deriv_scaled_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Ai_deriv_scaled_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_airy_Ai_deriv_e(const double x, double * result)
+{
+  int status = gsl_sf_airy_Ai_deriv_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Ai_deriv_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_airy_Bi_deriv_scaled_e(const double x, double * result)
+{
+  int status = gsl_sf_airy_Bi_deriv_scaled_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Bi_deriv_scaled_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_airy_Bi_deriv_e(const double x, double * result)
+{
+  int status = gsl_sf_airy_Bi_deriv_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Bi_deriv_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_airy_Ai_deriv_scaled(const double x)
+{
+  double y;
+  int status = gsl_sf_airy_Ai_deriv_scaled_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_airy_Ai_deriv_scaled", status);
+  }
+  return y;
+}
+
+double gsl_sf_airy_Ai_deriv(const double x)
+{
+  double y;
+  int status = gsl_sf_airy_Ai_deriv_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Ai_deriv_e", status);
+  }
+  return y;
+}
+
+double gsl_sf_airy_Bi_deriv_scaled(const double x)
+{
+  double y;
+  int status = gsl_sf_airy_Bi_deriv_scaled_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Bi_deriv_scaled", status);
+  }
+  return y;
+}
+
+double gsl_sf_airy_Bi_deriv(const double x)
+{
+  double y;
+  int status = gsl_sf_airy_Bi_deriv_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_airy_Bi_deriv", status);
+  }
+  return y;
 }
