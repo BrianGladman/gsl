@@ -7,3 +7,11 @@
      GSL_ERROR(#fn, status); \
    } ; \
    return result.val;
+
+#define EVAL_DOUBLE(fn) \
+   int status = fn; \
+   if (status != GSL_SUCCESS) { \
+     GSL_ERROR(#fn, status); \
+   } ; \
+   return result;
+

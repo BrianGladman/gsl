@@ -757,12 +757,14 @@ double gsl_sf_lncosh(const double x)
 
 double gsl_sf_angle_restrict_symm(const double theta)
 {
-  EVAL_RESULT(gsl_sf_angle_restrict_symm_e(&result));
+  double result = theta;
+  EVAL_DOUBLE(gsl_sf_angle_restrict_symm_e(&result));
 }
 
 double gsl_sf_angle_restrict_pos(const double theta)
 {
-  EVAL_RESULT(gsl_sf_angle_restrict_pos_e(&result));
+  double result = theta;
+  EVAL_DOUBLE(gsl_sf_angle_restrict_pos_e(&result));
 }
 
 #if 0

@@ -68,9 +68,8 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 #define GSL_MULTIMIN_FN_EVAL_DF(F,x,g) (*((F)->df))(x,(F)->params,(g))
 #define GSL_MULTIMIN_FN_EVAL_F_DF(F,x,y,g) (*((F)->fdf))(x,(F)->params,(y),(g))
 
-int gsl_diff_gradient(const gsl_multimin_function *f,
-		      gsl_vector *x,
-		      gsl_vector *g);
+int gsl_multimin_diff (const gsl_multimin_function * f,
+                       gsl_vector * x, gsl_vector * g);
 
 /* wrapper for using a vector input function as a real input function */
 typedef struct 

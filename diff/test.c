@@ -127,7 +127,7 @@ df6 (double x, void *params)
 
 typedef int (diff_fn) (const gsl_function * f, double x, double * res, double *abserr);
 
-int
+void
 test (diff_fn * diff, gsl_function * f, gsl_function * df, double x, 
       const char * desc)
 {

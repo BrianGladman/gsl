@@ -1,7 +1,6 @@
 for (I = problems ; I->f != 0; I++) 
 {
   size_t i;
-  int status;
   double sum = 0, mean, sumd2 = 0, sd, res, err; 
   
   gsl_rng * r;
