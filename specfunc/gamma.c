@@ -7,6 +7,7 @@
 #include <gsl_math.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
+#include "gsl_sf_psi.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
@@ -602,6 +603,33 @@ lngamma_lanczos(double x, double * result)
 }
 
 
+/* x near a negative integer
+ * Calculates sign as well as log(|gamma(x)|).
+ * x = -N + eps
+ */
+static
+int
+lngamma_sgn_sing(int N, double eps, double * lng, double * sgn)
+{
+  if(eps == 0.0) {
+    *lng = 0.0;
+    *sgn = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    double psi_N;
+    double psi_Np1;
+    double lng_Np1;
+    gsl_sf_psi_int_impl(N, &psi_N);  /* not N+1, in case N = MAX_INT */
+    lngamma_lanczos(N+1.0, &lng_Np1);
+    psi_Np1 = psi_N + 1.0/N;
+    *lng = -log(fabs(eps)) - lng_Np1 + eps*psi_Np1;
+    *sgn = ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * ( eps > 0.0 ? 1.0 : -1.0 );
+    return GSL_SUCCESS;
+  }
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 
@@ -611,20 +639,35 @@ int gsl_sf_lngamma_impl(double x, double * result)
     return lngamma_lanczos(x, result);
   }
   else {
-    double z = 1.0 - x;
-    double s = sin(M_PI*z);
+    double z  = 1.0 - x;
+    double s  = sin(M_PI*z);
+    double as = fabs(s);
     if(s == 0.0) {
       *result = 0.0;
       return GSL_EDOM;
     }
+    else if(as < 10.0*GSL_SQRT_MACH_EPS) {
+      /* x is near a negative integer, -N */
+      if(x < INT_MIN + 2.0) {
+        *result = 0.0;
+	return GSL_EROUND;
+      }
+      else {
+        int N = -(int)(x - 0.5);
+	double eps = x + N;
+	double sgn;
+        return lngamma_sgn_sing(N, eps, result, &sgn);
+      }
+    }
     else {
       double lg_z;
       lngamma_lanczos(z, &lg_z);
-      *result = log(M_PI/fabs(s)) - lg_z;
+      *result = log(M_PI/as) - lg_z;
       return GSL_SUCCESS;
     }
   }
 }
+
 
 int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
 {
@@ -635,16 +678,30 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
   else {
     double z = 1.0 - x;
     double s = sin(M_PI*x);
+    double as = fabs(s);
     if(s == 0.0) {
       *sgn = 0.0;
       *result_lg = 0.0;
       return GSL_EDOM;
     }
+    else if(as < 10.0*GSL_SQRT_MACH_EPS) {
+      /* x is near a negative integer, -N */
+      if(x < INT_MIN + 2.0) {
+        *result_lg = 0.0;
+	*sgn = 0.0;
+	return GSL_EROUND;
+      }
+      else {
+        int N = -(int)(x - 0.5);
+	double eps = x + N;
+        return lngamma_sgn_sing(N, eps, result_lg, sgn);
+      }
+    }
     else {
       double lg_z;
       lngamma_lanczos(z, &lg_z);
       *sgn = (s > 0.0 ? 1.0 : -1.0);
-      *result_lg = log(M_PI/fabs(s)) - lg_z;
+      *result_lg = log(M_PI/as) - lg_z;
       return GSL_SUCCESS;
     }
   }
@@ -655,13 +712,13 @@ int
 gsl_sf_gamma_impl(const double x, double * result)
 {
   double lng, sgn;
-  double g;
   int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
   if(stat_lng != GSL_SUCCESS) {
     *result = 0.0;
     return stat_lng;
   }
   else {
+    double g;
     int stat_exp = gsl_sf_exp_impl(lng, &g);
     *result = sgn * g;
     return stat_exp;
@@ -675,7 +732,11 @@ gsl_sf_gammainv_impl(const double x, double * result)
   double lng, sgn;
   double g;
   int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
-  if(stat_lng != GSL_SUCCESS) {
+  if(stat_lng == GSL_EDOM) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(stat_lng != GSL_SUCCESS) {
     *result = 0.0;
     return stat_lng;
   }
@@ -685,6 +746,7 @@ gsl_sf_gammainv_impl(const double x, double * result)
     return stat_exp;
   }
 }
+
 
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
 {

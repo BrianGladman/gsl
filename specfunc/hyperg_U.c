@@ -185,8 +185,7 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
      * U(a,b,x) = U(a,a+1,x) when 1+a-b=0
      * and U(a,a+1,x) = x^(-a).
      */
-    double lnx = log(x);
-    double lnr = -a * lnx;
+    double lnr = -a * log(x);
     return gsl_sf_exp_impl(lnr, result);
   }
   else {
@@ -208,10 +207,9 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     int istrt = ( N < 1 ? 1-N : 0 );
     double xi = istrt;
 
-    double powx;
     double gamr;
     int stat_gamr = gsl_sf_gammainv_impl(1.0+a-b, &gamr);
-    int stat_powx = gsl_sf_pow_int_impl(x, istrt);
+    double powx   = gsl_sf_pow_int(x, istrt);
     double sarg   = beps*M_PI;
     double sfact  = ( sarg != 0.0 ? sarg/sin(sarg) : 1.0 );
     double factor = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * gamr * powx;
@@ -310,3 +308,25 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
   }
 }
 
+
+int
+gsl_sf_hyperg_U_e(const double a, const double b, const double x, double * result)
+{
+  int status = gsl_sf_hyperg_U_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("  gsl_sf_hyperg_U_e", status);
+  }
+  return status;
+}
+
+
+double
+gsl_sf_hyperg_U(const double a, const double b, const double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_U_impl(a, b, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("  gsl_sf_hyperg_U", status);
+  }
+  return y;
+}

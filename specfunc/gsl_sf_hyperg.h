@@ -26,6 +26,15 @@ int     gsl_sf_hyperg_1F1_e(double a, double b, double x, double * result);
 double  gsl_sf_hyperg_1F1(double a, double b, double x);
 
 
+/* Confluent hypergeometric function  U(a,b,x)
+ *
+ * exceptions:
+ */
+int     gsl_sf_hyperg_U_impl(double a, double b, double x, double * result);
+int     gsl_sf_hyperg_U_e(double a, double b, double x, double * result);
+double  gsl_sf_hyperg_U(double a, double b, double x);
+
+
 /* Gauss hypergeometric function 2F1[a,b,c,x]
  * |x| < 1
  *
