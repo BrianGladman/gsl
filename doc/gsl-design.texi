@@ -79,8 +79,11 @@ by the Foundation.
 @top About GSL
 
 @ifinfo
-This file documents the @value{GSL}, a collection of numerical routines
-for scientific computing.
+This file documents the design of @value{GSL}, a collection of numerical
+routines for scientific computing.
+
+More information about GSL can be found at the project homepage,
+@url{http://www.gnu.org/software/gsl/}.
 @end ifinfo
 
 The @value{GSL} is a library of scientific subroutines.  It aims to
