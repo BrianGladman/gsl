@@ -238,7 +238,7 @@ static void airy_mod_phase(double x, double * mod, double * phase)
   else {
     char buff[50];
     sprintf(buff,"airy_mod_phase: x= %g  > -1", x);
-    GSL_MESSAGE(buff);
+    GSL_ERROR(buff, GSL_EDOM);
     *mod = 0.;
     *phase = 0.;
     return;
@@ -536,8 +536,7 @@ static double airy_aie(double x)
   if(x < 1.0) {
     char buff[50];
     sprintf(buff,"airy_aie: x= %g  < 1", x);
-    GSL_MESSAGE(buff);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   else {
     double sqx = sqrt(x);
@@ -554,8 +553,7 @@ static double airy_bie(double x)
   if(x < 2.0) {
     char buff[50];
     sprintf(buff,"airy_bie: x= %g  < 2", x);
-    GSL_MESSAGE(buff);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   else if(x < 4.0) {
     double sqx = sqrt(x);

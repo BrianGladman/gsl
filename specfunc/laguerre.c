@@ -53,8 +53,7 @@ double gsl_sf_laguerre_cp(int n, double a, double x)
   if(n < 0) {
     char buff[100];
     sprintf(buff,"laguerre_cp: n=%d  < 0 not allowed", n);
-    GSL_MESSAGE(buff);
-    return 1.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 1.);
   }
   else if(n == 0) {
     return 1.;
@@ -67,8 +66,7 @@ double gsl_sf_laguerre_cp(int n, double a, double x)
     double result;
     double * c = (double *)malloc((n+1) * sizeof(double));
     if(c == 0) {
-      GSL_MESSAGE("gsl_sf_laguerre_cp: out of memory");
-      return 0.;
+      GSL_ERROR_RETURN("gsl_sf_laguerre_cp: out of memory", GSL_ENOMEM, 1.);
     }
     else {
       c[0] = 1.;

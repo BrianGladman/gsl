@@ -32,6 +32,10 @@ Copyright 1984, 1987 by Stephen L. Moshier
 Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 */
 
+#include <gsl_math.h>
+#include <gsl_errno.h>
+#include "gsl_sf_bessel.h"
+
 
 double gsl_sf_bessel_Jn(int n, double x )
 {
@@ -54,7 +58,7 @@ double gsl_sf_bessel_Jn(int n, double x )
     result = sign * gsl_sf_bessel_J0(x);
   }
   else if(n == 1) {
-    result = sign * gsl_sf_bessel_J1(x) );
+    result = sign * gsl_sf_bessel_J1(x);
   }
   else if(n == 2) {
     if(x < GSL_SQRT_MACH_EPS) {
@@ -66,7 +70,7 @@ double gsl_sf_bessel_Jn(int n, double x )
     }    
   }
   else {  
-    if(x < GSl_MACH_EPS) {
+    if(x < GSL_MACH_EPS) {
       /* underflow */
       result = 0.;
     }

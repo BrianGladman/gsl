@@ -51,8 +51,8 @@ int check_bessel(void)
 int main(int argc, char * argv[])
 {
 
-  gsl_test(check_airy(),       "Airy functions")
-  gsl_test(check_bessel(),     "Bessel functions")  
+  gsl_test(check_airy(),       "Airy functions");
+  gsl_test(check_bessel(),     "Bessel functions"); 
 
   exit(0);  
 }

@@ -24,17 +24,23 @@ gsl_empty_error_handler (const char * reason, const char * file, int line) {
 }
 
 void
+gsl_error_stream_printf(const char * label, const char * file, int line, const char * reason)
+{
+  fprintf(stderr, "\ngsl: %s:%d: %s: %s\n", file, line, label, reason);
+}
+
+void
 gsl_message(const char * reason, const char * file, int line, unsigned int mask)
 {
   if(mask & GSL_MESSAGE_MASK) {
-    fprintf(stderr, "\ngsl: %s:%d: MESSAGE: %s\n", file, line, reason);
+    gsl_error_stream_printf("MESSAGE", file, line, reason);
   }
 }
 
 void
 gsl_warning(const char * reason, const char * file, int line)
 {
-  fprintf(stderr, "\ngsl: %s:%d: WARNING: %s\n", file, line, reason);
+  gsl_error_stream_printf("WARNING", file, line, reason);
 }
 
 void
@@ -46,6 +52,6 @@ gsl_error (const char *reason, const char *file, int line)
       return;
     }
 
-  gsl_message(reason, file, line);
+  gsl_error_stream_printf("ERROR", file, line, reason);
   abort ();
 }

@@ -1,14 +1,8 @@
-# Makefile.in generated automatically by automake 1.2c from Makefile.am
+# Makefile.in generated automatically by automake 1.2 from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
+# gives unlimited permission to copy, distribute and modify it.
 
 
 SHELL = /bin/sh
@@ -69,7 +63,7 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslspecfunc.a 
 
-# noinst_PROGRAMS = 
+noinst_PROGRAMS = test_sf
 
 include_HEADERS = \
 	gsl_sf.h 	    	\
@@ -90,25 +84,13 @@ include_HEADERS = \
 
 noinst_HEADERS = bessel_amp_phase.h
 
-INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../integration -I$(top_srcdir)
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
 
-#TESTS = test_trap test_radix2 test
+TESTS = test_sf
 
-#test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#test_radix2_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-
-#test_DEPENDENCIES = libgslfft.a
-#test_trap_DEPENDENCIES = libgslfft.a
-#test_radix2_DEPENDENCIES = libgslfft.a
-#benchmark_DEPENDENCIES = libgslfft.a
-
-#test_SOURCES = test.c
-#test_trap_SOURCES = test_trap.c
-#test_radix2_SOURCES = test_radix2.c
-#benchmark_SOURCES = benchmark.c 
+test_sf_LDADD = libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_sf_DEPENDENCIES = libgslspecfunc.a
+test_sf_SOURCES = test_sf.c
 
 libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
@@ -117,6 +99,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_I1.c		\
 	bessel_J0.c		\
 	bessel_J1.c		\
+	bessel_Jn.c		\
 	bessel_K0.c		\
 	bessel_K1.c		\
 	bessel_Y0.c		\
@@ -147,10 +130,15 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslspecfunc_a_LIBADD = 
 libgslspecfunc_a_OBJECTS =  airy.o bessel.o bessel_I0.o bessel_I1.o \
-bessel_J0.o bessel_J1.o bessel_K0.o bessel_K1.o bessel_Y0.o bessel_Y1.o \
-bessel_amp_phase.o chebyshev.o coulomb.o dilog.o erfc.o fermi_dirac.o \
-gamma.o laguerre.o legendre.o log.o pow_int.o sig2lamp.o t-erf.o trig.o
+bessel_J0.o bessel_J1.o bessel_Jn.o bessel_K0.o bessel_K1.o bessel_Y0.o \
+bessel_Y1.o bessel_amp_phase.o chebyshev.o coulomb.o dilog.o erfc.o \
+fermi_dirac.o gamma.o laguerre.o legendre.o log.o pow_int.o sig2lamp.o \
+t-erf.o trig.o
 AR = ar
+PROGRAMS =  $(noinst_PROGRAMS)
+
+test_sf_OBJECTS =  test_sf.o
+test_sf_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -164,14 +152,14 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/airy.P .deps/bessel.P .deps/bessel_I0.P \
-.deps/bessel_I1.P .deps/bessel_J0.P .deps/bessel_J1.P .deps/bessel_K0.P \
-.deps/bessel_K1.P .deps/bessel_Y0.P .deps/bessel_Y1.P \
+.deps/bessel_I1.P .deps/bessel_J0.P .deps/bessel_J1.P .deps/bessel_Jn.P \
+.deps/bessel_K0.P .deps/bessel_K1.P .deps/bessel_Y0.P .deps/bessel_Y1.P \
 .deps/bessel_amp_phase.P .deps/chebyshev.P .deps/coulomb.P \
 .deps/dilog.P .deps/erfc.P .deps/fermi_dirac.P .deps/gamma.P \
 .deps/laguerre.P .deps/legendre.P .deps/log.P .deps/pow_int.P \
-.deps/sig2lamp.P .deps/t-erf.P .deps/trig.P
-SOURCES = $(libgslspecfunc_a_SOURCES)
-OBJECTS = $(libgslspecfunc_a_OBJECTS)
+.deps/sig2lamp.P .deps/t-erf.P .deps/test_sf.P .deps/trig.P
+SOURCES = $(libgslspecfunc_a_SOURCES) $(test_sf_SOURCES)
+OBJECTS = $(libgslspecfunc_a_OBJECTS) $(test_sf_OBJECTS)
 
 default: all
 
@@ -188,7 +176,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
@@ -221,19 +209,32 @@ uninstall-libLIBRARIES:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	-rm -f *.o core
+	rm -f *.o core
 
 clean-compile:
 
 distclean-compile:
-	-rm -f *.tab.c
+	rm -f *.tab.c
 
 maintainer-clean-compile:
 
 libgslspecfunc.a: $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_DEPENDENCIES)
-	-rm -f libgslspecfunc.a
+	rm -f libgslspecfunc.a
 	$(AR) cru libgslspecfunc.a $(libgslspecfunc_a_OBJECTS) $(libgslspecfunc_a_LIBADD)
 	$(RANLIB) libgslspecfunc.a
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+test_sf: $(test_sf_OBJECTS) $(test_sf_DEPENDENCIES)
+	@rm -f test_sf
+	$(LINK) $(test_sf_LDFLAGS) $(test_sf_OBJECTS) $(test_sf_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -265,7 +266,7 @@ mostlyclean-tags:
 clean-tags:
 
 distclean-tags:
-	-rm -f TAGS ID
+	rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -276,7 +277,6 @@ subdir = specfunc
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu specfunc/Makefile
 	@for file in $(DISTFILES); do \
@@ -286,7 +286,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = $(CC) -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include .deps/.P
@@ -302,7 +302,7 @@ clean-depend:
 distclean-depend:
 
 maintainer-clean-depend:
-	-rm -rf .deps
+	rm -rf .deps
 
 .deps/%.P: %.c
 	@echo "Computing dependencies for $<..."
@@ -311,10 +311,35 @@ maintainer-clean-depend:
 	$(MKDEP) $< >$@.tmp \
 	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
 	  && rm -f $@.tmp
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info:
 dvi:
 check: all
-	$(MAKE)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES
 	@$(NORMAL_INSTALL)
@@ -327,7 +352,7 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(HEADERS)
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
@@ -336,31 +361,34 @@ installdirs:
 
 
 mostlyclean-generic:
-	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	-rm -f Makefile $(DISTCLEANFILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	rm -f Makefile $(DISTCLEANFILES)
+	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile distclean-tags \
+distclean:  distclean-libLIBRARIES distclean-compile \
+		distclean-noinstPROGRAMS distclean-tags \
 		distclean-depend distclean-generic clean
-	-rm -f config.status
+	rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-compile \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-depend maintainer-clean-generic \
 		distclean
 	@echo "This command is intended for maintainers to use;"
@@ -369,13 +397,15 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 .PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
-clean-depend maintainer-clean-depend info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
+install-exec install-data install uninstall all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

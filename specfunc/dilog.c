@@ -179,12 +179,10 @@ static double dilog_c_integral(double a, double b, double cos_theta, double eps)
 double gsl_sf_dilog_c(double r, double cos_theta)
 {
   if(r < 0.) {
-    GSL_MESSAGE("dilog_c: r < 0");
-    return 0.;
+    GSL_ERROR_RETURN("dilog_c: r < 0", GSL_EDOM, 0.);
   }
   else if(fabs(cos_theta) > 1.) {
-    GSL_MESSAGE("dilog_c: fabs(cos_theta) > 1");
-    return 0.;
+    GSL_ERROR_RETURN("dilog_c: fabs(cos_theta) > 1", GSL_EDOM, 0.);
   }
   else if(r == 0.) {
     return 0.;

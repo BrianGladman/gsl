@@ -82,7 +82,7 @@ void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg)
   if(za == 0.) {
     char buff[100];
     sprintf(buff,"gsl_sf_complex_lngamma: zr= %g  zi= %g", zr, zi);
-    GSL_MESSAGE(buff);
+    GSL_ERROR(buff, GSL_EDOM);
     *lnr = 0.;
     *arg = 0.;
     return;
@@ -139,7 +139,7 @@ void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg)
       char buff[100];
       sprintf(buff,"complex_lngamma: z= (%g,%g) near a negative integer",
 	      zr, zi);
-      GSL_MESSAGE(buff);
+      GSL_ERROR(buff, GSL_EDOM);
       *lnr = 0.;
       *arg = 0.;
     }
