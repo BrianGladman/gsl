@@ -1,3 +1,9 @@
+Wed Sep 19 17:41:13 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-histogram.c (main): turn off the display of mean and
+ 	standard deviation it is too confusing because it is not the mean
+ 	of the data itself.
+
 Tue Sep 18 20:08:39 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_gsl_histogram.sh: modified the expected test output to
