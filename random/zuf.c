@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "gsl_random.h"
+#include "zuf.h"
 
 /* It is crucial that m == n-273 mod 607 at all times;
  * For speed of execution, however, this is never enforced.
@@ -17,14 +17,14 @@
 typedef struct {
     int n,m;
     double u[607];
-} GSL_randomState;
+} gsl_ran_zuf_randomState;
 
 
-inline double GSL_uniform_wstate(void *vState)
+inline double gsl_ran_zuf_uniform_wstate(void *vState)
 {
     double t;
-    GSL_randomState *theState;
-    theState = (GSL_randomState *)vState;
+    gsl_ran_zuf_randomState *theState;
+    theState = (gsl_ran_zuf_randomState *)vState;
 
     t = theState->u[theState->m] + theState->u[theState->n];
     while (t>1.0) t -= 1.0;     /* same as floor() */
@@ -35,16 +35,16 @@ inline double GSL_uniform_wstate(void *vState)
     return t;
 }    
 
-#define GSL_RANDMAX 2147483647.0
-inline unsigned long GSL_random_wstate(void *vState)
+#define gsl_ran_zuf_RANDMAX 2147483647.0
+inline unsigned long gsl_ran_zuf_random_wstate(void *vState)
 {
-    return (unsigned long)(GSL_uniform_wstate(vState)*GSL_RANDMAX);
+    return (unsigned long)(gsl_ran_zuf_uniform_wstate(vState)*gsl_ran_zuf_RANDMAX);
 }
-double GSL_randmax()
+double gsl_ran_zuf_max()
 {
-    return GSL_RANDMAX;
+    return gsl_ran_zuf_RANDMAX;
 }
-void GSL_seed_wstate(void *vState, int seed)
+void gsl_ran_zuf_seed_wstate(void *vState, int seed)
 {
     /* A very elaborate seeding procedure is provided with the
      * zufall package; this is virtually a copy of that procedure */
@@ -59,8 +59,8 @@ void GSL_seed_wstate(void *vState, int seed)
     double s, t;
     int ii, jj;
 
-    GSL_randomState *theState;
-    theState = (GSL_randomState *)vState;
+    gsl_ran_zuf_randomState *theState;
+    theState = (gsl_ran_zuf_randomState *)vState;
 
     /* It is crucial that m == n-273 mod 607 at all times;
      * For speed of execution, however, this is never enforced.
@@ -100,13 +100,13 @@ void GSL_seed_wstate(void *vState, int seed)
     }
 } 
 
-void GSL_copyRandomState(void *tState,
+void gsl_ran_zuf_copyState(void *tState,
                          void *fState)
 {
     int k;
-    GSL_randomState *toState, *fromState;
-    toState   = (GSL_randomState *)tState;
-    fromState = (GSL_randomState *)fState;
+    gsl_ran_zuf_randomState *toState, *fromState;
+    toState   = (gsl_ran_zuf_randomState *)tState;
+    fromState = (gsl_ran_zuf_randomState *)fState;
 
     for (k=0; k<607; ++k) {
         toState->u[k] = fromState->u[k];
@@ -120,7 +120,7 @@ void GSL_copyRandomState(void *tState,
  * Instead is is set in the initializer: note 607-273=334.
  * Currently, state.u[607] is not initialized to anything special
  */
-static GSL_randomState state = {
+static gsl_ran_zuf_randomState state = {
     0, 334,
     { 0.1227935452,0.5911134421,0.3607630969,0.7119046445,0.3202328649,
       0.3050241354,0.6982676573,0.2516378998,0.4219606416,0.5938834879,
@@ -246,6 +246,6 @@ static GSL_randomState state = {
       0.3734000081,0.7502747460 }
 };
 
-#include "ranstate.c"
+#include "zuf-state.c"
 
 /* thats all... */

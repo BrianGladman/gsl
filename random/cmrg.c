@@ -7,28 +7,28 @@
   **/
 
 #include <stdlib.h>
-#include "gsl_random.h"
+#include "gsl_ran.h"
 
-const int m1 = 2147483647, m2 = 2145483479;
-int a12=63308,   q12=33921, r12=12979,
-    a13=-183326, q13=11714, r13=2883,
-    a21=86098,   q21=24919, r21=7417,
-    a23=-539608, q23=3976,  r23=2071;
+static const int m1 = 2147483647, m2 = 2145483479;
+static int a12=63308,   q12=33921, r12=12979,
+           a13=-183326, q13=11714, r13=2883,
+           a21=86098,   q21=24919, r21=7417,
+           a23=-539608, q23=3976,  r23=2071;
 
 
 typedef struct {
     long x10,x11,x12;           /* first component */
     long x20,x21,x22;           /* second component */
-} GSL_randomState;
+} gsl_ran_cmrg_randomState;
 
-const double Invmp1 = 4.656612873077393e-10;
+static const double Invmp1 = 4.656612873077393e-10;
 
 #define POSITIVE(x,m) if (x<0) x += m
 
-inline unsigned long GSL_random_wstate(void *vState)
+inline unsigned long gsl_ran_cmrg_random_wstate(void *vState)
 {
     int h,p12,p13,p21,p23;
-    GSL_randomState *theState;
+    gsl_ran_cmrg_randomState *theState;
     theState = (void *)vState;
 
     /* Component 1 */
@@ -56,20 +56,20 @@ inline unsigned long GSL_random_wstate(void *vState)
     else
         return (theState->x12-theState->x22);
 }
-inline double GSL_uniform_wstate(void *vState)
+inline double gsl_ran_cmrg_uniform_wstate(void *vState)
 {
     int Z;
-    Z = GSL_random_wstate(vState);
+    Z = gsl_ran_cmrg_random_wstate(vState);
     if (Z==0) Z=m1;
     return(Z*Invmp1);
 }
 
-double GSL_randmax() { return (double)m1; }
+double gsl_ran_cmrg_max() { return (double)m1; }
 
-void GSL_seed_wstate(void *vState, int s)
+void gsl_ran_cmrg_seed_wstate(void *vState, int s)
 {
-    GSL_randomState *theState;
-    theState = (GSL_randomState *)vState;
+    gsl_ran_cmrg_randomState *theState;
+    theState = (gsl_ran_cmrg_randomState *)vState;
 
     /* An entirely adhoc way of seeding! This does not come
        from L'Ecuyer et al */
@@ -82,12 +82,12 @@ void GSL_seed_wstate(void *vState, int s)
     return;
 }
 
-void GSL_copyRandomState(void *tState,
+void gsl_ran_cmrg_copyState(void *tState,
                          void *fState)
 {
-    GSL_randomState *toState, *fromState;
-    toState   = (GSL_randomState *)tState;
-    fromState = (GSL_randomState *)fState;
+    gsl_ran_cmrg_randomState *toState, *fromState;
+    toState   = (gsl_ran_cmrg_randomState *)tState;
+    fromState = (gsl_ran_cmrg_randomState *)fState;
 
     toState->x10 = fromState->x10;
     toState->x11 = fromState->x11;
@@ -97,10 +97,8 @@ void GSL_copyRandomState(void *tState,
     toState->x22 = fromState->x22;
 }
     
-/* -- From here on in, it's boilerplate! -- */
-
-static GSL_randomState state;
-#include "ranstate.c"
+static gsl_ran_cmrg_randomState state = { 10, 20, 30, 40, 50 , 60};
+#include "cmrg-state.c"
 
     
     

@@ -78,23 +78,23 @@ C***END PROLOGUE  UNI
   **/
 
 #include <stdlib.h>
-#include "gsl_random.h"
+#include "uni32.h"
 
-const long MDIG=32;                /* Machine digits in int */
-const long m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
-const long m2 = 65536;             /* 2^(MDIG/2) */
+static const long MDIG=32;                /* Machine digits in int */
+static const long m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
+static const long m2 = 65536;             /* 2^(MDIG/2) */
 
 
 typedef struct {
     unsigned long m[17];
     int i,j;
-} GSL_randomState;
+} gsl_ran_uni32_randomState;
 
-inline unsigned long GSL_random_wstate(void *vState)
+inline unsigned long gsl_ran_uni32_random_wstate(void *vState)
 {
     long k;                     /* important k not be unsigned */
-    GSL_randomState *theState;
-    theState = (GSL_randomState *)vState;
+    gsl_ran_uni32_randomState *theState;
+    theState = (gsl_ran_uni32_randomState *)vState;
 
     k = theState->m[theState->i] - theState->m[theState->j];
     if (k < 0) k += m1;
@@ -106,20 +106,20 @@ inline unsigned long GSL_random_wstate(void *vState)
     return k;
 
 }
-inline double GSL_uniform_wstate(void *vState)
+inline double gsl_ran_uni32_uniform_wstate(void *vState)
 {
-    return (double)GSL_random_wstate(vState)/m1;
+    return (double)gsl_ran_uni32_random_wstate(vState)/m1;
 }
-double GSL_randmax()
+double gsl_ran_uni32_max()
 {
     return (double)m1;
 }
 
-void GSL_seed_wstate(void *vState, int jd)
+void gsl_ran_uni32_seed_wstate(void *vState, int jd)
 {
     int i,jseed,k0,k1,j0,j1;
-    GSL_randomState *theState;
-    theState = (GSL_randomState *)vState;
+    gsl_ran_uni32_randomState *theState;
+    theState = (gsl_ran_uni32_randomState *)vState;
     
     /* For this routine, the seeding is very elaborate! */
     /* A flaw in this approach is that seeds 1,2 give exactly the
@@ -149,13 +149,13 @@ void GSL_seed_wstate(void *vState, int jd)
 
 
 /* get/set randomState */
-void GSL_copyRandomState(void *tState,
+void gsl_ran_uni32_copyState(void *tState,
                          void *fState)
 {
     int k;
-    GSL_randomState *toState, *fromState;
-    toState   = (GSL_randomState *)tState;
-    fromState = (GSL_randomState *)fState;
+    gsl_ran_uni32_randomState *toState, *fromState;
+    toState   = (gsl_ran_uni32_randomState *)tState;
+    fromState = (gsl_ran_uni32_randomState *)fState;
 
     for (k=0; k<17; ++k) {
         toState->m[k] = fromState->m[k];
@@ -164,13 +164,13 @@ void GSL_copyRandomState(void *tState,
     toState->j = fromState->j;
 }
 
-static GSL_randomState state = {
+static gsl_ran_uni32_randomState state = {
     { 30788, 23052,  2053, 19346, 10646, 19427, 23975,
       19049, 10949, 19693, 29746, 26748, 2796,  23890,
       29168, 31924, 16499 },
     4, 16
 };
-#include "ranstate.c"
+#include "uni32-state.c"
 
 
     
