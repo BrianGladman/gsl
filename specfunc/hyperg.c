@@ -11,7 +11,6 @@
 #include "gsl_sf_gamma.h"
 #include "hyperg.h"
 
-#define locEPS       (1000.0*GSL_DBL_EPSILON)
 #define SUM_LARGE    (1.0e-5*DBL_MAX)
 
 
@@ -23,13 +22,13 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
   double an  = a;
   double bn  = b;
   double n   = 1.0;
-  double sum = 1.0;
   double del = 1.0;
   double abs_del = 1.0;
   double max_abs_del = 1.0;
+  double sum_val = 1.0;
   double sum_err = 0.0;
-  
-  while(abs_del/fabs(sum) > GSL_DBL_EPSILON) {
+
+  while(abs_del/fabs(sum_val) > GSL_DBL_EPSILON) {
     double u, abs_u;
 
     if(bn == 0.0) {
@@ -37,25 +36,25 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
       result->err = 0.0;
       return GSL_EDOM;
     }
-    if(an == 0.0 || n > 400.0) {
-      result->val  = sum;
+    if(an == 0.0 || n > 1000.0) {
+      result->val  = sum_val;
       result->err  = sum_err;
-      result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum);
+      result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum_val);
       return GSL_SUCCESS;
     }
 
     u = x * (an/(bn*n));
     abs_u = fabs(u);
     if(abs_u > 1.0 && max_abs_del > DBL_MAX/abs_u) {
-      result->val = sum;
-      result->err = fabs(sum);
+      result->val = sum_val;
+      result->err = fabs(sum_val);
       return GSL_EOVRFLW;
     }
     del *= u;
-    sum += del;
-    if(fabs(sum) > SUM_LARGE) {
-      result->val = sum;
-      result->err = fabs(sum);
+    sum_val += del;
+    if(fabs(sum_val) > SUM_LARGE) {
+      result->val = sum_val;
+      result->err = fabs(sum_val);
       return GSL_EOVRFLW;
     }
 
@@ -68,9 +67,10 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     n  += 1.0;
   }
 
-  result->val  = sum;
+  result->val  = sum_val;
   result->err  = sum_err;
-  result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum);
+  result->err += abs_del;
+  result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum_val);
 
   return GSL_SUCCESS;
 }
