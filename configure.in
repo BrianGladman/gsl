@@ -193,6 +193,9 @@ case "$host" in
         AC_DEFINE(HAVE_NETBSD_IEEE_INTERFACE)
         AC_MSG_RESULT([netbsd]) 
         ;;
+    *-*-*openbsd*)  
+        AC_MSG_RESULT([openbsd, support not implemented])
+        ;;
     *-*-*bsd*) 
         AC_DEFINE(HAVE_FREEBSD_IEEE_INTERFACE)
         AC_MSG_RESULT([freebsd]) 

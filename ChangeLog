@@ -1,3 +1,8 @@
+Mon Jun 25 10:21:17 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: catch case of openbsd, which is not supported yet
+ 	in ieee directory
+
 Mon Jun 18 22:31:26 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in (GSL_CFLAGS): now just uses includedir for
