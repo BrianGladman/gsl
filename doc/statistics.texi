@@ -21,26 +21,40 @@ and integer datasets. The versions for floating-point data have the
 prefix @code{gsl_stats} and the versions for integer data have the
 prefix @code{gsl_stats_int}.
 
-@section Distributions, Samples and Estimators
+@menu
+* Statistical Concepts::        
+* Mean::                        
+* Standard deviation and variance (unknown population mean)::  
+* Standard deviation and variance (known population mean)::  
+* Absolute deviation::          
+* Higher moments (skewness and kurtosis)::  
+* Maximum and Minimum values::  
+* Median and Percentiles::      
+* Statistical tests::           
+* Statistics References and Further Reading::  
+@end menu
+
+@node Statistical Concepts
+@section Statistical Concepts
 
 A probability density function tells us the frequency with which a
 random variable takes a particular value or lies in a given range,
 @c
 @equation
-@hbox{probability}(a < x < b) = @int_a^b dx \, p(x)
+\hbox@{probability@}(a < x < b) = \int_a^b dx \, p(x)
 @end equation
 @noindent
 The ensemble of all possible values generated with the appropriate
 frequency by the probability density function is called the
 @dfn{population}. We can define parameters describing the probability
-density function, such as the population mean @math{@mu} and population
-variance @math{@sigma^2},
+density function, such as the population mean @math{\mu} and population
+variance @math{\sigma^2},
 @c
 @equation
-@mu = @int_{-\infty}^{+\infty} dx \, x p(x) 
+\mu = \int_@{-\infty@}^@{+\infty@} dx \, x p(x) 
 @end equation
 @equation
-@sigma^2 = @int_{-\infty}^{+\infty} dx \, (x-@mu)^2 p(x)
+\sigma^2 = \int_@{-\infty@}^@{+\infty@} dx \, (x-\mu)^2 p(x)
 @end equation
 @noindent
 The parameters cannot be observed directly. In statistical calculations
@@ -54,166 +68,206 @@ probability density function.
 
 For example the arithmetic mean of an observed dataset, also known as
 the sample mean, can be shown to be a good estimator for the population
-mean @math{@mu}. We denote estimators with a "hat", so the sample mean
-is written @math{@hat @mu}.
+mean @math{\mu}. We denote estimators with a "hat", so the sample mean
+is written @math{\hat \mu}.
 
 There can be many possible estimators for a parameter, but some will be
 better than others. Using probability theory and the probability density
 function we can calculate the behavior of any estimator. An estimator is
 called @dfn{unbiased} if its expectation value in repeated observations
-exactly matches the underlying parameter of the probability density
-function. An unbiased estimator is desirable.
+equals the underlying parameter of the probability density function. An
+unbiased estimator is desirable. There are also other measures of an
+estimator properties, such as @dfn{precision} and @dfn{efficiency}
+(consult the references for details).
 
+@node Mean
 @section Mean
 
-@deftypefn Statistics double gsl_stats_mean (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_mean (const int data[], unsigned int n)
+@deftypefn Statistics double gsl_stats_mean (const double data[], size_t n)
+@deftypefnx Statistics double gsl_stats_int_mean (const int data[], size_t n)
 
-@code{gsl_stats_mean} returns the arithmetic mean of @var{data}, a
-double-precision dataset of length @var{n}. @code{gsl_stats_int_mean}
-returns the sample mean of an integer dataset.
+The function @code{gsl_stats_mean} returns the arithmetic mean of
+@var{data}, a double-precision array of length @var{n}. The function
+@code{gsl_stats_int_mean} returns the sample mean of an integer array.
 
 The sample mean is an unbiased estimator of the population mean and is
-denoted by @math{@hat @mu}.
+denoted by @math{\hat \mu}.
 @c
 @equation
-{@hat @mu} = {1 @over N} @sum x_i
+@{\hat \mu@} = @{1 \over N@} \sum x_i
 @end equation
 @noindent
-where @math{x_i} are the elements of the dataset @var{data}.
+where @math{x_i} are the elements of the array @var{data}.
 
-For a gaussian distribution the variance of @math{@hat @mu} is
-@math{@sigma^2/N}, so the one standard-deviation error on the mean is
-@math{@sigma/@sqrt{N}}.
+For a gaussian distribution the variance of @math{\hat \mu} is
+@math{\sigma^2/N}, so the one standard-deviation error on the mean is
+@math{\sigma/\sqrt@{N@}}.
 
-If the underlying distribution has large tails then the mean may be
+If the underlying distribution has long tails then the mean may be
 subject to large fluctations, or in the worst case may not converge.
 
 @end deftypefn
 
-@section Standard deviation and variance 
+@node Standard deviation and variance (unknown population mean)
+@section Standard deviation and variance (unknown population mean)
 
-@deftypefn Statistics double gsl_stats_est_variance (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_est_variance (const int data[], unsigned int n)
+@deftypefn Statistics double gsl_stats_est_variance (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_est_variance (const int data[], const const size_t n)
 
-@code{gsl_stats_est_variance} returns the sample variance of @var{data},
-a double-precision dataset of length @var{n}.
-@code{gsl_stats_int_est_variance} returns the sample variance of an
-integer dataset.
+The function @code{gsl_stats_est_variance} returns the estimated
+variance of @var{data}, a double-precision array of length @var{n}.
+The function @code{gsl_stats_int_est_variance} returns the estimated
+variance of an integer array.
 
-The sample variance @math{@hat @sigma^2} is an unbiased estimator of
-@math{@sigma^2}, and is defined by
+This is an unbiased estimator of
+@math{\sigma^2}, and is defined by
 @c
 @equation
-{@hat @sigma}^2 = {1 @over (N-1)} @sum (x_i - {@hat @mu})^2
+@{\hat \sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\hat \mu@})^2
 @end equation
 @noindent
-where @math{x_i} are the elements of the dataset @var{data}. 
+where @math{x_i} are the elements of the array @var{data}. 
 
-Note that the normalisation factor of @math{1/(N-1)} (and not
-@math{1/N}) is chosen to make @math{@hat @sigma^2} an unbiased
-estimator.
+Note that the normalisation factor of @math{1/(N-1)} is chosen to make
+@math{\hat \sigma^2} an unbiased estimator. (A factor of @math{1/N}
+produces variances which, on the average, are too small since
+correlations between @math{x_i} and @math{\hat \mu} tend to reduce the
+sample variance).
 
-(A factor of @math{1/N} produces variances which, on the average, are too
-small since correlations between @math{x_i} and @math{@hat @mu} tend to
-reduce the sample variance).
+For a gaussian distribution the variance of @math{\hat \sigma^2} is
+@math{2 \sigma^4/N}. The one standard-deviation error on the variance is
+@math{\sqrt@{2@} \sigma^2/\sqrt@{N@}}.
 
-For a gaussian distribution the variance of @math{@hat @sigma^2} is
-@math{2 @sigma^4/N}. The one standard-deviation error on the variance is
-@math{@sqrt{2} @sigma^2/@sqrt{N}}.
+@end deftypefn
 
 Both these functions compute the mean via a call to
 @code{gsl_stats_mean} or @code{gsl_stats_int_mean}. If you have already
-computed the mean then you can use one of the following two functions.
+computed the mean then you can pass it directly to one of the following
+two functions.
 
-@end deftypefn
+@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int data[], const size_t n, const double mean)
 
-@deftypefn Statistics double gsl_stats_est_variance_with_mean (const double data[], unsigned int n, double mean)
-@deftypefnx Statistics double gsl_stats_int_est_variance_with_mean (const int data[], unsigned int n, double mean)
-@end deftypefn
-
-@code{gsl_stats_est_variance_with_mean} returns the sample variance of
-@var{data} relative to the given value of @var{mean}.
-@code{gsl_stats_int_est_variance} does the same for an integer dataset.
-
-
-
-@deftypefn Statistics double gsl_stats_est_sd (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_est_sd (const int data[], unsigned int n)
-
-@end deftypefn
-
-@deftypefn Statistics double gsl_stats_est_sd_with_mean (const double data[], unsigned int n, double mean)
-@deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int data[], unsigned int n, double mean)
-@end deftypefn
-
-
-
-
-@section Absolute deviation
-
-@deftypefn Statistics double gsl_stats_absdev (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_absdev (const int data[], unsigned int n)
-@end deftypefn
-
-The sample absolute deviation from the mean is defined as 
+The function @code{gsl_stats_est_variance_with_mean} returns the sample
+variance of @var{data} relative to the given value of @var{mean}, and
+@code{gsl_stats_int_est_variance} does the same for an integer array.
+The functions are computed with @math{\hat \mu} replaced by the value of
+@var{mean} that you supply,
 @c
 @equation
-absdev  = {1 @over N} @sum |x_i - {@hat @mu}|
+@{\hat \sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - mean)^2
+@end equation
+
+@end deftypefn
+
+The standard deviation is defined as the square root of the
+variance. The following functions return the square root of the
+corresponding variance functions above.
+
+@deftypefn Statistics double gsl_stats_est_sd (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_est_sd (const int data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_est_sd_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_est_sd_with_mean (const int data[], const size_t n, const double mean)
+@end deftypefn
+
+@node Standard deviation and variance (known population mean)
+@section Standard deviation and variance (known population mean)
+
+If the population mean is known a priori then the estimators for the
+variance given above must be modified to make them unbiased.  When the
+mean is known the factor @math{1/(N-1)} should be replaced by
+@math{1/N}, and the mean @math{\hat \mu} replaced by the known
+population mean @math{\mu},
+@c
+@equation
+@{\hat \sigma@}^2 = @{1 \over N@} \sum (x_i - \mu)^2
 @end equation
 @noindent
-where @math{x_i} are the elements of the dataset @var{data}.
+The following functions compute the variance and standard deviation
+according to this formula:
 
-
-@deftypefn Statistics double gsl_stats_absdev_with_mean (const double data[], unsigned int n, double mean)
-@deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int data[], unsigned int n, double mean)
+@deftypefn Statistics double gsl_stats_variance (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_variance (const int data[], const const size_t n)
+@deftypefnx Statistics double gsl_stats_variance_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_variance_with_mean (const int data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_sd (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_sd (const int data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_sd_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_sd_with_mean (const int data[], const size_t n, const double mean)
 @end deftypefn
 
+@node Absolute deviation
+@section Absolute deviation
 
+@deftypefn Statistics double gsl_stats_absdev (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_absdev (const int data[], const size_t n)
 
+The function @code{gsl_stats_absdev} computes the absolute deviation
+from the mean of @var{data}, a double precision array of length @var{n}.
 
-@section Higher moments, skewness and kurtosis
-
-@deftypefn Statistics double gsl_stats_skew (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_skew (const int data[], unsigned int n, double mean)
+The absolute deviation from the mean is defined as
+@c
+@equation
+absdev  = @{1 \over N@} \sum |x_i - @{\hat \mu@}|
+@end equation
+@noindent
+where @math{x_i} are the elements of the array @var{data}.
 @end deftypefn
 
+If you have already computed the mean of @var{data}, or wish to compute
+the absolute deviation relative to another value (such as zero, or the
+median) then the following functions allow you to supply
+
+@deftypefn Statistics double gsl_stats_absdev_with_mean (const double data[], const size_t n, const double mean)
+@deftypefnx Statistics double gsl_stats_int_absdev_with_mean (const int data[], const size_t n, const double mean)
+@end deftypefn
+
+@node Higher moments (skewness and kurtosis)
+@section Higher moments (skewness and kurtosis)
+
+@deftypefn Statistics double gsl_stats_skew (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_skew (const int data[], const size_t n, const double mean)
 
 The skewness is defined as 
 @c
 @equation
-skew = {1 @over N} @sum {@left( x_i - {@hat @mu} @over {@hat @sigma} @right)}^3
+skew = @{1 \over N@}
+     \sum @{\left( x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^3
 @end equation
 @noindent
-where @math{x_i} are the elements of the dataset @var{data}.
+where @math{x_i} are the elements of the array @var{data}.
 
-
-
-@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double data[], unsigned int n, double mean, double sd)
-@deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int data[], unsigned int n, double mean, double mean, double sd)
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis (const double data[], unsigned int n)
-@deftypefnx Statistics double gsl_stats_int_kurtosis (const int data[], unsigned int n, double mean)
+
+@deftypefn Statistics double gsl_stats_skew_with_mean_and_sd (const double data[], const size_t n, const double mean, const double sd)
+@deftypefnx Statistics double gsl_stats_int_skew_with_mean_and_sd (const int data[], const size_t n, const double mean, const double sd)
 @end deftypefn
+
+@deftypefn Statistics double gsl_stats_kurtosis (const double data[], const size_t n)
+@deftypefnx Statistics double gsl_stats_int_kurtosis (const int data[], const size_t n, const double mean)
 
 The kurtosis is defined as 
 @c
 @equation
-kurtosis = @left( {1 @over N} @sum {@left( x_i - {@hat @mu} @over {@hat @sigma} @right)}^4 @right) - 3
+kurtosis = \left( @{1 \over N@} 
+  \sum @{\left(x_i - @{\hat \mu@} \over @{\hat \sigma@} \right)@}^4 \right) - 3
 @end equation
 @noindent
 
-@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double data[], unsigned int n, double mean, double sd)
-@deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int data[], unsigned int n, double mean, double mean, double sd)
 @end deftypefn
 
+@deftypefn Statistics double gsl_stats_kurtosis_with_mean_and_sd (const double data[], const size_t n, const double mean, const double sd)
+@deftypefnx Statistics double gsl_stats_int_kurtosis_with_mean_and_sd (const int data[], const size_t n, const double mean, const double sd)
+@end deftypefn
 
+@node Maximum and Minimum values
 @section Maximum and Minimum values
 
+@node Median and Percentiles
 @section Median and Percentiles
 
-
+@node Statistical tests
 @section Statistical tests
 
 Here is a basic example of how to use these functions:

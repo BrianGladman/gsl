@@ -12,27 +12,13 @@ double
 gsl_vector_get(gsl_vector v, size_t i)
 {
 #ifdef GSL_RANGE_CHECK
-  if (i < 0 || i >= v.n) 
+  if (i < 0 || i >= v.n)   /* if size_t is unsigned then i<0 is impossible! */
     {
       abort() ;
     }
 #endif
   return v.data[i] ;
 }
-
-
-double *
-gsl_vector_set(gsl_vector v, size_t i)
-{
-#ifdef GSL_RANGE_CHECK
-  if (i < 0 || i >= v.n) 
-    {
-      abort() ;
-    }
-#endif
-  return v.data + i ;
-}
-
 
 void
 gsl_vector_set(gsl_vector * v, size_t i, double x)
@@ -46,15 +32,25 @@ gsl_vector_set(gsl_vector * v, size_t i, double x)
   v.data[i] = x ;
 }
 
-int
-gsl_vector *
-gsl_vector_alloc ( v, size_t n)
+gsl_vector * 
+gsl_vector_alloc (size_t n)
 {
+  gsl_vector * v ;
+
   if (n == 0)
     {
       GSL_ERROR ("vector length n must be positive integer", GSL_EDOM);
     }
   
+  
+  v = (gsl_vector *) malloc(sizeof(gsl_vector)) ;
+
+  if (v == 0) 
+    {
+      GSL_ERROR ("failed to allocate space for vector", GSL_ENOMEM);
+    }
+  else 
+    
   v->data = malloc(n * sizeof(double)) ;
 
   if (v->data == 0) 
@@ -64,7 +60,7 @@ gsl_vector_alloc ( v, size_t n)
   
   v->n = n ;
 
-  return 0 ;
+  return v ;
 }
 
 int
@@ -174,7 +170,3 @@ void vector_jpeg_d(FILE *fd, const double * v, unsigned long size,
 		   enum jpeg_scheme scheme
 		   );
 		   
-
-
-#endif /* !vectors_h_included */
-
