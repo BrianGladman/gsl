@@ -46,7 +46,7 @@ functions
 
 * Dave Morrison <dave@bnl.gov> for advice on build procedure and
   various patches, the diff/ numerical differentiation routines,
-  and multmin documentation
+  multmin documentation, and Landau distribution
 
 * Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.
 
