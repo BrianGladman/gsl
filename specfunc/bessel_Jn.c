@@ -1,5 +1,6 @@
-/*							jn.c
-
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ *
  * DESCRIPTION:
  *
  * Returns Bessel function of order n, where n is a

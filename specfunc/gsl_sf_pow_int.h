@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_SF_POW_INT_H_
 #define GSL_SF_POW_INT_H_
 

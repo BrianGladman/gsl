@@ -1,6 +1,5 @@
-/*
- * Author: G. Jungman
- * RCS: "$Id$"
+/* Author: G. Jungman
+ * RCS:    $Id$
  */
 #include <math.h>
 #include <gsl_math.h>

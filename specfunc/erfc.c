@@ -1,4 +1,6 @@
-/* $Id$ */
+/* Author:  J. Theiler
+ * RCS:     $Id$
+ */
 /**
  *  erfc() is the complimentary error function.
  *  This algorithm is from:

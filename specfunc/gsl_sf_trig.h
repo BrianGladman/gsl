@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_SF_TRIG_H_
 #define GSL_SF_TRIG_H_
 

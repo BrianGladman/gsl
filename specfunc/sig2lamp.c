@@ -1,5 +1,6 @@
-/* $Id$ */
-
+/* Author:  J. Theiler
+ * RCS:     $Id$
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "gsl_specfunc.h"

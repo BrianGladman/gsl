@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include <math.h>
 #include "gsl_sf.h"
 

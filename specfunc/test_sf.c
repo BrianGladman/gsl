@@ -1,6 +1,8 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <gsl_sf.h>
 
 

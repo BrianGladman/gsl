@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_LEGENDRE_H_
 #define GSL_LEGENDRE_H_
 

@@ -1,4 +1,6 @@
-/* $Id$ */
+/* Author:  G. Jungman
+ * RCS:     $Id$ 
+ */
 #include <stdio.h>
 #include <math.h>
 #include <gsl_errno.h>

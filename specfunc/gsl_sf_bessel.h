@@ -1,31 +1,50 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_BESSEL_H_
 #define GSL_BESSEL_H_
 
-/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x). */
+/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x), J_n(x) */
 double gsl_sf_bessel_J0(double x);
 double gsl_sf_bessel_J1(double x);
+double gsl_sf_bessel_J(int n, double x)
 
-/* Evaluate regular modified cylindrical Bessel funcions I_0(x), I_1(x). */
+/* Evaluate regular modified cylindrical Bessel functions I_0(x), I_1(x), I_n(x) */
 double gsl_sf_bessel_I0(double x);
 double gsl_sf_bessel_I1(double x);
+double gsl_sf_bessel_I(int n, double x);
 
 /* Evaluate scaled regular modified cylindrical Bessel funcions
    exp(-|x|) I_0(x)
-   exp(-|x|) I_1(x).
+   exp(-|x|) I_1(x)
+   exp(-|x|) I_n(x)
    */
 double gsl_sf_bessel_I0_scaled(double x);
 double gsl_sf_bessel_I1_scaled(double x);
+double gsl_sf_bessel_I_scaled(int n, double x);
 
-/* Evaluate regular modified cylindrical Bessel function I_n(x). */
-double gsl_sf_bessel_I(int n, double x);
+/* Evaluate irregular Bessel functions K_0(x), K_1(x), K_n(x)
+   x > 0.0
+   */
+double gsl_sf_bessel_K0(double x);
+double gsl_sf_bessel_K1(double x);
+double gsl_sf_bessel_K(int n, double x);
 
-/* Evaluate logarithm of regular modified cylindrical Bessel functions I_n(x).
-   This method avoids overflow when calculating for large x.
- */
-double gsl_sf_log_bessel_I0(double);
-double gsl_sf_log_bessel_I1(double);
-double gsl_sf_log_bessel_I(int, double);
+/* Evaluate scaled irregular Bessel functions
+   exp(x) K_0(x)
+   exp(x) K_1(x)
+   exp(x) K_n(x)
+   x > 0.0
+   */
+double gsl_sf_bessel_K0_scaled(double x);
+double gsl_sf_bessel_K1_scaled(double x);
+double gsl_sf_bessel_K_scaled(int n, double x);
 
+/* Evaluate irregular Bessel functions Y_0(x), Y_1(x)
+   x > 0.0
+   */
+double gsl_sf_bessel_Y0(double x);
+double gsl_sf_bessel_Y1(double x);
 
 /* Evaluate the regular spherical Bessel function j_l(x)
    at a given point x for a set of l values 0,...,lmax.
@@ -80,7 +99,6 @@ double sphbesseljprime_meissel(double l, double x, double jl_x);
 void asymp_sphbesselj_meissel(double l, double x,
 				     double *jl, double *jlp,
 				     int dflag);
-
 
 
 

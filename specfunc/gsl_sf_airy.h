@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_AIRY_H_
 #define GSL_AIRY_H_
 

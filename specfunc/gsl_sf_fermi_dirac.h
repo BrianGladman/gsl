@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef FERMI_DIRAC_H_
 #define FERMI_DIRAC_H_
 

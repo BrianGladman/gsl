@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_GAMMAFUNCTION_H_
 #define GSL_GAMMAFUNCTION_H_
 

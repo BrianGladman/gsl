@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
@@ -168,109 +171,6 @@ void asymp_sphbesselj_meissel(double l, double x,
   }
 }
 
-
-#define ACC 40.
-#define BIGNO 1.e+10
-#define BIGNI 1.e-10
-double gsl_sf_bessel_I(int n, double x)
-{
-  if(n < 2){
-    GSL_MESSAGE("besselI: n<2 in besselI(n,x)\n");
-    return 0.;
-  }
-  
-  if(x == 0.)
-    return 0.;
-  else {
-    int j;
-    double tox = 2./fabs(x);
-    double bip = 0.;
-    double ans = 0.;
-    double bi = 1.;
-    double bim;
-    
-    /* Downward recursion. */
-    for(j=2*(n+(int) sqrt(ACC*n)); j>0; j--){
-      bim = bip + j * tox * bi;
-      bip = bi;
-      bi = bim;
-      
-      /* Renormalize to prevent overflow. */
-      if(fabs(bi) > BIGNO){
-	ans *= BIGNI;
-	bi *= BIGNI;
-	bip *= BIGNI;
-      }
-      
-      if(j == n) ans = bip;
-    }
-
-    ans *= gsl_sf_bessel_I0(x) / bi;
-
-    return x < 0. && (n & 1) ? -ans : ans;
-  }
-}
-#undef ACC
-#undef BIGNO
-#undef BIGNI
-
-
-
-#define ACC 40.
-#define BIGNO 1.e+10
-#define BIGNI 1.e-10
-double gsl_sf_log_bessel_I(int n, double x)
-{
- if(n < 2){
-    GSL_MESSAGE("log_besselI: n<2 in log_besselI(n,x)");
-    return 0.;
-  }
-  if(x <= 0.){
-    GSL_MESSAGE("log_besselI: log(I_n(x)) with x <= 0.");
-    return 0.;
-  }
-  else {
-    int j;
-    double logfactor;
-    double tox = 2./fabs(x);
-    double bip = 0.;
-    double factor = 0.;
-    double bi = 1.;
-    double bim;
-    double ans;
-    
-    /* Downward recursion. */
-    for(j=2*(n+(int) sqrt(ACC*n)); j>0; j--){
-      bim = bip + j * tox * bi;
-      bip = bi;
-      bi = bim;
-      
-      /* Renormalize to prevent overflow. */
-      if(fabs(bi) > BIGNO){
-	factor *= BIGNI;
-	bi  *= BIGNI;
-	bip *= BIGNI;
-      }
-      
-      if(j == n) factor = bip;
-    }
-
-    /* Cutoff the real low values. This is
-     * mainly to trap for log(0).
-     */
-    if(factor <= 1.e-200)
-      logfactor = log(1.e-200);
-    else
-      logfactor = log(factor);
-
-    ans = logfactor + log_besselI0(x) - log(bi);
-
-    return ans;
-  }
-}
-#undef ACC
-#undef BIGNO
-#undef BIGNI
 
 
 #define ACC GSL_MACH_EPS

@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_DILOG_H_
 #define GSL_DILOG_H_
 

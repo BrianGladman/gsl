@@ -1,17 +1,5 @@
-/*							kn.c
- *
- *	Modified Bessel function, third kind, integer order
- *
- *
- *
- * SYNOPSIS:
- *
- * double x, y, kn();
- * int n;
- *
- * y = kn( n, x );
- *
- *
+/* Author:  G. Jungman
+ * RCS:     $Id$
  *
  * DESCRIPTION:
  *
@@ -23,7 +11,6 @@
  * low range, and an asymptotic expansion in the high range.
  *
  *
- *
  * ACCURACY:
  *
  *                      Relative error:
@@ -31,7 +18,7 @@
  *    DEC       0,30         3000       1.3e-9      5.8e-11
  *    IEEE      0,30        90000       1.8e-8      3.0e-10
  *
- *  Error is high only near the crossover point x = 9.55
+ * Error is high only near the crossover point x = 9.55
  * between the two expansions used.
  */
 

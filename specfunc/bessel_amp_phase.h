@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef _BESSEL_AMP_PHASE_H_
 #define _BESSEL_AMP_PHASE_H_
 

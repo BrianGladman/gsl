@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #ifndef GSL_SF_PSI_H_
 #define GSL_SF_PSI_H_
 

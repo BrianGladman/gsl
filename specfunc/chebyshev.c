@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include <stdlib.h>
 #include <math.h>
 #include <gsl_errno.h>

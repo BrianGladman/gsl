@@ -1,3 +1,6 @@
+/* Author:  G. Jungman
+ * RCS:     $Id$
+ */
 #include "gsl_sf_laguerre.h"
 #include <gsl_errno.h>
 
