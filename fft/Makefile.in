@@ -159,6 +159,18 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
 	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
+DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/compare.P \
+.deps/complex.P .deps/complex_init.P .deps/complex_pass_2.P \
+.deps/complex_pass_3.P .deps/complex_pass_4.P .deps/complex_pass_5.P \
+.deps/complex_pass_6.P .deps/complex_pass_n.P .deps/complex_radix2.P \
+.deps/dft_complex.P .deps/errno.P .deps/errs.P .deps/factorize.P \
+.deps/halfcomplex.P .deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
+.deps/halfcomplex_pass_3.P .deps/halfcomplex_pass_4.P \
+.deps/halfcomplex_pass_5.P .deps/halfcomplex_pass_n.P \
+.deps/halfcomplex_unpack.P .deps/real.P .deps/real_init.P \
+.deps/real_pass_2.P .deps/real_pass_3.P .deps/real_pass_4.P \
+.deps/real_pass_5.P .deps/real_pass_n.P .deps/real_unpack.P \
+.deps/test.P .deps/test_radix2.P .deps/test_signals.P .deps/test_trap.P
 SOURCES = $(libfft_a_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) errs.c
 OBJECTS = $(libfft_a_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) errs.o
 
@@ -292,6 +304,31 @@ distdir: $(DISTFILES)
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
+
+MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+-include .deps/.P
+.deps/.P:
+	test -d .deps || mkdir .deps
+	echo > $@
+
+-include $(DEP_FILES)
+$(DEP_FILES): .deps/.P
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+
+maintainer-clean-depend:
+	rm -rf .deps
+
+.deps/%.P: $(srcdir)/%.c
+	@echo "Computing dependencies for $<..."
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
@@ -332,20 +369,20 @@ maintainer-clean-generic:
 	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
 		mostlyclean-binPROGRAMS mostlyclean-tags \
-		mostlyclean-generic
+		mostlyclean-depend mostlyclean-generic
 
 clean:  clean-noinstLIBRARIES clean-compile clean-binPROGRAMS clean-tags \
-		clean-generic mostlyclean
+		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-noinstLIBRARIES distclean-compile \
-		distclean-binPROGRAMS distclean-tags distclean-generic \
-		clean
+		distclean-binPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
 	rm -f config.status
 
 maintainer-clean:  maintainer-clean-noinstLIBRARIES \
 		maintainer-clean-compile maintainer-clean-binPROGRAMS \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -356,8 +393,9 @@ maintainer-clean-compile mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS uninstall-includeHEADERS install-includeHEADERS \
 tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info dvi installcheck install-exec install-data install \
-uninstall all installdirs mostlyclean-generic distclean-generic \
+distdir mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info dvi installcheck install-exec install-data \
+install uninstall all installdirs mostlyclean-generic distclean-generic \
 clean-generic maintainer-clean-generic clean mostlyclean distclean \
 maintainer-clean
 
