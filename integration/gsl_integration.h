@@ -12,11 +12,23 @@ typedef struct {
   size_t * iord ;
 } gsl_integration_workspace ;
 
+typedef struct {
+  size_t npts ;
+  unsigned int * level;
+  unsigned int * ndin ;
+} gsl_integration_workspace_pts ;
+
 gsl_integration_workspace * 
 gsl_integration_workspace_alloc (size_t n) ;
 
 void
 gsl_integration_workspace_free (gsl_integration_workspace * w) ;
+
+gsl_integration_workspace_pts *
+gsl_integration_workspace_pts_alloc (const size_t npts);
+
+void
+gsl_integration_workspace_pts_free (gsl_integration_workspace_pts * w);
 
 typedef void gsl_integration_rule_t (const gsl_function *f, 
 				     const double a, const double b,
@@ -158,5 +170,23 @@ gsl_integration_qags_impl (const gsl_function *f,
 			   double * result, double * abserr, 
 			   size_t * last, size_t * nqeval,
 			   gsl_integration_rule_t * q) ;
+int
+gsl_integration_qagp (const gsl_function *f,
+		      double * pts, size_t npts,
+		      double epsabs, double epsrel,
+		      gsl_integration_workspace * workspace,
+		      gsl_integration_workspace_pts * workspace_pts,
+		      size_t * last,
+		      double * result, double * abserr, size_t * neval);
+
+int
+gsl_integration_qagp_impl (const gsl_function *f,
+			   const double *pts, const size_t npts,
+			   double epsabs, double epsrel,
+			   gsl_integration_workspace * workspace,
+			   gsl_integration_workspace_pts * workspace_pts,
+			   double *result, double *abserr,
+			   size_t * last, size_t * nqeval,
+			   gsl_integration_rule_t * const q);
 
 #endif /* GSL_INTEGRATION_H */

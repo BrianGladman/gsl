@@ -16,7 +16,7 @@ gsl_integration_qag_impl (const gsl_function *f,
 			  double * result, double * abserr, size_t * nqeval,
 			  gsl_integration_rule_t * const q)
 {
-  double q_result, q_abserr, q_defabs, q_resabs;
+  double q_result, q_abserr, q_resabs, q_resasc;
   double tolerance ;
   double maxerr_value, area, errsum;
   size_t maxerr_index, nrmax, i;
@@ -48,7 +48,7 @@ gsl_integration_qag_impl (const gsl_function *f,
 
   /* perform the first integration */
 
-  q (f, a, b, &q_result, &q_abserr, &q_defabs, &q_resabs);
+  q (f, a, b, &q_result, &q_abserr, &q_resabs, &q_resasc);
 
   rlist[0] = q_result;
   elist[0] = q_abserr;
@@ -58,7 +58,7 @@ gsl_integration_qag_impl (const gsl_function *f,
 
   tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (q_result));
 
-  round_off = 50 * GSL_DBL_EPSILON * q_defabs ;
+  round_off = 50 * GSL_DBL_EPSILON * q_resabs ;
 
   if (q_abserr <= round_off && q_abserr > tolerance)
     {
@@ -68,10 +68,9 @@ gsl_integration_qag_impl (const gsl_function *f,
       *last = 0;
 
       GSL_ERROR ("cannot reach tolerance because of roundoff error "
-		 "on first attempt",
-		 GSL_EROUND);
+		 "on first attempt", GSL_EROUND);
     }
-  else if ((q_abserr <= tolerance && q_abserr != q_resabs) || q_abserr == 0)
+  else if ((q_abserr <= tolerance && q_abserr != q_resasc) || q_abserr == 0)
     {
       *result = q_result;
       *abserr = q_abserr;
@@ -109,11 +108,11 @@ gsl_integration_qag_impl (const gsl_function *f,
 
       double area1 = 0, area2 = 0, area12 = 0;
       double error1 = 0, error2 = 0, error12 = 0;
-      double defab1, defab2;
-      double resabs = 0;
+      double resasc1, resasc2;
+      double resabs1, resabs2;
 
-      q (f, a1, b1, &area1, &error1, &resabs, &defab1);
-      q (f, a2, b2, &area2, &error2, &resabs, &defab2);
+      q (f, a1, b1, &area1, &error1, &resabs1, &resasc1);
+      q (f, a2, b2, &area2, &error2, &resabs2, &resasc2);
 
       area12 = area1 + area2;
       error12 = error1 + error2;
@@ -121,7 +120,7 @@ gsl_integration_qag_impl (const gsl_function *f,
       errsum += (error12 - maxerr_value);
       area += area12 - rlist[maxerr_index];
 
-      if (defab1 != error1 && defab2 != error2)
+      if (resasc1 != error1 && resasc2 != error2)
 	{
 	  if (fabs (rlist[maxerr_index] - area12) <= 0.00001 * fabs (area12)
 	      && error12 >= 0.99 * maxerr_value)
@@ -160,7 +159,7 @@ gsl_integration_qag_impl (const gsl_function *f,
 
       if (error2 > error1)
 	{
-	  alist[maxerr_index] = a2;	/* already done blist[maxerr] = b2 */
+	  alist[maxerr_index] = a2;	/* blist[maxerr] is already == b2 */
 	  rlist[maxerr_index] = area2;
 	  elist[maxerr_index] = error2;
 
@@ -191,7 +190,6 @@ gsl_integration_qag_impl (const gsl_function *f,
 
     }
   while (i < limit && !error_type && errsum > tolerance);
-
 
   {
     double result_sum = 0;

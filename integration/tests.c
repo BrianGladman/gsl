@@ -113,6 +113,16 @@ double f17 (double x, void * params) {
   return pow(2.0,-alpha)/(((x-1)*(x-1)+pow(4.0,-alpha))*(x-2)) ;
 }
 
+/* f454(x) = x^3 log|(x^2-1)(x^2-2)| */
+/* integ(f454,x,0,inf) = 61 log(2) + (77/4) log(7) - 27 */
+
+double f454 (double x, void * params) {
+  double x2 = x * x;
+  double x3 = x * x2;
+  params = 0 ;
+  return x3 * log(fabs((x2 - 1.0) * (x2 - 2.0))) ;
+}
+
 /* f455(x) = log(x)/(1+100*x^2) */
 /* integ(f455,x,0,inf) = -log(10)/20 */
 

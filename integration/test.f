@@ -1,15 +1,20 @@
       program main
       double precision a,b,result,abserr,resabs,resasc
-      double precision book1,book3,book11,book15,book16,book455
+      double precision book1,book3,book11,book15,book16
+      double precision book454,book455
       double precision myfn1,myfn2
       double precision alpha
       double precision alist(1000),blist(1000),rlist(1000)
-      double precision elist(1000)
+      double precision elist(1000),pts(1000)
+      double precision points(4)
       integer iord(1000)
+      integer ndin(1000)
+      integer level(1000)
       integer inf
       common /ALPHA/alpha
-      external book1,book3,book11,book15,book16,book455,myfn1
-      external myfn2
+      external book1,book3,book11,book15,book16
+      external book454,book455
+      external myfn1,myfn2
       call gsl_ieee_env_setup
 
       a = 0.0
@@ -274,17 +279,35 @@ c      do i=1,20
 c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c      enddo
 
+c      alpha = 1.0
+c      b = 1.0
+c      inf = -1
+c      epsabs = 1.0d-7
+c      epsrel = 0.0
+c      limit = 1000
+c      print *, 'DQAGI abs'
+c      call dqagie(myfn2,b,inf,epsabs,epsrel,limit,result,abserr,
+c     $     neval,ier,alist,blist,rlist,elist,iord,last)
+c      write(6,3) result, abserr, neval, ier, last
+c      do i=1,20
+c         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+c      enddo
+      
       alpha = 1.0
-      b = 1.0
-      inf = -1
-      epsabs = 1.0d-7
-      epsrel = 0.0
+      a = 0.0
+      b = 3.0
+      npts2 = 4
+      points(1) = 1.0
+      points(2) = sqrt(2.0d0)
+      epsabs = 0.0
+      epsrel = 1.0d-3
       limit = 1000
-      print *, 'DQAGI abs'
-      call dqagie(myfn2,b,inf,epsabs,epsrel,limit,result,abserr,
-     $     neval,ier,alist,blist,rlist,elist,iord,last)
+      print *, 'DQAGP'
+      call dqagpe(book454,a,b,npts2,points,epsabs,epsrel,limit,
+     $     result, abserr, neval,ier,alist,blist,rlist,elist,
+     $     pts,iord,level,ndin,last)
       write(6,3) result, abserr, neval, ier, last
-      do i=1,20
+      do i=1,25
          write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
       enddo
 
@@ -344,6 +367,14 @@ c      enddo
       double precision alpha,x
       common /ALPHA/alpha
       book16=(x**(alpha-1.0))/((1.0+10.0*x)**2.0)
+      end
+
+      double precision function book454(x)
+      double precision alpha,x
+      common /ALPHA/alpha
+      book454=(x**3.0) * log(abs((x**2.0 - 1.0)*(x**2.0 - 2.0)))
+      write(6,6661) x, book454
+ 6661 format("FF x = ", 1pe25.18, " book454 = ", 1pe25.18)
       end
 
       double precision function book455(x)

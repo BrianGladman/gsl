@@ -3,7 +3,26 @@ This is a reimplementation of the double precision version of QUADPACK.
 Brian Gough
 bjg@netsci.freeserve.co.uk
 
-Testing:
+Bugs in the original quadpack
+=============================
+
+The use of DEFABS, RESABS and RESASC is inconsistent in DQAGSE and
+DQAGPE, in the function calls to the Gauss-Kronrod integrators. I have
+used the following definitions throughout,
+
+	RESABS=integrate(|f(x)|,x,a,b) 
+	RESASC=integrate(|f(x)-<f>|,x,a,b) 
+
+
+DQAGPE: In the original DQAGPE the variable DEFABS is used in the loop
+for in the first integral approximation. At the end of the subroutine
+it is used in a divergence test. Since its value at that stage comes
+from the final partition the test is not meaningful. The value that
+should be used in the test is RESABS.
+
+
+Testing
+=======
 
 The results of these functions should agree almost exactly with the
 results from the original QUADPACK versions. I have been able to get
@@ -14,11 +33,21 @@ If you want to compile the fortran versions to compare them with the
 GSL versions you need to bear in mind the following points to get full
 agreement:
 
+-- The original QUADPACK does not use a consistent number of digits for
+   the Gauss-Kronrod weights and abscissae. For example, the routine DQK15I
+   uses only 16 digits, while DQK15 uses 33 digits. The 16 digit version 
+   is rounded in decimal which leads to some discrepancies in the binary
+   representations in double precision.
+
+   I have used the full 33 digit values throughout the code. This causes 
+   some differences in the results compared with the original QUADPACK, but
+   the differences should be an improvement.
+
 -- Make sure you compile everything in double precision.  i.e. use -r8,
    otherwise some float values may enter the calculation and wipe out
    your full double precision accuracy
 
--- If you are using an Intel chip remember that these work in extended
+-- If you are using an Intel chip remember that it works in extended
    precision by default. Consequently some of the tests for round-off
    produce different results than would be obtained if you were working
    to double-precision accuracy. This leads to different branches
@@ -71,12 +100,3 @@ bjg|zeke> fort77 main.f foo.f       (fort77 is an f2c front end)
 bjg|zeke> ./a.out 
  x =   1.96252698E-313        (Doh! We have to use 1.23d0 to make it work)
 
--- The original QUADPACK does not use a consistent number of digits
-   the Gauss-Kronrod weights and abscissae. For example, the routine DQK15I
-   uses only 16 digits, while DQK15 uses 33 digits. The 16 digit version 
-   is rounded in decimal which leads to some discrepancies in the binary
-   representations in double precision.
-
-   I have used the full 33 digit values throughout the code. This causes 
-   some differences in the results compared with the original QUADPACK, but
-   the differences should be an improvement.

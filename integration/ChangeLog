@@ -1,3 +1,14 @@
+Thu Mar 11 15:15:46 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* qags_impl.c (gsl_integration_qags_impl): removed dependency in
+ 	quadrature function calls by introducing dummy variables resabs1
+ 	and resabs2
+
+Wed Mar 10 19:05:41 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* added integrators QAGI, QAGIU, QAGIL for infinite and
+ 	semi-infinite ranges
+
 1999-01-01  Mark Galassi  <rosalia@cygnus.com>
 
 	* integration.c: replaced strings.h with string.h, which is the

@@ -19,6 +19,7 @@ double f15 (double x, void * params);
 double f16 (double x, void * params);
 double f17 (double x, void * params);
 
+double f454 (double x, void * params);
 double f455 (double x, void * params);
 
 double myfn1 (double x, void * params);
