@@ -374,75 +374,73 @@ None have been contributed yet.
 The following commands were created primarily to be used for statistical
 analysis of Psychological experiment data.
 
-@deftypefn Statistics double dmean (double *array, int size)
-@code{dmean} returns the mean of an array of doubles.
+@deftypefn Statistics double gsl_stats_dmean (double *array, int size)
+@code{gsl_stats_dmean} returns the mean of an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double imean (int *array, int size)
-@code{imean} returns the mean of an array of integers.
+@deftypefn Statistics double gsl_stats_imean (int *array, int size)
+@code{gsl_stats_imean} returns the mean of an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dvariance (double *array, int size)
-@code{dvariance} returns the variance of an array of doubles.
+@deftypefn Statistics double gsl_stats_dvariance (double *array, int size)
+@code{gsl_stats_dvariance} returns the variance of an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double ivariance (int *array, int size)
-@code{ivariance} returns the variance of an array of integers.
+@deftypefn Statistics double gsl_stats_ivariance (int *array, int size)
+@code{gsl_stats_ivariance} returns the variance of an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dsd (double *array, int size)
-@code{dsd} returns the standard deviation of an array of doubles.
+@deftypefn Statistics double gsl_stats_dsd (double *array, int size)
+@code{gsl_stats_dsd} returns the standard deviation of an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double isd (int *array, int size)
-@code{isd} returns the standard deviation of an array of integers.
+@deftypefn Statistics double gsl_stats_isd (int *array, int size)
+@code{gsl_stats_isd} returns the standard deviation of an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double iest_variance (int *array, int size)
-@code{iest_variance} returns the estimated variance for an array of integers.
+@deftypefn Statistics double gsl_stats_iest_variance (int *array, int size)
+@code{gsl_stats_iest_variance} returns the estimated variance for an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dest_variance (double *array, int size)
-@code{dest_variance} returns the estimated variance for an array of doubles.
+@deftypefn Statistics double gsl_stats_dest_variance (double *array, int size)
+@code{gsl_stats_dest_variance} returns the estimated variance for an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double iest_sd (int *array, int size)
-@code{iest_sd} returns the estimated standard deviation of an array of integers.
+@deftypefn Statistics double gsl_stats_iest_sd (int *array, int size)
+@code{gsl_stats_iest_sd} returns the estimated standard deviation of an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dest_sd (double *array, int size);
-@code{dest_sd} returns the estimated standard deviation of an array of doubles.
+@deftypefn Statistics double gsl_stats_dest_sd (double *array, int size);
+@code{gsl_stats_dest_sd} returns the estimated standard deviation of an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics double iipvariance (int *array1, int *array2, int size1, int size2)
-@code{iipvariance} returns the pooled variance of two arrays of integers.
+@deftypefn Statistics double gsl_stats_iipvariance (int *array1, int *array2, int size1, int size2)
+@code{gsl_stats_iipvariance} returns the pooled variance of two arrays of integers.
 @end deftypefn
 
-@deftypefn Statistics double iittest (int *array1, int *array2, int size1, int size2);
-@code{iittest} returns the t statistic from two arrays of integers.
+@deftypefn Statistics double gsl_stats_iittest (int *array1, int *array2, int size1, int size2);
+@code{gsl_stats_iittest} returns the t statistic from two arrays of integers.
 @end deftypefn
 
-@deftypefn Statistics double ddttest (double *array1, double *array2, int size1, int size2);
-@code{ddttest} returns the t statistic from two arrays of doubles.
+@deftypefn Statistics double gsl_stats_ddttest (double *array1, double *array2, int size1, int size2);
+@code{gsl_stats_ddttest} returns the t statistic from two arrays of doubles.
 @end deftypefn
 
-@deftypefn Statistics int imax (int *array1, int size);
-@code{imax} returns the highest number in an array of integers.
+@deftypefn Statistics int gsl_stats_imax (int *array1, int size);
+@code{gsl_stats_imax} returns the highest number in an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dmax (double *array1, int size);
-@code{dmax} returns the highest number in an array of doubles.
+@deftypefn Statistics double gsl_stats_dmax (double *array1, int size);
+@code{gsl_stats_dmax} returns the highest number in an array of doubles.
 @end deftypefn
 
-@deftypefn Statistics int imin (int *array1, int size);
-@code{imin} returns the lowest number in an array of integers.
+@deftypefn Statistics int gsl_stats_imin (int *array1, int size);
+@code{gsl_stats_imin} returns the lowest number in an array of integers.
 @end deftypefn
 
-@deftypefn Statistics double dmin (double *array1, int size);
-@code{imin} returns the lowest number in an array of doubles.
+@deftypefn Statistics double gsl_stats_dmin (double *array1, int size);
+@code{gsl_stats_imin} returns the lowest number in an array of doubles.
 @end deftypefn
-
-
 
 @node Root finding, Simulated annealing, Statistics, Reference manual
 @section Root finding
