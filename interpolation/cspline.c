@@ -226,7 +226,8 @@ cspline_natural_create (const double x_array[], const double y_array[], size_t s
       gsl_interp_cspline *interp = cspline_new (x_array, size);
       if (interp != 0)
 	{
-	  cspline_calc_natural (interp, x_array, y_array);
+	  int status = cspline_calc_natural (interp, x_array, y_array);
+	  if(status != GSL_SUCCESS) interp->free((gsl_interp_obj *)interp);
 	}
       return (gsl_interp_obj *) interp;
     }
@@ -245,7 +246,8 @@ cspline_periodic_create (const double x_array[], const double y_array[], size_t 
       gsl_interp_cspline *interp = cspline_new (x_array, size);
       if (interp != 0)
 	{
-	  cspline_calc_periodic (interp, x_array, y_array);
+	  int status = cspline_calc_periodic (interp, x_array, y_array);
+	  if(status != GSL_SUCCESS) interp->free((gsl_interp_obj *)interp);
 	}
       return (gsl_interp_obj *) interp;
     }
