@@ -88,9 +88,9 @@ for $file (@ARGV) {
         print TEST &begin_project_app($name);
         print TEST &begin_target($name);
         #print TEST &begin_group("Source Files");
-        print TEST &add_files("test", $dir, $name, 'inc', &list_sources($prog));
-        print TEST &add_files("test", $dir, $name, 'exclude', grep(/^test_/,@int_headers));
-        #print TEST &add_files("test", $dir, $name, 'exclude', @ext_headers);
+        print TEST &add_files($name, $dir, $name, 'inc', &list_sources($prog));
+        print TEST &add_files($name, $dir, $name, 'exclude', grep(/^test_/,@int_headers));
+        #print TEST &add_files($name, $dir, $name, 'exclude', @ext_headers);
         #print TEST &end_group("Source Files");
         print TEST &end_target();
         print TEST &end_project();
@@ -220,7 +220,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /Za /W3 /GX /O2 /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /MD /Za /W3 /GX /O2 /I "..\\msvc" /I "." /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
