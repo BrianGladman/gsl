@@ -27,5 +27,8 @@
 #undef ATOMIC
 #undef MULTIPLICITY
 #undef IN_FORMAT
+#undef OUT_FORMAT
 #undef ZERO
-
+#undef NAME
+#undef STRING
+#undef EXPAND

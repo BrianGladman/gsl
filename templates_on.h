@@ -9,7 +9,8 @@
 #define SHORT complex_long_double
 #define ATOMIC long double
 #define MULTIPLICITY 2
-#define IN_FORMAT "%Lg"
+#define IN_FORMAT "%Lg %Lg"
+#define OUT_FORMAT "%Lg %Lg"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX)
@@ -17,7 +18,8 @@
 #define SHORT complex
 #define ATOMIC double
 #define MULTIPLICITY 2
-#define IN_FORMAT "%lg"
+#define IN_FORMAT "%lg %lg"
+#define OUT_FORMAT "%g %g"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_GSL_COMPLEX_FLOAT)
@@ -25,7 +27,8 @@
 #define SHORT complex_float
 #define ATOMIC float
 #define MULTIPLICITY 2
-#define IN_FORMAT "%g"
+#define IN_FORMAT "%g %g"
+#define OUT_FORMAT "%g %g"
 #define ZERO {{0,0}}
 
 #elif defined(BASE_LONG_DOUBLE)
@@ -34,6 +37,7 @@
 #define ATOMIC long double
 #define MULTIPLICITY 1
 #define IN_FORMAT "%Lg"
+#define OUT_FORMAT "%Lg"
 #define ZERO 0
 
 #elif defined(BASE_DOUBLE)
@@ -42,6 +46,7 @@
 #define ATOMIC double
 #define MULTIPLICITY 1
 #define IN_FORMAT "%lg"
+#define OUT_FORMAT "%g"
 #define ZERO 0
 
 #elif defined(BASE_FLOAT)
@@ -50,6 +55,7 @@
 #define ATOMIC float
 #define MULTIPLICITY 1
 #define IN_FORMAT "%g"
+#define OUT_FORMAT "%g"
 #define ZERO 0
 
 #elif defined(BASE_ULONG)
@@ -58,6 +64,7 @@
 #define ATOMIC unsigned long
 #define MULTIPLICITY 1
 #define IN_FORMAT "%lu"
+#define OUT_FORMAT "%lu"
 #define ZERO 0
 
 #elif defined(BASE_LONG)
@@ -66,6 +73,7 @@
 #define ATOMIC long
 #define MULTIPLICITY 1
 #define IN_FORMAT "%ld"
+#define OUT_FORMAT "%ld"
 #define ZERO 0
 
 #elif defined(BASE_UINT)
@@ -74,6 +82,7 @@
 #define ATOMIC unsigned int
 #define MULTIPLICITY 1
 #define IN_FORMAT "%u"
+#define OUT_FORMAT "%u"
 #define ZERO 0
 
 #elif defined(BASE_INT)
@@ -82,6 +91,7 @@
 #define ATOMIC int
 #define MULTIPLICITY 1
 #define IN_FORMAT "%d"
+#define OUT_FORMAT "%d"
 #define ZERO 0
 
 #elif defined(BASE_USHORT)
@@ -90,6 +100,7 @@
 #define ATOMIC unsigned short
 #define MULTIPLICITY 1
 #define IN_FORMAT "%hu"
+#define OUT_FORMAT "%hu"
 #define ZERO 0
 
 #elif defined(BASE_SHORT)
@@ -98,6 +109,7 @@
 #define ATOMIC short
 #define MULTIPLICITY 1
 #define IN_FORMAT "%hd"
+#define OUT_FORMAT "%hd"
 #define ZERO 0
 
 #elif defined(BASE_UCHAR)
@@ -105,7 +117,8 @@
 #define SHORT uchar
 #define ATOMIC unsigned char
 #define MULTIPLICITY 1
-#define IN_FORMAT "%c"
+#define IN_FORMAT "%c%*c"
+#define OUT_FORMAT "%c"
 #define ZERO 0
 
 #elif defined(BASE_CHAR)
@@ -113,7 +126,8 @@
 #define SHORT char
 #define ATOMIC char
 #define MULTIPLICITY 1
-#define IN_FORMAT "%c"
+#define IN_FORMAT "%c%*c"
+#define OUT_FORMAT "%c"
 #define ZERO 0
 
 #else
@@ -132,3 +146,7 @@
 #define FUNCTION(a,c) CONCAT3(a,SHORT,c)
 #define TYPE(dir) CONCAT2(dir,SHORT)
 #endif
+
+#define STRING(x) #x
+#define EXPAND(x) STRING(x)
+#define NAME(x) EXPAND(TYPE(x))
