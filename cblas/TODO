@@ -1,1 +1,3 @@
 use macros so that all complex arithmetic can use native complex types if compiler supports them
+
+make sure double/float are replaced by BASE everywhere

@@ -1001,7 +1001,7 @@ cblas_ztpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 }
 
 
-#ifdef 0
+
 /* GER */
 
 void
@@ -1014,6 +1014,7 @@ cblas_sger (const enum CBLAS_ORDER order, const int M, const int N,
 #undef BASE
 }
 
+
 void
 cblas_dger (const enum CBLAS_ORDER order, const int M, const int N,
 	    const double alpha, const double *X, const int incX,
@@ -1023,7 +1024,6 @@ cblas_dger (const enum CBLAS_ORDER order, const int M, const int N,
 #include "source_ger.h"
 #undef BASE
 }
-
 
 /* GERU */
 
@@ -1071,6 +1071,7 @@ cblas_zgerc (const enum CBLAS_ORDER order, const int M, const int N,
 }
 
 /* HER */
+#ifdef 0
 
 void
 cblas_cher (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
@@ -1160,7 +1161,7 @@ cblas_zhpr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #include "source_hpr2.h"
 #undef BASE
 }
-
+#endif
 /* SYR */
 
 void
@@ -1183,7 +1184,7 @@ cblas_dsyr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-
+#ifdef 0
 /* SPR */
 
 void

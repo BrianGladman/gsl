@@ -295,6 +295,43 @@ function m = trmatrix (order, uplo, Diag, A, lda, N)
 
 endfunction
 
+function m = trmatout (order, uplo, Diag, A, lda, N, a)
+  if (order == 102)   # column major
+    tmp = reshape(A,lda,length(A)/lda);
+    m = tmp(1:N,1:N);
+  elseif (order == 101)  # row major
+    tmp = reshape(A,lda,length(A)/lda).';
+    m = tmp(1:N,1:N);
+  endif
+
+  if (Diag == 132)  # unit diag
+    if (uplo == 121) # upper
+      for i = 1:(N-1)
+        m(i,(i+1):N) = a(i,(i+1):N);
+      endfor
+    else  # lower
+      for i = 2:N
+        m(i,1:(i-1)) = a(i,1:(i-1));
+      endfor
+    endif
+  else
+    if (uplo == 121) # upper
+      for i = 1:N
+        m(i,i:N) = a(i,i:N);
+      endfor
+    else  # lower
+      for i = 1:N
+        m(i,1:i) = a(i,1:i);
+      endfor
+    endif
+  endif
+
+  if (order == 102)   # column major
+    m = reshape(m,1,length(A));
+  elseif (order == 101)  # row major
+    m = reshape(m.',1,length(A));
+  endif
+endfunction
 
 function m = tbmatrix (order, uplo, Diag, A, lda, N, K)
 
@@ -845,7 +882,7 @@ function XX = blas_tpsv (order, uplo, trans, diag, N, A, X, incX)
   XX = vout(X, incX, N, y);
 endfunction
 
-function YY = blas_ger (order, M, N, alpha, X, incX, Y, incY, A, lda)
+function AA = blas_ger (order, M, N, alpha, X, incX, Y, incY, A, lda)
   a = matrix (order, A, lda, M, N);
 
   x = vector (X, incX, columns(a));
@@ -853,10 +890,10 @@ function YY = blas_ger (order, M, N, alpha, X, incX, Y, incY, A, lda)
 
   a = alpha * x * y' + a;
   
-  YY = mout(order, A, lda, M, N, a);
+  AA = mout(order, A, lda, M, N, a);
 endfunction
 
-function YY = blas_geru (order, M, N, alpha, X, incX, Y, incY, A, lda)
+function AA = blas_geru (order, M, N, alpha, X, incX, Y, incY, A, lda)
   a = matrix (order, A, lda, M, N);
 
   x = vector (X, incX, columns(a));
@@ -864,10 +901,10 @@ function YY = blas_geru (order, M, N, alpha, X, incX, Y, incY, A, lda)
 
   a = alpha * x * (y.') + a;
   
-  YY = mout(order, A, lda, M, N, a);
+  AA = mout(order, A, lda, M, N, a);
 endfunction
 
-function YY = blas_gerc (order, M, N, alpha, X, incX, Y, incY, A, lda)
+function AA = blas_gerc (order, M, N, alpha, X, incX, Y, incY, A, lda)
   a = matrix (order, A, lda, M, N);
 
   x = vector (X, incX, columns(a));
@@ -875,8 +912,20 @@ function YY = blas_gerc (order, M, N, alpha, X, incX, Y, incY, A, lda)
 
   a = alpha * x * y' + a;
   
-  YY = mout(order, A, lda, M, N, a);
+  AA = mout(order, A, lda, M, N, a);
 endfunction
+
+function AA = blas_syr (order, uplo, N, alpha, X, incX, A, lda)
+  a = trmatrix (order, uplo, 131, A, lda, N); #nounit
+  x = vector (X, incX, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  a = alpha * x * x' + a;
+  
+  AA = trmatout(order, uplo, 131, A, lda, N, a);
+endfunction
+
 
 
 ######################################################################
@@ -1432,6 +1481,23 @@ function test_ger (S, fn, order, M, N, alpha, X, incX, \
   end_block();
 endfunction
 
+function test_syr (S, fn, order, uplo, N, alpha, X, incX, A, lda)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "N", N);
+  define(S, "int", "lda", lda);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  AA = feval(strcat("blas_", fn), order, uplo, N, alpha, X, incX, A, lda);
+  define(S, "matrix", "A_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, X, incX, A, lda)");
+  test(S, "vector", "A", "A_expected", strcat(S.prefix, fn), A);
+  end_block();
+endfunction
+
 
 
 ######################################################################
@@ -1826,24 +1892,38 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d,c,z];
+#     S = context(i);
+#     T = test_matvectors(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         if (S.complex == 0)
+#           test_ger (S, "ger", order, T.m, T.n, alpha, T.v1, T.s1, \
+#                     T.v2, T.s2, T.A, T.lda);
+#         else
+#           test_ger (S, "geru", order, T.m, T.n, alpha, T.v1, T.s1, \
+#                     T.v2, T.s2, T.A, T.lda);
+#           test_ger (S, "gerc", order, T.m, T.n, alpha, T.v1, T.s1, \
+#                     T.v2, T.s2, T.A, T.lda);
+#         endif
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d,c,z];
+  for i = [s,d];
     S = context(i);
-    T = test_matvectors(S, j);
+    T = test_trmatvector(S, j);
     for alpha = coeff(S)
-      for beta = coeff(S)
-          for order = [101, 102]
-            if (S.complex == 0)
-              test_ger (S, "ger", order, T.m, T.n, alpha, T.v1, T.s1, \
-                        T.v2, T.s2, T.A, T.lda);
-            else
-              test_ger (S, "geru", order, T.m, T.n, alpha, T.v1, T.s1, \
-                        T.v2, T.s2, T.A, T.lda);
-              test_ger (S, "gerc", order, T.m, T.n, alpha, T.v1, T.s1, \
-                        T.v2, T.s2, T.A, T.lda);
-            endif
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_syr (S, "syr", order, uplo, T.n, alpha, T.v, T.s, T.A, T.lda);
         endfor
       endfor
     endfor
   endfor
 endfor
+  
+  

@@ -23,33 +23,34 @@
  */
 
 {
-    size_t j, k;
+    size_t i, j;
     size_t ix, jx;
-    size_t kk = 0;
 
-    if (Uplo == CblasUpper) {
-	jx = 0;
-	for (j = 0; j < N; j++) {
-	    BASE tmp = alpha * X[jx];
-	    ix = jx;
-	    for (k = kk; k < kk + N - j; k++) {
-		Ap[k] += X[ix] * tmp;
-		ix += incX;
-	    }
-	    jx += incX;
-	    kk += N - j;
+    if ((order == CblasRowMajor && Uplo == CblasUpper)
+        || (order == CblasColMajor && Uplo == CblasLower)) {
+      size_t ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+	const BASE tmp = alpha * X[ix];
+	size_t jx = ix;
+	for (j = i ; j < N; j++) {
+          Ap[TPUP(N,i,j)] += X[jx] * tmp;
+          jx += incX;
 	}
+	ix += incX;
+      }
+    } else if ((order == CblasRowMajor && Uplo == CblasLower)
+               || (order == CblasColMajor && Uplo == CblasUpper)) {
+      size_t ix = OFFSET(N, incX);
+      for (i = 0; i < N; i++) {
+	const BASE tmp = alpha * X[ix];
+	size_t jx = OFFSET(N, incX);
+	for (j = 0 ; j <= i; j++) {
+          Ap[TPLO(N,i,j)] += X[jx] * tmp;
+          jx += incX;
+	}
+	ix += incX;
+      }
     } else {
-	jx = 0;
-	for (j = 0; j < N; j++) {
-	    BASE tmp = alpha * X[jx];
-	    ix = 0;
-	    for (k = kk; k < kk + j + 1; k++) {
-		Ap[k] += X[ix] * tmp;
-		ix += incX;
-	    }
-	    jx += incX;
-	    kk += j + 1;
-	}
+      BLAS_ERROR("unrecognized operation");
     }
 }
