@@ -39,13 +39,7 @@
  *   Abramowitz and Stegun, Handbook of Mathematical Functions, "Inverse
  *   Circular Functions in Terms of Real and Imaginary Parts", Formulas
  *   4.4.37, 4.4.38, 4.4.39
- *
- * FIXME: The functions using gsl_complex_inverse will overflow in
- * intermediate expressions like sinh(I), which are then
- * reciprocated. The overflow could be avoided by rearranging the
- * expression, as done for tan(z).  
  */
-
 
 #include <config.h>
 #include <math.h>
