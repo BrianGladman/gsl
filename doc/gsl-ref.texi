@@ -290,11 +290,8 @@ December 2001
 
 @ifinfo
 This file documents the @value{GSL}, a collection of numerical routines
-for scientific computing.  The documentation corresponds to version
-@value{VERSION}.
-
-@comment As of @value{UPDATED} the library is in beta-test release only and is
-@comment not recommended for general use.
+for scientific computing.  This version corresponds to release
+@value{VERSION} of the library.
 
 More information about GSL can be found at the project homepage,
 @url{http://www.gnu.org/software/gsl/}.
