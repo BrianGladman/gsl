@@ -182,6 +182,7 @@ The output from the program gives the original function and the 10-term and
 @section References and Further Reading
 
 The following paper describes the use of Chebyshev series,
+
 @itemize @asis
 @item 
 R. Broucke, ``Ten Subroutines for the Manipulation of Chebyshev Series

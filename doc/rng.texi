@@ -202,7 +202,6 @@ For example,
 @example
 printf("r is a '%s' generator\n", gsl_rng_name (r)) ;
 @end example
-
 @noindent
 would print something like @code{r is a 'taus' generator}
 @end deftypefn
