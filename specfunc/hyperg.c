@@ -85,51 +85,6 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
 
 
 int
-gsl_sf_hyperg_1F1_1_int_impl(const int b, const double x, double * result)
-{
-  if(b < 1) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(b == 1) {
-    return gsl_sf_exp_impl(x, result);
-  }
-  else if(b == 2) {
-    return gsl_sf_exprel_impl(x, result);
-  }
-  else if(b == 3) {
-    return gsl_sf_exprel_2_impl(x, result);
-  }
-  else {
-    return gsl_sf_exprel_n_impl(b-1, x, result);
-  }
-}
-
-
-int
-gsl_sf_hyperg_1F1_1_impl(const double b, const double x, double * result)
-{
-  double ax = fabs(x);
-
-  if(b < 1.0) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(b == 1.0) {
-    return gsl_sf_exp_impl(x, result);
-  }
-  else {
-    if(b > 2.0*ax) {
-      double prec;
-      return gsl_sf_hyperg_1F1_series_impl(1.0, b, x, result, &prec);
-    }
-    else {
-    }
-  }
-}
-
-
-int
 gsl_sf_hyperg_1F1_large_b_impl(const double a, const double b, const double x, double * result)
 {
   if(fabs(x/b) < 1.0) {

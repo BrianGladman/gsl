@@ -82,7 +82,7 @@ double  gsl_sf_doublefact(unsigned int n);
 /* log(n!) 
  * Faster than ln(Gamma(n+1)) for n < 170; defers for larger n.
  *
- * exceptions: GSL_EDOM
+ * exceptions: none
  */
 int     gsl_sf_lnfact_impl(unsigned int n, double * result);
 int     gsl_sf_lnfact_e(unsigned int n, double * result);
@@ -156,5 +156,9 @@ int     gsl_sf_pochrel_e(double a, double x, double * result);
 double  gsl_sf_pochrel(double a, double x);
 
 
+
+/* Incomplete Gamma Function
+ * gamma
+ */
 
 #endif /* !GSL_GAMMAFUNCTION_H_ */

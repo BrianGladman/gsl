@@ -14,6 +14,211 @@
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
+
+/* Asymptotic result for 1F1(a, b, x)  x -> -Infinity.
+ * Assumes b-a != neg integer and b != neg integer.
+ */
+static
+int
+hyperg_1F1_asymp_negx(const double a, const double b, const double x,
+                      double * result, double * prec
+                      )
+{
+  double lg_b, sgn_b;
+  double lg_bma, sgn_bma;
+  double ln_pre;
+  double ln_F;
+  double prec_F;
+  double F;
+  int stat_b   = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  int stat_bma = gsl_sf_lngamma_sgn_impl(b-a, &lg_bma, &sgn_bma);
+  
+  if(stat_b == GSL_SUCCESS && stat_bma == GSL_SUCCESS) {
+    gsl_sf_hyperg_2F0_series_impl(a, 1.0+a-b, -1.0/x, -1, &F, &prec_F);
+
+    ln_pre = lg_b - a*log(-x) - lg_bma;
+    ln_F = log(fabs(F));
+  
+    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX-1.0) {
+      *result = sgn_b * sgn_bma * exp(ln_pre) * F;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+  else {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+}
+
+
+/* Asymptotic result for 1F1(a, b, x)  x -> +Infinity
+ * Assumes b != neg integer and a != neg integer
+ */
+static
+int
+hyperg_1F1_asymp_posx(const double a, const double b, const double x,
+                      double * result, double * prec
+                      )
+{
+  double lg_b, sgn_b;
+  double lg_a, sgn_a;
+  double ln_pre;
+  double ln_F;
+  double prec_F;
+  double F;
+
+  int stat_b = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  int stat_a = gsl_sf_lngamma_sgn_impl(a, &lg_a, &sgn_a);
+
+  if(stat_a == GSL_SUCCESS && stat_b == GSL_SUCCESS) {
+    gsl_sf_hyperg_2F0_series_impl(b-a, 1.0-a, 1.0/x, -1, &F, &prec_F);
+
+    ln_pre = lg_b - lg_a + x + (a-b)*log(x);
+
+    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX) {
+      *result = sgn_b * sgn_a * exp(ln_pre) * F;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EOVRFLW;
+    }
+  }
+  else {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+}
+
+
+/* Asymptotic result for x < 2b-4a, 2b-4a large.
+ * [Abramowitz+Stegun, 13.5.21]
+ */
+static
+int
+hyperg_1F1_large2bm4a(const double a, const double b, const double x, double * result)
+{
+  double eta    = 2.0*b - 4.0*a;
+  double cos2th = x/eta;
+  double sin2th = 1.0 - cos2th;
+  double th = acos(sqrt(cos2th));
+  double pre_h  = 0.25*M_PI*M_PI*eta*eta*cos2th*sin2th;
+  double ser;
+  double lnpre;
+  double lnr;
+  double lg_b;
+  gsl_sf_lngamma_impl(b, &lg_b);
+  lnpre = lg_b + 0.5*x + 0.5*(1.0-b)*log(0.25*x*eta) - 0.25*log(pre_h);
+  ser = sin(a*M_PI) + sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
+  lnr = lnpre + log(fabs(ser));
+  return gsl_sf_exp_sgn_impl(lnr, ser, result);
+}
+
+
+/* Series for 1F1(1,b,x)
+ * b > 0
+ */
+static
+int
+hyperg_1F1_1_series(const double b, const double x, double * result)
+{
+  double term = 1.0;
+  double sum  = 1.0;
+  int n = 1;
+  while(fabs(term/sum) > 10.0*GSL_MACH_EPS) {
+    term *= x/(b+n-1);
+    sum  += term;
+  }
+  return GSL_SUCCESS;
+}
+
+
+/* 1F1(1,b,x)
+ * b >= 1, b integer
+ */
+static
+int
+hyperg_1F1_1_int(const int b, const double x, double * result)
+{
+  if(b < 1) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(b == 1) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(b == 2) {
+    return gsl_sf_exprel_impl(x, result);
+  }
+  else if(b == 3) {
+    return gsl_sf_exprel_2_impl(x, result);
+  }
+  else {
+    return gsl_sf_exprel_n_impl(b-1, x, result);
+  }
+}
+
+
+/* 1F1(1,b,x)
+ * b >=1, b real
+ */
+static
+int
+hyperg_1F1_1(const double b, const double x, double * result)
+{
+  double ax = fabs(x);
+  double ib = floor(b + 0.1);
+
+  if(b < 1.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(b == 1.0) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(b >= 1.4*ax) {
+    return hyperg_1F1_1_series(b, x, result);
+  }
+  else if(fabs(b - ib) < locEPS && ib < INT_MAX) {
+    return hyperg_1F1_1_int((int)ib, x, result);
+  }
+  else if(x > 0.0) {
+    if(x > 20.0 && b < 0.75*x) {
+      double prec;
+      return hyperg_1F1_asymp_posx(1.0, b, x, result, &prec);
+    }
+    else if(b < 1.0e+05) {
+      double bp = b + ceil(1.4*x-b) + 1.0;
+      double M;
+      hyperg_1F1_1_series(bp, x, &M);
+      while(bp > b+0.1) {
+        bp -= 1.0;
+        M   = 1.0 + x/bp * M;
+      }
+    }
+    else {
+      hyperg_1F1_large2bm4a(1.0, b, x, result);
+    }
+  }
+  else {
+    if(ax < 10.0 && b < 10.0) {
+      return hyperg_1F1_1_series(b, x, result);
+    }
+    if(ax > 10.0 && locMAX(fabs(2.0-b),1.0) < 0.99*ax) {
+      double prec;
+      return hyperg_1F1_asymp_negx(1.0, b, x, result, &prec);
+    }
+    else {
+      /* HERE */
+    }
+  }
+}
+
+
 /* 1F1(a,b,x)/Gamma(b) for b->0
  * [limit of Abramowitz+Stegun 13.3.7]
  */
@@ -589,84 +794,6 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
 }
 
 
-/* Asymptotic result for 1F1(a, b, x)  x -> -Infinity.
- * Assumes b-a != neg integer and b != neg integer.
- */
-static
-int
-hyperg_1F1_asymp_negx(const double a, const double b, const double x,
-                      double * result, double * prec
-                      )
-{
-  double lg_b, sgn_b;
-  double lg_bma, sgn_bma;
-  double ln_pre;
-  double ln_F;
-  double prec_F;
-  double F;
-  int stat_b   = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
-  int stat_bma = gsl_sf_lngamma_sgn_impl(b-a, &lg_bma, &sgn_bma);
-  
-  if(stat_b == GSL_SUCCESS && stat_bma == GSL_SUCCESS) {
-    gsl_sf_hyperg_2F0_series_impl(a, 1.0+a-b, -1.0/x, -1, &F, &prec_F);
-
-    ln_pre = lg_b - a*log(-x) - lg_bma;
-    ln_F = log(fabs(F));
-  
-    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX-1.0) {
-      *result = sgn_b * sgn_bma * exp(ln_pre) * F;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  else {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-}
-
-
-/* Asymptotic result for 1F1(a, b, x)  x -> +Infinity
- * Assumes b != neg integer and a != neg integer
- */
-static
-int
-hyperg_1F1_asymp_posx(const double a, const double b, const double x,
-                      double * result, double * prec
-                      )
-{
-  double lg_b, sgn_b;
-  double lg_a, sgn_a;
-  double ln_pre;
-  double ln_F;
-  double prec_F;
-  double F;
-
-  int stat_b = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
-  int stat_a = gsl_sf_lngamma_sgn_impl(a, &lg_a, &sgn_a);
-
-  if(stat_a == GSL_SUCCESS && stat_b == GSL_SUCCESS) {
-    gsl_sf_hyperg_2F0_series_impl(b-a, 1.0-a, 1.0/x, -1, &F, &prec_F);
-
-    ln_pre = lg_b - lg_a + x + (a-b)*log(x);
-
-    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX) {
-      *result = sgn_b * sgn_a * exp(ln_pre) * F;
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EOVRFLW;
-    }
-  }
-  else {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-}
 
 
 /* Use this when a is small.
@@ -1231,8 +1358,8 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
 
 
 /* Evaluate a <= 0 cases directly. (Polynomial; Horner)
- * If x > 0, the terms are all positive, so this
- * must work. We will assume x > 0 here.
+ * When the terms are all positive, this
+ * must work. We will assume this here.
  */
 static
 int
@@ -1398,71 +1525,11 @@ hyperg_1F1_Y_agt0_blt2a_recurse(const double a, const double b, const double x,
 }
 
 
+/* Handle case of generic positive a, b.
+ */
+static
 int
-gsl_sf_hyperg_1F1_int_impl(const int a, const int b, const double x, double * result)
-{
-  if(x == 0.0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-  else if(a == b) {
-    return gsl_sf_exp_impl(x, result);
-  }
-  else if(b == 0) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(a == 0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-  else if(b < 0 && (a < b || a > 0)) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(a == -1) {
-    *result = 1.0 + (double)a/b * x;
-    return GSL_SUCCESS;
-  }
-  else if(a == -2) {
-    *result = 1.0 + (double)a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
-    return GSL_SUCCESS;
-  }
-  else if(a < 0 && b < 0) {
-    return hyperg_1F1_ab_negint(a, b, x, result);
-  }
-  else if(a < 0 && b > 0) {
-    /* Use Kummer to reduce it to the positive integer case.
-     * Note that b > a, strictly, since we already trapped b = a.
-     */
-    double Kummer_1F1;
-    int stat_K = hyperg_1F1_ab_posint(b-a, b, -x, &Kummer_1F1);
-    if(stat_K == GSL_SUCCESS) {
-      if(Kummer_1F1 == 0.0) {
-        *result = 0.0;
-	return GSL_SUCCESS;
-      }
-      else {
-        double lnr = log(fabs(Kummer_1F1)) + x;
-        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
-      }
-    }
-    else {
-      *result = 0.0;
-      return stat_K;
-    }
-  }
-  else {
-    /* a > 0 and b > 0 */
-    return hyperg_1F1_ab_posint(a, b, x, result);
-  }
-}
-
-
-int
-gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
-                       double * result
-                       )
+hyperg_1F1_ab_pos(const double a, const double b, const double x, double * result)
 {
   const double bma = b - a;
   const double amb = a - b; 
@@ -1483,112 +1550,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   const int bma_neg_integer = ( bma < -0.1  &&  fabs(bma - rint(bma)) < locEPS );
   const int amb_neg_integer = ( amb < -0.1  &&  fabs(amb - rint(amb)) < locEPS );
 
-  /* Testing for this before testing a and b
-   * is somewhat arbitrary. The result is that
-   * we can have 1F1(0,0,0) = 1. Whatever.
-   */
-  if(x == 0.0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
 
-  if(b == 0.0) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-
-  if(a == 0.0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-
-  /* case: a==b; exp(x)
-   * It's good to test exact equality now.
-   * We also test approximate equality later.
-   * Note that we need to test this before we
-   * test for the domain error below (denominator
-   * zero before numerator), because a and b
-   * might be negative integers with a==b, which would
-   * wrongly trip the test below.
-   */
-  if(a == b) {
-    return gsl_sf_exp_impl(x, result);
-  }
-
-  /* case: denominator zeroes before numerator
-   * Note that we draw a distinction between the
-   * negative integers and zero. Approximate zero
-   * is handled in the cases below, and is not a
-   * negative integer. So we can test the negative
-   * integer case now since there is no interference
-   * between the cases.
-   */
-  if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-
-  /* case: a and b very small; 1 + a/b (exp(x)-1)
-   * Note that neither a nor b is zero, since
-   * we eliminated that with the above tests.
-   */
-  if(fabs(a) < 10.0*locEPS && fabs(b) < 10.0*locEPS) {
-    double expm1;
-    int stat_e = gsl_sf_expm1_impl(x, &expm1);
-    if(stat_e == GSL_SUCCESS) {
-      double sa = ( a > 0.0 ? 1.0 : -1.0 );
-      double sb = ( b > 0.0 ? 1.0 : -1.0 );
-      double se = ( expm1 > 0.0 ? 1.0 : -1.0 );
-      double lnr = log(fabs(a)) - log(fabs(b)) + log(fabs(expm1));
-      double hx;
-      int stat_hx = gsl_sf_exp_sgn_impl(lnr, sa * sb * se, &hx);
-      if(stat_hx == GSL_SUCCESS) {
-        *result = 1.0 + hx;
-	return GSL_SUCCESS;
-      }
-      else {
-        *result = 0.0;
-        return stat_hx;
-      }
-    }
-    else {
-      *result = 0.0;
-      return stat_e;
-    }
-  }
-
-  /* case: b very small
-   * (and a not very small, since we did not trigger the above test)
-   */
-  if(fabs(b) < 10.0*locEPS) {
-    double F_renorm;
-    int stat_F = hyperg_1F1_renorm_b0(a, x, &F_renorm);
-    if(F_renorm == 0.0) {
-      /* It is possible to get zero, since we might
-       * hit a zero of the Bessel function.
-       */
-      *result = 0.0;
-      return stat_F;
-    }
-    else {
-      double sF = ( F_renorm > 0.0 ? 1.0 : -1.0 );
-      double sb = ( b > 0.0 ? 1.0 : -1.0 );
-      double lnr = log(fabs(F_renorm)) - log(fabs(b));
-      return gsl_sf_exp_sgn_impl(lnr, sF * sb, result);
-    }
-  }
-
-  /* Now we make the arbitrary "near an integer" test.
-   * Note that we deal not only with the negative
-   * integers, but all the integers. Basically, the
-   * integer cases are always a problem for the
-   * recursions in terms of the Y() or Z() functions.
-   */
-  if(a_integer && b_integer) {
-    int inta = floor(a + 0.1);
-    int intb = floor(b + 0.1);
-    return gsl_sf_hyperg_1F1_int_impl(inta, intb, x, result);
-  }
 
   /* case: approximate a==b;
    *
@@ -1620,35 +1582,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     }
   }
 
-  /* case: a = neg integer; use explicit evaluation */
-  if(a_neg_integer) {
-    int inta = floor(a + 0.1);
-    return 0 /* hyperg_1F1_a_negint(inta, b, x, result) */; /* FIXME */
-  }
-
-  /* b-a = negative integer; Kummer and explicit evaluation */
-  if(bma_neg_integer) {
-    int    intbma = floor(bma + 0.1);
-    double Kummer_1F1;
-    int    stat_K = 0; /* hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1); */
-    /* FIXME */
-    if(Kummer_1F1 == 0.0) {
-      *result = 0.0;
-      return stat_K;
-    }
-    else {
-      double lnr = log(fabs(Kummer_1F1)) + x;
-      double sK  = ( Kummer_1F1 > 0.0 ? 1.0 : - 1.0 );
-      if(lnr < GSL_LOG_DBL_MAX) {
-        *result = sK * exp(lnr);
-        return stat_K;
-      }
-      else {
-        *result = 0.0;  /* FIXME: should be Inf */
-        return GSL_EOVRFLW;
-      }
-    }
-  }
 
   /* Trap the generic cases where some form
    * of series evaluation will work.
@@ -1863,6 +1796,229 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    */
   *result = 0.0;
   return GSL_EUNIMPL;
+}
+
+
+static
+int
+hyperg_1F1_ab_neg(const double a, const double b, const double x, double * result)
+{
+}
+
+
+
+
+int
+gsl_sf_hyperg_1F1_int_impl(const int a, const int b, const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == b) {
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(b == 0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == 0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(b < 0 && (a < b || a > 0)) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x > 100.0  && locMAX(1.0,fabs(b-a))*locMAX(1.0,fabs(1-a)) < 0.5 * x) {
+    /* x -> +Inf asymptotic
+     */
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+  else if(x < -100.0 && locMAX(1.0,fabs(a))*locMAX(1.0,fabs(1+a-b)) < 0.5 * fabs(x)) {
+    /* x -> -Inf asymptotic
+     */
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+  else if(a < 0 && b < 0) {
+    return hyperg_1F1_ab_negint(a, b, x, result);
+  }
+  else if(a < 0 && b > 0) {
+    /* Use Kummer to reduce it to the positive integer case.
+     * Note that b > a, strictly, since we already trapped b = a.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_ab_posint(b-a, b, -x, &Kummer_1F1);
+    if(stat_K == GSL_SUCCESS) {
+      if(Kummer_1F1 == 0.0) {
+        *result = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        double lnr = log(fabs(Kummer_1F1)) + x;
+        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else {
+    /* a > 0 and b > 0 */
+    return hyperg_1F1_ab_posint(a, b, x, result);
+  }
+}
+
+
+int
+gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
+                       double * result
+                       )
+{
+  const int a_integer = ( fabs(a - rint(a)) < locEPS );
+  const int b_integer = ( fabs(b - rint(b)) < locEPS );
+
+  if(x == 0.0) {
+    /* Testing for this before testing a and b
+     * is somewhat arbitrary. The result is that
+     * we can have 1F1(0,0,0) = 1. Whatever.
+     */
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(b == 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == b) {
+    /* case: a==b; exp(x)
+     * It's good to test exact equality now.
+     * We also test approximate equality later.
+     */
+    return gsl_sf_exp_impl(x, result);
+  }
+  else if(fabs(b) < 10.0*locEPS) {
+    /* Note that neither a nor b is zero, since
+     * we eliminated that with the above tests.
+     */
+    if(fabs(a) < 10.0*locEPS) {
+      /* a and b near zero: 1 + a/b (exp(x)-1) 
+       */
+      double exm1;
+      int stat_e = gsl_sf_expm1_impl(x, &exm1);
+      if(stat_e == GSL_SUCCESS) {
+        double sa = ( a > 0.0 ? 1.0 : -1.0 );
+        double sb = ( b > 0.0 ? 1.0 : -1.0 );
+        double se = ( exm1 > 0.0 ? 1.0 : -1.0 );
+        double lnr = log(fabs(a)) - log(fabs(b)) + log(fabs(exm1));
+        double hx;
+        int stat_hx = gsl_sf_exp_sgn_impl(lnr, sa * sb * se, &hx);
+        if(stat_hx == GSL_SUCCESS) {
+          *result = (hx == DBL_MAX ? hx : 1.0 + hx);  /* excessive paranoia ? */
+	  return GSL_SUCCESS;
+        }
+        else {
+          *result = 0.0;
+          return stat_hx;
+        }
+      }
+      else {
+        *result = 0.0;
+        return stat_e;
+      }
+    }
+    else {
+      /* b near zero and a not near zero
+       */
+      double F_renorm;
+      int stat_F = hyperg_1F1_renorm_b0(a, x, &F_renorm);
+      if(F_renorm == 0.0) {
+        /* It is possible to get zero, since we might
+         * hit a zero of the Bessel function.
+         */
+        *result = 0.0;
+        return stat_F;
+      }
+      else {
+        double sF = ( F_renorm > 0.0 ? 1.0 : -1.0 );
+        double sb = ( b > 0.0 ? 1.0 : -1.0 );
+        double lnr = log(fabs(F_renorm)) - log(fabs(b));
+        return gsl_sf_exp_sgn_impl(lnr, sF * sb, result);
+      }
+    }
+  }
+  else if(a_integer && b_integer) {
+    /* Check for reduction to the integer case.
+     * Make the arbitrary "near an integer" test.
+     */
+    int inta = floor(a + 0.1);
+    int intb = floor(b + 0.1);
+    return gsl_sf_hyperg_1F1_int_impl(inta, intb, x, result);
+  }
+  else if(/*b_neg_integer*/1) {
+    /* b is a neg integer, but a is not even an integer
+     */
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a < 0.0 && b > 0.0) {
+    /* Use Kummer to reduce it to the positive case.
+     * Note that b > a, strictly, since we already trapped b = a.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_ab_pos(b-a, b, -x, &Kummer_1F1);
+    if(stat_K == GSL_SUCCESS) {
+      if(Kummer_1F1 == 0.0) {
+        *result = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        double lnr = log(fabs(Kummer_1F1)) + x;
+        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else if(a > 0.0 && b < 0.0) {
+    /* Use Kummer to reduce it to the negative case.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_ab_neg(b-a, b, -x, &Kummer_1F1);
+    if(stat_K == GSL_SUCCESS) {
+      if(Kummer_1F1 == 0.0) {
+        *result = 0.0;
+	return GSL_SUCCESS;
+      }
+      else {
+        double lnr = log(fabs(Kummer_1F1)) + x;
+        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else if(a < 0.0 && b < 0.0) {
+    return hyperg_1F1_ab_neg(a, b, x, result);
+  }
+  else {
+    /* a > 0 and b > 0 */
+    return hyperg_1F1_ab_pos(a, b, x, result);
+  }
+
+
+
 }
 
 
