@@ -135,3 +135,5 @@ reliable implementation of gamma_inc, multifit bug fixes
 * Vladimir Savichev <vlad@ariel.phys.wesleyan.edu> bug reports
 
 * Jochen Küpper <jochen@jochen-kuepper.de> doc bug fixes
+
+* John Ketchum <johnk@qualcomm.com> for bug reports for the blas library

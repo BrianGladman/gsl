@@ -648,7 +648,8 @@ gsl_blas_cgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex_float alpha,
   const size_t N = A->size2;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
-      || (TransA == CblasTrans && M == X->size && N == Y->size))
+      || (TransA == CblasTrans && M == X->size && N == Y->size)
+      || (TransA == CblasConjTrans && M == X->size && N == Y->size))
     {
       cblas_cgemv (CblasRowMajor, TransA, INT (M), INT (N),
 		   GSL_COMPLEX_P (&alpha), A->data, INT (A->tda), X->data,
@@ -672,7 +673,8 @@ gsl_blas_zgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex alpha,
   const size_t N = A->size2;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
-      || (TransA == CblasTrans && M == X->size && N == Y->size))
+      || (TransA == CblasTrans && M == X->size && N == Y->size)
+      || (TransA == CblasConjTrans && M == X->size && N == Y->size))
     {
       cblas_zgemv (CblasRowMajor, TransA, INT (M), INT (N),
 		   GSL_COMPLEX_P (&alpha), A->data, INT (A->tda), X->data,
