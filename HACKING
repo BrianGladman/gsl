@@ -14,6 +14,9 @@ ftp://ftp.gnu.org/gnu/libtool/
 * you must have a recent CVS (at least 1.9) from
 ftp://prep.ai.mit.edu/u2/emacs/
 
+* you must have texinfo (4.0 or later) from
+ftp://ftp.gnu.org/gnu/texinfo/
+
 Once you have this stuff, you can get the repository and start
 working from your own machine.  To do the initial checkout of the
 repository try (bash syntax):
