@@ -102,9 +102,9 @@ where mu_T is slightly greater than 1.
 @node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
 @section Simulated Annealing functions
 
-@deftp {Simulated annealing} gsl_Efunc_t
+@deftp {Simulated annealing} gsl_siman_Efunc_t
 @smallexample
-typedef double (*gsl_Efunc_t) (void *xp);
+typedef double (*gsl_siman_Efunc_t) (void *xp);
 @end smallexample
 @end deftp
 
@@ -146,7 +146,7 @@ typedef struct s_siman_params gsl_siman_params_t;
 @end deftp
 
 
-@deftypefn {Simulated annealing} void gsl_siman_solve (void *@var{x0_p}, gsl_Efunc_t @var{Ef}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, size_t @var{element_size}, gsl_siman_params_t params)
+@deftypefn {Simulated annealing} void gsl_siman_solve (void *@var{x0_p}, gsl_siman_Efunc_t @var{Ef}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, size_t @var{element_size}, gsl_siman_params_t params)
 Does a @emph{simulated annealing} search through a given space.  The
 space is specified by providing the functions @var{Ef}, @var{distance},
 @var{print_position}, @var{element_size}.

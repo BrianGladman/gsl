@@ -30,7 +30,7 @@
 /* implementation of a basic simulated annealing algorithm */
 
 void 
-gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
+gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 		 gsl_siman_step_t take_step,
 		 gsl_siman_metric_t distance,
 		 gsl_siman_print_t print_position,
@@ -150,7 +150,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 /* implementation of a simulated annealing algorithm with many tries */
 
 void 
-gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
+gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 		      gsl_siman_step_t take_step,
 		      gsl_siman_metric_t distance,
 		      gsl_siman_print_t print_position,

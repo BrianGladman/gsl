@@ -1,3 +1,8 @@
+Thu Jul 12 21:50:07 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_siman.h: changed renamed gsl_Efunc_t to gsl_siman_Efunc_t,
+	in accordance with namespace conventions
+
 2000-12-15  Mark Galassi  <rosalia@galassi.org>
 
 	* siman.c (gsl_siman_solve): reversed a small change I had made

@@ -35,7 +35,7 @@ __BEGIN_DECLS
 
 /* types for the function pointers passed to gsl_siman_solve */
 
-typedef double (*gsl_Efunc_t) (void *xp);
+typedef double (*gsl_siman_Efunc_t) (void *xp);
 typedef void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, double step_size);
 typedef double (*gsl_siman_metric_t) (void *xp, void *yp);
 typedef void (*gsl_siman_print_t) (void *xp);
@@ -77,7 +77,7 @@ void gsl_siman_Usolve(const gsl_rng * r,
 		      gsl_siman_params_t params);
 
 void gsl_siman_solve(const gsl_rng * r, 
-		     void *x0_p, gsl_Efunc_t Ef,
+		     void *x0_p, gsl_siman_Efunc_t Ef,
 		     gsl_siman_step_t take_step,
 		     gsl_siman_metric_t distance,
 		     gsl_siman_print_t print_position,
@@ -88,7 +88,7 @@ void gsl_siman_solve(const gsl_rng * r,
 		     gsl_siman_params_t params);
 
 void 
-gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
+gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 		      gsl_siman_step_t take_step,
 		      gsl_siman_metric_t distance,
 		      gsl_siman_print_t print_position,
