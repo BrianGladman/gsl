@@ -872,7 +872,10 @@ static
 int
 fd_nint(const int j, const double x, gsl_sf_result * result)
 {
-  const int nsize = 100 + 1;
+/*    const int nsize = 100 + 1; */
+  enum {
+    nsize = 100+1
+  };
   double qcoeff[nsize];
 
   if(j >= -1) {
@@ -928,8 +931,12 @@ static
 int
 fd_neg(const double j, const double x, gsl_sf_result * result)
 {
-  const int itmax = 100;
-  const int qsize = 100 + 1;
+  enum {
+    itmax = 100,
+    qsize = 100+1
+  };
+/*    const int itmax = 100; */
+/*    const int qsize = 100 + 1; */
   double qnum[qsize], qden[qsize];
 
   if(x < GSL_LOG_DBL_MIN) {

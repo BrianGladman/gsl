@@ -1,3 +1,10 @@
+1999-08-02  Mark Galassi  <rosalia@lanl.gov>
+
+	* fermi_dirac.c: took out the use of some "const int" constants
+	which were being used to size arrays, since this is not portable
+	(thanks to Bernd Petrovitsch <bernd@ict.tuwien.ac.at> for pointing
+	this out).
+
 1999-01-02  Mark Galassi  <rosalia@cygnus.com>
 
 	* trig.c (gsl_sf_rect_to_polar_impl): introduced an #ifdef
