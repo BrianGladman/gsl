@@ -1,3 +1,11 @@
+Thu Aug 20 12:22:28 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* siman.c: use (char *) judiciously to avoid warnings about void
+ 	pointer arithmetic (see randist/shuffle.c for similar examples)
+
+	* siman_test.c: perform several tests, using the exact answer as
+ 	the comparison value, rather than checking for stationarity.
+
 Sun Jun 28 14:11:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* Converted to work with rng-style random number generators

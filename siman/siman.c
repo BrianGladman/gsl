@@ -21,6 +21,8 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
   double T;
   int n_evals = 0, n_iter = 0, n_accepts, n_rejects, n_eless;
 
+  distance = 0 ; /* This parameter is not currently used */
+
   x = (void *) malloc (element_size);
   new_x = (void *) malloc (element_size);
 
@@ -138,13 +140,13 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 	{			/* only go to N_TRIES-2 */
 	  /* center the new_x[] around x, then pass it to take_step() */
 	  sum_probs[i] = 0;
-	  memcpy (new_x + i * element_size, x, element_size);
-	  take_step (r, new_x + i * element_size, params.step_size);
-	  energies[i] = Ef (new_x + i * element_size);
+	  memcpy ((char *)new_x + i * element_size, x, element_size);
+	  take_step (r, (char *)new_x + i * element_size, params.step_size);
+	  energies[i] = Ef ((char *)new_x + i * element_size);
 	  probs[i] = exp (-(energies[i] - Ex) / (params.k * T));
 	}
       /* now add in the old value of "x", so it is a contendor */
-      memcpy (new_x + (params.n_tries - 1) * element_size, x, element_size);
+      memcpy ((char *)new_x + (params.n_tries - 1) * element_size, x, element_size);
       energies[params.n_tries - 1] = Ex;
       probs[params.n_tries - 1] = exp (-(energies[i] - Ex) / (params.k * T));
 
@@ -159,7 +161,7 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 	{
 	  if (u < sum_probs[i])
 	    {
-	      memcpy (x, new_x + i * element_size, element_size);
+	      memcpy (x, (char *)new_x + i * element_size, element_size);
 	      break;
 	    }
 	}
