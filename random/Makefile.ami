@@ -24,10 +24,13 @@
 
 ## A similar warning applies to the sources *-state.c, *-gen.c, and
 ## some of the *.h files; if you want to edit them, you should instead
-## edit the template files, xx-state.xc, xx-gen.c, and gsl_ran.h
-## and then run './makesrc Makefile.ami' to remake all the built-sources.
+## edit the template files, xxx-state.xc, xxx-gen.xc, and gsl_ran.h
+## and then run './makesrc --all' to remake all the built-sources.
 
 #####################################################################
+
+## Some *.h files are in neighboring directories
+INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
