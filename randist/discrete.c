@@ -138,19 +138,19 @@ typedef struct {
     int N;                      /* max number of elts on stack */
     int *v;                     /* array of values on the stack */
     int i;                      /* index of top of stack */
-} stack_t;
+} gsl_stack_t;
 
-static stack_t *
+static gsl_stack_t *
 new_stack(int N) {
-    stack_t *s;
-    s = (stack_t *)malloc(sizeof(stack_t));
+    gsl_stack_t *s;
+    s = (gsl_stack_t *)malloc(sizeof(gsl_stack_t));
     s->N = N;
     s->i = -1;                  /* indicates stack is empty */
     s->v = (int *)malloc(sizeof(int)*N);
     return s;
 }
 static void
-push_stack(stack_t *s, int v)
+push_stack(gsl_stack_t *s, int v)
 {
     s->i += 1;
     if ((s->i) >= (s->N)) {
@@ -159,7 +159,7 @@ push_stack(stack_t *s, int v)
     }
     (s->v)[s->i] = v;
 }
-static int pop_stack(stack_t *s)
+static int pop_stack(gsl_stack_t *s)
 {
     if ((s->i) < 0) {
         fprintf(stderr,"Cannot pop stack!\n");
@@ -168,11 +168,11 @@ static int pop_stack(stack_t *s)
     s->i -= 1;
     return ((s->v)[s->i + 1]);
 }
-static inline int size_stack(const stack_t *s)
+static inline int size_stack(const gsl_stack_t *s)
 {
     return s->i + 1;
 }
-static void free_stack(stack_t *s)
+static void free_stack(gsl_stack_t *s)
 {
     free((char *)(s->v));
     free((char *)s);
@@ -188,8 +188,8 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
     int k,s,b;
     gsl_ran_discrete_t *g;
     int nBigs, nSmalls;
-    stack_t *Bigs;
-    stack_t *Smalls;
+    gsl_stack_t *Bigs;
+    gsl_stack_t *Smalls;
     double *E;
     double pTotal = 0.0, mean, d;
     
