@@ -376,7 +376,7 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
 {
   if(n < 0) {
     if(!GSL_IS_ODD(abs(n))) {
-      *result = 0.; /* exactly zero at even negative integers */
+      *result = 0.0; /* exactly zero at even negative integers */
       return GSL_SUCCESS;
     }
     else if(n > -ZETA_NEG_TABLE_NMAX) {
@@ -400,6 +400,35 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
   }
 }
 
+
+int gsl_sf_eta_int_impl(int n, double * result)
+{
+  double z;
+  int stat_z = gsl_sf_zeta_int_impl(n, &z);
+  if(stat_z == GSL_SUCCESS) {
+    double pre = 1.0 - pow(2.0,1.0-n);
+    *result = pre * z;
+  }
+  else {
+    *result = 0.0;
+  }
+  return stat_z;
+}
+
+
+int gsl_sf_eta_impl(const double s, double * result)
+{
+  double z;
+  int stat_z = gsl_sf_zeta_int_impl(s, &z);
+  if(stat_z == GSL_SUCCESS) {
+    double pre = 1.0 - pow(2.0,1.0-s);
+    *result = pre * z;
+  }
+  else {
+    *result = 0.0;
+  }
+  return stat_z;
+}
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -430,6 +459,25 @@ int gsl_sf_zeta_int_e(const int s, double * result)
   return status;
 }
 
+int gsl_sf_eta_int_e(const int s, double * result)
+{
+  int status = gsl_sf_eta_int_impl(s, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_eta_int_e", status);
+  }
+  return status;
+}
+
+
+int gsl_sf_eta_e(const double s, double * result)
+{
+  int status = gsl_sf_eta_impl(s, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_eta_e", status);
+  }
+  return status;
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -453,12 +501,32 @@ double gsl_sf_hzeta(const double s, const double a)
   return y;
 }
 
-double gsl_sf_zeta_int(int n)
+double gsl_sf_zeta_int(const int n)
 {
   double y;
   int status = gsl_sf_zeta_int_impl(n, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_zeta_int", status);
+  }
+  return y;
+}
+
+double gsl_sf_eta_int(const int n)
+{
+  double y;
+  int status = gsl_sf_eta_int_impl(n, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_eta_int", status);
+  }
+  return y;
+}
+
+double gsl_sf_eta(const double s)
+{
+  double y;
+  int status = gsl_sf_eta_impl(s, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_eta", status);
   }
   return y;
 }

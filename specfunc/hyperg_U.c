@@ -15,6 +15,65 @@
 #define locMIN(a,b)  ((a) < (b) ? (a) : (b))
 
 
+/* Evaluate u_{N+1}/u_N by Steed's continued fraction method.
+ *
+ * u_N := Gamma[a+N]/Gamma[a] U(a + N, b, x)
+ */
+static
+int
+hyperg_U_CF1(const double a, const double b, const int N, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 20000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = -(a + N);
+  double b1 =  (b - 2.0*a - x - 2.0*(N+1));
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = -(a + N + n - b)*(a + N + n - 1.0);
+    bn =  (b - 2.0*a - x - 2.0*(N+n));
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+    
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+    
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+  
+  *result = fn;
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
 /* Large x asymptotic for  x^a U(a,b,x)
  * Based on SLATEC D9CHU() [W. Fullerton]
  *
@@ -381,6 +440,14 @@ hyperg_U_small_a(const double a, const double b, const double x, double * result
 int
 gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
 {
+  double a = 0.5;
+  double b = 3.0;
+  double x = 1.0;
+  double f;
+  hyperg_U_CF1(a, b, 10, x, &f);
+  printf("%22.18g\n", f);
+  exit(0);
+  
   if(x <= 0.0) {
     *result = 0.0;
     return GSL_EDOM;

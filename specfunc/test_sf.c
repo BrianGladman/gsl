@@ -2384,6 +2384,8 @@ int main(int argc, char * argv[])
 {
 /* test_coulomb(); */
 /* test_recurse(); */
+double r;
+gsl_sf_hyperg_U_impl(0.0, 0.0, 0.0, &r);
 
   gsl_test(check_airy(),       "Airy Functions");
   gsl_test(check_bessel(),     "Bessel Functions");
