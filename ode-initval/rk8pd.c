@@ -17,7 +17,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Runge-Kutta 8(9), Prince-Dormand */
+/* Runge-Kutta 8(9), Prince-Dormand 
+ *
+ * High Order Embedded Runge-Kutta Formulae
+ * P.J. Prince and J.R. Dormand
+ * J. Comp. Appl. Math.,7, pp. 67-75, 1981
+ */
 
 /* Author:  G. Jungman
  */
