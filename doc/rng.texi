@@ -8,7 +8,7 @@ your program. Each instance of a generator keeps track of its own state,
 allowing the generators to be used in multi-threaded programs.
 Additional functions are available for transforming uniform random
 numbers into samples from continuous or discrete probability
-distributions such as the gaussian, log-normal or poisson distributions.
+distributions such as the Gaussian, log-normal or Poisson distributions.
 
 @comment Need to explain the difference between SERIAL and PARALLEL random 
 @comment number generators here
@@ -150,7 +150,7 @@ non-uniform distributions @pxref{Random Number Distributions}.
 This function returns a random integer from the generator @var{r}.  The
 minimum and maximum values depend on the algorithm used, but all
 integers in the range [@var{min},@var{max}] are equally likely.  The
-values of @var{min} and @var{max} can determined using the auxilliary
+values of @var{min} and @var{max} can determined using the auxiliary
 functions @code{gsl_rng_max (r)} and @code{gsl_rng_min (r)}.
 @end deftypefn
 
@@ -319,7 +319,7 @@ functions are supplied.  These include:
 
 @deftypefn Random {gsl_rng *} gsl_rng_cpy (gsl_rng * @var{dest}, const gsl_rng * @var{src})
 This function copies the random number generator @var{src} into the
-pre-exisiting generator @var{dest}, making @var{dest} into an exact copy
+pre-existing generator @var{dest}, making @var{dest} into an exact copy
 of @var{src}. It returns @var{dest} if successful and a null pointer if
 sufficient memory could not be allocated.
 @end deftypefn
@@ -331,7 +331,7 @@ exact copy of the generator @var{r}.
 
 @deftypefn Random void gsl_rng_print_state (const gsl_rng * @var{r})
 This function prints a hex-dump of the state of the generator @var{r} to
-stdout. At the moment its only use is for debugging.
+@code{stdout}. At the moment its only use is for debugging.
 @end deftypefn
 
 @node Available random number generator algorithms
@@ -379,7 +379,7 @@ For more information see,
 @itemize @asis
 @item
 Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
-623-dimensionally equidistributerd uniform pseudorandom number
+623-dimensionally equidistributed uniform pseudorandom number
 generator". @cite{ACM Transactions on Modeling and Computer
 Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
 @end itemize
@@ -732,7 +732,7 @@ where the numeric suffix indicates the buffer length. The original BSD
 @code{random} function used a 128-byte default buffer and so
 @code{gsl_rng_random_bsd} has been made equivalent to
 @code{gsl_rng_random128_bsd}. Corresponding versions of the @code{libc5}
-and @code{glibc2} generators are also avaliable, with the names
+and @code{glibc2} generators are also available, with the names
 @code{gsl_rng_random8_libc5}, @code{gsl_rng_random8_glibc2}, etc.
 @end deffn
 
@@ -1229,8 +1229,8 @@ MM&YK) available under the GNU General Public License.
 @comment cmrg
 @comment [q1([x1,x2,x3]) := [63308 mod 2147483647 * x2 -183326 mod 2147483647 * x3, x1, x2],
 @comment  q2([x1,x2,x3]) := [86098 mod 2145483479 * x1 -539608 mod 2145483479 * x3, x1, x2] ]
-@comment  intial for q1 is [69069, 475559465, 654291926]
-@comment  intial for q2 is  [1790562961, 959348806, 2093487202]
+@comment  initial for q1 is [69069, 475559465, 654291926]
+@comment  initial for q2 is  [1790562961, 959348806, 2093487202]
 
 @comment tausworthe
 @comment    [ b1(x) := rsh(xor(lsh(x, 13), x), 19),

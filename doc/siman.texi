@@ -61,7 +61,7 @@ if
 
 In other words, a step @emph{will} occur if the new energy is lower.  If
 the new energy is higher, the transition can still occur, and its
-likelyhood is proportional to the temperature @math{T} and inversely
+likelihood is proportional to the temperature @math{T} and inversely
 proportional to the energy difference 
 @c{$E_{i+1} - E_i$}
 @math{E_@{i+1@} - E_i}.

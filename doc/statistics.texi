@@ -95,7 +95,7 @@ so the one standard-deviation error on the mean is
 @math{\sigma/\sqrt@{N@}}.
 
 If the underlying distribution has long tails then the mean may be
-subject to large fluctations.
+subject to large fluctuations.
 
 @end deftypefn
 
@@ -147,7 +147,7 @@ For a gaussian distribution the variance of
 @math{\sqrt@{2@} \sigma^2/\sqrt@{N@}}.
 
 If the underlying distribution has long tails then the variance may be
-subject to large fluctations, or may not converge.
+subject to large fluctuations, or may not converge.
 
 Both these functions compute the mean via a call to
 @code{gsl_stats_mean}. If you have already computed the mean then you
@@ -383,7 +383,7 @@ kurtosis = ( @{1 \over N@} \sum
 @noindent
 The kurtosis measures how sharply peaked a distribution is, relative to
 its width. The kurtosis is normalised to zero for a gaussian
-distribution by the -3 in the defintion.
+distribution by the -3 in the definition.
 
 @end deftypefn
 
@@ -436,7 +436,7 @@ before calling this function.
 @end deftypefn
 @deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{n})
 
-The function @code{gsl_stats_min} returns the minimun value in
+The function @code{gsl_stats_min} returns the minimum value in
 @var{data}, an array of length @var{n}.  The minimum value is defined as
 the value of the element 
 @c{$x_i$}

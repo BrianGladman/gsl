@@ -233,7 +233,7 @@ an error code of @code{GSL_EDOM}.
 @deftypefun double gsl_histogram_max (const gsl_histogram * @var{h})
 @deftypefunx double gsl_histogram_min (const gsl_histogram * @var{h})
 @deftypefunx size_t gsl_histogram_bins (const gsl_histogram * @var{h})
-These functions return the maximum upper and mimimum lower range limits
+These functions return the maximum upper and minimum lower range limits
 and the number of bins of the histogram @var{h}. They provide a way of
 determining these values without accessing the @code{gsl_histogram}
 struct directly.
@@ -627,7 +627,7 @@ bin whose x and y ranges contain the coordinates (@var{x},@var{y}).
 
 If the point @math{(x,y)} lies inside the valid ranges of the
 histogram then the function returns zero to indicate success. If
-@math{(x,y)} lies outide the limits of the histogram then the
+@math{(x,y)} lies outside the limits of the histogram then the
 function returns @code{GSL_EDOM}, and none of bins are modified. The
 error handler is not called, since it is often necessary to compute
 histogram for a small range of a larger dataset, ignoring any
@@ -667,7 +667,7 @@ the error handler is called with an error code of @code{GSL_EDOM}.
 @deftypefunx double gsl_histogram2d_ymax (const gsl_histogram2d * @var{h})
 @deftypefunx double gsl_histogram2d_ymin (const gsl_histogram2d * @var{h})
 @deftypefunx size_t gsl_histogram2d_ny (const gsl_histogram2d * @var{h})
-These functions return the maximum upper and mimimum lower range limits
+These functions return the maximum upper and minimum lower range limits
 and the number of bins for the x and y directions of the histogram
 @var{h}. They provide a way of determining these values without
 accessing the @code{gsl_histogram2d} struct directly.

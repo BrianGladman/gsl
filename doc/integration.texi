@@ -555,7 +555,7 @@ GSL_INTEG_SINE
 @end example
 
 @noindent
-The @code{gsl_integration_qawo_table} acts as a cache for trigonmetric
+The @code{gsl_integration_qawo_table} acts as a cache for trigonometric
 coefficients computed in the integration process. The parameter @var{n}
 determines the number of levels of coefficients that can be stored. Each
 level corresponds to one bisection of the interval @math{L}, so that
@@ -674,8 +674,8 @@ where
 @c{$c = (2 \,\hbox{floor}(|\omega|) + 1) \pi/|\omega|$}
 @math{c = (2 floor(|\omega|) + 1) \pi/|\omega|}. The width @math{c} is
 chosen to cover an odd number of periods so that the contributions from
-the intervals alternate in sign and are monotonically descreasing when
-@var{f} is positive and monotically descreasing. The sum of this
+the intervals alternate in sign and are monotonically decreasing when
+@var{f} is positive and monotonically decreasing. The sum of this
 sequence of contributions is accelerated using the epsilon-algorithm.
 
 This function works to an overall absolute tolerance of

@@ -1,6 +1,6 @@
 @cindex IEEE floating point 
 
-This chapter describes functions for examing the representation of
+This chapter describes functions for examining the representation of
 floating point numbers and controlling the floating point environment of
 your program.
 
@@ -94,7 +94,7 @@ The IEEE standard defines several @dfn{modes} for controlling the
 behavior of floating point operations. These modes specify the important
 properties of computer arithmetic: the direction used for rounding (e.g.
 whether numbers should be rounded up, down or to the nearest number),
-the rouding precision and how the program should handle arithmetic
+the rounding precision and how the program should handle arithmetic
 exceptions, such as division by zero.
 
 Unfortunately there is no universal API for controlling these features --

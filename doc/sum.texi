@@ -145,6 +145,6 @@ The theory of the u-transform was presented by Levin,
 @itemize @asis
 @item
 D. Levin,
-Development of Non-Linear Transformations for Improving Covergence of
+Development of Non-Linear Transformations for Improving Convergence of
 Sequences, @cite{Intern. J. Computer Math.} B3:371--388, 1973
 @end itemize
