@@ -352,10 +352,11 @@ None have been contributed yet.
 
 @menu
 * Statistics::                  
+* Root finding::                
 * Simulated annealing::         
 @end menu
 
-@node Statistics, Simulated annealing, Reference manual, Reference manual
+@node Statistics, Root finding, Reference manual, Reference manual
 @section Statistics
 @cindex statistics
 @cindex mean
@@ -365,6 +366,7 @@ None have been contributed yet.
 @cindex estimated variance
 @cindex t-test
 
+[contributed by Jim Davies]
 
 The following commands were created primarily to be used for statistical
 analysis of Psychological experiment data.
@@ -417,10 +419,30 @@ analysis of Psychological experiment data.
 @code{iittestf} returns the t statistic from two arrays of integers.
 @end deftypefn
 
-@node Simulated annealing,  , Statistics, Reference manual
+
+
+@node Root finding, Simulated annealing, Statistics, Reference manual
+@section Root finding
+@cindex root finding
+@cindex Newton's Method
+
+[contributed by Mark Galassi]
+
+@deftypefn gsl_newton1D (double (*fn)(double x), double (*dfn)(double x), double guess)
+Uses Newton's method to find a root of the function @var{fn}, starting
+at @var{guess}.  User has to supply both the function @var{fn} and its
+first derivative @var{dfn}.
+@end deftypefn
+
+
+
+@node Simulated annealing,  , Root finding, Reference manual
 @section Simulated annealing
 @cindex simulated annealing
 @cindex combinatorial searches
+
+[just a stub for kicks; still have to contribute this to the library and
+right it up well.]
 
 @deftp {Simulated annealing} Union Element
 Element is a union.  Each field in the union describes one of the
