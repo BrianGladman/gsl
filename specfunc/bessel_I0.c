@@ -147,7 +147,7 @@ int gsl_sf_bessel_I0_scaled_e(const double x, gsl_sf_result * result)
   /* CHECK_POINTER(result) */
 
   if(y < 2.0 * GSL_SQRT_DBL_EPSILON) {
-    result->val = 1.0;
+    result->val = 1.0 - y;
     result->err = 0.5*y*y;
     return GSL_SUCCESS;
   }

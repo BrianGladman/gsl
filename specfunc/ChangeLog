@@ -1,3 +1,8 @@
+2001-07-06  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bessel_I0.c (gsl_sf_bessel_I0_scaled_e): added missing scaling
+	factor of exp(-x) for case x<2sqrt(epsilon)
+
 Thu Jul  5 16:16:13 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* erfc.c (gsl_sf_erfc_e): corrected case of -10<x<-5 to take into
@@ -8,7 +13,7 @@ Tue Jul  3 12:09:33 2001  Brian Gough  <bjg@network-theory.co.uk>
 	* eval.h (EVAL_DOUBLE): avoid returning the status value as a
  	numerical result
 
-2001-06-28  Brian Gough  <bjg@hppav.local>
+2001-06-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* elementary.c (gsl_sf_multiply_e): use GSL_COERCE_DBL macro to
 	deal with extended register problem
