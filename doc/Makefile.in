@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1m from Makefile.am
+# Makefile.in generated automatically by automake 1.1l from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -32,23 +32,18 @@ pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ..
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
-
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-host_alias = @host_alias@
 host_triplet = @host@
-CC = @CC@
+host_alias = @host_alias@
+RANLIB = @RANLIB@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
 VERSION = @VERSION@
+CC = @CC@
 
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
@@ -57,7 +52,9 @@ gsl_ref_TEXINFOS = err.texi fft.texi random.texi
 noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps
 EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
-	initial-route.eps final-route.eps
+	initial-route.eps final-route.eps \
+	fftalgorithms.tex fftalgorithms.bib \
+	algorithm.sty algorithmic.sty calc.sty
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -72,16 +69,16 @@ DIST_COMMON =  $(gsl_ref_TEXINFOS) Makefile.am Makefile.in mdate-sh \
 stamp-vti texinfo.tex version-ref.texi
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
+	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
 
 TAR = tar
-GZIP = --best
 default: all
 
 .SUFFIXES:
 .SUFFIXES: .texi .texinfo .info .dvi .ps
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu doc/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
+	cd $(top_srcdir) && automake --gnu doc/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -89,16 +86,15 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 
 
 version-ref.texi: stamp-vti
-	cp $(srcdir)/stamp-vti $(srcdir)/version-ref.texi
 
 stamp-vti: gsl-ref.texi $(top_srcdir)/configure.in
 	echo "@set UPDATED `cd $(srcdir) \
 	  && $(SHELL) ./mdate-sh gsl-ref.texi`" > vti.tmp
 	echo "@set EDITION $(VERSION)" >> vti.tmp
 	echo "@set VERSION $(VERSION)" >> vti.tmp
-	cmp -s vti.tmp $(srcdir)/stamp-vti \
-	  || cp vti.tmp $(srcdir)/stamp-vti
-	rm -f vti.tmp
+	cmp -s vti.tmp $(srcdir)/version-ref.texi || cp vti.tmp $(srcdir)/version-ref.texi
+	rm vti.tmp
+	echo timestamp > $(srcdir)/stamp-vti
 
 mostlyclean-vti:
 	rm -f vti.tmp
@@ -124,15 +120,7 @@ DVIPS = dvips
 	TEXINPUTS=$(srcdir):$$TEXINPUTS \
 	  MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
 
-.texi:
-	cd $(srcdir) \
-	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
-
 .texinfo.info:
-	cd $(srcdir) \
-	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
-
-.texinfo:
 	cd $(srcdir) \
 	  && $(MAKEINFO) `echo $< | sed 's,.*/,,'`
 
@@ -147,7 +135,7 @@ install-info-am: $(INFO_DEPS)
 	@for file in $(INFO_DEPS); do \
 	  for ifile in `cd $(srcdir) && echo $$file $$file-[0-9] $$file-[0-9][0-9]`; do \
 	    if test -f $(srcdir)/$$ifile; then \
-	      echo " $(INSTALL_DATA) $(srcdir)/$$ifile $(infodir)/$$ifile"; \
+	      echo "$(INSTALL_DATA) $(srcdir)/$$ifile $(infodir)/$$ifile"; \
 	      $(INSTALL_DATA) $(srcdir)/$$ifile $(infodir)/$$ifile; \
 	    else : ; fi; \
 	  done; \
@@ -155,7 +143,7 @@ install-info-am: $(INFO_DEPS)
 	$(POST_INSTALL)
 	@if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 	  for file in $(INFO_DEPS); do \
-	    echo " install-info --info-dir=$(infodir) $(infodir)/$$file";\
+	    echo "install-info --info-dir=$(infodir) $(infodir)/$$file";\
 	    install-info --info-dir=$(infodir) $(infodir)/$$file; :;\
 	  done; \
 	else : ; fi
@@ -182,15 +170,14 @@ dist-info: $(INFO_DEPS)
 mostlyclean-info:
 	rm -f gsl-ref.aux gsl-ref.cp gsl-ref.cps gsl-ref.dvi gsl-ref.fn \
 	  gsl-ref.fns gsl-ref.ky gsl-ref.log gsl-ref.pg gsl-ref.toc \
-	  gsl-ref.tp gsl-ref.tps gsl-ref.vr gsl-ref.vrs gsl-ref.op \
-	  gsl-ref.tr gsl-ref.cv
+	  gsl-ref.tp gsl-ref.vr gsl-ref.op
 
 clean-info:
 
 distclean-info:
 
 maintainer-clean-info:
-	for i in $(INFO_DEPS); do rm -f `eval echo $$i*`; done
+	for i in $(INFO_DEPS); do rm `eval echo $$i*`; done
 tags: TAGS
 TAGS:
 

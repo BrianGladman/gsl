@@ -11,7 +11,7 @@ include_HEADERS= gsl_ran.h gsl_ran_switch.h
 test_switch_SOURCES= test-switch.c switch.c 
 
 switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
-	makeswitch $(ALLRAN) 
+	./makeswitch $(ALLRAN) 
 
 ## The user doesn't really _need_ these, but 'make all' does,
 ## and probably it is fair for the user to have them, since that
