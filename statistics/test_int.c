@@ -11,6 +11,8 @@ main (void)
   /* sample sets of integers */
   
   const unsigned int ina = 20, inb = 20;
+
+  const int test1[] = {1, 2, 3, 4, 5, 6} ;
   
   const int igroupa[] =
   {17, 18, 16, 18, 12,
@@ -26,11 +28,20 @@ main (void)
 
   int * sorted ;
 
+
   {
     double mean = gsl_stats_int_mean (igroupa, ina);
     double expected = 17;
     gsl_test (mean != expected,
-	      "gsl_stats_int_mean (%g observed vs %g expected)",
+	      "gsl_stats_int_mean (integer) (%g observed vs %g expected)",
+	      mean, expected);
+  }
+
+  {
+    double mean = gsl_stats_int_mean (test1, 6);
+    double expected = 3.5;
+    gsl_test (mean != expected,
+	      "gsl_stats_int_mean (fractional) (%g observed vs %g expected)",
 	      mean, expected);
   }
 

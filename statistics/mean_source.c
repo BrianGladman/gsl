@@ -8,8 +8,6 @@ FUNCTION(gsl_stats,mean) (const BASE data[], const size_t size)
   double sum = 0, mean;
   size_t i;
 
-  printf("size = %d\n",size) ;
-
   for (i = 0; i < size; i++)
     {
       sum += data[i];
@@ -17,6 +15,5 @@ FUNCTION(gsl_stats,mean) (const BASE data[], const size_t size)
 
   mean = sum / size;
 
-  printf("mean = %g\n", mean) ;
   return mean;
 }
