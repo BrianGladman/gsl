@@ -100,6 +100,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * FFTs::                        
 * Root finding::                
 * Simulated annealing::         
+* Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Copying::                     
 * Concept Index::               
@@ -108,7 +109,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * Type Index::                  
 @end menu
 
-@node Preliminaries
+@node Preliminaries, Error handling in GSL, Top, Top
 @chapter Preliminaries
 
 The GNU Scientific Library (GSL) is a collection of routines for
@@ -117,16 +118,17 @@ team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
 
-@node Error handling in GSL
+@node Error handling in GSL, Random number generation, Preliminaries, Top
 @chapter Error handling in GSL
+@cindex Errors
+@include err.texi
 
 
-
-@node Random number generation
+@node Random number generation, Basic statistics, Error handling in GSL, Top
 @chapter Random number generation
 @include random.texi
 
-@node Basic statistics
+@node Basic statistics, FFTs, Random number generation, Top
 @chapter Basic statistics
 @cindex statistics -- basic
 @cindex mean
@@ -249,11 +251,11 @@ int main()
 @end smallexample
 
 @c Section on FFTs
-@node FFTs
+@node FFTs, Root finding, Basic statistics, Top
 @chapter FFTs
 @include fft.texi
 
-@node Root finding
+@node Root finding, Simulated annealing, FFTs, Top
 @chapter Root finding
 @cindex root finding
 @cindex Newton's Method
@@ -285,7 +287,7 @@ Example: @code{gsl_newton1D(sin, cos, 2.3)}
 @end deftypefn
 
 
-@node Simulated annealing
+@node Simulated annealing, Debugging Numerical Programs, Root finding, Top
 @chapter Simulated annealing
 @cindex simulated annealing
 @cindex combinatorial searches
@@ -318,7 +320,7 @@ probability of taking a step is given by a Boltzmann distribution.
 * Examples with Simulated Annealing::  
 @end menu
 
-@node Simulated Annealing algorithm
+@node Simulated Annealing algorithm, Simulated Annealing functions, Simulated annealing, Simulated annealing
 @section Simulated Annealing algorithm
 
 
@@ -370,7 +372,7 @@ T -> T/mu_T
 where mu_T is slightly greater than 1.
 
 
-@node Simulated Annealing functions
+@node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated annealing
 @section Simulated Annealing functions
 
 @deftp {Simulated annealing} gsl_Efunc_t
@@ -438,7 +440,7 @@ If @var{print_position} is null, no information is printed to the
 screen.
 @end deftypefn
 
-@node Examples with Simulated Annealing
+@node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated annealing
 @section Examples with Simulated Annealing
 
 GSL's Simulated Annealing package is clumsy, and it has to be because it
@@ -451,7 +453,7 @@ application with little change and should make things easier.
 * Traveling Salesman Problem::  
 @end menu
 
-@node Trivial example
+@node Trivial example, Traveling Salesman Problem, Examples with Simulated Annealing, Examples with Simulated Annealing
 @subsection Trivial example
 
 The first example, in one dimensional cartesian space, sets up an energy
@@ -547,7 +549,7 @@ lower temperatures it converges.}
 @end tex
 
 
-@node Traveling Salesman Problem
+@node Traveling Salesman Problem,  , Trivial example, Examples with Simulated Annealing
 @subsection Traveling Salesman Problem
 @cindex TSP
 @cindex Traveling Salesman Problem
@@ -655,7 +657,11 @@ the calculation at which a new temperature is set) for this problem:
 @end tex
 
 
-@node Contributors to GSL
+@node Debugging Numerical Programs, Contributors to GSL, Simulated annealing, Top
+@appendix Debugging Numerical Programs
+
+
+@node Contributors to GSL, Copying, Debugging Numerical Programs, Top
 @appendix Contributors to GSL
 
 @table @strong
@@ -677,7 +683,7 @@ Wrote the FFT package and the relevant chapter in this manual.
 @end table
 
 
-@node Copying
+@node Copying, Concept Index, Contributors to GSL, Top
 @appendix Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
@@ -712,22 +718,22 @@ on our reputation.
 being distributed that relate to @value{GSL} are found in the General
 Public Licenses that accompany them.
 
-@node Concept Index
+@node Concept Index, Function Index, Copying, Top
 @unnumbered Concept Index
 
 @printindex cp
 
-@node Function Index
+@node Function Index, Variable Index, Concept Index, Top
 @unnumbered Function Index
 
 @printindex fn
 
-@node Variable Index
+@node Variable Index, Type Index, Function Index, Top
 @unnumbered Variable Index
 
 @printindex vr
 
-@node Type Index
+@node Type Index,  , Variable Index, Top
 @unnumbered Type Index
 
 @printindex tp

@@ -1,0 +1,309 @@
+This chapter describes the way that GSL functions report and handle
+errors.  By examining the status information returned by every GSL
+function you can determine whether it succeeded or failed, and if it
+failed you can find out what the precise cause of failure was. You can
+also define your own error handling functions to modify the default
+behavior of the library.
+
+Note: In this context we use the word @dfn{error} to mean something
+very different from a bug. An error report from the library just means
+that the library was not able to compute what you asked, to the level of
+precision you specified. In the case of problems caused by bugs, consult
+the chapter on @pxref{Debugging Numerical Programs}.
+
+@menu
+* Error Reporting ::            
+* Error Handlers::              
+* Using GSL Error Reporting in your own functions::  
+@end menu
+
+@node Error Reporting
+@section Error Reporting
+
+GSL follows the error reporting conventions of the C library. Most
+functions in GSL return a status code of @code{-1} to indicate an error
+and @code{0} to indicate success. 
+
+GSL routines report an error whenever they cannot perform the task
+requested of them. For example, a root-finding function would return
+@code{-1} if it could not converge to the requested accuracy, or
+exceeded a limit on the number of iterations. Situations like this are a
+normal occurrence when using any mathematical library and you should
+check the return status of the GSL functions that you call.
+
+Whenever a GSL routine indicates an error it also stores an error code
+in the variable @code{gsl_errno}. The value of @code{gsl_errno}
+specifies the type of error. It is analogous to the variable
+@code{errno} in the C library.
+
+@deftypevar int gsl_errno
+The variable @code{gsl_errno} contains the error code for the GSL
+library. You can change the value of @code{gsl_errno}. The initial value
+of @code{gsl_errno} at program startup is zero. Library functions will
+set it to certain non-zero values when they encounter an error. The
+error conditions are listed for each function. Functions do not change
+@code{gsl_errno} when they succeed; thus the value of @code{gsl_errno}
+after a successful call is not necessarily zero, and you should not use
+@code{gsl_errno} to determine @emph{whether} a call failed. The proper
+way to do that is documented for each function. @emph{If} the call
+failed, you can examine @code{gsl_errno}.
+@end deftypevar
+
+The error code numbers are defined in the file @file{gsl_errno.h}. They
+all have the prefix @code{GSL_} and expand to non-zero constant integer
+values. Many of the error codes use the same base name as a
+corresponding error code in C library. Here are some of the most common
+error codes,
+
+@cindex error codes
+@deftypefn {Macro} int GSL_EDOM
+Domain error; used by mathematical functions when an argument value does
+not fall into the domain over which the function is defined (like
+EDOM in the C library)
+@end deftypefn
+
+@deftypefn {Macro} int GSL_ERANGE
+Range error; used by mathematical functions when the result value is not
+representable because of overflow or underflow (like ERANGE in the C
+library)
+@end deftypefn
+
+@deftypefn {Macro} int GSL_NOMEM
+No memory available. The system cannot allocate more virtual memory
+because its capacity is full (like ENOMEM in the C library). This error
+is reported when a GSL routine encounters problems when trying to
+allocate memory with @code{malloc}.
+@end deftypefn
+
+@deftypefn {Macro} int GSL_EINVAL
+Invalid argument. This is used to indicate various kinds of problems
+with passing the wrong argument to a library function (like EINVAL in the C
+library). 
+@end deftypefn
+
+Some mathematical functions in GSL return floating point numbers.  These
+functions use the same error reporting convention as functions such as
+@code{sqrt} and @code{sin} in the C library.  For these functions an
+error is indicated by returning a special numerical value such as
+@code{NaN} or @code{Inf}, in addition to setting @code{gsl_errno}. If
+you want to check for an error without looking at the return value then
+set @code{gsl_errno} to @code{0} before you call the function and test
+@code{gsl_errno} afterwards.
+
+@cindex Errors - warnings
+@cindex warnings
+Apart from these mathematical functions, the library functions generally
+restrict their use of the return value to reporting either success or
+failure (such as @code{0} or @code{-1}).  The return value is not used
+to encode warnings, error-counts, error-levels or any other out-of-band
+information.  Information on the cause or severity of an error is
+always reported separately through the variable @code{gsl_errno}.  The
+@code{gsl_errno} error code can be used to specify precisely what
+circumstances have caused the problem.
+
+In a situation where other libraries might return a warning code (such
+as @code{-2}) GSL will always report an error, returning a status of
+@code{-1}. However, the functions will provide additional information in
+the @code{gsl_errno} error code, which will indicate the severity of the
+problem.  The caller can examine @code{gsl_errno} and decide what action
+to take, including ignoring the error if it is not considered serious.
+
+Here is an example of some code which checks the return value of a
+function where an error might be reported,
+
+@example
+int status = gsl_fft_complex_radix2_forward (data, length)
+
+if (status) @{
+    if (gsl_errno == GSL_EINVAL) @{
+       fprintf (stderr, "invalid argument, length=%d\n", length); 
+    @} else @{
+       fprintf (stderr, "status=%d, gsl_errno=%d\n", status, gsl_errno);
+    @}
+    abort ();
+@}
+@end example
+@noindent
+The function @code{gsl_fft_complex_radix2} only accepts integer lengths
+which are a power of two. If the variable @code{length} is not a power
+of two then the call to the library function will return a status of
+@code{-1}, and the value of @code{gsl_errno} will be set to
+@code{GSL_EINVAL} indicating that the length argument is invalid.
+
+@node Error Handlers
+@section Error Handlers
+@cindex Error handlers
+
+In addition to reporting errors the library also provides a simple error
+handler. The error handler is called by library functions when they are
+about to report an error (for example, before just before they return
+@code{-1}).
+
+The default behavior of the error handler is to call @code{abort()} when
+any error is reported by the library. If a library routine reports an
+error then the whole program will core-dump. This is a safe default for
+lazy programmers who do not check the return status of library routines
+(we don't encourage you to write programs this way). If you turn off the
+default error handler or provide your own error handler then it is your
+responsibility to check the return values of the GSL routines.
+
+All GSL error handlers have the type @code{gsl_errhandler_t}, which is
+defined in @file{gsl_errno.h},
+
+@deftp {Data Type} {typedef void gsl_errhandler_t (const char *reason, const char *file, int line)}
+
+This is the type of GSL error handler functions. An error handler will
+be passed three arguments, specifying the reason for the error, the
+source file in which it occurred, and the line number in that file. 
+The source file and line number are set at compile time using
+the @code{__FILE__} and @code{__LINE__} directives in the preprocessor.
+An error handler function returns type @code{void}. Error handler
+functions should be defined like this,
+
+@example
+void @var{handler}  (const char * reason, const char * file, int line)
+@end example
+@end deftp
+
+To request the use of your own error handler you need to call the
+function @code{gsl_set_error_handler} which is also declared in
+@file{gsl_errno.h},
+
+@deftypefun gsl_errhandler_t gsl_set_error_handler (gsl_errhandler_t @var{new_handler})
+
+This functions sets a new error handler, @var{new_handler}, for the GSL
+library routines. The previous handler is returned (so that you can
+restore it later). 
+
+@example
+old_handler = gsl_set_error_handler (&my_error_handler); 
+
+.....     /* code uses new handler */
+
+gsl_set_error_handler(old_handler) ; /* restore original handler */
+@end example
+@noindent
+To use the default behavior (@code{abort} on error) set the error
+handler to @code{NULL},
+
+@example
+old_handler = gsl_set_error_handler (NULL); 
+@end example
+@noindent
+To turn off error handling use,
+
+@example
+old_handler = gsl_set_error_handler (&gsl_no_error_handler);
+@end example
+@noindent
+The function @code{gsl_no_error_handler} is predefined by the library
+and is just an error handler which returns immediately without doing
+anything.
+@end deftypefun
+
+Here is a skeleton outline of a program which defines its own error
+handler.  Imagine that the program does interactive data analysis --
+there is a main loop which reads commands from the user and calls
+library routines with user-supplied arguments,
+
+@example
+#include <setjmp.h>
+#include <gsl_errno.h>
+
+jmp_buf main_loop;
+void my_error_handler (const char *reason, const char *file, int line);
+
+main ()
+@{
+   gsl_set_error_handler (&my_error_handler);
+
+   while (1) 
+     @{
+       .... /* read command from user */
+
+       if (setjmp (main_loop) == 0)
+         @{
+            .... /* call GSL routines requested by user */
+         @}
+       else 
+         @{
+            .... /* my_error_handler bailed out, GSL reported an error */
+         @}
+     @}
+@}
+
+void
+my_error_handler (const char *reason, const char *file, int line)
+@{
+    fprintf (stderr, "GSL error: %s\n", reason);
+    longjmp (main_loop);
+@}
+@end example
+@noindent
+Before entering the interactive loop the program uses
+@code{gsl_set_error_handler} to provide its own error handler
+@code{my_error_handler} for GSL error reports. After this point the
+function @code{my_error_handler} will be invoked whenever an error is
+reported by GSL. The new error handler prints the cause of the error
+(the string @code{reason}) and then does a non-local jump back to the
+main loop. This would allow the user to fix the command which
+caused the error and try again.
+
+@node Using GSL Error Reporting in your own functions
+@section Using GSL Error Reporting in your own functions
+@cindex error handling macros
+If you are writing numerical functions in program which also uses GSL code
+you may find it convenient to adopt the same error reporting conventions
+as in the library.
+
+To report an error you need to set the variable @code{gsl_errno} to the
+appropriate error code, call the function @code{gsl_error} with a string
+describing the error and then return a status code of @code{-1} or a
+special value, such as @code{NaN}. For convenience @file{gsl_errno.h}
+defines two macros to carry out these steps:
+
+@deffn {Macro} GSL_ERROR (@var{reason}, @var{errno})
+
+This macro reports an error using the GSL conventions and returns a
+status value of @code{-1}. It expands to the following code fragment,
+
+@example
+gsl_errno = errno ;
+gsl_error (reason, __FILE__, __LINE__) ;
+return -1 ;
+@end example
+@noindent
+The macro definition in @file{gsl_errno.h} actually wraps the code
+in a @code{do @{ ... @} while (0)} block to prevent possible
+parsing problems.
+@end deffn
+
+Here is an example of how the macro could be used to report that a
+routine did not achieve a requested tolerance. To report the error the
+routine needs to set the error code @code{gsl_errno} to the fictitious
+error code, @code{GSL_ETOL}, and return @code{-1}.
+
+@example
+if (residual > tolerance) 
+  @{
+    GSL_ERROR("failed to reach specified tolerance", GSL_ETOL) ;
+  @}
+@end example
+
+@deffn {Macro} GSL_ERROR_RETURN (@var{reason}, @var{errno}, @var{value})
+
+This macro is the same as @code{GSL_ERROR} but returns a user-defined
+status value of @var{value} instead of @code{-1}. It can be used for
+mathematical functions that return a floating point value instead of a
+status code.
+@end deffn
+
+Here is an example where a function needs to return a @code{NaN} because
+of a mathematical singularity,
+
+@example
+if (x == 0) 
+  @{
+    GSL_ERROR_RETURN("argument lies on singularity", GSL_ERANGE, NAN) ;
+  @}
+@end example
