@@ -117,4 +117,3 @@ Sat Mar 21 17:28:26 1998  Brian Gough  <bjg@vvv.lanl.gov>
 1998-01-27  Mark Galassi  <rosalia@cygnus.com>
 
 	* Makefile.am: fixed a typo: removed trailing \ at the end of this file.
-	
