@@ -40,3 +40,19 @@ gsl_multimin_test_gradient (const gsl_vector *g, double epsabs)
 
   return GSL_CONTINUE;
 }
+
+int
+gsl_multimin_test_size (const double size, double epsabs)
+{
+  if (epsabs < 0.0)
+    {
+      GSL_ERROR ("absolute tolerance is negative", GSL_EBADTOL);
+    }
+  
+  if (size < epsabs)
+    {
+      return GSL_SUCCESS;
+    }
+
+  return GSL_CONTINUE;
+}

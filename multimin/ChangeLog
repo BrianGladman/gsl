@@ -1,3 +1,8 @@
+Sun Sep 30 20:50:00 2002  Tuomo Keskitalo  <tkeskita@pt.hut.fi>
+
+	* Added Nelder-Mead Simplex optimization algorithm and 
+	fminimizer structure.
+
 Sun Feb 10 21:57:36 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* conjugate_pr.c (conjugate_pr_iterate): return error ENOPROG if

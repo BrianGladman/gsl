@@ -28,6 +28,10 @@ gsl_multimin_function_fdf rosenbrock =
  &rosenbrock_fdf,
  2, 0};
 
+gsl_multimin_function rosenbrock_fmin =
+{&rosenbrock_f,
+ 2, 0};
+
 void rosenbrock_initpt (gsl_vector * x)
 {
   gsl_vector_set (x, 0, -1.2);
@@ -73,6 +77,10 @@ gsl_multimin_function_fdf roth =
  &roth_fdf,
  2, 0};
 
+gsl_multimin_function roth_fmin =
+{&roth_f,
+ 2, 0};
+
 void roth_initpt (gsl_vector * x)
 {
   gsl_vector_set (x, 0, 4.5);
@@ -113,6 +121,10 @@ gsl_multimin_function_fdf wood =
 {&wood_f,
  &wood_df,
  &wood_fdf,
+ 4, 0};
+
+gsl_multimin_function wood_fmin =
+{&wood_f,
  4, 0};
 
 void

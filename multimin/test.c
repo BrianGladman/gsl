@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Modified by Tuomo Keskitalo to add Nelder Mead Simplex test suite */
+
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_test.h>
@@ -27,8 +29,11 @@
 #include "test_funcs.h"
 
 int
-test_fdf(const char * desc, gsl_multimin_function_fdf *f, initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
+test_fdf(const char * desc, gsl_multimin_function_fdf *f, 
+	 initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
 
+int
+test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt);
 
 int
 main (void)
@@ -53,6 +58,10 @@ main (void)
       test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T);
       T++;
     }
+
+  test_f("Roth", &roth_fmin, roth_initpt);
+  test_f("Wood", &wood_fmin, wood_initpt);
+  test_f("Rosenbrock", &rosenbrock_fmin, rosenbrock_initpt);
 
   T = fdfminimizers;
 
@@ -119,6 +128,64 @@ test_fdf(const char * desc,
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);
+
+  return status;
+}
+
+int
+test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
+{
+  /* currently this function tests only nmsimplex */
+
+  int status, i;
+  size_t iter = 0;
+  const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex;
+
+  gsl_vector *x = gsl_vector_alloc (f->n);
+
+  gsl_vector *step_size = gsl_vector_alloc (f->n);
+
+  gsl_multimin_fminimizer *s;
+
+  (*initpt) (x);
+
+  for (i = 0; i < f->n; i++) 
+    gsl_vector_set (step_size, i, 1);
+
+  s = gsl_multimin_fminimizer_alloc(T, f->n);
+
+  gsl_multimin_fminimizer_set (s, f, x, step_size);
+
+#ifdef DEBUG
+  printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); 
+#endif
+
+  do 
+    {
+      iter++;
+      status = gsl_multimin_fminimizer_iterate(s);
+
+#ifdef DEBUG
+      printf("%i: \n",iter);
+      printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); 
+      printf("f(x) %g\n", gsl_multimin_fminimizer_minimum (s));
+      printf("size: %g\n", gsl_multimin_fminimizer_size (s));
+      printf("\n");
+#endif
+
+      status = gsl_multimin_test_size (gsl_multimin_fminimizer_size (s),
+				       1e-3);
+    }
+  while (iter < 5000 && status == GSL_CONTINUE);
+
+  status |= (fabs(s->fval) > 1e-5);
+
+  gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
+	   gsl_multimin_fminimizer_name(s),desc, iter, s->fval);
+
+  gsl_multimin_fminimizer_free(s);
+  gsl_vector_free(x);
+  gsl_vector_free(step_size);
 
   return status;
 }

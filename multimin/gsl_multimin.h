@@ -17,6 +17,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Modified by Tuomo Keskitalo to include fminimizer and 
+   Nelder Mead related lines */
+
 #ifndef __GSL_MULTIMIN_H__
 #define __GSL_MULTIMIN_H__
 
@@ -72,6 +75,79 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 int gsl_multimin_diff (const gsl_multimin_function * f,
                        const gsl_vector * x, gsl_vector * g);
 
+/* minimization of non-differentiable functions */
+
+typedef struct 
+{
+  const char *name;
+  size_t size;
+  int (*alloc) (void *state, size_t n);
+  int (*set) (void *state, gsl_multimin_function * f,
+              const gsl_vector * x, 
+	      double * size,
+              const gsl_vector * step_size);
+  int (*iterate) (void *state, gsl_multimin_function * f, 
+                  gsl_vector * x, 
+		  double * size,
+		  double * fval);
+  void (*free) (void *state);
+}
+gsl_multimin_fminimizer_type;
+
+typedef struct 
+{
+  /* multi dimensional part */
+  const gsl_multimin_fminimizer_type *type;
+  gsl_multimin_function *f;
+
+  double fval;
+  gsl_vector * x;
+  
+  double size;
+
+  void *state;
+}
+gsl_multimin_fminimizer;
+
+gsl_multimin_fminimizer *
+gsl_multimin_fminimizer_alloc(const gsl_multimin_fminimizer_type *T,
+			      size_t n);
+
+int 
+gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * s,
+			     gsl_multimin_function * f,
+			     const gsl_vector * x,
+			     const gsl_vector * step_size);
+
+void
+gsl_multimin_fminimizer_free(gsl_multimin_fminimizer *s);
+
+const char * 
+gsl_multimin_fminimizer_name (const gsl_multimin_fminimizer * s);
+
+int
+gsl_multimin_fminimizer_iterate(gsl_multimin_fminimizer *s);
+
+gsl_vector * 
+gsl_multimin_fminimizer_x (const gsl_multimin_fminimizer * s);
+
+double 
+gsl_multimin_fminimizer_minimum (const gsl_multimin_fminimizer * s);
+
+double
+gsl_multimin_fminimizer_size (const gsl_multimin_fminimizer * s);
+
+extern const 
+gsl_multimin_fminimizer_type *gsl_multimin_fminimizer_nmsimplex;
+
+/* Convergence test functions */
+
+int
+gsl_multimin_test_gradient(const gsl_vector * g,double epsabs);
+
+int
+gsl_multimin_test_size(const double size ,double epsabs);
+
 /* minimisation of differentiable functions */
 
 typedef struct 
@@ -126,9 +202,6 @@ gsl_multimin_fdfminimizer_iterate(gsl_multimin_fdfminimizer *s);
 
 int
 gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
-
-int
-gsl_multimin_test_gradient(const gsl_vector * g,double epsabs);
 
 gsl_vector * 
 gsl_multimin_fdfminimizer_x (gsl_multimin_fdfminimizer * s);
