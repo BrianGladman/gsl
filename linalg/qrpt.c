@@ -43,7 +43,7 @@
 int
 gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
                          gsl_vector * rdiag,
-                         gsl_vector_int * permutation,
+                         gsl_permutation * permutation,
                          int *signum)
 {
   if (matrix == 0 || permutation == 0 || signum == 0)
@@ -80,12 +80,13 @@ gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
 
       *signum = 1;
 
+      gsl_permutation_init (permutation); /* set to identity */
+
       for (j = 0; j < N; j++)
 	{
 	  REAL norm = column_norm (matrix, 0, M, j);
 	  gsl_vector_set (rdiag, j, norm);
 	  wa[j] = norm;
-	  gsl_vector_int_set (permutation, j, j);
 	}
 
       for (j = 0; j < N; j++)
@@ -110,7 +111,7 @@ gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
 	  if (kmax != k)
 	    {
 	      gsl_matrix_swap_cols (matrix, j, kmax);
-	      gsl_vector_int_swap (permutation, j, kmax);
+	      gsl_permutation_swap (permutation, j, kmax);
 	      gsl_vector_set (rdiag, kmax, gsl_vector_get (rdiag, j));
 	      wa[kmax] = wa[j];
 	      (*signum) = -(*signum);
@@ -200,7 +201,7 @@ gsl_la_decomp_QRPT_impl (gsl_matrix * matrix,
 int
 gsl_la_solve_QRPT_impl (const gsl_matrix * qr_matrix,
                         const gsl_vector * rdiag,
-                        const gsl_vector_int * permutation,
+                        const gsl_permutation * permutation,
                         const gsl_vector * rhs,
                         gsl_vector * solution)
 {
@@ -242,7 +243,7 @@ gsl_la_solve_QRPT_impl (const gsl_matrix * qr_matrix,
 
 int
 gsl_la_qrsolve_QRPT_impl (const gsl_matrix * q, const gsl_matrix * r,
-                          const gsl_vector_int * permutation,
+                          const gsl_permutation * permutation,
                           const gsl_vector * rhs,
                           gsl_vector * solution)
 {
@@ -318,7 +319,7 @@ gsl_la_qrsolve_QRPT_impl (const gsl_matrix * q, const gsl_matrix * r,
 int
 gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
                          const gsl_vector * rdiag,
-                         const gsl_vector_int * permutation,
+                         const gsl_permutation * permutation,
                          gsl_vector * solution)
 {
   if (qr_matrix == 0 || permutation == 0 || solution == 0)
@@ -390,7 +391,7 @@ gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
 
 int
 gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
-                         const gsl_vector_int * permutation,
+                         const gsl_permutation * permutation,
                          gsl_vector * w, const gsl_vector * v)
 {
   if (q->size1 != q->size2 || r->size1 != r-> size2)
@@ -437,7 +438,7 @@ gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
       for (j = 0; j < N; j++)
         {
           double r0j = gsl_matrix_get (r, 0, j);
-          int perm_j = gsl_vector_int_get (permutation, j);
+          int perm_j = gsl_permutation_get (permutation, j);
           double vj = gsl_vector_get (v, perm_j);
           gsl_matrix_set (r, 0, j, r0j + w0 * vj);
         }

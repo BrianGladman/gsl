@@ -2,37 +2,21 @@ pkglib_LIBRARIES = libgsllinalg.a
 
 check_PROGRAMS = test_la
 
-pkginclude_HEADERS = \
-	gsl_linalg.h
+pkginclude_HEADERS = gsl_linalg.h
 
 noinst_HEADERS = tridiag.h
 
 
-INCLUDES = \
-	-I$(srcdir)/..		\
-	-I$(srcdir)/../err	\
-	-I$(srcdir)/../matrix	\
-	-I$(srcdir)/../vector   \
-	-I$(srcdir)/../block
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../permutation
 
 TESTS = test_la
 
-test_la_LDADD = libgsllinalg.a 		\
-	../sys/libgslsys.a		\
-	../err/libgsltest.a		\
-	../matrix/libgslmatrix.a	\
-	../vector/libgslvector.a	\
-	../block/libgslblock.a	        \
-	../err/libgslerr.a              \
-        ../utils/libutils.a
+test_la_LDADD = libgsllinalg.a ../sys/libgslsys.a ../err/libgsltest.a ../matrix/libgslmatrix.a ../vector/libgslvector.a ../permutation/libgslpermutation.a ../block/libgslblock.a ../err/libgslerr.a ../utils/libutils.a
 
 test_la_DEPENDENCIES = libgsllinalg.a
 test_la_SOURCES = test_la.c
 
-libgsllinalg_a_SOURCES = 	\
-	multiply.c		\
-	tridiag.c tridiag.h	\
-	lu.c hh.c qr.c qrpt.c svd.c
+libgsllinalg_a_SOURCES = multiply.c tridiag.c tridiag.h	lu.c hh.c qr.c qrpt.c svd.c
 
 noinst_HEADERS = norm.c permut.c givens.c
 

@@ -19,7 +19,7 @@ int solve_tridiag(
   );
 
 static
-int solve_cyctridiag(
+int solve_cyc_tridiag(
   const double diag[], size_t d_stride,
   const double offdiag[], size_t o_stride,
   const double b[], size_t b_stride,

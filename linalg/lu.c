@@ -21,7 +21,7 @@
 
 int
 gsl_la_decomp_LU_impl(gsl_matrix * matrix,
-                      gsl_vector_int * permutation,
+                      gsl_permutation * permutation,
 		      int * signum)
 {
   if(matrix == 0 || permutation == 0 || signum == 0) {
@@ -50,6 +50,7 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
     /* Prepare permutation and scaling information.
      */
     *signum = 1;
+
     for(i=0; i<N; i++) { 
       REAL max_row_element = 0.0;
 
@@ -106,12 +107,12 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
 
       /* Perform pivot if non-null. */
       if(j != i_pivot) {
-        gsl_matrix_swap_rows (matrix, i_pivot, j);
+        gsl_matrix_swap_rows (matrix, j, i_pivot);
         *signum = -(*signum);
         scale[i_pivot] = scale[j];
       }
 
-      gsl_vector_int_set(permutation, j, i_pivot); 
+      permutation->data[j] = i_pivot ;
 
       /* Trap apparent singularity. */
       if(gsl_matrix_get(matrix, j, j) == 0.0) {
@@ -137,7 +138,7 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
 
 int
 gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
-                     const gsl_vector_int * permutation,
+                     const gsl_permutation * permutation,
                      const gsl_vector     * rhs,
 		     gsl_vector           * solution)
 {
@@ -173,7 +174,7 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
      * and perform update.
      */
     for(k=0; k<N; k++) {
-      int perm_index_k = gsl_vector_int_get(permutation, k);
+      int perm_index_k = gsl_permutation_get(permutation, k);
       REAL sum = gsl_vector_get(solution, perm_index_k);
       gsl_vector_set(solution, perm_index_k, gsl_vector_get(solution, k));
       if(kk >= 0) {
@@ -215,7 +216,7 @@ gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
 
 int
 gsl_la_invert_LU_impl (const gsl_matrix     * lu_matrix,
-                       const gsl_vector_int * permutation,
+                       const gsl_permutation * permutation,
                        gsl_matrix           * inverse)
 {
   size_t i,j, n = lu_matrix->size1;

@@ -192,7 +192,7 @@ test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   int signum;
   size_t i, dim = m->size1;
 
-  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
   gsl_vector * rhs = gsl_vector_alloc(dim);
   gsl_matrix * lu  = gsl_matrix_alloc(dim,dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
@@ -210,7 +210,7 @@ test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector_free(solution);
   gsl_matrix_free(lu);
   gsl_vector_free(rhs);
-  gsl_vector_int_free(perm);
+  gsl_permutation_free(perm);
 
   return s;
 }
@@ -333,7 +333,7 @@ test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   int signum;
   size_t i, dim = m->size1;
 
-  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
   gsl_vector * rhs = gsl_vector_alloc(dim);
   gsl_matrix * qr  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
@@ -353,7 +353,7 @@ test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector_free(d);
   gsl_matrix_free(qr);
   gsl_vector_free(rhs);
-  gsl_vector_int_free(perm);
+  gsl_permutation_free(perm);
 
   return s;
 }
@@ -544,7 +544,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   int s = 0;
   size_t i, dim = m->size1;
 
-  gsl_vector_int * perm = gsl_vector_int_alloc(dim);
+  gsl_permutation * perm = gsl_permutation_alloc(dim);
   gsl_matrix * hh  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * solution = gsl_vector_alloc(dim);
@@ -561,7 +561,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector_free(solution);
   gsl_vector_free(d);
   gsl_matrix_free(hh);
-  gsl_vector_int_free(perm);
+  gsl_permutation_free(perm);
 
   return s;
 }

@@ -13,11 +13,9 @@
 
 */
 
-static int permute (const gsl_vector_int * perm, gsl_vector * v);
-static int invpermute (const gsl_vector_int * perm, gsl_vector * v);
-
+#if 0  /* This function is not needed yet */
 static int
-permute (const gsl_vector_int * perm, gsl_vector * v)
+permute (const gsl_permutation * perm, gsl_vector * v)
 {
   int i, k, pk;
   double r1, t;
@@ -26,17 +24,17 @@ permute (const gsl_vector_int * perm, gsl_vector * v)
 
   for (i = 0; i < N; i++)
     {
-      k = gsl_vector_int_get(perm,i);
+      k = gsl_permutation_get(perm,i);
 
       while (k > i) 
-        k = gsl_vector_int_get(perm,k);
+        k = gsl_permutation_get(perm,k);
 
       if (k < i)
         continue ;
       
       /* Now have k == i, i.e the least in its cycle */
 
-      pk = gsl_vector_int_get(perm,k);
+      pk = gsl_permutation_get(perm,k);
 
       if (pk == i)
         continue ;
@@ -50,7 +48,7 @@ permute (const gsl_vector_int * perm, gsl_vector * v)
           r1 = gsl_vector_get(v,pk);
           gsl_vector_set(v,k,r1);
           k = pk;
-          pk = gsl_vector_int_get(perm,k);
+          pk = gsl_permutation_get(perm,k);
         };
 
       gsl_vector_set(v,k,t);
@@ -58,9 +56,10 @@ permute (const gsl_vector_int * perm, gsl_vector * v)
 
   return GSL_SUCCESS;
 }
+#endif 
 
 static int
-invpermute (const gsl_vector_int * perm, gsl_vector * v)
+invpermute (const gsl_permutation * perm, gsl_vector * v)
 {
   int i, k, pk;
   double r1, t;
@@ -69,17 +68,17 @@ invpermute (const gsl_vector_int * perm, gsl_vector * v)
 
   for (i = 0; i < N; i++)
     {
-      k = gsl_vector_int_get(perm,i);
+      k = gsl_permutation_get(perm,i);
 
       while (k > i) 
-        k = gsl_vector_int_get(perm,k);
+        k = gsl_permutation_get(perm,k);
 
       if (k < i)
         continue ;
       
       /* Now have k == i, i.e the least in its cycle */
 
-      pk = gsl_vector_int_get(perm,k);
+      pk = gsl_permutation_get(perm,k);
 
       if (pk == i)
         continue ;
@@ -93,7 +92,7 @@ invpermute (const gsl_vector_int * perm, gsl_vector * v)
           r1 = gsl_vector_get(v,pk);
           gsl_vector_set(v,pk,t);
           k = pk;
-          pk = gsl_vector_int_get(perm,k);
+          pk = gsl_permutation_get(perm,k);
           t = r1;
         };
 

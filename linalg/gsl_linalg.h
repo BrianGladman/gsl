@@ -4,6 +4,7 @@
 #ifndef GSL_LINALG_H
 #define GSL_LINALG_H
 
+#include <gsl_permutation.h>
 #include <gsl_vector.h>
 #include <gsl_matrix.h>
 
@@ -53,7 +54,7 @@ gsl_la_decomp_SV_impl(gsl_matrix * A,
  */
 int
 gsl_la_decomp_LU_impl(gsl_matrix * matrix,
-                      gsl_vector_int * permutation,
+                      gsl_permutation * permutation,
                       int * signum);
 
 
@@ -63,12 +64,12 @@ gsl_la_decomp_LU_impl(gsl_matrix * matrix,
  */
 int
 gsl_la_solve_LU_impl(const gsl_matrix     * lu_matrix,
-                     const gsl_vector_int * permutation,
+                     const gsl_permutation * permutation,
                      const gsl_vector     * rhs,
                      gsl_vector           * solution);
 
 int gsl_la_invert_LU_impl (const gsl_matrix     * lu_matrix,
-                           const gsl_vector_int * permutation,
+                           const gsl_permutation * permutation,
                            gsl_matrix           * inverse);
 
 double gsl_la_det_LU (gsl_matrix * lu_matrix, int signum);
@@ -119,31 +120,31 @@ gsl_la_Rsolve_impl (const gsl_matrix * r, gsl_vector * solution);
 int
 gsl_la_decomp_QRPT_impl(gsl_matrix * matrix, 
                         gsl_vector * rdiag,
-                        gsl_vector_int * permutation, 
+                        gsl_permutation * permutation, 
                         int * signum);
 
 int
 gsl_la_solve_QRPT_impl(const gsl_matrix     * qr_matrix,
                        const gsl_vector     * rdiag,
-                       const gsl_vector_int * permutation,
+                       const gsl_permutation * permutation,
                        const gsl_vector     * rhs,
                        gsl_vector           * solution);
 
 int
 gsl_la_qrsolve_QRPT_impl (const gsl_matrix * q, const gsl_matrix * r,
-                          const gsl_vector_int * permutation,
+                          const gsl_permutation * permutation,
                           const gsl_vector * rhs,
                           gsl_vector * solution);
 
 int
 gsl_la_Rsolve_QRPT_impl (const gsl_matrix * qr_matrix,
                        const gsl_vector * rdiag,
-                       const gsl_vector_int * permutation,
+                       const gsl_permutation * permutation,
                        gsl_vector * solution);
 
 int 
 gsl_la_update_QRPT_impl (gsl_matrix * q, gsl_matrix * r,
-                         const gsl_vector_int * permutation,
+                         const gsl_permutation * permutation,
                          gsl_vector * u, const gsl_vector * v);
 
 /* Linear Solve Using Householder Transformations
