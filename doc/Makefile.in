@@ -45,6 +45,8 @@ CC = @CC@
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
 gsl_ref_TEXINFOS = fft.texi random.texi
+
+noinst_DATA = siman-test.eps
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 MAKEINFO = makeinfo
@@ -52,6 +54,8 @@ TEXI2DVI = texi2dvi
 INFO_DEPS = gsl-ref.info
 DVIS = gsl-ref.dvi
 TEXINFOS = gsl-ref.texi
+DATA =  $(noinst_DATA)
+
 DIST_COMMON =  $(gsl_ref_TEXINFOS) Makefile.am Makefile.in mdate-sh \
 stamp-vti texinfo.tex version-ref.texi
 
@@ -196,7 +200,7 @@ install: install-exec install-data all
 
 uninstall: uninstall-info
 
-all: $(INFO_DEPS) Makefile
+all: $(INFO_DEPS) $(DATA) Makefile
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install

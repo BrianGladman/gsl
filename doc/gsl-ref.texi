@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
 
 @tex
 \input epsf
-\centerline{\epsfysize=5cm\epsfbox{siman-test.eps}}
+\centerline{\epsfxsize=5in\epsfbox{siman-test.eps}}
 \nobreak
 %\centerline{\captfont Fig.~2.1: A 0--simplex (point), 1--simplex
 %(segment), 2--simplex (triangle),}
