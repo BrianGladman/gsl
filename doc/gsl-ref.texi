@@ -23,8 +23,8 @@
 @end tex
 @c @cropmarks
 @c @afourpaper
-@paperbackbook
-@set publish
+@c @paperbackbook
+@c @set publish
 @raggedbottom
 @c %**start of header
 @setfilename gsl-ref.info

@@ -459,7 +459,10 @@ Note that the algorithm gradually increases the step size as it
 successfully moves downhill, as can be seen by plotting the successive
 points.
 
+@iftex
+@sp 1
 @center @image{multimin,4in}
+@end iftex
 @noindent
 The conjugate gradient algorithm finds the minimum on its second
 direction because the function is purely quadratic. Additional
