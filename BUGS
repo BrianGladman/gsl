@@ -2,7 +2,7 @@ This file is the GSL bug tracking system.  The CVS version of this
 file should be kept up-to-date.
 
 ----------------------------------------------------------------------
-BUG#1 -- STATUS: reproducible, not yet fixed
+BUG#1 -- gsl_sf_hyperg_2F1_e fails for some arguments STATUS: open
 
 From: keith.briggs@bt.com
 To: gsl-discuss@sources.redhat.com
@@ -36,7 +36,7 @@ differently.  There is a special formula given for it in Abramowitz &
 Stegun 15.3.10
 
 ----------------------------------------------------------------------
-BUG#3 -- STATUS: reproducible, not yet fixed
+BUG#3 -- gsl_sf_bessel_Jn fails for large argument STATUS: open
 
 From: Rodolphe Conan <rconan@eso.org>
 To: gsl list <gsl-discuss@sources.redhat.com>
@@ -52,7 +52,7 @@ Rodolphe Conan writes:
 One of the continued fraction computations is breaking down
 
 ----------------------------------------------------------------------
-BUG#4 -- STATUS: reproducible, not yet fixed
+BUG#4 -- gsl_linalg_solve_symm_cyc_tridiag() crashes STATUS: open
 
 From: David Necas (Yeti) <yeti@physics.muni.cz>
 To: Brian Gough <bjg@network-theory.co.uk>
@@ -70,14 +70,14 @@ only bunches of NaN's). They should return some error code instead.
 
 ----------------------------------------------------------------------
 
-BUG#5 -- STATUS: reproducible, not yet fixed
+BUG#5 -- broken error terms for implicit odes STATUS: open
 
 The error terms for the implicit ode integrators are broken.  They
 have 'FIXME' entries still in the code.  Only the bsimp error term is
 implemented.
 
 ----------------------------------------------------------------------
-BUG#6 -- STATUS: open, not yet fixed
+BUG#6 -- gsl_isnan, isinf on Compaq Unix STATUS: open
 
 From: Slaven Peles <peles@cns.physics.gatech.edu>
 To: gsl-discuss@sources.redhat.com
@@ -101,7 +101,7 @@ FAIL: gsl_finite(nan) (1 observed vs 0 expected)
 
 ----------------------------------------------------------------------
 
-BUG#7 -- STATUS: open, not yet fixed
+BUG#7 -- gsl_sf_coupling_3j loses accuracy for large arguments STATUS: open
 
 From: Filip Floegel <floegel@itp.uni-hannover.de>
 Subject: gsl_sf_coupling_3j
@@ -125,5 +125,114 @@ mathematica gives me:
 
 my guess is that gamma.c which is used for calculating fractional
 numbers probably diverges for large integers. 
+
+----------------------------------------------------------------------
+
+BUG#8 -- inexact coefficients in rk8pd.c STATUS: open
+
+From: Luc Maisonobe <Luc.Maisonobe@c-s.fr>
+To: gsl-discuss@sources.redhat.com
+Subject: further thoughts about Dormand-Prince 8 (RK8PD)
+Date: Wed, 14 Aug 2002 10:50:49 +0200
+
+I was looking for some references concerning Runge-Kutta methods when I
+noticed GSL had an high order one. I also found a question in the list
+archive (April 2002) about the references of this method which is
+implemented in rk8pd.c. It was said the coefficients were taken from the
+"Numerical Algorithms with C" book by Engeln-Mullges and Uhlig.
+
+I have checked the coefficients somewhat with a little java tool I have
+developped (see http://www.spaceroots.org/archive.htm#RKCheckSoftware)
+and found they were not exact. I think this method is really the method
+that is already in rksuite (http://www.netlib.org/ode/rksuite/) were the
+coefficients are given as real values with 30 decimal digits. The
+coefficients have probably been approximated as fractions later on.
+However, these approximations are not perfect, they are good only for
+the first 16 or 18 digits depending on the coefficient.
+
+This has no consequence for practical purposes since they are stored in
+double variables, but give a false impression of beeing exact
+expressions. Well, there are even some coefficients that should really
+be rational numbers but for which wrong numerators and denominators are
+given. As an example, the first and fourth elements of the b7 array are
+given as 29443841.0 / 614563906.0 and 77736538.0 / 692538347, hence the
+sum off all elements of the b7 array (which should theoretically be
+equal to ah[5]) only approximate this. For these two coefficients, this
+could have been avoided using  215595617.0 / 4500000000.0 and
+202047683.0 / 1800000000.0, which also looks more coherent with the
+other coefficients.
+
+The rksuite comments say this method is described in this paper :
+
+   High Order Embedded Runge-Kutta Formulae
+   P.J. Prince and J.R. Dormand
+   J. Comp. Appl. Math.,7, pp. 67-75, 1981
+
+It also says the method is an 8(7) method (i.e. the coefficients set
+used to advance integration is order 8 and error estimation is order 7).
+If I use my tool to check the order, I am forced to check the order
+conditions numerically with a tolerance since I do not have an exact
+expression of the coefficients. Since even if some conditions are not
+mathematically met, the residuals are small and could be below the
+tolerance. There are tolerance values for which such numerical test
+dedeuce the method is of order 9, as is said in GSL. However, I am not
+convinced, there are to few parameters for the large number of order
+conditions needed at order 9.
+
+I would suggest to correct the coefficients in rk8pd.c (just put the
+literal constants of rksuite) and to add the reference to the article.
+
+----------------------------------------------------------------------
+
+BUG#9 -- problem with multimin example STATUS: open
+
+From: Thomas Kunert <kunert@physik.tu-dresden.de>
+To: gsl-discuss@sources.redhat.com
+Subject: Re: multimin example
+
+ The example for multimin doesn't give me the expected output but a much
+ worse result. Any idea about the reason? I have gsl 1.2 on Mandrake 8.2.
+
+     1 4.99629 6.99072  687.84780
+     2 4.98886 6.97215  683.55456
+     3 4.97400 6.93501  675.01278
+     4 4.94429 6.86073  658.10798
+
+It's true that there is a problem there, but I don't know why.
+
+----------------------------------------------------------------------
+BUG#10 -- gsl_sf_fermi_dirac_int error estimates STATUS: open
+
+Some of the error estimates on gsl_sf_fermi_dirac_int are much too
+large.  The value itself is pretty accurate.
+
+In the test_sf_result you need to work in something like
+
+  if(r.err > 1.0e5 * (fabs(r.val - val) + GSL_DBL_EPSILON * fabs(val)))
+        s |= TEST_SF_INCONS;   /* error estimate too large */
+
+in addition to the existing
+
+   if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
+
+to catch those.  
+
+#include<stdio.h>
+#include<gsl/gsl_errno.h>
+#include<gsl/gsl_sf.h>
+
+int main() {
+  gsl_sf_result r;
+  int status;
+
+  status = gsl_sf_fermi_dirac_int_e (9, 500.0, &r);
+  printf("FD_9(500) = %.18e +- %.18e\n", r.val, r.err);
+}
+
+result,
+
+FD_9(500) = 2.692738498426942915e+20 +- 2.629627439870118259e+47
+
+Exact     = 2.692738498...e+20
 
 ----------------------------------------------------------------------
