@@ -88,11 +88,11 @@ inline
 static
 double riemann_zeta_prod(double s)
 {
-  double f2 = 1. - pow(2.,-s);
-  double f3 = 1. - pow(3.,-s);
-  double f5 = 1. - pow(5.,-s);
-  double f7 = 1. - pow(7.,-s);
-  return 1./(f2*f3*f5*f7);
+  double f2 = 1.0 - pow(2.0,-s);
+  double f3 = 1.0 - pow(3.0,-s);
+  double f5 = 1.0 - pow(5.0,-s);
+  double f7 = 1.0 - pow(7.0,-s);
+  return 1.0/(f2*f3*f5*f7);
 }
 
 /* assumes s >= 0 and s != 1.0 */
@@ -103,11 +103,11 @@ static
 double riemann_zeta_sgt0(double s)
 {
   if(s < 1.0) {
-    return gsl_sf_cheb_eval(&zeta_xlt1_cs, 2.0*s - 1.0) / (s - 1.);
+    return gsl_sf_cheb_eval(&zeta_xlt1_cs, 2.0*s - 1.0) / (s - 1.0);
   }
   else if(s <= 20.0) {
     double x = (2.*s - 21.)/19.;
-    return gsl_sf_cheb_eval(&zeta_xgt1_cs, x) / (s - 1.);
+    return gsl_sf_cheb_eval(&zeta_xgt1_cs, x) / (s - 1.0);
   }
   else {
     return riemann_zeta_prod(s);
@@ -493,7 +493,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     const double pmax  = pow(kmax + q, -s);
     double scp = s;
     double pcp = pmax / (kmax + q);
-    double ans = pmax*((kmax+q)/(s-1) + 0.5);
+    double ans = pmax*((kmax+q)/(s-1.0) + 0.5);
     
     for(k=0; k<kmax; k++) {
       ans += pow(k + q, -s);
@@ -511,6 +511,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     return GSL_SUCCESS;
   }
 }
+
 
 /* checked OK [GJ] Tue May  5 20:38:59 MDT 1998 */
 int gsl_sf_zeta_impl(const double s, double * result)

@@ -263,6 +263,7 @@ gsl_sf_pochrel_impl(const double a, const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_lnpoch_e(const double a, const double x, double * result)
@@ -306,6 +307,8 @@ int gsl_sf_pochrel_e(const double a, const double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
 
 double gsl_sf_lnpoch(const double a, const double x)
 {

@@ -5,8 +5,8 @@
 #include <gsl_errno.h>
 #include "gsl_sf_ellint.h"
 
-#define gslMIN(x,y)  ((x) < (y) ? (x) : (y))
-#define gslMAX(x,y)  ((x) > (y) ? (x) : (y))
+#define locMIN(x,y)  ((x) < (y) ? (x) : (y))
+#define locMAX(x,y)  ((x) > (y) ? (x) : (y))
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
@@ -14,20 +14,20 @@
 #ifdef HAVE_INLINE
 inline
 #endif
-static double gslMAX3(double x, double y, double z)
+static double locMAX3(double x, double y, double z)
 {
-  double xy = gslMAX(x, y);
-  return gslMAX(xy, z);
+  double xy = locMAX(x, y);
+  return locMAX(xy, z);
 }
 
 #ifdef HAVE_INLINE
 inline
 #endif
-static double gslMAX4(double x, double y, double z, double w)
+static double locMAX4(double x, double y, double z, double w)
 {
-  double xy  = gslMAX(x,  y);
-  double xyz = gslMAX(xy, z);
-  return gslMAX(xyz, w);
+  double xy  = locMAX(x,  y);
+  double xyz = locMAX(xy, z);
+  return locMAX(xyz, w);
 }
 
 
@@ -99,7 +99,7 @@ int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(gslMAX(x, y) < uplim) { 
+  else if(locMAX(x, y) < uplim) { 
     const double c1 = 1.0 / 7.0;
     const double c2 = 9.0 / 22.0;
     double xn = x;
@@ -178,10 +178,10 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
     *result = 0.0;
     return GSL_EBADTOL;
   }
-  else if(gslMIN(x,y) < 0.0 || gslMIN(x+y,z) < lolim) {
+  else if(locMIN(x,y) < 0.0 || locMIN(x+y,z) < lolim) {
     return GSL_EDOM;
   }
-  else if(gslMAX3(x,y,z) < uplim) {
+  else if(locMAX3(x,y,z) < uplim) {
     const double c1 = 3.0 / 14.0;
     const double c2 = 1.0 /  6.0;
     const double c3 = 9.0 / 22.0;
@@ -200,7 +200,7 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
       xndev = (mu - xn) / mu;
       yndev = (mu - yn) / mu;
       zndev = (mu - zn) / mu;
-      epslon = gslMAX3(fabs(xndev), fabs(yndev), fabs(zndev));
+      epslon = locMAX3(fabs(xndev), fabs(yndev), fabs(zndev));
       if (epslon < errtol) break;
       xnroot = sqrt(xn);
       ynroot = sqrt(yn);
@@ -286,7 +286,7 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(gslMAX3(x,y,z) < uplim) { 
+  else if(locMAX3(x,y,z) < uplim) { 
     const double c1 = 1.0 / 24.0;
     const double c2 = 3.0 / 44.0;
     const double c3 = 1.0 / 14.0;
@@ -301,7 +301,7 @@ int gsl_sf_ellint_RF_impl(double x, double y, double z, double errtol, double * 
       xndev = 2.0 - (mu + xn) / mu;
       yndev = 2.0 - (mu + yn) / mu;
       zndev = 2.0 - (mu + zn) / mu;
-      epslon = gslMAX3(fabs(xndev), fabs(yndev), fabs(zndev));
+      epslon = locMAX3(fabs(xndev), fabs(yndev), fabs(zndev));
       if (epslon < errtol) break;
       xnroot = sqrt(xn);
       ynroot = sqrt(yn);
@@ -393,7 +393,7 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(gslMAX4(x,y,z,p) < uplim) {
+  else if(locMAX4(x,y,z,p) < uplim) {
     const double c1 = 3.0 / 14.0;
     const double c2 = 1.0 /  3.0;
     const double c3 = 3.0 / 22.0;
@@ -418,7 +418,7 @@ int gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, double errtol,
       yndev = (mu - yn) / mu;
       zndev = (mu - zn) / mu;
       pndev = (mu - pn) / mu;
-      epslon = gslMAX4(fabs(xndev), fabs(yndev), fabs(zndev), fabs(pndev));
+      epslon = locMAX4(fabs(xndev), fabs(yndev), fabs(zndev), fabs(pndev));
       if(epslon < errtol) break;
       xnroot = sqrt(xn);
       ynroot = sqrt(yn);

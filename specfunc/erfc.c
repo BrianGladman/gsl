@@ -1,17 +1,19 @@
 /* Author:  J. Theiler (modifications by G. Jungman)
  * RCS:     $Id$
  */
-/**
- *  erfc() is the complimentary error function.
- *  This algorithm is from:
- *    Hart et al, Computer Approximations, John Wiley and Sons, New York (1968)
- **/
+/*
+ * See Hart et al, Computer Approximations, John Wiley and Sons, New York (1968)
+ * (This applies only to the erfc8 stuff, which is the part
+ *  of the original code that survives. I have replaced much of
+ *  the other stuff with Chebyshev fits. These are simpler and
+ *  more precise than the original approximations. [GJ])
+ */
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_erf.h"
 
-#define LogRootPi_        0.57236494292470008706
+#define LogRootPi_  0.57236494292470008706
 
 
 static double erfc8_sum(double x)

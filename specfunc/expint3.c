@@ -7,7 +7,7 @@
 #include "gsl_sf_expint.h"
 
 
-static double aexp3_data[24] = {
+static double expint3_data[24] = {
   1.269198414221126014,
  -0.248846446384140982,
   0.80526220717231041e-01,
@@ -33,15 +33,15 @@ static double aexp3_data[24] = {
   0.29e-17,
  -0.2e-18
 };
-static struct gsl_sf_cheb_series aexp3_cs = {
-  aexp3_data,
+static struct gsl_sf_cheb_series expint3_cs = {
+  expint3_data,
   23,
   -1.0, 1.0,
   (double *)0,
   (double *)0
 };
 
-static double aexp3a_data[23] = {
+static double expint3a_data[23] = {
    1.9270464955068273729,
   -0.349293565204813805e-01,
    0.14503383718983009e-02,
@@ -66,8 +66,8 @@ static double aexp3a_data[23] = {
   -0.5e-18,
    0.1e-18
 };
-static struct gsl_sf_cheb_series aexp3a_cs = {
-  aexp3a_data,
+static struct gsl_sf_cheb_series expint3a_cs = {
+  expint3a_data,
   22,
   -1.0, 1.0,
   (double *)0,
@@ -91,13 +91,13 @@ int gsl_sf_expint_3_impl(const double x, double * result)
   }
   else if(x <= 2.0) {
     const double t = x*x*x/4.0 - 1.0;
-    const double c = gsl_sf_cheb_eval(&aexp3_cs, t);
+    const double c = gsl_sf_cheb_eval(&expint3_cs, t);
     *result = x * c;
     return GSL_SUCCESS;
   }
   else if(x < pow(-GSL_LOG_MACH_EPS, 1.0/3.0)) {
     const double t = 16.0/(x*x*x) - 1.0;
-    const double c = gsl_sf_cheb_eval(&aexp3a_cs, t);
+    const double c = gsl_sf_cheb_eval(&expint3a_cs, t);
     *result = val_infinity - c * exp(-x*x*x)/(3.0*x*x);
     return GSL_SUCCESS;
   }

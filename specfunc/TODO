@@ -39,142 +39,143 @@ should be finished before a 1.0 level release.
 * Final Seal of Approval
 
   - airy.c
-    OK: Sun Nov  8 12:25:10 MST 1998 [GJ]
+    OK: Sun Nov  8 12:25:10 MST 1998 [GJ]  *
 
   - airy_der.c
-    OK: Sun Nov  8 12:25:56 MST 1998 [GJ]
+    OK: Sun Nov  8 12:25:56 MST 1998 [GJ]  *
 
   - atanint.c
-    OK: Sun Nov  8 12:27:01 MST 1998 [GJ]
+    OK: Sun Nov  8 12:27:01 MST 1998 [GJ]  *
 
   - bessel.c
-    OK: Wed Nov 11 14:21:22 MST 1998 [GJ]
+    OK: Wed Nov 11 14:21:22 MST 1998 [GJ]  *
 
   - bessel_I0.c
-    OK: Sun Nov  8 12:27:59 MST 1998 [GJ]
+    OK: Sun Nov  8 12:27:59 MST 1998 [GJ]  *
 
   - bessel_I1.c
-    OK: Sun Nov  8 12:28:44 MST 1998 [GJ]
+    OK: Sun Nov  8 12:28:44 MST 1998 [GJ]  *
 
   - bessel_In.c
-    OK: Sun Nov  8 19:32:34 MST 1998 [GJ]
+    OK: Sun Nov  8 19:32:34 MST 1998 [GJ]  *
 
   - bessel_Inu.c
-    OK: Sun Nov  8 20:00:24 MST 1998 [GJ]
+    OK: Sun Nov  8 20:00:24 MST 1998 [GJ]  *
 
   - bessel_J0.c
-    OK: Sun Nov  8 12:29:34 MST 1998 [GJ]
+    OK: Sun Nov  8 12:29:34 MST 1998 [GJ]  *
     
   - bessel_J1.c
-    OK: Sun Nov  8 12:30:34 MST 1998 [GJ]
+    OK: Sun Nov  8 12:30:34 MST 1998 [GJ]  *
     
   - bessel_Jn.c
-    OK: Wed Nov 11 14:09:10 MST 1998 [GJ]
+    OK: Wed Nov 11 14:09:10 MST 1998 [GJ]  *
 
   - bessel_Jnu.c
-    OK: Wed Nov 11 14:25:09 MST 1998 [GJ]
+    OK: Wed Nov 11 14:25:09 MST 1998 [GJ]  *
 
   - bessel_K0.c
-    OK: Sun Nov  8 12:39:07 MST 1998 [GJ]
+    OK: Sun Nov  8 12:39:07 MST 1998 [GJ]  *
 
   - bessel_K1.c
-    OK: Sun Nov  8 12:45:12 MST 1998 [GJ]
+    OK: Sun Nov  8 12:45:12 MST 1998 [GJ]  *
 
   - bessel_Kn.c
-    OK: Sun Nov  8 19:39:10 MST 1998 [GJ]
+    OK: Sun Nov  8 19:39:10 MST 1998 [GJ]  *
 
   - bessel_Knu.c
-    OK: Wed Nov 11 14:20:41 MST 1998 [GJ]
+    OK: Wed Nov 11 14:20:41 MST 1998 [GJ]  *
 
   - bessel_Y0.c
-    OK: Sun Nov  8 12:47:15 MST 1998 [GJ]
+    OK: Sun Nov  8 12:47:15 MST 1998 [GJ]  *
     
   - bessel_Y1.c
-    OK: Sun Nov  8 12:49:37 MST 1998 [GJ]
+    OK: Sun Nov  8 12:49:37 MST 1998 [GJ]  *
     
   - bessel_Yn.c
-    OK: Sun Nov  8 19:40:38 MST 1998 [GJ]
+    OK: Sun Nov  8 19:40:38 MST 1998 [GJ]  *
 
   - bessel_Ynu.c
-    OK: Sun Nov  8 20:01:30 MST 1998 [GJ]
+    OK: Sun Nov  8 20:01:30 MST 1998 [GJ]  *
 
   - bessel_amp_phase.c
-    OK: Wed Nov 11 14:08:11 MST 1998 [GJ]
+    OK: Wed Nov 11 14:08:11 MST 1998 [GJ]  *
 
   - bessel_i.c
-    OK: Sun Nov  8 20:05:00 MST 1998 [GJ]
+    OK: Sun Nov  8 20:05:00 MST 1998 [GJ]  *
 
   - bessel_j.c
-    OK: Wed Nov 11 14:27:52 MST 1998 [GJ]
+    OK: Wed Nov 11 14:27:52 MST 1998 [GJ]  *
 
   - bessel_k.c
-    OK: Sun Nov  8 20:05:45 MST 1998 [GJ]
+    OK: Sun Nov  8 20:05:45 MST 1998 [GJ]  *
 
   - bessel_olver.c
-    OK: Wed Nov 11 14:03:32 MST 1998 [GJ]
+    OK: Wed Nov 11 14:03:32 MST 1998 [GJ]  *
 
   - bessel_temme.c
-    OK: Wed Nov 11 12:59:21 MST 1998 [GJ]
+    OK: Wed Nov 11 12:59:21 MST 1998 [GJ]  *
 
   - bessel_y.c
-    OK: Sun Nov  8 20:06:44 MST 1998 [GJ]
+    OK: Sun Nov  8 20:06:44 MST 1998 [GJ]  *
 
   - beta.c
-    OK: Sun Nov  8 19:58:07 MST 1998 [GJ]
+    OK: Sun Nov  8 19:58:07 MST 1998 [GJ]  *
 
   - chebyshev.c
-    OK: Sun Nov  8 19:42:02 MST 1998 [GJ]
+    OK: Sun Nov  8 19:42:02 MST 1998 [GJ]  *
 
   - clausen.c
-    OK: Sun Nov  8 16:41:37 MST 1998 [GJ]
+    OK: Sun Nov  8 16:41:37 MST 1998 [GJ]  *
 
   - coulomb.c
 
   - coulomb_bound.c
-    OK: Sun Nov  8 19:17:28 MST 1998 [GJ]
+    OK: Sun Nov  8 19:17:28 MST 1998 [GJ]  *
 
   - coupling.c
     OK: Sun Nov  8 16:44:09 MST 1998 [GJ]
 
   - dawson.c
-    OK: Sun Nov  8 15:05:33 MST 1998 [GJ]
+    OK: Sun Nov  8 15:05:33 MST 1998 [GJ]  *
 
   - debye.c
-    OK: Sun Nov  8 17:06:19 MST 1998 [GJ]
+    OK: Sun Nov  8 17:06:19 MST 1998 [GJ]  *
 
   - dilog.c
-    
+    OK: Thu Nov 12 17:24:26 MST 1998 [GJ]  *
+
   - elementary.c
-    OK: Sun Nov  8 15:08:53 MST 1998 [GJ]
+    OK: Sun Nov  8 15:08:53 MST 1998 [GJ]  *
 
   - ellint.c
     OK: Sun Nov  8 19:19:49 MST 1998 [GJ]
 
   - elljac.c
-    OK: Sun Nov  8 19:21:05 MST 1998 [GJ]
+    OK: Sun Nov  8 19:21:05 MST 1998 [GJ]  *
 
   - erfc.c
-    OK: Sun Nov  8 16:38:25 MST 1998 [GJ]
+    OK: Sun Nov  8 16:38:25 MST 1998 [GJ]  *
 
   - exp.c
-    OK: Sun Nov  8 14:54:38 MST 1998 [GJ]
+    OK: Sun Nov  8 14:54:38 MST 1998 [GJ]  *
 
   - expint.c
-    OK: Sun Nov  8 15:03:24 MST 1998 [GJ]
+    OK: Sun Nov  8 15:03:24 MST 1998 [GJ]  *
 
   - expint3.c
-    OK: Sun Nov  8 14:58:06 MST 1998 [GJ]
+    OK: Sun Nov  8 14:58:06 MST 1998 [GJ]  *
 
   - fermi_dirac.c
-    
+
   - gamma.c
-    OK: Sun Nov  8 19:43:43 MST 1998 [GJ]
+    OK: Sun Nov  8 19:43:43 MST 1998 [GJ]  *
 
   - gamma_inc.c
-    OK: Sun Nov  8 19:27:28 MST 1998 [GJ]
+    OK: Sun Nov  8 19:27:28 MST 1998 [GJ]  *
 
   - gegenbauer.c
-    OK: Sun Nov  8 19:26:31 MST 1998 [GJ]
+    OK: Sun Nov  8 19:26:31 MST 1998 [GJ]  *
 
   - hyperg.c
 
@@ -189,38 +190,38 @@ should be finished before a 1.0 level release.
   - hyperg_U.c
     
   - laguerre.c
-    OK: Sun Nov  8 19:29:02 MST 1998 [GJ]
+    OK: Sun Nov  8 19:29:02 MST 1998 [GJ]  *
 
   - legendre_H3d.c
-    OK: Sun Nov  8 14:38:53 MST 1998 [GJ]
+    OK: Sun Nov  8 14:38:53 MST 1998 [GJ]  *
 
   - legendre_Qn.c
-    OK: Wed Nov 11 14:31:07 MST 1998 [GJ]
+    OK: Wed Nov 11 14:31:07 MST 1998 [GJ]  *
 
   - legendre_con.c
 
   - legendre_poly.c
     
   - log.c
-    OK: Sun Nov  8 14:48:11 MST 1998 [GJ]
+    OK: Sun Nov  8 14:48:11 MST 1998 [GJ]  *
 
   - poch.c
-    OK: Sun Nov  8 19:56:27 MST 1998 [GJ]
+    OK: Sun Nov  8 19:56:27 MST 1998 [GJ]  *
 
   - poly.c
-    OK: Sun Nov  8 14:49:45 MST 1998 [GJ]
+    OK: Sun Nov  8 14:49:45 MST 1998 [GJ]  *
 
   - pow_int.c
-    OK: Sun Nov  8 12:53:22 MST 1998 [GJ]
+    OK: Sun Nov  8 12:53:22 MST 1998 [GJ]  *
 
   - psi.c
-    OK: Sun Nov  8 14:24:33 MST 1998 [GJ]
+    OK: Sun Nov  8 14:24:33 MST 1998 [GJ]  *
 
   - shint.c
-    OK: Sun Nov  8 14:32:35 MST 1998 [GJ]
+    OK: Sun Nov  8 14:32:35 MST 1998 [GJ]  *
 
   - sinint.c
-    OK: Sun Nov  8 14:35:10 MST 1998 [GJ]
+    OK: Sun Nov  8 14:35:10 MST 1998 [GJ]  *
 
   - synchrotron.c
     OK: Sun Nov  8 14:27:33 MST 1998 [GJ]
@@ -229,10 +230,10 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 14:29:12 MST 1998 [GJ]
 
   - trig.c
-    OK: Sun Nov  8 20:03:18 MST 1998 [GJ]
+    OK: Sun Nov  8 20:03:18 MST 1998 [GJ]  *
 
   - zeta.c
-    OK: Sun Nov  8 14:01:17 MST 1998 [GJ]
+    OK: Sun Nov  8 14:01:17 MST 1998 [GJ]  *
 
 
 
