@@ -52,15 +52,9 @@ papers for other developers.
 
 * Fresnel Integrals ("Juergen J. Zach" <jjzach@pacific.mps.ohio-state.edu>)
 
-* Cumulative Distribution functions for the random distributions
-(Jason Hooper Stover <jason@sakla.net>)
+* Cumulative Distribution functions for discrete random distributions
 
 Other tasks:
-
-* Fix build problems which occur with -ansi (and similar options) 
-where BSD extensions like hypot(), log1p() are found by the 
-configure script in the system math library but without any
-prototypes in the include files. 
 
 * Remove use of long double internally, e.g. as an accumulator in
 loops. It introduces variation between platforms which is undesirable.

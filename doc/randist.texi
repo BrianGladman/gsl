@@ -1,5 +1,8 @@
 @cindex random number distributions
-
+@cindex cumulative distribution functions (CDFs)
+@cindex CDFs, cumulative distribution functions
+@cindex inverse cumulative distribution functions
+@cindex quantile functions
 This chapter describes functions for generating random variates and
 computing their probability distributions.  Samples from the
 distributions described in this chapter can be obtained using any of the
@@ -9,16 +12,24 @@ obtained analytically from the uniform distribution of a random number
 generator by applying an appropriate transformation.  This method uses
 one call to the random number generator.
 
-
 More complicated distributions are created by the
 @dfn{acceptance-rejection} method, which compares the desired
 distribution against a distribution which is similar and known
 analytically.  This usually requires several samples from the generator.
 
-The functions described in this section are declared in
-@file{gsl_randist.h}.
+The library also provides cumulative distribution functions and inverse
+cumulative distribution functions, sometimes referred to as quantile
+functions.  The cumulative distribution functions and their inverses are
+computed separately for the upper and lower tails of the distribution,
+allowing full accuracy to be retained for small results.
+
+The functions for random variates and probability density functions
+described in this section are declared in @file{gsl_randist.h}.  The
+corresponding cumulative distribution functions are declared in
+@file{gsl_cdf.h}.
 
 @menu
+* Random Number Distribution Introduction::  
 * The Gaussian Distribution::   
 * The Gaussian Tail Distribution::  
 * The Bivariate Gaussian Distribution::  
@@ -60,11 +71,61 @@ The functions described in this section are declared in
 * Random Number Distribution References and Further Reading::  
 @end menu
 
+@node Random Number Distribution Introduction
+@section Introduction
+
+Continuous random number distributions are defined by a probability
+density function, @math{p(x)}, such that the probability of @math{x}
+occurring in the infinitesimal range @math{x} to @math{x+dx} is @c{$p\,dx$}
+@math{p dx}.
+
+The cumulative distribution function for the lower tail is defined by,
+@tex
+\beforedisplay
+$$
+P(x) = \int_{-\infty}^{x} dx' p(x')
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+P(x) = \int_@{-\infty@}^@{x@} dx' p(x')
+@end example
+@end ifinfo
+@noindent
+and gives the probability of a variate taking a value less than @math{x}.
+
+The cumulative distribution function for the upper tail is defined by,
+@tex
+\beforedisplay
+$$
+Q(x) = \int_{x}^{-\infty} dx' p(x')
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+P(x) = \int_@{x@}^@{-\infty@} dx' p(x')
+@end example
+@end ifinfo
+@noindent
+and gives the probability of a variate taking a greater than @math{x}.
+The upper and lower cumulative distribution functions are related by
+@math{P(x) + Q(x) = 1} and satisfy @c{$0 \le P(x) \le 1$}
+@math{0 <= P(x) <= 1}, @c{$0 \le Q(x) \le 1$}
+@math{0 <= Q(x) <= 1}.
+
+The inverse cumulative distributions, @c{$x=P^{-1}(P)$}
+@math{x=P^@{-1@}(P)} and @c{$x=Q^{-1}(Q)$}
+@math{x=Q^@{-1@}(Q)} give the values of @math{x}
+which correspond to a specific value of @math{P} or {Q}.  
+They can be used to find confidence limits from probability values.
+
 @page
 @node The Gaussian Distribution
 @section The Gaussian Distribution
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
-@cindex Gaussian random variates
+@cindex Gaussian distribution
 This function returns a Gaussian random variate, with mean zero and
 standard deviation @var{sigma}.  The probability distribution for
 Gaussian random variates is,
@@ -100,7 +161,7 @@ the formula given above.
 \centerline{\input rand-gaussian.tex}
 @end tex
 
-@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
+@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, double @var{sigma})
 This function computes a gaussian random variate using the
 Kinderman-Monahan ratio method.
 @end deftypefun
@@ -113,11 +174,29 @@ are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
 @end deftypefn
 
+@deftypefun double gsl_cdf_gaussian_P (double @var{x}, double @var{sigma})
+@deftypefunx double gsl_cdf_gaussian_Q (double @var{x}, double @var{sigma})
+@deftypefunx double gsl_cdf_gaussian_Pinv (double @var{P}, double @var{sigma})
+@deftypefunx double gsl_cdf_gaussian_Qinv (double @var{Q}, double @var{sigma})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Gaussian
+distribution with standard deviation @var{sigma}.
+@end deftypefun
+
+@deftypefun double gsl_cdf_ugaussian_P (double @var{x})
+@deftypefunx double gsl_cdf_ugaussian_Q (double @var{x})
+@deftypefunx double gsl_cdf_ugaussian_Pinv (double @var{P})
+@deftypefunx double gsl_cdf_ugaussian_Qinv (double @var{Q})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the unit Gaussian
+distribution.
+@end deftypefun
+
 @page
 @node The Gaussian Tail Distribution
 @section The Gaussian Tail Distribution
 @deftypefn Random double gsl_ran_gaussian_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
-@cindex Gaussian Tail random variates
+@cindex Gaussian Tail distribution
 This function provides random variates from the upper tail of a Gaussian
 distribution with standard deviation @var{sigma}.  The values returned
 are larger than the lower limit @var{a}, which must be positive.  The
@@ -182,7 +261,9 @@ deviation of one, @var{sigma} = 1.
 @section The Bivariate Gaussian Distribution
 
 @deftypefn Random void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho}, double * @var{x}, double * @var{y})
-@cindex Gaussian random variates
+@cindex Bivariate Gaussian distribution
+@cindex Two-dimensional Gaussian distribution
+@cindex Gaussian distribution, bivariate
 This function generates a pair of correlated gaussian variates, with
 mean zero, correlation coefficient @var{rho} and standard deviations
 @var{sigma_x} and @var{sigma_y} in the @math{x} and @math{y} directions.
@@ -223,7 +304,7 @@ deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @node The Exponential Distribution
 @section The Exponential Distribution
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
-@cindex Exponential random variates
+@cindex Exponential distribution
 This function returns a random variate from the exponential distribution
 with mean @var{mu}. The distribution is,
 
@@ -256,12 +337,21 @@ given above.
 \centerline{\input rand-exponential.tex}
 @end tex
 
+@deftypefun double gsl_cdf_exponential_P (double @var{x}, double @var{mu})
+@deftypefunx double gsl_cdf_exponential_Q (double @var{x}, double @var{mu})
+@deftypefunx double gsl_cdf_exponential_Pinv (double @var{P}, double @var{mu})
+@deftypefunx double gsl_cdf_exponential_Qinv (double @var{Q}, double @var{mu})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the exponential
+distribution with mean @var{mu}.
+@end deftypefun
+
 @page
 @node The Laplace Distribution
 @section The Laplace Distribution
 @deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{a})
-@cindex two-sided exponential random variates
-@cindex Laplace distribution random variates
+@cindex Two-sided exponential distribution
+@cindex Laplace distribution
 This function returns a random variate from the Laplace distribution
 with width @var{a}.  The distribution is,
 
@@ -284,7 +374,7 @@ for @math{-\infty < x < \infty}.
 
 @deftypefun double gsl_ran_laplace_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
-for a Laplace distribution with mean @var{a}, using the formula
+for a Laplace distribution with width @var{a}, using the formula
 given above.
 @end deftypefun
 
@@ -293,11 +383,21 @@ given above.
 \centerline{\input rand-laplace.tex}
 @end tex
 
+@deftypefun double gsl_cdf_laplace_P (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_laplace_Q (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_laplace_Pinv (const double @var{P}, const double @var{a})
+@deftypefunx double gsl_cdf_laplace_Qinv (const double @var{Q}, const double @var{a})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Laplace
+distribution with width @var{a}.
+@end deftypefun
+
+
 @page
 @node The Exponential Power Distribution
 @section The Exponential Power Distribution
 @deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Exponential power distribution, random variates
+@cindex Exponential power distribution
 This function returns a random variate from the exponential power distribution
 with scale parameter @var{a} and exponent @var{b}.  The distribution is,
 
@@ -336,7 +436,7 @@ and exponent @var{b}, using the formula given above.
 @node The Cauchy Distribution
 @section The Cauchy Distribution
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{a})
-@cindex Cauchy random variates
+@cindex Cauchy distribution
 This function returns a random variate from the Cauchy distribution with
 scale parameter @var{a}.  The probability distribution for Cauchy
 random variates is,
@@ -370,11 +470,21 @@ given above.
 \centerline{\input rand-cauchy.tex}
 @end tex
 
+@deftypefun double gsl_cdf_cauchy_P (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Q (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Pinv (const double @var{P}, const double @var{a})
+@deftypefunx double gsl_cdf_cauchy_Qinv (const double @var{Q}, const double @var{a})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Cauchy
+distribution with scale parameter @var{a}.
+@end deftypefun
+
+
 @page
 @node The Rayleigh Distribution
 @section The Rayleigh Distribution
 @deftypefn Random double gsl_ran_rayleigh (const gsl_rng * @var{r}, double @var{sigma})
-@cindex Rayleigh random variates
+@cindex Rayleigh distribution
 This function returns a random variate from the Rayleigh distribution with
 scale parameter @var{sigma}.  The distribution is,
 
@@ -405,11 +515,21 @@ formula given above.
 \centerline{\input rand-rayleigh.tex}
 @end tex
 
+@deftypefun double gsl_cdf_rayleigh_P (const double @var{x}, const double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Q (const double @var{x}, const double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Pinv (const double @var{P}, const double @var{sigma})
+@deftypefunx double gsl_cdf_rayleigh_Qinv (const double @var{Q}, const double @var{sigma})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Rayleigh
+distribution with scale parameter @var{sigma}.
+@end deftypefun
+
+
 @page
 @node The Rayleigh Tail Distribution
 @section The Rayleigh Tail Distribution
 @deftypefn Random double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
-@cindex Rayleigh Tail random variates
+@cindex Rayleigh Tail distribution
 This function returns a random variate from the tail of the Rayleigh
 distribution with scale parameter @var{sigma} and a lower limit of
 @var{a}.  The distribution is,
@@ -446,7 +566,7 @@ lower limit @var{a}, using the formula given above.
 @node The Landau Distribution
 @section The Landau Distribution
 @deftypefn Random double gsl_ran_landau (const gsl_rng * @var{r})
-@cindex Landau random variates
+@cindex Landau distribution
 This function returns a random variate from the Landau distribution.  The
 probability distribution for Landau random variates is defined
 analytically by the complex integral,
@@ -495,7 +615,7 @@ above.
 @node The Levy alpha-Stable Distributions
 @section The Levy alpha-Stable Distributions
 @deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{c}, double @var{alpha})
-@cindex Levy distribution, random variates
+@cindex Levy distribution
 This function returns a random variate from the Levy symmetric stable
 distribution with scale @var{c} and exponent @var{alpha}.  The symmetric
 stable probability distribution is defined by a fourier transform,
@@ -534,7 +654,8 @@ The algorithm only works for @c{$0 < \alpha \le 2$}
 @section The Levy skew alpha-Stable Distribution
 
 @deftypefn Random double gsl_ran_levy_skew (const gsl_rng * @var{r}, double @var{c}, double @var{alpha}, double @var{beta})
-@cindex Levy distribution, random variates
+@cindex Levy distribution, skew
+@cindex Skew Levy distribution
 This function returns a random variate from the Levy skew stable
 distribution with scale @var{c}, exponent @var{alpha} and skewness
 parameter @var{beta}.  The skewness parameter must lie in the range
@@ -592,7 +713,7 @@ distributed as an alpha-stable variate,
 @node The Gamma Distribution
 @section The Gamma Distribution
 @deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Gamma distribution random variates
+@cindex Gamma distribution
 This function returns a random variate from the gamma
 distribution.  The distribution function is,
 
@@ -626,11 +747,21 @@ formula given above.
 \centerline{\input rand-gamma.tex}
 @end tex
 
+@deftypefun double gsl_cdf_gamma_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gamma_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gamma_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gamma_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the gamma
+distribution with parameters @var{a} and @var{b}.
+@end deftypefun
+
 @page
 @node The Flat (Uniform) Distribution
 @section The Flat (Uniform) Distribution
 @deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex flat distribution random variates
+@cindex flat distribution
+@cindex uniform distribution
 This function returns a random variate from the flat (uniform)
 distribution from @var{a} to @var{b}. The distribution is,
 
@@ -662,11 +793,21 @@ given above.
 \centerline{\input rand-flat.tex}
 @end tex
 
+@deftypefun double gsl_cdf_flat_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_flat_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_flat_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_flat_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for a uniform distribution
+from @var{a} to @var{b}.
+@end deftypefun
+
+
 @page
 @node The Lognormal Distribution
 @section The Lognormal Distribution
 @deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
-@cindex Lognormal random variates
+@cindex Lognormal distribution
 This function returns a random variate from the lognormal
 distribution.  The distribution function is,
 
@@ -697,6 +838,16 @@ using the formula given above.
 \centerline{\input rand-lognormal.tex}
 @end tex
 
+@deftypefun double gsl_cdf_lognormal_P (double @var{x}, double @var{zeta}, double @var{sigma})
+@deftypefunx double gsl_cdf_lognormal_Q (double @var{x}, double @var{zeta}, double @var{sigma})
+@deftypefunx double gsl_cdf_lognormal_Pinv (double @var{P}, double @var{zeta}, double @var{sigma})
+@deftypefunx double gsl_cdf_lognormal_Qinv (double @var{Q}, double @var{zeta}, double @var{sigma})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the lognormal
+distribution with parameters @var{zeta} and @var{sigma}.
+@end deftypefun
+
+
 @page
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
@@ -720,7 +871,7 @@ X_i = \sum_i Y_i^2
 has a chi-squared distribution with @math{n} degrees of freedom.
 
 @deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
-@cindex Chi-squared random variates
+@cindex Chi-squared distribution
 This function returns a random variate from the chi-squared distribution
 with @var{nu} degrees of freedom. The distribution function is,
 
@@ -753,6 +904,17 @@ the formula given above.
 \centerline{\input rand-chisq.tex}
 @end tex
 
+@deftypefun double gsl_cdf_chisq_P (double @var{x}, double @var{nu})
+@deftypefunx double gsl_cdf_chisq_Q (double @var{x}, double @var{nu})
+@deftypefunx double gsl_cdf_chisq_Pinv (double @var{P}, double @var{nu})
+@deftypefunx double gsl_cdf_chisq_Qinv (double @var{Q}, double @var{nu})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the chi-squared
+distribution with @var{nu} degrees of freedom.
+@end deftypefun
+
+
+
 @page
 @node The F-distribution
 @section The F-distribution
@@ -776,7 +938,7 @@ X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
 has an F-distribution @math{F(x;\nu_1,\nu_2)}.
 
 @deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
-@cindex F-distribution random variates
+@cindex F-distribution
 This function returns a random variate from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}. The distribution function is,
 
 @tex
@@ -816,6 +978,13 @@ using the formula given above.
 \centerline{\input rand-fdist.tex}
 @end tex
 
+@deftypefun double gsl_cdf_Fdist_P (double @var{x}, double @var{nu1}, double @var{nu2})
+@deftypefunx double gsl_cdf_Fdist_Q (double @var{x}, double @var{nu1}, double @var{nu2})
+These functions compute the cumulative distribution functions
+@math{P(x)} and @math{Q(x)} for the F-distribution with @var{nu1} and
+@var{nu2} degrees of freedom.
+@end deftypefun
+
 @page
 @node The t-distribution
 @section The t-distribution
@@ -840,7 +1009,8 @@ X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
 has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
 
 @deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
-@cindex t-distribution random variates
+@cindex t-distribution
+@cindex Student t-distribution
 This function returns a random variate from the t-distribution.  The
 distribution function is,
 
@@ -873,11 +1043,20 @@ given above.
 \centerline{\input rand-tdist.tex}
 @end tex
 
+@deftypefun double gsl_cdf_tdist_P (double @var{x}, double @var{nu})
+@deftypefunx double gsl_cdf_tdist_Q (double @var{x}, double @var{nu})
+@deftypefunx double gsl_cdf_tdist_Pinv (double @var{P}, double @var{nu})
+@deftypefunx double gsl_cdf_tdist_Qinv (double @var{Q}, double @var{nu})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the t-distribution
+with @var{nu} degrees of freedom.
+@end deftypefun
+
 @page
 @node The Beta Distribution
 @section The Beta Distribution
 @deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Beta distribution random variates
+@cindex Beta distribution
 This function returns a random variate from the beta
 distribution.  The distribution function is,
 
@@ -909,12 +1088,19 @@ formula given above.
 \centerline{\input rand-beta.tex}
 @end tex
 
+@deftypefun double gsl_cdf_beta_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_beta_Q (double @var{x}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)} and @math{Q(x)} for the beta distribution with
+parameters @var{a} and @var{b}.
+@end deftypefun
+
 @page
 @node The Logistic Distribution
 @section The Logistic Distribution
 
 @deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{a})
-@cindex Logistic random variates
+@cindex Logistic distribution
 This function returns a random variate from the logistic
 distribution.  The distribution function is,
 
@@ -945,11 +1131,20 @@ formula given above.
 \centerline{\input rand-logistic.tex}
 @end tex
 
+@deftypefun double gsl_cdf_logistic_P (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_logistic_Q (const double @var{x}, const double @var{a})
+@deftypefunx double gsl_cdf_logistic_Pinv (const double @var{P}, const double @var{a})
+@deftypefunx double gsl_cdf_logistic_Qinv (const double @var{Q}, const double @var{a})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the logistic
+distribution with scale parameter @var{a}.
+@end deftypefun
+
 @page
 @node The Pareto Distribution
 @section The Pareto Distribution
 @deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Pareto random variates
+@cindex Pareto distribution
 This function returns a random variate from the Pareto distribution of
 order @var{a}.  The distribution function is,
 
@@ -981,6 +1176,15 @@ the formula given above.
 \centerline{\input rand-pareto.tex}
 @end tex
 
+@deftypefun double gsl_cdf_pareto_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_pareto_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_pareto_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_pareto_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Pareto
+distribution with exponent @var{a} and scale @var{b}.
+@end deftypefun
+
 @page
 @node The Spherical Distribution (2D & 3D)
 @section The Spherical Distribution (2D & 3D)
@@ -1001,8 +1205,8 @@ uniform random number between 0 and @math{2\pi} and let @var{x} and
 @var{y} be the sine and cosine respectively.  Two trig functions would
 have been expensive in the old days, but with modern hardware
 implementations, this is sometimes the fastest way to go.  This is the
-case for my home Pentium (but not the case for my Sun Sparcstation 20 at
-work).  One can avoid the trig evaluations by choosing @var{x} and
+case for the Pentium (but not the case for the Sun Sparcstation).
+One can avoid the trig evaluations by choosing @var{x} and
 @var{y} in the interior of a unit circle (choose them at random from the
 interior of the enclosing square, and then reject those that are outside
 the unit circle), and then dividing by @c{$\sqrt{x^2 + y^2}$}
@@ -1050,7 +1254,7 @@ Mathematics for the Engineer (1956).
 @node The Weibull Distribution
 @section The Weibull Distribution
 @deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Weibull distribution random variates
+@cindex Weibull distribution
 This function returns a random variate from the Weibull distribution.  The
 distribution function is,
 
@@ -1083,11 +1287,21 @@ using the formula given above.
 \centerline{\input rand-weibull.tex}
 @end tex
 
+@deftypefun double gsl_cdf_weibull_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_weibull_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_weibull_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_weibull_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Weibull
+distribution with scale @var{a} and exponent @var{b}.
+@end deftypefun
+
+
 @page
 @node The Type-1 Gumbel Distribution
 @section  The Type-1 Gumbel Distribution
 @deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Gumbel distribution (Type 1), random variates
+@cindex Gumbel distribution (Type 1)
 @cindex Type 1 Gumbel distribution, random variates
 This function returns  a random variate from the Type-1 Gumbel
 distribution.  The Type-1 Gumbel distribution function is,
@@ -1120,12 +1334,22 @@ using the formula given above.
 \centerline{\input rand-gumbel1.tex}
 @end tex
 
+@deftypefun double gsl_cdf_gumbel1_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel1_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel1_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel1_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Type-1 Gumbel
+distribution with parameters @var{a} and @var{b}.
+@end deftypefun
+
+
 @page
 @node The Type-2 Gumbel Distribution
 @section  The Type-2 Gumbel Distribution
 @deftypefn Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Gumbel distribution (Type 2), random variates
-@cindex Type 2 Gumbel distribution, random variate
+@cindex Gumbel distribution (Type 2)
+@cindex Type 2 Gumbel distribution
 This function returns a random variate from the Type-2 Gumbel
 distribution.  The Type-2 Gumbel distribution function is,
 
@@ -1156,6 +1380,16 @@ using the formula given above.
 @tex
 \centerline{\input rand-gumbel2.tex}
 @end tex
+
+@deftypefun double gsl_cdf_gumbel2_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel2_Q (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel2_Pinv (double @var{P}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_gumbel2_Qinv (double @var{Q}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} and their inverses for the Type-2 Gumbel
+distribution with parameters @var{a} and @var{b}.
+@end deftypefun
+
 
 @page
 @node The Dirichlet Distribution
@@ -1810,6 +2044,45 @@ Example output from the program, three 10-step random walks from the origin.
 \centerline{\input random-walk.tex}
 @end tex
 
+The following program computes the upper and lower cumulative
+distribution functions for the standard normal distribution at
+@math{x=2}.
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_cdf.h>
+
+int
+main (void)
+@{
+  double P, Q;
+  double x = 2.0;
+
+  P = gsl_cdf_ugaussian_P (x);
+  printf ("prob(x < %f) = %f\n", x, P);
+
+  Q = gsl_cdf_ugaussian_Q (x);
+  printf ("prob(x > %f) = %f\n", x, Q);
+
+  x = gsl_cdf_ugaussian_Pinv (P);
+  printf ("Pinv(%f) = %f\n", P, x);
+
+  x = gsl_cdf_ugaussian_Qinv (Q);
+  printf ("Qinv(%f) = %f\n", Q, x);
+
+  return 0;
+@}
+@end example
+@noindent
+Here is the output of the program,
+
+@example
+prob(x < 2.000000) = 0.977250
+prob(x > 2.000000) = 0.022750
+Pinv(0.977250) = 2.000000
+Qinv(0.022750) = 2.000000
+@end example
+
 @node Random Number Distribution References and Further Reading
 @section References and Further Reading
 @noindent
@@ -1848,3 +2121,36 @@ R.M. Barnett et al., Physical Review D54, 1 (1996)
 @noindent
 The Review of Particle Physics is available online in postscript and pdf
 format.
+
+@noindent
+An overview of methods used to compute cumulative distribution functions
+can be found in @cite{Statistical Computing} by W.J. Kennedy and
+J.E. Gentle. Another general reference is @cite{Elements of Statistical
+Computing} by R.A. Thisted.
+
+@itemize @asis
+@item
+William E. Kennedy and James E. Gentle, @cite{Statistical Computing} (1980),
+Marcel Dekker, ISBN 0-8247-6898-1.
+@end itemize
+
+@itemize @asis
+@item
+Ronald A. Thisted, @cite{Elements of Statistical Computing} (1988), 
+Chapman & Hall, ISBN 0-412-01371-1.
+@end itemize
+@noindent
+The cumulative distribution functions for the Gaussian distribution
+are based on the following papers,
+
+@itemize @asis
+@item
+@cite{Rational Chebyshev Approximations Using Linear Equations},
+W.J. Cody, W. Fraser, J.F. Hart. Numerische Mathematik 12, 242-251 (1968).
+@end itemize
+
+@itemize @asis
+@item
+@cite{Rational Chebyshev Approximations for the Error Function},
+W.J. Cody. Mathematics of Computation 23, n107, 631-637 (July 1969).
+@end itemize
