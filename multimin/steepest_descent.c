@@ -30,6 +30,7 @@ typedef struct
 {
   double step;
   double max_step;
+  double tol;
   gsl_vector *x1;
   gsl_vector *g1;
 }
@@ -61,7 +62,7 @@ steepest_descent_alloc (void *vstate, size_t n)
 static int
 steepest_descent_set (void *vstate, gsl_multimin_function_fdf * fdf,
 		      const gsl_vector * x, double *f,
-		      gsl_vector * gradient, double step_size)
+		      gsl_vector * gradient, double step_size, double tol)
 {
   steepest_descent_state_t *state = (steepest_descent_state_t *) vstate;
 
@@ -69,6 +70,7 @@ steepest_descent_set (void *vstate, gsl_multimin_function_fdf * fdf,
 
   state->step = step_size;
   state->max_step = step_size;
+  state->tol = tol;
 
   return GSL_SUCCESS;
 }
@@ -105,7 +107,7 @@ steepest_descent_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   double f0 = *f;
   double f1;
-  double step = state->step;
+  double step = state->step, tol = state->tol;
 
   int failed = 0;
 
@@ -130,12 +132,12 @@ trial:
       /* downhill step failed, reduce step-size and try again */
 
       failed = 1;
-      step *= 0.1;
+      step *= tol;
       goto trial;
     }
 
   if (failed)
-    step *= 0.1;
+    step *= tol;
   else
     step *= 2.0;
 

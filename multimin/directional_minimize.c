@@ -75,7 +75,7 @@ minimize (gsl_multimin_function_fdf * fdf,
           const gsl_vector * x, const gsl_vector * p,
           double lambda,
           double stepa, double stepb, double stepc,
-          double fa, double fb, double fc,
+          double fa, double fb, double fc, double tol,
           gsl_vector * x1, gsl_vector * dx1, 
           gsl_vector * x2, gsl_vector * dx2, gsl_vector * gradient,          
           double * step, double * f, double * gnorm)
@@ -91,8 +91,8 @@ minimize (gsl_multimin_function_fdf * fdf,
   double fv = fa;
   double fw = fc;
 
-  double tol2 = fabs(w - v);
-  double tol1 = fabs(v - u);
+  double old2 = fabs(w - v);
+  double old1 = fabs(v - u);
 
   double stepm, fm, pg, gnorm1;
 
@@ -127,11 +127,11 @@ mid_trial:
 	du = e1 / e2;
       }
 
-    if (du > 0 && du < (stepc - stepb) && fabs(du) < 0.5 * tol2)
+    if (du > 0 && du < (stepc - stepb) && fabs(du) < 0.5 * old2)
       {
 	stepm = u + du;
       }
-    else if (du < 0 && du > (stepa - stepb) && fabs(du) < 0.5 * tol2)
+    else if (du < 0 && du > (stepa - stepb) && fabs(du) < 0.5 * old2)
       {
 	stepm = u + du;
       }
@@ -182,8 +182,8 @@ mid_trial:
     }
   else if (fm <= fb)
     {
-      tol2 = tol1;
-      tol1 = fabs(u - stepm);
+      old2 = old1;
+      old1 = fabs(u - stepm);
       w = v;
       v = u;
       u = stepm;
@@ -209,7 +209,7 @@ mid_trial:
       *step = stepm;
       *gnorm = gnorm1;
 
-      if (fabs (pg * lambda / gnorm1) < 1.0e-4)
+      if (fabs (pg * lambda / gnorm1) < tol)
         {
 #ifdef DEBUG
           printf("ok!\n");

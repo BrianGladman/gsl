@@ -1,3 +1,7 @@
+Thu Oct 25 11:56:06 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added a tolerance parameter for the line minimizations
+
 Wed Oct 24 23:18:46 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* modified all routines to use a single minimiztion iteration,

@@ -80,7 +80,7 @@ typedef struct
   int (*alloc) (void *state, size_t n);
   int (*set) (void *state, gsl_multimin_function_fdf * fdf,
               const gsl_vector * x, double * f, 
-              gsl_vector * gradient, double step_size);
+              gsl_vector * gradient, double step_size, double tol);
   int (*iterate) (void *state,gsl_multimin_function_fdf * fdf, 
                   gsl_vector * x, double * f, 
                   gsl_vector * gradient, gsl_vector * dx);
@@ -112,7 +112,7 @@ int
 gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
                                gsl_multimin_function_fdf *fdf,
                                const gsl_vector * x,
-                               double step_size);
+                               double step_size, double tol);
 
 void
 gsl_multimin_fdfminimizer_free(gsl_multimin_fdfminimizer *s);

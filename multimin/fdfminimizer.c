@@ -97,7 +97,7 @@ int
 gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
                                gsl_multimin_function_fdf * fdf,
                                const gsl_vector * x,
-                               double step_size)
+                               double step_size, double tol)
 {
   if (s->x->size != fdf->n)
     {
@@ -114,7 +114,7 @@ gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
   gsl_vector_memcpy (s->x,x);
   gsl_vector_set_zero (s->dx);
   
-  return (s->type->set) (s->state, s->fdf, s->x, &(s->f), s->gradient, step_size);
+  return (s->type->set) (s->state, s->fdf, s->x, &(s->f), s->gradient, step_size, tol);
 }
 
 void

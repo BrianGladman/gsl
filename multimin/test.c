@@ -87,7 +87,7 @@ test_fdf(const char * desc,
 
   s = gsl_multimin_fdfminimizer_alloc(T, f->n);
 
-  gsl_multimin_fdfminimizer_set (s, f, x, step_size);
+  gsl_multimin_fdfminimizer_set (s, f, x, step_size, 0.1);
 
 #ifdef DEBUG
   printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); 

@@ -33,6 +33,7 @@ typedef struct
   int iter;
   double step;
   double max_step;
+  double tol;
   gsl_vector *x1;
   gsl_vector *dx1;
   gsl_vector *x2;
@@ -140,13 +141,14 @@ vector_bfgs_alloc (void *vstate, size_t n)
 static int
 vector_bfgs_set (void *vstate, gsl_multimin_function_fdf * fdf,
 		 const gsl_vector * x, double *f, gsl_vector * gradient,
-		 double step_size)
+		 double step_size, double tol)
 {
   vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
 
   state->iter = 0;
   state->step = step_size;
   state->max_step = step_size;
+  state->tol = tol;
 
   GSL_MULTIMIN_FN_EVAL_F_DF (fdf, x, f, gradient);
 
@@ -206,7 +208,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   double fa = *f, fb, fc;
   double dir;
-  double stepa = 0.0, stepb, stepc = state->step;
+  double stepa = 0.0, stepb, stepc = state->step, tol = state->tol;
 
   double g1norm;
   double pg;
@@ -248,7 +250,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 		      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
 
   minimize (fdf, x, p, dir / pnorm,
-	    stepa, stepb, stepc, fa, fb, fc,
+	    stepa, stepb, stepc, fa, fb, fc, tol,
 	    x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);
 
   gsl_vector_memcpy (x, x2);
