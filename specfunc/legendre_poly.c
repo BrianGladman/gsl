@@ -180,16 +180,17 @@ static int legendre_sphPlm_recurse(const int l, int m,
  *   size of harvest[] = l+1
  *   harvest[0] = P_0(x)  ...  harvest[l] = P_l(x)
  */
+ /* FIXME: get rid of this harvest nonsense */
 int gsl_sf_legendre_Pl_impl(const int l,
                             const double x,
                             double * result, double * harvest
 			    )
 { 
-  if(l < 0 || x < -1. || x > 1.) {
+  if(l < 0 || x < -1.0 || x > 1.0) {
     return GSL_EDOM;
   }
   else if(l == 0) {
-    *result = 1.;
+    *result = 1.0;
     if(harvest != 0) harvest[0] = 1.;
     return GSL_SUCCESS;
   }
@@ -202,7 +203,7 @@ int gsl_sf_legendre_Pl_impl(const int l,
     return GSL_SUCCESS;
   }
   else if(l == 2) {
-    double P2 = 0.5*(3.*x*x-1.);
+    double P2 = 0.5 * (3.0*x*x - 1.0);
     *result = P2;
     if(harvest != 0) {
       harvest[0] = 1.;
@@ -229,6 +230,7 @@ int gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * resul
  *   size of harvest[] = l-m+1
  *   harvest[0] = P_m^m(x)  ...  harvest[l-m] = P_l^m(x)
  */
+ /* FIXME: get rid of this harvest nonsense */
 int gsl_sf_legendre_Plm_impl(const int l, const int m,
                              const double one_m_x, const double one_p_x,
                              double * result, double * harvest
@@ -263,6 +265,7 @@ int gsl_sf_legendre_Plm_impl(const int l, const int m,
  *   size of harvest[] = l-m+1
  *   harvest[0] = sphP_m^m(x)  ...  harvest[l-m] = sphP_l^m(x)
  */
+ /* FIXME: get rid of this harvest nonsense */
 int gsl_sf_legendre_sphPlm_impl(const int l, int m,
                                 const double one_m_x, const double one_p_x,
                                 double * result, double * harvest
