@@ -57,4 +57,4 @@ gsl_sf_hyperg_2F0_series_impl(double a, double b, double x, int n_trunc,
                               gsl_sf_result * result);
 
 
-#endif  /* !_HYPERG_H_ */
+#endif /* !_HYPERG_H_ */

@@ -68,4 +68,4 @@ double func args                                     \
 }                                                    \
 
 
-#endif  /* !_TEMPLATES_ERRFUNCS_H_ */
+#endif /* !_TEMPLATES_ERRFUNCS_H_ */

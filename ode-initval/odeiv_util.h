@@ -33,4 +33,4 @@ void gsl_odeiv_step_construct(
   );
 
 
-#endif  /* !ODEIV_UTIL_H */
+#endif /* !ODEIV_UTIL_H */

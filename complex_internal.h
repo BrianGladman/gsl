@@ -11,4 +11,4 @@
 #define IMAG0(a) ((a)[1])
 
 
-#endif  /* !COMPLEX_INTERNAL_H_ */
+#endif /* !COMPLEX_INTERNAL_H_ */

@@ -1,8 +1,8 @@
 /* gsl_vegas_print.h */
 /* $Id$ */
 
-#ifndef GSL_VEGAS_PRINT_H
-#define GSL_VEGAS_PRINT_H
+#ifndef __GSL_VEGAS_PRINT_H__
+#define __GSL_VEGAS_PRINT_H__
 
 void print_lim(gsl_monte_vegas_state* state, 
 	       double xl[], double xu[], unsigned long dim);

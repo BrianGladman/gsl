@@ -41,4 +41,4 @@
 #define M_PACKEDTRLO_ACCESS_CI(A, N, lda, i, j)   IMAG(A, 1, M_PACKEDTRLO_INDEX(N, lda, i, j))
 
 
-#endif  /* !_MATRIX_ACCESS_H */
+#endif /* !_MATRIX_ACCESS_H */

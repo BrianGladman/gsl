@@ -17,4 +17,4 @@ gsl_sf_bessel_K_scaled_temme(double nu, double x,
                              double * K_nu, double * K_nup1, double * Kp_nu);
 
 
-#endif  /* !BESSEL_TEMME_H_ */
+#endif /* !BESSEL_TEMME_H_ */

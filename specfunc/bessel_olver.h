@@ -12,4 +12,4 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
 double gsl_sf_bessel_Olver_zofmzeta(double minus_zeta);
 
 
-#endif  /* !BESSEL_OLVER_H_ */
+#endif /* !BESSEL_OLVER_H_ */

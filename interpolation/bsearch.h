@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_INTERP_BSEARCH_H_
-#define GSL_INTERP_BSEARCH_H_
+#ifndef __GSL_INTERP_BSEARCH_H__
+#define __GSL_INTERP_BSEARCH_H__
 
 size_t
 gsl_interp_bsearch(const double x_array[], double x,
@@ -34,4 +34,4 @@ gsl_interp_bsearch(const double x_array[], double x,
 #endif /* HAVE_INLINE */
 
 
-#endif /* !GSL_INTERP_BSEARCH_H_ */
+#endif /* __GSL_INTERP_BSEARCH_H__ */
