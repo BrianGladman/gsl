@@ -34,6 +34,9 @@ introduces variation between platforms which is undesirable.
 
 * Check behavior of conjugate_fr in multimin -- the demo results look odd.
 
+* Sort out "const" in prototypes for rng/qrng, it looks odd since there are
+consts for many functions which modify the state.
+
 * Switch to library interface versioning for libtool (eventually),
 provide better GSL_VERSION_MAJOR, GSL_VERSION_MINOR macros.
 
