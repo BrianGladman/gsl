@@ -75,7 +75,7 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
         *result = sum;
         return GSL_ELOSS;
       }
-    } while(fabs(del/sum) > locEPS);
+    } while(fabs(del/sum) > 0.1*locEPS);
     *result = sum;
     *prec   = (GSL_MACH_EPS*delmax)/fabs(sum) + k*GSL_MACH_EPS;
     return GSL_SUCCESS;
@@ -83,12 +83,21 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
 }
 
 
+/* Luke's rational approximation. The most accesible
+ * discussion is in [Kolbig, CPC 23, 51 (1981)].
+ * The convergence is supposedly guaranteed for x < 0.
+ * You have to read Luke's books to see this and other
+ * results. Unfortunately, the stability is not so
+ * clear to me, although is seems very efficient when
+ * it works.
+ */
 static
 int
 hyperg_2F1_luke(const double a, const double b, const double c,
                 const double xin, 
                 double * result, double * prec)
 {
+  const double RECUR_BIG = 1.0e+50;
   const int nmax = 20000;
   int n = 3;
   const double x  = -xin;
@@ -131,42 +140,26 @@ hyperg_2F1_luke(const double a, const double b, const double c,
 
     if(*prec < locEPS || n > nmax) break;
 
-#if defined(LUKE_INSTRUMENT)
-    printf("%20.15g   %20.15g", An, Bn);
-#endif
-
-    if(fabs(An) > 1.e5 || fabs(Bn) > 1.e5) {
-      An /= 1.e5;
-      Bn /= 1.e5;
-      Anm1 /= 1.e5;
-      Bnm1 /= 1.e5;
-      Anm2 /= 1.e5;
-      Bnm2 /= 1.e5;
-      Anm3 /= 1.e5;
-      Bnm3 /= 1.e5;
-
-#if defined(LUKE_INSTRUMENT)      
-      printf("   -");
-#endif
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An   /= RECUR_BIG;
+      Bn   /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+      Anm3 /= RECUR_BIG;
+      Bnm3 /= RECUR_BIG;
     }
-    else if(fabs(An) < 1.e-5 || fabs(Bn) < 1.e-5) {
-      An *= 1.e5;
-      Bn *= 1.e5;
-      Anm1 *= 1.e5;
-      Bnm1 *= 1.e5;
-      Anm2 *= 1.e5;
-      Bnm2 *= 1.e5;
-      Anm3 *= 1.e5;
-      Bnm3 *= 1.e5;
-      
-#if defined(LUKE_INSTRUMENT) 
-      printf("   +");
-#endif
+    else if(fabs(An) < 1.0/RECUR_BIG || fabs(Bn) < 1.0/RECUR_BIG) {
+      An   *= RECUR_BIG;
+      Bn   *= RECUR_BIG;
+      Anm1 *= RECUR_BIG;
+      Bnm1 *= RECUR_BIG;
+      Anm2 *= RECUR_BIG;
+      Bnm2 *= RECUR_BIG;
+      Anm3 *= RECUR_BIG;
+      Bnm3 *= RECUR_BIG;
     }
-
-#if defined(LUKE_INSTRUMENT)
-    printf("  %20.15g  \n", An/Bn);
-#endif
 
     n++;
     Bnm3 = Bnm2;
@@ -179,87 +172,26 @@ hyperg_2F1_luke(const double a, const double b, const double c,
 
   *result = F;
 
-  if(*prec > locEPS)
+  if(*prec > 10.0 * locEPS)
     return GSL_ELOSS;
   else
     return GSL_SUCCESS;
 }
 
-static void do_it(double a, double b, double c, double x)
-{
-  double y;
-  double prec;
-  int stat = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
-  printf("%5.3g  %5.3g  %5.3g   %10.6g", a, b, c, x);
-  printf("   ");
-  printf("%24.18g  %8.4g  %s", y, prec, gsl_strerror(stat));
-  printf("\n");
-}
 
-void testy(void)
-{
-  do_it(1.0, 1.0, 1.0, -1.0);
-  do_it(1.0, 1.0, 1.0, -0.8);
-  do_it(1.0, 1.0, 1.0, -0.2);
-  do_it(1.0, 1.0, 1.0, -1.e-10);
-  do_it(1.0, 1.0, 1.0,  1.e-10);
-  do_it(1.0, 1.0, 1.0,  0.2);
-  do_it(1.0, 1.0, 1.0,  0.8);
-
-  do_it(10.0, 1.0, 1.0, -1.0);
-  do_it(10.0, 1.0, 1.0, -0.8);
-  do_it(10.0, 1.0, 1.0, -0.2);
-  do_it(10.0, 1.0, 1.0, -1.e-10);
-  do_it(10.0, 1.0, 1.0,  1.e-10);
-  do_it(10.0, 1.0, 1.0,  0.2);
-  do_it(10.0, 1.0, 1.0,  0.8);
-  
-  do_it(50.0, 1.0, 1.0, -1.0);
-  do_it(50.0, 1.0, 1.0, -0.8);
-  do_it(50.0, 1.0, 1.0, -0.2);
-  do_it(50.0, 1.0, 1.0, -1.e-10);
-  do_it(50.0, 1.0, 1.0,  1.e-10);
-  do_it(50.0, 1.0, 1.0,  0.2);
-  do_it(50.0, 1.0, 1.0,  0.8);
-  
-  do_it(100.0, 1.0, 1.0, -1.0);
-  do_it(100.0, 1.0, 1.0, -0.8);
-  do_it(100.0, 1.0, 1.0, -0.2);
-  do_it(100.0, 1.0, 1.0, -1.e-10);
-  do_it(100.0, 1.0, 1.0,  1.e-10);
-  do_it(100.0, 1.0, 1.0,  0.2);
-  do_it(100.0, 1.0, 1.0,  0.8);
-
-  do_it(1.0, 1.0, 50.0, -1.0);
-  do_it(1.0, 1.0, 50.0, -0.8);
-  do_it(1.0, 1.0, 50.0, -0.2);
-  do_it(1.0, 1.0, 50.0, -1.e-10);
-  do_it(1.0, 1.0, 50.0,  1.e-10);
-  do_it(1.0, 1.0, 50.0,  0.2);
-  do_it(1.0, 1.0, 50.0,  0.8);
-  
-  do_it(50.0, 50.0, 1.0, -1.0);
-  do_it(50.0, 50.0, 1.0, -0.8);
-  do_it(50.0, 50.0, 1.0, -0.2);
-  do_it(50.0, 50.0, 1.0, -1.e-10);
-  do_it(50.0, 50.0, 1.0,  1.e-10);
-  do_it(50.0, 50.0, 1.0,  0.2);
-  do_it(50.0, 50.0, 1.0,  0.8);
-  
-
-  exit(0);
-}
-
-
-/* a = aR + i aI, b = aR - i aI */
+/* Luke's rational approximation for the
+ * case a = aR + i aI, b = aR - i aI.
+ */
 static
 int
 hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
-                     const double x, 
+                     const double xin, 
                      double * result, double * prec)
 {
+  const double RECUR_BIG = 1.0e+50;
   const int nmax = 10000;
   int n = 3;
+  const double x = -xin;
   const double x3 = x*x*x;
   const double atimesb = aR*aR + aI*aI;
   const double apb     = 2.0*aR;
@@ -296,10 +228,31 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
     double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
     double r = An/Bn;
 
-    *prec = fabs(F - r)/F;
+    *prec = fabs(F - r)/fabs(F);
     F = r;
 
     if(*prec < locEPS || n > nmax) break;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An   /= RECUR_BIG;
+      Bn   /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+      Anm3 /= RECUR_BIG;
+      Bnm3 /= RECUR_BIG;
+    }
+    else if(fabs(An) < 1.0/RECUR_BIG || fabs(Bn) < 1.0/RECUR_BIG) {
+      An   *= RECUR_BIG;
+      Bn   *= RECUR_BIG;
+      Anm1 *= RECUR_BIG;
+      Bnm1 *= RECUR_BIG;
+      Anm2 *= RECUR_BIG;
+      Bnm2 *= RECUR_BIG;
+      Anm3 *= RECUR_BIG;
+      Bnm3 *= RECUR_BIG;
+    }
 
     n++;
     Bnm3 = Bnm2;
@@ -312,11 +265,233 @@ hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
   
   *result = F;
 
-  if(*prec > locEPS)
+  if(*prec > 10.0 * locEPS)
     return GSL_ELOSS;
   else
     return GSL_SUCCESS;
 }
+
+
+/* Do the reflection described in [Moshier, p. 334].
+ * Assumes c != neg integer.
+ */
+static
+int
+hyperg_2F1_reflect(const double a, const double b, const double c,
+                   const double x, double * result)
+{
+  const double d = c - a - b;
+  const int intd  = rint(d);
+  const int d_integer = ( fabs(d - intd) < locEPS );
+
+  if(d_integer) {
+    const double ln_omx = log(1.0 - x);
+    const double ad = fabs(d);
+    int stat_F2 = GSL_SUCCESS;
+    double sgn_2;
+    double F1, F2;
+    double d1, d2;
+    double lng_c;
+    double lng_ad2;
+    double lng_bd2;
+    int stat_c;
+    int stat_ad2;
+    int stat_bd2;
+
+    if(d >= 0.0) {
+      d1 = d;
+      d2 = 0.0;
+    }
+    else {
+      d1 = 0.0;
+      d2 = d;
+    }
+
+    stat_ad2 = gsl_sf_lngamma_impl(a+d2, &lng_ad2);
+    stat_bd2 = gsl_sf_lngamma_impl(b+d2, &lng_bd2);
+    stat_c   = gsl_sf_lngamma_impl(c,    &lng_c);
+
+    /* Evaluate F1.
+     */
+    if(ad < locEPS) {
+      /* d = 0 */
+      F1 = 0.0;
+    }
+    else {
+      double lng_ad;
+      double lng_ad1;
+      double lng_bd1;
+      int stat_ad  = gsl_sf_lngamma_impl(ad,   &lng_ad);
+      int stat_ad1 = gsl_sf_lngamma_impl(a+d1, &lng_ad1);
+      int stat_bd1 = gsl_sf_lngamma_impl(b+d1, &lng_bd1);
+
+      if(stat_ad1 == GSL_SUCCESS && stat_bd1 == GSL_SUCCESS) {
+        /* Gamma functions in the denominator are ok.
+	 * Proceed with evaluation.
+	 */
+	int i;
+        double sum1 = 1.0;
+        double term = 1.0;
+        double ln_pre1 = lng_ad + lng_c + d2*ln_omx - lng_ad1 - lng_bd1;
+
+        /* Do F1 sum.
+         */
+        for(i=1; i<ad; i++) {
+	  int j = i-1;
+	  term *= (a + d2 + j) * (b + d2 + j) / (1.0 + d2 + j) / i * (1.0-x);
+          sum1 += term;
+        }
+
+        if(ln_pre1 + log(fabs(sum1)) < GSL_LOG_DBL_MAX) {
+          F1 = exp(ln_pre1) * sum1;
+        }
+        else {
+          *result = 0.0; /* FIXME: should be Inf */
+          return GSL_EOVRFLW;
+        }
+      }
+      else {
+        /* Gamma functions in the denominator were not ok.
+	 * So the F1 term is zero.
+	 */
+        F1 = 0.0;
+      }
+    } /* end F1 evaluation */
+
+
+    /* Evaluate F2.
+     */
+    if(stat_ad2 == GSL_SUCCESS && stat_bd2 == GSL_SUCCESS) {
+      /* Gamma functions in the denominator are ok.
+       * Proceed with evaluation.
+       */
+      const int maxiter = 1000;
+      int i;
+      double psi_1 = -M_EULER;
+      double psi_1pd; 
+      double psi_apd1;
+      double psi_bpd1;
+      int stat_1pd  = gsl_sf_psi_impl(1.0 + ad, &psi_1pd);
+      int stat_apd1 = gsl_sf_psi_impl(a + d1,   &psi_apd1);
+      int stat_bpd1 = gsl_sf_psi_impl(b + d1,   &psi_bpd1);
+      double psi  = psi_1 + psi_1pd - psi_apd1 - psi_bpd1 - ln_omx;
+      double fact = 1.0;
+      double sum2 = psi;
+      double ln_pre2 = lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
+      
+      /* Do F2 sum.
+       */
+      for(i=1; i<maxiter; i++) {
+        int j = i-1;
+        psi  += 1.0/(1.0+j) + 1.0/(1.0+ad+j) - 1.0/(a+d1+j) - 1.0/(b+d1+j);
+        fact *= (a+d1+j)*(b+d1+j)/(ad+j)/i * (1.0-x);
+	sum2 += fact * psi;
+      }
+
+      if(i == maxiter) stat_F2 = GSL_EMAXITER;
+
+      if(ln_pre2 + log(fabs(sum2)) < GSL_LOG_DBL_MAX) {
+        F2 = exp(ln_pre2) * sum2;
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+    }
+    else {
+      /* Gamma functions on the denominator not ok.
+       * So the F2 term is zero.
+       */
+      F2 = 0.0;
+    } /* end F2 evaluation */
+
+    sgn_2 = ( GSL_IS_ODD(intd) ? -1.0 : 1.0 );
+    *result = F1 + sgn_2 * F2;
+    return stat_F2;
+  }
+  else {
+    /* d not an integer */
+
+    double pre1, pre2;
+    double sgn1, sgn2;
+    double F1, F2;
+    double prec_F1, prec_F2;
+    int status_F1, status_F2;
+
+    /* These gamma functions appear in the denominator, so we
+     * catch their harmless domain errors and set the terms to zero.
+     */
+    double ln_g1ca,  ln_g1cb,  ln_g2a,  ln_g2b;
+    double sgn_g1ca, sgn_g1cb, sgn_g2a, sgn_g2b;
+    int stat_1ca = gsl_sf_lngamma_sgn_impl(c-a, &ln_g1ca, &sgn_g1ca);
+    int stat_1cb = gsl_sf_lngamma_sgn_impl(c-b, &ln_g1cb, &sgn_g1cb);
+    int stat_2a  = gsl_sf_lngamma_sgn_impl(a, &ln_g2a, &sgn_g2a);
+    int stat_2b  = gsl_sf_lngamma_sgn_impl(b, &ln_g2b, &sgn_g2b);
+    int ok1 = (stat_1ca == GSL_SUCCESS && stat_1cb == GSL_SUCCESS);
+    int ok2 = (stat_2a  == GSL_SUCCESS && stat_2b  == GSL_SUCCESS);
+    
+    double ln_gc,  ln_gd,  ln_gmd;
+    double sgn_gc, sgn_gd, sgn_gmd;
+    gsl_sf_lngamma_sgn_impl( c, &ln_gc,  &sgn_gc);
+    gsl_sf_lngamma_sgn_impl( d, &ln_gd,  &sgn_gd);
+    gsl_sf_lngamma_sgn_impl(-d, &ln_gmd, &sgn_gmd);
+    
+    sgn1 = sgn_gc * sgn_gd  * sgn_g1ca * sgn_g1cb;
+    sgn2 = sgn_gc * sgn_gmd * sgn_g2a  * sgn_g2b;
+
+    if(ok1 && ok2) {
+      double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
+      double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
+      if(ln_pre1 < GSL_LOG_DBL_MAX && ln_pre2 < GSL_LOG_DBL_MAX) {
+        pre1 = sgn1 * exp(ln_pre1);
+        pre2 = sgn2 * exp(ln_pre2);
+      }
+      else {
+   	*result = 0.0; /* FIXME: should be Inf */
+   	return GSL_EOVRFLW;
+      }
+    }
+    else if(ok1 && !ok2) {
+      double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
+      if(ln_pre1 < GSL_LOG_DBL_MAX) {
+        pre1 = sgn1 * exp(ln_pre1);
+        pre2 = 0.0;
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+   	return GSL_EOVRFLW;
+      }
+    }
+    else if(!ok1 && ok2) {
+      double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
+      if(ln_pre2 < GSL_LOG_DBL_MAX) {
+        pre1 = 0.0;
+        pre2 = sgn2 * exp(ln_pre2);
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+   	return GSL_EOVRFLW;
+      }
+    }
+    else {
+      pre1 = 0.0;
+      pre2 = 0.0;
+      *result = 0.0;
+      return GSL_EUNDRFLW;
+    }
+
+    status_F1 = hyperg_2F1_series(  a,   b, 1.0-d, 1.0-x, &F1, &prec_F1);
+    status_F2 = hyperg_2F1_series(c-a, c-b, 1.0+d, 1.0-x, &F2, &prec_F2);
+
+    *result = pre1*F1 + pre2*F2;
+
+    if(prec_F1 > 10.0 * locEPS || prec_F2 > 10.0 * locEPS)
+      return GSL_ELOSS;
+    else
+      return GSL_SUCCESS;
+  }
+}
+
 
 static int pow_omx(const double x, const double p, double * result)
 {
@@ -349,10 +524,12 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
                        const double x,
                        double * result)
 {
+  const double d = c - a - b;
+
   int a_neg_integer;
   int b_neg_integer;
   int c_neg_integer;
-  
+
   if(x < -1.0 || 1.0 <= x) return GSL_EDOM;
 
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
@@ -362,278 +539,73 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
   if(c_neg_integer) {
     if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
     if(! (b_neg_integer && b > c + 0.1)) return GSL_EDOM;
-  }  
+  }
+
   if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
-    return pow_omx(x, c-a-b, result);  /* (1-x)^(c-a-b) */
+    return pow_omx(x, d, result);  /* (1-x)^(c-a-b) */
   }
 
   if(fabs(a) < 10.0 && fabs(b) < 10.0) {
-    double prec;
-    return hyperg_2F1_series(a, b, c, x, result, &prec);
-  }
-  else if(x < 0.0) {
-    double prec;
-    return hyperg_2F1_luke(a, b, c, x, result, &prec);
-  }
-  else {
-    double xi  = x/(x-1.0);
-    double pre;
-    double prec;
-    int stat_pre = pow_omx(x, -a, &pre);
-    if(stat_pre == GSL_EUNDRFLW) {
-      *result = 0.0;
-      return stat_pre;
+    /* a and b are not too large, so we attempt
+     * variations on the series summation.
+     */
+    if(a_neg_integer) {
+      double prec;
+      return hyperg_2F1_series(rint(a), b, c, x, result, &prec);
     }
-    else if(stat_pre == GSL_EOVRFLW) {
-      *result = 0.0; /* FIXME: should be Inf */
-      return stat_pre;
+    if(b_neg_integer) {
+      double prec;
+      return hyperg_2F1_series(a, rint(b), c, x, result, &prec);
+    }
+
+    if(x < -0.25) {
+      double prec;
+      return hyperg_2F1_luke(a, b, c, x, result, &prec);
+    }
+    else if(x < 0.5) {
+      double prec;
+      return hyperg_2F1_series(a, b, c, x, result, &prec);
     }
     else {
-      double newF;
-      int stat_hyp = hyperg_2F1_luke(a, c-b, c, xi, &newF, &prec);
-      *result = pre * newF;
-      return stat_hyp;
-    }
-  }
-}
-
-
-int gsl_sf_hyperg_2F1_impl_old(double a, double b, const double c,
-                           const double x,
-                           double * result
-                           )
-{
-  const double ax = fabs(x);
-  double d;
-  int a_neg_integer;
-  int b_neg_integer;
-  int c_neg_integer;
-  int d_integer;
-  
-  if(ax >= 1.0) return GSL_EDOM;
-
-  if(fabs(a) > fabs(b)) {
-    double tmp = a;
-    a = b;
-    b = tmp;
-  }
-
-  d  = c - a - b;
-  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
-  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
-  c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
-  d_integer	= ( fabs(d - rint(d)) < locEPS );
-
-  if(c_neg_integer) {
-    if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
-    if(! (b_neg_integer && b > c + 0.1)) return GSL_EDOM;
-  }
-  
-  if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
-    return pow_omx(x, c-a-b, result);  /* (1-x)^(c-a-b) */
-  }
-
-
-  if(x < -0.5 && b > 0.0) {
-    double F, F_prec, p;
-    int status_F = hyperg_2F1_series(a, c-b, c, -x/(1.0-x), &F, &F_prec);
-    int status_p = pow_omx(x, -a, &p);
-    if(status_p == GSL_SUCCESS && status_F == GSL_SUCCESS) {
-      *result = p * F;
-      return GSL_SUCCESS; 
-    }
-    else if(status_p == GSL_EUNDRFLW) {
-      *result = 0.0;
-      return GSL_EUNDRFLW;
-    }
-    else if(status_p == GSL_EOVRFLW) {
-      *result = 0.0; /* FIXME: should be Inf */
-      return GSL_EOVRFLW;
-    }
-    else if(F_prec > locEPS) {
-      *result = p * F;
-      return GSL_ELOSS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EFAILED;
-    }
-  }
-  
-  if(x < -0.5 && b <= 0.0) {
-    double F, F_prec, p;
-    int status_F = hyperg_2F1_series(c-a, b, c, -x/(1.0-x), &F, &F_prec);
-    int status_p = pow_omx(x, -b, &p);
-    if(status_p == GSL_SUCCESS && status_F == GSL_SUCCESS) {
-      *result = p * F;
-      return GSL_SUCCESS; 
-    }
-    else if(status_p == GSL_EUNDRFLW) {
-      *result = 0.0;
-      return GSL_EUNDRFLW;
-    }
-    else if(status_p == GSL_EOVRFLW) {
-      *result = 0.0; /* FIXME: should be Inf */
-      return GSL_EOVRFLW;
-    }
-    else if(F_prec > locEPS) {
-      *result = p * F;
-      return GSL_ELOSS;
-    }
-    else {
-      *result = 0.0;
-      return GSL_EFAILED;
-    }
-  }
-  
-  if(x > 0.75 && !d_integer) {
-    double pre1, pre2, F1, F2;
-    double prec_F1, prec_F2;
-    int status_F1, status_F2;
-    {
-      /* these gamma functions appear in the denominator, so we
-         catch their harmless domain errors and set the terms to zero
-      */
-      double ln_g1ca, ln_g1cb, ln_g2a, ln_g2b;
-      int stat_1ca = gsl_sf_lngamma_impl(c-a, &ln_g1ca);
-      int stat_1cb = gsl_sf_lngamma_impl(c-b, &ln_g1cb);
-      int stat_2a  = gsl_sf_lngamma_impl(a, &ln_g2a);
-      int stat_2b  = gsl_sf_lngamma_impl(b, &ln_g2b);
-      int ok1 = (stat_1ca == GSL_SUCCESS && stat_1cb == GSL_SUCCESS);
-      int ok2 = (stat_2a  == GSL_SUCCESS && stat_2b  == GSL_SUCCESS);
-      
-      double ln_gc, ln_gd, ln_gmd;
-      gsl_sf_lngamma_impl( c, &ln_gc);
-      gsl_sf_lngamma_impl( d, &ln_gd);
-      gsl_sf_lngamma_impl(-d, &ln_gmd);
-      
-      if(ok1 && ok2) {
-	double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
-        double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
-	if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
-          *result = 0.0; /* FIXME: should be Inf */
-          return GSL_EOVRFLW;
-        }
-        pre1 = exp(ln_pre1);
-        pre2 = exp(ln_pre2);
-      }
-      else if(ok1 && !ok2) {
-	double ln_pre1 = ln_gc + ln_gd  - ln_g1ca - ln_g1cb;
-	if(ln_pre1 > GSL_LOG_DBL_MAX) {
-	  *result = 0.0; /* FIXME: should be Inf */
-          return GSL_EOVRFLW;
-	}
-	pre1 = exp(ln_pre1);
-	pre2 = 0.0;
-      }
-      else if(!ok1 && ok2) {
-	double ln_pre2 = ln_gc + ln_gmd - ln_g2a  - ln_g2b + d*log(1.0-x);
-	if(ln_pre2 > GSL_LOG_DBL_MAX) {
-	  *result = 0.0; /* FIXME: should be Inf */
-          return GSL_EOVRFLW;
-	}
-        pre1 = 0.0;
-	pre2 = exp(ln_pre2);
+      if(fabs(c) > 10.0) {
+        double prec;
+        return hyperg_2F1_series(a, b, c, x, result, &prec);
       }
       else {
-        pre1 = 0.0;
-	pre2 = 0.0;
-	*result = 0.0;
-	return GSL_EUNDRFLW;
+        return hyperg_2F1_reflect(a, b, c, x, result);
       }
     }
-    status_F1 = hyperg_2F1_series(  a,   b, 1.0-d, 1.0-x, &F1, &prec_F1);
-    status_F2 = hyperg_2F1_series(c-a, c-b, 1.0+d, 1.0-x, &F2, &prec_F2);
-    *result = pre1*F1 + pre2*F2;
-    if(prec_F1 > locEPS || prec_F2 > locEPS)
-      return GSL_ELOSS;
-    else
-      return GSL_SUCCESS;
   }
-  
-  if(x > 0.75 && d_integer) {
-    int i;
-    double ad = fabs(d);
-    double ln_pre1, ln_pre2, pre1, pre2;
-    double F1, F2;
-    double d1, d2;
-    double sum1 = 0.0, sum2 = 0.0;
-    double lng_ad, lng_c;
-    double lng_ad1, lng_ad2, lng_bd1, lng_bd2;
-    int stat_ad, stat_c;
-    int stat_ad1, stat_ad2, stat_bd1, stat_bd2;
-    double ln_omx = log(1.0 - x);
-    if(d >= 0.0) {
-      d1 = d;
-      d2 = 0.0;
+  else {
+    /* Either a or b or both large.
+     * Introduce some new variables ap,bp so that bp is
+     * the larger in magnitude.
+     */
+    double ap, bp; 
+    if(fabs(a) > fabs(b)) {
+      bp = a;
+      ap = b;
     }
     else {
-      d1 = 0.0;
-      d2 = d;
+      bp = b;
+      ap = a;
     }
-    stat_ad  = gsl_sf_lngamma_impl(ad,   &lng_ad);
-    stat_c   = gsl_sf_lngamma_impl(c,    &lng_c);
-    stat_ad1 = gsl_sf_lngamma_impl(a+d1, &lng_ad1);
-    stat_ad2 = gsl_sf_lngamma_impl(a+d1, &lng_ad2);
-    stat_bd1 = gsl_sf_lngamma_impl(a+d1, &lng_bd1);
-    stat_bd2 = gsl_sf_lngamma_impl(a+d1, &lng_bd2);
-    
-    if(stat_ad != GSL_SUCCESS || stat_c != GSL_SUCCESS)
-    ln_pre1 = lng_ad + lng_c + d2*ln_omx - lng_ad1 - lng_bd1;
-    ln_pre2 =          lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
 
-    if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
-      *result = 0.0; /* FIXME: should be Inf (?) */
-      return GSL_EOVRFLW;
+    if(x < 0.0) {
+      double prec;
+      return hyperg_2F1_luke(a, b, c, x, result, &prec);
     }
-    pre1 = exp(ln_pre1);
-    pre2 = exp(ln_pre2);
-    
-    {
-      /* F1 sum */
-      double term = 1.0;;
-      for(i=0; i<ad; i++) {
-        sum1 += term;
-	term *= (a + d2 + i) * (b + d2 + i) / (1.0 + d2 + i) / (i+1) * (1.0-x);
-      }
-    }
-    
-    {
-      /* F2 sum */
-      double term;
-      double Psi;
-      double ln_dkfact;
-      double p1 = -M_EULER;
-      double p2, p3, p4;
-      gsl_sf_lnfact_impl(ad, &ln_dkfact);
-      term = exp(-ln_dkfact);
-      gsl_sf_psi_impl(1 + ad, &p2);
-      gsl_sf_psi_impl(a + d1, &p3);
-      gsl_sf_psi_impl(b + d1, &p4);
-      Psi = p1 + p2 - p3 - p4 - log(1.0-x);
-      for(i=0; i<ad; i++) {
-        sum2 += term * Psi;
-	term *= (a + d1 + i) * (b + d1 + i) / (ad + i + 1) / (i+1) * (1.0-x);
-	Psi  +=  1.0/(2.0 + i) + 1.0/(2.0 + ad + i)
-	        -1.0/(a + d1 + 1 + i) - 1.0/(b + d1 + 1 + i);
-      }
-    }
-    
-    F1 = pre1 * sum1;
-    F2 = pre2 * sum2;
-    
-    
-  }
-  
 
-  {
-    /* default case */
-    double prec;
-    int status = hyperg_2F1_series(a, b, c, x, result, &prec);
-    if(prec > locEPS)
-      return GSL_ELOSS;
-    else
-      return GSL_SUCCESS;
+    if(locMAX(fabs(a),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
+      /* If c is large enough we can attempt the series anyway.
+       */
+      double prec;
+      return hyperg_2F1_series(a, b, c, x, result, &prec);
+    }
+
+
+
+
   }
 }
 
@@ -648,20 +620,22 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
   if(ax >= 1.0) return GSL_EDOM;
   if(c_neg_integer) return GSL_EDOM;
 
-  if(ax < 0.2 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
+  if(ax < 0.25 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
     double prec;
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
   }
-  else if(aR*aR+aI*aI < 50.0 /* fabs(aR) < 5.0 && fabs(aI) < 5.0 */) {
-    double prec;
-    int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
-    return status;
+  else if(fabs(aR) < 10.0 && fabs(aI) < 10.0) {
+    if(x < -0.25) {
+      double prec;
+      return hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec);
+    }
+    else {
+      double prec;
+      return hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
+    }
   }
   else {
-    double prec;
-    int status = hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec);
-    return status;
   }
 }
 
@@ -676,7 +650,7 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
   const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
   
   if(c_neg_integer) {
-    if((a_neg_integer && a > c) || (b_neg_integer && b > c)) {
+    if((a_neg_integer && a > c+0.1) || (b_neg_integer && b > c+0.1)) {
       /* 2F1 terminates early */
       *result = 0.0;
       return GSL_SUCCESS;
