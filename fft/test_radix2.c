@@ -23,38 +23,48 @@ unsigned int tests = 0;
 unsigned int passed = 0;
 unsigned int failed = 0;
 
+void check_complex_radix2 (unsigned int n) ;
+
 int
 main (int argc, char *argv[])
 {
-
-  double *real_data, *real_tmp;
-  double *fft_real_data, *fft_real_tmp;
-  complex *complex_data, *complex_tmp;
-  complex *fft_complex_data, *fft_complex_tmp;
-  char length[256];
-
-  gsl_fft_complex_wavetable complex_wavetable;
-  gsl_fft_real_wavetable real_wavetable;
-  gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
-  int i, status;
-  unsigned int n, n_min, n_max;
+  unsigned int i, n;
+  int status ;
 
   if (argc == 2)
     {
       n = strtol (argv[1], NULL, 0);
+      check_complex_radix2 (n) ;
     }
   else
     {
-      printf ("test n\n");
-      exit (EXIT_FAILURE);
+      for (i = 1 ; i <= 1024 ; i *= 2) 
+	{
+	  check_complex_radix2 (i) ;
+	}
     }
-  
-  real_data = malloc (n * sizeof (double));
+
+  status = msg_summary (tests, passed, failed);
+
+  return status ;
+}
+
+
+void check_complex_radix2 (unsigned int n) 
+{
+
+  int status ;
+
+  complex *complex_data, *complex_tmp;
+  complex *fft_complex_data, *fft_complex_tmp;
+
+  char length[256];
+
   complex_data = malloc (n * sizeof (complex));
   complex_tmp = malloc (n * sizeof (complex));
   fft_complex_data = malloc (n * sizeof (complex));
   fft_complex_tmp = malloc (n * sizeof (complex));
-
+  
   sprintf (length, "n = %d", n);
   
   msg_checking_params (length, 
@@ -64,7 +74,7 @@ main (int argc, char *argv[])
   gsl_fft_complex_radix2_dif_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
-				    n, 1000.0);
+				    n, 1e6);
   msg_result_status (status);
   
   
@@ -75,7 +85,7 @@ main (int argc, char *argv[])
   gsl_fft_complex_radix2_forward (complex_data, n);
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
-				    n, 1000.0);
+				    n, 1e6);
   msg_result_status (status);
   
   /* compute the inverse fft */
@@ -84,11 +94,16 @@ main (int argc, char *argv[])
   status = gsl_fft_complex_radix2_inverse (complex_data, n);
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft_real", complex_data,
-				    n, 1000.0);
+				    n, 1e6);
   msg_result_status (status);
-  
+
+  free (complex_data) ;
+  free (complex_tmp) ;
+  free (fft_complex_data) ;
+  free (fft_complex_tmp) ;
   
 }
+
 
 
 

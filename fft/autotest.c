@@ -1,4 +1,7 @@
+#include <config.h>
+
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <autotest.h>
 
@@ -63,21 +66,21 @@ msg_summary (unsigned int total_tests,
   if (total_failed != 0)
     {
       printf ("%d TEST(S) FAILED.\n", total_failed);
-      return -1 ;
+      return EXIT_FAILURE ;
     }
 
   if (total_tests != total_passed + total_failed)
     {
       printf ("Test results do not add up %d != %d + %d\n",
 	      total_tests, total_passed, total_failed);
-      return -1 ;
+      return EXIT_FAILURE ;
     }
 
   if (total_passed == total_tests)
     {
       printf ("All tests passed successfully\n");
-      return 0 ;
+      return EXIT_SUCCESS ;
     }
 
-  return -1;
+  return EXIT_FAILURE;
 }

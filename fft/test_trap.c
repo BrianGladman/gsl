@@ -27,11 +27,11 @@ main (int argc, char *argv[])
 {
   int status ;
 
-  double *real_data, *real_tmp;
-  double *fft_real_data, *fft_real_tmp;
+  double real_x ;
+  complex complex_x ;
 
-  complex *complex_data, *complex_tmp;
-  complex *fft_complex_data, *fft_complex_tmp;
+  double * real_data = &real_x ;
+  complex * complex_data = &complex_x  ; 
 
   gsl_fft_complex_wavetable complex_wavetable;
   gsl_fft_real_wavetable real_wavetable;

@@ -17,7 +17,7 @@ typedef struct
 gsl_fft_halfcomplex_wavetable;
 
 int
-  gsl_fft_halfcomplex_backwards (double *data,
+  gsl_fft_halfcomplex_backward (double *data,
 				 const unsigned int n,
 			   const gsl_fft_halfcomplex_wavetable * wavetable);
 

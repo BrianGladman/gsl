@@ -23,9 +23,36 @@ unsigned int tests = 0;
 unsigned int passed = 0;
 unsigned int failed = 0;
 
+void check_complex (unsigned int n) ;
+
 int
 main (int argc, char *argv[])
 {
+  int status;
+  unsigned int i, n ;
+
+  if (argc == 2)
+    {
+      n = strtol (argv[1], NULL, 0);
+      check_complex (n) ;
+    }
+  else
+    {
+      for (i = 1 ; i < 100 ; i++) 
+	{
+	  check_complex (i) ;
+	}
+    }
+
+  status = msg_summary (tests, passed, failed);
+  
+  return status;
+}
+
+void check_complex (unsigned int n) 
+{
+  int i, status ;
+
   double *real_data, *real_tmp;
   double *fft_real_data, *fft_real_tmp;
   complex *complex_data, *complex_tmp;
@@ -35,19 +62,7 @@ main (int argc, char *argv[])
   gsl_fft_complex_wavetable complex_wavetable;
   gsl_fft_real_wavetable real_wavetable;
   gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
-  int i, status;
-  unsigned int n, n_min, n_max;
 
-  if (argc == 2)
-    {
-      n = strtol (argv[1], NULL, 0);
-    }
-  else
-    {
-      printf ("test n\n");
-      exit (EXIT_FAILURE);
-    }
-  
   real_data = malloc (n * sizeof (double));
   complex_data = malloc (n * sizeof (complex));
   complex_tmp = malloc (n * sizeof (complex));
@@ -105,6 +120,7 @@ main (int argc, char *argv[])
   msg_checking_params (length, 
 		       "gsl_fft_complex_backward with test_signal_noise");
   status = gsl_fft_complex_backward (fft_complex_tmp, n, &complex_wavetable);
+
   for (i = 0; i < n; i++)
     {
       complex_tmp[i].real *= n;
@@ -223,8 +239,4 @@ main (int argc, char *argv[])
   free (complex_tmp);
   free (fft_complex_data);
   free (fft_complex_tmp);
-
-  status = msg_summary (tests, passed, failed);
-  
-  return status;
 }
