@@ -49,6 +49,7 @@ The functions described in this section are declared in
 * The Hypergeometric Distribution::  
 * The Logarithmic Distribution::  
 * Shuffling and Sampling::      
+* Random Number Distribution Examples::  
 * Random Number Distribution References and Further Reading::  
 @end menu
 
@@ -1883,6 +1884,75 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 
 @end deftypefn
 
+@node Random Number Distribution Examples
+@section Random Number Distribution Examples
+
+The following program demonstrates the use of a random number generator
+to produce variates from a distribution. It prints 10 samples from the
+Poisson distribution with a mean of 3.
+
+@example
+#include <stdio.h>
+#include <gsl_rng.h>
+#include <gsl_randist.h>
+
+int
+main ()
+@{
+  gsl_rng * r ;
+
+  int i, n = 10;
+  double mu = 3.0;
+
+  /* create a generator chosen by the environment variable GSL_RNG_TYPE */
+
+  gsl_rng_env_setup();
+  
+  r = gsl_rng_alloc (gsl_rng_default);
+
+  /* print n random variates chosen from the poisson distribution with
+     mean parameter mu */
+
+  for (i = 0; i < n; i++) 
+    @{
+      unsigned int k = gsl_ran_poisson (r, mu);
+      
+      printf(" %u", k);
+    @}
+
+  printf("\n");
+@}
+@end example
+
+@noindent
+If the library and header files are installed under @file{/usr/local}
+(the default location) then the program can be compiled with these
+options,
+
+@example
+gcc -I/usr/local/include/gsl -L/usr/local/lib/gsl demo.c -lgslrandist 
+  -lgslrng -lgslspecfunc -lgslerr -lm
+@end example
+
+@noindent
+Here is the output of the program,
+
+@example
+$ ./a.out 
+ 4 2 3 3 1 3 4 1 3 5
+@end example
+
+@noindent
+The variates depend on the seed used by the generator. The seed for the
+default generator type @code{gsl_rng_default} can be changed with the
+@code{GSL_RNG_SEED} environment variable to produce a different stream
+of variates,
+
+@example
+$ GSL_RNG_SEED=123 ./a.out 
+GSL_RNG_SEED=123
+ 1 1 2 1 2 6 2 1 8 7
+@end example
 
 @node Random Number Distribution References and Further Reading
 @section Random Number Distribution References and Further Reading
