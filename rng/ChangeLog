@@ -1,3 +1,7 @@
+Fri Jun 19 11:12:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* removed the gsl- prefix from generator name strings
+
 Thu Jun 18 12:17:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c: added a 10000 iteration check for cmrg

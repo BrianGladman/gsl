@@ -70,7 +70,7 @@ void mrg_set(void * vstate, unsigned int s)
   return;
 }
 
-static const gsl_rng_type mrg_type = { "gsl-mrg",  /* name */
+static const gsl_rng_type mrg_type = { "mrg",  /* name */
 					2147483647,  /* RAND_MAX */
 					sizeof(mrg_state_t), 
 					&mrg_set, 

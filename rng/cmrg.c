@@ -118,7 +118,7 @@ void cmrg_set(void * vstate, unsigned int s)
   cmrg_get (state);
 }
 
-static const gsl_rng_type cmrg_type = { "gsl-cmrg",  /* name */
+static const gsl_rng_type cmrg_type = { "cmrg",  /* name */
 					2147483647,  /* RAND_MAX */
 					sizeof(cmrg_state_t), 
 					&cmrg_set, 

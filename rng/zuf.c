@@ -96,7 +96,7 @@ void zuf_set(void * vstate, unsigned int s)
     }
 } 
 
-static const gsl_rng_type zuf_type = { "gsl-zuf",  /* name */
+static const gsl_rng_type zuf_type = { "zuf",  /* name */
 					16777216,  /* RAND_MAX */
 					sizeof(zuf_state_t), 
 					&zuf_set, 

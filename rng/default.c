@@ -20,6 +20,8 @@ gsl_rng_env_setup (void)
   if (p)
     {
       gsl_rng_default = 0 ;
+
+      /* check GSL_RNG_TYPE against the names of all the generators */
       
       check(&gsl_rng_default, gsl_rng_bad_rand, p) ;
       check(&gsl_rng_default, gsl_rng_bad_randu, p) ;

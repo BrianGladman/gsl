@@ -84,8 +84,6 @@ C***END PROLOGUE  UNI
 
 unsigned long int uni32_get (void * vstate);
 void uni32_set (void * state, unsigned int s);
-void uni32_set_with_state (void * vstate, const void * vinit_state,
-			  unsigned int s);
 
 static const unsigned int MDIG=32;                /* Machine digits in int */
 static const unsigned int m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
@@ -159,7 +157,7 @@ void uni32_set(void * vstate, unsigned int s)
   return;
 }
 
-static const gsl_rng_type uni32_type = { "gsl-uni32",  /* name */
+static const gsl_rng_type uni32_type = { "uni32",  /* name */
 					 2147483647,  /* RAND_MAX */
 					 sizeof(uni32_state_t), 
 					 &uni32_set, 

@@ -6,11 +6,11 @@
 /* This is a maximally equidistributed combined Tausworthe
    generator. The sequence is,
    
-   x_n = (s1_n ^ s2_n ^ s3_n) 
+       x_n = (s1_n ^ s2_n ^ s3_n) 
 
-   s1_{n+1} = (((s1_n & 4294967294) << 12) ^ (((s1_n << 13) ^ s1_n) >> 19))
-   s2_{n+1} = (((s2_n & 4294967288) <<  4) ^ (((s2_n <<  2) ^ s2_n) >> 25))
-   s3_{n+1} = (((s3_n & 4294967280) << 17) ^ (((s3_n <<  3) ^ s3_n) >> 11))
+       s1_{n+1} = (((s1_n & 4294967294) <<12) ^ (((s1_n <<13) ^ s1_n) >>19))
+       s2_{n+1} = (((s2_n & 4294967288) << 4) ^ (((s2_n << 2) ^ s2_n) >>25))
+       s3_{n+1} = (((s3_n & 4294967280) <<17) ^ (((s3_n << 3) ^ s3_n) >>11))
 
    computed modulo 2^32, where '^' means exclusive-or. Note that the
    algorithm relies on 32-bit unsigned integers (it is formally
@@ -77,7 +77,7 @@ void taus_set(void * vstate, unsigned int s)
   return;
 }
 
-static const gsl_rng_type taus_type = { "gsl-taus",  /* name */
+static const gsl_rng_type taus_type = { "taus",  /* name */
 					4294967295UL,  /* RAND_MAX */
 					sizeof(taus_state_t), 
 					&taus_set, 

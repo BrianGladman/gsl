@@ -157,7 +157,7 @@ void uni_set(void * vstate, unsigned int s)
   return;
 }
 
-static const gsl_rng_type uni_type = { "gsl-uni",  /* name */
+static const gsl_rng_type uni_type = { "uni",  /* name */
 					32767,  /* RAND_MAX */
 					sizeof(uni_state_t), 
 					&uni_set, 
