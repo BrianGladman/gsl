@@ -1,5 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(statistics/jtest.c)
+AM_INIT_AUTOMAKE(gsl, 0.3a-interim)
 AM_CONFIG_HEADER(config.h)
 
 dnl things required by automake
@@ -16,10 +17,10 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 
-VERSION=0.3a-interim
-AC_SUBST(VERSION)
-PACKAGE=gsl
-AC_SUBST(PACKAGE)
+#VERSION=0.3a-interim
+#AC_SUBST(VERSION)
+#PACKAGE=gsl
+#AC_SUBST(PACKAGE)
 
 dnl Checks for header files.
 

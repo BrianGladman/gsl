@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1l from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -32,17 +32,23 @@ pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ..
 
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-host_triplet = @host@
 host_alias = @host_alias@
-RANLIB = @RANLIB@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
+host_triplet = @host@
 CC = @CC@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
 
 ALLRAN= taus mrg cmrg uni uni32 zuf rand
 FAVORITERAN= taus
@@ -219,10 +225,10 @@ HEADERS =  $(include_HEADERS)
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
-	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
+GZIP = --best
 DEP_FILES =  .deps/benchran.P .deps/cmrg-gen.P .deps/cmrg-state.P \
 .deps/cmrg.P .deps/mrg-gen.P .deps/mrg-state.P .deps/mrg.P .deps/ran.P \
 .deps/rand-gen.P .deps/rand-state.P .deps/rand.P .deps/switch.P \
@@ -237,8 +243,8 @@ default: all
 
 .SUFFIXES:
 .SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
-	cd $(top_srcdir) && automake --gnu random/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu random/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -259,14 +265,14 @@ install-libLIBRARIES: $(lib_LIBRARIES)
 	$(mkinstalldirs) $(libdir)
 	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(INSTALL_DATA) $$p $(libdir)/$$p"; \
+	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
 	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
 	  else :; fi; \
 	done
 	$(POST_INSTALL)
 	@list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(RANLIB) $(libdir)/$$p"; \
+	    echo " $(RANLIB) $(libdir)/$$p"; \
 	    $(RANLIB) $(libdir)/$$p; \
 	  else :; fi; \
 	done
@@ -351,7 +357,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(bindir)
 	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
@@ -453,7 +459,7 @@ install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
 	@list="$(include_HEADERS)"; for p in $$list; do \
-	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
+	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1l from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -32,17 +32,23 @@ pkgincludedir = $(includedir)/@PACKAGE@
 
 top_builddir = ..
 
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-host_triplet = @host@
 host_alias = @host_alias@
-RANLIB = @RANLIB@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
+host_triplet = @host@
 CC = @CC@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
 
 noinst_LIBRARIES = libfft.a 
 
@@ -158,10 +164,10 @@ HEADERS =  $(include_HEADERS)
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
-	$(TEXINFOS) $(MANS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
+GZIP = --best
 DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/compare.P \
 .deps/complex.P .deps/complex_init.P .deps/complex_pass_2.P \
 .deps/complex_pass_3.P .deps/complex_pass_4.P .deps/complex_pass_5.P \
@@ -181,8 +187,8 @@ default: all
 
 .SUFFIXES:
 .SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL) 
-	cd $(top_srcdir) && automake --gnu fft/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu fft/Makefile
 
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -231,7 +237,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	$(mkinstalldirs) $(bindir)
 	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; \
 	done
@@ -265,7 +271,7 @@ install-includeHEADERS: $(include_HEADERS)
 	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
 	@list="$(include_HEADERS)"; for p in $$list; do \
-	  echo "$(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
+	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
@@ -352,6 +358,7 @@ check-TESTS: $(TESTS)
 	  echo "========================"; \
 	else \
 	  echo "$$failed of $$all tests failed"; \
+	  exit 1; \
 	fi
 info:
 dvi:

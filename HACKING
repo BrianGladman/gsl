@@ -1,0 +1,45 @@
+
+                         Hacking on GSL
+
+The GSL hacker needs some stuff that the end users don't:
+
+* you must have the latest automake (1.1l or greater) from
+ftp://ftp.cygnus.com/pub/tromey/
+
+* you must have the latest autoconf from
+ftp://prep.ai.mit.edu/u2/emacs/ (notice the studly use of the old
+/u2/emacs path!)
+
+* you must have the latest texinfo with Brian's mathematical hacks;
+you can get that from /u/bjg/texinfo-3.9-math.tar.gz on the NIS
+division computers.
+
+* you must have the latest CVS (1.9 right now) from
+ftp://prep.ai.mit.edu/u2/emacs/
+
+Once you have this stuff, you can get the repository and start
+working from your own machine.  To do the initial checkout of the
+repository try (bash syntax):
+
+export CVS_RSH=ssh
+cvs -d your-login@sarastro.lanl.gov:/n/projects/cvs/gsl checkout gsl
+
+at this point you can "cd gsl" and start mucking around with
+"./configure --prefix=whatever; make install".  Once you are in the
+gsl directory, future CVS commands will not need the -d option, so you
+can just do
+
+cvs update		(to make sure you get other people's new stuff)
+cvs commit		(to check in your changes)
+cvs add filename	(to add a file to the repository)
+
+---------
+
+Let me know if any of these steps don't work.  I have tried them out
+on swift and they seem to work.
+
+I also think you need something like
+
+export CVSMASK=0
+
+but I'm not sure offhand.

@@ -1,5 +1,11 @@
 @BOTTOM@
 
+/* Define if you have PACKAGE */
+#undef PACKAGE
+
+/* Define if you have VERSION */
+#undef VERSION
+
 /* Define if you have the ansi CLOCKS_PER_SEC clock rate */
 #undef HAVE_CLOCKS_PER_SEC
 
