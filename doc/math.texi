@@ -112,12 +112,26 @@ This macro contains the IEEE representation of the Not-a-Number symbol,
 @node Elementary Functions
 @section Elementary Functions
 
+The following routines provide portable implementations of functions
+found in the BSD math library.  When native versions are not available
+the functions described here can be used instead.  The substitution can
+be made automatically if you use @code{autoconf} to compile your
+application @pxref{Portability functions}.
+
 @deftypefun double gsl_log1p (const double @var{x})
 @cindex log1p
-@cindex logarithm, computed accurately
+@cindex logarithm, computed accurately near 1
 This function computes the value of @math{\log(1+x)} in a way that is
-accurate for small @var{x}. It provides an alternative to the system
+accurate for small @var{x}. It provides an alternative to the BSD math
 function @code{log1p(x)}.
+@end deftypefun
+
+@deftypefun double gsl_expm1 (const double @var{x})
+@cindex expm1
+@cindex exponential, difference from 1 computed accurately
+This function computes the value of @math{\exp(x)-1} in a way that is
+accurate for small @var{x}. It provides an alternative to the BSD math
+function @code{expm1(x)}.
 @end deftypefun
 
 @deftypefun double gsl_hypot (const double @var{x}, const double @var{y})
@@ -126,8 +140,8 @@ function @code{log1p(x)}.
 @cindex length, computed accurately using hypot
 This function computes the value of
 @c{$\sqrt{x^2 + y^2}$}
-@math{\sqrt@{x^2 + y^2@}} in a way that avoid overflow. It provides an
-alternative to the system function @code{hypot(x,y)}.
+@math{\sqrt@{x^2 + y^2@}} in a way that avoids overflow. It provides an
+alternative to the BSD math function @code{hypot(x,y)}.
 @end deftypefun
 
 @node Testing the Sign of Numbers

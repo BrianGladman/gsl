@@ -8,10 +8,11 @@ introduces its conventions.
 @menu
 * ANSI C Compliance::           
 * Compiling and Linking::       
-* Automake macros::             
 * Shared Libraries::            
+* Automake macros::             
 * Inline functions::            
 * Long double::                 
+* Portability functions::       
 * Alternative optimized functions::  
 * Support for different numeric types::  
 * Compatibility with C++::      
@@ -212,6 +213,44 @@ If it is necessary to work on a system which does not support formatted
 @code{long double} input/output then the options are to use binary
 formats or to convert @code{long double} results into @code{double} for
 reading and writing.
+
+@node Portability functions
+@section Portability functions
+
+To help in writing portable applications GSL provides some
+implementations of functions that are found in other libraries, such as
+the BSD math library.  You can write your application to use the native
+versions of these functions, and substitute the GSL versions (with a
+preprocessor macro) if they are unavailable on another platform.  The
+substitution can be made automatically if you use @code{autoconf}. For
+example, to test whether the BSD function @code{hypot} is available you
+can include the following line in the configure file @file{configure.in}
+for your application ,
+
+@example
+AC_CHECK_FUNCS(hypot)
+@end example
+@noindent
+and place the following macro definitions in the file
+@file{config.h.in},
+
+@example
+/* Substitute gsl functions for missing system functions */
+
+#ifndef HAVE_HYPOT
+#define hypot gsl_hypot
+#endif
+@end example
+@noindent
+The application source files can then use the include command
+@code{#include <config.h>} to substitute @code{gsl_hypot} for each
+occurrence of @code{hypot} when @code{hypot} is not available.
+
+In most circumstances the best strategy is to use the native versions of
+these functions when available, and fall back to GSL versions otherwise,
+since this allows your application to take advantage of any
+platform-specific optimizations in the system library.  This is the
+strategy used within GSL itself.
 
 @node Alternative optimized functions
 @section Alternative optimized functions

@@ -1,3 +1,7 @@
+Sun Oct 22 15:00:24 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* expm1.c (gsl_expm1): added gsl_expm1, a substitute for BSD's expm1
+
 Mon Apr  3 16:58:53 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* params.c (main): added parentheses around negative output values

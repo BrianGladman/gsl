@@ -42,3 +42,29 @@
 
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE
+
+/* Substitute gsl functions for missing system functions */
+
+#ifndef HAVE_HYPOT
+#define hypot gsl_hypot
+#endif
+
+#ifndef HAVE_LOG1P
+#define log1p gsl_log1p
+#endif
+
+#ifndef HAVE_EXPM1
+#define expm1 gsl_expm1
+#endif
+
+#ifndef HAVE_ACOSH
+#define acosh gsl_acosh
+#endif
+
+#ifndef HAVE_ASINH
+#define asinh gsl_asinh
+#endif
+
+#ifndef HAVE_ATANH
+#define atanh gsl_atanh
+#endif

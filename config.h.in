@@ -18,14 +18,29 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define if you have the acosh function.  */
+#undef HAVE_ACOSH
+
+/* Define if you have the asinh function.  */
+#undef HAVE_ASINH
+
+/* Define if you have the atanh function.  */
+#undef HAVE_ATANH
+
 /* Define if you have the clock function.  */
 #undef HAVE_CLOCK
+
+/* Define if you have the expm1 function.  */
+#undef HAVE_EXPM1
 
 /* Define if you have the hypot function.  */
 #undef HAVE_HYPOT
 
 /* Define if you have the isinf function.  */
 #undef HAVE_ISINF
+
+/* Define if you have the log1p function.  */
+#undef HAVE_LOG1P
 
 /* Define if you have the memcpy function.  */
 #undef HAVE_MEMCPY
@@ -94,3 +109,29 @@
 
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE
+
+/* Substitute gsl functions for missing system functions */
+
+#ifndef HAVE_HYPOT
+#define hypot gsl_hypot
+#endif
+
+#ifndef HAVE_LOG1P
+#define log1p gsl_log1p
+#endif
+
+#ifndef HAVE_EXPM1
+#define expm1 gsl_expm1
+#endif
+
+#ifndef HAVE_ACOSH
+#define acosh gsl_acosh
+#endif
+
+#ifndef HAVE_ASINH
+#define asinh gsl_asinh
+#endif
+
+#ifndef HAVE_ATANH
+#define atanh gsl_atanh
+#endif

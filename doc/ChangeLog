@@ -2,6 +2,10 @@
 
 	* gsl-ref.texi: small changes to update the author list.
 
+Mon Oct 23 21:49:25 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* usage.texi: added info on portability functions
+
 Sat Jul 15 23:52:59 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (EXTRA_DIST): added gsl-design.texi to the
