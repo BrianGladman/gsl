@@ -20,9 +20,18 @@ int main(int argc, char * argv[])
   int n = 2;
 
   for(x=-5; x < 10.; x += .02) {
-    
+    printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g    %20.16g %20.16g\n",
+           x,
+	   gsl_sf_airy_Ai(x),
+	   gsl_sf_airy_Bi(x),
+	   gsl_sf_airy_Ai_scaled(x),
+	   gsl_sf_airy_Bi_scaled(x),
+	   gsl_sf_airy_Ai_deriv(x),
+	   gsl_sf_airy_Bi_deriv(x)
+           );
   }
-  
+  exit(0);
+
 /*
   struct gsl_sf_ChebSeries * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 15);
   

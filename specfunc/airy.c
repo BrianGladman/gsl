@@ -413,8 +413,52 @@ static struct gsl_sf_ChebSeries big2_cs = {
                     log weighted error  16.29
           significant figures required  14.41
                decimal places required  17.06
+	       
+ [GJ] Sun Apr 19 18:14:31 EDT 1998
+ There was something wrong with these coefficients. I think the SLATEC
+ numbers were systematically wrong, creating errors after 3 or 4 digits.
+ I recomputed this table. Now I get double precision agreement with
+ Mathematica. Is it possible that an error in the SLATEC fit has
+ been propagated for 20 years? Seeing is believing...
 */
-static double data_aip[34] = {
+static double data_aip[36] = {
+ -0.0187519297793867540198,
+ -0.0091443848250055004725,
+  0.0009010457337825074652,
+ -0.0001394184127221491507,
+  0.0000273815815785209370,
+ -0.0000062750421119959424,
+  0.0000016064844184831521,
+ -0.0000004476392158510354,
+  0.0000001334635874651668,
+ -0.0000000420735334263215,
+  0.0000000139021990246364,
+ -0.0000000047831848068048,
+  0.0000000017047897907465,
+ -0.0000000006268389576018,
+  0.0000000002369824276612,
+ -0.0000000000918641139267,
+  0.0000000000364278543037,
+ -0.0000000000147475551725,
+  0.0000000000060851006556,
+ -0.0000000000025552772234,
+  0.0000000000010906187250,
+ -0.0000000000004725870319,
+  0.0000000000002076969064,
+ -0.0000000000000924976214,
+  0.0000000000000417096723,
+ -0.0000000000000190299093,
+  0.0000000000000087790676,
+ -0.0000000000000040927557,
+  0.0000000000000019271068,
+ -0.0000000000000009160199,
+  0.0000000000000004393567,
+ -0.0000000000000002125503,
+  0.0000000000000001036735,
+ -0.0000000000000000509642,
+  0.0000000000000000252377,
+ -0.0000000000000000125793
+/*
   -.0187519297793868
   -.0091443848250055,
    .0009010457337825,
@@ -449,6 +493,7 @@ static double data_aip[34] = {
   -.0000000000000002,
    .0000000000000001,
   -.0000000000000000
+*/
 };
 
 /* chebyshev for Bi(x) asymptotic factor 
@@ -527,7 +572,7 @@ static double data_bip2[29] = {
 
 static struct gsl_sf_ChebSeries aip_cs = {
   data_aip,
-  33,
+  35,
   -1, 1,
   (double *) 0,
   (double *) 0
@@ -549,7 +594,7 @@ static struct gsl_sf_ChebSeries bip2_cs = {
   (double *) 0
 };
 
-
+/* FIXME: something is wrong with this... not accurate to more than 3 digits */
 /* should only be called for x >= 1.0 */
 static double airy_aie(const double x)
 {
@@ -611,7 +656,7 @@ int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
   }
   else if(x <= 0.0) {
     double z = x*x*x;
-    *result = 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
+    *result  = 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
     return GSL_SUCCESS;
   }
    else if(x <= 1.0) {
@@ -680,8 +725,9 @@ int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x <= 2.) {
-    double z = (2.0*x*x*x - 9.0)/7.0;
-    double s = exp(-2.0/3.0 * sqrt(z));
+    double x3 = x*x*x;
+    double z = (2.0*x3 - 9.0)/7.0;
+    double s = exp(-2.0/3.0 * sqrt(x3));
     *result  = 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
     *result *= s;
     return GSL_SUCCESS;

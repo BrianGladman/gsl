@@ -730,7 +730,7 @@ int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
   const double eta = 0.1 * GSL_MACH_EPS;                  /* 0.1*r1mach(3) */
   const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;    /* sqrt (eta) */
   const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS;   /* eta**0.3333 */
-  const double xmax  = pow(1.5*GSL_LOG_DBL_MIN, 0.6666);  /* (1.5*alog(r1mach(2)))**0.6666 */
+  const double xmax  = pow(1.5*GSL_LOG_DBL_MAX, 0.6666);  /* (1.5*alog(r1mach(2)))**0.6666 */
 
   if(x < -1.0) {
     double a, p;
@@ -752,9 +752,9 @@ int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x < xmax) {
-    double s;
-    gsl_sf_airy_Bi_scaled_impl(x, &s);
-    *result = s * exp (2.0*x*sqrt(x)/3.0);
+    double bp_s;
+    gsl_sf_airy_Bi_deriv_scaled_impl(x, &bp_s);
+    *result = bp_s * exp (2.0*x*sqrt(x)/3.0);
     return GSL_SUCCESS;
   }
   else {
