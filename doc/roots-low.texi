@@ -59,16 +59,7 @@ values of your iterated variables available to help diagnose why it
 failed. Second, it makes it possible to preserve the state of the root
 finder, enabling it to be restarted in the same place if needed. A
 situation where this could be useful is if the function under search is
-very costly to evaluate. Pretend, for a moment, that you want to find a
-root of a function which takes several minutes to evaluate. Your program
-could chug away for a few iterations, then examine your mailbox to see
-if the number of flames about bogging down the machine is above a
-certain threshold. If it isn't, chug away for a few more iterations and
-repeat the process; if it is, depending on your temperament, your
-program could renice itself to a lower priority and mail back apologies
-before continuing, or it could mailbomb everyone who complained, spawn
-copies of itself endlessly, and dump garbage to @w{@file{/dev/audio}}.
-(The latter approach is not recommended.)
+very costly to evaluate. 
 
 Note that these arguments must be valid pointers; GSL root finders will
 not allocate any memory for you.

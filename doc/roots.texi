@@ -5,9 +5,7 @@
 @cindex roots
 
 This chapter describes functions for finding a root of an arbitrary
-function which you provide. It discusses proper use and possible
-pitfalls of each function and gives an overview of the algorithms
-involved.
+one-dimensional function which you provide. 
 
 The @value{GSL} provides two types of root finding functions: high-level
 functions which take few arguments and make most decisions for you, and
@@ -16,16 +14,8 @@ controlled. For most tasks, the simpler high-level functions will be
 sufficient, but the greater degree of control provided by the low-level
 functions is sometimes useful.
 
-For examples of GSL root finding functions in action, look at the source
-code for the testing program which verifies that the they work correctly
-(it is run when you do a @samp{make check}). It is in the file
-@w{@file{roots/test.c}} and implements one way of properly handling
-errors.
-
 The header file @w{@file{gsl_roots.h}} contains prototypes for GSL root
 finding functions and some other related declarations.
-
-@strong{FIXME: add a note about performance.}
 
 @menu
 * Root Finding Overview::

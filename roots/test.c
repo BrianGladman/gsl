@@ -150,6 +150,42 @@ main (void)
   test_newton_failure ("gsl_root_newton, max iterations towards root, (x - 1)^7 {0}",
 		       func6, func6_df, func6_fdf, 0.0, 1.0);
 
+  {
+    int n = 0 ;
+    double x[2] ;
+
+    n = gsl_root_solve_quadratic (4.0, -20.0, 26.0, x) ;
+
+    gsl_test(n != 0, "gsl_root_solve_quadratic, no roots, (2x - 5)^2 = -1") ;
+
+    n = gsl_root_solve_quadratic (4.0, -20.0, 25.0, x) ;
+    
+    gsl_test(n != 1, "gsl_root_solve_quadratic, one root, (2x - 5)^2 = 0");
+    gsl_test_rel(x[0], 2.5, 1e-9, "gsl_root_solve_quadratic, (2x - 5)^2 = 0");
+
+    n = gsl_root_solve_quadratic (4.0, -20.0, 21.0, x);
+    
+    gsl_test(n != 2, "gsl_root_solve_quadratic, two roots, (2x - 5)^2 = 4") ;
+    gsl_test_rel(x[0], 1.5, 1e-9, "gsl_root_solve_quadratic, (2x - 5)^2 = 4");
+    gsl_test_rel(x[1], 3.5, 1e-9, "gsl_root_solve_quadratic, (2x - 5)^2 = 4");
+
+    n = gsl_root_solve_quadratic (4.0, 7.0, 0.0, x);
+    
+    gsl_test(n != 2, "gsl_root_solve_quadratic, two roots, x(4x + 7) = 0") ;
+    gsl_test_rel(x[0], -1.75, 1e-9, "gsl_root_solve_quadratic, x(4x + 7) = 0");
+    gsl_test_rel(x[1], 0.0, 1e-9, "gsl_root_solve_quadratic, x(4x + 7) = 0");
+
+
+    n = gsl_root_solve_quadratic (5.0, 0.0, -20.0, x);
+    
+    gsl_test(n != 2, "gsl_root_solve_quadratic, two roots b = 0, 5 x^2 = 20") ;
+    gsl_test_rel(x[0], -2.0, 1e-9, "gsl_root_solve_quadratic, 5 x^2 = 20");
+    gsl_test_rel(x[1], 2.0, 1e-9, "gsl_root_solve_quadratic, 5 x^2 = 20");
+
+
+
+  }
+
 
   /* now summarize the results */
 
