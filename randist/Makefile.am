@@ -1,13 +1,14 @@
+B:1,$
 ## $Id$
-## Assumes that ../ranunif/gsl_ran.h and ../ranunif/libgslran.a exist
+## Assumes that ../random/gsl_ran.h and ../random/libgslran.a exist
 ## ...and are built!
 
 bin_PROGRAMS= gauss test-gauss bench-gauss exponential poisson bench-poisson test-shuffle gamma bench-gamma
 
 include_HEADERS= gsl_randist.h
 
-INCLUDES= -I../ranunif
-LDADD= ../ranunif/libgslrantaus.a
+INCLUDES= -I$(srcdir)/../random
+LDADD= ../random/libgslrandom.a
 
 gauss_SOURCES= rungauss.c gauss.c
 test_gauss_SOURCES= test-gauss.c gauss.c
