@@ -70,9 +70,9 @@ int main(int argc, char * argv[])
   }
 */
 
-  gsl_sf_legendre_Plm_array_e(60, 10, 0.51324, y_array);
+  gsl_sf_legendre_Pl_array_e(1000, 0.51324, y_array);
   
-  for(i=0; i<=60-10; i++) {
+  for(i=0; i<=1000; i++) {
   printf("%3d   %22.17g    %22.17g\n",
 	    i,
 	    x,

@@ -8,11 +8,75 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
-/* FIXME: These are not good for |x| very near 1, due to
- * the 1-x*x problem.
- */
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* l >= 0;  0 <= x <= 1
+ *
+ * if harvest != 0: 
+ *   size of harvest[] = l-m+1
+ *   harvest[0] = P_m^m(x)  ...  harvest[l-m] = P_l^m(x)
+ */
+int gsl_sf_legendre_Pl_impl(const int l,
+                            const double x,
+                            double * result, double * harvest
+			    )
+{ 
+  if(l < 0 || x < 0. || x > 1.) {
+    return GSL_EDOM;
+  }
+  else if(l == 0) {
+    *result = 1.;
+    if(harvest != 0) harvest[0] = 1.;
+    return GSL_SUCCESS;
+  }
+  else if(l == 1) {
+    *result = x;
+    if(harvest != 0) {
+      harvest[0] = 1.;
+      harvest[1] = x;
+    }
+    return GSL_SUCCESS;
+  }
+  else if(l == 2) {
+    double P2 = 0.5*(3.*x*x-1.);
+    *result = P2;
+    if(harvest != 0) {
+      harvest[0] = 1.;
+      harvest[1] = x;
+      harvest[2] = P2;
+    }
+    return GSL_SUCCESS;
+  }
+  else {
+    int ell;
+    double pmm   = 1.;             /* P_m^m(x) */
+    double pmmp1 = x * pmm;        /* P_{m+1}^m(x) */
+    double p_ell = pmmp1;
+
+    /* Compute P_l, l > 1, upward recurrence on l. */
+    if(harvest != 0) {
+      harvest[0] = pmm;
+      harvest[1] = pmmp1;
+      for(ell=2; ell <= l; ell++){
+        p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
+        pmm = pmmp1;
+        pmmp1 = p_ell;
+        harvest[ell] = p_ell;
+      }
+    }
+    else {
+      for(ell=2; ell <= l; ell++){
+        p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
+        pmm = pmmp1;
+        pmmp1 = p_ell;
+      }
+    }
+
+    *result = p_ell;
+    return GSL_SUCCESS;
+  }
+}
 
 /* l >= m >= 0;  0 <= x <= 1
  *
@@ -180,6 +244,15 @@ int gsl_sf_legendre_sphPlm_impl(const int l, int m,
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_legendre_Pl_e(const int l, const double x, double * result)
+{
+  int status = gsl_sf_legendre_Pl_impl(l, x, result, (double *)0);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_Pl_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_legendre_Plm_e(const int l, const int m, const double x, double * result)
 {
   int status = gsl_sf_legendre_Plm_impl(l, m, 1.-x, 1.+x, result, (double *)0);
@@ -194,6 +267,16 @@ int gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, double * 
   int status = gsl_sf_legendre_sphPlm_impl(l, m, 1.-x, 1.+x, result, (double *)0);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_legendre_sphPlm_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_legendre_Pl_array_e(const int l, const double x, double * result_array)
+{
+  double y;
+  int status = gsl_sf_legendre_Pl_impl(l, x, &y, result_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_Pl_array_e", status);
   }
   return status;
 }
@@ -224,6 +307,16 @@ int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, 
 int gsl_sf_legendre_array_size(const int lmax, const int m)
 {
   return lmax-m+1;
+}
+
+double gsl_sf_legendre_Pl(const int l, const double x)
+{
+  double y;
+  int status = gsl_sf_legendre_Pl_impl(l, x, &y, (double *)0);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_legendre_Pl");
+  }
+  return y;
 }
 
 double gsl_sf_legendre_Plm(const int l, const int m, const double x)
