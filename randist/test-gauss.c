@@ -1,13 +1,13 @@
 /* $Id$ */
 /* Driver routine for the uniform random number generators */
 #include <stdio.h>
+#include <stdlib.h>
 #include "gsl_ran.h"
 #include "gsl_randist.h"
 int
 main(int argc, char **argv)
 {
     int i,n=1;
-    double rmax;
     int randseed=17;
     if (argc == 1) {
         printf("Usage: %s <n> [seed]\n",argv[0]);
