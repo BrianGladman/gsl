@@ -243,7 +243,7 @@ usage of MINPACK routines
 gsl_combination_valid and new function gsl_permutation_memcpy,
 doc fix for bessel functions, bug fix for gsl_sf_psi_1_int,
 bug report for gsl_permutation_canonical_to_linear, linalg
-QRPT bug reports and fixes.
+QRPT bug reports and fixes, and many other corrections.
 
 * Fabio Brugnara <brugnara@itc.it> provided a much-needed bug
 fix for the conjugate gradient algorithm multidimensional
