@@ -10,7 +10,7 @@ test_DEPENDENCIES = libfft.a
 benchmark_DEPENDENCIES = libfft.a
 
 # test_SOURCES = test.c test.h 
-test_SOURCES = test.c
+test_SOURCES = test.c gsl_fft_test.h
 benchmark_SOURCES = benchmark.c 
 
 
