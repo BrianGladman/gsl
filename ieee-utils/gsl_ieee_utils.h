@@ -54,7 +54,7 @@ enum {
 
 void gsl_ieee_env_setup (void) ;
 int gsl_ieee_read_mode_string (const char * description) ;
-void gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
+int gsl_ieee_set_mode (int precision, int rounding, int exception_mask) ;
 
 #endif /* GSL_IEEE_UTILS_H */
 
