@@ -13,23 +13,68 @@
 
 (setq  gsl-dimensionless-constants
        '(("fsc"           "FINE_STRUCTURE_ALPHA")
+         ("Nav"           "AVAGADRO")
          )
        )
 
 (setq  gsl-constants
        '(("c"             "SPEED_OF_LIGHT")
-         ("au"            "ASTRONOMICAL_UNIT")
          ("Grav"          "GRAVITATIONAL_CONSTANT")
-         ("float(lyr)"    "LIGHT_YEAR")
-         ("pc"            "PARSEC")
-         ("ga"            "GRAV_ACCEL")
-         ("ev"            "ELECTRON_VOLT")
          ("h"             "PLANCKS_CONSTANT_H")
          ("hbar"          "PLANCKS_CONSTANT_HBAR")
+
+         ("au"            "ASTRONOMICAL_UNIT")
+         ("float(lyr)"    "LIGHT_YEAR")
+         ("pc"            "PARSEC")
+
+         ("ga"            "GRAV_ACCEL")
+
+         ("ev"            "ELECTRON_VOLT")
          ("me"            "MASS_ELECTRON")
          ("mu"            "MASS_MUON")
          ("mp"            "MASS_PROTON")
          ("mn"            "MASS_NEUTRON")
+
+         ("min"           "MINUTE")
+         ("hr"            "HOUR")
+         ("day"           "DAY")
+         ("wk"            "WEEK")
+
+         ("in"            "INCH")
+         ("ft"            "FOOT")
+         ("yd"            "YARD")
+         ("mi"            "MILE")
+         ("nmi"           "NAUTICAL_MILE")
+         ("fath"          "FATHOM")
+
+         ("mil"           "MIL")
+         ("pt"            "POINT")
+         ("tpt"           "TEXPOINT")
+
+         ("u"             "MICRON")
+         ("Ang"           "ANGSTROM")
+
+         ("hect"          "HECTARE")
+         ("acre"          "ACRE")
+         ("barn"          "BARN")
+
+         ("l"             "LITER")
+         ("gal"           "USGALLON")
+         ("qt"            "QUART")
+         ("pt"            "PINT")
+         ("cup"           "CUP")
+         ("ozfl"          "FLUID_OUNCE")
+         ("tbsp"          "TABLESPOON")
+         ("tsp"           "TEASPOON")
+         ("galC"          "CANADIANGALLON")
+         ("galUK"         "UKGALLON")
+         
+         ("mph"           "MILES_PER_HOUR")
+         ("kph"           "KILOMETERS_PER_HOUR")
+         ("knot"          "KNOT")
+
+         ("amu"            "UNIFIED_ATOMIC_MASS")
+
          )
        )
 
