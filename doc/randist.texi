@@ -105,7 +105,7 @@ Kinderman-Monahan ratio method.
 
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
 @deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
-@deftypefnx Random double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
+@deftypefnx Random double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r})
 These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
