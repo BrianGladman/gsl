@@ -6,6 +6,9 @@ requirements.
 
 * Document dht
 
+* Switch to library interface versioning for libtool (eventually),
+provide better GSL_VERSION_MAJOR, GSL_VERSION_MINOR macros.
+
 * use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
 
 * add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
@@ -22,10 +25,6 @@ jotahtin@cc.hut.fi, still to add (BJG)).
 
 * Add a GSL_ERROR_MODE environment variable for choosing error
 behavior at runtime.
-
-* Split up workspaces/tables for fft_workspace and integration so that
-they are more efficient (tables = read-only, can be used by several
-threads, workspace = r/w, can only be used by one thread.)
 
 * Implement N-d histograms (Simone Piccardi <piccardi@fi.infn.it> is
 working on something here).
@@ -165,8 +164,6 @@ gsl_roots_fsolver_brent)??
 
 * Redesign the interface to iterative functions to use an init/do-while
 construct (Mostly done).
-
-* Switch to library interface versioning for libtool (eventually).
 
 * Add a vector layer to statistics and ffts, sometime in the future.
 
