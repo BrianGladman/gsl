@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
-#include <gsl_version.h>
+#include <gsl/gsl_version.h>
 
 const char * gsl_version = GSL_VERSION;
+
