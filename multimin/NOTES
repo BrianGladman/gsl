@@ -1,0 +1,21 @@
+@Article{Buckley:1994:AFC,
+  author =       "A. G. Buckley",
+  title =        "Algorithm 734: {A} {Fortran} 90 Code for Unconstrained
+                 Nonlinear Minimization",
+  journal =      j-TOMS,
+  volume =       "20",
+  number =       "3",
+  pages =        "354--372",
+  month =        sep,
+  year =         "1994",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Sat Nov 19 12:53:17 1994",
+  URL =          "http://www.acm.org/pubs/citations/journals/toms/1994-20-3/p354
+-buckley/",
+  acknowledgement = ack-rfb,
+  keywords =     "algorithms; conversion; Fortran 90; limited memory;
+                 new features; nonlinear optimization; quasi-Newton",
+  subject =      "G.1.6 [Numerical Analysis]: Optimization -- gradient
+                 methods;",
+}
