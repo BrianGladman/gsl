@@ -11,7 +11,7 @@ TESTS = test
 check_PROGRAMS = test #demo
 
 test_SOURCES = test.c 
-test_LDADD = libgslmonte.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslmonte.la ../rng/libgslrng.la ../sys/libgslsys.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 noinst_HEADERS = test_main.c
 
