@@ -245,6 +245,16 @@ BUG#13 -- gsl_diff functions don't handle large arguments
 The step size in the gsl_diff functions is fixed, and so does not work
 for large arguments due to loss of precision.
 
+Stefan Zegenhagen <Stefan.Zegenhagen@ipp.mpg.de> suggests using
+
+  double h = x * GSL_SQRT_DBL_EPSILON;
+
+Ideally the value of h should be adaptive and rechosen if an
+inaccurate derivative if detected (from an estimate of the error on
+the derivative).
+
+Need to check the literature before implementing a new algorithm.
+
 > From: eknecronzontas <eknecronzontas@yahoo.com>
 > Subject: Unusual behaviour in gsl_diff_central?
 > Date: Tue, 1 Apr 2003 06:36:38 -0800 (PST)
