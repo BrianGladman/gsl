@@ -1,3 +1,9 @@
+2000-02-23  Mark Galassi  <rosalia@lanl.gov>
+
+	* Makefile.am, gsl.spec: added a gsl.spec.  Seems to work.
+
+	* gsl-config.in: overhauled gsl-config.in; should work better now.
+
 Tue Feb 15 18:55:05 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added directory for permutation objects, permutation/
