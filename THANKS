@@ -77,6 +77,7 @@ improvements to the design
 
 * F J Franklin <MEP95JFF@sheffield.ac.uk> for test reports and debugging
 
-* Keith Briggs <briggsk@info.bt.co.uk> for bug reports
+* Keith Briggs <briggsk@info.bt.co.uk> for bug reports and code for
+the skewed Levy alpha-stable variates gsl_ran_levy_skew
 
 * Vince <vattervi@msu.edu> for permutation iterator functions

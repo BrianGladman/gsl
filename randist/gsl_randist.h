@@ -131,7 +131,8 @@ double gsl_ran_tdist_pdf (const double x, const double nu);
 double gsl_ran_laplace (const gsl_rng * r, const double mu);
 double gsl_ran_laplace_pdf (const double x, const double mu);
 
-double gsl_ran_levy (const gsl_rng * r, const double mu, const double a);
+double gsl_ran_levy (const gsl_rng * r, const double c, const double alpha);
+double gsl_ran_levy_skew (const gsl_rng * r, const double c, const double alpha, const double beta);
 
 double gsl_ran_weibull (const gsl_rng * r, const double mu, const double a);
 double gsl_ran_weibull_pdf (const double x, const double mu, const double a);

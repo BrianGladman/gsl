@@ -25,7 +25,7 @@ The functions described in this section are declared in
 * The Cauchy Distribution::     
 * The Rayleigh Distribution::   
 * The Rayleigh Tail Distribution::  
-* The Symmetric Levy Distribution::  
+* The Levy alpha-Stable Distributions::  
 * The Gamma Distribution::      
 * The Flat (Uniform) Distribution::  
 * The Lognormal Distribution::  
@@ -435,37 +435,78 @@ lower limit @var{a}, using the formula given above.
 @end tex
 
 @page
-@node The Symmetric Levy Distribution
-@section The Symmetric Levy Distribution
-@deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
+@node The Levy alpha-Stable Distributions
+@section The Levy alpha-Stable Distributions
+@deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{c}, double @var{alpha})
 @cindex Levy distribution, random numbers
-This function returns a random number from the symmetric Levy
-distribution with scale @var{mu} and exponent @var{a}.  The symmetric
-Levy probability distribution is defined by a fourier transform,
+This function returns a random number from the Levy symmetric stable
+distribution with scale @var{c} and exponent @var{alpha}.  The symmetric
+stable probability distribution is defined by a fourier transform,
 
 @tex
 \beforedisplay
 $$
-p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(it(\mu-x)- |t|^a)
+p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(-it x - |c t|^\alpha)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a)
+p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha)
 @end example
 @end ifinfo
 @noindent
 There is no explicit solution for the form of @math{p(x)} and the
 library does not define a corresponding @code{pdf} function.  For
-@math{a = 1} the distribution reduces to the Cauchy distribution.  For
-@math{a = 2} it is a Gaussian distribution with @c{$\sigma = \sqrt{2}\mu$} 
-@math{\sigma = \sqrt@{2@} \mu}.  For @math{a < 1} the tails of the
+@math{\alpha = 1} the distribution reduces to the Cauchy distribution.  For
+@math{\alpha = 2} it is a Gaussian distribution with @c{$\sigma = \sqrt{2} c$} 
+@math{\sigma = \sqrt@{2@} c}.  For @math{\alpha < 1} the tails of the
 distribution become extremely wide.
 
-The algorithm only works for @c{$0 < a \le 2$}
-@math{0 < a <= 2}.
+The algorithm only works for @c{$0 < \alpha \le 2$}
+@math{0 < alpha <= 2}.
 @end deftypefn
+
+@deftypefn Random double gsl_ran_levy_skew (const gsl_rng * @var{r}, double @var{c}, double @var{alpha}, double @var{beta})
+@cindex Levy distribution, random numbers
+This function returns a random number from the Levy skew stable
+distribution with scale @var{c}, exponent @var{alpha} and skewness
+parameter @var{beta}.  The skewness parameter must lie in the range
+@math{[-1,1]}. The Levy skew stable probability distribution is defined
+by a fourier transform,
+
+@tex
+\beforedisplay
+$$
+p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(-it x - |c t|^\alpha (1-i \beta sign(t) \tan(\pi\alpha/2)))
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha (1-i beta sign(t) tan(pi alpha/2)))
+@end example
+@end ifinfo
+@noindent
+When @math{\alpha = 1} the term @math{\tan(\pi \alpha/2)} is replaced by
+@math{-(2/\pi)\log|t|}.  There is no explicit solution for the form of
+@math{p(x)} and the library does not define a corresponding @code{pdf}
+function.  For @math{\alpha = 2} the distribution reduces to a Gaussian
+distribution with @c{$\sigma = \sqrt{2} c$} 
+@math{\sigma = \sqrt@{2@} c} and the skewness parameter has no effect.  
+For @math{\alpha < 1} the tails of the distribution become extremely
+wide.
+
+The algorithm only works for @c{$0 < \alpha \le 2$}
+@math{0 < alpha <= 2}.
+@end deftypefn
+
+The Levy alpha-stable distributions have the property that if @math{N}
+alpha-stable variates are drawn from the distribution @math{p(c, \alpha,
+\beta)} then the sum @math{Y = X_1 + X_2 + \dots + X_N} will also be
+distributed as an alpha-stable variate,
+@c{$p(N^{1/\alpha} c, \alpha, \beta)$}  
+@math{p(N^(1/\alpha) c, \alpha, \beta)}.
 
 @comment PDF not available because there is no analytic expression for it
 @comment
@@ -937,40 +978,6 @@ and then the components are normalized.  The method is described by
 Knuth, v2, 3rd ed, p135-136, and attributed to G. W. Brown, Modern
 Mathematics for the Engineer (1956).
 @end deftypefn
-
-@noindent
-The following program generates a random walk in two dimensions.
-
-@example
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-
-main ()
-@{
-  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
-  int i ;
-  double x = 0, y = 0, dx, dy;
-
-  printf("%g %g\n", x, y) ;
-
-  for (i = 0; i < 10; i++)
-    @{
-      gsl_ran_dir_2d (r, &dx, &dy) ;
-      x += dx ; y += dy; 
-      printf("%g %g\n", x, y) ;
-    @}
-@}
-@end example
-
-@noindent
-Example output from the program, three 10-step random walks from the origin.
-
-@sp 1
-@tex
-\centerline{\input random-walk.tex}
-@end tex
-
 
 @page
 @node The Weibull Distribution
@@ -1622,6 +1629,39 @@ $ GSL_RNG_SEED=123 ./a.out
 GSL_RNG_SEED=123
  1 1 2 1 2 6 2 1 8 7
 @end example
+
+@noindent
+The following program generates a random walk in two dimensions.
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+
+main ()
+@{
+  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+  int i ;
+  double x = 0, y = 0, dx, dy;
+
+  printf("%g %g\n", x, y) ;
+
+  for (i = 0; i < 10; i++)
+    @{
+      gsl_ran_dir_2d (r, &dx, &dy) ;
+      x += dx ; y += dy; 
+      printf("%g %g\n", x, y) ;
+    @}
+@}
+@end example
+
+@noindent
+Example output from the program, three 10-step random walks from the origin.
+
+@sp 1
+@tex
+\centerline{\input random-walk.tex}
+@end tex
 
 @node Random Number Distribution References and Further Reading
 @section References and Further Reading

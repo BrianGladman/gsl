@@ -122,6 +122,22 @@ double test_levy1 (void);
 double test_levy1_pdf (double x);
 double test_levy2 (void);
 double test_levy2_pdf (double x);
+double test_levy1a (void);
+double test_levy1a_pdf (double x);
+double test_levy2a (void);
+double test_levy2a_pdf (double x);
+double test_levy_skew1 (void);
+double test_levy_skew1_pdf (double x);
+double test_levy_skew2 (void);
+double test_levy_skew2_pdf (double x);
+double test_levy_skew1a (void);
+double test_levy_skew1a_pdf (double x);
+double test_levy_skew2a (void);
+double test_levy_skew2a_pdf (double x);
+double test_levy_skew1b (void);
+double test_levy_skew1b_pdf (double x);
+double test_levy_skew2b (void);
+double test_levy_skew2b_pdf (double x);
 double test_logistic (void);
 double test_logistic_pdf (double x);
 double test_lognormal (void);
@@ -224,6 +240,14 @@ main (void)
   testPDF (FUNC2(gumbel2));
   testPDF (FUNC2(levy1));
   testPDF (FUNC2(levy2));
+  testPDF (FUNC2(levy1a));
+  testPDF (FUNC2(levy2a));
+  testPDF (FUNC2(levy_skew1));
+  testPDF (FUNC2(levy_skew2));
+  testPDF (FUNC2(levy_skew1a));
+  testPDF (FUNC2(levy_skew2a));
+  testPDF (FUNC2(levy_skew1b));
+  testPDF (FUNC2(levy_skew2b));
   testPDF (FUNC2(logistic));
   testPDF (FUNC2(lognormal));
   testPDF (FUNC2(pareto));
@@ -1157,6 +1181,103 @@ test_levy2 (void)
 
 double
 test_levy2_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
+}
+
+double
+test_levy1a (void)
+{
+  return gsl_ran_levy (r_global, 5.0, 1.01);
+}
+
+double
+test_levy1a_pdf (double x)
+{
+  return gsl_ran_cauchy_pdf (x, 5.0);
+}
+
+double
+test_levy2a (void)
+{
+  return gsl_ran_levy (r_global, 5.0, 1.99);
+}
+
+double
+test_levy2a_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
+}
+
+
+double
+test_levy_skew1 (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 1.0, 0.0);
+}
+
+double
+test_levy_skew1_pdf (double x)
+{
+  return gsl_ran_cauchy_pdf (x, 5.0);
+}
+
+double
+test_levy_skew2 (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 2.0, 0.0);
+}
+
+double
+test_levy_skew2_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
+}
+
+double
+test_levy_skew1a (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 1.01, 0.0);
+}
+
+double
+test_levy_skew1a_pdf (double x)
+{
+  return gsl_ran_cauchy_pdf (x, 5.0);
+}
+
+double
+test_levy_skew2a (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 1.99, 0.0);
+}
+
+double
+test_levy_skew2a_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
+}
+
+double
+test_levy_skew1b (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 1.01, 0.001);
+}
+
+double
+test_levy_skew1b_pdf (double x)
+{
+  return gsl_ran_cauchy_pdf (x, 5.0);
+}
+
+double
+test_levy_skew2b (void)
+{
+  return gsl_ran_levy_skew (r_global, 5.0, 1.99, 0.001);
+}
+
+double
+test_levy_skew2b_pdf (double x)
 {
   return gsl_ran_gaussian_pdf (x, sqrt(2.0) * 5.0 );
 }

@@ -35,8 +35,9 @@ main (int argc, char *argv[])
 {
   size_t i,j;
   size_t n = 0;
-  double mu = 0, nu = 0, nu1 = 0, nu2 = 0, sigma = 0, a = 0, b = 0, p = 0;
+  double mu = 0, nu = 0, nu1 = 0, nu2 = 0, sigma = 0, a = 0, b = 0, c = 0;
   double zeta = 0, sigmax = 0, sigmay = 0, rho = 0;
+  double p = 0;
   double x = 0, y =0, z=0  ;
   unsigned int N = 0, t = 0, n1 = 0, n2 = 0 ;
   unsigned long int seed = 0 ;
@@ -72,6 +73,7 @@ main (int argc, char *argv[])
 "  hypergeometric\n"
 "  laplace\n"
 "  levy\n"
+"  levy-skew\n"
 "  logarithmic\n"
 "  logistic\n"
 "  lognormal\n"
@@ -283,10 +285,18 @@ main (int argc, char *argv[])
     }
   else if (NAME("levy"))
     {
-      ARGS(2, "mu = scale parameter, a = power (1=cauchy, 2=gaussian)");
-      DBL_ARG(mu) ;
+      ARGS(2, "c = scale, a = power (1=cauchy, 2=gaussian)");
+      DBL_ARG(c) ;
       DBL_ARG(a) ;
-      OUTPUT(gsl_ran_levy (r, mu, a));
+      OUTPUT(gsl_ran_levy (r, c, a));
+    }
+  else if (NAME("levy-skew"))
+    {
+      ARGS(3, "c = scale, a = power (1=cauchy, 2=gaussian), b = skew");
+      DBL_ARG(c) ;
+      DBL_ARG(a) ;
+      DBL_ARG(b) ;
+      OUTPUT(gsl_ran_levy_skew (r, c, a, b));
     }
   else if (NAME("logarithmic"))
     {
