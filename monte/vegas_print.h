@@ -14,8 +14,8 @@ void print_res(gsl_monte_vegas_state* state,
 	       double chi_sq);
 void print_grid(gsl_monte_vegas_state* state, unsigned long dim);
 
-void vegas_open_log(gsl_monte_vegas_state* state);
-void vegas_close_log(gsl_monte_vegas_state* state);
+int vegas_open_log(gsl_monte_vegas_state* state);
+int vegas_close_log(gsl_monte_vegas_state* state);
 
 
 #endif
