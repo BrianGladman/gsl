@@ -15,7 +15,7 @@ distributions such as the gaussian, log-normal or poisson distributions.
 * Random number generator initialization::  
 * Sampling from a random number generator::  
 * Auxiliary random number generator functions::  
-* Random number environment::   
+* Random number environment variables::  
 * Saving and restoring random number generator state::  
 * Available random number generator algorithms::  
 * Random Number Distributions::  
@@ -80,10 +80,8 @@ The random number functions described in this section are declared in
 the header file @file{gsl_rng.h}.
 
 @deftypefn Random {gsl_rng *} gsl_rng_alloc (gsl_rng_type * @var{T})
-This function returns a pointer to a newly-created instance of a random
-number generator of type @var{T}. The generator is automatically
-initialized with the default seed. 
-
+This function returns a pointer to a newly-created
+instance of a random number generator of type @var{T}.
 For example, the following code creates an instance of the Tausworthe
 generator,
 
@@ -95,32 +93,39 @@ If there is insufficient memory to create the generator then the
 function returns a null pointer and the error handler is invoked with an
 error code of @code{GSL_ENOMEM}.
 
+The generator is automatically initialized with the
+default seed, @code{gsl_rng_default_seed}. This is zero
+by default but can be changed using the C variable
+@code{gsl_rng_default_seed} or the environment variable
+@code{GSL_RNG_SEED}, @pxref{Random number environment variables}.
+
 The defined generator types are,
 
 @example
-gsl_rng_bsdrand, gsl_rng_cmrg, gsl_rng_minstd,
-gsl_rng_mrg, gsl_rng_mt19937, gsl_rng_ran0,
-gsl_rng_ran1, gsl_rng_ran2, gsl_rng_ran3,
-gsl_rng_rand, gsl_rng_randu, gsl_rng_ranlux,
-gsl_rng_ranlux389, gsl_rng_ranmar, gsl_rng_r250,
-gsl_rng_taus, gsl_rng_tds, gsl_rng_tt800,
-gsl_rng_uni, gsl_rng_uni32, gsl_rng_vax, gsl_rng_zuf
+gsl_rng_cmlib, gsl_rng_cmrg, gsl_rng_minstd,
+gsl_rng_mrg, gsl_rng_mt19937, gsl_rng_r250,
+gsl_rng_ran0, gsl_rng_ran1, gsl_rng_ran2, gsl_rng_ran3,
+gsl_rng_rand, gsl_rng_rand48, gsl_rng_randu,
+gsl_rng_ranf, gsl_rng_ranlux, gsl_rng_ranlux389,
+gsl_rng_ranmar, gsl_rng_taus, gsl_rng_tds,
+gsl_rng_tt800, gsl_rng_uni, gsl_rng_uni32, gsl_rng_vax,
+gsl_rng_zuf
 @end example
 @end deftypefn
 
 @deftypefn Random void gsl_rng_set (const gsl_rng * @var{r}, unsigned long int @var{s})
-This function initializes (or `seeds') the random number generator.  If
-the random number generator is seeded with the same value of @var{s} on
-two different runs, the same stream of random numbers will be generated
-(by successive calls to the routines below). If different values of
-@var{s} are supplied, then the generated streams of random numbers
-should be completely different @footnote{The poorer quality generators
-won't live up to this expectation -- different seeds can produce
-correlated sequences}. If the seed @var{s} is zero then the default seed
-from the original implementation is used instead. For example, the
-Fortran source code for the original @code{ranlux} generator used a
-defaullt seed of 314159265, and so choosing @var{s} equal to zero
-reproduces this.
+This function initializes (or `seeds') the random number
+generator. If the random number generator is seeded with
+the same value of @var{s} on two different runs, the
+same stream of random numbers will be generated (by
+successive calls to the routines below). If different
+values of @var{s} are supplied, then the generated
+streams of random numbers should be completely
+different. If the seed @var{s} is zero then the standard
+seed from the original implementation is used instead.
+For example, the Fortran source code for the original
+@code{ranlux} generator used a seed of 314159265, and so
+choosing @var{s} equal to zero reproduces this.
 @end deftypefn
 
 @deftypefn Random void gsl_rng_free (gsl_rng * @var{r})
@@ -144,29 +149,30 @@ algorithm used. They can determined using the auxilliary functions
 @end deftypefn
 
 @deftypefn Random double gsl_rng_uniform (const gsl_rng * @var{r})
-This function returns a double precision floating point number uniformly
-distributed in the range [0,1), including 0.0 but excluding 1.0. The
-value is typically obtained by dividing the result of
-@code{gsl_rng_get(r)} by @code{gsl_rng_max(r) + 1} in double precision.
-Some generators compute this ratio internal such that they provide
-floating point numbers with more than the 32 bits of randomness than can
-be represented in a single @code{unsigned long int}.
+This function returns a double precision floating point number
+uniformly distributed in the range [0,1), including 0.0 but excluding
+1.0. The value is typically obtained by dividing the result of
+@code{gsl_rng_get(r)} by @code{gsl_rng_max(r) + 1} in double
+precision. Some generators compute this ratio internally so that they
+provide floating point numbers with more than the 32 bits of
+randomness than can be represented in a single @code{unsigned long
+int}.
 @end deftypefn
 
 @deftypefn Random double gsl_rng_uniform_pos (const gsl_rng * @var{r})
-This function returns a positive double precision floating point number
-uniformly distributed in the range (0,1), i.e. excluding both 0.0 and
-1.0. The number is obtained by sampling the generator using the
-algorithm of @code{gsl_rng_uniform} until it returns a non-zero
-value. You should use this function if you need to avoid a singularity
-or other end-point effect at 0.0.
+This function returns a positive double precision floating point
+number uniformly distributed in the range (0,1), excluding both 0.0
+and 1.0. The number is obtained by sampling the generator using the
+algorithm of @code{gsl_rng_uniform} until it returns a non-zero value.
+You can use this function if you need to avoid a singularity at 0.0.
 @end deftypefn
 
 @deftypefn Random {unsigned long int} gsl_rng_uniform_int (const gsl_rng * @var{r}, unsigned long int @var{n})
 This function returns a random integer from 0 to @var{n-1} inclusive.
-All integers in the range [0,@var{n-1}] are equally likely regardless of
-the generator used. A correction is applied so that this function can
-return zero even if the generator has a non-zero minimum value. 
+All integers in the range [0,@var{n-1}] are equally likely, regardless
+of the generator used. An offset correction is applied so that this
+function can return zero with the correct probability even if the
+underlying generator has a minimum value of 1 and cannot return zero.
 
 If @var{n} is larger than the range of the generator then the function
 calls the error handler with an error code of @code{GSL_EINVAL} and
@@ -175,7 +181,9 @@ returns zero.
 
 @node Auxiliary random number generator functions
 @section Auxiliary random number generator functions
-The following functions provide information about the generator.
+The following functions provide information about an existing
+generator. You can use them in preference to hard-coding the generator
+parameters into your own code.
 
 @deftypefn Random {const char *} gsl_rng_name (const gsl_rng * @var{r})
 This function returns a pointer to the name of the generator.
@@ -199,25 +207,36 @@ algorithms that cannot return zero, and for these generators the minimum
 value is 1.
 @end deftypefn
 
-@node Random number environment
-@section Random number environment
+@node Random number environment variables
+@section Random number environment variables
 
 The library allows you to set a default generator and default seed using
 the environment variables @code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED}
 and the function @code{gsl_rng_env_setup}.
 
-
 @deftypefun {const gsl_rng_type *} gsl_rng_env_setup (void)
 This function reads the environment variables @code{GSL_RNG_TYPE} and
-@code{GSL_RNG_SEED} and sets the corresponding 
-
-There are two variables which control the 
+@code{GSL_RNG_SEED} and sets the corresponding library variables
+@code{gsl_rng_default} and @code{gsl_rng_default_seed},
 
 @example
-extern const gsl_rng_type *@var{gsl_rng_default}
-extern unsigned long int @var{gsl_rng_default_seed}
+extern const gsl_rng_type *gsl_rng_default
+extern unsigned long int gsl_rng_default_seed
 @end example
+
+The environment variable @code{GSL_RNG_TYPE} should be the name of a
+generator, for example @code{taus} or @code{mt19937}. The environment
+variable @code{GSL_RNG_SEED} should contain the desired seed value. It
+is converted to an @code{unsigned long int} using the C library
+function @code{strtoul}.
+
+The initial default generator is @code{gsl_rng_cmrg} and the initial
+value of @code{gsl_rng_default seed} is zero.
 @end deftypefun
+@noindent
+Here is a short program which shows how to create a single global
+generator using defaults from the environment variables
+@code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED},
 
 @example
 #include <stdio.h>
@@ -237,13 +256,20 @@ main ()
   printf("first value = %u\n", gsl_rng_get (r)) ;
 @}
 @end example
-
+@noindent
+Running the program without any environment variables
+uses the initial defaults, a @code{cmrg} generator with
+a seed of 0,
 @example
 bjg|zeke> ./a.out 
 generator type: cmrg
 seed = 0
 first value = 240037626
-
+@end example
+@noindent
+By setting the two variables on the command line we can
+change the default generator and the seed,
+@example
 bjg|zeke> GSL_RNG_TYPE="taus" GSL_RNG_SEED=123 ./a.out 
 GSL_RNG_TYPE=taus
 GSL_RNG_SEED=123
@@ -346,19 +372,11 @@ Its sequence is,
 @c
 @c THIS IS HORRIBLE!
 @macro mod 
-@iftex
 \hbox@{ mod @}
-@end iftex
-@ifnottex
-mod @end ifnottex
 @end macro
 @c
 @macro and
-@iftex
 \&
-@end iftex
-@ifnottex
-& @end ifnottex
 @end macro
 @c
 @equation
@@ -494,14 +512,14 @@ number generator", @cite{Journal of Computational Physics}, 40, 517-526
 @cindex Random number generators, Numerical recipes
 @cindex Numerical recipes, random number generators
 The following generators are provided for compatibility with
-@cite{Numerical Recipes}. Note that the original routines Numerical
-Recipes functions used single precision while we use double precision,
-which might lead to minor discrepancies at the level of rounding error.
-If necessary you can force the returned values to single precision by
-storing them in a @code{volatile float}, which forces the values into
-memory and prevents them being held in a register with double or
-extended precision. Apart from this difference the underlying algorithms
-for the integer part of the generators are the same.
+@cite{Numerical Recipes}. Note that the original Numerical Recipes
+functions used single precision while we use double precision, which
+might lead to minor discrepancies at the level of rounding error. If
+necessary you can force the returned values to single precision by
+storing them in a @code{volatile float}, which prevents the value
+being held in a register with double or extended precision. Apart from
+this difference the underlying algorithms for the integer part of the
+generators are the same.
 
 @deffn {Generator} gsl_rng_ran0 
 Numerical recipes @code{ran0} implements Park and Miller's @sc{minstd}
@@ -520,25 +538,6 @@ Numerical recipes @code{ran2}
 Numerical recipes @code{ran3}
 @end deffn
 
-@subsection Historical generators
-
-The following generators are included only for historical reasons, so
-that you can reproduce results from old programs which might have used
-them. These generators should not be used for real simulations since
-they have poor statistical properties by modern standards.
-
-@deffn {Generator} gsl_rng_vax
-@cindex VAX random number generator
-This is the old VAX generator @code{MTH$RANDOM}. Its sequence is,
-@c
-@equation
-x_@{n+1@} = (a x_n + c) @mod m
-@end equation
-@noindent
-with @math{a = 69069}, @math{c = 1} and @math{m = 2^@{32@}}. The seed
-specifies the initial value, @math{x_1}. The period of this generator is
-@math{2^@{32@}} and it uses 1 word of storage per generator.
-@end deffn
 
 @deffn {Generator} gsl_rng_rand
 @cindex BSD random number generator
@@ -548,11 +547,10 @@ This is the BSD @code{rand()} generator. Its sequence is
 x_@{n+1@} = (a x_n + c) @mod m
 @end equation
 @noindent
-with @math{a = 1103515245}, @math{c = 12345} and @math{m =
-2^@{31@}}. The seed specifies the initial value, @math{x_1}.  The period
-of this generator is 2^31, and it uses 1 word of storage per generator.
-One of the problems with @code{rand()} was that the the low bits of
-successive  numbers were correlated.
+with @math{a = 1103515245}, @math{c = 12345} and @math{m = 2^@{31@}}.
+The seed specifies the initial value, @math{x_1}. The period of this
+generator is @math{2^@{31@}}, and it uses 1 word of storage per
+generator.
 @end deffn
 
 @deffn {Generator} gsl_rng_rand48
@@ -563,30 +561,22 @@ This is the 48-bit Unix @code{rand48} generator. Its sequence is
 x_@{n+1@} = (a x_n + c) @mod m
 @end equation
 @noindent
-with @math{a =25214903917}, @math{c = 11} and @math{m = 2^@{48@}}.  The
-seed specifies the upper 32 bits of the initial value, @math{x_1}, with
-the lower 16 bits set to @code{0x330E}.  The function @code{gsl_rng_get}
-returns the upper 32 bits from each term of the sequence.  The function
-@code{gsl_rng_uniform} uses the full 48 bits to return the double
-precision number @math{x_n/m}.
-@end deffn
-
-@deffn {Generator} gsl_rng_randu
-@cindex RANDU random number generator
-This is the IBM/360 @code{RANDU} generator. Its sequence is
-@c
-@equation
-x_@{n+1@} = (a x_n) @mod m
-@end equation
-@noindent
-with @math{a = 65539} and @math{m = 2^@{31@}}. The seed specifies the
-initial value, @math{x_1}. The period of this generator was only 2^29.
+with @math{a =25214903917}, @math{c = 11} and @math{m = 2^@{48@}}. The
+seed specifies the upper 32 bits of the initial value, @math{x_1},
+with the lower 16 bits set to @code{0x330E}. The function
+@code{gsl_rng_get} returns the upper 32 bits from each term of the
+sequence. This does not have a direct parallel in the original
+@code{rand48} functions, but forcing the result to type @code{long
+int} reproduce the sequence of @code{mrand48}. The function
+@code{gsl_rng_uniform} uses the full 48 bits of internal state to
+return the double precision number @math{x_n/m}, which is equivalent
+to the function @code{drand48}.
 @end deffn
 
 @deffn {Generator} gsl_rng_ranf
 @cindex RANF random number generator
 @cindex CRAY random number generator, RANF
-This is the CRAY random number generator @code{RANDF}. Its
+This is the CRAY random number generator @code{RANF}. Its
 sequence is
 @c
 @equation
@@ -618,6 +608,38 @@ The period of this generator is @math{2^@{46@}}.
 @end deffn
 
 
+The following generators are included only for historical reasons, so
+that you can reproduce results from old programs which might have used
+them. These generators should not be used for real simulations since
+they have poor statistical properties by modern standards.
+
+@deffn {Generator} gsl_rng_vax
+@cindex VAX random number generator
+This is the old VAX generator @code{MTH$RANDOM}. Its sequence is,
+@c
+@equation
+x_@{n+1@} = (a x_n + c) @mod m
+@end equation
+@noindent
+with @math{a = 69069}, @math{c = 1} and @math{m = 2^@{32@}}. The seed
+specifies the initial value, @math{x_1}. The period of this generator is
+@math{2^@{32@}} and it uses 1 word of storage per generator.
+@end deffn
+
+
+@deffn {Generator} gsl_rng_randu
+@cindex RANDU random number generator
+This is the IBM/360 @code{RANDU} generator. Its sequence is
+@c
+@equation
+x_@{n+1@} = (a x_n) @mod m
+@end equation
+@noindent
+with @math{a = 65539} and @math{m = 2^@{31@}}. The seed specifies the
+initial value, @math{x_1}. The period of this generator was only 2^29.
+@end deffn
+
+
 @deffn {Generator} gsl_rng_ranmar
 @cindex RANMAR random number generator
 This is the RANMAR lagged-fibonacci generator of Marsaglia, Zaman and
@@ -625,13 +647,19 @@ Tsang.  It is a 24-bit generator, originally designed for
 single-precision IEEE floating point numbers.
 @end deffn
 
+@deffn {Generator} gsl_rng_minstd
+@cindex RANMAR random number generator
+This is Park and Miller's "minimal standard" generator
+@end deffn
+
+
 uni       Fibonacci subtraction
 uni32     32 bit version of uni
 rand      Linear congruential 
 zuf
-minstd
-minstd Park and Miller's minimal standard generator
 
+
+@section Performance
 
 @smallexample
     randu ------------------------------------------------
