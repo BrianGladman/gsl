@@ -30,23 +30,74 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_interp.h>
 
+
+int
+test_bsearch(void)
+{
+  double x_array[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+  size_t index_result;
+  int status = 0;
+  int s;
+
+  /* check an interior point */
+  index_result = gsl_interp_bsearch(x_array, 1.5, 0, 4);
+  s = (index_result != 1);
+  status += s;
+  gsl_test (s, "simple bsearch");
+
+  /* check that we get the last interval if x == last value */
+  index_result = gsl_interp_bsearch(x_array, 4.0, 0, 4);
+  s = (index_result != 3);
+  status += s;
+  gsl_test (s, "upper endpoint bsearch");
+
+  /* check that we get the first interval if x == first value */
+  index_result = gsl_interp_bsearch(x_array, 0.0, 0, 4);
+  s = (index_result != 0);
+  status += s;
+  gsl_test (s, "lower endpoint bsearch");
+
+  /* check that we get correct interior boundary behaviour */
+  index_result = gsl_interp_bsearch(x_array, 2.0, 0, 4);
+  s = (index_result != 2);
+  status += s;
+  gsl_test (s, "degenerate bsearch");
+
+  /* check out of bounds above */
+  index_result = gsl_interp_bsearch(x_array, 10.0, 0, 4);
+  s = (index_result != 3);
+  status += s;
+  gsl_test (s, "out of bounds bsearch +");
+
+  /* check out of bounds below */
+  index_result = gsl_interp_bsearch(x_array, -10.0, 0, 4);
+  s = (index_result != 0);
+  status += s;
+  gsl_test (s, "out of bounds bsearch -");
+
+  return status;
+}
+
+
+
 typedef double TEST_FUNC (double);
 typedef struct _xy_table xy_table;
 
 struct _xy_table
   {
-    double *x;
-    double *y;
+    double * x;
+    double * y;
     size_t n;
   };
 
 static int
 test_interp (
-  xy_table * data_table,
+  const xy_table * data_table,
   const gsl_interp_factory * factory,
   xy_table * test_table,
   xy_table * test_d_table,
-  xy_table * test_i_table)
+  xy_table * test_i_table
+  )
 {
   int status = 0;
   size_t i;
@@ -86,62 +137,66 @@ test_linear (void)
 {
   int s;
 
-  double data_x[4] =
-  {0.0, 1.0, 2.0, 3.0};
-  double data_y[4] =
-  {0.0, 1.0, 2.0, 3.0};
-  double test_x[4] =
-  {0.0, 0.5, 1.5, 2.5};
-  double test_y[4] =
-  {0.0, 0.5, 1.5, 2.5};
-  double test_dy[4] =
-  {1.0, 1.0, 1.0, 1.0};
-  double test_iy[4] =
-  {0.0, 0.125, 9.0/8.0, 25.0/8.0};
+  double data_x[4] = { 0.0, 1.0, 2.0, 3.0 };
+  double data_y[4] = { 0.0, 1.0, 2.0, 3.0 };
+  double test_x[6] = { 0.0, 0.5, 1.0, 1.5, 2.5, 3.0 };
+  double test_y[6] = { 0.0, 0.5, 1.0, 1.5, 2.5, 3.0 };
+  double test_dy[6] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+  double test_iy[6] = { 0.0, 0.125, 0.5, 9.0/8.0, 25.0/8.0, 9.0/2.0 };
 
-  xy_table data_table =
-  {data_x, data_y, sizeof (data_x) / sizeof (double)};
-  xy_table test_table =
-  {test_x, test_y, sizeof (test_x) / sizeof (double)};
-  xy_table test_d_table =
-  {test_x, test_dy, sizeof (test_x) / sizeof (double)};
-  xy_table test_i_table =
-  {test_x, test_iy, sizeof (test_x) / sizeof (double)};
+  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
+  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
+  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
+  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
 
   s = test_interp (&data_table, &gsl_interp_factory_linear, &test_table, &test_d_table, &test_i_table);
   gsl_test (s, "linear interpolation");
   return s;
 }
 
+
 static int
 test_cspline_natural (void)
 {
   int s;
 
-  double data_x[3] =
-  {0.0, 1.0, 2.0};
-  double data_y[3] =
-  {0.0, 1.0, 2.0};
-  double test_x[2] =
-  {0.0, 0.5};
-  double test_y[2] =
-  {0.0, 0.5};
-  double test_dy[2] =
-  {1.0, 1.0};
-  double test_iy[2] =
-  {0.0, 0.125};
+  double data_x[3] = { 0.0, 1.0, 2.0 };
+  double data_y[3] = { 0.0, 1.0, 2.0 };
+  double test_x[4] = { 0.0, 0.5, 1.0, 2.0 };
+  double test_y[4] = { 0.0, 0.5, 1.0, 2.0 };
+  double test_dy[4] = { 1.0, 1.0, 1.0, 1.0 };
+  double test_iy[4] = { 0.0, 0.125, 0.5, 2.0 };
 
-  xy_table data_table =
-  {data_x, data_y, sizeof (data_x) / sizeof (double)};
-  xy_table test_table =
-  {test_x, test_y, sizeof (test_x) / sizeof (double)};
-  xy_table test_d_table =
-  {test_x, test_dy, sizeof (test_x) / sizeof (double)};
-  xy_table test_i_table =
-  {test_x, test_iy, sizeof (test_x) / sizeof (double)};
-  
+  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
+  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
+  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
+  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
+
   s = test_interp (&data_table, &gsl_interp_factory_cspline_natural, &test_table, &test_d_table, &test_i_table);
-  gsl_test (s, "cspline interpolation");
+  gsl_test (s, "natural cspline interpolation");
+  return s;
+}
+
+
+static int
+test_akima_natural (void)
+{
+  int s;
+
+  double data_x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+  double data_y[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+  double test_x[4] = { 0.0, 0.5, 1.0, 2.0 };
+  double test_y[4] = { 0.0, 0.5, 1.0, 2.0 };
+  double test_dy[4] = { 1.0, 1.0, 1.0, 1.0 };
+  double test_iy[4] = { 0.0, 0.125, 0.5, 2.0 };
+
+  xy_table data_table = { data_x, data_y, sizeof (data_x) / sizeof (double) };
+  xy_table test_table = { test_x, test_y, sizeof (test_x) / sizeof (double) };
+  xy_table test_d_table = { test_x, test_dy, sizeof (test_x) / sizeof (double) };
+  xy_table test_i_table = { test_x, test_iy, sizeof (test_x) / sizeof (double) };
+
+  s = test_interp (&data_table, &gsl_interp_factory_akima_natural, &test_table, &test_d_table, &test_i_table);
+  gsl_test (s, "natural akima interpolation");
   return s;
 }
 
@@ -151,11 +206,13 @@ main (int argc, char **argv)
 {
   int status = 0;
 
-  argc = 0;			/* prevent warnings about unused parameters */
+  argc = 0;    /* prevent warnings about unused parameters */
   argv = 0;
 
-  status += test_linear ();
-  status += test_cspline_natural ();
+  status += test_bsearch();
+  status += test_linear();
+  status += test_cspline_natural();
+  status += test_akima_natural();
 
-  return gsl_test_summary ();
+  return gsl_test_summary();
 }

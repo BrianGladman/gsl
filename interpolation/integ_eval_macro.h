@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* stupid littel macro for doing the spline integral evaluation
+/* stupid little macro for doing the spline integral evaluation
    which is common to both the cspline and akima methods
  */
 

@@ -144,12 +144,12 @@ interp_akima_new (const double x_array[], const double y_array[], size_t size)
 /* common calculation */
 static
 void
-interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double *m)
+interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double * m)
 {
   size_t i;
-  for (i = 0; i < interp->size; i++)
+  for (i = 0; i < interp->size - 1; i++)
     {
-      double NE = fabs (m[i + 1] - m[i]) + fabs (m[i - 1] - m[i - 2]);
+      const double NE = fabs (m[i + 1] - m[i]) + fabs (m[i - 1] - m[i - 2]);
       if (NE == 0.0)
 	{
 	  interp->b[i] = m[i];
@@ -158,9 +158,9 @@ interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double *m)
 	}
       else
 	{
-	  double h_i = x_array[i + 1] - x_array[i];
-	  double NE_next = fabs (m[i + 2] - m[i + 1]) + fabs (m[i] - m[i - 1]);
-	  double alpha_i = fabs (m[i - 1] - m[i - 2]) / NE;
+	  const double h_i = x_array[i + 1] - x_array[i];
+	  const double NE_next = fabs (m[i + 2] - m[i + 1]) + fabs (m[i] - m[i - 1]);
+	  const double alpha_i = fabs (m[i - 1] - m[i - 2]) / NE;
 	  double alpha_ip1;
 	  double tL_ip1;
 	  if (NE_next == 0.0)
@@ -179,6 +179,7 @@ interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double *m)
     }
 }
 
+
 static
 gsl_interp_obj *
 akima_natural_create (const double x_array[],
@@ -189,21 +190,21 @@ akima_natural_create (const double x_array[],
 
   if (interp != 0)
     {
-      double *_m = (double *) malloc ((size + 4) * sizeof (double));
+      double * _m = (double *) malloc ((size + 4) * sizeof (double));
       if (_m != 0)
 	{
-	  double *m = _m + 2;
+	  double * m = _m + 2; /* offset so we can address the -1,-2 components */
 	  size_t i;
-	  for (i = 0; i < size - 2; i++)
+	  for (i = 0; i <= size - 2; i++)
 	    {
 	      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
 	    }
 
 	  /* non-periodic boundary conditions */
-	  m[-2] = 3 * m[0] - 2 * m[1];
-	  m[-1] = 2 * m[0] - m[1];
-	  m[size - 1] = 2 * m[size - 2] - m[size - 3];
-	  m[size] = 3 * m[size - 2] - 2 * m[size - 3];
+	  m[-2] = 3.0 * m[0] - 2.0 * m[1];
+	  m[-1] = 2.0 * m[0] - m[1];
+	  m[size - 1] = 2.0 * m[size - 2] - m[size - 3];
+	  m[size] = 3.0 * m[size - 2] - 2.0 * m[size - 3];
 
 	  interp_akima_calc (interp, x_array, m);
 	  free (_m);
@@ -218,6 +219,7 @@ akima_natural_create (const double x_array[],
   return (gsl_interp_obj *) interp;
 }
 
+
 static
 gsl_interp_obj *
 akima_periodic_create (const double x_array[],
@@ -228,12 +230,12 @@ akima_periodic_create (const double x_array[],
 
   if (interp != 0)
     {
-      double *_m = (double *) malloc ((size + 4) * sizeof (double));
+      double * _m = (double *) malloc ((size + 4) * sizeof (double));
       if (_m != 0)
 	{
-	  double *m = _m + 2;
+	  double * m = _m + 2; /* offset so we can address the -1,-2 components */
 	  size_t i;
-	  for (i = 0; i < size - 2; i++)
+	  for (i = 0; i <= size - 2; i++)
 	    {
 	      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
 	    }
@@ -256,6 +258,7 @@ akima_periodic_create (const double x_array[],
 
   return (gsl_interp_obj *) interp;
 }
+
 
 static
 void
@@ -310,11 +313,11 @@ akima_eval_impl (const gsl_interp_obj * akima_interp,
 
       /* evaluate */
       {
-	double x_lo = x_array[index];
-	double delx = x - x_lo;
-	double b = interp->b[index];
-	double c = interp->c[index];
-	double d = interp->d[index];
+	const double x_lo = x_array[index];
+	const double delx = x - x_lo;
+	const double b = interp->b[index];
+	const double c = interp->c[index];
+	const double d = interp->d[index];
 	*y = y_array[index] + delx * (b + delx * (c + d * delx));
 	return GSL_SUCCESS;
       }
@@ -484,10 +487,9 @@ akima_eval_i_impl (const gsl_interp_obj * akima_interp,
 	  const double y_lo = y_array[i];
 	  const double dx = x_hi - x_lo;
 	  if(dx != 0.0) {
-	    const double b_i = interp->b[index_a];
-	    const double c_i = interp->c[index_a];
-	    const double d_i = interp->d[index_a];
-	    INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, a, b, *result);
+	    const double b_i = interp->b[i];
+	    const double c_i = interp->c[i];
+	    const double d_i = interp->d[i];
 	    *result += dx * (y_lo + dx*(0.5*b_i + dx*(c_i/3.0 + 0.25*d_i*dx)));
 	  }
 	  else {
