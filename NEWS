@@ -1,5 +1,8 @@
 * What is new in gsl-1.3:
 
+** Fixed the eigenvalue routines to prevent an infinite loop for Inf
+or NaN entries in matrix.
+
 ** Fixed a bug in the multifit and multiroots allocation routines
 which cause them to fail to report some out of memory conditions.
 

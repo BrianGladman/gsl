@@ -201,3 +201,5 @@ gsl_rng_taus2 seeding
 
 * Tiago de Paula Peixoto <count0@fissionauthority.com> bug report for multifit
 memory allocation
+
+* Adam Johansen <amj26@hermes.cam.ac.uk> bug report for eigenvalue routines

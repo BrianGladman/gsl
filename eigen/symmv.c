@@ -150,7 +150,7 @@ gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec,
       
       while (b > 0)
         {
-          if (sd[b - 1] == 0.0)
+          if (sd[b - 1] == 0.0 || gsl_isnan(sd[b - 1]))
             {
               b--;
               continue;

@@ -133,7 +133,7 @@ gsl_eigen_symm (gsl_matrix * A, gsl_vector * eval,
       
       while (b > 0)
         {
-          if (sd[b - 1] == 0.0)
+          if (sd[b - 1] == 0.0 || gsl_isnan(sd[b - 1]))
             {
               b--;
               continue;

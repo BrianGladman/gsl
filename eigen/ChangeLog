@@ -1,3 +1,13 @@
+2002-11-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* symm.c (gsl_eigen_symm): prevent infinite loop for NaNs
+
+	* herm.c (gsl_eigen_herm): prevent infinite loop for NaNs
+
+	* symmv.c (gsl_eigen_symmv): prevent infinite loop for NaNs
+
+	* hermv.c (gsl_eigen_hermv): prevent infinite loop for NaNs
+
 Fri Oct 18 17:58:35 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added test cases to catch division by zero
