@@ -50,19 +50,19 @@ typedef struct {
 int gsl_monte_vegas_integrate(gsl_monte_vegas_state *state,
 		    gsl_monte_f_T fxn, double xl[], double xu[], 
 		    unsigned long num_dim, unsigned long calls,
-		    double* tot_int, double* tot_sig, double* chi_sq_ptr);
+		    double* tot_int, double* tot_sig, double* chi_sq);
 int gsl_monte_vegas1(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
 		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
+		     double* tot_int, double* tot_sig, double* chi_sq);
 int gsl_monte_vegas2(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
 		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
+		     double* tot_int, double* tot_sig, double* chi_sq);
 int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
 		     unsigned long num_dim, unsigned long calls,
-		     double* tot_int, double* tot_sig, double* chi_sq_ptr);
+		     double* tot_int, double* tot_sig, double* chi_sq);
 
 
 gsl_monte_vegas_state* gsl_monte_vegas_alloc(void);
