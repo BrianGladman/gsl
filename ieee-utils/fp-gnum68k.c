@@ -1,4 +1,4 @@
-/* ieee-utils/fp-sparclinux.c
+/* ieee-utils/fp-gnum68k.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
  * 
@@ -60,29 +60,35 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       mode |= _FPU_RC_NEAREST ;
     }
 
+  /* FIXME: I don't have documentation for the M68K so I'm not sure
+     about the mapping of the exceptions below. Maybe someone who does
+     know could correct this. */
+
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    mode |= _FPU_MASK_IM ;
-
+    mode |= _FPU_MASK_OPERR ;
+  
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    GSL_ERROR ("sparclinux does not support the denormalized operand exception. "
-	       "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
-
+    {
+      GSL_ERROR ("the denormalized operand exception has not been implemented for m68k yet. Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
+      /*mode |= _FPU_MASK_DM ; ???? */ 
+    }
+  
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    mode |= _FPU_MASK_ZM ;
+    mode |= _FPU_MASK_DZ ;
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    mode |= _FPU_MASK_OM ;
+    mode |= _FPU_MASK_OVFL ;
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    mode |= _FPU_MASK_UM ;
+    mode |= _FPU_MASK_UNFL ;
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode &= ~ _FPU_MASK_PM ;
+      mode &= ~ (_FPU_MASK_INEX1 | _FPU_MASK_INEX2) ;
     }
   else
     {
-      mode |= _FPU_MASK_PM ;
+      mode |= (_FPU_MASK_INEX1 | _FPU_MASK_INEX2) ;
     }
 
   _FPU_SETCW(mode) ;

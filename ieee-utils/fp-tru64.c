@@ -40,21 +40,21 @@
  * Problem have been reported with the "fixed" float.h installed with
  * gcc-2.95 lacking some of the definitions in the system float.h (the
  * symptoms are errors like: `FP_RND_RN' undeclared). To work around
- * this we include the system float.h before the gcc version, e.g. 
+ * this we can include the system float.h before the gcc version, e.g. 
  *
  *  #include "/usr/include/float.h"
  *  #include <float.h>
- * 
- * This is controlled by the config.h symbol 
- * `HAVE_FP_RND_IN_USR_INCLUDE_FLOAT_H'.
  */
 
-#ifdef FIND_FP_RND_IN_USR_INCLUDE_FLOAT_H
+#include <float.h>
+
+#ifndef FP_RND_RN
+#  undef _FLOAT_H_
 #  include "/usr/include/float.h"
 #  undef _FLOAT_H_
+#  include <float.h>
 #endif
 
-#include <float.h>
 #include <machine/fpu.h>
 #include <stdio.h>
 #include <gsl/gsl_ieee_utils.h>

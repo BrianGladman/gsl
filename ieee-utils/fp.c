@@ -1,13 +1,13 @@
 #include <config.h>
 
-#if defined(HAVE_SPARCLINUX_IEEE_INTERFACE)
-#include "fp-sparclinux.c"
-#elif defined(HAVE_M68KLINUX_IEEE_INTERFACE)
-#include "fp-m68klinux.c"
-#elif defined(HAVE_PPCLINUX_IEEE_INTERFACE)
-#include "fp-ppclinux.c"
-#elif defined(HAVE_X86LINUX_IEEE_INTERFACE)
-#include "fp-x86linux.c"
+#if defined(HAVE_GNUSPARC_IEEE_INTERFACE)
+#include "fp-gnusparc.c"
+#elif defined(HAVE_GNUM68K_IEEE_INTERFACE)
+#include "fp-gnum68k.c"
+#elif defined(HAVE_GNUPPC_IEEE_INTERFACE)
+#include "fp-gnuppc.c"
+#elif defined(HAVE_GNUX86_IEEE_INTERFACE)
+#include "fp-gnux86.c"
 #elif defined(HAVE_HPUX11_IEEE_INTERFACE)
 #include "fp-hpux11.c"
 #elif defined(HAVE_HPUX_IEEE_INTERFACE)
@@ -32,6 +32,8 @@
 #include "fp-openbsd.c"
 #elif defined(HAVE_DARWIN_IEEE_INTERFACE)
 #include "fp-darwin.c"
+#elif defined(HAVE_FEENABLEEXCEPT) || defined(HAVE_FESETTRAPENABLE)
+#include "fp-gnuc99.c"
 #else
 #include "fp-unknown.c" 
 #endif

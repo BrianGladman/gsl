@@ -1,3 +1,13 @@
+2003-06-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-m68klinux.c fp-ppclinux.c fp-sparclinux.c fp-x86linux.c:
+	renamed to fp-gnum68k.c fp-gnuppc.c fp-gnusparc.c fp-gnux86.c
+	since they are dependent on the GNU C Library interface rather
+	than the kernel interface
+
+	* fp-gnuc99.c: added a fallback to the C99 exception functions for
+	cases where the operating system is not recognized
+
 Mon Aug 26 20:57:29 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: use system values for FLT_MIN, FLT_MAX, DBL_MIN, DBL_MAX

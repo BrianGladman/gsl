@@ -1,4 +1,4 @@
-/* ieee-utils/fp-m68klinux.c
+/* ieee-utils/fp-gnux86.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
  * 
@@ -21,6 +21,15 @@
 #include <fpu_control.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_ieee_utils.h>
+
+  /* Handle libc5, where _FPU_SETCW is not available, suggested by
+     OKUJI Yoshinori <okuji@gnu.org> and Evgeny Stambulchik
+     <fnevgeny@plasma-gate.weizmann.ac.il> */
+
+#ifndef _FPU_SETCW
+#include <i386/fpu_control.h>
+#define _FPU_SETCW(cw) __setfpucw(cw)
+#endif
 
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
@@ -60,35 +69,28 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       mode |= _FPU_RC_NEAREST ;
     }
 
-  /* FIXME: I don't have documentation for the M68K so I'm not sure
-     about the mapping of the exceptions below. Maybe someone who does
-     know could correct this. */
-
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    mode |= _FPU_MASK_OPERR ;
-  
+    mode |= _FPU_MASK_IM ;
+
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    {
-      GSL_ERROR ("the denormalized operand exception has not been implemented for m68k linux yet. Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
-      /*mode |= _FPU_MASK_DM ; ???? */ 
-    }
-  
+    mode |= _FPU_MASK_DM ;
+
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    mode |= _FPU_MASK_DZ ;
+    mode |= _FPU_MASK_ZM ;
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    mode |= _FPU_MASK_OVFL ;
+    mode |= _FPU_MASK_OM ;
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    mode |= _FPU_MASK_UNFL ;
+    mode |= _FPU_MASK_UM ;
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode &= ~ (_FPU_MASK_INEX1 | _FPU_MASK_INEX2) ;
+      mode &= ~ _FPU_MASK_PM ;
     }
   else
     {
-      mode |= (_FPU_MASK_INEX1 | _FPU_MASK_INEX2) ;
+      mode |= _FPU_MASK_PM ;
     }
 
   _FPU_SETCW(mode) ;

@@ -1,4 +1,4 @@
-/* ieee-utils/fp-x86linux.c
+/* ieee-utils/fp-gnusparc.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
  * 
@@ -21,15 +21,6 @@
 #include <fpu_control.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_ieee_utils.h>
-
-  /* Handle libc5, where _FPU_SETCW is not available, suggested by
-     OKUJI Yoshinori <okuji@gnu.org> and Evgeny Stambulchik
-     <fnevgeny@plasma-gate.weizmann.ac.il> */
-
-#ifndef _FPU_SETCW
-#include <i386/fpu_control.h>
-#define _FPU_SETCW(cw) __setfpucw(cw)
-#endif
 
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
@@ -73,7 +64,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode |= _FPU_MASK_IM ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    mode |= _FPU_MASK_DM ;
+    GSL_ERROR ("sparc does not support the denormalized operand exception. "
+	       "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode |= _FPU_MASK_ZM ;
