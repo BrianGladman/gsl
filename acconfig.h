@@ -108,7 +108,11 @@
 #endif
 
 #ifndef HAVE_FINITE
+#ifdef HAVE_ISFINITE
+#define finite isfinite
+#else
 #define finite gsl_finite
+#endif
 #endif
 
 #ifdef __GNUC__

@@ -106,19 +106,37 @@ AC_CHECK_FUNCS(expm1)
 AC_CHECK_FUNCS(acosh)
 AC_CHECK_FUNCS(asinh)
 AC_CHECK_FUNCS(atanh)
-AC_CHECK_FUNCS(isinf)
-AC_CHECK_FUNCS(finite)
 
-case "$host" in
-    *-*-os2_emx)
-       AC_MSG_RESULT([os/2 assuming isnan is a macro])
-       AC_DEFINE(HAVE_ISNAN,1)
-       AC_SUBST(HAVE_ISNAN)
-       ;;
-    *)
-       AC_CHECK_FUNCS(isnan)
-       ;;
-esac
+AC_CHECK_FUNCS(isinf, ,[
+    AC_MSG_CHECKING([for isinf with <math.h>])
+    AC_TRY_LINK([#include <math.h>], [float f = 0.0; isinf(f)],[
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_ISINF)],
+        AC_MSG_RESULT(no))])
+
+AC_CHECK_FUNCS(finite, ,[
+    AC_MSG_CHECKING([for finite with <math.h>])
+    AC_TRY_LINK([#include <math.h>], [float f = 0.0; finite(f)],[
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_FINITE)
+        ac_cv_func_finite=yes],
+        AC_MSG_RESULT(no))])
+
+if test "x${ac_cv_func_finite}" != "xyes" ; then 
+  AC_CHECK_FUNCS(isfinite, ,[
+      AC_MSG_CHECKING([for isfinite with <math.h>])
+      AC_TRY_LINK([#include <math.h>], [float f = 0.0; isfinite(f)],[
+          AC_MSG_RESULT(yes)
+          AC_DEFINE(HAVE_ISFINITE)],
+          AC_MSG_RESULT(no))])
+fi
+
+AC_CHECK_FUNCS(isnan, ,[
+    AC_MSG_CHECKING([for isnan with <math.h>])
+    AC_TRY_LINK([#include <math.h>], [float f = 0.0; isnan(f)],[
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_ISNAN)],
+        AC_MSG_RESULT(no))])
 
 dnl OpenBSD has a broken implementation of log1p.
 case "$host" in

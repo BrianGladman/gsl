@@ -1,3 +1,8 @@
+Wed Oct  3 11:06:51 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: check for isinf(), finite(), isnan() as
+ 	macros. Also check for isfinite() as an alternative to finite().
+
 Sat Sep 29 18:04:35 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.m4: cleaned up arguments to GSL_CONFIG
