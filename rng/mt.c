@@ -70,10 +70,10 @@ mt_get (void *vstate)
 {
   mt_state_t *state = (mt_state_t *) vstate;
 
-  unsigned long y;
-  const unsigned long int mag01[2] =
-  {0x00000000UL, 0x9908b0dfUL};
+  unsigned long k ;
   unsigned long int *const mt = state->mt;
+
+#define MAGIC(y) (((y)&0x1) ? 0x9908b0dfUL : 0)
 
   if (state->mti >= N)
     {	/* generate N words at one time */
@@ -81,31 +81,34 @@ mt_get (void *vstate)
 
       for (kk = 0; kk < N - M; kk++)
 	{
-	  y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-	  mt[kk] = mt[kk + M] ^ (y >> 1) ^ mag01[y & 0x1];
+	  unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+	  mt[kk] = mt[kk + M] ^ (y >> 1) ^ MAGIC(y);
 	}
       for (; kk < N - 1; kk++)
 	{
-	  y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-	  mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1];
+	  unsigned long y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+	  mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ MAGIC(y);
 	}
-      y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-      mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ mag01[y & 0x1];
+
+      {
+	unsigned long y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
+	mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ MAGIC(y);
+      }
 
       state->mti = 0;
     }
 
   /* Tempering */
-
-  y = mt[state->mti];
-  y ^= (y >> 11);
-  y ^= (y << 7) & 0x9d2c5680UL;
-  y ^= (y << 15) & 0xefc60000UL;
-  y ^= (y >> 18);
+  
+  k = mt[state->mti];
+  k ^= (k >> 11);
+  k ^= (k << 7) & 0x9d2c5680UL;
+  k ^= (k << 15) & 0xefc60000UL;
+  k ^= (k >> 18);
 
   state->mti++;
 
-  return y;
+  return k;
 }
 
 double
