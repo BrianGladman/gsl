@@ -182,6 +182,39 @@ case "$host" in
         ;;
 esac
 
+
+dnl Early versions of gcc-2.95.2 for PPC have a bug when passing lots
+dnl of arguments; test for this...
+dnl (This test assumes cross-compiling is okay: ...? )
+
+case "$host" in
+    powerpc-*-linux*) 
+         if test x"$ac_cv_prog_gcc" = xyes; then
+          AC_MSG_CHECKING([for PPC gcc bug])
+
+          AC_TRY_RUN([
+           #include<stdlib.h>
+           int test4bug (void* v1,void* v2,void* v3,void* v4,
+                         void* v5,void* v6,void* v7,
+                         double* ptr_1,void* v8,double d,double* ptr_2)
+           { return ((ptr_1 == ptr_2) ? 0 : 1); }
+           int main ()
+           { double ptr[] = {0}; exit (test4bug (0,0,0,0,0,0,0,ptr,0,0.0,ptr)); }
+          ],
+          ac_ppc_gcc_bug=no,
+          ac_ppc_gcc_bug=yes,
+          ac_ppc_gcc_bug=no)
+
+          if test $ac_ppc_gcc_bug = yes; then
+           AC_MSG_RESULT(yes)
+           AC_MSG_ERROR([known compiler bug -- gsl will not compile correctly; please update your compiler -- See KNOWN-PROBLEMS file for more info])
+          else
+           AC_MSG_RESULT(no)
+          fi
+         fi
+        ;;
+esac
+
 # On some systems requiring symbols FP_RND_{RN,RM,RP,RZ} for setting the 
 # floating-point rounding strategy, the symbols are defined in 
 # /usr/include/float.h.  However, some versions of GCC do not have
