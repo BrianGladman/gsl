@@ -3,7 +3,7 @@
 #include "source.h"
 
 TYPE(gsl_vector) * 
-FUNCTION(gsl_vector,alloc) (size_t n)
+FUNCTION(gsl_vector,alloc) (const size_t n)
 {
   TYPE(gsl_vector) * v ;
 
@@ -37,7 +37,7 @@ FUNCTION(gsl_vector,alloc) (size_t n)
 }
 
 TYPE(gsl_vector) *
-FUNCTION(gsl_vector,calloc) (size_t n)
+FUNCTION(gsl_vector,calloc) (const size_t n)
 {
   size_t i ;
 
