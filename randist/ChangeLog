@@ -1,3 +1,8 @@
+Thu Sep 21 18:41:53 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* pareto.c (gsl_ran_pareto): made arguments and documentation
+ 	consistent
+
 Wed May 10 14:55:43 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl-randist.c (main): fixed bug for lognormal (it was calling

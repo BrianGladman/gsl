@@ -316,7 +316,7 @@ main (int argc, char *argv[])
     }
   else if (NAME("pareto"))
     {
-      ARGS(2, "mu = scale parameter, a = power");
+      ARGS(2, "a = power, b = scale parameter");
       DBL_ARG(mu) ;
       DBL_ARG(a) ;
       OUTPUT(gsl_ran_pareto (r, mu, a));

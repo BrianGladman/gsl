@@ -847,13 +847,13 @@ order @var{a}.  The distribution function is,
 @tex
 \beforedisplay
 $$
-p(x) dx = a b^a / x^{a+1} dx
+p(x) dx = (a/b) / (x/b)^{a+1} dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-p(x) dx = a b^a / x^@{a+1@} dx
+p(x) dx = (a/b) / (x/b)^@{a+1@} dx
 @end example
 @end ifinfo
 

@@ -111,8 +111,8 @@ double gsl_ran_negative_binomial_pdf (const unsigned int k, const double p, doub
 unsigned int gsl_ran_pascal (const gsl_rng * r, double p, unsigned int n);
 double gsl_ran_pascal_pdf (const unsigned int k, const double p, unsigned int n);
 
-double gsl_ran_pareto (const gsl_rng * r, double mu, const double a);
-double gsl_ran_pareto_pdf (const double x, const double mu, const double a);
+double gsl_ran_pareto (const gsl_rng * r, double a, const double b);
+double gsl_ran_pareto_pdf (const double x, const double a, const double b);
 
 unsigned int gsl_ran_poisson (const gsl_rng * r, double mu);
 void gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],

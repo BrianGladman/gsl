@@ -1,4 +1,7 @@
-* From: Brian Gough <bjg@network-theory.co.uk>
+
+* Note that we need to get rid of mu when it is not the mean.
+
+  From: Brian Gough <bjg@network-theory.co.uk>
   To: briggsk@info.bt.co.uk
   Cc: gsl-discuss@sourceware.cygnus.com
   Subject: Re: Pareto Distribution
