@@ -1,0 +1,25 @@
+#! /bin/sh
+##
+
+list="$*"
+auxlist="gauss"
+
+echo -n "bin_PROGRAMS= "
+for i in $list $auxlist; do
+    echo -n "$i test-$i bench-$i "
+done
+echo ""
+echo ""
+    
+for i in $list; do
+    echo "${i}_SOURCES=             ran.c $i.c"
+    echo "test_${i}_SOURCES=        testran.c"
+    echo "test_${i}_DEPENDENCIES=   $i.o"
+    echo "test_${i}_LDADD=          $i.o"
+    echo "bench_${i}_SOURCES=       benchran.c"
+    echo "bench_${i}_DEPENDENCIES=  $i.o"
+    echo "bench_${i}_LDADD=         $i.o"
+done
+echo ""
+
+##
