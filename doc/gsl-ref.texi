@@ -239,6 +239,7 @@ under the terms of the GNU Free Documentation License.
 * Contributors to GSL::         
 * Autoconf Macros::             
 * GSL CBLAS Library::           
+* Free Software Needs Free Documentation::  
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Function Index::              
@@ -474,7 +475,7 @@ Wrote the major cumulative distribution functions.
 @appendix Autoconf Macros
 @include autoconf.texi
 
-@node GSL CBLAS Library, GNU General Public License, Autoconf Macros, Top
+@node GSL CBLAS Library, Free Software Needs Free Documentation, Autoconf Macros, Top
 @appendix GSL CBLAS Library
 @include cblas.texi
 
@@ -482,13 +483,18 @@ Wrote the major cumulative distribution functions.
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, GNU Free Documentation License, GSL CBLAS Library, Top
+@node  Free Software Needs Free Documentation, GNU General Public License, GSL CBLAS Library, Top
+@unnumbered Free Software Needs Free Documentation
+@include freemanuals.texi
+
+@node  GNU General Public License, GNU Free Documentation License, Free Software Needs Free Documentation, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 
 @node GNU Free Documentation License, Function Index, GNU General Public License, Top
 @unnumbered GNU Free Documentation License
 @include fdl.texi
+
 
 @comment htmlhelp: @bye
 
