@@ -1,3 +1,9 @@
+1998-05-16  Mark Galassi  <rosalia@cygnus.com>
+
+	* configure.in: Brian fixed the error where libgslerr.a was not
+	being installed in the 0.3e release, so I just bumped it up to
+	0.3f to make a new release.
+
 1998-05-14  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: upped the version to 0.3e, and this time I might
