@@ -371,24 +371,17 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
                                 const double x,
 				double * result)
 {
-  const double ax = fabs(x);
+  double ax = fabs(x);
   const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
 
   if(ax >= 1.0) return GSL_EDOM;
   if(c_neg_integer) return GSL_EDOM;
 
-  if(ax < 0.2 && fabs(aR) < 20.0 && fabs(aI) < 20.0) {
-    double prec;
-    int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
-    return status;
-  }
-  else if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
+  if(fabs(aR) < 5.0 && fabs(aI) < 5.0) {
     double prec;
     int status = hyperg_2F1_conj_series(aR, aI, c, x, result, &prec);
     return status;
   }
   else {
-    int status = hyperg_2F1_conj_luke(aR, aI, c, x, result, &prec);
-    return status;
   }
 }
