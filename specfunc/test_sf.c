@@ -1227,6 +1227,7 @@ int check_exp(void)
 
 int check_gamma(void)
 {
+  double y;
   double zr, zi, lg_r, lg_i, lg, sgn;
   int status = 0;
   int s;
@@ -1459,6 +1460,127 @@ int check_gamma(void)
   s += ( frac_diff( gsl_sf_pochrel(-5.5,-0.01), 1.7292598184510393273  ) > 1.0e-14 );
   s += ( frac_diff( gsl_sf_pochrel(-5.5,-11.0), 0.09090909090939652475 ) > 1.0e-14 );
   gsl_test(s, "  gsl_sf_pochrel");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(0.001, 0.001);
+  s += ( frac_diff(y, 0.9936876467088602902 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(0.001, 0.001)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(0.001, 1.0);
+  s += ( frac_diff(y, 0.9997803916424144436 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(0.001, 1.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(0.001, 10.0);
+  s += ( frac_diff(y, 0.9999999958306921828 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(0.001, 10.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(1.0, 0.001);
+  s += ( frac_diff(y, 0.0009995001666250083319 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1.0, 0.001)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(1.0, 1.01);
+  s += ( frac_diff(y, 0.6357810204284766802 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1.0, 1.01)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(1.0, 10.0);
+  s += ( frac_diff(y, 0.9999546000702375151 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1.0, 10.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(10.0, 10.01);
+  s += ( frac_diff(y, 0.5433207586693410570 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 1.01)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(10.0, 20.0);
+  s += ( frac_diff(y, 0.9950045876916924128 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 20.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(1000.0, 1000.1);
+  s += ( frac_diff(y, 0.5054666401440661753 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(10.0, 1000.1)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_P(1000.0, 2000.0);
+  s += ( frac_diff(y, 1.0 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_P(1000.0, 10000.0)");
+  status += s;
+
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(0.001, 0.001);
+  s += ( frac_diff(y, 0.006312353291139709793 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 0.001)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(0.001, 1.0);
+  s += ( frac_diff(y, 0.00021960835758555639171 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 1.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(0.001, 10.0);
+  s += ( frac_diff(y, 4.169307817190261516e-09 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 10.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(1.0, 0.001);
+  s += ( frac_diff(y, 0.9990004998333749917 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(1.0, 0.001)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(1.0, 1.01);
+  s += ( frac_diff(y, 0.3642189795715233198 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(1.0, 1.01)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(1.0, 10.0);
+  s += ( frac_diff(y, 0.00004539992976248485154 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(1.0, 10.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(10.0, 10.01);
+  s += ( frac_diff(y, 0.4566792413306589430 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 1.01)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(10.0, 100.0);
+  s += ( frac_diff(y, 1.1253473960842733885e-31 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 100.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(1000.0, 1000.1);
+  s += ( frac_diff(y, 0.4945333598559338247 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 1000.1)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_gamma_inc_Q(1000.0, 2000.0);
+  s += ( frac_diff(y, 6.847349459614753180e-136 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_gamma_inc_Q(1000.0, 2000.0)");
   status += s;
 
   return status;

@@ -181,9 +181,30 @@ int     gsl_sf_pochrel_e(double a, double x, double * result);
 double  gsl_sf_pochrel(double a, double x);
 
 
-
-/* Incomplete Gamma Function
- * gamma
+/* Normalized Incomplete Gamma Function
+ *
+ * Q(a,x) = 1/Gamma(a) Integral[ t^(a-1) e^(-t), {t,x,Infinity} ]
+ *
+ * a > 0, x >= 0
+ *
+ * exceptions: GSL_EDOM
  */
+int     gsl_sf_gamma_inc_Q_impl(double a, double x, double * result);
+int     gsl_sf_gamma_inc_Q_e(double a, double x, double * result);
+double  gsl_sf_gamma_inc_Q(double a, double x);
+
+
+/* Complementary Normalized Incomplete Gamma Function
+ *
+ * P(a,x) = 1/Gamma(a) Integral[ t^(a-1) e^(-t), {t,0,x} ]
+ *
+ * a > 0, x >= 0
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_gamma_inc_P_impl(double a, double x, double * result);
+int     gsl_sf_gamma_inc_P_e(double a, double x, double * result);
+double  gsl_sf_gamma_inc_P(double a, double x);
+
 
 #endif /* !GSL_GAMMAFUNCTION_H_ */
