@@ -119,10 +119,8 @@ be public domain.
 SEPT/02: See online images at http://members.fortunecity.com/aands/
 
 Devroye's book on Random Variates (1st ed) is/was in the public
-domain.  The troff source has been lost, unfortunately, but he says we
-could scan it in if anyone would like to do that. It is 800 pages so a
-spare copy of the book that could have the binding removed would be
-needed, plus a scanner with an Automatic Document Feeder.
+domain.  
+
 
 * Investigate complex support in GCC: Operations like sin(z) silently
 convert argument to double, losing the imaginary part. This is
