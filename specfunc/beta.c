@@ -22,7 +22,10 @@ gsl_sf_lnbeta_impl(const double x, const double y, double * result)
     const double min = GSL_MIN(x,y);
     const double rat = min/max;
 
-    if(rat < 0.1) {
+    if(rat < 0.2) {
+      /* min << max, so be careful
+       * with the subtraction
+       */
       double lnopr;
       double lnpow;
       double lnpre;

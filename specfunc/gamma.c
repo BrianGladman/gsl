@@ -926,6 +926,10 @@ unsigned int err_bits = 0;
   else if(x >= 0.5) {
     return lngamma_lanczos(x, result);
   }
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
   else if(fabs(x) < 0.02) {
     double sgn;
     return lngamma_sgn_0(x, result, &sgn);
@@ -979,6 +983,11 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
   else if(x >= 0.5) {
     *sgn = 1.0;
     return lngamma_lanczos(x, result_lg);
+  }
+  else if(x == 0.0) {
+    *result_lg = 0.0;
+    *sgn = 0.0;
+    return GSL_EDOM;
   }
   else if(fabs(x) < 0.02) {
     return lngamma_sgn_0(x, result_lg, sgn);

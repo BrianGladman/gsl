@@ -88,7 +88,21 @@ int gsl_sf_lnsinh_impl(const double x, double * result)
 
 int gsl_sf_lncosh_impl(const double x, double * result)
 {
-  if(x < -0.5*GSL_LOG_MACH_EPS) {
+  if(fabs(x) < 1.0) {
+    double y = x*x;
+    double c0 = 0.5;
+    double c1 = 1.0/24.0;
+    double c2 = 1.0/720.0;
+    double c3 = 1.0/40320.0;
+    double c4 = 1.0/3628800.0;
+    double c5 = 1.0/479001600.0;
+    double c6 = 1.0/87178291200.0;
+    double c7 = 1.0/20922789888000.0;
+    double c8 = 1.0/6402373705728000.0;
+    double eps = y*(c0+y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*(c6+y*(c7+y*c8))))))));
+    return gsl_sf_log_1plusx_impl(eps, result);
+  }
+  else if(x < -0.5*GSL_LOG_DBL_EPSILON) {
     *result = x + log(0.5*(1.0 + exp(-2.0*x)));
     return GSL_SUCCESS;
   }
