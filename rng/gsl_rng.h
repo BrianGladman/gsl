@@ -43,7 +43,9 @@ extern const gsl_rng_type *gsl_rng_rand;
 extern const gsl_rng_type *gsl_rng_randu;
 extern const gsl_rng_type *gsl_rng_ranlux389;
 extern const gsl_rng_type *gsl_rng_ranlux;
+extern const gsl_rng_type *gsl_rng_ranmar;
 extern const gsl_rng_type *gsl_rng_taus;
+extern const gsl_rng_type *gsl_rng_tds;
 extern const gsl_rng_type *gsl_rng_tt800;
 extern const gsl_rng_type *gsl_rng_uni32;
 extern const gsl_rng_type *gsl_rng_uni;
@@ -56,7 +58,8 @@ extern unsigned long int gsl_rng_default_seed;
 unsigned long int gsl_rng_get (const gsl_rng * r);
 double gsl_rng_uniform (const gsl_rng * r);
 double gsl_rng_uniform_pos (const gsl_rng * r);
-double gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
+double gsl_rng_uniform_gt0_lt1 (const gsl_rng * r);
+unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
@@ -113,12 +116,29 @@ gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
   do 
     {
       k = (r->get) (r->state);
-      x = k / ((double) max)
+      x = k / ((double) max);
     }
   while (x == 0 || x == 1) ;
 
   return x;
 }
+
+extern inline unsigned long int
+gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
+{
+  unsigned long int max = r->max;
+  unsigned long int scale = max / n;
+  unsigned long int k;
+
+  do 
+    {
+      k = ((r->get) (r->state)) / scale ;
+    }
+  while (k < n) ;
+
+  return k;
+}
+
 #endif /* HAVE_INLINE */
 
 #endif /* GSL_RNG_H */

@@ -123,11 +123,11 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   unsigned long int max = r->max;
   unsigned long int k;
 
-  do 
+  do
     {
       k = (r->get) (r->state);
     }
-  while (k == 0) ;
+  while (k == 0);
 
   return k / ((double) max);
 }
@@ -137,16 +137,35 @@ gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
 {
   unsigned long int max = r->max;
   unsigned long int k;
-  volatile double x; /* store x in memory, we need to test exact equality */
 
-  do 
+  /* store x in memory, we need to test exact equality */
+
+  volatile double x;
+
+  do
     {
       k = (r->get) (r->state);
-      x = k / ((double) max)
+      x = k / ((double) max);
     }
-  while (x == 0 || x == 1) ;
+  while (x == 0 || x == 1);
 
   return x;
+}
+
+unsigned long int
+gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
+{
+  unsigned long int max = r->max;
+  unsigned long int scale = max / n;
+  unsigned long int k;
+
+  do
+    {
+      k = ((r->get) (r->state)) / scale;
+    }
+  while (k < n);
+
+  return k;
 }
 
 unsigned long int
@@ -176,7 +195,8 @@ gsl_rng_print_state (const gsl_rng * r)
 
   for (i = 0; i < n; i++)
     {
-      printf ("%.2x", *(p + i));	/* FIXME: we assumed that a char is 8 bits */
+      /* FIXME: we're assuming that a char is 8 bits */
+      printf ("%.2x", *(p + i));
     }
 
 }
