@@ -5,25 +5,24 @@ typedef struct
 {
   size_t size1;
   size_t size2;
-  double * data;
+  float * data;
   
-} gsl_matrix ;
+} gsl_matrix_float ;
 
-gsl_matrix * gsl_matrix_alloc (size_t n1, size_t n2);
-gsl_matrix * gsl_matrix_calloc (size_t n1, size_t n2);
-void gsl_matrix_free (gsl_matrix * m);
+gsl_matrix_float * gsl_matrix_float_alloc (size_t n1, size_t n2);
+gsl_matrix_float * gsl_matrix_float_calloc (size_t n1, size_t n2);
+void gsl_matrix_float_free (gsl_matrix_float * m);
 
-double gsl_matrix_get(const gsl_matrix * m, size_t i, size_t j);
-void gsl_matrix_set(gsl_matrix * m, size_t i,  size_t j, double x);
-
-extern int gsl_check_range ;
+float gsl_matrix_float_get(const gsl_matrix_float * m, size_t i, size_t j);
+void gsl_matrix_float_set(gsl_matrix_float * m, size_t i, size_t j, float x);
 
 /* inline functions if you are using GCC */
 
 #ifndef __STRICT_ANSI__
 extern inline 
-double
-gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)
+float
+gsl_matrix_float_get(const gsl_matrix_float * m, 
+		     const size_t i, const size_t j)
 {
 #ifdef GSL_CHECK_RANGE
   if (i >= m->size1)  /* size_t is unsigned, can't be negative */
@@ -40,10 +39,11 @@ gsl_matrix_get(const gsl_matrix * m, const size_t i, const size_t j)
 
 extern inline 
 void
-gsl_matrix_set(gsl_matrix * m, const size_t i, const size_t j, const double x)
+gsl_matrix_float_set(gsl_matrix_float * m, 
+		     const size_t i, const size_t j, const float x)
 {
 #ifdef GSL_CHECK_RANGE
-  if (i >= m->size1) /* size_t is unsigned, can't be negative */
+  if (i >= m->size) /* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, /* nothing */) ;
     }
