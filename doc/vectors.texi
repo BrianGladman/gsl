@@ -22,6 +22,7 @@ with the vector and matrix formats used by BLAS routines.
 * Initializing vector elements::  
 * Reading and writing vectors::  
 * Creating subvector views::    
+* Modifying subvector views::   
 * Copying vectors::             
 * Exchanging elements::         
 * Vector operations::           
@@ -34,6 +35,7 @@ with the vector and matrix formats used by BLAS routines.
 * Initializing matrix elements::  
 * Reading and writing matrices::  
 * Creating submatrix views::    
+* Modifying matrix views::      
 * Creating row and column views::  
 * Copying matrices::            
 * Copying rows and columns::    
@@ -458,6 +460,24 @@ vectors which are declared @code{const}.
 This function is equivalent to @code{gsl_vector_subvector_with_stride}
 but can be used for vectors which are declared @code{const}.
 @end deftypefun
+
+@node Modifying subvector views
+@section Modifying subvector views
+
+@deftypefun int gsl_vector_view_from_vector (gsl_vector *@var{v}, gsl_vector *@var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
+This function modifies and existing vector view @var{v} to form a new
+view of a vector @var{base}, starting from element @var{offset}.  The
+vector has @var{n} elements separated by stride @var{stride}.  Any
+existing view in @var{v} will be lost as a result of this function.
+@end deftypefun
+
+@deftypefun int gsl_vector_view_from_array (gsl_vector *@var{v}, double *@var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
+This function modifies and existing vector view @var{v} to form a new
+view of an array @var{base}, starting from element @var{offset}.  The
+vector has @var{n} elements separated by stride @var{stride}.  Any
+existing view in @var{v} will be lost as a result of this function.
+@end deftypefun
+
 
 @comment @deftypefun {gsl_vector *} gsl_vector_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 @comment This function creates a vector as a slice of an existing block @var{b},
@@ -926,6 +946,30 @@ Of course, the original matrix should not be deallocated while the new
 matrix is still in use.
 @end deftypefun
 
+@node Modifying matrix views
+@section Modifying matrix views
+
+@deftypefun int gsl_matrix_view_from_matrix (gsl_matrix * @var{m}, gsl_matrix * @var{mm}, const size_t @var{k1}, const size_t @var{k2}, const size_t @var{n1}, const size_t @var{n2})
+This function modifies and existing matrix view @var{m} to form a new
+view of a matrix @var{mm}, starting from element (@var{k1},@var{k2}).
+The matrix view has @var{n1} rows and @var{n2} columns.  Any existing
+view in @var{m} will be lost as a result of this function.
+@end deftypefun
+
+@deftypefun int gsl_matrix_view_from_vector (gsl_matrix * @var{m}, gsl_vector * @var{v}, const size_t @var{offset}, const size_t @var{n1}, const size_t @var{n2})
+This function modifies and existing matrix view @var{m} to form a new
+view of a vector @var{v}, starting from element @var{offset}.  The
+vector has @var{n1} rows and @var{n2} columns.  Any
+existing view in @var{m} will be lost as a result of this function.
+@end deftypefun
+
+@deftypefun int gsl_matrix_view_from_array (gsl_matrix * @var{m}, double * @var{base}, const size_t @var{offset}, const size_t @var{n1}, const size_t @var{n2})
+This function modifies and existing matrix view @var{m} to form a new
+view of an array @var{base}, starting from element @var{offset}.  The
+matrix has @var{n1} rows and @var{n2} columns.  Any
+existing view in @var{m} will be lost as a result of this function.
+@end deftypefun
+
 @comment @deftypefun {gsl_matrix *} gsl_matrix_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 @comment This function creates a matrix as a slice of the block @var{b},
 @comment returning a pointer to a newly initialized matrix struct.  The start of
@@ -1104,8 +1148,8 @@ be possible.
 @deftypefun int gsl_matrix_transpose_memcpy (gsl_matrix * @var{dest}, gsl_matrix * @var{src})
 This function makes the matrix @var{dest} the transpose of the matrix
 @var{src} by copying the elements of @var{src} into @var{dest}.  This
-function works for all matrices provided the dimensions of the matrix
-@var{dest} must match the transposed dimensions of the matrix @var{src}.
+function works for all matrices provided that the dimensions of the matrix
+@var{dest} match the transposed dimensions of the matrix @var{src}.
 @end deftypefun
 
 @deftypefun int gsl_matrix_transpose (gsl_matrix * @var{m})
@@ -1113,8 +1157,6 @@ This function replaces the matrix @var{m} by its transpose by copying
 the elements of the matrix in-place.  The matrix must be square for this
 operation to be possible.
 @end deftypefun
-
-
 
 @node Matrix operations
 @section Matrix operations
