@@ -620,38 +620,33 @@ int check_dilog(void)
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.7, 0.0), -0.11007260850832985251 ) > 1.0e-13 );
+  s += ( frac_diff( gsl_sf_dilogc(0.7, 0.0), -0.11007260850832985251 ) > 1.0e-14 );
   gsl_test(s, "  dilogc(0.7, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.7, 0.0));
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.5, 0.0), -0.05897507442156586346 ) > 1.0e-13 );
+  s += ( frac_diff( gsl_sf_dilogc(0.5, 0.0), -0.05897507442156586346 ) > 1.0e-14 );
   gsl_test(s, "  dilogc(0.5, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.5, 0.0));
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.1, 0.0), -0.0024937776225208839662 ) > 1.0e-13 );
+  s += ( frac_diff( gsl_sf_dilogc(0.1, 0.0), -0.0024937776225208839662 ) > 1.0e-14 );
   gsl_test(s, "  dilogc(0.1, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.1, 0.0));
   status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_dilogc(0.01, 0.0), -0.000024999375027776215378 ) > 1.0e-13 );
   gsl_test(s, "  dilogc(0.01, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.01, 0.0));
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(10.0, 0.0), -3.0596887943287347304 ) > 1.0e-11 );
+  s += ( frac_diff( gsl_sf_dilogc(10.0, 0.0), -3.0596887943287347304 ) > 1.0e-14 );
   gsl_test(s, "  dilogc(10.0, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(10.0, 0.0));
+  status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_dilogc(100.0, 0.0), -11.015004738293824854 ) > 1.0e-14 );
   gsl_test(s, "  dilogc(100.0, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(100.0, 0.0));
   status += s;
 
   return status;

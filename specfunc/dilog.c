@@ -177,107 +177,39 @@ gsl_sf_dilog_impl(const double x, double * result)
 }
 
 
-/* Evaluate using a series representation for the
- * "correction" term:
- *    Re[Li2(z)] = Li2(|z|) - Sum[|z|^k / k^2 (1-cos(k arg(z))), {k,1,Inf}]
+/* Evaluate the series representation for Li2(z):
  *
- * This requires r < 1 and is slow to converge when r is near 1.
- * For large N, the accuracy is approximately Exp[-N ln(r)]/N^2,
- * for |N ln(r)| > 1. Therefore, the number of terms required is
- * roughly N ~ 10 / |ln r| for accuracy of Exp[-10]/N^2. So, in
- * practice this is not useful for 1-r < 10^(-2).
- *
- * Assumes r > 0. If arg(z) is zero, this will be adding
- * up lots of zeros, so better to trap that case outside.
+ *   Li2(z) = Sum[ |z|^k / k^2 Exp[i k arg(z)], {k,1,Infinity}]
+ *   |z|    = r
+ *   arg(z) = theta
+ *   
+ * Assumes r > 0. 
  */
 static
 int
-dilogc_series_1(double r, double cos_theta, double * result)
+dilogc_series_1(double r, double theta, double * real_result, double * imag_result)
 {
-  int stat_dl;
-  double dilog_abs;
-  double alpha = 1.0 - cos_theta;
-  double beta  = sin(acos(cos_theta));
-  double ck  = cos_theta;
-  double sk  = beta;
-  double rk  = r;
-  double sum = r*(1.0 - ck);
-  int kmax = 100 + (int)(10.0/(-log(r)));
+  double ck = cos(theta);
+  double sk = sin(theta);
+  double alpha = 1.0 - ck;
+  double beta  = sk;
+  double rk = r;
+  double real_sum = r*ck;
+  double imag_sum = r*sk;
+  int kmax = 50 + (int)(10.0/(-log(r)));
   int k;
   for(k=2; k<kmax; k++) {
     double ck_tmp = ck;
     ck = ck - (alpha*ck + beta*sk);
     sk = sk - (alpha*sk - beta*ck_tmp);
     rk *= r;
-    sum += rk/((double)k*k) * (1.0 - ck);
+    real_sum += rk/((double)k*k) * ck;
+    imag_sum += rk/((double)k*k) * sk;
   }
   
-  /* Re(Li2(z)) = Li2(|z|) - sum */
-  stat_dl = gsl_sf_dilog_impl(r, &dilog_abs);
-  *result = dilog_abs - sum;
-  return stat_dl;
-}
-
-/* E_2(i x)
- * used below
- */
-static
-double
-E2_imag(double x)
-{
-  if(fabs(x) > 100.0) {
-    return -1.0/x * (sin(x) - 2.0/x*cos(x));
-  }
-  else {
-    double Si;
-    gsl_sf_Si_impl(x, &Si);
-    return cos(x) + x * (Si - 0.5*M_PI);
-  }
-}
-
-
-/* Evaluate using a series which is small for r near 1.
- * This is easily derived from the above representation:
- *
- *  Li2(z) = Li2(|z|) - 1/4 a(2Pi-a) + Sum[(1-r^k)/k^2(1-cos(k a)), {k,1,Inf}]
- *
- * where a = argz(z), 0 <= a <= 2Pi.
- *
- * Assumes r < 1. If arg(z) is zero, this will be adding
- * up lots of zeros, so better to trap that case outside.
- */
-static
-int
-dilogc_series_2(double r, double cos_theta, double *result)
-{
-  int stat_dl;
-  double dilog_abs;
-  double sum_end;
-  double theta = acos(cos_theta);
-  double alpha = 1.0 - cos_theta;
-  double beta  = sin(theta);
-  double ck  = cos_theta;
-  double sk  = beta;
-  double rk  = r;
-  double sum = (1.0-r)*(1.0 - ck);
-  int kmax = locMax( 10, (int)(10.0/(-log(r))) );
-  int k;
-  for(k=2; k<kmax; k++) {
-    double ck_tmp = ck;
-    ck = ck - (alpha*ck + beta*sk);
-    sk = sk - (alpha*sk - beta*ck_tmp);
-    rk *= r;
-    sum += (1.0-rk)/((double)k*k) * (1.0 - ck);
-  }
-
-  /* Clean up the last part of the sum,
-   * approximated by an integral.
-   */
-  sum_end = 1.0/kmax * (1.0 - E2_imag(kmax*theta));
-
-  stat_dl = gsl_sf_dilog_impl(r, &dilog_abs);
-  *result = dilog_abs - 0.25*theta*(2.0*M_PI - theta) + sum + sum_end;
-  return stat_dl;  
+  *real_result = real_sum;
+  *imag_result = imag_sum;
+  return GSL_SUCCESS;
 }
 
 
@@ -298,11 +230,15 @@ gsl_sf_dilogc_impl(const double r, const double cos_theta, double * result)
     double tmp_result;
     int stat_tmp;
     
-    if(t < 0.99) {
-      stat_tmp = dilogc_series_1(t, cos_theta, &tmp_result);
+    if(t < 0.75) {
+      double real_tmp_result;
+      double imag_tmp_result;
+      stat_tmp = dilogc_series_1(t, acos(cos_theta), &real_tmp_result, &imag_tmp_result);
+      tmp_result = real_tmp_result;
     }
     else {
-      stat_tmp = dilogc_series_2(t, cos_theta, &tmp_result);
+      /* FIXME: need something for t -> 1 */
+      tmp_result = 0.0;
     }
 
     /* Invert the standard functional relation if r was > 1.
