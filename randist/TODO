@@ -1,23 +1,14 @@
-1. The exponential power distribution method could be speeded up by
+* The exponential power distribution method could be speeded up by
 using a rational function approximation for the rejection scaling
 parameter.
 
-x2. Check for off by one error in the shuffle algorithm. DONE. checked
-against Knuth.
-
-x3. If the user runs gsl-dist for two different distributions then the
-variates will be correlated because they come from the same stream of
-random numbers. DONE, the user now has to supply a seed
-
-4. Do something about the possibility of the user providing invalid
+* Do something about the possibility of the user providing invalid
 parameters (e.g. negative variance etc)
 
-5. Add the triangular distribution.
+* Add the triangular distribution.
 
-x6. Add the Rayleigh distribution. DONE
-
-7. fix error handling in discrete.c to use GSL_ERROR(), do the same
+* fix error handling in discrete.c to use GSL_ERROR(), do the same
 for memory management
 
-8. Look at Marsaglia & Tsang, "The Monte Python Method for generating
+* Look at Marsaglia & Tsang, "The Monte Python Method for generating
 random variables", ACM TOMS Vol 24, No 3, p341

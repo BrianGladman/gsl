@@ -1,43 +1,15 @@
+* Surely this has been fixed now????
 
-FIXME: there is a problem with BRENT. The interval sometimes skips off
-the root.  Somewhere the best guess is being used as the interval
-endpoint which is wrong.
+    FIXME: there is a problem with BRENT. The interval sometimes skips off
+    the root.  Somewhere the best guess is being used as the interval
+    endpoint which is wrong.
 
-Add an inline version of the iterate method for speed? Perhaps not,
+* Add an inline version of the iterate method for speed? Perhaps not,
 the time taken for each iteration surely dominated by the convergence
 test.
 
--*-text-*- $Id$
+* Numerical derivatives? Maybe have a function to manufacture an fdf
+from an f and optionally a df. (We'll need to approximate the
+derivative if it is not provided; this is something which should be
+done outside the root finding package.)
 
-This is a (hopefully complete) list of things which need to be done for the
-root finding package. The ordering is random. Contact Reid (rp@lanl.gov) for
-details or clarification on anything.
-
-DONE * Add Brent and Dekker root finders. They are the best.
-
-* Fix the documentation. It needs some minor reorganization and additions and
-  some clarifications.
-
-* Fix or trap the stopping problems in false position, secant method, and
-  Newton's Method.
-
-* Write the high level functions.
-
-* Write a function to manufacture an fdf from an f and optionally a df. (We'll
-  need to approximate the derivative if it is not provided; this is something
-  which should be done outside the root finding package.)
-
-* Write a function to extract f from an fdf.
-
-* Verify and improve robustness. Write more tests. Bisection and the high
-  level functions must be able to handle anything that we throw at them (they
-  are allowed to give error messages when the input is invalid, but they must
-  never give an incorrect answer (this is possible for bisection; is it
-  possible for the high level function?); false position?, secant, and Newton
-  are allowed to break, but we should minimize that and minimize especially
-  wrong answers.
-
-* Document in detail how everything can break. (To be done after breakage has
-  been minimized.) 
-
-* Make sure everything is portable (i.e. hook into Autoconf better).

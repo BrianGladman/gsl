@@ -1,16 +1,16 @@
-Newton-Maehly (Newton with implicit deflation)
+* Newton-Maehly (Newton with implicit deflation)
 
-Jenkins-Traub
+* Jenkins-Traub
 
-Brian Smith's adaptation of Laguerre's method
+* Brian Smith's adaptation of Laguerre's method
 
-Hirano's method, SIAM J Num Anal 19 (1982) 793-99 by Murota
+* Hirano's method, SIAM J Num Anal 19 (1982) 793-99 by Murota
 
-Carstensen, Petkovic, "On iteration methods without derivatives for
-the simultaneous determination of polynomial zeros",
-J. Comput. Appl. Math., 45 (1993) 251-267
+* Carstensen, Petkovic, "On iteration methods without derivatives for
+the simultaneous determination of polynomial zeros", J. Comput. Appl.
+Math., 45 (1993) 251-267
 
-
+* Investigate this,
 
  > NA Digest   Sunday, July 11, 1999   Volume 99 : Issue 28
  > 

@@ -1,5 +1,11 @@
 TODO 
 
+* Automatically put the version and date into the KNOWN-PROBLEMS file
+
+* Switch to libtool and --disable-shared (even though it is still
+slower) and build a single libgsl. This will also be easier for making
+the debian package hopefully.
+
 * Add support for C++ (Use #ifdef __cplusplus extern "C" { #pragma }
 #endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB).
 
@@ -10,7 +16,15 @@ rounding.
 * Clean up the ordering of lines in the Makefile.am's so that they are
 all consistent. At the moment the lines are in any order. Also get rid
 of make strict targets, since it's better to define a shell alias to
-do that.
+do that.  Files with strict target are 
+
+    blas/Makefile.am
+    dht/Makefile.am
+    linalg/Makefile.am
+    monte/Makefile.am
+    ode-initval/Makefile.am
+    specfunc/Makefile.am
+    sum/Makefile.am
 
 * Run tests where matrix dim2 != size2, note that dim2 is a physical
 dimension and size2 is the number of columns in the matrix. This will
@@ -56,7 +70,7 @@ coverage testing.
 * Add swig.i files and swig demos so that swig can be run more easily
 
 * Redesign the interface to iterative functions to use an init/do-while
-construct
+construct (Mostly done).
 
 * Sine and Cosine Transforms from FFTPACK. A simple multidimensional
 fft.

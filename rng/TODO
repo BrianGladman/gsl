@@ -1,23 +1,32 @@
+* Add all the new generators from Knuth's 3rd Edition 
 
 * Add SWNS generator Phys.Rev.E 50 (2) p. 1607-1615 (1994), Phys.Rev.E
 60 (6), p.7626-7628 (1999)
+
+* Add ISAAC generator (??)
+
+* Add (A)RC4 ? (and maybe MD5)
+
+* Check that RANLXS will work on machines with non-standard with of
+float/dbl (original has checks for DBL_MANT_DIG ..)
+
+* mention more clearly why not all Cokus used (or recheck MT pages for
+improvements)
 
 * run the DIEHARD tests on all the generators, especially the ones we
 are listing as "Simulation Quality" -- some of those are a bit old and
 might fail one or two diehard tests.
 
-* Add drand48,   DONE
-       NAG,       missing, gave up! 
-       CRAY,      DONE 
+* Add  NAG,       missing, gave up! 
        CDC 48-bit missing 
 
 * Check out the bug fix to mrand48 that was made in glibc2, pr757
 
 * Check out  the following paper,
 
-On the anomaly of ran1() in Monte Carlo pricing of financial
-derivatives; Akira Tajima , Syoiti Ninomiya , and Shu Tezuka ; Winter
-simulation , 1996, Page 360, from ACM
+    On the anomaly of ran1() in Monte Carlo pricing of financial
+    derivatives; Akira Tajima , Syoiti Ninomiya , and Shu Tezuka ; Winter
+    simulation , 1996, Page 360, from ACM
 
 * The following papers have been published, I think we refer to them
 (or could do),
@@ -32,16 +41,6 @@ simulation , 1996, Page 360, from ACM
 * Look at this paper: I. Vattulainen, "Framework for testing random numbers
   in parallel calculations", Phys. Rev. E, 59, 6, June 1999, p7200
 
-* Check that RANLXS will work on machines with non-standard with of
-float/dbl (original has checks for DBL_MANT_DIG ..)
-
-* Add ISAAC generator (??)
-
-* Add (A)RC4 ? (and maybe MD5)
-
-* mention more clearly why not all Cokus used (or recheck MT pages for
-improvements)
-
 ----------------------------------------------------------------------
 DONE
 
@@ -51,26 +50,6 @@ change it to provide 2^31 different initial states (this will also
 prevent the high bits being zero). DONE - we now use a 32-bit
 generator.
 
-x2. Make things work on 64 bit platforms. Sometimes we just need to
-use & 0xffffffff on 32 bit quantities that are returned to the user
-where we rely on 32 bit arithmetic, sometimes it is more complicated
-(e.g. the Tausworthe generator relies on 32 bit arithmetic at all
-stages). DONE, needs to be tested on an actual 64 bit machine though
-DONE (I tested it on the Alpha (ancho).
-
-x3. Add reimplementations of the Numerical Recipes generators, since
-lots of people use those. DONE, for ran0,1,2,3
-
-x4. Add functions for getting an integer in the range [0,N] or [1,N],
-like rolling dice. Be aware that division might not make a smooth
-distribution, and a small modulus might be correlated for some generators.
-DONE, for [0,N-1]
-
-x5. provide a RAND_SCALE precomputed scale factor for getting [0,1] In
-numerical recipes they divide by (MAX+1) which we can't handle in our
-current scheme. They also replace 1 by 1-eps where eps=1.2e-7. Yuk.
-DONE
-
 x8. Get the macros from the faster MT19937 generator and use them. We
 need to make MT be the fastest of the simulation quality generators if
 it is the default. DONE. It didn't improve the speed on other
@@ -78,9 +57,3 @@ platforms, so I just used the tricks which also worked on the pentium
 (e.g. changing mag[x&1] to x&1 ? mag[1] : mag[0])
 
 x9. Send to M.Makumoto for review. DONE, no reply as of 4 Nov 1998 though.
-
-x10. Add random/srandom DONE.
-
-
-16. Rewrite test.c to use a loop over a list of all the generators.
-Too much cut and paste! DONE
