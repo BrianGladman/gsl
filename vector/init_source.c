@@ -260,3 +260,29 @@ FUNCTION (gsl_vector, set_zero) (TYPE (gsl_vector) * v)
       *(BASE *) (data + MULTIPLICITY * i * stride) = zero;
     }
 }
+
+int
+FUNCTION (gsl_vector, set_basis) (TYPE (gsl_vector) * v, size_t i)
+{
+  ATOMIC * const data = v->data;
+  const size_t n = v->size;
+  const size_t stride = v->stride;
+  const BASE zero = ZERO ;
+  const BASE one = ONE;
+
+  size_t k;
+
+  if (i >= n)
+    {
+      GSL_ERROR ("index out of range", GSL_EINVAL);
+    }
+
+  for (k = 0; k < n; k++)
+    {
+      *(BASE *) (data + MULTIPLICITY * k * stride) = zero;
+    }
+
+  *(BASE *) (data + MULTIPLICITY * i * stride) = one;
+
+  return GSL_SUCCESS;
+}

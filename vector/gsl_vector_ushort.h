@@ -55,6 +55,7 @@ void gsl_vector_ushort_set (gsl_vector_ushort * v, const size_t i, unsigned shor
 
 void gsl_vector_ushort_set_zero (gsl_vector_ushort * v);
 void gsl_vector_ushort_set_all (gsl_vector_ushort * v, unsigned short x);
+int gsl_vector_ushort_set_basis (gsl_vector_ushort * v, size_t i);
 
 int gsl_vector_ushort_fread (FILE * stream, gsl_vector_ushort * v);
 int gsl_vector_ushort_fwrite (FILE * stream, const gsl_vector_ushort * v);

@@ -66,6 +66,7 @@ void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, con
 void gsl_vector_complex_long_double_set_zero (gsl_vector_complex_long_double * v);
 void gsl_vector_complex_long_double_set_all (gsl_vector_complex_long_double * v,
                                        gsl_complex_long_double z);
+int gsl_vector_complex_long_double_set_basis (gsl_vector_complex_long_double * v, size_t i);
 
 int gsl_vector_complex_long_double_fread (FILE * stream,
 				    gsl_vector_complex_long_double * v);

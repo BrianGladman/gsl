@@ -55,6 +55,7 @@ void gsl_vector_float_set (gsl_vector_float * v, const size_t i, float x);
 
 void gsl_vector_float_set_zero (gsl_vector_float * v);
 void gsl_vector_float_set_all (gsl_vector_float * v, float x);
+int gsl_vector_float_set_basis (gsl_vector_float * v, size_t i);
 
 int gsl_vector_float_fread (FILE * stream, gsl_vector_float * v);
 int gsl_vector_float_fwrite (FILE * stream, const gsl_vector_float * v);

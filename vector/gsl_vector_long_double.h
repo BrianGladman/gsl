@@ -55,6 +55,7 @@ void gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, lon
 
 void gsl_vector_long_double_set_zero (gsl_vector_long_double * v);
 void gsl_vector_long_double_set_all (gsl_vector_long_double * v, long double x);
+int gsl_vector_long_double_set_basis (gsl_vector_long_double * v, size_t i);
 
 int gsl_vector_long_double_fread (FILE * stream, gsl_vector_long_double * v);
 int gsl_vector_long_double_fwrite (FILE * stream, const gsl_vector_long_double * v);

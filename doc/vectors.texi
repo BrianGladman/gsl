@@ -360,6 +360,12 @@ This function sets all the elements of the vector @var{v} to the value
 This function sets all the elements of the vector @var{v} to zero.
 @end deftypefun
 
+@deftypefun int gsl_vector_set_basis (gsl_vector * @var{v}, size_t @var{i})
+This function makes a basis vector by setting all the elements of the
+vector @var{v} to zero except for the @var{i}-th element which is set to
+one.
+@end deftypefun
+
 @node Reading and writing vectors
 @section Reading and writing vectors
 
@@ -426,8 +432,6 @@ by copying.
 
 The following function can be used to exchange, or permute, the elements
 of a vector.
-
-
 
 @deftypefun int gsl_vector_swap_elements (gsl_vector * @var{v}, size_t i, size_t j)
 This function exchanges the @var{i}-th and @var{j}-th elements of the

@@ -55,6 +55,7 @@ void gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x
 
 void gsl_vector_uchar_set_zero (gsl_vector_uchar * v);
 void gsl_vector_uchar_set_all (gsl_vector_uchar * v, unsigned char x);
+int gsl_vector_uchar_set_basis (gsl_vector_uchar * v, size_t i);
 
 int gsl_vector_uchar_fread (FILE * stream, gsl_vector_uchar * v);
 int gsl_vector_uchar_fwrite (FILE * stream, const gsl_vector_uchar * v);

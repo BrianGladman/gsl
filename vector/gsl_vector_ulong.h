@@ -55,6 +55,7 @@ void gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x
 
 void gsl_vector_ulong_set_zero (gsl_vector_ulong * v);
 void gsl_vector_ulong_set_all (gsl_vector_ulong * v, unsigned long x);
+int gsl_vector_ulong_set_basis (gsl_vector_ulong * v, size_t i);
 
 int gsl_vector_ulong_fread (FILE * stream, gsl_vector_ulong * v);
 int gsl_vector_ulong_fwrite (FILE * stream, const gsl_vector_ulong * v);

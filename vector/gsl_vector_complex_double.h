@@ -66,6 +66,7 @@ void gsl_vector_complex_set (gsl_vector_complex * v, const size_t i,
 void gsl_vector_complex_set_zero (gsl_vector_complex * v);
 void gsl_vector_complex_set_all (gsl_vector_complex * v,
                                        gsl_complex z);
+int gsl_vector_complex_set_basis (gsl_vector_complex * v, size_t i);
 
 int gsl_vector_complex_fread (FILE * stream,
 				    gsl_vector_complex * v);
