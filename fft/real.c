@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -5,7 +6,7 @@
 #include <gsl_complex.h>
 #include <gsl_fft_real.h>
 
-#include <fft_real.h>
+#include "fft_real.h"
 
 int
 gsl_fft_real (double data[],

@@ -1,4 +1,4 @@
-
+#include <config.h>
 
 #include <gsl_complex.h>
 #include <gsl_errno.h>

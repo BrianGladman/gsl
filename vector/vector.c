@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gsl_vector.h>
 
 /* turn off range checking at runtime if zero */

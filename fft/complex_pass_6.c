@@ -1,8 +1,10 @@
+#include <config.h>
 #include <math.h>
+
 #include <gsl_complex.h>
 #include <gsl_fft_complex.h>
 
-#include <fft_complex.h>
+#include "fft_complex.h"
 
 int
 gsl_fft_complex_pass_6 (const gsl_complex from[],

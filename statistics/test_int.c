@@ -1,5 +1,7 @@
+#include <config.h>
 #include <stdlib.h>
 #include <math.h>
+
 #include <gsl_test.h>
 #include <gsl_statistics_int.h>
 

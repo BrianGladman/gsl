@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gsl_errno.h>
 #include <gsl_fft_complex.h>
 

@@ -1,8 +1,9 @@
+#include <config.h>
 #include <math.h>
 #include <float.h>
 #include <stdio.h>
 
-#include <compare.h>
+#include "compare.h"
 
 extern int verbose;
 extern int tests;

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gsl_fft.h>
 
 #include "bitreverse.h"

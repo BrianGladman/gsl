@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 
 #undef GSL_RANGE_CHECK_OFF

@@ -15,7 +15,7 @@
 #include <gsl_test.h>
 
 #include <getopt.h>
-#include <compare.h>
+#include "compare.h"
 
 int verbose = 0;
 

@@ -1,4 +1,6 @@
+#include <config.h>
 #include <math.h>
+
 #include <gsl_complex.h>
 #include <gsl_dft_complex.h>
 #include <gsl_errno.h>

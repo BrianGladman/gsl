@@ -4,7 +4,6 @@
 #include <stddef.h>
 
 #include <gsl_math.h>
-
 #include <gsl_complex.h>
 #include <gsl_fft.h>
 

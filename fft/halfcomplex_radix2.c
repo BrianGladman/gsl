@@ -1,3 +1,4 @@
+#include <config.h>
 #include <math.h>
 #include <gsl_errno.h>
 #include <gsl_fft_halfcomplex.h>

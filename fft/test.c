@@ -16,7 +16,7 @@
 #include <gsl_test.h>
 
 #include <getopt.h>
-#include <compare.h>
+#include "compare.h"
 
 void usage (void);
 void check_complex (size_t n) ;

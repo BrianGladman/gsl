@@ -13,7 +13,7 @@
 #include <gsl_fft_signals.h>
 
 #include <gsl_test.h>
-#include <compare.h>
+#include "compare.h"
 
 int verbose = 0;
 
