@@ -46,13 +46,13 @@ of error.  The return value is analogous to the value of the variable
 and decide what action to take, including ignoring the error if it is
 not considered serious.
 
-In addition to reporting errors the library also provides an optional
-error handler.  The error handler is called by library functions when
-they report an error, just before they return to the caller.  The
-purpose of the handler is to provide a function where a breakpoint can
-be set that will catch library errors when running under the debugger.
-It is not intended for use in production programs, which should handle
-any errors using the return codes.
+In addition to reporting errors the library also has an error handler
+function.  The error handler is called by library functions when they
+report an error, just before they return to the caller.  The purpose of
+the handler is to provide a function where a breakpoint can be set that
+will catch library errors when running under the debugger.  It is not
+intended for use in production programs, which should handle any errors
+using the return codes.
 
 @node Error Codes
 @section Error Codes

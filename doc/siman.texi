@@ -64,34 +64,20 @@ proportional to the energy difference
 
 The temperature @math{T} is initially set to a high value, and a random
 walk is carried out at that temperature.  Then the temperature is
-lowered very slightly (according to a @dfn{cooling schedule}) and
-another random walk is taken.
-@cindex cooling schedule
-@cindex schedule - cooling
-
-This slight probability of taking a step that gives higher energy
-is what allows simulated annealing to frequently get out of local
-minima.
-
-An initial guess is supplied.  At each step, a point is chosen at a
-random distance from the current one, where the random distance @math{r}
-is distributed according to a Boltzmann distribution
-@tex
-$r = \exp^{-E/kT}$.
-@end tex
-@ifinfo
-r = e^(-E/kT).
-@end ifinfo
-After a few search steps using this distribution, the temperature
-@math{T} is lowered according to some scheme, for example
+lowered very slightly according to a @dfn{cooling schedule}, for
+example:
 @tex
 $T \rightarrow T/\mu_T$
 @end tex
 @ifinfo
 T -> T/mu_T
 @end ifinfo
-where @math{\mu_T} is slightly greater than 1.
+where @math{\mu_T} is slightly greater than 1. 
+@cindex cooling schedule
+@cindex schedule - cooling
 
+The slight probability of taking a step that gives higher energy is what
+allows simulated annealing to frequently get out of local minima.
 
 @node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
 @section Simulated Annealing functions
