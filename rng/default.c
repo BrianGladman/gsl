@@ -1,24 +1,72 @@
 #include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <gsl_rng.h>
-
-void get_default_seed (void) ;
+#include <gsl_errno.h>
 
 unsigned int gsl_rng_default_seed = 1 ;
+const gsl_rng_type * gsl_rng_default ;
 
-void
-get_default_seed (void)
+static void 
+check (const gsl_rng_type ** def, const gsl_rng_type * test, const char * p) ;
+
+int
+gsl_rng_env_setup (void)
 {
   unsigned int seed = 1;
+  const char * p = getenv ("GSL_RNG_TYPE") ;
 
-  const char * p = getenv ("GSL_RNG_SEED") ;
+  if (p)
+    {
+      gsl_rng_default = 0 ;
+      
+      check(&gsl_rng_default, gsl_rng_bad_rand, p) ;
+      check(&gsl_rng_default, gsl_rng_bad_randu, p) ;
+      check(&gsl_rng_default, gsl_rng_cmrg, p) ;
+      check(&gsl_rng_default, gsl_rng_mrg, p) ;
+      check(&gsl_rng_default, gsl_rng_rand, p) ;
+      check(&gsl_rng_default, gsl_rng_taus, p) ;
+      check(&gsl_rng_default, gsl_rng_uni, p) ;
+      check(&gsl_rng_default, gsl_rng_uni32, p) ;
+      check(&gsl_rng_default, gsl_rng_zuf, p) ;
+      
+      if (gsl_rng_default == 0) 
+	{
+	  GSL_ERROR("unknown generator",EINVAL) ;
+	}
+      
+      printf("GSL_RNG_TYPE=%s\n",gsl_rng_default->name) ;
+    }
+  else
+    {
+      gsl_rng_default = gsl_rng_taus ;
+    }
+
+  p = getenv ("GSL_RNG_SEED") ;
    
-   if (p)  /* GSL_IEEE_MODE environment variable is not set */
+   if (p) 
      {
        seed = strtoul(p, 0, 0) ;
-       printf("GSL_RNG_SEED=%d\n", seed) ;
+       printf("GSL_RNG_SEED=%u\n", seed) ;
      } ;
 
    gsl_rng_default_seed = seed ;
+
+   return GSL_SUCCESS ;
 }
+
+
+static void 
+check (const gsl_rng_type ** def, const gsl_rng_type * test, const char * p)
+{
+  if (*def)
+    return ;
+
+  if (strcmp(p,test->name) == 0) 
+    {
+      *def = test ;
+    }
+}
+
+

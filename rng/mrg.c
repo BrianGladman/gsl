@@ -90,4 +90,4 @@ static const gsl_rng_type mrg_type = { "gsl-mrg",  /* name */
 					&mrg_set, 
 					&mrg_get } ;
 
-const gsl_rng_type * gsl_rng_mrg (void) { return &mrg_type ; }
+const gsl_rng_type * gsl_rng_mrg = &mrg_type ; 

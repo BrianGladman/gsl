@@ -103,7 +103,8 @@ static const gsl_rng_type cmrg_type = { "gsl-cmrg",  /* name */
 					&cmrg_set, 
 					&cmrg_get } ;
 
-const gsl_rng_type * gsl_rng_cmrg (void) { return &cmrg_type ; }
+const gsl_rng_type * gsl_rng_cmrg = &cmrg_type ;
+
 
 
     

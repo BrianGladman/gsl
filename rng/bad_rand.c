@@ -45,4 +45,5 @@ static const gsl_rng_type bad_rand_type = { "bad_rand",  /* name */
 					     &bad_rand_set, 
 					     &bad_rand_get } ;
 
-const gsl_rng_type * gsl_rng_bad_rand (void) { return &bad_rand_type ; }
+const gsl_rng_type * gsl_rng_bad_rand = &bad_rand_type ;
+

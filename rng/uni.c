@@ -187,7 +187,7 @@ static const gsl_rng_type uni_type = { "gsl-uni",  /* name */
 					&uni_set, 
 					&uni_get } ;
 
-const gsl_rng_type * gsl_rng_uni (void) { return &uni_type ; }
+const gsl_rng_type * gsl_rng_uni = &uni_type ; 
 
 
 

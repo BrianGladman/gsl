@@ -202,5 +202,5 @@ static const gsl_rng_type zuf_type = { "gsl-zuf",  /* name */
 					&zuf_set, 
 					&zuf_get } ;
 
-const gsl_rng_type * gsl_rng_zuf (void) { return &zuf_type ; }
+const gsl_rng_type * gsl_rng_zuf = &zuf_type ;
 

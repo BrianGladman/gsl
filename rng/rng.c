@@ -18,11 +18,9 @@ typedef struct {
 static gsl_rng * reference_to_generator (gsl_rng_internal * r) ;
 
 gsl_rng *
-gsl_rng_alloc (const gsl_rng_type * (*f)(void))
+gsl_rng_alloc (const gsl_rng_type * T)
 {
   
-  const gsl_rng_type * T = f() ;
-
   gsl_rng_internal * r = (gsl_rng_internal *) malloc(sizeof(gsl_rng)) ;
 
   if (r == 0) 

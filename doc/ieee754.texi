@@ -18,6 +18,8 @@ To be written
 
 @c   __setfpucw(0x1372); 
 
+@c mention extended vs double precision on Pentium, and how to get around
+@c it (-ffloat-store, or selective use of volatile)
 
 @deftypefun void gsl_ieee_printf_float (const float * @var{x})
 @deftypefunx void gsl_ieee_printf_double (const double * @var{x})

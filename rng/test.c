@@ -3,11 +3,12 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-void generic_rng_test (const gsl_rng_type * (*f) (void));
+void generic_rng_test (const gsl_rng_type * T);
 
 int
 main (void)
 {
+  gsl_rng_env_setup() ;
   generic_rng_test (gsl_rng_cmrg);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_rand);
@@ -20,11 +21,11 @@ main (void)
 }
 
 void
-generic_rng_test (const gsl_rng_type * (*f) (void))
+generic_rng_test (const gsl_rng_type * T)
 {
   int n = 1000000;
 
-  gsl_rng *r = gsl_rng_alloc (f);
+  gsl_rng *r = gsl_rng_alloc (T);
   const unsigned long int ran_max = gsl_rng_max (r);
   const char *name = gsl_rng_name (r);
 

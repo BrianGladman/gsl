@@ -179,7 +179,7 @@ static const gsl_rng_type uni32_type = { "gsl-uni32",  /* name */
 					 &uni32_set, 
 					 &uni32_get } ;
 
-const gsl_rng_type * gsl_rng_uni32 (void) { return &uni32_type ; }
+const gsl_rng_type * gsl_rng_uni32 = &uni32_type ; 
 
 
 

@@ -76,6 +76,6 @@ static const gsl_rng_type taus_type = { "gsl-taus",  /* name */
 					&taus_set, 
 					&taus_get } ;
 
-const gsl_rng_type * gsl_rng_taus (void) { return &taus_type ; }
+const gsl_rng_type * gsl_rng_taus = &taus_type ;
 
 

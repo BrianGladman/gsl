@@ -181,4 +181,4 @@ static const gsl_rng_type rand_type = { "gsl-rand",  /* name */
 					&rand_set, 
 					&rand_get } ;
 
-const gsl_rng_type * gsl_rng_rand (void) { return &rand_type ; }
+const gsl_rng_type * gsl_rng_rand = &rand_type ;
