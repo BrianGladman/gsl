@@ -1,3 +1,9 @@
+Fri Jun 19 11:17:24 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* siman.c (gsl_siman_solve_many): changed the variable 'throw' to
+ 	'u' (for uniform-random-number) so that we can compile with c++
+ 	where throw is a reserved word.
+	
 Sat May 23 13:59:55 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* siman.c: made the solving functions deterministic by removing

@@ -112,7 +112,7 @@ void gsl_siman_solve_many(void *x0_p, gsl_Efunc_t Ef,
   double Ex;			/* energy of the chosen point */
   double T;			/* the temperature */
   int i, done;
-  double throw;			/* throw the die to choose a new "x" */
+  double u;			/* throw the die to choose a new "x" */
   int n_iter;
 
   if (print_position) {
@@ -151,9 +151,9 @@ void gsl_siman_solve_many(void *x0_p, gsl_Efunc_t Ef,
     for (i = 1; i < params.n_tries; ++i) {
       sum_probs[i] = sum_probs[i-1] + probs[i];
     }
-    throw = gsl_ran_uniform() * sum_probs[params.n_tries-1];
+    u = gsl_ran_uniform() * sum_probs[params.n_tries-1];
     for (i = 0; i < params.n_tries; ++i) {
-      if (throw < sum_probs[i]) {
+      if (u < sum_probs[i]) {
 	memcpy(x, new_x + i*element_size, element_size);
 	break;
       }
