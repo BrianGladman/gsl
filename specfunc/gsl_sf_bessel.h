@@ -182,6 +182,12 @@ double  gsl_sf_bessel_Ynu(double nu, double x);
 int     gsl_sf_bessel_Inu_scaled_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Inu_scaled(double nu, double x);
 
+int gsl_sf_bessel_InuKnu_scaled_impl(double nu, double x, int kmax,
+                                     double * result_I_array,
+                                     double * result_K_array,
+                                     double * result_Ip_array,
+                                     double * result_Kp_array);
+
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated

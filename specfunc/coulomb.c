@@ -12,6 +12,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"
+#include "gsl_sf_airy.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coulomb.h"
@@ -532,6 +533,53 @@ coulomb_jwkb(double lam, double eta, double x,
 }
 
 
+static
+int
+new_jwkb(const double lam, const double eta, const double x,
+         double * fjwkb, double * gjwkb,
+	 double * exponent)
+{
+  const double llp1      = lam*(lam+1.0) + 6.0/35.0;
+  const double llp1_eff  = locMax(llp1, 0.0);
+  const double rho_ghalf = sqrt(x*(2.0*eta - x) + llp1_eff);
+  const double sinh_arg  = sqrt(llp1_eff/(eta*eta+llp1_eff)) * rho_ghalf / x;
+  const double sinh_inv  = log(sinh_arg + sqrt(1.0 + sinh_arg*sinh_arg));
+
+  const double phi = fabs(rho_ghalf - eta*atan2(rho_ghalf,x-eta) - sqrt(llp1_eff) * sinh_inv);
+
+  const double zeta_half = pow(3.0*phi/2.0, 1.0/3.0);
+  const double prefactor = sqrt(M_PI*phi*x/(6.0 * rho_ghalf));
+  
+  double F = prefactor *     3.0/zeta_half;
+  double G = prefactor * M_SQRT3/zeta_half;
+  double F_exp;
+  double G_exp;
+  
+  const double airy_scale_exp = phi;
+  double ai, bi;
+  gsl_sf_airy_Ai_scaled_impl(zeta_half*zeta_half, &ai);
+  gsl_sf_airy_Bi_scaled_impl(zeta_half*zeta_half, &bi);
+  F *= ai;
+  G *= bi;
+  F_exp = log(F) - airy_scale_exp;
+  G_exp = log(G) + airy_scale_exp;
+  
+
+  if(G_exp >= GSL_LOG_DBL_MAX) {
+    *fjwkb = F;
+    *gjwkb = G;
+    *exponent = airy_scale_exp;
+    return GSL_EOVRFLW;
+  }
+  else {
+    *fjwkb = exp(F_exp);
+    *gjwkb = exp(G_exp);
+    *exponent = 0.0;
+    return GSL_SUCCESS;
+  }
+}
+
+
 #define LAM_MIN_RETURN(status)   \
 do {                             \
   if(! keep_Fmin_values) {       \
@@ -586,7 +634,7 @@ coulomb_lam_min_values(double lam_min,
     double fjwkb;
     double gjwkb;
     double exponent;
-    int stat_WKB = coulomb_jwkb(lam, eta, x, &fjwkb, &gjwkb, &exponent);
+    int stat_WKB = /*coulomb*/coulomb_jwkb(lam, eta, x, &fjwkb, &gjwkb, &exponent);
     result_F  = F_sign_lam_min * fjwkb;
     result_G  = gjwkb;
     result_Fexp = -exponent;
