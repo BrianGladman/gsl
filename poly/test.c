@@ -540,17 +540,17 @@ main (void)
 
   {
     double x, y;
-    gsl_poly *p = gsl_poly_calloc (9);
+    gsl_poly *p = gsl_poly_calloc (7);
 
-    double a[10] = { 1, -1, 1, -1, 1, -1, 1, -1, 1};
+    double a[10] = { 1, -1, 1, -1, 1, -1, 1};
 
-    gsl_poly_set_from_array (p, a, 9);
+    gsl_poly_set_from_array (p, a, 7);
 
     x = 1.0;
     y = gsl_poly_eval2 (p, x);
 
     gsl_test_rel (y, 1.0, 10 * GSL_DBL_EPSILON,
-		  "gsl_poly_eval2({1,-1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
+		  "gsl_poly_eval2({1,-1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
 
     gsl_poly_free (p);
   }
@@ -594,7 +594,6 @@ main (void)
 #endif
 
   {
-    int status = 0;
     size_t i;
     gsl_poly *p = gsl_poly_calloc (6);
 
@@ -610,7 +609,6 @@ main (void)
   }
 
   {
-    int status = 0;
     size_t i;
     gsl_poly *p1 = gsl_poly_calloc (6);
     gsl_poly *p2 = gsl_poly_calloc (6);
@@ -631,7 +629,6 @@ main (void)
   }
 
   {
-    int status = 0;
     size_t i;
     gsl_poly *p1 = gsl_poly_calloc (6);
     gsl_poly *p2 = gsl_poly_calloc (6);
@@ -715,11 +712,40 @@ main (void)
     gsl_poly_free (w);
   }
 
-#ifdef DIVISION
   {
-    double qok[4] = { 1, 0, 0, 1 };
-    double rok[2] = { 0, 0 };
-    int status = 0;
+    size_t i;
+
+    gsl_poly *p1 = gsl_poly_calloc (6);
+    gsl_poly *p2 = gsl_poly_calloc (3);
+    gsl_poly *q = gsl_poly_calloc (6);
+    gsl_poly *r = gsl_poly_calloc (6);
+
+    double u[6] = { 5.74, -2.11, -3.33, 9.06, 2.40, 4.63};
+    double v[3] = { 9.54, -3.28, -6.81 };
+
+    double qok[6] = { 1.54774201200558894e0, -2.27080863126619150e0,
+                      -2.49611329973844286e-2, -6.79882525697503671e-1,
+                      0.0, 0.0};
+    double rok[6] = { -9.02545879453331846e0, 2.46301081416577986e1,
+                      0.0, 0.0, 0.0, 0.0};
+
+    gsl_poly_set_from_array (p1, u, 6);
+    gsl_poly_set_from_array (p2, v, 3);
+
+    gsl_poly_div (q, r, p1, p2);
+
+    for (i = 0; i < 6; i++)
+      gsl_test_rel (q->c[i], qok[i], 1.0e-9, "quotient x^%u, poly division", i);
+    for (i = 0; i < 6; i++)    
+      gsl_test_rel (r->c[i], rok[i], 1.0e-9, "remainder x^%u, poly division", i);
+
+    gsl_poly_free (p1);
+    gsl_poly_free (p2);
+    gsl_poly_free (q);
+    gsl_poly_free (r);
+  }
+
+  {
     size_t i;
     gsl_poly *p1 = gsl_poly_calloc (6);
     gsl_poly *p2 = gsl_poly_calloc (3);
@@ -729,46 +755,19 @@ main (void)
     double u[6] = { 1, 1, 1, 1, 1, 0 };
     double v[3] = { 1, 1, 0 };
 
+    double qok[6] = { 1, 0, 1, 0, 1, 0};
+    double rok[6] = { 0, 0, 0, 0, 0, 0};
+
     gsl_poly_set_from_array (p1, u, 6);
     gsl_poly_set_from_array (p2, v, 3);
 
-    gsl_poly_div (p1, p2, q, r);
+    gsl_poly_div (q, r, p1, p2);
 
-    gsl_test_rel (q->c[0], qok[0], 1.0e-9, "quotient x^0, poly division");
-    gsl_test_abs (q->c[1], qok[1], 1.0e-9, "quotient x^1, poly division");
-    gsl_test_abs (q->c[2], qok[2], 1.0e-9, "quotient x^2, poly division");
-    gsl_test_rel (q->c[3], qok[3], 1.0e-9, "quotient x^3, poly division");
-    gsl_test_abs (r->c[0], rok[0], 1.0e-9, "remainder x^0, poly division");
-    gsl_test_abs (r->c[1], rok[1], 1.0e-9, "remainder x^1, poly division");
+    for (i = 0; i < 6; i++)
+      gsl_test_rel (q->c[i], qok[i], 1.0e-9, "quotient x^%u, poly division", i);
+    for (i = 0; i < 6; i++)    
+      gsl_test_rel (r->c[i], rok[i], 1.0e-9, "remainder x^%u, poly division", i);
 
-    gsl_poly_free (p1);
-    gsl_poly_free (p2);
-    gsl_poly_free (q);
-    gsl_poly_free (r);
-  }
-
-  {
-    double qok[4] = { 5.0 / 16.0, 1.0 / 8.0, 1.0 / 4.0, 1.0 / 2.0 };
-    double rok[2] = { 11.0 / 16.0, 9.0 / 16.0 };
-    gsl_poly *p1 = gsl_poly_calloc (6);
-    gsl_poly *p2 = gsl_poly_calloc (3);
-    gsl_poly *q = gsl_poly_calloc (6);
-    gsl_poly *r = gsl_poly_calloc (6);
-
-    double u[6] = { 1, 1, 1, 1, 1, 0 };
-    double v[3] = { 1, 1, 0 };
-
-    gsl_poly_set_from_array (p1, u, 5);
-    gsl_poly_set_from_array (p2, v, 2);
-
-    gsl_poly_div (p1, p2, q, r);
-
-    gsl_test_rel (q->c[0], qok[0], 1.0e-9, "quotient x^0, poly division");
-    gsl_test_rel (q->c[1], qok[1], 1.0e-9, "quotient x^1, poly division");
-    gsl_test_rel (q->c[2], qok[2], 1.0e-9, "quotient x^2, poly division");
-    gsl_test_rel (q->c[3], qok[3], 1.0e-9, "quotient x^3, poly division");
-    gsl_test_rel (r->c[0], rok[0], 1.0e-9, "remainder x^0, poly division");
-    gsl_test_rel (r->c[1], rok[1], 1.0e-9, "remainder x^1, poly division");
     gsl_poly_free (p1);
     gsl_poly_free (p2);
     gsl_poly_free (q);
@@ -777,26 +776,23 @@ main (void)
   }
 
   {
-    double dpok[5] = { 1.0, 2.0, 3.0, 4.0, 5.0 };
+    size_t i;
     gsl_poly *p = gsl_poly_calloc (6);
-    gsl_poly *dp = gsl_poly_calloc (6);
+    gsl_poly *dp = gsl_poly_calloc (5);
 
     double c[6] = { 1, 1, 1, 1, 1, 1 };
+    double dpok[5] = { 1.0, 2.0, 3.0, 4.0, 5.0 };
 
     gsl_poly_set_from_array (p, c, 5);
 
-    gsl_poly_diff (p, dp);
+    gsl_poly_diff (dp, p);
 
-    gsl_test_rel (dp->c[0], dpok[0], 1.0e-9, "x^0, poly diff");
-    gsl_test_rel (dp->c[1], dpok[1], 1.0e-9, "x^1, poly diff");
-    gsl_test_rel (dp->c[2], dpok[2], 1.0e-9, "x^2, poly diff");
-    gsl_test_rel (dp->c[3], dpok[3], 1.0e-9, "x^3, poly diff");
-    gsl_test_rel (dp->c[4], dpok[4], 1.0e-9, "x^4, poly diff");
+    for (i = 0; i < 6; i++)
+      gsl_test_rel (dp->c[i], dpok[i], 1.0e-9, "x^%u, poly diff", i);
 
     gsl_poly_free (p);
     gsl_poly_free (dp);
   }
-#endif
 
   /* now summarize the results */
 

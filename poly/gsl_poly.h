@@ -55,6 +55,7 @@ void gsl_poly_free (gsl_poly * p);
 /* Operations */
 double gsl_poly_get (const gsl_poly * p, const size_t i);
 void gsl_poly_set (gsl_poly * p, const size_t i, double a);
+int gsl_poly_set_from_array (gsl_poly * p, const double a[], size_t size);
 
 int gsl_poly_set_zero (gsl_poly * p);
 int gsl_poly_set_all (gsl_poly * p, size_t d, double x);

@@ -124,7 +124,7 @@ gsl_poly_find_size (const gsl_poly * p, double tol)
 }
 
 int
-gsl_poly_set_from_array (gsl_poly * p, const double * a, size_t size)
+gsl_poly_set_from_array (gsl_poly * p, const double a[], size_t size)
 {
   size_t i;
 
@@ -182,13 +182,13 @@ gsl_poly_sub (gsl_poly * p1, const gsl_poly * p2)
 int
 gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
 {
-  int i, j, k;
+  int i, j;
 
   int size_p1 = p1->size;
   int size_p2 = p2->size;
-  int size_q = size_p1 + size_p2;
+  int size_q = q->size;
 
-  if (size_q != size_p1 + size_p2)
+  if (size_q + 1 != size_p1 + size_p2)
     {
       GSL_ERROR ("incorrect size of destination polynomial", GSL_EBADLEN);
     }
@@ -202,8 +202,8 @@ gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
     {
       double sum = 0.0;
 
-      size_t j_min = (i < size_p2) ? 0 : (i - size_p2);
-      size_t j_max = (i > size_p1) ? i : size_p1;
+      size_t j_min = (i >= size_p2) ? (i - size_p2 + 1) : 0;
+      size_t j_max = (i >= size_p1) ? size_p1 : (i + 1);
 
       for (j = j_min; j < j_max; j++)
         {
@@ -219,10 +219,10 @@ gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
 int
 gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v)
 {
-  size_t size_u = u->size;
-  size_t size_v = v->size;
   size_t size_q = q->size;
   size_t size_r = r->size;
+  size_t size_u = u->size;
+  size_t size_v = v->size;
   
   size_t i, j, k;
 
@@ -243,6 +243,13 @@ gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v
       GSL_ERROR ("size of remainder must equal size of numerator", GSL_EBADLEN);
     }
 
+  /* Trim leading zeros from denominator */
+
+  while (size_v > 1 && (v->c[size_v - 1] == 0.0))
+    {
+      size_v--;
+    }
+
   for (i = 0; i < size_u; i++)
     {
       q->c[i] = 0.0;
@@ -261,7 +268,7 @@ gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v
 	}
     }
 
-  for (j = size_v; j < size_u; j++)
+  for (j = size_v - 1; j < size_u; j++)
     {
       r->c[j] = 0.0;
     }
