@@ -55,9 +55,9 @@ FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
 	  flag = "";
 	}
 
-      printf ("%15s: %d  %.16f %.16f %s\n", name_a, i,
+      printf ("%15s: %d  %.16f %.16f %s\n", name_a, (int)i,
 	      a[2*stride*i], a[2*stride*i+1], flag);
-      printf ("%15s: %d  %.16f %.16f %e %s\n", name_b, i,
+      printf ("%15s: %d  %.16f %.16f %e %s\n", name_b, (int)i,
 	      b[2*stride*i], b[2*stride*i+1], ticks, flag);
     }
 
@@ -107,8 +107,10 @@ FUNCTION(compare_real,results) (const char *name_a, const BASE a[],
 	  flag = "";
 	}
 
-      printf ("%15s: %d  %.16f %s\n", name_a, i, a[stride*i], flag);
-      printf ("%15s: %d  %.16f %e %s\n", name_b, i, b[stride*i], ticks, flag);
+      printf ("%15s: %d  %.16f %s\n", name_a, (int)i, 
+	      a[stride*i], flag);
+      printf ("%15s: %d  %.16f %e %s\n", name_b, (int)i, 
+	      b[stride*i], ticks, flag);
     }
 
   return -1;
