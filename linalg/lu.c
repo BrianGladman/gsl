@@ -36,13 +36,13 @@
  *
  *   P A = L U
  *
- * where P is a permutation matrix, L is unit lower triangular and R
+ * where P is a permutation matrix, L is unit lower triangular and U
  * is upper triangular.
  *
  * L is stored in the strict lower triangular part of the input
  * matrix. The diagonal elements of L are unity and are not stored.
  *
- * R is stored in the diagonal and upper triangular part of the
+ * U is stored in the diagonal and upper triangular part of the
  * input matrix.  
  * 
  * P is stored in the permutation p. Column j of P is column k of the

@@ -54,7 +54,7 @@ P A = L U
 @end ifinfo
 @noindent
 where @math{P} is a permutation matrix, @math{L} is unit lower
-triangular matrix and @math{R} is upper triangular matrix. For square
+triangular matrix and @math{U} is upper triangular matrix. For square
 matrices this decomposition can be used to convert the linear system
 @math{A x = b} into a pair of triangular systems (@math{L y = P b},
 @math{U x = y}), which can be solved by forward and back-substitution.
