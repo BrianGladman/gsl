@@ -1,3 +1,8 @@
+Thu Oct  7 12:03:36 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* levin_u.c levin_uerr.c: changed DBL_MAX to GSL_DBL_MAX since we
+ 	don't rely on DBL_MAX
+
 Sat Feb  6 20:35:26 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* test.c: adjusted the precision check to allow for "infinite

@@ -69,8 +69,8 @@ gsl_sum_levin_u_accel_minmax (const double *array,
       int better = 0;
       int before = 0;
       int converging = 0;
-      double least_trunc = DBL_MAX;
-      double least_trunc_noise = DBL_MAX;
+      double least_trunc = GSL_DBL_MAX;
+      double least_trunc_noise = GSL_DBL_MAX;
       double least_trunc_result;
 
       /* Calculate specified minimum number of terms.  No convergence
