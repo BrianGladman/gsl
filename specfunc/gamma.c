@@ -664,7 +664,7 @@ int gsl_sf_lnfact_impl(const unsigned int n, double * result)
     return GSL_SUCCESS;
   }
   else {
-    gsl_sf_lngamma_impl(n+1., result);
+    gsl_sf_lngamma_impl(n+1.0, result);
     return GSL_SUCCESS;
   }
 }
@@ -676,9 +676,9 @@ int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result)
   if(m > n) return GSL_EDOM;
 
   if(m*2 > n) m = n-m;
-  gsl_sf_lnfact_impl(n+1, &nf);
-  gsl_sf_lnfact_impl(m+1, &mf);
-  gsl_sf_lnfact_impl(n-m+1, &nmmf);
+  gsl_sf_lnfact_impl(n, &nf);
+  gsl_sf_lnfact_impl(m, &mf);
+  gsl_sf_lnfact_impl(n-m, &nmmf);
   *result = nf - mf - nmmf;
   return GSL_SUCCESS;
 }
@@ -691,9 +691,9 @@ int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result)
   if(m > n) return GSL_EDOM;
 
   if(m*2 > n) m = n-m;
-  gsl_sf_lnfact_impl(n+1, &nf);
-  gsl_sf_lnfact_impl(m+1, &mf);
-  gsl_sf_lnfact_impl(n-m+1, &nmmf);
+  gsl_sf_lnfact_impl(n, &nf);
+  gsl_sf_lnfact_impl(m, &mf);
+  gsl_sf_lnfact_impl(n-m, &nmmf);
   ln_result = nf - mf - nmmf;
   
   if(ln_result < GSL_LOG_DBL_MAX) {

@@ -2,6 +2,7 @@ Mon Jul 13 12:40:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gamma.c: changed all the factorial functions to take unsigned
  	int arguments, since negative values are not allowed.
+	(gsl_sf_choose): fixed off by one error in call to factorial.
 
 Sun Jul 12 13:21:41 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
