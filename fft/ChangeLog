@@ -1,3 +1,8 @@
+Sun Feb 14 17:31:21 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* started converting header files to use gsl_complex_packed_array
+ 	more consistently
+
 Mon Dec 14 22:55:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* real_init.c: fixed a possible malloc(0) bug found by Electric Fence.
