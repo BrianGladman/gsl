@@ -1,3 +1,7 @@
+Mon Jan 29 10:53:06 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added an underflow test for gsl_hypot
+
 Thu Nov 16 19:28:38 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coerce.c: added functions for coercing values out of registers

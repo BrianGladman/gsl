@@ -76,6 +76,9 @@ main (void)
   y = gsl_hypot (1e-10, 1e-10) ; y_expected = 1.414213562373095048801688e-10;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot(1e-10, 1e-10)");
 
+  y = gsl_hypot (1e-38, 1e-38) ; y_expected = 1.414213562373095048801688e-38;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot(1e-38, 1e-38)");
+
   y = gsl_hypot (1e-10, -1.0) ; y_expected = 1.000000000000000000005;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot(1e-10, -1)");
 
