@@ -10,10 +10,10 @@ test_scal (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float alpha = 0;
-   float X[] = { 0.651 };
+   float alpha = 0.0f;
+   float X[] = { 0.651f };
    int incX = -1;
-   float expected[] = { 0.651 };
+   float expected[] = { 0.651f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -26,10 +26,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha = 0.1;
-   float X[] = { 0.651 };
+   float alpha = 0.1f;
+   float X[] = { 0.651f };
    int incX = -1;
-   float expected[] = { 0.651 };
+   float expected[] = { 0.651f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -42,10 +42,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha = 1;
-   float X[] = { 0.651 };
+   float alpha = 1.0f;
+   float X[] = { 0.651f };
    int incX = -1;
-   float expected[] = { 0.651 };
+   float expected[] = { 0.651f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -106,10 +106,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {0, 0};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {0.0f, 0.0f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -123,10 +123,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {0.1, 0};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {0.1f, 0.0f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -140,10 +140,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {1, 0};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {1.0f, 0.0f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -157,10 +157,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {0, 0.1};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {0.0f, 0.1f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -174,10 +174,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {0.1, 0.2};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {0.1f, 0.2f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -191,10 +191,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {1, 0.3};
-   float X[] = { 0.986, -0.775 };
+   float alpha[2] = {1.0f, 0.3f};
+   float X[] = { 0.986f, -0.775f };
    int incX = -1;
-   float expected[] = { 0.986, -0.775 };
+   float expected[] = { 0.986f, -0.775f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -310,10 +310,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 0;
-   float X[] = { 0.389, -0.236 };
+   float alpha = 0.0f;
+   float X[] = { 0.389f, -0.236f };
    int incX = 1;
-   float expected[] = { 0, -0 };
+   float expected[] = { 0.0f, -0.0f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -326,10 +326,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 0.1;
-   float X[] = { 0.389, -0.236 };
+   float alpha = 0.1f;
+   float X[] = { 0.389f, -0.236f };
    int incX = 1;
-   float expected[] = { 0.0389, -0.0236 };
+   float expected[] = { 0.0389f, -0.0236f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -342,10 +342,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 1;
-   float X[] = { 0.389, -0.236 };
+   float alpha = 1.0f;
+   float X[] = { 0.389f, -0.236f };
    int incX = 1;
-   float expected[] = { 0.389, -0.236 };
+   float expected[] = { 0.389f, -0.236f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -361,7 +361,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    double alpha = 0;
    double X[] = { -0.429, -0.183 };
    int incX = 1;
-   double expected[] = { -0, -0 };
+   double expected[] = { -0.0, -0.0 };
    cblas_dscal(N, alpha, X, incX);
    {
      int i;
@@ -406,10 +406,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0, 0};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {0.0f, 0.0f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0, 0, 0, 0 };
+   float expected[] = { -0.0f, 0.0f, 0.0f, 0.0f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -423,10 +423,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0.1, 0};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {0.1f, 0.0f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0.0603, 0.0239, 0.0339, -0.058 };
+   float expected[] = { -0.0603f, 0.0239f, 0.0339f, -0.058f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -440,10 +440,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {1, 0};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {1.0f, 0.0f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0.603, 0.239, 0.339, -0.58 };
+   float expected[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -457,10 +457,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0, 0.1};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {0.0f, 0.1f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0.0239, -0.0603, 0.058, 0.0339 };
+   float expected[] = { -0.0239f, -0.0603f, 0.058f, 0.0339f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -474,10 +474,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0.1, 0.2};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {0.1f, 0.2f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0.1081, -0.0967, 0.1499, 0.0098 };
+   float expected[] = { -0.1081f, -0.0967f, 0.1499f, 0.0098f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -491,10 +491,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {1, 0.3};
-   float X[] = { -0.603, 0.239, 0.339, -0.58 };
+   float alpha[2] = {1.0f, 0.3f};
+   float X[] = { -0.603f, 0.239f, 0.339f, -0.58f };
    int incX = 1;
-   float expected[] = { -0.6747, 0.0581, 0.513, -0.4783 };
+   float expected[] = { -0.6747f, 0.0581f, 0.513f, -0.4783f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -511,7 +511,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    double alpha[2] = {0, 0};
    double X[] = { -0.956, 0.613, 0.443, 0.503 };
    int incX = 1;
-   double expected[] = { -0, 0, 0, 0 };
+   double expected[] = { -0.0, 0.0, 0.0, 0.0 };
    cblas_zscal(N, alpha, X, incX);
    {
      int i;
@@ -610,10 +610,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 0;
-   float X[] = { 0.629, -0.419 };
+   float alpha = 0.0f;
+   float X[] = { 0.629f, -0.419f };
    int incX = -1;
-   float expected[] = { 0.629, -0.419 };
+   float expected[] = { 0.629f, -0.419f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -626,10 +626,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 0.1;
-   float X[] = { 0.629, -0.419 };
+   float alpha = 0.1f;
+   float X[] = { 0.629f, -0.419f };
    int incX = -1;
-   float expected[] = { 0.629, -0.419 };
+   float expected[] = { 0.629f, -0.419f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -642,10 +642,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha = 1;
-   float X[] = { 0.629, -0.419 };
+   float alpha = 1.0f;
+   float X[] = { 0.629f, -0.419f };
    int incX = -1;
-   float expected[] = { 0.629, -0.419 };
+   float expected[] = { 0.629f, -0.419f };
    cblas_sscal(N, alpha, X, incX);
    {
      int i;
@@ -706,10 +706,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0, 0};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {0.0f, 0.0f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -723,10 +723,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0.1, 0};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {0.1f, 0.0f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -740,10 +740,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {1, 0};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {1.0f, 0.0f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -757,10 +757,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0, 0.1};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {0.0f, 0.1f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -774,10 +774,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {0.1, 0.2};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {0.1f, 0.2f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;
@@ -791,10 +791,10 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float alpha[2] = {1, 0.3};
-   float X[] = { 0.736, 0.331, -0.318, 0.622 };
+   float alpha[2] = {1.0f, 0.3f};
+   float X[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    int incX = -1;
-   float expected[] = { 0.736, 0.331, -0.318, 0.622 };
+   float expected[] = { 0.736f, 0.331f, -0.318f, 0.622f };
    cblas_cscal(N, alpha, X, incX);
    {
      int i;

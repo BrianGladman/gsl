@@ -10,11 +10,11 @@ test_copy (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float X[] = { 0.898 };
+   float X[] = { 0.898f };
    int incX = 1;
-   float Y[] = { 0.699 };
+   float Y[] = { 0.699f };
    int incY = -1;
-   float expected[] = { 0.898 };
+   float expected[] = { 0.898f };
    cblas_scopy(N, X, incX, Y, incY);
    {
      int i;
@@ -44,11 +44,11 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { -0.166, 0.639 };
+   float X[] = { -0.166f, 0.639f };
    int incX = 1;
-   float Y[] = { 0.863, 0.613 };
+   float Y[] = { 0.863f, 0.613f };
    int incY = -1;
-   float expected[] = { -0.166, 0.639 };
+   float expected[] = { -0.166f, 0.639f };
    cblas_ccopy(N, X, incX, Y, incY);
    {
      int i;
@@ -80,11 +80,11 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.222 };
+   float X[] = { 0.222f };
    int incX = -1;
-   float Y[] = { 0.522 };
+   float Y[] = { 0.522f };
    int incY = 1;
-   float expected[] = { 0.222 };
+   float expected[] = { 0.222f };
    cblas_scopy(N, X, incX, Y, incY);
    {
      int i;
@@ -114,11 +114,11 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.376, 0.229 };
+   float X[] = { 0.376f, 0.229f };
    int incX = -1;
-   float Y[] = { 0.143, -0.955 };
+   float Y[] = { 0.143f, -0.955f };
    int incY = 1;
-   float expected[] = { 0.376, 0.229 };
+   float expected[] = { 0.376f, 0.229f };
    cblas_ccopy(N, X, incX, Y, incY);
    {
      int i;
@@ -150,11 +150,11 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.074 };
+   float X[] = { 0.074f };
    int incX = -1;
-   float Y[] = { -0.802 };
+   float Y[] = { -0.802f };
    int incY = -1;
-   float expected[] = { 0.074 };
+   float expected[] = { 0.074f };
    cblas_scopy(N, X, incX, Y, incY);
    {
      int i;
@@ -184,11 +184,11 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.084, 0.778 };
+   float X[] = { 0.084f, 0.778f };
    int incX = -1;
-   float Y[] = { 0.31, -0.797 };
+   float Y[] = { 0.31f, -0.797f };
    int incY = -1;
-   float expected[] = { 0.084, 0.778 };
+   float expected[] = { 0.084f, 0.778f };
    cblas_ccopy(N, X, incX, Y, incY);
    {
      int i;

@@ -1,3 +1,13 @@
+##  After running this script with 
+##
+##     octave test.m
+##
+## you can trim the size of the file by stripping trailing zeros using
+##
+## perl -i.bak -p -e 's/(\d\.\d+?)(0+)(\D)/$1$3/g' test_*.c
+##
+##
+
 rand("seed", 1);
 global TEST=0;
 global FILE=stdout;
@@ -1635,14 +1645,23 @@ function define(S, type, name,x)
       if (nargin == 3)
         fprintf(FILE, "   %s %s;\n", S.precision, name);
       else
-        fprintf(FILE, "   %s %s = %.12g;\n", S.precision, name, x);
+        if (strcmp(S.precision,"float"))
+          fprintf(FILE, "   %s %s = %#.12gf;\n", S.precision, name, x);
+        else 
+          fprintf(FILE, "   %s %s = %.12g;\n", S.precision, name, x);
+        endif
       endif
     else
       if (nargin == 3)
         fprintf(FILE, "   %s %s[2];\n", S.precision, name);
       else
-        fprintf(FILE, "   %s %s[2] = {%.12g, %.12g};\n", S.precision, name, \
-               real(x), imag(x));
+        if (strcmp(S.precision,"float"))
+          fprintf(FILE, "   %s %s[2] = {%#.12gf, %#.12gf};\n", 
+                  S.precision, name, real(x), imag(x));
+        else
+          fprintf(FILE, "   %s %s[2] = {%.12g, %.12g};\n", 
+                  S.precision, name, real(x), imag(x));
+        endif
       endif
     endif
   elseif (strcmp(type,"int"))
@@ -1659,15 +1678,15 @@ function define(S, type, name,x)
       endif
       if ((abs(x(i)) > 1e3 || abs(x(i)) < 1e-3) && abs(x(i)) != 0.0)
         if (strcmp(S.precision,"float"))
-          format = "%.6e";
+          format = "%.6ef";
         else
           format = "%.12e";
         endif
       else
         if (strcmp(S.precision,"float"))
-          format = "%.6g";
+          format = "%#.6gf";
         else
-          format = "%.12g";
+          format = "%#.12g";
         endif
       endif
       if (S.complex == 0)

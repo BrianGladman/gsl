@@ -10,12 +10,12 @@ test_axpy (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float alpha = 0;
-   float X[] = { 0.018 };
+   float alpha = 0.0f;
+   float X[] = { 0.018f };
    int incX = 1;
-   float Y[] = { -0.417 };
+   float Y[] = { -0.417f };
    int incY = -1;
-   float expected[] = { -0.417 };
+   float expected[] = { -0.417f };
    cblas_saxpy(N, alpha, X, incX, Y, incY);
    {
      int i;
@@ -46,12 +46,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {1, 0};
-   float X[] = { -0.542, -0.362 };
+   float alpha[2] = {1.0f, 0.0f};
+   float X[] = { -0.542f, -0.362f };
    int incX = 1;
-   float Y[] = { -0.459, -0.433 };
+   float Y[] = { -0.459f, -0.433f };
    int incY = -1;
-   float expected[] = { -1.001, -0.795 };
+   float expected[] = { -1.001f, -0.795f };
    cblas_caxpy(N, alpha, X, incX, Y, incY);
    {
      int i;
@@ -84,12 +84,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha = 0.1;
-   float X[] = { 0.771 };
+   float alpha = 0.1f;
+   float X[] = { 0.771f };
    int incX = -1;
-   float Y[] = { 0.507 };
+   float Y[] = { 0.507f };
    int incY = 1;
-   float expected[] = { 0.5841 };
+   float expected[] = { 0.5841f };
    cblas_saxpy(N, alpha, X, incX, Y, incY);
    {
      int i;
@@ -120,12 +120,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {-0.3, 0.1};
-   float X[] = { 0.194, -0.959 };
+   float alpha[2] = {-0.3f, 0.1f};
+   float X[] = { 0.194f, -0.959f };
    int incX = -1;
-   float Y[] = { 0.096, 0.032 };
+   float Y[] = { 0.096f, 0.032f };
    int incY = 1;
-   float expected[] = { 0.1337, 0.3391 };
+   float expected[] = { 0.1337f, 0.3391f };
    cblas_caxpy(N, alpha, X, incX, Y, incY);
    {
      int i;
@@ -158,12 +158,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha = 1;
-   float X[] = { 0.647 };
+   float alpha = 1.0f;
+   float X[] = { 0.647f };
    int incX = -1;
-   float Y[] = { 0.016 };
+   float Y[] = { 0.016f };
    int incY = -1;
-   float expected[] = { 0.663 };
+   float expected[] = { 0.663f };
    cblas_saxpy(N, alpha, X, incX, Y, incY);
    {
      int i;
@@ -194,12 +194,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float alpha[2] = {-0.3, 0.1};
-   float X[] = { 0.899, -0.624 };
+   float alpha[2] = {-0.3f, 0.1f};
+   float X[] = { 0.899f, -0.624f };
    int incX = -1;
-   float Y[] = { 0.155, -0.33 };
+   float Y[] = { 0.155f, -0.33f };
    int incY = -1;
-   float expected[] = { -0.0523, -0.0529 };
+   float expected[] = { -0.0523f, -0.0529f };
    cblas_caxpy(N, alpha, X, incX, Y, incY);
    {
      int i;

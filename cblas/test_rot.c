@@ -10,14 +10,14 @@ test_rot (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float c = 0;
-   float s = 0;
-   float X[] = { -0.314 };
+   float c = 0.0f;
+   float s = 0.0f;
+   float X[] = { -0.314f };
    int incX = 1;
-   float Y[] = { -0.406 };
+   float Y[] = { -0.406f };
    int incY = -1;
-   float x_expected[] = { 0 };
-   float y_expected[] = { 0 };
+   float x_expected[] = { 0.0f };
+   float y_expected[] = { 0.0f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -36,14 +36,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0.866025403784;
-   float s = 0.5;
-   float X[] = { -0.314 };
+   float c = 0.866025403784f;
+   float s = 0.5f;
+   float X[] = { -0.314f };
    int incX = 1;
-   float Y[] = { -0.406 };
+   float Y[] = { -0.406f };
    int incY = -1;
-   float x_expected[] = { -0.474932 };
-   float y_expected[] = { -0.194606 };
+   float x_expected[] = { -0.474932f };
+   float y_expected[] = { -0.194606f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -62,14 +62,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0;
-   float s = -1;
-   float X[] = { -0.314 };
+   float c = 0.0f;
+   float s = -1.0f;
+   float X[] = { -0.314f };
    int incX = 1;
-   float Y[] = { -0.406 };
+   float Y[] = { -0.406f };
    int incY = -1;
-   float x_expected[] = { 0.406 };
-   float y_expected[] = { -0.314 };
+   float x_expected[] = { 0.406f };
+   float y_expected[] = { -0.314f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -88,14 +88,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = -1;
-   float s = 0;
-   float X[] = { -0.314 };
+   float c = -1.0f;
+   float s = 0.0f;
+   float X[] = { -0.314f };
    int incX = 1;
-   float Y[] = { -0.406 };
+   float Y[] = { -0.406f };
    int incY = -1;
-   float x_expected[] = { 0.314 };
-   float y_expected[] = { 0.406 };
+   float x_expected[] = { 0.314f };
+   float y_expected[] = { 0.406f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -120,8 +120,8 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = 1;
    double Y[] = { -0.014 };
    int incY = -1;
-   double x_expected[] = { 0 };
-   double y_expected[] = { 0 };
+   double x_expected[] = { 0.0 };
+   double y_expected[] = { 0.0 };
    cblas_drot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -218,14 +218,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0;
-   float s = 0;
-   float X[] = { -0.808 };
+   float c = 0.0f;
+   float s = 0.0f;
+   float X[] = { -0.808f };
    int incX = -1;
-   float Y[] = { -0.511 };
+   float Y[] = { -0.511f };
    int incY = 1;
-   float x_expected[] = { 0 };
-   float y_expected[] = { 0 };
+   float x_expected[] = { 0.0f };
+   float y_expected[] = { 0.0f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -244,14 +244,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0.866025403784;
-   float s = 0.5;
-   float X[] = { -0.808 };
+   float c = 0.866025403784f;
+   float s = 0.5f;
+   float X[] = { -0.808f };
    int incX = -1;
-   float Y[] = { -0.511 };
+   float Y[] = { -0.511f };
    int incY = 1;
-   float x_expected[] = { -0.955249 };
-   float y_expected[] = { -0.038539 };
+   float x_expected[] = { -0.955249f };
+   float y_expected[] = { -0.038539f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -270,14 +270,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0;
-   float s = -1;
-   float X[] = { -0.808 };
+   float c = 0.0f;
+   float s = -1.0f;
+   float X[] = { -0.808f };
    int incX = -1;
-   float Y[] = { -0.511 };
+   float Y[] = { -0.511f };
    int incY = 1;
-   float x_expected[] = { 0.511 };
-   float y_expected[] = { -0.808 };
+   float x_expected[] = { 0.511f };
+   float y_expected[] = { -0.808f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -296,14 +296,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = -1;
-   float s = 0;
-   float X[] = { -0.808 };
+   float c = -1.0f;
+   float s = 0.0f;
+   float X[] = { -0.808f };
    int incX = -1;
-   float Y[] = { -0.511 };
+   float Y[] = { -0.511f };
    int incY = 1;
-   float x_expected[] = { 0.808 };
-   float y_expected[] = { 0.511 };
+   float x_expected[] = { 0.808f };
+   float y_expected[] = { 0.511f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -328,8 +328,8 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.165 };
    int incY = 1;
-   double x_expected[] = { 0 };
-   double y_expected[] = { 0 };
+   double x_expected[] = { 0.0 };
+   double y_expected[] = { 0.0 };
    cblas_drot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -426,14 +426,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0;
-   float s = 0;
-   float X[] = { -0.201 };
+   float c = 0.0f;
+   float s = 0.0f;
+   float X[] = { -0.201f };
    int incX = -1;
-   float Y[] = { 0.087 };
+   float Y[] = { 0.087f };
    int incY = -1;
-   float x_expected[] = { 0 };
-   float y_expected[] = { 0 };
+   float x_expected[] = { 0.0f };
+   float y_expected[] = { 0.0f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -452,14 +452,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0.866025403784;
-   float s = 0.5;
-   float X[] = { -0.201 };
+   float c = 0.866025403784f;
+   float s = 0.5f;
+   float X[] = { -0.201f };
    int incX = -1;
-   float Y[] = { 0.087 };
+   float Y[] = { 0.087f };
    int incY = -1;
-   float x_expected[] = { -0.130571 };
-   float y_expected[] = { 0.175844 };
+   float x_expected[] = { -0.130571f };
+   float y_expected[] = { 0.175844f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -478,14 +478,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = 0;
-   float s = -1;
-   float X[] = { -0.201 };
+   float c = 0.0f;
+   float s = -1.0f;
+   float X[] = { -0.201f };
    int incX = -1;
-   float Y[] = { 0.087 };
+   float Y[] = { 0.087f };
    int incY = -1;
-   float x_expected[] = { -0.087 };
-   float y_expected[] = { -0.201 };
+   float x_expected[] = { -0.087f };
+   float y_expected[] = { -0.201f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -504,14 +504,14 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float c = -1;
-   float s = 0;
-   float X[] = { -0.201 };
+   float c = -1.0f;
+   float s = 0.0f;
+   float X[] = { -0.201f };
    int incX = -1;
-   float Y[] = { 0.087 };
+   float Y[] = { 0.087f };
    int incY = -1;
-   float x_expected[] = { 0.201 };
-   float y_expected[] = { -0.087 };
+   float x_expected[] = { 0.201f };
+   float y_expected[] = { -0.087f };
    cblas_srot(N, X, incX, Y, incY, c, s);
    {
      int i;
@@ -536,8 +536,8 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { 0.7 };
    int incY = -1;
-   double x_expected[] = { 0 };
-   double y_expected[] = { 0 };
+   double x_expected[] = { 0.0 };
+   double y_expected[] = { 0.0 };
    cblas_drot(N, X, incX, Y, incY, c, s);
    {
      int i;

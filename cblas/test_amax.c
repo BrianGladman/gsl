@@ -9,7 +9,7 @@ void
 test_amax (void) {
   {
    int N = 1;
-   float X[] = { -0.388 };
+   float X[] = { -0.388f };
    int incX = -1;
    int expected = 0;
    int k;
@@ -31,7 +31,7 @@ test_amax (void) {
 
   {
    int N = 1;
-   float X[] = { 0.704, 0.665 };
+   float X[] = { 0.704f, 0.665f };
    int incX = -1;
    int expected = 0;
    int k;
@@ -53,7 +53,7 @@ test_amax (void) {
 
   {
    int N = 2;
-   float X[] = { 0.909, 0.037 };
+   float X[] = { 0.909f, 0.037f };
    int incX = 1;
    int expected = 0;
    int k;
@@ -75,7 +75,7 @@ test_amax (void) {
 
   {
    int N = 2;
-   float X[] = { -0.648, 0.317, 0.62, 0.392 };
+   float X[] = { -0.648f, 0.317f, 0.62f, 0.392f };
    int incX = 1;
    int expected = 1;
    int k;
@@ -97,7 +97,7 @@ test_amax (void) {
 
   {
    int N = 2;
-   float X[] = { 0.487, 0.918 };
+   float X[] = { 0.487f, 0.918f };
    int incX = -1;
    int expected = 0;
    int k;
@@ -119,7 +119,7 @@ test_amax (void) {
 
   {
    int N = 2;
-   float X[] = { 0.993, 0.172, -0.825, 0.873 };
+   float X[] = { 0.993f, 0.172f, -0.825f, 0.873f };
    int incX = -1;
    int expected = 0;
    int k;

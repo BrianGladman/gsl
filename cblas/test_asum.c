@@ -10,9 +10,9 @@ test_asum (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float X[] = { 0.239 };
+   float X[] = { 0.239f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_sasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "sasum(case 40)");
@@ -32,9 +32,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.1, 0.017 };
+   float X[] = { 0.1f, 0.017f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_scasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scasum(case 42)");
@@ -54,9 +54,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.899, -0.72 };
+   float X[] = { 0.899f, -0.72f };
    int incX = 1;
-   float expected = 1.619;
+   float expected = 1.619f;
    float f;
    f = cblas_sasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "sasum(case 44)");
@@ -76,9 +76,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { -0.567, -0.645, 0.098, 0.256 };
+   float X[] = { -0.567f, -0.645f, 0.098f, 0.256f };
    int incX = 1;
-   float expected = 1.566;
+   float expected = 1.566f;
    float f;
    f = cblas_scasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scasum(case 46)");
@@ -98,9 +98,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.169, 0.833 };
+   float X[] = { 0.169f, 0.833f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_sasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "sasum(case 48)");
@@ -120,9 +120,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { -0.314, -0.318, -0.835, -0.807 };
+   float X[] = { -0.314f, -0.318f, -0.835f, -0.807f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_scasum(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scasum(case 50)");

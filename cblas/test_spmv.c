@@ -11,15 +11,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -33,15 +33,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -55,15 +55,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -77,15 +77,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -99,15 +99,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -121,15 +121,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 121;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -143,15 +143,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -165,15 +165,15 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   float alpha = 0.1;
-   float beta = -0.3;
+   float alpha = 0.1f;
+   float beta = -0.3f;
    int N = 2;
-   float A[] = { -0.174, 0.878, 0.478 };
-   float X[] = { 0.503, 0.313 };
+   float A[] = { -0.174f, 0.878f, 0.478f };
+   float X[] = { 0.503f, 0.313f };
    int incX = -1;
-   float Y[] = { -0.565, -0.109 };
+   float Y[] = { -0.565f, -0.109f };
    int incY = -1;
-   float y_expected[] = { 0.221025, 0.0714172 };
+   float y_expected[] = { 0.221025f, 0.0714172f };
    cblas_sspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -195,7 +195,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -217,7 +217,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -239,7 +239,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -261,7 +261,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -283,7 +283,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -305,7 +305,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -327,7 +327,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;
@@ -349,7 +349,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int incX = -1;
    double Y[] = { -0.449, -0.219 };
    int incY = -1;
-   double y_expected[] = { -0.036098, 9.270000000000e-04 };
+   double y_expected[] = { -0.036098, 9.27e-04 };
    cblas_dspmv(order, uplo, N, alpha, A, X, incX, beta, Y, incY);
    {
      int i;

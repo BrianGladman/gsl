@@ -10,9 +10,9 @@ test_nrm2 (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float X[] = { 0.317 };
+   float X[] = { 0.317f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_snrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "snrm2(case 28)");
@@ -32,9 +32,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.776, 0.983 };
+   float X[] = { 0.776f, 0.983f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_scnrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scnrm2(case 30)");
@@ -54,9 +54,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.14, -0.632 };
+   float X[] = { 0.14f, -0.632f };
    int incX = 1;
-   float expected = 0.647320631527;
+   float expected = 0.647320631527f;
    float f;
    f = cblas_snrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "snrm2(case 32)");
@@ -76,9 +76,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.281, -0.063, 0.367, 0.232 };
+   float X[] = { 0.281f, -0.063f, 0.367f, 0.232f };
    int incX = 1;
-   float expected = 0.521001919382;
+   float expected = 0.521001919382f;
    float f;
    f = cblas_scnrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scnrm2(case 34)");
@@ -98,9 +98,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.918, -0.126 };
+   float X[] = { 0.918f, -0.126f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_snrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "snrm2(case 36)");
@@ -120,9 +120,9 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 2;
-   float X[] = { 0.31, 0.059, -0.442, 0.987 };
+   float X[] = { 0.31f, 0.059f, -0.442f, 0.987f };
    int incX = -1;
-   float expected = 0;
+   float expected = 0.0f;
    float f;
    f = cblas_scnrm2(N, X, incX);
    gsl_test_rel(f, expected, flteps, "scnrm2(case 38)");

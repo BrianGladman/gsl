@@ -10,12 +10,12 @@ test_swap (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float X[] = { 0.539 };
+   float X[] = { 0.539f };
    int incX = 1;
-   float Y[] = { -0.262 };
+   float Y[] = { -0.262f };
    int incY = -1;
-   float expected1[] = { -0.262 };
-   float expected2[] = { 0.539 };
+   float expected1[] = { -0.262f };
+   float expected2[] = { 0.539f };
    cblas_sswap(N, X, incX, Y, incY);
    {
      int i;
@@ -58,12 +58,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { -0.316, -0.529 };
+   float X[] = { -0.316f, -0.529f };
    int incX = 1;
-   float Y[] = { -0.313, 0.363 };
+   float Y[] = { -0.313f, 0.363f };
    int incY = -1;
-   float expected1[] = { -0.313, 0.363 };
-   float expected2[] = { -0.316, -0.529 };
+   float expected1[] = { -0.313f, 0.363f };
+   float expected2[] = { -0.316f, -0.529f };
    cblas_cswap(N, X, incX, Y, incY);
    {
      int i;
@@ -110,12 +110,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.336 };
+   float X[] = { 0.336f };
    int incX = -1;
-   float Y[] = { -0.431 };
+   float Y[] = { -0.431f };
    int incY = 1;
-   float expected1[] = { -0.431 };
-   float expected2[] = { 0.336 };
+   float expected1[] = { -0.431f };
+   float expected2[] = { 0.336f };
    cblas_sswap(N, X, incX, Y, incY);
    {
      int i;
@@ -158,12 +158,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { -0.239, 0.361 };
+   float X[] = { -0.239f, 0.361f };
    int incX = -1;
-   float Y[] = { 0.149, 0.347 };
+   float Y[] = { 0.149f, 0.347f };
    int incY = 1;
-   float expected1[] = { 0.149, 0.347 };
-   float expected2[] = { -0.239, 0.361 };
+   float expected1[] = { 0.149f, 0.347f };
+   float expected2[] = { -0.239f, 0.361f };
    cblas_cswap(N, X, incX, Y, incY);
    {
      int i;
@@ -210,12 +210,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { -0.405 };
+   float X[] = { -0.405f };
    int incX = -1;
-   float Y[] = { -0.213 };
+   float Y[] = { -0.213f };
    int incY = -1;
-   float expected1[] = { -0.213 };
-   float expected2[] = { -0.405 };
+   float expected1[] = { -0.213f };
+   float expected2[] = { -0.405f };
    cblas_sswap(N, X, incX, Y, incY);
    {
      int i;
@@ -258,12 +258,12 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float X[] = { 0.853, 0.146 };
+   float X[] = { 0.853f, 0.146f };
    int incX = -1;
-   float Y[] = { 0.009, -0.178 };
+   float Y[] = { 0.009f, -0.178f };
    int incY = -1;
-   float expected1[] = { 0.009, -0.178 };
-   float expected2[] = { 0.853, 0.146 };
+   float expected1[] = { 0.009f, -0.178f };
+   float expected2[] = { 0.853f, 0.146f };
    cblas_cswap(N, X, incX, Y, incY);
    {
      int i;

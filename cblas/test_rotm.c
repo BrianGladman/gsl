@@ -10,13 +10,13 @@ test_rotm (void) {
 const double flteps = 1e-4, dbleps = 1e-6;
   {
    int N = 1;
-   float h[] = { -1, -4.449820e+03, -15.5826, 7.091334e+04, 2.959120e+04 };
-   float X[] = { -0.034 };
+   float h[] = { -1.0f, -4.44982e+03f, -15.5826f, 7.091334e+04f, 2.95912e+04f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -3.956017e+04 };
-   float y_expected[] = { -1.657054e+04 };
+   float x_expected[] = { -3.956017e+04f };
+   float y_expected[] = { -1.657054e+04f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -35,13 +35,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 15.9728, 6.400638e+03, 1.733082e-05, 1.524511e-04 };
-   float X[] = { -0.034 };
+   float h[] = { 0.0f, 15.9728f, 6.400638e+03f, 1.733082e-05f, 1.524511e-04f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -0.0340097 };
-   float y_expected[] = { -218.182 };
+   float x_expected[] = { -0.0340097f };
+   float y_expected[] = { -218.182f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -60,13 +60,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, 5.688411e+04, 5.914789e+03, 0.00210473, 0.0231019 };
-   float X[] = { -0.034 };
+   float h[] = { 1.0f, 5.688411e+04f, 5.914789e+03f, 0.00210473f, 0.0231019f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -1.934620e+03 };
-   float y_expected[] = { 0.0210629 };
+   float x_expected[] = { -1.93462e+03f };
+   float y_expected[] = { 0.0210629f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -85,13 +85,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, -0.582083, 0.00103161, -3.429851e-05, 7.411469e-05 };
-   float X[] = { -0.034 };
+   float h[] = { -2.0f, -0.582083f, 0.00103161f, -3.429851e-05f, 7.411469e-05f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -0.034 };
-   float y_expected[] = { -0.56 };
+   float x_expected[] = { -0.034f };
+   float y_expected[] = { -0.56f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -110,13 +110,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 115.163, -6.715448e+04, -258.695, -16.2552 };
-   float X[] = { -0.034 };
+   float h[] = { -1.0f, 115.163f, -6.715448e+04f, -258.695f, -16.2552f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { 140.954 };
-   float y_expected[] = { 2.292355e+03 };
+   float x_expected[] = { 140.954f };
+   float y_expected[] = { 2.292355e+03f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -135,13 +135,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, -3.314862e+03, -442.976, -214.586, -25.9716 };
-   float X[] = { -0.034 };
+   float h[] = { 0.0f, -3.314862e+03f, -442.976f, -214.586f, -25.9716f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { 120.134 };
-   float y_expected[] = { 14.5012 };
+   float x_expected[] = { 120.134f };
+   float y_expected[] = { 14.5012f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -160,13 +160,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, -1.177304e+03, -1.236662e-04, -0.186585, 1.15841 };
-   float X[] = { -0.034 };
+   float h[] = { 1.0f, -1.177304e+03f, -1.236662e-04f, -0.186585f, 1.15841f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { 39.4683 };
-   float y_expected[] = { -0.614711 };
+   float x_expected[] = { 39.4683f };
+   float y_expected[] = { -0.614711f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -185,13 +185,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, -88.9796, 0.808226, 1.106582e-05, -0.00862288 };
-   float X[] = { -0.034 };
+   float h[] = { -2.0f, -88.9796f, 0.808226f, 1.106582e-05f, -0.00862288f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -0.034 };
-   float y_expected[] = { -0.56 };
+   float x_expected[] = { -0.034f };
+   float y_expected[] = { -0.56f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -210,13 +210,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, -0.00225865, 8.338551e+04, -1.98282, -2.409905e-05 };
-   float X[] = { -0.034 };
+   float h[] = { -1.0f, -0.00225865f, 8.338551e+04f, -1.98282f, -2.409905e-05f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { 1.11046 };
-   float y_expected[] = { -2.835107e+03 };
+   float x_expected[] = { 1.11046f };
+   float y_expected[] = { -2.835107e+03f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -235,13 +235,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 0.258779, 74.2802, 0.923299, 4.847128e+03 };
-   float X[] = { -0.034 };
+   float h[] = { 0.0f, 0.258779f, 74.2802f, 0.923299f, 4.847128e+03f };
+   float X[] = { -0.034f };
    int incX = 1;
-   float Y[] = { -0.56 };
+   float Y[] = { -0.56f };
    int incY = -1;
-   float x_expected[] = { -0.551048 };
-   float y_expected[] = { -3.08553 };
+   float x_expected[] = { -0.551048f };
+   float y_expected[] = { -3.08553f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -260,7 +260,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -8.00850735044, 0.0204647351647, 1.898461360078e-04, -4.32701487194 };
+   double h[] = { -1.0, -8.00850735044, 0.0204647351647, 1.898461360078e-04, -4.32701487194 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -285,7 +285,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 1.230610998905e+04, 210.056650134, 9.20757074452, 2.072879691524e+03 };
+   double h[] = { 0.0, 1.230610998905e+04, 210.056650134, 9.20757074452, 2.072879691524e+03 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -310,7 +310,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, -1.244580625511e+03, 1.11154682624, 2.269384716089e-05, -0.0143785338883 };
+   double h[] = { 1.0, -1.244580625511e+03, 1.11154682624, 2.269384716089e-05, -0.0143785338883 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -335,7 +335,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, 293.927527276, -2.614737743134e+03, 10.3164975867, -7.947030813329e+03 };
+   double h[] = { -2.0, 293.927527276, -2.614737743134e+03, 10.3164975867, -7.947030813329e+03 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -360,7 +360,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -0.0178609251786, 0.00983044958941, 105.944529127, 1.687350579234e-05 };
+   double h[] = { -1.0, -0.0178609251786, 0.00983044958941, 105.944529127, 1.687350579234e-05 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -385,7 +385,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 6.241999071283e-05, 2.495425882445e+03, 304.604891146, 1.604644714854e+04 };
+   double h[] = { 0.0, 6.241999071283e-05, 2.495425882445e+03, 304.604891146, 1.604644714854e+04 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -410,7 +410,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, -0.058097639487, 8.386083625428e+03, -10.5233229994, 184.653245391 };
+   double h[] = { 1.0, -0.058097639487, 8.386083625428e+03, -10.5233229994, 184.653245391 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -435,7 +435,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, -92.8754629217, 1.467547244529e-04, -3.197881072301e-04, -1.89874629713 };
+   double h[] = { -2.0, -92.8754629217, 1.467547244529e-04, -3.197881072301e-04, -1.89874629713 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -460,7 +460,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -0.0961996230646, -2.248344186185e-05, -316.856396787, 1.663969157848e+03 };
+   double h[] = { -1.0, -0.0961996230646, -2.248344186185e-05, -316.856396787, 1.663969157848e+03 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -485,7 +485,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, -201.862043128, 4.999906166451e-04, -0.0653365534487, 586.454083328 };
+   double h[] = { 0.0, -201.862043128, 4.999906166451e-04, -0.0653365534487, 586.454083328 };
    double X[] = { 0.84 };
    int incX = 1;
    double Y[] = { -0.711 };
@@ -510,13 +510,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 162.86, 1.379231e-04, 9.67285, 0.929218 };
-   float X[] = { 0.629 };
+   float h[] = { -1.0f, 162.86f, 1.379231e-04f, 9.67285f, 0.929218f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 106.173 };
-   float y_expected[] = { 0.358765 };
+   float x_expected[] = { 106.173f };
+   float y_expected[] = { 0.358765f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -535,13 +535,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 537.387, -21.6404, -1.017074e+03, -1.730546e-05 };
-   float X[] = { 0.629 };
+   float h[] = { 0.0f, 537.387f, -21.6404f, -1.017074e+03f, -1.730546e-05f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { -391.961 };
-   float y_expected[] = { -13.2258 };
+   float x_expected[] = { -391.961f };
+   float y_expected[] = { -13.2258f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -560,13 +560,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, -1.339977e-05, 0.00522784, 2.020352e-05, -0.0654088 };
-   float X[] = { 0.629 };
+   float h[] = { 1.0f, -1.339977e-05f, 0.00522784f, 2.020352e-05f, -0.0654088f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 0.385992 };
-   float y_expected[] = { -0.654248 };
+   float x_expected[] = { 0.385992f };
+   float y_expected[] = { -0.654248f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -585,13 +585,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, -50.922, 31.5261, -0.194913, 0.206417 };
-   float X[] = { 0.629 };
+   float h[] = { -2.0f, -50.922f, 31.5261f, -0.194913f, 0.206417f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 0.629 };
-   float y_expected[] = { 0.386 };
+   float x_expected[] = { 0.629f };
+   float y_expected[] = { 0.386f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -610,13 +610,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 1.15659, 2.599832e+04, 435.891, 1.546671e+03 };
-   float X[] = { 0.629 };
+   float h[] = { -1.0f, 1.15659f, 2.599832e+04f, 435.891f, 1.546671e+03f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 168.981 };
-   float y_expected[] = { 1.694996e+04 };
+   float x_expected[] = { 168.981f };
+   float y_expected[] = { 1.694996e+04f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -635,13 +635,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 3.359889e-04, -0.00134822, -12.9136, -5.655622e+04 };
-   float X[] = { 0.629 };
+   float h[] = { 0.0f, 3.359889e-04f, -0.00134822f, -12.9136f, -5.655622e+04f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { -4.35566 };
-   float y_expected[] = { 0.385152 };
+   float x_expected[] = { -4.35566f };
+   float y_expected[] = { 0.385152f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -660,13 +660,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, 2.751190e-05, 1.70314, 18.4063, 185.731 };
-   float X[] = { 0.629 };
+   float h[] = { 1.0f, 2.75119e-05f, 1.70314f, 18.4063f, 185.731f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 0.386017 };
-   float y_expected[] = { 71.063 };
+   float x_expected[] = { 0.386017f };
+   float y_expected[] = { 71.063f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -685,13 +685,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, -1.031009e-04, -3.378602e+04, 7.869358e-05, 157.303 };
-   float X[] = { 0.629 };
+   float h[] = { -2.0f, -1.031009e-04f, -3.378602e+04f, 7.869358e-05f, 157.303f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 0.629 };
-   float y_expected[] = { 0.386 };
+   float x_expected[] = { 0.629f };
+   float y_expected[] = { 0.386f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -710,13 +710,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 0.00207419, -89.9374, -1.40414, -25.1433 };
-   float X[] = { 0.629 };
+   float h[] = { -1.0f, 0.00207419f, -89.9374f, -1.40414f, -25.1433f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { -0.540694 };
-   float y_expected[] = { -66.276 };
+   float x_expected[] = { -0.540694f };
+   float y_expected[] = { -66.276f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -735,13 +735,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, -4.972562e+04, 3.656980e-05, 632.116, 0.195207 };
-   float X[] = { 0.629 };
+   float h[] = { 0.0f, -4.972562e+04f, 3.65698e-05f, 632.116f, 0.195207f };
+   float X[] = { 0.629f };
    int incX = -1;
-   float Y[] = { 0.386 };
+   float Y[] = { 0.386f };
    int incY = 1;
-   float x_expected[] = { 244.626 };
-   float y_expected[] = { 0.386023 };
+   float x_expected[] = { 244.626f };
+   float y_expected[] = { 0.386023f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -760,7 +760,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, 8.64768339859, -105.906731008, -347.053994991, -1.28802789909 };
+   double h[] = { -1.0, 8.64768339859, -105.906731008, -347.053994991, -1.28802789909 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -785,7 +785,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 0.926057152065, 3.315158944851e-04, -1.203638835886e+03, 0.00197484344868 };
+   double h[] = { 0.0, 0.926057152065, 3.315158944851e-04, -1.203638835886e+03, 0.00197484344868 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -810,7 +810,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, -9.404298701289e-05, -0.00380843381223, -0.0767212569647, -3.66628238398 };
+   double h[] = { 1.0, -9.404298701289e-05, -0.00380843381223, -0.0767212569647, -3.66628238398 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -835,7 +835,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, 0.0900662226146, 0.00250500071094, 6.46624826995, -2.159443948633e-05 };
+   double h[] = { -2.0, 0.0900662226146, 0.00250500071094, 6.46624826995, -2.159443948633e-05 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -860,7 +860,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, 8.011686652935e+03, -23.8989526115, -1.104879849207e+04, 0.108740065261 };
+   double h[] = { -1.0, 8.011686652935e+03, -23.8989526115, -1.104879849207e+04, 0.108740065261 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -885,7 +885,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 5.162681717012e-05, 48.059409562, -4.701209666609e+04, -6.803336444880e+04 };
+   double h[] = { 0.0, 5.162681717012e-05, 48.059409562, -4.701209666609e+04, -6.80333644488e+04 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -910,7 +910,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, -5.554806445579e-04, 5.101973060197e+04, -5.932040237374e+03, 3.91045757161 };
+   double h[] = { 1.0, -5.554806445579e-04, 5.101973060197e+04, -5.932040237374e+03, 3.91045757161 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -935,7 +935,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, -1.697234884626e-05, 101.466514367, 5.772202675851e+03, -6.884724590773e-04 };
+   double h[] = { -2.0, -1.697234884626e-05, 101.466514367, 5.772202675851e+03, -6.884724590773e-04 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -960,7 +960,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -0.0199779342753, 13.013123509, -17.8393347684, 0.129333249919 };
+   double h[] = { -1.0, -0.0199779342753, 13.013123509, -17.8393347684, 0.129333249919 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -985,7 +985,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, -6.673799053773e+04, 587.759435538, 3.493966594965e+04, 2.098374142331e-05 };
+   double h[] = { 0.0, -6.673799053773e+04, 587.759435538, 3.493966594965e+04, 2.098374142331e-05 };
    double X[] = { -0.674 };
    int incX = -1;
    double Y[] = { -0.645 };
@@ -1010,13 +1010,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 0.070033, 0.034824, -0.00740144, -0.153474 };
-   float X[] = { -0.111 };
+   float h[] = { -1.0f, 0.070033f, 0.034824f, -0.00740144f, -0.153474f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.00701131 };
-   float y_expected[] = { 0.0119423 };
+   float x_expected[] = { -0.00701131f };
+   float y_expected[] = { 0.0119423f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1035,13 +1035,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 7.618016e-04, -0.00396806, -92.8408, -0.0018571 };
-   float X[] = { -0.111 };
+   float h[] = { 0.0f, 7.618016e-04f, -0.00396806f, -92.8408f, -0.0018571f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { 9.4516 };
-   float y_expected[] = { -0.10256 };
+   float x_expected[] = { 9.4516f };
+   float y_expected[] = { -0.10256f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1060,13 +1060,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, -5.833806e+03, 0.00265668, -587.573, 0.0972416 };
-   float X[] = { -0.111 };
+   float h[] = { 1.0f, -5.833806e+03f, 0.00265668f, -587.573f, 0.0972416f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { 647.449 };
-   float y_expected[] = { 0.100984 };
+   float x_expected[] = { 647.449f };
+   float y_expected[] = { 0.100984f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1085,13 +1085,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, -8.933390e+04, -5.160220e-05, 2.589784e-05, -7.52586 };
-   float X[] = { -0.111 };
+   float h[] = { -2.0f, -8.93339e+04f, -5.16022e-05f, 2.589784e-05f, -7.52586f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.111 };
-   float y_expected[] = { -0.103 };
+   float x_expected[] = { -0.111f };
+   float y_expected[] = { -0.103f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1110,13 +1110,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, 0.125135, 0.00586453, 1.100694e-05, -0.0137436 };
-   float X[] = { -0.111 };
+   float h[] = { -1.0f, 0.125135f, 0.00586453f, 1.100694e-05f, -0.0137436f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.0138912 };
-   float y_expected[] = { 7.646310e-04 };
+   float x_expected[] = { -0.0138912f };
+   float y_expected[] = { 7.64631e-04f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1135,13 +1135,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, -0.0996414, 0.00505806, 1.321441e-05, 1.151406e-04 };
-   float X[] = { -0.111 };
+   float h[] = { 0.0f, -0.0996414f, 0.00505806f, 1.321441e-05f, 1.151406e-04f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.111001 };
-   float y_expected[] = { -0.103561 };
+   float x_expected[] = { -0.111001f };
+   float y_expected[] = { -0.103561f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1160,13 +1160,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 1, 8.18165, 169.902, -1.453316e-05, 1.539957e+03 };
-   float X[] = { -0.111 };
+   float h[] = { 1.0f, 8.18165f, 169.902f, -1.453316e-05f, 1.539957e+03f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -1.01116 };
-   float y_expected[] = { -158.505 };
+   float x_expected[] = { -1.01116f };
+   float y_expected[] = { -158.505f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1185,13 +1185,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -2, 1.827623e-04, -0.0528808, 24.7305, 328.39 };
-   float X[] = { -0.111 };
+   float h[] = { -2.0f, 1.827623e-04f, -0.0528808f, 24.7305f, 328.39f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.111 };
-   float y_expected[] = { -0.103 };
+   float x_expected[] = { -0.111f };
+   float y_expected[] = { -0.103f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1210,13 +1210,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { -1, -0.0876053, 7.858704e+04, -4.758389e+03, -0.0114841 };
-   float X[] = { -0.111 };
+   float h[] = { -1.0f, -0.0876053f, 7.858704e+04f, -4.758389e+03f, -0.0114841f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { 490.124 };
-   float y_expected[] = { -8.723160e+03 };
+   float x_expected[] = { 490.124f };
+   float y_expected[] = { -8.72316e+03f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1235,13 +1235,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   float h[] = { 0, 0.00192188, -1.031412e-05, -0.00123957, 0.312197 };
-   float X[] = { -0.111 };
+   float h[] = { 0.0f, 0.00192188f, -1.031412e-05f, -0.00123957f, 0.312197f };
+   float X[] = { -0.111f };
    int incX = -1;
-   float Y[] = { -0.103 };
+   float Y[] = { -0.103f };
    int incY = -1;
-   float x_expected[] = { -0.110872 };
-   float y_expected[] = { -0.102999 };
+   float x_expected[] = { -0.110872f };
+   float y_expected[] = { -0.102999f };
    cblas_srotm(N, X, incX, Y, incY, h);
    {
      int i;
@@ -1260,7 +1260,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -0.0253351881542, -0.105247702585, -7.18405641016, -5.409804811228e+04 };
+   double h[] = { -1.0, -0.0253351881542, -0.105247702585, -7.18405641016, -5.409804811228e+04 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1285,7 +1285,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 8.503080247483e+03, -6.186691885896e-05, -0.201279925805, -5.810746179529e-05 };
+   double h[] = { 0.0, 8.503080247483e+03, -6.186691885896e-05, -0.201279925805, -5.810746179529e-05 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1310,7 +1310,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, 0.351101212426, 64.9574703355, 3.015315809025e-05, -5.291308403203e-04 };
+   double h[] = { 1.0, 0.351101212426, 64.9574703355, 3.015315809025e-05, -5.291308403203e-04 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1335,7 +1335,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, 0.0220262018719, -0.00311338149392, -70.6413298654, 31.8952671416 };
+   double h[] = { -2.0, 0.0220262018719, -0.00311338149392, -70.6413298654, 31.8952671416 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1360,7 +1360,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, 1.549812806922e+04, -4.868519165134e+04, -5.230242596804e+04, 1.580434434560e+04 };
+   double h[] = { -1.0, 1.549812806922e+04, -4.868519165134e+04, -5.230242596804e+04, 1.58043443456e+04 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1385,7 +1385,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, -3.30917942895, -0.0100316602276, -0.0222191220411, -0.0881815578726 };
+   double h[] = { 0.0, -3.30917942895, -0.0100316602276, -0.0222191220411, -0.0881815578726 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1410,7 +1410,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 1, 5.68327898035, 1.646867755046e-04, -0.106527931872, -28.2458905362 };
+   double h[] = { 1.0, 5.68327898035, 1.646867755046e-04, -0.106527931872, -28.2458905362 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1435,7 +1435,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -2, 2.20585352008, 1.117638462348e+03, -0.116329468158, 0.00362096329059 };
+   double h[] = { -2.0, 2.20585352008, 1.117638462348e+03, -0.116329468158, 0.00362096329059 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1460,7 +1460,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { -1, -0.00182683798892, -2.288460066516e-05, -37.55844708, -9.540756598260e-05 };
+   double h[] = { -1.0, -0.00182683798892, -2.288460066516e-05, -37.55844708, -9.54075659826e-05 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
@@ -1485,7 +1485,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int N = 1;
-   double h[] = { 0, 1.026904569550e-04, -20.1292302013, -1.703870486677e-04, 5.17477399477 };
+   double h[] = { 0.0, 1.02690456955e-04, -20.1292302013, -1.703870486677e-04, 5.17477399477 };
    double X[] = { 0.203 };
    int incX = -1;
    double Y[] = { -0.03 };
