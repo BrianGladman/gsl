@@ -1,3 +1,8 @@
+Sun Apr 19 19:14:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* strerror.c (gsl_strerror): added an strerror function for making
+ 	readable descriptions of the error number
+
 Wed Apr 15 21:59:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added a stream handler, for the error stream

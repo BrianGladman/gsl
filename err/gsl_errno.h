@@ -39,6 +39,9 @@ void gsl_warning (const char * reason, const char * file, int line,
 void gsl_stream_printf (const char *label, const char *file,
 			int line, const char *reason);
 
+const char * gsl_strerror (int gsl_errno);
+
+
 #ifdef GSL_THREAD_SAFE
 #define GSL_ERRHANDLER_OFF
 #else /* GSL_THREAD_SAFE */
@@ -83,7 +86,6 @@ FILE * gsl_set_stream (FILE * new_stream);
 #else
 #define GSL_ERROR_RETURN(reason, gsl_errno, value) \
        do { \
-       GSL_WARNING(reason, gsl_errno) ; \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return value ; \
        } while (0)
@@ -101,7 +103,6 @@ FILE * gsl_set_stream (FILE * new_stream);
 #else 
 #define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
        do { \
-       GSL_WARNING(reason, gsl_errno) ; \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return ; \
        } while (0)
@@ -132,3 +133,4 @@ FILE * gsl_set_stream (FILE * new_stream);
 extern int gsl_warnings_off ;
 
 #endif /* GSL_ERRNO_H */
+

@@ -10,7 +10,7 @@
 gsl_stream_printf (const char *label, const char *file, int line, 
 		   const char *reason)
 {
-  fprintf (stderr, "\ngsl: %s:%d: %s: %s\n", file, line, label, reason);
+  fprintf (stderr, "gsl: %s:%d: %s: %s\n", file, line, label, reason);
 }
 #else /* GSL_THREAD_SAFE */
 FILE * gsl_stream = stderr ;
@@ -25,7 +25,7 @@ gsl_stream_printf (const char *label, const char *file, int line,
       (*gsl_stream_handler) (label, file, line, reason);
       return;
     }
-  fprintf (gsl_stream, "\ngsl: %s:%d: %s: %s\n", file, line, label, reason);
+  fprintf (gsl_stream, "gsl: %s:%d: %s: %s\n", file, line, label, reason);
 
 }
 
