@@ -60,12 +60,12 @@ int gsl_sf_bessel_J0_impl(const double x, double * result)
     *result = 1.;
   }
   else if(y <= 4.0) {
-    *result = gsl_sf_cheb_eval(0.125*y*y - 1.0, &bj0_cs);
+    *result = gsl_sf_cheb_eval(&bj0_cs, 0.125*y*y - 1.0);
   }
   else if (y < xmax) {
     double z     = 32.0/(y*y) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm0_cs)) / sqrt(y);
-    double theta = y - M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth0_cs) / y;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z)) / sqrt(y);
+    double theta = y - M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z) / y;
     *result = ampl * cos(theta);
   }
   else {

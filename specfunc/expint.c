@@ -293,30 +293,30 @@ int gsl_sf_expint_E1_impl(const double x, double * result)
     return GSL_EOVRFLW;
   }
   else if(x <= -10.) {
-    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(20./x+1., &AE11_cs));
+    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE11_cs, 20.0/x+1.0));
     return GSL_SUCCESS;
   }
   else if(x <= -4.) {
-    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval((40./x+7.)/3., &AE12_cs));
+    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE12_cs, (40.0/x+7.0)/3.0));
     return GSL_SUCCESS;
   }
   else if(x <= -1.) {
-    *result = -log(fabs(x)) + gsl_sf_cheb_eval((2.*x+5.)/3., &E11_cs);
+    *result = -log(fabs(x)) + gsl_sf_cheb_eval(&E11_cs, (2.0*x+5.0)/3.0);
     return GSL_SUCCESS;
   }
   else if(x == 0.) {
     return GSL_EDOM;
   }
   else if(x <= 1.) {
-    *result = -log(fabs(x)) - 0.6875 + x + gsl_sf_cheb_eval(x, &E12_cs);
+    *result = -log(fabs(x)) - 0.6875 + x + gsl_sf_cheb_eval(&E12_cs, x);
     return GSL_SUCCESS;
   }
   else if(x <= 4.) {
-    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval((8./x-5.)/3., &AE13_cs));
+    *result = exp(-x)/x * (1. + gsl_sf_cheb_eval(&AE13_cs, (8.0/x-5.0)/3.0));
     return GSL_SUCCESS;
   }
   else if(x <= xmax) {
-    *result = exp(-x)/x * (1. +  gsl_sf_cheb_eval(8./x-1., &AE14_cs));
+    *result = exp(-x)/x * (1. +  gsl_sf_cheb_eval(&AE14_cs, 8.0/x-1.0));
     return GSL_SUCCESS;
   }
   else {

@@ -125,23 +125,23 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, double * result)
   }
   else if(x < x_small) {
     *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	        (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x
+      	      	        (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x
       	      	       );
     return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
     *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	        (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x
+      	      	        (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x
       	      	       );
     return GSL_SUCCESS;
   }
   else if(x <= 8.) {
-    *result = (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak1_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval(&ak1_cs, (16.0/x-5.0)/3.0)) / sqrt(x);
     return GSL_SUCCESS;
   }
   else {
-    *result = (1.25 + gsl_sf_cheb_eval(16./x-1., &ak12_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval(&ak12_cs, 16.0/x-1.0)) / sqrt(x);
     return GSL_SUCCESS;
   }
 }
@@ -164,12 +164,12 @@ int gsl_sf_bessel_K1_impl(const double x, double * result)
     return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x; 
+    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, -1.0))/x; 
     return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
-    return log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x; 
+    return log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(&bk1_cs, 0.5*y-1.0))/x; 
     return GSL_SUCCESS;
   }
   else if(x < xmax) { 

@@ -69,13 +69,13 @@ int gsl_sf_bessel_J1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y < 4.0) {
-    *result = x * (.25 + gsl_sf_cheb_eval(.125*y*y-1., &bj1_cs));
+    *result = x * (.25 + gsl_sf_cheb_eval(&bj1_cs, 0.125*y*y-1.0));
     return GSL_SUCCESS;
   }
   else if(y < xmax) {
     double z     = 32.0/(y*y) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm1_cs)) / sqrt(y);
-    double theta = y - 3.0*M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth1_cs) / y;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z)) / sqrt(y);
+    double theta = y - 3.0*M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z) / y;
     *result = (x < 0. ? -ampl : ampl) /* fortran_sign(ampl, x) */ * cos (theta);
     return GSL_SUCCESS;
   }

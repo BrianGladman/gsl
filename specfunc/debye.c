@@ -144,7 +144,7 @@ int gsl_sf_debye_1_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    *result = gsl_sf_cheb_eval(t, &adeb1_cs) - 0.25 * x;
+    *result = gsl_sf_cheb_eval(&adeb1_cs, t) - 0.25 * x;
     return GSL_SUCCESS;
   }
   else if(x < xup) {
@@ -192,7 +192,7 @@ int gsl_sf_debye_2_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    *result = gsl_sf_cheb_eval(t, &adeb2_cs) - x/3.0;
+    *result = gsl_sf_cheb_eval(&adeb2_cs, t) - x/3.0;
     return GSL_SUCCESS;
   }
   else if(x < xup) {
@@ -245,7 +245,7 @@ int gsl_sf_debye_3_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    *result = gsl_sf_cheb_eval(t, &adeb3_cs) - 0.375*x;
+    *result = gsl_sf_cheb_eval(&adeb3_cs, t) - 0.375*x;
     return GSL_SUCCESS;
   }
   else if(x < xup) {
@@ -299,7 +299,7 @@ int gsl_sf_debye_4_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    *result = gsl_sf_cheb_eval(t, &adeb4_cs) - 2.0*x/5.0;
+    *result = gsl_sf_cheb_eval(&adeb4_cs, t) - 2.0*x/5.0;
     return GSL_SUCCESS;
   }
   else if(x < xup) {

@@ -120,7 +120,7 @@ int gsl_sf_psi_impl(const double x, double * result)
   
   if(y >= 2.0) {
     double aux = 0.;
-    if(y < xbig) aux = gsl_sf_cheb_eval(8./(y*y)-1., &apsi_cs);
+    if(y < xbig) aux = gsl_sf_cheb_eval(&apsi_cs, 8.0/(y*y)-1.0);
     if(x < 0.0) {
       /* *result = log(y) - 0.5/x + aux - M_PI * cot(M_PI*x); */
       *result = log(y) - 0.5/x + aux - M_PI * cos(M_PI*x)/sin(M_PI*x);
@@ -141,7 +141,7 @@ int gsl_sf_psi_impl(const double x, double * result)
       if(x < 0.0) --n;
       y = x - n;
       --n;
-      ans = gsl_sf_cheb_eval(2.*y-1., &psi_cs);
+      ans = gsl_sf_cheb_eval(&psi_cs, 2.0*y-1.0);
       if(n == 0) {
 	*result = ans;
 	return GSL_SUCCESS;

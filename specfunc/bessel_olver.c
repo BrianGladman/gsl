@@ -389,25 +389,32 @@ static struct gsl_sf_cheb_series A4_lt1_cs = {
 static double olver_B0(double z, double abs_zeta)
 {
   if(z < 0.98) {
-    double t = 1./sqrt((1-z)*(1+z));
-    return -5./(48.*abs_zeta*abs_zeta) + t*(-3 + 5.*t*t)/(24.*sqrt(abs_zeta));
+    double t = 1.0/sqrt((1.0-z)*(1.0+z));
+    return -5.0/(48.0*abs_zeta*abs_zeta) + t*(-3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
   }
   else if(z < 1.02) {
-    double a = 1.-z;
+    double a = 1.0-z;
     return  0.0179988721413553309252458658183
-           +0.0111992982212877614645974276203  * a
-	   +0.0059404069786014304317781160605  * a*a
-	   +0.0028676724516390040844556450173  * a*a*a
-	   +0.0012339189052567271708525111185  * a*a*a*a
-	   +0.0004169250674535178764734660248  * a*a*a*a*a
-	   +0.00003301733850859498069527773655 * a*a*a*a*a*a
-	   -0.00013180762385782030099901064251 * a*a*a*a*a*a*a
-	   -0.00019068703700508472398139456474 * a*a*a*a*a*a*a*a
+      + a * ( +0.0111992982212877614645974276203
+         + a * ( +0.0059404069786014304317781160605
+	    + a * ( +0.0028676724516390040844556450173
+	       + a * ( +0.0012339189052567271708525111185
+                  + a * ( +0.0004169250674535178764734660248
+                     + a * ( +0.00003301733850859498069527773655
+                       + a * ( -0.00013180762385782030099901064251
+	                       -0.00019068703700508472398139456474 * a
+                             )
+                           )
+			)
+                     )
+                  )
+               )
+            )
 	   ;
   }
   else {
-    double t = 1./sqrt((z-1)*(z+1));
-    return -5./(48.*abs_zeta*abs_zeta) + t*( 3 + 5.*t*t)/(24.*sqrt(abs_zeta));
+    double t = 1.0/sqrt((z-1.0)*(z+1.0));
+    return -5.0/(48.0*abs_zeta*abs_zeta) + t*( 3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
   }
 }
 
@@ -415,7 +422,7 @@ static double olver_B0(double z, double abs_zeta)
 static double olver_B1(double z, double abs_zeta)
 {
   if(z < 0.88) {
-    double t   = 1./sqrt((1-z)*(1+z));
+    double t   = 1.0/sqrt((1.0-z)*(1.0+z));
     double t2  = t*t;
     double rz  = sqrt(abs_zeta);
     double z32 = rz*rz*rz;
@@ -427,7 +434,7 @@ static double olver_B1(double z, double abs_zeta)
     return -(term1 + term2 + term3 + term4)/rz;
   }
   else if(z < 1.12) {
-    double a = 1.-z;
+    double a = 1.0-z;
     return -0.00149282953213429172050073403334
            -0.00175640941909277865678308358128 * a
 	   -0.00113346148874174912576929663517 * a*a
@@ -460,7 +467,7 @@ static double olver_B2(double z, double abs_zeta)
 {
   if(z < 0.8) {
     double x = 5.*z/2. - 1.;
-    return gsl_sf_cheb_eval(x,&B2_lt1_cs) / z;
+    return gsl_sf_cheb_eval(&B2_lt1_cs, x) / z;
   }
   else if(z <= 1.2) {
     double a = 1.-z;
@@ -479,7 +486,7 @@ static double olver_B2(double z, double abs_zeta)
   else {
     double zi = 1./z;
     double x  = 12./5. * zi - 1.;
-    return gsl_sf_cheb_eval(x,&B2_gt1_cs) * zi*zi*zi;
+    return gsl_sf_cheb_eval(&B2_gt1_cs, x) * zi*zi*zi;
   }
 }
 
@@ -488,7 +495,7 @@ static double olver_B3(double z, double abs_zeta)
 {
   if(z < 0.8) {
     double x = 5.*z/2. - 1.;
-    return gsl_sf_cheb_eval(x,&B3_lt1_cs);
+    return gsl_sf_cheb_eval(&B3_lt1_cs, x);
   }
   else if(z < 1.2) {
     double a = 1.-z;
@@ -504,7 +511,7 @@ static double olver_B3(double z, double abs_zeta)
   else {
     double x   = 12./(5.*z) - 1.;
     double zi2 = 1./(z*z);
-    return gsl_sf_cheb_eval(x,&B3_gt1_cs) * zi2*zi2*zi2;
+    return gsl_sf_cheb_eval(&B3_gt1_cs, x) * zi2*zi2*zi2;
   }
 }
 
@@ -603,7 +610,7 @@ static double olver_A3(double z, double abs_zeta)
 {
   if(z < 0.9) {
     double x = 20.*z/9. - 1.;
-    return gsl_sf_cheb_eval(x, &A3_lt1_cs);
+    return gsl_sf_cheb_eval(&A3_lt1_cs, x);
   }
   else if(z < 1.1) {
     double a = 1.-z;
@@ -619,7 +626,7 @@ static double olver_A3(double z, double abs_zeta)
   else {
     double x   = 11./(5.*z) - 1.;
     double zi2 = 1./(z*z);
-    return gsl_sf_cheb_eval(x, &A3_gt1_cs) * zi2*zi2*zi2;
+    return gsl_sf_cheb_eval(&A3_gt1_cs, x) * zi2*zi2*zi2;
   }
 }
 
@@ -628,7 +635,7 @@ static double olver_A4(double z, double abs_zeta)
 {
   if(z < 0.8) {
     double x = 5.*z/2. - 1.;
-    return gsl_sf_cheb_eval(x, &A4_lt1_cs);
+    return gsl_sf_cheb_eval(&A4_lt1_cs, x);
   }
   else if(z < 1.2) {
     double a = 1.-z;
@@ -643,7 +650,7 @@ static double olver_A4(double z, double abs_zeta)
   else {
     double x   = 12./(5.*z) - 1.;
     double zi2 = 1./(z*z);
-    return gsl_sf_cheb_eval(x, &A4_gt1_cs) * zi2*zi2*zi2*zi2;
+    return gsl_sf_cheb_eval(&A4_gt1_cs, x) * zi2*zi2*zi2*zi2;
   }
 }
 
@@ -698,25 +705,27 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
       /* z near 1 */
       double a = 1.-z;
       pre  =  1.25992104989487316476721060728
-             +0.37797631496846194943016318218  * a
-	     +0.230385563409348235843147082474 * a*a
-	     +0.165909603649648694839821892031 * a*a*a
-	     ;
+             + a * ( +0.37797631496846194943016318218
+	        + a * ( +0.230385563409348235843147082474 
+	                +0.165909603649648694839821892031 *a
+                      )
+		   )
+	          ;
       zeta = a * pre;
-      pre  = sqrt(sqrt(4.*pre/(1+z)));
+      pre  = sqrt(sqrt(4.0*pre/(1+z)));
       abs_zeta = fabs(zeta);
     }
     else if(z < 1.) {
       /* z < 1 */
-      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2./3.);
+      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2.0/3.0);
       zeta = abs_zeta;
-      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
     }
     else {
       /* z > 1 */
-      abs_zeta = pow(1.5*(rt - acos(1./z)), 2./3.);
+      abs_zeta = pow(1.5*(rt - acos(1.0/z)), 2.0/3.0);
       zeta = -abs_zeta;
-      pre  = sqrt(sqrt(4.*abs_zeta/(rt*rt)));
+      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
     }
 
     asum = olver_Asum(nu, z, abs_zeta);

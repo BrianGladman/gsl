@@ -99,12 +99,12 @@ int gsl_sf_expint_3_impl(const double x, double * result)
   }
   else if(x <= 2.0) {
     double t = x*x*x/4.0 - 1.0;
-    *result = x * gsl_sf_cheb_eval(t, &aexp3_cs);
+    *result = x * gsl_sf_cheb_eval(&aexp3_cs, t);
     return GSL_SUCCESS;
   }
   else if(x < xup) {
     double t = 16.0/(x*x*x) - 1.0;
-    double r = gsl_sf_cheb_eval(t, &aexp3a_cs);
+    double r = gsl_sf_cheb_eval(&aexp3a_cs, t);
     r *= exp(-x*x*x)/(3.0*x*x);
     *result = FUNINF - r;
     return GSL_SUCCESS;

@@ -93,11 +93,11 @@ static inline double riemann_zeta_prod(double s)
 static inline double riemann_zeta_sgt0(double s)
 {
   if(s < 1.0) {
-    return gsl_sf_cheb_eval(2.*s - 1, &zeta_xlt1_cs) / (s - 1.);
+    return gsl_sf_cheb_eval(&zeta_xlt1_cs, 2.0*s - 1.0) / (s - 1.);
   }
   else if(s <= 20.0) {
     double x = (2.*s - 21.)/19.;
-    return gsl_sf_cheb_eval(x, &zeta_xgt1_cs) / (s - 1.);
+    return gsl_sf_cheb_eval(&zeta_xgt1_cs, x) / (s - 1.);
   }
   else {
     return riemann_zeta_prod(s);

@@ -145,7 +145,7 @@ int check_cheb(void)
 
   f = 0.0;
   for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    f += fabs(gsl_sf_cheb_eval(x, cs) - sin(x));
+    f += fabs(gsl_sf_cheb_eval(cs, x) - sin(x));
   }
   s = 0;
   s += ( f > 100.0 * 1.0e-14 );
@@ -154,7 +154,7 @@ int check_cheb(void)
   
   f = 0.0;
   for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    f += fabs(gsl_sf_cheb_eval_n(x, 25, cs) - sin(x));
+    f += fabs(gsl_sf_cheb_eval_n(cs, 25, x) - sin(x));
   }
   s = 0;
   s += ( f > 100.0 * 1.0e-14 );
@@ -164,17 +164,33 @@ int check_cheb(void)
   gsl_sf_cheb_calc_impl(cs, sin);
   f = 0.0;
   for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    f += fabs(gsl_sf_cheb_eval(x, cs) - sin(x));
+    f += fabs(gsl_sf_cheb_eval(cs, x) - sin(x));
   }
   s = 0;
   s += ( f > 100.0 * 1.0e-14 );
   gsl_test(s, "  cheb_calc()");
   status += s;
-  
-  
-  
+
+  f = 0.0;
+  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
+    f += fabs(gsl_sf_cheb_eval_deriv(cs, x) - cos(x));
+  }
+  s = 0;
+  s += ( f > 100.0 * 10.0 * 1.0e-14 );
+  gsl_test(s, "  cheb_eval_deriv()");
+  status += s;
+
+  f = 0.0;
+  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
+    f += fabs(gsl_sf_cheb_eval_integ(cs, x) + (1.0 + cos(x)));
+  }
+  s = 0;
+  s += ( f > 100.0 * 1.0e-14 );
+  gsl_test(s, "  cheb_eval_integ()");
+  status += s;
+
   gsl_sf_cheb_free(cs);
-  
+
   return status;
 }
 
@@ -195,7 +211,7 @@ int check_clausen(void)
   status += s;
   
   s = 0;
-  s += ( gsl_sf_clausen_impl(1.0e+6*M_PI + M_PI/3.0, &y) != GSL_ELOSS);
+  s += ( gsl_sf_clausen_impl(1.0e+10*M_PI + M_PI/3.0, &y) != GSL_ELOSS);
   gsl_test(s, "  gsl_sf_clausen: trap accuracy loss from large argument");
   status += s;
 

@@ -81,7 +81,7 @@ int gsl_sf_clausen_impl(double x, double *result)
      */
     double t = 2.0*(x*x / PISQ - 0.5);
     if(t > 1.0) t = 1.0;
-    *result = x * gsl_sf_cheb_eval(t, &aclaus_cs) - x * log(x);
+    *result = x * gsl_sf_cheb_eval(&aclaus_cs, t) - x * log(x);
   }
   
   *result *= sgn;

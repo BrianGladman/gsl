@@ -133,11 +133,11 @@ int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
   double y = fabs(x);
 
   if(y == 0.) {
-    *result = 0.;
+    *result = 0.0;
     return GSL_SUCCESS;
   }
   else if(y < xmin) {
-    *result = 0.;
+    *result = 0.0;
     return GSL_EUNDRFLW;
   }
   else if(y < x_small) {
@@ -145,16 +145,16 @@ int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    *result = x * exp(-y) * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    *result = x * exp(-y) * (0.875 + gsl_sf_cheb_eval(&bi1_cs, y*y/4.5-1.0));
     return GSL_SUCCESS;
   }
   else if(y <= 8.0) {
-    double b = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai1_cs)) / sqrt(y);
-    *result = ( x > 0. ? b : -b) /* fortran_sign(b, x) */;
+    double b = (0.375 + gsl_sf_cheb_eval(&ai1_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
+    *result = ( x > 0.0 ? b : -b) /* fortran_sign(b, x) */;
     return GSL_SUCCESS;
   }
   else {
-    double b = (.375 + gsl_sf_cheb_eval(16./y-1.0, &ai12_cs)) / sqrt(y);
+    double b = (.375 + gsl_sf_cheb_eval(&ai12_cs, 16.0/y-1.0)) / sqrt(y);
     *result = ( x > 0. ? b : -b) /* fortran_sign(b, x) */;
     return GSL_SUCCESS;
   }
@@ -181,7 +181,7 @@ int gsl_sf_bessel_I1_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    *result = x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    *result = x * (.875 + gsl_sf_cheb_eval(&bi1_cs, y*y/4.5-1.0));
     return GSL_SUCCESS;
   }
   else if(y < xmax) {

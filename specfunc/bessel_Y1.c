@@ -67,13 +67,13 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
   else if(x < x_small) {
     double J1 = 0.;
     int status = gsl_sf_bessel_J1_impl(x, &J1);
-    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(-1., &by1_cs))/x;
+    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, -1.0))/x;
     return status;
   }
   else if(x < 4.0) {
     double J1 = 0.;
     int status = gsl_sf_bessel_J1_impl(x, &J1);
-    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(0.125*x*x-1., &by1_cs))/x;
+    *result = two_over_pi * log(0.5*x) * J1 + (0.5 + gsl_sf_cheb_eval(&by1_cs, 0.125*x*x-1.0))/x;
     if(status == GSL_EUNDRFLW)
       return GSL_ELOSS;
     else
@@ -81,8 +81,8 @@ int gsl_sf_bessel_Y1_impl(const double x, double * result)
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm1_cs)) / sqrt(x);
-    double theta = x - 3.0*M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth1_cs) / x;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm1_cs, z)) / sqrt(x);
+    double theta = x - 3.0*M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth1_cs, z) / x;
     *result = ampl * sin (theta);
     return GSL_SUCCESS;
   }

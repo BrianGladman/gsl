@@ -131,13 +131,13 @@ int gsl_sf_bessel_I0_scaled_impl(const double x, double * result)
     *result = 1.;
   }
   else if(y <= 3.0) {
-    *result = exp(-y) * (2.75 + gsl_sf_cheb_eval(y*y/4.5-1., &bi0_cs));
+    *result = exp(-y) * (2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0));
   }
   else if(y <= 8.0) {
-    *result = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai0_cs)) / sqrt(y);
+    *result = (.375 + gsl_sf_cheb_eval(&ai0_cs, (48.0/y-11.0)/5.0)) / sqrt(y);
   }
   else {
-    *result = (.375 + gsl_sf_cheb_eval(16./y-1., &ai02_cs)) / sqrt(y);
+    *result = (.375 + gsl_sf_cheb_eval(&ai02_cs, 16.0/y-1.0)) / sqrt(y);
   }
   return GSL_SUCCESS;
 }
@@ -153,7 +153,7 @@ int gsl_sf_bessel_I0_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    *result = 2.75 + gsl_sf_cheb_eval(y*y/4.5-1.0, &bi0_cs);
+    *result = 2.75 + gsl_sf_cheb_eval(&bi0_cs, y*y/4.5-1.0);
     return GSL_SUCCESS;
   }
   else if(y < xmax) {

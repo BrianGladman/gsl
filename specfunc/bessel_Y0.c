@@ -61,18 +61,18 @@ int gsl_sf_bessel_Y0_impl(const double x, double * result)
   }
   else if(x < x_small){
     *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	      + .375 + gsl_sf_cheb_eval(-1., &by0_cs);
+	      + .375 + gsl_sf_cheb_eval(&by0_cs, -1.0);
     return GSL_SUCCESS;
   }
   else if(x < 4.0) {
     *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	      + .375 + gsl_sf_cheb_eval(.125*x*x-1., &by0_cs);
+	      + .375 + gsl_sf_cheb_eval(&by0_cs, 0.125*x*x-1.0);
     return GSL_SUCCESS;
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;
-    double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm0_cs)) / sqrt(x);
-    double theta = x - M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth0_cs) / x;
+    double ampl  = (0.75 + gsl_sf_cheb_eval(&_bessel_amp_phase_bm0_cs, z)) / sqrt(x);
+    double theta = x - M_PI_4 + gsl_sf_cheb_eval(&_bessel_amp_phase_bth0_cs, z) / x;
     *result = ampl * sin (theta);
     return GSL_SUCCESS;
   }

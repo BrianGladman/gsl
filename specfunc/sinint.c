@@ -205,12 +205,12 @@ static void fg_asymp(const double x, double * f, double * g)
   const double x2 = x*x;
 
   if(x <= xbnd) {
-    *f = (1.0 + gsl_sf_cheb_eval((1.0/x2-0.04125)/0.02125, &f1_cs))/x;
-    *g = (1.0 + gsl_sf_cheb_eval((1.0/x2-0.04125)/0.02125, &g1_cs))/x2;
+    *f = (1.0 + gsl_sf_cheb_eval(&f1_cs, (1.0/x2-0.04125)/0.02125))/x;
+    *g = (1.0 + gsl_sf_cheb_eval(&g1_cs, (1.0/x2-0.04125)/0.02125))/x2;
   }
   else if(x <= xbig) {
-    *f = (1.0 + gsl_sf_cheb_eval(100./x2-1., &f2_cs))/x;
-    *g = (1.0 + gsl_sf_cheb_eval(100./x2-1., &g2_cs))/x2;
+    *f = (1.0 + gsl_sf_cheb_eval(&f2_cs, 100.0/x2-1.0))/x;
+    *g = (1.0 + gsl_sf_cheb_eval(&g2_cs, 100.0/x2-1.0))/x2;
   }
   else {
     *f = (x < xmaxf ? 1./x  : 0.);
@@ -265,7 +265,7 @@ int gsl_sf_Si_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(ax <= 4.0) {
-    *result = x * (0.75 + gsl_sf_cheb_eval((x*x-8.0)*0.125, &si_cs));
+    *result = x * (0.75 + gsl_sf_cheb_eval(&si_cs, (x*x-8.0)*0.125));
     return GSL_SUCCESS;
   }
   else {
@@ -319,7 +319,7 @@ int gsl_sf_Ci_impl(const double x, double * result)
   else if(x <= 4.) {
     double y = -1.0;
     if (x > xsml) y = (x*x-8.0)*0.125;
-    *result = log(x) - 0.5 + gsl_sf_cheb_eval(y, &ci_cs);
+    *result = log(x) - 0.5 + gsl_sf_cheb_eval(&ci_cs, y);
     return GSL_SUCCESS;
   }
   else {

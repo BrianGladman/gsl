@@ -43,7 +43,7 @@ int gsl_sf_Shi_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(ax <= 0.375) {
-    *result = x * (1.0 + gsl_sf_cheb_eval(128.*x*x/9.-1., &shi_cs));
+    *result = x * (1.0 + gsl_sf_cheb_eval(&shi_cs, 128.0*x*x/9.0-1.0));
     return GSL_SUCCESS;
   }
   else {

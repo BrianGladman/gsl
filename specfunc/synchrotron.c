@@ -193,14 +193,14 @@ int gsl_sf_synchrotron_1_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    double cheb1 = gsl_sf_cheb_eval(t, &async1_cs);
-    double cheb2 = gsl_sf_cheb_eval(t, &async2_cs);
+    double cheb1 = gsl_sf_cheb_eval(&async1_cs, t);
+    double cheb2 = gsl_sf_cheb_eval(&async2_cs, t);
     *result = pow(x,1.0/3.0) * cheb1 - pow(x,11.0/3.0) * cheb2 - PIBRT3 * x;
     return GSL_SUCCESS;
   }
   else if(x < xhi1) {
     double t = (12.0 - x) / (x + 4.0);
-    double cheb1 = gsl_sf_cheb_eval(t, &asynca_cs);
+    double cheb1 = gsl_sf_cheb_eval(&asynca_cs, t);
     double y = LNRTP2 - x + log(sqrt(x) * cheb1);
     if(y < GSL_LOG_DBL_MIN) {
       *result = 0.0;
@@ -234,14 +234,14 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
   }
   else if(x <= 4.0) {
     double t = x*x/8.0 - 1.0;
-    double cheb1 = gsl_sf_cheb_eval(t, &asyn21_cs);
-    double cheb2 = gsl_sf_cheb_eval(t, &asyn22_cs);
+    double cheb1 = gsl_sf_cheb_eval(&asyn21_cs, t);
+    double cheb2 = gsl_sf_cheb_eval(&asyn22_cs, t);
     *result = pow(x, 1.0/3.0) * cheb1 - pow(x, 5.0/3.0) * cheb2;
     return GSL_SUCCESS;
   }
   else if(x < xhi1) {
     double t = (10.0 - x) / (x + 2.0);
-    double cheb1 = gsl_sf_cheb_eval(t, &asyn2a_cs);
+    double cheb1 = gsl_sf_cheb_eval(&asyn2a_cs, t);
     double y = LNRTP2 - x + log(sqrt(x) * cheb1);
     if(y < GSL_LOG_DBL_MIN) {
       *result = 0.0;

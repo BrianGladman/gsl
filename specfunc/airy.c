@@ -235,13 +235,13 @@ static int airy_mod_phase(const double x, double * mod, double * phase)
 
   if(x < -2.0) {
     double z = 16.0/(x*x*x) + 1.0;
-    m =  0.3125 + gsl_sf_cheb_eval(z, &am21_cs);
-    p = -0.625  + gsl_sf_cheb_eval(z, &ath1_cs);
+    m =  0.3125 + gsl_sf_cheb_eval(&am21_cs, z);
+    p = -0.625  + gsl_sf_cheb_eval(&ath1_cs, z);
   }
   else if(x <= -1.0) {
     double z = (16.0/(x*x*x) + 9.0)/7.0;
-    m =  0.3125 + gsl_sf_cheb_eval(z, &am22_cs);
-    p = -0.625  + gsl_sf_cheb_eval(z, &ath2_cs);
+    m =  0.3125 + gsl_sf_cheb_eval(&am22_cs, z);
+    p = -0.625  + gsl_sf_cheb_eval(&ath2_cs, z);
   }
   else {
     *mod = 0.;
@@ -604,7 +604,7 @@ static double airy_aie(const double x)
 {
   double sqx = sqrt(x);
   double z = 2.0/(x*sqx) - 1.0;
-  return (.28125 + gsl_sf_cheb_eval(z, &aip_cs))/sqrt(sqx);
+  return (.28125 + gsl_sf_cheb_eval(&aip_cs, z))/sqrt(sqx);
 }
 
 /* should only be called for x >= 2.0 */
@@ -616,12 +616,12 @@ static double airy_bie(const double x)
   if(x < 4.0) {
     double sqx = sqrt(x);
     double z   = ATR/(x*sqx) + BTR;
-    return (0.625 + gsl_sf_cheb_eval(z, &bip_cs))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(&bip_cs, z))/sqrt(sqx);
   }
   else {
     double sqx = sqrt(x);
     double z = 16.0/(x*sqx) - 1.0;
-    return (0.625 + gsl_sf_cheb_eval(z, &bip2_cs))/sqrt(sqx);
+    return (0.625 + gsl_sf_cheb_eval(&bip2_cs, z))/sqrt(sqx);
   }
 }
 
@@ -639,7 +639,7 @@ int gsl_sf_airy_Ai_impl(const double x, double * result)
   }
   else if(x <= 1.0) {
     double z = x*x*x;
-    *result = 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
+    *result = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
     return GSL_SUCCESS;
   }
   else {
@@ -662,13 +662,13 @@ int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
   }
   else if(x <= 0.0) {
     double z = x*x*x;
-    *result  = 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
+    *result  = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
     return GSL_SUCCESS;
   }
    else if(x <= 1.0) {
     double z = x*x*x;
     double scale = exp(2.0/3.0 * sqrt(z));
-    *result  = 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
+    *result  = 0.375 + (gsl_sf_cheb_eval(&aif_cs, z) - x*(0.25 + gsl_sf_cheb_eval(&aig_cs, z)));
     *result *= scale;
     return GSL_SUCCESS;
   }
@@ -689,12 +689,12 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
   }
   else if(x < 1.0) {
     double z = x*x*x;
-    *result = 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
+    *result = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
     return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double z = (2.0*x*x*x - 9.0)/7.0;
-    *result = 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
+    *result = 1.125 + gsl_sf_cheb_eval(&bif2_cs, z) + x*(0.625 + gsl_sf_cheb_eval(&big2_cs, z));
     return GSL_SUCCESS;
   }
   else {
@@ -722,13 +722,13 @@ int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
   }
   else if(x < 0.0) {
     double z = x*x*x;
-    *result  = 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
+    *result  = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
     double z = x*x*x;
     double s = exp(-2.0/3.0 * sqrt(z));
-    *result  = 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
+    *result  = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
     *result *= s;
     return GSL_SUCCESS;
   }
@@ -736,7 +736,7 @@ int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
     double x3 = x*x*x;
     double z = (2.0*x3 - 9.0)/7.0;
     double s = exp(-2.0/3.0 * sqrt(x3));
-    *result  = 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
+    *result  = 1.125 + gsl_sf_cheb_eval(&bif2_cs, z) + x*(0.625 + gsl_sf_cheb_eval(&big2_cs, z));
     *result *= s;
     return GSL_SUCCESS;
   }

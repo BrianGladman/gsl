@@ -587,18 +587,18 @@ static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
   if(x <= -4.0) {
     double z = 1.;
     if(x > xsml) z = 128.0/(x*x*x) + 1.0;
-    a =  0.3125 + gsl_sf_cheb_eval(z, &an20_cs);
-    p = -0.625  + gsl_sf_cheb_eval(z, &aph0_cs);
+    a =  0.3125 + gsl_sf_cheb_eval(&an20_cs, z);
+    p = -0.625  + gsl_sf_cheb_eval(&aph0_cs, z);
   }
   else if(x <= -2.0) {
     double z = (128.0/(x*x*x) + 9.0) / 7.0;
-    a =  0.3125 + gsl_sf_cheb_eval(z, &an21_cs);
-    p = -0.625  + gsl_sf_cheb_eval(z, &aph1_cs);
+    a =  0.3125 + gsl_sf_cheb_eval(&an21_cs, z);
+    p = -0.625  + gsl_sf_cheb_eval(&aph1_cs, z);
   }
   else if(x <= -1.0) {
     double z = (16.0/(x*x*x) + 9.0) / 7.0;
-    a =  0.3125 + gsl_sf_cheb_eval(z, &an22_cs);
-    p = -0.625  + gsl_sf_cheb_eval(z, &aph2_cs);
+    a =  0.3125 + gsl_sf_cheb_eval(&an22_cs, z);
+    p = -0.625  + gsl_sf_cheb_eval(&aph2_cs, z);
   }
   else {
     return GSL_EDOM;
@@ -633,21 +633,21 @@ int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
     double x2 = 0.0;
     if(fabs(x) > x3sml) x3 = x*x*x;
     if(fabs(x) > x2sml) x2 = x*x;
-    *result = (x2*(0.125 + gsl_sf_cheb_eval(x3, &aif_cs)) - gsl_sf_cheb_eval(x3, &aig_cs)) - 0.25;
+    *result = (x2*(0.125 + gsl_sf_cheb_eval(&aif_cs, x3)) - gsl_sf_cheb_eval(&aig_cs, x3)) - 0.25;
     if (x > x32sml) *result *= exp(2.0*x*sqrt(x)/3.0);
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     double sqrtx = sqrt(x);
     double z = (16.0/(x*sqrtx) - 9.0)/7.0;
-    *result = (-0.28125 - gsl_sf_cheb_eval(z, &aip1_cs)) * sqrt(sqrtx);
+    *result = (-0.28125 - gsl_sf_cheb_eval(&aip1_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
   else {
     double sqrtx = sqrt(x);
     double z = -1.0;
     if (x < xbig) z = 16.0/(x*sqrtx) - 1.0;
-    *result = (-0.28125 - gsl_sf_cheb_eval(z, &aip2_cs)) * sqrt(sqrtx);
+    *result = (-0.28125 - gsl_sf_cheb_eval(&aip2_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
 }
@@ -669,7 +669,7 @@ int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
     double x2 = 0.0;
     if(fabs(x) > x3sml) x3 = x*x*x;
     if(fabs(x) > x2sml) x2 = x*x;
-    *result = (x2*(0.125 + gsl_sf_cheb_eval(x3, &aif_cs)) - gsl_sf_cheb_eval(x3, &aig_cs)) - 0.25;
+    *result = (x2*(0.125 + gsl_sf_cheb_eval(&aif_cs, x3)) - gsl_sf_cheb_eval(&aig_cs, x3)) - 0.25;
     return GSL_SUCCESS;
   }
   else {
@@ -706,26 +706,26 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
     double x2 = 0.0;
     if(fabs(x) > x3sml) x3 = x*x*x;
     if(fabs(x) > x2sml) x2 = x*x;
-    *result = x2 * (gsl_sf_cheb_eval(x3, &bif_cs) + 0.25) + gsl_sf_cheb_eval(x3, &big_cs) + 0.5;
+    *result = x2 * (gsl_sf_cheb_eval(&bif_cs, x3) + 0.25) + gsl_sf_cheb_eval(&big_cs, x3) + 0.5;
     if (x > x32sml) *result *= exp (-2.0*x*sqrt(x)/3.0);
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {
     double z = (2.0*x*x*x - 9.0) / 7.0;
-    *result = exp (-2.0*x*sqrt(x)/3.0) * (x*x * (0.25 + gsl_sf_cheb_eval(z, &bif2_cs)) + 0.5 + gsl_sf_cheb_eval(z, &big2_cs));
+    *result = exp (-2.0*x*sqrt(x)/3.0) * (x*x * (0.25 + gsl_sf_cheb_eval(&bif2_cs, z)) + 0.5 + gsl_sf_cheb_eval(&big2_cs, z));
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     double sqrtx = sqrt(x);
     double z = atr/(x*sqrtx) + btr;
-    *result = (0.625 + gsl_sf_cheb_eval(z, &bip1_cs)) * sqrt(sqrtx);
+    *result = (0.625 + gsl_sf_cheb_eval(&bip1_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
   else {
     double sqrtx = sqrt(x);
     double z = -1.0;
     if(x < xbig) z = 16.0/(x*sqrtx) - 1.0;
-    *result = (0.625 + gsl_sf_cheb_eval(z, &bip2_cs)) * sqrt(sqrtx);
+    *result = (0.625 + gsl_sf_cheb_eval(&bip2_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
 }
@@ -749,12 +749,12 @@ int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
     double x2 = 0.0;
     if(fabs(x) > x3sml) x3 = x*x*x;
     if(fabs(x) > x2sml) x2 = x*x;
-    *result = x2*(gsl_sf_cheb_eval(x3, &bif_cs) + 0.25) + gsl_sf_cheb_eval(x3, &big_cs) + 0.5;
+    *result = x2*(gsl_sf_cheb_eval(&bif_cs, x3) + 0.25) + gsl_sf_cheb_eval(&big_cs, x3) + 0.5;
     return GSL_SUCCESS;
   }
   else if(x <= 2.0) {
     double z = (2.0*x*x*x - 9.0) / 7.0;
-    *result = x*x*(gsl_sf_cheb_eval(z, &bif2_cs) + 0.25) + gsl_sf_cheb_eval(z, &big2_cs) + 0.5;
+    *result = x*x*(gsl_sf_cheb_eval(&bif2_cs, z) + 0.25) + gsl_sf_cheb_eval(&big2_cs, z) + 0.5;
     return GSL_SUCCESS;
   }
   else if(x < xmax) {
