@@ -34,7 +34,7 @@
 static
 int
 conicalP_negmu_xlt1_CF1(const double mu, const int ell, const double tau,
-                        const double x, double * result)
+                        const double x, gsl_sf_result * result)
 {
   const double RECUR_BIG = GSL_SQRT_DBL_MAX;
   const int maxiter = 5000;
@@ -80,9 +80,10 @@ conicalP_negmu_xlt1_CF1(const double mu, const int ell, const double tau,
     if(fabs(del - 1.0) < 2.0*GSL_DBL_EPSILON) break;
   }
 
-  *result = fn;
+  result->val = fn;
+  result->err = 4.0 * GSL_DBL_EPSILON * (sqrt(n) + 1.0) * fabs(fn);
 
-  if(n == maxiter)
+  if(n >= maxiter)
     return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
@@ -97,10 +98,11 @@ conicalP_negmu_xlt1_CF1(const double mu, const int ell, const double tau,
 static
 int
 conicalP_negmu_xgt1_CF1(const double mu, const int ell, const double tau,
-                        const double x, double * result)
+                        const double x, gsl_sf_result * result)
 { 
   const int maxk = 20000;
   const double gamma = 1.0-1.0/(x*x);
+  const double pre = sqrt(x-1.0)*sqrt(x+1.0) / (x*(2.0*(ell+mu+1.0)));
   double tk   = 1.0;
   double sum  = 1.0;
   double rhok = 0.0;
@@ -116,9 +118,11 @@ conicalP_negmu_xgt1_CF1(const double mu, const int ell, const double tau,
     if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
   }
 
-  *result = sqrt(x-1.0)*sqrt(x+1.0) / (x*(2.0*(ell+mu+1.0))) * sum;
+  result->val  = pre * sum;
+  result->err  = fabs(pre * tk);
+  result->err += 2.0 * GSL_DBL_EPSILON * (sqrt(k) + 1.0) * fabs(pre*sum);
 
-  if(k == maxk)
+  if(k >= maxk)
     return GSL_EMAXITER;
   else
     return GSL_SUCCESS;
@@ -537,11 +541,14 @@ int
 conicalP_xlt1_hyperg_A(double mu, double tau, double x, gsl_sf_result * result)
 {
   double x2 = x*x;
+  double err_amp = 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-fabs(x)));
   double pre_val = M_SQRTPI / pow(0.5*sqrt(1-x2), mu);
-  double pre_err = fabs(pre_val) * GSL_DBL_EPSILON * (1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-fabs(x))));
+  double pre_err = err_amp * GSL_DBL_EPSILON * (fabs(mu)+1.0) * fabs(pre_val) ;
   gsl_sf_result ln_g1, ln_g2, arg_g1, arg_g2;
   gsl_sf_result F1, F2;
   gsl_sf_result pre1, pre2;
+  double t1_val, t1_err;
+  double t2_val, t2_err;
 
   int stat_F1 = gsl_sf_hyperg_2F1_conj_impl(0.25 - 0.5*mu, 0.5*tau, 0.5, x2, &F1);
   int stat_F2 = gsl_sf_hyperg_2F1_conj_impl(0.75 - 0.5*mu, 0.5*tau, 1.5, x2, &F2);
@@ -553,13 +560,17 @@ conicalP_xlt1_hyperg_A(double mu, double tau, double x, gsl_sf_result * result)
   gsl_sf_exp_err_impl(-2.0*ln_g1.val, 2.0*ln_g1.err, &pre1);
   gsl_sf_exp_err_impl(-2.0*ln_g2.val, 2.0*ln_g2.err, &pre2);
   pre2.val *= -2.0*x;
-  pre2.err *=  2.0*x;
+  pre2.err *=  2.0*fabs(x);
   pre2.err +=  GSL_DBL_EPSILON * fabs(pre2.val);
-  
-  result->val  = pre_val * (pre1.val * F1.val + pre2.val * F2.val);
-  result->err  = pre_val * (fabs(pre1.val) * F1.err + fabs(pre2.val) * F2.err);
-  result->err += pre_val * (pre1.err * fabs(F1.val) + pre2.err * fabs(F2.err));
-  result->err += pre_err * fabs(pre1.val * F1.val + pre2.val * F2.val);
+
+  t1_val = pre1.val * F1.val;
+  t1_err = fabs(pre1.val) * F1.err + pre1.err * fabs(F1.val);
+  t2_val = pre2.val * F2.val;
+  t2_err = fabs(pre2.val) * F2.err + pre2.err * fabs(F2.val);
+
+  result->val  = pre_val * (t1_val + t2_val);
+  result->err  = pre_val * (t1_err + t2_err);
+  result->err += pre_err * fabs(t1_val + t2_val);
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return status;
@@ -959,7 +970,9 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, gsl_sf_result * resu
       int stat_I  = GSL_ERROR_SELECT_2(stat_I0, stat_I1);
       int stat_V  = conicalP_1_V(th, x/sth, lambda, -1.0, &V0, &V1);
       double bessterm = V0 * I0.val + V1 * I1.val;
-      double besserr  = fabs(V0) * I0.err + fabs(V1) * I1.err;
+      double besserr  =  fabs(V0) * I0.err + fabs(V1) * I1.err
+                       + 2.0 * GSL_DBL_EPSILON * fabs(V0 * I0.val)
+		       + 2.0 * GSL_DBL_EPSILON * fabs(V1 * I1.val);
       double arg1 = th * lambda;
       double sqts = sqrt(th/sth);
       int stat_e = gsl_sf_exp_mult_err_impl(arg1, 2.0 * GSL_DBL_EPSILON * fabs(arg1),
@@ -976,7 +989,9 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, gsl_sf_result * resu
       int stat_J  = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
       int stat_V  = conicalP_1_V(xi, x/sh, lambda, 1.0, &V0, &V1);
       double bessterm = V0 * J0.val + V1 * J1.val;
-      double besserr  = fabs(V0) * J0.err + fabs(V1) * J1.err;
+      double besserr  = fabs(V0) * J0.err + fabs(V1) * J1.err
+                       + 2.0 * GSL_DBL_EPSILON * fabs(V0 * J0.val)
+		       + 2.0 * GSL_DBL_EPSILON * fabs(V1 * J1.val);
       double pre = sqrt(xi/sh);
       result->val  = pre * bessterm;
       result->err  = pre * besserr;
@@ -1146,11 +1161,11 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
   }
   else if(x < 1.0) {
     const double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
-    double rat;
+    gsl_sf_result rat;
     gsl_sf_result Phf;
     int stat_CF1 = conicalP_negmu_xlt1_CF1(0.5, l, lambda, x, &rat);
     int stat_Phf = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
-    double Pellp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pellp1 = rat.val * GSL_SQRT_DBL_MIN;
     double Pell   = GSL_SQRT_DBL_MIN;
     double Pellm1;
     int ell;
@@ -1163,7 +1178,8 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     }
 
     result->val  = GSL_SQRT_DBL_MIN * Phf.val / Pell;
-    result->err  = GSL_SQRT_DBL_MIN * Phf.val / fabs(Pell);
+    result->err  = GSL_SQRT_DBL_MIN * Phf.err / fabs(Pell);
+    result->err += fabs(rat.err/rat.val) * (l + 1.0) * fabs(result->val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_Phf, stat_CF1);
@@ -1177,10 +1193,10 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     /* x > 1.0 */
 
     const double xi = x/sqrt((x-1.0)*(x+1.0));
-    double rat;
+    gsl_sf_result rat;
     int stat_CF1 = conicalP_negmu_xgt1_CF1(0.5, l, lambda, x, &rat);
     int stat_P;
-    double Pellp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pellp1 = rat.val * GSL_SQRT_DBL_MIN;
     double Pell   = GSL_SQRT_DBL_MIN;
     double Pellm1;
     int ell;
@@ -1197,14 +1213,16 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
       stat_P = gsl_sf_conicalP_half_impl(lambda, x, &Phf);
       result->val  = GSL_SQRT_DBL_MIN * Phf.val / Pell;
       result->err  = GSL_SQRT_DBL_MIN * Phf.err / fabs(Pell);
-      result->err += 2.0 * GSL_DBL_EPSILON * (l + 1.0) * fabs(result->val);
+      result->err += fabs(rat.err/rat.val) * (l + 1.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
     else {
       gsl_sf_result Pmhf;
       stat_P = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pmhf);
       result->val  = GSL_SQRT_DBL_MIN * Pmhf.val / Pellp1;
       result->err  = GSL_SQRT_DBL_MIN * Pmhf.err / fabs(Pellp1);
-      result->err += 2.0 * GSL_DBL_EPSILON * (l + 1.0) * fabs(result->val);
+      result->err += fabs(rat.err/rat.val) * (l + 1.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
 
     return GSL_ERROR_SELECT_2(stat_P, stat_CF1);
@@ -1263,11 +1281,11 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
   }
   else if(x < 1.0) {
     const double xi = x/(sqrt(1.0-x)*sqrt(1.0+x));
-    double rat;
+    gsl_sf_result rat;
     gsl_sf_result P0;
     int stat_CF1 = conicalP_negmu_xlt1_CF1(0.0, m, lambda, x, &rat);
     int stat_P0  = gsl_sf_conicalP_0_impl(lambda, x, &P0);
-    double Pkp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pkp1 = rat.val * GSL_SQRT_DBL_MIN;
     double Pk   = GSL_SQRT_DBL_MIN;
     double Pkm1;
     int k;
@@ -1281,7 +1299,8 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
 
     result->val  = GSL_SQRT_DBL_MIN * P0.val / Pk;
     result->err  = GSL_SQRT_DBL_MIN * P0.err / fabs(Pk);
-    result->err += GSL_DBL_EPSILON * m * fabs(result->val);
+    result->err += fabs(rat.err/rat.val) * (m + 1.0) * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_P0, stat_CF1);
   }
@@ -1294,10 +1313,10 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
     /* x > 1.0 */
 
     const double xi = x/sqrt((x-1.0)*(x+1.0));
-    double rat;
+    gsl_sf_result rat;
     int stat_CF1 = conicalP_negmu_xgt1_CF1(0.0, m, lambda, x, &rat);
     int stat_P;
-    double Pkp1 = rat * GSL_SQRT_DBL_MIN;
+    double Pkp1 = rat.val * GSL_SQRT_DBL_MIN;
     double Pk   = GSL_SQRT_DBL_MIN;
     double Pkm1;
     int k;
@@ -1314,14 +1333,16 @@ int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda,
       stat_P = gsl_sf_conicalP_1_impl(lambda, x, &P1);
       result->val  = GSL_SQRT_DBL_MIN * P1.val / Pk;
       result->err  = GSL_SQRT_DBL_MIN * P1.err / fabs(Pk);
-      result->err += 2.0 * GSL_DBL_EPSILON * (m+2.0) * fabs(result->val);
+      result->err += fabs(rat.err/rat.val) * (m+2.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
     else {
       gsl_sf_result P0;
       stat_P = gsl_sf_conicalP_0_impl(lambda, x, &P0);
       result->val  = GSL_SQRT_DBL_MIN * P0.val / Pkp1;
       result->err  = GSL_SQRT_DBL_MIN * P0.err / fabs(Pkp1);
-      result->err += 2.0 * GSL_DBL_EPSILON * (m+2.0) * fabs(result->val);
+      result->err += fabs(rat.err/rat.val) * (m+2.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
 
     return GSL_ERROR_SELECT_2(stat_P, stat_CF1);
