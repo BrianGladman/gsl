@@ -61,7 +61,7 @@ main (void)
 		if (z != 0)
 		  {
 		    status = 1;
-		    printf ("(%d,%d): %g vs %g\n", i, j, z, ya);
+		    printf ("(%d,%d): %g vs %g\n", (int)i, (int)j, z, ya);
 		  }
 	      }
 	    else

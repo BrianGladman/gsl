@@ -276,7 +276,7 @@ main (void)
 	if (h->xrange[i] != hh->xrange[i])
 	  {
 	    printf ("xrange[%d] : %g orig vs %g\n",
-		    i, h->xrange[i], hh->xrange[i]);
+		    (int)i, h->xrange[i], hh->xrange[i]);
 	    status = 1;
 	  }
       }
@@ -286,7 +286,7 @@ main (void)
 	if (h->yrange[j] != hh->yrange[j])
 	  {
 	    printf ("yrange[%d] : %g orig vs %g\n",
-		    j, h->yrange[j], hh->yrange[j]);
+		    (int)j, h->yrange[j], hh->yrange[j]);
 	    status = 1;
 	  }
       }
@@ -295,7 +295,8 @@ main (void)
       {
 	if (h->bin[i] != hh->bin[i])
 	  {
-	    printf ("bin[%d] : %g orig vs %g\n", i, h->bin[i], hh->bin[i]);
+	    printf ("bin[%d] : %g orig vs %g\n", 
+		    (int)i, h->bin[i], hh->bin[i]);
 	    status = 1;
 	  }
       }
@@ -324,7 +325,7 @@ main (void)
 	if (h->xrange[i] != hh->xrange[i])
 	  {
 	    printf ("xrange[%d] : %g orig vs %g\n",
-		    i, h->xrange[i], hh->xrange[i]);
+		    (int)i, h->xrange[i], hh->xrange[i]);
 	    status = 1;
 	  }
       }
@@ -334,7 +335,7 @@ main (void)
 	if (h->yrange[j] != hh->yrange[j])
 	  {
 	    printf ("yrange[%d] : %g orig vs %g\n",
-		    j, h->yrange[j], hh->yrange[j]);
+		    (int)j, h->yrange[j], hh->yrange[j]);
 	    status = 1;
 	  }
       }
@@ -343,7 +344,8 @@ main (void)
       {
 	if (h->bin[i] != hh->bin[i])
 	  {
-	    printf ("bin[%d] : %g orig vs %g\n", i, h->bin[i], hh->bin[i]);
+	    printf ("bin[%d] : %g orig vs %g\n", 
+		    (int)i, h->bin[i], hh->bin[i]);
 	    status = 1;
 	  }
       }

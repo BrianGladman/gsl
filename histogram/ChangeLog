@@ -1,0 +1,5 @@
+1998-11-06    <bjg@ancho.lanl.gov>
+
+	* used a cast of (int) when attempting to print size_t variables
+	with %d
+

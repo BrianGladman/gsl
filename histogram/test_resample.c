@@ -44,7 +44,7 @@ main (void)
 	  {
 	    if (y != 0)
 	      {
-		printf ("%d: %g vs %g\n", i, y, ya);
+		printf ("%d: %g vs %g\n", (int) i, y, ya);
 		status = 1;
 	      }
 	  }
