@@ -133,7 +133,8 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
       /* compute B <= G^T B X,  where X = [0,1;1,0] */
 
       gsl_vector_set (d, 0, c * f0 - s * d1);
-      gsl_vector_set (f, 1, s * f0 + c * d1);
+      gsl_vector_set (f, 0, s * f0 + c * d1);
+      gsl_vector_set (d, 1, 0.0);
       
       /* Compute U <= U G */
 
@@ -160,7 +161,7 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
       /* compute B <= B G */
 
       gsl_vector_set (d, 0, d0 * c - f0 * s);
-      gsl_vector_set (f, 0, d0 * s + f0 * c);
+      gsl_vector_set (f, 0, 0.0);
 
       /* Compute V <= V G */
 

@@ -36,6 +36,7 @@ gsl_matrix * create_general_matrix(size_t size1, size_t size2);
 gsl_matrix * create_vandermonde_matrix(size_t size);
 gsl_matrix * create_moler_matrix(size_t size);
 gsl_matrix * create_row_matrix(size_t size1, size_t size2);
+gsl_matrix * create_2x2_matrix(double a11, double a12, double a21, double a22);
 int test_matmult(void);
 int test_matmult_mod(void);
 int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
@@ -175,6 +176,16 @@ create_row_matrix(size_t size1, size_t size2)
   return m;
 }
 
+gsl_matrix *
+create_2x2_matrix(double a11, double a12, double a21, double a22)
+{
+  gsl_matrix * m = gsl_matrix_alloc(2, 2);
+  gsl_matrix_set(m, 0, 0, a11);
+  gsl_matrix_set(m, 0, 1, a12);
+  gsl_matrix_set(m, 1, 0, a21);
+  gsl_matrix_set(m, 1, 1, a22);
+  return m;
+}
 
 gsl_matrix * m35;
 gsl_matrix * m53;
@@ -191,6 +202,8 @@ gsl_matrix * hilb12;
 gsl_matrix * row3;
 gsl_matrix * row5;
 gsl_matrix * row12;
+
+gsl_matrix * A22;
 
 gsl_matrix_complex * c7;
 
@@ -1347,6 +1360,31 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp row12");
   s += f;
 
+  {
+    double i1, i2, i3, i4;
+    double lower = -2, upper = 2;
+
+    for (i1 = lower; i1 <= upper; i1++)
+      {
+        for (i2 = lower; i2 <= upper; i2++)
+          {
+            for (i3 = lower; i3 <= upper; i3++)
+              {
+                for (i4 = lower; i4 <= upper; i4++)
+                  {
+                    gsl_matrix_set (A22, 0,0, i1);
+                    gsl_matrix_set (A22, 0,1, i2);
+                    gsl_matrix_set (A22, 1,0, i3);
+                    gsl_matrix_set (A22, 1,1, i4);
+                    
+                    f = test_SV_decomp_dim(A22, 16 * GSL_DBL_EPSILON);
+                    gsl_test(f, "  SV_decomp A(2x2)(%g, %g, %g, %g)", i1,i2,i3,i4);
+                    s += f;
+                  }
+              }
+          }
+      }
+  }
 
   return s;
 }
@@ -1751,6 +1789,8 @@ int main(void)
   row3 = create_row_matrix(3,3);
   row5 = create_row_matrix(5,5);
   row12 = create_row_matrix(12,12);
+
+  A22 = create_2x2_matrix (0.0, 0.0, 0.0, 0.0);
 
   /* Matmult now obsolete */
 #ifdef MATMULT

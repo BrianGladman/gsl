@@ -1,5 +1,7 @@
 Thu Sep 13 12:26:17 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c (test_SV_decomp): added brute force testing of 2x2 svd
+
 	* svdstep.c (svd2): fixed bug where singular values in 2x2 svd
  	were not ordered correctly.
 
