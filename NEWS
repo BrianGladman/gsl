@@ -50,8 +50,9 @@ yourself if you want subsequent runs to use different random numbers.
 ** Work is in progress on a reimplementation of QUADPACK in the
 `integration' subdirectory, but it is not finished yet.
 
-** Work is in progress on a reimplementation of VEGAS in the
-`monte' subdirectory, but it is not finished yet.
+** Work is in progress on reimplementations of the VEGAS and
+MISER Monte Carlo algorithms in the monte' subdirectory.  They work
+just fine, but the code is still evolving.
 
 ** Work has started on a portable blas system in the `blas'
 subdirectory.
