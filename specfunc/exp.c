@@ -657,6 +657,14 @@ int gsl_sf_exp_err_e(const double x, const double dx, gsl_sf_result * result)
   return status;
 }
 
+int gsl_sf_exp_err_e10_e(const double x, const double dx, gsl_sf_result_e10 * result)
+{
+  int status = gsl_sf_exp_err_e10_impl(x, dx, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_exp_err_e10_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_exp_mult_e(const double x, const double y, gsl_sf_result * result)
 {

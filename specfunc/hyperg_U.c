@@ -1414,6 +1414,15 @@ gsl_sf_hyperg_U_int_e(const int a, const int b, const double x, gsl_sf_result * 
   return status;
 }
 
+int
+gsl_sf_hyperg_U_int_e10_e(const int a, const int b, const double x, gsl_sf_result_e10 * result)
+{
+  int status = gsl_sf_hyperg_U_int_e10_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("  gsl_sf_hyperg_U_int_e10_e", status);
+  }
+  return status;
+}
 
 int
 gsl_sf_hyperg_U_e(const double a, const double b, const double x, gsl_sf_result * result)
@@ -1421,6 +1430,16 @@ gsl_sf_hyperg_U_e(const double a, const double b, const double x, gsl_sf_result 
   int status = gsl_sf_hyperg_U_impl(a, b, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("  gsl_sf_hyperg_U_e", status);
+  }
+  return status;
+}
+
+int
+gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x, gsl_sf_result_e10 * result)
+{
+  int status = gsl_sf_hyperg_U_e10_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("  gsl_sf_hyperg_U_e10_e", status);
   }
   return status;
 }
