@@ -177,6 +177,11 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
  *            1 +   1 +     1 +   1 +      1 +   1 +
  *
  * Uses Gautschi equivalent series method for the CF evaluation.
+ *
+ * Assumes a != x + 1, so that the first term of the
+ * CF recursion is not undefined. This is why we need
+ * gamma_inc_Q_CF_protected() below. Based on a problem
+ * report by Teemu Ikonen [Tue Oct 10 12:17:19 MDT 2000].
  */
 static
 int
@@ -212,6 +217,43 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
     return GSL_EMAXITER;
   else
     return stat_D;
+}
+
+
+/* See note above for  gamma_inc_Q_CF(). */
+static
+int
+gamma_inc_Q_CF_protected(const double a, const double x, gsl_sf_result * result)
+{
+  if(fabs(1.0 - a + x) < 2.0*GSL_DBL_EPSILON) {
+    /*
+     * This is a problem region because when
+     * 1.0 - a + x = 0 the first term of the
+     * CF recursion is undefined.
+     *
+     * I missed this condition when I first
+     * implemented gamma_inc_Q_CF() function,
+     * so now I have to fix it by side-stepping
+     * this point, using the recursion relation
+     *   Q(a,x) = Q(a-1,x) + x^(a-1) e^(-z) / Gamma(a)
+     *          = Q(a-1,x) + D(a-1,x)
+     * to lower 'a' by one, giving an a=x point,
+     * which is fine.
+     */
+
+    gsl_sf_result D;
+    gsl_sf_result tmp_CF;
+
+    const int stat_tmp_CF = gamma_inc_Q_CF(a-1.0, x, &tmp_CF);
+    const int stat_D = gamma_inc_D(a-1.0, x, &D);
+    result->val  = tmp_CF.val + D.val;
+    result->err  = tmp_CF.err + D.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_2(stat_tmp_CF, stat_D);
+  }
+  else {
+    return gamma_inc_Q_CF(a, x, result);
+  }
 }
 
 
@@ -456,7 +498,7 @@ gsl_sf_gamma_inc_P_impl(const double a, const double x, gsl_sf_result * result)
        * so the subtraction is stable.
        */
       gsl_sf_result Q;
-      int stat_Q = gamma_inc_Q_CF(a, x, &Q);
+      int stat_Q = gamma_inc_Q_CF_protected(a, x, &Q);
       result->val  = 1.0 - Q.val;
       result->err  = Q.err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
