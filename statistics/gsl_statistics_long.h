@@ -25,12 +25,16 @@ double gsl_stats_long_skew (const long data[], const size_t stride, const size_t
 double gsl_stats_long_kurtosis (const long data[], const size_t stride, const size_t n);
 double gsl_stats_long_lag1_autocorrelation (const long data[], const size_t stride, const size_t n);
 
+double gsl_stats_long_covariance (const long data1[], const size_t stride1,const long data2[], const size_t stride2, const size_t n);
+
 double gsl_stats_long_variance_m (const long data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_long_sd_m (const long data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_long_absdev_m (const long data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_long_skew_m_sd (const long data[], const size_t stride, const size_t n, const double mean, const double sd);
 double gsl_stats_long_kurtosis_m_sd (const long data[], const size_t stride, const size_t n, const double mean, const double sd);
 double gsl_stats_long_lag1_autocorrelation_m (const long data[], const size_t stride, const size_t n, const double mean);
+
+double gsl_stats_long_covariance_m (const long data1[], const size_t stride1,const long data2[], const size_t stride2, const size_t n, const double mean1, const double mean2);
 
 
 double gsl_stats_long_pvariance (const long data1[], const size_t stride1, const size_t n1, const long data2[], const size_t stride2, const size_t n2);

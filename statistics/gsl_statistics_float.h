@@ -25,12 +25,16 @@ double gsl_stats_float_skew (const float data[], const size_t stride, const size
 double gsl_stats_float_kurtosis (const float data[], const size_t stride, const size_t n);
 double gsl_stats_float_lag1_autocorrelation (const float data[], const size_t stride, const size_t n);
 
+double gsl_stats_float_covariance (const float data1[], const size_t stride1,const float data2[], const size_t stride2, const size_t n);
+
 double gsl_stats_float_variance_m (const float data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_float_sd_m (const float data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_float_absdev_m (const float data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_float_skew_m_sd (const float data[], const size_t stride, const size_t n, const double mean, const double sd);
 double gsl_stats_float_kurtosis_m_sd (const float data[], const size_t stride, const size_t n, const double mean, const double sd);
 double gsl_stats_float_lag1_autocorrelation_m (const float data[], const size_t stride, const size_t n, const double mean);
+
+double gsl_stats_float_covariance_m (const float data1[], const size_t stride1,const float data2[], const size_t stride2, const size_t n, const double mean1, const double mean2);
 
 /* DEFINED FOR FLOATING POINT TYPES ONLY */
 
