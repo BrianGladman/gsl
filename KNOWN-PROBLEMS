@@ -11,12 +11,11 @@ p.s. If you want to send us the output of 'make check' please use gzip
 to compress it, because the resulting file is huge.
 
 -------------------------------------------------------------------------------
-
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c qrpt.c
-*** permut.c:21: warning: `permute' defined but not used
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c svd.c
+*** VERSION: 0.5+
+    make  all-recursive
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c blas_raw_native.c
+Making all in blas
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC blas_raw_native.c -o .libs/blas_raw_native.lo
 *** source_iamax_r.h: In function `gsl_blas_raw_isamax':
 *** source_iamax_r.h:9: warning: `result' might be used uninitialized in this function
 *** source_iamax_r.h: In function `gsl_blas_raw_idamax':
@@ -25,9 +24,9 @@ to compress it, because the resulting file is huge.
 *** source_iamax_c.h:8: warning: `result' might be used uninitialized in this function
 *** source_iamax_c.h: In function `gsl_blas_raw_izamax':
 *** source_iamax_c.h:8: warning: `result' might be used uninitialized in this function
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c blas_raw_native_cm.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c blas_raw_native.c -o blas_raw_native.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c blas_raw_cblas.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC blas_raw_cblas.c -o .libs/blas_raw_cblas.lo
 *** blas_raw_cblas.c: In function `gsl_blas_raw_sdsdot':
 *** blas_raw_cblas.c:22: warning: implicit declaration of function `cblas_sdsdot'
 *** blas_raw_cblas.c: In function `gsl_blas_raw_dsdot':
@@ -310,7 +309,9 @@ to compress it, because the resulting file is huge.
 *** blas_raw_cblas.c:1504: warning: implicit declaration of function `cblas_cher2k'
 *** blas_raw_cblas.c: In function `gsl_blas_raw_zher2k':
 *** blas_raw_cblas.c:1517: warning: implicit declaration of function `cblas_zher2k'
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c blas_raw_cblas_cm.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c blas_raw_cblas.c -o blas_raw_cblas.o >/dev/null 2>&1
+--------
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC blas_raw_cblas_cm.c -o .libs/blas_raw_cblas_cm.lo
 *** blas_raw_cblas_cm.c: In function `gsl_blas_raw_sgemv_cm':
 *** blas_raw_cblas_cm.c:30: warning: implicit declaration of function `cblas_sgemv'
 *** blas_raw_cblas_cm.c: In function `gsl_blas_raw_dgemv_cm':
@@ -501,117 +502,54 @@ to compress it, because the resulting file is huge.
 *** blas_raw_cblas_cm.c:1160: warning: implicit declaration of function `cblas_cher2k'
 *** blas_raw_cblas_cm.c: In function `gsl_blas_raw_zher2k_cm':
 *** blas_raw_cblas_cm.c:1173: warning: implicit declaration of function `cblas_zher2k'
-    rm -f libgslblascblas.a
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c blas_raw_cblas_cm.c -o blas_raw_cblas_cm.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c bessel_Jnu.c
+Making all in specfunc
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC bessel_Jnu.c -o .libs/bessel_Jnu.lo
 *** bessel_Jnu.c: In function `gsl_sf_bessel_Jnu_impl':
 *** bessel_Jnu.c:104: warning: `Ynp1' might be used uninitialized in this function
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c bessel_K0.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c bessel_Jnu.c -o bessel_Jnu.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c bessel_i.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC bessel_i.c -o .libs/bessel_i.lo
 *** bessel_i.c: In function `gsl_sf_bessel_il_scaled_impl':
 *** bessel_i.c:231: warning: `iellm1' might be used uninitialized in this function
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c bessel_j.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c bessel_i.c -o bessel_i.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c dilog.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC dilog.c -o .libs/dilog.lo
 *** dilog.c: In function `gsl_sf_complex_dilog_impl':
 *** dilog.c:401: warning: unused variable `dummy'
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c elementary.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c dilog.c -o dilog.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c gegenbauer.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC gegenbauer.c -o .libs/gegenbauer.lo
 *** gegenbauer.c: In function `gsl_sf_gegenpoly_n_impl':
 *** gegenbauer.c:113: warning: `gk' might be used uninitialized in this function
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c gamma.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c gegenbauer.c -o gegenbauer.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c legendre_poly.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC legendre_poly.c -o .libs/legendre_poly.lo
 *** legendre_poly.c: In function `gsl_sf_legendre_Plm_impl':
 *** legendre_poly.c:253: warning: `p_ell' might be used uninitialized in this function
 *** legendre_poly.c: In function `gsl_sf_legendre_sphPlm_impl':
 *** legendre_poly.c:418: warning: `y_ell' might be used uninitialized in this function
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../ieee-utils -I./../err   -g -O2 -Wall -c log.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -g -O2 -Wall -c legendre_poly.c -o legendre_poly.o >/dev/null 2>&1
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c miser.c
+Making all in monte
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC miser.c -o .libs/miser.lo
 *** miser.c: In function `gsl_monte_miser_validate':
 *** miser.c:328: warning: long unsigned int format, size_t arg (arg 4)
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c plain.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c miser.c -o miser.o >/dev/null 2>&1
+--------
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c  -fPIC -DPIC plain.c -o .libs/plain.lo
 *** plain.c: In function `gsl_monte_plain_validate':
 *** plain.c:101: warning: long unsigned int format, size_t arg (arg 4)
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c utils.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I.. -g -O2 -Wall -c plain.c -o plain.o >/dev/null 2>&1
 --------
-      4[3]: 2.22044604925031259e-16                        0
-*** FAIL:   solve_LU vander(4)
-     12[0]: -2.66822535639952236e-13                        0
---------
-     12[11]:  1.304008127082465e-05                        0
-*** FAIL:   solve_LU vander(12)
-*** FAIL: LU Decomposition and Solve
-    PASS:   solve_QR hilbert(2)
---------
-      2[1]: 1.01337819927476612e-16                        0
-*** FAIL:   solve_QR vander(2)
-      3[2]: -6.42726167775492556e-17                        0
-*** FAIL:   solve_QR vander(3)
-      4[0]: -5.08049207870976742e-17                        0
---------
-      4[3]: 4.7236782802337235e-16                        0
-*** FAIL:   solve_QR vander(4)
-     12[0]: -2.2117496798129479e-23                        0
---------
-     12[11]: 3.09917506942664071e-16                        0
-*** FAIL:   solve_QR vander(12)
-*** FAIL: QR Decomposition and Solve
-    PASS:   update_QR hilbert(2)
---------
-      3[1]:   -8.97139145592337073      -8.9713914559236887
-*** FAIL:   update_QR vander(3)
-    PASS:   update_QR vander(4)
-    PASS:   update_QR vander(12)
-*** FAIL: QR Rank-1 Update
-    PASS:   solve_QRPT hilbert(2)
---------
-      2[1]: 1.01337819927476612e-16                        0
-*** FAIL:   solve_QRPT vander(2)
-    PASS:   solve_QRPT vander(3)
---------
-    PASS:   solve_QRPT vander(12)
-*** FAIL: QRPT Decomposition and Solve
-    PASS:   solve_HH hilbert(2)
---------
-     12[4]:   -1019115477.69762874              -1009008000
-*** FAIL:   solve_HH hilbert(12)
-      2[1]: -4.96506830649454821e-16                        0
-*** FAIL:   solve_HH vander(2)
-    PASS:   solve_HH vander(3)
---------
-      4[3]: -5.02538127811320129e-16                        0
-*** FAIL:   solve_HH vander(4)
-     12[0]: 1.74311364321392575e-23                        0
---------
-     12[9]: -5.66455361643360644e-16                        0
-*** FAIL:   solve_HH vander(12)
-*** FAIL: Householder solve
-    PASS:   solve_TD dim=2 A
---------
-    PASS: Tridiagonal solve
-*** FAIL: test_la
-    ===================
---------
-    ===================
-*** make[3]: *** [check-TESTS] Error 1
-    make[3]: Leaving directory `/home/bjg/gsl/linalg'
-*** make[2]: *** [check] Error 2
-    make[2]: Leaving directory `/home/bjg/gsl/linalg'
---------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../linalg -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c test.c
-*** test.c: In function `test_invert_jacobi':
-*** test.c:74: warning: implicit declaration of function `gsl_la_matmult_impl'
-    gcc -g -O2 -Wall  -o test  test.o libgsleigen.a ../sys/libgslsys.a ../err/libgsltest.a ../linalg/libgsllinalg.a ../matrix/libgslmatrix.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../utils/libutils.a -lm 
---------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c test_blas_raw.c
+Making check in blas
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I..    -g -O2 -Wall -c test_blas_raw.c
 *** test_blas_raw.c: In function `test_tbsv':
 *** test_blas_raw.c:1342: warning: unused variable `tmp_d'
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./.. -I./../err -I./../matrix -I./../vector -I./../block  -g -O2 -Wall -c test_cases.c
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I..    -g -O2 -Wall -c test_cases.c
 --------
+Making check in specfunc
     PASS:   gsl_sf_conicalP_1_impl(200.0, 10.0, &r)
 *** FAIL:   gsl_sf_conicalP_1_impl(1000.0, 100.0, &r)
       test_legendre.c 196
@@ -625,50 +563,206 @@ to compress it, because the resulting file is huge.
     ===================
 --------
     ===================
-*** make[3]: *** [check-TESTS] Error 1
-    make[3]: Leaving directory `/home/bjg/gsl/specfunc'
-*** make[2]: *** [check] Error 2
-    make[2]: Leaving directory `/home/bjg/gsl/specfunc'
+*** make[2]: *** [check-TESTS] Error 1
+    make[2]: Leaving directory `/tmp/gsl-0.5+/specfunc'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/tmp/gsl-0.5+/specfunc'
 --------
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c vegas_test.c
+Making check in histogram
+    gcc -g -O2 -Wall -o test2d_trap test2d_trap.o .libs/libgslhistogram.al -lm ../block/.libs/libgslblock.al -lm ../err/.libs/libgslerr.al -lm ../err/.libs/libgsltest.al -lm -lm
+*** make[2]: *** No rule to make target `test_gsl_histogram.sh'.
+    make[2]: Leaving directory `/tmp/gsl-0.5+/histogram'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/tmp/gsl-0.5+/histogram'
+--------
+Making check in monte
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I..    -g -O2 -Wall -c vegas_test.c
 *** vegas_test.c: In function `fconst':
 *** vegas_test.c:198: warning: unused variable `i'
 *** vegas_test.c:197: warning: unused variable `prod'
-    gcc -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a ../block/libgslblock.a	../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a -lm 
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c miser_test.c
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o vegas_test  vegas_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 	../block/libgslblock.la	../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
+--------
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I..    -g -O2 -Wall -c miser_test.c
 *** miser_test.c: In function `main':
 *** miser_test.c:43: warning: unused variable `chisq'
 *** miser_test.c: In function `fconst':
 *** miser_test.c:189: warning: unused variable `i'
 *** miser_test.c:188: warning: unused variable `prod'
-    gcc -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a -lm 
-    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I./../ -I./../err -I./../rng/ -I./../vector/ -I./../block/  -g -O2 -Wall -c plain_test.c
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o miser_test  miser_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
+--------
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I.. -I..    -g -O2 -Wall -c plain_test.c
 *** plain_test.c: In function `main':
 *** plain_test.c:43: warning: unused variable `chisq'
 *** plain_test.c: In function `fconst':
 *** plain_test.c:187: warning: unused variable `i'
 *** plain_test.c:186: warning: unused variable `prod'
-    gcc -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a -lm 
+    /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../err/libgsltest.la ../utils/libutils.la -lm 
 --------
-      LINEAR(                   4)    4.0000000000054641                     4  1.366e-12
-*** FAIL:   LINEAR
-    PASS:   STIFF
+Making check in min
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I..    -g -O2 -Wall -c test.c
+*** test.c: In function `test_bracket':
+*** test.c:182: warning: control reaches end of non-void function
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I..    -g -O2 -Wall -c test_funcs.c
 --------
-    PASS:   STIFF
-*** FAIL: Bulirsch-Stoer Implicit
-    PASS:   Evolve: exp, rkck
+Making check in multimin
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I..    -g -O2 -Wall -c test.c
+*** test.c: In function `test_fdf':
+*** test.c:122: warning: control reaches end of non-void function
+*** test.c: In function `main':
+*** test.c:146: warning: control reaches end of non-void function
+    gcc -DHAVE_CONFIG_H -I. -I. -I.. -I..    -g -O2 -Wall -c test_funcs.c
 --------
-    PASS: Evolution
-*** FAIL: test_odeiv
-    ===================
+    gcc -g -O2 -Wall -o .libs/test test.o test_funcs.o .libs/libgslmultimin.al -lm ../min/.libs/libgslmin.al -lm ../blas/.libs/libgslblas.al -lm ../blas/.libs/libgslblasnative.so -lm ../blas/.libs/libgslblascblas.so -lm ../linalg/.libs/libgsllinalg.al -lm ../matrix/.libs/libgslmatrix.al -lm ../vector/.libs/libgslvector.al -lm ../block/.libs/libgslblock.al -lm ../ieee-utils/.libs/libgslieeeutils.al -lm ../err/.libs/libgslerr.al -lm ../err/.libs/libgsltest.al -lm ../utils/.libs/libutils.al -lm -lm -Wl,--rpath -Wl,/usr/local/lib
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsdot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dswap'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zaxpy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sspmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsyr2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssyrk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_stpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_drot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_icamax'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtrmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_drotmg'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_isamax'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_izamax'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsymv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chpr2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dgemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dznrm2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsyrk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztrmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_saxpy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhpr2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cher2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sasum'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dnrm2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cgemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cher2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssyr2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dzasum'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sgemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_strsm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_srotg'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztbsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_strmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtrsm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctbsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sger'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_stpsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chpr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cgeru'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zher2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zgemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtrmm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_csyrk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_daxpy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsymm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_csyr2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_drotg'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_caxpy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zdotu_sub'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztrsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cdotc_sub'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dgemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cgbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cher'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zherk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zher2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zgbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_srot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsyr2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sgbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dasum'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cherk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztrmm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssyr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ccopy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_srotm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zcopy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dspmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zdscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctpsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dger'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_csscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sdot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztrsm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cswap'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cdotu_sub'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssymv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sgemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsyr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zsyrk'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zgeru'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_scopy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhpr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_stbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_stbsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctrsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ddot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtpsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sdsdot'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_scnrm2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sspr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctrmm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtrsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dspr'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_strmm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dtbsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zhpmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_chemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zscal'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zswap'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zsyr2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zgemm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssymm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zsymm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dsbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_strsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zdotc_sub'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_csymm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cgerc'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sspr2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_sswap'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dcopy'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztpsv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctrsm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zher'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ssyr2k'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_srotmg'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_dgbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ctrmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_ztbmv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_snrm2'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_drotm'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_idamax'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_cgemv'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_zgerc'
+*** ../blas/.libs/libgslblascblas.so: undefined reference to `cblas_scasum'
+*** make[2]: *** [test] Error 1
+    make[2]: Leaving directory `/tmp/gsl-0.5+/multimin'
+*** make[1]: *** [check-am] Error 2
+*** make[1]: Target `check' not remade because of errors.
+    make[1]: Leaving directory `/tmp/gsl-0.5+/multimin'
 --------
-    ===================
-*** make[3]: *** [check-TESTS] Error 1
-    make[3]: Leaving directory `/home/bjg/gsl/ode-initval'
-*** make[2]: *** [check] Error 2
-    make[2]: Leaving directory `/home/bjg/gsl/ode-initval'
---------
-    make[2]: Leaving directory `/home/bjg/gsl/doc'
-*** make[1]: *** [check-recursive] Error 1
-    make[1]: Leaving directory `/home/bjg/gsl'
-*** make: *** [check] Error 2
+Making check in doc
+    make[1]: Leaving directory `/tmp/gsl-0.5+'
+*** make: *** [check-recursive] Error 1
+*** make: Target `check' not remade because of errors.

@@ -400,7 +400,7 @@ Support}). However, it is useful to have a small number of utility
 functions which do not require the full BLAS code. The following
 function falls into this category.
 
-@deftypefun int gsl_vector_copy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
+@deftypefun int gsl_vector_memcpy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
 This function copies the elements of the vector @var{src} into the
 vector @var{dest}. The two vectors must be the same length.
 @end deftypefun
@@ -749,7 +749,7 @@ Support}). However, it is useful to have a small number of utility
 functions which do not require the full BLAS code. The following
 function falls into this category.
 
-@deftypefun int gsl_matrix_copy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
+@deftypefun int gsl_matrix_memcpy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
 This function copies the elements of the matrix @var{src} into the
 matrix @var{dest}. The two matrix must have the same size.
 @end deftypefun
@@ -762,13 +762,13 @@ into a vector. This allows the elements of the vector and the matrix to
 be modified independently. Note that if the matrix and the vector point
 to overlapping regions of memory then the result will be undefined.
 
-@deftypefun int gsl_matrix_copy_row (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{i})
+@deftypefun int gsl_matrix_get_row (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{i})
 This function copies the elements of the @var{i}-th row of the matrix
 @var{m} into the vector @var{v}. The length of the vector must be the
 same as the length of the row.
 @end deftypefun
 
-@deftypefun int gsl_matrix_copy_col (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{j})
+@deftypefun int gsl_matrix_get_col (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{j})
 This function copies the elements of the @var{i}-th column of the matrix
 @var{m} into the vector @var{v}. The length of the vector must be the
 same as the length of the column.

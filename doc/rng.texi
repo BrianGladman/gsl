@@ -318,11 +318,10 @@ call to call.  It is often useful to be able to save and restore the
 state.  To permit these practices, a few somewhat more advanced
 functions are supplied.  These include:
 
-@deftypefn Random {gsl_rng *} gsl_rng_cpy (gsl_rng * @var{dest}, const gsl_rng * @var{src})
+@deftypefn Random int gsl_rng_memcpy (gsl_rng * @var{dest}, const gsl_rng * @var{src})
 This function copies the random number generator @var{src} into the
 pre-existing generator @var{dest}, making @var{dest} into an exact copy
-of @var{src}. It returns @var{dest} if successful and a null pointer if
-sufficient memory could not be allocated.
+of @var{src}. The two generators must be of the same type.
 @end deftypefn
 
 @deftypefn Random {gsl_rng *} gsl_rng_clone (const gsl_rng * @var{r})

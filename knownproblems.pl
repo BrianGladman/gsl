@@ -1,22 +1,6 @@
 #!/usr/local/bin/perl
 
-print <<EOF ;
-List of Known Problems
-======================
-
-The errors below have been automatically extracted from the output of
-"make check" and are known to the developers.  
-
-If you find a bug which is not on this list please report it to the
-mailing list gsl-discuss\@sourceware.cygnus.com. Thank you.
-
-p.s. If you want to send us the output of 'make check' please use gzip
-to compress it, because the resulting file is huge.
-
-EOF
-
-print "-" x 79, "\n\n" ;
-
+while (<DATA>) { print ; } ;
 chomp(@lines = <>) ;
 
 @n = () ;
@@ -56,10 +40,13 @@ for ($i = @lines - 1 ; $i >= 0 ; $i--) {
 
 for ($i = 0 ; $i < @lines ; $i++) {
     $_ = $lines[$i] ;
+    $dir = $_ if /^Making/ ;
     if ($n[$i] > 1) {
 	print "*** $_\n" ;
 	$prev = 1 ;
     } elsif ($n[$i] == 1) {
+        print "$dir\n" if $dir ne $prevdir ;
+        $prevdir = $dir ;
 	print "    $_\n" ;
 	$prev = 1 ;
     } else {
@@ -68,3 +55,18 @@ for ($i = 0 ; $i < @lines ; $i++) {
     }
 }
 
+######################################################################
+__END__
+List of Known Problems
+======================
+
+The errors below have been automatically extracted from the output of
+"make check" and are known to the developers.  
+
+If you find a bug which is not on this list please report it to the
+mailing list gsl-discuss@sourceware.cygnus.com. Thank you.
+
+p.s. If you want to send us the output of 'make check' please use gzip
+to compress it, because the resulting file is huge.
+
+-------------------------------------------------------------------------------

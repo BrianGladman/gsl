@@ -1,6 +1,6 @@
 TODO  -- see also individual TODO files in each directory
 
-* Check that there are no conflicts when linking with Lapack
+* Check that there are no conflicts when linking with Lapack. CBLAS, ATLAS
 
 * Add GPL copyright notices for each file
 
@@ -10,7 +10,7 @@ checked for.
 
 * Add a vector layer to statistics and ffts, sometime in the future.
 
-* Switch to libtool library interface versioning (eventually).
+* Switch to library interface versioning for libtool (eventually).
 
 * Add support for C++ headers (Use __BEGIN_DECLS __END_DECLS as
 in the Libtool Manual).

@@ -8,11 +8,11 @@ intended to conform to the ANSI C standard.  The library does not rely
 on any non-ANSI extensions in the interface it exports to the user.
 Extensions which can be used in a way compatible with pure ANSI C are
 supported, however.  Thus programs you write using GSL should be
-portable to any system with a working ANSI C compiler. They will also be
+portable to any system with a working ANSI C compiler.  They will also be
 able to take advantage of compiler extensions on those platforms which
 support them.  When an ANSI C feature is known to be broken on a
 particular system the library will exclude any related functions at
-compile-time. This should make it impossible to link a program that
+compile-time.  This should make it impossible to link a program that
 would use these functions and give incorrect results.
 
 @menu
@@ -28,40 +28,45 @@ would use these functions and give incorrect results.
 @cindex compiling programs, include paths
 @cindex including GSL header files
 @cindex header files, including
-The library header files are installed in their own @code{gsl}
-directory.  To include them you should write,
+The library header files are installed in their own @file{gsl}
+directory.  You should write any preprocessor include statements with a
+@file{gsl/} directory prefix thus,
 
 @example
 #include <gsl/gsl_math.h>
 @end example
 
 @noindent
-and provide the appropriate path to the preprocessor.  For example, if
-the gsl directory is installed in its default location of
-@file{/usr/local/include} then the following command line is
-appropriate,
-
-@example
-gcc -I/usr/local/include -c file.c
-@end example
+If this directory is not installed on the standard search path of your
+compiler you will also need to provide the location to the preprocessor
+as a command line flag.  The default location of the @file{gsl}
+directory is @file{/usr/local/include/gsl}.
 
 @cindex compiling programs, library paths
 @cindex linking with GSL libraries
 @cindex libraries, linking with
-The libraries themselves are also installed in a separate @code{gsl}
-directory.  To link against the libraries you need to specify the
-location of this directory.  For example, the following compilation
-options,
+The library is installed as a single file, @file{libgsl.a}.  A shared
+version of the library is also installed on systems that support shared
+libraries.  The default location of these files is
+@file{/usr/local/lib}.  To link against the library you need to specify
+both the main library and a supporting @sc{blas} library.  A suitable
+blas implementation is provided in @file{libgslblasnative} if your
+system does not provide one.  The following example shows how to link an
+application with the library,
 
 @example
-gcc -L/usr/local/lib/gsl file.o -lgslspecfunc
+gcc app.o -lgsl -lgslblasnative -lm
 @end example
-
 @noindent
-would apply for a program using the @code{libgslspecfunc.a} special
-functions library installed in the default location.  The individual
-libraries are interdependent and it is often necessary to link with
-several to provide all the necessary functions.
+The following command line shows how to link the same application with
+an alternative blas library @file{libcblas},
+
+@example
+gcc app.o -lgsl -lgslblascblas -lcblas -lm
+@end example
+@noindent
+The library must conform to the @sc{cblas} standard. For more
+information see @ref{BLAS Support}.
 
 @node Inline functions
 @section Inline functions
@@ -69,13 +74,17 @@ several to provide all the necessary functions.
 @cindex inline functions
 @cindex HAVE_INLINE
 @cindex autoconf, using with GSL
-The @code{inline} keyword is not part of ANSI C.  Since the library
-header files conform to the ANSI standard the library does not export
-any inline function definitions by default. However, for frequently used
-functions the library provides equivalent inline definitions.  These can
-be turned on by defining the macro @code{HAVE_INLINE} when compiling an
-application.  If you use @code{autoconf} this can be done automatically
-using the following test,
+The @code{inline} keyword is not part of ANSI C and the library does not
+export any inline function definitions by default.  The inline versions
+of functions can be included by defining the macro @code{HAVE_INLINE}
+when compiling an application.
+
+@example
+gcc -c -DHAVE_INLINE app.c
+@end example
+@noindent
+If you use @code{autoconf} this macro can be defined automatically.
+The following test should be placed in your @file{configure.in} file,
 
 @example
 AC_C_INLINE
@@ -85,11 +94,11 @@ if test "$ac_cv_c_inline" != no ; then
   AC_SUBST(HAVE_INLINE)
 fi
 @end example
-
 @noindent
-and then including the file @file{config.h} before including any library
-headers.  If you do not define the macro @code{HAVE_INLINE} then the
-slower non-inlined versions of the functions wiil be used instead.
+and the macro will then be defined in the compilation flags or by
+including the file @file{config.h} before any library headers.  If you
+do not define the macro @code{HAVE_INLINE} then the slower non-inlined
+versions of the functions will be used instead.
 
 @node Long double
 @section Long double
@@ -156,9 +165,9 @@ produce an entirely different stream of random variates.
 @node Support for different numeric types
 @section Support for different numeric types
 
-Many functions in the library are defined for different numeric
-types. This feature is implemented by varying the name of the function
-with a type-related modifier --- a primitive form of C++ templates.  The
+Many functions in the library are defined for different numeric types.
+This feature is implemented by varying the name of the function with a
+type-related modifier --- a primitive form of C++ templates.  The
 modifier is inserted into the function name after the initial module
 prefix.  The following table shows the function names defined for all
 the numeric types of an imaginary module @code{gsl_foo} with function
@@ -205,7 +214,7 @@ gsl_foo_uchar            unsigned char
 @end example
 @noindent
 When a module contains type-dependent definitions the library provides
-individual header files for each type. The filenames are modified as
+individual header files for each type.  The filenames are modified as
 shown in the below.  For convenience the default header includes the
 definitions for all the types.  To include only the double precision
 header, or any other specific type, file use its individual filename.
