@@ -23,8 +23,10 @@
 }}
 @end tex
 @comment @paperbackbook
+@comment @cropmarks
+@comment @afourpaper
+@raggedbottom
 
-@cropmarks
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
