@@ -106,6 +106,7 @@
 @include version-ref.texi
 @set GSL @i{GNU Scientific Library}
 
+@iftex
 @copying
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002 The GSL Team.
 
@@ -119,6 +120,7 @@ Free Documentation License''.
 The Texinfo source for this manual may be obtained from
 @code{ftp.gnu.org} in the directory @code{/gnu/gsl/}.
 @end copying
+@end iftex
 
 @titlepage
 @title GNU Scientific Library

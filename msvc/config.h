@@ -57,9 +57,6 @@
 /* Define if you have the strtoul function.  */
 #define HAVE_STRTOUL
 
-/* Define if you have the m library (-lm).  */
-#define HAVE_LIBM
-
 /* Name of package */
 #undef PACKAGE
 
@@ -141,6 +138,9 @@
 
 /* Define this is IEEE comparisons work correctly (e.g. NaN != NaN) */
 #define HAVE_IEEE_COMPARISONS 1
+
+/* Define this is IEEE denormalized numbers are available */
+#define HAVE_IEEE_DENORMALS 1
 
 /* Substitute gsl functions for missing system functions */
 

@@ -21,9 +21,9 @@ With these settings you should be able to compile and link the program
 main.c in this directory.
 
 You can choose from four project configurations, 'ReleaseML',
-'ReleaseMT', 'ReleaseMD' and 'ReleaseDLL'.  If you want to use the
-Debug configurations you'll need to recompile the library with
-debugging switched on.
+'ReleaseMT' and 'ReleaseDLL'.  If you want to use the Debug
+configurations you'll need to recompile the library with debugging
+switched on.
 
 To run the program compiled with 'ReleaseDLL' option you will need to
 copy the dll files libgsl.dll and libgslcblas.dll into the same

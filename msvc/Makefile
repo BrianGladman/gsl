@@ -1,5 +1,5 @@
 all:
-	for n in GSLLIBML GSLLIBMT GSLLIBMD GSLDLL ; do  \
+	for n in GSLLIBML GSLLIBMT GSLDLL ; do  \
 	( cd .. ; mkdir $$n ; cd $$n ; \
 	  perl ../msvc/am2ms.pl $$n ../Makefile.am ../*/Makefile.am ; \
 	  mv GSL.dsw ../$$n.dsw ; \

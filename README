@@ -25,47 +25,11 @@ A list of mirror sites can be found at http://www.gnu.org/order/ftp.html
 Installation
 ============
 
-To compile GSL you will need an ANSI C-compiler.  After unpacking the
-distribution the Makefiles can be prepared using the configure
-command,
-
-  ./configure
-
-You can then build the library by typing,
-
-  make
-
-By default both static and shared versions of the libraries are
-compiled.  Compilation of shared libraries can be turned off by
-specifying the `--disable-shared' option to `configure', e.g.
-  
-  ./configure --disable-shared
-
-This is recommended if you encounter problems building the library,
-because some platforms do not support shared libraries.
+GSL follows the standard GNU installation procedure.  Please consult
+the INSTALL file in this distribution for more detailed instructions.
 
 For notes about problems with specific platforms and compilers see the
 MACHINES file.
-
-An extensive test suite is available.  It can be invoked with "make
-check" in each directory.  All tests can be run together with "make
-check" at the top level.  The test output should be directed to a file
-rather than a terminal, with the command,
-
-   make check > log 2>&1
-
-since it is several megabytes in size.
-
-If you run "make check" and get some failures, please see the MACHINES
-file. If you find failures that are not mentioned, please report them.
-
-The library can be installed using the command,
-
-  make install
-
-The default install directory prefix is /usr/local.  Consult the file
-INSTALL for information on installing the library in another location
-or changing other default compilation options.
 
 More information about GSL
 ==========================
@@ -102,7 +66,7 @@ All bug reports should include:
        The hardware and operating system
        The compiler used, including version number and compilation options
        A description of the bug behaviour
-       A short program which exercises the bug
+       A short program which reproducibly exercises the bug
 
 Thank you.
 

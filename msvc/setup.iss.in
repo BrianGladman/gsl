@@ -49,8 +49,8 @@ Source: "..\GSLLIBML\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgs
 Source: "..\GSLLIBML\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasML.lib";
 Source: "..\GSLLIBMT\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMT.lib"
 Source: "..\GSLLIBMT\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMT.lib";
-Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
-Source: "..\GSLLIBMD\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMD.lib";
+;;Source: "..\GSLLIBMD\Release\libgsl.lib"; DestDir: "{app}\lib"; DestName: "libgslMD.lib"
+;;Source: "..\GSLLIBMD\Release\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasMD.lib";
 
 ;;Source: "Debug\libgsl.lib"; DestDir: "{app}\lib";  DestName: "libgsld.lib"
 ;;Source: "Debug\libgslcblas.lib"; DestDir: "{app}\lib"; DestName: "libgslcblasd.lib";

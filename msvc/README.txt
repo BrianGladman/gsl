@@ -52,9 +52,8 @@ The "Release" versions of the libraries are installed in the lib
 directory as follows,
 
     libgsl.lib,    libgslcblas.lib    - Release (DLL)
-    libgslML.lib,  libgslcblasML.lib  - Release (single-threaded)
+    libgslML.lib,  libgslcblasML.lib  - Release (single-threaded /ML)
     libgslMT.lib,  libgslcblasMT.lib  - Release (multi-threaded /MT)
-    libgslMD.lib,  libgslcblasMD.lib  - Release (multi-threaded /MD)
 
 If you need Debug versions of the library you can build them by
 compiling the *.dsw project workspace files in the top-level src/
@@ -130,8 +129,9 @@ The single-threaded libraries are built with the /ML option.  This is
 compatible with the default link option /ML for single-threaded
 applications in Microsoft Visual C++.  To use GSL in a multi-threaded
 application you will need to use the multi-threaded versions of the
-library and compile your code with either /MT or /MD.  See the
-Microsoft Visual C++ Manual for details on link options.
+library and compile your code with either /MT for the statically
+linked version or /MD for the DLL version.  See the Microsoft Visual
+C++ Manual for details on link options.
 
 Acknowledgements
 ================

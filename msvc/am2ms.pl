@@ -12,9 +12,9 @@ if ($target eq 'GSLLIBML') {
 } elsif ($target eq 'GSLLIBMT') {
     $begin_project_lib = \&begin_project_static_lib;
     @options = ("Release", "/MT", "Debug", "/MTd");
-} elsif ($target eq 'GSLLIBMD') {
-    $begin_project_lib = \&begin_project_static_lib;
-    @options = ("Release", "/MD", "Debug", "/MDd");
+#} elsif ($target eq 'GSLLIBMD') {
+#    $begin_project_lib = \&begin_project_static_lib;
+#    @options = ("Release", "/MD", "Debug", "/MDd");
 } elsif ($target eq 'GSLDLL') {
     $begin_project_lib = \&begin_project_dll;
     @options = ("Release", "/MD /LD", "Debug", "/MDd /LDd");
