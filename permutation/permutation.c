@@ -143,7 +143,7 @@ gsl_permutation_inverse (gsl_permutation * inv, const gsl_permutation * p)
 int
 gsl_permutation_next (gsl_permutation * p)
 {
-  /* Replaces p with the next permutation (in the standard lexiographical
+  /* Replaces p with the next permutation (in the standard lexicographical
    * ordering).  Returns GSL_FAILURE if there is no next permutation.
    */
   const size_t size = p->size;

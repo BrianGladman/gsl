@@ -99,7 +99,7 @@ gsl_combination_valid (gsl_combination * c)
 int
 gsl_combination_next (gsl_combination * c)
 {
-  /* Replaces c with the next combination (in the standard lexiographical
+  /* Replaces c with the next combination (in the standard lexicographical
    * ordering).  Returns GSL_FAILURE if there is no next combination.
    */
   const size_t n = c->n;
@@ -133,7 +133,7 @@ int
 gsl_combination_prev (gsl_combination * c)
 {
   /* Replaces c with the previous combination (in the standard
-   * lexiographical ordering).  Returns GSL_FAILURE if there is no
+   * lexicographical ordering).  Returns GSL_FAILURE if there is no
    * previous combination.
    */
   const size_t n = c->n;
