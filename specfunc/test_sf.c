@@ -66,9 +66,9 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
     {
       f = test_sf_frac_diff(val, r.val);
 
-      if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
-      if(r.err < 0.0)                   s |= TEST_SF_ERRNEG;
-      if(f > tol)                       s |= TEST_SF_TOLBAD;
+      if(fabs(val - r.val) > 2.0 * TEST_SIGMA * r.err) s |= TEST_SF_INCONS;
+      if(r.err < 0.0)                                  s |= TEST_SF_ERRNEG;
+      if(f > TEST_FACTOR * tol)                        s |= TEST_SF_TOLBAD;
     }
 
   if(s != 0) {
@@ -100,7 +100,7 @@ test_sf_check_val(char * message_buff, double rval, double val, double tol)
   int    s = 0;
   double f = test_sf_frac_diff(val, rval);
 
-  if(f > tol)                       s |= TEST_SF_TOLBAD;
+  if(f > TEST_FACTOR * tol)                       s |= TEST_SF_TOLBAD;
 
   if(s != 0) {
     char buff[2048];
@@ -129,9 +129,9 @@ test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, dou
   int    s = 0;
   double f = test_sf_frac_diff(val, r.val);
 
-  if(f > GSL_MAX_DBL(TEST_SNGL,tol))   s |= TEST_SF_INCONS;
+  if(f > GSL_MAX_DBL(TEST_SNGL, TEST_FACTOR * tol))   s |= TEST_SF_INCONS;
   if(r.err < 0.0)     s |= TEST_SF_ERRNEG;
-  if(f > tol)         s |= TEST_SF_TOLBAD;
+  if(f > TEST_FACTOR * tol)         s |= TEST_SF_TOLBAD;
 
   if(s != 0) {
     char buff[2048];
