@@ -242,8 +242,3 @@ int main (void)
 }
 
 ----------------------------------------------------------------------
-BUG#31 - svd should handle Mx1 case 
-
-the svd routines should handle the special case of an Mx1 matrix, 
-which is just the normalisation of a vector.
-----------------------------------------------------------------------
