@@ -10,51 +10,65 @@
 #include <gsl_interp.h>
 
 
-double test_func(double x)
+double test_func_1(double x) { return sin(x); }
+double test_func_2(double x) { return x*x; }
+
+
+typedef  struct _xy_table  xy_table;
+
+struct _xy_table {
+  double * x;
+  double * y;
+  int      n;
+};
+
+
+int
+test_interp(xy_table * tab, gsl_interp_factory * fact, double (*f)(double))
 {
-  return sin(x);
+  gsl_interp_accel * a = gsl_interp_accel_new();
+  gsl_interp_obj * interp = fact->create(tab->x, tab->y, tab->n);
+  
+  
+  gsl_interp_accel_free(a);
+  gsl_interp_obj_free(interp);
+  
+  return 0;
 }
 
 
 int main(int argc, char ** argv)
 {
-  int status;
-  int N = 20000;
+  int status = 0;
+  int s;
   int i;
 
   double x;
   double xmin = 0.0;
   double xmax = 2.0*M_PI;
-  double dx = 5.e-6 * xmax;
+  double dx = 1.e-4 * xmax;
 
-  double * xa = (double *) malloc(N * sizeof(double));
-  double * ya = (double *) malloc(N * sizeof(double));
-  
-  gsl_interp_factory f = gsl_interp_factory_cspline_periodic;
-  gsl_interp_accel * a = gsl_interp_accel_new();
-  gsl_interp_obj * interp;
+  double (*test_func)(double) = test_func_1;
 
-  for(i=0; i<N; i++) {
-    xa[i] = xmin + (xmax - xmin) * (double)i/(double)(N-1);
-    ya[i] = test_func(xa[i]);
+  xy_table data_table;
+  data_table.n = 200;
+  data_table.x = (double *) malloc(data_table.n * sizeof(double));
+  data_table.y = (double *) malloc(data_table.n * sizeof(double));
+
+  for(i=0; i<data_table.n; i++) {
+    data_table.x[i] = xmin + (xmax - xmin) * i/(double)(data_table.n-1);
+    data_table.y[i] = test_func(data_table.x[i]);
   }
 
-  interp = f.create(xa, ya, N);
+  s = 0;
+  s += test_interp(&data_table, &gsl_interp_factory_linear, test_func);
+  gsl_test(s, "linear interpolation");
+  status += s;
 
-  for(x=xmin; x<xmax; x += dx) {
-    double y_func = test_func(x);
-    double y;
-    int eval_stat = gsl_interp_eval_impl(interp, xa, ya, x, a, &y);
-    
-    printf("%g   %g    %g    %g    %s\n",
-                x,
-		y_func,
-		y,
-		(y - y_func)/(y + y_func),
-		gsl_strerror(eval_stat)
-		);
-    
-  }
+  s = 0;
+  s += test_interp(&data_table, &gsl_interp_factory_cspline_natural, test_func);
+  gsl_test(s, "cspline interpolation");
+  status += s;
 
   return gsl_test_summary();
 }
