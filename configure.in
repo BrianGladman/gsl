@@ -441,3 +441,20 @@ fi
 
 dnl
 AC_OUTPUT(gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile sort/Makefile complex/Makefile diff/Makefile cheb/Makefile Makefile)
+
+dnl Warning for OS/2 Makefiles
+dnl
+case "$host" in
+        *-*-os2_emx) 
+        cat <<EOF
+*** WARNING: standard Makefiles do not work on OS/2
+*** 
+*** A compatibility script 'os2makefiles.pl' is available from Henry
+*** Sobotka.  You will need to download this script separately. See
+*** http://sources.redhat.com/gsl/ for a link to it.
+***
+*** Run os2makefiles.pl        to create OS/2 Makefiles
+***     os2makefiles.pl -help  for options
+EOF
+        ;;
+esac

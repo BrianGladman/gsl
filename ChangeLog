@@ -1,3 +1,8 @@
+Sun Sep  9 22:57:11 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: print out a warning for OS/2 telling the user to
+ 	run an extra script
+
 Fri Sep  7 14:32:01 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.pc.in: added pkg-config file
