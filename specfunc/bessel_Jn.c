@@ -44,30 +44,6 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
     *result = sign * b1;
     return GSL_SUCCESS;
   }
-  /*
-  else if(n == 2) {
-    if(x == 0.) {
-      *result = 0.;
-      return GSL_SUCCESS;
-    }
-    else if(x < GSL_SQRT_MACH_EPS) {
-      *result = 0.25*x*x;
-      if(*result == 0.) {
-        return GSL_EUNDRFLW;
-      }
-      else {
-	return GSL_SUCCESS;
-      }  
-    }
-    else {
-      double b0, b1;
-      gsl_sf_bessel_J0_impl(x, &b0);
-      gsl_sf_bessel_J1_impl(x, &b1);
-      *result = sign * (2.0 * b1 / x  -  b0);
-      return GSL_SUCCESS;
-    }    
-  }
-  */
   else {
     if(x == 0.) {
       *result = 0.;
@@ -78,13 +54,13 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       *result *= sign;
       return status;
     }
-    else if(x > (n*n+1) * GSL_ROOT3_MACH_EPS) {
-      int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
+    else if(n > 30) {
+      int status = gsl_sf_bessel_Jnu_asymp_Olver_impl((double)n, x, result);
       *result *= sign;
       return status;
     }
-    else if(n > 700 && x < 0.7*n) {
-      int status = gsl_sf_bessel_Jnu_asymp_Debye_impl((double)n, x, result);
+    else if(GSL_ROOT3_MACH_EPS * x > (n*n+1)) {
+      int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
       *result *= sign;
       return status;
     }

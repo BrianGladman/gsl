@@ -12,6 +12,8 @@
 
 #include "bessel_Kn_impl.h"
 
+#define Min(a,b) ((a) < (b) ? (a) : (b))
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -28,7 +30,7 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
   else if(x*x < 4.*(n+1)*GSL_SQRT_MACH_EPS) {
     return gsl_sf_bessel_Knu_asympx_impl((double)n, x, result);
   }
-  else if(n > 700) {
+  else if(Min( 0.29/(n*n), 0.5/(n*n +x*x) ) < GSL_ROOT3_MACH_EPS) {
     return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
   }
   else {
@@ -132,14 +134,14 @@ int gsl_sf_bessel_Kn_scaled_array_e(const int n, const double x, double * result
 
 int gsl_sf_bessel_Kn_array_e(const int n, const double x, double * result)
 {
-  int i;
-  double ex = exp(-x);
   int status = gsl_sf_bessel_Kn_scaled_array_impl(n, x, result);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Kn_array_e", status);
   }
   else {
-    for(i=0; i<=n; i++) result[i] *= exp(-x);
+    int i;
+    double ex = exp(-x);
+    for(i=0; i<=n; i++) result[i] *= ex;
   }
   return status;
 }

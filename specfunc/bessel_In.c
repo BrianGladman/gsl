@@ -12,18 +12,21 @@
 
 #include "bessel_In_impl.h"
 
+#define Min(a,b) ((a) < (b) ? (a) : (b))
 
-/* n >= 2; x >= 0
+
+/* n >= 2; x > 0
  * checked OK [GJ]
  */
 static int bessel_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
 {
-  if(x == 0.) {
-    *b_n = 0.;
-    if(b_nm1 != (double *)0) *b_nm1 = 0.;
-    return GSL_SUCCESS;
-  }
-  else if(x*x < 4.*(n+1)*GSL_SQRT_MACH_EPS) {
+  *b_n = 0.;
+  *b_nm1 = 0.;
+
+  if(x*x < 4.*(n+1)*GSL_SQRT_MACH_EPS) {
+  
+    /* Taylor expansion */
+    
     double ex = exp(-x);
     gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, 4, b_n);
     *b_n *= ex;
@@ -38,13 +41,20 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
     else
       return GSL_SUCCESS;
   }
-  else if(n > 700) {
+  else if( Min( 0.29/(n*n), 0.5/(n*n +x*x) ) < GSL_ROOT3_MACH_EPS) {
+  
+    /* uniform asymptotic */
+    
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n);
     if(b_nm1 != (double *)0) {
       gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n-1, x, b_nm1);
     }
+    return GSL_SUCCESS;
   }
   else {
+    
+    /* recurrence */
+
     int j;
     const int jmax = 2 * (n + (int) sqrt(50.*n));
     const double renorm     = 1.e+8;
@@ -85,6 +95,7 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
     ratio = i0_scaled / b_j;
     *b_n   = local_b_n   * ratio;
     if(b_nm1 != (double *) 0) *b_nm1 = local_b_nm1 * ratio;
+    return GSL_SUCCESS;
   }
 }
 
@@ -108,9 +119,9 @@ int gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
       return GSL_SUCCESS;
     }
     else {
-      bessel_In_scaled(n, fabs(x), result, (double *)0);
+      int status = bessel_In_scaled(n, fabs(x), result, (double *)0);
       if(x < 0. && GSL_IS_ODD(n)) *result = - *result;
-      return GSL_SUCCESS;
+      return status;
     }
   }
 }
@@ -120,8 +131,7 @@ int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_ar
   n = abs(n);  /* I(-n, z) = I(n, z) */
  
   if(n == 0) {
-    gsl_sf_bessel_I0_scaled_impl(x, &(result_array[0]));
-    return GSL_SUCCESS;
+    return gsl_sf_bessel_I0_scaled_impl(x, &(result_array[0]));
   }
   else if(n == 1) {
     int status = gsl_sf_bessel_I1_scaled_impl(x, &(result_array[1]));
@@ -141,7 +151,7 @@ int gsl_sf_bessel_In_scaled_array_impl(int n, const double x, double * result_ar
       double ax = fabs(x);
       double two_over_x = 2./ax;
       double b_jm1, b_j, b_jp1;
-      bessel_In_scaled(n, ax, &b_n, &b_nm1);
+      bessel_In_scaled(n, ax, &b_n, &b_nm1);  /* starting values */
 
       result_array[n]   = b_n;
       result_array[n-1] = b_nm1;
