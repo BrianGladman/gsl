@@ -6,24 +6,31 @@
 @cindex solving a non-linear equation
 @cindex non-linear equation, solutions of
 
-This chapter describes functions for finding a root of an arbitrary
-one-dimensional function which you provide.  The header file
-@file{gsl_roots.h} contains prototypes for the root finding functions
-and related declarations.
+This chapter describes functions for finding roots of arbitrary
+one-dimensional functions.  The library provides low level components
+for a variety of iterative solvers and convergence tests. These can be
+combined by the user to achieve the desired solution, with full access
+to the intermediate steps of the iteration. Each class of methods uses
+the same framework, so that you can switch between solvers at runtime
+without needing to recompile your program. Each instance of a solver
+keeps track of its own state, allowing the solvers to be used in
+multi-threaded programs.
+
+The header file @file{gsl_roots.h} contains prototypes for the root
+finding functions and related declarations.
 
 @menu
 * Root Finding Overview::       
 * Root Finding Caveats::        
-* Initializing the solver::     
+* Initializing the Solver::     
 * Providing the function to solve::  
 * Search Bounds and Guesses::   
 * Root Finding Iteration::      
 * Search Stopping Parameters::  
-* Bisection::                   
-* Brent-Dekker Method::         
-* False Position::              
-* Secant Method::               
-* Newtons Method::              
+* Root Bracketing Algorithms::  
+* Root Finding Algorithms using Derivatives::  
+* Root Finding Examples::       
+* Root Finding References and Further Reading::  
 @end menu
 
 @node Root Finding Overview
@@ -47,17 +54,20 @@ behavior of the function is compatible with the algorithm and a good
 initial guess is available a polishing algorithm can provide rapid
 convergence.
 
-In GSL both types of algorithm are available in a similar framework.
+In GSL both types of algorithm are available in a similar framework. The
+user provides a high-level driver for the algorithms, and the library
+provides the individual functions necessary for each of the steps. 
+There are three main phases of the iteration. The steps are,
 
 @itemize @bullet
 @item
 initialize solver state, @var{s}, for algorithm @var{T}
 
 @item
-update @var{s} using @var{T}
+update @var{s} using the iteration @var{T}
 
 @item
-test new estimate from @var{s}, and repeat update unless converged
+test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
 
 @noindent
@@ -83,18 +93,16 @@ Care must be taken when a function may have a multiple root (such as
 @math{f(x) = (x-x_0)^2} or 
 @c{$f(x) = (x-x_0)^3$}
 @math{f(x) = (x-x_0)^3}).  
-Algorithms based on root bracketing should not have problems with
-odd-multiplicity roots (e.g. cubic, quintic, @dots{}), since they do not
-depend on the behavior of the function --- only the values at the
-endpoints. However, it is not possible to use root-bracketing algorithms
-on even-multiplicity roots, because the initial bracket relies on the
-existence of a zero-crossing (where the function is negative at one end
-of the interval and positive at the other end). Roots with
-even-multiplicity do not cross zero, but only touch it
-instantaneously. These roots need to be approached on a case-by-case
-basis using knowledge of the algorithm to be used. Root polishing
-algorithms generally work with higher multiplicity roots, but at reduced
-rate of convergence.
+It is not possible to use root-bracketing algorithms on
+even-multiplicity roots. For these algorithms the initial interval must
+contain a zero-crossing, where the function is negative at one end of
+the interval and positive at the other end. Roots with even-multiplicity
+do not cross zero, but only touch it instantaneously. Algorithms based
+on root bracketing will still work for odd-multiplicity roots
+(e.g. cubic, quintic, @dots{}). 
+Root polishing algorithms generally work with higher multiplicity roots,
+but at reduced rate of convergence. In these cases the @dfn{Steffenson
+algorithm} can be used to accelerate the convergence of multiple roots.
 
 While it is not absolutely required that @math{f} have a root within the
 search region, numerical root finding functions should not be used
@@ -104,8 +112,8 @@ root finders go awry, it is a bad idea to throw a root finder at a
 function you do not know much about. In general it is best to examine
 the function visually by plotting before searching for a root.
 
-@node Initializing the solver
-@section Initializing the solver
+@node Initializing the Solver
+@section Initializing the Solver
 
 @deftypefun {gsl_root_fsolver *} gsl_root_fsolver_alloc (const gsl_root_fsolver_type * @var{T}, gsl_function * @var{f}, gsl_interval @var{x})
 This function returns a pointer to a a newly allocated instance of a
@@ -171,7 +179,7 @@ would print something like @code{s is a 'bisection' solver}
 @section Providing the function to solve
 @cindex root finding, providing a function to solve
 
-You must provide a continous function of one variable for the root
+You must provide a continuous function of one variable for the root
 finders to operate on, and, sometimes, its first derivative. In order
 to allow for general parameters the functions are defined by the
 following data types:
@@ -243,13 +251,11 @@ this function should return the value of
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}
 
-
 @item double (* @var{df}) (double @var{x}, void * @var{params})
 this function should return the value of the derivative of @var{f} with
 respect to @var{x},
 @c{$f'(x,\hbox{\it params})$}
 @math{f'(x,params)}, for argument @var{x} and parameters @var{params}
-
 
 @item void (* @var{fdf}) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
 this function should set the values of the function @var{f} to 
@@ -258,7 +264,10 @@ this function should set the values of the function @var{f} to
 and its derivative @var{df} to
 @c{$f'(x,\hbox{\it params})$}
 @math{f'(x,params)} 
-for argument @var{x} and parameters @var{params}
+for argument @var{x} and parameters @var{params}. This function provides
+an optimization of the separate functions for @math{f(x)} and @math{f'(x)} -- 
+it is always faster to compute the function and its derivative at the
+same time. 
 
 @item void * @var{params}
 a pointer to the parameters of the function
@@ -284,10 +293,9 @@ can be evaluated at the same time using the following macro,
      (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
 @end example
 
-Because many terms of a function and its derivative are often the same,
-it is usually faster to compute the function and its derivative at the
-same time. It stores @math{f(x)} in its first argument and @math{f'(x)}
-in its second.
+The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
+its @var{dy} argument -- both of these should be pointers to
+@code{double}.
 
 Here's an example where 
 @c{$f(x) = \exp(2x)$}
@@ -342,7 +350,7 @@ the length of the interval is smaller than the requested precision. The
 interval is defined by the following struct,
 
 @deftp {Data Type} {gsl_interval}
-This is a structure that holds an interval (@var{lower}, @var{upper}) on
+This is a structure that holds an interval [@var{lower}, @var{upper}] on
 the real line.
 
 @table @code
@@ -352,18 +360,40 @@ the lower limit of the interval
 the upper limit of the interval
 @end table
 
-Whether the endpoints are included in the interval or not depends on the
-context in which the interval is used. Thus, the structure could also
-describe the interval [@var{lower}, @var{upper}].
+Whether the endpoints are intended to be included in the interval or not
+depends on the context in which the interval is used.
 @end deftp
 
 @node Root Finding Iteration
 @section Root Finding Iteration
 
+The following functions drive the iteration of each algorithm. Each
+function performs one iteration to update the state of any solver of the
+corresponding type. The same functions work for all solvers so that
+different methods can be substituted at runtime without modifications to
+the code.
+
 @deftypefun int gsl_root_fsolver_iterate (gsl_root_fsolver * @var{s})
 @deftypefunx int gsl_root_fdfsolver_iterate (gsl_root_fdfsolver * @var{s})
-These functions perform a single iteration of the solver @var{s}.
+These functions perform a single iteration of the solver @var{s}. If the
+iteration encounters an unexpected problem then an error code will be
+returned,
+
+@table @code
+@item GSL_EBADFUNC
+the iteration encountered a singular point where the function or its
+derivative evaluated to @code{Inf} or @code{NaN}.
+
+@item GSL_EZERODIV
+the derivative of the function vanished at the iteration point,
+preventing the algorithm from continuing without a division by zero.
+@end table
 @end deftypefun
+
+The solver maintains a current best estimate of the root at all
+times. The bracketing solvers also keep track of the current best
+interval bounding the root. This information can be accessed with the
+following auxiliary functions,
 
 @deftypefun double gsl_root_fsolver_root (const gsl_root_fsolver * @var{s})
 @deftypefunx double gsl_root_fdfsolver_root (const gsl_root_fdfsolver * @var{s})
@@ -374,13 +404,12 @@ These functions return the current estimate of the root for the solver @var{s}.
 This function returns the current bracketing interval for the solver @var{s}.
 @end deftypefun
 
-
 @node Search Stopping Parameters
 @section Search Stopping Parameters
 @cindex root finding, stopping parameters
 
-The root finding functions (and numerical root finding functions in
-general) stop when one of the following conditions is true:
+A root finding procedure should stop when one of the following conditions is
+true:
 
 @itemize @bullet
 @item
@@ -390,8 +419,13 @@ A root has been found to within the user-specified precision.
 A user-specified maximum number of iterations has executed.
 
 @item
-An error has occured.
+An error has occurred.
 @end itemize
+
+@noindent
+In the root finding framework of GSL the handling of these conditions is
+under user control.  The functions below allow the user to test the
+precision of the current result in several standard ways.
 
 @deftypefun int gsl_root_test_interval (gsl_interval @var{x}, double @var{epsrel}, double @var{epsabs})
 This function tests for the convergence of the interval @var{x} 
@@ -471,26 +505,37 @@ unimportant provided a value can be found where the residual,
 
 @comment ============================================================
 
-@node Bisection
-@section Bisection
+@node Root Bracketing Algorithms
+@section Root Bracketing Algorithms
+
+The root bracketing algorithms described in this section require an
+initial interval which is guaranteed to contain a root -- if @math{a}
+and @math{b} are the endpoints of the interval then @math{f(a)} must
+differ in sign from @math{f(b)}. This ensures that the function crosses
+zero at least once in the interval. If a valid initial interval is used
+then these algorithm cannot fail, provided the function is well-behaved.
+
+Note that a bracketing algorithm cannot find roots of even degree, since
+these do not cross the @math{x}-axis.
+
+@deffn {Solver} gsl_root_fsolver_bisection
+
 @cindex bisection algorithm for finding roots
 @cindex root finding, bisection algorithm
 
-Bisection is a simple and robust method of finding roots of a function
-@math{f}; when its arguments are valid, it cannot fail. However, it is
-the slowest algorithm provided by the library, and it cannot find roots
-of even degree. Its convergence is linear.
+The @dfn{bisection algorithm} is the simplest method of bracketing the
+roots of a function.   It is the slowest algorithm provided by
+the library, with linear convergence.
 
-One begins the algorithm with an interval which is guaranteed by the
-Intermediate Value Theorem to contain a root: where @math{a} and
-@math{b} are the endpoints of the interval, @math{f(a)} must differ in
-sign from @math{f(b)}. (If you're a bit fuzzy on the Intermediate Value
-Theorem, consult any elementary calculus textbook.)
+On each iteration, the interval is bisected and the value of the
+function at the midpoint is calculated. The sign of this value is used
+to determine which half of the interval does not contain a root. That
+half is discarded to give a new, smaller interval containing the
+root. This procedure can be continued indefinitely until the interval is
+sufficiently small.
 
-Each iteration, bisection chops its interval in half and discards the
-interval which does not contain a root. Once the interval is smaller
-than the requested epsilon, iteration stops and the root location is
-returned.
+At any time the current estimate of the root is taken as the midpoint of
+the interval.
 
 @comment eps file "roots-bisection.eps"
 @iftex
@@ -505,164 +550,109 @@ the beginning of the interval and @math{b_n} is the @math{n}th position
 of the end. The midpoint of each interval is also indicated.
 @end quotation
 @end iftex
+@end deffn
 
 @comment ============================================================
 
-@node Brent-Dekker Method
-@section Brent-Dekker Method
-@cindex brent's method for finding roots
-@cindex root finding, brent's method
-
-Brent's method is a simple and robust algorithm of finding roots of a
-function @math{f}; when its arguments are valid, it cannot
-fail. 
-
-One begins the algorithm with an interval which is guaranteed by the
-Intermediate Value Theorem to contain a root: where @math{a} and
-@math{b} are the endpoints of the interval, @math{f(a)} must differ in
-sign from @math{f(b)}. 
-
-Each iteration, brent's method chops its interval in half and discards the
-interval which does not contain a root. Once the interval is smaller
-than the requested epsilon, iteration stops and the root location is
-returned.
-
-@comment ============================================================
-
-@node False Position
-@section False Position
+@deffn {Solver} gsl_root_fsolver_falsepos
 @cindex false position algorithm for finding roots
 @cindex root finding, false position algorithm
 
-False position is a robust method of finding roots of a function
-@math{f}; if its arguments are valid, it cannot fail. However, it cannot
-find roots of even degree. Its convergence is linear, but it is usually
+The @dfn{false position algorithm} is a method of finding roots based on
+linear interpolation. Its convergence is linear, but it is usually
 faster than bisection.
 
-One begins the algorithm with an interval which is guaranteed by the
-Intermediate Value Theorem to contain a root: where @math{a} and
-@math{b} are the endpoints of the interval, @math{f(a)} must differ in
-sign from @math{f(b)}. (If you're a bit fuzzy on the Intermediate Value
-Theorem, consult any elementary calculus textbook.)
+On each iteration a line is drawn between the endpoints @math{(a,f(a))}
+and @math{(b,f(b))} and the point where this line crosses the
+@math{x}-axis taken as a ``midpoint''.  The value of the function at
+this point is calculated and its sign is used to determine which side of
+the interval does not contain a root. That side is discarded to give a
+new, smaller interval containing the root. This procedure can be
+continued indefinitely until the interval is sufficiently small.
 
-Each iteration, false position draws a line between @math{f(a)} and
-@math{f(b)}; the @math{x} position where this line crosses the @math{x}
-axis is where the interval is split. The part of the interval which
-contains the root is taken to be the new interval, and the process is
-repeated until one of the following is true:
-
-@tex
-\beforedisplay
-$$
-|a - b| \leq \varepsilon
-a_n - a_{n-1} = 0 \;\;\;{\rm and}\;\;\; |b_n - b_{n-1}| \leq \varepsilon
-b_n - b_{n-1} = 0 \;\;\;{\rm and}\;\;\;|a_n - a_{n-1}| \leq \varepsilon
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-|a - b| \leq \varepsilon
-a_n - a_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\; |b_n - b_@{n-1@}| \leq \varepsilon
-b_n - b_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\;|a_n - a_@{n-1@}| \leq \varepsilon
-@end example
-@end ifinfo
+The best estimate of the root is taken from the linear interpolation of
+the interval on the current iteration.
 
 @comment eps file "roots-false-position.eps"
-@iftex
-@tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=5in\epsfbox{roots-false-position.eps}}
-@end tex
-@quotation
-Several iterations of false position, where @math{a_n} is @math{n}th
-position of the beginning of the interval and @math{b_n} is the
-@math{n}th position of the end.
-@end quotation
-@end iftex
+@comment @iftex
+@comment @tex
+@comment \input epsf
+@comment \medskip
+@comment \centerline{\epsfxsize=5in\epsfbox{roots-false-position.eps}}
+@comment @end tex
+@comment @quotation
+@comment Several iterations of false position, where @math{a_n} is @math{n}th
+@comment position of the beginning of the interval and @math{b_n} is the
+@comment @math{n}th position of the end.
+@comment @end quotation
+@comment @end iftex
+@end deffn
 
 @comment ============================================================
 
-@node Secant Method
-@section Secant Method
-@cindex Secant Method algorithm for finding roots
-@cindex root finding, Secant Method algorithm
+@deffn {Solver} gsl_root_fsolver_brent
+@cindex brent's method for finding roots
+@cindex root finding, brent's method
 
-Secant Method is a somewhat fragile method of finding roots. On single
-roots, its convergence is of order @math{(1 + \sqrt 5)/2} (approximately
-@math{1.62}). On multiple roots, converges linearly.
+The @dfn{Brent-Dekker method} (referred to here as @dfn{Brent's method})
+combines an interpolation strategy with the bisection algorithm. This
+produces a fast algorithm which is still robust.
 
-One begins the algorithm with two guesses for the value of the root,
-@math{g_0} and @math{g_1}. The root may be either inside or outside the
-interval defined by @math{g_0} and @math{g_1}.
+On each iteration Brent's method approximates the function using an
+interpolating curve. On the first iteration this is a linear
+interpolation of the two endpoints. For subsequent iterations the
+algorithm uses an inverse quadratic fit to the last three points, for
+higher accuracy. The intercept of the interpolating curve with the
+@math{x}-axis is taken as a guess for the root.  If it lies within the
+bounds of the current interval then the interpolating point is accepted,
+and used to generate a smaller interval. If the interpolating point is
+not accepted then the algorithm falls back to an ordinary bisection
+step.
 
-Each iteration, Secant Method draws a line through @math{f(g_@{n - 1@})}
-and @math{f(g_n)}. The @math{x} position where this line crosses the
-@math{x} axis becomes @math{g_@{n + 1@}}. @math{g_@{n - 1@}} is
-discarded, @math{n} is incremented, and the process is repeated until:
-
-@tex
-\beforedisplay
-$$
-|g_n - g_@{n-1@}| \leq \varepsilon
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-|g_n - g_@{n-1@}| \leq \varepsilon
-@end example
-@end ifinfo
-
-Note that @math{g_@{n + 1@}} may be obtained by either interpolation or
-extrapolation and that Secant Method cannot fail during interpolation.
-
-Secant Method breaks in the same situations that Newton's Method does,
-though it is somewhat less sensitive. (@xref{Newtons Method}.)
-
-@comment eps file "roots-secant-method.eps"
-@iftex
-@tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=5in\epsfbox{roots-secant-method.eps}}
-@end tex
-@quotation
-Several iterations of Secant Method, where @math{g_n} is the @math{n}th
-guess.
-@end quotation
-@end iftex
+The best estimate of the root is taken from the most recent
+interpolation or bisection.
+@end deffn
 
 @comment ============================================================
 
-@node Newtons Method
-@section Newtons Method
+@node Root Finding Algorithms using Derivatives
+@section Root Finding Algorithms using Derivatives
+
+The root polishing algorithms described in this section require an
+initial guess for the location of the root. There is no absolute
+guarantee of convergence -- the function must be suitable for this
+technique and the initial guess must be sufficiently close to the root
+for it to work.  When the conditions are satisfied then convergence is
+quadratic.
+
+These algorithms make use of both the function and its derivative. 
+
+@deffn {Derivative Solver} gsl_root_fdfsolver_newton
 @cindex Newton's Method algorithm for finding roots
 @cindex root finding, Newton's Method algorithm
 
-Newton's Method is a fast but somewhat fragile method of finding roots.
-On single roots, it converges quadratically; however, on multiple roots
-it converges linearly.
-
-One begins the algorithm with one guess @math{g} for the value of the
-root. Each iteration, Newton's Method draws a line tangent to @math{f}
-(the function whose root you are searching for); the @math{x} position
-where this line crosses the @math{x} axis becomes the new @math{g}. The
-process is repeated until:
+Newton's Method is the standard root-polishing algorithm.  The algorithm
+begins with an initial guess for the location of the root. On each
+iteration, a line tangent to the function @math{f} is drawn at that
+position. The point where this line crosses the @math{x}-axis becomes
+the new guess. The iteration is defined by the following sequence,
 
 @tex
 \beforedisplay
 $$
-|g_n - g_@{n-1@}| \leq \varepsilon
+x_{i+1} = x_i - {f(x_i) \over f'(x_i)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-|g_n - g_@{n-1@}| \leq \varepsilon
+x_@{i+1@} = x_i - f(x_i)/f'(x_i)
 @end example
 @end ifinfo
+
+@noindent
+Newton's method converges quadratically for single roots, and linearly
+for multiple roots.
 
 @comment eps file "roots-newtons-method.eps"
 @iftex
@@ -676,22 +666,130 @@ Several iterations of Newton's Method, where @math{g_n} is the
 @math{n}th guess.
 @end quotation
 @end iftex
+@end deffn
+
+@comment ============================================================
+
+@deffn {Derivative Solver} gsl_root_fdfsolver_secant
+@cindex Secant Method algorithm for finding roots
+@cindex root finding, Secant Method algorithm
+
+The @dfn{secant method} is a simplified version of Newton's method
+which can be useful when computation of the derivative is costly.
+
+On its first iteration the algorithm begins with Newton's method, using
+the derivative to compute a first step,
+
+@tex
+\beforedisplay
+$$
+x_1 = x_0 - {f(x_0) \over f'(x_0)}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_1 = x_0 - f(x_0)/f'(x_0)
+@end example
+@end ifinfo
+
+@noindent
+Subsequent iterations avoid the evaluation of the derivative by
+replacing it with a numerical estimate, the slope through the previous
+two points,
+
+@tex
+\beforedisplay
+$$
+x_{i+1} = x_i - {f(x_i) \over f'_{est}}
+ ~\hbox{where}~
+ f'_{est} =  {f(x_{i}) - f(x_{i-1}) \over x_i - x_{i-1}}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+x_@{i+1@} = x_i f(x_i) / f'_@{est@} where
+ f'_@{est@} = (f(x_i) - f(x_@{i-1@})/(x_i - x_@{i-1@})
+@end example
+@end ifinfo
+
+@noindent
+When the derivative does not change significantly in the vicinity of the
+root the secant method gives a useful saving.
+
+On single roots, the method has a convergence of order @math{(1 + \sqrt
+5)/2} (approximately @math{1.62}). It converges linearly for multiple
+roots.
+
+@comment eps file "roots-secant-method.eps"
+@comment @iftex
+@comment @tex
+@comment \input epsf
+@comment \medskip
+@comment \centerline{\epsfxsize=5in\epsfbox{roots-secant-method.eps}}
+@comment @end tex
+@comment @quotation
+@comment Several iterations of Secant Method, where @math{g_n} is the @math{n}th
+@comment guess.
+@comment @end quotation
+@comment @end iftex
+@end deffn
+
+@comment ============================================================
+
+@deffn {Derivative Solver} gsl_root_fdfsolver_steffenson
+@cindex Steffenson's Method for finding roots
+@cindex root finding, Steffenson's Method
+
+The @dfn{Steffenson Method} provides the fastest convergence of all the
+routines. It combines the basic Newton algorithm with an Aitken
+``delta-squared'' acceleration. If the iterates of the Newton are
+@math{x_i} then acceleration procedure generates a new sequence
+@math{R_i},
+
+@tex
+\beforedisplay
+$$
+R_i = x_i - {(x_{i+1} - x_i)^2 \over (x_{i+2} - 2 x_{i+1} - x_i)}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} - x_@{i@})
+@end example
+@end ifinfo
+
+@noindent
+which converges faster than the original sequence under reasonable
+conditions. The new sequence requires three terms before it can produce
+its first value so the method returns accelerated values on the second
+and subsequent iterations. On the first iteration it returns the
+ordinary Newton estimate.
+
+As with all acceleration procedures this method can become unstable if
+the function is not well-behaved.
+@end deffn
+
+@node Root Finding Examples
+@section Root Finding Examples
 
 
+@node Root Finding References and Further Reading
+@section Root Finding References and Further Reading
 
+For information on the Brent-Dekker algorithm see the following two
+papers,
 
+@itemize @asis
+@item
+R. P. Brent, "An algorithm with guaranteed convergence for finding a
+zero of a function", @cite{Computer Journal}, 14 (1971) 422-425
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+@item
+J. C. P. Bus and T. J. Dekker, "Two Efficient Algorithms with Guaranteed
+Convergence for Finding a Zero of a Function", @cite{ACM Transactions of
+Mathematical Software}, Vol. 1 No. 4 (1975) 330-345
+@end itemize
 
