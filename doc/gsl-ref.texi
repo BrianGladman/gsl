@@ -105,11 +105,20 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997, 1998, 1999 The GSL Team.
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 The GSL Team.
 
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+
+@ignore
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
 are preserved on all copies.
+@end ignore
 
 @ignore
 Permission is granted to process this file through TeX and print the
@@ -118,6 +127,8 @@ notice identical to this one except for the removal of this paragraph
 (this paragraph not being relevant to the printed manual).
 
 @end ignore
+
+@ignore
 Permission is granted to copy and distribute modified versions of this
 manual under the conditions for verbatim copying, provided that the entire
 resulting derived work is distributed under the terms of a permission
@@ -127,6 +138,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation approved
 by the GSL Team.
+@end ignore
 @end ifinfo
 
 @titlepage
@@ -176,8 +188,16 @@ University of Paris-Dauphine
 @sp 1
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001 The GSL Project.
+Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001 The GSL Team.
 
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+
+@ignore
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
 are preserved on all copies.
@@ -191,6 +211,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions,
 except that this permission notice may be stated in a translation approved
 by the GSL Team.
+@end ignore
 @end titlepage
 
 @ifinfo
@@ -250,6 +271,7 @@ More information about GSL can be found at the project homepage,
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * GNU General Public License::  
+* GNU Free Documentation License::  
 * Concept Index::               
 * Function Index::              
 * Variable Index::              
@@ -506,11 +528,15 @@ Multidimensional minimization.
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, Concept Index, Contributors to GSL, Top
+@node  GNU General Public License, GNU Free Documentation License, Contributors to GSL, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 
-@node Concept Index, Function Index, GNU General Public License, Top
+@node GNU Free Documentation License, Concept Index, GNU General Public License, Top
+@unnumbered GNU Free Documentation License
+@include fdl.texi
+
+@node Concept Index, Function Index, GNU Free Documentation License, Top
 @unnumbered Concept Index
 
 @printindex cp
