@@ -26,6 +26,7 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, double * result)
     
     int stat_nu  = gsl_sf_bessel_Jnu_impl( nu, x, &Jnu);
     int stat_mnu = gsl_sf_bessel_Jnu_impl(-nu, x, &Jmnu);
+    /* FIXME: this will fail since we only support nu > 0.0 */
     
     if(stat_nu == GSL_SUCCESS && stat_mnu == GSL_SUCCESS) {
       *result = (Jnu * cos(t) - Jmnu) / sin(t);
