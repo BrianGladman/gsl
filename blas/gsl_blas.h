@@ -612,14 +612,12 @@ int  gsl_blas_ssymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
                      gsl_matrix_float * C);
 
 int  gsl_blas_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-                     int K,
                      float alpha,
                      const gsl_matrix_float * A,
                      float beta,
                      gsl_matrix_float * C);
 
 int  gsl_blas_ssyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-                      int K,
                       float alpha,
                       const gsl_matrix_float * A,
                       const gsl_matrix_float * B,
@@ -805,7 +803,6 @@ int  gsl_blas_cherk (CBLAS_UPLO_t Uplo,
 
 int  gsl_blas_cher2k (CBLAS_UPLO_t Uplo,
                       CBLAS_TRANSPOSE_t Trans,
-                      int K,
                       const gsl_complex_float * alpha,
                       const gsl_matrix_complex_float * A,
                       const gsl_matrix_complex_float * B,
