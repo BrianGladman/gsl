@@ -1,5 +1,7 @@
 Mon Jun 12 19:23:53 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* Makefile.am (noinst_HEADERS): added aix and irix to makefile
+
 	* fp-x86linux.c (gsl_ieee_set_mode): Handle libc5, where
  	_FPU_SETCW is not available, by defining the macro. Suggested by
  	OKUJI Yoshinori <okuji@gnu.org>

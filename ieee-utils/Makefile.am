@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_ieee_utils.h
 
 libgslieeeutils_la_SOURCES =  print.c make_rep.c gsl_ieee_utils.h env.c fp.c read.c
 
-noinst_HEADERS = fp-hpux.c fp-x86linux.c fp-sunos4.c fp-solaris.c fp-tru64.c fp-sparclinux.c fp-m68klinux.c fp-ppclinux.c fp-unknown.c endian.c standardize.c
+noinst_HEADERS = fp-aix.c fp-hpux.c fp-irix.c fp-m68klinux.c fp-ppclinux.c fp-solaris.c fp-sparclinux.c fp-sunos4.c fp-tru64.c fp-unknown.c fp-x86linux.c endian.c standardize.c
 
 INCLUDES= -I$(top_builddir)
 
