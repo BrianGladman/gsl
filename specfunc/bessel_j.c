@@ -1,6 +1,6 @@
 /* specfunc/bessel_j.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,7 +180,7 @@ gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return status;
   }
-  else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1.0)) {
+  else if(GSL_ROOT4_DBL_EPSILON * x > (l*l + l + 1.0)) {
     gsl_sf_result b;
     int status = gsl_sf_bessel_Jnu_asympx_e(l + 0.5, x, &b);
     double pre = sqrt((0.5*M_PI)/x);
@@ -195,6 +195,18 @@ gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
     result->val = pre * b.val;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
+  }
+  else if(x > 1000.0)
+  {
+    /* We need this to avoid feeding large x to CF1; note that
+     * due to the above check, we know that n <= 50.
+     */
+    gsl_sf_result b;
+    int status = gsl_sf_bessel_Jnu_asympx_e(l + 0.5, x, &b);
+    double pre = sqrt((0.5*M_PI)/x);
+    result->val = pre * b.val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
+    return status;  
   }
   else {
     double sgn;
