@@ -23,7 +23,8 @@ void FUNCTION (test, text) (void);
 void FUNCTION (test, binary) (void);
 void FUNCTION (test, arith) (void);
 
-void FUNCTION (test, func) (void)
+void
+FUNCTION (test, func) (void)
 {
 
   size_t i, j;
@@ -82,7 +83,8 @@ void FUNCTION (test, func) (void)
 }
 
 #if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
-void FUNCTION (test, text) (void)
+void
+FUNCTION (test, text) (void)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 
@@ -137,7 +139,8 @@ void FUNCTION (test, text) (void)
 }
 #endif
 
-void FUNCTION (test, binary) (void)
+void
+FUNCTION (test, binary) (void)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 
@@ -191,7 +194,8 @@ void FUNCTION (test, binary) (void)
   FUNCTION (gsl_matrix, free) (m);
 }
 
-void FUNCTION (test, trap) (void)
+void
+FUNCTION (test, trap) (void)
 {
   TYPE (gsl_matrix) * mc = FUNCTION (gsl_matrix, alloc) (M, N);
   size_t i = 0, j = 0;
@@ -283,7 +287,8 @@ void FUNCTION (test, trap) (void)
 }
 
 
-void FUNCTION (test, arith) (void)
+void
+FUNCTION (test, arith) (void)
 {
 
 #define P 8
@@ -303,10 +308,10 @@ void FUNCTION (test, arith) (void)
       for (j = 0; j < Q; j++)
 	{
 	  BASE z, z1;
-          GSL_REAL(z) = (ATOMIC) k;
-          GSL_IMAG(z) = (ATOMIC) (k + 10);
-	  GSL_REAL(z1) = (ATOMIC) (k + 5);
-          GSL_IMAG(z1) = (ATOMIC) (k + 20);
+	  GSL_REAL (z) = (ATOMIC) k;
+	  GSL_IMAG (z) = (ATOMIC) (k + 10);
+	  GSL_REAL (z1) = (ATOMIC) (k + 5);
+	  GSL_IMAG (z1) = (ATOMIC) (k + 20);
 
 	  FUNCTION (gsl_matrix, set) (a, i, j, z);
 	  FUNCTION (gsl_matrix, set) (b, i, j, z1);
