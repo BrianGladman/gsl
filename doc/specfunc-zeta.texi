@@ -29,7 +29,8 @@ These routines compute the zeta function @math{\zeta(s)} for arbitrary @var{s},
 @subsection Hurwitz Zeta Function
 
 The Hurwitz zeta function is defined by
-@math{\zeta(s,q) = \sum_0^\infty (k+q)^(-s)}.
+@c{$\zeta(s,q) = \sum_0^\infty (k+q)^{-s}$}
+@math{\zeta(s,q) = \sum_0^\infty (k+q)^@{-s@}}.
 
 @deftypefun double gsl_sf_hzeta (double @var{s}, double @var{q})
 @deftypefunx int gsl_sf_hzeta_e (double @var{s}, double @var{q}, gsl_sf_result * @var{result})
@@ -43,7 +44,8 @@ These routines compute the Hurwitz zeta function @math{\zeta(s,q)} for
 @subsection Eta Function
 
 The eta function is defined by
-@math{\eta(s) = (1-2^(1-s)) \zeta(s)}.
+@c{$\eta(s) = (1-2^{1-s}) \zeta(s)$}
+@math{\eta(s) = (1-2^@{1-s@}) \zeta(s)}.
 
 @deftypefun double gsl_sf_eta_int (int @var{n})
 @deftypefunx int gsl_sf_eta_int_e (int @var{n}, gsl_sf_result * @var{result})

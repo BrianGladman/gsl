@@ -3,7 +3,7 @@
 @section Transport Functions
 @cindex Transport functions
 
-The transport functions @math{J(n,x)}are defined by the integral 
+The transport functions @math{J(n,x)} are defined by the integral 
 representations
 @c{$J(n,x) := \int_0^x dt \, t^n e^t /(e^t - 1)^2$}
 @math{J(n,x) := \int_0^x dt t^n e^t /(e^t - 1)^2}.

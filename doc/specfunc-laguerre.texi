@@ -6,7 +6,7 @@
 
 The Laguerre polynomials are defined in terms of confluent
 hypergeometric functions as
-@c{$L^a_n(x) = ((a+1)_n / n!) {}_1F_1(-n,a+1,x)$}.
+@c{$L^a_n(x) = ((a+1)_n / n!) {}_1F_1(-n,a+1,x)$}
 @math{L^a_n(x) = ((a+1)_n / n!) 1F1(-n,a+1,x)}.
 
 

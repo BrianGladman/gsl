@@ -6,6 +6,7 @@
 @cindex conical functions
 @cindex hyperbolic space
 
+The Legendre Functions and Legendre Polynomials are described in
 Abramowitz & Stegun, Chapter 8.
 
 @subsection Legendre Polynomials
@@ -71,20 +72,17 @@ These routines compute the Legendre function @math{Q_l(x)} for @math{x >
 
 @subsection Associated Legendre Polynomials and Spherical Harmonics
 
-P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
+The following functions compute the associated Legendre Polynomials
+@math{P_l^m(x)}.  Note that this function grows combinatorially with
+@math{l} and can overflow for @math{l} larger than about 150.  There is
+no trouble for small @math{m}, but overflow occurs when @math{m} and
+@math{l} are both large.  Rather than allow overflows, these functions
+refuse to calculate @math{P_l^m(x)} and return @code{GSL_EOVRFLW} when
+they can sense that @math{l} and @math{m} are too big.
 
-Note that this function grows combinatorially with l.
-Therefore we can easily generate an overflow for l larger
-than about 150.
-
-There is no trouble for small m, but when m and l are both large,
-then there will be trouble.  Rather than allow overflows, these
-functions refuse to calculate when they can sense that l and m are
-too big.
-
-If you really want to calculate a spherical harmonic, then DO NOT
-use this.  Instead use legendre_sphPlm() below, which  uses a similar
-recursion, but with the normalized functions.
+If you really want to calculate a spherical harmonic, then DO NOT use
+these functions.  Instead use @code{gsl_sf_legendre_sphPlm()} below,
+which uses a similar recursion, but with the normalized functions.
 
 @deftypefun double gsl_sf_legendre_Plm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_Plm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
@@ -123,7 +121,7 @@ This function computes an array of normalized associated Legendre functions
 @c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
 @math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$}
 for @c{$m \ge 0$}
-@math{m >= 0}, @c{$l = |m|, \dots, lmax$}; 
+@math{m >= 0}, @c{$l = |m|, \dots, lmax$}
 @math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
 @math{|x| <= 1.0}
 @comment Exceptional Return Values: GSL_EDOM

@@ -86,6 +86,67 @@ header files can be including the file @file{gsl_sf.h}.
 @node Special Functions Examples
 @section Examples
 
+The following example demonstrates the use of the error handling form of
+the special functions, in this case to compute the Bessel function
+@math{J_0(5.0)},
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_sf_bessel.h>
+
+int
+main ()
+@{
+  double x = 5.0;
+  gsl_sf_result result;
+
+  double expected = -0.17759677131433830434739701;
+  
+  int status = gsl_sf_bessel_J0_e (x, &result);
+
+  printf("status  = %s\n", gsl_strerror(status));
+  printf("J0(5.0) = %.18f +/- %.18f\n", result.val, result.err);
+  printf("exact   = %.18f\n", expected);
+@}
+@end example
+@noindent
+Here are the results of running the program,
+@example
+$ ./a.out 
+status  = success
+J0(5.0) = -0.177596771314338292 +/- 0.000000000000000193
+exact   = -0.177596771314338292
+@end example
+@noindent
+The next program computes the same quantity using the natural form of
+the function. In this case the error term @var{result.err} and return
+status are not accessible.
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_sf_bessel.h>
+
+int
+main ()
+@{
+  double x = 5.0;
+  double expected = -0.17759677131433830434739701;
+  
+  double y = gsl_sf_bessel_J0 (x);
+
+  printf("J0(5.0) = %.18f\n", y);
+  printf("exact   = %.18f\n", expected);
+@}
+@end example
+@noindent
+The results of the function are the same,
+@example
+$ ./a.out 
+J0(5.0) = -0.177596771314338292
+exact   = -0.177596771314338292
+@end example
+
+
 
 @node Special Functions References and Further Reading
 @section References and Further Reading
@@ -93,4 +154,11 @@ header files can be including the file @file{gsl_sf.h}.
 @itemize @asis
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
+
+@item
+MISCFUN: A software package to compute uncommon special functions.
+@cite{ACM Trans. Math. Soft.}, vol. 22, 1996, 288-301
+
+Fermi-Dirac functions of orders -1/2 , 1/2 , 3/2 , and 5/2. 
+@cite{ACM Trans. Math. Soft.}, vol. 24, 1998, 1-12.
 @end itemize

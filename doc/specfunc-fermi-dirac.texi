@@ -12,13 +12,13 @@ The complete Fermi-Dirac integral @math{F_j(x)} is given by,
 @tex
 \beforedisplay
 $$
-F_j(x)   := {1\over\Gamma(j+1)} \int_0^\infty {t^j  \over (Exp[t-x] + 1)}
+F_j(x)   := {1\over\Gamma(j+1)} \int_0^\infty {t^j  \over (\exp(t-x) + 1)}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-F_j(x)   := (1/r\Gamma(j+1)) \int_0^\infty (t^j / (Exp[t-x] + 1))
+F_j(x)   := (1/r\Gamma(j+1)) \int_0^\infty (t^j / (\exp(t-x) + 1))
 @end example
 @end ifinfo
 

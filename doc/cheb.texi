@@ -7,48 +7,36 @@ to univariate functions.  A Chebyshev approximation is a truncation of
 the series @math{f(x) = \sum c_n T_n(x)}, where the Chebyshev
 polynomials @math{T_n(x) = \cos(n \arccos x)} provide an orthogonal
 basis of polynomials on the interval @math{[-1,1]}, with the weight
-function @c{$1 \over \sqrt{1-x^2}$} 
-@math{1 \over \sqrt@{1-x^2@}}.  The first few such polynomials are,
-
-@tex
-\beforedisplay
-$$
-\eqalign{
- T_0(x) & = 1, \cr
- T_1(x) & = x, \cr
- T_2(x) & = 2 x^2 - 1.
-}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
- T_0(x) = 1,
- T_1(x) = x,
- T_2(x) = 2 x^2 - 1.
-@end example
-@end ifinfo
+function @c{$1 / \sqrt{1-x^2}$} 
+@math{1 / \sqrt@{1-x^2@}}.  The first few Chebyshev polynomials are,
+@math{T_0(x) = 1}, @math{T_1(x) = x}, @math{T_2(x) = 2 x^2 - 1}.
 
 @menu
 * The gsl_cheb_series struct::  
 * Creation and Calculation of Chebyshev Series::  
 * Chebyshev Series Evaluation::  
 * Derivatives and Integrals::   
+* Chebyshev Approximation examples::  
+* Chebyshev Approximation References and Further Reading::  
 @end menu
 
 @node The gsl_cheb_series struct
 @section The gsl_cheb_series struct
 
+A Chebyshev series  is stored using the following structure,
+
 @example
 typedef struct
 @{
-  double * c;   /* coefficients                */
-  int order;    /* order of expansion          */
-  double a;     /* lower interval point        */
-  double b;     /* upper interval point        */
-  int order_sp;
+  double * c;   /* coefficients  c[0] .. c[order]  */
+  int order;    /* order of expansion              */
+  double a;     /* lower interval point            */
+  double b;     /* upper interval point            */
 @} gsl_cheb_struct
 @end example
+@noindent
+The approximation is made over the range @math{[a,b]} using @var{order}+1
+terms, including the coefficient @math{c[0]}.  
 
 @node Creation and Calculation of Chebyshev Series
 @section Creation and Calculation of Chebyshev Series
@@ -103,8 +91,86 @@ order for other modes.
 @section Derivatives and Integrals
 
 @deftypefun int gsl_cheb_calc_deriv (gsl_cheb_series * @var{deriv}, const gsl_cheb_series * @var{cs})
+This function computes the derivative of the series @var{cs}, storing
+the derivative coefficients in the previously allocated @var{deriv}.
+The two series @var{cs} and @var{deriv} must have been allocated with
+the same order.
 @end deftypefun
 
 @deftypefun int gsl_cheb_calc_integ (gsl_cheb_series * @var{integ}, const gsl_cheb_series * @var{cs})
+This function computes the integral of the series @var{cs}, storing the
+integral coefficients in the previously allocated @var{integ}.  The two
+series @var{cs} and @var{integ} must have been allocated with the same
+order.  The lower limit of the integration is taken to be the left hand
+end of the range @var{a}.
 @end deftypefun
 
+@node Chebyshev Approximation examples
+@section Examples
+
+The following example program computes the Chebyshev approximation to a
+step function, using 10-term and 40-term polynomials.  This is an
+extremely difficult approximation to make, due to the discontinuity, and
+was chosen as an example where approximation error is visible.  For
+smooth functions the Chebyshev approximation converges extremely
+rapidly and errors would not be detectable.
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_chebyshev.h>
+
+double
+f (double x, void *p)
+@{
+  if (x < 0.5)
+    return 0.25;
+  else
+    return 0.75;
+@}
+
+
+int
+main (void)
+@{
+  double x;
+
+  gsl_cheb_series *cs = gsl_cheb_alloc (40);
+
+  gsl_function F;
+
+  F.function = f;
+  F.params = 0;
+
+  gsl_cheb_init (cs, &F, 0.0, 1.0);
+
+  for (x = 0; x < 1; x += 0.001)
+    @{
+      double r10 = gsl_cheb_eval_n (cs, 10, x);
+      double r40 = gsl_cheb_eval (cs, x);
+      printf ("%g %g %g\n", x, GSL_FN_EVAL (&F, x), r5, r40);
+    @}
+
+  gsl_cheb_free (cs);
+@}
+@end example
+
+@noindent
+The output from the program gives the original function and the 10-term and
+40-term approximations, sampled at intervals of 0.001 in @math{x}.
+
+@iftex
+@sp 1
+@center @image{cheb,4in}
+@end iftex
+
+@node Chebyshev Approximation References and Further Reading
+@section References and Further Reading
+
+
+@itemize @asis
+@item 
+R. Broucke, ``Ten Subroutines for the Manipulation of Chebyshev Series
+[C1] (Algorithm 446)''. @cite{Communications of the ACM} 16(4), 254-256
+(1973)
+@end itemize

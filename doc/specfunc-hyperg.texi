@@ -80,16 +80,16 @@ exceptions:
 @deftypefun double gsl_sf_hyperg_2F1_renorm (double @var{a}, double @var{b}, double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F1_renorm_e (double @var{a}, double @var{b}, double @var{c}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the renormalized Gauss hypergeometric function
-@c{${}_2F_1[a,b,c,x] / Gamma[c]$}
-@math{2F1[a,b,c,x] / Gamma[c]} for @math{|x| < 1}.
+@c{${}_2F_1[a,b,c,x] / \Gamma[c]$}
+@math{2F1[a,b,c,x] / \Gamma[c]} for @math{|x| < 1}.
 @comment exceptions:
 @end deftypefun
 
 @deftypefun double gsl_sf_hyperg_2F1_conj_renorm (double @var{aR}, double @var{aI}, double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F1_conj_renorm_e (double @var{aR}, double @var{aI}, double @var{c}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the renormalized Gauss hypergeometric function
-@c{${}_2F_1[a_R + i a_I, a_R - i a_I, c, x] / Gamma[c]$}
-@math{2F1[a_R + i a_I, a_R - i a_I, c, x] / Gamma[c]} for @math{|x| < 1}.
+@c{${}_2F_1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma[c]$}
+@math{2F1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma[c]} for @math{|x| < 1}.
 @comment exceptions:
 @end deftypefun
 

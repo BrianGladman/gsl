@@ -15,7 +15,7 @@ $$
 \eqalign{
 F(\phi,k)   &= \int_0^\phi dt {1 \over \sqrt{(1 - k^2 \sin(t)^2)}}\cr
 E(\phi,k)   &= \int_0^\phi dt   \sqrt{(1 - k^2 \sin(t)^2)}\cr
-P(\phi,k,n) &= \int_0^\phi dt {(1 + n \sin(t)^2)^{-1}\over\sqrt{1 - k^2 \sin(t)^2}}
+P(\phi,k,n) &= \int_0^\phi dt {1 \over (1 + n \sin(t)^2) \sqrt{1 - k^2 \sin(t)^2}}
 }
 $$
 \afterdisplay
@@ -26,7 +26,7 @@ $$
 
   E(\phi,k) = \int_0^\phi dt   \sqrt((1 - k^2 \sin(t)^2))
 
-P(\phi,k,n) = \int_0^\phi dt (1 + n \sin(t)^2)^(-1)/\sqrt(1 - k^2 \sin(t)^2)
+P(\phi,k,n) = \int_0^\phi dt 1/((1 + n \sin(t)^2)\sqrt(1 - k^2 \sin(t)^2))
 @end example
 @end ifinfo
 @noindent
