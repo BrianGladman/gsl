@@ -117,6 +117,7 @@ legendre_H3d_series(const int ell, const double lambda, const double eta, double
 /* Evaluate legendre_H3d(ell+1)/legendre_H3d(ell)
  * by continued fraction.
  */
+#if 0
 static
 int
 legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta, double * result)
@@ -171,8 +172,13 @@ legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta, doub
   else
     return GSL_SUCCESS;
 }
+#endif /* 0 */
 
 
+/* Evaluate legendre_H3d(ell+1)/legendre_H3d(ell)
+ * by continued fraction. Use the Gautschi (Euler)
+ * equivalent series.
+ */
 static
 int
 legendre_H3d_CF1_ser(const int ell, const double lambda, const double coth_eta, double * result)

@@ -337,7 +337,7 @@ int gsl_sf_expint_E2_impl(const double x, double * result)
   else if(x <= xmax) {
     double E1;
     int stat_E1 = gsl_sf_expint_E1_impl(x, &E1);
-    *result = 0.5 * (exp(-x) - x*E1);
+    *result = exp(-x) - x*E1;
     return stat_E1;
   }
   else {

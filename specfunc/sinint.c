@@ -1,10 +1,11 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
- #include <math.h>
+#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_expint.h"
 
 
@@ -197,9 +198,9 @@ static void fg_asymp(const double x, double * f, double * g)
       xmaxg = 1.0/sqrt(r1mach(1))
       xbnd = sqrt(50.0)
   */
-  const double xbig  = 1./GSL_SQRT_MACH_EPS;
-  const double xmaxf = 1./DBL_MIN;
-  const double xmaxg = 1./GSL_SQRT_DBL_MIN;
+  const double xbig  = 1.0/GSL_SQRT_MACH_EPS;
+  const double xmaxf = 1.0/DBL_MIN;
+  const double xmaxg = 1.0/GSL_SQRT_DBL_MIN;
   const double xbnd  = 7.07106781187;
 
   const double x2 = x*x;
@@ -213,8 +214,8 @@ static void fg_asymp(const double x, double * f, double * g)
     *g = (1.0 + gsl_sf_cheb_eval(&g2_cs, 100.0/x2-1.0))/x2;
   }
   else {
-    *f = (x < xmaxf ? 1./x  : 0.);
-    *g = (x < xmaxg ? 1./x2 : 0. );
+    *f = (x < xmaxf ? 1.0/x  : 0.0);
+    *g = (x < xmaxg ? 1.0/x2 : 0.0);
   }
   return;
 }
@@ -324,9 +325,11 @@ int gsl_sf_Ci_impl(const double x, double * result)
   }
   else {
     double f, g;
+    double arg = x;
+    int status = gsl_sf_angle_restrict_pos_impl(&arg);
     fg_asymp(x, &f, &g);
-    *result = f*sin(x) - g*cos(x);
-    return GSL_SUCCESS;
+    *result = f*sin(arg) - g*cos(arg);
+    return status;
   }
 }
 
@@ -359,7 +362,7 @@ double gsl_sf_Si(double x)
   double y;
   int status = gsl_sf_Si_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Si_e", status);
+    GSL_WARNING("gsl_sf_Si", status);
   }
   return y;
 }
@@ -369,7 +372,7 @@ double gsl_sf_Ci(double x)
   double y;
   int status = gsl_sf_Ci_impl(x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_Ci_e", status);
+    GSL_WARNING("gsl_sf_Ci", status);
   }
   return y;
 }

@@ -124,6 +124,7 @@ test_sf_SOURCES = test_sf.c
 libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
+	atanint.c		\
 	bessel.c		\
 	bessel.h                \
 	bessel_I0.c		\
@@ -201,18 +202,18 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslspecfunc_a_LIBADD = 
-libgslspecfunc_a_OBJECTS =  airy.o airy_der.o bessel.o bessel_I0.o \
-bessel_I1.o bessel_In.o bessel_Inu.o bessel_J0.o bessel_J1.o \
-bessel_Jn.o bessel_Jnu.o bessel_K0.o bessel_K1.o bessel_Kn.o \
-bessel_Knu.o bessel_Y0.o bessel_Y1.o bessel_Yn.o bessel_Ynu.o \
-bessel_amp_phase.o bessel_i.o bessel_j.o bessel_k.o bessel_olver.o \
-bessel_temme.o bessel_y.o chebyshev.o clausen.o coupling.o coulomb.o \
-coulomb_bound.o dawson.o debye.o dilog.o ellint.o elljac.o erfc.o exp.o \
-expint.o expint3.o fermi_dirac.o gegenbauer.o gamma.o gamma_inc.o \
-hyperg_0F1.o hyperg_2F0.o hyperg_1F1.o hyperg_2F1.o hyperg_U.o hyperg.o \
-laguerre.o legendre_H3d.o legendre_con.o legendre_poly.o log.o poch.o \
-poly.o pow_int.o psi.o shint.o sinint.o synchrotron.o transport.o \
-trig.o zeta.o
+libgslspecfunc_a_OBJECTS =  airy.o airy_der.o atanint.o bessel.o \
+bessel_I0.o bessel_I1.o bessel_In.o bessel_Inu.o bessel_J0.o \
+bessel_J1.o bessel_Jn.o bessel_Jnu.o bessel_K0.o bessel_K1.o \
+bessel_Kn.o bessel_Knu.o bessel_Y0.o bessel_Y1.o bessel_Yn.o \
+bessel_Ynu.o bessel_amp_phase.o bessel_i.o bessel_j.o bessel_k.o \
+bessel_olver.o bessel_temme.o bessel_y.o chebyshev.o clausen.o \
+coupling.o coulomb.o coulomb_bound.o dawson.o debye.o dilog.o ellint.o \
+elljac.o erfc.o exp.o expint.o expint3.o fermi_dirac.o gegenbauer.o \
+gamma.o gamma_inc.o hyperg_0F1.o hyperg_2F0.o hyperg_1F1.o hyperg_2F1.o \
+hyperg_U.o hyperg.o laguerre.o legendre_H3d.o legendre_con.o \
+legendre_poly.o log.o poch.o poly.o pow_int.o psi.o shint.o sinint.o \
+synchrotron.o transport.o trig.o zeta.o
 AR = ar
 test_sf_OBJECTS =  test_sf.o
 test_sf_LDFLAGS = 
@@ -228,8 +229,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
-.deps/bessel_I0.P .deps/bessel_I1.P .deps/bessel_In.P \
+DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/atanint.P \
+.deps/bessel.P .deps/bessel_I0.P .deps/bessel_I1.P .deps/bessel_In.P \
 .deps/bessel_Inu.P .deps/bessel_J0.P .deps/bessel_J1.P \
 .deps/bessel_Jn.P .deps/bessel_Jnu.P .deps/bessel_K0.P \
 .deps/bessel_K1.P .deps/bessel_Kn.P .deps/bessel_Knu.P \

@@ -27,4 +27,22 @@ int     gsl_sf_transport_3_e(double x, double * result);
 double  gsl_sf_transport_3(double x);
 
 
+/* J(4,x)
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int     gsl_sf_transport_4_impl(double x, double * result);
+int     gsl_sf_transport_4_e(double x, double * result);
+double  gsl_sf_transport_4(double x);
+
+
+/* J(5,x)
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int     gsl_sf_transport_5_impl(double x, double * result);
+int     gsl_sf_transport_5_e(double x, double * result);
+double  gsl_sf_transport_5(double x);
+
+
 #endif  /* !GSL_SF_TRANSPORT_H_ */

@@ -74,6 +74,68 @@ static struct gsl_sf_cheb_series tran3_cs = {
 };
 
 
+static double tran4_data[20] = {
+  0.48075709946151105786,
+ -0.8175378810321083956e-01,
+  0.1002700665975162973e-01,
+ -0.105993393598201507e-02,
+  0.10345062450304053e-03,
+ -0.964427054858991e-05,
+  0.87455444085147e-06,
+ -0.7793212079811e-07,
+  0.686498861410e-08,
+ -0.59995710764e-09,
+  0.5213662413e-10,
+ -0.451183819e-11,
+  0.38921592e-12,
+ -0.3349360e-13,
+  0.287667e-14,
+ -0.24668e-15,
+  0.2113e-16,
+ -0.181e-17,
+  0.15e-18,
+ -0.1e-19
+};
+static struct gsl_sf_cheb_series tran4_cs = {
+  tran4_data,
+  19,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+static double tran5_data[20] = {
+   0.34777777713391078928,
+  -0.6645698897605042801e-01,
+   0.861107265688330882e-02,
+  -0.93966822237555384e-03,
+   0.9363248060815134e-04,
+  -0.885713193408328e-05,
+   0.81191498914503e-06,
+  -0.7295765423277e-07,
+   0.646971455045e-08,
+  -0.56849028255e-09,
+   0.4962559787e-10,
+  -0.431093996e-11,
+   0.37310094e-12,
+  -0.3219769e-13,
+   0.277220e-14,
+  -0.23824e-15,
+   0.2044e-16,
+  -0.175e-17,
+   0.15e-18,
+  -0.1e-19
+};
+static struct gsl_sf_cheb_series tran5_cs = {
+  tran5_data,
+  19,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
 static
 double
 transport_sumexp(int numexp, int order, double t, double x)
@@ -86,7 +148,7 @@ transport_sumexp(int numexp, int order, double t, double x)
   for(k=1; k<=numexp; k++) {
     int j;
     double sum2 = 1.0;
-    xk = 1.0/(rk*x);
+    xk  = 1.0/(rk*x);
     xk1 = 1.0;
     for(j=1; j<=order; j++) {
       sum2 = sum2*xk1*xk + 1.0;
@@ -98,6 +160,8 @@ transport_sumexp(int numexp, int order, double t, double x)
   return sumexp;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
 gsl_sf_transport_2_impl(const double x, double * result)
@@ -221,13 +285,16 @@ C                    for large x.
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 2.0*GSL_SQRT_DBL_MIN) {
+  else if(x == 0.0) {
     *result = 0.0;
-    return GSL_EUNDRFLW;
+    return GSL_SUCCESS;
   }
   else if(x < 3.0*GSL_SQRT_MACH_EPS) {
     *result = 0.5*x*x;
-    return GSL_SUCCESS;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else
+      return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     double x2 = x*x;
@@ -238,7 +305,7 @@ C                    for large x.
   else if(x < -GSL_LOG_MACH_EPS) {
     int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
     double sumexp = transport_sumexp(numexp, 3, exp(-x), x);
-    double t = 2.0 * log(x) - x + log(sumexp);
+    double t = 3.0 * log(x) - x + log(sumexp);
     if(t < GSL_LOG_MACH_EPS) {
       *result = valinf;
     }
@@ -250,7 +317,7 @@ C                    for large x.
   else if(x < 3.0/GSL_MACH_EPS) {
     int    numexp = 1;
     double sumexp = transport_sumexp(numexp, 3, 1.0, x);
-    double t = 2.0 * log(x) - x + log(sumexp);
+    double t = 3.0 * log(x) - x + log(sumexp);
     if(t < GSL_LOG_MACH_EPS) {
       *result = valinf;
     }
@@ -260,7 +327,7 @@ C                    for large x.
     return GSL_SUCCESS;
   }
   else {
-    double t = 2.0 * log(x) - x;
+    double t = 3.0 * log(x) - x;
     if(t < GSL_LOG_MACH_EPS) {
       *result = valinf;
     }
@@ -271,6 +338,194 @@ C                    for large x.
   }
 }
 
+
+int
+gsl_sf_transport_4_impl(const double x, double * result)
+{
+/*
+C    NTERMS - INTEGER - The number of terms of the array ATRAN to be used.
+C                       The recommended value is such that
+C                             ATRAN(NTERMS) < EPS/100
+C
+C    XLOW2 - DOUBLE PRECISION - The value below which TRAN04 = 0.0 to machine
+C                   precision. The recommended value is
+C                          cube root of (3*XMIN)
+C
+C    XLOW1 - DOUBLE PRECISION - The value below which TRAN04 = X**3/3 to
+C                   machine precision. The recommended value is
+C                             sqrt(8*EPSNEG)
+C
+C    XHIGH1 - DOUBLE PRECISION - The value above which the exponential series fo
+r
+C                    large X contains only one term. The recommended value
+C                    is        - ln(EPS).
+C
+C    XHIGH2 - DOUBLE PRECISION - The value above which 
+C                       TRAN04 = VALINF  -  X**4 exp(-X)
+C                    The recommended value is 4/EPS
+C
+C    XHIGH3 - DOUBLE PRECISION - The value of ln(EPSNEG). Used to prevent overflow.
+C
+      DATA NUMJN,RNUMJN/ 4 , 4.0 D 0 /
+      DATA NTERMS/17/
+      DATA XLOW1,XLOW2/2.98023224D-8,4.05653502D-103/
+      DATA XHIGH1,XHIGH3/36.04365668D0,-36.73680056D0/
+      DATA XHIGH2/1.80143985D16/
+*/
+  const double valinf = 25.975757609067316596;
+
+  if(x < 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+    *result = x*x*x/3.0;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else
+      return GSL_SUCCESS;
+  }
+  else if(x <= 4.0) {
+    double x2 = x*x;
+    double t = (x2/8.0 - 0.5) - 0.5;
+    *result = x2*x * gsl_sf_cheb_eval(&tran4_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < -GSL_LOG_MACH_EPS) {
+    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+    double sumexp = transport_sumexp(numexp, 4, exp(-x), x);
+    double t = 4.0 * log(x) - x + log(sumexp);
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+  else if(x < 3.0/GSL_MACH_EPS) {
+    int    numexp = 1;
+    double sumexp = transport_sumexp(numexp, 4, 1.0, x);
+    double t = 4.0 * log(x) - x + log(sumexp);
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+  else {
+    double t = 4.0 * log(x) - x;
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+}
+
+
+int
+gsl_sf_transport_5_impl(const double x, double * result)
+{
+/*
+C    NTERMS - INTEGER - The number of terms of the array ATRAN to be used.
+C                       The recommended value is such that
+C                             ATRAN(NTERMS) < EPS/100
+C
+C    XLOW2 - DOUBLE PRECISION - The value below which TRAN05 = 0.0 to machine
+C                   precision. The recommended value is
+C                          4th root of (4*XMIN)
+C
+C    XLOW1 - DOUBLE PRECISION - The value below which TRAN05 = X**4/4 to
+C                   machine precision. The recommended value is
+C                             sqrt(8*EPSNEG)
+C
+C    XHIGH1 - DOUBLE PRECISION - The value above which the exponential series fo
+r
+C                    large X contains only one term. The recommended value
+C                    is        - ln(EPS).
+C
+C    XHIGH2 - DOUBLE PRECISION - The value above which 
+C                       TRAN05 = VALINF  -  X**5 exp(-X)
+C                    The recommended value is 5/EPS
+C
+C    XHIGH3 - DOUBLE PRECISION - The value of ln(EPSNEG). Used to prevent overflow.
+
+      DATA NUMJN,RNUMJN/ 5 , 5.0 D 0 /
+      DATA NTERMS/17/
+      DATA XLOW1,XLOW2/2.98023224D-8,1.72723372D-77/
+      DATA XHIGH1,XHIGH3/36.04365668D0,-36.73680056D0/
+      DATA XHIGH2/2.25179981D16/
+*/
+  const double valinf = 124.43133061720439116;
+
+  if(x < 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < 3.0*GSL_SQRT_MACH_EPS) {
+    *result = x*x*x*x/4.0;
+    if(*result == 0.0)
+      return GSL_EUNDRFLW;
+    else
+      return GSL_SUCCESS;
+  }
+  else if(x <= 4.0) {
+    double x2 = x*x;
+    double t = (x2/8.0 - 0.5) - 0.5;
+    *result = x2*x2 * gsl_sf_cheb_eval(&tran5_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < -GSL_LOG_MACH_EPS) {
+    int    numexp = (int)((-GSL_LOG_MACH_EPS)/x) + 1;
+    double sumexp = transport_sumexp(numexp, 5, exp(-x), x);
+    double t = 5.0 * log(x) - x + log(sumexp);
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+  else if(x < 3.0/GSL_MACH_EPS) {
+    int    numexp = 1;
+    double sumexp = transport_sumexp(numexp, 5, 1.0, x);
+    double t = 5.0 * log(x) - x + log(sumexp);
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+  else {
+    double t = 5.0 * log(x) - x;
+    if(t < GSL_LOG_MACH_EPS) {
+      *result = valinf;
+    }
+    else {
+      *result = valinf - exp(t);
+    }
+    return GSL_SUCCESS;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_transport_2_e(const double x, double * result)
 {
@@ -290,6 +545,26 @@ int gsl_sf_transport_3_e(const double x, double * result)
   return status;
 }
 
+int gsl_sf_transport_4_e(const double x, double * result)
+{
+  int status = gsl_sf_transport_4_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_transport_4_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_transport_5_e(const double x, double * result)
+{
+  int status = gsl_sf_transport_5_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_transport_5_e", status);
+  }
+  return status;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*/
 
 double gsl_sf_transport_2(const double x)
 {
@@ -307,6 +582,26 @@ double gsl_sf_transport_3(const double x)
   int status = gsl_sf_transport_3_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_transport_3", status);
+  }
+  return y;
+}
+
+double gsl_sf_transport_4(const double x)
+{
+  double y;
+  int status = gsl_sf_transport_4_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_transport_4", status);
+  }
+  return y;
+}
+
+double gsl_sf_transport_5(const double x)
+{
+  double y;
+  int status = gsl_sf_transport_5_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_transport_5", status);
   }
   return y;
 }
