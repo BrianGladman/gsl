@@ -878,6 +878,7 @@ analytically. This usually requires several samples from the generator.
 
 @subsection Continuous distributions
 
+@c ----------------------------------------------------------------------
 @unnumberedsubsec The Gaussian Distribution
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian random numbers
@@ -949,48 +950,7 @@ for @math{x,y} in the range @math{-\infty} to @math{+\infty}.
 \centerline{\input rand-bivariate-gaussian.tex}
 @end tex
 
-@page
-@subsection The Cauchy Distribution
-@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
-@cindex Cauchy random numbers
-This function returns a random number from the Cauchy distribution with
-scale parameter @var{mu}. The probability distribution for Cauchy
-random numbers is,
-@c
-@equation
-p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
-@end equation
-@noindent
-for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
-distribution is also known as the Lorentz distribution.
-@end deftypefn
-@tex
-\centerline{\input rand-cauchy.tex}
-@end tex
-
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-The Cauchy distribution decreases as @math{1/x^2} for large @math{x} and
-so the variance, skewness, excess and cumulants are either infinite or
-undefined.
-
-@item
-Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
-
-@item
-Cumulative distribution function, 
-@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @} + @{1\over \pi@} \arctan(x/\mu)}
-
-@item
-Confidence limits:
-
-@math{p(|x| < \mu) = 0.5},
-@math{p(|x| < 2\mu) = 0.705},
-@math{p(|x| < 3\mu) = 0.795}
-
-@end itemize
-
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
 @cindex Exponential random numbers
@@ -1038,7 +998,290 @@ Useful integral:
 
 @end itemize
 
+@c----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{mu})
+@cindex two-sided exponential random numbers
+@cindex Laplace distribution random numbers
+This function returns a random number from the the Laplace distribution
+with width @var{mu}. The distribution is,
+@equation
+p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
+@end equation
+@noindent
+for @math{-\infty < x < \infty}.
+@end deftypefn
+@tex
+\centerline{\input rand-laplace.tex}
+@end tex
 
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{0}, Variance = @math{2\mu^2}, Skewness = @math{0}, Excess =
+@math{6}
+
+@item
+Cumulants, @math{\kappa_1=0}, @math{\kappa_2=2 \mu^2},
+@math{\kappa_@{2n+1@}=0}, @math{\kappa_@{2n@}=(2n)!\mu^@{2n@}/n}
+
+@item
+Characteristic function, @math{\phi(t) = 1/(1+\mu^2 t^2}
+
+@item
+Cumulative distribution function, @math{CDF(x) = \int_0^x p(x') dx' =
+@{1 \over 2@} \exp(-|x|)} for @math{x<0} and @math{1 - @{1 \over 2@}
+\exp(-|x|)} for @math{x>0}.
+@item
+Confidence limits:
+
+@item
+Useful integral:
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
+@cindex Exponential power distribution, random numbers
+This function returns a random number from the exponential power distribution
+with mean @var{mu} and exponent @var{a}.
+@c
+@equation
+p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
+@end equation
+@noindent
+for @math{x \ge 0}. For @math{a = 1} this reduces to the laplace
+distribution. For @math{a = 2} it has the same form as a gaussian
+distribution, but with @math{\mu = \sqrt{2} \sigma}.
+@end deftypefn
+@tex
+\centerline{\input rand-exppow.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness = FIXME, Excess = FIXME
+
+@item
+Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@subsection The Cauchy Distribution
+@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
+@cindex Cauchy random numbers
+This function returns a random number from the Cauchy distribution with
+scale parameter @var{mu}. The probability distribution for Cauchy
+random numbers is,
+@c
+@equation
+p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
+@end equation
+@noindent
+for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
+distribution is also known as the Lorentz distribution.
+@end deftypefn
+@tex
+\centerline{\input rand-cauchy.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+The Cauchy distribution decreases as @math{1/x^2} for large @math{x} and
+so the variance, skewness, excess and cumulants are either infinite or
+undefined.
+
+@item
+Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @} + @{1\over \pi@} \arctan(x/\mu)}
+
+@item
+Confidence limits:
+
+@math{p(|x| < \mu) = 0.5},
+@math{p(|x| < 2\mu) = 0.705},
+@math{p(|x| < 3\mu) = 0.795}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
+@cindex Levy distribution, random numbers
+This function returns a random number from the Levy distribution with
+scale @var{mu} and exponent @var{a}. The Levy probability distribution
+is defined by a fourier transform,
+@c
+@equation
+p(x) = @{1 \over 2 \pi)@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a) 
+@end equation
+@noindent
+There is no simple analytic form for @math{p(x)}. For @math{a = 1} it
+reduces to the Cauchy distribution. For @math{a = 2} it has the same
+form as a Gaussian distribution, but with @math{\mu = \sqrt{2} \sigma
+FIXME: check}. For @math{a < 1} we get very large tails.
+
+The algorithm only works for @math{0 < a \le 2}.
+@end deftypefn
+@tex
+\centerline{\input rand-levy.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness = FIXME, Excess = FIXME
+
+@item
+Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex Gamma distribution random numbers
+This function returns a random number from the gamma
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
+@end equation
+@c If @math{X} and @math{Y} are independent gamma-distributed random
+@c variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
+@c distribution of order @math{a+b}.
+@end deftypefn
+@tex
+\centerline{\input rand-gamma.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{ab}, Variance = @math{ab^2}, Skewness =
+@math{2/\sqrt@{a@}}, Excess = @math{6/a}
+
+@item
+Cumulants, @math{\kappa_1=ab}, @math{\kappa_n=a\Gamma(n) b^n},
+for @math{n>1}
+
+@item
+Characteristic function, @math{\phi(t) = 1 - i bt }
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@subsection The Erlang distribution
+The Erlang distribution is the sum of @math{n} exponential variates,
+each with mean @math{a}.
+
+@deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
+@cindex Erlang random numbers
+This function returns a random number from the Erlang distribution.
+@c
+@equation
+p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
+@end equation
+@noindent
+for @math{x \ge 0}. 
+@end deftypefn
+@tex
+\centerline{\input rand-erlang.tex}
+@end tex
+
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex flat distribution random numbers
+This function returns a random number from the flat (uniform)
+distribution from @var{a} to @var{b}.
+@c
+@equation
+p(x) dx = @{1 \over (b-a)@} dx
+@end equation
+@noindent
+if @math{a \le x < b} and 0 otherwise.
+@end deftypefn
+@tex
+\centerline{\input rand-flat.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{(a+b)/2}, Variance = @math{(b-a)^2/12}, Skewness =
+@math{0}, Excess = @math{-1.2} @c FIXME, is this exact?
+
+@item
+Cumulants, @math{\kappa_1=(a+b)/2}, @math{\kappa_@{2n+1@}=0},
+@math{\kappa_@{2n@}=(b-a)^@{2n@} B_@{2n@} / (2n)},
+
+@item
+Characteristic function, @math{\phi(t) = (2 sin(ht/2)/(ht)) \exp(i t (b+a)/2)}
+where @math{h = (b - a)}.
+
+@end itemize
+
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
+@cindex Lognormal random numbers
+This function returns a random number from the lognormal
+distribution.  The distribution function is
+@c
+@equation
+p(x) dx = @{1 \over x \sqrt@{2 \pi \sigma^2@} @} \exp(-(\ln(x) - \zeta)^2/2 \sigma^2) dx
+@end equation
+for @math{x > 0}
+@end deftypefn
+@tex
+\centerline{\input rand-lognormal.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{st}, 
+Variance = @math{s(s-1)t^2}, 
+Skewness = @math{(s+2)\sqrt@{s-1@}}, 
+Excess = @math{(s-1)(s^3+3s^2+6s+6)}
+
+where @math{s = \exp(\sigma^2)} and @math{t = \exp(\zeta)}.
+
+The mode (maximum) occurs at @math{x = exp(\zeta - \sigma^2)}.
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = @{1 \over 2@} erfc((\zeta-\ln(x))/ (\sqrt@{2@} \sigma))}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
 @page
 @subsection The Chi-squared Distribution
 The chi-squared distribution arises in statistics If @math{Y_i} are
@@ -1091,26 +1334,7 @@ Useful integral:
 
 @end itemize
 
-
-@page
-@subsection The Erlang distribution
-The Erlang distribution is the sum of @math{n} exponential variates,
-each with mean @math{a}.
-
-@deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
-@cindex Erlang random numbers
-This function returns a random number from the Erlang distribution.
-@c
-@equation
-p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
-@end equation
-@noindent
-for @math{x \ge 0}. 
-@end deftypefn
-@tex
-\centerline{\input rand-erlang.tex}
-@end tex
-
+@c ----------------------------------------------------------------------
 @page
 @subsection The F-distribution
 The F-distribution arises in statistics. If @math{Y_1} and @math{Y_2} are
@@ -1150,72 +1374,34 @@ Mean = @math{\nu_2/(\nu_2 - 2)} (for @math{\nu_2 > 2}), Variance =
 
 @end itemize
 
-
+@c ----------------------------------------------------------------------
 @page
-@deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex flat distribution random numbers
-This function returns a random number from the flat (uniform)
-distribution from @var{a} to @var{b}.
-@c
+@subsection The t-distribution
+The t-distribution arises in statistics. If @math{Y_1} has a normal
+distribution and @math{Y_2} has a  chi-squared distribution with @math{\nu}
+degrees of freedom then the ratio
+
 @equation
-p(x) dx = @{1 \over (b-a)@} dx
+X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
 @end equation
 @noindent
-if @math{a \le x < b} and 0 otherwise.
-@end deftypefn
-@tex
-\centerline{\input rand-flat.tex}
-@end tex
+has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
 
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{(a+b)/2}, Variance = @math{(b-a)^2/12}, Skewness =
-@math{0}, Excess = @math{-1.2} @c FIXME, is this exact?
-
-@item
-Cumulants, @math{\kappa_1=(a+b)/2}, @math{\kappa_@{2n+1@}=0},
-@math{\kappa_@{2n@}=(b-a)^@{2n@} B_@{2n@} / (2n)},
-
-@item
-Characteristic function, @math{\phi(t) = (2 sin(ht/2)/(ht)) \exp(i t (b+a)/2)}
-where @math{h = (b - a)}.
-
-@end itemize
-
-@page
-@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Gamma distribution random numbers
-This function returns a random number from the gamma
-distribution.  The distribution function is
-@c
+@deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
+@cindex t-distribution random numbers
+This function returns a random number from the t-distribution. The
+distribution is,
 @equation
-p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
+p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
+   (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
 @end equation
-@c If @math{X} and @math{Y} are independent gamma-distributed random
-@c variables of order @math{a} and @math{b}, then @math{X+Y} has a gamma
-@c distribution of order @math{a+b}.
+@noindent
 @end deftypefn
 @tex
-\centerline{\input rand-gamma.tex}
+\centerline{\input rand-tdist.tex}
 @end tex
 
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{ab}, Variance = @math{ab^2}, Skewness =
-@math{2/\sqrt@{a@}}, Excess = @math{6/a}
-
-@item
-Cumulants, @math{\kappa_1=ab}, @math{\kappa_n=a\Gamma(n) b^n},
-for @math{n>1}
-
-@item
-Characteristic function, @math{\phi(t) = 1 - i bt }
-
-@end itemize
-
-
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Beta distribution random numbers
@@ -1243,6 +1429,7 @@ Mean = @math{1/2}, Variance = @math{1/(4(2a+1))}, Skewness = @math{0},
 Excess = @math{-6 \sqrt@{2a + 1@}/(a(2a+3))}
 @end itemize
 
+@c ----------------------------------------------------------------------
 @page
 @subsection The Logistic Distribution
 
@@ -1277,39 +1464,7 @@ Useful integral:
 
 @end itemize
 
-@page
-@deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
-@cindex Lognormal random numbers
-This function returns a random number from the lognormal
-distribution.  The distribution function is
-@c
-@equation
-p(x) dx = @{1 \over x \sqrt@{2 \pi \sigma^2@} @} \exp(-(\ln(x) - \zeta)^2/2 \sigma^2) dx
-@end equation
-for @math{x > 0}
-@end deftypefn
-@tex
-\centerline{\input rand-lognormal.tex}
-@end tex
-
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{st}, 
-Variance = @math{s(s-1)t^2}, 
-Skewness = @math{(s+2)\sqrt@{s-1@}}, 
-Excess = @math{(s-1)(s^3+3s^2+6s+6)}
-
-where @math{s = \exp(\sigma^2)} and @math{t = \exp(\zeta)}.
-
-The mode (maximum) occurs at @math{x = exp(\zeta - \sigma^2)}.
-
-@item
-Cumulative distribution function, 
-@math{CDF(x) = \int_0^x p(x') dx' = @{1 \over 2@} erfc((\zeta-\ln(x))/ (\sqrt@{2@} \sigma))}
-
-@end itemize
-
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Lognormal random numbers
@@ -1352,7 +1507,7 @@ Useful integral:
 
 @end itemize
 
-
+@c ----------------------------------------------------------------------
 @deftypefn Random double gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @cindex 2D random direction vector
 @cindex direction vector, random 2D
@@ -1371,73 +1526,7 @@ This function returns a random direction vector @math{v} =
 normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
 @end deftypefn
 
-@page
-@subsection The t-distribution
-The t-distribution arises in statistics. If @math{Y_1} has a normal
-distribution and @math{Y_2} has a  chi-squared distribution with @math{\nu}
-degrees of freedom then the ratio
-
-@equation
-X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
-@end equation
-@noindent
-has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
-
-@deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
-@cindex t-distribution random numbers
-This function returns a random number from the t-distribution. The
-distribution is,
-@equation
-p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
-   (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
-@end equation
-@noindent
-@end deftypefn
-@tex
-\centerline{\input rand-tdist.tex}
-@end tex
-
-@page
-@deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{mu})
-@cindex two-sided exponential random numbers
-@cindex Laplace distribution random numbers
-This function returns a random number from the the Laplace distribution
-with width @var{mu}. The distribution is,
-@equation
-p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
-@end equation
-@noindent
-for @math{-\infty < x < \infty}.
-@end deftypefn
-@tex
-\centerline{\input rand-laplace.tex}
-@end tex
-
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{0}, Variance = @math{2\mu^2}, Skewness = @math{0}, Excess =
-@math{6}
-
-@item
-Cumulants, @math{\kappa_1=0}, @math{\kappa_2=2 \mu^2},
-@math{\kappa_@{2n+1@}=0}, @math{\kappa_@{2n@}=(2n)!\mu^@{2n@}/n}
-
-@item
-Characteristic function, @math{\phi(t) = 1/(1+\mu^2 t^2}
-
-@item
-Cumulative distribution function, @math{CDF(x) = \int_0^x p(x') dx' =
-@{1 \over 2@} \exp(-|x|)} for @math{x<0} and @math{1 - @{1 \over 2@}
-\exp(-|x|)} for @math{x>0}.
-@item
-Confidence limits:
-
-@item
-Useful integral:
-
-@end itemize
-
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Weibull distribution random numbers
@@ -1462,12 +1551,45 @@ Variance = @math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
 @item
 Cumulative distribution function, 
 @math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
+@end itemize
 
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefn Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex Gumbel distribution, random numbers
+These functions return random numbers from the Type-1 and Type-2 Gumbel
+distributions. The Type-1 Gumbel distribution is,
+@equation
+p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
+@end equation
+@noindent
+for @math{-\infty < x < \infty}. The Type-2 Gumbel distribution is,
+@equation
+p(x) dx = a b x^@{-a-1@} \exp(-b x^@{-a@}) dx
+@end equation
+@noindent
+for @math{0 < x < \infty}.
+@end deftypefn
+@tex
+\centerline{\input rand-gumbel.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{\Gamma(1+1/a) \mu}, 
+Variance = @math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
+
+@item
+Cumulative distribution function, 
+@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
 @end itemize
 
 @page
 @subsection Discrete distributions
 
+@c ----------------------------------------------------------------------
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
 This function returns a random integer from the poisson distribution
@@ -1498,6 +1620,36 @@ Characteristic function, @math{\phi(t) = \exp(m(e^@{it@}-1))}
 
 @end itemize
 
+@c ----------------------------------------------------------------------
+@deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
+@cindex Bernoulli trial, random numbers
+This function returns the result either 0 or 1, the result of a
+Bernoulli trial with probability @var{p}. The probability distribution
+for a Bernoulli trial is,
+@c
+@equation
+p(0) = 1 - p, p(1) = p
+@end equation
+@end deftypefn
+@tex
+\centerline{\input rand-bernoulli.tex}
+@end tex
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness =
+@math{FIXME}, Excess = @math{FIXME}
+
+@item
+Cumulants, @math{\kappa_n=FIXME} for all @math{n}
+
+@item
+Characteristic function, @math{\phi(t) = FIXME}
+
+@end itemize
+
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
 @cindex Binomial random numbers
@@ -1530,6 +1682,42 @@ Characteristic function, @math{\phi(t) = (1-p+p \exp(it))^n}
 
 @end itemize
 
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, double @var{t})
+@cindex Negative Binomial distribution, random numbers
+This function returns a random integer from the negative binomial
+distribution, the number of failures occurring before @var{t} successes
+in independent trials with probability @var{p} of success. The
+probability distribution for negative binomial random numbers is,
+@c
+@equation
+p(n) = @{\Gamma(t + n) \over \Gamma(n+1) \Gamma(t) @} p^t (1-p)^n
+@end equation
+@noindent
+Note that @math{t} is not required to be an integer.
+@end deftypefn
+@tex
+\centerline{\input rand-nbinomial.tex}
+@end tex
+
+@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+This function returns a random integer from the Pascal distribution. The
+Pascal distribution is simply a negative binomial distribution with an
+integer value of @math{t}.
+@equation
+p(n) = @{(t + n - 1)! \over n! (t -1)! @} p^t (1-p)^n
+@end equation
+@end deftypefn
+
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{t(1-p)/p}, Variance = @math{t(1-p)/p^2}, Skewness =
+@math{(2-p)/\sqrt@{t(1-p)@}}, Excess = @math{(1/N)(6+@{p^2 \over 1 - p@})}
+@end itemize
+
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
 @cindex Geometric random numbers
@@ -1563,53 +1751,7 @@ Characteristic function, @math{\phi(t) = p/(1 - (1-p)\exp(it)}
 
 @end itemize
 
-@page
-@deftypefn Random {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
-@cindex Logarithmic random numbers
-This function returns a random integer from the logarithmic
-distribution. The probability distribution for logarithmic random numbers
-is,
-@c
-@equation
-p(n) = @{-1 \over \log(1-p)@} @{\left( p^n \over n \right)@}
-@end equation
-@noindent
-for @math{n \ge 1}.
-@end deftypefn
-@tex
-\centerline{\input rand-logarithmic.tex}
-@end tex
-
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{a p / (1-p)}, Variance = @math{a p (1-a p)/(1-p)^2}
-where @math{a = -1/\log(1-p)}
-@end itemize
-
-@page
-@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
-@cindex Binomial random numbers
-This function returns a random integer from the negative binomial
-distribution, the number of failures occurring before @var{t} successes
-in independent trials with probability @var{p} of success. The
-probability distribution for negative binomial random numbers is,
-@c
-@equation
-p(n) = @{(t + n - 1)! \over n! (t - 1)! @} p^t (1-p)^n
-@end equation
-@end deftypefn
-@tex
-\centerline{\input rand-nbinomial.tex}
-@end tex
-
-@unnumberedsubsubsec Properties
-@itemize @asis
-@item
-Mean = @math{t(1-p)/p}, Variance = @math{t(1-p)/p^2}, Skewness =
-@math{(2-p)/\sqrt@{t(1-p)@}}, Excess = @math{(1/N)(6+@{p^2 \over 1 - p@})}
-@end itemize
-
+@c ----------------------------------------------------------------------
 @page
 @deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 @cindex Geometric random numbers
@@ -1636,7 +1778,32 @@ Skewness = @math{(n_2 - n_1)(N-2t) \sqrt@{(N-1)/(t n_1 n_2 (N-t))@}}, where
 @math{N = n_1 + n_2}.
 @end itemize
 
+@c ----------------------------------------------------------------------
+@page
+@deftypefn Random {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
+@cindex Logarithmic random numbers
+This function returns a random integer from the logarithmic
+distribution. The probability distribution for logarithmic random numbers
+is,
+@c
+@equation
+p(n) = @{-1 \over \log(1-p)@} @{\left( p^n \over n \right)@}
+@end equation
+@noindent
+for @math{n \ge 1}.
+@end deftypefn
+@tex
+\centerline{\input rand-logarithmic.tex}
+@end tex
 
+@unnumberedsubsubsec Properties
+@itemize @asis
+@item
+Mean = @math{a p / (1-p)}, Variance = @math{a p (1-a p)/(1-p)^2}
+where @math{a = -1/\log(1-p)}
+@end itemize
+
+@c ----------------------------------------------------------------------
 @c @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
 @c @code{gsl_ran_poisson_array} places an array of @var{N}
 @c poisson--distributed random numbers with mean @var{mu} into the array
