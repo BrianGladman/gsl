@@ -6,3 +6,10 @@ joining the project.
 
 The random, fft, siman, roots, statistics and specfunc are reasonable
 well developed.  All but the later are documented in gsl-ref.texi.
+
+A test suite is available for most of the libraries.  It can be
+invoked with "make check" in each directory.  All tests can be run
+together with "make check" at the top level.
+
+If you are interested in participating in GSL development, please send
+mail to Mark Galassi -- rosalia@cygnus.com
