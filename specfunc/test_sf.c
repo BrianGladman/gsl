@@ -955,6 +955,26 @@ int check_log(void)
   gsl_test(s, "  log(-1)");
   status += s;
 
+  s = 0;
+  s += ( frac_diff( gsl_sf_log_1plusx(0.1), 0.09531017980432486004 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 + 0.1)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_log_1plusx(0.49), 0.3987761199573677730 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 + 0.49)");
+  status += s;
+  
+  s = 0;
+  s += ( frac_diff( gsl_sf_log_1plusx(-0.49), -0.6733445532637655964 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 - 0.49)");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff( gsl_sf_log_1plusx(1.0e-10), 9.999999999500000000e-11 ) > 1.0e-14 );
+  gsl_test(s, "  log(1 + 1.0e-10)");
+  status += s;
+
   return status;
 }
 

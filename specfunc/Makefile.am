@@ -11,6 +11,7 @@ include_HEADERS = \
 	gsl_sf_clausen.h	\
 	gsl_sf_coupling.h	\
 	gsl_sf_coulomb.h	\
+	gsl_sf_dawson.h		\
 	gsl_sf_debye.h      	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_ellint.h        	\
@@ -79,6 +80,7 @@ libgslspecfunc_a_SOURCES = 	\
 	coupling.c		\
 	coulomb.c		\
 	coulomb_bound.c		\
+	dawson.c		\
 	debye.c			\
 	dilog.c			\
 	ellint.c		\
