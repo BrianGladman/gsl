@@ -22,6 +22,8 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   double ratio;
   double dirder;
 
+  int iter = 0;
+
   double p1 = 0.1, p25 = 0.25, p5 = 0.5, p75 = 0.75, p0001 = 0.0001;
 
   /* Compute qtf = Q^T f */
@@ -41,6 +43,8 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   /* Determine the Levenberg-Marquardt parameter */
 
 lm_iteration:
+  
+  iter++ ;
   
   lmpar (r, perm, qtf, diag, state->delta, &(state->par), newton, gradient, sdiag, dx, w);
 
@@ -91,8 +95,6 @@ lm_iteration:
     dirder = -(t1 * t1 + t2 * t2);
   }
 
-
-
   /* compute the ratio of the actual to predicted reduction */
 
   if (prered > 0)
@@ -123,7 +125,10 @@ lm_iteration:
     {
       double temp = (actred >= 0) ? p5 : p5*dirder / (dirder + p5 * actred);
 
-      if (p1 * fnorm1 >= state->fnorm || temp < p1 ) temp = p1;
+      if (p1 * fnorm1 >= state->fnorm || temp < p1 ) 
+        {
+          temp = p1;
+        }
 
       state->delta = temp * GSL_MIN_DBL (state->delta, pnorm/p1);
 
@@ -176,10 +181,9 @@ lm_iteration:
     {
       return GSL_ETOLG;
     }
-  else 
+  else if (iter < 10)
     {
       /* Repeat inner loop if unsuccessful */
-      printf("repeat\n");
       goto lm_iteration;
     }
 
