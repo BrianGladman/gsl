@@ -5,6 +5,9 @@
 #include <errno.h>
 
 enum { 
+  GSL_SUCCESS  = 0, 
+  GSL_FAILURE  = -1,
+  GSL_CONTINUE = -2,  /* iteration has not converged */
   GSL_EDOM     = 1,   /* input domain error, e.g sqrt(-1) */
   GSL_ERANGE   = 2,   /* output range error, e.g. exp(1e100) */
   GSL_EFAULT   = 3,   /* invalid pointer */
@@ -29,13 +32,6 @@ enum {
   GSL_EUNSUP   = 22,  /* requested feature is not supported by the hardware */
   GSL_EUNIMPL  = 23   /* requested feature not (yet) implemented */
 } ;
-
-/* just to make things slightly clearer */
-
-enum {
-  GSL_SUCCESS = 0, 
-  GSL_FAILURE = -1
-};
 
 void gsl_error (const char * reason, const char * file, int line,
 		int gsl_errno);
