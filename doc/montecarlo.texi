@@ -1,0 +1,141 @@
+@cindex Monte Carlo integrators
+@menu
+* Algorithms::                  
+* Interface::                   
+* Example::                     
+* The Future::                  
+@end menu
+
+
+@c RCS: $Id$
+@c
+
+This chapter describes the Monte Carlo integration routines in the
+library.  At the moment the algorithms implemented are: plain non-adaptive,
+ Monte Carlo, VEGAS (following Peter Lepage) and MISER (following
+Numerical recipes).  We will dispense with an introduction and simply
+describe the algorithms and interfaces.  Note that the documentation (as
+well as the code) is still evolving - the code at a faster rate.
+
+@node Algorithms, Interface
+@section Algorithms
+
+@subsection MISER
+
+One of the basic ideas of all stratified sampling techniques is
+the observation that for two regions @math{a} and @math{b} with
+variances @math{\sigma_a} and @math{\sigma_b}, the combined 
+variance 
+@equation
+  \sigma^2 = @{\sigma^2_a \over N_a@} + @{\sigma^2_b \over (N-N_a)@}
+@end equation
+is minimized by choosing (assuming one can)
+@equation
+   @{N_a \over N @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
+@endequation
+
+@subsection VEGAS
+
+
+@node Interface, Example, Algorithms
+@section Interface
+
+All of the integration routines use the same interface.  Their
+is an allocator to allocate memory to hold control variables and
+workspace, a routine to initialize those control variables,
+the integrator itself, and of course a function to free the space
+when done.  For an integrator algorithm, call it COOL
+(substitute any of the currently existing algorithms) we then 
+have
+@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc()
+@end deftypefun
+@deftypefun int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
+        double *x_lower, double* x_upper, double*)
+@end deftypefun
+@deftypefun int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
+@end deftypefun
+@deftypefun int gsl_monte_COOL(gsl_monte_COOL_state* s, 
+        double *x_lower, double* x_upper, long int dimension,
+        long int function_calls, double* result, double* error,
+        ...)
+@end deftypefun
+
+Notice the ellipses in last argument to the actual integration routine.
+
+
+@node Example, The Future, Interface
+@section Example
+
+Here we provide s simple example of using the integration routines.  Vegas
+was chosen at random.
+
+@example
+#include <math.h>
+#include <stdio.h>
+
+#include <gsl_math.h>
+#include <gsl_monte_vegas.h>
+
+double f1(double x[]) 
+@{
+  int i;
+  double product = 1.0;
+
+  for (i = 0; i < 10; i++) 
+    product *= x[i];
+
+  return product;
+@}
+
+main () 
+@{
+  double xl[10] = @{0, 0, 0, 0, 0, 0, 0, 0, 0, 0@};
+  double xu[10] = @{1, 1, 1, 1, 1, 1, 1, 1, 1, 1@};
+
+  double res = 0;
+  double err = 0;
+  double chisq = 0;
+  int status = 0;
+  unsigned long calls = 10000;
+  unsigned long dimension = 10;
+
+  gsl_monte_vegas_state* s = gsl_monte_vegas_alloc();
+  gsl_monte_plain_init(s);
+
+  status = gsl_monte_vegas(s, f0, xl, xu, dimension, calls, res, err, chisq);
+  if (status)
+    printf("oops!\n");
+  else
+    printf("vegas(f0) = %f +- %f with \"chisq\" %f\n", res, err, chisq);
+
+@}
+@end example
+
+
+@node The Future,  , Example
+@section The Future
+
+In the future, the author of the Monte Carlo routines intends to add
+more algorithms, greater control over the current ones,  more error
+handling, and a more consistent interface.  Probably something like
+the rng interface will evolve, so that something like 
+@example
+  integrator = gsl_monte_alloc(gsl_monte_vegas, dimension)
+@end example 
+will be possible.
+The old interface will probably stay around for a while (though, since
+this is @math{version < 1}, the author 
+does not want to be held to such as statement).
+
+@c @display
+@c   To Be Fixed.
+@c @end display
+@c @noindent
+@c 
+@c @itemize @asis
+@c @item 
+@c @code{item 1}
+@c @item 
+@c @code{item 2}
+@c @end itemize
+@c 
