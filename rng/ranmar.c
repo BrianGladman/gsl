@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-#include <stdio.h>
-
 /* This is the RANMAR lagged fibonacci generator of Marsaglia, Zaman
    and Tsang.  The sequence is a series of 24-bit integers, x_n,
 
@@ -20,12 +18,16 @@
    each of length O(10^30). Thus each seed up to 900,000,000 gives an
    independent sequence.
 
+   Although it was good in its day this generator now has known
+   statistical defects and has been superseded by RANLUX.
+
    From: F. James, "A Review of Pseudorandom number generators",
    Computer Physics Communications 60, 329 (1990).
 
    G. Marsaglia, A. Zaman and W.W. Tsang, Stat. Prob. Lett. 9, 35 (1990)  */
 
-unsigned long int ranmar_get (void *vstate);
+inline unsigned long int ranmar_get (void *vstate);
+double ranmar_get_double (void *vstate);
 void ranmar_set_impl (void *state, unsigned long int s, unsigned int luxury);
 void ranmar_set (void *state, unsigned long int s);
 void ranmar389_set (void *state, unsigned long int s);
@@ -41,7 +43,7 @@ typedef struct
   }
 ranmar_state_t;
 
-unsigned long int
+inline unsigned long int
 ranmar_get (void *vstate)
 {
   ranmar_state_t *state = (ranmar_state_t *) vstate;
@@ -94,6 +96,11 @@ ranmar_get (void *vstate)
   return delta;
 }
 
+double
+ranmar_get_double (void *vstate)
+{
+  return ranmar_get (vstate) / 16777216.0 ;
+}
 
 void
 ranmar_set (void *vstate, unsigned long int s)
@@ -143,6 +150,7 @@ static const gsl_rng_type ranmar_type =
  0,				/* RAND_MIN */
  sizeof (ranmar_state_t),
  &ranmar_set,
- &ranmar_get};
+ &ranmar_get,
+ &ranmar_get_double};
 
 const gsl_rng_type *gsl_rng_ranmar = &ranmar_type;

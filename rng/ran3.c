@@ -6,7 +6,8 @@
    subtractive generator, with the Numerical Recipe's ran3 paramters.
    It is a subtractive lagged fibonnaci generator. */
 
-unsigned long int ran3_get (void *vstate);
+inline unsigned long int ran3_get (void *vstate);
+double ran3_get_double (void *vstate);
 void ran3_set (void *state, unsigned long int s);
 
 #define M_BIG 1000000000
@@ -20,7 +21,7 @@ typedef struct
   }
 ran3_state_t;
 
-unsigned long int
+inline unsigned long int
 ran3_get (void *vstate)
 {
   ran3_state_t *state = (ran3_state_t *) vstate;
@@ -46,6 +47,11 @@ ran3_get (void *vstate)
   return j;
 }
 
+double
+ran3_get_double (void *vstate)
+{
+  return ran3_get (vstate) / (double) M_BIG ;
+}
 
 void
 ran3_set (void *vstate, unsigned long int s)
@@ -96,6 +102,7 @@ static const gsl_rng_type ran3_type =
  0,				/* RAND_MIN */
  sizeof (ran3_state_t),
  &ran3_set,
- &ran3_get};
+ &ran3_get,
+ &ran3_get_double};
 
 const gsl_rng_type *gsl_rng_ran3 = &ran3_type;

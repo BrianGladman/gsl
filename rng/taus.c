@@ -36,7 +36,8 @@
    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/tausme.ps
    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/tausme.ps */
 
-unsigned long int taus_get (void *vstate);
+inline unsigned long int taus_get (void *vstate);
+double taus_get_double (void *vstate);
 void taus_set (void *state, unsigned long int s);
 
 typedef struct
@@ -45,7 +46,7 @@ typedef struct
   }
 taus_state_t;
 
-unsigned long
+inline unsigned long
 taus_get (void *vstate)
 {
   taus_state_t *state = (taus_state_t *) vstate;
@@ -58,6 +59,12 @@ taus_get (void *vstate)
   state->s3 = TAUSWORTHE (state->s3, 3, 11, 4294967280UL, 17);
 
   return (state->s1 ^ state->s2 ^ state->s3);
+}
+
+double
+taus_get_double (void *vstate)
+{
+  return taus_get (vstate) / 4294967296.0 ;
 }
 
 void
@@ -89,6 +96,7 @@ static const gsl_rng_type taus_type =
  0,			        /* RAND_MIN */
  sizeof (taus_state_t),
  &taus_set,
- &taus_get};
+ &taus_get,
+ &taus_get_double};
 
 const gsl_rng_type *gsl_rng_taus = &taus_type;

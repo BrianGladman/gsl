@@ -12,7 +12,8 @@
    Generators II", ACM Transactions on Modelling and Computer
    Simulation, Vol. 4, No. 3, 1994, pages 254-266. */
 
-unsigned long int tt_get (void *vstate);
+inline unsigned long int tt_get (void *vstate);
+double tt_get_double (void *vstate);
 void tt_set (void *state, unsigned long int s);
 
 #define N 25
@@ -25,7 +26,7 @@ typedef struct
   }
 tt_state_t;
 
-unsigned long int
+inline unsigned long int
 tt_get (void *vstate)
 {
   tt_state_t *state = (tt_state_t *) vstate;
@@ -66,6 +67,12 @@ tt_get (void *vstate)
   state->n = n + 1;
 
   return y;
+}
+
+double
+tt_get_double (void * vstate)
+{
+  return tt_get (vstate) / 4294967296.0 ;
 }
 
 void
@@ -111,6 +118,7 @@ static const gsl_rng_type tt_type =
  0,			        /* RAND_MIN */
  sizeof (tt_state_t),
  &tt_set,
- &tt_get};
+ &tt_get,
+ &tt_get_double};
 
 const gsl_rng_type *gsl_rng_tt800 = &tt_type;

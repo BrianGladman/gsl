@@ -1,4 +1,5 @@
 #include <config.h>
+#include <math.h>
 #include <stdlib.h>
 #include <gsl_rng.h>
 
@@ -16,7 +17,8 @@
    The rand() generator is not very good -- the low bits of successive
    numbers are correlated. */
 
-unsigned long int bsdrand_get (void *vstate);
+inline unsigned long int bsdrand_get (void *vstate);
+double bsdrand_get_double (void *vstate);
 void bsdrand_set (void *state, unsigned long int s);
 
 typedef struct
@@ -25,7 +27,7 @@ typedef struct
   }
 bsdrand_state_t;
 
-unsigned long int
+inline unsigned long int
 bsdrand_get (void *vstate)
 {
   bsdrand_state_t *state = (bsdrand_state_t *) vstate;
@@ -37,6 +39,11 @@ bsdrand_get (void *vstate)
   return state->x;
 }
 
+double
+bsdrand_get_double (void *vstate)
+{
+  return bsdrand_get (vstate) / 2147483648.0 ;
+}
 
 void
 bsdrand_set (void *vstate, unsigned long int s)
@@ -54,6 +61,7 @@ static const gsl_rng_type bsdrand_type =
  0,				/* RAND_MIN */
  sizeof (bsdrand_state_t),
  &bsdrand_set,
- &bsdrand_get};
+ &bsdrand_get,
+ &bsdrand_get_double};
 
 const gsl_rng_type *gsl_rng_bsdrand = &bsdrand_type;

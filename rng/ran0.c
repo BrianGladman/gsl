@@ -12,7 +12,8 @@
    Note, if you choose a seed of 123459876 it would give a degenerate
    series 0,0,0,0, ...  I've made that into an error. */
 
-unsigned long int ran0_get (void *vstate);
+inline unsigned long int ran0_get (void *vstate);
+double ran0_get_double (void *vstate);
 void ran0_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
@@ -24,7 +25,7 @@ typedef struct
   }
 ran0_state_t;
 
-unsigned long int
+inline unsigned long int
 ran0_get (void *vstate)
 {
   ran0_state_t *state = (ran0_state_t *) vstate;
@@ -46,6 +47,11 @@ ran0_get (void *vstate)
   return state->x;
 }
 
+double
+ran0_get_double (void *vstate)
+{
+  return ran0_get (vstate) / 2147483647.0 ;
+}
 
 void
 ran0_set (void *vstate, unsigned long int s)
@@ -54,7 +60,8 @@ ran0_set (void *vstate, unsigned long int s)
 
   if (s == mask)
     {
-      GSL_ERROR_RETURN_NOTHING ("ran0 should not use seed == mask", GSL_EINVAL);
+      GSL_ERROR_RETURN_NOTHING ("ran0 should not use seed == mask", 
+				GSL_EINVAL);
     }
 
   state->x = s ^ mask;
@@ -68,6 +75,7 @@ static const gsl_rng_type ran0_type =
  1,				/* RAND_MIN */
  sizeof (ran0_state_t),
  &ran0_set,
- &ran0_get};
+ &ran0_get,
+ &ran0_get_double};
 
 const gsl_rng_type *gsl_rng_ran0 = &ran0_type;

@@ -52,7 +52,8 @@
    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/combmrg.ps
    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
 
-unsigned long int cmrg_get (void *vstate);
+inline unsigned long int cmrg_get (void *vstate);
+double cmrg_get_double (void *vstate);
 void cmrg_set (void *state, unsigned long int s);
 
 static const long int m1 = 2147483647, m2 = 2145483479;
@@ -69,7 +70,7 @@ typedef struct
   }
 cmrg_state_t;
 
-unsigned long int
+inline unsigned long int
 cmrg_get (void *vstate)
 {
   cmrg_state_t *state = (cmrg_state_t *) vstate;
@@ -115,13 +116,19 @@ cmrg_get (void *vstate)
     if (state->y1 < 0)
       state->y1 += m2;
   }
-
-  /* Combination */
+  
   if (state->x1 < state->y1)
     return (state->x1 - state->y1 + m1);
   else
     return (state->x1 - state->y1);
 }
+
+double 
+cmrg_get_double (void *vstate)
+{
+  return cmrg_get (vstate) / 2147483647.0 ;
+}
+
 
 void
 cmrg_set (void *vstate, unsigned long int s)
@@ -165,6 +172,7 @@ static const gsl_rng_type cmrg_type =
  0,			        /* RAND_MIN */
  sizeof (cmrg_state_t),
  &cmrg_set,
- &cmrg_get};
+ &cmrg_get,
+ &cmrg_get_double};
 
 const gsl_rng_type *gsl_rng_cmrg = &cmrg_type;

@@ -33,7 +33,8 @@
    Kenneth G. Hamilton, "Assembler RANLUX for PCs", Computer Physics
    Communications, 101 (1997) 249-253  */
 
-unsigned long int ranlux_get (void *vstate);
+inline unsigned long int ranlux_get (void *vstate);
+double ranlux_get_double (void *vstate);
 void ranlux_set_impl (void *state, unsigned long int s, unsigned int luxury);
 void ranlux_set (void *state, unsigned long int s);
 void ranlux389_set (void *state, unsigned long int s);
@@ -54,26 +55,6 @@ typedef struct
 ranlux_state_t;
 
 static inline unsigned long int increment_state (ranlux_state_t * state);
-
-unsigned long int
-ranlux_get (void *vstate)
-{
-  ranlux_state_t *state = (ranlux_state_t *) vstate;
-  const unsigned int skip = state->skip;
-  unsigned long int r = increment_state (state);
-
-  state->n++;
-
-  if (state->n == 24)
-    {
-      unsigned int i;
-      state->n = 0;
-      for (i = 0; i < skip; i++)
-	increment_state (state);
-    }
-
-  return r;
-}
 
 static inline unsigned long int
 increment_state (ranlux_state_t * state)
@@ -119,6 +100,31 @@ increment_state (ranlux_state_t * state)
   return delta;
 }
 
+inline unsigned long int
+ranlux_get (void *vstate)
+{
+  ranlux_state_t *state = (ranlux_state_t *) vstate;
+  const unsigned int skip = state->skip;
+  unsigned long int r = increment_state (state);
+
+  state->n++;
+
+  if (state->n == 24)
+    {
+      unsigned int i;
+      state->n = 0;
+      for (i = 0; i < skip; i++)
+	increment_state (state);
+    }
+
+  return r;
+}
+
+double
+ranlux_get_double (void *vstate)
+{
+  return ranlux_get (vstate) / 16777216.0;
+}
 
 void
 ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
@@ -181,7 +187,8 @@ static const gsl_rng_type ranlux_type =
  0,				/* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux_set,
- &ranlux_get};
+ &ranlux_get,
+ &ranlux_get_double};
 
 static const gsl_rng_type ranlux389_type =
 {"ranlux389",			/* name */
@@ -189,7 +196,8 @@ static const gsl_rng_type ranlux389_type =
  0,				/* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux389_set,
- &ranlux_get};
+ &ranlux_get,
+ &ranlux_get_double};
 
 const gsl_rng_type *gsl_rng_ranlux = &ranlux_type;
 const gsl_rng_type *gsl_rng_ranlux389 = &ranlux389_type;

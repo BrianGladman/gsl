@@ -36,7 +36,8 @@
 
 #include <gsl_rng.h>
 
-unsigned long int mt_get (void *vstate);
+inline unsigned long int mt_get (void *vstate);
+double mt_get_double (void *vstate);
 void mt_set (void *state, unsigned long int s);
 
 #define N 624	/* Period parameters */
@@ -51,7 +52,7 @@ typedef struct
   }
 mt_state_t;
 
-unsigned long
+inline unsigned long
 mt_get (void *vstate)
 {
   mt_state_t *state = (mt_state_t *) vstate;
@@ -94,6 +95,12 @@ mt_get (void *vstate)
   return y;
 }
 
+double
+mt_get_double (void * vstate)
+{
+  return mt_get (vstate) / 4294967296.0 ;
+}
+
 void
 mt_set (void *vstate, unsigned long int s)
 {
@@ -119,6 +126,7 @@ static const gsl_rng_type mt_type =
  0,			        /* RAND_MIN  */
  sizeof (mt_state_t),
  &mt_set,
- &mt_get};
+ &mt_get,
+ &mt_get_double};
 
 const gsl_rng_type *gsl_rng_mt19937 = &mt_type;

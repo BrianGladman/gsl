@@ -31,7 +31,8 @@
    multiple recursive random number generators", ACM Transactions on
    Modeling and Computer Simulation 3, 87-98 (1993). */
 
-unsigned long int mrg_get (void *vstate);
+inline unsigned long int mrg_get (void *vstate);
+double mrg_get_double (void *vstate);
 void mrg_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647;
@@ -44,7 +45,7 @@ typedef struct
   }
 mrg_state_t;
 
-unsigned long int
+inline unsigned long int
 mrg_get (void *vstate)
 {
   mrg_state_t *state = (mrg_state_t *) vstate;
@@ -72,6 +73,12 @@ mrg_get (void *vstate)
     state->x1 += m;
 
   return state->x1;
+}
+
+double
+mrg_get_double (void *vstate)
+{
+  return mrg_get (vstate) / 2147483647.0 ;
 }
 
 
@@ -117,6 +124,7 @@ static const gsl_rng_type mrg_type =
  0,                             /* RAND_MIN */
  sizeof (mrg_state_t),
  &mrg_set,
- &mrg_get};
+ &mrg_get,
+ &mrg_get_double};
 
 const gsl_rng_type *gsl_rng_mrg = &mrg_type;

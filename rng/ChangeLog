@@ -1,3 +1,14 @@
+Sun Jul  5 15:59:29 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* ranf.c: added CRAY RANF, 48 bit generator
+
+	* rand48.c: added the standard unix rand48()
+
+	* changed all the routines to allow an additional callback for
+ 	returning doubles. Now we can implement numerical recipes with its
+ 	non-standard checks on the floating point results and also access
+ 	the full state for getting 48-bit doubles out of rand48.
+	
 Sat Jul  4 11:14:49 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* ranmar.c: added the RANMAR generator

@@ -13,7 +13,8 @@
 
    The period of this generator is 2^32. */
 
-unsigned long int tds_get (void *vstate);
+inline unsigned long int tds_get (void *vstate);
+double tds_get_double (void *vstate);
 void tds_set (void *state, unsigned long int s);
 
 typedef struct
@@ -30,6 +31,12 @@ tds_get (void *vstate)
   state->x = (1664525 * state->x) & 0xffffffffUL;
 
   return state->x;
+}
+
+double
+tds_get_double (void *vstate)
+{
+  return tds_get (vstate) / 4294967296.0 ;
 }
 
 void
@@ -51,6 +58,7 @@ static const gsl_rng_type tds_type =
  1,				/* RAND_MIN */
  sizeof (tds_state_t),
  &tds_set,
- &tds_get};
+ &tds_get,
+ &tds_get_double};
 
 const gsl_rng_type *gsl_rng_tds = &tds_type;

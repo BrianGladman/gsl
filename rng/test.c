@@ -5,6 +5,7 @@
 
 void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	       unsigned long int result);
+void rng_float_test (const gsl_rng_type * T);
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
@@ -62,6 +63,39 @@ main (void)
 
   rng_test (gsl_rng_ranmar, 1, 10000, 14428370);
 
+  rng_test (gsl_rng_rand48, 0, 10000, 0xDE095043UL);
+  rng_test (gsl_rng_rand48, 1, 10000, 0xEDA54977UL);
+
+  rng_test (gsl_rng_ranf, 0, 10000, 2152890433UL);
+  rng_test (gsl_rng_ranf, 2, 10000, 339327233);
+
+  /* Test constant relationship between int and double functions */
+
+  rng_float_test (gsl_rng_bsdrand);
+  rng_float_test (gsl_rng_cmrg);
+  rng_float_test (gsl_rng_minstd);
+  rng_float_test (gsl_rng_mrg);
+  rng_float_test (gsl_rng_mt19937);
+  rng_float_test (gsl_rng_r250);
+  rng_float_test (gsl_rng_ran0);
+  rng_float_test (gsl_rng_ran1);
+  rng_float_test (gsl_rng_ran2);
+  rng_float_test (gsl_rng_ran3);
+  rng_float_test (gsl_rng_rand);
+  rng_float_test (gsl_rng_randu);
+  rng_float_test (gsl_rng_rand48);
+  rng_float_test (gsl_rng_ranf);
+  rng_float_test (gsl_rng_ranlux);
+  rng_float_test (gsl_rng_ranlux389);
+  rng_float_test (gsl_rng_ranmar);
+  rng_float_test (gsl_rng_taus);
+  rng_float_test (gsl_rng_tds);
+  rng_float_test (gsl_rng_tt800);
+  rng_float_test (gsl_rng_uni);
+  rng_float_test (gsl_rng_uni32);
+  rng_float_test (gsl_rng_vax);
+  rng_float_test (gsl_rng_zuf);
+
   /* Test save/restore functions */
 
   rng_state_test (gsl_rng_bsdrand);
@@ -76,6 +110,8 @@ main (void)
   rng_state_test (gsl_rng_ran3);
   rng_state_test (gsl_rng_rand);
   rng_state_test (gsl_rng_randu);
+  rng_state_test (gsl_rng_rand48);
+  rng_state_test (gsl_rng_ranf);
   rng_state_test (gsl_rng_ranlux);
   rng_state_test (gsl_rng_ranlux389);
   rng_state_test (gsl_rng_ranmar);
@@ -99,6 +135,8 @@ main (void)
   rng_parallel_state_test (gsl_rng_ran3);
   rng_parallel_state_test (gsl_rng_rand);
   rng_parallel_state_test (gsl_rng_randu);
+  rng_parallel_state_test (gsl_rng_rand48);
+  rng_parallel_state_test (gsl_rng_ranf);
   rng_parallel_state_test (gsl_rng_ranlux);
   rng_parallel_state_test (gsl_rng_ranlux389);
   rng_parallel_state_test (gsl_rng_ranmar);
@@ -126,6 +164,8 @@ main (void)
   generic_rng_test (gsl_rng_ran3);
   generic_rng_test (gsl_rng_rand);
   generic_rng_test (gsl_rng_randu);
+  generic_rng_test (gsl_rng_rand48);
+  generic_rng_test (gsl_rng_ranf);
   generic_rng_test (gsl_rng_ranlux);
   generic_rng_test (gsl_rng_ranlux389);
   generic_rng_test (gsl_rng_ranmar);
@@ -165,6 +205,44 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	    gsl_rng_name (r), n, k, result);
 
   gsl_rng_free (r);
+}
+
+void
+rng_float_test (const gsl_rng_type * T)
+{
+  gsl_rng *ri = gsl_rng_alloc (T);
+  gsl_rng *rf = gsl_rng_alloc (T);
+
+  double u, c ; 
+  unsigned int i;
+  unsigned long int k = 0;
+  int status = 0 ;
+
+  do 
+    {
+      k = gsl_rng_get (ri);
+      u = gsl_rng_get (rf);
+    } 
+  while (k == 0) ;
+
+  c = k / u ;
+
+  for (i = 0; i < N2; i++)
+    {
+      k = gsl_rng_get (ri);
+      u = gsl_rng_get (rf);
+      if (c*k != u)
+	{
+	  status = 1 ;
+	  break ;
+	}
+    }
+
+  gsl_test (status, "%s, ratio of int vs double (%g observed vs %g expected)",
+	    gsl_rng_name (ri), c, k/u);
+
+  gsl_rng_free (ri);
+  gsl_rng_free (rf);
 }
 
 

@@ -12,7 +12,8 @@
 
    The period of the underlying combined generator is O(2^60). */
 
-unsigned long int ran2_get (void *vstate);
+inline unsigned long int ran2_get (void *vstate);
+double ran2_get_double (void *vstate);
 void ran2_set (void *state, unsigned long int s);
 
 static const long int m1 = 2147483563, a1 = 40014, q1 = 53668, r1 = 12211;
@@ -30,7 +31,7 @@ typedef struct
   }
 ran2_state_t;
 
-unsigned long int
+inline unsigned long int
 ran2_get (void *vstate)
 {
   ran2_state_t *state = (ran2_state_t *) vstate;
@@ -65,6 +66,18 @@ ran2_get (void *vstate)
   return state->n;
 }
 
+double
+ran2_get_double (void *vstate)
+{
+  float x_max = 1 - 1.2e-7 ; /* Numerical Recipes version of 1-FLT_EPS */
+
+  float x = ran2_get (vstate) / 2147483563.0 ;
+ 
+  if (x > x_max) 
+    return x_max ;
+  
+  return x ;
+}
 
 void
 ran2_set (void *vstate, unsigned long int s)
@@ -108,6 +121,7 @@ static const gsl_rng_type ran2_type =
  1,				/* RAND_MIN */
  sizeof (ran2_state_t),
  &ran2_set,
- &ran2_get};
+ &ran2_get,
+ &ran2_get_double};
 
 const gsl_rng_type *gsl_rng_ran2 = &ran2_type;

@@ -20,7 +20,8 @@
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */
 
-unsigned long int randu_get (void *vstate);
+inline unsigned long int randu_get (void *vstate);
+double randu_get_double (void *vstate);
 void randu_set (void *state, unsigned long int s);
 
 static const long int a = 65539;
@@ -32,7 +33,7 @@ typedef struct
   }
 randu_state_t;
 
-unsigned long int
+inline unsigned long int
 randu_get (void *vstate)
 {
   randu_state_t *state = (randu_state_t *) vstate;
@@ -42,6 +43,12 @@ randu_get (void *vstate)
   state->x = (a * state->x) & 0x7fffffffUL;
 
   return state->x;
+}
+
+double
+randu_get_double (void *vstate)
+{
+  return randu_get (vstate) / 2147483648.0 ;
 }
 
 void
@@ -63,6 +70,7 @@ static const gsl_rng_type randu_type =
  1,       			/* RAND_MIN */
  sizeof (randu_state_t),
  &randu_set,
- &randu_get};
+ &randu_get,
+ &randu_get_double};
 
 const gsl_rng_type *gsl_rng_randu = &randu_type;

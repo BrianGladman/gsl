@@ -4,13 +4,10 @@
 
 /* This is an implementation of the algorithm used in Numerical
    Recipe's ran1 generator.  It is MINSTD with a 32-element
-   shuffle-box. 
+   shuffle-box. */
 
-   As far as I can tell, in general the effects of adding a shuffle
-   box cannot be proven theoretically, so the period of this generator
-   is unknown.  */
-
-unsigned long int ran1_get (void *vstate);
+inline unsigned long int ran1_get (void *vstate);
+double ran1_get_double (void *vstate);
 void ran1_set (void *state, unsigned long int s);
 
 static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
@@ -26,7 +23,7 @@ typedef struct
   }
 ran1_state_t;
 
-unsigned long int
+inline unsigned long int
 ran1_get (void *vstate)
 {
   ran1_state_t *state = (ran1_state_t *) vstate;
@@ -52,6 +49,19 @@ ran1_get (void *vstate)
   }
 
   return state->n;
+}
+
+double
+ran1_get_double (void *vstate)
+{
+  float x_max = 1 - 1.2e-7 ; /* Numerical Recipes version of 1-FLT_EPS */
+
+  float x = ran1_get (vstate) / 2147483647.0 ;
+ 
+  if (x > x_max) 
+    return x_max ;
+  
+  return x ;
 }
 
 
@@ -95,6 +105,7 @@ static const gsl_rng_type ran1_type =
  1,				/* RAND_MIN */
  sizeof (ran1_state_t),
  &ran1_set,
- &ran1_get};
+ &ran1_get,
+ &ran1_get_double};
 
 const gsl_rng_type *gsl_rng_ran1 = &ran1_type;

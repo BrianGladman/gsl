@@ -12,6 +12,7 @@ typedef struct
     void *state;
     void (*set) (void *state, unsigned long int seed);
     unsigned long int (*get) (void *state);
+    double (*get_double) (void *state);
   }
 gsl_rng;
 
@@ -23,6 +24,7 @@ typedef struct
     size_t size;
     void (*set) (void *state, unsigned long int seed);
     unsigned long int (*get) (void *state);
+    double (*get_double) (void *state);
   }
 gsl_rng_type;
 
@@ -39,8 +41,10 @@ extern const gsl_rng_type *gsl_rng_ran0;
 extern const gsl_rng_type *gsl_rng_ran1;
 extern const gsl_rng_type *gsl_rng_ran2;
 extern const gsl_rng_type *gsl_rng_ran3;
+extern const gsl_rng_type *gsl_rng_rand48;
 extern const gsl_rng_type *gsl_rng_rand;
 extern const gsl_rng_type *gsl_rng_randu;
+extern const gsl_rng_type *gsl_rng_ranf;
 extern const gsl_rng_type *gsl_rng_ranlux389;
 extern const gsl_rng_type *gsl_rng_ranlux;
 extern const gsl_rng_type *gsl_rng_ranmar;
@@ -58,7 +62,6 @@ extern unsigned long int gsl_rng_default_seed;
 unsigned long int gsl_rng_get (const gsl_rng * r);
 double gsl_rng_uniform (const gsl_rng * r);
 double gsl_rng_uniform_pos (const gsl_rng * r);
-double gsl_rng_uniform_gt0_lt1 (const gsl_rng * r);
 unsigned long int gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n);
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
@@ -85,42 +88,20 @@ gsl_rng_get (const gsl_rng * r)
 extern inline double
 gsl_rng_uniform (const gsl_rng * r)
 {
-  unsigned long int k = (r->get) (r->state);
-  unsigned long int max = r->max;
-
-  return k / (1.0 + max);
+  return (r->get_double) (r->state);
 }
 
 extern inline double
 gsl_rng_uniform_pos (const gsl_rng * r)
 {
-  unsigned long int max = r->max;
-  unsigned long int k;
-  
-  do 
+  double x ;
+  do
     {
-      k = (r->get) (r->state);
+      x = (r->get_double) (r->state) ;
     }
-  while (k == 0) ;
-    
-  return k / ((double) max);
-}
+  while (x == 0) ;
 
-extern inline double
-gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
-{
-  unsigned long int max = r->max;
-  unsigned long int k;
-  volatile double x;
-
-  do 
-    {
-      k = (r->get) (r->state);
-      x = k / ((double) max);
-    }
-  while (x == 0 || x == 1) ;
-
-  return x;
+  return x ;
 }
 
 extern inline unsigned long int

@@ -31,12 +31,12 @@ gsl_rng_alloc (const gsl_rng_type * T)
   r->size = T->size;
   r->set = T->set;
   r->get = T->get;
+  r->get_double = T->get_double;
 
   gsl_rng_set (r, gsl_rng_default_seed);	/* seed the generator */
 
   return r;
 }
-
 
 gsl_rng *
 gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src)
@@ -57,12 +57,12 @@ gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src)
   dest->size = src->size;
   dest->set = src->set;
   dest->get = src->get;
+  dest->get_double = src->get_double;
 
   memcpy (dest->state, src->state, src->size);
 
   return dest;
 }
-
 
 gsl_rng *
 gsl_rng_clone (const gsl_rng * q)
@@ -90,6 +90,7 @@ gsl_rng_clone (const gsl_rng * q)
   r->size = q->size;
   r->set = q->set;
   r->get = q->get;
+  r->get_double = q->get_double;
 
   memcpy (r->state, q->state, q->size);
 
@@ -111,45 +112,20 @@ gsl_rng_get (const gsl_rng * r)
 double
 gsl_rng_uniform (const gsl_rng * r)
 {
-  unsigned long int k = (r->get) (r->state);
-  unsigned long int max = r->max;
-
-  return k / ((double) max);
+  return (r->get_double) (r->state);
 }
 
 double
 gsl_rng_uniform_pos (const gsl_rng * r)
 {
-  unsigned long int max = r->max;
-  unsigned long int k;
-
+  double x ;
   do
     {
-      k = (r->get) (r->state);
+      x = (r->get_double) (r->state) ;
     }
-  while (k == 0);
+  while (x == 0) ;
 
-  return k / ((double) max);
-}
-
-double
-gsl_rng_uniform_gt0_lt1 (const gsl_rng * r)
-{
-  unsigned long int max = r->max;
-  unsigned long int k;
-
-  /* store x in memory, we need to test exact equality */
-
-  volatile double x;
-
-  do
-    {
-      k = (r->get) (r->state);
-      x = k / ((double) max);
-    }
-  while (x == 0 || x == 1);
-
-  return x;
+  return x ;
 }
 
 unsigned long int

@@ -82,7 +82,8 @@ C***END PROLOGUE  UNI
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-unsigned long int uni32_get (void *vstate);
+inline unsigned long int uni32_get (void *vstate);
+double uni32_get_double (void *vstate);
 void uni32_set (void *state, unsigned long int s);
 
 static const unsigned long int MDIG = 32;	/* Machine digits in int */
@@ -96,7 +97,7 @@ typedef struct
   }
 uni32_state_t;
 
-unsigned long
+inline unsigned long
 uni32_get (void *vstate)
 {
   uni32_state_t *state = (uni32_state_t *) vstate;
@@ -129,6 +130,12 @@ uni32_get (void *vstate)
     }
 
   return k;
+}
+
+double
+uni32_get_double (void *vstate)
+{
+  return uni32_get (vstate) / 2147483647.0 ;
 }
 
 void
@@ -171,6 +178,7 @@ static const gsl_rng_type uni32_type =
  0,				/* RAND_MIN */
  sizeof (uni32_state_t),
  &uni32_set,
- &uni32_get};
+ &uni32_get,
+ &uni32_get_double};
 
 const gsl_rng_type *gsl_rng_uni32 = &uni32_type;

@@ -121,7 +121,8 @@ C
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-unsigned long int rand_get (void *vstate);
+inline unsigned long int rand_get (void *vstate);
+double rand_get_double (void *vstate);
 void rand_set (void *state, unsigned long int s);
 
 typedef struct
@@ -136,7 +137,7 @@ static const long a0 = 1029;
 static const long a1ma0 = 507;
 static const long c = 1731;
 
-unsigned long int
+inline unsigned long int
 rand_get (void *vstate)
 {
   long y0, y1;
@@ -150,6 +151,12 @@ rand_get (void *vstate)
   state->x1 = y1 % 2048;
 
   return state->x1 * 2048 + state->x0;
+}
+
+double 
+rand_get_double (void *vstate)
+{
+  return rand_get (vstate) / 4194304.0 ;
 }
 
 void
@@ -173,6 +180,7 @@ static const gsl_rng_type rand_type =
  0,				/* RAND_MIN */
  sizeof (rand_state_t),
  &rand_set,
- &rand_get};
+ &rand_get,
+ &rand_get_double};
 
 const gsl_rng_type *gsl_rng_rand = &rand_type;
