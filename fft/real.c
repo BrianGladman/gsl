@@ -9,11 +9,9 @@
 #include "fft_real.h"
 
 int
-gsl_fft_real (double data[],
-	      const size_t n,
+gsl_fft_real (double data[], const size_t stride, const size_t n,
 	      const gsl_fft_real_wavetable * wavetable)
 {
-
   const size_t nf = wavetable->nf;
 
   size_t i;
@@ -26,9 +24,11 @@ gsl_fft_real (double data[],
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
   size_t state = 0;
-  double *from = data;
-  double *to = scratch;
-
+  double *in = data;
+  size_t istride = stride ;
+  double *out = scratch;
+  size_t ostride = 1 ;
+  
   if (n == 0)
     {
       GSL_ERROR ("length n must be positive integer", GSL_EDOM);
@@ -44,7 +44,6 @@ gsl_fft_real (double data[],
       GSL_ERROR ("wavetable does not match length of data", GSL_EINVAL);
     }
 
-
   for (i = 0; i < nf; i++)
     {
       const size_t factor = wavetable->factor[i];
@@ -56,27 +55,31 @@ gsl_fft_real (double data[],
 
       if (state == 0)
 	{
-	  from = data;
-	  to = scratch;
+	  in = data;
+	  istride = stride;
+	  out = scratch;
+	  ostride = 1;
 	  state = 1;
 	}
       else
 	{
-	  from = scratch;
-	  to = data;
+	  in = scratch;
+	  istride = stride;
+	  out = data;
+	  ostride = 1;
 	  state = 0;
 	}
 
       if (factor == 2)
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_real_pass_2 (from, to, product, n, twiddle1);
+	  gsl_fft_real_pass_2 (in, istride, out, ostride, product, n, twiddle1);
 	}
       else if (factor == 3)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
-	  gsl_fft_real_pass_3 (from, to, product, n, twiddle1,
+	  gsl_fft_real_pass_3 (in, istride, out, ostride, product, n, twiddle1,
 			       twiddle2);
 	}
       else if (factor == 4)
@@ -84,7 +87,7 @@ gsl_fft_real (double data[],
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
-	  gsl_fft_real_pass_4 (from, to, product, n, twiddle1,
+	  gsl_fft_real_pass_4 (in, istride, out, ostride, product, n, twiddle1,
 			       twiddle2, twiddle3);
 	}
       else if (factor == 5)
@@ -93,20 +96,23 @@ gsl_fft_real (double data[],
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
 	  twiddle4 = twiddle3 + tskip;
-	  gsl_fft_real_pass_5 (from, to, product, n, twiddle1,
+	  gsl_fft_real_pass_5 (in, istride, out, ostride, product, n, twiddle1,
 			       twiddle2, twiddle3, twiddle4);
 	}
       else
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_real_pass_n (from, to, factor, product, n,
+	  gsl_fft_real_pass_n (in, istride, out, ostride, factor, product, n,
 			       twiddle1);
 	}
     }
 
   if (state == 1)		/* copy results back from scratch to data */
     {
-      memcpy (data, scratch, n * sizeof (double));
+      for (i = 0; i < n; i++)
+	{
+	  data[istride*i] = scratch[i] ;
+	}
     }
 
   return 0;

@@ -7,12 +7,15 @@
 int 
 fft_bitreverse_order_complex (double data[], 
 			      const size_t stride,
-			      const size_t n)
+			      const size_t n,
+			      size_t logn)
 {
   /* This is the Goldrader bit-reversal algorithm */
 
   size_t i;
   size_t j = 0;
+
+  logn = 0 ; /* not needed for this algorithm */
 
   for (i = 0; i < n - 1; i++)
     {
@@ -43,13 +46,16 @@ fft_bitreverse_order_complex (double data[],
 
 int 
 fft_bitreverse_order_real (double data[], 
-			      const size_t stride,
-			      const size_t n)
+			   const size_t stride,
+			   const size_t n,
+			   size_t logn)
 {
   /* This is the Goldrader bit-reversal algorithm */
 
   size_t i;
   size_t j = 0;
+
+  logn = 0 ; /* not needed for this algorithm */
 
   for (i = 0; i < n - 1; i++)
     {

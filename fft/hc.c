@@ -4,24 +4,25 @@
 
 #include <gsl_errno.h>
 #include <gsl_complex.h>
-#include <gsl_vector.h>
 #include <gsl_fft_halfcomplex.h>
 
 #include "fft_halfcomplex.h"
 
 int
-gsl_fft_halfcomplex_backward (gsl_vector * data,
+gsl_fft_halfcomplex_backward (double data[], const size_t stride, 
+			      const size_t n,
 			      const gsl_fft_halfcomplex_wavetable * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, wavetable) ;
+  int status = gsl_fft_halfcomplex (data, stride, n, wavetable) ;
   return status ;
 }
 
 int
-gsl_fft_halfcomplex_inverse (gsl_vector * data,
+gsl_fft_halfcomplex_inverse (double data[], const size_t stride, 
+			     const size_t n,
 			     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, wavetable);
+  int status = gsl_fft_halfcomplex (data, stride, n, wavetable);
 
   if (status)
     {
@@ -31,22 +32,18 @@ gsl_fft_halfcomplex_inverse (gsl_vector * data,
   /* normalize inverse fft with 1/n */
 
   {
-    const size_t n = data->size ;
-    const size_t stride = data->stride ;
-    double * const out = data->data ;
-
     const double norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
-	out[stride*i] *= norm;
+	data[stride*i] *= norm;
       }
   }
   return status;
 }
 
 int
-gsl_fft_halfcomplex (gsl_vector * data,
+gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
 		     const gsl_fft_halfcomplex_wavetable * wavetable)
 {
   size_t factor, product, q, state;
@@ -56,18 +53,12 @@ gsl_fft_halfcomplex (gsl_vector * data,
   int tskip;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
-  const size_t n = data->size ;
+  double * const scratch = wavetable->scratch;
 
-  double * const a = data->data;
-  double * const b = wavetable->scratch;
-
-  const size_t astride = data->stride ;
-  const size_t bstride = 1 ;
-
-  double * in = a;
-  size_t istride = astride;
-  double * out = b;
-  size_t ostride = bstride;
+  double * in = data;
+  size_t istride = stride;
+  double * out = scratch;
+  size_t ostride = 1;
 
   if (n == 0)
     {
@@ -99,18 +90,18 @@ gsl_fft_halfcomplex (gsl_vector * data,
 
       if (state == 0)
 	{
-	  in = a;
-	  istride = astride;
-	  out = b;
-	  ostride = bstride;
+	  in = data;
+	  istride = stride;
+	  out = scratch;
+	  ostride = 1;
 	  state = 1;
 	}
       else
 	{
-	  in = b;
-	  istride = bstride;
-	  out = a;
-	  ostride = astride;
+	  in = scratch;
+	  istride = 1;
+	  out = data;
+	  ostride = stride;
 	  state = 0;
 	}
 
@@ -158,10 +149,12 @@ gsl_fft_halfcomplex (gsl_vector * data,
     {
       for (i = 0; i < n; i++)
 	{
-	  a[istride*i] = b[ostride*i] ;
+	  data[istride*i] = scratch[i] ;
 	}
     }
 
   return 0;
 
 }
+
+

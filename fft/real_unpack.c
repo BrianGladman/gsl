@@ -18,8 +18,8 @@ gsl_fft_real_unpack (const double real_coefficient[],
 
   for (i = 0; i < n; i++)
     {
-      complex_coefficient[i].real = real_coefficient[i];
-      complex_coefficient[i].imag = 0.0;
+      GSL_REAL(complex_coefficient[i]) = real_coefficient[i];
+      GSL_IMAG(complex_coefficient[i]) = 0.0;
     }
 
   return 0;

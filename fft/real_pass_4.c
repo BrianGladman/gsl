@@ -31,10 +31,10 @@ gsl_fft_real_pass_4 (const double in[],
       const size_t from2 = from1 + m;
       const size_t from3 = from2 + m;
       
-      z0_real = VECTOR(in,istride,from0);
-      z1_real = VECTOR(in,istride,from1);
-      z2_real = VECTOR(in,istride,from2);
-      z3_real = VECTOR(in,istride,from3);
+      const double z0_real = VECTOR(in,istride,from0);
+      const double z1_real = VECTOR(in,istride,from1);
+      const double z2_real = VECTOR(in,istride,from2);
+      const double z3_real = VECTOR(in,istride,from3);
 
       /* compute x = W(4) z */
 
@@ -76,12 +76,12 @@ gsl_fft_real_pass_4 (const double in[],
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
       double w1_real, w1_imag, w2_real, w2_imag, w3_real, w3_imag;
-      w1_real = twiddle1[k - 1].real;
-      w1_imag = -twiddle1[k - 1].imag;
-      w2_real = twiddle2[k - 1].real;
-      w2_imag = -twiddle2[k - 1].imag;
-      w3_real = twiddle3[k - 1].real;
-      w3_imag = -twiddle3[k - 1].imag;
+      w1_real = GSL_REAL(twiddle1[k - 1]);
+      w1_imag = -GSL_IMAG(twiddle1[k - 1]);
+      w2_real = GSL_REAL(twiddle2[k - 1]);
+      w2_imag = -GSL_IMAG(twiddle2[k - 1]);
+      w3_real = GSL_REAL(twiddle3[k - 1]);
+      w3_imag = -GSL_IMAG(twiddle3[k - 1]);
 
       for (k1 = 0; k1 < q; k1++)
 	{
@@ -176,8 +176,8 @@ gsl_fft_real_pass_4 (const double in[],
       const double x2 = VECTOR(in,istride,from2);
       const double x3 = VECTOR(in,istride,from3);
       
-      t1 = (1.0 / sqrt (2.0)) * (x1 - x3);
-      t2 = (1.0 / sqrt (2.0)) * (x1 + x3);
+      const double t1 = (1.0 / sqrt (2.0)) * (x1 - x3);
+      const double t2 = (1.0 / sqrt (2.0)) * (x1 + x3);
       
       const size_t to0 = k1 * product + 2 * k - 1;
       const size_t to1 = to0 + 2 * product_1;

@@ -9,8 +9,8 @@
 #include <gsl_fft.h>
 
 int gsl_fft_halfcomplex_radix2_backward (double data[], size_t stride, size_t n);
-int gsl_fft_halfcomplex_radix2_inverse (gsl_vector * data);
-int gsl_fft_halfcomplex_radix2 (gsl_vector * data);
+int gsl_fft_halfcomplex_radix2_inverse (double data[], size_t stride, size_t n);
+int gsl_fft_halfcomplex_radix2 (double data[], size_t stride, size_t n);
 
 typedef struct
   {
@@ -23,25 +23,20 @@ typedef struct
   }
 gsl_fft_halfcomplex_wavetable;
 
-int
-gsl_fft_halfcomplex_backward (gsl_vector * data,
-			      const gsl_fft_halfcomplex_wavetable * wavetable);
+int gsl_fft_halfcomplex_backward (double data[], size_t stride, size_t n,
+				  const gsl_fft_halfcomplex_wavetable * wavetable);
 
-int
-gsl_fft_halfcomplex_inverse (gsl_vector * data,
-			     const gsl_fft_halfcomplex_wavetable * wavetable);
+int gsl_fft_halfcomplex_inverse (double data[], size_t stride, size_t n,
+				 const gsl_fft_halfcomplex_wavetable * wavetable);
 
-int
-gsl_fft_halfcomplex (gsl_vector * data,
-		     const gsl_fft_halfcomplex_wavetable * wavetable);
+int gsl_fft_halfcomplex (double data[], size_t stride, size_t n,
+			 const gsl_fft_halfcomplex_wavetable * wavetable);
 
-int
-gsl_fft_halfcomplex_init (size_t n,
-			  gsl_fft_halfcomplex_wavetable * wavetable);
+int gsl_fft_halfcomplex_init (size_t n,
+			      gsl_fft_halfcomplex_wavetable * wavetable);
 
-int
-gsl_fft_halfcomplex_generate_wavetable (size_t n,
-					gsl_fft_halfcomplex_wavetable * wavetable);
+int gsl_fft_halfcomplex_generate_wavetable (size_t n,
+					    gsl_fft_halfcomplex_wavetable * wavetable);
 
 gsl_fft_halfcomplex_wavetable * gsl_fft_halfcomplex_wavetable_alloc (size_t n);
 

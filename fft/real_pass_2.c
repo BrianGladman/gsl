@@ -47,8 +47,8 @@ gsl_fft_real_pass_2 (const double in[],
     {
 
       /* forward real transform: w -> conjugate(w) */
-      const double w_real = twiddle[k - 1].real;
-      const double w_imag = -twiddle[k - 1].imag;
+      const double w_real = GSL_REAL(twiddle[k - 1]);
+      const double w_imag = -GSL_IMAG(twiddle[k - 1]);
 
       for (k1 = 0; k1 < q; k1++)
 	{

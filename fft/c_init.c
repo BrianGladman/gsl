@@ -10,8 +10,7 @@
 #include "factorize.h"
 
 int
-gsl_fft_complex_init (size_t n,
-		      gsl_fft_complex_wavetable * wavetable)
+gsl_fft_complex_init (size_t n, gsl_fft_complex_wavetable * wavetable)
 {
   int status;
   size_t n_factors;

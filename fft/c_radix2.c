@@ -9,26 +9,26 @@
 #include "bitreverse.h"
 
 int
-gsl_fft_complex_radix2_forward (gsl_vector_complex * data)
+gsl_fft_complex_radix2_forward (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = forward;
-  int status = gsl_fft_complex_radix2 (data, sign);
+  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_backward (gsl_vector_complex * data)
+gsl_fft_complex_radix2_backward (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2 (data, sign);
+  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_inverse (gsl_vector_complex * data)
+gsl_fft_complex_radix2_inverse (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2 (data, sign);
+  int status = gsl_fft_complex_radix2 (data, stride, n, sign);
 
   if (status)
     {
@@ -38,16 +38,12 @@ gsl_fft_complex_radix2_inverse (gsl_vector_complex * data)
   /* normalize inverse fft with 1/n */
 
   {
-    const size_t n = data->size ;
-    const size_t stride = data->stride ;
-    double * const out = data->data ;
-    
     const double norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(out,stride,i) *= norm;
-	IMAG(out,stride,i) *= norm;
+	REAL(data,stride,i) *= norm;
+	IMAG(data,stride,i) *= norm;
       }
   }
 
@@ -56,26 +52,26 @@ gsl_fft_complex_radix2_inverse (gsl_vector_complex * data)
 
 
 int
-gsl_fft_complex_radix2_dif_forward (gsl_vector_complex * data)
+gsl_fft_complex_radix2_dif_forward (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = forward;
-  int status = gsl_fft_complex_radix2_dif (data, sign);
+  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_dif_backward (gsl_vector_complex * data)
+gsl_fft_complex_radix2_dif_backward (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2_dif (data, sign);
+  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
   return status;
 }
 
 int
-gsl_fft_complex_radix2_dif_inverse (gsl_vector_complex * data)
+gsl_fft_complex_radix2_dif_inverse (double data[], const size_t stride, const size_t n)
 {
   gsl_fft_direction sign = backward;
-  int status = gsl_fft_complex_radix2_dif (data, sign);
+  int status = gsl_fft_complex_radix2_dif (data, stride, n, sign);
 
   if (status)
     {
@@ -85,16 +81,12 @@ gsl_fft_complex_radix2_dif_inverse (gsl_vector_complex * data)
   /* normalize inverse fft with 1/n */
 
   {
-    const size_t n = data->size ;
-    const size_t stride = data->stride ;
-    double * const out = data->data ;
-    
     const double norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(out,stride,i) *= norm;
-	IMAG(out,stride,i) *= norm;
+	REAL(data,stride,i) *= norm;
+	IMAG(data,stride,i) *= norm;
       }
   }
 
@@ -103,7 +95,7 @@ gsl_fft_complex_radix2_dif_inverse (gsl_vector_complex * data)
 
 
 int
-gsl_fft_complex_radix2 (gsl_vector_complex * data,
+gsl_fft_complex_radix2 (double data[], const size_t stride, const size_t n,
 			const gsl_fft_direction sign)
 {
 
@@ -112,10 +104,6 @@ gsl_fft_complex_radix2 (gsl_vector_complex * data,
   size_t bit; 
   size_t logn = 0;
   int status;
-
-  const size_t n = data->size ;
-  const size_t istride = data->stride ;
-  double * const in = data->data ;
 
   if (n == 1) /* identity operation */
     {
@@ -137,7 +125,7 @@ gsl_fft_complex_radix2 (gsl_vector_complex * data,
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
-  status = fft_complex_bitreverse_order(in, istride, n, logn) ;
+  status = fft_bitreverse_order_complex(data, stride, n, logn) ;
 
   /* apply fft recursion */
 
@@ -163,16 +151,16 @@ gsl_fft_complex_radix2 (gsl_vector_complex * data,
 	  const size_t i = b ;
 	  const size_t j = b + dual;
 	  
-	  const double z1_real = REAL(in,istride,j) ;
-	  const double z1_imag = IMAG(in,istride,j) ;
+	  const double z1_real = REAL(data,stride,j) ;
+	  const double z1_imag = IMAG(data,stride,j) ;
 
 	  const double wd_real = z1_real ;
 	  const double wd_imag = z1_imag ;
 	  
-	  REAL(in,istride,j) = REAL(in,istride,i) - wd_real;
-	  IMAG(in,istride,j) = IMAG(in,istride,i) - wd_imag;
-	  REAL(in,istride,i) += wd_real;
-	  IMAG(in,istride,i) += wd_imag;
+	  REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
+	  IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
+	  REAL(data,stride,i) += wd_real;
+	  IMAG(data,stride,i) += wd_imag;
 	}
       
       /* a = 1 .. (dual-1) */
@@ -194,16 +182,16 @@ gsl_fft_complex_radix2 (gsl_vector_complex * data,
 	      const size_t i = b + a;
 	      const size_t j = b + a + dual;
 
-	      const double z1_real = REAL(in,istride,j) ;
-	      const double z1_imag = IMAG(in,istride,j) ;
+	      const double z1_real = REAL(data,stride,j) ;
+	      const double z1_imag = IMAG(data,stride,j) ;
 	      
 	      const double wd_real = w_real * z1_real - w_imag * z1_imag;
 	      const double wd_imag = w_real * z1_imag + w_imag * z1_real;
 
-	      REAL(in,istride,j) = REAL(in,istride,i) - wd_real;
-	      IMAG(in,istride,j) = IMAG(in,istride,i) - wd_imag;
-	      REAL(in,istride,i) += wd_real;
-	      IMAG(in,istride,i) += wd_imag;
+	      REAL(data,stride,j) = REAL(data,stride,i) - wd_real;
+	      IMAG(data,stride,j) = IMAG(data,stride,i) - wd_imag;
+	      REAL(data,stride,i) += wd_real;
+	      IMAG(data,stride,i) += wd_imag;
 	    }
 	}
       dual *= 2;
@@ -216,7 +204,7 @@ gsl_fft_complex_radix2 (gsl_vector_complex * data,
 
 
 int
-gsl_fft_complex_radix2_dif (gsl_vector_complex * data,
+gsl_fft_complex_radix2_dif (double data[], const size_t stride, const size_t n,
 			    const gsl_fft_direction sign)
 {
   int result ;
@@ -224,10 +212,6 @@ gsl_fft_complex_radix2_dif (gsl_vector_complex * data,
   size_t bit; 
   size_t logn = 0;
   int status;
-
-  const size_t n = data->size ;
-  const size_t istride = data->stride ;
-  double * const in = data->data ;
 
   if (n == 1) /* identity operation */
     {
@@ -271,15 +255,15 @@ gsl_fft_complex_radix2_dif (gsl_vector_complex * data,
 	      const size_t i = b + a;
 	      const size_t j = b + a + dual;
 	      
-	      const double t1_real = REAL(in,istride,i) + REAL(in,istride,j);
-	      const double t1_imag = IMAG(in,istride,i) + IMAG(in,istride,j);
-	      const double t2_real = REAL(in,istride,i) - REAL(in,istride,j);
-	      const double t2_imag = IMAG(in,istride,i) - IMAG(in,istride,j);
+	      const double t1_real = REAL(data,stride,i) + REAL(data,stride,j);
+	      const double t1_imag = IMAG(data,stride,i) + IMAG(data,stride,j);
+	      const double t2_real = REAL(data,stride,i) - REAL(data,stride,j);
+	      const double t2_imag = IMAG(data,stride,i) - IMAG(data,stride,j);
 
-	      REAL(in,istride,i) = t1_real;
-	      IMAG(in,istride,i) = t1_imag;
-	      REAL(in,istride,j) = w_real*t2_real - w_imag * t2_imag;
-	      IMAG(in,istride,j) = w_real*t2_imag + w_imag * t2_real;
+	      REAL(data,stride,i) = t1_real;
+	      IMAG(data,stride,i) = t1_imag;
+	      REAL(data,stride,j) = w_real*t2_real - w_imag * t2_imag;
+	      IMAG(data,stride,j) = w_real*t2_imag + w_imag * t2_real;
 	    }
 
 	  /* trignometric recurrence for w-> exp(i theta) w */
@@ -297,7 +281,7 @@ gsl_fft_complex_radix2_dif (gsl_vector_complex * data,
   /* bit reverse the ordering of output data for decimation in
      frequency algorithm */
   
-  status = fft_complex_bitreverse_order(in, istride, n, logn) ;
+  status = fft_bitreverse_order_complex(data, stride, n, logn) ;
 
   return 0;
 

@@ -83,8 +83,8 @@ gsl_fft_real_generate_wavetable (size_t n,
 	      m = m + j * q;
 	      m = m % n;
 	      theta = d_theta * m;	/*  d_theta*j*k*q */
-	      wavetable->trig[t].real = cos (theta);
-	      wavetable->trig[t].imag = sin (theta);
+	      GSL_REAL(wavetable->trig[t]) = cos (theta);
+	      GSL_IMAG(wavetable->trig[t]) = sin (theta);
 
 	      t++;
 	    }

@@ -102,14 +102,14 @@ gsl_fft_real_pass_5 (const double in[],
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
-      const double w1_real = twiddle1[k - 1].real;
-      const double w1_imag = -twiddle1[k - 1].imag;
-      const double w2_real = twiddle2[k - 1].real;
-      const double w2_imag = -twiddle2[k - 1].imag;
-      const double w3_real = twiddle3[k - 1].real;
-      const double w3_imag = -twiddle3[k - 1].imag;
-      const double w4_real = twiddle4[k - 1].real;
-      const double w4_imag = -twiddle4[k - 1].imag;
+      const double w1_real = GSL_REAL(twiddle1[k - 1]);
+      const double w1_imag = -GSL_IMAG(twiddle1[k - 1]);
+      const double w2_real = GSL_REAL(twiddle2[k - 1]);
+      const double w2_imag = -GSL_IMAG(twiddle2[k - 1]);
+      const double w3_real = GSL_REAL(twiddle3[k - 1]);
+      const double w3_imag = -GSL_IMAG(twiddle3[k - 1]);
+      const double w4_real = GSL_REAL(twiddle4[k - 1]);
+      const double w4_imag = -GSL_IMAG(twiddle4[k - 1]);
 
       for (k1 = 0; k1 < q; k1++)
 	{
