@@ -1,3 +1,8 @@
+Tue Nov 17 16:47:09 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* secant.c, falsepos.c newton.c: added gsl_math.h to included
+ 	headers to import GSL_MAX and GSL_MIN
+
 Mon Nov  9 21:21:45 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* roots.h: got rid of local MAX(a,b) and MIN(a,b) definitions
