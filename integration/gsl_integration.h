@@ -90,7 +90,6 @@ enum gsl_integration_qawo_enum { GSL_INTEG_COSINE, GSL_INTEG_SINE };
 
 typedef struct
 {
-  size_t i;
   size_t n;
   double omega;
   double L;

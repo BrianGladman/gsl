@@ -80,7 +80,9 @@ gsl_strerror (const int gsl_errno)
     case GSL_EUNIMPL:
       return "the requested feature is not (yet) implemented";
     case GSL_ECACHE:
-      return "cache table limit exceeded";
+      return "cache limit exceeded";
+    case GSL_ETABLE:
+      return "table limit exceeded";
     case GSL_ENOPROG:
       return "iteration is not making progress towards solution";
     case GSL_ENOPROGJ:

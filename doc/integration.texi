@@ -550,12 +550,14 @@ GSL_INTEG_SINE
 @end example
 
 @noindent
-The @code{gsl_integration_qawo_table} acts as a cache for trigonometric
-coefficients computed in the integration process.  The parameter @var{n}
-determines the number of levels of coefficients that can be stored.  Each
+The @code{gsl_integration_qawo_table} is a table of the trigonometric
+coefficients required in the integration process.  The parameter @var{n}
+determines the number of levels of coefficients that are computed.  Each
 level corresponds to one bisection of the interval @math{L}, so that
 @var{n} levels are sufficient for subintervals down to the length
-@math{L/2^n}.
+@math{L/2^n}.  The integration routine @code{gsl_integration_qawo}
+returns the error @code{GSL_ETABLE} if the number of levels is
+insufficient for the requested accuracy.
 
 @end deftypefun
 
@@ -740,7 +742,7 @@ or roundoff error was detected in the extrapolation table.
 a non-integrable singularity or other bad integrand behavior was found
 in the integration interval.
 @item GSL_EDIVERGE
-the integral is divergent, or slowly convergent.
+the integral is divergent, or too slowly convergent.
 @end table
 
 @node Numerical integration examples

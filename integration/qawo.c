@@ -153,7 +153,7 @@ gsl_integration_qawo (gsl_function * f,
 
       if (current_level >= wf->n) 
 	{
-	  error_type = -1 ; /* exceeded limit of cache */
+	  error_type = -1 ; /* exceeded limit of table */
 	  break ;
 	}
 
@@ -445,7 +445,7 @@ return_error:
     }
   else if (error_type == -1) 
     {
-      GSL_ERROR ("exceeded limit of trigonometric cache", GSL_ECACHE);
+      GSL_ERROR ("exceeded limit of trigonometric table", GSL_ETABLE);
     }
   else
     {

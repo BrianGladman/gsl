@@ -1,5 +1,9 @@
 * What is new in gsl-0.7+:
 
+** The Chebyschev coefficients for the QAWO algorithm are now
+precomputed in a table for efficiency, rather than being computed on
+the fly.
+
 ** There are several new sorting functions for selecting the k-th
 smallest or largest elements of a dataset.
 
