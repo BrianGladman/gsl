@@ -649,6 +649,7 @@ lngamma_lanczos_complex(double zr, double zi, gsl_sf_result * yr, gsl_sf_result 
   gsl_sf_result log1_r,    log1_i;
   gsl_sf_result logAg_r,   logAg_i;
   double Ag_r, Ag_i;
+  double yi_tmp_val, yi_tmp_err;
 
   zr -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
 
@@ -670,7 +671,11 @@ lngamma_lanczos_complex(double zr, double zi, gsl_sf_result * yr, gsl_sf_result 
   yi->val = zi*log1_r.val + (zr+0.5)*log1_i.val - zi + logAg_i.val;
   yr->err = 4.0 * GSL_DBL_EPSILON * fabs(yr->val);
   yi->err = 4.0 * GSL_DBL_EPSILON * fabs(yi->val);
-  return gsl_sf_angle_restrict_symm_impl(&(yi->val));
+  yi_tmp_val = yi->val;
+  yi_tmp_err = yi->err;
+  gsl_sf_angle_restrict_symm_err_impl(yi_tmp_val, yi);
+  yi->err += yi_tmp_err;
+  return GSL_SUCCESS;
 }
 
 

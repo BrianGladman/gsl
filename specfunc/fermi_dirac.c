@@ -1239,8 +1239,8 @@ int gsl_sf_fermi_dirac_m1_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 0.0) {
     const double ex = exp(x);
-    result->val  = ex/(1.0+ex);
-    result->err += 2.0 * (fabs(x) + 1.0) * GSL_DBL_EPSILON * fabs(result->val);
+    result->val = ex/(1.0+ex);
+    result->err = 2.0 * (fabs(x) + 1.0) * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {

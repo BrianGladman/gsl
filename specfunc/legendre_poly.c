@@ -93,15 +93,15 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
   else if(l < 100000) {
     /* Compute by upward recurrence on l.
      */
-    double pmm   = 1.0;     /* P_0(x) */
-    double pmmp1 = x;	    /* P_1(x) */
-    double p_ell = pmmp1;
+    double p_mm   = 1.0;     /* P_0(x) */
+    double p_mmp1 = x;	    /* P_1(x) */
+    double p_ell = p_mmp1;
     int ell;
 
     for(ell=2; ell <= l; ell++){
-      p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
-      pmm = pmmp1;
-      pmmp1 = p_ell;
+      p_ell = (x*(2*ell-1)*p_mmp1 - (ell-1)*p_mm) / ell;
+      p_mm = p_mmp1;
+      p_mmp1 = p_ell;
     }
 
     result->val = p_ell;
@@ -166,18 +166,18 @@ gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * result_ar
     return GSL_SUCCESS;
   }
   else {
-    double pmm   = 1.0;     /* P_0(x) */
-    double pmmp1 = x;	    /* P_1(x) */
-    double p_ell = pmmp1;
+    double p_mm   = 1.0;    /* P_0(x) */
+    double p_mmp1 = x;	    /* P_1(x) */
+    double p_ell = p_mmp1;
     int ell;
 
     result_array[0] = 1.0;
     result_array[1] = x;
 
     for(ell=2; ell <= lmax; ell++){
-      p_ell = (x*(2*ell-1)*pmmp1 - (ell-1)*pmm) / ell;
-      pmm = pmmp1;
-      pmmp1 = p_ell;
+      p_ell = (x*(2*ell-1)*p_mmp1 - (ell-1)*p_mm) / ell;
+      p_mm = p_mmp1;
+      p_mmp1 = p_ell;
       result_array[ell] = p_ell;
     }
 
@@ -196,8 +196,8 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
   double dif = l-m;
   double sum = l+m;
   double exp_check = 0.5 * log(2.0*l+1.0) 
-                     + 0.5 * dif * (log(dif)-1.0)
-                     - 0.5 * sum * (log(sum)-1.0);
+                   + 0.5 * dif * (log(dif)-1.0)
+                   - 0.5 * sum * (log(sum)-1.0);
 
   if(result == 0) {
     return GSL_EFAULT;
@@ -208,8 +208,7 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
     return GSL_EDOM;
   }
   else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
-    /* Bail out.
-     */
+    /* Bail out. */
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EOVRFLW;
@@ -218,36 +217,36 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
     /* Account for the error due to the
      * representation of 1-x.
      */
-    double err_amp = 1.0 / (GSL_DBL_EPSILON + fabs(1.0-fabs(x)));
+    const double err_amp = 1.0 / (GSL_DBL_EPSILON + fabs(1.0-fabs(x)));
 
-    double pmm;                 /* P_m^m(x) */
-    double pmmp1;               /* P_{m+1}^m(x) */
+    double p_mm;     /* P_m^m(x) */
+    double p_mmp1;   /* P_{m+1}^m(x) */
 
     /* Calculate P_m^m from the analytic result:
      *          P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2) , m > 0
      */
-    pmm = 1.0;
+    p_mm = 1.0;
     if(m > 0){
-      double circ = sqrt(1.0-x)*sqrt(1.0+x);
-      double fact = 1.0;
+      double root_factor = sqrt(1.0-x)*sqrt(1.0+x);
+      double fact_coeff = 1.0;
       int i;
       for(i=1; i<=m; i++) {
-        pmm  *= -fact * circ;
-        fact += 2.0;
+        p_mm *= -fact_coeff * root_factor;
+        fact_coeff += 2.0;
       }
     }
 
     /* Calculate P_{m+1}^m. */
-    pmmp1 = x * (2*m + 1) * pmm;
+    p_mmp1 = x * (2*m + 1) * p_mm;
 
     if(l == m){
-      result->val = pmm;
-      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(pmm);
+      result->val = p_mm;
+      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(p_mm);
       return GSL_SUCCESS;
     }
     else if(l == m + 1) {
-      result->val = pmmp1;
-      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(pmmp1);
+      result->val = p_mmp1;
+      result->err = err_amp * 2.0 * GSL_DBL_EPSILON * fabs(p_mmp1);
       return GSL_SUCCESS;
     }
     else{
@@ -256,9 +255,9 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
     
       /* Compute P_l^m, l > m+1 by upward recurrence on l. */
       for(ell=m+2; ell <= l; ell++){
-        p_ell = (x*(2*ell-1)*pmmp1 - (ell+m-1)*pmm) / (ell-m);
-        pmm = pmmp1;
-        pmmp1 = p_ell;
+        p_ell = (x*(2*ell-1)*p_mmp1 - (ell+m-1)*p_mm) / (ell-m);
+        p_mm = p_mmp1;
+        p_mmp1 = p_ell;
       }
 
       result->val = p_ell;
@@ -300,47 +299,47 @@ gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, doub
     return GSL_EOVRFLW;
   }
   else {
-    double pmm;                 /* P_m^m(x)     */
-    double pmmp1;               /* P_{m+1}^m(x) */
+    double p_mm;                 /* P_m^m(x)     */
+    double p_mmp1;               /* P_{m+1}^m(x) */
 
     /* Calculate P_m^m from the analytic result:
      *          P_m^m(x) = (-1)^m (2m-1)!! (1-x^2)^(m/2) , m > 0
      */
-    pmm = 1.0;
+    p_mm = 1.0;
     if(m > 0){
+      double root_factor = sqrt(1.0-x)*sqrt(1.0+x);
+      double fact_coeff = 1.0;
       int i;
-      double circ = sqrt(1.0-x)*sqrt(1.0+x);
-      double fact = 1.0;
       for(i=1; i<=m; i++){
-        pmm  *= -fact * circ;
-        fact += 2.0;
+        p_mm *= -fact_coeff * root_factor;
+        fact_coeff += 2.0;
       }
     }
 
     /* Calculate P_{m+1}^m. */
-    pmmp1 = x * (2*m + 1) * pmm;
+    p_mmp1 = x * (2*m + 1) * p_mm;
 
     if(lmax == m){
-      result_array[0] = pmm;
+      result_array[0] = p_mm;
       return GSL_SUCCESS;
     }
     else if(lmax == m + 1) {
-      result_array[0] = pmm;
-      result_array[1] = pmmp1;
+      result_array[0] = p_mm;
+      result_array[1] = p_mmp1;
       return GSL_SUCCESS;
     }
     else{
       double p_ell;
       int ell;
 
-      result_array[0] = pmm;
-      result_array[1] = pmmp1;
+      result_array[0] = p_mm;
+      result_array[1] = p_mmp1;
 
       /* Compute P_l^m, l >= m+2, by upward recursion on l. */
       for(ell=m+2; ell <= lmax; ell++){
-        p_ell = (x*(2*ell-1)*pmmp1 - (ell+m-1)*pmm) / (ell-m);
-        pmm = pmmp1;
-        pmmp1 = p_ell;
+        p_ell = (x*(2*ell-1)*p_mmp1 - (ell+m-1)*p_mm) / (ell-m);
+        p_mm = p_mmp1;
+        p_mmp1 = p_ell;
         result_array[ell-m] = p_ell;
       }
 
@@ -388,31 +387,31 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
     double lnpre_err;
     gsl_sf_result ex_pre;
     double sr;
-    double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
-    double ymm, ymmerr;
-    double ymmp1_factor = x * sqrt(2.0*m + 3.0);
-    double ymmp1;
+    const double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
+    const double y_mmp1_factor = x * sqrt(2.0*m + 3.0);
+    double y_mm, y_mm_err;
+    double y_mmp1;
     gsl_sf_log_1plusx_impl(-x*x, &lncirc);
     gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
     lnpre_val = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
     lnpre_err = 0.25*M_LNPI*GSL_DBL_EPSILON + 0.5 * (lnpoch.err + fabs(m)*lncirc.err);
     gsl_sf_exp_err_impl(lnpre_val, lnpre_err, &ex_pre);
     sr    = sqrt((2.0+1.0/m)/(4.0*M_PI));
-    ymm   = sgn * sr * ex_pre.val;
-    ymmp1 = ymmp1_factor * ymm;
-    ymmerr  = 2.0 * GSL_DBL_EPSILON * fabs(ymm) + sr * ex_pre.err;
-    ymmerr *= 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-x));
+    y_mm   = sgn * sr * ex_pre.val;
+    y_mmp1 = y_mmp1_factor * y_mm;
+    y_mm_err  = 2.0 * GSL_DBL_EPSILON * fabs(y_mm) + sr * ex_pre.err;
+    y_mm_err *= 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-x));
 
     if(l == m){
-      result->val  = ymm;
-      result->err  = ymmerr;
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(ymm);
+      result->val  = y_mm;
+      result->err  = y_mm_err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(y_mm);
       return GSL_SUCCESS;
     }
     else if(l == m + 1) {
-      result->val  = ymmp1;
-      result->err  = fabs(ymmp1_factor) * ymmerr;
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(ymmp1);
+      result->val  = y_mmp1;
+      result->err  = fabs(y_mmp1_factor) * y_mm_err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(y_mmp1);
       return GSL_SUCCESS;
     }
     else{
@@ -421,18 +420,18 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
 
       /* Compute Y_l^m, l > m+1, upward recursion on l. */
       for(ell=m+2; ell <= l; ell++){
-        double rat1 = (double)(ell-m)/(double)(ell+m);
-	double rat2 = (ell-m-1.0)/(ell+m-1.0);
-        double factor1 = sqrt(rat1*(2*ell+1)*(2*ell-1));
-        double factor2 = sqrt(rat1*rat2*(2*ell+1)/(2*ell-3));
-        y_ell = (x*ymmp1*factor1 - (ell+m-1)*ymm*factor2) / (ell-m);
-        ymm   = ymmp1;
-        ymmp1 = y_ell;
+        const double rat1 = (double)(ell-m)/(double)(ell+m);
+	const double rat2 = (ell-m-1.0)/(ell+m-1.0);
+        const double factor1 = sqrt(rat1*(2*ell+1)*(2*ell-1));
+        const double factor2 = sqrt(rat1*rat2*(2*ell+1)/(2*ell-3));
+        y_ell = (x*y_mmp1*factor1 - (ell+m-1)*y_mm*factor2) / (ell-m);
+        y_mm   = y_mmp1;
+        y_mmp1 = y_ell;
       }
 
       result->val  = y_ell;
       result->err  = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
-      result->err += fabs(ymmerr/ymm) * fabs(y_ell);
+      result->err += fabs(y_mm_err/y_mm) * fabs(y_ell);
 
       return GSL_SUCCESS;
     }
@@ -455,12 +454,12 @@ gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double 
     return GSL_SUCCESS;
   }
   else {
-    double ymm;
-    double ymmp1;
+    double y_mm;
+    double y_mmp1;
 
     if(m == 0) {
-      ymm   = 0.5/M_SQRTPI;          /* Y00 = 1/sqrt(4pi) */
-      ymmp1 = x * M_SQRT3 * ymm;
+      y_mm   = 0.5/M_SQRTPI;          /* Y00 = 1/sqrt(4pi) */
+      y_mmp1 = x * M_SQRT3 * y_mm;
     }
     else {
       /* |x| < 1 here */
@@ -468,39 +467,39 @@ gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double 
       gsl_sf_result lncirc;
       gsl_sf_result lnpoch;
       double lnpre;
-      double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
+      const double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
       gsl_sf_log_1plusx_impl(-x*x, &lncirc);
       gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
       lnpre = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
-      ymm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
-      ymmp1 = x * sqrt(2.0*m + 3.0) * ymm;
+      y_mm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
+      y_mmp1 = x * sqrt(2.0*m + 3.0) * y_mm;
     }
 
     if(lmax == m){
-      result_array[0] = ymm;
+      result_array[0] = y_mm;
       return GSL_SUCCESS;
     }
     else if(lmax == m + 1) {
-      result_array[0] = ymm;
-      result_array[1] = ymmp1;
+      result_array[0] = y_mm;
+      result_array[1] = y_mmp1;
       return GSL_SUCCESS;
     }
     else{
       double y_ell;
       int ell;
 
-      result_array[0] = ymm;
-      result_array[1] = ymmp1;
+      result_array[0] = y_mm;
+      result_array[1] = y_mmp1;
 
       /* Compute Y_l^m, l > m+1, upward recursion on l. */
       for(ell=m+2; ell <= lmax; ell++){
-        double rat1 = (double)(ell-m)/(double)(ell+m);
-	double rat2 = (ell-m-1.0)/(ell+m-1.0);
-        double factor1 = sqrt(rat1*(2*ell+1)*(2*ell-1));
-        double factor2 = sqrt(rat1*rat2*(2*ell+1)/(2*ell-3));
-        y_ell = (x*ymmp1*factor1 - (ell+m-1)*ymm*factor2) / (ell-m);
-        ymm   = ymmp1;
-        ymmp1 = y_ell;
+        const double rat1 = (double)(ell-m)/(double)(ell+m);
+	const double rat2 = (ell-m-1.0)/(ell+m-1.0);
+        const double factor1 = sqrt(rat1*(2*ell+1)*(2*ell-1));
+        const double factor2 = sqrt(rat1*rat2*(2*ell+1)/(2*ell-3));
+        y_ell = (x*y_mmp1*factor1 - (ell+m-1)*y_mm*factor2) / (ell-m);
+        y_mm   = y_mmp1;
+        y_mmp1 = y_ell;
 	result_array[ell-m] = y_ell;
       }
     }

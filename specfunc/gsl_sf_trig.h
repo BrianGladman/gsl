@@ -93,6 +93,18 @@ int gsl_sf_rect_to_polar_impl(double x, double y, gsl_sf_result * r, gsl_sf_resu
 int gsl_sf_rect_to_polar_e(double x, double y, gsl_sf_result * r, gsl_sf_result * theta); 
 
 
+/* Sin(x) for quantity with an associated error.
+ */
+int gsl_sf_sin_err_impl(double x, double dx, gsl_sf_result * result);
+int gsl_sf_sin_err_e(double x, double dx, gsl_sf_result * result);
+
+
+/* Cos(x) for quantity with an associated error.
+ */
+int gsl_sf_cos_err_impl(double x, double dx, gsl_sf_result * result);
+int gsl_sf_cos_err_e(double x, double dx, gsl_sf_result * result);
+
+
 /* Force an angle to lie in the range (-pi,pi].
  *
  * exceptions: GSL_ELOSS
@@ -109,16 +121,9 @@ int gsl_sf_angle_restrict_pos_impl(double * theta);
 int gsl_sf_angle_restrict_pos_e(double * theta);
 
 
-/* Sin(x) for quantity with an associated error.
- */
-int gsl_sf_sin_err_impl(double x, double dx, gsl_sf_result * result);
-int gsl_sf_sin_err_e(double x, double dx, gsl_sf_result * result);
+int gsl_sf_angle_restrict_symm_err_impl(double theta, gsl_sf_result * result);
 
-
-/* Cos(x) for quantity with an associated error.
- */
-int gsl_sf_cos_err_impl(double x, double dx, gsl_sf_result * result);
-int gsl_sf_cos_err_e(double x, double dx, gsl_sf_result * result);
+int gsl_sf_angle_restrict_pos_err_impl(double theta, gsl_sf_result * result);
 
 
 #endif /* !GSL_SF_TRIG_H */

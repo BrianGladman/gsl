@@ -538,45 +538,77 @@ gsl_sf_rect_to_polar_impl(const double x, const double y,
 }
 
 
-int gsl_sf_angle_restrict_symm_impl(double * theta)
+int gsl_sf_angle_restrict_symm_err_impl(const double theta, gsl_sf_result * result)
 {
   /* synthetic extended precision constants */
-  const double P1 = 4 * 7.8539812564849853515625e-1;
-  const double P2 = 4 * 3.7748947079307981766760e-8;
+  const double P1 = 4 * 7.8539812564849853515625e-01;
+  const double P2 = 4 * 3.7748947079307981766760e-08;
   const double P3 = 4 * 2.6951514290790594840552e-15;
   const double TwoPi = 2*(P1 + P2 + P3);
 
-  const double t = *theta;
-  const double y = 2*floor(t/TwoPi);
-  double r = ((t - y*P1) - y*P2) - y*P3;
+  const double y = 2*floor(theta/TwoPi);
+  double r = ((theta - y*P1) - y*P2) - y*P3;
 
   if(r >  M_PI) r -= TwoPi;
-  *theta = r;
+  result->val = r;
 
-  if(t > 0.0625/GSL_DBL_EPSILON)
+  if(theta > 0.0625/GSL_DBL_EPSILON) {
+    result->err = fabs(result->val);
     return GSL_ELOSS;
-  else
+  }
+  else if(theta > 0.0625/GSL_SQRT_DBL_EPSILON) {
+    result->err = GSL_SQRT_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
+  }
+  else {
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+}
+
+
+int gsl_sf_angle_restrict_pos_err_impl(const double theta, gsl_sf_result * result)
+{
+  /* synthetic extended precision constants */
+  const double P1 = 4 * 7.85398125648498535156e-01;
+  const double P2 = 4 * 3.77489470793079817668e-08;
+  const double P3 = 4 * 2.69515142907905952645e-15;
+  const double TwoPi = 2*(P1 + P2 + P3);
+
+  const double y = 2*floor(theta/TwoPi);
+
+  result->val = ((theta - y*P1) - y*P2) - y*P3;
+
+  if(theta > 0.0625/GSL_DBL_EPSILON) {
+    result->err = fabs(result->val);
+    return GSL_ELOSS;
+  }
+  else if(theta > 0.0625/GSL_SQRT_DBL_EPSILON) {
+    result->err = GSL_SQRT_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+}
+
+
+int gsl_sf_angle_restrict_symm_impl(double * theta)
+{
+  gsl_sf_result r;
+  int stat = gsl_sf_angle_restrict_symm_err_impl(*theta, &r);
+  *theta = r.val;
+  return stat;
 }
 
 
 int gsl_sf_angle_restrict_pos_impl(double * theta)
 {
-  /* synthetic extended precision constants */
-  const double P1 = 4 * 7.85398125648498535156e-1;
-  const double P2 = 4 * 3.77489470793079817668e-8;
-  const double P3 = 4 * 2.69515142907905952645e-15;
-  const double TwoPi = 2*(P1 + P2 + P3);
-
-  const double t = *theta;
-  const double y = 2*floor(t/TwoPi);
-
-  *theta = ((t - y*P1) - y*P2) - y*P3;
-
-  if(t > 0.0625/GSL_DBL_EPSILON)
-    return GSL_ELOSS;
-  else
-    return GSL_SUCCESS;
+  gsl_sf_result r;
+  int stat = gsl_sf_angle_restrict_pos_err_impl(*theta, &r);
+  *theta = r.val;
+  return stat;
 }
 
 

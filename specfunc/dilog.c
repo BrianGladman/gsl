@@ -397,16 +397,19 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
   /* Trap unit circle case.
    */
   if(r == 1.0) {
-    double theta_restrict = theta;
-    int stat_restrict = gsl_sf_angle_restrict_pos_impl(&theta_restrict);
+    gsl_sf_result theta_restrict;
+    int dummy = gsl_sf_angle_restrict_pos_err_impl(theta, &theta_restrict);
     int stat_c;
-    double term1 = theta_restrict*theta_restrict;
-    double term2 = 2.0*M_PI*fabs(theta_restrict);
+    const double term1 = theta_restrict.val*theta_restrict.val;
+    const double term2 = 2.0*M_PI*fabs(theta_restrict.val);
+    const double term1_err = 2.0 * fabs(theta_restrict.val * theta_restrict.err);
+    const double term2_err = 2.0*M_PI*fabs(theta_restrict.err);
     real_dl->val  = M_PI*M_PI/6.0 + 0.25*(term1 - term2);
-    real_dl->err  = GSL_DBL_EPSILON * (M_PI*M_PI/6.0 + 0.25 * (fabs(term1) + fabs(term2)));
+    real_dl->err  = 2.0 * GSL_DBL_EPSILON * (M_PI*M_PI/6.0 + 0.25 * (fabs(term1) + fabs(term2)));
+    real_dl->err += 0.25 * (term1_err + term2_err);
     real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
     stat_c = gsl_sf_clausen_impl(theta, imag_dl);
-    return GSL_ERROR_SELECT_2(stat_c, stat_restrict);
+    return stat_c;
   }
 
   /* Generic case.
