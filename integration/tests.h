@@ -18,4 +18,7 @@ double book13 (double x);
 double book14 (double x);
 double book15 (double x);
 
+double book16 (double x);
+double book17 (double x);
+
 

@@ -11,14 +11,14 @@ enum {
 
 typedef struct  {
   int sign ;
-  char mantissa[24] ; /* Actual bits are 0..22, element 23 is a NULL */
+  char mantissa[24] ; /* Actual bits are 0..22, element 23 is \0 */
   int exponent ;
   int type ;
 } gsl_ieee_float_rep ;
 
 typedef struct  {
   int sign ;
-  char mantissa[53] ; /* Actual bits are 0..51, element 52 is a NULL */
+  char mantissa[53] ; /* Actual bits are 0..51, element 52 is \0 */
   int exponent ;
   int type ;
 } gsl_ieee_double_rep ;

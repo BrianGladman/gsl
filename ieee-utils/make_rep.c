@@ -14,7 +14,7 @@
    sign      = 0x8000000000000000  
    exponent  = 0x7ff0000000000000 
    mantissa  = 0x000fffffffffffff
-   
+
    */
 
 void 
