@@ -254,8 +254,8 @@ double E1(void *xp)
 {
   double x = * ((double *) xp);
 
-/*   return exp(-square(x-1))*sin(8*x); */
   return exp(-square(x-1))*sin(8*x) - exp(-square(x-1000))*0.89;
+/*   return exp(-square(x-1))*sin(8*x); */
 }
 
 double M1(void *xp, void *yp)

@@ -192,7 +192,9 @@ int main(void)
 
   printf("# ");
   fflush(stdout);
+#if 0
   system("date");
+#endif /* 0 */
   fflush(stdout);
 
   return 0;
@@ -240,12 +242,16 @@ void exhaustive_search()
   static int initial_route[N_CITIES] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
   printf("\n# ");
   fflush(stdout);
+#if 0
   system("date");
+#endif
   fflush(stdout);
   do_all_perms(initial_route, 1);
   printf("\n# ");
   fflush(stdout);
+#if 0
   system("date");
+#endif /* 0 */
   fflush(stdout);
 
   printf("# exhaustive best route: ");
