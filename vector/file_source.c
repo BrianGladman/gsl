@@ -40,7 +40,7 @@ FUNCTION(gsl_block,fread)(FILE * stream, BASE * data, const size_t n)
 
   if (items != n) 
     {
-      GSL_ERROR ("read failed", GSL_EFAILED) ;
+      GSL_ERROR ("fread failed", GSL_EFAILED) ;
     } ;
 
   return 0;
@@ -53,7 +53,7 @@ FUNCTION(gsl_block,fwrite)(FILE * stream, const BASE * data, const size_t n)
 
   if (items != n) 
     {
-      GSL_ERROR ("write failed", GSL_EFAILED) ;
+      GSL_ERROR ("fwrite failed", GSL_EFAILED) ;
     } ;
   
   return 0;
