@@ -1,0 +1,178 @@
+ 
+* Some articles worth looking at
+
+@Article{Stewart:1985:NCD,
+  author =       "G. W. Stewart",
+  title =        "A Note on Complex Division",
+  journal =      j-TOMS,
+  volume =       "11",
+  number =       "3",
+  pages =        "238--241",
+  month =        sep,
+  year =         "1985",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Fri Aug 26 23:38:15 1994",
+  note =         "See also \cite{Stewart:1986:CNC}.",
+  URL =          "http://www.acm.org/pubs/citations/journals/toms/1985-11-3/p238
+-stewart/",
+  abstract =     "An algorithm for computing the quotient of two complex
+                 numbers is modified to make it more robust in the
+                 presence of underflows.",
+  acknowledgement = ack-nhfb,
+  keywords =     "algorithms; complex arithmetic; computer arithmetic;
+                 na",
+  subject =      "{\bf G.1.0}: Mathematics of Computing, NUMERICAL
+                 ANALYSIS, General, Numerical algorithms. {\bf G.4}:
+                 Mathematics of Computing, MATHEMATICAL SOFTWARE,
+                 Reliability and robustness.",
+}
+
+@Article{Stewart:1986:CNC,
+  author =       "G. W. Stewart",
+  title =        "Corrigendum: ``{A} Note on Complex Division''",
+  journal =      j-TOMS,
+  volume =       "12",
+  number =       "3",
+  pages =        "285--285",
+  month =        sep,
+  year =         "1986",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Fri Sep 30 01:17:25 1994",
+  note =         "See \cite{Stewart:1985:NCD}.",
+  acknowledgement = ack-nhfb,
+}
+
+@Article{Cody:1993:ACP,
+  author =       "W. J. Cody",
+  title =        "Algorithm 714: {CELEFUNT}: {A} Portable Test Package
+                 for Complex Elementary Functions",
+  journal =      j-TOMS,
+  volume =       "19",
+  number =       "1",
+  pages =        "1--21",
+  month =        mar,
+  year =         "1993",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Mon Sep 05 09:15:25 1994",
+  URL =          "http://www.acm.org/pubs/citations/journals/toms/1993-19-1/p1-c
+ody/",
+  abstract =     "This paper discusses CELEFUNT, a package of Fortran
+                 programs for testing complex elementary functions.",
+  acknowledgement = ack-nhfb,
+  keywords =     "algorithms; measurement; performance",
+  subject =      "{\bf G.4}: Mathematics of Computing, MATHEMATICAL
+                 SOFTWARE, Certification and testing. {\bf G.1.0}:
+                 Mathematics of Computing, NUMERICAL ANALYSIS, General,
+                 Numerical algorithms.",
+}
+@Article{Hull:1994:ICE,
+  author =       "T. E. Hull and Thomas F. Fairgrieve and Ping Tak Peter
+                 Tang",
+  title =        "Implementing Complex Elementary Functions Using
+                 Exception Handling",
+  journal =      j-TOMS,
+  volume =       "20",
+  number =       "2",
+  pages =        "215--244",
+  month =        jun,
+  year =         "1994",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Tue Mar 21 15:10:29 1995",
+  note =         "See \cite{Anonymous:1994:C}.",
+  URL =          "http://www.acm.org/pubs/citations/journals/toms/1994-20-2/p215
+-hull/",
+  abstract =     "Algorithms are developed for reliable and accurate
+                 evaluations of the complex elementary functions
+                 required in Fortran 77 and Fortran 90, namely cabs,
+                 csqrt, cexp, clog, csin, and ccos. The algorithms are
+                 presented in a pseudocode that has a convenient
+                 exception-handling facility. A tight error bound is
+                 derived for each algorithm. Corresponding Fortran
+                 programs for an IEEE environment have also been
+                 developed to illustrate the practicality of the
+                 algorithms, and these programs have been tested very
+                 carefully to help confirm the correctness of the
+                 algorithms and their error bounds. The results are of
+                 these tests are included in the paper, but the Fortran
+                 programs are not; the programs are available from
+                 Fairgrieve, (tff@cs.toronto.edu).",
+  acknowledgement = ack-nhfb,
+  keywords =     "algorithms; complex elementary functions; design;
+                 implementation",
+  subject =      "G.1.0 [Numerical Analysis]: General--error analysis;
+                 numerical algorithms; G.1.2 [Numerical Analysis]:
+                 Approximation--elementary function approximation; G.4
+                 [Mathematics of Computing]: Mathematical
+                 Software--algorithm analysis; reliability and
+                 robustness; verification",
+}
+
+
+@Article{Anonymous:1994:C,
+  author =       "Anonymous",
+  title =        "Corrigenda",
+  journal =      j-TOMS,
+  volume =       "20",
+  number =       "4",
+  pages =        "553--553",
+  month =        dec,
+  year =         "1994",
+  CODEN =        "ACMSCU",
+  ISSN =         "0098-3500",
+  bibdate =      "Tue Mar 14 16:17:03 1995",
+  note =         "See \cite{Hull:1994:ICE}",
+  acknowledgement = ack-rfb,
+}
+
+
+
+@Article{Hull:1997:ICA,
+  author =       "T. E. Hull and Thomas F. Fairgrieve and Ping Tak Peter
+                 Tang",
+  title =        "Implementing the Complex Arcsine and Arccosine
+                 Functions Using Exception Handling",
+  journal =      j-TOMS,
+  volume =       "23",
+  number =       "3",
+  pages =        "299--335",
+  month =        sep,
+  year =         "1997",
+  bibdate =      "Wed May  6 11:23:41 1998",
+  URL =          "http://www.acm.org/pubs/citations/journals/toms/1997-23-3/p299
+-hull/",
+  abstract =     "We develop efficient algorithms for reliable and
+                 accurate evaluations of the complex arcsine and
+                 arccosine functions. A tight error bound is derived for
+                 each algorithm; the results are valid for all
+                 machine-representable points in the complex plane. The
+                 algorithms are presented in a pseudocode that has a
+                 convenient exception-handling facility. Corresponding
+                 Fortran 77 programs for an IEEE environment have also
+                 been developed to illustrate the practicality of the
+                 algorithms, and these programs have been tested very
+                 carefully to help confirm the correctness of the
+                 algorithms and their error bounds. The results of these
+                 tests are included in the article, but the Fortran 77
+                 programs are not (these programs are available from
+                 Fairgrieve). Tests of other widely available programs
+                 fail at many points in the complex plane, and otherwise
+                 are slower and produce much less accurate results.",
+  accepted =     "February 1997",
+  acknowledgement = ack-rfb # " and " # ack-kr,
+  keywords =     "algorithms, design, complex elementary functions,
+                 implementation",
+  subject =      "{\bf G.1.0}: Mathematics of Computing, NUMERICAL
+                 ANALYSIS, General, error analysis, Numerical
+                 algorithms. {\bf G.1.2}: Mathematics of Computing,
+                 NUMERICAL ANALYSIS, Approximation, elementary function
+                 approximation. {\bf G.4}: Mathematics of Computing,
+                 MATHEMATICAL SOFTWARE, algorithm analysis, reliability
+                 and robustness, verification.",
+}
+
+
+

@@ -19,7 +19,7 @@
 (setq calc-float-format '(sci 20))
 ;;(setq calc-full-float-format '(sci 0))
 
-(calc-eval '(setq var-EvalRules '(vec (calcFunc-assign (calcFunc-sec (var x var-x)) (/ 1 (calcFunc-cos (var x var-x)))) (calcFunc-assign (calcFunc-csc (var x var-x)) (/ 1 (calcFunc-sin (var x var-x)))) (calcFunc-assign (calcFunc-cot (var x var-x)) (/ 1 (calcFunc-tan (var x var-x)))) (calcFunc-assign (calcFunc-sech (var x var-x)) (/ 1 (calcFunc-cosh (var x var-x)))) (calcFunc-assign (calcFunc-csch (var x var-x)) (/ 1 (calcFunc-sinh (var x var-x)))) (calcFunc-assign (calcFunc-coth (var x var-x)) (/ 1 (calcFunc-tanh (var x var-x)))) (calcFunc-assign (calcFunc-arcsec (var x var-x)) (calcFunc-arccos (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsc (var x var-x)) (calcFunc-arcsin (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccot (var x var-x)) (calcFunc-arctan (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arcsech (var x var-x)) (calcFunc-arccosh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsch (var x var-x)) (calcFunc-arcsinh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccoth (var x var-x)) (calcFunc-arctanh (/ 1 (var x var-x)))))) 'eval)
+(calc-eval '(setq var-EvalRules '(vec (calcFunc-assign (calcFunc-sec (var x var-x)) (/ 1 (calcFunc-cos (var x var-x)))) (calcFunc-assign (calcFunc-csc (var x var-x)) (/ 1 (calcFunc-sin (var x var-x)))) (calcFunc-assign (calcFunc-cot (var x var-x)) (/ 1 (calcFunc-tan (var x var-x)))) (calcFunc-assign (calcFunc-sech (var x var-x)) (/ 1 (calcFunc-cosh (var x var-x)))) (calcFunc-assign (calcFunc-csch (var x var-x)) (/ 1 (calcFunc-sinh (var x var-x)))) (calcFunc-assign (calcFunc-coth (var x var-x)) (/ 1 (calcFunc-tanh (var x var-x)))) (calcFunc-assign (calcFunc-arcsec (var x var-x)) (calcFunc-arccos (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsc (var x var-x)) (calcFunc-arcsin (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccot (var x var-x)) (calcFunc-arctan (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arcsech (var x var-x)) (calcFunc-arccosh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccsch (var x var-x)) (calcFunc-arcsinh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-arccoth (var x var-x)) (calcFunc-arctanh (/ 1 (var x var-x)))) (calcFunc-assign (calcFunc-abs2 (var x var-x)) (* (var x var-x) (calcFunc-conj (var x var-x)))) (calcFunc-assign (calcFunc-logabs (var x var-x)) (calcFunc-log (calcFunc-abs (var x var-x)))))) 'eval)
 
 (defun reflections (a b)
   (let ((a (float a)) (b (float b)))
@@ -126,6 +126,11 @@
                     (combine edge trig)))
 
 (defun test-all ()
+  
+  (test "arg" reals)
+  (test "abs" reals)
+  (test "abs2" reals)
+  (test "logabs" reals)
 
 ;  (test "sqrt" reals)
 
@@ -153,7 +158,7 @@
 ;  (test "sec" trigs)
 ;  (test "cot" trigs)
 
-  (test "csch" trigs)
+;  (test "csch" trigs)
 ;  (test "sech" trigs)
 ;  (test "coth" trigs)
 
@@ -161,7 +166,7 @@
 ;  (test "arcsec" trigs)
 ;  (test "arccot" trigs)
 
-  (test "arccsch" trigs)
+;  (test "arccsch" trigs)
 ;  (test "arcsech" trigs)
 ;  (test "arccoth" trigs)
 
