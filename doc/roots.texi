@@ -25,6 +25,13 @@ function and gives an overview of the algorithms involved.
 
 FIXME: Insert discussion of numerical root finding here.
 
+While it is not absolutely required that @math{f} have a root within the
+search region, numerical root finding functions should not be used
+haphazardly to check for the @emph{existence} of roots. There are better
+ways to do this! Since it is easy to create situations where numerical
+root finders go awry, it is a bad idea to throw a root finder at a
+function you do not know much about.
+
 Note that GSL root finding functions can only search for one root at a
 time.
 
@@ -36,27 +43,75 @@ time.
 
 All GSL root finding functions follow the same general template:
 
-@deftypefun int gsl_root_template (@var{root}, @var{f}, [@var{df},]
-[@w{@var{lower_bound}}, @w{@var{upper_bound}}, | @var{guess},
-[@var{guess2},]], @var{epsilon}, @w{@var{max_iterations}}[,
-@w{@var{max_step_size}}])
+@deftypefun double gsl_root_template (@var{f}, [@var{df},] [@w{@var{lower_bound}}, @w{@var{upper_bound}}, | @var{guess}, [@var{guess2},]], @var{epsilon}, @w{@var{max_iterations}} [, @w{@var{max_step_size}}])
 @end deftypefun
 
-The following subsections explain how to use GSL root finding
-functions in your code, the specific meaning of each argument, and which
-error codes are possible.
+The following 
+@iftex
+subsections
+@end iftex
+@ifinfo
+nodes
+@end ifinfo
+explain how to use GSL root finding functions in your code, the specific
+meaning of each argument, and which error codes are possible.
 
 @menu
+* Using the Root Finding Functions::   Proper @code{#include}ing and linking
+* Root Finder Return Values::          What GSL root finders return and when
 * Providing the Function to Search::   @code{f}, @code{df}
-* How the Root Location Is Returned::  @code{root}
 * Search Bounds and Guesses::          @code{lower_bound}, @code{upper_bound}, @code{guess},
                                          @code{guess2}
 * Search Stopping Parameters::         @code{epsilon}, @code{max_iterations},
                                          @code{max_step_size}
-* Using the Root Finding Functions::   Proper @code{#include}ing and linking
-* Root Finder Error Codes::            Error codes root finding functions
+* Root Finder Error Codes::            Error codes GSL root finding functions
                                          can return
 @end menu
+
+
+@node Using the Root Finding Functions
+@subsection Using the Root Finding Functions
+@cindex root finding, include files
+@cindex root finding, linking
+@cindex linking root finding functions
+@cindex include files for root finding functions
+
+Declarations of GSL root finding functions and associated crud is in
+@file{gsl_roots.h}; you should include it in your programs which make
+use of GSL root finding services.
+
+The library @file{libgslroots.*} contains code for the GSL root finding
+functions; use @samp{-lgslroots} on the command line to link it in.
+Alternately, you could just link the main GSL library (@file{libgsl.*},
+@samp{-lgsl}); this might be the better way to go if you are using other
+GSL functions as well. (FIXME: How correct is this?)
+
+Once you've @code{#include}d and linked, you're all set. Call GSL root
+finding functions as they're described in this manual.
+
+FIXME: Anything else?
+
+
+@node Root Finder Return Values
+@subsection Root Finder Return Values
+
+Depending on whether a GSL root finding function succeeded or failed, it
+will return the location of a root or the special value @code{NAN} (IEEE
+Not-A-Number).
+
+If the function succeeded in finding a root to the desired precision in
+the specified number of iterations, it will return the location of that
+root.
+
+If the function failed, it will return @code{NAN} (defined in the ANSI
+standard header file @file{math.h} FIXME: Is this true?) and set
+@w{@code{gsl_errno}} to a diagnostic value. @xref{Root Finder Error
+Codes}, for a list of possible @w{@code{gsl_errno}} values and their
+meanings.
+
+The final values of @w{@code{lower_bound}}, @w{@code{upper_bound}},
+@code{guess}, and/or @code{guess2} are very often useful for diagnosing
+why a root finder failed. @xref{Search Bounds and Guesses}.
 
 
 @node Providing the Function to Search
@@ -71,10 +126,6 @@ finder(s) to operate on, and, occasionally, its first derivative.
 A pointer to the function whose root you are searching for. It is called
 by the root finding function many times during its search. It must be
 continous within the search region (@pxref{Search Bounds and Guesses}).
-
-While it is not absolutely required that @code{f} have a root within the
-search region, GSL root finding functions should not be used haphazardly
-to check for the @emph{existence} of a root.
 
 Here is an example function which you could pass to a GSL root finder:
 
@@ -103,6 +154,11 @@ function_which_takes_a_function_pointer (my_function);
 A pointer to the first derivative of the function whose root you are
 searching for.
 
+@emph{Please note:} If your function's first derivative is not
+available, you should not approximate it numerically; it is almost
+always faster to use an algorithm which does not require a derivative.
+(FIXME: Is this a valid statement?)
+
 If we were looking for a root of the function in the previous example,
 this is what we would use for @code{dfn}:
 
@@ -118,54 +174,91 @@ my_functions_first_derivative (double x) @{
 @end group
 @end smallexample
 
-This argument is only required for functions which use Newton's Method
+This argument is only required for algorithms which use Newton's Method
 (@pxref{Newtons Method}).
-@end deftypevr
-
-
-@node How the Root Location Is Returned
-@subsection How the Root Location Is Returned
-
-Because the return value of GSL root finding functions is reserved for
-the error status, you must provide a pointer to a @code{double} to store
-the root location in.
-
-@deftypevr {Function Argument} {double *} root
-@vindex @r{root finding,} root @r{(function argument)}
-A pointer to a @code{double} where GSL root finding functions will store
-the root location. This must be a valid pointer; GSL root finders will
-not allocate any memory for you. We recommend that you use the @code{&}
-operator on a declared variable because it is much less messy than using
-@code{malloc}.
 @end deftypevr
 
 
 @node Search Bounds and Guesses
 @subsection Search Bounds and Guesses
-@vindex @r{root finding,} guess @r{(function argument)}
-@vindex @r{root finding,} guess2 @r{(function argument)}
+@cindex root finding, search bounds
+@cindex root finding, guess(es)
 
-Search bounds and guesses are not equivalent. If a function requires
-bounds for a search (with @w{@code{lower_bound}} and
-@w{@code{upper_bound}}, all iterations of the search will remain within
-the interval @math{[lower\_bound, upper\_bound]}; if it requires a
-guess, the search is not guaranteed to stay anywhere in particular,
-which is usually a rather large region) Essentially bounds are like
-saying ``I know there is a root between here and here; find it,'' and a
-guess are liky saying, ``Here is a value which is somewhat near the
-root; find the root.'' (Double guesses are essentially the same as single
-guesses.)
+Search bounds and guesses are not the same things. Search bounds are the
+endpoints of the search interval which is iterated smaller and smaller
+until the length of the interval is smaller than the requested
+precision; a guess is an @math{x} value which is iterated around until
+the it is within desired precision of a root. Two guesses behave
+similarly to one; there are just two @math{x} values wandering about
+instead of one.
 
-No GSL root finding functions take both bounds and guesses.
+No GSL root finding functions take both bounds and guesses. While the
+hybrid functions (@pxref{Hybrid Algorithms}) incorporate algorithms
+whose use of bounds and guesses is mixed, hybrid functions accept bounds
+and generate guesses internally when they are needed.
 
-@deftypevr {Function Argument} double lower_bound
-@deftypevrx {Function Argument} double upper_bound
+These variables are defined as pointers to @code{double}s rather than
+simply @code{double}s for two reasons. First, if the root finding
+function fails, it is very useful to have the final values of your
+iterated variables available to help diagnose why it failed. Second, it
+makes it possible to preserve the state of the root finder, enabling it
+to be restarted in the same place if needed. A situation where this
+could be useful is if the function under search is very costly to
+evaluate. Pretend, for a moment, that you want to find a root of a
+function which takes several minutes to evaluate. Your program could
+chug away for a few iterations, then examine your mailbox to see if the
+number of flames about bogging down the machine is above a certain
+threshold. If it isn't, chug away for a few more iterations and repeat
+the process; if it is, depending on your temperament, your program could
+renice itself to a lower priority and mail back apologies before
+continuing, or it could mailbomb everyone who complained, spawn copies
+of itself endlessly, and dump garbage to @w{@file{/dev/audio}} and
+@w{@file{/dev/console}}.
+
+@deftypevr {Function Argument} {double *} lower_bound
+@deftypevrx {Function Argument} {double *} upper_bound
 @vindex @r{root finding,} lower_bound @r{(function argument)}
 @vindex @r{root finding,} upper_bound @r{(function argument)}
-The upper and lower bounds of the interval in which to search for a
+The initial upper and lower bounds of the interval in which to search for a
 root. @w{@code{lower_bound}} must be less than @w{@code{upper_bound}}.
+
+These arguments are modified during execution of the root finding
+function; if you need to preserve their initial values, you must make
+copies of them. See the third paragraph of this
+@iftex
+subsection
+@end iftex
+@ifinfo
+node
+@end ifinfo
+for the reasoning behind this behavior.
+
+These arguments is accepted by bracketing algorithms such as bisection
+(@pxref{Bisection}) and hybrid algorithms (@pxref{Hybrid Algorithms}).
 @end deftypevr
 
+@deftypevr {Function Argument} {double *} guess
+@deftypevrx {Function Argument} {double *} guess2
+@vindex @r{root finding,} guess @r{(function argument)}
+@vindex @r{root finding,} guess2 @r{(function argument)}
+One or two initial values for the guess(es) iterated by the root finding
+function.
+
+These arguments are modified during execution of the root finding
+function; if you need to preserve their initial values, you must make
+copies of them. See the third paragraph of this
+@iftex
+subsection
+@end iftex
+@ifinfo
+node
+@end ifinfo
+for the reasoning behind this behavior.
+
+@code{guess} is accepted by stepping algorithms (Newton's Method,
+@ref{Newtons Method}, and Secant Method, @ref{Secant Method}.)
+@code{guess2} is only accepted by Secant Method.
+@end deftypevr
 
 @node Search Stopping Parameters
 @subsection Search Stopping Parameters
@@ -254,18 +347,6 @@ especially important for @w{@code{max_step_size}}.
 @end deftypevr
 
 
-@node Using the Root Finding Functions
-@subsection Using the Root Finding Functions
-@cindex root finding, include files
-@cindex root finding, linking
-@cindex linking root finding functions
-@cindex include files for root finding functions
-
-Declarations of GSL root finding functions and associated crud is in
-@file{gsl_roots.h}; you should include it in your programs which make
-use of GSL root finding services.
-
-
 @node Root Finder Error Codes
 @subsection Root Finder Error Codes
 @cindex root finding, error codes
@@ -298,7 +379,8 @@ The function under search (or its derivative) is not behaving as GSL
 expects it to. (For example, it returned @code{NAN}.)
 
 @item
-@code{root} is a null pointer. @xref{How the Root Location Is Returned}.
+@code{guess}, @code{guess2}, @w{@code{lower_bound}}, or
+@w{@code{upper_bound}} is a null pointer. @xref{Search Bounds and Guesses}.
 @end itemize
 
 @item GSL_ERUNAWAY
