@@ -24,6 +24,10 @@ gsl-randist
 gsl-histogram
 gsl.pc
 gmon.out
+config.guess
+config.sub
+gsl.spec
+ltmain.sh
 autom4te.cache
 config.guess
 config.sub
