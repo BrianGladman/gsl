@@ -25,9 +25,10 @@
 
 /* The Bivariate Gaussian probability distribution is 
 
-   p(x,y) dxdy = (1/(2 pi sigma_x sigma_y sqrt(r))) 
-                    exp(-(x^2 + y^2 - 2 r x y)/(2c)) dxdy     
+   p(x,y) dxdy = (1/(2 pi sigma_x sigma_y sqrt(c))) 
+    exp(-((x/sigma_x)^2 + (y/sigma_y)^2 - 2 r (x/sigma_x)(y/sigma_y))/2c) dxdy 
 
+   where c = 1-r^2
 */
 
 void
