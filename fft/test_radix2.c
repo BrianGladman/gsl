@@ -44,7 +44,7 @@ main (int argc, char *argv[])
   else
     {
       printf ("test n\n");
-      exit (0);
+      exit (EXIT_FAILURE);
     }
   
   real_data = malloc (n * sizeof (double));

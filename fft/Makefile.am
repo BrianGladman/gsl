@@ -1,15 +1,18 @@
-noinst_LIBRARIES = libfft.a
+noinst_LIBRARIES = libfft.a 
 
 bin_PROGRAMS = test_trap test_radix2 test benchmark errs
 
-include_HEADERS = gsl_errno.h gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
 
+INCLUDES = -I../err
 
-test_LDADD = libfft.a
-test_trap_LDADD = libfft.a
-test_radix2_LDADD = libfft.a
-errs_LDADD = libfft.a
-benchmark_LDADD = libfft.a
+TESTS = test_trap test_radix2 test
+
+test_LDADD = libfft.a ../err/liberr.a
+test_trap_LDADD = libfft.a ../err/liberr.a
+test_radix2_LDADD = libfft.a ../err/liberr.a
+errs_LDADD = libfft.a ../err/liberr.a
+benchmark_LDADD = libfft.a ../err/liberr.a
 
 test_DEPENDENCIES = libfft.a
 test_trap_DEPENDENCIES = libfft.a
@@ -28,7 +31,6 @@ compare.c compare.h \
 gsl_complex.h \
 dft_complex.c \
 gsl_dft_complex.h \
-errno.c gsl_errno.h \
  \
 gsl_fft.h \
 benchmark.c \

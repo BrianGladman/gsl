@@ -24,7 +24,7 @@ main (int argc, char *argv[])
   int resolution = CLOCKS_PER_SEC;
   unsigned int n = 1;
 
-  gsl_error_set_handler (&my_error_handler);
+  gsl_set_error_handler (&my_error_handler);
 
   if (argc == 2)
     {
@@ -33,7 +33,7 @@ main (int argc, char *argv[])
   else
     {
       printf ("test n\n");
-      exit (0);
+      exit (EXIT_FAILURE);
     }
 
   status = gsl_fft_complex_wavetable_alloc (n, &complex_wavetable);

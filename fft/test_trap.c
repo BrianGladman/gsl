@@ -37,7 +37,7 @@ main (int argc, char *argv[])
   gsl_fft_real_wavetable real_wavetable;
   gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
 
-  gsl_error_set_handler (&my_error_handler);
+  gsl_set_error_handler (&my_error_handler);
 
   /* n = 0 in alloc */
 

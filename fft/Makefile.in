@@ -44,17 +44,21 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-noinst_LIBRARIES = libfft.a
+noinst_LIBRARIES = libfft.a 
 
 bin_PROGRAMS = test_trap test_radix2 test benchmark errs
 
-include_HEADERS = gsl_errno.h gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_test.h gsl_dft_complex.h gsl_complex.h gsl_math.h
 
-test_LDADD = libfft.a
-test_trap_LDADD = libfft.a
-test_radix2_LDADD = libfft.a
-errs_LDADD = libfft.a
-benchmark_LDADD = libfft.a
+INCLUDES = -I../err
+
+TESTS = test_trap test_radix2 test
+
+test_LDADD = libfft.a ../err/liberr.a
+test_trap_LDADD = libfft.a ../err/liberr.a
+test_radix2_LDADD = libfft.a ../err/liberr.a
+errs_LDADD = libfft.a ../err/liberr.a
+benchmark_LDADD = libfft.a ../err/liberr.a
 
 test_DEPENDENCIES = libfft.a
 test_trap_DEPENDENCIES = libfft.a
@@ -72,7 +76,6 @@ compare.c compare.h \
 gsl_complex.h \
 dft_complex.c \
 gsl_dft_complex.h \
-errno.c gsl_errno.h \
  \
 gsl_fft.h \
 benchmark.c \
@@ -124,8 +127,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libfft_a_LIBADD = 
-libfft_a_OBJECTS =  autotest.o compare.o dft_complex.o errno.o \
-benchmark.o complex.o complex_init.o complex_pass_2.o complex_pass_3.o \
+libfft_a_OBJECTS =  autotest.o compare.o dft_complex.o benchmark.o \
+complex.o complex_init.o complex_pass_2.o complex_pass_3.o \
 complex_pass_4.o complex_pass_5.o complex_pass_6.o complex_pass_n.o \
 complex_radix2.o factorize.o halfcomplex.o halfcomplex_init.o \
 halfcomplex_pass_2.o halfcomplex_pass_3.o halfcomplex_pass_4.o \
@@ -145,7 +148,7 @@ benchmark_OBJECTS =  benchmark.o
 benchmark_LDFLAGS = 
 errs_SOURCES = errs.c
 errs_OBJECTS =  errs.o
-errs_DEPENDENCIES =  libfft.a
+errs_DEPENDENCIES =  libfft.a ../err/liberr.a
 errs_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -163,8 +166,8 @@ DEP_FILES =  .deps/autotest.P .deps/benchmark.P .deps/compare.P \
 .deps/complex.P .deps/complex_init.P .deps/complex_pass_2.P \
 .deps/complex_pass_3.P .deps/complex_pass_4.P .deps/complex_pass_5.P \
 .deps/complex_pass_6.P .deps/complex_pass_n.P .deps/complex_radix2.P \
-.deps/dft_complex.P .deps/errno.P .deps/errs.P .deps/factorize.P \
-.deps/halfcomplex.P .deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
+.deps/dft_complex.P .deps/errs.P .deps/factorize.P .deps/halfcomplex.P \
+.deps/halfcomplex_init.P .deps/halfcomplex_pass_2.P \
 .deps/halfcomplex_pass_3.P .deps/halfcomplex_pass_4.P \
 .deps/halfcomplex_pass_5.P .deps/halfcomplex_pass_n.P \
 .deps/halfcomplex_unpack.P .deps/real.P .deps/real_init.P \
@@ -329,10 +332,31 @@ maintainer-clean-depend:
 	@o='o';				\
 	test -n "$o" && o='$$o';	\
 	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  all=`expr $$all + 1`; \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    echo "PASS: $$tst"; \
+	  else \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  echo "========================"; \
+	  echo "All $$all tests passed"; \
+	  echo "========================"; \
+	else \
+	  echo "$$failed of $$all tests failed"; \
+	fi
 info:
 dvi:
 check: all
-	$(MAKE)
+	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-binPROGRAMS
 	$(NORMAL_INSTALL)
@@ -394,10 +418,10 @@ clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
 install-binPROGRAMS uninstall-includeHEADERS install-includeHEADERS \
 tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
 distdir mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend info dvi installcheck install-exec install-data \
-install uninstall all installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
+maintainer-clean-depend check-TESTS info dvi installcheck install-exec \
+install-data install uninstall all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

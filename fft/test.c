@@ -43,7 +43,7 @@ main (int argc, char *argv[])
   else
     {
       printf ("test n\n");
-      exit (0);
+      exit (EXIT_FAILURE);
     }
   
   real_data = malloc (n * sizeof (double));
@@ -52,7 +52,7 @@ main (int argc, char *argv[])
   fft_complex_data = malloc (n * sizeof (complex));
   fft_complex_tmp = malloc (n * sizeof (complex));
 
-  gsl_error_set_handler (NULL);	/* abort on any errors */
+  gsl_set_error_handler (NULL);	/* abort on any errors */
 
   sprintf (length, "n = %d", n);
   
