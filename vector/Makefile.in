@@ -74,7 +74,11 @@ lib_LIBRARIES = libgslvector.a
 
 check_PROGRAMS = test test_float test_int test_complex test_trap 
 
-include_HEADERS = gsl_vector.h gsl_vector_float.h gsl_vector_int.h \
+include_HEADERS = 		\
+	gsl_vector.h		\
+	gsl_vector_double.h	\
+	gsl_vector_float.h	\
+	gsl_vector_int.h	\
 	gsl_vector_complex.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
@@ -100,24 +104,7 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c
 
-libgslvector_a_SOURCES = \
-source.h \
-init.c \
-vector.c \
-file.c \
-gsl_vector.h \
-init_int.c \
-vector_int.c \
-file_int.c \
-gsl_vector_int.h \
-init_float.c \
-vector_float.c \
-file_float.c \
-gsl_vector_float.h \
-init_complex.c \
-vector_complex.c \
-file_complex.c \
-gsl_vector_complex.h
+libgslvector_a_SOURCES = init.c file.c vector.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -129,9 +116,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslvector_a_LIBADD = 
-libgslvector_a_OBJECTS =  init.o vector.o file.o init_int.o vector_int.o \
-file_int.o init_float.o vector_float.o file_float.o init_complex.o \
-vector_complex.o file_complex.o
+libgslvector_a_OBJECTS =  init.o file.o vector.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
@@ -162,11 +147,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/file.P .deps/file_complex.P .deps/file_float.P \
-.deps/file_int.P .deps/init.P .deps/init_complex.P .deps/init_float.P \
-.deps/init_int.P .deps/test.P .deps/test_complex.P .deps/test_float.P \
-.deps/test_trap.P .deps/vector.P .deps/vector_complex.P \
-.deps/vector_float.P .deps/vector_int.P
+DEP_FILES =  .deps/file.P .deps/init.P .deps/test.P .deps/test_complex.P \
+.deps/test_float.P .deps/test_trap.P .deps/vector.P
 SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_float_SOURCES) $(test_int_SOURCES) test_complex.c $(test_trap_SOURCES)
 OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_float_OBJECTS) $(test_int_OBJECTS) test_complex.o $(test_trap_OBJECTS)
 

@@ -34,7 +34,7 @@ FUNCTION(gsl_vector,fscanf)(FILE * stream, TYPE(gsl_vector) * v)
 }
 
 int
-FUNCTION(gsl_block,fread)(FILE * stream, BASE * data, const size_t n)
+FUNCTION(gsl_block,fread)(FILE * stream, ATOMIC * data, const size_t n)
 {
   size_t items = fread (data,  sizeof(BASE), n, stream) ;
 
@@ -47,7 +47,7 @@ FUNCTION(gsl_block,fread)(FILE * stream, BASE * data, const size_t n)
 }
 
 int 
-FUNCTION(gsl_block,fwrite)(FILE * stream, const BASE * data, const size_t n)
+FUNCTION(gsl_block,fwrite)(FILE * stream, const ATOMIC * data, const size_t n)
 {
   size_t items = fwrite(data, sizeof(BASE), n, stream) ;
 

@@ -3,7 +3,7 @@
 
 
 #define BASE_GSL_COMPLEX_LONG
-#define IN_FORMAT "%lg %lg"
+#define IN_FORMAT "%Lg"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -12,7 +12,7 @@
 #undef  BASE_GSL_COMPLEX_LONG
 
 #define BASE_GSL_COMPLEX
-#define IN_FORMAT "%lg %lg"
+#define IN_FORMAT "%lg"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -21,7 +21,7 @@
 #undef  BASE_GSL_COMPLEX
 
 #define BASE_GSL_COMPLEX_FLOAT
-#define IN_FORMAT "%g %g"
+#define IN_FORMAT "%g"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -30,7 +30,7 @@
 #undef  BASE_GSL_COMPLEX_FLOAT
 
 #define BASE_LONG_DOUBLE
-#define IN_FORMAT "%lg"
+#define IN_FORMAT "%Lg"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -48,7 +48,7 @@
 #undef  BASE_DOUBLE
 
 #define BASE_FLOAT
-#define IN_FORMAT "%lg"
+#define IN_FORMAT "%g"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -57,7 +57,7 @@
 #undef  BASE_FLOAT
 
 #define BASE_ULONG
-#define IN_FORMAT "%lg"
+#define IN_FORMAT "%lu"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -66,7 +66,7 @@
 #undef  BASE_ULONG
 
 #define BASE_LONG
-#define IN_FORMAT "%lg"
+#define IN_FORMAT "%ld"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -75,7 +75,7 @@
 #undef  BASE_LONG
 
 #define BASE_UINT
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%u"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -84,7 +84,7 @@
 #undef  BASE_UINT
 
 #define BASE_INT
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%d"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -93,7 +93,7 @@
 #undef  BASE_INT
 
 #define BASE_USHORT
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%hu"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -102,7 +102,7 @@
 #undef  BASE_USHORT
 
 #define BASE_SHORT
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%h"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -111,7 +111,7 @@
 #undef  BASE_SHORT
 
 #define BASE_UCHAR
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%c"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"
@@ -120,7 +120,7 @@
 #undef  BASE_UCHAR
 
 #define BASE_CHAR
-#define IN_FORMAT "%ld"
+#define IN_FORMAT "%c"
 #include "source.h"
 #include "file_source.c"
 #include "fprintf_block.c"

@@ -37,11 +37,11 @@ int gsl_block_complex_fprintf (FILE * stream, const double * data, size_t n,
 extern int gsl_check_range ;
 
 #ifndef  GSL_VECTOR_COMPLEX_REAL
-#define  GSL_VECTOR_COMPLEX_REAL(z, i)  (z->dat[2*i])
-#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  (z->dat[2*i + 1])
+#define  GSL_VECTOR_COMPLEX_REAL(z, i)  (z->data[2*i])
+#define  GSL_VECTOR_COMPLEX_IMAG(z, i)  (z->data[2*i + 1])
 #endif
 
-#define GSL_COMPLEX_AT(zv, i)  ((gsl_complex *)  &(zv->dat[2*i]))
+#define GSL_COMPLEX_AT(zv, i)  ((gsl_complex *)  &(zv->data[2*i]))
 
 
 /* inline functions if you are using GCC or otherwise enlightened cc */
@@ -70,8 +70,8 @@ gsl_vector_complex_set(gsl_vector_complex * v, const size_t i, const gsl_complex
       GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
     }
 #endif
-  GSL_VECTOR_COMPLEX_REAL(v, i) = GSL_COMPLEX_P_REAL(z);
-  GSL_VECTOR_COMPLEX_IMAG(v, i) = GSL_COMPLEX_P_IMAG(z);
+  GSL_VECTOR_COMPLEX_REAL(v, i) = GSL_COMPLEX_P_REAL(x);
+  GSL_VECTOR_COMPLEX_IMAG(v, i) = GSL_COMPLEX_P_IMAG(x);
 }
 
 #endif /* HAVE_INLINE */

@@ -32,4 +32,4 @@ CLEANFILES = test.txt test.dat
 
 noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c
 
-libgslvector_a_SOURCES = init.c file.c vector.c 
+libgslvector_a_SOURCES = init.c file.c vector.c

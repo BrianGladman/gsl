@@ -5,8 +5,8 @@
    and use BASE as the base datatype      */
 
 #if   defined(BASE_GSL_COMPLEX_LONG)
-#define BASE gsl_complex_long
-#define SHORT complex_long
+#define BASE gsl_complex_long_double
+#define SHORT complex_long_double
 #define ATOMIC long double
 #define MULTIPLICITY 2
 

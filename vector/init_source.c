@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <gsl_vector.h>
 
 #include "source.h"
 
@@ -46,7 +47,7 @@ FUNCTION(gsl_vector,calloc) (const size_t n)
   if (v == 0) 
     return 0 ;
 
-  for (i = 0 ; i < MULTIPLICTY * n; i++)  /* initialize vector to zero */
+  for (i = 0 ; i < MULTIPLICITY * n; i++)  /* initialize vector to zero */
     {
       v->data[i] = 0.0 ;
     }

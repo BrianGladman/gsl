@@ -1,20 +1,25 @@
 int
-FUNCTION(gsl_block,fprintf)(FILE * stream, const BASE * data, const size_t n,
-			     const char * format)
+FUNCTION(gsl_block,fprintf)(FILE * stream, const ATOMIC * data, const size_t n,
+			    const char * format)
 {
   size_t i ;
 
   for (i = 0 ; i < n ; i++) 
     {
-      int status = fprintf(stream, format, data[i]) ;
+      int k;
+      int status;
       
-      if (status < 0) 
-	{
+      for(k = 0; k < MULTIPLICITY; k++) {
+	if(k > 0) {
+	  status = putc(' ', stream);
+	  if(status == EOF) GSL_ERROR ("putc failed", GSL_EFAILED) ;
+	}
+        status = fprintf(stream, format, data[MULTIPLICITY*i + k]) ;
+        if (status < 0) {
 	  GSL_ERROR ("fprintf failed", GSL_EFAILED) ;
 	}
-
+      }
       status = putc('\n', stream) ;
-
       if (status == EOF) 
 	{
 	  GSL_ERROR ("putc failed", GSL_EFAILED) ;
@@ -25,21 +30,18 @@ FUNCTION(gsl_block,fprintf)(FILE * stream, const BASE * data, const size_t n,
 }
 
 int
-FUNCTION(gsl_block,fscanf)(FILE * stream, BASE * data, const size_t n)
+FUNCTION(gsl_block,fscanf)(FILE * stream, ATOMIC * data, const size_t n)
 {
   size_t i ;
 
   for (i = 0 ; i < n ; i++) 
     {
-      int status = fscanf(stream, IN_FORMAT, data + i) ;
-
-      if (status != 1) 
-	{
-	  GSL_ERROR ("fscanf failed", GSL_EFAILED) ;
-	}
+      int k;
+      for(k=0; k<MULTIPLICITY; k++) {
+        int status = fscanf(stream, IN_FORMAT, data + MULTIPLICITY*i + k);
+	if (status != 1) GSL_ERROR ("fscanf failed", GSL_EFAILED);
+      }
     }
 
-  return 0;
+  return GSL_SUCCESS;
 } 
-
-
