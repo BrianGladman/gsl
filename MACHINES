@@ -55,6 +55,9 @@ the -std option for ANSI conformance.  Use
 
 to build the library this way.
 
+Use GNU tar to unpack the tar file, as Tru64 tar gives an error
+halfway through.
+
 DOS
 ---
 
