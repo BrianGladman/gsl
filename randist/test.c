@@ -28,8 +28,10 @@ double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
 double test_chisq_pdf (double x);
-double test_discrete (void);
-double test_discrete_pdf (unsigned int n);
+double test_discrete1 (void);
+double test_discrete1_pdf (unsigned int n);
+double test_discrete2 (void);
+double test_discrete2_pdf (unsigned int n);
 double test_erlang (void);
 double test_erlang_pdf (double x);
 double test_exponential (void);
@@ -162,9 +164,9 @@ main (void)
   testMoments (FUNC (exponential), 0.0, 1.0, 1- exp(-0.5));
   testMoments (FUNC (cauchy), 0.0, 10000.0, 0.5);
 
-  testMoments (FUNC (discrete), -0.5, 0.5, 0.59 );
-  testMoments (FUNC (discrete), 0.5, 1.5, 0.40 );
-  testMoments (FUNC (discrete), 1.5, 3.5, 0.01 );
+  testMoments (FUNC (discrete1), -0.5, 0.5, 0.59 );
+  testMoments (FUNC (discrete1), 0.5, 1.5, 0.40 );
+  testMoments (FUNC (discrete1), 1.5, 3.5, 0.01 );
 
   testPDF (FUNC2(beta));
   testPDF (FUNC2(cauchy));
@@ -217,7 +219,8 @@ main (void)
   testPDF (FUNC2(dir3dyz));
   testPDF (FUNC2(dir3dzx));
 
-  testDiscretePDF (FUNC2(discrete));
+  testDiscretePDF (FUNC2(discrete1));
+  testDiscretePDF (FUNC2(discrete2));
   testDiscretePDF (FUNC2(poisson));
   testDiscretePDF (FUNC2(poisson_large));
   testDiscretePDF (FUNC2(bernoulli));
@@ -647,20 +650,37 @@ test_dir3dzx_pdf (double x)
     }
 }
 
-static gsl_ran_discrete_t *g = NULL;
+static gsl_ran_discrete_t *g1 = NULL;
+static gsl_ran_discrete_t *g2 = NULL;
+
 double
-test_discrete (void)
+test_discrete1 (void)
 {
     static double P[3]={0.59, 0.4, 0.01};
-    if (g==NULL) {
-        g = gsl_ran_discrete_preproc(3,P);
+    if (g1==NULL) {
+        g1 = gsl_ran_discrete_preproc(3,P);
     }
-    return gsl_ran_discrete(r_global,g);
+    return gsl_ran_discrete(r_global,g1);
 }
-double test_discrete_pdf (unsigned int n)
+double test_discrete1_pdf (unsigned int n)
 {
-    return gsl_ran_discrete_pdf((int)n,g);
+    return gsl_ran_discrete_pdf((int)n,g1);
 }
+
+double
+test_discrete2 (void)
+{
+    static double P[10]={ 1, 9, 3, 4, 5, 8, 6, 7, 2, 0 };
+    if (g2==NULL) {
+        g2 = gsl_ran_discrete_preproc(10,P);
+    }
+    return gsl_ran_discrete(r_global,g2);
+}
+double test_discrete2_pdf (unsigned int n)
+{
+    return gsl_ran_discrete_pdf((int)n,g2);
+}
+
     
 double
 test_erlang (void)

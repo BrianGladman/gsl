@@ -155,7 +155,7 @@ push_stack(gsl_stack_t *s, int v)
     s->i += 1;
     if ((s->i) >= (s->N)) {
         fprintf(stderr,"Cannot push stack!\n");
-        exit(0);                /* fatal!! */
+        abort();                /* fatal!! */
     }
     (s->v)[s->i] = v;
 }
@@ -163,7 +163,7 @@ static int pop_stack(gsl_stack_t *s)
 {
     if ((s->i) < 0) {
         fprintf(stderr,"Cannot pop stack!\n");
-        exit(0);
+        abort();
     }
     s->i -= 1;
     return ((s->v)[s->i + 1]);
@@ -194,18 +194,20 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
     double pTotal = 0.0, mean, d;
     
     if (Kevents < 1) {
-        fprintf(stderr,"new_randeventW: Kevents=%d < 1\n",Kevents);
-        /* Could probably treat Kevents=1 as a special case */
-        return NULL;
+      /* Could probably treat Kevents=1 as a special case */
+
+      GSL_ERROR_RETURN ("number of events must be a positive integer", 
+			GSL_EINVAL, 0);
     }
+
     /* Make sure elements of ProbArray[] are positive.
      * Won't enforce that sum is unity; instead will just normalize
      */
+
     for (k=0; k<Kevents; ++k) {
         if (ProbArray[k] < 0) {
-            fprintf(stderr,"new_randeventW: ProbArray[%d]=%g is negative\n",
-                    k,ProbArray[k]);
-            return NULL;
+	  GSL_ERROR_RETURN ("probabilities must be non-negative",
+			    GSL_EINVAL, 0) ;
         }
         pTotal += ProbArray[k];
     }
@@ -217,10 +219,11 @@ gsl_ran_discrete_preproc(int Kevents, const double *ProbArray)
     g->A = (int *)malloc(sizeof(int)*Kevents);
 
     E = (double *)malloc(sizeof(double)*Kevents);
+
     if (E==NULL) {
-        fprintf(stderr,"Cannot allocate for randeventW\n");
-        return NULL;
+      GSL_ERROR_RETURN ("Cannot allocate memory for randevent", ENOMEM, 0);
     }
+
     for (k=0; k<Kevents; ++k) {
         E[k] = ProbArray[k]/pTotal;
     }
