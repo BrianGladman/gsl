@@ -5,91 +5,91 @@
 
 gsl_histogram *
 gsl_histogram_calloc_uniform (const size_t n, const double xmin,
-			     const double xmax)
+			      const double xmax)
 {
-  gsl_histogram * h ;
-  
-  if (xmin >= xmax) 
+  gsl_histogram *h;
+
+  if (xmin >= xmax)
     {
-      GSL_ERROR_RETURN ("xmin must be less than xmax", GSL_EINVAL, 0) ;
+      GSL_ERROR_RETURN ("xmin must be less than xmax", GSL_EINVAL, 0);
     }
-  
-  h = gsl_histogram_calloc (n) ;
-  
-  if (h == 0) 
+
+  h = gsl_histogram_calloc (n);
+
+  if (h == 0)
     {
-      return h ;
+      return h;
     }
-    
+
   {
-    size_t i ;
-    
-    for (i = 0; i < n + 1; i++) 
+    size_t i;
+
+    for (i = 0; i < n + 1; i++)
       {
-	h->range[i] = xmin + ((double)i/(double)n) * (xmax - xmin) ;
+	h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
       }
   }
 
-  return h ;
+  return h;
 }
 
 gsl_histogram *
 gsl_histogram_calloc (size_t n)
 {
-  gsl_histogram * h ;
- 
+  gsl_histogram *h;
+
   if (n == 0)
     {
-      GSL_ERROR_RETURN ("histogram length n must be positive integer", 
-			GSL_EDOM, 0) ;
+      GSL_ERROR_RETURN ("histogram length n must be positive integer",
+			GSL_EDOM, 0);
     }
 
-  h = (gsl_histogram *) malloc(sizeof(gsl_histogram)) ;
+  h = (gsl_histogram *) malloc (sizeof (gsl_histogram));
 
-  if (h == 0) 
+  if (h == 0)
     {
       GSL_ERROR_RETURN ("failed to allocate space for histogram struct",
 			GSL_ENOMEM, 0);
     }
 
-  h->range = (double *) malloc((n + 1) * sizeof(double)) ;
+  h->range = (double *) malloc ((n + 1) * sizeof (double));
 
-  if (h->range == 0) 
+  if (h->range == 0)
     {
-      free(h) ; /* exception in constructor, avoid memory leak */
+      free (h);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram ranges", 
+      GSL_ERROR_RETURN ("failed to allocate space for histogram ranges",
 			GSL_ENOMEM, 0);
     }
 
-  h->bin = (double *) malloc(n * sizeof(double)) ;
+  h->bin = (double *) malloc (n * sizeof (double));
 
-  if (h->bin == 0) 
+  if (h->bin == 0)
     {
-      free(h->range) ;
-      free(h) ; /* exception in constructor, avoid memory leak */
+      free (h->range);
+      free (h);		/* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_RETURN ("failed to allocate space for histogram bins", 
+      GSL_ERROR_RETURN ("failed to allocate space for histogram bins",
 			GSL_ENOMEM, 0);
     }
 
   {
-    size_t i ;
+    size_t i;
 
     for (i = 0; i < n + 1; i++)
       {
-	h->range[i] = i ;
+	h->range[i] = i;
       }
-    
+
     for (i = 0; i < n; i++)
       {
-	h->bin[i] = 0 ;
+	h->bin[i] = 0;
       }
   }
 
   h->nbins = n;
 
-  return h ;
+  return h;
 }
 
 

@@ -5,7 +5,7 @@
 int
 main (int argc, char **argv)
 {
-  double a = 0.0, b = 1.0 ;
+  double a = 0.0, b = 1.0;
   size_t n = 10;
 
   if (argc != 4)
@@ -20,19 +20,21 @@ main (int argc, char **argv)
   n = atoi (argv[3]);
 
   {
-    gsl_histogram * h = gsl_histogram_calloc_uniform (n, a, b) ;
-    int status ;
-    
-    do {
-      double x ;
-      status = fscanf(stdin, "%lg", &x) ;
-      
-      gsl_histogram_increment (h, x) ;
+    gsl_histogram *h = gsl_histogram_calloc_uniform (n, a, b);
+    int status;
 
-    } while (status == 1) ;
+    do
+      {
+	double x;
+	status = fscanf (stdin, "%lg", &x);
 
-    gsl_histogram_fprintf (stdout, h, "%g", "%g") ;
+	gsl_histogram_increment (h, x);
+
+      }
+    while (status == 1);
+
+    gsl_histogram_fprintf (stdout, h, "%g", "%g");
   }
-  
-  return 0 ;
+
+  return 0;
 }

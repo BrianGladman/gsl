@@ -5,12 +5,12 @@
 void
 gsl_histogram2d_reset (gsl_histogram2d * h)
 {
-  size_t i ;
+  size_t i;
   const size_t nx = h->nx;
   const size_t ny = h->ny;
-  
-  for (i = 0; i < nx * ny; i++) 
+
+  for (i = 0; i < nx * ny; i++)
     {
-      h->bin[i] = 0 ;
+      h->bin[i] = 0;
     }
 }
