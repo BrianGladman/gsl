@@ -232,6 +232,11 @@ main (void)
       {
         gsl_permutation_memcpy (plin, p);
 
+        for (j = 0; j < 5; j++)
+          {
+            pcan->data[j] = 0;
+          }
+
 	gsl_permutation_linear_to_canonical (pcan, plin);
 
 	for (j = 0; j < 5; j++)
@@ -242,6 +247,11 @@ main (void)
 	status |= (gsl_permutation_canonical_cycles (pcan) != cycles[i]);
 
 	status |= (gsl_permutation_linear_cycles (plin) != cycles[i]);
+
+        for (j = 0; j < 5; j++)
+          {
+            plin->data[j] = 0;
+          }
 
 	gsl_permutation_canonical_to_linear (plin, pcan);
 		
