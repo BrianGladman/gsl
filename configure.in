@@ -126,23 +126,6 @@ if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
-AC_MSG_CHECKING(for IEEE compilation options)
-case "$host" in
-    alpha*-*-*) 
-		if test X"$GCC" = Xyes ; then
-			ieee_alpha_options='-mieee -mfp-rounding-mode=d'
-			CFLAGS="$ieee_alpha_options $CFLAGS"
-		else
-			# This assumes Compaq's C compiler.
-			ieee_alpha_options='-ieee -fprm d'
-			CFLAGS="$ieee_alpha_options $CFLAGS"
-		fi
-		AC_MSG_RESULT([adding $ieee_alpha_options])
-        ;;
-    *)
-        AC_MSG_RESULT([none])
-        ;;
-esac
 
 AC_MSG_CHECKING(for IEEE arithmetic interface type)
 case "$host" in
@@ -182,6 +165,85 @@ case "$host" in
         AC_MSG_RESULT([unknown])
         ;;
 esac
+
+
+AC_MSG_CHECKING([for rounding-control compiler flags])
+save_cflags="$CFLAGS"
+case "$host" in
+    alpha*-*-*) 
+		if test X"$GCC" = Xyes ; then
+			ieee_alpha_options='-mfp-rounding-mode=d'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		else
+			# This assumes Compaq's C compiler, which is probably
+			# a pretty bad assumption.  Improvements welcome.
+			ieee_alpha_options='-fprm d'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		fi
+		#
+		# now see if the option we think should be accepted actually is
+		#
+		AC_TRY_COMPILE( ,[ int foo; ],[
+			AC_MSG_RESULT([$ieee_alpha_options])
+			dnl
+			dnl after the check is over, CFLAGS will become save_cflags,
+			dnl which has just acquired the additional flag.
+			dnl
+			save_cflags="$CFLAGS"
+			],[
+			AC_MSG_RESULT([unknown!])
+			AC_MSG_WARN(
+			[I don't know how to enable dynamic rounding with your compiler]
+			)
+			]
+		)	dnl here ends our AC_TRY_COMPILE
+        ;;
+    *)
+        AC_MSG_RESULT([none])
+        ;;
+esac
+# Now restore our (possibly augmented) CFLAGS.
+CFLAGS="$save_cflags"
+
+
+AC_MSG_CHECKING([for IEEE-conformance compiler flags])
+save_cflags="$CFLAGS"
+case "$host" in
+    alpha*-*-*) 
+		if test X"$GCC" = Xyes ; then
+			ieee_alpha_options='-mieee'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		else
+			# This assumes Compaq's C compiler, which is probably
+			# a pretty bad assumption.  Improvements welcome.
+			ieee_alpha_options='-ieee'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		fi
+		#
+		# now see if the option we think should be accepted actually is
+		#
+		AC_TRY_COMPILE( ,[ int foo; ],[
+			AC_MSG_RESULT([$ieee_alpha_options])
+			dnl
+			dnl after the check is over, CFLAGS will become save_cflags,
+			dnl which has just acquired the additional flag.
+			dnl
+			save_cflags="$CFLAGS"
+			],[
+			AC_MSG_RESULT([unknown!])
+			AC_MSG_WARN(
+			[I don't know how to enable full IEEE mode with your compiler]
+			)
+			]
+		)	dnl here ends our AC_TRY_COMPILE
+        ;;
+    *)
+        AC_MSG_RESULT([none])
+        ;;
+esac
+# Now restore our (possibly augmented) CFLAGS.
+CFLAGS="$save_cflags"
+
 
 dnl AC_ARG_ENABLE(exceptions,[exceptions],AC_PROG_CXX)
 
