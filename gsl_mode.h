@@ -42,9 +42,9 @@ extern inline unsigned int GSL_MODE_PREC(gsl_mode_t mt);
 extern inline unsigned int
 GSL_MODE_PREC(gsl_mode_t mt)
 { return  (mt & (unsigned int)7); }
-#else
+#else  /* HAVE_INLINE */
 #define GSL_MODE_PREC(mt) ((mt) & (unsigned int)7)
-#endif
+#endif /* HAVE_INLINE */
 
 
 

@@ -1,3 +1,10 @@
+1999-07-14  Mark Galassi  <rosalia@cygnus.com>
+
+	* prec.c (GSL_MODE_PREC): surrounded this with function with an
+	#ifndef, since it might already be defined as a macro.  In truth,
+	this function might be completely unnecessary, since the logic in
+	../gsl_mode.h seems to cover all cases.
+
 Fri Nov 20 17:41:35 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* params.c: added program for printing ieee parameters

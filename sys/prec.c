@@ -46,7 +46,9 @@ const double gsl_prec_root6_eps[_GSL_PREC_T_NUM] = {
 
 /* We need this somewhere, in case the inline is ignored.
  */
+#ifndef GSL_MODE_PREC
 unsigned int
 GSL_MODE_PREC(gsl_mode_t mt)
 { return  (mt & (unsigned int)7); }
+#endif /* GSL_MODE_PREC */
 
