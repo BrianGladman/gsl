@@ -1230,31 +1230,74 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
 }
 
 
+/* Evaluate a <= 0 cases directly. (Polynomial; Horner)
+ * If x > 0, the terms are all positive, so this
+ * must work. We will assume x > 0 here.
+ */
 static
 int
-hyperg_1F1_ab_negint(const double a, const double b, const double x, double * result)
+hyperg_1F1_a_negint_poly(const int a, const double b, const double x, double * result)
 {
-  /* Safe to recurse backward with Z function.
-   * Z(ap,N,b,x) := 1/Gamma(1+ap-N-b) 1F1(ap-N,b,x)
-   * Z[n+1] + (b-2a-x+2n) Z[n] + (a-n)(1+a-n-b) Z[n-1] = 0
-   */
-  double Znm1 = 1.0;	     /* Z(0,0,b,x) */
-  double Zn   = 1.0 - x/b;   /* Z(0,1,b,x) */
-  double Znp1;
-  int n;
-  for(n=2; n<a; n++) {
-    Znp1 = -(b-x-2*n) * Zn + n*(1-n-b) * Znm1;
-    Znm1 = Zn;
-    Zn   = Znp1;
-  }
-  if(Zn == 0.0) {
-    *result = 0.0;
+  if(a == 0) {
+    *result = 1.0;
     return GSL_SUCCESS;
   }
   else {
-    double lg_ab;
-    gsl_sf_lngamma_impl(1.0+a-b, &lg_ab);  /* 1+a-b > 0  here */
-    return gsl_sf_exp_sgn_impl(lg_ab + log(fabs(Zn)), Zn, result);
+    int N = -a;
+    double poly = 1.0;
+    int k;
+    for(k=N-1; k>=0; k--) {
+      double t = (a+k)/(b+k) * (x/(k+1));
+      double r = t + 1.0/poly;
+      if(r > 0.9*DBL_MAX/poly) {
+        *result = 0.0; /* FIXME: should be Inf */
+	return GSL_EOVRFLW;
+      }
+      else {
+        poly *= r;  /* P_n = 1 + t_n P_{n-1} */
+      }
+    }
+    *result = poly;
+    return GSL_SUCCESS;
+  }
+}
+
+
+/* Assumes a <= -1,  b <= -1, and b <= a.
+ */
+static
+int
+hyperg_1F1_ab_negint(const int a, const int b, const double x, double * result)
+{
+  if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(x > 0.0) {
+    return hyperg_1F1_a_negint_poly(a, b, x, result);
+  }
+  else {
+    /* Apply a Kummer transformation to make x > 0 so
+     * we can evaluate the polynomial safely. Of course,
+     * this assumes b <= a, which must be true for
+     * a<0 and b<0, since otherwise the thing is undefined.
+     */
+    double K;
+    double ex;
+    int stat_K = hyperg_1F1_a_negint_poly(b-a, b, -x, &K);
+    int stat_e = gsl_sf_exp_impl(x, &ex);
+    if(stat_K == GSL_SUCCESS && stat_e == GSL_SUCCESS) {
+      *result = ex * K;
+     return GSL_SUCCESS; 
+    }
+    else if(stat_K == GSL_EOVRFLW) {
+      *result = 0.0;
+      return stat_K;
+    }
+    else if(stat_e == GSL_EUNDRFLW) {
+      *result = 0.0;
+      return stat_e;
+    }
   }
 }
 
@@ -1270,39 +1313,7 @@ int
 hyperg_1F1_a_posint(const int a, const double b, const double x);
 
 
-/* Handle a = negative integer cases.
- * Assumes b is such that the numerator terminates
- * before the denominator, which is of course required
- * in any case. Also assumes a <= 0.
- */
-static
-int
-hyperg_1F1_a_negint(const int a, const double b, const double x, double * result)
-{
-  if(a == 0) {
-    *result = 1.0;
-    return GSL_SUCCESS;
-  }
-  else if(a == -1) {
-    *result = 1.0 + a/b * x;
-    return GSL_SUCCESS;
-  }
-  else if(a == -2) {
-    *result = 1.0 + a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
-    return GSL_SUCCESS;
-  }
-  else {
-    int N = -a;
-    double poly = 1.0;
-    int k;
-    for(k=N-1; k>=0; k--) {
-      double t = (a+k)/(b+k) * (x/(k+1));
-      poly = 1.0 + poly * t;
-    }
-    *result = poly;
-    return GSL_SUCCESS;
-  }
-}
+
 
 
 /* Evaluate Y(a, 0, b, x), Y(a, 1, b, x) for b > 2a, a > 0.
@@ -1612,14 +1623,15 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   /* case: a = neg integer; use explicit evaluation */
   if(a_neg_integer) {
     int inta = floor(a + 0.1);
-    return hyperg_1F1_a_negint(inta, b, x, result);
+    return 0 /* hyperg_1F1_a_negint(inta, b, x, result) */; /* FIXME */
   }
 
   /* b-a = negative integer; Kummer and explicit evaluation */
   if(bma_neg_integer) {
     int    intbma = floor(bma + 0.1);
     double Kummer_1F1;
-    int    stat_K = hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1);
+    int    stat_K = 0; /* hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1); */
+    /* FIXME */
     if(Kummer_1F1 == 0.0) {
       *result = 0.0;
       return stat_K;
