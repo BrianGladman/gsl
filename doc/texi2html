@@ -195,7 +195,8 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 	      'cite', 'CITE',
 	      'code', 'CODE',
 	      'ctrl', '&do_ctrl',	# special case (obsolete)
-	      'dfn', 'STRONG',		# DFN tag is illegal in the standard
+	      'dfn', 'I',               # BJG: originally 'STRONG',
+                         		# DFN tag is illegal in the standard
 	      'dmn', '',		# useless
 	      'emph', 'EM',
 	      'email', '&do_email',	# new special case
