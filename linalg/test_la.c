@@ -108,7 +108,7 @@ int test_invert_jacobi(void)
   for(i=0; i<10; i++) {
     for(j=0; j<10; j++) {
       double delta_ij = ( i == j ? 1.0 : 0.0 );
-      double id_ij = gsl_matrix_get(id, i, j);
+      double id_ij    = gsl_matrix_get(id, i, j);
       int rs = ( fabs(id_ij - delta_ij) > 5.0e-3 );
       s += rs;
     }
