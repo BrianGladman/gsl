@@ -103,6 +103,16 @@ mathematica gives me:
 my guess is that gamma.c which is used for calculating fractional
 numbers probably diverges for large integers. 
 
+Note from Serge Winitzki <serge@cosmos.phy.tufts.edu>:
+
+The package "matpack" (www.matpack.de) includes many special functions, 
+also the 3j symbols. They refer to some quite complicated numerical 
+methods using recursion relations to get the right answers for large 
+momenta, and to 1975-1976 papers by Schulten and Gordon for the 
+description of the algorithms. The papers can be downloaded for free at
+http://www.ks.uiuc.edu/Publications/Papers/ 
+
+
 ----------------------------------------------------------------------
 
 BUG#8 -- inexact coefficients in rk8pd.c STATUS: open
