@@ -49,12 +49,12 @@ transform. The kernel in the summation above defines the matrix
 of the @math{\nu}-Hankel transform of size @math{M-1}.
 The coefficients of this matrix, being dependent on
 @math{\nu} and @math{M}, must be precomputed and stored;
-the @code{gsl_dht_transform} object encapsulates this data.
-The allocation function @code{gsl_dht_transform_new} returns
+the @code{gsl_dht} object encapsulates this data.
+The allocation function @code{gsl_dht_new} returns
 a properly initialized
 object which can then be used to perform transforms on data
 sample vectors, for fixed @math{\nu} and @math{M}, using the
-@code{gsl_dht_transform_apply} function. The implementation
+@code{gsl_dht_apply} function. The implementation
 allows a scaling of the fundamental interval, for convenience,
 so that one take assume the function is defined on
 the interval @math{[0,X]}, rather than the unit interval.
@@ -66,32 +66,32 @@ corresponds to an orthogonal expansion in eigenfunctions
 of the Dirichlet problem for the Bessel differential equation.
 
 
-@deftypefun {gsl_dht_transform *} gsl_dht_transform_new (size_t @var{size}, double @var{nu}, double @var{xmax})
+@deftypefun {gsl_dht *} gsl_dht_new (size_t @var{size}, double @var{nu}, double @var{xmax})
 Allocate and initialize a transform object.
 @end deftypefun
 
-@deftypefun void gsl_dht_transform_free (gsl_dht_transform * @var{t})
+@deftypefun void gsl_dht_free (gsl_dht * @var{t})
 Free a transform object.
 @end deftypefun
 
-@deftypefun int gsl_dht_transform_apply (const gsl_dht_transform * @var{t}, double * @var{f_in}, double * @var{f_out})
+@deftypefun int gsl_dht_apply (const gsl_dht * @var{t}, double * @var{f_in}, double * @var{f_out})
 Apply a transform object to a data vector, f_in[0] ... f_in[size-1].
 @end deftypefun
 
-@deftypefun double gsl_dht_transform_x_sample (const gsl_dht_transform * @var{t}, int @var{n})
+@deftypefun double gsl_dht_x_sample (const gsl_dht * @var{t}, int @var{n})
 Return the value of the n'th sample point in the unit interval,
 @c{${{j_{\nu,n+1}}\over{j_{\nu,M}}} X$}
 @math{(j_@{\nu,n+1@}/j_@{\nu,M@}) X}. These are the
 points where the function @math{f(t)} is assumed to be sampled.
 @end deftypefun
 
-@deftypefun double gsl_dht_transform_k_sample (const gsl_dht_transform * @var{t}, int @var{n})
+@deftypefun double gsl_dht_k_sample (const gsl_dht * @var{t}, int @var{n})
 Return the value of the n'th sample point in "k-space",
 @c{${{j_{\nu,n+1}}\over X}$}
 @math{j_@{\nu,n+1@}/X}.
 @end deftypefun
 
-@deftypefun int gsl_dht_transform_recalc (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
+@deftypefun int gsl_dht_recalc (gsl_dht * @var{t}, double @var{nu}, double @var{xmax})
 Recalculate a transform object for a different @math{\nu} and @math{X}. The
 size cannot be changed, because the internal allocation is not changed.
 @end deftypefun
