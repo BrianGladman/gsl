@@ -22,7 +22,7 @@
  */
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_ieee_utils.h>
 #include "gsl_eigen.h"
 
@@ -92,7 +92,8 @@ int test_invert_jacobi(void)
   gsl_matrix * hm = create_hilbert_matrix(10);
   gsl_eigen_invert_jacobi_impl(hm, hminv, 1000);
 
-  gsl_linalg_matmult(hm, hminv, id);
+  /* gsl_linalg_matmult(hm, hminv, id); */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, hm, hminv, 0.0, id);
 
   for(i=0; i<10; i++) {
     for(j=0; j<10; j++) {

@@ -8,7 +8,7 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test
 
-test_LDADD = libgsleigen.la ../sys/libgslsys.la ../test/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
+test_LDADD = libgsleigen.la ../sys/libgslsys.la ../test/libgsltest.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
 
 test_DEPENDENCIES = libgsleigen.la
 test_SOURCES = test.c
