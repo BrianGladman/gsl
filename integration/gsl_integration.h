@@ -21,4 +21,10 @@ double gsl_integ_lorenz(double (*f)(double),
 			double a, double b, double eps);
 
 
+int gsl_integration_qk15 (double (*f) (double x),
+		      double a, double b,
+		      double * result, double * abserr,
+		      double * resabs, double * resasc) ;
+
+
 #endif /* !GSL_INTEGRATION_H_ */
