@@ -1,3 +1,9 @@
+Thu Oct  7 11:46:53 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_results.c (gsl_test_str): changed #if __STDC__ to #ifdef
+ 	__STDC__ so the code will compile with compilers that define
+ 	__STDC__ to 0 meaning STDC+extensions.
+
 Sun Jul 11 21:48:25 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_errnos.c (main): added GSL_ECACHE to handle internal cache

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #if HAVE_VPRINTF
-#if __STDC__
+#ifdef __STDC__
 #include <stdarg.h>
 #else
 #include <varargs.h>
@@ -45,7 +45,7 @@ gsl_test (int status, const char *test_description,...)
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#if __STDC__
+#ifdef __STDC__
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -97,7 +97,7 @@ gsl_test_rel (double result, double expected, double relative_error,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#if __STDC__
+#ifdef __STDC__
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -156,7 +156,7 @@ gsl_test_abs (double result, double expected, double absolute_error,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#if __STDC__
+#ifdef __STDC__
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -213,7 +213,7 @@ gsl_test_int (int result, int expected, const char *test_description,...)
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#if __STDC__
+#ifdef __STDC__
       va_start (ap, test_description);
 #else
       va_start (ap);
@@ -262,7 +262,7 @@ gsl_test_str (const char * result, const char * expected,
 #ifdef HAVE_VPRINTF
       va_list ap;
 
-#if __STDC__
+#ifdef __STDC__
       va_start (ap, test_description);
 #else
       va_start (ap);
