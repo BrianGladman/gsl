@@ -1,3 +1,11 @@
+Fri Dec  7 12:38:40 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* laguerre.c (laguerre_n_cp): catch internal error, not global
+ 	error
+
+	* error.h (INTERNAL_OVERFLOW_ERROR): added internal error macros
+ 	which do not call the error handler.
+
 Wed Dec  5 19:25:26 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma.c (gamma_xgthalf): return gamma(x) exactly when x is an

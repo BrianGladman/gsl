@@ -4,6 +4,9 @@
 
 ** Fixed bug in gsl_sf_hyperg_1F1_int
 
+** Fixed internal error handling in gsl_sf_laguerre_n to allow
+recovery from overflow.
+
 ** Several routines for handling divided difference polynomials have
 been added to the poly/ directory.
 

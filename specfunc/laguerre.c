@@ -93,7 +93,8 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
     double t = (-n+k)/(a+1.0+k) * (x/(k+1));
     double r = t + 1.0/poly_1F1_val;
     if(r > 0.9*GSL_DBL_MAX/poly_1F1_val) {
-      OVERFLOW_ERROR(result);
+      /* internal error only, don't call the error handler */
+      INTERNAL_OVERFLOW_ERROR(result);
     }
     else {
       /* Collect the Horner terms. */
