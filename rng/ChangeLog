@@ -1,3 +1,7 @@
+Sun Jun 21 23:24:36 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added the MT19937 and TT880 mersenne prime generators
+
 Sat Jun 20 13:58:40 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* ensured that 32 bit quantities are defined as 'long', as
