@@ -71,3 +71,4 @@ language objects instead of compiled C functions.
 * Redesign the interface to iterative function to use an init/do-while
 construct
  
+* Make the return value EINVAL vs EDOM consistent for invalid parameters

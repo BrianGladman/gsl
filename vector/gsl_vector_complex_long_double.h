@@ -17,7 +17,7 @@ struct gsl_vector_complex_long_double_struct
 typedef struct gsl_vector_complex_long_double_struct gsl_vector_complex_long_double;
 
 gsl_vector_complex_long_double 
-*gsl_vector_complex_long_double_alloc_from_block (gsl_block_complex_long_double * b, 
+*gsl_vector_complex_long_double_alloc (gsl_block_complex_long_double * b, 
                                             size_t offset, 
                                             size_t n, 
                                             size_t stride);

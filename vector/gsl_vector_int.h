@@ -14,7 +14,7 @@ struct gsl_vector_int_struct
 
 typedef struct gsl_vector_int_struct gsl_vector_int;
 
-gsl_vector_int *gsl_vector_int_alloc_from_block (gsl_block_int * b,
+gsl_vector_int *gsl_vector_int_alloc (gsl_block_int * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

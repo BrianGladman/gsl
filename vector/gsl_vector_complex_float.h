@@ -17,7 +17,7 @@ struct gsl_vector_complex_float_struct
 typedef struct gsl_vector_complex_float_struct gsl_vector_complex_float;
 
 gsl_vector_complex_float 
-*gsl_vector_complex_float_alloc_from_block (gsl_block_complex_float * b, 
+*gsl_vector_complex_float_alloc (gsl_block_complex_float * b, 
                                             size_t offset, 
                                             size_t n, 
                                             size_t stride);

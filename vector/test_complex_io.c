@@ -6,8 +6,8 @@ FUNCTION (test, text) (void)
 {
   TYPE (gsl_block) * bv = FUNCTION (gsl_block, alloc) (N);
   TYPE (gsl_block) * bw = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc_from_block) (bv,0,N,1);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc_from_block) (bw,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (bv,0,N,1);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (bw,0,N,1);
 
   size_t i;
 

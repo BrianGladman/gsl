@@ -714,11 +714,13 @@ x_@{i+1@} = x_i f(x_i) / f'_@{est@} where
 
 @noindent
 When the derivative does not change significantly in the vicinity of the
-root the secant method gives a useful saving.
+root the secant method gives a useful saving. As with all methods of
+computing a numerical derivative the estimate can suffer from
+cancellation errors if the separation of the points becomes too small.
 
 On single roots, the method has a convergence of order @math{(1 + \sqrt
 5)/2} (approximately @math{1.62}). It converges linearly for multiple
-roots.
+roots.  
 
 @comment eps file "roots-secant-method.eps"
 @comment @iftex
@@ -742,9 +744,8 @@ roots.
 
 The @dfn{Steffenson Method} provides the fastest convergence of all the
 routines. It combines the basic Newton algorithm with an Aitken
-``delta-squared'' acceleration. If the iterates of the Newton are
-@math{x_i} then acceleration procedure generates a new sequence
-@math{R_i},
+``delta-squared'' acceleration. If the Newton iterates are @math{x_i}
+then the acceleration procedure generates a new sequence @math{R_i},
 
 @tex
 \beforedisplay

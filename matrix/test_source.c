@@ -13,7 +13,7 @@ FUNCTION (test, func) (void)
   int k = 0;
 
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   gsl_test (m->data != b->data, NAME (gsl_matrix) "_alloc returns valid pointer");
   gsl_test (m->size1 != N, NAME (gsl_matrix) "_alloc returns valid size1");
@@ -65,8 +65,8 @@ FUNCTION (test, func) (void)
 
   b = FUNCTION (gsl_block, alloc) (N * M);
   bv = FUNCTION (gsl_block, alloc) (M);
-  m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
-  v = FUNCTION (gsl_vector, alloc_from_block) (bv, 0, M, 1);
+  m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
+  v = FUNCTION (gsl_vector, alloc) (bv, 0, M, 1);
 
   k = 0;
   for (i = 0; i < N; i++)
@@ -83,7 +83,7 @@ FUNCTION (test, func) (void)
     k = 0;
     for (i = 0; i < N; i++)
       {
-	FUNCTION (gsl_matrix, copy_row) (m, i, v);
+	FUNCTION (gsl_matrix, copy_row) (v, m, i);
 
 	for (j = 0; j < M; j++)
 	  {
@@ -107,7 +107,7 @@ void
 FUNCTION (test, text) (void)
 {
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   size_t i, j;
   int k = 0;
@@ -131,7 +131,7 @@ FUNCTION (test, text) (void)
   {
     FILE *f = fopen ("test.txt", "r");
     TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fscanf) (f, mm);
@@ -162,7 +162,7 @@ void
 FUNCTION (test, binary) (void)
 {
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   size_t i, j;
   int k = 0;
@@ -186,7 +186,7 @@ FUNCTION (test, binary) (void)
   {
     FILE *f = fopen ("test.dat", "r");
     TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fread) (f, mm);
@@ -216,7 +216,7 @@ void
 FUNCTION (test, trap) (void)
 {
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   size_t i = 0, j = 0;
   double x;

@@ -14,7 +14,7 @@ struct gsl_vector_uchar_struct
 
 typedef struct gsl_vector_uchar_struct gsl_vector_uchar;
 
-gsl_vector_uchar *gsl_vector_uchar_alloc_from_block (gsl_block_uchar * b,
+gsl_vector_uchar *gsl_vector_uchar_alloc (gsl_block_uchar * b,
                                                      size_t offset, 
                                                      size_t n, 
                                                      size_t stride);

@@ -11,7 +11,7 @@ FUNCTION (test, func) (void)
   int k = 0;
 
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   gsl_test (m->data != b->data, NAME (gsl_matrix) "_alloc returns valid pointer");
   gsl_test (m->size1 != N, NAME (gsl_matrix) "_alloc returns valid size1");
@@ -69,7 +69,7 @@ void
 FUNCTION (test, text) (void)
 {
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   size_t i, j;
   int k = 0;
@@ -97,7 +97,7 @@ FUNCTION (test, text) (void)
   {
     FILE *f = fopen ("test.txt", "r");
     TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fscanf) (f, mm);
@@ -128,7 +128,7 @@ void
 FUNCTION (test, binary) (void)
 {
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
 
   size_t i, j;
   int k = 0;
@@ -156,7 +156,7 @@ FUNCTION (test, binary) (void)
   {
     FILE *f = fopen ("test.dat", "r");
     TYPE (gsl_block) * bb = FUNCTION (gsl_block, alloc) (N * M);
-    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc_from_block) (b, 0, N, M, M);
+    TYPE (gsl_matrix) * mm = FUNCTION (gsl_matrix, alloc) (b, 0, N, M, M);
     status = 0;
 
     FUNCTION (gsl_matrix, fread) (f, mm);
@@ -186,7 +186,7 @@ void
 FUNCTION (test, trap) (void)
 {
   TYPE (gsl_block) * bc = FUNCTION (gsl_block, alloc) (N * M);
-  TYPE (gsl_matrix) * mc = FUNCTION (gsl_matrix, alloc_from_block) (bc, 0, N, M, M);
+  TYPE (gsl_matrix) * mc = FUNCTION (gsl_matrix, alloc) (bc, 0, N, M, M);
   size_t i = 0, j = 0;
 
   BASE z = {{1.2, 3.4}};

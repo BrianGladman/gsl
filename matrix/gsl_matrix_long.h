@@ -16,7 +16,7 @@ struct gsl_matrix_long_struct
 } ;
 
 gsl_matrix_long * 
-gsl_matrix_long_alloc_from_block (gsl_block_long * b, size_t offset, 
+gsl_matrix_long_alloc (gsl_block_long * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_long * 
@@ -35,8 +35,8 @@ int gsl_matrix_long_fwrite (FILE * stream, const gsl_matrix_long * m) ;
 int gsl_matrix_long_fscanf (FILE * stream, gsl_matrix_long * m);
 int gsl_matrix_long_fprintf (FILE * stream, const gsl_matrix_long * m, const char * format);
  
-int gsl_matrix_long_copy_row(const gsl_matrix_long * m, size_t i, gsl_vector_long * v);
-int gsl_matrix_long_copy_col(const gsl_matrix_long * m, size_t j, gsl_vector_long * v);
+int gsl_matrix_long_copy_row(gsl_vector_long * v, const gsl_matrix_long * m, size_t i);
+int gsl_matrix_long_copy_col(gsl_vector_long * v, const gsl_matrix_long * m, size_t j);
 int gsl_matrix_long_set_row(gsl_matrix_long * m, size_t i, const gsl_vector_long * v);
 int gsl_matrix_long_set_col(gsl_matrix_long * m, size_t j, const gsl_vector_long * v);
 
@@ -60,7 +60,7 @@ gsl_matrix_long_get(const gsl_matrix_long * m,
       GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, 0) ;
     }
 #endif
-  return m->data[i * m->size2 + j] ;
+  return m->data[i * m->dim2 + j] ;
 } 
 
 extern inline 
@@ -78,7 +78,7 @@ gsl_matrix_long_set(gsl_matrix_long * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  m->data[i * m->size2 + j] = x ;
+  m->data[i * m->dim2 + j] = x ;
 }
 #endif
 

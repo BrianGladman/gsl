@@ -1,5 +1,5 @@
 TYPE (gsl_vector) *
-FUNCTION (gsl_vector, alloc_from_block) (TYPE(gsl_block) * block, 
+FUNCTION (gsl_vector, alloc) (TYPE(gsl_block) * block, 
                                          const size_t offset, 
                                          const size_t n, 
                                          const size_t stride)
@@ -82,3 +82,6 @@ FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
 {
   free (v);
 }
+
+
+

@@ -8,7 +8,7 @@ FUNCTION (test, func) (void)
   size_t i;
 
   TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc_from_block) (b,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (b,0,N,1);
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
@@ -91,8 +91,8 @@ FUNCTION (test, binary) (void)
 {
   TYPE (gsl_block) * bv = FUNCTION (gsl_block, alloc) (N);
   TYPE (gsl_block) * bw = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc_from_block) (bv,0,N,1);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc_from_block) (bw,0,N,1);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (bv,0,N,1);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (bw,0,N,1);
 
   size_t i;
 
@@ -140,7 +140,7 @@ void
 FUNCTION (test, trap) (void)
 {
   TYPE (gsl_block) * bc = FUNCTION (gsl_block, alloc) (N);
-  TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc_from_block) (bc,0,N,1);
+  TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc) (bc,0,N,1);
 
   BASE z = {{1.2, 3.4}};
   BASE z1 = {{4.5, 6.7}};

@@ -16,11 +16,11 @@ struct gsl_matrix_float_struct
 } ;
 
 gsl_matrix_float * 
-gsl_matrix_float_alloc_from_block (gsl_block_float * b, size_t offset, 
+gsl_matrix_float_alloc (gsl_block_float * b, size_t offset, 
                                    size_t n1, size_t n2, size_t d2);
 
 gsl_matrix_float * 
-gsl_matrix_float_alloc_from_matrix (gsl_matrix_float * b,
+gsl_matrix_float_alloc_from_matrix (gsl_matrix_float * m,
                                     size_t k1, size_t k2,
                                     size_t n1, size_t n2);
 
@@ -35,8 +35,8 @@ int gsl_matrix_float_fwrite (FILE * stream, const gsl_matrix_float * m) ;
 int gsl_matrix_float_fscanf (FILE * stream, gsl_matrix_float * m);
 int gsl_matrix_float_fprintf (FILE * stream, const gsl_matrix_float * m, const char * format);
  
-int gsl_matrix_float_copy_row(const gsl_matrix_float * m, size_t i, gsl_vector_float * v);
-int gsl_matrix_float_copy_col(const gsl_matrix_float * m, size_t j, gsl_vector_float * v);
+int gsl_matrix_float_copy_row(gsl_vector_float * v, const gsl_matrix_float * m, size_t i);
+int gsl_matrix_float_copy_col(gsl_vector_float * v, const gsl_matrix_float * m, size_t j);
 int gsl_matrix_float_set_row(gsl_matrix_float * m, size_t i, const gsl_vector_float * v);
 int gsl_matrix_float_set_col(gsl_matrix_float * m, size_t j, const gsl_vector_float * v);
 

@@ -17,7 +17,7 @@ struct gsl_vector_complex_struct
 typedef struct gsl_vector_complex_struct gsl_vector_complex;
 
 gsl_vector_complex 
-*gsl_vector_complex_alloc_from_block (gsl_block_complex * b, 
+*gsl_vector_complex_alloc (gsl_block_complex * b, 
                                             size_t offset, 
                                             size_t n, 
                                             size_t stride);

@@ -17,7 +17,7 @@ struct gsl_matrix_complex_struct
 } ;
 
 gsl_matrix_complex * 
-gsl_matrix_complex_alloc_from_block (gsl_block_complex * b, 
+gsl_matrix_complex_alloc (gsl_block_complex * b, 
                                            size_t offset, 
                                            size_t n1, size_t n2, size_t d2);
 
@@ -37,8 +37,8 @@ int gsl_matrix_complex_fwrite (FILE * stream, const gsl_matrix_complex * m) ;
 int gsl_matrix_complex_fscanf (FILE * stream, gsl_matrix_complex * m);
 int gsl_matrix_complex_fprintf (FILE * stream, const gsl_matrix_complex * m, const char * format);
 
-int gsl_matrix_complex_copy_row(const gsl_matrix_complex * m, size_t i, gsl_vector_complex * v);
-int gsl_matrix_complex_copy_col(const gsl_matrix_complex * m, size_t j, gsl_vector_complex * v);
+int gsl_matrix_complex_copy_row(gsl_vector_complex * v, const gsl_matrix_complex * m, size_t i);
+int gsl_matrix_complex_copy_col(gsl_vector_complex * v, const gsl_matrix_complex * m, size_t j);
 int gsl_matrix_complex_set_row(gsl_matrix_complex * m, size_t i, const gsl_vector_complex * v);
 int gsl_matrix_complex_set_col(gsl_matrix_complex * m, size_t j, const gsl_vector_complex * v);
 
@@ -63,7 +63,7 @@ gsl_matrix_complex_get(const gsl_matrix_complex * m,
       GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
-  return *(gsl_complex *)(m->data + 2*(i * m->size2 + j)) ;
+  return *(gsl_complex *)(m->data + 2*(i * m->dim2 + j)) ;
 } 
 
 extern inline 
@@ -81,7 +81,7 @@ gsl_matrix_complex_set(gsl_matrix_complex * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  *(gsl_complex *)(m->data + 2*(i * m->size2 + j)) = x ;
+  *(gsl_complex *)(m->data + 2*(i * m->dim2 + j)) = x ;
 }
 #endif /* HAVE_INLINE */
 

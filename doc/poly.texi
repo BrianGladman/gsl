@@ -130,7 +130,7 @@ z^3 + a z^2 + b z + c = 0
 
 @noindent
 The number of complex roots is returned (always three) and the locations
-of the roots are stored in @var{z0}, @var{z1} and @var{z3}. The roots
+of the roots are stored in @var{z0}, @var{z1} and @var{z2}. The roots
 are returned in ascending order, sorted first by their real components
 and then by their imaginary components.
 

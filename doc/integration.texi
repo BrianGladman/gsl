@@ -769,8 +769,8 @@ $$
 @end ifinfo
 
 @noindent
-The program below computes this integral using a relative accuracy bound of
-@code{1e-7}. 
+The program below computes this integral to a relative accuracy bound of
+@code{1e-7}.
 
 @example
 #include <stdio.h>

@@ -119,11 +119,11 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
   self->block_p_vec = gsl_block_int_alloc(dim);
 
   self->d     = 
-    gsl_matrix_alloc_from_block(self->block_d, 0, KMAXX, dim, dim);
+    gsl_matrix_alloc(self->block_d, 0, KMAXX, dim, dim);
   self->a_mat = 
-    gsl_matrix_alloc_from_block(self->block_a_mat, 0, dim, dim, dim);
+    gsl_matrix_alloc(self->block_a_mat, 0, dim, dim, dim);
   self->p_vec = 
-    gsl_vector_int_alloc_from_block(self->block_p_vec, 0, dim, 1);
+    gsl_vector_int_alloc(self->block_p_vec, 0, dim, 1);
 
   self->ysav = (double *) malloc(dim * sizeof(double));
   self->yseq = (double *) malloc(dim * sizeof(double));
@@ -132,15 +132,15 @@ bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
   self->extr_work = (double *) malloc(dim * sizeof(double));
 
   self->block_dfdy = gsl_block_alloc(dim * dim);
-  self->dfdy = gsl_matrix_alloc_from_block(self->block_dfdy, 0, dim, dim, dim);
+  self->dfdy = gsl_matrix_alloc(self->block_dfdy, 0, dim, dim, dim);
 
   self->block_delta_temp_vec = gsl_block_alloc(dim);
   self->delta_temp_vec = 
-    gsl_vector_alloc_from_block(self->block_delta_temp_vec, 0, dim, 1);
+    gsl_vector_alloc(self->block_delta_temp_vec, 0, dim, 1);
 
   self->block_rhs_temp_vec = gsl_block_alloc(dim);
   self->rhs_temp_vec = 
-    gsl_vector_alloc_from_block(self->block_rhs_temp_vec, 0, dim, 1);
+    gsl_vector_alloc(self->block_rhs_temp_vec, 0, dim, 1);
 
   self->delta = (double *) malloc(dim * sizeof(double));
 }

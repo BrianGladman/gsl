@@ -1,7 +1,7 @@
 int
-FUNCTION (gsl_matrix, copy_row) (const TYPE (gsl_matrix) * m,
-				 const size_t i,
-				 TYPE (gsl_vector) * v)
+FUNCTION (gsl_matrix, copy_row) (TYPE (gsl_vector) * v,
+                                 const TYPE (gsl_matrix) * m,
+				 const size_t i)
 {
   const size_t column_length = m->size1;
   const size_t row_length = m->size2;
@@ -28,13 +28,13 @@ FUNCTION (gsl_matrix, copy_row) (const TYPE (gsl_matrix) * m,
       }
   }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
-FUNCTION (gsl_matrix, copy_col) (const TYPE (gsl_matrix) * m,
-				 const size_t j,
-				 TYPE (gsl_vector) * v)
+FUNCTION (gsl_matrix, copy_col) (TYPE (gsl_vector) * v,
+                                 const TYPE (gsl_matrix) * m,
+				 const size_t j)
 {
   const size_t column_length = m->size1;
   const size_t row_length = m->size2;
@@ -67,9 +67,7 @@ FUNCTION (gsl_matrix, copy_col) (const TYPE (gsl_matrix) * m,
       }
   }
 
-  v->stride = 1;
-
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
@@ -103,7 +101,7 @@ FUNCTION (gsl_matrix, set_row) (TYPE (gsl_matrix) * m,
       }
   }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
@@ -137,5 +135,5 @@ FUNCTION (gsl_matrix, set_col) (TYPE (gsl_matrix) * m,
       }
   }
 
-  return 0;
+  return GSL_SUCCESS;
 }

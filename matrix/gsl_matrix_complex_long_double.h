@@ -17,7 +17,7 @@ struct gsl_matrix_complex_long_double_struct
 } ;
 
 gsl_matrix_complex_long_double * 
-gsl_matrix_complex_long_double_alloc_from_block (gsl_block_complex_long_double * b, 
+gsl_matrix_complex_long_double_alloc (gsl_block_complex_long_double * b, 
                                            size_t offset, 
                                            size_t n1, size_t n2, size_t d2);
 
@@ -37,8 +37,8 @@ int gsl_matrix_complex_long_double_fwrite (FILE * stream, const gsl_matrix_compl
 int gsl_matrix_complex_long_double_fscanf (FILE * stream, gsl_matrix_complex_long_double * m);
 int gsl_matrix_complex_long_double_fprintf (FILE * stream, const gsl_matrix_complex_long_double * m, const char * format);
 
-int gsl_matrix_complex_long_double_copy_row(const gsl_matrix_complex_long_double * m, size_t i, gsl_vector_complex_long_double * v);
-int gsl_matrix_complex_long_double_copy_col(const gsl_matrix_complex_long_double * m, size_t j, gsl_vector_complex_long_double * v);
+int gsl_matrix_complex_long_double_copy_row(gsl_vector_complex_long_double * v, const gsl_matrix_complex_long_double * m, size_t i);
+int gsl_matrix_complex_long_double_copy_col(gsl_vector_complex_long_double * v, const gsl_matrix_complex_long_double * m, size_t j);
 int gsl_matrix_complex_long_double_set_row(gsl_matrix_complex_long_double * m, size_t i, const gsl_vector_complex_long_double * v);
 int gsl_matrix_complex_long_double_set_col(gsl_matrix_complex_long_double * m, size_t j, const gsl_vector_complex_long_double * v);
 
@@ -63,7 +63,7 @@ gsl_matrix_complex_long_double_get(const gsl_matrix_complex_long_double * m,
       GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, zero) ;
     }
 #endif
-  return *(gsl_complex_long_double *)(m->data + 2*(i * m->size2 + j)) ;
+  return *(gsl_complex_long_double *)(m->data + 2*(i * m->dim2 + j)) ;
 } 
 
 extern inline 
@@ -81,7 +81,7 @@ gsl_matrix_complex_long_double_set(gsl_matrix_complex_long_double * m,
       GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
-  *(gsl_complex_long_double *)(m->data + 2*(i * m->size2 + j)) = x ;
+  *(gsl_complex_long_double *)(m->data + 2*(i * m->dim2 + j)) = x ;
 }
 #endif /* HAVE_INLINE */
 

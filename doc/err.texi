@@ -265,9 +265,9 @@ However, in this case there is no way for the calling program to test
 for an error. Instead if there are any errors (such as underflow) they
 are logged to the error stream, and can be examined by the user at the
 end of the run. It is up to the programmer to decide which form is best
-suited to a given application. For a truly robust program the standard
-error checking versions of the functions should be used, since they
-don't rely on the user examining the error stream.
+suited to a given application. For a truly robust program the error
+checking versions of the functions should be used, since they don't rely
+on the user examining the error stream.
 
 @node Manipulating the error stream
 @section Manipulating the error stream

@@ -1,5 +1,5 @@
 TYPE (gsl_matrix) *
-FUNCTION (gsl_matrix, alloc_from_block) (TYPE(gsl_block) * block, 
+FUNCTION (gsl_matrix, alloc) (TYPE(gsl_block) * block, 
                                          const size_t offset,
                                          const size_t n1, 
                                          const size_t n2,

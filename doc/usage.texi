@@ -97,9 +97,11 @@ slower non-inlined versions of the functions are used instead.
 @section Long double
 @cindex long double
 The extended numerical type @code{long double} is part of the ANSI C
-standard and should be available in every modern compiler.  The
+standard and should be available in every modern compiler.  However, the
 precision of @code{long double} is platform dependent, and this should
-be considered when using it.
+be considered when using it. The IEEE standard only specifies the
+minimum precision of @code{long double} (extended precision), while
+@code{double} is the same on all platforms.
 
 In some system libraries the @code{stdio.h} formatted input/output
 functions @code{printf} and @code{scanf} are not implemented correctly
@@ -128,15 +130,16 @@ writing.
 @cindex alternative optimized functions
 @cindex optimized functions, alternatives
 The implementation of some frequently-used functions may not be optimal
-on all architectures. For example, the Gaussian random number generator
-can be implemented in different ways, using the polar method or ratio
-method, and the relative speeds of these algorithms depend on different
-factors. In these cases an alternate implementation of the function has
-been provided with exactly the same interface. If you write your
-application using calls to the standard implementations of the functions
-you can select the alternative versions later via a preprocessor
-macro. It is also possible to introduce your own optimized functions
-this way while retaining portability. For example,
+on all architectures. For example, the routine for Gaussian random
+variates can be implemented using different algorithms (e.g. polar
+method or ratio method).  The relative speeds of the algorithms depend
+on different factors, so the choice of the fastest algorithm is
+platform-dependent. In these cases an alternate implementation of the
+function has been provided with exactly the same interface. If you write
+your application using calls to the standard implementations of the
+functions you can select the alternative versions later via a
+preprocessor macro. It is also possible to introduce your own optimized
+functions this way while retaining portability. For example,
 
 @example
 #ifdef SPARC
@@ -146,7 +149,7 @@ this way while retaining portability. For example,
 #define gsl_ran_gaussian my_gaussian
 #endif
 @end example
-
+@noindent
 Note that the alternative implementations will not produce bit-for-bit
 identical results, and in the case of random number distributions will
 produce an entirely different stream of random variates.
