@@ -369,9 +369,8 @@ gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result)
     gsl_sf_result lnpoch;
     double sgn;
     int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
-    int stat_exp    = gsl_sf_exp_impl(lnpoch.val, result);
+    int stat_exp    = gsl_sf_exp_err_impl(lnpoch.val, lnpoch.err, result);
     result->val *= sgn;
-    result->err  = fabs(lnpoch.err * result->val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
   }
@@ -400,7 +399,7 @@ gsl_sf_pochrel_impl(const double a, const double x, gsl_sf_result * result)
       const double el = exp(lnpoch.val);
       result->val  = (sgn*el - 1.0)/x;
       result->err  = fabs(result->val) * (lnpoch.err + 2.0 * GSL_DBL_EPSILON);
-      result->err += GSL_DBL_EPSILON * (fabs(sgn*el) + 1.0) / fabs(x);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(sgn*el) + 1.0) / fabs(x);
       return stat_poch;
     }
   }

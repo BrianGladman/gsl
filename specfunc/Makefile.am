@@ -134,6 +134,7 @@ libgslspecfunc_a_SOURCES = 	\
 	pow_int.c		\
 	psi.c			\
         recurse.h               \
+	result.c		\
 	shint.c			\
 	sinint.c		\
 	synchrotron.c		\

@@ -727,7 +727,7 @@ lngamma_sgn_0(double eps, gsl_sf_result * lng, double * sgn)
   const double gee = g + 1.0/(1.0+eps) + 0.5*eps;
 
   lng->val = log(gee/fabs(eps));
-  lng->err = 2.0 * GSL_DBL_EPSILON * fabs(lng->val);
+  lng->err = 4.0 * GSL_DBL_EPSILON * fabs(lng->val);
   *sgn = GSL_SIGN(eps);
 
   return GSL_SUCCESS;

@@ -17,12 +17,28 @@ int gsl_sf_exp_impl(double x, gsl_sf_result * result);
 int gsl_sf_exp_e(double x, gsl_sf_result * result);
 
 
+/* Exp(x)
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_exp_e10_impl(double x, gsl_sf_result_e10 * result);
+int gsl_sf_exp_e10_e(double x, gsl_sf_result_e10 * result);
+
+
 /* Exponentiate and multiply by a given factor:  y * Exp(x)
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int gsl_sf_exp_mult_impl(double x, double y, gsl_sf_result * result);
 int gsl_sf_exp_mult_e(double x, double y, gsl_sf_result * result);
+
+
+/* Exponentiate and multiply by a given factor:  y * Exp(x)
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_exp_mult_e10_impl(const double x, const double y, gsl_sf_result_e10 * result);
+int gsl_sf_exp_mult_e10_e(const double x, const double y, gsl_sf_result_e10 * result);
 
 
 /* exp(x)-1
@@ -66,6 +82,12 @@ int gsl_sf_exp_err_impl(double x, double dx, gsl_sf_result * result);
 int gsl_sf_exp_err_e(double x, double dx, gsl_sf_result * result);
 
 
+/* Exponentiate a quantity with an associated error.
+ */
+int gsl_sf_exp_err_e10_impl(double x, double dx, gsl_sf_result_e10 * result);
+int gsl_sf_exp_err_e10_e(double x, double dx, gsl_sf_result_e10 * result);
+
+
 /* Exponentiate and multiply by a given factor:  y * Exp(x),
  * for quantities with associated errors.
  *
@@ -73,6 +95,16 @@ int gsl_sf_exp_err_e(double x, double dx, gsl_sf_result * result);
  */
 int gsl_sf_exp_mult_err_impl(double x, double dx, double y, double dy, gsl_sf_result * result);
 int gsl_sf_exp_mult_err_e(double x, double dx, double y, double dy, gsl_sf_result * result);
+
+
+/* Exponentiate and multiply by a given factor:  y * Exp(x),
+ * for quantities with associated errors.
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_exp_mult_err_e10_impl(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
+int gsl_sf_exp_mult_err_e10_e(double x, double dx, double y, double dy, gsl_sf_result_e10 * result);
+
 
 
 #ifdef HAVE_INLINE
@@ -93,7 +125,7 @@ int gsl_sf_exp_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = exp(x);
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }  
 }

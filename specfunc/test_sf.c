@@ -43,13 +43,51 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   if(s != 0) {
     char buff[2048];
     sprintf(buff, "  expected: %20.16g\n", val);
+    strcat(message_buff, buff);
     sprintf(buff, "  obtained: %20.16g   %20.16g  %g\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    strcat(message_buff, buff);
     sprintf(buff, "  fracdiff: %20.16g\n", f);
     strcat(message_buff, buff);
   }
 
   if(s & TEST_SF_INCONS) {
     strcat(message_buff, "  value/expected not consistent within reported error\n");
+  }
+  if(s & TEST_SF_ERRNEG) {
+    strcat(message_buff, "  reported error negative\n");
+  }
+  if(s & TEST_SF_TOLBAD) {
+    strcat(message_buff, "  value not within tolerance of expected value\n");
+  }
+
+  return s;
+}
+
+/* Relax the condition on the agreement and on the usefulness
+ * of the error estimate.
+ */
+int
+test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, double tol)
+{
+  int    s = 0;
+  double f = test_sf_frac_diff(val, r.val);
+
+  if(f > GSL_MAX_DBL(TEST_SNGL,tol))   s |= TEST_SF_INCONS;
+  if(r.err < 0.0)     s |= TEST_SF_ERRNEG;
+  if(f > tol)         s |= TEST_SF_TOLBAD;
+
+  if(s != 0) {
+    char buff[2048];
+    sprintf(buff, "  expected: %20.16g\n", val);
+    strcat(message_buff, buff);
+    sprintf(buff, "  obtained: %20.16g   %20.16g  %g\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    strcat(message_buff, buff);
+    sprintf(buff, "  fracdiff: %20.16g\n", f);
+    strcat(message_buff, buff);
+  }
+
+  if(s & TEST_SF_INCONS) {
+    strcat(message_buff, "  value/expected not consistent MAX(tol,SINGLE_PREC)\n");
   }
   if(s & TEST_SF_ERRNEG) {
     strcat(message_buff, "  reported error negative\n");
@@ -310,24 +348,90 @@ int test_erf(void)
 int test_exp(void)
 {
   gsl_sf_result r;
+  gsl_sf_result_e10 re;
   double x;
+  int sa;
   int s = 0;
 
   TEST_SF(s,  gsl_sf_exp_impl, (-10.0, &r), exp(-10.0), TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_exp_impl, ( 10.0, &r), exp( 10.0), TEST_TOL0, GSL_SUCCESS);
 
+  sa = 0;
+  sa += gsl_sf_exp_e10_impl(1.0, &re);
+  sa += ( test_sf_frac_diff(re.val, M_E ) > TEST_TOL0 );
+  sa += ( re.err > TEST_TOL1 );
+  sa += ( re.e10 != 0 );
+  gsl_test(sa, "gsl_sf_exp_e10_impl(1.0, &re)");
+
+  sa = 0;
+  sa += gsl_sf_exp_e10_impl(2000.0, &re);
+  sa += ( test_sf_frac_diff(re.val, 3.88118019428363725 ) > TEST_TOL0 );
+  sa += ( re.err > TEST_TOL5 );
+  sa += ( re.e10 != 868 );
+  gsl_test(sa, "gsl_sf_exp_e10_impl(2000.0, &re)");
+
+
+  TEST_SF(s, gsl_sf_exp_err_impl, (-10.0, TEST_TOL1, &r), exp(-10.0), TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_err_impl, ( 10.0, TEST_TOL1, &r), exp( 10.0), TEST_TOL1, GSL_SUCCESS);
+
+  sa = 0;
+  sa += gsl_sf_exp_err_e10_impl(1.0, TEST_SQRT_TOL0, &re);
+  sa += ( test_sf_frac_diff(re.val, M_E ) > TEST_TOL0 );
+  sa += ( re.err > 32.0 * TEST_SQRT_TOL0 );
+  sa += ( re.e10 != 0 );
+  gsl_test(sa, "gsl_sf_exp_err_e10_impl(1.0, TEST_SQRT_TOL0, &re)");
+
+  sa = 0;
+  sa += gsl_sf_exp_err_e10_impl(2000.0, 1.0e-10, &re);
+  sa += ( test_sf_frac_diff(re.val, 3.88118019428363725 ) > TEST_TOL0 );
+  sa += ( re.err > 1.0e-07 );
+  sa += ( re.e10 != 868 );
+  gsl_test(sa, "gsl_sf_exp_err_e10_impl(2000.0, 1.0e-10, &re)");
+
+
   x = 0.8*GSL_LOG_DBL_MAX;
   TEST_SF(s, gsl_sf_exp_mult_impl, (-10.0,  1.0e-06, &r), 1.0e-06*exp(-10.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (-10.0,  2.0, &r), 2.0*exp(-10.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (-10.0, -2.0, &r), -2.0*exp(-10.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (-10.0,  2.0, &r),     2.0*exp(-10.0),     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (-10.0, -2.0, &r),    -2.0*exp(-10.0),     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_exp_mult_impl, ( 10.0,  1.0e-06, &r), 1.0e-06*exp( 10.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, ( 10.0, -2.0, &r), -2.0*exp( 10.0), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.00001, &r), 1.00001*exp(x), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.000001, &r), 1.000001*exp(x), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.000000001, &r), 1.000000001*exp(x), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 100.0, &r), 100.0*exp(x), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.0e+20, &r), 1.0e+20*exp(x), TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_impl, (x, exp(-x)*exp(M_LN2), &r),  2.0, 1.0e-13, GSL_SUCCESS );
+  TEST_SF(s, gsl_sf_exp_mult_impl, ( 10.0, -2.0, &r),    -2.0*exp( 10.0),     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.00001, &r),      1.00001*exp(x),     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.000001, &r),     1.000001*exp(x),    TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.000000001, &r),  1.000000001*exp(x), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 100.0, &r),        100.0*exp(x),       TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, 1.0e+20, &r),      1.0e+20*exp(x),     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_impl, (x, exp(-x)*exp(M_LN2), &r),  2.0, TEST_TOL4, GSL_SUCCESS );
+
+  TEST_SF(s, gsl_sf_exp_mult_err_impl, (-10.0, TEST_SQRT_TOL0, 2.0, TEST_SQRT_TOL0, &r), 2.0*exp(-10.0), TEST_SQRT_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_exp_mult_err_impl, (x, TEST_SQRT_TOL0*x, exp(-x)*exp(M_LN2), TEST_SQRT_TOL0*x, &r),  2.0, TEST_SQRT_TOL0, GSL_SUCCESS );
+
+  sa = 0;
+  sa += gsl_sf_exp_mult_e10_impl(1.0, 1.0, &re);
+  sa += ( test_sf_frac_diff(re.val, M_E ) > TEST_TOL0 );
+  sa += ( re.err > TEST_TOL2 );
+  sa += ( re.e10 != 0 );
+  gsl_test(sa, "gsl_sf_exp_mult_e10_impl(1.0, 1.0, &re)");
+
+  sa = 0;
+  sa += gsl_sf_exp_mult_e10_impl(1000.0, 1.0e+200, &re);
+  sa += ( test_sf_frac_diff(re.val, 1.9700711140165661 ) > TEST_TOL0 );
+  sa += ( re.err > 1.0e-12 );
+  sa += ( re.e10 != 634 );
+  gsl_test(sa, "gsl_sf_exp_mult_e10_impl(1000.0, 1.0e+200, &re)");
+
+  sa = 0;
+  sa += gsl_sf_exp_mult_err_e10_impl(1.0, TEST_TOL0, 1.0, TEST_TOL0, &re);
+  sa += ( test_sf_frac_diff(re.val, M_E ) > TEST_TOL0 );
+  sa += ( re.err > TEST_TOL2 );
+  sa += ( re.e10 != 0 );
+  gsl_test(sa, "gsl_sf_exp_mult_e10_impl(1.0, TEST_TOL0, 1.0, TEST_TOL0, &re)");
+
+  sa = 0;
+  sa += gsl_sf_exp_mult_err_e10_impl(1000.0, 1.0e-12, 1.0e+200, 1.0e+190, &re);
+  sa += ( test_sf_frac_diff(re.val, 1.9700711140165661 ) > TEST_TOL0 );
+  sa += ( re.err > 1.0e-09 );
+  sa += ( re.e10 != 634 );
+  gsl_test(sa, "gsl_sf_exp_mult_err_e10_impl(1000.0, 1.0e+200, &re)");
 
   TEST_SF(s,  gsl_sf_expm1_impl, (-10.0, &r), exp(-10.0)-1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expm1_impl, (-0.001, &r), -0.00099950016662500845, TEST_TOL0, GSL_SUCCESS);
@@ -1231,6 +1335,40 @@ int test_zeta(void)
   return s;
 }
 
+int test_results(void)
+{
+  int s = 0;
+
+  gsl_sf_result_e10 re;
+  gsl_sf_result r;
+
+  re.val = -1.0;
+  re.err = 0.5;
+  re.e10 = 0;
+  gsl_sf_result_smash_impl(&re, &r);
+  s += ( test_sf_frac_diff(r.val, -1.0) > TEST_TOL0 );
+  s += ( test_sf_frac_diff(r.err,  0.5) > TEST_TOL0 );
+
+  re.val = -1.0;
+  re.err = 0.5;
+  re.e10 = 10;
+  gsl_sf_result_smash_impl(&re, &r);
+  s += ( test_sf_frac_diff(r.val, -1.0e+10) > TEST_TOL1 );
+  s += ( test_sf_frac_diff(r.err,  0.5e+10) > TEST_TOL1 );
+
+  re.val = 1.0;
+  re.err = 0.5;
+  re.e10 = 10000;
+  s += ( gsl_sf_result_smash_impl(&re, &r) != GSL_EOVRFLW );
+
+  re.val = 1.0;
+  re.err = 0.5;
+  re.e10 = -10000;
+  s += ( gsl_sf_result_smash_impl(&re, &r) != GSL_EUNDRFLW );
+
+  return s;
+}
+
 
 int main(int argc, char * argv[])
 {
@@ -1263,6 +1401,8 @@ int main(int argc, char * argv[])
   gsl_test(test_transport(),  "Transport Functions");
   gsl_test(test_trig(),       "Trigonometric and Related Functions");
   gsl_test(test_zeta(),       "Zeta Functions");
+
+  gsl_test(test_results(),    "Result Methods");
 
   return gsl_test_summary();
 }
