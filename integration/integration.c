@@ -1,4 +1,3 @@
-#if 0
 /* Created: [GJ] Tue Apr 23 21:26:53 EDT 1996
  */
 #include <stdio.h>
@@ -8,6 +7,7 @@
 #include <gsl_errno.h>
 /* #include "interpolation.h" */
 #include "gsl_integration.h"
+#if 0
 
 
 static char * info_string = 0;

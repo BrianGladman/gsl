@@ -1,5 +1,5 @@
-#ifndef GSL_INTEGRATION_H_
-#define GSL_INTEGRATION_H_
+#ifndef GSL_INTEGRATION_H
+#define GSL_INTEGRATION_H
 
 /* Quadrature of f() on (a,b) by Simpson rule.
    Attempts evaluation to precision specified by eps.
@@ -22,9 +22,43 @@ double gsl_integ_lorenz(double (*f)(double),
 
 
 int gsl_integration_qk15 (double (*f) (double x),
-		      double a, double b,
-		      double * result, double * abserr,
-		      double * resabs, double * resasc) ;
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc) ;
+
+int gsl_integration_qk21 (double (*f) (double x),
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc);
+
+int gsl_integration_qk31 (double (*f) (double x),
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc);
+
+int gsl_integration_qk41 (double (*f) (double x),
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc);
+
+int gsl_integration_qk51 (double (*f) (double x),
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc);
+
+int gsl_integration_qk61 (double (*f) (double x),
+			  double a, double b,
+			  double * result, double * abserr,
+			  double * resabs, double * resasc);
 
 
-#endif /* !GSL_INTEGRATION_H_ */
+
+int gsl_integration_qk (const int n,
+			const double xgk[], const double wg[], const double wgk[],
+			double fv1[], double fv2[],
+			double (*f) (double x),
+			double a, double b,
+			double * result, double * abserr,
+			double * resabs, double * resasc) ;
+
+#endif /* GSL_INTEGRATION_H */

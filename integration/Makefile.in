@@ -71,9 +71,14 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslintegration.a
 
-libgslintegration_a_SOURCES = integration.c
+libgslintegration_a_SOURCES = integration.c \
+	qk15.c qk21.c qk31.c qk41.c qk51.c qk61.c qk.c
 
 include_HEADERS = gsl_integration.h
+check_PROGRAMS = test
+
+test_SOURCES = test.c
+test_LDADD = libgslintegration.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -85,8 +90,12 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslintegration_a_LIBADD = 
-libgslintegration_a_OBJECTS =  integration.o
+libgslintegration_a_OBJECTS =  integration.o qk15.o qk21.o qk31.o qk41.o \
+qk51.o qk61.o qk.o
 AR = ar
+test_OBJECTS =  test.o
+test_DEPENDENCIES =  libgslintegration.a
+test_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -99,9 +108,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/integration.P
-SOURCES = $(libgslintegration_a_SOURCES)
-OBJECTS = $(libgslintegration_a_OBJECTS)
+DEP_FILES =  .deps/integration.P .deps/qk.P .deps/qk15.P .deps/qk21.P \
+.deps/qk31.P .deps/qk41.P .deps/qk51.P .deps/qk61.P .deps/test.P
+SOURCES = $(libgslintegration_a_SOURCES) $(test_SOURCES)
+OBJECTS = $(libgslintegration_a_OBJECTS) $(test_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -167,6 +177,19 @@ libgslintegration.a: $(libgslintegration_a_OBJECTS) $(libgslintegration_a_DEPEND
 	-rm -f libgslintegration.a
 	$(AR) cru libgslintegration.a $(libgslintegration_a_OBJECTS) $(libgslintegration_a_LIBADD)
 	$(RANLIB) libgslintegration.a
+
+mostlyclean-checkPROGRAMS:
+
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+
+distclean-checkPROGRAMS:
+
+maintainer-clean-checkPROGRAMS:
+
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -250,7 +273,7 @@ maintainer-clean-depend:
 	@-rm -f .deps/$(*F).p
 info:
 dvi:
-check: all
+check: all $(check_PROGRAMS)
 	$(MAKE)
 installcheck:
 install-exec: install-libLIBRARIES
@@ -285,26 +308,30 @@ maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+		mostlyclean-checkPROGRAMS mostlyclean-tags \
+		mostlyclean-depend mostlyclean-generic
 
-clean:  clean-libLIBRARIES clean-compile clean-tags clean-depend \
-		clean-generic mostlyclean
+clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
+		clean-depend clean-generic mostlyclean
 
-distclean:  distclean-libLIBRARIES distclean-compile distclean-tags \
-		distclean-depend distclean-generic clean
+distclean:  distclean-libLIBRARIES distclean-compile \
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
+		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-tags \
-		maintainer-clean-depend maintainer-clean-generic \
-		distclean
+		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 .PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile uninstall-includeHEADERS \
+clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
+distclean-checkPROGRAMS clean-checkPROGRAMS \
+maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
 clean-depend maintainer-clean-depend info dvi installcheck install-exec \
