@@ -533,8 +533,8 @@ case "$host" in
 *** WARNING: standard Makefiles do not work on OS/2
 *** 
 *** A compatibility script 'os2makefiles.pl' is available from Henry
-*** Sobotka.  You will need to download this script separately. See
-*** http://sources.redhat.com/gsl/ for a link to it.
+*** Sobotka.  You will need to download this script separately from,
+*** http://www.elzahir.org/download/scripts/os2makefiles.pl.gz
 ***
 *** Run os2makefiles.pl        to create OS/2 Makefiles
 ***     os2makefiles.pl -help  for options

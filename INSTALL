@@ -43,9 +43,10 @@ The library can be installed using the command,
 
   make install
 
-The default install directory prefix is /usr/local.  Consult the file
-INSTALL for information on installing the library in another location
-or changing other default compilation options.
+The default install directory prefix is /usr/local.  Consult the
+"Further Information" section below for instructions on installing the
+library in another location or changing other default compilation
+options.
 
                     ------------------------------
 
@@ -146,8 +147,8 @@ configuration option:
       CFLAGS="-Ae -O"  ./configure
 
 
-Hints for IRIX
-==============
+Hints for IRIX (SGI)
+====================
 
 The library should be compiled with the following option,
 

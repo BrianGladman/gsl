@@ -5,7 +5,7 @@ The GSL hacker needs some stuff that the end users don't:
 * you must have a recent automake (1.4p1 or greater) from
 ftp://sources.redhat.com/pub/automake/
 
-* you must have the latest autoconf from
+* you must have autoconf 2.13 or greater from
 ftp://sources.redhat.com/pub/automake/
 
 * you must have a recent libtool (1.4 or greater) from
@@ -39,8 +39,8 @@ point your web browser to
 grab the latest bundled release at
   ftp://sources.redhat.com/pub/gsl/
 
-Let me know (rosalia@lanl.gov) if any of these steps don't work.  I
-have tried them out on swift and they seem to work.
+Please send a message to gsl-discuss@sources.redhat.com if any of
+these steps don't work.
 
 ---------- submitting patches
 
@@ -52,8 +52,8 @@ checkout and to use a nice cvs diff option, like
 There is a script fixpatch.pl in gsl/scripts which will make the
 resulting output suitable for piping to 'patch'.
 
-Please test your patch before sending it, by applying it to a clean
-set of files and running 'make'.
+Note: Please test your patch before sending it, by applying it to a
+clean set of files and running 'make'.
 
 If your patch contains lines longer than 80 characters please check
 that your mailer does not break these lines.  If in doubt, send the
