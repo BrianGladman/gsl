@@ -132,7 +132,7 @@ test_matmult_mod(void)
 
 
 static int
-test_LU_solve_dim(size_t dim, const double * actual)
+test_LU_solve_dim(size_t dim, const double * actual, double eps)
 {
   int s = 0;
   int signum;
@@ -146,7 +146,7 @@ test_LU_solve_dim(size_t dim, const double * actual)
   s += gsl_la_decomp_LU_Crout_impl(hm, perm, &signum);
   s += gsl_la_solve_LU_impl(hm, perm, rhs, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i]) > 16.0 * dim * GSL_DBL_EPSILON );
+    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
     s += foo;
     if(foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
@@ -163,25 +163,31 @@ test_LU_solve_dim(size_t dim, const double * actual)
 
 int test_LU_solve(void)
 {
+  int f;
   int s = 0;
   double actual[16];
 
   actual[0] =  -8.0;
   actual[1] =  18.0;
-  s += test_LU_solve_dim(2, actual);
+  f = test_LU_solve_dim(2, actual, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=2");
+  s += f;
 
   actual[0] =   27.0;
   actual[1] = -192.0;
   actual[2] =  210.0;
-  s += test_LU_solve_dim(3, actual);
+  f = test_LU_solve_dim(3, actual, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=3");
+  s += f;
 
   actual[0] =   -64.0;
   actual[1] =   900.0;
   actual[2] = -2520.0;
   actual[3] =  1820.0;
-  s += test_LU_solve_dim(4, actual);
+  f = test_LU_solve_dim(4, actual, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  solve_LU dim=4");
+  s += f;
 
-/*
   actual[0]  = -1728.0;
   actual[1]  =  245388.0;
   actual[2]  = -8528520.0;
@@ -194,8 +200,10 @@ int test_LU_solve(void)
   actual[9]  =  26189163000.0;
   actual[10] = -11437874448.0;
   actual[11] =  2157916488.0;
-  s += test_LU_solve_dim(12, actual);
-*/
+  f = test_LU_solve_dim(12, actual, 0.05);
+  gsl_test(f, "  solve_LU dim=12");
+  s += f;
+
   return s;
 }
 
