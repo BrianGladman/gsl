@@ -147,13 +147,27 @@ Further information is available using the command @code{gsl-config --help}.
 @cindex LD_LIBRARY_PATH
 To run a program linked with the shared version of the library it may be
 necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
-the directory where the library is installed.  For example,
+the directory where the library is installed.  For example, in the
+Bourne shell (@code{/bin/sh} or @code{/bin/bash}), the library path can be set
+with the following commands:
 
 @example
-LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH ./example
+LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH
+./example
 @end example
 @noindent
-To compile a statically linked version of the program instead, use the
+In the C-shell (@code{/bin/csh} or @code{/bin/tcsh}) the equivalent
+command is,
+
+@example
+setenv LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
+@end example
+
+To save retyping these commands each session they should be placed in an
+individual or system-wide login file.
+
+To compile a statically linked version of the program, use the
 @code{-static} flag in @code{gcc},
 
 @example
