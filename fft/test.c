@@ -17,6 +17,9 @@
 #include <gsl_fft_halfcomplex_float.h>
 #include <gsl_test.h>
 
+void my_error_handler (const char *reason, const char *file,
+		       int line, int err);
+
 #include "complex_internal.h"
 
 /* Usage: test [n]
@@ -27,6 +30,7 @@
 #include "templates_on.h"
 #include "test_complex.c"
 #include "test_real.c"
+#include "test_trap.c"
 #include "templates_off.h"
 #undef  BASE_DOUBLE
 
@@ -34,6 +38,7 @@
 #include "templates_on.h"
 #include "test_complex.c"
 #include "test_real.c"
+#include "test_trap.c"
 #include "templates_off.h"
 #undef  BASE_FLOAT
 
@@ -80,7 +85,16 @@ main (int argc, char *argv[])
 	}
     }
 
+  gsl_set_error_handler (&my_error_handler);
+  test_trap () ;
+  test_float_trap () ;
 
   return gsl_test_summary ();
 }
 
+
+void
+my_error_handler (const char *reason, const char *file, int line, int err)
+{
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+}

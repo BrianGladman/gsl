@@ -1,3 +1,9 @@
+Thu Sep 10 12:05:07 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* removed wavetable from function names to make them shorter and
+ 	avoid confusion, e.g. gsl_fft_complex_wavetable_alloc ->
+ 	gsl_fft_complex_alloc
+
 Sat Sep  5 22:32:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* major work done on templatizing everything so that you can do an

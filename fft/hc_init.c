@@ -23,7 +23,7 @@ FUNCTION(gsl_fft_halfcomplex,init) (size_t n,
 
   wavetable->nf = n_factors;
 
-  status = FUNCTION(gsl_fft_halfcomplex,generate_wavetable) (n, wavetable);
+  status = FUNCTION(gsl_fft_halfcomplex,generate) (n, wavetable);
 
   if (status)
     {
@@ -34,7 +34,7 @@ FUNCTION(gsl_fft_halfcomplex,init) (size_t n,
 }
 
 int
-FUNCTION(gsl_fft_halfcomplex,generate_wavetable) (size_t n,
+FUNCTION(gsl_fft_halfcomplex,generate) (size_t n,
 						  TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
   size_t i;
@@ -91,7 +91,7 @@ FUNCTION(gsl_fft_halfcomplex,generate_wavetable) (size_t n,
 }
 
 TYPE(gsl_fft_wavetable_halfcomplex) *
-FUNCTION(gsl_fft_halfcomplex,wavetable_alloc) (size_t n)
+FUNCTION(gsl_fft_halfcomplex,alloc) (size_t n)
 {
   TYPE(gsl_fft_wavetable_halfcomplex) * w ;
 
@@ -132,7 +132,7 @@ FUNCTION(gsl_fft_halfcomplex,wavetable_alloc) (size_t n)
 }
 
 void
-FUNCTION(gsl_fft_halfcomplex,wavetable_free) (TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
+FUNCTION(gsl_fft_halfcomplex,free) (TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */

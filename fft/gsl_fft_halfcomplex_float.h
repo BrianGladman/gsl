@@ -34,13 +34,13 @@ int gsl_fft_halfcomplex_float_transform (float data[], size_t stride, size_t n,
 int gsl_fft_halfcomplex_float_init (size_t n,
 				    gsl_fft_wavetable_halfcomplex_float * wavetable);
 
-int gsl_fft_halfcomplex_float_generate_wavetable (size_t n,
+int gsl_fft_halfcomplex_float_generate (size_t n,
 						  gsl_fft_wavetable_halfcomplex_float * wavetable);
 
-gsl_fft_wavetable_halfcomplex_float * gsl_fft_halfcomplex_float_wavetable_alloc (size_t n);
+gsl_fft_wavetable_halfcomplex_float * gsl_fft_halfcomplex_float_alloc (size_t n);
 
 void
-gsl_fft_halfcomplex_float_wavetable_free (gsl_fft_wavetable_halfcomplex_float * wavetable);
+gsl_fft_halfcomplex_float_free (gsl_fft_wavetable_halfcomplex_float * wavetable);
 
 int
 gsl_fft_halfcomplex_float_unpack (const float halfcomplex_coefficient[],

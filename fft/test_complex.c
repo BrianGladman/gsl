@@ -56,9 +56,9 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
   /* Test allocation */
 
   {
-    cw = FUNCTION(gsl_fft_complex,wavetable_alloc) (n);
+    cw = FUNCTION(gsl_fft_complex,alloc) (n);
     gsl_test (cw == 0, NAME(gsl_fft_complex) 
-	      "_wavetable_alloc, n = %d, stride = %d", n, stride);
+	      "_alloc, n = %d, stride = %d", n, stride);
   }
 
   /* Test initialization */
@@ -202,7 +202,7 @@ void FUNCTION(test_complex,func) (size_t stride, size_t n)
 	      "_forward with signal_exp, n = %d, stride = %d", n, stride);
   }
 
-  FUNCTION(gsl_fft_complex,wavetable_free) (cw);
+  FUNCTION(gsl_fft_complex,free) (cw);
   
   free (complex_data);
   free (complex_tmp);
@@ -433,3 +433,4 @@ void FUNCTION(test_complex,radix2) (size_t stride, size_t n)
   free (fft_complex_data);
   free (fft_complex_tmp);
 }
+

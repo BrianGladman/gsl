@@ -36,9 +36,9 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   
   /* mixed radix real fft */
   
-  rw = FUNCTION(gsl_fft_real,wavetable_alloc) (n);
+  rw = FUNCTION(gsl_fft_real,alloc) (n);
   gsl_test (rw == 0, NAME(gsl_fft_real) 
-	    "_wavetable_alloc, n = %d, stride = %d", n, stride);
+	    "_alloc, n = %d, stride = %d", n, stride);
   
   status = FUNCTION(gsl_fft_real,init) (n, rw);
   gsl_test (status, NAME(gsl_fft_real) 
@@ -63,9 +63,9 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   
   /* compute the inverse fft */
 
-  hcw = FUNCTION(gsl_fft_halfcomplex,wavetable_alloc) (n);
+  hcw = FUNCTION(gsl_fft_halfcomplex,alloc) (n);
   gsl_test (hcw == 0, NAME(gsl_fft_halfcomplex) 
-	    "_wavetable_alloc, n = %d, stride = %d", n, stride);
+	    "_alloc, n = %d, stride = %d", n, stride);
   
   status = FUNCTION(gsl_fft_halfcomplex,init) (n, hcw);
   gsl_test (status, NAME(gsl_fft_halfcomplex) 
@@ -87,8 +87,8 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
   gsl_test (status, NAME(gsl_fft_halfcomplex) 
 	    " with data from signal_noise, n = %d, stride = %d", n, stride);
 
-  FUNCTION(gsl_fft_real,wavetable_free) (rw);
-  FUNCTION(gsl_fft_halfcomplex,wavetable_free) (hcw);
+  FUNCTION(gsl_fft_real,free) (rw);
+  FUNCTION(gsl_fft_halfcomplex,free) (hcw);
 
   free(real_data) ;
   free(complex_data) ;

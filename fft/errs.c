@@ -50,7 +50,7 @@ main (int argc, char *argv[])
 
       cw = gsl_fft_wavetable_complex_alloc (n);
       status = gsl_fft_complex_init (n, cw);
-      status = gsl_fft_complex_generate_wavetable (n, cw);
+      status = gsl_fft_complex_generate (n, cw);
 
       for (i = 0; i < n; i++)
 	{

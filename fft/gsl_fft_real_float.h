@@ -25,12 +25,12 @@ int gsl_fft_real_float_transform (float data[], size_t stride, size_t n,
 
 int gsl_fft_real_float_init (size_t n, gsl_fft_wavetable_real_float * wavetable);
 
-int gsl_fft_real_float_generate_wavetable (size_t n,
+int gsl_fft_real_float_generate (size_t n,
 					   gsl_fft_wavetable_real_float * wavetable);
 
-gsl_fft_wavetable_real_float * gsl_fft_real_float_wavetable_alloc (size_t n);
+gsl_fft_wavetable_real_float * gsl_fft_real_float_alloc (size_t n);
 
-void  gsl_fft_real_float_wavetable_free (gsl_fft_wavetable_real_float * wavetable);
+void  gsl_fft_real_float_free (gsl_fft_wavetable_real_float * wavetable);
 
 int gsl_fft_real_float_unpack (const float real_float_coefficient[],
 			       float complex_coefficient[],

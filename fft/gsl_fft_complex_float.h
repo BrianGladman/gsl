@@ -93,16 +93,16 @@ gsl_fft_complex_float_init (size_t n,
 			    gsl_fft_wavetable_complex_float * wavetable);
 
 int
-gsl_fft_complex_float_generate_wavetable (size_t n,
+gsl_fft_complex_float_generate (size_t n,
 					  gsl_fft_wavetable_complex_float * wavetable);
 
-gsl_fft_wavetable_complex_float * gsl_fft_complex_float_wavetable_alloc (size_t n);
+gsl_fft_wavetable_complex_float * gsl_fft_complex_float_alloc (size_t n);
 
 void
-gsl_fft_complex_float_wavetable_free (gsl_fft_wavetable_complex_float * wavetable);
+gsl_fft_complex_float_free (gsl_fft_wavetable_complex_float * wavetable);
 
 int
-gsl_fft_complex_float_wavetable_cpy (gsl_fft_wavetable_complex_float * dest,
+gsl_fft_complex_float_cpy (gsl_fft_wavetable_complex_float * dest,
 				     gsl_fft_wavetable_complex_float * src) ;
 
 #endif /* GSL_FFT_COMPLEX_FLOAT_H */

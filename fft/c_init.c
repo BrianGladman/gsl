@@ -23,7 +23,7 @@ FUNCTION(gsl_fft_complex,init) (size_t n,
 
   wavetable->nf = n_factors;
 
-  status = FUNCTION(gsl_fft_complex,generate_wavetable) (n, wavetable);
+  status = FUNCTION(gsl_fft_complex,generate) (n, wavetable);
 
   if (status)
     {
@@ -34,7 +34,7 @@ FUNCTION(gsl_fft_complex,init) (size_t n,
 }
 
 int
-FUNCTION(gsl_fft_complex,generate_wavetable) (size_t n,
+FUNCTION(gsl_fft_complex,generate) (size_t n,
 					      TYPE(gsl_fft_wavetable_complex) * wavetable)
 {
   size_t i;
@@ -91,7 +91,7 @@ FUNCTION(gsl_fft_complex,generate_wavetable) (size_t n,
 }
 
 TYPE(gsl_fft_wavetable_complex) * 
-FUNCTION(gsl_fft_complex,wavetable_alloc) (size_t n)
+FUNCTION(gsl_fft_complex,alloc) (size_t n)
 {
   TYPE(gsl_fft_wavetable_complex) * w ;
 
@@ -132,7 +132,7 @@ FUNCTION(gsl_fft_complex,wavetable_alloc) (size_t n)
 }
 
 void
-FUNCTION(gsl_fft_complex,wavetable_free) (TYPE(gsl_fft_wavetable_complex) * wavetable)
+FUNCTION(gsl_fft_complex,free) (TYPE(gsl_fft_wavetable_complex) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */
@@ -147,7 +147,7 @@ FUNCTION(gsl_fft_complex,wavetable_free) (TYPE(gsl_fft_wavetable_complex) * wave
 }
 
 int
-FUNCTION(gsl_fft_complex,wavetable_cpy) (TYPE(gsl_fft_wavetable_complex) * dest,
+FUNCTION(gsl_fft_complex,cpy) (TYPE(gsl_fft_wavetable_complex) * dest,
 					 TYPE(gsl_fft_wavetable_complex) * src)
 {
   int i, n, nf ;

@@ -23,7 +23,7 @@ FUNCTION(gsl_fft_real,init) (size_t n,
 
   wavetable->nf = n_factors;
 
-  status = FUNCTION(gsl_fft_real,generate_wavetable) (n, wavetable);
+  status = FUNCTION(gsl_fft_real,generate) (n, wavetable);
 
   if (status)
     {
@@ -34,7 +34,7 @@ FUNCTION(gsl_fft_real,init) (size_t n,
 }
 
 int
-FUNCTION(gsl_fft_real,generate_wavetable) (size_t n,
+FUNCTION(gsl_fft_real,generate) (size_t n,
 					   TYPE(gsl_fft_wavetable_real) * wavetable)
 {
   size_t i;
@@ -91,7 +91,7 @@ FUNCTION(gsl_fft_real,generate_wavetable) (size_t n,
 }
 
 TYPE(gsl_fft_wavetable_real) *
-FUNCTION(gsl_fft_real,wavetable_alloc) (size_t n)
+FUNCTION(gsl_fft_real,alloc) (size_t n)
 {
   TYPE(gsl_fft_wavetable_real) * w;
 
@@ -128,7 +128,7 @@ FUNCTION(gsl_fft_real,wavetable_alloc) (size_t n)
 }
 
 void
-FUNCTION(gsl_fft_real,wavetable_free) (TYPE(gsl_fft_wavetable_real) * wavetable)
+FUNCTION(gsl_fft_real,free) (TYPE(gsl_fft_wavetable_real) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */

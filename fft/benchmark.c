@@ -44,7 +44,7 @@ main (int argc, char *argv[])
 
   cw = gsl_fft_wavetable_complex_alloc (n);
   status = gsl_fft_complex_init (n, cw);
-  status = gsl_fft_complex_generate_wavetable (n, cw);
+  status = gsl_fft_complex_generate (n, cw);
 
   data = (double *) malloc (n * 2 * sizeof (double));
   fft_data = (double *) malloc (n * 2 * sizeof (double));
