@@ -349,6 +349,66 @@ dilogc_unitdisk(double r, double theta, gsl_sf_result * real_dl, gsl_sf_result *
 
 
 
+/* This is the real part of Li_2(r e^{i theta}).
+ */
+static
+int
+dilog_li2_real(double r, double theta, gsl_sf_result * result)
+{
+  /* Reduce argument to within the unit disk. */
+  const double r_tmp = ( r > 1.0 ? 1.0/r : r );
+  double result_tmp;
+
+  if(r_tmp < GSL_SQRT_DBL_EPSILON)
+  {
+    const double c = cos(theta);
+    result_tmp = r_tmp * (c + r_tmp * (2.0*c*c - 1.0));
+  }
+  else if(r_tmp < 0.98)
+  {
+  }
+  else
+  {
+  }
+
+  return 0;
+}
+
+
+
+/* This is the function
+ *
+ *   Cl_2(2 omega) + Cl_2(2 theta) - Cl_2(2 omega + 2 theta)
+ *
+ * where
+ *
+ *   theta := atan2(-A sin(omega), 1 - A cos(omega))
+ *
+ * This function arises as part of the imaginary part of the
+ * complex dilogarithm. It is manifestly periodic in omega.
+ * It also has the symmetry omega <--> theta, which arises
+ * from an underlying relation z <--> 1-z.
+ */
+static
+int
+dilog_gfunc(double A, double omega, double theta, double cos_omega, double sin_omega, gsl_sf_result * g)
+{
+  const double a0 = 1.0 - A * cos_omega;
+  const double a1 = - A * sin_omega;
+  /* const double theta = atan2(a1, a0); */
+  gsl_sf_result cl2_2omega;
+  gsl_sf_result cl2_2theta;
+  gsl_sf_result cl2_2ot;   
+  const int stat_0 = gsl_sf_clausen_e(2.0*omega, &cl2_2omega);
+  const int stat_1 = gsl_sf_clausen_e(2.0*theta, &cl2_2theta);
+  const int stat_2 = gsl_sf_clausen_e(2.0*(theta + omega), &cl2_2ot);
+  g->val = cl2_2omega.val + cl2_2theta.val - cl2_2ot.val;
+  g->err = cl2_2omega.err + cl2_2theta.err + cl2_2ot.err;
+  return GSL_ERROR_SELECT_3(stat_0, stat_1, stat_2);
+}
+
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
@@ -463,16 +523,24 @@ gsl_sf_complex_dilog_e(const double r, double theta,
       double theta_restricted = theta;
       const int stat_reduct = gsl_sf_angle_restrict_pos_e(&theta_restricted);
       const double zeta2 = M_PI*M_PI/6.0;
-      const double x = r * cos(theta);
-      const double y = r * sin(theta);
+      const double cos_theta = cos(theta);
+      const double sin_theta = sin(theta);
+      const double x = r * cos_theta;
+      const double y = r * sin_theta;
       const double omega = atan2(y, 1.0-x);
       const double lnr = log(r);
       const double pmt = M_PI - theta_restricted;
+
       gsl_sf_result Cl_a, Cl_b, Cl_c;
       const int stat_c1 = gsl_sf_clausen_e(2.0*omega, &Cl_a);
       const int stat_c2 = gsl_sf_clausen_e(2.0*theta, &Cl_b);
       const int stat_c3 = gsl_sf_clausen_e(2.0*(omega+theta), &Cl_c);
       const int stat_c  = GSL_ERROR_SELECT_3(stat_c1, stat_c2, stat_c3);
+      /*
+      gsl_sf_result Cl_abc;
+      const int stat_c = dilog_gfunc(r, theta, cos_theta, sin_theta, &Cl_abc);
+      */
+
       const double r1 = -result_re_tmp.val;
       const double r2 = -0.5*lnr*lnr;
       const double r3 =  0.5*pmt*pmt;
@@ -483,9 +551,12 @@ gsl_sf_complex_dilog_e(const double r, double theta,
       real_dl->err += GSL_DBL_EPSILON * (fabs(r1) + fabs(r2) + fabs(r3) + fabs(r4));
       real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
       imag_dl->val  = r5 + 0.5*(Cl_a.val + Cl_b.val - Cl_c.val);
+      /* imag_dl->val  = r5 + 0.5*Cl_abc.val; */
       imag_dl->err  = GSL_DBL_EPSILON * fabs(r5);
       imag_dl->err += GSL_DBL_EPSILON * 0.5*(fabs(Cl_a.val) + fabs(Cl_b.val) + fabs(Cl_c.val));
+      /* imag_dl->err += GSL_DBL_EPSILON * 0.5*fabs(Cl_abc.val); */
       imag_dl->err += 0.5*(Cl_a.err + Cl_b.err + Cl_c.err);
+      /* imag_dl->err += 0.5*Cl_abc.err; */
       imag_dl->err += 2.0*GSL_DBL_EPSILON * fabs(imag_dl->val);
       return GSL_ERROR_SELECT_3(stat_dilog, stat_c, stat_reduct);
     }
@@ -498,6 +569,33 @@ gsl_sf_complex_dilog_e(const double r, double theta,
     }
   }
 }
+
+
+int
+gsl_sf_complex_spence_e(
+  const double A,
+  const double omega,
+  gsl_sf_result * real_dl,
+  gsl_sf_result * imag_dl
+  )
+{
+  const double cos_omega = cos(omega);
+  const double sin_omega = sin(omega);
+  const double ax = 1.0 - A * cos_omega;
+  const double ay = - A * sin_omega;
+  const double r = sqrt(ax*ax + ay*ay);
+  const double theta = atan2(ay, ax);
+
+  const double imag_term_disc = omega * log(r);
+  gsl_sf_result imag_term_periodic;
+  const int stat_g = dilog_gfunc(A, omega, theta, cos_omega, sin_omega, &imag_term_periodic);
+  imag_dl->val = 0.5 * (imag_term_disc + imag_term_periodic.val);
+  imag_dl->err = 0.5 * imag_term_periodic.err;
+  imag_dl->err += GSL_DBL_EPSILON * fabs(imag_dl->val);
+
+  return 0; /* GSL_ERROR_SELECT_(stat_g); */
+}
+
 
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
