@@ -1,3 +1,8 @@
+2003-04-08  G. Jungman
+
+    * erfc.c, gsl_sf_erf.h: added gsl_sf_hazard_e() and
+    gsl_sf_hazard() functions
+
 2003-04-07  G. Jungman
 
     * gamma_inc.c, gsl_sf_gamma.h: added gsl_sf_gamma_inc_e() and

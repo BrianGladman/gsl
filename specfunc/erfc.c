@@ -456,3 +456,9 @@ double gsl_sf_erf_Q(double x)
 {
   EVAL_RESULT(gsl_sf_erf_Q_e(x, &result));
 }
+
+double gsl_sf_hazard(double x)
+{
+  EVAL_RESULT(gsl_sf_hazard_e(x, &result));
+}
+
