@@ -5,4 +5,5 @@ Brian Gough (bjg@vvv.lanl.gov) - FFT package, error handling, vector and
   matrix functions, histograms, some parts of statistics, ieee-utils, 
   integration
 Reid Priedhorsky (rp@lanl.gov) - root finding
-Gerry Jungman (jungman@nnn.lanl.gov) special functions, interpolation
+Gerry Jungman (jungman@nnn.lanl.gov) special functions, interpolation, series
+  acceleration
