@@ -291,8 +291,8 @@ int expint_E1_impl(const double x, gsl_sf_result * result, const int scale)
 
   /* CHECK_POINTER(result) */
 
-  if(x < -xmax) {
-    OVERFLOW_ERROR(result);
+  if(x < -xmax && !scale) {
+      OVERFLOW_ERROR(result);
   }
   else if(x <= -10.0) {
     const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
@@ -344,14 +344,17 @@ int expint_E1_impl(const double x, gsl_sf_result * result, const int scale)
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
-  else if(x <= xmax) {
+  else if(x <= xmax || scale) {
     const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_c;
     cheb_eval_e(&AE14_cs, 8.0/x-1.0, &result_c);
     result->val  = s * (1.0 +  result_c.val);
     result->err  = s * (GSL_DBL_EPSILON + result_c.err);
     result->err += 2.0 * (x + 1.0) * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    if(result->val == 0.0)
+      UNDERFLOW_ERROR(result);
+    else
+      return GSL_SUCCESS;
   }
   else {
     UNDERFLOW_ERROR(result);
@@ -367,7 +370,7 @@ int expint_E2_impl(const double x, gsl_sf_result * result, const int scale)
 
   /* CHECK_POINTER(result) */
 
-  if(x < -xmax) {
+  if(x < -xmax && !scale) {
     OVERFLOW_ERROR(result);
   }
   else if(x < 100.0) {
@@ -379,7 +382,7 @@ int expint_E2_impl(const double x, gsl_sf_result * result, const int scale)
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_E1;
   }
-  else if(x < xmax) {
+  else if(x < xmax || scale) {
     const double s = ( scale ? 1.0 : exp(-x) );
     const double c1  = -2.0;
     const double c2  =  6.0;
@@ -399,7 +402,10 @@ int expint_E2_impl(const double x, gsl_sf_result * result, const int scale)
     const double sum  = y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*sum6)))));
     result->val = s * (1.0 + sum)/x;
     result->err = 2.0 * (x + 1.0) * GSL_DBL_EPSILON * result->val;
-    return GSL_SUCCESS;
+    if(result->val == 0.0)
+      UNDERFLOW_ERROR(result);
+    else
+      return GSL_SUCCESS;
   }
   else {
     UNDERFLOW_ERROR(result);
