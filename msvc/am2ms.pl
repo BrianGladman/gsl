@@ -105,8 +105,8 @@ print LIBGSL &end_project();
 
 open(GSL, ">GSL.dsw");
 print GSL &begin_workspace();
-print GSL &add_workspace_project("libgsl", "libgsl.dsp");
-print GSL &add_workspace_project("libgslcblas", "libgslcblas.dsp");
+print GSL &add_workspace_project("libgsl", "msvc\\libgsl.dsp");
+print GSL &add_workspace_project("libgslcblas", "msvc\\libgslcblas.dsp");
 print GSL &end_workspace();
 close GSL;
 
@@ -114,9 +114,9 @@ close GSL;
 
 open(TEST, ">GSLTESTS.dsw");
 print TEST &begin_workspace();
-print TEST &add_workspace_project("GSLTESTS", "GSLTESTS.dsp", @tests);
+print TEST &add_workspace_project("GSLTESTS", "msvc\\GSLTESTS.dsp", @tests);
 for $t (@tests) {
-    print TEST &add_workspace_project($t, "$t.dsp");
+    print TEST &add_workspace_project($t, "msvc\\$t.dsp");
 }
 print TEST &end_workspace();
 close (TEST);
@@ -139,8 +139,9 @@ close(TEST);
 
 open(BATCH, ">COPY_GSL_HEADERS.bat");
 for $h (@installed_headers) {
+    $h =~ s#../##;
     $h =~ s#/#\\#g;  # convert to dos style path
-    print BATCH "copy $h ..\\gsl\n" ;
+    print BATCH "copy $h gsl\n" ;
 }
 close(BATCH);
 
@@ -570,7 +571,7 @@ sub add_check {
     my ($test) = @_;
     return <<"EOF";
 \@echo running $test...
-\@.\\bin\\$test.exe >> result.dat
+\@msvc\\bin\\$test.exe >> result.dat
 EOF
 }
 
