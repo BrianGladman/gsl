@@ -56,7 +56,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996,1997,1998,1999,2000 The GSL Project.
+Copyright @copyright{} 1996,1997,1998,1999,2000,2001 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -73,12 +73,14 @@ except that this permission notice may be stated in a translation approved
 by the Foundation.
 @end titlepage
 
+@contents
+
 @node Top, Motivation, (dir), (dir)
 @top About GSL
 
 @ifinfo
-This file documents the the @value{GSL}, a collection
-of numerical routines for scientific computing.
+This file documents the @value{GSL}, a collection of numerical routines
+for scientific computing.
 @end ifinfo
 
 The @value{GSL} is a library of scientific subroutines.  It aims to
@@ -89,8 +91,8 @@ modify, and improve the interfaces and/or implementations of whichever
 routines might be needed for a particular purpose.
 
 GSL is intended to provide a free equivalent to existing proprietary
-numerical libraries written in C or Fortran, such as NAG, IMSL's CNL and
-IBM's ESSL.
+numerical libraries written in C or Fortran, such as NAG, IMSL's CNL,
+IBM's ESSL, and SGI's SCSL.
 
 The target platform is a low-end desktop workstation. The goal is to
 provide something which is generally useful, and the library is aimed at
@@ -155,11 +157,18 @@ in Fortran written under a Department of Energy program in the
 design (given the limitations of that era).  GSL should aim to be a
 modern version of SLATEC.
 
+@emph{NSWC} is the Naval Surface Warfare Center numerical library.  It
+is a large public-domain Fortran library, containing a lot of
+high-quality code.  Documentation for the library is hard to find, only
+a few photocopies of the printed manual are still in circulation.
+
 @emph{NAG} and @emph{IMSL} both sell high-quality libraries which are
 proprietary.  The NAG library is more advanced and has wider scope than
 IMSL. The IMSL library leans more towards ease-of-use and makes
 extensive use of variable length argument lists to emulate "default
 arguments".
+
+@emph{ESSL} and @emph{SCSL} are proprietary libraries from IBM and SGI.
 
 Forth Scientific Library [see the URL
 http://www.taygeta.com/fsl/sciforth.html].  Mainly of interest to Forth
@@ -192,6 +201,13 @@ Will Naylor. Public domain.
 
 @emph{MESHACH} A comprehensive matrix-vector linear algebra library
 written in C. Freely available but not GPL'ed (non-commercial license).
+
+@emph{CERNLIB} is a large high-quality Fortran library developed at CERN
+over many years.  It was originally non-free software but has recently
+been released under the GPL.
+
+@emph{COLT} is a free numerical library in Java developed at CERN by
+Wolfgang Hoschek.  It is under a BSD-style license.
 
 [JT section: written by James Theiler, and not incorporated into the
 above motivation]
@@ -356,17 +372,18 @@ programs, so it makes sense for them to be separate libraries.
 @node  Design of  Numerical Libraries, Code Reuse, What routines are not implemented, Design
 @section  Design of  Numerical Libraries
 
-In writing a numerical library there is a unavoidable tension between
-completeness and simplicity.  By completeness I mean the ability to
+In writing a numerical library there is a unavoidable conflict between
+completeness and simplicity.  Completeness refers to the ability to
 perform operations on different objects so that the group is
 "closed". In mathematics objects can be combined and operated on in an
 infinite number of ways.  For example, I can take the derivative of a
 scalar field wrt a vector and the derivative of a vector field wrt a
 scalar (along a path).
 
-There is a definite tendency to unconsciously try to reproduce this in a
-numerical library, by adding new features one by one. After all, it is
-always easy enough to support just one more feature.... so why not?
+There is a definite tendency to unconsciously try to reproduce all these
+possibilities in a numerical library, by adding new features one by
+one. After all, it is always easy enough to support just one more
+feature.... so why not?
 
 Looking at the big picture, no-one would start out by saying "I want to
 be able to represent every possible mathematical object and operation
@@ -464,7 +481,7 @@ Proceedings of the Summer '91 Usenix Conference, pp.  235-256, 1991.
 @section Background and Preparation
 
 Before implementing something be sure to research the subject
-thoroughly.  This will save a lot of time in the long-run.  The two most
+thoroughly!  This will save a lot of time in the long-run.  The two most
 important steps are,
 
 @enumerate
@@ -472,8 +489,9 @@ important steps are,
 to determine whether there is already a free library (GPL or
 GPL-compatible) which does the job.  If so, there is no need to
 reimplement it.  Carry out a search on Netlib, GAMs, na-net,
-sci.math.num-analysis and the web in general. This should also provide a
-list of existing proprietary libraries which are relevant.
+sci.math.num-analysis and the web in general. This should also provide
+you with a list of existing proprietary libraries which are relevant,
+keep a note of these for future reference in step 2.
 
 @item 
 make a comparative survey of existing implementations in the
@@ -612,11 +630,11 @@ the sentence differently (e.g., "The identifier lower-case is ...").''
 @node Minimal structs, Algorithm decomposition, Comments, Design
 @section Minimal structs
 
-We prefer to make structs which are minimal.  For example, if a certain
-type of problem can be solved by several classes of algorithm (e.g. with
-and without derivative information) it is better to make separate types
-of struct to handle those cases.  i.e. run time type identification is
-not desirable.
+We prefer to make structs which are @dfn{minimal}.  For example, if a
+certain type of problem can be solved by several classes of algorithm
+(e.g. with and without derivative information) it is better to make
+separate types of struct to handle those cases.  i.e. run time type
+identification is not desirable.
 
 @node Algorithm decomposition, Memory allocation and ownership, Minimal structs, Design
 @section Algorithm decomposition
@@ -630,8 +648,8 @@ seem necessary then it's a sign that the algorithm should be broken down
 further into individual components so that the user has complete control
 over them.  
 
-For example, when solving a differential equation the user needs to be
-able to advance the solution by individual steps, while tracking a
+For example, when solving a differential equation the user may need to
+be able to advance the solution by individual steps, while tracking a
 realtime process.  This is only possible if the algorithm is broken down
 into step-level components.  Higher level decompositions would not give
 sufficient flexibility.
@@ -689,6 +707,9 @@ using the C arguments, by typing v->data, v->stride, v->size instead.
 A gsl_vector version of low-level functions would mainly be a
 convenience.
 
+Please use BLAS routines internally within the library whenever possible
+for efficiency.
+
 @node Exceptions and Error handling, Persistence, Linear Algebra Levels, Design
 @section Exceptions and Error handling
 
@@ -719,34 +740,34 @@ If you make an object foo which uses blocks of memory (e.g. vector,
 matrix, histogram) you can provide functions for reading and writing
 those blocks,
 
-@example
+@smallexample
 int gsl_foo_fread (FILE * stream, gsl_foo * v);
 int gsl_foo_fwrite (FILE * stream, const gsl_foo * v);
 int gsl_foo_fscanf (FILE * stream, gsl_foo * v);
 int gsl_foo_fprintf (FILE * stream, const gsl_foo * v, const char *format);
-@end example
+@end smallexample
 @noindent
 Only dump out the blocks of memory, not any associated parameters such
 as lengths.  The idea is for the user to build higher level input/output
 facilities using the functions the library provides.  Use the functions
 
-@example
+@smallexample
 int gsl_block_fread (FILE * stream, gsl_block * b);
 int gsl_block_fwrite (FILE * stream, const gsl_block * b);
 int gsl_block_fscanf (FILE * stream, gsl_block * b);
 int gsl_block_fprintf (FILE * stream, const gsl_block * b, const char *format);
-@end example
+@end smallexample
 @noindent
 or
 
-@example
+@smallexample
 int gsl_block_raw_fread (FILE * stream, double * b, size_t n, size_t stride);
 int gsl_block_raw_fwrite (FILE * stream, const double * b, size_t n, size_t stri
 de);
 int gsl_block_raw_fscanf (FILE * stream, double * b, size_t n, size_t stride);
 int gsl_block_raw_fprintf (FILE * stream, const double * b, size_t n, size_t str
 ide, const char *format);
-@end example
+@end smallexample
 @noindent
 to do the actual reading and writing.
 
@@ -795,6 +816,10 @@ pointer to result (output variable)
 absolute error 
 @item relerr
 relative error
+@item epsabs
+absolute tolerance 
+@item epsrel
+relative tolerance
 @item size
 the size of an array or vector e.g. double array[size] 
 @item stride
@@ -829,7 +854,7 @@ write a descending loop you have to be careful because @code{size_t} is
 unsigned, so instead of
 
 @example
-for (i = N - 1; i >= 0; i--) @{ ... @}
+for (i = N - 1; i >= 0; i--) @{ ... @} /* DOESN'T WORK */
 @end example
 @noindent
 use something like
@@ -838,7 +863,7 @@ use something like
 for (i = N; i > 0 && i--;) @{ ... @}
 @end example
 @noindent
-to avoid problems with wrap-around at @code{i=0}.
+to avoid problems with wrap-around at @code{i=0}.  
 
 If you really want to avoid confusion use a separate variable to invert
 the loop order,
@@ -916,8 +941,8 @@ sort of idea is a part of the C language.
 @node Test suites, Compilation, Pseudo-templates, Design
 @section Test suites
 
-The implementor of each library should provide a reasonable test suite
-for that library.
+The implementor of each module should provide a reasonable test suite
+for the routines.
 
 The test suite should be a program that uses the library and checks the
 result against known results, or invokes the library several times and
@@ -943,16 +968,17 @@ output PASS/FAIL line, so that any failure can be uniquely identified.
 Make sure everything compiles cleanly.  Use the strict compilation
 options for extra checking.
 
-@example
+@smallexample
 make CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion 
   -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings 
   -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes 
   -Wnested-externs -Dinline= -g -O4"
-@end example
+@end smallexample
 @noindent
-Also use checkergcc to check for memory problems on the stack and the
-heap.  It's the best memory checking tool.  If checkergcc isn't available
-then Electric Fence will check the heap, which is better than nothing.
+Also use @code{checkergcc} to check for memory problems on the stack and
+the heap.  It's the best memory checking tool.  If checkergcc isn't
+available then Electric Fence will check the heap, which is better than
+no checking.
 
 Make sure that the library will also compile with C++ compilers
 (g++).  This should not be too much of a problem if you have been writing
@@ -986,17 +1012,30 @@ program.
 Each contributor must make sure her code is under the GNU General Public
 License (GPL).
 @item
-We must understand ownership of existing code and algorithms.
+We must understand ownership of existing code and algorithms.  
+@item
+Each contributor can retain ownership of their code, or sign it over to
+FSF as they prefer.  In the event of any legal uncertainty code will
+simply be removed from the library.
 @itemize @minus
 @item
-Obviously: don't use or translate non-free code. Such as: Numerical
-Recipes, ACM TOMS.  
+Obviously: don't use or translate non-free code. 
 
-Note that the ACM algorithms are not public domain, even though they are
-distributed on the internet -- the ACM uses a special non-commercial
-license which is not compatible with the GPL. The details of this
-license can be found on the cover page of ACM Transactions on
-Mathematical Software or on the ACM Website.
+In particular don't copy or translate code from @cite{Numerical Recipes}
+or @cite{ACM TOMS}.
+
+Numerical Recipes is under a strict license and is not free software.
+The publishers Cambridge University Press claim copyright on all aspects
+of the book and the code, including function names, variable names and
+ordering of mathematical subexpressions.  Routines in GSL should not
+refer to Numerical Recipes or be based on it in any way.  
+
+The ACM algorithms published in TOMS (Transactions on Mathematical
+Software) are not public domain, even though they are distributed on the
+internet -- the ACM uses a special non-commercial license which is not
+compatible with the GPL. The details of this license can be found on the
+cover page of ACM Transactions on Mathematical Software or on the ACM
+Website.
 
 Only use code which is explicitly under a free license: GPL or Public
 Domain.  If there is no license on the code then this does not mean it
@@ -1024,10 +1063,6 @@ development.
 The best solution is probably to issue guidelines for portability, like
 saying "don't use XYZ unless you absolutely have to".  Then the Windows
 people will be able to do their porting.
-
-We should also read up on what Cygnus is doing for their win32
-portability.
-
 
 @node Compatibility with other libraries, Parallelism, Non-UNIX portability, Design
 @section Compatibility with other libraries
@@ -1120,6 +1155,4 @@ Public Licenses that accompany them.
 
 @c @printindex tp
 
-@c -@shortcontents
-@contents
 @bye
