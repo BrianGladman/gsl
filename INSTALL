@@ -20,8 +20,8 @@ specifying the `--disable-shared' option to `configure', e.g.
   
   ./configure --disable-shared
 
-This is recommended if you encounter problems building the library,
-because some platforms do not support shared libraries.
+If you encounter problems building the library try using the above
+option, because some platforms do not support shared libraries.
 
 For notes about problems with specific platforms and compilers see the
 next section of this file (below).
@@ -87,6 +87,19 @@ library compile without -g instead of using strip.
 make install-strip does not work, due to a minor problem with autoconf
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
+
+4) The configure script can fail with a segmentation fault on bash-2.01
+
+    $ ./configure
+    Segmentation fault
+
+This is due to a bug in bash, related to the MAIL environment
+variable.  To work around it use 
+
+    $ unset ENV MAIL MAILPATH
+    $ ./configure
+
+which should avoid the problem.
 
 Hints for AIX
 =============
