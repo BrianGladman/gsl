@@ -4,6 +4,9 @@ We need to do a better job with the NEWS file!
 
 ** The NEWS file now uses outline mode, like the Emacs NEWS file
 
+** The statistics directory now has functions for computing the
+lag1-autocorrelation
+
 ** The simulated annealing routines no longer set the random number
 seed with the time of day.  You'll need to reseed the generator
 yourself if you want to make subsequent runs use different random
