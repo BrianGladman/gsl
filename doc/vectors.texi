@@ -1077,8 +1077,8 @@ declared @code{const}.
 @deftypefun gsl_matrix_view gsl_matrix_view_array_with_tda (double * @var{base}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 @deftypefunx gsl_matrix_const_view gsl_matrix_const_view_array_with_tda (const double * @var{base}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 These functions return a matrix view of the array @var{base} with a
-physical number of columns @var{tda} which may differ from corresponding
-the dimension of the matrix.  The matrix has @var{n1} rows and @var{n2}
+physical number of columns @var{tda} which may differ from the corresponding
+dimension of the matrix.  The matrix has @var{n1} rows and @var{n2}
 columns, and the physical number of columns in memory is given by
 @var{tda}.  Mathematically, the @math{(i,j)}-th element of the new
 matrix is given by,

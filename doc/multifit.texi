@@ -218,10 +218,29 @@ parameters at all times. This information can be accessed with the
 following auxiliary functions,
 @end deftypefun
 
+The solver struct @var{s} contains the following entries, which can
+be used to track the progress of the solution:
+
+@table @code
+@item gsl_vector * x
+The current position.
+
+@item gsl_vector * f
+The function value at the current position.
+
+@item gsl_vector * dx
+The difference between the current position and the previous position,
+i.e. the last step, taken as a vector.
+
+@item gsl_matrix * J
+The Jacobian matrix at the current position (for the
+@code{gsl_multifit_fdfsolver} struct only)
+@end table
+
 @deftypefun {gsl_vector *} gsl_multifit_fsolver_position (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * @var{s})
 These functions return the current position (i.e. best-fit parameters)
-of the solver @var{s}.
+@code{s->x} of the solver @var{s}.
 @end deftypefun
 
 @node Search Stopping Parameters for Minimization Algorithms
@@ -340,7 +359,7 @@ Levenberg-Marquardt method.
 The proposed step is now tested by evaluating the function at the
 resulting point, @math{x'}.  If the step reduces the norm of the
 function sufficiently, and follows the predicted behavior of the
-function within the trust region. then it is accepted and size of the
+function within the trust region, then it is accepted and the size of the
 trust region is increased.  If the proposed step fails to improve the
 solution, or differs significantly from the expected behavior within
 the trust region, then the size of the trust region is decreased and
@@ -636,8 +655,6 @@ main (void)
 
   gsl_multifit_covar (s->J, 0.0, covar);
 
-  gsl_matrix_fprintf (stdout, covar, "%g");
-
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
 
@@ -656,7 +673,7 @@ main (void)
   return 0;
 @}
 
-int
+void
 print_state (size_t iter, gsl_multifit_fdfsolver * s)
 @{
   printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
@@ -671,7 +688,7 @@ print_state (size_t iter, gsl_multifit_fdfsolver * s)
 @noindent
 The iteration terminates when the change in x is smaller than 0.0001, as
 both an absolute and relative change.  Here are the results of running
-the program,
+the program:
 
 @smallexample
 iter: 0 x = 1.00000000 0.00000000 0.00000000 |f(x)| = 118.574

@@ -36,7 +36,7 @@ Horner's method for stability.  The function is inlined when possible.
 
 The functions described here manipulate polynomials stored in Newton's
 divided-difference representation.  The use of divided-differences is
-described in Abramowitz & Stegun sections 25.1.4, 25.2.26.
+described in Abramowitz & Stegun sections 25.1.4 and 25.2.26.
 
 @deftypefun int gsl_poly_dd_init (double @var{dd}[], const double @var{xa}[], const double @var{ya}[], size_t @var{size})
 This function computes a divided-difference representation of the
@@ -263,7 +263,7 @@ which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 @section References and Further Reading
 
 The balanced-QR method and its error analysis are described in the
-following papers.
+following papers,
 
 @itemize @asis
 @item
@@ -279,4 +279,13 @@ Eigenvalues and Eigenvectors'', @cite{Numerische Mathematik}, 13 (1969),
 A. Edelman and H. Murakami, ``Polynomial roots from companion matrix
 eigenvalues'', @cite{Mathematics of Computation}, Vol. 64 No. 210
 (1995), 763--776.
+@end itemize
+
+@noindent
+The formulas for divided difference are given in Abramowitz and Stegun,
+
+@itemize @asis
+@item
+Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
+Sections 25.1.4 and 25.2.26.
 @end itemize
