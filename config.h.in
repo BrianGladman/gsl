@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -218,6 +218,6 @@
 #define DISCARD_POINTER(p) /* ignoring discarded pointer */
 #endif
 
-#ifndef GSL_RANGE_CHECK_ON
-#define GSL_RANGE_CHECK_OFF  /* turn off range checking by default */
+#ifndef RANGE_CHECK_ON
+#define RANGE_CHECK_OFF  /* turn off range checking by default */
 #endif
