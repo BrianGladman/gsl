@@ -1,3 +1,9 @@
+1998-07-26  Mark Galassi  <rosalia@cygnus.com>
+
+	* Makefile.am (INCLUDES): added -I$(top_srcdir), since gsl_math.h
+	is needed, and that is in the top level source directory.  This is
+	necessary for using a separate build directory.
+
 Tue Jul 14 12:39:30 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* nbinomial.c: added Negative Binomial distribution
