@@ -107,7 +107,7 @@ integrator:
 struct my_f_params @{ double a; double b; double c; @};
 
 double
-my_f (double x, size_t dim, void * p) @{
+my_f (double x[], size_t dim, void * p) @{
    struct my_f_params * fp = (struct my_f_params *)p;
 
    if (dim != 2)
