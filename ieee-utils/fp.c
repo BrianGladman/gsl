@@ -26,6 +26,8 @@
 #include "fp-freebsd.c"
 #elif defined(HAVE_OS2EMX_IEEE_INTERFACE)
 #include "fp-os2emx.c"
+#elif defined(HAVE_NETBSD_IEEE_INTERFACE)
+#include "fp-netbsd.c"
 #else
 #include "fp-unknown.c" 
 #endif
