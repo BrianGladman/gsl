@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <gsl_errno.h>
 #include <gsl_config.h>
+#include <gsl_vector_ulong.h>
 
 typedef struct
 {
@@ -25,6 +26,11 @@ int gsl_matrix_ulong_fread (FILE * stream, gsl_matrix_ulong * m) ;
 int gsl_matrix_ulong_fwrite (FILE * stream, const gsl_matrix_ulong * m) ;
 int gsl_matrix_ulong_fscanf (FILE * stream, gsl_matrix_ulong * m);
 int gsl_matrix_ulong_fprintf (FILE * stream, const gsl_matrix_ulong * m, const char * format);
+
+int gsl_matrix_ulong_copy_row(const gsl_matrix_ulong * m, size_t i, gsl_vector_ulong * v);
+int gsl_matrix_ulong_copy_col(const gsl_matrix_ulong * m, size_t j, gsl_vector_ulong * v);
+int gsl_matrix_ulong_set_row(gsl_matrix_ulong * m, size_t i, const gsl_vector_ulong * v);
+int gsl_matrix_ulong_set_col(gsl_matrix_ulong * m, size_t j, const gsl_vector_ulong * v);
 
 extern int gsl_check_range ;
 

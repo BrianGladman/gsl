@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <gsl_errno.h>
 #include <gsl_config.h>
+#include <gsl_vector_short.h>
 
 typedef struct
 {
@@ -24,6 +25,11 @@ int gsl_matrix_short_fread (FILE * stream, gsl_matrix_short * m) ;
 int gsl_matrix_short_fwrite (FILE * stream, const gsl_matrix_short * m) ;
 int gsl_matrix_short_fscanf (FILE * stream, gsl_matrix_short * m);
 int gsl_matrix_short_fprintf (FILE * stream, const gsl_matrix_short * m, const char * format);
+
+int gsl_matrix_short_copy_row(const gsl_matrix_short * m, size_t i, gsl_vector_short * v);
+int gsl_matrix_short_copy_col(const gsl_matrix_short * m, size_t j, gsl_vector_short * v);
+int gsl_matrix_short_set_row(gsl_matrix_short * m, size_t i, const gsl_vector_short * v);
+int gsl_matrix_short_set_col(gsl_matrix_short * m, size_t j, const gsl_vector_short * v);
 
 extern int gsl_check_range ;
 

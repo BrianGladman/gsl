@@ -1,7 +1,7 @@
 #include <gsl_errno.h>
 
 int
-FUNCTION(gsl_matrix,get_row)(const TYPE(gsl_matrix) * m,
+FUNCTION(gsl_matrix,copy_row)(const TYPE(gsl_matrix) * m,
 			     const size_t i,
 			     TYPE (gsl_vector) * v)
 {
@@ -19,15 +19,23 @@ FUNCTION(gsl_matrix,get_row)(const TYPE(gsl_matrix) * m,
 		GSL_EBADLEN) ;
     }
 
-  
-  v->data = m->data + MULTIPLICITY * i * row_length;
+  {
+    ATOMIC * row_data =  m->data + MULTIPLICITY * i * row_length ;
+    size_t j ;
+
+    for (j = 0 ; j < MULTIPLICITY * row_length ; j++) 
+      {
+	 v->data[j] = row_data[j] ;
+      }
+  }
+
   v->stride = 1;
 
   return 0 ;
 }
 
 int
-FUNCTION(gsl_matrix,get_col)(const TYPE(gsl_matrix) * m,
+FUNCTION(gsl_matrix,copy_col)(const TYPE(gsl_matrix) * m,
 			     const size_t j,
 			     TYPE (gsl_vector) * v)
 {
@@ -44,14 +52,27 @@ FUNCTION(gsl_matrix,get_col)(const TYPE(gsl_matrix) * m,
       GSL_ERROR("matrix column size and vector length are not equal", 
 		GSL_EBADLEN) ;
     }
-
   
-  v->data = m->data + MULTIPLICITY * j;
-  v->stride = row_length;
+
+  {
+    ATOMIC * column_data =  m->data + MULTIPLICITY * j ;
+    size_t i ;
+
+    for (i = 0 ; i < row_length ; i++) 
+      {
+	int k;
+	for (k = 0; k < MULTIPLICITY; k++)
+	  {
+	    v->data[MULTIPLICITY*j+k] = 
+	      column_data[MULTIPLICITY*i*row_length+k] ;
+	  }
+      }
+  }
+
+  v->stride = 1 ;
 
   return 0 ;
 }
-
 
 int
 FUNCTION(gsl_matrix,set_row)(TYPE(gsl_matrix) * m,
@@ -73,11 +94,11 @@ FUNCTION(gsl_matrix,set_row)(TYPE(gsl_matrix) * m,
     }
 
   {
-    const BASE * v_data = (BASE *) v->data ;
-    BASE * row_data = (BASE *) m->data + MULTIPLICITY * i * row_length ;
+    const ATOMIC * v_data = v->data ;
+    ATOMIC * row_data = m->data + MULTIPLICITY * i * row_length ;
     size_t j ;
 
-    for (j = 0 ; j < row_length ; j++) 
+    for (j = 0 ; j < MULTIPLICITY*row_length ; j++) 
       {
 	row_data[j] = v_data[j] ;
       }
@@ -106,13 +127,13 @@ FUNCTION(gsl_matrix,set_col)(TYPE(gsl_matrix) * m,
     }
 
   {
-    const BASE * v_data = (BASE *)v->data ;
-    BASE * column_data = ((BASE *)m->data) + j ;
+    const ATOMIC * v_data = v->data ;
+    ATOMIC * column_data = m->data + MULTIPLICITY * j;
     size_t i ;
 
     for (i = 0 ; i < column_length ; i++) 
       {
-	column_data[i*row_length] = v_data[i] ;
+	column_data[MULTIPLICITY * i* row_length] = v_data[i] ;
       }
   }
 

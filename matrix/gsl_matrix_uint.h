@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <gsl_errno.h>
 #include <gsl_config.h>
+#include <gsl_vector_uint.h>
 
 typedef struct
 {
@@ -25,8 +26,12 @@ int gsl_matrix_uint_fwrite (FILE * stream, const gsl_matrix_uint * m) ;
 int gsl_matrix_uint_fscanf (FILE * stream, gsl_matrix_uint * m);
 int gsl_matrix_uint_fprintf (FILE * stream, const gsl_matrix_uint * m, const char * format);
 
-extern int gsl_check_range ;
+int gsl_matrix_uint_copy_row(const gsl_matrix_uint * m, size_t i, gsl_vector_uint * v);
+int gsl_matrix_uint_copy_col(const gsl_matrix_uint * m, size_t j, gsl_vector_uint * v);
+int gsl_matrix_uint_set_row(gsl_matrix_uint * m, size_t i, const gsl_vector_uint * v);
+int gsl_matrix_uint_set_col(gsl_matrix_uint * m, size_t j, const gsl_vector_uint * v);
 
+extern int gsl_check_range ;
 
 #ifdef HAVE_INLINE
 

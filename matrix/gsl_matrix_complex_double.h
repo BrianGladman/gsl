@@ -5,6 +5,7 @@
 #include <gsl_errno.h>
 #include <gsl_config.h>
 #include <gsl_complex.h>
+#include <gsl_vector_complex_double.h>
 
 typedef struct
 {
@@ -26,6 +27,12 @@ int gsl_matrix_complex_fread (FILE * stream, gsl_matrix_complex * m) ;
 int gsl_matrix_complex_fwrite (FILE * stream, const gsl_matrix_complex * m) ;
 int gsl_matrix_complex_fscanf (FILE * stream, gsl_matrix_complex * m);
 int gsl_matrix_complex_fprintf (FILE * stream, const gsl_matrix_complex * m, const char * format);
+
+int gsl_matrix_complex_copy_row(const gsl_matrix_complex * m, size_t i, gsl_vector_complex * v);
+int gsl_matrix_complex_copy_col(const gsl_matrix_complex * m, size_t j, gsl_vector_complex * v);
+int gsl_matrix_complex_set_row(gsl_matrix_complex * m, size_t i, const gsl_vector_complex * v);
+int gsl_matrix_complex_set_col(gsl_matrix_complex * m, size_t j, const gsl_vector_complex * v);
+
 
 extern int gsl_check_range ;
 

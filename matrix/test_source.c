@@ -8,6 +8,7 @@ void
 FUNCTION(test,func) (void) 
 {
   TYPE(gsl_matrix) * m;
+  TYPE(gsl_vector) * v;
   size_t i, j;
   int k = 0;
 
@@ -69,7 +70,35 @@ FUNCTION(test,func) (void)
     }
     gsl_test(status, NAME(gsl_matrix) "_calloc initializes array to zero") ;
   }
+
   FUNCTION(gsl_matrix,free) (m) ;
+
+  m = FUNCTION(gsl_matrix,alloc) (N,M) ;
+  v = FUNCTION(gsl_vector,alloc) (M) ;  
+
+  k=0;
+  for (i = 0 ; i < N ; i++) {
+    for (j = 0 ; j < M ; j++) {
+      k++ ; FUNCTION(gsl_matrix,set)(m,i,j,(BASE)k) ;
+    }
+  }
+
+  {
+    status = 0 ;
+    k = 0 ;
+    for (i = 0 ; i < N ; i++) {
+      FUNCTION(gsl_matrix,copy_row)(m,i,v) ;
+  
+      for (j = 0 ; j < M ; j++) {
+	k++ ;
+	if(v->data[j] != (BASE)k) 
+	    status = 1 ;
+      }
+    }
+    
+    gsl_test(status, NAME(gsl_matrix) "_copy_row extracts row correctly") ;
+  }
+
 }
 
 void 
