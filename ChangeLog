@@ -1,3 +1,7 @@
+2002-02-07  Mark Galassi  <rosalia@galassi.org>
+
+	* THANKS: added Karsten Howes <karsten@videotron.ca>.
+
 Wed Jan 16 16:55:25 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in acconfig.h: check whether IEEE comparisons work for
