@@ -16,8 +16,9 @@
 /* Luke's rational approximation.
  * See [Luke, Algorithms for the Computation of Mathematical Functions, p.182]
  *
- * Like the case of the 1F1 rational approximations, these probably
- * are guaranteed to converge for x < 0.
+ * Like the case of the 2F1 rational approximations, these are
+ * probably guaranteed to converge for x < 0, barring gross
+ * numerical instability in the pre-asymptotic regime.
  */
 static
 int
@@ -25,7 +26,7 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
                 double * result, double * prec)
 {
   const double RECUR_BIG = 1.0e+50;
-  const int nmax = 20000;
+  const int nmax = 5000;
   int n = 3;
   const double x  = -xin;
   const double x3 = x*x*x;
@@ -62,7 +63,7 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
     *prec = fabs((F - r)/F);
     F = r;
 
-    if(*prec < 0.1*locEPS || n > nmax) break;
+    if(*prec < GSL_MACH_EPS || n > nmax) break;
 
     if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
       An   /= RECUR_BIG;
@@ -100,87 +101,6 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
     return GSL_ELOSS;
   else
     return GSL_SUCCESS;
-}
-
-
-
-
-/* Do the (stable) upward recursion on the parameter 'a'.
- * Work in terms of the function
- *     Y(n) := Gamma(a+n)/Gamma(1+a+n-b) 1F1(a+n;b;x)
- *
- *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
- *
- * Note that this will bomb if a-b+1 is a negative integer and
- * the recursion passes through that integer.
- */
-static
-int
-hyperg_1F1_Y_recurse_a(double a, double b, double x,
-                       double n, double Ynm1, double Yn,
-		       double N,
-		       double * YN)
-{
-  int k;
-  double Ykm1 = Ynm1;
-  double Yk   = Yn;
-  double Ykp1;
-
-  for(k=n; k<N; k++) {
-    double ckp1 = (a + k + 1 - b);
-    double ck   = b - 2*a - 2*k - x;
-    double ckm1 = a + k - 1;
-    
-    if(fabs(ckp1) < GSL_MACH_EPS) {
-      *YN = 0.0;
-      return GSL_EDOM;
-    }
-    Ykp1 = (-ck*Yk - ckm1*Ykm1)/ckp1;
-    
-    Ykm1 = Yk;
-    Yk   = Ykp1;
-  }
-  
-  *YN = Ykp1;
-  return GSL_SUCCESS;
-}
-
-
-/* Manage the upward recursion on the parameter 'a',
- * Evaluating 1F1(a+n_stop,b,x) by recursing up
- * from 1F1(a+n_start,b,x) and 1F1(a+n_start+1,b,x).
- *
- * Assumes n_stop > n_start.
- *
- * Uses the series representation to evaluate at the 
- * reduced values of 'a'. This can be very inefficient
- * if x is large. So it is better not to use this for
- * large x.
- */
-static
-int
-hyperg_1F1_recurse_a(double a, double b, double x,
-                     int n_start,
-                     int n_stop,
-                     double * result)
-{
-  double prec;
-  double Y0, Y1;
-  double F0, F1;
-
-  int stat_0 = gsl_sf_hyperg_1F1_series_impl(a+n_start,     b, x, &F0, &prec);
-  int stat_1 = gsl_sf_hyperg_1F1_series_impl(a+n_start+1.0, b, x, &F1, &prec);
-  
-  double lg_a0;       /* log(Gamma(a+n_start))     */
-  double lg_ab0;      /* log(Gamma(1+a+n_start-b)) */
-  int stat_lg_a0  = gsl_sf_lngamma_impl(a+n_start,     &lg_a0);
-  int stat_lg_ab0 = gsl_sf_lngamma_impl(1+a+n_start-b, &lg_ab0);
-
-  
-
-
-  
-  
 }
 
 
@@ -269,10 +189,10 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
   double abs_oma = fabs(oma);
   double abs_ap1mb = fabs(ap1mb);
 
-  if(b > 0.0 && abs_x < 0.7 * abs_b) {
-    /* Series is dominated and safe, though
-     * it is a little slow to converge, being
-     * like Sum[(x/b)^n] in the worst case.
+  if(fabs(x) < 8.0 || (b > 0.0 && abs_x < 0.7 * abs_b)) {
+    /* Series is easy or is dominated and safe, though
+     * it may be little slow to converge in the latter
+     * case, being like Sum[(x/b)^n] in the worst case.
      */
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
@@ -285,8 +205,8 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
     double prec;
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
   }
-  else if(   (abs_b > 1000.0 && abs_x < 0.9 * abs_b)
-          || (abs_b >  500.0 && abs_x < 0.6 * abs_b)
+  else if(   (abs_b > 1000.0 && abs_x < 0.8 * abs_b)
+          || (abs_b >  500.0 && abs_x < 0.5 * abs_b)
     ) {
     return gsl_sf_hyperg_1F1_large_b_impl(a, b, x, result);
   }
@@ -295,8 +215,122 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
      * somewhat larger wedges around b=-|x|, as well as
      * a chunk for -500<b<0.
      */
+    double prec;
+    return hyperg_1F1_luke(a, b, x, result, &prec);
   }
 }
+
+
+/* Do the (stable) upward recursion on the parameter 'a'.
+ * Work in terms of the function
+ *     Y(n) := Gamma(a+n)/Gamma(1+a+n-b) 1F1(a+n;b;x)
+ *
+ *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
+ *
+ * Note that this will bomb if a-b+1 is a negative integer and
+ * the recursion passes through that integer.
+ */
+static
+int
+hyperg_1F1_Y_recurse_a(double a, double b, double x,
+                       int n, double Ynm1, double Yn,
+		       int N,
+		       double * YNm1, double * YN)
+{
+  int k;
+  double Ykm1 = Ynm1;
+  double Yk   = Yn;
+  double Ykp1;
+
+  for(k=n; k<N; k++) {
+    double ckp1 = (a + k + 1 - b);
+    double ck   = b - 2*a - 2*k - x;
+    double ckm1 = a + k - 1;
+    
+    if(fabs(ckp1) < GSL_MACH_EPS) {
+      *YN = 0.0;
+      return GSL_EDOM;
+    }
+    Ykp1 = (-ck*Yk - ckm1*Ykm1)/ckp1;
+    
+    Ykm1 = Yk;
+    Yk   = Ykp1;
+  }
+  
+  *YNm1 = Ykm1;
+  *YN   = Yk;
+  return GSL_SUCCESS;
+}
+
+
+/* Manage the upward recursion on the parameter 'a',
+ * evaluating 1F1(a+N,b,x) and 1F1(a+N+1,b,x) by recursing
+ * up from 1F1(a,b,x) and 1F1(a+1,b,x).
+ *
+ * Assumes  0 <= a < 1.
+ */
+static
+int
+hyperg_1F1_recurse_a(double a, double b, double x, int N, double * FN, double * FNp1)
+{
+  double prec;
+  double F0, F1;
+  int stat_0 = hyperg_1F1_small_a(a,	 b, x, &F0);
+  int stat_1 = hyperg_1F1_small_a(a+1.0, b, x, &F1);
+
+  if(stat_0 == GSL_EOVRFLW || stat_1 == GSL_EOVRFLW) {
+    *FN   = 0.0;
+    *FNp1 = 0.0;
+    return GSL_EOVRFLW;
+  }
+  else {
+    double lg_a0;   /* log(Gamma(a))     */
+    double lg_ab0;  /* log(Gamma(1+a-b)) */
+    double sg_ab0;
+    int stat_lg_a0  = gsl_sf_lngamma_impl(a, &lg_a0);
+    int stat_lg_ab0 = gsl_sf_lngamma_sgn_impl(1+a-b, &lg_ab0, &sg_ab0);
+
+    double ln_Y0 = lg_a0 - lg_ab0 + log(fabs(F0));
+    double ln_Y1 = lg_a0 - lg_ab0 + log(fabs(a/(1.0+a-b)*F1));
+
+    if(ln_Y0 > GSL_LOG_DBL_MAX || ln_Y1 > GSL_LOG_DBL_MAX) {
+      *FN   = 0.0;
+      *FNp1 = 0.0;
+      return GSL_EOVRFLW;
+    }
+    else {
+      double lg_aN;       /* log(Gamma(a+N))     */
+      double lg_abN;      /* log(Gamma(1+a+N-b)) */
+      double sg_abN;
+      int stat_lg_aN  = gsl_sf_lngamma_impl(a+N, &lg_aN);
+      int stat_lg_abN = gsl_sf_lngamma_sgn_impl(1+a+N-b, &lg_abN, &sg_abN);
+
+      double e0 = sg_ab0 * exp(lg_a0 - lg_ab0);
+      double Y0 = e0 * F0;
+      double Y1 = a/(1.0+a-b) * e0 * F1;
+      double ln_FN, ln_FNp1;
+      double YN, YNp1;
+
+      hyperg_1F1_Y_recurse_a(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
+
+      ln_FN   = -(lg_aN - lg_abN) + log(fabs(YN));
+      ln_FNp1 = -(lg_aN - lg_abN) + log(fabs((1.0+a+N-b)/(a+N)*YNp1));
+      
+      if(ln_FN > GSL_LOG_DBL_MAX || ln_FNp1 > GSL_LOG_DBL_MAX) {
+        *FN   = 0.0;
+	*FNp1 = 0.0;
+	return GSL_EOVRFLW;
+      }
+      else {
+        double eN = exp(lg_aN - lg_abN);
+        *FN   = YN / eN;
+        *FNp1 = (1.0+a+N-b)/(a+N) / eN * YNp1;
+        return GSL_SUCCESS;
+      }
+    }
+  }
+}
+
 
 
 int
@@ -312,6 +346,10 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   const double bma = b - a;
   const double amb = a - b;
 
+/*
+double prec;
+return hyperg_1F1_luke(a, b, x, result, &prec);
+*/
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
@@ -332,6 +370,89 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     *result = 0.0;
     return GSL_EDOM;
   }
+
+
+  /* Trap the generic cases where some form
+   * of series evaluation will work.
+   */
+  if(fabs(x) < 8.0) {
+
+    if( (fabs(a) < 20.0 && fabs(b) < 20.0) || (b >= fabs(a)) ) {
+      /* Arguments small enough to evaluate series directly
+       * or series is dominated and safe.
+       */
+      double prec;
+      return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+    }
+    
+    if( (fabs(bma) < 20.0 && fabs(b) < 20.0) || (b >= fabs(bma)) ) {
+      /* Use Kummer transformation to render series safe.
+       * We do not have to worry about overflow in
+       * exp(x) * Kummer_1F1, because neither term can be very large.
+       */
+      double prec;
+      double Kummer_1F1;
+      double Ex = exp(x);
+      int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, x, &Kummer_1F1, &prec);
+      *result = Ex * Kummer_1F1;
+      return stat_K;
+    }
+  }
+
+
+  /* Large negative x asymptotic.
+   */
+  if(x < -20.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+
+
+  /* Large positive x asymptotic.
+   */
+  if(x > 20.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+
+
+  /* Luke in the canonical case.
+   */
+  if(x < 0.0 && !a_neg_integer && !bma_neg_integer) {
+    double prec;
+    return hyperg_1F1_luke(a, b, x, result, &prec);
+  }
+
+
+  /* Luke with Kummer transformation.
+   */
+  if(x > 0.0 && !a_neg_integer && !bma_neg_integer) {
+    double prec;
+    double Kummer_1F1;
+    double ex;
+    int stat_F = hyperg_1F1_luke(b-a, b, -x, &Kummer_1F1, &prec);
+    int stat_e = gsl_sf_exp_impl(x, &ex);
+    if(stat_F == GSL_SUCCESS && stat_e == GSL_SUCCESS) {
+      double lnr = log(fabs(Kummer_1F1)) + x;
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = ex * Kummer_1F1;
+	return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0;  /* FIXME: should be Inf */
+	return GSL_EOVRFLW;
+      }
+    }
+    else if(stat_F != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_F;
+    }
+    else {
+      *result = 0.0;
+      return stat_e;
+    }
+  }
+
 
   /* If 'a' is a negative integer, then the
    * series truncates to a polynomial.
@@ -385,63 +506,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   }
 
 
-  /* Now we have dealt with any special negative integer cases,
-   * including the error cases, so we are left with a well-defined
-   * series evaluation, though the arguments may be large.
-   */
-
-  if(fabs(x) < 20.0) {
-    
-    if(x < -5.0) {
-      /* Luke should be most appropriate here, for 
-       * not very small negative x.
-       */
-      double prec;
-      return hyperg_1F1_luke(a, b, x, result, &prec);
-    }
-
-    if( (fabs(a) < 20.0 && fabs(b) < 20.0) || (b >= fabs(a)) ) {
-      /* Arguments small enough to evaluate series directly
-       * or series is dominated and safe.
-       */
-      double prec;
-      return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
-    }
-    
-    if( (fabs(bma) < 20.0 && fabs(b) < 20.0) || (b >= fabs(bma)) ) {
-      /* Use Kummer transformation to render series safe.
-       * We do not have to worry about overflow in
-       * exp(x) * Kummer_1F1, because neither term can be very large.
-       */
-      double prec;
-      double Kummer_1F1;
-      double Ex = exp(x);
-      int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, x, &Kummer_1F1, &prec);
-      *result = Ex * Kummer_1F1;
-      return stat_K;
-    }
-  }
-
-  if(x < 0.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
-    /* Large negative x asymptotic.
-     */
-    double prec;
-    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
-  }
-
-  if(x > 0.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
-    /* Large positive x asymptotic.
-     */
-    double prec;
-    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
-  }
-
-  if(x < 0.0) {
-    /* Luke should converge for x < 0.
-     */
-    double prec;
-    return hyperg_1F1_luke(a, b, x, result, &prec);
-  }
 
   /* At this point we have no more tricks. Instead we must
    * proceed systematically. If a>0 we reduce it to 0<a<1
