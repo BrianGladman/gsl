@@ -1,3 +1,11 @@
+Fri Sep 14 18:56:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* view_source.c: fixed cast for array type
+
+	* view.c: added #includes for missing const qualified types
+
+	* view_source.c: error for non-unit strides
+
 Fri Aug  3 14:11:23 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added gsl_matrix_ptr and gsl_matrix_const_ptr functions

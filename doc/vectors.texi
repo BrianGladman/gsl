@@ -1128,13 +1128,14 @@ which are declared @code{const}.
 
 @deftypefun gsl_matrix_view gsl_matrix_view_vector (gsl_vector * @var{v}, size_t @var{n1}, size_t @var{n2})
 @deftypefunx gsl_matrix_const_view gsl_matrix_const_view_vector (const gsl_vector * @var{v}, size_t @var{n1}, size_t @var{n2})
-These functions return a matrix view of the vector @var{v}.  The
-matrix has @var{n1} rows and @var{n2} columns.  The physical number of
-columns in memory is also given by @var{n2}.  Mathematically, the
-(@var{i},@var{j})-th element of the new matrix is given by,
+These functions return a matrix view of the vector @var{v}.  The matrix
+has @var{n1} rows and @var{n2} columns. The vector must have unit
+stride. The physical number of columns in memory is also given by
+@var{n2}.  Mathematically, the (@var{i},@var{j})-th element of the new
+matrix is given by,
 
 @example
-m'(i,j) = v->data[(i*n2 + j)*v->stride]
+m'(i,j) = v->data[i*n2 + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
@@ -1156,13 +1157,13 @@ declared @code{const}.
 @deftypefunx gsl_matrix_const_view gsl_matrix_const_view_vector_with_tda (const gsl_vector * @var{v}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 These functions return a matrix view of the vector @var{v} with a
 physical number of columns @var{tda} which may differ from the
-corresponding matrix dimension.  The matrix has @var{n1} rows and
-@var{n2} columns, and the physical number of columns in memory is given
-by @var{tda}.  Mathematically, the (@var{i},@var{j})-th element of the
-new matrix is given by,
+corresponding matrix dimension.  The vector must have unit stride. The
+matrix has @var{n1} rows and @var{n2} columns, and the physical number
+of columns in memory is given by @var{tda}.  Mathematically, the
+(@var{i},@var{j})-th element of the new matrix is given by,
 
 @example
-m'(i,j) = v->data[(i*tda + j)*v->stride]
+m'(i,j) = v->data[i*tda + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}

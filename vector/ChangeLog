@@ -1,3 +1,7 @@
+Fri Sep 14 19:13:20 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* view.c (USE_QUALIFIER): added missing qualified types
+
 Thu Aug 23 13:22:29 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_vector_complex_float.h: added const to second argument of

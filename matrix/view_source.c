@@ -37,7 +37,7 @@ FUNCTION (gsl_matrix, view_array) (QUALIFIER ATOMIC * array,
   {
     TYPE(gsl_matrix) m = NULL_MATRIX;
 
-    m.data = array;
+    m.data = (ATOMIC *)array;
     m.size1 = n1;
     m.size2 = n2;
     m.tda = n2; 
@@ -77,7 +77,7 @@ FUNCTION(gsl_matrix, view_array_with_tda) (QUALIFIER ATOMIC * base,
   {
     TYPE(gsl_matrix) m = NULL_MATRIX;
 
-    m.data = base;
+    m.data = (ATOMIC *)base;
     m.size1 = n1;
     m.size2 = n2;
     m.tda = tda;
@@ -104,6 +104,11 @@ FUNCTION(gsl_matrix, view_vector) (QUALIFIED_TYPE(gsl_vector) * v,
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (v->stride != 1) 
+    {
+      GSL_ERROR_VAL ("vector must have unit stride",
                      GSL_EINVAL, view);
     }
   else if (n1 * n2 > v->size)
@@ -144,6 +149,11 @@ FUNCTION(gsl_matrix, view_vector_with_tda) (QUALIFIED_TYPE(gsl_vector) * v,
   else if (n2 == 0)
     {
       GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (v->stride != 1) 
+    {
+      GSL_ERROR_VAL ("vector must have unit stride",
                      GSL_EINVAL, view);
     }
   else if (n2 > tda)

@@ -31,7 +31,7 @@ FUNCTION(gsl_vector, view_array) (QUALIFIER ATOMIC * base, size_t n)
   {
     TYPE(gsl_vector) v = NULL_VECTOR;
 
-    v.data = base  ;
+    v.data = (ATOMIC *)base  ;
     v.size = n;
     v.stride = 1;
     v.block = 0;
@@ -64,7 +64,7 @@ FUNCTION(gsl_vector, view_array_with_stride) (QUALIFIER ATOMIC * base,
   {
     TYPE(gsl_vector) v = NULL_VECTOR;
     
-    v.data = base ;
+    v.data = (ATOMIC *)base ;
     v.size = n;
     v.stride = stride;
     v.block = 0;

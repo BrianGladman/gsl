@@ -98,7 +98,6 @@ gsl_vector_complex_const_view_array (const double *base,
 
 _gsl_vector_complex_const_view
 gsl_vector_complex_const_view_array_with_stride (const double *base,
-                                                       size_t offset, 
                                                        size_t stride,
                                                        size_t n);
 
