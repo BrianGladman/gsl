@@ -675,24 +675,23 @@ random as can be measured, using the author's test.
 This implementation uses the values suggested the example on p392 of
 Ziff's article: @math{A=471}, @math{B=1586}, @math{C=6988}, @math{D=9689}.
 
-If the offsets are appropriately chosen (such the one ones in
-this implementation), then the sequence is said to be maximal.
-I'm not sure what that means, but I would guess that means all
-states are part of the same cycle, which would mean that the
-period for this generator is astronomical; it is
-@c{$(2^K)^D \approx 10^{93334}$}
-@math{(2^K)^D \approx 10^@{93334@}}
-where @math{K=32} is the number of bits in the word, and D is the longest
-lag.  This would also mean that any one random number could 
-easily be zero; ie 
-@c{$0 \le r < 2^{32}$}
-@math{0 <= r < 2^32}.
 
-Ziff doesn't say so, but it seems to me that the bits are
-completely independent here, so one could use this as an efficient
-bit generator; each number supplying 32 random bits.  The quality of the
-generated bits depends on the underlying seeding procedure, which 
-may need to be improved in some circumstances.
+If the offsets are appropriately chosen (such as the one ones in this
+implementation), then the sequence is said to be maximal; that means
+that the period is @math{2^D - 1}, where @math{D} is the longest lag.
+(It is one less than @math{2^D} because it is not permitted to have all
+zeros in the @code{ra[]} array.)  For this implementation with
+@math{D=9689} that works out to about @c{$10^{2917}$}
+@math{10^2917}.
+
+Note that the implementation of this generator using a 32-bit
+integer amounts to 32 parallel implementations of one-bit
+generators.  One consequence of this is that the period of this
+32-bit generator is the same as for the one-bit generator.
+Moreover, this inedpendence means that all 32-bit patterns are
+equally likely, and in particular that 0 is an allowed random
+value.  (We are grateful to Heiko Bauke for clarifying for us these
+properties of GFSR random number generators.)
 
 For more information see,
 @itemize @asis
