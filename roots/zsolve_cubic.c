@@ -100,18 +100,18 @@ gsl_root_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
 	  GSL_IMAG (z[0]) = 0;
 
 	  GSL_REAL (z[1]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[1]) = (sqrt (3.0) / 2.0) * (A - B);
+	  GSL_IMAG (z[1]) = -(sqrt (3.0) / 2.0) * fabs(A - B);
 
 	  GSL_REAL (z[2]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[2]) = -(sqrt (3.0) / 2.0) * (A - B);
+	  GSL_IMAG (z[2]) = (sqrt (3.0) / 2.0) * fabs(A - B);
 	}
       else
 	{
 	  GSL_REAL (z[0]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[0]) = (sqrt (3.0) / 2.0) * (A - B);
+	  GSL_IMAG (z[0]) = -(sqrt (3.0) / 2.0) * fabs(A - B);
 
 	  GSL_REAL (z[1]) = -0.5 * (A + B) - a / 3;
-	  GSL_IMAG (z[1]) = -(sqrt (3.0) / 2.0) * (A - B);
+	  GSL_IMAG (z[1]) = (sqrt (3.0) / 2.0) * fabs(A - B);
 
 	  GSL_REAL (z[2]) = A + B - a / 3;
 	  GSL_IMAG (z[2]) = 0;

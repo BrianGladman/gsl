@@ -67,6 +67,28 @@ main (void)
   test_bisection_failure ("gsl_root_bisection, invalid range check [1, 1]",
 			  sin, 1.0, 1.0, M_PI);
 
+  test_brent ("gsl_root_brent, sin(x) [3, 4]",
+		  sin, 3.0, 4.0, M_PI);
+  test_brent ("gsl_root_brent, sin(x) [-4, -3]",
+		  sin, -4.0, -3.0, -M_PI);
+  test_brent ("gsl_root_brent, sin(x) [-1/3, 1]",
+		  sin, -1.0 / 3.0, 1.0, 0.0);
+  test_brent ("gsl_root_brent, cos(x) [0, 3]",
+		  cos, 0.0, 3.0, M_PI / 2.0);
+  test_brent ("gsl_root_brent, cos(x) [-3, 0]",
+		  cos, -3.0, 0.0, -M_PI / 2.0);
+  test_brent ("gsl_root_brent, x^20 - 1 [0.1, 2]",
+		  func1, 0.1, 2.0, 1.0);
+  test_brent ("gsl_root_brent, sqrt(|x|)*sgn(x)",
+		  func2, -1.0 / 3.0, 1.0, 0.0);
+  test_brent ("gsl_root_brent, x^2 - 1e-8 [0, 1]",
+		  func3, 0.0, 1.0, sqrt (1e-8));
+  test_brent ("gsl_root_brent, x exp(-x) [-1/3, 2]",
+		  func4, -1.0 / 3.0, 2.0, 0.0);
+  test_brent ("gsl_root_brent, (x - 1)^7 [0.1, 2]",
+		  func6, 0.1, 2.0, 1.0);
+
+
   /* Test false position. */
 
   test_falsepos ("gsl_root_falsepos, sin(x) [3, 3.2]",
@@ -210,9 +232,7 @@ main (void)
     gsl_test(n != 3, "gsl_root_solve_cubic, three roots, (x-17)(x-31)(x-95)=0") ;
     gsl_test_rel(x[0], 17.0, 1e-9, "x1, (x-17)(x-31)(x-95)=0");
     gsl_test_rel(x[1], 31.0, 1e-9, "x2, (x-17)(x-31)(x-95)=0");
-    gsl_test_rel(x[2], 95.0, 1e-9, "x3, (x-17)(x-31)(x-95)=0")
-;
-
+    gsl_test_rel(x[2], 95.0, 1e-9, "x3, (x-17)(x-31)(x-95)=0");
  
   }
 
@@ -266,6 +286,53 @@ main (void)
     gsl_test_rel(GSL_IMAG(z[0]), -2.0, 1e-9, "z1.imag, 5 x^2 = -20");
     gsl_test_rel(GSL_REAL(z[1]), 0.0, 1e-9, "z2.real, 5 x^2 = -20");
     gsl_test_rel(GSL_IMAG(z[1]), 2.0, 1e-9, "z2.imag, 5 x^2 = -20");
+  }
+
+  {
+    int n = 0 ;
+    gsl_complex z[3] ;
+
+    n = gsl_root_complex_solve_cubic (0.0, 0.0, -27.0, z) ;
+    
+    gsl_test(n != 3, "gsl_root_complex_solve_cubic, three root, x^3 = 27");
+    gsl_test_rel(GSL_REAL(z[0]), -1.5, 1e-9, "z1.real, x^3 = 27");
+    gsl_test_rel(GSL_IMAG(z[0]), -1.5 * sqrt(3.0), 1e-9, "z1.imag, x^3 = 27");
+    gsl_test_rel(GSL_REAL(z[1]), -1.5, 1e-9, "z2.real, x^3 = 27");
+    gsl_test_rel(GSL_IMAG(z[1]), 1.5 * sqrt(3.0), 1e-9, "z2.imag, x^3 = 27");
+    gsl_test_rel(GSL_REAL(z[2]), 3.0, 1e-9, "z3.real, x^3 = 27");
+    gsl_test_rel(GSL_IMAG(z[2]), 0.0, 1e-9, "z3.imag, x^3 = 27");
+
+    n = gsl_root_complex_solve_cubic (-51.0, 867.0, -4913.0, z);
+
+    gsl_test(n != 3, "gsl_root_complex_solve_cubic, three roots, (x-17)^3=0") ;
+    gsl_test_rel(GSL_REAL(z[0]), 17.0, 1e-9, "z1.real, (x-17)^3=0");
+    gsl_test_rel(GSL_IMAG(z[0]), 0.0, 1e-9, "z1.imag, (x-17)^3=0");
+    gsl_test_rel(GSL_REAL(z[1]), 17.0, 1e-9, "z2.real, (x-17)^3=0");
+    gsl_test_rel(GSL_IMAG(z[1]), 0.0, 1e-9, "z2.imag, (x-17)^3=0");
+    gsl_test_rel(GSL_REAL(z[2]), 17.0, 1e-9, "z3.real, (x-17)^3=0");
+    gsl_test_rel(GSL_IMAG(z[2]), 0.0, 1e-9, "z3.imag, (x-17)^3=0");
+
+    n = gsl_root_complex_solve_cubic (-57.0, 1071.0, -6647.0, z);
+    
+    gsl_test(n != 3, "gsl_root_complex_solve_cubic, three roots, (x-17)(x-17)(x-23)=0") ;
+    gsl_test_rel(GSL_REAL(z[0]), 17.0, 1e-9, "z1.real, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(GSL_IMAG(z[0]), 0.0, 1e-9, "z1.imag, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(GSL_REAL(z[1]), 17.0, 1e-9, "z2.real, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(GSL_IMAG(z[1]), 0.0, 1e-9, "z2.imag, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(GSL_REAL(z[2]), 23.0, 1e-9, "z3.real, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(GSL_IMAG(z[2]), 0.0, 1e-9, "z3.imag, (x-17)(x-17)(x-23)=0");
+
+
+    n = gsl_root_complex_solve_cubic (-143.0, 5087.0, -50065.0, z);
+    
+    gsl_test(n != 3, "gsl_root_complex_solve_cubic, three roots, (x-17)(x-31)(x-95)=0") ;
+    gsl_test_rel(GSL_REAL(z[0]), 17.0, 1e-9, "z1.real, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(GSL_IMAG(z[0]), 0.0, 1e-9, "z1.imag, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(GSL_REAL(z[1]), 31.0, 1e-9, "z2.real, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(GSL_IMAG(z[1]), 0.0, 1e-9, "z2.imag, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(GSL_REAL(z[2]), 95.0, 1e-9, "z3.real, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(GSL_IMAG(z[2]), 0.0, 1e-9, "z3.imag, (x-17)(x-31)(x-95)=0");
+ 
   }
 
 
@@ -344,6 +411,29 @@ test_bisection_failure (const char *description,
   gsl_test (!status, description, root - correct_root);
 }
 
+
+test_brent (const char *description,
+		double (*f) (double),
+		double lower_bound, double upper_bound,
+		double correct_root)
+{
+  int status;
+  double root;
+
+  status = gsl_root_brent (&root, f, &lower_bound, &upper_bound,
+			   REL_EPSILON, ABS_EPSILON,
+			   MAX_ITERATIONS);
+
+  gsl_test (status, description, root - correct_root);
+
+  /* check the validity of the returned result */
+
+  if (!WITHIN_TOL (root, correct_root, REL_EPSILON, ABS_EPSILON))
+    {
+      status = 1; /* failed */ ;
+      gsl_test (status, "precision incorrectly reported");
+    }
+}
 
 /* Using gsl_root_falsepos, find the root of the function pointed to by f,
    using the interval [lower_bound, upper_bound]. Check if f succeeded and

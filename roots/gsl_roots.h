@@ -19,6 +19,12 @@ gsl_root_bisection (double *root, double (*f) (double),
 		    unsigned int max_iterations);
 
 int
+gsl_root_brent (double *root, double (*f) (double), 
+		double *lower_bound, double *upper_bound, 
+		double rel_epsilon, double abs_epsilon, 
+		unsigned int max_iterations);
+
+int
 gsl_root_falsepos (double *root, double (*f) (double), 
 		   double *lower_bound, double *upper_bound, 
 		   double rel_epsilon, double abs_epsilon,

@@ -17,6 +17,18 @@ void
 			  double correct_root);
 
 void
+  test_brent (const char *description,
+		  double (*f) (double),
+		  double lower_bound, double upper_bound,
+		  double correct_root);
+
+void
+  test_brent_failure (const char *description,
+			  double (*f) (double),
+			  double lower_bound, double upper_bound,
+			  double correct_root);
+
+void
   test_falsepos (const char *description,
 		 double (*f) (double),
 		 double lower_bound, double upper_bound,

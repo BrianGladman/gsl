@@ -20,7 +20,7 @@ gsl_root_brent (double *root, double (*f) (double),
 		unsigned int max_iterations)
 {
   unsigned int iterations;
-  double midpoint, fl, fu, fm;
+  double fu, fl, a, b, c, d, e, tol, fa, fb, fc;
 
   if (*lower_bound >= *upper_bound)
     GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
@@ -52,6 +52,12 @@ gsl_root_brent (double *root, double (*f) (double),
       GSL_ERROR ("endpoints do not straddle y=0", GSL_EINVAL);
     }
   
+  a = *lower_bound ;
+  fa = fl ;
+
+  b = *upper_bound ;
+  fb = fu ;
+
   for (iterations = 0; iterations < max_iterations; iterations++)
     {
       if ((fb < 0 && fc < 0.0) || (fb > 0 && fc > 0))
@@ -72,14 +78,17 @@ gsl_root_brent (double *root, double (*f) (double),
 	  fc = fa ; 
 	}
 
-      tol = 2 * rel * fabs(b) + 0.5 * abs
-      err = 0.5 * (c - b);
+      tol = 2 * rel_epsilon * fabs(b) + 0.5 * abs_epsilon ;
+      
+      { 
+	double err = 0.5 * (c - b);
 
-      if (fabs(err) <= tol || fb == 0)
-	{
-	  *root = b;
-	  return GSL_SUCCESS;
-	}
+	if (fabs(err) <= tol || fb == 0)
+	  {
+	    *root = b;
+	    return GSL_SUCCESS;
+	  }
+      }
 
       if (fabs(e) >= tol && fabs(fa) > fabs(fb))
 	{
