@@ -1,0 +1,6 @@
+Sat May 30 15:40:51 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* qage_impl.c (gsl_integration_qage_impl): fixed serious bug for
+ 	index i, which was incremented at the end of the do loop and
+ 	give an extra undefined entry in the result list!
+	
