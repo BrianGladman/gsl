@@ -234,7 +234,7 @@ gsl_linalg_QRPT_svx (const gsl_matrix * QR,
 
 
 int
-gsl_linalg_QRPT_qrsolve (const gsl_matrix * Q, const gsl_matrix * R,
+gsl_linalg_QRPT_QRsolve (const gsl_matrix * Q, const gsl_matrix * R,
 			 const gsl_permutation * p,
 			 const gsl_vector * b,
 			 gsl_vector * x)
@@ -269,15 +269,58 @@ gsl_linalg_QRPT_qrsolve (const gsl_matrix * Q, const gsl_matrix * R,
 int
 gsl_linalg_QRPT_Rsolve (const gsl_matrix * QR,
 			const gsl_permutation * p,
+                        const gsl_vector * b,
 			gsl_vector * x)
 {
   if (QR->size1 != QR->size2)
     {
-      return GSL_ENOTSQR;
+      GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (QR->size1 != x->size)
+  else if (QR->size1 != b->size)
     {
-      return GSL_EBADLEN;
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (QR->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match x size", GSL_EBADLEN);
+    }
+  else if (p->size != x->size)
+    {
+      GSL_ERROR ("permutation size must match x size", GSL_EBADLEN);
+    }
+  else
+    {
+      /* Copy x <- b */
+
+      gsl_vector_memcpy (x, b);
+
+      /* Solve R x = b, storing x inplace */
+
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
+
+      gsl_permute_vector_inverse (p, x);
+
+      return GSL_SUCCESS;
+    }
+}
+
+
+int
+gsl_linalg_QRPT_Rsvx (const gsl_matrix * QR,
+                      const gsl_permutation * p,
+                      gsl_vector * x)
+{
+  if (QR->size1 != QR->size2)
+    {
+      GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
+    }
+  else if (QR->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match x size", GSL_EBADLEN);
+    }
+  else if (p->size != x->size)
+    {
+      GSL_ERROR ("permutation size must match x size", GSL_EBADLEN);
     }
   else
     {
@@ -290,6 +333,8 @@ gsl_linalg_QRPT_Rsolve (const gsl_matrix * QR,
       return GSL_SUCCESS;
     }
 }
+
+
 
 /* Update a Q R P^T factorisation for A P= Q R ,  A' = A + u v^T,
 

@@ -124,21 +124,16 @@ int gsl_linalg_QR_svx (const gsl_matrix * QR,
                        const gsl_vector * tau,
                        gsl_vector * x);
 
-int gsl_linalg_QR_qrsolve (gsl_matrix * Q,
+int gsl_linalg_QR_QRsolve (gsl_matrix * Q,
 			   gsl_matrix * R,
 			   const gsl_vector * b,
 			   gsl_vector * x);
 
-
-int gsl_linalg_QR_qrsvx (gsl_matrix * Q,
-                         gsl_matrix * R,
-                         gsl_vector * x);
-
-int gsl_linalg_QR_rsolve (const gsl_matrix * QR,
+int gsl_linalg_QR_Rsolve (const gsl_matrix * QR,
                           const gsl_vector * b,
 			  gsl_vector * x);
 
-int gsl_linalg_QR_rsvx (const gsl_matrix * QR,
+int gsl_linalg_QR_Rsvx (const gsl_matrix * QR,
                         gsl_vector * x);
 
 int gsl_linalg_QR_update (gsl_matrix * Q,
@@ -182,18 +177,18 @@ int gsl_linalg_QRPT_svx (const gsl_matrix * QR,
                          const gsl_permutation * p,
                          gsl_vector * x);
 
-int gsl_linalg_QRPT_qrsolve (const gsl_matrix * Q,
+int gsl_linalg_QRPT_QRsolve (const gsl_matrix * Q,
 			     const gsl_matrix * R,
 			     const gsl_permutation * p,
 			     const gsl_vector * b,
 			     gsl_vector * x);
 
-int gsl_linalg_QRPT_R_solve (const gsl_matrix * QR,
+int gsl_linalg_QRPT_Rsolve (const gsl_matrix * QR,
                              const gsl_permutation * p,
 			     const gsl_vector * b,
                              gsl_vector * x);
 
-int gsl_linalg_QRPT_R_svx (const gsl_matrix * QR,
+int gsl_linalg_QRPT_Rsvx (const gsl_matrix * QR,
                            const gsl_permutation * p,
                            gsl_vector * x);
 

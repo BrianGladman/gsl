@@ -407,7 +407,7 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
 }
 
 int
-gsl_linalg_QR_qrsolve (gsl_matrix * Q, gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
+gsl_linalg_QR_QRsolve (gsl_matrix * Q, gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
 {
   const size_t M = R->size1;
   const size_t N = R->size2;
