@@ -1,3 +1,7 @@
+Mon Apr 30 12:38:15 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* poly.c: moved poly_eval function into poly/ directory
+
 Wed Apr 25 17:28:48 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* trig.c (gsl_sf_polar_to_rect): dropped _e from polar/rect

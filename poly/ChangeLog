@@ -1,3 +1,7 @@
+Mon Apr 30 12:36:08 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eval.c (gsl_poly_eval): added eval function  from specfunc
+
 Tue Aug 24 12:02:47 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* zsolve.c: added general solver using QR method

@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** The polynomial evaluation function has been moved from the specfunc
+directory to the poly directory.
+
 ** The Chebyshev functions are now available as an independent module
 in their own directory.
 

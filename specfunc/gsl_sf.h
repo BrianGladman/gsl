@@ -27,7 +27,6 @@
 #include <gsl/gsl_sf_laguerre.h>
 #include <gsl/gsl_sf_legendre.h>
 #include <gsl/gsl_sf_log.h>
-#include <gsl/gsl_sf_poly.h>
 #include <gsl/gsl_sf_pow_int.h>
 #include <gsl/gsl_sf_psi.h>
 #include <gsl/gsl_sf_synchrotron.h>

@@ -23,9 +23,9 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_poly.h>
 #include "legendre.h"
 #include "gsl_sf_exp.h"
-#include "gsl_sf_poly.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_ellint.h"
@@ -189,11 +189,11 @@ static double olver_U3(double beta2, double p)
   double beta6 = beta4*beta2;
   double opb2s = (1.0+beta2)*(1.0+beta2);
   double den   = 39813120.0 * opb2s*opb2s;
-  double poly1 = gsl_sf_poly_eval(U3c1, 4, p);
-  double poly2 = gsl_sf_poly_eval(U3c2, 6, p);
-  double poly3 = gsl_sf_poly_eval(U3c3, 8, p);
-  double poly4 = gsl_sf_poly_eval(U3c4, 10, p);
-  double poly5 = gsl_sf_poly_eval(U3c5, 12, p);
+  double poly1 = gsl_poly_eval(U3c1, 4, p);
+  double poly2 = gsl_poly_eval(U3c2, 6, p);
+  double poly3 = gsl_poly_eval(U3c3, 8, p);
+  double poly4 = gsl_poly_eval(U3c4, 10, p);
+  double poly5 = gsl_poly_eval(U3c5, 12, p);
   
   return (p-1.0)*(     1215.0*poly1 + 324.0*beta2*poly2
                  + 54.0*beta4*poly3 +  12.0*beta6*poly4

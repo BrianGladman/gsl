@@ -26,7 +26,6 @@ pkginclude_HEADERS = \
 	gsl_sf_laguerre.h   	\
 	gsl_sf_legendre.h	\
 	gsl_sf_log.h 		\
-	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
         gsl_sf_result.h         \
@@ -136,7 +135,6 @@ libgslspecfunc_la_SOURCES = 	\
 	legendre_poly.c		\
 	log.c			\
 	poch.c			\
-	poly.c			\
 	pow_int.c		\
 	psi.c			\
         recurse.h               \

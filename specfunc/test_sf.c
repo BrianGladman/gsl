@@ -950,32 +950,6 @@ int test_log(void)
   return s;
 }
 
-int test_poly(void)
-{
-  int status = 0;
-  int s;
-
-  double x;
-  double y;
-  double c[3]  = { 1.0, 0.5, 0.3 };
-  double d[11] = { 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1};
-
-  s = 0;
-  x = 0.5;
-  y = gsl_sf_poly_eval(c, 3, x);
-  s += ( test_sf_frac_diff(y, 1 + 0.5*x + 0.3*x*x) > TEST_TOL0 );
-  gsl_test(s, "  gsl_sf_poly_eval({1, 0.5, 0.3}, 0.5)");
-  status += s;
-  
-  s = 0;
-  x = 1.0;
-  y = gsl_sf_poly_eval(d, 11, x);
-  s += ( test_sf_frac_diff(y, 1.0) > TEST_TOL0 );
-  gsl_test(s, "  gsl_sf_poly_eval({1,-1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
-  status += s;
-
-  return status;
-}
 
 int test_pow_int(void)
 {
@@ -1397,7 +1371,6 @@ int main(int argc, char * argv[])
   gsl_test(test_laguerre(),   "Laguerre Polynomials");
   gsl_test(test_legendre(),   "Legendre Functions");
   gsl_test(test_log(),        "Logarithm");
-  gsl_test(test_poly(),       "Polynomial Evaluation");
   gsl_test(test_pow_int(),    "Integer Powers");
   gsl_test(test_psi(),        "Psi Functions");
   gsl_test(test_synch(),      "Synchrotron Functions");

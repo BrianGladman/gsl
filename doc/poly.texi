@@ -1,18 +1,32 @@
 @cindex polynomials, roots of 
 
-This chapter describes functions for solving polynomial equations.  There
+This chapter describes functions for evaluation and solving polynomials.  There
 are routines for finding real and complex roots of quadratic and cubic
 equations using analytic methods.  An iterative polynomial solver is also
 available for finding the roots of general real polynomials (of any
 order).  The functions are defined in the header file @code{gsl_poly.h}.
 
 @menu
+* Polynomial evaluation::       
 * Quadratic equations::         
 * Cubic equations::             
 * General polynomial equations::  
 * Roots of Polynomials Examples::  
 * Roots of Polynomials References and Further Reading::  
 @end menu
+
+@node Polynomial evaluation
+@section Polynomial evaluation
+@cindex polynomial evaluation
+@cindex evaluation of polynomials
+
+@deftypefun double gsl_sf_poly_eval (const double c[], const int @var{len}, const double @var{x})
+This function evaluates the polynomial 
+@c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
+@math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}}.  
+The function is inlined when possible.
+@end deftypefun
+
 
 @node  Quadratic equations
 @section Quadratic equations

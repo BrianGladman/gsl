@@ -41,7 +41,6 @@ header files can be including the file @file{gsl_sf.h}.
 * Laguerre Functions::
 * Legendre Functions and Spherical Harmonics::
 * Logarithm and Related Functions::
-* Polynomial Manipulation::
 * Power Function::
 * Psi (Digamma) Function::
 * Synchrotron Functions::
@@ -75,7 +74,6 @@ header files can be including the file @file{gsl_sf.h}.
 @include specfunc-laguerre.texi
 @include specfunc-legendre.texi
 @include specfunc-log.texi
-@include specfunc-poly.texi
 @include specfunc-pow-int.texi
 @include specfunc-psi.texi
 @include specfunc-synchrotron.texi
