@@ -6,7 +6,7 @@ DEP_FILES=""
 
 SUBDIRS = err utils ieee-utils vector matrix blas specfunc rng randist fft roots statistics siman sum integration interpolation histogram monte doc
 
-include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h
+include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h gsl_machine.h gsl_precision.h
 noinst_HEADERS = complex_internal.h templates_on.h templates_off.h
 
 strict:

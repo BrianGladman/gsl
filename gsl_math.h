@@ -45,25 +45,9 @@
 #endif
 
 
-/* need to determine this stuff at configure time, just use placeholder
-   values for now */
-
-#define GSL_MACH_EPS		1.e-14
-#define GSL_SQRT_MACH_EPS	1.e-7
-#define GSL_ROOT3_MACH_EPS      2.154e-5
-#define GSL_ROOT4_MACH_EPS      0.0003162
-#define GSL_ROOT5_MACH_EPS      0.00158489
-#define GSL_ROOT6_MACH_EPS      0.00464159
-#define GSL_LOG_MACH_EPS      	-32.2362
-
-#define GSL_SQRT_DBL_MIN        2.e-154
-#define GSL_SQRT_DBL_MAX        5.e+153
-#define GSL_ROOT3_DBL_MIN       3.42e-103
-#define GSL_ROOT3_DBL_MAX       2.92e+102
-#define GSL_ROOT4_DBL_MIN       1.414213e-77
-#define GSL_ROOT4_DBL_MAX       7.071067e+76
-#define GSL_LOG_DBL_MIN       	(DBL_MIN_10_EXP * M_LN10)
-#define GSL_LOG_DBL_MAX       	(DBL_MAX_10_EXP * M_LN10)
+/* magic constants; mostly for the benefit of the implementation */
+#include <gsl_machine.h>
+#include <gsl_precision.h>
 
 
 /* other needlessly compulsive abstractions */
@@ -73,7 +57,7 @@
 #define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
 
 
-/* Define MAX and MIN functions if they don't exist */
+/* Define MAX and MIN macros/functions if they don't exist. */
 
 /* plain old macros for general use */
 #define GSL_MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -133,4 +117,5 @@ GSL_MIN_LDBL (long double a, long double b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
 
-#endif /* _GSL_MATH_H */
+
+#endif /* !_GSL_MATH_H */
