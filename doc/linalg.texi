@@ -544,17 +544,17 @@ Householder coefficients @var{tau}, encode the orthogonal matrix
 upper triangular part of @var{A} is not referenced.
 @end deftypefun
 
-@deftypefun int gsl_linalg_symmtd_unpack (const gsl_matrix * @var{A}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+@deftypefun int gsl_linalg_symmtd_unpack (const gsl_matrix * @var{A}, const gsl_vector * @var{tau}, gsl_matrix * @var{Q}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the encoded symmetric tridiagonal decomposition
 (@var{A}, @var{tau}) obtained from @code{gsl_linalg_symmtd_decomp} into
-the orthogonal matrix @var{Q}, the vector of diagonal elements @var{d}
-and the vector of subdiagonal elements @var{sd}.  
+the orthogonal matrix @var{Q}, the vector of diagonal elements @var{diag}
+and the vector of subdiagonal elements @var{subdiag}.  
 @end deftypefun
 
-@deftypefun int gsl_linalg_symmtd_unpack_dsd (const gsl_matrix * @var{A}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+@deftypefun int gsl_linalg_symmtd_unpack_T (const gsl_matrix * @var{A}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the diagonal and subdiagonal of the encoded
 symmetric tridiagonal decomposition (@var{A}, @var{tau}) obtained from
-@code{gsl_linalg_symmtd_decomp} into the vectors @var{d} and @var{sd}.
+@code{gsl_linalg_symmtd_decomp} into the vectors @var{diag} and @var{subdiag}.
 @end deftypefun
 
 @node Tridiagonal Decomposition of Hermitian Matrices
@@ -593,18 +593,18 @@ upper triangular part of @var{A} and imaginary parts of the diagonal are
 not referenced.
 @end deftypefun
 
-@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the encoded tridiagonal decomposition (@var{A},
 @var{tau}) obtained from @code{gsl_linalg_hermtd_decomp} into the
-unitary matrix @var{U}, the real vector of diagonal elements @var{d} and
-the real vector of subdiagonal elements @var{sd}. 
+unitary matrix @var{U}, the real vector of diagonal elements @var{diag} and
+the real vector of subdiagonal elements @var{subdiag}. 
 @end deftypefun
 
-@deftypefun int gsl_linalg_hermtd_unpack_dsd (const gsl_matrix_complex * @var{A}, gsl_vector * @var{d}, gsl_vector * @var{sd})
+@deftypefun int gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * @var{A}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the diagonal and subdiagonal of the encoded
 tridiagonal decomposition (@var{A}, @var{tau}) obtained from
-@code{gsl_linalg_hermtd_decomp} into the real vectors @var{d} and
-@var{sd}.
+@code{gsl_linalg_hermtd_decomp} into the real vectors @var{diag} and
+@var{subdiag}.
 @end deftypefun
 
 @node Bidiagonalization
