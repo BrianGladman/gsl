@@ -271,7 +271,7 @@ case "$host" in
 
           if test $ac_ppc_gcc_bug = yes; then
            AC_MSG_RESULT(yes)
-           AC_MSG_ERROR([known compiler bug -- gsl will not compile correctly; please update your compiler -- See KNOWN-PROBLEMS file for more info])
+           AC_MSG_ERROR([known compiler bug -- gsl will not compile correctly; please update your compiler -- See MACHINES file for more info])
           else
            AC_MSG_RESULT(no)
           fi
