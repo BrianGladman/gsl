@@ -188,6 +188,8 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
 		r, correct_root);
 
     }
+
+  gsl_root_fsolver_free(s);  
 }
 
 void
@@ -210,6 +212,7 @@ test_f_e (const gsl_root_fsolver_type * T,
 
   if (status == GSL_EINVAL) 
     {
+      gsl_root_fsolver_free(s);
       return ;
     }
 
@@ -227,6 +230,7 @@ test_f_e (const gsl_root_fsolver_type * T,
   gsl_test (!status, "%s, %s", gsl_root_fsolver_name(s), description, 
 	    gsl_root_fsolver_root(s) - correct_root);
 
+  gsl_root_fsolver_free(s);
 }
 
 void
@@ -268,6 +272,7 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
 		gsl_root_fdfsolver_root(s), correct_root);
 
     }
+  gsl_root_fdfsolver_free(s);
 }
 
 void
@@ -296,6 +301,7 @@ test_fdf_e (const gsl_root_fdfsolver_type * T,
 
   gsl_test (!status, "%s, %s", gsl_root_fdfsolver_name(s), 
 	    description, gsl_root_fdfsolver_root(s) - correct_root);
+  gsl_root_fdfsolver_free(s);
 }
 
 void

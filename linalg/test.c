@@ -2091,6 +2091,12 @@ int main(void)
   gsl_test(test_TDN_cyc_solve(),  "Tridiagonal nonsymmetric cyclic solve");
 #endif
 
+  gsl_matrix_free(m35);
+  gsl_matrix_free(m53);
+  gsl_matrix_free(m97);
+  gsl_matrix_free(s35);
+  gsl_matrix_free(s53);
+
   gsl_matrix_free(hilb2);
   gsl_matrix_free(hilb3);
   gsl_matrix_free(hilb4);
@@ -2101,7 +2107,16 @@ int main(void)
   gsl_matrix_free(vander4);
   gsl_matrix_free(vander12);
 
+  gsl_matrix_free(moler10);
+
   gsl_matrix_complex_free(c7);
+  gsl_matrix_free(row3);
+  gsl_matrix_free(row5);
+  gsl_matrix_free(row12);
+
+  gsl_matrix_free(A22);
+  gsl_matrix_free(A33);
+  gsl_matrix_free(A44);
 
   exit (gsl_test_summary());
 }

@@ -110,6 +110,8 @@ main (void)
 
     gsl_ntuple_project (h, ntuple, &V, &S);
 
+    gsl_ntuple_close (ntuple);
+
     /* gsl_histogram_fprintf (stdout, h, "%f", "%f"); */
 
     for (i = 0; i < 100; i++)
