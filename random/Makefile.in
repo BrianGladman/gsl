@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 
@@ -42,19 +42,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
 CC = @CC@
-CPP = @CPP@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -230,7 +221,7 @@ test_switch_OBJECTS =  test-switch.o switch.o
 test_switch_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -272,16 +263,16 @@ distclean-libLIBRARIES:
 maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(libdir)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
 	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
 	  else :; fi; \
 	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	$(POST_INSTALL)
+	@list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo " $(RANLIB) $(libdir)/$$p"; \
 	    $(RANLIB) $(libdir)/$$p; \
@@ -289,8 +280,7 @@ install-libLIBRARIES: $(lib_LIBRARIES)
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
+	list="$(lib_LIBRARIES)"; for p in $$list; do \
 	  rm -f $(libdir)/$$p; \
 	done
 
@@ -306,41 +296,49 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(libgslrandom_a_OBJECTS): ../config.h
 
 libgslrandom.a: $(libgslrandom_a_OBJECTS) $(libgslrandom_a_DEPENDENCIES)
 	rm -f libgslrandom.a
 	$(AR) cru libgslrandom.a $(libgslrandom_a_OBJECTS) $(libgslrandom_a_LIBADD)
 	$(RANLIB) libgslrandom.a
+$(libgslrantaus_a_OBJECTS): ../config.h
 
 libgslrantaus.a: $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_DEPENDENCIES)
 	rm -f libgslrantaus.a
 	$(AR) cru libgslrantaus.a $(libgslrantaus_a_OBJECTS) $(libgslrantaus_a_LIBADD)
 	$(RANLIB) libgslrantaus.a
+$(libgslranmrg_a_OBJECTS): ../config.h
 
 libgslranmrg.a: $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_DEPENDENCIES)
 	rm -f libgslranmrg.a
 	$(AR) cru libgslranmrg.a $(libgslranmrg_a_OBJECTS) $(libgslranmrg_a_LIBADD)
 	$(RANLIB) libgslranmrg.a
+$(libgslrancmrg_a_OBJECTS): ../config.h
 
 libgslrancmrg.a: $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_DEPENDENCIES)
 	rm -f libgslrancmrg.a
 	$(AR) cru libgslrancmrg.a $(libgslrancmrg_a_OBJECTS) $(libgslrancmrg_a_LIBADD)
 	$(RANLIB) libgslrancmrg.a
+$(libgslranuni_a_OBJECTS): ../config.h
 
 libgslranuni.a: $(libgslranuni_a_OBJECTS) $(libgslranuni_a_DEPENDENCIES)
 	rm -f libgslranuni.a
 	$(AR) cru libgslranuni.a $(libgslranuni_a_OBJECTS) $(libgslranuni_a_LIBADD)
 	$(RANLIB) libgslranuni.a
+$(libgslranuni32_a_OBJECTS): ../config.h
 
 libgslranuni32.a: $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_DEPENDENCIES)
 	rm -f libgslranuni32.a
 	$(AR) cru libgslranuni32.a $(libgslranuni32_a_OBJECTS) $(libgslranuni32_a_LIBADD)
 	$(RANLIB) libgslranuni32.a
+$(libgslranzuf_a_OBJECTS): ../config.h
 
 libgslranzuf.a: $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_DEPENDENCIES)
 	rm -f libgslranzuf.a
 	$(AR) cru libgslranzuf.a $(libgslranzuf_a_OBJECTS) $(libgslranzuf_a_LIBADD)
 	$(RANLIB) libgslranzuf.a
+$(libgslranrand_a_OBJECTS): ../config.h
 
 libgslranrand.a: $(libgslranrand_a_OBJECTS) $(libgslranrand_a_DEPENDENCIES)
 	rm -f libgslranrand.a
@@ -357,9 +355,9 @@ distclean-binPROGRAMS:
 maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
@@ -367,110 +365,108 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	done
 
 uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
+$(taus_OBJECTS): ../config.h
 
 taus: $(taus_OBJECTS) $(taus_DEPENDENCIES)
-	@rm -f taus
 	$(LINK) $(taus_LDFLAGS) $(taus_OBJECTS) $(taus_LDADD) $(LIBS)
+$(test_taus_OBJECTS): ../config.h
 
 test-taus: $(test_taus_OBJECTS) $(test_taus_DEPENDENCIES)
-	@rm -f test-taus
 	$(LINK) $(test_taus_LDFLAGS) $(test_taus_OBJECTS) $(test_taus_LDADD) $(LIBS)
+$(bench_taus_OBJECTS): ../config.h
 
 bench-taus: $(bench_taus_OBJECTS) $(bench_taus_DEPENDENCIES)
-	@rm -f bench-taus
 	$(LINK) $(bench_taus_LDFLAGS) $(bench_taus_OBJECTS) $(bench_taus_LDADD) $(LIBS)
+$(mrg_OBJECTS): ../config.h
 
 mrg: $(mrg_OBJECTS) $(mrg_DEPENDENCIES)
-	@rm -f mrg
 	$(LINK) $(mrg_LDFLAGS) $(mrg_OBJECTS) $(mrg_LDADD) $(LIBS)
+$(test_mrg_OBJECTS): ../config.h
 
 test-mrg: $(test_mrg_OBJECTS) $(test_mrg_DEPENDENCIES)
-	@rm -f test-mrg
 	$(LINK) $(test_mrg_LDFLAGS) $(test_mrg_OBJECTS) $(test_mrg_LDADD) $(LIBS)
+$(bench_mrg_OBJECTS): ../config.h
 
 bench-mrg: $(bench_mrg_OBJECTS) $(bench_mrg_DEPENDENCIES)
-	@rm -f bench-mrg
 	$(LINK) $(bench_mrg_LDFLAGS) $(bench_mrg_OBJECTS) $(bench_mrg_LDADD) $(LIBS)
+$(cmrg_OBJECTS): ../config.h
 
 cmrg: $(cmrg_OBJECTS) $(cmrg_DEPENDENCIES)
-	@rm -f cmrg
 	$(LINK) $(cmrg_LDFLAGS) $(cmrg_OBJECTS) $(cmrg_LDADD) $(LIBS)
+$(test_cmrg_OBJECTS): ../config.h
 
 test-cmrg: $(test_cmrg_OBJECTS) $(test_cmrg_DEPENDENCIES)
-	@rm -f test-cmrg
 	$(LINK) $(test_cmrg_LDFLAGS) $(test_cmrg_OBJECTS) $(test_cmrg_LDADD) $(LIBS)
+$(bench_cmrg_OBJECTS): ../config.h
 
 bench-cmrg: $(bench_cmrg_OBJECTS) $(bench_cmrg_DEPENDENCIES)
-	@rm -f bench-cmrg
 	$(LINK) $(bench_cmrg_LDFLAGS) $(bench_cmrg_OBJECTS) $(bench_cmrg_LDADD) $(LIBS)
+$(uni_OBJECTS): ../config.h
 
 uni: $(uni_OBJECTS) $(uni_DEPENDENCIES)
-	@rm -f uni
 	$(LINK) $(uni_LDFLAGS) $(uni_OBJECTS) $(uni_LDADD) $(LIBS)
+$(test_uni_OBJECTS): ../config.h
 
 test-uni: $(test_uni_OBJECTS) $(test_uni_DEPENDENCIES)
-	@rm -f test-uni
 	$(LINK) $(test_uni_LDFLAGS) $(test_uni_OBJECTS) $(test_uni_LDADD) $(LIBS)
+$(bench_uni_OBJECTS): ../config.h
 
 bench-uni: $(bench_uni_OBJECTS) $(bench_uni_DEPENDENCIES)
-	@rm -f bench-uni
 	$(LINK) $(bench_uni_LDFLAGS) $(bench_uni_OBJECTS) $(bench_uni_LDADD) $(LIBS)
+$(uni32_OBJECTS): ../config.h
 
 uni32: $(uni32_OBJECTS) $(uni32_DEPENDENCIES)
-	@rm -f uni32
 	$(LINK) $(uni32_LDFLAGS) $(uni32_OBJECTS) $(uni32_LDADD) $(LIBS)
+$(test_uni32_OBJECTS): ../config.h
 
 test-uni32: $(test_uni32_OBJECTS) $(test_uni32_DEPENDENCIES)
-	@rm -f test-uni32
 	$(LINK) $(test_uni32_LDFLAGS) $(test_uni32_OBJECTS) $(test_uni32_LDADD) $(LIBS)
+$(bench_uni32_OBJECTS): ../config.h
 
 bench-uni32: $(bench_uni32_OBJECTS) $(bench_uni32_DEPENDENCIES)
-	@rm -f bench-uni32
 	$(LINK) $(bench_uni32_LDFLAGS) $(bench_uni32_OBJECTS) $(bench_uni32_LDADD) $(LIBS)
+$(zuf_OBJECTS): ../config.h
 
 zuf: $(zuf_OBJECTS) $(zuf_DEPENDENCIES)
-	@rm -f zuf
 	$(LINK) $(zuf_LDFLAGS) $(zuf_OBJECTS) $(zuf_LDADD) $(LIBS)
+$(test_zuf_OBJECTS): ../config.h
 
 test-zuf: $(test_zuf_OBJECTS) $(test_zuf_DEPENDENCIES)
-	@rm -f test-zuf
 	$(LINK) $(test_zuf_LDFLAGS) $(test_zuf_OBJECTS) $(test_zuf_LDADD) $(LIBS)
+$(bench_zuf_OBJECTS): ../config.h
 
 bench-zuf: $(bench_zuf_OBJECTS) $(bench_zuf_DEPENDENCIES)
-	@rm -f bench-zuf
 	$(LINK) $(bench_zuf_LDFLAGS) $(bench_zuf_OBJECTS) $(bench_zuf_LDADD) $(LIBS)
+$(rand_OBJECTS): ../config.h
 
 rand: $(rand_OBJECTS) $(rand_DEPENDENCIES)
-	@rm -f rand
 	$(LINK) $(rand_LDFLAGS) $(rand_OBJECTS) $(rand_LDADD) $(LIBS)
+$(test_rand_OBJECTS): ../config.h
 
 test-rand: $(test_rand_OBJECTS) $(test_rand_DEPENDENCIES)
-	@rm -f test-rand
 	$(LINK) $(test_rand_LDFLAGS) $(test_rand_OBJECTS) $(test_rand_LDADD) $(LIBS)
+$(bench_rand_OBJECTS): ../config.h
 
 bench-rand: $(bench_rand_OBJECTS) $(bench_rand_DEPENDENCIES)
-	@rm -f bench-rand
 	$(LINK) $(bench_rand_LDFLAGS) $(bench_rand_OBJECTS) $(bench_rand_LDADD) $(LIBS)
+$(test_switch_OBJECTS): ../config.h
 
 test-switch: $(test_switch_OBJECTS) $(test_switch_DEPENDENCIES)
-	@rm -f test-switch
 	$(LINK) $(test_switch_LDFLAGS) $(test_switch_OBJECTS) $(test_switch_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list="$(include_HEADERS)"; for p in $$list; do \
 	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
+	list="$(include_HEADERS)"; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
@@ -482,8 +478,11 @@ ID: $(HEADERS) $(SOURCES)
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
 	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -497,12 +496,7 @@ maintainer-clean-tags:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = random
-
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu random/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -512,12 +506,13 @@ distdir: $(DISTFILES)
 
 MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
+.deps/.P:
+	test -d .deps || mkdir .deps
 	echo > $@
 
 -include $(DEP_FILES)
+$(DEP_FILES): .deps/.P
 
 mostlyclean-depend:
 
@@ -528,58 +523,53 @@ distclean-depend:
 maintainer-clean-depend:
 	rm -rf .deps
 
-.deps/%.P: %.c
+.deps/%.P: $(srcdir)/%.c
 	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
 	for tst in $(TESTS); do \
+	  all=`expr $$all + 1`; \
 	  if test -f $$tst; then dir=.; \
 	  else dir="$(srcdir)"; fi; \
 	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
-	    all=`expr $$all + 1`; \
 	    echo "PASS: $$tst"; \
-	  elif test $$? -ne 77; then \
-	    all=`expr $$all + 1`; \
+	  else \
 	    failed=`expr $$failed + 1`; \
 	    echo "FAIL: $$tst"; \
 	  fi; \
 	done; \
 	if test "$$failed" -eq 0; then \
-	  banner="All $$all tests passed"; \
+	  echo "========================"; \
+	  echo "All $$all tests passed"; \
+	  echo "========================"; \
 	else \
-	  banner="$$failed of $$all tests failed"; \
-	fi; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"; \
-	test "$$failed" -eq 0
+	  echo "$$failed of $$all tests failed"; \
+	  exit 1; \
+	fi
 info:
 dvi:
 check: all
 	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-libLIBRARIES install-binPROGRAMS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
 uninstall: uninstall-libLIBRARIES uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: $(LIBRARIES) $(PROGRAMS) $(BUILT_SOURCES) $(HEADERS) Makefile
 
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 installdirs:
 	$(mkinstalldirs)  $(libdir) $(bindir) $(includedir)
 
@@ -592,7 +582,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	rm -f config.cache config.log stamp-h
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:

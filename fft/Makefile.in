@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1p from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -42,23 +42,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOHEADER = @AUTOHEADER@
-AUTOMAKE = @AUTOMAKE@
 CC = @CC@
-CPP = @CPP@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -176,7 +163,7 @@ errs_DEPENDENCIES =  libfft.a ../err/liberr.a
 errs_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -236,6 +223,7 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(libfft_a_OBJECTS): ../config.h
 
 libfft.a: $(libfft_a_OBJECTS) $(libfft_a_DEPENDENCIES)
 	rm -f libfft.a
@@ -252,9 +240,9 @@ distclean-binPROGRAMS:
 maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
@@ -262,42 +250,40 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	done
 
 uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
+$(test_trap_OBJECTS): ../config.h
 
 test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
-	@rm -f test_trap
 	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
+$(test_radix2_OBJECTS): ../config.h
 
 test_radix2: $(test_radix2_OBJECTS) $(test_radix2_DEPENDENCIES)
-	@rm -f test_radix2
 	$(LINK) $(test_radix2_LDFLAGS) $(test_radix2_OBJECTS) $(test_radix2_LDADD) $(LIBS)
+$(test_OBJECTS): ../config.h
 
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
-	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+$(benchmark_OBJECTS): ../config.h
 
 benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
-	@rm -f benchmark
 	$(LINK) $(benchmark_LDFLAGS) $(benchmark_OBJECTS) $(benchmark_LDADD) $(LIBS)
+$(errs_OBJECTS): ../config.h
 
 errs: $(errs_OBJECTS) $(errs_DEPENDENCIES)
-	@rm -f errs
 	$(LINK) $(errs_LDFLAGS) $(errs_OBJECTS) $(errs_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list="$(include_HEADERS)"; for p in $$list; do \
 	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
+	list="$(include_HEADERS)"; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
@@ -309,8 +295,11 @@ ID: $(HEADERS) $(SOURCES)
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
 	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -324,12 +313,7 @@ maintainer-clean-tags:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = fft
-
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu fft/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -356,11 +340,11 @@ distclean-depend:
 maintainer-clean-depend:
 	rm -rf .deps
 
-.deps/%.P: %.c
+.deps/%.P: $(srcdir)/%.c
 	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< | sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," > $@
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -389,17 +373,17 @@ check: all
 	$(MAKE) check-TESTS
 installcheck:
 install-exec: install-binPROGRAMS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
 uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all: $(LIBRARIES) $(PROGRAMS) $(HEADERS) Makefile
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
@@ -415,7 +399,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	rm -f config.cache config.log stamp-h
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:

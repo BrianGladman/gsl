@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1p from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -42,23 +42,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOHEADER = @AUTOHEADER@
-AUTOMAKE = @AUTOMAKE@
 CC = @CC@
-CPP = @CPP@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -131,7 +118,7 @@ bench_gamma_DEPENDENCIES =  ../random/libgslrandom.a
 bench_gamma_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+LINK = $(CC) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -171,9 +158,9 @@ distclean-binPROGRAMS:
 maintainer-clean-binPROGRAMS:
 
 install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	@list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  if test -f $$p; then \
 	    echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`"; \
 	     $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p|sed '$(transform)'`; \
@@ -181,8 +168,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	done
 
 uninstall-binPROGRAMS:
-	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	list="$(bin_PROGRAMS)"; for p in $$list; do \
 	  rm -f $(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 
@@ -198,54 +184,53 @@ distclean-compile:
 	rm -f *.tab.c
 
 maintainer-clean-compile:
+$(gauss_OBJECTS): ../config.h
 
 gauss: $(gauss_OBJECTS) $(gauss_DEPENDENCIES)
-	@rm -f gauss
 	$(LINK) $(gauss_LDFLAGS) $(gauss_OBJECTS) $(gauss_LDADD) $(LIBS)
+$(test_gauss_OBJECTS): ../config.h
 
 test-gauss: $(test_gauss_OBJECTS) $(test_gauss_DEPENDENCIES)
-	@rm -f test-gauss
 	$(LINK) $(test_gauss_LDFLAGS) $(test_gauss_OBJECTS) $(test_gauss_LDADD) $(LIBS)
+$(bench_gauss_OBJECTS): ../config.h
 
 bench-gauss: $(bench_gauss_OBJECTS) $(bench_gauss_DEPENDENCIES)
-	@rm -f bench-gauss
 	$(LINK) $(bench_gauss_LDFLAGS) $(bench_gauss_OBJECTS) $(bench_gauss_LDADD) $(LIBS)
+$(exponential_OBJECTS): ../config.h
 
 exponential: $(exponential_OBJECTS) $(exponential_DEPENDENCIES)
-	@rm -f exponential
 	$(LINK) $(exponential_LDFLAGS) $(exponential_OBJECTS) $(exponential_LDADD) $(LIBS)
+$(poisson_OBJECTS): ../config.h
 
 poisson: $(poisson_OBJECTS) $(poisson_DEPENDENCIES)
-	@rm -f poisson
 	$(LINK) $(poisson_LDFLAGS) $(poisson_OBJECTS) $(poisson_LDADD) $(LIBS)
+$(bench_poisson_OBJECTS): ../config.h
 
 bench-poisson: $(bench_poisson_OBJECTS) $(bench_poisson_DEPENDENCIES)
-	@rm -f bench-poisson
 	$(LINK) $(bench_poisson_LDFLAGS) $(bench_poisson_OBJECTS) $(bench_poisson_LDADD) $(LIBS)
+$(test_shuffle_OBJECTS): ../config.h
 
 test-shuffle: $(test_shuffle_OBJECTS) $(test_shuffle_DEPENDENCIES)
-	@rm -f test-shuffle
 	$(LINK) $(test_shuffle_LDFLAGS) $(test_shuffle_OBJECTS) $(test_shuffle_LDADD) $(LIBS)
+$(gamma_OBJECTS): ../config.h
 
 gamma: $(gamma_OBJECTS) $(gamma_DEPENDENCIES)
-	@rm -f gamma
 	$(LINK) $(gamma_LDFLAGS) $(gamma_OBJECTS) $(gamma_LDADD) $(LIBS)
+$(bench_gamma_OBJECTS): ../config.h
 
 bench-gamma: $(bench_gamma_OBJECTS) $(bench_gamma_DEPENDENCIES)
-	@rm -f bench-gamma
 	$(LINK) $(bench_gamma_LDFLAGS) $(bench_gamma_OBJECTS) $(bench_gamma_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list="$(include_HEADERS)"; for p in $$list; do \
 	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
 	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
-	list='$(include_HEADERS)'; for p in $$list; do \
+	list="$(include_HEADERS)"; for p in $$list; do \
 	  rm -f $(includedir)/$$p; \
 	done
 
@@ -257,8 +242,11 @@ ID: $(HEADERS) $(SOURCES)
 TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
+	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+	done; \
 	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -272,12 +260,7 @@ maintainer-clean-tags:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 subdir = randist
-
 distdir: $(DISTFILES)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu randist/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -304,28 +287,28 @@ distclean-depend:
 maintainer-clean-depend:
 	rm -rf .deps
 
-.deps/%.P: %.c
+.deps/%.P: $(srcdir)/%.c
 	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< | sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," > $@
+	@o='o';				\
+	test -n "$o" && o='$$o';	\
+	$(MKDEP) $< | sed "s/^\(.*\)\.o:/\1.$$o \1.l$$o:/" > $@
 info:
 dvi:
 check: all
 	$(MAKE)
 installcheck:
 install-exec: install-binPROGRAMS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
 uninstall: uninstall-binPROGRAMS uninstall-includeHEADERS
 
-all: Makefile $(PROGRAMS) $(HEADERS)
+all: $(PROGRAMS) $(HEADERS) Makefile
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
@@ -341,7 +324,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	rm -f config.cache config.log stamp-h
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:

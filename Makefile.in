@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.1p from Makefile.am
+# Makefile.in generated automatically by automake 1.1m from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -42,29 +42,18 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
-
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
 host_alias = @host_alias@
 host_triplet = @host@
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOHEADER = @AUTOHEADER@
-AUTOMAKE = @AUTOMAKE@
 CC = @CC@
-CPP = @CPP@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 SUBDIRS = err random randist fft roots statistics siman doc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+CONFIG_HEADER_IN = config.h.in
+CONFIG_HEADER_FULL = config.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
@@ -88,21 +77,21 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in 
+$(srcdir)/aclocal.m4:  configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
-config.status: $(srcdir)/configure
+config.status: configure
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure: configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-config.h: stamp-h
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+$(CONFIG_HEADER): stamp-h
+stamp-h: $(CONFIG_HEADER_IN) $(top_builddir)/config.status
 	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
+	  && CONFIG_FILES= CONFIG_HEADERS=$(CONFIG_HEADER_FULL) \
 	     $(SHELL) ./config.status
 	@echo timestamp > stamp-h
-$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
+$(srcdir)/$(CONFIG_HEADER_IN): stamp-h.in
 $(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
 	cd $(top_srcdir) && $(AUTOHEADER)
 	echo timestamp > $(srcdir)/stamp-h.in
@@ -112,7 +101,7 @@ mostlyclean-hdr:
 clean-hdr:
 
 distclean-hdr:
-	rm -f config.h
+	rm -f $(CONFIG_HEADER)
 
 maintainer-clean-hdr:
 
@@ -127,27 +116,17 @@ maintainer-clean-hdr:
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	for subdir in $(SUBDIRS); do \
-	  target=`echo $@ | sed s/-recursive//`; \
-	  echo "Making $$target in $$subdir"; \
-	  (cd $$subdir && $(MAKE) $$target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-
+check-recursive installcheck-recursive info-recursive dvi-recursive \
 mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	rev=''; for subdir in $(SUBDIRS); do rev="$$rev $$subdir"; done; \
-	for subdir in $$rev; do \
+	@for subdir in $(SUBDIRS); do \
 	  target=`echo $@ | sed s/-recursive//`; \
 	  echo "Making $$target in $$subdir"; \
 	  (cd $$subdir && $(MAKE) $$target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	   || case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
 	done && test -z "$$fail"
 tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
 	  (cd $$subdir && $(MAKE) tags); \
 	done
 
@@ -159,11 +138,11 @@ ID: $(HEADERS) $(SOURCES)
 TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list="$(SUBDIRS)"; for subdir in $$list; do \
 	  test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
 	done; \
 	test -z "$(ETAGS_ARGS)config.h.in$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	  || cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $(SOURCES) $(HEADERS) -o $$here/TAGS
 
 mostlyclean-tags:
 
@@ -175,8 +154,6 @@ distclean-tags:
 maintainer-clean-tags:
 
 distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
-
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
 # tarfile.
@@ -209,11 +186,10 @@ dist-all: distdir
 distdir: $(DISTFILES)
 	rm -rf $(distdir)
 	mkdir $(distdir)
-	-chmod 777 $(distdir)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(top_distdir) && pwd`; \
-	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu Makefile
+	-chmod 755 $(distdir)
+	here=`pwd`; distdir=`cd $(distdir) && pwd` \
+	  && cd $(srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(srcdir) --output-dir=$$distdir --gnu
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -224,8 +200,8 @@ distdir: $(DISTFILES)
 	  test -d $(distdir)/$$subdir		\
 	  || mkdir $(distdir)/$$subdir		\
 	  || exit 1;				\
-	  chmod 777 $(distdir)/$$subdir;	\
-	  (cd $$subdir && $(MAKE) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	  chmod 755 $(distdir)/$$subdir;	\
+	  (cd $$subdir && $(MAKE) distdir=../$(distdir)/$$subdir distdir) \
 	    || exit 1; \
 	done
 info: info-recursive
@@ -233,16 +209,16 @@ dvi: dvi-recursive
 check: all-am
 	$(MAKE) check-recursive
 installcheck: installcheck-recursive
-all-recursive-am: config.h
+all-recursive-am: $(CONFIG_HEADER)
 	$(MAKE) all-recursive
 
 all-am: Makefile config.h
 
 install-exec: install-exec-recursive
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install-data: install-data-recursive
-	@$(NORMAL_INSTALL)
+	$(NORMAL_INSTALL)
 
 install: install-recursive
 	@:
@@ -264,7 +240,7 @@ clean-generic:
 
 distclean-generic:
 	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	rm -f config.cache config.log stamp-h
 	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
