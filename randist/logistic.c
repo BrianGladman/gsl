@@ -4,7 +4,7 @@
 
 /* The logistic distribution has the form,
 
-   p(x) dx = exp(-x) / (1 + exp(-x))^2 dx
+   p(x) dx = (1/mu) exp(-x/mu) / (1 + exp(-x/mu))^2 dx
 
    for x > 0 */
 
@@ -27,7 +27,7 @@ gsl_ran_logistic (const gsl_rng * r, const double mu)
 double
 gsl_ran_logistic_pdf (const double x, const double mu)
 {
-  double u = exp (-x/fabs(mu));
-  double p = u / (mu * (1 + u) * (1 + u));
+  double u = exp (-x/mu);
+  double p = u / (fabs(mu) * (1 + u) * (1 + u));
   return p;
 }
