@@ -50,8 +50,10 @@ main (int argc, char **argv)
     }
 
   {
-    gsl_histogram *h = gsl_histogram_calloc_uniform (n, a, b);
     double x;
+    gsl_histogram *h = gsl_histogram_alloc (n);
+
+    gsl_histogram_set_ranges_uniform (h, a, b);
 
     while (fscanf(stdin, "%lg", &x) == 1)
       {

@@ -1,3 +1,8 @@
+Fri Oct 19 15:19:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-histogram.c (main): use gsl_histogram_alloc instead of
+ 	calloc
+
 Wed Oct  3 11:06:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed auto-expanding RCS tokens from comments as they
