@@ -55,6 +55,21 @@ following CFLAGS:
     -Wmissing-prototypes -Wnested-externs -Werror -g -O4
     -Dinline=''
 
+I recommend having a bash alias,
+	
+    makestrict () { make $* CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline= -g -O4" } ;
+
+which lets you type things like
+
+    makestrict check
+
+If you can compile your code with 
+
+    makestrict
+    makestrict CC=c++ 
+
+then that's a good test for portability.
+
 ----------
 
 When compiling the library it's important to use the local copies of
