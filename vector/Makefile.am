@@ -17,18 +17,21 @@ test_trap_DEPENDENCIES = libgslvector.a
 test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
-noinst_HEADERS = vector_source.c init_source.c
+noinst_HEADERS = vector_source.c init_source.c file_source.c
 
 libgslvector_a_SOURCES = \
 source.h \
 init.c \
 vector.c \
+file.c \
 gsl_vector.h \
 init_int.c \
 vector_int.c \
+file_int.c \
 gsl_vector_int.h \
 init_float.c \
 vector_float.c \
+file_float.c \
 gsl_vector_float.h
 
 
