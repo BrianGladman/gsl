@@ -1255,8 +1255,8 @@ gsl_sf_gamma_e(const double x, gsl_sf_result * result)
   if(x < 0.5) {
     int rint_x = (int)floor(x+0.5);
     double f_x = x - rint_x;
-    double sgn = ( GSL_IS_EVEN(rint_x) ? 1.0 : -1.0 );
-    double sin_term = sgn * sin(M_PI * f_x) / M_PI;
+    double sgn_gamma = ( GSL_IS_EVEN(rint_x) ? 1.0 : -1.0 );
+    double sin_term = sgn_gamma * sin(M_PI * f_x) / M_PI;
 
     if(sin_term == 0.0) {
       DOMAIN_ERROR(result);
@@ -1589,19 +1589,36 @@ int gsl_sf_choose_e(unsigned int n, unsigned int m, gsl_sf_result * result)
     result->err = 0.0;
     return GSL_SUCCESS;
   }
-  else {
-    double prod = 1.0;
-    int k;
-    for(k=n; k>=m+1; k--) {
-      double tk = (double)k / (double)(k-m);
-      if(tk > GSL_DBL_MAX/prod) {
-        OVERFLOW_ERROR(result);
-      }
-      prod *= tk;
-    }
-    result->val = prod;
-    result->err = 2.0 * GSL_DBL_EPSILON * prod * fabs(n-m);
+  else if (n <= FACT_TABLE_MAX) {
+    result->val = (fact_table[n].f / fact_table[m].f) / fact_table[n-m].f;
+    result->err = 6.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
+  } else {
+    if(m*2 < n) m = n-m;
+
+    if (n - m < 64)  /* compute product for a manageable number of terms */
+      {
+        double prod = 1.0;
+        unsigned int k;
+        
+        for(k=n; k>=m+1; k--) {
+          double tk = (double)k / (double)(k-m);
+          if(tk > GSL_DBL_MAX/prod) {
+            OVERFLOW_ERROR(result);
+          }
+          prod *= tk;
+        }
+        result->val = prod;
+        result->err = 2.0 * GSL_DBL_EPSILON * prod * fabs(n-m);
+        return GSL_SUCCESS;
+      }
+    else
+      {
+        gsl_sf_result lc;
+        const int stat_lc = gsl_sf_lnchoose_e (n, m, &lc);
+        const int stat_e  = gsl_sf_exp_err_e(lc.val, lc.err, result);
+        return GSL_ERROR_SELECT_2(stat_lc, stat_e);
+      }
   }
 }
 
