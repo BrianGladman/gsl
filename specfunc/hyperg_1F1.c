@@ -118,26 +118,32 @@ hyperg_1F1_asymp_negx(const double a, const double b, const double x,
   double ln_F;
   double prec_F;
   double F;
-  gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
-  gsl_sf_lngamma_sgn_impl(b-a, &lg_bma, &sgn_bma);
+  int stat_b   = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  int stat_bma = gsl_sf_lngamma_sgn_impl(b-a, &lg_bma, &sgn_bma);
   
-  gsl_sf_hyperg_2F0_series_impl(a, 1.0+a-b, -1.0/x, -1, &F, &prec_F);
+  if(stat_b == GSL_SUCCESS && stat_bma == GSL_SUCCESS) {
+    gsl_sf_hyperg_2F0_series_impl(a, 1.0+a-b, -1.0/x, -1, &F, &prec_F);
 
-  ln_pre = lg_b - a*log(-x) - lg_bma;
-  ln_F = log(fabs(F));
+    ln_pre = lg_b - a*log(-x) - lg_bma;
+    ln_F = log(fabs(F));
   
-  if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX-1.0) {
-    *result = sgn_b * sgn_bma * exp(ln_pre) * F;
-    return GSL_SUCCESS;
+    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX-1.0) {
+      *result = sgn_b * sgn_bma * exp(ln_pre) * F;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EOVRFLW;
+    }
   }
   else {
     *result = 0.0;
-    return GSL_EOVRFLW;
+    return GSL_EDOM;
   }
 }
 
 
-/* Assumes b != 0 and a != 0
+/* Assumes b != neg integer and a != neg integer
  */
 static
 int
@@ -152,20 +158,26 @@ hyperg_1F1_asymp_posx(const double a, const double b, const double x,
   double prec_F;
   double F;
 
-  gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
-  gsl_sf_lngamma_sgn_impl(a, &lg_a, &sgn_a);
+  int stat_b = gsl_sf_lngamma_sgn_impl(b, &lg_b, &sgn_b);
+  int stat_a = gsl_sf_lngamma_sgn_impl(a, &lg_a, &sgn_a);
 
-  gsl_sf_hyperg_2F0_series_impl(b-a, 1.0-a, 1.0/x, -1, &F, &prec_F);
+  if(stat_a == GSL_SUCCESS && stat_b == GSL_SUCCESS) {
+    gsl_sf_hyperg_2F0_series_impl(b-a, 1.0-a, 1.0/x, -1, &F, &prec_F);
 
-  ln_pre = lg_b - lg_a + x + (a-b)*log(x);
+    ln_pre = lg_b - lg_a + x + (a-b)*log(x);
 
-  if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX) {
-    *result = sgn_b * sgn_a * exp(ln_pre) * F;
-    return GSL_SUCCESS;
+    if(ln_pre + ln_F  <  GSL_LOG_DBL_MAX) {
+      *result = sgn_b * sgn_a * exp(ln_pre) * F;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EOVRFLW;
+    }
   }
   else {
     *result = 0.0;
-    return GSL_EOVRFLW;
+    return GSL_EDOM;
   }
 }
 
@@ -190,15 +202,18 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
   double abs_oma = fabs(oma);
   double abs_ap1mb = fabs(ap1mb);
 
-  if(a == 0.0) {
+  if(abs_a < locEPS) {
+    /* a == 0 */
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(a == -1.0) {
+  else if(fabs(a+1.0) < locEPS) {
+    /* a == -1 */
     *result = 1.0 + a/b * x;
     return GSL_SUCCESS;
   }
-  else if(a == -2.0) {
+  else if(fabs(a+2.0) < locEPS) {
+    /* a == -2 */
     *result = 1.0 + a/b * x + 0.5*a*(a+1.0)/(b*(b+1.0)) *x*x;
     return GSL_SUCCESS;
   }
@@ -437,6 +452,36 @@ hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double
 }
 
 
+/* Handle a = neg integer cases.
+ * Assumes b is such that the numerator terminates
+ * before the denominator, which is of course required
+ * in any case.
+ *
+ * FIXME: how does this behave for b < 0 and/or x < 0 ???
+ * The question is whether or not the recursion is stable.
+ */
+static
+int
+hyperg_1F1_a_negint(int a, const double b, const double x, double * result)
+{
+  if(a == -1) {
+    *result = 1.0 + a/b * x;
+    return GSL_SUCCESS;
+  }
+  else if(a == -2) {
+    *result = 1.0 + a/b * x + 0.5*a*(a+1.0)/(b*(b+1.0)) *x*x;
+    return GSL_SUCCESS;
+  }
+  else {
+    double FN, FNp1;
+    int N      = -a;
+    double ap  = 0.0;
+    int stat_r = hyperg_1F1_recurse_nega(ap, b, x, N, &FN, &FNp1);
+    *result = FN;
+    return stat_r;
+  }
+}
+
 
 int
 gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
@@ -465,6 +510,12 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
     return GSL_SUCCESS;
   }
 
+  /* case: a==0 */
+  if(fabs(a) < locEPS) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  
   /* case: a==b,  exp(x) */
   if(fabs(bma) < locEPS) {
     return gsl_sf_exp_impl(x, result);
@@ -475,7 +526,6 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
     *result = 0.0;
     return GSL_EDOM;
   }
-
 
   /* Trap the generic cases where some form
    * of series evaluation will work.
@@ -505,9 +555,39 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
   }
 
 
+  /* a = negative integer
+   */
+  if(a_neg_integer) {
+    int inta = floor(a + 0.1);
+    return hyperg_1F1_a_negint(inta, b, x, result);
+  }
+
+
+  /* b-a = negative integer
+   */
+  if(bma_neg_integer) {
+    int    intbma = floor(bma + 0.1);
+    double Kummer_1F1;
+    int    stat_K = hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1);
+    double lnr    = log(fabs(Kummer_1F1)) + x;
+    if(lnr < GSL_LOG_DBL_MAX) {
+      *result = exp(x) * Kummer_1F1;
+      return stat_K;
+    }
+    else {
+      *result = 0.0;  /* FIXME: should be Inf */
+      return GSL_EOVRFLW;
+    }
+  }
+
+
   /* Large negative x asymptotic.
    */
-  if(x < -10.0 && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)) {
+  if(   x < -10.0
+     && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 1.2*fabs(x)
+     && !b_neg_integer
+     && !bma_neg_integer
+    ) {
     double prec;
     return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
   }
@@ -515,10 +595,17 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
 
   /* Large positive x asymptotic.
    */
-  if(x > 10.0 && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)) {
+  if(   x > 10.0
+     && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 1.2*fabs(x)
+     && !b_neg_integer
+     && !a_neg_integer
+    ) {
     double prec;
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
   }
+
+
+
 
 
   /* Large positive a obtained by recursion.
@@ -590,58 +677,6 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
       *result = 0.0;
       return stat_e;
     }
-  }
-
-
-  /* If 'a' is a negative integer, then the
-   * series truncates to a polynomial.
-   * We do not have to worry about negative integer 'b',
-   * since that error condition is trapped above.
-   *
-   * FIXME: Don't we have to worry about the magnitudes
-   * of the arguments??
-   */
-  if(a_neg_integer) {
-    double prec;
-    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
-  }
-
-  /* If b-a is a negative integer, use the Kummer transformation
-   *    1F1(a,b,x) = Exp(x) 1F1(b-a,b,x)
-   * to reduce it to a polynomial times an exponential.
-   * Note that there can be no error condition here, since
-   * there can only be an error if 'b' is a negative integer, but
-   * in that case we would not have gotten this far unless 'a' was
-   * a negative integer as well, in which case the above code block
-   * handled the situation.
-   *
-   * FIXME: Don't we also have to be careful about the
-   * magnitude of the arguments??
-   */
-  if(bma_neg_integer) {
-    double prec;
-    double Ex, Kummer_1F1;
-    double int_bma = floor(bma + 0.1);
-    int stat_E = gsl_sf_exp_impl(x, &Ex);
-    int stat_K = gsl_sf_hyperg_1F1_series_impl(int_bma, b, -x, &Kummer_1F1, &prec);
-    int stat;
-    if(stat_E != GSL_SUCCESS) {
-      *result = 0.0;
-      stat    = stat_E;
-    }
-    else if(stat_K == GSL_ELOSS || prec > locEPS) {
-      *result = Ex * Kummer_1F1;
-      stat    = GSL_ELOSS;
-    }
-    else if(stat_K != GSL_SUCCESS) {
-      *result = 0.0;
-      stat    = stat_K;
-    }
-    else {
-      *result = Ex * Kummer_1F1;
-      stat = GSL_SUCCESS;
-    }
-    return stat;
   }
 
 
