@@ -98,6 +98,7 @@ suite (@pxref{Random number generation}) and the FFT package
 * FFTs::                        
 * Root finding::                
 * Simulated annealing::         
+* Contributors to GSL::         
 * Copying::                     
 * Concept Index::               
 * Function Index::              
@@ -107,6 +108,7 @@ suite (@pxref{Random number generation}) and the FFT package
 
 @node Preliminaries
 @chapter Preliminaries
+
 
 
 
@@ -304,8 +306,30 @@ Does a @emph{simulated annealing} search through a given space (defined
 by the type @code{Element}).
 @end deftypefn
 
+@node Contributors to GSL
+@appendix Contributors to GSL
+
+@table @strong
+@item Mark Galassi
+Conceived GSL (with James Theiler) and wrote the design document.  Has
+not yet contributed any real code @code{:-)}.
+
+@item James Theiler
+Conceived GSL (with Mark Galassi).  Wrote the random number generators
+and the relevant chapter in this manual.
+
+@item Jim Davies
+Wrote the basic statistical routines and the relevant chapter in this
+manual.
+
+@item Brian Gough
+Wrote the FFT package and the relevant chapter in this manual.
+
+@end table
+
+
 @node Copying
-@unnumbered Copying
+@appendix Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
 this means that everyone is free to use them and free to redistribute
