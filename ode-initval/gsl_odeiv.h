@@ -199,7 +199,7 @@ gsl_odeiv_control * gsl_odeiv_control_yp_new(double eps_abs, double eps_rel);
  * each component
  *
  *    D0 = eps_abs * scale_abs[i] + eps_rel * (a_y |y| + a_dydt h |y'|)
- * /
+ */
 gsl_odeiv_control * gsl_odeiv_control_scaled_new(double eps_abs, double eps_rel, double a_y, double a_dydt, const double scale_abs[], size_t dim);
 
 /* General evolution object.
