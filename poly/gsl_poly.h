@@ -59,9 +59,10 @@ int gsl_poly_set_from_array (gsl_poly * p, const double a[], size_t size);
 
 int gsl_poly_set_zero (gsl_poly * p);
 int gsl_poly_set_all (gsl_poly * p, size_t d, double x);
-int gsl_poly_set_basis (gsl_poly * p, size_t i);
 int gsl_poly_scale (gsl_poly * p, double a);
-int gsl_poly_consistent (const gsl_poly * p, double tol);
+
+int gsl_poly_chop (gsl_poly * p, size_t k);
+size_t gsl_poly_find_size (const gsl_poly * p, double tol);
  
 int gsl_poly_memcpy (gsl_poly * dest, const gsl_poly * src);
 

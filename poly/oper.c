@@ -106,18 +106,16 @@ gsl_poly_chop (gsl_poly * p, size_t k)
   return GSL_SUCCESS;
 }
 
-size_t
-gsl_poly_find_size (const gsl_poly * p, double tol)
+size_t gsl_poly_find_size (const gsl_poly * p, double tol)
 {
   size_t i;
   size_t size = p->size;
 
-  for (i = size; i > 0 && i--;)
+  i = size;
+
+  while (i > 0 && fabs (p->c[i-1]) < tol)
     {
-      if (fabs (p->c[i]) >= tol)
-	{
-	  break;
-	}
+      i--;
     }
 
   return i;
@@ -151,12 +149,12 @@ gsl_poly_add (gsl_poly * p1, const gsl_poly * p2)
     {
       GSL_ERROR ("size of polynomials must be equal", GSL_EBADLEN);
     }
-  
+
   for (i = 0; i < size; i++)
     {
       p1->c[i] += p2->c[i];
     }
-  
+
   return GSL_SUCCESS;
 }
 
@@ -170,12 +168,12 @@ gsl_poly_sub (gsl_poly * p1, const gsl_poly * p2)
     {
       GSL_ERROR ("size of polynomials must be equal", GSL_EBADLEN);
     }
-  
+
   for (i = 0; i < size; i++)
     {
       p1->c[i] -= p2->c[i];
     }
-  
+
   return GSL_SUCCESS;
 }
 
@@ -197,7 +195,7 @@ gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
     {
       q->c[i] = 0.0;
     }
-  
+
   for (i = 0; i < size_q; i++)
     {
       double sum = 0.0;
@@ -206,10 +204,10 @@ gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
       size_t j_max = (i >= size_p1) ? size_p1 : (i + 1);
 
       for (j = j_min; j < j_max; j++)
-        {
-          sum += p1->c[j] * p2->c[i-j];
-        }
-      
+	{
+	  sum += p1->c[j] * p2->c[i - j];
+	}
+
       q->c[i] = sum;
     }
 
@@ -217,13 +215,14 @@ gsl_poly_mul (gsl_poly * q, const gsl_poly * p1, const gsl_poly * p2)
 }
 
 int
-gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v)
+gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u,
+	      const gsl_poly * v)
 {
   size_t size_q = q->size;
   size_t size_r = r->size;
   size_t size_u = u->size;
   size_t size_v = v->size;
-  
+
   size_t i, j, k;
 
   if (size_v > size_u)
@@ -235,12 +234,14 @@ gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v
 
   if (size_q != size_u)
     {
-      GSL_ERROR ("size of quotient must equal size of numerator", GSL_EBADLEN);
+      GSL_ERROR ("size of quotient must equal size of numerator",
+		 GSL_EBADLEN);
     }
 
   if (size_r != size_u)
     {
-      GSL_ERROR ("size of remainder must equal size of numerator", GSL_EBADLEN);
+      GSL_ERROR ("size of remainder must equal size of numerator",
+		 GSL_EBADLEN);
     }
 
   /* Trim leading zeros from denominator */
@@ -256,21 +257,20 @@ gsl_poly_div (gsl_poly * q, gsl_poly * r, const gsl_poly * u, const gsl_poly * v
       r->c[i] = u->c[i];
     }
 
-  for (k = size_u - size_v + 1; k > 0 && k--;) 
+  for (k = size_u; k >= size_v && k--;)
     {
-      double qk = r->c[size_v + k - 1] / v->c[size_v - 1];
+      double qk = r->c[k] / v->c[size_v - 1];
 
-      q->c[k] = qk;
+      q->c[k - (size_v - 1)] = qk;
 
-      for (j = size_v + k - 1; j > k && j--;)
+      /* Shift the remainder */
+
+      r->c[k] = 0.0;
+
+      for (j = 0; j < size_v - 1; j++)
 	{
-	  r->c[j] -= qk * v->c[j - k];
+	  r->c[j + (k - (size_v - 1))] -= qk * v->c[j];
 	}
-    }
-
-  for (j = size_v - 1; j < size_u; j++)
-    {
-      r->c[j] = 0.0;
     }
 
   return GSL_SUCCESS;
@@ -295,10 +295,11 @@ gsl_poly_diff (gsl_poly * dp, const gsl_poly * p)
 {
   size_t size = dp->size;
   size_t i;
-  
-  if (size + 1 !=  p->size)
+
+  if (size + 1 != p->size)
     {
-      GSL_ERROR ("derivative must be one element smaller than polynomial", GSL_EBADLEN);
+      GSL_ERROR ("derivative must be one element smaller than polynomial",
+		 GSL_EBADLEN);
     }
 
   for (i = 0; i < size; i++)
@@ -320,4 +321,3 @@ gsl_poly_dump (gsl_poly * p)
     }
   printf ("\n");
 }
-

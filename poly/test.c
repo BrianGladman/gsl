@@ -507,7 +507,7 @@ main (void)
 
       gsl_poly_memcpy (q, p);
 
-      for (i = 0; i <N; i++)
+      for (i = 0; i < N; i++)
 	{
 	  if (q->c[i] != p->c[i])
 	    status = 1;
@@ -522,7 +522,7 @@ main (void)
   }
 
   {
-    double x, y;
+    double x, y, y_exp;
     gsl_poly *p = gsl_poly_calloc (10);
 
     gsl_poly_set (p, 0, 1.0);
@@ -531,9 +531,9 @@ main (void)
 
     x = 0.5;
     y = gsl_poly_eval2 (p, x);
+    y_exp = 1 + 0.5 * x + 0.3 * x * x;
 
-    gsl_test_rel (y, 1 + 0.5 * x + 0.3 * x * x, 10 * GSL_DBL_EPSILON,
-		  "gsl_poly_eval2({1, 0.5, 0.3}, 0.5)");
+    gsl_test_rel (y, y_exp, eps, "gsl_poly_eval2({1, 0.5, 0.3}, 0.5)");
 
     gsl_poly_free (p);
   }
@@ -542,68 +542,60 @@ main (void)
     double x, y;
     gsl_poly *p = gsl_poly_calloc (7);
 
-    double a[10] = { 1, -1, 1, -1, 1, -1, 1};
+    double a[10] = { 1, -1, 1, -1, 1, -1, 1 };
 
     gsl_poly_set_from_array (p, a, 7);
 
     x = 1.0;
     y = gsl_poly_eval2 (p, x);
 
-    gsl_test_rel (y, 1.0, 10 * GSL_DBL_EPSILON,
+    gsl_test_rel (y, 1.0, eps,
 		  "gsl_poly_eval2({1,-1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
 
     gsl_poly_free (p);
   }
 
-#ifdef DEGREE
   {
-    int status = 0;
-    gsl_poly *p = gsl_poly_calloc (6);
-
-    gsl_poly_set_all (p, 5, 1.0);
-    status = gsl_poly_consistent (p, GSL_DBL_EPSILON);
-    gsl_test (status, "gsl_poly_consistent GSL_SUCCESS");
-    gsl_poly_set (p, 5, 0.0);
-    gsl_poly_set (p, 4, 0.0);
-    status = gsl_poly_consistent (p, GSL_DBL_EPSILON);
-    gsl_test (!status, "gsl_poly_consistent GSL_FAILURE");
-
-    gsl_poly_free (p);
-  }
-#endif
-
-#ifdef DEGREE
-  {
+    size_t i;
     gsl_poly *p = gsl_poly_calloc (5);
+
+    double a[5] = { 1, 1, 1, 0, 0 };
 
     gsl_poly_set (p, 0, 1.0);
     gsl_poly_set (p, 1, 1.0);
     gsl_poly_set (p, 2, 1.0);
-    gsl_poly_set (p, 3, 1.0);
-    gsl_poly_set (p, 4, 1.0);
-    gsl_poly_set_degree (p, GSL_DBL_EPSILON);
-    gsl_test (p->degree != 4,
-	      "gsl_poly_set_degree {1,1,1,1}, GSL_DBL_EPSILON");
-    gsl_poly_set (p, 4, 1.0e-20);
-    gsl_poly_set_degree (p, GSL_DBL_EPSILON);
-    gsl_test (p->degree != 3,
-	      "gsl_poly_set_degree {1,1,1,1.0e-20}, GSL_DBL_EPSILON");
+    gsl_poly_set (p, 3, -1.0e-6);
+    gsl_poly_set (p, 4, -1.0e-6);
+
+    i = gsl_poly_find_size (p, 1.0e-5);
+
+    gsl_test (i != 3, "gsl_poly_find_size {1,1,1,0,0}");
+
+    gsl_poly_chop (p, i);
+
+    for (i = 0; i < 5; i++)
+      {
+	gsl_test_rel (p->c[i], a[i], 1e-20, "x^%u, poly chop", i);
+      }
 
     gsl_poly_free (p);
   }
-#endif
+
 
   {
     size_t i;
     gsl_poly *p = gsl_poly_calloc (6);
 
-    double a[6] = {1, 2, 3, 4, 5, 6};
+    double a[6] = { 1, 2, 3, 4, 5, 6 };
 
     gsl_poly_set_from_array (p, a, 6);
     gsl_poly_scale (p, 2.1354);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (p->c[i], 2.1354*a[i], 1.0e-09, "x^%u, poly scale", i);
+      {
+	double ci = 2.1354 * a[i];
+	gsl_test_rel (p->c[i], ci, eps, "x^%u, poly scale", i);
+      }
 
     gsl_poly_free (p);
   }
@@ -614,7 +606,7 @@ main (void)
     gsl_poly *p2 = gsl_poly_calloc (6);
 
     double a[6] = { 2.18, -1.01, 7.39, 1.69, 5.11, 2.16 };
-    double b[6] = { 9.97, 8.13, -1.34, -9.39, 1.37, -8.24};
+    double b[6] = { 9.97, 8.13, -1.34, -9.39, 1.37, -8.24 };
 
     gsl_poly_set_from_array (p1, a, 6);
     gsl_poly_set_from_array (p2, b, 6);
@@ -622,7 +614,10 @@ main (void)
     gsl_poly_add (p1, p2);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (p1->c[i], a[i]+b[i], 1.0e-09, "x^%u, poly addition", i);
+      {
+	double ci = a[i] + b[i];
+	gsl_test_rel (p1->c[i], ci, eps, "x^%u, poly addition", i);
+      }
 
     gsl_poly_free (p1);
     gsl_poly_free (p2);
@@ -634,7 +629,7 @@ main (void)
     gsl_poly *p2 = gsl_poly_calloc (6);
 
     double a[6] = { 2.18, -1.01, 7.39, 1.69, 5.11, 2.16 };
-    double b[6] = { 9.97, 8.13, -1.34, -9.39, 1.37, -8.24};
+    double b[6] = { 9.97, 8.13, -1.34, -9.39, 1.37, -8.24 };
 
     gsl_poly_set_from_array (p1, a, 6);
     gsl_poly_set_from_array (p2, b, 6);
@@ -642,51 +637,14 @@ main (void)
     gsl_poly_sub (p1, p2);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (p1->c[i], a[i]-b[i], 1.0e-09, "x^%u, poly subtraction", i);
-
-    gsl_poly_free (p1);
-    gsl_poly_free (p2);
-  }
-
-
-#ifdef DEGREE
-  {
-    int status = 0;
-    size_t i;
-    gsl_poly *p1 = gsl_poly_calloc (6);
-    gsl_poly *p2 = gsl_poly_calloc (6);
-
-    double a[6] = { 2.18, -1.01, 7.39, 1.69, 5.11, 2.16 };
-    double b[6] = { 9.97, 8.13, -1.34, -9.39, -5.11, -2.16};
-
-    gsl_poly_set_from_array (p1, a, 6);
-    gsl_poly_set_from_array (p2, b, 6);
-
-    gsl_poly_add (p1, p2);
-
-    for (i = 0; i < 6; i++)
-      gsl_test_rel (p1->c[i], a[i]+b[i], 1.0e-09, "x^%u, poly addition", i);
-
-    gsl_test_abs (p1->c[0], 0.0, 1.0e-09, "x^0, poly addition");
-    gsl_test_rel (p1->c[1], 2.0, 1.0e-09, "x^1, poly addition");
-    gsl_test_rel (p1->c[2], 2.0, 1.0e-09, "x^2, poly addition");
-    gsl_test_rel (p1->c[3], 2.0, 1.0e-09, "x^3, poly addition");
-    gsl_test_abs (p1->c[4], 0.0, 1.0e-09, "x^4, poly addition");
-    gsl_test_abs (p1->c[5], 0.0, 1.0e-09, "x^5, poly addition");
-
-
-    gsl_poly_set_degree (p1, GSL_DBL_EPSILON);
-    if (p1->degree != 3)
       {
-	status = 1;
+	double ci = a[i] - b[i];
+	gsl_test_rel (p1->c[i], ci, eps, "x^%u, poly subtraction", i);
       }
-    gsl_test (status, "gsl_poly_add with lower degree for result");
-
 
     gsl_poly_free (p1);
     gsl_poly_free (p2);
   }
-#endif
 
   {
     size_t i;
@@ -705,7 +663,9 @@ main (void)
     gsl_poly_mul (w, p1, p2);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (w->c[i], p[i], 1.0e-09, "x^%u, poly multiplication", i);
+      {
+	gsl_test_rel (w->c[i], p[i], eps, "x^%u, poly multiplication", i);
+      }
 
     gsl_poly_free (p1);
     gsl_poly_free (p2);
@@ -720,14 +680,16 @@ main (void)
     gsl_poly *q = gsl_poly_calloc (6);
     gsl_poly *r = gsl_poly_calloc (6);
 
-    double u[6] = { 5.74, -2.11, -3.33, 9.06, 2.40, 4.63};
+    double u[6] = { 5.74, -2.11, -3.33, 9.06, 2.40, 4.63 };
     double v[3] = { 9.54, -3.28, -6.81 };
 
-    double qok[6] = { 1.54774201200558894e0, -2.27080863126619150e0,
-                      -2.49611329973844286e-2, -6.79882525697503671e-1,
-                      0.0, 0.0};
-    double rok[6] = { -9.02545879453331846e0, 2.46301081416577986e1,
-                      0.0, 0.0, 0.0, 0.0};
+    double qc[6] = { 1.54774201200558894e0, -2.27080863126619150e0,
+      -2.49611329973844286e-2, -6.79882525697503671e-1,
+      0.0, 0.0
+    };
+    double rc[6] = { -9.02545879453331846e0, 2.46301081416577986e1,
+      0.0, 0.0, 0.0, 0.0
+    };
 
     gsl_poly_set_from_array (p1, u, 6);
     gsl_poly_set_from_array (p2, v, 3);
@@ -735,9 +697,14 @@ main (void)
     gsl_poly_div (q, r, p1, p2);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (q->c[i], qok[i], 1.0e-9, "quotient x^%u, poly division", i);
-    for (i = 0; i < 6; i++)    
-      gsl_test_rel (r->c[i], rok[i], 1.0e-9, "remainder x^%u, poly division", i);
+      {
+	gsl_test_rel (q->c[i], qc[i], eps, "quotient x^%u, poly division", i);
+      }
+    for (i = 0; i < 6; i++)
+      {
+	gsl_test_rel (r->c[i], rc[i], eps, "remainder x^%u, poly division",
+		      i);
+      }
 
     gsl_poly_free (p1);
     gsl_poly_free (p2);
@@ -755,8 +722,8 @@ main (void)
     double u[6] = { 1, 1, 1, 1, 1, 0 };
     double v[3] = { 1, 1, 0 };
 
-    double qok[6] = { 1, 0, 1, 0, 1, 0};
-    double rok[6] = { 0, 0, 0, 0, 0, 0};
+    double qc[6] = { 0, 1, 0, 1, 0, 0 };
+    double rc[6] = { 1, 0, 0, 0, 0, 0 };
 
     gsl_poly_set_from_array (p1, u, 6);
     gsl_poly_set_from_array (p2, v, 3);
@@ -764,9 +731,15 @@ main (void)
     gsl_poly_div (q, r, p1, p2);
 
     for (i = 0; i < 6; i++)
-      gsl_test_rel (q->c[i], qok[i], 1.0e-9, "quotient x^%u, poly division", i);
-    for (i = 0; i < 6; i++)    
-      gsl_test_rel (r->c[i], rok[i], 1.0e-9, "remainder x^%u, poly division", i);
+      {
+	gsl_test_rel (q->c[i], qc[i], eps, "quotient x^%u, poly division", i);
+      }
+
+    for (i = 0; i < 6; i++)
+      {
+	gsl_test_rel (r->c[i], rc[i], eps, "remainder x^%u, poly division",
+		      i);
+      }
 
     gsl_poly_free (p1);
     gsl_poly_free (p2);
@@ -781,14 +754,16 @@ main (void)
     gsl_poly *dp = gsl_poly_calloc (5);
 
     double c[6] = { 1, 1, 1, 1, 1, 1 };
-    double dpok[5] = { 1.0, 2.0, 3.0, 4.0, 5.0 };
+    double dpc[5] = { 1.0, 2.0, 3.0, 4.0, 5.0 };
 
-    gsl_poly_set_from_array (p, c, 5);
+    gsl_poly_set_from_array (p, c, 6);
 
     gsl_poly_diff (dp, p);
 
-    for (i = 0; i < 6; i++)
-      gsl_test_rel (dp->c[i], dpok[i], 1.0e-9, "x^%u, poly diff", i);
+    for (i = 0; i < 5; i++)
+      {
+	gsl_test_rel (dp->c[i], dpc[i], eps, "x^%u, poly diff", i);
+      }
 
     gsl_poly_free (p);
     gsl_poly_free (dp);
