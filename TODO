@@ -5,6 +5,43 @@ We are looking for volunteers to do the following tasks.
 Consult the TODO files in each directory first for specific
 requirements.
 
+* Volunteer(s) for first line support on the mailing lists
+(e.g. checking that bugs are reproducible, and that all relevant
+information is supplied)
+
+* Eigensystems for non-symmetric matrices
+
+* ODE algorithms from RKSUITE
+
+* Incomplete Fermi-Dirac functions
+
+* General Legendre functions
+
+* Spheroidal wave functions
+
+* Weierstrass elliptic functions
+
+* Complex Bessel Functions
+
+* Additional volunteers with access to a good library to get copies of
+papers for other developers.
+
+* Estimates of condition numbers for linear solvers
+
+* Sine and Cosine Transforms from FFTPACK  (Alok Singhal <as8ca@virginia.edu>)
+
+* Cubature, e.g as provided by Cubpack. (Gert Van den Eynde
+<gvdeynde@sckcen.be> ?)
+
+* Mathieu functions (Lowell Johnson <ldj00@sio.midco.net>)
+
+* Fresnel Integrals ("Juergen J. Zach" <jjzach@pacific.mps.ohio-state.edu>)
+
+* Cumulative Distribution functions for the random distributions
+(Jason Hooper Stover <jason@sakla.net>)
+
+Other tasks:
+
 * Remove use of long double internally, e.g. as an accumulator in
 loops. It introduces variation between platforms which is undesirable.
 It should be replaced with a preprocessor variable ACC_DOUBLE so
