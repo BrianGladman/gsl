@@ -1,3 +1,9 @@
+2003-05-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* binomial_tpe.c: fast binomial algorithm using TPE method
+
+	* test.c: added the tests for the fast Binomial TPE routine
+
 2003-02-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* discrete.c (gsl_ran_discrete_preproc): fixed bug reported by

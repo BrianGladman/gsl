@@ -45,12 +45,21 @@ double test_beta (void);
 double test_beta_pdf (double x);
 double test_bernoulli (void);
 double test_bernoulli_pdf (unsigned int n);
+
 double test_binomial (void);
-double test_binomial_tpe (void);
 double test_binomial_pdf (unsigned int n);
 double test_binomial_large (void);
-double test_binomial_large_tpe (void);
 double test_binomial_large_pdf (unsigned int n);
+double test_binomial_huge (void);
+double test_binomial_huge_pdf (unsigned int n);
+
+double test_binomial_tpe (void);
+double test_binomial_tpe_pdf (unsigned int n);
+double test_binomial_large_tpe (void);
+double test_binomial_large_tpe_pdf (unsigned int n);
+double test_binomial_huge_tpe (void);
+double test_binomial_huge_tpe_pdf (unsigned int n);
+
 double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
@@ -309,7 +318,11 @@ main (void)
   testDiscretePDF (FUNC2 (poisson_large));
   testDiscretePDF (FUNC2 (bernoulli));
   testDiscretePDF (FUNC2 (binomial));
+  testDiscretePDF (FUNC2 (binomial_tpe));
   testDiscretePDF (FUNC2 (binomial_large));
+  testDiscretePDF (FUNC2 (binomial_large_tpe));
+  testDiscretePDF (FUNC2 (binomial_huge));
+  testDiscretePDF (FUNC2 (binomial_huge_tpe));
   testDiscretePDF (FUNC2 (geometric));
   testDiscretePDF (FUNC2 (geometric1));
   testDiscretePDF (FUNC2 (hypergeometric1));
@@ -578,17 +591,10 @@ test_bernoulli_pdf (unsigned int n)
   return gsl_ran_bernoulli_pdf (n, 0.3);
 }
 
-
 double
 test_binomial (void)
 {
   return gsl_ran_binomial (r_global, 0.3, 5);
-}
-
-double
-test_binomial_tpe (void)
-{
-  return gsl_ran_binomial_tpe (r_global, 0.3, 5);
 }
 
 double
@@ -598,9 +604,28 @@ test_binomial_pdf (unsigned int n)
 }
 
 double
+test_binomial_tpe (void)
+{
+  return gsl_ran_binomial_tpe (r_global, 0.3, 5);
+}
+
+double
+test_binomial_tpe_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 5);
+}
+
+
+double
 test_binomial_large (void)
 {
   return gsl_ran_binomial (r_global, 0.3, 55);
+}
+
+double
+test_binomial_large_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 55);
 }
 
 double
@@ -610,9 +635,34 @@ test_binomial_large_tpe (void)
 }
 
 double
-test_binomial_large_pdf (unsigned int n)
+test_binomial_large_tpe_pdf (unsigned int n)
 {
   return gsl_ran_binomial_pdf (n, 0.3, 55);
+}
+
+
+double
+test_binomial_huge (void)
+{
+  return gsl_ran_binomial (r_global, 0.3, 5500);
+}
+
+double
+test_binomial_huge_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 5500);
+}
+
+double
+test_binomial_huge_tpe (void)
+{
+  return gsl_ran_binomial_tpe (r_global, 0.3, 5500);
+}
+
+double
+test_binomial_huge_tpe_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 5500);
 }
 
 double
