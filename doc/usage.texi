@@ -142,7 +142,9 @@ Further information is available using the command @code{gsl-config --help}.
 
 @node Shared Libraries
 @section Shared Libraries
-
+@cindex shared libraries
+@cindex libraries, shared
+@cindex LD_LIBRARY_PATH
 To run a program linked with the shared version of the library it may be
 necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
 the directory where the library is installed.  For example,
