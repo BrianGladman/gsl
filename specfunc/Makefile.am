@@ -7,7 +7,6 @@ pkginclude_HEADERS = \
 	gsl_specfunc.h		\
 	gsl_sf_airy.h       	\
 	gsl_sf_bessel.h     	\
-	gsl_sf_chebyshev.h  	\
 	gsl_sf_clausen.h	\
 	gsl_sf_coupling.h	\
 	gsl_sf_coulomb.h	\
@@ -44,7 +43,10 @@ noinst_HEADERS = \
 	bessel.h		\
 	hyperg.h		\
 	legendre.h              \
-        eval.h
+        eval.h                  \
+        chebyshev.h             \
+        cheb_eval.c             \
+        cheb_eval_mode.c
 
 INCLUDES= -I$(top_builddir)
 
@@ -103,7 +105,6 @@ libgslspecfunc_la_SOURCES = 	\
 	bessel_sequence.c	\
 	beta.c			\
 	beta_inc.c		\
-	chebyshev.c		\
 	clausen.c		\
 	coulomb.c		\
 	coupling.c		\

@@ -8,7 +8,6 @@
 
 #include <gsl/gsl_sf_airy.h>
 #include <gsl/gsl_sf_bessel.h>
-#include <gsl/gsl_sf_chebyshev.h>
 #include <gsl/gsl_sf_clausen.h>
 #include <gsl/gsl_sf_coupling.h>
 #include <gsl/gsl_sf_coulomb.h>

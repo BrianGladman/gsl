@@ -25,9 +25,10 @@
 #include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "gsl_sf_airy.h"
-#include "gsl_sf_chebyshev.h"
 #include "bessel_olver.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /* fit for f(x) = zofmzeta((x+1)/2), 0 <= mzeta <= 1 */
 static double zofmzeta_a_data[20] = {
@@ -52,12 +53,10 @@ static double zofmzeta_a_data[20] = {
  -1.06506e-14,
   5.5375e-15
 };
-static gsl_sf_cheb_series zofmzeta_a_cs = {
+static cheb_series zofmzeta_a_cs = {
   zofmzeta_a_data,
   19,
   -1,1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -95,12 +94,10 @@ static double zofmzeta_b_data[30] = {
  -6.04e-16,
   1.20e-16
 };
-static gsl_sf_cheb_series zofmzeta_b_cs = {
+static cheb_series zofmzeta_b_cs = {
   zofmzeta_b_data,
   29,
   -1,1,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -122,12 +119,10 @@ static double zofmzeta_c_data[11] = {
   4.192e-16,
  -1.23e-17
 };
-static gsl_sf_cheb_series zofmzeta_c_cs = {
+static cheb_series zofmzeta_c_cs = {
   zofmzeta_c_data,
   10,
   -1,1,
-  (double *)0,
-  (double *)0,
   6
 };
 
@@ -141,13 +136,13 @@ gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
   if(minus_zeta < 1.0) {
     const double x = 2.0*minus_zeta - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&zofmzeta_a_cs, x, &c);
+    cheb_eval_e(&zofmzeta_a_cs, x, &c);
     return c.val;
   }
   else if(minus_zeta < 10.0) {
     const double x = (2.0*minus_zeta - 11.0)/9.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&zofmzeta_b_cs, x, &c);
+    cheb_eval_e(&zofmzeta_b_cs, x, &c);
     return c.val;
   }
   else {
@@ -155,7 +150,7 @@ gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
     const double p = pow(minus_zeta, 3.0/2.0);
     const double x = 2.0*TEN_32/p - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&zofmzeta_c_cs, x, &c);
+    cheb_eval_e(&zofmzeta_c_cs, x, &c);
     return c.val * p;
   }
 }
@@ -195,12 +190,10 @@ static double A3_gt1_data[31] = {
    1.4806598977677176106283840244e-17,
   -3.0069285750787303634897997963e-18
 };
-static gsl_sf_cheb_series A3_gt1_cs = {
+static cheb_series A3_gt1_cs = {
   A3_gt1_data,
   30,
   -1,1,
-  (double *)0,
-  (double *)0,
   17
 };
 
@@ -237,12 +230,10 @@ static double A4_gt1_data[30] = {
   3.7849342199690728470461022877e-15,
  -7.8552867468122209577151823365e-16
 };
-static gsl_sf_cheb_series A4_gt1_cs = {
+static cheb_series A4_gt1_cs = {
   A4_gt1_data,
   17, /* 29, */
   -1, 1,
-  (double *)0,
-  (double *)0,
   17
 };
 
@@ -289,12 +280,10 @@ static double B2_gt1_data[40] = {
  -4.8124980266864320351456993068e-11,
   2.3666534694476306077416831958e-11
 };
-static gsl_sf_cheb_series B2_gt1_cs = {
+static cheb_series B2_gt1_cs = {
   B2_gt1_data,
   39,
   -1, 1,
-  (double *)0,
-  (double *)0,
   30
 };
 
@@ -332,12 +321,10 @@ static double B3_gt1_data[30] = {
  -4.1358791499961929237755474814e-07,
   2.0354151158738819867477996807e-07
 };
-static gsl_sf_cheb_series B3_gt1_cs = {
+static cheb_series B3_gt1_cs = {
   B3_gt1_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   29
 };
 
@@ -385,12 +372,10 @@ static double B2_lt1_data[40] = {
   6.8663910168392483929411418190e-11,
  -3.4068313177952244040559740439e-11
 };
-static gsl_sf_cheb_series B2_lt1_cs = {
+static cheb_series B2_lt1_cs = {
   B2_lt1_data,
   39,
   -1, 1,
-  (double *)0,
-  (double *)0,
   39
 };
 
@@ -438,12 +423,10 @@ static double B3_lt1_data[40] = {
   5.0226342286491286957075289622e-08,
  -2.5049645660259882970547555831e-08
 };
-static gsl_sf_cheb_series B3_lt1_cs = {
+static cheb_series B3_lt1_cs = {
   B3_lt1_data,
   39,
   -1, 1,
-  (double *)0,
-  (double *)0,
   39
 };
 
@@ -491,12 +474,10 @@ static double A3_lt1_data[40] = {
   -5.1347942579352613057675111787e-09,
    2.5583541594586723967261504321e-09
 };
-static gsl_sf_cheb_series A3_lt1_cs = {
+static cheb_series A3_lt1_cs = {
   A3_lt1_data,
   39,
   -1, 1,
-  (double *)0,
-  (double *)0,
   39
 };
 
@@ -533,12 +514,10 @@ static double A4_lt1_data[30] = {
   2.5923752117132254429002796600e-08,
  -2.3309428552190587304662883477e-08
 };
-static gsl_sf_cheb_series A4_lt1_cs = {
+static cheb_series A4_lt1_cs = {
   A4_lt1_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   29
 };
 
@@ -618,7 +597,7 @@ static double olver_B2(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&B2_lt1_cs, x, &c);
+    cheb_eval_e(&B2_lt1_cs, x, &c);
     return  c.val / z;
   }
   else if(z <= 1.2) {
@@ -639,7 +618,7 @@ static double olver_B2(double z, double abs_zeta)
     const double zi = 1.0/z;
     const double x  = 12.0/5.0 * zi - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&B2_gt1_cs, x, &c);
+    cheb_eval_e(&B2_gt1_cs, x, &c);
     return c.val * zi*zi*zi;
   }
 }
@@ -650,7 +629,7 @@ static double olver_B3(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&B3_lt1_cs, x, &c);
+    cheb_eval_e(&B3_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.2) {
@@ -668,7 +647,7 @@ static double olver_B3(double z, double abs_zeta)
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&B3_gt1_cs, x, &c);
+    cheb_eval_e(&B3_gt1_cs, x, &c);
     return  c.val * zi2*zi2*zi2;
   }
 }
@@ -773,7 +752,7 @@ static double olver_A3(double z, double abs_zeta)
   if(z < 0.9) {
     const double x = 20.0*z/9.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&A3_lt1_cs, x, &c);
+    cheb_eval_e(&A3_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.1) {
@@ -791,7 +770,7 @@ static double olver_A3(double z, double abs_zeta)
     const double x   = 11.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&A3_gt1_cs, x, &c);
+    cheb_eval_e(&A3_gt1_cs, x, &c);
     return  c.val * zi2*zi2*zi2;
   }
 }
@@ -802,7 +781,7 @@ static double olver_A4(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&A4_lt1_cs, x, &c);
+    cheb_eval_e(&A4_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.2) {
@@ -819,7 +798,7 @@ static double olver_A4(double z, double abs_zeta)
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&A4_gt1_cs, x, &c);
+    cheb_eval_e(&A4_gt1_cs, x, &c);
     return c.val * zi2*zi2*zi2*zi2;
   }
 }

@@ -25,10 +25,10 @@
 #include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -59,12 +59,10 @@ static double by1_data[14] = {
   0.00000000000000027838,
  -0.00000000000000000186
 };
-static gsl_sf_cheb_series by1_cs = {
+static cheb_series by1_cs = {
   by1_data,
   13,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -95,7 +93,7 @@ int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
     gsl_sf_result J1;
     gsl_sf_result c;
     int status = gsl_sf_bessel_J1_e(x, &J1);
-    gsl_sf_cheb_eval_e(&by1_cs, -1.0, &c);
+    cheb_eval_e(&by1_cs, -1.0, &c);
     result->val = two_over_pi * lnterm * J1.val + (0.5 + c.val)/x;
     result->err = fabs(lnterm) * (fabs(GSL_DBL_EPSILON * J1.val) + J1.err) + c.err/x;
     return status;
@@ -105,7 +103,7 @@ int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
     int status;
     gsl_sf_result J1;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&by1_cs, 0.125*x*x-1.0, &c);
+    cheb_eval_e(&by1_cs, 0.125*x*x-1.0, &c);
     status = gsl_sf_bessel_J1_e(x, &J1);
     result->val = two_over_pi * lnterm * J1.val + (0.5 + c.val)/x;
     result->err = fabs(lnterm) * (fabs(GSL_DBL_EPSILON * J1.val) + J1.err) + c.err/x;
@@ -116,8 +114,8 @@ int gsl_sf_bessel_Y1_e(const double x, gsl_sf_result * result)
     gsl_sf_result ca;
     gsl_sf_result ct;
     gsl_sf_result cp;
-    const int stat_ca = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
-    const int stat_ct = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
+    const int stat_ca = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
+    const int stat_ct = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
     const int stat_cp = gsl_sf_bessel_cos_pi4_e(x, ct.val/x, &cp);
     const double sqrtx = sqrt(x);
     const double ampl  = (0.75 + ca.val) / sqrtx;

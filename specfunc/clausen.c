@@ -24,9 +24,10 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_trig.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_clausen.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 static double aclaus_data[15] = {
   2.142694363766688447e+00,
@@ -45,12 +46,10 @@ static double aclaus_data[15] = {
   0.68e-17,
   0.4e-18
 };
-static gsl_sf_cheb_series aclaus_cs = {
+static cheb_series aclaus_cs = {
   aclaus_data,
   14,
   -1, 1,
-  (double *)0,
-  (double *)0
 };
 
 
@@ -91,7 +90,7 @@ int gsl_sf_clausen_e(double x, gsl_sf_result *result)
   else {
     const double t = 2.0*(x*x / (M_PI*M_PI) - 0.5);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&aclaus_cs, t, &result_c);
+    cheb_eval_e(&aclaus_cs, t, &result_c);
     result->val = x * (result_c.val - log(x));
     result->err = x * (result_c.err + GSL_DBL_EPSILON);
   }

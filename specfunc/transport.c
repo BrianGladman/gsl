@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_transport.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 static double transport2_data[18] = {
    1.671760446434538503,
@@ -47,12 +48,10 @@ static double transport2_data[18] = {
    0.23e-16,
   -0.19e-17
 };
-static gsl_sf_cheb_series transport2_cs = {
+static cheb_series transport2_cs = {
   transport2_data,
   17,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -76,12 +75,10 @@ static double transport3_data[18] = {
    0.219e-16,
   -0.19e-17
 };
-static gsl_sf_cheb_series transport3_cs = {
+static cheb_series transport3_cs = {
   transport3_data,
   17,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -106,12 +103,10 @@ static double transport4_data[18] = {
   0.211e-16,
  -0.18e-17
 };
-static gsl_sf_cheb_series transport4_cs = {
+static cheb_series transport4_cs = {
   transport4_data,
   17,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -136,12 +131,10 @@ static double transport5_data[18] = {
    0.21e-16,
   -0.18e-17
 };
-static gsl_sf_cheb_series transport5_cs = {
+static cheb_series transport5_cs = {
   transport5_data,
   17,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -192,7 +185,7 @@ gsl_sf_transport_2_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     double t = (x*x/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&transport2_cs, t, &result_c);
+    cheb_eval_e(&transport2_cs, t, &result_c);
     result->val  = x * result_c.val;
     result->err  = x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -273,7 +266,7 @@ gsl_sf_transport_3_e(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&transport3_cs, t, &result_c);
+    cheb_eval_e(&transport3_cs, t, &result_c);
     result->val  = x2 * result_c.val;
     result->err  = x2 * result_c.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -354,7 +347,7 @@ gsl_sf_transport_4_e(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&transport4_cs, t, &result_c);
+    cheb_eval_e(&transport4_cs, t, &result_c);
     result->val  = x2*x * result_c.val;
     result->err  = x2*x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -435,7 +428,7 @@ gsl_sf_transport_5_e(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&transport5_cs, t, &result_c);
+    cheb_eval_e(&transport5_cs, t, &result_c);
     result->val  = x2*x2 * result_c.val;
     result->err  = x2*x2 * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

@@ -23,12 +23,13 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_mode.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -60,12 +61,10 @@ static double bj0_data[13] = {
   -0.0000000000000010619,
    0.0000000000000000074,
 };
-static gsl_sf_cheb_series bj0_cs = {
+static cheb_series bj0_cs = {
   bj0_data,
   12,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -84,15 +83,15 @@ int gsl_sf_bessel_J0_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(y <= 4.0) {
-    return gsl_sf_cheb_eval_e(&bj0_cs, 0.125*y*y - 1.0, result);
+    return cheb_eval_e(&bj0_cs, 0.125*y*y - 1.0, result);
   }
   else {
     const double z = 32.0/(y*y) - 1.0;
     gsl_sf_result ca;
     gsl_sf_result ct;
     gsl_sf_result cp;
-    const int stat_ca = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &ca);
-    const int stat_ct = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &ct);
+    const int stat_ca = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &ca);
+    const int stat_ct = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &ct);
     const int stat_cp = gsl_sf_bessel_cos_pi4_e(y, ct.val/y, &cp);
     const double sqrty = sqrt(y);
     const double ampl  = (0.75 + ca.val) / sqrty;

@@ -23,13 +23,15 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_hyperg.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 #define locEPS  (1000.0*GSL_DBL_EPSILON)
 
@@ -60,12 +62,10 @@ static double fd_1_a_data[22] = {
   0.0,
  -3.e-19
 };
-static gsl_sf_cheb_series fd_1_a_cs = {
+static cheb_series fd_1_a_cs = {
   fd_1_a_data,
   21,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -96,12 +96,10 @@ static double fd_1_b_data[22] = {
   3.7e-17,
  -1.6e-17
 };
-static gsl_sf_cheb_series fd_1_b_cs = {
+static cheb_series fd_1_b_cs = {
   fd_1_b_data,
   21,
   -1, 1,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -133,12 +131,10 @@ static double fd_1_c_data[23] = {
   1.4e-16,
  -3.e-17
 };
-static gsl_sf_cheb_series fd_1_c_cs = {
+static cheb_series fd_1_c_cs = {
   fd_1_c_data,
   22,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -181,12 +177,10 @@ static double fd_1_d_data[30] = {
   2.33e-17,
  -5.9e-18
 };
-static gsl_sf_cheb_series fd_1_d_cs = {
+static cheb_series fd_1_d_cs = {
   fd_1_d_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   14
 };
 
@@ -209,12 +203,10 @@ static double fd_1_e_data[10] = {
  -2.9e-18,
  -1.7e-18
 };
-static gsl_sf_cheb_series fd_1_e_cs = {
+static cheb_series fd_1_e_cs = {
   fd_1_e_data,
   9,
   -1, 1,
-  (double *)0,
-  (double *)0,
   4
 };
 
@@ -244,12 +236,10 @@ static double fd_2_a_data[21] = {
   0.0,
   4.e-19
 };
-static gsl_sf_cheb_series fd_2_a_cs = {
+static cheb_series fd_2_a_cs = {
   fd_2_a_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -280,12 +270,10 @@ static double fd_2_b_data[22] = {
   1.2e-17,
   1.e-18
 };
-static gsl_sf_cheb_series fd_2_b_cs = {
+static cheb_series fd_2_b_cs = {
   fd_2_b_data,
   21,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -314,12 +302,10 @@ static double fd_2_c_data[20] = {
  -7.39e-15,
   4.3e-16
 };
-static gsl_sf_cheb_series fd_2_c_cs = {
+static cheb_series fd_2_c_cs = {
   fd_2_c_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -362,12 +348,10 @@ static double fd_2_d_data[30] = {
   3.394e-17,
  -8.81e-18
 };
-static gsl_sf_cheb_series fd_2_d_cs = {
+static cheb_series fd_2_d_cs = {
   fd_2_d_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   14
 };
 
@@ -384,12 +368,10 @@ static double fd_2_e_data[4] = {
   0.00022846306484003205,
   5.2e-19
 };
-static gsl_sf_cheb_series fd_2_e_cs = {
+static cheb_series fd_2_e_cs = {
   fd_2_e_data,
   3,
   -1, 1,
-  (double *)0,
-  (double *)0,
   3
 };
 
@@ -418,12 +400,10 @@ static double fd_mhalf_a_data[20] = {
   1.0084e-15,
  -1.561e-16
 };
-static gsl_sf_cheb_series fd_mhalf_a_cs = {
+static cheb_series fd_mhalf_a_cs = {
   fd_mhalf_a_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -452,12 +432,10 @@ static double fd_mhalf_b_data[20] = {
   3.00028e-14,
  -3.4970e-15
 };
-static gsl_sf_cheb_series fd_mhalf_b_cs = {
+static cheb_series fd_mhalf_b_cs = {
   fd_mhalf_b_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -491,12 +469,10 @@ static double fd_mhalf_c_data[25] = {
  -2.6e-17,
   5.e-18
 };
-static gsl_sf_cheb_series fd_mhalf_c_cs = {
+static cheb_series fd_mhalf_c_cs = {
   fd_mhalf_c_data,
   24,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -538,12 +514,10 @@ static double fd_mhalf_d_data[30] = {
   7.6e-18,
  -1.9e-18
 };
-static gsl_sf_cheb_series fd_mhalf_d_cs = {
+static cheb_series fd_mhalf_d_cs = {
   fd_mhalf_d_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -575,12 +549,10 @@ static double fd_half_a_data[23] = {
  -6.e-19,
   1.e-19
 };
-static gsl_sf_cheb_series fd_half_a_cs = {
+static cheb_series fd_half_a_cs = {
   fd_half_a_data,
   22,
   -1, 1,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -609,12 +581,10 @@ static double fd_half_b_data[20] = {
  -3.864e-15,
   1.202e-15
 };
-static gsl_sf_cheb_series fd_half_b_cs = {
+static cheb_series fd_half_b_cs = {
   fd_half_b_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -646,12 +616,10 @@ static double fd_half_c_data[23] = {
  -4.0e-17,
  -1.4e-17
 };
-static gsl_sf_cheb_series fd_half_c_cs = {
+static cheb_series fd_half_c_cs = {
   fd_half_c_data,
   22,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -693,12 +661,10 @@ static double fd_half_d_data[30] = {
   1.59e-17,
  -4.0e-18
 };
-static gsl_sf_cheb_series fd_half_d_cs = {
+static cheb_series fd_half_d_cs = {
   fd_half_d_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -728,12 +694,10 @@ static double fd_3half_a_data[20] = {
  -3.78e-17,
   5.1e-18
 };
-static gsl_sf_cheb_series fd_3half_a_cs = {
+static cheb_series fd_3half_a_cs = {
   fd_3half_a_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -764,12 +728,10 @@ static double fd_3half_b_data[22] = {
   4.5e-17,
  -5.e-18
 };
-static gsl_sf_cheb_series fd_3half_b_cs = {
+static cheb_series fd_3half_b_cs = {
   fd_3half_b_data,
   21,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -799,12 +761,10 @@ static double fd_3half_c_data[21] = {
   3.05e-15,
  -4.8e-16
 };
-static gsl_sf_cheb_series fd_3half_c_cs = {
+static cheb_series fd_3half_c_cs = {
   fd_3half_c_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -841,12 +801,10 @@ static double fd_3half_d_data[25] = {
  -1.81807e-14,
   4.6884e-15
 };
-static gsl_sf_cheb_series fd_3half_d_cs = {
+static cheb_series fd_3half_d_cs = {
   fd_3half_d_data,
   24,
   -1, 1,
-  (double *)0,
-  (double *)0,
   16
 };
 
@@ -1325,20 +1283,20 @@ int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    return gsl_sf_cheb_eval_e(&fd_1_a_cs, x, result);
+    return cheb_eval_e(&fd_1_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_1_b_cs, t, result);
+    return cheb_eval_e(&fd_1_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_1_c_cs, t, result);
+    return cheb_eval_e(&fd_1_c_cs, t, result);
   }
   else if(x < 30.0) {
     double t = 0.1*x - 2.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_1_d_cs, t, &c);
+    cheb_eval_e(&fd_1_d_cs, t, &c);
     result->val  = c.val * x*x;
     result->err  = c.err * x*x + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1346,7 +1304,7 @@ int gsl_sf_fermi_dirac_1_e(const double x, gsl_sf_result * result)
   else if(x < 1.0/GSL_SQRT_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_1_e_cs, t, &c);
+    cheb_eval_e(&fd_1_e_cs, t, &c);
     result->val  = c.val * x*x;
     result->err  = c.err * x*x + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1389,20 +1347,20 @@ int gsl_sf_fermi_dirac_2_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    return gsl_sf_cheb_eval_e(&fd_2_a_cs, x, result);
+    return cheb_eval_e(&fd_2_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_2_b_cs, t, result);
+    return cheb_eval_e(&fd_2_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_2_c_cs, t, result);
+    return cheb_eval_e(&fd_2_c_cs, t, result);
   }
   else if(x < 30.0) {
     double t = 0.1*x - 2.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_2_d_cs, t, &c);
+    cheb_eval_e(&fd_2_d_cs, t, &c);
     result->val  = c.val * x*x*x;
     result->err  = c.err * x*x*x + 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1410,7 +1368,7 @@ int gsl_sf_fermi_dirac_2_e(const double x, gsl_sf_result * result)
   else if(x < 1.0/GSL_ROOT3_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_2_e_cs, t, &c);
+    cheb_eval_e(&fd_2_e_cs, t, &c);
     result->val = c.val * x*x*x;
     result->err = c.err * x*x*x + 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1496,21 +1454,21 @@ int gsl_sf_fermi_dirac_mhalf_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    return gsl_sf_cheb_eval_e(&fd_mhalf_a_cs, x, result);
+    return cheb_eval_e(&fd_mhalf_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_mhalf_b_cs, t, result);
+    return cheb_eval_e(&fd_mhalf_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_mhalf_c_cs, t, result);
+    return cheb_eval_e(&fd_mhalf_c_cs, t, result);
   }
   else if(x < 30.0) {
     double rtx = sqrt(x);
     double t = 0.1*x - 2.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_mhalf_d_cs, t, &c);
+    cheb_eval_e(&fd_mhalf_d_cs, t, &c);
     result->val  = c.val * rtx;
     result->err  = c.err * rtx + 0.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1546,21 +1504,21 @@ int gsl_sf_fermi_dirac_half_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    return gsl_sf_cheb_eval_e(&fd_half_a_cs, x, result);
+    return cheb_eval_e(&fd_half_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_half_b_cs, t, result);
+    return cheb_eval_e(&fd_half_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_half_c_cs, t, result);
+    return cheb_eval_e(&fd_half_c_cs, t, result);
   }
   else if(x < 30.0) {
     double x32 = x*sqrt(x);
     double t = 0.1*x - 2.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_half_d_cs, t, &c);
+    cheb_eval_e(&fd_half_d_cs, t, &c);
     result->val = c.val * x32;
     result->err = c.err * x32 + 1.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -1596,21 +1554,21 @@ int gsl_sf_fermi_dirac_3half_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    return gsl_sf_cheb_eval_e(&fd_3half_a_cs, x, result);
+    return cheb_eval_e(&fd_3half_a_cs, x, result);
   }
   else if(x < 4.0) {
     double t = 2.0/3.0*(x-1.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_3half_b_cs, t, result);
+    return cheb_eval_e(&fd_3half_b_cs, t, result);
   }
   else if(x < 10.0) {
     double t = 1.0/3.0*(x-4.0) - 1.0;
-    return gsl_sf_cheb_eval_e(&fd_3half_c_cs, t, result);
+    return cheb_eval_e(&fd_3half_c_cs, t, result);
   }
   else if(x < 30.0) {
     double x52 = x*x*sqrt(x);
     double t = 0.1*x - 2.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&fd_3half_d_cs, t, &c);
+    cheb_eval_e(&fd_3half_d_cs, t, &c);
     result->val = c.val * x52;
     result->err = c.err * x52 + 2.5 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;

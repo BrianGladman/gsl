@@ -25,12 +25,12 @@
 #include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
-#define ROOT_EIGHT (2.0*M_SQRT2)
+#include "cheb_eval.c"
 
+#define ROOT_EIGHT (2.0*M_SQRT2)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -60,12 +60,10 @@ static double bj1_data[12] = {
    0.000000000000005840,
   -0.000000000000000044,
 };
-static gsl_sf_cheb_series bj1_cs = {
+static cheb_series bj1_cs = {
   bj1_data,
   11,
   -1, 1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -95,7 +93,7 @@ int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
   }
   else if(y < 4.0) {
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&bj1_cs, 0.125*y*y-1.0, &c);
+    cheb_eval_e(&bj1_cs, 0.125*y*y-1.0, &c);
     result->val = x * (0.25 + c.val);
     result->err = fabs(x * c.err);
     return GSL_SUCCESS;
@@ -109,8 +107,8 @@ int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
     gsl_sf_result ca;
     gsl_sf_result ct;
     gsl_sf_result sp;
-    const int stat_ca = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
-    const int stat_ct = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
+    const int stat_ca = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
+    const int stat_ct = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
     const int stat_sp = gsl_sf_bessel_sin_pi4_e(y, ct.val/y, &sp);
     const double sqrty = sqrt(y);
     const double ampl  = (0.75 + ca.val) / sqrty;

@@ -1,3 +1,9 @@
+Tue Apr 24 17:05:22 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* split out chebyshev functions into their own cheb/ directory,
+ 	leaving behind an internal cheb struct and cheb evaluation
+ 	function.
+
 Mon Apr 23 10:21:06 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* changed tests for EFAULT into a commented-out macro, since

@@ -136,74 +136,6 @@ test_sf_check_return(char * message_buff, int val_return, int expected_return)
 }
 
 
-
-int test_cheb(void)
-{
-  gsl_sf_result r;
-  double x;
-  double f;
-  int status = 0;
-  int s;
-
-  gsl_sf_cheb_series * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 40);
-
-  f = 0.0;
-  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    gsl_sf_cheb_eval_e(cs, x, &r);
-    f += fabs(r.val - sin(x));
-  }
-  s = 0;
-  s += ( f > 100.0 * TEST_TOL1 );
-  gsl_test(s, "  gsl_sf_cheb_eval_e()");
-  status += s;
-  
-  f = 0.0;
-  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    gsl_sf_cheb_eval_n_e(cs, 25, x, &r);
-    f += fabs(r.val - sin(x));
-  }
-  s = 0;
-  s += ( f > 100.0 * TEST_TOL1 );
-  gsl_test(s, "  gsl_sf_cheb_eval_n_e()");
-  status += s;
-
-  gsl_sf_cheb_calc_e(cs, sin);
-  f = 0.0;
-  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    gsl_sf_cheb_eval_e(cs, x, &r);
-    f += fabs(r.val - sin(x));
-  }
-  s = 0;
-  s += ( f > 100.0 * TEST_TOL1 );
-  gsl_test(s, "  gsl_sf_cheb_calc_e()");
-  status += s;
-
-  f = 0.0;
-  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    gsl_sf_cheb_eval_deriv_e(cs, x, &r);
-    f += fabs(r.val - cos(x));
-  }
-  s = 0;
-  s += ( f > 100.0 * TEST_TOL2 );
-  gsl_test(s, "  gsl_sf_cheb_eval_deriv_e()");
-  status += s;
-
-  f = 0.0;
-  for(x=-M_PI; x<M_PI; x += M_PI/100.0) {
-    gsl_sf_cheb_eval_integ_e(cs, x, &r);
-    f += fabs(r.val + (1.0 + cos(x)));
-  }
-  s = 0;
-  s += ( f > 100.0 * TEST_TOL1 );
-  gsl_test(s, "  gsl_sf_cheb_eval_integ_e()");
-  status += s;
-
-  gsl_sf_cheb_free(cs);
-
-  return status;
-}
-
-
 int test_clausen(void)
 {
   gsl_sf_result r;
@@ -1405,7 +1337,6 @@ int main(int argc, char * argv[])
 
   gsl_test(test_airy(),       "Airy Functions");
   gsl_test(test_bessel(),     "Bessel Functions");
-  gsl_test(test_cheb(),       "Chebyshev Evaluation");
   gsl_test(test_clausen(),    "Clausen Integral");
   gsl_test(test_coulomb(),    "Coulomb Wave Functions");
   gsl_test(test_coupling(),   "Coupling Coefficients");

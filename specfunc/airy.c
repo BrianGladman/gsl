@@ -23,10 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_airy.h"
 
+#include "chebyshev.h"
+#include "cheb_eval_mode.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -98,12 +99,10 @@ static double am21_data[37] = {
   0.0000000000000001,
   0.0000000000000001
 };
-static gsl_sf_cheb_series am21_cs = {
+static cheb_series am21_cs = {
   am21_data,
   36,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   20
 };
 
@@ -145,12 +144,10 @@ static double ath1_data[36] = {
   -0.00000000000000004,
   -0.00000000000000002
 };
-static gsl_sf_cheb_series ath1_cs = {
+static cheb_series ath1_cs = {
   ath1_data,
   35,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   15
 };
 
@@ -189,12 +186,10 @@ static double am22_data[33] = {
   0.00000000000000007,
   0.00000000000000002
 };
-static gsl_sf_cheb_series am22_cs = {
+static cheb_series am22_cs = {
   am22_data,
   32,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   15
 };
 
@@ -232,12 +227,10 @@ static double ath2_data[32] = {
   -0.00000000000000006,
   -0.00000000000000002
 };
-static gsl_sf_cheb_series ath2_cs = {
+static cheb_series ath2_cs = {
   ath2_data,
   31,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   16
 };
 
@@ -254,13 +247,13 @@ airy_mod_phase(const double x, gsl_mode_t mode, gsl_sf_result * mod, gsl_sf_resu
 
   if(x < -2.0) {
     double z = 16.0/(x*x*x) + 1.0;
-    gsl_sf_cheb_eval_mode_e(&am21_cs, z, mode, &result_m);
-    gsl_sf_cheb_eval_mode_e(&ath1_cs, z, mode, &result_p);
+    cheb_eval_mode_e(&am21_cs, z, mode, &result_m);
+    cheb_eval_mode_e(&ath1_cs, z, mode, &result_p);
   }
   else if(x <= -1.0) {
     double z = (16.0/(x*x*x) + 9.0)/7.0;
-    gsl_sf_cheb_eval_mode_e(&am22_cs, z, mode, &result_m);
-    gsl_sf_cheb_eval_mode_e(&ath2_cs, z, mode, &result_p);
+    cheb_eval_mode_e(&am22_cs, z, mode, &result_m);
+    cheb_eval_mode_e(&ath2_cs, z, mode, &result_p);
   }
   else {
     mod->val = 0.0;
@@ -311,12 +304,10 @@ static double ai_data_f[9] = {
    0.00000000000000012014,
    0.00000000000000000010
 };
-static gsl_sf_cheb_series aif_cs = {
+static cheb_series aif_cs = {
   ai_data_f,
   8,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   8
 };
 
@@ -330,12 +321,10 @@ static double ai_data_g[8] = {
    0.00000000000001392,
    0.00000000000000001
 };
-static gsl_sf_cheb_series aig_cs = {
+static cheb_series aig_cs = {
   ai_data_g,
   7,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   7
 };
 
@@ -366,12 +355,10 @@ static double data_bif[9] = {
    0.00000000000000020810,
    0.00000000000000000018
 };
-static gsl_sf_cheb_series bif_cs = {
+static cheb_series bif_cs = {
   data_bif,
   8,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   8
 };
 
@@ -385,12 +372,10 @@ static double data_big[8] = {
    0.00000000000002411,
    0.00000000000000002
 };
-static gsl_sf_cheb_series big_cs = {
+static cheb_series big_cs = {
   data_big,
   7,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   7
 };
 
@@ -410,12 +395,10 @@ static double data_bif2[10] = {
   0.0000000000000044962,
   0.0000000000000000111
 };
-static gsl_sf_cheb_series bif2_cs = {
+static cheb_series bif2_cs = {
   data_bif2,
   9,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   9
 };
 
@@ -431,12 +414,10 @@ static double data_big2[10] = {
   0.0000000000000005167,
   0.0000000000000000011
 };
-static gsl_sf_cheb_series big2_cs = {
+static cheb_series big2_cs = {
   data_big2,
   9,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   9
 };
 
@@ -532,12 +513,10 @@ static double data_aip[36] = {
   -.0000000000000000
 */
 };
-static gsl_sf_cheb_series aip_cs = {
+static cheb_series aip_cs = {
   data_aip,
   35,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   17
 };
 
@@ -583,12 +562,10 @@ static double data_bip[24] = {
   -0.00000000000000011,
    0.00000000000000001
 };
-static gsl_sf_cheb_series bip_cs = {
+static cheb_series bip_cs = {
   data_bip,
   23,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   14
 };
 
@@ -623,12 +600,10 @@ static double data_bip2[29] = {
   -0.0000000000000001737,
   -0.0000000000000000010
 };
-static gsl_sf_cheb_series bip2_cs = {
+static cheb_series bip2_cs = {
   data_bip2,
   28,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   10
 };
 
@@ -641,7 +616,7 @@ airy_aie(const double x, gsl_mode_t mode, gsl_sf_result * result)
   double z   = 2.0/(x*sqx) - 1.0;
   double y   = sqrt(sqx);
   gsl_sf_result result_c;
-  gsl_sf_cheb_eval_mode_e(&aip_cs, z, mode, &result_c);
+  cheb_eval_mode_e(&aip_cs, z, mode, &result_c);
   result->val = (0.28125 + result_c.val)/y;
   result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   return GSL_SUCCESS;
@@ -658,7 +633,7 @@ static int airy_bie(const double x, gsl_mode_t mode, gsl_sf_result * result)
     double z   = ATR/(x*sqx) + BTR;
     double y   = sqrt(sqx);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_mode_e(&bip_cs, z, mode, &result_c);
+    cheb_eval_mode_e(&bip_cs, z, mode, &result_c);
     result->val = (0.625 + result_c.val)/y;
     result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   }
@@ -667,7 +642,7 @@ static int airy_bie(const double x, gsl_mode_t mode, gsl_sf_result * result)
     double z   = 16.0/(x*sqx) - 1.0;
     double y   = sqrt(sqx);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_mode_e(&bip2_cs, z, mode, &result_c);
+    cheb_eval_mode_e(&bip2_cs, z, mode, &result_c);
     result->val = (0.625 + result_c.val)/y;
     result->err = result_c.err/y + GSL_DBL_EPSILON * fabs(result->val);
   }
@@ -698,8 +673,8 @@ gsl_sf_airy_Ai_e(const double x, const gsl_mode_t mode, gsl_sf_result * result)
     const double z = x*x*x;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&aif_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&aig_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&aif_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&aig_cs, z, mode, &result_c1);
     result->val  = 0.375 + (result_c0.val - x*(0.25 + result_c1.val));
     result->err  = result_c0.err + fabs(x*result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -741,8 +716,8 @@ gsl_sf_airy_Ai_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double z = x*x*x;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&aif_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&aig_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&aif_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&aig_cs, z, mode, &result_c1);
     result->val  = 0.375 + (result_c0.val - x*(0.25 + result_c1.val));
     result->err  = result_c0.err + fabs(x*result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -779,8 +754,8 @@ int gsl_sf_airy_Bi_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double z = x*x*x;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&bif_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&big_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&bif_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&big_cs, z, mode, &result_c1);
     result->val  = 0.625 + result_c0.val + x*(0.4375 + result_c1.val);
     result->err  = result_c0.err + fabs(x * result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -790,8 +765,8 @@ int gsl_sf_airy_Bi_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double z = (2.0*x*x*x - 9.0)/7.0;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&bif2_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&big2_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&bif2_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&big2_cs, z, mode, &result_c1);
     result->val  = 1.125 + result_c0.val + x*(0.625 + result_c1.val);
     result->err  = result_c0.err + fabs(x * result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -838,8 +813,8 @@ gsl_sf_airy_Bi_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double z = x*x*x;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&bif_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&big_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&bif_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&big_cs, z, mode, &result_c1);
     result->val  = 0.625 + result_c0.val + x*(0.4375 + result_c1.val);
     result->err  = result_c0.err + fabs(x * result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -856,8 +831,8 @@ gsl_sf_airy_Bi_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
     const double s  = exp(-2.0/3.0 * sqrt(x3));
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_e(&bif2_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_e(&big2_cs, z, mode, &result_c1);
+    cheb_eval_mode_e(&bif2_cs, z, mode, &result_c0);
+    cheb_eval_mode_e(&big2_cs, z, mode, &result_c1);
     result->val  = s * (1.125 + result_c0.val + x*(0.625 + result_c1.val));
     result->err  = s * (result_c0.err + fabs(x * result_c1.err));
     result->err += GSL_DBL_EPSILON * fabs(result->val);

@@ -23,10 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_expint.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -61,12 +62,10 @@ static double f1_data[20] = {
     0.0000000000000001391,
    -0.0000000000000000282
 };
-static gsl_sf_cheb_series f1_cs = {
+static cheb_series f1_cs = {
   f1_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -109,12 +108,10 @@ static double f2_data[29] = {
    -0.0000000000000000900,
     0.0000000000000000432
 };
-static gsl_sf_cheb_series f2_cs = {
+static cheb_series f2_cs = {
   f2_data,
   28,
   -1, 1,
-  (double *)0,
-  (double *)0,
   14
 };
 
@@ -149,12 +146,10 @@ static double g1_data[21] = {
    -0.0000000000000002615,
     0.0000000000000000548
 };
-static gsl_sf_cheb_series g1_cs = {
+static cheb_series g1_cs = {
   g1_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -202,12 +197,10 @@ static double g2_data[34] = {
     0.0000000000000000801,
    -0.0000000000000000501
 };
-static gsl_sf_cheb_series g2_cs = {
+static cheb_series g2_cs = {
   g2_data,
   33,
   -1, 1,
-  (double *)0,
-  (double *)0,
   20
 };
 
@@ -231,8 +224,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
   if(x <= xbnd) {
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_e(&f1_cs, (1.0/x2-0.04125)/0.02125, &result_c1);
-    gsl_sf_cheb_eval_e(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
+    cheb_eval_e(&f1_cs, (1.0/x2-0.04125)/0.02125, &result_c1);
+    cheb_eval_e(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
     f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
@@ -241,8 +234,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
   else if(x <= xbig) {
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_e(&f2_cs, 100.0/x2-1.0, &result_c1);
-    gsl_sf_cheb_eval_e(&g2_cs, 100.0/x2-1.0, &result_c2);
+    cheb_eval_e(&f2_cs, 100.0/x2-1.0, &result_c1);
+    cheb_eval_e(&g2_cs, 100.0/x2-1.0, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
     f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
@@ -283,12 +276,10 @@ static double si_data[12] = {
   -0.0000000000000000122
 };
 
-static gsl_sf_cheb_series si_cs = {
+static cheb_series si_cs = {
   si_data,
   11,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -314,12 +305,10 @@ static double ci_data[13] = {
    -0.00000000000000028912,
     0.00000000000000000194
 };
-static gsl_sf_cheb_series ci_cs = {
+static cheb_series ci_cs = {
   ci_data,
   12,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -339,7 +328,7 @@ int gsl_sf_Si_e(const double x, gsl_sf_result * result)
   }
   else if(ax <= 4.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&si_cs, (x*x-8.0)*0.125, &result_c);
+    cheb_eval_e(&si_cs, (x*x-8.0)*0.125, &result_c);
     result->val  =  x * (0.75 + result_c.val);
     result->err  = ax * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -374,7 +363,7 @@ int gsl_sf_Ci_e(const double x, gsl_sf_result * result)
     const double lx = log(x);
     const double y  = (x*x-8.0)*0.125;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&ci_cs, y, &result_c);
+    cheb_eval_e(&ci_cs, y, &result_c);
     result->val  = lx - 0.5 + result_c.val;
     result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(lx) + 0.5) + result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

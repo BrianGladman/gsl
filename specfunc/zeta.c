@@ -23,12 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_elementary.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_zeta.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 #define LogTwoPi_  1.8378770664093454835606594728111235279723
 
@@ -55,12 +57,10 @@ static double zeta_xlt1_data[14] = {
  -1.0429819093456189719660003522e-18,
   6.9925216166580021051464412040e-21,
 };
-static gsl_sf_cheb_series zeta_xlt1_cs = {
+static cheb_series zeta_xlt1_cs = {
   zeta_xlt1_data,
   13,
   -1, 1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -100,12 +100,10 @@ static double zeta_xgt1_data[30] = {
   -2.7276516388124786119323824391e-16,
    7.8473570134636044722154797225e-17
 };
-static gsl_sf_cheb_series zeta_xgt1_cs = {
+static cheb_series zeta_xgt1_cs = {
   zeta_xgt1_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   17
 };
 
@@ -117,7 +115,7 @@ riemann_zeta_sgt0(double s, gsl_sf_result * result)
 {
   if(s < 1.0) {
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
+    cheb_eval_e(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
     result->val = c.val / (s - 1.0);
     result->err = c.err / fabs(s-1.0) + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -125,7 +123,7 @@ riemann_zeta_sgt0(double s, gsl_sf_result * result)
   else if(s <= 20.0) {
     double x = (2.0*s - 21.0)/19.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&zeta_xgt1_cs, x, &c);
+    cheb_eval_e(&zeta_xgt1_cs, x, &c);
     result->val = c.val / (s - 1.0);
     result->err = c.err / (s - 1.0) + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;

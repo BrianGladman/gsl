@@ -27,9 +27,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
+#include <gsl/gsl_mode.h>
 #include "bessel_temme.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /* nu = (x+1)/4, -1<x<1, 1/(2nu)(1/Gamma[1-nu]-1/Gamma[1+nu]) */
 static double g1_dat[14] = {
@@ -48,12 +50,10 @@ static double g1_dat[14] = {
   -3.3726677300771949833341213457e-17,
   -3.6586334809210520744054437104e-20
 };
-static gsl_sf_cheb_series g1_cs = {
+static cheb_series g1_cs = {
   g1_dat,
   13,
   -1, 1,
-  (double *)0,
-  (double *)0,
   7
 };
 
@@ -76,12 +76,10 @@ static double g2_dat[15] =
  -2.4377878310107693650659740228e-18,
  -7.5225243218253901727164675011e-20
 };
-static gsl_sf_cheb_series g2_cs = {
+static cheb_series g2_cs = {
   g2_dat,
   14,
   -1, 1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -94,8 +92,8 @@ gsl_sf_temme_gamma(const double nu, double * g_1pnu, double * g_1mnu, double * g
   const double x = 4.0*anu - 1.0;
   gsl_sf_result r_g1;
   gsl_sf_result r_g2;
-  gsl_sf_cheb_eval_e(&g1_cs, x, &r_g1);
-  gsl_sf_cheb_eval_e(&g2_cs, x, &r_g2);
+  cheb_eval_e(&g1_cs, x, &r_g1);
+  cheb_eval_e(&g2_cs, x, &r_g2);
   *g1 = r_g1.val;
   *g2 = r_g2.val;
   *g_1mnu = 1.0/(r_g2.val + nu * r_g1.val);

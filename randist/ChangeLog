@@ -1,3 +1,8 @@
+Tue Apr 24 17:10:47 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bernoulli.c (gsl_ran_bernoulli_pdf): removed unnecessary
+ 	reference to gsl_sf.h
+
 Mon Apr 23 10:25:44 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* changed calls to old specfunc _impl functions to use new error

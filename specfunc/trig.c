@@ -23,10 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /* sinh(x) series
  * double-precision for |x| < 1.0
@@ -94,12 +95,10 @@ static double sinc_data[17] = {
   0.000000000000002445383,
   0.000000000000000009925
 };
-static gsl_sf_cheb_series sinc_cs = {
+static cheb_series sinc_cs = {
   sinc_data,
   16,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -121,12 +120,10 @@ static double sin_data[12] = {
    2.5984137983099020336115e-17,
   -1.1821555255364833468288e-19
 };
-static gsl_sf_cheb_series sin_cs = {
+static cheb_series sin_cs = {
   sin_data,
   11,
   -1, 1,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -146,12 +143,10 @@ static double cos_data[11] = {
  -7.6896421502815579078577263149e-17,
  -3.7363121133079412079201377318e-18
 };
-static gsl_sf_cheb_series cos_cs = {
+static cheb_series cos_cs = {
   cos_data,
   10,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -205,13 +200,13 @@ gsl_sf_sin_e(double x, gsl_sf_result * result)
       if(octant == 0) {
         gsl_sf_result sin_cs_result;
 	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = gsl_sf_cheb_eval_e(&sin_cs, t, &sin_cs_result);
+	stat_cs = cheb_eval_e(&sin_cs, t, &sin_cs_result);
         result->val = z * (1.0 + z*z * sin_cs_result.val);
       }
       else { /* octant == 2 */
         gsl_sf_result cos_cs_result;
 	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = gsl_sf_cheb_eval_e(&cos_cs, t, &cos_cs_result);
+	stat_cs = cheb_eval_e(&cos_cs, t, &cos_cs_result);
         result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
       }
 
@@ -281,13 +276,13 @@ gsl_sf_cos_e(double x, gsl_sf_result * result)
       if(octant == 0) {
         gsl_sf_result cos_cs_result;
         const double t = 8.0*fabs(z)/M_PI - 1.0;
-        stat_cs = gsl_sf_cheb_eval_e(&cos_cs, t, &cos_cs_result);
+        stat_cs = cheb_eval_e(&cos_cs, t, &cos_cs_result);
         result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
       }
       else { /* octant == 2 */
         gsl_sf_result sin_cs_result;
         const double t = 8.0*fabs(z)/M_PI - 1.0;
-        stat_cs = gsl_sf_cheb_eval_e(&sin_cs, t, &sin_cs_result);
+        stat_cs = cheb_eval_e(&sin_cs, t, &sin_cs_result);
         result->val = z * (1.0 + z*z * sin_cs_result.val);
       }
 
@@ -700,7 +695,7 @@ int gsl_sf_sinc_e(double x, gsl_sf_result * result)
        * there is a zero there and the Chebyshev
        * accuracy will go to zero.
        */
-      return gsl_sf_cheb_eval_e(&sinc_cs, 2.0*ax-1.0, result);
+      return cheb_eval_e(&sinc_cs, 2.0*ax-1.0, result);
     }
     else if(ax < 100.0) {
       /* Small arguments are no problem.

@@ -23,13 +23,14 @@
 #ifndef _BESSEL_AMP_PHASE_H_
 #define _BESSEL_AMP_PHASE_H_
 
-#include "gsl_sf_chebyshev.h"
 
-extern const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bm0_cs;
-extern const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bth0_cs;
+#include "chebyshev.h"
 
-extern const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bm1_cs;
-extern const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bth1_cs;
+extern const cheb_series _gsl_sf_bessel_amp_phase_bm0_cs;
+extern const cheb_series _gsl_sf_bessel_amp_phase_bth0_cs;
+
+extern const cheb_series _gsl_sf_bessel_amp_phase_bm1_cs;
+extern const cheb_series _gsl_sf_bessel_amp_phase_bth1_cs;
 
 
 /* large argument expansions [Abramowitz+Stegun, 9.2.28-29]

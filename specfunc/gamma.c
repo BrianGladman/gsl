@@ -23,12 +23,14 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 #define LogRootTwoPi_  0.9189385332046727418
 
@@ -589,12 +591,10 @@ static double gstar_a_data[30] = {
   3.4144405720185253938994854173e-15,
  -1.0115153943081187052322643819e-15
 };
-static gsl_sf_cheb_series gstar_a_cs = {
+static cheb_series gstar_a_cs = {
   gstar_a_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   17
 };
 
@@ -634,12 +634,10 @@ static double gstar_b_data[] = {
   1.6779342132074761078792361165e-16,
  -6.0483153034414765129837716260e-17
 };
-static gsl_sf_cheb_series gstar_b_cs = {
+static cheb_series gstar_b_cs = {
   gstar_b_data,
   29,
   -1, 1,
-  (double *)0,
-  (double *)0,
   18
 };
 
@@ -1008,12 +1006,10 @@ static double gamma_5_10_data[24] = {
   1.3858639703888078291599886143e-18,
  -2.2574398807738626571560124396e-19
 };
-static const gsl_sf_cheb_series gamma_5_10_cs = {
+static const cheb_series gamma_5_10_cs = {
   gamma_5_10_data,
   23,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   11
 };
 
@@ -1082,7 +1078,7 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
     const double gamma_8 = 5040.0;
     const double t = (2.0*x - 15.0)/5.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&gamma_5_10_cs, t, &c);
+    cheb_eval_e(&gamma_5_10_cs, t, &c);
     result->val  = exp(c.val) * gamma_8;
     result->err  = result->val * c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * result->val;
@@ -1326,12 +1322,12 @@ gsl_sf_gammastar_e(const double x, gsl_sf_result * result)
   }
   else if(x < 2.0) {
     const double t = 4.0/3.0*(x-0.5) - 1.0;
-    return gsl_sf_cheb_eval_e(&gstar_a_cs, t, result);
+    return cheb_eval_e(&gstar_a_cs, t, result);
   }
   else if(x < 10.0) {
     const double t = 0.25*(x-2.0) - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&gstar_b_cs, t, &c);
+    cheb_eval_e(&gstar_b_cs, t, &c);
     result->val  = c.val/(x*x) + 1.0 + 1.0/(12.0*x);
     result->err  = c.err/(x*x);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

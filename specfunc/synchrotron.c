@@ -23,11 +23,12 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_synchrotron.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 static double synchrotron1_data[13] = {
   30.364682982501076273,
@@ -44,12 +45,10 @@ static double synchrotron1_data[13] = {
    0.2086588e-13,
    0.15167e-15
 };
-static gsl_sf_cheb_series synchrotron1_cs = {
+static cheb_series synchrotron1_cs = {
   synchrotron1_data,
   12,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -67,12 +66,10 @@ static double synchrotron2_data[12] = {
   0.77e-16,
   0.5e-18
 };
-static gsl_sf_cheb_series synchrotron2_cs = {
+static cheb_series synchrotron2_cs = {
   synchrotron2_data,
   11,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   7
 };
 
@@ -101,12 +98,10 @@ static double synchrotron1a_data[23] = {
   0.41e-17,
   0.7e-18
 };
-static gsl_sf_cheb_series synchrotron1a_cs = {
+static cheb_series synchrotron1a_cs = {
   synchrotron1a_data,
   22,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -125,12 +120,10 @@ static double synchrotron21_data[13] = {
   0.21529e-13,
   0.156e-15
 };
-static gsl_sf_cheb_series synchrotron21_cs = {
+static cheb_series synchrotron21_cs = {
   synchrotron21_data,
   12,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -149,12 +142,10 @@ static double synchrotron22_data[13] = {
    0.3232e-15,
    0.21e-17
 };
-static gsl_sf_cheb_series synchrotron22_cs = {
+static cheb_series synchrotron22_cs = {
   synchrotron22_data,
   12,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -177,12 +168,10 @@ static double synchrotron2a_data[17] = {
   0.307e-16,
   0.3e-17
 };
-static gsl_sf_cheb_series synchrotron2a_cs = {
+static cheb_series synchrotron2a_cs = {
   synchrotron2a_data,
   16,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -210,8 +199,8 @@ int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_e(&synchrotron1_cs, t, &result_c1);
-    gsl_sf_cheb_eval_e(&synchrotron2_cs, t, &result_c2);
+    cheb_eval_e(&synchrotron1_cs, t, &result_c1);
+    cheb_eval_e(&synchrotron2_cs, t, &result_c2);
     result->val  = px * result_c1.val - px11 * result_c2.val - c0 * x;
     result->err  = px * result_c1.err + px11 * result_c2.err + c0 * x * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -221,7 +210,7 @@ int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
     const double c0 = 0.2257913526447274323630976; /* log(sqrt(pi/2)) */
     const double t = (12.0 - x) / (x + 4.0);
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_e(&synchrotron1a_cs, t, &result_c1);
+    cheb_eval_e(&synchrotron1a_cs, t, &result_c1);
     result->val = sqrt(x) * result_c1.val * exp(c0 - x);
     result->err = 2.0 * GSL_DBL_EPSILON * result->val * (fabs(c0-x)+1.0);
     return GSL_SUCCESS;
@@ -254,8 +243,8 @@ int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result cheb1;
     gsl_sf_result cheb2;
-    gsl_sf_cheb_eval_e(&synchrotron21_cs, t, &cheb1);
-    gsl_sf_cheb_eval_e(&synchrotron22_cs, t, &cheb2);
+    cheb_eval_e(&synchrotron21_cs, t, &cheb1);
+    cheb_eval_e(&synchrotron22_cs, t, &cheb2);
     result->val  = px * cheb1.val - px5 * cheb2.val;
     result->err  = px * cheb1.err + px5 * cheb2.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -265,7 +254,7 @@ int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
     const double c0 = 0.22579135264472743236;   /* log(sqrt(pi/2)) */
     const double t  = (10.0 - x) / (x + 2.0);
     gsl_sf_result cheb1;
-    gsl_sf_cheb_eval_e(&synchrotron2a_cs, t, &cheb1);
+    cheb_eval_e(&synchrotron2a_cs, t, &cheb1);
     result->val = sqrt(x) * exp(c0-x) * cheb1.val;
     result->err = GSL_DBL_EPSILON * result->val * (fabs(c0-x)+1.0);
     return GSL_SUCCESS;

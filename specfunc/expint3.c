@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 static double expint3_data[24] = {
   1.269198414221126014,
@@ -53,12 +54,10 @@ static double expint3_data[24] = {
   0.29e-17,
  -0.2e-18
 };
-static gsl_sf_cheb_series expint3_cs = {
+static cheb_series expint3_cs = {
   expint3_data,
   23,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -87,12 +86,10 @@ static double expint3a_data[23] = {
   -0.5e-18,
    0.1e-18
 };
-static gsl_sf_cheb_series expint3a_cs = {
+static cheb_series expint3a_cs = {
   expint3a_data,
   22,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -118,7 +115,7 @@ int gsl_sf_expint_3_e(const double x, gsl_sf_result * result)
   else if(x <= 2.0) {
     const double t = x*x*x/4.0 - 1.0;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&expint3_cs, t, &result_c);
+    cheb_eval_e(&expint3_cs, t, &result_c);
     result->val = x * result_c.val;
     result->err = x * result_c.err;
     return GSL_SUCCESS;
@@ -127,7 +124,7 @@ int gsl_sf_expint_3_e(const double x, gsl_sf_result * result)
     const double t = 16.0/(x*x*x) - 1.0;
     const double s = exp(-x*x*x)/(3.0*x*x);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&expint3a_cs, t, &result_c);
+    cheb_eval_e(&expint3a_cs, t, &result_c);
     result->val = val_infinity - result_c.val * s;
     result->err = val_infinity * GSL_DBL_EPSILON + s * result_c.err;
     return GSL_SUCCESS;

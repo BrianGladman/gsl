@@ -23,10 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_bessel.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -67,12 +68,10 @@ static double bk1_data[11] = {
   -0.0000000000000000070
 };
 
-static gsl_sf_cheb_series bk1_cs = {
+static cheb_series bk1_cs = {
   bk1_data,
   10,
   -1, 1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -95,12 +94,10 @@ static double ak1_data[17] = {
    0.00000000000000038,
   -0.00000000000000006
 };
-static gsl_sf_cheb_series ak1_cs = {
+static cheb_series ak1_cs = {
   ak1_data,
   16,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -120,12 +117,10 @@ static double ak12_data[14] = {
   -0.00000000000000022,
    0.00000000000000002
 };
-static gsl_sf_cheb_series ak12_cs = {
+static cheb_series ak12_cs = {
   ak12_data,
   13,
   -1, 1,
-  (double *)0,
-  (double *)0,
   7
 };
 
@@ -152,7 +147,7 @@ int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
     int stat_I1;
     gsl_sf_result I1;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
+    cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
     stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
     result->val  = ex * ((lx-M_LN2)*I1.val + (0.75 + c.val)/x);
     result->err  = ex * (c.err/x + fabs(lx)*I1.err);
@@ -162,7 +157,7 @@ int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
   else if(x <= 8.0) {
     const double sx = sqrt(x);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&ak1_cs, (16.0/x-5.0)/3.0, &c);
+    cheb_eval_e(&ak1_cs, (16.0/x-5.0)/3.0, &c);
     result->val  = (1.25 + c.val) / sx;
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -171,7 +166,7 @@ int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
   else {
     const double sx = sqrt(x);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&ak12_cs, 16.0/x-1.0, &c);
+    cheb_eval_e(&ak12_cs, 16.0/x-1.0, &c);
     result->val  = (1.25 + c.val) / sx;
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -199,7 +194,7 @@ int gsl_sf_bessel_K1_e(const double x, gsl_sf_result * result)
     int stat_I1;
     gsl_sf_result I1;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
+    cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
     stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
     result->val  = (lx-M_LN2)*I1.val + (0.75 + c.val)/x;
     result->err  = c.err/x + fabs(lx)*I1.err;

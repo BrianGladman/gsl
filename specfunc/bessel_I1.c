@@ -23,8 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 #define ROOT_EIGHT (2.0*M_SQRT2)
 
@@ -67,12 +69,10 @@ static double bi1_data[11] = {
    0.000000000000004741,
    0.000000000000000024
 };
-static gsl_sf_cheb_series bi1_cs = {
+static cheb_series bi1_cs = {
   bi1_data,
   10,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -99,12 +99,10 @@ static double ai1_data[21] = {
    0.00000000000000071,
   -0.00000000000000006
 };
-static gsl_sf_cheb_series ai1_cs = {
+static cheb_series ai1_cs = {
   ai1_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   11
 };
 
@@ -132,12 +130,10 @@ static double ai12_data[22] = {
    0.00000000000000028,
   -0.00000000000000003
 };
-static gsl_sf_cheb_series ai12_cs = {
+static cheb_series ai12_cs = {
   ai12_data,
   21,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -170,7 +166,7 @@ int gsl_sf_bessel_I1_scaled_e(const double x, gsl_sf_result * result)
   else if(y <= 3.0) {
     const double ey = exp(-y);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&bi1_cs, y*y/4.5-1.0, &c);
+    cheb_eval_e(&bi1_cs, y*y/4.5-1.0, &c);
     result->val  = x * ey * (0.875 + c.val);
     result->err  = ey * c.err + y * GSL_DBL_EPSILON * fabs(result->val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -181,7 +177,7 @@ int gsl_sf_bessel_I1_scaled_e(const double x, gsl_sf_result * result)
     gsl_sf_result c;
     double b;
     double s;
-    gsl_sf_cheb_eval_e(&ai1_cs, (48.0/y-11.0)/5.0, &c);
+    cheb_eval_e(&ai1_cs, (48.0/y-11.0)/5.0, &c);
     b = (0.375 + c.val) / sy;
     s = (x > 0.0 ? 1.0 : -1.0);
     result->val  = s * b;
@@ -194,7 +190,7 @@ int gsl_sf_bessel_I1_scaled_e(const double x, gsl_sf_result * result)
     gsl_sf_result c;
     double b;
     double s;
-    gsl_sf_cheb_eval_e(&ai12_cs, 16.0/y-1.0, &c);
+    cheb_eval_e(&ai12_cs, 16.0/y-1.0, &c);
     b = (0.375 + c.val) / sy;
     s = (x > 0.0 ? 1.0 : -1.0);
     result->val  = s * b;
@@ -230,7 +226,7 @@ int gsl_sf_bessel_I1_e(const double x, gsl_sf_result * result)
   }
   else if(y <= 3.0) {
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&bi1_cs, y*y/4.5-1.0, &c);
+    cheb_eval_e(&bi1_cs, y*y/4.5-1.0, &c);
     result->val  = x * (0.875 + c.val);
     result->err  = y * c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

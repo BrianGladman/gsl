@@ -25,10 +25,10 @@
 #include <gsl/gsl_errno.h>
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -58,12 +58,10 @@ static double by0_data[13] = {
    0.000000000000001641,
   -0.000000000000000011
 };
-static gsl_sf_cheb_series by0_cs = {
+static cheb_series by0_cs = {
   by0_data,
   12,
   -1, 1,
-  (double *)0,
-  (double *)0,
   8
 };
 
@@ -86,7 +84,7 @@ int gsl_sf_bessel_Y0_e(const double x, gsl_sf_result * result)
     gsl_sf_result J0;
     gsl_sf_result c;
     int stat_J0 = gsl_sf_bessel_J0_e(x, &J0);
-    gsl_sf_cheb_eval_e(&by0_cs, 0.125*x*x-1.0, &c);
+    cheb_eval_e(&by0_cs, 0.125*x*x-1.0, &c);
     result->val = two_over_pi*(-M_LN2 + log(x))*J0.val + 0.375 + c.val;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + c.err;
     return stat_J0;
@@ -99,8 +97,8 @@ int gsl_sf_bessel_Y0_e(const double x, gsl_sf_result * result)
     gsl_sf_result c1;
     gsl_sf_result c2;
     gsl_sf_result sp;
-    const int stat_c1 = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &c1);
-    const int stat_c2 = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &c2);
+    const int stat_c1 = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &c1);
+    const int stat_c2 = cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &c2);
     const int stat_sp = gsl_sf_bessel_sin_pi4_e(x, c2.val/x, &sp);
     const double sqrtx = sqrt(x);
     const double ampl  = (0.75 + c1.val) / sqrtx;

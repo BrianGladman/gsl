@@ -27,10 +27,7 @@
 #include "bessel_temme.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
-
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 

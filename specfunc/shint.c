@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -46,12 +47,10 @@ static double shi_data[7] = {
    0.0000000000000002451817,
    0.0000000000000000000467
 };
-static gsl_sf_cheb_series shi_cs = {
+static cheb_series shi_cs = {
   shi_data,
   6,
   -1, 1,
-  (double *)0,
-  (double *)0,
   6
 };
 
@@ -70,7 +69,7 @@ int gsl_sf_Shi_e(const double x, gsl_sf_result * result)
   }
   else if(ax <= 0.375) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&shi_cs, 128.0*x*x/9.0-1.0, &result_c);
+    cheb_eval_e(&shi_cs, 128.0*x*x/9.0-1.0, &result_c);
     result->val  = x * (1.0 + result_c.val);
     result->err  = x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

@@ -21,7 +21,7 @@
 #include <math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <gsl/gsl_sf.h>
+#include <gsl/gsl_gamma.h>
 
 /* The binomial distribution has the form,
 

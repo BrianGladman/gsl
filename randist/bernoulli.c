@@ -21,7 +21,6 @@
 #include <math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <gsl/gsl_sf.h>
 
 /* The bernoulli distribution has the form,
 

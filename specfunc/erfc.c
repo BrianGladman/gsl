@@ -30,8 +30,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_erf.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 #define LogRootPi_  0.57236494292470008706
 
@@ -157,12 +159,10 @@ static double erfc_xlt1_data[20] = {
   2.45935306460536488037576200030e-18,
  -9.29599561220523396007359328540e-19
 };
-static gsl_sf_cheb_series erfc_xlt1_cs = {
+static cheb_series erfc_xlt1_cs = {
   erfc_xlt1_data,
   19,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   12
 };
 
@@ -195,12 +195,10 @@ static double erfc_x15_data[25] = {
  -1.90685978789192181051961024995e-15,
   3.50826648032737849245113757340e-16
 };
-static gsl_sf_cheb_series erfc_x15_cs = {
+static cheb_series erfc_x15_cs = {
   erfc_x15_data,
   24,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   16
 };
 
@@ -228,12 +226,10 @@ static double erfc_x510_data[20] = {
  -6.07970619384160374392535453420e-16,
   9.12600607264794717315507477670e-17
 };
-static gsl_sf_cheb_series erfc_x510_cs = {
+static cheb_series erfc_x510_cs = {
   erfc_x510_data,
   19,
   -1, 1,
-  (double *) 0,
-  (double *) 0,
   12
 };
 
@@ -265,7 +261,7 @@ int gsl_sf_erfc_e(double x, gsl_sf_result * result)
   if(ax <= 1.0) {
     double t = 2.0*ax - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&erfc_xlt1_cs, t, &c);
+    cheb_eval_e(&erfc_xlt1_cs, t, &c);
     e_val = c.val;
     e_err = c.err;
   }
@@ -273,7 +269,7 @@ int gsl_sf_erfc_e(double x, gsl_sf_result * result)
     double ex2 = exp(-x*x);
     double t = 0.5*(ax-3.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&erfc_x15_cs, t, &c);
+    cheb_eval_e(&erfc_x15_cs, t, &c);
     e_val = ex2 * c.val;
     e_err = ex2 * (c.err + 2.0*fabs(x)*GSL_DBL_EPSILON);
   }
@@ -281,7 +277,7 @@ int gsl_sf_erfc_e(double x, gsl_sf_result * result)
     double exterm = exp(-x*x) / x;
     double t = (2.0*x - 15.0)/5.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&erfc_x510_cs, t, &c);
+    cheb_eval_e(&erfc_x510_cs, t, &c);
     e_val = exterm * c.val;
     e_err = exterm * (c.err + 2.0*fabs(x)*GSL_DBL_EPSILON + GSL_DBL_EPSILON);
   }

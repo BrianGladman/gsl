@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -115,12 +116,10 @@ static double AE11_data[39] = {
   -0.000000000000000082,
    0.000000000000000017
 };
-static gsl_sf_cheb_series AE11_cs = {
+static cheb_series AE11_cs = {
   AE11_data,
   38,
   -1, 1,
-  (double *)0,
-  (double *)0,
   20
 };
 
@@ -151,12 +150,10 @@ static double AE12_data[25] = {
   -0.000000000000000244,
   -0.000000000000000058
 };
-static gsl_sf_cheb_series AE12_cs = {
+static cheb_series AE12_cs = {
   AE12_data,
   24,
   -1, 1,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -181,12 +178,10 @@ static double E11_data[19] = {
     0.00000000000000002733,
    -0.00000000000000000108
 };
-static gsl_sf_cheb_series E11_cs = {
+static cheb_series E11_cs = {
   E11_data,
   18,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -208,12 +203,10 @@ static double E12_data[16] = {
   -0.00000000000000010148,
    0.00000000000000000315
 };
-static gsl_sf_cheb_series E12_cs = {
+static cheb_series E12_cs = {
   E12_data,
   15,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -244,12 +237,10 @@ static double AE13_data[25] = {
   -0.000000000000000094,
    0.000000000000000023
 };
-static gsl_sf_cheb_series AE13_cs = {
+static cheb_series AE13_cs = {
   AE13_data,
   24,
   -1, 1,
-  (double *)0,
-  (double *)0,
   15
 };
 
@@ -281,12 +272,10 @@ static double AE14_data[26] = {
    0.00000000000000016,
   -0.00000000000000005
 };
-static gsl_sf_cheb_series AE14_cs = {
+static cheb_series AE14_cs = {
   AE14_data,
   25,
   -1, 1,
-  (double *)0,
-  (double *)0,
   13
 };
 
@@ -309,7 +298,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= -10.0) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&AE11_cs, 20.0/x+1.0, &result_c);
+    cheb_eval_e(&AE11_cs, 20.0/x+1.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
     result->err  = s * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * (fabs(x) + 1.0) * fabs(result->val);
@@ -318,7 +307,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= -4.0) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&AE12_cs, (40.0/x+7.0)/3.0, &result_c);
+    cheb_eval_e(&AE12_cs, (40.0/x+7.0)/3.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
     result->err  = s * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -327,7 +316,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= -1.0) {
     const double ln_term = -log(fabs(x));
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&E11_cs, (2.0*x+5.0)/3.0, &result_c);
+    cheb_eval_e(&E11_cs, (2.0*x+5.0)/3.0, &result_c);
     result->val  = ln_term + result_c.val;
     result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -341,7 +330,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= 1.0) {
     const double ln_term = -log(fabs(x));
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&E12_cs, x, &result_c);
+    cheb_eval_e(&E12_cs, x, &result_c);
     result->val  = ln_term - 0.6875 + x + result_c.val;
     result->err  = result_c.err + GSL_DBL_EPSILON * fabs(ln_term);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -350,7 +339,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&AE13_cs, (8.0/x-5.0)/3.0, &result_c);
+    cheb_eval_e(&AE13_cs, (8.0/x-5.0)/3.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
     result->err  = s * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -359,7 +348,7 @@ int gsl_sf_expint_E1_e(const double x, gsl_sf_result * result)
   else if(x <= xmax) {
     const double s = exp(-x)/x;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&AE14_cs, 8.0/x-1.0, &result_c);
+    cheb_eval_e(&AE14_cs, 8.0/x-1.0, &result_c);
     result->val  = s * (1.0 +  result_c.val);
     result->err  = s * (GSL_DBL_EPSILON + result_c.err);
     result->err += 2.0 * (x + 1.0) * GSL_DBL_EPSILON * fabs(result->val);

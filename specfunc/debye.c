@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_debye.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 static double adeb1_data[17] = {
    2.4006597190381410194,
@@ -46,12 +47,10 @@ static double adeb1_data[17] = {
    0.109e-16,
   -0.9e-18
 };
-static gsl_sf_cheb_series adeb1_cs = {
+static cheb_series adeb1_cs = {
   adeb1_data,
   16,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -75,12 +74,10 @@ static double adeb2_data[18] = {
   -0.17e-17,
    0.1e-18
 };
-static gsl_sf_cheb_series adeb2_cs = {
+static cheb_series adeb2_cs = {
   adeb2_data,
   17,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -103,12 +100,10 @@ static double adeb3_data[17] = {
    0.305e-16,
   -0.24e-17
 };
-static gsl_sf_cheb_series adeb3_cs = {
+static cheb_series adeb3_cs = {
   adeb3_data,
   16,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -131,12 +126,10 @@ static double adeb4_data[17] = {
    0.393e-16,
   -0.32e-17
 };
-static gsl_sf_cheb_series adeb4_cs = {
+static cheb_series adeb4_cs = {
   adeb4_data,
   16,
   -1.0, 1.0,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -163,7 +156,7 @@ int gsl_sf_debye_1_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&adeb1_cs, t, &c);
+    cheb_eval_e(&adeb1_cs, t, &c);
     result->val = c.val - 0.25 * x;
     result->err = c.err + 0.25 * x * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
@@ -218,7 +211,7 @@ int gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&adeb2_cs, t, &c);
+    cheb_eval_e(&adeb2_cs, t, &c);
     result->val = c.val - x/3.0;
     result->err = c.err + GSL_DBL_EPSILON * x/3.0;
     return GSL_SUCCESS;
@@ -278,7 +271,7 @@ int gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&adeb3_cs, t, &c);
+    cheb_eval_e(&adeb3_cs, t, &c);
     result->val = c.val - 0.375*x;
     result->err = c.err + GSL_DBL_EPSILON * 0.375*x;
     return GSL_SUCCESS;
@@ -339,7 +332,7 @@ int gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&adeb4_cs, t, &c);
+    cheb_eval_e(&adeb4_cs, t, &c);
     result->val = c.val - 2.0*x/5.0;
     result->err = c.err + GSL_DBL_EPSILON * 2.0*x/5.0;
     return GSL_SUCCESS;

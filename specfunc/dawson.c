@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_dawson.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /* Based on ddaws.f, Fullerton, W., (LANL) */
 
@@ -73,12 +74,10 @@ static double daw_data[21] = {
    -0.7345836823178450261333333333333e-29,
     0.8951937667516552533333333333333e-31
 };
-static gsl_sf_cheb_series daw_cs = {
+static cheb_series daw_cs = {
   daw_data,
   15, /* 20, */
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -129,12 +128,10 @@ static double daw2_data[45] = {
   -0.18079295866694391771955199999999e-30,
    0.16090686015283030305450666666666e-31
 };
-static gsl_sf_cheb_series daw2_cs = {
+static cheb_series daw2_cs = {
   daw2_data,
   32, /* 44, */
   -1, 1,
-  (double *)0,
-  (double *)0,
   21
 };
 
@@ -215,12 +212,10 @@ static double dawa_data[75] = {
   -0.6120087296881677722911435593001e-31,
    0.1966024640193164686956230217896e-31
 };
-static gsl_sf_cheb_series dawa_cs = {
+static cheb_series dawa_cs = {
   dawa_data,
   34, /* 74, */
   -1, 1,
-  (double *)0,
-  (double *)0,
   12
 };
 
@@ -243,7 +238,7 @@ gsl_sf_dawson_e(double x, gsl_sf_result * result)
   }
   else if(y < 1.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&daw_cs, 2.0*y*y - 1.0, &result_c);
+    cheb_eval_e(&daw_cs, 2.0*y*y - 1.0, &result_c);
     result->val = x * (0.75 + result_c.val);
     result->err = y * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -251,7 +246,7 @@ gsl_sf_dawson_e(double x, gsl_sf_result * result)
   }
   else if(y < 4.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&daw2_cs, 0.125*y*y - 1.0, &result_c);
+    cheb_eval_e(&daw2_cs, 0.125*y*y - 1.0, &result_c);
     result->val = x * (0.25 + result_c.val);
     result->err = y * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -259,7 +254,7 @@ gsl_sf_dawson_e(double x, gsl_sf_result * result)
   }
   else if(y < xbig) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
+    cheb_eval_e(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
     result->val  = (0.5 + result_c.val) / x;
     result->err  = result_c.err / y;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);

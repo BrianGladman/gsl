@@ -23,8 +23,11 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
+#include <gsl/gsl_mode.h>
 #include "gsl_sf_expint.h"
+
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 
 static double atanint_data[21] = {
@@ -50,12 +53,10 @@ static double atanint_data[21] = {
  -0.511e-17,
   0.79e-18,
 };
-static gsl_sf_cheb_series atanint_cs = {
+static cheb_series atanint_cs = {
   atanint_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -83,7 +84,7 @@ gsl_sf_atanint_e(const double x, gsl_sf_result * result)
   else if(ax <= 1.0) {
     const double t = 2.0 * (x*x - 0.5);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&atanint_cs, t, &result_c);
+    cheb_eval_e(&atanint_cs, t, &result_c);
     result->val  = x * result_c.val;
     result->err  = x * result_c.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -92,7 +93,7 @@ gsl_sf_atanint_e(const double x, gsl_sf_result * result)
   else if(ax < 1.0/GSL_SQRT_DBL_EPSILON) {
     const double t = 2.0 * (1.0/(x*x) - 0.5);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_e(&atanint_cs, t, &result_c);
+    cheb_eval_e(&atanint_cs, t, &result_c);
     result->val  = sgn * (0.5*M_PI*log(ax) + result_c.val/ax);
     result->err  = result_c.err/ax + fabs(result->val*GSL_DBL_EPSILON);
     result->err += GSL_DBL_EPSILON * fabs(result->val);

@@ -23,9 +23,10 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
 #include "gsl_sf_log.h"
 
+#include "chebyshev.h"
+#include "cheb_eval.c"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -59,12 +60,10 @@ static double lopx_data[21] = {
  -1.3492637457521938883731579510e-17,
   1.8657327910677296608121390705e-18
 };
-static gsl_sf_cheb_series lopx_cs = {
+static cheb_series lopx_cs = {
   lopx_data,
   20,
   -1, 1,
-  (double *)0,
-  (double *)0,
   10
 };
 
@@ -97,12 +96,10 @@ static double lopxmx_data[20] = {
  -9.5034129794804273611403251480e-17,
   1.3170135013050997157326965813e-17
 };
-static gsl_sf_cheb_series lopxmx_cs = {
+static cheb_series lopxmx_cs = {
   lopxmx_data,
   19,
   -1, 1,
-  (double *)0,
-  (double *)0,
   9
 };
 
@@ -200,7 +197,7 @@ gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result)
   else if(fabs(x) < 0.5) {
     double t = 0.5*(8.0*x + 1.0)/(x+2.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&lopx_cs, t, &c);
+    cheb_eval_e(&lopx_cs, t, &c);
     result->val = x * c.val;
     result->err = fabs(x * c.err);
     return GSL_SUCCESS;
@@ -241,7 +238,7 @@ gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result)
   else if(fabs(x) < 0.5) {
     double t = 0.5*(8.0*x + 1.0)/(x+2.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_e(&lopxmx_cs, t, &c);
+    cheb_eval_e(&lopxmx_cs, t, &c);
     result->val = x*x * c.val;
     result->err = x*x * c.err;
     return GSL_SUCCESS;
