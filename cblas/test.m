@@ -963,6 +963,11 @@ function AA = blas_ger (order, M, N, alpha, X, incX, Y, incY, A, lda)
   x = vector (X, incX, columns(a));
   y = vector (Y, incY, rows(a));
 
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
   a = alpha * x * y' + a;
   
   AA = mout(order, A, lda, M, N, a);
@@ -973,6 +978,11 @@ function AA = blas_geru (order, M, N, alpha, X, incX, Y, incY, A, lda)
 
   x = vector (X, incX, columns(a));
   y = vector (Y, incY, rows(a));
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
 
   a = alpha * x * (y.') + a;
   
@@ -985,6 +995,11 @@ function AA = blas_gerc (order, M, N, alpha, X, incX, Y, incY, A, lda)
   x = vector (X, incX, columns(a));
   y = vector (Y, incY, rows(a));
 
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
   a = alpha * x * y' + a;
   
   AA = mout(order, A, lda, M, N, a);
@@ -996,6 +1011,11 @@ function AA = blas_syr (order, uplo, N, alpha, X, incX, A, lda)
   t = triu(a,1) + tril(a,-1);
   a = diag(real(diag(a))) + t + t';  # make symmetric
 
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
   a = alpha * x * x' + a;
   
   AA = trmatout(order, uplo, 131, A, lda, N, a);
@@ -1006,6 +1026,11 @@ function AA = blas_spr (order, uplo, N, alpha, X, incX, A)
   x = vector (X, incX, N);
   t = triu(a,1) + tril(a,-1);
   a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
 
   a = alpha * x * x' + a;
   
@@ -1019,6 +1044,11 @@ function AA = blas_syr2 (order, uplo, N, alpha, X, incX, Y, incY, A, lda)
   t = triu(a,1) + tril(a,-1);
   a = diag(real(diag(a))) + t + t';  # make symmetric
 
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
   a = alpha * x * y' + alpha * y * x' + a;
   
   AA = trmatout(order, uplo, 131, A, lda, N, a);
@@ -1030,6 +1060,11 @@ function AA = blas_spr2 (order, uplo, N, alpha, X, incX, Y, incY, A)
   y = vector (Y, incY, N);
   t = triu(a,1) + tril(a,-1);
   a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
 
   a = alpha * x * y' + alpha * y * x' + a;
   
@@ -1067,6 +1102,48 @@ function AA = blas_hpr (order, uplo, N, alpha, X, incX, A)
   endif
 
   a = alpha * x * x' + a;
+  for i = 1:N
+    a(i,i) = real(a(i,i));
+  endfor
+  
+  AA = tpmatout(order, uplo, 131, A, N, a);
+endfunction
+
+
+function AA = blas_her2 (order, uplo, N, alpha, X, incX, Y, incY, A, lda)
+  a = trmatrix (order, uplo, 131, A, lda, N); #nounit
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
+  a = alpha * x * y' + conj(alpha) * y * x' + a;
+  for i = 1:N
+    a(i,i) = real(a(i,i));
+  endfor
+  
+  AA = trmatout(order, uplo, 131, A, lda, N, a);
+endfunction
+
+function AA = blas_hpr2 (order, uplo, N, alpha, X, incX, Y, incY, A)
+  a = tpmatrix (order, uplo, 131, A, N); #nounit
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make symmetric
+
+  if (alpha == 0)
+    AA = A;
+    return;
+  endif
+
+  a = alpha * x * y' + conj(alpha) * y * x' + a;
+
   for i = 1:N
     a(i,i) = real(a(i,i));
   endfor
@@ -2181,20 +2258,20 @@ n=16;
 #   endfor
 # endfor
 
-for j = 1:n
-  for i = [c,z];
-    S = context(i);
-    T = test_tpmatvector(S, j);
-    R = S ; R.complex = 0;
-    for alpha = coeff(R)
-      for order = [101, 102]
-        for uplo = [121, 122]
-          test_hpr (S, "hpr", order, uplo, T.n, alpha, T.v, T.s, T.A);
-        endfor
-      endfor
-    endfor
-  endfor
-endfor
+# for j = 1:n
+#   for i = [c,z];
+#     S = context(i);
+#     T = test_tpmatvector(S, j);
+#     R = S ; R.complex = 0;
+#     for alpha = coeff(R)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_hpr (S, "hpr", order, uplo, T.n, alpha, T.v, T.s, T.A);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
 
 
 
@@ -2243,3 +2320,32 @@ endfor
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z];
+#     S = context(i);
+#     T = test_trmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_syr2 (S, "her2", order, uplo, T.n, alpha, T.v1, T.s1, \
+#                      T.v2, T.s2, T.A, T.lda);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+for j = 1:n
+  for i = [c,z];
+    S = context(i);
+    T = test_trmatvectors(S, j);
+    for alpha = coeff(S)
+      for order = [101, 102]
+        for uplo = [121, 122]
+          test_spr2 (S, "hpr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+                     T.v2, T.s2, T.A, T.lda);
+        endfor
+      endfor
+    endfor
+  endfor
+endfor

@@ -43,7 +43,7 @@
 
 	for (j = i+1 ; j < N; j++) {
           const BASE X_real = REAL(X, jx);
-          const BASE X_imag = conj * IMAG(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
           REAL(Ap, TPUP(N,i,j)) += X_real * tmp_real - X_imag * tmp_imag;
           IMAG(Ap, TPUP(N,i,j)) += X_imag * tmp_real + X_real * tmp_imag;
           jx += incX;
@@ -59,7 +59,7 @@
 	size_t jx = OFFSET(N, incX);
 	for (j = 0 ; j < i; j++) {
           const BASE X_real = REAL(X, jx);
-          const BASE X_imag = conj * IMAG(X, jx);
+          const BASE X_imag = -conj * IMAG(X, jx);
           REAL(Ap, TPLO(N,i,j)) += X_real * tmp_real - X_imag * tmp_imag;
           IMAG(Ap, TPLO(N,i,j)) += X_imag * tmp_real + X_real * tmp_imag;
           jx += incX;

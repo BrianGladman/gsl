@@ -1116,7 +1116,7 @@ cblas_zhpr (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
-#ifdef 0
+
 /* HER2 */
 
 void
@@ -1161,7 +1161,7 @@ cblas_zhpr2 (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 #include "source_hpr2.h"
 #undef BASE
 }
-#endif
+
 /* SYR */
 
 void
