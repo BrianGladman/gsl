@@ -8,6 +8,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
+	
+/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* chebyshev expansions for Airy modulus and phase
    based on SLATEC r9aimp()
@@ -556,25 +558,7 @@ static double airy_bie(double x)
   }
 }
 
-
-double gsl_sf_airy_Ai(double x)
-{
-  if(x < -1.0) {
-    double mod, theta;
-    airy_mod_phase(x, &mod, &theta);
-    return mod * cos(theta);
-  }
-  else if(x <= 1.0) {
-    double z = x*x*x;
-    return 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
-  }
-  else {
-    return airy_aie(x) * exp(-2.0*x*sqrt(x)/3.0);
-  }
-}
-
-
-int gsl_sf_airy_Bi_pe(double x, double * result)
+int gsl_sf_airy_Bi_impl(double x, double * result)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -597,7 +581,7 @@ int gsl_sf_airy_Bi_pe(double x, double * result)
 
     if(y > GSL_LOG_DBL_MAX - 1.) {
       *result = 0.; /* FIXME: should be Inf */
-      GSL_ERROR("gsl_sf_airy_Bi_pe: overflow", GSL_EOVRFLW);
+      return GSL_EOVRFLW;
     }
     else {
       *result = airy_bie(x) * exp(y);
@@ -606,16 +590,46 @@ int gsl_sf_airy_Bi_pe(double x, double * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_airy_Bi_e(double x, double * result)
+{
+  int status = gsl_sf_airy_Bi_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
 double gsl_sf_airy_Bi(double x)
 {
   double y;
-  int error_status = gsl_sf_airy_Bi_pe(x, &y);
+  int status = gsl_sf_airy_Bi_impl(x, &y);
 
-  if(error_status == GSL_EOVRFLW) {
-    GSL_WARNING("gsl_sf_airy_Bi: overflow detected");
+  if(status != GSL_SUCCESS) {
+    char buff[128];
+    sprintf(buff, "gsl_sf_airy_Bi: x= %22.17g", x);
+    GSL_WARNING(buff);
   }
-  else { /* success */
-    return y;
+
+  return y;
+}
+
+double gsl_sf_airy_Ai(double x)
+{
+  if(x < -1.0) {
+    double mod, theta;
+    airy_mod_phase(x, &mod, &theta);
+    return mod * cos(theta);
+  }
+  else if(x <= 1.0) {
+    double z = x*x*x;
+    return 0.375 + (gsl_sf_cheb_eval(z, &aif_cs) - x*(0.25 + gsl_sf_cheb_eval(z, &aig_cs)));
+  }
+  else {
+    return airy_aie(x) * exp(-2.0*x*sqrt(x)/3.0);
   }
 }
 

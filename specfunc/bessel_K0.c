@@ -8,6 +8,8 @@
 #include "gsl_sf_bessel.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC bk0(), bk0e() */
 
 /* chebyshev expansions 
@@ -100,57 +102,109 @@ static struct gsl_sf_ChebSeries ak02_cs = {
   -1, 1
 };
 
-
-double gsl_sf_bessel_K0_scaled(double x)
+int gsl_sf_bessel_K0_scaled_impl(double x, double * result)
 {
   const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
 
   if(x <= 0.0) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K0_scaled: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < x_small) {
-    return  exp(x) * (-log(0.5*x)*gsl_sf_bessel_I0(x) - .25
-      	      	      + gsl_sf_cheb_eval(-1., &bk0_cs)
-      	      	     );
+    *result = exp(x) * (-log(0.5*x)*gsl_sf_bessel_I0(x) - .25
+      	      	        + gsl_sf_cheb_eval(-1., &bk0_cs)
+      	      	       );
+    return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
-    return  exp(x) * (-log(0.5*x)*gsl_sf_bessel_I0(x) - .25
-      	      	      + gsl_sf_cheb_eval(0.5*y-1., &bk0_cs)
-      	      	     );
+    *result = exp(x) * (-log(0.5*x)*gsl_sf_bessel_I0(x) - .25
+      	      	        + gsl_sf_cheb_eval(0.5*y-1., &bk0_cs)
+      	      	       );
+    return GSL_SUCCESS;
   }
   else if(x <= 8.) {
-    return (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak0_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak0_cs)) / sqrt(x);
+    return GSL_SUCCESS;
   }
   else {
-    return (1.25 + gsl_sf_cheb_eval(16./x-1., &ak02_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval(16./x-1., &ak02_cs)) / sqrt(x);
+    return GSL_SUCCESS;
   } 
 }
 
 
-double gsl_sf_bessel_K0(double x)
+int gsl_sf_bessel_K0_impl(double x, double * result)
 {
   const double x_small = 2.*GSL_SQRT_MACH_EPS;
-  const double xmax = -GSL_LOG_DBL_MAX - 0.5 * 6.9 /* ?? */  - 0.01;
+  const double xmax = GSL_LOG_DBL_MAX - 0.5 * 6.9 /* FIXME: ?? */  - 0.01;
     /*
       xmax = -alog(r1mach(1))
       xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
     */
 
   if(x <= 0.) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K0: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < x_small) {
-    return -log(0.5*x)*gsl_sf_bessel_I0(x) - .25 + gsl_sf_cheb_eval(-1., &bk0_cs);
+    *result = -log(0.5*x)*gsl_sf_bessel_I0(x) - .25 + gsl_sf_cheb_eval(-1., &bk0_cs);
+    return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
-    return -log(0.5*x)*gsl_sf_bessel_I0(x) - .25 + gsl_sf_cheb_eval(0.5*y-1., &bk0_cs);
+    *result = -log(0.5*x)*gsl_sf_bessel_I0(x) - .25 + gsl_sf_cheb_eval(0.5*y-1., &bk0_cs);
+    return GSL_SUCCESS;
   }
   else if(x < xmax) {
-    return exp(-x) * gsl_sf_bessel_K0_scaled(x);
+    *result = exp(-x) * gsl_sf_bessel_K0_scaled(x);
+    return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K0: x too large", GSL_EUNDRFLW, 0.);
+    return GSL_EUNDRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_K0_scaled_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_K0_scaled_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+int gsl_sf_bessel_K0_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_K0_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_K0_scaled(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_K0_scaled_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
+}
+
+
+double gsl_sf_bessel_K0(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_K0_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
 }

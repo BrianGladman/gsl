@@ -8,6 +8,8 @@
 #include "gsl_sf_bessel.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC besi1(), besi1e() */
 
 /* chebyshev expansions
@@ -115,63 +117,115 @@ struct gsl_sf_ChebSeries ai12_cs = {
 
 #define ROOT_EIGHT 2.82842712474619
 
-double gsl_sf_bessel_I1_scaled(double x)
+int gsl_sf_bessel_I1_scaled_impl(double x, double * result)
 {
   static double xmin    = 2.0 * DBL_MIN;
   static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
-  int err_status = GSL_SUCCESS;
-
   double y = fabs(x);
 
   if(y == 0.) {
-    return 0.;
+    *result = 0.;
+    return GSL_SUCCESS;
   }
   else if(y < xmin) {
-    err_status = GSL_EUNDRFLW;
-    return 0.;
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
   else if(y < x_small) {
-    return 0.5*x;
+    *result = 0.5*x;
+    return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    return exp(-y) * x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    *result = x * exp(-y) * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    return GSL_SUCCESS;
   }
   else if(y <= 8.0) {
     double b = (.375 + gsl_sf_cheb_eval((48./y-11.)/5., &ai1_cs)) / sqrt(y);
-    return fortran_sign(b, x);
+    *result = fortran_sign(b, x);
+    return GSL_SUCCESS;
   }
   else {
     double b = (.375 + gsl_sf_cheb_eval(16./y-1.0, &ai12_cs)) / sqrt(y);
-    return fortran_sign(b, x);
+    *result = fortran_sign(b, x);
+    return GSL_SUCCESS;
   }
 }
 
 
-double gsl_sf_bessel_I1(double x)
+int gsl_sf_bessel_I1_impl(double x, double * result)
 {
   static double xmin    = 2.0 * DBL_MIN;
   static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   static double xmax    = GSL_LOG_DBL_MAX; /* alog (r1mach(2)) */
-  int err_status = GSL_SUCCESS;
-
   double y = fabs(x);
 
   if(y == 0.) {
+    *result = 0.;
+    return GSL_SUCCESS;
   }
   else if(y < xmin) {
-    err_status = GSL_EUNDRFLW;
-    return 0.;
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
   else if(y < x_small) {
-    return 0.5*x;
+    *result = 0.5*x;
+    return GSL_SUCCESS;
   }
   else if(y <= 3.0) {
-    return  x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    *result = x * (.875 + gsl_sf_cheb_eval(y*y/4.5-1., &bi1_cs));
+    return GSL_SUCCESS;
   }
   else if(y < xmax) {
-    return exp(y) * gsl_sf_bessel_I1_scaled(x);
+    *result = exp(y) * gsl_sf_bessel_I1_scaled(x);
+    return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_I1: x too large", GSL_EOVRFLW, 0.);
+    *result = 0.; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
   }
+}
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_I1_scaled_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_I1_scaled_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_bessel_I1_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_I1_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_I1_scaled(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_I1_scaled_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING();
+  }
+  
+  return y;
+}
+
+double gsl_sf_bessel_I1(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_I1_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING();
+  }
+  
+  return y;
 }

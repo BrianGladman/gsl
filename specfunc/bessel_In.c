@@ -6,21 +6,27 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
+extern int gsl_sf_bessel_I1_scaled_impl(double, double *);
 
-double gsl_sf_bessel_I_scaled(int n, double x)
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_I_scaled_impl(int n, double x, double * result)
 {
-  double result;
   n = abs(n);  /* I(-n, z) = I(n, z) */
  
   if(n == 0) {
-    result = gsl_sf_bessel_I0_scaled(x);
+    *result = gsl_sf_bessel_I0_scaled(x);
+    return GSL_SUCCESS;
   }
   else if(n == 1) {
-    result = gsl_sf_bessel_I1_scaled(x);
+    double b;
+    return gsl_sf_bessel_I1_scaled_impl(x, &b);
   }
   else { 
     if(x == 0.) {
-      result = 0.;
+      *result = 0.;
+      return GSL_SUCCESS;
     }
     else {
       int j;
@@ -53,23 +59,67 @@ double gsl_sf_bessel_I_scaled(int n, double x)
       /* Normalize using I0(x); j=0 here. */
       b_np1 *= gsl_sf_bessel_I0_scaled(x) / b_j;
 
-      result = x < 0. && (GSL_IS_ODD(n)) ? -b_np1 : b_np1;
+      *result = x < 0. && (GSL_IS_ODD(n)) ? -b_np1 : b_np1;
+      return GSL_SUCCESS;
     }
   }
+}
+
+int gsl_sf_bessel_I_impl(int n, double x, double * result)
+{
+  double ax = fabs(x);
   
-  return result;
+  if(ax > GSL_LOG_DBL_MAX - 1.) {
+    *result = 0.; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
+  }
+  else {
+    double y;
+    int status = gsl_sf_bessel_I_scaled_impl(n, x, &y);
+    *result = exp(ax) * y;
+    return status;
+  }
+}
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_I_scaled_e(int n, double x, double * result)
+{
+  int status = gsl_sf_bessel_I_scaled_impl(n, x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_bessel_I_e(int n, double x, double * result)
+{
+  int status = gsl_sf_bessel_I_impl(n, x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_I_scaled(int n, double x)
+{
+  double y;
+  int status = gsl_sf_bessel_I_scaled_impl(n, x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
+}
+
 double gsl_sf_bessel_I(int n, double x)
 {
-  double y = fabs(x);
+  double y;
+  int status = gsl_sf_bessel_I_impl(n, x, &y);
   
-  if(y > GSL_LOG_DBL_MAX) {
-    /* domain error */
-    return 0.;
+  if(status != GSL_SUCCESS) {
   }
-  else {
-    return exp(y) * gsl_sf_bessel_I_scaled(n, x);
-  }
+  
+  return y;
 }

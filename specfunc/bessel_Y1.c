@@ -10,6 +10,8 @@
 #include "bessel_amp_phase.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC besy1, 1977 version, w. fullerton */
 
 /* chebyshev expansions
@@ -37,7 +39,6 @@ static double by1_data[14] = {
    .00000000000000027838,
   -.00000000000000000186
 };
-
    
 static struct gsl_sf_ChebSeries by1_cs = {
   by1_data,
@@ -45,8 +46,7 @@ static struct gsl_sf_ChebSeries by1_cs = {
   -1, 1
 };
 
-
-double gsl_sf_bessel_Y1(double x)
+int gsl_sf_bessel_Y1_impl(double x, double * result)
 {
   const double two_over_pi = 2./M_PI;
   const double xmin = 1.571*DBL_MIN; /*exp ( amax1(alog(r1mach(1)), -alog(r1mach(2)))+.01) */
@@ -54,26 +54,56 @@ double gsl_sf_bessel_Y1(double x)
   const double xmax    = 1./GSL_MACH_EPS;
   
   if(x <= 0.) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_Y1: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < xmin) {
-    GSl_ERROR_RETURN("gsl_sf_bessel_Y1: x too small", GSL_EOVRFLW, 0.);
+    *result = 0.; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    return two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
-      (0.5 + gsl_sf_cheb_eval(-1., &by1_cs))/x;
+    *result = two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
+              (0.5 + gsl_sf_cheb_eval(-1., &by1_cs))/x;
+    return GSL_SUCCESS;
   }
   else if(x < 4.0) {
-    return two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
-      (0.5 + gsl_sf_cheb_eval(0.125*x*x-1., &by1_cs))/x;
+    *result = two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
+              (0.5 + gsl_sf_cheb_eval(0.125*x*x-1., &by1_cs))/x;
+    return GSL_SUCCESS;
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;
     double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm1_cs)) / sqrt(x);
     double theta = x - 3.0*M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth1_cs) / x;
-    return ampl * sin (theta);
+    *result = ampl * sin (theta);
+    return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_Y1: x too large", GSL_EUNDRFLW, 0.);
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_Y1_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_Y1_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_Y1(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_Y1_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
 }

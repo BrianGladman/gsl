@@ -7,39 +7,8 @@
 #include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 
-	
-int gsl_sf_cheb_calc(struct gsl_sf_ChebSeries * cs, double (*func)(double))
-{
-  if(cs == 0) {
-    GSL_ERROR_RETURN("gsl_sf_cheb_calc: (nil) ChebSeries", GSL_EFAILED, GSL_FAILURE);
-  }
-  else {
-    int k, j;
-    double bma = 0.5 * (cs->b - cs->a);
-    double bpa = 0.5 * (cs->b + cs->a);
-    double fac = 2./(cs->order +1.);
-    double * f = malloc((cs->order+1) * sizeof(double));
 
-    if(f == 0) {
-      GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, GSL_ENOMEM);
-    }
-  
-    for(k = 0; k<=cs->order; k++) {
-      double y = cos(M_PI * (k+0.5)/(cs->order+1));
-      f[k] = func(y*bma + bpa);
-    }
-
-    for(j = 0; j<=cs->order; j++) {
-      double sum = 0.0;
-      for(k = 0; k<=cs->order; k++) sum += f[k]*cos(M_PI * j*(k+0.5)/(cs->order+1));
-      cs->c[j] = fac * sum;
-    }
-
-    free(f);
-    return GSL_SUCCESS;
-  }
-}
-
+/*-*-*-*-*-*-*-*-*-*-*-* Allocators *-*-*-*-*-*-*-*-*-*-*-*/
 
 struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
     	    	    	    	    	   double a, double b,
@@ -76,6 +45,56 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
     }
   }
 }
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+{
+  if(cs == 0) {
+    return GSL_EFAILED;
+  }
+  else {
+    int k, j;
+    double bma = 0.5 * (cs->b - cs->a);
+    double bpa = 0.5 * (cs->b + cs->a);
+    double fac = 2./(cs->order +1.);
+    double * f = malloc((cs->order+1) * sizeof(double));
+
+    if(f == 0) {
+      return GSL_ENOMEM;
+    }
+  
+    for(k = 0; k<=cs->order; k++) {
+      double y = cos(M_PI * (k+0.5)/(cs->order+1));
+      f[k] = func(y*bma + bpa);
+    }
+
+    for(j = 0; j<=cs->order; j++) {
+      double sum = 0.0;
+      for(k = 0; k<=cs->order; k++) sum += f[k]*cos(M_PI * j*(k+0.5)/(cs->order+1));
+      cs->c[j] = fac * sum;
+    }
+
+    free(f);
+    return GSL_SUCCESS;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Functions *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_cheb_calc_e(struct gsl_sf_ChebSeries * cs, double (*func)(double))
+{
+  int status = gsl_sf_cheb_calc_impl(cs, func);
+  
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cheb_calc_e: failed", status);
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Natural Prototype Functions *-*-*-*-*-*-*-*-*-*-*-*/
 
 
 double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)

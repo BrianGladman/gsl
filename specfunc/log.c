@@ -6,7 +6,9 @@
 #include "gsl_sf_log.h"
 
 
-int gsl_sf_complex_log(double zr, double zi, double * lnr, double * theta)
+/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_complex_log_impl(double zr, double zi, double * lnr, double * theta)
 {
   if(zr != 0.0 || zi != 0.0) {
     double r2 = zr*zr + zi*zi;
@@ -15,6 +17,20 @@ int gsl_sf_complex_log(double zr, double zi, double * lnr, double * theta)
     return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR("gsl_sf_complex_log: z=0.0", GSL_EDOM);
+    return GSL_EDOM;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_complex_log_e(double zr, double zi, double * lnr, double * theta)
+{
+  int status = gsl_sf_complex_log_impl(zr, zi, lnr, theta);
+  
+  if(status != GSL_SUCCESS) {
+    char buff[128];
+    sprintf(buff, "gsl_sf_complex_log_e: zr= %22.17g zi= %22.17g", zr, zi);
+    GSL_ERROR(buff, status);
   }
 }

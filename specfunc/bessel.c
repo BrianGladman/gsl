@@ -8,11 +8,15 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+extern int gsl_sf_fact_impl(double, double *);
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* sum which occurs in Taylor series for J_nu(x) * Gamma(nu+1)/((x/2)^nu)
  * [Abramowitz+Stegun, 9.1.10]
  */
-int gsl_sf_bessel_Jnu_taylorsum_e(double nu, double x, int kmax, double * result)
+static int Jnu_taylorsum(double nu, double x, int kmax, double * result)
 {
   int k;
   double y = -0.25 * x*x;
@@ -44,12 +48,8 @@ int gsl_sf_bessel_Jnu_taylorsum_e(double nu, double x, int kmax, double * result
 
 /* Taylor expansion for J_nu(x)
  * nu >= 0.0 and x >= 0.0
- * Return:
- *   GSL_SUCCESS on success
- *   GSL_EDOM    if nu < 0.0 or x < 0.0
- *   GSL_ELOSS   if loss of accuracy
  */
-int gsl_sf_bessel_Jnu_taylor_e(double nu, double x, int kmax, double * result)
+int gsl_sf_bessel_Jnu_taylor_impl(double nu, double x, int kmax, double * result)
 {
   if(nu < 0.0 || x < 0.0) {
     return GSL_EDOM;
@@ -57,14 +57,14 @@ int gsl_sf_bessel_Jnu_taylor_e(double nu, double x, int kmax, double * result)
   else {
     double ts;
     double p   = (nu == 0. ? 1. :  pow(0.5*x, nu));
-    double pre = pow(0.5*x, nu) / exp(gsl_sf_lngamma(nu+1.));
-    int status = gsl_sf_bessel_Jnu_taylorsum_e(nu, x, kmax, &ts);
+    double pre = pre / exp(gsl_sf_lngamma(nu+1.));
+    int status = Jnu_taylorsum(nu, x, kmax, &ts);
     *result = pre * ts;
     return status;
   }
 }
 
-int gsl_sf_bessel_Jn_taylor_e(int n, double x, int kmax, double * result)
+int gsl_sf_bessel_Jn_taylor_impl(int n, double x, int kmax, double * result)
 {
   if(n < 0 || x < 0.0) {
     return GSL_EDOM;
@@ -73,18 +73,17 @@ int gsl_sf_bessel_Jn_taylor_e(int n, double x, int kmax, double * result)
     double ts;
     double pre;
     double nfact;
-    int status = gsl_sf_fact_e(n, &nfact);
+    int status = gsl_sf_fact_impl(n, &nfact);
     if(status == GSL_SUCCESS) {
       pre = gsl_sf_pow_int(0.5*x, n) / nfact;
-      gsl_sf_bessel_Jnu_taylorsum_e(n, x, kmax, &ts);
+      status = Jnu_taylorsum_e(n, x, kmax, &ts);
       *result = pre * ts;
+      return status;
     }
     else {
       *result = 0.;
-      GSL_ERROR(
-    int status = gsl_sf_bessel_Jnu_taylorsum_e(n, x, kmax, &ts);
-    *result = pre * ts;
-    return status;
+      return GSL_EUNDRFLW;
+    }
   }
 }
 

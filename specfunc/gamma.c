@@ -11,29 +11,12 @@
 
 extern double hypot(double, double);
 
-
 #define LogRootTwoPi_  0.9189385332046727418
 #define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
-static double gamma_cof[6] = {76.18009172947146, -86.50532032941677,
-			    	  24.01409824083091, -1.231739572450155,
-			    	  0.1208650973866179e-2, -0.5395239384953e-5
-	    	    	    	  };
-
-double gsl_sf_lngamma_old(double xx)
-{
-  int j;
-  double x = xx;
-  double y = xx;
-  double tmp = x + 5.5 - (x + 0.5) * log(x + 5.5);
-  double ser = 1.000000000190015;
-  
-  for(j=0; j<=5; j++) ser += gamma_cof[j]/(++y);
-  
-  return -tmp + log(2.5066282746310005 * ser / x);
-}
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* coefficients for gamma=7, kmax=8  Lanczos method */
 static double lanczos_7_c[9] = {
@@ -48,14 +31,13 @@ static double lanczos_7_c[9] = {
   1.50563273514931155834e-7
 };
 
-
 /* Lanczos with gamma=7, truncated at 1/(z+8) 
- * J. SIAM Numer. Anal, Ser. B, 1 (1964) 86
+ * [J. SIAM Numer. Anal, Ser. B, 1 (1964) 86]
  */
-int gsl_sf_lngamma_e(double x, double * result)
+int gsl_sf_lngamma_impl(double x, double * result)
 {
   if(x <= 0.0) {
-    GSL_ERROR("gsl_sf_lngamma_e: x <= 0", GSL_EDOM);
+    return GSL_EDOM;
   }
   else {
     int k;
@@ -71,24 +53,11 @@ int gsl_sf_lngamma_e(double x, double * result)
   }
 }
 
-double gsl_sf_lngamma(double x)
-{
-  double y;
-  int status = gsl_sf_lngamma_e(x, &y);
-  if(status == GSL_SUCCESS) {
-    return y;
-  }
-  else {
-    GSL_WARNING("gsl_sf_lngamma: domain error detected");
-    return 0.;
-  }
-}
-
 
 /* complex version of Lanczos method; this is not safe for export
  * since it becomes bad in the left half-plane
  */
-static void gsl_sf_lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
+static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
 {
   int k;
   double log1_r,    log1_i;
@@ -117,28 +86,34 @@ static void gsl_sf_lngamma_lanczos_complex(double zr, double zi, double * yr, do
 }
 
 
-int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
+int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
 {
   if(zr <= 0.5) {
     /* transform to right half plane using reflection;
      * in fact we can do a little better by stopping at 1/2
      */
+    int status;
     double x = 1.-zr;
     double y = -zi;
     double a, b;
     double lnsin_r, lnsin_i;
     
-    gsl_sf_lngamma_lanczos_complex(x, y, &a, &b);
-    gsl_sf_complex_logsin(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
- 
-    *lnr = LogPi_ - lnsin_r - a;
-    *arg =        - lnsin_i - b;
-    gsl_sf_angle_restrict_symm(arg);
-    return GSL_SUCCESS;
+    lngamma_lanczos_complex(x, y, &a, &b);
+    status = gsl_sf_complex_logsin(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
+    
+    if(status == GSL_SUCCESS) {
+      *lnr = LogPi_ - lnsin_r - a;
+      *arg =        - lnsin_i - b;
+      gsl_sf_angle_restrict_symm(arg);
+      return GSL_SUCCESS;
+    }
+    else {
+      return GSL_EDOM;
+    }
   }
   else {
     /* otherwise plain vanilla Lanczos */
-    gsl_sf_lngamma_lanczos_complex(zr, zi, lnr, arg);
+    lngamma_lanczos_complex(zr, zi, lnr, arg);
     return GSL_SUCCESS;
   }
 }
@@ -356,16 +331,68 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
 };
 
 
-int gsl_sf_fact_e(int n, double * result)
+int gsl_sf_fact_impl(int n, double * result)
 {
-  if(n <= 0) {
-    GSL_ERROR("gsl_sf_fact: n <= 0", GSL_EDOM);
+ if(n <= 0) {
+    return GSL_EDOM;
   }
   else if(n <= FACT_TABLE_MAX){
     *result = fact_table[n].f;
     return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR("gsl_sf_fact: overflow", GSL_EOVRFLW);
+    return GSL_EOVRFLW;
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_fact_e(int n, double * result)
+{
+  int status == gsl_sf_fact_impl(n, result);
+  
+  if(status != GSL_SUCCESS) {
+    char buff[128];
+    sprintf(buff, "gsl_sf_fact_e: n= %d", n);
+    GSL_ERROR(buff, status);
+  }
+}
+
+int gsl_sf_lngamma_e(double x, double * result)
+{
+  int status = gsl_sf_lngamma_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+    char buff[128];
+    sprintf(buff, "gsl_sf_lngamma_e: x= %22.27g", x);
+    GSL_ERROR(buff, status);
+  }
+}
+
+int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
+{
+  int status = gsl_sf_lngamma_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+    char buff[128];
+    sprintf(buff, "gsl_sf_lngamma_complex_e: zr= %22.27g  zi=  %22.27g", zr, zi);
+    GSL_ERROR(buff, status);
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_lngamma(double x)
+{
+  double y;
+  int status = gsl_sf_lngamma_impl(x, &y);
+  if(status == GSL_SUCCESS) {
+    return y;
+  }
+  else {
+    GSL_WARNING("gsl_sf_lngamma: domain error detected");
+    return 0.;
   }
 }

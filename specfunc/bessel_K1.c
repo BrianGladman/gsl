@@ -8,6 +8,8 @@
 #include "gsl_sf_bessel.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC besk1(), besk1e() */
 
 /* chebyshev expansions 
@@ -101,71 +103,117 @@ static struct gsl_sf_ChebSeries ak12_cs = {
 };
 
 
-
-double gsl_sf_bessel_K1_scaled(double x)
+int gsl_sf_bessel_K1_scaled_impl(double x, double * result)
 {
-  static double xmin    = DBL_MIN; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01) */
-  static double x_small = 2.0*GSL_SQRT_MACH_EPS; 
-  int err_status = GSL_SUCCESS;
+  const double xmin    = 2.0*DBL_MIN;
+  const double x_small = 2.0*GSL_SQRT_MACH_EPS; 
 
   if(x <= 0.) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K1_scaled: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < xmin) {
-    err_status = GSL_EUNDRFLW;
-    return 0.;
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
   else if(x < x_small) {
-    return exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	      (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x
-      	      	    );
+    *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
+      	      	        (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x
+      	      	       );
+    return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
-    return exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	      	      (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x
-      	      	    );
+    *result = exp(x) * (log(0.5*x)*gsl_sf_bessel_I1(x) +
+      	      	        (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x
+      	      	       );
+    return GSL_SUCCESS;
   }
   else if(x <= 8.) {
-    return (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak1_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval((16./x-5.)/3., &ak1_cs)) / sqrt(x);
+    return GSL_SUCCESS;
   }
   else {
-    return (1.25 + gsl_sf_cheb_eval(16./x-1., &ak12_cs)) / sqrt(x);
+    *result = (1.25 + gsl_sf_cheb_eval(16./x-1., &ak12_cs)) / sqrt(x);
+    return GSL_SUCCESS;
   }
 }
 
-
-double gsl_sf_bessel_K1(double x)
+int gsl_sf_bessel_K1_impl(double x, double * result)
 {
-  const double xmin    = DBL_MIN; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01)*/
+  const double xmin    = 2.0*DBL_MIN;
   const double x_small = 2.*GSL_SQRT_MACH_EPS;
-  const double xmax    = -GSL_LOG_DBL_MAX - 0.5 * 6.9 /* ?? */  - 0.01;
+  const double xmax    = GSL_LOG_DBL_MAX - 0.5 * 6.9 /* FIXME: ?? */  - 0.01;
   /*
     xmax = -alog(r1mach(1))
     xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
   */
-  int err_status = GSL_SUCCESS;
 
   if(x <= 0.) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K1: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < xmin) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_K1: x too small", GSL_EOVRFLW, 0.);
+    *result = 0.; /* FIXME: should be Inf */
+    return GSL_EOVRFLW;
   }
   else if(x < x_small) {
-    return log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	    (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x; 
+    *result = log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(-1., &bk1_cs))/x; 
+    return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double y = x*x;
-    return log(0.5*x)*gsl_sf_bessel_I1(x) +
-      	    (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x; 
+    return log(0.5*x)*gsl_sf_bessel_I1(x) + (0.75 + gsl_sf_cheb_eval(.5*y-1., &bk1_cs))/x; 
+    return GSL_SUCCESS;
   }
   else if(x < xmax) { 
-    return exp(-x) * gsl_sf_bessel_K1_scaled(x);
+    *result = exp(-x) * gsl_sf_bessel_K1_scaled(x);
+    return GSL_SUCCESS;
   }
   else {
-    err_status = GSL_EUNDRFLW;
-    return 0.;
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_K1_scaled_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_K1_scaled_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+int gsl_sf_bessel_K1_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_K1_scaled_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_K1_scaled(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_K1_scaled_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
+}
+
+double gsl_sf_bessel_K1(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_K1_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
 }

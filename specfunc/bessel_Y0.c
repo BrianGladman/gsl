@@ -10,6 +10,8 @@
 #include "bessel_amp_phase.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* based on SLATEC besy0, 1980 version, w. fullerton */
 
 /* chebyshev expansions
@@ -44,7 +46,7 @@ static struct gsl_sf_ChebSeries by0_cs = {
 };
 
 
-double gsl_sf_bessel_Y0(double x)
+int gsl_sf_bessel_Y0_impl(double x, double * result)
 {
   const double two_over_pi = 2./M_PI;
   const double ln_half     = -M_LN2;
@@ -52,23 +54,52 @@ double gsl_sf_bessel_Y0(double x)
   const double xmax        = 1./GSL_MACH_EPS;
 
   if (x <= 0.) {
-    GSL_ERROR_RETURN("gsl_sf_bessel_Y0: x <= 0", GSL_EDOM, 0.);
+    return GSL_EDOM;
   }
   else if(x < x_small){
-    return two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	    + .375 + gsl_sf_cheb_eval(-1., &by0_cs);
+    *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
+	      + .375 + gsl_sf_cheb_eval(-1., &by0_cs);
+    return GSL_SUCCESS;
   }
   else if(x < 4.0) {
-    return two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
-	    + .375 + gsl_sf_cheb_eval(.125*x*x-1., &by0_cs);
+    *result = two_over_pi*(ln_half + log(x))*gsl_sf_bessel_J0(x)
+	      + .375 + gsl_sf_cheb_eval(.125*x*x-1., &by0_cs);
+    return GSL_SUCCESS;
   }
   else if(x < xmax) {
     double z     = 32.0/(x*x) - 1.0;
     double ampl  = (0.75 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bm0_cs)) / sqrt(x);
     double theta = x - M_PI_4 + gsl_sf_cheb_eval(z, &_bessel_amp_phase_bth0_cs) / x;
-    return ampl * sin (theta);
+    *result = ampl * sin (theta);
+    return GSL_SUCCESS;
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_Y0: x too large", GSL_EUNDRFLW, 0.);
+    *result = 0.;
+    return GSL_EUNDRFLW;
   }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_bessel_Y0_e(double x, double * result)
+{
+  int status = gsl_sf_bessel_Y0_impl(x, result);
+  
+  if(status != GSL_SUCCESS) {
+  }
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_bessel_Y0_e(double x)
+{
+  double y;
+  int status = gsl_sf_bessel_Y0_impl(x, &y);
+  
+  if(status != GSL_SUCCESS) {
+  }
+  
+  return y;
 }
