@@ -549,7 +549,6 @@ int
 coulomb_lam_min_values(double lam_min,
                        double eta, double x,
 		       int keep_Fmin_values, /* replace F and Fp at lam_min ? */
-		       double F_sign,
                        double * F_lam_min,   double * G_lam_min,
                        double * Fp_lam_min,  double * Gp_lam_min,
 		       double * F_exponent,  double * G_exponent
@@ -560,8 +559,12 @@ coulomb_lam_min_values(double lam_min,
   int stat_CF2;
 
   double P, Q;
-  double fjwkb, gjwkb;
+  double fjwkb = 0.0;
+  double gjwkb = 0.0;
   double exponent;
+
+  double F_sign_lam_min  = (*F_lam_min  > 0.0 ? 1.0 : -1.0);
+  double Fp_sign_lam_min = (*Fp_lam_min > 0.0 ? 1.0 : -1.0);
 
   *F_exponent = 0.0;
   *G_exponent = 0.0;
@@ -573,7 +576,7 @@ coulomb_lam_min_values(double lam_min,
       /* WKB detects a large G value. Do not attempt
        * the continued fraction.
        */
-      *F_lam_min  = fjwkb;
+      *F_lam_min  = Fp_sign_lam_min * fjwkb;
       *G_lam_min  = gjwkb;
       *F_exponent = -exponent;
       *G_exponent =  exponent;
@@ -593,7 +596,7 @@ coulomb_lam_min_values(double lam_min,
       double gamma = (F_ratio - P)/Q;
       double omega = 1.0/sqrt((F_ratio - P)*gamma + Q);
       if(! keep_Fmin_values) {
-        *F_lam_min  =  F_sign * omega;
+        *F_lam_min  =  F_sign_lam_min * omega;
         *Fp_lam_min = *F_lam_min * F_ratio;
       }
       *G_lam_min  = *F_lam_min * gamma;
@@ -601,7 +604,6 @@ coulomb_lam_min_values(double lam_min,
       return GSL_SUCCESS;
     }
     else {
-      double Fp_sign_lam_min = (*Fp_lam_min > 0.0 ? 1.0 : -1.0);
       if(! keep_Fmin_values) {
         *Fp_lam_min = Fp_sign_lam_min * sqrt(fabs(Q));
       }
@@ -614,7 +616,7 @@ coulomb_lam_min_values(double lam_min,
     if(x_less_turn) {
       /* Fallback on WKB values if CF2 claims it failed. */
       if(! keep_Fmin_values) {
-        *F_lam_min  = fjwkb;
+        *F_lam_min  = F_sign_lam_min * fjwkb;
       }
       *G_lam_min  = gjwkb;
       return GSL_SUCCESS;
@@ -674,7 +676,6 @@ coulomb_small_args(double lam_min, int kmax,
   
     coulomb_lam_min_values(lam_min, eta, x,
                            1 /* keep F_lam_min and Fp_lam_min */,
-		           F_sign_lam_max,
                            &F_lam_min,  &G_lam_min,
                            &Fp_lam_min, &Gp_lam_min,
 		           &F_e, &G_e
@@ -836,7 +837,6 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
     /* Obtain the properly normalized values at the minimum lambda. */
     coulomb_lam_min_values(lam_min, eta, x,
                            0 /* replace F_lam_min and Fp_lam_min */,
-                           F_sign_lam_max,
                            &F_lam_min,  &G_lam_min,
                            &Fp_lam_min, &Gp_lam_min,
                            F_exponent,  G_exponent);
