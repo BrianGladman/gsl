@@ -45,7 +45,8 @@ functions
   fixing matmult.
 
 * Dave Morrison <dave@bnl.gov> for advice on build procedure and
-  various patches, and the diff/ numerical differentiation routines.
+  various patches, the diff/ numerical differentiation routines,
+  and multmin documentation
 
 * Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.
 
