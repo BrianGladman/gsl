@@ -1,9 +1,11 @@
 /* $Id$ */
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "gsl_ran.h"
 #include "gsl_randist.h"
 
+int
 main(int argc, char **argv)
 {
     int i=1,N=10, *x;
