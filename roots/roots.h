@@ -25,14 +25,6 @@ do { \
 
 /* Return nonzero if a and b are within tolerance of each other. */
 
-#ifndef MIN
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#endif 
-
-#ifndef MAX
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-#endif
-
 #define WITHIN_TOL(a, b, rel_epsilon, abs_epsilon) \
      (fabs((a) - (b)) < (rel_epsilon) * MIN(fabs(a), fabs(b)) + (abs_epsilon))
 

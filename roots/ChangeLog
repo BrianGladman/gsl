@@ -1,3 +1,8 @@
+Mon Nov  9 21:21:45 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* roots.h: got rid of local MAX(a,b) and MIN(a,b) definitions
+ 	since they are now in config.h
+
 Wed Nov  4 16:08:32 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c (test_brent): allow the brent tests to run for more
