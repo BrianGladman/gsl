@@ -1,5 +1,3 @@
-B:1,$
-## $Id$
 ## Assumes that ../random/gsl_ran.h and ../random/libgslran.a exist
 ## ...and are built!
 

@@ -10,7 +10,8 @@ noinst_HEADERS = roots.h
 
 INCLUDES = -I$(srcdir)/../err
 
-TESTS = test-macros test-bisection test-falsepos test-secant test-newton
+TESTS = $(srcdir)/test-macros $(srcdir)/test-bisection \
+	$(srcdir)/test-falsepos $(srcdir)/test-secant $(srcdir)/test-newton
 TESTS_ENVIRONMENT = BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@
 
 test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
