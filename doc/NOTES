@@ -1,0 +1,55 @@
+Writing Mathematics in Texinfo documentation
+============================================
+
+1) To write equations using standard texinfo use the @tex .. @end tex
+macros to include the TeX, then use @ifinfo ... @endinfo to include
+the ASCII version which will appear in the info file.
+
+You can take advantage of the separate TeX and ASCII versions to make
+them look nice for each case.
+
+The latest version of texi2html allows you to choose between the ASCII
+equations and GIF images of the TeX equation in the HTML.
+
+Here is an example,
+
+    @tex
+    \beforedisplay
+    $$
+    e = 1 + {1 \over 2!} + {1 \over 3!} + {1 \over 4!} + \dots 
+      = 2.71828182846...
+    $$
+    \afterdisplay
+    @end tex
+    @ifinfo
+    @example
+    e = 1 + 1/2! + 1/3! + 1/4! + ... 
+      = 2.71828182846...
+    @end example
+    @end ifinfo
+
+Note the use of \beforedisplay ... \afterdisplay around the equation
+so that the spacing for equations looks nicer.
+
+2) For simple inline mathematics like variable names use the @math
+command,
+
+     the value of @math{x} is constrained by ...
+
+For more complicated inline mathematics where you want to make the TeX
+version different from the ASCII version use the ``@c{} hack'' to
+specify the TeX alternative,
+
+    the value of the partial derivative
+    @c{$\partial_x F$}
+    @math{d_x F} is constrained by the implicit ...
+
+The ordinary comment command @c is overridden by a new macro for
+handling the tex version of the math. Note that the @c{} command MUST
+be followed by a newline. It is not possible to write it in the middle
+of a line. This is a hack but it is unavoidable.
+
+To write a comment use the @comment command instead
+
+    @comment This is a comment
+
