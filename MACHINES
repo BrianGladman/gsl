@@ -73,3 +73,17 @@ There are problems with dynamic linker, so the library should be
 compiled with
 
   ./configure --disable-shared
+
+Microsoft Visual C++
+--------------------
+
+When compiled with the "Maximize speed" optimisation option (/O2 flag)
+the tests give the following failures
+
+[...]
+FAIL: gsl_isnan(nan) (0 observed vs 1 expected)
+[...]
+FAIL: gsl_finite(nan) (1 observed vs 0 expected)
+
+They work correctly without optimization
+
