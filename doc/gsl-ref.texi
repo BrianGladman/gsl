@@ -118,6 +118,8 @@ function library and numerical integration.
 * Simulated Annealing::         
 * Vectors and Matrices::        
 * Histograms::                  
+* Numerical Integration::       
+* The IEEE standard for floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Copying::                     
@@ -176,11 +178,19 @@ allowing wrappers to be written for very high level languages.
 @chapter Vectors and Matrices
 @include vectors.texi
 
-@node Histograms, Debugging Numerical Programs, Vectors and Matrices, Top
+@node Histograms, Numerical Integration, Vectors and Matrices, Top
 @chapter Histograms
 @include histogram.texi
 
-@node Debugging Numerical Programs, Contributors to GSL, Histograms, Top
+@node Numerical Integration, The IEEE standard for floating-point arithmetic, Histograms, Top
+@chapter Numerical Integration
+@include integration.texi
+
+@node  The IEEE standard for floating-point arithmetic, Debugging Numerical Programs, Numerical Integration, Top
+@chapter The IEEE standard for floating-point arithmetic
+@include ieee754.texi
+
+@node Debugging Numerical Programs, Contributors to GSL, The IEEE standard for floating-point arithmetic, Top
 @appendix Debugging Numerical Programs
 @include debug.texi
 
