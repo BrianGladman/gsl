@@ -4,7 +4,8 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
-#include "tridiag.h"
+#include <gsl_linalg.h>
+#include <gsl_vector.h>
 #include "integ_eval_macro.h"
 #include "gsl_interp.h"
 
@@ -93,18 +94,22 @@ cspline_new (const double xa[], size_t size)
  */
 static
 int
-cspline_calc_natural (gsl_interp_cspline * interp,
-		      const double xa[], const double ya[]
-)
+cspline_calc_natural (
+  gsl_interp_cspline * interp,
+  const double xa[],
+  const double ya[])
 {
   size_t i;
   size_t num_points = interp->size;
   size_t max_index = num_points - 1;	/* Engeln-Mullges + Uhlig "n" */
   size_t sys_size = max_index - 1;	/* linear system is sys_size x sys_size */
   int status;
-  double *g = (double *) malloc (sys_size * sizeof (double));
-  double *diag = (double *) malloc (sys_size * sizeof (double));
-  double *offdiag = (double *) malloc (sys_size * sizeof (double));
+
+  gsl_vector * g = gsl_vector_alloc(sys_size);
+  gsl_vector * diag = gsl_vector_alloc(sys_size);
+  gsl_vector * offdiag = gsl_vector_alloc(sys_size);
+
+  gsl_vector solution_vec = { sys_size, 1, interp->c + 1, 0 };
 
   if (g == 0 || diag == 0 || offdiag == 0)
     {
@@ -115,28 +120,28 @@ cspline_calc_natural (gsl_interp_cspline * interp,
       interp->c[0] = 0.0;
       interp->c[max_index] = 0.0;
 
-      for (i = 1; i < sys_size; i++)
+      for (i = 0; i < sys_size; i++)
 	{
-	  offdiag[i] = xa[i + 1] - xa[i];
+	  gsl_vector_set(offdiag, i, xa[i + 2] - xa[i + 1]);
 	}
 
       for (i = 0; i < sys_size; i++)
 	{
-	  double h_i = xa[i + 1] - xa[i];
-	  double h_ip1 = xa[i + 2] - xa[i + 1];
-	  diag[i] = 2.0 * (h_ip1 + h_i);
-	  g[i] = 3.0 * ((ya[i + 2] - ya[i + 1]) / h_ip1 - (ya[i + 1] - ya[i]) / h_i);
+	  const double h_i   = xa[i + 1] - xa[i];
+	  const double h_ip1 = xa[i + 2] - xa[i + 1];
+	  const double ydiff_i   = ya[i + 1] - ya[i];
+	  const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
+	  gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
+	  gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i));
 	}
 
-      status = solve_tridiag (diag, offdiag, g, interp->c + 1, sys_size);
+      status = gsl_la_solve_symm_tridiag_impl(diag, offdiag, g, &solution_vec);
     }
 
-  if (g != 0)
-    free (g);
-  if (diag != 0)
-    free (diag);
-  if (offdiag != 0)
-    free (offdiag);
+  if (g != 0) gsl_vector_free (g);
+  if (diag != 0) gsl_vector_free (diag);
+  if (offdiag != 0) gsl_vector_free (offdiag);
+
   return status;
 }
 
@@ -146,64 +151,71 @@ cspline_calc_natural (gsl_interp_cspline * interp,
  */
 static
 int
-cspline_calc_periodic (gsl_interp_cspline * interp,
-		       const double xa[], const double ya[]
-)
+cspline_calc_periodic (
+  gsl_interp_cspline * interp,
+  const double xa[],
+  const double ya[])
 {
   size_t i;
   size_t num_points = interp->size;
-  size_t max_index = num_points - 1;	/* Engeln-Mullges + Uhlig "n" */
-  size_t sys_size = max_index;	/* linear system is sys_size x sys_size */
+  size_t max_index = num_points - 1;  /* Engeln-Mullges + Uhlig "n" */
+  size_t sys_size = max_index;        /* linear system is sys_size x sys_size */
   int status;
-  double *g = (double *) malloc (sys_size * sizeof (double));
-  double *diag = (double *) malloc (sys_size * sizeof (double));
-  double *offdiag = (double *) malloc (sys_size * sizeof (double));
 
-  if (g == 0 || diag == 0 || offdiag == 0)
-    {
+  if (sys_size == 2) {
+    /* solve 2x2 system */
+
+    const double h0 = xa[1] - xa[0];
+    const double h1 = xa[2] - xa[1];
+    const double h2 = xa[3] - xa[2];
+    const double A = 2.0*(h0 + h1);
+    const double B = h0 + h1;
+    double g[2];
+    double det;
+
+    g[0] = 3.0 * ((ya[2] - ya[1]) / h1 - (ya[1] - ya[0]) / h0);
+    g[1] = 3.0 * ((ya[1] - ya[2]) / h2 - (ya[2] - ya[1]) / h1);
+
+    det = 3.0 * (h0 + h1) * (h0 + h1);
+    interp->c[1] = ( A * g[0] - B * g[1])/det;
+    interp->c[2] = (-B * g[0] + A * g[1])/det;
+    interp->c[0] = interp->c[2];
+
+    status = GSL_SUCCESS;
+  }
+  else {
+    gsl_vector * g = gsl_vector_alloc(sys_size);
+    gsl_vector * diag = gsl_vector_alloc(sys_size);
+    gsl_vector * offdiag = gsl_vector_alloc(sys_size);
+    gsl_vector solution_vec = { sys_size, 1, interp->c + 1, 0 };
+
+    if (g == 0 || diag == 0 || offdiag == 0) {
       status = GSL_ENOMEM;
     }
-  else
-    {
-      if (sys_size == 2)
-	{
-	  double h0 = xa[1] - xa[0];
-	  double h1 = xa[2] - xa[1];
-	  double h2 = xa[3] - xa[2];
-	  offdiag[0] = offdiag[1] = h0 + h1;
-	  diag[0] = diag[1] = 2.0 * (h0 + h1);
-	  g[0] = 3.0 * ((ya[2] - ya[1]) / h1 - (ya[1] - ya[0]) / h0);
-	  g[1] = 3.0 * ((ya[1] - ya[2]) / h2 - (ya[2] - ya[1]) / h1);
+    else {
+      for (i = 0; i < sys_size; i++) {
+        gsl_vector_set(offdiag, i, xa[i + 2] - xa[i + 1]);
+      }
+      gsl_vector_set(offdiag, max_index, xa[1]-xa[0]);
 
-	  /* FIXME: solve 2x2 system */
-	  status = GSL_SUCCESS;
-	}
-      else
-	{
-	  for (i = 0; i < sys_size; i++)
-	    {
-	      offdiag[i] = xa[i + 1] - xa[i];
-	    }
+      for (i = 0; i < sys_size; i++) {
+    	const double h_i   = xa[i + 1] - xa[i];
+        const double h_ip1 = xa[i + 2] - xa[i + 1];
+        const double ydiff_i   = ya[i + 1] - ya[i];
+        const double ydiff_ip1 = ya[(i + 2) % num_points] - ya[i + 1];
+        gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
+        gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i));
+      }
 
-	  for (i = 0; i < sys_size; i++)
-	    {
-	      double h_i = xa[i + 1] - xa[i];
-	      double h_ip1 = xa[i + 2] - xa[i + 1];
-	      diag[i] = 2.0 * (h_ip1 + h_i);
-	      g[i] = 3.0 * ((ya[(i + 2) % num_points] - ya[i + 1]) / h_ip1 - (ya[i + 1] - ya[i]) / h_i);
-	    }
-
-	  status = solve_cyctridiag (diag, offdiag, g, interp->c + 1, sys_size);
-	  interp->c[0] = interp->c[max_index];
-	}
+      status = gsl_la_solve_symm_tridiag_impl(diag, offdiag, g, &solution_vec);
+      interp->c[0] = interp->c[max_index];
     }
 
-  if (g != 0)
-    free (g);
-  if (diag != 0)
-    free (diag);
-  if (offdiag != 0)
-    free (offdiag);
+    if (g != 0) gsl_vector_free (g);
+    if (diag != 0) gsl_vector_free (diag);
+    if (offdiag != 0) gsl_vector_free (offdiag);
+  }
+
   return status;
 }
 

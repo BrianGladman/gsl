@@ -6,15 +6,27 @@ pkginclude_HEADERS = 		\
 	gsl_interp.h
 
 noinst_HEADERS = 		\
-	bsearch.h		\
-	tridiag.h
+	bsearch.h
 
 
-INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
+INCLUDES = \
+	-I$(full_top_srcdir)		\
+	-I$(full_top_srcdir)/err 	\
+	-I$(full_top_srcdir)/linalg	\
+	-I$(full_top_srcdir)/vector	\
+	-I$(full_top_srcdir)/block	\
+	-I$(full_top_srcdir)/matrix
 
 TESTS = test
 
-test_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_LDADD = libgslinterpolation.a 	\
+	../linalg/libgsllinalg.a 	\
+	../vector/libgslvector.a	\
+	../block/libgslblock.a		\
+	../err/libgslerr.a 		\
+	../err/libgsltest.a 		\
+	../utils/libutils.a
+
 test_DEPENDENCIES = libgslinterpolation.a
 test_SOURCES = test.c
 
@@ -25,6 +37,4 @@ libgslinterpolation_a_SOURCES = 	\
 	cspline.c			\
 	interp.c			\
 	linear.c			\
-	tridiag.c                       \
         integ_eval_macro.h
-
