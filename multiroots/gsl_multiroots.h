@@ -64,16 +64,16 @@ struct gsl_multiroot_function_fdf_struct
 {
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
   int (* df) (const gsl_vector * x, void * params, gsl_matrix * df);
-  int (* fdf) (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix *fdf);
+  int (* fdf) (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix *df);
   size_t n;
   void * params;
 };
 
 typedef struct gsl_multiroot_function_fdf_struct gsl_multiroot_function_fdf ;
 
-#define GSL_MULTIROOT_FN_EVAL_F(F,x,y) (*((F)->f)(x,(F)->params,(y)))
-#define GSL_MULTIROOT_FN_EVAL_DF(F,x,dy) (*((F)->df)(x,(F)->params,(dy)))
-#define GSL_MULTIROOT_FN_EVAL_F_DF(F,x,y,dy) (*((F)->fdf)(x,(F)->params,(y),(dy)))
+#define GSL_MULTIROOT_FN_EVAL_F(F,x,y) ((*((F)->f))(x,(F)->params,(y)))
+#define GSL_MULTIROOT_FN_EVAL_DF(F,x,dy) ((*((F)->df))(x,(F)->params,(dy)))
+#define GSL_MULTIROOT_FN_EVAL_F_DF(F,x,y,dy) ((*((F)->fdf))(x,(F)->params,(y),(dy)))
 
 typedef struct
   {
