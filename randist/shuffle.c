@@ -8,6 +8,7 @@
 #include <stdio.h>		/* defines NULL */
 #include <math.h>		/* defines floor() */
 #include "gsl_ran.h"
+#include "gsl_randist.h"
 
 int *
 gsl_ran_shuffle(int N, int *x)
@@ -17,13 +18,13 @@ gsl_ran_shuffle(int N, int *x)
     /* First, do a bunch of memory allocation stuff */
     if (N<0) return NULL;
     if (x==NULL && N>0) {
-	x = (int *)calloc(N,sizeof(int));
+	x = (int *)calloc((size_t) N,sizeof(int));
 	if (x==NULL) return NULL;
 	for (i=0; i<N; ++i)	
 	    x[i]=i;
     }
     if (x != NULL && N==0) {
-	cfree((char *)x);
+	free((char *)x);
 	return NULL;
     }
     /* Now here's the algorithm, more or less transcribed
@@ -47,11 +48,11 @@ gsl_ran_choose(int K, int N, int *x)
     /* First, do a bunch of memory allocation stuff */
     if (N<K || K<0) {
 	if (x != NULL)
-	    cfree((char *)x);
+	    free((char *)x);
 	return NULL;
     }
     if (x==NULL && K>0) {
-	x = (int *)calloc(K,sizeof(int));
+	x = (int *)calloc((size_t) K,sizeof(int));
 	if (x==NULL) 
 	    return NULL;
     }
