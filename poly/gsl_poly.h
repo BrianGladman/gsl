@@ -1,6 +1,7 @@
 #ifndef GSL_POLY_H
 #define GSL_POLY_H
 
+#include <stdlib.h>
 #include <gsl_complex.h>
 
 /* Solve for real or complex roots of the standard quadratic equation,
@@ -29,5 +30,23 @@ int
 gsl_poly_complex_solve_cubic (double a, double b, double c, 
 			      gsl_complex * z0, gsl_complex * z1, 
 			      gsl_complex * z2);
+
+
+/* Solve for the complex roots of a general real polynomial */
+
+typedef struct 
+{ 
+  size_t nc ;
+  double * matrix ; 
+} 
+gsl_poly_complex_workspace ;
+
+gsl_poly_complex_workspace * gsl_poly_complex_workspace_alloc (size_t n);
+void gsl_poly_complex_workspace_free (gsl_poly_complex_workspace * w);
+
+int
+gsl_poly_complex_solve (const double * a, size_t n, 
+                        gsl_poly_complex_workspace * w,
+                        gsl_complex_packed_ptr z);
 
 #endif /* GSL_POLY_H */

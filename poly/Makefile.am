@@ -5,7 +5,7 @@ pkginclude_HEADERS = gsl_poly.h
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 libgslpoly_a_SOURCES = solve_quadratic.c solve_cubic.c \
-	zsolve_quadratic.c zsolve_cubic.c
+	zsolve_quadratic.c zsolve_cubic.c zsolve.c zsolve_init.c
 
 TESTS = test
 
