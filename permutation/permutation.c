@@ -80,7 +80,7 @@ gsl_permutation_valid (gsl_permutation * p)
   return GSL_SUCCESS;
 }
 
-int
+void
 gsl_permutation_reverse (gsl_permutation * p)
 {
   const size_t size = p->size ;
