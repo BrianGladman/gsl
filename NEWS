@@ -1,5 +1,8 @@
 * What will be new in gsl-1.6:
 
+** The Jacobi eigensolvers gsl_eigen_jacobi and gsl_eigen_jacobi_invert 
+have new implementations from Golub and Van Loan.
+
 ** Differential equation solvers now handle error codes returned from
 user-defined functions.
 

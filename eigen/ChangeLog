@@ -1,3 +1,9 @@
+2004-12-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* jacobi.c (gsl_eigen_jacobi): use algorithm from Golub and Van
+	Loan
+	(gsl_eigen_invert_jacobi): new code
+
 2003-01-02  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* symmv.c (gsl_eigen_symmv): change gsl_isnan to isnan

@@ -339,10 +339,14 @@ int test_invert_jacobi(void)
     for(j=0; j<10; j++) {
       double delta_ij = ( i == j ? 1.0 : 0.0 );
       double id_ij    = gsl_matrix_get(id, i, j);
+      
       int rs = ( fabs(id_ij - delta_ij) > 5.0e-3 );
       s += rs;
+      gsl_test_abs(id_ij, delta_ij, 5e-3, "invert hilbert(10) %d,%d", i,j);
     }
   }
+
+  gsl_test (s, "gsl_eigen_jacobi_invert hilbert(10)");
 
   gsl_matrix_free(hm);
   gsl_matrix_free(hminv);
@@ -409,10 +413,14 @@ int main()
     gsl_matrix_complex_free (rh10);
   }
 
-  /* gsl_matrix *h5 = create_hilbert_matrix (5); */
-  /* test_eigen_jacobi("hilbert(5)", h5); */
-  /* test_invert_jacobi(); */
-  /* gsl_matrix_free (h5); */
+#if 0 /* Deprecated functions */
+  {
+    gsl_matrix *h5 = create_hilbert_matrix (5);
+    test_eigen_jacobi("hilbert(5)", h5); 
+    test_invert_jacobi(); 
+    gsl_matrix_free (h5); 
+  }
+#endif
 
   exit (gsl_test_summary());
 }
