@@ -54,9 +54,13 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   int    s = 0;
   double f;
 
-  if (val != val)  /* Test for NaN vs number */
+  if (gsl_isnan(r.val) || gsl_isnan(val)) 
     {
-      s = (r.val == r.val) ? TEST_SF_INCONS : 0;
+      s = (gsl_isnan(r.val) != gsl_isnan(val)) ? TEST_SF_INCONS : s; 
+    }
+  else if (gsl_isinf(r.val) || gsl_isinf(val)) 
+    {
+      s = (gsl_isinf(r.val) != gsl_isinf(val)) ? TEST_SF_INCONS : s; 
     }
   else
     {
