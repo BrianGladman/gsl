@@ -28,7 +28,7 @@ to some measure @math{\mu}.  We will write @math{E_L(f)} for the
 normal (or Lebesgue) integral and simple @math{E(f)} for a Monte Carlo
 estimate.  Specifically then,
 @equation
-  E(f) = @{1 \over N @} \Sum_i^N f(x_i).
+  E(f) = @{1 \over N @} \sum_i^N f(x_i).
 @end equation
 Similarly, we will denote the variance of the expactation value
 as @math{Var_@{\mu@}(f)}, defined as 
@@ -63,7 +63,7 @@ This variance
 is minimized (subject to the constrain that @math{N_a + N_b} is fixed) 
 by choosing (assuming one can) @math{N_a} s.t.
 @equation
-  @{N_a \over N_a+N_b @} = @{ \sigma_a^(1/2) \over \sigma_a + \sigma_b @}
+  @{N_a \over N_a+N_b @} = @{ \sigma_a \over \sigma_a + \sigma_b @}
 @end equation
 (where we have written @math{\sigma} for @math{Var_L(f)}).  
 For such a choice, the variance is given by
@@ -105,14 +105,14 @@ the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
-@deftypefun Monte gsl_monte_COOL_state* gsl_monte_COOL_alloc()
+@deftypefun {Monte} gsl_monte_COOL_state* gsl_monte_COOL_alloc()
 @end deftypefun
-@deftypefun Monte int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
+@deftypefun {Monte} int gsl_monte_COOL_init(gsl_monte_COOL_state* s, 
         double *x_lower, double* x_upper, double*)
 @end deftypefun
-@deftypefun Monte int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
+@deftypefun {Monte} int gsl_monte_COOL_free(gsl_monte_COOL_state* s), 
 @end deftypefun
-@deftypefun Monte int gsl_monte_COOL(gsl_monte_COOL_state* s, 
+@deftypefun {Monte} int gsl_monte_COOL(gsl_monte_COOL_state* s, 
         double *x_lower, double* x_upper, long int dimension,
         long int function_calls, double* result, double* error,
         ...)
@@ -134,7 +134,7 @@ The Numberical Recipes gang argue that it is better to use some power
 alpha, so that
 @equation 
   Var(f) = @{\sigma_a^@{\alpha/2@} \over N_a^\alpha @} + 
-               \sigma_b^@{\alpha/2@} \over N_b^\alpha @}
+               @{\sigma_b^@{\alpha/2@} \over N_b^\alpha @}
 @end equation
 @end deftypevr
 
