@@ -29,6 +29,7 @@ int check_airy(void)
   /** functions */
 
   s = 0;
+  s += ( frac_diff(gsl_sf_airy_Ai(-500.0),               0.0725901201040411396 ) > TOL );
   s += ( frac_diff(gsl_sf_airy_Ai(-5),                   0.3507610090241142    ) > TOL );
   s += ( frac_diff(gsl_sf_airy_Ai(-0.3000000000000094),  0.4309030952855831    ) > TOL );
   s += ( frac_diff(gsl_sf_airy_Ai(0.6999999999999907),   0.1891624003981519    ) > TOL );
@@ -51,6 +52,7 @@ int check_airy(void)
   status += s;
   
   s = 0;
+  s += ( frac_diff(gsl_sf_airy_Bi(-500.0),               -0.09468857013299102759 ) > 2.0*TOL );
   s += ( frac_diff(gsl_sf_airy_Bi(-5),                   -0.1383691349016005    ) > 2.0*TOL );
   s += ( frac_diff(gsl_sf_airy_Bi(-0.3000000000000094),   0.4779778401098885    ) > TOL );
   s += ( frac_diff(gsl_sf_airy_Bi(0.6999999999999907),    0.9733286558781599    ) > TOL );
@@ -5836,6 +5838,25 @@ int check_trig(void)
   int status = 0;
   int s;
 
+  s = 0;
+  y = gsl_sf_sin_pi_x(1000.5);
+  s += ( frac_diff(y, 1.0 ) > TOL );
+  gsl_test(s, "  gsl_sf_sin_pi_x(1000.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_sin_pi_x(10000.0 + 1.0/65536.0);
+  s += ( frac_diff(y, 0.00004793689960306688455 ) > TOL );
+  gsl_test(s, "  gsl_sf_sin_pi_x(10000.0 + 1.0/65536.0)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_sin_pi_x(1099511627776.0 + 1 + 0.125);
+  s += ( frac_diff(y, -0.3826834323650897717 ) > TOL );
+  gsl_test(s, "  gsl_sf_sin_pi_x(2^40 + 1 + 0.125)");
+  status += s;
+
+
   yr = 1.0;
   yi = 5.0;
   gsl_sf_complex_sin_impl(yr, yi, &zr, &zi);
@@ -6007,9 +6028,7 @@ int check_zeta(void)
 
   s = 0;
   s += ( frac_diff(gsl_sf_zeta(-151),            8.195215221831378294e+143  ) > TOL );
-  printf("%22.18g\n", gsl_sf_zeta(-151));
   s += ( frac_diff(gsl_sf_zeta(-51),             9.68995788746359406565e+24 ) > TOL );
-  printf("%22.18g\n", gsl_sf_zeta(-51));
   s += ( frac_diff(gsl_sf_zeta(-5),             -0.003968253968253968253968 ) > TOL );
   s += ( frac_diff(gsl_sf_zeta(-0.5),           -0.207886224977354566017307 ) > TOL );
   s += ( frac_diff(gsl_sf_zeta(0.5),            -1.460354508809586812889499 ) > TOL );
@@ -6028,7 +6047,7 @@ int check_zeta(void)
   s += ( frac_diff(gsl_sf_hzeta(9,  0.1),  1.0000000004253980e+09  ) > TOL );
   s += ( frac_diff(gsl_sf_hzeta(30, 0.5),  1.0737418240000053e+09  ) > TOL );
   s += ( frac_diff(gsl_sf_hzeta(30, 0.9),  2.3589824880264765e+01  ) > TOL );
-  s += ( frac_diff(gsl_sf_hzeta(75, 0.25), 1.4272476927059599e+45  ) > 4.0*TOL ); /* exp()... not my fault */
+  s += ( frac_diff(gsl_sf_hzeta(75, 0.25), 1.4272476927059599e+45  ) > TOL );
   gsl_test(s, "  gsl_sf_hzeta");
   status += s;
 
