@@ -9,37 +9,74 @@
 #define locMin(a, b)  ((a) < (b) ? (a) : (b))
 
 
-gsl_interp_linear *
-gsl_interp_linear_new(const double x_array[], const double y_array[], int size)
+/* linear interpolation object */
+typedef struct {
+  int     (*eval_impl)   (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
+  int     (*eval_d_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, double * y);
+  void    (*free)        (gsl_interp_obj *);
+  double  xmin;
+  double  xmax;
+  int     size;
+}
+gsl_interp_linear;
+
+
+gsl_interp_obj *
+gsl_interp_linear_create(const double xa[], const double ya[], int size);
+
+void
+gsl_interp_linear_free(gsl_interp_obj * interp);
+
+int
+gsl_interp_linear_eval_impl(const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
+
+int
+gsl_interp_linear_eval_d_impl(const gsl_interp_obj *, const double xa[], const double ya[], double x, double * y);
+
+
+
+const gsl_interp_obj_factory gsl_interp_linear_factory = {
+  gsl_interp_linear_create
+};
+
+
+
+gsl_interp_obj *
+gsl_interp_linear_create(const double x_array[], const double y_array[], int size)
 {
   if(size <= 1)
     return 0;
   else {
     gsl_interp_linear * interp = (gsl_interp_linear *) malloc(sizeof(gsl_interp_linear));
     if(interp != 0) {
+      interp->eval_impl   = gsl_interp_linear_eval_impl;
+      interp->eval_d_impl = gsl_interp_linear_eval_d_impl;
       interp->xmin = x_array[0];
       interp->xmax = x_array[size-1];
       interp->size = size;
     }
-    return interp;
+    return (gsl_interp_obj *) interp;
   }
 }
 
 
 void
-gsl_interp_linear_free(gsl_interp_linear * interp)
+gsl_interp_linear_free(gsl_interp_obj * linear_interp)
 {
+  gsl_interp_linear * interp = (gsl_interp_linear * ) linear_interp;
   if(interp != 0) free(interp);
 }
 
 
 int
-gsl_interp_linear_eval_direct_impl(const gsl_interp_linear * interp,
-                                   const double x_array[], const double y_array[],
-                                   double x,
-                                   double * y
-                                   )
+gsl_interp_linear_eval_d_impl(const gsl_interp_obj * linear_interp,
+                              const double x_array[], const double y_array[],
+                              double x,
+                              double * y
+                              )
 {
+  gsl_interp_linear * interp = (gsl_interp_linear * )linear_interp;
+
   if(x > interp->xmax) {
     *y = y_array[interp->size - 1];
     return GSL_EDOM;
@@ -68,13 +105,15 @@ gsl_interp_linear_eval_direct_impl(const gsl_interp_linear * interp,
 
 
 int
-gsl_interp_linear_eval_impl(const gsl_interp_linear * interp,
-                            gsl_interp_iter * iter,
+gsl_interp_linear_eval_impl(const gsl_interp_obj * linear_interp,
                             const double x_array[], const double y_array[],
 		            double x,
+			    gsl_interp_accel * a,
 			    double * y
 		            )
 {
+  gsl_interp_linear * interp = (gsl_interp_linear * )linear_interp;
+
   if(x < interp->xmin) {
     *y = y_array[0];
     return GSL_EDOM;
@@ -84,8 +123,8 @@ gsl_interp_linear_eval_impl(const gsl_interp_linear * interp,
     return GSL_EDOM;
   }
   else {
-    int     index_lo = iter->cache_lo;
-    int     index_hi = iter->cache_hi;
+    int     index_lo = a->cache_lo;
+    int     index_hi = a->cache_hi;
     int     index;
     double  x_lo;
     double  x_hi;
@@ -94,60 +133,60 @@ gsl_interp_linear_eval_impl(const gsl_interp_linear * interp,
     double  dx;
 
 
-    /* find correct bin; check for iterator cache hits */
+    /* find correct bin; check for accelerator cache hits */
 
     if(x < x_array[index_lo]) {
       /* cache miss: lo side */
 
-      if(iter->type == GSL_INTERP_LOCALSTEP) {
+      if(a->heuristic == GSL_INTERP_LOCALSTEP) {
         /* reverse step heuristic */
-	index_lo = locMax(0, index_lo - iter->cache_size);
-	index_hi = locMin(interp->size - 1, index_lo + iter->cache_size);
+	index_lo = locMax(0, index_lo - a->cache_size);
+	index_hi = locMin(interp->size - 1, index_lo + a->cache_size);
 	if(x >= x_array[index_lo] && x <= x_array[index_hi]) {
-	  ++iter->hit_count;
+	  ++a->hit_count;
 	  index = CHECK_BSEARCH(x_array, x, index_lo, index_hi);
 	}
 	else {
-	  ++iter->miss_count;
+	  ++a->miss_count;
 	  index = bsearch(x_array, x, 0, index_lo);
 	}
       }
       else {
-        ++iter->miss_count;
+        ++a->miss_count;
 	index = bsearch(x_array, x, 0, index_lo);
       }
     }
     else if(x > x_array[index_hi]) {
       /* cache miss: hi side */
 
-      if(iter->type == GSL_INTERP_LOCALSTEP) {
+      if(a->heuristic == GSL_INTERP_LOCALSTEP) {
         /* forward step heuristic */
-	index_hi = locMin(interp->size - 1, index_hi + iter->cache_size);
-	index_lo = locMax(0, index_hi - iter->cache_size);
+	index_hi = locMin(interp->size - 1, index_hi + a->cache_size);
+	index_lo = locMax(0, index_hi - a->cache_size);
 	if(x >= x_array[index_lo] && x <= x_array[index_hi]) {
-	  ++iter->hit_count;
+	  ++a->hit_count;
 	  index = CHECK_BSEARCH(x_array, x, index_lo, index_hi);
 	}
 	else {
-	  ++iter->miss_count;
+	  ++a->miss_count;
 	  index = bsearch(x_array, x, index_hi, interp->size - 1);
 	}
       }
       else {
-        ++iter->miss_count;
+        ++a->miss_count;
 	index = bsearch(x_array, x, index_hi, interp->size - 1);
       }
     }
     else {
       /* cache hit */
-      ++iter->hit_count;
+      ++a->hit_count;
       index = CHECK_BSEARCH(x_array, x, index_lo, index_hi);
     }
 
       
-    /* adjust iterator cache */
-    index_lo = locMax(0, index - iter->cache_size/2);
-    index_hi = locMin(interp->size - 1, index_lo + iter->cache_size);
+    /* adjust accelerator cache */
+    index_lo = locMax(0, index - a->cache_size/2);
+    index_hi = locMin(interp->size - 1, index_lo + a->cache_size);
 
     /* evaluate */
     x_lo = x_array[index];

@@ -5,90 +5,94 @@
 #define GSL_INTERP_H_
 
 
-/* iterator heuristics */
+/* accelerator heuristics */
 enum {
   GSL_INTERP_LOCALSTEP,
   GSL_INTERP_RANDOMACCESS
 };
 
-/* spline types */
-enum {
-  GSL_INTERP_CSPLINE_FREE,
-  GSL_INTERP_CSPLINE_FIXED
-};
 
-/* iterator */
+/* evaluation accelerator */
 typedef struct {
   int cache_lo;
   int cache_hi;
   int cache_size;
-  int type;
+  int heuristic;
   unsigned long miss_count;
   unsigned long hit_count;
 }
-gsl_interp_iter;
+gsl_interp_accel;
 
-/* linear interpolation data */
-typedef struct {
+
+/* general interpolation object */
+struct gsl_interp_obj_struct {
+  int     (*eval_impl)   (const struct gsl_interp_obj_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
+  int     (*eval_d_impl) (const struct gsl_interp_obj_struct *, const double xa[], const double ya[], double x, double * y);
+  void    (*free)        (struct gsl_interp_obj_struct *);
   double  xmin;
   double  xmax;
   int     size;
-}
-gsl_interp_linear;
+};
+typedef    struct gsl_interp_obj_struct   gsl_interp_obj;
 
-/* cubic spline interpolation data */
+
+/* interpolation object factory */
 typedef struct {
-  double    xmin;
-  double    xmax;
-  int       size;
-  int       type;
-  double *  y2;
+  gsl_interp_obj *  (*create) (const double x_array[], const double y_array[], int size);
 }
-gsl_interp_cspline;
+gsl_interp_obj_factory;
 
 
-gsl_interp_iter *
-gsl_interp_iter_new(int type, int cache_size);
+/* available factories */
+extern const gsl_interp_obj_factory   gsl_interp_linear_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_fixed_factory;
 
-void
-gsl_interp_iter_free(gsl_interp_iter * iter);
 
-
-gsl_interp_linear *
-gsl_interp_linear_new(const double x_array[], const double y_array[], int size);
-
-int
-gsl_interp_linear_eval_impl(const gsl_interp_linear * interp_lin,
-                            gsl_interp_iter * iter,
-                            const double x_array[], const double y_array[],
-		            double x,
-			    double * y
-		            );
-
-int
-gsl_interp_linear_eval_direct_impl(const gsl_interp_linear * interp_lin,
-                                   const double x_array[], const double y_array[],
-		                   double x,
-			           double * y
-		                   );
+gsl_interp_accel *
+gsl_interp_accel_new(int heuristic, int cache_size);
 
 void
-gsl_interp_linear_free(gsl_interp_cspline * interp_cs);
+gsl_interp_accel_free(gsl_interp_accel * a);
 
-
-gsl_interp_cspline *
-gsl_interp_cspline_new(const double x[], const double y[], int size, int type);
 
 int
-gsl_interp_cspline_eval_impl(const gsl_interp_cspline * interp_cs,
-                             gsl_interp_iter * iter,
-                             const double x_array[], const double y_array[],
-		             double x,
-			     double * y
-		             );
+gsl_interp_eval_impl(const gsl_interp_obj * obj,
+                     const double xa[], const double ya[], double x,
+                     gsl_interp_accel * a, double * y
+                     );
+
+int
+gsl_interp_eval_e(const gsl_interp_obj * obj,
+                  const double xa[], const double ya[], double x,
+                  gsl_interp_accel * a, double * y
+                  );
+
+double
+gsl_interp_eval(const gsl_interp_obj * obj,
+                const double xa[], const double ya[], double x,
+                gsl_interp_accel * a
+                );
+
+int
+gsl_interp_eval_noaccel_impl(const gsl_interp_obj * obj,
+                             const double xa[], const double ya[], double x,
+                             double * y
+                             );
+
+int
+gsl_interp_eval_noaccel_e(const gsl_interp_obj * obj,
+                          const double xa[], const double ya[], double x,
+                          double * y
+                          );
+
+double
+gsl_interp_eval_noaccel(const gsl_interp_obj * obj,
+                        const double xa[], const double ya[], double x
+                        );
 
 void
-gsl_interp_cspline_free(gsl_interp_cspline * interp_cs);
+gsl_interp_obj_free(gsl_interp_obj * interp_obj);
 
 
 #endif  /* !GSL_INTERP_H_ */
