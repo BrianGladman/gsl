@@ -1211,6 +1211,7 @@ int
 test_SV_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
+  double di1;
   size_t i,j, M = m->size1, N = m->size2;
 
   gsl_matrix * v  = gsl_matrix_alloc(M,N);
@@ -1223,6 +1224,28 @@ test_SV_decomp_dim(const gsl_matrix * m, double eps)
   gsl_matrix_memcpy(v,m);
 
   s += gsl_linalg_SV_decomp(v, q, d, w);
+
+  /* Check that singular values are non-negative and in non-decreasing
+     order */
+  
+  di1 = 0.0;
+
+  for (i = 0; i < N; i++)
+    {
+      double di = gsl_vector_get (d, i);
+
+      if (di < 0) {
+        s++;
+        printf("singular value %d = %22.18g < 0\n", i, di);
+      }
+
+      if(i > 0 && di > di1) {
+        s++;
+        printf("singular value %d = %22.18g vs previous %22.18g\n", i, di, di1);
+      }
+
+      di1 = di;
+    }      
   
   /* Scale dqt = D Q^T */
   

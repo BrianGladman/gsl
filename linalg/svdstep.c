@@ -126,14 +126,14 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 
   if (d0 == 0.0)
     {
-      /* Eliminate off-diagonal element in [0,f1;0,d1] */
+      /* Eliminate off-diagonal element in [0,f1;0,d1] to make [d,0;0,0] */
 
       create_givens (f0, d1, &c, &s);
 
-      /* compute B <= G^T B */
+      /* compute B <= G^T B X,  where X = [0,1;1,0] */
 
-      gsl_vector_set (f, 0, c * f0 - s * d1);
-      gsl_vector_set (d, 1, s * f0 + c * d1);
+      gsl_vector_set (d, 0, c * f0 - s * d1);
+      gsl_vector_set (f, 1, s * f0 + c * d1);
       
       /* Compute U <= U G */
 
@@ -144,6 +144,10 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 	  gsl_matrix_set (U, i, 0, c * Uip - s * Uiq);
 	  gsl_matrix_set (U, i, 1, s * Uip + c * Uiq);
 	}
+
+      /* Compute V <= V X */
+
+      gsl_matrix_swap_columns (V, 0, 1);
 
       return;
     }
@@ -194,17 +198,24 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
           gsl_matrix_set (V, i, 1, s * Vip + c * Viq);
         }
       
-      /* Eliminate off-diagonal elements, work with the column that
-         has the largest norm */
+      /* Eliminate off-diagonal elements, bring column with largest
+         norm to first column */
       
-      if (fabs(a11) + fabs(a21) > fabs(a12) + fabs(a22))
+      if (hypot(a11, a21) < hypot(a12,a22))
         {
-          create_givens (a11, a21, &c, &s);
+          double t1, t2;
+
+          /* B <= B X */
+
+          t1 = a11; a11 = a12; a12 = t1;
+          t2 = a21; a21 = a22; a22 = t2;
+
+          /* V <= V X */
+
+          gsl_matrix_swap_columns(V, 0, 1);
         } 
-      else
-        {
-          create_givens (a22, -a12, &c, &s);
-        }
+
+      create_givens (a11, a21, &c, &s);
       
       /* compute B <= G^T B */
       
