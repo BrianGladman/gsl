@@ -106,9 +106,13 @@ _gsl_root_ivt_guar(double (* f)(double), double lower_bound,
     _BARF_FPCALL(f, upper_bound, fu);
 
     if (fl * fu > 0.0)
-      GSL_ERROR("interval not guaranteed to contain a root", GSL_EINVAL);
+      {
+	GSL_ERROR("interval not guaranteed to contain a root", GSL_EINVAL);
+      }
     else
-      return GSL_SUCCESS;
+      {
+	return GSL_SUCCESS;
+      }
 }
 
 /* Check if the user has the root but doesn't know it. If lower_bound or

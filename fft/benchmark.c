@@ -15,7 +15,8 @@
 
 #include "bitreverse.h"
 
-void my_error_handler (const char *reason, const char *file, int line);
+void my_error_handler (const char *reason, const char *file,
+		       int line, int err);
 
 int
 main (int argc, char *argv[])
@@ -154,7 +155,7 @@ main (int argc, char *argv[])
 
 
 void
-my_error_handler (const char *reason, const char *file, int line)
+my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  printf ("error: %s in %s at %d\n", reason, file, line);
+  printf ("error: %s in %s at %d (gsl_errno=%d)\n", reason, file, line, err);
 }

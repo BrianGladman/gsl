@@ -30,7 +30,8 @@
 #define MAX_DELTAY     2000000.0
 #define MAX_STEP_SIZE  100.0
 
-void my_error_handler (const char *reason, const char *file, int line);
+void my_error_handler (const char *reason, const char *file,
+		       int line, int err);
 
 /* Print usage instructions. */
 void
@@ -557,7 +558,7 @@ cos_fdf(double * y, double * yprime, double x, int y_wanted,
 
 
 void
-my_error_handler (const char *reason, const char *file, int line)
+my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (0) printf ("(caught [%s:%d: %s])\n", file, line, reason) ;
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }

@@ -20,7 +20,8 @@
 int verbose = 0;
 
 void usage (void);
-void my_error_handler (const char *reason, const char *file, int line);
+void my_error_handler (const char *reason, const char *file,
+		       int line, int err);
 
 void
 usage (void)
@@ -192,7 +193,7 @@ main (int argc, char * argv[])
 
 
 void
-my_error_handler (const char *reason, const char *file, int line)
+my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (0) printf ("(caught [%s:%d: %s])\n", file, line, reason) ;
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }
