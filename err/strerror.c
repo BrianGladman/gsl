@@ -85,6 +85,12 @@ gsl_strerror (const int gsl_errno)
       return "iteration is not making progress towards solution";
     case GSL_ENOPROGJ:
       return "jacobian evaluations are not improving the solution";
+    case GSL_ETOLF:
+      return "cannot reach the specified tolerance in F";
+    case GSL_ETOLX:
+      return "cannot reach the specified tolerance in X";
+    case GSL_ETOLG:
+      return "cannot reach the specified tolerance in gradient";
     default:
       return "unknown error code" ;
     }

@@ -65,7 +65,10 @@ enum {
   GSL_EUNIMPL  = 24,  /* requested feature not (yet) implemented */
   GSL_ECACHE   = 25,  /* cache table limit exceeded */
   GSL_ENOPROG  = 26,  /* iteration is not making progress towards solution */
-  GSL_ENOPROGJ = 27   /* jacobian evaluations are not improving the solution */
+  GSL_ENOPROGJ = 27,  /* jacobian evaluations are not improving the solution */
+  GSL_ETOLF    = 28,  /* cannot reach the specified tolerance in F */
+  GSL_ETOLX    = 29,  /* cannot reach the specified tolerance in X */
+  GSL_ETOLG    = 30   /* cannot reach the specified tolerance in gradient */
 } ;
 
 void gsl_error (const char * reason, const char * file, int line,

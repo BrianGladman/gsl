@@ -70,6 +70,9 @@ main (void)
   CHECK(GSL_ECACHE);
   CHECK(GSL_ENOPROG);
   CHECK(GSL_ENOPROGJ);
+  CHECK(GSL_ETOLF);
+  CHECK(GSL_ETOLX);
+  CHECK(GSL_ETOLG);
 
   for (i = 0 ; i < n ; i++) 
     {
