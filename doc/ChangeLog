@@ -1,0 +1,4 @@
+Fri Oct 18 11:28:58 1996  Mark Galassi  <rosalia@nis.lanl.gov>
+
+	* gsl.texi (Test suites): Added a brief section raising the issue
+	of test suites for GSL.

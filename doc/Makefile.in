@@ -42,16 +42,17 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-info_TEXINFOS = gsl.texi
+info_TEXINFOS = gsl.texi 
+gsl_TEXINFOS = fft.texi
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 MAKEINFO = makeinfo
 TEXI2DVI = texi2dvi
 INFO_DEPS = gsl.info
 DVIS = gsl.dvi
-TEXINFOS = gsl.texi
-DIST_COMMON =  Makefile.am Makefile.in mdate-sh stamp-vti texinfo.tex \
-version.texi
+TEXINFOS = gsl.texi 
+DIST_COMMON =  $(gsl_TEXINFOS) ChangeLog Makefile.am Makefile.in \
+mdate-sh stamp-vti texinfo.tex version.texi
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
@@ -91,8 +92,8 @@ distclean-vti:
 maintainer-clean-vti:
 	rm -f stamp-vti version.texi
 
-gsl.info: gsl.texi version.texi
-gsl.dvi: gsl.texi version.texi
+gsl.info: gsl.texi version.texi $(gsl_TEXINFOS)
+gsl.dvi: gsl.texi version.texi $(gsl_TEXINFOS)
 
 
 DVIPS = dvips

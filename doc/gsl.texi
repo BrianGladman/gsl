@@ -45,7 +45,10 @@ by the Foundation.
 @title GNU Scientific Library
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
-@author by Mark Galassi and Jim Davies
+@author Mark Galassi
+@author Jim Davies
+@author James Theiler
+@author Brian Gough
 
 @page
 @vskip 0pt plus 1filll
@@ -498,6 +501,7 @@ from the design.
 @menu
 * Random number generation::    
 * Statistics::                  
+* FFTs::                        
 * Root finding::                
 * Simulated annealing::         
 @end menu
@@ -919,7 +923,9 @@ int main()
 @}
 @end smallexample
 
-@c Chapter on FFTs
+@c Section on FFTs
+@node FFTs
+@section FFTs
 @include fft.texi
 
 @node Root finding
