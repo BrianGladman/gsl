@@ -1,5 +1,12 @@
 * What is new in gsl-1.5:
 
+** Numerical derivatives should now be calculated using the
+gsl_deriv_forward, gsl_deriv_central and gsl_deriv_backward functions,
+which accept a step-size argument in addition to the position x.  The
+original gsl_diff functions (without the step-size) are deprecated.
+
+** Corrected documentation for gsl_ran_hypergeometric_pdf()
+
 ** The tridiagonal matrix solvers gsl_linalg_solve_symm_tridiag,
 gsl_linalg_solve_tridiag, gsl_linalg_solve_symm_cyc_tridiag,
 gsl_linalg_solve_cyc_tridiag now use the GSL_ERROR macro to report
