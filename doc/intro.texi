@@ -110,10 +110,9 @@ code can be found on the GNU website,
 @noindent
 The preferred platform for the library is a GNU system, which allows it
 to take advantage of additional features in the GNU C compiler and GNU C
-library.  However, the library is fully portable and compiles on most
-Unix platforms. It is also available for Microsoft Windows.  Precompiled
-versions of the library can be purchased from commercial redistributors
-listed on the website.
+library.  However, the library is fully portable and should compile on
+most systems.  Precompiled versions of the library can be purchased from
+commercial redistributors listed on the website.
 
 Announcements of new releases, updates and other relevant events are
 made on the @code{gsl-announce} mailing list.  To subscribe to this
