@@ -290,12 +290,12 @@ int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * resu
   double ampl;
   double theta;
   double alpha = x;
-  double beta  = 0.5*nu*M_PI;
+  double beta  = -0.5*nu*M_PI;
   int stat_a = gsl_sf_bessel_asymp_Mnu_impl(nu, x, &ampl);
   int stat_t = gsl_sf_bessel_asymp_thetanu_corr_impl(nu, x, &theta);
   int stat_red1 = gsl_sf_angle_restrict_pos_impl(&alpha);
   int stat_red2 = gsl_sf_angle_restrict_pos_impl(&beta);
-  *result = ampl * sin(alpha-beta+theta);
+  *result = ampl * sin(alpha+beta+theta);
   return GSL_ERROR_SELECT_4(stat_red1, stat_red2, stat_t, stat_a);
 }
 

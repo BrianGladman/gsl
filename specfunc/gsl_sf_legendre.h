@@ -51,15 +51,6 @@ int     gsl_sf_legendre_Q1_e(double x, double * result);
 double  gsl_sf_legendre_Q1(double x);
 
 
-/* Q_2(x), x > -1, x != 1
- *
- * exceptions: GSL_EDOM
- */
-int     gsl_sf_legendre_Q2_impl(double x, double * result);
-int     gsl_sf_legendre_Q2_e(double x, double * result);
-double  gsl_sf_legendre_Q2(double x);
-
-
 /* Q_l(x), x > -1, x != 1, l >= 0
  *
  * exceptions: GSL_EDOM

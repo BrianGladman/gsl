@@ -164,9 +164,25 @@ gsl_sf_legendre_Q0_impl(const double x, double * result)
     *result = 0.5 * log((1.0+x)/(1.0-x));
     return GSL_SUCCESS;
   }
-  else {
+  else if(x < 10.0) {
     *result = 0.5 * log((x+1.0)/(x-1.0));
     return GSL_SUCCESS;
+  }
+  else if(x*GSL_DBL_MIN < 2.0) {
+    const double y = 1.0/(x*x);
+    const double c1 = 1.0/3.0;
+    const double c2 = 1.0/5.0;
+    const double c3 = 1.0/7.0;
+    const double c4 = 1.0/9.0;
+    const double c5 = 1.0/11.0;
+    const double c6 = 1.0/13.0;
+    const double c7 = 1.0/15.0;
+    *result = 2.0/x * (1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7)))))));
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
   }
 }
 
@@ -182,13 +198,32 @@ gsl_sf_legendre_Q1_impl(const double x, double * result)
     *result = 0.5 * x * log((1.0+x)/(1.0-x)) - 1.0;
     return GSL_SUCCESS;
   }
-  else {
+  else if(x < 6.0) {
     *result = 0.5 * x * log((x+1.0)/(x-1.0)) - 1.0;
     return GSL_SUCCESS;
+  }
+  else if(x*GSL_SQRT_DBL_MIN < 0.99/M_SQRT3) {
+    const double y = x*x;
+    const double c1 = 3.0/5.0;
+    const double c2 = 3.0/7.0;
+    const double c3 = 3.0/9.0;
+    const double c4 = 3.0/11.0;
+    const double c5 = 3.0/13.0;
+    const double c6 = 3.0/15.0;
+    const double c7 = 3.0/17.0;
+    const double c8 = 3.0/19.0;
+    const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*(c7 + y*c8)))))));
+    *result = sum / (3.0*x*x);
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
   }
 }
 
 
+#if 0
 int
 gsl_sf_legendre_Q2_impl(const double x, double * result)
 {
@@ -205,6 +240,7 @@ gsl_sf_legendre_Q2_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
 }
+#endif
 
 
 int
@@ -297,6 +333,7 @@ gsl_sf_legendre_Q1_e(const double x, double * result)
 }
 
 
+#if 0
 int
 gsl_sf_legendre_Q2_e(const double x, double * result)
 {
@@ -306,6 +343,7 @@ gsl_sf_legendre_Q2_e(const double x, double * result)
   }
   return status;
 }
+#endif
 
 
 int
@@ -345,6 +383,7 @@ gsl_sf_legendre_Q1(const double x)
 }
 
 
+#if 0
 double
 gsl_sf_legendre_Q2(const double x)
 {
@@ -355,6 +394,7 @@ gsl_sf_legendre_Q2(const double x)
   }
   return y;
 }
+#endif
 
 
 double

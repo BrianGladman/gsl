@@ -684,11 +684,13 @@ lngamma_lanczos(double x, double * result)
   double Ag;
 
   x -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
-  
+
   Ag = lanczos_7_c[0];
   for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
 
-  *result = (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
+  /* (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag(x)) */
+  *result = (x+0.5)*log((x+7.5)/M_E) + (LogRootTwoPi_ + log(Ag) - 7.0);
+
   return GSL_SUCCESS;
 }
 
@@ -935,6 +937,46 @@ gammastar_ser(const double x, double * result)
 }
 
 
+/* Chebyshev expansion for log(gamma(x)/gamma(8))
+ * 5 < x < 10
+ * -1 < t < 1
+ */
+static double gamma_5_10_data[24] = {
+ -1.5285594096661578881275075214,
+  4.8259152300595906319768555035,
+  0.2277712320977614992970601978,
+ -0.0138867665685617873604917300,
+  0.0012704876495201082588139723,
+ -0.0001393841240254993658962470,
+  0.0000169709242992322702260663,
+ -2.2108528820210580075775889168e-06,
+  3.0196602854202309805163918716e-07,
+ -4.2705675000079118380587357358e-08,
+  6.2026423818051402794663551945e-09,
+ -9.1993973208880910416311405656e-10,
+  1.3875551258028145778301211638e-10,
+ -2.1218861491906788718519522978e-11,
+  3.2821736040381439555133562600e-12,
+ -5.1260001009953791220611135264e-13,
+  8.0713532554874636696982146610e-14,
+ -1.2798522376569209083811628061e-14,
+  2.0417711600852502310258808643e-15,
+ -3.2745239502992355776882614137e-16,
+  5.2759418422036579482120897453e-17,
+ -8.5354147151695233960425725513e-18,
+  1.3858639703888078291599886143e-18,
+ -2.2574398807738626571560124396e-19
+};
+const gsl_sf_cheb_series gamma_5_10_cs = {
+  gamma_5_10_data,
+  23,
+  -1, 1,
+  (double *) 0,
+  (double *) 0,
+  11
+};
+
+
 /* gamma(x) for x >= 1/2
  * assumes x >= 1/2
  */
@@ -977,7 +1019,7 @@ gamma_xgthalf(const double x, double * result)
     *result = 1.0 + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
     return GSL_SUCCESS;
   }
-  else if(x < 10.0) {
+  else if(x < 5.0) {
     /* Exponentiating the logarithm is fine, as
      * long as the exponential is not so large
      * that it greatly amplifies the error.
@@ -987,14 +1029,26 @@ gamma_xgthalf(const double x, double * result)
     *result = exp(lg);
     return GSL_SUCCESS;
   }
+  else if(x < 10.0) {
+    /* This is a sticky area. The logarithm
+     * is too large and the gammastar series
+     * is not good.
+     */
+    const double gamma_8 = 5040.0;
+    double t = (2.0*x - 15.0)/5.0;
+    double c = gsl_sf_cheb_eval(&gamma_5_10_cs, t);
+    *result = exp(c) * gamma_8;
+    return GSL_SUCCESS;
+  }
   else if(x < xmax) {
     /* We do not want to exponentiate the logarithm
      * if x is large because of the inevitable
      * inflation of the error.
      */
-    double p = pow(x, 0.5*(x-0.5));
-    double e = exp(-0.5*x);
-    double pre = M_SQRT2 * M_SQRTPI * (p*e) * (p*e);
+    double p = pow(x, 0.5*x);
+    double e = exp(-x);
+    double q = (p * e) * p;
+    double pre = M_SQRT2 * M_SQRTPI * q/sqrt(x);
     double gstar;
     int stat_gs = gammastar_ser(x, &gstar);
     *result = pre * gstar;
@@ -1133,14 +1187,46 @@ int
 gsl_sf_gamma_impl(const double x, double * result)
 {
   if(x < 0.5) {
-    double lng, sgn;
-    int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
-    if(stat_lng != GSL_SUCCESS) {
+    int rint_x = (int)floor(x+0.5);
+    double f_x = x - rint_x;
+    double sgn = ( GSL_IS_EVEN(rint_x) ? 1.0 : -1.0 );
+    double sin_term = sgn * sin(M_PI * f_x) / M_PI;
+
+    if(sin_term == 0.0) {
       *result = 0.0;
-      return stat_lng;
+      return GSL_EDOM;
+    }
+    else if(x > -169.0) {
+      double g;
+      gamma_xgthalf(1.0-x, &g);
+      if(fabs(sin_term) * g * GSL_DBL_MIN < 1.0) {
+        *result = 1.0/(sin_term * g);
+        return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0;
+	return GSL_EUNDRFLW;
+      }
     }
     else {
-      return gsl_sf_exp_sgn_impl(lng, sgn, result);
+      /* It is hard to control it here.
+       * And we feel bad about exponentiating
+       * the logarithm because of the
+       * amplification of the error.
+       */
+      *result = 0.0;
+      return GSL_EROUND;
+#if 0
+      double lng, sgn;
+      int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
+      if(stat_lng != GSL_SUCCESS) {
+        *result = 0.0;
+        return stat_lng;
+      }
+      else {
+        return gsl_sf_exp_sgn_impl(lng, sgn, result);
+      }
+#endif
     }
   }
   else {
@@ -1310,9 +1396,11 @@ int gsl_sf_fact_impl(const unsigned int n, double * result)
     return GSL_SUCCESS;
   }
   else {
+    *result = 0.0;
     return GSL_EOVRFLW;
   }
 }
+
 
 int gsl_sf_doublefact_impl(const unsigned int n, double * result)
 {
@@ -1321,9 +1409,11 @@ int gsl_sf_doublefact_impl(const unsigned int n, double * result)
     return GSL_SUCCESS;
   }
   else {
+    *result = 0.0;
     return GSL_EOVRFLW;
   }
 }
+
 
 int gsl_sf_lnfact_impl(const unsigned int n, double * result)
 {
@@ -1336,6 +1426,7 @@ int gsl_sf_lnfact_impl(const unsigned int n, double * result)
     return GSL_SUCCESS;
   }
 }
+
 
 int gsl_sf_lndoublefact_impl(const unsigned int n, double * result)
 {
@@ -1357,6 +1448,7 @@ int gsl_sf_lndoublefact_impl(const unsigned int n, double * result)
   }
 }
 
+
 int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result)
 {
   double nf, mf, nmmf;
@@ -1365,41 +1457,46 @@ int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-
-  if(m*2 > n) m = n-m;
-  gsl_sf_lnfact_impl(n, &nf);
-  gsl_sf_lnfact_impl(m, &mf);
-  gsl_sf_lnfact_impl(n-m, &nmmf);
-  *result = nf - mf - nmmf;
-  return GSL_SUCCESS;
+  else if(m == n || m == 0) {
+    *result = 0.0;
+     return GSL_SUCCESS;
+  }
+  else {
+    if(m*2 > n) m = n-m;
+    gsl_sf_lnfact_impl(n, &nf);
+    gsl_sf_lnfact_impl(m, &mf);
+    gsl_sf_lnfact_impl(n-m, &nmmf);
+    *result = nf - mf - nmmf;
+    return GSL_SUCCESS;
+  }
 }
+
 
 int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result)
 {
-  double nf, mf, nmmf;
-  double ln_result;
-
   if(m > n) {
     *result = 0.0;
     return GSL_EDOM;
   }
-
-  if(m*2 > n) m = n-m;
-  gsl_sf_lnfact_impl(n, &nf);
-  gsl_sf_lnfact_impl(m, &mf);
-  gsl_sf_lnfact_impl(n-m, &nmmf);
-  ln_result = nf - mf - nmmf;
-  
-  if(ln_result < GSL_LOG_DBL_MAX) {
-    *result = exp(ln_result);
+  else if(m == n || m == 0) {
+    *result = 1.0;
     return GSL_SUCCESS;
   }
   else {
-    *result = 0.0; /* FIXME: should be Inf */
-    return GSL_EOVRFLW;
+    double prod = 1.0;
+    int k;
+    for(k=n; k>=m+1; k--) {
+      double tk = (double)k / (double)(k-m);
+      if(tk > GSL_DBL_MAX/prod) {
+        *result = 0.0;
+	return GSL_EOVRFLW;
+      }
+      prod *= tk;
+    }
+    *result = prod;
+    return GSL_SUCCESS;
   }
 }
-
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/

@@ -8,6 +8,7 @@
 #include "bessel_olver.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
 
@@ -20,120 +21,125 @@
  */
 static int bessel_yl_small_x(int l, const double x, double * result)
 {
-  const int lmax = 15;
-  int i;
   double num_fact;
   double den = gsl_sf_pow_int(x, l+1);
-  if(gsl_sf_doublefact_impl(2*l-1, &num_fact) != GSL_SUCCESS || den == 0.0) {
+  int stat_df = gsl_sf_doublefact_impl(2*l-1, &num_fact);
+
+  if(stat_df != GSL_SUCCESS || den == 0.0) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else {
+    const int lmax = 200;
     double t = -0.5*x*x;
     double sum = 1.0;
     double t_coeff = 1.0;
     double t_power = 1.0;
     double delta;
-    for(i=1; i<lmax; i++) {
+    int i;
+    for(i=1; i<=lmax; i++) {
       t_coeff /= i*(2*(i-l) - 1);
       t_power *= t;
       delta = t_power*t_coeff;
       sum += delta;
-      if(fabs(delta) < GSL_MACH_EPS) break;
+      if(fabs(delta/sum) < GSL_DBL_EPSILON) break;
     }
     *result = -num_fact/den * sum;
     return GSL_SUCCESS;
   }
 }
 
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Wed May 13 15:19:15 MDT 1998 */
+
 int gsl_sf_bessel_y0_impl(const double x, double * result)
 {
   if(x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-  else if(1.0/DBL_MAX > 0.0 && x < 1.0/DBL_MAX) {
+  else if(1.0/GSL_DBL_MAX > 0.0 && x < 1.0/GSL_DBL_MAX) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x < GSL_ROOT6_MACH_EPS) {
-    double x2 = x*x;
-    double x4 = x2*x2;
-    *result = (-1.0 + 0.5*x2 - x4/24.)/x;
-    return GSL_SUCCESS;
-  }
   else {
-    *result = -cos(x)/x;
-    return GSL_SUCCESS;
+    double theta = x;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&theta);
+    *result = -cos(theta)/x;
+    return stat_red;
   }
 }
 
-/* checked OK [GJ] Wed May 13 15:19:27 MDT 1998 */
+
 int gsl_sf_bessel_y1_impl(const double x, double * result)
 {
   if(x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-  else if(1.0/DBL_MAX > 0.0 && 144.0*x*x < 1.0/DBL_MAX) {
+  else if(x < 1.0/GSL_SQRT_DBL_MAX) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x < GSL_ROOT6_MACH_EPS) {
-    double x2 = x*x;
-    double x4 = x2*x2;
-    *result = -(144.0 + 72.0*x2 - 18.0*x4)/(144.0*x2);
+  else if(x < 0.25) {
+    const double y = x*x;
+    const double c1 =  1.0/2.0;
+    const double c2 = -1.0/8.0;
+    const double c3 =  1.0/144.0;
+    const double c4 = -1.0/5760.0;
+    const double c5 =  1.0/403200.0;
+    const double c6 = -1.0/43545600.0;
+    const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*c6)))));
+    *result = -sum/y;
     return GSL_SUCCESS;
   }
   else {
-    *result = -cos(x)/(x*x) - sin(x)/x;
-    return GSL_SUCCESS;
+    double theta = x;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&theta);
+    *result = -cos(theta)/(x*x) - sin(theta)/x;
+    return stat_red;
   }
 }
 
-/* checked OK [GJ] Wed May 13 15:19:39 MDT 1998 */
+
 int gsl_sf_bessel_y2_impl(const double x, double * result)
 {
   if(x <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
-  else if(1.0/DBL_MAX > 0.0 && 1152.0*x*x*x < 1.0/DBL_MAX) {
+  else if(x < 1.0/GSL_ROOT3_DBL_MAX) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
-  else if(x < GSL_ROOT6_MACH_EPS) {
-    double x2 = x*x;
-    double x3 = x2*x;
-    double x4 = x2*x2;
-    *result = -(3456.0 + 576.0 * x2 + 144.0 * x4)/(1152.0 * x3);
+  else if(x < 0.5) {
+    const double y = x*x;
+    const double c1 =  1.0/6.0;
+    const double c2 =  1.0/24.0;
+    const double c3 = -1.0/144.0;
+    const double c4 =  1.0/3456.0;
+    const double c5 = -1.0/172800.0;
+    const double c6 =  1.0/14515200.0;
+    const double c7 = -1.0/1828915200.0;
+    const double sum = 1.0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7))))));
+    *result = -3.0/(x*x*x) * sum;
     return GSL_SUCCESS;
   }
   else {
-    double three_over_x2 = 3.0/(x*x);
-    *result = (1.0 - three_over_x2)/x * cos(x) - three_over_x2 * sin(x);
-    return GSL_SUCCESS;
+    double a = 3.0/(x*x);
+    double theta = x;
+    int stat_red = gsl_sf_angle_restrict_pos_impl(&theta);
+    *result = (1.0 - a)/x * cos(theta) - a * sin(theta);
+    return stat_red;
   }
 }
 
-/* checked OK [GJ] Wed May 13 16:28:01 MDT 1998 */
+
 int gsl_sf_bessel_yl_impl(int l, const double x, double * result)
 {
   if(l < 0 || x <= 0.0) {
     return GSL_EDOM;
-  }
-  else if(x < 3.0) {
-    return bessel_yl_small_x(l, x, result);
-  }
-  else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
-    int status = gsl_sf_bessel_Ynu_asympx_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
-    return status;
-  }
-  else if(l > 30) {
-    int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
-    return status;
   }
   else if(l == 0) {
     return gsl_sf_bessel_y0_impl(x, result);
@@ -143,6 +149,19 @@ int gsl_sf_bessel_yl_impl(int l, const double x, double * result)
   }
   else if(l == 2) {
     return gsl_sf_bessel_y2_impl(x, result);
+  }
+  else if(x < 3.0) {
+    return bessel_yl_small_x(l, x, result);
+  }
+  else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1.0)) {
+    int status = gsl_sf_bessel_Ynu_asympx_impl(l + 0.5, x, result);
+    if(status == GSL_SUCCESS) *result *= sqrt((0.5*M_PI)/x);
+    return status;
+  }
+  else if(l > 40) {
+    int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(l + 0.5, x, result);
+    if(status == GSL_SUCCESS) *result *= sqrt((0.5*M_PI)/x);
+    return status;
   }
   else {
     /* recurse upward */

@@ -20,8 +20,8 @@ bessel_In_CF1(const int n, const double x, const double threshold, double * rati
   double rhok = 0.0;
   int k;
 
-  for(k=1; k<kmax; k++) {
-    double ak = 0.25*x*x/((n+k)*(n+k+1.0));
+  for(k=1; k<=kmax; k++) {
+    double ak = 0.25 * (x/(n+k)) * (x/(n+k+1.0));
     rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
     tk  *= rhok;
     sum += tk;
@@ -81,13 +81,13 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
     if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
     return GSL_ERROR_SELECT_2(stat_I0, stat_CF1);
   }
-  else if( GSL_MIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < 0.2*GSL_ROOT3_DBL_EPSILON) {
+  else if( GSL_MIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < 0.5*GSL_ROOT3_DBL_EPSILON) {
     int stat_as = gsl_sf_bessel_Inu_scaled_asymp_unif_impl((double)n, ax, result);
     if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
     return stat_as;
   }
   else {
-    const int nhi = 2 + (int) (1.6 / GSL_ROOT6_DBL_EPSILON);
+    const int nhi = 2 + (int) (1.2 / GSL_ROOT6_DBL_EPSILON);
     double Ikp1;
     double Ik;
     double Ikm1;

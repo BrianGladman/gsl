@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"
 #include "gsl_sf_log.h"
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_psi.h"
 #include "gsl_sf_gamma.h"
 
@@ -155,9 +156,6 @@ pochrel_smallx(const double a, const double x, double * result)
 }
 
 
-/* Handle the case of a>0 and a+x>0.
- * Assumes neither is equal to zero.
- */
 static
 int
 lnpoch_pos(const double a, const double x, double * result)
@@ -171,14 +169,12 @@ lnpoch_pos(const double a, const double x, double * result)
     *result = -log(g2/g1);
     return GSL_SUCCESS;
   }
-#if 0
-  else if(fabs(x) < 0.1*a) {
+  else if(absx < 0.1*a && a > 15.0) {
     /* Be careful about the implied subtraction.
-     * Note that both a+x and and a must both be
-     * large here since they are not both small
-     * (the above test failed) and x is not
-     * relatively large. So we calculate
-     * using Stirling for Log[Gamma(z)],
+     * Note that both a+x and and a must be
+     * large here since a is not small
+     * and x is not relatively large.
+     * So we calculate using Stirling for Log[Gamma(z)].
      *
      *   Log[Gamma(a+x)/Gamma(a)] = x(Log[a]-1) + (x+a-1/2)Log[1+x/a]
      *                              + (1/(1+eps)   - 1) / (12 a)
@@ -196,11 +192,16 @@ lnpoch_pos(const double a, const double x, double * result)
     const double c3 = -eps*(3.0+eps*(3.0+eps))/d3;
     const double c5 = -eps*(5.0+eps*(10.0+eps*(10.0+eps*(5.0+eps))))/d5;
     const double c7 = -eps*(7.0+eps*(21.0+eps*(35.0+eps*(35.0+eps*(21.0+eps*(7.0+eps))))))/d7;
+    const double p8 = gsl_sf_pow_int(1.0+eps,8);
+    const double c8 = 1.0/p8             - 1.0;  /* these need not   */
+    const double c9 = 1.0/(p8*(1.0+eps)) - 1.0;  /* be very accurate */
     const double a4 = a*a*a*a;
     const double a6 = a4*a*a;
-    const double ser = (c1 + c3/(30.0*a*a) + c5/(105.0*a4) +c7/(140.0*a6))/(12.0*a);
+    const double ser_1 = c1 + c3/(30.0*a*a) + c5/(105.0*a4) + c7/(140.0*a6);
+    const double ser_2 = c8/(99.0*a6*a*a) - 691.0/360360.0 * c9/(a6*a4);
+    const double ser = (ser_1 + ser_2)/ (12.0*a);
 
-    double term1 = x * (log(a) - 1.0);
+    double term1 = x * log(a/M_E);
     double term2;
     double ln_1peps;
     gsl_sf_log_1plusx_impl(eps, &ln_1peps);  /* log(1 + x/a) */
@@ -209,7 +210,6 @@ lnpoch_pos(const double a, const double x, double * result)
     *result = term1 + term2 + ser;
     return GSL_SUCCESS;
   }
-#endif
   else {
     double poch_rel;
     int stat_p = pochrel_smallx(a, x, &poch_rel);
@@ -244,15 +244,18 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
                        double * result, double * sgn)
 {
   if(a == 0.0 || a+x == 0.0) {
+    *sgn = 0.0;
     *result = 0.0;
     return GSL_EDOM;
   }
   else if(x == 0.0) {
+    *sgn = 1.0;
     *result = 1.0;
     return GSL_SUCCESS;
   }
   else if(a > 0.0 && a+x > 0.0) {
-    return lnpoch_pos(a, a+x, result);
+    *sgn = 1.0;
+    return lnpoch_pos(a, x, result);
   }
   else if(a < 0.0 && a+x < 0.0) {
     /* Reduce to positive case using reflection.

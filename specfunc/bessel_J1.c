@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_trig.h"
 #include "gsl_sf_bessel.h"
 
 #define ROOT_EIGHT (2.0*M_SQRT2)

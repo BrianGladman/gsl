@@ -8,6 +8,7 @@
 #include "gsl_sf_elementary.h"
 #include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_zeta.h"
 
 #define LogTwoPi_  1.8378770664093454835606594728111235279723
@@ -533,6 +534,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
 int gsl_sf_zeta_impl(const double s, double * result)
 {
   if(s == 1.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }
 
@@ -542,31 +544,62 @@ int gsl_sf_zeta_impl(const double s, double * result)
   }
   else {
     /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
-    double ln_gamma;
-    double ln_pre = s * LogTwoPi_;
+
     const double zeta_one_minus_s = riemann_zeta_sgt0(1.0-s);
     const double sin_term = sin(0.5*M_PI*s)/M_PI;
 
-    gsl_sf_lngamma_impl(1.0-s, &ln_gamma);
-
-    /* The prefactor for the result is exp(ln_pre + ln_gamma);
-     * ln_pre is negative and ln_gamma is positive, so there
-     * is some error in the subtraction. This error is a
-     * problem because of the amplification in the exponential.
-     * So we try to sidestep it.
-     */
-    if(     ln_pre > GSL_LOG_DBL_MIN+1.0
-       && ln_gamma < GSL_LOG_DBL_MAX-1.0
-       && zeta_one_minus_s < 2.0
-       ) {
-      double factor_1 = exp(ln_pre);
-      double factor_2 = exp(ln_gamma);
-      *result = factor_1 * factor_2 * sin_term * zeta_one_minus_s;
+    if(sin_term == 0.0) {
+      *result = 0.0;
       return GSL_SUCCESS;
     }
+    else if(s > -170) {
+      /* We have to be careful about losing digits
+       * in calculating pow(2 Pi, s). The gamma
+       * function is fine because we were careful
+       * with that implementation.
+       * We keep an array of (2 Pi)^(10 n).
+       */
+      const double twopi_pow[18] = { 1.0,
+                                     9.589560061550901348e+007,
+                                     9.195966217409212684e+015,
+                                     8.818527036583869903e+023,
+                                     8.456579467173150313e+031,
+                                     8.109487671573504384e+039,
+                                     7.776641909496069036e+047,
+                                     7.457457466828644277e+055,
+                                     7.151373628461452286e+063,
+                                     6.857852693272229709e+071,
+                                     6.576379029540265771e+079,
+                                     6.306458169130020789e+087,
+                                     6.047615938853066678e+095,
+                                     5.799397627482402614e+103,
+                                     5.561367186955830005e+111,
+                                     5.333106466365131227e+119,
+				     5.114214477385391780e+127,
+				     4.904306689854036836e+135
+                                    };
+      int n = floor((-s)/10.0);
+      double fs = s + 10.0*n;
+      double p = pow(2.0*M_PI, fs) / twopi_pow[n];
+
+      double g;
+      int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
+      *result = p * g * sin_term * zeta_one_minus_s;
+      return stat_g;
+    }
     else {
-      double ln_term  = ln_pre + ln_gamma;
-      return gsl_sf_exp_mult_impl(ln_term, sin_term*zeta_one_minus_s, result);
+      /* The actual zeta function may or may not
+       * overflow here. But we have no easy way
+       * to calculate it when the prefactor(s)
+       * overflow. Trying to use log's and exp
+       * is no good because we loose a couple
+       * digits to the exp error amplification.
+       * When we gather a little more patience,
+       * we can implement something here. Until
+       * then just give up.
+       */
+      *result = 0.0;
+      return GSL_EOVRFLW;
     }
   }
 }

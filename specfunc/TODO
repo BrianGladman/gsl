@@ -107,7 +107,7 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_k.c
-    OK: Sun Nov 22 08:35:28 EST 1998 
+    OK: 
 
   - bessel_olver.c
     OK:

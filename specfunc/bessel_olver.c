@@ -396,7 +396,7 @@ static gsl_sf_cheb_series A4_lt1_cs = {
 static double olver_B0(double z, double abs_zeta)
 {
   if(z < 0.98) {
-    const double t = 1.0/sqrt((1.0-z)*(1.0+z));
+    const double t = 1.0/sqrt(1.0-z*z);
     return -5.0/(48.0*abs_zeta*abs_zeta) + t*(-3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
   }
   else if(z < 1.02) {
@@ -413,7 +413,7 @@ static double olver_B0(double z, double abs_zeta)
     return c0 + a*(c1 + a*(c2 + a*(c3 + a*(c4 + a*(c5 + a*(c6 + a*(c7 + a*c8)))))));
   }
   else {
-    const double t = 1.0/sqrt((z-1.0)*(z+1.0));
+    const double t = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
     return -5.0/(48.0*abs_zeta*abs_zeta) + t*( 3.0 + 5.0*t*t)/(24.0*sqrt(abs_zeta));
   }
 }
@@ -422,7 +422,7 @@ static double olver_B0(double z, double abs_zeta)
 static double olver_B1(double z, double abs_zeta)
 {
   if(z < 0.88) {
-    const double t   = 1.0/sqrt((1.0-z)*(1.0+z));
+    const double t   = 1.0/sqrt(1.0-z*z);
     const double t2  = t*t;
     const double rz  = sqrt(abs_zeta);
     const double z32 = rz*rz*rz;
@@ -449,7 +449,7 @@ static double olver_B1(double z, double abs_zeta)
     return c0+a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*(c8+a*(c9+a*c10)))))))));
   }
   else {
-    const double t   = 1.0/sqrt((z-1.0)*(z+1.0));
+    const double t   = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
     const double t2  = t*t;
     const double rz  = sqrt(abs_zeta);
     const double z32 = rz*rz*rz;
@@ -466,7 +466,7 @@ static double olver_B1(double z, double abs_zeta)
 static double olver_B2(double z, double abs_zeta)
 {
   if(z < 0.8) {
-    const double x = 5.*z/2. - 1.;
+    const double x = 5.0*z/2.0 - 1.0;
     return gsl_sf_cheb_eval(&B2_lt1_cs, x) / z;
   }
   else if(z <= 1.2) {
@@ -518,8 +518,8 @@ static double olver_B3(double z, double abs_zeta)
 /* checked OK [GJ] Thu Apr 30 20:08:13 MDT 1998 */
 static double olver_A1(double z, double abs_zeta)
 {
-  if(z < 0.99) {
-    double t = 1./sqrt((1-z)*(1+z));
+  if(z < 0.98) {
+    double t = 1.0/sqrt(1.0-z*z);
     double rz = sqrt(abs_zeta);
     double t2 = t*t;
     double term1 =  t2*(81.0 - 462.0*t2 + 385.0*t2*t2)/1152.0;
@@ -527,7 +527,7 @@ static double olver_A1(double z, double abs_zeta)
     double term3 =  7.0*t*(-3.0 + 5.0*t2)/(1152.0*rz*rz*rz);
     return term1 + term2 + term3;
   }
-  else if(z < 1.01) {
+  else if(z < 1.02) {
     const double a = 1.0-z;
     const double c0 = -0.00444444444444444444444444444444;
     const double c1 = -0.00184415584415584415584415584416;
@@ -541,7 +541,7 @@ static double olver_A1(double z, double abs_zeta)
     return c0+a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*c8)))))));
   }
   else {
-    const double t = 1.0/sqrt((z-1.0)*(z+1.0));
+    const double t = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
     const double rz = sqrt(abs_zeta);
     const double t2 = t*t;
     const double term1 = -t2*(81.0 + 462.0*t2 + 385.0*t2*t2)/1152.0;
@@ -555,7 +555,7 @@ static double olver_A1(double z, double abs_zeta)
 static double olver_A2(double z, double abs_zeta)
 {
   if(z < 0.88) {
-    double t  = 1.0/sqrt((1.0-z)*(1.0+z));
+    double t  = 1.0/sqrt(1.0-z*z);
     double t2 = t*t;
     double t4 = t2*t2;
     double t6 = t4*t2;
@@ -587,7 +587,7 @@ static double olver_A2(double z, double abs_zeta)
     return c0+a*(c1+a*(c2+a*(c3+a*(c4+a*(c5+a*(c6+a*(c7+a*(c8+a*(c9+a*c10)))))))));
   }
   else {
-    const double t  = 1.0/sqrt((z-1.0)*(z+1.0));
+    const double t  = 1.0/(z*sqrt(1.0 - 1.0/(z*z)));
     const double t2 = t*t;
     const double t4 = t2*t2;
     const double t6 = t4*t2;
@@ -694,6 +694,7 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
 int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
 {
   if(x <= 0.0 || nu <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }  
   else {
@@ -704,29 +705,34 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
     double ai, aip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
-    double rt   = sqrt(fabs(1.0-z)*(1.0+z));
 
-    if(fabs(1.0-z) < GSL_ROOT4_MACH_EPS) {
+    if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
       const double c0 = 1.25992104989487316476721060728;
       const double c1 = 0.37797631496846194943016318218;
       const double c2 = 0.230385563409348235843147082474;
       const double c3 = 0.165909603649648694839821892031;
-      pre = c0 + a*(c1 + a*(c2 + a*c3));
+      const double c4 = 0.12931387086451008907;
+      const double c5 = 0.10568046188858133991;
+      const double c6 = 0.08916997952268186978;
+      const double c7 = 0.07700014900618802456;
+      pre = c0 + a*(c1 + a*(c2 + a*(c3 + a*(c4 + a*(c5 + a*(c6 + a*c7))))));
       zeta = a * pre;
-      pre  = sqrt(sqrt(4.0*pre/(1+z)));
+      pre  = sqrt(2.0*sqrt(pre/(1.0+z)));
       abs_zeta = fabs(zeta);
     }
     else if(z < 1.0) {
-      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2.0/3.0);
+      double rt   = sqrt(1.0 - z*z);
+      abs_zeta = pow(1.5*(log((1.0+rt)/z) - rt), 2.0/3.0);
       zeta = abs_zeta;
-      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
+      pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
     }
     else {
       /* z > 1 */
+      double rt = z * sqrt(1.0 - 1.0/(z*z));
       abs_zeta = pow(1.5*(rt - acos(1.0/z)), 2.0/3.0);
       zeta = -abs_zeta;
-      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
+      pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
     }
 
     asum = olver_Asum(nu, z, abs_zeta);
@@ -736,6 +742,7 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
     gsl_sf_airy_Ai_deriv_impl(arg, &aip);
 
     *result = pre * (ai*asum/crnu + aip*bsum/(nu*crnu*crnu));
+
     return GSL_SUCCESS;
   }
 }
@@ -747,12 +754,11 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
  *    nu =  5: uniformly good to >  8D
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
- *
- * checked OK [GJ] Sun May  3 22:59:22 EDT 1998 
  */
 int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
 {
   if(x <= 0.0 || nu <= 0.0) {
+    *result = 0.0;
     return GSL_EDOM;
   }  
   else {
@@ -763,29 +769,34 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
     double bi, bip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
-    double rt   = sqrt(fabs(1.0-z)*(1.0+z));
-    
-    if(fabs(1.0-z) < GSL_ROOT4_MACH_EPS) {
+
+    if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
       const double c0 = 1.25992104989487316476721060728;
       const double c1 = 0.37797631496846194943016318218;
       const double c2 = 0.230385563409348235843147082474;
       const double c3 = 0.165909603649648694839821892031;
-      pre = c0 + a*(c1 + a*(c2 + a*c3));
+      const double c4 = 0.12931387086451008907;
+      const double c5 = 0.10568046188858133991;
+      const double c6 = 0.08916997952268186978;
+      const double c7 = 0.07700014900618802456;
+      pre = c0 + a*(c1 + a*(c2 + a*(c3 + a*(c4 + a*(c5 + a*(c6 + a*c7))))));
       zeta = a * pre;
-      pre  = sqrt(sqrt(4.*pre/(1+z)));
+      pre  = sqrt(2.0*sqrt(pre/(1.0+z)));
       abs_zeta = fabs(zeta);
     }
     else if(z < 1.0) {
-      abs_zeta = pow(1.5*(log((1+rt)/z) - rt), 2.0/3.0);
+      double rt   = sqrt(1.0 - z*z);
+      abs_zeta = pow(1.5*(log((1.0+rt)/z) - rt), 2.0/3.0);
       zeta = abs_zeta;
-      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
+      pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
     }
     else {
       /* z > 1 */
-      abs_zeta = pow(1.5*(rt - acos(1./z)), 2.0/3.0);
+      double rt = z * sqrt(1.0 - 1.0/(z*z));
+      abs_zeta = pow(1.5*(rt - acos(1.0/z)), 2.0/3.0);
       zeta = -abs_zeta;
-      pre  = sqrt(sqrt(4.0*abs_zeta/(rt*rt)));
+      pre  = sqrt(2.0*sqrt(abs_zeta/(rt*rt)));
     }
 
     asum = olver_Asum(nu, z, abs_zeta);

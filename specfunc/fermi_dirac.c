@@ -12,7 +12,7 @@
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
 
-#define locEPS        (1000.0*GSL_MACH_EPS)
+#define locEPS        (1000.0*GSL_DBL_EPSILON)
 
 
 /* Chebyshev fit for F_{1}(t);  -1 < t < 1, -1 < x < 1
@@ -872,14 +872,14 @@ static
 int
 fd_nint(const int j, const double x, double * result)
 {
-  const int nmax = 100;
-  double qcoeff[nmax+1];
+  const int nsize = 100 + 1;
+  double qcoeff[nsize];
 
   if(j >= -1) {
     *result = 0.0;
     return GSL_ESANITY;
   }
-  else if(j < -(nmax+1)) {
+  else if(j < -(nsize)) {
     *result = 0.0;
     return GSL_EUNIMPL;
   }
@@ -926,7 +926,8 @@ int
 fd_neg(const double j, const double x, double * result)
 {
   const int itmax = 100;
-  double qnum[itmax+1], qden[itmax+1];
+  const int qsize = 100 + 1;
+  double qnum[qsize], qden[qsize];
 
   if(x < GSL_LOG_DBL_MIN) {
     *result = 0.0;
@@ -946,7 +947,7 @@ fd_neg(const double j, const double x, double * result)
       double p   = pow(rat, j+1.0);
       term *= -ex * p;
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -964,7 +965,7 @@ fd_neg(const double j, const double x, double * result)
       double term = enx/p;
       fd_whiz(term, jterm, qnum, qden, &f, &s);
       xn += x;
-      if(fabs(f-f_previous) < fabs(f)*10.0*GSL_MACH_EPS || xn < GSL_LOG_DBL_MIN) break;
+      if(fabs(f-f_previous) < fabs(f)*10.0*GSL_DBL_EPSILON || xn < GSL_LOG_DBL_MIN) break;
       enx *= ex;
     }
 
@@ -985,7 +986,7 @@ static
 int
 fd_asymp(const double j, const double x, double * result)
 {
-  const int j_integer = ( fabs(j - floor(j+0.5)) < 100.0*GSL_MACH_EPS );
+  const int j_integer = ( fabs(j - floor(j+0.5)) < 100.0*GSL_DBL_EPSILON );
   const int itmax = 200;
   double lg;
   int stat_lg = gsl_sf_lngamma_impl(j + 2.0, &lg);
@@ -1006,7 +1007,7 @@ fd_asymp(const double j, const double x, double * result)
     xgam = xgam * xm2 * (j + 1.0 - (2*n-2)) * (j + 1.0 - (2*n-1));
     add  = eta * xgam;
     if(!j_integer && fabs(add) > fabs(add_previous)) break;
-    if(fabs(add/seqn) < GSL_MACH_EPS) break;
+    if(fabs(add/seqn) < GSL_DBL_EPSILON) break;
     seqn += add;
   }
   stat_ser = ( fabs(add) > locEPS*fabs(seqn) ? GSL_ELOSS : GSL_SUCCESS );
@@ -1041,7 +1042,7 @@ fd_series(const double j, const double x, double * result)
     pow_factor *= x/n;
     term = pow_factor * eta_factor;
     sum += term;
-    if(fabs(term/sum) < GSL_MACH_EPS && fabs(prev/sum) < GSL_MACH_EPS) break;
+    if(fabs(term/sum) < GSL_DBL_EPSILON && fabs(prev/sum) < GSL_DBL_EPSILON) break;
     prev = term;
   }
 
@@ -1075,7 +1076,7 @@ fd_series_int(const int j, const double x, double * result)
     pow_factor *= x/n;
     del  = pow_factor * eta_factor;
     sum += del;
-    if(fabs(del/sum) < 0.1*GSL_MACH_EPS) break;
+    if(fabs(del/sum) < 0.1*GSL_DBL_EPSILON) break;
   }
 
   /* Now sum the terms where eta() is negative.
@@ -1173,7 +1174,7 @@ fd_UMseries_int(const int j, const double x, double * result)
 
     del = ((j+1.0)*U - M);
     sum_odd += del;
-    if(fabs(del/sum_odd) < GSL_MACH_EPS) break;
+    if(fabs(del/sum_odd) < GSL_DBL_EPSILON) break;
   }
 
   /* Add up the even terms of the sum.
@@ -1203,7 +1204,7 @@ fd_UMseries_int(const int j, const double x, double * result)
 
     del = ((j+1.0)*U - M);
     sum_even -= del;
-    if(fabs(del/sum_even) < GSL_MACH_EPS) break;
+    if(fabs(del/sum_even) < GSL_DBL_EPSILON) break;
   }
 
   stat_sum = ( n == nmax ? GSL_EMAXITER : GSL_SUCCESS );
@@ -1276,7 +1277,7 @@ int gsl_sf_fermi_dirac_1_impl(const double x, double * result)
       double rat = (n-1.0)/n;
       term *= -ex * rat * rat;
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -1301,7 +1302,7 @@ int gsl_sf_fermi_dirac_1_impl(const double x, double * result)
     *result  = c * x*x;
     return GSL_SUCCESS;
   }
-  else if(x < 1.0/GSL_SQRT_MACH_EPS) {
+  else if(x < 1.0/GSL_SQRT_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
     double c = gsl_sf_cheb_eval(&fd_1_e_cs, t);
     *result  = c * x*x;
@@ -1335,7 +1336,7 @@ int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
       double rat = (n-1.0)/n;
       term *= -ex * rat * rat * rat;
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -1360,7 +1361,7 @@ int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
     *result  = c * x*x*x;
     return GSL_SUCCESS;
   }
-  else if(x < 1.0/GSL_ROOT3_MACH_EPS) {
+  else if(x < 1.0/GSL_ROOT3_DBL_EPSILON) {
     double t = 60.0/x - 1.0;
     double c = gsl_sf_cheb_eval(&fd_2_e_cs, t);
     *result  = c * x*x*x;
@@ -1435,7 +1436,7 @@ int gsl_sf_fermi_dirac_mhalf_impl(const double x, double * result)
       double rat = (n-1.0)/n;
       term *= -ex * sqrt(rat);
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -1483,7 +1484,7 @@ int gsl_sf_fermi_dirac_half_impl(const double x, double * result)
       double rat = (n-1.0)/n;
       term *= -ex * rat * sqrt(rat);
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;
@@ -1531,7 +1532,7 @@ int gsl_sf_fermi_dirac_3half_impl(const double x, double * result)
       double rat = (n-1.0)/n;
       term *= -ex * rat * rat * sqrt(rat);
       sum  += term;
-      if(fabs(term/sum) < GSL_MACH_EPS) break;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
     }
     *result = sum;
     return GSL_SUCCESS;

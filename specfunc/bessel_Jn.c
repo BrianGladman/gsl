@@ -44,7 +44,7 @@ bessel_Jn_CF1(const int n, const double x, double * ratio)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Sun May  3 22:35:34 EDT 1998 */
+
 int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
 {
   int sign = 1;
@@ -78,7 +78,7 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       *result = 0.0;
       return GSL_SUCCESS;
     }
-    else if(x*x < 10.0*(n+1.0)*GSL_ROOT5_MACH_EPS) {
+    else if(x*x < 10.0*(n+1.0)*GSL_ROOT5_DBL_EPSILON) {
       int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 50, GSL_MACH_EPS, result);
       *result *= sign;
       return status;
@@ -88,7 +88,7 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       *result *= sign;
       return status;
     }
-    else if(n > 30) {
+    else if(n > 50) {
       int status = gsl_sf_bessel_Jnu_asymp_Olver_impl((double)n, x, result);
       *result *= sign;
       return status;

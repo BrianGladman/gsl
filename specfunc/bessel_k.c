@@ -20,15 +20,16 @@
  */
 static int bessel_kl_scaled_small_x(int l, const double x, double * result)
 {
-  const int lmax = 18;
-  int i;
   double num_fact;
-  double den = gsl_sf_pow_int(x, l+1);
-  if(gsl_sf_doublefact_impl((unsigned int) 2*l-1, &num_fact) != GSL_SUCCESS || den == 0.0) {
+  double den  = gsl_sf_pow_int(x, l+1);
+  int stat_df = gsl_sf_doublefact_impl((unsigned int) (2*l-1), &num_fact);
+
+  if(stat_df != GSL_SUCCESS || den == 0.0) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
   else {
+    const int lmax = 50;
     double ipos_term;
     double ineg_term;
     double sgn = (GSL_IS_ODD(l) ? -1.0 : 1.0);
@@ -38,6 +39,9 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
     double t_coeff = 1.0;
     double t_power = 1.0;
     double delta;
+    int stat_il;
+    int i;
+
     for(i=1; i<lmax; i++) {
       t_coeff /= i*(2*(i-l) - 1);
       t_power *= t;
@@ -45,13 +49,15 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
       sum += delta;
       if(fabs(delta/sum) < GSL_DBL_EPSILON) break;
     }
-    gsl_sf_bessel_il_scaled_impl(l, x, &ipos_term);
+
+    stat_il = gsl_sf_bessel_il_scaled_impl(l, x, &ipos_term);
     ineg_term =  sgn * num_fact/den * sum;
     *result   = -sgn * 0.5*M_PI * (ex*ipos_term - ineg_term);
     *result  *= ex;
-    return GSL_SUCCESS;
+    return stat_il;
   }
 }
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -124,12 +130,12 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, double * result)
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1)) {
     int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
+    if(status == GSL_SUCCESS) *result *= sqrt((0.5*M_PI)/x);
     return status;
   }
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < GSL_ROOT3_DBL_EPSILON) {
     int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
-    if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
+    if(status == GSL_SUCCESS) *result *= sqrt((0.5*M_PI)/x);
     return status;
   }
   else {

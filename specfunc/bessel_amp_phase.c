@@ -155,13 +155,12 @@ const gsl_sf_cheb_series _bessel_amp_phase_bth1_cs = {
 int
 gsl_sf_bessel_asymp_Mnu_impl(const double nu, const double x, double * result)
 {
-  double x_inv  = 1.0/x;
-  double x_inv2 = x_inv*x_inv;
-  double mu     = 4.0*nu*nu;
-  double Mnu2_c = 2.0/(M_PI) *
-                   (1.0 + (mu-1.0)/8.0 * x_inv2
-                        + (mu-1.0)*(mu-9.0)*3.0/128.0 * x_inv2*x_inv2
-                    );
+  const double r  = 2.0*nu/x;
+  const double r2 = r*r;
+  const double x2 = x*x;
+  const double term1 = (r2-1.0/x2)/8.0;
+  const double term2 = (r2-1.0/x2)*(r2-9.0/x2)*3.0/128.0;
+  const double Mnu2_c = 2.0/(M_PI) * (1.0 + term1 + term2);
   *result = sqrt(Mnu2_c)/sqrt(x); /* will never underflow this way */
   return GSL_SUCCESS;
 }
@@ -170,12 +169,11 @@ gsl_sf_bessel_asymp_Mnu_impl(const double nu, const double x, double * result)
 int
 gsl_sf_bessel_asymp_thetanu_corr_impl(const double nu, const double x, double * result)
 {
-  double x_inv  = 1.0/x;
-  double x_inv2 = x_inv*x_inv;
-  double mu     = 4.0*nu*nu;
-  *result = (  0.25*M_PI 
-             + (mu-1.0)/8.0 * x_inv
-             + (mu-1.0)*(mu-25.0)/384.0 * x_inv*x_inv2
-             );
+  const double r  = 2.0*nu/x;
+  const double r2 = r*r;
+  const double x2 = x*x;
+  const double term1 = x*(r2 - 1.0/x2)/8.0;
+  const double term2 = x*(r2 - 1.0/x2)*(r2 - 25.0/x2)/384.0;
+  *result = (-0.25*M_PI + term1 + term2);
   return GSL_SUCCESS;
 }
