@@ -37,6 +37,8 @@ typedef unsigned int gsl_mode_t;
 #define GSL_PREC_APPROX  2
 
 #ifdef HAVE_INLINE
+extern inline unsigned int GSL_MODE_PREC(gsl_mode_t mt);
+
 extern inline unsigned int
 GSL_MODE_PREC(gsl_mode_t mt)
 { return  (mt & (unsigned int)7); }
