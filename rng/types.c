@@ -28,7 +28,7 @@ const gsl_rng_type * gsl_rng_generator_types[N];
 #define ADD(t) {if (i==N) abort(); gsl_rng_generator_types[i] = (t); i++; };
 
 const gsl_rng_type **
-gsl_rng_types_setup ()
+gsl_rng_types_setup (void)
 {
   int i = 0;
 
