@@ -1,10 +1,15 @@
 #include <config.h>
 #include <stdlib.h>
+#include <gsl_rng.h>
 
 /*  From:
     P. L'Ecuyer, "Combined Multiple Recursive Random Number Generators,"
     to appear in Operations Research, 1996.
     (Preprint obtained as file compmrg.ps from L'Ecuyer's web page.)  */
+
+unsigned long cmrg_get (void * vstate);
+void cmrg_set(void * state, unsigned int s);
+void cmrg_set_with_state(void * vstate, void * vinit_state, unsigned int s);
 
 static const int m1 = 2147483647, m2 = 2145483479;
 
@@ -13,23 +18,32 @@ static const int a12 =   63308, q12 = 33921, r12 = 12979,
                  a21 =   86098, q21 = 24919, r21 =  7417,
                  a23 = -539608, q23 =  3976, r23 =  2071 ;
 
-#define gsl_ran_cmrg_RANDMAX 2147483647 /* m1 */
+static const unsigned long int gsl_ran_cmrg_RANDMAX = 2147483647; /* m1 */
 
 typedef struct {
-    long x10,x11,x12;           /* first component */
-    long x20,x21,x22;           /* second component */
-} gsl_ran_cmrg_randomState;
+    long x10, x11, x12;           /* first component */
+    long x20, x21, x22;           /* second component */
+} cmrg_state_t;
 
-#define POSITIVE(x,m) if (x<0) x += m
+static const 
+gsl_rng_type cmrg_type = { sizeof(cmrg_state_t), &cmrg_set, &cmrg_get } ;
+
+
+const gsl_rng_type * 
+gsl_rng_cmrg (void) 
+{
+  return &cmrg_type ;
+}
 
 unsigned long cmrg_get (void * vstate)
 {
     int h,p12,p13,p21,p23;
-    gsl_ran_cmrg_randomState * state = (gsl_ran_cmrg_randomState *) vstate;
+    cmrg_state_t * state = (cmrg_state_t *) vstate;
 
     /* Component 1 */
     h = state->x10 / q13 ; p13 = -a13 * (state->x10 - h * q13) - h * r13;
     h = state->x11 / q12 ; p12 =  a12 * (state->x11 - h * q12) - h * r12;
+#define POSITIVE(x,m) if (x<0) x += m
     POSITIVE(p13,m1);
     POSITIVE(p12,m1);
     state->x10 = state->x11;
@@ -54,16 +68,29 @@ unsigned long cmrg_get (void * vstate)
         return (state->x12 - state->x22);
 }
 
-#define LCG(n) ((n)*8121+28411)%134456
+static cmrg_state_t init_state = {
+    511515612L, 1645048169L, 1860274777L,
+     55882945L, 1225790668L, 2055528708L
+};
 
-void cmrg_set(void * vstate, unsigned int s)
+void cmrg_set(void * state, unsigned int s)
+{
+  cmrg_set_with_state(state, &init_state, s) ;
+}
+
+void cmrg_set_with_state(void * vstate, void * vinit_state, unsigned int s)
 {
     /* An entirely adhoc way of seeding! This does **not** come
        from L'Ecuyer et al */
-    gsl_ran_cmrg_randomState * state = (gsl_ran_cmrg_randomState *) vstate;
 
-    if (s==0) s=1;
+    cmrg_state_t * state = (cmrg_state_t *) vstate;
+    cmrg_state_t * init_state = (cmrg_state_t *) vinit_state;
 
+    *state = *init_state ;
+
+    if (s == 0) s = 1;
+
+#define LCG(n) ((n)*8121+28411)%134456
     state->x10 = LCG(s);
     state->x11 = LCG(state->x10);
     state->x12 = LCG(state->x11);
@@ -79,14 +106,9 @@ void cmrg_set(void * vstate, unsigned int s)
     cmrg_get (state);
     cmrg_get (state);
     cmrg_get (state);
-
 }
 
-static gsl_ran_cmrg_randomState state = {
-    511515612L, 1645048169L, 1860274777L,
-     55882945L, 1225790668L, 2055528708L
-};
-#include "cmrg-state.c"
+
 
     
     

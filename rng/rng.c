@@ -17,8 +17,7 @@ gsl_rng_alloc (const gsl_rng_type * (*f)(void))
 			GSL_ENOMEM, 0);
     } ;
 
-  r->state = malloc(T->state) ;
-
+  r->state = malloc(T->sizeof_state) ;
 
   if (r->state == 0) 
     {
@@ -27,7 +26,6 @@ gsl_rng_alloc (const gsl_rng_type * (*f)(void))
       GSL_ERROR_RETURN ("failed to allocate space for rng state",
 			GSL_ENOMEM, 0);
     } ;
-
 
   r->set = T->set ;
   r->get = T->get ;
