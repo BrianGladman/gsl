@@ -244,8 +244,13 @@ wrote the error handling infrastructure.
 @item Reid Priedhorsky
 Wrote the root finding package and the relevant chapter in this manual.
 
-@item Gerry Jungman
-Wrote the special function library.
+@item Gerard Jungman
+Wrote the special function library, discrete hankel transforms,
+the rudimentary linear algebra functions, and the original version
+of the acceleration (Levin U) transforms.
+
+@item Mike Booth
+Wrote the Monte Carlo library.
 
 @end table
 
