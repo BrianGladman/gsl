@@ -12,16 +12,39 @@ or two-parameter regression and multiple-parameter fits.
 
 @menu
 * Simple linear fitting::       
+* Linear fitting without a constant term::  
 * Multi-parameter fitting::     
+* Fitting examples::            
 * Fitting References and Further Reading::  
 @end menu
 
 @node  Simple linear fitting
 @section Simple linear fitting
 
+The least-squares fit to a straight line @math{Y = c_0 + c_1 X}.  For
+weighted data this is acheived by minimizing the weighted sum of squared
+residuals, @math{\chi^2},
+
+@tex
+\beforedisplay
+$$
+\chi^2 = \sum_i w_i (y_i - (c_0 + c_1 x_i))^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = \sum_i w_i (y_i - (c_0 + c_1 x_i))^2
+@end example
+@end ifinfo
+
+@noindent
+for the parameters @math{c_0}, @math{c_1}.  For unweighted data the
+@math{\chi^2} is computed with @math{w_i = 1}.
+
 @deftypefun int gsl_fit_linear (const double * @var{x}, const size_t @var{xstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c0}, double * @var{c1}, double * @var{cov00}, double * @var{cov01}, double * @var{cov11}, double * @var{sumsq})
 This function computes the best-fit linear regression coefficients
-(@var{c0},@var{c1}) of the model @math{Y = c0 + c1 X} for the datasets
+(@var{c0},@var{c1}) of the model @math{Y = c_0 + c_1 X} for the datasets
 (@var{x}, @var{y}), two vectors of length @var{n} with strides
 @var{xstride} and @var{ystride}.  The variance-covariance matrix for the
 parameters (@var{c0}, @var{c1}) is estimated from the scatter of the
@@ -32,11 +55,11 @@ residuals from the best-fit line is returned in @var{sumsq}.
 
 @deftypefun int gsl_fit_wlinear (const double * @var{x}, const size_t @var{xstride}, const double * @var{w}, const size_t @var{wstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c0}, double * @var{c1}, double * @var{cov00}, double * @var{cov01}, double * @var{cov11}, double * @var{chisq})
 This function computes the best-fit linear regression coefficients
-(@var{c0},@var{c1}) of the model @math{Y = c0 + c1 X} for the weighted
+(@var{c0},@var{c1}) of the model @math{Y = c_0 + c_1 X} for the weighted
 datasets (@var{x}, @var{y}), two vectors of length @var{n} with strides
 @var{xstride} and @var{ystride}.  The vector @var{w}, of length @var{n}
 and stride @var{wstride}, specifies the weight of each datapoint. The
-weight is the reciprocal of variance for each datapoint in @var{y}.
+weight is the reciprocal of the variance for each datapoint in @var{y}.
 
 The covariance matrix for the parameters (@var{c0}, @var{c1}) is
 estimated from weighted data and returned via the parameters
@@ -50,12 +73,36 @@ This function uses the best-fit linear regression coefficients
 @var{c0},@var{c1} and their estimated covariance
 @var{cov00},@var{cov01},@var{cov11} to compute the fitted function
 @var{y} and its standard deviation @var{y_err} for the model @math{Y =
-c0 + c1 X} at the point @var{x}.
+c_0 + c_1 X} at the point @var{x}.
 @end deftypefun
+
+@node Linear fitting without a constant term
+@section Linear fitting without a constant term
+
+The least-squares fit to a straight line @math{Y = c_1 X} without a
+constant term.  For weighted data this is acheived by minimizing the
+weighted sum of squared residuals, @math{\chi^2},
+
+@tex
+\beforedisplay
+$$
+\chi^2 = \sum_i w_i (y_i -  c_1 x_i)^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = \sum_i w_i (y_i - c_1 x_i)^2
+@end example
+@end ifinfo
+
+@noindent
+for the parameter @math{c_1}.  For unweighted data the @math{\chi^2} is
+computed with @math{w_i = 1}.
 
 @deftypefun int gsl_fit_mul (const double * @var{x}, const size_t @var{xstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c1}, double * @var{cov11}, double * @var{sumsq})
 This function computes the best-fit linear regression coefficient
-@var{c1} of the model @math{Y = c1 X} for the datasets (@var{x},
+@var{c1} of the model @math{Y = c_1 X} for the datasets (@var{x},
 @var{y}), two vectors of length @var{n} with strides @var{xstride} and
 @var{ystride}.  The variance of the parameter @var{c1} is estimated from
 the scatter of the points around the best-fit line and returned via the
@@ -65,11 +112,11 @@ best-fit line is returned in @var{sumsq}.
 
 @deftypefun int gsl_fit_wmul (const double * @var{x}, const size_t @var{xstride}, const double * @var{w}, const size_t @var{wstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c1}, double * @var{cov11}, double * @var{sumsq})
 This function computes the best-fit linear regression coefficient
-@var{c1} of the model @math{Y = c1 X} for the weighted datasets
+@var{c1} of the model @math{Y = c_1 X} for the weighted datasets
 (@var{x}, @var{y}), two vectors of length @var{n} with strides
 @var{xstride} and @var{ystride}.  The vector @var{w}, of length @var{n}
 and stride @var{wstride}, specifies the weight of each datapoint. The
-weight is the reciprocal of variance for each datapoint in @var{y}.
+weight is the reciprocal of the variance for each datapoint in @var{y}.
 
 The variance of the parameter @var{c1} is estimated from the weighted
 data and returned via the parameters @var{cov11}.  The weighted sum of
@@ -81,28 +128,150 @@ returned in @var{chisq}.
 This function uses the best-fit linear regression coefficient @var{c1}
 and its estimated covariance @var{cov11} to compute the fitted function
 @var{y} and its standard deviation @var{y_err} for the model @math{Y =
-c1 X} at the point @var{x}.
+c_1 X} at the point @var{x}.
 @end deftypefun
 
 @node Multi-parameter fitting
 @section Multi-parameter fitting
 
+The functions described in this section perform fitting to a general
+linear model, @math{y = X c} where @math{y} is a vector of @math{n}
+observations, @math{X} is a @math{n} by @math{p} matrix of predictor
+variables, and @math{c} are the @math{p} unknown best-fit parameters,
+which are to be estimated.
+
+The best-fit is found by minimizing the weighted sums of squared
+residuals, @math{\chi^2},
+
+@tex
+\beforedisplay
+$$
+\chi^2 = (y - X c)^T W (y - X c)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = (y - X c)^T W (y - X c)
+@end example
+@end ifinfo
+@noindent
+with respect to the parameters @math{c}. The weights are specified by
+the diagonal elements of the @math{n} by @math{n} matrix @math{W}.  For
+unweighted data @math{W} is replaced by the identity matrix.
+
+This formulation can be used for fits to any number of functions and/or
+variables by preparing the matrix @math{X} appropriately.  For example,
+to fit to a @math{p}-th order polynomial in @var{x}, use
+
+@tex
+\beforedisplay
+$$
+X_{ij} = x_i^j
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X_@{ij@} = x_i^j
+@end example
+@end ifinfo
+@noindent
+To fit to a set of @math{p} sinusiodal functions with fixed frequencies
+@math{\omega_1}, @math{\omega_2}, @dots{}, @math{\omega_p}, use,
+
+@tex
+\beforedisplay
+$$
+X_{ij} = sin(\omega_j x_i)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X_@{ij@} = sin(\omega_j x_i)
+@end example
+@end ifinfo
+@noindent
+
+To fit to @math{p} independent variables @math{x_1}, @math{x_2}, @dots{},
+@math{x_p}
+
+@tex
+\beforedisplay
+$$
+X_{ij} = x_j(i)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X_@{ij@} = x_j(i)
+@end example
+@end ifinfo
+@noindent
+where @math{x_j(i)} is the @math{i}-th value of the predictor variable
+@math{x_j}.
+
 @deftypefun {gsl_multifit_linear_workspace *} gsl_multifit_linear_alloc (size_t @var{n}, size_t @var{p})
+This function allocates a workspace for fitting a model to @var{n}
+observations using @var{p} parameters.
 @end deftypefun
 
 @deftypefun void gsl_multifit_linear_free (gsl_multifit_linear_workspace * @var{work})
+This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of predictor
+variables @var{X}.  The variance-covariance matrix of the model
+parameters @var{cov} is estimated from the scatter of the observations
+about the best-fit.  The sum of squares of the residuals from the
+best-fit, @math{\chi^2}, is returned in @var{chisq}.
+
+The best-fit is found by singular value decomposition of the matrix
+@var{X}. Any components which have zero singular value (to machine
+precision) are discarded from the fit.
 @end deftypefun
 
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of predictor
+variables @var{X}.  The covariance matrix of the model parameters
+@var{cov} is estimated from the weighted data.  The weighted sum of
+squares of the residuals from the best-fit, @math{\chi^2}, is returned
+in @var{chisq}.
+
+The best-fit is found by singular value decomposition of the matrix
+@var{X}. Any components which have zero singular value (to machine
+precision) are discarded from the fit.
 @end deftypefun
+
+@node Fitting examples
+@section Examples
 
 
 
 @node Fitting References and Further Reading
 @section References and Further Reading
 
+A summary of formulas and techniques for least squares fitting can be
+found in the "Statistics" chapter of the Annual Review of Particle
+Physics prepared by the Particle Data Group.
+
+@itemize @asis
+@item
+@cite{Review of Particle Properties}
+R.M. Barnett et al., Physical Review D54, 1 (1996)
+@end itemize
+@noindent
+The Review of Particle Physics is available online at
+@url{http://pdg.lbl.gov/}.
+
+The tests used to prepare these routines are based on the NIST
+Statistical Reference Datasets. The datasets and their documentation are
+available from @url{http://www.nist.gov/itl/div898/strd/index.html}
 
 
