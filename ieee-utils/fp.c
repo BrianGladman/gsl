@@ -20,6 +20,8 @@
 #include "fp-aix.c"
 #elif defined(HAVE_TRU64_IEEE_INTERFACE)
 #include "fp-tru64.c"
+#elif defined(HAVE_FREEBSD_IEEE_INTERFACE)
+#include "fp-freebsd.c"
 #else
 #include "fp-unknown.c" 
 #endif

@@ -1,6 +1,6 @@
-/* ieee-utils/fp-x86linux.c
+/* ieee-utils/fp-freebsd.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough
+ * Copyright (C) 2000 Vladimir Kushnir
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,83 +17,86 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <fpu_control.h>
-#include <gsl/gsl_errno.h>
+#include <ieeefp.h>
 #include <gsl/gsl_ieee_utils.h>
-
-  /* Handle libc5, where _FPU_SETCW is not available, suggested by
-     OKUJI Yoshinori <okuji@gnu.org> and Evgeny Stambulchik
-     <fnevgeny@plasma-gate.weizmann.ac.il> */
-
-#ifndef _FPU_SETCW
-#include <i386/fpu_control.h>
-#define _FPU_SETCW(cw) __setfpucw(cw)
-#endif
+#include <gsl/gsl_errno.h>
 
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
-  unsigned short mode = 0 ;
+  fp_prec_t prec = 0 ;
+  fp_except_t mode = 0 ;
+  fp_rnd_t    rnd  = 0 ;
 
   switch (precision)
     {
     case GSL_IEEE_SINGLE_PRECISION:
-      mode |= _FPU_SINGLE ;
+      prec = FP_PS;
+      fpsetprec(prec);      
       break ;
     case GSL_IEEE_DOUBLE_PRECISION:
-      mode |= _FPU_DOUBLE ;
+      prec = FP_PD;
+      fpsetprec(prec);
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
-      mode |= _FPU_EXTENDED ;
+      prec = FP_PE;
+      fpsetprec(prec);
       break ;
-    default:
-      mode |= _FPU_EXTENDED ;
     }
 
   switch (rounding)
     {
     case GSL_IEEE_ROUND_TO_NEAREST:
-      mode |= _FPU_RC_NEAREST ;
+      rnd = FP_RN ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_DOWN:
-      mode |= _FPU_RC_DOWN ;
+      rnd = FP_RM ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_UP:
-      mode |= _FPU_RC_UP ;
+      rnd = FP_RP ;
+      fpsetround (rnd) ;
       break ;
     case GSL_IEEE_ROUND_TO_ZERO:
-      mode |= _FPU_RC_ZERO ;
+      rnd = FP_RZ ;
+      fpsetround (rnd) ;
       break ;
     default:
-      mode |= _FPU_RC_NEAREST ;
+      rnd = FP_RN ;
+      fpsetround (rnd) ;
     }
 
+  /* Turn on all the exceptions apart from 'inexact' */
+
+  mode = FP_X_INV | FP_X_DNML | FP_X_DZ | FP_X_OFL | FP_X_UFL ;
+
   if (exception_mask & GSL_IEEE_MASK_INVALID)
-    mode |= _FPU_MASK_IM ;
+    mode &= ~ FP_X_INV ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    mode |= _FPU_MASK_DM ;
+    mode &= ~ FP_X_DNML ;
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
-    mode |= _FPU_MASK_ZM ;
+    mode &= ~ FP_X_DZ ;
 
   if (exception_mask & GSL_IEEE_MASK_OVERFLOW)
-    mode |= _FPU_MASK_OM ;
+    mode &= ~ FP_X_OFL ;
 
   if (exception_mask & GSL_IEEE_MASK_UNDERFLOW)
-    mode |= _FPU_MASK_UM ;
+    mode &=  ~ FP_X_UFL ;
 
   if (exception_mask & GSL_IEEE_TRAP_INEXACT)
     {
-      mode &= ~ _FPU_MASK_PM ;
+      mode |= FP_X_IMP ;
     }
   else
     {
-      mode |= _FPU_MASK_PM ;
+      mode &= ~ FP_X_IMP ;
     }
 
-  _FPU_SETCW(mode) ;
+  fpsetmask (mode) ;
 
   return GSL_SUCCESS ;
+
 }

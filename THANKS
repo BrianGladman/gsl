@@ -71,3 +71,5 @@ functions
 * Toby White <tow@theor.ch.cam.ac.uk> for a patch to the docs
 
 * Bill Brower <wbrower@ll.mit.edu> for bug report on gsl.m4
+
+* Vladimir Kushnir <vkushnir@Alfacom.net> for ieee support for FreeBSD
