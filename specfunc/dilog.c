@@ -551,8 +551,8 @@ gsl_sf_dilog_e(const double x, gsl_sf_result * result)
 
 int
 gsl_sf_complex_dilog_xy_e(
-  double x,
-  double y,
+  const double x,
+  const double y,
   gsl_sf_result * real_dl,
   gsl_sf_result * imag_dl
   )
@@ -623,8 +623,8 @@ gsl_sf_complex_dilog_xy_e(
 
 int
 gsl_sf_complex_dilog_e(
-  double r,
-  double theta,
+  const double r,
+  const double theta,
   gsl_sf_result * real_dl,
   gsl_sf_result * imag_dl
   )

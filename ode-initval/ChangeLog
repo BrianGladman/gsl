@@ -1,3 +1,8 @@
+2004-12-29  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_compare_vanderpol): avoid variable size array
+	(test_compare_oregonator): as above
+
 2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_evolve_xsin): changed description from "failures"

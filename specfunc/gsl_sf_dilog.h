@@ -101,7 +101,7 @@ gsl_sf_complex_dilog_xy_e(
 int
 gsl_sf_complex_dilog_e(
   const double r,
-  double theta,
+  const double theta,
   gsl_sf_result * result_re,
   gsl_sf_result * result_im
   );

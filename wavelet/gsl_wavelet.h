@@ -19,7 +19,8 @@
 
 #ifndef __GSL_WAVELET_H__
 #define __GSL_WAVELET_H__
-
+#include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 
 #undef __BEGIN_DECLS
@@ -67,12 +68,12 @@ typedef struct
 }
 gsl_wavelet_workspace;
 
-extern const gsl_wavelet_type *gsl_wavelet_daubechies;
-extern const gsl_wavelet_type *gsl_wavelet_daubechies_centered;
-extern const gsl_wavelet_type *gsl_wavelet_haar;
-extern const gsl_wavelet_type *gsl_wavelet_haar_centered;
-extern const gsl_wavelet_type *gsl_wavelet_bspline;
-extern const gsl_wavelet_type *gsl_wavelet_bspline_centered;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_daubechies;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_daubechies_centered;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_haar;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_haar_centered;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_bspline;
+GSL_VAR const gsl_wavelet_type *gsl_wavelet_bspline_centered;
 
 gsl_wavelet *gsl_wavelet_alloc (const gsl_wavelet_type * T, size_t k);
 void gsl_wavelet_free (gsl_wavelet * w);

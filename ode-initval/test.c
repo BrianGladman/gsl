@@ -698,7 +698,7 @@ test_compare_vanderpol (void)
   const size_t ns = 11;
 
   /* initial values for each ode-solver */
-  double y[ns][sd];
+  double y[11][2];
   double *yp = &y[0][0];
 
   size_t i, j, k;
@@ -805,7 +805,7 @@ test_compare_oregonator (void)
   const size_t ns = 2;
 
   /* initial values for each ode-solver */
-  double y[ns][sd];
+  double y[2][3];
   double *yp = &y[0][0];
 
   size_t i, j, k;
