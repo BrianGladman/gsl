@@ -1,22 +1,17 @@
-
-
-
-
-
-
-/* $Id$ */
 #include <math.h>
-#include "gsl_ran.h"
-#include "gsl_randist.h"
+#include <gsl_rng.h>
+#include <gsl_randist.h>
 
-double 
-gsl_ran_exponential (double mu)
+double
+gsl_ran_exponential (const gsl_rng * r, double mu)
 {
   double u;
+
   do
     {
-      u = gsl_ran_uniform ();
+      u = gsl_rng_uniform (r);
     }
-  while (u <= 0.0);
+  while (u == 0.0);
+
   return -mu * log (u);
 }

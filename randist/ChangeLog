@@ -1,3 +1,7 @@
+Sun Jun 28 14:21:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* converted everything to work with rng style generators
+
 Sun Apr 19 19:06:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* made the 'gsl-dist' programs just output a single column of

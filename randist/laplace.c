@@ -1,16 +1,20 @@
-
-/* $Id$ */
 #include <math.h>
-#include "gsl_ran.h"
-#include "gsl_randist.h"
+#include <gsl_rng.h>
+#include <gsl_randist.h>
 
-double 
-gsl_ran_laplace (double mu)
+/* The Laplace probability distribution is  
+
+   p(x) = (1/(2 mu)) * exp( -|x/mu|)
+
+   for -infty < x < infty  */
+
+double
+gsl_ran_laplace (const gsl_rng * r, double mu)
 {
   double u;
   do
     {
-      u = 2 * gsl_ran_uniform () - 1.0;
+      u = 2 * gsl_rng_uniform (r) - 1.0;
     }
   while (u == 0.0);
 
@@ -23,9 +27,3 @@ gsl_ran_laplace (double mu)
       return -mu * log (u);
     }
 }
-
-/* The Laplace probability distribution is  
-
-   p(x) = (1/(2 mu)) * exp( -|x/mu|)
-
-   for -infty < x < infty  */

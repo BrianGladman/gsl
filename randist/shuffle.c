@@ -1,11 +1,9 @@
+/* Randomly permute (shuffle) N indices
 
+   Supply an integer array x[N], and on return, it will be filled with
+   indices 0...N-1 in random order.  The algorithm is from Knuth,
+   SemiNumerical Algorithms, v2, p139 */
 
-/* $Id$ */
-/* Randomly permute (shuffle) N indices */
-/* Supply an integer array x[N], and on return, it will
- * be filled with indices 0...N-1 in random order.
- * The algorithm is from Knuth, SemiNumerical Algorithms, v2, p139 
- */
 #include <stdlib.h>
 #include <stdio.h>		/* defines NULL */
 #include <math.h>		/* defines floor() */
