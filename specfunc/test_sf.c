@@ -1472,5 +1472,5 @@ int main(int argc, char * argv[])
 
   gsl_test(test_results(),    "Result Methods");
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

@@ -96,5 +96,5 @@ main (void)
 
   gsl_permutation_free (p);
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

@@ -367,7 +367,7 @@ gsl_test_verbose (int v)
 }
 
 int
-gsl_test_summary ()
+gsl_test_summary (void)
 {
 
   if (verbose && 0)		/* FIXME: turned it off, this annoys me */

@@ -105,5 +105,5 @@ main (void)
       i++;
     }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }

@@ -451,5 +451,5 @@ main (void)
     gsl_test_int (r.type, GSL_IEEE_TYPE_NAN, "double x = NaN, type is NAN");
   }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }

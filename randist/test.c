@@ -284,7 +284,7 @@ main (void)
   testDiscretePDF (FUNC2(negative_binomial));
   testDiscretePDF (FUNC2(pascal));
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }
 
 void

@@ -122,6 +122,6 @@ main (void)
       test_char_func (s1,s2);
     }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 

@@ -194,7 +194,7 @@ main (void)
     check_full (t, result, "eta(1/2)");
   }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 void

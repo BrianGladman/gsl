@@ -31,6 +31,6 @@ main (void)
 
 #include "tests.c"
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }
 

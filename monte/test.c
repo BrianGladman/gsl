@@ -282,7 +282,7 @@ main (void)
 #undef MONTE_SPEEDUP
 #endif
       
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 /* Simple constant function */

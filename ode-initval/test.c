@@ -609,5 +609,5 @@ main (void)
       test_evolve_stiff5 (p[i].type, p[i].h, 1e-5);
     }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }

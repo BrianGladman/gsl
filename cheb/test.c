@@ -155,5 +155,5 @@ main(void)
   gsl_cheb_free(csd);
   gsl_cheb_free(cs);
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

@@ -195,7 +195,7 @@ main (void)
   test_complex_float_trap ();
   test_complex_long_double_trap ();
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 void

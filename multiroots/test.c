@@ -90,7 +90,7 @@ main (void)
       T2++;
     }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 void scale (gsl_vector * x, double factor);

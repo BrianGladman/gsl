@@ -185,7 +185,7 @@ main ()
   test (&gsl_diff_forward, &F6, &DF6, 10.0, "1/x, x=10, forward diff");
   test (&gsl_diff_backward, &F6, &DF6, 10.0, "1/x, x=10, backward diff");
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 

@@ -259,7 +259,7 @@ main (void)
     gsl_test_rel (x, 2.0/3.0, 4*GSL_DBL_EPSILON, "gsl_fdiv(2,3)");
   }
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 

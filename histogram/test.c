@@ -455,5 +455,5 @@ main (void)
   gsl_histogram_free (h1);
   gsl_histogram_free (hr);
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }

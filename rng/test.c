@@ -153,7 +153,7 @@ main (void)
   for (r = rngs ; *r != 0; r++)
     generic_rng_test (*r);
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 

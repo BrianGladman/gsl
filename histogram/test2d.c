@@ -623,5 +623,5 @@ main (void)
   gsl_histogram2d_free (g);
   gsl_histogram2d_free (hr);
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }

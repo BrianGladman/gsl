@@ -118,7 +118,7 @@ main (void)
 
   gsl_histogram_free (h);
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 

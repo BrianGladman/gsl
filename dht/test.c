@@ -189,5 +189,5 @@ int main()
   gsl_test( test_dht_exp1(),    "Exp  J1 DHT");
   gsl_test( test_dht_poly1(),   "Poly J1 DHT");
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

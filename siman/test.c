@@ -277,7 +277,7 @@ int main(void)
 		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.4") ;
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 
 #ifdef JUNK 
   x0.D1 = 12.0;

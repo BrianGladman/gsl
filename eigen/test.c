@@ -366,5 +366,5 @@ int main()
   gsl_matrix_complex_free (rh10);
   gsl_matrix_free (rs10);
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

@@ -115,7 +115,7 @@ main (int argc, char *argv[])
   test_trap () ;
   test_float_trap () ;
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 

@@ -1492,5 +1492,5 @@ int main(void)
   gsl_matrix_free(vander4);
   gsl_matrix_free(vander12);
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }

@@ -76,7 +76,7 @@ main (void)
   test_bracket("sqrt(|x|) [-1,-0.6]",&F_func2,-1.0,-0.6,15);
   test_bracket("sqrt(|x|) [-1,1]",&F_func2,-1.0,1.0,15);
 
-  return gsl_test_summary ();
+  exit (gsl_test_summary ());
 }
 
 void

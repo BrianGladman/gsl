@@ -225,5 +225,5 @@ main (int argc, char **argv)
   status += test_cspline_natural();
   status += test_akima_natural();
 
-  return gsl_test_summary();
+  exit (gsl_test_summary());
 }
