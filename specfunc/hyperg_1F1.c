@@ -1548,9 +1548,12 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
                        )
 {
   const double bma = b-a;
-  const int a_integer   = ( fabs(a - rint(a)) < locEPS );
-  const int b_integer   = ( fabs(b - rint(b)) < locEPS );
-  const int bma_integer = ( fabs(bma - rint(bma)) < locEPS );
+  const int rinta = floor(a + 0.5);
+  const int rintb = floor(b + 0.5);
+  const int rintbma = floor(bma + 0.5);
+  const int a_integer   = ( fabs(a - rinta) < locEPS );
+  const int b_integer   = ( fabs(b - rintb) < locEPS );
+  const int bma_integer = ( fabs(bma - rintbma) < locEPS );
   const int b_neg_integer   = ( b < -0.1 &&  b_integer );
   const int a_neg_integer   = ( a < -0.1 &&  a_integer );
   const int bma_neg_integer = ( bma < -0.1 &&  bma_integer );

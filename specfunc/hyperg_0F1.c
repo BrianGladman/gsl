@@ -29,7 +29,7 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
   int n_max = 200;
   int n_far = 0;
   double special_term = 0.0;
-
+  const double rintc = floor(c + 0.5);
 
   /* Figure out if there is a large contribution
    * hiding far out in the sum because c is
@@ -39,14 +39,14 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
    * near termination if we do not do some
    * special handling.
    */
-  if(c < 0.0 && fabs(c - rint(c)) < 0.001) {
+  if(c < 0.0 && fabs(c - rintc) < 0.001) {
     double ln_term;
     double ln_poch;
     double ln_fact;
     int stat_exp;
     int stat_poch;
     double sign = (x < 0.0 && GSL_IS_ODD(n_far) ? -1.0 : 1.0);
-    n_far = rint(c);
+    n_far = rintc;
     gsl_sf_lnfact_impl(n_far, &ln_fact);
     stat_poch = gsl_sf_lnpoch_impl(c, n_far, &ln_poch);
     if(stat_poch != GSL_SUCCESS) {
@@ -109,7 +109,7 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
   /* If the sum stopped before getting to the
    * distant large contribution, then include it now.
    */
-  if(n_far > rint(n)) {
+  if(n_far > n) {
     sum += special_term;
   }
 
@@ -121,24 +121,6 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
     return GSL_ELOSS;
   else
     return GSL_SUCCESS;
-}
-
-
-
-int
-test_hyperg0F1_stuff(void)
-{
-  double c = -2.0+1.e-6;
-  double x = 1.0;
-  double result;
-  double prec;
-  int stat = hyperg_0F1_series(c, x, &result, &prec);
-  
-  printf("%20.16g  %10.6g    %20.16g  %20.16g  %s",
-         c, x, result, prec, gsl_strerror(stat)
-	 );
-  printf("\n");
-  return 0;
 }
 
 
@@ -209,10 +191,13 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
 {
-  int c_neg_integer = (c < 0.0 && fabs(c - rint(c)) < locEPS);
+  const double rintc = floor(c + 0.5);
+  const int c_neg_integer = (c < 0.0 && fabs(c - rintc) < locEPS);
 
   if(fabs(c) < locEPS || c_neg_integer) {
     *result = 0.0;
@@ -264,6 +249,8 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
 gsl_sf_hyperg_0F1_e(const double c, const double x, double * result)
 {
@@ -274,6 +261,8 @@ gsl_sf_hyperg_0F1_e(const double c, const double x, double * result)
   return status;
 }
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 double
 gsl_sf_hyperg_0F1(const double c, const double x)

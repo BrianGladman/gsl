@@ -24,7 +24,7 @@ int     gsl_sf_exp_sgn_e(double x, double sgn, double * result);
 double  gsl_sf_exp_sgn(double x, double sgn);
 
 
-/* Similarly for exp(x)-1
+/* exp(x)-1
  *
  * exceptions: GSL_EOVRFLW
  */
@@ -33,7 +33,7 @@ int     gsl_sf_expm1_e(double x, double * result);
 double  gsl_sf_expm1(double x);
 
 
-/* Similarly for (exp(x)-1)/x = 1 + x/2 + x^2/(2*3) + x^3/(2*3*4) + ...
+/* (exp(x)-1)/x = 1 + x/2 + x^2/(2*3) + x^3/(2*3*4) + ...
  *
  * exceptions: GSL_EOVRFLW
  */
@@ -42,7 +42,7 @@ int     gsl_sf_exprel_e(double x, double * result);
 double  gsl_sf_exprel(double x);
 
 
-/* Similarly for 2(exp(x)-1-x)/x^2 = 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + ...
+/* 2(exp(x)-1-x)/x^2 = 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + ...
  *
  * exceptions: GSL_EOVRFLW
  */
@@ -61,6 +61,7 @@ double  gsl_sf_exprel_2(double x);
 int     gsl_sf_exprel_n_impl(int n, double x, double * result);
 int     gsl_sf_exprel_n_e(int n, double x, double * result);
 double  gsl_sf_exprel_n(int n, double x);
+
 
 
 #ifdef HAVE_INLINE

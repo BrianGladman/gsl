@@ -172,8 +172,10 @@ hyperg_zaU_asymp(const double a, const double b, const double x, double *result)
 {
   const double ap = a;
   const double bp = 1.0 + a - b;
-  const int ap_neg_int = ( ap < 0.0 && fabs(ap - rint(ap)) < locEPS );
-  const int bp_neg_int = ( bp < 0.0 && fabs(bp - rint(bp)) < locEPS );
+  const double rintap = floor(ap + 0.5);
+  const double rintbp = floor(bp + 0.5);
+  const int ap_neg_int = ( ap < 0.0 && fabs(ap - rintap) < locEPS );
+  const int bp_neg_int = ( bp < 0.0 && fabs(bp - rintbp) < locEPS );
 
   if(ap_neg_int || bp_neg_int) {
     /* Evaluate 2F0 polynomial.
@@ -507,59 +509,6 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x,
 }
 
 
-/* Recurse forward along a diagonal to determine U(a,b,x)
- * and U(a+1,b+1,x).
- * Assumes b > a+1.
- */
-#if 0
-static
-int
-hyperg_U_diag_recurse(const double a, const double b, const double x,
-                      double * Uab, double * Uap1bp1)
-{
-  double M    = floor(a);
-  double a0   = a - M;
-  double b0   = b - M;
-  double Umm1;
-  double Um;
-  double Ump1;
-  int m;
-  int stat_0;
-  int stat_1;
-  if(a0 == 0.0) {
-    a0 += 1.0;
-    b0 += 1.0;
-    M  -= 1.0;
-  }
-  stat_0 = hyperg_U_small_ab(a0-1.0, b0-1.0, x, &Umm1);
-  stat_1 = hyperg_U_small_ab(a0, b0, x, &Um);
-
-  if(	(stat_0 == GSL_SUCCESS || stat_0 == GSL_ELOSS)
-     && (stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS)
-    ) {
-    for(m=0; m<M+1; m++) {
-      double ap = a0 + m;
-      double bp = b0 + m;
-      Ump1 = (Umm1 - (1.0-bp+x)*Um)/(ap*x);
-      Umm1 = Um;
-      Um   = Ump1;
-    }
-    *Uab     = Umm1;
-    *Uap1bp1 = Um;
-    if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
-      return GSL_ELOSS;
-    else
-      return GSL_SUCCESS;
-  }
-  else {
-    *Uab     = 0.0;
-    *Uap1bp1 = 0.0;
-    return GSL_EFAILED;
-  }
-}
-#endif /* 0 */
-
-
 /* We use this to keep track of large
  * dynamic ranges in the recursions.
  * This can be important because sometimes
@@ -586,7 +535,246 @@ do {                                       \
 } while (0)
 
 
+/* Specialization to b >= 1, for integer parameters.
+ * Assumes x > 0.
+ */
+static
+int
+hyperg_U_int_bge1(const int a, const int b, const double x,
+                  double * result,
+	          double * ln_multiplier)
+{
+  if(a == 0) {
+    *result = 1.0;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == -1) {
+    *result = -b + x;
+    *ln_multiplier = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(b == a + 1) {
+    /* U(a,a+1,x) = x^(-a)
+     */
+    return gsl_sf_exp_impl(-a*log(x), result);
+  }
+  else if(fabs(a)*locMAX(fabs(1+a-b),1.0) < 0.99*fabs(x)) {
+    double asymp;
+    int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
+    *result = asymp;
+    *ln_multiplier = -a*log(x);  /* log(pow(x, -a)) */
+    return stat_asymp;
+  }
+  else if(abs(a) < 5 && b < 5 && x < 2.0) {
+    *ln_multiplier = 0.0;
+    return hyperg_U_series(a, b, x, result);
+  }
+  else if(a < 0) {
+    /* Recurse backward from a = -1,0.
+     */
+    const double scale_factor = GSL_SQRT_DBL_MAX;
+    int scale_count = 0;
+    double Uap1 = 1.0;     /* U(0,b,x)  */
+    double Ua   = -b + x;  /* U(-1,b,x) */
+    double Uam1;
+    int ap;
 
+    for(ap=-1; ap>a; ap--) {
+      Uam1 = ap*(b-ap-1.0)*Uap1 + (x+2.0*ap-b)*Ua;
+      Uap1 = Ua;
+      Ua   = Uam1;
+      RESCALE_2(Ua,Uap1,scale_factor,scale_count);
+    }
+    *result = Ua;
+    *ln_multiplier = ( scale_count != 0 ? scale_count*log(scale_factor) : 0.0 );
+    return GSL_SUCCESS;
+  }
+  else if(b >= 2.0*a + x) {
+    /* Recurse forward from a = 0,1.
+     */
+    const double scale_factor = GSL_SQRT_DBL_MAX;
+    int scale_count = 0;
+    double Uam1 = 1.0;  /* U(0,b,x) */
+    double Ua;
+    double Uap1;
+    int ap;
+    double lm;
+    int stat_1 = hyperg_U_small_a_bgt0(1.0, b, x, &Ua, &lm);  /* U(1,b,x) */
+
+    if(stat_1 == GSL_SUCCESS || stat_1 == GSL_ELOSS) {
+
+      Uam1 *= exp(-lm);
+
+      for(ap=1; ap<a; ap++) {
+        Uap1 = -(Uam1 + (b-2.0*ap-x)*Ua)/(ap*(1.0+ap-b));
+        Uam1 = Ua;
+        Ua   = Uap1;
+        RESCALE_2(Ua,Uam1,scale_factor,scale_count);
+      }
+
+      *result = Ua;
+      *ln_multiplier = lm + scale_count * log(scale_factor);
+      return stat_1;
+    }
+    else {
+      *result = 0.0;
+      *ln_multiplier = 0.0;
+      return stat_1;
+    }
+  }
+  else {
+    if(b <= x) {
+      /* Recurse backward either to the b=a+1 line
+       * or to a=0, whichever we hit.
+       */
+      const double scale_factor = GSL_SQRT_DBL_MAX;
+      int scale_count = 0;
+      int stat_CF1;
+      double ru;
+      int a_target;
+      double lnU_target;
+
+      if(b < a + 1) {
+        a_target = b-1;
+	lnU_target = -a_target*log(x);
+      }
+      else {
+        a_target = 0;
+	lnU_target = 0.0;
+      }
+
+      stat_CF1 = hyperg_U_CF1(a, b, 0, x, &ru);
+
+      if(stat_CF1 == GSL_SUCCESS || stat_CF1 == GSL_EMAXITER) {
+        double Ua   = 1.0;
+        double Uap1 = ru/a * Ua;
+        double Uam1;
+        int ap;
+        for(ap=a; ap>a_target; ap--) {
+          Uam1 = -((b-2.0*ap-x)*Ua + ap*(1.0+ap-b)*Uap1);
+          Uap1 = Ua;
+          Ua   = Uam1;
+	  RESCALE_2(Ua,Uap1,scale_factor,scale_count);
+        }
+
+        if(Ua == 0.0) {
+	  *result = 0.0;
+	  *ln_multiplier = 0.0;
+	  return GSL_EZERODIV;
+	}
+	else {
+	  double lns = -scale_count*log(scale_factor);
+	  double lnr = lnU_target - log(fabs(Ua)) + lns;
+	  int stat_e = gsl_sf_exp_sgn_impl(lnr, Ua, result);
+	  if(stat_e == GSL_SUCCESS) {
+	    *ln_multiplier = 0.0;
+	  }
+	  else {
+	    *result = GSL_SIGN(Ua);
+	    *ln_multiplier = lnr;
+	  }
+	  return stat_CF1;
+	}
+      }
+      else {
+        *result = 0.0;
+	*ln_multiplier = 0.0;
+	return stat_CF1;
+      }
+    }
+    else {
+      /* Recurse backward to near the b=2a+x line, then
+       * forward from a near zero to get the normalization.
+       */
+      const double scale_factor = GSL_SQRT_DBL_MAX;
+      int scale_count_for = 0;
+      int scale_count_bck = 0;
+      int a0 = 1;
+      int a1 = a0 + ceil(0.5*(b-x) - a0);
+      double Ua1_bck;
+      double Ua1_for;
+      int stat_for;
+      int stat_bck;
+      double lm_for;
+
+      {
+        /* Recurse back to determine U(a1,b), sans normalization.
+         */
+        double ru;
+        int stat_CF1 = hyperg_U_CF1(a, b, 0, x, &ru);
+        double Ua   = 1.0;
+        double Uap1 = ru/a * Ua;
+        double Uam1;
+        int ap;
+        for(ap=a; ap>a1; ap--) {
+          Uam1 = -((b-2.0*ap-x)*Ua + ap*(1.0+ap-b)*Uap1);
+          Uap1 = Ua;
+          Ua   = Uam1;
+	  RESCALE_2(Ua,Uap1,scale_factor,scale_count_bck);
+        }
+        Ua1_bck  = Ua;
+        stat_bck = stat_CF1;
+      }
+      {
+        /* Recurse forward to determine U(a1,b) with
+         * absolute normalization.
+         */
+        double Uam1 = 1.0;  /* U(a0-1,b,x) = U(0,b,x) */
+        double Ua;
+        double Uap1;
+        int ap;
+        int stat_1 = hyperg_U_small_a_bgt0(a0, b, x, &Ua, &lm_for); /* U(1,b,x) */
+
+        Uam1 *= exp(-lm_for);
+
+        for(ap=a0; ap<a1; ap++) {
+          Uap1 = -(Uam1 + (b-2.0*ap-x)*Ua)/(ap*(1.0+ap-b));
+          Uam1 = Ua;
+          Ua   = Uap1;
+	  RESCALE_2(Ua,Uam1,scale_factor,scale_count_for);
+        }
+        Ua1_for = Ua;
+	stat_for = stat_1;
+      }
+
+      if(Ua1_bck == 0.0) {
+        *result = 0.0;
+        *ln_multiplier = 0.0;
+        return GSL_EZERODIV;
+      }
+      else if(Ua1_for == 0.0) {
+        /* Should never happen. */
+        *result = 0.0;
+	*ln_multiplier = 0.0;
+	return GSL_EUNDRFLW;
+      }
+      else {
+        double lns = (scale_count_for - scale_count_bck)*log(scale_factor);
+        double lnr = lm_for + log(fabs(Ua1_for)) - log(fabs(Ua1_bck)) + lns;
+	double sgn = GSL_SIGN(Ua1_for) * GSL_SIGN(Ua1_bck);
+        int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn, result);
+        if(stat_e == GSL_SUCCESS) {
+          *ln_multiplier = 0.0;
+        }
+        else {
+          *result = sgn;
+          *ln_multiplier = lnr;
+        }
+	if(stat_bck == GSL_EFAILED || stat_for == GSL_EFAILED)
+          return GSL_EFAILED;
+        else if(stat_bck == GSL_ELOSS || stat_for == GSL_ELOSS)
+          return GSL_ELOSS;
+        else 
+          return GSL_SUCCESS;
+      }
+    }
+  }
+}
+
+
+/* Handle b >= 1 for generic a,b values.
+ */
 static
 int
 hyperg_U_bge1(const double a, const double b, const double x,
@@ -826,9 +1014,58 @@ hyperg_U_bge1(const double a, const double b, const double x,
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+
+int
+gsl_sf_hyperg_U_int_impl(const int a, const int b, const double x, double * result)
+{
+  if(x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    double ln_multiplier;
+    double ln_pre;
+    double U;
+    int stat_U;
+    if(b >= 1) {
+      stat_U = hyperg_U_int_bge1(a, b, x, &U, &ln_multiplier);
+      ln_pre = 0.0;
+    }
+    else {
+      /* Use the reflection formula
+       * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
+       */
+      int ap = 1 + a - b;
+      int bp = 2 - b;
+      stat_U = hyperg_U_int_bge1(ap, bp, x, &U, &ln_multiplier);
+      ln_pre = (1.0-b)*log(x);
+    }
+
+    if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+      double ln_U = log(fabs(U));
+      double ln_r = ln_U + ln_pre + ln_multiplier;
+      int stat_e = gsl_sf_exp_sgn_impl(ln_r, U, result);
+      if(stat_e == GSL_SUCCESS)
+        return stat_U;
+      else
+        return stat_e;
+    }
+    else {
+      *result = 0.0;
+      return stat_U;
+    }
+  }
+}
+
+
 int
 gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
 {
+  const double rinta = floor(a + 0.5);
+  const double rintb = floor(b + 0.5);
+  const int a_integer = ( fabs(a - rinta) < locEPS );
+  const int b_integer = ( fabs(b - rintb) < locEPS );
+
   if(x <= 0.0) {
     *result = 0.0;
     return GSL_EDOM;
@@ -837,13 +1074,16 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     *result = 1.0;
     return GSL_SUCCESS;
   }
+  else if(a_integer && b_integer) {
+    return gsl_sf_hyperg_U_int_impl(rinta, rintb, x, result);
+  }
   else {
     double ln_multiplier;
     double ln_pre;
     double U;
     int stat_U;
     if(b >= 1.0) {
-      /* Use b >= 1 fucntion.
+      /* Use b >= 1 function.
        */
       stat_U = hyperg_U_bge1(a, b, x, &U, &ln_multiplier);
       ln_pre = 0.0;
@@ -877,6 +1117,18 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+
+int
+gsl_sf_hyperg_U_int_e(const int a, const int b, const double x, double * result)
+{
+  int status = gsl_sf_hyperg_U_int_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("  gsl_sf_hyperg_U_int_e", status);
+  }
+  return status;
+}
+
+
 int
 gsl_sf_hyperg_U_e(const double a, const double b, const double x, double * result)
 {
@@ -890,6 +1142,19 @@ gsl_sf_hyperg_U_e(const double a, const double b, const double x, double * resul
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+
+double
+gsl_sf_hyperg_U_int(const int a, const int b, const double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_U_int_impl(a, b, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("  gsl_sf_hyperg_U_int", status);
+  }
+  return y;
+}
+
 
 double
 gsl_sf_hyperg_U(const double a, const double b, const double x)

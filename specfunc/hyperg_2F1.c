@@ -281,7 +281,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
                    const double x, double * result)
 {
   const double d = c - a - b;
-  const int intd  = rint(d);
+  const int intd  = floor(d+0.5);
   const int d_integer = ( fabs(d - intd) < locEPS );
 
   if(d_integer) {
@@ -525,16 +525,18 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
                        double * result)
 {
   const double d = c - a - b;
-
+  const double rinta = floor(a + 0.5);
+  const double rintb = floor(b + 0.5);
+  const double rintc = floor(c + 0.5);
   int a_neg_integer;
   int b_neg_integer;
   int c_neg_integer;
 
   if(x < -1.0 || 1.0 <= x) return GSL_EDOM;
 
-  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
-  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
-  c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+  a_neg_integer = ( a < 0.0  &&  fabs(a - rinta) < locEPS );
+  b_neg_integer = ( b < 0.0  &&  fabs(b - rintb) < locEPS );
+  c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
 
   if(c_neg_integer) {
     if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
@@ -551,11 +553,11 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
      */
     if(a_neg_integer) {
       double prec;
-      return hyperg_2F1_series(rint(a), b, c, x, result, &prec);
+      return hyperg_2F1_series(rinta, b, c, x, result, &prec);
     }
     if(b_neg_integer) {
       double prec;
-      return hyperg_2F1_series(a, rint(b), c, x, result, &prec);
+      return hyperg_2F1_series(a, rintb, c, x, result, &prec);
     }
 
     if(x < -0.25) {
@@ -624,7 +626,8 @@ int gsl_sf_hyperg_2F1_conj_impl(const double aR, const double aI, const double c
 				double * result)
 {
   const double ax = fabs(x);
-  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+  const double rintc = floor(c + 0.5);
+  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
 
   if(ax >= 1.0) return GSL_EDOM;
   if(c_neg_integer) return GSL_EDOM;
@@ -665,9 +668,12 @@ int gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c
 			          double * result
 			          )
 {
-  const int a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
-  const int b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
-  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+  const double rinta = floor(a + 0.5);
+  const double rintb = floor(b + 0.5);
+  const double rintc = floor(c + 0.5);
+  const int a_neg_integer = ( a < 0.0  &&  fabs(a - rinta) < locEPS );
+  const int b_neg_integer = ( b < 0.0  &&  fabs(b - rintb) < locEPS );
+  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rintc) < locEPS );
   
   if(c_neg_integer) {
     if((a_neg_integer && a > c+0.1) || (b_neg_integer && b > c+0.1)) {
