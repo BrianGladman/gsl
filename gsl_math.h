@@ -157,35 +157,9 @@ GSL_MIN_LDBL (long double a, long double b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
 
-
 /* Functions from sys directory */
 double gsl_log1p (const double x);
-
-#ifdef HAVE_INLINE
-extern inline double gsl_hypot (const double x, const double y);
-
-extern inline double gsl_hypot (const double x, const double y) {
-  double xabs = fabs(x) ;
-  double yabs = fabs(y) ;
-  double min, max;
-
-  if (xabs < yabs) {
-    min = xabs ; max = yabs ;
-  } else {
-    min = yabs ; max = xabs ;
-  }
-
-  if (min == 0)  return max ;
-
-  {
-    double u = min / max ;
-    return max * sqrt (1 + u * u) ;
-  }
-}
-#else
 double gsl_hypot (const double x, const double y);
-#endif
-
 
 
 /* Definition of an arbitrary function with parameters */
