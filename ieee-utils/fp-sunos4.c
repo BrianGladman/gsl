@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <sys/ieeefp.h>
 #include <gsl_ieee_utils.h>
 #include <gsl_errno.h>
@@ -62,4 +61,5 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       ieee_flags ("set", "exception", "inexact", out) ;
     }
 
+  return GSL_SUCCESS ;
 }

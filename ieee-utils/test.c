@@ -7,6 +7,8 @@
 int
 main (void)
 {
+  float zerof = 0.0 ;
+  double zero = 0.0 ;
 
   /* Check for +ZERO (float) */
 
@@ -192,12 +194,11 @@ main (void)
   /* Check for NAN (e.g. Inf - Inf) (float) */
 
   {
-    const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
     float x, y, z;
 
-    x = 1.0 / 0.0;
-    y = 2.0 / 0.0;
+    x = 1.0 / zerof;
+    y = 2.0 / zerof;
     z = y - x;
 
     gsl_ieee_float_to_rep (&z, &r);
@@ -215,7 +216,7 @@ main (void)
   {
     double d = 0.0;
     const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
+      = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -230,7 +231,7 @@ main (void)
   {
     double d = 0.0;
     const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
+      = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
     double x = d * -1.0;
@@ -247,7 +248,7 @@ main (void)
   {
     double d = 2.1;
     const char mantissa[]
-    = "0000110011001100110011001100110011001100110011001101";
+      = "0000110011001100110011001100110011001100110011001101";
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -263,7 +264,7 @@ main (void)
   {
     double d = -1.3303577090924210146738460025517269968986511230468750;
     const char mantissa[]
-    = "0101010010010010010100101010010010001000100011101110";
+      = "0101010010010010010100101010010010001000100011101110";
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -279,7 +280,7 @@ main (void)
   {
     double d = 3.37e297;
     const char mantissa[]
-    = "0100100111001001100101111001100000100110011101000100";
+      = "0100100111001001100101111001100000100110011101000100";
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -311,7 +312,7 @@ main (void)
   {
     double d = 2.2250738585072014e-308;		/* DBL_MIN */
     const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
+      = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
     gsl_ieee_double_to_rep (&d, &r);
 
@@ -343,7 +344,7 @@ main (void)
   {
     double d = 2.2250738585072014e-308;		/* DBL_MIN */
     char mantissa[]
-    = "1000000000000000000000000000000000000000000000000000";
+      = "1000000000000000000000000000000000000000000000000000";
     int i;
     gsl_ieee_double_rep r;
 
@@ -369,7 +370,7 @@ main (void)
   {
     double d = 1.7976931348623157e+308;		/* DBL_MAX */
     const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
+      = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
     double x = 2 * d;
@@ -386,7 +387,7 @@ main (void)
   {
     double d = 1.7976931348623157e+308;		/* DBL_MAX */
     const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
+      = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
 
     double x = -2 * d;
@@ -401,13 +402,11 @@ main (void)
   /* Check for NAN (e.g. Inf - Inf) */
 
   {
-    const char mantissa[]
-    = "0000000000000000000000000000000000000000000000000000";
     gsl_ieee_double_rep r;
     double x, y, z;
 
-    x = 1.0 / 0.0;
-    y = 2.0 / 0.0;
+    x = 1.0 / zero;
+    y = 2.0 / zero;
     z = y - x;
 
     gsl_ieee_double_to_rep (&z, &r);

@@ -13,28 +13,34 @@ void
 gsl_ieee_env_setup (void)
 {
   const char * p = getenv("GSL_IEEE_MODE") ;
-  
-  if (p)
-    gsl_ieee_read_mode_string (p) ;
 
+  int precision = 0, rounding = 0, exception_mask = 0 ;
+
+  if (p)
+    gsl_ieee_read_mode_string (p, &precision, &rounding, &exception_mask) ;
+
+  gsl_ieee_set_mode (precision, rounding, exception_mask) ;
+  
 }
 
 int
-gsl_ieee_read_mode_string (const char * description)
+gsl_ieee_read_mode_string (const char * description, 
+			   int * precision, 
+			   int * rounding, 
+			   int * exception_mask)
 {
   char * start = strdup (description) ;
   char * end;
 
   char * p = start;
 
-  int precision = 0 ;
   int precision_count = 0 ;
-
-  int rounding = 0 ;
   int rounding_count = 0 ;
-
-  int exception_mask = 0 ;
   int exception_count = 0 ;
+
+  *precision = 0 ;
+  *rounding = 0 ;
+  *exception_mask = 0 ;
 
   do {
     int status ;
@@ -62,7 +68,7 @@ gsl_ieee_read_mode_string (const char * description)
 
     if (status)
       GSL_ERROR ("unrecognized IEEE mode. Valid settings are:\n\n" 
-		 "  single double extended\n"
+		 "  single-precision double-precision extended-precision\n"
 		 "  round-to-nearest round-down round-up round-to-zero\n"
 		 "  mask-invalid mask-denormalized mask-overflow "
 		 "mask-underflow catch-inexact\n"
@@ -72,7 +78,7 @@ gsl_ieee_read_mode_string (const char * description)
 
     if (new_precision) 
       {
-	precision = new_precision ;
+	*precision = new_precision ;
 	precision_count ++ ;
 	if (precision_count > 1)
 	  GSL_ERROR ("attempted to set IEEE precision twice", GSL_EINVAL) ;
@@ -80,7 +86,7 @@ gsl_ieee_read_mode_string (const char * description)
 
     if (new_rounding) 
       {
-	rounding = new_rounding ;
+	*rounding = new_rounding ;
 	rounding_count ++ ;
 	if (rounding_count > 1)
 	  GSL_ERROR ("attempted to set IEEE rounding mode twice", GSL_EINVAL) ;
@@ -88,15 +94,13 @@ gsl_ieee_read_mode_string (const char * description)
 
     if (new_exception) 
       {
-	exception_mask |= new_exception ;
+	*exception_mask |= new_exception ;
 	exception_count ++ ;
       }
 
     p = end ; 
 
   } while (end && *p != '\0') ;
-
-  gsl_ieee_set_mode (precision, rounding, exception_mask) ;
 
   free(start) ;
 
@@ -107,15 +111,15 @@ static int
 lookup_string (const char * p, int * precision, int * rounding, 
 	       int * exception_mask)
 {
-  if (strcmp(p,"single") == 0) 
+  if (strcmp(p,"single-precision") == 0) 
     {
       *precision = GSL_IEEE_SINGLE_PRECISION ;
     }
-  else if (strcmp(p,"double") == 0) 
+  else if (strcmp(p,"double-precision") == 0) 
     {
       *precision = GSL_IEEE_DOUBLE_PRECISION ;
     }
-  else if (strcmp(p,"extended") == 0) 
+  else if (strcmp(p,"extended-precision") == 0) 
     {
       *precision = GSL_IEEE_EXTENDED_PRECISION ;
     }

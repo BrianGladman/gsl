@@ -64,9 +64,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       mode |= _FPU_MASK_PM ;
     }
 
-  printf("p = %d, r = %d, m = %d, mode = %x\n",precision, rounding,
-	 exception_mask, mode) ;
-
   __setfpucw (mode) ;
 
+  return GSL_SUCCESS ;
 }

@@ -74,9 +74,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       mode &= ~ FP_X_IMP ;
     }
 
-  printf("p = %d, r = %d, m = %d, mode = %x\n",precision, rounding,
-	 exception_mask, mode) ;
-
   fpsetmask (mode) ;
 
+  return GSL_SUCCESS ;
 }
