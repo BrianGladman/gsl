@@ -5,6 +5,7 @@
    */
 
 #include <stdio.h>              /* defines NULL */
+#include <string.h>             /* for strdup() */
 #include "gsl_ran.h"            /* defines gsl_ran_ prototypes */
 #include "gsl_ran_switch.h"
 
