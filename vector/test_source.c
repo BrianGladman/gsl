@@ -12,34 +12,70 @@ void
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
+  gsl_test (v->stride != 1, NAME (gsl_vector) "_alloc returns unit stride");
 
   for (i = 0; i < N; i++)
     {
       FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
-    };
+    }
 
   {
     int status = 0;
-
+    
     for (i = 0; i < N; i++)
       {
 	if (v->data[i] != (ATOMIC) i)
 	  status = 1;
       };
-
-    gsl_test (status, NAME (gsl_vector) "_set" DESC " writes into array correctly");
+    
+    gsl_test (status, 
+	      NAME (gsl_vector) "_set" DESC " writes into array correctly");
   }
 
   {
     int status = 0;
-
+    
     for (i = 0; i < N; i++)
       {
 	if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) i)
 	  status = 1;
       };
-    gsl_test (status, NAME (gsl_vector) "_get" DESC " reads from array correctly");
+    gsl_test (status, 
+	      NAME (gsl_vector) "_get" DESC " reads from array correctly");
   }
+
+  /* Now set stride to 2 */
+
+  v->stride = 2 ;
+
+  {
+    int status = 0;
+
+    for (i = 0; i < N/2; i++)
+      {
+	if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (2*i))
+	  status = 1;
+      };
+    gsl_test (status, NAME (gsl_vector) "_get" DESC " reads from array correctly with stride");
+  }
+
+  for (i = 0; i < N/2; i++)
+    {
+      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (i+1000));
+    };
+
+  {
+    int status = 0;
+
+    for (i = 0; i < N/2; i++)
+      {
+	if (v->data[2*i] != (ATOMIC) (i+1000))
+	  status = 1;
+      };
+
+    gsl_test (status, NAME (gsl_vector) "_set" DESC " writes into array correctly with stride");
+  }
+
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 
