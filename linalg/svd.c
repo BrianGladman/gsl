@@ -160,15 +160,16 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
   
   for (i = 0; i < K; i++)
     {
-      double Si = gsl_vector_get (S, i);
+      double S_max = gsl_vector_get (S, i);
       size_t i_max = i;
       
       for (j = i + 1; j < K; j++)
         {
           double Sj = gsl_vector_get (S, j);
           
-          if (Sj > Si)
+          if (Sj > S_max)
             {
+              S_max = Sj;
 	      i_max = j;
 	    }
 	}

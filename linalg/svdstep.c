@@ -1,4 +1,4 @@
-inline static void
+static void
 chop_small_elements (gsl_vector * d, gsl_vector * f)
 {
   const size_t N = d->size;
@@ -20,37 +20,6 @@ chop_small_elements (gsl_vector * d, gsl_vector * f)
 
 }
 
-#ifdef JUNK
-inline static void
-chase_out_zero (gsl_vector * d, gsl_vector * f, double gc[], double gs[])
-{
-  const size_t n = d->size;
-
-  double c = 0.0, s = 1.0;
-
-  size_t i;
-
-  for (i = 0; i < N - 1; i++)
-    {
-      double d_i = gsl_vector_get (d, i);
-      double f_i = gsl_vector_get (f, i);
-
-      double f1 = s * f_i;
-
-      gsl_vector_set (f, i, c * f_i);
-
-      create_givens (d_i, f1, &c, &s);
-
-      gsl_vector_set (d, i, hypot (d_i, f1));
-
-      if (gc)
-	gc[i] = c;
-      if (gs)
-	gs[i] = s;
-    }
-}
-#endif
-
 static double
 trailing_eigenvalue (const gsl_vector * d, const gsl_vector * f)
 {
@@ -69,14 +38,20 @@ trailing_eigenvalue (const gsl_vector * d, const gsl_vector * f)
 
   double mu;
 
-  if (dt >= 0)
+  if (dt > 0)
     {
       mu = tb - (tab * tab) / (dt + hypot (dt, tab));
     }
-  else
+  else if (dt < 0)
     {
       mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
     }
+  else 
+    {
+      /* dt == 0, this shouldn't happen */
+      abort();
+    }
+  
 
   return mu;
 }
@@ -126,7 +101,7 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 
   if (d0 == 0.0)
     {
-      /* Eliminate off-diagonal element in [0,f1;0,d1] to make [d,0;0,0] */
+      /* Eliminate off-diagonal element in [0,f0;0,d1] to make [d,0;0,0] */
 
       create_givens (f0, d1, &c, &s);
 
@@ -154,7 +129,7 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
     }
   else if (d1 == 0.0)
     {
-      /* Eliminate off-diagonal element in [d0,f1;0,0] */
+      /* Eliminate off-diagonal element in [d0,f0;0,0] */
 
       create_givens (d0, f0, &c, &s);
 
@@ -177,7 +152,7 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
     }
   else
     {
-      /* Make columns orthogonal, A = [d0, f1; 0, d1] * G */
+      /* Make columns orthogonal, A = [d0, f0; 0, d1] * G */
       
       create_schur (d0, f0, d1, &c, &s);
       
@@ -239,6 +214,93 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 }
 
 
+static void
+chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, size_t k1)
+{
+  const size_t M = U->size1;
+  const size_t n = d->size;
+  double c, s;
+  double x, y;
+  size_t i, k;
+
+  x = gsl_vector_get (f, k1);
+  y = gsl_vector_get (d, k1+1);
+
+  for (k = k1; k < n - 1; k++)
+    {
+      create_givens (y, -x, &c, &s);
+      
+      /* Compute U <= U G */
+      
+      for (i = 0; i < M; i++)
+	{
+	  double Uip = gsl_matrix_get (U, i, k);
+	  double Uiq = gsl_matrix_get (U, i, k + 1);
+	  gsl_matrix_set (U, i, k, c * Uip - s * Uiq);
+	  gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
+	}
+      
+      /* compute B <= G^T B */
+      
+      gsl_vector_set (d, k + 1, s * x + c * y);
+
+      if (k == k1)
+        gsl_vector_set (f, k, c * x - s * y );
+
+      if (k < n - 2) 
+        {
+          double z = gsl_vector_get (f, k + 1);
+          gsl_vector_set (f, k + 1, c * z); 
+
+          x = -s * z ;
+          y = gsl_vector_get (d, k + 2); 
+        }
+    }
+}
+
+static void
+chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
+{
+  const size_t N = V->size1;
+  const size_t n = d->size;
+  double c, s;
+  double x, y;
+  size_t i, k;
+
+  x = gsl_vector_get (d, n - 2);
+  y = gsl_vector_get (f, n - 2);
+
+  for (k = n - 2; k > 0; k--)
+    {
+      create_givens (x, y, &c, &s);
+
+      /* Compute V <= V G where G = [c, s ; -s, c] */
+      
+      for (i = 0; i < N; i++)
+	{
+	  double Vip = gsl_matrix_get (V, i, k);
+	  double Viq = gsl_matrix_get (V, i, k + 1);
+	  gsl_matrix_set (V, i, k, c * Vip - s * Viq);
+	  gsl_matrix_set (V, i, k + 1, s * Vip + c * Viq);
+	}
+
+      /* compute B <= B G */
+      
+      gsl_vector_set (d, k, c * x - s * y);
+
+      if (k == n - 2)
+        gsl_vector_set (f, k, s * x + c * y );
+
+      if (k > 0) 
+        {
+          double z = gsl_vector_get (f, k - 1);
+          gsl_vector_set (f, k - 1, c * z); 
+
+          x = gsl_vector_get (d, k - 1); 
+          y = s * z ;
+        }
+    }
+}
 
 static void
 qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
@@ -250,18 +312,51 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
   double ak, bk, zk, ap, bp, aq, bq;
   size_t i, k;
 
+  if (n == 1)
+    return;  /* shouldn't happen */
+
+  /* Compute 2x2 svd directly */
+
   if (n == 2)
     {
       svd2 (d, f, U, V);
       return;
     }
 
+  /* Chase out any zeroes on the diagonal */
+
+  for (i = 0; i < n - 1; i++)
+    {
+      double d_i = gsl_vector_get (d, i);
+      
+      if (d_i == 0.0)
+        {
+          chase_out_intermediate_zero (d, f, U, i);
+          return;
+        }
+    }
+
+  /* Chase out any zero at the end of the diagonal */
+
+  {
+    double d_nm1 = gsl_vector_get (d, n - 1);
+
+    if (d_nm1 == 0.0) 
+      {
+        chase_out_trailing_zero (d, f, V);
+        return;
+      }
+  }
+
+
+  /* Apply QR reduction steps to the diagonal and offdiagonal */
+
   {
     double d0 = gsl_vector_get (d, 0);
     double f0 = gsl_vector_get (f, 0);
     
     double d1 = gsl_vector_get (d, 1);
-    double f1 = (n > 2) ? gsl_vector_get (f, 1) : 0.0;
+    double f1 = gsl_vector_get (f, 1);
     
     {
       double mu = trailing_eigenvalue (d, f);
@@ -380,3 +475,5 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
   gsl_vector_set (f, n - 2, bk);
   gsl_vector_set (d, n - 1, ap);
 }
+
+
