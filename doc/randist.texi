@@ -1026,7 +1026,7 @@ due to Robert E. Knop (CACM 13, 326 (1970)), and explained in Knuth, v2,
 projected along any axis is actually uniform (this is only true for 3d).
 @end deftypefn
 
-@deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, int @var{n}, double *@var{x})
+@deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, size_t @var{n}, double *@var{x})
 @cindex N-dimensional random direction vector
 @cindex direction vector, random N-dimensional
 @cindex spherical random variates, N-dimensional
