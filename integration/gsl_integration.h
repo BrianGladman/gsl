@@ -155,6 +155,9 @@ gsl_integration_qelg (size_t * n, double epstab[],
 		      double * result, double * abserr,
 		      double res3la[], size_t * nres) ;
 
+void
+gsl_integration_qcheb (gsl_function * f, double a, double b, double *cheb12, double *cheb24);
+
 int
 gsl_integration_qags (const gsl_function *f,
 		      double a, double b,

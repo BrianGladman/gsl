@@ -16,7 +16,8 @@ libgslintegration_a_SOURCES = \
 	qagi.c qagiu.c qagil.c \
 	qagp.c qagp_impl.c \
 	err.c err.h \
-	workspace.c partition.c
+	workspace.c partition.c \
+	qcheb.c
 
 include_HEADERS = gsl_integration.h
 
