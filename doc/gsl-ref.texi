@@ -18,7 +18,7 @@
 @ifinfo
 This file documents the @value{GSL}.
 
-Copyright (C) 1996, 1997, 1998 The GSL Project.
+Copyright (C) 1996, 1997, 1998, 1999 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -60,7 +60,8 @@ by the Foundation.
 @address @email{jt@@nis.lanl.gov}
 @author
 @author Brian Gough 
-@address @email{bjg@@netsci.freeserve.co.uk}
+@address Network Theory Limited, UK
+@address @email{bjg@@network-theory.co.uk}
 @author
 @author Reid Priedhorsky 
 @address Mathematical Modeling and Analysis Group, Los Alamos National Laboratory
