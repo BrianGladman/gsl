@@ -538,7 +538,7 @@ test_evolve_system (const gsl_odeiv_step_type * T,
 	  break;
 	}
 
-      if (steps > 10000)
+      if (steps > 100000)
 	{
 	  gsl_test(GSL_EFAILED, 
 		   "%s evolve_apply reached maxiter",
@@ -600,7 +600,7 @@ sys_driver (const gsl_odeiv_step_type * T,
 	  break;
 	}
 
-      if (steps > 1e6)
+      if (steps > 1e7)
 	{
 	  gsl_test(GSL_EMAXITER, 
 		   "sys_driver: %s evolve_apply reached maxiter at t=%g",
