@@ -52,7 +52,7 @@ int
 test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol)
 {
   int    s = 0;
-  double f;
+  double f = 0;
 
   if (gsl_isnan(r.val) || gsl_isnan(val)) 
     {
