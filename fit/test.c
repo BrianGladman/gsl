@@ -168,18 +168,6 @@ main (void)
   }
 
 
-
-#ifdef JUNK
-    printf("c0 = %.18e\n", c0);
-    printf("c1 = %.18e\n", c1);
-    
-    printf("cov00 = %.18e   s0 = %.18e\n", cov00, sqrt(cov00));
-    printf("cov01 = %.18e\n", cov01);
-    printf("cov11 = %.18e   s1 = %.18e\n", cov11, sqrt(cov11));
-    
-    printf("sumsq = %.18e\n", sumsq);
-#endif
-
   /* now summarize the results */
 
   return gsl_test_summary ();
