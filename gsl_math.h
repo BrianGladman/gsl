@@ -1,4 +1,5 @@
 #ifndef _GSL_MATH_H
+#define _GSL_MATH_H
 #include <math.h>
 #include <limits.h>
 #include <float.h>
