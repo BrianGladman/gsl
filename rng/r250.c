@@ -132,6 +132,7 @@ r250_set (void *vstate, unsigned long int s)
 static const gsl_rng_type r250_type =
 {"r250",			/* name */
  0xffffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (r250_state_t),
  &r250_set,
  &r250_get};

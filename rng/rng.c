@@ -114,13 +114,31 @@ gsl_rng_uniform (const gsl_rng * r)
   unsigned long int k = (r->get) (r->state);
   unsigned long int max = r->max;
 
-  return k / (1.0 + max);
+  return k / ((double) max);
+}
+
+double
+gsl_rng_uniform_pos (const gsl_rng * r)
+{
+  unsigned long int max = r->max;
+  unsigned long int k = (r->get) (r->state);
+
+  while (k == 0) 
+    k = (r->get) (r->state);
+
+  return k / ((double) max);
 }
 
 unsigned long int
 gsl_rng_max (const gsl_rng * r)
 {
   return r->max;
+}
+
+unsigned long int
+gsl_rng_min (const gsl_rng * r)
+{
+  return r->min;
 }
 
 const char *

@@ -168,6 +168,7 @@ uni32_set (void *vstate, unsigned long int s)
 static const gsl_rng_type uni32_type =
 {"uni32",			/* name */
  2147483647,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (uni32_state_t),
  &uni32_set,
  &uni32_get};

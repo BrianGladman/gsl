@@ -103,6 +103,7 @@ mt_set (void *vstate, unsigned long int s)
 static const gsl_rng_type mt_type =
 {"mt19937",			/* name */
  0xffffffffUL,			/* RAND_MAX  */
+ 0,			        /* RAND_MIN  */
  sizeof (mt_state_t),
  &mt_set,
  &mt_get};

@@ -108,6 +108,7 @@ tt_set (void *vstate, unsigned long int s)
 static const gsl_rng_type tt_type =
 {"tt800",			/* name */
  0xffffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (tt_state_t),
  &tt_set,
  &tt_get};

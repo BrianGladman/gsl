@@ -166,6 +166,7 @@ uni_set (void *vstate, unsigned long int s)
 static const gsl_rng_type uni_type =
 {"uni",				/* name */
  32767,				/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (uni_state_t),
  &uni_set,
  &uni_get};

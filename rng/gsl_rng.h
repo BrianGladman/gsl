@@ -7,6 +7,7 @@ typedef struct
   {
     const char *name;
     unsigned long int max;
+    unsigned long int min;
     size_t size;
     void *state;
     void (*set) (void *state, unsigned long int seed);
@@ -18,6 +19,7 @@ typedef struct
   {
     const char *name;
     unsigned long int max;
+    unsigned long int min;
     size_t size;
     void (*set) (void *state, unsigned long int seed);
     unsigned long int (*get) (void *state);
@@ -49,6 +51,7 @@ extern unsigned long int gsl_rng_default_seed;
 
 unsigned long int gsl_rng_get (const gsl_rng * r);
 double gsl_rng_uniform (const gsl_rng * r);
+double gsl_rng_uniform_pos (const gsl_rng * r);
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 gsl_rng *gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src);
@@ -58,6 +61,7 @@ void gsl_rng_free (gsl_rng * r);
 
 void gsl_rng_set (const gsl_rng * r, unsigned long int seed);
 unsigned long int gsl_rng_max (const gsl_rng * r);
+unsigned long int gsl_rng_min (const gsl_rng * r);
 const char *gsl_rng_name (const gsl_rng * r);
 void gsl_rng_print_state (const gsl_rng * r);
 
@@ -78,6 +82,19 @@ gsl_rng_uniform (const gsl_rng * r)
 
   return k / (1.0 + max);
 }
+
+extern inline double
+gsl_rng_uniform_pos (const gsl_rng * r)
+{
+  unsigned long int max = r->max;
+  unsigned long int k = (r->get) (r->state);
+
+  while (k == 0) 
+    k = (r->get) (r->state);
+
+  return k / ((double) max);
+}
+
 #endif /* HAVE_INLINE */
 
 #endif /* GSL_RNG_H */

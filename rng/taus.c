@@ -86,6 +86,7 @@ taus_set (void *vstate, unsigned long int s)
 static const gsl_rng_type taus_type =
 {"taus",			/* name */
  0xffffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (taus_state_t),
  &taus_set,
  &taus_get};

@@ -162,6 +162,7 @@ cmrg_set (void *vstate, unsigned long int s)
 static const gsl_rng_type cmrg_type =
 {"cmrg",			/* name */
  2147483646,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (cmrg_state_t),
  &cmrg_set,
  &cmrg_get};

@@ -114,6 +114,7 @@ mrg_set (void *vstate, unsigned long int s)
 static const gsl_rng_type mrg_type =
 {"mrg",				/* name */
  2147483646,			/* RAND_MAX */
+ 0,                             /* RAND_MIN */
  sizeof (mrg_state_t),
  &mrg_set,
  &mrg_get};

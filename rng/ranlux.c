@@ -175,6 +175,7 @@ ranlux389_set (void *vstate, unsigned long int s)
 static const gsl_rng_type ranlux_type =
 {"ranlux",			/* name */
  0x00ffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux_set,
  &ranlux_get};
@@ -182,6 +183,7 @@ static const gsl_rng_type ranlux_type =
 static const gsl_rng_type ranlux389_type =
 {"ranlux389",			/* name */
  0x00ffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (ranlux_state_t),
  &ranlux389_set,
  &ranlux_get};

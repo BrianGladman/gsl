@@ -55,6 +55,7 @@ bad_rand_set (void *vstate, unsigned long int s)
 static const gsl_rng_type bad_rand_type =
 {"bad-rand",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
+ 0,         			/* RAND_MIN */
  sizeof (bad_rand_state_t),
  &bad_rand_set,
  &bad_rand_get};

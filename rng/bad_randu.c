@@ -60,6 +60,7 @@ bad_randu_set (void *vstate, unsigned long int s)
 static const gsl_rng_type bad_randu_type =
 {"bad-randu",			/* name */
  0x7fffffffUL,			/* RAND_MAX */
+ 1,       			/* RAND_MIN */
  sizeof (bad_randu_state_t),
  &bad_randu_set,
  &bad_randu_get};

@@ -54,6 +54,7 @@ vax_set (void *vstate, unsigned long int s)
 static const gsl_rng_type vax_type =
 {"vax",				/* name */
  0xffffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (vax_state_t),
  &vax_set,
  &vax_get};

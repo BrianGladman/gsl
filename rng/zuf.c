@@ -106,6 +106,7 @@ zuf_set (void *vstate, unsigned long int s)
 static const gsl_rng_type zuf_type =
 {"zuf",				/* name */
  0x00ffffffUL,			/* RAND_MAX */
+ 0,			        /* RAND_MIN */
  sizeof (zuf_state_t),
  &zuf_set,
  &zuf_get};
