@@ -85,7 +85,7 @@ main (void)
   while (list[i].f)
     {
       struct f t = list[i];
-      gsl_complex z = gsl_complex_xy (t.x, t.y);
+      gsl_complex z = gsl_complex_rect (t.x, t.y);
       double f = (t.f) (z);
       gsl_test_rel (f, t.fx, 10 * GSL_DBL_EPSILON, "%s at (%g,%g)", t.name, t.x, t.y);
       i++;
@@ -96,7 +96,7 @@ main (void)
   while (listz[i].f)
     {
       struct fz t = listz[i];
-      gsl_complex z = gsl_complex_xy (t.x, t.y);
+      gsl_complex z = gsl_complex_rect (t.x, t.y);
       gsl_complex fz = (t.f) (z);
       double fx = GSL_REAL (fz), fy = GSL_IMAG (fz);
       gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,%g)", t.name, t.x, t.y);

@@ -1,3 +1,8 @@
+Mon Dec  4 12:29:12 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* math.c (gsl_complex_rect): changed the function gsl_complex_xy
+ 	to gsl_complex_rect, since this is more meaningful
+
 Sun Oct 22 13:55:09 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* math.c: changed calls to gsl_hypot() to hypot() so that the

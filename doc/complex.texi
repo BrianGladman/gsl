@@ -51,9 +51,9 @@ element array. This eliminates any padding between the real and
 imaginary parts, @code{dat[0]} and @code{dat[1]}, allowing the struct to
 be mapped correctly onto packed complex arrays.
 
-@deftypefun gsl_complex gsl_complex_xy (double @var{x}, double @var{y})
-This function uses the cartesian components (@var{x},@var{y}) to return
-the complex number @math{z = x + i y}.
+@deftypefun gsl_complex gsl_complex_rect (double @var{x}, double @var{y})
+This function uses the rectangular cartesian components
+(@var{x},@var{y}) to return the complex number @math{z = x + i y}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_polar (double @var{r}, double @var{theta})

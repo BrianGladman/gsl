@@ -58,7 +58,7 @@
  **********************************************************************/
 
 gsl_complex
-gsl_complex_xy (double x, double y)
+gsl_complex_rect (double x, double y)
 {				/* return z = x + i y */
   gsl_complex z;
   GSL_SET_COMPLEX (&z, x, y);

@@ -35,7 +35,7 @@ __BEGIN_DECLS
 
 /* Complex numbers */
 
-gsl_complex gsl_complex_xy (double x, double y);  /* r= real+i*imag */
+gsl_complex gsl_complex_rect (double x, double y);  /* r= real+i*imag */
 gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 
 /* Properties of complex numbers */
