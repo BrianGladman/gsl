@@ -6,8 +6,10 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
-extern int gsl_sf_bessel_Y0_impl(const double, double *);
-extern int gsl_sf_bessel_Y1_impl(const double, double *);
+#include "bessel_Y0_impl.h"
+#include "bessel_Y1_impl.h"
+
+#include "bessel_Yn_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/

@@ -10,7 +10,9 @@
 
 #include "bessel.h"
 
-#define Root_2Pi_  2.50662827463100050241576528481
+#define Root_2Pi_   2.50662827463100050241576528481
+#define CubeRoot2_  1.25992104989487316476721060728
+
 
 extern int gsl_sf_lngamma_impl(double, double *);
 
@@ -60,28 +62,106 @@ static int Inu_Jnu_taylorsum(const double nu, const double x,
 
 /* Debye functions [Abramowitz+Stegun, 9.3.9-10] */
 
-static double debye_u1(double * tpow)
+static double debye_u1(const double * tpow)
 {
   return (3*tpow[1] - 5*tpow[3])/24.;
 }
-static double debye_u2(double * tpow)
+static double debye_u2(const double * tpow)
 {
   return (81*tpow[2] - 462*tpow[4] + 385*tpow[6])/1152.;
 }
-static double debye_u3(double * tpow)
+static double debye_u3(const double * tpow)
 {
   return (30375.*tpow[3] - 369603.*tpow[5] + 765765.*tpow[7] - 425425.*tpow[9])/414720.;
 }
-static double debye_u4(double * tpow)
+static double debye_u4(const double * tpow)
 {
   return (4465125.*tpow[4] - 94121676.*tpow[6] + 349922430.*tpow[8] - 
           446185740.*tpow[10] + 185910725.*tpow[12])/39813120.;
 }
-static double debye_u5(double * tpow)
+static double debye_u5(const double * tpow)
 {
   return (1519035525.*tpow[5]     - 49286948607.*tpow[7] + 
           284499769554.*tpow[9]   - 614135872350.*tpow[11] + 
           566098157625.*tpow[13]  - 188699385875.*tpow[15])/6688604160.;
+}
+
+/* and Debye functions for imaginary argument */
+
+static double debye_u1_im(const double * tpow)  /* u_1(i t)/i */
+{
+  return (3*tpow[1] + 5*tpow[3])/24.;
+}
+static double debye_u2_im(const double * tpow)  /* u_2(i t)   */
+{
+  return (-81*tpow[2] - 462*tpow[4] - 385*tpow[6])/1152.;
+}
+static double debye_u3_im(const double * tpow)  /* u_3(i t)/i */
+{
+  return (-30375.*tpow[3] - 369603.*tpow[5] - 765765.*tpow[7] - 425425.*tpow[9])/414720.;
+}
+static double debye_u4_im(const double * tpow)  /* u_4(i t)   */
+{
+  return (4465125.*tpow[4] + 94121676.*tpow[6] + 349922430.*tpow[8] + 
+          446185740.*tpow[10] + 185910725.*tpow[12])/39813120.;
+}
+static double debye_u5_im(const double * tpow)  /* u_5(i t)/i */
+{
+  return (1519035525.*tpow[5]     + 49286948607.*tpow[7] + 
+          284499769554.*tpow[9]   + 614135872350.*tpow[11] + 
+          566098157625.*tpow[13]  + 188699385875.*tpow[15])/6688604160.;
+}
+
+/* [Abramowitz+Stegun, 9.3.17] */
+static double debye_L(const double nu, const double * tpow)
+{
+  double nu2 = nu*nu;
+  double nu4 = nu2*nu2;
+  return 1. + debye_u2_im(tpow)/nu2 + debye_u4_im(tpow)/nu4;
+}
+
+/* [Abramowitz+Stegun, 9.3.18] */
+static double debye_M(const double nu, const double * tpow)
+{
+  double nu3 = nu*nu*nu;
+  double nu5 = nu3*nu*nu;
+  return debye_u1_im(tpow)/nu + debye_u3_im(tpow)/nu3 + debye_u5_im(tpow)/nu5;
+}
+
+
+/* functions for transition region [Abramowitz+Stegun, 9.3.25-26] */
+
+static double trans_f1(const double * zpow)
+{
+  return -0.2*zpow[1];
+}
+static double trans_f2(const double * zpow)
+{
+  return -.09*zpow[5] + 3./35.*zpow[2];
+}
+static double trans_f3(const double * zpow)
+{
+  return 957./7000.*zpow[6] - 173./3150.*zpow[3] - 1./225.;
+}
+static double trans_f4(const double * zpow)
+{
+  return 27./20000.*zpow[10] - 23573./147000.*zpow[7] + 5903./138600.*zpow[4] + 947./346500.*zpow[1];
+}
+static double trans_g0(const double * zpow)
+{
+  return .3*zpow[2];
+}
+static double trans_g1(const double * zpow)
+{
+  return -17./70.*zpow[3] + 1./70.;
+}
+static double trans_g2(const double * zpow)
+{
+  return -9./1000.*zpow[7] + 611./3150.*zpow[4] - 37./3150.*zpow[1];
+}
+static double trans_g3(const double * zpow)
+{
+  return 549./28000.*zpow[8] - 110767./693000.*zpow[5] + 79./12375.*zpow[2];
 }
 
 
@@ -89,15 +169,17 @@ static double debye_u5(double * tpow)
 void plotto(void)
 {
   double x;
-  for(x=1.; x<=2.; x += 0.02) {
+  for(x=-1.; x<=1.; x += 0.02) {
     int j;
     double xpow[16];
     xpow[0] = 1.;
     for(j=1; j<16; j++) xpow[j] = x * xpow[j-1];
-    printf("%6.4g  %6.4g    %6.4g %6.4g %6.4g %6.4g %6.4g\n",
-           x, 10.*xpow[5]*xpow[5]*xpow[5],
-           debye_u1(xpow), debye_u2(xpow), debye_u3(xpow),
-	   debye_u4(xpow), debye_u5(xpow)
+    printf("%6.4g   %8.4g %8.4g %8.4g %8.4g   %8.4g %8.4g %8.4g %8.4g\n",
+           x,
+           trans_f1(xpow), trans_f2(xpow), trans_f3(xpow),
+	   trans_f4(xpow),
+	   trans_g0(xpow), trans_g1(xpow), trans_g2(xpow),
+	   trans_g3(xpow)
 	   );
   }
 }
@@ -263,7 +345,7 @@ int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double
  *
  *   Our educated guess for the condition is, with x < 0.5 nu,
  *      0.4 / (nu^2 (1-(x/nu)^2)^6) < MACH_EPS^{1/3}
- *   or
+ *   or, equivalently,
  *      0.63 / (nu (1-(x/nu)^2)^3)  < MACH_EPS^{1/6}
  *
  *   The various powers here make sense since they correspond to the
@@ -314,6 +396,56 @@ int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double *
   *result = -pre * sum;
   return GSL_SUCCESS;
 }
+
+
+/* nu -> Inf; x > nu   [Abramowitz+Stegun, 9.3.15]
+ *
+ * error:
+ *
+ *   Our educated guess for the condition is, with x > 2 nu,
+ *      0.4 / (nu^2 (1-(nu/x)^2)^6) < MACH_EPS^{1/3}
+ */
+int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(const double nu, const double x, double * result)
+{
+  int i;
+  double sec_b = x/nu;
+  double tan_b = sqrt(sec_b*sec_b - 1.);
+  double t   = 1./tan_b;
+  double Psi = -0.25*M_PI + nu*(tan_b - atan(tan_b));
+  double pre = sqrt(2./(M_PI*nu*tan_b));
+  double tpow[16];
+  double L, M;
+  tpow[0] = 1.;
+  for(i=0; i<16; i++) tpow[i] = t * tpow[i-1];
+  L = debye_L(nu, tpow);
+  M = debye_M(nu, tpow);
+  *result = pre * (L*cos(Psi) + M*sin(Psi));
+  return GSL_SUCCESS;
+}
+
+/* nu -> Inf; x > nu   [Abramowitz+Stegun, 9.3.16]
+ *
+ * error:
+ *  same analysis as for Jnu above
+ */
+int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(const double nu, const double x, double * result)
+{
+  int i;
+  double sec_b = x/nu;
+  double tan_b = sqrt(sec_b*sec_b - 1.);
+  double t   = 1./tan_b;
+  double Psi = -0.25*M_PI + nu*(tan_b - atan(tan_b));
+  double pre = sqrt(2./(M_PI*nu*tan_b));
+  double tpow[16];
+  double L, M;
+  tpow[0] = 1.;
+  for(i=0; i<16; i++) tpow[i] = t * tpow[i-1];
+  L = debye_L(nu, tpow);
+  M = debye_M(nu, tpow);
+  *result = pre * (L*sin(Psi) - M*cos(Psi));
+  return GSL_SUCCESS;
+}
+
 
 /* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7]
  *
@@ -387,9 +519,49 @@ int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, do
   return GSL_SUCCESS;
 }
 
+/* transition region
+ *
+ * error:
+ *   The polynomials f and g are empirically bounded by 0.2 for 
+ *   -1 <= z <= 1. So the maximum error is <= 0.2/nu^{10/3}. However,
+ *   as one would expect, the polynomials die rapidly for |z| -> 0.
+ *   For -1/2 <= z <= 1/2 we have |f|,|g| <= 0.01.
+ *   For -1/4 <= z <= 1/4 we have |f|,|g| <= 0.001.
+ *   
+ */
 int gsl_sf_bessel_Jnu_asymp_trans_impl(const double nu, const double x, double * result)
 {
-  
+  int i;
+  double nu_3 = pow(nu, 1./3.);
+  double z  = (x - nu)/nu_3;
+  double nu_3_2 = nu_3 * nu_3;
+  double nu_3_4 = nu_3_2 * nu_3_2;
+  double nu_3_8 = nu_3_4 * nu_3_4;
+  double ai, aip;
+  double sum1;
+  double sum2;
+  double zpow[11];
+  zpow[0] = 1.;
+  for(i=1; i<11; i++) zpow[i] = zpow[i-1] * z;
+  sum1 = 1. + trans_f1(zpow)/(nu_3_2) 
+            + trans_f2(zpow)/(nu_3_4)
+            + trans_f3(zpow)/(nu*nu)
+	    + trans_f4(zpow)/(nu_3_8);
+  sum2 = trans_g0(zpow)
+         + trans_g1(zpow)/(nu_3_2)
+         + trans_g2(zpow)/(nu_3_4)
+	 + trans_g3(zpow)/(nu*nu);
+  gsl_sf_airy_Ai_impl(-CubeRoot2_*z, &ai);
+  gsl_sf_airy_Ai_deriv_impl(-CubeRoot2_*z, &aip);
+  *result = CubeRoot2_/nu_3 * ai * sum1
+           + CubeRoot2_*CubeRoot2_/nu * aip * sum2;
+  return GSL_SUCCESS; 
+}
+
+/* transition region
+ */
+int gsl_sf_bessel_Ynu_asymp_trans_impl(const double nu, const double x, double * result)
+{
 }
 
 

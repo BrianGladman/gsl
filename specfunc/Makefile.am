@@ -27,6 +27,7 @@ noinst_HEADERS = \
 	bessel.h		\
 	airy_impl.h		\
 	bessel_I0_impl.h	\
+	bessel_I1_impl.h	\
 	bessel_In_impl.h	\
 	bessel_J0_impl.h	\
 	bessel_J1_impl.h	\
@@ -36,6 +37,7 @@ noinst_HEADERS = \
 	bessel_Kn_impl.h	\
 	bessel_Y0_impl.h	\
 	bessel_Y1_impl.h	\
+	bessel_Yn_impl.h	\
 	expint_impl.h		\
 	shint_impl.h		\
 	sinint_impl.h

@@ -21,6 +21,10 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+plotto();
+exit(0);
+
+/*
   for(x=-5; x < 10.; x += .05) {
     printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g\n",
            x,
@@ -31,6 +35,7 @@ int main(int argc, char * argv[])
            );
   }
   exit(0);
+*/
 
 /*
   struct gsl_sf_ChebSeries * cs = gsl_sf_cheb_new(sin, -M_PI, M_PI, 15);
