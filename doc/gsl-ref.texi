@@ -225,7 +225,7 @@ not recommended for general use.
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
-* Copying::                     
+* GNU General Public License::  
 * Concept Index::               
 * Function Index::              
 * Variable Index::              
@@ -244,6 +244,39 @@ allowing wrappers to be written for very high level languages.
 GSL is currently in developers release, for people who want to work on
 the library itself. When the library is complete and fully tested it
 will be announced for general use.
+
+   The subroutines and source code in the @value{GSL} package are
+``free''; this means that everyone is free to use them and free to
+redistribute them on a free basis.  The @value{GSL}-related programs are
+not in the public domain; they are copyrighted and there are
+restrictions on their distribution, but these restrictions are designed
+to permit everything that a good cooperating citizen would want to do.
+What is not allowed is to try to prevent others from further sharing any
+version of these programs that they might get from you.
+
+   Specifically, we want to make sure that you have the right to give
+away copies of the programs that relate to @value{GSL}, that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+   To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the @value{GSL}-related code, you must give the recipients all
+the rights that you have.  You must make sure that they, too, receive or
+can get the source code.  And you must tell them their rights.
+
+   Also, for our own protection, we must make certain that everyone
+finds out that there is no warranty for the programs that relate to
+@value{GSL}.  If these programs are modified by someone else and passed
+on, we want their recipients to know that what they have is not what we
+distributed, so that any problems introduced by others will not reflect
+on our reputation.
+
+   The precise conditions of the licenses for the programs currently
+being distributed that relate to @value{GSL} are found in the General
+Public Licenses that accompany them.
+
 
 @node Using the library, Error handling, Preliminaries, Top
 @chapter Using the library
@@ -395,7 +428,7 @@ will be announced for general use.
 @appendix Debugging Numerical Programs
 @include debug.texi
 
-@node Contributors to GSL, Copying, Debugging Numerical Programs, Top
+@node Contributors to GSL, GNU General Public License, Debugging Numerical Programs, Top
 @appendix Contributors to GSL
 
 (See the AUTHORS file in the distribution for up-to-date information.)
@@ -441,45 +474,15 @@ Multidimensional minimization.
 
 @end table
 
+@comment @node  Copyright, GNU General Public License, Contributors to GSL, Top
+@comment @unnumbered Copyright
+@comment @include science.texi
 
+@node  GNU General Public License, Concept Index, Contributors to GSL, Top
+@unnumbered GNU General Public License
+@include gpl.texi
 
-
-@node Copying, Concept Index, Contributors to GSL, Top
-@appendix Copying
-
-   The subroutines and source code in the @value{GSL} package are
-``free''; this means that everyone is free to use them and free to
-redistribute them on a free basis.  The @value{GSL}-related programs are
-not in the public domain; they are copyrighted and there are
-restrictions on their distribution, but these restrictions are designed
-to permit everything that a good cooperating citizen would want to do.
-What is not allowed is to try to prevent others from further sharing any
-version of these programs that they might get from you.
-
-   Specifically, we want to make sure that you have the right to give
-away copies of the programs that relate to @value{GSL}, that you receive
-source code or else can get it if you want it, that you can change these
-programs or use pieces of them in new free programs, and that you know
-you can do these things.
-
-   To make sure that everyone has such rights, we have to forbid you to
-deprive anyone else of these rights.  For example, if you distribute
-copies of the @value{GSL}-related code, you must give the recipients all
-the rights that you have.  You must make sure that they, too, receive or
-can get the source code.  And you must tell them their rights.
-
-   Also, for our own protection, we must make certain that everyone
-finds out that there is no warranty for the programs that relate to
-@value{GSL}.  If these programs are modified by someone else and passed
-on, we want their recipients to know that what they have is not what we
-distributed, so that any problems introduced by others will not reflect
-on our reputation.
-
-   The precise conditions of the licenses for the programs currently
-being distributed that relate to @value{GSL} are found in the General
-Public Licenses that accompany them.
-
-@node Concept Index, Function Index, Copying, Top
+@node Concept Index, Function Index, GNU General Public License, Top
 @unnumbered Concept Index
 
 @printindex cp
