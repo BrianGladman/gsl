@@ -1,3 +1,7 @@
+Thu Nov 19 22:46:43 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* config.h.in: removed MAX and MIN
+
 Wed Nov 18 10:40:18 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_math.h: added prototypes for inline functions GSL_MAX_INT

@@ -8,7 +8,7 @@
 The functions described in this chapter accelerate the convergence of a
 series using the Levin u-transform. This method takes a small number of
 terms from the start of a series and uses a systematic approximation to
-compute an extrapolated value, with an estimate of its error. The
+compute an extrapolated value and an estimate of its error. The
 u-transform works for both convergent and divergent series, including
 asymptotic series.
 
@@ -45,7 +45,7 @@ The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
 using the series,
 
 @equation
-\zeta(2) = 1 + 1/2^3 + 1/3^2 + 1/4^2 + \dots
+\zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + \dots
 @end equation
 @noindent
 After @var{N} terms the error in the sum is @math{O(1/N)}, making direct
