@@ -151,10 +151,10 @@ gsl_eigen_jacobi(gsl_matrix * a,
 	    gsl_vector_set(eval, iq, d_iq + h);
 	    gsl_matrix_set(a, ip, iq, 0.0);
 
-            for(j=0; j<=ip-1; j++){
+            for(j=0; j<ip; j++){
               jac_rotate(a, j, ip, j, iq, &g, &h, s, tau);
             }
-            for(j=ip+1; j<=iq-1; j++){
+            for(j=ip+1; j<iq; j++){
               jac_rotate(a, ip, j, j, iq, &g, &h, s, tau);
             }
             for(j=iq+1; j<n; j++){
