@@ -23,7 +23,7 @@ INCLUDES= -I$(top_builddir) -I$(top_srcdir)
 
 TESTS = vegas_test miser_test plain_test
 
-TESTS_ENVIRONMENT = #BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@ $(SHELL) -x
+TESTS_ENVIRONMENT = #$(SHELL) -x
 
 vegas_test_SOURCES = vegas_test.c gsl_monte_vegas.h gsl_monte.h
 

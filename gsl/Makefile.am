@@ -7,9 +7,10 @@ header-links: remove-links
 	done
 
 remove-links: 
-	rm -rf $(full_top_builddir)/gsl/*.h
+	rm -f gsl*.h
 
 
 all: all-am header-links
 
 clean: clean-am remove-links
+distclean: distclean-am remove-links
