@@ -74,6 +74,7 @@ gsl_integration_qk (const int n,
   /* scale by the width of the integration region */
 
   err = (result_kronrod - result_gauss) * half_length ;
+
   result_kronrod *= half_length ;
   result_abs *= abs_half_length ;
   result_asc *= abs_half_length ;
