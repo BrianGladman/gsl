@@ -14,7 +14,7 @@ void my_error_handler (const char *reason, const char *file,
 int main (void)
 {
 
-  gsl_set_error_handler (&my_error_handler);
+  gsl_set_error_handler (&my_error_handler); 
 
   /* Test the basic Gauss-Kronrod rules with a smooth positive function. */
 
@@ -759,5 +759,5 @@ int main (void)
 void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
-  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+  if (1) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }

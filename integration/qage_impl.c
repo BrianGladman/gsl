@@ -61,7 +61,7 @@ gsl_integration_qage_impl (double (*f) (double x),
       *nqeval = 1;
       *last = 0;
 
-      GSL_ERROR ("cannot reach tolerance because of roundoff error"
+      GSL_ERROR ("cannot reach tolerance because of roundoff error "
 		 "on first attempt",
 		 GSL_EROUND);
     }
