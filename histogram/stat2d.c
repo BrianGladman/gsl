@@ -41,14 +41,14 @@
   sum up all bins of histogram2d
  */
 
-double 
-gsl_histogram2d_sum(const gsl_histogram2d * h)
+double
+gsl_histogram2d_sum (const gsl_histogram2d * h)
 {
-  const size_t n=h->nx*h->ny;
-  double sum=0;
-  size_t i=0;
+  const size_t n = h->nx * h->ny;
+  double sum = 0;
+  size_t i = 0;
 
-  while(i < n)
+  while (i < n)
     sum += h->bin[i++];
 
   return sum;
@@ -78,16 +78,17 @@ gsl_histogram2d_xmean (const gsl_histogram2d * h)
       double xi = (h->xrange[i + 1] + h->xrange[i]) / 2.0;
       double wi = 0;
 
-      for (j=0; j<ny; j++)
+      for (j = 0; j < ny; j++)
 	{
-	  double wij=h->bin[i*ny+j];
+	  double wij = h->bin[i * ny + j];
 	  if (wij > 0)
-	    wi+=wij;
+	    wi += wij;
 	}
-      if (wi>0) {
-      W += wi;
-      wmean += (xi - wmean) * (wi / W);
-      }
+      if (wi > 0)
+	{
+	  W += wi;
+	  wmean += (xi - wmean) * (wi / W);
+	}
     }
 
   return wmean;
@@ -117,25 +118,27 @@ gsl_histogram2d_ymean (const gsl_histogram2d * h)
       double yj = (h->yrange[j + 1] + h->yrange[j]) / 2.0;
       double wj = 0;
 
-      for (i=0; i<nx; i++)
+      for (i = 0; i < nx; i++)
 	{
-	  double wij=h->bin[i*ny+j];
-	  if (wij>0)
-	    wj+=wij;
+	  double wij = h->bin[i * ny + j];
+	  if (wij > 0)
+	    wj += wij;
 	}
 
-      if (wj>0) {
-      W += wj;
-      wmean += (yj - wmean) * (wj / W);
-      }
+      if (wj > 0)
+	{
+	  W += wj;
+	  wmean += (yj - wmean) * (wj / W);
+	}
     }
 
   return wmean;
 }
 
 double
-gsl_histogram2d_xsigma (const gsl_histogram2d * h) {
-  const double xmean=gsl_histogram2d_xmean(h);
+gsl_histogram2d_xsigma (const gsl_histogram2d * h)
+{
+  const double xmean = gsl_histogram2d_xmean (h);
   const size_t nx = h->nx;
   const size_t ny = h->ny;
   size_t i;
@@ -157,28 +160,30 @@ gsl_histogram2d_xsigma (const gsl_histogram2d * h) {
       double xi = (h->xrange[i + 1] + h->xrange[i]) / 2 - xmean;
       double wi = 0;
 
-      for (j=0; j<ny; j++)
+      for (j = 0; j < ny; j++)
 	{
-	  double wij=h->bin[i*ny+j];
-	  if (wij>0)
-	    wi+=wij;
+	  double wij = h->bin[i * ny + j];
+	  if (wij > 0)
+	    wi += wij;
 	}
 
-      if (wi>0) {
-      W += wi;
-      wvariance += ((xi * xi) - wvariance) * (wi / W);
-      }
+      if (wi > 0)
+	{
+	  W += wi;
+	  wvariance += ((xi * xi) - wvariance) * (wi / W);
+	}
     }
 
   {
-    double xsigma=sqrt(wvariance);
+    double xsigma = sqrt (wvariance);
     return xsigma;
   }
 }
 
 double
-gsl_histogram2d_ysigma (const gsl_histogram2d * h) {
-  const double ymean=gsl_histogram2d_ymean(h);
+gsl_histogram2d_ysigma (const gsl_histogram2d * h)
+{
+  const double ymean = gsl_histogram2d_ymean (h);
   const size_t nx = h->nx;
   const size_t ny = h->ny;
   size_t i;
@@ -200,28 +205,30 @@ gsl_histogram2d_ysigma (const gsl_histogram2d * h) {
       double yj = (h->yrange[j + 1] + h->yrange[j]) / 2.0 - ymean;
       double wj = 0;
 
-      for (i=0; i<nx; i++)
+      for (i = 0; i < nx; i++)
 	{
-	  double wij=h->bin[i*ny+j];
+	  double wij = h->bin[i * ny + j];
 	  if (wij > 0)
-	    wj+=wij;
+	    wj += wij;
 	}
-      if (wj>0) {
-      W += wj;
-      wvariance += ((yj * yj) - wvariance) * (wj / W);
-      }
+      if (wj > 0)
+	{
+	  W += wj;
+	  wvariance += ((yj * yj) - wvariance) * (wj / W);
+	}
     }
 
   {
-    double ysigma=sqrt(wvariance);
+    double ysigma = sqrt (wvariance);
     return ysigma;
   }
 }
 
 double
-gsl_histogram2d_cov (const gsl_histogram2d * h) {
-  const double xmean=gsl_histogram2d_xmean(h);
-  const double ymean=gsl_histogram2d_ymean(h);
+gsl_histogram2d_cov (const gsl_histogram2d * h)
+{
+  const double xmean = gsl_histogram2d_xmean (h);
+  const double ymean = gsl_histogram2d_ymean (h);
   const size_t nx = h->nx;
   const size_t ny = h->ny;
   size_t i;
@@ -240,12 +247,12 @@ gsl_histogram2d_cov (const gsl_histogram2d * h) {
 
   for (j = 0; j < ny; j++)
     {
-      for (i=0; i<nx; i++)
+      for (i = 0; i < nx; i++)
 	{
-	  double xi =  (h->xrange[i + 1] + h->xrange[i]) / 2.0 - xmean;
-	  double yj =  (h->yrange[j + 1] + h->yrange[j]) / 2.0 - ymean;
-	  double wij = h->bin[i*ny+j];
-	  
+	  double xi = (h->xrange[i + 1] + h->xrange[i]) / 2.0 - xmean;
+	  double yj = (h->yrange[j + 1] + h->yrange[j]) / 2.0 - ymean;
+	  double wij = h->bin[i * ny + j];
+
 	  if (wij > 0)
 	    {
 	      W += wij;
