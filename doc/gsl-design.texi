@@ -806,7 +806,9 @@ int gsl_foo_fprintf (FILE * stream, const gsl_foo * v, const char *format);
 @noindent
 Only dump out the blocks of memory, not any associated parameters such
 as lengths.  The idea is for the user to build higher level input/output
-facilities using the functions the library provides.  Use the functions
+facilities using the functions the library provides.  The fprintf/fscanf
+versions should be portable between architectures, while the binary
+versions should be the "raw" version of the data. Use the functions
 
 @smallexample
 int gsl_block_fread (FILE * stream, gsl_block * b);
