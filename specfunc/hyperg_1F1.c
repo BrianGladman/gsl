@@ -281,7 +281,7 @@ hyperg_1F1_1(const double b, const double x, double * result)
     return hyperg_1F1_1_int((int)ib, x, result);
   }
   else if(x > 0.0) {
-    if(x > 20.0 && b < 0.75*x) {
+    if(x > 100.0 && b < 0.75*x) {
       double prec;
       return hyperg_1F1_asymp_posx(1.0, b, x, result, &prec);
     }
@@ -1108,9 +1108,6 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
      */
     return hyperg_1F1_beps_bgt0(a-b, b, x, result);  /* a = b + eps */
   }
-  
-  
-  
   else if(b > a && b >= 2*a + x) {
     /* Use the Gautschi CF series, then
      * recurse backward to a near 0 for normalization.
@@ -1253,7 +1250,7 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       /* Recurse down in b, from near the a=b line, b=a+eps,a+eps-1.
        */
       double N   = floor(a - b);
-      double eps = a - b - N;
+      double eps = 1.0 + N - a + b;
       double Manp1;
       double Man;
       double Manm1;
@@ -1283,7 +1280,7 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       double epsa = a - floor(a);
       double a0   = floor(0.5*(b-x)) + epsa;
       double N    = floor(a0 - b);
-      double epsb = a0 - b - N;
+      double epsb = 1.0 + N - a0 + b;
       double Ma0b;
       double Ma0p1b;
       double Mnm1;
@@ -1414,6 +1411,8 @@ static
 int
 hyperg_1F1_ab_neg(const double a, const double b, const double x, double * result)
 {
+  *result = 0.0;
+  return GSL_EUNIMPL;
 }
 
 
@@ -1610,20 +1609,20 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     return stat_K;
     
   }
-  else if(   x < -10.0
-     && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
-     && !b_neg_integer
-     && !bma_neg_integer
+  else if(   x < -30.0
+          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
+          && !b_neg_integer
+          && !bma_neg_integer
     ) {
     /* Large negative x asymptotic.
      */
     double prec;
     return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
   }
-  else if(   x > 10.0
-     && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
-     && !b_neg_integer
-     && !a_neg_integer
+  else if(   x > 100.0
+          && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
+          && !b_neg_integer
+          && !a_neg_integer
     ) {
     /* Large positive x asymptotic.
      */
