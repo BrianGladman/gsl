@@ -19,7 +19,7 @@ AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, :)
 AC_CHECK_TOOL(AR, ar, :)
 #AC_PROG_RANLIB
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 dnl Early versions of gcc-2.95.2 for PPC have a bug when passing lots
 dnl of arguments; test for this...
@@ -98,7 +98,7 @@ if test "x$LIBS" != "x" ; then
   AC_MSG_CHECKING([for math library])
   AC_MSG_RESULT([$LIBS])
 else
-  AC_CHECK_LIB(m, main)
+  AC_SEARCH_LIBS(cos, m)
 fi
 
 AC_CHECK_FUNCS(hypot)

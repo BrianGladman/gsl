@@ -155,3 +155,7 @@ random number generators.
 
 * David Ronis <ronis@ronispc.chem.mcgill.ca> for bug reports and
 patches
+
+* Christian T. Steigies <cts@debian.org> for a documentation fix
+
+* Teun Burgers <a.rburgers@freeler.nl> improvements to configure script
