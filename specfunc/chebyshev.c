@@ -7,8 +7,8 @@
 #include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 
-#define locMAX(a,b) ((a) > (b) ? (a) : (b))
-#define locMIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 
 int gsl_sf_cheb_calc_impl(struct gsl_sf_ChebSeries *, double (*)(double));
@@ -173,8 +173,8 @@ double gsl_sf_cheb_eval_n(const double x, const int n, const struct gsl_sf_ChebS
   double y  = (2.*x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2. * y;
 
-  int eval_order = locMIN(n, cs->order);
-  eval_order     = locMAX(eval_order, 0);
+  int eval_order = MIN(n, cs->order);
+  eval_order     = MAX(eval_order, 0);
   
   for(j = eval_order; j>=1; j--) {
     double temp = d;

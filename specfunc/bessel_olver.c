@@ -687,7 +687,7 @@ void plot_it(void)
   }
 }
 
-static double olver_Asum(double nu, double z, double abs_zeta)
+static inline double olver_Asum(double nu, double z, double abs_zeta)
 {
   double nu2 = nu*nu;
   double A1 = olver_A1(z, abs_zeta);
@@ -697,7 +697,7 @@ static double olver_Asum(double nu, double z, double abs_zeta)
   return 1. + A1/nu2 + A2/(nu2*nu2) + A3/(nu2*nu2*nu2) + A4/(nu2*nu2*nu2*nu2);
 }
 
-static double olver_Bsum(double nu, double z, double abs_zeta)
+static inline double olver_Bsum(double nu, double z, double abs_zeta)
 {
   double nu2 = nu*nu;
   double B0 = olver_B0(z, abs_zeta);

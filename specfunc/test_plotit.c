@@ -22,6 +22,14 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+unsigned long v;
+unsigned long w;
+for(v=0; v<200; v++) {
+  gsl_sf_choose_long_e(v, v/2, &w);
+  printf("%ld  %ld\n", v, w);
+}
+exit(0);
+
 /*
 printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);
 exit(0);

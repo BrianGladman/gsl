@@ -362,6 +362,42 @@ int gsl_sf_lnfact_impl(const int n, double * result)
   }
 }
 
+int gsl_sf_lnchoose_impl(unsigned int n, unsigned int m, double * result)
+{
+  double nf, mf, nmmf;
+
+  if(m > n) return GSL_EDOM;
+
+  if(m*2 > n) m = n-m;
+  gsl_sf_lnfact_impl(n+1, &nf);
+  gsl_sf_lnfact_impl(m+1, &mf);
+  gsl_sf_lnfact_impl(n-m+1, &nmmf);
+  *result = nf - mf - nmmf;
+  return GSL_SUCCESS;
+}
+
+int gsl_sf_choose_impl(unsigned int n, unsigned int m, double * result)
+{
+  double nf, mf, nmmf;
+  double ln_result;
+
+  if(m > n) return GSL_EDOM;
+
+  if(m*2 > n) m = n-m;
+  gsl_sf_lnfact_impl(n+1, &nf);
+  gsl_sf_lnfact_impl(m+1, &mf);
+  gsl_sf_lnfact_impl(n-m+1, &nmmf);
+  ln_result = nf - mf - nmmf;
+  
+  if(ln_result < GSL_LOG_DBL_MAX) {
+    *result = exp(ln_result);
+    return GSL_SUCCESS;
+  }
+  else {
+    return GSL_EOVRFLW;
+  }
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -397,6 +433,24 @@ int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
   int status = gsl_sf_lngamma_complex_impl(zr, zi, lnr, arg);
   if(status != GSL_SUCCESS) {;
     GSL_ERROR("gsl_sf_lngamma_complex_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_choose_e(unsigned int n, unsigned int m, double * r)
+{
+  int status = gsl_sf_choose_impl(n, m, r);
+  if(status != GSL_SUCCESS) {;
+    GSL_ERROR("gsl_sf_choose_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_lnchoose_e(unsigned int n, unsigned int m, double * r)
+{
+  int status = gsl_sf_lnchoose_impl(n, m, r);
+  if(status != GSL_SUCCESS) {;
+    GSL_ERROR("gsl_sf_lnchoose_e", status);
   }
   return status;
 }
