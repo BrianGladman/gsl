@@ -17,9 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author: M.J. Booth */
-/* RCS: $Id$ */
-
 #include <config.h>
 #include <math.h>
 #include <stdio.h>
@@ -184,14 +181,14 @@ main (void)
 #ifdef DBLGAUSSIAN
     /* variance(F2) = 0.5 * (1/(a sqrt(2 pi)))^d - 1 */
 
-    add(problems,&n, &F2, xl, xu,  1, 9947,    1.0, 0.01, "double gaussian, 1d" );
-    add(problems,&n, &F2, xl, xu,  2, 69577,   1.0, 0.01, "double gaussian, 2d" );
-    add(problems,&n, &F2, xl, xu,  3, 307468,  1.0, 0.01, "double gaussian, 3d" );
-    add(problems,&n, &F2, xl, xu,  4, 12565,   1.0, 0.1, "double gaussian, 4d" );
-    add(problems,&n, &F2, xl, xu,  5, 50426,   1.0, 0.1, "double gaussian, 5d" );
-    add(problems,&n, &F2, xl, xu,  6, 201472,  1.0, 0.1, "double gaussian, 6d" );
-    add(problems,&n, &F2, xl, xu,  7, 804056,  1.0, 0.1, "double gaussian, 7d" );
-    add(problems,&n, &F2, xl, xu,  8, 356446,  1.0, 0.3, "double gaussian, 8d" );
+    add(problems,&n, &F2, xl, xu,  1, 9947,  1.0, 0.01, "double gaussian, 1d" );
+    add(problems,&n, &F2, xl, xu,  2, 695,   1.0, 0.1, "double gaussian, 2d" );
+    add(problems,&n, &F2, xl, xu,  3, 3074,  1.0, 0.1, "double gaussian, 3d" );
+    add(problems,&n, &F2, xl, xu,  4, 12565, 1.0, 0.1, "double gaussian, 4d" );
+    add(problems,&n, &F2, xl, xu,  5, 50426, 1.0, 0.1, "double gaussian, 5d" );
+    add(problems,&n, &F2, xl, xu,  6, 201472, 1.0, 0.1, "double gaussian, 6d" );
+    add(problems,&n, &F2, xl, xu,  7, 804056, 1.0, 0.1, "double gaussian, 7d" );
+    add(problems,&n, &F2, xl, xu,  8, 356446, 1.0, 0.3, "double gaussian, 8d" );
     add(problems,&n, &F2, xl, xu,  9, 1422049, 1.0, 0.3, "double gaussian, 9d" );
     add(problems,&n, &F2, xl, xu, 10, 5673189, 1.0, 0.3, "double gaussian, 10d" );
 #endif

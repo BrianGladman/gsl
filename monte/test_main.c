@@ -48,7 +48,7 @@ for (I = problems ; I->f != 0; I++)
 
  sd = sqrt(sumd2 / (TRIALS-1.0)) ;
  
- if (sd < GSL_DBL_EPSILON * mean)
+ if (sd < TRIALS * GSL_DBL_EPSILON * mean)
    {
      sd = 0 ;
    }
