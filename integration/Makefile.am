@@ -20,6 +20,6 @@ include_HEADERS = gsl_integration.h
 TESTS = test
 check_PROGRAMS = test
 
-test_SOURCES = test.c
+test_SOURCES = test.c tests.c
 test_LDADD = libgslintegration.a
 test_LDADD = libgslintegration.a ../err/libgslerr.a ../err/libgsltest.a 

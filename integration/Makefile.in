@@ -91,7 +91,7 @@ include_HEADERS = gsl_integration.h
 TESTS = test
 check_PROGRAMS = test
 
-test_SOURCES = test.c tests.c
+test_SOURCES = test.c tests.c tests.h
 test_LDADD = libgslintegration.a
 test_LDADD = libgslintegration.a ../err/libgslerr.a ../err/libgsltest.a 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
