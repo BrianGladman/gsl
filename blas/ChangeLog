@@ -1,3 +1,7 @@
+Sat Sep 16 20:27:18 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* blas.c: use GSL_ERROR macro to signal errors
+
 Fri Sep 15 20:04:28 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* source_iamax_r.h source_iamax_c.h: initialize max index to zero
