@@ -11,7 +11,7 @@
 * GSL-design: (GSL-design).             GNU Scientific Library -- Design
 @end direntry
 
-@include version-design.texi
+@comment @include version-design.texi
 @set GSL @emph{GNU Scientific Library}
 
 @ifinfo
@@ -253,6 +253,24 @@ mind that evil profit-making companies (such as those which sell
 * Interface to other languages::  
 * What routines are implemented::  
 * Standards and conventions::   
+* Namespace::                   
+* Header files::                
+* Target system::               
+* Function Names::              
+* Object-orientation::          
+* Minimal structs::             
+* Algorithm decomposition::     
+* Memory allocation and ownership::  
+* Memory layout::               
+* Exceptions and Error handling::  
+* Persistence::                 
+* Datatype widths::             
+* size_t::                      
+* Constness::                   
+* Pseudo-templates::            
+* Test programs::               
+* Compilation::                 
+* Thread-safety::               
 * Test suites::                 
 * Legal issues::                
 * Non-UNIX portability::        
@@ -394,7 +412,7 @@ conventions.  Some standards that should be set are:
 @item
 Targets for make.  We of course follow the GNU coding standards and use
 automake, so all the standard GNU targets are present.  In @ref{Test
-suites} we discuss the possibility of a @code{make verify} target which
+suites} we discuss the possibility of a @code{make check} target which
 will run a verification suite for the given subsystem.
 @item
 Function arguments and abstraction levels.
@@ -410,8 +428,178 @@ I (-jt) recommend using gsl_xxx_functionName() for functions that
 we supply, where xxx is the 'category'.  Categories are 'ran' (random
 number generators), 'sf' (special functions), 'stat' (statistics), etc.
 
+
 @end itemize
 
+
+@node Namespace
+@section Namespace
+
+Use @code{gsl_} as a prefix for all exported functions and variables.
+
+Use @code{GSL_} as a prefix for all exported macros.
+
+All exported header files should have a filename with the prefix @code{gsl_}.
+
+All installed libraries should have a name like libgslhistogram.a
+
+Any installed executables (utility programs etc) should have the prefix
+@code{gsl-} (with a hyphen, not an underscore).
+
+@node Header files
+@section Header files
+
+Installed header files should be idempotent, i.e. surround them by the
+preprocessor conditionals like the following,
+
+@example
+#ifndef GSL_HISTOGRAM_H
+...
+#endif /* GSL_HISTOGRAM_H */
+@end example
+
+@node Target system
+@section Target system
+
+The target system is ANSI C, with a full Standard C Library, and IEEE
+arithmetic.
+
+@node Function Names
+@section Function Names
+
+
+
+@node Object-orientation
+@section Object-orientation
+
+@node Minimal structs
+@section Minimal structs
+
+@node Algorithm decomposition
+@section Algorithm decomposition
+
+@node Memory allocation and ownership
+@section Memory allocation and ownership
+
+@node Memory layout
+@section Memory layout
+
+@node Exceptions and Error handling
+@section Exceptions and Error handling
+
+@node Persistence
+@section Persistence
+
+If you make an object foo which uses blocks of memory (e.g. vector,
+matrix, histogram) you can provide functions for reading and writing
+those blocks,
+
+@example
+int gsl_foo_fread (FILE * stream, gsl_foo * v);
+int gsl_foo_fwrite (FILE * stream, const gsl_foo * v);
+int gsl_foo_fscanf (FILE * stream, gsl_foo * v);
+int gsl_foo_fprintf (FILE * stream, const gsl_foo * v, const char *format);
+@end example
+@noindent
+Only dump out the blocks of memory, not any associated parameters such
+as lengths. The idea is for the user to build higher level input/output
+facilities using the functions the library provides. Use the functions
+
+@example
+int gsl_block_fread (FILE * stream, gsl_block * b);
+int gsl_block_fwrite (FILE * stream, const gsl_block * b);
+int gsl_block_fscanf (FILE * stream, gsl_block * b);
+int gsl_block_fprintf (FILE * stream, const gsl_block * b, const char *format);
+@end example
+@noindent
+or
+
+@example
+int gsl_block_raw_fread (FILE * stream, double * b, size_t n, size_t stride);
+int gsl_block_raw_fwrite (FILE * stream, const double * b, size_t n, size_t stri
+de);
+int gsl_block_raw_fscanf (FILE * stream, double * b, size_t n, size_t stride);
+int gsl_block_raw_fprintf (FILE * stream, const double * b, size_t n, size_t str
+ide, const char *format);
+@end example
+@noindent
+to do the actual reading and writing.
+
+@node Datatype widths
+@section Datatype widths
+
+Be aware that in ANSI C the type @code{int} is only guaranteed to
+provide 16-bits (or more). Therefore if you require 32 bits you must use
+@code{long int}, which will have 32 bits (or more).  Of course, on many
+platforms the type @code{int} does have 32 bits instead of 16 bits but
+we have to code to the ANSI standard rather than a specific platform.
+
+@node size_t
+@section size_t
+
+All objects (blocks of memory, etc) should be measured in terms of a
+@code{size_t} type.  Therefore any iterations (e.g. @code{for(i=0; i<N;
+i++)}) should also use an index of type @code{size_t}.  If you need to
+write a descending loop you have to be careful because @code{size_t} is
+unsigned, so instead of
+
+@example
+for (i = N - 1; i >= 0 ; i--) @{ ... @}
+@end example
+@noindent
+use something like
+
+@example
+for (i = 0; i < N; i++) @{ j = N - i ; ... @}
+@end example
+@noindent
+to avoid problems with wrap-around at @code{i=0}.
+
+@node Constness
+@section Constness
+
+Use @code{const} in function prototypes wherever an object pointed to by
+a pointer is constant (obviously).  For variables which are meaningfully
+constant within a function/scope use @code{const} also. This prevents
+you from accidentally modifying a variable which should be constant
+(e.g. length of an array, etc). It can also help the compiler do
+optimization.  These comments also apply to arguments passed by value
+which should be made @code{const} when that is meaningful.
+
+@node Pseudo-templates
+@section Pseudo-templates
+
+@node Test programs
+@section Test programs
+
+Provide one test program per directory which aims for 100% path coverage
+of the code. Obviously it would be a lot of work to really achieve this,
+so prioritise testing on the critical parts and use inspection for the
+rest.  Test all the error conditions by explicitly provoking them,
+because we consider it a serious defect if the function does not return
+an error for an invalid parameter. N.B. Don't bother to test for null
+pointers -- it's sufficient for the library to segfault if the user
+provides an invalid pointer.
+
+The tests should be deterministic.  Use the @code{gsl_test} functions
+provided to perform separate tests for each feature with a separate
+output PASS/FAIL line, so that any failure can be uniquely identified.
+
+@node Compilation
+@section Compilation
+
+@node Thread-safety
+@section Thread-safety
+
+The library should be useable in thread-safe programs.  All the
+functions should be thread-safe.
+
+We don't require everything to be completely thread safe, but any thing
+that isn't should be obvious, and not a function. For example, some
+global variables are used to control the overall behavior of the library
+(range-checking on/off, function to call on fatal error, etc).  Since
+these are accessed directly by the user they obviously aren't thread
+specific.
 
 @node Test suites
 @section Test suites
@@ -424,10 +612,9 @@ result against known results, or invokes the library several times and
 does a statistical analysis on the results (for example in the case of
 random number generators).
 
-We should add the target @code{make verify} to the Makefile.am files,
+We should add the target @code{make check} to the Makefile.am files,
 and that should automatically execute the verification suite for the
 given library.
-
 
 @node Legal issues
 @section Legal issues
@@ -447,9 +634,6 @@ numerical analysis.
 @end itemize
 
 @end itemize
-
-
-
 
 @node Non-UNIX portability
 @section Non-UNIX portability
