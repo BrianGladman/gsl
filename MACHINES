@@ -66,6 +66,14 @@ in the gsl complex tests.  The configure script has been hardcoded to
 substitute gsl_log1p instead on OpenBSD.  The log1p() bug has been
 reported and so may be fixed in future versions of OpenBSD.
 
+DEC Alpha
+---------
+
+With gcc-2.95 the tests fail in the eigen/ directory.  This is due to
+an optimization bug which causes errors in the manipulation of complex
+numbers.   This may be fixed in more recent versions of gcc.
+
+
 MacOS X
 -------
 
