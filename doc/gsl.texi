@@ -418,16 +418,16 @@ analysis of Psychological experiment data.
 @code{gsl_stats_ddpvariance} returns the pooled variance of two arrays of doubles.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_iipvariance (int *array1, int *array2, int size1, int size2)
-@code{gsl_stats_iipvariance} returns the pooled variance of two arrays of integers.
+@deftypefn Statistics double gsl_stats_ipvariance (int *array1, int *array2, int size1, int size2)
+@code{gsl_stats_ipvariance} returns the pooled variance of two arrays of integers.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_ddttest (double *array1, double *array2, int size1, int size2);
-@code{gsl_stats_ddttest} returns the t statistic from two arrays of doubles.
+@deftypefn Statistics double gsl_stats_dttest (double *array1, double *array2, int size1, int size2);
+@code{gsl_stats_dttest} returns the t statistic from two arrays of doubles.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_iittest (int *array1, int *array2, int size1, int size2);
-@code{gsl_stats_iittest} returns the t statistic from two arrays of integers.
+@deftypefn Statistics double gsl_stats_ittest (int *array1, int *array2, int size1, int size2);
+@code{gsl_stats_ittest} returns the t statistic from two arrays of integers.
 @end deftypefn
 
 @deftypefn Statistics double gsl_stats_dmax (double *array1, int size);
@@ -449,6 +449,12 @@ analysis of Psychological experiment data.
 Here is a basic example of how to use these functions:
 
 @smallexample
+#include<stdio.h>
+
+#include "mean.h"
+#include "variance.h"
+#include "test.h"
+
 /* to compile: gcc file_name.c libgsl_statistics.a -lm */
 
 int main()
