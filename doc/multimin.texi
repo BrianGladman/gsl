@@ -431,19 +431,29 @@ inefficient and is included only for demonstration purposes.
 @cindex Minimization, simplex algorithm
 This is the Simplex algorithm by Nelder and Mead. It constructs 
 @math{n} vectors @math{p_i} from the
-starting vector @var{x} as follows:
+starting vector @var{x} and the vector @var{step_size} as follows:
 @tex
 \beforedisplay
 $$
 \eqalign{
-p_0 & = {x_0, x_1, \cdots , x_n} \cr
-p_1 & = {x_0 + step\_size_0, x_1, \cdots , x_n} \cr
-p_2 & = {x_0, x_1 + step\_size_1, \cdots , x_n} \cr
-p_n & = {x_0, x_1, \cdots , x_n+step\_size_n} \cr
+p_0 & = (x_0, x_1, \cdots , x_n) \cr
+p_1 & = (x_0 + step\_size_0, x_1, \cdots , x_n) \cr
+p_2 & = (x_0, x_1 + step\_size_1, \cdots , x_n) \cr
+\dots &= \dots \cr
+p_n & = (x_0, x_1, \cdots , x_n+step\_size_n) \cr
 }
 $$
 \afterdisplay
-@end tex                                                                                            
+@end tex
+@ifinfo
+@example
+p_0 = (x_0, x_1, ... , x_n) 
+p_1 = (x_0 + step_size_0, x_1, ... , x_n) 
+p_2 = (x_0, x_1 + step_size_1, ... , x_n) 
+... = ...
+p_n = (x_0, x_1, ... , x_n+step_size_n)
+@end example
+@end ifinfo
 @noindent
 that form the @math{n+1} vertices of a simplex in @math{n}
 dimensions.  In each iteration step the algorithm tries to improve
@@ -602,6 +612,8 @@ main(void)
       GSL_ERROR_VAL ("failed to allocate space for ss", GSL_ENOMEM, 0);
     @}
   
+  /* Set all step sizes to 1 */
+
   gsl_vector_set_all (ss, 1.0);
 
   /* Starting point */

@@ -1,6 +1,6 @@
 \input texinfo @c -*-texinfo-*-
 @c This will be for the printing version of the manual
-@input config-local.texi
+@c @input config-local.texi
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
