@@ -74,7 +74,7 @@ full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslmonte.a 
 
-libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c plain.c gsl_vegas.h gsl_miser.h gsl_monte_plain.h gsl_monte.h
+libgslmonte_a_SOURCES = vegas.c vegas-print.c miser.c plain.c gsl_monte_vegas.h gsl_monte_miser.h gsl_monte_plain.h gsl_monte.h
 
 check_PROGRAMS = vegas_test miser_test plain_test
 
@@ -90,21 +90,21 @@ TESTS = vegas_test miser_test plain_test
 
 TESTS_ENVIRONMENT = #BUILDDIR=@full_top_builddir@/roots SRCDIR=@full_top_srcdir@ $(SHELL) -x
 
-vegas_test_SOURCES = vegas_test.c gsl_vegas.h gsl_monte.h
+vegas_test_SOURCES = vegas_test.c gsl_monte_vegas.h gsl_monte.h
 
 vegas_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
 		../err/libgslerr.a ../err/libgsltest.a
 
 vegas_test_LDFLAGS = -static
 
-miser_test_SOURCES = miser_test.c gsl_miser.h gsl_monte.h
+miser_test_SOURCES = miser_test.c gsl_monte_miser.h gsl_monte.h
 
 miser_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
 		../err/libgslerr.a ../err/libgsltest.a 
 
 miser_test_LDFLAGS = -static
 
-plain_test_SOURCES = plain_test.c gsl_plain.h gsl_monte.h
+plain_test_SOURCES = plain_test.c gsl_monte_plain.h gsl_monte.h
 
 plain_test_LDADD = libgslmonte.a ../rng/libgslrng.a ../vector/libgslvector.a \
 		../err/libgslerr.a ../err/libgsltest.a 
@@ -142,8 +142,10 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gnutar
+TAR = tar
 GZIP = --best
+DEP_FILES =  .deps/miser.P .deps/miser_test.P .deps/plain.P \
+.deps/plain_test.P .deps/vegas-print.P .deps/vegas.P .deps/vegas_test.P
 SOURCES = $(libgslmonte_a_SOURCES) $(vegas_test_SOURCES) $(miser_test_SOURCES) $(plain_test_SOURCES)
 OBJECTS = $(libgslmonte_a_OBJECTS) $(vegas_test_OBJECTS) $(miser_test_OBJECTS) $(plain_test_OBJECTS)
 
@@ -152,9 +154,9 @@ all: Makefile $(LIBRARIES) $(HEADERS)
 .SUFFIXES:
 .SUFFIXES: .S .c .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps monte/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu monte/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -190,9 +192,6 @@ uninstall-libLIBRARIES:
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
-
-.c.o:
-	$(COMPILE) -c $<
 
 .s.o:
 	$(COMPILE) -c $<
@@ -281,12 +280,41 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = monte
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu monte/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
 	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+
+maintainer-clean-depend:
+	-rm -rf .deps
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -350,20 +378,20 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-checkPROGRAMS mostlyclean-tags \
-		mostlyclean-generic
+		mostlyclean-depend mostlyclean-generic
 
 clean:  clean-libLIBRARIES clean-compile clean-checkPROGRAMS clean-tags \
-		clean-generic mostlyclean
+		clean-depend clean-generic mostlyclean
 
 distclean:  distclean-libLIBRARIES distclean-compile \
-		distclean-checkPROGRAMS distclean-tags \
+		distclean-checkPROGRAMS distclean-tags distclean-depend \
 		distclean-generic clean
 	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile maintainer-clean-checkPROGRAMS \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -374,7 +402,8 @@ clean-compile maintainer-clean-compile mostlyclean-checkPROGRAMS \
 distclean-checkPROGRAMS clean-checkPROGRAMS \
 maintainer-clean-checkPROGRAMS uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir check-TESTS info dvi installcheck \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend check-TESTS info dvi installcheck \
 install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
