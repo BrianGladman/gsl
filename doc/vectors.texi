@@ -1095,11 +1095,20 @@ matrix @var{m} in-place.  The matrix must be square for this operation to
 be possible.
 @end deftypefun
 
+@deftypefun int gsl_matrix_transpose_memcpy (gsl_matrix * @var{dest}, gsl_matrix * @var{src})
+This function makes the matrix @var{dest} the transpose of the matrix
+@var{src} by copying the elements of @var{src} into @var{dest}.  This
+function works for all matrices provided the dimensions of the matrix
+@var{dest} must match the transposed dimensions of the matrix @var{src}.
+@end deftypefun
+
 @deftypefun int gsl_matrix_transpose (gsl_matrix * @var{m})
 This function replaces the matrix @var{m} by its transpose by copying
 the elements of the matrix in-place.  The matrix must be square for this
 operation to be possible.
 @end deftypefun
+
+
 
 @node Matrix operations
 @section Matrix operations

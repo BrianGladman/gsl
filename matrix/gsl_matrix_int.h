@@ -102,6 +102,7 @@ int gsl_matrix_int_swap_rows(gsl_matrix_int * m, const size_t i, const size_t j)
 int gsl_matrix_int_swap_columns(gsl_matrix_int * m, const size_t i, const size_t j);
 int gsl_matrix_int_swap_rowcol(gsl_matrix_int * m, const size_t i, const size_t j);
 int gsl_matrix_int_transpose (gsl_matrix_int * m);
+int gsl_matrix_int_transpose_memcpy (gsl_matrix_int * dest, const gsl_matrix_int * src);
 
 
 gsl_matrix_int gsl_matrix_int_view (int * m, size_t n1, size_t n2);

@@ -1,3 +1,8 @@
+Thu Aug 17 19:46:22 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* swap_source.c (FUNCTION): added function
+ 	gsl_matrix_transpose_memcpy for transposing rectangular matrices
+
 Sun Jul 16 10:40:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION):  added gsl_matrix_view function for

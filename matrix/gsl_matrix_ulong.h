@@ -102,6 +102,7 @@ int gsl_matrix_ulong_swap_rows(gsl_matrix_ulong * m, const size_t i, const size_
 int gsl_matrix_ulong_swap_columns(gsl_matrix_ulong * m, const size_t i, const size_t j);
 int gsl_matrix_ulong_swap_rowcol(gsl_matrix_ulong * m, const size_t i, const size_t j);
 int gsl_matrix_ulong_transpose (gsl_matrix_ulong * m);
+int gsl_matrix_ulong_transpose_memcpy (gsl_matrix_ulong * dest, const gsl_matrix_ulong * src);
 
 
 gsl_matrix_ulong gsl_matrix_ulong_view (unsigned long * m, size_t n1, size_t n2);

@@ -101,6 +101,7 @@ int gsl_matrix_complex_swap_columns(gsl_matrix_complex * m, const size_t i, cons
 int gsl_matrix_complex_swap_rowcol(gsl_matrix_complex * m, const size_t i, const size_t j);
 
 int gsl_matrix_complex_transpose (gsl_matrix_complex * m);
+int gsl_matrix_complex_transpose_memcpy (gsl_matrix_complex * dest, const gsl_matrix_complex * src);
 
 gsl_matrix_complex gsl_matrix_complex_submatrix (gsl_matrix_complex * m, size_t i, size_t j, size_t n1, size_t n2);
 gsl_vector_complex gsl_matrix_complex_row (gsl_matrix_complex * m, size_t i);

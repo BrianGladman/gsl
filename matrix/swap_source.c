@@ -174,3 +174,37 @@ FUNCTION (gsl_matrix, transpose) (TYPE (gsl_matrix) * m)
   return GSL_SUCCESS;
 }
 
+int
+FUNCTION (gsl_matrix, transpose_memcpy) (TYPE (gsl_matrix) * dest, 
+                                         const TYPE (gsl_matrix) * src)
+{
+  const size_t src_size1 = src->size1;
+  const size_t src_size2 = src->size2;
+
+  const size_t dest_size1 = dest->size1;
+  const size_t dest_size2 = dest->size2;
+
+  size_t i, j, k;
+
+  if (dest_size2 != src_size1 || dest_size1 != src_size2)
+    {
+      GSL_ERROR ("dimensions of dest matrix must be transpose of src matrix", 
+                 GSL_EBADLEN);
+    }
+
+  for (i = 0; i < dest_size1; i++)
+    {
+      for (j = 0 ; j < dest_size2; j++) 
+        {
+          for (k = 0; k < MULTIPLICITY; k++)
+            {
+              size_t e1 = (i *  dest->tda + j) * MULTIPLICITY + k ;
+              size_t e2 = (j *  src->tda + i) * MULTIPLICITY + k ;
+
+              dest->data[e1] = src->data[e2] ;
+            }
+        }
+    }
+
+  return GSL_SUCCESS;
+}
