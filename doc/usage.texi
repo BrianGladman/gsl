@@ -27,24 +27,21 @@ results.
 @cindex including GSL header files
 @cindex header files, including
 The library header files are installed in their own @code{gsl}
-directory. To include them you can write,
+directory. To include them you should write,
 
 @example
-#include <gsl/gsl_math.h>
+#include <gsl_math.h>
 @end example
 
 @noindent
-and provide the appropriate path to the preprocessor where
-necessary. For example, if the files are installed in the default
-location of @file{/usr/local/include} then the command line,
+and provide the appropriate path to the preprocessor. For example, if
+the gsl directory is installed in its default location of
+@file{/usr/local/include} then the following command line is
+appropriate,
 
 @example
-gcc -I/usr/local/include -c file.c
+gcc -I/usr/local/include/gsl -c file.c
 @end example
-
-@noindent 
-It is also possible to write @code{#include <gsl_math.h>} instead if you
-specify the full path to the directory as a compilation option. 
 
 @cindex compiling programs, library paths
 @cindex linking with GSL libraries

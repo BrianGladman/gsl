@@ -1,7 +1,9 @@
 TODO 
 
-* make all internal functions static, and all exported functions &
-variables prefixed with gsl_ or GSL_.
+* make all internal functions static, and have all exported functions
+& variables prefixed with gsl_ or GSL_.
+
+Usefule command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.
@@ -41,12 +43,11 @@ coverage testing.
 
 * Add swig.i files and swig demos so that swig can be run more easily
 
-* Redesign the interface to iterative function to use an init/do-while
+* Redesign the interface to iterative functions to use an init/do-while
 construct
 
 * Sine and Cosine Transforms from FFTPACK. A simple multidimensional
-fft. Put a pointer to FFTW in the documentation, recommending it for
-serious fft work.
+fft.
 
 * Some header files for physical constants (speed of light, etc),
 using data from the Particle Data Book. (e.g. gsl_physics.h, could

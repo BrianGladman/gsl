@@ -1133,156 +1133,18 @@ int main ()
 @center Low-pass filtered version of a real pulse, output from the example program.
 @end iftex
 
-
-@comment The fourier expansion of the square wave 
-@comment $$
-@comment f(x) = {4 \over \pi} (\cos x - {1 \over 3} \cos 3x + {1 \over 5} \cos
-@comment 5x - \dots)
-@comment $$
-
-
-@comment -@node Test Signals
-@comment -@section Test Signals
-@comment -@cindex FFT test signals
-
-@comment This section describes functions for generating simple test signals,
-@comment such as unit pulses, constant signals, complex exponentials (sine and
-@comment cosine waves) and pairs of complex exponentials with different
-@comment frequencies. The Fourier transforms for these signals can be calculated
-@comment analytically. Each function returns both the test signal and its Fourier
-@comment transform.
-
-@comment There are also some routines for generating white noise. In this case
-@comment the transform cannot be calculated analytically, and is computed using a
-@comment brute-force discrete Fourier transform. This may be slow but it is easy
-@comment to check and independent of all the other routines.
-
-@comment These functions are declared in the header file @file{gsl_fft_signals.h}.
-
-@comment -@deftypefun int gsl_fft_signal_complex_pulse (size_t @var{t}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
-
-@comment This function prepares a ``delta-function'' pulse of complex amplitude
-@comment (@var{z_real},@var{z_imag}) at time @var{t} in the complex array
-@comment -@var{data} of length @var{n}. The pulse only occupies one array element.
-@comment All other elements of @var{data} are set to zero. The function also
-@comment returns the fourier transform of the pulse in the complex array
-@comment -@var{fft}, also of length @var{n}.
-
-@comment Writing @math{z} as (@math{z_@{real@} + i z_@{imag@}}), the mathematical
-@comment definition of the pulse is,
-@comment -@equation{
-@comment z_k =  z \delta_@{kt@},
-@comment -}
-@comment -@noindent
-@comment where @math{\delta_@{kt@}=1} if @math{k=t}, and 0 otherwise. The fourier
-@comment transform is,
-
-@comment -@equation{
-@comment x_j = \sum_@{k=0@}^@{n-1@} z \delta_@{kt@} \exp(-2\pi i j k/n)
-@comment     = z \exp(-2\pi i j t/n)
-@comment -}
-@comment -@end deftypefun
-
-@comment -@deftypefun int gsl_fft_signal_complex_constant (size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, complex @var{fft[]})
-
-@comment This function prepares a constant complex signal of amplitude
-@comment (@var{z_real},@var{z_imag}) in the complex array @var{data} of length
-@comment -@var{n}. The function also returns the fourier transform of the constant
-@comment in the complex array @var{fft}, also of length @var{n}.
-
-@comment The mathematical definition of the constant signal is, 
-
-@comment -@equation{
-@comment z_k = z
-@comment -}
-@comment -@noindent
-@comment and the fourier transform is,
-
-@comment -@equation{
-@comment x_j = \sum_@{k=0@}^@{n-1@} z \exp(-2\pi i j k/n)
-@comment     = z n \delta_@{j0@}
-@comment -}
-@comment -@end deftypefun
-
-@comment -@deftypefun int gsl_fft_signal_complex_exp (int @var{f}, size_t @var{stride}, size_t @var{n}, double @var{z_real}, double @var{z_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
-
-@comment This function prepares a complex exponential signal of amplitude
-@comment (@var{z_real},@var{z_imag}) and frequency @var{f} in the complex array
-@comment -@var{data} of length @var{n}. The function also returns the fourier
-@comment transform of the signal in the complex array @var{fft}, also of length
-@comment -@var{n}.
-
-@comment The mathematical definition of the complex exponential signal is,
-
-@comment -@equation{
-@comment z_k = z \exp(2\pi i k f/n)
-@comment -}
-@comment -@noindent
-
-@comment and the fourier transform is,
-
-@comment -@equation{
-@comment x_j = \sum_@{k=0@}^@{n-1@} z \exp(2\pi i k f/n) \exp(-2\pi i j k/n)
-@comment     = z n \delta_@{j,f@}
-@comment -}
-@comment -@end deftypefun
-
-@comment -@deftypefun int gsl_fft_signal_complex_exppair (int @var{f1}, int @var{f2}, size_t @var{stride}, size_t @var{n}, double @var{z1_real}, double @var{z1_imag}, double @var{z2_real}, double @var{z2_imag}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
-
-@comment This function prepares a pair of exponential signals of amplitude
-@comment (@var{z1_real},@var{z1_imag}) and (@var{z2_real},@var{z2_imag}) with
-@comment frequencies @var{f1} and @var{f2} in the complex array @var{data} of
-@comment length @var{n}. The function also returns the fourier transform of the
-@comment signal in the complex array @var{fft}, also of length @var{n}.
-
-@comment The mathematical definition of the pair of exponential signals is,
-
-@comment -@equation{
-@comment z_k = z_1 \exp(2\pi i k f_1/n) + z_2 \exp(2\pi i k f_2/n)
-@comment -}
-@comment -@noindent
-@comment and the fourier transform is,
-
-@comment -@equation{
-@comment x_j =  z_1 n \delta_@{j,f_1@}  + z_2 n \delta_@{j,f_2@}
-@comment -}
-@comment -@end deftypefun
-
-@comment -@deftypefun int gsl_fft_signal_complex_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
-
-@comment This function prepares a complex white-noise signal in the complex array
-@comment -@var{data} of length @var{n}. The real and imaginary components of each
-@comment array element are independent uniform distributed random values in the
-@comment range [0,1] (computed using the system @code{rand} function). The
-@comment function also returns the fourier transform of the signal in the complex
-@comment array @var{fft}, also of length @var{n}. The fourier transform is
-@comment computed using the brute-force discrete fourier transform
-@comment -@code{gsl_dft_complex_forward}. Note that the direct computation of the
-@comment discrete fourier transform has worse numerical stability than an FFT, so
-@comment the array @var{fft} is only useful in detecting large errors.
-
-@comment -@end deftypefun
-
-@comment -@deftypefun int gsl_fft_signal_real_noise (size_t @var{n}, gsl_complex_packed_array @var{data[]}, gsl_complex_packed_array @var{fft[]})
-
-@comment This function generates real white noise instead of complex white noise.
-@comment It is the same as @code{gsl_fft_signal_complex_noise} but with the
-@comment imaginary parts of @var{data} explicitly set to zero.
-
-@comment -@end deftypefun
-
-@comment All these functions return a value of @code{0} if no errors were
-@comment detected, and @code{-1} in the case of error. There is only one
-@comment -@code{gsl_errno} condition defined for these functions:
-
-@comment -@table @code
-@comment -@item GSL_EDOM
-@comment The length of the data @var{n} is not a positive integer (i.e. @var{n}
-@comment is zero).
-@comment -@end table
-
 @node FFT References and Further Reading
 @section References and Further Reading
+
+For serious FFT work we recommend the use of the dedicated FFTW library
+by Frigo and Johnson. The FFTW library is self-optimizing --- it
+automatically tunes itself for each hardware platform in order to
+achieve maximum performance. It is available under the GNU GPL.
+
+@itemize @asis
+@item
+FFTW Website, @url{http://www.fftw.org/}
+@end itemize
 
 @noindent
 A good starting point for learning more about the FFT is the review

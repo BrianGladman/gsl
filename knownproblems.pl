@@ -10,6 +10,9 @@ The errors below have been automatically extracted from the output of
 If you find a bug which is not on this list please report it to the
 mailing list gsl-discuss\@sourceware.cygnus.com. Thank you.
 
+p.s. If you want to send us the output of 'make check' please use gzip
+to compress it, because the resulting file is huge.
+
 EOF
 
 print "-" x 79, "\n\n" ;
