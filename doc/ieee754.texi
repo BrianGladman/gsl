@@ -244,12 +244,9 @@ exceptions, such as division by zero.
 Many of these features can now be controlled via standard functions such
 as @code{fpsetround}, which should be used whenever they are available.
 Unfortunately in the past there has been no universal API for
-controlling their behavior -- each system has had its own way of
-accessing them.  For example, the Linux kernel provides the function
-@code{__setfpucw} (@dfn{set-fpu-control-word}) to set IEEE modes, while
-HP-UX and Solaris use the functions @code{fpsetround} and
-@code{fpsetmask}.  To help you write portable programs GSL allows you to
-specify modes in a platform-independent way using the environment
+controlling their behavior -- each system has had its own low-level way
+of accessing them.  To help you write portable programs GSL allows you
+to specify modes in a platform-independent way using the environment
 variable @code{GSL_IEEE_MODE}.  The library then takes care of all the
 necessary machine-specific initializations for you when you call the
 function @code{gsl_ieee_env_setup}.

@@ -223,7 +223,7 @@ All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
 @deftypefun int gsl_fft_complex_radix2_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
 
 @deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
@@ -232,7 +232,9 @@ All these functions are declared in the header file @file{gsl_fft_complex.h}.
 These functions compute forward, backward and inverse FFTs of length
 @var{n} with stride @var{stride}, on the packed complex array @var{data}
 using an in-place radix-2 decimation-in-time algorithm.  The length of
-the transform @var{n} is restricted to powers of two.
+the transform @var{n} is restricted to powers of two.  For the
+@code{transform} version of the function the @var{sign} argument can be
+either @code{forward} (-1) or @code{backward} (+1).
 
 The functions return a value of @code{GSL_SUCCESS} if no errors were
 detected, or @code{GSL_EDOM} if the length of the data @var{n} is not a
@@ -241,7 +243,7 @@ power of two.
 
 @deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
-@deftypefunx int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, gsl_fft_direction @var{sign})
 
 @deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
@@ -463,7 +465,7 @@ factors for each pass.
 @end table
 @end deftp
 @noindent
-The mixed radix algorithms require an additional working space to hold
+The mixed radix algorithms require additional working space to hold
 the intermediate steps of the transform.
 
 @deftypefun {gsl_fft_complex_workspace *} gsl_fft_complex_workspace_alloc (size_t @var{n})
@@ -492,7 +494,7 @@ same length will be needed.
 The following functions compute the transform,
 
 @deftypefun int gsl_fft_complex_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
-@deftypefunx int gsl_fft_complex_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
+@deftypefunx int gsl_fft_complex_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work}, gsl_fft_direction @var{sign})
 @deftypefunx int gsl_fft_complex_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
 @deftypefunx int gsl_fft_complex_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable}, gsl_fft_complex_workspace * @var{work})
 
@@ -503,7 +505,9 @@ There is no restriction on the length @var{n}.  Efficient modules are
 provided for subtransforms of length 2, 3, 4, 5, 6 and 7.  Any remaining
 factors are computed with a slow, @math{O(n^2)}, general-@math{n}
 module. The caller must supply a @var{wavetable} containing the
-trigonometric lookup tables and a workspace @var{work}.
+trigonometric lookup tables and a workspace @var{work}.  For the
+@code{transform} version of the function the @var{sign} argument can be
+either @code{forward} (-1) or @code{backward} (+1).
 
 The functions return a value of @code{0} if no errors were detected. The
 following @code{gsl_errno} conditions are defined for these functions:
@@ -852,12 +856,12 @@ These functions free the memory associated with the wavetable
 same length will be needed.
 @end deftypefun
 @noindent
-The mixed radix algorithms require an additional working space to hold
+The mixed radix algorithms require additional working space to hold
 the intermediate steps of the transform,
 
 @deftypefun {gsl_fft_real_workspace *} gsl_fft_real_workspace_alloc (size_t @var{n})
 This function allocates a workspace for a real transform of length
-@var{n}.  The same workspace is used for both forward real and inverse
+@var{n}.  The same workspace can be used for both forward real and inverse
 halfcomplex transforms.
 @end deftypefun
 
@@ -1043,7 +1047,7 @@ Fast fourier transforms: A tutorial review and a state of the art.
 @end itemize
 @noindent
 To find out about the algorithms used in the GSL routines you may want
-to consult the latex document @cite{GSL FFT Algorithms} (it is included
+to consult the document @cite{GSL FFT Algorithms} (it is included
 in GSL, as @file{doc/fftalgorithms.tex}).  This has general information
 on FFTs and explicit derivations of the implementation for each
 routine.  There are also references to the relevant literature.  For

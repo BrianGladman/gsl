@@ -1,4 +1,5 @@
 @cindex exponential integrals
+@cindex integrals, exponential
 
 Information on the exponential integrals can be found in Abramowitz &
 Stegun, Chapter 5.  These functions are declared in the header file
@@ -15,7 +16,7 @@ Stegun, Chapter 5.  These functions are declared in the header file
 
 @node Exponential Integral
 @subsection Exponential Integral
-
+@cindex E1(x), E2(x), Ei(x)
 
 @deftypefun double gsl_sf_expint_E1 (double @var{x})
 @deftypefunx int gsl_sf_expint_E1_e (double @var{x}, gsl_sf_result * @var{result})
@@ -84,6 +85,9 @@ where @math{PV} denotes the principal value of the integral.
 
 @node Hyperbolic Integrals
 @subsection Hyperbolic Integrals
+@cindex hyperbolic integrals
+@cindex Shi(x)
+@cindex Chi(x)
 
 @deftypefun double gsl_sf_Shi (double @var{x})
 @deftypefunx int gsl_sf_Shi_e (double @var{x}, gsl_sf_result * @var{result})
@@ -113,7 +117,9 @@ dt \exp(-t^3)} for @c{$x \ge 0$}
 
 @node Trigonometric Integrals
 @subsection Trigonometric Integrals
-
+@cindex trigonometric integrals
+@cindex Si(x)
+@cindex Ci(x)
 @deftypefun double gsl_sf_Si (const double @var{x})
 @deftypefunx int gsl_sf_Si_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Sine integral
@@ -133,7 +139,7 @@ These routines compute the Cosine integral @math{Ci(x) = -\int_x^\infty dt
 
 @node Arctangent Integral
 @subsection Arctangent Integral
-
+@cindex arctangent integral
 @deftypefun double gsl_sf_atanint (double @var{x})
 @deftypefunx int gsl_sf_atanint_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Arctangent integral @math{AtanInt(x) =
@@ -141,3 +147,4 @@ These routines compute the Arctangent integral @math{AtanInt(x) =
 @comment Domain: 
 @comment Exceptional Return Values: 
 @end deftypefun
+

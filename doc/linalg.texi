@@ -60,6 +60,7 @@ triangular matrix and @math{U} is upper triangular matrix. For square
 matrices this decomposition can be used to convert the linear system
 @math{A x = b} into a pair of triangular systems (@math{L y = P b},
 @math{U x = y}), which can be solved by forward and back-substitution.
+Note that the @math{LU} decomposition is valid for singular matrices.
 
 @deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
 @deftypefunx int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
@@ -431,7 +432,8 @@ This routine uses the Golub-Reinsch SVD algorithm.
 
 @deftypefun int gsl_linalg_SV_decomp_mod (gsl_matrix * @var{A}, gsl_matrix * @var{X}, gsl_matrix * @var{V}, gsl_vector * @var{S}, gsl_vector * @var{work})
 This function computes the SVD using the modified Golub-Reinsch
-algorithm, which is faster for @math{M>>N}.  It requires the vector
+algorithm, which is faster for @c{$M \gg N$}
+@math{M>>N}.  It requires the vector
 @var{work} and the @math{N}-by-@math{N} matrix @var{X} as additional
 working space.
 @end deftypefun
@@ -863,7 +865,7 @@ G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
 @end itemize
 @noindent
-The @sc{lapack} library is described in,
+The @sc{lapack} library is described in the following manual,
 
 @itemize @asis
 @item

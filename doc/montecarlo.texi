@@ -1,5 +1,5 @@
 @cindex Monte Carlo integration
-
+@cindex stratified sampling in monte carlo integration
 This chapter describes routines for multidimensional Monte Carlo
 integration.  These include the traditional Monte Carlo method and
 adaptive algorithms such as @sc{vegas} and @sc{miser} which use
@@ -42,10 +42,11 @@ The functions are defined in separate header files for each routine,
 
 @node Monte Carlo Interface
 @section Interface
-All of the Monte Carlo integration routines use the same interface.
-There is an allocator to allocate memory for control variables and
-workspace, a routine to initialize those control variables, the
-integrator itself, and a function to free the space when done.
+All of the Monte Carlo integration routines use the same general form of
+interface.  There is an allocator to allocate memory for control
+variables and workspace, a routine to initialize those control
+variables, the integrator itself, and a function to free the space when
+done.
 
 Each integration function requires a random number generator to be
 supplied, and returns an estimate of the integral and its standard
@@ -208,7 +209,7 @@ the random number generator @var{r}. A previously allocated workspace
 @var{result}, with an estimated absolute error @var{abserr}.
 @end deftypefun
 
-@deftypefun void gsl_monte_plain_free (gsl_monte_plain_state* @var{s}), 
+@deftypefun void gsl_monte_plain_free (gsl_monte_plain_state * @var{s})
 This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
@@ -306,7 +307,7 @@ the random number generator @var{r}. A previously allocated workspace
 @var{result}, with an estimated absolute error @var{abserr}.
 @end deftypefun
 
-@deftypefun void gsl_monte_miser_free (gsl_monte_miser_state* @var{s}), 
+@deftypefun void gsl_monte_miser_free (gsl_monte_miser_state * @var{s}) 
 This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
@@ -444,7 +445,7 @@ this will increase the efficiency of integration with @sc{vegas}.
 
 @sc{vegas} incorporates a number of additional features, and combines both
 stratified sampling and importance sampling.  The integration region is
-divided into a number of ``boxes'', with each box getting in fixed
+divided into a number of ``boxes'', with each box getting a fixed
 number of points (the goal is 2).  Each box can then have a fractional
 number of bins, but if bins/box is less than two, Vegas switches to a
 kind variance reduction (rather than importance sampling).
@@ -477,7 +478,7 @@ is returned via the state struct component, @var{s->chisq}, and must be
 consistent with 1 for the weighted average to be reliable.
 @end deftypefun
 
-@deftypefun void gsl_monte_vegas_free (gsl_monte_vegas_state* @var{s}), 
+@deftypefun void gsl_monte_vegas_free (gsl_monte_vegas_state * @var{s})
 This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun

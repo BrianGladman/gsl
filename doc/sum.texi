@@ -75,7 +75,7 @@ extrapolated value itself. Consequently this algorithm is an @math{O(N)}
 process and only requires @math{O(N)} terms of storage.  If the series
 converges sufficiently fast then this procedure can be acceptable.  It
 is appropriate to use this method when there is a need to compute many
-extrapolations of series with similar converge properties at high-speed.
+extrapolations of series with similar convergence properties at high-speed.
 For example, when numerically integrating a function defined by a
 parameterized series where the parameter varies only slightly. A
 reliable error estimate should be computed first using the full

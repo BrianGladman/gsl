@@ -159,7 +159,7 @@ overall convergence behavior of the integration.
 @node QNG non-adaptive Gauss-Kronrod integration
 @section QNG non-adaptive Gauss-Kronrod integration
 
-The QNG algorithm is non-adaptive procedure which uses fixed
+The QNG algorithm is a non-adaptive procedure which uses fixed
 Gauss-Kronrod abscissae to sample the integrand at a maximum of 87
 points.  It is provided for fast integration of smooth functions.
 
@@ -262,7 +262,7 @@ workspace.
 
 @node QAGP adaptive integration with known singular points
 @section QAGP adaptive integration with known singular points
-
+@cindex singular points, specifying positions in quadrature
 @deftypefun int gsl_integration_qagp (const gsl_function * @var{f}, double *@var{pts}, size_t @var{npts}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
 
 This function applies the adaptive integration algorithm QAGS taking
@@ -371,7 +371,7 @@ and then integrated using the QAGS algorithm.
 
 @node  QAWC adaptive integration for Cauchy principal values
 @section QAWC adaptive integration for Cauchy principal values
-
+@cindex Cauchy principal value, by numerical quadrature
 @deftypefun int gsl_integration_qawc (gsl_function *@var{f}, double @var{a}, double @var{b}, double @var{c}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double * @var{result}, double * @var{abserr})
 
 This function computes the Cauchy principal value of the integral of
@@ -409,7 +409,7 @@ integration rule.
 
 @node  QAWS adaptive integration for singular functions
 @section QAWS adaptive integration for singular functions
-
+@cindex singular functions, numerical integration of
 The QAWS algorithm is designed for integrands with algebraic-logarithmic
 singularities at the end-points of an integration region.  In order to
 work efficiently the algorithm requires a precomputed table of
@@ -516,7 +516,7 @@ Gauss-Kronrod integration rule is used.
 
 @node  QAWO adaptive integration for oscillatory functions
 @section QAWO adaptive integration for oscillatory functions
-
+@cindex oscillatory functions, numerical integration of
 The QAWO algorithm is designed for integrands with an oscillatory
 factor, @math{\sin(\omega x)} or @math{\cos(\omega x)}.  In order to
 work efficiently the algorithm requires a table of Chebyschev moments
@@ -586,7 +586,7 @@ This function frees all the memory associated with the workspace @var{t}.
 This function uses an adaptive algorithm to compute the integral of
 @math{f} over @math{(a,b)} with the weight function 
 @math{\sin(\omega x)} or @math{\cos(\omega x)} defined 
-by the table @var{wf}.
+by the table @var{wf},
 
 @tex
 \beforedisplay

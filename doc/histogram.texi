@@ -11,9 +11,8 @@ default).  Both one and two-dimensional histograms are supported.
 
 Once a histogram has been created it can also be converted into a
 probability distribution function.  The library provides efficient
-routines for selecting random samples from probability
-distributions.  This can be useful for generating simulations based real
-data.
+routines for selecting random samples from probability distributions.
+This can be useful for generating simulations based on real data.
 
 The functions are declared in the header files @file{gsl_histogram.h}
 and @file{gsl_histogram2d.h}.
@@ -229,7 +228,7 @@ bin[n-1] corresponds to xmin + (n-1)d <= x < xmax
 where @math{d} is the bin spacing, @math{d = (xmax-xmin)/n}.
 @end deftypefun
 
-@deftypefun void gsl_histogram_free (gsl_histogram * h)
+@deftypefun void gsl_histogram_free (gsl_histogram * @var{h})
 This function frees the histogram @var{h} and all of the memory
 associated with it.
 @end deftypefun
@@ -256,7 +255,7 @@ There are two ways to access histogram bins, either by specifying an
 for accessing the histogram through @math{x} coordinates use a binary
 search to identify the bin which covers the appropriate range.
 
-@deftypefun int gsl_histogram_increment (gsl_histogram * h, double x)
+@deftypefun int gsl_histogram_increment (gsl_histogram * @var{h}, double @var{x})
 This function updates the histogram @var{h} by adding one (1.0) to the
 bin whose range contains the coordinate @var{x}. 
 
@@ -267,7 +266,7 @@ none of bins are modified.  Similarly, if the value of @var{x} is greater
 than or equal to the upper limit of the histogram then the function
 returns @code{GSL_EDOM}, and none of the bins are modified.  The error
 handler is not called, however, since it is often necessary to compute
-histogram for a small range of a larger dataset, ignoring the values
+histograms for a small range of a larger dataset, ignoring the values
 outside the range of interest.
 @end deftypefun
 
@@ -278,14 +277,14 @@ floating-point number @var{weight}.
 @end deftypefun
 
 @deftypefun double gsl_histogram_get (const gsl_histogram * @var{h}, size_t @var{i})
-This function returns the contents of the @var{i}th bin of the histogram
+This function returns the contents of the @var{i}-th bin of the histogram
 @var{h}.  If @var{i} lies outside the valid range of indices for the
 histogram then the error handler is called with an error code of
 @code{GSL_EDOM} and the function returns 0.
 @end deftypefun
 
 @deftypefun int gsl_histogram_get_range (const gsl_histogram * @var{h}, size_t @var{i}, double * @var{lower}, double * @var{upper})
-This function finds the upper and lower range limits of the @var{i}th
+This function finds the upper and lower range limits of the @var{i}-th
 bin of the histogram @var{h}.  If the index @var{i} is valid then the
 corresponding range limits are stored in @var{lower} and @var{upper}.
 The lower limit is inclusive (i.e. events with this coordinate are
@@ -330,7 +329,10 @@ handler is invoked.
 
 @node Histogram Statistics
 @section Histogram Statistics
-
+@cindex histogram statistics
+@cindex statistics, from histogram
+@cindex maximum value, from histogram
+@cindex minimum value, from histogram
 @deftypefun double gsl_histogram_max_val (const gsl_histogram * @var{h})
 This function returns the maximum value contained in the histogram bins.
 @end deftypefun
@@ -351,6 +353,7 @@ value. In the case where several bins contain the same maximum value the
 smallest index is returned.
 @end deftypefun
 
+@cindex mean value, from histogram
 @deftypefun double gsl_histogram_mean (const gsl_histogram * @var{h})
 This function returns the mean of the histogrammed variable, where the
 histogram is regarded as a probability distribution. Negative bin values
@@ -358,6 +361,8 @@ are ignored for the purposes of this calculation.  The accuracy of the
 result is limited by the bin width.
 @end deftypefun
 
+@cindex standard deviation, from histogram
+@cindex variance, from histogram
 @deftypefun double gsl_histogram_sigma (const gsl_histogram * @var{h})
 This function returns the standard deviation of the histogrammed
 variable, where the histogram is regarded as a probability
@@ -511,7 +516,10 @@ is assumed to be uniform.
 
 @node The histogram probability distribution struct
 @section The histogram probability distribution struct
-
+@cindex probability distribution, from histogram
+@cindex sampling from histograms
+@cindex random sampling from histograms
+@cindex histograms, random sampling from
 The probability distribution function for a histogram consists of a set
 of @dfn{bins} which measure the probability of an event falling into a
 given range of a continuous variable @math{x}. A probability
@@ -543,7 +551,7 @@ The following functions allow you to create a @code{gsl_histogram_pdf}
 struct which represents this probability distribution and generate
 random samples from it.
 
-@deftypefun {gsl_histogram_pdf *} gsl_histogram_pdf_alloc (size_t n)
+@deftypefun {gsl_histogram_pdf *} gsl_histogram_pdf_alloc (size_t @var{n})
 This function allocates memory for a probability distribution with
 @var{n} bins and returns a pointer to a newly initialized
 @code{gsl_histogram_pdf} struct. If insufficient memory is available a
@@ -841,9 +849,9 @@ bin whose x and y ranges contain the coordinates (@var{x},@var{y}).
 If the point @math{(x,y)} lies inside the valid ranges of the
 histogram then the function returns zero to indicate success.  If
 @math{(x,y)} lies outside the limits of the histogram then the
-function returns @code{GSL_EDOM}, and none of bins are modified.  The
+function returns @code{GSL_EDOM}, and none of the bins are modified.  The
 error handler is not called, since it is often necessary to compute
-histogram for a small range of a larger dataset, ignoring any
+histograms for a small range of a larger dataset, ignoring any
 coordinates outside the range of interest.
 @end deftypefun
 
@@ -862,8 +870,8 @@ code of @code{GSL_EDOM} and the function returns 0.
 
 @deftypefun int gsl_histogram2d_get_xrange (const gsl_histogram2d * @var{h}, size_t @var{i}, double * @var{xlower}, double * @var{xupper})
 @deftypefunx int gsl_histogram2d_get_yrange (const gsl_histogram2d * @var{h}, size_t @var{j}, double * @var{ylower}, double * @var{yupper})
-These functions find the upper and lower range limits of the @var{i}th
-and @var{j}th bins in the x and y directions of the histogram @var{h}.
+These functions find the upper and lower range limits of the @var{i}-th
+and @var{j}-th bins in the x and y directions of the histogram @var{h}.
 The range limits are stored in @var{xlower} and @var{xupper} or
 @var{ylower} and @var{yupper}.  The lower limits are inclusive
 (i.e. events with these coordinates are included in the bin) and the
@@ -1147,7 +1155,7 @@ The following functions allow you to create a @code{gsl_histogram2d_pdf}
 struct which represents a two dimensional probability distribution and
 generate random samples from it.
 
-@deftypefun {gsl_histogram2d_pdf *} gsl_histogram2d_pdf_alloc (size_t nx, size_t ny)
+@deftypefun {gsl_histogram2d_pdf *} gsl_histogram2d_pdf_alloc (size_t @var{nx}, size_t @var{ny})
 This function allocates memory for a two-dimensional probability
 distribution of size @var{nx}-by-@var{ny} and returns a pointer to a
 newly initialized @code{gsl_histogram2d_pdf} struct. If insufficient

@@ -2,7 +2,7 @@
 @node Chebyshev Polynomials
 @section Chebyshev Polynomials
 @cindex Chebyshev polynomials
-
+@cindex polynomials, Chebyshev
 The Chebyshev polynomials 
 @c{$T_n(x) = \cos(n \arccos x)$}
 @math{T_n(x) = \cos(n \arccos x)} provide an 
@@ -34,7 +34,8 @@ $$
 
 @node The gsl_sf_cheb_series struct
 @subsection The gsl_sf_cheb_series struct
-
+@cindex Chebyshev series
+@cindex series, Chebyshev
 @example
 typedef struct
 @{

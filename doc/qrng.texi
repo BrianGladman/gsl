@@ -61,7 +61,7 @@ This function returns a pointer to the name of the generator.
 
 @deftypefun size_t gsl_qrng_size (const gsl_qrng * @var{q})
 @deftypefunx {void *} gsl_qrng_state (const gsl_qrng * @var{q})
-These function return a pointer to the state of generator @var{r} and
+These functions return a pointer to the state of generator @var{r} and
 its size.  You can use this information to access the state directly.  For
 example, the following code will write the state of a generator to a
 stream,

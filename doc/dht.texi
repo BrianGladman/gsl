@@ -22,7 +22,7 @@ related to the zeroes of the sine or cosine function.
 
 Specifically, let @math{f(t)} be a function on the unit interval.
 Then the finite @math{\nu}-Hankel transform of @math{f(t)} is defined
-to be the set of numbers @math{g_m} given by
+to be the set of numbers @math{g_m} given by,
 
 @tex
 \beforedisplay
@@ -33,7 +33,7 @@ $$
 @end tex
 
 @noindent
-so that
+so that,
 
 @tex
 \beforedisplay
@@ -69,7 +69,7 @@ data.  The allocation function @code{gsl_dht_alloc} returns a
 @code{gsl_dht_init} before it can be used to perform transforms on data
 sample vectors, for fixed @math{\nu} and @math{M}, using the
 @code{gsl_dht_apply} function. The implementation allows a scaling of
-the fundamental interval, for convenience, so that one take assume the
+the fundamental interval, for convenience, so that one can assume the
 function is defined on the interval @math{[0,X]}, rather than the unit
 interval.
 

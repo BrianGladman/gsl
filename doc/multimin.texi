@@ -52,7 +52,7 @@ minimization of @math{n}-dimensional functions.  All algorithms
 proceed from an initial guess using a search algorithm which attempts
 to move in a downhill direction. 
 
-All algorithms making use of the gradient of the fuction perform a
+All algorithms making use of the gradient of the function perform a
 one-dimensional line minimisation along this direction until the lowest
 point is found to a suitable tolerance.  The search direction is then
 updated with local information from the function and its derivatives,
@@ -83,7 +83,7 @@ test @var{s} for convergence, and repeat iteration if necessary
 
 @noindent
 Each iteration step consists either of an improvement to the
-line-mimisation in the current direction or an update to the search
+line-minimisation in the current direction or an update to the search
 direction itself.  The state for the minimizers is held in a
 @code{gsl_multimin_fdfminimizer} struct or a
 @code{gsl_multimin_fminimizer} struct.
@@ -353,7 +353,7 @@ $$
 and returns @code{GSL_CONTINUE} otherwise.  A suitable choice of
 @var{epsabs} can be made from the desired accuracy in the function for
 small variations in @math{x}.  The relationship between these quantities
-is given by @c{$\delta f = g\,\delta x$}
+is given by @c{$\delta{f} = g\,\delta{x}$}
 @math{\delta f = g \delta x}.
 @end deftypefun
 
@@ -418,7 +418,7 @@ function minimum, assuming quadratic behavior in that region.
 @cindex Minimization, steepest descent algorithm
 The steepest descent algorithm follows the downhill gradient of the
 function at each step. When a downhill step is successful the step-size
-is increased by factor of two.  If the downhill step leads to a higher
+is increased by a factor of two.  If the downhill step leads to a higher
 function value then the algorithm backtracks and the step size is
 decreased using the parameter @var{tol}.  A suitable value of @var{tol}
 for most applications is 0.1.  The steepest descent method is
@@ -429,7 +429,7 @@ inefficient and is included only for demonstration purposes.
 @cindex Nelder-Mead simplex algorithm for minimization
 @cindex Simplex algorithm, minimization
 @cindex Minimization, simplex algorithm
-This is the Simplex algorithm by Nelder and Mead. It constructs 
+This is the Simplex algorithm of Nelder and Mead. It constructs 
 @math{n} vectors @math{p_i} from the
 starting vector @var{x} and the vector @var{step_size} as follows:
 @tex
@@ -455,19 +455,17 @@ p_n = (x_0, x_1, ... , x_n+step_size_n)
 @end example
 @end ifinfo
 @noindent
-that form the @math{n+1} vertices of a simplex in @math{n}
-dimensions.  In each iteration step the algorithm tries to improve
-the parameter vector @math{p_i} corresponding to the highest, i. e.
-worst, function value by simple geometrical transformations.  These
+These vectors form the @math{n+1} vertices of a simplex in @math{n}
+dimensions.  On each iteration step the algorithm tries to improve
+the parameter vector @math{p_i} corresponding to the highest
+function value by simple geometrical transformations.  These
 are reflection, reflection followed by expansion, contraction and multiple
 contraction. Using these transformations the simplex moves through 
 the parameter space towards the minimum, where it contracts itself.  
 
-After each iteration, the best vertex is returned.
-Note, that due to the nature of the algorithm 
-(getting rid of the worst estimate), every
-iteration doesn't necessarily improve the current best parameter vector.
-Usually several iterations are required.
+After each iteration, the best vertex is returned.  Note, that due to
+the nature of the algorithm not every step improves the current
+best parameter vector.  Usually several iterations are required.
 
 The routine calculates the minimizer specific characteristic size as the
 average distance from the geometrical center of the simplex to all its
@@ -508,7 +506,6 @@ main (void)
   my_func.params = &par;
 
   /* Starting point, x = (5,7) */
-
   x = gsl_vector_alloc (2);
   gsl_vector_set (x, 0, 5.0);
   gsl_vector_set (x, 1, 7.0);
@@ -599,38 +596,22 @@ main(void)
   gsl_multimin_function minex_func;
 
   size_t iter = 0, i;
-  int rval = GSL_CONTINUE;
-  int status = GSL_SUCCESS;
-  double ssval;
+  int status;
+  double size;
 
   /* Initial vertex size vector */
-
   ss = gsl_vector_alloc (np);
 
-  if (ss == NULL)
-    @{
-      GSL_ERROR_VAL ("failed to allocate space for ss", GSL_ENOMEM, 0);
-    @}
-  
   /* Set all step sizes to 1 */
-
   gsl_vector_set_all (ss, 1.0);
 
   /* Starting point */
-
   x = gsl_vector_alloc (np);
 
-  if (x == NULL)
-    @{
-      gsl_vector_free(ss);
-      GSL_ERROR_VAL ("failed to allocate space for x", GSL_ENOMEM, 0);
-    @}
-  
   gsl_vector_set (x, 0, 5.0);
   gsl_vector_set (x, 1, 7.0);
 
   /* Initialize method and iterate */
-
   minex_func.f = &my_f;
   minex_func.n = np;
   minex_func.params = (void *)&par;
@@ -638,7 +619,7 @@ main(void)
   s = gsl_multimin_fminimizer_alloc (T, np);
   gsl_multimin_fminimizer_set (s, &minex_func, x, ss);
 
-  while (rval == GSL_CONTINUE)
+  do
     @{
       iter++;
       status = gsl_multimin_fminimizer_iterate(s);
@@ -646,20 +627,22 @@ main(void)
       if (status) 
         break;
 
-      rval = gsl_multimin_test_size (gsl_multimin_fminimizer_size (s),
-                                     1e-2);
-      ssval = gsl_multimin_fminimizer_size (s);
+      size = gsl_multimin_fminimizer_size (s);
+      status = gsl_multimin_test_size (size, 1e-2);
 
-      if (rval == GSL_SUCCESS)
-        printf ("converged to minimum at\n");
+      if (status == GSL_SUCCESS)
+        @{
+          printf ("converged to minimum at\n");
+        @}
 
       printf ("%5d ", iter);
       for (i = 0; i < np; i++)
         @{
           printf ("%10.3e ", gsl_vector_get (s->x, i));
         @}
-      printf ("f() = %-10.3f ssize = %.3f\n", s->fval, ssval);
+      printf ("f() = %7.3f size = %.3f\n", s->fval, size);
     @}
+  while (status == GSL_CONTINUE && iter < 100);
   
   gsl_vector_free(x);
   gsl_vector_free(ss);
@@ -673,32 +656,32 @@ The minimum search stops when the Simplex size drops to 0.01. The output is
 shown below.
 
 @example
-    1  6.500e+00  5.000e+00 f() = 512.500    ssize = 1.082
-    2  5.250e+00  4.000e+00 f() = 290.625    ssize = 1.372
-    3  5.250e+00  4.000e+00 f() = 290.625    ssize = 1.372
-    4  5.500e+00  1.000e+00 f() = 252.500    ssize = 1.372
-    5  2.625e+00  3.500e+00 f() = 101.406    ssize = 1.823
-    6  3.469e+00  1.375e+00 f() = 98.760     ssize = 1.526
-    7  1.820e+00  3.156e+00 f() = 63.467     ssize = 1.105
-    8  1.820e+00  3.156e+00 f() = 63.467     ssize = 1.105
-    9  1.016e+00  2.812e+00 f() = 43.206     ssize = 1.105
-   10  2.041e+00  2.008e+00 f() = 40.838     ssize = 0.645
-   11  1.236e+00  1.664e+00 f() = 32.816     ssize = 0.645
-   12  1.236e+00  1.664e+00 f() = 32.816     ssize = 0.447
-   13  5.225e-01  1.980e+00 f() = 32.288     ssize = 0.447
-   14  1.103e+00  2.073e+00 f() = 30.214     ssize = 0.345
-   15  1.103e+00  2.073e+00 f() = 30.214     ssize = 0.264
-   16  1.103e+00  2.073e+00 f() = 30.214     ssize = 0.160
-   17  9.864e-01  1.934e+00 f() = 30.090     ssize = 0.132
-   18  9.190e-01  1.987e+00 f() = 30.069     ssize = 0.092
-   19  1.028e+00  2.017e+00 f() = 30.013     ssize = 0.056
-   20  1.028e+00  2.017e+00 f() = 30.013     ssize = 0.046
-   21  1.028e+00  2.017e+00 f() = 30.013     ssize = 0.033
-   22  9.874e-01  1.985e+00 f() = 30.006     ssize = 0.028
-   23  9.846e-01  1.995e+00 f() = 30.003     ssize = 0.023
-   24  1.007e+00  2.003e+00 f() = 30.001     ssize = 0.012
-converged to minimum at
-   25  1.007e+00  2.003e+00 f() = 30.001     ssize = 0.010
+    1  6.500e+00  5.000e+00 f() = 512.500 size = 1.082
+    2  5.250e+00  4.000e+00 f() = 290.625 size = 1.372
+    3  5.250e+00  4.000e+00 f() = 290.625 size = 1.372
+    4  5.500e+00  1.000e+00 f() = 252.500 size = 1.372
+    5  2.625e+00  3.500e+00 f() = 101.406 size = 1.823
+    6  3.469e+00  1.375e+00 f() = 98.760  size = 1.526
+    7  1.820e+00  3.156e+00 f() = 63.467  size = 1.105
+    8  1.820e+00  3.156e+00 f() = 63.467  size = 1.105
+    9  1.016e+00  2.812e+00 f() = 43.206  size = 1.105
+   10  2.041e+00  2.008e+00 f() = 40.838  size = 0.645
+   11  1.236e+00  1.664e+00 f() = 32.816  size = 0.645
+   12  1.236e+00  1.664e+00 f() = 32.816  size = 0.447
+   13  5.225e-01  1.980e+00 f() = 32.288  size = 0.447
+   14  1.103e+00  2.073e+00 f() = 30.214  size = 0.345
+   15  1.103e+00  2.073e+00 f() = 30.214  size = 0.264
+   16  1.103e+00  2.073e+00 f() = 30.214  size = 0.160
+   17  9.864e-01  1.934e+00 f() = 30.090  size = 0.132
+   18  9.190e-01  1.987e+00 f() = 30.069  size = 0.092
+   19  1.028e+00  2.017e+00 f() = 30.013  size = 0.056
+   20  1.028e+00  2.017e+00 f() = 30.013  size = 0.046
+   21  1.028e+00  2.017e+00 f() = 30.013  size = 0.033
+   22  9.874e-01  1.985e+00 f() = 30.006  size = 0.028
+   23  9.846e-01  1.995e+00 f() = 30.003  size = 0.023
+   24  1.007e+00  2.003e+00 f() = 30.001  size = 0.012
+converged to minimum at                  
+   25  1.007e+00  2.003e+00 f() = 30.001  size = 0.010
 @end example
 @noindent
 The simplex size first increases, while the simplex moves towards the

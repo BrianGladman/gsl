@@ -135,7 +135,7 @@ for @c{$m \ge 0$}
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_array_size (const int @var{lmax}, const int @var{m})
-This functions returns the size of @var{result_array}[] needed for the array
+This function returns the size of @var{result_array}[] needed for the array
 versions of @math{P_l^m(x)}, @var{lmax} - @var{m} + 1.
 @comment Exceptional Return Values: none
 @end deftypefun

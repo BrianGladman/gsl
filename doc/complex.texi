@@ -213,7 +213,7 @@ This function returns the square root of the complex number @var{z},
 always lies in the right half of the complex plane.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_sqrt_real (double x)
+@deftypefun gsl_complex gsl_complex_sqrt_real (double @var{x})
 This function returns the complex square root of the real number
 @var{x}, where @var{x} may be negative.
 @end deftypefun

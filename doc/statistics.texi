@@ -304,7 +304,7 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @node Autocorrelation
 @section Autocorrelation
 
-@deftypefun double gsl_stats_lag1_autocorrelation (const double data[], const size_t @var{stride}, const size_t @var{n})
+@deftypefun double gsl_stats_lag1_autocorrelation (const double @var{data}[], const size_t @var{stride}, const size_t @var{n})
 This function computes the lag-1 autocorrelation of the dataset @var{data}.
 
 @tex
@@ -327,7 +327,7 @@ a_1 = @{\sum_@{i = 1@}^@{n@} (x_@{i@} - \Hat\mu) (x_@{i-1@} - \Hat\mu)
 @end deftypefun
 
 
-@deftypefun double gsl_stats_lag1_autocorrelation_m (const double data[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
+@deftypefun double gsl_stats_lag1_autocorrelation_m (const double @var{data}[], const size_t @var{stride}, const size_t @var{n}, const double @var{mean})
 This function computes the lag-1 autocorrelation of the dataset
 @var{data} using the given value of the mean @var{mean}.
 
@@ -337,7 +337,7 @@ This function computes the lag-1 autocorrelation of the dataset
 @section Covariance
 @cindex covariance, of two datasets
 
-@deftypefun double gsl_stats_covariance (const double @var{data1}[], const size_t @var{stride1}, const double data2[], const size_t @var{stride2}, const size_t @var{n})
+@deftypefun double gsl_stats_covariance (const double @var{data1}[], const size_t @var{stride1}, const double @var{data2}[], const size_t @var{stride2}, const size_t @var{n})
 This function computes the covariance of the datasets @var{data1} and
 @var{data2} which must both be of the same length @var{n}.
 

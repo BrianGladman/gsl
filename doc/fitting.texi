@@ -1,7 +1,7 @@
 @cindex fitting
 @cindex least squares fit
 @cindex regression, least squares
-
+@cindex weighted linear fits
 This chapter describes routines for performing least squares fits to
 experimental data using linear combinations of functions. The data may
 be weighted or unweighted.  For weighted data the functions compute the
@@ -22,7 +22,7 @@ the header file @file{gsl_fit.h}
 
 @node   Linear regression
 @section Linear regression
-
+@cindex linear regression
 The functions described in this section can be used to perform
 least-squares fits to a straight line model, @math{Y = c_0 + c_1 X}.
 For weighted data the best-fit is found by minimizing the weighted sum of
@@ -45,6 +45,7 @@ $$
 for the parameters @math{c_0}, @math{c_1}.  For unweighted data the
 sum is computed with @math{w_i = 1}.
 
+@cindex covariance matrix, from linear regression
 @deftypefun int gsl_fit_linear (const double * @var{x}, const size_t @var{xstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c0}, double * @var{c1}, double * @var{cov00}, double * @var{cov01}, double * @var{cov11}, double * @var{sumsq})
 This function computes the best-fit linear regression coefficients
 (@var{c0},@var{c1}) of the model @math{Y = c_0 + c_1 X} for the datasets
@@ -137,7 +138,8 @@ c_1 X} at the point @var{x}.
 
 @node Multi-parameter fitting
 @section Multi-parameter fitting
-
+@cindex multi-parameter regression
+@cindex fits, multi-parameter linear
 The functions described in this section perform least-squares fits to a
 general linear model, @math{y = X c} where @math{y} is a vector of
 @math{n} observations, @math{X} is an @math{n} by @math{p} matrix of
@@ -548,6 +550,8 @@ The Review of Particle Physics is available online at the website given
 above.
 
 @noindent
+@cindex NIST Statistical Reference Datasets
+@cindex Statistical Reference Datasets (StRD)
 The tests used to prepare these routines are based on the NIST
 Statistical Reference Datasets. The datasets and their documentation are
 available from NIST at the following website,

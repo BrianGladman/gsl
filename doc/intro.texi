@@ -139,11 +139,8 @@ int
 main (void)
 @{
   double x = 5.0;
-
   double y = gsl_sf_bessel_J0 (x);
-
   printf ("J0(%g) = %.18e\n", x, y);
-
   return 0;
 @}
 @end example
@@ -166,6 +163,37 @@ The software described in this manual has no warranty, it is provided
 routines and their accuracy using the source code provided.  Consult the
 GNU General Public license for further details (@pxref{GNU General
 Public License}).
+
+@node  Reporting Bugs
+@section Reporting Bugs
+@cindex reporting bugs in GSL
+@cindex bugs, how to report
+@cindex bug-gsl mailing list
+@cindex mailing list, bug-gsl
+A list of known bugs can be found in the @file{BUGS} file included in
+the GSL distribution.  Details of compilation problems can be found in
+the @file{INSTALL} file.
+
+If you find a bug which is not listed in these files please report it to
+@email{bug-gsl@@gnu.org}.
+
+All bug reports should include:
+
+@itemize @bullet
+@item
+The version number of GSL
+@item
+The hardware and operating system
+@item
+The compiler used, including version number and compilation options
+@item
+A description of the bug behavior
+@item
+A short program which exercises the bug
+@end itemize
+@noindent
+It is also useful if you can report whether the same problem occurs
+when the library is compiled without optimization. Thank you.
 
 @node  Further Information,  , No Warranty, Introduction
 @section Further Information

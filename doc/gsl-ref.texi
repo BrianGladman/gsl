@@ -118,7 +118,7 @@ A copy of the license is included in the section entitled ``GNU
 Free Documentation License''.
 
 The Texinfo source for this manual may be obtained from
-@code{ftp.gnu.org} in the directory @code{/gnu/gsl/}.
+@code{http://www.network-theory.co.uk/gsl/manual/src/}.
 @end copying
 @end iftex
 
@@ -187,7 +187,7 @@ Email: info@@network-theory.co.uk
 
 ISBN 0-9541617-3-4
 
-Cover design by David Nicholls.
+Original cover design by David Nicholls.
 
 Further information about this book is available from 
 @url{http://www.network-theory.co.uk/gsl/manual/}
@@ -232,9 +232,9 @@ systems.
 The Free Software Foundation is a tax-exempt charity that raises funds
 for work on the GNU Project.  It is dedicated to promoting computer
 users' right to use, study, copy, modify, and redistribute computer
-programs.  You can support the Free Software Foundation by making a
-donation or ordering manuals, t-shirts and especially CD-ROMs.  For more
-information visit the website @url{www.gnu.org}.
+programs.  You can support the Free Software Foundation by becoming an
+associate member, making a donation or ordering manuals and CD-ROMs.
+For more information visit the website @url{www.gnu.org}.
 @sp 1
 @flushright
 Brian Gough
@@ -301,7 +301,6 @@ under the terms of the GNU Free Documentation License.
 * Contributors to GSL::         
 * Autoconf Macros::             
 * GSL CBLAS Library::           
-* Reporting Bugs::              
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Function Index::              
@@ -521,48 +520,23 @@ Implementation of the random number generators in Knuth's
 
 @item Szymon Jaroszewicz 
 @comment <sj@cs.umb.edu>
-Write the routines for generating combinations
+Wrote the routines for generating combinations
 
 @end table
 
 @node  Autoconf Macros, GSL CBLAS Library, Contributors to GSL, Top
 @appendix Autoconf Macros
+@include autoconf.texi
 
-@noindent
-The following autoconf test will check for extern inline,
-
-@smallexample
-dnl Check for "extern inline", using a modified version
-dnl of the test for AC_C_INLINE from acspecific.mt
-dnl
-AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
-[ac_cv_c_extern_inline=no
-AC_TRY_COMPILE([extern $ac_cv_c_inline double foo(double x);
-extern $ac_cv_c_inline double foo(double x) @{ return x+1.0; @};
-double foo (double x) @{ return x + 1.0; @};], 
-[  foo(1.0)  ],
-[ac_cv_c_extern_inline="yes"])
-])
-
-if test "$ac_cv_c_extern_inline" != no ; then
-  AC_DEFINE(HAVE_INLINE,1)
-  AC_SUBST(HAVE_INLINE)
-fi
-@end smallexample
-
-@node GSL CBLAS Library, Reporting Bugs, Autoconf Macros, Top
+@node GSL CBLAS Library, GNU General Public License, Autoconf Macros, Top
 @appendix GSL CBLAS Library
 @include cblas.texi
-
-@node  Reporting Bugs, GNU General Public License, GSL CBLAS Library, Top
-@appendix Reporting Bugs
-@include bugs.texi
 
 @comment @node  Copyright, GNU General Public License, Contributors to GSL, Top
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  GNU General Public License, GNU Free Documentation License, Reporting Bugs, Top
+@node  GNU General Public License, GNU Free Documentation License, GSL CBLAS Library, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 

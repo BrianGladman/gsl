@@ -25,7 +25,6 @@ These functions are declared in the header file @file{gsl_rng.h}.
 * Saving and restoring random number generator state::  
 * Random number generator algorithms::  
 * Unix random number generators::  
-* Numerical Recipes generators::  
 * Other random number generators::  
 * Random Number Generator Performance::  
 * Random Number Generator Examples::  
@@ -213,7 +212,7 @@ value is 1.
 
 @deftypefn Random {void *} gsl_rng_state (const gsl_rng * @var{r})
 @deftypefnx Random size_t gsl_rng_size (const gsl_rng * @var{r})
-These function return a pointer to the state of generator @var{r} and
+These functions return a pointer to the state of generator @var{r} and
 its size.  You can use this information to access the state directly.  For
 example, the following code will write the state of a generator to a
 stream,
@@ -823,41 +822,6 @@ contained a bug in @code{mrand48} function which caused it to produce
 different results (only the lower 16-bits of the return value were set).
 @end deffn
 
-@node Numerical Recipes generators
-@section Numerical Recipes generators
-@cindex Random number generators, Numerical recipes
-@cindex Numerical recipes, random number generators
-@comment
-The following generators are provided for compatibility with
-@cite{Numerical Recipes}.  Note that the original Numerical Recipes
-functions used single precision while we use double precision.  This will
-lead to minor discrepancies, but only at the level of single-precision
-rounding error.  If necessary you can force the returned values to single
-precision by storing them in a @code{volatile float}, which prevents the
-value being held in a register with double or extended precision.  Apart
-from this difference the underlying algorithms for the integer part of
-the generators are the same.
-
-@deffn {Generator} gsl_rng_ran0 
-Numerical recipes @code{ran0} implements Park and Miller's @sc{minstd}
-algorithm with a modified seeding procedure.
-@end deffn
-
-@deffn {Generator} gsl_rng_ran1 
-Numerical recipes @code{ran1} implements Park and Miller's @sc{minstd}
-algorithm with a 32-element Bayes-Durham shuffle box.
-@end deffn
-
-@deffn {Generator} gsl_rng_ran2 
-Numerical recipes @code{ran2} implements a L'Ecuyer combined recursive
-generator with a 32-element Bayes-Durham shuffle-box.
-@end deffn
-
-@deffn {Generator} gsl_rng_ran3 
-Numerical recipes @code{ran3} implements Knuth's portable
-subtractive generator.
-@end deffn
-
 @node Other random number generators
 @section Other random number generators
 
@@ -1270,7 +1234,7 @@ The seed specifies the initial value,
 @end deffn
 
 @deffn {Generator} gsl_rng_fishman2x
-This is the L'Ecuyer - Fishman random number generator. It is taken from
+This is the L'Ecuyer--Fishman random number generator. It is taken from
 Knuth's @cite{Seminumerical Algorithms}, 3rd Ed., page 108. Its sequence
 is,
 
@@ -1381,7 +1345,7 @@ The seed specifies the initial value,
 
 
 @node Random Number Generator Performance
-@section Random Number Generator Performance
+@section Performance
 
 @comment
 @comment I made the original plot like this
@@ -1389,9 +1353,10 @@ The seed specifies the initial value,
 @comment
 
 The following table shows the relative performance of a selection the
-available random number generators.  The simulation quality generators
-which offer the best performance are @code{taus}, @code{gfsr4} and
-@code{mt19937}.
+available random number generators.  The fastest simulation quality
+generators are @code{taus}, @code{gfsr4} and @code{mt19937}.  The
+generators which offer the best mathematically-proven quality are those
+based on the @sc{ranlux} algorithm.
 
 @comment The large number of generators based on single linear congruences are
 @comment represented by the @code{random} generator below.  These generators are
@@ -1528,6 +1493,19 @@ available online.
 @cite{DIEHARD source code} G. Marsaglia,
 @item
 @url{http://stat.fsu.edu/pub/diehard/}
+@end itemize
+
+@noindent
+A comprehensive set of random number generator tests is available from
+@sc{nist},
+
+@itemize @asis
+@item
+NIST Special Publication 800-22, "A Statistical Test Suite for the
+Validation of Random Number Generators and Pseudo Random Number
+Generators for Cryptographic Applications".
+@item
+@url{http://csrc.nist.gov/rng/}
 @end itemize
 
 @node Random Number Acknowledgements

@@ -117,7 +117,7 @@ at most once.  The numbers have to be in increasing order.
 This function advances the combination @var{c} to the next combination
 in lexicographic order and returns @code{GSL_SUCCESS}.  If no further
 combinations are available it returns @code{GSL_FAILURE} and leaves
-@var{c} unmodified.  Starting with the fisrst combination and
+@var{c} unmodified.  Starting with the first combination and
 repeatedly applying this function will iterate through all possible
 combinations of a given order.
 @end deftypefun

@@ -113,7 +113,7 @@ This function exponentiates @var{x} with an associated absolute error
 @end deftypefun
 
 @deftypefun int gsl_sf_exp_err_e10_e (double @var{x}, double @var{dx}, gsl_sf_result_e10 * @var{result})
-This functions exponentiate a quantity @var{x} with an associated absolute 
+This function exponentiates a quantity @var{x} with an associated absolute 
 error @var{dx} using the @code{gsl_sf_result_e10} type to return a result with
 extended range.
 @comment Exceptional Return Values: 

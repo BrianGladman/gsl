@@ -134,7 +134,7 @@ double (*gsl_siman_Efunc_t) (void *xp)
 
 @deftp {Data Type} gsl_siman_step_t
 This function type should modify the configuration @var{xp} using a random step
-taken from the generator @var{r}, up to a maximium distance of
+taken from the generator @var{r}, up to a maximum distance of
 @var{step_size}.
 @example
 void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, 

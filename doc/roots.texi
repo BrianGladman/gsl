@@ -685,7 +685,7 @@ Several iterations of Newton's Method, where @math{g_n} is the
 @cindex Secant Method algorithm for finding roots
 @cindex root finding, Secant Method algorithm
 
-The @dfn{secant method} is a simplified version of Newton's method does
+The @dfn{secant method} is a simplified version of Newton's method which does
 not require the computation of the derivative on every step.
 
 On its first iteration the algorithm begins with Newton's method, using
@@ -706,8 +706,8 @@ x_1 = x_0 - f(x_0)/f'(x_0)
 
 @noindent
 Subsequent iterations avoid the evaluation of the derivative by
-replacing it with a numerical estimate, the slope through the previous
-two points,
+replacing it with a numerical estimate, the slope of the line through
+the previous two points,
 
 @tex
 \beforedisplay

@@ -9,7 +9,6 @@ introduces its conventions.
 * ANSI C Compliance::           
 * Compiling and Linking::       
 * Shared Libraries::            
-* Autoconf macros::             
 * Inline functions::            
 * Long double::                 
 * Portability functions::       
@@ -140,79 +139,11 @@ To compile a statically linked version of the program instead, use the
 gcc -static app.o -lgsl -lgslcblas -lm
 @end example
 
-@node Autoconf macros
-@section Autoconf macros
-
-For applications using @code{autoconf} the standard macro
-@code{AC_CHECK_LIB} can be used to link with the library automatically
-from a @code{configure} script.  The library itself depends on the
-presence of a @sc{cblas} and math library as well, so these must also be
-located before linking with the main @code{libgsl} file.  The following
-commands should be placed in the @file{configure.in} file to perform
-these tests,
-
-@example
-AC_CHECK_LIB(m,main)
-AC_CHECK_LIB(gslcblas,main)
-AC_CHECK_LIB(gsl,main)
-@end example
-@noindent
-Assuming the libraries are found the output during the configure stage
-looks like this,
-
-@example
-checking for main in -lm... yes
-checking for main in -lgslcblas... yes
-checking for main in -lgsl... yes
-@end example
-@noindent
-If the library is found then the tests will define the macros
-@code{HAVE_LIBGSL}, @code{HAVE_LIBGSLCBLAS}, @code{HAVE_LIBM} and add
-the options @code{-lgsl -lgslcblas -lm} to the variable @code{LIBS}.
-
-The tests above will find any version of the library.  They are suitable
-for general use, where the versions of the functions are not important.
-An alternative macro is available in the file @file{gsl.m4} to test for
-a specific version of the library.  To use this macro simply add the
-following line to your @file{configure.in} file instead of the tests
-above:
-
-@example
-AM_PATH_GSL(GSL_VERSION,
-           [action-if-found],
-           [action-if-not-found])
-@end example
-@noindent
-The argument @code{GSL_VERSION} should be the two or three digit
-@sc{major.minor} or @sc{major.minor.micro} version number of the release
-you require. A suitable choice for @code{action-if-not-found} is,
-
-@example
-AC_MSG_ERROR(could not find required version of GSL)
-@end example
-@noindent
-Then you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
-your Makefile.am files to obtain the correct compiler flags.
-@code{GSL_LIBS} is equal to the output of the @code{gsl-config --libs}
-command and @code{GSL_CFLAGS} is equal to @code{gsl-config --cflags}
-command. For example,
-
-@example
-libgsdv_la_LDFLAGS =    \
-        $(GTK_LIBDIR) \
-        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslcblas
-@end example
-@noindent
-Note that the macro @code{AM_PATH_GSL} needs to use the C compiler so it
-should appear in the @file{configure.in} file before the macro
-@code{AC_LANG_CPLUSPLUS} for programs that use C++.
-
 @node Inline functions
 @section Inline functions
 
 @cindex inline functions
 @cindex HAVE_INLINE
-@cindex autoconf, using with GSL
 The @code{inline} keyword is not part of ANSI C and the library does not
 export any inline function definitions by default. However, the library
 provides optional inline versions of performance-critical functions by
@@ -224,22 +155,9 @@ application.
 gcc -c -DHAVE_INLINE app.c
 @end example
 @noindent
-If you use @code{autoconf} this macro can be defined automatically.
-The following test should be placed in your @file{configure.in} file,
-
-@example
-AC_C_INLINE
-
-if test "$ac_cv_c_inline" != no ; then
-  AC_DEFINE(HAVE_INLINE,1)
-  AC_SUBST(HAVE_INLINE)
-fi
-@end example
-@noindent
-and the macro will then be defined in the compilation flags or by
-including the file @file{config.h} before any library headers.  If you
-do not define the macro @code{HAVE_INLINE} then the slower non-inlined
-versions of the functions will be used instead.
+If you use @code{autoconf} this macro can be defined automatically.  If
+you do not define the macro @code{HAVE_INLINE} then the slower
+non-inlined versions of the functions will be used instead.
 
 Note that the actual usage of the inline keyword is @code{extern
 inline}, which eliminates unnecessary function definitions in @sc{gcc}.
@@ -284,18 +202,11 @@ To help in writing portable applications GSL provides some
 implementations of functions that are found in other libraries, such as
 the BSD math library.  You can write your application to use the native
 versions of these functions, and substitute the GSL versions via a
-preprocessor macro if they are unavailable on another platform.  The
-substitution can be made automatically if you use @code{autoconf}. For
-example, to test whether the BSD function @code{hypot} is available you
-can include the following line in the configure file @file{configure.in}
-for your application,
+preprocessor macro if they are unavailable on another platform. 
 
-@example
-AC_CHECK_FUNCS(hypot)
-@end example
-@noindent
-and place the following macro definitions in the file
-@file{config.h.in},
+For example, after determining whether the BSD function @code{hypot} is
+available you can include the following macro definitions in a file
+@file{config.h} with your application,
 
 @example
 /* Substitute gsl_hypot for missing system hypot */
@@ -306,8 +217,10 @@ and place the following macro definitions in the file
 @end example
 @noindent
 The application source files can then use the include command
-@code{#include <config.h>} to substitute @code{gsl_hypot} for each
-occurrence of @code{hypot} when @code{hypot} is not available.
+@code{#include <config.h>} to replace each occurrence of @code{hypot} by
+@code{gsl_hypot} when @code{hypot} is not available.  This substitution
+can be made automatically if you use @code{autoconf}, see @ref{Autoconf
+Macros}.
 
 In most circumstances the best strategy is to use the native versions of
 these functions when available, and fall back to GSL versions otherwise,

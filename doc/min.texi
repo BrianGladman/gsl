@@ -35,7 +35,7 @@ algorithms to find the maximum of a function simply invert its sign.
 @cindex minimization, overview
 
 The minimization algorithms begin with a bounded region known to contain
-a minimum.  The region is described by an lower bound @math{a} and an
+a minimum.  The region is described by a lower bound @math{a} and an
 upper bound @math{b}, with an estimate of the location of the minimum
 @math{x}.
 

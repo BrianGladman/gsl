@@ -119,7 +119,7 @@ This function returns the order of the stepping function on the previous
 step.  This order can vary if the stepping function itself is adaptive.
 @end deftypefun
 
-@deftypefun int gsl_odeiv_step_apply (gsl_odeiv_step * @var{s}, double @var{t}, double @var{h}, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * @var{dydt})
+@deftypefun int gsl_odeiv_step_apply (gsl_odeiv_step * @var{s}, double @var{t}, double @var{h}, double @var{y}[], double @var{yerr}[], const double @var{dydt_in}[], double @var{dydt_out}[], const gsl_odeiv_system * @var{dydt})
 This function applies the stepping function @var{s} to the system of
 equations defined by @var{dydt}, using the step size @var{h} to advance
 the system from time @var{t} and state @var{y} to time @var{t}+@var{h}.
@@ -325,7 +325,7 @@ This function frees all the memory associated with the control function
 @var{c}.
 @end deftypefun
 
-@deftypefun int gsl_odeiv_control_hadjust (gsl_odeiv_control * @var{c}, gsl_odeiv_step * @var{s}, const double y0[], const double yerr[], const double dydt[], double * @var{h})
+@deftypefun int gsl_odeiv_control_hadjust (gsl_odeiv_control * @var{c}, gsl_odeiv_step * @var{s}, const double @var{y0}[], const double @var{yerr}[], const double @var{dydt}[], double * @var{h})
 This function adjusts the step-size @var{h} using the control function
 @var{c}, and the current values of @var{y}, @var{yerr} and @var{dydt}.
 The stepping function @var{step} is also needed to determine the order
@@ -361,7 +361,7 @@ the results of a stepping function and control function to reliably
 advance the solution forward over an interval @math{(t_0, t_1)}.  If the
 control function signals that the step-size should be decreased the
 evolution function backs out of the current step and tries the proposed
-smaller step-size.  This is process is continued until an acceptable
+smaller step-size.  This process is continued until an acceptable
 step-size is found.
 
 @deftypefun {gsl_odeiv_evolve *} gsl_odeiv_evolve_alloc (size_t @var{dim})
@@ -369,7 +369,7 @@ This function returns a pointer to a newly allocated instance of an
 evolution function for a system of @var{dim} dimensions.
 @end deftypefun
 
-@deftypefun int gsl_odeiv_evolve_apply (gsl_odeiv_evolve * @var{e}, gsl_odeiv_control * @var{con}, gsl_odeiv_step * @var{step}, const gsl_odeiv_system * @var{dydt}, double * @var{t}, double @var{t1}, double * @var{h}, double y[])
+@deftypefun int gsl_odeiv_evolve_apply (gsl_odeiv_evolve * @var{e}, gsl_odeiv_control * @var{con}, gsl_odeiv_step * @var{step}, const gsl_odeiv_system * @var{dydt}, double * @var{t}, double @var{t1}, double * @var{h}, double @var{y}[])
 This function advances the system (@var{e}, @var{dydt}) from time
 @var{t} and position @var{y} using the stepping function @var{step}.
 The new time and position are stored in @var{t} and @var{y} on output.
@@ -413,8 +413,8 @@ x''(t) + \mu x'(t) (x(t)^2 - 1) + x(t) = 0
 @end ifinfo
 @noindent
 This can be converted into a first order system suitable for use with
-the library by introducing a separate variable for the velocity, @math{y
-= x'(t)},
+the routines described in this chapter by introducing a separate
+variable for the velocity, @math{y = x'(t)},
 
 @tex
 \beforedisplay

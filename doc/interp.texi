@@ -126,7 +126,7 @@ previous value of an index lookup.  When the subsequent interpolation
 point falls in the same interval its index value can be returned
 immediately.
 
-@deftypefun size_t gsl_interp_bsearch (const double x_array[], double @var{x}, size_t @var{index_lo}, size_t @var{index_hi})
+@deftypefun size_t gsl_interp_bsearch (const double @var{x_array}[], double @var{x}, size_t @var{index_lo}, size_t @var{index_hi})
 This function returns the index @math{i} of the array @var{x_array} such
 that @code{x_array[i] <= x < x_array[i+1]}.  The index is searched for
 in the range [@var{index_lo},@var{index_hi}].
@@ -139,7 +139,7 @@ lookups, thus allowing for application of various acceleration
 strategies.
 @end deftypefun
 
-@deftypefun size_t gsl_interp_accel_find (gsl_interp_accel * @var{a}, const double x_array[], size_t @var{size}, double @var{x})
+@deftypefun size_t gsl_interp_accel_find (gsl_interp_accel * @var{a}, const double @var{x_array}[], size_t @var{size}, double @var{x})
 This function performs a lookup action on the data array @var{x_array}
 of size @var{size}, using the given accelerator @var{a}.  This is how
 lookups are performed during evaluation of an interpolation.  The
@@ -199,7 +199,7 @@ defined in the header file @file{gsl_spline.h}.
 @deftypefun {gsl_spline *} gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{size})
 @end deftypefun
 
-@deftypefun int gsl_spline_init (gsl_spline * @var{spline}, const double xa[], const double @var{ya}[], size_t @var{size})
+@deftypefun int gsl_spline_init (gsl_spline * @var{spline}, const double @var{xa}[], const double @var{ya}[], size_t @var{size})
 @end deftypefun
 
 @deftypefun void gsl_spline_free (gsl_spline * @var{spline})

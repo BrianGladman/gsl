@@ -22,7 +22,7 @@ file @code{gsl_poly.h}.
 @cindex polynomial evaluation
 @cindex evaluation of polynomials
 
-@deftypefun double gsl_poly_eval (const double c[], const int @var{len}, const double @var{x})
+@deftypefun double gsl_poly_eval (const double @var{c}[], const int @var{len}, const double @var{x})
 This function evaluates the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
 @math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}} using
@@ -38,7 +38,7 @@ The functions described here manipulate polynomials stored in Newton's
 divided-difference representation.  The use of divided-differences is
 described in Abramowitz & Stegun sections 25.1.4, 25.2.26.
 
-@deftypefun int gsl_poly_dd_init (double dd[], const double xa[], const double ya[], size_t @var{size})
+@deftypefun int gsl_poly_dd_init (double @var{dd}[], const double @var{xa}[], const double @var{ya}[], size_t @var{size})
 This function computes a divided-difference representation of the
 interpolating polynomial for the points (@var{xa}, @var{ya}) stored in
 the arrays @var{xa} and @var{ya} of length @var{size}.  On output the
@@ -46,13 +46,13 @@ divided-differences of (@var{xa},@var{ya}) are stored in the array
 @var{dd}, also of length @var{size}.
 @end deftypefun
 
-@deftypefun double gsl_poly_dd_eval (const double dd[], const double xa[], const size_t @var{size}, const double @var{x})
+@deftypefun double gsl_poly_dd_eval (const double @var{dd}[], const double @var{xa}[], const size_t @var{size}, const double @var{x})
 This function evaluates the polynomial stored in divided-difference form
 in the arrays @var{dd} and @var{xa} of length @var{size} at the point
 @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_poly_dd_taylor (double c[], double @var{xp}, const double dd[], const double xa[], size_t @var{size}, double w[])
+@deftypefun int gsl_poly_dd_taylor (double @var{c}[], double @var{xp}, const double @var{dd}[], const double @var{xa}[], size_t @var{size}, double @var{w}[])
 This function converts the divided-difference representation of a
 polynomial to a Taylor expansion.  The divided-difference representation
 is supplied in the arrays @var{dd} and @var{xa} of length @var{size}.
@@ -292,7 +292,7 @@ which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 @node Roots of Polynomials References and Further Reading
 @section References and Further Reading
 @noindent
-The balanced-QR method and its error analysis is described in the
+The balanced-QR method and its error analysis are described in the
 following papers.
 
 @itemize @asis

@@ -946,7 +946,7 @@ int baz (const double x[], size_t n);
 @node  Pointers, Constness, Arrays vs Pointers, Design
 @section Pointers
 
-Avoid deferencing pointers on the right-hand side of an expression where
+Avoid dereferencing pointers on the right-hand side of an expression where
 possible.  It's better to introduce a temporary variable.  This is
 easier for the compiler to optimise and also more readable since it
 avoids confusion between the use of @code{*} for multiplication and
@@ -1087,7 +1087,7 @@ avoid silent failures.
 
 If your test uses multiple values make sure there are no simple
 relations between them that could allow bugs to be missed through silent
-cancelations.
+cancellations.
 
 If you need some random floats to put in the test programs use @code{od -f
 /dev/random} as a source of inspiration.

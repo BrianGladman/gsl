@@ -1,6 +1,7 @@
 @cindex Low-level CBLAS
 @cindex CBLAS, Low-level interface
-
+@cindex BLAS, Low-level C interface
+@cindex Basic Linear Algebra Subroutines (BLAS)
 The prototypes for the low-level @sc{cblas} functions are declared in
 the file @code{gsl_cblas.h}.  For the definition of the functions
 consult the documentation available from Netlib (@pxref{BLAS References

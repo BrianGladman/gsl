@@ -30,7 +30,7 @@ started.
 If the breakpoint catches an error then you can use a backtrace
 (@code{bt}) to see the call-tree, and the arguments which possibly
 caused the error.  By moving up into the calling function you can
-investigate the values of variable at that point.  Here is an example
+investigate the values of variables at that point.  Here is an example
 from the program @code{fft/test_trap}, which contains the following
 line,
 
@@ -120,7 +120,7 @@ could also print out the values of other variables such as
 @section Examining floating point registers
 
 The contents of floating point registers can be examined using the
-command @code{info float} (not available on all platforms).
+command @code{info float} (on supported all platforms).
 
 @smallexample
 (gdb) info float
@@ -275,7 +275,7 @@ need @code{-Wall}, but it is not enough on its own.
 @item -O4
 Turn on optimization.  The warnings for uninitialized variables in
 @code{-Wall} rely on the optimizer to analyze the code.  If there is no
-optimization then the warnings aren't generated.
+optimization then these warnings aren't generated.
 @item -W 
 This turns on some extra warnings not included in @code{-Wall}, such as
 missing return values and comparisons between signed and unsigned
@@ -314,7 +314,7 @@ different object files (you get an error at link time).  Such a variable
 should be defined in one file and referred to in other files with an
 @code{extern} declaration.
 @item -Wnested-externs 
-This warns if an @code{extern} declaration is encountered within an
+This warns if an @code{extern} declaration is encountered within a
 function.
 @item -Dinline= 
 The @code{inline} keyword is not part of ANSI C. Thus if you want to use

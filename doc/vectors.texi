@@ -319,7 +319,7 @@ This function sets the value of the @var{i}-th element of a vector
 @end deftypefun
 
 @deftypefun {double *} gsl_vector_ptr (gsl_vector * @var{v}, size_t @var{i})
-@deftypefunx {const double *} gsl_vector_ptr (const gsl_vector * @var{v}, size_t @var{i})
+@deftypefunx {const double *} gsl_vector_const_ptr (const gsl_vector * @var{v}, size_t @var{i})
 These functions return a pointer to the @var{i}-th element of a vector
 @var{v}.  If @var{i} lies outside the allowed range of 0 to @var{n-1}
 then the error handler is invoked and a null pointer is returned.
@@ -645,7 +645,7 @@ by copying.  The two vectors must have the same length.
 The following function can be used to exchange, or permute, the elements
 of a vector.
 
-@deftypefun int gsl_vector_swap_elements (gsl_vector * @var{v}, size_t i, size_t j)
+@deftypefun int gsl_vector_swap_elements (gsl_vector * @var{v}, size_t @var{i}, size_t @var{j})
 This function exchanges the @var{i}-th and @var{j}-th elements of the
 vector @var{v} in-place.
 @end deftypefun
@@ -962,7 +962,7 @@ object and will not be deallocated.
 @cindex range-checking for matrices
 
 The functions for accessing the elements of a matrix use the same range
-checking system as vectors.  You turn off range checking by recompiling
+checking system as vectors.  You can turn off range checking by recompiling
 your program with the preprocessor definition
 @code{GSL_RANGE_CHECK_OFF}.
 
@@ -993,7 +993,7 @@ handler is invoked.
 @end deftypefun
 
 @deftypefun {double *} gsl_matrix_ptr (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
-@deftypefunx {const double *} gsl_matrix_ptr (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
+@deftypefunx {const double *} gsl_matrix_const_ptr (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 These functions return a pointer to the (@var{i},@var{j})th element of a
 matrix @var{m}.  If @var{i} or @var{j} lie outside the allowed range of
 0 to @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked
@@ -1382,7 +1382,7 @@ This function copies the elements of the matrix @var{src} into the
 matrix @var{dest}.  The two matrices must have the same size.
 @end deftypefun
 
-@deftypefun int gsl_matrix_swap (gsl_matrix * @var{m1}, const gsl_matrix * @var{m2})
+@deftypefun int gsl_matrix_swap (gsl_matrix * @var{m1}, gsl_matrix * @var{m2})
 This function exchanges the elements of the matrices @var{m1} and
 @var{m2} by copying.  The two matrices must have the same size.
 @end deftypefun
@@ -1404,7 +1404,7 @@ same as the length of the row.
 @end deftypefun
 
 @deftypefun int gsl_matrix_get_col (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{j})
-This function copies the elements of the @var{i}-th column of the matrix
+This function copies the elements of the @var{j}-th column of the matrix
 @var{m} into the vector @var{v}.  The length of the vector must be the
 same as the length of the column.
 @end deftypefun
@@ -1417,7 +1417,7 @@ the same as the length of the row.
 
 @deftypefun int gsl_matrix_set_col (gsl_matrix * @var{m}, size_t @var{j}, const gsl_vector * @var{v})
 This function copies the elements of the vector @var{v} into the
-@var{i}-th column of the matrix @var{m}.  The length of the vector must be
+@var{j}-th column of the matrix @var{m}.  The length of the vector must be
 the same as the length of the column.
 @end deftypefun
 
@@ -1443,7 +1443,7 @@ matrix @var{m} in-place.  The matrix must be square for this operation to
 be possible.
 @end deftypefun
 
-@deftypefun int gsl_matrix_transpose_memcpy (gsl_matrix * @var{dest}, gsl_matrix * @var{src})
+@deftypefun int gsl_matrix_transpose_memcpy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
 This function makes the matrix @var{dest} the transpose of the matrix
 @var{src} by copying the elements of @var{src} into @var{dest}.  This
 function works for all matrices provided that the dimensions of the matrix
@@ -1515,20 +1515,23 @@ This function returns the minimum and maximum values in the matrix
 @deftypefun void gsl_matrix_max_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
 This function returns the indices of the maximum value in the matrix
 @var{m}, storing them in @var{imax} and @var{jmax}.  When there are
-several equal maximum elements then the first element found is returned.
+several equal maximum elements then the first element found is returned,
+searching in row-major order.
 @end deftypefun
 
 @deftypefun void gsl_matrix_min_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
 This function returns the indices of the minimum value in the matrix
 @var{m}, storing them in @var{imax} and @var{jmax}.  When there are
-several equal minimum elements then the first element found is returned.
+several equal minimum elements then the first element found is returned,
+searching in row-major order.
 @end deftypefun
 
 @deftypefun void gsl_matrix_minmax_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{imax})
 This function returns the indices of the minimum and maximum values in
 the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
 (@var{imax},@var{jmax}). When there are several equal minimum or maximum
-elements then the first elements found are returned.
+elements then the first elements found are returned, searching in
+row-major order.
 @end deftypefun
 
 @node Matrix properties

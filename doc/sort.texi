@@ -82,7 +82,7 @@ the data which destroys its initial ordering.
 @end deftypefun
 
 @cindex indirect sorting
-@deftypefun int gsl_heapsort_index (size_t * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
+@deftypefun int gsl_heapsort_index (size_t * @var{p}, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
 This function indirectly sorts the @var{count} elements of the array
 @var{array}, each of size @var{size}, into ascending order using the

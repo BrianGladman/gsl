@@ -86,7 +86,7 @@ for @math{x} in the range @math{-\infty} to @math{+\infty}.  Use the
 transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
 @math{\mu}.  This function uses the Box-Mueller algorithm which requires two
-calls the random number generator @var{r}.
+calls to the random number generator @var{r}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
@@ -408,7 +408,7 @@ formula given above.
 @page
 @node The Rayleigh Tail Distribution
 @section The Rayleigh Tail Distribution
-@deftypefn Random double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a} double @var{sigma})
+@deftypefn Random double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
 @cindex Rayleigh Tail random variates
 This function returns a random variate from the tail of the Rayleigh
 distribution with scale parameter @var{sigma} and a lower limit of
@@ -1184,7 +1184,7 @@ p(\theta_1, ..., \theta_K) d\theta_1 ... d\theta_K =
 for @c{$\theta_i \ge 0$} 
 @math{theta_i >= 0}
 and @c{$\alpha_i \ge 0$} 
-@math{alpha_i >= 0}. 
+@math{alpha_i >= 0}.  The delta function ensures that @math{\sum \theta_i = 1}.
 The normalization factor @math{Z} is
 
 @tex
