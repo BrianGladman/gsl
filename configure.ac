@@ -119,8 +119,10 @@ if test "x$LIBS" = "x" ; then
 fi
 
 dnl Remember to put a definition in acconfig.h for each of these
-AC_CHECK_DECLS(feenableexcept,,,[#include <math.h>]) 
-AC_CHECK_DECLS(fesettrapenable,,,[#include <math.h>]) 
+AC_CHECK_DECLS(feenableexcept,,,[#define _GNU_SOURCE 1
+#include <fenv.h>]) 
+AC_CHECK_DECLS(fesettrapenable,,,[#define _GNU_SOURCE 1
+#include <fenv.h>]) 
 AC_CHECK_DECLS(hypot,,,[#include <math.h>]) 
 AC_CHECK_DECLS(expm1,,,[#include <math.h>])
 AC_CHECK_DECLS(acosh,,,[#include <math.h>])
@@ -180,7 +182,10 @@ AC_CACHE_CHECK([for extended floating point registers],ac_cv_c_extended_fp,
     *68k*-*-*)
         ac_cv_c_extended_fp=yes
         ;;      
-    *86*-*-*)
+    *86-*-*)
+        ac_cv_c_extended_fp=yes
+        ;;      
+    x86_64-*-*)
         ac_cv_c_extended_fp=yes
         ;;      
     *) 

@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#define _GNU_SOURCE 1
+
 #include <math.h>
 #include <stdio.h>
 #include <fenv.h>

@@ -1,3 +1,8 @@
+2003-12-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-gnuc99.c (_GNU_SOURCE): define _GNU_SOURCE when including
+	fenv.h
+
 2003-07-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* read.c (gsl_ieee_read_mode_string): added missing
