@@ -69,13 +69,13 @@ hybrid_iterate (void * vstate, gsl_multiroot_function * function, gsl_vector * x
 
   size_t i;
 
-  size_t n = fdf->n ;
+  size_t n = function->n ;
 
-  gsl_matrix_copy (state->lu, J);
+  /*  gsl_matrix_copy (state->lu, J);
 
   gsl_la_decomp_LU_impl (state->lu, state->permutation, &signum);
 
-  gsl_la_solve_LU_impl (state->lu, state->permutation, f, dx);
+  gsl_la_solve_LU_impl (state->lu, state->permutation, f, dx); */
       
   for (i = 0; i < n; i++)
     {
