@@ -38,6 +38,15 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
 			GSL_EDOM, 0) ;
     }
 
+  for (i = 0; i < n; i++)
+    {
+      if (h->bin[i] < 0) {
+	GSL_ERROR_RETURN ("histogram bins must be positive to compute"
+			  "probabilities", 
+			  GSL_EDOM, 0) ;
+      }
+    }
+
   p = (gsl_histogram_pdf *) malloc(sizeof(gsl_histogram_pdf)) ;
 
   if (p == 0) 
@@ -73,26 +82,18 @@ gsl_histogram_pdf_alloc (const gsl_histogram * h)
     }
 
   {
-    double total = 0, sum = 0;
+    double mean = 0, sum = 0;
     
     for (i = 0; i < n; i++)
       {
-	const double b = h->bin[i] ;
-	if (b >= 0) 
-	  {
-	    total += b ;
-	  }
+	mean += (h->bin[i] - mean) / ((double)(i + 1)) ;
       }
 
     p->sum[0] = 0 ;
 
     for (i = 0; i < n; i++)
       {
-	double b = h->bin[i] ;
-	if (b >= 0) 
-	  {
-	    sum += b / total ;
-	  }
+	sum += (h->bin[i] / mean) / n ;
 	p->sum[i+1] = sum  ;
       }
   }
