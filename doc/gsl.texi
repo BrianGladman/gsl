@@ -152,67 +152,72 @@ whichever routines might be needed for a particular purpose. We are
 starting small, with random number generators and special functions, but
 hope to expand to include linear algebra, Fourier analysis, etc.
 
-The secret name of this package is GNUmerical Recipes.
+@c The secret name of this package is GNUmerical Recipes.
 
-As much as we might grumble about them, we have great admiration for the
-Numerical Recipes series.  This is perhaps the cheapest ($80 buys you
-the book and a single-screen license) and most comprehensive collection
-of good numerical software available.  We know of very few working
-scientists who do not have a copy of one of the Numerical Recipes books
-on their shelf.  
+@c As much as we might grumble about them, we have great admiration for the
+@c Numerical Recipes series.  This is perhaps the cheapest ($80 buys you
+@c the book and a single-screen license) and most comprehensive collection
+@c of good numerical software available.  We know of very few working
+@c scientists who do not have a copy of one of the Numerical Recipes books
+@c on their shelf.  
+@c 
+@c The software is not always the latest and greatest, and complaints about
+@c this have appeared from time to time, but it has several noteworthy strengths
+@c which we think accounts for its incredible success over the last decade.
+@c 
+@c Most noteworthy is the book itself.  Each routine is preceeded by a
+@c readable, lively (if somewhat condescending) discussion of the issues at
+@c hand.  The issues include: why one might want to use such a routine in
+@c the first place, what tradeoffs in terms of accuracy or efficiency have
+@c to be made in the implementation, etc.  And the book covers a remarkable
+@c range of topics, from linear algebra to nonlinear optimization.  
+@c 
+@c Almost as remarkable is that the authors included the source code.
+@c Indeed, the source code is enshrined (well, typeset) in the text of the
+@c Numerical Recipes book.  Users are invited to modify the code to fit
+@c their needs, to pick and choose which routines (or which parts of
+@c routines) to use or adapt for their particular applications.  Though the
+@c routines can be (and usually are) used as black boxes, it makes
+@c scientists happy and more comfortable to be able to look under the hood.
+@c 
+@c The main problem with Numerical Recipes is that the code is not free.
+@c It may seem petty to complain about this.  People don't complain that
+@c IMSL isn't free.  Part of the problem is the unusual (bizarre)
+@c per-screen license.  But the main problem is that source code is
+@c provided, and so it is essentially impossible to enforce the license,
+@c except by intimidation.  Numerical Recipes is probably the most pirated
+@c software (well... pirating Microsoft doesn't count) available.  To the
+@c authors' credit, Numerical Recipes software is inexpensive and easily
+@c obtainable.  It is easy to incorporate into your own applications.  But
+@c as long as it contains NR subroutines, you cannot legally exchange your
+@c code with your colleagues.  You can try to be careful and isolate the
+@c NR subroutines, and then distribute an NR-less version, but in that case
+@c you have to use the NR routines exactly as they are, which destroys the
+@c advantage of having source code that you could modify.
+@c 
+@c The approach taken by Larry Wall, Donald Libes, John Ousterhout, and the
+@c O'Reilly and Associates publishing company is to provide free software,
+@c let the community debug, beta-test, and improve the code (often in
+@c directions completely unanticipated by the original authors), and then
+@c to write a book describing the freely-available software.  Oddly, the
+@c authors of Numerical Recipes have taken precisely the opposite approach.
+@c The book can be downloaded from the official Numerical Recipes web site,
+@c but the software must be licensed.
 
-The software is not always the latest and greatest, and complaints about
-this have appeared from time to time, but it has several noteworthy strengths
-which we think accounts for its incredible success over the last decade.
+@menu
+* Goals::                       
+@end menu
 
-Most noteworthy is the book itself.  Each routine is preceeded by a
-readable, lively (if somewhat condescending) discussion of the issues at
-hand.  The issues include: why one might want to use such a routine in
-the first place, what tradeoffs in terms of accuracy or efficiency have
-to be made in the implementation, etc.  And the book covers a remarkable
-range of topics, from linear algebra to nonlinear optimization.  
+@node Goals,  , jt section, jt section
+@subsection Goals
 
-Almost as remarkable is that the authors included the source code.
-Indeed, the source code is enshrined (well, typeset) in the text of the
-Numerical Recipes book.  Users are invited to modify the code to fit
-their needs, to pick and choose which routines (or which parts of
-routines) to use or adapt for their particular applications.  Though the
-routines can be (and usually are) used as black boxes, it makes
-scientists happy and more comfortable to be able to look under the hood.
-
-The main problem with Numerical Recipes is that the code is not free.
-It may seem petty to complain about this.  People don't complain that
-IMSL isn't free.  Part of the problem is the unusual (bizarre)
-per-screen license.  But the main problem is that source code is
-provided, and so it is essentially impossible to enforce the license,
-except by intimidation.  Numerical Recipes is probably the most pirated
-software (well... pirating Microsoft doesn't count) available.  To the
-authors' credit, Numerical Recipes software is inexpensive and easily
-obtainable.  It is easy to incorporate into your own applications.  But
-as long as it contains NR subroutines, you cannot legally exchange your
-code with your colleagues.  You can try to be careful and isolate the
-NR subroutines, and then distribute an NR-less version, but in that case
-you have to use the NR routines exactly as they are, which destroys the
-advantage of having source code that you could modify.
-
-The approach taken by Larry Wall, Donald Libes, John Ousterhout, and the
-O'Reilly and Associates publishing company is to provide free software,
-let the community debug, beta-test, and improve the code (often in
-directions completely unanticipated by the original authors), and then
-to write a book describing the freely-available software.  Oddly, the
-authors of Numerical Recipes have taken precisely the opposite approach.
-The book can be downloaded from the official Numerical Recipes web site,
-but the software must be licensed.
-
-----
-
-The short-term aim of GSL is to emulate, possibly even clone, Numerical
-Recipes software and documentation.  The goal will be to provide a
-somewhat coherent package of somewhat independent subroutines.  We
-hereby promise not to use any actual NR code, but we paid for the book,
-and we are not going to take it off of our shelves or pretend not to
-read it.  We also plan to provide drop-in substitutes for NR
-subroutines, usually as wrappers to our own preferred interfaces.
+@c The short-term aim of GSL is to emulate, possibly even clone, Numerical
+@c Recipes software and documentation.  The goal will be to provide a
+@c somewhat coherent package of somewhat independent subroutines.  We
+@c hereby promise not to use any actual NR code, but we paid for the book,
+@c and we are not going to take it off of our shelves or pretend not to
+@c read it.  We also plan to provide drop-in substitutes for NR
+@c subroutines, usually as wrappers to our own preferred interfaces.
 
 And we furthermore promise to try as hard as possible to document
 the software: this will ideally involve discussion of why you might want
