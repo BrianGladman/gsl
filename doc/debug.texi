@@ -180,9 +180,9 @@ warning-free.
 This turns on a set of warnings for common programming problems. You
 need @code{-Wall}, but it is not enough on its own, as explained above.
 @item -O4
-The warnings for unitialized variables in @code{-Wall} rely on the
-optimizer to analyze the code. If there is no optimization then the
-warnings aren't generated.
+Turn on optimization. The warnings for unitialized variables in
+@code{-Wall} rely on the optimizer to analyze the code. If there is no
+optimization then the warnings aren't generated.
 @item -W 
 This turns on some extra warnings not included in @code{-Wall}, such as
 missing return values and comparisons between signed and unsigned

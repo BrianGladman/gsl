@@ -161,7 +161,7 @@ old_handler = gsl_set_error_handler (&my_error_handler);
 
 .....     /* code uses new handler */
 
-gsl_set_error_handler(old_handler) ; /* restore original handler */
+gsl_set_error_handler (old_handler) ; /* restore old handler */
 @end example
 @noindent
 To use the default behavior (@code{abort} on error) set the error
@@ -200,7 +200,7 @@ main ()
          @}
        else 
          @{
-            .... /* my_error_handler bailed out, GSL reported an error */
+            .... /* my_error_handler bailed out, GSL gave an error */
          @}
      @}
 @}
@@ -320,7 +320,7 @@ old_handler = gsl_set_stream_handler (&my_error_stream);
 
 .....     /* code uses new handler */
 
-gsl_set_stream_handler(old_handler) ; /* restore original handler */
+gsl_set_stream_handler (old_handler) ; /* restore old handler */
 @end example
 @noindent
 To use the default behavior (print the message to @code{stderr}) set the stream

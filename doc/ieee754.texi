@@ -77,11 +77,11 @@ ld 1.20000000000000000004
 
 @section Setting up your IEEE environment
 
-The IEEE standard defines several @dfn{modes} for controlling the behavior
-of floating point operations. These modes specify three important
-properties of computer arithmetic: the direction used for rounding
-(e.g. round-up or round-down), the precision used for rounding
-intermediate results and how the program should handle arithmetic
+The IEEE standard defines several @dfn{modes} for controlling the
+behavior of floating point operations. These modes specify the important
+properties of computer arithmetic: the direction used for rounding (e.g.
+whether numbers should be rounded up, down or to the nearest number),
+the rouding precision and how the program should handle arithmetic
 exceptions, such as division by zero.
 
 Unfortunately there is no universal API for controlling these features --
