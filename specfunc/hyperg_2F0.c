@@ -6,13 +6,18 @@
 #include <gsl_errno.h>
 #include "gsl_sf_hyperg.h"
 
+#define locEPS         (1000.0 * GSL_MACH_EPS)
+#define locMAX(a, b)   ((a) > (b) ? (a) : (b))
+
 
 /* [Carlson, p.109] says the error in truncating this asymptotic series
  * is less than the absolute value of the first neglected term
  */
-static int hyperg_2F0_series(const double a, const double b, const double x,
-                             double * result, double * prec
-			     )
+static
+int
+hyperg_2F0_series(const double a, const double b, const double x,
+                  double * result, double * prec
+                  )
 {
   double an = a;
   double bn = b;  
@@ -40,7 +45,7 @@ static int hyperg_2F0_series(const double a, const double b, const double x,
 
     abs_del      = fabs(del);
 
-    
+    if(abs_del > last_abs_del) break; /* series is probably starting to grow */
 
     last_abs_del = abs_del;
     max_abs_del  = locMAX(abs_del, max_abs_del);
@@ -49,11 +54,10 @@ static int hyperg_2F0_series(const double a, const double b, const double x,
     bn += 1.0;
     n  += 1.0;
     
-    if(an == 0.0 || bn == 0.0) break;  /* terminating series */
+    if(an == 0.0 || bn == 0.0) break;  /* series terminated */
   }
-  
-  max_abs_del *= GSL_MACH_EPS;
-  err     = fabs(GSL_MACH_EPS * n + max_abs_del);
+
+  err     = GSL_MACH_EPS * n + abs_del;
   *prec   = err/(err + fabs(sum));
   *result = sum;
   if(*prec > locEPS)
@@ -62,4 +66,41 @@ static int hyperg_2F0_series(const double a, const double b, const double x,
     return GSL_SUCCESS;
 }
 
+int
+gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x,
+                       double * result
+                       )
+{
+  const double small_x = 0.05;
 
+  if(fabs(x) < small_x) {
+    double prec;
+    return hyperg_2F0_series(a, b, x, result, &prec);
+  }
+  else {
+    /* FIXME: can we do something here? */
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+}
+
+int
+gsl_sf_hyperg_2F0_e(const double a, const double b, const double x, double * result)
+{
+  int status = gsl_sf_hyperg_2F0_impl(a, b, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_2F0_e", status);
+  }
+  return status;
+}
+
+double
+gsl_sf_hyperg_2F0(const double a, const double b, const double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_2F0_impl(a, b, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_2F0", status);
+  }
+  return y;
+}

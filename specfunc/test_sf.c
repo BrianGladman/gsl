@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl_test.h>
 #include <gsl_sf.h>
 
 
@@ -140,6 +141,16 @@ int check_hyperg(void)
   gsl_test(s, "gsl_sf_hyperg_2F1");
   status += s;
 
+  /* FIXME: the "true" values here may not be so good */
+  s = 0;
+  s += ( frac_diff(gsl_sf_hyperg_2F0(0.01, 1.0, -0.02), 0.999803886708565    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F0(0.1,  0.5, -0.02), 0.999015947934831    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F0(1,   1, -0.02),   0.980755496569062     ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F0(8,   8, -0.02),   0.3299059284994299    ) > 1.e-14 );
+  s += ( frac_diff(gsl_sf_hyperg_2F0(50, 50, -0.02),   2.688995263773233e-13 ) > 1.e-14 );
+  gsl_test(s, "gsl_sf_hyperg_2F0");
+  status += s;
+
   return status;
 }
 
@@ -191,6 +202,7 @@ int main(int argc, char * argv[])
   
   gsl_test(check_zeta(),       "Zeta functions");
   
+  gsl_test_summary();
 
   exit(0);  
 }

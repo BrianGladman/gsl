@@ -737,6 +737,16 @@ gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * result)
   return status;
 }
 
+int
+gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, double * result)
+{
+  int status = gsl_sf_hyperg_2F1_conj_impl(aR, aI, c, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_hyperg_2F1_conj_e", status);
+  }
+  return status;
+}
+
 double
 gsl_sf_hyperg_2F1(double a, double b, double c, double x)
 {
@@ -744,6 +754,17 @@ gsl_sf_hyperg_2F1(double a, double b, double c, double x)
   int status = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_hyperg_2F1", status);
+  }
+  return y;
+}
+
+double
+gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x)
+{
+  double y;
+  int status = gsl_sf_hyperg_2F1_conj_impl(aR, aI, c, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_hyperg_2F1_conj", status);
   }
   return y;
 }
