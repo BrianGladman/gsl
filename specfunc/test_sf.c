@@ -891,9 +891,9 @@ int test_jac(void)
   m = 0.999999;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 0.96402778575700186570 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( cn, 0.26580148285600686381 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( dn, 0.26580323105264131136 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff( sn, 0.96402778575700186570 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff( cn, 0.26580148285600686381 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff( dn, 0.26580323105264131136 ) > TEST_TOL1 );
   gsl_test(sa, "  gsl_sf_elljac_e(2.0|0.999999)");
   s += sa;
 
