@@ -22,7 +22,24 @@ include_HEADERS = \
 	gsl_sf_trig.h
 
 
-noinst_HEADERS = bessel_amp_phase.h
+noinst_HEADERS = \
+	bessel_amp_phase.h	\
+	bessel.h		\
+	airy_impl.h		\
+	bessel_I0_impl.h	\
+	bessel_In_impl.h	\
+	bessel_J0_impl.h	\
+	bessel_J1_impl.h	\
+	bessel_Jn_impl.h	\
+	bessel_K0_impl.h	\
+	bessel_K1_impl.h	\
+	bessel_Kn_impl.h	\
+	bessel_Y0_impl.h	\
+	bessel_Y1_impl.h	\
+	expint_impl.h		\
+	shint_impl.h		\
+	sinint_impl.h
+	
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
 
