@@ -1,7 +1,7 @@
 @cindex Synchrotron functions
 
 The functions described in this section are declared in the header file
-@file{gsl_sf_synchroton.h}.
+@file{gsl_sf_synchrotron.h}.
 
 @deftypefun double gsl_sf_synchrotron_1 (double @var{x})
 @deftypefunx int gsl_sf_synchrotron_1_e (double @var{x}, gsl_sf_result * @var{result})
