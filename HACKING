@@ -48,14 +48,8 @@ checkout and to use a nice cvs diff option, like
 
   cvs diff -u
 
-If your patches span several directories, or contain extra files, take
-a copy of the original directory tree before editing and use
-
-  diff -N -r -u origdir newdir
-
-to prepare the patch. The command "cvs diff" does not preserve
-directory information and is only useful for diffs within a single
-directory.
+Recent versions of patch can now cope with cvs diffs across multiple
+directories.
 
 If your patch contains lines longer than 80 characters please check
 that your mailer does not break these lines.  If in doubt, send the
