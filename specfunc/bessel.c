@@ -529,6 +529,20 @@ int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result)
   }
   result->val = (ceps * s - seps * d)/ M_SQRT2;
   result->err = 2.0 * GSL_DBL_EPSILON * (fabs(ceps) + fabs(seps)) * abs_sum / M_SQRT2;
+
+  /* Try to account for error in evaluation of sin(y), cos(y).
+   * This is a little sticky because we don't really know
+   * how the library routines are doing their argument reduction.
+   * However, we will make a reasonable guess.
+   * FIXME ?
+   */
+  if(y > 1.0/GSL_DBL_EPSILON) {
+    result->err *= 0.5 * y;
+  }
+  else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
+    result->err *= 256.0 * y * GSL_SQRT_DBL_EPSILON;
+  }
+
   return GSL_SUCCESS;
 }
 
@@ -553,6 +567,18 @@ int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result)
   }
   result->val = (ceps * d + seps * s)/ M_SQRT2;
   result->err = 2.0 * GSL_DBL_EPSILON * (fabs(ceps) + fabs(seps)) * abs_sum / M_SQRT2;
+
+  /* Try to account for error in evaluation of sin(y), cos(y).
+   * See above.
+   * FIXME ?
+   */
+  if(y > 1.0/GSL_DBL_EPSILON) {
+    result->err *= 0.5 * y;
+  }
+  else if(y > 1.0/GSL_SQRT_DBL_EPSILON) {
+    result->err *= 256.0 * y * GSL_SQRT_DBL_EPSILON;
+  }
+
   return GSL_SUCCESS;
 }
 
