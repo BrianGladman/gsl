@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
@@ -63,6 +64,76 @@ int gsl_sf_bessel_j2_impl(const double x, double * result)
   }
 }  
 
+int gsl_sf_bessel_jl_impl(const int l, const double x, double * result)
+{
+  if(l < 0 || x < 0.0) {
+    return GSL_EDOM;
+  }
+  else if(x == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(x*x < 10.*(l+1.5)*GSL_ROOT5_MACH_EPS) {
+    int status = gsl_sf_bessel_Inu_Jnu_taylor_impl(l+0.5, x, -1, 4, result);
+    *result *= sqrt(M_PI/(2.0*x));
+    return status;
+  }
+  else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
+    int status = gsl_sf_bessel_Jnu_asympx_impl(l + 0.5, x, result);
+    *result *= sqrt(M_PI/(2.0*x));
+    return status;
+  }
+  else if(l > 30) {
+    int status = gsl_sf_bessel_Jnu_asymp_Olver_impl(l + 0.5, x, result);
+    *result *= sqrt(M_PI/(2.0*x));
+    return status;
+  }
+  else if(l == 0) {
+    return gsl_sf_bessel_j0_impl(x, result);
+  }
+  else if(l == 1) {
+    return gsl_sf_bessel_j1_impl(x, result);
+  }
+  else if(l == 2) {
+    return gsl_sf_bessel_j2_impl(x, result);
+  }
+  else {
+    /* recurse down from safe values */
+    double rt_term = sqrt(M_PI/(2.0*x));
+    double jellp1, jell, jellm1;
+    const int LMAX = 31;
+    int ell;
+    gsl_sf_bessel_asymp_Jnu_Olver_impl(LMAX + 1 + 0.5, x, &jellp1);
+    gsl_sf_bessel_asymp_Jnu_Olver_impl(LMAX     + 0.5, x, &jell);
+    jellp1 *= rt_term;
+    jell   *= rt_term;
+    for(ell = LMAX; ell >= l+1; ell--) {
+      jellm1 = -jellp1 + (2*ell + 1)/x * jell;
+      jellp1 = jell;
+      jell   = jellm1;
+    }
+    *result = jellm1;
+    return GSL_SUCCESS;
+  }
+}
+
+
+int gsl_sf_bessel_jl_array_impl(const int lmax, const double x, double * result_array)
+{
+  int ell;
+  double jellp1, jell, jellm1;
+  gsl_sf_bessel_jl_impl(lmax+1, x, &jellp1);
+  gsl_sf_bessel_jl_impl(lmax,   x, &jell);
+  result_array[lmax] = jell;
+  for(ell = lmax; ell >= 1; ell--) {
+    jellm1 = -jellp1 + (2*ell + 1)/x * jell;
+    jellp1 = jell;
+    jell   = jellm1;
+    result_array[ell-1] = jellm1;
+  }
+  return GSL_SUCCESS;
+}
+
 int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl_x)
 {
   if(lmax < 0 || x < 0.) {
@@ -82,7 +153,7 @@ int gsl_sf_bessel_j_steed_array_impl(const int lmax, const double x, double * jl
     }
   }
   else {
-    /* Steed/Barnett algorithm */
+    /* Steed/Barnett algorithm [Comp. Phys. Comm. 21, 297 (1981)] */
     double x_inv = 1./x;
     double W = 2.*x_inv;
     double F = 1.;
@@ -176,11 +247,20 @@ int gsl_sf_bessel_j2_e(const double x, double * result)
   return status;
 }
 
-int gsl_sf_bessel_j_steed_array_e(const int lmax, const double x, double * jl_x)
+int gsl_sf_bessel_jl_e(const int l, const double x, double * result)
 {
-  int status = gsl_sf_bessel_j_steed_array_impl(lmax, x, jl_x);
+  int status = gsl_sf_bessel_jl_impl(l, x, result);
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_j_steed_array_e", status);
+    GSL_ERROR("gsl_sf_bessel_jl_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_bessel_jl_array_e(const int lmax, const double x, double * jl_array)
+{
+  int status = gsl_sf_bessel_jl_array_impl(lmax, x, jl_array);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_bessel_jl_array_e", status);
   }
   return status;
 }
@@ -214,6 +294,16 @@ double gsl_sf_bessel_j2(const double x)
   int status = gsl_sf_bessel_j2_impl(x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_bessel_j2", status);
+  }
+  return y;
+}
+
+double gsl_sf_bessel_jl(const int l, const double x)
+{
+  double y;
+  int status = gsl_sf_bessel_jl_impl(l, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_bessel_jl", status);
   }
   return y;
 }

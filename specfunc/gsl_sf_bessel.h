@@ -95,12 +95,12 @@ double gsl_sf_bessel_j1(double x);   /* underflow */
 double gsl_sf_bessel_j2(double x);   /* underflow */
 
 
-/* Regular spherical Bessel function j_l(x)
- * for a set of l values 0,...,lmax.
- * x >= 0.
- * Steed+Barnett algorithm [Comp. Phys. Comm. 21, 297 (1981)]
- */
-int gsl_sf_bessel_j_steed_array_e(int lmax, double x, double * jl_x);
+/* Regular spherical Bessel functions j_l(x) */
+
+int gsl_sf_bessel_jl_e(int l, double x, double * result);
+int gsl_sf_bessel_jl_array_e(int lmax, double x, double * result_array);
+
+double gsl_sf_bessel_jl(int l, double x);
 
 
 /* Regular cylindrical Bessel functions J_nu(x) calculated
@@ -184,6 +184,14 @@ int gsl_sf_bessel_Y0_impl(double x, double * result);
 int gsl_sf_bessel_Y1_impl(double x, double * result);
 
 int gsl_sf_bessel_Yn_impl(int n, double x, double * result);
+
+
+int gsl_sf_bessel_j0_impl(double x, double * result);
+int gsl_sf_bessel_j1_impl(double x, double * result);
+int gsl_sf_bessel_j2_impl(double x, double * result);
+int gsl_sf_bessel_jl_impl(int l, double x, double * result);
+int gsl_sf_bessel_jl_array_impl(int lmax, double x, double * result_array);
+int gsl_sf_bessel_j_steed_array_impl(int lmax, double x, double * jl_x);
 
 
 #endif /* !GSL_BESSEL_H_ */
