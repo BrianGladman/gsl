@@ -425,6 +425,11 @@ Public Licenses that accompany them.
 
 @printindex tp
 
+@comment Use @setchapternewpage odd to ensure that the contents starts 
+@comment on an odd page so that it can always be moved to the front when 
+@comment printing two-up.
+
+@setchapternewpage odd
 @comment -@shortcontents
 @contents
 @bye
