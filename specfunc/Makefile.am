@@ -24,7 +24,7 @@ noinst_HEADERS = bessel_amp_phase.h
 
 INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../integration -I$(top_srcdir)
 
-TESTS = test_trap test_radix2 test
+#TESTS = test_trap test_radix2 test
 
 #test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 #test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
