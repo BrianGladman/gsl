@@ -1,12 +1,12 @@
 #include <gsl_statistics.h>
 
 double 
-gsl_stats_mean (const double data[], unsigned int size)
+gsl_stats_mean (const double data[], const size_t size)
 {
   /* Compute the arithmetic mean of a dataset */
 
   double sum = 0, mean;
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < size; i++)
     {

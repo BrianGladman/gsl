@@ -3,13 +3,13 @@
 
 #include <gsl_statistics_int.h>
 
-int
-gsl_stats_int_max (const int data[], unsigned int n)
+int /* BASE type */
+gsl_stats_int_max (const int data[], const size_t n)
 {
   /* finds the largest member of an integer dataset */
 
   int max = data[0];
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < n; i++)
     {
@@ -20,13 +20,13 @@ gsl_stats_int_max (const int data[], unsigned int n)
   return max;
 }
 
-int
-gsl_stats_int_min (const int data[], unsigned int n)
+int /* BASE type */
+gsl_stats_int_min (const int data[], const size_t n)
 {
   /* finds the smallest member of an integer dataset */
 
   int min = data[0];
-  unsigned int i;
+  size_t i;
 
   for (i = 0; i < n; i++)
     {
@@ -38,13 +38,13 @@ gsl_stats_int_min (const int data[], unsigned int n)
 
 }
 
-unsigned int
-gsl_stats_int_max_index (const int data[], unsigned int n)
+size_t
+gsl_stats_int_max_index (const int data[], const size_t n)
 {
   /* finds the index of the largest member of an integer dataset */
 
   int max = data[0];
-  unsigned int i, max_index = 0;
+  size_t i, max_index = 0;
 
   for (i = 0; i < n; i++)
     {
@@ -58,13 +58,13 @@ gsl_stats_int_max_index (const int data[], unsigned int n)
   return max_index;
 }
 
-unsigned int
-gsl_stats_int_min_index (const int data[], unsigned int n)
+size_t
+gsl_stats_int_min_index (const int data[], const size_t n)
 {
   /* finds the index of the smallest member of an integer dataset */
 
   int min = data[0];
-  unsigned int i, min_index = 0;
+  size_t i, min_index = 0;
 
   for (i = 0; i < n; i++)
     {
