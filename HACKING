@@ -27,6 +27,7 @@ cvs -d sourceware.cygnus.com:/cvs/gsl checkout gsl
 cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl login
      (password is ``anoncvs'')
 cvs -d :pserver:anoncvs@sourceware.cygnus.com:/cvs/gsl checkout gsl
+cd gsl ; ./autogen.sh   (to create auto-generated files)
 [from now on you can just do "cvs update" in the gsl directory]
 
 # PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
@@ -43,7 +44,24 @@ have tried them out on swift and they seem to work.
 ---------- submitting patches
 
 The best way to send us a patch is to compile from an anonymous CVS
-checkout and to use a nice cvs diff option, like "cvs rdiff -u".
+checkout and to use a nice cvs rdiff option, like 
+
+  cvs rdiff -u
+
+Please use "cvs rdiff", rather than "cvs diff", to make patches if
+they span several directories.  The command "cvs diff" does not
+preserve directory information and is only useful for diffs of a
+single file.
+
+If your patch contains lines longer than 80 characters please check
+that your mailer does not break these lines.  If in doubt, send the
+patch as a mime attachment or uuencoded file.
+
+Before submitting a patch you may want to search the mailing list
+archive for related information. There is a search facility for the
+mailing list available at,
+
+  http://sourceware.cygnus.com/ml/gsl-discuss/
 
 ---------- some special targets
 
