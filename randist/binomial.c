@@ -1,6 +1,7 @@
 #include <math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
+#include <gsl_sf.h>
 
 /* Binomial distribution 
 
@@ -42,4 +43,13 @@ gsl_ran_binomial (const gsl_rng * r, double p, unsigned int t)
     }
 
   return n;
+}
+
+double
+gsl_ran_binomial_pdf (unsigned int n, double p, unsigned int t)
+{
+  double P = (gsl_sf_choose (t, n) 
+	      * pow(p, (double)n) 
+	      * pow(1 - p, (double)t - (double)n));
+  return P ;
 }

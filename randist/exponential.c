@@ -9,3 +9,11 @@ gsl_ran_exponential (const gsl_rng * r, double mu)
 
   return -mu * log (u);
 }
+
+double
+gsl_ran_exponential_pdf (double x, double mu)
+{
+  double p = mu * exp(-mu * x) ;
+
+  return p ;
+}

@@ -2,17 +2,25 @@
 #define GSL_RANDIST_H
 #include <gsl_rng.h>
 
-int *gsl_ran_shuffle (int N, int *x);
-int *gsl_ran_choose (int K, int N, int *x);
 
 double gsl_ran_beta (const gsl_rng * r, double a, double b);
+double gsl_ran_beta_pdf (double x, double a, double b);
+
 unsigned int gsl_ran_binomial (const gsl_rng * r, double p, unsigned int t);
+double gsl_ran_binomial_pdf (unsigned int n, double p, unsigned int t);
+
 double gsl_ran_exponential (const gsl_rng * r, double mu);
+double gsl_ran_exponential_pdf (double x, double mu);
+
 double gsl_ran_cauchy (const gsl_rng * r, double mu);
+double gsl_ran_cauchy_pdf (double x, double mu);
+
 double gsl_ran_chisq (const gsl_rng * r, double nu);
 double gsl_ran_erlang (const gsl_rng * r, double mu, double n);
-double gsl_ran_laplace (const gsl_rng * r, double mu);
+
 double gsl_ran_gaussian (const gsl_rng * r);
+double gsl_ran_gaussian_pdf (double x);
+
 void gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y);
 double gsl_ran_lognormal (const gsl_rng * r);
 double gsl_ran_logistic (const gsl_rng * r);
@@ -25,10 +33,15 @@ double gsl_ran_fdist (const gsl_rng * r, double nu1, double nu2);
 void gsl_ran_dir_2d (const gsl_rng * r, double * x, double * y);
 void gsl_ran_dir_3d (const gsl_rng * r, double * x, double * y, double * z);
 double gsl_ran_tdist (const gsl_rng * r, double nu);
+double gsl_ran_two_sided_exponential (const gsl_rng * r, double mu);
+
 
 unsigned int gsl_ran_poisson (const gsl_rng * r, double mu);
 unsigned int gsl_ran_geometric (const gsl_rng * r, double p);
 void gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 			    double mu);
+
+int *gsl_ran_shuffle (const gsl_rng * r, int N, int *x);
+int *gsl_ran_choose (const gsl_rng * r, int K, int N, int *x);
 
 #endif /* GSL_RANDIST_H */

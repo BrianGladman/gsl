@@ -1,15 +1,32 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <gsl_randist.h>
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-#define N 10000
-void test_moments (double (*f) (void), double mean, double var);
-double gaussian (void);
+#define N 100000
+void test_moments (double (*f) (void), const char * name, 
+		   double a, double b, double p);
+
+double beta (void);
+double cauchy (void);
+double chisq (void);
+double erlang (void);
 double exponential (void);
+double fdist (void);
+double flat (void);
+double gamma (void);
+double gaussian (void);
+double geometric (void);
+double logistic (void);
+double lognormal (void);
+double pareto (void);
+double poisson (void);
+double tdist (void);
+double weibull (void);
 
 gsl_rng * r_global ;
 
@@ -18,31 +35,38 @@ main (void)
 {
   r_global = gsl_rng_alloc (gsl_rng_default) ;
 
-  test_moments (gaussian, 0.0, 1.0);
-  test_moments (exponential, 0.0, 1.0);
+#define FUNC(x) x, "gsl_ran_" #x
+  test_moments (FUNC(gaussian), 0.0, 100.0, 0.5);
+  test_moments (FUNC(gaussian), -1.0, 1.0, 0.68);
+
+  test_moments (FUNC(exponential), 0.0, 1.0, 0.63212);
+  test_moments (FUNC(cauchy), 0.0, 10000.0, 0.5);
 
   return 0;
 }
 
 void
-test_moments (double (*f) (void), double mean, double var)
+test_moments (double (*f) (void), const char * name, 
+	      double a, double b, double p)
 {
-  int i;
-  double est_mean = 0, est_var = 0, est_skew = 0, est_four = 0;
+  int i ;
+  double count = 0, expected, sigma ;
+  int status ;
 
   for (i = 0; i < N; i++)
     {
-      const double r = f ();
-      const double delta = r - mean;
-      est_mean += (r - est_mean) / (i + 1);
-      est_var += (delta * delta - est_var) / (i + 1);
-      est_skew += (delta * delta * delta - est_skew) / (i + 1);
-      est_four += (delta * delta * delta * delta - est_four) / (i + 1);
+      double r = f ();
+      if (r < b && r > a)
+	count++ ;
     }
-  printf ("est_mean = %g vs %g\n", est_mean, mean);
-  printf ("est_var = %g vs %g\n", est_var, var);
-  printf ("est_skew = %g\n", est_skew);
-  printf ("est_four = %g\n", est_four);
+  
+  expected = p * N ;
+  sigma = fabs(count - expected) / sqrt(expected) ;
+  
+  status = (sigma > 3) ;
+
+  gsl_test(status, "%s, range [%g,%g] (%g observed vs %g expected)",
+	  name, a, b, count/N, p) ;
 }
 
 double 
@@ -98,4 +122,48 @@ gaussian (void)
 {
   return gsl_ran_gaussian (r_global) ;
 }
+
+double 
+geometric (void)
+{
+  return gsl_ran_geometric (r_global, 0.5) ;
+}
+
+double 
+logistic (void)
+{
+  return gsl_ran_logistic (r_global) ;
+}
+
+double 
+lognormal (void)
+{
+  return gsl_ran_lognormal (r_global) ;
+}
+
+double 
+pareto (void)
+{
+  return gsl_ran_pareto (r_global, 2.0) ;
+}
+
+double 
+poisson (void)
+{
+  return gsl_ran_poisson (r_global, 2.0) ;
+}
+
+double 
+tdist (void)
+{
+  return gsl_ran_tdist (r_global, 2.0) ;
+}
+
+double 
+weibull (void)
+{
+  return gsl_ran_weibull (r_global, 2.0) ;
+}
+
+
 

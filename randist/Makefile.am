@@ -2,14 +2,14 @@ lib_LIBRARIES = libgslrandist.a
 libgslrandist_a_SOURCES = \
         beta.c binomial.c cauchy.c chisq.c erlang.c \
         exponential.c fdist.c flat.c \
-	gamma.c gauss.c geometric.c laplace.c logistic.c lognormal.c \
-	pareto.c poisson.c shuffle.c sphere.c tdist.c weibull.c
+	gamma.c gauss.c geometric.c logistic.c lognormal.c \
+	pareto.c poisson.c shuffle.c sphere.c tdist.c twosidedexp.c weibull.c
 
 include_HEADERS= gsl_randist.h
 
-INCLUDES= -I$(srcdir)/../rng
+INCLUDES= -I$(srcdir)/../rng -I$(srcdir)/../specfunc -I$(srcdir)/../err
 
 test_SOURCES = test.c
-test_LDADD = libgslrandist.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslrandist.a ../rng/libgslrng.a ../specfunc/libgslspecfunc.a ../err/libgslerr.a ../err/libgsltest.a
 TESTS = test
 check_PROGRAMS = test

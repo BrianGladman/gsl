@@ -22,6 +22,13 @@ gsl_ran_gaussian (const gsl_rng * r)
   return y * sqrt (-2.0 * log (r2) / r2);	/* Box-Muller transform */
 }
 
+double
+gsl_ran_gaussian_pdf (double x)
+{
+  double p = (1 / sqrt(2*M_PI)) * exp(-x*x/2) ;
+  return p ;
+}
+
 void
 gsl_ran_bivariate_gaussian (const gsl_rng * r, double *x, double *y)
 {

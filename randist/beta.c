@@ -1,6 +1,7 @@
 #include <math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
+#include <gsl_sf.h>
 
 double
 gsl_ran_beta (const gsl_rng * r, double a, double b)
@@ -15,4 +16,15 @@ gsl_ran_beta (const gsl_rng * r, double a, double b)
   double x2 = gsl_ran_gamma (r, b) ;
 
   return x1/(x1 + x2) ;
+}
+
+double
+gsl_ran_beta_pdf (double x, double a, double b)
+{
+  double gab = gsl_sf_lngamma (a + b) ;
+  double ga = gsl_sf_lngamma (a) ;
+  double gb = gsl_sf_lngamma (b) ;
+  
+  double p = exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1) ;
+  return p ;
 }

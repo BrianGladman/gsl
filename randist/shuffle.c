@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <stdio.h>		/* defines NULL */
 #include <math.h>		/* defines floor() */
-#include "gsl_ran.h"
+#include <gsl_rng.h>
 #include "gsl_randist.h"
 
 int *
-gsl_ran_shuffle (int N, int *x)
+gsl_ran_shuffle (const gsl_rng * r, int N, int *x)
 {
   int i, k, tmp;
 
@@ -36,7 +36,7 @@ gsl_ran_shuffle (int N, int *x)
 
   for (i = N - 1; i >= 0; --i)
     {
-      k = floor (i * gsl_ran_uniform ());
+      k = floor (i * gsl_rng_uniform (r));
       tmp = x[k];
       x[k] = x[i];
       x[i] = tmp;
@@ -44,7 +44,7 @@ gsl_ran_shuffle (int N, int *x)
   return x;
 }
 int *
-gsl_ran_choose (int K, int N, int *x)
+gsl_ran_choose (const gsl_rng * r, int K, int N, int *x)
 {
   int n, k;
   /* Choose K out of N items */
@@ -68,7 +68,7 @@ gsl_ran_choose (int K, int N, int *x)
   /* Here is the guts of the algorithm: three lines!! */
   for (n = 0, k = 0; n < N && k < K; ++n)
     {
-      if ((N - n) * gsl_ran_uniform () < K - k)
+      if ((N - n) * gsl_rng_uniform (r) < K - k)
 	{
 	  x[k++] = n;
 	}

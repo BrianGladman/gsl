@@ -3,6 +3,12 @@
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
+/* The Cauchy probability distribution is 
+
+   p(x) = (1/pi) (1 + (x/mu)^2)^(-1)
+
+   It is also known as the Lorentzian probability distribution */
+
 double
 gsl_ran_cauchy (const gsl_rng * r, double mu)
 {
@@ -16,8 +22,12 @@ gsl_ran_cauchy (const gsl_rng * r, double mu)
   return mu * tan (M_PI * u);
 }
 
-/* The Cauchy probability distribution is 
+double
+gsl_ran_cauchy_pdf (double x, double mu)
+{
+  double u = x / mu ;
+  double p = (1/M_PI) / (1+u*u) ;
+  return p ;
+}
 
-   p(x) = (1/pi) (1 + (x/mu)^2)^(-1)
 
-   It is also known as the Lorentzian probability distribution */
