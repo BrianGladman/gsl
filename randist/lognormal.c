@@ -5,7 +5,7 @@
 
 /* The lognormal distribution has the form 
 
-   p(x) dx = 1/(x * sqrt(2 pi)) exp(-ln(x)^2/2) 
+   p(x) dx = 1/(x * sqrt(2 pi)) exp(-ln(x)^2/2) dx
 
    for x > 0. Lognormal random numbers are the exponentials of
    gaussian random numbers */

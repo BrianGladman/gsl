@@ -4,7 +4,7 @@
 
 /* The Pareto distribution has the form,
 
-   p(x) = a / x^(a+1)      for x >= 1
+   p(x) dx = a / x^(a+1) dx     for x >= 1
 
  */
 

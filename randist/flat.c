@@ -4,8 +4,8 @@
 
 /* This is the uniform distribution in the range [a, b)
 
-   p(x)dx = 1/(b-a)   if  a <= x < b
-   .....  = 0         otherwise 
+   p(x)dx = 1/(b-a) dx   if  a <= x < b
+   .....  = 0            otherwise 
 
  */
 

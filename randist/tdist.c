@@ -7,7 +7,7 @@
 /* The t-distribution has the form
 
    p(x) dx = (Gamma((nu + 1)/2)/(sqrt(pi nu) Gamma(nu/2))
-   * (1 + (x^2)/nu)^-((nu + 1)/2)
+   * (1 + (x^2)/nu)^-((nu + 1)/2) dx
 
    The method used here is the one described in Knuth */
 

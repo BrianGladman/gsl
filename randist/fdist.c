@@ -7,7 +7,7 @@
 
    p(x) dx = (nu1^(nu1/2) nu2^(nu2/2) Gamma((nu1 + nu2)/2) /
    Gamma(nu1/2) Gamma(nu2/2)) *
-   x^(nu1/2 - 1) (nu2 + nu1 * x)^(-nu1/2 -nu2/2)
+   x^(nu1/2 - 1) (nu2 + nu1 * x)^(-nu1/2 -nu2/2) dx
 
    The method used here is the one described in Knuth */
 

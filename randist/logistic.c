@@ -4,7 +4,7 @@
 
 /* The logistic distribution has the form,
 
-   p(x) dx = exp(-x) / (1 + exp(-x))^2 
+   p(x) dx = exp(-x) / (1 + exp(-x))^2 dx
 
    for x > 0 */
 
