@@ -12,11 +12,15 @@
 #endif
 
 #ifndef M_LN10
-#define       	      	2.30258509299404568402	    /* ln(10) */
+#define M_LN10     	      	2.30258509299404568402	    /* ln(10) */
 #endif
 
 #ifndef M_LN2
-#define       	      	0.69314718055994530942	    /* ln(2) */
+#define M_LN2 	      	      	0.69314718055994530942	    /* ln(2) */
+#endif
+
+#ifndef M_EULER
+#define M_EULER                 0.5772156649015328606065    /* Euler constant */
 #endif
 
 

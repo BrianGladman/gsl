@@ -34,7 +34,6 @@
  *  Error is high only near the crossover point x = 9.55
  * between the two expansions used.
  */
-
 
 /*
 Cephes Math Library Release 2.1:  November, 1988
@@ -78,7 +77,6 @@ asymptotically, where
     u = 4 v .
 
 */
-
 #include "mconf.h"
 
 #define EUL 5.772156649015328606065e-1
