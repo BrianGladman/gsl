@@ -5,6 +5,7 @@
  * This is applicable for x < 2 and |nu|<=1/2.
  * These functions assume x > 0.
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"

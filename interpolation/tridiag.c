@@ -1,9 +1,4 @@
-
-
-
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+#include <config.h>
 #include <stdlib.h>
 #include <gsl_errno.h>
 #include "tridiag.h"

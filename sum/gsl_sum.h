@@ -28,6 +28,7 @@ int gsl_sum_levin_u_accel (const double * array,
 			   double * dq_den,
 			   double * dsum,
 			   double * sum_accel,
+			   size_t * n_used,
 			   double * sum_plain,
 			   double * precision);
 
@@ -65,6 +66,7 @@ int gsl_sum_levin_u_accel_minmax (const double * array,
 				  double * dq_den,
 				  double * dsum,
 				  double * sum_accel,
+				  size_t * n_used,
 				  double * sum_plain,
 				  double * precision);
 

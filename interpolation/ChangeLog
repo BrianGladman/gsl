@@ -1,5 +1,7 @@
 Tue Nov 17 16:52:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* added #include <config.h> to all top-level source files
+
 	* renamed test_interp.c to test.c
 
 	* test_interp.c: got rid of unused function alloc_xy_table

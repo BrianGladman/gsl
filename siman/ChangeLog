@@ -1,3 +1,7 @@
+Tue Nov 17 17:22:14 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added #include <config.h> to all top-level source files
+
 Sun Nov  8 20:40:28 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* siman_tsp.c: clean up for make strict

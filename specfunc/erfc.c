@@ -8,6 +8,7 @@
  *  the other stuff with Chebyshev fits. These are simpler and
  *  more precise than the original approximations. [GJ])
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"

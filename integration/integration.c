@@ -1,5 +1,6 @@
 /* Created: [GJ] Tue Apr 23 21:26:53 EDT 1996
  */
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>

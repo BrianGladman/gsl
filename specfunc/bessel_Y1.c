@@ -1,6 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel_amp_phase.h"

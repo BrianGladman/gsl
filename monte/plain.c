@@ -5,8 +5,7 @@
 
 #define TINY DBL_MIN
 
-#define myMAX(a,b) ((a) >= (b) ? (a) : (b))
-
+#include <config.h>
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_monte_plain.h>
@@ -47,7 +46,7 @@ int gsl_monte_plain_integrate(gsl_monte_plain_state *state,
   }
   *res = vol * sum/calls;
   if ( calls > 1) {
-    *err = vol * sqrt(myMAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1))));
+    *err = vol * sqrt(GSL_MAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1))));
   }
   else {
     /* should't happen, validate should catch */

@@ -1,7 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include<stdlib.h>
+#include <config.h>
+#include <stdlib.h>
 #include <gsl_errno.h>
 #include "bsearch.h"
 #include "tridiag.h"

@@ -1,5 +1,7 @@
 Tue Nov 17 12:31:03 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* test.c: added #include <config.h>
+
 	* renamed test_sum.c to test.c
 
 	* renamed all the functions so that _with_derivs is now the

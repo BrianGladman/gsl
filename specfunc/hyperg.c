@@ -4,6 +4,7 @@
 /* Miscellaneous implementations of use
  * for evaluation of hypergeometric functions.
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"

@@ -1,6 +1,7 @@
 /*   Set of programs for printing vegas results   */
 /* RCS $Id$ */
 
+#include <config.h>
 #include <stdio.h>
 #include <gsl_monte_vegas.h>
 #include <vegas_print.h>

@@ -1,5 +1,7 @@
 Tue Nov 17 17:29:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* added #include <config.h> to all top-level source files
+
 	* chebyshev.c (gsl_sf_cheb_eval_n): changed local gslMIN and
  	gslMAX to the standard GSL_MIN and GSL_MAX macros
 

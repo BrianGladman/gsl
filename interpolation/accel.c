@@ -1,6 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <config.h>
 #include <stdlib.h>
 #include "bsearch.h"
 #include "gsl_interp.h"

@@ -1,6 +1,7 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <config.h>
 #include "gsl_sf_poly.h"
 
 

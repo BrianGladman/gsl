@@ -13,6 +13,7 @@ gsl_sum_levin_u_accel (const double *array,
 		       double *dq_den,
 		       double *dsum,
 		       double *sum_accel,
+		       size_t *n_used,
 		       double *sum_plain,
 		       double *precision)
 {
@@ -21,6 +22,7 @@ gsl_sum_levin_u_accel (const double *array,
 				       q_num, q_den,
 				       dq_num, dq_den, dsum,
 				       sum_accel,
+				       n_used,
 				       sum_plain,
 				       precision);
 }
@@ -36,6 +38,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 			      double *dq_den,
 			      double *dsum,
 			      double *sum_accel,
+			      size_t *n_used,
 			      double *sum_plain,
 			      double *precision)
 {
@@ -43,12 +46,14 @@ gsl_sum_levin_u_accel_minmax (const double *array,
     {
       *sum_accel = 0.0;
       *sum_plain = 0.0;
+      *n_used    = 0;
       return GSL_SUCCESS;
     }
   else if (array_size == 1)
     {
       *sum_accel = array[0];
       *sum_plain = array[0];
+      *n_used    = 1;
       return GSL_SUCCESS;
     }
   else
@@ -151,6 +156,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 	  *sum_accel = least_trunc_result;
 	  *precision = (GSL_MAX (least_trunc, least_trunc_noise)
 			/ fabs (*sum_accel));
+	  *n_used = n ;
 	  return GSL_SUCCESS;
 	}
       else
@@ -160,6 +166,7 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 
 	  *sum_accel = result_n;
 	  *precision = GSL_MAX (trunc_n, noise_n) / fabs (result_n);
+	  *n_used = n ;
 	  return GSL_SUCCESS;
 	}
     }

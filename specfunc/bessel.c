@@ -3,6 +3,7 @@
  */
 /* Miscellaneous support functions for Bessel function evaluations.
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "bessel.h"

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gsl_integration.h>
 #include "qk61.h"
 

@@ -1,5 +1,9 @@
 Tue Nov 17 16:49:12 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* added #include <config.h> to all top-level source files
+
+	* plain.c (gsl_monte_plain_integrate): replaced myMAX by GSL_MAX
+
 	* utils.c: move macros around to avoid double definition
 
 Fri Aug 14 10:12:06 1998  Brian Gough  <bjg@vvv.lanl.gov>

@@ -1,3 +1,4 @@
+#include <config.h>
 #include <float.h>
 #include <math.h>
 #include <gsl_integration.h>

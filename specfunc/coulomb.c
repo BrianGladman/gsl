@@ -12,6 +12,7 @@
  *  [Bardin et al., CPC 3, 73 (1972)]
  *  [Abad+Sesma, CPC 71, 110 (1992)]
  */
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_exp.h"
