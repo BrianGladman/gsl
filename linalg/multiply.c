@@ -26,15 +26,15 @@ gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C)
 
     for(i=0; i<C->size1; i++) {
       for(j=0; j<C->size2; j++) {
-        a = A->data[i*A->size2 + 0];
-	b = B->data[0 + j];
+        a = gsl_matrix_get(A,i,0);
+	b = gsl_matrix_get(B,0,j);
         temp = a * b;
         for(k=1; k<A->size2; k++) {
-	  a = A->data[i*A->size2 + k];
-	  b = B->data[k*B->size2 + j];
+          a = gsl_matrix_get(A,i,k);
+          b = gsl_matrix_get(B,k,j);
           temp += a * b;
 	}
-	C->data[i*C->size2 + j] = temp;
+	gsl_matrix_set(C,i,j,temp);
       }
     }
 
@@ -83,8 +83,8 @@ gsl_la_matmult_mod_impl(const gsl_matrix * A, gsl_la_matrix_mod_t modA,
           if(modA & GSL_LA_MOD_TRANSPOSE) SWAP_SIZE_T(a1, a2);
 	  if(modB & GSL_LA_MOD_TRANSPOSE) SWAP_SIZE_T(b1, b2);
 
-          a = A->data[a1*dim2_A + a2];
-          b = B->data[b1*dim2_B + b2];
+          a = gsl_matrix_get(A,a1,a2);
+          b = gsl_matrix_get(B,b1,b2);
           temp = a * b;
 
           for(k=1; k<dim2_A; k++) {
@@ -94,12 +94,12 @@ gsl_la_matmult_mod_impl(const gsl_matrix * A, gsl_la_matrix_mod_t modA,
             b2 = j;
             if(modA & GSL_LA_MOD_TRANSPOSE) SWAP_SIZE_T(a1, a2);
 	    if(modB & GSL_LA_MOD_TRANSPOSE) SWAP_SIZE_T(b1, b2);
-            a = A->data[a1*dim2_A + a2];
-            b = B->data[b1*dim2_B + b2];
+            a = gsl_matrix_get(A,a1,a2);
+            b = gsl_matrix_get(B,b1,b2);
             temp += a * b;
           }
 
-          C->data[i*dim2_C + j] = temp;
+          gsl_matrix_set(C,i,j,temp);
 	}
       }
 

@@ -1,9 +1,13 @@
 TODO 
 
-* make all internal functions static, and have all exported functions
+* Run tests where matrix dim2 != size2, note that dim2 is a physical
+dimension and size2 is the number of columns in the matrix. This will
+probably find a lot of bugs in the matrix logic.
+
+* Make all internal functions static, and have all exported functions
 & variables prefixed with gsl_ or GSL_.
 
-Usefule command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.

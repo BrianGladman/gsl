@@ -112,6 +112,9 @@ test_matmult_mod(void)
   gsl_matrix * A = gsl_matrix_calloc(3, 3);
   gsl_matrix * B = gsl_matrix_calloc(3, 3);
   gsl_matrix * C = gsl_matrix_calloc(3, 3);
+  gsl_matrix * D = gsl_matrix_calloc(2, 3);
+  gsl_matrix * E = gsl_matrix_calloc(2, 3);
+  gsl_matrix * F = gsl_matrix_calloc(2, 2);
 
   gsl_matrix_set(A, 0, 0, 10.0);
   gsl_matrix_set(A, 0, 1,  5.0);
@@ -132,6 +135,20 @@ test_matmult_mod(void)
   gsl_matrix_set(B, 2, 0,  1.0);
   gsl_matrix_set(B, 2, 1,  3.0);
   gsl_matrix_set(B, 2, 2,  2.0);
+
+  gsl_matrix_set(D, 0, 0, 10.0);
+  gsl_matrix_set(D, 0, 1,  5.0);
+  gsl_matrix_set(D, 0, 2,  1.0);
+  gsl_matrix_set(D, 1, 0,  1.0);
+  gsl_matrix_set(D, 1, 1, 20.0);
+  gsl_matrix_set(D, 1, 2,  5.0);
+
+  gsl_matrix_set(E, 0, 0, 10.0);
+  gsl_matrix_set(E, 0, 1,  5.0);
+  gsl_matrix_set(E, 0, 2,  2.0);
+  gsl_matrix_set(E, 1, 0,  1.0);
+  gsl_matrix_set(E, 1, 1,  3.0);
+  gsl_matrix_set(E, 1, 2,  2.0);
 
   gsl_la_matmult_mod_impl(A, GSL_LA_MOD_NONE, B, GSL_LA_MOD_NONE, C);
   s += ( fabs(gsl_matrix_get(C, 0, 0) - 106.0) > GSL_DBL_EPSILON );
@@ -177,9 +194,32 @@ test_matmult_mod(void)
   s += ( fabs(gsl_matrix_get(C, 2, 1) -  30.0) > GSL_DBL_EPSILON );
   s += ( fabs(gsl_matrix_get(C, 2, 2) -  30.0) > GSL_DBL_EPSILON );
 
+  /* now try for non-symmetric matrices */
+  gsl_la_matmult_mod_impl(D, GSL_LA_MOD_TRANSPOSE, E, GSL_LA_MOD_NONE, C);
+  s += ( fabs(gsl_matrix_get(C, 0, 0) - 101.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 0, 1) -  53.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 0, 2) -  22.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 1, 0) -  70.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 1, 1) -  85.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 1, 2) -  50.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 2, 0) -  15.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 2, 1) -  20.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(C, 2, 2) -  12.0) > GSL_DBL_EPSILON );
+
+
+  gsl_la_matmult_mod_impl(D, GSL_LA_MOD_NONE, E, GSL_LA_MOD_TRANSPOSE, F);
+  s += ( fabs(gsl_matrix_get(F, 0, 0) - 127.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(F, 0, 1) -  27.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(F, 1, 0) - 120.0) > GSL_DBL_EPSILON );
+  s += ( fabs(gsl_matrix_get(F, 1, 1) -  71.0) > GSL_DBL_EPSILON );
+
+
   gsl_matrix_free(A);
   gsl_matrix_free(B);
   gsl_matrix_free(C);
+  gsl_matrix_free(D);
+  gsl_matrix_free(E);
+  gsl_matrix_free(F);
 
   return s;
 }
