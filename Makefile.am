@@ -4,7 +4,7 @@
 
 SUBDIRS = gsl utils sys err block vector matrix permutation sort ieee-utils min multimin linalg eigen blas specfunc dht rng randist fft poly roots multiroots statistics siman sum integration interpolation histogram monte ode-initval doc
 
-SUBLIBS = blas/libgslblas.a blas/libgslblascblas.a blas/libgslblasnative.a block/libgslblock.a dht/libgsldht.a eigen/libgsleigen.a err/libgslerr.a err/libgsltest.a fft/libgslfft.a histogram/libgslhistogram.a ieee-utils/libgslieeeutils.a integration/libgslintegration.a interpolation/libgslinterpolation.a linalg/libgsllinalg.a matrix/libgslmatrix.a min/libgslmin.a monte/libgslmonte.a multimin/libgslmultimin.a multiroots/libgslmultiroots.a ode-initval/libgslodeiv.a permutation/libgslpermutation.a poly/libgslpoly.a randist/libgslrandist.a rng/libgslrng.a roots/libgslroots.a siman/libgslsiman.a sort/libgslsort.a specfunc/libgslspecfunc.a statistics/libgslstatistics.a sum/libgslsum.a sys/libgslsys.a vector/libgslvector.a
+SUBLIBS = blas/libgslblas.a blas/libgslblascblas.a blas/libgslblasnative.a block/libgslblock.a dht/libgsldht.a eigen/libgsleigen.a err/libgslerr.a err/libgsltest.a fft/libgslfft.a histogram/libgslhistogram.a ieee-utils/libgslieeeutils.a integration/libgslintegration.a interpolation/libgslinterpolation.a linalg/libgsllinalg.a matrix/libgslmatrix.a min/libgslmin.a monte/libgslmonte.a multimin/libgslmultimin.a multiroots/libgslmultiroots.a ode-initval/libgslodeiv.a permutation/libgslpermutation.a poly/libgslpoly.a randist/libgslrandist.a rng/libgslrng.a roots/libgslroots.a siman/libgslsiman.a sort/libgslsort.a specfunc/libgslspecfunc.a statistics/libgslstatistics.a sum/libgslsum.a sys/libgslsys.a utils/libutils.a vector/libgslvector.a
 
 bin_SCRIPTS = gsl-config
 

@@ -1,16 +1,21 @@
 TODO  -- see also individual TODO files in each directory
 
-* Should doc/mdate-sh be in CVS. Automake needs it unless you supply --missing
+* Add GPL copyright notices for each file
+
+* Should doc/mdate-sh be in CVS? Automake needs it unless you supply --missing
 
 * Make a sorted datatype for the median and quantile functions so that
 the user can be prevented from passing unsorted data, which is not
 checked for.
 
-* Add a vector layer to statistics and ffts.
+* Add a vector layer to statistics and ffts, sometime in the future.
 
 * Switch to libtool and --disable-shared (even though it is still
-slower) and build a single libgsl. This will also be easier for making
-the debian package hopefully.
+slower) and build a single libgsl. Unfortunately this causes problems
+with tests and bin programs, so it may need a reorganization -- the
+whole libgsl has to be built first, but they are built on a per
+directory basis. Switch to libtool library interface versioning
+(eventually).
 
 * Add support for C++ (Use #ifdef __cplusplus extern "C" { #pragma }
 #endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB. See also
@@ -51,10 +56,6 @@ Linux.
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.
 
-* Allow the user to test which version they are using, so that a
-specific version can be required. As in gtk, gsl_print_version(),
-gsl_check_version(int major, int minor, int micro)
- 
 * Make the return value EINVAL vs EDOM consistent for invalid
 parameters. EDOM means a domain error (i.e. float or mathematically
 undefined), EINVAL means invalid (i.e. zero length)

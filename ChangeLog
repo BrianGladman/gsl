@@ -1,3 +1,11 @@
+Mon Mar  6 19:48:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_version.h: added simple release-number based support for
+ 	accessing the version number at compile-time and run-time. This is
+ 	not a complete solution but it will do for now, as libtool
+ 	interface numbers are too complicated to worry about at the
+ 	moment due to other problems with libtool.
+
 Thu Mar  2 20:52:50 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* templates_on.h (ATOMIC_IO): added an internal type for IO, for
