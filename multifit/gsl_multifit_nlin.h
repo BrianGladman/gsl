@@ -42,8 +42,8 @@ __BEGIN_DECLS
 struct gsl_multifit_function_struct
 {
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
-  size_t m;   /* number of functions */
-  size_t n;   /* number of independent variables */
+  size_t n;   /* number of functions */
+  size_t p;   /* number of independent variables */
   void * params;
 };
 
@@ -81,8 +81,8 @@ gsl_multifit_fsolver;
 
 gsl_multifit_fsolver *
 gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T, 
-                                 gsl_multifit_function * f, 
-                                 gsl_vector * x);
+                            gsl_multifit_function * f, 
+                            gsl_vector * x);
 
 void gsl_multifit_fsolver_free (gsl_multifit_fsolver * s);
 
@@ -103,8 +103,8 @@ struct gsl_multifit_function_fdf_struct
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
   int (* df) (const gsl_vector * x, void * params, gsl_matrix * df);
   int (* fdf) (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix *df);
-  size_t m;   /* number of functions */
-  size_t n;   /* number of independent variables */
+  size_t n;   /* number of functions */
+  size_t p;   /* number of independent variables */
   void * params;
 };
 
@@ -165,7 +165,8 @@ int gsl_multifit_test_residual (const gsl_vector * f, double epsabs);
 
 extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_hybrids;
 
-extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_hybridsj;
+extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
+extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
 
 
 __END_DECLS

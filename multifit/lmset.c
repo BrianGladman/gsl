@@ -32,6 +32,7 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   /* set delta to 100 |D x| or to 100 if |D x| is zero */
 
+  state->xnorm = scaled_enorm (diag, x);
   state->delta = compute_delta (diag, x);
 
   /* Factorize J into QR decomposition */

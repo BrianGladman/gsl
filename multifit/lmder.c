@@ -50,8 +50,9 @@ typedef struct
     gsl_vector *x_trial;
     gsl_vector *f_trial;
     gsl_vector *df;
-    gsl_vector *qtdf;
+    gsl_vector *sdiag;
     gsl_vector *rptdx;
+    gsl_vector *w;
     gsl_permutation * perm;
   }
 lmder_state_t;
@@ -76,7 +77,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
   lmder_state_t *state = (lmder_state_t *) vstate;
   gsl_matrix *q, *r;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
-   *df, *qtdf, *rptdx;
+   *df, *sdiag, *rptdx, *w;
   gsl_permutation *perm;
 
   q = gsl_matrix_calloc (n, n);
@@ -138,7 +139,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   state->qtf = qtf;
 
-  newton = gsl_vector_calloc (n);
+  newton = gsl_vector_calloc (p);
 
   if (newton == 0)
     {
@@ -153,7 +154,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   state->newton = newton;
 
-  gradient = gsl_vector_calloc (n);
+  gradient = gsl_vector_calloc (p);
 
   if (gradient == 0)
     {
@@ -169,7 +170,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   state->gradient = gradient;
 
-  x_trial = gsl_vector_calloc (n);
+  x_trial = gsl_vector_calloc (p);
 
   if (x_trial == 0)
     {
@@ -223,9 +224,9 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 
   state->df = df;
 
-  qtdf = gsl_vector_calloc (n);
+  sdiag = gsl_vector_calloc (p);
 
-  if (qtdf == 0)
+  if (sdiag == 0)
     {
       gsl_matrix_free (q);
       gsl_matrix_free (r);
@@ -238,10 +239,10 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (f_trial);
       gsl_vector_free (df);
 
-      GSL_ERROR_VAL ("failed to allocate space for qtdf", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for sdiag", GSL_ENOMEM, 0);
     }
 
-  state->qtdf = qtdf;
+  state->sdiag = sdiag;
 
 
   rptdx = gsl_vector_calloc (n);
@@ -258,12 +259,34 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (x_trial);
       gsl_vector_free (f_trial);
       gsl_vector_free (df);
-      gsl_vector_free (qtdf);
+      gsl_vector_free (sdiag);
 
       GSL_ERROR_VAL ("failed to allocate space for rptdx", GSL_ENOMEM, 0);
     }
 
   state->rptdx = rptdx;
+
+  w = gsl_vector_calloc (n);
+
+  if (w == 0)
+    {
+      gsl_matrix_free (q);
+      gsl_matrix_free (r);
+      gsl_vector_free (tau);
+      gsl_vector_free (diag);
+      gsl_vector_free (qtf);
+      gsl_vector_free (newton);
+      gsl_vector_free (gradient);
+      gsl_vector_free (x_trial);
+      gsl_vector_free (f_trial);
+      gsl_vector_free (df);
+      gsl_vector_free (sdiag);
+      gsl_vector_free (rptdx);
+
+      GSL_ERROR_VAL ("failed to allocate space for rptdx", GSL_ENOMEM, 0);
+    }
+
+  state->w = w;
 
   perm = gsl_permutation_calloc (p);
 
@@ -279,8 +302,9 @@ lmder_alloc (void *vstate, size_t n, size_t p)
       gsl_vector_free (x_trial);
       gsl_vector_free (f_trial);
       gsl_vector_free (df);
-      gsl_vector_free (qtdf);
+      gsl_vector_free (sdiag);
       gsl_vector_free (rptdx);
+      gsl_vector_free (w);
 
       GSL_ERROR_VAL ("failed to allocate space for perm", GSL_ENOMEM, 0);
     }
@@ -323,8 +347,10 @@ lmder_free (void *vstate)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
+  gsl_permutation_free (state->perm);
+  gsl_vector_free (state->w);
   gsl_vector_free (state->rptdx);
-  gsl_vector_free (state->qtdf);
+  gsl_vector_free (state->sdiag);
   gsl_vector_free (state->df);
   gsl_vector_free (state->f_trial);
   gsl_vector_free (state->x_trial);

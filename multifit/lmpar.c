@@ -56,7 +56,11 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
   const size_t n = r->size2;
   size_t i, j, nsing;
 
-  gsl_vector_memcpy (x, qtf);
+  for (i = 0 ; i < n ; i++)
+    {
+      double qtfi = gsl_vector_get (qtf, i);
+      gsl_vector_set (x, i,  qtfi);
+    }
 
   nsing = count_nsing (r);
 
@@ -72,7 +76,7 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 
       gsl_vector_set (x, j, temp);
 
-      for (i = 0; i < j; j++)
+      for (i = 0; i < j; i++)
 	{
 	  double rij = gsl_matrix_get (r, i, j);
 	  double xi = gsl_vector_get (x, i);
@@ -121,10 +125,10 @@ compute_newton_correction (const gsl_matrix * r, const gsl_vector * sdiag,
     }
 }
 
-static double
-compute_phider (const gsl_matrix * r, const gsl_vector * x, double dxnorm, 
-                const gsl_permutation * perm, const gsl_vector * diag, 
-                gsl_vector * w)
+static void
+compute_newton_bound (const gsl_matrix * r, const gsl_vector * x, 
+                      double dxnorm,  const gsl_permutation * perm, 
+                      const gsl_vector * diag, gsl_vector * w)
 {
   /* If the jacobian is not rank-deficient then the Newton step
      provides a lower bound for the zero of the function. Otherwise
@@ -138,7 +142,8 @@ compute_phider (const gsl_matrix * r, const gsl_vector * x, double dxnorm,
 
   if (nsing < n)
     {
-      return 0;
+      gsl_vector_set_zero (w);
+      return;
     }
 
   for (i = 0; i < n; i++)
@@ -167,12 +172,6 @@ compute_phider (const gsl_matrix * r, const gsl_vector * x, double dxnorm,
 	gsl_vector_set (w, j, (wj - sum) / rjj);
       }
     }
-
-  {
-    double temp = enorm (w);
-
-    return temp * temp;
-  }
 }
 
 static void
@@ -205,7 +204,8 @@ compute_gradient_direction (const gsl_matrix * r, const gsl_permutation * p,
 static int
 lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
        const gsl_vector * diag, double delta, double * par_inout,
-       gsl_vector * newton, gsl_vector * gradient, gsl_vector * p)
+       gsl_vector * newton, gsl_vector * gradient, gsl_vector * sdiag, 
+       gsl_vector * x, gsl_vector * w)
 {
   double qnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c,
     dxnorm, wnorm, phider;
@@ -227,24 +227,37 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 
   qnorm = scaled_enorm (diag, newton);
 
-  fp = dxnorm - delta;
+  fp = qnorm - delta;
+
+#ifdef DEBUG
+  printf ("qnorm = %g, delta = %g, fp = %g\n", qnorm, delta, fp);
+#endif
 
   if (fp <= 0.1 * delta)
     {
-      gsl_vector_memcpy (p, newton);
+      gsl_vector_memcpy (x, newton);
 #ifdef DEBUG
       printf ("took newton (fp = %g, delta = %g)\n", fp, delta);
 #endif
+
+      *par_inout = 0;
+
       return GSL_SUCCESS;
     }
 
-  phider = compute_phider (r, newton, dxnorm, perm, diag, w);
+  compute_newton_bound (r, newton, dxnorm, perm, diag, w);
+
+  phider = pow (enorm (w), 2.0);
 
   par_lower = fp / (delta * phider);
 
-  compute_scaled_gradient (r, perm, qtf, diag, gradient);
+  compute_gradient_direction (r, perm, qtf, diag, gradient);
 
   gnorm = enorm (gradient);
+
+#ifdef DEBUG
+  printf("gnorm = %g\n", gnorm);
+#endif
 
   par_upper =  gnorm / delta;
 
@@ -268,35 +281,39 @@ iteration:
 
   iter++;
 
+#ifdef DEBUG
+  printf("lmpar iteration = %d\n", iter);
+#endif
+
   /* Evaluate the function at the current value of par */
 
   if (par == 0)
     {
-      par = GSL_DBL_MAX (0.001 * par_upper, GSL_DBL_MIN);
+      par = GSL_MAX_DBL (0.001 * par_upper, GSL_DBL_MIN);
     }
 
-  /* Compute wa1 = sqrt(par) diag */
+  /* Compute the least squares solution of [ R P x - Q^T f, sqrt(par) D x]
+     for A = Q R P^T */
+
+#ifdef DEBUG
+  printf ("calling qrsolv with par = %g\n", par);
+#endif
 
   {
-    size_t n = r->size2;
-    size_t i;  
+    double sqrt_par = sqrt(par);
 
-    double sqrt_par = sqrt (par);
-
-    for (i = 0; i < n; i++)
-      {
-        double di = gsl_vector_get (diag, i);
-        gsl_vector_set (wa1, i, sqrt_par * di);
-      }
+    qrsolv (r, perm, sqrt_par, diag, qtf, x, sdiag, w);
   }
-
-  qrsolv (r, perm, wa1, qtf, x, sdiag, wa2);
 
   dxnorm = scaled_enorm (diag, x);
 
   fp_old = fp;
 
   fp = dxnorm - delta;
+
+#ifdef DEBUG
+  printf ("After qrsolv dxnorm = %g, delta = %g, fp = %g\n", dxnorm, delta, fp);
+#endif
 
   /* If the function is small enough, accept the current value of par */
 
@@ -343,9 +360,6 @@ iteration:
   goto iteration;
 
 line220:
-
-  if (iter == 0)
-    par = 0;
 
   *par_inout = par;
 

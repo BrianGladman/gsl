@@ -1,7 +1,48 @@
+/* This function computes the solution to the least squares system
+
+   phi = [ A x =  b , lambda D x = 0 ]^2
+    
+   where A is an M by N matrix, D is an N by N diagonal matrix, lambda
+   is a scalar parameter and b is a vector of length M.
+
+   The function requires the factorization of A into A = Q R P^T,
+   where Q is an orthogonal matrix, R is an upper triangular matrix
+   with diagonal elements of non-increasing magnitude and P is a
+   permuation matrix. The system above is then equivalent to
+
+   [ R z = Q^T b, P^T (lambda D) P z = 0 ]
+
+   where x = P z. If this system does not have full rank then a least
+   squares solution is obtained.  On output the function also provides
+   an upper triangular matrix S such that
+
+   P^T (A^T A + lambda^2 D^T D) P = S^T S
+
+   Parameters,
+   
+   r: On input, contains the full upper triangle of R. On output the
+   strict lower triangle contains the transpose of the strict upper
+   triangle of S, and the diagonal of S is stored in sdiag.  The full
+   upper triangle of R is not modified.
+
+   p: the encoded form of the permutation matrix P. column j of P is
+   column p[j] of the identity matrix.
+
+   lambda, diag: contains the scalar lambda and the diagonal elements
+   of the matrix D
+
+   qtb: contains the product Q^T b
+
+   x: on output contains the least squares solution of the system
+
+   wa: is a workspace of length N
+
+   */
+
 int
-qrsolv (gsl_matrix * r, const gsl_permutation * p, 
-        const gsl_vector * diag, const gsl_vector * qtb, gsl_vector * x, 
-        gsl_vector * sdiag,   gsl_vector * wa)
+qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda, 
+        const gsl_vector * diag, const gsl_vector * qtb, 
+        gsl_vector * x, gsl_vector * sdiag, gsl_vector * wa)
 {
   size_t n = r->size2;
 
@@ -33,7 +74,7 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p,
 
       size_t pj = gsl_permutation_get (p, j);
 
-      double diagpj = gsl_vector_get (diag, pj);
+      double diagpj = lambda * gsl_vector_get (diag, pj);
 
       if (diagpj == 0)
 	{

@@ -4,7 +4,6 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   lmder_state_t *state = (lmder_state_t *) vstate;
 
   const double delta = state->delta;
-  const double xnorm = state->xnorm;
   const double fnorm = state->fnorm;
 
   gsl_matrix *q = state->q;
@@ -17,6 +16,8 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
   gsl_vector *rptdx = state->rptdx;
   gsl_vector *newton = state->newton;
   gsl_vector *gradient = state->gradient;
+  gsl_vector *sdiag = state->sdiag;
+  gsl_vector *w = state->w;
   gsl_permutation *perm = state->perm;
 
   double prered, actred;
@@ -44,9 +45,11 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
 
 lm_iteration:
   
-  lmpar (r, perm, qtf, diag, delta, &(state->par), newton, gradient, dx);
+  lmpar (r, perm, qtf, diag, delta, &(state->par), newton, gradient, sdiag, dx, w);
 
   /* Take a trial step */
+
+  gsl_vector_scale (dx, -1.0); /* reverse the step to go downhill */
 
   compute_trial_step (x, dx, state->x_trial);
 
@@ -70,6 +73,10 @@ lm_iteration:
 
   actred = compute_actual_reduction (fnorm, fnorm1);
 
+#ifdef DEBUG
+  printf("lmiterate: fnorm = %g fnorm1 = %g  actred = %g\n", fnorm, fnorm1, actred);
+#endif
+
   /* Compute rptdx = R P^T dx, noting that |J dx| = |R P^T dx| */
 
   compute_rptdx (r, perm, dx, rptdx);
@@ -86,6 +93,8 @@ lm_iteration:
     dirder = -(t1 * t1 + t2 * t2);
   }
 
+
+
   /* compute the ratio of the actual to predicted reduction */
 
   if (prered > 0)
@@ -96,6 +105,11 @@ lm_iteration:
     {
       ratio = 0;
     }
+
+#ifdef DEBUG
+  printf("lmiterate: prered = %g dirder = %g ratio = %g\n", prered, dirder,ratio);
+#endif
+
 
   /* update the step bound */
 
@@ -162,6 +176,7 @@ lm_iteration:
     {
       /* Repeat inner loop if unsuccessful */
       
+      return GSL_CONTINUE;
       goto lm_iteration;
     }
 
