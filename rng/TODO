@@ -68,4 +68,4 @@ simulation , 1996, Page 360, from ACM
 float/dbl (original has checks for DBL_MANT_DIG ..)
 
 16. Rewrite test.c to use a loop over a list of all the generators.
-Too much cut and paste!
+Too much cut and paste! DONE

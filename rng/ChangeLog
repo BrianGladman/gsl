@@ -1,3 +1,7 @@
+Mon Dec  6 16:21:05 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): rewrote the tests to loop over all the generators
+
 Wed Aug 11 20:57:10 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ranlxd.c, ranlxs.c: added ranlxd and ranlxs, second generation
