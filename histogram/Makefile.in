@@ -75,21 +75,21 @@ include_HEADERS = gsl_histogram.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err -I$(srcdir)/../utils
 
-check_PROGRAMS = test #test_float test_int test_trap
+check_PROGRAMS = test test_trap
 
-TESTS = test #test_float test_int test_trap
+TESTS = test test_trap
 
 test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
-#test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslhistogram.a
-#test_trap_DEPENDENCIES = libgslvector.a
+test_trap_DEPENDENCIES = libgslhistogram.a
 
 test_SOURCES = test.c
-#test_trap_SOURCES = test_trap.c
+test_trap_SOURCES = test_trap.c
 
 libgslhistogram_a_SOURCES = add.c find.c get.c init.c params.c reset.c file.c \
-	 gsl_histogram.h
+	pdf.c	 gsl_histogram.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -102,10 +102,12 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslhistogram_a_LIBADD = 
 libgslhistogram_a_OBJECTS =  add.o find.o get.o init.o params.o reset.o \
-file.o
+file.o pdf.o
 AR = ar
 test_OBJECTS =  test.o
 test_LDFLAGS = 
+test_trap_OBJECTS =  test_trap.o
+test_trap_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -119,9 +121,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/add.P .deps/file.P .deps/find.P .deps/get.P \
-.deps/init.P .deps/params.P .deps/reset.P .deps/test.P
-SOURCES = $(libgslhistogram_a_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslhistogram_a_OBJECTS) $(test_OBJECTS)
+.deps/init.P .deps/params.P .deps/pdf.P .deps/reset.P .deps/test.P \
+.deps/test_trap.P
+SOURCES = $(libgslhistogram_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES)
+OBJECTS = $(libgslhistogram_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -200,6 +203,10 @@ maintainer-clean-checkPROGRAMS:
 test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
+test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
+	@rm -f test_trap
+	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)

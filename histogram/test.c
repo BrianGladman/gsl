@@ -64,7 +64,7 @@ int main (void)
     
     for (i = 0 ; i < N ; i++) 
       {
-	gsl_histogram_add (h, (double)i) ;
+	gsl_histogram_increment (h, (double)i) ;
 	
 	for (j = 0 ; j <= i ; j++) {
 	  if (h->bin[j] != 1) {
@@ -79,7 +79,7 @@ int main (void)
 	}
       }
     
-    gsl_test(status, "gsl_histogram_add works correctly") ;
+    gsl_test(status, "gsl_histogram_increment works correctly") ;
   }
 
   {

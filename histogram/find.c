@@ -7,7 +7,7 @@ typedef int cmp_fn_t(const void *, const void *) ;
 static int compare_range (const double * x, const double * range) ;
 
 int 
-gsl_histogram_find (const size_t n, const double * range, 
+gsl_histogram_find (const size_t n, const double range[], 
 		    const double x, size_t * i)
 {
   if (x < range[0]) 

@@ -7,8 +7,15 @@ gsl_histogram *
 gsl_histogram_alloc_uniform (const size_t n, const double xmin,
 			     const double xmax)
 {
-  gsl_histogram * h = gsl_histogram_alloc (n) ;
-
+  gsl_histogram * h ;
+  
+  if (xmin >= xmax) 
+    {
+      GSL_ERROR_RETURN ("xmin must be less than xmax", GSL_EINVAL, 0) ;
+    }
+  
+  h = gsl_histogram_alloc (n) ;
+  
   if (h == 0) 
     {
       return h ;

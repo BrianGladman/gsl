@@ -3,7 +3,7 @@
 #include <gsl_histogram.h>
 
 int
-gsl_histogram_add (gsl_histogram * h, double x)
+gsl_histogram_increment (gsl_histogram * h, double x)
 {
   int status = gsl_histogram_accumulate(h, x, 1.0) ;
   return status ;
