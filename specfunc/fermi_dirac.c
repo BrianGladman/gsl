@@ -87,9 +87,9 @@ static double F2_c_integrand(double y, double A)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* [Goano, TOMS-745, (4)] */
-int gsl_sf_fermi_integral_m1_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_m1_impl(const double x, double * result)
 {
-  if(x < GSL_LOG_DBL_MIN + 1.0) {
+  if(x < GSL_LOG_DBL_MIN) {
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
@@ -105,7 +105,7 @@ int gsl_sf_fermi_integral_m1_impl(const double x, double * result)
 }
 
 /* [Goano, TOMS-745, (3)] */
-int gsl_sf_fermi_integral_0_impl(const double x, double * result)
+int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
 {
   if(x < GSL_LOG_DBL_MIN) {
     *result = 0.0;
@@ -130,12 +130,21 @@ int gsl_sf_fermi_integral_0_impl(const double x, double * result)
 /* [Goano, TOMS-745, p. 222] */
 int gsl_sf_fermi_integral_inc_0_impl(const double x, const double b, double * result)
 {
-  double arg = b - x;
-  double f0;
-  int status = gsl_sf_fermi_integral_0_impl(arg, &f0);
-  *result = f0 - arg;
-  return status;
+  if(b < 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else {
+    double arg = b - x;
+    double f0;
+    int status = gsl_sf_fermi_integral_0_impl(arg, &f0);
+    *result = f0 - arg;
+    return status;
+  }
 }
+
+
+
 
 int gsl_sf_fermi_integral_1_impl(const double A, double * result)
 {
@@ -251,6 +260,25 @@ int gsl_sf_fermi_integral_2_impl(const double A, double * result)
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_fermi_dirac_0_e(double x, double * result)
+{
+  int status = gsl_sf_fermi_dirac_0_impl(x, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_dirac_0_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_fermi_dirac_m1_e(double x, double * result)
+{
+  int status = gsl_sf_fermi_dirac_m1_impl(x, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_dirac_m1_e", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_fermi_integral_1_e(const double A, double * result)
 {
   int status = gsl_sf_fermi_integral_1_impl(A, result);
@@ -271,6 +299,26 @@ int gsl_sf_fermi_integral_2_e(const double A, double * result)
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_fermi_dirac_0(double x)
+{
+  double y;
+  int status = gsl_sf_fermi_dirac_0_impl(x, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_dirac_0", status);
+  }
+  return y;
+}
+
+double gsl_sf_fermi_dirac_m1(double x)
+{
+  double y;
+  int status = gsl_sf_fermi_dirac_m1_impl(x, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_dirac_m1", status);
+  }
+  return y;
+}
 
 double gsl_sf_fermi_integral_1(const double A)
 {
