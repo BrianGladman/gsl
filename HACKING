@@ -124,6 +124,8 @@ for HAVE_INLINE use in installed headers.
  grep config.h gsl/*.h    --- shouldn't match anything
  grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
 
+* Check that the library passes "make check" with -O3
+
 ----------- Notes on making a release
 
 * Edit the version number in configure.in. 
