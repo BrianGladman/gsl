@@ -864,6 +864,7 @@ transputer -----------------------
 @section Random Number Distributions
 @cindex random number distributions
 
+
 Distributions of random numbers can be obtained from any of the
 generators using the functions described in this section. In the
 simplest cases a non-uniform distribution can be obtained analytically
@@ -876,10 +877,41 @@ More complicated distributions are created by the
 distribution against a distribution which is similar and known
 analytically. This usually requires several samples from the generator.
 
-@subsection Continuous distributions
+
+
 
 @c ----------------------------------------------------------------------
-@unnumberedsubsec The Gaussian Distribution
+@menu
+* The Gaussian Distribution::   
+* The Exponential Distribution::  
+* The Laplace Distribution::    
+* The Exponential Power Distribution::  
+* The Cauchy Distribution::     
+* The Symmetric Levy Distribution::  
+* The Gamma Distribution::      
+* The Erlang distribution::     
+* The Flat (Uniform) Distribution::  
+* The Lognormal Distribution::  
+* The Chi-squared Distribution::  
+* The F-distribution::          
+* The t-distribution::          
+* The Beta Distribution::       
+* The Logistic Distribution::   
+* The Pareto Distribution::     
+* The Spherical Distribution (2D & 3D)::  
+* The Weibull Distribution::    
+* The Gumbel Distribution::     
+* The Poisson Distribution::    
+* The Bernoulli Distribution::  
+* The Binomial Distribution::   
+* The Negative Binomial Distribution::  
+* The Geometric Distribution::  
+* The Hypergeometric Distribution::  
+* The Logarithmic Distribution::  
+@end menu
+
+@node The Gaussian Distribution
+@subsection The Gaussian Distribution
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian random numbers
 This function returns a gaussian random number, with mean zero and
@@ -887,7 +919,8 @@ standard deviation @math{\sigma}. The probability distribution for gaussian
 random numbers is,
 @c
 @equation
-p(z) dz = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(z-\mu)^2 / 2\sigma^2) dz
+p(z) dz = @{1 \over \sqrt@{2 \pi \sigma^2@}@} 
+            \exp (-(z-\mu)^2 / 2\sigma^2) dz
 @end equation
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
@@ -941,7 +974,8 @@ mean zero, correlation coefficient @var{rho} and standard deviations
 The probability distribution for bivariate gaussian random numbers is,
 @c
 @equation
-p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2 + y^2 - 2 \rho x y) / 2 \sigma_x^2 \sigma_y^2 (1-\rho^2)) dz
+p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} 
+\exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dz
 @end equation
 @noindent
 for @math{x,y} in the range @math{-\infty} to @math{+\infty}.
@@ -952,6 +986,8 @@ for @math{x,y} in the range @math{-\infty} to @math{+\infty}.
 
 @c ----------------------------------------------------------------------
 @page
+@node The Exponential Distribution
+@subsection The Exponential Distribution
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
 @cindex Exponential random numbers
 This function returns a random number from the exponential distribution
@@ -1000,6 +1036,8 @@ Useful integral:
 
 @c ----------------------------------------------------------------------
 @page
+@node The Laplace Distribution
+@subsection The Laplace Distribution
 @deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{mu})
 @cindex two-sided exponential random numbers
 @cindex Laplace distribution random numbers
@@ -1042,10 +1080,12 @@ Useful integral:
 
 @c ----------------------------------------------------------------------
 @page
+@node The Exponential Power Distribution
+@subsection The Exponential Power Distribution
 @deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Exponential power distribution, random numbers
 This function returns a random number from the exponential power distribution
-with mean @var{mu} and exponent @var{a}.
+with scale parameter @var{mu} and exponent @var{a}.
 @c
 @equation
 p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
@@ -1062,7 +1102,8 @@ distribution, but with @math{\mu = \sqrt@{2@} \sigma}.
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness = FIXME, Excess = FIXME
+Mean = @math{0}, Variance = @math{\mu^2 \Gamma(3/a)/\Gamma(1/a)},
+Skewness = @math{0}, Excess = @math{\Gamma(5/a)\Gamma(1/a)/\Gamma(3/a)^2}
 
 @item
 Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
@@ -1079,6 +1120,7 @@ Cumulative distribution function,
 
 @c ----------------------------------------------------------------------
 @page
+@node The Cauchy Distribution
 @subsection The Cauchy Distribution
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
 @cindex Cauchy random numbers
@@ -1100,9 +1142,9 @@ distribution is also known as the Lorentz distribution.
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-The Cauchy distribution decreases as @math{1/x^2} for large @math{x} and
-so the variance, skewness, excess and cumulants are either infinite or
-undefined.
+The Cauchy distribution decreases as @math{1/|x|^2} for large
+@math{x}. This makes the variance infinite. Other higher moments are
+either infinite or undefined.
 
 @item
 Characteristic function, @math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
@@ -1122,11 +1164,13 @@ Confidence limits:
 
 @c ----------------------------------------------------------------------
 @page
+@node The Symmetric Levy Distribution
+@subsection The Symmetric Levy Distribution
 @deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Levy distribution, random numbers
-This function returns a random number from the Levy distribution with
-scale @var{mu} and exponent @var{a}. The Levy probability distribution
-is defined by a fourier transform,
+This function returns a random number from the symmetric Levy
+distribution with scale @var{mu} and exponent @var{a}. The symmetric
+Levy probability distribution is defined by a fourier transform,
 @c
 @equation
 p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a) 
@@ -1134,7 +1178,7 @@ p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a)
 @noindent
 There is no explicit solution for the form of @math{p(x)}. For @math{a =
 1} the distribution reduces to the Cauchy distribution. For @math{a = 2}
-it has is Gaussian distribution with @math{\sigma = \sqrt@{2@} \mu}. For
+it is a Gaussian distribution with @math{\sigma = \sqrt@{2@} \mu}. For
 @math{a < 1} the tails of the distribution become extremely wide.
 
 The algorithm only works for @math{0 < a \le 2}.
@@ -1146,7 +1190,7 @@ The algorithm only works for @math{0 < a \le 2}.
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness = FIXME, Excess = FIXME
+Mean = @math{0}, Variance = @math{FIXME}, Skewness = @math{0}, Excess = FIXME
 
 @item
 Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
@@ -1163,6 +1207,8 @@ Cumulative distribution function,
 
 @c ----------------------------------------------------------------------
 @page
+@node The Gamma Distribution
+@subsection The Gamma Distribution
 @deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gamma distribution random numbers
 This function returns a random number from the gamma
@@ -1196,9 +1242,10 @@ Characteristic function, @math{\phi(t) = 1 - i bt }
 
 @c ----------------------------------------------------------------------
 @page
+@node The Erlang distribution
 @subsection The Erlang distribution
 The Erlang distribution is the sum of @math{n} exponential variates,
-each with mean @math{a}.
+each with mean @math{a}. 
 
 @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
 @cindex Erlang random numbers
@@ -1216,6 +1263,8 @@ for @math{x \ge 0}.
 
 @c ----------------------------------------------------------------------
 @page
+@node The Flat (Uniform) Distribution
+@subsection The Flat (Uniform) Distribution
 @deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex flat distribution random numbers
 This function returns a random number from the flat (uniform)
@@ -1242,13 +1291,15 @@ Cumulants, @math{\kappa_1=(a+b)/2}, @math{\kappa_@{2n+1@}=0},
 @math{\kappa_@{2n@}=(b-a)^@{2n@} B_@{2n@} / (2n)},
 
 @item
-Characteristic function, @math{\phi(t) = (2 sin(ht/2)/(ht)) \exp(i t (b+a)/2)}
+Characteristic function, @math{\phi(t) = (2 \sin(ht/2)/(ht)) \exp(i t (b+a)/2)}
 where @math{h = (b - a)}.
 
 @end itemize
 
 @c ----------------------------------------------------------------------
 @page
+@node The Lognormal Distribution
+@subsection The Lognormal Distribution
 @deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
 @cindex Lognormal random numbers
 This function returns a random number from the lognormal
@@ -1273,7 +1324,7 @@ Excess = @math{(s-1)(s^3+3s^2+6s+6)}
 
 where @math{s = \exp(\sigma^2)} and @math{t = \exp(\zeta)}.
 
-The mode (maximum) occurs at @math{x = exp(\zeta - \sigma^2)}.
+The mode (maximum) occurs at @math{x = \exp(\zeta - \sigma^2)}.
 
 @item
 Cumulative distribution function, 
@@ -1283,6 +1334,7 @@ Cumulative distribution function,
 
 @c ----------------------------------------------------------------------
 @page
+@node The Chi-squared Distribution
 @subsection The Chi-squared Distribution
 The chi-squared distribution arises in statistics If @math{Y_i} are
 @math{n} independent gaussian random numbers with unit variance then the
@@ -1336,6 +1388,7 @@ Useful integral:
 
 @c ----------------------------------------------------------------------
 @page
+@node The F-distribution
 @subsection The F-distribution
 The F-distribution arises in statistics. If @math{Y_1} and @math{Y_2} are
 chi-squared deviates with @math{\nu_1} and @math{\nu_2} degrees of freedom
@@ -1376,6 +1429,7 @@ Mean = @math{\nu_2/(\nu_2 - 2)} (for @math{\nu_2 > 2}), Variance =
 
 @c ----------------------------------------------------------------------
 @page
+@node The t-distribution
 @subsection The t-distribution
 The t-distribution arises in statistics. If @math{Y_1} has a normal
 distribution and @math{Y_2} has a  chi-squared distribution with @math{\nu}
@@ -1403,6 +1457,8 @@ p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
 
 @c ----------------------------------------------------------------------
 @page
+@node The Beta Distribution
+@subsection The Beta Distribution
 @deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Beta distribution random numbers
 This function returns a random number from the beta
@@ -1431,6 +1487,7 @@ Excess = @math{-6 \sqrt@{2a + 1@}/(a(2a+3))}
 
 @c ----------------------------------------------------------------------
 @page
+@node The Logistic Distribution
 @subsection The Logistic Distribution
 
 @deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{mu})
@@ -1455,7 +1512,7 @@ Mean = @math{0}, Variance = @math{\pi^2 \mu^2 / 3}, Skewness =
 
 @item
 Cumulative distribution function, 
-@math{CDF(x) = \int_-\infty^x p(x') dx' = 1/(1+\exp(-x/\mu))}
+@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1/(1+\exp(-x/\mu))}
 @item
 Confidence limits:
 
@@ -1466,9 +1523,11 @@ Useful integral:
 
 @c ----------------------------------------------------------------------
 @page
+@node The Pareto Distribution
+@subsection The Pareto Distribution
 @deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Lognormal random numbers
-This function returns a random number from the pareto distribution of
+This function returns a random number from the Pareto distribution of
 order @var{a}.  The distribution function is,
 @c
 @equation
@@ -1508,6 +1567,9 @@ Useful integral:
 @end itemize
 
 @c ----------------------------------------------------------------------
+@page
+@node The Spherical Distribution (2D & 3D)
+@subsection The Spherical Distribution (2D & 3D)
 @deftypefn Random double gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @cindex 2D random direction vector
 @cindex direction vector, random 2D
@@ -1528,6 +1590,8 @@ normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
 
 @c ----------------------------------------------------------------------
 @page
+@node The Weibull Distribution
+@subsection The Weibull Distribution
 @deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Weibull distribution random numbers
 This function returns a random number from the Weibull distribution. The
@@ -1555,6 +1619,8 @@ Cumulative distribution function,
 
 @c ----------------------------------------------------------------------
 @page
+@node The Gumbel Distribution
+@subsection The Gumbel Distribution
 @deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @deftypefnx Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gumbel distribution, random numbers
@@ -1587,9 +1653,11 @@ Cumulative distribution function,
 @end itemize
 
 @page
-@subsection Discrete distributions
+@section Discrete distributions
 
 @c ----------------------------------------------------------------------
+@node The Poisson Distribution
+@subsection The Poisson Distribution
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
 This function returns a random integer from the poisson distribution
@@ -1597,10 +1665,10 @@ with mean @var{mu}. The probability distribution for poisson random
 numbers is,
 @c
 @equation
-p(n) = @{\mu^n \over n!@} \exp(-\mu)
+p(k) = @{\mu^k \over k!@} \exp(-\mu)
 @end equation
 @noindent
-for @math{n \ge 0}.
+for @math{k \ge 0}.
 @end deftypefn
 @tex
 \centerline{\input rand-poisson.tex}
@@ -1622,6 +1690,8 @@ Characteristic function, @math{\phi(t) = \exp(m(e^@{it@}-1))}
 
 @c ----------------------------------------------------------------------
 @page
+@node The Bernoulli Distribution
+@subsection The Bernoulli Distribution
 @deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
 @cindex Bernoulli trial, random numbers
 This function returns the result either 0 or 1, the result of a
@@ -1639,8 +1709,8 @@ p(0) = 1 - p, p(1) = p
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-Mean = @math{FIXME}, Variance = @math{FIXME}, Skewness =
-@math{FIXME}, Excess = @math{FIXME}
+Mean = @math{p}, Variance = @math{p(1-p)}, Skewness =
+@math{(1-2p)/\sqrt@{p(1-p)@}}, Excess = @math{1-6p(1-p))/(p(1-p))}
 
 @item
 Cumulants, @math{\kappa_n=FIXME} for all @math{n}
@@ -1652,17 +1722,19 @@ Characteristic function, @math{\phi(t) = FIXME}
 
 @c ----------------------------------------------------------------------
 @page
-@deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+@node The Binomial Distribution
+@subsection The Binomial Distribution
+@deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
 @cindex Binomial random numbers
 This function returns a random integer from the binomial distribution,
-the number of successes in @var{t} independent trials with probability
+the number of successes in @var{n} independent trials with probability
 @var{p}. The probability distribution for binomial random numbers is,
 @c
 @equation
-p(n) = @{t! \over n! (t-n)! @} p^n (1-p)^@{t-n@}
+p(k) = @{n! \over k! (n-k)! @} p^k (1-p)^@{n-k@}
 @end equation
 @noindent
-for @math{0 \le n \le t}.
+for @math{0 \le k \le n}.
 @end deftypefn
 @tex
 \centerline{\input rand-binomial.tex}
@@ -1671,55 +1743,60 @@ for @math{0 \le n \le t}.
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-Mean = @math{tp}, Variance = @math{tp(1-p)}, Skewness =
-@math{(1-2p)/\sqrt@{tp(1-p@}}, Excess = @math{(1-6p(1-p))/(tp(1-p))}
+Mean = @math{np}, Variance = @math{np(1-p)}, Skewness =
+@math{(1-2p)/\sqrt@{np(1-p@}}, Excess = @math{(1-6p(1-p))/(np(1-p))}
 
 @item
-Cumulants, @math{\kappa_1=tp}, @math{\kappa_@{n+1@}=p(1-p)(d\kappa_n/dp)},
+Cumulants, @math{\kappa_1=np}, @math{\kappa_@{r+1@}=p(1-p)(d\kappa_r/dp)},
 for @math{n>1}
 
 @item
-Characteristic function, @math{\phi(t) = (1-p+p \exp(it))^n}
+Characteristic function, @math{\phi(t) = (1-p + p\exp(it))^n}
 
 @end itemize
 
 @c ----------------------------------------------------------------------
 @page
-@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, double @var{t})
+@node The Negative Binomial Distribution
+@subsection The Negative Binomial Distribution
+@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, double @var{n})
 @cindex Negative Binomial distribution, random numbers
 This function returns a random integer from the negative binomial
-distribution, the number of failures occurring before @var{t} successes
+distribution, the number of failures occurring before @var{n} successes
 in independent trials with probability @var{p} of success. The
 probability distribution for negative binomial random numbers is,
 @c
 @equation
-p(n) = @{\Gamma(t + n) \over \Gamma(n+1) \Gamma(t) @} p^t (1-p)^n
+p(k) = @{\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) @} p^n (1-p)^k
 @end equation
 @noindent
-Note that @math{t} is not required to be an integer.
+Note that @math{k} is not required to be an integer.
 @end deftypefn
 @tex
 \centerline{\input rand-nbinomial.tex}
 @end tex
 
-@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{t})
+@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{k})
 This function returns a random integer from the Pascal distribution. The
 Pascal distribution is simply a negative binomial distribution with an
-integer value of @math{t}.
+integer value of @math{n}.
 @equation
-p(n) = @{(t + n - 1)! \over n! (t -1)! @} p^t (1-p)^n
+p(k) = @{(n + k - 1)! \over k! (n -1)! @} p^n (1-p)^k
 @end equation
 @end deftypefn
 
 @unnumberedsubsubsec Properties
 @itemize @asis
 @item
-Mean = @math{t(1-p)/p}, Variance = @math{t(1-p)/p^2}, Skewness =
-@math{(2-p)/\sqrt@{t(1-p)@}}, Excess = @math{(1/N)(6+@{p^2 \over 1 - p@})}
+Mean = @math{n(1-p)/p}, Variance = @math{n(1-p)/p^2}, Skewness =
+@math{(2-p)/\sqrt@{n(1-p)@}}, Excess = @math{(1/n)(6+@{p^2 \over 1 -
+p@})}
 @end itemize
 
 @c ----------------------------------------------------------------------
 @page
+@node The Geometric Distribution
+@subsection The Geometric Distribution
 @deftypefn Random {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
 @cindex Geometric random numbers
 This function returns a random integer from the geometric distribution,
@@ -1728,10 +1805,10 @@ first success. The probability distribution for geometric random numbers
 is,
 @c
 @equation
-p(n) =  p (1-p)^n
+p(k) =  p (1-p)^k
 @end equation
 @noindent
-for @math{n \ge 1}.
+for @math{k \ge 1}.
 @end deftypefn
 @tex
 \centerline{\input rand-geometric.tex}
@@ -1745,7 +1822,7 @@ Mean = @math{(1-p)/p}, Variance = @math{(1-p)/p^2}, Skewness =
 
 @item
 Cumulants, @math{\kappa_1=(1-p)/p},
-@math{\kappa_@{n+1@}=-(1-p)(d\kappa_n/dp)}, for @math{n>1}
+@math{\kappa_@{r+1@}=-(1-p)(d\kappa_r/dp)}, for @math{r>1}
 
 @item
 Characteristic function, @math{\phi(t) = p/(1 - (1-p)\exp(it)}
@@ -1754,6 +1831,8 @@ Characteristic function, @math{\phi(t) = p/(1 - (1-p)\exp(it)}
 
 @c ----------------------------------------------------------------------
 @page
+@node The Hypergeometric Distribution
+@subsection The Hypergeometric Distribution
 @deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 @cindex Geometric random numbers
 This function returns a random integer from the hypergeometric
@@ -1761,10 +1840,10 @@ distribution. The probability distribution for hypergeometric
 random numbers is,
 @c
 @equation
-p(n) =  C(n1,n) C(n2, t-n) / C(n1+n2,n)
+p(k) =  C(n1,k) C(n2, t-k) / C(n1+n2,k)
 @end equation
 @noindent
-where @math{C(a,b) = a!/(b!(a-b)!)}. The domain of @math{n} is
+where @math{C(a,b) = a!/(b!(a-b)!)}. The domain of @math{k} is
 @math{max(0,t-n_2)}, ..., @math{max(t,n_1)}.
 @end deftypefn
 @tex
@@ -1781,6 +1860,8 @@ Skewness = @math{(n_2 - n_1)(N-2t) \sqrt@{(N-1)/(t n_1 n_2 (N-t))@}}, where
 
 @c ----------------------------------------------------------------------
 @page
+@node The Logarithmic Distribution
+@subsection The Logarithmic Distribution
 @deftypefn Random {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
 @cindex Logarithmic random numbers
 This function returns a random integer from the logarithmic
@@ -1788,7 +1869,7 @@ distribution. The probability distribution for logarithmic random numbers
 is,
 @c
 @equation
-p(n) = @{-1 \over \log(1-p)@} @{\left( p^n \over n \right)@}
+p(k) = @{-1 \over \log(1-p)@} @{\left( p^k \over k \right)@}
 @end equation
 @noindent
 for @math{n \ge 1}.
@@ -1817,7 +1898,7 @@ where @math{a = -1/\log(1-p)}
 
 @deftypefn Random void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
 
-This function randomly shuff;es the order of @var{n} objects, each of
+This function randomly shuffles the order of @var{n} objects, each of
 size @var{size}, stored in the array @var{base}[0..@var{n}-1].
 
 The following code shows how to shuffle the numbers from 0 to 51,
