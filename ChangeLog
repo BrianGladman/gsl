@@ -1,3 +1,8 @@
+2000-12-14  Mark Galassi  <rosalia@galassi.org>
+
+	* gsl.spec, configure.in: upped the version to 0.7+ since the
+	release has been made.
+
 2000-10-26  Mark Galassi  <rosalia@galassi.org>
 
 	* ltconfig, ltmain.sh: removed these auto-generated files.
