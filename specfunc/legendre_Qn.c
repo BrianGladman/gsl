@@ -187,7 +187,7 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
     GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0){
-    result->val = 0.5 * log((1.0+x)/(1.0-x));
+    result->val = 0.5 * (log1p(x) - log1p(-x));
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
@@ -228,7 +228,7 @@ gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
     GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0){
-    result->val = 0.5 * x * log((1.0+x)/(1.0-x)) - 1.0;
+    result->val = 0.5 * x * (log1p(x) - log1p(-x)) - 1.0;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
