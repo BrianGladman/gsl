@@ -12,8 +12,10 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* [Abramowitz+Stegun, 9.6.11] 
- * checked OK [GJ] Sun May  3 20:48:26 EDT 1998 
+/* [Abramowitz+Stegun, 9.6.11]
+ * assumes n >= 1
+ *
+ * checked OK [GJ] Sun May  3 20:48:26 EDT 1998
  */
 static int bessel_Kn_scaled_small_x(const int n, const double x, double * result)
 {
@@ -25,7 +27,7 @@ static int bessel_Kn_scaled_small_x(const int n, const double x, double * result
   double term1, sum1, ln_pre1;
   double term2, sum2, pre2;
 
-  gsl_sf_lnfact_impl(n-1, &ln_nm1_fact);
+  gsl_sf_lnfact_impl((unsigned int)(n-1), &ln_nm1_fact);
 
   ln_pre1 = -n*ln_x_2 + ln_nm1_fact;
   if(ln_pre1 > GSL_LOG_DBL_MAX - 3.) return GSL_EOVRFLW;
@@ -48,8 +50,8 @@ static int bessel_Kn_scaled_small_x(const int n, const double x, double * result
     double psi_kp1 = -M_EULER;
     double psi_npkp1;
     gsl_sf_psi_int_impl(n, &psi_n);
-    gsl_sf_fact_impl(n, &npk_fact);
-    psi_npkp1 = psi_n + 1./n;
+    gsl_sf_fact_impl((unsigned int)n, &npk_fact);
+    psi_npkp1 = psi_n + 1.0/n;
     sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact;
     for(k=1; k<KMAX; k++) {
       psi_kp1   += 1./k;

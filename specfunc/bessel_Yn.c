@@ -14,7 +14,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Sun May  3 23:25:41 EDT 1998 */
+/* assumes n >= 1 */
 static int bessel_Yn_small_x(const int n, const double x, double * result)
 {
   int k;
@@ -25,10 +25,10 @@ static int bessel_Yn_small_x(const int n, const double x, double * result)
   double term1, sum1, ln_pre1;
   double term2, sum2, pre2;
 
-  gsl_sf_lnfact_impl(n-1, &ln_nm1_fact);
+  gsl_sf_lnfact_impl((unsigned int)(n-1), &ln_nm1_fact);
 
   ln_pre1 = -n*ln_x_2 + ln_nm1_fact;
-  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.) return GSL_EOVRFLW;
+  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.0) return GSL_EOVRFLW;
 
   sum1 = 1.0;
   k_term = 1.0;
@@ -48,8 +48,8 @@ static int bessel_Yn_small_x(const int n, const double x, double * result)
     double psi_kp1 = -M_EULER;
     double psi_npkp1;
     gsl_sf_psi_int_impl(n, &psi_n);
-    gsl_sf_fact_impl(n, &npk_fact);
-    psi_npkp1 = psi_n + 1./n;
+    gsl_sf_fact_impl((unsigned int)n, &npk_fact);
+    psi_npkp1 = psi_n + 1.0/n;
     sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact;
     for(k=1; k<KMAX; k++) {
       psi_kp1   += 1./k;
@@ -109,19 +109,19 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
     }
     else if(GSL_ROOT3_MACH_EPS * x > (n*n + 1)) {
       double b = 0.0;
-      int status = gsl_sf_bessel_Ynu_asympx_impl(n, x, &b);
+      int status = gsl_sf_bessel_Ynu_asympx_impl((double)n, x, &b);
       *result = sign * b;
       return status;
     }
     else if(x > 700.0*n) {
-      double ampl  = gsl_sf_bessel_asymp_Mnu(n, x);
-      double theta = gsl_sf_bessel_asymp_thetanu(n, x);
+      double ampl  = gsl_sf_bessel_asymp_Mnu((double)n, x);
+      double theta = gsl_sf_bessel_asymp_thetanu((double)n, x);
       *result = sign * ampl * sin(theta);
       return GSL_SUCCESS;
     }
     else if(n > 30) {
       double b0 = 0.0;
-      int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(n, x, &b0);
+      int status = gsl_sf_bessel_Ynu_asymp_Olver_impl((double)n, x, &b0);
       *result = sign * b0;
       return status;
     }

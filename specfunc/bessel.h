@@ -28,7 +28,7 @@ int gsl_sf_bessel_Ynu_asymp_Debye_osc_impl(double nu, double x, double * result)
 
 
 int
-gsl_sf_bessel_JnuYnu_zero(double nu, double x,
+gsl_sf_bessel_JnuYnu_zero(double nu,
                           double * Jnu,  double * Ynu,
                           double * Jpnu, double * Ypnu
 		          );

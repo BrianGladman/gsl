@@ -211,13 +211,12 @@ static gsl_sf_cheb_series dawa_cs = {
 int
 gsl_sf_dawson_impl(double x, double * result)
 {
-  /* const double eps = GSL_MACH_EPS;   */              /* D1MACH(3) */
-  const double xsml = 1.225 * GSL_SQRT_MACH_EPS;        /* sqrt(1.5*eps) */
-  const double xbig = 1.0/(M_SQRT2*GSL_SQRT_MACH_EPS);  /* sqrt(0.5/eps) */
-  const double xmax = 0.1 * DBL_MAX;
+  const double xsml = 1.225 * GSL_SQRT_DBL_EPSILON;
+  const double xbig = 1.0/(M_SQRT2*GSL_SQRT_DBL_EPSILON);
+  const double xmax = 0.1 * GSL_DBL_MAX;
 
   const double y = fabs(x);
-  
+
   if(y < xsml) {
     *result = x;
     return GSL_SUCCESS;

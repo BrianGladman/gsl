@@ -12,7 +12,6 @@
 #include "gsl_sf_gamma.h"
 
 #define LogRootTwoPi_  0.9189385332046727418
-#define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
@@ -825,7 +824,7 @@ int gsl_sf_lngamma_impl(double x, double * result)
       *result = 0.0;
       return GSL_EDOM;
     }
-    else if(as < 10.0*GSL_SQRT_MACH_EPS) {
+    else if(as < 10.0*GSL_SQRT_DBL_EPSILON) {
       /* x is near a negative integer, -N */
       if(x < INT_MIN + 2.0) {
         *result = 0.0;
@@ -871,7 +870,7 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
       *result_lg = 0.0;
       return GSL_EDOM;
     }
-    else if(as < 10.0*GSL_SQRT_MACH_EPS) {
+    else if(as < 10.0*GSL_SQRT_DBL_EPSILON) {
       /* x is near a negative integer, -N */
       if(x < INT_MIN + 2.0) {
         *result_lg = 0.0;
@@ -959,7 +958,7 @@ gsl_sf_gammastar_impl(const double x, double * result)
     *result = y/(x*x) + 1.0 + 1.0/(12.0*x);
     return GSL_SUCCESS;
   }
-  else if(x < 1.0/GSL_ROOT4_MACH_EPS) {
+  else if(x < 1.0/GSL_ROOT4_DBL_EPSILON) {
     /* Use the Stirling series for the correction to Log(Gamma(x)),
      * which is better behaved and easier to compute than the
      * regular Stirling series for Gamma(x). However, it does
@@ -978,7 +977,7 @@ gsl_sf_gammastar_impl(const double x, double * result)
     *result = exp(ln_term);
     return GSL_SUCCESS;
   }
-  else if(x < 1.0/GSL_MACH_EPS) {
+  else if(x < 1.0/GSL_DBL_EPSILON) {
     /* Use Stirling formula for Gamma(x).
      */
     const double xi = 1.0/x;

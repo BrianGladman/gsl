@@ -66,10 +66,10 @@
 
 extern inline int GSL_MAX_INT (int a, int b);
 extern inline int GSL_MIN_INT (int a, int b);
-extern inline int GSL_MAX_DBL (double a, double b);
-extern inline int GSL_MIN_DBL (double a, double b);
-extern inline int GSL_MAX_LDBL (long double a, long double b);
-extern inline int GSL_MIN_LDBL (long double a, long double b);
+extern inline double GSL_MAX_DBL (double a, double b);
+extern inline double GSL_MIN_DBL (double a, double b);
+extern inline long double GSL_MAX_LDBL (long double a, long double b);
+extern inline long double GSL_MIN_LDBL (long double a, long double b);
 
 extern inline int
 GSL_MAX_INT (int a, int b)
@@ -83,25 +83,25 @@ GSL_MIN_INT (int a, int b)
   return GSL_MIN (a, b);
 }
 
-extern inline int
+extern inline double
 GSL_MAX_DBL (double a, double b)
 {
   return GSL_MAX (a, b);
 }
 
-extern inline int
+extern inline double
 GSL_MIN_DBL (double a, double b)
 {
   return GSL_MIN (a, b);
 }
 
-extern inline int
+extern inline long double
 GSL_MAX_LDBL (long double a, long double b)
 {
   return GSL_MAX (a, b);
 }
 
-extern inline int
+extern inline long double
 GSL_MIN_LDBL (long double a, long double b)
 {
   return GSL_MIN (a, b);

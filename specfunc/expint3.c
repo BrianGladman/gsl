@@ -88,7 +88,7 @@ int gsl_sf_expint_3_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x < 1.6*GSL_ROOT3_MACH_EPS) {
+  else if(x < 1.6*GSL_ROOT3_DBL_EPSILON) {
     *result = x;
     return GSL_SUCCESS;
   }
@@ -98,7 +98,7 @@ int gsl_sf_expint_3_impl(const double x, double * result)
     *result = x * c;
     return GSL_SUCCESS;
   }
-  else if(x < pow(-GSL_LOG_MACH_EPS, 1.0/3.0)) {
+  else if(x < pow(-GSL_LOG_DBL_EPSILON, 1.0/3.0)) {
     const double t = 16.0/(x*x*x) - 1.0;
     const double c = gsl_sf_cheb_eval(&expint3a_cs, t);
     *result = val_infinity - c * exp(-x*x*x)/(3.0*x*x);

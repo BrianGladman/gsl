@@ -16,7 +16,7 @@
 /* [Abramowitz+Stegun, 10.2.4 + 10.2.6]
  * with lmax=15, precision ~ 15D for x < 3
  *
- * 
+ * assumes l >= 1
  */
 static int bessel_kl_scaled_small_x(int l, const double x, double * result)
 {
@@ -24,7 +24,7 @@ static int bessel_kl_scaled_small_x(int l, const double x, double * result)
   int i;
   double num_fact;
   double den = gsl_sf_pow_int(x, l+1);
-  if(gsl_sf_doublefact_impl(2*l-1, &num_fact) != GSL_SUCCESS || den == 0.0) {
+  if(gsl_sf_doublefact_impl((unsigned int) 2*l-1, &num_fact) != GSL_SUCCESS || den == 0.0) {
     *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }

@@ -52,19 +52,31 @@ laguerre_n_cp(const int n, const double a, const double x, double * result)
   double lnpoch;
   int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
   int stat_p = gsl_sf_lnpoch_impl(a+1.0, n, &lnpoch);
-  double lnpre = lnpoch - lnfact;
-
-  double poly_1F1 = 1.0;
+  double pre_correct;
+  double lnpre;  double poly_1F1 = 1.0;
   int k;
+
+/*
+  if(fabs(lnpoch - lnfact) < 0.1*fabs(lnpoch + lnfact)) {
+    lnpre = (lnpoch - M_LN2) - lnfact;
+    pre_correct = 2.0;
+  }
+  else {
+    lnpre = lnpoch - lnfact;
+    pre_correct = 1.0;
+  }
+*/
+
   for(k=n-1; k>=0; k--) {
     double t = (-n+k)/(a+1.0+k) * (x/(k+1));
     double r = t + 1.0/poly_1F1;
-    if(r > 0.9*DBL_MAX/poly_1F1) {
+    if(r > 0.9*GSL_DBL_MAX/poly_1F1) {
       *result = 0.0; /* FIXME: should be Inf */
       return GSL_EOVRFLW;
     }
     else {
-      poly_1F1 *= r;  /* P_n = 1 + t_n P_{n-1} */
+      /* Collect the Horner terms. */
+      poly_1F1 = 1.0 + t * poly_1F1;
     }
   }
 
@@ -74,6 +86,7 @@ laguerre_n_cp(const int n, const double a, const double x, double * result)
   }
   else {
     int stat_e = gsl_sf_exp_mult_impl(lnpre, poly_1F1, result);
+    *result *= pre_correct;
     return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
   }
 }
@@ -94,7 +107,7 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x, double *
     *result = 1.0 + a - x;
     return GSL_SUCCESS;
   }
-  else if(x < 0.0 || n < 10) {
+  else if(x < 0.0 || n < 5) {
     /* The explicit polynomial is always safe for x < 0
      * since all the terms are positive. Note that this
      * also catches overflows correctly.

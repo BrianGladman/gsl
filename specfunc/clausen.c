@@ -39,7 +39,7 @@ static gsl_sf_cheb_series aclaus_cs = {
 
 int gsl_sf_clausen_impl(double x, double *result)
 {
-  const double x_cut = M_PI * GSL_SQRT_MACH_EPS;
+  const double x_cut = M_PI * GSL_SQRT_DBL_EPSILON;
 
   double sgn = 1.0;
   int status_red;

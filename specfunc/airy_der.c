@@ -5,6 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_airy.h"
 
 
@@ -594,15 +595,12 @@ static gsl_sf_cheb_series aph0_cs = {
 
 static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
 {
-  const double pi34 = 2.3561944901923449288469825374596271631;
-  /* const double eta  = 0.1 * GSL_MACH_EPS;              */ /* 0.1*r1mach(3) */
-  const double xsml = -(5.0396842/GSL_ROOT3_MACH_EPS); /* -(128.0/r1mach(3))**0.3333 */
+  const double pi34 = 2.356194490192344928847;
   double sqrtx;
   double a, p;
 
   if(x <= -4.0) {
-    double z = 1.;
-    if(x > xsml) z = 128.0/(x*x*x) + 1.0;
+    double z = 128.0/(x*x*x) + 1.0;
     a =  0.3125 + gsl_sf_cheb_eval(&an20_cs, z);
     p = -0.625  + gsl_sf_cheb_eval(&aph0_cs, z);
   }
@@ -617,27 +615,23 @@ static int airy_deriv_mod_phase(const double x, double * ampl, double * phi)
     p = -0.625  + gsl_sf_cheb_eval(&aph2_cs, z);
   }
   else {
+    *ampl = 0.0;
+    *phi = 0.0;
     return GSL_EDOM;
   }
 
   sqrtx = sqrt(-x);
   *ampl = sqrt(a * sqrtx);
   *phi  = pi34 - x * sqrtx * p;
+
   return GSL_SUCCESS;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Sun Apr 19 19:06:29 EDT 1998 */
 int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
 {
-  /* const double eta   = 0.1 * GSL_MACH_EPS;	      */   /* 0.1*r1mach(3) */
-  const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;   /* sqrt (eta) */
-  const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS;  /* eta**0.3333 */
-  const double x32sml= 1.3104 * x3sml*x3sml;
-  const double xbig  = GSL_ROOT3_DBL_MAX*GSL_ROOT3_DBL_MAX; /* r1mach(2)**0.6666 */
-
   if(x < -1.0) {
     double a, p;
     airy_deriv_mod_phase(x, &a, &p);
@@ -645,12 +639,12 @@ int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x <= 1.0) {
-    double x3 = 0.0;
-    double x2 = 0.0;
-    if(fabs(x) > x3sml) x3 = x*x*x;
-    if(fabs(x) > x2sml) x2 = x*x;
+    double x3 = x*x*x;
+    double x2 = x*x;
     *result = (x2*(0.125 + gsl_sf_cheb_eval(&aif_cs, x3)) - gsl_sf_cheb_eval(&aig_cs, x3)) - 0.25;
-    if (x > x32sml) *result *= exp(2.0*x*sqrt(x)/3.0);
+    if(x > GSL_ROOT3_DBL_EPSILON*GSL_ROOT3_DBL_EPSILON) {
+      *result *= exp(2.0*x*sqrt(x)/3.0);
+    }
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
@@ -661,19 +655,15 @@ int gsl_sf_airy_Ai_deriv_scaled_impl(const double x, double * result)
   }
   else {
     double sqrtx = sqrt(x);
-    double z = -1.0;
-    if (x < xbig) z = 16.0/(x*sqrtx) - 1.0;
+    double z = 16.0/(x*sqrtx) - 1.0;
     *result = (-0.28125 - gsl_sf_cheb_eval(&aip2_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 19:06:46 EDT 1998 */
+
 int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
 {
-  const double x3sml = GSL_ROOT3_MACH_EPS;   /* r1mach(3)**0.3334 */
-  const double x2sml = GSL_SQRT_MACH_EPS;    /* sqrt(r1mach(3))   */
-
   if(x < -1.0) {
     double a, p;
     airy_deriv_mod_phase(x, &a, &p);
@@ -681,35 +671,30 @@ int gsl_sf_airy_Ai_deriv_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
-    double x3 = 0.0;
-    double x2 = 0.0;
-    if(fabs(x) > x3sml) x3 = x*x*x;
-    if(fabs(x) > x2sml) x2 = x*x;
-    *result = (x2*(0.125 + gsl_sf_cheb_eval(&aif_cs, x3)) - gsl_sf_cheb_eval(&aig_cs, x3)) - 0.25;
+    double x3 = x*x*x;
+    double c1 = gsl_sf_cheb_eval(&aif_cs, x3);
+    double c2 = gsl_sf_cheb_eval(&aig_cs, x3);
+    *result = (x*x*(0.125 + c1) - c2) - 0.25;
     return GSL_SUCCESS;
   }
+  else if(x*x*x < 9.0/4.0 * GSL_LOG_DBL_MIN*GSL_LOG_DBL_MIN) {
+    double s = 0.0;
+    double arg = -2.0*x*sqrt(x)/3.0;
+    int stat_a = gsl_sf_airy_Ai_deriv_scaled_impl(x, &s);
+    int stat_e = gsl_sf_exp_mult_impl(arg, s, result);
+    return GSL_ERROR_SELECT_2(stat_e, stat_a);
+  }
   else {
-    double s = 0.;
-    int status = gsl_sf_airy_Ai_deriv_scaled_impl(x, &s);
-    *result = s * exp(-2.0*x*sqrt(x)/3.0);
-    if(*result == 0.)
-      return GSL_EUNDRFLW;
-    else
-      return status;
+    *result = 0.0;
+    return GSL_EUNDRFLW;
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 19:07:00 EDT 1998 */
+
 int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
 {
   const double atr =  8.7506905708484345;   /* 16./(sqrt(8)-1) */
   const double btr = -2.0938363213560543;   /* -(sqrt(8)+1)/(sqrt(8)-1) */
-
-  /* const double eta   = 0.1 * GSL_MACH_EPS;         */     /* 0.1*r1mach(3) */
-  const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;  /* sqrt (eta) */
-  const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS; /* eta**0.3333 */
-  const double x32sml= 1.3104 * x3sml*x3sml;
-  const double xbig  = GSL_ROOT3_DBL_MAX*GSL_ROOT3_DBL_MAX; /* r1mach(2)**0.6666 */
 
   if(x < -1.0) {
     double a, p;
@@ -717,21 +702,23 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
     *result = a * sin(p);
     return GSL_SUCCESS;
   }
-  else if(x <= 1.0) {
-    double x3 = 0.0;
-    double x2 = 0.0;
-    if(fabs(x) > x3sml) x3 = x*x*x;
-    if(fabs(x) > x2sml) x2 = x*x;
-    *result = x2 * (gsl_sf_cheb_eval(&bif_cs, x3) + 0.25) + gsl_sf_cheb_eval(&big_cs, x3) + 0.5;
-    if (x > x32sml) *result *= exp (-2.0*x*sqrt(x)/3.0);
+  else if(x < 1.0) {
+    double x3 = x*x*x;
+    double x2 = x*x;
+    double c1 = gsl_sf_cheb_eval(&bif_cs, x3);
+    double c2 = gsl_sf_cheb_eval(&big_cs, x3);
+    *result = x2 * (c1 + 0.25) + c2 + 0.5;
+    if(x > GSL_ROOT3_DBL_EPSILON*GSL_ROOT3_DBL_EPSILON) {
+      *result *= exp (-2.0*x*sqrt(x)/3.0);
+    }
     return GSL_SUCCESS;
   }
-  else if(x <= 2.0) {
+  else if(x < 2.0) {
     double z = (2.0*x*x*x - 9.0) / 7.0;
     *result = exp (-2.0*x*sqrt(x)/3.0) * (x*x * (0.25 + gsl_sf_cheb_eval(&bif2_cs, z)) + 0.5 + gsl_sf_cheb_eval(&big2_cs, z));
     return GSL_SUCCESS;
   }
-  else if(x <= 4.0) {
+  else if(x < 4.0) {
     double sqrtx = sqrt(x);
     double z = atr/(x*sqrtx) + btr;
     *result = (0.625 + gsl_sf_cheb_eval(&bip1_cs, z)) * sqrt(sqrtx);
@@ -739,48 +726,45 @@ int gsl_sf_airy_Bi_deriv_scaled_impl(const double x, double * result)
   }
   else {
     double sqrtx = sqrt(x);
-    double z = -1.0;
-    if(x < xbig) z = 16.0/(x*sqrtx) - 1.0;
+    double z = 16.0/(x*sqrtx) - 1.0;
     *result = (0.625 + gsl_sf_cheb_eval(&bip2_cs, z)) * sqrt(sqrtx);
     return GSL_SUCCESS;
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 19:07:15 EDT 1998 */
+
 int gsl_sf_airy_Bi_deriv_impl(const double x, double * result)
 {
-  /* const double eta = 0.1 * GSL_MACH_EPS;          */        /* 0.1*r1mach(3) */
-  const double x2sml = 0.31622777 * GSL_SQRT_MACH_EPS;    /* sqrt (eta) */
-  const double x3sml = 0.46416245 * GSL_ROOT3_MACH_EPS;   /* eta**0.3333 */
-  const double xmax  = pow(1.5*GSL_LOG_DBL_MAX, 0.6666);  /* (1.5*alog(r1mach(2)))**0.6666 */
-
   if(x < -1.0) {
     double a, p;
     airy_deriv_mod_phase(x, &a, &p);
     *result = a * sin(p);
     return GSL_SUCCESS;
   }
-  else if(x <= 1.0) {
-    double x3 = 0.0;
-    double x2 = 0.0;
-    if(fabs(x) > x3sml) x3 = x*x*x;
-    if(fabs(x) > x2sml) x2 = x*x;
-    *result = x2*(gsl_sf_cheb_eval(&bif_cs, x3) + 0.25) + gsl_sf_cheb_eval(&big_cs, x3) + 0.5;
+  else if(x < 1.0) {
+    double x3 = x*x*x;
+    double x2 = x*x;
+    double c1 = gsl_sf_cheb_eval(&bif_cs, x3);
+    double c2 = gsl_sf_cheb_eval(&big_cs, x3);
+    *result = x2 * (c1 + 0.25) + c2 + 0.5;
     return GSL_SUCCESS;
   }
-  else if(x <= 2.0) {
+  else if(x < 2.0) {
     double z = (2.0*x*x*x - 9.0) / 7.0;
-    *result = x*x*(gsl_sf_cheb_eval(&bif2_cs, z) + 0.25) + gsl_sf_cheb_eval(&big2_cs, z) + 0.5;
+    double c1 = gsl_sf_cheb_eval(&bif2_cs, z);
+    double c2 = gsl_sf_cheb_eval(&big2_cs, z);
+    *result = x*x * (c1 + 0.25) + c2 + 0.5;
     return GSL_SUCCESS;
   }
-  else if(x < xmax) {
+  else if(x < GSL_ROOT3_DBL_MAX*GSL_ROOT3_DBL_MAX) {
+    double arg = 2.0*(x*sqrt(x)/3.0);
     double bp_s;
-    gsl_sf_airy_Bi_deriv_scaled_impl(x, &bp_s);
-    *result = bp_s * exp (2.0*x*sqrt(x)/3.0);
-    return GSL_SUCCESS;
+    int stat_b = gsl_sf_airy_Bi_deriv_scaled_impl(x, &bp_s);
+    int stat_e = gsl_sf_exp_mult_impl(arg, bp_s, result);
+    return GSL_ERROR_SELECT_2(stat_e, stat_b);
   }
   else {
-    *result = 0.; /* FIXME: should be Inf */
+    *result = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;
   }
 }

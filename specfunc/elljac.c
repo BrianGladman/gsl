@@ -12,7 +12,7 @@
 
 
 int
-gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
+gsl_sf_elljac_impl(double u, double m, double * sn, double * cn, double * dn)
 {
   if(fabs(m) > 1.0) {
     *sn = 0.0;
@@ -20,13 +20,13 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
     *dn = 0.0;
     return GSL_EDOM;
   }
-  else if(fabs(m) < GSL_MACH_EPS) {
+  else if(fabs(m) < GSL_DBL_EPSILON) {
     *sn = sin(u);
     *cn = cos(u);
     *dn = 1.0;
     return GSL_SUCCESS;
   }
-  else if(fabs(m - 1.0) < GSL_MACH_EPS) {
+  else if(fabs(m - 1.0) < GSL_DBL_EPSILON) {
     *sn = tanh(u);
     *cn = 1.0/cosh(u);
     *dn = *cn;
@@ -45,7 +45,7 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
     b[0] = sqrt(1.0 - m);
     c[0] = sqrt(m);
 
-    while( fabs(c[n]) > 100.0 * GSL_MACH_EPS) {
+    while( fabs(c[n]) > 100.0 * GSL_DBL_EPSILON) {
       a[n+1] = 0.5 * (a[n] + b[n]);
       b[n+1] = sqrt(a[n] * b[n]);
       c[n+1] = 0.5 * (a[n] - b[n]);
@@ -73,8 +73,10 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double *cn, double * dn)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int
-gsl_sf_elljac_e(double u, double m, double * sn, double *cn, double * dn)
+gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
 {
   int status = gsl_sf_elljac_impl(u, m, sn, cn, dn);
   if(status != GSL_SUCCESS) {

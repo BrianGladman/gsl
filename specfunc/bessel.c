@@ -541,7 +541,7 @@ int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, do
  * Assumes nu >= 0.
  */
 int
-gsl_sf_bessel_JnuYnu_zero(const double nu, const double x,
+gsl_sf_bessel_JnuYnu_zero(const double nu,
                           double * Jnu,  double * Ynu,
                           double * Jpnu, double * Ypnu
 		          )

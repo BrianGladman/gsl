@@ -96,7 +96,7 @@ gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
     return GSL_EDOM;
   }
   else if(x == 0.0) {
-    return gsl_sf_bessel_JnuYnu_zero(nu, x, result, (double *)0, (double *)0, (double *)0);
+    return gsl_sf_bessel_JnuYnu_zero(nu, result, (double *)0, (double *)0, (double *)0);
   }
   else if(x*x < 10.0*(nu+1.0)*GSL_ROOT5_MACH_EPS) {
     return gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 50, GSL_MACH_EPS, result);

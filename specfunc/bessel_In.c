@@ -28,6 +28,8 @@ bessel_In_CF1(const int n, const double x, const double threshold, double * rati
     if(fabs(tk/sum) < threshold) break;
   }
 
+  *ratio = 0.5*x/(n+1.0) * sum;
+
   if(k == kmax)
     return GSL_EMAXITER;
   else
@@ -54,7 +56,7 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x*x < 10.0*(n+1.0)/M_E) {
-    int stat_In = gsl_sf_bessel_Inu_Jnu_taylor_impl(n, x, 1, 50, GSL_MACH_EPS, result);
+    int stat_In = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, 1, 50, GSL_MACH_EPS, result);
     *result *= exp(-fabs(x));
     return stat_In;
   }
@@ -84,8 +86,8 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, double * result)
     double Ik;
     double Ikm1;
     int k;
-    int stat_a1 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nhi+1.0, x, &Ikp1);
-    int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nhi,     x, &Ik);
+    int stat_a1 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nhi+1.0,     x, &Ikp1);
+    int stat_a2 = gsl_sf_bessel_Inu_scaled_asymp_unif_impl((double)nhi, x, &Ik);
     for(k=nhi; k > n; k--) {
       Ikm1 = Ikp1 + 2.0*k/x * Ik;
       Ikp1 = Ik;
@@ -150,8 +152,8 @@ gsl_sf_bessel_In_impl(int n_in, const double x, double * result)
 {
   const double ax = fabs(x);
   const int n = abs(n_in);  /* I(-n, z) = I(n, z) */
-  double I0_scaled;
-  const int stat_In_scaled = gsl_sf_bessel_In_scaled_impl(n, ax, &I0_scaled);
+  double In_scaled;
+  const int stat_In_scaled = gsl_sf_bessel_In_scaled_impl(n, ax, &In_scaled);
 
   /* In_scaled is always less than 1,
    * so this overflow check is conservative.
@@ -161,8 +163,8 @@ gsl_sf_bessel_In_impl(int n_in, const double x, double * result)
     return GSL_EOVRFLW;
   }
   else {
+    *result = exp(ax) * In_scaled;
     if(x < 0.0 && GSL_IS_ODD(n)) *result = - *result;
-    *result *= exp(ax);
     return stat_In_scaled;
   }
 }

@@ -605,7 +605,7 @@ static double airy_aie(const double x)
 {
   double sqx = sqrt(x);
   double z = 2.0/(x*sqx) - 1.0;
-  return (.28125 + gsl_sf_cheb_eval(&aip_cs, z))/sqrt(sqx);
+  return (0.28125 + gsl_sf_cheb_eval(&aip_cs, z))/sqrt(sqx);
 }
 
 /* should only be called for x >= 2.0 */
@@ -629,7 +629,6 @@ static double airy_bie(const double x)
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* checked OK [GJ] Sun Apr 19 18:37:38 EDT 1998 */
 int gsl_sf_airy_Ai_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -645,14 +644,14 @@ int gsl_sf_airy_Ai_impl(const double x, double * result)
   }
   else {
     *result = airy_aie(x) * exp(-2.0*x*sqrt(x)/3.0);
-    if(*result == 0.)
+    if(*result == 0.0)
       return GSL_EUNDRFLW;
     else
       return GSL_SUCCESS;
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 18:37:54 EDT 1998  */
+
 int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -679,7 +678,7 @@ int gsl_sf_airy_Ai_scaled_impl(const double x, double * result)
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 18:38:14 EDT 1998 */
+
 int gsl_sf_airy_Bi_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -693,7 +692,7 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
     *result = 0.625 + gsl_sf_cheb_eval(&bif_cs, z) + x*(0.4375 + gsl_sf_cheb_eval(&big_cs, z));
     return GSL_SUCCESS;
   }
-  else if(x <= 2.) {
+  else if(x <= 2.0) {
     double z = (2.0*x*x*x - 9.0)/7.0;
     *result = 1.125 + gsl_sf_cheb_eval(&bif2_cs, z) + x*(0.625 + gsl_sf_cheb_eval(&big2_cs, z));
     return GSL_SUCCESS;
@@ -701,8 +700,8 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
   else {
     double y = 2.0*x*sqrt(x)/3.0;
 
-    if(y > GSL_LOG_DBL_MAX - 1.) {
-      *result = 0.; /* FIXME: should be Inf */
+    if(y > GSL_LOG_DBL_MAX - 1.0) {
+      *result = 0.0; /* FIXME: should be Inf */
       return GSL_EOVRFLW;
     }
     else {
@@ -712,7 +711,7 @@ int gsl_sf_airy_Bi_impl(const double x, double * result)
   }
 }
 
-/* checked OK [GJ] Sun Apr 19 18:38:28 EDT 1998  */
+
 int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
 {
   if(x < -1.0) {
@@ -733,7 +732,7 @@ int gsl_sf_airy_Bi_scaled_impl(const double x, double * result)
     *result *= s;
     return GSL_SUCCESS;
   }
-  else if(x <= 2.) {
+  else if(x <= 2.0) {
     double x3 = x*x*x;
     double z = (2.0*x3 - 9.0)/7.0;
     double s = exp(-2.0/3.0 * sqrt(x3));

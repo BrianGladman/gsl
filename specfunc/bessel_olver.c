@@ -7,6 +7,7 @@
 #include "bessel.h"
 #include "gsl_sf_airy.h"
 #include "gsl_sf_chebyshev.h"
+#include "bessel_olver.h"
 
 
 /* Chebyshev fit for f(x) = z(x)^6 A_3(z(x)),  z(x) = 22/(10(x+1)) */
