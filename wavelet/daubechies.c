@@ -27,6 +27,7 @@
  * http://www.cwp.mines.edu/wavelets/.
  */
 
+#include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_wavelet.h>
 
@@ -442,12 +443,12 @@ daubechies_centered_init (const double **h1, const double **g1,
   return GSL_SUCCESS;
 }
 
-const gsl_wavelet_type daubechies_type = {
+static const gsl_wavelet_type daubechies_type = {
   "daubechies",
   &daubechies_init
 };
 
-const gsl_wavelet_type daubechies_centered_type = { 
+static const gsl_wavelet_type daubechies_centered_type = { 
   "daubechies-centered",
   &daubechies_centered_init
 };

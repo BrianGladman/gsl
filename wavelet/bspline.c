@@ -30,6 +30,7 @@
  * the term 336z^-3 should read 363z^-3.
  */
 
+#include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_wavelet.h>
@@ -576,12 +577,12 @@ bspline_centered_init (const double **h1, const double **g1,
   return GSL_SUCCESS;
 }
 
-const gsl_wavelet_type bspline_type = {
+static const gsl_wavelet_type bspline_type = {
   "bspline",
   &bspline_init
 };
 
-const gsl_wavelet_type bspline_centered_type = { 
+static const gsl_wavelet_type bspline_centered_type = { 
   "bspline-centered",
   &bspline_centered_init
 };

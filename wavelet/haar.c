@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_wavelet.h>
@@ -66,12 +67,12 @@ haar_centered_init (const double **h1, const double **g1, const double **h2,
   return GSL_SUCCESS;
 }
 
-const gsl_wavelet_type haar_type = {
+static const gsl_wavelet_type haar_type = {
   "haar",
   &haar_init
 };
 
-const gsl_wavelet_type haar_centered_type = {
+static const gsl_wavelet_type haar_centered_type = {
   "haar-centered",
   &haar_centered_init
 };
