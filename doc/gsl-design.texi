@@ -390,6 +390,15 @@ parts of the library keep modules independent where possible. If
 interdependencies between modules are introduced be sure about where you
 are going to draw the line.
 
+Whenever possible choose algorithms which scale well and always remember
+to handle asymptotic cases.  This is particularly relevant for functions
+with integer arguments.  It is tempting to implement these using the
+simple @math{O(n)} algorithms used to define the functions, such as the
+many recurrence relations found in Abramowitz and Stegun.  While such
+methods might be acceptable for @math{n=O(10-100)} they will not be
+satisfactory for a user who needs to compute the same function for
+@math{n=1000000}.
+
 @node Code Reuse, Standards and conventions, Design of  Numerical Libraries, Design
 @section Code Reuse
 
