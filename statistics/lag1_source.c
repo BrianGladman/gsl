@@ -1,4 +1,3 @@
-#include "source.h"
 
 double 
 FUNCTION(gsl_stats,lag1_autocorrelation) (const BASE data[], const size_t n)

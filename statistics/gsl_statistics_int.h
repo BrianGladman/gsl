@@ -39,7 +39,7 @@ int gsl_stats_int_min (const int data[], size_t n);
 size_t gsl_stats_int_max_index (const int data[], size_t n);
 size_t gsl_stats_int_min_index (const int data[], size_t n);
 
-int gsl_stats_int_sort_data (int data[], size_t n) ;
+void gsl_stats_int_sort_data (int data[], size_t n) ;
 
 double gsl_stats_int_median_from_sorted_data (const int sorted_data[],
 					      size_t n) ;

@@ -1,4 +1,3 @@
-#include "source.h"
 
 double
 FUNCTION(gsl_stats,median_from_sorted_data) (const BASE sorted_data[],

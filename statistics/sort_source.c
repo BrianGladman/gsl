@@ -1,26 +1,21 @@
 #include <stdlib.h>
 
-#include "source.h"
+static int FUNCTION(my,compare) (const void * x, const void * y) ;
 
-typedef int cmp_fn_t(const void *, const void *) ;
-
-static int FUNCTION(my,compare) (const BASE * x, const BASE * y) ;
-
-int
+void
 FUNCTION(gsl_stats,sort_data) (BASE data[], const size_t n)
 {  
-  qsort(data, n, sizeof(BASE), (cmp_fn_t *) FUNCTION(my,compare)) ;
-  return 0 ;
+  qsort(data, n, sizeof(BASE), FUNCTION(my,compare)) ;
 }
 
 static int
-FUNCTION(my,compare) (const BASE * x, const BASE * y)
+FUNCTION(my,compare) (const void * x, const void * y)
 {
-  if (*x < *y) 
+  if (* (const BASE *)x < * (const BASE *)y) 
     {
       return -1 ;
     }
-  else if (*x > *y)
+  else if (* (const BASE *)x > * (const BASE *)y)
     {
       return +1 ;
     } 

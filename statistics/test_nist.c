@@ -348,11 +348,11 @@ main (void)
     double expected_lag1 = -0.307304800605679;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-lew gsl_stats_mean") ;
+		  "lew gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "nist-lew gsl_stats_est_sd") ;
+		  "lew gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "nist-lew gsl_stats_lag1_autocorrelation") ;
+		  "lew autocorrelation") ;
   }
 
 
@@ -366,11 +366,11 @@ main (void)
     double expected_lag1 = -0.120948622967393;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-lottery gsl_stats_mean") ;
+		  "lottery gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "nist-lottery gsl_stats_est_sd") ;
+		  "lottery gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "nist-lottery gsl_stats_lag1_autocorrelation") ;
+		  "lottery autocorrelation") ;
   }
 
   {
@@ -383,11 +383,11 @@ main (void)
     double expected_lag1 = 0.937989183438248;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-mavro gsl_stats_mean") ;
+		  "mavro gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-13, 
-		  "nist-mavro gsl_stats_est_sd") ;
+		  "mavro gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-13, 
-		  "nist-mavro gsl_stats_lag1_autocorrelation") ;
+		  "mavro autocorrelation") ;
   }
 
 
@@ -401,11 +401,11 @@ main (void)
     double expected_lag1 = 0.535199668621283;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-michelson gsl_stats_mean") ;
+		  "michelson gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-13, 
-		  "nist-michelson gsl_stats_est_sd") ;
+		  "michelson gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-13, 
-		  "nist-michelson gsl_stats_lag1_autocorrelation") ;
+		  "michelson autocorrelation") ;
   }
 
   {
@@ -418,11 +418,11 @@ main (void)
     double expected_lag1 = -0.00355099287237972;
 
     gsl_test_rel (mean, expected_mean, 1e-14, 
-		  "nist-pidigits gsl_stats_mean") ;
+		  "pidigits gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "nist-pidigits gsl_stats_est_sd") ;
+		  "pidigits gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-14, 
-		  "nist-pidigits gsl_stats_lag1_autocorrelation") ;
+		  "pidigits autocorrelation") ;
   }
     
   {
@@ -435,11 +435,11 @@ main (void)
     double expected_lag1 = -0.5;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-numacc1 gsl_stats_mean") ;
+		  "acc1 gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "nist-numacc1 gsl_stats_est_sd") ;
+		  "acc1 gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-15, 
-		  "nist-numacc1 gsl_stats_lag1_autocorrelation") ;
+		  "acc1 autocorrelation") ;
   }
 
   {
@@ -452,11 +452,11 @@ main (void)
     double expected_lag1 = -0.999;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-numacc2 gsl_stats_mean") ;
+		  "acc2 gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-15, 
-		  "nist-numacc2 gsl_stats_est_sd") ;
+		  "acc2 gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "nist-numacc2 gsl_stats_lag1_autocorrelation") ;
+		  "acc2 autocorrelation") ;
   }
 
   {
@@ -469,11 +469,11 @@ main (void)
     double expected_lag1 = -0.999;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-numacc3 gsl_stats_mean") ;
+		  "acc3 gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-9, 
-		  "nist-numacc3 gsl_stats_est_sd") ;
+		  "acc3 gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "nist-numacc3 gsl_stats_lag1_autocorrelation") ;
+		  "acc3 autocorrelation") ;
   }
 
 
@@ -487,11 +487,11 @@ main (void)
     double expected_lag1 = -0.999;
 
     gsl_test_rel (mean, expected_mean, 1e-15, 
-		  "nist-numacc4 gsl_stats_mean") ;
+		  "acc4 gsl_stats_mean") ;
     gsl_test_rel (estsd, expected_estsd, 1e-7, 
-		  "nist-numacc4 gsl_stats_est_sd") ;
+		  "acc4 gsl_stats_est_sd") ;
     gsl_test_rel (lag1, expected_lag1, 1e-10, 
-		  "nist-numacc4 gsl_stats_lag1_autocorrelation") ;
+		  "acc4 autocorrelation") ;
   }
 
 

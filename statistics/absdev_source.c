@@ -1,7 +1,5 @@
 #include <math.h>
 
-#include "source.h"
-
 double
 FUNCTION(gsl_stats,absdev) (const BASE data[], const size_t n)
 {

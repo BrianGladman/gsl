@@ -1,4 +1,3 @@
-#include "source.h"
 
 BASE 
 FUNCTION(gsl_stats,max) (const BASE data[], const size_t n)

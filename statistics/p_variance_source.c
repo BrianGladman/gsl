@@ -1,4 +1,3 @@
-#include "source.h"
 
 double 
 FUNCTION(gsl_stats,pvariance) (const BASE data1[], const BASE data2[],

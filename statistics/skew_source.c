@@ -1,6 +1,5 @@
 #include <math.h>
 
-#include "source.h"
 
 double 
 FUNCTION(gsl_stats,skew) (const BASE data[], const size_t n)
