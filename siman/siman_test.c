@@ -6,11 +6,11 @@
 
 /* set up parameters for this simulated annealing run */
 #define N_TRIES 200		/* how many points do we try before stepping */
-#define ITERS_FIXED_T 10	/* how many iterations for each T? */
-#define STEP_SIZE 10		/* max step size in random walk */
+#define ITERS_FIXED_T 1000	/* how many iterations for each T? */
+#define STEP_SIZE 1.0		/* max step size in random walk */
 #define K 1.0			/* Boltzmann constant */
-#define T_INITIAL 0.002		/* initial temperature */
-#define MU_T 1.005		/* damping factor for temperature */
+#define T_INITIAL 0.008		/* initial temperature */
+#define MU_T 1.003		/* damping factor for temperature */
 #define T_MIN 2.0e-6
 
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
@@ -71,9 +71,8 @@ double test_E_2D(Element x)
   return exp(-square(old_x-1) - square(old_y - 0.8))*sin(8*old_x + 8 * old_y);
 }
 
-/* takes a step for the test function; max distance: step_size.
- * the new point is put in x_p and returned.
- */
+/* takes a step for the test function; max distance: step_size.  the
+   new point is put in x_p and returned. */
 void test_step_2D(Element *x_p, double step_size)
 {
   double r;
@@ -165,7 +164,8 @@ double E1(void *xp)
 {
   double x = * ((double *) xp);
 
-  return exp(-square(x-1))*sin(8*x);
+/*   return exp(-square(x-1))*sin(8*x); */
+  return exp(-square(x-1))*sin(8*x) - exp(-square(x-1000))*0.89;
 }
 
 double M1(void *xp, void *yp)
@@ -192,14 +192,15 @@ void S1(void *xp, double step_size)
 
 void P1(void *xp)
 {
-  printf("%12g", *((double *) xp));
+  printf(" %12g ", *((double *) xp));
 }
 
 int main(int argc, char *argv[])
 {
   Element x0;			/* initial guess for search */
 
-  double x_initial = 2.5;
+/*   double x_initial = 2.5; */
+  double x_initial = -10.0;
 
   gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
 
