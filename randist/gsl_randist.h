@@ -37,12 +37,18 @@ double gsl_ran_gamma_int (const gsl_rng * r, unsigned int a);
 double gsl_ran_gamma_pdf (double x, double a, double b);
 
 double gsl_ran_gaussian (const gsl_rng * r, double sigma);
+double gsl_ran_gaussian_ratio_method (const gsl_rng * r, double sigma);
 double gsl_ran_gaussian_pdf (double x, double sigma);
 
 double gsl_ran_ugaussian (const gsl_rng * r);
+double gsl_ran_ugaussian_ratio_method (const gsl_rng * r);
 double gsl_ran_ugaussian_pdf (double x);
 
-double gsl_ran_ugaussian_tail (const gsl_rng * r, double sigma);
+double gsl_ran_gaussian_tail (const gsl_rng * r, double a, double sigma);
+double gsl_ran_gaussian_tail_pdf (double x, double a, double sigma);
+
+double gsl_ran_ugaussian_tail (const gsl_rng * r, double a);
+double gsl_ran_ugaussian_tail_pdf (double x, double a);
 
 void gsl_ran_bivariate_gaussian (const gsl_rng * r, double sigma_x, double sigma_y, double rho, double *x, double *y);
 double gsl_ran_bivariate_gaussian_pdf (double x, double y, double sigma_x, double sigma_y, double rho);
@@ -100,6 +106,7 @@ double gsl_ran_weibull (const gsl_rng * r, double mu, double a);
 double gsl_ran_weibull_pdf (double x, double mu, double a);
 
 void gsl_ran_dir_2d (const gsl_rng * r, double * x, double * y);
+void gsl_ran_dir_2d_trig_method (const gsl_rng * r, double * x, double * y);
 void gsl_ran_dir_3d (const gsl_rng * r, double * x, double * y, double * z);
 void gsl_ran_dir_nd (const gsl_rng * r, int n, double * x);
 

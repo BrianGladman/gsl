@@ -33,23 +33,20 @@ main (int argc, char *argv[])
 "\n"
 "  beta\n"
 "  binomial\n"
-"  cauchy\n"
-"  beta\n"
-"  binomial\n"
+"  bivariate-gaussian\n"
 "  cauchy\n"
 "  chisq\n"
+"  dir-2d\n"
+"  dir-3d\n"
+"  dir-nd\n"
 "  erlang\n"
 "  exponential\n"
 "  exppow\n"
 "  fdist\n"
 "  flat\n"
 "  gamma\n"
-"  gaussian\n"
-"  bivariate-gaussian\n"
 "  gaussian-tail\n"
-"  dir-2d\n"
-"  dir-3d\n"
-"  dir-nd\n"
+"  gaussian\n"
 "  geometric\n"
 "  gumbel1\n"
 "  gumbel2\n"
@@ -63,9 +60,11 @@ main (int argc, char *argv[])
 "  pareto\n"
 "  pascal\n"
 "  poisson\n"
-"  rayleigh\n"
 "  rayleigh-tail\n"
+"  rayleigh\n"
 "  tdist\n"
+"  ugaussian-tail\n"
+"  ugaussian\n"
 "  weibull\n") ;
       exit (0);
     }
@@ -178,9 +177,21 @@ main (int argc, char *argv[])
     }
   else if (NAME("gaussian-tail"))
     {
-      ARGS(1, "sigma = distance to tail");
+      ARGS(2, "a = lower limit, sigma = standard deviation");
+      DBL_ARG(a) ;
       DBL_ARG(sigma) ;
-      OUTPUT(gsl_ran_ugaussian_tail (r, sigma));
+      OUTPUT(gsl_ran_gaussian_tail (r, a, sigma));
+    }
+  else if (NAME("ugaussian"))
+    {
+      ARGS(0, "unit gaussian, no parameters required");
+      OUTPUT(gsl_ran_ugaussian (r));
+    }
+  else if (NAME("ugaussian-tail"))
+    {
+      ARGS(1, "a = lower limit");
+      DBL_ARG(a) ;
+      OUTPUT(gsl_ran_ugaussian_tail (r, a));
     }
   else if (NAME("bivariate-gaussian"))
     {

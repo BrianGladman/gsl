@@ -58,6 +58,14 @@ double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
+double test_gaussian_ratio_method (void);
+double test_gaussian_ratio_method_pdf (double x);
+double test_gaussian_tail (void);
+double test_gaussian_tail_pdf (double x);
+double test_ugaussian (void);
+double test_ugaussian_pdf (double x);
+double test_ugaussian_ratio_method (void);
+double test_ugaussian_ratio_method_pdf (double x);
 double test_ugaussian_tail (void);
 double test_ugaussian_tail_pdf (double x);
 double test_bivariate_gaussian1 (void);
@@ -72,8 +80,6 @@ double test_gumbel1 (void);
 double test_gumbel1_pdf (double x);
 double test_gumbel2 (void);
 double test_gumbel2_pdf (double x);
-double test_ugaussian (void);
-double test_ugaussian_pdf (double x);
 double test_geometric (void);
 double test_geometric_pdf (unsigned int x);
 double test_geometric1 (void);
@@ -112,6 +118,8 @@ double test_poisson_large (void);
 double test_poisson_large_pdf (unsigned int x);
 double test_dir2d (void);
 double test_dir2d_pdf (double x);
+double test_dir2d_trig_method (void);
+double test_dir2d_trig_method_pdf (double x);
 double test_dir3dxy (void);
 double test_dir3dxy_pdf (double x);
 double test_dir3dyz (void);
@@ -153,7 +161,9 @@ main (void)
   testMoments (FUNC (ugaussian_tail), 3.0, 3.5, 0.0011172689/0.0013498981);
   testMoments (FUNC (exponential), 0.0, 1.0, 1- exp(-0.5));
   testMoments (FUNC (cauchy), 0.0, 10000.0, 0.5);
-  testMoments (FUNC (discrete), 0.5, 1.5, 0.4 );
+
+  testMoments (FUNC (discrete), -0.5, 0.5, 0.59 );
+  testMoments (FUNC (discrete), 0.5, 1.5, 0.40 );
   testMoments (FUNC (discrete), 1.5, 3.5, 0.01 );
 
   testPDF (FUNC2(beta));
@@ -175,7 +185,10 @@ main (void)
   testPDF (FUNC2(gamma_int));
   testPDF (FUNC2(gamma_large));
   testPDF (FUNC2(gaussian));
+  testPDF (FUNC2(gaussian_ratio_method));
   testPDF (FUNC2(ugaussian));
+  testPDF (FUNC2(ugaussian_ratio_method));
+  testPDF (FUNC2(gaussian_tail));
   testPDF (FUNC2(ugaussian_tail));
   
   testPDF (FUNC2(bivariate_gaussian1));
@@ -199,6 +212,7 @@ main (void)
   testPDF (FUNC2(weibull1));
 
   testPDF (FUNC2(dir2d));
+  testPDF (FUNC2(dir2d_trig_method));
   testPDF (FUNC2(dir3dxy));
   testPDF (FUNC2(dir3dyz));
   testPDF (FUNC2(dir3dzx));
@@ -545,6 +559,27 @@ test_dir2d_pdf (double x)
     }
 }
 
+double
+test_dir2d_trig_method (void)
+{
+  double x=0, y=0, theta;
+  gsl_ran_dir_2d_trig_method (r_global, &x, &y);
+  theta = atan2(x,y);
+  return theta;
+}
+
+double
+test_dir2d_trig_method_pdf (double x)
+{
+  if (x > -M_PI && x <= M_PI)
+    {
+      return 1 / (2 * M_PI) ;
+    }
+  else
+    {
+      return 0 ;
+    }
+}
 
 double
 test_dir3dxy (void)
@@ -798,6 +833,55 @@ test_gaussian_pdf (double x)
 {
   return gsl_ran_gaussian_pdf (x, 3.0);
 }
+
+double
+test_gaussian_ratio_method (void)
+{
+  return gsl_ran_gaussian_ratio_method (r_global, 3.0);
+}
+
+double
+test_gaussian_ratio_method_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, 3.0);
+}
+
+double
+test_gaussian_tail (void)
+{
+  return gsl_ran_gaussian_tail (r_global, 1.7, 0.25);
+}
+
+double
+test_gaussian_tail_pdf (double x)
+{
+  return gsl_ran_gaussian_tail_pdf (x, 1.7, 0.25) ;
+}
+
+double
+test_ugaussian (void)
+{
+  return gsl_ran_ugaussian (r_global);
+}
+
+double
+test_ugaussian_pdf (double x)
+{
+  return gsl_ran_ugaussian_pdf (x);
+}
+
+double
+test_ugaussian_ratio_method (void)
+{
+  return gsl_ran_ugaussian_ratio_method (r_global);
+}
+
+double
+test_ugaussian_ratio_method_pdf (double x)
+{
+  return gsl_ran_ugaussian_pdf (x);
+}
+
 double
 test_ugaussian_tail (void)
 {
@@ -807,9 +891,7 @@ test_ugaussian_tail (void)
 double
 test_ugaussian_tail_pdf (double x)
 {
-    if (x < 3.0) return 0;
-    else 
-        return gsl_ran_gaussian_pdf (x, 1.0)/0.0013498981;
+  return gsl_ran_ugaussian_tail_pdf (x, 3.0) ;
 }
 
 double
@@ -885,21 +967,6 @@ test_bivariate_gaussian4_pdf (double x)
   double sigma = sqrt(su*su + sv*sv) ;
     
   return gsl_ran_gaussian_pdf (x, sigma);
-}
-
-
-
-
-double
-test_ugaussian (void)
-{
-  return gsl_ran_ugaussian (r_global);
-}
-
-double
-test_ugaussian_pdf (double x)
-{
-  return gsl_ran_ugaussian_pdf (x);
 }
 
 
