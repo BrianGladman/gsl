@@ -915,7 +915,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
       /* Downward recursion on a.
        */
       for(ap=a0; ap>a+0.1; ap -= 1.0) {
-        Uam1 = ap*(b-ap-1.0)*Uap1 + (x+2.0*ap-b)*Ua;
+        Uam1 = ap*(b0-ap-1.0)*Uap1 + (x+2.0*ap-b0)*Ua;
 	Uap1 = Ua;
 	Ua   = Uam1;
 	RESCALE_2(Ua,Uap1,scale_factor,scale_count);

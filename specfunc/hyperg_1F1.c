@@ -632,11 +632,11 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, double *
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
   else if(x > 0.0) {
-    if(x > 100.0 && abs_bma*abs_oma < 0.9*x) {
+    if(x > 100.0 && abs_bma*abs_oma < 0.5*x) {
       double prec;
       return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
     }
-    else if(b < 1.0e+05) {
+    else if(b < 5.0e+06) {
       double prec;
       double bp = b + ceil(1.4*x-b) + 1.0;
       double Mbp1;
@@ -1268,14 +1268,11 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
           Man = Manm1;
         }
         *result = Man;
-	if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
-	  return GSL_ELOSS;
-	else
-          return GSL_SUCCESS;
+	return GSL_ERROR_SELECT_2(stat_0, stat_1);
       }
       else {
         *result = 0.0;
-	return GSL_EFAILED;
+	return GSL_ERROR_SELECT_2(stat_0, stat_1);
       }
     }
     else {
