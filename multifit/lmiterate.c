@@ -60,7 +60,9 @@ lm_iteration:
     {
       if (pnorm < state->delta)
 	{
+#ifdef DEBUG
           printf("set delta = pnorm = %g\n" , pnorm);
+#endif
 	  state->delta = pnorm;
 	}
     }

@@ -11,6 +11,7 @@
 #include "test_longley.c"
 #include "test_filip.c"
 #include "test_pontius.c"
+#include "test_fn.c"
 
 int
 main (void)
@@ -20,6 +21,8 @@ main (void)
   test_longley();
   test_filip();
   test_pontius();
+
+  test_lmder();
 
   /* now summarize the results */
 
