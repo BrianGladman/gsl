@@ -17,7 +17,7 @@ gsl_set_error_handler (gsl_errhandler_t * new_handler)
 }
 
 void 
-gsl_no_error_handler (const char * reason, const char * file, int line) {
+gsl_empty_error_handler (const char * reason, const char * file, int line) {
   reason = 0 ; /* stop complaints about unused parameters */
   file = 0 ;
   line = 0 ;

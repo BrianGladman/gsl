@@ -28,41 +28,33 @@
 /* just to make things slightly clearer */
 enum {GSL_SUCCESS = 0, GSL_FAILURE = -1};
 
-extern int gsl_errno;
 
 typedef void gsl_errhandler_t (const char *reason, const char *file, int line);
 
 void gsl_error (const char *reason, const char *file, int line);
 void (*gsl_set_error_handler (void (*new_handler) (const char *reason, const char *file, int line))) (const char *reason, const char *file, int line);
 
-void gsl_no_error_handler (const char *reason, const char * file, int line) ;
+void gsl_empty_error_handler (const char *reason, const char * file, int line) ;
 
 void gsl_message(const char * message, const char * file, int line);
 
 
 #define GSL_ERROR(reason, errno) \
        do { \
-       gsl_errno = errno ; \
        gsl_error (reason, __FILE__, __LINE__) ; \
        return errno ; \
        } while (0)
 
-#define GSL_ERROR_RETURN(reason, errno, value) \
-       do { \
-       gsl_errno = errno ; \
-       gsl_error (reason, __FILE__, __LINE__) ; \
-       return value ; \
-       } while (0)
 
+#ifdef GSL_MESSAGING
 #define GSL_MESSAGE(message) \
        do { \
        gsl_message (message, __FILE__, __LINE__) ; \
        } while (0)
+#else
+/* throw away message */
+#define GSL_MESSAGE(message) do { } while(0)
+#endif
 
-#define GSL_ERROR_MESSAGE(message, errno) \
-       do { \
-       gsl_errno = errno; \
-       gsl_message (message, __FILE__, __LINE__) ; \
-       } while (0)
 
 #endif /* _GSL_ERRNO_H */
