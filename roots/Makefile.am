@@ -1,14 +1,17 @@
-## Process this file with automake to produce Makefile.in
+noinst_LIBRARIES = libroots.a 
 
-CFLAGS=-g -Wall
-
-check_PROGRAMS = rtest
-lib_LIBRARIES = libgsl_roots.a
-
-rtest_SOURCES = rtest.c
-rtest_LDADD = libgsl_roots.a
-rtest_DEPENDENCIES = libgsl_roots.a
-
-libgsl_roots_a_SOURCES = newton.c
+noinst_PROGRAMS = test
 
 include_HEADERS = gsl_roots.h
+
+INCLUDES = -I$(srcdir)/../err
+
+TESTS = test
+
+test_LDADD = libroots.a ../err/liberr.a
+
+test_DEPENDENCIES = libroots.a
+
+test_SOURCES = test.c
+
+libroots_a_SOURCES = bisection.c
