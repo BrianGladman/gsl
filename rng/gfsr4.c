@@ -25,20 +25,6 @@
    bears out the claim that 4-tap GFSR's with appropriately chosen
    offsets are as random as can be measured, using the author's test.
 
-   If the offsets are appropriately chosen (such the one ones in
-   this implementatin), then the sequence is said to be maximal.
-   I'm not sure what that means, but I would guess that means all
-   states are part of the same cycle, which would mean that the
-   period for this generator is astronomical; it is
-     (2^K)^D ~ 10^93334
-   where K=32 is the number of bits in the word, and D is the longest
-   lag.  This would also mean that any one random number could 
-   easily be zero; ie 0 <= ra[] < 2^32.
-
-   Ziff doesn't say so, but it seems to me that the bits are
-   completely independent here, so one could use this as an efficient
-   bit generator; each number supplying 32 random bits.
-
    This implementation uses the values suggested the the author's
    example on p392, but altered to fit the GSL framework.  The "state"
    is 2^14 longs, or 64Kbytes; 2^14 is the smallest power of two that
