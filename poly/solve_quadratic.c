@@ -42,7 +42,8 @@ gsl_poly_solve_quadratic (double a, double b, double c,
   else if (disc == 0) 
     {
       *x0 = -0.5 * b / a ;
-      return 1 ;
+      *x1 = -0.5 * b / a ;
+      return 2 ;
     }
   else
     {

@@ -11,10 +11,17 @@ int
 gsl_poly_solve_cubic (double a, double b, double c, 
                       double *x0, double *x1, double *x2)
 {
-  double Q = (a * a - 3 * b) / 9;
-  double R = (2 * a * a * a - 9 * a * b + 27 * c) / 54;
+  double q = (a * a - 3 * b);
+  double r = (2 * a * a * a - 9 * a * b + 27 * c);
+
+  double Q = q / 9;
+  double R = r / 54;
+
   double Q3 = Q * Q * Q;
   double R2 = R * R;
+
+  double CR2 = 729 * r * r;
+  double CQ3 = 2916 * q * q * q;
 
   if (R == 0 && Q == 0)
     {
@@ -23,14 +30,17 @@ gsl_poly_solve_cubic (double a, double b, double c,
       *x2 = - a / 3 ;
       return 3 ;
     }
-  else if (R2 == Q3)
+  else if (CR2 == CQ3) 
     {
+      /* this test is actually R2 == Q3, written in a form suitable
+         for exact computation with integers */
 
       /* Due to finite precision some double roots may be missed, and
 	 considered to be a pair of complex roots z = x +/- epsilon i
 	 close to the real axis. */
 
       double sqrtQ = sqrt (Q);
+
       if (R > 0)
 	{
 	  *x0 = -2 * sqrtQ  - a / 3;
@@ -45,7 +55,7 @@ gsl_poly_solve_cubic (double a, double b, double c,
 	}
       return 3 ;
     }
-  else if (R2 < Q3)
+  else if (CR2 < CQ3) /* equivalent to R2 < Q3 */
     {
       double sqrtQ = sqrt (Q);
       double sqrtQ3 = sqrtQ * sqrtQ * sqrtQ;

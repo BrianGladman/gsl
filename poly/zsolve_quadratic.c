@@ -49,7 +49,11 @@ gsl_poly_complex_solve_quadratic (double a, double b, double c,
     {
       GSL_REAL (*z0) = -0.5 * b / a;
       GSL_IMAG (*z0) = 0;
-      return 1;
+
+      GSL_REAL (*z1) = -0.5 * b / a;
+      GSL_IMAG (*z1) = 0;
+
+      return 2;
     }
   else
     {

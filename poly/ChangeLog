@@ -1,3 +1,23 @@
+Tue Aug 17 14:23:47 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* zsolve_cubic.c (gsl_poly_complex_solve_cubic): compute the
+ 	discriminant without division so that it is exact for exact inputs
+
+	* solve_cubic.c (gsl_poly_solve_cubic): compute the discriminant
+ 	without division so that it is exact for exact inputs
+
+	* changed the way roots are counted to make all the routines
+ 	consistent. Conincident roots are no longer a special case, now
+ 	they are made up of separate roots which happen to have the same
+ 	values.
+
+	* zsolve_quadratic.c (gsl_poly_complex_solve_quadratic): in the
+ 	case of a multiple root set all the returned values r0 = r1 =
+ 	root, rather than just setting one and leaving the others
+ 	potentially unset.
+
+	* solve_quadratic.c (gsl_poly_solve_quadratic):  ditto
+
 Tue Aug  3 19:36:26 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_poly.h: changed all functions to take separate variables for
