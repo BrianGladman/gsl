@@ -1,3 +1,8 @@
+Tue Aug 21 22:54:08 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): use inf/inf to generate a nan, because MSVC
+ 	optimizes inf-inf to zero
+
 Sun May  6 14:28:57 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* infnan.c: added gsl_isnan, gsl_isinf, gsl_isreal

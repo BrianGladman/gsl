@@ -211,7 +211,7 @@ main (void)
     zero = 0.0;
     one = 1.0;
     inf = exp(1.0e10);
-    nan = inf - inf;
+    nan = inf / inf;
     
     s = gsl_isinf(zero);
     gsl_test_int (s, 0, "gsl_isinf(0)");
