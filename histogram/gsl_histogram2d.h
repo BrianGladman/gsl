@@ -103,6 +103,9 @@ gsl_histogram2d_div(gsl_histogram2d *h1, const gsl_histogram2d *h2);
 int
 gsl_histogram2d_scale(gsl_histogram2d *h, double scale);
 
+int
+gsl_histogram2d_shift(gsl_histogram2d *h, double shift);
+
 int gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h) ;
 int gsl_histogram2d_fread (FILE * stream, gsl_histogram2d * h);
 int gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h, 

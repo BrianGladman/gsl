@@ -23,10 +23,10 @@
  * Need GSL library and header.
  * Contains the routines:
  * gsl_histogram_same_binning check if two histograms have the same binning 
- * gsl_histogram_add          add two histogram
- * gsl_histogram_sub          subctract two histogram
- * gsl_histogram_mult         multiply two histogram
- * gsl_histogram_div          divide two histogram
+ * gsl_histogram_add          add two histograms
+ * gsl_histogram_sub          subctract two histograms
+ * gsl_histogram_mult         multiply two histograms
+ * gsl_histogram_div          divide two histograms
  * gsl_histogram_scale        scale histogram contents
  *
  * Author: S. Piccardi
@@ -41,7 +41,7 @@
 
 /* 
  * gsl_histogram_same_binning:
- * control if two histogram have the
+ * control if two histograms have the
  * same binning
  */
 
@@ -71,7 +71,7 @@ gsl_histogram_equal_bins_p (const gsl_histogram * h1, const gsl_histogram * h2)
 
 /* 
  * gsl_histogram_add:
- * add two histogram
+ * add two histograms
  */
 int 
 gsl_histogram_add (gsl_histogram * h1, const gsl_histogram * h2)
@@ -93,7 +93,7 @@ gsl_histogram_add (gsl_histogram * h1, const gsl_histogram * h2)
 
 /* 
  * gsl_histogram_sub:
- * subtract two histogram
+ * subtract two histograms
  */
 
 int 
@@ -117,7 +117,7 @@ gsl_histogram_sub (gsl_histogram * h1, const gsl_histogram * h2)
 
 /* 
  * gsl_histogram_mult:
- * multiply two histogram
+ * multiply two histograms
  */
 
 int 
@@ -139,7 +139,7 @@ gsl_histogram_mul (gsl_histogram * h1, const gsl_histogram * h2)
 }
 /* 
  * gsl_histogram_div:
- * divide two histogram
+ * divide two histograms
  */
 int 
 gsl_histogram_div (gsl_histogram * h1, const gsl_histogram * h2)
@@ -161,7 +161,7 @@ gsl_histogram_div (gsl_histogram * h1, const gsl_histogram * h2)
 
 /* 
  * gsl_histogram_scale:
- * scale an histogram by a numeric factor
+ * scale a histogram by a numeric factor
  */
 
 int 
@@ -172,6 +172,24 @@ gsl_histogram_scale (gsl_histogram * h, double scale)
   for (i = 0; i < h->n; i++)
     {
       h->bin[i] *= scale;
+    }
+
+  return GSL_SUCCESS;
+}
+
+/* 
+ * gsl_histogram_shift:
+ * shift a histogram by a numeric offset
+ */
+
+int 
+gsl_histogram_shift (gsl_histogram * h, double shift)
+{
+  size_t i;
+
+  for (i = 0; i < h->n; i++)
+    {
+      h->bin[i] += shift;
     }
 
   return GSL_SUCCESS;

@@ -29,8 +29,7 @@ typedef struct {
 } gsl_histogram_pdf ;
 
 gsl_histogram * gsl_histogram_calloc (size_t n);
-gsl_histogram * gsl_histogram_calloc_uniform (const size_t n, const double xmin, 
-					     const double xmax);
+gsl_histogram * gsl_histogram_calloc_uniform (const size_t n, const double xmin, const double xmax);
 void gsl_histogram_free (gsl_histogram * h);
 int gsl_histogram_increment (gsl_histogram * h, double x);
 int gsl_histogram_accumulate (gsl_histogram * h, double x, double weight);
@@ -82,6 +81,10 @@ gsl_histogram_div(gsl_histogram *h1, const gsl_histogram *h2);
 
 int 
 gsl_histogram_scale(gsl_histogram *h, double scale);
+
+int 
+gsl_histogram_shift (gsl_histogram * h, double shift);
+
 
 double gsl_histogram_sigma (const gsl_histogram * h);
 

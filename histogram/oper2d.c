@@ -168,7 +168,7 @@ gsl_histogram2d_div (gsl_histogram2d * h1, const gsl_histogram2d * h2)
 
 /* 
  * gsl_histogram2d_scale:
- * scale an histogram by a numeric factor
+ * scale a histogram by a numeric factor
  */
 
 int 
@@ -179,6 +179,24 @@ gsl_histogram2d_scale (gsl_histogram2d * h, double scale)
   for (i = 0; i < (h->nx) * (h->ny); i++)
     {
       h->bin[i] *= scale;
+    }
+  
+  return GSL_SUCCESS;
+}
+
+/* 
+ * gsl_histogram2d_shift:
+ * shift a histogram by a numeric offset
+ */
+
+int 
+gsl_histogram2d_shift (gsl_histogram2d * h, double shift)
+{
+  size_t i;
+
+  for (i = 0; i < (h->nx) * (h->ny); i++)
+    {
+      h->bin[i] += shift;
     }
   
   return GSL_SUCCESS;

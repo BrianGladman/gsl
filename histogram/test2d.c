@@ -421,6 +421,19 @@ main (void)
     gsl_test (status, "gsl_histogram2d_scale works correctly");
   }
 
+  gsl_histogram2d_memcpy (h1, g);
+  gsl_histogram2d_shift (h1, 0.25);
+
+  {
+    int status = 0;
+    for (i = 0; i < M*N; i++)
+      {
+	if (h1->bin[i] != 0.25 + g->bin[i])
+	  status = 1;
+      }
+    gsl_test (status, "gsl_histogram2d_shift works correctly");
+  }
+
   gsl_histogram2d_free (h);	/* free whatever is in h */
 
   h = gsl_histogram2d_calloc_uniform (M1, N1, 0.0, 5.0, 0.0, 5.0);
