@@ -33,13 +33,13 @@
 int
 main (void)
 {
-  float zerof = 0.0, minus_onef = -1.0 ;
+  float zerof = 0.0f, minus_onef = -1.0f ;
   double zero = 0.0, minus_one = -1.0 ;
 
   /* Check for +ZERO (float) */
 
   {
-    float f = 0.0;
+    float f = 0.0f;
     const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
@@ -58,7 +58,7 @@ main (void)
     gsl_ieee_float_rep r;
     
     while (f < 0) {
-      f *= 0.1;
+      f *= 0.1f;
     }
 
     gsl_ieee_float_to_rep (&f, &r);
@@ -72,7 +72,7 @@ main (void)
   /* Check for a positive NORMAL number (e.g. 2.1) (float) */
 
   {
-    float f = 2.1;
+    float f = 2.1f;
     const char mantissa[] = "00001100110011001100110";
 
     gsl_ieee_float_rep r;
@@ -88,7 +88,7 @@ main (void)
   /* Check for a negative NORMAL number (e.g. -1.3304...) (float) */
 
   {
-    float f = -1.3303577090924210 ;
+    float f = -1.3303577090924210f ;
     const char mantissa[] = "01010100100100100101001";
 
     gsl_ieee_float_rep r;
@@ -104,7 +104,7 @@ main (void)
   /* Check for a large positive NORMAL number (e.g. 3.37e31) (float) */
 
   {
-    float f = 3.37e31;
+    float f = 3.37e31f;
     const char mantissa[] = "10101001010110101001001";
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
@@ -118,7 +118,7 @@ main (void)
   /* Check for a small positive NORMAL number (e.g. 3.37e-31) (float) */
 
   {
-    float f = 3.37e-31;
+    float f = 3.37e-31f;
     const char mantissa[] = "10110101011100110111011";
 
     gsl_ieee_float_rep r;
@@ -134,7 +134,7 @@ main (void)
   /* Check for FLT_MIN (smallest possible number that is not denormal) */
 
   {
-    float f = 1.17549435e-38;	/* FLT_MIN (float) */
+    float f = 1.17549435e-38f;	/* FLT_MIN (float) */
     const char mantissa[] = "00000000000000000000000";
     gsl_ieee_float_rep r;
     gsl_ieee_float_to_rep (&f, &r);
@@ -148,7 +148,7 @@ main (void)
   /* Check for FLT_MAX (largest possible number that is not Inf) */
 
   {
-    float f = 3.40282347e+38;	/* FLT_MAX */
+    float f = 3.40282347e+38f;	/* FLT_MAX */
     const char mantissa[] = "11111111111111111111111";
 
     gsl_ieee_float_rep r;
@@ -165,7 +165,7 @@ main (void)
 
 #ifdef TEST_DENORMAL
   {
-    float f = 1.17549435e-38;	/* FLT_MIN */
+    float f = 1.17549435e-38f;	/* FLT_MIN */
     char mantissa[] = "10000000000000000000000";
 
     int i;
@@ -173,7 +173,7 @@ main (void)
 
     for (i = 0; i < 23; i++)
       {
-	float x = f / pow (2.0, 1 + (float) i);
+	float x = f / (float)pow (2.0, 1 + (float) i);
 	mantissa[i] = '1';
 	gsl_ieee_float_to_rep (&x, &r);
 
@@ -192,7 +192,7 @@ main (void)
   /* Check for positive INFINITY (e.g. 2*FLT_MAX) */
 
   {
-    float f = 3.40282347e+38;	/* FLT_MAX */
+    float f = 3.40282347e+38f;	/* FLT_MAX */
     const char mantissa[] = "00000000000000000000000";
 
     gsl_ieee_float_rep r;
@@ -209,7 +209,7 @@ main (void)
   /* Check for negative INFINITY (e.g. -2*FLT_MAX) */
 
   {
-    float f = 3.40282347e+38;	/* FLT_MAX */
+    float f = 3.40282347e+38f;	/* FLT_MAX */
     const char mantissa[] = "00000000000000000000000";
 
     gsl_ieee_float_rep r;
@@ -229,8 +229,8 @@ main (void)
     gsl_ieee_float_rep r;
     float x, y, z;
 
-    x = 1.0 / zerof;
-    y = 2.0 / zerof;
+    x = 1.0f / zerof;
+    y = 2.0f / zerof;
     z = y - x;
 
     gsl_ieee_float_to_rep (&z, &r);
