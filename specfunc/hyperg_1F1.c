@@ -6,11 +6,57 @@
 #include <gsl_errno.h>
 #include "hyperg.h"
 #include "gsl_sf_exp.h"
+#include "gsl_sf_bessel.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_hyperg.h"
 
 #define locMAX(a,b)     ((a) > (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
+
+
+/* 1F1(a,b,x)/Gamma(b) for b->0
+ * [limit of Abramowitz+Stegun 13.3.7]
+ */
+static
+int
+hyperg_1F1_renorm_b0(const double a, const double x, double * result)
+{
+  double eta = a*x;
+  if(eta > 0.0) {
+    double root_eta = sqrt(eta);
+    double I1_scaled;
+    int stat_I = gsl_sf_bessel_I1_scaled_impl(2.0*root_eta, &I1_scaled);
+    if(stat_I != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_I;
+    }
+    else {
+      double lnr = 0.5*x + 0.5*log(eta) + fabs(x) + log(I1_scaled);
+      return gsl_sf_exp_impl(lnr, result);
+    }
+  }
+  else if(eta == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double root_eta = sqrt(-eta);
+    double J1;
+    int stat_J = gsl_sf_bessel_J1_impl(2.0*root_eta, &J1);
+    if(stat_J != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_J;
+    }
+    else {
+      double lnr = 0.5*x + 0.5*log(-eta) + fabs(x) + log(J1);
+      double ex;
+      int stat_e = gsl_sf_exp_impl(lnr, &ex);
+      *result = -ex;
+      return stat_e;
+    }
+  }
+  
+}
 
 
 /* We define two scaled functions for general use.
@@ -429,7 +475,7 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
   }
   else if(fabs(a+2.0) < locEPS) {
     /* a == -2 */
-    *result = 1.0 + a/b * x + 0.5*a*(a+1.0)/(b*(b+1.0)) *x*x;
+    *result = 1.0 + a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
     return GSL_SUCCESS;
   }
   else if(fabs(x) < 8.0 || (b > 0.0 && abs_x < 0.7 * abs_b)) {
@@ -458,8 +504,12 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
      * somewhat larger wedges around b=-|x|, as well as
      * a chunk for -500<b<0.
      */
-    double prec;
-    return hyperg_1F1_luke(a, b, x, result, &prec);
+    if(x < 0.0) {
+      double prec;
+      return hyperg_1F1_luke(a, b, x, result, &prec);
+    }
+    else {
+    }
   }
 }
 
@@ -542,7 +592,6 @@ static
 int
 hyperg_1F1_recurse_posa(double a, double b, double x, int N, double * FN, double * FNp1)
 {
-  double prec;
   double F0, F1;
   int stat_0 = hyperg_1F1_small_a(a,	 b, x, &F0);
   int stat_1 = hyperg_1F1_small_a(a+1.0, b, x, &F1);
@@ -669,30 +718,34 @@ hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double
 /* Handle a = neg integer cases.
  * Assumes b is such that the numerator terminates
  * before the denominator, which is of course required
- * in any case.
- *
- * FIXME: how does this behave for b < 0 and/or x < 0 ???
- * The question is whether or not the recursion is stable.
+ * in any case. Also assumes a <= 0.
  */
 static
 int
-hyperg_1F1_a_negint(int a, const double b, const double x, double * result)
+hyperg_1F1_a_negint(const int a, const double b, const double x, double * result)
 {
-  if(a == -1) {
+  if(a == 0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
+  }
+  else if(a == -1) {
     *result = 1.0 + a/b * x;
     return GSL_SUCCESS;
   }
   else if(a == -2) {
-    *result = 1.0 + a/b * x + 0.5*a*(a+1.0)/(b*(b+1.0)) *x*x;
+    *result = 1.0 + a/b*x * (1.0 + 0.5*(a+1.0)/(b+1.0)*x);
     return GSL_SUCCESS;
   }
   else {
-    double FN, FNp1;
-    int N      = -a;
-    double ap  = 0.0;
-    int stat_r = hyperg_1F1_recurse_nega(ap, b, x, N, &FN, &FNp1);
-    *result = FN;
-    return stat_r;
+    int N = -a;
+    double poly = 1.0;
+    int k;
+    for(k=N-1; k>=0; k--) {
+      double t = (a+k)/(b+k) * (x/(k+1));
+      poly = 1.0 + poly * t;
+    }
+    *result = poly;
+    return GSL_SUCCESS;
   }
 }
 
@@ -784,45 +837,147 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
                        double * result
                        )
 {
-  int a_neg_integer;    /*  a   negative integer  */
-  int b_neg_integer;    /*  b   negative integer  */
-  int bma_neg_integer;  /*  b-a negative integer  */
-  int amb_neg_integer;  /*  a-b negative integer  */
-
   const double bma = b - a;
-  const double amb = a - b;
+  const double amb = a - b; 
+ 
+ /* Note that we draw a distinction between the negative
+  * integer cases and the zero cases. This makes sense since
+  * it may be possible to specify, for instance, b as a very
+  * small number and mean it, whereas the ability to specify
+  * a number close to a given nonzero negative integer is
+  * limited by the precision of the FP representation.
+  * For the negative integer test, we resort to an
+  * (arbitrary) nearness measure.
+  */
+  const int a_neg_integer = ( a < -0.1 &&  fabs(a - rint(a)) < locEPS );
+  const int b_neg_integer = ( b < -0.1  &&  fabs(b - rint(b)) < locEPS );
+  const int bma_neg_integer = ( bma < -0.1  &&  fabs(bma - rint(bma)) < locEPS );
+  const int amb_neg_integer = ( amb < -0.1  &&  fabs(amb - rint(amb)) < locEPS );
 
-  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
-  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
-  bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
-  amb_neg_integer = ( amb < 0.0  &&  fabs(amb - rint(amb)) < locEPS );
-  
+  /* Testing for this before testing a and b
+   * is somewhat arbitrary. The result is that
+   * we can have 1F1(0,0,0) = 1. Whatever.
+   */
   if(x == 0.0) {
     *result = 1.0;
     return GSL_SUCCESS;
   }
 
-  /* case: a==0 */
-  if(fabs(a) < locEPS) {
+  if(b == 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+
+  if(a == 0.0) {
     *result = 1.0;
     return GSL_SUCCESS;
   }
 
-  /* case: b==0 (and a != 0, by above) */
-  if(fabs(b) < locEPS) {
+  /* case: denominator zeroes before numerator
+   * Note that we draw a distinction between the
+   * negative integers and zero. Zero is handled
+   * in the cases below, and is not a negative
+   * integer. So we can test the negative integer
+   * case now since there is no interference between
+   * the cases.
+   */
+  if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
     *result = 0.0;
     return GSL_EDOM;
   }
 
-  /* case: a==b,  exp(x) */
+  /* case: a and b very small; 1 + a/b (exp(x)-1)
+   * Note that neither a nor b is zero, since
+   * we eliminated that with the above tests.
+   */
+  if(fabs(a) < 10.0*locEPS && fabs(b) < 10.0*locEPS) {
+    double expm1;
+    int stat_e = gsl_sf_expm1_impl(x, &expm1);
+    if(stat_e == GSL_SUCCESS) {
+      double sa = ( a > 0.0 ? 1.0 : -1.0 );
+      double sb = ( b > 0.0 ? 1.0 : -1.0 );
+      double se = ( expm1 > 0.0 ? 1.0 : -1.0 );
+      double lnr = log(fabs(a)) - log(fabs(b)) + log(fabs(expm1));
+      if(lnr < GSL_LOG_DBL_MAX-1.0) {
+        *result = 1.0 + sa * sb * se * exp(lnr);
+	return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+	return GSL_EOVRFLW;
+      }
+    }
+    else {
+      *result = 0.0;
+      return stat_e;
+    }
+  }
+
+  /* case: b very small
+   * (and a not very small, since we passed the above test)
+   */
+  if(fabs(b) < 10.0*locEPS) {
+    double F_renorm;
+    int stat_F = hyperg_1F1_renorm_b0(a, x, &F_renorm);
+    if(F_renorm == 0.0) {
+      /* It is possible to get zero, since we might
+       * hit a zero of the Bessel function.
+       */
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else {
+      double sF = ( F_renorm > 0.0 ? 1.0 : -1.0 );
+      double sb = ( b > 0.0 ? 1.0 : -1.0 );
+      double lnr = log(fabs(F_renorm)) - log(fabs(b));
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = sF * sb * exp(lnr);
+	return stat_F;
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+    }
+  }
+
+  /* case: a==b;  exp(x)
+   * We test this after the above because this can
+   * be triggered for very small a and b, even though
+   * they might be very different from each other.
+   * In that case exp(x) would be wrong.
+   */
   if(fabs(bma) < locEPS) {
     return gsl_sf_exp_impl(x, result);
   }
 
-  /* case: denominator zeroes before numerator */
-  if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
-    *result = 0.0;
-    return GSL_EDOM;
+  /* case: a = neg integer; use explicit evaluation */
+  if(a_neg_integer) {
+    int inta = floor(a + 0.1);
+    return hyperg_1F1_a_negint(inta, b, x, result);
+  }
+
+  /* b-a = negative integer; Kummer and explicit evaluation */
+  if(bma_neg_integer) {
+    int    intbma = floor(bma + 0.1);
+    double Kummer_1F1;
+    int    stat_K = hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1);
+    if(Kummer_1F1 == 0.0) {
+      *result = 0.0;
+      return stat_K;
+    }
+    else {
+      double lnr = log(fabs(Kummer_1F1)) + x;
+      double sK  = ( Kummer_1F1 > 0.0 ? 1.0 : - 1.0 );
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = sK * exp(lnr);
+        return stat_K;
+      }
+      else {
+        *result = 0.0;  /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+    }
   }
 
   /* Trap the generic cases where some form
@@ -851,7 +1006,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       return stat_K;
     }
   }
-
 
   /* When b is positive, the series can be dominated,
    * as long as x is not relatively too large.
@@ -929,34 +1083,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   }
 
 
-  /* a = negative integer
-   * Backward recursion should be stable for
-   * any value of x, but we must be careful
-   * about b.
-   */
-  if(a_neg_integer && b > -1.0) {
-    int inta = floor(a + 0.1);
-    return hyperg_1F1_a_negint(inta, b, x, result);
-  }
-
-
-  /* b-a = negative integer
-   * Use Kummer and backward recursion.
-   */
-  if(bma_neg_integer && b > -1.0) {
-    int    intbma = floor(bma + 0.1);
-    double Kummer_1F1;
-    int    stat_K = hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1);
-    double lnr    = log(fabs(Kummer_1F1)) + x;
-    if(lnr < GSL_LOG_DBL_MAX) {
-      *result = exp(x) * Kummer_1F1;
-      return stat_K;
-    }
-    else {
-      *result = 0.0;  /* FIXME: should be Inf */
-      return GSL_EOVRFLW;
-    }
-  }
 
 
   /* Large negative x asymptotic.
