@@ -1,5 +1,8 @@
 Sat Mar 11 11:19:05 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* init_source.c (FUNCTION): added gsl_matrix_identity to set a
+ 	matrix to the identity, and gsl_matrix_zero for zeroing a matrix
+
 	* gsl_matrix.h: renamed struct element dim2 to tda (trailing
  	dimension) following blas conventions for row-major matrices
 

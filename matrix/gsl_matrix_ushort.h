@@ -41,6 +41,9 @@ gsl_vector_ushort_alloc_col_from_matrix (gsl_matrix_ushort * m,
 
 void gsl_matrix_ushort_free (gsl_matrix_ushort * m);
 
+void gsl_matrix_ushort_set_zero (gsl_matrix_ushort * m);
+void gsl_matrix_ushort_set_identity (gsl_matrix_ushort * m);
+
 unsigned short * gsl_matrix_ushort_ptr(const gsl_matrix_ushort * m, size_t i, size_t j);
 unsigned short   gsl_matrix_ushort_get(const gsl_matrix_ushort * m, size_t i, size_t j);
 void    gsl_matrix_ushort_set(gsl_matrix_ushort * m, size_t i, size_t j, unsigned short x);

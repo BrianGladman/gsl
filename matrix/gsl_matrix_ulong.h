@@ -41,6 +41,9 @@ gsl_vector_ulong_alloc_col_from_matrix (gsl_matrix_ulong * m,
 
 void gsl_matrix_ulong_free (gsl_matrix_ulong * m);
 
+void gsl_matrix_ulong_set_zero (gsl_matrix_ulong * m);
+void gsl_matrix_ulong_set_identity (gsl_matrix_ulong * m);
+
 unsigned long * gsl_matrix_ulong_ptr(const gsl_matrix_ulong * m, size_t i, size_t j);
 unsigned long   gsl_matrix_ulong_get(const gsl_matrix_ulong * m, size_t i, size_t j);
 void    gsl_matrix_ulong_set(gsl_matrix_ulong * m, size_t i, size_t j, unsigned long x);

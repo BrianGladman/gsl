@@ -41,6 +41,9 @@ gsl_vector_alloc_col_from_matrix (gsl_matrix * m,
 
 void gsl_matrix_free (gsl_matrix * m);
 
+void gsl_matrix_set_zero (gsl_matrix * m);
+void gsl_matrix_set_identity (gsl_matrix * m);
+
 double * gsl_matrix_ptr(const gsl_matrix * m, size_t i, size_t j);
 double   gsl_matrix_get(const gsl_matrix * m, size_t i, size_t j);
 void    gsl_matrix_set(gsl_matrix * m, size_t i, size_t j, double x);

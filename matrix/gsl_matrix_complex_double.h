@@ -45,6 +45,9 @@ gsl_vector_complex_alloc_col_from_matrix (gsl_matrix_complex * m,
 
 void gsl_matrix_complex_free (gsl_matrix_complex * m);
 
+void gsl_matrix_complex_set_zero (gsl_matrix_complex * m);
+void gsl_matrix_complex_set_identity (gsl_matrix_complex * m);
+
 gsl_complex * gsl_matrix_complex_ptr(const gsl_matrix_complex * m, size_t i, size_t j);
 gsl_complex gsl_matrix_complex_get(const gsl_matrix_complex * m, size_t i, size_t j);
 void gsl_matrix_complex_set(gsl_matrix_complex * m, size_t i, size_t j, gsl_complex x);

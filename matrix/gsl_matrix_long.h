@@ -41,6 +41,9 @@ gsl_vector_long_alloc_col_from_matrix (gsl_matrix_long * m,
 
 void gsl_matrix_long_free (gsl_matrix_long * m);
 
+void gsl_matrix_long_set_zero (gsl_matrix_long * m);
+void gsl_matrix_long_set_identity (gsl_matrix_long * m);
+
 long * gsl_matrix_long_ptr(const gsl_matrix_long * m, size_t i, size_t j);
 long   gsl_matrix_long_get(const gsl_matrix_long * m, size_t i, size_t j);
 void    gsl_matrix_long_set(gsl_matrix_long * m, size_t i, size_t j, long x);

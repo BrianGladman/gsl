@@ -36,7 +36,7 @@ FUNCTION (gsl_matrix, alloc) (const size_t n1, const size_t n2)
   m->data = block->data;
   m->size1 = n1;
   m->size2 = n2;
-  m->tda = n2;
+  m->tda = n2; 
   m->block = block;
 
   return m;
@@ -168,3 +168,39 @@ FUNCTION (gsl_matrix, free) (TYPE (gsl_matrix) * m)
   free (m);
 }
 
+void
+FUNCTION (gsl_matrix, set_identity) (TYPE (gsl_matrix) * m)
+{
+  size_t i, j;
+  size_t p = m->size1 ;
+  size_t q = m->size2 ;
+
+  const BASE zero = ZERO;
+  const BASE one = ONE;
+
+  for (i = 0; i < p; i++)
+    {
+      for (j = 0; j < q; j++)
+        {
+          FUNCTION(gsl_matrix, set) (m, i, j, (i == j) ? one : zero) ;
+        }
+    }
+}
+
+void
+FUNCTION (gsl_matrix, set_zero) (TYPE (gsl_matrix) * m)
+{
+  size_t i, j;
+  size_t p = m->size1 ;
+  size_t q = m->size2 ;
+
+  const BASE zero = ZERO;
+
+  for (i = 0; i < p; i++)
+    {
+      for (j = 0; j < q; j++)
+        {
+          FUNCTION(gsl_matrix, set) (m, i, j, zero) ;
+        }
+    }
+}

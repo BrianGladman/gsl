@@ -41,6 +41,9 @@ gsl_vector_uchar_alloc_col_from_matrix (gsl_matrix_uchar * m,
 
 void gsl_matrix_uchar_free (gsl_matrix_uchar * m);
 
+void gsl_matrix_uchar_set_zero (gsl_matrix_uchar * m);
+void gsl_matrix_uchar_set_identity (gsl_matrix_uchar * m);
+
 unsigned char * gsl_matrix_uchar_ptr(const gsl_matrix_uchar * m, size_t i, size_t j);
 unsigned char   gsl_matrix_uchar_get(const gsl_matrix_uchar * m, size_t i, size_t j);
 void    gsl_matrix_uchar_set(gsl_matrix_uchar * m, size_t i, size_t j, unsigned char x);
