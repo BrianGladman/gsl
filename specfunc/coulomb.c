@@ -200,7 +200,9 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
 
 /* Deterine the connection phase phi_lambda.
  * See coulomb_FG_series() below. We have
- * to be careful about sin(phi)->0.
+ * to be careful about sin(phi)->0. Note that
+ * there is an underflow condition for large 
+ * positive eta in any case.
  */
 static
 int
@@ -211,8 +213,8 @@ coulomb_connection(const double lam, const double eta,
   const double sin_lamh = sin((lam+0.5)*M_PI);  /*  cos(lam*M_PI) */
   const double cos_lamh = cos((lam+0.5)*M_PI);  /* -sin(lam*M_PI) */
   const double eta_pi = eta*M_PI;
-  if(eta_pi < 12.0) {
-    const double th = tanh(eta*M_PI);
+  if(eta_pi < 7.0) {
+    const double th = tanh(eta_pi);
     const double Y  = th * sin_lamh;
     const double X  = cos_lamh;
     const double R  = sqrt(X*X + Y*Y);
@@ -220,14 +222,21 @@ coulomb_connection(const double lam, const double eta,
     const double sin_beta = Y/R;
     *cos_phi = cos_beta * cos_lamh + sin_beta * sin_lamh;
     *sin_phi = sin_beta * cos_lamh - cos_beta * sin_lamh;
+    return GSL_SUCCESS;
   }
-  else {
-    double eps = 2.0 / (1.0 + exp(2.0*eta_pi));   /* 1 - tanh(eta pi) */
+  else if(-2.0*eta_pi > GSL_LOG_DBL_MIN){
+    double emx = exp(-2.0*eta_pi);
+    double eps = (2.0*emx)/(1.0 + emx);   /* 1 - tanh(eta pi) */
     double cs  = cos_lamh * sin_lamh;
     *cos_phi = 1.0 - 0.5*eps*eps*cs*cs;
     *sin_phi = -eps * cs * (1.0 + eps * sin_lamh*sin_lamh);
+    return GSL_SUCCESS;
   }
-  return GSL_SUCCESS;
+  else {
+    *cos_phi = 1.0;
+    *sin_phi = 0.0;
+    return GSL_EUNDRFLW;
+  }
 }
 
 
@@ -855,9 +864,13 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
     return GSL_EDOM;
     /* After all, since we are asking for G, this is a domain error... */
   }
-  else if(x < 1.2 && fabs(eta*x) < 10.0) {
+  else if(x < 1.2 && 2.0*M_PI*eta < 0.9*(-GSL_LOG_DBL_MIN) && fabs(eta*x) < 10.0) {
     /* Reduce to a small lambda value and use the series
-     * representations for F and G.
+     * representations for F and G. We cannot allow eta to
+     * be large and positive because the connection formula
+     * for G_lam is badly behaved due to an underflow in sin(phi_lam) 
+     * [see coulomb_FG_series() and coulomb_connection() above].
+     * Note that large negative eta is ok however.
      */
     const double SMALL = 1.0e-100;
     const int N    = (int)(lam_F + 0.5);
