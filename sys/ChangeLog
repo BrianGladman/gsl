@@ -1,0 +1,4 @@
+Fri Nov 20 17:41:35 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* params.c: added program for printing ieee parameters
+
