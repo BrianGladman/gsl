@@ -137,3 +137,5 @@ reliable implementation of gamma_inc, multifit bug fixes
 * Jochen Küpper <jochen@jochen-kuepper.de> doc bug fixes
 
 * John Ketchum <johnk@qualcomm.com> for bug reports for the blas library
+
+* Nicolas Darnis <ndarnis@cvf.fr> additional permutation functions

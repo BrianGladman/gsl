@@ -1,3 +1,8 @@
+Mon Apr  1 17:29:49 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* permutation.c (gsl_permutation_mul): added function for
+ 	combining permutations (Nicolas Darnis)
+
 Sat Feb  9 18:17:53 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* permutation.c (gsl_permutation_memcpy): added memcpy function

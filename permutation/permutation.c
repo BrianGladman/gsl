@@ -246,6 +246,29 @@ gsl_permutation_prev (gsl_permutation * p)
 }
 
 int
+gsl_permutation_mul (gsl_permutation * p, const gsl_permutation * pa, const gsl_permutation * pb)
+{
+  size_t i;
+  const size_t size = p->size;
+
+  if (pa->size != size)
+    {
+      GSL_ERROR("size of result does not match size of pa", GSL_EINVAL);
+    }
+
+  if (pb->size != size)
+    {
+      GSL_ERROR("size of result does not match size of pb", GSL_EINVAL);
+    }
+
+  for (i = 0; i < size; i++)
+    {
+      p->data[i] = pb->data[pa->data[i]];
+    }
+
+  return GSL_SUCCESS;
+}
+int
 gsl_permutation_memcpy (gsl_permutation * dest,
                         const gsl_permutation * src)
 {

@@ -1,4 +1,8 @@
-* What is new in gsl-1.1.1:
+* What is new in gsl-1.2:
+
+* Added new function for combining permutations, gsl_permutation_mul
+
+* What was new in gsl-1.1.1:
 
 ** Fixes to histogram2d stat functions
 

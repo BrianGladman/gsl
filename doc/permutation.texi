@@ -183,6 +183,12 @@ the @math{p_j}-th column of the identity matrix. The permutation @var{p}
 and the vector @var{v} must have the same length.
 @end deftypefun
 
+@deftypefun int gsl_permutation_mul (gsl_permutation * @var{p}, const gsl_permutation * @var{pa}, const gsl_permutation * @var{pb})
+This function combines the two permutations @var{pa} and @var{pb} into a
+single permutation @var{p}, where @math{p = pa . pb}. The permutation
+@var{p} is equivalent to applying @math{pb} first and then @var{pa}.
+@end deftypefun
+
 @node Reading and writing permutations
 @section Reading and writing permutations
 
