@@ -316,3 +316,38 @@ The gsl_const directory is broken in gsl-1.4 (the include file doesn't
 include the right files) and is not backwards compatible.
 
 The documentation for plancks constant is missing from the manual!
+
+----------------------------------------------------------------------
+BUG#16 -- brent
+
+From: Paul Sydney <sydney@maui.net>
+Subject: [Bug-gsl] Typo in min/brent.c
+Date: Tue, 17 Feb 2004 17:42:43 -1000
+
+Looks like a typo in min/brent.c.  You should be compare bounds on both 
+ends with the new position:
+
+== Need to check the original Brent routine for this (in his book
+"Multidimensional minimisation without Derivatives")
+
+[tools/gsl-1.4/min] sydney% diff -c brent.c brent.old
+*** brent.c     Tue Feb 17 17:10:14 2004
+--- brent.old   Tue Feb 17 17:09:55 2004
+***************
+*** 132,138 ****
+         d = p / q;
+         u = z + d;
+
+!       if ((u - x_left) < t2 || (x_right - u) < t2)
+           {
+             d = (z < midpoint) ? tolerance : -tolerance ;
+           }
+--- 132,138 ----
+         d = p / q;
+         u = z + d;
+
+!       if ((u - x_left) < t2 || (x_right - z) < t2)
+           {
+             d = (z < midpoint) ? tolerance : -tolerance ;
+           }
+
