@@ -4593,13 +4593,44 @@ int check_legendre(void)
   y = gsl_sf_conicalP_sph_reg(2, 1.0, -0.5);
   s += ( frac_diff(y, 1.6406279287008789526 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(2, 1.0, -0.5)");
-  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
   y = gsl_sf_conicalP_sph_reg(10, 1.0, -0.5);
   s += ( frac_diff(y, 0.000029315266725049129448 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(10, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(20, 1.0, -0.5);
+  s += ( frac_diff(y, 7.335769429462034431e-15 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(20, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(30, 1.0, -0.5);
+  s += ( frac_diff(y, 1.3235612394267378871e-26 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(30, 1.0, -0.5)");
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(10, 1.0, 0.5);
+  s += ( frac_diff(y, 2.7016087199857873954e-10 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(10, 1.0, 0.5)");
+  printf("%22.18g\n", y);
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(20, 1.0, 0.5);
+  s += ( frac_diff(y, 1.1782569701435933399e-24 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(20, 1.0, 0.5)");
+  printf("%22.18g\n", y);
+  status += s;
+
+  s = 0;
+  y = gsl_sf_conicalP_sph_reg(30, 1.0, 0.5);
+  s += ( frac_diff(y, 3.636240588303797919e-41 ) > 1.0e-12 );
+  gsl_test(s, "  gsl_sf_conicalP_sph_reg_impl(30, 1.0, 0.5)");
   printf("%22.18g\n", y);
   status += s;
 

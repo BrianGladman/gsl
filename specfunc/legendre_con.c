@@ -1136,7 +1136,7 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
                                  double * result
 				 )
 {
-  if(x <= -1.0) {
+  if(x <= -1.0 || l < -1) {
     *result = 0.0;
     return GSL_EDOM;
   }
@@ -1156,13 +1156,13 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     double Pell;
     double Pellp1;
     int ell;
-    int stat_0 = gsl_sf_conicalP_half_impl(lambda, x, &Pellm1);   /* P^( 1/2) */
-    int stat_1 = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pellm1);  /* P^(-1/2) */
+    int stat_0 = gsl_sf_conicalP_half_impl(lambda, x, &Pellm1);  /* P^( 1/2) */
+    int stat_1 = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pell);   /* P^(-1/2) */
     int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
 
     for(ell=0; ell<l; ell++) {
       double d = (ell+1.0)*(ell+1.0) + lambda*lambda;
-      Pellp1 = (Pellm1 - 2.0*(ell+0.5)*c*x * Pell) / d;
+      Pellp1 = (Pellm1 - (2.0*ell+1.0)*c*x * Pell) / d;
       Pellm1 = Pell;
       Pell   = Pellp1;
     }
@@ -1171,6 +1171,24 @@ int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda,
     return GSL_SUCCESS;
   }
   else if(x < 1.0) {
+    double c = 1.0/sqrt(1.0-x*x);
+    double Pellm1;
+    double Pell;
+    double Pellp1;
+    int ell;
+    int stat_0 = gsl_sf_conicalP_half_impl(lambda, x, &Pellm1);  /* P^( 1/2) */
+    int stat_1 = gsl_sf_conicalP_mhalf_impl(lambda, x, &Pell);   /* P^(-1/2) */
+    int stat_P = GSL_ERROR_SELECT_2(stat_0, stat_1);
+
+    for(ell=0; ell<l; ell++) {
+      double d = (ell+1.0)*(ell+1.0) + lambda*lambda;
+      Pellp1 = (Pellm1 - (2.0*ell+1.0)*c*x * Pell) / d;
+      Pellm1 = Pell;
+      Pell   = Pellp1;
+    }
+
+    *result = Pell;
+    return GSL_SUCCESS;
   }
   else {
     /* x > 1.0 */
