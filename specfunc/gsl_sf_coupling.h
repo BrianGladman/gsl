@@ -114,7 +114,7 @@ int gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
                                    int two_jd, int two_je, int two_jf,
                                    gsl_sf_result * result
                                    );
-double gsl_sf_coupling_INCORRECT_6j(int two_ja, int two_jb, int two_jc,
+double gsl_sf_coupling_6j_INCORRECT(int two_ja, int two_jb, int two_jc,
                                     int two_jd, int two_je, int two_jf
                                     );
 #endif /* !GSL_DISABLE_DEPRECATED */

@@ -1,3 +1,9 @@
+2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_sf_coupling.h: fixed declaration to
+	gsl_sf_coupling_6j_INCORRECT instead of
+	gsl_sf_coupling_INCORRECT_6j
+
 2004-11-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* psi.c (gsl_sf_psi_1): added missing function definition
