@@ -99,8 +99,8 @@ void gsl_vector_long_minmax_index (const gsl_vector_long * v, size_t * imin, siz
 
 int gsl_vector_long_add (gsl_vector_long * a, const gsl_vector_long * b);
 int gsl_vector_long_sub (gsl_vector_long * a, const gsl_vector_long * b);
-int gsl_vector_long_mul_elements (gsl_vector_long * a, const gsl_vector_long * b);
-int gsl_vector_long_div_elements (gsl_vector_long * a, const gsl_vector_long * b);
+int gsl_vector_long_mul (gsl_vector_long * a, const gsl_vector_long * b);
+int gsl_vector_long_div (gsl_vector_long * a, const gsl_vector_long * b);
 int gsl_vector_long_scale (gsl_vector_long * a, const double x);
 int gsl_vector_long_add_constant (gsl_vector_long * a, const double x);
 

@@ -68,7 +68,7 @@ FUNCTION(gsl_vector, sub) (TYPE(gsl_vector) * a, const TYPE(gsl_vector) * b)
 }
 
 int 
-FUNCTION(gsl_vector, mul_elements) (TYPE(gsl_vector) * a, const TYPE(gsl_vector) * b)
+FUNCTION(gsl_vector, mul) (TYPE(gsl_vector) * a, const TYPE(gsl_vector) * b)
 {
   const size_t N = a->size;
 
@@ -93,7 +93,7 @@ FUNCTION(gsl_vector, mul_elements) (TYPE(gsl_vector) * a, const TYPE(gsl_vector)
 }
 
 int 
-FUNCTION(gsl_vector, div_elements) (TYPE(gsl_vector) * a, const TYPE(gsl_vector) * b)
+FUNCTION(gsl_vector, div) (TYPE(gsl_vector) * a, const TYPE(gsl_vector) * b)
 {
   const size_t N = a->size;
 

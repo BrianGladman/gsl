@@ -235,7 +235,7 @@ FUNCTION (test, func) (void)
     }
 
     FUNCTION(gsl_vector, memcpy) (v, a);
-    FUNCTION(gsl_vector, mul_elements) (v, b);
+    FUNCTION(gsl_vector, mul) (v, b);
     
     {
       int status = 0;
@@ -249,11 +249,11 @@ FUNCTION (test, func) (void)
           if (r != z)
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_mul_elements multiplies correctly");
+      gsl_test (status, NAME (gsl_vector) "_mul multiplies correctly");
     }
 
     FUNCTION(gsl_vector, memcpy) (v, a);
-    FUNCTION(gsl_vector, div_elements) (v, b);
+    FUNCTION(gsl_vector, div) (v, b);
     
     {
       int status = 0;
@@ -264,10 +264,10 @@ FUNCTION (test, func) (void)
           BASE x = FUNCTION(gsl_vector,get) (a,i);
           BASE y = FUNCTION(gsl_vector,get) (b,i);
           BASE z = x / y;
-          if (fabs(r - z) > 2 * GSL_DBL_EPSILON * fabs(z))
+          if (fabs(r - z) > 2 * GSL_FLT_EPSILON * fabs(z))
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_div_elements divides correctly");
+      gsl_test (status, NAME (gsl_vector) "_div divides correctly");
     }
 
 
