@@ -16,12 +16,14 @@ double gsl_sf_lngamma(double);
       lnr = log|Gamma(z)|
       arg = arg(Gamma(z))  in (-Pi, Pi]
  */
-void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg);
+int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg);
 
 
-/* log(Gamma(n)) for integer n
+/* factorial(n)
+ * Returns GSL_EDOM if n<=0, GSL_OVRFLW if n too large, GSL_SUCCESS on success
  */
-double gsl_sf_lngamma_int(int);
+int gsl_sf_fact_e(int n, double * result);
 
 
-#endif /* GSL_GAMMAFUNCTION_H_ */
+
+#endif /* !GSL_GAMMAFUNCTION_H_ */
