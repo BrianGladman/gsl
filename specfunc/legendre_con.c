@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "legendre.h"
@@ -17,6 +16,7 @@
 
 #define Root_2OverPi_  0.797884560802865355879892
 #define locEPS         (1000.0*GSL_MACH_EPS)
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -362,11 +362,10 @@ gsl_sf_conicalP_xlt1_large_neg_mu_impl(double mu, double tau, double x,
     return GSL_SUCCESS;
   }
   else {
-    double ln_sum = log(fabs(sum));
-    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    int stat_e = gsl_sf_exp_mult_impl(ln_pre, sum, result);
     if(stat_e != GSL_SUCCESS) {
-      *result = GSL_SIGN(sum);
-      *ln_multiplier = ln_sum + ln_pre;
+      *result = sum;
+      *ln_multiplier = ln_pre;
     }
     else {
       *ln_multiplier = 0.0;
@@ -472,11 +471,10 @@ gsl_sf_conicalP_xgt1_neg_mu_largetau_impl(const double mu, const double tau,
     return GSL_SUCCESS;
   }
   else {
-    double ln_sum = log(fabs(sum));
-    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    int stat_e = gsl_sf_exp_mult_impl(ln_pre, sum, result);
     if(stat_e != GSL_SUCCESS) {
-      *result = GSL_SIGN(sum);
-      *ln_multiplier = ln_sum + ln_pre;
+      *result = sum;
+      *ln_multiplier = ln_pre;
     }
     else {
       *ln_multiplier = 0.0;
@@ -529,11 +527,10 @@ gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
     return GSL_SUCCESS;
   }
   else {
-    double ln_sum = log(fabs(sum));
-    int stat_e = gsl_sf_exp_sgn_impl(ln_sum + ln_pre, sum, result);
+    int stat_e = gsl_sf_exp_mult_impl(ln_pre, sum, result);
     if(stat_e != GSL_SUCCESS) {
-      *result = GSL_SIGN(sum);
-      *ln_multiplier = ln_sum + ln_pre;
+      *result = sum;
+      *ln_multiplier = ln_pre;
     }
     else {
       *ln_multiplier = 0.0;
@@ -585,6 +582,7 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
   int stat_F = conicalP_hyperg_large_x(mu, tau, y, &reF, &imF);
 
   /* f = Gamma(-i tau)/Gamma(1/2 - mu - i tau)
+   * FIXME: shift so it's better for tau-> 0
    */
   double lgr_num, lgth_num;
   double lgr_den, lgth_den;
@@ -607,16 +605,15 @@ gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
   else {
     double lnFf     = 0.5*log(reF*reF+imF*imF) + lgr_num - lgr_den;
     double lnnoc    = lnpre_const + lnpre_comm + lnFf;
-    int stat_e = gsl_sf_exp_sgn_impl(lnnoc + log(fabs(c)), c, result);
+    int stat_e = gsl_sf_exp_mult_impl(lnnoc, c, result);
     if(stat_e == GSL_SUCCESS) {
       *ln_multiplier = 0.0;
-      return status;
     }
     else {
       *result = c;
       *ln_multiplier = lnnoc;
-      return status;
     }
+    return status;
   }
 }
 
@@ -708,17 +705,137 @@ conicalP_xnear1_hyperg_C(double mu, double tau, double x, double * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/* V0, V1 from Kolbig, m = 0
+ */
+static
+int
+conicalP_0_V(const double t, const double f, const double tau, const double sgn,
+             double * V0, double * V1)
+{
+  double C[8];
+  double T[8];
+  double H[8];
+  double V[12];
+  int i;
+  T[0] = 1.0;
+  H[0] = 1.0;
+  V[0] = 1.0;
+  for(i=1; i<=7; i++) {
+    T[i] = T[i-1] * t;
+    H[i] = H[i-1] * (t*f);
+  }
+  for(i=1; i<=11; i++) {
+    V[i] = V[i-1] * tau;
+  }
 
+  C[0] = 1.0;
+  C[1] = (H[1]-1.0)/(8.0*T[1]);
+  C[2] = (9.0*H[2] + 6.0*H[1] - 15.0 - sgn*8.0*T[2])/(128.0*T[2]);
+  C[3] = 5.0*(15.0*H[3] + 27.0*H[2] + 21.0*H[1] - 63.0 - sgn*T[2]*(16.0*H[1]+24.0))/(1024.0*T[3]);
+  C[4] = 7.0*(525.0*H[4] + 1500.0*H[3] + 2430.0*H[2] + 1980.0*H[1] - 6435.0
+              + 192.0*T[4] - sgn*T[2]*(720.0*H[2]+1600.0*H[1]+2160.0)
+              ) / (32768.0*T[4]);
+  C[5] = 21.0*(2835.0*H[5] + 11025.0*H[4] + 24750.0*H[3] + 38610.0*H[2]
+               + 32175.0*H[1] - 109395.0 + T[4]*(1984.0*H[1]+4032.0)
+               - sgn*T[2]*(4800.0*H[3]+15120.0*H[2]+26400.0*H[1]+34320.0)
+	       ) / (262144.0*T[5]);
+  C[6] = 11.0*(218295.0*H[6] + 1071630.0*H[5] + 3009825.0*H[4] + 6142500.0*H[3]
+               + 9398025.0*H[2] + 7936110.0*H[1] - 27776385.0
+	       + T[4]*(254016.0*H[2]+749952.0*H[1]+1100736.0)
+	       - sgn*T[2]*(441000.0*H[4] + 1814400.0*H[3] + 4127760.0*H[2]
+	                 + 6552000.0*H[1] + 8353800.0 + 31232.0*T[4]
+			 )
+               ) / (4194304.0*T[6]);
+
+  *V0 = C[0] + (-4.0*C[3]/T[1]+C[4])/V[4]
+             + (-192.0*C[5]/T[3]+144.0*C[6]/T[2])/V[8]
+             + sgn * (-C[2]/V[2]
+	              + (-24.0*C[4]/T[2]+12.0*C[5]/T[1]-C[6])/V[6] 
+	              + (-1920.0*C[6]/T[4])/V[10]
+		      );
+  *V1 = C[1]/V[1] + (8.0*(C[3]/T[2]-C[4]/T[1])+C[5])/V[5]
+                  + (384.0*C[5]/T[4] - 768.0*C[6]/T[3])/V[9]
+                  + sgn * ((2.0*C[2]/T[1]-C[3])/V[3]
+		           + (48.0*C[4]/T[3]-72.0*C[5]/T[2] + 18.0*C[6]/T[1])/V[7]
+		           + (3840.0*C[6]/T[5])/V[11]
+		           );
+
+  return GSL_SUCCESS;
+}
+
+
+/* V0, V1 from Kolbig, m = 1
+ */
+static
+int
+conicalP_1_V(const double t, const double f, const double tau, const double sgn,
+             double * V0, double * V1)
+{
+  double Cm1;
+  double C[8];
+  double T[8];
+  double H[8];
+  double V[12];
+  int i;
+  T[0] = 1.0;
+  H[0] = 1.0;
+  V[0] = 1.0;
+  for(i=1; i<=7; i++) {
+    T[i] = T[i-1] * t;
+    H[i] = H[i-1] * (t*f);
+  }
+  for(i=1; i<=11; i++) {
+    V[i] = V[i-1] * tau;
+  }
+
+  Cm1  = -1.0;
+  C[0] = 3.0*(1.0-H[1])/(8.0*T[1]);
+  C[1] = (-15.0*H[2]+6.0*H[1]+9.0+sgn*8.0*T[2])/(128.0*T[2]);
+  C[2] = 3.0*(-35.0*H[3] - 15.0*H[2] + 15.0*H[1] + 35.0 + sgn*T[2]*(32.0*H[1]+8.0))/(1024.0*T[3]);
+  C[3] = (-4725.0*H[4] - 6300.0*H[3] - 3150.0*H[2] + 3780.0*H[1] + 10395.0
+          -1216.0*T[4] + sgn*T[2]*(6000.0*H[2]+5760.0*H[1]+1680.0)) / (32768.0*T[4]);
+  C[4] = 7.0*(-10395.0*H[5] - 23625.0*H[4] - 28350.0*H[3] - 14850.0*H[2]
+              +19305.0*H[1] + 57915.0 - T[4]*(6336.0*H[1]+6080.0)
+	      + sgn*T[2]*(16800.0*H[3] + 30000.0*H[2] + 25920.0*H[1] + 7920.0)
+	      ) / (262144.0*T[5]);
+  C[5] = (-2837835.0*H[6] - 9168390.0*H[5] - 16372125.0*H[4] - 18918900*H[3]
+          -10135125.0*H[2] + 13783770.0*H[1] + 43648605.0
+	  -T[4]*(3044160.0*H[2] + 5588352.0*H[1] + 4213440.0)
+	  +sgn*T[2]*(5556600.0*H[4] + 14817600.0*H[3] + 20790000.0*H[2]
+	             + 17297280.0*H[1] + 5405400.0 + 323072.0*T[4]
+		     )
+          ) / (4194304.0*T[6]);
+
+  *V0 = C[0] + (-4.0*C[3]/T[1]+C[4])/V[4]
+             + (-192.0*C[5]/T[3]+144.0*C[6]/T[2])/V[8]
+             + sgn * (-C[2]/V[2]
+	              + (-24.0*C[4]/T[2]+12.0*C[5]/T[1]-C[6])/V[6] 
+		      );
+  *V1 = C[1]/V[1] + (8.0*(C[3]/T[2]-C[4]/T[1])+C[5])/V[5]
+                  + (384.0*C[5]/T[4] - 768.0*C[6]/T[3])/V[9]
+                  + sgn * (Cm1*T[1] + (2.0*C[2]/T[1]-C[3])/V[3]
+		           + (48.0*C[4]/T[3]-72.0*C[5]/T[2] + 18.0*C[6]/T[1])/V[7]
+		           );
+
+  return GSL_SUCCESS;
+}
+
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* P^0_{-1/2 + I lambda}
  */
 int
-gsl_sf_conical_0_impl(const double lambda, const double x, double * result)
+gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
 {
   if(x <= -1.0) {
     *result = 0.0;
     return GSL_EDOM;
+  }
+  else if(x == 1.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
   }
   else if(lambda == 0.0) {
     double K;
@@ -742,16 +859,55 @@ gsl_sf_conical_0_impl(const double lambda, const double x, double * result)
   else if(    x <= 0.0
           || (x < 0.1 && lambda < 17.0)
 	  || (x < 0.2 && lambda < 5.0 )
-	  ) {
+    ) {
     return conicalP_xlt1_hyperg_A(0.0, lambda, x, result);
   }
-  else if(   ((0.1 < x && x <= 0.2) && (5.0 < lambda && lambda < 17.0))
-          || ((0.2 < x && x < 1.5)  && (lambda < 20.0))
-          ) {
+  else if(   (x <= 0.2 && lambda < 17.0)
+          || (x <= 1.5 && lambda < 20.0)
+    ) {
+    return gsl_sf_hyperg_2F1_conj_impl(0.5, lambda, 1.0, (1.0-x)/2, result);
   }
-  else if(1.5 <= x && lambda < locMAX(x,20.0)) {
+  else if(1.5 < x && lambda < locMAX(x,20.0)) {
+    double P;
+    double lm;
+    int stat_P = gsl_sf_conicalP_large_x_impl(0.0, lambda, x,
+                                              &P, &lm
+                                              );
+    if(P != 0.0 && (stat_P == GSL_SUCCESS || stat_P == GSL_ELOSS)) {
+      int stat_e = gsl_sf_exp_mult_impl(lm, P, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_P);
+    }
+    else {
+      *result = 0.0;
+      return stat_P;
+    }
   }
   else {
+    double V0, V1;
+    if(x < 1.0) {
+      double th  = acos(x);
+      double sth = sqrt(1.0-x*x);  /* sin(th) */
+      double I0, I1;
+      int stat_I0 = gsl_sf_bessel_I0_scaled_impl(th * lambda, &I0);
+      int stat_I1 = gsl_sf_bessel_I1_scaled_impl(th * lambda, &I1);
+      int stat_I  = GSL_ERROR_SELECT_2(stat_I0, stat_I1);
+      int stat_V  = conicalP_0_V(th, x/sth, lambda, -1.0, &V0, &V1);
+      double bessterm = V0 * I0 + V1 * I1;
+      int stat_e = gsl_sf_exp_mult_impl(x, sqrt(th/sth) * bessterm, result);
+      return GSL_ERROR_SELECT_3(stat_e, stat_V, stat_I);
+    }
+    else {
+      double sh = sqrt(x-1.0)*sqrt(x+1.0);  /* sinh(xi)      */
+      double xi = log(x + sh);              /* xi = acosh(x) */
+      double J0, J1;
+      int stat_J0 = gsl_sf_bessel_J0_impl(xi * lambda, &J0);
+      int stat_J1 = gsl_sf_bessel_J1_impl(xi * lambda, &J1);
+      int stat_J  = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
+      int stat_V  = conicalP_0_V(xi, x/sh, lambda, 1.0, &V0, &V1);
+      double bessterm = V0 * J0 + V1 * J1;
+      *result = sqrt(xi/sh) * bessterm;
+      return GSL_ERROR_SELECT_2(stat_V, stat_J);
+    }
   }
 }
 
@@ -759,7 +915,7 @@ gsl_sf_conical_0_impl(const double lambda, const double x, double * result)
 /* P^1_{-1/2 + I lambda}
  */
 int
-gsl_sf_conical_1_impl(const double lambda, const double x, double * result)
+gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
 {
   if(x <= -1.0) {
     *result = 0.0;
@@ -795,16 +951,61 @@ gsl_sf_conical_1_impl(const double lambda, const double x, double * result)
   else if(    x <= 0.0
           || (x < 0.1 && lambda < 17.0)
 	  || (x < 0.2 && lambda < 5.0 )
-	  ) {
+    ) {
     return conicalP_xlt1_hyperg_A(1.0, lambda, x, result);
   }
-  else if(   ((0.1 < x && x <= 0.2) && (5.0 < lambda && lambda < 17.0))
-          || ((0.2 < x && x < 1.5)  && (lambda < 20.0))
-          ) {
+  else if(   (x <= 0.2 && lambda < 17.0)
+          || (x < 1.5  && lambda < 20.0)
+    ) {
+    const double arg = fabs(x*x - 1.0);
+    const double sgn = GSL_SIGN(1.0 - x);
+    const double pre = 0.5*(lambda*lambda + 0.25) * sgn * sqrt(arg);
+    double F;
+    int stat_F = gsl_sf_hyperg_2F1_conj_impl(0.5, lambda, 1.0, (1.0-x)/2, &F);
+    *result = pre * F;
+    return stat_F;
   }
   else if(1.5 <= x && lambda < locMAX(x,20.0)) {
+    double P;
+    double lm;
+    int stat_P = gsl_sf_conicalP_large_x_impl(1.0, lambda, x,
+                                              &P, &lm
+                                              );
+    if(P != 0.0 && (stat_P == GSL_SUCCESS || stat_P == GSL_ELOSS)) {
+      int stat_e = gsl_sf_exp_mult_impl(lm, P, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_P);
+    }
+    else {
+      *result = 0.0;
+      return stat_P;
+    }
   }
   else {
+    double V0, V1;
+    if(x < 1.0) {
+      double th  = acos(x);
+      double sth = sqrt(1.0-x*x);  /* sin(th) */
+      double I0, I1;
+      int stat_I0 = gsl_sf_bessel_I0_scaled_impl(th * lambda, &I0);
+      int stat_I1 = gsl_sf_bessel_I1_scaled_impl(th * lambda, &I1);
+      int stat_I  = GSL_ERROR_SELECT_2(stat_I0, stat_I1);
+      int stat_V  = conicalP_1_V(th, x/sth, lambda, -1.0, &V0, &V1);
+      double bessterm = V0 * I0 + V1 * I1;
+      int stat_e = gsl_sf_exp_mult_impl(x, sqrt(th/sth) * bessterm, result);
+      return GSL_ERROR_SELECT_3(stat_e, stat_V, stat_I);
+    }
+    else {
+      double sh = sqrt(x-1.0)*sqrt(x+1.0);  /* sinh(xi)      */
+      double xi = log(x + sh);              /* xi = acosh(x) */
+      double J0, J1;
+      int stat_J0 = gsl_sf_bessel_J0_impl(xi * lambda, &J0);
+      int stat_J1 = gsl_sf_bessel_J1_impl(xi * lambda, &J1);
+      int stat_J  = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
+      int stat_V  = conicalP_1_V(xi, x/sh, lambda, 1.0, &V0, &V1);
+      double bessterm = V0 * J0 + V1 * J1;
+      *result = sqrt(xi/sh) * bessterm;
+      return GSL_ERROR_SELECT_2(stat_V, stat_J);
+    }
   }
 }
 
@@ -813,31 +1014,31 @@ gsl_sf_conical_1_impl(const double lambda, const double x, double * result)
  * [Abramowitz+Stegun 8.6.8, 8.6.12]
  * checked OK [GJ] Fri May  8 12:24:36 MDT 1998 
  */
-int gsl_sf_conical_half_impl(const double lambda, const double x,
-                             double * result
-                             )
+int gsl_sf_conicalP_half_impl(const double lambda, const double x,
+                              double * result
+                              )
 {
-  /* FIXME: do something about this nonsense */
-  double one_plus_x  = 1.0 + x;
-  double one_minus_x = 1.0 - x;
-  /* double x = 0.5 * (one_plus_x - one_minus_x); */
-  if(fabs(x) < 1.0) {
+  if(x <= -1.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x < 1.0) {
     double ac  = acos(x);
-    double den = sqrt(sqrt(one_minus_x*one_plus_x));
+    double den = sqrt(sqrt(1.0-x)*sqrt(1.0+x));
     *result = Root_2OverPi_ / den * cosh(ac * lambda);
     return GSL_SUCCESS;
   }
-  else if(one_minus_x < 0.0) { /* x > 1 */
-    double sq_term = sqrt(-one_minus_x*one_plus_x);
+  else if(x == 1.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    /* x > 1 */
+    double sq_term = sqrt(x-1.0)*sqrt(x+1.0);
     double ln_term = log(x + sq_term);
     double den = sqrt(sq_term);
     *result = Root_2OverPi_ / den * cos(lambda * ln_term);
     return GSL_SUCCESS;
-  }
-  else {
-    /* |x| == 1 or x < -1 */
-    *result = 0.0;
-    return GSL_EDOM;
   }
 }
 
@@ -846,17 +1047,15 @@ int gsl_sf_conical_half_impl(const double lambda, const double x,
  * [Abramowitz+Stegun 8.6.9, 8.6.14]
  * checked OK [GJ] Fri May  8 12:24:43 MDT 1998 
  */
-int gsl_sf_conical_mhalf_impl(const double lambda, const double x,
-                              double * result
-                              )
+int gsl_sf_conicalP_mhalf_impl(const double lambda, const double x, double * result)
 {
-  /* FIXME: do something about this nonsense */
-  double one_plus_x  = 1.0 + x;
-  double one_minus_x = 1.0 - x;
-  /* double x = 0.5 * (one_plus_x - one_minus_x); */
-  if(fabs(x) < 1.0) {
+  if(x <= -1.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(x < 1.0) {
     double ac  = acos(x);
-    double den = sqrt(sqrt(one_minus_x*one_plus_x));
+    double den = sqrt(sqrt(1.0-x)*sqrt(1.0+x));
     double arg = ac * lambda;
     if(fabs(arg) < GSL_SQRT_MACH_EPS) {
       *result = Root_2OverPi_ / den * ac;
@@ -866,8 +1065,13 @@ int gsl_sf_conical_mhalf_impl(const double lambda, const double x,
     }
     return GSL_SUCCESS;
   }
-  else if(one_minus_x < 0.0) { /* x > 1 */
-    double sq_term = sqrt(-one_minus_x*one_plus_x);
+  else if(x == 1.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    /* x > 1 */
+    double sq_term = sqrt(x-1.0)*sqrt(x+1.0);
     double ln_term = log(x + sq_term);
     double den = sqrt(sq_term);
     double arg = lambda * ln_term;
@@ -879,18 +1083,10 @@ int gsl_sf_conical_mhalf_impl(const double lambda, const double x,
     }
     return GSL_SUCCESS;
   }
-  else if(one_minus_x == 0.0) { /* x == 1 */
-    *result = 0.0;
-    return GSL_SUCCESS;
-  }  
-  else {
-    /* x <= -1 */
-    *result = 0.0;
-    return GSL_EDOM;
-  }
 }
 
-int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
+
+int gsl_sf_conicalP_sph_reg_impl(const int lmax, const double lambda,
                                 const double x,
                                 double * result
 				)
@@ -906,7 +1102,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
     int l_start = 20 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)));
     p[0] = lambda*lambda;
     p[1] = x/sqrt(one_m_x*one_p_x);
-    gsl_sf_conical_mhalf_impl(lambda, x, &f0);  /* l =  0  */ 
+    gsl_sf_conicalP_mhalf_impl(lambda, x, &f0);  /* l =  0  */ 
     /*recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
     */
     
@@ -917,7 +1113,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
     int l_start = 10 + (int) ceil(lmax * (1. + (0.14 + 0.026*lambda)*(x-1.)));
     p[0] = lambda*lambda;
     p[1] = x/sqrt(-one_m_x*one_p_x);
-    gsl_sf_conical_mhalf_impl(lambda, x, &f0);
+    gsl_sf_conicalP_mhalf_impl(lambda, x, &f0);
     /*recurse_backward_minimal_simple_conical_sph_reg_xgt1(l_start, lmax, 0, p, f0, harvest, result);*/
   }
   else {
@@ -930,29 +1126,47 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_conical_half_e(const double lambda, const double x, double * result)
+int gsl_sf_conicalP_0_e(const double lambda, const double x, double * result)
 {
-  int status = gsl_sf_conical_half_impl(lambda, x, result);
+  int status = gsl_sf_conicalP_0_impl(lambda, x, result);
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_conical_half_e", status);
+    GSL_ERROR("gsl_sf_conicalP_0_e", status);
   }
   return status;
 }
 
-int gsl_sf_conical_mhalf_e(const double lambda, const double x, double * result)
+int gsl_sf_conicalP_1_e(const double lambda, const double x, double * result)
 {
-  int status = gsl_sf_conical_mhalf_impl(lambda, x, result);
+  int status = gsl_sf_conicalP_1_impl(lambda, x, result);
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_conical_mhalf_e", status);
+    GSL_ERROR("gsl_sf_conicalP_1_e", status);
   }
   return status;
 }
 
-int gsl_sf_conical_sph_reg_e(const int l, const double lambda, const double x, double * result)
+int gsl_sf_conicalP_half_e(const double lambda, const double x, double * result)
 {
-  int status = gsl_sf_conical_sph_reg_impl(l, lambda, x, result);
+  int status = gsl_sf_conicalP_half_impl(lambda, x, result);
   if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_conical_sph_reg_e", status);
+    GSL_ERROR("gsl_sf_conicalP_half_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_conicalP_mhalf_e(const double lambda, const double x, double * result)
+{
+  int status = gsl_sf_conicalP_mhalf_impl(lambda, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_conicalP_mhalf_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_conicalP_sph_reg_e(const int l, const double lambda, const double x, double * result)
+{
+  int status = gsl_sf_conicalP_sph_reg_impl(l, lambda, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_conicalP_sph_reg_e", status);
   }
   return status;
 }
@@ -960,32 +1174,53 @@ int gsl_sf_conical_sph_reg_e(const int l, const double lambda, const double x, d
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_conical_half(const double lambda, const double x)
+
+double gsl_sf_conicalP_0(const double lambda, const double x)
 {
   double y;
-  int status = gsl_sf_conical_half_impl(lambda, x, &y);
+  int status = gsl_sf_conicalP_0_impl(lambda, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_half", status);
+    GSL_WARNING("gsl_sf_conicalP_0", status);
   }
   return y;
 }
 
-double gsl_sf_conical_mhalf(const double lambda, const double x)
+double gsl_sf_conicalP_1(const double lambda, const double x)
 {
   double y;
-  int status = gsl_sf_conical_mhalf_impl(lambda, x, &y);
+  int status = gsl_sf_conicalP_1_impl(lambda, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_mhalf", status);
+    GSL_WARNING("gsl_sf_conicalP_1", status);
   }
   return y;
 }
 
-double gsl_sf_conical_sph_reg(const int l, const double lambda, const double x)
+double gsl_sf_conicalP_half(const double lambda, const double x)
 {
   double y;
-  int status = gsl_sf_conical_sph_reg_impl(l, lambda, x, &y);
+  int status = gsl_sf_conicalP_half_impl(lambda, x, &y);
   if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_conical_sph_reg", status);
+    GSL_WARNING("gsl_sf_conicalP_half", status);
+  }
+  return y;
+}
+
+double gsl_sf_conicalP_mhalf(const double lambda, const double x)
+{
+  double y;
+  int status = gsl_sf_conicalP_mhalf_impl(lambda, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_conicalP_mhalf", status);
+  }
+  return y;
+}
+
+double gsl_sf_conicalP_sph_reg(const int l, const double lambda, const double x)
+{
+  double y;
+  int status = gsl_sf_conicalP_sph_reg_impl(l, lambda, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_conicalP_sph_reg", status);
   }
   return y;
 }

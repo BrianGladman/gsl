@@ -27,15 +27,13 @@ laguerre_large_n(const int n, const double alpha, const double x, double * resul
   const double pre_h  = 0.25*M_PI*M_PI*eta*eta*cos2th*sin2th;
   double ser;
   double lnpre;
-  double lnr;
   double lg_b;
   double lnfact;
   gsl_sf_lngamma_impl(b+n, &lg_b);
   gsl_sf_lnfact_impl(n, &lnfact);
   lnpre = lg_b - lnfact + 0.5*x + 0.5*(1.0-b)*log(0.25*x*eta) - 0.25*log(pre_h);
   ser = sin(a*M_PI) + sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
-  lnr = lnpre + log(fabs(ser));
-  return gsl_sf_exp_sgn_impl(lnr, ser, result);
+  return gsl_sf_exp_mult_impl(lnpre, ser, result);
 }
 
 
@@ -74,8 +72,7 @@ laguerre_n_cp(const int n, const double a, const double x, double * result)
     return GSL_SUCCESS;
   }
   else {
-    double lnr = lnpre + log(fabs(poly_1F1));
-    int stat_e = gsl_sf_exp_sgn_impl(lnr, poly_1F1, result);
+    int stat_e = gsl_sf_exp_mult_impl(lnpre, poly_1F1, result);
     return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
   }
 }

@@ -219,9 +219,8 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
       return stat_J;
     }
     else {
-      double s_J = (Jcm1 > 0.0 ? 1.0 : -1.0);
-      double ln_result = lg_c + log(-x)*0.5*(1.0-c) + log(fabs(Jcm1));
-      return gsl_sf_exp_sgn_impl(ln_result, s_J * sgn, result);
+      double ln_pre = lg_c + log(-x)*0.5*(1.0-c);
+      return gsl_sf_exp_mult_impl(ln_pre, sgn*Jcm1, result);
     }
   }
   else if(x == 0.0) {
@@ -242,9 +241,8 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
       return stat_I;
     }
     else {
-      double s_I = (Icm1 > 0.0 ? 1.0 : -1.0);
-      double ln_result = log(x)*0.5*(1.0-c) + lg_c + log(fabs(Icm1));
-      return gsl_sf_exp_sgn_impl(ln_result, s_I * sgn, result);
+      double ln_pre = log(x)*0.5*(1.0-c) + lg_c;
+      return gsl_sf_exp_mult_impl(ln_pre, sgn*Icm1, result);
     }
   }
 }

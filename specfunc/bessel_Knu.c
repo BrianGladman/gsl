@@ -52,13 +52,8 @@ gsl_sf_bessel_Knu_impl(const double nu, const double x, double * result)
   else {
     double b = 0.0;
     int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
-    if(b != 0.0 && stat_K == GSL_SUCCESS) {
-      return gsl_sf_exp_sgn_impl(-x + log(fabs(b)), b, result);
-    }
-    else {
-      *result = 0.0;
-      return stat_K;
-    }
+    int stat_e = gsl_sf_exp_mult_impl(-x, b, result);
+    return GSL_ERROR_SELECT_2(stat_e, stat_K);
   }
 }
 
@@ -111,7 +106,7 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, double * result)
   {
     double K_scaled;
     gsl_sf_bessel_Knu_scaled_impl(nu, x, &K_scaled);
-    *result = -x +log(fabs(K_scaled));
+    *result = -x + log(fabs(K_scaled));
     return GSL_SUCCESS;
   }
 }

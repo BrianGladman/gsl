@@ -13,6 +13,7 @@
 #include <gsl_sf_dawson.h>
 #include <gsl_sf_debye.h>
 #include <gsl_sf_dilog.h>
+#include <gsl_sf_elementary.h>
 #include <gsl_sf_ellint.h>
 #include <gsl_sf_elljac.h>
 #include <gsl_sf_erf.h>
@@ -32,5 +33,6 @@
 #include <gsl_sf_transport.h>
 #include <gsl_sf_trig.h>
 #include <gsl_sf_zeta.h>
+
 
 #endif /* !GSL_SF_H_ */

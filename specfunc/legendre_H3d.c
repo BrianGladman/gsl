@@ -103,14 +103,8 @@ legendre_H3d_series(const int ell, const double lambda, const double eta, double
     if(fabs(term/sum) < 10.0 * GSL_MACH_EPS) break;
   }
 
-  stat_e = gsl_sf_exp_sgn_impl(lnpre + log(fabs(sum)), sum, result);
-
-  if(stat_e == GSL_EOVRFLW)
-    return GSL_EOVRFLW;
-  else if(n == nmax)
-    return GSL_EMAXITER;
-  else
-    return stat_e;
+  stat_e = gsl_sf_exp_mult_impl(lnpre, sum, result);
+  return GSL_ERROR_SELECT_2(stat_e, (n==nmax ? GSL_EMAXITER : GSL_SUCCESS));
 }
 
 
@@ -223,17 +217,27 @@ gsl_sf_legendre_H3d_0_impl(const double lambda, const double eta, double * resul
     return GSL_SUCCESS;
   }
   else {
-    if(eta + log(fabs(lambda)) > -GSL_LOG_DBL_MIN) {
+    double s = sin(lambda*eta);
+    if(s == 0.0) {
       *result = 0.0;
-      return GSL_EUNDRFLW;
-    }
-    else if(eta > -0.5*GSL_LOG_MACH_EPS) {
-      *result = 2.0 * sin(lambda*eta)/lambda * exp(-eta);
       return GSL_SUCCESS;
     }
     else {
-      *result = sin(lambda*eta)/(lambda*sinh(eta));
-      return GSL_SUCCESS;
+      if(eta > -0.5*GSL_LOG_MACH_EPS) {
+        *result = 2.0 * s/lambda * exp(-eta);
+      }
+      else {
+        *result = s/(lambda*sinh(eta));
+      }
+      if(*result == 0.0) {
+        /* The sin term did not vanish, so
+	 * this is a genuine underflow.
+	 */
+        return GSL_EUNDRFLW;
+      }
+      else {
+        return GSL_SUCCESS;
+      }
     }
   }
 }
@@ -325,18 +329,17 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(-ell-0.5, lambda, cosh_eta, &P, &lm);
     if(P == 0.0) {
-      *result = P;
+      *result = 0.0;
       return stat_P;
     }
     else {
       double lnN, lnsh;
       double lnpre;
-      double lnP = log(fabs(P));
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
-      stat_e = gsl_sf_exp_sgn_impl(lnpre + lnP + lm, P, result);
+      stat_e = gsl_sf_exp_mult_impl(lnpre + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }
@@ -348,18 +351,17 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta, d
                                                            cosh_eta, eta,
                                                            &P, &lm);
     if(P == 0.0) {
-      *result = P;
+      *result = 0.0;
       return stat_P;
     }
     else {
       double lnN, lnsh;
       double lnpre;
-      double lnP = log(fabs(P));
       int stat_e;
       gsl_sf_lnsinh_impl(eta, &lnsh);
       legendre_H3d_lnnorm(ell, lambda, &lnN);
       lnpre = 0.5*(M_LNPI + lnN - M_LN2 - lnsh) - log(abs_lam);
-      stat_e = gsl_sf_exp_sgn_impl(lnpre + lnP + lm, P, result);
+      stat_e = gsl_sf_exp_mult_impl(lnpre + lm, P, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);
     }
   }

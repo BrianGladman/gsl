@@ -334,6 +334,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
         double sum1 = 1.0;
         double term = 1.0;
         double ln_pre1 = lng_ad + lng_c + d2*ln_omx - lng_ad1 - lng_bd1;
+	int stat_e;
 
         /* Do F1 sum.
          */
@@ -342,11 +343,9 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
 	  term *= (a + d2 + j) * (b + d2 + j) / (1.0 + d2 + j) / i * (1.0-x);
           sum1 += term;
         }
-
-        if(ln_pre1 + log(fabs(sum1)) < GSL_LOG_DBL_MAX) {
-          F1 = exp(ln_pre1) * sum1;
-        }
-        else {
+        
+	stat_e = gsl_sf_exp_mult_impl(ln_pre1, sum1, &F1);
+	if(stat_e == GSL_EOVRFLW) {
           *result = 0.0; /* FIXME: should be Inf */
           return GSL_EOVRFLW;
         }
@@ -381,7 +380,6 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
       double fact = 1.0;
       double sum2 = psi;
       double ln_pre2 = lng_c + d1*ln_omx - lng_ad2 - lng_bd2;
-
       int stat_e;
 
       /* Do F2 sum.
@@ -399,7 +397,7 @@ hyperg_2F1_reflect(const double a, const double b, const double c,
         F2 = 0.0;
       }
       else {
-        stat_e = gsl_sf_exp_sgn_impl(ln_pre2 + log(fabs(sum2)), sum2, &F2);
+        stat_e = gsl_sf_exp_mult_impl(ln_pre2, sum2, &F2);
         if(stat_e == GSL_EOVRFLW) {
           *result = 0.0;
 	  return GSL_EOVRFLW;
@@ -716,10 +714,8 @@ gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
         double F;
         int stat_F = gsl_sf_hyperg_2F1_impl(a-c+1, b-c+1, -c+2, x, &F);
         double ln_pre = g1 + g2 - g3 - g4 - g5;
-	double sg = s1 * s2 * s3 * s4 * s5;
-	double sF = ( F > 0.0 ? 1.0 : -1.0 );
-	double lnr = ln_pre + (1.0-c)*log(x) + log(fabs(F));
-	int stat_e = gsl_sf_exp_sgn_impl(lnr, sg * sF, result);
+	double sg  = s1 * s2 * s3 * s4 * s5;
+	int stat_e = gsl_sf_exp_mult_impl(ln_pre, sg * F, result);
 	return GSL_ERROR_SELECT_2(stat_e, stat_F);
       }
     }
@@ -730,15 +726,8 @@ gsl_sf_hyperg_2F1_renorm_impl(const double a, const double b, const double c,
     double lng;
     int stat_g = gsl_sf_lngamma_impl(c, &lng);
     int stat_F = gsl_sf_hyperg_2F1_impl(a, b, c, x, &F);
-    if(stat_F == GSL_SUCCESS && stat_g == GSL_SUCCESS) {
-      double ln_absF   = log(fabs(F));
-      double ln_result = ln_absF - lng;
-      return gsl_sf_exp_sgn_impl(ln_result, F, result);
-    }
-    else {
-      *result = 0.0;
-      return GSL_ERROR_SELECT_2(stat_F, stat_g);
-    }
+    int stat_e = gsl_sf_exp_mult_impl(-lng, F, result);
+    return GSL_ERROR_SELECT_3(stat_e, stat_F, stat_g);
   }
 }
 

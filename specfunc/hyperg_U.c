@@ -692,15 +692,15 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	  return GSL_EZERODIV;
 	}
 	else {
-	  double lns = -scale_count*log(scale_factor);
-	  double lnr = lnU_target - log(fabs(Ua)) + lns;
-	  int stat_e = gsl_sf_exp_sgn_impl(lnr, Ua, result);
+	  double lnscl = -scale_count*log(scale_factor);
+	  double lnpre = lnU_target + lnscl;
+	  int stat_e = gsl_sf_exp_mult_impl(lnpre, 1.0/Ua, result);
 	  if(stat_e == GSL_SUCCESS) {
 	    *ln_multiplier = 0.0;
 	  }
 	  else {
-	    *result = GSL_SIGN(Ua);
-	    *ln_multiplier = lnr;
+	    *result = 1.0/Ua;
+	    *ln_multiplier = lnpre;
 	  }
 	  return stat_CF1;
 	}
@@ -857,23 +857,21 @@ hyperg_U_bge1(const double a, const double b, const double x,
     double L;
     const int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
     gsl_sf_lnfact_impl(n, &lnfact);
-    if(L == 0.0 || stat_L != GSL_SUCCESS) {
-      *ln_multiplier = 0.0;
-      *result = 0.0;
+    if(L != 0.0 || (stat_L == GSL_SUCCESS || stat_L == GSL_ELOSS)) {
+      const int stat_e = gsl_sf_exp_mult_impl(lnfact, sgn*L, result);
+      if(stat_e == GSL_SUCCESS) {
+        *ln_multiplier = 0.0;
+      }
+      else {
+        *ln_multiplier = lnfact;
+	*result = sgn*L;
+      }
       return stat_L;
     }
     else {
-      const double lnr = lnfact + log(fabs(L));
-      const int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn*L, result);
-      if(stat_e == GSL_SUCCESS) {
-        *ln_multiplier = 0.0;
-	return GSL_SUCCESS;
-      }
-      else {
-        *ln_multiplier = lnr;
-	*result = GSL_SIGN(sgn*L);
-	return GSL_SUCCESS;
-      }
+      *ln_multiplier = 0.0;
+      *result = 0.0;
+      return stat_L;
     }
   }
   else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
@@ -1161,13 +1159,9 @@ gsl_sf_hyperg_U_int_impl(const int a, const int b, const double x, double * resu
     }
 
     if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-      double ln_U = log(fabs(U));
-      double ln_r = ln_U + ln_pre + ln_multiplier;
-      int stat_e = gsl_sf_exp_sgn_impl(ln_r, U, result);
-      if(stat_e == GSL_SUCCESS)
-        return stat_U;
-      else
-        return stat_e;
+      double ln_r = ln_pre + ln_multiplier;
+      int stat_e = gsl_sf_exp_mult_impl(ln_r, U, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_U);
     }
     else {
       *result = 0.0;
@@ -1218,13 +1212,9 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     }
 
     if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-      double ln_U = log(fabs(U));
-      double ln_r = ln_U + ln_pre + ln_multiplier;
-      int stat_e = gsl_sf_exp_sgn_impl(ln_r, U, result);
-      if(stat_e == GSL_SUCCESS)
-        return stat_U;
-      else
-        return stat_e;
+      double ln_r = ln_pre + ln_multiplier;
+      int stat_e = gsl_sf_exp_mult_impl(ln_r, U, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_U);
     }
     else {
       *result = 0.0;

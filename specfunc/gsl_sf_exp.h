@@ -15,13 +15,22 @@ int     gsl_sf_exp_e(double x, double * result);
 double  gsl_sf_exp(double x);
 
 
-/* Exponentiate and apply a given sign: Exp(x) * Sgn(sgn)
+/* Exponentiate and apply a given sign:  Exp(x) * Sgn(sgn)
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int     gsl_sf_exp_sgn_impl(double x, double sgn, double * result);
 int     gsl_sf_exp_sgn_e(double x, double sgn, double * result);
 double  gsl_sf_exp_sgn(double x, double sgn);
+
+
+/* Exponentiate and multiply by a given factor:  y * Exp(x)
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_exp_mult_impl(double x, double y, double * result);
+int     gsl_sf_exp_mult_e(double x, double y, double * result);
+double  gsl_sf_exp_mult(double x, double y);
 
 
 /* exp(x)-1

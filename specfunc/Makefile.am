@@ -14,6 +14,7 @@ include_HEADERS = \
 	gsl_sf_dawson.h		\
 	gsl_sf_debye.h      	\
 	gsl_sf_dilog.h      	\
+	gsl_sf_elementary.h	\
 	gsl_sf_ellint.h        	\
 	gsl_sf_elljac.h        	\
 	gsl_sf_erf.h        	\
@@ -90,6 +91,7 @@ libgslspecfunc_a_SOURCES = 	\
 	dawson.c		\
 	debye.c			\
 	dilog.c			\
+	elementary.c		\
 	ellint.c		\
 	elljac.c		\
 	erfc.c			\

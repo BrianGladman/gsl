@@ -37,7 +37,45 @@ int gsl_sf_exp_sgn_impl(const double x, const double sgn, double * result)
   else {
     *result = GSL_SIGN(sgn) * exp(x);
     return GSL_SUCCESS;
-  }  
+  }
+}
+
+int gsl_sf_exp_mult_impl(const double x, const double y, double * result)
+{
+  const double ay  = fabs(y);
+
+  if(y == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(   ( x < 0.5*GSL_LOG_DBL_MAX   &&   x > 0.5*GSL_LOG_DBL_MIN)
+          && (ay < 0.8*GSL_SQRT_DBL_MAX  &&  ay > 1.2*GSL_SQRT_DBL_MIN)
+    ) {
+    *result = y * exp(x);
+    return GSL_SUCCESS;
+  }
+  else {
+    const double ly  = log(ay);
+    const double lnr = x + ly;
+
+    if(lnr > GSL_LOG_DBL_MAX - 0.01) {
+      *result = 0.0; /* FIXME: should be Inf */
+      return GSL_EOVRFLW;
+    }
+    else if(lnr < GSL_LOG_DBL_MIN + 0.01) {
+      *result = 0.0;
+      return GSL_EUNDRFLW;
+    }
+    else {
+      const double sy  = GSL_SIGN(y);
+      const double M   = floor(x);
+      const double N   = floor(ly);
+      const double a   = x  - M;
+      const double b   = ly - N;
+      *result = sy * exp(M+N) * exp(a+b);
+      return GSL_SUCCESS;
+    }
+  }
 }
 
 int gsl_sf_expm1_impl(const double x, double * result)
@@ -247,7 +285,6 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
 	double pre = exp(lnpre);
 	double bigG_ratio;
         double ln_bigG_ratio_pre = -x + (N-1)*ln_x - lg_N;
-	double ln_bigGsum;
 	double bigGsum = 1.0;
 	double term = 1.0;
 	int k;
@@ -255,8 +292,7 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
 	  term *= (N-k)/x;
 	  bigGsum += term;
 	}
-	ln_bigGsum = log(fabs(bigGsum));
-	stat_eG = gsl_sf_exp_impl(ln_bigG_ratio_pre + ln_bigGsum, &bigG_ratio);
+	stat_eG = gsl_sf_exp_mult_impl(ln_bigG_ratio_pre, bigGsum, &bigG_ratio);
 	if(stat_eG == GSL_SUCCESS) {
           *result = pre * (1.0 - bigG_ratio);
 	  return GSL_SUCCESS;
@@ -275,7 +311,7 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
       return exprel_n_CF(N, x, result);
     }
     else {
-      /* x -> -Infinity asymptotic:
+      /* x -> -Inf asymptotic:
        * exprel_n(x) ~ e^x n!/x^n - n/x (1 + (n-1)/x + (n-1)(n-2)/x + ...)
        *             ~ - n/x (1 + (n-1)/x + (n-1)(n-2)/x + ...)
        */
@@ -293,6 +329,8 @@ gsl_sf_exprel_n_impl(const int N, const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+
 int gsl_sf_exp_e(const double x, double * result)
 {
   int status = gsl_sf_exp_impl(x, result);
@@ -302,6 +340,7 @@ int gsl_sf_exp_e(const double x, double * result)
   return status;
 }
 
+
 int gsl_sf_exp_sgn_e(const double x, const double sgn, double * result)
 {
   int status = gsl_sf_exp_sgn_impl(x, sgn, result);
@@ -310,6 +349,17 @@ int gsl_sf_exp_sgn_e(const double x, const double sgn, double * result)
   }
   return status;
 }
+
+
+int gsl_sf_exp_mult_e(const double x, const double y, double * result)
+{
+  int status = gsl_sf_exp_mult_impl(x, y, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_exp_mult_e", status);
+  }
+  return status;
+}
+
 
 int gsl_sf_expm1_e(const double x, double * result)
 {
@@ -351,6 +401,8 @@ int gsl_sf_exprel_n_e(const int n, const double x, double * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
+
 double gsl_sf_exp(const double x)
 {
   double y;
@@ -370,6 +422,17 @@ double gsl_sf_exp_sgn(const double x, const double sgn)
     GSL_WARNING("  gsl_sf_exp_sgn", status);
   }
   return y;
+}
+
+
+double gsl_sf_exp_mult(const double x, const double y)
+{
+  double r;
+  int status = gsl_sf_exp_mult_impl(x, y, &r);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("  gsl_sf_exp_mult", status);
+  }
+  return r;
 }
 
 
