@@ -1,9 +1,15 @@
 # Generated automatically from Makefile.in by configure.
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 
 SHELL = /bin/sh
@@ -26,6 +32,8 @@ mandir = ${prefix}/man
 includedir = ${prefix}/include
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/gsl
 pkglibdir = $(libdir)/gsl
 pkgincludedir = $(includedir)/gsl
@@ -43,14 +51,14 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL_PROGRAM}
 transform = s,x,x,
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
-host_alias = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = i586-pc-linux-gnulibc1
+host_triplet = i586-pc-linux-gnulibc1
 CC = gcc
 CPP = gcc -E
 LN_S = ln -s
@@ -58,24 +66,27 @@ MAKEINFO = makeinfo
 PACKAGE = gsl
 RANLIB = ranlib
 VERSION = 0.3c-interim
-full_top_builddir = /home/jungman/gsl
-full_top_srcdir = /home/jungman/gsl
+full_top_builddir = /home/bjg/gsl
+full_top_srcdir = /home/bjg/gsl
 
 lib_LIBRARIES = libgslvector.a 
 
-noinst_PROGRAMS = test
+noinst_PROGRAMS = test test_trap
 
 include_HEADERS = gsl_vector.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
-TESTS = test
+TESTS = test test_trap
 
 test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslvector.a
+test_trap_DEPENDENCIES = libgslvector.a
 
 test_SOURCES = test.c
+test_trap_SOURCES = test_trap.c
 
 libgslvector_a_SOURCES = \
 vector_init.c \
@@ -98,6 +109,8 @@ PROGRAMS =  $(noinst_PROGRAMS)
 
 test_OBJECTS =  test.o
 test_LDFLAGS = 
+test_trap_OBJECTS =  test_trap.o
+test_trap_LDFLAGS = 
 CFLAGS = -g -O2
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
@@ -110,18 +123,19 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/test.P .deps/vector.P .deps/vector_init.P
-SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES)
-OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS)
+DEP_FILES =  .deps/test.P .deps/test_trap.P .deps/vector.P \
+.deps/vector_init.P
+SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES)
+OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS)
 
-default: all
+all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu vector/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -129,7 +143,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 mostlyclean-libLIBRARIES:
 
 clean-libLIBRARIES:
-	test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
 distclean-libLIBRARIES:
 
@@ -137,49 +151,52 @@ maintainer-clean-libLIBRARIES:
 
 install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(libdir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(libdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 	@$(POST_INSTALL)
 	@list='$(lib_LIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(RANLIB) $(libdir)/$$p"; \
-	    $(RANLIB) $(libdir)/$$p; \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLIBRARIES:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(libdir)/$$p; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-.c.o:
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
 	$(COMPILE) -c $<
 
 mostlyclean-compile:
-	rm -f *.o core
+	-rm -f *.o core *.core
 
 clean-compile:
 
 distclean-compile:
-	rm -f *.tab.c
+	-rm -f *.tab.c
 
 maintainer-clean-compile:
 
 libgslvector.a: $(libgslvector_a_OBJECTS) $(libgslvector_a_DEPENDENCIES)
-	rm -f libgslvector.a
+	-rm -f libgslvector.a
 	$(AR) cru libgslvector.a $(libgslvector_a_OBJECTS) $(libgslvector_a_LIBADD)
 	$(RANLIB) libgslvector.a
 
 mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
-	test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
 distclean-noinstPROGRAMS:
 
@@ -189,37 +206,47 @@ test: $(test_OBJECTS) $(test_DEPENDENCIES)
 	@rm -f test
 	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
+test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
+	@rm -f test_trap
+	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
+
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(includedir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$p; \
 	done
 
 uninstall-includeHEADERS:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(include_HEADERS)'; for p in $$list; do \
-	  rm -f $(includedir)/$$p; \
+	  rm -f $(DESTDIR)$(includedir)/$$p; \
 	done
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES)
-	here=`pwd` && cd $(srcdir) && mkid -f$$here/ID $(SOURCES) $(HEADERS)
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $(SOURCES) $(HEADERS) $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	test -z "$(ETAGS_ARGS)$(SOURCES)$(HEADERS)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $(SOURCES) $(HEADERS) -o $$here/TAGS)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
 clean-tags:
 
 distclean-tags:
-	rm -f TAGS ID
+	-rm -f TAGS ID
 
 maintainer-clean-tags:
 
@@ -230,6 +257,7 @@ subdir = vector
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
 	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu vector/Makefile
 	@for file in $(DISTFILES); do \
@@ -239,12 +267,7 @@ distdir: $(DISTFILES)
 	  || cp -p $$d/$$file $(distdir)/$$file; \
 	done
 
-MKDEP = gcc -M $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
--include .deps/.P
-.deps/.P: $(BUILT_SOURCES)
-	echo > $@
 
 -include $(DEP_FILES)
 
@@ -255,15 +278,18 @@ clean-depend:
 distclean-depend:
 
 maintainer-clean-depend:
-	rm -rf .deps
+	-rm -rf .deps
 
-.deps/%.P: %.c
-	@echo "Computing dependencies for $<..."
-	@o='o'; \
-	test -n "$o" && o='$$o'; \
-	$(MKDEP) $< >$@.tmp \
-	  && sed "s,^\(.*\)\.o:,\1.$$o \1.l$$o $@:," < $@.tmp > $@ \
-	  && rm -f $@.tmp
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).P -c $<
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).p -c $<
+	@-sed -e 's/^\([^:]*\)\.o:/\1.lo \1.o:/' \
+	  < .deps/$(*F).p > .deps/$(*F).P
+	@-rm -f .deps/$(*F).p
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \
 	srcdir=$(srcdir); export srcdir; \
@@ -305,28 +331,26 @@ install: install-exec install-data all
 
 uninstall: uninstall-libLIBRARIES uninstall-includeHEADERS
 
-all: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(libdir) $(includedir)
+	$(mkinstalldirs)  $(DATADIR)$(libdir) $(DATADIR)$(includedir)
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-libLIBRARIES mostlyclean-compile \
 		mostlyclean-noinstPROGRAMS mostlyclean-tags \
 		mostlyclean-depend mostlyclean-generic
@@ -337,7 +361,7 @@ clean:  clean-libLIBRARIES clean-compile clean-noinstPROGRAMS clean-tags \
 distclean:  distclean-libLIBRARIES distclean-compile \
 		distclean-noinstPROGRAMS distclean-tags \
 		distclean-depend distclean-generic clean
-	rm -f config.status
+	-rm -f config.status
 
 maintainer-clean:  maintainer-clean-libLIBRARIES \
 		maintainer-clean-compile \
@@ -347,7 +371,7 @@ maintainer-clean:  maintainer-clean-libLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default mostlyclean-libLIBRARIES distclean-libLIBRARIES \
+.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
 clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
 install-libLIBRARIES mostlyclean-compile distclean-compile \
 clean-compile maintainer-clean-compile mostlyclean-noinstPROGRAMS \

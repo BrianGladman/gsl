@@ -1,8 +1,9 @@
 #include <stdlib.h>
-#include <gsl_vector.h>
 
-gsl_vector * 
-gsl_vector_alloc (size_t n)
+#include "source.h"
+
+TYPE(gsl_vector) * 
+FUNCTION(gsl_vector,alloc) (size_t n)
 {
   gsl_vector * v ;
 
@@ -12,18 +13,20 @@ gsl_vector_alloc (size_t n)
 			GSL_EDOM, 0);
     }
 
-  v = (gsl_vector *) malloc(sizeof(gsl_vector)) ;
+  v = (TYPE(gsl_vector) *) malloc(sizeof(TYPE(gsl_vector))) ;
   
   if (v == 0) 
     {
       GSL_ERROR_RETURN ("failed to allocate space for vector struct",
 			GSL_ENOMEM, 0);
     }
-    
-  v->data = malloc(n * sizeof(double)) ;
+
+  v->data = malloc(n * sizeof(BASE)) ;
 
   if (v->data == 0) 
     {
+      free(v) ; /* exception in constructor, avoid memory leak */
+
       GSL_ERROR_RETURN ("failed to allocate space for vector data", 
 			GSL_ENOMEM, 0);
     }
@@ -33,19 +36,19 @@ gsl_vector_alloc (size_t n)
   return v ;
 }
 
-gsl_vector *
-gsl_vector_calloc (size_t n)
+TYPE(gsl_vector) *
+FUNCTION(gsl_vector,calloc) (size_t n)
 {
   size_t i ;
 
-  gsl_vector * v = gsl_vector_alloc (n) ;
+  TYPE(gsl_vector) * v = FUNCTION(gsl_vector,alloc) (n) ;
   
   if (v == 0) 
     return 0 ;
 
   for (i = 0 ; i < n; i++)  /* initialize vector to zero */
     {
-      v->data[i] = 0.0 ;
+      v->data[i] = 0 ;
     }
 
   return v ;
@@ -53,7 +56,7 @@ gsl_vector_calloc (size_t n)
 
 
 void
-gsl_vector_free (gsl_vector * v)
+FUNCTION(gsl_vector,free) (TYPE(gsl_vector) * v)
 {
   free(v->data) ;
   free(v) ;

@@ -1,55 +1,60 @@
-#include <stdio.h>
-#include <time.h>
-/* #define GSL_RANGE_CHECK */
 #include <gsl_vector.h>
+#include <gsl_test.h>
 
-#define N 100000
+#define N 10000
 
 int main (void) 
 {
-  gsl_vector * v ;
-  size_t i,k;
-  double *p ;
-  double start, end, tot=0 ;
+  gsl_vector * v;
+  size_t i;
 
   v = gsl_vector_alloc(N) ;
 
-  start = clock() / (double)CLOCKS_PER_SEC ;
- 
-  p = v->data ;
+  gsl_test(v->data == 0, "gsl_vector_alloc returns valid pointer") ;
+  gsl_test(v->size != N, "gsl_vector_alloc returns valid size") ;
 
-  for (k = 0 ; k < 100 ; k++) {
-  for (i = 0 ; i< N ; i++) {
-    p[i] = i ;
-  } ;
-  }
-
-  end = clock() / (double)CLOCKS_PER_SEC ;
-
-  printf("time = %g\n", end - start) ;
-  
-  start = clock() / (double)CLOCKS_PER_SEC ;
- 
-  for (k = 0 ; k < 100 ; k++) {
-  for (i = 0 ; i< N ; i++) {
+  for (i = 0 ; i < N ; i++) {
     gsl_vector_set(v,i,(double)i) ;
   } ;
+
+  { 
+    int status = 0 ;
+
+    for (i = 0 ; i < N ; i++) {
+      if(v->data[i] != (double)i) 
+	status = 1 ;
+    } ;
+    
+    gsl_test(status, "gsl_vector_set writes into array correctly") ;
   }
 
-  end = clock() / (double)CLOCKS_PER_SEC ;
+  {
+    int status = 0 ;
 
-  printf("time = %g\n", end - start) ;
-
-  start = clock() / (double)CLOCKS_PER_SEC ;
-
-  for (k = 0 ; k < 100 ; k++) {
-  for (i = 0 ; i< N ; i++) {
-    tot += gsl_vector_get(v,i) ;
-  } ;
+    for (i = 0 ; i < N ; i++) {
+      if(gsl_vector_get(v,i) != (double)i) 
+	status = 1 ;
+    } ;
+    gsl_test(status, "gsl_vector_get reads from array correctly") ;
   }
-  end = clock() / (double)CLOCKS_PER_SEC ;
 
-  printf("tot=%g\n",tot) ;
-  printf("time = %g\n", end - start) ;
-  return 0 ;
+  gsl_vector_free(v);  /* free whatever is in v */
+
+  v = gsl_vector_calloc(N) ;
+
+  gsl_test(v->data == 0, "gsl_vector_calloc returns valid pointer") ;
+  gsl_test(v->size != N, "gsl_vector_calloc returns valid size") ;
+
+  { 
+    int status = 0 ;
+
+    for (i = 0 ; i < N ; i++) {
+      if(v->data[i] != 0.0) 
+	status = 1 ;
+    } ;
+    
+    gsl_test(status, "gsl_vector_calloc initializes array to zero") ;
+  }
+
+  return gsl_test_summary ();
 }

@@ -1,18 +1,21 @@
 lib_LIBRARIES = libgslvector.a 
 
-noinst_PROGRAMS = test
+noinst_PROGRAMS = test test_trap
 
 include_HEADERS = gsl_vector.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
-TESTS = test
+TESTS = test test_trap
 
 test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_trap_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslvector.a
+test_trap_DEPENDENCIES = libgslvector.a
 
 test_SOURCES = test.c
+test_trap_SOURCES = test_trap.c
 
 libgslvector_a_SOURCES = \
 vector_init.c \
