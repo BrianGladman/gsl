@@ -3,35 +3,41 @@
 
 #include <errno.h>
 
-#define GSL_EDOM       1   /* input domain error, e.g sqrt(-1) */
-#define GSL_ERANGE     2   /* output range error, e.g. exp(1e100) */
-#define GSL_EFAULT     3 
-#define GSL_EINVAL     4 
-#define GSL_EFAILED    5   /* generic failure */
-#define GSL_EFACTOR    6   /* factorization failed */
-#define GSL_ESANITY    7   /* check failed - shouldn't happen */
-#define GSL_ENOMEM     8   /* malloc failed */
-#define GSL_EBADFUNC   9   /* problem with user-supplied function */
-#define GSL_ERUNAWAY   10  /* iterative process is out of control */
-#define GSL_ETIMEOUT   11  /* exceeded max number of iterations */
-#define GSL_EZERODIV   12  /* tried to divide by zero */
-#define GSL_ETOL       13  /* user specified an invalid tolerance */
-#define GSL_EUNDRFLW   14  /* underflow */
-#define GSL_EOVRFLW    15  /* overflow  */
-#define GSL_ELOSS      16  /* loss of accuracy */
+enum { 
+  GSL_EDOM     = 1,   /* input domain error, e.g sqrt(-1) */
+  GSL_ERANGE   = 2,   /* output range error, e.g. exp(1e100) */
+  GSL_EFAULT   = 3, 
+  GSL_EINVAL   = 4, 
+  GSL_EFAILED  = 5,   /* generic failure */
+  GSL_EFACTOR  = 6,   /* factorization failed */
+  GSL_ESANITY  = 7,   /* check failed - shouldn't happen */
+  GSL_ENOMEM   = 8,   /* malloc failed */
+  GSL_EBADFUNC = 9,   /* problem with user-supplied function */
+  GSL_ERUNAWAY = 10,  /* iterative process is out of control */
+  GSL_ETIMEOUT = 11,  /* exceeded max number of iterations */
+  GSL_EZERODIV = 12,  /* tried to divide by zero */
+  GSL_ETOL     = 13,  /* user specified an invalid tolerance */
+  GSL_EUNDRFLW = 14,  /* underflow */
+  GSL_EOVRFLW  = 15,  /* overflow  */
+  GSL_ELOSS    = 16   /* loss of accuracy */
+} ;
 
 /* just to make things slightly clearer */
-enum {GSL_SUCCESS = 0, GSL_FAILURE = -1};
+
+enum {
+  GSL_SUCCESS = 0, 
+  GSL_FAILURE = -1
+};
 
 void gsl_error (const char *reason, const char *file, int line, int gsl_errno);
 void gsl_warning(const char * reason, const char * file, int line) ;
 
-typedef void gsl_errhandler_t (const char *reason,
-			       const char *file,
+typedef void gsl_errhandler_t (const char * reason,
+			       const char * file,
 			       int line,
 			       int gsl_errno);
 
-void gsl_empty_error_handler (const char *reason,
+void gsl_empty_error_handler (const char * reason,
 			      const char * file,
 			      int line,
 			      int gsl_errno);

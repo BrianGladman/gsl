@@ -20,14 +20,16 @@ extern unsigned int gsl_message_mask ;
 
 /* Provide some symolic masks for client ease of use. */
 
-#define GSL_MESSAGE_MASK_A  1 ;
-#define GSL_MESSAGE_MASK_B  2 ;
-#define GSL_MESSAGE_MASK_C  4 ;
-#define GSL_MESSAGE_MASK_D  8 ;
-#define GSL_MESSAGE_MASK_E  16 ;
-#define GSL_MESSAGE_MASK_F  32 ;
-#define GSL_MESSAGE_MASK_G  64 ;
-#define GSL_MESSAGE_MASK_H  128 ;
+enum {
+  GSL_MESSAGE_MASK_A = 1,
+  GSL_MESSAGE_MASK_B = 2,
+  GSL_MESSAGE_MASK_C = 4,
+  GSL_MESSAGE_MASK_D = 8,
+  GSL_MESSAGE_MASK_E = 16,
+  GSL_MESSAGE_MASK_F = 32,
+  GSL_MESSAGE_MASK_G = 64,
+  GSL_MESSAGE_MASK_H = 128
+} ;
 
 #ifdef GSL_MESSAGING_OFF        /* throw away messages */ 
 #define GSL_MESSAGE(message, mask) do { } while(0)
