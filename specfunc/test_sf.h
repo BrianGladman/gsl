@@ -4,6 +4,8 @@
 #ifndef TEST_SF_H
 #define TEST_SF_H
 
+#include <gsl_math.h>
+#include <gsl_errno.h>
 #include <gsl_machine.h>
 #include "gsl_sf_result.h"
 
