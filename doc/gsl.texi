@@ -20,7 +20,7 @@ END-INFO-DIR-ENTRY
 @ifinfo
 This file documents the @emph{GNU Scientific Library}.
 
-Copyright (C) 1996 Free Software Foundation, Inc.
+Copyright (C) 1996 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -52,7 +52,7 @@ by the Foundation.
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996 Free Software Foundation, Inc.
+Copyright @copyright{} 1996 The GSL Project.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -79,16 +79,14 @@ of numerical routines for scientific computing.
 
 @menu
 * Motivation::                  
-* Motivation again::                  
 * Design::                      
-* Examples of the existing routines::  
 * Reference manual::            
 * Function Index::              
 * Variable Index::              
 * Type Index::                  
 @end menu
 
-@node Motivation, Motivation again, Top, Top
+@node Motivation, Design, Top, Top
 @chapter Motivation
 @cindex numerical analysis
 @cindex free software
@@ -136,18 +134,23 @@ not @emph{free} in the sense of @emph{freedom}.  On top of that, the
 implementation suffers from @emph{fortranitis} and other
 limitations. [FIXME give refs on review of NR]
 
-@node Motivation again, Design, Motivation, Top
+@menu
+* jt section::                  
+@end menu
+
+@node jt section,  , Motivation, Motivation
+@section jt section
 [written by James Theiler, and not incorporated into the above
 motivation]
 
-@value{GSL} is a library of scientific subroutines.  It aims to provide a
-convenient interface to "black box" routines that do standard (and not
-so standard) tasks that arise in scientific research.  More than that,
-it also provides the source code.  Users are welcome to alter, adjust,
-modify, and improve the interfaces and/or implementations of whichever
-routines might be needed for a particular purpose. We are starting
-small, with random number generators and special functions, but hope to
-expand to include linear algebra, Fourier analysis, etc.
+@value{GSL} is a library of scientific subroutines.  It aims to provide
+a convenient interface to ``black box'' routines that do standard (and
+not so standard) tasks that arise in scientific research.  More than
+that, it also provides the source code.  Users are welcome to alter,
+adjust, modify, and improve the interfaces and/or implementations of
+whichever routines might be needed for a particular purpose. We are
+starting small, with random number generators and special functions, but
+hope to expand to include linear algebra, Fourier analysis, etc.
 
 The secret name of this package is GNUmerical Recipes.
 
@@ -228,7 +231,7 @@ mind that evil profit-making companies (such as those which sell
 
 
 
-@node Design, Examples of the existing routines, Motivation again, Top
+@node Design, Reference manual, Motivation, Top
 @chapter Design
 
 @menu
@@ -471,32 +474,39 @@ ships with MPI, and vice-versa; we should figure out which is the
 recommended platform.)
 
 
-
-@node Examples of the existing routines, Reference manual, Design, Top
-@chapter Examples of the existing routines
-
-None have been contributed yet.
-
-@node Reference manual, Function Index, Examples of the existing routines, Top
+@node Reference manual, Function Index, Design, Top
 @chapter Reference manual
+
+This is the reference manual for those parts of GSL that have been
+written so far.  As GSL gets bigger we will split the reference manual
+from the design.
 
 
 @menu
-* Random Number Generation::    
+* Random number generation::    
 * Statistics::                  
 * Root finding::                
 * Simulated annealing::         
 * Copying::                     
 @end menu
 
-@node Random Number Generation, Statistics, Reference manual, Reference manual
+@node Random number generation, Statistics, Reference manual, Reference manual
 @section Random number generation
 @cindex random
 @cindex gaussian
 @cindex uniform
 @cindex poisson
 
-General routines for the casual user:
+@menu
+* General routines for the casual user::  
+* Somewhat more advanced functions::  
+* Algorithm-specific random number generators::  
+* How to link::                 
+* How to incorporate a new random number generator algorithm into this scheme::  
+@end menu
+
+@node General routines for the casual user, Somewhat more advanced functions, Random number generation, Random number generation
+@subsection General routines for the casual user
 
 @deftypefn Random void gsl_ran_seed(int s)
 @code{gsl_ran_seed} initializes (or `seeds') the random number
@@ -541,7 +551,8 @@ where @code{dx} is @code{1./gsl_ran_max()}.
 variance one.
 @end deftypefn
 
-[Somewhat more advanced functions.]
+@node Somewhat more advanced functions, Algorithm-specific random number generators, General routines for the casual user, Random number generation
+@subsection Somewhat more advanced functions
 
 It is important to remember that a function like @code{gsl_ran_uniform()}
 is not a "real" function like the sine or cosine.  Unlike real
@@ -595,7 +606,8 @@ and returns the uniformly distributed real random number
 resulting from that update.
 @end deftypefn
 
-ALGORITHM-SPECIFIC RANDOM NUMBER GENERATORS:
+@node Algorithm-specific random number generators, How to link, Somewhat more advanced functions, Random number generation
+@subsection Algorithm-specific random number generators
 
 The above functions make no reference to the actual algorithm used.
 This is deliberate so that you can change algorithms without having to
@@ -620,7 +632,8 @@ It is also possible to choose, for example, the @code{mrg} algorithm as the
 default used by, for instance, @code{gsl_ran_uniform()}, by using the call
 @code{gsl_ran_use_mrg()}. 
 
-HOW TO LINK:
+@node How to link, How to incorporate a new random number generator algorithm into this scheme, Algorithm-specific random number generators, Random number generation
+@subsection How to link
 
 This is not set in stone yet, but for now link against @code{xxx.o
 xxx-gen.o} to cause the generic calls to use algorithm @code{xxx}.  Link
@@ -637,7 +650,8 @@ generators included, and one of them the default.
 [**FIXME: not implemented yet]
 
 
-HOW TO INCORPORATE A NEW RANDOM NUMBER GENERATOR ALGORITHM INTO THIS SCHEME:
+@node How to incorporate a new random number generator algorithm into this scheme,  , How to link, Random number generation
+@subsection How to incorporate a new random number generator algorithm into this scheme
 
 Suppose you run across a nifty article describing a new algorithm for
 generating a random number.  You can place it in the scheme here by
@@ -673,7 +687,7 @@ Now you can `@code{make cool}', or `@code{make test-cool}', or
 cool new random number generator.
 
 
-@node Statistics, Root finding, Random Number Generation, Reference manual
+@node Statistics, Root finding, Random number generation, Reference manual
 @section Statistics
 @cindex statistics
 @cindex mean
@@ -858,7 +872,7 @@ Does a @emph{simulated annealing} search through a given space (defined
 by the type @code{Element}).
 @end deftypefn
 
-@node   Copying,  , Simulated annealing, Reference manual
+@node Copying,  , Simulated annealing, Reference manual
 @unnumberedsec Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
