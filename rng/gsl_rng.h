@@ -9,24 +9,19 @@ typedef struct
     unsigned long int max;
     unsigned long int min;
     size_t size;
-    void *state;
-    void (*set) (void *state, unsigned long int seed);
-    unsigned long int (*get) (void *state);
-    double (*get_double) (void *state);
-  }
-gsl_rng;
-
-typedef struct
-  {
-    const char *name;
-    unsigned long int max;
-    unsigned long int min;
-    size_t size;
     void (*set) (void *state, unsigned long int seed);
     unsigned long int (*get) (void *state);
     double (*get_double) (void *state);
   }
 gsl_rng_type;
+
+typedef struct
+  {
+    const gsl_rng_type * type;
+    void *state;
+  }
+gsl_rng;
+
 
 /* These structs also need to appear in default.c so you can select
    them via the environment variable GSL_RNG_TYPE */
@@ -104,13 +99,13 @@ const gsl_rng_type * gsl_rng_env_setup (void);
 extern inline unsigned long int
 gsl_rng_get (const gsl_rng * r)
 {
-  return (r->get) (r->state);
+  return (r->type->get) (r->state);
 }
 
 extern inline double
 gsl_rng_uniform (const gsl_rng * r)
 {
-  return (r->get_double) (r->state);
+  return (r->type->get_double) (r->state);
 }
 
 extern inline double
@@ -119,7 +114,7 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   double x ;
   do
     {
-      x = (r->get_double) (r->state) ;
+      x = (r->type->get_double) (r->state) ;
     }
   while (x == 0) ;
 
@@ -129,8 +124,8 @@ gsl_rng_uniform_pos (const gsl_rng * r)
 extern inline unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
-  unsigned long int offset = r->min;
-  unsigned long int range = r->max - offset;
+  unsigned long int offset = r->type->min;
+  unsigned long int range = r->type->max - offset;
   unsigned long int scale = range / n;
   unsigned long int k;
 
@@ -142,7 +137,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   do
     {
-      k = (((r->get) (r->state)) - offset) / scale;
+      k = (((r->type->get) (r->state)) - offset) / scale;
     }
   while (k >= n);
 
