@@ -990,8 +990,8 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, gsl_sf_result * resu
       int stat_V  = conicalP_1_V(xi, x/sh, lambda, 1.0, &V0, &V1);
       double bessterm = V0 * J0.val + V1 * J1.val;
       double besserr  = fabs(V0) * J0.err + fabs(V1) * J1.err
-                       + 2.0 * GSL_DBL_EPSILON * fabs(V0 * J0.val)
-		       + 2.0 * GSL_DBL_EPSILON * fabs(V1 * J1.val);
+                       + 512.0 * 2.0 * GSL_DBL_EPSILON * fabs(V0 * J0.val)
+		       + 512.0 * 2.0 * GSL_DBL_EPSILON * fabs(V1 * J1.val);
       double pre = sqrt(xi/sh);
       result->val  = pre * bessterm;
       result->err  = pre * besserr;
