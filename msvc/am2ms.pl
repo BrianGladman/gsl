@@ -39,6 +39,8 @@ for $file (@ARGV) {
     @int_headers = parse_list($AM{noinst_HEADERS});
     @progs = parse_list($AM{bin_PROGRAMS}, $AM{check_PROGRAMS});
 
+    push(@installed_headers, map("$dir/$_", @ext_headers));
+
     #print "== dir $dir ==\n" ;
 
     for $lib (@gsllib, @noinstlibs) {
@@ -75,8 +77,12 @@ for $file (@ARGV) {
         my $name = $dir; 
         $name =~ s/.*\///; 
         $name =~ s/-/_/g;
-        $name = "${prog}_${name}";
-        push (@tests, "$name");
+        if ($prog =~ /test/) {
+            $name = "${prog}_${name}";
+            push (@tests, "$name");
+        } else {
+            $name = $prog;
+        }
         open(TEST, ">$name.dsp");
         warn "$name $prog => ", @sources, "\n";
         print TEST &begin_project_app($name);
@@ -118,6 +124,26 @@ close (TEST);
 open(TEST, ">GSLTESTS.dsp");
 print TEST &generic_project("GSLTESTS");
 close(TEST);
+
+# Write test batch files
+
+open(TEST, ">MAKE_CHECK.bat");
+print TEST &begin_check();
+for $t (@tests) {
+    print TEST &add_check($t);
+}
+print TEST &end_check();
+close(TEST);
+
+# Write script to copy headers into gsl directory
+
+open(BATCH, ">COPY_GSL_HEADERS.bat");
+for $h (@installed_headers) {
+    $h =~ s#/#\\#g;  # convert to dos style path
+    print BATCH "copy $h ..\\gsl\n" ;
+}
+close(BATCH);
+
 
 ######################################################################
 
@@ -287,7 +313,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\\$proj.exe" /libpath:"Release"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"bin\\$proj.exe" /libpath:"Release"
 
 !ELSEIF  "\$(CFG)" == "$proj - Win32 Debug"
 
@@ -312,7 +338,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 gsl.lib gslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\\$proj.exe" /pdbtype:sept /libpath:"Debug"
+# ADD LINK32 libgsl.lib libgslcblas.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"bin\\$proj.exe" /pdbtype:sept /libpath:"Debug"
 
 !ENDIF 
 EOF
@@ -520,3 +546,39 @@ MTL=midl.exe
 # End Project
 EOF
 }
+
+######################################################################
+
+sub begin_check {
+    return <<'EOF';
+@echo off
+@REM
+@REM  MS-DOS Batch file to test the GNU Scientific Library (GSL)
+@REM  on M$ Visual C++ 6.0.
+@REM
+@REM  2001/04/03 - José Miguel Buenaposada (jmbuena@dia.fi.upm.es)
+@REM               Initial version.
+@REM  
+@REM
+
+@echo "Testing GSL library" 
+EOF
+} 
+
+sub add_check {
+    my ($test) = @_;
+    return <<"EOF";
+\@echo running $test...
+\@.\\bin\\$test.exe >> result.dat
+EOF
+}
+
+sub end_check {
+    return <<'EOF'
+@echo Number of failures:
+@FIND /V /C "result.dat"
+@echo Full test log is in result.dat
+EOF
+}
+
+######################################################################
