@@ -376,8 +376,9 @@ i=19 sum=2.718281828459045535 error=4.44089e-16
 @end example
 
 @noindent
-After nineteen terms the sum converges to within @math{4 \times
-10^@{-16@}} of the correct value.  If we now change the rounding mode to
+After nineteen terms the sum converges to within @c{$4 \times 10^{-16}$}
+@math{4 \times 10^-16} of the correct value.  
+If we now change the rounding mode to
 @code{round-down} the final result is less accurate,
 
 @example

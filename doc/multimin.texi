@@ -32,8 +32,8 @@ invert its sign.
 
 Minimizing a function of several variables is somewhat more involved
 than minimizing a function of one variable.  Nonetheless, the multimin
-library builds upon the foundation of the GSL one-dimensional
-minimization library to create a flexible framework for finding such
+library builds upon the foundation of the one-dimensional
+minimization routines to create a flexible framework for finding such
 minima.  The library works with @math{N} dimensional functions with
 @math{P} parameters.  The methods in the multimin library all employ
 some type of gradient search algorithm.  In these methods, the
@@ -43,15 +43,14 @@ is used to determine a search direction for the next iteration of the
 minimizer.  A line search is made along this direction to hunt for an
 improved minimum and the process is repeated until stopping criteria
 are satisfied.  There are other methods besides gradient searches that
-can be used for finding a minimum of an N dimensional function; it is
-possible that additional methods will find their way into GSL over
-time.
+can be used for finding a minimum of an N dimensional function; 
+these additional methods may be added in future.
 
-A variety of bracketing algorithms are available in GSL in a similar
+A variety of bracketing algorithms are available within the minimization
 framework.  The user provides a high-level driver for the algorithms,
-and the library provides the individual functions necessary for each
-of the steps.  There are three main phases of the iteration.  The
-steps are,
+and the library provides the individual functions necessary for each of
+the steps.  There are three main phases of the iteration.  The steps
+are,
 
 @itemize @bullet
 @item
@@ -132,11 +131,11 @@ would print something like @code{s is a 'conjugate_pr' minimizer}
 You must provide a parametric function of @math{N} variables for the
 minimizers to operate on.  You also need to provide a routine which
 calculates the gradient of the function, a third routine which
-calculates both the function value and the gradient, the
-dimensionality of the function domain and an array of parameters.  The
-GSL type @code{gsl_multimin_function_fdf} encapsulates these objects
-in a single struct.  Here's an example for the case of a simple
-paraboloid.
+calculates both the function value and the gradient, the dimensionality
+of the function domain and an array of parameters.  The
+@code{gsl_multimin_function_fdf} type encapsulates these objects in a
+single struct.  The following example defines a function suitable for
+the case of a simple paraboloid,
 
 @example
 static double
@@ -193,14 +192,14 @@ main()
 @node Multimin Iteration
 @section Iteration
 
-Multidimensional minimization in GSL proceeds as a pair of nested
-iterations.  An outer loop iterates over successive estimates of the
-location of the minimum of the objective function; at each new point
-the gradient of the objective function is calculated.  The gradient is
-used to determine a new direction along which to move.  The different
-algorithms in the multimin package use the gradient in different ways
-in calculating this new direction.  Whatever the method employed, the
-inner loop hunts for a minimum along that direction.
+Multidimensional minimization proceeds as a pair of nested iterations.
+An outer loop iterates over successive estimates of the location of the
+minimum of the objective function; at each new point the gradient of the
+objective function is calculated.  The gradient is used to determine a
+new direction along which to move.  The different algorithms in the
+multimin package use the gradient in different ways in calculating this
+new direction.  Whatever the method employed, the inner loop hunts for a
+minimum along that direction.
 
 @node Multimin Stopping Criteria
 @section Stopping Criteria
@@ -238,7 +237,7 @@ line search has found a minimum, the process is repeated.  Since the
 new point will be at a minimum of the function as it is varied along
 the direction of the old gradient, the new direction of steepest
 descent will be orthogonal to the old direction.  While this method is
-robust and doesn't depend in detail on the shape of the function in
+robust and does not depend in detail on the shape of the function in
 the neighborhood of the minimum, it can sometimes be slow to converge.
 
 The next two methods that are available are both conjugate gradient
@@ -308,7 +307,7 @@ my_df (const gsl_vector *v, void *params, gsl_vector *df)
   gsl_vector_set(df, 1, 40.0 * (y - *(dp+1)));
 @}
 
-/* So much fun ... now we'll calculate f _and_ df. */
+/* Calculate both f and df. */
 static void 
 my_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df) 
 @{
@@ -325,7 +324,7 @@ main()
   double minimum, a, b, sqr_dist, dist;
   gsl_multimin_fdf_minimizer *s;
 
-  /* Let's put the minimum at v = (1,2). */
+  /* Set position of the minimum, v = (1,2). */
   double par[2] = @{1.0, 2.0@}; 
 
   gsl_multimin_function_fdf my_func =
@@ -342,7 +341,7 @@ main()
   gsl_vector *x = gsl_vector_alloc(2);
   gsl_vector *delta = gsl_vector_alloc(2);
 
-  /* An initial guess for the location of the minimum... */
+  /* Initial guess for the location of the minimum, x = (10,10) */
   for (i = 0; i < 2; i++) @{
     gsl_vector_set(x, i, 10.0);
   @}
@@ -381,7 +380,7 @@ main()
         @{
           iterations_line = 0;
           /* Once we've bracketed the minimum along the current line
-             search direction, use the GSL one-dimensional minimizer
+             search direction, use the one-dimensional minimizer
              to find a minimum in `f' along that line. */
           do 
             @{
@@ -411,13 +410,12 @@ main()
           just_started = 0;
         @}
 
-      /* At this point, we've found a minimum along the line search
-         direction.  See if it satisfies our criteria for stopping the
-         multidimensional search.  We stop when either of two criteria
-         are met: one, that the norm of the gradient is within EPSABS
-         of zero; or two, that the current best estimate of the
-         location of the minimum is within EPSABS of the previous
-         estimate. */
+      /* Found minimum along the line search direction.  See if 
+         it satisfies our criteria for stopping the multidimensional
+         search.  Stop if either of two criteria are met: 1), that
+         the norm of the gradient is within EPSABS of zero; or 2), that
+         the current best estimate of the location of the minimum is
+         within EPSABS of the previous estimate. */
       gsl_vector_set(delta, 0, 
                      (gsl_vector_get(s->history->x1, 0) -
                       gsl_vector_get(s->history->x,  0)));
@@ -449,3 +447,13 @@ main()
 @node Multimin References and Further Reading
 @section References and Further Reading
 
+A brief description of multidimensional minimization algorithms and
+further references can be found in the following book,
+
+@itemize @asis
+@item C.W. Ueberhuber,
+@cite{Numerical Computation (Volume 2)}, Chapter 14, Section 4.4
+"Minimization Methods", p. 325---335, Springer (1997), ISBN
+3-540-62057-5.
+@end itemize
+@noindent

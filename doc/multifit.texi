@@ -16,15 +16,15 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @menu
 * Overview of Nonlinear Least-Squares Fitting::  
-* Initializing the Nonlinear Solver::  
+* Initializing the Nonlinear Least-Squares Solver::  
 * Providing the Function to be Minimized::  
 * Iteration of the Minimization Algorithm::  
 * Search Stopping Parameters for Minimization Algorithms::  
 * Minimization Algorithms using Derivatives::  
 * Minimization Algorithms without Derivatives::  
 * Computing the covariance matrix of best fit parameters::  
-* Example programs for Nonlinear Fitting::  
-* References and Further Reading for Nonlinear Fitting::  
+* Example programs for Nonlinear Least-Squares Fitting::  
+* References and Further Reading for Nonlinear Least-Squares Fitting::  
 @end menu
 
 @node Overview of Nonlinear Least-Squares Fitting
@@ -74,7 +74,7 @@ These include requiring a decrease in the norm @math{||F||} on each
 step or using a trust region to avoid steps which fall outside the linear 
 regime.
 
-@node Initializing the Nonlinear Solver
+@node Initializing the Nonlinear Least-Squares Solver
 @section Initializing the Solver
 
 @deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
@@ -240,7 +240,7 @@ An error has occurred.
 @end itemize
 
 @noindent
-In the minimization framework of GSL the handling of these conditions is
+The minimization framework leaves the handling of these conditions is
 under user control.  The functions below allow the user to test the
 current estimate of the best-fit parameters in several standard ways.
 
@@ -426,7 +426,7 @@ set to zero).
 
 @comment ============================================================
 
-@node Example programs for Nonlinear Fitting
+@node Example programs for Nonlinear Least-Squares Fitting
 @section Examples
 
 The following example program fits a weighted exponential model with
@@ -523,7 +523,7 @@ expb_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df)
   return GSL_SUCCESS;
 @}
 @end example
-
+@noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
 some simulated random data. The data uses the known parameters
 (1.0,5.0,-0.1) combined with gaussian noise (standard deviation = 0.1)
@@ -622,8 +622,7 @@ print_state (size_t iter, gsl_multifit_fdfsolver * s)
           gsl_vector_get (s->x, 2), gsl_blas_dnrm2 (s->f));
 @}
 @end example
-
-
+@noindent
 The iteration terminates when the change in x is smaller than 0.0001, as
 both an absolute and relative change.  Here are the results of running
 the program,
@@ -639,7 +638,7 @@ b      = 1.01061 +/- 0.0394169
 A      = 5.01278 +/- 0.0598364
 lambda = -0.100563 +/- 0.00311668
 @end example
-
+@noindent
 The approximate values of the parameters are found correctly.  The
 errors on the parameters are given by the square roots of the diagonal
 elements of the covariance matrix.
@@ -649,9 +648,9 @@ elements of the covariance matrix.
 @center @image{fit-exp,4in}
 @end iftex
 
-@node References and Further Reading for Nonlinear Fitting
+@node References and Further Reading for Nonlinear Least-Squares Fitting
 @section References and Further Reading
-
+@noindent
 The MINPACK algorithm is described in the following article,
 
 @itemize @asis

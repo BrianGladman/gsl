@@ -965,13 +965,13 @@ status = success
 @end example
 @noindent
 The convergence is much more rapid, but takes a wide excursion out to
-the point @math{(-4.23,-65.3)}. This could lead to algorithm going
+the point @math{(-4.23,-65.3)}. This could cause the algorithm to go
 astray in a realistic application.  The hybrid algorithm follows the
 downhill path to the solution more reliably.
 
 @node References and Further Reading for Multidimensional Root Finding
 @section References and Further Reading
-
+@noindent
 The original version of the Hybrid method is described in the following
 articles by Powell,
 

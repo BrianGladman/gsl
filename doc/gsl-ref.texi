@@ -219,8 +219,8 @@ not recommended for general use.
 * One dimensional Minimization::  
 * Multidimensional Root-Finding::  
 * Multidimensional Minimization::  
-* Fitting::                     
-* Nonlinear Fitting::           
+* Least-Squares Fitting::       
+* Nonlinear Least-Squares Fitting::  
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
@@ -407,19 +407,19 @@ Questions about the GNU GPL},
 @chapter Multidimensional Root-Finding
 @include multiroots.texi
 
-@node   Multidimensional Minimization, Fitting, Multidimensional Root-Finding, Top
+@node   Multidimensional Minimization, Least-Squares Fitting, Multidimensional Root-Finding, Top
 @chapter Multidimensional Minimization
 @include multimin.texi
 
-@node Fitting, Nonlinear Fitting, Multidimensional Minimization, Top
-@chapter Fitting
+@node Least-Squares Fitting, Nonlinear Least-Squares Fitting, Multidimensional Minimization, Top
+@chapter Least-Squares Fitting
 @include fitting.texi
 
-@node Nonlinear Fitting, Physical Constants, Fitting, Top
-@chapter Nonlinear Fitting
+@node Nonlinear Least-Squares Fitting, Physical Constants, Least-Squares Fitting, Top
+@chapter Nonlinear Least-Squares Fitting
 @include multifit.texi
 
-@node  Physical Constants, IEEE floating-point arithmetic, Nonlinear Fitting, Top
+@node  Physical Constants, IEEE floating-point arithmetic, Nonlinear Least-Squares Fitting, Top
 @chapter Physical Constants
 @include const.texi
 

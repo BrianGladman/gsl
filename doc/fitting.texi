@@ -2,15 +2,15 @@
 @cindex least squares fit
 @cindex regression, least squares
 
-This chapter describes functions for performing univariate least squares
-fits to experimental data. The data may be weighted or unweighted.  For
-weighted data the functions compute the best fit parameters and their
-associated covariance matrix.  For unweighted data the covariance matrix
-is estimated from the scatter of the points, giving a
-variance-covariance matrix. The functions are divided into separate
-versions for simple one- or two-parameter regression and
-multiple-parameter fits.  The functions are declared in the header file
-@file{gsl_fit.h}
+This chapter describes routines for performing least squares fits to
+experimental data using linear combinations of functions. The data may
+be weighted or unweighted.  For weighted data the functions compute the
+best fit parameters and their associated covariance matrix.  For
+unweighted data the covariance matrix is estimated from the scatter of
+the points, giving a variance-covariance matrix. The functions are
+divided into separate versions for simple one- or two-parameter
+regression and multiple-parameter fits.  The functions are declared in
+the header file @file{gsl_fit.h}
 
 @menu
 * Linear regression::           
@@ -165,9 +165,9 @@ the diagonal elements of the @math{n} by @math{n} matrix @math{W}.  For
 unweighted data @math{W} is replaced by the identity matrix.
 
 This formulation can be used for fits to any number of functions and/or
-variables by preparing the matrix @math{X} appropriately.  For example,
-to fit to a @math{p}-th order polynomial in @var{x}, use the following
-matrix
+variables by preparing the @math{n}-by-@math{p} matrix @math{X}
+appropriately.  For example, to fit to a @math{p}-th order polynomial in
+@var{x}, use the following matrix,
 
 @tex
 \beforedisplay
@@ -182,6 +182,9 @@ X_@{ij@} = x_i^j
 @end example
 @end ifinfo
 @noindent
+where the index @math{i} runs over the observations and the index
+@math{j} runs from 0 to @math{p-1}.
+
 To fit to a set of @math{p} sinusoidal functions with fixed frequencies
 @math{\omega_1}, @math{\omega_2}, @dots{}, @math{\omega_p}, use,
 
@@ -199,7 +202,7 @@ X_@{ij@} = sin(\omega_j x_i)
 @end ifinfo
 @noindent
 To fit to @math{p} independent variables @math{x_1}, @math{x_2}, @dots{},
-@math{x_p}, use
+@math{x_p}, use,
 
 @tex
 \beforedisplay
@@ -495,11 +498,12 @@ $ ./fit 19 < exp.dat
 @end example
 @noindent
 The parameters of the quadratic fit match the coefficients of the
-expansion of @math{e^x}, taking the errors on the parameters into
-account.  The errors on the parameters are given by the square-root of
-the corresponding diagonal elements of the covariance matrix.  The
-chi-squared per degree of freedom is 1.4, indicating a reasonable fit to
-the data.
+expansion of @math{e^x}, taking into account the errors on the
+parameters and the @math{O(x^3)} difference between the exponential and
+quadratic functions for the larger values of @math{x}.  The errors on
+the parameters are given by the square-root of the corresponding
+diagonal elements of the covariance matrix.  The chi-squared per degree
+of freedom is 1.4, indicating a reasonable fit to the data.
 
 @iftex
 @sp 1
