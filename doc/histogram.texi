@@ -10,8 +10,9 @@ are supported.
 
 Once a histogram has been created it can also be converted into a
 probability distribution. The library provides efficient functions for
-generating random samples from a probability distribution, which can be
-useful for generating simulations based real data.
+generating random samples from a histogrammed probability
+distribution. This can be useful for generating simulations based real
+data.
 
 @section The histogram struct
 
@@ -63,8 +64,8 @@ bound (@math{x<r}). Thus any samples which fall on the upper end of the
 histogram are excluded. If you want to include this value for the last
 bin you will need to add an extra bin to your histogram.
 
-The @code{gsl_histogram} struct and the functions in this chapter are
-defined in the header file @file{gsl_histogram.h}.
+The @code{gsl_histogram} struct and its associated functions are defined
+in the header file @file{gsl_histogram.h}.
 
 @section Histogram allocation
 The functions for allocating memory to a histogram follow the style of
@@ -297,7 +298,7 @@ A histogram made by counting events can be regarded as a measurement of
 a probability distribution. Allowing for statistical error, the height
 of each bin represents the probability of an event where the value of
 @math{x} falls in the range of that bin. The probability distribution
-has the one-dimensional form @math{p(x)dx} where,
+function has the one-dimensional form @math{p(x)dx} where,
 
 @equation
 p(x) = n_i/ (N w_i)
@@ -308,6 +309,35 @@ contains @math{x}, @math{w_i} is the width of the bin and @math{N} is
 the total number of events. The distribution of events within each bin
 is assumed to be uniform.
 
+@section The histogram probability distribution struct
+
+The probability distribution function for a histogram consists of a set
+of @dfn{bins} which measure the probability of an event falling into a
+given range of a continuous variable @math{x}. A probability
+distribution function is defined by the following struct, which actually
+stores the cumulative probability distribution function. This is the
+natural quantity for generating samples via the inverse transform
+method, because there is a one-to-one mapping between the cumulative
+probability distribution and the range [0,1]. It can be shown that by
+taking a uniform random number in this range and finding its
+corresponding coordinate in the cumulative probability distribution we
+obtain samples with the desired probability distribution.
+
+@deftp {Data Type} {gsl_histogram_pdf}
+@table @code
+@item size_t nbins
+This is the number of bins used to approximate the probability
+distribution function. 
+@item double * range
+The ranges of the bins are stored in an array of @var{nbins+1} elements
+pointed to by @var{range}.
+@item double * sum
+The cumulative probability for the bins is stored in an array of
+@var{nbins} elements pointed to by @var{sum}.
+@end table
+@end deftp
+@c
+@noindent
 The following functions allow you to create a @code{gsl_histogram_pdf}
 struct which represents this probability distribution and generate
 random samples from it.
@@ -332,7 +362,15 @@ all of the memory associated with it.
 @deftypefun double gsl_histogram_pdf_sample (const gsl_histogram_pdf * @var{p}, double @var{r})
 This function uses @var{r}, a uniform random number between zero and
 one, to compute a single random sample from the probability distribution
-@var{p}.
+@var{p}. The algorithm used to compute the sample @math{s} is given by
+the following formula,
+
+@equation
+s = range[i] + delta * (range[i+1] - range[i])
+@end equation
+@noindent
+where @math{i} is the index which satisfies @math{sum[i] <= r <
+sum[i+1]} and @math{delta} is @math{(r - sum[i])/(sum[i+1] - sum[i])}.
 @end deftypefun
 
 @section Example programs for histograms
@@ -458,6 +496,13 @@ bin(i,j) corresponds to xrange[i] <= x < xrange[i+1]
                     and yrange[j] <= y < yrange[j+1]
 @end display
 
+Note that any samples which fall on the upper sides of the histogram are
+excluded. If you want to include these values for the side bins you will
+need to add an extra row or column to your histogram.
+
+The @code{gsl_histogram2d} struct and its associated functions are
+defined in the header file @file{gsl_histogram2d.h}.
+
 @section 2D Histogram allocation
 
 The functions for allocating memory to a 2D histogram follow the style
@@ -495,7 +540,7 @@ associated with it.
 You can access the bins of a two-dimensional histogram either by
 specifying a pair of @math{(x,y)} coordinates or by using the bin
 indices @math{(i,j)} directly. The functions for accessing the histogram
-using @math{(x,y)} coordinates employ a binary search in the x and y
+using @math{(x,y)} coordinates employ binary searches in the x and y
 directions to identify the bin which covers the appropriate range.
 
 @deftypefun int gsl_histogram2d_increment (gsl_histogram2d * @var{h}, double @var{x}, double @var{y})
@@ -674,6 +719,24 @@ contains @math{(x,y)}, @math{A_@{ij@}} is the area of the bin and @math{N} is
 the total number of events. The distribution of events within each bin
 is assumed to be uniform.
 
+@deftp {Data Type} {gsl_histogram2d_pdf}
+@table @code
+@item size_t nx, ny
+This is the number of histogram bins used to approximate the probability
+distribution function in the x and y directions.
+@item double * xrange
+The ranges of the bins in the x-direction are stored in an array of
+@var{nx + 1} elements pointed to by @var{xrange}.
+@item double * yrange
+The ranges of the bins in the y-direction are stored in an array of
+@var{ny + 1} pointed to by @var{yrange}.
+@item double * sum
+The cumulative probability for the bins is stored in an array of
+@var{nx}*@var{ny} elements pointed to by @var{sum}.
+@end table
+@end deftp
+@c
+@noindent
 The following functions allow you to create a @code{gsl_histogram2d_pdf}
 struct which represents a two dimensional probability distribution and
 generate random samples from it.
