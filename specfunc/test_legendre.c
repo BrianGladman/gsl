@@ -311,9 +311,12 @@ int test_legendre(void)
 
   TEST_SF(s, gsl_sf_legendre_Q1_e, (-0.99999, &r), 5.102972792420609255, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (-0.5, &r), -0.7253469278329725772, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Q1_e, (-0.01, &r), -0.9998999966664666524, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (-1e-10, &r), -0.999999999999999999, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (0.0, &r), -1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (1e-10, &r), -0.999999999999999999, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Q1_e, (0.0001, &r), -0.9999999899999999667, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Q1_e, (0.01, &r), -0.9998999966664666524, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (0.5, &r), -0.7253469278329725772, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (0.99999, &r), 5.102972792420609255, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Q1_e, (1.00001, &r), 5.103099853147064474, TEST_TOL4, GSL_SUCCESS);

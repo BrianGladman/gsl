@@ -307,18 +307,43 @@ int gsl_sf_log_erfc_e(double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
-  if(x > 8.0) {
-    result->val = log_erfc8(x);
+  if(x*x < 10.0*GSL_ROOT6_DBL_EPSILON) {
+    const double y = x / M_SQRTPI;
+    /* series for -1/2 Log[Erfc[Sqrt[Pi] y]] */
+    const double c3 = (4.0 - M_PI)/3.0;
+    const double c4 = 2.0*(1.0 - M_PI/3.0);
+    const double c5 = -0.001829764677455021;  /* (96.0 - 40.0*M_PI + 3.0*M_PI*M_PI)/30.0  */
+    const double c6 =  0.02629651521057465;   /* 2.0*(120.0 - 60.0*M_PI + 7.0*M_PI*M_PI)/45.0 */
+    const double c7 = -0.01621575378835404;
+    const double c8 =  0.00125993961762116;
+    const double c9 =  0.00556964649138;
+    const double c10 = -0.0045563339802;
+    const double c11 =  0.0009461589032;
+    const double c12 =  0.0013200243174;
+    const double c13 = -0.00142906;
+    const double c14 =  0.00048204;
+    double series = c8 + y*(c9 + y*(c10 + y*(c11 + y*(c12 + y*(c13 + c14*y)))));
+    series = y*(1.0 + y*(1.0 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*(c7 + y*series)))))));
+    result->val = -2.0 * series;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
-  else if (fabs(x) < 1) {
+  /*
+  don't like use of log1p(); added above series stuff for small x instead, should be ok [GJ]
+  else if (fabs(x) < 1.0) {
     gsl_sf_result result_erf;
     gsl_sf_erf_e(x, &result_erf);
     result->val  = log1p(-result_erf.val);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
-  } else {
+  }
+  */
+  else if(x > 8.0) {
+    result->val = log_erfc8(x);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
     gsl_sf_result result_erfc;
     gsl_sf_erfc_e(x, &result_erfc);
     result->val  = log(result_erfc.val);

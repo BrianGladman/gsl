@@ -1,6 +1,6 @@
 /* specfunc/test_sf.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -380,6 +380,7 @@ int test_erf(void)
   TEST_SF(s, gsl_sf_log_erfc_e, (-1e-10, &r),  1.1283791670318505967e-10, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_log_erfc_e, (0.0, &r), log(1.0), TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_log_erfc_e, (1e-10, &r), -1.128379167159174551e-10, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_log_erfc_e, (0.001, &r), -0.0011290158896213548027, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_log_erfc_e, (0.1, &r), -0.119304973737395598329, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_log_erfc_e, (1.0, &r), log(0.15729920705028513066), TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_log_erfc_e, (10.0, &r), log(2.0884875837625447570e-45), TEST_TOL0, GSL_SUCCESS);

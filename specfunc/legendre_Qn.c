@@ -185,11 +185,23 @@ gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
   if(x <= -1.0 || x == 1.0) {
     DOMAIN_ERROR(result);
   }
-  else if(x < 1.0){
-    result->val = 0.5 * (log1p(x) - log1p(-x));
-    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val) + 
-					   1.0 / fabs(1.0 - x) 
-					   + 1.0 / fabs(1.0 + x));
+  else if(x*x < GSL_ROOT6_DBL_EPSILON) { /* |x| <~ 0.05 */
+    const double c3 = 1.0/3.0;
+    const double c5 = 1.0/5.0;
+    const double c7 = 1.0/7.0;
+    const double c9 = 1.0/9.0;
+    const double c11 = 1.0/11.0;
+    const double y = x * x;
+    const double series = 1.0 + y*(c3 + y*(c5 + y*(c7 + y*(c9 + y*c11))));
+    result->val = x * series;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(x);
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0) {
+    result->val = 0.5 * log((1.0+x)/(1.0-x));
+    result->err  = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON/fabs(1.0 + x);
+    result->err += 2.0 * GSL_DBL_EPSILON/fabs(1.0 - x);
     return GSL_SUCCESS;
   }
   else if(x < 10.0) {
@@ -225,11 +237,23 @@ gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
   if(x <= -1.0 || x == 1.0) {
     DOMAIN_ERROR(result);
   }
+  else if(x*x < GSL_ROOT6_DBL_EPSILON) { /* |x| <~ 0.05 */
+    const double c3 = 1.0/3.0;
+    const double c5 = 1.0/5.0;
+    const double c7 = 1.0/7.0;
+    const double c9 = 1.0/9.0;
+    const double c11 = 1.0/11.0;
+    const double y = x * x;
+    const double series = 1.0 + y*(c3 + y*(c5 + y*(c7 + y*(c9 + y*c11))));
+    result->val = x * x * series - 1.0;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
   else if(x < 1.0){
-    result->val = 0.5 * x * (log1p(x) - log1p(-x)) - 1.0;
-    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val)
-					   + 1.0 / fabs(1.0 - x)
-					   + 1.0 / fabs(1.0 + x));
+    result->val = 0.5 * x * (log((1.0+x)/(1.0-x))) - 1.0;
+    result->err  = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err  += 2.0 * GSL_DBL_EPSILON / fabs(1.0 + x);
+    result->err  += 2.0 * GSL_DBL_EPSILON / fabs(1.0 - x);
     return GSL_SUCCESS;
   }
   else if(x < 6.0) {
