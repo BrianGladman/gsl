@@ -13,3 +13,5 @@ random numbers. DONE, the user now has to supply a seed
 parameters (e.g. negative variance etc)
 
 5. Add the triangular distribution.
+
+6. Add the Rayleigh distribution

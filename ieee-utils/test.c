@@ -359,7 +359,7 @@ main (void)
 
 	gsl_test_int (r.sign, 0, "double x = DBL_MIN/2^%d, sign is +", i + 1);
 	gsl_test_int (r.exponent, -1023,
-		      "double x = DBL_MIN/2^%d, exponent is -1022", i + 1);
+		      "double x = DBL_MIN/2^%d, exponent", i + 1);
 	gsl_test_str (r.mantissa, mantissa,
 		      "double x = DBL_MIN/2^%d, mantissa", i + 1);
 	gsl_test_int (r.type, GSL_IEEE_TYPE_DENORMAL,
