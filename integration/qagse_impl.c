@@ -350,8 +350,6 @@ gsl_integration_qagse_impl (double (*f) (double x),
     }
   while (i < limit && !error_type && errsum > tolerance);
 
-  printf ("error_type = %d, error_type2 = %d\n", error_type, error_type2);
-
   if (*abserr == DBL_MAX)
     goto compute_result;
 
@@ -411,6 +409,7 @@ compute_result:
 fixmefixme:
 
   *nqeval = 2 * i + 1;
+  *last = i + 1 ;
 
   if (error_type) 
     {
