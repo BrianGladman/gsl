@@ -1,9 +1,23 @@
 This file documents problems installing GSL on specific platforms.
 
-Any platform
-------------
+Information is available for the following systems,
 
-* If there are problems building the library try using
+-- Any platform
+-- AIX
+-- Compaq/DEC Alpha
+-- DOS
+-- IRIX
+-- MacOS X
+-- Microsoft Visual C++
+-- OpenBSD
+-- OS/2
+-- PPC
+-- Solaris
+
+* Any platform
+--------------
+
+If there are problems building the library try using
 
         ./configure --disable-shared
 
@@ -12,7 +26,7 @@ the build process to complete successfully.
 
 If you get any problems try this first.
 
-* Attempts to run 'strip' on the static library libgsl.a will probably
+Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
 strip, and probably affects others too). The libgsl.a ar archive made
 by libtool contains files with the same filenames from different
@@ -20,13 +34,13 @@ directories, and this causes the strip program to overwrite these
 archive entries.  If you need to produce a compact version of the
 library compile without -g instead of using strip.
 
-* make install-strip does not work, due to a minor problem with autoconf
+make install-strip does not work, due to a minor problem with autoconf
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
 
 
-AIX
----
+* AIX
+-----
 
 For compilation problems with the native compiler xlc, try disabling
 shared libraries,
@@ -36,8 +50,8 @@ shared libraries,
     ./configure --disable-shared
     make
 
-Compaq/DEC Alpha
-----------------
+* Compaq/DEC Alpha
+------------------
 
 With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
 due to a compiler optimization bug which causes errors in the
@@ -58,8 +72,8 @@ to build the library this way.
 Use GNU tar to unpack the tar file, as Tru64 tar gives an error
 halfway through.
 
-DOS
----
+* DOS
+-----
 
 When using DJGPP The default stack size of 512k may be insufficient for
 the specfunc tests and will cause them to crash.  To increase the
@@ -70,8 +84,8 @@ stack size by a suitable amount use,
 on the executable and then rerun it manually.  (5/01: The specfunc
 tests have been rewritten to use less stack space now).
 
-IRIX
-----
+* IRIX
+------
 
 The 32 bit IRIX compiler gives warnings about "long double" not being
 supported. These can be ignored or turned off with,
@@ -90,16 +104,16 @@ You may get warnings about " /usr/bin/ld: arg list too long" when
 building shared libraries.  If so, try increasing the ncargs kernel
 parameter with the systune(1m) command.
 
-MacOS X
--------
+* MacOS X
+---------
 
 There are problems with dynamic linker, so the library should be
 compiled with
 
   ./configure --disable-shared
 
-Microsoft Visual C++
---------------------
+* Microsoft Visual C++
+----------------------
 
 When compiled with the "Maximize speed" optimisation option (/O2 flag)
 the tests give the following failures
@@ -111,16 +125,25 @@ FAIL: gsl_finite(nan) (1 observed vs 0 expected)
 
 They work correctly without optimization
 
-OpenBSD
--------
+* OpenBSD
+---------
 
 As of July 2001 the OpenBSD log1p() function on i386 causes failures
 in the gsl complex tests.  The configure script has been hardcoded to
 substitute gsl_log1p instead on OpenBSD.  The log1p() bug has been
 reported and so may be fixed in future versions of OpenBSD.
 
-PPC
----
+* OS/2
+------
+
+The configure script fails to detect the function 'isnan', leading to
+a slew of errors 'isnan redefined'.
+
+To work around this problem, run configure and edit the resulting
+config.h file to comment out the line which defines HAVE_ISINF.
+
+* PPC
+-----
 
 F J Frankin <MEP95JFF@sheffield.ac.uk> reported on the gsl-discuss
 mailing list that some early versions of GCC-2.95 have a problem with
@@ -130,38 +153,17 @@ a segmentation fault when run).  This problem is fixed in recent
 versions of GCC.  GSL now includes an autoconf test which detects the
 problem.
 
+* Solaris
+---------
 
-Solaris
--------
+Some warnings about "end of loop code not reached". These can be
+ignored -- they come from the do { ... ; return ; } while(0) statement
+in the GSL_ERROR macro.
 
-The Solaris C compiler (cc) has problems compiling the vector and
-matrix code, giving the error message
 
-  "./reim_source.c", line 35: left operand must be modifiable lvalue: op "="
+
 
-correspoding to a line containing a return statement.  This seems to
-be due to a misinterpretation of the C90 standard, Section 6.6.6.4,
-
-    If a return statement with an expression is executed the value of
-    the expression is returned to the caller as the value of the
-    function call expression.  If the expression has a type different
-    from that of the function in which it appears, it is converted as
-    if it were assigned to an object of that type.
-
-It looks like they are applying the second rule, since the '=' sign in
-the error message indicates assignment.  This results in an error,
-since the return type is a struct containing a const element.
-However, the expression type is the same as the function type, so this
-rule should not be applied here.
-
-The same code works with Tru64 Unix, IRIX, HP-UX, AIX and Microsoft
-compilers, and with gcc -ansi.
-
-I am going to assume this is a bug in the Solaris compiler.
-
-There is no simple way to work around this problem, as it involves an
-inherent part of the design of the vector/matrix library.
-
-I am not an expert by any means on the C standard or Solaris Compilers
-so any further information or tips would be useful, please send them
-to gsl-discuss@sources.redhat.com.
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:
