@@ -1380,7 +1380,7 @@ cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 #undef BASE
 }
 
-#ifdef 0
+
 /* SYRK */
 
 void
@@ -1412,7 +1412,7 @@ cblas_csyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const void *beta, void *C, const int ldc)
 {
 #define BASE float
-#include "source_sryk_c.h"
+#include "source_syrk_c.h"
 #undef BASE
 }
 
@@ -1423,11 +1423,11 @@ cblas_zsyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const void *beta, void *C, const int ldc)
 {
 #define BASE double
-#include "source_sryk_c.h"
+#include "source_syrk_c.h"
 #undef BASE
 }
 
-
+#ifdef 0
 /* HERK */
 
 void
