@@ -9,5 +9,5 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 check_PROGRAMS = test
-test_LDADD = libgslieeeutils.la ../err/libgsltest.a
+test_LDADD = libgslieeeutils.la ../err/libgsltest.la
 test_SOURCES = test.c
