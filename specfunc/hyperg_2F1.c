@@ -78,11 +78,12 @@ static int hyperg_2F1_conj_series(const double aR, const double aI, const double
 }
 
 static int hyperg_2F1_luke(const double a, const double b, const double c,
-                           const double x, 
+                           const double xin, 
 			   double * result, double * prec)
 {
   const int nmax = 10000;
   int n = 3;
+  const double x  = -xin;
   const double x3 = x*x*x;
   const double t0 = a*b/c;
   const double t1 = (a+1.0)*(b+1.0)/(2.0*c);
@@ -117,7 +118,7 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
     double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
     double r = An/Bn;
 
-    *prec = fabs(F - r)/F;
+    *prec = fabs((F - r)/F);
     F = r;
 
     if(*prec < locEPS || n > nmax) break;
@@ -138,6 +139,19 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
   else
     return GSL_SUCCESS;
 }
+
+void testy(void)
+{
+  double y, prec;
+  double a = 10.0;
+  double b = 3.0;
+  double c = 1.0;
+  double x = 0.8;
+  int stat = hyperg_2F1_luke(a, b, c, x, &y, &prec);
+  printf("%24.18g   %24.18g   %6.4g  %2d\n", x, y, prec, stat);
+  exit(0);
+}
+
 
 /* a = aR + i aI, b = aR - i aI */
 static int hyperg_2F1_conj_luke(const double aR, const double aI, const double c,
@@ -309,8 +323,8 @@ int gsl_sf_hyperg_2F1_impl(const double a, const double b, const double c,
     double status_F1, status_F2;
     double prec_F1, prec_F2;
     double lng_c   = gsl_sf_lngamma(c);
-    double ln_pre1 = lng_c + gsl_sf_ln_gamma( d) - gsl_sf_lngamma(c-a) - gsl_sf_lngamma(c-b);
-    double ln_pre2 = lng_c + gsl_sf_ln_gamma(-d) - gsl_sf_lngamma(a)   - gsl_sf_lngamma(b) + d*log(1.0-x);
+    double ln_pre1 = lng_c + gsl_sf_lngamma( d) - gsl_sf_lngamma(c-a) - gsl_sf_lngamma(c-b);
+    double ln_pre2 = lng_c + gsl_sf_lngamma(-d) - gsl_sf_lngamma(a)   - gsl_sf_lngamma(b) + d*log(1.0-x);
     if(ln_pre1 > GSL_LOG_DBL_MAX || ln_pre2 > GSL_LOG_DBL_MAX) {
       *result = 0.0; /* FIXME: should be Inf */
       return GSL_EOVRFLW;
