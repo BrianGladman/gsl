@@ -4,12 +4,144 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_gamma.h"
 #include "gsl_sf_pow_int.h"
+#include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
+
+#define locEPS  (1000.0*GSL_MACH_EPS)
+
 
 #ifndef Sqr
 #define Sqr(x) ((x)*(x))
 #endif
+
+
+/* Handle case of integer j <= -2.
+ */
+static
+int
+fd_nint(const int j, const double x, double * result)
+{
+  const int nmax = 100;
+  double qcoeff[nmax+1];
+
+  if(j >= -1) {
+    *result = 0.0;
+    return GSL_ESANITY;
+  }
+  else if(j < -(nmax+1)) {
+    *result = 0.0;
+    return GSL_EUNIMPL;
+  }
+  else {
+    double a, p, f;
+    int i, k;
+    int n = -(j+1);
+
+    qcoeff[1] = 1.0;
+
+    for(k=2; k<=n; k++) {
+      qcoeff[k] = -qcoeff[k-1];
+      for(i=k-1; i>=2; i--) {
+        qcoeff[i] = i*qcoeff[i] - (k-(i-1))*qcoeff[i-1];
+      }
+    }
+
+    if(x >= 0.0) {
+      a = exp(-x);
+      f = qcoeff[1];
+      for(i=2; i<=n; i++) {
+        f = f*a + qcoeff[i];
+      }
+    }
+    else {
+      a = exp(x);
+      f = qcoeff[n];
+      for(i=n-1; i>=1; i--) {
+        f = f*a + qcoeff[i];
+      }
+    }
+
+    p = gsl_sf_pow_int(1.0+a, j);
+    *result = f*a*p;
+  }
+}
+
+
+/* x < 0
+ */
+static
+int
+fd_neg(const double j, const double x, double * result)
+{
+  const int itmax = 100;
+  double qnum[itmax+1], qden[itmax+1];
+
+  if(x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+  else {
+    double s;
+    double xn = x;
+    double ex  = -exp(x);
+    double enx = -ex;
+    double f = 0.0;
+    int jterm;
+    for(jterm=1; jterm<=itmax; jterm++) {
+      double p = gsl_sf_pow_int(jterm, j+1);
+      double f_previous = f;
+      double term = enx/p;
+      int stat_lu;
+      xn += x;
+      if(fabs(f-f_previous) < fabs(f)*10.0*GSL_MACH_EPS || xn < GSL_LOG_DBL_MIN) break;
+      stat_lu = gsl_sf_levin_u_transform(term, jterm, qnum, qden, &f, s);
+      enx *= ex;
+    }
+    if(jterm == itmax)
+      return GSL_EMAXITER;
+    else
+      return GSL_SUCCESS;
+  }
+}
+
+
+/* asymptotic expansion
+ * j + 2.0 > 0.0
+ */
+static
+int
+fd_asymp(const double j, const double x, double * result)
+{
+  const int j_integer = ( fabs(j - floor(j+0.5)) < 100.0*GSL_MACH_EPS );
+  const int itmax = 100;
+  double lg;
+  int stat_lg = gsl_sf_lngamma_impl(j + 2.0, &lg);
+  double seqn = 0.5;
+  double xm2  = (1.0/x)/x;
+  double xgam = 1.0;
+  double add  = DBL_MAX;
+  double fneg;
+  int stat_fneg;
+  int stat_ser;
+  int stat_eta = 0;
+  int n;
+  for(n=1; n<=itmax; n++) {
+    double add_previous = add;
+    double eta;
+    gsl_sf_eta_int_impl(2*n, &eta);
+    xgam = xgam * xm2 * (j + 1.0 - (2*n-2)) * (j + 1.0 - (2*n-1));
+    add  = eta * xgam;
+    if(fabs(add) > fabs(add_previous) && !j_integer) break;
+    seqn += add;
+  }
+  stat_ser = ( fabs(add) > locEPS*fabs(seqn) ? GSL_ELOSS : GSL_SUCCESS );
+
+  stat_fneg = fd_neg(j, -x, &fneg);
+  *result = cos(j*M_PI) * fneg + 2.0 * seqn * exp((j+1.0)*log(x) - lg);
+  return GSL_ERROR_SELECT_3(stat_fneg, stat_ser, stat_lg);
+}
 
 
 /* implement trapezoid rule for func with 2 args
@@ -104,6 +236,7 @@ int gsl_sf_fermi_dirac_m1_impl(const double x, double * result)
   }
 }
 
+
 /* [Goano, TOMS-745, (3)] */
 int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
 {
@@ -126,6 +259,33 @@ int gsl_sf_fermi_dirac_0_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
 }
+
+
+int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
+{
+  if(j == 0) {
+    return gsl_sf_fermi_dirac_0_impl(x, result);
+  }
+  else if(j == -1) {
+    return gsl_sf_fermi_dirac_m1_impl(x, result);
+  }
+  else if(j < 0) {
+    return fd_nint(j, x, result);
+  }
+  else if(x <= 0.0) {
+    return fd_neg(j, x, result);
+  }
+  else {
+    double k_div = -log10(10.0*GSL_MACH_EPS);
+    double a1    = 2.0*k_div - j*(2.0+k_div/10.0);
+    double a2    = sqrt(fabs((2.0*k_div - 1.0 - j)*(2.0*k_div - j)));
+    double a     = locMAX(a1, a2);
+    double xasymp = locMAX(j-1.0, a);
+    double fasymp;
+    int stat_asymp = fd_asymp(j, x, &fasymp);
+  }
+}
+
 
 /* [Goano, TOMS-745, p. 222] */
 int gsl_sf_fermi_dirac_inc_0_impl(const double x, const double b, double * result)

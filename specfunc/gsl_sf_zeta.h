@@ -48,7 +48,7 @@ double  gsl_sf_eta_int(int n);
 /* Eta Function
  * eta(s) = (1-2^(1-s)) zeta(s)
  *
- * exceptions:
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
  */
 int     gsl_sf_eta_impl(double s, double * result);
 int     gsl_sf_eta_e(double s, double * result);

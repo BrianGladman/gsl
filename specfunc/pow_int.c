@@ -22,11 +22,11 @@ inline double gsl_sf_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3;
 
 double gsl_sf_pow_int(double x, int n)
 {
-  double value = 1.;
+  double value = 1.0;
 
   if(n < 0) {
-    if(x == 0.0) return 0.; /* FIXME: should be Inf */
-    x = 1./x;
+    if(x == 0.0) return 0.0; /* FIXME: should be Inf */
+    x = 1.0/x;
     n = -n;
   }
 
