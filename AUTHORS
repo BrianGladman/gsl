@@ -1,6 +1,8 @@
 Mark Galassi (rosalia@cygnus.com) - overall design, simulated annealing
 Jim Davies (jimmyd@nis.lanl.gov) - statistics library
 James Theiler (jt@nis.lanl.gov) - random number generators
-Brian Gough (bjg@vvv.lanl.gov) - FFT package, error handling
+Brian Gough (bjg@vvv.lanl.gov) - FFT package, error handling, vector and 
+  matrix functions, histograms, some parts of statistics, ieee-utils, 
+  integration
 Reid Priedhorsky (rp@lanl.gov) - root finding
 Gerry Jungman (jungman@nnn.lanl.gov) special functions
