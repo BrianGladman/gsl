@@ -263,6 +263,16 @@ subsequent results are rounded to the same value.
 @itemize @asis
 @item
 David Goldberg: What Every Computer Scientist Should Know About
-Floating-Point Arithmetic. [Comm ACM ??] Vol. 23, No. 1 (March 1991) pages 5-48
+Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol. 23, No. 1
+(March 1991), pages 5-48
+
+Corrigendum: @cite{ACM Computing Surveys}, Vol. 23, No. 3 (September
+1991), page 413.
+
+@item
+See also the sections by B. A. Wichmann and Charles B. Dunham in
+Surveyor's Forum: ``What Every Computer Scientist Should Know About
+Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol. 24,
+No. 3 (September 1992), page 319
 @end itemize
 @noindent

@@ -12,3 +12,6 @@ together with "make check" at the top level.
 
 If you are interested in participating in GSL development, please send
 mail to Mark Galassi -- rosalia@cygnus.com
+
+Until we have set up a separate bug reporting address, please report
+any bugs to the GSL discussion list gsl-discuss@sourceware.cygnus.com
