@@ -12,6 +12,7 @@ The functions and macros are defined in the header file @file{gsl_math.h}.
 * Mathematical Constants::      
 * Infinities and Not-a-number::  
 * Elementary Functions::        
+* Small integer powers::        
 * Testing the Sign of Numbers::  
 * Testing for Odd and Even Numbers::  
 * Maximum and Minimum functions::  
