@@ -1,13 +1,13 @@
 This chapter describes functions for solving linear systems.  The
 library provides simple linear algebra operations which operate directly
-on the gsl_vector and gsl_matrix objects. These are meant for "small"
-systems where simple algorithms perform acceptably.
+on the @code{gsl_vector} and @code{gsl_matrix} objects.  These are meant
+for "small" systems where simple algorithms are acceptable.
 
-Anyone interested in large systems will want to use the more
-sophisticated routines found in @sc{lapack}. This package supports
-blocked algorithms for greater efficiency, specialized data
-representations, and other optimizations. It is the standard package for
-linear algebra.
+Anyone interested in large systems will want to use the sophisticated
+routines found in @sc{lapack}. @sc{lapack} is recommended as the
+standard package for linear algebra.  It supports blocked algorithms for
+greater efficiency, specialized data representations, and other
+optimizations.
 
 @menu
 * LU Decomposition::            
@@ -22,46 +22,127 @@ linear algebra.
 @node LU Decomposition
 @section LU Decomposition
 
+A general square matrix @math{A} has an @math{LU} decomposition into
+upper and lower triangular matrices,
+@tex
+\beforedisplay
+$$
+P A = L U
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+P A = L U
+@end example
+@end ifinfo
+@noindent
+where @math{P} is a permutation matrix, @math{L} is unit lower
+triangular matrix and @math{R} is upper triangular matrix.
+
 @deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{a}, gsl_permutation * @var{p}, int *@var{signum})
+This function factorizes the square matrix @var{a} into the @math{LU}
+decomposition @math{P A = L U}.  On output the diagonal and upper
+triangular part of the input matrix contains the matrix @math{R}. The
+lower triangular part of the input matrix (excluding the diagonal)
+contains @math{L}.  The diagonal elements of @math{L} are unity, and are
+not stored.
+
+The permutation matrix @math{P} is encoded in the permutation
+@var{p}. The @math{j}-th column of the matrix @math{P} is given by the
+@math{k}-th column of the identity matrix, where @code{k =
+permutation->data[j]}.
+
+The sign of the permutation is given by @var{signum}. It has the value
+@math{(-1)^n}, where @math{n} is the number of interchanges in the
+permutation.
+
+The algorithm used in the decomposition is Gaussian Elimination with
+partial pivoting (Golub & Van Loan, @cite{Matrix Computations},
+Algorithm 3.4.1).
+
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_LU_solve (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the @math{LU}
+decomposition of @math{A} into (@var{lu}, @var{p}) given by
+@code{gsl_linalg_LU_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using the
+@math{LU} decomposition of @math{A} into (@var{lu},@var{p}). On input,
+@var{x} should contain the right-hand side @math{b} and will be replaced
+by the solution on output.
 @end deftypefun
 
-@deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{a}, const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{rhs}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+@deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{a}, const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+This function applies an iterative improvement to @var{x}, the solution
+of @math{Ax=b}, using the @math{LU} decomposition of @math{A} into
+(@var{lu},@var{p}). The initial residual @math{r = Ax - b} is also
+computed and stored in @var{residual}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_invert (const gsl_matrix * @var{lu}, const gsl_permutation * @var{p}, gsl_matrix * @var{inverse})
+This function computes the inverse of a matrix @math{A} from its
+@math{LU} decomposition (@var{lu},@var{p}), storing the result in the
+matrix @var{inverse}. The inverse is computed by solving the system
+@math{A x = b} for each column of the identity matrix.
 @end deftypefun
 
 @deftypefun double gsl_linalg_LU_det (gsl_matrix * @var{lu}, int @var{signum})
+This function computes the determinant of a matrix @math{A} from its
+@math{LU} decomposition, @var{lu}. The determinant is computed as the
+product of the diagonal elements of @math{U} and the sign of the row
+permutation @var{signum}.
 @end deftypefun
 
 @deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{lu})
+This function computes the logarithm of the absolute value of the
+determinant of a matrix @math{A}, @math{\ln|det(A)|}, from its @math{LU}
+decomposition, @var{lu}.  This function may be useful if the direct
+computation of the determinant would overflow or underflow.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{lu}, int @var{signum})
+This function computes the sign of the determinant of a matrix @math{A},
+@math{sign(det(A))}, from its @math{LU} decomposition, @var{lu}.
 @end deftypefun
 
 @node QR Decomposition
 @section QR Decomposition
 
+A general @math{M}-by-@math{N} matrix @math{A} has a @math{QR}
+decomposition into the product of an @math{M}-by-@math{M} orthogonal
+sqaure matrix @math{Q} (where @math{Q^T Q = I}) and an
+@math{M}-by-@math{N} right-triangular matrix @math{R},
+@tex
+\beforedisplay
+$$
+A = Q R
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A = Q R
+@end example
+@end ifinfo
+@noindent
+
 @deftypefun int gsl_linalg_QR_decomp (gsl_matrix * @var{a}, gsl_vector * @var{tau})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_qrsolve (gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_QR_qrsolve (gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QR_rsolve (const gsl_matrix * @var{qr}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_QR_rsolve (const gsl_matrix * @var{qr}, gsl_vector * @var{x})
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_update (gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{w}, const gsl_vector * @var{v})
@@ -73,7 +154,7 @@ linear algebra.
 @deftypefun int gsl_linalg_QR_unpack (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, gsl_matrix * @var{q}, gsl_matrix * @var{r})
 @end deftypefun
 
-@deftypefun int gsl_linalg_R_solve (const gsl_matrix * @var{r}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_R_solve (const gsl_matrix * @var{r}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
 @deftypefun int gsl_linalg_R_svx (const gsl_matrix * @var{r}, gsl_vector * @var{x})
@@ -85,16 +166,16 @@ linear algebra.
 @deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{a}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_svx (const gsl_matrix * @var{qr}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_qrsolve (const gsl_matrix * @var{q}, const gsl_matrix * @var{r}, const gsl_permutation * @var{p}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_QRPT_qrsolve (const gsl_matrix * @var{q}, const gsl_matrix * @var{r}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_R_solve (const gsl_matrix * @var{qr}, const gsl_permutation * @var{p}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_QRPT_R_solve (const gsl_matrix * @var{qr}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_update (gsl_matrix * @var{q}, gsl_matrix * @var{r}, const gsl_permutation * @var{p}, gsl_vector * @var{u}, const gsl_vector * @var{v})
@@ -106,7 +187,7 @@ linear algebra.
 @deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{Q}, gsl_vector * @var{S})
 @end deftypefun
 
-@deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, const gsl_vector * @var{rhs}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{Q}, gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
 @node Householder solver for linear systems
@@ -118,10 +199,10 @@ linear algebra.
 @node Tridiagonal Systems
 @section Tridiagonal Systems
 
-@deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
-@deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{rhs}, gsl_vector * @var{solution})
+@deftypefun int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{offdiag}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @end deftypefun
 
 
