@@ -2061,7 +2061,7 @@ int main (void)
 const char * s = "5678"; long double x = 1.234 ; 
 fprintf(stderr,"%Lg\n",x) ; 
 sscanf(s, "%Lg", &x);
-if (x == 5678) exit (0) else exit(1); 
+if (x == 5678) {exit (0);} else {exit(1); };
 }
 EOF
 if { (eval echo configure:2068: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
