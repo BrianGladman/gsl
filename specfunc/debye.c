@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_debye.h"
 
+#include "check.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -243,10 +245,8 @@ int gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
   else {
     result->val = (val_infinity/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 
@@ -304,10 +304,8 @@ int gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
   else {
     result->val = ((val_infinity/x)/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 
@@ -366,10 +364,8 @@ int gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
   else {
     result->val = (((val_infinity/x)/x)/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 

@@ -25,6 +25,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_transport.h"
 
+#include "check.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -257,10 +259,8 @@ gsl_sf_transport_3_e(const double x, gsl_sf_result * result)
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = 0.5*x*x;
     result->err = 2.0 * GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double x2 = x*x;
@@ -338,10 +338,8 @@ gsl_sf_transport_4_e(const double x, gsl_sf_result * result)
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x*x*x/3.0;
     result->err = 3.0 * GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double x2 = x*x;
@@ -419,10 +417,8 @@ gsl_sf_transport_5_e(const double x, gsl_sf_result * result)
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x*x*x*x/4.0;
     result->err = 4.0 * GSL_DBL_EPSILON * result->val;
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
     const double x2 = x*x;

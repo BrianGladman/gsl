@@ -27,7 +27,7 @@
 #include <gsl/gsl_sf_exp.h>
 #include "gsl_sf_gamma.h"
 
-
+#include "check.h"
 
 static
 int
@@ -147,12 +147,10 @@ gsl_sf_beta_inc_e(
       result->err = (fabs(prefactor.err * cf.val) + fabs(prefactor.val * cf.err))/a;
 
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
-      if(result->val == 0.0 && stat == GSL_SUCCESS) {
-        GSL_ERROR ("error", GSL_EUNDRFLW);
+      if(stat == GSL_SUCCESS) {
+	CHECK_UNDERFLOW(result);
       }
-      else {
-        return stat;
-      }
+      return stat;
     }
     else {
       /* Apply continued fraction after hypergeometric transformation. */
@@ -165,12 +163,10 @@ gsl_sf_beta_inc_e(
       result->err += fabs(prefactor.val * cf.err)/b;
       result->err += 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(term));
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
-      if(result->val == 0.0 && stat == GSL_SUCCESS) {
-        GSL_ERROR ("error", GSL_EUNDRFLW);
+      if(stat == GSL_SUCCESS) {
+	CHECK_UNDERFLOW(result);
       }
-      else {
-        return stat;
-      }
+      return stat;
     }
   }
 }

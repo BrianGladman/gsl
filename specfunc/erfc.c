@@ -32,6 +32,8 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_sf_erf.h"
 
+#include "check.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -348,12 +350,8 @@ int gsl_sf_erf_Z_e(double x, gsl_sf_result * result)
     result->val  = ex2 / (M_SQRT2 * M_SQRTPI);
     result->err  = fabs(x * result->val) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    if(result->val == 0.0) {
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    }
-    else {
-      return GSL_SUCCESS;
-    }
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 

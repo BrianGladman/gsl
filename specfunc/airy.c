@@ -26,6 +26,8 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_airy.h"
 
+#include "check.h"
+
 #include "chebyshev.h"
 #include "cheb_eval_mode.c"
 
@@ -688,10 +690,8 @@ gsl_sf_airy_Ai_e(const double x, const gsl_mode_t mode, gsl_sf_result * result)
     result->val  = result_aie.val * s;
     result->err  = result_aie.err * s + result->val * x32 * GSL_DBL_EPSILON;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else
-      return stat_aie;
+    CHECK_UNDERFLOW(result);
+    return stat_aie;
   }
 }
 

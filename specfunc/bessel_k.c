@@ -28,7 +28,7 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
 
-
+#include "check.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -94,10 +94,8 @@ int gsl_sf_bessel_k0_scaled_e(const double x, gsl_sf_result * result)
   else {
     result->val = M_PI/(2.0*x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else 
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 
@@ -119,10 +117,8 @@ int gsl_sf_bessel_k1_scaled_e(const double x, gsl_sf_result * result)
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 1.0/x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else 
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 
@@ -144,10 +140,8 @@ int gsl_sf_bessel_k2_scaled_e(const double x, gsl_sf_result * result)
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 3.0/x * (1.0 + 1.0/x));
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    if(result->val == 0.0)
-      GSL_ERROR ("error", GSL_EUNDRFLW);
-    else 
-      return GSL_SUCCESS;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
 }
 

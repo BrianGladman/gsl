@@ -29,6 +29,7 @@
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_coulomb.h"
 
+#include "check.h"
 
 /* normalization for hydrogenic wave functions */
 static
@@ -62,7 +63,8 @@ gsl_sf_hydrogenicR_1_e(const double Z, const double r, gsl_sf_result * result)
     double ea = exp(-Z*r);
     result->val = norm*ea;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) * fabs(Z*r);
-    return ( result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS );
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
   }
   else {
     result->val = 0.0;
@@ -91,7 +93,6 @@ gsl_sf_hydrogenicR_e(const int n, const int l,
     double pp = gsl_sf_pow_int(rho, l);
     gsl_sf_result lag;
     int stat_lag = gsl_sf_laguerre_n_e(n-l-1, 2*l+1, rho, &lag);
-    int stat_uf;
     double W_val = norm.val * ea * pp;
     double W_err = norm.err * ea * pp;
     W_err += norm.val * ((0.5*rho + 1.0) * GSL_DBL_EPSILON) * ea * pp;
@@ -99,8 +100,10 @@ gsl_sf_hydrogenicR_e(const int n, const int l,
     result->val  = W_val * lag.val;
     result->err  = W_val * lag.err + W_err * fabs(lag.val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    stat_uf = ( result->val == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS );
-    return GSL_ERROR_SELECT_3(stat_lag, stat_uf, stat_norm);
+    if (stat_lag == GSL_SUCCESS && stat_norm == GSL_SUCCESS) {
+      CHECK_UNDERFLOW(result);
+    };
+    return GSL_ERROR_SELECT_2(stat_lag, stat_norm);
   }
 }
 

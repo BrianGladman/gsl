@@ -29,6 +29,8 @@
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
+#include "check.h"
+
 #include "chebyshev.h"
 #include "cheb_eval.c"
 
@@ -1387,12 +1389,8 @@ gsl_sf_gammainv_e(const double x, gsl_sf_result * result)
       result->val  = 1.0/g.val;
       result->err  = fabs(g.err/g.val) * fabs(result->val);
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-      if(result->val == 0.0) {
-        GSL_ERROR ("error", GSL_EUNDRFLW);
-      }
-      else {
-        return GSL_SUCCESS;
-      }
+      CHECK_UNDERFLOW(result);
+      return GSL_SUCCESS;
     }
   }
 }
@@ -1483,10 +1481,8 @@ int gsl_sf_taylorcoeff_e(const int n, const double x, gsl_sf_result * result)
       }
       result->val = product;
       result->err = n * GSL_DBL_EPSILON * product;
-      if(result->val == 0.0)
-        GSL_ERROR ("error", GSL_EUNDRFLW);
-      else
-        return GSL_SUCCESS;
+      CHECK_UNDERFLOW(result);
+      return GSL_SUCCESS;
     }    
   }
 }

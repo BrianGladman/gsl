@@ -45,7 +45,8 @@ noinst_HEADERS = \
         eval.h                  \
         chebyshev.h             \
         cheb_eval.c             \
-        cheb_eval_mode.c
+        cheb_eval_mode.c        \
+	check.h
 
 INCLUDES= -I$(top_builddir)
 
