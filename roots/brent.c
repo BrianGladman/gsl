@@ -14,21 +14,21 @@
 #include "roots.h"
 
 int
-gsl_root_brent (double *root, double (*f) (double), 
-		double *lower_bound, double *upper_bound, 
-		double rel_epsilon, double abs_epsilon, 
+gsl_root_brent (double *root, double (*f) (double),
+		double *lower_bound, double *upper_bound,
+		double rel_epsilon, double abs_epsilon,
 		unsigned int max_iterations)
 {
   unsigned int iterations;
-  double fu, fl, a, b, c, d, e, tol, fa, fb, fc;
+  double fu, fl, a, b, c, d, e, tol, fa, fb, fc, xm;
 
   if (*lower_bound >= *upper_bound)
     GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
- 
+
   if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
     GSL_ERROR ("relative or absolute tolerance negative", GSL_EBADTOL);
 
- if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+  if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
     GSL_ERROR ("relative tolerance too small", GSL_EBADTOL);
 
   SAFE_FUNC_CALL (f, *lower_bound, fl);
@@ -36,6 +36,7 @@ gsl_root_brent (double *root, double (*f) (double),
   if (fl == 0.0)
     {
       *root = *lower_bound;
+      *upper_bound = *lower_bound;
       return GSL_SUCCESS;
     }
 
@@ -44,6 +45,7 @@ gsl_root_brent (double *root, double (*f) (double),
   if (fu == 0.0)
     {
       *root = *upper_bound;
+      *lower_bound = *upper_bound;
       return GSL_SUCCESS;
     }
 
@@ -51,12 +53,18 @@ gsl_root_brent (double *root, double (*f) (double),
     {
       GSL_ERROR ("endpoints do not straddle y=0", GSL_EINVAL);
     }
-  
-  a = *lower_bound ;
-  fa = fl ;
 
-  b = *upper_bound ;
-  fb = fu ;
+  a = *lower_bound;
+  fa = fl;
+
+  b = *upper_bound;
+  fb = fu;
+
+  c = b;
+  fc = fb;
+
+  d = b - a;
+  e = d;
 
   for (iterations = 0; iterations < max_iterations; iterations++)
     {
@@ -65,34 +73,49 @@ gsl_root_brent (double *root, double (*f) (double),
 	  c = a;
 	  fc = fa;
 	  d = b - a;
-	  e = d ;
-	}
-      
-      if (fabs(fc) < fabs(fb))
-	{
-	  a = b ;
-	  b = c ; 
-	  c = a ;
-	  fa = fb ;
-	  fb = fc ;
-	  fc = fa ; 
+	  e = d;
 	}
 
-      tol = 2 * rel_epsilon * fabs(b) + 0.5 * abs_epsilon ;
-      
-      { 
-	double err = 0.5 * (c - b);
-
-	if (fabs(err) <= tol || fb == 0)
-	  {
-	    *root = b;
-	    return GSL_SUCCESS;
-	  }
-      }
-
-      if (fabs(e) >= tol && fabs(fa) > fabs(fb))
+      if (fabs (fc) < fabs (fb))
 	{
-	  s = fb / fa;
+	  a = b;
+	  b = c;
+	  c = a;
+	  fa = fb;
+	  fb = fc;
+	  fc = fa;
+	}
+
+      tol = 0.5 * MAX (rel_epsilon * fabs (b), abs_epsilon);
+      xm = 0.5 * (c - b);
+
+      if (fb == 0)
+	{
+	  *root = b;
+	  *lower_bound = b;
+	  *upper_bound = b;
+
+	  return GSL_SUCCESS;
+	}
+      else if (fabs (xm) <= tol)
+	{
+	  *root = b;
+	  *lower_bound = b;
+	  *upper_bound = c;
+
+	  return GSL_SUCCESS;
+	}
+
+      if (fabs (e) < tol || fabs (fa) <= fabs (fb))
+	{
+	  d = xm;		/* use bisection */
+	  e = d;
+	}
+      else
+	{
+	  double p, q, r;	/* use inverse cubic interpolation */
+	  double s = fb / fa;
+
 	  if (a == c)
 	    {
 	      p = 2 * xm * s;
@@ -102,48 +125,50 @@ gsl_root_brent (double *root, double (*f) (double),
 	    {
 	      q = fa / fc;
 	      r = fb / fc;
-	      p = s * (2 * xm * q * (q - r) - (b - a) * (r - 1)) ;
+	      p = s * (2 * xm * q * (q - r) - (b - a) * (r - 1));
 	      q = (q - 1) * (r - 1) * (s - 1);
 	    }
 	  if (p <= 0)
 	    {
-	      p = -p ;
+	      p = -p;
 	    }
 	  else
 	    {
-	      q = -q ;
+	      q = -q;
 	    }
-	  
-	  s = e ;
 
-	  if (2 * p < MIN(3 * xm * q - fabs(tol * q), fabs(s * q)))
+	  if (2 * p < MIN (3 * xm * q - fabs (tol * q), fabs (e * q)))
 	    {
-	      e = d ;
-	      d = p/q ;
+	      e = d;
+	      d = p / q;
 	    }
 	  else
 	    {
-	      d = xm ;
-	      e = d ;
+	      /* interpolation failed, fall back to bisection */
+	      d = xm;
+	      e = d;
 	    }
 	}
 
-      a = b ;
-      fa = fb ;
+      a = b;
+      fa = fb;
 
-      if (fabs(d) > tol)
+      if (fabs (d) > tol)
 	{
 	  b += d;
 	}
       else
 	{
-	  b += (xm < 0 ? -tol1 : +tol1) ;
+	  b += (xm < 0 ? -tol : +tol);
 	}
 
-      SAFE_FUNC(f, *b, fb);
-	
+      SAFE_FUNC_CALL (f, b, fb);
+
     }
-  
+
+  *lower_bound = b;
+  *upper_bound = c;
+
   GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
-  
+
 }
