@@ -20,9 +20,9 @@ intermediate values that might overflow.
 The functions are available in versions for datasets in the standard
 floating-point and integer types.  The versions for double precision
 floating-point data have the prefix @code{gsl_stats} and are declared in
-the header file @file{gsl_stats_double.h}.  The versions for integer
+the header file @file{gsl_statistics_double.h}.  The versions for integer
 data have the prefix @code{gsl_stats_int} and are declared in the header
-files @file{gsl_stats_int.h}. 
+files @file{gsl_statistics_int.h}. 
 
 @menu
 * Mean and standard deviation and variance::  
