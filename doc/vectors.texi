@@ -199,7 +199,7 @@ Vectors are defined by a @code{gsl_vector} structure which describes a
 slice of a block. A vector represents a @dfn{view} of an area of memory,
 and different vectors can be created which point to the same block.  For
 example, it is possible to make two vectors which point to the even and
-odd elements of a third vector, or to make vectors which correspond to
+odd elements of another vector, or to make vectors which correspond to
 the rows and columns of a matrix.
 
 The @code{gsl_vector} structure contains four members, the @dfn{size},

@@ -1,8 +1,13 @@
 TODO  -- see also individual TODO files in each directory
 
+* Subtle bug in BLAS. If uninitialized memory is passed with a
+multiplier of zero then it is accessed and multiplied by zero. This
+would be ok, except that the memory could contain NaN or Inf. Should
+check for zero case and explicitly handle it.
+
 * Investigate complex support in GCC: Operations like sin(z) silently
 convert argument to double, losing the imaginary part. This is
-mentioned in CEPHES documentation in 1988 with a patch to generate a
+mentioned in CEPHES documentation in 1998 with a patch to generate a
 warning.  What happened?
 
 * Go through the matrix and vector functions systematically and decide

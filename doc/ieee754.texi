@@ -252,7 +252,7 @@ environment variable should be a list of keywords, separated by
 commas, like this,
 
 @display
-@code{GSL_IEEE_MODE} = "@var{keyword},@var{keyword};..."
+@code{GSL_IEEE_MODE} = "@var{keyword},@var{keyword},..."
 @end display
 
 @noindent

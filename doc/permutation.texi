@@ -61,6 +61,7 @@ insufficient memory is available to create the permutation.
 @end deftypefun
 
 @deftypefun void gsl_permutation_init (gsl_permutation * @var{p})
+@cindex indentity permutation
 This function initializes the permutation @var{p} to the identity, i.e.
 @math{(0,1,2,...,n-1)}.
 @end deftypefun
@@ -82,6 +83,8 @@ permutation @var{p}.  If @var{i} lies outside the allowed range of 0 to
 @end deftypefun
 
 @deftypefun int gsl_permutation_swap (gsl_permutation * @var{p}, const size_t @var{i}, const size_t @var{j})
+@cindex exchanging permutation elements
+@cindex swapping permutation elements
 This function exchanges the @var{i}-th and @var{j}-th elements of the
 permutation @var{p}.
 @end deftypefun
@@ -99,6 +102,8 @@ permutation @var{p}.
 @end deftypefun
 
 @deftypefun int gsl_permutation_valid (gsl_permutation * @var{p})
+@cindex checking permutation for validity
+@cindex testing permutation for validity
 This function checks that the permutation @var{p} is valid.  The @var{n}
 elements should contain each of the numbers 0 .. @var{n}-1 once and only
 once.
@@ -108,10 +113,12 @@ once.
 @section Permutation functions
 
 @deftypefun void gsl_permutation_reverse (gsl_permutation * @var{p})
+@cindex reversing a permutation
 This function reverses the elements of the permutation @var{p}.
 @end deftypefun
 
 @deftypefun int gsl_permutation_invert (gsl_permutation * @var{inv}, const gsl_permutation * @var{p})
+@cindex inverting a permutation
 This function computes the inverse of the permuation @var{p}, storing
 the result in @var{inv}.
 @end deftypefun

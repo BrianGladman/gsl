@@ -21,7 +21,10 @@ distributions such as the Gaussian, log-normal or Poisson distributions.
 * Auxiliary random number generator functions::  
 * Random number environment variables::  
 * Saving and restoring random number generator state::  
-* Available random number generator algorithms::  
+* Random number generator algorithms::  
+* Unix random number generators::  
+* Numerical Recipes generators::  
+* Other random number generators::  
 * Random Number Generator Performance::  
 * Random Number References and Further Reading::  
 * Random Number Acknowledgements::  
@@ -334,8 +337,8 @@ This function prints a hex-dump of the state of the generator @var{r} to
 @code{stdout}.  At the moment its only use is for debugging.
 @end deftypefn
 
-@node Available random number generator algorithms
-@section Available random number generator algorithms
+@node Random number generator algorithms
+@section Random number generator algorithms
 
 The functions described above make no reference to the actual algorithm
 used.  This is deliberate so that you can switch algorithms without
@@ -343,16 +346,6 @@ having to change any of your application source code.  The library
 provides a large number of generators of different types, including
 simulation quality generators, generators provided for compatibility
 with other libraries and historical generators from the past.
-
-@menu
-* Simulation quality generators::  
-* Unix random number generators::  
-* Numerical Recipes generators::  
-* Other random number generators::  
-@end menu
-
-@node Simulation quality generators
-@subsection Simulation quality generators
 
 The following generators are recommended for use in simulation.  They
 have extremely long periods, low correlation and pass most statistical
@@ -679,7 +672,7 @@ generators", @cite{Computers in Physics}, 12(4), Jul/Aug
 @end deffn
 
 @node Unix random number generators
-@subsection Unix random number generators
+@section Unix random number generators
 
 The standard Unix random number generators @code{rand}, @code{random}
 and @code{rand48} are provided as part of GSL. Although these
@@ -807,7 +800,7 @@ different results (only the lower 16-bits of the return value were set).
 @end deffn
 
 @node Numerical Recipes generators
-@subsection Numerical Recipes generators
+@section Numerical Recipes generators
 @cindex Random number generators, Numerical recipes
 @cindex Numerical recipes, random number generators
 @comment
@@ -842,7 +835,7 @@ subtractive generator.
 @end deffn
 
 @node Other random number generators
-@subsection Other random number generators
+@section Other random number generators
 
 The generators in this section are provided for compatibility with
 existing libraries.  If you are converting an existing program to use GSL

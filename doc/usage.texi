@@ -14,6 +14,7 @@ introduces its conventions.
 * Alternative optimized functions::  
 * Support for different numeric types::  
 * Compatibility with C++::      
+* Aliasing of arrays::          
 @end menu
 
 @node ANSI C Compliance
@@ -282,3 +283,13 @@ header, or any other specific type, file use its individual filename.
 @cindex C++, compatibility
 The library header files automatically define functions to have
 @code{extern "C"} linkage when included in C++ programs.
+
+
+@node Aliasing of arrays
+@section Aliasing of arrays
+@cindex aliasing of arrays
+The library assumes that arrays, vectors and matrices passed as
+arguments are not aliased and do not overlap. This allows the library to
+use additional optimizations, and removes the need to handle overlapping
+memory regions as a special case.  If overlapping arguments are used
+then the results of such functions will be undefined.

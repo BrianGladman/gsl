@@ -7,6 +7,9 @@ Tru64, AIX, IRIX, fixes for odes, and testing
 * Thomas Walter <walter@pctc.chemie.uni-erlangen.de> for heapsort
 routines, bug reports and useful suggestions
 
+* Jorma Olavi T{htinen <jotahtin@cc.hut.fi> for complex arithmetic
+functions
+
 * Barak Pearlmutter <bap@cs.unm.edu>
 
 * Frederick W. Wheeler <wheeler@cipr.rpi.edu>

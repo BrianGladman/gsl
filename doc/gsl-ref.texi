@@ -181,6 +181,7 @@ not recommended for general use.
 * Interpolation::               
 * Series Acceleration::         
 * Simulated Annealing::         
+* Complex Numbers::             
 * Vectors and Matrices::        
 * BLAS Support::                
 * Linear Algebra::              
@@ -289,11 +290,15 @@ allowing wrappers to be written for very high level languages.
 @include sum.texi
 
 @comment Section on simulated annealing
-@node Simulated Annealing, Vectors and Matrices, Series Acceleration, Top
+@node Simulated Annealing, Complex Numbers, Series Acceleration, Top
 @chapter Simulated Annealing
 @include siman.texi
 
-@node Vectors and Matrices, BLAS Support, Simulated Annealing, Top
+@node Complex Numbers, Vectors and Matrices, Simulated Annealing, Top
+@chapter Complex Numbers
+@include complex.texi
+
+@node Vectors and Matrices, BLAS Support, Complex Numbers, Top
 @chapter Vectors and Matrices
 @include vectors.texi
 

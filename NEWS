@@ -13,6 +13,9 @@ C++ programs
     gsl_rng_cpy (dest, src)     is now  gsl_rng_memcpy (dest, src)
     gsl_matrix_copy_row (v,m,i) is now  gsl_matrix_get_row (v,m,i)
     gsl_matrix_copy_col (v,m,j) is now  gsl_matrix_get_col (v,m,j)
+    gsl_vector_swap             is now  gsl_vector_swap_elements
+    gsl_vector_swap_cols        is now  gsl_vector_swap_columns
+    gsl_vector_swap_row_col     is now  gsl_vector_swap_row_column
 
 ** A new sort directory has been added for sorting objects and vectors.
 
