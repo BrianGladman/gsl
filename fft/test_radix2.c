@@ -184,8 +184,8 @@ void check_complex_radix2 (unsigned int n)
 				    "fft of noise", complex_data,
 				    n, 1e6);
   msg_result_status (status);
-  
-  
+
+
   msg_checking_params (length, 
 		       "gsl_fft_complex_radix2_forward with signal_noise");
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);

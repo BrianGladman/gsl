@@ -152,8 +152,8 @@ gsl_fft_complex_radix2 (complex data[],
 	  const double z1_real = data[j].real ;
 	  const double z1_imag = data[j].imag ;
 
-	  const double wd_real = z1_real -  z1_imag;
-	  const double wd_imag = z1_imag +  z1_real;
+	  const double wd_real = z1_real ;
+	  const double wd_imag = z1_imag ;
 	  
 	  data[j].real = data[i].real - wd_real;
 	  data[j].imag = data[i].imag - wd_imag;
@@ -283,3 +283,11 @@ gsl_fft_complex_radix2_dif (complex data[],
   return 0;
 
 }
+
+
+
+
+
+
+
+
