@@ -20,10 +20,6 @@
 	* NEWS, configure.in, gsl.spec: upped the version to 0.7 as we are
 	about to release.
 
-Tue Sep 19 19:09:46 2000  Brian Gough  <bjg@network-theory.co.uk>
-
-	* fit/test.c (main): removed unused variables
-
 Thu Jul 20 20:20:04 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.m4: changed \? to \{0,1\} in the sed commands to allow for

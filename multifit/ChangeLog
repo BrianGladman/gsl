@@ -1,0 +1,5 @@
+Fri Sep 29 19:19:24 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am multifit/demo.c: removed demo from Makefile since it
+ 	is was just a temporary test.
+
