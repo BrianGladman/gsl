@@ -84,6 +84,8 @@ double test_hypergeometric4 (void);
 double test_hypergeometric4_pdf (unsigned int x);
 double test_hypergeometric5 (void);
 double test_hypergeometric5_pdf (unsigned int x);
+double test_hypergeometric6 (void);
+double test_hypergeometric6_pdf (unsigned int x);
 double test_levy1 (void);
 double test_levy1_pdf (double x);
 double test_levy2 (void);
@@ -131,10 +133,6 @@ main (void)
 
 #define FUNC(x) x, "gsl_ran_" #x
 #define FUNC2(x) x, x ## _pdf, "gsl_ran_" #x
-  test_pdf (FUNC2(test_bivariate_gaussian1));
-  test_pdf (FUNC2(test_bivariate_gaussian2));
-  test_pdf (FUNC2(test_bivariate_gaussian3));
-  test_pdf (FUNC2(test_bivariate_gaussian4));
 
   test_shuffle() ;
   test_choose() ;
@@ -166,6 +164,11 @@ main (void)
   test_pdf (FUNC2(test_gaussian));
   test_pdf (FUNC2(test_ugaussian));
 
+  test_pdf (FUNC2(test_bivariate_gaussian1));
+  test_pdf (FUNC2(test_bivariate_gaussian2));
+  test_pdf (FUNC2(test_bivariate_gaussian3));
+  test_pdf (FUNC2(test_bivariate_gaussian4));
+
   test_pdf (FUNC2(test_gumbel1));
   test_pdf (FUNC2(test_gumbel2));
   test_pdf (FUNC2(test_levy1));
@@ -196,6 +199,7 @@ main (void)
   test_discrete_pdf (FUNC2(test_hypergeometric3));
   test_discrete_pdf (FUNC2(test_hypergeometric4));
   test_discrete_pdf (FUNC2(test_hypergeometric5));
+  test_discrete_pdf (FUNC2(test_hypergeometric6));
   test_discrete_pdf (FUNC2(test_negative_binomial));
   test_discrete_pdf (FUNC2(test_pascal));
 
@@ -937,6 +941,20 @@ test_hypergeometric5_pdf (unsigned int n)
 {
   return gsl_ran_hypergeometric_pdf (n, 2, 7, 5);
 }
+
+
+double
+test_hypergeometric6 (void)
+{
+  return gsl_ran_hypergeometric (r_global, 2, 10, 3);
+}
+
+double
+test_hypergeometric6_pdf (unsigned int n)
+{
+  return gsl_ran_hypergeometric_pdf (n, 2, 10, 3);
+}
+
 
 
 
