@@ -110,3 +110,6 @@ suggestions, additional histogram code, PyGSL python interface
 
 * Carlo Perassi <carlo@linux.it> for implementing the random number
 generators in Knuth's Seminumerical Algorithms, 3rd Ed.
+
+* Dan, Ho-Jin <hjdan@sys713.kaist.ac.kr> for divided differences interpolation
+routines

@@ -56,6 +56,31 @@ double gsl_poly_eval(const double c[], const int len, const double x)
 }
 #endif /* HAVE_INLINE */
 
+/* Work with divided-difference polynomials, Abramowitz & Stegun 25.2.26 */
+
+int
+gsl_poly_dd_init (double dd[], const double x[], const double y[],
+                  size_t size);
+
+double
+gsl_poly_dd_eval (const double dd[], const double xa[], const size_t size, const double x);
+
+#ifdef HAVE_INLINE
+extern inline
+double gsl_poly_dd_eval(const double dd[], const double xa[], const size_t size, const double x)
+{
+  size_t i;
+  double y = dd[size - 1];
+  for (i = size - 1; i--;) y = dd[i] + (x - xa[i]) * y;
+  return y;
+}
+#endif /* HAVE_INLINE */
+
+
+int
+gsl_poly_dd_taylor (double c[], double xp,
+                    const double dd[], const double x[], size_t size,
+                    double w[]);
 
 /* Solve for real or complex roots of the standard quadratic equation,
  * returning the number of real roots.

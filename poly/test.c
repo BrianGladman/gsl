@@ -418,6 +418,45 @@ main (void)
 
   }
 
+  {
+    int i;
+
+    double xa[7] = {0.16, 0.97, 1.94, 2.74, 3.58, 3.73, 4.70 };
+    double ya[7] = {0.73, 1.11, 1.49, 1.84, 2.30, 2.41, 3.07 };
+
+    double dd_expected[7] = {  7.30000000000000e-01,
+                               4.69135802469136e-01,
+                              -4.34737219941284e-02,
+                               2.68681098870099e-02,
+                              -3.22937056934996e-03,
+                               6.12763259971375e-03,
+                              -6.45402453527083e-03 };
+
+    double dd[7], coeff[7], work[7];
+    
+    gsl_poly_dd_init (dd, xa, ya, 7);
+
+    for (i = 0; i < 7; i++)
+      {
+        gsl_test_rel (dd[i], dd_expected[i], 1e-10, "divided difference dd[%d]", i);
+      }
+
+    for (i = 0; i < 7; i++)
+      {
+        double y = gsl_poly_dd_eval(dd, xa, 7, xa[i]);
+        gsl_test_rel (y, ya[i], 1e-10, "divided difference y[%d]", i);
+      }
+
+    gsl_poly_dd_taylor (coeff, 1.5, dd, xa, 7, work);
+    
+    for (i = 0; i < 7; i++)
+      {
+        double y = gsl_poly_eval(coeff, 7, xa[i] - 1.5);
+        gsl_test_rel (y, ya[i], 1e-10, "taylor expansion about 1.5 y[%d]", i);
+      }
+  }
+
+
   /* now summarize the results */
 
   exit (gsl_test_summary ());

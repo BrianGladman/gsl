@@ -67,6 +67,15 @@ Linear interpolation.  This interpolation method does not require any
 additional memory.
 @end deffn
 
+@deffn {Interpolation Type} gsl_interp_polynomial
+@cindex polynomial interpolation
+Polynomial interpolation.  This method should only be used for
+interpolating small numbers of points because polynomial interpolation
+introduces large oscillations, even for well-behaved datasets.  The
+number of terms in the interpolating polynomial is equal to the number
+of points.
+@end deffn
+
 @deffn {Interpolation Type} gsl_interp_cspline
 @cindex cubic splines
 Cubic spline with natural boundary conditions

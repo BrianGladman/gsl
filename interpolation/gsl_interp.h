@@ -71,6 +71,7 @@ typedef struct {
 
 /* available types */
 extern const gsl_interp_type * gsl_interp_linear;
+extern const gsl_interp_type * gsl_interp_polynomial;
 extern const gsl_interp_type * gsl_interp_cspline;
 extern const gsl_interp_type * gsl_interp_cspline_periodic;
 extern const gsl_interp_type * gsl_interp_akima;

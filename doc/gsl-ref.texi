@@ -258,7 +258,7 @@ More information about GSL can be found at the project homepage,
 * Error Handling::              
 * Mathematical Functions::      
 * Complex Numbers::             
-* Roots of Polynomials::        
+* Polynomials::                 
 * Special Functions::           
 * Vectors and Matrices::        
 * Permutations::                
@@ -320,15 +320,15 @@ More information about GSL can be found at the project homepage,
 @chapter Mathematical Functions
 @include math.texi
 
-@node Complex Numbers, Roots of Polynomials, Mathematical Functions, Top
+@node Complex Numbers, Polynomials, Mathematical Functions, Top
 @chapter Complex Numbers
 @include complex.texi
 
-@node  Roots of Polynomials, Special Functions, Complex Numbers, Top
-@chapter Roots of Polynomials
+@node Polynomials, Special Functions, Complex Numbers, Top
+@chapter Polynomials
 @include poly.texi
 
-@node Special Functions, Vectors and Matrices, Roots of Polynomials, Top
+@node Special Functions, Vectors and Matrices, Polynomials, Top
 @chapter Special Functions
 @include specfunc.texi
 

@@ -1,3 +1,7 @@
+Sun Dec  2 22:02:31 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* dd.c: added divided differences code from Dan, Ho-Jin
+
 Wed Oct 31 18:42:10 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qr.c (qr_companion): increased maximum number of iterations from

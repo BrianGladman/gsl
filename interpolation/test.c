@@ -164,6 +164,28 @@ test_linear (void)
   return s;
 }
 
+static int
+test_polynomial (void)
+{
+  int s;
+
+  double data_x[4] = { 0.0, 1.0, 2.0, 3.0 };
+  double data_y[4] = { 0.0, 1.0, 2.0, 3.0 };
+  double test_x[6] = { 0.0, 0.5, 1.0, 1.5, 2.5, 3.0 };
+  double test_y[6] = { 0.0, 0.5, 1.0, 1.5, 2.5, 3.0 };
+  double test_dy[6] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+  double test_iy[6] = { 0.0, 0.125, 0.5, 9.0/8.0, 25.0/8.0, 9.0/2.0 };
+
+  xy_table data_table = make_xy_table(data_x, data_y, 4);
+  xy_table test_table = make_xy_table(test_x, test_y, 6);
+  xy_table test_d_table = make_xy_table(test_x, test_dy, 6);
+  xy_table test_i_table = make_xy_table(test_x, test_iy, 6);
+
+  s = test_interp (&data_table, gsl_interp_polynomial, &test_table, &test_d_table, &test_i_table);
+  gsl_test (s, "polynomial interpolation");
+  return s;
+}
+
 
 static int
 test_cspline (void)
@@ -221,6 +243,7 @@ main (int argc, char **argv)
 
   status += test_bsearch();
   status += test_linear();
+  status += test_polynomial();
   status += test_cspline();
   status += test_akima();
 

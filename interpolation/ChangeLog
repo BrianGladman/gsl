@@ -1,3 +1,8 @@
+Sun Dec  2 22:48:23 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* poly.c: added polynomial interpolation based on divided
+ 	differences from Dan, Ho-Jin.
+
 Tue Jul  3 12:10:53 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* interp.c (DISCARD_STATUS): discard error status values using a

@@ -1,5 +1,11 @@
 * What will be new in gsl-1.1:
 
+** Several routines for handling divided difference polynomials have
+been added to the poly/ directory.
+
+** The interpolation routines now include polynomial interpolation,
+based on divided-differences.
+
 ** Added new random number generators from Knuth's Seminumerical
 Algorithms, 3rd Edition: borosh13, coveyou, fishman18, fishman20,
 fishman2x, knuthran, knuthran2, lecuyer21, waterman14
