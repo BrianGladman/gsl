@@ -1,3 +1,6 @@
+#ifndef GSL_VECTOR_H 
+#define GSL_VECTOR_H 
+
 #include <stdlib.h>
 #include <gsl_errno.h>
 
@@ -44,3 +47,4 @@ gsl_vector_set(gsl_vector * v, const size_t i, const double x)
 }
 #endif
 
+#endif /* GSL_VECTOR_H */
