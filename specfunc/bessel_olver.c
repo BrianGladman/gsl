@@ -10,8 +10,8 @@
 #include "bessel_olver.h"
 
 
-/* fit for f(x) = zofmzeta((x+1)/2), 0 <= zofmzeta <= 1 */
-static double zofmzeta_01_data[20] = {
+/* fit for f(x) = zofmzeta((x+1)/2), 0 <= mzeta <= 1 */
+static double zofmzeta_a_data[20] = {
   2.9332563730829348990,
   0.4896518224847036624,
   0.0228637617355380860,
@@ -33,15 +33,84 @@ static double zofmzeta_01_data[20] = {
  -1.06506e-14,
   5.5375e-15
 };
-static gsl_sf_cheb_series zofmzeta_01_cs = {
-  zofmzeta_01_data,
-  29,
+static gsl_sf_cheb_series zofmzeta_a_cs = {
+  zofmzeta_a_data,
+  19,
   -1,1,
   (double *)0,
   (double *)0,
   8
 };
 
+
+/* fit for f(x) = zofmzeta((9x+11)/2), 1 <= mzeta <= 10 */
+static double zofmzeta_b_data[30] = {
+  22.40725276466303489,
+  10.39808258825165581,
+  1.092050144486018425,
+ -0.071111274777921604,
+  0.008990125336059704,
+ -0.001201950338088875,
+  0.000106686807968315,
+  0.000017406491576830,
+ -0.000014946669657805,
+  6.189984487752e-6,
+ -2.049466715178e-6,
+  5.87189458020e-7,
+ -1.46077514157e-7,
+  2.9803936132e-8,
+ -3.817692108e-9,
+ -4.66980416e-10,
+  5.83860334e-10,
+ -2.78825299e-10,
+  1.01682688e-10,
+ -3.1209928e-11,
+  8.111122e-12,
+ -1.663986e-12,
+  1.81364e-13,
+  5.3414e-14,
+ -4.7234e-14,
+  2.1689e-14,
+ -7.815e-15,
+  2.371e-15,
+ -6.04e-16,
+  1.20e-16
+};
+static gsl_sf_cheb_series zofmzeta_b_cs = {
+  zofmzeta_b_data,
+  29,
+  -1,1,
+  (double *)0,
+  (double *)0,
+  15
+};
+
+
+/* fit for f(x) = zofmzeta(mz(x))/mz(x)^(3/2),
+ * mz(x) = (2/(x+1))^(2/3) 10
+ * 10 <= mzeta <= Inf
+ */
+static double zofmzeta_c_data[11] = {
+  1.3824761227122911500,
+  0.0244856101686774245,
+ -0.0000842866496282540,
+  1.4656076569771e-6,
+ -3.14874099476e-8,
+  7.561134833e-10,
+ -1.94531643e-11,
+  5.245878e-13,
+ -1.46380e-14,
+  4.192e-16,
+ -1.23e-17
+};
+static gsl_sf_cheb_series zofmzeta_c_cs = {
+  zofmzeta_c_data,
+  10,
+  -1,1,
+  (double *)0,
+  (double *)0,
+  6
+};
 
 
 /* Invert [Abramowitz+Stegun, 9.3.39].
@@ -51,12 +120,24 @@ double
 gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
 {
   if(minus_zeta < 1.0) {
+    const double x = 2.0*minus_zeta - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zofmzeta_01_cs, minus_zeta, &c);
+    gsl_sf_cheb_eval_impl(&zofmzeta_a_cs, x, &c);
+    return c.val;
+  }
+  else if(minus_zeta < 10.0) {
+    const double x = (2.0*minus_zeta - 11.0)/9.0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&zofmzeta_b_cs, x, &c);
     return c.val;
   }
   else {
-    /* FIXME */
+    const double TEN_32 = 31.62277660168379332; /* 10^(3/2) */
+    const double p = pow(minus_zeta, 3.0/2.0);
+    const double x = 2.0*TEN_32/p - 1.0;
+    gsl_sf_result c;
+    gsl_sf_cheb_eval_impl(&zofmzeta_c_cs, x, &c);
+    return c.val * p;
   }
 }
 

@@ -235,6 +235,9 @@ const static double coef_jnu5_a[] = {
 
 
 /* Chebyshev expansion: j_{nu,5} = nu c_k T_k*((5/nu)^(2/3)), nu >= 5 */
+/* FIXME: There is something wrong with this fit, in about the
+ * 9th or 10th decimal place.
+ */
 const static double coef_jnu5_b[] = {
   2.569079487591442,
   1.726073360882134,
@@ -1072,6 +1075,13 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
       const double chb = clenshaw(c, L-1, arg);
       result->val = nu * chb;
       result->err = 2.0e-15 * result->val;
+
+      /* FIXME: truth in advertising for the screwed up
+       * s = 5 fit. Need to fix that.
+       */
+      if(s == 5) {
+        result->err *= 5.0e+06;
+      }
     }
     return GSL_SUCCESS;
   }
