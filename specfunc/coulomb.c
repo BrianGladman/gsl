@@ -283,7 +283,7 @@ coulomb_G_recur(double lam_min, int kmax,
  */
 static
 int
-coulomb_CF1(double lam_min, int kmax,
+my_coulomb_CF1(double lam_min, int kmax,
             double eta, double x,
             double * fcl_sign,
 	    double * result
@@ -310,7 +310,7 @@ coulomb_CF1(double lam_min, int kmax,
   do {
     double pk1 = pk + 1.0;
     double ek  = eta / pk;
-    double rk2 = 1. + ek*ek;
+    double rk2 = 1.0 + ek*ek;
     double tk  = (pk + pk1)*(x_inv + ek/pk1);
     D   =  tk - rk2 * D;
     C   =  tk - rk2 / C;
@@ -328,8 +328,87 @@ coulomb_CF1(double lam_min, int kmax,
       return GSL_ERUNAWAY;
     }
   }
-  while(fabs(df-1.) > CF1_acc);
+  while(fabs(df-1.0) > CF1_acc);
   
+  *result = F;
+  return GSL_SUCCESS;
+}
+
+static
+int
+coulomb_CF1(double lam_min, int kmax,
+            double eta, double x,
+            double * fcl_sign,
+	    double * result
+            )
+{
+  const double CF1_small = 1.e-30;
+  const double CF1_abort = 1.e5;
+  const double CF1_acc   = 10.0*GSL_MACH_EPS;
+  const double x_inv     = 1.0/x;
+  const double lam_max   = lam_min + kmax;
+  const double px        = lam_max + 1.0 + CF1_abort;
+  
+  double pk = lam_max + 1.0;
+  
+  double D;
+  double df;
+
+  double F;
+  double p;
+  double pk1;
+  double ek;
+  
+  double fcl = 1.0;
+
+  double tk;
+
+  while(1) {
+    ek = eta/pk;
+    F = (ek + pk*x_inv)*fcl + (fcl - 1.0)*x_inv;
+    pk1 = pk + 1.0;
+    if(fabs(eta*x + pk*pk1) > CF1_acc) break;
+    fcl = (1.0 + ek*ek)/(1.0 + eta*eta/(pk1*pk1));
+    pk = 2.0 + pk;
+  }
+
+  D  = 1.0/((pk + pk1)*(x_inv + ek/pk1));
+  df = -fcl*(1.0 + ek*ek)*D;
+  
+  if(fcl != 1.0) fcl = -1.0;
+  if(D    < 0.0) fcl = -fcl;
+  
+  F = F + df;
+
+  p = 1.0;
+  do {
+    pk = pk1;
+    pk1 = pk + 1.0;
+    ek  = eta / pk;
+    tk  = (pk + pk1)*(x_inv + ek/pk1);
+    D   =  tk - D*(1.0+ek*ek);
+    if(fabs(D) < sqrt(CF1_acc)) {
+      p += 1.0;
+      if(p > 2.0) {
+        printf("HELP............\n");
+      }
+    }
+    D = 1.0/D;
+    if(D < 0.0) {
+      /* sign of result depends on sign of denominator */
+      fcl = -fcl;
+    }
+    df = df*(D*tk - 1.0);
+    F  = F + df;
+    if( pk > px ) {
+      printf("OH NO.....\n");
+      return GSL_ERUNAWAY;
+    }
+  }
+  while(fabs(df) > fabs(F)*CF1_acc);
+  
+  *fcl_sign = fcl;
+  *result = F;
   return GSL_SUCCESS;
 }
 
@@ -708,10 +787,13 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
     double G_lam_min, Gp_lam_min;
     double Fp_unnorm_lam_min;
     double F_scale;
+    int stat_CF1;
 
     /* Obtain F'/F and sign(F) at the upper lambda value.
      */
-    coulomb_CF1(lam_min, kmax, eta, x, &F_sign_lam_max, &F_ratio_lam_max);
+    stat_CF1 = coulomb_CF1(lam_min, kmax, eta, x,
+                           &F_sign_lam_max, &F_ratio_lam_max
+                           );
 
     /* Evolve the downward recurrence to the minimum lambda value.
      * Obtain "F_lam_min" and "Fp_lam_min", which do not have
@@ -910,24 +992,25 @@ gsl_sf_coulomb_wave_FGp_e(double lam_min, int kmax,
 int
 test_coulomb(void)
 {
-  const int kmax = 100;
+  const int kmax = 3;
   int k;
 
   double lam_min = 0.0;
-  double eta = 10.0;
-  double x = 10.0;
+  double eta = -50.0;
+  double x = 5.0;
 
   double fc[kmax+1], fcp[kmax+1], gc[kmax+1], gcp[kmax+1];
   double F_e, G_e;
 
-  int stat = gsl_sf_coulomb_wave_impl(lam_min, kmax, eta, x,
+  int stat = gsl_sf_coulomb_wave_impl(lam_min, kmax,
+                                      eta, x,
                                       fc, fcp,
 				      gc, gcp,
 				      &F_e, &G_e);
   
   for(k=0; k<=kmax; k++) {
-    printf("%5.3g   %20.16g  %20.16g  %20.16g  %20.16g\n",
-           lam_min + k, fc[k], fcp[k], gc[k], gcp[k]
+    printf("%5.3g   %20.16g  %20.16g  %20.16g  %20.16g  %s\n",
+           lam_min + k, fc[k], fcp[k], gc[k], gcp[k], gsl_strerror(stat)
 	   );
   }
 
