@@ -29,7 +29,7 @@
 do { \
   *yp = GSL_FN_EVAL(f,x); \
   if (!finite(*yp)) \
-    GSL_ERROR("function returned invalid value", GSL_EBADFUNC); \
+    GSL_ERROR("function value is not finite", GSL_EBADFUNC); \
 } while (0)
 
 #endif /* __ROOTS_H__ */

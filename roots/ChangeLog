@@ -1,3 +1,15 @@
+2005-03-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* steffenson.c (steffenson_iterate): improved wording of error messages
+
+	* secant.c (secant_iterate): improved wording of error messages
+
+	* roots.h (SAFE_FUNC_CALL): improved wording of error message
+
+	* newton.c (newton_iterate): improved wording of error messages
+
+	* utility.c: removed, not needed any more
+
 Sun Jul 15 17:53:48 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed interval type

@@ -107,7 +107,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 
   if (!finite (f_new))
     {
-      GSL_ERROR ("function not continuous", GSL_EBADFUNC);
+      GSL_ERROR ("function value is not finite", GSL_EBADFUNC);
     }
 
   if (state->count < 3)
@@ -128,7 +128,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
 
   if (!finite (df_new))
     {
-      GSL_ERROR ("function not differentiable", GSL_EBADFUNC);
+      GSL_ERROR ("derivative value is not finite", GSL_EBADFUNC);
     }
       
   return GSL_SUCCESS;
