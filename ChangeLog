@@ -1,3 +1,14 @@
+2000-10-26  Mark Galassi  <rosalia@lanl.gov>
+
+	* AUTHORS: some changes and additions.
+
+	* KNOWN-PROBLEMS: updated the list of known problems.
+
+2000-10-04  Mark Galassi  <rosalia@lanl.gov>
+
+	* NEWS, configure.in, gsl.spec: upped the version to 0.7 as we are
+	about to release.
+
 Tue Sep 19 19:09:46 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fit/test.c (main): removed unused variables
