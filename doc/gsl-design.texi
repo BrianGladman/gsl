@@ -173,7 +173,7 @@ arguments".
 
 @emph{ESSL} and @emph{SCSL} are proprietary libraries from IBM and SGI.
 
-Forth Scientific Library [see the URL
+@emph{Forth Scientific Library} [see the URL
 http://www.taygeta.com/fsl/sciforth.html].  Mainly of interest to Forth
 users.
 
@@ -528,6 +528,12 @@ undertaken.
 @item SIAM Journal of Scientific Computing
 @end itemize
 @end enumerate
+@noindent
+Keep in mind that GSL is not a research project.  Making a good
+implementation is difficult enough, without also needing to invent new
+algorithms.  We want to implement existing algorithms whenever
+possible. Making minor improvements is ok, but don't let it be a
+time-sink.
 
 @node Documentation, Namespace, Background and Preparation, Design
 @section Documentation
@@ -1169,11 +1175,10 @@ program.
 Each contributor must make sure her code is under the GNU General Public
 License (GPL).   This means getting a disclaimer from your employer.
 @item
-We must understand ownership of existing code and algorithms.  
+We must clearly understand ownership of existing code and algorithms.
 @item
 Each contributor can retain ownership of their code, or sign it over to
-FSF as they prefer.  In the event of any legal uncertainty code will
-simply be removed from the library.
+FSF as they prefer. 
 
 There is a standard disclaimer in the GPL (take a look at it).  The more
 specific you make your disclaimer the more likely it is that it will be
