@@ -415,6 +415,57 @@ test_stepper_stiff (const gsl_odeiv_step_type * T, double h, double base_prec)
 }
 
 void
+test_stepper_err (const gsl_odeiv_step_type * T, double h, double base_prec)
+{
+  int s = 0;
+  double y[2];
+  double yerr[2];
+  double t;
+  double del;
+  double delmax = 0.0, errmax = 0.0;
+  int count = 0;
+
+  gsl_odeiv_step *stepper = gsl_odeiv_step_alloc (T, 2);
+
+  y[0] = 1.0;
+  y[1] = 0.0;
+
+  for (t = 0.0; t < M_PI; t += h)
+    {
+      int stat;
+      double y1_t = y[1];
+      double sin_th = sin(t+h);
+      double dy_exp = cos(t)*sin(h)-2*sin(t)*pow(sin(h/2),2.0);
+      double dy_t;
+      gsl_odeiv_step_apply (stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
+      dy_t = y[1] - y1_t;
+      del = fabs (dy_t - dy_exp);// + (fabs(y[1]) + fabs(y1_t))*GSL_DBL_EPSILON;
+      
+      if (t > 0.1 && t < 0.2) { 
+        int stat = (del > 10.0*yerr[1]);
+                
+        if (stat != 0)
+          {
+            delmax = del;
+            errmax = yerr[1];
+
+            printf ("SIN(%.18e) %.5e %.5e %e %e %e\n", t + h, y[1],
+                    dy_t, dy_exp, del, yerr[1]);
+            break;
+          }
+        s += stat;
+      }
+      count++;
+    }
+
+  gsl_test (s, "%s, sine [0,pi], accurary of estimate error = %g vs %g",
+	    gsl_odeiv_step_name (stepper), delmax, errmax);
+
+  gsl_odeiv_step_free (stepper);
+}
+
+
+void
 test_evolve_system_flat (gsl_odeiv_step * step,
                          const gsl_odeiv_system * sys,
                          double t0, double t1, double hstart,
@@ -592,6 +643,12 @@ main (void)
   p[10].type = 0;
 
   gsl_ieee_env_setup ();
+
+  for (i = 0; p[i].type != 0; i++)
+    {
+      test_stepper_err (p[i].type, p[i].h, GSL_SQRT_DBL_EPSILON);
+    }
+
 
   for (i = 0; p[i].type != 0; i++)
     {
