@@ -27,132 +27,169 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_odeiv.h"
 
+#include "odeiv_util.h"
 
 gsl_odeiv_evolve *
-gsl_odeiv_evolve_new(void)
+gsl_odeiv_evolve_alloc (size_t dim)
 {
-  gsl_odeiv_evolve * e = (gsl_odeiv_evolve *) malloc(sizeof(gsl_odeiv_evolve));
-  if(e != 0) {
-    e->y0 = 0;
-    e->yerr = 0;
-    e->count = 0;
-    e->dimension = 0;
-    e->count_stutter = 0;
-    e->last_step = 0.0;
-  }
+  gsl_odeiv_evolve *e =
+    (gsl_odeiv_evolve *) malloc (sizeof (gsl_odeiv_evolve));
+
+  if (e == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for evolve struct",
+		      GSL_ENOMEM);
+    }
+
+  e->y0 = (double *) malloc (dim * sizeof (double));
+
+  if (e->y0 == 0)
+    {
+      free (e);
+      GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
+    }
+
+  e->yerr = (double *) malloc (dim * sizeof (double));
+
+  if (e->yerr == 0)
+    {
+      free (e->y0);
+      free (e);
+      GSL_ERROR_NULL ("failed to allocate space for yerr", GSL_ENOMEM);
+    }
+
+  e->dydt_in = (double *) malloc (dim * sizeof (double));
+
+  if (e->dydt_in == 0)
+    {
+      free (e->yerr);
+      free (e->y0);
+      free (e);
+      GSL_ERROR_NULL ("failed to allocate space for dydt_in", GSL_ENOMEM);
+    }
+
+  e->dydt_out = (double *) malloc (dim * sizeof (double));
+
+  if (e->dydt_out == 0)
+    {
+      free (e->dydt_in);
+      free (e->yerr);
+      free (e->y0);
+      free (e);
+      GSL_ERROR_NULL ("failed to allocate space for dydt_out", GSL_ENOMEM);
+    }
+
+  e->dimension = dim;
+  e->count = 0;
+  e->count_stutter = 0;
+  e->last_step = 0.0;
+
   return e;
 }
 
+int
+gsl_odeiv_evolve_reset (gsl_odeiv_evolve * e)
+{
+  e->count = 0;
+  e->count_stutter = 0;
+  e->last_step = 0.0;
+  return GSL_SUCCESS;
+}
+
+void
+gsl_odeiv_evolve_free (gsl_odeiv_evolve * e)
+{
+  free (e->dydt_out);
+  free (e->dydt_in);
+  free (e->yerr);
+  free (e->y0);
+  free (e);
+}
 
 /* Evolution framework method.
  *
  * Uses an adaptive step control object
- * and/or a monitor object if given.
  */
 int
-gsl_odeiv_evolve_apply(
-  gsl_odeiv_evolve * e, 
-  gsl_odeiv_evolve_mon * mon,
-  gsl_odeiv_evolve_control * con,
-  gsl_odeiv_step * step,
-  const gsl_odeiv_system * dydt,
-  double t0, double t1, double hstart,
-  double y[])
+gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
+			gsl_odeiv_control * con,
+			gsl_odeiv_step * step,
+			const gsl_odeiv_system * dydt,
+			double *t, double t1, double *h, double y[])
 {
-  double h = fabs(hstart);
-  double t = t0;
+  const double t0 = *t;
+  double h0 = *h;
+  int step_status;
+  int final_step = 0;
+  double dt = t1 - t0;  /* remaining time, possibly less than h */
 
-  if(e->yerr == 0 || e->y0 == 0 || e->dimension != dydt->dimension) {
-    if(e->yerr != 0) free(e->yerr);
-    if(e->y0 != 0) free(e->y0);
-    e->yerr = (double * ) malloc(dydt->dimension * sizeof(double));
-    e->y0   = (double * ) malloc(dydt->dimension * sizeof(double));
-    e->dydt_in  = (double * ) malloc(dydt->dimension * sizeof(double));
-    e->dydt_out = (double * ) malloc(dydt->dimension * sizeof(double));
-    e->dimension = dydt->dimension;
-
-    if(e->yerr == 0 || e->y0 == 0 || e->dydt_in == 0 || e->dydt_out == 0) {
-      if(e->yerr != 0) free(e->yerr);
-      if(e->y0 != 0) free(e->y0);
-      if(e->dydt_in != 0) free(e->dydt_in);
-      if(e->dydt_out != 0) free(e->dydt_out);
-      e->dimension = 0;
-      e->yerr = 0;
-      e->y0 = 0;
-      e->dydt_in = 0;
-      e->dydt_out = 0;
-      return GSL_ENOMEM;
-    }
-  }
-
-  e->count = 0;
-  e->count_stutter = 0;
-
-  while(t < t1) {
-
-    /* No need to copy if we cannot control the step size. */
-    if(con!= 0) memcpy(e->y0, y, e->dimension * sizeof(double));
-
-    /* Calculate initial dydt once if the method can benefit. */
-    if(step->can_use_dydt) {
-      GSL_ODEIV_FN_EVAL(dydt, t, y, e->dydt_in);
+  if (e->dimension != step->dimension)
+    {
+      GSL_ERROR ("step dimension must match evolvution size", GSL_EINVAL);
     }
 
-    if(mon != 0 && mon->pre_step != 0) mon->pre_step(mon, t, e->dimension, y);
+  /* No need to copy if we cannot control the step size. */
 
-    while(1) {
-      const double t_save = t;
-      int step_stat;
+  if (con != NULL)
+    {
+      DBL_MEMCPY (e->y0, y, e->dimension);
+    }
 
-      h = GSL_MIN_DBL(t1-t, h);
-      if(h < 8.0 * GSL_DBL_EPSILON) return GSL_EUNDRFLW; /* FIXME */
+  /* Calculate initial dydt once if the method can benefit. */
 
-      if(step->can_use_dydt) {
-        step_stat = gsl_odeiv_step_apply(step, t, h, y, e->yerr, e->dydt_in, e->dydt_out, dydt);
-      }
-      else {
-        step_stat = gsl_odeiv_step_apply(step, t, h, y, e->yerr, 0, e->dydt_out, dydt);
-      }
-      t += h;
-      e->last_step = h;
+  if (step->type->can_use_dydt_in)
+    {
+      GSL_ODEIV_FN_EVAL (dydt, t0, y, e->dydt_in);
+    }
 
-      ++e->count;
-      /* if(step->stutter) ++e->count_stutter; */
+try_step:
+    
+  if (h0 > dt)
+    {
+      h0 = dt;
+      final_step = 1;
+    }
 
-      if(con == 0) {
-        /* We do not have the ability to adjust the step.
-         * Continue with prescribed evolution.
-         */
-        break;
-      }
-      else {
-        /* Check error and attempt to adjust the step. */
-        const int hadj_stat = GSL_ODEIV_CONTROL_HADJ(con, e->dimension, step->order, y, e->yerr, e->dydt_out, &h);
-	if(hadj_stat == GSL_ODEIV_HADJ_INC || hadj_stat == GSL_ODEIV_HADJ_NIL) {
-	  /* Step was increased or unchanged. Continue with evolution. */
-	  break;
-	}
-        else if(hadj_stat == GSL_ODEIV_HADJ_DEC) {
+  if (step->type->can_use_dydt_in)
+    {
+      step_status =
+	gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, e->dydt_in,
+			      e->dydt_out, dydt);
+    }
+  else
+    {
+      step_status =
+	gsl_odeiv_step_apply (step, t0, h0, y, e->yerr, NULL, e->dydt_out,
+			      dydt);
+    }
+
+  e->count++;
+  e->last_step = h0;
+
+  if (final_step)
+    {
+      *t = t1;
+    }
+  else
+    {
+      *t = t0 + h0;
+    }
+
+  if (con != NULL)
+    {
+      /* Check error and attempt to adjust the step. */
+      const int hadjust_status 
+        = gsl_odeiv_control_hadjust (con, step, y, e->yerr, e->dydt_out, &h0);
+
+      if (hadjust_status == GSL_ODEIV_HADJ_DEC)
+	{
 	  /* Step was decreased. Undo and go back to try again. */
-          memcpy(y, e->y0, dydt->dimension * sizeof(double));
-	  t = t_save;
+	  DBL_MEMCPY (y, e->y0, dydt->dimension);
+	  goto try_step;
 	}
-      }
     }
- 
-    if(mon != 0 && mon->post_step != 0) mon->post_step(mon, t, e->dimension, y, e->yerr);
-  }
 
-  return GSL_SUCCESS;
-}
+  *h = h0;  /* suggest step size for next time-step */
 
-
-void
-gsl_odeiv_evolve_free(gsl_odeiv_evolve * e)
-{
-  if(e != 0) {
-    if(e->y0 != 0) free(e->y0);
-    if(e->yerr != 0) free(e->yerr);
-    free(e);
-  }
+  return step_status;
 }

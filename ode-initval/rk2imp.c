@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Runge-Kutta 2, Gaussian implicit */
+
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
@@ -25,120 +27,142 @@
 #include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
+#include "odeiv_util.h"
 
-typedef  struct gsl_odeiv_step_rk2imp_struct  gsl_odeiv_step_rk2imp;
-
-struct gsl_odeiv_step_rk2imp_struct
+typedef struct
 {
-  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+  double *knu;
+  double *ytmp;
+}
+rk2imp_state_t;
 
-  double * work;  /* generic work space */
-};
-
-
-
-static int  rk2imp_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-static void rk2imp_free(void *);
-
-
-gsl_odeiv_step *
-gsl_odeiv_step_rk2imp_new(void)
+static void *
+rk2imp_alloc (size_t dim)
 {
-  gsl_odeiv_step_rk2imp * s = (gsl_odeiv_step_rk2imp *) malloc(sizeof(gsl_odeiv_step_rk2imp));
-  if(s != 0) {
-    gsl_odeiv_step_construct(&(s->parent),
-      "rk2imp",
-      rk2imp_step,
-      0,
-      rk2imp_free,
-      0,
-      0,
-      2);
-    s->work = 0;
-  }
-  return (gsl_odeiv_step *) s;
+  rk2imp_state_t *state = (rk2imp_state_t *) malloc (sizeof (rk2imp_state_t));
+
+  if (state == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for rk2imp_state",
+		      GSL_ENOMEM);
+    }
+
+  state->knu = (double *) malloc (dim * sizeof (double));
+
+  if (state->knu == 0)
+    {
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for knu", GSL_ENOMEM);
+    }
+
+  state->ytmp = (double *) malloc (dim * sizeof (double));
+
+  if (state->ytmp == 0)
+    {
+      free (state->knu);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
+    }
+
+  return state;
 }
 
 
-static
-int
-rk2imp_step(
-  void * self,
-  double t,
-  double h,
-  double y[],
-  double yerr[],
-  const double dydt_in[],
-  double dydt_out[],
-  const gsl_odeiv_system * sys)
+static int
+rk2imp_apply (void *vstate,
+	      size_t dim,
+	      double t,
+	      double h,
+	      double y[],
+	      double yerr[],
+	      const double dydt_in[],
+	      double dydt_out[], const gsl_odeiv_system * sys)
 {
+  rk2imp_state_t *state = (rk2imp_state_t *) vstate;
+
   const int iter_steps = 3;
   int status = 0;
   int nu;
-  int i;
-  size_t dim;
+  size_t i;
 
-  double * knu;
-  double * ytmp;
-
-  gsl_odeiv_step_rk2imp * my = (gsl_odeiv_step_rk2imp *) self;
-
-  if(sys->dimension == 0) {
-    return GSL_EINVAL;
-  }
-
-  if(sys->dimension != my->parent.dimension) {
-    if(my->work != 0) free(my->work);
-    my->parent.dimension = sys->dimension;
-    my->work = (double *) malloc(2 * sys->dimension * sizeof(double));
-    if(my->work == 0) {
-      my->parent.dimension = 0;
-      return GSL_ENOMEM;
-    }
-  }
-
-  dim = my->parent.dimension;
-
-  /* divide up the workspace */
-  knu  = my->work;
-  ytmp = my->work + dim;
+  double *const knu = state->knu;
+  double *const ytmp = state->ytmp;
 
   /* initialization step */
-  if(dydt_in != 0) {
-    memcpy(knu, dydt_in, dim * sizeof(double));
-  }
-  else {
-    status += ( GSL_ODEIV_FN_EVAL(sys, t, y, knu) != 0 );
-  }
+  if (dydt_in != NULL)
+    {
+      DBL_MEMCPY (knu, dydt_in, dim);
+    }
+  else
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t, y, knu);
+      GSL_STATUS_UPDATE (&status, s);
+    }
 
   /* iterative solution */
-  for(nu=0; nu<iter_steps; nu++) {
-    for(i=0; i<dim; i++) {
-      ytmp[i] = y[i] + 0.5*h*knu[i];
+  for (nu = 0; nu < iter_steps; nu++)
+    {
+      for (i = 0; i < dim; i++)
+	{
+	  ytmp[i] = y[i] + 0.5 * h * knu[i];
+	}
+      {
+	int s = GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h, ytmp, knu);
+	GSL_STATUS_UPDATE (&status, s);
+      }
     }
-    status += ( GSL_ODEIV_FN_EVAL(sys, t + 0.5*h, ytmp, knu) != 0 );
-  }
 
   /* assignment */
-  for(i=0; i<dim; i++) {
-    if(dydt_out != 0) dydt_out[i] = knu[i];
-    y[i]   += h * knu[i];
-    yerr[i] = h * h * knu[i];
-  }
+  for (i = 0; i < dim; i++)
+    {
+      y[i] += h * knu[i];
+      yerr[i] = h * h * knu[i];
+      if (dydt_out != NULL)
+	dydt_out[i] = knu[i];
+    }
 
-  return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
+  return status;
 }
 
+
+static int
+rk2imp_reset (void *vstate, size_t dim)
+{
+  rk2imp_state_t *state = (rk2imp_state_t *) vstate;
+
+  DBL_ZERO_MEMSET (state->knu, dim);
+  DBL_ZERO_MEMSET (state->ytmp, dim);
+
+  return GSL_SUCCESS;
+}
+
+static unsigned int
+rk2imp_order (void *vstate)
+{
+  rk2imp_state_t *state = (rk2imp_state_t *) vstate;
+  state = 0; /* prevent warnings about unused parameters */
+  return 2;
+}
 
 static void
-rk2imp_free(void * self)
+rk2imp_free (void *vstate)
 {
-  if(self != 0) {
-    gsl_odeiv_step_rk2imp * my = (gsl_odeiv_step_rk2imp *) self;
-    if(my->work != 0) free(my->work);
-    free(self);
-  }
+  rk2imp_state_t *state = (rk2imp_state_t *) vstate;
+  free (state->knu);
+  free (state->ytmp);
+  free (state);
 }
+
+static const gsl_odeiv_step_type rk2imp_type = { "rk2imp",	/* name */
+  1,				/* can use dydt_in */
+  0,				/* gives exact dydt_out */
+  &rk2imp_alloc,
+  &rk2imp_apply,
+  &rk2imp_reset,
+  &rk2imp_order,
+  &rk2imp_free
+};
+
+const gsl_odeiv_step_type *gsl_odeiv_step_rk2imp = &rk2imp_type;

@@ -1,5 +1,7 @@
 * What will be new in gsl-0.9:
 
+** The ode solvers have been reorganized.
+
 ** There are new eigensystem routines for real symmetric and complex
 hermitian matrices.
 

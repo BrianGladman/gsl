@@ -14,7 +14,7 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	roots-newtons-method.eps roots-secant-method.eps \
 	histogram.eps histogram2d.eps min-interval.eps \
         fit-wlinear.eps fit-exp.eps ntuple.eps qrng.eps \
-        cheb.eps \
+        cheb.eps vdp.eps \
 	rand-beta.tex rand-binomial.tex rand-cauchy.tex rand-chisq.tex \
 	rand-erlang.tex rand-exponential.tex rand-fdist.tex rand-flat.tex \
 	rand-gamma.tex rand-gaussian.tex rand-geometric.tex rand-laplace.tex \

@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Bulirsch-Stoer Implicit */
+
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
@@ -29,57 +31,59 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_linalg.h>
-#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
+#include "odeiv_util.h"
 
 #define SEQUENCE_COUNT 8
 #define SEQUENCE_MAX   7
 
 /* Bader-Deuflhard extrapolation sequence */
-static const int bd_sequence[SEQUENCE_COUNT] = { 2, 6, 10, 14, 22, 34, 50, 70 };
+static const int bd_sequence[SEQUENCE_COUNT] =
+  { 2, 6, 10, 14, 22, 34, 50, 70 };
 
-
-
-typedef  struct gsl_odeiv_step_bsimp_struct  gsl_odeiv_step_bsimp;
-
-struct gsl_odeiv_step_bsimp_struct
+typedef struct
 {
-  gsl_odeiv_step parent;     /* inherits from gsl_odeiv_step */
+  gsl_matrix *d;		/* workspace for extrapolation         */
+  gsl_matrix *a_mat;		/* workspace for linear system matrix  */
+  gsl_permutation *p_vec;	/* workspace for LU permutation        */
 
-  gsl_matrix      *  d;      /* workspace for extrapolation         */
-  gsl_matrix      *  a_mat;  /* workspace for linear system matrix  */
-  gsl_permutation *  p_vec;  /* workspace for LU permutation        */
-
-  double x[SEQUENCE_MAX];    /* workspace for extrapolation */
+  double x[SEQUENCE_MAX];	/* workspace for extrapolation */
 
   /* state info */
+  size_t k_current;
   size_t k_choice;
   double h_next;
   double eps;
 
   /* workspace for extrapolation step */
-  double * y_extrap_save;
-  double * y_extrap_sequence;
-  double * yp;
-  double * extrap_work;
-  double * dfdt;
-  gsl_matrix * dfdy;
+  double *yp;
+  double *y_extrap_save;
+  double *y_extrap_sequence;
+  double *extrap_work;
+  double *dfdt;
+  double *y_temp;
+  double *delta_temp;
+  gsl_matrix *dfdy;
 
   /* workspace for the basic stepper */
-  gsl_vector * rhs_temp_vec;
-  gsl_vector * delta_temp_vec;
-  double * delta;
-};
+  double *rhs_temp;
+  double *delta;
+
+  /* order of last step */
+  size_t order;
+}
+bsimp_state_t;
 
 
-/* Calculate a choice for the "order" of
- * the method, using the Deuflhard criteria.
+/* Calculate a choice for the "order" of the method, using the
+ * Deuflhard criteria.  
  */
+
 static size_t
-bsimp_deuf_kchoice(double eps, size_t dimension)
+bsimp_deuf_kchoice (double eps, size_t dimension)
 {
-  const double safety_f  = 0.25;
+  const double safety_f = 0.25;
   const double small_eps = safety_f * eps;
 
   double a_work[SEQUENCE_COUNT];
@@ -89,392 +93,371 @@ bsimp_deuf_kchoice(double eps, size_t dimension)
 
   a_work[0] = bd_sequence[0] + 1.0;
 
-  for(k=0; k<SEQUENCE_MAX; k++) {
-    a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
-  }
-
-  for(i=0; i<SEQUENCE_MAX; i++) {
-    alpha[i][i] = 1.0;
-    for(k=0; k<i; k++) {
-      const double tmp1 = a_work[k + 1] - a_work[i + 1];
-      const double tmp2 = (a_work[i + 1] - a_work[0] + 1.0) * (2*k + 1);
-      alpha[k][i] = pow(small_eps, tmp1/tmp2);
+  for (k = 0; k < SEQUENCE_MAX; k++)
+    {
+      a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
     }
-  }
+
+  for (i = 0; i < SEQUENCE_MAX; i++)
+    {
+      alpha[i][i] = 1.0;
+      for (k = 0; k < i; k++)
+	{
+	  const double tmp1 = a_work[k + 1] - a_work[i + 1];
+	  const double tmp2 = (a_work[i + 1] - a_work[0] + 1.0) * (2 * k + 1);
+	  alpha[k][i] = pow (small_eps, tmp1 / tmp2);
+	}
+    }
 
   a_work[0] += dimension;
 
-  for(k=0; k<SEQUENCE_MAX; k++) {
-    a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
-  }
+  for (k = 0; k < SEQUENCE_MAX; k++)
+    {
+      a_work[k + 1] = a_work[k] + bd_sequence[k + 1];
+    }
 
-  for(k=0; k < SEQUENCE_MAX-1; k++) {
-    if(a_work[k + 2] > a_work[k+1] * alpha[k][k+1]) break;
-  }
+  for (k = 0; k < SEQUENCE_MAX - 1; k++)
+    {
+      if (a_work[k + 2] > a_work[k + 1] * alpha[k][k + 1])
+	break;
+    }
 
   return k;
 }
 
-
-static int bsimp_step(void * self, double t, double h, double y[], double y_err[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-
-
-/* Perform basic allocation of temporaries
- * given the dimension of the system vector.
- */
 static void
-bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
-{
-  self->d     = gsl_matrix_alloc(SEQUENCE_MAX, dim);
-  self->a_mat = gsl_matrix_alloc(dim, dim);
-  self->p_vec = gsl_permutation_alloc(dim);
-
-  self->y_extrap_save = (double *) malloc(dim * sizeof(double));
-  self->y_extrap_sequence = (double *) malloc(dim * sizeof(double));
-  self->dfdt = (double *) malloc(dim * sizeof(double));
-  self->yp   = (double *) malloc(dim * sizeof(double));
-  self->extrap_work = (double *) malloc(dim * sizeof(double));
-
-  self->dfdy = gsl_matrix_alloc(dim, dim);
-
-  self->delta_temp_vec = gsl_vector_alloc(dim);
-  self->rhs_temp_vec = gsl_vector_alloc(dim);
-
-  self->delta = (double *) malloc(dim * sizeof(double));
-}
-
-
-/* Perform basic de-allocation of temporaries.
- */
-static void
-bsimp_dealloc(gsl_odeiv_step_bsimp * self)
-{
-  if(self->delta != 0) free(self->delta);
-
-  if(self->rhs_temp_vec != 0) gsl_vector_free(self->rhs_temp_vec);
-  if(self->delta_temp_vec != 0) gsl_vector_free(self->delta_temp_vec);
-
-  if(self->dfdy != 0) gsl_matrix_free(self->dfdy);
-
-  if(self->extrap_work != 0) free(self->extrap_work);
-  if(self->yp != 0) free(self->yp);
-  if(self->dfdt != 0) free(self->dfdt);
-  if(self->y_extrap_sequence != 0) free(self->y_extrap_sequence);
-  if(self->y_extrap_save != 0) free(self->y_extrap_save);
-
-  if(self->p_vec != 0) gsl_permutation_free(self->p_vec);
-  if(self->a_mat != 0) gsl_matrix_free(self->a_mat);
-  if(self->d != 0) gsl_matrix_free(self->d);
-
-  self->delta = 0;
-
-  self->rhs_temp_vec = 0;
-  self->delta_temp_vec = 0;
-
-  self->dfdy = 0;
-
-  self->extrap_work = 0;
-  self->yp = 0;
-  self->dfdt = 0;
-  self->y_extrap_sequence = 0;
-  self->y_extrap_save = 0;
-
-  self->p_vec = 0;
-  self->a_mat = 0;
-  self->d = 0;
-}
-
-
-static int
-bsimp_reset(void * self)
-{
-  if(self != 0) {
-    gsl_odeiv_step_bsimp * my = (gsl_odeiv_step_bsimp *) self;
-    bsimp_dealloc(my);
-    if(my->parent.dimension > 0) {
-      bsimp_alloc(my, my->parent.dimension);
-      my->k_choice = bsimp_deuf_kchoice(my->eps, my->parent.dimension);
-      my->parent.order = 2 * my->k_choice;
-    }
-  }
-
-  return GSL_SUCCESS;
-}
-
-
-static void
-bsimp_free(void * self)
-{
-  if(self != 0) {
-    bsimp_dealloc((gsl_odeiv_step_bsimp *) self);
-    free(self);
-  }
-}
-
-
-gsl_odeiv_step *
-gsl_odeiv_step_bsimp_new(double eps)
-{  
-  gsl_odeiv_step_bsimp * s = (gsl_odeiv_step_bsimp *) malloc(sizeof(gsl_odeiv_step_bsimp));
-  if(s != 0) {
-    gsl_odeiv_step_construct(&(s->parent),
-      "bsimp",
-      bsimp_step,
-      bsimp_reset,
-      bsimp_free,
-      1,
-      0,
-      0);
-      s->a_mat = 0;
-      s->p_vec = 0;
-      s->d = 0;
-      s->extrap_work = 0;
-      s->yp = 0;
-      s->y_extrap_save = 0;
-      s->y_extrap_sequence = 0;
-      s->dfdt = 0;
-      s->dfdy = 0;
-      s->eps = eps;
-      s->rhs_temp_vec = 0;
-      s->delta_temp_vec = 0;
-      s->delta = 0;
-  }
-  return (gsl_odeiv_step *) s;
-}
-
-
-
-static void
-poly_extrap(
-  gsl_matrix * d,
-  const double x[],
-  const int i_step,
-  const double x_i,
-  const double y_i[],
-  double y_0[],
-  double y_0_err[],
-  double work[],
-  const size_t dim)
+poly_extrap (gsl_matrix * d,
+	     const double x[],
+	     const unsigned int i_step,
+	     const double x_i,
+	     const double y_i[],
+	     double y_0[], double y_0_err[], double work[], const size_t dim)
 {
   size_t j, k;
 
-  memcpy(y_0_err, y_i, dim * sizeof(double));
-  memcpy(y_0,     y_i, dim * sizeof(double));
+  DBL_MEMCPY (y_0_err, y_i, dim);
+  DBL_MEMCPY (y_0, y_i, dim);
 
-  if(i_step == 0) {
-    for(j=0; j<dim; j++) {
-      gsl_matrix_set(d, 0, j, y_i[j]);
+  if (i_step == 0)
+    {
+      for (j = 0; j < dim; j++)
+	{
+	  gsl_matrix_set (d, 0, j, y_i[j]);
+	}
     }
-  }
-  else {
-    memcpy(work, y_i, dim * sizeof(double));
+  else
+    {
+      DBL_MEMCPY (work, y_i, dim);
 
-    for(k=0; k<i_step; k++) {
-      double delta = 1.0/(x[i_step-k-1] - x_i);
-      const double f1 = delta * x_i;
-      const double f2 = delta * x[i_step-k-1];
+      for (k = 0; k < i_step; k++)
+	{
+	  double delta = 1.0 / (x[i_step - k - 1] - x_i);
+	  const double f1 = delta * x_i;
+	  const double f2 = delta * x[i_step - k - 1];
 
-      for(j=0; j<dim; j++) {
-        const double q_kj = gsl_matrix_get(d, k, j);
-        gsl_matrix_set(d, k, j, y_0_err[j]);
-        delta = work[j] - q_kj;
-        y_0_err[j] = f1 * delta;
-        work[j]    = f2 * delta;
-        y_0[j]    += y_0_err[j];
-      }
+	  for (j = 0; j < dim; j++)
+	    {
+	      const double q_kj = gsl_matrix_get (d, k, j);
+	      gsl_matrix_set (d, k, j, y_0_err[j]);
+	      delta = work[j] - q_kj;
+	      y_0_err[j] = f1 * delta;
+	      work[j] = f2 * delta;
+	      y_0[j] += y_0_err[j];
+	    }
+	}
+
+      for (j = 0; j < dim; j++)
+	{
+	  gsl_matrix_set (d, i_step, j, y_0_err[j]);
+	}
     }
-
-    for(j=0; j<dim; j++) {
-      gsl_matrix_set(d, i_step, j, y_0_err[j]);
-    }
-  }
 }
 
+/* Basic implicit Bulirsch-Stoer step.  Divide the step h_total into
+ * n_step smaller steps and do the Bader-Deuflhard semi-implicit
+ * iteration.  */
 
-/* Basic implicit Bulirsch-Stoer step.
- * Divide the step h_total into n_step smaller
- * steps and do the Bader-Deuflhard
- * semi-implicit iteration.
- */
 static int
-bsimp_step_local(
-  gsl_odeiv_step_bsimp * step,
-  const double y[],
-  const double yp[],
-  const double dfdt[],
-  const gsl_matrix * dfdy,
-  const size_t dim,
-  const double t0,
-  const double h_total,
-  const unsigned int n_step,
-  double y_out[],
-  const gsl_odeiv_system * sys)
+bsimp_step_local (void *vstate,
+		  size_t dim,
+		  const double t0,
+		  const double h_total,
+		  const unsigned int n_step,
+		  const double y[],
+		  const double yp[],
+		  const double dfdt[],
+		  const gsl_matrix * dfdy,
+		  double y_out[], 
+                  const gsl_odeiv_system * sys)
 {
-  const double h = h_total / n_step;
+  bsimp_state_t *state = (bsimp_state_t *) vstate;
 
+  gsl_matrix *const a_mat = state->a_mat;
+  gsl_permutation *const p_vec = state->p_vec;
+
+  double *const delta = state->delta;
+  double *const y_temp = state->y_temp;
+  double *const delta_temp = state->delta_temp;
+  double *const rhs_temp = state->rhs_temp;
+
+  gsl_vector y_temp_vec = gsl_vector_view (y_temp, dim);
+  gsl_vector delta_temp_vec = gsl_vector_view (delta_temp, dim);
+  gsl_vector rhs_temp_vec = gsl_vector_view (rhs_temp, dim);
+
+  const double h = h_total / n_step;
   double t = t0 + h;
 
   int signum;
   size_t i, j;
   size_t n_inter;
 
-  /* shameless use of somebody else's temp work space */
-  double * ytemp = step->extrap_work;
-  gsl_vector ytemp_vec;
-  ytemp_vec.data = ytemp;
-  ytemp_vec.size = step->parent.dimension;
-  ytemp_vec.block = 0;
-  ytemp_vec.stride = 1;
-
   /* Calculate the matrix for the linear system. */
-  for(i=0; i<dim; i++) {
-    for(j=0; j<dim; j++) {
-      gsl_matrix_set(step->a_mat, i, j, -h * gsl_matrix_get(dfdy, i, j));
+  for (i = 0; i < dim; i++)
+    {
+      for (j = 0; j < dim; j++)
+	{
+	  gsl_matrix_set (a_mat, i, j, -h * gsl_matrix_get (dfdy, i, j));
+	}
+      gsl_matrix_set (a_mat, i, i, gsl_matrix_get (a_mat, i, i) + 1.0);
     }
-    gsl_matrix_set(step->a_mat, i, i, gsl_matrix_get(step->a_mat, i, i) + 1.0);
-  }
 
   /* LU decomposition for the linear system. */
-  gsl_linalg_LU_decomp(step->a_mat, step->p_vec, &signum);
 
+  gsl_linalg_LU_decomp (a_mat, p_vec, &signum);
 
   /* Initial step. */
 
-  for(i=0; i<dim; i++) {
-    ytemp[i] = h * (yp[i] + h * dfdt[i]);
-  }
+  for (i = 0; i < dim; i++)
+    {
+      y_temp[i] = h * (yp[i] + h * dfdt[i]);
+    }
 
-  gsl_linalg_LU_solve(step->a_mat, step->p_vec, &ytemp_vec, step->delta_temp_vec);
+  gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec, &delta_temp_vec);
 
-  for (i=0; i<dim; i++) {
-    const double di = gsl_vector_get(step->delta_temp_vec, i);
-    step->delta[i] = di;
-    ytemp[i] = y[i] + di;
-  }
-
+  for (i = 0; i < dim; i++)
+    {
+      const double di = delta_temp[i];
+      delta[i] = di;
+      y_temp[i] = y[i] + di;
+    }
 
   /* Intermediate steps. */
 
-  GSL_ODEIV_FN_EVAL(sys, t, ytemp, y_out);
+  GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
 
-  for (n_inter=1; n_inter<n_step; n_inter++) {
+  for (n_inter = 1; n_inter < n_step; n_inter++)
+    {
+      for (i = 0; i < dim; i++)
+	{
+	  rhs_temp[i] = h * y_out[i] - delta[i];
+	}
 
-    for (i=0; i<dim; i++) {
-      gsl_vector_set(step->rhs_temp_vec, i, h * y_out[i] - step->delta[i]);
+      gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec, &delta_temp_vec);
+
+      for (i = 0; i < dim; i++)
+	{
+	  delta[i] += 2.0 * delta_temp[i];
+	  y_temp[i] += delta[i];
+	}
+
+      t += h;
+
+      GSL_ODEIV_FN_EVAL (sys, t, y_temp, y_out);
     }
-
-    gsl_linalg_LU_solve(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
-
-    for(i=0; i<dim; i++) {
-      step->delta[i] += 2.0 * gsl_vector_get(step->delta_temp_vec, i);
-      ytemp[i] += step->delta[i];
-    }
-
-    t += h;
-
-    GSL_ODEIV_FN_EVAL(sys, t, ytemp, y_out);
-  }
 
 
   /* Final step. */
 
-  for(i=0; i<dim; i++) {
-    gsl_vector_set(step->rhs_temp_vec, i, h * y_out[i] - step->delta[i]);
-  }
+  for (i = 0; i < dim; i++)
+    {
+      rhs_temp[i] = h * y_out[i] - delta[i];
+    }
 
-  gsl_linalg_LU_solve(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
+  gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec, &delta_temp_vec);
 
-  for(i=0; i<dim; i++) {
-    y_out[i] = ytemp[i] + gsl_vector_get(step->delta_temp_vec, i);
-  }
+  for (i = 0; i < dim; i++)
+    {
+      y_out[i] = y_temp[i] + delta_temp[i];
+    }
 
   return GSL_SUCCESS;
 }
 
+
+static void *
+bsimp_alloc (size_t dim)
+{
+  bsimp_state_t *state = (bsimp_state_t *) malloc (sizeof (bsimp_state_t));
+
+  state->d = gsl_matrix_alloc (SEQUENCE_MAX, dim);
+  state->a_mat = gsl_matrix_alloc (dim, dim);
+  state->p_vec = gsl_permutation_alloc (dim);
+
+  state->yp = (double *) malloc (dim * sizeof (double));
+  state->y_extrap_save = (double *) malloc (dim * sizeof (double));
+  state->y_extrap_sequence = (double *) malloc (dim * sizeof (double));
+  state->extrap_work = (double *) malloc (dim * sizeof (double));
+  state->dfdt = (double *) malloc (dim * sizeof (double));
+  state->y_temp = (double *) malloc (dim * sizeof (double));
+  state->delta_temp = (double *) malloc (dim * sizeof(double));
+
+  state->dfdy = gsl_matrix_alloc (dim, dim);
+
+  state->rhs_temp = (double *) malloc (dim * sizeof(double));
+  state->delta = (double *) malloc (dim * sizeof (double));
+
+  {
+    size_t k_choice = bsimp_deuf_kchoice (GSL_SQRT_DBL_EPSILON, dim); /*FIXME: choice of epsilon? */
+    state->k_choice = k_choice;
+    state->k_current = k_choice;
+    state->order = 2 * k_choice;
+  }
+
+  state->h_next = -GSL_SQRT_DBL_MAX;
+
+  return state;
+}
 
 /* Perform the basic semi-implicit extrapolation
  * step, of size h, at a Deuflhard determined order.
  */
 static int
-bsimp_step(
-  void * self,
-  const double t,
-  const double h,
-  double y[],
-  double yerr[],
-  const double dydt_in[],
-  double dydt_out[],
-  const gsl_odeiv_system * sys)
+bsimp_apply (void *vstate,
+             size_t dim,
+             const double t,
+             const double h,
+             double y[],
+             double yerr[],
+             const double dydt_in[],
+             double dydt_out[], 
+             const gsl_odeiv_system * sys)
 {
-  gsl_odeiv_step_bsimp * my = (gsl_odeiv_step_bsimp *) self;
+  bsimp_state_t *state = (bsimp_state_t *) vstate;
+
+  double *const x = state->x;
+  double *const yp = state->yp;
+  double *const y_extrap_sequence = state->y_extrap_sequence;
+  double *const y_extrap_save = state->y_extrap_save;
+  double *const extrap_work = state->extrap_work;
+  double *const dfdt = state->dfdt;
+  gsl_matrix *d = state->d;
+  gsl_matrix *dfdy = state->dfdy;
 
   const double t_local = t;
 
   size_t k;
 
-  if(sys->dimension <= 0) {
-    return GSL_EINVAL;
-  }
+  if (h + t_local == t_local)
+    {
+      return GSL_EUNDRFLW;	/* FIXME: error condition */
+    }
 
-  if(h + t_local == t_local) {
-    return GSL_EUNDRFLW; /* FIXME: error condition */
-  }
-
-  /* Trap and perform state initialization,
-   * which allocates work space and calculates
-   * the effective "order" of the method.
-   */
-  if(my->parent.dimension != sys->dimension) {
-    my->parent.dimension = sys->dimension;
-    bsimp_dealloc(my);
-    bsimp_alloc(my, my->parent.dimension);
-    my->k_choice = bsimp_deuf_kchoice(my->eps, my->parent.dimension);
-    my->parent.order = 2 * my->k_choice;
-    my->h_next   = -GSL_SQRT_DBL_MAX;
-  }
-
-  memcpy(my->y_extrap_save, y, my->parent.dimension * sizeof(double));
+  DBL_MEMCPY (y_extrap_save, y, dim);
 
   /* Evaluate the derivative. */
-  if(dydt_in != 0) {
-    memcpy(my->yp, dydt_in, my->parent.dimension * sizeof(double));
-  }
-  else {
-    GSL_ODEIV_FN_EVAL(sys, t_local, y, my->yp);
-  }
+  if (dydt_in != NULL)
+    {
+      DBL_MEMCPY (yp, dydt_in, dim);
+    }
+  else
+    {
+      GSL_ODEIV_FN_EVAL (sys, t_local, y, yp);
+    }
 
   /* Evaluate the Jacobian for the system. */
-  GSL_ODEIV_JA_EVAL(sys, t_local, y, my->dfdy->data, my->dfdt);
+  GSL_ODEIV_JA_EVAL (sys, t_local, y, dfdy->data, dfdt);
+
 
   /* Make a series of refined extrapolations,
    * up to the specified maximum order, which
    * was calculated based on the Deuflhard
-   * criterion upon state initialization.
-   */
-  for(k=0; k <= my->k_choice; k++) {
+   * criterion upon state initialization.  */
+  for (k = 0; k <= state->k_current; k++)
+    {
+      const unsigned int N = bd_sequence[k];
+      const double r = (h / N);
+      const double x_k = r * r;
 
-    const double x_k = (h/bd_sequence[k]) * (h/bd_sequence[k]);
+      int status = bsimp_step_local (state,
+                                     dim, t_local, h, N,
+                                     y_extrap_save, yp,
+                                     dfdt, dfdy,
+                                     y_extrap_sequence, 
+                                     sys);
 
-    bsimp_step_local(self,
-  		     my->y_extrap_save,
-		     my->yp,
-  		     my->dfdt,
-  		     my->dfdy,
-  		     my->parent.dimension,
-  		     t_local,
-  		     h,
-  		     bd_sequence[k],
-  		     my->y_extrap_sequence,
-  		     sys);
+      if (status != GSL_SUCCESS)
+        {
+          break;
+        }
 
-    my->x[k] = x_k;
-    poly_extrap(my->d, my->x, k, x_k, my->y_extrap_sequence, y, yerr, my->extrap_work, my->parent.dimension);
-  }
+      x[k] = x_k;
+
+      poly_extrap (d, x, k, x_k, y_extrap_sequence, y, yerr, extrap_work, dim);
+    }
 
   /* Evaluate dydt_out[]. */
-  if(dydt_out != 0) {
-    GSL_ODEIV_FN_EVAL(sys, t+h, y, dydt_out);
-  }
+
+  if (dydt_out != NULL)
+    {
+      GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+    }
 
   return GSL_SUCCESS;
 }
+
+static unsigned int
+bsimp_order (void *vstate)
+{
+  bsimp_state_t *state = (bsimp_state_t *) vstate;
+  return state->order;
+}
+
+static int
+bsimp_reset (void *vstate, size_t dim)
+{
+  bsimp_state_t *state = (bsimp_state_t *) vstate;
+
+  state->h_next = 0;
+
+  DBL_ZERO_MEMSET (state->yp, dim);
+
+  return GSL_SUCCESS;
+}
+
+
+static void
+bsimp_free (void * vstate)
+{
+  bsimp_state_t *state = (bsimp_state_t *) vstate;
+
+  free (state->delta);
+  free (state->rhs_temp);
+
+  gsl_matrix_free (state->dfdy);
+
+  free (state->delta_temp);
+  free (state->y_temp);
+  free (state->dfdt);
+  free (state->extrap_work);
+  free (state->y_extrap_sequence);
+  free (state->y_extrap_save);
+  free (state->yp);
+
+  gsl_permutation_free (state->p_vec);
+  gsl_matrix_free (state->a_mat);
+  gsl_matrix_free (state->d);
+  free (state);
+}
+
+static const gsl_odeiv_step_type bsimp_type = { 
+  "bsimp",	                /* name */
+  1,				/* can use dydt_in */
+  0,				/* gives exact dydt_out */
+  &bsimp_alloc,
+  &bsimp_apply,
+  &bsimp_reset,
+  &bsimp_order,
+  &bsimp_free
+};
+
+const gsl_odeiv_step_type *gsl_odeiv_step_bsimp = &bsimp_type;

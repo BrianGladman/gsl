@@ -54,7 +54,9 @@ __BEGIN_DECLS
  * As with GSL function objects, user-supplied parameter
  * data is also present. 
  */
-typedef struct  {
+
+typedef struct  
+{
   int (* function) (double t, const double y[], double dydt[], void * params);
   int (* jacobian) (double t, const double y[], double * dfdy, double dfdt[], void * params);
   size_t dimension;
@@ -72,42 +74,29 @@ gsl_odeiv_system;
  * In general the object has some state which facilitates
  * iterating the stepping operation.
  */
-typedef struct {
-  const char * _name;
-  int  (*_step)  (void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-  /*
-  int  (*_reset) (void * _state);
-  void (*_free)  (void * _state, void * _work);
-  void * _state;
-  void * _work;
-  */
-  int  (*_reset) (void * self);
-  void (*_free)  (void * self);
 
-  int can_use_dydt;
+typedef struct 
+{
+  const char * name;
+  int can_use_dydt_in;
+  int gives_exact_dydt_out;
+  void * (*alloc) (size_t dim);
+  int  (*apply)  (void * state, size_t dim, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+  int  (*reset) (void * state, size_t dim);
+  unsigned int  (*order) (void * state);
+  void (*free)  (void * state);
+}
+gsl_odeiv_step_type;
+
+typedef struct {
+  const gsl_odeiv_step_type * type;
   size_t dimension;
-  unsigned int order;
-  /*
-  int stutter;
-  */
+  void * state;
 }
 gsl_odeiv_step;
 
 
-/* General stepper object factory.
- *
- * Specialized factory instances create
- * steppers embodying different methods.
- */
- /*
-typedef struct {
-  const char * name;
-  gsl_odeiv_step * (*create) (unsigned int dimension);
-}
-gsl_odeiv_step_factory;
-*/
-
-/* Available stepper factories.
+/* Available stepper types.
  *
  * rk2    : embedded 2nd(3rd) Runge-Kutta
  * rk4    : 4th order (classical) Runge-Kutta
@@ -118,69 +107,31 @@ gsl_odeiv_step_factory;
  * gear1  : M=1 implicit Gear method
  * gear2  : M=2 implicit Gear method
  */
- /*
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rkck;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk8pd;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk2imp;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_rk4imp;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear1;
-extern const gsl_odeiv_step_factory  gsl_odeiv_step_factory_gear2;
-*/
+
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rk2;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rk4;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rkf45;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rkck;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rk8pd;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rk2imp;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_rk4imp;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_bsimp;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_gear1;
+extern const gsl_odeiv_step_type *gsl_odeiv_step_gear2;
 
 
-/* Constructors for specialized stepper objects.
- *
- * rk2    : embedded 2nd(3rd) Runge-Kutta
- * rk4    : 4th order (classical) Runge-Kutta
- * rkck   : embedded 4th(5th) Runge-Kutta, Cash-Karp
- * rk8pd  : embedded 8th(9th) Runge-Kutta, Prince-Dormand
- * rk2imp : implicit 2nd order Runge-Kutta at Gaussian points
- * rk4imp : implicit 4th order Runge-Kutta at Gaussian points
- * gear1  : M=1 implicit Gear method
- * gear2  : M=2 implicit Gear method
+/* Constructor for specialized stepper objects.
  */
-gsl_odeiv_step * gsl_odeiv_step_rk2_new(void);
-gsl_odeiv_step * gsl_odeiv_step_rk4_new(void);
-gsl_odeiv_step * gsl_odeiv_step_rkck_new(void);
-gsl_odeiv_step * gsl_odeiv_step_rk8pd_new(void);
-gsl_odeiv_step * gsl_odeiv_step_rk2imp_new(void);
-gsl_odeiv_step * gsl_odeiv_step_rk4imp_new(void);
-gsl_odeiv_step * gsl_odeiv_step_gear1_new(void);
-gsl_odeiv_step * gsl_odeiv_step_gear2_new(void);
-gsl_odeiv_step * gsl_odeiv_step_bsimp_new(double eps);
-
+gsl_odeiv_step * gsl_odeiv_step_alloc(const gsl_odeiv_step_type * T, size_t dim);
+int  gsl_odeiv_step_reset(gsl_odeiv_step * s);
+void gsl_odeiv_step_free(gsl_odeiv_step * s);
 
 /* General stepper object methods.
  */
 const char * gsl_odeiv_step_name(const gsl_odeiv_step *);
+unsigned int gsl_odeiv_step_order(const gsl_odeiv_step * s);
+
 int  gsl_odeiv_step_apply(gsl_odeiv_step *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-int  gsl_odeiv_step_reset(gsl_odeiv_step *);
-void gsl_odeiv_step_free(gsl_odeiv_step *);
-
-
-/* General evolution monitor object.
- *
- * Instances of this object are used by
- * the evolution to facilitate a kind of
- * callback mechanism.
- */
-typedef struct {
-  int (*pre_step)  (void * self, double t, unsigned int dim, const double y[]);
-  int (*post_step) (void * self, double t, unsigned int dim, const double y[], const double yerr[]);
-  FILE * f;
-  void * params;
-}
-gsl_odeiv_evolve_mon;
-
-
-/* Specialized monitor constructors.
- */
-gsl_odeiv_evolve_mon * gsl_odeiv_evolve_mon_stream_new(FILE *);
-
-void gsl_odeiv_evolve_mon_free(gsl_odeiv_evolve_mon *);
-
 
 /* General step size control object.
  *
@@ -191,14 +142,23 @@ void gsl_odeiv_evolve_mon_free(gsl_odeiv_evolve_mon *);
  * The general data can be used by specializations
  * to store state and control their heuristics.
  */
-typedef struct {
-  int  (*_hadjust) (void * data, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h);
-  void (*_free) (void * data);
-  size_t _data_size;
-  void * _data;
-}
-gsl_odeiv_evolve_control;
 
+typedef struct 
+{
+  const char * name;
+  void * (*alloc) (void);
+  int  (*init) (void * state, double eps_abs, double eps_rel, double a_y, double a_dydt);
+  int  (*hadjust) (void * state, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h);
+  void (*free) (void * state);
+}
+gsl_odeiv_control_type;
+
+typedef struct 
+{
+  const gsl_odeiv_control_type * type;
+  void * state;
+}
+gsl_odeiv_control;
 
 /* Possible return values for an hadjust() evolution method.
  */
@@ -206,14 +166,17 @@ gsl_odeiv_evolve_control;
 #define GSL_ODEIV_HADJ_NIL   0  /* step unchanged     */
 #define GSL_ODEIV_HADJ_DEC (-1) /* step decreased     */
 
-#define GSL_ODEIV_CONTROL_HADJ(c,dim,ord,y,yerr,yp,h) (*((c)->_hadjust))((c)->_data,dim,ord,y,yerr,yp,h)
-
+gsl_odeiv_control * gsl_odeiv_control_alloc(const gsl_odeiv_control_type * T);
+int gsl_odeiv_control_init(gsl_odeiv_control * c, double eps_abs, double eps_rel, double a_y, double a_dydt);
+void gsl_odeiv_control_free(gsl_odeiv_control * c);
+int gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y0[], const double yerr[], const double dydt[], double * h);
+const char * gsl_odeiv_control_name(const gsl_odeiv_control * c);
 
 /* Available control object constructors.
  *
  * The standard control object is a four parameter heuristic
  * defined as follows:
- *    D0 = eps_rel * (a_y |y| + a_dydt h |y'|) + eps_abs
+ *    D0 = eps_abs + eps_rel * (a_y |y| + a_dydt h |y'|)
  *    D1 = |yerr|
  *    q  = consistency order of method (q=4 for 4(5) embedded RK)
  *    S  = safety factor (0.9 say)
@@ -228,32 +191,30 @@ gsl_odeiv_evolve_control;
  * The yp method is the standard method with a_y=0, a_dydt=1.
  */
 
-gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_standard_new(double eps_rel, double eps_abs, double a_y, double a_dydt);
-gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_y_new(double eps_rel, double eps_abs);
-gsl_odeiv_evolve_control * gsl_odeiv_evolve_control_yp_new(double eps_rel, double eps_abs);
-
-void gsl_odeiv_evolve_control_free(gsl_odeiv_evolve_control *);
+gsl_odeiv_control * gsl_odeiv_control_standard_new(double eps_abs, double eps_rel, double a_y, double a_dydt);
+gsl_odeiv_control * gsl_odeiv_control_y_new(double eps_abs, double eps_rel);
+gsl_odeiv_control * gsl_odeiv_control_yp_new(double eps_abs, double eps_rel);
 
 
 /* General evolution object.
  */
 typedef struct {
+  size_t dimension;
   double * y0;
   double * yerr;
   double * dydt_in;
   double * dydt_out;
   double last_step;
-  size_t dimension;
-  unsigned int count;
-  unsigned int count_stutter;
+  unsigned long int count;
+  unsigned long int count_stutter;
 }
 gsl_odeiv_evolve;
 
-
 /* Evolution object methods.
  */
-gsl_odeiv_evolve * gsl_odeiv_evolve_new(void);
-int gsl_odeiv_evolve_apply(gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * mon, gsl_odeiv_evolve_control * con, gsl_odeiv_step * step, const gsl_odeiv_system * dydt, double t0, double t1, double hstart, double y[]);
+gsl_odeiv_evolve * gsl_odeiv_evolve_alloc(size_t dim);
+int gsl_odeiv_evolve_apply(gsl_odeiv_evolve *, gsl_odeiv_control * con, gsl_odeiv_step * step, const gsl_odeiv_system * dydt, double * t, double t1, double * h, double y[]);
+int gsl_odeiv_evolve_reset(gsl_odeiv_evolve *);
 void gsl_odeiv_evolve_free(gsl_odeiv_evolve *);
 
 

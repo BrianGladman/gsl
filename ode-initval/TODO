@@ -1,0 +1,10 @@
+* Implement other stepping methods from well-known packages such as
+RKSUITE, etc
+
+* Provide the bsimp method with a way to back out of its internal
+subdivision algorithm when this blows up.  In the internal steps the
+solution is advanced by an iteration involving terms like (inv A)^n,
+where n can be O(10-100), which can easily overflow.  It should be
+possible to check for this and back out of it to the previous level of
+subdivision by returning GSL_EFAILED instead of GSL_SUCCESS.  For an
+example try solving the demo.c Van der Pol oscillator with bsimp.

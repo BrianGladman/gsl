@@ -1,6 +1,6 @@
-/* ode-initval/rkck.c
+/* ode-initval/rkf45.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 2001 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Runge-Kutta 4(5), Cash-Karp */
+/* Runge-Kutta-Fehlberg 4(5)*/
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,30 +27,31 @@
 
 #include "odeiv_util.h"
 
-/* Cash-Karp constants */
-static const double ah[] = { 1.0 / 5.0, 0.3, 3.0 / 5.0, 1.0, 7.0 / 8.0 };
-static const double b21 = 1.0 / 5.0;
-static const double b3[] = { 3.0 / 40.0, 9.0 / 40.0 };
-static const double b4[] = { 0.3, -0.9, 1.2 };
-static const double b5[] = { -11.0 / 54.0, 2.5, -70.0 / 27.0, 35.0 / 27.0 };
-static const double b6[] =
-  { 1631.0 / 55296.0, 175.0 / 512.0, 575.0 / 13824.0, 44275.0 / 110592.0,
-    253.0 / 4096.0 };
-static const double c1 = 37.0 / 378.0;
-static const double c3 = 250.0 / 621.0;
-static const double c4 = 125.0 / 594.0;
-static const double c6 = 512.0 / 1771.0;
+/* Runge-Kutta-Fehlberg constants */
+static const double ah[] = { 1.0/4.0, 3.0/8.0, 12.0/13.0, 1.0, 1.0/2.0 };
+
+static const double b3[] = { 3.0/32.0, 9.0/32.0 };
+
+static const double b4[] = { 1932.0/2197.0, -7200.0/2197.0, 7296.0/2197.0};
+
+static const double b5[] = { 8341.0/4104.0, -32832.0/4104.0, 29440.0/4104.0, -845.0/4104.0};
+
+static const double b6[] = { -6080.0/20520.0, 41040.0/20520.0, -28352.0/20520.0, 9295.0/20520.0, -5643.0/20520.0};
+
+static const double c1 = 902880.0/7618050.0;
+static const double c3 = 3953664.0/7618050.0;
+static const double c4 = 3855735.0/7618050.0;
+static const double c5 = -1371249.0/7618050.0;
+static const double c6 = 277020.0/7618050.0;
+
+
 static const double ec[] = { 0.0,
-  /* the first value is the same as c1, above */
-  37.0 / 378.0 - 2825.0 / 27648.0,
+  1.0 / 360.0,
   0.0,
-  /* the first value is the same as c3, above */
-  250.0 / 621.0 - 18575.0 / 48384.0,
-  /* the first value is the same as c4, above */
-  125.0 / 594.0 - 13525.0 / 55296.0,
-  -277.00 / 14336.0,
-  /* the first value is the same as c6, above */
-  512.0 / 1771.0 - 0.25
+  -128.0 / 4275.0,
+  -2197.0 / 75240.0,
+  1.0 / 50.0,
+  2.0 / 55.0
 };
 
 typedef struct
@@ -67,16 +65,16 @@ typedef struct
   double *y0;
   double *ytmp;
 }
-rkck_state_t;
+rkf45_state_t;
 
 static void *
-rkck_alloc (size_t dim)
+rkf45_alloc (size_t dim)
 {
-  rkck_state_t *state = (rkck_state_t *) malloc (sizeof (rkck_state_t));
+  rkf45_state_t *state = (rkf45_state_t *) malloc (sizeof (rkf45_state_t));
 
   if (state == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for rkck_state", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for rkf45_state", GSL_ENOMEM);
     }
 
   state->k1 = (double *) malloc (dim * sizeof (double));
@@ -176,7 +174,7 @@ rkck_alloc (size_t dim)
 
 
 static int
-rkck_apply (void *vstate,
+rkf45_apply (void *vstate,
 	    size_t dim,
 	    double t,
 	    double h,
@@ -185,7 +183,7 @@ rkck_apply (void *vstate,
 	    const double dydt_in[],
 	    double dydt_out[], const gsl_odeiv_system * sys)
 {
-  rkck_state_t *state = (rkck_state_t *) vstate;
+  rkf45_state_t *state = (rkf45_state_t *) vstate;
 
   size_t i;
   int status = 0;
@@ -210,7 +208,7 @@ rkck_apply (void *vstate,
     }
 
   for (i = 0; i < dim; i++)
-    ytmp[i] = y[i] + b21 * h * k1[i];
+    ytmp[i] = y[i] +  ah[0] * h * k1[i];
 
   /* k2 step */
   {
@@ -256,7 +254,7 @@ rkck_apply (void *vstate,
 
   for (i = 0; i < dim; i++)
     {
-      const double d_i = c1 * k1[i] + c3 * k3[i] + c4 * k4[i] + c6 * k6[i];
+      const double d_i = c1 * k1[i] + c3 * k3[i] + c4 * k4[i] + c5 * k5[i] + c6 * k6[i];
       y[i] += h * d_i;
       if (dydt_out != NULL)
 	dydt_out[i] = d_i;
@@ -273,9 +271,9 @@ rkck_apply (void *vstate,
 
 
 static int
-rkck_reset (void *vstate, size_t dim)
+rkf45_reset (void *vstate, size_t dim)
 {
-  rkck_state_t *state = (rkck_state_t *) vstate;
+  rkf45_state_t *state = (rkf45_state_t *) vstate;
 
   DBL_ZERO_MEMSET (state->k1, dim);
   DBL_ZERO_MEMSET (state->k2, dim);
@@ -289,17 +287,17 @@ rkck_reset (void *vstate, size_t dim)
 }
 
 static unsigned int
-rkck_order (void *vstate)
+rkf45_order (void *vstate)
 {
-  rkck_state_t *state = (rkck_state_t *) vstate;
+  rkf45_state_t *state = (rkf45_state_t *) vstate;
   state = 0; /* prevent warnings about unused parameters */
   return 5;
 }
 
 static void
-rkck_free (void *vstate)
+rkf45_free (void *vstate)
 {
-  rkck_state_t *state = (rkck_state_t *) vstate;
+  rkf45_state_t *state = (rkf45_state_t *) vstate;
 
   free (state->ytmp);
   free (state->y0);
@@ -312,14 +310,14 @@ rkck_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv_step_type rkck_type = { "rkck",	/* name */
+static const gsl_odeiv_step_type rkf45_type = { "rkf45",	/* name */
   1,				/* can use dydt_in */
   0,				/* gives exact dydt_out */
-  &rkck_alloc,
-  &rkck_apply,
-  &rkck_reset,
-  &rkck_order,
-  &rkck_free
+  &rkf45_alloc,
+  &rkf45_apply,
+  &rkf45_reset,
+  &rkf45_order,
+  &rkf45_free
 };
 
-const gsl_odeiv_step_type *gsl_odeiv_step_rkck = &rkck_type;
+const gsl_odeiv_step_type *gsl_odeiv_step_rkf45 = &rkf45_type;

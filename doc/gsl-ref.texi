@@ -203,7 +203,7 @@ not recommended for general use.
 * N-tuples::                    
 * Monte Carlo Integration::     
 * Simulated Annealing::         
-* Ordinary Differential Equations (ODEs)::  
+* Ordinary Differential Equations::  
 * Interpolation::               
 * Numerical Differentiation::   
 * Chebyshev Approximations::    
@@ -307,15 +307,15 @@ will be announced for general use.
 @chapter Monte Carlo Integration
 @include montecarlo.texi
 
-@node Simulated Annealing, Ordinary Differential Equations (ODEs), Monte Carlo Integration, Top
+@node Simulated Annealing, Ordinary Differential Equations, Monte Carlo Integration, Top
 @chapter Simulated Annealing
 @include siman.texi
 
-@node Ordinary Differential Equations (ODEs), Interpolation, Simulated Annealing, Top
-@chapter Ordinary Differential Equations (ODEs)
+@node Ordinary Differential Equations, Interpolation, Simulated Annealing, Top
+@chapter Ordinary Differential Equations
 @include ode-initval.texi
 
-@node   Interpolation, Numerical Differentiation, Ordinary Differential Equations (ODEs), Top
+@node   Interpolation, Numerical Differentiation, Ordinary Differential Equations, Top
 @chapter Interpolation
 @include interp.texi
 

@@ -17,6 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Gear 1 */
+
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
@@ -25,116 +27,129 @@
 #include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "odeiv_util.h"
 #include "gsl_odeiv.h"
 
+#include "odeiv_util.h"
 
-typedef  struct gsl_odeiv_step_gear1_struct  gsl_odeiv_step_gear1;
-
-struct gsl_odeiv_step_gear1_struct
+typedef struct
 {
-  gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
+  double *k;
+  double *y0;
+}
+gear1_state_t;
 
-  double * k;
-  double * y0;
-};
-
-static int  gear1_step(void *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-static void gear1_free(void *);
-
-
-
-gsl_odeiv_step *
-gsl_odeiv_step_gear1_new(void)
+static void *
+gear1_alloc (size_t dim)
 {
-  gsl_odeiv_step_gear1 * s = (gsl_odeiv_step_gear1 *) malloc(sizeof(gsl_odeiv_step_gear1));
-  if(s != 0) {
-    gsl_odeiv_step_construct(&(s->parent),
-      "gear1",
-      gear1_step,
-      0,
-      gear1_free,
-      0,
-      0,
-      2);
+  gear1_state_t *state = (gear1_state_t *) malloc (sizeof (gear1_state_t));
 
-    s->k = 0;
-    s->y0 = 0;
-  }
-  return (gsl_odeiv_step *) s;
+  if (state == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for gear1_state", GSL_ENOMEM);
+    }
+
+  state->k = (double *) malloc (dim * sizeof (double));
+
+  if (state->k == 0)
+    {
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for k", GSL_ENOMEM);
+    }
+
+  state->y0 = (double *) malloc (dim * sizeof (double));
+
+  if (state->y0 == 0)
+    {
+      free (state->k);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
+    }
+
+  return state;
 }
 
-
 static int
-gear1_step(
-  void * self,
-  double t,
-  double h,
-  double y[],
-  double yerr[],
-  const double dydt_in[],
-  double dydt_out[],
-  const gsl_odeiv_system * sys)
+gear1_apply(void * vstate,
+            size_t dim,
+            double t,
+            double h,
+            double y[],
+            double yerr[],
+            const double dydt_in[],
+            double dydt_out[],
+            const gsl_odeiv_system * sys)
 {
+  gear1_state_t *state = (gear1_state_t *) vstate;
+
   const int iter_steps = 3;
   int status = 0;
   int nu;
-  int i;
-  size_t dim;
+  size_t i;
 
-  gsl_odeiv_step_gear1 * my = (gsl_odeiv_step_gear1 *) self;
+  double * const k = state->k;
+  double * const y0 = state->y0;
 
-  if(sys->dimension <= 0) {
-    return GSL_EINVAL;
-  }
+  dydt_in = 0; /* avoid warning about unused parameter */
 
-  /* (Re)Initialization may be necessary. */
-  if(sys->dimension != my->parent.dimension) {
-    if(my->k != 0) free(my->k);
-    if(my->y0 != 0) free(my->y0);
-    my->parent.dimension = sys->dimension;
-    my->k  = (double *) malloc(sys->dimension * sizeof(double));
-    my->y0 = (double *) malloc(sys->dimension * sizeof(double));
-    if(my->k == 0 || my->y0 == 0) {
-      if(my->k != 0) free(my->k);
-      if(my->y0 != 0) free(my->y0);
-      my->parent.dimension = 0;
-      return GSL_ENOMEM;
-    }
-  }
-
-  dim = my->parent.dimension;
-
-  memcpy(my->y0, y, dim * sizeof(double));
+  DBL_MEMCPY(y0, y, dim);
 
   /* iterative solution */
   for(nu=0; nu<iter_steps; nu++) {
-    status += ( GSL_ODEIV_FN_EVAL(sys, t + h, y, my->k) != 0 );
+    int s = GSL_ODEIV_FN_EVAL(sys, t + h, y, k);
+    GSL_STATUS_UPDATE(&status, s);
     for(i=0; i<dim; i++) {
-      y[i] = my->y0[i] + h * my->k[i];
+      y[i] = y0[i] + h * k[i];
     }
   }
 
   /* fudge the error estimate */
   for(i=0; i<dim; i++) {
-    yerr[i] = h * h * my->k[i];
+    yerr[i] = h * h * k[i];
   }
 
-  if(dydt_out != 0) {
-    memcpy(dydt_out, my->k, dim * sizeof(double));
+  if(dydt_out != NULL) {
+    DBL_MEMCPY(dydt_out, k, dim);
   }
 
-  return  ( status == 0 ? GSL_SUCCESS : GSL_EBADFUNC );
+  return status;
 }
 
+static int
+gear1_reset (void *vstate, size_t dim)
+{
+  gear1_state_t *state = (gear1_state_t *) vstate;
+
+  DBL_ZERO_MEMSET (state->k, dim);
+  DBL_ZERO_MEMSET (state->y0, dim);
+
+  return GSL_SUCCESS;
+}
+
+static unsigned int
+gear1_order (void *vstate)
+{
+  gear1_state_t *state = (gear1_state_t *) vstate;
+  state = 0; /* prevent warnings about unused parameters */
+  return 2;
+}
 
 static void
-gear1_free(void * self)
+gear1_free (void *vstate)
 {
-  if(self != 0) {
-    gsl_odeiv_step_gear1 * my = (gsl_odeiv_step_gear1 *) self;
-    if(my->k != 0) free(my->k);
-    if(my->y0 != 0) free(my->y0);
-    free(self);
-  }
+  gear1_state_t *state = (gear1_state_t *) vstate;
+  free (state->k);
+  free (state->y0);
+  free (state);
 }
+
+static const gsl_odeiv_step_type gear1_type = { "gear1",	/* name */
+  1,				/* can use dydt_in */
+  0,				/* gives exact dydt_out */
+  &gear1_alloc,
+  &gear1_apply,
+  &gear1_reset,
+  &gear1_order,
+  &gear1_free
+};
+
+const gsl_odeiv_step_type *gsl_odeiv_step_gear1 = &gear1_type;

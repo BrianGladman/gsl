@@ -26,101 +26,56 @@
 #include <gsl/gsl_errno.h>
 #include "gsl_odeiv.h"
 
-
-
-static void
-data_free(void * data)
+gsl_odeiv_control *
+gsl_odeiv_control_alloc(const gsl_odeiv_control_type * T)
 {
-  if(data != 0) free(data);
-}
+  gsl_odeiv_control * c = 
+    (gsl_odeiv_control *) malloc(sizeof(gsl_odeiv_control));
 
+  if(c == 0) 
+    {
+      GSL_ERROR_NULL ("failed to allocate space for control struct", 
+                      GSL_ENOMEM);
+    };
 
-static int
-hadjust(void * data, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h)
-{
-  const double * d = (double *) data;
-  const double eps_abs = d[0];
-  const double eps_rel = d[1];
-  const double a_y     = d[2];
-  const double a_dydt  = d[3];
-  const double S = 0.9;
-  const double h_old = fabs(*h);
-  double rmax = DBL_MIN;
-  size_t i;
+  c->type = T;
+  c->state = c->type->alloc();
 
-  for(i=0; i<dim; i++) {
-    const double D0 = eps_rel * (a_y * fabs(y[i]) + a_dydt * h_old * fabs(yp[i])) + eps_abs;
-    const double r  = fabs(yerr[i])/(fabs(D0) + 2.0*DBL_MIN);
-    rmax = GSL_MAX_DBL(r, rmax);
-  }
+  if (c->state == 0)
+    {
+      free (c);		/* exception in constructor, avoid memory leak */
 
-  if(rmax > 1.1) {
-    /* decrease step, no more than factor of 5 */
-    *h = h_old * S / pow(rmax, 1.0/ord);
-    *h = GSL_MAX_DBL(0.2 * h_old, *h);
-    return GSL_ODEIV_HADJ_DEC;
-  }
-  else if(rmax < 0.9) {
-    /* increase step, no more than factor of 5 */
-    *h = h_old / S / pow(rmax, 1.0/(ord+1.0));
-    *h = GSL_MIN_DBL(5.0 * h_old, *h);
-    return GSL_ODEIV_HADJ_INC;
-  }
-  else {
-    /* no change */
-    return GSL_ODEIV_HADJ_NIL;
-  }
-}
+      GSL_ERROR_NULL ("failed to allocate space for control state", 
+                      GSL_ENOMEM);
+    };
 
-
-gsl_odeiv_evolve_control *
-gsl_odeiv_evolve_control_standard_new(
-  double eps_rel,
-  double eps_abs,
-  double a_y,
-  double a_dydt)
-{
-  gsl_odeiv_evolve_control * c = (gsl_odeiv_evolve_control *) malloc(sizeof(gsl_odeiv_evolve_control));
-  if(c != 0) {
-    double * d;
-    c->_data_size = 4 * sizeof(double);
-    c->_data = malloc(c->_data_size);
-    if(c->_data == 0) {
-      free(c);
-      return 0;
-    }
-    d = (double *) c->_data;
-    d[0] = eps_abs;
-    d[1] = eps_rel;
-    d[2] = a_y;
-    d[3] = a_dydt;
-    c->_free = data_free;
-    c->_hadjust = hadjust;
-  }  
   return c;
 }
 
-
-gsl_odeiv_evolve_control *
-gsl_odeiv_evolve_control_y_new(double eps_rel, double eps_abs)
+int
+gsl_odeiv_control_init(gsl_odeiv_control * c, 
+                       double eps_abs, double eps_rel, 
+                       double a_y, double a_dydt)
 {
-  return gsl_odeiv_evolve_control_standard_new(eps_rel, eps_abs, 1.0, 0.0);
+  return c->type->init (c->state, eps_abs, eps_rel, a_y, a_dydt);
 }
-
-
-gsl_odeiv_evolve_control *
-gsl_odeiv_evolve_control_yp_new(double eps_rel, double eps_abs)
-{
-  return gsl_odeiv_evolve_control_standard_new(eps_rel, eps_abs, 0.0, 1.0);
-
-}
-
 
 void
-gsl_odeiv_evolve_control_free(gsl_odeiv_evolve_control * c)
+gsl_odeiv_control_free(gsl_odeiv_control * c)
 {
-  if(c != 0) {
-    if(c->_free != 0) c->_free(c->_data);
-    free(c);
-  }
+  c->type->free(c->state);
+  free(c);
+}
+
+const char *
+gsl_odeiv_control_name(const gsl_odeiv_control * c)
+{
+  return c->type->name;
+}
+
+int
+gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y0[], const double yerr[], const double dydt[], double * h)
+{
+  return c->type->hadjust(c->state, s->dimension, s->type->order(s->state),
+                          y0, yerr, dydt, h);
 }
