@@ -194,14 +194,24 @@ University of Paris-Dauphine
 @page
 @vskip 0pt plus 1filll
 @ifset publish
+@flushleft
 Published by Network Theory Limited.
 
-15 Royal Park,
-Clifton,
-Bristol BS8 3AL,
-United Kingdom.
+15 Royal Park
+Clifton
+Bristol BS8 3AL
+United Kingdom
+
+Email: info@@network-theory.co.uk
 
 ISBN 0-9541617-0-X
+
+Cover design by David Nicholls, i4Design.
+
+Errata for this book will be available from 
+@url{http://www.network-theory.co.uk/gsl/manual/}
+
+@end flushleft
 @end ifset
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001 The GSL Team.
 
@@ -240,6 +250,44 @@ by the GSL Team.
 @top GSL
 @end ifinfo
 
+@ifset publish
+@iftex
+@unnumbered Preface
+This manual documents the use of the GNU Scientific Library, a numerical
+library for C and C++ programmers.
+
+The GNU Scientific Library is @dfn{free software}.  The term "free
+software" is sometimes misunderstood--it has nothing to do with
+price. It is about freedom.  It refers to your freedom to run, copy,
+distribute, study, change and improve the software.  With the GNU
+Scientific Library you have all these freedoms.
+
+The GNU Scientific Library is part of the GNU Project.  The GNU Project
+was launched in 1984 to develop a complete Unix-like operating system
+which is free software: the GNU system.  It was conceived as a way of
+bringing back the cooperative spirit that prevailed in the computing
+community in earlier days---to make cooperation possible once again by
+removing the obstacles to cooperation imposed by the owners of
+proprietary software.  Variants of the GNU operating system, which use
+the kernel Linux, are now widely used; though these systems are often
+referred to as ``Linux'', they are more accurately called GNU/Linux
+systems.
+
+The Free Software Foundation is a tax-exempt charity that raises funds
+for work on the GNU Project.  It is dedicated to promoting computer
+users' right to use, study, copy, modify, and redistribute computer
+programs.  You can support the Free Software Foundation by making a
+donation or ordering manuals, t-shirts and especially CD-ROMs.  For more
+information visit the website @url{www.gnu.org}.
+@sp 1
+@flushright
+Brian Gough
+Publisher
+December 2001
+@end flushright
+@end iftex
+@end ifset
+
 @ifinfo
 This file documents the @value{GSL}, a collection of numerical routines
 for scientific computing.  The documentation corresponds to version
@@ -249,7 +297,7 @@ for scientific computing.  The documentation corresponds to version
 @comment not recommended for general use.
 
 More information about GSL can be found at the project homepage,
-@url{http://sources.redhat.com/gsl/}.
+@url{http://www.gnu.org/software/gsl/}.
 @end ifinfo
 
 @menu
@@ -550,6 +598,14 @@ fi
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
+@ifset publish
+@comment @node The GNU Manifesto, Function Index, GNU Free Documentation License, Top
+@comment @unnumbered The GNU Manifesto
+@comment @include gnu.texi
+
+@include gnumerics.texi
+@end ifset
+
 @comment htmlhelp: @bye
 
 @iftex
@@ -584,16 +640,16 @@ fi
 @contents
 @end ifclear
 
-@ifset publish
+@ifset extrablankpages
 @comment final page must be blank for printed version
+@page
 @headings off
-@page
 @*
 @page
 @*
-@page
-@*
-@page
-@*
+@comment @page
+@comment @*
+@comment @page
+@comment @*
 @end ifset
 @bye
