@@ -94,13 +94,9 @@ dnl Checks for library functions.
 
 dnl Use alternate libm if specified by user
 
-AC_ARG_WITH(libm,
-[  --with-libm=LIBM        use the specified math libray [default=-lm] ],
-[LIBM=$withval])
-
-if test "x$LIBM" != "x" ; then
-  LIBS="$LIBM $LIBS"
-  AC_MSG_RESULT([using specified math library: $LIBS])
+if test "x$LIBS" != "x" ; then
+  AC_MSG_CHECKING([for math library])
+  AC_MSG_RESULT([$LIBS])
 else
   AC_CHECK_LIB(m, main)
 fi
