@@ -266,7 +266,8 @@ spherical Bessel functions @math{j_l(x)} for @math{l} from 0 to
 @math{x >= 0}, storing the results in the array
 @var{result_array}.
 The Steed/Barnett algorithm is described in @cite{Comp. Phys. Comm.} 21,
-297 (1981).
+297 (1981).  Steed's method is more stable than the
+recurrence used in the other functions but slower.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW

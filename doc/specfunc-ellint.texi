@@ -34,7 +34,9 @@ P(\phi,k,n) = \int_0^\phi dt 1/((1 + n \sin(t)^2)\sqrt(1 - k^2 \sin(t)^2))
 @noindent
 The complete Legendre forms are denoted by @math{K(k) = F(\pi/2, k)} and
 @math{E(k) = E(\pi/2, k)}.  Further information on the Legendre forms of
-elliptic integrals can be found in Abramowitz & Stegun, Chapter 17.
+elliptic integrals can be found in Abramowitz & Stegun, Chapter 17.  The
+notation used here is based on Carlson, @cite{Numerische Mathematik} 33
+(1979) 1 and differs slightly from that used by Abramowitz & Stegun.
 
 @subsection Carlson Forms
 
