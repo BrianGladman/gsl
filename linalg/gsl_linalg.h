@@ -317,22 +317,22 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
 
 int gsl_linalg_LQ_decomp (gsl_matrix * A, gsl_vector * tau);
 
-int gsl_linalg_LQ_solve (const gsl_matrix * LQ, const gsl_vector * tau, 
+int gsl_linalg_LQ_solve_T (const gsl_matrix * LQ, const gsl_vector * tau, 
 			 const gsl_vector * b, gsl_vector * x);
 
-int gsl_linalg_LQ_svx (const gsl_matrix * LQ, const gsl_vector * tau, 
-		       gsl_vector * x);
+int gsl_linalg_LQ_svx_T (const gsl_matrix * LQ, const gsl_vector * tau, 
+                         gsl_vector * x);
 
-int gsl_linalg_LQ_lssolve (const gsl_matrix * LQ, const gsl_vector * tau, 
+int gsl_linalg_LQ_lssolve_T (const gsl_matrix * LQ, const gsl_vector * tau, 
 			   const gsl_vector * b, gsl_vector * x, 
 			   gsl_vector * residual);
 
-int gsl_linalg_LQ_Lsolve (const gsl_matrix * LQ, const gsl_vector * b, 
+int gsl_linalg_LQ_Lsolve_T (const gsl_matrix * LQ, const gsl_vector * b, 
 			  gsl_vector * x);
 
-int gsl_linalg_LQ_Lsvx (const gsl_matrix * LQ, gsl_vector * x);
+int gsl_linalg_LQ_Lsvx_T (const gsl_matrix * LQ, gsl_vector * x);
 
-int gsl_linalg_L_solve (const gsl_matrix * L, const gsl_vector * b, 
+int gsl_linalg_L_solve_T (const gsl_matrix * L, const gsl_vector * b, 
 			gsl_vector * x);
 
 int gsl_linalg_LQ_vecQ (const gsl_matrix * LQ, const gsl_vector * tau, 
@@ -360,28 +360,28 @@ int gsl_linalg_PTLQ_decomp2 (const gsl_matrix * A, gsl_matrix * q,
 			     gsl_permutation * p, int *signum, 
 			     gsl_vector * norm);
 
-int gsl_linalg_PTLQ_solve (const gsl_matrix * QR,
+int gsl_linalg_PTLQ_solve_T (const gsl_matrix * QR,
 			   const gsl_vector * tau,
 			   const gsl_permutation * p,
 			   const gsl_vector * b,
 			   gsl_vector * x);
 
-int gsl_linalg_PTLQ_svx (const gsl_matrix * LQ,
-			 const gsl_vector * tau,
-			 const gsl_permutation * p,
-			 gsl_vector * x);
+int gsl_linalg_PTLQ_svx_T (const gsl_matrix * LQ,
+                           const gsl_vector * tau,
+                           const gsl_permutation * p,
+                           gsl_vector * x);
 
-int gsl_linalg_PTLQ_LQsolve (const gsl_matrix * Q, const gsl_matrix * L,
+int gsl_linalg_PTLQ_LQsolve_T (const gsl_matrix * Q, const gsl_matrix * L,
 			     const gsl_permutation * p,
 			     const gsl_vector * b,
 			     gsl_vector * x);
 
-int gsl_linalg_PTLQ_Lsolve (const gsl_matrix * LQ,
+int gsl_linalg_PTLQ_Lsolve_T (const gsl_matrix * LQ,
 			    const gsl_permutation * p,
 			    const gsl_vector * b,
 			    gsl_vector * x);
 
-int gsl_linalg_PTLQ_Lsvx (const gsl_matrix * LQ,
+int gsl_linalg_PTLQ_Lsvx_T (const gsl_matrix * LQ,
 			  const gsl_permutation * p,
 			  gsl_vector * x);
 
