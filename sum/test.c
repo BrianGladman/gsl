@@ -130,6 +130,51 @@ main (void)
     check_full (t, result, "asymptotic series");
   }
 
+  {
+    double t[N];
+    int n;
+
+    /* Euler's gamma from GNU Calc (precision = 32) */
+
+    double result = 0.5772156649015328606065120900824; 
+
+    /* terms for Euler's gamma */
+
+    t[0] = 1.0;
+
+    for (n = 1; n < N; n++)
+      {
+	t[n] = 1/(n+1.0) + log(n/(n+1.0));
+      }
+
+    check_trunc (t, result, "Euler's constant");
+    check_full (t, result, "Euler's constant");
+  }
+
+  {
+    double t[N];
+    int n;
+
+    /* eta(1/2) = sum_{k=1}^{\infty} (-1)^(k+1) / sqrt(k)
+
+       From Levin, Intern. J. Computer Math. B3:371--388, 1973.
+
+       I=(1-sqrt(2))zeta(1/2)
+        =(2/sqrt(pi))*integ(1/(exp(x^2)+1),x,0,inf) */
+
+    double result = 0.6048986434216305;  /* approx */
+
+    /* terms for eta(1/2) */
+
+    for (n = 0; n < N; n++)
+      {
+	t[n] = (n%2 ? -1 : 1) * 1.0 /sqrt(n + 1.0);
+      }
+
+    check_trunc (t, result, "eta(1/2)");
+    check_full (t, result, "eta(1/2)");
+  }
+
   return gsl_test_summary ();
 }
 
@@ -164,5 +209,5 @@ check_full (double * t, double expected, const char * desc)
 
   /* Allow one digit of slop */
 
-  gsl_test (sd_est > sd_actual + 1.0, "full significant digits, %s", desc);
+  gsl_test (sd_est > sd_actual + 1.0, "full significant digits, %s (%g vs %g)", desc, sd_est, sd_actual);
 }

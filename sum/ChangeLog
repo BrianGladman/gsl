@@ -1,3 +1,15 @@
+Mon Nov  1 12:50:17 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added tests using series for the Euler constant
+ 	and eta(1/2)
+
+	* resolved problems with spurious failures by replacing the
+ 	directly computed truncation error by an estimate which varies
+ 	more smoothly. I have used the average of the previous two values,
+ 	which seems to give a reliable estimate of the truncation
+ 	error. The direct evaluation of the truncation error sometimes
+ 	fluctuated wildly, due to cancellation effects.
+
 Thu Oct 28 12:05:47 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: cleaned up tests, now find that everything works in

@@ -61,7 +61,8 @@ gsl_sum_levin_u_accel_minmax (const double *array,
       const double SMALL = 0.01;
       const size_t nmax = GSL_MAX (max_terms, array_size) - 1;
       double noise_n = 0.0, noise_nm1 = 0.0;
-      double trunc_n = 0.0, trunc_nm1 = 0.0;
+      double trunc_n = 0.0, trunc_nm1 = 0.0 ;
+      double actual_trunc_n = 0.0, actual_trunc_nm1 = 0.0;
       double result_n = 0.0, result_nm1 = 0.0;
       double variance = 0;
       size_t n;
@@ -107,8 +108,16 @@ gsl_sum_levin_u_accel_minmax (const double *array,
 				dq_num, dq_den, dsum,
 				&result_n, sum_plain);
 
-	  trunc_nm1 = trunc_n;
-	  trunc_n = fabs (result_n - result_nm1);
+          /* Compute the truncation error directly */
+
+	  actual_trunc_nm1 = actual_trunc_n;
+	  actual_trunc_n = fabs (result_n - result_nm1);
+
+          /* Average results to make a more reliable estimate of the
+             real truncation error */
+
+          trunc_nm1 = trunc_n;
+          trunc_n = 0.5*(actual_trunc_n + actual_trunc_nm1);
 
 	  noise_nm1 = noise_n;
 	  variance = 0;

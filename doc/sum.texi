@@ -96,35 +96,37 @@ main (void)
 
   printf("term-by-term sum = %.16f using %d terms\n", sum, N) ;
   printf("term-by-term sum = %.16f using %d terms\n", sum_plain, n_used) ;
-  printf("accelerated sum  = %.16f using %d terms\n", sum_accel, n_used) ;
   printf("exact value      = %.16f\n", zeta_2) ;
+  printf("accelerated sum  = %.16f using %d terms\n", sum_accel, n_used) ;
   printf("estimated error  = %.16f\n", prec * sum_accel) ;
   printf("actual error     = %.16f\n", sum_accel - zeta_2) ;
-        
+       
   return 0;
 @}
 @end example
 
 @noindent
-The Levin u-transform is able to obtain an estimate of the sum to 1 part
-in 
+The ouput below shows that the Levin u-transform is able to obtain an 
+estimate of the sum to 1 part in 
 @c{$10^{10}$}
 @math{10^10} using the first eleven terms of the series. The
-error estimate returned by the function safely bounds the correct value
-and is conservatively large. By comparison a direct summation would
-require 
-@c{$10^{10}$}
-@math{10^10} terms to achieve the same precision.
+error estimate returned by the function is also accurate, giving
+the correct number of significant digits. 
 
 @example
 bash$ ./a.out 
-term-by-term sum = 1.5961632439130233 using 20 terms
-term-by-term sum = 1.5649766384209025 using 11 terms
-accelerated sum  = 1.6449340668936467 using 11 terms
-exact value      = 1.6449340668482264
-estimated error  = 0.0000000002517837
-actual error     = 0.0000000000454203
+term-by-term sum =  1.5961632439130233 using 20 terms
+term-by-term sum =  1.5759958390005426 using 13 terms
+exact value      =  1.6449340668482264
+accelerated sum  =  1.6449340668166479 using 13 terms
+estimated error  =  0.0000000000508580
+actual error     = -0.0000000000315785
 @end example
+@noindent
+Note that a direct summation of this series would require 
+@c{$10^{10}$}
+@math{10^10} terms to achieve the same precision as the accelerated 
+sum does in 13 terms.
 
 @node Series Acceleration References
 @section Series Acceleration References
