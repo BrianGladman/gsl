@@ -1478,7 +1478,7 @@ cblas_dsyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 #include "source_syr2k_r.h"
 #undef BASE
 }
-#ifdef 0
+
 void
 cblas_csyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	      const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
@@ -1500,7 +1500,6 @@ cblas_zsyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 #include "source_syr2k_c.h"
 #undef BASE
 }
-
 
 /* HER2K */
 
@@ -1527,6 +1526,7 @@ cblas_zher2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 #undef BASE
 }
 
+#ifdef 0
 
 /* TRMM */
 

@@ -29,7 +29,7 @@ function t = Trans (S)
     t = [111, 112];
     #t = v(1+fix(rand()));
   else
-    t = [111, 113];
+    t = [111, 112, 113];
     #t = v(1+fix(rand()));
   endif
 endfunction
@@ -1435,16 +1435,45 @@ function CC = blas_syr2k (order, uplo, trans, N, K, alpha, \
   if (trans == 111)
     a = matrix (order, A, lda, N, K);
     b = matrix (order, B, ldb, N, K);
-    c = alpha * (a * b' + b * a') + beta * c;
+    c = alpha * (a * b.' + b * a.') + beta * c;
   else
     a = matrix (order, A, lda, K, N);
     b = matrix (order, B, ldb, K, N);
-    c = alpha * (a' * b + b' * a) + beta * c;
+    c = alpha * (a.' * b + b.' * a) + beta * c;
   endif
 
   CC = trmatout(order, uplo, 131, C, ldc, N, c);
 endfunction
 
+
+function CC = blas_her2k (order, uplo, trans, N, K, alpha, \
+                         A, lda, B, ldb, beta, C, ldc)
+  c = trmatrix (order, uplo, 131, C, ldc, N);
+
+  if (beta == 1 && (alpha == 0 || K == 0))
+    CC=C;
+    return;
+  endif
+
+  t = triu(c,1) + tril(c,-1);
+  c = t + t' + diag(real(diag(c)));  # make hermitian
+
+  if (trans == 111)
+    a = matrix (order, A, lda, N, K);
+    b = matrix (order, B, ldb, N, K);
+    c = alpha * a * b' + alpha' * b * a' + beta * c;
+  else
+    a = matrix (order, A, lda, K, N);
+    b = matrix (order, B, ldb, K, N);
+    c = alpha * a' * b + alpha' * b' * a + beta * c;
+  endif
+
+  for i = 1:N
+    c(i,i) = real(c(i,i));
+  endfor
+
+  CC = trmatout(order, uplo, 131, C, ldc, N, c);
+endfunction
 
 ######################################################################
 
@@ -2232,6 +2261,31 @@ function test_syr2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
   end_block();
 endfunction
 
+function test_her2k (S, fn, order, uplo, trans,  N, K, alpha, A, \
+                    lda, B, ldb, beta, C, ldc)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "int", "trans", trans);
+  define(S, "int", "N", N);
+  define(S, "int", "K", K);
+  define(S, "scalar", "alpha", alpha);
+  T=S; T.complex = 0;
+  define(T, "scalar", "beta", beta);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "B", B);
+  define(S, "int", "ldb", ldb);
+  define(S, "matrix", "C", C);
+  define(S, "int", "ldc", ldc);
+
+  CC = feval(strcat("blas_", fn), order, uplo, trans, N, K, \
+             alpha, A, lda, B, ldb, beta, C, ldc);
+  define(S, "matrix", "C_expected", CC);
+  call("cblas_", S.prefix, fn, "(order, uplo, trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc)");
+  test(S, "matrix", "C", "C_expected", strcat(S.prefix, fn), C);
+  end_block();
+endfunction
 
 ######################################################################
 
@@ -2882,16 +2936,42 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z] #[s,d] #,c,z]
+#     S = context(i);
+#     for trans = Trans(S)
+#       if (S.complex && trans == 113)
+#         continue; # ConjTrans not allowed for complex case, 
+#       endif
+#       for alpha = coeff(S)
+#         for beta = coeff(S)
+#           for order = [101, 102]
+#             for uplo = [121, 122]
+#               T = test_syr2kmatmat(S, j, order, trans);
+#               test_syr2k (S, "syr2k", order, uplo, trans, T.n, T.k, alpha, 
+#                           T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d] #,c,z]
+  for i = [c,z]
     S = context(i);
     for trans = Trans(S)
+      if (S.complex && trans == 112)
+        continue; # Trans not allowed for complex case, 
+      endif
       for alpha = coeff(S)
-        for beta = coeff(S)
+        R = S; R.complex = 0;
+        for beta = coeff(R)
           for order = [101, 102]
             for uplo = [121, 122]
               T = test_syr2kmatmat(S, j, order, trans);
-              test_syr2k (S, "syr2k", order, uplo, trans, T.n, T.k, alpha, 
+              test_her2k (S, "her2k", order, uplo, trans, T.n, T.k, alpha, 
                           T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
             endfor
           endfor

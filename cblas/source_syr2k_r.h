@@ -1,4 +1,4 @@
-/* blas/source_syrk_r.h
+/* blas/source_syr2k_r.h
  * 
  * Copyright (C) 2001 Brian Gough
  * 
