@@ -200,9 +200,9 @@ bsimp_step_local (void *vstate,
   double *const delta_temp = state->delta_temp;
   double *const rhs_temp = state->rhs_temp;
 
-  gsl_vector y_temp_vec = gsl_vector_view (y_temp, dim);
-  gsl_vector delta_temp_vec = gsl_vector_view (delta_temp, dim);
-  gsl_vector rhs_temp_vec = gsl_vector_view (rhs_temp, dim);
+  gsl_vector_view y_temp_vec = gsl_vector_view_array (y_temp, dim);
+  gsl_vector_view delta_temp_vec = gsl_vector_view_array (delta_temp, dim);
+  gsl_vector_view rhs_temp_vec = gsl_vector_view_array (rhs_temp, dim);
 
   const double h = h_total / n_step;
   double t = t0 + h;
@@ -232,7 +232,7 @@ bsimp_step_local (void *vstate,
       y_temp[i] = h * (yp[i] + h * dfdt[i]);
     }
 
-  gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec, &delta_temp_vec);
+  gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec.vector, &delta_temp_vec.vector);
 
   for (i = 0; i < dim; i++)
     {
@@ -252,7 +252,7 @@ bsimp_step_local (void *vstate,
 	  rhs_temp[i] = h * y_out[i] - delta[i];
 	}
 
-      gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec, &delta_temp_vec);
+      gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
 
       for (i = 0; i < dim; i++)
 	{
@@ -273,7 +273,7 @@ bsimp_step_local (void *vstate,
       rhs_temp[i] = h * y_out[i] - delta[i];
     }
 
-  gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec, &delta_temp_vec);
+  gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
 
   for (i = 0; i < dim; i++)
     {

@@ -24,10 +24,10 @@ test_pontius ()
       gsl_multifit_linear_alloc (pontius_n, pontius_p);
 
     gsl_matrix * X = gsl_matrix_alloc (pontius_n, pontius_p);
-    gsl_vector y = gsl_vector_view (pontius_y, pontius_n);
+    gsl_vector_view y = gsl_vector_view_array (pontius_y, pontius_n);
     gsl_vector * c = gsl_vector_alloc (pontius_p);
     gsl_matrix * cov = gsl_matrix_alloc (pontius_p, pontius_p);
-    gsl_vector diag;
+    gsl_vector_view diag;
 
     double chisq;
 
@@ -49,7 +49,7 @@ test_pontius ()
           }
       }
 
-    gsl_multifit_linear (X, &y, c, cov, &chisq, work);
+    gsl_multifit_linear (X, &y.vector, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "pontius gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "pontius gsl_fit_multilinear c1") ;
@@ -57,9 +57,9 @@ test_pontius ()
 
     diag = gsl_matrix_diagonal (cov);
 
-    gsl_test_rel (gsl_vector_get(&diag,0), pow(expected_sd[0],2.0), 1e-10, "pontius gsl_fit_multilinear cov00") ;
-    gsl_test_rel (gsl_vector_get(&diag,1), pow(expected_sd[1],2.0), 1e-10, "pontius gsl_fit_multilinear cov11") ;
-    gsl_test_rel (gsl_vector_get(&diag,2), pow(expected_sd[2],2.0), 1e-10, "pontius gsl_fit_multilinear cov22") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,0), pow(expected_sd[0],2.0), 1e-10, "pontius gsl_fit_multilinear cov00") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,1), pow(expected_sd[1],2.0), 1e-10, "pontius gsl_fit_multilinear cov11") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,2), pow(expected_sd[2],2.0), 1e-10, "pontius gsl_fit_multilinear cov22") ;
 
     gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_multilinear chisq") ;
 
@@ -75,7 +75,7 @@ test_pontius ()
       gsl_multifit_linear_alloc (pontius_n, pontius_p);
 
     gsl_matrix * X = gsl_matrix_alloc (pontius_n, pontius_p);
-    gsl_vector y = gsl_vector_view (pontius_y, pontius_n);
+    gsl_vector_view y = gsl_vector_view_array (pontius_y, pontius_n);
     gsl_vector * w = gsl_vector_alloc (pontius_n);
     gsl_vector * c = gsl_vector_alloc (pontius_p);
     gsl_matrix * cov = gsl_matrix_alloc (pontius_p, pontius_p);
@@ -104,7 +104,7 @@ test_pontius ()
 
     gsl_vector_set_all (w, 1.0);
 
-    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq, work);
+    gsl_multifit_wlinear (X, w, &y.vector, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-10, "pontius gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-10, "pontius gsl_fit_multilinear c1") ;

@@ -80,38 +80,38 @@ gsl_linalg_hermtd_decomp (gsl_matrix_complex * A, gsl_vector_complex * tau)
 
       for (i = 0 ; i < N - 1; i++)
         {
-          gsl_vector_complex c = gsl_matrix_complex_column (A, i);
-          gsl_vector_complex v = gsl_vector_complex_subvector (&c, i + 1, N - (i + 1));
-          gsl_complex tau_i = gsl_linalg_complex_householder_transform (&v);
+          gsl_vector_complex_view c = gsl_matrix_complex_column (A, i);
+          gsl_vector_complex_view v = gsl_vector_complex_subvector (&c.vector, i + 1, N - (i + 1));
+          gsl_complex tau_i = gsl_linalg_complex_householder_transform (&v.vector);
           
           /* Apply the transformation H^T A H to the remaining columns */
 
           if ((i + 1) < (N - 1) 
               && !(GSL_REAL(tau_i) == 0.0 && GSL_IMAG(tau_i) == 0.0)) 
             {
-              gsl_matrix_complex m = 
+              gsl_matrix_complex_view m = 
                 gsl_matrix_complex_submatrix (A, i + 1, i + 1, 
                                               N - (i+1), N - (i+1));
-              gsl_complex ei = gsl_vector_complex_get(&v, 0);
-              gsl_vector_complex x = gsl_vector_complex_subvector (tau, i, N-(i+1));
-              gsl_vector_complex_set (&v, 0, one);
+              gsl_complex ei = gsl_vector_complex_get(&v.vector, 0);
+              gsl_vector_complex_view x = gsl_vector_complex_subvector (tau, i, N-(i+1));
+              gsl_vector_complex_set (&v.vector, 0, one);
               
               /* x = tau * A * v */
-              gsl_blas_zhemv (CblasLower, tau_i, &m, &v, zero, &x);
+              gsl_blas_zhemv (CblasLower, tau_i, &m.matrix, &v.vector, zero, &x.vector);
 
               /* w = x - (1/2) tau * (x' * v) * v  */
               {
                 gsl_complex xv, txv, alpha;
-                gsl_blas_zdotc(&x, &v, &xv);
+                gsl_blas_zdotc(&x.vector, &v.vector, &xv);
                 txv = gsl_complex_mul(tau_i, xv);
                 alpha = gsl_complex_mul_real(txv, -0.5);
-                gsl_blas_zaxpy(alpha, &v, &x);
+                gsl_blas_zaxpy(alpha, &v.vector, &x.vector);
               }
               
               /* apply the transformation A = A - v w' - w v' */
-              gsl_blas_zher2(CblasLower, neg_one, &v, &x, &m);
+              gsl_blas_zher2(CblasLower, neg_one, &v.vector, &x.vector, &m.matrix);
 
-              gsl_vector_complex_set (&v, 0, ei);
+              gsl_vector_complex_set (&v.vector, 0, ei);
             }
           
           gsl_vector_complex_set (tau, i, tau_i);
@@ -165,15 +165,15 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
 	{
           gsl_complex ti = gsl_vector_complex_get (tau, i);
 
-          const gsl_vector_complex c = gsl_matrix_complex_const_column (A, i);
+          gsl_vector_complex_const_view c = gsl_matrix_complex_const_column (A, i);
 
-          const gsl_vector_complex h = 
-            gsl_vector_complex_const_subvector (&c, i + 1, N - (i+1));
+          gsl_vector_complex_const_view h = 
+            gsl_vector_complex_const_subvector (&c.vector, i + 1, N - (i+1));
 
-          gsl_matrix_complex m = 
+          gsl_matrix_complex_view m = 
             gsl_matrix_complex_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
 
-          gsl_linalg_complex_householder_hm (ti, &h, &m);
+          gsl_linalg_complex_householder_hm (ti, &h.vector, &m.matrix);
         }
 
       /* Copy diagonal into diag */

@@ -132,11 +132,11 @@ gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec,
          computing eigenvectors */
 
       {
-	gsl_vector d_vec = gsl_vector_view (d, N);
-	gsl_vector sd_vec = gsl_vector_view (sd, N - 1);
-	gsl_vector tau = gsl_vector_view (sd, N - 1);
-	gsl_linalg_symmtd_decomp (A, &tau);
-        gsl_linalg_symmtd_unpack (A, &tau, evec, &d_vec, &sd_vec);
+	gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+	gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
+	gsl_vector_view tau = gsl_vector_view_array (sd, N - 1);
+	gsl_linalg_symmtd_decomp (A, &tau.vector);
+        gsl_linalg_symmtd_unpack (A, &tau.vector, evec, &d_vec.vector, &sd_vec.vector);
       }
 
       /* Make an initial pass through the tridiagonal decomposition
@@ -206,8 +206,8 @@ gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec,
         }
 
       {
-        gsl_vector d_vec = gsl_vector_view (d, N);
-        gsl_vector_memcpy (eval, &d_vec);
+        gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+        gsl_vector_memcpy (eval, &d_vec.vector);
       }
       
       return GSL_SUCCESS;

@@ -75,35 +75,35 @@ gsl_linalg_symmtd_decomp (gsl_matrix * A, gsl_vector * tau)
   
       for (i = 0 ; i < N - 2; i++)
         {
-          gsl_vector c = gsl_matrix_column (A, i);
-          gsl_vector v = gsl_vector_subvector (&c, i + 1, N - (i + 1));
-          double tau_i = gsl_linalg_householder_transform (&v);
+          gsl_vector_view c = gsl_matrix_column (A, i);
+          gsl_vector_view v = gsl_vector_subvector (&c.vector, i + 1, N - (i + 1));
+          double tau_i = gsl_linalg_householder_transform (&v.vector);
           
           /* Apply the transformation H^T A H to the remaining columns */
 
           if (tau_i != 0.0) 
             {
-              gsl_matrix m = gsl_matrix_submatrix (A, i + 1, i + 1, 
-                                                   N - (i+1), N - (i+1));
-              double ei = gsl_vector_get(&v, 0);
-              gsl_vector x = gsl_vector_subvector (tau, i, N-(i+1));
-              gsl_vector_set (&v, 0, 1.0);
+              gsl_matrix_view m = gsl_matrix_submatrix (A, i + 1, i + 1, 
+                                                        N - (i+1), N - (i+1));
+              double ei = gsl_vector_get(&v.vector, 0);
+              gsl_vector_view x = gsl_vector_subvector (tau, i, N-(i+1));
+              gsl_vector_set (&v.vector, 0, 1.0);
               
               /* x = tau * A * v */
-              gsl_blas_dsymv (CblasLower, tau_i, &m, &v, 0.0, &x);
+              gsl_blas_dsymv (CblasLower, tau_i, &m.matrix, &v.vector, 0.0, &x.vector);
 
               /* w = x - (1/2) tau * (x' * v) * v  */
               {
                 double xv, alpha;
-                gsl_blas_ddot(&x, &v, &xv);
+                gsl_blas_ddot(&x.vector, &v.vector, &xv);
                 alpha = - (tau_i / 2.0) * xv;
-                gsl_blas_daxpy(alpha, &v, &x);
+                gsl_blas_daxpy(alpha, &v.vector, &x.vector);
               }
               
               /* apply the transformation A = A - v w' - w v' */
-              gsl_blas_dsyr2(CblasLower, -1.0, &v, &x, &m);
+              gsl_blas_dsyr2(CblasLower, -1.0, &v.vector, &x.vector, &m.matrix);
 
-              gsl_vector_set (&v, 0, ei);
+              gsl_vector_set (&v.vector, 0, ei);
             }
           
           gsl_vector_set (tau, i, tau_i);
@@ -155,13 +155,13 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A,
 
       for (i = N - 2; i > 0 && i--;)
 	{
-          const gsl_vector c = gsl_matrix_const_column (A, i);
-          const gsl_vector h = gsl_vector_const_subvector (&c, i + 1, N - (i+1));
+          gsl_vector_const_view c = gsl_matrix_const_column (A, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector, i + 1, N - (i+1));
           double ti = gsl_vector_get (tau, i);
 
-          gsl_matrix m = gsl_matrix_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
+          gsl_matrix_view m = gsl_matrix_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
 
-          gsl_linalg_householder_hm (ti, &h, &m);
+          gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
         }
 
       /* Copy diagonal into diag */

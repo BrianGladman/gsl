@@ -769,8 +769,8 @@ test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
   /* Compute QR P^T by permuting the elements of the rows of QR */
 
   for (i = 0; i < M; i++) {
-    gsl_vector row = gsl_matrix_row (a, i);
-    gsl_permute_vector_inverse (perm, &row);
+    gsl_vector_view row = gsl_matrix_row (a, i);
+    gsl_permute_vector_inverse (perm, &row.vector);
   }
 
   for(i=0; i<M; i++) {

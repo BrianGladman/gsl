@@ -78,10 +78,10 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
 	  /* Compute the Householder transformation to reduce the j-th
 	     column of the matrix to a multiple of the j-th unit vector */
 
-	  gsl_vector c_full = gsl_matrix_column (A, i);
-          gsl_vector c = gsl_vector_subvector (&c_full, i, M-i);
+	  gsl_vector_view c_full = gsl_matrix_column (A, i);
+          gsl_vector_view c = gsl_vector_subvector (&(c_full.vector), i, M-i);
 
-	  double tau_i = gsl_linalg_householder_transform (&c);
+	  double tau_i = gsl_linalg_householder_transform (&(c.vector));
 
 	  gsl_vector_set (tau, i, tau_i);
 
@@ -90,8 +90,8 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
 
 	  if (i + 1 < N)
 	    {
-	      gsl_matrix m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-	      gsl_linalg_householder_hm (tau_i, &c, &m);
+	      gsl_matrix_view m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
+	      gsl_linalg_householder_hm (tau_i, &(c.vector), &(m.matrix));
 	    }
 	}
 
@@ -200,8 +200,8 @@ gsl_linalg_QR_lssolve (const gsl_matrix * QR, const gsl_vector * tau, const gsl_
     }
   else
     {
-      const gsl_matrix R = gsl_matrix_const_submatrix (QR, 0, 0, N, N);
-      gsl_vector c = gsl_vector_subvector(residual, 0, N);
+      gsl_matrix_const_view R = gsl_matrix_const_submatrix (QR, 0, 0, N, N);
+      gsl_vector_view c = gsl_vector_subvector(residual, 0, N);
 
       gsl_vector_memcpy(residual, b);
 
@@ -211,13 +211,13 @@ gsl_linalg_QR_lssolve (const gsl_matrix * QR, const gsl_vector * tau, const gsl_
 
       /* Solve R x = rhs */
 
-      gsl_vector_memcpy(x, &c);
+      gsl_vector_memcpy(x, &(c.vector));
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, &R, x);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, &(R.matrix), x);
 
       /* Compute residual = b - A x = Q (Q^T b - R x) */
       
-      gsl_vector_set_zero(&c);
+      gsl_vector_set_zero(&(c.vector));
 
       gsl_linalg_QR_Qvec(QR, tau, residual);
 
@@ -332,11 +332,11 @@ gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector *
 
       for (i = 0; i < GSL_MIN (M, N); i++)
 	{
-	  const gsl_vector c = gsl_matrix_const_column (QR, i);
-          const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
-	  gsl_vector w = gsl_vector_subvector (v, i, M - i);
+	  gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector), i, M - i);
+	  gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
 	  double ti = gsl_vector_get (tau, i);
-	  gsl_linalg_householder_hv (ti, &h, &w);
+	  gsl_linalg_householder_hv (ti, &(h.vector), &(w.vector));
 	}
       return GSL_SUCCESS;
     }
@@ -365,11 +365,12 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
 
       for (i = GSL_MIN (M, N); i > 0 && i--;)
 	{
-	  const gsl_vector c = gsl_matrix_const_column (QR, i);
-          const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
-	  gsl_vector w = gsl_vector_subvector (v, i, M - i);
+	  gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector), 
+                                                                i, M - i);
+	  gsl_vector_view w = gsl_vector_subvector (v, i, M - i);
 	  double ti = gsl_vector_get (tau, i);
-	  gsl_linalg_householder_hv (ti, &h, &w);
+	  gsl_linalg_householder_hv (ti, &h.vector, &w.vector);
 	}
       return GSL_SUCCESS;
     }
@@ -406,11 +407,12 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
 
       for (i = GSL_MIN (M, N); i > 0 && i--;)
 	{
-          const gsl_vector c = gsl_matrix_const_column (QR, i);
-          const gsl_vector h = gsl_vector_const_subvector (&c, i, M - i);
-          gsl_matrix m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
+          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector,
+                                                                i, M - i);
+          gsl_matrix_view m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
           double ti = gsl_vector_get (tau, i);
-          gsl_linalg_householder_hm (ti, &h, &m);
+          gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
 	}
 
       /*  Form the right triangular matrix R from a packed QR matrix */

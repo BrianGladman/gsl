@@ -38,8 +38,16 @@
 #undef QUALIFIED_TYPE
 #endif
 
+#ifdef QUALIFIED_VIEW
+#undef QUALIFIED_VIEW
+#endif
+
 #ifdef QUALIFIED_REAL_TYPE
 #undef QUALIFIED_REAL_TYPE
+#endif
+
+#ifdef QUALIFIED_REAL_VIEW
+#undef QUALIFIED_REAL_VIEW
 #endif
 
 #ifdef USES_LONGDOUBLE
@@ -48,6 +56,12 @@
 
 #ifdef SHORT_REAL
 #undef SHORT_REAL
+#endif
+
+#ifndef USE_QUALIFIER
+#ifdef QUALIFIER
+#undef QUALIFIER
+#endif
 #endif
 
 #undef BASE

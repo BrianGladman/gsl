@@ -48,9 +48,9 @@ gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D)
 
   for (j = 0; j < N; j++)
     {
-      gsl_vector A_j = gsl_matrix_column (A, j);
+      gsl_vector_view A_j = gsl_matrix_column (A, j);
       
-      double s = gsl_blas_dasum(&A_j);
+      double s = gsl_blas_dasum(&A_j.vector);
       
       double f = 1.0;
       
@@ -76,7 +76,7 @@ gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D)
 
       if (f != 1.0)
         {
-          gsl_blas_dscal(1.0/f, &A_j);
+          gsl_blas_dscal(1.0/f, &A_j.vector);
         }
     }
 

@@ -82,16 +82,16 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
 
   
   {
-    gsl_vector f = gsl_vector_subvector (work, 0, K - 1);
+    gsl_vector_view f = gsl_vector_subvector (work, 0, K - 1);
     
     /* bidiagonalize matrix A, unpack A into U V S */
     
-    gsl_linalg_bidiag_decomp (A, S, &f);
-    gsl_linalg_bidiag_unpack2 (A, S, &f, V);
+    gsl_linalg_bidiag_decomp (A, S, &f.vector);
+    gsl_linalg_bidiag_unpack2 (A, S, &f.vector, V);
     
     /* apply reduction steps to B=(S,Sd) */
     
-    chop_small_elements (S, &f);
+    chop_small_elements (S, &f.vector);
     
     /* Progressively reduce the matrix until it is diagonal */
     
@@ -99,7 +99,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
     
     while (b > 0)
       {
-        if (gsl_vector_get (&f, b - 1) == 0.0)
+        if (gsl_vector_get (&f.vector, b - 1) == 0.0)
           {
             b--;
             continue;
@@ -112,7 +112,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
         
         while (a > 0)
           {
-            if (gsl_vector_get (&f, a - 1) == 0.0)
+            if (gsl_vector_get (&f.vector, a - 1) == 0.0)
               {
                 break;
               }
@@ -122,19 +122,19 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
         
         {
           const size_t n_block = b - a + 1;
-          gsl_vector S_block = gsl_vector_subvector (S, a, n_block);
-          gsl_vector f_block = gsl_vector_subvector (&f, a, n_block - 1);
+          gsl_vector_view S_block = gsl_vector_subvector (S, a, n_block);
+          gsl_vector_view f_block = gsl_vector_subvector (&f.vector, a, n_block - 1);
           
-          gsl_matrix U_block =
+          gsl_matrix_view U_block =
             gsl_matrix_submatrix (A, 0, a, A->size1, n_block);
-          gsl_matrix V_block =
+          gsl_matrix_view V_block =
             gsl_matrix_submatrix (V, 0, a, V->size1, n_block);
           
-          qrstep (&S_block, &f_block, &U_block, &V_block);
+          qrstep (&S_block.vector, &f_block.vector, &U_block.matrix, &V_block.matrix);
           
           /* remove any small off-diagonal elements */
           
-          chop_small_elements (&S_block, &f_block);
+          chop_small_elements (&S_block.vector, &f_block.vector);
         }
       }
   }
@@ -237,17 +237,17 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
 
   for (i = 0; i < N; i++)
     {
-      gsl_vector c = gsl_matrix_column (A, i);
-      gsl_vector v = gsl_vector_subvector (&c, i, M - i);
-      double tau_i = gsl_linalg_householder_transform (&v);
+      gsl_vector_view c = gsl_matrix_column (A, i);
+      gsl_vector_view v = gsl_vector_subvector (&c.vector, i, M - i);
+      double tau_i = gsl_linalg_householder_transform (&v.vector);
 
       /* Apply the transformation to the remaining columns */
 
       if (i + 1 < N)
 	{
-	  gsl_matrix m =
+	  gsl_matrix_view m =
 	    gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-	  gsl_linalg_householder_hm (tau_i, &v, &m);
+	  gsl_linalg_householder_hm (tau_i, &v.vector, &m.matrix);
 	}
 
       gsl_vector_set (S, i, tau_i);
@@ -280,8 +280,8 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
     {
       /* Householder column transformation to accumulate L */
       double tj = gsl_vector_get (S, j);
-      gsl_matrix m = gsl_matrix_submatrix (A, j, j, M - j, N - j);
-      gsl_linalg_householder_hm1 (tj, &m);
+      gsl_matrix_view m = gsl_matrix_submatrix (A, j, j, M - j, N - j);
+      gsl_linalg_householder_hm1 (tj, &m.matrix);
     }
 
   /* unpack R into X V S */
@@ -291,21 +291,21 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
   /* Multiply L by X, to obtain U = L X, stored in U */
 
   {
-    gsl_vector sum = gsl_vector_subvector (work, 0, N);
+    gsl_vector_view sum = gsl_vector_subvector (work, 0, N);
 
     for (i = 0; i < M; i++)
       {
-	gsl_vector L_i = gsl_matrix_row (A, i);
-	gsl_vector_set_zero (&sum);
+	gsl_vector_view L_i = gsl_matrix_row (A, i);
+	gsl_vector_set_zero (&sum.vector);
 
 	for (j = 0; j < N; j++)
 	  {
-	    double Lij = gsl_vector_get (&L_i, j);
-	    gsl_vector X_j = gsl_matrix_row (X, j);
-	    gsl_blas_daxpy (Lij, &X_j, &sum);
+	    double Lij = gsl_vector_get (&L_i.vector, j);
+	    gsl_vector_view X_j = gsl_matrix_row (X, j);
+	    gsl_blas_daxpy (Lij, &X_j.vector, &sum.vector);
 	  }
 
-	gsl_vector_memcpy (&L_i, &sum);
+	gsl_vector_memcpy (&L_i.vector, &sum.vector);
       }
   }
 
@@ -458,13 +458,13 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
 		  double cosine, sine;
 		  double v;
 
-		  gsl_vector cj = gsl_matrix_column (A, j);
-		  gsl_vector ck = gsl_matrix_column (A, k);
+		  gsl_vector_view cj = gsl_matrix_column (A, j);
+		  gsl_vector_view ck = gsl_matrix_column (A, k);
 
-		  gsl_blas_ddot (&cj, &ck, &p);
+		  gsl_blas_ddot (&cj.vector, &ck.vector, &p);
 
-		  a = gsl_blas_dnrm2 (&cj);
-		  b = gsl_blas_dnrm2 (&ck);
+		  a = gsl_blas_dnrm2 (&cj.vector);
+		  b = gsl_blas_dnrm2 (&ck.vector);
 
 		  q = a * a;
 		  r = b * b;
@@ -546,8 +546,8 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
 
 	for (j = 0; j < N; j++)
 	  {
-	    gsl_vector column = gsl_matrix_column (A, j);
-	    double norm = gsl_blas_dnrm2 (&column);
+	    gsl_vector_view column = gsl_matrix_column (A, j);
+	    double norm = gsl_blas_dnrm2 (&column.vector);
 
 	    /* Determine if singular value is zero, according to the
 	       criteria used in the main loop above (i.e. comparison
@@ -556,14 +556,14 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
 	    if (norm == 0 || (j > 0 && norm <= tolerance * prev_norm))
 	      {
 		gsl_vector_set (S, j, 0.0);	/* singular */
-		gsl_vector_set_zero (&column);	/* annihilate column */
+		gsl_vector_set_zero (&column.vector);	/* annihilate column */
 
 		prev_norm = 0;
 	      }
 	    else
 	      {
 		gsl_vector_set (S, j, norm);	/* non-singular */
-		gsl_vector_scale (&column, 1.0 / norm);	/* normalize column */
+		gsl_vector_scale (&column.vector, 1.0 / norm);	/* normalize column */
 
 		prev_norm = norm;
 	      }

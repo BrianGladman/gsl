@@ -42,9 +42,9 @@ gsl_linalg_householder_transform (gsl_vector * v)
     { 
       double alpha, beta, tau ;
       
-      gsl_vector x = gsl_vector_subvector (v, 1, n - 1) ; 
+      gsl_vector_view x = gsl_vector_subvector (v, 1, n - 1) ; 
       
-      double xnorm = gsl_blas_dnrm2 (&x);
+      double xnorm = gsl_blas_dnrm2 (&x.vector);
       
       if (xnorm == 0) 
         {
@@ -55,7 +55,7 @@ gsl_linalg_householder_transform (gsl_vector * v)
       beta = - (alpha >= 0.0 ? +1.0 : -1.0) * hypot(alpha, xnorm) ;
       tau = (beta - alpha) / beta ;
       
-      gsl_blas_dscal (1.0 / (alpha - beta), &x);
+      gsl_blas_dscal (1.0 / (alpha - beta), &x.vector);
       gsl_vector_set (v, 0, beta) ;
       
       return tau;

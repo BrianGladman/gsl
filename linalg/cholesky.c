@@ -97,14 +97,14 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
               double A_ki = gsl_matrix_get (A, k, i);
               double A_ii = gsl_matrix_get (A, i, i);
 
-              gsl_vector ci = gsl_matrix_row (A, i);
-              gsl_vector ck = gsl_matrix_row (A, k);
+              gsl_vector_view ci = gsl_matrix_row (A, i);
+              gsl_vector_view ck = gsl_matrix_row (A, k);
 
               if (i > 0) {
-                gsl_vector di = gsl_vector_subvector(&ci, 0, i);
-                gsl_vector dk = gsl_vector_subvector(&ck, 0, i);
+                gsl_vector_view di = gsl_vector_subvector(&ci.vector, 0, i);
+                gsl_vector_view dk = gsl_vector_subvector(&ck.vector, 0, i);
                 
-                gsl_blas_ddot (&di, &dk, &sum);
+                gsl_blas_ddot (&di.vector, &dk.vector, &sum);
               }
 
               A_ki = (A_ki - sum) / A_ii;
@@ -112,10 +112,10 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
             } 
 
           {
-            gsl_vector ck = gsl_matrix_row (A, k);
-            gsl_vector dk = gsl_vector_subvector (&ck, 0, k);
+            gsl_vector_view ck = gsl_matrix_row (A, k);
+            gsl_vector_view dk = gsl_vector_subvector (&ck.vector, 0, k);
             
-            double sum = gsl_blas_dnrm2 (&dk);
+            double sum = gsl_blas_dnrm2 (&dk.vector);
             double diag = A_kk - sum * sum;
 
             double L_kk = sqrt(diag);

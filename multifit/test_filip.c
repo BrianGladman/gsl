@@ -40,10 +40,10 @@ test_filip ()
       gsl_multifit_linear_alloc (filip_n, filip_p);
 
     gsl_matrix * X = gsl_matrix_alloc (filip_n, filip_p);
-    gsl_vector y = gsl_vector_view (filip_y, filip_n);
+    gsl_vector_view y = gsl_vector_view_array (filip_y, filip_n);
     gsl_vector * c = gsl_vector_alloc (filip_p);
     gsl_matrix * cov = gsl_matrix_alloc (filip_p, filip_p);
-    gsl_vector diag;
+    gsl_vector_view diag;
 
     double chisq;
 
@@ -81,7 +81,7 @@ test_filip ()
           }
       }
 
-    gsl_multifit_linear (X, &y, c, cov, &chisq, work);
+    gsl_multifit_linear (X, &y.vector, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-7, "filip gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-7, "filip gsl_fit_multilinear c1") ;
@@ -97,17 +97,17 @@ test_filip ()
 
     diag = gsl_matrix_diagonal (cov);
 
-    gsl_test_rel (gsl_vector_get(&diag,0), pow(expected_sd[0],2.0), 1e-7, "filip gsl_fit_multilinear cov00") ;
-    gsl_test_rel (gsl_vector_get(&diag,1), pow(expected_sd[1],2.0), 1e-7, "filip gsl_fit_multilinear cov11") ;
-    gsl_test_rel (gsl_vector_get(&diag,2), pow(expected_sd[2],2.0), 1e-7, "filip gsl_fit_multilinear cov22") ;
-    gsl_test_rel (gsl_vector_get(&diag,3), pow(expected_sd[3],2.0), 1e-7, "filip gsl_fit_multilinear cov33") ;
-    gsl_test_rel (gsl_vector_get(&diag,4), pow(expected_sd[4],2.0), 1e-7, "filip gsl_fit_multilinear cov44") ;
-    gsl_test_rel (gsl_vector_get(&diag,5), pow(expected_sd[5],2.0), 1e-7, "filip gsl_fit_multilinear cov55") ;
-    gsl_test_rel (gsl_vector_get(&diag,6), pow(expected_sd[6],2.0), 1e-7, "filip gsl_fit_multilinear cov66") ;
-    gsl_test_rel (gsl_vector_get(&diag,7), pow(expected_sd[7],2.0), 1e-7, "filip gsl_fit_multilinear cov77") ;
-    gsl_test_rel (gsl_vector_get(&diag,8), pow(expected_sd[8],2.0), 1e-7, "filip gsl_fit_multilinear cov88") ;
-    gsl_test_rel (gsl_vector_get(&diag,9), pow(expected_sd[9],2.0), 1e-7, "filip gsl_fit_multilinear cov99") ;
-    gsl_test_rel (gsl_vector_get(&diag,10), pow(expected_sd[10],2.0), 1e-7, "filip gsl_fit_multilinear cov1010") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,0), pow(expected_sd[0],2.0), 1e-7, "filip gsl_fit_multilinear cov00") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,1), pow(expected_sd[1],2.0), 1e-7, "filip gsl_fit_multilinear cov11") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,2), pow(expected_sd[2],2.0), 1e-7, "filip gsl_fit_multilinear cov22") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,3), pow(expected_sd[3],2.0), 1e-7, "filip gsl_fit_multilinear cov33") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,4), pow(expected_sd[4],2.0), 1e-7, "filip gsl_fit_multilinear cov44") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,5), pow(expected_sd[5],2.0), 1e-7, "filip gsl_fit_multilinear cov55") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,6), pow(expected_sd[6],2.0), 1e-7, "filip gsl_fit_multilinear cov66") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,7), pow(expected_sd[7],2.0), 1e-7, "filip gsl_fit_multilinear cov77") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,8), pow(expected_sd[8],2.0), 1e-7, "filip gsl_fit_multilinear cov88") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,9), pow(expected_sd[9],2.0), 1e-7, "filip gsl_fit_multilinear cov99") ;
+    gsl_test_rel (gsl_vector_get(&diag.vector,10), pow(expected_sd[10],2.0), 1e-7, "filip gsl_fit_multilinear cov1010") ;
 
     gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_multilinear chisq") ;
 
@@ -122,7 +122,7 @@ test_filip ()
       gsl_multifit_linear_alloc (filip_n, filip_p);
 
     gsl_matrix * X = gsl_matrix_alloc (filip_n, filip_p);
-    gsl_vector y = gsl_vector_view (filip_y, filip_n);
+    gsl_vector_view y = gsl_vector_view_array (filip_y, filip_n);
     gsl_vector * w = gsl_vector_alloc (filip_n);
     gsl_vector * c = gsl_vector_alloc (filip_p);
     gsl_matrix * cov = gsl_matrix_alloc (filip_p, filip_p);
@@ -167,7 +167,7 @@ test_filip ()
 
     gsl_vector_set_all (w, 1.0);
 
-    gsl_multifit_wlinear (X, w, &y, c, cov, &chisq, work);
+    gsl_multifit_wlinear (X, w, &y.vector, c, cov, &chisq, work);
 
     gsl_test_rel (gsl_vector_get(c,0), expected_c[0], 1e-7, "filip gsl_fit_multilinear c0") ;
     gsl_test_rel (gsl_vector_get(c,1), expected_c[1], 1e-7, "filip gsl_fit_multilinear c1") ;

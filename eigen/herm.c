@@ -115,11 +115,11 @@ gsl_eigen_herm (gsl_matrix_complex * A, gsl_vector * eval,
 	}
 
       {
-	gsl_vector d_vec = gsl_vector_view (d, N);
-	gsl_vector sd_vec = gsl_vector_view (sd, N - 1);
-	gsl_vector_complex tau_vec = gsl_vector_complex_view (w->tau, N-1);
-	gsl_linalg_hermtd_decomp (A, &tau_vec);
-	gsl_linalg_hermtd_unpack_T (A, &d_vec, &sd_vec);
+	gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+	gsl_vector_view sd_vec = gsl_vector_view_array (sd, N - 1);
+	gsl_vector_complex_view tau_vec = gsl_vector_complex_view_array (w->tau, N-1);
+	gsl_linalg_hermtd_decomp (A, &tau_vec.vector);
+	gsl_linalg_hermtd_unpack_T (A, &d_vec.vector, &sd_vec.vector);
       }
 
       /* Make an initial pass through the tridiagonal decomposition
@@ -170,8 +170,8 @@ gsl_eigen_herm (gsl_matrix_complex * A, gsl_vector * eval,
         }
       
       {
-        gsl_vector d_vec = gsl_vector_view (d, N);
-        gsl_vector_memcpy (eval, &d_vec);
+        gsl_vector_view d_vec = gsl_vector_view_array (d, N);
+        gsl_vector_memcpy (eval, &d_vec.vector);
       }
       
       return GSL_SUCCESS;

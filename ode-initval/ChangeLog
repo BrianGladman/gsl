@@ -1,3 +1,7 @@
+Sun Jul  1 22:42:02 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bsimp.c: modified to use new-style vector views
+
 Fri Jun 22 11:59:24 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* evolve.c: keep track of failed step count

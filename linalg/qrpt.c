@@ -97,8 +97,8 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
 
       for (i = 0; i < N; i++)
 	{
-	  gsl_vector c = gsl_matrix_column (A, i);
-	  double x = gsl_blas_dnrm2 (&c);
+	  gsl_vector_view c = gsl_matrix_column (A, i);
+	  double x = gsl_blas_dnrm2 (&c.vector);
 	  gsl_vector_set (norm, i, x);
 	}
 
@@ -133,9 +133,10 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
 	     column of the matrix to a multiple of the j-th unit vector */
 
 	  {
-	    gsl_vector c_full = gsl_matrix_column (A, i);
-            gsl_vector c = gsl_vector_subvector (&c_full, i, M - i);
-	    double tau_i = gsl_linalg_householder_transform (&c);
+	    gsl_vector_view c_full = gsl_matrix_column (A, i);
+            gsl_vector_view c = gsl_vector_subvector (&c_full.vector, 
+                                                      i, M - i);
+	    double tau_i = gsl_linalg_householder_transform (&c.vector);
 
 	    gsl_vector_set (tau, i, tau_i);
 
@@ -143,9 +144,9 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
 
 	    if (i + 1 < N)
 	      {
-		gsl_matrix m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i+1));
+		gsl_matrix_view m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i+1));
 
-		gsl_linalg_householder_hm (tau_i, &c, &m);
+		gsl_linalg_householder_hm (tau_i, &c.vector, &m.matrix);
 	      }
 	  }
 
@@ -166,9 +167,10 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
                   
                   if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
                     {
-                      gsl_vector c_full = gsl_matrix_column (A, j);
-                      gsl_vector c = gsl_vector_subvector(&c_full, i+1, M - (i+1));
-                      y = gsl_blas_dnrm2 (&c);
+                      gsl_vector_view c_full = gsl_matrix_column (A, j);
+                      gsl_vector_view c = gsl_vector_subvector(&c_full.vector,
+                                                               i+1, M - (i+1));
+                      y = gsl_blas_dnrm2 (&c.vector);
                     }
                   
                   gsl_vector_set (norm, j, y);

@@ -57,10 +57,10 @@ gsl_linalg_complex_householder_transform (gsl_vector_complex * v)
       gsl_complex tau ;
       double beta_r;
 
-      gsl_vector_complex x = gsl_vector_complex_subvector (v, 1, n - 1) ; 
+      gsl_vector_complex_view x = gsl_vector_complex_subvector (v, 1, n - 1) ; 
       gsl_complex alpha = gsl_vector_complex_get (v, 0) ;            
       double absa = gsl_complex_abs (alpha);
-      double xnorm = gsl_blas_dznrm2 (&x);
+      double xnorm = gsl_blas_dznrm2 (&x.vector);
       
       if (xnorm == 0 && GSL_IMAG(alpha) == 0) 
         {
@@ -76,7 +76,7 @@ gsl_linalg_complex_householder_transform (gsl_vector_complex * v)
       {
         gsl_complex amb = gsl_complex_sub_real(alpha, beta_r);
         gsl_complex s = gsl_complex_inverse(amb);
-        gsl_blas_zscal (s, &x);
+        gsl_blas_zscal (s, &x.vector);
       }
       
       {

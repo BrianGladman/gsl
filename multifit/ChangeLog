@@ -1,3 +1,15 @@
+Sun Jul  1 22:42:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multilinear.c:  modified to use new-style vector views
+
+	* test_pontius.c:  modified to use new-style vector views
+
+	* test_longley.c:  modified to use new-style vector views
+
+	* test_fn.c:  modified to use new-style vector views
+
+	* test_filip.c:  modified to use new-style vector views
+
 Tue Jun 26 21:41:30 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_filip.c (test_filip): reduce tolerance on covariance test

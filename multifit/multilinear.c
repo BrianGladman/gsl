@@ -101,11 +101,11 @@ gsl_multifit_linear (const gsl_matrix * X,
 
       for (j = 0; j < p; j++)
 	{
-	  gsl_vector column = gsl_matrix_column (QSI, j);
+	  gsl_vector_view column = gsl_matrix_column (QSI, j);
 	  double alpha = gsl_vector_get (S, j);
 	  if (alpha != 0)
 	    alpha = 1.0 / alpha;
-	  gsl_vector_scale (&column, alpha);
+	  gsl_vector_scale (&column.vector, alpha);
 	}
 
       gsl_vector_set_zero (c);
@@ -124,9 +124,9 @@ gsl_multifit_linear (const gsl_matrix * X,
 	for (i = 0; i < n; i++)
 	  {
 	    double yi = gsl_vector_get (y, i);
-	    const gsl_vector row = gsl_matrix_const_row (X, i);
+	    gsl_vector_const_view row = gsl_matrix_const_row (X, i);
 	    double y_est, ri;
-	    gsl_blas_ddot (&row, c, &y_est);
+	    gsl_blas_ddot (&row.vector, c, &y_est);
 	    ri = yi - y_est;
 	    r2 += ri * ri;
 	  }
@@ -139,16 +139,16 @@ gsl_multifit_linear (const gsl_matrix * X,
 
 	for (i = 0; i < p; i++)
 	  {
-	    gsl_vector row_i = gsl_matrix_row (QSI, i);
+	    gsl_vector_view row_i = gsl_matrix_row (QSI, i);
 	    double d_i = gsl_vector_get (D, i);
 
 	    for (j = i; j < p; j++)
 	      {
-		gsl_vector row_j = gsl_matrix_row (QSI, j);
+		gsl_vector_view row_j = gsl_matrix_row (QSI, j);
 		double d_j = gsl_vector_get (D, j);
 		double s;
 
-		gsl_blas_ddot (&row_i, &row_j, &s);
+		gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
 
 		gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
 		gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
@@ -227,8 +227,8 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 	    wi = 0;
 
 	  {
-	    gsl_vector row = gsl_matrix_row (A, i);
-	    gsl_vector_scale (&row, sqrt (wi));
+	    gsl_vector_view row = gsl_matrix_row (A, i);
+	    gsl_vector_scale (&row.vector, sqrt (wi));
 	  }
 	}
 
@@ -259,11 +259,11 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 
       for (j = 0; j < p; j++)
 	{
-	  gsl_vector column = gsl_matrix_column (QSI, j);
+	  gsl_vector_view column = gsl_matrix_column (QSI, j);
 	  double alpha = gsl_vector_get (S, j);
 	  if (alpha != 0)
 	    alpha = 1.0 / alpha;
-	  gsl_vector_scale (&column, alpha);
+	  gsl_vector_scale (&column.vector, alpha);
 	}
 
       gsl_vector_set_zero (c);
@@ -280,16 +280,16 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 
       for (i = 0; i < p; i++)
 	{
-	  gsl_vector row_i = gsl_matrix_row (QSI, i);
+	  gsl_vector_view row_i = gsl_matrix_row (QSI, i);
 	  double d_i = gsl_vector_get (D, i);
 
 	  for (j = i; j < p; j++)
 	    {
-	      gsl_vector row_j = gsl_matrix_row (QSI, j);
+	      gsl_vector_view row_j = gsl_matrix_row (QSI, j);
 	      double d_j = gsl_vector_get (D, j);
 	      double s;
 
-	      gsl_blas_ddot (&row_i, &row_j, &s);
+	      gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
 
 	      gsl_matrix_set (cov, i, j, s / (d_i * d_j));
 	      gsl_matrix_set (cov, j, i, s / (d_i * d_j));
@@ -305,9 +305,9 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 	  {
 	    double yi = gsl_vector_get (y, i);
 	    double wi = gsl_vector_get (w, i);
-	    const gsl_vector row = gsl_matrix_const_row (X, i);
+	    gsl_vector_const_view row = gsl_matrix_const_row (X, i);
 	    double y_est, ri;
-	    gsl_blas_ddot (&row, c, &y_est);
+	    gsl_blas_ddot (&row.vector, c, &y_est);
 	    ri = yi - y_est;
 	    r2 += wi * ri * ri;
 	  }

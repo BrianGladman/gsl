@@ -244,8 +244,8 @@ gsl_linalg_LU_invert (const gsl_matrix * LU, const gsl_permutation * p, gsl_matr
 
   for (i = 0; i < n; i++)
     {
-      gsl_vector c = gsl_matrix_column (inverse, i);
-      int status_i = gsl_linalg_LU_svx (LU, p, &c);
+      gsl_vector_view c = gsl_matrix_column (inverse, i);
+      int status_i = gsl_linalg_LU_svx (LU, p, &(c.vector));
 
       if (status_i)
 	status = status_i;

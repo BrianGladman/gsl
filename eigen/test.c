@@ -95,8 +95,8 @@ test_eigen_results (size_t N, const gsl_matrix * m, const gsl_vector * eval,
   for (i = 0; i < N; i++)
     {
       double ei = gsl_vector_get (eval, i);
-      const gsl_vector vi = gsl_matrix_const_column(evec, i);
-      gsl_vector_memcpy(x, &vi);
+      gsl_vector_const_view vi = gsl_matrix_const_column(evec, i);
+      gsl_vector_memcpy(x, &vi.vector);
       /* compute y = m x (should = lambda v) */
       gsl_blas_dgemv (CblasNoTrans, 1.0, m, x, 0.0, y);
       for (j = 0; j < N; j++)
@@ -112,20 +112,20 @@ test_eigen_results (size_t N, const gsl_matrix * m, const gsl_vector * eval,
 
   for (i = 0; i < N; i++)
     {
-      const gsl_vector vi = gsl_matrix_const_column(evec, i);
-      double nrm_v = gsl_blas_dnrm2(&vi);
+      gsl_vector_const_view vi = gsl_matrix_const_column(evec, i);
+      double nrm_v = gsl_blas_dnrm2(&vi.vector);
       gsl_test_rel (nrm_v, 1.0, N * GSL_DBL_EPSILON, "%s, normalized(%d), %s", 
                     desc, i, desc2);
     }
 
   for (i = 0; i < N; i++)
     {
-      const gsl_vector vi = gsl_matrix_const_column(evec, i);
+      gsl_vector_const_view vi = gsl_matrix_const_column(evec, i);
       for (j = i + 1; j < N; j++)
         {
-          const gsl_vector vj = gsl_matrix_const_column(evec, j);
+          gsl_vector_const_view vj = gsl_matrix_const_column(evec, j);
           double vivj;
-          gsl_blas_ddot (&vi, &vj, &vivj);
+          gsl_blas_ddot (&vi.vector, &vj.vector, &vivj);
           gsl_test_abs (vivj, 0.0, N * GSL_DBL_EPSILON, 
                         "%s, orthogonal(%d,%d), %s", desc, i, j, desc2);
         }
@@ -168,8 +168,8 @@ test_eigen_complex_results (size_t N, const gsl_matrix_complex * m,
   for (i = 0; i < N; i++)
     {
       double ei = gsl_vector_get (eval, i);
-      const gsl_vector_complex vi = gsl_matrix_complex_const_column(evec, i);
-      gsl_vector_complex_memcpy(x, &vi);
+      gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
+      gsl_vector_complex_memcpy(x, &vi.vector);
       /* compute y = m x (should = lambda v) */
       gsl_blas_zgemv (CblasNoTrans, GSL_COMPLEX_ONE, m, x, 
                       GSL_COMPLEX_ZERO, y);
@@ -188,21 +188,21 @@ test_eigen_complex_results (size_t N, const gsl_matrix_complex * m,
 
   for (i = 0; i < N; i++)
     {
-      const gsl_vector_complex vi = gsl_matrix_complex_const_column(evec, i);
-      double nrm_v = gsl_blas_dznrm2(&vi);
+      gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
+      double nrm_v = gsl_blas_dznrm2(&vi.vector);
       gsl_test_rel (nrm_v, 1.0, N * GSL_DBL_EPSILON, "%s, normalized(%d), %s", 
                     desc, i, desc2);
     }
 
   for (i = 0; i < N; i++)
     {
-      const gsl_vector_complex vi = gsl_matrix_complex_const_column(evec, i);
+      gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
       for (j = i + 1; j < N; j++)
         {
-          const gsl_vector_complex vj 
+          gsl_vector_complex_const_view vj 
             = gsl_matrix_complex_const_column(evec, j);
           gsl_complex vivj;
-          gsl_blas_zdotc (&vi, &vj, &vivj);
+          gsl_blas_zdotc (&vi.vector, &vj.vector, &vivj);
           gsl_test_abs (gsl_complex_abs(vivj), 0.0, N * GSL_DBL_EPSILON, 
                         "%s, orthogonal(%d,%d), %s", desc, i, j, desc2);
         }
