@@ -74,7 +74,7 @@ exprel_n_CF(const int N, const double x, gsl_sf_result * result)
   }
 
   result->val = fn;
-  result->err = 2.0*GSL_DBL_EPSILON*fabs(fn);
+  result->err = 2.0*(n+1.0)*GSL_DBL_EPSILON*fabs(fn);
 
   if(n == maxiter)
     return GSL_EMAXITER;
@@ -169,7 +169,7 @@ int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
       const double berr = 2.0 * GSL_DBL_EPSILON * (fabs(ly) + fabs(N));
       result->val  = sy * exp(M+N) * exp(a+b);
       result->err  = berr * fabs(result->val);
-      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * (M + N + 1.0) * fabs(result->val);
       return GSL_SUCCESS;
     }
   }

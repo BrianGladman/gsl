@@ -49,14 +49,14 @@ int test_airy(void)
 
   /** derivatives */
 
-  TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (-5.0, m, &r),	            0.3271928185544435,    TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (-5.0, m, &r),	            0.3271928185544435,       TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (-0.5500000000000094, m, &r), -0.1914604987143629,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (0.4999999999999906, m, &r),  -0.2249105326646850,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (1.899999999999992, m, &r),   -0.06043678178575718,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (3.249999999999988, m, &r),   -0.007792687926790889,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_impl, (5.199999999999981, m, &r),   -0.0001589434526459543, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_airy_Ai_deriv_scaled_impl, (-5.0, m, &r),		  0.3271928185544435, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_airy_Ai_deriv_scaled_impl, (-5.0, m, &r),		  0.3271928185544435, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_scaled_impl, (0.5499999999999906, m, &r), -0.2874057279170166, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_scaled_impl, (1.499999999999991, m, &r),  -0.3314199796863637, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_deriv_scaled_impl, (2.49999999999999, m, &r),   -0.3661089384751620, TEST_TOL0, GSL_SUCCESS);

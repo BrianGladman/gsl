@@ -227,6 +227,7 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
     gsl_sf_cheb_eval_impl(&daw_cs, 2.0*y*y - 1.0, &result_c);
     result->val = x * (0.75 + result_c.val);
     result->err = y * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(y < 4.0) {
@@ -234,18 +235,20 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
     gsl_sf_cheb_eval_impl(&daw2_cs, 0.125*y*y - 1.0, &result_c);
     result->val = x * (0.25 + result_c.val);
     result->err = y * result_c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(y < xbig) {
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
-    result->val = (0.5 + result_c.val) / x;
-    result->err = result_c.err / y;
+    result->val  = (0.5 + result_c.val) / x;
+    result->err  = result_c.err / y;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(y < xmax) {
     result->val = 0.5/x;
-    result->err = result->val * GSL_DBL_EPSILON;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {

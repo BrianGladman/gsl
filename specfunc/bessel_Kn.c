@@ -123,7 +123,7 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, gsl_sf_result * result)
     } 
     
     result->val  = b_j;
-    result->err  = fabs(b_j) * (fabs(r_b_jm1.err/r_b_jm1.val) + fabs(r_b_j.err/r_b_j.val));
+    result->err  = n * (fabs(b_j) * (fabs(r_b_jm1.err/r_b_jm1.val) + fabs(r_b_j.err/r_b_j.val)));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
     return GSL_ERROR_SELECT_2(stat_0, stat_1);
@@ -133,10 +133,11 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, gsl_sf_result * result)
 
 int gsl_sf_bessel_Kn_impl(const int n, const double x, gsl_sf_result * result)
 {
-  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
-  double ex = exp(-x);
+  const int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
+  const double ex = exp(-x);
   result->val *= ex;
   result->err *= ex;
+  result->err += x * GSL_DBL_EPSILON * fabs(result->val);
   return status;
 }
 

@@ -216,8 +216,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
     gsl_sf_cheb_eval_impl(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
-    f->err = result_c1.err/x  + GSL_DBL_EPSILON * fabs(f->val);
-    g->err = result_c2.err/x2 + GSL_DBL_EPSILON * fabs(g->val);
+    f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
+    g->err = result_c2.err/x2 + 2.0 * GSL_DBL_EPSILON * fabs(g->val);
   }
   else if(x <= xbig) {
     gsl_sf_result result_c1;
@@ -226,8 +226,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
     gsl_sf_cheb_eval_impl(&g2_cs, 100.0/x2-1.0, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
-    f->err = result_c1.err/x  + GSL_DBL_EPSILON * fabs(f->val);
-    g->err = result_c2.err/x2 + GSL_DBL_EPSILON * fabs(g->val);
+    f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
+    g->err = result_c2.err/x2 + 2.0 * GSL_DBL_EPSILON * fabs(g->val);
   }
   else {
     f->val = (x < xmaxf ? 1.0/x  : 0.0);

@@ -470,7 +470,7 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       result->val  = dchu_val;
       result->err  = dchu_err;
       result->err += fabs(t_val);
-      result->err += 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
 
       if(i >= 2000) {
         return GSL_EMAXITER;
@@ -721,10 +721,10 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
     }
 
     lnscale = log(scale_factor);
-    lnm.val = scale_count*log(scale_factor);
+    lnm.val = scale_count*lnscale;
     lnm.err = 2.0 * GSL_DBL_EPSILON * fabs(lnm.val);
     y.val = Ua;
-    y.err = 2.0 * GSL_DBL_EPSILON * (fabs(a)+1.0) * fabs(Ua);
+    y.err = 4.0 * GSL_DBL_EPSILON * (fabs(a)+1.0) * fabs(Ua);
     return gsl_sf_exp_mult_err_e10_impl(lnm.val, lnm.err, y.val, y.err, result);
   }
   else if(b >= 2.0*a + x) {
@@ -1063,6 +1063,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
     else {
       /* Upward recursion on b.
        */
+      const err_mult = fabs(b-b0) + fabs(a-a0) + 1.0;
       const double lnscale = log(scale_factor);
       gsl_sf_result lnm;
       gsl_sf_result y;
@@ -1081,9 +1082,9 @@ hyperg_U_bge1(const double a, const double b, const double x,
       lnm.val = lm_max + scale_count * lnscale;
       lnm.err = 2.0 * GSL_DBL_EPSILON * (fabs(lm_max) + fabs(scale_count * lnscale));
       y.val = Ub;
-      y.err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ub);
-      y.err += fabs(r_Ua.err/r_Ua.val) * fabs(Ub);
-      y.err += 2.0 * GSL_DBL_EPSILON * (fabs(b-b0) + fabs(a-a0) + 1.0) * fabs(Ub);
+      y.err  = 2.0 * err_mult * fabs(r_Uap1.err/r_Uap1.val) * fabs(Ub);
+      y.err += 2.0 * err_mult * fabs(r_Ua.err/r_Ua.val) * fabs(Ub);
+      y.err += 2.0 * GSL_DBL_EPSILON * err_mult * fabs(Ub);
       y.err *= fabs(lm_0-lm_max) + 1.0;
       y.err *= fabs(lm_1-lm_max) + 1.0;
       stat_e = gsl_sf_exp_mult_err_e10_impl(lnm.val, lnm.err, y.val, y.err, result);

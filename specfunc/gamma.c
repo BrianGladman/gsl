@@ -1082,7 +1082,7 @@ gamma_xgthalf(const double x, gsl_sf_result * result)
     gsl_sf_result gstar;
     int stat_gs = gammastar_ser(x, &gstar);
     result->val = pre * gstar.val;
-    result->err = 3.5 * GSL_DBL_EPSILON * result->val;
+    result->err = (x + 2.5) * GSL_DBL_EPSILON * result->val;
     return stat_gs;
   }
   else {
@@ -1300,10 +1300,11 @@ gsl_sf_gammastar_impl(const double x, gsl_sf_result * result)
   else if(x < 0.5) {
     gsl_sf_result lg;
     const int stat_lg = gsl_sf_lngamma_impl(x, &lg);
-    const double lnr  = lg.val - (x-0.5)*log(x) + x - 0.5*(M_LN2+M_LNPI);
-    const int stat_e  = gsl_sf_exp_impl(lnr, result);
-    result->err  = fabs(lnr) * lg.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    const double lx = log(x);
+    const double c  = 0.5*(M_LN2+M_LNPI);
+    const double lnr_val = lg.val - (x-0.5)*lx + x - c;
+    const double lnr_err = lg.err + 2.0 * GSL_DBL_EPSILON *((x+0.5)*fabs(lx) + c);
+    const int stat_e  = gsl_sf_exp_err_impl(lnr_val, lnr_err, result);
     return GSL_ERROR_SELECT_2(stat_lg, stat_e);
   }
   else if(x < 2.0) {

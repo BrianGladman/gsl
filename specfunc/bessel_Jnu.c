@@ -141,7 +141,7 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
       Jmu   = sgn_Jmu * sqrt(2.0/(M_PI*x) / (Q + gamma*(P-Jmuprime_Jmu)));
 
       result->val = Jmu * (sgn_Jnu * GSL_SQRT_DBL_MIN) / Jn;
-      result->err = GSL_DBL_EPSILON * (N + 2.0) * fabs(result->val);
+      result->err = 2.0 * GSL_DBL_EPSILON * (N + 2.0) * fabs(result->val);
 
       return GSL_ERROR_SELECT_2(stat_CF2, stat_CF1);
     }

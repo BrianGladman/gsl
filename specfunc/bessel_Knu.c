@@ -51,7 +51,7 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, gsl_sf_result * r
     }
 
     result->val = K_nu;
-    result->err = GSL_DBL_EPSILON * (0.5*N + 2.0) * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * (N + 4.0) * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

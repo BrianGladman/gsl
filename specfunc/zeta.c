@@ -506,7 +506,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
       const double p2 = pow(q/(1.0+q), s);
       const double p3 = pow(q/(2.0+q), s);
       result->val = p1 * (1.0 + p2 + p3);
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      result->err = GSL_DBL_EPSILON * (0.5*s + 2.0) * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -534,7 +534,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
       }
 
       result->val = ans;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(ans);
+      result->err = 2.0 * (jmax + 1.0) * GSL_DBL_EPSILON * fabs(ans);
       return GSL_SUCCESS;
     }
   }

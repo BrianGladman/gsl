@@ -29,9 +29,9 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
   }
   else {
     const double f = 1.0 - 2.0 * GSL_DBL_EPSILON;
-    double min = GSL_MIN_DBL(fabs(x), fabs(y));
-    double max = GSL_MAX_DBL(fabs(x), fabs(y));
-    if(max < 0.9 * GSL_SQRT_DBL_MAX || min < f * DBL_MAX/max) {
+    const double min = GSL_MIN_DBL(fabs(x), fabs(y));
+    const double max = GSL_MAX_DBL(fabs(x), fabs(y));
+    if(max < 0.9 * GSL_SQRT_DBL_MAX || min < (f * DBL_MAX)/max) {
       result->val = x*y;
       result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return (fabs(result->val) == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS);

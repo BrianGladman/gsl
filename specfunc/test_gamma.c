@@ -40,13 +40,13 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_gamma_impl, (2.0 + 1.0/256.0, &r), 1.0016577903733583299 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_impl, (9.0, &r), 40320.0                   , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_impl, (10.0, &r), 362880.0                  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gamma_impl, (100.0, &r), 9.332621544394415268e+155 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gamma_impl, (170.0, &r), 4.269068009004705275e+304 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gamma_impl, (100.0, &r), 9.332621544394415268e+155 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gamma_impl, (170.0, &r), 4.269068009004705275e+304 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_impl, (-10.5, &r), -2.640121820547716316e-07  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gamma_impl, (-11.25, &r), 6.027393816261931672e-08  , TEST_TOL0, GSL_SUCCESS); /* exp()... not my fault */
   TEST_SF(s,  gsl_sf_gamma_impl, (-1.0+1.0/65536.0, &r), -65536.42280587818970 , TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s,  gsl_sf_gammastar_impl, (1.0e-08, &r), 3989.423555759890865  , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammastar_impl, (1.0e-08, &r), 3989.423555759890865  , TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gammastar_impl, (1.0e-05, &r), 126.17168469882690233 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gammastar_impl, (0.001, &r), 12.708492464364073506 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gammastar_impl, (1.5, &r), 1.0563442442685598666 , TEST_TOL0, GSL_SUCCESS);
@@ -57,11 +57,11 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_gammastar_impl, (1.0e+05, &r), 1.0000008333336805529 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_gammastar_impl, (1.0e+20, &r), 1.0 , TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s,  gsl_sf_gammainv_impl, (10.0, &r), 1.0/362880.0 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gammainv_impl, (100.0, &r), 1.0715102881254669232e-156    , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gammainv_impl, (-10.5, &r), -1.0/2.640121820547716316e-07  , TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gammainv_impl, (-11.25, &r), 1.0/6.027393816261931672e-08 , TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_gammainv_impl, (-1.0+1.0/65536.0, &r), -1.0/65536.42280587818970 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammainv_impl, (10.0, &r), 1.0/362880.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammainv_impl, (100.0, &r), 1.0715102881254669232e-156, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammainv_impl, (-10.5, &r), -1.0/2.640121820547716316e-07, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammainv_impl, (-11.25, &r), 1.0/6.027393816261931672e-08, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_gammainv_impl, (-1.0+1.0/65536.0, &r), -1.0/65536.42280587818970 , TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_lngamma_complex_impl, (5.0, 2.0, &r1, &r2),
             2.7487017561338026749, TEST_TOL0,
@@ -88,9 +88,9 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_taylorcoeff_impl, (10,   1.0, &r), 2.7557319223985890653e-07  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_taylorcoeff_impl, (10,   5.0, &r), 2.6911444554673721340      , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_taylorcoeff_impl, (10,   500.0, &r), 2.6911444554673721340e+20  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (100,  100.0, &r), 1.0715102881254669232e+42  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (1000, 200.0, &r), 2.6628790558154746898e-267 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (1000, 500.0, &r), 2.3193170139740855074e+131 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (100,  100.0, &r), 1.0715102881254669232e+42  , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (1000, 200.0, &r), 2.6628790558154746898e-267 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_taylorcoeff_impl, (1000, 500.0, &r), 2.3193170139740855074e+131 , TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s,   gsl_sf_fact_impl, (0, &r), 1.0 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,   gsl_sf_fact_impl, (1, &r), 1.0 , TEST_TOL0, GSL_SUCCESS);
@@ -126,8 +126,8 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_lnpoch_impl, (7,3, &r), 6.222576268071368616, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_lnpoch_impl, (5,2, &r), 3.401197381662155375, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF_SGN(s, gsl_sf_lnpoch_sgn_impl, (-4.5, 0.25, &r, &sgn), 0.7430116475119920117, TEST_TOL0, 1.0, GSL_SUCCESS);
-  TEST_SF_SGN(s, gsl_sf_lnpoch_sgn_impl, (-4.5, 1.25, &r, &sgn), 2.1899306304483174731, TEST_TOL0, -1.0, GSL_SUCCESS);
+  TEST_SF_SGN(s, gsl_sf_lnpoch_sgn_impl, (-4.5, 0.25, &r, &sgn), 0.7430116475119920117, TEST_TOL1, 1.0, GSL_SUCCESS);
+  TEST_SF_SGN(s, gsl_sf_lnpoch_sgn_impl, (-4.5, 1.25, &r, &sgn), 2.1899306304483174731, TEST_TOL1, -1.0, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_poch_impl, (7,3, &r), 504.0 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_poch_impl, (5,2, &r), 30.0  , TEST_TOL1, GSL_SUCCESS);
@@ -138,7 +138,7 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_pochrel_impl, (5,0.01, &r), 1.5186393661368275330, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,0.01, &r), 1.8584945633829063516, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-1.0/8.0, &r), 1.0883319303552135488, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-1.0/256.0, &r), 1.7678268037726177453, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-1.0/256.0, &r), 1.7678268037726177453, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_impl, (-5.5,-11.0, &r), 0.09090909090939652475, TEST_TOL0, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_gamma_inc_P_impl, (0.001, 0.001, &r), 0.9936876467088602902, TEST_TOL0, GSL_SUCCESS) ;

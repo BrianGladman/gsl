@@ -29,15 +29,18 @@ int test_coulomb(void)
   int k_G;
 
   TEST_SF(s, gsl_sf_hydrogenicR_1_impl, (3.0, 2.0, &r),  0.025759948256148471036,  TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_1_impl, (3.0, 10.0, &r), 9.724727052062819704e-13, TEST_TOL0, GSL_SUCCESS);  status += s;
+  TEST_SF(s, gsl_sf_hydrogenicR_1_impl, (3.0, 10.0, &r), 9.724727052062819704e-13, TEST_TOL1, GSL_SUCCESS);
+  status += s;
 
   TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 0, 3.0, 2.0, &r), -0.03623182256981820062,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 1, 3.0, 2.0, &r), -0.028065049083129581005, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 2, 3.0, 2.0, &r),  0.14583027278668431009,  TEST_TOL0, GSL_SUCCESS);  status += s;
+  TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 2, 3.0, 2.0, &r),  0.14583027278668431009,  TEST_TOL0, GSL_SUCCESS);
+  status += s;
 
   TEST_SF(s, gsl_sf_hydrogenicR_impl, (100,  0, 3.0, 2.0, &r), -0.00007938950980052281367, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_impl, (100, 10, 3.0, 2.0, &r),  7.112823375353605977e-12,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hydrogenicR_impl, (100, 90, 3.0, 2.0, &r),  5.845231751418131548e-245, TEST_TOL2, GSL_SUCCESS);
+  status += s;
 
   lam_F = 0.0;
   k_G   = 0;

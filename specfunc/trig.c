@@ -206,7 +206,10 @@ gsl_sf_sin_impl(double x, gsl_sf_result * result)
       if(abs_x > 1.0/GSL_DBL_EPSILON) {
         result->err = fabs(result->val);
       }
-      else if(abs_x > 1.0/GSL_SQRT_DBL_EPSILON) {
+      else if(abs_x > 100.0/GSL_SQRT_DBL_EPSILON) {
+        result->err = 2.0 * abs_x * GSL_DBL_EPSILON * fabs(result->val);
+      }
+      else if(abs_x > 0.1/GSL_SQRT_DBL_EPSILON) {
         result->err = 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
       }
       else {
@@ -280,7 +283,10 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
       if(abs_x > 1.0/GSL_DBL_EPSILON) {
         result->err = fabs(result->val);
       }
-      else if(abs_x > 1.0/GSL_SQRT_DBL_EPSILON) {
+      else if(abs_x > 100.0/GSL_SQRT_DBL_EPSILON) {
+        result->err = 2.0 * abs_x * GSL_DBL_EPSILON * fabs(result->val);
+      }
+      else if(abs_x > 0.1/GSL_SQRT_DBL_EPSILON) {
         result->err = 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
       }
       else {
@@ -410,14 +416,14 @@ gsl_sf_complex_logsin_impl(const double zr, const double zi,
   else if(zi > 60.0) {
     lszr->val = -M_LN2 + zi;
     lszi->val =  0.5*M_PI - zr;
-    lszr->err = GSL_DBL_EPSILON * fabs(lszr->val);
-    lszi->err = GSL_DBL_EPSILON * fabs(lszi->val);
+    lszr->err = 2.0 * GSL_DBL_EPSILON * fabs(lszr->val);
+    lszi->err = 2.0 * GSL_DBL_EPSILON * fabs(lszi->val);
   }
   else if(zi < -60.0) {
     lszr->val = -M_LN2 - zi;
     lszi->val = -0.5*M_PI + zr;
-    lszr->err = GSL_DBL_EPSILON * fabs(lszr->val);
-    lszi->err = GSL_DBL_EPSILON * fabs(lszi->val);
+    lszr->err = 2.0 * GSL_DBL_EPSILON * fabs(lszr->val);
+    lszi->err = 2.0 * GSL_DBL_EPSILON * fabs(lszi->val);
   }
   else {
     gsl_sf_result sin_r, sin_i;
@@ -451,17 +457,17 @@ gsl_sf_lnsinh_impl(const double x, gsl_sf_result * result)
     double eps;
     sinh_series(x, &eps);
     result->val = log(eps);
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < -0.5*GSL_LOG_DBL_EPSILON) {
     result->val = x + log(0.5*(1.0 - exp(-2.0*x)));
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     result->val = -M_LN2 + x;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -479,12 +485,12 @@ int gsl_sf_lncosh_impl(const double x, gsl_sf_result * result)
   }
   else if(x < -0.5*GSL_LOG_DBL_EPSILON) {
     result->val = x + log(0.5*(1.0 + exp(-2.0*x)));
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     result->val = -M_LN2 + x;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

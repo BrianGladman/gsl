@@ -81,7 +81,7 @@ int gsl_sf_bessel_j1_impl(const double x, gsl_sf_result * result)
     const double sin_x = sin_result.val;
     result->val  = (sin_x/x - cos_x)/x;
     result->err  = (fabs(sin_result.err/x) + fabs(cos_result.err))/fabs(x);
-    result->err += GSL_DBL_EPSILON * (fabs(sin_x/(x*x)) + fabs(cos_x/x));
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(sin_x/(x*x)) + fabs(cos_x/x));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
@@ -131,7 +131,7 @@ int gsl_sf_bessel_j2_impl(const double x, gsl_sf_result * result)
     const double f = (3.0/(x*x) - 1.0);
     result->val  = (f * sin_x - 3.0*cos_x/x)/x;
     result->err  = fabs(f * sin_result.err/x) + fabs((3.0*cos_result.err/x)/x);
-    result->err += GSL_DBL_EPSILON * (fabs(f*sin_x/x) + 3.0*fabs(cos_x/(x*x)));
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(f*sin_x/x) + 3.0*fabs(cos_x/(x*x)));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_cos, stat_sin);
   }
@@ -205,7 +205,7 @@ gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
       double pre   = GSL_SQRT_DBL_EPSILON / jell;
       result->val  = j0_result.val * pre;
       result->err  = j0_result.err * fabs(pre);
-      result->err += GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_j0, stat_CF1);
     }
     else {
@@ -214,7 +214,7 @@ gsl_sf_bessel_jl_impl(const int l, const double x, gsl_sf_result * result)
       double pre   = GSL_SQRT_DBL_EPSILON / jellp1;
       result->val  = j1_result.val * pre;
       result->err  = j1_result.err * fabs(pre);
-      result->err += GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_j1, stat_CF1);
     }
   }

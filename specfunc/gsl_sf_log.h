@@ -64,7 +64,7 @@ gsl_sf_log_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = log(x);
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -82,7 +82,7 @@ gsl_sf_log_abs_impl(const double x, gsl_sf_result * result)
   }
   else {
     result->val = log(fabs(x));
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }

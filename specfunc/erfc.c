@@ -276,7 +276,7 @@ int gsl_sf_erfc_impl(double x, gsl_sf_result * result)
   }
   else {
     e_val = erfc8(ax);
-    e_err = GSL_DBL_EPSILON * fabs(e_val);
+    e_err = (x*x + 1.0) * GSL_DBL_EPSILON * fabs(e_val);
   }
 
   if(x < 0.0) {

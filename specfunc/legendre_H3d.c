@@ -405,7 +405,7 @@ gsl_sf_legendre_H3d_impl(const int ell, const double lambda, const double eta,
       ln_abslam = log(abs_lam);
       lnpre_val  = 0.5*(M_LNPI + lnN - M_LN2 - lnsh.val) - ln_abslam;
       lnpre_err  = lnsh.err;
-      lnpre_err += GSL_DBL_EPSILON * (0.5*(M_LNPI + M_LN2 + fabs(lnN)) + fabs(ln_abslam));
+      lnpre_err += 2.0 * GSL_DBL_EPSILON * (0.5*(M_LNPI + M_LN2 + fabs(lnN)) + fabs(ln_abslam));
       lnpre_err += 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
       stat_e = gsl_sf_exp_mult_err_impl(lnpre_val + lm, lnpre_err, P.val, P.err, result);
       return GSL_ERROR_SELECT_2(stat_e, stat_P);

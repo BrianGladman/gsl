@@ -219,7 +219,7 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
 
   result->val  = F;
   result->err  = 2.0 * fabs(F * prec);
-  result->err += 2.0 * GSL_DBL_EPSILON * fabs(F);
+  result->err += 2.0 * GSL_DBL_EPSILON * (n-1.0) * fabs(F);
 
   return GSL_SUCCESS;
 }
@@ -239,12 +239,12 @@ hyperg_1F1_1_series(const double b, const double x, gsl_sf_result * result)
   while(fabs(term/sum_val) > 2.0*GSL_DBL_EPSILON) {
     term *= x/(b+n-1);
     sum_val += term;
-    sum_err += 4.0 * GSL_DBL_EPSILON * fabs(term);
+    sum_err += 2.0 * 4.0 * GSL_DBL_EPSILON * fabs(term);
     n += 1.0;
   }
   result->val  = sum_val;
   result->err  = sum_err;
-  result->err += fabs(term);
+  result->err += 2.0 * fabs(term);
   return GSL_SUCCESS;
 }
 

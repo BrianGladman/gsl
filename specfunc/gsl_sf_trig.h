@@ -121,43 +121,4 @@ int gsl_sf_cos_err_impl(double x, double dx, gsl_sf_result * result);
 int gsl_sf_cos_err_e(double x, double dx, gsl_sf_result * result);
 
 
-
-#ifdef HAVE_INLINE
-extern inline int
-gsl_sf_sin_impl(double x, gsl_sf_result * result)
-{
-  double frac_err;
-  if(x > 1.0/GSL_DBL_EPSILON) {
-    frac_err = 1.0;
-  }
-  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
-    frac_err = GSL_SQRT_DBL_EPSILON;
-  }
-  else {
-    frac_err = 2.0 * GSL_DBL_EPSILON;
-  }
-  result->val = sin(x);
-  result->err = frac_err * fabs(result->val);
-  return GSL_SUCCESS;
-}
-extern inline int
-gsl_sf_cos_impl(double x, gsl_sf_result * result)
-{
-  double frac_err;
-  if(x > 1.0/GSL_DBL_EPSILON) {
-    frac_err = 1.0;
-  }
-  else if(x > 10.0/GSL_SQRT_DBL_EPSILON) {
-    frac_err = GSL_SQRT_DBL_EPSILON;
-  }
-  else {
-    frac_err = 2.0 * GSL_DBL_EPSILON;
-  }
-  result->val = cos(x);
-  result->err = frac_err * fabs(result->val);
-  return GSL_SUCCESS;
-}
-#endif /* HAVE_INLINE */
-
-
 #endif /* !GSL_SF_TRIG_H */

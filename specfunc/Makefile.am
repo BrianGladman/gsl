@@ -46,12 +46,15 @@ noinst_HEADERS = \
 	legendre.h
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err 
 
 TESTS = test_sf
 
-test_sf_LDADD = libgslspecfunc.a ../sys/libgslsys.a \
-	../err/libgslerr.a ../err/libgsltest.a
+test_sf_LDADD = libgslspecfunc.a \
+	../ieee-utils/libgslieeeutils.a \
+	../sys/libgslsys.a \
+	../err/libgslerr.a \
+	../err/libgsltest.a
 test_sf_DEPENDENCIES = libgslspecfunc.a
 test_sf_SOURCES = test_sf.c		\
 		  test_sf.h		\

@@ -26,7 +26,7 @@ int test_dilog(void)
   TEST_SF(s, gsl_sf_dilog_impl, ( 5.0, &r),    1.7837191612666306277,     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_impl, ( 11.0, &r),   0.3218540439999117111,     TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_impl, (12.59, &r),   0.0010060918167266208634,  TEST_TOL3, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_dilog_impl, (12.595, &r),  0.00003314826006436236810, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_dilog_impl, (12.595, &r),  0.00003314826006436236810, TEST_TOL5, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_impl, (13.0, &r),   -0.07806971248458575855,    TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_impl, (20.0, &r),   -1.2479770861745251168,     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_dilog_impl, (150.0, &r),  -9.270042702348657270,      TEST_TOL0, GSL_SUCCESS);

@@ -294,7 +294,7 @@ int gsl_sf_expint_E1_impl(const double x, gsl_sf_result * result)
     gsl_sf_cheb_eval_impl(&AE11_cs, 20.0/x+1.0, &result_c);
     result->val  = s * (1.0 + result_c.val);
     result->err  = s * result_c.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(x) + 1.0) * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x <= -4.0) {
@@ -343,8 +343,8 @@ int gsl_sf_expint_E1_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_c;
     gsl_sf_cheb_eval_impl(&AE14_cs, 8.0/x-1.0, &result_c);
     result->val  = s * (1.0 +  result_c.val);
-    result->err  = s * result_c.err;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = s * (GSL_DBL_EPSILON + result_c.err);
+    result->err += 2.0 * (x + 1.0) * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -373,8 +373,8 @@ int gsl_sf_expint_E2_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_E1;
     int stat_E1 = gsl_sf_expint_E1_impl(x, &result_E1);
     result->val  = ex - x*result_E1.val;
-    result->err  = GSL_DBL_EPSILON*ex + fabs(x * result_E1.err);
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err  = fabs(x) * (GSL_DBL_EPSILON*ex + result_E1.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_E1;
   }
   else if(x < xmax) {
@@ -395,7 +395,7 @@ int gsl_sf_expint_E2_impl(const double x, gsl_sf_result * result)
     const double sum6 = c6+y*(c7+y*(c8+y*(c9+y*(c10+y*(c11+y*(c12+y*c13))))));
     const double sum  = y*(c1+y*(c2+y*(c3+y*(c4+y*(c5+y*sum6)))));
     result->val = exp(-x) * (1.0 + sum)/x;
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * (x + 1.0) * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else {

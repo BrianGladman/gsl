@@ -123,30 +123,34 @@ int gsl_sf_bessel_K0_scaled_impl(const double x, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(x <= 2.0) {
+    const double lx = log(x);
     const double ex = exp(x);
     int stat_I0;
     gsl_sf_result I0;
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&bk0_cs, 0.5*x*x-1.0, &c);
     stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
-    result->val = ex * ((-log(x)+M_LN2)*I0.val - 0.25 + c.val);
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + ex * (I0.err + c.err);
+    result->val  = ex * ((-lx+M_LN2)*I0.val - 0.25 + c.val);
+    result->err  = ex * ((M_LN2+fabs(lx))*I0.err + c.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_I0;
   }
   else if(x <= 8.0) {
     const double sx = sqrt(x);
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&ak0_cs, (16.0/x-5.0)/3.0, &c);
-    result->val = (1.25 + c.val) / sx;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err / sx;
+    result->val  = (1.25 + c.val) / sx;
+    result->err  = c.err / sx;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     const double sx = sqrt(x);
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&ak02_cs, 16.0/x-1.0, &c);
-    result->val = (1.25 + c.val) / sx;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err / sx;
+    result->val  = (1.25 + c.val) / sx;
+    result->err  = (c.err + GSL_DBL_EPSILON) / sx;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   } 
 }
@@ -163,19 +167,21 @@ int gsl_sf_bessel_K0_impl(const double x, gsl_sf_result * result)
     return GSL_EDOM;
   }
   else if(x <= 2.0) {
+    const double lx = log(x);
     int stat_I0;
     gsl_sf_result I0;
     gsl_sf_result c;
     gsl_sf_cheb_eval_impl(&bk0_cs, 0.5*x*x-1.0, &c);
     stat_I0 = gsl_sf_bessel_I0_impl(x, &I0);
-    result->val = (-log(x)+M_LN2)*I0.val - 0.25 + c.val;
-    result->err = GSL_DBL_EPSILON * fabs(result->val) + c.err;
+    result->val  = (-lx+M_LN2)*I0.val - 0.25 + c.val;
+    result->err  = (fabs(lx) + M_LN2) * I0.err + c.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_I0;
   }
   else {
     gsl_sf_result K0_scaled;
     int stat_K0 = gsl_sf_bessel_K0_scaled_impl(x, &K0_scaled);
-    int stat_e  = gsl_sf_exp_mult_err_impl(-x, 0.0,
+    int stat_e  = gsl_sf_exp_mult_err_impl(-x, GSL_DBL_EPSILON*fabs(x),
                                            K0_scaled.val, K0_scaled.err,
 					   result);
     return GSL_ERROR_SELECT_2(stat_e, stat_K0);
