@@ -1,3 +1,7 @@
+Mon Apr 24 21:15:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_sum.h: added #include <stdlib.h> for size_t
+
 Mon Nov  1 12:50:17 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added tests using series for the Euler constant
