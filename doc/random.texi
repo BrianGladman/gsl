@@ -321,3 +321,11 @@ have to remake routines that depend on @code{cool.c}.  This way, you'll
 maintain the convention in the GSL random number package that not
 initializing a random number generator is equivalent to initializing
 with a seed of 1.
+
+@c    [ b1(x) := rsh(xor(lsh(x, 13), x), 19),
+@c      q1(x) := xor(lsh(and(x, 4294967294), 12), b1(x)),
+@c      b2(x) := rsh(xor(lsh(x, 2), x), 25),
+@c      q2(x) := xor(lsh(and(x, 4294967288), 4), b2(x)),
+@c      b3(x) := rsh(xor(lsh(x, 3), x), 11),
+@c      q3(x) := xor(lsh(and(x, 4294967280), 17), b3(x)) ]
+@c      [s1, s2, s3] = [600098857, 1131373026, 1223067536] 
