@@ -21,6 +21,7 @@
 #include <gsl/gsl_min.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "test.h"
 #include "min.h"
@@ -45,6 +46,8 @@ main (void)
   
   const gsl_min_fminimizer_type * fminimizer[4] ;
   const gsl_min_fminimizer_type ** T;
+
+  gsl_ieee_env_setup ();
 
   fminimizer[0] = gsl_min_fminimizer_goldensection;
   fminimizer[1] = gsl_min_fminimizer_brent;

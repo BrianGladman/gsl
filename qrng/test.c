@@ -1,6 +1,8 @@
 /* Author: G. Jungman
  * RCS:    $Id$
  */
+#include <gsl/gsl_ieee_utils.h>
+
 #include "gsl_qrng.h"
 
 
@@ -75,6 +77,8 @@ int test_nied2(void)
 int main()
 {
   int status = 0;
+
+  gsl_ieee_env_setup ();
 
   /* status += test_sobol(); */
   status += test_nied2();

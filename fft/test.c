@@ -34,6 +34,7 @@
 #include <gsl/gsl_fft_real_float.h>
 #include <gsl/gsl_fft_halfcomplex.h>
 #include <gsl/gsl_fft_halfcomplex_float.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
 
 void my_error_handler (const char *reason, const char *file,
@@ -72,6 +73,8 @@ main (int argc, char *argv[])
   size_t start = 1, end = 99;
   size_t stride ;
   size_t n = 0;
+
+  gsl_ieee_env_setup ();
 
   if (argc == 2) 
     n = strtol (argv[1], NULL, 0);

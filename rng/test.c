@@ -22,6 +22,7 @@
 #include <math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	       unsigned long int result);
@@ -92,6 +93,8 @@ main (void)
     0};
 
   const gsl_rng_type ** r ;
+
+  gsl_ieee_env_setup ();
 
   gsl_rng_env_setup ();
 

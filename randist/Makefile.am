@@ -9,13 +9,13 @@ libgslrandist_la_SOURCES = bernoulli.c beta.c bigauss.c binomial.c cauchy.c chis
 bin_PROGRAMS = gsl-randist
 
 gsl_randist_SOURCES = gsl-randist.c
-gsl_randist_LDADD = libgslrandist.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la ../err/libgslerr.la ../sys/libgslsys.la ../utils/libutils.la
+gsl_randist_LDADD = libgslrandist.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la  ../err/libgslerr.la ../sys/libgslsys.la ../utils/libutils.la
 
 TESTS = test
 
 check_PROGRAMS = test
 
 test_SOURCES = test.c
-test_LDADD = libgslrandist.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
+test_LDADD = libgslrandist.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 
 

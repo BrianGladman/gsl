@@ -23,6 +23,7 @@
  */
 
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_math.h>
 #include "test_cases.h"
 #include "gsl_blas_raw.h"
@@ -2562,6 +2563,8 @@ int test_hpr2(void)
 int main()
 {
   int status = 0;
+
+  gsl_ieee_env_setup ();
 
   status += test_L1();
   status += test_gemv();

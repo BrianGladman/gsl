@@ -26,6 +26,7 @@
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_statistics.h>
+#include <gsl/gsl_ieee_utils.h>
 
 /* Test program for mean.c.  JimDavies 7.96 */
 
@@ -100,6 +101,8 @@ int
 main (void)
 {
   size_t s1, s2;
+
+  gsl_ieee_env_setup ();
 
   for (s1 = 1; s1 < 4 ; s1++) 
     {

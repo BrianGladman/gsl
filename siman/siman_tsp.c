@@ -23,6 +23,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
+#include <gsl/gsl_ieee_utils.h>
 
 /* set up parameters for this simulated annealing run */
 
@@ -166,6 +167,8 @@ int main(void)
   unsigned int i;
 
   const gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+
+  gsl_ieee_env_setup ();
 
   prepare_distance_matrix();
 

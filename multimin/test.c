@@ -20,7 +20,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_min.h>
-
+#include <gsl/gsl_ieee_utils.h>
 
 #include "test_funcs.h"
 
@@ -53,6 +53,8 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
   gsl_vector *x = gsl_vector_alloc (f->n);
 
   gsl_multimin_fdf_minimizer *s;
+
+  gsl_ieee_env_setup ();
 
   (*initpt) (x);
 

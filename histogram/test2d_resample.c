@@ -21,6 +21,7 @@
 #include <math.h>
 #include <gsl/gsl_histogram2d.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "urand.c"
 
@@ -32,9 +33,12 @@ main (void)
   double total = 0;
   size_t N = 200000;
 
-  gsl_histogram2d *h = gsl_histogram2d_calloc_uniform (10, 10,
-						       0.0, 1.0,
-						       0.0, 1.0);
+  gsl_histogram2d *h;
+
+  gsl_ieee_env_setup ();
+
+  h = gsl_histogram2d_calloc_uniform (10, 10, 0.0, 1.0, 0.0, 1.0);
+
   for (i = 0; i < 10; i++)
     {
       for (j = 0; j < 10; j++)

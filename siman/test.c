@@ -23,6 +23,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <stdio.h>
 
 /* set up parameters for this simulated annealing run */
@@ -231,6 +232,8 @@ int main(void)
   double x ;
 
   gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+
+  gsl_ieee_env_setup ();
 
   /* The function tested here has multiple mimima. 
      The global minimum is at    x = 1.36312999, (f = -0.87287)

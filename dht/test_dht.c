@@ -23,6 +23,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <math.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
 #include "gsl_dht.h"
 
@@ -181,6 +182,8 @@ test_dht_poly1(void)
 
 int main()
 {
+  gsl_ieee_env_setup ();
+
   gsl_test( test_dht_exact(),   "Small Exact DHT");
   gsl_test( test_dht_simple(),  "Simple  DHT");
   gsl_test( test_dht_exp1(),    "Exp  J1 DHT");

@@ -23,6 +23,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_linalg.h>
+#include <gsl/gsl_ieee_utils.h>
 #include "gsl_eigen.h"
 
 gsl_matrix *
@@ -112,6 +113,8 @@ int test_invert_jacobi(void)
 
 int main()
 {
+  gsl_ieee_env_setup ();
+
   gsl_test(test_eigen_jacobi(),   "Eigensystem:  Jacobi Method");
   gsl_test(test_invert_jacobi(),  "Inversion:    Jacobi Method");
 

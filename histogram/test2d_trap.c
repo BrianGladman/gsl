@@ -22,6 +22,7 @@
 #include <gsl/gsl_histogram2d.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #define N 107
 #define M 239
@@ -38,6 +39,8 @@ main (void)
   size_t i, j;
 
   gsl_set_error_handler (&my_error_handler);
+
+  gsl_ieee_env_setup ();
 
   status = 0;
   h = gsl_histogram2d_calloc (0, 10);

@@ -24,6 +24,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #define M 53
 #define N 107
@@ -124,6 +125,8 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
+  gsl_ieee_env_setup ();
+
   test_func ();
   test_float_func ();
   test_long_double_func ();

@@ -21,6 +21,7 @@
 #include <math.h>
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #include "urand.c"
 
@@ -30,7 +31,11 @@ main (void)
   size_t i;
   int status = 0;
 
-  gsl_histogram *h = gsl_histogram_calloc_uniform (10, 0.0, 1.0);
+  gsl_histogram *h;
+
+  gsl_ieee_env_setup ();
+
+  h = gsl_histogram_calloc_uniform (10, 0.0, 1.0);
 
   gsl_histogram_increment (h, 0.1);
   gsl_histogram_increment (h, 0.2);

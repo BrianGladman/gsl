@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <gsl/gsl_block.h>
+#include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
 
 int status = 0;
@@ -141,6 +142,8 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
+  gsl_ieee_env_setup ();
+
   test_func ();
   test_float_func ();
   test_long_double_func ();

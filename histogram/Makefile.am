@@ -15,12 +15,12 @@ gsl_histogram_SOURCES = gsl-histogram.c
 gsl_histogram_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../utils/libutils.la
 noinst_HEADERS = urand.c
 
-test_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../test/libgsltest.la
-test2d_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../test/libgsltest.la
-test_resample_LDADD = libgslhistogram.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la
-test2d_resample_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../test/libgsltest.la
-test_trap_LDADD = libgslhistogram.la ../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la
-test2d_trap_LDADD = libgslhistogram.la ../block/libgslblock.la  ../err/libgslerr.la ../test/libgsltest.la
+test_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test2d_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test_resample_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test2d_resample_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test_trap_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
+test2d_trap_LDADD = libgslhistogram.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la
 
 test_DEPENDENCIES = libgslhistogram.la
 test2d_DEPENDENCIES = libgslhistogram.la

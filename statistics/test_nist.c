@@ -23,6 +23,7 @@
 
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_statistics.h>
+#include <gsl/gsl_ieee_utils.h>
 
 int
 main (void)
@@ -356,6 +357,7 @@ main (void)
       numacc4[i+1] = 10000000.3 ;
     }
 
+  gsl_ieee_env_setup ();
 
   {
     double mean = gsl_stats_mean (lew, 1, nlew);

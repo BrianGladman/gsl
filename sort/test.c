@@ -25,6 +25,7 @@
 #include <gsl/gsl_heapsort.h>
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
+#include <gsl/gsl_ieee_utils.h>
 
 double urand (void);
 
@@ -100,6 +101,8 @@ int
 main (void)
 {
   size_t i, s;
+
+  gsl_ieee_env_setup ();
 
   /* Test for lengths of 1 ... 31, then 32, 64, 128, 256, ... */
 

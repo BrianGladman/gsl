@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #define N 397
 #define NR 10
@@ -33,6 +34,8 @@ main (void)
 
   gsl_histogram *h, *h1, *hr, *g;
   size_t i, j;
+
+  gsl_ieee_env_setup ();
 
   h = gsl_histogram_calloc (N);
   h1 = gsl_histogram_calloc (N);

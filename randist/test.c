@@ -25,6 +25,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #define N 100000
 void testMoments (double (*f) (void), const char *name,
@@ -167,6 +168,8 @@ gsl_rng *r_global;
 int
 main (void)
 {
+  gsl_ieee_env_setup ();
+
   gsl_rng_env_setup() ;
   r_global = gsl_rng_alloc (gsl_rng_default);
 

@@ -22,6 +22,7 @@
 #include <gsl/gsl_histogram.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_ieee_utils.h>
 
 #define N 397
 
@@ -37,6 +38,8 @@ main (void)
   size_t i;
 
   gsl_set_error_handler (&my_error_handler);
+
+  gsl_ieee_env_setup ();
 
   status = 0;
   h = gsl_histogram_calloc (0);

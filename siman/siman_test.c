@@ -23,6 +23,7 @@
 #include <string.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
+#include <gsl/gsl_ieee_utils.h>
 
 /* A cute example of this program to then look at stuff would be:
    ./siman_test D3 | grep -v "^#" | awk '{print $3}' | sed 's/::/ /gp' > output
@@ -78,6 +79,8 @@ int main(int argc, char *argv[])
   double x_initial = -10.0;
 
   gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+
+  gsl_ieee_env_setup ();
 
   gsl_siman_solve(r, &x_initial, E1, S1, M1, P1, sizeof(double), params);
 
