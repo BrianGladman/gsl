@@ -193,3 +193,6 @@ dirichlet distribution
 
 * Slaven Peles <peles@cns.physics.gatech.edu>, build options for
 Compaq cc, doc bug fix
+
+* David Favis-Mortlock <d.favis-mortlock@dial.pipex.com> bug report for
+gsl_rng_taus2 seeding

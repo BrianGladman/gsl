@@ -71,6 +71,13 @@
 
    The generator taus2 has been added to satisfy this requirement.
    The original taus generator is unchanged.
+
+   Update: November 2002
+
+   There was a bug in the correction to the seeding procedure for s2.
+   It affected the following seeds 254679140 1264751179 1519430319
+   2274823218 2529502358 3284895257 3539574397 (s2 < 8).
+
 */
 
 static inline unsigned long int taus_get (void *vstate);
@@ -139,7 +146,7 @@ taus2_set (void *vstate, unsigned long int s)
   state->s1 = LCG (s);
   if (state->s1 < 2) state->s1 += 2UL;
   state->s2 = LCG (state->s1);
-  if (state->s2 < 8) state->s1 += 8UL;
+  if (state->s2 < 8) state->s2 += 8UL;
   state->s3 = LCG (state->s2);
   if (state->s3 < 8) state->s3 += 16UL;
 

@@ -1,3 +1,7 @@
+Sun Nov  3 14:40:43 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* taus.c (taus2_set): fixed bug in seeding for s2 < 8
+
 Mon Jun 17 21:04:10 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mt.c (mt_set): ensure state counter mti is initialised by
