@@ -70,11 +70,15 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-check_PROGRAMS = siman_test siman_tsp
+check_PROGRAMS = test siman_test siman_tsp
 noinst_LIBRARIES = libgslsiman.a
 
-TESTS = siman_test_driver.sh
+TESTS = test
 EXTRA_DIST = siman_test_driver.sh
+
+test_SOURCES = test.c
+test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslsiman.a
 
 siman_test_SOURCES = siman_test.c
 siman_test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a
@@ -105,6 +109,8 @@ LIBS = @LIBS@
 libgslsiman_a_LIBADD = 
 libgslsiman_a_OBJECTS =  siman.o
 AR = ar
+test_OBJECTS =  test.o
+test_LDFLAGS = 
 siman_test_OBJECTS =  siman_test.o
 siman_test_LDFLAGS = 
 siman_tsp_OBJECTS =  siman_tsp.o
@@ -121,9 +127,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/siman.P .deps/siman_test.P .deps/siman_tsp.P
-SOURCES = $(libgslsiman_a_SOURCES) $(siman_test_SOURCES) $(siman_tsp_SOURCES)
-OBJECTS = $(libgslsiman_a_OBJECTS) $(siman_test_OBJECTS) $(siman_tsp_OBJECTS)
+DEP_FILES =  .deps/siman.P .deps/siman_test.P .deps/siman_tsp.P \
+.deps/test.P
+SOURCES = $(libgslsiman_a_SOURCES) $(test_SOURCES) $(siman_test_SOURCES) $(siman_tsp_SOURCES)
+OBJECTS = $(libgslsiman_a_OBJECTS) $(test_OBJECTS) $(siman_test_OBJECTS) $(siman_tsp_OBJECTS)
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -175,6 +182,10 @@ clean-checkPROGRAMS:
 distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
+
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 siman_test: $(siman_test_OBJECTS) $(siman_test_DEPENDENCIES)
 	@rm -f siman_test

@@ -1,10 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-check_PROGRAMS = siman_test siman_tsp
+check_PROGRAMS = test siman_test siman_tsp
 noinst_LIBRARIES = libgslsiman.a
 
-TESTS = siman_test_driver.sh
+TESTS = test
 EXTRA_DIST = siman_test_driver.sh
+
+test_SOURCES = test.c
+test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES = libgslsiman.a
 
 siman_test_SOURCES = siman_test.c
 siman_test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a
