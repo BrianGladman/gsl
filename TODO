@@ -49,6 +49,11 @@ papers for other developers.
 
 Other tasks:
 
+* Fix build problems which occur with -ansi (and similar options) 
+where BSD extensions like hypot(), log1p() are found by the 
+configure script in the system math library but without any
+prototypes in the include files. 
+
 * Remove use of long double internally, e.g. as an accumulator in
 loops. It introduces variation between platforms which is undesirable.
 It should be replaced with a preprocessor variable ACC_DOUBLE so
