@@ -1,6 +1,6 @@
 #include <config.h>
 #include <stdio.h>
-#include <gsl_matrix.h>
+#include <gsl_matrix_float.h>
 #include <gsl_test.h>
 
 #define N 107
@@ -8,19 +8,19 @@
 
 int main (void) 
 {
-  gsl_matrix * m;
+  gsl_matrix_float * m;
   size_t i, j;
   int k = 0;
 
-  m = gsl_matrix_alloc(N,M) ;
+  m = gsl_matrix_float_alloc(N,M) ;
 
-  gsl_test(m->data == 0, "gsl_matrix_alloc returns valid pointer") ;
-  gsl_test(m->size1 != N, "gsl_matrix_alloc returns valid size1") ;
-  gsl_test(m->size2 != M, "gsl_matrix_alloc returns valid size2") ;
+  gsl_test(m->data == 0, "gsl_matrix_float_alloc returns valid pointer") ;
+  gsl_test(m->size1 != N, "gsl_matrix_float_alloc returns valid size1") ;
+  gsl_test(m->size2 != M, "gsl_matrix_float_alloc returns valid size2") ;
 
   for (i = 0 ; i < N ; i++) {
     for (j = 0 ; j < M ; j++) {
-      k++ ; gsl_matrix_set(m,i,j,(double)k) ;
+      k++ ; gsl_matrix_float_set(m,i,j,(float)k) ;
     }
   }
 
@@ -35,7 +35,7 @@ int main (void)
       } ;
     } ;
     
-    gsl_test(status, "gsl_matrix_set writes into array correctly") ;
+    gsl_test(status, "gsl_matrix_float_set writes into array correctly") ;
   }
 
   {
@@ -44,20 +44,20 @@ int main (void)
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
 	k++ ;
-	if(gsl_matrix_get(m,i,j) != k) 
+	if(gsl_matrix_float_get(m,i,j) != k) 
 	  status = 1 ;
       } ;
     } ;
-    gsl_test(status, "gsl_matrix_get reads from array correctly") ;
+    gsl_test(status, "gsl_matrix_float_get reads from array correctly") ;
   }
 
-  gsl_matrix_free(m);  /* free whatever is in m */
+  gsl_matrix_float_free(m);  /* free whatever is in m */
 
-  m = gsl_matrix_calloc(N,M) ;
+  m = gsl_matrix_float_calloc(N,M) ;
 
-  gsl_test(m->data == 0, "gsl_matrix_calloc returns valid pointer") ;
-  gsl_test(m->size1 != N, "gsl_matrix_calloc returns valid size1") ;
-  gsl_test(m->size2 != M, "gsl_matrix_calloc returns valid size2") ;
+  gsl_test(m->data == 0, "gsl_matrix_float_calloc returns valid pointer") ;
+  gsl_test(m->size1 != N, "gsl_matrix_float_calloc returns valid size1") ;
+  gsl_test(m->size2 != M, "gsl_matrix_float_calloc returns valid size2") ;
 
   { 
     int status = 0 ;
@@ -68,7 +68,7 @@ int main (void)
 	  status = 1 ;
       } 
     }
-    gsl_test(status, "gsl_matrix_calloc initializes array to zero") ;
+    gsl_test(status, "gsl_matrix_float_calloc initializes array to zero") ;
   }
 
   {
@@ -76,11 +76,11 @@ int main (void)
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
-	k++ ; gsl_matrix_set(m,i,j,(double)k) ;
+	k++ ; gsl_matrix_float_set(m,i,j,(float)k) ;
       }
     }
     
-    gsl_matrix_fprintf(f, m, "%.4f") ;
+    gsl_matrix_float_fprintf(f, m, "%.4f") ;
 
     fclose(f) ;
   }
@@ -89,9 +89,9 @@ int main (void)
   {
     int status = 0 ;
     FILE * f = fopen("test.dat","r") ;
-    gsl_matrix * mm = gsl_matrix_calloc(N,M) ;
+    gsl_matrix_float * mm = gsl_matrix_float_calloc(N,M) ;
 
-    gsl_matrix_fscanf(f, mm) ;
+    gsl_matrix_float_fscanf(f, mm) ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -101,10 +101,10 @@ int main (void)
       }
     }
     
-    gsl_test(status, "gsl_matrix_fprintf and fscanf work correctly") ;
+    gsl_test(status, "gsl_matrix_float_fprintf and fscanf work correctly") ;
     
     fclose (f) ;
-    gsl_matrix_free (mm) ;
+    gsl_matrix_float_free (mm) ;
   }
 
 
@@ -113,11 +113,11 @@ int main (void)
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
-	k++ ; gsl_matrix_set(m,i,j,(double)k) ;
+	k++ ; gsl_matrix_float_set(m,i,j,(float)k) ;
       }
     }
     
-    gsl_matrix_fwrite(f, m) ;
+    gsl_matrix_float_fwrite(f, m) ;
 
     fclose (f) ;
   }
@@ -125,9 +125,9 @@ int main (void)
   {
     int status = 0 ;
     FILE * f = fopen("test.dat","r") ;
-    gsl_matrix * mm = gsl_matrix_calloc(N,M) ;
+    gsl_matrix_float * mm = gsl_matrix_float_calloc(N,M) ;
 
-    gsl_matrix_fread(f, mm) ;
+    gsl_matrix_float_fread(f, mm) ;
     k = 0 ;
     for (i = 0 ; i < N ; i++) {
       for (j = 0 ; j < M ; j++) {
@@ -137,10 +137,10 @@ int main (void)
       }
     }
 
-    gsl_test(status, "gsl_matrix_write and read work correctly") ;
+    gsl_test(status, "gsl_matrix_float_write and read work correctly") ;
 
     fclose (f) ;
-    gsl_matrix_free (mm) ;
+    gsl_matrix_float_free (mm) ;
   }
 
   return gsl_test_summary ();

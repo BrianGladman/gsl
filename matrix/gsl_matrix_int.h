@@ -16,6 +16,11 @@ void gsl_matrix_int_free (gsl_matrix_int * m);
 int gsl_matrix_int_get(const gsl_matrix_int * m, size_t i, size_t j);
 void gsl_matrix_int_set(gsl_matrix_int * m, size_t i,  size_t j, int x);
 
+int gsl_matrix_int_fread (FILE * stream, gsl_matrix_int * m) ;
+int gsl_matrix_int_fwrite (FILE * stream, const gsl_matrix_int * m) ;
+int gsl_matrix_int_fscanf (FILE * stream, gsl_matrix_int * m);
+int gsl_matrix_int_fprintf (FILE * stream, const gsl_matrix_int * m, const char * format);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
