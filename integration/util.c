@@ -17,15 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "qpsrt.c"
-
-static inline
-void initialise (gsl_integration_workspace * workspace, double a, double b);
-
-static inline
-void set_initial_result (gsl_integration_workspace * workspace, 
-			 double result, double error);
-
 static inline
 void update (gsl_integration_workspace * workspace,
 		 double a1, double b1, double area1, double error1,
@@ -35,46 +26,6 @@ static inline void
 retrieve (const gsl_integration_workspace * workspace, 
 	  double * a, double * b, double * r, double * e);
 
-static inline
-void initialise (gsl_integration_workspace * workspace, double a, double b)
-{
-  workspace->size = 0;
-  workspace->nrmax = 0;
-  workspace->i = 0;
-  workspace->alist[0] = a;
-  workspace->blist[0] = b;
-  workspace->rlist[0] = 0.0;
-  workspace->elist[0] = 0.0;
-  workspace->order[0] = 0;
-  workspace->level[0] = 0;
-
-  workspace->maximum_level = 0;
-}
-
-static inline
-void set_initial_result (gsl_integration_workspace * workspace, 
-			 double result, double error)
-{
-  workspace->size = 1;
-  workspace->rlist[0] = result;
-  workspace->elist[0] = error;
-}
-
-static inline
-void append_interval (gsl_integration_workspace * workspace,
-		      double a1, double b1, double area1, double error1)
-{
-  const size_t i_new = workspace->size ;
-
-  workspace->alist[i_new] = a1;
-  workspace->blist[i_new] = b1;
-  workspace->rlist[i_new] = area1;
-  workspace->elist[i_new] = error1;
-  workspace->order[i_new] = i_new;
-  workspace->level[i_new] = 0;
-
-  workspace->size++;
-}
 
 
 static inline
@@ -148,16 +99,6 @@ retrieve (const gsl_integration_workspace * workspace,
   *e = elist[i] ;
 }
 
-static inline void
-reset_nrmax (gsl_integration_workspace * workspace);
-
-static inline void
-reset_nrmax (gsl_integration_workspace * workspace)
-{
-  workspace->nrmax = 0;
-  workspace->i = workspace->order[0] ;
-}
-
 static inline double
 sum_results (const gsl_integration_workspace * workspace);
 
@@ -194,16 +135,3 @@ subinterval_too_small (double a1, double a2, double b2)
   return status;
 }
 
-/* Compare the integral of f(x) with the integral of |f(x)|
-   to determine if f(x) covers both positive and negative values */
-
-static inline int
-test_positivity (double result, double resabs);
-
-static inline int
-test_positivity (double result, double resabs)
-{
-  int status = (fabs (result) >= (1 - 50 * GSL_DBL_EPSILON) * resabs);
-
-  return status;
-}

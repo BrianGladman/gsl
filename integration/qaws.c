@@ -24,6 +24,9 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
+#include "initialise.c"
+#include "append.c"
+#include "qpsrt.c"
 #include "util.c"
 #include "qc25s.c"
 

@@ -16,7 +16,7 @@ libgslintegration_la_SOURCES = \
 	qawf.c 
 
 pkginclude_HEADERS = gsl_integration.h
-noinst_HEADERS = qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c err.c
+noinst_HEADERS = qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c err.c positivity.c append.c initialise.c set_initial.c reset.c
 
 TESTS = test
 check_PROGRAMS = test

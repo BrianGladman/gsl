@@ -24,9 +24,14 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
+#include "initialise.c"
+#include "set_initial.c"
+#include "reset.c"
+#include "qpsrt.c"
 #include "util.c"
 #include "qpsrt2.c"
 #include "qelg.c"
+#include "positivity.c"
 
 #include "qc25f.c"
 

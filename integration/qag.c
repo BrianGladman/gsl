@@ -23,6 +23,9 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
+#include "initialise.c"
+#include "set_initial.c"
+#include "qpsrt.c"
 #include "util.c"
 
 static int
