@@ -57,6 +57,28 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result);
 double gsl_sf_zeta(const double s);
 
 
+/* Riemann Zeta Function minus 1
+ *   useful for evaluating the fractional part
+ *   of Riemann zeta for large argument
+ *
+ * s != 1.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int gsl_sf_zetam1_e(const double s, gsl_sf_result * result);
+double gsl_sf_zetam1(const double s);
+
+
+/* Riemann Zeta Function minus 1 for integer arg
+ *   useful for evaluating the fractional part
+ *   of Riemann zeta for large argument
+ *
+ * s != 1.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
+ */
+int gsl_sf_zetam1_int_e(const int s, gsl_sf_result * result);
+double gsl_sf_zetam1_int(const int s);
+
+
 /* Hurwitz Zeta Function
  * zeta(s,q) = Sum[ (k+q)^(-s), {k,0,Infinity} ]
  *
