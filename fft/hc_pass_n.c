@@ -150,8 +150,8 @@ gsl_fft_halfcomplex_pass_n (const double from[],
 	      else
 		{
 		  size_t tskip = (q + 1) / 2 - 1;
-		  w_real = twiddle[k - 1 + tskip * (e1 - 1)].real;
-		  w_imag = twiddle[k - 1 + tskip * (e1 - 1)].imag;
+		  w_real = GSL_REAL(twiddle[k - 1 + tskip * (e1 - 1)]);
+		  w_imag = GSL_REAL(twiddle[k - 1 + tskip * (e1 - 1)]);
 		}
 
 	      {

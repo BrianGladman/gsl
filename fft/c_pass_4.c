@@ -7,8 +7,10 @@
 #include "fft_complex.h"
 
 int
-fft_complex_pass_4 (const gsl_complex from[],
-		    gsl_complex to[],
+fft_complex_pass_4 (const double in[],
+		    const size_t istride,
+		    double out[],
+		    const size_t ostride,
 		    const gsl_fft_direction sign,
 		    const size_t product,
 		    const size_t n,
@@ -109,11 +111,6 @@ fft_complex_pass_4 (const gsl_complex from[],
 
 	  /* apply twiddle factors */
 
-	  const size_t to0 = j;
-	  const size_t to1 = p_1 + to0;
-	  const size_t to2 = p_1 + to1;
-	  const size_t to3 = p_1 + to2;
-	  
 	  /* to0 = 1 * x0 */
 	  REAL(out,ostride,j) = x0_real;
 	  IMAG(out,ostride,j) = x0_imag;

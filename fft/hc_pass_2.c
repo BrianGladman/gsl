@@ -13,15 +13,8 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 			    const size_t n,
 			    const gsl_complex twiddle[])
 {
-
   size_t i, j, k, k1, jump;
   size_t factor, q, m, product_1;
-  size_t from0, from1;
-  size_t to0, to1;
-  gsl_complex x0, x1;
-  gsl_complex w;
-  gsl_complex z0, z1;
-  double r0, r1, s0, s1;
   i = 0;
   j = 0;
 
@@ -33,21 +26,14 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 
   for (k1 = 0; k1 < product_1; k1++)
     {
-      from0 = 2 * k1 * q;
-      from1 = from0 + 2 * q - 1;
+      const double r0 = from[2 * k1 * q];
+      const double r1 = from[2 * k1 * q + 2 * q - 1];
 
-      r0 = from[from0];
-      r1 = from[from1];
+      const double s0 = r0 + r1;
+      const double s1 = r0 - r1;
 
-      s0 = r0 + r1;
-      s1 = r0 - r1;
-
-      to0 = q * k1;
-      to1 = to0 + m;
-
-      to[to0] = s0;
-      to[to1] = s1;
-
+      to[q * k1] = s0;
+      to[q * k1 + m] = s1;
     }
 
   if (q == 1)
@@ -56,38 +42,38 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
   for (k = 1; k < (q + 1) / 2; k++)
     {
 
-      w.real = twiddle[k - 1].real;
-      w.imag = twiddle[k - 1].imag;
+      const double w_real = GSL_REAL(twiddle[k - 1]);
+      const double w_imag = GSL_IMAG(twiddle[k - 1]);
 
       for (k1 = 0; k1 < product_1; k1++)
 	{
-	  from0 = 2 * k1 * q + 2 * k - 1;
-	  from1 = 2 * k1 * q - 2 * k + 2 * q - 1;
+	  const size_t from0 = 2 * k1 * q + 2 * k - 1;
+	  const size_t from1 = 2 * k1 * q - 2 * k + 2 * q - 1;
 
-	  z0.real = from[from0];
-	  z0.imag = from[from0 + 1];
+	  const double z0_real = from[from0];
+	  const double z0_imag = from[from0 + 1];
 
-	  z1.real = from[from1];
-	  z1.imag = from[from1 + 1];
+	  const double z1_real = from[from1];
+	  const double z1_imag = from[from1 + 1];
 
 	  /* compute x = W(2) z */
 
 	  /* x0 = z0 + z1 */
-	  x0.real = z0.real + z1.real;
-	  x0.imag = z0.imag - z1.imag;
+	  const double x0_real = z0_real + z1_real;
+	  const double x0_imag = z0_imag - z1_imag;
 
 	  /* x1 = z0 - z1 */
-	  x1.real = z0.real - z1.real;
-	  x1.imag = z0.imag + z1.imag;
+	  const double x1_real = z0_real - z1_real;
+	  const double x1_imag = z0_imag + z1_imag;
 
-	  to0 = k1 * q + 2 * k - 1;
-	  to1 = to0 + m;
+	  const size_t to0 = k1 * q + 2 * k - 1;
+	  const size_t to1 = to0 + m;
 
-	  to[to0] = x0.real;
-	  to[to0 + 1] = x0.imag;
+	  to[to0] = x0_real;
+	  to[to0 + 1] = x0_imag;
 
-	  to[to1] = w.real * x1.real - w.imag * x1.imag;
-	  to[to1 + 1] = w.imag * x1.real + w.real * x1.imag;
+	  to[to1] = w_real * x1_real - w_imag * x1_imag;
+	  to[to1 + 1] = w_imag * x1_real + w_real * x1_imag;
 
 	}
     }
@@ -97,9 +83,9 @@ gsl_fft_halfcomplex_pass_2 (const double from[],
 
   for (k1 = 0; k1 < product_1; k1++)
     {
-      from0 = 2 * k1 * q + q - 1;
-      to0 = k1 * q + q - 1;
-      to1 = to0 + m;
+      const size_t from0 = 2 * k1 * q + q - 1;
+      const size_t to0 = k1 * q + q - 1;
+      const size_t to1 = to0 + m;
 
       to[to0] = 2 * from[from0];
       to[to1] = -2 * from[from0 + 1];

@@ -7,8 +7,10 @@
 #include "fft_complex.h"
 
 int
-fft_complex_pass_n (gsl_complex from[],
-		    gsl_complex to[],
+fft_complex_pass_n (double in[],
+		    const size_t istride,
+		    double out[],
+		    const size_t ostride,
 		    const gsl_fft_direction sign,
 		    const size_t factor,
 		    const size_t product,
@@ -20,14 +22,15 @@ fft_complex_pass_n (gsl_complex from[],
 
   const size_t m = n / factor;
   const size_t q = n / product;
-  const size_t product_1 = product / factor;
-  const size_t jump = (factor - 1) * product_1;
+  const size_t p_1 = product / factor;
+  const size_t jump = (factor - 1) * p_1;
 
   size_t e, e1;
 
   for (i = 0; i < m; i++)
     {
-      to[i] = from[i];
+      REAL(out,ostride,i) = REAL(in,istride,i);
+      IMAG(out,ostride,i) = IMAG(in,istride,i);
     }
 
   for (e = 1; e < (factor - 1) / 2 + 1; e++)
@@ -36,10 +39,10 @@ fft_complex_pass_n (gsl_complex from[],
 	{
 	  const size_t idx = i + e * m;
 	  const size_t idxc = i + (factor - e) * m;
-	  to[idx].real = from[idx].real + from[idxc].real;
-	  to[idx].imag = from[idx].imag + from[idxc].imag;
-	  to[idxc].real = from[idx].real - from[idxc].real;
-	  to[idxc].imag = from[idx].imag - from[idxc].imag;
+	  REAL(out,ostride,idx) = REAL(in,istride,idx) + REAL(in,istride,idxc);
+	  IMAG(out,ostride,idx) = IMAG(in,istride,idx) + IMAG(in,istride,idxc);
+	  REAL(out,ostride,idxc) = REAL(in,istride,idx) - REAL(in,istride,idxc);
+	  IMAG(out,ostride,idxc) = IMAG(in,istride,idx) - IMAG(in,istride,idxc);
 	}
     }
 
@@ -47,15 +50,16 @@ fft_complex_pass_n (gsl_complex from[],
 
   for (i=0 ; i<m; i++) 
     {
-      from[i] = to[i] ;
+      REAL(in,istride,i) = REAL(out,ostride,i);
+      IMAG(in,istride,i) = IMAG(out,ostride,i);
     }
 
   for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
     {
       for (i = 0; i < m; i++)
 	{
-	  from[i].real += to[i + e1*m].real ;
-	  from[i].imag += to[i + e1*m].imag ;
+	  REAL(in,istride,i) += REAL(out,ostride,i + e1*m) ;
+	  IMAG(in,istride,i) += IMAG(out,ostride,i + e1*m) ;
 	}
     }
 
@@ -70,8 +74,10 @@ fft_complex_pass_n (gsl_complex from[],
 
       for (i = 0; i < m; i++) 
 	{
-	  from[i + em] = to[i];
-	  from[i + ecm] = to[i];
+	  REAL(in,istride,i+em) = REAL(out,ostride,i) ;
+	  IMAG(in,istride,i+em) = IMAG(out,ostride,i) ;
+	  REAL(in,istride,i+ecm) = REAL(out,ostride,i) ;
+	  IMAG(in,istride,i+ecm) = IMAG(out,ostride,i) ;
 	}
 
       for (e1 = 1; e1 < (factor - 1) / 2 + 1; e1++)
@@ -81,35 +87,37 @@ fft_complex_pass_n (gsl_complex from[],
 	    w_imag = 0 ;
 	  } else {
 	    if (sign == forward) {
-	      w_real = twiddle[idx - 1].real ;
-	      w_imag = twiddle[idx - 1].imag ;
+	      w_real = GSL_REAL(twiddle[idx - 1]) ;
+	      w_imag = GSL_IMAG(twiddle[idx - 1]) ;
 	    } else {
-	      w_real = twiddle[idx - 1].real ;
-	      w_imag = -twiddle[idx - 1].imag ;
+	      w_real = GSL_REAL(twiddle[idx - 1]) ;
+	      w_imag = -GSL_IMAG(twiddle[idx - 1]) ;
 	    }
 	  }
 
 	  for (i = 0; i < m; i++) 
 	    {
-	      gsl_complex xp = to[i + e1 * m];
-	      gsl_complex xm = to[i + (factor - e1) *m];
+	      const double xp_real = REAL(out,ostride,i + e1 * m);
+	      const double xp_imag = IMAG(out,ostride,i + e1 * m);
+	      const double xm_real = REAL(out,ostride,i + (factor - e1) *m);
+	      const double xm_imag = IMAG(out,ostride,i + (factor - e1) *m);
 	
-	      const double ap = w_real * xp.real ;
-	      const double am = w_imag * xm.imag ; 
+	      const double ap = w_real * xp_real ;
+	      const double am = w_imag * xm_imag ; 
 
 	      double sum_real = ap - am;
 	      double sumc_real = ap + am;
 
-	      const double bp = w_real * xp.imag ;
-	      const double bm = w_imag * xm.real ;
+	      const double bp = w_real * xp_imag ;
+	      const double bm = w_imag * xm_real ;
 
 	      double sum_imag = bp + bm;
 	      double sumc_imag = bp - bm;
 
-	      from[i + em].real += sum_real;
-	      from[i + em].imag += sum_imag;
-	      from[i + ecm].real +=  sumc_real;
-	      from[i + ecm].imag += sumc_imag;
+	      REAL(in,istride,i + em) += sum_real;
+	      IMAG(in,istride,i + em) += sum_imag;
+	      REAL(in,istride,i + ecm) += sumc_real;
+	      IMAG(in,istride,i + ecm) += sumc_imag;
 	    }
 	  idx += idx_step ;
 	  idx %= factor * q ;
@@ -120,59 +128,59 @@ fft_complex_pass_n (gsl_complex from[],
   j = 0;
 
   /* k = 0 */
-  for (k1 = 0; k1 < product_1; k1++)
+  for (k1 = 0; k1 < p_1; k1++)
     {
-      to[k1] = from[k1];
+      REAL(out,ostride,k1) = REAL(in,istride,k1);
+      IMAG(out,ostride,k1) = IMAG(in,istride,k1);
     }
 
   for (e1 = 1; e1 < factor; e1++)
     {
-      for (k1 = 0; k1 < product_1; k1++)
+      for (k1 = 0; k1 < p_1; k1++)
 	{
-	  to[k1 + e1 * product_1] = from[k1 + e1 * m] ;
+	  REAL(out,ostride,k1 + e1 * p_1) = REAL(in,istride,k1 + e1 * m) ;
+	  IMAG(out,ostride,k1 + e1 * p_1) = IMAG(in,istride,k1 + e1 * m) ;
 	}
     }
 
-  i = product_1 ;
+  i = p_1 ;
   j = product ;
 
   for (k = 1; k < q; k++)
     {
-      for (k1 = 0; k1 < product_1; k1++)
+      for (k1 = 0; k1 < p_1; k1++)
 	{
-
-	  to[j].real = from[i].real;
-	  to[j].imag = from[i].imag;
-
+	  REAL(out,ostride,j) = REAL(in,istride,i);
+	  IMAG(out,ostride,j) = IMAG(in,istride,i);
 	  i++;
 	  j++;
 	}
       j += jump;
     }
 
-  i = product_1 ;
+  i = p_1 ;
   j = product ;
 
   for (k = 1; k < q; k++)
     {
-      for (k1 = 0; k1 < product_1; k1++)
+      for (k1 = 0; k1 < p_1; k1++)
 	{
 	  for (e1 = 1; e1 < factor; e1++)
 	    {
-	      double x_real = from[i + e1 * m].real;
-	      double x_imag = from[i + e1 * m].imag;
+	      double x_real = REAL(in, istride,i + e1 * m);
+	      double x_imag = IMAG(in, istride,i + e1 * m);
 
 	      double w_real, w_imag ;
 	      if (sign == forward) {
-		w_real = twiddle[(e1-1)*q + k-1].real ;
-		w_imag = twiddle[(e1-1)*q + k-1].imag ;
+		w_real = GSL_REAL(twiddle[(e1-1)*q + k-1]) ;
+		w_imag = GSL_IMAG(twiddle[(e1-1)*q + k-1]) ;
 	      } else {
-		w_real = twiddle[(e1-1)*q + k-1].real ;
-		w_imag = -twiddle[(e1-1)*q + k-1].imag ; 
+		w_real = GSL_REAL(twiddle[(e1-1)*q + k-1]) ;
+		w_imag = -GSL_IMAG(twiddle[(e1-1)*q + k-1]) ; 
 	      }
 
-	      to[j + e1 * product_1].real = w_real * x_real - w_imag * x_imag;
-	      to[j + e1 * product_1].imag = w_real * x_imag + w_imag * x_real;
+	      REAL(out,ostride,j + e1 * p_1) = w_real * x_real - w_imag * x_imag;
+	      IMAG(out,ostride,j + e1 * p_1) = w_real * x_imag + w_imag * x_real;
 	    }
 	  i++;
 	  j++;

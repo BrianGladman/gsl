@@ -4,6 +4,7 @@
 
 #include <gsl_errno.h>
 #include <gsl_complex.h>
+#include <gsl_vector_complex_double.h>
 #include <gsl_fft_complex.h>
 
 #include "fft_complex.h"
@@ -38,19 +39,20 @@ gsl_fft_complex_inverse (gsl_vector_complex * data,
       return status;
     }
 
-  const size_t n = data->size ;
-  const size_t stride = data->stride ;
-  double * const v = data->data ;
 
   /* normalize inverse fft with 1/n */
 
   {
+    const size_t n = data->size ;
+    const size_t stride = data->stride ;
+    double * const out = data->data ;
+    
     const double norm = 1.0 / n;
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(data,stride,i) *= norm;
-	IMAG(data,stride,i) *= norm;
+	REAL(out,stride,i) *= norm;
+	IMAG(out,stride,i) *= norm;
       }
   }
   return status;
@@ -68,7 +70,6 @@ gsl_fft_complex (gsl_vector_complex * data,
 
   size_t q, product = 1;
 
-  gsl_complex *scratch = wavetable->scratch;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4, *twiddle5, *twiddle6;
 
   size_t state = 0;
@@ -76,10 +77,15 @@ gsl_fft_complex (gsl_vector_complex * data,
   const size_t n = data->size ;
 
   double * const a = data->data;
-  double * const b = scratch;
+  double * const b = wavetable->scratch;
 
   const size_t astride = data->stride ;
   const size_t bstride = 1 ;
+
+  double * in = a;
+  size_t istride = astride;
+  double * out = b;
+  size_t ostride = bstride;
 
   if (n == 0)
     {
@@ -108,7 +114,7 @@ gsl_fft_complex (gsl_vector_complex * data,
 	  in = a;
 	  istride = astride;
 	  out = b;
-	  ostrid = bstride;
+	  ostride = bstride;
 	  state = 1;
 	}
       else

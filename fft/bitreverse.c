@@ -4,7 +4,8 @@
 #include "bitreverse.h"
 
 int 
-bitreverse_complex (gsl_complex data[], 
+bitreverse_complex (double data[], 
+		    const size_t stride,
 		    const size_t n,
 		    const size_t logn)
 {
@@ -25,9 +26,12 @@ bitreverse_complex (gsl_complex data[],
       
       if (i < j)
 	{
-	  const gsl_complex data_tmp = data[i];
-	  data[i] = data[j];
-	  data[j] = data_tmp;
+	  const double tmp_real = REAL(data,stride,i);
+	  const double tmp_imag = IMAG(data,stride,i);
+	  REAL(data,stride,i) = REAL(data,stride,j);
+	  IMAG(data,stride,i) = IMAG(data,stride,j);
+	  REAL(data,stride,j) = tmp_real;
+	  IMAG(data,stride,j) = tmp_imag;
 	}
     }
   return 0;

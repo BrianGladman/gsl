@@ -83,8 +83,8 @@ gsl_fft_halfcomplex_generate_wavetable (size_t n,
 	      m = m + j * product_1;
 	      m = m % n;
 	      theta = d_theta * m;	/*  d_theta*j*k*product_1 */
-	      wavetable->trig[t].real = cos (theta);
-	      wavetable->trig[t].imag = sin (theta);
+	      GSL_REAL(wavetable->trig[t]) = cos (theta);
+	      GSL_IMAG(wavetable->trig[t]) = sin (theta);
 
 	      t++;
 	    }

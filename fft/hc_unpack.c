@@ -15,24 +15,24 @@ gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
       GSL_ERROR ("length n must be positive integer", GSL_EDOM);
     }
 
-  complex_coefficient[0].real = halfcomplex_coefficient[0];
-  complex_coefficient[0].imag = 0.0;
+  GSL_REAL(complex_coefficient[0]) = halfcomplex_coefficient[0];
+  GSL_IMAG(complex_coefficient[0]) = 0.0;
 
   for (i = 1; i < n - i; i++)
     {
       const double hc_real = halfcomplex_coefficient[2 * i - 1];
       const double hc_imag = halfcomplex_coefficient[2 * i];
 
-      complex_coefficient[i].real = hc_real;
-      complex_coefficient[i].imag = hc_imag;
-      complex_coefficient[n - i].real = hc_real;
-      complex_coefficient[n - i].imag = -hc_imag;
+      GSL_REAL(complex_coefficient[i]) = hc_real;
+      GSL_IMAG(complex_coefficient[i]) = hc_imag;
+      GSL_REAL(complex_coefficient[n - i]) = hc_real;
+      GSL_IMAG(complex_coefficient[n - i]) = -hc_imag;
     }
 
   if (i == n - i)
     {
-      complex_coefficient[i].real = halfcomplex_coefficient[n - 1];
-      complex_coefficient[i].imag = 0.0;
+      GSL_REAL(complex_coefficient[i]) = halfcomplex_coefficient[n - 1];
+      GSL_IMAG(complex_coefficient[i]) = 0.0;
     }
 
   return 0;

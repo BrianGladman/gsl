@@ -83,8 +83,8 @@ gsl_fft_complex_generate_wavetable (size_t n,
 	      m = m + j * product_1;
 	      m = m % n;
 	      theta = d_theta * m;	/*  d_theta*j*k*p_(i-1) */
-	      wavetable->trig[t].real = cos (theta);
-	      wavetable->trig[t].imag = sin (theta);
+	      GSL_REAL(wavetable->trig[t]) = cos (theta);
+	      GSL_REAL(wavetable->trig[t]) = sin (theta);
 
 	      t++;
 	    }
@@ -116,7 +116,7 @@ gsl_fft_complex_wavetable_alloc (size_t n)
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  w->scratch = (double *) malloc (n * 2 * sizeof (double));
 
   if (w->scratch == NULL)
     {
