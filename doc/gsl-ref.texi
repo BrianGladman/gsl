@@ -108,7 +108,7 @@
 
 @iftex
 @copying
-Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002 The GSL Team.
+Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003 The GSL Team.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1
@@ -170,30 +170,6 @@ University of Paris-Dauphine
 @sp 1
 @page
 @vskip 0pt plus 1filll
-@ifset publish
-@flushleft
-A catalogue record for this book is available from the British Library.
-
-Second Edition, First Printing, February 2002 (14/2/2002)
-
-Published by Network Theory Limited.
-
-15 Royal Park
-Clifton
-Bristol BS8 3AL
-United Kingdom
-
-Email: info@@network-theory.co.uk
-
-ISBN 0-9541617-3-4
-
-Original cover design by David Nicholls.
-
-Further information about this book is available from 
-@url{http://www.network-theory.co.uk/gsl/manual/}
-
-@end flushleft
-@end ifset
 @insertcopying
 @end titlepage
 
