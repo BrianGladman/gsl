@@ -15,12 +15,15 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_blas.h>
+
 #include "gsl_linalg.h"
 
 #define REAL double
 
-#include "norm.c"
 #include "givens.c"
+#include "matrix.c"
+#include "norm.c"
 
 /* Factorise a general NxN matrix A into 
 
@@ -58,7 +61,9 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 	  /* Compute the Householder transformation to reduce the j-th
 	     column of the matrix to a multiple of the j-th unit vector */
 
-	  REAL ajnorm = column_norm (matrix, j, M, j);
+          gsl_vector c = col (matrix, j, j, M - 1);
+
+	  REAL ajnorm = gsl_blas_dnrm2 (&c);
 
 	  if (ajnorm == 0)
 	    {
@@ -69,11 +74,7 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 	  if (gsl_matrix_get (matrix, j, j) < 0)
 	    ajnorm *= -1;
 
-	  for (i = j; i < N; i++)
-	    {
-	      REAL aij = gsl_matrix_get (matrix, i, j);
-	      gsl_matrix_set (matrix, i, j, aij / ajnorm);
-	    }
+          gsl_blas_dscal (1.0/ajnorm, &c) ;
 
 	  gsl_vector_set (rdiag, j, -ajnorm);
 

@@ -1,20 +1,24 @@
 void
-generate_householder (gsl_matrix * m, gsl_vector * tau, size_t i)
+generate_householder (gsl_vector * v, double * tau, size_t i)
 {
-  /* replace [tau(i), m(i+1:m,i)] with a householder vector that
-     annihilates m(i:m,i) */
+  /* replace v[0:n-1] with a householder vector (tau, v[1:n-1]) that
+     annihilates v[1:n-1] */
+
+  double x0 = gsl_vector_get (v, 0) ;
+
+  gsl_vector v1 = subvector (v, 1, n-1) ; 
   
-  sigma = column_norm (m, i+1, n, i) ;
+  double s = gsl_blas_dnrm2 (&v1);
   
-  if (sigma == 0) 
+  double mu;
+
+  if (s == 0) 
     {
-      gsl_vector_set (tau, i, 0);
+      *tau = 0 ;
       return ;
     }
 
-  x0 = gsl_matrix_get (m, i, i) ;
-
-  mu = sqrt(x0 * x0 + sigma) ;
+  mu = gsl_hypot(x0, s) ;
 
   if (x0 <= 0)
     {
@@ -22,12 +26,14 @@ generate_householder (gsl_matrix * m, gsl_vector * tau, size_t i)
     }
   else
     {
-      v0 = -sigma / (x0 + mu) ;
+      v0 = -(s*s) / (x0 + mu) ;
     }
 
-  gsl_vector_set (tau, i, 2 * v0 / (sigma + v0 * v0)) ;
+  *tau  =  (2 * v0) / (s * s + v0 * v0) ;
 
-  column_scale (m, i+1, n, i, 1.0/v0) ;
+  gsl_blas_dscal (1.0 / v0, &c);
+  
+  return ;
 }
 
 void
@@ -35,15 +41,19 @@ apply_householder (gsl_matrix *m, double tau, gsl_vector * work, size_t i)
 {
   /* applies a householder transformation in column i to matrix m */
  
-  /* w = M' v */
-
   double mii = gsl_matrix_get (m, i, i) ;
-
   gsl_matrix_set (m, i, i, 1) ;
 
-  gsl_blas_dgemv (CblasTrans, 1.0, submatrix(m, i+1, i+1, m, n),
-                  col(m, i, i, m), 0.0, work) ;
+  gsl_matrix a = submatrix (m, i+1, i+1, m, n);
 
-  gsl_blas_dger (-tau, work, col(m, i, i, m), submatrix(m, i+1, i+1, m, n));
+  gsl_vector v = col (m, i, i, m) ;
+
+  /* w = M' v */
+
+  gsl_blas_dgemv (CblasTrans, 1.0, &a, &v, 0.0, work) ;
+
+  /* M = M - w v' */
+
+  gsl_blas_dger (-tau, work, &v, &a);
 
 }
