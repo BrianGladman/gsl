@@ -356,8 +356,10 @@ The pressure of 1 pound per square inch.
 @cindex viscosity, units of
 @table @code
 @item GSL_CONST_MKS_POISE
+The dynamic viscosity of 1 poise.
 
 @item GSL_CONST_MKS_STOKES
+The kinematic viscosity of 1 stokes.
 @end table
 
 
@@ -368,18 +370,25 @@ The pressure of 1 pound per square inch.
 
 @table @code
 @item GSL_CONST_MKS_STILB
+The luminance of 1 stilb.
 
 @item GSL_CONST_MKS_LUMEN
+The luminous flux of 1 lumen.
 
 @item GSL_CONST_MKS_LUX
+The illuminance of 1 lux.
 
 @item GSL_CONST_MKS_PHOT
+The illuminance of 1 phot.
 
 @item GSL_CONST_MKS_FOOTCANDLE
+The illuminance of 1 footcandle.
 
 @item GSL_CONST_MKS_LAMBERT
+The luminance of 1 lambert.
 
 @item GSL_CONST_MKS_FOOTLAMBERT
+The luminance of 1 footlambert.
 @end table
 
 
@@ -388,10 +397,13 @@ The pressure of 1 pound per square inch.
 @cindex radioactivity, units of
 @table @code
 @item GSL_CONST_MKS_CURIE
+The activity of 1 curie.
 
 @item GSL_CONST_MKS_ROENTGEN
+The exposure of 1 roentgen.
 
 @item GSL_CONST_MKS_RAD
+The absorbed dose of 1 rad.
 @end table
 
 @node Physical Constant Examples

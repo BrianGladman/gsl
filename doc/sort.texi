@@ -5,7 +5,7 @@ indirectly (using an index).  All the functions use the @dfn{heapsort}
 algorithm.  Heapsort is an @math{O(N \log N)} algorithm which operates
 in-place.  It does not require any additional storage and provides
 consistent performance.  The running time for its worst-case (ordered
-data) which is not significantly different from the average and best
+data)  is not significantly longer than the average and best
 cases.  Note that the heapsort algorithm does not preserve the relative
 ordering of equal elements --- it is an @dfn{unstable} sort.  However
 the resulting order of equal elements will be consistent across

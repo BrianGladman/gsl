@@ -191,36 +191,36 @@ not recommended for general use.
 * Error handling::              
 * Mathematical Functions::      
 * Complex Numbers::             
-* Vectors and Matrices::        
-* BLAS Support::                
-* Linear Algebra::              
-* Eigensystems::                
-* Chebyshev Approximations::    
-* Special Functions::           
 * Roots of Polynomials::        
-* Numerical Differentiation::   
-* Interpolation::               
-* Series Acceleration::         
+* Special Functions::           
+* Fast Fourier Transforms::     
+* Numerical Integration::       
 * Random Number Generation::    
 * Quasi-Random Sequences::      
 * Random Number Distributions::  
-* Permutations::                
-* Sorting::                     
 * Statistics::                  
 * Histograms::                  
 * N-tuples::                    
+* Monte Carlo Integration::     
+* Simulated Annealing::         
+* Ordinary Differential Equations (ODEs)::  
+* Interpolation::               
+* Numerical Differentiation::   
+* Chebyshev Approximations::    
+* Series Acceleration::         
+* Discrete Hankel Transforms::  
+* Vectors and Matrices::        
+* Permutations::                
+* Sorting::                     
+* BLAS Support::                
+* Linear Algebra::              
+* Eigensystems::                
+* One dimensional Root-Finding::  
+* One dimensional Minimization::  
 * Fitting::                     
 * Nonlinear Fitting::           
-* One dimensional Root-Finding::  
 * Multidimensional Root-Finding::  
-* One dimensional Minimization::                
-* Multidimensional Minimization::                
-* Simulated Annealing::         
-* Fast Fourier Transforms::     
-* Discrete Hankel Transforms::  
-* Numerical Integration::       
-* Monte Carlo Integration::     
-* Ordinary Differential Equations (ODEs)::  
+* Multidimensional Minimization::  
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
@@ -259,51 +259,27 @@ will be announced for general use.
 @chapter Mathematical Functions
 @include math.texi
 
-@node Complex Numbers, Vectors and Matrices, Mathematical Functions, Top
+@node Complex Numbers, Roots of Polynomials, Mathematical Functions, Top
 @chapter Complex Numbers
 @include complex.texi
 
-@node Vectors and Matrices, BLAS Support, Complex Numbers, Top
-@chapter Vectors and Matrices
-@include vectors.texi
-
-@node BLAS Support, Linear Algebra, Vectors and Matrices, Top
-@chapter BLAS Support
-@include blas.texi
-
-@node Linear Algebra, Eigensystems, BLAS Support, Top
-@chapter Linear Algebra
-@include linalg.texi
-
-@node Eigensystems, Chebyshev Approximations, Linear Algebra, Top
-@chapter Eigensystems
-@include eigen.texi
-
-@node  Chebyshev Approximations, Special Functions, Eigensystems, Top
-@chapter Chebyshev Approximations
-@include cheb.texi
-
-@node Special Functions, Roots of Polynomials, Chebyshev Approximations, Top
-@chapter Special Functions
-@include specfunc.texi
-
-@node  Roots of Polynomials, Numerical Differentiation, Special Functions, Top
+@node  Roots of Polynomials, Special Functions, Complex Numbers, Top
 @chapter Roots of Polynomials
 @include poly.texi
 
-@node  Numerical Differentiation, Interpolation, Roots of Polynomials, Top
-@chapter Numerical Differentiation
-@include diff.texi
+@node Special Functions, Fast Fourier Transforms, Roots of Polynomials, Top
+@chapter Special Functions
+@include specfunc.texi
 
-@node   Interpolation, Series Acceleration, Numerical Differentiation, Top
-@chapter Interpolation
-@include interp.texi
+@node Fast Fourier Transforms, Numerical Integration, Special Functions, Top
+@chapter Fast Fourier Transforms (FFTs)
+@include fft.texi
 
-@node Series Acceleration, Random Number Generation, Interpolation, Top
-@chapter Series Acceleration
-@include sum.texi
+@node Numerical Integration, Random Number Generation, Fast Fourier Transforms, Top
+@chapter Numerical Integration
+@include integration.texi
 
-@node Random Number Generation, Quasi-Random Sequences, Series Acceleration, Top
+@node Random Number Generation, Quasi-Random Sequences, Numerical Integration, Top
 @chapter Random Number Generation
 @include rng.texi
 
@@ -311,19 +287,11 @@ will be announced for general use.
 @chapter Quasi-Random Sequences
 @include qrng.texi
 
-@node  Random Number Distributions, Permutations, Quasi-Random Sequences, Top
+@node  Random Number Distributions, Statistics, Quasi-Random Sequences, Top
 @chapter Random Number Distributions
 @include randist.texi
 
-@node   Permutations, Sorting, Random Number Distributions, Top
-@chapter Permutations
-@include permutation.texi
-
-@node  Sorting, Statistics, Permutations, Top
-@chapter Sorting
-@include sort.texi
-
-@node Statistics, Histograms, Sorting, Top
+@node Statistics, Histograms, Random Number Distributions, Top
 @chapter Statistics
 @include statistics.texi
 
@@ -331,62 +299,93 @@ will be announced for general use.
 @chapter Histograms
 @include histogram.texi
 
-@node  N-tuples, Fitting, Histograms, Top
+@node  N-tuples, Monte Carlo Integration, Histograms, Top
 @chapter N-tuples
 @include ntuple.texi
 
-@node Fitting, Nonlinear Fitting, N-tuples, Top
-@chapter Fitting
-@include fitting.texi
-
-@node Nonlinear Fitting, One dimensional Root-Finding, Fitting, Top
-@chapter Nonlinear Fitting
-@include multifit.texi
-
-@node  One dimensional Root-Finding, Multidimensional Root-Finding, Nonlinear Fitting, Top
-@chapter One dimensional Root-Finding
-@include roots.texi
-
-@node  Multidimensional Root-Finding, One dimensional Minimization, One dimensional Root-Finding, Top
-@chapter Multidimensional Root-Finding
-@include multiroots.texi
-
-@node   One dimensional Minimization, Multidimensional Minimization, Multidimensional Root-Finding, Top
-@chapter One dimensional Minimization
-@include min.texi
-
-@node   Multidimensional Minimization, Simulated Annealing, One dimensional Minimization, Top
-@chapter Multidimensional Minimization
-@include multimin.texi
-
-@node Simulated Annealing, Fast Fourier Transforms, Multidimensional Minimization, Top
-@chapter Simulated Annealing
-@include siman.texi
-
-@node Fast Fourier Transforms, Discrete Hankel Transforms, Simulated Annealing, Top
-@chapter Fast Fourier Transforms (FFTs)
-@include fft.texi
-
-@node  Discrete Hankel Transforms, Numerical Integration, Fast Fourier Transforms, Top
-@chapter Discrete Hankel Transforms
-@include dht.texi
-
-@node Numerical Integration, Monte Carlo Integration, Discrete Hankel Transforms, Top
-@chapter Numerical Integration
-@include integration.texi
-
-@node Monte Carlo Integration, Ordinary Differential Equations (ODEs), Numerical Integration, Top
+@node Monte Carlo Integration, Simulated Annealing, N-tuples, Top
 @chapter Monte Carlo Integration
 @include montecarlo.texi
 
-@node Ordinary Differential Equations (ODEs), Physical Constants, Monte Carlo Integration, Top
+@node Simulated Annealing, Ordinary Differential Equations (ODEs), Monte Carlo Integration, Top
+@chapter Simulated Annealing
+@include siman.texi
+
+@node Ordinary Differential Equations (ODEs), Interpolation, Simulated Annealing, Top
 @chapter Ordinary Differential Equations (ODEs)
 @include ode-initval.texi
 
-@node  Physical Constants, IEEE floating-point arithmetic, Ordinary Differential Equations (ODEs), Top
+@node   Interpolation, Numerical Differentiation, Ordinary Differential Equations (ODEs), Top
+@chapter Interpolation
+@include interp.texi
+
+@node  Numerical Differentiation, Chebyshev Approximations, Interpolation, Top
+@chapter Numerical Differentiation
+@include diff.texi
+
+@node  Chebyshev Approximations, Series Acceleration, Numerical Differentiation, Top
+@chapter Chebyshev Approximations
+@include cheb.texi
+
+@node Series Acceleration, Discrete Hankel Transforms, Chebyshev Approximations, Top
+@chapter Series Acceleration
+@include sum.texi
+
+@node  Discrete Hankel Transforms, Vectors and Matrices, Series Acceleration, Top
+@chapter Discrete Hankel Transforms
+@include dht.texi
+
+@node Vectors and Matrices, Permutations, Discrete Hankel Transforms, Top
+@chapter Vectors and Matrices
+@include vectors.texi
+
+@node   Permutations, Sorting, Vectors and Matrices, Top
+@chapter Permutations
+@include permutation.texi
+
+@node  Sorting, BLAS Support, Permutations, Top
+@chapter Sorting
+@include sort.texi
+
+@node BLAS Support, Linear Algebra, Sorting, Top
+@chapter BLAS Support
+@include blas.texi
+
+@node Linear Algebra, Eigensystems, BLAS Support, Top
+@chapter Linear Algebra
+@include linalg.texi
+
+@node Eigensystems, One dimensional Root-Finding, Linear Algebra, Top
+@chapter Eigensystems
+@include eigen.texi
+
+@node  One dimensional Root-Finding, One dimensional Minimization, Eigensystems, Top
+@chapter One dimensional Root-Finding
+@include roots.texi
+
+@node   One dimensional Minimization, Fitting, One dimensional Root-Finding, Top
+@chapter One dimensional Minimization
+@include min.texi
+
+@node Fitting, Nonlinear Fitting, One dimensional Minimization, Top
+@chapter Fitting
+@include fitting.texi
+
+@node Nonlinear Fitting, Multidimensional Root-Finding, Fitting, Top
+@chapter Nonlinear Fitting
+@include multifit.texi
+
+@node  Multidimensional Root-Finding, Multidimensional Minimization, Nonlinear Fitting, Top
+@chapter Multidimensional Root-Finding
+@include multiroots.texi
+
+@node   Multidimensional Minimization, Physical Constants, Multidimensional Root-Finding, Top
+@chapter Multidimensional Minimization
+@include multimin.texi
+
+@node  Physical Constants, IEEE floating-point arithmetic, Multidimensional Minimization, Top
 @chapter Physical Constants
 @include const.texi
-
 
 @node IEEE floating-point arithmetic, Debugging Numerical Programs, Physical Constants, Top
 @chapter IEEE floating-point arithmetic

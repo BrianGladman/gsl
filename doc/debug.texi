@@ -14,7 +14,7 @@ programs which use GSL.
 @cindex gdb
 @cindex debugging numerical programs
 @cindex breakpoints
-Any errors reported by the library are routed through the function
+Any errors reported by the library are passed to the function
 @code{gsl_error}.  By running your programs under gdb and setting a
 breakpoint in this function you can automatically catch any library
 errors.  You can add a breakpoint for every session by putting

@@ -5,10 +5,9 @@
 
 @subsection Trigonometric Functions
 
-These simple trigonometric functions are important because we want to
-control the error estimate, and it is to determine the error for the
-standard library implementations.  These functions are declared in
-the header file @file{gsl_sf_trig.h}.
+The library includes its own trigonometric functions in order to provide
+consistency across platforms and reliable error estimates.  These
+functions are declared in the header file @file{gsl_sf_trig.h}.
 
 @deftypefun double gsl_sf_sin (double @var{x})
 @deftypefunx int gsl_sf_sin_e (double @var{x}, gsl_sf_result * @var{result})
@@ -58,7 +57,7 @@ value of @var{x}.
 
 @deftypefun double gsl_sf_lnsinh (double @var{x})
 @deftypefunx int gsl_sf_lnsinh_e (double @var{x}, gsl_sf_result * @var{result})
-These routines @math{\log(\sinh(x))} for @math{x > 0}.
+These routines compute @math{\log(\sinh(x))} for @math{x > 0}.
 @comment Domain: x > 0 
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun

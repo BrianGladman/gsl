@@ -69,7 +69,7 @@ terms) to choose an optimal number of terms for the extrapolation.
 The functions described in this section compute the Levin u-transform of
 series and attempt to estimate the error from the "truncation error" in
 the extrapolation, the difference between the final two approximations.
-Using this method there is no need to compute an intermediate table of
+Using this method avoids the need to compute an intermediate table of
 derivatives because the error is estimated from the behavior of the
 extrapolated value itself. Consequently this algorithm is an @math{O(N)}
 process and only required @math{O(N)} terms of storage.  If the series

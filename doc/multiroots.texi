@@ -455,7 +455,7 @@ algorithm for badly scaled functions.
 On each iteration the algorithm first determines the standard Newton
 step by solving the system @math{J dx = - f}.  If this step falls inside
 the trust region it is used as a trial step in the next stage.  If not,
-the algorithm uses the linear combination of the Newton and Gradient
+the algorithm uses the linear combination of the Newton and gradient
 directions which is predicted to minimize the norm of the function while
 staying inside the trust region.
 
@@ -472,7 +472,7 @@ dx = - \alpha J^@{-1@} f(x) - \beta \nabla |f(x)|^2
 @end example
 @end ifinfo
 @noindent
-This combination of Newton and Gradient directions is referred to as a
+This combination of Newton and gradient directions is referred to as a
 @dfn{dogleg step}.
 
 The proposed step is now tested by evaluating the function at the
@@ -556,10 +556,10 @@ using LU decomposition.
 @deffn {Derivative Solver} gsl_multiroot_fdfsolver_gnewton
 @cindex Modified Newton's Method for nonlinear systems
 @cindex GNEWTON algorithm
-This is a modified version of Newtons method which attempts to improve
+This is a modified version of Newton's method which attempts to improve
 global convergence by requiring every step to reduce the Euclidean norm
 of the residual, @math{|f(x)|}.  If the Newton step leads to an increase
-in the norm then a reduced step of relative size
+in the norm then a reduced step of relative size,
 
 @tex
 \beforedisplay

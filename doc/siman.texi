@@ -23,6 +23,9 @@ avoiding local minima; it is based on the idea of taking a random walk
 through the space at successively lower temperatures, where the
 probability of taking a step is given by a Boltzmann distribution.
 
+The functions described in this chapter are declared in the header file
+@file{gsl_siman.h}.
+
 @menu
 * Simulated Annealing algorithm::  
 * Simulated Annealing functions::  

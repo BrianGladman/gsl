@@ -7,14 +7,14 @@ coefficients, the Dawson function, Debye functions, Dilogarithms,
 Elliptic integrals, Jacobi elliptic functions, Error functions,
 Exponential integrals, Fermi-Dirac functions, Gamma functions,
 Gegenbauer functions, Hypergeometric functions, Laguerre functions,
-Legendre functions and Spherical Harmonics, Psi (Digamma) Function,
+Legendre functions and Spherical Harmonics, the Psi (Digamma) Function,
 Synchrotron functions, Transport functions, Trigonometric functions and
 Zeta functions.  Each routine also computes an estimate of the numerical
 error in the calculated value of the function.
 
 The functions are declared in individual header files, such as
 @file{gsl_sf_airy.h}, @file{gsl_sf_bessel.h}, etc.  The complete set of
-header files can be including the file @file{gsl_sf.h}.
+header files can be included using the file @file{gsl_sf.h}.
 
 @menu
 * Special Function Usage::
@@ -149,14 +149,40 @@ exact   = -0.177596771314338292
 @node Special Functions References and Further Reading
 @section References and Further Reading
 
+The library follows the conventions of @cite{Abramowitz & Stegun} where
+possible,
 @itemize @asis
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
-
+@end itemize
+@noindent
+The following papers contain information on the algorithms used 
+to compute the special functions,
+@itemize @asis
 @item
 MISCFUN: A software package to compute uncommon special functions.
 @cite{ACM Trans. Math. Soft.}, vol. 22, 1996, 288-301
 
-Fermi-Dirac functions of orders -1/2 , 1/2 , 3/2 , and 5/2. 
-@cite{ACM Trans. Math. Soft.}, vol. 24, 1998, 1-12.
+@item
+G.N. Watson, A Treatise on the Theory of Bessel Functions,
+2nd Edition (Cambridge University Press, 1944).
+
+@item
+G. Nemeth, Mathematical Approximations of Special Functions,
+Nova Science Publishers, ISBN 1-56072-052-2
+
+@item
+B.C. Carlson, Special Functions of Applied Mathematics (1977)
+
+@item
+W.J. Thompson, Atlas for Computing Mathematical Functions, John Wiley & Sons,
+New York (1997).
+
+@item
+Y.Y. Luke, Algorithms for the Computation of Mathematical Functions, Academic
+Press, New York (1977).
+
+@comment @item
+@comment Fermi-Dirac functions of orders @math{-1/2}, @math{1/2}, @math{3/2}, and
+@comment @math{5/2}.  @cite{ACM Trans. Math. Soft.}, vol. 24, 1998, 1-12.
 @end itemize

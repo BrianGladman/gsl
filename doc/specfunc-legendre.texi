@@ -81,9 +81,9 @@ no trouble for small @math{m}, but overflow occurs when @math{m} and
 refuse to calculate @math{P_l^m(x)} and return @code{GSL_EOVRFLW} when
 they can sense that @math{l} and @math{m} are too big.
 
-If you really want to calculate a spherical harmonic, then DO NOT use
-these functions.  Instead use @code{gsl_sf_legendre_sphPlm()} below,
-which uses a similar recursion, but with the normalized functions.
+If you want to calculate a spherical harmonic, then DO NOT use these
+functions.  Instead use @code{gsl_sf_legendre_sphPlm()} below, which
+uses a similar recursion, but with the normalized functions.
 
 @deftypefun double gsl_sf_legendre_Plm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_Plm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
@@ -201,9 +201,9 @@ These routines compute the Regular Cylindrical Conical Function
 
 The following spherical functions are specializations of Legendre
 functions which give the regular eigenfunctions of the Laplacian on a
-3-dimensional hyperbolic space.  Of particular interest is the flat
-limit, @math{\lambda \to \infty}, @math{\eta \to 0}, @math{\lambda\eta}
-fixed.
+3-dimensional hyperbolic space @math{H3d}.  Of particular interest is
+the flat limit, @math{\lambda \to \infty}, @math{\eta \to 0},
+@math{\lambda\eta} fixed.
   
 @deftypefun double gsl_sf_legendre_H3d_0 (double @var{lambda}, double @var{eta})
 @deftypefunx int gsl_sf_legendre_H3d_0_e (double @var{lambda}, double @var{eta}, gsl_sf_result * @var{result})

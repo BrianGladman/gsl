@@ -79,10 +79,13 @@ p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-x^2 / 2\sigma^2) dx
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  Use the
 transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
-@math{\mu}.
+@math{\mu}.  This function uses the Box-Mueller algorithm which requires two
+calls the random number generator @var{r}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, const double @var{sigma})
+This function computes a gaussian random number using the
+Kinderman-Monahan ratio method.
 @end deftypefun
 
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
@@ -933,6 +936,7 @@ spherical surface.  They can be used as random directions, for example in
 the steps of a random walk.
 
 @deftypefn Random void gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
+@deftypefnx Random void gsl_ran_dir_2d_trig_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @cindex 2D random direction vector
 @cindex direction vector, random 2D
 @cindex spherical random numbers, 2D
@@ -956,8 +960,6 @@ interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=uv/(u^2+v^2)}.
 @end deftypefn
 
-@deftypefn Random void gsl_ran_dir_2d_trig_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
-@end deftypefn
 
 
 @deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
@@ -1534,7 +1536,7 @@ gsl_ran_shuffle (r, a, 52, sizeof (int));
 
 @end deftypefn
 
-@deftypefn Random {void *} gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+@deftypefn Random int gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function fills the array @var{dest}[k] with @var{k} objects taken
 randomly from the @var{n} elements of the array
 @var{src}[0..@var{n}-1].  The objects are each of size @var{size}.  The
@@ -1565,7 +1567,7 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 
 @end deftypefn
 
-@deftypefn Random {void *} gsl_ran_sample (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+@deftypefn Random void gsl_ran_sample (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function is like @code{gsl_ran_choose} but samples @var{k} items
 from the original array of @var{n} items @var{src} with replacement, so
 the same object can appear more than once in the output sequence

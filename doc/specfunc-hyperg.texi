@@ -38,13 +38,13 @@ These routines compute the confluent hypergeometric function
 @deftypefun double gsl_sf_hyperg_U_int (int @var{m}, int @var{n}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_U_int_e (int @var{m}, int @var{n}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the confluent hypergeometric function
-@math{U(m,n,x)} for integer parameters.
+@math{U(m,n,x)} for integer parameters @var{m}, @var{n}.
 @comment exceptions:
 @end deftypefun
 
 @deftypefun int gsl_sf_hyperg_U_int_e10_e (int @var{m}, int @var{n}, double @var{x}, gsl_sf_result_e10 * @var{result})
 This routine computes the confluent hypergeometric function
-@math{U(m,n,x)} for integer parameters using the
+@math{U(m,n,x)} for integer parameters @var{m}, @var{n} using the
 @code{gsl_sf_result_e10} type to return a result with extended range.
 @end deftypefun
 

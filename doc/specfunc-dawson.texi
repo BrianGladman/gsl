@@ -10,6 +10,6 @@ Stegun, Table 7.5.  These functions are declared in the header file
 
 @deftypefun double gsl_sf_dawson (double @var{x})
 @deftypefunx int gsl_sf_dawson_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the value for Dawson's integral for @var{x}.
+These routines compute the value of Dawson's integral for @var{x}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun

@@ -40,8 +40,9 @@ notation used here is based on Carlson, @cite{Numerische Mathematik} 33
 
 @subsection Carlson Forms
 
-The Carlson symmetric forms @math{RC(x,y)}, @math{RD(x,y,z)},
-@math{RF(x,y,z)} and @math{RJ(x,y,z,p)} are defined by,
+The Carlson symmetric forms of elliptical integrals @math{RC(x,y)},
+@math{RD(x,y,z)}, @math{RF(x,y,z)} and @math{RJ(x,y,z,p)} are defined
+by,
 
 @tex
 \beforedisplay

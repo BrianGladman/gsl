@@ -1,9 +1,21 @@
-This chapter describes functions for performing Discrete Hankel Transforms
-(DHTs). The discrete Hankel transform acts on a vector of sampled data,
-where the samples are assumed to have been taken at points related to
-the zeroes of a Bessel function of fixed order; compare this to the
-case of the discrete Fourier transform, where samples are token
-at points related to the zeroes of the sine or cosine function.
+This chapter describes functions for performing Discrete Hankel
+Transforms (DHTs).  The functions are declared in the header file
+@file{gsl_dht.h}.
+
+@menu
+* Discrete Hankel Transform Definition::  
+* Discrete Hankel Transform Functions::  
+* Discrete Hankel Transform References::  
+@end menu
+
+@node Discrete Hankel Transform Definition
+@section Definitions
+
+The discrete Hankel transform acts on a vector of sampled data, where
+the samples are assumed to have been taken at points related to the
+zeroes of a Bessel function of fixed order; compare this to the case of
+the discrete Fourier transform, where samples are token at points
+related to the zeroes of the sine or cosine function.
 
 Specifically, let @math{f(t)} be a function on the unit interval.
 Then the finite @math{\nu}-Hankel transform of @math{f(t)} is defined
@@ -65,46 +77,55 @@ corresponds to an orthogonal expansion in eigenfunctions
 of the Dirichlet problem for the Bessel differential equation.
 
 
+@node Discrete Hankel Transform Functions
+@section Functions
+
 @deftypefun {gsl_dht *} gsl_dht_alloc (size_t @var{size})
-Allocates a Discrete Hankel transform of size @var{size}.
+This function allocates a Discrete Hankel transform object of size
+@var{size}.
+@end deftypefun
+
+@deftypefun int gsl_dht_init (gsl_dht * @var{t}, double @var{nu}, double @var{xmax})
+This function initializes the transform @var{t} for the given values of
+@var{nu} and @var{x}.
 @end deftypefun
 
 @comment , double @var{nu}, double @var{xmax}
 
 @deftypefun void gsl_dht_free (gsl_dht * @var{t})
-Free a transform object.
+This function frees the transform @var{t}.
 @end deftypefun
 
 @deftypefun int gsl_dht_apply (const gsl_dht * @var{t}, double * @var{f_in}, double * @var{f_out})
-Apply a transform object to a data vector, f_in[0] ... f_in[size-1].
+This function applies the transform @var{t} to the array @var{f_in}
+whose size is equal to the size of the transform.  The result is stored
+in the array @var{f_out} which must be of the same length.
 @end deftypefun
 
 @deftypefun double gsl_dht_x_sample (const gsl_dht * @var{t}, int @var{n})
-Return the value of the n'th sample point in the unit interval,
+This function returns the value of the n'th sample point in the unit interval,
 @c{${{j_{\nu,n+1}}\over{j_{\nu,M}}} X$}
 @math{(j_@{\nu,n+1@}/j_@{\nu,M@}) X}. These are the
 points where the function @math{f(t)} is assumed to be sampled.
 @end deftypefun
 
 @deftypefun double gsl_dht_k_sample (const gsl_dht * @var{t}, int @var{n})
-Return the value of the n'th sample point in "k-space",
+This function returns the value of the n'th sample point in "k-space",
 @c{${{j_{\nu,n+1}}\over X}$}
 @math{j_@{\nu,n+1@}/X}.
 @end deftypefun
 
-@deftypefun int gsl_dht_recalc (gsl_dht * @var{t}, double @var{nu}, double @var{xmax})
-Recalculate a transform object for a different @math{\nu} and @math{X}. The
-size cannot be changed, because the internal allocation is not changed.
-@end deftypefun
+@node Discrete Hankel Transform References
+@section References and Further Reading
+@noindent
+The algorithms used by these functions are described in the following papers,
 
 @itemize @asis
 @item
 H. Fisk Johnson, Comp. Phys. Comm. 43, 181 (1987).
-@cite{Johnson}
 @end itemize
 
 @itemize @asis
 @item
 D. Lemoine, J. Chem. Phys. 101, 3936 (1994).
-@cite{Lemoine}
 @end itemize

@@ -74,10 +74,15 @@ in the series.
 @end deftypefun
 
 @deftypefun double gsl_cheb_eval_n (const gsl_cheb_series * @var{cs}, size_t @var{order}, double @var{x})
-Evaluate a Chebyshev series at a given point, to (at most) the given order.
+This function evaluates the Chebyshev series @var{cs} at a given point
+@var{n}, to (at most) the given order @var{order}.
 @end deftypefun
 
 @deftypefun int gsl_cheb_eval_n_err (const gsl_cheb_series * @var{cs}, const size_t @var{order}, const double @var{x}, double * @var{result}, double * @var{abserr})
+This function evaluate a Chebyshev series @var{cs} at a given point
+@var{x}, estimating both the series @var{result} and its absolute error
+@var{abserr}, to (at most) the given order @var{order}.  The error
+estimate is made from the first neglected term in the series.
 @end deftypefun
 
 @comment @deftypefun double gsl_cheb_eval_mode (const gsl_cheb_series * @var{cs}, double @var{x}, gsl_mode_t @var{mode})
@@ -176,7 +181,7 @@ The output from the program gives the original function and the 10-term and
 @node Chebyshev Approximation References and Further Reading
 @section References and Further Reading
 
-
+The following paper describes the use of Chebyshev series,
 @itemize @asis
 @item 
 R. Broucke, ``Ten Subroutines for the Manipulation of Chebyshev Series

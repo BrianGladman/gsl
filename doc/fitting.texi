@@ -9,7 +9,8 @@ associated covariance matrix.  For unweighted data the covariance matrix
 is estimated from the scatter of the points, giving a
 variance-covariance matrix. The functions are divided into separate
 versions for simple one- or two-parameter regression and
-multiple-parameter fits.
+multiple-parameter fits.  The functions are declared in the header file
+@file{gsl_fit.h}
 
 @menu
 * Linear regression::           

@@ -4,7 +4,9 @@
 @cindex Coulomb wave functions
 @cindex hydrogen atom
 
-The coulomb functions are declared in the header file @file{gsl_sf_coulomb.h}.
+The Coulomb functions are declared in the header file
+@file{gsl_sf_coulomb.h}.  Both bound state and scattering solutions are
+available.
 
 @subsection Normalized Hydrogenic Bound States
 

@@ -167,10 +167,12 @@ $$
 @end ifinfo
 @noindent
 For large @math{N} this variance decreases asymptotically as
-@math{Var(f)/N}, where @math{Var(f)} is the true variance of the
+@math{var(f)/N}, where @math{var(f)} is the true variance of the
 function over the integration region.  The error estimate itself should
-decrease as @math{\sigma(f)/\sqrt@{N@}}.  The familiar law of errors
-decreasing as @math{1/\sqrt@{N@}} applies --- to reduce the error by a
+decrease as @c{$\sigma(f)/\sqrt{N}$}
+@math{\sigma(f)/\sqrt@{N@}}.  The familiar law of errors
+decreasing as @c{$1/\sqrt{N}$}
+@math{1/\sqrt@{N@}} applies --- to reduce the error by a
 factor of 10 requires a 100-fold increase in the number of sample
 points.
 
@@ -473,7 +475,7 @@ This function frees the memory associated with the integrator state
 @var{s}.
 @end deftypefun
 
-The @sc{vegas} algorithm computes a number of independent estimates the
+The @sc{vegas} algorithm computes a number of independent estimates of the
 integral internally, according to the @code{iterations} parameter
 described below, and returns their weighted average.  Random sampling of
 the integrand can occasionally produce an estimate where the error is

@@ -514,7 +514,7 @@ the Bessel function @math{J_1(x)}.
 @deftypefun double gsl_sf_bessel_zero_Jnu (double @var{nu}, unsigned int @var{s})
 @deftypefunx int gsl_sf_bessel_zero_Jnu_e (double @var{nu}, unsigned int @var{s}, gsl_sf_result * @var{result})
 These routines compute the location of the @var{s}-th positive zero of
-the Bessel function @math{J_nu(x)}.
+the Bessel function @math{J_\nu(x)}.
 @comment Exceptional Return Values: 
 @end deftypefun
 

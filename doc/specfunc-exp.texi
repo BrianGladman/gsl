@@ -102,9 +102,7 @@ exprel_N(x) = N!/x^N (\exp(x) - \sum_@{k=0@}^@{N-1@} x^k/k!)
 
 @deftypefun int gsl_sf_exp_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
 This function exponentiates @var{x} with an associated absolute error
-@var{dx} to give the result 
-@c{$\exp(x) \pm- dx \exp(x)$}
-@math{\exp(x) +/- dx \exp(x)}.
+@var{dx}.
 @comment Exceptional Return Values: 
 @end deftypefun
 

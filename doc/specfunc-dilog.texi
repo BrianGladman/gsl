@@ -15,7 +15,7 @@ These routines compute the dilogarithm for a real argument. In Lewin's
 notation this is @math{Li_2(x)}, the real part of the dilogarithm of a
 real @math{x}.  It is defined by the integral representation
 @math{Li_2(x) = - \Re \int_0^x ds \log(1-s) / s}.  
-Note that @math{\Im Li_2(x) = 0} for @c{$x \le 1$} 
+Note that @math{\Im(Li_2(x)) = 0} for @c{$x \le 1$} 
 @math{x <= 1}, and @math{-\pi\log(x)} for @math{x > 1}.
 
 @end deftypefun
