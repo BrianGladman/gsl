@@ -133,6 +133,7 @@ gsl_vector_char gsl_matrix_char_row (gsl_matrix_char * m, size_t i);
 gsl_vector_char gsl_matrix_char_column (gsl_matrix_char * m, size_t j);
 gsl_vector_char gsl_matrix_char_diagonal (gsl_matrix_char * m);
 
+const gsl_matrix_char gsl_matrix_char_const_submatrix (const gsl_matrix_char * m, size_t i, size_t j, size_t n1, size_t n2);
 const gsl_vector_char gsl_matrix_char_const_row (const gsl_matrix_char * m, size_t i);
 const gsl_vector_char gsl_matrix_char_const_column (const gsl_matrix_char * m, size_t j);
 const gsl_vector_char gsl_matrix_char_const_diagonal (const gsl_matrix_char * m);

@@ -133,6 +133,7 @@ gsl_vector gsl_matrix_row (gsl_matrix * m, size_t i);
 gsl_vector gsl_matrix_column (gsl_matrix * m, size_t j);
 gsl_vector gsl_matrix_diagonal (gsl_matrix * m);
 
+const gsl_matrix gsl_matrix_const_submatrix (const gsl_matrix * m, size_t i, size_t j, size_t n1, size_t n2);
 const gsl_vector gsl_matrix_const_row (const gsl_matrix * m, size_t i);
 const gsl_vector gsl_matrix_const_column (const gsl_matrix * m, size_t j);
 const gsl_vector gsl_matrix_const_diagonal (const gsl_matrix * m);
