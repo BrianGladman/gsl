@@ -36,7 +36,7 @@ gsl_rng_env_setup (void)
       
       if (gsl_rng_default == 0) 
 	{
-	  GSL_ERROR("unknown generator",EINVAL) ;
+	  GSL_ERROR("unknown generator",GSL_EINVAL) ;
 	}
       
       printf("GSL_RNG_TYPE=%s\n",gsl_rng_default->name) ;
