@@ -41,6 +41,7 @@
  * incorrect errors.
  */
 
+#if 0
 static double
 norm_arg (double x, double a)
 {
@@ -70,6 +71,7 @@ norm_arg (double x, double a)
 
   return arg;
 }
+#endif
 
 /*
  * Wrapper for the functions that do the work.
