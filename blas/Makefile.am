@@ -1,7 +1,7 @@
 noinst_LTLIBRARIES = libgslblas.la
 lib_LTLIBRARIES = libgslblasnative.la libgslblascblas.la
 
-check_PROGRAMS = test_blas_raw
+check_PROGRAMS = test
 
 pkginclude_HEADERS = 		\
 	gsl_blas.h		\
@@ -69,10 +69,10 @@ noinst_HEADERS = matrix_access.h \
 
 INCLUDES= -I$(top_srcdir)
 
-TESTS = test_blas_raw
+TESTS = test
 
-test_blas_raw_LDADD = libgslblasnative.la ../err/libgslerr.la ../err/libgsltest.la ../sys/libgslsys.la
-test_blas_raw_SOURCES = test_blas_raw.c test_cases.c test_cases.h
+test_LDADD = libgslblasnative.la ../err/libgslerr.la ../err/libgsltest.la ../sys/libgslsys.la
+test_SOURCES = test_blas_raw.c test_cases.c test_cases.h
 
 libgslblas_la_SOURCES = 		\
 	blas.c
@@ -85,6 +85,3 @@ libgslblascblas_la_SOURCES =	\
 	blas_raw_cblas.c	\
 	blas_raw_cblas_cm.c
 
-
-strict:
-	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

@@ -1,6 +1,6 @@
 noinst_LTLIBRARIES = libgslspecfunc.la 
 
-check_PROGRAMS = test_sf
+check_PROGRAMS = test
 
 pkginclude_HEADERS = \
 	gsl_sf.h 	    	\
@@ -47,16 +47,16 @@ noinst_HEADERS = \
 
 INCLUDES= -I$(top_builddir)
 
-TESTS = test_sf
+TESTS = test
 
-test_sf_LDADD = libgslspecfunc.la \
+test_LDADD = libgslspecfunc.la \
 	../ieee-utils/libgslieeeutils.la \
 	../sys/libgslsys.la \
 	../err/libgslerr.la \
 	../err/libgsltest.la \
         ../utils/libutils.la
-test_sf_DEPENDENCIES = libgslspecfunc.la
-test_sf_SOURCES = test_sf.c		\
+test_DEPENDENCIES = libgslspecfunc.la
+test_SOURCES = test_sf.c		\
 		  test_sf.h		\
 		  test_airy.c		\
 		  test_bessel.c		\

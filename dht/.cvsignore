@@ -3,4 +3,4 @@
 .libs
 Makefile
 Makefile.in
-test_dht
+test

@@ -1,3 +1,8 @@
+Mon May  1 22:11:32 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* modified all the makefiles to compile test programs as "test",
+ 	for simpler automated builds
+
 Tue Apr 11 14:51:59 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eigen/eigen_sort.c (gsl_eigen_sort_impl): updated occurrence of
