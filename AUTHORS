@@ -3,7 +3,8 @@ Jim Davies (jimmyd@nis.lanl.gov) - statistics library
 James Theiler (jt@nis.lanl.gov) - random number generators
 Brian Gough (bjg@vvv.lanl.gov) - FFT package, error handling, vector and 
   matrix functions, histograms, some parts of statistics, ieee-utils, 
-  integration
+  integration, rng directory and random number distributions
 Reid Priedhorsky (rp@lanl.gov) - root finding
 Gerard Jungman (jungman@nnn.lanl.gov) special functions, interpolation, 
   series acceleration
+Michael Booth (booth@debian.org) - Monte Carlo integration
