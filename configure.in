@@ -125,8 +125,15 @@ fi ;
 AC_MSG_CHECKING(for IEEE compilation options)
 case "$host" in
     alpha*-*-*) 
-	CFLAGS="-mieee $CFLAGS"
-	AC_MSG_RESULT([adding -mieee])
+		if test X"$GCC" = Xyes ; then
+			ieee_alpha_options='-mieee -mfp-rounding-mode=d'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		else
+			# This assumes Compaq's C compiler.
+			ieee_alpha_options='-ieee -fprm d'
+			CFLAGS="$ieee_alpha_options $CFLAGS"
+		fi
+		AC_MSG_RESULT([adding $ieee_alpha_options])
         ;;
     *)
         AC_MSG_RESULT([none])
@@ -150,6 +157,10 @@ case "$host" in
     *-*-hpux*) 
         AC_DEFINE(HAVE_HPUX_IEEE_INTERFACE)
         AC_MSG_RESULT([hpux]) 
+        ;;
+    *-*-osf*) 
+        AC_DEFINE(HAVE_TRU64_IEEE_INTERFACE)
+        AC_MSG_RESULT([osf/tru64]) 
         ;;
     *)
         AC_MSG_RESULT([unknown])

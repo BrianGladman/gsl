@@ -79,6 +79,7 @@
 #undef HAVE_SUNOS4_IEEE_INTERFACE
 #undef HAVE_SOLARIS_IEEE_INTERFACE
 #undef HAVE_HPUX_IEEE_INTERFACE
+#undef HAVE_TRU64_IEEE_INTERFACE
 
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE

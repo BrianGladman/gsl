@@ -1,3 +1,9 @@
+Tue Aug 17 18:36:01 1999  Tim Mooney <mooney@plains.NoDak.edu>
+ 
+       	* fp-tru64.c: added, based on solaris and HP-UX fp-* files.
+  	Rounding mode and trap control requires that the compiler be
+ 	passed special options, see the comments in fp-tru64.c.
+ 
 Fri Jul 23 19:00:51 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* print.c: added fprintf versions of the printf functions
