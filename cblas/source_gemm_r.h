@@ -74,7 +74,7 @@
 
       for (k = 0; k < K; k++) {
         for (i = 0; i < n1; i++) {
-          BASE temp = alpha * F[ldf * i + k];
+          const BASE temp = alpha * F[ldf * i + k];
           if (temp != 0.0) {
             for (j = 0; j < n2; j++) {
               C[ldc * i + j] += temp * G[ldg * k + j];
@@ -101,7 +101,7 @@
 
       for (k = 0; k < K; k++) {
         for (i = 0; i < n1; i++) {
-          BASE temp = alpha * F[ldf * k + i];
+          const BASE temp = alpha * F[ldf * k + i];
           if (temp != 0.0) {
             for (j = 0; j < n2; j++) {
               C[ldc * i + j] += temp * G[ldg * k + j];

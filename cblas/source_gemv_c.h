@@ -27,8 +27,8 @@
     size_t ix, iy;
     size_t lenX, lenY;
 
-    const double alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
-    const double beta_real = REAL0(beta), beta_imag = IMAG0(beta);
+    const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
+    const BASE beta_real = REAL0(beta), beta_imag = IMAG0(beta);
 
     if ((alpha_real == 0.0 && alpha_imag == 0.0)
 	&& (beta_real == 1.0 && beta_imag == 0.0))

@@ -1,4 +1,4 @@
-/* blas/source_gemm_r.h
+/* blas/source_symm_r.h
  * 
  * Copyright (C) 2001 Brian Gough
  * 

@@ -1281,6 +1281,30 @@ function CC = blas_symm (order, side, uplo,  M, N, alpha, \
 endfunction
 
 
+function CC = blas_hemm (order, side, uplo,  M, N, alpha, \
+                         A, lda, B, ldb, beta, C, ldc)
+  c = matrix (order, C, ldc, M, N);
+
+  if (side == 141)
+    a = trmatrix (order, uplo, 131, A, lda, M);
+  else
+    a = trmatrix (order, uplo, 131, A, lda, N);
+  endif
+
+  t = triu(a,1) + tril(a,-1);
+  a = t + t' + diag(real(diag(a)));  # make hermitian
+
+  b = matrix (order, B, ldb, M, N);
+
+  if (side == 141)
+    c = alpha * a * b + beta * c;
+  else
+    c = alpha * b * a + beta * c;
+  endif
+
+  CC = mout(order, C, ldc, M, N, c);
+endfunction
+
 ######################################################################
 
                                 # testing functions
@@ -1968,7 +1992,7 @@ function test_gemm (S, fn, order, transA, transB, M, N, K, alpha, A, \
 endfunction
 
 
-function test_symm (S, fn, order, side, uplo, M, N, alpha, A, \
+function test_hesymm (S, fn, order, side, uplo, M, N, alpha, A, \
                     lda, B, ldb, beta, C, ldc)
   begin_block();
   define(S, "int", "order", order);
@@ -2565,8 +2589,27 @@ n=16;
 #   endfor
 # endfor
     
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     for uplo = [121, 122]
+#       for side = [141, 142]
+#         for alpha = coeff(S)
+#           for beta = coeff(S)
+#             for order = [101, 102]
+#               T = test_symatmat(S, j, order, side);
+#               test_hesymm (S, "symm", order, side, uplo, T.m, T.n,
+#                          alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+    
 for j = 1:n
-  for i = [s,d] #,c,z]
+  for i = [c,z]
     S = context(i);
     for uplo = [121, 122]
       for side = [141, 142]
@@ -2574,7 +2617,7 @@ for j = 1:n
           for beta = coeff(S)
             for order = [101, 102]
               T = test_symatmat(S, j, order, side);
-              test_symm (S, "symm", order, side, uplo, T.m, T.n,
+              test_hesymm (S, "hemm", order, side, uplo, T.m, T.n,
                          alpha, T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
             endfor
           endfor
@@ -2583,4 +2626,3 @@ for j = 1:n
     endfor
   endfor
 endfor
-    

@@ -1307,7 +1307,7 @@ cblas_zgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 #undef BASE
 }
 
-#ifdef 0
+
 /* SYMM */
 
 void
@@ -1359,8 +1359,8 @@ cblas_zsymm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 /* HEMM */
 
 void
-cblas_chemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
-	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
+cblas_chemm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
+	     const enum CBLAS_UPLO Uplo, const int M, const int N,
 	     const void *alpha, const void *A, const int lda, const void *B,
 	     const int ldb, const void *beta, void *C, const int ldc)
 {
@@ -1370,8 +1370,8 @@ cblas_chemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 }
 
 void
-cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
-	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
+cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
+	     const enum CBLAS_UPLO Uplo, const int M, const int N,
 	     const void *alpha, const void *A, const int lda, const void *B,
 	     const int ldb, const void *beta, void *C, const int ldc)
 {
@@ -1380,7 +1380,7 @@ cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 #undef BASE
 }
 
-
+#ifdef 0
 /* SYRK */
 
 void
