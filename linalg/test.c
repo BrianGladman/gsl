@@ -699,31 +699,31 @@ static int
 test_QR_update_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
-  size_t i,j,k, dim = m->size1;
+  size_t i,j,k, M = m->size1, N = m->size2;
 
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_matrix * qr1  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * qr2  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * q1  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * r1  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * q2  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * r2  = gsl_matrix_alloc(dim,dim);
-  gsl_vector * d = gsl_vector_alloc(dim);
-  gsl_vector * solution1 = gsl_vector_alloc(dim);
-  gsl_vector * solution2 = gsl_vector_alloc(dim);
-  gsl_vector * u = gsl_vector_alloc(dim);
-  gsl_vector * v = gsl_vector_alloc(dim);
-  gsl_vector * w = gsl_vector_alloc(dim);
+  gsl_vector * rhs = gsl_vector_alloc(N);
+  gsl_matrix * qr1  = gsl_matrix_alloc(M,N);
+  gsl_matrix * qr2  = gsl_matrix_alloc(M,N);
+  gsl_matrix * q1  = gsl_matrix_alloc(M,M);
+  gsl_matrix * r1  = gsl_matrix_alloc(M,N);
+  gsl_matrix * q2  = gsl_matrix_alloc(M,M);
+  gsl_matrix * r2  = gsl_matrix_alloc(M,N);
+  gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
+  gsl_vector * solution1 = gsl_vector_alloc(N);
+  gsl_vector * solution2 = gsl_vector_alloc(N);
+  gsl_vector * u = gsl_vector_alloc(M);
+  gsl_vector * v = gsl_vector_alloc(N);
+  gsl_vector * w = gsl_vector_alloc(M);
   gsl_matrix_memcpy(qr1,m);
   gsl_matrix_memcpy(qr2,m);
-  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  for(i=0; i<dim; i++) gsl_vector_set(u, i, sin(i+1.0));
-  for(i=0; i<dim; i++) gsl_vector_set(v, i, cos(i+2.0) + sin(i*i+3.0));
+  for(i=0; i<N; i++) gsl_vector_set(rhs, i, i+1.0);
+  for(i=0; i<M; i++) gsl_vector_set(u, i, sin(i+1.0));
+  for(i=0; i<N; i++) gsl_vector_set(v, i, cos(i+2.0) + sin(i*i+3.0));
 
-  for(i=0; i<dim; i++) 
+  for(i=0; i<M; i++) 
     {
       double ui = gsl_vector_get(u, i);
-      for(j=0; j<dim; j++) 
+      for(j=0; j<N; j++) 
         {
           double vj = gsl_vector_get(v, j);
           double qij = gsl_matrix_get(qr1, i, j);
@@ -736,10 +736,10 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
 
   /* compute w = Q^T u */
       
-  for (j = 0; j < dim; j++)
+  for (j = 0; j < M; j++)
     {
       double sum = 0;
-      for (i = 0; i < dim; i++)
+      for (i = 0; i < M; i++)
           sum += gsl_matrix_get (q2, i, j) * gsl_vector_get (u, i);
       gsl_vector_set (w, j, sum);
     }
@@ -748,12 +748,12 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
 
   /* compute qr2 = q2 * r2 */
 
-  for (i = 0; i < dim; i++)
+  for (i = 0; i < M; i++)
     {
-      for (j = 0; j< dim; j++)
+      for (j = 0; j< N; j++)
         {
           double sum = 0;
-          for (k = 0; k <= j; k++)
+          for (k = 0; k <= GSL_MIN(j,M-1); k++)
             {
               double qik = gsl_matrix_get(q2, i, k);
               double rkj = gsl_matrix_get(r2, k, j);
@@ -763,14 +763,14 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
         }
     }
 
-  for(i=0; i<dim; i++) {
-    for(j=0; j<dim; j++) {
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
       double s1 = gsl_matrix_get(qr1, i, j);
       double s2 = gsl_matrix_get(qr2, i, j);
       
       int foo = check(s1, s2, eps);
       if(foo) {
-        printf("%3d[%d,%d]: %22.18g   %22.18g\n", dim, i,j, s1, s2);
+        printf("(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, s1, s2);
       }
       s += foo;
     }
@@ -797,6 +797,14 @@ int test_QR_update(void)
 {
   int f;
   int s = 0;
+
+  f = test_QR_update_dim(m35, 2 * 512.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_update m(3,5)");
+  s += f;
+
+  f = test_QR_update_dim(m53, 2 * 512.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QR_update m(5,3)");
+  s += f;
 
   f = test_QR_update_dim(hilb2,  2 * 512.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_update hilbert(2)");

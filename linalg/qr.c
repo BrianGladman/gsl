@@ -166,7 +166,7 @@ gsl_linalg_QR_svx (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * x
 }
 
 int
-gsl_linalgQR_Rsolve (const gsl_matrix * QR, const gsl_vector * b, gsl_vector * x)
+gsl_linalg_QR_Rsolve (const gsl_matrix * QR, const gsl_vector * b, gsl_vector * x)
 {
   if (QR->size1 != QR->size2)
     {
@@ -196,7 +196,7 @@ gsl_linalgQR_Rsolve (const gsl_matrix * QR, const gsl_vector * b, gsl_vector * x
 
 
 int
-gsl_linalgQR_Rsvx (const gsl_matrix * QR, gsl_vector * x)
+gsl_linalg_QR_Rsvx (const gsl_matrix * QR, gsl_vector * x)
 {
   if (QR->size1 != QR->size2)
     {
@@ -384,7 +384,7 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
          simultaneously applied to R,  H = J_1^T ... J^T_(n-1) R
          so that H is upper Hessenberg.  (12.5.2) */
 
-      for (k = N - 1; k > 0; k--)
+      for (k = M - 1; k > 0; k--)
 	{
 	  double c, s;
 	  double wk = gsl_vector_get (w, k);
@@ -409,7 +409,7 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
       /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H
          Equation 12.5.4 */
 
-      for (k = 1; k < N; k++)
+      for (k = 1; k < GSL_MIN(M,N+1); k++)
 	{
 	  double c, s;
 	  double diag = gsl_matrix_get (R, k - 1, k - 1);

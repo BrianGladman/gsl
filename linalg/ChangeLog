@@ -1,3 +1,8 @@
+Sat Apr 28 00:39:53 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (gsl_linalg_QR_update): fixed QR update to work correctly
+ 	with rectangular matrices where M > N
+
 Mon Apr 23 10:29:01 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c: removed EFAULT test since this should only apply to

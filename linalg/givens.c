@@ -53,7 +53,7 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
 
   /* Apply rotation to matrix Q,  Q' = Q G */
 
-  for (k = 0; k < N; k++)
+  for (k = 0; k < M; k++)
     {
       double qki = gsl_matrix_get (Q, k, i);
       double qkj = gsl_matrix_get (Q, k, j);
