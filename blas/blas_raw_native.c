@@ -436,7 +436,7 @@ void gsl_blas_raw_sgemv(CBLAS_TRANSPOSE TransA,
                         float Y[], size_t incY)
 {
 #define BASE_TYPE float
-#include "source_gemv.h"
+#include "source_gemv_r.h"
 #undef BASE_TYPE
 }
 
@@ -449,7 +449,7 @@ void gsl_blas_raw_dgemv (CBLAS_TRANSPOSE TransA,
                          double Y[], size_t incY)
 {
 #define BASE_TYPE double
-#include "source_gemv.h"
+#include "source_gemv_r.h"
 #undef BASE_TYPE
 }
 
