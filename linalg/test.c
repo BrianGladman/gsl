@@ -34,6 +34,7 @@ gsl_matrix * create_hilbert_matrix(size_t size);
 gsl_matrix * create_general_matrix(size_t size1, size_t size2);
 gsl_matrix * create_vandermonde_matrix(size_t size);
 gsl_matrix * create_moler_matrix(size_t size);
+gsl_matrix * create_row_matrix(size_t size1, size_t size2);
 int test_matmult(void);
 int test_matmult_mod(void);
 int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
@@ -146,6 +147,19 @@ create_moler_matrix(size_t size)
 }
 
 
+gsl_matrix *
+create_row_matrix(size_t size1, size_t size2)
+{
+  size_t i;
+  gsl_matrix * m = gsl_matrix_calloc(size1, size2);
+  for(i=0; i<size1; i++) {
+      gsl_matrix_set(m, i, 0, 1.0/(i+1.0));
+  }
+
+  return m;
+}
+
+
 gsl_matrix * m35;
 gsl_matrix * m53;
 gsl_matrix * m97;
@@ -157,6 +171,10 @@ gsl_matrix * hilb2;
 gsl_matrix * hilb3;
 gsl_matrix * hilb4;
 gsl_matrix * hilb12;
+
+gsl_matrix * row3;
+gsl_matrix * row5;
+gsl_matrix * row12;
 
 double m53_lssolution[] = {52.5992295702070, -337.7263113752073, 
                            351.8823436427604};
@@ -1200,6 +1218,19 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp vander(12)");
   s += f;
 
+  f = test_SV_decomp_dim(row3, 10 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp row3");
+  s += f;
+
+  f = test_SV_decomp_dim(row5, 128 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp row5");
+  s += f;
+
+  f = test_SV_decomp_dim(row12, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp row12");
+  s += f;
+
+
   return s;
 }
 
@@ -1597,6 +1628,10 @@ int main(void)
   vander12 = create_vandermonde_matrix(12);
 
   moler10 = create_moler_matrix(10);
+
+  row3 = create_row_matrix(3,3);
+  row5 = create_row_matrix(5,5);
+  row12 = create_row_matrix(12,12);
 
   /* Matmult now obsolete */
 #ifdef MATMULT
