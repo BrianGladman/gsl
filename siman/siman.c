@@ -2,13 +2,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <gsl_ran.h>
+#include <gsl_rng.h>
 #include <gsl_siman.h>
 
 /* implementation of a basic simulated annealing algorithm */
 
 void 
-gsl_siman_solve (void *x0_p, gsl_Efunc_t Ef,
+gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 		 gsl_siman_step_t take_step,
 		 gsl_siman_metric_t distance,
 		 gsl_siman_print_t print_position,
@@ -42,9 +42,9 @@ gsl_siman_solve (void *x0_p, gsl_Efunc_t Ef,
       for (i = 0; i < params.n_tries - 1; ++i)
 	{
 	  memcpy (new_x, x, element_size);
-	  take_step (new_x, params.step_size);
+	  take_step (r, new_x, params.step_size);
 	  new_E = Ef (new_x);
-	  ++n_evals;		/* keep trakc of Ef() evaluations */
+	  ++n_evals;		/* keep track of Ef() evaluations */
 	  /* now take the crucial step: see if the new point is accepted
 	     or not, as determined by the boltzman probability */
 	  if (new_E < E)
@@ -54,7 +54,7 @@ gsl_siman_solve (void *x0_p, gsl_Efunc_t Ef,
 	      E = new_E;
 	      ++n_eless;
 	    }
-	  else if (exp (-(E - new_E) / (params.k * T)) * gsl_ran_uniform () < 0.5)
+	  else if (exp (-(E - new_E) / (params.k * T)) * gsl_rng_uniform (r) < 0.5)
 	    {
 	      /* yay! take a step */
 	      memcpy (x, new_x, element_size);
@@ -98,7 +98,7 @@ gsl_siman_solve (void *x0_p, gsl_Efunc_t Ef,
 /* implementation of a simulated annealing algorithm with many tries */
 
 void 
-gsl_siman_solve_many (void *x0_p, gsl_Efunc_t Ef,
+gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 		      gsl_siman_step_t take_step,
 		      gsl_siman_metric_t distance,
 		      gsl_siman_print_t print_position,
@@ -139,7 +139,7 @@ gsl_siman_solve_many (void *x0_p, gsl_Efunc_t Ef,
 	  /* center the new_x[] around x, then pass it to take_step() */
 	  sum_probs[i] = 0;
 	  memcpy (new_x + i * element_size, x, element_size);
-	  take_step (new_x + i * element_size, params.step_size);
+	  take_step (r, new_x + i * element_size, params.step_size);
 	  energies[i] = Ef (new_x + i * element_size);
 	  probs[i] = exp (-(energies[i] - Ex) / (params.k * T));
 	}
@@ -154,7 +154,7 @@ gsl_siman_solve_many (void *x0_p, gsl_Efunc_t Ef,
 	{
 	  sum_probs[i] = sum_probs[i - 1] + probs[i];
 	}
-      u = gsl_ran_uniform () * sum_probs[params.n_tries - 1];
+      u = gsl_rng_uniform (r) * sum_probs[params.n_tries - 1];
       for (i = 0; i < params.n_tries; ++i)
 	{
 	  if (u < sum_probs[i])

@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include <gsl_ran.h>
+#include <gsl_rng.h>
 #include <gsl_siman.h>
 #include <stdio.h>
 
@@ -104,16 +104,16 @@ double Mtsp(void *xp, void *yp)
 }
 
 /* take a step through the TSP space */
-void Stsp(void *xp, double step_size)
+void Stsp(const gsl_rng * r, void *xp, double step_size)
 {
   int x1, x2, dummy;
   int *route = (int *) xp;
 
   /* pick the two cities to swap in the matrix; we leave the first
      city fixed */
-  x1 = (gsl_ran_random() % (N_CITIES-1)) + 1;
+  x1 = (gsl_rng_get (r) % (N_CITIES-1)) + 1;
   do {
-    x2 = (gsl_ran_random() % (N_CITIES-1)) + 1;
+    x2 = (gsl_rng_get (r) % (N_CITIES-1)) + 1;
   } while (x2 == x1);
 
   dummy = route[x1];
@@ -136,6 +136,8 @@ int main(int argc, char *argv[])
 {
   int x_initial[N_CITIES];
   int i;
+
+  const gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
 
   prepare_distance_matrix();
 
@@ -161,7 +163,7 @@ int main(int argc, char *argv[])
 
 /*   exhaustive_search(); */
 
-  gsl_siman_solve(x_initial, Etsp, Stsp, Mtsp, Ptsp,
+  gsl_siman_solve(r, x_initial, Etsp, Stsp, Mtsp, Ptsp,
 		  N_CITIES*sizeof(int), params);
 
   printf("# final order of cities:\n");

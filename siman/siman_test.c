@@ -1,6 +1,6 @@
 #include <math.h>
 
-#include <gsl_ran.h>
+#include <gsl_rng.h>
 #include <gsl_siman.h>
 #include <stdio.h>
 
@@ -50,14 +50,12 @@ double square(double x)
 /* takes a step for the test function; max distance: step_size.
  * the new point is put in x_p and returned.
  */
-void test_step_1D(Element *x_p, double step_size)
+void test_step_1D(const gsl_rng * r, Element *x_p, double step_size)
 {
-  double r;
   double old_x = x_p->D1;
   double new_x;
 
-  r = gsl_ran_uniform();
-  new_x = r;
+  new_x = gsl_rng_uniform(r);
   new_x = new_x*2*params.step_size;
   new_x = new_x - params.step_size + old_x;
 
@@ -88,18 +86,15 @@ double test_E_2D(Element x)
 
 /* takes a step for the test function; max distance: step_size.  the
    new point is put in x_p and returned. */
-void test_step_2D(Element *x_p, double step_size)
+void test_step_2D(const gsl_rng * r, Element *x_p, double step_size)
 {
-  double r;
   double old_x =  x_p->D2[0], old_y = x_p->D2[1], new_x, new_y;
 
-  r = gsl_ran_uniform();
-  new_x = r;
+  new_x = gsl_rng_uniform(r);
   new_x = new_x*2*params.step_size;
   new_x = new_x - params.step_size + old_x;
 
-  r = gsl_ran_uniform();
-  new_y = r;
+  new_y = gsl_rng_uniform(r);
   new_y = new_y*2*params.step_size;
   new_y = new_y - params.step_size + old_y;
 
@@ -135,24 +130,20 @@ double test_E_3D(Element x)
 /* takes a step for the test function; max distance: step_size.
  * the new point is put in x_p and returned.
  */
-void test_step_3D(Element *x_p, double step_size)
+void test_step_3D(const gsl_rng * r, Element *x_p, double step_size)
 {
-  double r;
   double old_x = x_p->D3[0], old_y = x_p->D3[1], old_z = x_p->D3[2];
   double new_x, new_y, new_z;
 
-  r = gsl_ran_uniform();
-  new_x = r;
+  new_x = gsl_rng_uniform(r);
   new_x = new_x*2*params.step_size;
   new_x = new_x - params.step_size + old_x;
 
-  r = gsl_ran_uniform();
-  new_y = r;
+  new_y = gsl_rng_uniform(r);
   new_y = new_y*2*params.step_size;
   new_y = new_y - params.step_size + old_y;
 
-  r = gsl_ran_uniform();
-  new_z = r;
+  new_z = gsl_rng_uniform(r);
   new_z = new_z*2*params.step_size;
   new_z = new_z - params.step_size + old_z;
 
@@ -191,14 +182,12 @@ double M1(void *xp, void *yp)
   return fabs(x - y);
 }
 
-void S1(void *xp, double step_size)
+void S1(const gsl_rng * r, void *xp, double step_size)
 {
-  double r;
   double old_x = *((double *) xp);
   double new_x;
 
-  r = gsl_ran_uniform();
-  new_x = r*2*step_size - step_size + old_x;
+  new_x = gsl_rng_uniform(r)*2*step_size - step_size + old_x;
 /*   new_x = new_x*2*step_size; */
 /*   new_x = new_x - step_size + old_x; */
 
@@ -217,7 +206,9 @@ int main(int argc, char *argv[])
 /*   double x_initial = 2.5; */
   double x_initial = -10.0;
 
-  gsl_siman_solve(&x_initial, E1, S1, M1, P1, sizeof(double), params);
+  gsl_rng * r = gsl_rng_alloc (gsl_rng_env_setup()) ;
+
+  gsl_siman_solve(r, &x_initial, E1, S1, M1, P1, sizeof(double), params);
 
   return 0;
 
@@ -231,7 +222,7 @@ int main(int argc, char *argv[])
   if (strcmp(argv[1], "D1") == 0) {
     x0.D1 = 12.0;
     printf("#one dimensional problem, x0 = %f\n", x0.D1);
-/*     gsl_siman_Usolve(&x0, test_E_1D, test_step_1D, distance_1D, */
+/*     gsl_siman_Usolve(r, &x0, test_E_1D, test_step_1D, distance_1D, */
 /* 		    print_pos_1D, params); */
     return 0;
   }
@@ -241,7 +232,7 @@ int main(int argc, char *argv[])
     x0.D2[1] = 5.5;
     printf("#two dimensional problem, (x0,y0) = (%f,%f)\n",
 	   x0.D2[0], x0.D2[1]);
-/*     gsl_siman_Usolve(&x0, test_E_2D, test_step_2D, distance_2D, */
+/*     gsl_siman_Usolve(r, &x0, test_E_2D, test_step_2D, distance_2D, */
 /* 		    print_pos_2D, params); */
     return 0;
   }
@@ -252,21 +243,21 @@ int main(int argc, char *argv[])
     x0.D3[2] = -15.5;
     printf("#three dimensional problem, (x0,y0,z0) = (%f,%f,%f)\n",
 	   x0.D3[0], x0.D3[1], x0.D3[2]);
-/*     gsl_siman_Usolve(&x0, test_E_3D, test_step_3D, distance_3D, */
+/*     gsl_siman_Usolve(r, &x0, test_E_3D, test_step_3D, distance_3D, */
 /* 		    print_pos_3D, params); */
   }
 /*
   x0.D2[0] = 12.2;
   x0.D2[1] = 5.5;
 
-  gsl_siman_solve(&x0, test_E_2D, test_step_2D, distance_2D, print_pos_2D, params);
+  gsl_siman_solve(r, &x0, test_E_2D, test_step_2D, distance_2D, print_pos_2D, params);
 */
 /*
   x0.D3[0] = 12.2;
   x0.D3[1] = 5.5;
   x0.D3[2] = -15.5;
 
-  gsl_siman_solve(&x0, test_E_3D, test_step_3D, distance_3D, print_pos_3D, params);
+  gsl_siman_solve(r, &x0, test_E_3D, test_step_3D, distance_3D, print_pos_3D, params);
   */
 
   return 0;

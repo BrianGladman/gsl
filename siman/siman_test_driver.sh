@@ -18,7 +18,7 @@ else
 fi
 
 echo -n "running simulated annealing test #2 (travelling salesman problem)"
-./siman_test > siman_test.out2
+GSL_RNG_SEED=12345 ./siman_test > siman_test.out2
 SECOND_LAST_ENERGY=`tail -2 siman_test.out2 | head -1 | awk '{print $4}'`
 LAST_ENERGY=`tail -1 siman_test.out2 | awk '{print $4}'`
 # echo " " $SECOND_LAST_ENERGY $LAST_ENERGY

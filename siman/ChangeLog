@@ -1,3 +1,13 @@
+Sun Jun 28 14:11:04 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Converted to work with rng-style random number generators
+
+	* gsl_siman.h: gsl_siman_step_t type functions now take a gsl_rng
+ 	random number generator as their first argument
+
+	* siman.c (gsl_siman_solve): Now takes a gsl_rng random number
+ 	generator as the first argument
+
 Fri Jun 19 11:17:24 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* siman.c (gsl_siman_solve_many): changed the variable 'throw' to
