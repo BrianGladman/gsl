@@ -63,8 +63,7 @@ typedef struct
 @subsection Creation/Calculation of Chebyshev Series
 
 
-@deftypefun
-gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
+@deftypefun gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
 				     double a, double b,
 				     int order)
 Calculate a Chebyshev series of specified order over
