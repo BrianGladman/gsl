@@ -18,6 +18,8 @@
 #define NIED2_BIT_COUNT 30
 #define NIED2_NBITS (NIED2_BIT_COUNT+1)
 
+#define MAXV (NIED2_NBITS + NIED2_MAX_DEGREE)
+
 /* Z_2 field operations */
 #define NIED2_ADD(x,y) (((x)+(y))%2)
 #define NIED2_MUL(x,y) (((x)*(y))%2)
@@ -216,8 +218,6 @@ static void calculate_v(
 
 static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
 {
-  const int MAXV = NIED2_NBITS + NIED2_MAX_DEGREE;
-
   int ci[NIED2_NBITS][NIED2_NBITS];
   int v[MAXV+1];
   int r;
