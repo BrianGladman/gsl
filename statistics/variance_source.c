@@ -79,6 +79,7 @@ compute_variance (const BASE data[], const size_t n, const double mean)
   /* takes a dataset and finds the variance */
 
   double variance = 0 ;
+
   size_t i;
 
   /* find the sum of the squares */
