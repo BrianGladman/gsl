@@ -1,3 +1,8 @@
+Sun Apr  2 14:25:52 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-m68klinux.c: added file for m68k support (not complete, some
+ 	macros need to be checked)
+
 Thu Mar 16 15:34:08 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* read.c (gsl_ieee_read_mode_string): changed token separator to ,

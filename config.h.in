@@ -76,6 +76,7 @@
 
 /* Define one of these if you have a known IEEE arithmetic interface */
 #undef HAVE_SPARCLINUX_IEEE_INTERFACE
+#undef HAVE_M68KLINUX_IEEE_INTERFACE
 #undef HAVE_LINUX_IEEE_INTERFACE
 #undef HAVE_SUNOS4_IEEE_INTERFACE
 #undef HAVE_SOLARIS_IEEE_INTERFACE

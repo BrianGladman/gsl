@@ -2,6 +2,8 @@
 
 #if defined(HAVE_SPARCLINUX_IEEE_INTERFACE)
 #include "fp-sparclinux.c"
+#elif defined(HAVE_M68KLINUX_IEEE_INTERFACE)
+#include "fp-m68klinux.c"
 #elif defined(HAVE_LINUX_IEEE_INTERFACE)
 #include "fp-linux.c"
 #elif defined(HAVE_HPUX_IEEE_INTERFACE)
