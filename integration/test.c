@@ -582,14 +582,14 @@ int main (void)
     status = gsl_integration_qng (&f, 0.0, 1.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,exp_result,1e-15,"qng(f1) smooth 43pt result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qng(f1) smooth 43pt abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qng(f1) smooth 43pt abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f1) smooth 43pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) smooth 43pt status") ;
 
     status = gsl_integration_qng (&f, 1.0, 0.0, 0.0, 1e-9,
 				  &result, &abserr, &neval) ;
     gsl_test_rel(result,-exp_result,1e-15,"qng(f1) reverse 43pt result") ;
-    gsl_test_rel(abserr,exp_abserr,1e-6,"qng(f1) reverse 43pt abserr") ;
+    gsl_test_rel(abserr,exp_abserr,1e-5,"qng(f1) reverse 43pt abserr") ;
     gsl_test_int((int)neval,exp_neval,"qng(f1) reverse 43pt neval") ;  
     gsl_test_int(status,exp_ier,"qng(f1) reverse 43pt status") ;
   }

@@ -105,7 +105,8 @@ histogram statistics
 
 * M Joonas Pihlaja <jpihlaja@cc.helsinki.fi> for bug reports
 
-* Albert Chin <china@thewrittenword.com> for bug reports and patches
+* Albert Chin <china@thewrittenword.com> for bug reports, patches, and
+providing HP-UX platforms for testing
 
 * Asterio Gonzalez <agonzalez@udiberica.com> for a bug report for multmin
 
@@ -170,3 +171,6 @@ in siman_solve.
 
 * Trevor Blackwell <tlb@trevorblackwell.com> bug report test case for
 SVD d_n = 0, bug fix to mt19937 generator
+
+* Nicolas Bock <nbock@buffalo.edu> documentation bug report
+

@@ -17,8 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define _INCLUDE_HPUX_SOURCE
-
 #include <math.h>
 #include <stdio.h>
 #include <fenv.h>

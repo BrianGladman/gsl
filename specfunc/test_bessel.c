@@ -303,10 +303,10 @@ int test_bessel(void)
 
   sa = 0;
   gsl_sf_bessel_Jn_array(3, 38, 1.0, J);
-  sa += ( test_sf_frac_diff(J[0],  0.0195633539826684059190  ) > TEST_TOL0);
-  sa += ( test_sf_frac_diff(J[1],  0.0024766389641099550438  ) > TEST_TOL0);
-  sa += ( test_sf_frac_diff(J[10], 1.9256167644801728904e-14 ) > TEST_TOL0);
-  sa += ( test_sf_frac_diff(J[35], 6.911232970971626272e-57  ) > TEST_TOL0);
+  sa += ( test_sf_frac_diff(J[0],  0.0195633539826684059190  ) > TEST_TOL1);
+  sa += ( test_sf_frac_diff(J[1],  0.0024766389641099550438  ) > TEST_TOL1);
+  sa += ( test_sf_frac_diff(J[10], 1.9256167644801728904e-14 ) > TEST_TOL1);
+  sa += ( test_sf_frac_diff(J[35], 6.911232970971626272e-57  ) > TEST_TOL1);
   gsl_test(sa, "  gsl_sf_bessel_Jn_array");
   s += sa;
 

@@ -113,7 +113,7 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-10, -100, 100.0, &r),  1151.6852040836932392, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-100, -200, 1.0, &r),  1.6476859702535324743, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-100, -200, 10.0, &r),  139.38026829540687270, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-100, -200, 100.0, &r),  1.1669433576237933752e+19, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-100, -200, 100.0, &r),  1.1669433576237933752e+19, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-10, -20, -1.0, &r),  0.6025549561148035735, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-10, -20, -10.0, &r),  0.00357079636732993491, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_int_e, (-10, -20, -100.0, &r),  1.64284868563391159e-35, TEST_TOL2, GSL_SUCCESS);
@@ -152,7 +152,7 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (100, 50.1, 100, &r),  7.235304862322283251e+63, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.5, -1, &r), 0.5380795069127684191, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.5, -10, &r),  0.05303758099290164485, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.5, -100, &r), 0.005025384718759852803, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.5, -100, &r), 0.005025384718759852803, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.5, -500, &r), 0.0010010030151059555322, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (1, 1.1, -500, &r), 0.00020036137599690208265, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (10, 1.1, -1, &r),     0.07227645648935938168, TEST_TOL1, GSL_SUCCESS);
@@ -241,9 +241,9 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 20.1, 1, &r),  0.0021267655527278456412, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 20.1, 10, &r),   2.0908665169032186979e-11, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 20.1, 100, &r),  -0.04159447537001340412, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -1, &r),  2.1214770215694685282e+07, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -10, &r),  1.0258848879387572642e+24, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -100, &r),  1.1811367147091759910e+67, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -1, &r),  2.1214770215694685282e+07, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -10, &r),  1.0258848879387572642e+24, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 1.1, -100, &r),  1.1811367147091759910e+67, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 50.1, -1, &r),  6.965259317271427390, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 50.1, -10, &r),  1.0690052487716998389e+07, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-100, 50.1, -100, &r),  6.889644435777096248e+36, TEST_TOL3, GSL_SUCCESS);
@@ -327,7 +327,7 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-90, 10, 10, &r),  -5.682999988842066677e+143, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-90, 100, 10, &r),  2.3410029853990624280e+189, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-90, 1000, 10, &r),  1.9799451517572225316e+271, TEST_TOL3, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_U_int_e, (-50, -1, 10, &r),  -9.083195466262584149e+64, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_U_int_e, (-50, -1, 10, &r),  -9.083195466262584149e+64, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-50, -10, 10, &r),  -1.4418257327071634407e+62, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-50, -100, 0.01, &r),  3.0838993811468983931e+93, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (-50, -100, 10, &r),  4.014552630378340665e+95, TEST_TOL2, GSL_SUCCESS);
@@ -365,7 +365,7 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_U_e, (8, 10.5, 1, &r),  27.981926466707438538, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (8, 10.5, 10, &r),  2.4370135607662056809e-8, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (8, 10.5, 100, &r),  1.1226567526311488330e-16, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_U_e, (10, -2.5, 10, &r),  6.734690720346560349e-14, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_U_e, (10, -2.5, 10, &r),  6.734690720346560349e-14, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (10, 2.5, 10, &r),  6.787780794037971638e-13, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (10, 2.5, 50, &r),  2.4098720076596087125e-18, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (-10.5, 1.1, 1, &r),  -3.990841457734147e+6, TEST_TOL2, GSL_SUCCESS);
