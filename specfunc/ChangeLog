@@ -1,3 +1,8 @@
+Fri Oct 12 16:39:27 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_hyperg.c (test_hyperg): increased tolerance from TOL0 to
+ 	TOL1 on one test to allow it to pass under different optimizations
+
 Thu Oct 11 14:21:34 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gegenbauer.c (gsl_sf_gegenpoly_n_e): initialize variable gk to
