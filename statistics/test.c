@@ -1,108 +1,193 @@
-#include <stdio.h>
+#include <math.h>
 #include <gsl_test.h>
 #include <gsl_statistics.h>
 
 /* Test program for mean.c.  JimDavies 7.96 */
 
-int 
+int within_fuzz (double x, double y);	/* approximate comparison function */
+
+int
 main (void)
 {
 
   /* sample sets of doubles */
 
-  int na = 14, nb = 14 ;
+  const unsigned int na = 14, nb = 14;
 
-  double groupa[] = { .0421, .0941, .1064, .0242, .1331,
-		      .0773, .0243, .0815, .1186, .0356,
-		      .0728, .0999, .0614, .0479 } ;
-  
-  double groupb[] = { .1081, .0986, .1566, .1961, .1125,
-		      .1942, .1079, .1021, .1583, .1673,
-		      .1675, .1856, .1688, .1512 } ;
-  
+  const double groupa[] =
+  {.0421, .0941, .1064, .0242, .1331,
+   .0773, .0243, .0815, .1186, .0356,
+   .0728, .0999, .0614, .0479};
+
+  const double groupb[] =
+  {.1081, .0986, .1566, .1961, .1125,
+   .1942, .1079, .1021, .1583, .1673,
+   .1675, .1856, .1688, .1512};
+
   /* sample sets of integers */
-  
-  int ina = 20, inb = 20 ;
 
-  int igroupa[] = { 17 , 18 , 16 , 18 , 12 , 
-		    20 , 18 , 20 , 20 , 22 , 
-		    20 , 10 ,  8 , 12 , 16 , 
-		    16 , 18 , 20 , 18 , 21 } ;
-  
-  int igroupb[] = { 19 , 20 , 22 , 24 , 10 ,
-		    25 , 20 , 22 , 21 , 23 ,
-		    20 , 10 , 12 , 14 , 12 ,
-		    20 , 22 , 24 , 23 , 17 } ;
+  const unsigned int ina = 20, inb = 20;
 
-  double mean, var, var_est, sd, sd_est, pv, t, max, min ;
-  int maximum, minumum; 
+  const int igroupa[] =
+  {17, 18, 16, 18, 12,
+   20, 18, 20, 20, 22,
+   20, 10, 8, 12, 16,
+   16, 18, 20, 18, 21};
 
-  mean = gsl_stats_mean(groupa, na);
-  gsl_test(mean < 0.072 || mean > 0.073, "gsl_stats_mean (%f vs XX)", mean);
-  
-  var = gsl_stats_variance(groupa, na);
-  gsl_test(var < .001139 || var > .001135, "gsl_stats_variance (%f)", var);
-  
-  var_est = gsl_stats_est_variance(groupb, nb);
-  gsl_test(var_est < .001 || var_est > .0013, "gsl_stats_est_variance (%f vs XX)",
-	   var_est);
+  const int igroupb[] =
+  {19, 20, 22, 24, 10,
+   25, 20, 22, 21, 23,
+   20, 10, 12, 14, 12,
+   20, 22, 24, 23, 17};
 
-  sd = gsl_stats_stddev(groupa, na);
-  gsl_test(sd < 0.0336 || sd > 0.0338, "gsl_stats_stddev (%f vs XX)", sd);
-  
-  sd_est = gsl_stats_est_stddev(groupa, na);
-  gsl_test(sd_est < .034  || sd_est > .036, "gsl_stats_est_stddev (%f vs XX)",
-	   sd_est);
+  {
+    double mean = gsl_stats_mean (groupa, na);
+    double expected = 0.0728;
+    gsl_test (!within_fuzz (mean, expected),
+	      "gsl_stats_mean (%g observed vs %g expected)",
+	      mean, expected);
+  }
 
-  pv = gsl_stats_pvariance(groupa, groupb, na, nb);
-  gsl_test(pv < 0.00122 || pv > 0.00124,"gsl_stats_pvariance, (%f vs XX)", pv);
-  
-  t = gsl_stats_ttest(groupa, groupb, na, nb);
-  gsl_test (t < -5.68 || t > -5.66, "gsl_stats_ttest (%f vs XX)", t);
+  {
+    double var = gsl_stats_variance (groupa, na);
+    double expected = 0.00113837428571429;
+    gsl_test (!within_fuzz (var, expected),
+	      "gsl_stats_variance (%g observed vs %g expected)",
+	      var, expected);
+  }
 
-  max = gsl_stats_max(groupa, na);
-  gsl_test (max != 0.1331, "gsl_stats_max (%f vs XX)", max);
+  {
+    double var_est = gsl_stats_est_variance (groupb, nb);
+    double expected = 0.00124956615384615;
+    gsl_test (!within_fuzz (var_est, expected),
+	      "gsl_stats_est_variance (%g observed vs %g expected)",
+	      var_est, expected);
+  }
 
-  min = gsl_stats_min(groupa, na);
-  gsl_test (max != 0.0242, "gsl_stats_min (%f vs XX)", min);
+  {
+    double sd = gsl_stats_stddev (groupa, na);
+    double expected = 0.0337398026922845;
+    gsl_test (!within_fuzz (sd, expected),
+	      "gsl_stats_stddev (%g observed vs %g expected)",
+	      sd, expected);
+  }
 
+  {
+    double sd_est = gsl_stats_est_stddev (groupa, na);
+    double expected = 0.0350134479659107;
+    gsl_test (!within_fuzz (sd_est, expected),
+	      "gsl_stats_est_stddev (%g observed vs %g expected)",
+	      sd_est, expected);
+  }
+
+  {
+    double pv = gsl_stats_pvariance (groupa, groupb, na, nb);
+    double expected = 0.00123775384615385;
+    gsl_test (!within_fuzz (pv, expected),
+	      "gsl_stats_pvariance (%g observed vs %g expected)",
+	      pv, expected);
+  }
+
+  {
+    double t = gsl_stats_ttest (groupa, groupb, na, nb);
+    double expected = -5.67026326985851;
+    gsl_test (!within_fuzz (t, expected),
+	      "gsl_stats_ttest (%g observed vs %g expected)",
+	      t, expected);
+  }
+
+  {
+    double max = gsl_stats_max (groupa, na);
+    double expected = 0.1331;
+    gsl_test (max != expected,
+	      "gsl_stats_max (%g observed vs %g expected)", max, expected);
+  }
+
+  {
+    double min = gsl_stats_min (groupa, na);
+    double expected = 0.0242;
+    gsl_test (min != expected,
+	      "gsl_stats_min (%g observed vs %g expected)", min, expected);
+  }
 
   /* integer tests */
 
-  mean = gsl_stats_imean(igroupa, ina);
-  gsl_test(mean != 17, "gsl_stats_imean (%f vs 17)", mean);
+  {
+    double mean = gsl_stats_imean (igroupa, ina);
+    double expected = 17;
+    gsl_test (mean != expected,
+	      "gsl_stats_imean (%g observed vs %g expected)",
+	      mean, expected);
+  }
 
-  var = gsl_stats_ivariance(igroupa, ina);
-  gsl_test(var < 13.6 || var > 13.8,"gsl_stats_ivariance (%f vs XX)", var);
-  
-  var = gsl_stats_iest_variance(igroupa, ina);
-  gsl_test(var < 14.42 || var > 14.425, "gsl_stats_iest_variance (%f vs XX)", 
-	   var);
-  
-  sd = gsl_stats_istddev (igroupa, ina);
-  gsl_test(sd < 3.6 || sd > 3.78, "gsl_stats_istddev (%f vs XX)", sd);
-  
-  sd_est = gsl_stats_iest_stddev(igroupa, ina);
-  gsl_test(sd_est < 3.79 || sd_est > 3.8, "gsl_stats_iest_stddev (%f vs XX)",
-	   sd_est);
-  
-  pv = gsl_stats_ipvariance(igroupa, igroupb, ina, inb);
-  gsl_test(pv < 18.84 || pv > 18.85,"gsl_stats_ipvariance (%f vs XX)", pv);
+  {
+    double var = gsl_stats_ivariance (igroupa, ina);
+    double expected = 13.7;
+    gsl_test (!within_fuzz (var, expected),
+	      "gsl_stats_ivariance (%g observed vs %g expected)",
+	      var, expected);
+  }
 
-  t = gsl_stats_ittest(igroupa, igroupb, ina, inb);
-  gsl_test(t < -1.47 || t > -1.45, "gsl_stats_ittest (%f vs XX)", t);
-  
-  maximum = gsl_stats_imax(igroupa, ina);
-  gsl_test(maximum != 22, "gsl_stats_imax (%d vs 22)", maximum);
-  
-  minumum = gsl_stats_imin(igroupa, inb);
-  gsl_test(minumum != 8, "gsl_stats_imin (%d vs 8)", minumum);
-  
-  return 0;
-}  
+  {
+    double var = gsl_stats_iest_variance (igroupa, ina);
+    double expected = 14.4210526315789;
+    gsl_test (!within_fuzz (var, expected),
+	      "gsl_stats_iest_variance (%g observed vs %g expected)",
+	      var, expected);
+  }
+
+  {
+    double sd = gsl_stats_istddev (igroupa, ina);
+    double expected = 3.70135110466435;
+    gsl_test (!within_fuzz (sd, expected),
+	      "gsl_stats_istddev (%g observed vs %g expected)",
+	      sd, expected);
+  }
+
+  {
+    double sd_est = gsl_stats_iest_stddev (igroupa, ina);
+    double expected = 3.79750610685209;
+    gsl_test (!within_fuzz (sd_est, expected),
+	      "gsl_stats_iest_stddev (%g observed vs %g expected)",
+	      sd_est, expected);
+  }
+
+  {
+    double pv = gsl_stats_ipvariance (igroupa, igroupb, ina, inb);
+    double expected = 18.8421052631579;
+    gsl_test (!within_fuzz (pv, expected),
+	      "gsl_stats_ipvariance (%g observed vs %g expected)",
+	      pv, expected);
+  }
+
+  {
+    double t = gsl_stats_ittest (igroupa, igroupb, ina, inb);
+    double expected = -1.45701922702927;
+    gsl_test (!within_fuzz (t, expected),
+	      "gsl_stats_ittest (%g observed vs %g expected)",
+	      t, expected);
+  }
+
+  {
+    int max = gsl_stats_imax (igroupa, ina);
+    int expected = 22;
+    gsl_test (max != expected,
+	      "gsl_stats_imax (%d observed vs %d expected)", max, expected);
+  }
+
+  {
+    int min = gsl_stats_imin (igroupa, inb);
+    int expected = 8;
+    gsl_test (min != expected,
+	      "gsl_stats_imin (%d observed vs %d expected)", min, expected);
+  }
+
+  return gsl_test_summary ();
+}
 
 
-
-
-
-
+int 
+within_fuzz (double x, double y)
+{
+  return fabs (x - y) < 0.00001;
+}
