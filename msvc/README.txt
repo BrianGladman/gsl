@@ -1,7 +1,8 @@
 The GNU Scientific Library (Windows Version)
 ============================================
 
-This is GSL, the GNU Scientific Library.
+This is GSL, the GNU Scientific Library, a collection of numerical
+routines for scientific computing.
 
 GSL is free software, you can redistribute it and/or modify it under
 the terms of the GNU General Public License.
@@ -19,15 +20,11 @@ you may want to print it out for reference.
 More information about GSL
 ==========================
 
-The library is in the final stages of development, and is being made
-available in hopes that others might be interested in joining the
-project and debugging the code.
-
-See the NEWS file for recent developments.
-
 The project homepage is http://sources.redhat.com/gsl/
 
 Please report bugs to the GSL discussion list gsl-discuss@sources.redhat.com
+
+See the NEWS file for recent developments.
 
 If you are interested in participating in GSL development, please send
 mail to Mark Galassi -- rosalia@lanl.gov

@@ -3,10 +3,13 @@ Demonstration Workspace for GSL with Microsoft Visual C++
 
 Workspace:  demo.dsw
 
-Before compiling the project you should add the directory where you
-installed GSL to the include and library paths.
+Before compiling the project you need to check that the directory
+where you installed GSL is present in the Microsoft Visual Studio
+include and library paths.  The directory is added automatically to
+these paths if you install the library with the automated setup
+program.
 
-The Visual C++ options that you need to change are,
+The Visual C++ options that need to be present are,
 
     Tools --  Options -- Directories
           Include Files
@@ -14,8 +17,8 @@ The Visual C++ options that you need to change are,
           Library Files: 
              "C:\Program Files\GSL\lib"
 
-After changing these settings you should be able to compile and link
-the program main.c in this directory. 
+With these settings you should be able to compile and link the program
+main.c in this directory.
 
 You can choose from two project configurations, 'Release' and
 'Debug'. The Release project configuration links with the libraries
