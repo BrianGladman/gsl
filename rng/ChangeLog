@@ -1,3 +1,15 @@
+Mon Mar  1 21:12:28 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* test.c (rng_parallel_state_test): added some extra tests to fill
+ 	a few holes in the net
+
+	* gsl_rng.h: moved static class information (max, min, etc) out of
+ 	the instance data. Originally I avoided this because of the
+ 	overhead of the extra indirection (r->type->get vs r->get) for
+ 	every get function call, but that turns out to be only about 10%
+ 	at worst so it's worth the slight speed cost to make the code
+ 	safer.
+
 Tue Nov 17 17:09:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gfsr4.c: added #include <config.h> which was missing

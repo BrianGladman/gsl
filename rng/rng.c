@@ -27,12 +27,7 @@ gsl_rng_alloc (const gsl_rng_type * T)
 			GSL_ENOMEM, 0);
     };
 
-  r->name = T->name;
-  r->max = T->max;
-  r->size = T->size;
-  r->set = T->set;
-  r->get = T->get;
-  r->get_double = T->get_double;
+  r->type = T;
 
   gsl_rng_set (r, gsl_rng_default_seed);	/* seed the generator */
 
@@ -42,9 +37,9 @@ gsl_rng_alloc (const gsl_rng_type * T)
 gsl_rng *
 gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src)
 {
-  if (dest->size != src->size)
+  if (dest->type->size != src->type->size)
     {
-      dest->state = realloc (dest->state, src->size);
+      dest->state = realloc (dest->state, src->type->size);
 
       if (dest->state == 0)
 	{
@@ -53,14 +48,9 @@ gsl_rng_cpy (gsl_rng * dest, const gsl_rng * src)
 	}
     }
 
-  dest->name = src->name;
-  dest->max = src->max;
-  dest->size = src->size;
-  dest->set = src->set;
-  dest->get = src->get;
-  dest->get_double = src->get_double;
+  dest->type = src->type;
 
-  memcpy (dest->state, src->state, src->size);
+  memcpy (dest->state, src->state, src->type->size);
 
   return dest;
 }
@@ -76,7 +66,7 @@ gsl_rng_clone (const gsl_rng * q)
 			GSL_ENOMEM, 0);
     };
 
-  r->state = malloc (q->size);
+  r->state = malloc (q->type->size);
 
   if (r->state == 0)
     {
@@ -86,14 +76,9 @@ gsl_rng_clone (const gsl_rng * q)
 			GSL_ENOMEM, 0);
     };
 
-  r->name = q->name;
-  r->max = q->max;
-  r->size = q->size;
-  r->set = q->set;
-  r->get = q->get;
-  r->get_double = q->get_double;
+  r->type = q->type;
 
-  memcpy (r->state, q->state, q->size);
+  memcpy (r->state, q->state, q->type->size);
 
   return r;
 }
@@ -101,19 +86,19 @@ gsl_rng_clone (const gsl_rng * q)
 void
 gsl_rng_set (const gsl_rng * r, unsigned long int seed)
 {
-  (r->set) (r->state, seed);
+  (r->type->set) (r->state, seed);
 }
 
 unsigned long int
 gsl_rng_get (const gsl_rng * r)
 {
-  return (r->get) (r->state);
+  return (r->type->get) (r->state);
 }
 
 double
 gsl_rng_uniform (const gsl_rng * r)
 {
-  return (r->get_double) (r->state);
+  return (r->type->get_double) (r->state);
 }
 
 double
@@ -122,7 +107,7 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   double x ;
   do
     {
-      x = (r->get_double) (r->state) ;
+      x = (r->type->get_double) (r->state) ;
     }
   while (x == 0) ;
 
@@ -132,8 +117,8 @@ gsl_rng_uniform_pos (const gsl_rng * r)
 unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
-  unsigned long int offset = r->min;
-  unsigned long int range = r->max - offset;
+  unsigned long int offset = r->type->min;
+  unsigned long int range = r->type->max - offset;
   unsigned long int scale = range / n;
   unsigned long int k;
 
@@ -145,7 +130,7 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 
   do
     {
-      k = (((r->get) (r->state)) - offset) / scale;
+      k = (((r->type->get) (r->state)) - offset) / scale;
     }
   while (k >= n);
 
@@ -155,25 +140,25 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 unsigned long int
 gsl_rng_max (const gsl_rng * r)
 {
-  return r->max;
+  return r->type->max;
 }
 
 unsigned long int
 gsl_rng_min (const gsl_rng * r)
 {
-  return r->min;
+  return r->type->min;
 }
 
 const char *
 gsl_rng_name (const gsl_rng * r)
 {
-  return r->name;
+  return r->type->name;
 }
 
 size_t
 gsl_rng_size (const gsl_rng * r)
 {
-  return r->size;
+  return r->type->size;
 }
 
 void *
@@ -187,7 +172,7 @@ gsl_rng_print_state (const gsl_rng * r)
 {
   size_t i;
   unsigned char *p = (unsigned char *) (r->state);
-  const size_t n = r->size;
+  const size_t n = r->type->size;
 
   for (i = 0; i < n; i++)
     {
