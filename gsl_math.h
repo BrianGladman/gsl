@@ -20,7 +20,7 @@
 #endif
 
 #ifndef M_PI_4
-#define M_PI_4        	0.785398163397448309661566084582    /* pi/4 */
+#define M_PI_4        	0.78539816339744830966156608458     /* pi/4 */
 #endif
 
 #ifndef M_SQRTPI
@@ -70,6 +70,7 @@
 #define GSL_IS_ODD(n)  ((n) & 1)
 #define GSL_IS_EVEN(n) (!(GSL_IS_ODD(n)))
 #define GSL_SIGN(x)    ((x) >= 0.0 ? 1 : -1)
+
 
 /* Define MAX and MIN functions if they don't exist */
 

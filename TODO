@@ -52,7 +52,6 @@ throughout, where appropriate
 * Other stuff we might want: filters, wavelets, coordinate system
 transformations, grids and fields, ...
 
-
-
-
+* Make sure gsl_config.h is used consistently. This is especially
+  relevant for HAVE_INLINE use in installed headers.
 
