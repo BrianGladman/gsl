@@ -56,3 +56,12 @@ transformations, grids and fields, ...
   relevant for HAVE_INLINE use in installed headers.
 
 * Public domain mapping tools http://www.soest.hawaii.edu/gmt/
+
+* Allow the user to test which version they are using, so that a specific
+version can be required.
+
+* Add swig.i files and swig demos so that swig can be run more easily
+
+* Change the use of function pointers to allow parameters, needed for
+multi-threaded programs and also to allow the use of scripting
+language objects instead of compiled C functions.
