@@ -1,5 +1,10 @@
 2000-12-15  Mark Galassi  <rosalia@galassi.org>
 
+	* siman.c (gsl_siman_solve): reversed a small change I had made
+	earlier and went back to taking Boltzmann-conditional steps when
+	the new energy is equal to the previous one.  This allows you to
+	move around if you are stuck on a plateau.
+
 	* gsl_siman.h, siman.c, siman_test.c, siman_tsp.c, test.c: changed
 	the siman_solve API to allow for more general search spaces.  The
 	problem was that we assumed that points in the search space were
