@@ -148,27 +148,6 @@ compilation.
    make dvi; dvips gsl-ref.dvi ; gzip -v -9 gsl-ref.ps
    scp -v gsl-ref.ps.gz sources.redhat.com:/sourceware/ftp/anonftp/pub/gsl
 
-* Preparing a windows version (Microsoft Visual C).
-
-   - Prepare the unix distribution tar file gsl-VERSION.tar.gz
-   - Make sure there is a copy of texi2html in doc/
-   - Compile the library and put the lib{gsl,gslcblas}.a  into msvc/usr/lib
-   - Run "make update" in msvc/ to update the exports file
-   - Use the script,
-   ./script/windists.sh gsl-VERSION.tar.gz
-   to create a corresponding zip file
-   - Unpack the file on Windows.  
-   - In the directory doc/html run the Microsoft HTML Help Compiler 
-   on the file gsl-ref.hhp to create gsl-ref.chm
-   - Build workspace GSL.dsw for libgsl and libgslcblas (Release & Debug 
-   configurations)
-   - Build the tests GSLTESTS.dsw for Debug
-   - Run MAKE_CHECK.bat (should give 0 errors)
-   - Clean and Build the tests GSLTESTS.dsw for Release
-   - Run MAKE_CHECK.bat (should give 0 errors)
-   - Compile the file setup.iss with INNO Setup 2 (free software)
-     to create a self-extracting installer.
-
 ----------------------------------------------------------------------
 
 Notes for Volunteers
