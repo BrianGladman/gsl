@@ -14,6 +14,10 @@ in @cite{Common Lisp, The Language (Second Edition)} @footnote{The first
 edition of @cite{Common Lisp, The Language} used different definitions
 from the second edition.} and the HP-28/48 series of calculators.
 
+The complex types are defined in the header file @file{gsl_complex.h},
+while the corresponding complex functions and arithmetic operations are
+defined in @file{gsl_complex_math.h}.
+
 @menu
 * Complex numbers::             
 * Properties of complex numbers::  
@@ -34,7 +38,7 @@ from the second edition.} and the HP-28/48 series of calculators.
 Complex numbers are represented using the type @code{gsl_complex}. The
 internal representation of this type may vary across platforms and
 should not be accessed directly. The functions and macros described
-below allow complex numbers to be manipulated in a portable way
+below allow complex numbers to be manipulated in a portable way.
 
 For reference, the default form of the @code{gsl_complex} type is
 given by the following struct,
