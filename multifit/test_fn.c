@@ -50,6 +50,13 @@ static double F[20] = {
   726.787783,
 };
 
+double cov[4][4] = {
+  { 1.8893186910e-01, -4.7099989571e-02,  5.2154168404e-01,  1.6608168209e-02},
+  {-4.7099989571e-02,  1.1761534388e-02, -1.2987843074e-01, -4.1615942391e-03},
+  { 5.2154168404e-01, -1.2987843074e-01,  1.4653936514e+00,  1.5738321686e-02},
+  { 1.6608168209e-02, -4.1615942391e-03,  1.5738321686e-02,  4.2348042340e-02},
+};
+
 int
 brown_f (const gsl_vector * x, void *params, gsl_vector * f)
 {
@@ -129,15 +136,32 @@ test_lmder (void)
     {
       status = gsl_multifit_fdfsolver_iterate (s);
 
-      gsl_test_rel (gsl_vector_get (s->x, 0), X[iter][0], 1e-5, "lmsder iter=%u x0", iter);
-      gsl_test_rel (gsl_vector_get (s->x, 1), X[iter][1], 1e-5, "lmsder iter=%u x1", iter);
-      gsl_test_rel (gsl_vector_get (s->x, 2), X[iter][2], 1e-5, "lmsder iter=%u x2", iter);
-      gsl_test_rel (gsl_vector_get (s->x, 3), X[iter][3], 1e-5, "lmsder iter=%u x3", iter);
-      gsl_test_rel (gsl_blas_dnrm2 (s->f), F[iter], 1e-5, "lmsder iter=%u f", iter);
+      gsl_test_rel (gsl_vector_get (s->x, 0), X[iter][0], 1e-5, "lmsder, iter=%u, x0", iter);
+      gsl_test_rel (gsl_vector_get (s->x, 1), X[iter][1], 1e-5, "lmsder, iter=%u, x1", iter);
+      gsl_test_rel (gsl_vector_get (s->x, 2), X[iter][2], 1e-5, "lmsder, iter=%u, x2", iter);
+      gsl_test_rel (gsl_vector_get (s->x, 3), X[iter][3], 1e-5, "lmsder, iter=%u, x3", iter);
+      gsl_test_rel (gsl_blas_dnrm2 (s->f), F[iter], 1e-5, "lmsder, iter=%u, f", iter);
 
       iter++;
     }
   while (iter < 20);
+  
+  {
+    size_t i, j;
+    gsl_matrix * covar = gsl_matrix_alloc (4, 4);
+    gsl_multifit_covar (s->J, 0.0, covar);
+
+    for (i = 0; i < 4; i++) 
+      {
+        for (j = 0; j < 4; j++)
+          {
+            gsl_test_rel (gsl_matrix_get(covar,i,j), cov[i][j], 1e-7, 
+                          "gsl_multifit_covar cov(%d,%d)", i, j) ;
+          }
+      }
+
+    gsl_matrix_free (covar);
+  }
 
   gsl_multifit_fdfsolver_free (s);
 
