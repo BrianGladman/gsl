@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
@@ -456,7 +457,520 @@ main (void)
       }
   }
 
+  {
+    gsl_poly * p;
+    size_t i,j;
+    int status = 0;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(10);
+    const double eps = 100.0 * GSL_DBL_EPSILON;
 
+    
+
+    for (i = 0; i < 5; i++)
+       { 
+         p = gsl_poly_calloc(i);
+         gsl_test (p == 0, "gsl_poly_calloc returns valid pointer");
+         gsl_test (p->c == 0, "gsl_poly_calloc returns valid coefficients pointer");
+         for (j = 0; j < i; j++)
+            {
+              gsl_poly_set(p, j, (double) j);
+            }
+     
+         status = 0;
+
+         for (j = 0; j < i ; j++)
+            {
+              if (p->c[j] != (double) j)
+                status = 1;
+            }
+
+         gsl_test (status, "gsl_poly_set writes into array correctly");
+
+         status = 0;
+
+         for (j = 0; j < i ; j++)
+            {
+              if (gsl_poly_get(p, j) != (double) j)
+                status = 1;
+            }
+
+         gsl_test (status, "gsl_poly_get reads from array correctly");
+          
+         gsl_poly_free(p);
+       }
+
+
+    for (i = 0; i <= 5; i++) 
+       {
+         p = gsl_poly_calloc(i+1);
+         gsl_poly_set(p,i,1.0);
+         gsl_test (p->degree != i, "gsl_poly sets the degree correctly");
+         gsl_poly_free(p);
+       }
+
+    for (i = 0; i <= 5; i++)
+       {
+         gsl_poly_set(p1,i,(double) i);
+       }
+
+    gsl_poly_memcpy(p2,p1);
+
+    status = 0;
+
+    if (p2->degree != p1->degree)
+      {
+        status = 1;
+      }
+  
+    for (i = 0; i <= 5; i++)
+       {
+         if (p2->c[i] != (double) i)
+           {
+             status = 1;
+           }
+       }
+  gsl_test(status, "gsl_poly_memcpy");
+  gsl_poly_free(p1);
+  gsl_poly_free(p2);
+ 
+  gsl_ieee_env_setup ();
+
+  {
+    double x, y;
+    gsl_poly * p = gsl_poly_calloc(10);
+
+    gsl_poly_set(p,0,1.0);
+    gsl_poly_set(p,1,0.5);
+    gsl_poly_set(p,2,0.3);
+    x = 0.5;
+    y = gsl_poly_eval2 (p, x);
+    gsl_test_rel (y, 1 + 0.5 * x + 0.3 * x * x, eps,
+		  "gsl_poly_eval2({1, 0.5, 0.3}, 0.5)");
+
+    gsl_poly_free(p);
+  }
+
+  {
+    double x, y;
+    gsl_poly * p = gsl_poly_calloc(20);
+
+    gsl_poly_set(p,0,1.0);
+    gsl_poly_set(p,1,-1.0);
+    gsl_poly_set(p,2,1.0);
+    gsl_poly_set(p,3,-1.0);
+    gsl_poly_set(p,4,1.0);
+    gsl_poly_set(p,5,-1.0);
+    gsl_poly_set(p,6,1.0);
+    gsl_poly_set(p,7,-1.0);
+    gsl_poly_set(p,8,1.0);
+    gsl_poly_set(p,9,-1.0);
+    gsl_poly_set(p,10,1.0);
+    x = 1.0;
+    y = gsl_poly_eval2 (p, x);
+    gsl_test_rel (y, 1.0, eps,
+		  "gsl_poly_eval2({1,-1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
+
+    gsl_poly_free(p);
+  }
+ 
+  {
+    int status = 0;
+    gsl_poly * p = gsl_poly_calloc(6);
+
+    gsl_poly_set_all(p,5,1.0);
+    status = gsl_poly_consistent(p, GSL_DBL_EPSILON);
+    gsl_test(status, "gsl_poly_consistent GSL_SUCCESS"); 
+    gsl_poly_set(p,5,0.0);
+    gsl_poly_set(p,4,0.0);
+    status = gsl_poly_consistent(p, GSL_DBL_EPSILON);
+    gsl_test(!status, "gsl_poly_consistent GSL_FAILURE"); 
+  
+    gsl_poly_free(p);
+  }
+
+  {
+    gsl_poly * p = gsl_poly_calloc(5);
+
+    gsl_poly_set(p,0,1.0);
+    gsl_poly_set(p,1,1.0);
+    gsl_poly_set(p,2,1.0);
+    gsl_poly_set(p,3,1.0);
+    gsl_poly_set(p,4,1.0);
+    gsl_poly_set_degree(p,GSL_DBL_EPSILON);
+    gsl_test(p->degree != 4, "gsl_poly_set_degree {1,1,1,1}, GSL_DBL_EPSILON");
+    gsl_poly_set(p,4,1.0e-20);
+    gsl_poly_set_degree(p,GSL_DBL_EPSILON);
+    gsl_test(p->degree != 3, "gsl_poly_set_degree {1,1,1,1.0e-20}, GSL_DBL_EPSILON");
+
+    gsl_poly_free(p); 
+  }
+
+  {
+    int status = 0;
+    size_t i;
+    gsl_poly * p = gsl_poly_calloc(6);
+
+    gsl_poly_set(p,0,1.0); 
+    gsl_poly_set(p,1,2.0); 
+    gsl_poly_set(p,2,3.0); 
+    gsl_poly_set(p,3,4.0); 
+    gsl_poly_set(p,4,5.0); 
+    gsl_poly_set(p,5,6.0); 
+    gsl_poly_scale(p,2.0);
+    
+    gsl_test_rel(p->c[0], 2.0, 1.0e-09, "x^0, poly scale");
+    gsl_test_rel(p->c[1], 4.0, 1.0e-09, "x^1, poly scale");
+    gsl_test_rel(p->c[2], 6.0, 1.0e-09, "x^2, poly scale");
+    gsl_test_rel(p->c[3], 8.0, 1.0e-09, "x^3, poly scale");
+    gsl_test_rel(p->c[4], 10.0, 1.0e-09, "x^4, poly scale");
+    gsl_test_rel(p->c[5], 12.0, 1.0e-09, "x^5, poly scale");
+
+    gsl_poly_free(p);
+    
+  }
+
+  {
+    int status = 0;
+    size_t i;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(6);
+
+    gsl_poly_set(p1,0,1.0); 
+    gsl_poly_set(p1,1,1.0); 
+    gsl_poly_set(p1,2,1.0); 
+    gsl_poly_set(p1,3,1.0); 
+    gsl_poly_set(p2,0,1.0); 
+    gsl_poly_set(p2,1,1.0); 
+    gsl_poly_set(p2,2,1.0); 
+    gsl_poly_set(p2,3,1.0); 
+    gsl_poly_set(p2,4,1.0); 
+    gsl_poly_set(p2,5,1.0); 
+    gsl_poly_add(p1,p2);
+    
+    gsl_test_rel(p1->c[0], 2.0, 1.0e-09, "x^0, poly addition");
+    gsl_test_rel(p1->c[1], 2.0, 1.0e-09, "x^1, poly addition");
+    gsl_test_rel(p1->c[2], 2.0, 1.0e-09, "x^2, poly addition");
+    gsl_test_rel(p1->c[3], 2.0, 1.0e-09, "x^3, poly addition");
+    gsl_test_rel(p1->c[4], 1.0, 1.0e-09, "x^4, poly addition");
+    gsl_test_rel(p1->c[5], 1.0, 1.0e-09, "x^5, poly addition");
+
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    
+  }
+
+  {
+    int status = 0;
+    size_t i;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(6);
+
+    gsl_poly_set(p1,0,1.0); 
+    gsl_poly_set(p1,1,1.0); 
+    gsl_poly_set(p1,2,1.0); 
+    gsl_poly_set(p1,3,1.0); 
+    gsl_poly_set(p1,4,1.0); 
+    gsl_poly_set(p1,5,1.0); 
+    gsl_poly_set(p2,0,-1.0); 
+    gsl_poly_set(p2,1,1.0); 
+    gsl_poly_set(p2,2,1.0); 
+    gsl_poly_set(p2,3,1.0); 
+    gsl_poly_set(p2,4,-1.0); 
+    gsl_poly_set(p2,5,-1.0); 
+    gsl_poly_add(p1,p2);
+
+    gsl_test_abs(p1->c[0], 0.0, 1.0e-09, "x^0, poly addition");
+    gsl_test_rel(p1->c[1], 2.0, 1.0e-09, "x^1, poly addition");
+    gsl_test_rel(p1->c[2], 2.0, 1.0e-09, "x^2, poly addition");
+    gsl_test_rel(p1->c[3], 2.0, 1.0e-09, "x^3, poly addition");
+    gsl_test_abs(p1->c[4], 0.0, 1.0e-09, "x^4, poly addition");
+    gsl_test_abs(p1->c[5], 0.0, 1.0e-09, "x^5, poly addition");
+
+    gsl_poly_set_degree(p1,GSL_DBL_EPSILON);
+    if (p1->degree != 3)
+      {
+        status = 1;
+      }
+    gsl_test(status, "gsl_poly_add with lower degree for result");
+
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    
+  }
+
+  {
+    int status = 0;
+    size_t i;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(6);
+
+    gsl_poly_set(p1,0,1.0); 
+    gsl_poly_set(p1,1,1.0); 
+    gsl_poly_set(p1,2,1.0); 
+    gsl_poly_set(p1,3,1.0); 
+    gsl_poly_set(p2,0,2.0); 
+    gsl_poly_set(p2,1,2.0); 
+    gsl_poly_set(p2,2,2.0); 
+    gsl_poly_set(p2,3,2.0); 
+    gsl_poly_set(p2,4,2.0); 
+    gsl_poly_set(p2,5,2.0); 
+    gsl_poly_sub(p1,p2);
+    gsl_test_rel(p1->c[0], -1.0, 1.0e-09, "x^0, poly substracttion");
+    gsl_test_rel(p1->c[1], -1.0, 1.0e-09, "x^1, poly substraction");
+    gsl_test_rel(p1->c[2], -1.0, 1.0e-09, "x^2, poly substraction");
+    gsl_test_rel(p1->c[3], -1.0, 1.0e-09, "x^3, poly substraction");
+    gsl_test_rel(p1->c[4], -2.0, 1.0e-09, "x^4, poly substraction");
+    gsl_test_rel(p1->c[5], -2.0, 1.0e-09, "x^5, poly substraction");
+
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    
+  }
+
+  {
+    int status = 0;
+    size_t i;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(6);
+
+    gsl_poly_set(p1,0,1.0); 
+    gsl_poly_set(p1,1,1.0); 
+    gsl_poly_set(p1,2,1.0); 
+    gsl_poly_set(p1,3,1.0); 
+    gsl_poly_set(p1,4,1.0); 
+    gsl_poly_set(p1,5,1.0); 
+    gsl_poly_set(p2,0,1.0); 
+    gsl_poly_set(p2,1,-1.0); 
+    gsl_poly_set(p2,2,-1.0); 
+    gsl_poly_set(p2,3,-1.0); 
+    gsl_poly_set(p2,4,1.0); 
+    gsl_poly_set(p2,5,1.0); 
+    gsl_poly_sub(p1,p2);
+    gsl_test_abs(p1->c[0], 0.0, 1.0e-09, "x^0, poly substracttion");
+    gsl_test_rel(p1->c[1], 2.0, 1.0e-09, "x^1, poly substraction");
+    gsl_test_rel(p1->c[2], 2.0, 1.0e-09, "x^2, poly substraction");
+    gsl_test_rel(p1->c[3], 2.0, 1.0e-09, "x^3, poly substraction");
+    gsl_test_abs(p1->c[4], 0.0, 1.0e-09, "x^4, poly substraction");
+    gsl_test_abs(p1->c[5], 0.0, 1.0e-09, "x^5, poly substraction");
+    gsl_poly_set_degree(p1,GSL_DBL_EPSILON);
+    if (p1->degree != 3)
+      {
+        status = 1;
+      }
+    gsl_test(status, "gsl_poly_sub with lower degree for result");
+ 
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    
+  }
+ 
+
+  {
+    gsl_poly * p1 = gsl_poly_calloc(8);
+    gsl_poly * p2 = gsl_poly_calloc(4);
+    gsl_poly *  w = gsl_poly_calloc(8);
+
+    double p[8] = {1,2,3,4,4,3,2,1};
+
+    gsl_poly_set_all(p1,4,1.0);
+    gsl_poly_set_all(p2,3,1.0);
+    gsl_poly_mul(p1,p2,w);
+    gsl_test_rel(p1->c[0], p[0], 1.0e-09, "x^0, poly multiplication");
+    gsl_test_rel(p1->c[1], p[1], 1.0e-09, "x^1, poly multiplication");
+    gsl_test_rel(p1->c[2], p[2], 1.0e-09, "x^2, poly multiplication");
+    gsl_test_rel(p1->c[3], p[3], 1.0e-09, "x^3, poly multiplication");
+    gsl_test_rel(p1->c[4], p[4], 1.0e-09, "x^4, poly multiplication");
+    gsl_test_rel(p1->c[5], p[5], 1.0e-09, "x^5, poly multiplication");
+    gsl_test_rel(p1->c[6], p[6], 1.0e-09, "x^6, poly multiplication");
+    gsl_test_rel(p1->c[7], p[7], 1.0e-09, "x^7, poly multiplication");
+
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    gsl_poly_free(w);
+  }
+
+  {
+    double qok[4] = {1,0,0,1};
+    double rok[2] = {0,0};
+    int status = 0;
+    size_t i;
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(3);
+    gsl_poly *  q = gsl_poly_calloc(6);
+    gsl_poly *  r = gsl_poly_calloc(6);
+
+    gsl_poly_set_all(p1,5,1.0);
+    gsl_poly_set_all(p2,2,1.0);
+    gsl_poly_div(p1,p2,q,r);
+    
+    gsl_test_rel(q->c[0],qok[0],1.0e-9,"quotient x^0, poly division");
+    gsl_test_abs(q->c[1],qok[1],1.0e-9,"quotient x^1, poly division");
+    gsl_test_abs(q->c[2],qok[2],1.0e-9,"quotient x^2, poly division");
+    gsl_test_rel(q->c[3],qok[3],1.0e-9,"quotient x^3, poly division");
+    gsl_test_abs(r->c[0],rok[0],1.0e-9,"remainder x^0, poly division");
+    gsl_test_abs(r->c[1],rok[1],1.0e-9,"remainder x^1, poly division");
+
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    gsl_poly_free(q);
+    gsl_poly_free(r);
+  }
+
+  {
+    double qok[4] = {5.0/16.0,1.0/8.0,1.0/4.0,1.0/2.0};
+    double rok[2] = {11.0/16.0,9.0/16.0};
+    gsl_poly * p1 = gsl_poly_calloc(6);
+    gsl_poly * p2 = gsl_poly_calloc(3);
+    gsl_poly *  q = gsl_poly_calloc(6);
+    gsl_poly *  r = gsl_poly_calloc(6);
+
+    gsl_poly_set_all(p1,5,1.0);
+    gsl_poly_set_all(p2,2,1.0);
+    gsl_poly_set(p2,2,2.0);
+    gsl_poly_div(p1,p2,q,r);
+    gsl_test_rel(q->c[0],qok[0],1.0e-9,"quotient x^0, poly division");
+    gsl_test_rel(q->c[1],qok[1],1.0e-9,"quotient x^1, poly division");
+    gsl_test_rel(q->c[2],qok[2],1.0e-9,"quotient x^2, poly division");
+    gsl_test_rel(q->c[3],qok[3],1.0e-9,"quotient x^3, poly division");
+    gsl_test_rel(r->c[0],rok[0],1.0e-9,"remainder x^0, poly division");
+    gsl_test_rel(r->c[1],rok[1],1.0e-9,"remainder x^1, poly division");
+    gsl_poly_free(p1);
+    gsl_poly_free(p2);
+    gsl_poly_free(q);
+    gsl_poly_free(r);
+
+  }
+
+  {
+    double dpok[5] = {1.0,2.0,3.0,4.0,5.0};
+    gsl_poly * p  = gsl_poly_calloc(6);
+    gsl_poly * dp = gsl_poly_calloc(6);
+
+    gsl_poly_set_all(p,5,1.0);
+    gsl_poly_diff(p,dp);
+    gsl_test_rel(dp->c[0],dpok[0],1.0e-9,"x^0, poly diff");
+    gsl_test_rel(dp->c[1],dpok[1],1.0e-9,"x^1, poly diff");
+    gsl_test_rel(dp->c[2],dpok[2],1.0e-9,"x^2, poly diff");
+    gsl_test_rel(dp->c[3],dpok[3],1.0e-9,"x^3, poly diff");
+    gsl_test_rel(dp->c[4],dpok[4],1.0e-9,"x^4, poly diff");
+
+    gsl_poly_free(p);
+    gsl_poly_free(dp);
+  }
+
+
+  {
+     gsl_poly * p  = gsl_poly_calloc(6);
+     int c1,c2,c3,nr;
+     gsl_poly_sturm * pss = gsl_poly_sturm_calloc(6);
+     gsl_poly * w = gsl_poly_calloc(6);
+     gsl_poly_set(p,0,-1);
+     gsl_poly_set(p,1,-3);
+     gsl_poly_set(p,5,1);
+     gsl_test (pss == 0, "gsl_poly_sturm_calloc returns valid pointer");
+     gsl_poly_sturm_build(pss,p,w);
+     gsl_test(pss->sturmseq[2]->degree!=1,"Sturm function 2, degree = 1");
+     gsl_test(pss->index!=3,"Sturm function index = 3");
+     gsl_test_rel(pss->sturmseq[2]->c[0],10.0/24.0,1.0e-9,"Sturm function 2, x^0");
+     gsl_test_rel(pss->sturmseq[2]->c[1],1.0,1.0e-9,"Sturm function 2, x^1");
+     gsl_test_rel(pss->sturmseq[3]->c[0],5.69859182098765e-01,1.0e-9,"Sturm function 3, x^0");
+     gsl_test(pss->sturmseq[3]->degree!=0,"Sturm function 3, degree = 0");
+     gsl_test(pss->sturmseq[4]->degree!=0,"Sturm function 4, degree = 0");
+     gsl_test(pss->sturmseq[5]->degree!=0,"Sturm function 5, degree = 0");
+     c1 = gsl_poly_sturm_changes(pss,-2.0);
+     c2 = gsl_poly_sturm_changes(pss, 0.0);
+     c3 = gsl_poly_sturm_changes(pss,+2.0);
+     gsl_test_rel(c1,3.0,1.0e-9,"Sturm changes in x = -2.0");
+     gsl_test_rel(c2,1.0,1.0e-9,"Sturm changes in x =  0.0");
+     gsl_test_abs(c3,0.0,1.0e-9,"Sturm changes in x = +2.0");
+     nr = gsl_poly_sturm_numroots(pss,-2.0,2.0);
+     gsl_test_rel(nr,3,1.0e-9,"Number of roots in [-2,2]");
+
+     free(p); 
+     free(w); 
+     free(pss);
+  }
+
+  {
+    gsl_poly_sturm * pss = gsl_poly_sturm_calloc(11);
+    gsl_poly       *   p = gsl_poly_calloc(11);
+    gsl_poly       *   w = gsl_poly_calloc(11);
+    double a = 0.0, b = 0.0;
+    int i = 0, nr = 0;
+    char buf[200];
+
+    /* Wilkinson poly*/
+    gsl_poly_set(p,0,3628800.0);
+    gsl_poly_set(p,1,-10628640.0);
+    gsl_poly_set(p,2,12753576.0);
+    gsl_poly_set(p,3,-8409500.0);
+    gsl_poly_set(p,4,3416930.0);
+    gsl_poly_set(p,5,-902055.0);
+    gsl_poly_set(p,6,157773.0);
+    gsl_poly_set(p,7,-18150.0);
+    gsl_poly_set(p,8,1320.0);
+    gsl_poly_set(p,9,-55.0);
+    gsl_poly_set(p,10,1.0);
+    gsl_poly_sturm_build(pss,p,w);
+    for (i = 0; i < 11; i++) {
+      b = ((double) i) + 1.0/2.0;
+      nr = gsl_poly_sturm_numroots(pss,a,b);
+      sprintf(buf,"Number of roots in [0,%f] Wilkinson p10",b);
+      gsl_test_rel(nr,i,1.0e-12,buf);
+    }
+
+    gsl_poly_sturm_free(pss);
+    gsl_poly_free(p);
+    gsl_poly_free(w);
+  }
+
+  {
+
+    gsl_poly_sturm * pss = gsl_poly_sturm_alloc(3);
+    gsl_poly       * p   = gsl_poly_calloc(3);
+    gsl_poly       * w   = gsl_poly_calloc(3);
+    int              nr  = 0;
+
+    gsl_poly_set(p,0,1.0);
+    gsl_poly_set(p,2,0.825);
+
+    gsl_poly_sturm_build(pss,p,w);
+    nr = gsl_poly_sturm_numroots(pss,0.0,1.0);
+    gsl_test_abs(nr,0,1.0e-12,"Number of roots of 1+0.825x^2 in [0,1]");   
+
+    gsl_poly_sturm_free(pss);
+    gsl_poly_free(p);
+    gsl_poly_free(w);
+  }
+
+    
+ 
+  {
+  /* Test Legendre sets */
+    int i = 0;
+    double a = 0.0;
+    char buf[200];
+    gsl_poly * p = gsl_poly_calloc(16);
+    gsl_poly * w1= gsl_poly_calloc(16);
+    gsl_poly * w2 = gsl_poly_calloc(16);
+    gsl_poly * w3 = gsl_poly_calloc(16);
+
+    for (i = 0; i <= 15; i++) {
+      gsl_poly_set_Legendre(p,i,w1,w2,w3);
+      a = gsl_poly_eval2(p,1.0);
+      sprintf(buf,"Legendre sets: value of P%d in 1.0",i);
+      gsl_test_rel(a,1.0,1.0e-12,buf);
+    }
+
+    gsl_poly_free(p);
+    gsl_poly_free(w1);
+    gsl_poly_free(w2);
+    gsl_poly_free(w3);
+  }
+
+
+  }
   /* now summarize the results */
 
   exit (gsl_test_summary ());
