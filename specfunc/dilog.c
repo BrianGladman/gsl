@@ -417,7 +417,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
    */
   if(r == 1.0) {
     gsl_sf_result theta_restrict;
-    int dummy = gsl_sf_angle_restrict_pos_err_impl(theta, &theta_restrict);
+    int stat_r = gsl_sf_angle_restrict_pos_err_impl(theta, &theta_restrict);
     int stat_c;
     const double term1 = theta_restrict.val*theta_restrict.val;
     const double term2 = 2.0*M_PI*fabs(theta_restrict.val);
@@ -428,6 +428,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
     real_dl->err += 0.25 * (term1_err + term2_err);
     real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
     stat_c = gsl_sf_clausen_impl(theta, imag_dl);
+    stat_r = 0;  /* discard restrict status */
     return stat_c;
   }
 
