@@ -121,3 +121,5 @@ fixes for the special functions
 
 * Theis Peter Hansen <tph@com.dtu.dk> fixed unchecked status values in
 multiroots
+
+* Jungemann Markus <Markus.Jungemann@de.bosch.com> documentation fixes
