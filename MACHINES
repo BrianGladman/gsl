@@ -1,5 +1,16 @@
 This file documents problems installing GSL on specific platforms.
 
+All
+---
+
+Attempts to run 'strip' on the static library libgsl.a may produce a
+broken library (it is known to happen with GNU binutils strip, and
+probably affects others too). The libgsl.a ar archive made by libtool
+contains files with the same filenames from different directories, and
+this causes the strip program to overwrite these archive entries.  If
+you need to produce a compact version of the library compile without
+-g instead of using strip.
+
 IRIX
 ----
 
