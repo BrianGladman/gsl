@@ -71,9 +71,11 @@ full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
 lib_LIBRARIES = libgslrandist.a
-libgslrandist_a_SOURCES = cauchy.c chisq.c erlang.c exponential.c flat.c \
+libgslrandist_a_SOURCES = \
+        beta.c binomial.c cauchy.c chisq.c erlang.c \
+        exponential.c fdist.c flat.c \
 	gamma.c gauss.c geometric.c laplace.c logistic.c lognormal.c \
-	pareto.c poisson.c shuffle.c weibull.c
+	pareto.c poisson.c shuffle.c sphere.c tdist.c weibull.c
 
 include_HEADERS= gsl_randist.h
 
@@ -90,9 +92,10 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrandist_a_LIBADD = 
-libgslrandist_a_OBJECTS =  cauchy.o chisq.o erlang.o exponential.o \
-flat.o gamma.o gauss.o geometric.o laplace.o logistic.o lognormal.o \
-pareto.o poisson.o shuffle.o weibull.o
+libgslrandist_a_OBJECTS =  beta.o binomial.o cauchy.o chisq.o erlang.o \
+exponential.o fdist.o flat.o gamma.o gauss.o geometric.o laplace.o \
+logistic.o lognormal.o pareto.o poisson.o shuffle.o sphere.o tdist.o \
+weibull.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -106,10 +109,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/cauchy.P .deps/chisq.P .deps/erlang.P \
-.deps/exponential.P .deps/flat.P .deps/gamma.P .deps/gauss.P \
-.deps/geometric.P .deps/laplace.P .deps/logistic.P .deps/lognormal.P \
-.deps/pareto.P .deps/poisson.P .deps/shuffle.P .deps/weibull.P
+DEP_FILES =  .deps/beta.P .deps/binomial.P .deps/cauchy.P .deps/chisq.P \
+.deps/erlang.P .deps/exponential.P .deps/fdist.P .deps/flat.P \
+.deps/gamma.P .deps/gauss.P .deps/geometric.P .deps/laplace.P \
+.deps/logistic.P .deps/lognormal.P .deps/pareto.P .deps/poisson.P \
+.deps/shuffle.P .deps/sphere.P .deps/tdist.P .deps/weibull.P
 SOURCES = $(libgslrandist_a_SOURCES)
 OBJECTS = $(libgslrandist_a_OBJECTS)
 

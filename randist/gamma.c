@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -9,7 +10,7 @@ static double gamma_frac (const gsl_rng * r, double a);
 
 /* The Gamma distribution of order a>0 is defined by:
 
-   F(x) = \frac{1}{\Gamma(a)}\int_0^x t^{a-1} e^{-t} dt
+   p(x)dx = \frac{1}{\Gamma(a)} x^{a-1} e^{-x} dx
 
    for x>0.  If X and Y are independent gamma-distributed random
    variables of order a and b, then X+Y has gamma distribution of
@@ -21,8 +22,8 @@ double
 gsl_ran_gamma (const gsl_rng * r, double a)
 {
   /* assume a > 0 */
-  int na;
-  na = floor (a);
+  int na = floor (a);
+
   if (a == na)
     {
       return gamma_int (r, na);
@@ -44,8 +45,10 @@ gamma_int (const gsl_rng * r, int a)
     {
       int i;
       double prod = 1.0;
+
       for (i = 0; i < a; ++i)
 	prod *= gsl_rng_uniform (r);
+
       if (prod == 0)
 	{
 	  return GSL_LOGINFINITY;

@@ -4,7 +4,7 @@
 
 /* Geometric distribution (bernoulli trial with probability p) 
 
-   prob(n) =  p (1 - p)^n
+   prob(n) =  p (1 - p)^(n-1) for n = 1, 2, 3, ...
 
    It gives the distribution of "waiting times" for an event that
    occurs with probability p. */
@@ -18,11 +18,11 @@ gsl_ran_geometric (const gsl_rng * r, double p)
 
   if (p == 1)
     {
-      n = 0 ;
+      n = 1 ;
     }
   else 
     {
-      n = log(u)/log(1-p) ;
+      n = log(u)/log(1-p) + 1 ;
     }
 
   return n;

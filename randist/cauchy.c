@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
