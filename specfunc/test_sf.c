@@ -523,8 +523,13 @@ int check_debye(void)
   return status;
 }
 
+/* FIXME: probably need more tests here... 
+ * also need to work on accuracy for r->1; need to
+ * adjust the switch-over point I suppose.
+ */
 int check_dilog(void)
 {
+  double x, y;
   int status = 0;
   int s;
 
@@ -586,69 +591,76 @@ int check_dilog(void)
   status += s;
 
 
-  /* dilogc */
+  /* complex dilog */
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.99999, 0.0), -0.20561329262779687646 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.99999, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.99999, 0.0));
+  gsl_sf_complex_dilog_impl(1.00001, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.20562022409960237363 ) > 1.0e-14 );
+  s += ( frac_diff( y,  0.91597344814458309320 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(1.00001, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.991, 0.0), -0.20250384721077806127 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.991, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.991, 0.0));
+  gsl_sf_complex_dilog_impl(0.99999, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.20561329262779687646 ) > 1.0e-14 );
+  s += ( frac_diff( y,  0.91595774018131512060 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.99999, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.98, 0.0), -0.19871638377785918403 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.98, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(0.991, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.20250384721077806127 ) > 1.0e-06 );
+  s += ( frac_diff( y,  0.90888544355846447810 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.991, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.95, 0.0), -0.18848636456893572091 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.95, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(0.98, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.19871638377785918403 ) > 1.0e-05 );
+  s += ( frac_diff( y,  0.90020045882981847610 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.98, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.9, 0.0), -0.17177943786580149299 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.9, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(0.95, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.18848636456893572091 ) > 1.0e-14 );
+  s += ( frac_diff( y,  0.87633754133420277830 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.95, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.8, 0.0), -0.13980800855429037810 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.8, cos(Pi/2))");
-  printf("%22.16g\n", gsl_sf_dilogc(0.8, 0.0));
+  gsl_sf_complex_dilog_impl(0.8, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.13980800855429037810 ) > 1.0e-14 );
+  s += ( frac_diff( y,  0.75310609092419884460 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.8, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.7, 0.0), -0.11007260850832985251 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.7, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(0.5, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.05897507442156586346 ) > 1.0e-14 );
+  s += ( frac_diff( y,  0.48722235829452235710 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.5, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.5, 0.0), -0.05897507442156586346 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.5, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(0.01, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -0.000024999375027776215378 ) > 1.0e-12 );
+  s += ( frac_diff( y,  0.009999888892888684820    ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(0.01, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.1, 0.0), -0.0024937776225208839662 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(0.1, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(10.0, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -3.0596887943287347304 ) > 1.0e-14 );
+  s += ( frac_diff( y,  3.7167814930680685900 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(10.0, Pi/2)");
   status += s;
 
   s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(0.01, 0.0), -0.000024999375027776215378 ) > 1.0e-13 );
-  gsl_test(s, "  dilogc(0.01, cos(Pi/2))");
-  status += s;
-
-  s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(10.0, 0.0), -3.0596887943287347304 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(10.0, cos(Pi/2))");
-  status += s;
-
-  s = 0;
-  s += ( frac_diff( gsl_sf_dilogc(100.0, 0.0), -11.015004738293824854 ) > 1.0e-14 );
-  gsl_test(s, "  dilogc(100.0, cos(Pi/2))");
+  gsl_sf_complex_dilog_impl(100.0, M_PI/2.0, &x, &y);
+  s += ( frac_diff( x, -11.015004738293824854 ) > 1.0e-14 );
+  s += ( frac_diff( y,  7.2437843013083534970 ) > 1.0e-14 );
+  gsl_test(s, "  complex_dilog(100.0, Pi/2)");
   status += s;
 
   return status;

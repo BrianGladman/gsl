@@ -6,7 +6,10 @@
 
 
 /* Calculate the Clausen integral:
- *   Cl(x) := Integrate[-Log[2 Sin[t/2]], {t,0,x}]
+ *   Cl_2(x) := Integrate[-Log[2 Sin[t/2]], {t,0,x}]
+ *
+ * Relation to dilogarithm:
+ *  Cl_2(theta) = Im[ Li_2(e^(i theta)) ]
  */
 int     gsl_sf_clausen_impl(double x, double * result);
 int     gsl_sf_clausen_e(double x, double * result);
