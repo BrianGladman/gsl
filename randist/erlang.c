@@ -1,6 +1,6 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -26,8 +26,12 @@ gsl_ran_erlang_pdf (const double x, const double a, const double n)
     }
   else
     {
-      double lngamma = gsl_sf_lngamma (n);
-      double p = exp ((n - 1) * log (x/a) - x/a - lngamma) / a;
+      double p;
+      gsl_sf_result lngamma;
+      
+      gsl_sf_lngamma_impl (n, &lngamma);
+      p = exp ((n - 1) * log (x/a) - x/a - lngamma.val) / a;
+
       return p;
     }
 }

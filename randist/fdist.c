@@ -1,6 +1,6 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -33,12 +33,16 @@ gsl_ran_fdist_pdf (const double x, const double nu1, const double nu2)
     }
   else
     {
-      double lg12 = gsl_sf_lngamma ((nu1 + nu2) / 2);
-      double lg1 = gsl_sf_lngamma (nu1 / 2);
-      double lg2 = gsl_sf_lngamma (nu2 / 2);
+      double p;
       double lglg = (nu1 / 2) * log (nu1) + (nu2 / 2) * log (nu2) ;
+
+      gsl_sf_result lg12, lg1, lg2 ;
+
+      gsl_sf_lngamma_impl ((nu1 + nu2) / 2, &lg12);
+      gsl_sf_lngamma_impl (nu1 / 2, &lg1);
+      gsl_sf_lngamma_impl (nu2 / 2, &lg2);
       
-      double p = exp (lglg + lg12 - lg1 - lg2)
+      p = exp (lglg + lg12.val - lg1.val - lg2.val)
 	* pow (x, nu1 / 2 - 1) * pow (nu2 + nu1 * x, -nu1 / 2 - nu2 / 2);
       
       return p;

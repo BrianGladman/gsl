@@ -2,7 +2,6 @@
 #include <math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
-#include <gsl_sf.h>
 
 /* The Pascal distribution is a negative binomial with valued integer n
 

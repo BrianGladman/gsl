@@ -1,6 +1,6 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -66,7 +66,11 @@ gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 double
 gsl_ran_poisson_pdf (const unsigned int k, const double mu)
 {
-  double lf = gsl_sf_lnfact (k); 
-  double p = exp (log (mu) * k - lf - mu);
+  double p;
+  gsl_sf_result lf;
+
+  gsl_sf_lnfact_impl (k, &lf); 
+
+  p = exp (log (mu) * k - lf.val - mu);
   return p;
 }

@@ -1,3 +1,8 @@
+Tue Dec 15 23:08:57 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* updated all the functions depending on gsl_sf to use the new
+ 	special function interface, based on gsl_sf_result
+
 Tue Nov 17 17:02:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added #include <config.h> to all top-level source files

@@ -1,7 +1,7 @@
 #include <config.h>
 #include <math.h>
 #include <gsl_math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -105,9 +105,10 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
 double
 gsl_ran_exppow_pdf (const double x, const double mu, const double a)
 {
-  double lg = 0, p ;
+  double p ;
+  gsl_sf_result lg;
   gsl_sf_lngamma_impl (1+1/a, &lg) ;
-  p = (1/(2*mu)) * exp(-pow(fabs(x/mu),a) - lg);
+  p = (1/(2*mu)) * exp(-pow(fabs(x/mu),a) - lg.val);
   return p;
 }
 

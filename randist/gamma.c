@@ -1,7 +1,7 @@
 #include <config.h>
 #include <math.h>
 #include <gsl_math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -139,8 +139,11 @@ gsl_ran_gamma_pdf (const double x, const double a, const double b)
     }
   else 
     {
-      double lngamma = gsl_sf_lngamma (a);
-      double p = exp ((a - 1) * log (x/b) - x/b - lngamma)/b;
+      double p;
+      gsl_sf_result lngamma ;
+
+      gsl_sf_lngamma_impl (a, &lngamma);
+      p = exp ((a - 1) * log (x/b) - x/b - lngamma.val)/b;
       return p;
     }
 }

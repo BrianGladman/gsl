@@ -2,7 +2,7 @@
 #include <math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 
 /* The hypergeometric distribution has the form,
 
@@ -92,9 +92,15 @@ gsl_ran_hypergeometric_pdf (const unsigned int k,
     }
   else 
     {
-      double f = (gsl_sf_lnchoose (n1, k)  + gsl_sf_lnchoose (n2, t - k)
-		  - gsl_sf_lnchoose (n1 + n2, t)) ;
+      double f;
+      gsl_sf_result c1, c2, c3;
       
+      gsl_sf_lnchoose_impl(n1,k, &c1);
+      gsl_sf_lnchoose_impl(n2,t-k, &c2);
+      gsl_sf_lnchoose_impl(n1+n2,t,&c3);
+
+      f = (c1.val + c2.val - c3.val) ;
+
       return exp(f);
     }
 }

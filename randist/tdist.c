@@ -1,7 +1,7 @@
 #include <config.h>
 #include <math.h>
 #include <gsl_math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -48,11 +48,14 @@ gsl_ran_tdist (const gsl_rng * r, const double nu)
 double
 gsl_ran_tdist_pdf (const double x, const double nu)
 {
-  double lg2 = gsl_sf_lngamma ((nu + 1) / 2);
-  double lg1 = gsl_sf_lngamma (nu / 2);
+  double p;
+  gsl_sf_result lg1, lg2;
+  gsl_sf_lngamma_impl (nu / 2, &lg1);
+  gsl_sf_lngamma_impl ((nu + 1) / 2, &lg2);
 
-  double p = exp (lg2 - lg1) / sqrt (M_PI * nu) * pow ((1 + x * x / nu),
-						       -(nu + 1) / 2);
+  p = ((exp (lg2.val - lg1.val) / sqrt (M_PI * nu)) 
+       * pow ((1 + x * x / nu), -(nu + 1) / 2));
   return p;
 }
+
 

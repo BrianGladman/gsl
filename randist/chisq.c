@@ -1,6 +1,6 @@
 #include <config.h>
 #include <math.h>
-#include <gsl_sf.h>
+#include <gsl_sf_gamma.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -26,8 +26,12 @@ gsl_ran_chisq_pdf (const double x, const double nu)
     }
   else
     {
-      double lngamma = gsl_sf_lngamma (nu / 2);
-      double p = exp ((nu / 2 - 1) * log (x/2) - x/2 - lngamma) / 2;
+      double p;
+      gsl_sf_result lngamma;
+
+      gsl_sf_lngamma_impl (nu / 2, &lngamma);
+      
+      p = exp ((nu / 2 - 1) * log (x/2) - x/2 - lngamma.val) / 2;
       return p;
     }
 }
