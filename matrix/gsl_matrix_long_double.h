@@ -6,12 +6,14 @@
 #include <gsl_config.h>
 #include <gsl_vector_long_double.h>
 
-typedef struct
+typedef struct gsl_matrix_long_double_struct gsl_matrix_long_double;
+
+struct gsl_matrix_long_double_struct
 {
   size_t size1;
   size_t size2;
   long double * data;
-} gsl_matrix_long_double ;
+} ;
 
 gsl_matrix_long_double * gsl_matrix_long_double_alloc (size_t n1, size_t n2);
 gsl_matrix_long_double * gsl_matrix_long_double_calloc (size_t n1, size_t n2);

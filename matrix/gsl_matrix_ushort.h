@@ -6,13 +6,14 @@
 #include <gsl_config.h>
 #include <gsl_vector_ushort.h>
 
-typedef struct
+typedef struct gsl_matrix_ushort_struct gsl_matrix_ushort;
+
+struct gsl_matrix_ushort_struct
 {
   size_t size1;
   size_t size2;
   unsigned short * data;
-  
-} gsl_matrix_ushort ;
+} ;
 
 gsl_matrix_ushort * gsl_matrix_ushort_alloc (size_t n1, size_t n2);
 gsl_matrix_ushort * gsl_matrix_ushort_calloc (size_t n1, size_t n2);

@@ -8,13 +8,12 @@
 #include <gsl_vector_complex.h>
 
 struct gsl_matrix_complex_float_struct;
-typedef struct gsl_matrix_complex_float_struct gsl_matrix_complex_float;
 
 struct gsl_vector_complex_float_struct
 {
   size_t size;
   size_t stride;
-  gsl_matrix_complex_float * parent;
+  struct gsl_matrix_complex_float_struct * parent;
   float *data;
 };
 

@@ -8,17 +8,16 @@
 #include <gsl_vector_complex.h>
 
 struct gsl_matrix_complex_long_double_struct;
-typedef struct gsl_matrix_complex_long_double_struct gsl_matrix_complex_long_double;
+
+typedef struct gsl_vector_complex_long_double_struct gsl_vector_complex_long_double;
 
 struct gsl_vector_complex_long_double_struct
 {
   size_t size;
   size_t stride;
-  gsl_matrix_complex_long_double * parent;
+  struct gsl_matrix_complex_long_double_struct * parent;
   long double *data;
 };
-
-typedef struct gsl_vector_complex_long_double_struct gsl_vector_complex_long_double;
 
 gsl_vector_complex_long_double *gsl_vector_complex_long_double_alloc (size_t n);
 gsl_vector_complex_long_double *gsl_vector_complex_long_double_calloc (size_t n);

@@ -6,13 +6,12 @@
 #include <gsl_config.h>
 
 struct gsl_matrix_float_struct;
-typedef struct gsl_matrix_float_struct gsl_matrix_float;
 
 struct gsl_vector_float_struct
 {
   size_t size;
   size_t stride;
-  gsl_matrix_float * parent;
+  struct gsl_matrix_float_struct * parent;
   float *data;
 };
 

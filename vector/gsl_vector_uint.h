@@ -6,13 +6,12 @@
 #include <gsl_config.h>
 
 struct gsl_matrix_uint_struct;
-typedef struct gsl_matrix_uint_struct gsl_matrix_uint;
 
 struct gsl_vector_uint_struct
 {
   size_t size;
   size_t stride;
-  gsl_matrix_uint * parent;
+  struct gsl_matrix_uint_struct * parent;
   unsigned int *data;
 };
 

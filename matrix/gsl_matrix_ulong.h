@@ -6,13 +6,14 @@
 #include <gsl_config.h>
 #include <gsl_vector_ulong.h>
 
-typedef struct
+typedef struct gsl_matrix_ulong_struct gsl_matrix_ulong ;
+
+struct gsl_matrix_ulong_struct
 {
   size_t size1;
   size_t size2;
   unsigned long * data;
-  
-} gsl_matrix_ulong ;
+};
 
 gsl_matrix_ulong * gsl_matrix_ulong_alloc (size_t n1, size_t n2);
 gsl_matrix_ulong * gsl_matrix_ulong_calloc (size_t n1, size_t n2);

@@ -7,13 +7,14 @@
 #include <gsl_complex.h>
 #include <gsl_vector_complex_double.h>
 
-typedef struct
+typedef struct gsl_matrix_complex_struct gsl_matrix_complex;
+
+struct gsl_matrix_complex_struct
 {
   size_t size1;
   size_t size2;
   double * data;
-  
-} gsl_matrix_complex ;
+} ;
 
 gsl_matrix_complex * gsl_matrix_complex_alloc (size_t n1, size_t n2);
 gsl_matrix_complex * gsl_matrix_complex_calloc (size_t n1, size_t n2);
