@@ -494,7 +494,7 @@ the hybrid functions are a good bet. The @value{GSL} provides two
 hybrids: one which does not require the first derivative of the function
 under search and one which does.
 
-@deftypefun double gsl_root_hybrid (@w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_hybrid (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_hybrid
 
 Search for a zero using a combination of false position (@pxref{False
@@ -509,7 +509,7 @@ error codes.
 
 @end deftypefun
 
-@deftypefun double gsl_root_hybrid_d (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_hybrid_d (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_hybrid
 
 Search for a zero using a combination of false position (@pxref{False
@@ -564,7 +564,7 @@ of the end. The midpoint of each interval is also indicated.
 bisection.)
 @end ifinfo
 
-@deftypefun double gsl_root_bisection (@w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}})
+@deftypefun int gsl_root_bisection (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}})
 @findex @r{root finding,} gsl_root_bisection
 
 Search for a zero of @code{f} using bisection, with @w{@code{*lower_bound}} and
@@ -619,7 +619,7 @@ position of the beginning of the interval and @math{b_n} is the
 false position.)
 @end ifinfo
 
-@deftypefun double gsl_root_falsepos (@w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}})
+@deftypefun int gsl_root_falsepos (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{lower_bound}}, @w{double * @var{upper_bound}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}})
 @findex @r{root finding,} gsl_root_falsepos
 
 Search for a zero of @code{f} using false position, with
@@ -676,7 +676,7 @@ guess.
 Secant Method.)
 @end ifinfo
 
-@deftypefun double gsl_root_secant (@w{double (* @var{f})(double)}, @w{double * @var{guess}}, @w{double * @var{guess2}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_secant (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double * @var{guess}}, @w{double * @var{guess2}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_secant
 
 Search for a zero of @code{f} using Secant Method, with @code{*guess}
@@ -729,7 +729,7 @@ Several iterations of Newton's Method, where @math{g_n} is the
 Newton's Method.)
 @end ifinfo
 
-@deftypefun double gsl_root_newton (@w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
+@deftypefun int gsl_root_newton (@w{double * @var{root}}, @w{double (* @var{f})(double)}, @w{double (* @var{df})(double)}, @w{void (* @var{fdf})(double *, double *, double)}, @w{double * @var{guess}}, @w{double @var{epsilon}}, @w{int @var{max_iterations}}, @w{double @var{max_step_size}})
 @findex @r{root finding,} gsl_root_newton
 
 Search for a zero of @code{f} using Newton's Method, with @code{*guess}
