@@ -10,10 +10,11 @@
 # The symptom of not doing this is that the OPERM5 test fails completely.
 #
 
-for RNG in mt19937 ranlux ranlux389 cmrg mrg taus tt800
+#for RNG in mt19937 ranlux ranlux389 cmrg mrg taus tt800
+for RNG in gfsr4
 do
 GSL_RNG_TYPE=$RNG ./rng-dump > tmp.$RNG
-diehard > tmp.$RNG.log <<EOF
+./diehard > tmp.$RNG.log <<EOF
 tmp.$RNG
 16
 EOF

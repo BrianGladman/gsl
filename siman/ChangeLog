@@ -1,3 +1,7 @@
+Wed Oct 28 15:06:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* siman.c: added #include <string.h> for memcpy
+
 Thu Aug 20 12:22:28 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* siman.c: use (char *) judiciously to avoid warnings about void

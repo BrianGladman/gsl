@@ -1,3 +1,9 @@
+Wed Oct 28 15:07:22 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* c.c: added #include <string.h> for memcpy
+
+	* c_float.c: added #include <string.h> for memcpy
+
 Thu Sep 10 12:05:07 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* removed wavetable from function names to make them shorter and
