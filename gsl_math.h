@@ -93,6 +93,7 @@
 /* magic constants; mostly for the benefit of the implementation */
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_precision.h>
+#include <gsl/gsl_nan.h>
 #include <gsl/gsl_pow_int.h>
 
 #undef __BEGIN_DECLS
@@ -240,20 +241,6 @@ struct gsl_interval_struct
 };
 
 typedef struct gsl_interval_struct gsl_interval;
-
-#ifdef NAN
-#define GSL_NAN NAN
-#define GSL_POSINF HUGE_VAL
-#define GSL_NEGINF (-HUGE_VAL)
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
-#else
-#define GSL_NAN (0.0/0.0)
-#define GSL_POSINF (+1.0/0.0)
-#define GSL_NEGINF (-1.0/0.0)
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
-#endif
 
 __END_DECLS
 
