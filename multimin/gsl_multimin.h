@@ -137,9 +137,6 @@ gsl_multimin_fminimizer_minimum (const gsl_multimin_fminimizer * s);
 double
 gsl_multimin_fminimizer_size (const gsl_multimin_fminimizer * s);
 
-extern const 
-gsl_multimin_fminimizer_type *gsl_multimin_fminimizer_nmsimplex;
-
 /* Convergence test functions */
 
 int
@@ -219,6 +216,7 @@ GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
+GSL_VAR const gsl_multimin_fminimizer_type *gsl_multimin_fminimizer_nmsimplex;
 
 
 __END_DECLS
