@@ -36,6 +36,7 @@ extern const gsl_rng_type * gsl_rng_uni ;
 extern const gsl_rng_type * gsl_rng_uni32 ;
 extern const gsl_rng_type * gsl_rng_zuf ;
 
+extern gsl_rng_type * gsl_rng_default ;
 extern unsigned long int gsl_rng_default_seed ;
 
 unsigned long int gsl_rng_get (const gsl_rng * r) ;
