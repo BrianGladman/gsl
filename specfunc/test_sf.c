@@ -222,6 +222,7 @@ int check_bessel(void)
   s += ( frac_diff(gsl_sf_bessel_Jnu(30.0, 100.0),  0.08146012958117222297    ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Jnu(10.0,   1.0),  2.6306151236874532070e-10 ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Jnu(10.0, 100.0), -0.05473217693547201474    ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Jnu(10.2, 100.0), -0.03548919161046526864  ) > 1.e-13 );
   gsl_test(s, "  gsl_sf_bessel_Jnu");
   status += s;
 
@@ -233,6 +234,7 @@ int check_bessel(void)
   s += ( frac_diff(gsl_sf_bessel_Ynu(30.0, 100.0),  0.006138839212010033452   ) > 1.e-10 );
   s += ( frac_diff(gsl_sf_bessel_Ynu(10.0,   1.0), -1.2161801427868918929e+08 ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Ynu(10.0, 100.0),  0.05833157423641492875    ) > 1.e-12 );
+  s += ( frac_diff(gsl_sf_bessel_Ynu(10.2, 100.0),  0.07169383985546287091    ) > 1.e-12 );
   gsl_test(s, "  gsl_sf_bessel_Ynu");
   status += s;
 
@@ -244,6 +246,7 @@ int check_bessel(void)
   s += ( frac_diff(gsl_sf_bessel_Inu_scaled(30.0, 100.0), 0.0004486987756920986146  ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Inu_scaled(10.0,   1.0), 1.0127529864692066036e-10 ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Inu_scaled(10.0, 100.0), 0.024176682718258828365   ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Inu_scaled(10.2, 100.0), 0.023691628843913810043   ) > 1.e-13 );
   gsl_test(s, "  gsl_sf_bessel_Inu_scaled");
   status += s;
 
@@ -255,6 +258,7 @@ int check_bessel(void)
   s += ( frac_diff(gsl_sf_bessel_Knu_scaled(30.0, 100.0), 10.673443449954850040     ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Knu_scaled(10.0,   1.0), 4.912296520990198599e+08  ) > 1.e-13 );
   s += ( frac_diff(gsl_sf_bessel_Knu_scaled(10.0, 100.0), 0.20578687173955779807    ) > 1.e-13 );
+  s += ( frac_diff(gsl_sf_bessel_Knu_scaled(10.2, 100.0), 0.20995808355244385075    ) > 1.e-13 );
   gsl_test(s, "  gsl_sf_bessel_Knu_scaled");
   status += s;
 
