@@ -1035,6 +1035,8 @@ int
 gsl_sf_gamma_impl(const double x, double * result)
 {
   if(fabs(x - 1.0) < 0.01) {
+    /* Use series for Gamma[1+eps] - 1/(1+eps).
+     */
     const double eps = x - 1.0;
     const double c1 =  0.4227843350984671394;
     const double c2 = -0.01094400467202744461;
@@ -1042,10 +1044,13 @@ gsl_sf_gamma_impl(const double x, double * result)
     const double c4 = -0.018271913165599812664;
     const double c5 =  0.018004931096854797895;
     const double c6 = -0.006850885378723806846;
-    *result = 1.0/x + eps*(c1 + eps*(c2 + eps*(c3 + eps*(c4 + eps*(c5 + eps*c6)))));
+    const double c7 =  0.003998239557568466030;
+    *result = 1.0/x + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*c7))))));
     return GSL_SUCCESS;
   }
   else if(fabs(x - 2.0) < 0.01) {
+    /* Use series for Gamma[1 + eps].
+     */
     const double eps = x - 2.0;
     const double c1 =  0.4227843350984671394;
     const double c2 =  0.4118403304264396948;
@@ -1053,7 +1058,9 @@ gsl_sf_gamma_impl(const double x, double * result)
     const double c4 =  0.07424901075351389832;
     const double c5 = -0.00026698206874501476832;
     const double c6 =  0.011154045718130991049;
-    *result = 1.0 + eps*(c1 + eps*(c2 + eps*(c3 + eps*(c4 + eps*(c5 + eps*c6)))));
+    const double c7 = -0.002852645821155340816;
+    const double c8 =  0.0021039333406973880085;
+    *result = 1.0 + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
     return GSL_SUCCESS;
   }
   else {  
