@@ -400,7 +400,8 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
     sr    = sqrt((2.0+1.0/m)/(4.0*M_PI));
     ymm   = sgn * sr * ex_pre.val;
     ymmp1 = ymmp1_factor * ymm;
-    ymmerr = 2.0 * GSL_DBL_EPSILON * fabs(ymm) + sr * ex_pre.err;
+    ymmerr  = 2.0 * GSL_DBL_EPSILON * fabs(ymm) + sr * ex_pre.err;
+    ymmerr *= 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-x));
 
     if(l == m){
       result->val  = ymm;

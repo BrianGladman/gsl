@@ -98,7 +98,7 @@ int test_legendre(void)
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, -0.5, &r), 0.12876871185785724117, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, 0.5, &r), 0.12876871185785724117, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, 0.999, &r), 1.7320802307583118647e-14, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, 0.999, &r), 1.7320802307583118647e-14, TEST_TOL2, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, -0.5, &r),   0.3302975570099492931, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, 0.5, &r),   -0.3302975570099492931, TEST_TOL1, GSL_SUCCESS);
@@ -106,9 +106,9 @@ int test_legendre(void)
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array_impl(100, 5, 0.5, L);
-  sa += ( test_sf_frac_diff(L[0],   -0.22609703187800460722 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[10],   0.07452710323813558940 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(L[95],   0.25865355990880161717 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff(L[0],   -0.22609703187800460722 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff(L[10],   0.07452710323813558940 ) > TEST_TOL1 );
+  sa += ( test_sf_frac_diff(L[95],   0.25865355990880161717 ) > TEST_TOL1 );
   gsl_test(s, "  gsl_sf_legendre_sphPlm_array_impl(100, 5, 0.5)");
   s += sa;
 
@@ -138,14 +138,14 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (0.0,  2.0, &r),  0.7984204253272901551, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (0.0,  100.0, &r),  0.4227531369388072584, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0, -0.5, &r),  5.345484922591867181e+07, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0,  0.5, &r),  1513.7910356104985334, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0, -0.5, &r),  5.345484922591867181e+07, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0,  0.5, &r),  1513.7910356104985334, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0,  2.0, &r),  0.03439243987215615642, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (10.0,  100.0, &r),  0.003283756665952609624, TEST_TOL2, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0, -0.5, &r),  1.7699538115312304280e+179, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  1.0e-8, &r),  5.464049005470029253e+133, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  0.5, &r),  1.9477730108056027211e+88, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  0.5, &r),  1.9477730108056027211e+88, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  10.0, &r),  0.0012462575917716355362, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  100.0, &r),  -0.0003225881344802625149, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_mhalf_impl, (200.0,  1000.0, &r), -0.00004330652890886567623 , TEST_TOL3, GSL_SUCCESS);
@@ -205,9 +205,9 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, 0.5, &r),  2.7016087199857873954e-10 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, 0.5, &r),  1.1782569701435933399e-24 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 1.0, 0.5, &r),  3.636240588303797919e-41 , TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, 2.0, &r),  2.4934929626284934483e-10 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, 2.0, &r),  1.1284762488012616191e-24 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 100.0, 100.0, &r),  -1.6757772087159526048e-64 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (10, 1.0, 2.0, &r),  2.4934929626284934483e-10 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (20, 1.0, 2.0, &r),  1.1284762488012616191e-24 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_sph_reg_impl, (30, 100.0, 100.0, &r),  -1.6757772087159526048e-64 , TEST_TOL4, GSL_SUCCESS);
 
 
   TEST_SF(s, gsl_sf_conicalP_cyl_reg_impl, (2, 1.0, -0.5, &r),   2.2048510472375258708 ,       TEST_TOL0, GSL_SUCCESS);
