@@ -235,6 +235,16 @@ int gsl_sf_beta_impl(const double a, const double b, gsl_sf_result * result);
 int gsl_sf_beta_e(const double a, const double b, gsl_sf_result * result);
 
 
+/* Normalized Incomplete Beta Function
+ * B_x(a,b)/B(a,b)
+ *
+ * a > 0, b > 0, 0 <= x <= 1
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int gsl_sf_beta_inc_impl(const double a, const double b, double x, gsl_sf_result * result);
+int gsl_sf_beta_inc_e(const double a, const double b, double x, gsl_sf_result * result);
+
+
 /* The maximum x such that gamma(x) is not
  * considered an overflow.
  */

@@ -185,5 +185,26 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_beta_impl, (1.0,  100.0, &r), 0.01                  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_beta_impl, (10.0, 100.0, &r), 2.3455339739604649879e-15 , TEST_TOL2, GSL_SUCCESS);
 
+
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (1.0, 1.0, 0.0, &r), 0.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (1.0, 1.0, 1.0, &r), 1.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (0.1, 0.1, 1.0, &r), 1.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0,  1.0, 0.5, &r), 0.5, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 0.1,  1.0, 0.5, &r), 0.9330329915368074160, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (10.0,  1.0, 0.5, &r), 0.0009765625000000000000, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (50.0,  1.0, 0.5, &r), 8.881784197001252323e-16, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0,  0.1, 0.5, &r), 0.06696700846319258402, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0, 10.0, 0.5, &r), 0.99902343750000000000, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0, 50.0, 0.5, &r), 0.99999999999999911180, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0,  1.0, 0.1, &r), 0.10, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0,  2.0, 0.1, &r), 0.19, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 1.0,  2.0, 0.9, &r), 0.99, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (50.0, 60.0, 0.5, &r), 0.8309072939016694143, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (90.0, 90.0, 0.5, &r), 0.5, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, ( 500.0,  500.0, 0.6, &r), 0.9999999999157549630, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (5000.0, 5000.0, 0.4, &r), 4.518543727260666383e-91, TEST_TOL5, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (5000.0, 5000.0, 0.6, &r), 1.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_beta_inc_impl, (5000.0, 2000.0, 0.6, &r), 8.445388773903332659e-89, TEST_TOL5, GSL_SUCCESS);
+
   return s;
 }

@@ -101,6 +101,7 @@ libgslspecfunc_la_SOURCES = 	\
 	bessel_zero.c		\
 	bessel_sequence.c	\
 	beta.c			\
+	beta_inc.c		\
 	chebyshev.c		\
 	clausen.c		\
 	coulomb.c		\
