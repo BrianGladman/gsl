@@ -1,4 +1,8 @@
 @BOTTOM@
+
+/* Defined if this is an official release */
+#undef RELEASED
+
 /* Define if you have inline */
 #undef HAVE_INLINE
 

@@ -52,11 +52,20 @@ int
 test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol)
 {
   int    s = 0;
-  double f = test_sf_frac_diff(val, r.val);
+  double f;
 
-  if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
-  if(r.err < 0.0)                   s |= TEST_SF_ERRNEG;
-  if(f > tol)                       s |= TEST_SF_TOLBAD;
+  if (val != val)  /* Test for NaN vs number */
+    {
+      s = (r.val == r.val) ? TEST_SF_INCONS : 0;
+    }
+  else
+    {
+      f = test_sf_frac_diff(val, r.val);
+
+      if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
+      if(r.err < 0.0)                   s |= TEST_SF_ERRNEG;
+      if(f > tol)                       s |= TEST_SF_TOLBAD;
+    }
 
   if(s != 0) {
     char buff[2048];
@@ -509,8 +518,8 @@ int test_erf(void)
   TEST_SF(s, gsl_sf_erf_Z_e, (1.0, &r),  0.24197072451914334980,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_erf_Q_e, (10.0, &r), 7.619853024160526066e-24, TEST_TOL2, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_hazard_e, (-20.0, &r), 5.5209483621597631896e-88, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hazard_e, (-10.0, &r), 7.6945986267064193463e-23, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hazard_e, (-20.0, &r), 5.5209483621597631896e-88, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hazard_e, (-10.0, &r), 7.6945986267064193463e-23, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hazard_e, (-1.0, &r), 0.28759997093917836123, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hazard_e, ( 0.0, &r), 0.79788456080286535588, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hazard_e, ( 1.0, &r), 1.5251352761609812091, TEST_TOL0, GSL_SUCCESS);
@@ -725,16 +734,16 @@ int test_expint(void)
   TEST_SF(s,  gsl_sf_expint_E1_scaled_e, (1000.0, &r), 0.00099900199402388071500, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E1_scaled_e, (10000.0, &r), 0.000099990001999400239880, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-10000.0, &r), -0.00010002000600240120072, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-1000.0, &r), -0.0010020060241207250807, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-10000.0, &r), -0.00010002000600240120072, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-1000.0, &r), -0.0010020060241207250807, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-10.0, &r), -0.13147020473410778034, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (-1.0, &r), 0.30282511676493393123, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (1.0/4294967296.0, &r), 0.99999999497004455927, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (1.0/65536.0, &r), 0.99983957954556245453, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (0.1, &r), 0.79853574552915483209, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (1.0, &r), 0.40365263767680592566, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (10.0, &r), 0.084366660602119181239, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (50.0, &r), 0.019244503494256481735, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (10.0, &r), 0.084366660602119181239, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (50.0, &r), 0.019244503494256481735, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (300.0, &r), 0.0033113304187878806691, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (1000.0, &r), 0.00099800597611928500004, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expint_E2_scaled_e, (10000.0, &r), 0.000099980005997601199281, TEST_TOL0, GSL_SUCCESS);

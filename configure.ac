@@ -21,6 +21,16 @@ AC_SUBST(GSL_LT_VERSION)
 GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
 
+case "$VERSION" in
+    *+)
+        AC_DEFINE(RELEASED,0)
+        ;;
+    *)
+        AC_DEFINE(RELEASED,1)
+        ;;
+esac
+AC_SUBST(RELEASED)      
+
 dnl things required by automake
 dnl AC_ARG_PROGRAM
 AC_PROG_MAKE_SET
