@@ -49,4 +49,4 @@
 #undef HAVE_HPUX_IEEE_INTERFACE
 
 /* Define this if printf can handle %Lf for long double */
-#undef HAVE_LONGDOUBLE_PRINTF
+#undef HAVE_PRINTF_LONGDOUBLE

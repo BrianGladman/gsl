@@ -1,7 +1,3 @@
-
-
-#include <gsl_errno.h>
-
 inline BASE
 FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
 			    const size_t i, const size_t j)

@@ -1,6 +1,3 @@
-#include <math.h>
-
-
 double 
 FUNCTION(gsl_stats,ttest) (const BASE data1[], const BASE data2[],
 			   const size_t n1, const size_t n2)

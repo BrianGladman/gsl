@@ -1,15 +1,4 @@
-#include <config.h>
-#include <math.h>
-#include <float.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "compare.h"
-
-extern int verbose;
-extern int tests;
-extern int passed;
-extern int failed;
 
 int
 FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],

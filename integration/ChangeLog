@@ -1,3 +1,10 @@
+Sat Nov 21 12:43:03 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Makefile.am (libgslintegration_a_SOURCES): eliminated local
+ 	max.h in favor of global GSL_MAX
+
+	* added missing gsl_math.h headers for new GSL_DBL_EPSILON macros
+
 Tue Nov 17 17:16:51 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added #include <config.h> to all top-level source files

@@ -2048,7 +2048,7 @@ esac
 echo $ac_n "checking whether printf/scanf works with long double""... $ac_c" 1>&6
 echo "configure:2050: checking whether printf/scanf works with long double" >&5
 if test "$cross_compiling" = yes; then
-  ac_cv_func_longdouble_printf=no
+  ac_cv_func_printf_longdouble=no
 else
   cat > conftest.$ac_ext <<EOF
 #line 2055 "configure"
@@ -2066,20 +2066,20 @@ if (x == 5678) {exit (0);} else {exit(1); };
 EOF
 if { (eval echo configure:2068: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
-  ac_cv_func_longdouble_printf=yes
+  ac_cv_func_printf_longdouble=yes
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
   rm -fr conftest*
-  ac_cv_func_longdouble_printf=no
+  ac_cv_func_printf_longdouble=no
 fi
 rm -fr conftest*
 fi
  
 
-if test $ac_cv_func_longdouble_printf = yes; then
+if test $ac_cv_func_printf_longdouble = yes; then
   cat >> confdefs.h <<\EOF
-#define HAVE_LONGDOUBLE_PRINTF 1
+#define HAVE_PRINTF_LONGDOUBLE 1
 EOF
 
   echo "$ac_t""yes" 1>&6

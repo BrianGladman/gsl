@@ -101,7 +101,7 @@ by the Foundation.
 @end ifinfo
 
 @ifinfo
-This file documents the the @value{GSL}, a collection of numerical
+This file documents the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
 As of @value{UPDATED}, the complete packages are the random number suite

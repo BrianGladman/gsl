@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <gsl_errno.h>
-
 int
 FUNCTION (gsl_vector, fread) (FILE * stream, TYPE (gsl_vector) * v)
 {

@@ -1,5 +1,3 @@
-#include <gsl_errno.h>
-
 inline BASE *
 FUNCTION (gsl_vector, ptr) (const TYPE (gsl_vector) * v, const size_t i)
 {

@@ -1,11 +1,11 @@
 #include <config.h>
 #include <math.h>
 #include <float.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
 #include "qpsrt.h"
-#include "max.h"
 
 int
 gsl_integration_qagse_impl (double (*f) (double x),
@@ -63,7 +63,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
   elist[0] = q_abserr;
   iord[0] = 0;
 
-  tolerance = max (epsabs, epsrel * fabs (q_result));
+  tolerance = GSL_MAX (epsabs, epsrel * fabs (q_result));
 
   if (q_abserr <= 100 * GSL_DBL_EPSILON * q_defabs && q_abserr > tolerance)
     {
@@ -144,7 +144,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
       errsum += (error12 - maxerr_value);
       area += area12 - rlist[maxerr_index];
 
-      tolerance = max (epsabs, epsrel * fabs (area));
+      tolerance = GSL_MAX (epsabs, epsrel * fabs (area));
 
       if (defab1 != error1 && defab2 != error2)
 	{
@@ -325,7 +325,7 @@ gsl_integration_qagse_impl (double (*f) (double x),
 	  *abserr = abseps;
 	  *result = reseps;
 	  correc = error_over_large_intervals;
-	  ertest = max (epsabs, epsrel * fabs (reseps));
+	  ertest = GSL_MAX (epsabs, epsrel * fabs (reseps));
 	  if (*abserr <= ertest)
 	    break;
 	}
@@ -385,7 +385,7 @@ check_error:
   /*  Test on divergence. */
 
 test_divergence:
-  if (!positive_integrand && max (fabs (*result), fabs (area)) < 0.01 * q_defabs)
+  if (!positive_integrand && GSL_MAX (fabs (*result), fabs (area)) < 0.01 * q_defabs)
     goto fixmefixme;
 
   if ((*result / area) < 0.01 || (*result / area) > 100 || errsum > fabs (area))

@@ -3,9 +3,8 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
+#include <gsl_math.h>
 #include <gsl_integration.h>
-
-#include "max.h"
 
 void
 gsl_integration_qelg (size_t * n, double epstab[], 
@@ -35,7 +34,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
   if ((*n) < 2) 
     {
       *result = current ;
-      *abserr = max(absolute,relative) ;
+      *abserr = GSL_MAX (absolute,relative) ;
       return ;
     }
   
@@ -56,10 +55,10 @@ gsl_integration_qelg (size_t * n, double epstab[],
       double e1abs = fabs(e1) ;
       double delta2 = e2 - e1 ;
       double err2 = fabs(delta2) ;
-      double tol2 = max(fabs(e2),e1abs)*GSL_DBL_EPSILON ;
+      double tol2 = GSL_MAX(fabs(e2),e1abs)*GSL_DBL_EPSILON ;
       double delta3 = e1 - e0 ;
       double err3 = fabs(delta3) ;
-      double tol3 = max(e1abs,fabs(e0))*GSL_DBL_EPSILON ;
+      double tol3 = GSL_MAX(e1abs,fabs(e0))*GSL_DBL_EPSILON ;
       
       double e3, delta1, err1, tol1, ss ;
 
@@ -77,7 +76,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
           *result = res ;
           absolute = err2 + err3 ;
           relative = 5 * GSL_DBL_EPSILON * fabs(res) ;
-	  *abserr = max(absolute, relative) ;
+	  *abserr = GSL_MAX(absolute, relative) ;
           return ;
         }
 
@@ -85,7 +84,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       epstab[(*n) - 2*i] = e1 ;
       delta1 = e1 - e3 ;
       err1 = fabs(delta1) ;
-      tol1 = max(e1abs, fabs(e3)) * GSL_DBL_EPSILON ;
+      tol1 = GSL_MAX(e1abs, fabs(e3)) * GSL_DBL_EPSILON ;
       
       /* If two elements are very close to each other, omit a part of
          the table by adjusting the value of n */
@@ -215,7 +214,7 @@ gsl_integration_qelg (size_t * n, double epstab[],
       res3la[2] = *result ;
     }
 
-  *abserr = max(*abserr, 5 * GSL_DBL_EPSILON * fabs(*result)) ;
+  *abserr = GSL_MAX(*abserr, 5 * GSL_DBL_EPSILON * fabs(*result)) ;
 
   return ;
 }

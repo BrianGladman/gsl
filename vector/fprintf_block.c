@@ -1,6 +1,3 @@
-#include <stdio.h>
-
-
 #if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
 
 int

@@ -523,7 +523,7 @@ int main (void)
      of roundoff error, uses the 31-pt rule */
 
   {
-    int status = 0, i; size_t last = 0,  neval = 0;
+    int status = 0; size_t last = 0,  neval = 0;
     double result = 0, abserr=0;
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;

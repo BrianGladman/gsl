@@ -1,5 +1,3 @@
-#include <gsl_complex.h>
-
 int
 FUNCTION(compare_complex,results) (const char *name_a, const BASE a[],
 				   const char *name_b, const BASE b[],

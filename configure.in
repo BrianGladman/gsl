@@ -198,12 +198,12 @@ fprintf(stderr,"%Lg\n",x) ;
 sscanf(s, "%Lg", &x);
 if (x == 5678) {exit (0);} else {exit(1); };
 }],
-ac_cv_func_longdouble_printf=yes, 
-ac_cv_func_longdouble_printf=no, 
-ac_cv_func_longdouble_printf=no) 
+ac_cv_func_printf_longdouble=yes, 
+ac_cv_func_printf_longdouble=no, 
+ac_cv_func_printf_longdouble=no) 
 
-if test $ac_cv_func_longdouble_printf = yes; then
-  AC_DEFINE(HAVE_LONGDOUBLE_PRINTF)
+if test $ac_cv_func_printf_longdouble = yes; then
+  AC_DEFINE(HAVE_PRINTF_LONGDOUBLE)
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)

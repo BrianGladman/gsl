@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 static int FUNCTION(my,compare) (const void * x, const void * y) ;
 
 void

@@ -1,11 +1,11 @@
 #include <config.h>
 #include <math.h>
 #include <float.h>
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
 #include "qpsrt.h"
-#include "max.h"
 
 int
 gsl_integration_qage_impl (double (*f) (double x),
@@ -56,7 +56,7 @@ gsl_integration_qage_impl (double (*f) (double x),
 
   /* Test on accuracy */
 
-  tolerance = max (epsabs, epsrel * fabs (q_result));
+  tolerance = GSL_MAX (epsabs, epsrel * fabs (q_result));
 
   round_off = 50 * GSL_DBL_EPSILON * q_defabs ;
 
@@ -134,7 +134,7 @@ gsl_integration_qage_impl (double (*f) (double x),
 	    }
 	}
 
-      tolerance = max (epsabs, epsrel * fabs (area));
+      tolerance = GSL_MAX (epsabs, epsrel * fabs (area));
 
       if (errsum > tolerance)
 	{

@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <gsl_vector.h>
-
 TYPE (gsl_vector) *
 FUNCTION (gsl_vector, alloc) (const size_t n)
 {

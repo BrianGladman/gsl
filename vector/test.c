@@ -16,7 +16,7 @@ int status = 0;
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "test_complex_source.c"
-#ifdef HAVE_LONGDOUBLE_PRINTF
+#ifdef HAVE_PRINTF_LONGDOUBLE
 #include "test_complex_io.c"
 #endif
 #include "templates_off.h"
@@ -40,7 +40,7 @@ int status = 0;
 #define BASE_LONG_DOUBLE
 #include "templates_on.h"
 #include "test_source.c"
-#ifdef HAVE_LONGDOUBLE_PRINTF
+#ifdef HAVE_PRINTF_LONGDOUBLE
 #include "test_io.c"
 #endif
 #include "templates_off.h"
@@ -139,7 +139,7 @@ main (void)
 
   test_text ();
   test_float_text ();
-#ifdef HAVE_LONGDOUBLE_PRINTF
+#ifdef HAVE_PRINTF_LONGDOUBLE
   test_long_double_text ();
 #endif
   test_ulong_text ();
@@ -152,7 +152,7 @@ main (void)
   test_char_text ();
   test_complex_text ();
   test_complex_float_text ();
-#ifdef HAVE_LONGDOUBLE_PRINTF
+#ifdef HAVE_PRINTF_LONGDOUBLE
   test_complex_long_double_text ();
 #endif
 

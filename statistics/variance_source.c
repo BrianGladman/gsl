@@ -1,5 +1,3 @@
-#include <math.h>
-
 static double 
 FUNCTION(compute,variance) (const BASE data[], const size_t n, const double mean);
 

@@ -1,3 +1,14 @@
+Sat Nov 21 20:39:14 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* texinfo.tex: removed, this is a duplicate and shouldn't be
+ 	needed in the top-level directory (it is in docs)
+
+	* move any included headers in _source.c files into the master
+ 	file that includes the _source.c, since this saves time when
+ 	compiling
+
+	* config.h.in: standardized on HAVE_PRINTF_LONGDOUBLE
+
 Fri Nov 20 15:14:53 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* replaced DBL_EPSILON, DBL_MAX, ... by GSL_DBL_EPSILON,
