@@ -236,7 +236,7 @@ int main (void)
   gsl_ntuple_value_fn V;
 
   gsl_histogram *h = gsl_histogram_alloc (100);
-  gsl_histogram_set_range_uniform(h, 0.0, 10.0);
+  gsl_histogram_set_ranges_uniform(h, 0.0, 10.0);
 
   S.function = &sel_func;
   S.params = &lower;
