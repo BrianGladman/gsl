@@ -1,6 +1,7 @@
 #We need to do a better job with the NEWS file!
 
-** The random number generators rand48 and ranf now work on the Alpha
+** Most Alpha specific problems have been fixed. In particular the
+random number generators rand48 and ranf now work on the Alpha
 
 ** Additional random number distributions: Rayleigh distribution
 
