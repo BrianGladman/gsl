@@ -80,7 +80,7 @@ include_HEADERS = gsl_roots.h
 
 noinst_HEADERS = roots.h
 
-INCLUDES = -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 
