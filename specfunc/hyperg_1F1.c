@@ -8,12 +8,12 @@
 #include "gsl_sf_exp.h"
 #include "gsl_sf_bessel.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_laguerre.h"
 #include "gsl_sf_hyperg.h"
 
 #define locMAX(a,b)     ((a) > (b) ? (a) : (b))
 #define locMIN(a,b)     ((a) < (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
-
 
 
 /* Asymptotic result for 1F1(a, b, x)  x -> -Infinity.
@@ -1085,7 +1085,10 @@ hyperg_1F1_ab_negint(const int a, const int b, const double x, double * result)
 }
 
 
-/* Handle case of generic positive a, b.
+/* Handle case of generic positive a, b. We do
+ * not check for large x (or Kummer transformed
+ * versions of large x), assuming that has been
+ * done already by the caller.
  */
 static
 int
@@ -1558,7 +1561,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   if(x == 0.0) {
     /* Testing for this before testing a and b
      * is somewhat arbitrary. The result is that
-     * we can have 1F1(0,0,0) = 1. Whatever.
+     * we have 1F1(1,0,0) = 1.
      */
     *result = 1.0;
     return GSL_SUCCESS;
@@ -1595,7 +1598,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
         double hx;
         int stat_hx = gsl_sf_exp_sgn_impl(lnr, sa * sb * se, &hx);
         if(stat_hx == GSL_SUCCESS) {
-          *result = (hx == DBL_MAX ? hx : 1.0 + hx);  /* excessive paranoia ? */
+          *result = (hx == DBL_MAX ? hx : 1.0 + hx);  /* FIXME: excessive paranoia ? what is DBL_MAX+1 ?*/
 	  return GSL_SUCCESS;
         }
         else {
@@ -1636,24 +1639,40 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
      */
     return gsl_sf_hyperg_1F1_int_impl((int)rinta, (int)rintb, x, result);
   }
-  else if(a_neg_integer && ((b <= a && x > 0.0) || (b > 0.0 && x < 0.0)) && a > INT_MIN) {
-    /* The polynomial evaluation is safe since all
-     * the terms are positive definite.
+  else if(b_neg_integer && !(a_neg_integer && a > b)) {
+    /* Standard domain error due to
+     * uncancelled singularity.
      */
-    return hyperg_1F1_a_negint_poly((int)rinta, b, x, result);
+    *result = 0.0;
+    return GSL_EDOM;
   }
-  else if(bma_neg_integer && ((a < 0.0 && x < 0.0) || (b > 0.0 && x > 0.0)) && bma > INT_MIN) {
-    /* Kummer transformed version of safe polynomial.
+
+
+  else if(a_neg_integer && rinta > INT_MIN && b > 0.0) {
+    /* 1F1(-n,b,x) = n!/(b)_n Laguerre[n,b-1,x]
+     *             = n B(b,n) Laguerre[n,b-1,x]
      */
-    double K;
-    int stat_K = hyperg_1F1_a_negint_poly((int)rintbma, b, -x, &K);
-    if(K != 0.0 && stat_K == GSL_SUCCESS) {
-      return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
+    int n = -(int)rinta;
+    double L;
+    int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
+    if(stat_L != GSL_SUCCESS || L == 0.0) {
+      *result = 0.0;
+      return stat_L;
     }
     else {
-      *result = 0.0;
-      return stat_K;
+      double lnbeta;
+      gsl_sf_lnbeta_impl(b, n, &lnbeta);
+      return gsl_sf_exp_sgn_impl(lnbeta + log(n) + log(fabs(L)), L, result);
     }
+  }
+  else if(a_neg_integer && b <= a && x > 0.0 && rinta > INT_MIN) {
+    /* The polynomial evaluation is safe since all
+     * the terms are positive definite. Note that we do not
+     * bother to check the other positive defintie case,
+     * with b > 0 and x < 0, since that is subsumed into
+     * the above laguerre polynomial case.
+     */
+    return hyperg_1F1_a_negint_poly((int)rinta, b, x, result);
   }
   else if(a_neg_integer && a > INT_MIN && x > 0.0) {
     /* Combine [Abramowitz+Stegun, 13.6.9 + 13.6.27]
@@ -1685,18 +1704,25 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       return stat_p;
     }
   }
-  else if(b_neg_integer) {
-    /* b is a neg integer, but a is not even an integer,
-     * so the thing is undefined.
+  else if(bma_neg_integer && ((a < 0.0 && x < 0.0) || (b > 0.0 && x > 0.0)) && rintbma > INT_MIN) {
+    /* Kummer transformed version of safe polynomial.
      */
-    *result = 0.0;
-    return GSL_EDOM;
+    double K;
+    int stat_K = hyperg_1F1_a_negint_poly((int)rintbma, b, -x, &K);
+    if(K != 0.0 && stat_K == GSL_SUCCESS) {
+      return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
   }
   else if(   (fabs(x) < 5.0 && fabs(a) < 10.0 && fabs(b) < 10.0)
+          || (a >= 0.0 && b >= 0.0 && x >= 0.0)
           || (b > 0.8*locMAX(fabs(a),1.0)*fabs(x))
     ) {
-    /* Arguments small enough to evaluate series directly
-     * or series is dominated and safe.
+    /* Arguments small enough to evaluate series directly,
+     * series is positive definite, or series is dominated and safe.
      */
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);

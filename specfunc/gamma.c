@@ -762,14 +762,55 @@ lngamma_complex_stirling(const double zr, const double zi, double * lg_r, double
 #endif /* 0 */
 
 
+#ifdef HAVE_INLINE
+inline
+#endif
+static
+int
+lngamma_1_pade(const double eps, double * result)
+{
+  /* Use (2,2) Pade for Log[Gamma[1+eps]]/eps
+   */
+  const double n1 = -1.0017419282349508699871138440;
+  const double n2 =  1.7364839209922879823280541733;
+  const double d1 =  1.2433006018858751556055436011;
+  const double d2 =  5.0456274100274010152489597514;
+  const double num = (eps + n1) * (eps + n2);
+  const double den = (eps + d1) * (eps + d2);
+  *result = 2.0816265188662692474880210318 * eps * num / den;
+  return GSL_SUCCESS;
+}
+
+#ifdef HAVE_INLINE
+inline
+#endif
+static
+int
+lngamma_2_pade(const double eps, double * result)
+{
+  /* Use (2,2) Pade for Log[Gamma[2+eps]]/eps
+   */
+  const double n1 = 1.000895834786669227164446568;
+  const double n2 = 4.209376735287755081642901277;
+  const double d1 = 2.618851904903217274682578255;
+  const double d2 = 10.85766559900983515322922936;
+  const double num = (eps + n1) * (eps + n2);
+  const double den = (eps + d1) * (eps + d2);
+  *result = 2.85337998765781918463568869 * eps * num/den;
+  return GSL_SUCCESS;
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 
 int gsl_sf_lngamma_impl(double x, double * result)
 {
-  if(x == 1.0 || x == 2.0) {
-    *result = 0.0;
-    return GSL_SUCCESS;
+  if(fabs(x - 1.0) < 0.01) {
+    return lngamma_1_pade(x-1.0, result);
+  }
+  else if(fabs(x - 2.0) < 0.01) {
+    return lngamma_2_pade(x-2.0, result);
   }
   else if(x >= 0.5) {
     return lngamma_lanczos(x, result);
@@ -807,7 +848,15 @@ int gsl_sf_lngamma_impl(double x, double * result)
 
 int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
 {
-  if(x >= 0.5) {
+  if(fabs(x - 1.0) < 0.01) {
+    *sgn = 1.0;
+    return lngamma_1_pade(x-1.0, result_lg);
+  }
+  else if(fabs(x - 2.0) < 0.01) {
+    *sgn = 1.0;
+    return lngamma_2_pade(x-2.0, result_lg);
+  }
+  else if(x >= 0.5) {
     *sgn = 1.0;
     return lngamma_lanczos(x, result_lg);
   }
@@ -847,17 +896,38 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
 int
 gsl_sf_gamma_impl(const double x, double * result)
 {
-  double lng, sgn;
-  int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
-  if(stat_lng != GSL_SUCCESS) {
-    *result = 0.0;
-    return stat_lng;
+  if(fabs(x - 1.0) < 0.01) {
+    const double eps = x - 1.0;
+    const double c1 =  0.4227843350984671394;
+    const double c2 = -0.01094400467202744461;
+    const double c3 =  0.09252092391911371098;
+    const double c4 = -0.018271913165599812664;
+    const double c5 =  0.018004931096854797895;
+    const double c6 = -0.006850885378723806846;
+    *result = 1.0/x + eps*(c1 + eps*(c2 + eps*(c3 + eps*(c4 + eps*(c5 + eps*c6)))));
+    return GSL_SUCCESS;
   }
-  else {
-    double g;
-    int stat_exp = gsl_sf_exp_impl(lng, &g);
-    *result = sgn * g;
-    return stat_exp;
+  else if(fabs(x - 2.0) < 0.01) {
+    const double eps = x - 2.0;
+    const double c1 =  0.4227843350984671394;
+    const double c2 =  0.4118403304264396948;
+    const double c3 =  0.08157691924708626638;
+    const double c4 =  0.07424901075351389832;
+    const double c5 = -0.00026698206874501476832;
+    const double c6 =  0.011154045718130991049;
+    *result = 1.0 + eps*(c1 + eps*(c2 + eps*(c3 + eps*(c4 + eps*(c5 + eps*c6)))));
+    return GSL_SUCCESS;
+  }
+  else {  
+    double lng, sgn;
+    int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
+    if(stat_lng != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_lng;
+    }
+    else {
+      return gsl_sf_exp_sgn_impl(lng, sgn, result);
+    }
   }
 }
 

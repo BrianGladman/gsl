@@ -81,6 +81,7 @@ libgslspecfunc_a_SOURCES = 	\
 	bessel_olver.c		\
 	bessel_temme.c		\
 	bessel_y.c		\
+	beta.c			\
 	chebyshev.c		\
 	clausen.c		\
 	coupling.c		\

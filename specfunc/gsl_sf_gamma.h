@@ -207,4 +207,26 @@ int     gsl_sf_gamma_inc_P_e(double a, double x, double * result);
 double  gsl_sf_gamma_inc_P(double a, double x);
 
 
+/* Logarithm of Beta Function
+ * Log[B(a,b)]
+ *
+ * a > 0, b > 0
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_lnbeta_impl(double a, double b, double * result);
+int     gsl_sf_lnbeta_e(double a, double b, double * result);
+double  gsl_sf_lnbeta(double a, double b);
+
+
+/* Beta Function
+ * B(a,b)
+ *
+ * a > 0, b > 0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_beta_impl(double a, double b, double * result);
+int     gsl_sf_beta_e(double a, double b, double * result);
+double  gsl_sf_beta(double a, double b);
+
+
 #endif /* !GSL_GAMMAFUNCTION_H_ */
