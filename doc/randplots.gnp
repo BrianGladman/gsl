@@ -217,8 +217,18 @@ set output "rand-levy.tex"
 set title "Levy Distribution"
 p1(x)=1/(pi*mu*(1+(x/mu)**2))
 p2(x)=1/sqrt(2*pi*2*mu**2)*exp(-x**2/(4*mu**2)) 
-plot mu=1.0, a=1, p1(x) title "$\mu=1, a=1.0$", \
-	mu=1.0, a=2, p2(x) title "$\mu=1, a=2.0$"
+plot mu=1.0, a=1, p1(x) title "$c=1, \alpha=1.0$", \
+	mu=1.0, a=2, p2(x) title "$c=1, \alpha=2.0$"
+
+set xrange [-5:5]
+set yrange [0:0.07]
+set ytics 0.1
+set output "rand-levyskew.tex"
+set title "Levy Skew Distribution"
+logp(x)= 1.0990e+01+x*(-3.3388e-01+x*(-4.2372e-01+x*(2.1749e-01+x*(-4.4910e-02 + x*(4.1801e-03 - 1.4456e-04*x)))))
+p1(x)=exp(logp(x))/1000000
+plot mu=1.0, a=1, p1(x) title "$c=1, \alpha=1.0, \beta=1.0$"
+
 
 set xrange [0:2]
 set yrange [0:1.5]

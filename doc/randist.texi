@@ -26,6 +26,7 @@ The functions described in this section are declared in
 * The Rayleigh Distribution::   
 * The Rayleigh Tail Distribution::  
 * The Levy alpha-Stable Distributions::  
+* The Levy skew alpha-Stable Distribution::  
 * The Gamma Distribution::      
 * The Flat (Uniform) Distribution::  
 * The Lognormal Distribution::  
@@ -467,12 +468,21 @@ The algorithm only works for @c{$0 < \alpha \le 2$}
 @math{0 < alpha <= 2}.
 @end deftypefn
 
+@sp 1
+@tex
+\centerline{\input rand-levy.tex}
+@end tex
+
+@page
+@node The Levy skew alpha-Stable Distribution
+@section The Levy skew alpha-Stable Distribution
+
 @deftypefn Random double gsl_ran_levy_skew (const gsl_rng * @var{r}, double @var{c}, double @var{alpha}, double @var{beta})
 @cindex Levy distribution, random numbers
 This function returns a random number from the Levy skew stable
 distribution with scale @var{c}, exponent @var{alpha} and skewness
 parameter @var{beta}.  The skewness parameter must lie in the range
-@math{[-1,1]}. The Levy skew stable probability distribution is defined
+@math{[-1,1]}.  The Levy skew stable probability distribution is defined
 by a fourier transform,
 
 @tex
@@ -495,7 +505,8 @@ function.  For @math{\alpha = 2} the distribution reduces to a Gaussian
 distribution with @c{$\sigma = \sqrt{2} c$} 
 @math{\sigma = \sqrt@{2@} c} and the skewness parameter has no effect.  
 For @math{\alpha < 1} the tails of the distribution become extremely
-wide.
+wide.  The symmetric distribution corresponds to @math{\beta =
+0}.
 
 The algorithm only works for @c{$0 < \alpha \le 2$}
 @math{0 < alpha <= 2}.
@@ -518,7 +529,7 @@ distributed as an alpha-stable variate,
 
 @sp 1
 @tex
-\centerline{\input rand-levy.tex}
+\centerline{\input rand-levyskew.tex}
 @end tex
 
 @page
