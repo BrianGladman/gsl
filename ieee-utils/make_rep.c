@@ -34,7 +34,16 @@ gsl_ieee_float_to_rep (const float * x, gsl_ieee_float_rep * r)
   if (little_endian_p())
     make_float_bigendian(&(u.f)) ;
   
-  r->sign = u.ieee.byte[3]>>7 ;
+  /* note that r->sign is signed, u.ieee.byte is unsigned */
+
+  if (u.ieee.byte[3]>>7)
+    {
+      r->sign = 1 ;
+    }
+  else
+    {
+      r->sign = 0 ;
+    }
 
   e = (u.ieee.byte[3] & 0x7f) << 1 | (u.ieee.byte[2] & 0x80)>>7 ; 
   
@@ -70,7 +79,17 @@ gsl_ieee_double_to_rep (const double * x, gsl_ieee_double_rep * r)
   if (little_endian_p())
     make_double_bigendian(&(u.d)) ;
   
-  r->sign = u.ieee.byte[7]>>7 ;
+  /* note that r->sign is signed, u.ieee.byte is unsigned */
+
+  if (u.ieee.byte[7]>>7)
+    {
+      r->sign = 1 ;
+    }
+  else
+    {
+      r->sign = 0 ;
+    }
+
 
   e =(u.ieee.byte[7] & 0x7f)<<4 ^ (u.ieee.byte[6] & 0xf0)>>4 ;
   

@@ -1,3 +1,8 @@
+Thu Oct  7 13:03:00 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* make_rep.c: more careful conversion from unsigned to signed integer
+ 	for sign attribute to prevent warnings
+
 Sat Aug 21 01:05:01 1999  Tim Mooney <mooney@plains.NoDak.edu>
  
     * fp-aix.c: added, based on fp-solaris.
