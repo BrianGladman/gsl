@@ -311,11 +311,13 @@ int gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, double * 
 
 int gsl_sf_legendre_Pl_array_e(const int l, const double x, double * result_array)
 {
+/*
   int status = gsl_sf_legendre_Pl_array_impl(l, x, result_array);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_legendre_Pl_array_e", status);
   }
   return status;
+  */
 }
 
 int gsl_sf_legendre_Plm_array_e(const int lmax, const int m, const double x, double * result_array)

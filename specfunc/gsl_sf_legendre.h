@@ -14,7 +14,7 @@ int     gsl_sf_legendre_Pl_e(int l, double x, double * result);
 double  gsl_sf_legendre_Pl(int l, double x);
 
 
-/* P_l(x) for l=0,...,lmax
+/* P_l(x) for l=0,...,lmax; |x| <= 1
  *
  * exceptions: GSL_EDOM
  */
