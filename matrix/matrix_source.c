@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-inline BASE
+BASE
 FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
 			    const size_t i, const size_t j)
 {
@@ -37,7 +37,7 @@ FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
   return *(BASE *) (m->data + MULTIPLICITY * (i * m->tda + j));
 }
 
-inline void
+void
 FUNCTION (gsl_matrix, set) (TYPE (gsl_matrix) * m,
 			    const size_t i, const size_t j,
 			    const BASE x)
