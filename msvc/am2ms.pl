@@ -18,7 +18,7 @@ if ($target eq 'GSLLIBML') {
 } elsif ($target eq 'GSLDLL') {
     $begin_project_lib = \&begin_project_dll;
     @options = ("Release", "/MD /LD", "Debug", "/MDd /LDd");
-    #$app_options = '/D "GSL_IMPORTS"';
+    $app_options = '/D "GSL_DLL"';
 } else {
     die "unrecognized target $target";
 }
