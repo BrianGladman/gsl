@@ -29,6 +29,11 @@ requirements
     statistics/TODO
     vector/TODO
 
+* Remove use of long double internally, e.g. as an accumulator in loops. It 
+introduces variation between platforms which is undesirable.
+
+* Check behavior of conjugate_fr in multimin -- the demo results look odd.
+
 * Switch to library interface versioning for libtool (eventually),
 provide better GSL_VERSION_MAJOR, GSL_VERSION_MINOR macros.
 

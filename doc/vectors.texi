@@ -1051,8 +1051,8 @@ by taking the address of the @code{matrix} component with the @code{&}
 operator.  In addition to matrix views it is also possible to create
 vector views of a matrix, such as row or column views.
 
-@deftypefun gsl_matrix_view gsl_matrix_submatrix (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, size_t @var{n1}, size_t @var{n2})
-@deftypefunx gsl_matrix_const_view gsl_matrix_const_submatrix (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, size_t @var{n1}, size_t @var{n2})
+@deftypefun gsl_matrix_view gsl_matrix_submatrix (gsl_matrix * @var{m}, size_t @var{k1}, size_t @var{k2}, size_t @var{n1}, size_t @var{n2})
+@deftypefunx gsl_matrix_const_view gsl_matrix_const_submatrix (const gsl_matrix * @var{m}, size_t @var{k1}, size_t @var{k2}, size_t @var{n1}, size_t @var{n2})
 These functions return a matrix view of a submatrix of the matrix
 @var{m}.  The upper-left element of the submatrix is the element
 (@var{k1},@var{k2}) of the original matrix.  The submatrix has @var{n1}
@@ -1061,14 +1061,14 @@ given by @var{tda} is unchanged.  Mathematically, the
 (@var{i},@var{j})-th element of the new matrix is given by,
 
 @example
-m'(i,j) = m->data[(k1*m->tda + k2) + i*m->tda + j]
+m'(i,j) = m->data[(k1*m->tda + k1) + i*m->tda + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
 runs from 0 to @code{n2-1}.
 
 The @code{data} pointer of the returned matrix struct is set to null if
-the combined parameters (@var{k1},@var{k2},@var{n1},@var{n2},@var{tda})
+the combined parameters (@var{i},@var{j},@var{n1},@var{n2},@var{tda})
 overrun the ends of the original matrix.
 
 The new matrix view is only a view of the block underlying the existing

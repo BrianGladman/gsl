@@ -17,7 +17,7 @@ Information is available for the following systems,
 * Any platform
 --------------
 
-If there are problems building the library try using
+1) If there are problems building the library try using
 
         ./configure --disable-shared
 
@@ -26,7 +26,15 @@ the build process to complete successfully.
 
 If you get any problems try this first.
 
-Attempts to run 'strip' on the static library libgsl.a will probably
+2) With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
+due to a compiler optimization bug which causes errors in the
+manipulation of complex numbers.  Do not use the library if you
+encounter this problem.
+
+This is fixed in more recent versions of gcc.  Compiling without
+optimisation will work around the bug.
+
+3) Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
 strip, and probably affects others too). The libgsl.a ar archive made
 by libtool contains files with the same filenames from different
@@ -37,7 +45,6 @@ library compile without -g instead of using strip.
 make install-strip does not work, due to a minor problem with autoconf
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
-
 
 * AIX
 -----
@@ -62,14 +69,6 @@ table-of-contents by setting LDFLAGS before compilation,
 
 * Compaq/DEC Alpha
 ------------------
-
-With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
-due to a compiler optimization bug which causes errors in the
-manipulation of complex numbers.  Do not use the library if you
-encounter this problem.
-
-This may be fixed in more recent versions of gcc.  Compiling without
-optimisation will work around the bug.
 
 The library should compile successfully with Compaq's C compiler using
 the -std option for ANSI conformance.  Use
