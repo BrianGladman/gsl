@@ -9,9 +9,7 @@ requirements.
 
 * PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
 
-* GSDV -- GNU Scientific Data Visualisation (Gtk widgets for GSL datatypes)
-
-* First line support on the mailing lists (e.g. checking that bugs are
+* 1st-line support on the mailing lists (e.g. checking that bugs are
 reproducible, and that all relevant information is supplied)
 
 * Eigensystems for non-symmetric matrices
@@ -108,6 +106,8 @@ maintainers will know more.
      
 Abramowitz and Stegun, "Handbook of Mathematical Functions" appears to
 be public domain.
+
+SEPT/02: See online images at http://members.fortunecity.com/aands/
 
 Devroye's book on Random Variates (1st ed) is/was in the public
 domain.  The troff source has been lost, unfortunately, but he says we
