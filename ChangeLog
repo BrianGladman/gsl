@@ -1,3 +1,7 @@
+Tue Sep  4 09:41:37 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl.spec.in: autogenerate gsl.spec from gsl.spec.in
+
 Sun Aug 26 17:19:24 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* acconfig.h: fixed incorrect #ifdef for HAVE_FINITE (Henry
