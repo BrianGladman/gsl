@@ -1,5 +1,9 @@
 * What is new in gsl-0.7+:
 
+** The build process now uses the latest libtool and automake
+
+** The library should now compile with Microsoft Visual C++
+
 ** Portable versions of the isinf, isnan and finite functions are
 available as gsl_isinf(x), gsl_isnan(x) and gsl_finite(x).
 
@@ -23,7 +27,7 @@ independently of GSL.  The organisation of the BLAS directories has be
 simplified.
 
 ** IEEE support for HPUX-11, NetBSD, Apple Darwin and OS/2 are now
-included
+included.
 
 ** The library now includes implementations of log1p, expm1, hypot,
 acosh, asinh, atanh for platforms which do not provide them.
