@@ -26,11 +26,11 @@ endfunction
 
 function t = trans (S)
   if (S.complex == 0)
-    v = [111, 112];
-    t = v(1+fix(rand()));
+    t = [111, 112];
+    #t = v(1+fix(rand()));
   else
-    v = [111, 113];
-    t = v(1+fix(rand()));
+    t = [111, 113];
+    #t = v(1+fix(rand()));
   endif
 endfunction
 
@@ -91,7 +91,7 @@ function T = test_trmatvector (S, j)
   T.n = fix(j/4)+1;
   T.lda = fix(j/4)+1;
   T.s = (-1)**(rem(fix(j/2),2));
-  T.trans = trans(S);
+
   if (S.complex == 0)
     T.A = random_matrix(T.n, T.n);
     T.v = random_vector(T.n);
@@ -106,7 +106,7 @@ function T = test_trmatvectors (S, j)
   T.lda = fix(j/4)+1;
   T.s1 = (-1)**(rem(fix(j/2),2));
   T.s2 = (-1)**(rem(j,2)) ;
-  T.trans = trans(S);
+
   if (S.complex == 0)
     T.A = random_matrix(T.n, T.n);
     T.v1 = random_vector(T.n);
@@ -119,19 +119,16 @@ function T = test_trmatvectors (S, j)
 endfunction
 
 
-function T = test_bmatvectors (S, j)
+function T = test_bmatvectors (S, j, trans)
   T.kl = fix(j/4)+1;
   T.ku = fix(j/4)+1;
   b = T.kl+T.ku+1;
-
 
   T.m =  b;
   T.n =  1+j;
   T.lda = max([T.m,T.n]);
   T.s1 = (-1)**(rem(fix(j/2),2));
   T.s2 = (-1)**(rem(j,2)) ;
-
-  T.trans = trans(S);
 
   if (S.complex == 0)
     T.A = random_matrix(T.lda, T.lda);
@@ -143,7 +140,7 @@ function T = test_bmatvectors (S, j)
     T.v2 = random_vector(T.m) + I * random_vector(T.m);
   endif
   
-  if (T.trans != 111)
+  if (trans != 111)
     tmp = T.v1;
     T.v1 = T.v2;
     T.v2 = tmp;
@@ -158,8 +155,6 @@ function T = test_tbmatvector (S, j)
   T.lda = T.n;
   T.s = (-1)**(fix(j/2));
 
-  T.trans = trans(S);
-
   if (S.complex == 0)
     T.A = random_matrix(T.lda, T.lda);
     T.v = random_vector(T.n);
@@ -172,7 +167,7 @@ endfunction
 function T = test_tpmatvector (S, j)
   T.n =  1+ fix(j/2);
   T.s = (-1)**(fix(j/2));
-  T.trans = trans(S);
+
   N = T.n * (T.n + 1) / 2;
 
   if (S.complex == 0)
@@ -188,7 +183,7 @@ function T = test_tpmatvectors (S, j)
   T.n =  1+ fix(j/2);
   T.s1 = (-1)**(rem(fix(j/2),2));
   T.s2 = (-1)**(rem(j,2)) ;
-  T.trans = trans(S);
+
   N = T.n * (T.n + 1) / 2;
 
   if (S.complex == 0)
@@ -226,7 +221,7 @@ function T = test_sbmatvectors (S, j)
   b = T.k+1;
   T.n =  b+fix(j/2);
   T.lda = T.n;
-  T.trans = trans(S);
+
   T.s1 = (-1)**(rem(fix(j/2),2));
   T.s2 = (-1)**(rem(j,2)) ;
 
@@ -244,7 +239,7 @@ endfunction
 function T = test_spmatvectors (S, j)
   T.n =  1+ fix(j/2);
   N = T.n * (T.n + 1) / 2;
-  T.trans = trans(S);
+
   T.s1 = (-1)**(rem(fix(j/2),2));
   T.s2 = (-1)**(rem(j,2)) ;
 
@@ -257,6 +252,45 @@ function T = test_spmatvectors (S, j)
     T.v1 = random_vector(T.n) + I * random_vector(T.n);
     T.v2 = random_vector(T.n) + I * random_vector(T.n);
   endif
+endfunction
+
+
+function T = test_matmat (S, j, order, transA, transB)
+  T.m = fix(j/4)+1;
+  T.n = fix(j/2)+1;
+  T.k = fix(j/1)+1;
+
+  if (order == 101)
+    T.ldc = T.n;
+  else
+    T.ldc = T.m;
+  endif
+
+  if ((order == 101 && transA == 111) || (order == 102 && transA == 112))
+    T.lda = T.k;
+  else
+    T.lda = T.m;
+  endif
+
+  if ((order == 101 && transB == 111) || (order == 102 && transB == 112))
+    T.ldb = T.n;
+  else
+    T.ldb = T.k;
+  endif
+
+  if (S.complex == 0)
+    T.C = random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.m, T.k);
+    T.B = random_matrix(T.k, T.n);
+  else
+    T.C = random_matrix(T.m, T.n) + I * random_matrix(T.m, T.n);
+
+    T.A = random_matrix(T.m, T.k) + I * random_matrix(T.m, T.k);
+    T.B = random_matrix(T.k, T.n) + I * random_matrix(T.k, T.n);
+  endif
+
+  
 endfunction
 
 
@@ -290,6 +324,11 @@ function v = vout (X, incX, N, x)
 endfunction
 
 function m = matrix (order, A, lda, M, N)
+#  order
+#  A
+#  lda
+#  M
+#  N
   if (order == 102)   # column major
     tmp = reshape(A,lda,length(A)/lda);
     m = tmp(1:M,1:N);
@@ -1152,6 +1191,35 @@ function AA = blas_hpr2 (order, uplo, N, alpha, X, incX, Y, incY, A)
 endfunction
 
 
+## Level 3 Blas
+
+function CC = blas_gemm (order, transA, transB,  M, N, K, alpha, \
+                         A, lda, B, ldb, beta, C, ldc)
+  c = matrix (order, C, ldc, M, N);
+
+  if (transA == 111)
+    a = matrix (order, A, lda, M, K);
+  else
+    a = matrix (order, A, lda, K, M);
+  endif
+
+  a = op(a, transA);
+
+  if (transB == 111)
+    b = matrix (order, B, ldb, K, N);
+  else
+    b = matrix (order, B, ldb, N, K);
+  endif
+
+  b = op(b, transB);
+
+
+  c = alpha * a * b + beta * c;
+  
+  CC = mout(order, C, ldc, M, N, c);
+endfunction
+
+
 ######################################################################
 
                                 # testing functions
@@ -1230,7 +1298,7 @@ function test(S,type,a,b,desc,var)
     endif
   elseif (strcmp(type,"int"))
     printf("   gsl_test_int(%s, %s, \"%s\");\n", a, b, desc);
-  elseif (strcmp(type,"vector"))
+  elseif (strcmp(type,"vector") || strcmp(type,"matrix"))
     N = length(var);
     if (S.complex == 0)
       printf("   {\n");
@@ -1812,6 +1880,31 @@ function test_hpr (S, fn, order, uplo, N, alpha, X, incX, Ap)
   end_block();
 endfunction
 
+function test_gemm (S, fn, order, transA, transB, M, N, K, alpha, A, \
+                    lda, B, ldb, beta, C, ldc)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "transA", transA);
+  define(S, "int", "transB", transB);
+  define(S, "int", "M", M);
+  define(S, "int", "N", N);
+  define(S, "int", "K", K);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "scalar", "beta", beta);
+  define(S, "matrix", "A", A);
+  define(S, "int", "lda", lda);
+  define(S, "matrix", "B", B);
+  define(S, "int", "ldb", ldb);
+  define(S, "matrix", "C", C);
+  define(S, "int", "ldc", ldc);
+
+  CC = feval(strcat("blas_", fn), order, transA, transB, M, N, K, \
+             alpha, A, lda, B, ldb, beta, C, ldc);
+  define(S, "matrix", "C_expected", CC);
+  call("cblas_", S.prefix, fn, "(order, transA, transB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc)");
+  test(S, "matrix", "C", "C_expected", strcat(S.prefix, fn), C);
+  end_block();
+endfunction
 
 ######################################################################
 
@@ -1971,11 +2064,13 @@ n=16;
 #   for i = [s,d,c,z]
 #     S = context(i);
 #     T = test_matvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
+#     for trans = trans(S)
+#       for alpha = coeff(S)
+#         for beta = coeff(S)
 #           for order = [101, 102]
-#             test_gemv (S, "gemv", order, T.trans, T.m, T.n, alpha, T.A, \
+#             test_gemv (S, "gemv", order, trans, T.m, T.n, alpha, T.A, \
 #                        T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -1985,12 +2080,14 @@ n=16;
 # for j = 1:n
 #   for i = [s,d,c,z]
 #     S = context(i);
-#     T = test_bmatvectors(S, j);
-#     for alpha = coeff(S)
-#       for beta = coeff(S)
-#         for order = [101, 102]
-#           test_gbmv (S, "gbmv", order, T.trans, T.m, T.n, T.kl, T.ku, \
-#                      alpha, T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+#     for trans = trans(S)
+#       T = test_bmatvectors(S, j, trans);
+#       for alpha = coeff(S)
+#         for beta = coeff(S)
+#           for order = [101, 102]
+#             test_gbmv (S, "gbmv", order, trans, T.m, T.n, T.kl, T.ku, \
+#                        alpha, T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -2000,29 +2097,14 @@ n=16;
 # for j = 1:n
 #   for i = [s,d,c,z]
 #     S = context(i);
-#     T = test_trmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#           test_trmv (S, "trmv", order, uplo, T.trans, diag, T.n,
-#                      T.A, T.lda, T.v, T.s);
-#         endfor
-#       endfor
-#     endfor
-#   endfor
-# endfor
-
-#n=32;
-
-# for j = 1:n
-#   for i = [s,d,c,z]
-#     S = context(i);
-#     T = test_tbmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#           test_tbmv (S, "tbmv", order, uplo, T.trans, diag, T.n, T.k,
-#                      T.A, T.lda, T.v, T.s);
+#     for trans = trans(S)
+#       T = test_trmatvector(S, j);
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_trmv (S, "trmv", order, uplo, trans, diag, T.n,
+#                        T.A, T.lda, T.v, T.s);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -2032,12 +2114,31 @@ n=16;
 # for j = 1:n
 #   for i = [s,d,c,z]
 #     S = context(i);
-#     T = test_tpmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#           test_tpmv (S, "tpmv", order, uplo, T.trans, diag, T.n, 
-#                      T.A, T.v, T.s);
+#     for trans = trans(S)
+#       T = test_tbmatvector(S, j);
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_tbmv (S, "tbmv", order, uplo, trans, diag, T.n, T.k,
+#                        T.A, T.lda, T.v, T.s);
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     for trans = trans(S)
+#       T = test_tpmatvector(S, j);
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_tpmv (S, "tpmv", order, uplo, trans, diag, T.n, 
+#                        T.A, T.v, T.s);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -2053,8 +2154,9 @@ n=16;
 #         for order = [101, 102]
 #           for uplo = [121, 122]
 #             for diag = [131, 132]
-#               test_hesymv (S, "symv", order, uplo, T.n, alpha, T.A, T.lda, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
+#               test_hesymv (S, "symv", order, uplo, T.n, alpha, 
+#                            T.A, T.lda, 
+#                            T.v1, T.s1, beta, T.v2, T.s2);
 #             endfor
 #           endfor
 #         endfor
@@ -2072,8 +2174,9 @@ n=16;
 #         for order = [101, 102]
 #           for uplo = [121, 122]
 #             for diag = [131, 132]
-#               test_hesymv (S, "hemv", order, uplo, T.n, alpha, T.A, T.lda, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
+#               test_hesymv (S, "hemv", order, uplo, T.n, alpha, 
+#                            T.A, T.lda, 
+#                            T.v1, T.s1, beta, T.v2, T.s2);
 #             endfor
 #           endfor
 #         endfor
@@ -2091,8 +2194,8 @@ n=16;
 #         for order = [101, 102]
 #           for uplo = [121, 122]
 #             for diag = [131, 132]
-#               test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
+#               test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, 
+#                            T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
 #             endfor
 #           endfor
 #         endfor
@@ -2110,8 +2213,8 @@ n=16;
 #         for order = [101, 102]
 #           for uplo = [121, 122]
 #             for diag = [131, 132]
-#               test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
-#                            T.s1, beta, T.v2, T.s2);
+#               test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, 
+#                            T.A, T.lda, T.v1, T.s1, beta, T.v2, T.s2);
 #             endfor
 #           endfor
 #         endfor
@@ -2162,28 +2265,31 @@ n=16;
 # for j = 1:n
 #   for i = [s,d,c,z]
 #     S = context(i);
-#     T = test_trmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#           test_trmv (S, "trsv", order, uplo, T.trans, diag, T.n,
-#                      T.A, T.lda, T.v, T.s);
+#     for trans = trans(S);
+#       T = test_trmatvector(S, j);
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_trmv (S, "trsv", order, uplo, trans, diag, T.n,
+#                        T.A, T.lda, T.v, T.s);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
 #   endfor
 # endfor
 
-
 # for j = 1:n
 #   for i = [s,d,c,z]
 #     S = context(i);
-#     T = test_tbmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#            test_tbmv (S, "tbsv", order, uplo, T.trans, diag, T.n, T.k,
-#                       T.A, T.lda, T.v, T.s);
+#     for trans = trans(S);
+#       T = test_tbmatvector(S, j);
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_tbmv (S, "tbsv", order, uplo, trans, diag, T.n, T.k,
+#                        T.A, T.lda, T.v, T.s);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -2194,11 +2300,13 @@ n=16;
 #   for i = [s,d,c,z]
 #     S = context(i);
 #     T = test_tpmatvector(S, j);
-#     for order = [101, 102]
-#       for uplo = [121, 122]
-#         for diag = [131, 132]
-#           test_tpmv (S, "tpsv", order, uplo, T.trans, diag, T.n, 
-#                      T.A, T.v, T.s);
+#     for trans = trans(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           for diag = [131, 132]
+#             test_tpmv (S, "tpsv", order, uplo, trans, diag, T.n, 
+#                        T.A, T.v, T.s);
+#           endfor
 #         endfor
 #       endfor
 #     endfor
@@ -2335,17 +2443,39 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [c,z];
+#     S = context(i);
+#     T = test_trmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for order = [101, 102]
+#         for uplo = [121, 122]
+#           test_spr2 (S, "hpr2", order, uplo, T.n, alpha, T.v1, T.s1, \
+#                      T.v2, T.s2, T.A, T.lda);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [c,z];
+  for i = [s,d] #,c,z]
     S = context(i);
-    T = test_trmatvectors(S, j);
-    for alpha = coeff(S)
-      for order = [101, 102]
-        for uplo = [121, 122]
-          test_spr2 (S, "hpr2", order, uplo, T.n, alpha, T.v1, T.s1, \
-                     T.v2, T.s2, T.A, T.lda);
+    for transA = trans(S)
+      for transB = trans(S)
+        for alpha = coeff(S)
+          for beta = coeff(S)
+            for order = [101, 102]
+              T = test_matmat(S, j, order, transA, transB);
+              test_gemm (S, "gemm", order, transA, transB, T.m, T.n,
+                         T.k, alpha, 
+                         T.A, T.lda, T.B, T.ldb, beta, T.C, T.ldc);
+            endfor
+          endfor
         endfor
       endfor
     endfor
   endfor
 endfor
+    
+    
