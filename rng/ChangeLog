@@ -1,3 +1,15 @@
+1998-09-10  James Theiler  <jt@lanl.gov>
+
+	* gfsr4.c: added new random number generator
+
+	* Makefile.am: added gfsr4.c to SOURCES list
+
+	* gsl_rng.h: added gfsr4
+
+	* test.c: added gfsr4
+
+	* benchmark.c: added gfsr4
+
 Mon Aug 10 22:12:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rng-dump.c: program to write out 3 million random numbers,
