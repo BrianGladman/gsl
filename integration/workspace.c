@@ -69,6 +69,21 @@ gsl_integration_workspace_alloc (const size_t n)
 			GSL_ENOMEM, 0);
     }
 
+  w->iord = (size_t *) malloc (n * sizeof (size_t));
+
+  if (w->iord == 0)
+    {
+      free (w->elist);
+      free (w->rlist);
+      free (w->blist);
+      free (w->alist);
+      free (w);		/* exception in constructor, avoid memory leak */
+
+      GSL_ERROR_RETURN ("failed to allocate space for iord ranges",
+			GSL_ENOMEM, 0);
+    }
+
+
   w->limit = n ;
   
   return w ;
@@ -77,6 +92,7 @@ gsl_integration_workspace_alloc (const size_t n)
 void
 gsl_integration_workspace_free (gsl_integration_workspace * w)
 {
+  free (w->iord) ;
   free (w->elist) ;
   free (w->rlist) ;
   free (w->blist) ;

@@ -407,19 +407,24 @@ int main (void)
     gsl_test_int(status,exp_ier,"qng(book1) beyond 87pt status") ;
   }
 
+  /* Test the adaptive integrator QAGE */
 
-#ifdef JUNK
   {
-    double alist[1000], blist[1000], rlist[1000], elist[1000];
-    size_t iord[1000] ;
-    size_t last;
-    result = 0 ; abserr=0; neval=0  ;
-    gsl_integration_qage(f, 0.0, 1.0, 0, 1e-10, 6, 1000,
-			 alist, blist, rlist, elist, iord, &last,
-			 &result, &abserr, &neval) ;
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
+    size_t last = 0,  neval = 0;
+    double result = 0, abserr=0;
+    int status ;
+    alpha = -0.9 ;
+    status = gsl_integration_qage (book1, 0.0, 1.0, 0.0, 1e-10, 
+				   GSL_INTEG_GAUSS15, w, &last, 
+				   &result, &abserr, &neval) ;
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
+    printf("qage: status = %d\n", status) ;
   }
+
+#ifdef JUNK
+
 
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
