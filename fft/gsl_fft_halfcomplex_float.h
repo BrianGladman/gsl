@@ -5,7 +5,6 @@
 
 #include <gsl_math.h>
 #include <gsl_complex.h>
-#include <gsl_vector.h>
 #include <gsl_fft.h>
 
 int gsl_fft_halfcomplex_float_radix2_backward (float data[], size_t stride, size_t n);
@@ -47,5 +46,10 @@ int
 gsl_fft_halfcomplex_float_unpack (const float halfcomplex_coefficient[],
 				  float complex_coefficient[],
 				  size_t stride, size_t n);
+
+int
+gsl_fft_halfcomplex_float_radix2_unpack (const float halfcomplex_coefficient[],
+					 float complex_coefficient[],
+					 size_t stride, size_t n);
 
 #endif /* GSL_FFT_HALFCOMPLEX_FLOAT_H */

@@ -105,16 +105,15 @@ FUNCTION(gsl_fft_real,radix2_transform) (BASE data[], const size_t stride,  cons
 	  }
       }
 
-      if (p_1 >  1) {
-	
-	for (b = 0; b < q; b++) {
-	  /* a = p_{i-1}/2 */
-
-	  VECTOR(data,stride,b*p + p - p_1/2) *= -1 ;
+      if (p_1 >  1) 
+	{
+	  for (b = 0; b < q; b++) 
+	    {
+	      /* a = p_{i-1}/2 */
+	      
+	      VECTOR(data,stride,b*p + p - p_1/2) *= -1 ;
+	    }
 	}
-      }
-
     }
   return 0;
-  
 }

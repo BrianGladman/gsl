@@ -5,7 +5,6 @@
 
 #include <gsl_math.h>
 #include <gsl_complex.h>
-#include <gsl_vector.h>
 #include <gsl_fft.h>
 
 int gsl_dft_complex_float_forward (const float data[], size_t stride, size_t n,

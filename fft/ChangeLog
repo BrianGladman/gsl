@@ -1,3 +1,8 @@
+Sat Sep  5 22:32:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* major work done on templatizing everything so that you can do an
+ 	fft of a float or a double vector.
+	
 Tue Sep  1 16:44:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* c_main.c: renamed c.c to c_main.c
