@@ -289,3 +289,12 @@ work with Akima interpolation as well, but I didn't test that:).
 ######################################################
 
 
+----------------------------------------------------------------------
+BUG#22 - test suite fails with djgpp
+
+Andris Pavenis <pavenis@latnet.lv> reports that the test suite fails
+on DOS with djgpp due to missing $(EXEEXT) extensions on the
+executables in TESTS.  This is an automake problem, but can be worked
+around by adding the extensions $(EXEEXT) manually to each executable
+in the TEST= lines in */Makefile.am.  He supplied a patch to do this.
+----------------------------------------------------------------------
