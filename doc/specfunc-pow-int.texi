@@ -16,6 +16,7 @@ check for overflow or underflow conditions.
 
 @example
 #include <gsl/gsl_sf_pow_int.h>
-double y = gsl_sf_pow_int(3.0, 12)  /* compute 3.0**12 */
+/* compute 3.0**12 */
+double y = gsl_sf_pow_int(3.0, 12); 
 @end example
 

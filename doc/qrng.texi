@@ -115,7 +115,8 @@ Sobol sequence.
 #include <stdio.h>
 #include <gsl/gsl_qrng.h>
 
-int main (void)
+int
+main (void)
 @{
   int i;
   gsl_qrng * q = gsl_qrng_alloc (gsl_qrng_sobol, 2);

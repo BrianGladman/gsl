@@ -258,7 +258,8 @@ void P1(void *xp)
   printf("%12g", *((double *) xp));
 @}
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 @{
   Element x0; /* initial guess for search */
 

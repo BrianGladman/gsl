@@ -429,7 +429,8 @@ before being displayed.
 #include <stdio.h>
 #include <gsl/gsl_const_mks.h>
 
-int main (void)
+int
+main (void)
 @{
   double c  = GSL_CONST_MKS_SPEED_OF_LIGHT;
   double au = GSL_CONST_MKS_ASTRONOMICAL_UNIT;

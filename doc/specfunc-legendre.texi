@@ -112,7 +112,7 @@ This function computes an array of Legendre polynomials
 
 @deftypefun double gsl_sf_legendre_sphPlm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_sphPlm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
-These routines compute the normalized associated legendre polynomial
+These routines compute the normalized associated Legendre polynomial
 @c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
 @math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$} suitable
 for use in spherical harmonics.  The parameters must satisfy @c{$m \ge 0$}

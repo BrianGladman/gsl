@@ -139,7 +139,7 @@ The following precision levels are available for the mode argument,
 Double-precision, a relative accuracy of approximately @c{$2 \times 10^{-16}$}
 @math{2 * 10^-16}.
 @item GSL_PREC_SINGLE
-Single-precision, a relative accuracy of approximately @c{$1 \ times 10^{-7}$}
+Single-precision, a relative accuracy of approximately @c{$1 \times 10^{-7}$}
 @math{10^-7}.
 @item GSL_PREC_APPROX
 Approximate values, a relative accuracy of approximately @c{$5 \times 10^{-4}$}
@@ -272,7 +272,8 @@ the special functions, in this case to compute the Bessel function
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
-int main (void)
+int
+main (void)
 @{
   double x = 5.0;
   gsl_sf_result result;
@@ -307,7 +308,8 @@ status are not accessible.
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
-int main (void)
+int
+main (void)
 @{
   double x = 5.0;
   double expected = -0.17759677131433830434739701;

@@ -34,7 +34,7 @@ int status = gsl_function(...)
 
 if (status) @{ /* an error occurred */
   .....       
-  /* the status value specifies the type of error */
+  /* status value specifies the type of error */
 @}
 @end example
 

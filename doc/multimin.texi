@@ -174,7 +174,8 @@ my_fdf (const gsl_vector *x, void *params,
   my_df(x, params, df);
 @}
 
-int main(void)
+int
+main(void)
 @{
   gsl_multimin_function_fdf my_func;
 
@@ -226,7 +227,7 @@ is sometimes the case that the best approach is to start out with one
 algorithm and switch to another when the estimate of the minimum
 approaches the true minimum.
 
-@deffn {Minimization Method} gsl_multimin_fdfminimizer_steepest_descent
+@deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
 The steepest descent method is the most straightforward of the
 available algorithms.  When a point is examined during the hunt for
 the minimum, the gradient is calculated at that point and the next
@@ -307,7 +308,8 @@ my_df (const gsl_vector * v, void *params, gsl_vector * df)
 
 /* Calculate both f and df. */
 static void
-my_fdf (const gsl_vector * x, void *params, double *f, gsl_vector * df)
+my_fdf (const gsl_vector * x, void *params, 
+        double *f, gsl_vector * df)
 @{
   *f = my_f (x, params);
   my_df (x, params, df);
@@ -324,7 +326,8 @@ const double EPSABS = 1e-4;
 const double EPSREL = 1e-4;
 const unsigned int MAX_ITER = 10000;
 
-int main (void)
+int
+main (void)
 @{
   size_t i = 0, j = 0;
   int status;

@@ -19,32 +19,64 @@ Stegun, Chapter 5.  These functions are declared in the header file
 
 @deftypefun double gsl_sf_expint_E1 (double @var{x})
 @deftypefunx int gsl_sf_expint_E1_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the exponential integral @math{E_1(x) := Re
-\int_1^\infty dt \exp(-xt)/t}.
+These routines compute the exponential integral @math{E_1(x)},
+@tex
+\beforedisplay
+$$
+E_1(x) := Re \int_1^\infty dt \exp(-xt)/t.
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+E_1(x) := Re \int_1^\infty dt \exp(-xt)/t.
+@end example
+@end ifinfo
+@noindent
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
-
 
 @deftypefun double gsl_sf_expint_E2 (double @var{x})
 @deftypefunx int gsl_sf_expint_E2_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the second-order exponential integral
-@math{E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2}.
+These routines compute the second-order exponential integral @math{E_2(x)},
+@tex
+\beforedisplay
+$$
+E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2.
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2.
+@end example
+@end ifinfo
+@noindent
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
-
 
 @node Ei(x)
 @subsection Ei(x)
 
-
 @deftypefun double gsl_sf_expint_Ei (double @var{x})
 @deftypefunx int gsl_sf_expint_Ei_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the exponential integral
-@c{$Ei(x) := PV(\int_{-x}^\infty dt \exp(-t)/t)$}
-@math{Ei(x) := PV(\int_@{-x@}^\infty dt \exp(-t)/t)}, where @math{PV}
-denotes the principal value of the integral.
+These routines compute the exponential integral @math{E_i(x)},
+@tex
+\beforedisplay
+$$
+Ei(x) := PV(\int_{-x}^\infty dt \exp(-t)/t)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+Ei(x) := PV(\int_@{-x@}^\infty dt \exp(-t)/t)
+@end example
+@end ifinfo
+@noindent
+where @math{PV} denotes the principal value of the integral.
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun

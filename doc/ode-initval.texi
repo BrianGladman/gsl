@@ -436,7 +436,8 @@ jac (double t, const double y[], double *dfdy,
   return GSL_SUCCESS;
 @}
 
-int main (void)
+int
+main (void)
 @{
   const gsl_odeiv_step_type * T 
     = gsl_odeiv_step_rk8pd;

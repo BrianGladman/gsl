@@ -178,7 +178,8 @@ The following program computes the eigenvalues and eigenvectors of the 4-th orde
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 
-int main (void)
+int
+main (void)
 @{
   double data[] = @{ 1.0  , 1/2.0, 1/3.0, 1/4.0,
                     1/2.0, 1/3.0, 1/4.0, 1/5.0,
@@ -225,7 +226,7 @@ int main (void)
 Here is the beginning of the output from the program,
 
 @example
-bjg|debian> ./a.out 
+$ ./a.out 
 eigenvalue = 9.67023e-05
 eigenvector = 
 -0.0291933

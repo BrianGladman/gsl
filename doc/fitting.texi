@@ -277,7 +277,8 @@ associated one standard-deviation error bars.
 #include <stdio.h>
 #include <gsl/gsl_fit.h>
 
-int main (void)
+int
+main (void)
 @{
   int i, n = 4;
   double x[4] = @{ 1970, 1980, 1990, 2000 @};
@@ -381,7 +382,8 @@ value @var{y}.
 #include <stdio.h>
 #include <gsl/gsl_multifit.h>
 
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 @{
   int i, n;
   double xi, yi, ei, chisq;
@@ -461,7 +463,8 @@ program.  It outputs a set of points with gaussian errors from the curve
 #include <math.h>
 #include <gsl/gsl_randist.h>
 
-int main (void)
+int
+main (void)
 @{
   double x;
   const gsl_rng_type * T;
@@ -538,13 +541,16 @@ Physics prepared by the Particle Data Group.
 @item
 @cite{Review of Particle Properties}
 R.M. Barnett et al., Physical Review D54, 1 (1996)
+@url{http://pdg.lbl.gov/}
 @end itemize
 @noindent
-The Review of Particle Physics is available online at
-@url{http://pdg.lbl.gov/}.
+The Review of Particle Physics is available online at the website given
+above.
 
 The tests used to prepare these routines are based on the NIST
 Statistical Reference Datasets. The datasets and their documentation are
-available from @url{http://www.nist.gov/itl/div898/strd/index.html}
+available from NIST at the following website,
+
+@center @url{http://www.nist.gov/itl/div898/strd/index.html}.
 
 

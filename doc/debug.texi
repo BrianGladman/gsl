@@ -64,7 +64,7 @@ reason for it.
 
 @smallexample
 (gdb) run
-Starting program: /home/bjg/gsl/fft/test_trap 
+Starting program: test_trap 
 
 Breakpoint 1, gsl_error (reason=0x8052b0d 
     "length n must be positive integer", 

@@ -3,8 +3,8 @@
 
 The prototypes for the low-level @sc{cblas} functions are declared in
 the file @code{gsl_cblas.h}.  For the definition of the functions
-consult the papers listed in the references or the documentation
-available from Netlib.
+consult the documentation available from Netlib (@pxref{BLAS References
+and Further Reading}).
 
 @menu
 * Level 1 CBLAS Functions::     
@@ -494,7 +494,8 @@ changed to @code{CblasColMajor}.
 #include <stdio.h>
 #include <gsl/gsl_cblas.h>
 
-int main (void)
+int
+main (void)
 @{
   int lda = 3;
 

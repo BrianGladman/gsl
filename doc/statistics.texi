@@ -670,7 +670,8 @@ Here is a basic example of how to use the statistical functions:
 #include <stdio.h>
 #include <gsl/gsl_statistics.h>
 
-int main(void)
+int
+main(void)
 @{
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double mean, variance, largest, smallest;
@@ -709,7 +710,8 @@ Here is an example using sorted data,
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
 
-int main(void)
+int
+main(void)
 @{
   double data[5] = @{17.2, 18.1, 16.5, 18.3, 12.6@};
   double median, upperq, lowerq;

@@ -137,7 +137,8 @@ summation of the series converge slowly.
 
 #define N 20
 
-int main (void)
+int
+main (void)
 @{
   double t[N];
   double sum_accel, err;

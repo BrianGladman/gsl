@@ -169,7 +169,8 @@ struct data
   double z;
 @};
 
-int main (void)
+int
+main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
@@ -222,7 +223,8 @@ struct data
 int sel_func (void *ntuple_data, void *params);
 double val_func (void *ntuple_data, void *params);
 
-int main (void)
+int
+main (void)
 @{
   struct data ntuple_row;
   int i;

@@ -230,14 +230,15 @@ finds its inverse.
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_permutation.h>
 
-int main (void) 
+int
+main (void) 
 @{
   const size_t N = 10;
   const gsl_rng_type * T;
   gsl_rng * r;
 
   gsl_permutation * p = gsl_permutation_alloc (N);
-  gsl_permutation * p_inv = gsl_permutation_alloc (N);
+  gsl_permutation * q = gsl_permutation_alloc (N);
 
   gsl_rng_env_setup();
   T = gsl_rng_default;
@@ -249,13 +250,13 @@ int main (void)
   printf("\n");
 
   printf(" random permutation:");  
-  gsl_ran_shuffle (r, p->data, p->size, sizeof(size_t));
+  gsl_ran_shuffle (r, p->data, N, sizeof(size_t));
   gsl_permutation_fprintf (stdout, p, " %u");
   printf("\n");
 
   printf("inverse permutation:");  
-  gsl_permutation_invert (p_inv, p);
-  gsl_permutation_fprintf (stdout, p_inv, " %u");
+  gsl_permutation_invert (q, p);
+  gsl_permutation_fprintf (stdout, q, " %u");
   printf("\n");
 
   return 0;
@@ -282,7 +283,8 @@ permutations, starting from the identity,
 #include <stdio.h>
 #include <gsl/gsl_permutation.h>
 
-int main (void) 
+int
+main (void) 
 @{
   gsl_permutation * p = gsl_permutation_alloc (3);
 

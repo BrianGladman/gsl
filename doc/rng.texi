@@ -287,7 +287,8 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 
 gsl_rng * r;  /* global generator */
 
-int main (void)
+int
+main (void)
 @{
   const gsl_rng_type * T;
 

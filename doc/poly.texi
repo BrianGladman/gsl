@@ -24,8 +24,8 @@ file @code{gsl_poly.h}.
 @deftypefun double gsl_poly_eval (const double c[], const int @var{len}, const double @var{x})
 This function evaluates the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
-@math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}}.  
-The function is inlined when possible.
+@math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}} using
+Horner's method for stability.  The function is inlined when possible.
 @end deftypefun
 
 
@@ -217,7 +217,8 @@ The following program will find these roots.
 #include <stdio.h>
 #include <gsl/gsl_poly.h>
 
-int main (void)
+int
+main (void)
 @{
   int i;
   /* coefficient of P(x) =  -1 + x^5  */

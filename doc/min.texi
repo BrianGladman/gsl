@@ -380,7 +380,8 @@ double fn1 (double x, void * params)
   return cos(x) + 1.0;
 @}
 
-int main (void)
+int
+main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
@@ -417,12 +418,14 @@ int main (void)
       a = gsl_min_fminimizer_x_lower (s);
       b = gsl_min_fminimizer_x_upper (s);
 
-      status = gsl_min_test_interval (a, b, 0.001, 0.0);
+      status 
+        = gsl_min_test_interval (a, b, 0.001, 0.0);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
 
-      printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
+      printf ("%5d [%.7f, %.7f] "
+              "%.7f %.7f %+.7f %.7f\n",
               iter, a, b,
               m, m_expected, m - m_expected, b - a);
     @}

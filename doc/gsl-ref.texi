@@ -316,10 +316,10 @@ More information about GSL can be found at the project homepage,
 * GSL CBLAS Library::           
 * GNU General Public License::  
 * GNU Free Documentation License::  
-* Concept Index::               
 * Function Index::              
 * Variable Index::              
 * Type Index::                  
+* Concept Index::               
 @end menu
 
 @node  Introduction, Using the library, Top, Top
@@ -562,7 +562,7 @@ fi
 @unnumbered GNU General Public License
 @include gpl.texi
 
-@node GNU Free Documentation License, Concept Index, GNU General Public License, Top
+@node GNU Free Documentation License, Function Index, GNU General Public License, Top
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
@@ -572,12 +572,7 @@ fi
 @normalbottom
 @end iftex
 
-@node Concept Index, Function Index, GNU Free Documentation License, Top
-@unnumbered Concept Index
-
-@printindex cp
-
-@node Function Index, Variable Index, Concept Index, Top
+@node Function Index, Variable Index, GNU Free Documentation License, Top
 @unnumbered Function Index
 
 @printindex fn
@@ -587,10 +582,15 @@ fi
 
 @printindex vr
 
-@node Type Index,  , Variable Index, Top
+@node Type Index, Concept Index, Variable Index, Top
 @unnumbered Type Index
 
 @printindex tp
+
+@node Concept Index,  , Type Index, Top
+@unnumbered Concept Index
+
+@printindex cp
 
 @ifclear publish
 @comment Use @setchapternewpage odd to ensure that the contents starts 

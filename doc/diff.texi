@@ -66,7 +66,8 @@ double f (double x, void * params)
   return pow (x, 1.5);
 @}
 
-int main (void)
+int
+main (void)
 @{
   gsl_function F;
   double result, abserr;

@@ -125,7 +125,8 @@ computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
 #include <stdio.h>
 #include <gsl/gsl_sf_bessel.h>
 
-int main (void)
+int
+main (void)
 @{
   double x = 5.0;
 

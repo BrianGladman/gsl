@@ -656,7 +656,8 @@ display_results (char *title, double result, double error)
           fabs (result - exact) / error);
 @}
 
-int main (void)
+int
+main (void)
 @{
   double res, err;
 

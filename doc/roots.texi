@@ -318,7 +318,7 @@ FDF.df = &my_df;
 FDF.fdf = &my_fdf;
 FDF.params = 0;
 @end example
-
+@noindent
 The function @math{f(x)} can be evaluated using the following macro,
 
 @example
@@ -340,7 +340,7 @@ can be evaluated at the same time using the following macro,
 #define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) 
      (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
 @end example
-
+@noindent
 The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
 its @var{dy} argument -- both of these should be pointers to
 @code{double}.
@@ -884,14 +884,15 @@ with solution @math{x = \sqrt 5 = 2.236068...}
 #include "demo_fn.h"
 #include "demo_fn.c"
 
-int main (void)
+int
+main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
   const gsl_root_fsolver_type *T;
   gsl_root_fsolver *s;
   double r = 0, r_expected = sqrt (5.0);
-  double x_lower = 0.0, x_upper = 5.0;
+  double x_lo = 0.0, x_hi = 5.0;
   gsl_function F;
   struct quadratic_params params = @{1.0, 0.0, -5.0@};
 
@@ -900,7 +901,7 @@ int main (void)
 
   T = gsl_root_fsolver_brent;
   s = gsl_root_fsolver_alloc (T);
-  gsl_root_fsolver_set (s, &F, x_lower, x_upper);
+  gsl_root_fsolver_set (s, &F, x_lo, x_hi);
 
   printf ("using %s method\n", 
           gsl_root_fsolver_name (s));
@@ -914,18 +915,18 @@ int main (void)
       iter++;
       status = gsl_root_fsolver_iterate (s);
       r = gsl_root_fsolver_root (s);
-      x_lower = gsl_root_fsolver_x_lower (s);
-      x_upper = gsl_root_fsolver_x_upper (s);
-      status = gsl_root_test_interval (x_lower, x_upper,
+      x_lo = gsl_root_fsolver_x_lower (s);
+      x_hi = gsl_root_fsolver_x_upper (s);
+      status = gsl_root_test_interval (x_lo, x_hi,
                                        0, 0.001);
 
       if (status == GSL_SUCCESS)
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
-              iter, x_lower, x_upper,
+              iter, x_lo, x_hi,
               r, r - r_expected, 
-              x_upper - x_lower);
+              x_hi - x_lo);
     @}
   while (status == GSL_CONTINUE && iter < max_iter);
   return status;
@@ -985,7 +986,8 @@ instead.
 #include "demo_fn.h"
 #include "demo_fn.c"
 
-int main (void)
+int
+main (void)
 @{
   int status;
   int iter = 0, max_iter = 100;
@@ -1027,7 +1029,7 @@ int main (void)
   return status;
 @}
 @end example
-
+@noindent
 Here are the results for Newton's method,
 
 @example

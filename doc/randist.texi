@@ -1642,7 +1642,8 @@ Poisson distribution with a mean of 3.
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-int main (void)
+int
+main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;
@@ -1710,7 +1711,8 @@ The following program generates a random walk in two dimensions.
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-int main (void)
+int
+main (void)
 @{
   const gsl_rng_type * T;
   gsl_rng * r;

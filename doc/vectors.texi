@@ -167,7 +167,8 @@ The following program shows how to allocate a block,
 #include <stdio.h>
 #include <gsl/gsl_block.h>
 
-int main (void)
+int
+main (void)
 @{
   gsl_block * b = gsl_block_alloc (100);
   
@@ -747,7 +748,8 @@ using the functions @code{gsl_vector_alloc}, @code{gsl_vector_set} and
 #include <stdio.h>
 #include <gsl/gsl_vector.h>
 
-int main (void)
+int
+main (void)
 @{
   int i;
   gsl_vector * v = gsl_vector_alloc (3);
@@ -786,7 +788,8 @@ The next program shows how to write a vector to a file.
 #include <stdio.h>
 #include <gsl/gsl_vector.h>
 
-int main (void)
+int
+main (void)
 @{
   int i; 
   gsl_vector * v = gsl_vector_alloc (100);
@@ -1521,7 +1524,8 @@ using the functions @code{gsl_matrix_alloc}, @code{gsl_matrix_set} and
 #include <stdio.h>
 #include <gsl/gsl_matrix.h>
 
-int main (void)
+int
+main (void)
 @{
   int i, j; 
   gsl_matrix * m = gsl_matrix_alloc (10, 3);
@@ -1564,7 +1568,8 @@ The next program shows how to write a matrix to a file.
 #include <stdio.h>
 #include <gsl/gsl_matrix.h>
 
-int main (void)
+int
+main (void)
 @{
   int i, j, k = 0; 
   gsl_matrix * m = gsl_matrix_alloc (100, 100);
@@ -1614,7 +1619,8 @@ computes the column-norms of a matrix.
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 
-int main (void)
+int
+main (void)
 @{
   size_t i,j;
 
@@ -1642,7 +1648,7 @@ Here is the output of the program, which can be confirmed using @sc{gnu
 Octave},
 
 @example
-bjg|debian> ./a.out
+$ ./a.out
 matrix column 0, norm = 4.31461
 matrix column 1, norm = 3.1205
 matrix column 2, norm = 2.19316
