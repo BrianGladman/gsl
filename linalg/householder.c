@@ -1,8 +1,10 @@
-void
-generate_householder (gsl_vector * v, double * tau, size_t i)
+double
+generate_householder (gsl_vector * v)
 {
   /* replace v[0:n-1] with a householder vector (tau, v[1:n-1]) that
      annihilates v[1:n-1] */
+
+  const size_t n = v->size ;
 
   double x0 = gsl_vector_get (v, 0) ;
 
@@ -10,12 +12,11 @@ generate_householder (gsl_vector * v, double * tau, size_t i)
   
   double s = gsl_blas_dnrm2 (&v1);
   
-  double mu;
+  double mu, v0;
 
   if (s == 0) 
     {
-      *tau = 0 ;
-      return ;
+      return 0; /* tau = 0 */
     }
 
   mu = gsl_hypot(x0, s) ;
@@ -29,31 +30,59 @@ generate_householder (gsl_vector * v, double * tau, size_t i)
       v0 = -(s*s) / (x0 + mu) ;
     }
 
-  *tau  =  (2 * v0) / (s * s + v0 * v0) ;
+  gsl_blas_dscal (1.0 / v0, &v1);
 
-  gsl_blas_dscal (1.0 / v0, &c);
+  gsl_vector_set (v, 0, mu) ;
   
-  return ;
+  return (2 * v0) / (s * s + v0 * v0);  /* this is tau */
 }
 
 void
-apply_householder (gsl_matrix *m, double tau, gsl_vector * work, size_t i)
+apply_householder (gsl_vector *v, gsl_matrix *m, double tau, gsl_vector * work)
 {
   /* applies a householder transformation in column i to matrix m */
+
+  double v0;
  
-  double mii = gsl_matrix_get (m, i, i) ;
-  gsl_matrix_set (m, i, i, 1) ;
+  if (tau == 0)
+    return ;
 
-  gsl_matrix a = submatrix (m, i+1, i+1, m, n);
+  v0 = gsl_vector_get (v, 0);
 
-  gsl_vector v = col (m, i, i, m) ;
+  gsl_vector_set (v, 0, 1.0) ;
 
   /* w = M' v */
 
-  gsl_blas_dgemv (CblasTrans, 1.0, &a, &v, 0.0, work) ;
+  gsl_blas_dgemv (CblasTrans, 1.0, m, v, 0.0, work) ;
 
-  /* M = M - w v' */
+  /* M = M - v w' */
 
-  gsl_blas_dger (-tau, work, &v, &a);
+  gsl_blas_dger (-tau, v, work, m);
 
+  gsl_vector_set (v, 0, v0);
+}
+
+void
+apply_householder_v (gsl_vector *v, gsl_vector *w, double tau)
+{
+  /* applies a householder transformation to vector w */
+
+  double v0,d;
+ 
+  if (tau == 0)
+    return ;
+
+  v0 = gsl_vector_get (v, 0);
+
+  gsl_vector_set (v, 0, 1.0) ;
+
+  /* d = v'w */
+
+  gsl_blas_ddot (v, w, &d);
+
+  /* w = w - tau (v) (v'w) */
+
+  gsl_blas_daxpy (-tau * d, v, w);
+
+  gsl_vector_set (v, 0, v0);
 }
