@@ -24,165 +24,106 @@
 #include <gsl_test.h>
 
 /* stopping parameters */
-#define REL_EPSILON    (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-#define ABS_EPSILON    (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-#define MAX_ITERATIONS 100
-#define MAX_DELTAY     2000000.0
-#define MAX_STEP_SIZE  100.0
+const double REL_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) ;
+const double ABS_EPSILON = (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER) ;
+const int MAX_ITERATIONS = 100 ;
+const double MAX_DELTAY = 2000000.0 ;
+const double MAX_STEP_SIZE = 100.0 ;
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
-
-/* Print usage instructions. */
-void
-usage(void)
-{
-  printf("Usage:  test <srcdir> <tests>\n"
-"where <srcdir> is the path to the directory with the source code\n"
-"where <tests> is a string indicating which tests to run. It can contain the\n"
-"following characters:\n"
-"\n"
-"  m -- test macros\n"
-"  b -- test gsl_root_bisection\n"
-"  f -- test gsl_root_falsepos\n"
-"  s -- test gsl_root_secant\n"
-"  n -- test gsl_root_newton\n"
-"\n"
-"Example:\n"
-"\n"
-"  test mb\n"
-"\n"
-"tests macros and gsl_root_bisection.\n");
-} ;
 
 int
 main(int argc, char ** argv)
 {
   int status ;
   int num_passed = 0, num_failed = 0;
-  char *srcdir = NULL;
-
-  /* Do some basic checking of the arguments. */
-  {
-    char c;
-   
-    /* The user must specifiy one argument. */
-    if (argc != 3) {
-      usage();
-      return 1;
-    }
-
-    srcdir = (char *) malloc(strlen(argv[1])*sizeof(char) + 1);
-    strcpy(srcdir, argv[1]);
-    printf("running tests in the source directory %s\n", srcdir);
-
-    /* argv[2] can contain only the characters "mbfsn". */
-    for (c = ' '; c <= '~'; c++)
-      if (strchr(argv[2], c) && !strchr("mbfsn", c)) {
-        usage();
-        return 1;
-      }
-  }
 
   gsl_set_error_handler(&my_error_handler);
 
-  
 
-  /* Test macros if so instructed. */
-  if (strchr(argv[2], 'm')) {
     test_macros() ;
-  }
+    
+    test_bisection("gsl_root_bisection, sin(x) [3, 4]", 
+		   sin, 3.0, 4.0, M_PI); 
+    test_bisection("gsl_root_bisection, sin(x) [-4, -3]", 
+		   sin, -4.0, -3.0, -M_PI); 
+    test_bisection("gsl_root_bisection, sin(x) [-1/3, 1]",
+		   sin, -1.0/3.0, 1.0, 0.0);
+    test_bisection("gsl_root_bisection, cos(x) [0, 3]",
+		   cos, 0.0, 3.0, M_PI/2.0);
+    test_bisection("gsl_root_bisection, cos(x) [-3, 0]",
+		   cos, -3.0, 0.0, -M_PI/2.0);
+    test_bisection("gsl_root_bisection, x^20 - 1 [0.1, 2]",
+		   test_hairy_1, 0.1, 2.0, 1.0); 
+    test_bisection("gsl_root_bisection, sqrt(|x|)*sgn(x)",
+		   test_hairy_2, -1.0/3.0, 1.0, 0.0);
+    test_bisection("gsl_root_bisection, x^2 - 1e-8 [0, 1]",
+		   test_hairy_3, 0.0, 1.0, sqrt(1e-8));
+    test_bisection("gsl_root_bisection, x exp(-x) [-1/3, 2]",
+		   test_hairy_4, -1.0/3.0, 2.0, 0.0);
+    test_bisection("gsl_root_bisection, (x - 1)^7 [0.1, 2]",
+		   test_hairy_6, 0.1, 2.0, 1.0);
+    
+    test_bisection_failure("gsl_root_bisection, invalid range check [4, 0]",
+			   sin, 4.0, 0.0, M_PI);
+    test_bisection_failure("gsl_root_bisection, invalid range check [1, 1]",
+			   sin, 1.0, 1.0, M_PI);
 
-  /* Test bisection if so instructed. */
+    /* Test false position. */
 
-  if (strchr(argv[2], 'b')) 
-    {
-      test_bisection("gsl_root_bisection, sin(x) [3, 4]", 
-		     sin, 3.0, 4.0, M_PI); 
-      test_bisection("gsl_root_bisection, sin(x) [-4, -3]", 
-		     sin, -4.0, -3.0, -M_PI); 
-      test_bisection("gsl_root_bisection, sin(x) [-1/3, 1]",
-		     sin, -1.0/3.0, 1.0, 0.0);
-      test_bisection("gsl_root_bisection, cos(x) [0, 3]",
-		     cos, 0.0, 3.0, M_PI/2.0);
-      test_bisection("gsl_root_bisection, cos(x) [-3, 0]",
-		     cos, -3.0, 0.0, -M_PI/2.0);
-      test_bisection("gsl_root_bisection, x^20 - 1 [0.1, 2]",
-		     test_hairy_1, 0.1, 2.0, 1.0); 
-      test_bisection("gsl_root_bisection, sqrt(|x|)*sgn(x)",
-		     test_hairy_2, -1.0/3.0, 1.0, 0.0);
-      test_bisection("gsl_root_bisection, x^2 - 1e-8 [0, 1]",
-		     test_hairy_3, 0.0, 1.0, sqrt(1e-8));
-      test_bisection("gsl_root_bisection, x exp(-x) [-1/3, 2]",
-		     test_hairy_4, -1.0/3.0, 2.0, 0.0);
-      test_bisection("gsl_root_bisection, (x - 1)^7 [0.1, 2]",
-		     test_hairy_6, 0.1, 2.0, 1.0);
-      
-      test_bisection_failure("gsl_root_bisection, invalid range check [4, 0]",
-			     sin, 4.0, 0.0, M_PI);
-      test_bisection_failure("gsl_root_bisection, invalid range check [1, 1]",
-		     sin, 1.0, 1.0, M_PI);
-    }
-  
-  /* Test false position if so instructed. */
-  if (strchr(argv[2], 'f')) 
-    {
-      test_falsepos("gsl_root_falsepos, sin(x) [3, 3.2]",
-		    sin, 3.0, 3.2, M_PI); 
-      test_falsepos("gsl_root_falsepos, sin(x) [-4, -3]", 
-		    sin, -4.0, -3.0, -M_PI); 
-      test_falsepos("gsl_root_falsepos, sin(x) [-1/3, 1]",
-		    sin, -1.0/3.0, 1.0, 0.0); 
-      test_falsepos("gsl_root_falsepos, cos(x) [0, 3]",
-		    cos, 0.0, 3.0, M_PI/2.0); 
-      test_falsepos("gsl_root_falsepos, cos(x) [-3, 0]", 
-		    cos, -3.0, 0.0, -M_PI/2.0); 
-      test_falsepos("gsl_root_falsepos, x^{20} - 1 [0.99, 1.01]", 
-		    test_hairy_1, 0.99, 1.01, 1.0); 
-      test_falsepos("gsl_root_falsepos, sqrt(|x|)*sgn(x) [-1/3, 1]", 
-		    test_hairy_2, -1.0/3.0, 1.0, 0.0);
-      test_falsepos("gsl_root_falsepos, x^2 - 1e-8 [0, 1]", 
-		    test_hairy_3, 0.0, 1.0, sqrt(1e-8));
-      test_falsepos("gsl_root_falsepos, x exp(-x) [-1/3, 2]", 
-		    test_hairy_4, -1.0/3.0, 2.0, 0.0) ;
-      test_falsepos("gsl_root_falsepos, (x - 1)^7 [pi/10, 2]", 
-		    test_hairy_6, M_PI/10.0, 2.0, 1.0);
+    test_falsepos("gsl_root_falsepos, sin(x) [3, 3.2]",
+		  sin, 3.0, 3.2, M_PI); 
+    test_falsepos("gsl_root_falsepos, sin(x) [-4, -3]", 
+		  sin, -4.0, -3.0, -M_PI); 
+    test_falsepos("gsl_root_falsepos, sin(x) [-1/3, 1]",
+		  sin, -1.0/3.0, 1.0, 0.0); 
+    test_falsepos("gsl_root_falsepos, cos(x) [0, 3]",
+		  cos, 0.0, 3.0, M_PI/2.0); 
+    test_falsepos("gsl_root_falsepos, cos(x) [-3, 0]", 
+		  cos, -3.0, 0.0, -M_PI/2.0); 
+    test_falsepos("gsl_root_falsepos, x^{20} - 1 [0.99, 1.01]", 
+		  test_hairy_1, 0.99, 1.01, 1.0); 
+    test_falsepos("gsl_root_falsepos, sqrt(|x|)*sgn(x) [-1/3, 1]", 
+		  test_hairy_2, -1.0/3.0, 1.0, 0.0);
+    test_falsepos("gsl_root_falsepos, x^2 - 1e-8 [5e-5, 3e-4]", 
+		  test_hairy_3, 5e-5, 3.0e-4, sqrt(1e-8));
+    test_falsepos("gsl_root_falsepos, x exp(-x) [-1/3, 2]", 
+		  test_hairy_4, -1.0/3.0, 2.0, 0.0) ;
+    test_falsepos("gsl_root_falsepos, (x - 1)^7 [0.8, 1.2]", 
+		  test_hairy_6, 0.8, 1.2, 1.0);
+    
+    
+    /* Test secant method. */
 
-  }
+    test_secant("gsl_root_secant, sin(x) {3.3, 3.4}", 
+		sin, 3.3, 3.4, M_PI); 
+    test_secant("gsl_root_secant, sin(x) {-3.3, -3.4}",
+		sin, -3.3, -3.4, -M_PI); 
+    test_secant("gsl_root_secant, sin(x) {0.4, 0.5}",
+		sin, 0.4, 0.5, 0.0); 
+    test_secant("gsl_root_secant, cos(x) {0.5, 0.6}",
+		cos, 0.5, 0.6, M_PI/2.0); 
+    test_secant("gsl_root_secant, cos(x) {-2.5, -3.0}",
+		cos, -2.5, -3.0, -M_PI/2.0);
+    test_secant("gsl_root_secant, x^20 - 1 {0.9, 0.91}",
+		test_hairy_1, 0.9, 0.91, 1.0); 
+    test_secant("gsl_root_secant, x^20 - 1 {1.1, 1.11}",
+		test_hairy_1, 1.1, 1.11, 1.0); 
+    test_secant("gsl_root_secant, sqrt(abs(x)) * sgn(x) {1, 1.01}",
+		test_hairy_2, 1.0, 1.01, 0.0);
+    test_secant("gsl_root_secant, x^2 - 1e-8 {1, 1.01}",
+		test_hairy_3, 1.0, 1.01, sqrt(1e-8)) ;
+    
+    test_secant_failure("gsl_root_secant, max iterations x -> +Inf, x exp(-x) {2, 2.01}",
+			test_hairy_4, 2.0, 2.01, 0.0);
+    test_secant_failure("gsl_root_secant, max iterations x -> -Inf, 1/(1 + exp(-x)) {0, 0.01}",
+			test_hairy_5, 0.0, 0.01, 0.0);
+    test_secant_failure("gsl_root_secant, max iterations towards root, (x - 1)^7 {0, 0.01}",
+			test_hairy_6, 0.0, 0.01, 1.0);
 
-  /* Test secant method if so instructed. */
-  if (strchr(argv[2], 's')) 
-    {
-      test_secant("gsl_root_secant, sin(x) {3.3, 3.4}", 
-		  sin, 3.3, 3.4, M_PI); 
-      test_secant("gsl_root_secant, sin(x) {-3.3, -3.4}",
-		  sin, -3.3, -3.4, -M_PI); 
-      test_secant("gsl_root_secant, sin(x) {0.4, 0.5}",
-		  sin, 0.4, 0.5, 0.0); 
-      test_secant("gsl_root_secant, cos(x) {0.5, 0.6}",
-		  cos, 0.5, 0.6, M_PI/2.0); 
-      test_secant("gsl_root_secant, cos(x) {-2.5, -3.0}",
-		  cos, -2.5, -3.0, -M_PI/2.0);
-      test_secant("gsl_root_secant, x^20 - 1 {0.9, 0.91}",
-		  test_hairy_1, 0.9, 0.91, 1.0); 
-      test_secant("gsl_root_secant, x^20 - 1 {1.1, 1.11}",
-		  test_hairy_1, 1.1, 1.11, 1.0); 
-      test_secant("gsl_root_secant, sqrt(abs(x)) * sgn(x) {1, 1.01}",
-		  test_hairy_2, 1.0, 1.01, 0.0);
-      test_secant("gsl_root_secant, x^2 - 1e-8 {1, 1.01}",
-		  test_hairy_3, 1.0, 1.01, sqrt(1e-8)) ;
-
-      test_secant_failure("gsl_root_secant, max iterations x -> +Inf, x exp(-x) {2, 2.01}",
-		  test_hairy_4, 2.0, 2.01, 0.0);
-      test_secant_failure("gsl_root_secant, max iterations x -> -Inf, 1/(1 + exp(-x)) {0, 0.01}",
-			  test_hairy_5, 0.0, 0.01, 0.0);
-      test_secant_failure("gsl_root_secant, max iterations towards root, (x - 1)^7 {0, 0.01}",
-		  test_hairy_6, 0.0, 0.01, 1.0);
-
-  }
-
-  /* Test Newton's Method if so instructed. */
-  if (strchr(argv[2], 'n')) {
+    /* Test Newton's Method. */
+    
     test_newton("gsl_root_newton, sin(x) {3.4}",
 		sin_fdf, 3.4, M_PI); 
     test_newton("gsl_root_newton, sin(x) {-3.3}",
@@ -212,11 +153,10 @@ main(int argc, char ** argv)
     test_newton_failure("gsl_root_newton, max iterations towards root, (x - 1)^7 {0}",
 		test_hairy_6_fdf, 0.0, 1.0);
 
-  }
 
-  /* now summarize the results */
-
-  return gsl_test_summary() ;
+    /* now summarize the results */
+    
+    return gsl_test_summary() ;
 }
 
 
@@ -294,9 +234,9 @@ test_bisection_failure (const char * description,
 
 int
 test_falsepos (const char * description, 
-		double (* f)(double), 
-		double lower_bound, double upper_bound, 
-		double correct_root)
+	       double (* f)(double), 
+	       double lower_bound, double upper_bound, 
+	       const double correct_root)
 {
   int status ;
   double root;
