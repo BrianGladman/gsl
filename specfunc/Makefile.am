@@ -8,6 +8,7 @@ include_HEADERS = \
 	gsl_sf_airy.h       	\
 	gsl_sf_bessel.h     	\
 	gsl_sf_chebyshev.h  	\
+	gsl_sf_clausen.h	\
 	gsl_sf_coulomb.h	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_ellint.h        	\
@@ -64,6 +65,7 @@ libgslspecfunc_la_SOURCES = 	\
 	bessel_olver.c		\
 	bessel_y.c		\
 	chebyshev.c		\
+	clausen.c		\
 #	coulomb.c		\ doesn't work yet
 	dilog.c			\
 	ellint.c		\

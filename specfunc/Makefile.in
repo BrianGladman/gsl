@@ -82,6 +82,7 @@ include_HEADERS = \
 	gsl_sf_airy.h       	\
 	gsl_sf_bessel.h     	\
 	gsl_sf_chebyshev.h  	\
+	gsl_sf_clausen.h	\
 	gsl_sf_coulomb.h	\
 	gsl_sf_dilog.h      	\
 	gsl_sf_ellint.h        	\
@@ -136,6 +137,7 @@ libgslspecfunc_la_SOURCES = 	\
 	bessel_olver.c		\
 	bessel_y.c		\
 	chebyshev.c		\
+	clausen.c		\
 	dilog.c			\
 	ellint.c		\
 	erfc.c			\
@@ -172,8 +174,8 @@ libgslspecfunc_la_OBJECTS =  airy.lo airy_der.lo bessel.lo bessel_I0.lo \
 bessel_I1.lo bessel_In.lo bessel_J0.lo bessel_J1.lo bessel_Jn.lo \
 bessel_K0.lo bessel_K1.lo bessel_Kn.lo bessel_Y0.lo bessel_Y1.lo \
 bessel_Yn.lo bessel_amp_phase.lo bessel_i.lo bessel_j.lo bessel_k.lo \
-bessel_olver.lo bessel_y.lo chebyshev.lo dilog.lo ellint.lo erfc.lo \
-expint.lo fermi_dirac.lo gamma.lo hyperg_2F1.lo laguerre.lo \
+bessel_olver.lo bessel_y.lo chebyshev.lo clausen.lo dilog.lo ellint.lo \
+erfc.lo expint.lo fermi_dirac.lo gamma.lo hyperg_2F1.lo laguerre.lo \
 legendre_con.lo legendre_poly.lo log.lo poly.lo pow_int.lo psi.lo \
 shint.lo sig2lamp.lo sinint.lo trig.lo zeta.lo
 test_sf_OBJECTS =  test_sf.o
@@ -197,11 +199,12 @@ DEP_FILES =  .deps/airy.P .deps/airy_der.P .deps/bessel.P \
 .deps/bessel_Kn.P .deps/bessel_Y0.P .deps/bessel_Y1.P .deps/bessel_Yn.P \
 .deps/bessel_amp_phase.P .deps/bessel_i.P .deps/bessel_j.P \
 .deps/bessel_k.P .deps/bessel_olver.P .deps/bessel_y.P \
-.deps/chebyshev.P .deps/dilog.P .deps/ellint.P .deps/erfc.P \
-.deps/expint.P .deps/fermi_dirac.P .deps/gamma.P .deps/hyperg_2F1.P \
-.deps/laguerre.P .deps/legendre_con.P .deps/legendre_poly.P .deps/log.P \
-.deps/poly.P .deps/pow_int.P .deps/psi.P .deps/shint.P .deps/sig2lamp.P \
-.deps/sinint.P .deps/test_sf.P .deps/trig.P .deps/zeta.P
+.deps/chebyshev.P .deps/clausen.P .deps/dilog.P .deps/ellint.P \
+.deps/erfc.P .deps/expint.P .deps/fermi_dirac.P .deps/gamma.P \
+.deps/hyperg_2F1.P .deps/laguerre.P .deps/legendre_con.P \
+.deps/legendre_poly.P .deps/log.P .deps/poly.P .deps/pow_int.P \
+.deps/psi.P .deps/shint.P .deps/sig2lamp.P .deps/sinint.P \
+.deps/test_sf.P .deps/trig.P .deps/zeta.P
 SOURCES = $(libgslspecfunc_la_SOURCES) $(test_sf_SOURCES)
 OBJECTS = $(libgslspecfunc_la_OBJECTS) $(test_sf_OBJECTS)
 
