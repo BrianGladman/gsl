@@ -327,6 +327,40 @@ int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
 }
 
 
+int
+gsl_sf_sin_pi_x_impl(const double x, gsl_sf_result * result)
+{
+  const double N = floor(x + 0.5);
+  const double f = x - N;
+
+  if(N < INT_MAX && N > INT_MIN) {
+    /* Make it an integer if we can. Saves another
+     * call to floor().
+     */
+    const int intN    = (int)N;
+    const double sign = ( GSL_IS_ODD(intN) ? -1.0 : 1.0 );
+    result->val = sign * sin(M_PI * f);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
+  }
+  else if(N > 2.0/GSL_DBL_EPSILON || N < -2.0/GSL_DBL_EPSILON) {
+    /* All integer-valued floating point numbers
+     * bigger than 2/eps=2^53 are actually even.
+     */
+    result->val = 0.0;
+    result->err = 0.0;
+  }
+  else {
+    const double resN = N - 2.0*floor(0.5*N); /* 0 for even N, 1 for odd N */
+    const double sign = ( fabs(resN) > 0.5 ? -1.0 : 1.0 );
+    result->val = sign * sin(M_PI*f);
+    result->err = GSL_DBL_EPSILON * fabs(result->val);
+  }
+
+  return GSL_SUCCESS;
+}
+
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_complex_sin_e(const double zr, const double zi, gsl_sf_result * szr, gsl_sf_result * szi)
@@ -408,36 +442,4 @@ int gsl_sf_angle_restrict_pos_e(double * theta)
     GSL_ERROR("gsl_sf_angle_restrict_pos_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes  *-*-*-*-*-*-*-*-*-*-*/
-
-double gsl_sf_sin_pi_x(const double x)
-{
-  const double N = floor(x + 0.5);
-  const double f = x - N;
-  double result;
-
-  if(N < INT_MAX && N > INT_MIN) {
-    /* Make it an integer if we can. Saves another
-     * call to floor().
-     */
-    const int intN    = (int)N;
-    const double sign = ( GSL_IS_ODD(intN) ? -1.0 : 1.0 );
-    result = sign * sin(M_PI * f);
-  }
-  else if(N > 2.0/GSL_DBL_EPSILON || N < -2.0/GSL_DBL_EPSILON) {
-    /* All integer-valued floating point numbers
-     * bigger than 2/eps=2^53 are actually even.
-     */
-    result = 0.0;
-  }
-  else {
-    const double resN = N - 2.0*floor(0.5*N); /* 0 for even N, 1 for odd N */
-    const double sign = ( fabs(resN) > 0.5 ? -1.0 : 1.0 );
-    result = sign * sin(M_PI*f);
-  }
-
-  return result;
 }

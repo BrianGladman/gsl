@@ -25,8 +25,6 @@
  * [Abramowitz+Stegun, 9.6.7]
  *
  * Assumes: nu >= 0
- *
- * checked OK [GJ] Mon May  4 00:11:54 EDT 1998 
  */
 static int Inu_Jnu_taylorsum(const double nu, const double x,
                              const int sign,
