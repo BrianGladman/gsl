@@ -35,10 +35,18 @@ int gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result)
 
   /* CHECK_POINTER(result) */
 
+
   if(n < 0) {
-    if(x == 0.0) return 0.0; /* FIXME: should be Inf */
-    x = 1.0/x;
     n = -n;
+
+    if(x == 0.0) {
+      double u = 1.0 / x;
+      result->val = (n % 2) ? u : (u * u) ;  /* correct sign of infinity */
+      result->err = GSL_POSINF;
+      GSL_ERROR ("overflow", GSL_EOVRFLW);
+    }
+
+    x = 1.0/x;
   }
 
   /* repeated squaring method 
