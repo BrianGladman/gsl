@@ -462,7 +462,7 @@ gsl_blas_srot (gsl_vector_float * X, gsl_vector_float * Y, float c, float s)
 int
 gsl_blas_drot (gsl_vector * X, gsl_vector * Y, const double c, const double s)
 {
-  if (X->size = Y->size)
+  if (X->size == Y->size)
     {
       cblas_drot (X->size, X->data, X->stride, Y->data, Y->stride, c, s);
       return GSL_SUCCESS;
@@ -967,6 +967,7 @@ gsl_blas_sger (float alpha, const gsl_vector_float * X,
     {
       cblas_sger (CblasRowMajor, M, N, alpha, X->data, X->stride, Y->data,
 		  Y->stride, A->data, tda);
+      return GSL_SUCCESS;
     }
   else
     {
@@ -987,6 +988,7 @@ gsl_blas_dger (double alpha, const gsl_vector * X, const gsl_vector * Y,
     {
       cblas_dger (CblasRowMajor, M, N, alpha, X->data, X->stride, Y->data,
 		  Y->stride, A->data, tda);
+      return GSL_SUCCESS;
     }
   else
     {
@@ -1005,7 +1007,6 @@ gsl_blas_cgeru (const gsl_complex_float * alpha,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
@@ -1025,7 +1026,6 @@ gsl_blas_zgeru (const gsl_complex * alpha, const gsl_vector_complex * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
@@ -1050,7 +1050,6 @@ gsl_blas_cgerc (const gsl_complex_float * alpha,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
@@ -1071,7 +1070,6 @@ gsl_blas_zgerc (const gsl_complex * alpha, const gsl_vector_complex * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
@@ -1291,7 +1289,7 @@ gsl_blas_dsyr2 (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector * X,
 /* GEMM */
 
 int
-gsl_blas_sgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
+gsl_blas_sgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 		float alpha, const gsl_matrix_float * A,
 		const gsl_matrix_float * B, float beta, gsl_matrix_float * C)
 {
@@ -1316,7 +1314,7 @@ gsl_blas_sgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
 
 
 int
-gsl_blas_dgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
+gsl_blas_dgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 		double alpha, const gsl_matrix * A, const gsl_matrix * B,
 		double beta, gsl_matrix * C)
 {
@@ -1341,7 +1339,7 @@ gsl_blas_dgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
 
 
 int
-gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
+gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 		const gsl_complex_float * alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_matrix_complex_float * B,
@@ -1369,7 +1367,7 @@ gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
 
 
 int
-gsl_blas_zgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB, int K,
+gsl_blas_zgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 		const gsl_complex * alpha, const gsl_matrix_complex * A,
 		const gsl_matrix_complex * B, const gsl_complex * beta,
 		gsl_matrix_complex * C)
@@ -1603,44 +1601,42 @@ gsl_blas_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
+  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ssyrk (CblasRowMajor, Uplo, Trans, N, MA, alpha, A->data, A->tda, beta, C->data,
+  cblas_ssyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta, C->data,
 	       C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		double alpha, const gsl_matrix * A, double beta,
 		gsl_matrix * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
+  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dsyrk (CblasRowMajor, Uplo, Trans, N, MA, alpha, A->data, A->tda, beta, C->data,
+  cblas_dsyrk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda, beta, C->data,
 	       C->tda);
   return GSL_SUCCESS;
 
@@ -1648,7 +1644,7 @@ gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
 
 
 int
-gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		const gsl_complex_float * alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_complex_float * beta, gsl_matrix_complex_float * C)
@@ -1656,7 +1652,6 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
   const size_t M = C->size1;
   const size_t N = C->size2;
   const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
 
   if (M != N)
     {
@@ -1674,25 +1669,24 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
 
 
 int
-gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		const gsl_complex * alpha, const gsl_matrix_complex * A,
 		const gsl_complex * beta, gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
+  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, MA, GSL_COMPLEX_P (alpha), A->data, A->tda,
+  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, K, GSL_COMPLEX_P (alpha), A->data, A->tda,
 	       GSL_COMPLEX_P (beta), C->data, C->tda);
   return GSL_SUCCESS;
 }
@@ -1700,50 +1694,48 @@ gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
 /* HERK */
 
 int
-gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_cherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		float alpha, const gsl_matrix_complex_float * A, float beta,
 		gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
+  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_cherk (CblasRowMajor, Uplo, Trans, N, MA, alpha, A->data, A->tda,
+  cblas_cherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda,
 	       beta, C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_zherk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		double alpha, const gsl_matrix_complex * A, double beta,
 		gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
-  const size_t MA = (Trans == CblasNoTrans) ? A->size1 : A->size2;
-  const size_t NA = (Trans == CblasNoTrans) ? A->size2 : A->size1;
+  const size_t K = (Trans == CblasNoTrans) ? A->size1 : A->size2;
 
   if (M != N)
     {
       GSL_ERROR ("matrix C must be square", GSL_ENOTSQR);
     }
-  else if (N != MA)
+  else if (N != K)
     {
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zherk (CblasRowMajor, Uplo, Trans, N, MA, alpha, A->data, A->tda,
+  cblas_zherk (CblasRowMajor, Uplo, Trans, N, K, alpha, A->data, A->tda,
 	       beta, C->data, C->tda);
   return GSL_SUCCESS;
 }
@@ -1778,7 +1770,7 @@ gsl_blas_ssyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, float alpha,
 
 
 int
-gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 double alpha, const gsl_matrix * A, const gsl_matrix * B,
 		 double beta, gsl_matrix * C)
 {
@@ -1805,7 +1797,7 @@ gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
 
 
 int
-gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, 
 		 const gsl_complex_float * alpha,
 		 const gsl_matrix_complex_float * A,
 		 const gsl_matrix_complex_float * B,
@@ -1835,7 +1827,7 @@ gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
 
 
 int
-gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 const gsl_complex * alpha, const gsl_matrix_complex * A,
 		 const gsl_matrix_complex * B, const gsl_complex * beta,
 		 gsl_matrix_complex * C)
@@ -1895,7 +1887,7 @@ gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 
 
 int
-gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, int K,
+gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 		 const gsl_complex * alpha, const gsl_matrix_complex * A,
 		 const gsl_matrix_complex * B, 
                  double beta,
