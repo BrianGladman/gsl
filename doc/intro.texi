@@ -119,7 +119,7 @@ commercial redistributors listed on the website.
 
 Announcements of new releases, updates and other relevant events are
 made on the @code{info-gsl@@gnu.org} mailing list.  To subscribe to this
-low-volume list, send an email of the following form,
+low-volume list, send an email of the following form:
 
 @example
 To: info-gsl-request@@gnu.org 
@@ -148,7 +148,7 @@ A list of known bugs can be found in the @file{BUGS} file included in
 the GSL distribution.  Details of compilation problems can be found in
 the @file{INSTALL} file.
 
-If you find a bug which is not listed in these files please report it to
+If you find a bug which is not listed in these files, please report it to
 @email{bug-gsl@@gnu.org}.
 
 All bug reports should include:
@@ -178,9 +178,12 @@ Additional information, including online copies of this manual, links to
 related projects, and mailing list archives are available from the
 website mentioned above.  
 
+Printed copies of this manual can be purchased from Network Theory Ltd
+at @url{http://www.network-theory.co.uk/gsl/manual/}.
+
 Any questions about the use and installation of the library can be asked
-on the mailing list @code{help-gsl@@gnu.org}.  To subscribe to this send
-an email of the following form,
+on the mailing list @code{help-gsl@@gnu.org}.  To subscribe to this
+list, send an email of the following form:
 
 @example
 To: help-gsl-request@@gnu.org
