@@ -1,3 +1,8 @@
+Fri Dec 11 16:50:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* AUTHORS: corrected the spelling of Gerard Jungman's name (it's
+ 	either Gerard or Jerry, but not Gerry)
+
 1998-12-05  Mark Galassi  <rosalia@cygnus.com>
 
 	* configure.in: made the version be 0.4after so it's clear that
