@@ -35,7 +35,7 @@ main (void)
 
   const double zeta_2 = M_PI * M_PI / 6.0;
   
-  /* terms for zeta(2) = \sum_{n=0}^{\infty} 1/n^2 */
+  /* terms for zeta(2) = \sum_{n=1}^{\infty} 1/n^2 */
 
   for (n = 0; n < N; n++)
     {
