@@ -107,7 +107,7 @@ int gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
                                 );
 
 /* Coulomb wave function divided by the argument,
- * F(xi, eta)/xi. This is the function which reduces to
+ * F(eta, x)/x. This is the function which reduces to
  * spherical Bessel functions in the limit eta->0.
  */
 int gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,

@@ -99,9 +99,11 @@ of overflow the exponents are stored in @var{F_exponent} and @var{G_exponent}.
 @end deftypefun
 
 @deftypefun int gsl_sf_coulomb_wave_sphF_array (double @var{L_min}, int @var{kmax}, double @var{eta}, double @var{x}, double @var{fc_array}[], double @var{F_exponent}[])
-Coulomb wave function divided by the argument,
-F(xi, eta)/xi.  This is the function which reduces to
-spherical Bessel functions in the limit eta->0.
+This function computes the Coulomb wave function divided by the argument
+@math{F_L(\eta, x)/x} for @math{L = Lmin \dots Lmin + kmax}, storing the
+results in @var{fc_array}.  In the case of overflow the exponent is
+stored in @var{F_exponent}. This function reduces to spherical Bessel
+functions in the limit @math{\eta \to 0}.
 @end deftypefun
 
 
