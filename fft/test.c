@@ -50,9 +50,9 @@ void my_error_handler (const char *reason, const char *file,
 #include "templates_on.h"
 #include "compare_source.c"
 #include "bitreverse.c"
-#include "test_complex.c"
-#include "test_real.c"
-#include "test_trap.c"
+#include "test_complex_source.c"
+#include "test_real_source.c"
+#include "test_trap_source.c"
 #include "templates_off.h"
 #undef  BASE_DOUBLE
 
@@ -60,9 +60,9 @@ void my_error_handler (const char *reason, const char *file,
 #include "templates_on.h"
 #include "compare_source.c"
 #include "bitreverse.c"
-#include "test_complex.c"
-#include "test_real.c"
-#include "test_trap.c"
+#include "test_complex_source.c"
+#include "test_real_source.c"
+#include "test_trap_source.c"
 #include "templates_off.h"
 #undef  BASE_FLOAT
 
