@@ -527,6 +527,84 @@ gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
 }
 
 
+/* Hypergeometric function to fixed order, which appears
+ * in the large x expansion below. We write it as
+ *
+ * 1 + (A + iB)y + (A + iB)(C + iD)y^2 / 2
+ *
+ * Note that for the usage below y = 1/x^2;
+ */
+static
+int
+conicalP_hyperg_large_x(const double mu, const double tau, const double y,
+                        double * reF, double * imF)
+{
+  const double d1 = (1.0 + tau*tau);
+  const double d2 = (4.0 + tau*tau);
+  const double A = (3.0/16.0 - mu*(0.5 - mu) + 0.25*(1.0 - 0.5*mu))/d1;
+  const double B = tau*(5.0/16.0 - 0.25*mu*mu + 0.25*tau*tau)/d1;
+  const double C = (35.0/8.0 - mu *(3.0 - 0.5*mu) + tau*tau*(1.0 - 0.5*mu))/d2;
+  const double D = tau*(13.0/16.0 + mu*(0.5 - 0.25*mu) + 0.25*tau*tau)/d2;
+
+  const double re2 = A*C - B*D;
+  const double im2 = B*C + A*D;
+
+  *reF = 1.0 + A*y + 0.5*re2*y*y;
+  *imF = y*(B + 0.5*im2*y);
+  return GSL_SUCCESS;
+}
+
+
+/* P^{mu}_{-1/2 + I tau}
+ * x->Inf
+ */
+int
+gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
+                             double * result, double * ln_multiplier)
+{
+  /* 2F1 term
+   */
+  double y = ( x < 0.5*GSL_SQRT_DBL_MAX ? 1.0/(x*x) : 0.0 );
+  double reF, imF;
+  int stat_F = conicalP_hyperg_large_x(mu, tau, y, &reF, &imF);
+
+  /* f = Gamma(-i tau)/Gamma(1/2 - mu - i tau)
+   */
+  double lgr_num, lgth_num;
+  double lgr_den, lgth_den;
+  int stat_gn = gsl_sf_lngamma_complex_impl(0.0,-tau,&lgr_num,&lgth_num);
+  int stat_gd = gsl_sf_lngamma_complex_impl(0.5-mu,-tau,&lgr_den,&lgth_den);
+
+  double angle = lgth_num - lgth_den + atan2(imF,reF);
+
+  double lnpre_const = 0.5*M_LN2 - 0.5*M_LNPI;
+  double lnpre_comm = (mu-0.5)*log(x) - 0.5*mu*(log(x+1.0) + log(x-1.0));
+
+  /*  result = pre*|F|*|f| * cos(angle - tau * log(x))
+   */
+  double c = cos(angle - tau*log(x));
+  int status = GSL_ERROR_SELECT_3(stat_gd, stat_gn, stat_F);
+  if(c == 0.0) {
+    *result = 0.0;
+    return status;
+  }
+  else {
+    double lnFf     = 0.5*log(reF*reF+imF*imF) + lgr_num - lgr_den;
+    double lnnoc    = lnpre_const + lnpre_comm + lnFf;
+    int stat_e = gsl_sf_exp_sgn_impl(lnnoc + log(fabs(c)), c, result);
+    if(stat_e == GSL_SUCCESS) {
+      *ln_multiplier = 0.0;
+      return status;
+    }
+    else {
+      *result = c;
+      *ln_multiplier = lnnoc;
+      return status;
+    }
+  }
+}
+
+
 /* P^{mu}_{-1/2 + I tau}  first hypergeometric representation
  * -1 < x < 1
  * more effective for |x| small

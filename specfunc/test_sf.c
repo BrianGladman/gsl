@@ -3531,6 +3531,9 @@ int check_legendre(void)
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0e-06, 1.0e-06),  1.1544011544013627977e-32  ) > 1.0e-10 );
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 1.0e-10),      2.0224912016958766992e-52  ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 1.0),	      0.011498635037491577728    ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 5.0),	      0.0020696945662545205776   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 7.0),	     -0.0017555303787488993676   ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 10.0),	      0.00008999979724504887101  ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 100.0),	     -4.185397793298567945e-44   ) > 1.0e-14 );  
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0, 500.0),	      1.4235113901091961263e-217 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 100.0, 0.001),      9.642762597222417946e-10 ) > 1.0e-14 );
@@ -3543,10 +3546,13 @@ int check_legendre(void)
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0e+08, 1.0e-08),  0.00009256115861125841299 ) > 1.0e-14 );
   s += ( frac_diff(gsl_sf_legendre_H3d(5, 1.0e+08, 100.0),   -6.496143209092860765e-52  ) > 1.0e-10 );
   gsl_test(s, "  gsl_sf_legendre_H3d(5)");
-  printf("%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n",
+  printf("%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n",
     gsl_sf_legendre_H3d(5, 1.0e-06, 1.0e-06),
 gsl_sf_legendre_H3d(5, 1.0, 1.0e-10),	 
-gsl_sf_legendre_H3d(5, 1.0, 1.0),	 
+gsl_sf_legendre_H3d(5, 1.0, 1.0),
+gsl_sf_legendre_H3d(5, 1.0, 5.0),
+gsl_sf_legendre_H3d(5, 1.0, 7.0),
+gsl_sf_legendre_H3d(5, 1.0, 10.0),	 
 gsl_sf_legendre_H3d(5, 1.0, 100.0),	 
 gsl_sf_legendre_H3d(5, 1.0, 500.0),	 
 gsl_sf_legendre_H3d(5, 100.0, 0.01),	 

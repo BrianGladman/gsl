@@ -34,3 +34,19 @@ gsl_sf_conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
                                           const double x, const double acos_x,
                                           double * result, double * ln_multiplier);
 
+
+/* P^{mu}_{-1/2 + I tau}
+ * x->Inf
+ *
+ *  * This is effective to precision EPS for
+ *
+ *    (mu^2 + tau^2)/((1 + tau^2)^(1/2) x^2) < EPS^{1/3}
+ *
+ * since it goes only to a fixed order, based on the
+ * representation in terms of hypegeometric functions
+ * of argument 1/x^2.
+ * [Zhurina+Karmazina, (3.8)]
+ */
+int
+gsl_sf_conicalP_large_x_impl(const double mu, const double tau, const double x,
+                             double * result, double * ln_multiplier);
