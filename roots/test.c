@@ -32,6 +32,10 @@
 /* #define TEST_ABS_EPSILON    0.0000001 */
 #define TEST_MAX_ITERATIONS 100
 #define TEST_MAX_DELTAY     2000000.0
+#define TEST_MAX_STEP_SIZE  100.0
+
+#define FAIL 1
+#define SUCC 0
 
 /* Some globals to store data about errors that occur. Any call to
    error_handler will overwrite these! We set the strings to NULL so we can
@@ -43,88 +47,186 @@ int g_line;             /* the line where an error occured */
 
 /* administer all the tests */
 int
-main(void)
+main(int argc, char ** argv)
 {
   int num_passed = 0, num_failed = 0;
 
-  printf("Testing root finding functions (GSL version %s)...\n", VERSION);
+  /* Do some basic checking of the arguments. */
+  {
+    char c;
+   
+    /* The user must specifiy one argument. */
+    if (argc != 2) {
+      print_usage();
+      return 1;
+    }
+
+    /* It can contain only the characters "mbfsn". */
+    for (c = ' '; c <= '~'; c++)
+      if (strchr(argv[1], c) && !strchr("mbfsn", c)) {
+        print_usage();
+        return 1;
+      }
+  }
 
   gsl_set_error_handler(error_handler);
 
 
-  /* test macros */
-  printf("Testing root finding macros:\n");
-  gsl_test_root_macros(&num_passed, &num_failed);
+  /* Test macros if so instructed. */
+  if (strchr(argv[1], 'm')) {
+    printf("Testing root finding macros:\n");
+    gsl_test_root_macros(&num_passed, &num_failed);
+  }
 
-  /* test bisection */
-  printf("Testing `gsl_root_bisection': \n");
-  printf("  sin(x) [3, 4] ... ");
-  gsl_test_root_bisection(sin, 3.0, 4.0, M_PI, &num_passed, &num_failed); 
-  printf("  sin(x) [-4, -3] ... ");
-  gsl_test_root_bisection(sin, -4.0, -3.0, -M_PI, &num_passed, &num_failed); 
-  printf("  sin(x) [-1/3, 1] ... ");
-  gsl_test_root_bisection(sin, -1.0/3.0, 1.0, 0.0, &num_passed, &num_failed); 
-  printf("  cos(x) [0, 3] ... ");
-  gsl_test_root_bisection(cos, 0.0, 3.0, M_PI/2.0, &num_passed, &num_failed); 
-  printf("  cos(x) [-3, 0] ... ");
-  gsl_test_root_bisection(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
-                          &num_failed); 
-  printf("  x^{20} - 1 [0.1, 2] ... ");
-  gsl_test_root_bisection(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
-                          &num_failed); 
-  printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
-  gsl_test_root_bisection(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
-                          &num_passed, &num_failed);
-  printf("  x^2 - 1e-8 [0, 1] ... ");
-  gsl_test_root_bisection(gsl_test_root_hairy_3, 0.0, 1.0, sqrt(1e-8),
-                          &num_passed, &num_failed);
-  printf("  x exp(-x) [-1/3, 2] ... ");
-  gsl_test_root_bisection(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
-                          &num_passed, &num_failed);
-  /* test false position */
-  printf("Testing `gsl_root_falsepos': \n");
-  printf("  sin(x) [3, 4] ... ");
-  gsl_test_root_falsepos(sin, 3.0, 4.0, M_PI, &num_passed, &num_failed); 
-  printf("  sin(x) [-4, -3] ... ");
-  gsl_test_root_falsepos(sin, -4.0, -3.0, -M_PI, &num_passed, &num_failed); 
-  printf("  sin(x) [-1/3, 1] ... ");
-  gsl_test_root_falsepos(sin, -1.0/3.0, 1.0, 0.0, &num_passed, &num_failed); 
-  printf("  cos(x) [0, 3] ... ");
-  gsl_test_root_falsepos(cos, 0.0, 3.0, M_PI/2.0, &num_passed, &num_failed); 
-  printf("  cos(x) [-3, 0] ... ");
-  gsl_test_root_falsepos(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
-                         &num_failed); 
-  printf("  x^{20} - 1 [0.1, 2] ... ");
-  gsl_test_root_falsepos(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
-                         &num_failed); 
-  printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
-  gsl_test_root_falsepos(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
-                         &num_passed, &num_failed);
-  printf("  x^2 - 1e-8 [0, 1] ... ");
-  gsl_test_root_falsepos(gsl_test_root_hairy_3, 0.0, 1.0, sqrt(1e-8),
-                         &num_passed, &num_failed);
-  printf("  x exp(-x) [-1/3, 2] ... ");
-  gsl_test_root_falsepos(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
-                         &num_passed, &num_failed);
+  /* Test bisection if so instructed. */
+  if (strchr(argv[1], 'b')) {
+    printf("Testing `gsl_root_bisection': \n");
+    printf("  sin(x) [3, 4] ... ");
+    gsl_test_root_bisection(sin, 3.0, 4.0, M_PI, &num_passed, &num_failed); 
+    printf("  sin(x) [-4, -3] ... ");
+    gsl_test_root_bisection(sin, -4.0, -3.0, -M_PI, &num_passed, &num_failed); 
+    printf("  sin(x) [-1/3, 1] ... ");
+    gsl_test_root_bisection(sin, -1.0/3.0, 1.0, 0.0, &num_passed, &num_failed);
+    printf("  cos(x) [0, 3] ... ");
+    gsl_test_root_bisection(cos, 0.0, 3.0, M_PI/2.0, &num_passed, &num_failed);
+    printf("  cos(x) [-3, 0] ... ");
+    gsl_test_root_bisection(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
+                            &num_failed); 
+    printf("  x^{20} - 1 [0.1, 2] ... ");
+    gsl_test_root_bisection(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
+                            &num_failed); 
+    printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
+    gsl_test_root_bisection(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
+                            &num_passed, &num_failed);
+    printf("  x^2 - 1e-8 [0, 1] ... ");
+    gsl_test_root_bisection(gsl_test_root_hairy_3, 0.0, 1.0, sqrt(1e-8),
+                            &num_passed, &num_failed);
+    printf("  x exp(-x) [-1/3, 2] ... ");
+    gsl_test_root_bisection(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
+                            &num_passed, &num_failed);
+    printf("  (x - 1)^{19} [pi/10, 2] ... ");
+    gsl_test_root_bisection(gsl_test_root_hairy_6, M_PI/10.0, 2.0, 1.0,
+                            &num_passed, &num_failed);
+  }
+
+  /* Test false position if so instructed. */
+  if (strchr(argv[1], 'f')) {
+    printf("Testing `gsl_root_falsepos': \n");
+    printf("  sin(x) [3, 4] ... ");
+    gsl_test_root_falsepos(sin, 3.0, 4.0, M_PI, &num_passed, &num_failed); 
+    printf("  sin(x) [-4, -3] ... ");
+    gsl_test_root_falsepos(sin, -4.0, -3.0, -M_PI, &num_passed, &num_failed); 
+    printf("  sin(x) [-1/3, 1] ... ");
+    gsl_test_root_falsepos(sin, -1.0/3.0, 1.0, 0.0, &num_passed, &num_failed); 
+    printf("  cos(x) [0, 3] ... ");
+    gsl_test_root_falsepos(cos, 0.0, 3.0, M_PI/2.0, &num_passed, &num_failed); 
+    printf("  cos(x) [-3, 0] ... ");
+    gsl_test_root_falsepos(cos, -3.0, 0.0, -M_PI/2.0, &num_passed,
+                           &num_failed); 
+    printf("  x^{20} - 1 [0.1, 2] ... ");
+    gsl_test_root_falsepos(gsl_test_root_hairy_1, 0.1, 2.0, 1.0, &num_passed,
+                           &num_failed); 
+    printf("  sqrt(abs(x)) * sgn(x) [-1/3, 1] ... ");
+    gsl_test_root_falsepos(gsl_test_root_hairy_2, -1.0/3.0, 1.0, 0.0,
+                           &num_passed, &num_failed);
+    printf("  x^2 - 1e-8 [0, 1] ... ");
+    gsl_test_root_falsepos(gsl_test_root_hairy_3, 0.0, 1.0, sqrt(1e-8),
+                           &num_passed, &num_failed);
+    printf("  x exp(-x) [-1/3, 2] ... ");
+    gsl_test_root_falsepos(gsl_test_root_hairy_4, -1.0/3.0, 2.0, 0.0,
+                           &num_passed, &num_failed);
+    printf("  (x - 1)^{19} [pi/10, 2] ... ");
+    gsl_test_root_falsepos(gsl_test_root_hairy_6, M_PI/10.0, 2.0, 1.0,
+                           &num_passed, &num_failed);
+  }
+
+  /* Test secant method if so instructed. */
+  if (strchr(argv[1], 's')) {
+    printf("Testing `gsl_root_secant':\n");
+    printf("  sin(x) {3.3, 3.4} ... ");
+    gsl_test_root_secant(sin, 3.3, 3.4, M_PI, &num_passed, &num_failed, SUCC); 
+    printf("  sin(x) {-3.3, -3.4} ... ");
+    gsl_test_root_secant(sin, -3.3, -3.4, -M_PI, &num_passed, &num_failed,
+                         SUCC); 
+    printf("  sin(x) {0.4, 0.5} ... ");
+    gsl_test_root_secant(sin, 0.4, 0.5, 0.0, &num_passed, &num_failed, SUCC); 
+    printf("  cos(x) {0.5, 0.6} ... ");
+    gsl_test_root_secant(cos, 0.5, 0.6, M_PI/2.0, &num_passed, &num_failed,
+                         SUCC); 
+    printf("  cos(x) {-2.5, -3.0} ... ");
+    gsl_test_root_secant(cos, -2.5, -3.0, -M_PI/2.0, &num_passed, &num_failed,
+                         SUCC);
+    printf("  x^{20} - 1 {0.9, 0.91} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_1, 0.9, 0.91, 1.0, &num_passed,
+                         &num_failed, SUCC); 
+    printf("  x^{20} - 1 {1.1, 1.11} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_1, 1.1, 1.11, 1.0, &num_passed,
+                         &num_failed, SUCC); 
+    printf("  sqrt(abs(x)) * sgn(x) {1, 1.01} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_2, 1.0, 1.01, 0.0,
+                         &num_passed, &num_failed, SUCC);
+    printf("  x^2 - 1e-8 {1, 1.01} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_3, 1.0, 1.01, sqrt(1e-8),
+                         &num_passed, &num_failed, SUCC);
+    printf("  x exp(-x) {2, 2.01} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_4, 2.0, 2.01, 0.0, &num_passed,
+                         &num_failed, SUCC);
+    printf("  1 / (1 + exp(-x)) {0, 0.01} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_5, 0.0, 0.01, 0.0, &num_passed,
+                         &num_failed, FAIL);
+    printf("  (x - 1)^{19} {0, 0.01} ... ");
+    gsl_test_root_secant(gsl_test_root_hairy_6, 0.0, 0.01, 1.0, &num_passed,
+                         &num_failed, SUCC);
+  }
+
+  /* Test Newton's Method if so instructed. */
+  if (strchr(argv[1], 'n')) {
+    printf("Testing `gsl_root_newton':\n");
+    printf("  (not implemented yet)\n");
+  }
 
   /* now summarize the results */
-  printf("--\nRoot finding testing complete.\n");
   if (num_failed == 0) {
-    printf("All %d root finding tests passed.\n", num_passed);
+    printf("All %d tests passed.\n", num_passed);
     /* `make check' expects 0 if the test succeeded. */
     return 0;
   }
   else {
-    printf("%d of %d root finding tests passed, %d failed.\n", num_passed,
-           num_passed + num_failed, num_failed);
-    printf("The integrity of the root finding package may be suspect!\n");
+    printf("%d of %d tests failed.\n", num_failed, num_passed + num_failed);
     /* `make check' expects non-zero if the test failed. */
     return 1;
   }
 }
 
+/* Print usage instructions. */
+void
+print_usage(void)
+{
+  printf(
+"Usage:
+
+  test <tests>
+
+where <tests> is a string indicating which tests to run. It can contain the
+following characters:
+
+  m -- test macros
+  b -- test gsl_root_bisection
+  f -- test gsl_root_falsepos
+  s -- test gsl_root_secant
+  n -- test gsl_root_newton
+
+Example:
+
+  test mb
+
+tests macros and gsl_root_bisection.
+");
+}
+
 /* An error handler which sets some global variables and returns. */
-void error_handler(const char * reason, const char * file, int line)
+void
+error_handler(const char * reason, const char * file, int line)
 {
   /* Memory for g_reason and g_file was allocated in the last call to
      error_handler (or the are NULL because error_handler hasn't been called
@@ -240,6 +342,54 @@ gsl_test_root_falsepos(double (* f)(double), double lower_bound,
   }
 }
 
+/* Using gsl_root_secant, find the root of the function pointed to by f, with
+   guesses guess1 and guess2. Check if f succeeded and that it was accurate
+   enough. */
+void
+gsl_test_root_secant(double (* f)(double), double guess1, double guess2,
+                     double cor_root, int * num_passed, int * num_failed,
+                     int failure_desired)
+{
+  int err;
+  double root;
+  
+  err = gsl_root_secant(&root, f, &guess1, &guess2, TEST_REL_EPSILON,
+                        TEST_ABS_EPSILON, TEST_MAX_ITERATIONS,
+                        TEST_MAX_STEP_SIZE);
+  /* Were we supposed to fail? */
+  if (failure_desired) {
+    /* Did it not fail? */
+    if (err == GSL_SUCCESS) {
+      printf("failed (succeeded)\n");
+      (void)(*num_failed)++;
+    }
+    /* It failed. */
+    else {
+      printf("ok (error %d)\n", gsl_errno);
+      (void)(*num_passed)++;
+    }
+  }
+  /* We were supposed to succeed. */
+  else {
+    /* Was there was an error? */
+    if (err != GSL_SUCCESS) {
+      printf("failed (error %d, %s)\n", gsl_errno, g_reason);
+      (void)(*num_failed)++;
+    }
+    /* Was it not accurate enough? */
+    else if (!_WITHIN_TOL(root, cor_root, TEST_REL_EPSILON,
+                          TEST_ABS_EPSILON)) {
+      printf("failed (inaccurate)\n");
+      (void)(*num_failed)++;
+    }
+    /* The test passed. */
+    else {
+      printf("ok\n");
+      (void)(*num_passed)++;
+    }
+  }
+}
+
 /* f(x) = x^{20} - 1 */
 /* zero at x = 1 or -1 */
 double
@@ -287,4 +437,12 @@ double
 gsl_test_root_hairy_5(double x)
 {
   return 1 / (1 + exp(x));
+}
+
+/* f(x) = (x - 1)^19 */
+/* zero at x = 1 */
+double
+gsl_test_root_hairy_6(double x)
+{
+  return pow(x - 1, 19.0);
 }

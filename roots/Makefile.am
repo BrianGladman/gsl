@@ -11,7 +11,7 @@ noinst_HEADERS = roots.h
 
 INCLUDES = -I$(srcdir)/../err
 
-TESTS = test
+TESTS = test-macros test-bisection test-falsepos test-secant
 
 test_LDADD = libroots.a ../err/liberr.a
 
@@ -19,4 +19,4 @@ test_DEPENDENCIES = libroots.a
 
 test_SOURCES = test.c test.h
 
-libroots_a_SOURCES = utility.c bisection.c falsepos.c
+libroots_a_SOURCES = utility.c bisection.c falsepos.c secant.c

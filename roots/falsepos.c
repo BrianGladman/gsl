@@ -64,6 +64,7 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
       /* Draw a line between f(*lower_bound) and f(*upper_bound) and note
          where that crosses the X axis; that's where we will split the
          interval. */
+      _BARF_ZERO(fl - fu);
       splitpoint = *upper_bound - (fu * (*lower_bound - *upper_bound)
                                    / (fl - fu));
       _BARF_FPCALL(f, splitpoint, fs);

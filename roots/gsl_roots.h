@@ -33,5 +33,9 @@ gsl_root_falsepos(double * root, double (* f)(double), double * lower_bound,
                   double * upper_bound, double rel_epsilon, double abs_epsilon,
                   unsigned int max_iterations, double max_deltay);
 
+int
+gsl_root_secant(double * root, double (* f)(double), double * guess1, 
+                double * guess2, double rel_epsilon, double abs_epsilon,
+                unsigned int max_iterations, double max_step_size);
 
 #endif /* __GSL_ROOTS_H__ */

@@ -31,48 +31,64 @@ _gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
 {
   /* Is the maximum delta-y too small? */
   if (max_deltay < GSL_ROOT_MIN_MAX_DELTAY)
-    GSL_ERROR("invalid argument(s)", GSL_EINVAL);
+    GSL_ERROR("maximum delta-y negative, zero, or too small", GSL_ETOL);
+
+  /* Did the user give a lower bound that not less than the upper bound? */
+  if (*lower_bound >= *upper_bound)
+    GSL_ERROR("lower bound larger than upper_bound", GSL_EINVAL);
 
   /* The rest of the arguments are common. */
-  if (_gsl_root_validate_args_p(root, f, lower_bound, upper_bound,
-                                rel_epsilon, abs_epsilon, max_iterations))
-    return GSL_SUCCESS;
-  else
-    GSL_ERROR("invalid argument(s)", GSL_EINVAL);
+  return _gsl_root_validate_args(root, f, lower_bound, upper_bound,
+                                 rel_epsilon, abs_epsilon, max_iterations);
 }
 
-/* Validate the arguments common to all four low level functions. Return false
-   if any of the following conditions do not hold, otherwise return true.
+/* Validate arguments commond to gsl_root_secant and gsl_root_newtons. Return
+   GSL_SUCCESS if all arguments are okay, complain appropriately (i.e. call
+   GSL_ERROR and return GSL_FAILURE) otherwise. */
+int
+_gsl_root_validate_sm_args(void * root, void * f, double * guess1,
+                           double * guess2, double rel_epsilon,
+                           double abs_epsilon, unsigned int max_iterations,
+                           double max_step_size)
+{
+  /* Is the maximum step size ridiculous? */
+  if (max_step_size <= 0.0)
+    GSL_ERROR("maximum step size <= 0", GSL_ETOL);
+
+  /* The rest of the arguments are common. */
+  return _gsl_root_validate_args(root, f, guess1, guess2, rel_epsilon,
+                                 abs_epsilon, max_iterations);
+}
+
+/* Validate the arguments common to all four low level functions. Return
+   GSL_SUCCESS if all of the following arguments hold true, call GSL_ERROR and
+   return GSL_FAILURE otherwise.
 
    * No pointer arguments are null.
    * The maximum number of iterations is non-zero.
    * Relative and absolute error are non-negative.
-   * The relative error is not too small.
-   * The upper bound is larger than the lower bound. */
+   * The relative error is not too small. */
 int
-_gsl_root_validate_args_p(void * root, void * f, double * lower_bound,
-                          double * upper_bound, double rel_epsilon,
-                          double abs_epsilon, unsigned int max_iterations)
+_gsl_root_validate_args(void * root, void * f, double * where1,
+                        double * where2, double rel_epsilon,
+                        double abs_epsilon, unsigned int max_iterations)
 {
   /* Are any pointers null? */
-  if ((root == NULL) || (f == NULL) || (lower_bound == NULL)
-      || (upper_bound == NULL))
-    return 0;
+  if ((root == NULL) || (f == NULL) || (where1 == NULL)
+      || (where2 == NULL))
+    GSL_ERROR("pointer argument null", GSL_EINVAL);
   /* Did the user tell us to do no iterations? */
   if (max_iterations == 0)
-    return 0;
+    GSL_ERROR("maximum iterations 0", GSL_EINVAL);
   /* Did the user try to pawn a negative tolerance off on us? */
   if (rel_epsilon < 0.0 || abs_epsilon < 0.0)
-    return 0;
+    GSL_ERROR("relative or absolute tolerance negative", GSL_ETOL);
   /* Is the relative error too small? */
   if (rel_epsilon < DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
-    return 0;
-  /* Did the user give a lower bound that not less than the upper bound? */
-  if (*lower_bound >= *upper_bound)
-    return 0;
+    GSL_ERROR("relative tolerance too small", GSL_ETOL);
 
   /* All is well. */
-  return 1;
+  return GSL_SUCCESS;
 }
 
 /* Verify that the supplied interval is guaranteed by the Intermediate Value
@@ -98,7 +114,9 @@ _gsl_root_ivt_guar(double (* f)(double), double lower_bound,
 /* Check if the user has the root but doesn't know it. If lower_bound or
    upper_bound is a root of f, or the interval [upper_bound, lower_bound] is
    within tolerance, return 1 and set *root appropriately. Otherwise, return
-   0. On error, call GSL_ERROR and return GSL_FAILURE. */
+   0. On error, call GSL_ERROR and return GSL_FAILURE. Only worry about
+   max_deltay if it is greater than 0 (which implies that you should validate
+   arguments _before_ calling this function).*/
 int
 _gsl_root_silly_user(double * root, double (* f)(double), double lower_bound,
                      double upper_bound, double rel_epsilon,
@@ -122,7 +140,8 @@ _gsl_root_silly_user(double * root, double (* f)(double), double lower_bound,
   
   /* Are lower_bound and upper_bound within tolerance? */
   _BARF_TOLS(lower_bound, upper_bound, 2 * rel_epsilon, 2 * abs_epsilon);
-  _BARF_DELTAY(fl, fu, max_deltay);
+  if (max_deltay > 0.0)
+    _BARF_DELTAY(fl, fu, max_deltay);
   if (_WITHIN_TOL(lower_bound, upper_bound, 2 * rel_epsilon,
                   2 * abs_epsilon)) {
     *root = (lower_bound + upper_bound) / 2.0;
