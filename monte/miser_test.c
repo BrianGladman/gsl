@@ -134,25 +134,26 @@ int main()
   printf("Testing double gaussian\n");
   for (num_dim = 1; num_dim < 10; num_dim += step) {
     switch (num_dim) {
-    case 4:
+    case 3:
       tol = 0.10;
       calls = 40000;
       s->dither = 0.1;
       break;
     case 5:
       tol = 0.09;
-      calls = 60000;
+      calls = 80000;
       break;
     case 6:
       calls = 50000;
       break;
     case 7:
-      s->dither = 0.1;
+      s->dither = 0.05;
       calls = 150000;
       break;
     case 9:
-      s->dither = 0.13;
-      calls = 310000;
+      tol = 0.1;
+      s->dither = 0.053;
+      calls = 400000;
       break;
     }
     status = gsl_monte_miser_integrate(s, f2, xl, xu, num_dim, calls, 

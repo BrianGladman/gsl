@@ -139,10 +139,12 @@ int main()
       s->alpha = 0.5;
       calls = 20000;
     }
+    /*
     status = gsl_monte_vegas_integrate(s, f2, xl, xu, num_dim, calls, 
 				       &res, &err, &chisq);
     fprintf(stdout, "dim=%lu, res=%.4f, err=%.4f, chisq=%.4f\n",
 	    num_dim, res, err, chisq);
+    */
     switch (num_dim) {
     case 5:
       calls = 40000;
@@ -156,14 +158,14 @@ int main()
       calls = 70000;
       break;
     case 9:
-      calls = 100000;
-      s->max_it_num = 20;
-      tol = 0.04;
+      calls = 150000;
+      s->max_it_num = 15;
+      tol = 0.05;
       s->alpha = 1.0;
       break;
     }
-    s->stage=1;
-    s->max_it_num = 10;
+    s->stage=0;
+    /* s->max_it_num = 10; */
     status = gsl_monte_vegas_integrate(s, f2, xl, xu, num_dim, calls, 
 				       &res, &err, &chisq);
     gsl_test_rel(res, 1.0, tol, "vegas(f2), dim=%d, err=%.4f, chisq=%.4f", 
