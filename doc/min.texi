@@ -462,6 +462,7 @@ book,
 @itemize @asis
 @item
 Richard Brent, @cite{Algorithms for minimization without derivatives},
-Prentice-Hall (1973)
+Prentice-Hall (1973), republished by Dover in paperback (2002), ISBN
+0-486-41998-3.
 @end itemize
 
