@@ -62,18 +62,40 @@ main (void)
   rng_test (gsl_rng_transputer, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
+  /* Borosh13 test value from PARI: (1812433253^10000)%(2^32) */
   rng_test (gsl_rng_borosh13, 1, 10000, 2513433025UL);
-  rng_test (gsl_rng_fishman18, 1, 10000, 1626638977UL);
-  rng_test (gsl_rng_fishman2x, 1, 10000, 1158622502UL);
-  rng_test (gsl_rng_knuthran2, 1, 10000, 1182784902UL);
+
+  /* Fishman18 test value from PARI: (62089911^10000)%(2^31-1) */
+  rng_test (gsl_rng_fishman18, 1, 10000, 330402013UL);
+
+  /* Fishman2x test value from PARI: 
+     ((48271^10000)%(2^31-1) - (40692^10000)%(2^31-249))%(2^31-1) */
+  rng_test (gsl_rng_fishman2x, 1, 10000, 540133597UL);
+
+  /* Knuthran2 test value from PARI: 
+     { xn1=1; xn2=1; for (n=1,10000, 
+            xn = (271828183*xn1 - 314159269*xn2)%(2^31-1);
+            xn2=xn1; xn1=xn; print(xn); ) } */
+  rng_test (gsl_rng_knuthran2, 1, 10000, 1084477620UL);
+
+  /* Knuthran test value taken from p188 in Knuth Vol 2. 3rd Ed */
   rng_test (gsl_rng_knuthran, 310952, 1009 * 2009 + 1, 461390032);
+
+  /* Lecuyer21 test value from PARI: (40692^10000)%(2^31-249) */
   rng_test (gsl_rng_lecuyer21, 1, 10000, 2006618587UL);
+
+  /* Waterman14 test value from PARI: (1566083941^10000)%(2^32) */
   rng_test (gsl_rng_waterman14, 1, 10000, 3776680385UL);
 
   /* specific tests of known results for 10000 iterations with seed = 6 */
 
+  /* Coveyou test value from PARI:
+     x=6; for(n=1,10000,x=(x*(x+1))%(2^32);print(x);) */
+
   rng_test (gsl_rng_coveyou, 6, 10000, 1416754246UL);
-  rng_test (gsl_rng_fishman20, 6, 10000, 1811577350UL);
+
+  /* Fishman20 test value from PARI: ((48271*6)^10000)%(2^31-1)
+  rng_test (gsl_rng_fishman20, 6, 10000, 890747149UL);
 
   /* FIXME: the ranlux tests below were made by running the fortran code and
      getting the expected value from that. An analytic calculation
