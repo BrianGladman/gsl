@@ -51,8 +51,12 @@ void mt_set (void *state, unsigned long int s);
 
 #define N 624	/* Period parameters */
 #define M 397
-const unsigned long UPPER_MASK = 0x80000000UL;	/* most significant w-r bits */
-const unsigned long LOWER_MASK = 0x7fffffffUL;	/* least significant r bits */
+
+/* most significant w-r bits */
+static const unsigned long UPPER_MASK = 0x80000000UL;	
+
+/* least significant r bits */
+static const unsigned long LOWER_MASK = 0x7fffffffUL;	
 
 typedef struct
   {
