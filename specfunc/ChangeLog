@@ -1,3 +1,8 @@
+Sat Oct 13 15:55:56 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cheb_eval.c (cheb_eval_e): keep track of cancellation error to
+ 	prevent underestimates of total error.
+
 Fri Oct 12 16:39:27 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_hyperg.c (test_hyperg): increased tolerance from TOL0 to
