@@ -1,12 +1,13 @@
 double
-FUNCTION(gsl_stats,absdev) (const BASE data[], const size_t n)
+FUNCTION(gsl_stats,absdev) (const BASE data[], const size_t stride, const size_t n)
 {
-  const double mean = FUNCTION(gsl_stats,mean)(data, n);
-  return FUNCTION(gsl_stats,absdev_with_mean)(data, n, mean);
+  const double mean = FUNCTION(gsl_stats,mean)(data, stride, n);
+  return FUNCTION(gsl_stats,absdev_with_mean)(data, stride, n, mean);
 }
     
 double 
 FUNCTION(gsl_stats,absdev_with_mean) (const BASE data[], 
+                                      const size_t stride,
 				      const size_t n, 
 				      const double mean)
 {
@@ -18,7 +19,7 @@ FUNCTION(gsl_stats,absdev_with_mean) (const BASE data[],
   /* find the sum of the absolute deviations */
   for (i = 0; i < n; i++)
     {
-      const double delta = fabs(data[i] - mean);
+      const double delta = fabs(data[i*stride] - mean);
       sum += delta;
     }
 

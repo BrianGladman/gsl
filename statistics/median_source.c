@@ -1,6 +1,7 @@
 
 double
 FUNCTION(gsl_stats,median_from_sorted_data) (const BASE sorted_data[],
+                                             const size_t stride,
 					     const size_t n)
 {
   double median ;
@@ -12,11 +13,11 @@ FUNCTION(gsl_stats,median_from_sorted_data) (const BASE sorted_data[],
 
   if (lhs == rhs)
     {
-      median = sorted_data[lhs] ;
+      median = sorted_data[lhs*stride] ;
     }
   else 
     {
-      median = (sorted_data[lhs] + sorted_data[rhs])/2.0 ;
+      median = (sorted_data[lhs*stride] + sorted_data[rhs*stride])/2.0 ;
     }
 
   return median ;

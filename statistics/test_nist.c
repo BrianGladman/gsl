@@ -339,9 +339,9 @@ main (void)
 
 
   {
-    double mean = gsl_stats_mean (lew, nlew);
-    double estsd = gsl_stats_est_sd (lew, nlew);
-    double lag1 = gsl_stats_lag1_autocorrelation (lew, nlew);
+    double mean = gsl_stats_mean (lew, 1, nlew);
+    double estsd = gsl_stats_est_sd (lew, 1, nlew);
+    double lag1 = gsl_stats_lag1_autocorrelation (lew, 1, nlew);
 
     double expected_mean = -177.435000000000;
     double expected_estsd = 277.332168044316;
@@ -357,9 +357,9 @@ main (void)
 
 
   {
-    double mean = gsl_stats_mean (lottery, nlottery);
-    double estsd = gsl_stats_est_sd (lottery, nlottery);
-    double lag1 = gsl_stats_lag1_autocorrelation (lottery, nlottery);
+    double mean = gsl_stats_mean (lottery, 1, nlottery);
+    double estsd = gsl_stats_est_sd (lottery, 1, nlottery);
+    double lag1 = gsl_stats_lag1_autocorrelation (lottery, 1, nlottery);
 
     double expected_mean = 518.958715596330;
     double expected_estsd = 291.699727470969;
@@ -374,9 +374,9 @@ main (void)
   }
 
   {
-    double mean = gsl_stats_mean (mavro, nmavro);
-    double estsd = gsl_stats_est_sd (mavro, nmavro);
-    double lag1 = gsl_stats_lag1_autocorrelation (mavro, nmavro);
+    double mean = gsl_stats_mean (mavro, 1, nmavro);
+    double estsd = gsl_stats_est_sd (mavro, 1, nmavro);
+    double lag1 = gsl_stats_lag1_autocorrelation (mavro, 1, nmavro);
 
     double expected_mean = 2.00185600000000;
     double expected_estsd = 0.000429123454003053;
@@ -392,9 +392,9 @@ main (void)
 
 
   {
-    double mean = gsl_stats_mean (michelson, nmichelson);
-    double estsd = gsl_stats_est_sd (michelson, nmichelson);
-    double lag1 = gsl_stats_lag1_autocorrelation (michelson, nmichelson);
+    double mean = gsl_stats_mean (michelson, 1, nmichelson);
+    double estsd = gsl_stats_est_sd (michelson, 1, nmichelson);
+    double lag1 = gsl_stats_lag1_autocorrelation (michelson, 1, nmichelson);
 
     double expected_mean = 299.852400000000;
     double expected_estsd = 0.0790105478190518;
@@ -409,9 +409,9 @@ main (void)
   }
 
   {
-    double mean = gsl_stats_mean (pidigits, npidigits);
-    double estsd = gsl_stats_est_sd (pidigits, npidigits);
-    double lag1 = gsl_stats_lag1_autocorrelation (pidigits, npidigits);
+    double mean = gsl_stats_mean (pidigits, 1, npidigits);
+    double estsd = gsl_stats_est_sd (pidigits, 1, npidigits);
+    double lag1 = gsl_stats_lag1_autocorrelation (pidigits, 1, npidigits);
 
     double expected_mean = 4.53480000000000;
     double expected_estsd = 2.86733906028871;
@@ -426,9 +426,9 @@ main (void)
   }
     
   {
-    double mean = gsl_stats_mean (numacc1, nacc1);
-    double estsd = gsl_stats_est_sd (numacc1, nacc1);
-    double lag1 = gsl_stats_lag1_autocorrelation (numacc1, nacc1);
+    double mean = gsl_stats_mean (numacc1, 1, nacc1);
+    double estsd = gsl_stats_est_sd (numacc1, 1, nacc1);
+    double lag1 = gsl_stats_lag1_autocorrelation (numacc1, 1, nacc1);
 
     double expected_mean = 10000002;
     double expected_estsd = 1;
@@ -443,9 +443,9 @@ main (void)
   }
 
   {
-    double mean = gsl_stats_mean (numacc2, nacc2);
-    double estsd = gsl_stats_est_sd (numacc2, nacc2);
-    double lag1 = gsl_stats_lag1_autocorrelation (numacc2, nacc2);
+    double mean = gsl_stats_mean (numacc2, 1, nacc2);
+    double estsd = gsl_stats_est_sd (numacc2, 1, nacc2);
+    double lag1 = gsl_stats_lag1_autocorrelation (numacc2, 1, nacc2);
 
     double expected_mean = 1.2;
     double expected_estsd = 0.1;
@@ -460,9 +460,9 @@ main (void)
   }
 
   {
-    double mean = gsl_stats_mean (numacc3, nacc3);
-    double estsd = gsl_stats_est_sd (numacc3, nacc3);
-    double lag1 = gsl_stats_lag1_autocorrelation (numacc3, nacc3);
+    double mean = gsl_stats_mean (numacc3, 1, nacc3);
+    double estsd = gsl_stats_est_sd (numacc3, 1, nacc3);
+    double lag1 = gsl_stats_lag1_autocorrelation (numacc3, 1, nacc3);
 
     double expected_mean = 1000000.2;
     double expected_estsd = 0.1;
@@ -478,9 +478,9 @@ main (void)
 
 
   {
-    double mean = gsl_stats_mean (numacc4, nacc4);
-    double estsd = gsl_stats_est_sd (numacc4, nacc4);
-    double lag1 = gsl_stats_lag1_autocorrelation (numacc4, nacc4);
+    double mean = gsl_stats_mean (numacc4, 1, nacc4);
+    double estsd = gsl_stats_est_sd (numacc4, 1, nacc4);
+    double lag1 = gsl_stats_lag1_autocorrelation (numacc4, 1, nacc4);
 
     double expected_mean = 10000000.2;
     double expected_estsd = 0.1;

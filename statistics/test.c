@@ -4,6 +4,8 @@
 #include <math.h>
 
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_sort.h>
+#include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_statistics.h>
 
 /* Test program for mean.c.  JimDavies 7.96 */
@@ -78,19 +80,26 @@
 int
 main (void)
 {
-  test_func ();
-  test_float_func ();
-  test_long_double_func ();
+  size_t s1, s2;
 
-  test_ulong_func ();
-  test_long_func ();
-  test_uint_func ();
-  test_int_func ();
-  test_ushort_func ();
-  test_short_func ();
-  test_uchar_func ();
-  test_char_func ();
-
+  for (s1 = 1; s1 < 4 ; s1++) 
+    {
+      for (s2 = 1; s2 < 4 ; s2++) 
+        {
+          test_func (s1,s2);
+          test_float_func (s1,s2);
+          test_long_double_func (s1,s2);
+          
+          test_ulong_func (s1,s2);
+          test_long_func (s1,s2);
+          test_uint_func (s1,s2);
+          test_int_func (s1,s2);
+          test_ushort_func (s1,s2);
+          test_short_func (s1,s2);
+          test_uchar_func (s1,s2);
+          test_char_func (s1,s2);
+        }
+    }
 
   return gsl_test_summary ();
 }

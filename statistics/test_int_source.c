@@ -1,21 +1,21 @@
-void FUNCTION (test, func) (void);
+void FUNCTION (test, func) (const size_t stridea, const size_t strideb);
 
 void
-FUNCTION (test, func) (void)
+FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 {
   /* sample sets of integers */
-  
+  int i;
   const unsigned int ina = 20, inb = 20;
 
-  const BASE test1[] = {1, 2, 3, 4, 5, 6} ;
+  const BASE raw1[] = {1, 2, 3, 4, 5, 6} ;
   
-  const BASE igroupa[] =
+  const BASE irawa[] =
   {17, 18, 16, 18, 12,
    20, 18, 20, 20, 22,
    20, 10, 8, 12, 16,
    16, 18, 20, 18, 21};
 
-  const BASE igroupb[] =
+  const BASE irawb[] =
   {19, 20, 22, 24, 10,
    25, 20, 22, 21, 23,
    20, 10, 12, 14, 12,
@@ -23,90 +23,120 @@ FUNCTION (test, func) (void)
 
   BASE * sorted ;
 
+  BASE * test1 = (BASE *) malloc (stridea * 6 * sizeof(BASE));
+  BASE * igroupa = (BASE *) malloc (stridea * ina * sizeof(BASE));
+  BASE * igroupb = (BASE *) malloc (strideb * inb * sizeof(BASE));
+
   double rel = 1e-10 ;
 
+  for (i = 0 ; i < ina ; i++)
+    igroupa[i * stridea] = irawa[i] ;
+
+  for (i = 0 ; i < inb ; i++)
+    igroupb[i * strideb] = irawb[i] ;
+
+  for (i = 0 ; i < 6 ; i++)
+    test1[i * stridea] = raw1[i] ;
+
+
+
   {
-    double mean = FUNCTION(gsl_stats,mean) (igroupa, ina);
+    double mean = FUNCTION(gsl_stats,mean) (igroupa, stridea, ina);
     double expected = 17.0;
     gsl_test_rel (mean,expected, rel, NAME(gsl_stats) "_mean (integer)");
   }
 
   {
-    double mean = FUNCTION(gsl_stats,mean) (test1, 6);
+    double mean = FUNCTION(gsl_stats,mean) (test1, stridea, 6);
     double expected = 3.5;
     gsl_test_rel (mean,expected, rel, NAME(gsl_stats) "_mean (fractional)");
   }
 
   {
-    double var = FUNCTION(gsl_stats,variance) (igroupa, ina);
+    double var = FUNCTION(gsl_stats,variance) (igroupa, stridea, ina);
     double expected = 13.7;
     gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_variance");
   }
 
   {
-    double var = FUNCTION(gsl_stats,est_variance) (igroupa, ina);
+    double var = FUNCTION(gsl_stats,est_variance) (igroupa, stridea, ina);
     double expected = 14.4210526315789;
     gsl_test_rel (var, expected, rel, NAME(gsl_stats) "_est_variance");
   }
 
   {
-    double sd = FUNCTION(gsl_stats,sd) (igroupa, ina);
+    double sd = FUNCTION(gsl_stats,sd) (igroupa, stridea, ina);
     double expected = 3.70135110466435;
     gsl_test_rel (sd, expected, rel, NAME(gsl_stats) "_sd");
   }
 
   {
-    double sd_est = FUNCTION(gsl_stats,est_sd) (igroupa, ina);
+    double sd_est = FUNCTION(gsl_stats,est_sd) (igroupa, stridea, ina);
     double expected = 3.79750610685209;
     gsl_test_rel (sd_est, expected, rel, NAME(gsl_stats) "_est_sd");
   }
 
   {
-    double absdev = FUNCTION(gsl_stats,absdev) (igroupa, ina);
+    double absdev = FUNCTION(gsl_stats,absdev) (igroupa, stridea, ina);
     double expected = 2.9;
     gsl_test_rel (absdev, expected, rel, NAME(gsl_stats) "_absdev");
   }
 
   {
-    double skew = FUNCTION(gsl_stats,skew) (igroupa, ina);
+    double skew = FUNCTION(gsl_stats,skew) (igroupa, stridea, ina);
     double expected = -0.909355923168064;
     gsl_test_rel (skew, expected, rel, NAME(gsl_stats) "_skew");
   }
 
   {
-    double kurt = FUNCTION(gsl_stats,kurtosis) (igroupa, ina);
+    double kurt = FUNCTION(gsl_stats,kurtosis) (igroupa, stridea, ina);
     double expected = -0.233692524908094 ;
     gsl_test_rel (kurt, expected, rel, NAME(gsl_stats) "_kurtosis");
   }
 
   {
-    double pv = FUNCTION(gsl_stats,pvariance) (igroupa, igroupb, ina, inb);
+    double pv = FUNCTION(gsl_stats,pvariance) (igroupa, igroupb, stridea, ina, strideb, inb);
     double expected = 18.8421052631579;
     gsl_test_rel (pv, expected, rel, NAME(gsl_stats) "_pvariance");
   }
 
   {
-    double t = FUNCTION(gsl_stats,ttest) (igroupa, igroupb, ina, inb);
+    double t = FUNCTION(gsl_stats,ttest) (igroupa, igroupb, stridea, ina, strideb, inb);
     double expected = -1.45701922702927;
     gsl_test_rel (t, expected, rel, NAME(gsl_stats) "_ttest");
   }
 
   {
-    int max = FUNCTION(gsl_stats,max) (igroupa, ina);
+    int max = FUNCTION(gsl_stats,max) (igroupa, stridea, ina);
     int expected = 22;
     gsl_test (max != expected,
 	      NAME(gsl_stats) "_max (%d observed vs %d expected)", max, expected);
   }
 
   {
-    int min = FUNCTION(gsl_stats,min) (igroupa, inb);
+    int min = FUNCTION(gsl_stats,min) (igroupa, stridea, ina);
     int expected = 8;
     gsl_test (min != expected,
 	      NAME(gsl_stats) "_min (%d observed vs %d expected)", min, expected);
   }
 
   {
-    int max_index = FUNCTION(gsl_stats,max_index) (igroupa, ina);
+    BASE min, max;
+    BASE expected_max = 22;
+    BASE expected_min = 8;
+    
+    FUNCTION(gsl_stats,minmax) (&min, &max, igroupa, stridea, ina);
+ 
+    gsl_test  (max != expected_max,
+	       NAME(gsl_stats) "_minmax max (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+	       max, expected_max);
+    gsl_test  (min != expected_min,
+	       NAME(gsl_stats) "_minmax min (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+	       min, expected_min);
+  }
+
+  {
+    int max_index = FUNCTION(gsl_stats,max_index) (igroupa, stridea, ina);
     int expected = 9 ;
     gsl_test (max_index != expected,
 	      NAME(gsl_stats) "_max_index (%d observed vs %d expected)",
@@ -114,27 +144,46 @@ FUNCTION (test, func) (void)
   }
 
   {
-    int min_index = FUNCTION(gsl_stats,min_index) (igroupa, inb);
+    int min_index = FUNCTION(gsl_stats,min_index) (igroupa, stridea, ina);
     int expected = 12 ;
     gsl_test (min_index != expected,
 	      NAME(gsl_stats) "_min_index (%d observed vs %d expected)",
 	      min_index, expected);
   }
 
-  sorted = (BASE *) malloc(ina * sizeof(BASE)) ;
-  memcpy(sorted, igroupa, ina * sizeof(BASE)) ;
+  {
+    size_t min_index, max_index;
+    size_t expected_max_index = 9;
+    size_t expected_min_index = 12;
 
-  FUNCTION(gsl_stats,sort_data(sorted, ina)) ;
+    FUNCTION(gsl_stats,minmax_index) (&min_index, &max_index, igroupa, stridea, ina);
+
+    gsl_test  (max_index != expected_max_index,
+	       NAME(gsl_stats) "_minmax_index max (%u observed vs %u expected)", 
+	       max_index, expected_max_index);
+    gsl_test  (min_index != expected_min_index,
+	       NAME(gsl_stats) "_minmax_index min (%u observed vs %u expected)", 
+	       min_index, expected_min_index);
+  }
+
+
+  sorted = (BASE *) malloc(stridea * ina * sizeof(BASE)) ;
+
+  for (i = 0 ; i < ina ; i++)
+    sorted[stridea * i] = igroupa[stridea * i] ;
+
+
+  TYPE(gsl_sort)(sorted, stridea, ina) ;
 
   {
-    double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, ina) ;
+    double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, stridea, ina) ;
     double expected = 18;
     gsl_test_rel (median,expected, rel,
 		  NAME(gsl_stats) "_median_from_sorted_data (even)");
   }
 
   {
-    double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, ina - 1) ;
+    double median = FUNCTION(gsl_stats,median_from_sorted_data)(sorted, stridea, ina - 1) ;
     double expected = 18;
     gsl_test_rel (median,expected, rel,
 		  NAME(gsl_stats) "_median_from_sorted_data (odd)");
@@ -142,31 +191,35 @@ FUNCTION (test, func) (void)
 
 
   {
-    double zeroth = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, ina, 0.0) ;
+    double zeroth = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, ina, 0.0) ;
     double expected = 8;
     gsl_test_rel (zeroth,expected, rel,
 		  NAME(gsl_stats) "_quantile_from_sorted_data (0)");
   }
 
   {
-    double top = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, ina, 1.0) ;
+    double top = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, ina, 1.0) ;
     double expected = 22;
     gsl_test_rel (top,expected, rel,
 		  NAME(gsl_stats) "_quantile_from_sorted_data (100)");
   }
 
   {
-    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, ina, 0.5) ;
+    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, ina, 0.5) ;
     double expected = 18;
     gsl_test_rel (median,expected, rel,
 		  NAME(gsl_stats) "_quantile_from_sorted_data (50, even)");
   }
 
   {
-    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, ina - 1, 0.5);
+    double median = FUNCTION(gsl_stats,quantile_from_sorted_data)(sorted, stridea, ina - 1, 0.5);
     double expected = 18;
     gsl_test_rel (median,expected, rel,
 		  NAME(gsl_stats) "_quantile_from_sorted_data (50, odd)");
   }
 
+  free (sorted);
+  free (igroupa);
+  free (igroupb);
+  free (test1);
 }

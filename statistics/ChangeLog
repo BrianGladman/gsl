@@ -1,3 +1,11 @@
+Mon Feb 28 20:29:08 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* removed sort function since this is now available in the sort
+ 	directory.
+
+	* converted all functions to take a stride argument, in
+ 	preparation for supporting statistics on vectors
+
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* test.c: added prototype for memcpy using #include <string.h>
