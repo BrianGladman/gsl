@@ -25,9 +25,6 @@
 #ifndef __GSL_BLAS_TYPES_H__
 #define __GSL_BLAS_TYPES_H__
 
-#include <sys/types.h>
-#include <gsl/gsl_complex.h>
-
 #include <gsl/gsl_cblas.h>
 
 #undef __BEGIN_DECLS

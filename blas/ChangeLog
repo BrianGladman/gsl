@@ -1,3 +1,7 @@
+Mon Feb 18 20:01:49 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_blas_types.h: removed unneeded header files
+
 Sat Apr 28 15:25:16 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* blas.c: cast size_t to int for calls to CBLAS
