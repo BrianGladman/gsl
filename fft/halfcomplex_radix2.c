@@ -3,6 +3,38 @@
 #include <gsl_fft_halfcomplex.h>
 
 int
+gsl_fft_halfcomplex_radix2_backward (double data[],
+				     const unsigned int n)
+{
+  int status = gsl_fft_halfcomplex_radix2 (data, n) ;
+  return status ;
+}
+
+int
+gsl_fft_halfcomplex_radix2_inverse (double data[],
+				    const unsigned int n)
+{
+  int status = gsl_fft_halfcomplex_radix2 (data, n);
+
+  if (status)
+    {
+      return status;
+    }
+
+  /* normalize inverse fft with 1/n */
+
+  {
+    const double norm = 1.0 / n;
+    unsigned int i;
+    for (i = 0; i < n; i++)
+      {
+	data[i] *= norm;
+      }
+  }
+  return status;
+}
+
+int
 gsl_fft_halfcomplex_radix2 (double data[],
 			    const unsigned int n)
 {

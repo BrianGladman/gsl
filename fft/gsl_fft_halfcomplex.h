@@ -6,6 +6,14 @@
 #include <gsl_fft.h>
 
 int
+gsl_fft_halfcomplex_radix2_backwards (double data[],
+				      const unsigned int n) ;
+
+int
+gsl_fft_halfcomplex_radix2_inverse (double data[],
+				    const unsigned int n) ;
+
+int
 gsl_fft_halfcomplex_radix2 (double data[],
 			    const unsigned int n) ;
 
@@ -97,7 +105,6 @@ int
 			      const unsigned int product,
 			      const unsigned int n,
 			      const complex twiddle[]);
-
 
 int
   gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
