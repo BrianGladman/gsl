@@ -286,7 +286,19 @@ If the requested modes are not supported by the platform being used then
 the function calls the error handler and returns an error code of
 @code{GSL_EUNSUP}.
 
-The following combination of modes is convenient for many purposes,
+When options are specified using this method, the resulting mode is
+based on a default setting of the highest available precision (double
+precision or extended precision, depending on the platform) in
+round-to-nearest mode, with all exceptions enabled apart from the
+@sc{inexact} exception.  The @sc{inexact} exception is generated
+whenever rounding occurs, so it must generally be disabled in typical
+scientific calculations.  All other floating-point exceptions are
+enabled by default, including underflows and the use of denormalized
+numbers, for safety.  They can be disabled with the individual
+@code{mask-} settings or together using @code{mask-all}.
+
+The following adjusted combination of modes is convenient for many
+purposes,
 
 @example
 GSL_IEEE_MODE="double-precision,"\
