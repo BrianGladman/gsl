@@ -333,7 +333,7 @@ order, @math{y_1(x) = -(\cos(x)/x + \sin(x))/x}.
 @deftypefun double gsl_sf_bessel_y2 (double @var{x})
 @deftypefunx int gsl_sf_bessel_y2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the irregular spherical Bessel function of second
-order, @math{y_2(x) = (-3/x^2 + 1/x)\cos(x) - (3/x^2)\sin(x)}.
+order, @math{y_2(x) = (-3/x^3 + 1/x)\cos(x) - (3/x^2)\sin(x)}.
 @comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
