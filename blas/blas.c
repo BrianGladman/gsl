@@ -18,14 +18,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
-/* GSL implementation of BLAS operations.  Conforms to gsl_blas
- * interface.  Note that GSL native storage is row-major, so we
- * implement in terms of the standard cblas interface .  */
+/* GSL implementation of BLAS operations for vectors and dense
+ * matrices.  Note that GSL native storage is row-major.  */
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
@@ -392,13 +386,13 @@ gsl_blas_daxpy (double alpha, const gsl_vector * X, gsl_vector * Y)
 }
 
 int
-gsl_blas_caxpy (const gsl_complex_float * alpha,
+gsl_blas_caxpy (const gsl_complex_float alpha,
 		const gsl_vector_complex_float * X,
 		gsl_vector_complex_float * Y)
 {
   if (X->size == Y->size)
     {
-      cblas_caxpy (X->size, GSL_COMPLEX_P (alpha), X->data, X->stride,
+      cblas_caxpy (X->size, GSL_COMPLEX_P (&alpha), X->data, X->stride,
 		   Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -409,12 +403,12 @@ gsl_blas_caxpy (const gsl_complex_float * alpha,
 }
 
 int
-gsl_blas_zaxpy (const gsl_complex * alpha, const gsl_vector_complex * X,
+gsl_blas_zaxpy (const gsl_complex alpha, const gsl_vector_complex * X,
 		gsl_vector_complex * Y)
 {
   if (X->size == Y->size)
     {
-      cblas_zaxpy (X->size, GSL_COMPLEX_P (alpha), X->data, X->stride,
+      cblas_zaxpy (X->size, GSL_COMPLEX_P (&alpha), X->data, X->stride,
 		   Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -534,15 +528,15 @@ gsl_blas_dscal (double alpha, gsl_vector * X)
 }
 
 void
-gsl_blas_cscal (const gsl_complex_float * alpha, gsl_vector_complex_float * X)
+gsl_blas_cscal (const gsl_complex_float alpha, gsl_vector_complex_float * X)
 {
-  cblas_cscal (X->size, GSL_COMPLEX_P (alpha), X->data, X->stride);
+  cblas_cscal (X->size, GSL_COMPLEX_P (&alpha), X->data, X->stride);
 }
 
 void
-gsl_blas_zscal (const gsl_complex * alpha, gsl_vector_complex * X)
+gsl_blas_zscal (const gsl_complex alpha, gsl_vector_complex * X)
 {
-  cblas_zscal (X->size, GSL_COMPLEX_P (alpha), X->data, X->stride);
+  cblas_zscal (X->size, GSL_COMPLEX_P (&alpha), X->data, X->stride);
 }
 
 void
@@ -571,12 +565,11 @@ gsl_blas_sgemv (CBLAS_TRANSPOSE_t TransA, float alpha,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
       || (TransA == CblasTrans && M == X->size && N == Y->size))
     {
-      cblas_sgemv (CblasRowMajor, TransA, M, N, alpha, A->data, tda, X->data,
+      cblas_sgemv (CblasRowMajor, TransA, M, N, alpha, A->data, A->tda, X->data,
 		   X->stride, beta, Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -593,12 +586,11 @@ gsl_blas_dgemv (CBLAS_TRANSPOSE_t TransA, double alpha, const gsl_matrix * A,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
       || (TransA == CblasTrans && M == X->size && N == Y->size))
     {
-      cblas_dgemv (CblasRowMajor, TransA, M, N, alpha, A->data, tda, X->data,
+      cblas_dgemv (CblasRowMajor, TransA, M, N, alpha, A->data, A->tda, X->data,
 		   X->stride, beta, Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -610,20 +602,19 @@ gsl_blas_dgemv (CBLAS_TRANSPOSE_t TransA, double alpha, const gsl_matrix * A,
 
 
 int
-gsl_blas_cgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex_float * alpha,
+gsl_blas_cgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_vector_complex_float * X,
-		const gsl_complex_float * beta, gsl_vector_complex_float * Y)
+		const gsl_complex_float beta, gsl_vector_complex_float * Y)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
       || (TransA == CblasTrans && M == X->size && N == Y->size))
     {
-      cblas_cgemv (CblasRowMajor, TransA, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, tda, X->data, X->stride, GSL_COMPLEX_P (beta),
+      cblas_cgemv (CblasRowMajor, TransA, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, X->data, X->stride, GSL_COMPLEX_P (&beta),
 		   Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -635,19 +626,18 @@ gsl_blas_cgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex_float * alpha,
 
 
 int
-gsl_blas_zgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex * alpha,
+gsl_blas_zgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex alpha,
 		const gsl_matrix_complex * A, const gsl_vector_complex * X,
-		const gsl_complex * beta, gsl_vector_complex * Y)
+		const gsl_complex beta, gsl_vector_complex * Y)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if ((TransA == CblasNoTrans && N == X->size && M == Y->size)
       || (TransA == CblasTrans && M == X->size && N == Y->size))
     {
-      cblas_zgemv (CblasRowMajor, TransA, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, tda, X->data, X->stride, GSL_COMPLEX_P (beta),
+      cblas_zgemv (CblasRowMajor, TransA, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, X->data, X->stride, GSL_COMPLEX_P (&beta),
 		   Y->data, Y->stride);
       return GSL_SUCCESS;
     }
@@ -662,14 +652,13 @@ gsl_blas_zgemv (CBLAS_TRANSPOSE_t TransA, const gsl_complex * alpha,
 /* HEMV */
 
 int
-gsl_blas_chemv (CBLAS_UPLO_t Uplo, const gsl_complex_float * alpha,
+gsl_blas_chemv (CBLAS_UPLO_t Uplo, const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_vector_complex_float * X,
-		const gsl_complex_float * beta, gsl_vector_complex_float * Y)
+		const gsl_complex_float beta, gsl_vector_complex_float * Y)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -680,19 +669,18 @@ gsl_blas_chemv (CBLAS_UPLO_t Uplo, const gsl_complex_float * alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_chemv (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (alpha), A->data, tda,
-	       X->data, X->stride, GSL_COMPLEX_P (beta), Y->data, Y->stride);
+  cblas_chemv (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (&alpha), A->data, A->tda,
+	       X->data, X->stride, GSL_COMPLEX_P (&beta), Y->data, Y->stride);
   return GSL_SUCCESS;
 }
 
 int
-gsl_blas_zhemv (CBLAS_UPLO_t Uplo, const gsl_complex * alpha,
+gsl_blas_zhemv (CBLAS_UPLO_t Uplo, const gsl_complex alpha,
 		const gsl_matrix_complex * A, const gsl_vector_complex * X,
-		const gsl_complex * beta, gsl_vector_complex * Y)
+		const gsl_complex beta, gsl_vector_complex * Y)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -703,8 +691,8 @@ gsl_blas_zhemv (CBLAS_UPLO_t Uplo, const gsl_complex * alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zhemv (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (alpha), A->data, tda,
-	       X->data, X->stride, GSL_COMPLEX_P (beta), Y->data, Y->stride);
+  cblas_zhemv (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (&alpha), A->data, A->tda,
+	       X->data, X->stride, GSL_COMPLEX_P (&beta), Y->data, Y->stride);
   return GSL_SUCCESS;
 }
 
@@ -717,7 +705,6 @@ gsl_blas_ssymv (CBLAS_UPLO_t Uplo, float alpha, const gsl_matrix_float * A,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -728,7 +715,7 @@ gsl_blas_ssymv (CBLAS_UPLO_t Uplo, float alpha, const gsl_matrix_float * A,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ssymv (CblasRowMajor, Uplo, N, alpha, A->data, tda, X->data,
+  cblas_ssymv (CblasRowMajor, Uplo, N, alpha, A->data, A->tda, X->data,
 	       X->stride, beta, Y->data, Y->stride);
   return GSL_SUCCESS;
 }
@@ -739,7 +726,6 @@ gsl_blas_dsymv (CBLAS_UPLO_t Uplo, double alpha, const gsl_matrix * A,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -750,7 +736,7 @@ gsl_blas_dsymv (CBLAS_UPLO_t Uplo, double alpha, const gsl_matrix * A,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dsymv (CblasRowMajor, Uplo, N, alpha, A->data, tda, X->data,
+  cblas_dsymv (CblasRowMajor, Uplo, N, alpha, A->data, A->tda, X->data,
 	       X->stride, beta, Y->data, Y->stride);
   return GSL_SUCCESS;
 }
@@ -765,7 +751,6 @@ gsl_blas_strmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -776,7 +761,7 @@ gsl_blas_strmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_strmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_strmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -788,7 +773,6 @@ gsl_blas_dtrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -799,7 +783,7 @@ gsl_blas_dtrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dtrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_dtrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -812,7 +796,6 @@ gsl_blas_ctrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -823,7 +806,7 @@ gsl_blas_ctrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ctrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_ctrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -836,7 +819,6 @@ gsl_blas_ztrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -847,7 +829,7 @@ gsl_blas_ztrmv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ztrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_ztrmv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -862,7 +844,6 @@ gsl_blas_strsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -873,7 +854,7 @@ gsl_blas_strsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_strsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_strsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -885,7 +866,6 @@ gsl_blas_dtrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -896,7 +876,7 @@ gsl_blas_dtrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_dtrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_dtrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -909,7 +889,6 @@ gsl_blas_ctrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -920,7 +899,7 @@ gsl_blas_ctrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ctrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_ctrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -933,7 +912,6 @@ gsl_blas_ztrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -944,7 +922,7 @@ gsl_blas_ztrsv (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_ztrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, tda, X->data,
+  cblas_ztrsv (CblasRowMajor, Uplo, TransA, Diag, N, A->data, A->tda, X->data,
 	       X->stride);
   return GSL_SUCCESS;
 }
@@ -958,12 +936,11 @@ gsl_blas_sger (float alpha, const gsl_vector_float * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
       cblas_sger (CblasRowMajor, M, N, alpha, X->data, X->stride, Y->data,
-		  Y->stride, A->data, tda);
+		  Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
   else
@@ -979,12 +956,11 @@ gsl_blas_dger (double alpha, const gsl_vector * X, const gsl_vector * Y,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (X->size == M && Y->size == N)
     {
       cblas_dger (CblasRowMajor, M, N, alpha, X->data, X->stride, Y->data,
-		  Y->stride, A->data, tda);
+		  Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
   else
@@ -997,7 +973,7 @@ gsl_blas_dger (double alpha, const gsl_vector * X, const gsl_vector * Y,
 /* GERU */
 
 int
-gsl_blas_cgeru (const gsl_complex_float * alpha,
+gsl_blas_cgeru (const gsl_complex_float alpha,
 		const gsl_vector_complex_float * X,
 		const gsl_vector_complex_float * Y,
 		gsl_matrix_complex_float * A)
@@ -1007,7 +983,7 @@ gsl_blas_cgeru (const gsl_complex_float * alpha,
 
   if (X->size == M && Y->size == N)
     {
-      cblas_cgeru (CblasRowMajor, M, N, GSL_COMPLEX_P (alpha), X->data,
+      cblas_cgeru (CblasRowMajor, M, N, GSL_COMPLEX_P (&alpha), X->data,
 		   X->stride, Y->data, Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
@@ -1018,7 +994,7 @@ gsl_blas_cgeru (const gsl_complex_float * alpha,
 }
 
 int
-gsl_blas_zgeru (const gsl_complex * alpha, const gsl_vector_complex * X,
+gsl_blas_zgeru (const gsl_complex alpha, const gsl_vector_complex * X,
 		const gsl_vector_complex * Y, gsl_matrix_complex * A)
 {
   const size_t M = A->size1;
@@ -1026,7 +1002,7 @@ gsl_blas_zgeru (const gsl_complex * alpha, const gsl_vector_complex * X,
 
   if (X->size == M && Y->size == N)
     {
-      cblas_zgeru (CblasRowMajor, M, N, GSL_COMPLEX_P (alpha), X->data,
+      cblas_zgeru (CblasRowMajor, M, N, GSL_COMPLEX_P (&alpha), X->data,
 		   X->stride, Y->data, Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
@@ -1040,7 +1016,7 @@ gsl_blas_zgeru (const gsl_complex * alpha, const gsl_vector_complex * X,
 /* GERC */
 
 int
-gsl_blas_cgerc (const gsl_complex_float * alpha,
+gsl_blas_cgerc (const gsl_complex_float alpha,
 		const gsl_vector_complex_float * X,
 		const gsl_vector_complex_float * Y,
 		gsl_matrix_complex_float * A)
@@ -1050,7 +1026,7 @@ gsl_blas_cgerc (const gsl_complex_float * alpha,
 
   if (X->size == M && Y->size == N)
     {
-      cblas_cgerc (CblasRowMajor, M, N, GSL_COMPLEX_P (alpha), X->data,
+      cblas_cgerc (CblasRowMajor, M, N, GSL_COMPLEX_P (&alpha), X->data,
 		   X->stride, Y->data, Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
@@ -1062,7 +1038,7 @@ gsl_blas_cgerc (const gsl_complex_float * alpha,
 
 
 int
-gsl_blas_zgerc (const gsl_complex * alpha, const gsl_vector_complex * X,
+gsl_blas_zgerc (const gsl_complex alpha, const gsl_vector_complex * X,
 		const gsl_vector_complex * Y, gsl_matrix_complex * A)
 {
   const size_t M = A->size1;
@@ -1070,7 +1046,7 @@ gsl_blas_zgerc (const gsl_complex * alpha, const gsl_vector_complex * X,
 
   if (X->size == M && Y->size == N)
     {
-      cblas_zgerc (CblasRowMajor, M, N, GSL_COMPLEX_P (alpha), X->data,
+      cblas_zgerc (CblasRowMajor, M, N, GSL_COMPLEX_P (&alpha), X->data,
 		   X->stride, Y->data, Y->stride, A->data, A->tda);
       return GSL_SUCCESS;
     }
@@ -1089,7 +1065,6 @@ gsl_blas_cher (CBLAS_UPLO_t Uplo, float alpha,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1101,7 +1076,7 @@ gsl_blas_cher (CBLAS_UPLO_t Uplo, float alpha,
     }
 
   cblas_cher (CblasRowMajor, Uplo, M, alpha, X->data, X->stride, A->data,
-	      tda);
+	      A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1112,7 +1087,6 @@ gsl_blas_zher (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector_complex * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1124,7 +1098,7 @@ gsl_blas_zher (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector_complex * X,
     }
 
   cblas_zher (CblasRowMajor, Uplo, N, alpha, X->data, X->stride, A->data,
-	      tda);
+	      A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1132,14 +1106,13 @@ gsl_blas_zher (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector_complex * X,
 /* HER2 */
 
 int
-gsl_blas_cher2 (CBLAS_UPLO_t Uplo, const gsl_complex_float * alpha,
+gsl_blas_cher2 (CBLAS_UPLO_t Uplo, const gsl_complex_float alpha,
 		const gsl_vector_complex_float * X,
 		const gsl_vector_complex_float * Y,
 		gsl_matrix_complex_float * A)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1150,20 +1123,19 @@ gsl_blas_cher2 (CBLAS_UPLO_t Uplo, const gsl_complex_float * alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_cher2 (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (alpha), X->data,
-	       X->stride, Y->data, Y->stride, A->data, tda);
+  cblas_cher2 (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (&alpha), X->data,
+	       X->stride, Y->data, Y->stride, A->data, A->tda);
   return GSL_SUCCESS;
 }
 
 
 int
-gsl_blas_zher2 (CBLAS_UPLO_t Uplo, const gsl_complex * alpha,
+gsl_blas_zher2 (CBLAS_UPLO_t Uplo, const gsl_complex alpha,
 		const gsl_vector_complex * X, const gsl_vector_complex * Y,
 		gsl_matrix_complex * A)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1174,8 +1146,8 @@ gsl_blas_zher2 (CBLAS_UPLO_t Uplo, const gsl_complex * alpha,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zher2 (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (alpha), X->data,
-	       X->stride, Y->data, Y->stride, A->data, tda);
+  cblas_zher2 (CblasRowMajor, Uplo, N, GSL_COMPLEX_P (&alpha), X->data,
+	       X->stride, Y->data, Y->stride, A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1188,7 +1160,6 @@ gsl_blas_ssyr (CBLAS_UPLO_t Uplo, float alpha, const gsl_vector_float * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1200,7 +1171,7 @@ gsl_blas_ssyr (CBLAS_UPLO_t Uplo, float alpha, const gsl_vector_float * X,
     }
 
   cblas_ssyr (CblasRowMajor, Uplo, N, alpha, X->data, X->stride, A->data,
-	      tda);
+	      A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1211,7 +1182,6 @@ gsl_blas_dsyr (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1223,7 +1193,7 @@ gsl_blas_dsyr (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector * X,
     }
 
   cblas_dsyr (CblasRowMajor, Uplo, N, alpha, X->data, X->stride, A->data,
-	      tda);
+	      A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1236,7 +1206,6 @@ gsl_blas_ssyr2 (CBLAS_UPLO_t Uplo, float alpha, const gsl_vector_float * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1248,7 +1217,7 @@ gsl_blas_ssyr2 (CBLAS_UPLO_t Uplo, float alpha, const gsl_vector_float * X,
     }
 
   cblas_ssyr2 (CblasRowMajor, Uplo, N, alpha, X->data, X->stride, Y->data,
-	       Y->stride, A->data, tda);
+	       Y->stride, A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1259,7 +1228,6 @@ gsl_blas_dsyr2 (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector * X,
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
-  const size_t tda = A->tda;
 
   if (M != N)
     {
@@ -1271,7 +1239,7 @@ gsl_blas_dsyr2 (CBLAS_UPLO_t Uplo, double alpha, const gsl_vector * X,
     }
 
   cblas_dsyr2 (CblasRowMajor, Uplo, N, alpha, X->data, X->stride, Y->data,
-	       Y->stride, A->data, tda);
+	       Y->stride, A->data, A->tda);
   return GSL_SUCCESS;
 }
 
@@ -1337,10 +1305,10 @@ gsl_blas_dgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 
 int
 gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_matrix_complex_float * B,
-		const gsl_complex_float * beta, gsl_matrix_complex_float * C)
+		const gsl_complex_float beta, gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1352,8 +1320,8 @@ gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
   if (M == MA && N == NB && NA == MB)	/* [MxN] = [MAxNA][MBxNB] */
     {
       cblas_cgemm (CblasRowMajor, TransA, TransB, M, N, NA,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda,
-		   GSL_COMPLEX_P (beta), C->data, C->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda,
+		   GSL_COMPLEX_P (&beta), C->data, C->tda);
       return GSL_SUCCESS;
     }
   else
@@ -1365,8 +1333,8 @@ gsl_blas_cgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
 
 int
 gsl_blas_zgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
-		const gsl_matrix_complex * B, const gsl_complex * beta,
+		const gsl_complex alpha, const gsl_matrix_complex * A,
+		const gsl_matrix_complex * B, const gsl_complex beta,
 		gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1379,8 +1347,8 @@ gsl_blas_zgemm (CBLAS_TRANSPOSE_t TransA, CBLAS_TRANSPOSE_t TransB,
   if (M == MA && N == NB && NA == MB)	/* [MxN] = [MAxNA][MBxNB] */
     {
       cblas_zgemm (CblasRowMajor, TransA, TransB, M, N, NA,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda,
-		   GSL_COMPLEX_P (beta), C->data, C->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda,
+		   GSL_COMPLEX_P (&beta), C->data, C->tda);
       return GSL_SUCCESS;
     }
   else
@@ -1457,10 +1425,10 @@ gsl_blas_dsymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo, double alpha,
 
 int
 gsl_blas_csymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_matrix_complex_float * B,
-		const gsl_complex_float * beta, gsl_matrix_complex_float * C)
+		const gsl_complex_float beta, gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1477,8 +1445,8 @@ gsl_blas_csymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && (M == MA && N == NB && NA == MB))
       || (Side == CblasRight && (M == MB && N == NA && NB == MA)))
     {
-      cblas_csymm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+      cblas_csymm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		   C->data, C->tda);
       return GSL_SUCCESS;
     }
@@ -1490,8 +1458,8 @@ gsl_blas_csymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
 int
 gsl_blas_zsymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
-		const gsl_matrix_complex * B, const gsl_complex * beta,
+		const gsl_complex alpha, const gsl_matrix_complex * A,
+		const gsl_matrix_complex * B, const gsl_complex beta,
 		gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1509,8 +1477,8 @@ gsl_blas_zsymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && (M == MA && N == NB && NA == MB))
       || (Side == CblasRight && (M == MB && N == NA && NB == MA)))
     {
-      cblas_zsymm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+      cblas_zsymm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		   C->data, C->tda);
       return GSL_SUCCESS;
     }
@@ -1525,10 +1493,10 @@ gsl_blas_zsymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
 int
 gsl_blas_chemm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		const gsl_matrix_complex_float * B,
-		const gsl_complex_float * beta, gsl_matrix_complex_float * C)
+		const gsl_complex_float beta, gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1545,8 +1513,8 @@ gsl_blas_chemm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && (M == MA && N == NB && NA == MB))
       || (Side == CblasRight && (M == MB && N == NA && NB == MA)))
     {
-      cblas_chemm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+      cblas_chemm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		   C->data, C->tda);
       return GSL_SUCCESS;
     }
@@ -1560,8 +1528,8 @@ gsl_blas_chemm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 
 int
 gsl_blas_zhemm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
-		const gsl_matrix_complex * B, const gsl_complex * beta,
+		const gsl_complex alpha, const gsl_matrix_complex * A,
+		const gsl_matrix_complex * B, const gsl_complex beta,
 		gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1579,8 +1547,8 @@ gsl_blas_zhemm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && (M == MA && N == NB && NA == MB))
       || (Side == CblasRight && (M == MB && N == NA && NB == MA)))
     {
-      cblas_zhemm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (alpha),
-		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+      cblas_zhemm (CblasRowMajor, Side, Uplo, M, N, GSL_COMPLEX_P (&alpha),
+		   A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		   C->data, C->tda);
       return GSL_SUCCESS;
     }
@@ -1641,9 +1609,9 @@ gsl_blas_dsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 
 int
 gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
-		const gsl_complex_float * beta, gsl_matrix_complex_float * C)
+		const gsl_complex_float beta, gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1658,16 +1626,16 @@ gsl_blas_csyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_csyrk (CblasRowMajor, Uplo, Trans, N, MA, GSL_COMPLEX_P (alpha),
-	       A->data, A->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_csyrk (CblasRowMajor, Uplo, Trans, N, MA, GSL_COMPLEX_P (&alpha),
+	       A->data, A->tda, GSL_COMPLEX_P (&beta), C->data, C->tda);
   return GSL_SUCCESS;
 }
 
 
 int
 gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
-		const gsl_complex * beta, gsl_matrix_complex * C)
+		const gsl_complex alpha, const gsl_matrix_complex * A,
+		const gsl_complex beta, gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1682,8 +1650,8 @@ gsl_blas_zsyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, K, GSL_COMPLEX_P (alpha),
-	       A->data, A->tda, GSL_COMPLEX_P (beta), C->data, C->tda);
+  cblas_zsyrk (CblasRowMajor, Uplo, Trans, N, K, GSL_COMPLEX_P (&alpha),
+	       A->data, A->tda, GSL_COMPLEX_P (&beta), C->data, C->tda);
   return GSL_SUCCESS;
 }
 
@@ -1794,10 +1762,10 @@ gsl_blas_dsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans, double alpha,
 
 int
 gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		 const gsl_complex_float * alpha,
+		 const gsl_complex_float alpha,
 		 const gsl_matrix_complex_float * A,
 		 const gsl_matrix_complex_float * B,
-		 const gsl_complex_float * beta, gsl_matrix_complex_float * C)
+		 const gsl_complex_float beta, gsl_matrix_complex_float * C)
 {
   const size_t M = C->size1;
   const size_t N = C->size2;
@@ -1815,8 +1783,8 @@ gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_csyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
-		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+  cblas_csyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (&alpha),
+		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		C->data, C->tda);
   return GSL_SUCCESS;
 }
@@ -1825,8 +1793,8 @@ gsl_blas_csyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 
 int
 gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		 const gsl_complex * alpha, const gsl_matrix_complex * A,
-		 const gsl_matrix_complex * B, const gsl_complex * beta,
+		 const gsl_complex alpha, const gsl_matrix_complex * A,
+		 const gsl_matrix_complex * B, const gsl_complex beta,
 		 gsl_matrix_complex * C)
 {
   const size_t M = C->size1;
@@ -1845,8 +1813,8 @@ gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zsyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
-		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (beta),
+  cblas_zsyr2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (&alpha),
+		A->data, A->tda, B->data, B->tda, GSL_COMPLEX_P (&beta),
 		C->data, C->tda);
   return GSL_SUCCESS;
 }
@@ -1855,7 +1823,7 @@ gsl_blas_zsyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 
 int
 gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		 const gsl_complex_float * alpha,
+		 const gsl_complex_float alpha,
 		 const gsl_matrix_complex_float * A,
 		 const gsl_matrix_complex_float * B, float beta,
 		 gsl_matrix_complex_float * C)
@@ -1876,7 +1844,7 @@ gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_cher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+  cblas_cher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (&alpha),
 		A->data, A->tda, B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 
@@ -1885,7 +1853,7 @@ gsl_blas_cher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 
 int
 gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
-		 const gsl_complex * alpha, const gsl_matrix_complex * A,
+		 const gsl_complex alpha, const gsl_matrix_complex * A,
 		 const gsl_matrix_complex * B, double beta,
 		 gsl_matrix_complex * C)
 {
@@ -1905,7 +1873,7 @@ gsl_blas_zher2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
       GSL_ERROR ("invalid length", GSL_EBADLEN);
     }
 
-  cblas_zher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (alpha),
+  cblas_zher2k (CblasRowMajor, Uplo, Trans, N, NA, GSL_COMPLEX_P (&alpha),
 		A->data, A->tda, B->data, B->tda, beta, C->data, C->tda);
   return GSL_SUCCESS;
 
@@ -1972,7 +1940,7 @@ gsl_blas_dtrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 int
 gsl_blas_ctrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 		CBLAS_TRANSPOSE_t TransA, CBLAS_DIAG_t Diag,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		gsl_matrix_complex_float * B)
 {
@@ -1989,7 +1957,7 @@ gsl_blas_ctrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
       cblas_ctrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2002,7 +1970,7 @@ gsl_blas_ctrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 int
 gsl_blas_ztrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 		CBLAS_TRANSPOSE_t TransA, CBLAS_DIAG_t Diag,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
+		const gsl_complex alpha, const gsl_matrix_complex * A,
 		gsl_matrix_complex * B)
 {
   const size_t M = B->size1;
@@ -2018,7 +1986,7 @@ gsl_blas_ztrmm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
       cblas_ztrmm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2089,7 +2057,7 @@ gsl_blas_dtrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 int
 gsl_blas_ctrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 		CBLAS_TRANSPOSE_t TransA, CBLAS_DIAG_t Diag,
-		const gsl_complex_float * alpha,
+		const gsl_complex_float alpha,
 		const gsl_matrix_complex_float * A,
 		gsl_matrix_complex_float * B)
 {
@@ -2106,7 +2074,7 @@ gsl_blas_ctrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
       cblas_ctrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else
@@ -2119,7 +2087,7 @@ gsl_blas_ctrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 int
 gsl_blas_ztrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 		CBLAS_TRANSPOSE_t TransA, CBLAS_DIAG_t Diag,
-		const gsl_complex * alpha, const gsl_matrix_complex * A,
+		const gsl_complex alpha, const gsl_matrix_complex * A,
 		gsl_matrix_complex * B)
 {
   const size_t M = B->size1;
@@ -2135,7 +2103,7 @@ gsl_blas_ztrsm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
   if ((Side == CblasLeft && M == MA) || (Side == CblasRight && N == MA))
     {
       cblas_ztrsm (CblasRowMajor, Side, Uplo, TransA, Diag, M, N,
-		   GSL_COMPLEX_P (alpha), A->data, A->tda, B->data, B->tda);
+		   GSL_COMPLEX_P (&alpha), A->data, A->tda, B->data, B->tda);
       return GSL_SUCCESS;
     }
   else

@@ -1,54 +1,28 @@
-
 This directory defines a GSL interface to BLAS functionality. GSL
 exports an interface with functions of the form gsl_blas_sdsdot(...),
-etc, defined in gsl_blas.h. Because some users will have a third party
-implementation of BLAS and some will not, GSL allows for accessing
-these different possibilities through the same interface. In order to
-achieve this, two separate libraries are built, each conforming to the
-gsl_blas.h interface.  These libraries are libgslblas and
-libgslblascblas. The first is a gsl implementation and the second is a
-wrapper around a conformant cblas implmentation.
+etc, defined in gsl_blas.h.  This act as a wrapper around a BLAS
+library conforming to the C-language BLAS interface standard, "CBLAS".
 
-Users wanting to use the GSL implementation will link as
-  ld ... -lgsl -lgslblas
+Because some users will have a third party implementation of CBLAS and
+some will not GSL provides a CBLAS library.
 
-Users wanting to use a conformant CBLAS implementation, libcblasfoo,
-will link as
-  ld ... -lgsl -lgslblascblas -lcblasfoo
+Users wanting to use the GSL CBLAS implementation will link as
+  ld ... -lgsl -lgslcblas
+
+Users wanting to use another conformant CBLAS implementation,
+libcblasfoo, will link as
+
+  ld ... -lgsl -lcblasfoo
 
 This allows the choice of blas implementation to be deferred to
 link time and obviously implies that no source code changes need
 be made.
 
-
-The gsl_blas interface is actually implemented in terms of an
-intermediate layer gsl_blas_raw, which is a low-level interface
-using built-in types only. This low-level interface is actually
-the layer with the variable implementation as described above.
-Users who need access to BLAS functionality but do not want to
-use higher-level GSL data types can write to the gsl_blas_raw
-interface and they retain the ability to swap BLAS implmentations
-at link time.
-
-
-Because of the way this works, we do not have a configuration
-check for the presence of cblas at build time. Having to find
-an existing cblas and compile in details of that would lose
-some of the benefit of the flexibility in the above method.
-Therefore, rather than looking for an existing cblas at GSL
-build time, we include our own copy of a conformant cblas.h
-and use that during build time. This is inherently unsafe,
-but only if the implementation differs in a significant way
-from the declared standard, which do not believe is a real
-problem.
-
-Of course, it would be nice if, after thirty years of software
-development with this idiotic langauge, somebody came up with
-a way to gain this kind of flexibility in a safe way which did
-not involve me standing on my head. Dream on.
-
-If you want to try to fix it, go ahead. I have better things to do.
-
+The gsl_blas interface is implemented in terms of the cblas_ interface
+of the CBLAS standard.  Users who need access to BLAS functionality
+but do not want to use higher-level GSL data types can write to the
+cblas_ interface and still retain the ability to swap BLAS
+implmentations at link time.
 
 ---
 

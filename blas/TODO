@@ -1,8 +1,4 @@
 
-* Level 3 raw_native operations need to be implemented
-
-* Support negative strides
-
 * Verify that we support the full CBLAS interface and that the GSL
 CBLAS library can be used standalone
 
