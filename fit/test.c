@@ -41,16 +41,14 @@ main (void)
 
   gsl_ieee_env_setup();
 
-
-
   {
     double c0, c1, cov00, cov01, cov11, sumsq;
        
     double expected_c0 = -0.262323073774029;
     double expected_c1 =  1.00211681802045; 
-    double expected_cov00 = 0.232818234301152;
+    double expected_cov00 = pow(0.232818234301152, 2.0);
     double expected_cov01 = -7.74327536339570e-05;  /* computed from octave */
-    double expected_cov11 = 0.429796848199937E-03;
+    double expected_cov11 = pow(0.429796848199937E-03, 2.0);
     double expected_sumsq = 26.6173985294224;
     
     gsl_fit_linear (x, xstride, y, ystride, norris_n, 
@@ -61,23 +59,57 @@ main (void)
   
     gsl_test_rel (c0, expected_c0, 1e-10, "norris gsl_fit_linear c0") ;
     gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_linear c1") ;
-    gsl_test_rel (sqrt(cov00), expected_cov00, 1e-10, "norris gsl_fit_linear cov00") ;
+    gsl_test_rel (cov00, expected_cov00, 1e-10, "norris gsl_fit_linear cov00") ;
     gsl_test_rel (cov01, expected_cov01, 1e-10, "norris gsl_fit_linear cov01") ;
-    gsl_test_rel (sqrt(cov11), expected_cov11, 1e-10, "norris gsl_fit_linear cov11") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_linear cov11") ;
     gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_linear sumsq") ;
-
-  printf("c0 = %.18e\n", c0);
-  printf("c1 = %.18e\n", c1);
-
-  printf("cov00 = %.18e   s0 = %.18e\n", cov00, sqrt(cov00));
-  printf("cov01 = %.18e\n", cov01);
-  printf("cov11 = %.18e   s1 = %.18e\n", cov11, sqrt(cov11));
-
-  printf("sumsq = %.18e\n", sumsq);
-
-
   }
 
+  {
+    double c0, c1, cov00, cov01, cov11, sumsq;
+       
+    double expected_c0 = -0.262323073774029;
+    double expected_c1 =  1.00211681802045; 
+    double expected_cov00 = 6.92384428759429e-02;  /* computed from octave */
+    double expected_cov01 = -9.89095016390515e-05; /* computed from octave */
+    double expected_cov11 = 2.35960747164148e-07;  /* computed from octave */
+    double expected_sumsq = 26.6173985294224;
+    
+    gsl_fit_wlinear (x, xstride, w, wstride, y, ystride, norris_n, 
+                     &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
+  
+    gsl_test_rel (c0, expected_c0, 1e-10, "norris gsl_fit_wlinear c0") ;
+    gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_wlinear c1") ;
+    gsl_test_rel (cov00, expected_cov00, 1e-10, "norris gsl_fit_wlinear cov00") ;
+    gsl_test_rel (cov01, expected_cov01, 1e-10, "norris gsl_fit_wlinear cov01") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_wlinear cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_wlinear sumsq") ;
+  }
+
+  {
+    double c0, c1, cov00, cov01, cov11, sumsq;
+       
+    double expected_c1 = 1.00174208046979e+00; /* all computed from octave */
+    double expected_cov11 = 7.46806595658452e-08;  
+    double expected_sumsq = 2.76112596299330e+01;
+    
+    gsl_fit_mul (x, xstride, y, ystride, norris_n, &c1, &cov11, &sumsq);
+  
+    gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_mul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_mul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_mul sumsq") ;
+  }
+
+#ifdef JUNK
+    printf("c0 = %.18e\n", c0);
+    printf("c1 = %.18e\n", c1);
+    
+    printf("cov00 = %.18e   s0 = %.18e\n", cov00, sqrt(cov00));
+    printf("cov01 = %.18e\n", cov01);
+    printf("cov11 = %.18e   s1 = %.18e\n", cov11, sqrt(cov11));
+    
+    printf("sumsq = %.18e\n", sumsq);
+#endif
 
   /* now summarize the results */
 

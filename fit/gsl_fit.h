@@ -51,14 +51,21 @@ int gsl_fit_wlinear (const double * x, const size_t xstride,
                      double * cov00, double * cov01, double * cov11, 
                      double * chisq);
 
+int gsl_fit_mul (const double * x, const size_t xstride,
+                 const double * y, const size_t ystride,
+                 size_t n,
+                 double * c1, 
+                 double * cov11, 
+                 double * sumsq);
 
-int gsl_fit_mult (const double * x, 
-                  const double * w, 
-                  const double * y, 
-                  size_t n,
-                  double * c1, 
-                  double * s1, double * r, 
-                  double * chisq);
+int gsl_fit_wmul (const double * x, 
+                 const double * w, 
+                 const double * y, 
+                 size_t n,
+                 double * c1, 
+                 double * s1, double * r, 
+                 double * chisq);
+
 
 
 int gsl_fit_poly (const double * x, 

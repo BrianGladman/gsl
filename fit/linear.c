@@ -32,7 +32,7 @@
    sumsq   --   sum of squares of residuals 
 
    This fit can be used in the case where the errors for the data are
-   uknown, but assumed the be equal for all points. The resulting
+   uknown, but assumed equal for all points. The resulting
    variance-covariance matrix estimates the error in the coefficients
    from the observed variance of the points around the best fit line.
 
@@ -181,7 +181,7 @@ gsl_fit_wlinear (const double *x, size_t xstride,
         if (wi > 0)
           {
             const double dx = x[i*xstride] - wm_x;
-            const double dy = y[i*xstride] - wm_y;
+            const double dy = y[i*ystride] - wm_y;
             const double d = dy - b * dx;
             d2 += wi * d * d;
           }
@@ -195,3 +195,58 @@ gsl_fit_wlinear (const double *x, size_t xstride,
 
 
 
+
+int
+gsl_fit_mul (const double *x, size_t xstride,
+             const double *y, size_t ystride,
+             size_t n,
+             double *c1,
+             double *cov_11, 
+             double *sumsq)
+{
+  double m_x = 0, m_y = 0, m_dx2 = 0, m_dxdy = 0;
+
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      m_x += (x[i*xstride] - m_x) / (i + 1.0);
+      m_y += (y[i*ystride] - m_y) / (i + 1.0);
+    }
+
+  for (i = 0; i < n; i++)
+    {
+      const double dx = x[i*xstride] - m_x;
+      const double dy = y[i*ystride] - m_y;
+      
+      m_dx2 += (dx * dx - m_dx2) / (i + 1.0);
+      m_dxdy += (dx * dy - m_dxdy) / (i + 1.0);
+    }
+
+  /* In terms of y = a + b x */
+
+  {
+    double s2 = 0, d2 = 0;
+    double b = (m_x * m_y + m_dxdy) / (m_x * m_x + m_dx2);
+
+    *c1 = b;
+
+    /* Compute chi^2 = \sum (y_i -  b * x_i)^2 */
+    
+    for (i = 0; i < n; i++)
+      {
+        const double dx = x[i*xstride] - m_x;
+        const double dy = y[i*ystride] - m_y;
+        const double d = (m_y - b * m_x) + dy - b * dx;
+        d2 += d * d;
+      }
+
+    s2 = d2 / (n - 1.0);  /* chisq per degree of freedom */
+
+    *cov_11 = s2 * 1.0 / (n * (m_x * m_x + m_dx2));
+      
+    *sumsq = d2;
+  }
+
+  return GSL_SUCCESS;
+}
