@@ -40,6 +40,7 @@ parameter.
 * Do something about the possibility of the user providing invalid
 parameters (e.g. negative variance etc). Not sure what to do though,
 since returning an error code is not possible. Maybe just return zero.
+  We should return NAN in this case, and for the CDFs.
 
 * Add the triangular distribution.
 
