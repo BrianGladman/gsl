@@ -33,7 +33,7 @@ sinh_series(const double x, double * result)
 
 
 /* cosh(x)-1 series
- * double-precision |x| < 1.0
+ * double-precision for |x| < 1.0
  */
 #ifdef HAVE_INLINE
 inline
@@ -56,7 +56,7 @@ cosh_m1_series(const double x, double * result)
   return GSL_SUCCESS;
 }
 
-    
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, double * szi)
@@ -124,7 +124,7 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
   else {
     double sin_r, sin_i;
     int status;
-    gsl_sf_complex_sin_impl(zr, zi, &sin_r, &sin_i);
+    gsl_sf_complex_sin_impl(zr, zi, &sin_r, &sin_i); /* ok by construction */
     status = gsl_sf_complex_log_impl(sin_r, sin_i, lszr, lszi);
     if(status == GSL_EDOM) {
       *lszr = 0.0;
@@ -338,6 +338,35 @@ int gsl_sf_angle_restrict_pos_e(double * theta)
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes  *-*-*-*-*-*-*-*-*-*-*/
+
+double gsl_sf_sin_pi_x(const double x)
+{
+  const double N = floor(x + 0.5);
+  const double f = x - N;
+  double result;
+
+  if(N < INT_MAX && N > INT_MIN) {
+    /* Make it an integer if we can. Saves another
+     * call to floor().
+     */
+    const int intN    = (int)N;
+    const double sign = ( GSL_IS_ODD(intN) ? -1.0 : 1.0 );
+    result = sign * sin(M_PI * f);
+  }
+  else if(N > 2.0/GSL_DBL_EPSILON || N < -2.0/GSL_DBL_EPSILON) {
+    /* All integer-valued floating point numbers
+     * bigger than 2/eps=2^53 are actually even.
+     */
+    result = 0.0;
+  }
+  else {
+    const double resN = N - 2.0*floor(0.5*N); /* 0 for even N, 1 for odd N */
+    const double sign = ( fabs(resN) > 0.5 ? -1.0 : 1.0 );
+    result = sign * sin(M_PI*f);
+  }
+
+  return result;
+}
 
 double gsl_sf_lnsinh(const double x)
 {

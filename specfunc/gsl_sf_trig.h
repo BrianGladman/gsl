@@ -80,4 +80,7 @@ int gsl_sf_angle_restrict_pos_impl(double * theta);
 int gsl_sf_angle_restrict_pos_e(double * theta);
 
 
+double gsl_sf_sin_pi_x(double x);
+
+
 #endif /* GSL_SF_TRIG_H_ */

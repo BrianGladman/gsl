@@ -117,10 +117,10 @@ int gsl_sf_log_abs_impl(const double x, double * result)
 int gsl_sf_complex_log_impl(const double zr, const double zi, double * lnr, double * theta)
 {
   if(zr != 0.0 || zi != 0.0) {
-    double ax = fabs(zr);
-    double ay = fabs(zi);
-    double min = GSL_MIN(ax, ay);
-    double max = GSL_MAX(ax, ay);
+    const double ax = fabs(zr);
+    const double ay = fabs(zi);
+    const double min = GSL_MIN(ax, ay);
+    const double max = GSL_MAX(ax, ay);
     *lnr   = log(max) + 0.5 * log(1.0 + (min/max)*(min/max));
     *theta = atan2(zi, zr);
     return GSL_SUCCESS;
@@ -164,7 +164,7 @@ int gsl_sf_log_1plusx_mx_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(fabs(x) < GSL_ROOT5_MACH_EPS) {
+  else if(fabs(x) < GSL_ROOT5_DBL_EPSILON) {
     const double c1 = -0.5;
     const double c2 =  1.0/3.0;
     const double c3 = -1.0/4.0;
