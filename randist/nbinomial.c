@@ -14,7 +14,7 @@
 unsigned int
 gsl_ran_negative_binomial (const gsl_rng * r, double p, double n)
 {
-  double X = gsl_ran_gamma (r, n) ;
+  double X = gsl_ran_gamma (r, n, 1.0) ;
   unsigned int k = gsl_ran_poisson (r, X*(1-p)/p) ;
   return k ;
 }

@@ -16,8 +16,8 @@ main (int argc, char *argv[])
 {
   size_t i;
   size_t n = 0;
-  double mu, nu, nu1, nu2, sigma, a, b, p;
-  unsigned int N, t, n1, n2 ;
+  double mu = 0, nu = 0, nu1 = 0, nu2 = 0, sigma = 0, a = 0, b = 0, p = 0;
+  unsigned int N = 0, t = 0, n1 = 0, n2 = 0 ;
   unsigned long int seed = 0 ;
   const char * name ;
   gsl_rng * r ;
@@ -41,7 +41,9 @@ main (int argc, char *argv[])
   gsl_rng_env_setup() ;
 
   if (gsl_rng_default_seed != 0) {
-    fprintf(stderr, "overriding GSL_RNG_SEED with command line value, seed = %d\n", seed) ;
+    fprintf(stderr, 
+	    "overriding GSL_RNG_SEED with command line value, seed = %ld\n", 
+	    seed) ;
   }
   
   gsl_rng_default_seed = seed ;
@@ -124,9 +126,10 @@ main (int argc, char *argv[])
     }
   else if (NAME("gamma"))
     {
-      ARGS(1, "a = order");
+      ARGS(2, "a = order, b = scale");
       DBL_ARG(a) ;
-      OUTPUT(gsl_ran_gamma (r, a));
+      DBL_ARG(b) ;
+      OUTPUT(gsl_ran_gamma (r, a, b));
     }
   else if (NAME("gaussian"))
     {

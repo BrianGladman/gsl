@@ -706,51 +706,51 @@ test_flat_pdf (double x)
 double
 test_gamma (void)
 {
-  return gsl_ran_gamma (r_global, 2.5);
+  return gsl_ran_gamma (r_global, 2.5, 2.17);
 }
 
 double
 test_gamma_pdf (double x)
 {
-  return gsl_ran_gamma_pdf (x, 2.5);
+  return gsl_ran_gamma_pdf (x, 2.5, 2.17);
 }
 
 double
 test_gamma1 (void)
 {
-  return gsl_ran_gamma (r_global, 1.0);
+  return gsl_ran_gamma (r_global, 1.0, 2.17);
 }
 
 double
 test_gamma1_pdf (double x)
 {
-  return gsl_ran_gamma_pdf (x, 1.0);
+  return gsl_ran_gamma_pdf (x, 1.0, 2.17);
 }
 
 
 double
 test_gamma_int (void)
 {
-  return gsl_ran_gamma (r_global, 10.0);
+  return gsl_ran_gamma (r_global, 10.0, 2.17);
 }
 
 double
 test_gamma_int_pdf (double x)
 {
-  return gsl_ran_gamma_pdf (x, 10.0);
+  return gsl_ran_gamma_pdf (x, 10.0, 2.17);
 }
 
 
 double
 test_gamma_large (void)
 {
-  return gsl_ran_gamma (r_global, 20.0);
+  return gsl_ran_gamma (r_global, 20.0, 2.17);
 }
 
 double
 test_gamma_large_pdf (double x)
 {
-  return gsl_ran_gamma_pdf (x, 20.0);
+  return gsl_ran_gamma_pdf (x, 20.0, 2.17);
 }
 
 

@@ -13,7 +13,7 @@
 double
 gsl_ran_erlang (const gsl_rng * r, const double a, const double n)
 {
-  return a * gsl_ran_gamma (r, n);
+  return gsl_ran_gamma (r, n, a);
 }
 
 double

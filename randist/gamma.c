@@ -9,31 +9,31 @@ static double gamma_frac (const gsl_rng * r, double a);
 
 /* The Gamma distribution of order a>0 is defined by:
 
-   p(x) dx = {1 / \Gamma(a)} x^{a-1} e^{-x} dx
+   p(x) dx = {1 / \Gamma(a) b^a } x^{a-1} e^{-x/b} dx
 
    for x>0.  If X and Y are independent gamma-distributed random
-   variables of order a and b, then X+Y has gamma distribution of
-   order a+b.
+   variables of order a1 and a2 with the same scale parameter b, then
+   X+Y has gamma distribution of order a1+a2.
 
    The algorithms below are from Knuth, vol 2, 2nd ed, p. 129. */
 
 double
-gsl_ran_gamma (const gsl_rng * r, const double a)
+gsl_ran_gamma (const gsl_rng * r, const double a, const double b)
 {
   /* assume a > 0 */
   unsigned int na = floor (a);
 
   if (a == na)
     {
-      return gsl_ran_gamma_int (r, na);
+      return b * gsl_ran_gamma_int (r, na);
     }
   else if (na == 0)
     {
-      return gamma_frac (r, a);
+      return b * gamma_frac (r, a);
     }
   else
     {
-      return gsl_ran_gamma_int (r, na) + gamma_frac (r, a - na);
+      return b * (gsl_ran_gamma_int (r, na) + gamma_frac (r, a - na)) ;
     }
 }
 
@@ -119,7 +119,7 @@ gamma_frac (const gsl_rng * r, const double a)
 }
 
 double
-gsl_ran_gamma_pdf (const double x, const double a)
+gsl_ran_gamma_pdf (const double x, const double a, const double b)
 {
   if (x < 0)
     {
@@ -128,18 +128,18 @@ gsl_ran_gamma_pdf (const double x, const double a)
   else if (x == 0)
     {
       if (a == 1)
-	return 1 ;
+	return 1/b ;
       else
 	return 0 ;
     }
   else if (a == 1)
     {
-      return exp(-x) ;
+      return exp(-x/b)/b ;
     }
   else 
     {
       double lngamma = gsl_sf_lngamma (a);
-      double p = exp ((a - 1) * log (x) - x - lngamma);
+      double p = exp ((a - 1) * log (x/b) - x/b - lngamma)/b;
       return p;
     }
 }

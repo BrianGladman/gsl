@@ -31,7 +31,7 @@ gsl_ran_exppow (const gsl_rng * r, const double mu, const double a)
   if (a < 1) 
     {
       double u = gsl_rng_uniform (r) ;
-      double v = gsl_ran_gamma (r, 1/a) ;
+      double v = gsl_ran_gamma (r, 1/a, 1.0) ;
       double z = mu * pow(v, 1/a) ;
 
       if (u > 0.5) 

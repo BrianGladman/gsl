@@ -32,9 +32,9 @@ double gsl_ran_fdist_pdf (double x, double nu1, double nu2);
 double gsl_ran_flat (const gsl_rng * r, double a, double b);
 double gsl_ran_flat_pdf (double x, double a, double b);
 
-double gsl_ran_gamma (const gsl_rng * r, double a);
+double gsl_ran_gamma (const gsl_rng * r, double a, double b);
 double gsl_ran_gamma_int (const gsl_rng * r, unsigned int a);
-double gsl_ran_gamma_pdf (double x, double a);
+double gsl_ran_gamma_pdf (double x, double a, double b);
 
 double gsl_ran_gaussian (const gsl_rng * r, double sigma);
 double gsl_ran_gaussian_pdf (double x, double sigma);

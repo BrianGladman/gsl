@@ -15,8 +15,8 @@ double
 gsl_ran_fdist (const gsl_rng * r, const double nu1, const double nu2)
 {
 
-  double Y1 = 2 * gsl_ran_gamma (r, nu1 / 2);
-  double Y2 = 2 * gsl_ran_gamma (r, nu2 / 2);
+  double Y1 =  gsl_ran_gamma (r, nu1 / 2, 2.0);
+  double Y2 =  gsl_ran_gamma (r, nu2 / 2, 2.0);
 
   double f = (Y1 * nu2) / (Y2 * nu1);
 
