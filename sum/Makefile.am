@@ -9,7 +9,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 
-test_LDADD = libgslsum.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslsum.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslsum.a
 test_SOURCES = test.c
 

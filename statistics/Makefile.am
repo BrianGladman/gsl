@@ -19,11 +19,11 @@ check_PROGRAMS = test test_nist
 TESTS = test test_nist
 
 test_SOURCES = test.c
-test_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_LDADD = libgslstatistics.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslstatistics.a
 
 test_nist_SOURCES = test_nist.c
-test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
+test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a ../utils/libutils.a
 test_nist_DEPENDENCIES = libgslstatistics.a
 
 libgslstatistics_a_SOURCES =  mean.c variance.c absdev.c skew.c \

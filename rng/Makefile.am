@@ -11,15 +11,13 @@ ranf.c ranlux.c ranlxs.c ranlxd.c ranmar.c \
 taus.c transputer.c tt.c uni.c uni32.c vax.c zuf.c
 
 test_SOURCES = test.c
-test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a \
-             ../utils/libutils.a
+test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 TESTS = test
 check_PROGRAMS = test benchmark rng-dump
 
 benchmark_SOURCES = benchmark.c 
-benchmark_LDADD = libgslrng.a ../err/libgslerr.a
+benchmark_LDADD = libgslrng.a ../err/libgslerr.a ../utils/libutils.a
 
 rng_dump_SOURCES = rng-dump.c 
-rng_dump_LDADD = libgslrng.a ../err/libgslerr.a \
-             ../utils/libutils.a
+rng_dump_LDADD = libgslrng.a ../err/libgslerr.a ../utils/libutils.a

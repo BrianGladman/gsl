@@ -7,6 +7,7 @@
  * Note that GSL native storage is row-major, so
  * we implement in terms of gsl_blas_raw.
  */
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_blas_types.h"
 #include "gsl_blas_raw.h"
@@ -24,7 +25,7 @@ int gsl_blas_sdsdot (float alpha,
 		     float * result
 		     )
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   *result = gsl_blas_raw_sdsdot(N, alpha, X->data, X->stride, Y->data, Y->stride);
@@ -36,7 +37,7 @@ int gsl_blas_dsdot (const gsl_vector_float * X,
 		    double * result
 		    )
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   *result = gsl_blas_raw_dsdot(N, X->data, X->stride, Y->data, Y->stride);
@@ -48,7 +49,7 @@ int gsl_blas_sdot (const gsl_vector_float * X,
 		   float * result
 		   )
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   *result = gsl_blas_raw_sdot(N, X->data, X->stride, Y->data, Y->stride);
@@ -60,7 +61,7 @@ int gsl_blas_ddot (const gsl_vector * X,
 		   double * result
 		   )
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   *result = gsl_blas_raw_ddot(N, X->data, X->stride, Y->data, Y->stride);
@@ -72,7 +73,7 @@ int  gsl_blas_cdotu (const gsl_vector_complex_float * X,
                      const gsl_vector_complex_float * Y,
                      gsl_complex_float * dotu)
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   gsl_blas_raw_cdotu(N, X->data, X->stride, Y->data, Y->stride, dotu->dat);
@@ -84,7 +85,7 @@ int  gsl_blas_cdotc (const gsl_vector_complex_float * X,
                      const gsl_vector_complex_float * Y,
                      gsl_complex_float * dotc)
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   gsl_blas_raw_cdotc(N, X->data, X->stride, Y->data, Y->stride, dotc->dat);
@@ -96,7 +97,7 @@ int  gsl_blas_zdotu (const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_complex * dotu)
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   gsl_blas_raw_zdotu(N, X->data, X->stride, Y->data, Y->stride, dotu->dat);
@@ -108,7 +109,7 @@ int  gsl_blas_zdotc (const gsl_vector_complex * X,
                      const gsl_vector_complex * Y,
                      gsl_complex * dotc)
 {
-  CBLAS_INDEX N = MIN(X->size, Y->size);
+  CBLAS_INDEX N = GSL_MIN(X->size, Y->size);
   int status = GSL_SUCCESS;
   if(X->size != Y->size) status = GSL_EINVAL;
   gsl_blas_raw_zdotc(N, X->data, X->stride, Y->data, Y->stride, dotc->dat);

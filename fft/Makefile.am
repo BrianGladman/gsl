@@ -19,7 +19,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
 
-test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 #errs_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 #benchmark_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 

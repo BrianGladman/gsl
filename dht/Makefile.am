@@ -13,7 +13,8 @@ test_dht_LDADD = libgsldht.a		\
 		../specfunc/libgslspecfunc.a	\
 		../sys/libgslsys.a 	\
 		../err/libgslerr.a	\
-		../err/libgsltest.a
+		../err/libgsltest.a     \
+                ../utils/libutils.a
 
 test_dht_DEPENDENCIES = libgsldht.a
 test_dht_SOURCES = test_dht.c

@@ -1,0 +1,5 @@
+Fri Oct  1 15:50:14 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* blas.c: make use of "trailing dimension" in matrix struct to
+ 	support LDA arguments for level 2 BLAS.
+

@@ -14,7 +14,7 @@ INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
 
 TESTS = test
 
-test_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslinterpolation.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslinterpolation.a
 test_SOURCES = test.c
 

@@ -22,6 +22,7 @@ distributions such as the Gaussian, log-normal or Poisson distributions.
 * Random number environment variables::  
 * Saving and restoring random number generator state::  
 * Available random number generator algorithms::  
+* Random Number Generator Performance::  
 * Random Number References and Further Reading::  
 * Random Number Acknowledgements::  
 @end menu
@@ -584,9 +585,9 @@ $$
 @end tex
 @ifinfo
 @example
-s1_@{n+1@} = (((s1_n & 4294967294) <<12) ^^ (((s1_n <<13) ^^ s1_n) >>19))
-s2_@{n+1@} = (((s2_n & 4294967288) << 4) ^^ (((s2_n << 2) ^^ s2_n) >>25))
-s3_@{n+1@} = (((s3_n & 4294967280) <<17) ^^ (((s3_n << 3) ^^ s3_n) >>11))
+s1_@{n+1@} = (((s1_n&4294967294)<<12)^^(((s1_n<<13)^^s1_n)>>19))
+s2_@{n+1@} = (((s2_n&4294967288)<< 4)^^(((s2_n<< 2)^^s2_n)>>25))
+s3_@{n+1@} = (((s3_n&4294967280)<<17)^^(((s3_n<< 3)^^s3_n)>>11))
 @end example
 @end ifinfo
 
@@ -1147,7 +1148,8 @@ SX-3", @cite{International Journal of High Speed Computing} (1994).
 @end itemize
 @end deffn
 
-@section Performance
+@node Random Number Generator Performance
+@section Random Number Generator Performance
 
 @comment
 @comment I made the original plot like this

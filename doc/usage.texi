@@ -97,13 +97,16 @@ slower non-inlined versions of the functions are used instead.
 @section Long double
 @cindex long double
 The extended numerical type @code{long double} is part of the ANSI C
-standard and should be available in every modern compiler. However, in
-some system libraries the @code{stdio.h} formatted input/output
+standard and should be available in every modern compiler.  The
+precision of @code{long double} is platform dependent, and this should
+be considered when using it.
+
+In some system libraries the @code{stdio.h} formatted input/output
 functions @code{printf} and @code{scanf} are not implemented correctly
-for @code{long double}. In order to avoid undefined or incorrect results
-these functions are tested during the @code{configure} stage of library
-compilation and certain GSL functions which depend on them are
-eliminated if necessary,
+for @code{long double}. Undefined or incorrect results are avoided by
+testing these functions during the @code{configure} stage of library
+compilation and eliminating certain GSL functions which depend on them
+if necessary,
 
 @example
 checking whether printf/scanf works with long double... no

@@ -13,5 +13,5 @@ check_PROGRAMS = test
 TESTS = test
 
 test_SOURCES = test.c test_funcs.c test.h
-test_LDADD = libgslmin.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslmin.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslmin.a

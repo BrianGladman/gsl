@@ -14,7 +14,7 @@ TESTS = test
 check_PROGRAMS = test
 
 test_SOURCES = test.c test_poly.c test.h
-test_LDADD = libgslpoly.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslpoly.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslpoly.a
 
 

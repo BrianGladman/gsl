@@ -1,0 +1,4 @@
+Fri Oct  1 15:46:13 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bsimp.c: converted to use new-style block/vector code
+

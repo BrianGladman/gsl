@@ -7,15 +7,15 @@ TESTS = test
 EXTRA_DIST = siman_test_driver.sh
 
 test_SOURCES = test.c
-test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 test_DEPENDENCIES = libgslsiman.a
 
 siman_test_SOURCES = siman_test.c
-siman_test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a
+siman_test_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../utils/libutils.a
 siman_test_DEPENDENCIES = libgslsiman.a
 
 siman_tsp_SOURCES = siman_tsp.c
-siman_tsp_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a
+siman_tsp_LDADD = libgslsiman.a ../rng/libgslrng.a ../err/libgslerr.a ../utils/libutils.a
 siman_tsp_DEPENDENCIES = libgslsiman.a
 
 CLEANFILES = siman_test.out1 siman_test.out2
