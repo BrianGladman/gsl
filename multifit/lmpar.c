@@ -173,7 +173,7 @@ compute_newton_bound (const gsl_matrix * r, const gsl_vector * x,
     {
       double sum = 0;
 
-      for (i = 0; i < j; j++)
+      for (i = 0; i < j; i++)
 	{
 	  sum += gsl_matrix_get (r, i, j) * gsl_vector_get (w, i);
 	}
@@ -220,8 +220,8 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
        gsl_vector * newton, gsl_vector * gradient, gsl_vector * sdiag, 
        gsl_vector * x, gsl_vector * w)
 {
-  double qnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c,
-    dxnorm, wnorm, phider;
+  double dxnorm, gnorm, fp, fp_old, par_lower, par_upper, par_c,
+    wnorm, phider;
 
   double par = *par_inout;
 
@@ -242,12 +242,12 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
   /* Evaluate the function at the origin and test for acceptance of
      the Gauss-Newton direction. */
 
-  qnorm = scaled_enorm (diag, newton);
+  dxnorm = scaled_enorm (diag, newton);
 
-  fp = qnorm - delta;
+  fp = dxnorm - delta;
 
 #ifdef DEBUG
-  printf ("qnorm = %g, delta = %g, fp = %g\n", qnorm, delta, fp);
+  printf ("dxnorm = %g, delta = %g, fp = %g\n", dxnorm, delta, fp);
 #endif
 
   if (fp <= 0.1 * delta)
@@ -268,6 +268,11 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 
   par_lower = fp / (delta * phider);
 
+#ifdef DEBUG
+  printf("par       = %g\n", par      );
+  printf("par_lower = %g\n", par_lower);
+#endif
+
   compute_gradient_direction (r, perm, qtf, diag, gradient);
 
   gnorm = enorm (gradient);
@@ -278,18 +283,34 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
 
   par_upper =  gnorm / delta;
 
+#ifdef DEBUG
+  printf("par_upper = %g\n", par_upper);
+#endif
+
   if (par > par_upper)
     {
+#ifdef DEBUG
+  printf("set par to par_upper\n");
+#endif
+
       par = par_upper;
     }
   else if (par < par_lower)
     {
+#ifdef DEBUG
+  printf("set par to par_lower\n");
+#endif
+
       par = par_lower;
     }
 
   if (par == 0)
     {
       par = gnorm / dxnorm;
+#ifdef DEBUG
+      printf("set par to gnorm/dxnorm = %g\n", par);
+#endif
+
     }
 
   /* Beginning of iteration */
@@ -302,11 +323,24 @@ iteration:
   printf("lmpar iteration = %d\n", iter);
 #endif
 
+#ifdef BRIANSFIX
+  /* Seems like this is described in the paper but not in the MINPACK code */
+
+  if (par < par_lower || par > par_upper) 
+    {
+      par = GSL_MAX_DBL (0.001 * par_upper, sqrt(par_lower * par_upper));
+    }
+#endif
+
   /* Evaluate the function at the current value of par */
 
   if (par == 0)
     {
       par = GSL_MAX_DBL (0.001 * par_upper, GSL_DBL_MIN);
+#ifdef DEBUG
+      printf("par = 0, set par to  = %g\n", par);
+#endif
+
     }
 
   /* Compute the least squares solution of [ R P x - Q^T f, sqrt(par) D x]
@@ -353,6 +387,14 @@ iteration:
 
   par_c = fp / (delta * wnorm * wnorm);
 
+#ifdef DEBUG
+  printf("fp = %g\n", fp);
+  printf("par_lower = %g\n", par_lower);
+  printf("par_upper = %g\n", par_upper);
+  printf("par_c = %g\n", par_c);
+#endif
+
+
   /* Depending on the sign of the function, update par_lower or par_upper */
 
   if (fp > 0)
@@ -360,19 +402,32 @@ iteration:
       if (par > par_lower)
 	{
 	  par_lower = par;
+#ifdef DEBUG
+      printf("fp > 0: set par_lower = par = %g\n", par);
+#endif
+
 	}
     }
   else if (fp < 0)
     {
       if (par < par_upper)
 	{
+#ifdef DEBUG
+      printf("fp < 0: set par_upper = par = %g\n", par);
+#endif
 	  par_upper = par;
 	}
     }
 
   /* Compute an improved estimate for par */
 
+#ifdef DEBUG
+      printf("improved estimate par = %g = MAX(%g, %g) \n", par, par_lower, par+par_c);
+#endif
+
   par = GSL_MAX_DBL (par_lower, par + par_c);
+
+
 
   goto iteration;
 

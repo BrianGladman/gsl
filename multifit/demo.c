@@ -95,7 +95,7 @@ main (void)
 
       //status = gsl_multifit_test_residual (s->f, 0.0000001);
     }
-  while (status == GSL_CONTINUE && iter < 1000);
+  while (iter < 5);
 
   printf ("status = %s\n", gsl_strerror (status));
 

@@ -56,7 +56,7 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       double rjj = gsl_matrix_get (r, j, j);
       double qtbj = gsl_vector_get (qtb, j);
 
-      for (i = j + 1; j < n; i++)
+      for (i = j + 1; i < n; i++)
 	{
 	  double rji = gsl_matrix_get (r, j, i);
 	  gsl_matrix_set (r, i, j, rji);
@@ -185,13 +185,13 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
       gsl_vector_set (wa, j, 0.0);
     }
 
-  for (k = 0; k < nsing; k--)
+  for (k = 0; k < nsing; k++)
     {
-      size_t j = nsing - k;
+      size_t j = (nsing - 1) - k;
 
       double sum = 0;
 
-      for (i = k; i < nsing; i++)
+      for (i = j + 1; i < nsing; i++)
 	{
 	  sum += gsl_matrix_get(r, i, j) * gsl_vector_get(wa, i);
 	}
@@ -206,7 +206,7 @@ qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda,
 
   /* Permute the components of z back to the components of x */
 
-  for (j = 0; j < n; i++)
+  for (j = 0; j < n; j++)
     {
       size_t pj = gsl_permutation_get (p, j);
       double waj = gsl_vector_get (wa, j);
