@@ -75,6 +75,14 @@ AC_MSG_CHECKING(whether CLOCKS_PER_SEC is known for $host_os)
         AC_DEFINE(HAVE_GUESSED_CLOCKS_PER_SEC,1000000)
 	AC_MSG_RESULT([yes (microseconds)]) 
         ;;
+    *-*-nextstep*) 
+	dnl 
+	dnl Nextstep3 defines CLK_TCK 64 in /usr/include/ansi/time.h,
+	dnl which seems to agree with observation of clock().
+	dnl 
+        AC_DEFINE(HAVE_GUESSED_CLOCKS_PER_SEC,64)
+	AC_MSG_RESULT([yes (15.625 milliseconds)]) 
+        ;;
     *) 
         AC_DEFINE(HAVE_GUESSED_CLOCKS_PER_SEC,1000000)
         AC_MSG_RESULT([no, assuming microseconds]) 
