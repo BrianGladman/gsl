@@ -29,6 +29,8 @@ structure constant, which are pure numbers are defined in
 * Viscosity::                   
 * Light and Illumination::      
 * Radioactivity::               
+* Force and Energy::            
+* Prefixes::                    
 * Physical Constant Examples::  
 * Physical Constant References and Further Reading::  
 @end menu
@@ -415,6 +417,97 @@ The exposure of 1 roentgen.
 
 @item GSL_CONST_MKS_RAD
 The absorbed dose of 1 rad.
+@end table
+
+
+@node Force and Energy
+@section Force and Energy
+@cindex force and energy, units of
+@table @code
+@item GSL_CONST_MKS_NEWTON
+The SI unit of force, 1 Newton.
+
+@item GSL_CONST_MKS_DYNE
+The force of 1 Dyne = @c{$10^{-5}$}
+@math{10^-5} Newton.
+
+@item GSL_CONST_MKS_JOULE
+The SI unit of energy, 1 Joule.
+
+@item GSL_CONST_MKS_ERG 
+The energy 1 erg = @c{$10^{-7}$} 
+@math{10^-7} Joule.
+@end table
+
+
+@node Prefixes
+@section Prefixes
+@cindex prefixes
+@cindex constants, prefixes
+
+These constants are dimensionless scaling factors.
+
+@table @code
+@item GSL_CONST_NUM_YOTTA
+@c{$10^{24}$}
+@math{10^24}
+
+@item GSL_CONST_NUM_ZETTA
+@c{$10^{21}$}
+@math{10^21}
+
+@item GSL_CONST_NUM_EXA
+@c{$10^{18}$}
+@math{10^18}
+
+@item GSL_CONST_NUM_PETA
+@c{$10^{15}$}
+@math{10^15}
+
+@item GSL_CONST_NUM_TERA
+@c{$10^{12}$}
+@math{10^12}
+
+@item GSL_CONST_NUM_GIGA
+@math{10^9}
+
+@item GSL_CONST_NUM_MEGA
+@math{10^6}
+
+@item GSL_CONST_NUM_KILO
+@math{10^3}
+
+@item GSL_CONST_NUM_MILLI
+@c{$10^{-3}$}
+@math{10^-3}
+
+@item GSL_CONST_NUM_MICRO
+@c{$10^{-6}$}
+@math{10^-6}
+
+@item GSL_CONST_NUM_NANO
+@c{$10^{-9}$}
+@math{10^-9}
+
+@item GSL_CONST_NUM_PICO
+@c{$10^{-12}$}
+@math{10^-12}
+
+@item GSL_CONST_NUM_FEMTO
+@c{$10^{-15}$}
+@math{10^-15}
+
+@item GSL_CONST_NUM_ATTO
+@c{$10^{-18}$}
+@math{10^-18}
+
+@item GSL_CONST_NUM_ZEPTO
+@c{$10^{-21}$}
+@math{10^-21}
+
+@item GSL_CONST_NUM_YOCTO
+@c{$10^{-24}$}
+@math{10^-24}
 @end table
 
 @node Physical Constant Examples

@@ -14,6 +14,23 @@
 (setq  gsl-dimensionless-constants
        '(("fsc"           "FINE_STRUCTURE")
          ("Nav"           "AVOGADRO")
+
+         ("1e24"          "YOTTA")
+         ("1e21"          "ZETTA")
+         ("1e18"          "EXA")
+         ("1e15"          "PETA")
+         ("1e12"          "TERA")
+         ("1e9"           "GIGA")
+         ("1e6"           "MEGA")
+         ("1e3"           "KILO")
+         ("1e-3"          "MILLI")
+         ("1e-6"          "MICRO")
+         ("1e-9"          "NANO")
+         ("1e-12"         "PICO")
+         ("1e-15"         "FEMTO")
+         ("1e-18"         "ATTO")
+         ("1e-21"         "ZEPTO")
+         ("1e-24"         "YOCTO")
          )
        )
 
@@ -134,6 +151,11 @@
          ("1.98892e30 kg"       "SOLAR_MASS")
          ("0.5291772083e-10 m"  "BOHR_RADIUS")
          ("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
+
+         ("N"                     "NEWTON")
+         ("1e-5 N"                "DYNE")
+         ("J"                     "JOULE")
+         ("1e-7 J"                "ERG")
          )
        )
 

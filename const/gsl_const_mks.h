@@ -114,5 +114,9 @@
 #define GSL_CONST_MKS_SOLAR_MASS (1.98892e30) /* kg */
 #define GSL_CONST_MKS_BOHR_RADIUS (5.291772083e-11) /* m */
 #define GSL_CONST_MKS_VACUUM_PERMITTIVITY (8.854187817e-12) /* A^2 s^4 / kg m^3 */
+#define GSL_CONST_MKS_NEWTON (1e0) /* kg m / s^2 */
+#define GSL_CONST_MKS_DYNE (1e-5) /* kg m / s^2 */
+#define GSL_CONST_MKS_JOULE (1e0) /* kg m^2 / s^2 */
+#define GSL_CONST_MKS_ERG (1e-7) /* kg m^2 / s^2 */
 
 #endif /* __GSL_CONST_MKS__ */

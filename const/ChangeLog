@@ -1,3 +1,8 @@
+Mon Apr  1 19:27:57 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* const.el (gsl-constants): Added newton, dyne, joule, erg and
+ 	power-of-ten prefixes, Mega, Giga, Tera, etc.
+
 Tue Jan  8 21:48:56 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* const.el (gsl-constants): added bohr_radius and

@@ -1,6 +1,9 @@
 * What is new in gsl-1.2:
 
-* Added new function for combining permutations, gsl_permutation_mul
+** Added new physical constants, newton, dyne, joule, erg and 
+power-of-ten prefixes, Mega, Giga, Tera, etc.
+
+** Added new function for combining permutations, gsl_permutation_mul
 
 * What was new in gsl-1.1.1:
 
