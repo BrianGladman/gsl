@@ -42,10 +42,18 @@ int gsl_monte_plain_integrate(const gsl_monte_plain_state *state,
     sum2 += fval * fval;
   }
   *res = vol * sum/calls;
-  *err = vol * sqrt(myMAX(TINY, (sum2-sum*sum/calls)/(calls*calls)));
-
+  if ( calls > 1) {
+    *err = vol * sqrt(myMAX(TINY, (sum2-sum*sum/calls)/(calls*(calls-1))));
+  }
+  else {
+    /* should't happen, validate should catch */
+    *err = -1;
+    status = 1;
+  }
   return status;
 }
+
+
 
 gsl_monte_plain_state* gsl_monte_plain_alloc(void)
 {
@@ -94,8 +102,8 @@ int gsl_monte_plain_validate(gsl_monte_plain_state* state,
     }
   }
 
-  if ( calls <= 0 ) {
-    sprintf(warning, "number of calls must be greater than zero, not %lu",
+  if ( calls <= 1 ) {
+    sprintf(warning, "number of calls must be greater than 1, not %lu",
 	    calls);
     GSL_ERROR(warning, GSL_EINVAL);
   }
