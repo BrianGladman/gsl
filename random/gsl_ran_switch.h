@@ -1,4 +1,4 @@
-### 
+/* gsl_ran_switch.h */
 void gsl_ran_use_default(void);
 void gsl_ran_use_taus(void);
 void gsl_ran_use_mrg(void);
