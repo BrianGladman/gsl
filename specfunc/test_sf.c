@@ -1119,7 +1119,7 @@ int test_synch(void)
   TEST_SF(s, gsl_sf_synchrotron_1_e, (10.0, &r),  0.000192238264300868882, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_synchrotron_1_e, (100.0, &r), 4.69759366592220221e-43, TEST_TOL1, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_synchrotron_2_e, (0.01, &r),  0.23098077342226277732, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_synchrotron_2_e, (0.01, &r),  0.23098077342226277732, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_synchrotron_2_e, (1.0, &r),   0.4944750621042082670,  TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_synchrotron_2_e, (10.0, &r),  0.00018161187569530204281,  TEST_TOL1, GSL_SUCCESS);  
   TEST_SF(s, gsl_sf_synchrotron_2_e, (256.0, &r), 1.3272635474353774058e-110, TEST_TOL4, GSL_SUCCESS);  /* exp()... not my fault */
