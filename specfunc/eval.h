@@ -6,7 +6,7 @@
    if (status == GSL_EDOM) { \
      return GSL_NAN; \
    } else if (status != GSL_SUCCESS) { \
-     GSL_ERROR(#fn, status); \
+     GSL_ERROR_VAL(#fn, status, result.val); \
    } ; \
    return result.val;
 
@@ -15,7 +15,7 @@
    if (status == GSL_EDOM) { \
      return GSL_NAN; \
    } else if (status != GSL_SUCCESS) { \
-     GSL_ERROR(#fn, status); \
+     GSL_ERROR_VAL(#fn, status, result.val); \
    } ; \
    return result;
 
