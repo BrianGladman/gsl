@@ -43,7 +43,7 @@ test_switch_SOURCES= test-switch.c switch.c
 test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
 
 switch.c gsl_ran_switch.h:
-	./makesrc --switch
+	$(srcdir)/makesrc --switch
 
 ## The user doesn't really _need_ these, assuming that the
 ## distribution includes all the .c and .h sources.

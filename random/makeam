@@ -82,8 +82,9 @@ echo "test_switch_LDADD=$obj"
 echo ""
     
     for i in $list; do
-    echo "${i}_SOURCES=             ran.c $i.c"
-    echo "${i}_DEPENDENCIES=        $i-state.c $i.h $i-gen.o"
+    echo "${i}_SOURCES=             ran.c $i.c $i.h"
+    echo "EXTRA_${i}_SOURCES=       $i-state.c"
+    echo "${i}_DEPENDENCIES=        $i-state.c $i-gen.o"
     echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
     echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
@@ -107,11 +108,14 @@ built_src="$built_src gsl_ran_switch.h switch.c"
 echo "## THE_BUILT_SOURCES=$built_src"
 echo ""
 echo "## If you need to build these sources, use the 'makesrc' script"
+echo "# These are commented out now that the files are under CVS "
+echo "# The relative dates seem to cause a problem for make distcheck"
 for i in $list; do
-    echo "$i.h $i-state.c $i-gen.c: makesrc"
-    echo "	./makesrc $i"
+    echo "# $i.h $i-state.c $i-gen.c: makesrc"
+    echo "#	\$(srcdir)/makesrc $i"
     echo ""
 done
+
 
 echo "## This target is kind of like 'distclean'"
 echo "tooclean:"

@@ -41,7 +41,7 @@ test_switch_SOURCES= test-switch.c switch.c
 test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
 
 switch.c gsl_ran_switch.h:
-	./makesrc --switch
+	$(srcdir)/makesrc --switch
 
 ## The user doesn't really _need_ these, assuming that the
 ## distribution includes all the .c and .h sources.
@@ -87,8 +87,9 @@ test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.
 
 test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o ../utils/libutils.a 
 
-taus_SOURCES=             ran.c taus.c
-taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
+taus_SOURCES=             ran.c taus.c taus.h
+EXTRA_taus_SOURCES=       taus-state.c
+taus_DEPENDENCIES=        taus-state.c taus-gen.o
 taus_LDADD=               taus-gen.o
 test_taus_SOURCES=        testran.c
 test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
@@ -96,8 +97,9 @@ test_taus_LDADD=          taus.o taus-gen.o ../err/libgsltest.a ../utils/libutil
 bench_taus_SOURCES=       benchran.c
 bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
 bench_taus_LDADD=         taus.o taus-gen.o
-mrg_SOURCES=             ran.c mrg.c
-mrg_DEPENDENCIES=        mrg-state.c mrg.h mrg-gen.o
+mrg_SOURCES=             ran.c mrg.c mrg.h
+EXTRA_mrg_SOURCES=       mrg-state.c
+mrg_DEPENDENCIES=        mrg-state.c mrg-gen.o
 mrg_LDADD=               mrg-gen.o
 test_mrg_SOURCES=        testran.c
 test_mrg_DEPENDENCIES=   mrg.o mrg-gen.o mrg.h
@@ -105,8 +107,9 @@ test_mrg_LDADD=          mrg.o mrg-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_mrg_SOURCES=       benchran.c
 bench_mrg_DEPENDENCIES=  mrg.o mrg-gen.o mrg.h
 bench_mrg_LDADD=         mrg.o mrg-gen.o
-cmrg_SOURCES=             ran.c cmrg.c
-cmrg_DEPENDENCIES=        cmrg-state.c cmrg.h cmrg-gen.o
+cmrg_SOURCES=             ran.c cmrg.c cmrg.h
+EXTRA_cmrg_SOURCES=       cmrg-state.c
+cmrg_DEPENDENCIES=        cmrg-state.c cmrg-gen.o
 cmrg_LDADD=               cmrg-gen.o
 test_cmrg_SOURCES=        testran.c
 test_cmrg_DEPENDENCIES=   cmrg.o cmrg-gen.o cmrg.h
@@ -114,8 +117,9 @@ test_cmrg_LDADD=          cmrg.o cmrg-gen.o ../err/libgsltest.a ../utils/libutil
 bench_cmrg_SOURCES=       benchran.c
 bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
 bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
-uni_SOURCES=             ran.c uni.c
-uni_DEPENDENCIES=        uni-state.c uni.h uni-gen.o
+uni_SOURCES=             ran.c uni.c uni.h
+EXTRA_uni_SOURCES=       uni-state.c
+uni_DEPENDENCIES=        uni-state.c uni-gen.o
 uni_LDADD=               uni-gen.o
 test_uni_SOURCES=        testran.c
 test_uni_DEPENDENCIES=   uni.o uni-gen.o uni.h
@@ -123,8 +127,9 @@ test_uni_LDADD=          uni.o uni-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_uni_SOURCES=       benchran.c
 bench_uni_DEPENDENCIES=  uni.o uni-gen.o uni.h
 bench_uni_LDADD=         uni.o uni-gen.o
-uni32_SOURCES=             ran.c uni32.c
-uni32_DEPENDENCIES=        uni32-state.c uni32.h uni32-gen.o
+uni32_SOURCES=             ran.c uni32.c uni32.h
+EXTRA_uni32_SOURCES=       uni32-state.c
+uni32_DEPENDENCIES=        uni32-state.c uni32-gen.o
 uni32_LDADD=               uni32-gen.o
 test_uni32_SOURCES=        testran.c
 test_uni32_DEPENDENCIES=   uni32.o uni32-gen.o uni32.h
@@ -132,8 +137,9 @@ test_uni32_LDADD=          uni32.o uni32-gen.o ../err/libgsltest.a ../utils/libu
 bench_uni32_SOURCES=       benchran.c
 bench_uni32_DEPENDENCIES=  uni32.o uni32-gen.o uni32.h
 bench_uni32_LDADD=         uni32.o uni32-gen.o
-zuf_SOURCES=             ran.c zuf.c
-zuf_DEPENDENCIES=        zuf-state.c zuf.h zuf-gen.o
+zuf_SOURCES=             ran.c zuf.c zuf.h
+EXTRA_zuf_SOURCES=       zuf-state.c
+zuf_DEPENDENCIES=        zuf-state.c zuf-gen.o
 zuf_LDADD=               zuf-gen.o
 test_zuf_SOURCES=        testran.c
 test_zuf_DEPENDENCIES=   zuf.o zuf-gen.o zuf.h
@@ -141,8 +147,9 @@ test_zuf_LDADD=          zuf.o zuf-gen.o ../err/libgsltest.a ../utils/libutils.a
 bench_zuf_SOURCES=       benchran.c
 bench_zuf_DEPENDENCIES=  zuf.o zuf-gen.o zuf.h
 bench_zuf_LDADD=         zuf.o zuf-gen.o
-rand_SOURCES=             ran.c rand.c
-rand_DEPENDENCIES=        rand-state.c rand.h rand-gen.o
+rand_SOURCES=             ran.c rand.c rand.h
+EXTRA_rand_SOURCES=       rand-state.c
+rand_DEPENDENCIES=        rand-state.c rand-gen.o
 rand_LDADD=               rand-gen.o
 test_rand_SOURCES=        testran.c
 test_rand_DEPENDENCIES=   rand.o rand-gen.o rand.h
@@ -158,26 +165,28 @@ bench_rand_LDADD=         rand.o rand-gen.o
 ## THE_BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
 
 ## If you need to build these sources, use the 'makesrc' script
-taus.h taus-state.c taus-gen.c: makesrc
-	./makesrc taus
+# These are commented out now that the files are under CVS 
+# The relative dates seem to cause a problem for make distcheck
+# taus.h taus-state.c taus-gen.c: makesrc
+#	$(srcdir)/makesrc taus
 
-mrg.h mrg-state.c mrg-gen.c: makesrc
-	./makesrc mrg
+# mrg.h mrg-state.c mrg-gen.c: makesrc
+#	$(srcdir)/makesrc mrg
 
-cmrg.h cmrg-state.c cmrg-gen.c: makesrc
-	./makesrc cmrg
+# cmrg.h cmrg-state.c cmrg-gen.c: makesrc
+#	$(srcdir)/makesrc cmrg
 
-uni.h uni-state.c uni-gen.c: makesrc
-	./makesrc uni
+# uni.h uni-state.c uni-gen.c: makesrc
+#	$(srcdir)/makesrc uni
 
-uni32.h uni32-state.c uni32-gen.c: makesrc
-	./makesrc uni32
+# uni32.h uni32-state.c uni32-gen.c: makesrc
+#	$(srcdir)/makesrc uni32
 
-zuf.h zuf-state.c zuf-gen.c: makesrc
-	./makesrc zuf
+# zuf.h zuf-state.c zuf-gen.c: makesrc
+#	$(srcdir)/makesrc zuf
 
-rand.h rand-state.c rand-gen.c: makesrc
-	./makesrc rand
+# rand.h rand-state.c rand-gen.c: makesrc
+#	$(srcdir)/makesrc rand
 
 ## This target is kind of like 'distclean'
 tooclean:
