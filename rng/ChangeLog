@@ -1,3 +1,7 @@
+Mon Aug  3 18:25:52 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* mt.c: made constants static since they shouldn't be exported
+
 Thu Jul  9 13:56:20 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* slatec.c: renamed cmlib.c to slatec.c
