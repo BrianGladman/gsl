@@ -474,17 +474,17 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 101;
-   int uplo = 121;
-   int trans = 113;
+   int uplo = 122;
+   int trans = 111;
    int N = 2;
    int K = 1;
    float alpha[2] = {1.0f, 0.0f};
    float beta[2] = {0.0f, 1.0f};
    float A[] = { 0.784f, -0.281f, -0.88f, 0.479f };
-   int lda = 2;
+   int lda = 1;
    float C[] = { 0.491f, 0.531f, 0.805f, -0.097f, 0.728f, 0.674f, -0.705f, -0.754f };
    int ldc = 2;
-   float C_expected[] = { 0.004695f, 0.050392f, -0.458321f, 1.42782f, 0.728f, 0.674f, 1.29896f, -1.54804f };
+   float C_expected[] = { 0.004695f, 0.050392f, 0.805f, -0.097f, -1.22932f, 1.35082f, 1.29896f, -1.54804f };
    cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
@@ -498,17 +498,17 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 102;
-   int uplo = 121;
-   int trans = 113;
+   int uplo = 122;
+   int trans = 111;
    int N = 2;
    int K = 1;
    float alpha[2] = {1.0f, 0.0f};
    float beta[2] = {0.0f, 1.0f};
    float A[] = { 0.272f, -0.146f, 0.155f, 0.038f };
-   int lda = 1;
+   int lda = 2;
    float C[] = { 0.533f, -0.41f, -0.904f, 0.301f, -0.836f, 0.57f, -0.374f, -0.293f };
    int ldc = 2;
-   float C_expected[] = { 0.462668f, 0.453576f, -0.904f, 0.301f, -0.522292f, -0.848294f, 0.315581f, -0.36222f };
+   float C_expected[] = { 0.462668f, 0.453576f, -0.253292f, -0.916294f, -0.836f, 0.57f, 0.315581f, -0.36222f };
    cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
@@ -523,13 +523,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 122;
-   int trans = 111;
+   int trans = 112;
    int N = 2;
    int K = 1;
    float alpha[2] = {0.0f, 1.0f};
    float beta[2] = {-1.0f, 0.0f};
    float A[] = { -0.055f, -0.127f, -0.896f, -0.625f };
-   int lda = 1;
+   int lda = 2;
    float C[] = { -0.619f, 0.511f, -0.877f, 0.557f, -0.801f, -0.437f, -0.922f, 0.332f };
    int ldc = 2;
    float C_expected[] = { 0.60503f, -0.524104f, -0.877f, 0.557f, 0.652833f, 0.406905f, -0.198f, 0.080191f };
@@ -547,13 +547,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 102;
    int uplo = 122;
-   int trans = 111;
+   int trans = 112;
    int N = 2;
    int K = 1;
    float alpha[2] = {0.0f, 1.0f};
    float beta[2] = {-1.0f, 0.0f};
    float A[] = { -0.528f, 0.759f, -0.079f, 0.952f };
-   int lda = 2;
+   int lda = 1;
    float C[] = { 0.775f, 0.855f, 0.786f, 0.525f, 0.85f, 0.044f, 0.658f, 0.947f };
    int ldc = 2;
    float C_expected[] = { 0.026504f, -1.1523f, -0.223383f, -1.20586f, 0.85f, 0.044f, -0.507584f, -1.84706f };
@@ -570,23 +570,23 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 101;
-   int uplo = 122;
-   int trans = 112;
+   int uplo = 121;
+   int trans = 111;
    int N = 2;
    int K = 1;
-   float alpha[2] = {1.0f, 0.0f};
-   float beta[2] = {1.0f, 0.0f};
-   float A[] = { -0.049f, -0.687f, -0.434f, 0.294f };
-   int lda = 2;
-   float C[] = { 0.937f, -0.113f, 0.796f, 0.293f, 0.876f, -0.199f, -0.757f, -0.103f };
+   double alpha[2] = {1, 0};
+   double beta[2] = {1, 0};
+   double A[] = { -0.049, -0.687, -0.434, 0.294 };
+   int lda = 1;
+   double C[] = { 0.937, -0.113, 0.796, 0.293, 0.876, -0.199, -0.757, -0.103 };
    int ldc = 2;
-   float C_expected[] = { 0.467432f, -0.045674f, 0.796f, 0.293f, 1.09924f, 0.084752f, -0.65508f, -0.358192f };
-   cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
+   double C_expected[] = { 0.467432, -0.045674, 1.019244, 0.576752, 0.876, -0.199, -0.65508, -0.358192 };
+   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
      for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], flteps, "csyrk(case 1590) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], flteps, "csyrk(case 1590) imag");
+       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1590) real");
+       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1590) imag");
      };
    };
   };
@@ -594,71 +594,23 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 102;
-   int uplo = 122;
-   int trans = 112;
+   int uplo = 121;
+   int trans = 111;
    int N = 2;
    int K = 1;
-   float alpha[2] = {1.0f, 0.0f};
-   float beta[2] = {1.0f, 0.0f};
-   float A[] = { 0.359f, -0.364f, 0.926f, -0.69f };
-   int lda = 1;
-   float C[] = { 0.306f, 0.249f, 0.28f, 0.229f, 0.866f, 0.092f, 0.886f, -0.283f };
-   int ldc = 2;
-   float C_expected[] = { 0.302385f, -0.012352f, 0.361274f, -0.355774f, 0.866f, 0.092f, 1.26738f, -1.56088f };
-   cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], flteps, "csyrk(case 1591) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], flteps, "csyrk(case 1591) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 101;
-   int uplo = 122;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   float alpha[2] = {-0.3f, 0.1f};
-   float beta[2] = {0.0f, 0.0f};
-   float A[] = { 0.607f, 0.555f, -0.85f, 0.831f };
+   double alpha[2] = {1, 0};
+   double beta[2] = {1, 0};
+   double A[] = { 0.359, -0.364, 0.926, -0.69 };
    int lda = 2;
-   float C[] = { 0.069f, 0.368f, 0.551f, -0.912f, -0.243f, -0.063f, -0.924f, 0.192f };
+   double C[] = { 0.306, 0.249, 0.28, 0.229, 0.866, 0.092, 0.886, -0.283 };
    int ldc = 2;
-   float C_expected[] = { -0.0855042f, -0.196089f, 0.551f, -0.912f, 0.28988f, -0.107516f, 0.131688f, 0.427004f };
-   cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
+   double C_expected[] = { 0.302385, -0.012352, 0.28, 0.229, 0.947274, -0.492774, 1.267376, -1.56088 };
+   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
      for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], flteps, "csyrk(case 1592) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], flteps, "csyrk(case 1592) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 102;
-   int uplo = 122;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   float alpha[2] = {-0.3f, 0.1f};
-   float beta[2] = {0.0f, 0.0f};
-   float A[] = { 0.427f, 0.86f, -0.136f, 0.002f };
-   int lda = 1;
-   float C[] = { 0.398f, -0.47f, 0.011f, -0.547f, -0.106f, 0.016f, 0.681f, 0.246f };
-   int ldc = 2;
-   float C_expected[] = { 0.0937373f, -0.276059f, 0.0295482f, 0.0288526f, -0.106f, 0.016f, -0.0054932f, 0.0020124f };
-   cblas_csyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], flteps, "csyrk(case 1593) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], flteps, "csyrk(case 1593) imag");
+       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1591) real");
+       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1591) imag");
      };
    };
   };
@@ -667,6 +619,54 @@ const double flteps = 1e-4, dbleps = 1e-6;
   {
    int order = 101;
    int uplo = 121;
+   int trans = 112;
+   int N = 2;
+   int K = 1;
+   double alpha[2] = {-0.3, 0.1};
+   double beta[2] = {0, 0};
+   double A[] = { 0.607, 0.555, -0.85, 0.831 };
+   int lda = 2;
+   double C[] = { 0.069, 0.368, 0.551, -0.912, -0.243, -0.063, -0.924, 0.192 };
+   int ldc = 2;
+   double C_expected[] = { -0.0855042, -0.1960886, 0.2898798, -0.1075156, -0.243, -0.063, 0.1316883, 0.4270039 };
+   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
+   {
+     int i;
+     for (i = 0; i < 4; i++) {
+       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1592) real");
+       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1592) imag");
+     };
+   };
+  };
+
+
+  {
+   int order = 102;
+   int uplo = 121;
+   int trans = 112;
+   int N = 2;
+   int K = 1;
+   double alpha[2] = {-0.3, 0.1};
+   double beta[2] = {0, 0};
+   double A[] = { 0.427, 0.86, -0.136, 0.002 };
+   int lda = 1;
+   double C[] = { 0.398, -0.47, 0.011, -0.547, -0.106, 0.016, 0.681, 0.246 };
+   int ldc = 2;
+   double C_expected[] = { 0.0937373, -0.2760591, 0.011, -0.547, 0.0295482, 0.0288526, -0.0054932, 0.0020124 };
+   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
+   {
+     int i;
+     for (i = 0; i < 4; i++) {
+       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1593) real");
+       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1593) imag");
+     };
+   };
+  };
+
+
+  {
+   int order = 101;
+   int uplo = 122;
    int trans = 111;
    int N = 2;
    int K = 1;
@@ -676,7 +676,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int lda = 1;
    double C[] = { -0.637, -0.727, -0.475, -0.776, 0.802, -0.55, -0.837, 0.222 };
    int ldc = 2;
-   double C_expected[] = { -0.7948013, -0.6854089, -0.5203527, -0.6458521, 0.802, -0.55, -0.7672563, 0.3151921 };
+   double C_expected[] = { -0.7948013, -0.6854089, -0.475, -0.776, 0.7566473, -0.4198521, -0.7672563, 0.3151921 };
    cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
@@ -690,7 +690,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 102;
-   int uplo = 121;
+   int uplo = 122;
    int trans = 111;
    int N = 2;
    int K = 1;
@@ -700,7 +700,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int lda = 2;
    double C[] = { -0.695, 0.524, 0.212, -0.88, -0.752, 0.291, 0.684, -0.124 };
    int ldc = 2;
-   double C_expected[] = { -0.7081182, 0.5090054, 0.212, -0.88, -0.7411652, 0.3122834, 0.6776683, -0.1519201 };
+   double C_expected[] = { -0.7081182, 0.5090054, 0.2228348, -0.8587166, -0.752, 0.291, 0.6776683, -0.1519201 };
    cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
@@ -714,7 +714,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 101;
-   int uplo = 121;
+   int uplo = 122;
    int trans = 112;
    int N = 2;
    int K = 1;
@@ -724,7 +724,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int lda = 2;
    double C[] = { 0.877, 0.927, -0.377, 0.967, 0.008, 0.292, -0.779, 0.794 };
    int ldc = 2;
-   double C_expected[] = { 0.9082933, 0.7647289, -0.3208028, 1.1220636, 0.008, 0.292, -0.9064832, 0.6898704 };
+   double C_expected[] = { 0.9082933, 0.7647289, -0.377, 0.967, 0.0641972, 0.4470636, -0.9064832, 0.6898704 };
    cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
@@ -738,7 +738,7 @@ const double flteps = 1e-4, dbleps = 1e-6;
 
   {
    int order = 102;
-   int uplo = 121;
+   int uplo = 122;
    int trans = 112;
    int N = 2;
    int K = 1;
@@ -748,205 +748,13 @@ const double flteps = 1e-4, dbleps = 1e-6;
    int lda = 1;
    double C[] = { 0.584, -0.454, 0.93, 0.782, 0.489, -0.278, 0.081, -0.919 };
    int ldc = 2;
-   double C_expected[] = { 0.6778197, -0.5114479, 0.93, 0.782, 0.4493975, -0.2167775, 0.0871195, -0.9669385 };
+   double C_expected[] = { 0.6778197, -0.5114479, 0.8903975, 0.8432225, 0.489, -0.278, 0.0871195, -0.9669385 };
    cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
    {
      int i;
      for (i = 0; i < 4; i++) {
        gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1597) real");
        gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1597) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 101;
-   int uplo = 121;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 0.1};
-   double beta[2] = {0, 0.1};
-   double A[] = { -0.617, 0.179, -0.626, 0.334 };
-   int lda = 2;
-   double C[] = { 0.346, -0.903, 0.022, -0.839, -0.715, 0.049, -0.338, 0.149 };
-   int ldc = 2;
-   double C_expected[] = { 0.1123886, 0.0694648, 0.1157132, 0.0348456, -0.715, 0.049, 0.0269168, -0.005768 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1598) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1598) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 102;
-   int uplo = 121;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 0.1};
-   double beta[2] = {0, 0.1};
-   double A[] = { -0.356, -0.308, 0.493, -0.351 };
-   int lda = 1;
-   double C[] = { -0.898, -0.905, 0.002, -0.219, 0.881, 0.879, 0.275, -0.351 };
-   int ldc = 2;
-   double C_expected[] = { 0.0685704, -0.0866128, 0.002, -0.219, -0.0852112, 0.0597384, 0.0697086, 0.0394848 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1599) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1599) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 101;
-   int uplo = 122;
-   int trans = 111;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 0.1};
-   double beta[2] = {1, 0};
-   double A[] = { -0.103, -0.951, -0.601, -0.041 };
-   int lda = 1;
-   double C[] = { -0.918, -0.018, 0.991, -0.789, -0.698, -0.067, 0.956, -0.599 };
-   int ldc = 2;
-   double C_expected[] = { -0.9375906, -0.1073792, 0.991, -0.789, -0.7555774, -0.0647088, 0.9510718, -0.563048 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1600) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1600) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 102;
-   int uplo = 122;
-   int trans = 111;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 0.1};
-   double beta[2] = {1, 0};
-   double A[] = { -0.237, 0.925, -0.904, -0.091 };
-   int lda = 2;
-   double C[] = { -0.572, 0.915, 0.398, 0.222, 0.016, 0.288, -0.078, -0.507 };
-   int ldc = 2;
-   double C_expected[] = { -0.528155, 0.8350544, 0.4794633, 0.2518423, 0.016, 0.288, -0.0944528, -0.4261065 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1601) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1601) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 101;
-   int uplo = 122;
-   int trans = 112;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {-0.3, 0.1};
-   double beta[2] = {0, 0};
-   double A[] = { 0.963, -0.23, -0.435, 0.289 };
-   int lda = 2;
-   double C[] = { 0.282, -0.272, -0.516, -0.594, -0.001, 0.155, -0.39, -0.354 };
-   int ldc = 2;
-   double C_expected[] = { -0.2180427, 0.2203409, -0.516, -0.594, 0.0678948, -0.1487506, -0.0065682, 0.0859994 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1602) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1602) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 102;
-   int uplo = 122;
-   int trans = 112;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {-0.3, 0.1};
-   double beta[2] = {0, 0};
-   double A[] = { 0.674, 0.1, -0.098, 0.552 };
-   int lda = 1;
-   double C[] = { 0.089, -0.523, -0.551, 0.618, 0.67, 0.247, 0.975, -0.714 };
-   int ldc = 2;
-   double C_expected[] = { -0.1467628, 0.0039876, 0.0001508, -0.1207996, 0.67, 0.247, 0.0993492, 0.0029476 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1603) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1603) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 101;
-   int uplo = 122;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 1};
-   double beta[2] = {1, 0};
-   double A[] = { 0.033, -0.864, 0.168, 0.524 };
-   int lda = 2;
-   double C[] = { 0.788, 0.016, -0.436, 0.749, -0.89, -0.87, 0.421, -0.203 };
-   int ldc = 2;
-   double C_expected[] = { 0.845024, -0.729407, -0.436, 0.749, -0.76214, -0.41172, 0.244936, -0.449352 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1604) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1604) imag");
-     };
-   };
-  };
-
-
-  {
-   int order = 102;
-   int uplo = 122;
-   int trans = 113;
-   int N = 2;
-   int K = 1;
-   double alpha[2] = {0, 1};
-   double beta[2] = {1, 0};
-   double A[] = { 0.957, -0.079, 0.935, 0.232 };
-   int lda = 1;
-   double C[] = { -0.744, -0.061, 0.195, -0.574, 0.551, 0.478, -0.337, 0.1 };
-   int ldc = 2;
-   double C_expected[] = { -0.592794, 0.848608, 0.046841, 0.339123, 0.551, 0.478, -0.77084, 0.920401 };
-   cblas_zsyrk(order, uplo, trans, N, K, alpha, A, lda, beta, C, ldc);
-   {
-     int i;
-     for (i = 0; i < 4; i++) {
-       gsl_test_rel(C[2*i], C_expected[2*i], dbleps, "zsyrk(case 1605) real");
-       gsl_test_rel(C[2*i+1], C_expected[2*i+1], dbleps, "zsyrk(case 1605) imag");
      };
    };
   };

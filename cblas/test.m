@@ -3171,6 +3171,9 @@ for j = testcases3
     S = context(i);
     for uplo = [121, 122]
       for trans = Trans(S)
+        if (S.complex && trans == 113)
+          continue; # ConjTrans not allowed for complex case, 
+        endif
         for alpha = coeff(S)
           for beta = coeff(S)
             for order = [101, 102]
