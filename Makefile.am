@@ -2,7 +2,7 @@
 
 lib_LIBRARIES = libgsl.a
 
-DEP_FILES=""
+DEP_FILES = ""
 
 SUBDIRS = err sys utils ieee-utils vector matrix blas specfunc rng randist fft roots statistics siman sum integration interpolation histogram monte doc
 
