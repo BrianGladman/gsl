@@ -62,9 +62,11 @@ at the upper end. Mathematically this means that the bins are defined by
 the following inequality,
 
 @tex
+\beforedisplay
 $$
 \hbox{bin[i] corresponds to range[i]} \le x < \hbox{range[i+1]}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @display
@@ -167,6 +169,7 @@ h->range[1] = 10.0 ;    /* bin[1] covers the range 10 <= x < 100 */
 h->range[2] = 100.0 ;   /* bin[2] covers the range 100 <= x < 1000 */
 h->range[3] = 1000.0 ;
 @end example
+
 @noindent
 Note that the size of the @var{range} array is automatically defined as
 @code{double range[4]} by @code{gsl_histogram_calloc}, and is one
@@ -308,6 +311,7 @@ range[2] range[3] bin[2]
 ....
 range[n-1] range[n] bin[n-1]
 @end example
+
 @noindent
 The values of the ranges are formatted using @var{range_format} and the
 value of the bins are formatted using @var{bin_format}. Each line
@@ -340,9 +344,11 @@ of each bin represents the probability of an event where the value of
 function has the one-dimensional form @math{p(x)dx} where,
 
 @tex
+\beforedisplay
 $$
 p(x) = n_i/ (N w_i)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -414,9 +420,11 @@ one, to compute a single random sample from the probability distribution
 the following formula,
 
 @tex
+\beforedisplay
 $$
 s = \hbox{range}[i] + \delta * (\hbox{range}[i+1] - \hbox{range}[i])
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -486,6 +494,7 @@ main (int argc, char **argv)
   exit (0) ;
 @}
 @end example
+
 @noindent
 Here is an example of the program in use. We generate 10000 random
 samples from a lorentz distribution with a width of 30 and histogram
@@ -494,6 +503,7 @@ them over the range -100 to 100, using 200 bins.
 @example
 gsl-lorentz 30 10000 | gsl-histogram -100 100 200 > histogram.dat
 @end example
+
 @noindent
 A plot of the resulting histogram shows the familiar shape of the
 lorentz distribution and the fluctuations caused by the finite sample
@@ -756,6 +766,7 @@ xrange[nx-1] xrange[nx] yrange[1] yrange[2] bin(nx-1,2)
 ....
 xrange[nx-1] xrange[nx] yrange[ny-1] yrange[ny] bin(nx-1,ny-1)
 @end example
+
 @noindent
 Each line contains the lower and upper limits of the bin and the
 contents of the bin. Since the upper limits of the each bin are the
@@ -785,9 +796,11 @@ the range of that bin. For a two-dimensional histogram the probability
 distribution takes the form @math{p(x,y) dx dy} where,
 
 @tex
+\beforedisplay
 $$
 p(x,y) = n_{ij}/ (N A_{ij})
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

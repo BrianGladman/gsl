@@ -273,9 +273,11 @@ The stopping criterion decides that two values @math{a} and
 @math{A}, are close enough if the following relation is true:
 
 @tex
+\beforedisplay
 $$
 |a - b| \leq R \min(|a|,|b|) + A 
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -290,9 +292,11 @@ are the endpoints of the region of interest, the following must be true
 an error will be returned:
 
 @tex
+\beforedisplay
 $$
 R \min(|a|,|b|) + A \geq 10 \max(|a|,|b|) \times {\tt DBL\_EPSILON} 
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -485,11 +489,13 @@ contains the root is taken to be the new interval, and the process is
 repeated until one of the following is true:
 
 @tex
+\beforedisplay
 $$
 |a - b| \leq \varepsilon
 a_n - a_{n-1} = 0 \;\;\;{\rm and}\;\;\; |b_n - b_{n-1}| \leq \varepsilon
 b_n - b_{n-1} = 0 \;\;\;{\rm and}\;\;\;|a_n - a_{n-1}| \leq \varepsilon
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -570,9 +576,11 @@ and @math{f(g_n)}. The @math{x} position where this line crosses the
 discarded, @math{n} is incremented, and the process is repeated until:
 
 @tex
+\beforedisplay
 $$
 |g_n - g_@{n-1@}| \leq \varepsilon
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -632,9 +640,11 @@ where this line crosses the @math{x} axis becomes the new @math{g}. The
 process is repeated until:
 
 @tex
+\beforedisplay
 $$
 |g_n - g_@{n-1@}| \leq \varepsilon
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

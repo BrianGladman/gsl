@@ -164,6 +164,7 @@ old_handler = gsl_set_error_handler (&my_error_handler);
 
 gsl_set_error_handler (old_handler) ; /* restore old handler */
 @end example
+
 @noindent
 To use the default behavior (@code{abort} on error) set the error
 handler to @code{NULL},
@@ -171,9 +172,8 @@ handler to @code{NULL},
 @example
 old_handler = gsl_set_error_handler (NULL); 
 @end example
-@noindent
 @end deftypefun
-@c ----------------------------------------------------------------------
+
 @noindent
 Here is a skeleton outline of a program which defines its own error
 handler.  Imagine that the program does interactive data analysis --
@@ -213,6 +213,7 @@ my_error_handler (const char *reason, const char *file, int line)
     longjmp (main_loop);
 @}
 @end example
+
 @noindent
 Before entering the interactive loop the program uses
 @code{gsl_set_error_handler} to provide its own error handler
@@ -323,6 +324,7 @@ old_handler = gsl_set_stream_handler (&my_error_stream);
 
 gsl_set_stream_handler (old_handler) ; /* restore old handler */
 @end example
+
 @noindent
 To use the default behavior (print the message to @code{stderr}) set the stream
 handler to @code{NULL},
@@ -330,7 +332,6 @@ handler to @code{NULL},
 @example
 old_handler = gsl_set_stream_handler (NULL); 
 @end example
-@noindent
 @end deftypefun
 
 @node Using GSL error reporting in your own functions
@@ -355,6 +356,7 @@ status value of @code{gsl_errno}. It expands to the following code fragment,
 gsl_error (reason, __FILE__, __LINE__, gsl_errno) ;
 return gsl_errno ;
 @end example
+
 @noindent
 The macro definition in @file{gsl_errno.h} actually wraps the code
 in a @code{do @{ ... @} while (0)} block to prevent possible

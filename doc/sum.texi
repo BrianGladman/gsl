@@ -47,9 +47,11 @@ The following code calculates an estimate of
 using the series,
 
 @tex
+\beforedisplay
 $$
 \zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + \dots
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -102,6 +104,7 @@ main (void)
   return 0;
 @}
 @end example
+
 @noindent
 The Levin u-transform is able to obtain an estimate of the sum to 1 part
 in 
@@ -114,7 +117,7 @@ require
 @math{10^10} terms to achieve the same precision.
 
 @example
-bjg|vvv> ./a.out 
+bash$ ./a.out 
 term-by-term sum = 1.5961632439130233 using 20 terms
 term-by-term sum = 1.5649766384209025 using 11 terms
 accelerated sum  = 1.6449340668936467 using 11 terms

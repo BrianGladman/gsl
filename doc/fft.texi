@@ -30,9 +30,11 @@ Fast Fourier Transforms are efficient algorithms for
 calculating the discrete fourier transform (DFT),
 
 @tex
+\beforedisplay
 $$
 x_j = \sum_{k=0}^{N-1} z_k \exp(-2\pi i j k / N) 
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -68,9 +70,11 @@ definition of the @dfn{forward fourier transform},
 @math{x = FFT(z)}, is,
 
 @tex
+\beforedisplay
 $$
 x_j = \sum_{k=0}^{N-1} z_k \exp(-2\pi i j k / N) 
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -84,9 +88,11 @@ and the definition of the @dfn{inverse fourier transform},
 @math{x = IFFT(z)}, is,
 
 @tex
+\beforedisplay
 $$
 z_j = {1 \over N} \sum_{k=0}^{N-1} x_k \exp(2\pi i j k / N).
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -112,9 +118,11 @@ The @dfn{backwards FFT} is simply our terminology for an unscaled
 version of the inverse FFT,
 
 @tex
+\beforedisplay
 $$
 z^{backwards}_j = \sum_{k=0}^{N-1} x_k \exp(2\pi i j k / N).
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -140,9 +148,11 @@ array of length 6,
 @example
 gsl_complex_packed_array data[6] ;
 @end example
+
 @noindent
 can be used to hold an array of three complex numbers, @code{z[3]}, in
 the following way,
+
 @example
 data[0] = Re(z[0])
 data[1] = Im(z[0])
@@ -151,8 +161,8 @@ data[3] = Im(z[1])
 data[4] = Re(z[2])
 data[5] = Im(z[2])
 @end example
-@noindent
 
+@noindent
 A @dfn{stride} parameter allows the user to perform transforms on the
 elements @code{z[stride*i]} instead of @code{z[i]}.  A stride greater
 than 1 can be used to take an in-place FFT of the column of a matrix. A
@@ -195,6 +205,7 @@ frequency-domain data @math{x}.
         N-2      z(t = N-2)      x(f = -2/(N Delta))
         N-1      z(t = N-1)      x(f = -1/(N Delta))
 @end example
+
 @noindent
 When @math{N} is even the location @math{N/2} contains the most positive
 and negative frequencies 
@@ -311,6 +322,7 @@ int main ()
 
 @}
 @end example
+
 @noindent
 Note that have assumed that the program is using the default @code{gsl}
 error handler (which calls @code{abort} for any errors).  If you are not
@@ -622,6 +634,7 @@ int main ()
 
 @}
 @end example
+
 @noindent
 Note that we have assumed that the program is using the default @code{gsl}
 error handler (which calls @code{abort} for any errors).  If you are not
@@ -637,9 +650,11 @@ transforms. The fourier transform of a real sequence is not real. It is
 a complex sequence with a special symmetry:
 
 @tex
+\beforedisplay
 $$
 z_k = z_{N-k}^*
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -661,9 +676,11 @@ real sequence. The half-complex coefficients @math{c} of a real sequence
 @math{x} are given by fourier analysis,
 
 @tex
+\beforedisplay
 $$
 c_k = \sum_{j=0}^{N-1} x_k \exp(-2 \pi i j k /N)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -677,9 +694,11 @@ transforms. They reconstruct real sequences by fourier synthesis from
 their half-complex frequency coefficients, @math{c},
 
 @tex
+\beforedisplay
 $$
 x_j = {1 \over N} \sum_{k=0}^{N-1} c_k \exp(2 \pi i j k /N)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -825,6 +844,7 @@ complex[3].imag  = -halfcomplex[4]
 complex[4].real  =  halfcomplex[1]
 complex[4].imag  = -halfcomplex[2]
 @end example
+
 @noindent
 The upper elements of the @var{complex} array, @code{complex[3]} and
 @code{complex[4]} are filled in using the symmetry condition.  The
@@ -848,6 +868,7 @@ complex[4].imag  = -halfcomplex[4]
 complex[5].real  =  halfcomplex[1] 
 complex[5].imag  = -halfcomplex[2] 
 @end example
+
 @noindent
 The upper elements of the @var{complex} array, @code{complex[4]} and
 @code{complex[5]} are be filled in using the symmetry condition. Both

@@ -118,6 +118,7 @@ semicolons, like this,
 @display
 @code{GSL_IEEE_MODE} = "@var{keyword};@var{keyword};..."
 @end display
+
 @noindent
 where @var{keyword} is one of the following mode-names,
 
@@ -170,19 +171,20 @@ To demonstrate the effects of different rounding modes consider
 following the program computes @math{e}, the base of natural logarithms,
 by summing a rapidly-decreasing series,
 
+@tex
+\beforedisplay
+$$
+e = 1 + {1 \over 2!} + {1 \over 3!} + {1 \over 4!} + \dots 
+  = 2.71828182846...
+$$
+\afterdisplay
+@end tex
 @ifinfo
 @example
 e = 1 + 1 / 2! + 1 / 3! + 1 / 4! + ... 
   = 2.71828182846...
 @end example
 @end ifinfo
-@tex
-$$
-e = 1 + {1 \over 2!} + {1 \over 3!} + {1 \over 4!} + \dots 
-  = 2.71828182846...
-$$
-@end tex
-
         
 @example
 #include <math.h>
@@ -210,10 +212,12 @@ int main (void)
 
 @}
 @end example
+
 @noindent
 Here are the results of running the program in @code{round-to-nearest}
 mode. This is the IEEE default so it isn't really necessary to specify
 it here,
+
 @example
 GSL_IEEE_MODE="round-to-nearest" ./a.out 
 i= 1 sum=1.000000000000000000 error=-1.71828
@@ -222,6 +226,7 @@ i= 2 sum=2.000000000000000000 error=-0.718282
 i=18 sum=2.718281828459045535 error=4.44089e-16
 i=19 sum=2.718281828459045535 error=4.44089e-16
 @end example
+
 @noindent
 After nineteen terms the sum converges to within @math{4 \times
 10^@{-16@}} of the correct value.  If we now change the rounding mode to
@@ -233,6 +238,7 @@ i= 1 sum=1.000000000000000000 error=-1.71828
 ....
 i=19 sum=2.718281828459041094 error=-3.9968e-15
 @end example
+
 @noindent
 The result is about @math{4 \times 10^@{-15@}} below the correct value, an
 order of magnitude worse than the result obtained in the
@@ -259,6 +265,7 @@ GSL_IEEE_MODE="single-precision" ./a.out
 ....
 i=12 sum=2.718281984329223633 error=1.5587e-07
 @end example
+
 @noindent
 with an error of @math{O(10^@{-7@})}, which corresponds to single
 precision accuracy (about 1 part in @math{10^7}). Continuing the

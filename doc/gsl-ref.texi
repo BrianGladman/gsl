@@ -42,6 +42,11 @@
 }
 \gdef\mycxxy#1#2{#1\Etex\mycxxz}
 \gdef\mycxxz#1{}
+%
+\gdef\beforedisplay{\vskip-10pt}
+\gdef\afterdisplay{\vskip-5pt}
+\gdef\beforedisplayh{\vskip-25pt}
+\gdef\afterdisplayh{\vskip-10pt}
 @end tex
 
 @include version-ref.texi

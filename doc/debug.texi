@@ -33,6 +33,7 @@ the following line,
 @example
 status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
 @end example
+
 @noindent
 The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
 an FFT as its first argument. When this line is executed an error will
@@ -40,18 +41,20 @@ be generated because the length of an FFT is not allowed to be zero.
 
 To debug this problem we start @code{gdb}, using the file
 @file{.gdbinit} to define a breakpoint in @code{gsl_error},
+
 @example
-bjg|zeke> gdb test_trap
+bash$ gdb test_trap
 GDB is free software and you are welcome to distribute copies of it
  under certain conditions; type "show copying" to see the conditions.
 There is absolutely no warranty for GDB; type "show warranty" for details.
 GDB 4.16 (i586-debian-linux), Copyright 1996 Free Software Foundation, Inc...
 Breakpoint 1 at 0x8050b1e: file error.c, line 14.
 @end example
-@c ----------------------------------------------------------------------
+
 @noindent
 When we run the program this breakpoint catches the error and shows the
 reason for it. 
+
 @example
 (gdb) run
 Starting program: /home/bjg/gsl/fft/test_trap 
@@ -64,6 +67,7 @@ Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer",
 @noindent
 The first argument of @code{gsl_error} is always a string describing the
 error. Now we can look at the backtrace to see what caused the problem,
+
 @example
 (gdb) bt
 #0  gsl_error (reason=0x8052b0d "length n must be positive integer", 
@@ -82,6 +86,7 @@ file @file{test_trap.c}.
 
 By moving up to the level of the original call we can find the line that
 caused the error,
+
 @example
 (gdb) up
 #1  0x8049376 in gsl_fft_complex_wavetable_alloc (n=0, wavetable=0xbffff778)
@@ -129,15 +134,17 @@ double f(x) @{
   return sqrt(x) ;
 @}
 @end example
+
 @noindent
 This code compiles cleanly with @code{-Wall} but produces some strange
 output,
 
 @example
-bjg|zeke> gcc -Wall tmp.c -lm
-bjg|zeke> ./a.out 
+bash$ gcc -Wall tmp.c -lm
+bash$ ./a.out 
 a = 1.5, sqrt(a) = 1
 @end example
+
 @noindent
 Note that adding @code{-ansi} does not help here, since the program does
 not contain any invalid constructs. What is happening is that the
@@ -160,6 +167,7 @@ gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
   -Waggregate-return -fshort-enums -fno-common -Wnested-externs
   -Dinline= -g -O4
 @end example
+
 @noindent
 It saves time if you to put these options in your @file{Makefile} (for
 example, under the target @code{make strict}) or define them as a shell
@@ -243,7 +251,7 @@ For comparison, this is what happens when the test program above is
 compiled with these options.
 
 @example
-bjg|zeke> gcc -ansi -pedantic -Werror -W -Wall -Wtraditional 
+bash$ gcc -ansi -pedantic -Werror -W -Wall -Wtraditional 
 -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align 
 -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums 
 -fno-common -Wmissing-prototypes -Wnested-externs -Dinline= 
@@ -259,6 +267,7 @@ tmp.c:15: warning: passing arg 1 of `sqrt' as floating rather than integer
 due to prototype
 make: *** [tmp] Error 1
 @end example
+
 @noindent
 The error in the prototype is flagged, plus the fact that we should have
 defined main as @code{int main (void)} in ANSI C. Clearly there is some

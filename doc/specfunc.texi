@@ -30,12 +30,14 @@ The Airy functions @math{Ai(x)} and @math{Bi(x)} are defined
 by the integral representations
 
 @tex
+\beforedisplay
 $$
 \eqalign{
 Ai(x) & = {1\over\pi} \int_0^\infty \cos( {1\over 3} t^3 + xt ) dt, \cr
 Bi(x) & = {1\over\pi} \int_0^\infty (e^{-t^3/3} + \sin({1\over 3} t^3 + xt) dt.
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -84,6 +86,7 @@ with the weight function
 polynomials are
 
 @tex
+\beforedisplay
 $$
 \eqalign{
  T_0(x) & = 1, \cr
@@ -91,6 +94,7 @@ $$
  T_2(x) & = 2 x^2 - 1.
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

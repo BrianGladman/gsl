@@ -59,9 +59,11 @@ standard deviation @var{sigma}. The probability
 distribution for gaussian random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(z) dz = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-(z-\mu)^2 / 2\sigma^2) dz
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -147,9 +149,11 @@ Confidence limits:
 Useful integral:
 
 @tex
+\beforedisplay
 $$
 \int_{-\infty}^{+\infty} x^{2n} p(x) dx = 2^n \sigma^{2n+1} \Gamma(n+ {1 \over 2}) / \sqrt\pi
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -171,9 +175,11 @@ mean zero, correlation coefficient @var{rho} and standard deviations
 The probability distribution for bivariate gaussian random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(x,y) dx dy = {1 \over 2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp (-(x^2 + y^2 - 2 \rho x y)/2\sigma_x^2\sigma_y^2 (1-\rho^2)) dz
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -215,9 +221,11 @@ This function returns a random number from the exponential distribution
 with mean @var{mu}.
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over \mu} \exp(-x/\mu) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -281,10 +289,13 @@ Confidence limits:
 
 @item
 Useful integral:
+
 @tex
+\beforedisplay
 $$
 \int_0^\infty x^n p(x) dx = n! \mu^{n+1}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -305,9 +316,11 @@ This function returns a random number from the the Laplace distribution
 with width @var{mu}. The distribution is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over 2 \mu}  \exp(-|x/\mu|) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -384,9 +397,11 @@ This function returns a random number from the exponential power distribution
 with scale parameter @var{mu} and exponent @var{a}.
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over 2 \mu \Gamma(1+1/a)} \exp(-|x/\mu|^a) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -449,9 +464,11 @@ scale parameter @var{mu}. The probability distribution for Cauchy
 random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over \mu\pi (1 + (x/\mu)^2) } dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -519,9 +536,11 @@ scale parameter @var{sigma}. The probability distribution for Rayleigh
 random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {x \over \sigma^2} \exp(- x^2/(2 \sigma^2)) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -560,9 +579,11 @@ distribution with scale parameter @var{sigma} and a lower limit of
 is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {x \over \sigma^2} \exp ((a^2 - x^2) /(2 \sigma^2)) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -615,9 +636,11 @@ distribution with scale @var{mu} and exponent @var{a}. The symmetric
 Levy probability distribution is defined by a fourier transform,
 
 @tex
+\beforedisplay
 $$
 p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(it(\mu-x)- |t|^a)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -676,9 +699,11 @@ This function returns a random number from the gamma
 distribution.  The distribution function is
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over \Gamma(a) b^a} x^{a-1} e^{-x/b} dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -755,9 +780,11 @@ This function returns a random number from the flat (uniform)
 distribution from @var{a} to @var{b}.
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over (b-a)} dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -819,9 +846,11 @@ This function returns a random number from the lognormal
 distribution.  The distribution function is
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over x \sqrt{2 \pi \sigma^2}} \exp(-(\ln(x) - \zeta)^2/2 \sigma^2) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -882,10 +911,13 @@ The chi-squared distribution arises in statistics If
 @math{Y_i} are
 @math{n} independent gaussian random numbers with unit variance then the
 sum-of-squares,
+
 @tex
+\beforedisplay
 $$
 X_i = \sum_i Y_i^2
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -901,9 +933,11 @@ This function returns a random number from the chi-squared distribution
 with @var{nu} degrees of freedom.
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {1 \over \Gamma(\nu/2) } (x/2)^{\nu/2 - 1} \exp(-x/2) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -980,9 +1014,11 @@ chi-squared deviates with
 then the ratio,
 
 @tex
+\beforedisplay
 $$
 X = { (Y_1 / \nu_1) \over (Y_2 / \nu_2) }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -999,6 +1035,7 @@ has an F-distribution
 This function returns a random number from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}.
 
 @tex
+\beforedisplay
 $$
 p(x) dx = 
    { \Gamma((\nu_1 + \nu_2)/2)
@@ -1006,6 +1043,7 @@ p(x) dx =
    \nu_1^{\nu_1/2} \nu_2^{\nu_2/2} 
    x^{\nu_1/2 - 1} (\nu_2 + \nu_1 x)^{-\nu_1/2 -\nu_2/2}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1065,9 +1103,11 @@ distribution and
 degrees of freedom then the ratio
 
 @tex
+\beforedisplay
 $$
 X = { Y_1 \over \sqrt{Y_2 / \nu} }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1088,10 +1128,12 @@ This function returns a random number from the t-distribution. The
 distribution is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {\Gamma((\nu + 1)/2) \over \sqrt{\pi \nu} \Gamma(\nu/2)}
    (1 + x^2/\nu)^{-(\nu + 1)/2} dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1123,9 +1165,11 @@ This function returns a random number from the beta
 distribution.  The distribution function is
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {\Gamma(a+b) \over \Gamma(a) \Gamma(b)} x^{a-1} (1-x)^{b-1} dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1182,9 +1226,11 @@ This function returns a random number from the logistic
 distribution.  The distribution function is
 
 @tex
+\beforedisplay
 $$
 p(x) dx = { \exp(-x/\mu) \over \mu (1 + \exp(-x/\mu))^2 } dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1237,9 +1283,11 @@ This function returns a random number from the Pareto distribution of
 order @var{a}.  The distribution function is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = a b^a / x^{a+1} dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1397,6 +1445,7 @@ main ()
     @}
 @}
 @end example
+
 @noindent
 Example output from the program, three 10-step random walks from the origin.
 
@@ -1415,9 +1464,11 @@ This function returns a random number from the Weibull distribution. The
 distribution is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = {a \over \mu^a} x^{a-1}  \exp(-(x/\mu)^a) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1468,9 +1519,11 @@ These functions return random numbers from the Type-1 and Type-2 Gumbel
 distributions. The Type-1 Gumbel distribution is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1485,9 +1538,11 @@ for
 The Type-2 Gumbel distribution is,
 
 @tex
+\beforedisplay
 $$
 p(x) dx = a b x^{-a-1} \exp(-b x^{-a}) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1630,9 +1685,11 @@ with mean @var{mu}. The probability distribution for Poisson random
 numbers is,
 
 @tex
+\beforedisplay
 $$
 p(k) = {\mu^k \over k!} \exp(-\mu)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1696,12 +1753,14 @@ Bernoulli trial with probability @var{p}. The probability distribution
 for a Bernoulli trial is,
 
 @tex
+\beforedisplay
 $$
 \eqalign{
 p(0) & = 1 - p \cr
 p(1) & = p
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1753,9 +1812,11 @@ the number of successes in @var{n} independent trials with probability
 @var{p}. The probability distribution for binomial random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(k) = {n! \over k! (n-k)!} p^k (1-p)^{n-k}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1819,9 +1880,11 @@ in independent trials with probability @var{p} of success. The
 probability distribution for negative binomial random numbers is,
 
 @tex
+\beforedisplay
 $$
 p(k) = {\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) } p^n (1-p)^k
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1849,9 +1912,11 @@ Pascal distribution is simply a negative binomial distribution with an
 integer value of @math{n}.
 
 @tex
+\beforedisplay
 $$
 p(k) = {(n + k - 1)! \over k! (n -1)! } p^n (1-p)^k
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1896,9 +1961,11 @@ first success. The probability distribution for geometric random numbers
 is,
 
 @tex
+\beforedisplay
 $$
 p(k) =  p (1-p)^k
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1962,11 +2029,13 @@ Characteristic function,
 This function returns a random integer from the hypergeometric
 distribution. The probability distribution for hypergeometric
 random numbers is,
-@c ----------------------------------------------------------------------
+
 @tex
+\beforedisplay
 $$
 p(k) =  C(n1,k) C(n2, t-k) / C(n1+n2,k)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -2019,9 +2088,11 @@ distribution. The probability distribution for logarithmic random numbers
 is,
 
 @tex
+\beforedisplay
 $$
 p(k) = {-1 \over \log(1-p)} {\left( p^k \over k \right)}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

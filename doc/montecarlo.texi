@@ -29,9 +29,11 @@ We will write the Monte Carlo estimate of the integral as
 @math{E(f; N)} for the
 
 @tex
+\beforedisplay
 $$
 E(f; N) = {1 \over N} \sum_i^N f(x_i).
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -45,9 +47,11 @@ for @math{N} randomly distributed points
 Similarly, we will denote the variance of @math{f} by 
 
 @tex
+\beforedisplay
 $$
 \sigma^2(f) = I(f^2) - I(f)^2
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -58,9 +62,11 @@ $$
 and the variance of the estimate by 
 
 @tex
+\beforedisplay
 $$
 Var(f; N) = E(f^2; N) - (E(f; N))^2.
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -72,9 +78,11 @@ The fundamental point of Monte Carlo integration is that for
 large @math{N}, 
 
 @tex
+\beforedisplay
 $$
 E(f; N) - I(f) \approx {\sigma^2(f)\over N}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -85,9 +93,11 @@ E(f; N) - I(f) \approx @{\sigma^2(f)\over N @}
 and furthermore, by the same argument, 
 
 @tex
+\beforedisplay
 $$
 \sigma^2(f) \approx Var(f; N)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -112,9 +122,11 @@ of the combined estimate
 is given by
 
 @tex
+\beforedisplay
 $$
 Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -126,9 +138,11 @@ This variance is minimized (subject to the constrain that @math{N_a + N_b}
 is fixed) by choosing (assuming one can) @math{N_a} s.t.
 
 @tex
+\beforedisplay
 $$
 {N_a \over N_a+N_b} = {\sigma_a \over \sigma_a + \sigma_b}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -139,9 +153,11 @@ $$
 For such a choice, the variance is given by
 
 @tex
+\beforedisplay
 $$
 Var(f) = {(\sigma_a + \sigma_b)^2 \over 4 N}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -179,9 +195,11 @@ a probability distribution described by the function @math{g}.  If
 we call the new estimate @math{E_g(f; N)} we have
 
 @tex
+\beforedisplay
 $$
 E_g(f; N) = E(f/g; N)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -192,9 +210,11 @@ E_g(f; N) = E(f/g; N)
 and similarly
 
 @tex
+\beforedisplay
 $$
 Var_g(f; N) = Var(f/g; N)
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -220,9 +240,11 @@ so that the number of bins required is only
 case, it is not hard to show that the optimal distribution is 
 
 @tex
+\beforedisplay
 $$ 
 g_1(x_1) = [\int dx_1 \ldots dx_n {f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) } ]^{(1/2)}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -293,9 +315,11 @@ is no reason to expect that the variance should scale like @math{1/N} and
 so they allow the scaling to depend on @math{\alpha}
 
 @tex
+\beforedisplay
 $$
 Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -411,12 +435,14 @@ In the future, the author of the Monte Carlo routines intends to add
 more algorithms, greater control over the current ones,  more error
 handling, and a more consistent interface.  Probably something like
 the rng interface will evolve, so that something like 
+
 @example
   integrator = gsl_monte_alloc(gsl_monte_vegas, dimension)
 @end example 
-will be possible.
-The old interface will probably stay around for a while (though, since
-this is @math{version < 1}, the author 
-does not want to be held to such as statement).
+
+@noindent
+will be possible.  The old interface will probably stay around for a
+while (though, since this is @math{version < 1}, the author does not
+want to be held to such as statement).
 
 

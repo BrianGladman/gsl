@@ -35,6 +35,7 @@ if test "$ac_cv_c_inline" != no ; then
   AC_SUBST(HAVE_INLINE)
 fi
 @end example
+
 @noindent
 and then including the file @file{config.h} before including any library
 headers.  If you do not define the macro @code{HAVE_INLINE} then the
@@ -54,6 +55,7 @@ eliminated if necessary,
 @example
 checking whether printf/scanf works with long double... no
 @end example
+
 @noindent
 Consequently when @code{long double} formatted input/output does not
 work on a given system then it will not be possible to link a program

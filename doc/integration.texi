@@ -6,9 +6,11 @@ code for QUADPACK is available on Netlib.
 All the functions attempt to compute an integral of the form
 
 @tex
+\beforedisplay
 $$
 I = \int_a^b f(x) dx
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -20,9 +22,11 @@ I = \int_a^b f(x) dx
 aiming to satisfy the accuracy requirement
 
 @tex
+\beforedisplay
 $$
 |RESULT - I|  \leq max \{ epsabs, epsrel |I| \}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -37,9 +41,11 @@ algorithm. The integrators attempt to estimate the absolute error
 holds,
 
 @tex
+\beforedisplay
 $$
 |RESULT - I| \leq ABSERR \leq max \{ epsabs, epsrel |I| \}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

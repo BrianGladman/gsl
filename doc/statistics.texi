@@ -35,6 +35,7 @@ gsl_stats_ushort_        unsigned short
 gsl_stats_char_          char          
 gsl_stats_uchar_         unsigned char 
 @end example
+
 @noindent
 All the algorithms use a recurrence relation to compute average
 quantities in a stable way, without large intermediate values that might
@@ -65,9 +66,11 @@ denoted by
 @math{\hat\mu}.
 
 @tex
+\beforedisplay
 $$
 {\hat\mu} = {1 \over N} \sum x_i
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -106,15 +109,18 @@ This is an unbiased estimator of
 @math{\sigma^2}, and is defined by
 
 @tex
+\beforedisplay
 $$
 {\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - {\hat\mu})^2
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
 @{\hat\sigma@}^2 = @{1 \over (N-1)@} \sum (x_i - @{\hat\mu@})^2
 @end example
 @end ifinfo
+
 @noindent
 where 
 @c{$x_i$} 
@@ -161,9 +167,11 @@ function is computed with
 replaced by the value of @var{mean} that you supply,
 
 @tex
+\beforedisplay
 $$
 {\hat\sigma}^2 = {1 \over (N-1)} \sum (x_i - mean)^2
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -196,9 +204,11 @@ population mean
 @math{\mu},
 
 @tex
+\beforedisplay
 $$
 {\hat\sigma}^2 = {1 \over N} \sum (x_i - \mu)^2
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -229,9 +239,11 @@ from the mean of @var{data}, an array of length @var{n}.
 The absolute deviation from the mean is defined as
 
 @tex
+\beforedisplay
 $$
 absdev  = {1 \over N} \sum |x_i - {\hat\mu}|
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -260,9 +272,11 @@ deviation of the array @var{data} relative to the given value of
 @var{mean},
 
 @tex
+\beforedisplay
 $$
 absdev  = {1 \over N} \sum |x_i - mean|
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -288,10 +302,12 @@ compute the skewness of @var{data}, an array of length @var{n}.
 The skewness is defined as 
 
 @tex
+\beforedisplay
 $$
 skew = {1 \over N} \sum 
  {\left( x_i - {\hat\mu} \over {\hat\sigma} \right)}^3
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -321,10 +337,12 @@ skewness of the array @var{data} using the given values of the mean
 @var{mean} and standard deviation @var{sd}.
 
 @tex
+\beforedisplay
 $$
 skew = {1 \over N}
      \sum {\left( x_i - mean \over sd \right)}^3
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -347,12 +365,14 @@ The function @code{gsl_stats_kurtosis} computes the kurtosis of
 The kurtosis is defined as 
 
 @tex
+\beforedisplay
 $$
 kurtosis = \left( {1 \over N} \sum 
  {\left(x_i - {\hat\mu} \over {\hat\sigma} \right)}^4 
  \right) 
  - 3
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -377,11 +397,13 @@ kurtosis of the array @var{data} using the given values of the mean
 @var{mean} and standard deviation @var{sd}.
 
 @tex
+\beforedisplay
 $$
 kurtosis = {1 \over N}
   \left( \sum {\left(x_i - mean \over sd \right)}^4 \right) 
   - 3
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -509,9 +531,11 @@ There are no checks to see whether the data are sorted, so the function
 The quantile is found by interpolation, using the formula
 
 @tex
+\beforedisplay
 $$
 \hbox{quantile} = (1 - \delta) \hbox{data[i]} + \delta \hbox{data[i+1]}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example

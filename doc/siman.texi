@@ -38,9 +38,11 @@ low energies; in these random walks, the probability of taking a step is
 determined by the Boltzmann distribution
 
 @tex
+\beforedisplay
 $$
 p = e^{-(E_{i+1} - E_i)/(kT)}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -155,6 +157,7 @@ The result (optimal point in the space) is placed in @code{*@var{x0_p}}.
 
 If @var{print_position} is not null, a log will be printed to the screen
 with the following columns:
+
 @example
 number_of_iterations temperature x x-(*x0_p) Ef(x)
 @end example

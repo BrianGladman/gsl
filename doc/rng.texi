@@ -191,9 +191,11 @@ parameters into your own code.
 @deftypefn Random {const char *} gsl_rng_name (const gsl_rng * @var{r})
 This function returns a pointer to the name of the generator.
 For example,
+
 @example
 printf("r is a '%s' generator\n", gsl_rng_name (r)) ;
 @end example
+
 @noindent
 would print something like @code{r is a 'taus' generator}
 @end deftypefn
@@ -279,20 +281,24 @@ main ()
   printf("first value = %u\n", gsl_rng_get (r)) ;
 @}
 @end example
+
 @noindent
 Running the program without any environment variables uses the initial
 defaults, an @code{mt19937} generator with a seed of 0,
+
 @example
-bjg|zeke> ./a.out 
+bash$ ./a.out 
 generator type: mt19937
 seed = 0
 first value = 3510405877
 @end example
+
 @noindent
 By setting the two variables on the command line we can
 change the default generator and the seed,
+
 @example
-bjg|zeke> GSL_RNG_TYPE="taus" GSL_RNG_SEED=123 ./a.out 
+bash$ GSL_RNG_TYPE="taus" GSL_RNG_SEED=123 ./a.out 
 GSL_RNG_TYPE=taus
 GSL_RNG_SEED=123
 generator type: taus
@@ -408,10 +414,13 @@ Communications}, 79 (1994) 111-114
 @cindex CMRG, combined multiple recursive random number generator
 This is a combined multiple recursive generator by L'Ecuyer. 
 Its sequence is,
+
 @tex
+\beforedisplay
 $$
 z_n = (x_n - y_n) \,\hbox{mod}\, m_1
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -424,14 +433,16 @@ where the two underlying generators
 @math{x_n} and 
 @c{$y_n$}
 @math{y_n} are,
-@c ----------------------------------------------------------------------
+
 @tex
+\beforedisplay
 $$
 \eqalign{ 
 x_n & = (a_1 x_{n-1} + a_2 x_{n-2} + a_3 x_{n-3}) \,\hbox{mod}\, m_1 \cr
 y_n & = (b_1 y_{n-1} + b_2 y_{n-2} + b_3 y_{n-3}) \,\hbox{mod}\, m_2
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -476,15 +487,18 @@ This is a fifth-order multiple recursive generator by L'Ecuyer, Blouin
 and Coutre.  Its sequence is,
 
 @tex
+\beforedisplay
 $$
 x_n = (a_1 x_{n-1} + a_5 x_{n-5}) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
 x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) mod m
 @end example
 @end ifinfo
+
 @noindent
 with 
 @c{$a_1 = 107374182$} 
@@ -516,18 +530,23 @@ This is a maximally equidistributed combined Tausworthe generator by
 L'Ecuyer. The sequence is,
 
 @tex
+\beforedisplay
 $$
 x_n = (s^1_n \oplus s^2_n \oplus s^3_n) 
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
 x_n = (s^1_n ^^ s^2_n ^^ s^3_n) 
 @end example
 @end ifinfo
+
 @noindent
 where,
+
 @tex
+\beforedisplay
 $$
 \eqalign{
 s^1_{n+1} &= (((s^1_n \& 4294967294) <<12) \oplus (((s^1_n <<13) \oplus s^1_n) >>19)) \cr
@@ -535,6 +554,7 @@ s^2_{n+1} &= (((s^2_n \& 4294967288) << 4) \oplus (((s^2_n << 2) \oplus s^2_n) >
 s^3_{n+1} &= (((s^3_n \& 4294967280) <<17) \oplus (((s^3_n << 3) \oplus s^3_n) >>11))
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -573,9 +593,11 @@ The @code{gfsr4} generator is like a lagged-fibonacci generator, and
 produces each number as an @code{xor}'d sum of four previous values.
 
 @tex
+\beforedisplay
 $$
 r_n = r_{n-A} \oplus r_{n-B} \oplus r_{n-C} \oplus r_{n-D}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -646,15 +668,18 @@ your program then these generators are quite acceptable.
 This is the BSD @code{rand()} generator. Its sequence is
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
 x_@{n+1@} = (a x_n + c) mod m
 @end example
 @end ifinfo
+
 @noindent
 with 
 @c{$a = 1103515245$}
@@ -689,7 +714,7 @@ buffer lengths of 8, 32, 64, 128 and 256 bytes, and the algorithm with
 the largest length that would fit into the user-supplied buffer was
 used. To support these algorithms additional generators are available
 with the following names,
-@c ----------------------------------------------------------------------
+
 @example
 gsl_rng_random8_bsd
 gsl_rng_random32_bsd
@@ -697,6 +722,7 @@ gsl_rng_random64_bsd
 gsl_rng_random128_bsd
 gsl_rng_random256_bsd
 @end example
+
 @noindent
 where the numeric suffix indicates the buffer length. The original BSD
 @code{random} function used a 128-byte default buffer and so
@@ -711,9 +737,11 @@ and @code{glibc2} generators are also avaliable, with the names
 This is the Unix @code{rand48} generator. Its sequence is
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -815,9 +843,11 @@ This is the CRAY random number generator @code{RANF}. Its
 sequence is
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -872,10 +902,13 @@ CERNLIB high-energy physics library.
 @cindex R250 shift-register random number generator
 This is the shift-register generator of Kirkpatrick and Stoll. The
 sequence is
+
 @tex
+\beforedisplay
 $$ 
 x_n = x_{n-103} \oplus x_{n-250}
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -926,10 +959,13 @@ Vol. 4, No. 3, 1994, pages 254-266.
 @deffn {Generator} gsl_rng_vax
 @cindex VAX random number generator
 This is the VAX generator @code{MTH$RANDOM}. Its sequence is,
+
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n + c) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -954,9 +990,11 @@ This is the random number generator from the INMOS Transputer
 Development system.  Its sequence is,
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -977,9 +1015,11 @@ The seed specifies the initial value,
 This is the IBM @code{RANDU} generator. Its sequence is
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1006,9 +1046,11 @@ simple linear congruence which takes care to avoid the major pitfalls of
 such algorithms. Its sequence is,
 
 @tex
+\beforedisplay
 $$
 x_{n+1} = (a x_n) \,\hbox{mod}\, m
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
@@ -1055,14 +1097,16 @@ original source code is available from NETLIB.
 @deffn {Generator} gsl_rng_zuf
 This is the ZUFALL lagged Fibonacci series generator of Peterson.  Its
 sequence is,
-@c ----------------------------------------------------------------------
+
 @tex
+\beforedisplay
 $$ 
 \eqalign{
 t &= u_{n-273} + u_{n-607} \cr
 u_n  &= t - \hbox{floor}(t)
 }
 $$
+\afterdisplay
 @end tex
 @ifinfo
 @example
