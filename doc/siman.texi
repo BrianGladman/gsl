@@ -96,7 +96,7 @@ $T \rightarrow T/\mu_T$
 @ifinfo
 T -> T/mu_T
 @end ifinfo
-where mu_T is slightly greater than 1.
+where @math{\mu_T} is slightly greater than 1.
 
 
 @node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
