@@ -1,7 +1,5 @@
 \input texinfo @c -*-texinfo-*-
-
-@comment This will be for the printing version of the manual
-
+@c This will be for the printing version of the manual
 @tex
 \gdef\paperbackbook{{\globaldefs = 1
   \parskip = 2pt plus 1pt
@@ -22,11 +20,11 @@
   \let\smalllisp = \smalllispx
 }}
 @end tex
-@comment @paperbackbook
-@comment @cropmarks
-@comment @afourpaper
+@c @cropmarks
+@c @afourpaper
+@c @paperbackbook
+@c @set @publish
 @raggedbottom
-
 @c %**start of header
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
@@ -216,6 +214,15 @@ University of Paris-Dauphine
 @sp 1
 @page
 @vskip 0pt plus 1filll
+@ifset publish
+Published by Network Theory Limited.
+
+15 Royal Park,
+Clifton,
+Bristol BS8 3AL,
+United Kingdom.
+
+@end ifset
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001 The GSL Team.
 
 Permission is granted to copy, distribute and/or modify this document
@@ -241,6 +248,12 @@ except that this permission notice may be stated in a translation approved
 by the GSL Team.
 @end ignore
 @end titlepage
+
+@ifset publish
+@setchapternewpage odd
+@contents
+@setchapternewpage on
+@end ifset
 
 @ifinfo
 @node Top, Introduction, (dir), (dir)
@@ -603,6 +616,8 @@ fi
 
 @comment htmlhelp: @bye
 
+@normalbottom
+
 @node Concept Index, Function Index, GNU Free Documentation License, Top
 @unnumbered Concept Index
 
@@ -627,7 +642,10 @@ fi
 @comment on an odd page so that it can always be moved to the front when 
 @comment printing two-up.
 
+@ifclear publish
 @setchapternewpage odd
 @comment -@shortcontents
 @contents
+@end ifclear
+
 @bye
