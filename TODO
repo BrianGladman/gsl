@@ -1,5 +1,8 @@
 TODO  -- see also individual TODO files in each directory
 
+* Add a "Related Projects" section to the web page in order to link to
+GSDV
+
 * Provide an interface to LAPACK, as for BLAS.
 
 * Annotate the header files with GAMS classifications
