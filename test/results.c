@@ -85,7 +85,11 @@ gsl_test_rel (double result, double expected, double relative_error,
 {
   int status ;
 
-  if (expected != 0 ) 
+  if (result != result) 
+    {
+      status = (expected == expected);   /* Check for NaN vs number */
+    }
+  else if (expected != 0 ) 
     {
       status = (fabs(result-expected)/fabs(expected) > relative_error) ;
     }
@@ -151,7 +155,14 @@ gsl_test_abs (double result, double expected, double absolute_error,
 {
   int status ;
 
-  status = fabs(result-expected) > absolute_error ;
+  if (result != result) 
+    {
+      status = (expected == expected);   /* Check for NaN vs number */
+    }
+  else 
+    {
+      status = fabs(result-expected) > absolute_error ;
+    }
 
   tests++;
 
