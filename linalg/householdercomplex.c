@@ -17,6 +17,24 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* Computes a householder transformation matrix H such that
+ *
+ *       H' v = -/+ |v| e_1
+ *
+ * where e_1 is the first unit vector.  On exit the matrix H can be
+ * computed from the return values (tau, v)
+ *
+ *       H = I - tau * w * w'
+ *
+ * where w = (1, v(2), ..., v(N)). The nonzero element of the result
+ * vector -/+|v| e_1 is stored in v(1).
+ *
+ * Note that the matrix H' in the householder transformation is the
+ * hermitian conjugate of H.  To compute H'v, pass the conjugate of
+ * tau as the first argument to gsl_linalg_householder_hm() rather
+ * than tau itself. See the LAPACK function CLARFG for details of this
+ * convention.  */
+
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
@@ -147,4 +165,43 @@ gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v
     }
       
   return GSL_SUCCESS;
+}
+
+int
+gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex *  w)
+{
+  size_t i;
+  const size_t N = v->size;
+  gsl_complex z;
+
+  if (GSL_REAL(tau) == 0.0 && GSL_IMAG(tau) == 0.0)
+      return GSL_SUCCESS;
+
+  {
+    /* compute z = v'w */
+
+    gsl_complex z0 = gsl_vector_complex_get(w,0);
+    gsl_complex z1, z;
+    gsl_complex tz, ntz;
+    
+    gsl_vector_complex_const_view v1 = gsl_vector_complex_const_subvector(v, 1, N-1);
+    gsl_vector_complex_view w1 = gsl_vector_complex_subvector(w, 1, N-1);
+
+    gsl_blas_zdotc(v, w, &z1);
+    
+    z = gsl_complex_add (z0, z1);
+
+    tz = gsl_complex_mul(z, tau);
+    ntz = gsl_complex_negative (tz);
+
+    /* compute w = w - tau * (v'w) * v   */
+
+    {
+      gsl_complex w0 = gsl_vector_complex_get(w, 0);
+      gsl_complex w0ntz = gsl_complex_add (w0, ntz);
+      gsl_vector_complex_set (w, 0, w0ntz);
+    }
+
+    gsl_blas_zaxpy(ntz, &v1.vector, &w1.vector);
+  }
 }
