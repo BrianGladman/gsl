@@ -682,19 +682,51 @@ static
 int
 hyperg_1F1_beps_bgt0(const double eps, const double b, const double x, double * result)
 {
-  double Kummer_1F1;
-  int stat_K = hyperg_1F1_small_a_bgt0(-eps, b, -x, &Kummer_1F1);
-  if((stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS) && Kummer_1F1 != 0.0) {
-    double lnK = log(fabs(Kummer_1F1));
-    int stat_e = gsl_sf_exp_sgn_impl(lnK + x, Kummer_1F1, result);
-    if(stat_e == GSL_SUCCESS)
-      return stat_K;
-    else
+  if(b > fabs(x) && fabs(eps) < GSL_SQRT_MACH_EPS) {
+    /* If b-a is very small and x/b is not too large we can
+     * use this explicit approximation.
+     *
+     * 1F1(b+eps,b,x) = exp(ax/b) (1 - eps x^2 (v2 + v3 x + ...) + ...)
+     *
+     *   v2 = a/(2b^2(b+1))
+     *   v3 = a(b-2a)/(3b^3(b+1)(b+2))
+     *   ...
+     *
+     * See [Luke, Mathematical Functions and Their Approximations, p.292]
+     *
+     * This cannot be used for b near a negative integer or zero.
+     * Also, if x/b is large the deviation from exp(x) behaviour grows.
+     */
+    double a = b + eps;
+    double exab;
+    int stat_e = gsl_sf_exp_impl(a*x/b, &exab);
+    if(stat_e == GSL_SUCCESS) {
+      double v2 = a/(2.0*b*b*(b+1.0));
+      double v3 = a*(b-2.0*a)/(3.0*b*b*b*(b+1.0)*(b+2.0));
+      double v  = v2 + v3 * x;
+      *result = exab * (1.0 - eps*x*x*v);
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
       return stat_e;
+    }
   }
   else {
-    *result = 0.0;
-    return stat_K;
+    /* Otherwise use a Kummer transformation to reduce
+     * it to the small a case.
+     */
+    double Kummer_1F1;
+    int stat_K = hyperg_1F1_small_a_bgt0(-eps, b, -x, &Kummer_1F1);
+    if((stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS) && Kummer_1F1 != 0.0) {
+      double lnK = log(fabs(Kummer_1F1));
+      int stat_e = gsl_sf_exp_sgn_impl(lnK + x, Kummer_1F1, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_K);
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
   }
 }
 
@@ -1042,6 +1074,82 @@ hyperg_1F1_a_negint_poly(const int a, const double b, const double x, double * r
 }
 
 
+/* Evaluate negative integer a case by relation
+ * to Laguerre polynomials. This is more general than
+ * the direct polynomial evaluation, but is safe
+ * for all values of x.
+ *
+ * 1F1(-n,b,x) = n!/(b)_n Laguerre[n,b-1,x]
+ *	       = n B(b,n) Laguerre[n,b-1,x]
+ */
+static
+int
+hyperg_1F1_a_negint_lag(const int a, const double b, const double x, double * result)
+{
+  int n = -a;
+  double L;
+  int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
+  if(stat_L != GSL_SUCCESS || L == 0.0) {
+    *result = 0.0;
+    return stat_L;
+  }
+  else {
+    double lnbeta;
+    gsl_sf_lnbeta_impl(b, n, &lnbeta);
+    if(fabs(lnbeta) < 0.1) {
+      /* As we have noted, when B(x,y) is near 1,
+       * evaluating log(B(x,y)) is not accurate.
+       * Instead we evaluate B(x,y) directly.
+       */
+      double beta;
+      int stat_e;
+      gsl_sf_beta_impl(b, n, &beta);
+      stat_e = gsl_sf_exp_sgn_impl(log(n) + log(1.2*fabs(L)), L, result);
+      *result *= beta/1.2;
+      return stat_e;
+    }
+    else {
+      return gsl_sf_exp_sgn_impl(lnbeta + log(n) + log(fabs(L)), L, result);
+    }
+  }
+}
+
+
+/* Handle negative integer a case for x > 0 and
+ * generic b.
+ *
+ * Combine [Abramowitz+Stegun, 13.6.9 + 13.6.27]
+ * M(-n,b,x) = (-1)^n / (b)_n U(-n,b,x)
+ */
+static
+int
+hyperg_1F1_a_negint_U(const int a, const double b, const double x, double * result)
+{
+  const int n = -a;
+  const double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
+  double lnpoch;
+  double sgpoch;
+  double U;
+  const int stat_p = gsl_sf_lnpoch_sgn_impl(b, n, &lnpoch, &sgpoch);
+  const int stat_U = gsl_sf_hyperg_U_impl(-n, b, x, &U);
+  if(stat_p == GSL_SUCCESS) {
+    if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+      const double lnr = -lnpoch + log(fabs(U));
+      const int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn * sgpoch * U, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_U);
+    }
+    else {
+      *result = 0.0;
+      return stat_U;
+    }
+  }
+  else {
+    *result = 0.0;
+    return stat_p;
+  }
+}
+
+
 /* Assumes a <= -1,  b <= -1, and b <= a.
  */
 static
@@ -1062,37 +1170,77 @@ hyperg_1F1_ab_negint(const int a, const int b, const double x, double * result)
      * a<0 and b<0, since otherwise the thing is undefined.
      */
     double K;
-    double ex;
     int stat_K = hyperg_1F1_a_negint_poly(b-a, b, -x, &K);
-    int stat_e = gsl_sf_exp_impl(x, &ex);
-    if(stat_K == GSL_SUCCESS && stat_e == GSL_SUCCESS) {
-      *result = ex * K;
-      return GSL_SUCCESS; 
-    }
-    else if(stat_K == GSL_EOVRFLW) {
-      *result = 0.0;
-      return stat_K;
-    }
-    else if(stat_e == GSL_EUNDRFLW) {
-      *result = 0.0;
-      return stat_e;
+    if(K != 0.0 && (stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS)) {
+      double lnr = x + log(fabs(K));
+      int stat_e = gsl_sf_exp_sgn_impl(lnr, K, result);
+      return GSL_ERROR_SELECT_2(stat_e, stat_K);
     }
     else {
       *result = 0.0;
-      return GSL_EFAILED;
+      return stat_K;
     }
   }
 }
 
 
-/* Handle case of generic positive a, b. We do
- * not check for large x (or Kummer transformed
- * versions of large x), assuming that has been
- * done already by the caller.
+/* [Abramowitz+Stegun, 13.1.3]
+ *
+ * M(a,b,x) = Gamma(1+a-b)/Gamma(2-b) x^(1-b) *
+ *            { Gamma(b)/Gamma(a) M(1+a-b,2-b,x) - (b-1) U(1+a-b,2-b,x) }
+ *
+ * b not an integer >= 2
  */
 static
 int
-hyperg_1F1_ab_pos(const double a, const double b, const double x, double * result)
+hyperg_1F1_U(const double a, const double b, const double x, double * result)
+{
+  double bp = 2.0 - b;
+  double ap = a - b + 1.0;
+  double lnpre;
+  double lg_ap, lg_bp;
+  double sg_ap;
+  double lnc1;
+  double lg_2mbp, lg_1papmbp;
+  double sg_2mbp, sg_1papmbp;
+  double M, U;
+  double term_M;
+  double inner, lninner;
+  int stat_F;
+  int stat_U;
+  int stat_e;
+
+  gsl_sf_lngamma_sgn_impl(ap, &lg_ap, &sg_ap);
+  gsl_sf_lngamma_impl(bp, &lg_bp);
+  lnpre = lg_ap - lg_bp + (bp-1.0)*log(x);
+
+  gsl_sf_lngamma_sgn_impl(2.0-bp,    &lg_2mbp,    &sg_2mbp);
+  gsl_sf_lngamma_sgn_impl(1.0+ap-bp, &lg_1papmbp, &sg_1papmbp);
+  lnc1 = lg_2mbp - lg_1papmbp;
+
+  stat_F = gsl_sf_hyperg_1F1_impl(ap, bp, x, &M);
+  stat_U = gsl_sf_hyperg_U_impl(ap, bp, x, &U);
+
+  stat_e = gsl_sf_exp_sgn_impl(lnc1+log(fabs(M)), sg_2mbp*sg_1papmbp*M, &term_M);
+
+  inner = term_M - (1.0-bp) * U;
+  lninner = log(fabs(inner));
+printf("--:  %22.18g   %22.18g\n", term_M, (1.0-bp) * U);
+
+    return gsl_sf_exp_sgn_impl(lninner + lnpre, sg_ap*inner, result);
+}
+
+
+/* Handle case of generic positive a, b.
+ * Assumes b-a is not a negative integer.
+ * Also assumes a and b are not negative
+ * integers, but that obviously follows...
+ */
+static
+int
+hyperg_1F1_ab_pos(const double a, const double b,
+                  const double x,
+                  double * result)
 {
   const double ax = fabs(x);
 
@@ -1103,11 +1251,31 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
+  else if(   x < -100.0
+          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.7*fabs(x)
+    ) {
+    /* Large negative x asymptotic.
+     */
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+  else if(   x > 100.0
+          && locMAX(fabs(b-a),1.0)*locMAX(fabs(1.0-a),1.0) < 0.7*fabs(x)
+    ) {
+    /* Large positive x asymptotic.
+     */
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
   else if(fabs(b-a) <= 1.0) {
     /* Directly handle b near a.
      */
     return hyperg_1F1_beps_bgt0(a-b, b, x, result);  /* a = b + eps */
   }
+  
+  
+
+  
   else if(b > a && b >= 2*a + x) {
     /* Use the Gautschi CF series, then
      * recurse backward to a near 0 for normalization.
@@ -1335,91 +1503,34 @@ hyperg_1F1_ab_pos(const double a, const double b, const double x, double * resul
       return stat_a0;
     }
   }
-
-
-
-#if 0
-  else {
-    /* 2a + x >= b >= a - 1
-     */
-    double ra;
-    int stat_CF1;
-    int stat_Mt;
-    double Mn_true;
-    double Ma;
-    double Mnm1;
-    double Mn;
-    double Mnp1;
-    double n;
-
-    if(b > x) {
-      /* Gautschi stable region for continued fraction.
-       */
-      double rap;
-      stat_CF1 = hyperg_1F1_CF1_p_ser(a, b, x, &rap);
-      ra = 1.0 + x/a * rap;
-    }
-    else {
-      /* This is the "anomalous convergence" region.
-       * Direct application of any method related
-       * to the continued fraction will not work.
-       * However, we can make use of the relation
-       *
-       * M(a+1,b,x)/M(a,b,x) = M(b-a-1,b,-x)/M(b-a,b,-x)
-       *
-       * and the second ratio is in the Gautschi stable
-       * region and can be evaluated. [The Kummer transform
-       * is a reflection about b=2a].
-       */
-      double rap_Kummer;
-      double ra_Kummer;
-      stat_CF1 = hyperg_1F1_CF1_p_ser(b-a-1.0, b, -x, &rap_Kummer);
-      ra_Kummer = 1.0 + (-x/(b-a-1.0)) * rap_Kummer;
-      ra = 1.0/ra_Kummer;
-    }
-
-    /* Recurse forward to near a=b to determine normalization.
-     * Since b < 2a + x, this is stable.
-     */
-    Ma   = GSL_SQRT_DBL_MIN;
-    Mnm1 = Ma;
-    Mn   = ra * Mnm1;
-
-    for(n=a+1.0; n<b-0.5; n += 1.0) {
-      Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-      Mnm1 = Mn;
-      Mn   = Mnp1;
-    }
-    stat_Mt = hyperg_1F1_beps_bgt0(n-b, b, x, &Mn_true);
-    if(stat_Mt == GSL_SUCCESS || stat_Mt == GSL_ELOSS) {
-      *result = Ma/Mn * Mn_true;
-      return stat_Mt;
-    }
-    else {
-      *result = 0.0;
-      return stat_Mt;
-    }
-  }
-#endif
-  
 }
 
 
 /* Assumes b != integer
+ * Assumes a != integer when x > 0
+ * Assumes b-a != neg integer when x < 0
  */
 static
 int
 hyperg_1F1_ab_neg(const double a, const double b, const double x,
                   double * result)
 {
+  const double bma = b - a;
+  const double abs_x = fabs(x);
   const double abs_a = fabs(a);
   const double abs_b = fabs(b);
   const double size_a = locMAX(abs_a, 1.0);
   const double size_b = locMAX(abs_b, 1.0);
 
-  if(   x > 0.0
-     && size_b > size_a
-     && size_a*log(M_E*x/size_b) < GSL_LOG_MACH_EPS+7.0
+  if(   (abs_a < 10.0 && abs_b < 10.0 && abs_x < 5.0)
+     || (b > 0.8*locMAX(fabs(a),1.0)*fabs(x))
+    ) {
+    double prec;
+    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+  }
+  else if(   x > 0.0
+          && size_b > size_a
+          && size_a*log(M_E*x/size_b) < GSL_LOG_MACH_EPS+7.0
     ) {
     /* Series terms are positive definite up until
      * there is a sign change. But by then the
@@ -1428,45 +1539,43 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
-  else if(x > 0.0) {
-    /* [Abramowitz+Stegun, 13.1.3]
-     *
-     * M(1+a-b,2-b,x) = Gamma(a)/Gamma(b) x^(b-1) *
-     *                  { Gamma(2-b)/Gamma(1+a-b) M(a,b,x) - (1-b) U(a,b,x) }
+  else if(   (abs_x < 5.0 && fabs(bma) < 10.0 && abs_b < 10.0)
+          || (b > 0.8*locMAX(fabs(bma),1.0)*abs_x)
+    ) {
+    /* Use Kummer transformation to render series safe.
      */
-    double bp = 2.0 - b;
-    double ap = a - b + 1.0;
-    double lnpre;
-    double lg_ap, lg_bp;
-    double sg_ap;
-    double lnc1;
-    double lg_2mbp, lg_1papmbp;
-    double sg_2mbp, sg_1papmbp;
-    double M, U;
-    double term_M;
-    double inner, lninner;
-    int stat_F;
-    int stat_U;
-    int stat_e;
-
-    gsl_sf_lngamma_sgn_impl(ap, &lg_ap, &sg_ap);
-    gsl_sf_lngamma_impl(bp, &lg_bp);
-    lnpre = lg_ap - lg_bp + (bp-1.0)*log(x);
-
-    gsl_sf_lngamma_sgn_impl(2.0-bp,    &lg_2mbp,    &sg_2mbp);
-    gsl_sf_lngamma_sgn_impl(1.0+ap-bp, &lg_1papmbp, &sg_1papmbp);
-    lnc1 = lg_2mbp - lg_1papmbp;
-
-    stat_F = gsl_sf_hyperg_1F1_impl(ap, bp, x, &M);
-    stat_U = gsl_sf_hyperg_U_impl(ap, bp, x, &U);
-
-    stat_e = gsl_sf_exp_sgn_impl(lnc1+log(fabs(M)), sg_2mbp*sg_1papmbp*M, &term_M);
-
-    inner = term_M - (1.0-bp) * U;
-    lninner = log(fabs(inner));
-printf("--:  %22.18g   %22.18g\n", term_M, (1.0-bp) * U);
-
-    return gsl_sf_exp_sgn_impl(lninner + lnpre, sg_ap*inner, result);
+    double prec;
+    double Kummer_1F1;
+    int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, -x, &Kummer_1F1, &prec);
+    if(Kummer_1F1 != 0.0 && (stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS)) {
+      double lnr = x + log(fabs(Kummer_1F1));
+      return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result);
+    }
+    else {
+      *result = 0.0;
+      return stat_K;
+    }
+  }
+  else if(   x < -30.0
+          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
+    ) {
+    /* Large negative x asymptotic.
+     * Note that we do not check if b-a is a negative integer.
+     */
+    double prec;
+    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
+  }
+  else if(   x > 100.0
+          && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
+    ) {
+    /* Large positive x asymptotic.
+     * Note that we do not check if a is a negative integer.
+     */
+    double prec;
+    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
+  }
+  else if(x > 0.0) {
+    return hyperg_1F1_U(a, b, x, result);
   }
   else {
     *result = 0.0;
@@ -1551,17 +1660,17 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   const double rinta = floor(a + 0.5);
   const double rintb = floor(b + 0.5);
   const double rintbma = floor(bma + 0.5);
-  const int a_integer   = ( fabs(a - rinta) < locEPS );
-  const int b_integer   = ( fabs(b - rintb) < locEPS );
-  const int bma_integer = ( fabs(bma - rintbma) < locEPS );
-  const int b_neg_integer   = ( b < -0.1 &&  b_integer );
-  const int a_neg_integer   = ( a < -0.1 &&  a_integer );
+  const int a_integer   = ( fabs(a-rinta) < locEPS && rinta > INT_MIN && rinta < INT_MAX );
+  const int b_integer   = ( fabs(b-rintb) < locEPS && rintb > INT_MIN && rintb < INT_MAX );
+  const int bma_integer = ( fabs(bma-rintbma) < locEPS && rintbma > INT_MIN && rintbma < INT_MAX );
+  const int b_neg_integer   = ( b < -0.1 && b_integer );
+  const int a_neg_integer   = ( a < -0.1 && a_integer );
   const int bma_neg_integer = ( bma < -0.1 &&  bma_integer );
 
   if(x == 0.0) {
     /* Testing for this before testing a and b
      * is somewhat arbitrary. The result is that
-     * we have 1F1(1,0,0) = 1.
+     * we have 1F1(a,0,0) = 1.
      */
     *result = 1.0;
     return GSL_SUCCESS;
@@ -1631,11 +1740,9 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
       }
     }
   }
-  else if(   (a_integer && a > INT_MIN && a < INT_MAX)
-          && (b_integer && b > INT_MIN && b < INT_MAX)
-    ) {
+  else if(a_integer && b_integer) {
     /* Check for reduction to the integer case.
-     * Make the arbitrary "near an integer" test.
+     * Relies on the arbitrary "near an integer" test.
      */
     return gsl_sf_hyperg_1F1_int_impl((int)rinta, (int)rintb, x, result);
   }
@@ -1646,212 +1753,129 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
     *result = 0.0;
     return GSL_EDOM;
   }
-
-
-  else if(a_neg_integer && rinta > INT_MIN && b > 0.0) {
-    /* 1F1(-n,b,x) = n!/(b)_n Laguerre[n,b-1,x]
-     *             = n B(b,n) Laguerre[n,b-1,x]
-     */
-    int n = -(int)rinta;
-    double L;
-    int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
-    if(stat_L != GSL_SUCCESS || L == 0.0) {
-      *result = 0.0;
-      return stat_L;
+  else if(b > 0.0) {
+    if(-1.0 <= a && a <= 1.0) {
+      /* Handle small a explicitly.
+       */
+      return hyperg_1F1_small_a_bgt0(a, b, x, result);
     }
-    else {
-      double lnbeta;
-      gsl_sf_lnbeta_impl(b, n, &lnbeta);
-      return gsl_sf_exp_sgn_impl(lnbeta + log(n) + log(fabs(L)), L, result);
-    }
-  }
-  else if(a_neg_integer && b <= a && x > 0.0 && rinta > INT_MIN) {
-    /* The polynomial evaluation is safe since all
-     * the terms are positive definite. Note that we do not
-     * bother to check the other positive defintie case,
-     * with b > 0 and x < 0, since that is subsumed into
-     * the above laguerre polynomial case.
-     */
-    return hyperg_1F1_a_negint_poly((int)rinta, b, x, result);
-  }
-  else if(a_neg_integer && a > INT_MIN && x > 0.0) {
-    /* Combine [Abramowitz+Stegun, 13.6.9 + 13.6.27]
-     * M(-n,1+y,x) = (-1)^n / (y+1)_n U(-n,1+y,x)
-     */
-    int n = -(int)rinta;
-    double sgn = ( GSL_IS_ODD(n) ? -1.0 : 1.0 );
-    double lnpoch;
-    double sgpoch;
-    double U;
-    int stat_p = gsl_sf_lnpoch_sgn_impl(b, n, &lnpoch, &sgpoch);
-    int stat_U = gsl_sf_hyperg_U_impl(-n, b, x, &U);
-    if(stat_p == GSL_SUCCESS) {
-      if(U != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-        double lnr = -lnpoch + log(fabs(U));
-        int stat_e = gsl_sf_exp_sgn_impl(lnr, sgn * sgpoch * U, result);
-	if(stat_e == GSL_SUCCESS)
-	  return stat_U;
-	else
-	  return stat_e;
+    else if(bma_neg_integer) {
+      /* Catch this now, to avoid problems in the
+       * generic evaluation code.
+       */
+      double Kummer_1F1;
+      int stat_K = hyperg_1F1_a_negint_lag((int)rintbma, b, -x, &Kummer_1F1);
+      if(stat_K == GSL_SUCCESS) {
+        if(Kummer_1F1 == 0.0) {
+          *result = 0.0;
+	  return GSL_SUCCESS;
+        }
+        else {
+          double lnr = log(fabs(Kummer_1F1)) + x;
+          return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+        }
       }
       else {
         *result = 0.0;
-        return stat_U;
+        return stat_K;
       }
     }
-    else {
-      *result = 0.0;
-      return stat_p;
-    }
-  }
-  else if(bma_neg_integer && ((a < 0.0 && x < 0.0) || (b > 0.0 && x > 0.0)) && rintbma > INT_MIN) {
-    /* Kummer transformed version of safe polynomial.
-     */
-    double K;
-    int stat_K = hyperg_1F1_a_negint_poly((int)rintbma, b, -x, &K);
-    if(K != 0.0 && stat_K == GSL_SUCCESS) {
-      return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
-    }
-    else {
-      *result = 0.0;
-      return stat_K;
-    }
-  }
-  else if(   (fabs(x) < 5.0 && fabs(a) < 10.0 && fabs(b) < 10.0)
-          || (a >= 0.0 && b >= 0.0 && x >= 0.0)
-          || (b > 0.8*locMAX(fabs(a),1.0)*fabs(x))
-    ) {
-    /* Arguments small enough to evaluate series directly,
-     * series is positive definite, or series is dominated and safe.
-     */
-    double prec;
-    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
-  }
-  else if(   (fabs(x) < 5.0 && fabs(bma) < 10.0 && fabs(b) < 10.0)
-          || (b > 0.8*locMAX(fabs(bma),1.0)*fabs(x))
-    ) {
-    /* Use Kummer transformation to render series safe.
-     * We do not have to worry about overflow in
-     * exp(x) * Kummer_1F1, because neither term can be very large.
-     */
-    double prec;
-    double Kummer_1F1;
-    double Ex = exp(x);
-    int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, -x, &Kummer_1F1, &prec);
-    *result = Ex * Kummer_1F1;
-    return stat_K;
-    
-  }
-  else if(   x < -30.0
-          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
-          && !b_neg_integer
-          && !bma_neg_integer
-    ) {
-    /* Large negative x asymptotic.
-     */
-    double prec;
-    return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
-  }
-  else if(   x > 100.0
-          && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
-          && !b_neg_integer
-          && !a_neg_integer
-    ) {
-    /* Large positive x asymptotic.
-     */
-    double prec;
-    return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
-  }
-  else if(b > locEPS && fabs(bma) < GSL_SQRT_MACH_EPS && fabs(b) > fabs(x) ) {
-    /* case: approximate a==b;
-     *
-     * 1F1(a,a+eps,x) = exp(ax/b) (1 + eps x^2 (v2 + v3 x + ...) + ...)
-     *
-     *   v2 = a/(2b^2(b+1))
-     *   v3 = a(b-2a)/(3b^3(b+1)(b+2))
-     *   ...
-     *
-     * See [Luke, Mathematical Functions and Their Approximations, p.292]
-     *
-     * This cannot be used for b near a negative integer or zero.
-     * Also, if x/b is large the deviation from exp(x) behaviour grows.
-     */
-    double eps = bma;
-    double exab;
-    int stat_e = gsl_sf_exp_impl(a*x/b, &exab);
-    if(stat_e == GSL_SUCCESS) {
-      double v2 = a/(2.0*b*b*(b+1.0));
-      double v3 = a*(b-2.0*a)/(3.0*b*b*b*(b+1.0)*(b+2.0));
-      double v  = v2 + v3 * x;
-      *result = exab * (1.0 + eps*x*x*v);
-      return GSL_SUCCESS;
-    }
-    else {
-      *result = 0.0;
-      return stat_e;
-    }
-  }
-  else if(-1.0 <= a && a <= 1.0 && b > 0.0) {
-    /* Handle small a explicitly. This helps clarify
-     * the thinking for the recursize cases below.
-     * It is also a minor premature optimization.
-     */
-    return hyperg_1F1_small_a_bgt0(a, b, x, result);
-  }
-  else if(a < 0.0 && b > 0.0) {
-    /* Use Kummer to reduce it to the generic positive case.
-     * Note that b > a, strictly, since we already trapped b = a.
-     */
-    double Kummer_1F1;
-    int stat_K = hyperg_1F1_ab_pos(b-a, b, -x, &Kummer_1F1);
-    if(stat_K == GSL_SUCCESS) {
-      if(Kummer_1F1 == 0.0) {
-        *result = 0.0;
-	return GSL_SUCCESS;
+    else if(a < 0.0) {
+      if(a_neg_integer) {
+        return hyperg_1F1_a_negint_lag((int)rinta, b, x, result);
       }
       else {
-        double lnr = log(fabs(Kummer_1F1)) + x;
-        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+        /* Use Kummer to reduce it to the generic positive case.
+         * Note that b > a, strictly, since we already trapped b = a.
+	 * Also b-(b-a)=a, and a is not a negative integer here,
+	 * so the generic evaluation is safe.
+         */
+        double Kummer_1F1;
+        int stat_K = hyperg_1F1_ab_pos(b-a, b, -x, &Kummer_1F1);
+        if(stat_K == GSL_SUCCESS) {
+          if(Kummer_1F1 == 0.0) {
+            *result = 0.0;
+	    return GSL_SUCCESS;
+          }
+          else {
+            double lnr = log(fabs(Kummer_1F1)) + x;
+            return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
+          }
+        }
+        else {
+          *result = 0.0;
+          return stat_K;
+        }
       }
     }
     else {
-      *result = 0.0;
-      return stat_K;
+      /* a > 0.0 */
+      return hyperg_1F1_ab_pos(a, b, x, result);
     }
-  }
-  else if(a > 0.0 && b < 0.0) {
-    /* Use Kummer to reduce it to the generic negative case.
-     */
-    double Kummer_1F1;
-    int stat_K = hyperg_1F1_ab_neg(b-a, b, -x, &Kummer_1F1);
-    if(stat_K == GSL_SUCCESS) {
-      if(Kummer_1F1 == 0.0) {
-        *result = 0.0;
-	return stat_K;
-      }
-      else {
-        double lnr = log(fabs(Kummer_1F1)) + x;
-        return gsl_sf_exp_sgn_impl(lnr, Kummer_1F1, result); 
-      }
-    }
-    else {
-      *result = 0.0;
-      return stat_K;
-    }
-  }
-  else if(a < 0.0 && b < 0.0) {
-    /* generic negative case
-     */
-    return hyperg_1F1_ab_neg(a, b, x, result);
   }
   else {
-    /* a > 0 and b > 0
-     * generic positive case
-     */
-    return hyperg_1F1_ab_pos(a, b, x, result);
+    /* b < 0.0 */
+
+    if(a_neg_integer && b < a && x > 0.0) {
+      /* The polynomial evaluation is safe since
+       * all the terms are positive definite.
+       */
+      return hyperg_1F1_a_negint_poly((int)rinta, b, x, result);
+    }
+    else if(a_neg_integer && x > 0.0) {
+      /* Handle this now to prevent problems
+       * in the generic evaluation.
+       */
+      return hyperg_1F1_a_negint_U(a, b, x, result);
+    }
+    else if(bma_neg_integer && x < 0.0) {
+      /* Handle this now to prevent problems
+       * in the generic evaluation.
+       */
+      double K;
+      int stat_K;
+      if(a < 0.0) {
+        /* Kummer transformed version of safe polynomial.
+	 * The condition a < 0 is equivalent to b < b-a,
+	 * which is the condition required for the series
+	 * to be positive definite here.
+         */
+        stat_K = hyperg_1F1_a_negint_poly((int)rintbma, b, -x, &K);
+      }
+      else {
+        /* Generic eval using U.
+	 */
+	stat_K = hyperg_1F1_a_negint_U((int)rintbma, b, -x, &K);
+      }
+      if(K != 0.0 && stat_K == GSL_SUCCESS) {
+        return gsl_sf_exp_sgn_impl(x + log(fabs(K)), K, result);
+      }
+      else {
+        *result = 0.0;
+        return stat_K;
+      }
+    }
+    else if(a > 0.0) {
+      /* Use Kummer to reduce it to the generic negative case.
+       */
+      double K;
+      int stat_K = hyperg_1F1_ab_neg(b-a, b, -x, &K);
+      if(K != 0.0 && (stat_K == GSL_SUCCESS || stat_K == GSL_ELOSS)) {
+        double lnr = log(fabs(K)) + x;
+        return gsl_sf_exp_sgn_impl(lnr, K, result); 
+      }
+      else {
+        *result = 0.0;
+        return stat_K;
+      }
+    }
+    else {
+      return hyperg_1F1_ab_neg(a, b, x, result);
+    }
   }
-  
-  
+}
+
+
   
 #if 0  
     /* Luke in the canonical case.
@@ -1892,7 +1916,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   }
 #endif
 
-}
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
