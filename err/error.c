@@ -39,6 +39,8 @@ gsl_error (const char * reason, const char * file, int line, int gsl_errno)
     }
 
   gsl_stream_printf ("ERROR", file, line, reason);
+
+  fprintf (stderr, "Default GSL error handler invoked.\n");
   abort ();
 }
 
