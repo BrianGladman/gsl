@@ -361,7 +361,7 @@ my_coulomb_CF1(double lambda,
   const double CF1_abort = 1.0e+05;
   const double CF1_acc   = 10.0*GSL_MACH_EPS;
   const double x_inv     = 1.0/x;
-  const double px        = lam_max + 1.0 + CF1_abort;
+  const double px        = lambda + 1.0 + CF1_abort;
 
   double pk = lambda + 1.0;
   double F  = eta/pk + pk*x_inv;
