@@ -10,7 +10,7 @@
    The method used here is the one described in Knuth */
 
 double
-gsl_ran_beta (const gsl_rng * r, double a, double b)
+gsl_ran_beta (const gsl_rng * r, const double a, const double b)
 {
   double x1 = gsl_ran_gamma (r, a);
   double x2 = gsl_ran_gamma (r, b);
@@ -19,7 +19,7 @@ gsl_ran_beta (const gsl_rng * r, double a, double b)
 }
 
 double
-gsl_ran_beta_pdf (double x, double a, double b)
+gsl_ran_beta_pdf (const double x, const double a, const double b)
 {
   if (x < 0 || x > 1)
     {

@@ -25,7 +25,7 @@ gsl_ran_logistic (const gsl_rng * r)
 }
 
 double
-gsl_ran_logistic_pdf (double x)
+gsl_ran_logistic_pdf (const double x)
 {
   double u = exp (-x);
   double p = u / ((1 + u) * (1 + u));

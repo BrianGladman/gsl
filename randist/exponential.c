@@ -9,7 +9,7 @@
    for x = 0 ... +infty */
 
 double
-gsl_ran_exponential (const gsl_rng * r, double mu)
+gsl_ran_exponential (const gsl_rng * r, const double mu)
 {
   double u = gsl_rng_uniform_pos (r);
 
@@ -17,7 +17,7 @@ gsl_ran_exponential (const gsl_rng * r, double mu)
 }
 
 double
-gsl_ran_exponential_pdf (double x, double mu)
+gsl_ran_exponential_pdf (const double x, const double mu)
 {
   if (x < 0)
     {

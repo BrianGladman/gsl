@@ -9,7 +9,7 @@
    for -infty < x < infty  */
 
 double
-gsl_ran_two_sided_exponential (const gsl_rng * r, double mu)
+gsl_ran_two_sided_exponential (const gsl_rng * r, const double mu)
 {
   double u;
   do
@@ -29,8 +29,9 @@ gsl_ran_two_sided_exponential (const gsl_rng * r, double mu)
 }
 
 double
-gsl_ran_two_sided_exponential_pdf (double x, double mu)
+gsl_ran_two_sided_exponential_pdf (const double x, const double mu)
 {
-  double p = 0.5 * exp (-mu * fabs (x));
+  double p = (1/(2*mu)) * exp (-fabs (x)/mu);
   return p;
 }
+

@@ -10,7 +10,7 @@
  */
 
 double
-gsl_ran_flat (const gsl_rng * r, double a, double b)
+gsl_ran_flat (const gsl_rng * r, const double a, const double b)
 {
   double u = gsl_rng_uniform (r);
 
@@ -20,7 +20,7 @@ gsl_ran_flat (const gsl_rng * r, double a, double b)
 }
 
 double
-gsl_ran_flat_pdf (double x, double a, double b)
+gsl_ran_flat_pdf (double x, const double a, const double b)
 {
   if (x < b && x >= a)
     {

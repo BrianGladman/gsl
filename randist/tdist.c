@@ -12,7 +12,7 @@
    The method used here is the one described in Knuth */
 
 double
-gsl_ran_tdist (const gsl_rng * r, double nu)
+gsl_ran_tdist (const gsl_rng * r, const double nu)
 {
   if (nu <= 2)
     {
@@ -29,22 +29,23 @@ gsl_ran_tdist (const gsl_rng * r, double nu)
       do
 	{
 	  Y1 = gsl_ran_gaussian (r);
-	  Y2 = gsl_ran_exponential (r, 2 / (nu - 2));
+	  Y2 = gsl_ran_exponential (r, 1 / (nu/2 - 1));
 
 	  Z = Y1 * Y1 / (nu - 2);
 	}
-      while (exp (-Y2 - Z) >= (1 - Z));
+      while (1 - Z < 0 || exp (-Y2 - Z) > (1 - Z));
 
-      /* FIXME: there must be a typo in Knuth's formula
-	 sqrt(1-2nu) can't be right if nu > 2 */
+      /* Note that there is a typo in Knuth's formula, the line below
+	 is taken from the original paper of Marsaglia, Mathematics of
+	 Computation, 34 (1980), p 234-256 */
 
-      t = Y1 / sqrt ((1 - 2 * nu) * (1 - Z));
+      t = Y1 / sqrt ((1 - 2 / nu) * (1 - Z));
       return t;
     }
 }
 
 double
-gsl_ran_tdist_pdf (double x, double nu)
+gsl_ran_tdist_pdf (const double x, const double nu)
 {
   double lg2 = gsl_sf_lngamma ((nu + 1) / 2);
   double lg1 = gsl_sf_lngamma (nu / 2);
@@ -53,3 +54,4 @@ gsl_ran_tdist_pdf (double x, double nu)
 						       -(nu + 1) / 2);
   return p;
 }
+

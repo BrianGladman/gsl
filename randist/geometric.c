@@ -10,7 +10,7 @@
    occurs with probability p. */
 
 unsigned int
-gsl_ran_geometric (const gsl_rng * r, double p)
+gsl_ran_geometric (const gsl_rng * r, const double p)
 {
   double u = gsl_rng_uniform_pos (r);
 
@@ -29,8 +29,15 @@ gsl_ran_geometric (const gsl_rng * r, double p)
 }
 
 double
-gsl_ran_geometric_pdf (unsigned int n, double p)
+gsl_ran_geometric_pdf (const unsigned int n, const double p)
 {
-  double P = p * pow (1 - p, n - 1.0);
-  return P;
+  if (n == 0)
+    {
+      return 0 ;
+    }
+  else
+    {
+      double P = p * pow (1 - p, n - 1.0);
+      return P;
+    }
 }

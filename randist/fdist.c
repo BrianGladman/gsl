@@ -12,7 +12,7 @@
    The method used here is the one described in Knuth */
 
 double
-gsl_ran_fdist (const gsl_rng * r, double nu1, double nu2)
+gsl_ran_fdist (const gsl_rng * r, const double nu1, const double nu2)
 {
 
   double Y1 = 2 * gsl_ran_gamma (r, nu1 / 2);
@@ -24,7 +24,7 @@ gsl_ran_fdist (const gsl_rng * r, double nu1, double nu2)
 }
 
 double
-gsl_ran_fdist_pdf (double x, double nu1, double nu2)
+gsl_ran_fdist_pdf (const double x, const double nu1, const double nu2)
 {
   if (x < 0)
     {

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <gsl_math.h>
 #include <gsl_rng.h>
 #include <gsl_randist.h>
 
@@ -34,7 +35,7 @@ gsl_ran_lognormal (const gsl_rng * r)
 }
 
 double
-gsl_ran_lognormal_pdf (double x)
+gsl_ran_lognormal_pdf (const double x)
 {
   if (x <= 0)
     {

@@ -5,26 +5,28 @@
 void
 gsl_ran_dir_2d (const gsl_rng * r, double *x, double *y)
 {
-  double u, v, r2;
+  double u, v, d, d2;
 
   do
     {
       u = 2 * gsl_rng_uniform (r) - 1;
       v = 2 * gsl_rng_uniform (r) - 1;
 
-      r2 = u * u + v * v;
+      d2 = u * u + v * v;
     }
-  while (r2 > 1.0 || r2 == 0);
+  while (d2 > 1.0 || d2 == 0);
+  
+  d = sqrt(d2) ;
 
-  *x = u / sqrt (r2);
-  *y = v / sqrt (r2);
+  *x = u / d;
+  *y = v / d;
 }
 
 
 void
 gsl_ran_dir_3d (const gsl_rng * r, double *x, double *y, double *z)
 {
-  double u, v, w, r2;
+  double u, v, w, d, d2;
 
   do
     {
@@ -32,11 +34,13 @@ gsl_ran_dir_3d (const gsl_rng * r, double *x, double *y, double *z)
       v = 2 * gsl_rng_uniform (r) - 1;
       w = 2 * gsl_rng_uniform (r) - 1;
 
-      r2 = u * u + v * v + w * w;
+      d2 = u * u + v * v + w * w;
     }
-  while (r2 > 1.0 || r2 == 0);
+  while (d2 > 1.0 || d2 == 0);
 
-  *x = u / sqrt (r2);
-  *y = v / sqrt (r2);
-  *z = w / sqrt (r2);
+  d = sqrt(d2) ;
+
+  *x = u / d;
+  *y = v / d;
+  *z = w / d;
 }

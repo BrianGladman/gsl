@@ -10,14 +10,14 @@
    for x = 0 ... +infty */
 
 double
-gsl_ran_chisq (const gsl_rng * r, double nu)
+gsl_ran_chisq (const gsl_rng * r, const double nu)
 {
   double chisq = 2 * gsl_ran_gamma (r, nu / 2);
   return chisq;
 }
 
 double
-gsl_ran_chisq_pdf (double x, double nu)
+gsl_ran_chisq_pdf (const double x, const double nu)
 {
   if (x <= 0)
     {
@@ -27,7 +27,6 @@ gsl_ran_chisq_pdf (double x, double nu)
     {
       double lngamma = gsl_sf_lngamma (nu / 2);
       double p = exp ((nu / 2 - 1) * log (x/2) - x/2 - lngamma) / 2;
-      /* FIXME: missing factor of 2 here! */
       return p;
     }
 }

@@ -11,9 +11,13 @@
 void test_moments (double (*f) (void), const char *name,
 		   double a, double b, double p);
 void test_pdf (double (*f) (void), double (*pdf)(double), const char *name);
+void test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), 
+			const char *name);
 
 double test_beta (void);
 double test_beta_pdf (double x);
+double test_binomial (void);
+double test_binomial_pdf (unsigned int n);
 double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
@@ -31,6 +35,7 @@ double test_gamma_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
 double test_geometric (void);
+double test_geometric_pdf (unsigned int x);
 double test_logistic (void);
 double test_logistic_pdf (double x);
 double test_lognormal (void);
@@ -38,8 +43,11 @@ double test_lognormal_pdf (double x);
 double test_pareto (void);
 double test_pareto_pdf (double x);
 double test_poisson (void);
+double test_poisson_pdf (unsigned int x);
 double test_tdist (void);
 double test_tdist_pdf (double x);
+double test_two_sided_exp (void);
+double test_two_sided_exp_pdf (double x);
 double test_weibull (void);
 double test_weibull_pdf (double x);
 
@@ -48,6 +56,7 @@ gsl_rng *r_global;
 int
 main (void)
 {
+  gsl_rng_env_setup() ;
   r_global = gsl_rng_alloc (gsl_rng_default);
 
 #define FUNC(x) x, "gsl_ran_" #x
@@ -70,7 +79,12 @@ main (void)
   test_pdf (FUNC2(test_lognormal));
   test_pdf (FUNC2(test_pareto));
   test_pdf (FUNC2(test_tdist));
+  test_pdf (FUNC2(test_two_sided_exp));
   test_pdf (FUNC2(test_weibull));
+
+  test_discrete_pdf (FUNC2(test_poisson));
+  test_discrete_pdf (FUNC2(test_binomial));
+  test_discrete_pdf (FUNC2(test_geometric));
 
   return 0;
 }
@@ -95,7 +109,7 @@ test_moments (double (*f) (void), const char *name,
 
   status = (sigma > 3);
 
-  gsl_test (status, "%s, range [%g,%g] (%g observed vs %g expected)",
+  gsl_test (status, "%s [%g,%g] (%g observed vs %g expected)",
 	    name, a, b, count / N, p);
 }
 
@@ -128,12 +142,12 @@ test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
          x+dx using Simpson's rule */
 
       double x = a + i * dx ;
-
+#define STEPS 1000
       double sum = 0 ;
-      for (j = 1; j < 1000; j++)
-	sum += pdf(x + j * dx / 1000) ;
+      for (j = 1; j < STEPS; j++)
+	sum += pdf(x + j * dx / STEPS) ;
 
-      p[i] =  0.5 * (pdf(x) + 2*sum + pdf(x + dx - 1e-7)) * dx / 1000 ;
+      p[i] =  0.5 * (pdf(x) + 2*sum + pdf(x + dx - 1e-7)) * dx / STEPS ;
     }
 
   for (i = 0; i < BINS; i++)
@@ -151,13 +165,58 @@ test_pdf (double (*f) (void), double (*pdf)(double), const char *name)
 	}
       status |= status_i ;
       if (status_i) 
-	gsl_test (status_i, "%s, range [%g,%g) (%g observed vs %g expected)", 
+	gsl_test (status_i, "%s [%g,%g) (%g observed vs %g expected)", 
 		  name, x, x+dx, count[i]/N, p[i]) ;
     }
 
   if (status == 0)
-    gsl_test (status, "%s, sampling against pdf, range [%g,%g) ", name, a, b) ;
+    gsl_test (status, "%s, sampling against pdf over range [%g,%g) ", 
+	      name, a, b) ;
 }
+
+void
+test_discrete_pdf (double (*f) (void), double (*pdf)(unsigned int), const char *name)
+{
+  double count[BINS], p[BINS];
+  unsigned int i ;
+  int status = 0, status_i =0 ;
+
+  for (i = 0; i < BINS; i++)
+    count[i] = 0 ;
+
+  for (i = 0; i < N; i++)
+    {
+      int r = f ();
+      if (r>= 0 && r < BINS)
+	count[r]++;
+    }
+  
+  for (i = 0; i < BINS; i++)
+    p[i] =  pdf(i) ;
+
+  for (i = 0; i < BINS; i++)
+    {
+      double d = fabs(count[i] - N*p[i]) ;
+      if (p[i] != 0)
+	{
+	  d = d / sqrt(N*p[i]) ;
+	  status_i = (d > 5) ;
+	}
+      else
+	{
+	  status_i = (count[i] != 0) ;
+	}
+      status |= status_i ;
+      if (status_i) 
+	gsl_test (status_i, "%s i=%d (%g observed vs %g expected)", 
+		  name, i, count[i]/N, p[i]) ;
+    }
+
+  if (status == 0)
+    gsl_test (status, "%s, sampling against pdf over range [%d,%d) ", 
+	      name, 0, BINS) ;
+}
+
       
 
 double
@@ -170,6 +229,18 @@ double
 test_beta_pdf (double x)
 {
   return gsl_ran_beta_pdf (x, 2.0, 3.0);
+}
+
+double
+test_binomial (void)
+{
+  return gsl_ran_binomial (r_global, 0.3, 20);
+}
+
+double
+test_binomial_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0.3, 20);
 }
 
 double
@@ -187,15 +258,14 @@ test_cauchy_pdf (double x)
 double
 test_chisq (void)
 {
-  return gsl_ran_chisq (r_global, 3.0);
+  return gsl_ran_chisq (r_global, 13.0);
 }
 
 double
 test_chisq_pdf (double x)
 {
-  return gsl_ran_chisq_pdf (x, 3.0);
+  return gsl_ran_chisq_pdf (x, 13.0);
 }
-
 
 double
 test_erlang (void)
@@ -269,7 +339,6 @@ test_gaussian_pdf (double x)
   return gsl_ran_gaussian_pdf (x);
 }
 
-
 double
 test_geometric (void)
 {
@@ -277,9 +346,9 @@ test_geometric (void)
 }
 
 double
-test_geometric_pdf (unsigned int x)
+test_geometric_pdf (unsigned int n)
 {
-  return gsl_ran_geometric_pdf (x, 0.5);
+  return gsl_ran_geometric_pdf (n, 0.5);
 }
 
 double
@@ -325,15 +394,33 @@ test_poisson (void)
 }
 
 double
+test_poisson_pdf (unsigned int n)
+{
+  return gsl_ran_poisson_pdf (n, 2.0);
+}
+
+double
 test_tdist (void)
 {
-  return gsl_ran_tdist (r_global, 2.75);
+  return gsl_ran_tdist (r_global, 12.75);
 }
 
 double
 test_tdist_pdf (double x)
 {
-  return gsl_ran_tdist_pdf (x, 2.75);
+  return gsl_ran_tdist_pdf (x, 12.75);
+}
+
+double
+test_two_sided_exp (void)
+{
+  return gsl_ran_two_sided_exponential (r_global, 2.75);
+}
+
+double
+test_two_sided_exp_pdf (double x)
+{
+  return gsl_ran_two_sided_exponential_pdf (x, 2.75);
 }
 
 double

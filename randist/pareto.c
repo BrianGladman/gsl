@@ -9,7 +9,7 @@
  */
 
 double
-gsl_ran_pareto (const gsl_rng * r, double a)
+gsl_ran_pareto (const gsl_rng * r, const double a)
 {
   double x = gsl_rng_uniform_pos (r);
 
@@ -19,7 +19,7 @@ gsl_ran_pareto (const gsl_rng * r, double a)
 }
 
 double
-gsl_ran_pareto_pdf (double x, double a)
+gsl_ran_pareto_pdf (const double x, const double a)
 {
   if (x >= 1)
     {

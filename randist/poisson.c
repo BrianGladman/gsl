@@ -64,7 +64,7 @@ gsl_ran_poisson_array (const gsl_rng * r, size_t n, unsigned int array[],
 }
 
 double
-gsl_ran_poisson_pdf (unsigned int n, double mu)
+gsl_ran_poisson_pdf (const unsigned int n, const double mu)
 {
   double lf = gsl_sf_lnfact (n); 
   double p = exp (log (mu) * n - lf - mu);

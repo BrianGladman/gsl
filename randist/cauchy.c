@@ -10,7 +10,7 @@
    It is also known as the Lorentzian probability distribution */
 
 double
-gsl_ran_cauchy (const gsl_rng * r, double mu)
+gsl_ran_cauchy (const gsl_rng * r, const double mu)
 {
   double u;
   do
@@ -23,7 +23,7 @@ gsl_ran_cauchy (const gsl_rng * r, double mu)
 }
 
 double
-gsl_ran_cauchy_pdf (double x, double mu)
+gsl_ran_cauchy_pdf (const double x, const double mu)
 {
   double u = x / mu;
   double p = (1 / (M_PI * mu)) / (1 + u * u);

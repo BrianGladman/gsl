@@ -19,7 +19,7 @@ static double gamma_frac (const gsl_rng * r, double a);
    The algorithms below are from Knuth, vol 2, 2nd ed, p. 129. */
 
 double
-gsl_ran_gamma (const gsl_rng * r, double a)
+gsl_ran_gamma (const gsl_rng * r, const double a)
 {
   /* assume a > 0 */
   unsigned int na = floor (a);
@@ -39,7 +39,7 @@ gsl_ran_gamma (const gsl_rng * r, double a)
 }
 
 double
-gsl_ran_gamma_int (const gsl_rng * r, unsigned int a)
+gsl_ran_gamma_int (const gsl_rng * r, const unsigned int a)
 {
   if (a < 12)
     {
@@ -65,7 +65,7 @@ gsl_ran_gamma_int (const gsl_rng * r, unsigned int a)
 }
 
 static double
-gamma_large (const gsl_rng * r, double a)
+gamma_large (const gsl_rng * r, const double a)
 {
   /* Works only if a > 1, and is most efficient if a is large
 
@@ -91,7 +91,7 @@ gamma_large (const gsl_rng * r, double a)
 }
 
 static double
-gamma_frac (const gsl_rng * r, double a)
+gamma_frac (const gsl_rng * r, const double a)
 {
   /* This is exercise 16 from Knuth; see page 135, and the solution is
      on page 551.  */
@@ -120,7 +120,7 @@ gamma_frac (const gsl_rng * r, double a)
 }
 
 double
-gsl_ran_gamma_pdf (double x, double a)
+gsl_ran_gamma_pdf (const double x, const double a)
 {
   if (x < 0)
     {
