@@ -25,7 +25,7 @@ FUNCTION (gsl_block, alloc) (const size_t n)
   if (n == 0)
     {
       GSL_ERROR_VAL ("block length n must be positive integer",
-			GSL_EDOM, 0);
+			GSL_EINVAL, 0);
     }
 
   b = (TYPE (gsl_block) *) malloc (sizeof (TYPE (gsl_block)));

@@ -1,3 +1,8 @@
+Sat Jul 15 21:45:10 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* init_source.c (FUNCTION): changed GSL_EDOM to GSL_EINVAL for
+ 	invalid size arguments
+
 Sun May 28 12:22:26 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_complex_source.c (FUNCTION): use binary mode "b" when
