@@ -48,7 +48,7 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   
-  gsl_test (status, NAME (gsl_vector) "_set writes into array correctly");
+  gsl_test (status, NAME (gsl_vector) "_set writes into array");
 
   status = 0;
 
@@ -61,7 +61,7 @@ FUNCTION (test, func) (void)
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
     };
-  gsl_test (status, NAME (gsl_vector) "_get reads from array correctly");
+  gsl_test (status, NAME (gsl_vector) "_get reads from array");
 
   /* Now set stride to 2 */
 
@@ -78,7 +78,7 @@ FUNCTION (test, func) (void)
       if (!GSL_COMPLEX_EQ (x, y))
 	status = 1;
     };
-  gsl_test (status, NAME (gsl_vector) "_get reads from array correctly with stride");
+  gsl_test (status, NAME (gsl_vector) "_get reads from array with stride");
 
   for (i = 0; i < N / 2; i++)
     {
@@ -96,7 +96,7 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   
-  gsl_test (status, NAME (gsl_vector) "_set writes into array correctly with stride");
+  gsl_test (status, NAME (gsl_vector) "_set writes into array with stride");
 
   /* Reset stride to 1 */
 
@@ -135,7 +135,7 @@ FUNCTION (test, func) (void)
     status |= ! GSL_COMPLEX_EQ(s,y) ;
   }
 
-  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements") ;
 
   status = 0;
 
@@ -152,7 +152,7 @@ FUNCTION (test, func) (void)
       status |= !GSL_COMPLEX_EQ(r,x);
     }
 
-  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements") ;
   
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }
@@ -198,7 +198,7 @@ FUNCTION (test, binary) (void)
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
 
-  gsl_test (status, NAME (gsl_vector) "_write and read work correctly");
+  gsl_test (status, NAME (gsl_vector) "_write and read work");
 
 }
 

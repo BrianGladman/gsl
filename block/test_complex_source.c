@@ -106,7 +106,7 @@ FUNCTION (test, binary) (void)
     FUNCTION (gsl_block, free) (w);
   }
 
-  gsl_test (status, NAME (gsl_block) "_write and read work correctly");
+  gsl_test (status, NAME (gsl_block) "_write and read");
 
 }
 

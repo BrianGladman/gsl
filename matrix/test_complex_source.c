@@ -62,7 +62,7 @@ FUNCTION (test, func) (void)
 	}
     }
 
-  gsl_test (status, NAME (gsl_matrix) "_set writes into array correctly");
+  gsl_test (status, NAME (gsl_matrix) "_set writes into array");
 
   status = 0;
   k = 0;
@@ -76,7 +76,7 @@ FUNCTION (test, func) (void)
 	    status = 1;
 	}
     }
-  gsl_test (status, NAME (gsl_matrix) "_get reads from array correctly");
+  gsl_test (status, NAME (gsl_matrix) "_get reads from array");
 
   FUNCTION (gsl_matrix, free) (m);	/* free whatever is in m */
 
@@ -129,7 +129,7 @@ FUNCTION (test, text) (void)
 	  }
       }
 
-    gsl_test (status, NAME (gsl_matrix) "_fprintf and fscanf work correctly");
+    gsl_test (status, NAME (gsl_matrix) "_fprintf and fscanf");
 
     fclose (f);
     FUNCTION (gsl_matrix, free) (mm);
@@ -185,7 +185,7 @@ FUNCTION (test, binary) (void)
 	  }
       }
 
-    gsl_test (status, NAME (gsl_matrix) "_write and read work correctly");
+    gsl_test (status, NAME (gsl_matrix) "_write and read");
 
     fclose (f);
     FUNCTION (gsl_matrix, free) (mm);
@@ -338,7 +338,7 @@ FUNCTION (test, arith) (void)
 	    k++;
 	  }
       }
-    gsl_test (status, NAME (gsl_matrix) "_add sums correctly");
+    gsl_test (status, NAME (gsl_matrix) "_add matrix addition");
   }
 
   {
@@ -360,7 +360,7 @@ FUNCTION (test, arith) (void)
 	    k++;
 	  }
       }
-    gsl_test (status, NAME (gsl_matrix) "_sub subtracts correctly");
+    gsl_test (status, NAME (gsl_matrix) "_sub matrix subtraction");
   }
 
   {
@@ -394,7 +394,7 @@ FUNCTION (test, arith) (void)
 	    k++;
 	  }
       }
-    gsl_test (status, NAME (gsl_matrix) "_mul_elements multiplies correctly");
+    gsl_test (status, NAME (gsl_matrix) "_mul_elements multiplication");
   }
 
 
@@ -430,7 +430,7 @@ FUNCTION (test, arith) (void)
 	    k++;
 	  }
       }
-    gsl_test (status, NAME (gsl_matrix) "_div_elements divides correctly");
+    gsl_test (status, NAME (gsl_matrix) "_div_elements division");
   }
 
   FUNCTION (gsl_matrix, free) (a);

@@ -60,5 +60,5 @@ FUNCTION (test, text) (void)
     FUNCTION (gsl_block, free) (w);
   }
 
-  gsl_test (status, NAME (gsl_block) "_fprintf and fscanf work correctly");
+  gsl_test (status, NAME (gsl_block) "_fprintf and fscanf");
 }

@@ -61,5 +61,5 @@ FUNCTION (test, text) (void)
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
 
-  gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf work correctly");
+  gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf");
 }

@@ -52,7 +52,7 @@ FUNCTION (test, text) (void)
 	  status = 1;
       };
 
-    gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf work correctly");
+    gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf");
 
     fclose (f);
   }

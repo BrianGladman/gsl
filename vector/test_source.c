@@ -48,7 +48,7 @@ FUNCTION (test, func) (void)
     };
   
   gsl_test (status,
-	    NAME (gsl_vector) "_set" DESC " writes into array correctly");
+	    NAME (gsl_vector) "_set" DESC " writes into array");
 
 
   status = 0;
@@ -58,7 +58,7 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   gsl_test (status,
-	    NAME (gsl_vector) "_get" DESC " reads from array correctly");
+	    NAME (gsl_vector) "_get" DESC " reads from array");
 
 
   /* Now set stride to 2 */
@@ -71,7 +71,7 @@ FUNCTION (test, func) (void)
       if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (2 * i))
 	status = 1;
     };
-  gsl_test (status, NAME (gsl_vector) "_get" DESC " reads correctly with stride");
+  gsl_test (status, NAME (gsl_vector) "_get" DESC " reads with stride");
 
   for (i = 0; i < N / 2; i++)
     {
@@ -86,7 +86,7 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   
-  gsl_test (status, NAME (gsl_vector) "_set" DESC " writes correctly with stride");
+  gsl_test (status, NAME (gsl_vector) "_set" DESC " writes with stride");
 
   /* Reset stride to 1 */
 
@@ -107,7 +107,7 @@ FUNCTION (test, func) (void)
   status |= (FUNCTION(gsl_vector,get)(v,2) != 2) ;
   status |= (FUNCTION(gsl_vector,get)(v,5) != 5) ;
 
-  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_swap_elements" DESC " exchanges elements") ;
 
   status = 0;
 
@@ -118,7 +118,7 @@ FUNCTION (test, func) (void)
       status |= (FUNCTION (gsl_vector, get) (v, i) !=  (ATOMIC) (N - i - 1));
     }
 
-  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
+  gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements") ;
 
   {
     BASE exp_max = FUNCTION(gsl_vector,get)(v, 0);
@@ -212,7 +212,7 @@ FUNCTION (test, func) (void)
           if (r != z)
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_add adds correctly");
+      gsl_test (status, NAME (gsl_vector) "_add vector addition");
     }
 
 
@@ -231,7 +231,7 @@ FUNCTION (test, func) (void)
           if (r != z)
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_sub subtracts correctly");
+      gsl_test (status, NAME (gsl_vector) "_sub vector subtraction");
     }
 
     FUNCTION(gsl_vector, memcpy) (v, a);
@@ -249,7 +249,7 @@ FUNCTION (test, func) (void)
           if (r != z)
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_mul multiplies correctly");
+      gsl_test (status, NAME (gsl_vector) "_mul multiplication");
     }
 
     FUNCTION(gsl_vector, memcpy) (v, a);
@@ -267,7 +267,7 @@ FUNCTION (test, func) (void)
           if (fabs(r - z) > 2 * GSL_FLT_EPSILON * fabs(z))
             status = 1;
         }
-      gsl_test (status, NAME (gsl_vector) "_div divides correctly");
+      gsl_test (status, NAME (gsl_vector) "_div division");
     }
 
 
@@ -315,7 +315,7 @@ FUNCTION (test, binary) (void)
 	  status = 1;
       };
 
-    gsl_test (status, NAME (gsl_vector) "_write and read work correctly");
+    gsl_test (status, NAME (gsl_vector) "_write and read");
 
     fclose (f);
   }
