@@ -1,10 +1,9 @@
 #include <stdio.h>
+#include <gsl_math.h>
 #include "gsl_sf.h"
 
-extern double R_norm(int, int, double);
-extern double R_norm_2(int, int, double);
-extern double gsl_sf_hydrogenicR_2(int, double, double);
-extern double gsl_sf_hydrogenicR_2_old(int, double, double);
+#include "bessel.h"
+#include "bessel_Jn_impl.h"
 
 int main(int argc, char * argv[])
 {
@@ -20,19 +19,17 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
-  plotto();
-  return 0;
-/*
-  for(n=0; n<=1; n++) {
-    double y2 = gsl_sf_hydrogenicR_2(n, 1., 1.);
-    y = gsl_sf_hydrogenicR_2_old(n, 1., 1.);
-    printf("%3d    %22.17g   %22.17g\n",
+  for(n=1; n<=1000; n++) {
+    x = 50.0 * n;
+    gsl_sf_bessel_Inu_scaled_asymp_unif_impl((double)n, x, &y);
+    printf("%3d    %22.17g   %22.17g    %22.17g\n",
 	    n,
+	    x,
 	    y,
-	    y2
+	    (n - pow(n, 0.34))/n
 	    );
   }
-*/
+
 
 /*
   for(x=xmin; x<xmax; x += dx) {

@@ -12,7 +12,6 @@
 
 #define Root_2Pi_  2.50662827463100050241576528481
 
-extern int gsl_sf_fact_impl(int, double *);
 extern int gsl_sf_lngamma_impl(double, double *);
 
 
@@ -106,7 +105,10 @@ void plotto(void)
  *   sign = -1  ==> Jnu
  *   sign = +1  ==> Inu
  *
- * error ~ o( (z/2)^(2kmax) / kmax! / (nu+1)^kmax )
+ * error ~ o( (x/2)^(2N) / N! / (nu+1)^N )   N = kmax + 1
+ *
+ * empirical error analysis:
+ *   for kmax=4, choose x*x < 10.*(n+1)*GSL_ROOT5_MACH_EPS
  *
  * Checks: nu >= 0; x >= 0
  */
@@ -152,7 +154,17 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
   }
 }
 
-/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+/* x >> nu*nu+1
+ * error ~ O( ((nu*nu+1)/x)^3 )
+ *
+ * empirical error analysis:
+ *   choose  GSL_ROOT3_MACH_EPS * x > (nu*nu + 1)
+ *
+ * This is not especially useful. When the argument gets
+ * large enough for this to apply, the cos() and sin()
+ * start loosing digits. However, this seems inevitable
+ * for this particular method.
+ */
 int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * result)
 {
   double mu   = 4.*nu*nu;
@@ -161,11 +173,21 @@ int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, double * resu
   double chi = x - (0.5*nu + 0.25)*M_PI;
   double P   = 1. - mum1*mum9/(128.*x*x);
   double Q   = mum1/(8.*x);
-  *result = 2./(Root_2Pi_* sqrt(x)) * (cos(chi)*P - sin(chi)*Q);
+  *result = sqrt(2./(M_PI*x)) * (cos(chi)*P - sin(chi)*Q);
   return GSL_SUCCESS;
 }
 
-/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+/* x >> nu*nu+1
+ * error ~ O( ((nu*nu+1)/x)^3 )
+ *
+ * empirical error analysis:
+ *   choose  GSL_ROOT3_MACH_EPS * x > (nu*nu + 1)
+ *
+ * This is not especially useful. When the argument gets
+ * large enough for this to apply, the cos() and sin()
+ * start loosing digits. However, this seems inevitable
+ * for this particular method.
+ */
 int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * result)
 {
   double mu   = 4.*nu*nu;
@@ -174,45 +196,62 @@ int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * resu
   double chi = x - (0.5*nu + 0.25)*M_PI;
   double P   = 1. - mum1*mum9/(128.*x*x);
   double Q   = mum1/(8.*x);
-  *result = 2./(Root_2Pi_* sqrt(x)) * (cos(chi)*P + sin(chi)*Q);
+  *result = sqrt(2./(M_PI*x)) * (sin(chi)*P + cos(chi)*Q);
   return GSL_SUCCESS;
 }
 
-/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+/* x >> nu*nu+1
+ * error ~ O( ((nu*nu+1)/x)^3 )
+ *
+ * empirical error analysis:
+ *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
+ */
 int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
   double mu   = 4.*nu*nu;
   double mum1 = mu-1.;
   double mum9 = mu-9.;
-  *result = 1./(Root_2Pi_* sqrt(x)) * (1. - mum1/(8.*x) + mum1*mum9/(128.*x*x));
-  if(*result == 0.)
-    return GSL_EUNDRFLW;
-  else 
-    return GSL_SUCCESS;
+  *result = 1./sqrt(2.*M_PI*x) * (1. - mum1/(8.*x) + mum1*mum9/(128.*x*x));
+  return GSL_SUCCESS;
 }
 
-/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+/* x >> nu*nu+1
+ * error ~ O( ((nu*nu+1)/x)^3 )
+ *
+ * empirical error analysis:
+ *   choose  GSL_ROOT3_MACH_EPS * x > 0.25 * (nu*nu + 1)
+ */
 int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double * result)
 {
   double mu   = 4.*nu*nu;
   double mum1 = mu-1.;
   double mum9 = mu-9.;
   *result = sqrt(M_PI/(2.*x)) * (1. + mum1/(8.*x) + mum1*mum9/(128.*x*x));
-  if(*result == 0.)
-    return GSL_EUNDRFLW;
-  else 
-    return GSL_SUCCESS;
+  return GSL_SUCCESS;
 }
 
-/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
+/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
+ *
+ * Error depends on coth_a = 1/sqrt(1-(x/nu)^2); we are going up to coth_a^{15},
+ * ie debye_u5(), so we want coth_a to be near enough to 1 that this polynomial
+ * does not start to dominate. Roughly then, we want 1 + 15/2 (x/nu)^2 ~ 1,
+ * so just x < C nu, with C << sqrt(2/15) = 0.365.
+ *
+ * empirical error analysis, assuming 14 digit requirement:
+ *   choose  x < 0.365 nu   ==>  nu > 200
+ *   choose  x < 0.250 nu   ==>  nu > 125
+ *   choose  x < 0.100 nu   ==>  nu >  80
+ *
+ * The dependence on the required precision is not obvious to me.
+ */
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
   int i;
-  double sinh_a = nu/x;                            /* 1 < sinh_a < Inf       */
-  double coth_a = sqrt(1. + 1./(sinh_a*sinh_a));   /* 1 < coth_a < sqrt(2)   */
-  double cosh_a = sinh_a * coth_a;                 /* 1 < cosh_a < Inf       */
-  double tanh_a = 1./coth_a;                       /* 1/sqrt(2) < tanh_a < 1 */
-  double ea  = 0.5*(cosh_a + sinh_a);              /* 1 < ea < Inf           */
+  double cosh_a = nu/x;                           
+  double sinh_a = sqrt(cosh_a*cosh_a-1.);         
+  double coth_a = cosh_a/sinh_a;                  
+  double tanh_a = 1./coth_a;                      
+  double ea  = cosh_a + sinh_a;                   
   double lnt = nu*(tanh_a - log(ea));
   double pre = 1./sqrt(2.*M_PI*nu*tanh_a) * exp(lnt);
   double tpow[16];
@@ -225,39 +264,55 @@ int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double *
   return GSL_SUCCESS;
 }
 
-/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
+/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7]
+ * 
+ * empirical error analysis, assuming 14 digit requirement:
+ *   choose  x < 0.365 nu   ==>  nu > 200
+ *   choose  x < 0.250 nu   ==>  nu > 125
+ *   choose  x < 0.100 nu   ==>  nu >  80
+ */
 int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
   int i;
-  double sinh_a = nu/x;                            /* 1 < sinh_a < Inf       */
-  double coth_a = sqrt(1. + 1./(sinh_a*sinh_a));   /* 1 < coth_a < sqrt(2)   */
-  double cosh_a = sinh_a * coth_a;                 /* 1 < cosh_a < Inf       */
-  double tanh_a = 1./coth_a;                       /* 1/sqrt(2) < tanh_a < 1 */
-  double ea  = 0.5*(cosh_a + sinh_a);              /* 1 < ea < Inf           */
+  double cosh_a = nu/x;                         
+  double sinh_a = sqrt(cosh_a*cosh_a-1.);       
+  double coth_a = cosh_a/sinh_a;                
+  double tanh_a = 1./coth_a;                    
+  double ea  = cosh_a + sinh_a;                 
   double lnt = nu*(tanh_a - log(ea));
-  double pre = 1./sqrt(2.*M_PI*nu*tanh_a) * exp(-lnt);
+  double pre = sqrt(2./(M_PI*nu*tanh_a)) * exp(-lnt);
   double tpow[16];
   double sum;
   tpow[0] = 1.;
   for(i=1; i<16; i++) tpow[i] = coth_a * tpow[i-1];
   sum = 1. - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
-  *result = -2.*pre * sum;
+  *result = -pre * sum;
   return GSL_SUCCESS;
 }
 
-/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7] */
+/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7]
+ *
+ * empirical error analysis, assuming 14 digit requirement:
+ *   choose   x > 50.000 nu   ==>  nu >   3
+ *   choose   x > 10.000 nu   ==>  nu >  15
+ *   choose   x >  2.000 nu   ==>  nu >  50
+ *   choose   x >  1.000 nu   ==>  nu >  75
+ *   choose   x >  0.500 nu   ==>  nu >  80
+ *   choose   x >  0.100 nu   ==>  nu >  80
+ */
 int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
   int i;
   double z = x/nu;
   double root_term = sqrt(1. + z*z);
-  double pre = 1./(sqrt(2.*M_PI*nu) * sqrt(root_term));
+  double pre = 1./sqrt(2.*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.+root_term));
-  double ex  = ( z < 1./GSL_SQRT_MACH_EPS ? exp(nu*(-z + eta)) : exp(nu/(2.*z)) );
+  double ex  = ( z < 1./GSL_MACH_EPS ? exp(nu*(-z + eta)) : exp(-nu/(2.*z)) );
   double t = 1./root_term;
   double sum;
   double tpow[16];
+  tpow[0] = 1.;
   for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
   sum = 1. + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
