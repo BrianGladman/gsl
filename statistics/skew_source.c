@@ -16,17 +16,19 @@ FUNCTION(gsl_stats,skew_with_mean_and_sd) (const BASE data[], const size_t n,
 {
   /* takes a dataset and finds the skewness */
 
-  double sum = 0, skew;
+  double skew = 0;
   size_t i;
 
-  /* find the sum of the cubed deviations, normalized by the sd */
+  /* find the sum of the cubed deviations, normalized by the sd. */
+
+  /* we use a recurrence relation to stably update a running value so
+     there aren't any large sums that can overflow */
+
   for (i = 0; i < n; i++)
     {
       const double x = (data[i] - mean) / sd;
-      sum += x * x * x;
+      skew += (x * x * x - skew) / ((double)(i + 1));
     }
-
-  skew = sum / n;
 
   return skew;
 }

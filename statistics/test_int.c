@@ -31,8 +31,8 @@ main (void)
 
   {
     double mean = gsl_stats_int_mean (igroupa, ina);
-    double expected = 17;
-    gsl_test (mean != expected,
+    double expected = 17.0;
+    gsl_test (!within_fuzz(mean,expected),
 	      "gsl_stats_int_mean (integer) (%g observed vs %g expected)",
 	      mean, expected);
   }
@@ -40,7 +40,7 @@ main (void)
   {
     double mean = gsl_stats_int_mean (test1, 6);
     double expected = 3.5;
-    gsl_test (mean != expected,
+    gsl_test (!within_fuzz(mean,expected),
 	      "gsl_stats_int_mean (fractional) (%g observed vs %g expected)",
 	      mean, expected);
   }

@@ -18,17 +18,21 @@ FUNCTION(gsl_stats,kurtosis_with_mean_and_sd) (const BASE data[],
 {
   /* takes a dataset and finds the kurtosis */
 
-  double sum = 0, kurtosis;
+  double avg = 0, kurtosis;
   size_t i;
 
   /* find the fourth moment the deviations, normalized by the sd */
+
+  /* we use a recurrence relation to stably update a running value so
+     there aren't any large sums that can overflow */
+
   for (i = 0; i < n; i++)
     {
       const double x = (data[i] - mean) / sd;
-      sum += x * x * x * x;
+      avg += (x * x * x * x - avg)/((double)(i + 1));
     }
 
-  kurtosis = (sum / n) - 3.0;  /* makes kurtosis zero for a Gaussian */
+  kurtosis = avg - 3.0;  /* makes kurtosis zero for a Gaussian */
 
   return kurtosis;
 }

@@ -1,3 +1,9 @@
+Wed Apr  8 18:11:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* Added a new recurrence algorithm for the mean, variance, skew
+ 	and kurtosis. It uses a running value which is less likely to
+ 	overflow than a global sum.
+
 Mon Mar 30 22:18:59 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* completely reorganised the source system to use macros as

@@ -1,19 +1,18 @@
 #include "source.h"
-#include <stdio.h>
+
 double 
 FUNCTION(gsl_stats,mean) (const BASE data[], const size_t size)
 {
-  /* Compute the arithmetic mean of a dataset */
+  /* Compute the arithmetic mean of a dataset using the recurrence relation 
+     mean_(n) = mean(n-1) + (data[n] - mean(n-1))/(n+1)   */
 
-  double sum = 0, mean;
+  double mean = 0;
   size_t i;
 
   for (i = 0; i < size; i++)
     {
-      sum += data[i];
+      mean += (data[i] - mean)/((double)(i + 1));
     }
-
-  mean = sum / size;
 
   return mean;
 }
