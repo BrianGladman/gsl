@@ -78,7 +78,8 @@ include_HEADERS = 		\
 	gsl_interp.h
 
 noinst_HEADERS = 		\
-	bsearch.h
+	bsearch.h		\
+	tridiag.h
 
 INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
 
@@ -93,7 +94,8 @@ libgslinterpolation_a_SOURCES = 	\
 	bsearch.c			\
 	cspline.c			\
 	interp.c			\
-	linear.c
+	linear.c			\
+	tridiag.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -106,7 +108,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslinterpolation_a_LIBADD = 
 libgslinterpolation_a_OBJECTS =  accel.o bsearch.o cspline.o interp.o \
-linear.o
+linear.o tridiag.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -121,7 +123,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/accel.P .deps/bsearch.P .deps/cspline.P \
-.deps/interp.P .deps/linear.P
+.deps/interp.P .deps/linear.P .deps/tridiag.P
 SOURCES = $(libgslinterpolation_a_SOURCES)
 OBJECTS = $(libgslinterpolation_a_OBJECTS)
 

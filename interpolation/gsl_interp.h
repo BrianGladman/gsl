@@ -25,15 +25,15 @@ gsl_interp_accel;
 
 
 /* general interpolation object */
-struct gsl_interp_obj_struct {
-  int     (*eval_impl)   (const struct gsl_interp_obj_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
-  int     (*eval_d_impl) (const struct gsl_interp_obj_struct *, const double xa[], const double ya[], double x, double * y);
-  void    (*free)        (struct gsl_interp_obj_struct *);
+struct _gsl_interp_obj_struct {
+  int     (*eval_impl)   (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
+  int     (*eval_na_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], double x, double * y);
+  void    (*free)        (struct _gsl_interp_obj_struct *);
   double  xmin;
   double  xmax;
   int     size;
 };
-typedef    struct gsl_interp_obj_struct   gsl_interp_obj;
+typedef  struct _gsl_interp_obj_struct  gsl_interp_obj;
 
 
 /* interpolation object factory */
@@ -46,7 +46,9 @@ gsl_interp_obj_factory;
 
 /* available factories */
 extern const gsl_interp_obj_factory   gsl_interp_linear_factory;
-extern const gsl_interp_obj_factory   gsl_interp_cspline_free_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_natural_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_periodic_factory;
+extern const gsl_interp_obj_factory   gsl_interp_cspline_notnode_factory;
 extern const gsl_interp_obj_factory   gsl_interp_cspline_fixed_factory;
 
 

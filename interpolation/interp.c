@@ -48,7 +48,7 @@ gsl_interp_eval_noaccel_impl(const gsl_interp_obj * obj,
                              double * y
                              )
 {
-  return obj->eval_d_impl(obj, xa, ya, x, y);
+  return obj->eval_na_impl(obj, xa, ya, x, y);
 }
 
 
@@ -58,7 +58,7 @@ gsl_interp_eval_noaccel_e(const gsl_interp_obj * obj,
                           double * y
                           )
 {
-  int status = obj->eval_d_impl(obj, xa, ya, x, y);
+  int status = obj->eval_na_impl(obj, xa, ya, x, y);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_interp_eval_noaccel_e", status);
   }
@@ -71,7 +71,7 @@ gsl_interp_eval_noaccel(const gsl_interp_obj * obj,
                         )
 {
   double y;
-  int status = obj->eval_d_impl(obj, xa, ya, x, &y);
+  int status = obj->eval_na_impl(obj, xa, ya, x, &y);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_interp_eval_noaccel_e", status);
   }

@@ -6,7 +6,8 @@ include_HEADERS = 		\
 	gsl_interp.h
 
 noinst_HEADERS = 		\
-	bsearch.h
+	bsearch.h		\
+	tridiag.h
 
 
 INCLUDES = -I$(full_top_srcdir) -I$(full_top_srcdir)/err
@@ -22,7 +23,9 @@ libgslinterpolation_a_SOURCES = 	\
 	bsearch.c			\
 	cspline.c			\
 	interp.c			\
-	linear.c
+	linear.c			\
+	tridiag.c
+
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"
