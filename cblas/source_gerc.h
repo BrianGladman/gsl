@@ -33,7 +33,7 @@
       INDEX jy = OFFSET(N, incY);
       for (j = 0; j < N; j++) {
 	const BASE Y_real = CONST_REAL(Y, jy);
-	const BASE Y_imag = (-1.0) * CONST_IMAG(Y, jy);
+	const BASE Y_imag = -CONST_IMAG(Y, jy);
 	REAL(A, lda * i + j) += Y_real * tmp_real - Y_imag * tmp_imag;
 	IMAG(A, lda * i + j) += Y_imag * tmp_real + Y_real * tmp_imag;
 	jy += incY;
@@ -44,7 +44,7 @@
     INDEX jy = OFFSET(N, incY);
     for (j = 0; j < N; j++) {
       const BASE Y_real = CONST_REAL(Y, jy);
-      const BASE Y_imag = (-1.0) * CONST_IMAG(Y, jy);
+      const BASE Y_imag = -CONST_IMAG(Y, jy);
       const BASE tmp_real = alpha_real * Y_real - alpha_imag * Y_imag;
       const BASE tmp_imag = alpha_imag * Y_real + alpha_real * Y_imag;
       INDEX ix = OFFSET(M, incX);

@@ -1,8 +1,8 @@
 #include <math.h>
 
-static double hypot (const double x, const double y);
+static double xhypot (const double x, const double y);
 
-static double hypot (const double x, const double y)
+static double xhypot (const double x, const double y)
 {
   double xabs = fabs(x) ;
   double yabs = fabs(y) ;

@@ -133,8 +133,8 @@
 	for (i = i_min; i < i_max; i++) {
 	  const BASE A_real = CONST_REAL(A, lda * j + (U + i - j));
 	  const BASE A_imag = CONST_IMAG(A, lda * j + (U + i - j));
-	  REAL(Y, iy) += A_real * tmpR - (-1.0) * A_imag * tmpI;
-	  IMAG(Y, iy) += A_real * tmpI + (-1.0) * A_imag * tmpR;
+	  REAL(Y, iy) += A_real * tmpR - (-A_imag) * tmpI;
+	  IMAG(Y, iy) += A_real * tmpI + (-A_imag) * tmpR;
 	  iy += incY;
 	}
       }
@@ -155,8 +155,8 @@
 	const BASE A_real = CONST_REAL(A, lda * i + (L + j - i));
 	const BASE A_imag = CONST_IMAG(A, lda * i + (L + j - i));
 
-	dotR += A_real * x_real - (-1.0) * A_imag * x_imag;
-	dotI += A_real * x_imag + (-1.0) * A_imag * x_real;
+	dotR += A_real * x_real - (-A_imag) * x_imag;
+	dotI += A_real * x_imag + (-A_imag) * x_real;
 	ix += incX;
       }
 

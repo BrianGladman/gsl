@@ -48,7 +48,7 @@
 	if (nonunit) {
 	  temp = A[i * lda + i] * B[i * ldb + j];
 	} else {
-	  temp = 1.0 * B[i * ldb + j];
+	  temp = B[i * ldb + j];
 	}
 
 	for (k = i + 1; k < n1; k++) {
@@ -74,7 +74,7 @@
 	if (nonunit) {
 	  temp += A[i * lda + i] * B[i * ldb + j];
 	} else {
-	  temp += 1.0 * B[i * ldb + j];
+	  temp += B[i * ldb + j];
 	}
 
 	B[ldb * i + j] = alpha * temp;
@@ -97,7 +97,7 @@
 	if (nonunit) {
 	  temp += A[i * lda + i] * B[i * ldb + j];
 	} else {
-	  temp += 1.0 * B[i * ldb + j];
+	  temp += B[i * ldb + j];
 	}
 
 	B[ldb * i + j] = alpha * temp;
@@ -117,7 +117,7 @@
 	if (nonunit) {
 	  temp = A[i * lda + i] * B[i * ldb + j];
 	} else {
-	  temp = 1.0 * B[i * ldb + j];
+	  temp = B[i * ldb + j];
 	}
 
 	for (k = i + 1; k < n1; k++) {
@@ -143,7 +143,7 @@
 	if (nonunit) {
 	  temp += A[j * lda + j] * B[i * ldb + j];
 	} else {
-	  temp += 1.0 * B[i * ldb + j];
+	  temp += B[i * ldb + j];
 	}
 
 	B[ldb * i + j] = alpha * temp;
@@ -161,7 +161,7 @@
 	if (nonunit) {
 	  temp = A[j * lda + j] * B[i * ldb + j];
 	} else {
-	  temp = 1.0 * B[i * ldb + j];
+	  temp = B[i * ldb + j];
 	}
 
 	for (k = j + 1; k < n2; k++) {
@@ -183,7 +183,7 @@
 	if (nonunit) {
 	  temp = A[j * lda + j] * B[i * ldb + j];
 	} else {
-	  temp = 1.0 * B[i * ldb + j];
+	  temp = B[i * ldb + j];
 	}
 
 	for (k = j + 1; k < n2; k++) {
@@ -210,7 +210,7 @@
 	if (nonunit) {
 	  temp += A[j * lda + j] * B[i * ldb + j];
 	} else {
-	  temp += 1.0 * B[i * ldb + j];
+	  temp += B[i * ldb + j];
 	}
 
 	B[ldb * i + j] = alpha * temp;

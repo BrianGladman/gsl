@@ -52,7 +52,7 @@
       if (nonunit) {
 	const BASE a_real = CONST_REAL(A, lda * i + 0);
 	const BASE a_imag = conj * CONST_IMAG(A, lda * i + 0);
-	const BASE s = hypot(a_real, a_imag);
+	const BASE s = xhypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
 	REAL(X, ix) = (tmp_real * b_real + tmp_imag * b_imag) / s;
@@ -88,7 +88,7 @@
       if (nonunit) {
 	const BASE a_real = CONST_REAL(A, lda * i + K);
 	const BASE a_imag = conj * CONST_IMAG(A, lda * i + K);
-	const BASE s = hypot(a_real, a_imag);
+	const BASE s = xhypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
 	REAL(X, ix) = (tmp_real * b_real + tmp_imag * b_imag) / s;
@@ -125,7 +125,7 @@
       if (nonunit) {
 	const BASE a_real = CONST_REAL(A, 0 + lda * i);
 	const BASE a_imag = conj * CONST_IMAG(A, 0 + lda * i);
-	const BASE s = hypot(a_real, a_imag);
+	const BASE s = xhypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
 	REAL(X, ix) = (tmp_real * b_real + tmp_imag * b_imag) / s;
@@ -162,7 +162,7 @@
       if (nonunit) {
 	const BASE a_real = CONST_REAL(A, K + lda * i);
 	const BASE a_imag = conj * CONST_IMAG(A, K + lda * i);
-	const BASE s = hypot(a_real, a_imag);
+	const BASE s = xhypot(a_real, a_imag);
 	const BASE b_real = a_real / s;
 	const BASE b_imag = a_imag / s;
 	REAL(X, ix) = (tmp_real * b_real + tmp_imag * b_imag) / s;
