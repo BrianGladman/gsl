@@ -123,6 +123,6 @@
 #define DISCARD_POINTER(p) /* ignoring discarded pointer */
 #endif
 
-#ifndef GSL_RANGE_CHECK
+#if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
 #define GSL_RANGE_CHECK 0  /* turn off range checking by default */
 #endif
