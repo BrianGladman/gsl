@@ -1,3 +1,7 @@
+Sun Oct 31 20:01:39 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* copy.c copy_source.c: added gsl_matrix_copy function
+
 Tue Oct 19 14:13:35 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added gsl_matrix_swap_row/col to exchange rows and columns

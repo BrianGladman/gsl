@@ -27,6 +27,7 @@ BLAS routines.
 * Accessing matrix elements::   
 * Reading and writing matrices::  
 * Slicing rows and columns::    
+* Copying matrices::            
 * Copying rows and columns::    
 * Exchanging rows and columns::  
 * Example programs for matrices::  
@@ -729,6 +730,20 @@ the @var{i}-th row of the matrix @var{m}.
 @deftypefun {gsl_vector *} gsl_vector_alloc_col_from_matrix (gsl_matrix * @var{m}, size_t @var{j})
 This function allocates a new @code{gsl_vector} struct which points to
 the @var{j}-th column of the matrix @var{m}.
+@end deftypefun
+
+@node Copying matrices
+@section Copying matrices
+
+Common operations on matrices such as addition and multiplication are
+available in the BLAS part of the library (@pxref{BLAS
+Support}). However, it is useful to have a small number of utility
+functions which do not require the full BLAS code. The following
+function falls into this category.
+
+@deftypefun int gsl_matrix_copy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
+This function copies the elements of the matrix @var{src} into the
+matrix @var{dest}. The two matrix must have the same size.
 @end deftypefun
 
 @node Copying rows and columns

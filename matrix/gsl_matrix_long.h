@@ -59,6 +59,8 @@ int gsl_matrix_long_swap_rows(gsl_matrix_long * m, size_t i, size_t j);
 int gsl_matrix_long_swap_cols(gsl_matrix_long * m, size_t i, size_t j);
 int gsl_matrix_long_swap_rowcol(gsl_matrix_long * m, size_t i, size_t j);
 
+int gsl_matrix_long_copy(gsl_matrix_long * dest, const gsl_matrix_long * src);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */

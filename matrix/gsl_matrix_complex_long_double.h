@@ -63,6 +63,8 @@ int gsl_matrix_complex_long_double_swap_rows(gsl_matrix_complex_long_double * m,
 int gsl_matrix_complex_long_double_swap_cols(gsl_matrix_complex_long_double * m, size_t i, size_t j);
 int gsl_matrix_complex_long_double_swap_rowcol(gsl_matrix_complex_long_double * m, size_t i, size_t j);
 
+int gsl_matrix_complex_long_double_copy(gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
+
 extern int gsl_check_range ;
 
 #ifdef HAVE_INLINE

@@ -59,6 +59,8 @@ int gsl_matrix_uchar_swap_rows(gsl_matrix_uchar * m, size_t i, size_t j);
 int gsl_matrix_uchar_swap_cols(gsl_matrix_uchar * m, size_t i, size_t j);
 int gsl_matrix_uchar_swap_rowcol(gsl_matrix_uchar * m, size_t i, size_t j);
 
+int gsl_matrix_uchar_copy(gsl_matrix_uchar * dest, const gsl_matrix_uchar * src);
+
 extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
