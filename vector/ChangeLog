@@ -1,3 +1,10 @@
+2003-01-01  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* gsl_vector_complex_float.h (gsl_vector_complex_float_get):
+	removed const from zero
+
+	* vector_source.c (FUNCTION): removed const from zero
+
 Sun Jan 27 22:29:54 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: ensure that range check is working when running the

@@ -1,3 +1,10 @@
+2003-01-01  Brian Gough  <brian.gough@network-theory.co.uk>
+
+	* gsl_matrix_complex_float.h (gsl_matrix_complex_float_get):
+	removed const from zero
+
+	* matrix_source.c (FUNCTION): removed const from zero
+
 2002-11-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am: added libgslsys.a to link, to provide gsl_hypot for

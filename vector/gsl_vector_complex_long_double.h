@@ -189,7 +189,7 @@ gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v,
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size)
     {
-      const gsl_complex_long_double zero = {{0, 0}};
+      gsl_complex_long_double zero = {{0, 0}};
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
     }
 #endif

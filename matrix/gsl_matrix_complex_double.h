@@ -237,7 +237,7 @@ gsl_matrix_complex_get(const gsl_matrix_complex * m,
 		     const size_t i, const size_t j)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  const gsl_complex zero = {{0,0}};
+  gsl_complex zero = {{0,0}};
 
   if (i >= m->size1)
     {

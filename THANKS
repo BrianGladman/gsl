@@ -211,3 +211,5 @@ memory allocation
 * Conrad Curry <cwcurry@orca.st.usm.edu> bug and documentation reports
 
 * Erik Schnetter <schnetter@uni-tuebingen.de> documentation bug reports
+
+* Maarten De Munck <indigo@kotnet.org> bug fix for vector/matrix get

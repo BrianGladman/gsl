@@ -25,7 +25,7 @@ FUNCTION (gsl_vector, get) (const TYPE (gsl_vector) * v, const size_t i)
     {
       if (i >= v->size)		/* size_t is unsigned, can't be negative */
 	{
-	  const BASE zero = ZERO;
+	  BASE zero = ZERO;
 	  GSL_ERROR_VAL ("index out of range", GSL_EINVAL, zero);
 	}
     }

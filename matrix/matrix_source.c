@@ -22,7 +22,7 @@ BASE
 FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
 			    const size_t i, const size_t j)
 {
-  const BASE zero = ZERO;
+  BASE zero = ZERO;
 
   if (gsl_check_range)
     {

@@ -144,7 +144,9 @@ The default mode of the HP-UX C compiler does not use ANSI C.
 To compile GSL you need to select ANSI C mode with the following
 configuration option:
 
-      CFLAGS="-Ae -O"  ./configure
+      CFLAGS="-Ae"  ./configure
+
+To switch on optimization use CFLAGS="-Ae -O".
 
 
 Hints for Intel (Pentium)
