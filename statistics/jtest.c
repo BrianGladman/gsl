@@ -4,48 +4,14 @@
 
 /* Test program for mean.c.  JimDavies 7.96 */
 
-main()
+int main()
 {
   
-  int grades[5];
   int groupone[20];
   int grouptwo[20];
-  double measure[6];
-  double average, var, sd_grades;
-  double mean_measure, var_measure, sd_measure;
-  double sd1, var1, pv, mean1;
+  double sd1, var1, pv, mean1, t;
   
-  /* integers test */
-
-  grades[0] = 99;
-  grades[1] = 76;
-  grades[2] = 95;
-  grades[3] = 85;
-  grades[4] = 457;
-   
-  average = imean(grades, 5);
-  
-  /*   printf ("Your average is %f.\n", average); */
-  var = ivariance(grades, 5);
-  /*  printf ("The variance of the grades is %f.\n\n", var);*/
-  sd_grades = isd(grades, 5);
-  /*  printf("JTEST: the SD is: %f.\n", sd_grades);*/
-
-  /* doubles test */
-
-  measure[0] = 24.655;
-  measure[1] = 20.1;
-  measure[2] = 30.001;
-  measure[3] = 25;
-  measure[4] = 24.99;
-  measure[5] = 15.67;
-
-  mean_measure = dmean(measure, 6);
-  var_measure = dvariance(measure, 6);
-  sd_measure = dsd(measure, 6);
-  /*   printf("jtest: the sd is: %f.\n", sd_measure);*/
-
-  /* integers ttest */
+  /* sample sets of integers */
 
   groupone[0] = 17 ;
   groupone[1] = 18 ;
@@ -67,7 +33,7 @@ main()
   groupone[17] = 20;
   groupone[18] = 18;
   groupone[19] = 21;
-  
+
   grouptwo[0]  = 19;
   grouptwo[1]  = 20;
   grouptwo[2]  = 22;
@@ -88,11 +54,43 @@ main()
   grouptwo[17] = 24;
   grouptwo[18] = 23;
   grouptwo[19] = 17;
+
+  /* sample sets of doubles */
+
+  groupa[0]  = .0421;
+  groupa[1]  = .0941;
+  groupa[2]  = .1064;
+  groupa[3]  = .0242;
+  groupa[4]  = .1331;
+  groupa[5]  = .0773;
+  groupa[6]  = .0243;
+  groupa[7]  = .0815;
+  groupa[8]  = .1186;
+  groupa[9]  = .0356;
+  groupa[10] = .0728;
+  groupa[11] = .0999;
+  groupa[12] = .0614;
+  groupa[13] = .0479;
  
+  groupb[0]  = .1081;
+  groupb[1]  = .0986;
+  groupb[2]  = .1566;
+  groupb[3]  = .1961;
+  groupb[4]  = .1125;
+  groupb[5]  = .1942;
+  groupb[6]  = .1079;
+  groupb[7]  = .1021;
+  groupb[8]  = .1583;
+  groupb[9]  = .1673;
+  groupb[10] = .1675;
+  groupb[11] = .1856;
+  groupb[12] = .1688;
+  groupb[13] = .1512;
+
   /* test imean */
  
   mean1 = imean(groupone, 20);
-  if (mean1 = 17){
+  if (mean1 == 17){
     printf("success: imean\n");
   }
   else {
@@ -101,11 +99,23 @@ main()
   
   mean1 = 0;
 
+  /* test dmean */
+ 
+  mean1 = dmean(groupa, 14);
+  if (mean1 > .072 && mean1 < .073){
+    printf("success: dmean\n");
+  }
+  else {
+    printf("ERROR: dmean (calculated %f)\n", mean1);
+  }
+  
+  mean1 = 0;
+
   /* test ivariance */
 
   var1 = ivariance(groupone, 20);
   
-  if (var1 > 14.42 && var1 < 14.425){
+  if (var1 > 13.6 && var1 < 13.8){
     printf("success: ivariance\n");
   }
   else{
@@ -114,14 +124,40 @@ main()
 
   var1 = 0;
 
+  /* test iest_variance */
+
+  var1 = iest_variance(groupone, 20);
+  
+  if (var1 > 14.42 && var1 < 14.425){
+    printf("success: iest_variance\n");
+  }
+  else{
+    printf("ERROR: iest_variance (calculated %f)\n", var1);
+  }
+
+  var1 = 0;
+
   /* test isd */
 
   sd1 = isd(groupone, 20);
-  if (sd1 > 3.79 && sd1 < 3.78){
+  if (sd1 > 3.6 && sd1 < 3.78){
     printf("success: isd\n");
   }
   else{
     printf("ERROR: isd (calculated %f)\n", sd1);
+  }
+
+  sd1 = 0;
+
+
+  /* test iest_sd */
+
+  sd1 = iest_sd(groupone, 20);
+  if (sd1 > 3.79 && sd1 < 3.8){
+    printf("success: iest_sd\n");
+  }
+  else{
+    printf("ERROR: iest_sd (calculated %f)\n", sd1);
   }
 
   sd1 = 0;
@@ -139,9 +175,30 @@ main()
   pv = 0;
 
   /* test iittest */
+  
+  t = iittest(groupone, grouptwo, 20, 20);
+  if (t > -1.47 && t < -1.45){
+    printf("success: iittest\n");
+  }
+  else{
+    printf("ERROR: iittest (calculated %f)\n", t);
+  }
+
+  t = 0;
+
 
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
