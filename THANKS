@@ -144,7 +144,7 @@ constants
 * Jeff Spirko <spirko@lehigh.edu> patch for 1d minimization
 
 * David Necas (Yeti) <yeti@physics.muni.cz> bug reports and patches
-for linear algebra, additional tridiagonal solvers
+for linear algebra, interpolation, additional tridiagonal solvers
 
 * <zunda@24i.net> for bug report
 

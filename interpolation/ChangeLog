@@ -1,3 +1,8 @@
+Sat Apr 27 20:57:22 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cspline.c (cspline_init_periodic): handle boundary effects
+ 	correctly
+
 Sun Dec  2 22:48:23 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* poly.c: added polynomial interpolation based on divided

@@ -168,13 +168,23 @@ cspline_init_periodic (void * vstate, const double xa[], const double ya[],
     return GSL_SUCCESS;
   } else {
     
-    state->offdiag[max_index] =  xa[1]-xa[0];
-    
-    for (i = 0; i < sys_size; i++) {
-      const double h_i   = xa[i + 1] - xa[i];
-      const double h_ip1 = xa[(i + 2) % num_points] - xa[i + 1];
+    for (i = 0; i < sys_size-1; i++) {
+      const double h_i       = xa[i + 1] - xa[i];
+      const double h_ip1     = xa[i + 2] - xa[i + 1];
       const double ydiff_i   = ya[i + 1] - ya[i];
-      const double ydiff_ip1 = ya[(i + 2) % num_points] - ya[i + 1];
+      const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
+      state->offdiag[i] = h_ip1;
+      state->diag[i] = 2.0 * (h_ip1 + h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i);
+    }
+
+    i = sys_size - 1;
+
+    {
+      const double h_i       = xa[i + 1] - xa[i];
+      const double h_ip1     = xa[1] - xa[0];
+      const double ydiff_i   = ya[i + 1] - ya[i];
+      const double ydiff_ip1 = ya[1] - ya[0];
       state->offdiag[i] = h_ip1;
       state->diag[i] = 2.0 * (h_ip1 + h_i);
       state->g[i] = 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i);
