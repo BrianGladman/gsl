@@ -187,6 +187,7 @@ static int sphconicalP_xlt1_large_tau_impl(int ell, double tau, double x, double
   sumB = olver_B0_th(mu, theta)/tau;
   
   *result = pre * (Im * sumA - theta/tau * Imm1 * sumB);
+  return GSL_SUCCESS; /* FIXME: hmmm, success??? */
 }
 
 
@@ -217,7 +218,7 @@ int gsl_sf_conical_sph_irr_1_impl(const double lambda,
     return GSL_SUCCESS;
   }
   else {
-    /* |x| == 1 */
+    /* |x| == 1 or x < -1 */
     return GSL_EDOM;
   }
 }
