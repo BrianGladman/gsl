@@ -1,3 +1,7 @@
+Wed Mar  6 22:03:35 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* stat2d.c: added checks for wi>0 (Achim Gaedke)
+
 Sat Jan 26 17:09:10 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* stat2d.c: added <math.h> include for sqrt

@@ -84,8 +84,10 @@ gsl_histogram2d_xmean (const gsl_histogram2d * h)
 	  if (wij > 0)
 	    wi+=wij;
 	}
+      if (wi>0) {
       W += wi;
       wmean += (xi - wmean) * (wi / W);
+      }
     }
 
   return wmean;
@@ -122,9 +124,10 @@ gsl_histogram2d_ymean (const gsl_histogram2d * h)
 	    wj+=wij;
 	}
 
+      if (wj>0) {
       W += wj;
       wmean += (yj - wmean) * (wj / W);
-
+      }
     }
 
   return wmean;
@@ -161,8 +164,10 @@ gsl_histogram2d_xsigma (const gsl_histogram2d * h) {
 	    wi+=wij;
 	}
 
+      if (wi>0) {
       W += wi;
       wvariance += ((xi * xi) - wvariance) * (wi / W);
+      }
     }
 
   {
@@ -201,9 +206,10 @@ gsl_histogram2d_ysigma (const gsl_histogram2d * h) {
 	  if (wij > 0)
 	    wj+=wij;
 	}
-
+      if (wj>0) {
       W += wj;
       wvariance += ((yj * yj) - wvariance) * (wj / W);
+      }
     }
 
   {
