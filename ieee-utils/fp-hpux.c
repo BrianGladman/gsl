@@ -21,6 +21,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     case GSL_IEEE_DOUBLE_PRECISION:
       GSL_ERROR ("HPUX PA-RISC only supports extended precision rounding "
 		 "(double precision is not supported)",
+		 GSL_EUNSUP) ;
       break ;
     case GSL_IEEE_EXTENDED_PRECISION:
       break ;
