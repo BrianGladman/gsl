@@ -26,8 +26,18 @@ main (void)
                         228.9, 668.4, 449.2, 0.2};
 
 
-  double x[1000], y[1000], w[1000];
+  int noint1_n = 11;
 
+  double noint1_x[] = { 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70 };
+  double noint1_y[] = { 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140};
+
+  int noint2_n = 3;
+  
+  double noint2_x[] = { 4, 5, 6 } ;
+  double noint2_y[] = { 3, 4, 4 } ;
+
+
+  double x[1000], y[1000], w[1000];
 
   size_t xstride = 2, wstride = 3, ystride = 5;
   size_t i;
@@ -86,33 +96,77 @@ main (void)
     gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_wlinear sumsq") ;
   }
 
+  for (i = 0; i < noint1_n; i++) 
+    {
+      x[i*xstride] = noint1_x[i];
+      w[i*wstride] = 1.0;
+      y[i*ystride] = noint1_y[i];
+    }
+
   {
     double c0, c1, cov00, cov01, cov11, sumsq;
        
-    double expected_c1 = 1.00174208046979e+00; /* all computed from octave */
-    double expected_cov11 = 7.46806595658452e-08;  
-    double expected_sumsq = 2.76112596299330e+01;
+    double expected_c1 = 2.07438016528926; 
+    double expected_cov11 = pow(0.165289256198347E-01, 2.0);  
+    double expected_sumsq = 127.272727272727;
     
-    gsl_fit_mul (x, xstride, y, ystride, norris_n, &c1, &cov11, &sumsq);
+    gsl_fit_mul (x, xstride, y, ystride, noint1_n, &c1, &cov11, &sumsq);
   
-    gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_mul c1") ;
-    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_mul cov11") ;
-    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_mul sumsq") ;
+    gsl_test_rel (c1, expected_c1, 1e-10, "noint1 gsl_fit_mul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "noint1 gsl_fit_mul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "noint1 gsl_fit_mul sumsq") ;
   }
 
   {
     double c0, c1, cov00, cov01, cov11, sumsq;
        
-    double expected_c1 = 1.00174208046979e+00; /* all computed from octave */
-    double expected_cov11 = 9.46651156027293e-08;  
-    double expected_sumsq = 2.76112596299330e+01;
+    double expected_c1 = 2.07438016528926; 
+    double expected_cov11 = 2.14661371686165e-05; /* computed from octave */
+    double expected_sumsq = 127.272727272727;
     
-    gsl_fit_wmul (x, xstride, w, wstride, y, ystride, norris_n, &c1, &cov11, &sumsq);
+    gsl_fit_wmul (x, xstride, w, wstride, y, ystride, noint1_n, &c1, &cov11, &sumsq);
 
-    gsl_test_rel (c1, expected_c1, 1e-10, "norris gsl_fit_wmul c1") ;
-    gsl_test_rel (cov11, expected_cov11, 1e-10, "norris gsl_fit_wmul cov11") ;
-    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "norris gsl_fit_wmul sumsq") ;
+    gsl_test_rel (c1, expected_c1, 1e-10, "noint1 gsl_fit_wmul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "noint1 gsl_fit_wmul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "noint1 gsl_fit_wmul sumsq") ;
   }
+
+
+  for (i = 0; i < noint2_n; i++) 
+    {
+      x[i*xstride] = noint2_x[i];
+      w[i*wstride] = 1.0;
+      y[i*ystride] = noint2_y[i];
+    }
+
+  {
+    double c0, c1, cov00, cov01, cov11, sumsq;
+       
+    double expected_c1 = 0.727272727272727; 
+    double expected_cov11 = pow(0.420827318078432E-01, 2.0);  
+    double expected_sumsq = 0.272727272727273;
+    
+    gsl_fit_mul (x, xstride, y, ystride, noint2_n, &c1, &cov11, &sumsq);
+  
+    gsl_test_rel (c1, expected_c1, 1e-10, "noint2 gsl_fit_mul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "noint2 gsl_fit_mul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "noint2 gsl_fit_mul sumsq") ;
+  }
+
+  {
+    double c0, c1, cov00, cov01, cov11, sumsq;
+       
+    double expected_c1 = 0.727272727272727; 
+    double expected_cov11 = 1.29870129870130e-02 ; /* computed from octave */
+    double expected_sumsq = 0.272727272727273;
+    
+    gsl_fit_wmul (x, xstride, w, wstride, y, ystride, noint2_n, &c1, &cov11, &sumsq);
+
+    gsl_test_rel (c1, expected_c1, 1e-10, "noint2 gsl_fit_wmul c1") ;
+    gsl_test_rel (cov11, expected_cov11, 1e-10, "noint2 gsl_fit_wmul cov11") ;
+    gsl_test_rel (sumsq, expected_sumsq, 1e-10, "noint2 gsl_fit_wmul sumsq") ;
+  }
+
 
 
 #ifdef JUNK
