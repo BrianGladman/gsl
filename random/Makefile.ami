@@ -1,6 +1,7 @@
 ## $Id$
-## This file is a template for Makefile.am (which is a template for Makefile.in,
-## which is a template for Makefile...) You can bootstrap your way to a regular
+## This file is a template for Makefile.am (which is a template for 
+## Makefile.in, which is a template for Makefile...) 
+## You can bootstrap your way to a regular
 ## Makefile with 'make -f Makefile.ami Makefile.am' followed by the usual
 ## automake/configure routines
 
@@ -38,6 +39,17 @@ CLEANFILES= tmp.out tmp.in
 Makefile.am: Makefile.ami makeam
 	cat Makefile.ami    > Makefile.am
 	./makeam $(ALLRAN) >> Makefile.am
+
+
+## need to automake'ify...somehow
+
+test-shuffle: test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+	$(LINK) -o $@ test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o -lm
+
+test-shuffle.o: shuffle.c
+	$(COMPILE) -c -DMAIN -o $@ shuffle.c
+
+
 
 
 

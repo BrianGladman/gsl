@@ -1,6 +1,7 @@
 ## $Id$
-## This file is a template for Makefile.am (which is a template for Makefile.in,
-## which is a template for Makefile...) You can bootstrap your way to a regular
+## This file is a template for Makefile.am (which is a template for 
+## Makefile.in, which is a template for Makefile...) 
+## You can bootstrap your way to a regular
 ## Makefile with 'make -f Makefile.ami Makefile.am' followed by the usual
 ## automake/configure routines
 
@@ -40,6 +41,17 @@ Makefile.am: Makefile.ami makeam
 	./makeam $(ALLRAN) >> Makefile.am
 
 
+## need to automake'ify...somehow
+
+test-shuffle: test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+	$(LINK) -o $@ test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o -lm
+
+test-shuffle.o: shuffle.c
+	$(COMPILE) -c -DMAIN -o $@ shuffle.c
+
+
+
+
 
 bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus bench-taus uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss test-switch 
 
@@ -53,7 +65,7 @@ gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c
 gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c
 gslranrand_SOURCES= rand.c rand-gen.c gauss.c
 
-gslrandom_SOURCES= switch.c gauss.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
+gslrandom_SOURCES= switch.c gauss.c shuffle.c  mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
 test_switch_LDADD= mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
