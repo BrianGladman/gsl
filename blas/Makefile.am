@@ -12,23 +12,37 @@ pkginclude_HEADERS = 		\
 	gsl_blas_raw_L1.h	\
 	gsl_blas_raw_cm.h
 
-noinst_HEADERS =  \
-	source_asum_r.h		\
+noinst_HEADERS = \
 	source_asum_c.h		\
+	source_asum_r.h		\
 	source_axpy_c.h		\
 	source_axpy_r.h		\
 	source_copy_c.h		\
 	source_copy_r.h		\
 	source_dot_c.h		\
 	source_dot_r.h		\
+	source_gbmv_c.h		\
+	source_gbmv_r.h		\
 	source_gemv.h		\
+	source_gemv_c.h		\
 	source_ger.h		\
-	source_iamax_r.h	\
+	source_gerc.h		\
+	source_geru.h		\
+	source_hbmv.h		\
+	source_her.h		\
+	source_her2.h		\
+	source_hpmv.h		\
+	source_hpr.h		\
+	source_hpr2.h		\
 	source_iamax_c.h	\
+	source_iamax_r.h	\
 	source_nrm2_c.h		\
 	source_nrm2_r.h		\
 	source_rot.h		\
 	source_rotg.h		\
+	source_rotm.h		\
+	source_rotmg.h		\
+	source_sbmv.h		\
 	source_scal_c.h		\
 	source_scal_c_s.h	\
 	source_scal_r.h		\
@@ -39,7 +53,8 @@ noinst_HEADERS =  \
 	source_swap_r.h		\
 	source_symv.h		\
 	source_syr.h		\
-	source_syr2.h
+	source_syr2.h		\
+	source_tbmv_r.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block

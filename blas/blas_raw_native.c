@@ -6,7 +6,7 @@
  * Conforms to gsl_blas_raw interface.
  *
  */
-#include <math.h>
+#include <gsl_math.h>
 #include "complex_internal.h"
 #include "gsl_blas_raw.h"
 
@@ -330,180 +330,17 @@ void gsl_blas_raw_drotg (double a[], double b[], double c[], double s[])
 void gsl_blas_raw_srotmg (float * d1, float * d2,
                           float * b1, float b2, float P[])
 {
-/*
-        SUBROUTINE SROTMG (SD1,SD2,SX1,SY1,SPARAM)
-C
-C     CONSTRUCT THE MODIFIED GIVENS TRANSFORMATION MATRIX H WHICH ZEROS
-C     THE SECOND COMPONENT OF THE 2-VECTOR  (SQRT(SD1)*SX1,SQRT(SD2)*
-C     SY2)**T.
-C     WITH SPARAM(1)=SFLAG, H HAS ONE OF THE FOLLOWING FORMS..
-C
-C     SFLAG=-1.E0     SFLAG=0.E0        SFLAG=1.E0     SFLAG=-2.E0
-C
-C       (SH11  SH12)    (1.E0  SH12)    (SH11  1.E0)    (1.E0  0.E0)
-C     H=(          )    (          )    (          )    (          )
-C       (SH21  SH22),   (SH21  1.E0),   (-1.E0 SH22),   (0.E0  1.E0).
-C     LOCATIONS 2-4 OF SPARAM CONTAIN SH11,SH21,SH12, AND SH22
-C     RESPECTIVELY. (VALUES OF 1.E0, -1.E0, OR 0.E0 IMPLIED BY THE
-C     VALUE OF SPARAM(1) ARE NOT STORED IN SPARAM.)
-C
-C     THE VALUES OF GAMSQ AND RGAMSQ SET IN THE DATA STATEMENT MAY BE
-C     INEXACT.  THIS IS OK AS THEY ARE ONLY USED FOR TESTING THE SIZE
-C     OF SD1 AND SD2.  ALL ACTUAL SCALING OF DATA IS DONE USING GAM.
-C
-
-  const float gam = 4096.0;
-  const float gamsq = 1.67772e+07;
-  const float rgamsq = 5.96046e-08;
-
-      IF(.NOT. SD1 .LT. ZERO) GO TO 10
-C       GO ZERO-H-D-AND-SX1..
-          GO TO 60
-   10 CONTINUE
-C     CASE-SD1-NONNEGATIVE
-      SP2=SD2*SY1
-      IF(.NOT. SP2 .EQ. ZERO) GO TO 20
-          SFLAG=-TWO
-          GO TO 260
-C     REGULAR-CASE..
-   20 CONTINUE
-      SP1=SD1*SX1
-      SQ2=SP2*SY1
-      SQ1=SP1*SX1
-C
-      IF(.NOT. ABS(SQ1) .GT. ABS(SQ2)) GO TO 40
-          SH21=-SY1/SX1
-          SH12=SP2/SP1
-C
-          SU=ONE-SH12*SH21
-C
-          IF(.NOT. SU .LE. ZERO) GO TO 30
-C         GO ZERO-H-D-AND-SX1..
-               GO TO 60
-   30     CONTINUE
-               SFLAG=ZERO
-               SD1=SD1/SU
-               SD2=SD2/SU
-               SX1=SX1*SU
-C         GO SCALE-CHECK..
-               GO TO 100
-   40 CONTINUE
-          IF(.NOT. SQ2 .LT. ZERO) GO TO 50
-C         GO ZERO-H-D-AND-SX1..
-               GO TO 60
-   50     CONTINUE
-               SFLAG=ONE
-               SH11=SP1/SP2
-               SH22=SX1/SY1
-               SU=ONE+SH11*SH22
-               STEMP=SD2/SU
-               SD2=SD1/SU
-               SD1=STEMP
-               SX1=SY1*SU
-C         GO SCALE-CHECK
-               GO TO 100
-C     PROCEDURE..ZERO-H-D-AND-SX1..
-   60 CONTINUE
-          SFLAG=-ONE
-          SH11=ZERO
-          SH12=ZERO
-          SH21=ZERO
-          SH22=ZERO
-C
-          SD1=ZERO
-          SD2=ZERO
-          SX1=ZERO
-C         RETURN..
-          GO TO 220
-C     PROCEDURE..FIX-H..
-   70 CONTINUE
-      IF(.NOT. SFLAG .GE. ZERO) GO TO 90
-C
-          IF(.NOT. SFLAG .EQ. ZERO) GO TO 80
-          SH11=ONE
-          SH22=ONE
-          SFLAG=-ONE
-          GO TO 90
-   80     CONTINUE
-          SH21=-ONE
-          SH12=ONE
-          SFLAG=-ONE
-   90 CONTINUE
-      GO TO IGO,(120,150,180,210)
-C     PROCEDURE..SCALE-CHECK
-  100 CONTINUE
-  110     CONTINUE
-          IF(.NOT. SD1 .LE. RGAMSQ) GO TO 130
-               IF(SD1 .EQ. ZERO) GO TO 160
-               ASSIGN 120 TO IGO
-C              FIX-H..
-               GO TO 70
-  120          CONTINUE
-               SD1=SD1*GAM**2
-               SX1=SX1/GAM
-               SH11=SH11/GAM
-               SH12=SH12/GAM
-          GO TO 110
-  130 CONTINUE
-  140     CONTINUE
-          IF(.NOT. SD1 .GE. GAMSQ) GO TO 160
-               ASSIGN 150 TO IGO
-C              FIX-H..
-               GO TO 70
-  150          CONTINUE
-               SD1=SD1/GAM**2
-               SX1=SX1*GAM
-               SH11=SH11*GAM
-               SH12=SH12*GAM
-          GO TO 140
-  160 CONTINUE
-  170     CONTINUE
-          IF(.NOT. ABS(SD2) .LE. RGAMSQ) GO TO 190
-               IF(SD2 .EQ. ZERO) GO TO 220
-               ASSIGN 180 TO IGO
-C              FIX-H..
-               GO TO 70
-  180          CONTINUE
-               SD2=SD2*GAM**2
-               SH21=SH21/GAM
-               SH22=SH22/GAM
-          GO TO 170
-  190 CONTINUE
-  200     CONTINUE
-          IF(.NOT. ABS(SD2) .GE. GAMSQ) GO TO 220
-               ASSIGN 210 TO IGO
-C              FIX-H..
-               GO TO 70
-  210          CONTINUE
-               SD2=SD2/GAM**2
-               SH21=SH21*GAM
-               SH22=SH22*GAM
-          GO TO 200
-  220 CONTINUE
-          IF(SFLAG)250,230,240
-  230     CONTINUE
-               SPARAM(3)=SH21
-               SPARAM(4)=SH12
-               GO TO 260
-  240     CONTINUE
-               SPARAM(2)=SH11
-               SPARAM(5)=SH22
-               GO TO 260
-  250     CONTINUE
-               SPARAM(2)=SH11
-               SPARAM(3)=SH21
-               SPARAM(4)=SH12
-               SPARAM(5)=SH22
-  260 CONTINUE
-          SPARAM(1)=SFLAG
-          RETURN
-      END
-*/
+#define BASE_TYPE float
+#include "source_rotmg.h"
+#undef BASE_TYPE
 }
 
-void gsl_blas_raw_drotmg (double d1[], double d2[],
-                          double b1[], double b2, double P[])
+void gsl_blas_raw_drotmg (double * d1, double * d2,
+                          double * b1, double b2, double P[])
 {
+#define BASE_TYPE double
+#include "source_rotmg.h"
+#undef BASE_TYPE
 }
 
 
@@ -531,6 +368,9 @@ void gsl_blas_raw_srotm (size_t N,
                          float Y[], size_t incY,
                          const float P[])
 {
+#define BASE_TYPE float
+#include "source_rotm.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_drotm (size_t N,
@@ -538,6 +378,9 @@ void gsl_blas_raw_drotm (size_t N,
                          double Y[], size_t incY,
                          const double P[])
 {
+#define BASE_TYPE double
+#include "source_rotm.h"
+#undef BASE_TYPE
 }
 
 
@@ -616,6 +459,9 @@ void gsl_blas_raw_cgemv (CBLAS_TRANSPOSE TransA,
                          const gsl_complex_packed_float beta,
                          gsl_complex_packed_array_float Y, size_t incY)
 {
+#define BASE_TYPE float
+#include "source_gemv_c.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zgemv (CBLAS_TRANSPOSE TransA,
@@ -626,77 +472,106 @@ void gsl_blas_raw_zgemv (CBLAS_TRANSPOSE TransA,
                          const gsl_complex_packed beta,
                          gsl_complex_packed_array Y, size_t incY)
 {
+#define BASE_TYPE double
+#include "source_gemv_c.h"
+#undef BASE_TYPE
 }
 
 /* GBMV */
 
 void gsl_blas_raw_sgbmv (CBLAS_TRANSPOSE TransA,
-                               size_t M, size_t N, size_t KL, size_t KU,
-                               float alpha,
-                               const float A[], int lda,
-                               const float X[], size_t incX,
-                               float beta,
-                               float Y[], size_t incY)
+                         size_t M, size_t N, size_t KL, size_t KU,
+                         float alpha,
+                         const float A[], int lda,
+                         const float X[], size_t incX,
+                         float beta,
+                         float Y[], size_t incY)
 {
+#define BASE_TYPE float
+#include "source_gbmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dgbmv (CBLAS_TRANSPOSE TransA,
-                               size_t M, size_t N, size_t KL, size_t KU,
-                               double alpha,
-                               const double A[], int lda,
-                               const double X[], size_t incX,
-                               double beta,
-                               double Y[], size_t incY)
+                         size_t M, size_t N, size_t KL, size_t KU,
+                         double alpha,
+                         const double A[], int lda,
+                         const double X[], size_t incX,
+                         double beta,
+                         double Y[], size_t incY)
 {
+#define BASE_TYPE double
+#include "source_gbmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_cgbmv (CBLAS_TRANSPOSE TransA,
-                               size_t M, size_t N, size_t KL, size_t KU,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float A, int lda,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_float beta,
-                               gsl_complex_packed_array_float Y, size_t incY)
+                         size_t M, size_t N, size_t KL, size_t KU,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float A, int lda,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_float beta,
+                         gsl_complex_packed_array_float Y, size_t incY)
 {
+#define BASE_TYPE float
+#include "source_gbmv_c.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zgbmv (CBLAS_TRANSPOSE TransA,
-                               size_t M, size_t N, size_t KL, size_t KU,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array A, int lda,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed beta,
-                               gsl_complex_packed_array Y, size_t incY)
+                         size_t M, size_t N, size_t KL, size_t KU,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array A, int lda,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed beta,
+                         gsl_complex_packed_array Y, size_t incY)
 {
+#define BASE_TYPE double
+#include "source_gbmv_c.h"
+#undef BASE_TYPE
 }
 
 
 /* TRMV */
 
 void gsl_blas_raw_strmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA,
-                               CBLAS_DIAG Diag,
-                               size_t N,
-                               const float A[], int lda,
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA,
+                         CBLAS_DIAG Diag,
+                         size_t N,
+                         const float A[], int lda,
+                         float X[], size_t incX)
 {
-
+  gsl_blas_raw_stbmv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_dtrmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const double A[], int lda,
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const double A[], int lda,
+                         double X[], size_t incX)
 {
+  gsl_blas_raw_dtbmv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_ctrmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const gsl_complex_packed_array_float A, int lda,
-                               gsl_complex_packed_array_float X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const gsl_complex_packed_array_float A, int lda,
+                         gsl_complex_packed_array_float X, size_t incX)
 {
+  gsl_blas_raw_ctbmv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_ztrmv (CBLAS_UPLO Uplo,
@@ -705,40 +580,51 @@ void gsl_blas_raw_ztrmv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_array A, int lda,
                                gsl_complex_packed_array X, size_t incX)
 {
+  gsl_blas_raw_ztbmv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 
 /* TBMV */
 
 void gsl_blas_raw_stbmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const float A[], int lda,
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const float A[], int lda,
+                         float X[], size_t incX)
 {
+#define BASE_TYPE float
+#include "source_tbmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dtbmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const double A[], int lda,
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const double A[], int lda,
+                         double X[], size_t incX)
 {
+#define BASE_TYPE double
+#include "source_tbmv_r.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_ctbmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const gsl_complex_packed_array_float A, int lda,
-                               gsl_complex_packed_array_float X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const gsl_complex_packed_array_float A, int lda,
+                         gsl_complex_packed_array_float X, size_t incX)
 {
 }
 
 void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N, size_t K,
-                               const gsl_complex_packed_array A, int lda,
-                               gsl_complex_packed_array X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N, size_t K,
+                         const gsl_complex_packed_array A, int lda,
+                         gsl_complex_packed_array X, size_t incX)
 {
 }
 
@@ -746,10 +632,10 @@ void gsl_blas_raw_ztbmv (CBLAS_UPLO Uplo,
 /* TPMV */
 
 void gsl_blas_raw_stpmv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const float Ap[],
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const float Ap[],
+                         float X[], size_t incX)
 {
 }
 
@@ -780,35 +666,55 @@ void gsl_blas_raw_ztpmv (CBLAS_UPLO Uplo,
 /* TRSV */
 
 void gsl_blas_raw_strsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const float A[], int lda,
-                               float X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const float A[], int lda,
+                         float X[], size_t incX)
 {
+  gsl_blas_raw_stbsv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_dtrsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const double A[], int lda,
-                               double X[], size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const double A[], int lda,
+                         double X[], size_t incX)
 {
+  gsl_blas_raw_dtbsv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_ctrsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const gsl_complex_packed_array_float A, int lda,
-                               gsl_complex_packed_array_float X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const gsl_complex_packed_array_float A, int lda,
+                         gsl_complex_packed_array_float X, size_t incX)
 {
+  gsl_blas_raw_ctbsv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 void gsl_blas_raw_ztrsv (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                               size_t N,
-                               const gsl_complex_packed_array A, int lda,
-                               gsl_complex_packed_array X, size_t incX)
+                         CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                         size_t N,
+                         const gsl_complex_packed_array A, int lda,
+                         gsl_complex_packed_array X, size_t incX)
 {
+  gsl_blas_raw_ztbsv (Uplo,
+                      TransA, Diag,
+                      N, N-1,
+                      A, lda,
+                      X, incX);
 }
 
 
@@ -921,37 +827,9 @@ void gsl_blas_raw_ssbmv (CBLAS_UPLO Uplo,
                          float beta,
                          float Y[], size_t incY)
 {
-  size_t i, j, ell;
-  size_t ix, iy, jx, jy;
-  size_t kp1 = K + 1;
-
-  iy=0;
-  for(i=0; i<N; i++) {
-    Y[iy] *= beta;
-    iy += incY;
-  }
-  
-  jx = 0;
-  jy = 0;
-  for(j=0; j<N; j++) {
-    float tmp1 = alpha * X[jx];
-    float tmp2 = 0.0;
-    ix = 0;
-    iy = 0;
-    ell = kp1 - j;
-    for(i=locMAX(0, j-K); i<j; i++) {
-      float ajli = A[lda*j + ell+i];
-      Y[iy] += tmp1 * ajli;
-      tmp2  += ajli * X[ix];
-      ix += incX;
-      iy += incY;
-    }
-    Y[jy] += tmp1*A[lda*j + kp1] + alpha*tmp2;
-    jx += incX;
-    jy += incY;
-  }
-  
-  /* FIXME */
+#define BASE_TYPE float
+#include "source_sbmv.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_dsbmv (CBLAS_UPLO Uplo,
@@ -962,6 +840,9 @@ void gsl_blas_raw_dsbmv (CBLAS_UPLO Uplo,
                          double beta,
                          double Y[], size_t incY)
 {
+#define BASE_TYPE double
+#include "source_sbmv.h"
+#undef BASE_TYPE
 }
 
 /* SPMV */
@@ -1132,179 +1013,241 @@ void gsl_blas_raw_chemv (CBLAS_UPLO Uplo,
                                const gsl_complex_packed_float beta,
                                gsl_complex_packed_array_float Y, size_t incY)
 {
+  gsl_blas_raw_chbmv (Uplo,
+                      N, N-1,
+                      alpha,
+                      A, lda,
+                      X, incX,
+                      beta,
+                      Y, incY);
 }
 
 void gsl_blas_raw_zhemv (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array A, int lda,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed beta,
-                               gsl_complex_packed_array Y, size_t incY)
+                         size_t N,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array A, int lda,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed beta,
+                         gsl_complex_packed_array Y, size_t incY)
 {
+  gsl_blas_raw_zhbmv (Uplo,
+                      N, N-1,
+                      alpha,
+                      A, lda,
+                      X, incX,
+                      beta,
+                      Y, incY);
 }
 
 
 /* HBMV */
 
 void gsl_blas_raw_chbmv (CBLAS_UPLO Uplo,
-                               size_t N, size_t K,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float A, int lda,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_float beta,
-                               gsl_complex_packed_array_float Y, size_t incY)
+                         size_t N, size_t K,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float A, int lda,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_float beta,
+                         gsl_complex_packed_array_float Y, size_t incY)
 {
+#define BASE_TYPE float
+#include "source_hbmv.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zhbmv (CBLAS_UPLO Uplo,
-                               size_t N, size_t K,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array A, int lda,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed beta,
-                               gsl_complex_packed_array Y, size_t incY)
+                         size_t N, size_t K,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array A, int lda,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed beta,
+                         gsl_complex_packed_array Y, size_t incY)
 {
+#define BASE_TYPE double
+#include "source_hbmv.h"
+#undef BASE_TYPE
 }
 
 
 /* HPMV */
 
 void gsl_blas_raw_chpmv (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float Ap,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_float beta,
-                               gsl_complex_packed_array_float Y, size_t incY)
+                         size_t N,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float Ap,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_float beta,
+                         gsl_complex_packed_array_float Y, size_t incY)
 {
+#define BASE_TYPE float
+#include "source_hpmv.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zhpmv (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array Ap,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed beta,
-                               gsl_complex_packed_array Y, size_t incY)
+                         size_t N,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array Ap,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed beta,
+                         gsl_complex_packed_array Y, size_t incY)
 {
+#define BASE_TYPE double
+#include "source_hpmv.h"
+#undef BASE_TYPE
 }
 
 
 /* GERU */
 
 void gsl_blas_raw_cgeru (size_t M, size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_array_float Y, size_t incY,
-                               gsl_complex_packed_array_float A, int lda)
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_array_float Y, size_t incY,
+                         gsl_complex_packed_array_float A, int lda)
 {
+#define BASE_TYPE float
+#include "source_geru.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zgeru (size_t M, size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed_array Y, size_t incY,
-                               gsl_complex_packed_array A, int lda)
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed_array Y, size_t incY,
+                         gsl_complex_packed_array A, int lda)
 {
+#define BASE_TYPE double
+#include "source_geru.h"
+#undef BASE_TYPE
 }
 
 
 /* GERC */
 
 void gsl_blas_raw_cgerc (size_t M, size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_array_float Y, size_t incY,
-                               gsl_complex_packed_array_float A, int lda)
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_array_float Y, size_t incY,
+                         gsl_complex_packed_array_float A, int lda)
 {
+#define BASE_TYPE float
+#include "source_gerc.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zgerc (size_t M, size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed_array Y, size_t incY,
-                               gsl_complex_packed_array A, int lda)
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed_array Y, size_t incY,
+                         gsl_complex_packed_array A, int lda)
 {
+#define BASE_TYPE double
+#include "source_gerc.h"
+#undef BASE_TYPE
 }
 
 /* HER */
 
 void gsl_blas_raw_cher (CBLAS_UPLO Uplo,
-                              size_t N,
-                              float alpha,
-                              const gsl_complex_packed_array_float X, size_t incX,
-                              gsl_complex_packed_array_float A, int lda)
+                        size_t N,
+                        float alpha,
+                        const gsl_complex_packed_array_float X, size_t incX,
+                        gsl_complex_packed_array_float A, int lda)
 {
+#define BASE_TYPE float
+#include "source_her.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zher (CBLAS_UPLO Uplo,
-                              size_t N,
-                              double alpha,
-                              const gsl_complex_packed_array X, size_t incX,
-                              gsl_complex_packed_array A, int lda)
+                        size_t N,
+                        double alpha,
+                        const gsl_complex_packed_array X, size_t incX,
+                        gsl_complex_packed_array A, int lda)
 {
+#define BASE_TYPE double
+#include "source_her.h"
+#undef BASE_TYPE
 }
 
 
 /* HPR */
 
 void gsl_blas_raw_chpr (CBLAS_UPLO Uplo,
-                              size_t N,
-                              float alpha,
-                              const gsl_complex_packed_array_float X, size_t incX,
-                              gsl_complex_packed_array_float A)
+                        size_t N,
+                        float alpha,
+                        const gsl_complex_packed_array_float X, size_t incX,
+                        gsl_complex_packed_array_float Ap)
 {
+#define BASE_TYPE float
+#include "source_hpr.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zhpr (CBLAS_UPLO Uplo,
-                              size_t N,
-                              double alpha,
-                              const gsl_complex_packed_array X, size_t incX,
-                              gsl_complex_packed_array A)
+                        size_t N,
+                        double alpha,
+                        const gsl_complex_packed_array X, size_t incX,
+                        gsl_complex_packed_array Ap)
 {
+#define BASE_TYPE double
+#include "source_hpr.h"
+#undef BASE_TYPE
 }
 
 
 /* HER2 */
 
 void gsl_blas_raw_cher2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_array_float Y, size_t incY,
-                               gsl_complex_packed_array_float A, int lda)
+                         size_t N,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_array_float Y, size_t incY,
+                         gsl_complex_packed_array_float A, int lda)
 {
+#define BASE_TYPE float
+#include "source_her2.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zher2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed_array Y, size_t incY,
-                               gsl_complex_packed_array A, int lda)
+                         size_t N,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed_array Y, size_t incY,
+                         gsl_complex_packed_array A, int lda)
 {
+#define BASE_TYPE double
+#include "source_her2.h"
+#undef BASE_TYPE
 }
 
 
 /* HPR2 */
 
 void gsl_blas_raw_chpr2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed_float alpha,
-                               const gsl_complex_packed_array_float X, size_t incX,
-                               const gsl_complex_packed_array_float Y, size_t incY,
-                               gsl_complex_packed_array_float Ap)
+                         size_t N,
+                         const gsl_complex_packed_float alpha,
+                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_complex_packed_array_float Y, size_t incY,
+                         gsl_complex_packed_array_float Ap)
 {
+#define BASE_TYPE float
+#include "source_hpr2.h"
+#undef BASE_TYPE
 }
 
 void gsl_blas_raw_zhpr2 (CBLAS_UPLO Uplo,
-                               size_t N,
-                               const gsl_complex_packed alpha,
-                               const gsl_complex_packed_array X, size_t incX,
-                               const gsl_complex_packed_array Y, size_t incY,
-                               gsl_complex_packed_array Ap)
+                         size_t N,
+                         const gsl_complex_packed alpha,
+                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_complex_packed_array Y, size_t incY,
+                         gsl_complex_packed_array Ap)
 {
+#define BASE_TYPE double
+#include "source_hpr2.h"
+#undef BASE_TYPE
 }
 
 
