@@ -22,6 +22,9 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+printf("%g\n", pow(0., 0.));
+exit(0);
+
 /*
 printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);
 exit(0);
