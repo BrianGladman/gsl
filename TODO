@@ -4,17 +4,19 @@ Main Todo Items
 Consult the TODO files in each directory first for specific
 requirements.
 
+* Make a web page at www.gnu.org
+
+* Arrange for RPMs to be uploaded to Redhat's contrib area
+
 * Document dht
 
 * Switch to library interface versioning for libtool (eventually),
 provide better GSL_VERSION_MAJOR, GSL_VERSION_MINOR macros.
 
-* use  GSL_NAN, GSL_POSINF, GSL_NEGINF macros 
-
 * add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
 errata.
 
-* make use of mode variables consistent in specfunc -- some seem to be
+* make mode variables consistent in specfunc -- some seem to be
 unnecessary from performance point of view since the speed difference
 is negligible.
 
