@@ -262,8 +262,9 @@ by the GSL Team.
 @end ifinfo
 
 @ifinfo
-This file documents the @value{GSL}, a collection of numerical
-routines for scientific computing.
+This file documents the @value{GSL}, a collection of numerical routines
+for scientific computing.  The documentation corresponds to version
+@value{VERSION}.
 
 @comment As of @value{UPDATED} the library is in beta-test release only and is
 @comment not recommended for general use.
