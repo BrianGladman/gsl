@@ -732,8 +732,9 @@ gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
     gsl_sf_result result_aps;
     const double arg = -2.0*x*sqrt(x)/3.0;
     const int stat_a = gsl_sf_airy_Ai_deriv_scaled_impl(x, mode, &result_aps);
-    const int stat_e = gsl_sf_exp_mult_impl(arg, result_aps.val, result);
-    result->err = fabs(arg) * fabs(result->val * result_aps.err/result_aps.val);
+    const int stat_e = gsl_sf_exp_mult_err_impl(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
+                                                result_aps.val, result_aps.err,
+						result);
     return GSL_ERROR_SELECT_2(stat_e, stat_a);
   }
   else {
@@ -855,8 +856,9 @@ gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
     gsl_sf_result result_bps;
     const double arg = 2.0*(x*sqrt(x)/3.0);
     int stat_b = gsl_sf_airy_Bi_deriv_scaled_impl(x, mode, &result_bps);
-    int stat_e = gsl_sf_exp_mult_impl(arg, result_bps.val, result);
-    result->err = fabs(arg) * fabs(result->val * result_bps.err/result_bps.val);
+    int stat_e = gsl_sf_exp_mult_err_impl(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
+                                          result_bps.val, result_bps.err,
+				          result);
     return GSL_ERROR_SELECT_2(stat_e, stat_b);
   }
   else {

@@ -4,14 +4,22 @@
 #ifndef GSL_SF_ERF_H_
 #define GSL_SF_ERF_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Complementary Error Function
  * erfc(x) := 2/Sqrt[Pi] Integrate[Exp[-t^2], {t,x,Infinity}]
  *
  * exceptions: none
  */
-double gsl_sf_erfc(double x);
-double gsl_sf_log_erfc(double x);
+int gsl_sf_erfc_impl(double x, gsl_sf_result * result);
+int gsl_sf_erfc_e(double x, gsl_sf_result * result);
+
+/* Log Complementary Error Function
+ *
+ * exceptions: none
+ */
+int gsl_sf_log_erfc_impl(double x, gsl_sf_result * result);
 
 
 /* Error Function
@@ -19,7 +27,8 @@ double gsl_sf_log_erfc(double x);
  *
  * exceptions: none
  */
-double gsl_sf_erf(double x);
+int gsl_sf_erf_impl(double x, gsl_sf_result * result);
+int gsl_sf_erf_e(double x, gsl_sf_result * result);
 
 
 /* Probability functions:
@@ -28,15 +37,10 @@ double gsl_sf_erf(double x);
  *
  * exceptions: none
  */
-double gsl_sf_erf_Z(double x);
-double gsl_sf_erf_Q(double x);
-
-
-/* Asymptotic expansion of erfc(x) for x -> +infinity.
- * Abramowitz+Stegun 7.2.14
- */
-double gsl_sf_erfc_asymptotic(double x);
-double gsl_sf_log_erfc_asymptotic(double x);
+int gsl_sf_erf_Z_impl(double x, gsl_sf_result * result);
+int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result);
+int gsl_sf_erf_Z_e(double x, gsl_sf_result * result);
+int gsl_sf_erf_Q_e(double x, gsl_sf_result * result);
 
 
 #endif /* !GSL_SF_ERF_H_ */

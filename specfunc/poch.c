@@ -78,7 +78,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
     const int	 incr = ( (bp < 10.0) ? 11.0-bp : 0 );
     const double b    = bp + incr;
     double dpoch1;
-    double dexprl;
+    gsl_sf_result dexprl;
     int stat_dexprl;
     int i;
 
@@ -126,9 +126,9 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
       result->err = 0.0;
       return stat_dexprl;
     }
-    dexprl = dexprl/q;
+    dexprl.val = dexprl.val/q;
     poly1 *= (x - 1.0);
-    dpoch1 = dexprl * (alnvar + q * poly1) + poly1;
+    dpoch1 = dexprl.val * (alnvar + q * poly1) + poly1;
 
     for(i=incr-1; i >= 0; i--) {
       /*

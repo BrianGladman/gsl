@@ -590,7 +590,9 @@ int gsl_sf_psi_n_impl(const int n, const double x, gsl_sf_result * result)
     gsl_sf_result hzeta;
     int stat_hz = gsl_sf_hzeta_impl(n+1.0, x, &hzeta);
     int stat_nf = gsl_sf_lnfact_impl((unsigned int) n, &ln_nf);
-    int stat_e  = gsl_sf_exp_mult_impl(ln_nf.val, hzeta.val, result);
+    int stat_e  = gsl_sf_exp_mult_err_impl(ln_nf.val, ln_nf.err,
+                                           hzeta.val, hzeta.err,
+					   result);
     if(GSL_IS_EVEN(n)) result->val = -result->val;
     return GSL_ERROR_SELECT_3(stat_e, stat_nf, stat_hz);
   }

@@ -119,7 +119,10 @@ gsl_sf_bessel_In_scaled_impl(int n, const double x, gsl_sf_result * result)
 int
 gsl_sf_bessel_In_scaled_array_impl(const int nmin, const int nmax, const double x, double * result_array)
 {
-  if(nmax < nmin || nmin < 0) {
+  if(result_array == 0) {
+    return GSL_EFAULT;
+  }
+  else if(nmax < nmin || nmin < 0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
     return GSL_EDOM;
@@ -200,7 +203,10 @@ gsl_sf_bessel_In_array_impl(const int nmin, const int nmax, const double x, doub
 {
   double ax = fabs(x);
 
-  if(ax > GSL_LOG_DBL_MAX - 1.0) {
+  if(result_array == 0) {
+    return GSL_EFAULT;
+  }
+  else if(ax > GSL_LOG_DBL_MAX - 1.0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0; /* FIXME: should be Inf */
     return GSL_EOVRFLW;

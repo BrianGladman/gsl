@@ -4,6 +4,8 @@
 #ifndef GSL_SF_HYPERG_H_
 #define GSL_SF_HYPERG_H_
 
+#include <gsl_sf_result.h>
+
 
 /* Hypergeometric function related to Bessel functions
  * 0F1[c,x] =
@@ -62,9 +64,8 @@ double  gsl_sf_hyperg_U(double a, double b, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_impl(double a, double b, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1(double a, double b, double c, double x);
+int gsl_sf_hyperg_2F1_impl(double a, double b, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_e(double a, double b, double c, double x, gsl_sf_result * result);
 
 
 /* Gauss hypergeometric function
@@ -73,9 +74,8 @@ double  gsl_sf_hyperg_2F1(double a, double b, double c, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_conj_impl(double aR, double aI, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
+int gsl_sf_hyperg_2F1_conj_impl(double aR, double aI, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_conj_e(double aR, double aI, double c, double x, gsl_sf_result * result);
 
 
 /* Renormalized Gauss hypergeometric function
@@ -84,9 +84,8 @@ double  gsl_sf_hyperg_2F1_conj(double aR, double aI, double c, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_renorm_impl(double a, double b, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1_renorm(double a, double b, double c, double x);
+int gsl_sf_hyperg_2F1_renorm_impl(double a, double b, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_renorm_e(double a, double b, double c, double x, gsl_sf_result * result);
 
 
 /* Renormalized Gauss hypergeometric function
@@ -95,9 +94,8 @@ double  gsl_sf_hyperg_2F1_renorm(double a, double b, double c, double x);
  *
  * exceptions:
  */
-int     gsl_sf_hyperg_2F1_conj_renorm_impl(double aR, double aI, double c, double x, double * result);
-int     gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, double * result);
-double  gsl_sf_hyperg_2F1_conj_renorm(double aR, double aI, double c, double x);
+int gsl_sf_hyperg_2F1_conj_renorm_impl(double aR, double aI, double c, double x, gsl_sf_result * result);
+int gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x, gsl_sf_result * result);
 
 
 /* Mysterious hypergeometric function. The series representation

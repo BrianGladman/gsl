@@ -92,7 +92,7 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
     Ip_mu = mu/x * I_mu + I_mup1;
     bessel_I_recur(nu, x, M-N, I_mu, Ip_mu, &I_nu, &Ip_nu);
     result->val = I_nu;
-    result->err = I_nu * (r_I_mu.err/r_I_mu.val + r_I_mup1.err/r_I_mup1.val);
+    result->err = I_nu * (GSL_DBL_EPSILON + r_I_mu.err/r_I_mu.val + r_I_mup1.err/r_I_mup1.val);
     return GSL_SUCCESS;
   }
 }
@@ -103,8 +103,9 @@ gsl_sf_bessel_Inu_impl(double nu, double x, gsl_sf_result * result)
 {
   gsl_sf_result b;
   int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &b);
-  int stat_e = gsl_sf_exp_mult_impl(x, b.val, result);
-  result->err += fabs(b.err/b.val * result->val);
+  int stat_e = gsl_sf_exp_mult_err_impl(x, fabs(x*GSL_DBL_EPSILON),
+                                        b.val, b.err,
+					result);
   return GSL_ERROR_SELECT_2(stat_e, stat_I);
 }
 

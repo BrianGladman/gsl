@@ -49,7 +49,10 @@ gsl_sf_atanint_impl(const double x, gsl_sf_result * result)
   const double ax  = fabs(x);
   const double sgn = GSL_SIGN(x);
 
-  if(ax == 0.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(ax == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;

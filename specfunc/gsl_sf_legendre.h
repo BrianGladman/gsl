@@ -205,9 +205,8 @@ double  gsl_sf_conicalP_cyl_reg(int m, double lambda, double x);
  * eta >= 0.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_H3d_0_impl(double lambda, double eta, double * result);
-int     gsl_sf_legendre_H3d_0_e(double lambda, double eta, double * result);
-double  gsl_sf_legendre_H3d_0(double lambda, double eta);
+int     gsl_sf_legendre_H3d_0_impl(double lambda, double eta, gsl_sf_result * result);
+int     gsl_sf_legendre_H3d_0_e(double lambda, double eta, gsl_sf_result * result);
 
 
 /* First radial eigenfunction of the Laplacian on the
@@ -223,9 +222,8 @@ double  gsl_sf_legendre_H3d_0(double lambda, double eta);
  * eta >= 0.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_H3d_1_impl(double lambda, double eta, double * result);
-int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, double * result);
-double  gsl_sf_legendre_H3d_1(double lambda, double eta);
+int     gsl_sf_legendre_H3d_1_impl(double lambda, double eta, gsl_sf_result * result);
+int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, gsl_sf_result * result);
 
 
 /* l'th radial eigenfunction of the Laplacian on the

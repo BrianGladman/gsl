@@ -17,14 +17,6 @@ int gsl_sf_exp_impl(double x, gsl_sf_result * result);
 int gsl_sf_exp_e(double x, gsl_sf_result * result);
 
 
-/* Exponentiate and apply a given sign:  Exp(x) * Sgn(sgn)
- *
- * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
- */
-int gsl_sf_exp_sgn_impl(double x, double sgn, gsl_sf_result * result);
-int gsl_sf_exp_sgn_e(double x, double sgn, gsl_sf_result * result);
-
-
 /* Exponentiate and multiply by a given factor:  y * Exp(x)
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
@@ -71,7 +63,16 @@ int gsl_sf_exprel_n_e(int n, double x, gsl_sf_result * result);
 /* Exponentiate a quantity with an associated error.
  */
 int gsl_sf_exp_err_impl(double x, double dx, gsl_sf_result * result);
+int gsl_sf_exp_err_e(double x, double dx, gsl_sf_result * result);
 
+
+/* Exponentiate and multiply by a given factor:  y * Exp(x),
+ * for quantities with associated errors.
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int gsl_sf_exp_mult_err_impl(double x, double dx, double y, double dy, gsl_sf_result * result);
+int gsl_sf_exp_mult_err_e(double x, double dx, double y, double dy, gsl_sf_result * result);
 
 
 #ifdef HAVE_INLINE

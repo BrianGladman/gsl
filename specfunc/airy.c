@@ -795,7 +795,10 @@ int gsl_sf_airy_Bi_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
 int
 gsl_sf_airy_Bi_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
-  if(x < -1.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x < -1.0) {
     gsl_sf_result mod;
     gsl_sf_result theta;
     int status_mp = airy_mod_phase(x, mode, &mod, &theta);

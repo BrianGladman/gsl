@@ -81,8 +81,7 @@ gsl_sf_bessel_Knu_impl(const double nu, const double x, gsl_sf_result * result)
 {
   gsl_sf_result b;
   int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
-  int stat_e = gsl_sf_exp_mult_impl(-x, b.val, result);
-  result->err += fabs(result->val * b.err/b.val);
+  int stat_e = gsl_sf_exp_mult_err_impl(-x, 0.0, b.val, b.err, result);
   return GSL_ERROR_SELECT_2(stat_e, stat_K);
 }
 

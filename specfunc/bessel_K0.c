@@ -175,8 +175,9 @@ int gsl_sf_bessel_K0_impl(const double x, gsl_sf_result * result)
   else {
     gsl_sf_result K0_scaled;
     int stat_K0 = gsl_sf_bessel_K0_scaled_impl(x, &K0_scaled);
-    int stat_e  = gsl_sf_exp_mult_impl(-x, K0_scaled.val, result);
-    result->err = fabs(result->val) * (GSL_DBL_EPSILON*fabs(x) + K0_scaled.err/K0_scaled.val);
+    int stat_e  = gsl_sf_exp_mult_err_impl(-x, 0.0,
+                                           K0_scaled.val, K0_scaled.err,
+					   result);
     return GSL_ERROR_SELECT_2(stat_e, stat_K0);
   }
 }
