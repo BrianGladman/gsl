@@ -3,15 +3,15 @@
 @section Special Function Usage
 
 The special functions are available in two calling conventions, a
-@dfn{natural form} which returns a numerical value that can be used in
-mathematical expressions, and an @dfn{error-handling form} which returns
-an error code, the function value and an estimate of the numerical
-error.  The two types of function provide alternative ways of accessing
-the same underlying code.
+@dfn{natural form} which returns the numerical value of the function and
+an @dfn{error-handling form} which returns an error code.  The two types
+of function provide alternative ways of accessing the same underlying
+code.
 
-The @dfn{natural form} simply returns the value of the function.  For
-example, the following function call will compute the value of the
-Bessel function @math{J_0(x)},
+The @dfn{natural form} returns only the value of the function and can be
+used directly in mathematical expressions..  For example, the following
+function call will compute the value of the Bessel function
+@math{J_0(x)},
 
 @example
 double y = gsl_sf_bessel_J0 (x);
@@ -36,9 +36,9 @@ return @code{GSL_SUCCESS}.
 @cindex gsl_sf_result
 @cindex gsl_sf_result_e10
 
-The error handling form of the special functions calculate an error
-estimate along with the value of the result.  Therefore, structures are
-provided for amalgating a value and error estimate.
+The error handling form of the special functions always calculate an
+error estimate along with the value of the result.  Therefore,
+structures are provided for amalgating a value and error estimate.
 
 The @code{gsl_sf_result} struct contains value and error fields.
 
@@ -50,14 +50,16 @@ typedef struct
 @} gsl_sf_result;
 @end example
 @noindent
-The field @code{val} contains the value and the field @var{err} contains
+The field @var{val} contains the value and the field @var{err} contains
 an estimate of the absolute error in the value.
 
 In some cases, an overflow or underflow can be detected and handled by a
 function.  In this case, it may be possible to return a scaling exponent
-as well as an error/value pair.  The @code{gsl_sf_result} struct
-contains value and error fields as well as an exponent field such that
-the actual result is obtained as @code{result * 10^(e10)}.
+as well as an error/value pair in order to save the result from
+exceeding the dynamic range of the built-in types.  The
+@code{gsl_sf_result_e10} struct contains value and error fields as well
+as an exponent field such that the actual result is obtained as
+@code{result * 10^(e10)}.
 
 @example
 typedef struct

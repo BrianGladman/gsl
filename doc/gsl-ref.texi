@@ -66,6 +66,16 @@
 \gdef\arcsech{\hbox{\rm arcsech}}
 \gdef\arccsch{\hbox{\rm arccsch}}
 \gdef\arccoth{\hbox{\rm arccoth}}
+%
+\gdef\Re{\hbox{\rm Re}}
+\gdef\Im{\hbox{\rm Im}}
+\gdef\Sin{\hbox{\rm Sin}}
+\gdef\Cos{\hbox{\rm Cos}}
+\gdef\Log{\hbox{\rm Log}}
+%
+\gdef\erf{\hbox{\rm erf}}
+\gdef\erfc{\hbox{\rm erfc}}
+\gdef\sinc{\hbox{\rm sinc}}
 @end tex
 
 @include version-ref.texi

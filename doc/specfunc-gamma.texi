@@ -46,7 +46,7 @@ is computed using the real Lanczos method.
 This routine computes the sign of the gamma function and the logarithm
 its magnitude, subject to @math{x} not being a negative integer.  Uses
 real Lanczos method.  The value of the gamma function can be
-reconstructed using the relation @math{\Gamma(x) = sgn * \exp(result_lg)}.
+reconstructed using the relation @math{\Gamma(x) = sgn * \exp(resultlg)}.
 @comment exceptions: GSL_EDOM, GSL_EROUND
 @end deftypefun
 
@@ -210,7 +210,7 @@ for @math{a > 0}, @c{$x \ge 0$}
 @deftypefun double gsl_sf_beta (double @var{a}, double @var{b})
 @deftypefunx int gsl_sf_beta_e (double @var{a}, double @var{b}, gsl_sf_result * @var{result})
 These routines compute the Beta Function, @math{B(a,b) =
-\Gamma(a)\Gamma(b)/\gamma(a+b)} for @math{a > 0}, @math{b > 0}.
+\Gamma(a)\Gamma(b)/\Gamma(a+b)} for @math{a > 0}, @math{b > 0}.
 @comment exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 

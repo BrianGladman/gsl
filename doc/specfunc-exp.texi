@@ -51,7 +51,7 @@ that is accurate for small @math{x}.
 @deftypefunx int gsl_sf_exprel_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the quantity @math{(\exp(x)-1)/x} using an
 algorithm that is accurate for small @math{x}.  For small @math{x} the
-algorithm is based on the expansion @math{(exp(x)-1)/x = 1 + x/2 +
+algorithm is based on the expansion @math{(\exp(x)-1)/x = 1 + x/2 +
 x^2/(2*3) + x^3/(2*3*4) + \dots}.
 @comment Exceptional Return Values:  GSL_EOVRFLW
 @end deftypefun
@@ -60,7 +60,7 @@ x^2/(2*3) + x^3/(2*3*4) + \dots}.
 @deftypefunx int gsl_sf_exprel_2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the quantity @math{2(\exp(x)-1-x)/x^2} using an
 algorithm that is accurate for small @math{x}.  For small @math{x} the
-algorithm is based on the expansion @math{2(exp(x)-1)/x^ = 
+algorithm is based on the expansion @math{2(\exp(x)-1)/x^ = 
 1 + x/3 + x^2/(3*4) + x^3/(3*4*5) + \dots}.
 @comment Exceptional Return Values:  GSL_EOVRFLW
 @end deftypefun
@@ -75,7 +75,8 @@ These routines compute the @math{N}-relative exponential, which is the
 \beforedisplay
 $$
 \eqalign{
-exprel_N(x) &= N!/x^N (\exp(x) - \sum_{k=0}^{N-1} x^k/k!)\cr
+\hbox{exprel}_N(x)
+            &= N!/x^N (\exp(x) - \sum_{k=0}^{N-1} x^k/k!)\cr
             &= 1 + x/(N+1) + x^2/((N+1)(N+2)) + \dots\cr
             &= {}_1F_1(1,1+N,x)\cr
 }

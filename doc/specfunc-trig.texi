@@ -29,13 +29,13 @@ These routines compute the hypotenuse function @c{$\sqrt{x^2 + y^2}$}
 @end deftypefun
 
 @deftypefun int gsl_sf_complex_sin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{szr}, gsl_sf_result * @var{szi})
-This function computes the complex sine, @math{Sin(z_r + i z_i)} storing
+This function computes the complex sine, @math{\sin(z_r + i z_i)} storing
 the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
 @deftypefun int gsl_sf_complex_cos_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{czr}, gsl_sf_result * @var{czi})
-This function computes the complex cosine, @math{Cos(z_r + i z_i)} storing
+This function computes the complex cosine, @math{\cos(z_r + i z_i)} storing
 the real and imaginary parts in @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
@@ -43,14 +43,14 @@ the real and imaginary parts in @var{szr}, @var{szi}.
 
 @deftypefun int gsl_sf_complex_logsin_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{lszr}, gsl_sf_result * @var{lszi})
 This function computes the logarithm of the complex sine,
-@math{Log(Sin(z_r + i z_i))} storing the real and imaginary parts in
+@math{\log(\sin(z_r + i z_i))} storing the real and imaginary parts in
 @var{szr}, @var{szi}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 
 @deftypefun double gsl_sf_sinc (double @var{x})
 @deftypefunx int gsl_sf_sinc_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute @math{sinc(x) = \sin(\pi x) / (\pi x)} for any
+These routines compute @math{\sinc(x) = \sin(\pi x) / (\pi x)} for any
 value of @var{x}.
 @comment Exceptional Return Values: none
 @end deftypefun
@@ -74,7 +74,7 @@ These routines compute @math{\log(\cosh(x))} for any @var{x}.
 
 @deftypefun int gsl_sf_polar_to_rect (double @var{r}, double @var{theta}, gsl_sf_result * @var{x}, gsl_sf_result * @var{y}); 
 This function converts the polar coordinates (@var{r},@var{theta}) to
-rectlinear coordinates (@var{x},@var{y}), @math{x = (r\cos(\theta)},
+rectlinear coordinates (@var{x},@var{y}), @math{x = r\cos(\theta)},
 @math{y = r\sin(\theta)}.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
@@ -82,7 +82,7 @@ rectlinear coordinates (@var{x},@var{y}), @math{x = (r\cos(\theta)},
 @deftypefun int gsl_sf_rect_to_polar (double @var{x}, double @var{y}, gsl_sf_result * @var{r}, gsl_sf_result * @var{theta})
 This function converts the rectilinear coordinates (@var{x},@var{y}) to
 polar coordinates (@var{r},@var{theta}), such that @math{x =
-(r\cos(\theta)}, @math{y = r\sin(\theta)}.  The argument @var{theta}
+r\cos(\theta)}, @math{y = r\sin(\theta)}.  The argument @var{theta}
 lies in the range @math{[-\pi, \pi]}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun

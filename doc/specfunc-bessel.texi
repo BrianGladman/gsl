@@ -317,7 +317,10 @@ inclusive  for @c{$lmax \geq 0$}
 
 @subsection Regular Modified Spherical Bessel Functions
 
-@math{ i_l(x) = \sqrt@{\pi/(2x)@} I_@{l+1/2@}(x) }
+The regular modified spherical bessel functions are related to the
+modified bessel functions of fractional order,
+@c{$i_l(x) = \sqrt{\pi/(2x)} I_{l+1/2}(x)$}
+@math{i_l(x) = \sqrt@{\pi/(2x)@} I_@{l+1/2@}(x)}
 
 @deftypefun double gsl_sf_bessel_i0_scaled (double @var{x})
 @deftypefunx int gsl_sf_bessel_i0_scaled_e (double @var{x}, gsl_sf_result * @var{result})
@@ -362,7 +365,10 @@ the array @var{result_array}.
 
 @subsection Irregular Modified Spherical Bessel Functions
 
-@math{ k_l(x) = \sqrt@{\pi/(2x)]@} K_@{l+1/2@}(x) }
+The irregular modified spherical bessel functions are related to the
+irregular modified bessel functions of fractional order,
+@c{$k_l(x) = \sqrt{\pi/(2x)} K_{l+1/2}(x)$}
+@math{k_l(x) = \sqrt@{\pi/(2x)@} K_@{l+1/2@}(x)}.
 
 @deftypefun double gsl_sf_bessel_k0_scaled (double @var{x})
 @deftypefunx int gsl_sf_bessel_k0_scaled_e (double @var{x}, gsl_sf_result * @var{result})

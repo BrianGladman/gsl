@@ -208,11 +208,13 @@ fixed.
 @deftypefunx int gsl_sf_legendre_H3d_0_e (double @var{lambda}, double @var{eta}, gsl_sf_result * @var{result})
 These routines compute the zeroth radial eigenfunction of the Laplacian on the
 3-dimensional hyperbolic space,
-@math{legendre_H3d_0(\lambda,\eta) := \sin(\lambda\eta)/(\lambda\sinh(\eta))}
+@c{$L^{H3d}_0(\lambda,\eta) := \sin(\lambda\eta)/(\lambda\sinh(\eta))$}
+@math{L^@{H3d@}_0(\lambda,\eta) := \sin(\lambda\eta)/(\lambda\sinh(\eta))}
 for @c{$\eta \ge 0$}
 @math{\eta >= 0}.
 In the flat limit this takes the form
-@math{legendre_H3d_0(\lambda,\eta) = j_0(\lambda\eta)}
+@c{$L^{H3d}_0(\lambda,\eta) = j_0(\lambda\eta)$}
+@math{L^@{H3d@}_0(\lambda,\eta) = j_0(\lambda\eta)}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
@@ -220,12 +222,13 @@ In the flat limit this takes the form
 @deftypefunx int gsl_sf_legendre_H3d_1_e (double @var{lambda}, double @var{eta}, gsl_sf_result * @var{result})
 These routines compute the first radial eigenfunction of the Laplacian on
 the 3-dimensional hyperbolic space,
-@c{$legendre_H3d_1(\lambda,\eta) := 1/\sqrt{\lambda^2 + 1} sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))$}
-@math{legendre_H3d_1(\lambda,\eta) := 1/\sqrt@{\lambda^2 + 1@} sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))}
+@c{$L^{H3d}_1(\lambda,\eta) := 1/\sqrt{\lambda^2 + 1} \sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))$}
+@math{L^@{H3d@}_1(\lambda,\eta) := 1/\sqrt@{\lambda^2 + 1@} \sin(\lambda \eta)/(\lambda \sinh(\eta)) (\coth(\eta) - \lambda \cot(\lambda\eta))}
 for @c{$\eta \ge 0$}
 @math{\eta >= 0}.
-In the flat limit this takes the form @math{legendre_H3d_1(\lambda,\eta)
-= j_1(\lambda\eta)}.
+In the flat limit this takes the form 
+@c{$L^{H3d}_1(\lambda,\eta) = j_1(\lambda\eta)$}
+@math{L^@{H3d@}_1(\lambda,\eta) = j_1(\lambda\eta)}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
@@ -235,13 +238,16 @@ These routines compute the @var{l}'th radial eigenfunction of the
 Laplacian on the 3-dimensional hyperbolic space @c{$\eta \ge 0$}
 @math{\eta >= 0}, @c{$l \ge 0$}
 @math{l >= 0}. In the flat limit this takes the form
-@math{legendre_H3d_l(l,\lambda,\eta) = j_l(\lambda\eta)}.
+@c{$L^{H3d}_l(\lambda,\eta) = j_l(\lambda\eta)$}
+@math{L^@{H3d@}_l(\lambda,\eta) = j_l(\lambda\eta)}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_H3d_array (int @var{lmax}, double @var{lambda}, double @var{eta}, double @var{result_array}[])
 This function computes an array of radial eigenfunctions
-@math{H3d(l)(\lambda, \eta)} for @c{$0 \le l \le lmax$}
+@c{$L^{H3d}_l( \lambda, \eta)$} 
+@math{L^@{H3d@}_l(\lambda, \eta)} 
+for @c{$0 \le l \le lmax$}
 @math{0 <= l <= lmax}.
 @comment Exceptional Return Values:
 @end deftypefun

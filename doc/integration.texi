@@ -14,6 +14,8 @@ QUADPACK, a numerical integration package written by Piessens,
 Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for QUADPACK is
 available on Netlib.
 
+These functions are declared in the header file @file{gsl_integration.h}.
+
 Each algorithm computes an approximation to a definite integral of the
 form,
 

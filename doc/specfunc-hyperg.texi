@@ -80,23 +80,26 @@ exceptions:
 @deftypefun double gsl_sf_hyperg_2F1_renorm (double @var{a}, double @var{b}, double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F1_renorm_e (double @var{a}, double @var{b}, double @var{c}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the renormalized Gauss hypergeometric function
-@c{${}_2F_1[a,b,c,x] / \Gamma[c]$}
-@math{2F1[a,b,c,x] / \Gamma[c]} for @math{|x| < 1}.
+@c{${}_2F_1[a,b,c,x] / \Gamma(c)$}
+@math{2F1[a,b,c,x] / \Gamma(c)} for @math{|x| < 1}.
 @comment exceptions:
 @end deftypefun
 
 @deftypefun double gsl_sf_hyperg_2F1_conj_renorm (double @var{aR}, double @var{aI}, double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F1_conj_renorm_e (double @var{aR}, double @var{aI}, double @var{c}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the renormalized Gauss hypergeometric function
-@c{${}_2F_1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma[c]$}
-@math{2F1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma[c]} for @math{|x| < 1}.
+@c{${}_2F_1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma(c)$}
+@math{2F1[a_R + i a_I, a_R - i a_I, c, x] / \Gamma(c)} for @math{|x| < 1}.
 @comment exceptions:
 @end deftypefun
 
 @deftypefun double gsl_sf_hyperg_2F0 (double @var{a}, double @var{b}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F0_e (double @var{a}, double @var{b}, double @var{x}, gsl_sf_result * @var{result})
-FIXME: Mysterious hypergeometric function.  The series representation
-is a divergent hypergeometric series.  However, for x < 0 we
-have 2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x)
+These routines compute the hypergeometric function @c{${}_2F_0(a,b,x)$}
+@math{2F0(a,b,x)}.  The series representation
+is a divergent hypergeometric series.  However, for @math{x < 0} we
+have 
+@c{${}_2F_0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x)$}
+@math{2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x)}
 @comment exceptions: GSL_EDOM
 @end deftypefun

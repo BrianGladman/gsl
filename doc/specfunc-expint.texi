@@ -21,7 +21,7 @@ These routines compute the exponential integral @math{E_1(x) := Re
 @deftypefun double gsl_sf_expint_E2 (double @var{x})
 @deftypefunx int gsl_sf_expint_E2_e (double @var{x}, gsl_sf_result * @var{result})
 These routines compute the second-order exponential integral
-@math{E_2(x) := Re \int_1^\infty dt \exp(-xt)/t^2}.
+@math{E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2}.
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
@@ -52,7 +52,7 @@ These routines compute the integral @math{Shi(x) = \int_0^x dt \sinh(t)/t}.
 
 @deftypefun double gsl_sf_Chi (double @var{x})
 @deftypefunx int gsl_sf_Chi_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the integral @math{ Chi(x) := Re[ \gamma_E + \log(x) + \int_0^x dt (\cosh[t]-1)/t] }, where @math{\gamma_E} is the Euler constant (available as a macro @code{M_EULER}.
+These routines compute the integral @math{ Chi(x) := Re[ \gamma_E + \log(x) + \int_0^x dt (\cosh[t]-1)/t] }, where @math{\gamma_E} is the Euler constant (available as the macro @code{M_EULER}).
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun

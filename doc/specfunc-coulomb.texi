@@ -17,12 +17,13 @@ state radial wavefunction @c{$R_1 := 2Z \sqrt{Z} \exp(-Z r)$}
 @deftypefunx int gsl_sf_hydrogenicR_e (int @var{n}, int @var{l}, double @var{Z}, double @var{r}, gsl_sf_result * @var{result})
 These routines compute the @var{n}-th normalized hydrogenic bound state
 radial wavefunction 
-@c{$R_n := 2 (Z^{3/2}/n^2) \sqrt{(n-l-1)!/(n+l)!} \exp(-Z r/n) (2Z/n)^l
-L^{2l+1}_{n-l-1}(2Z/n r)$}
+@c{$R_n := 2 (Z^{3/2}/n^2) \sqrt{(n-l-1)!/(n+l)!} \exp(-Z r/n) (2Z/n)^l L^{2l+1}_{n-l-1}(2Z/n r)$}
 @math{R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Z/n)^l
 L^@{2l+1@}_@{n-l-1@}(2Z/n r)}.  
 The normalization is chosen such that the wavefunction @math{\psi} is
-given by @math{\psi(n,l,r) = R_n Y_(lm)}.
+given by 
+@c{$\psi(n,l,r) = R_n Y_{lm}$}
+@math{\psi(n,l,r) = R_n Y_@{lm@}}.
 @end deftypefun
 
 @subsection Coulomb Wave Functions

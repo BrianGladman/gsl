@@ -6,10 +6,12 @@ This chapter describes routines for computing Chebyshev approximations
 to univariate functions.  A Chebyshev approximation is a truncation of
 the series @math{f(x) = \sum c_n T_n(x)}, where the Chebyshev
 polynomials @math{T_n(x) = \cos(n \arccos x)} provide an orthogonal
-basis of polynomials on the interval @math{[-1,1]}, with the weight
+basis of polynomials on the interval @math{[-1,1]} with the weight
 function @c{$1 / \sqrt{1-x^2}$} 
 @math{1 / \sqrt@{1-x^2@}}.  The first few Chebyshev polynomials are,
 @math{T_0(x) = 1}, @math{T_1(x) = x}, @math{T_2(x) = 2 x^2 - 1}.
+
+These functions are declared in the header file @file{gsl_chebyshev.h}.
 
 @menu
 * The gsl_cheb_series struct::  
@@ -67,7 +69,8 @@ This function evaluates the Chebyshev series @var{cs} at a given point @var{x}.
 @deftypefun int gsl_cheb_eval_err (const gsl_cheb_series * @var{cs}, const double @var{x}, double * @var{result}, double * @var{abserr})
 This function computes the Chebyshev series @var{cs} at a given point
 @var{x}, estimating both the series @var{result} and its absolute error
-@var{abserr}.
+@var{abserr}.  The error estimate is made from the first neglected term
+in the series.
 @end deftypefun
 
 @deftypefun double gsl_cheb_eval_n (const gsl_cheb_series * @var{cs}, size_t @var{order}, double @var{x})
@@ -77,18 +80,24 @@ Evaluate a Chebyshev series at a given point, to (at most) the given order.
 @deftypefun int gsl_cheb_eval_n_err (const gsl_cheb_series * @var{cs}, const size_t @var{order}, const double @var{x}, double * @var{result}, double * @var{abserr})
 @end deftypefun
 
-@deftypefun double gsl_cheb_eval_mode (const gsl_cheb_series * @var{cs}, double @var{x}, gsl_mode_t @var{mode})
-@end deftypefun
+@comment @deftypefun double gsl_cheb_eval_mode (const gsl_cheb_series * @var{cs}, double @var{x}, gsl_mode_t @var{mode})
+@comment @end deftypefun
 
-@deftypefun int gsl_cheb_eval_mode_err (const gsl_cheb_series * @var{cs}, const double @var{x}, gsl_mode_t @var{mode}, double * @var{result}, double * @var{abserr})
-Evaluate a Chebyshev series at a given point, using the default
-order for double precision mode(s) and the single precision
-order for other modes.
-@end deftypefun
+@comment @deftypefun int gsl_cheb_eval_mode_err (const gsl_cheb_series * @var{cs}, const double @var{x}, gsl_mode_t @var{mode}, double * @var{result}, double * @var{abserr})
+@comment Evaluate a Chebyshev series at a given point, using the default
+@comment order for double precision mode(s) and the single precision
+@comment order for other modes.
+@comment @end deftypefun
 
 
 @node Derivatives and Integrals
 @section Derivatives and Integrals
+
+The following functions allow a Chebyshev series to be differentiated or
+integrated, producing a new Chebyshev series.  Note that the error
+estimate produced by evaluating the derivative series will be
+underestimated due to the contribution of higher order terms being
+neglected.
 
 @deftypefun int gsl_cheb_calc_deriv (gsl_cheb_series * @var{deriv}, const gsl_cheb_series * @var{cs})
 This function computes the derivative of the series @var{cs}, storing
@@ -113,7 +122,7 @@ step function, using 10-term and 40-term polynomials.  This is an
 extremely difficult approximation to make, due to the discontinuity, and
 was chosen as an example where approximation error is visible.  For
 smooth functions the Chebyshev approximation converges extremely
-rapidly and errors would not be detectable.
+rapidly and errors would not be visible.
 
 @example
 #include <stdio.h>
