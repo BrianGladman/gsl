@@ -95,4 +95,3 @@
 
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_LONGDOUBLE_PRINTF
-
