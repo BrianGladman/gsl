@@ -5,12 +5,12 @@ failed you can find out what the precise cause of failure was. You can
 also define your own error handling functions to modify the default
 behavior of the library.
 
-@c Note: In this context we use the word @dfn{error} to mean something
-@c different from a bug. An error report from the library just means that
-@c the library was not able to compute what you asked. For example, if a
-@c root finding function cannot reach the level of precision you requested
-@c the library would return an error. In the case of problems caused
-@c by real bugs, @pxref{Debugging Numerical Programs}.
+@comment Note: In this context we use the word @dfn{error} to mean something
+@comment different from a bug. An error report from the library just means that
+@comment the library was not able to compute what you asked. For example, if a
+@comment root finding function cannot reach the level of precision you requested
+@comment the library would return an error. In the case of problems caused
+@comment by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
 * Error reporting::             
@@ -100,7 +100,7 @@ if (status) @{
     exit (-1);
 @}
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The function @code{gsl_fft_complex_radix2} only accepts integer lengths
 which are a power of two. If the variable @code{length} is not a power
@@ -143,7 +143,7 @@ functions should be defined like this,
 void @var{handler} (const char * reason, const char * file, int line)
 @end example
 @end deftp
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 To request the use of your own error handler you need to call the
 function @code{gsl_set_error_handler} which is also declared in
@@ -244,7 +244,7 @@ write,
 double result;
 int status = gsl_sf_bessel_J1_e (1.23, &result);
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 where @code{gsl_sf_bessel_J1_e} is the appropriate function from the
 special functions (@code{sf}) module. The suffix @code{_e} appended to
@@ -259,7 +259,7 @@ an alternative interface which allows this,
 @example
 double result = gsl_sf_bessel_J1 (1.23)
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 However, in this case there is no way for the calling program to test
 for an error. Instead if there are any errors (such as underflow) they

@@ -19,7 +19,7 @@ This chapter describes the GSL special function library.
 * Trigonometric Functions (Complex)::
 @end menu
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Airy Functions
 @section Airy Functions
 @cindex Airy functions
@@ -65,13 +65,13 @@ a re-implementation of the Airy Chebyshev fits in the SLATEC Fortran library.
 @end deftypefun
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Bessel Functions
 @section Bessel Functions
 @cindex Bessel functions
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Chebyshev Polynomials
 @section Chebyshev Polynomials
 @cindex Chebyshev polynomials
@@ -114,56 +114,56 @@ nature of these zeroes and the behaviour of the set of polynomials at
 these special points which makes the Chebyshev polynomials
 especially useful in numerical approximation of functions.
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Coulomb Wave Functions
 @section Coulomb Wave Functions
 @cindex Coulomb wave functions
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Dilogarithm
 @section Dilogarithm
 @cindex dilogarithm
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Error Function
 @section Error Function
 @cindex error function
 @cindex erf(x)
 @cindex erfc(x)
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Fermi-Dirac Function
 @section Fermi-Dirac Function
 @cindex Fermi-Dirac function
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Gamma Function
 @section Gamma Function
 @cindex gamma function
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Laguerre Functions
 @section Laguerre Functions
 @cindex Laguerre functions
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Legendre Functions and Spherical Harmonics
 @section Legendre Functions and Spherical Harmonics
 @cindex Legendre functions
 @cindex spherical harmonics
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Logarithm (Complex)
 @section Logarithm (Complex)
 @cindex logarithm
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Power Function
 @section Power Function
 @cindex power function
@@ -181,14 +181,14 @@ a simple function to fill this gap.
 double y = gsl_sf_pow_int(3., 12)
 @end example
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Psi (DiGamma) Function
 @section Psi (DiGamma) Function
 @cindex psi function
 @cindex digamma function
 
 
-@c ---------------------------------------------------------------------------
+@comment
 @node Trigonometric Functions (Complex)
 @section Trigonometric Functions (Complex)
 @cindex trigonometric functions 

@@ -241,7 +241,7 @@ interval which does not contain a root. Once the interval is smaller
 than the requested epsilon, iteration stops and the root location is
 returned.
 
-@c eps file "roots-bisection.eps"
+@comment eps file "roots-bisection.eps"
 @iftex
 @tex
 \input epsf
@@ -326,7 +326,7 @@ a_n - a_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\; |b_n - b_@{n-1@}| \leq \varepsilon
 b_n - b_@{n-1@} = 0 \;\;\;@{\rm and@}\;\;\;|a_n - a_@{n-1@}| \leq \varepsilon
 }
 
-@c eps file "roots-false-position.eps"
+@comment eps file "roots-false-position.eps"
 @iftex
 @tex
 \input epsf
@@ -406,7 +406,7 @@ extrapolation and that Secant Method cannot fail during interpolation.
 Secant Method breaks in the same situations that Newton's Method does,
 though it is somewhat less sensitive. (@xref{Newtons Method}.)
 
-@c eps file "roots-secant-method.eps"
+@comment eps file "roots-secant-method.eps"
 @iftex
 @tex
 \input epsf
@@ -459,7 +459,7 @@ process is repeated until:
 
 This algorithm is entirely unrelated to Newt Gingrich.
 
-@c eps file "roots-newtons-method.eps"
+@comment eps file "roots-newtons-method.eps"
 @iftex
 @tex
 \input epsf

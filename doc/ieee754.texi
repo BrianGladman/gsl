@@ -4,24 +4,24 @@ This chapter describes functions for examing the representation of
 floating point numbers and controlling the floating point environment of
 your program.
 
-@c @c to turn on math exception handling use __setfpucw, see
-@c @c /usr/include/i386/fpu_control.h
-@c @c e.g.
-@c @c #include <math.h>
-@c @c #include <stdio.h>
-@c @c #include <fpu_control.h>
-@c @c double f (double x) ;
-@c @c int main ()
-@c @c {
-@c @c   double a = 0 ;
-@c @c   double y, z ;
-@c @c   __setfpucw(0x1372); 
-@c @c mention extended vs double precision on Pentium, and how to get around
-@c @c it (-ffloat-store, or selective use of volatile)
+@comment to turn on math exception handling use __setfpucw, see
+@comment /usr/include/i386/fpu_control.h
+@comment e.g.
+@comment #include <math.h>
+@comment #include <stdio.h>
+@comment #include <fpu_control.h>
+@comment double f (double x) ;
+@comment int main ()
+@comment {
+@comment   double a = 0 ;
+@comment   double y, z ;
+@comment   __setfpucw(0x1372); 
+@comment mention extended vs double precision on Pentium, and how to get around
+@comment it (-ffloat-store, or selective use of volatile)
 
-@c @c On the alpha the option -mieee is needed with gcc
-@c @c In Digital's compiler the equivalent is -ieee, -ieee-with-no-inexact 
-@c @c and -ieee-with-inexact,  or -fpe1 or -fpe2
+@comment On the alpha the option -mieee is needed with gcc
+@comment In Digital's compiler the equivalent is -ieee, -ieee-with-no-inexact 
+@comment and -ieee-with-inexact,  or -fpe1 or -fpe2
 
 @menu
 * Representation of floating point numbers::  
@@ -181,7 +181,7 @@ $$
 @end tex
 @ifinfo
 @example
-e = 1 + 1 / 2! + 1 / 3! + 1 / 4! + ... 
+e = 1 + 1/2! + 1/3! + 1/4! + ... 
   = 2.71828182846...
 @end example
 @end ifinfo

@@ -192,19 +192,19 @@ team (@pxref{Contributors to GSL}) in C, and are meant to present a
 modern Applications Programming Interface (API) for C programmers, while
 allowing wrappers to be written for very high level languages.
 
-@c Section on using the library
+@comment Section on using the library
 @node Using the library, Error handling in GSL, Preliminaries, Top
 @chapter Using the library
 @cindex usage, compiling application programs
 @include usage.texi
 
-@c Section on error handling
+@comment Section on error handling
 @node Error handling in GSL, Random Number Generation, Using the library, Top
 @chapter Error handling in GSL
 @cindex Errors
 @include err.texi
 
-@c Section on random number generation
+@comment Section on random number generation
 @node Random Number Generation, Random Number Distributions, Error handling in GSL, Top
 @chapter Random Number Generation
 @include rng.texi
@@ -213,32 +213,32 @@ allowing wrappers to be written for very high level languages.
 @chapter Random Number Distributions
 @include randist.texi
 
-@c Section on statistics
+@comment Section on statistics
 @node Statistics, FFTs, Random Number Distributions, Top
 @chapter Statistics
 @include statistics.texi
 
-@c Section on FFTs
+@comment Section on FFTs
 @node FFTs, Root finding, Statistics, Top
 @chapter Fast Fourier Transforms (FFTs)
 @include fft.texi
 
-@c Section on root finding
+@comment Section on root finding
 @node Root finding, Special Functions, FFTs, Top
 @chapter Root finding
 @include roots.texi
 
-@c Section on special functions
+@comment Section on special functions
 @node Special Functions, Series Acceleration, Root finding, Top
 @chapter Special Functions
 @include specfunc.texi
 
-@c Section on series acceleration
+@comment Section on series acceleration
 @node Series Acceleration, Simulated Annealing, Special Functions, Top
 @chapter Series Acceleration
 @include sum.texi
 
-@c Section on simulated annealing
+@comment Section on simulated annealing
 @node Simulated Annealing, Vectors and Matrices, Series Acceleration, Top
 @chapter Simulated Annealing
 @include siman.texi
@@ -356,6 +356,6 @@ Public Licenses that accompany them.
 
 @printindex tp
 
-@c -@shortcontents
+@comment -@shortcontents
 @contents
 @bye

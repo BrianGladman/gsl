@@ -6,9 +6,9 @@
 * The Future::                  
 @end menu
 
-@c ----------------------------------------------------------------------
-@c RCS: $Id$
-@c ----------------------------------------------------------------------
+@comment ----------------------------------------------------------------------
+@comment RCS: $Id$
+@comment ----------------------------------------------------------------------
 
 This chapter describes the Monte Carlo integration routines in the
 library.  At the moment the algorithms implemented are: plain

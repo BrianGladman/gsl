@@ -32,7 +32,7 @@ typedef struct
   double * data;
 @} gsl_vector ;
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The library also defines three other types of vectors, for
 single-precision floating point numbers, complex numbers of type
@@ -71,7 +71,7 @@ elements of the vector to zero.
 This function frees the memory used by a vector @var{v} previously
 allocated with @code{gsl_vector_alloc} or @code{gsl_vector_calloc}.
 @end deftypefun
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions perform the same tasks as the functions above
 for single-precision and integer vectors.
@@ -131,7 +131,7 @@ This function sets the value of the @var{i}th element of a vector
 @var{v} to @var{x}. If @var{i} lies outside the allowed range of 0 to
 @var{n-1} then the error handler is invoked.
 @end deftypefun
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions perform the same tasks for vectors of the type
 @code{gsl_vector_float} and @code{gsl_vector_int}.
@@ -191,7 +191,7 @@ length since the function uses the size of @var{v} to determine how many
 numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions read and write single-precision and integer
 vectors with the types @code{gsl_vector_float} and
@@ -249,7 +249,7 @@ int main ()
     @}
 @}
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 Here is the output from the program. The final loop attempts to read
 outside the range of the vector @code{v}, and the error is trapped by
@@ -262,7 +262,7 @@ v_2 = 3.23
 gsl: vector_source.c:12: ERROR: index out of range
 IOT trap/Abort (core dumped)
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The next program shows how to write a vector to a file.
 
@@ -287,7 +287,7 @@ int main ()
   @}
 @}
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 After running this program the file @file{test.dat} should contain the
 elements of @code{v}, written using the format specifier
@@ -311,7 +311,7 @@ typedef struct
   double * data;
 @} gsl_matrix ;
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The library also defines three other types of matrices, for
 single-precision floating point numbers, complex numbers of type
@@ -351,7 +351,7 @@ These functions free a matrix @var{m} previously allocated with
 @code{gsl_matrix_alloc} or @code{gsl_matrix_calloc}.
 @end deftypefun
 
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions perform the same tasks as the functions above
 for single-precision and integer matrices.
@@ -395,7 +395,7 @@ accessed by the function @code{gsl_matrix_get(m,i,j)} and
 @example
 m->data[i * n2 + j]
 @end example
-@c 
+@comment 
 @noindent
 where @var{n2} is the second dimension of the matrix.
 
@@ -412,7 +412,7 @@ matrix @var{m} to @var{x}. If @var{i} or @var{j} lies outside the
 allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
 @end deftypefun
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions perform the same tasks for matrices of the type
 @code{gsl_matrix_float} and @code{gsl_matrix_int}.
@@ -472,7 +472,7 @@ length since the function uses the size of @var{m} to determine how many
 numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The following functions read and write single-precision and integer
 matrices with the types @code{gsl_matrix_float} and
@@ -527,7 +527,7 @@ int main ()
       printf("m_(%d,%d) = %g\n", i, j, gsl_matrix_get (m, i, j));
 @}
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 Here is the output from the program. The final loop attempts to read
 outside the range of the matrix @code{m}, and the error is trapped by
@@ -545,7 +545,7 @@ m_(9,2) = 902.23
 gsl: matrix_source.c:13: ERROR: first index out of range
 IOT trap/Abort (core dumped)
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 The next program shows how to write a matrix to a file.
 
@@ -584,7 +584,7 @@ int main ()
 
 @}
 @end example
-@c ----------------------------------------------------------------------
+@comment
 @noindent
 After running this program the file @file{test.dat} should contain the
 elements of @code{m}, written in binary format. The matrix which is read

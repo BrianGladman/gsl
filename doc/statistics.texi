@@ -566,15 +566,15 @@ floating-point number.
 
 FIXME, do more work on the statistical tests
 
-@c -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
-@c -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@comment -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@comment -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
 
-@c The function @code{gsl_stats_ttest} computes the t-test statistic for
-@c the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and
-@c -@var{n2} respectively.
+@comment The function @code{gsl_stats_ttest} computes the t-test statistic for
+@comment the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and
+@comment -@var{n2} respectively.
 
-@c The t-test statistic measures the difference between the means of two
-@c datasets.
+@comment The t-test statistic measures the difference between the means of two
+@comment datasets.
 
 @node Example statistical programs
 @section Example statistical programs

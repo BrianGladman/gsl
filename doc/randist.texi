@@ -15,7 +15,7 @@ analytically. This usually requires several samples from the generator.
 The functions described in this section are declared in
 @file{gsl_randist.h}.
 
-@c ----------------------------------------------------------------------
+@comment 
 @menu
 * The Gaussian Distribution::   
 * The Bivariate Gaussian Distribution::  
@@ -166,7 +166,7 @@ $$
 @page
 @node The Bivariate Gaussian Distribution
 @section The Bivariate Gaussian Distribution
-@c ----------------------------------------------------------------------
+@comment
 @deftypefn Random void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho}, double * @var{x}, double * @var{y})
 @cindex Gaussian random numbers
 This function generates a pair of correlated gaussian variates, with
@@ -211,7 +211,7 @@ deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 \centerline{\input rand-bivariate-gaussian.tex}
 @end tex
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Exponential Distribution
 @section The Exponential Distribution
@@ -305,7 +305,7 @@ $$
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Laplace Distribution
 @section The Laplace Distribution
@@ -387,7 +387,7 @@ Useful integral:
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Exponential Power Distribution
 @section The Exponential Power Distribution
@@ -453,7 +453,7 @@ Cumulative distribution function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Cauchy Distribution
 @section The Cauchy Distribution
@@ -525,7 +525,7 @@ Confidence limits:
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Rayleigh Distribution
 @section The Rayleigh Distribution
@@ -567,7 +567,7 @@ formula given above.
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Rayleigh Tail Distribution
 @section The Rayleigh Tail Distribution
@@ -608,24 +608,24 @@ lower limit @var{a}, using the formula given above.
 @itemize @asis
 @item
 
-@c -- @item
-@c -- Characteristic function, @xmath{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+@comment -- @item
+@comment -- Characteristic function, @xmath{\phi(t) = \exp(-i\alpha t - \beta |t|)}
 
 @item
 Cumulative distribution function, 
 @c{$CDF(x) = \int_{-\infty}^x p(x') dx' = 1 - \exp((a^2-x^2)/(2 \sigma^2))$}
 @math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1 - \exp((a^2-x^2)/(2 \sigma^2))}
 
-@c ---@item
-@c ---Confidence limits:
+@comment ---@item
+@comment ---Confidence limits:
 
-@c ---@xmath{p(|x| < \mu) = 0.5},
-@c ---@xmath{p(|x| < 2\mu) = 0.705},
-@c ---@xmath{p(|x| < 3\mu) = 0.795}
+@comment ---@xmath{p(|x| < \mu) = 0.5},
+@comment ---@xmath{p(|x| < 2\mu) = 0.705},
+@comment ---@xmath{p(|x| < 3\mu) = 0.795}
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Symmetric Levy Distribution
 @section The Symmetric Levy Distribution
@@ -689,7 +689,7 @@ Cumulative distribution function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Gamma Distribution
 @section The Gamma Distribution
@@ -711,9 +711,9 @@ p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
 @end example
 @end ifinfo
 
-@c If @xmath{X} and @xmath{Y} are independent gamma-distributed random
-@c variables of order @xmath{a} and @xmath{b}, then @xmath{X+Y} has a gamma
-@c distribution of order @xmath{a+b}.
+@comment If @xmath{X} and @xmath{Y} are independent gamma-distributed random
+@comment variables of order @xmath{a} and @xmath{b}, then @xmath{X+Y} has a gamma
+@comment distribution of order @xmath{a+b}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gamma_pdf (double @var{x}, double @var{a}, double @var{b})
@@ -751,28 +751,28 @@ Characteristic function,
 
 @end itemize
 
-@c -@c ----------------------------------------------------------------------
-@c - @page
-@c - @node The Erlang distribution
-@c - @section The Erlang distribution
-@c The Erlang distribution is the sum of @xmath{n} exponential variates,
-@c each with mean @xmath{a}. 
+@comment -@comment
+@comment - @page
+@comment - @node The Erlang distribution
+@comment - @section The Erlang distribution
+@comment The Erlang distribution is the sum of @xmath{n} exponential variates,
+@comment each with mean @xmath{a}. 
 
-@c - @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
-@c - @cindex Erlang random numbers
-@c This function returns a random number from the Erlang distribution.
-@c - @c
-@c - @equation{
-@c p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
-@c - }
-@c - @noindent
-@c for @xmath{x \ge 0}. 
-@c - @end deftypefn
-@c - @tex
-@c \centerline{\input rand-erlang.tex}
-@c - @end tex
+@comment - @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
+@comment - @cindex Erlang random numbers
+@comment This function returns a random number from the Erlang distribution.
+@comment - @c
+@comment - @equation{
+@comment p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
+@comment - }
+@comment - @noindent
+@comment for @xmath{x \ge 0}. 
+@comment - @end deftypefn
+@comment - @tex
+@comment \centerline{\input rand-erlang.tex}
+@comment - @end tex
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Flat (Uniform) Distribution
 @section The Flat (Uniform) Distribution
@@ -838,7 +838,7 @@ where @math{h = (b - a)}.
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Lognormal Distribution
 @section The Lognormal Distribution
@@ -904,7 +904,7 @@ Cumulative distribution function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
@@ -999,7 +999,7 @@ Useful integral:
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The F-distribution
 @section The F-distribution
@@ -1090,7 +1090,7 @@ Variance =
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The t-distribution
 @section The t-distribution
@@ -1157,7 +1157,7 @@ given above.
 \centerline{\input rand-tdist.tex}
 @end tex
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Beta Distribution
 @section The Beta Distribution
@@ -1217,7 +1217,7 @@ Excess =
 @math{-6 \sqrt@{2a + 1@}/(a(2a+3))}
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Logistic Distribution
 @section The Logistic Distribution
@@ -1275,7 +1275,7 @@ Useful integral:
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Pareto Distribution
 @section The Pareto Distribution
@@ -1347,7 +1347,7 @@ Useful integral:
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Spherical Distribution (2D & 3D)
 @section The Spherical Distribution (2D & 3D)
@@ -1456,7 +1456,7 @@ Example output from the program, three 10-step random walks from the origin.
 @end tex
 
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Weibull Distribution
 @section The Weibull Distribution
@@ -1510,7 +1510,7 @@ Cumulative distribution function,
 @math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Gumbel Distribution
 @section The Gumbel Distribution
@@ -1585,11 +1585,11 @@ Cumulative distribution function,
 @math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @section Discrete distributions
 
-@c ----------------------------------------------------------------------
+@comment
 @node General Discrete Distributions
 @section General Discrete Distributions
 
@@ -1696,7 +1696,7 @@ keep this original array @var{P[k]} around.
 De-allocates the lookup table pointed to by @var{g}.
 @end deftypefn
 
-@c ----------------------------------------------------------------------
+@comment
 @node The Poisson Distribution
 @section The Poisson Distribution
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
@@ -1763,7 +1763,7 @@ Characteristic function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Bernoulli Distribution
 @section The Bernoulli Distribution
@@ -1822,7 +1822,7 @@ Characteristic function, @math{\phi(t) = FIXME}
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Binomial Distribution
 @section The Binomial Distribution
@@ -1889,7 +1889,7 @@ Characteristic function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Negative Binomial Distribution
 @section The Negative Binomial Distribution
@@ -1970,7 +1970,7 @@ Excess =
 @math{(1/n)(6+@{p^2 \over 1 - p@})}
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Geometric Distribution
 @section The Geometric Distribution
@@ -2041,7 +2041,7 @@ Characteristic function,
 
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Hypergeometric Distribution
 @section The Hypergeometric Distribution
@@ -2098,7 +2098,7 @@ where
 @math{N = n_1 + n_2}.
 @end itemize
 
-@c ----------------------------------------------------------------------
+@comment
 @page
 @node The Logarithmic Distribution
 @section The Logarithmic Distribution
@@ -2150,12 +2150,12 @@ where
 @math{a = -1/\log(1-p)}
 @end itemize
 
-@c ----------------------------------------------------------------------
-@c - @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
-@c - @code{gsl_ran_poisson_array} places an array of @var{N}
-@c poisson--distributed random numbers with mean @var{mu} into the array
-@c - @var{p}.
-@c - @end deftypefn
+@comment
+@comment - @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
+@comment - @code{gsl_ran_poisson_array} places an array of @var{N}
+@comment poisson--distributed random numbers with mean @var{mu} into the array
+@comment - @var{p}.
+@comment - @end deftypefn
 
 @page
 @node Shuffling and Sampling

@@ -52,7 +52,7 @@ pointed to by @var{bin}. The bins are floating-point numbers, so you can
 increment them by non-integer values if necessary.
 @end table
 @end deftp
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The range for @var{bin}[i] is given by @var{range}[i] to
 @var{range}[i+1]. For @math{n} bins there are @math{n+1} entries in the
@@ -389,7 +389,7 @@ The cumulative probability for the bins is stored in an array of
 @var{n} elements pointed to by @var{sum}.
 @end table
 @end deftp
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The following functions allow you to create a @code{gsl_histogram_pdf}
 struct which represents this probability distribution and generate
@@ -556,7 +556,7 @@ dimensional array of bins in a single block of memory according to the
 mapping @var{bin(i,j)} = @code{bin[i * ny + j]}.
 @end table
 @end deftp
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The range for @var{bin(i,j)} is given by @var{xrange[i]} to
 @var{xrange[i+1]} in the x-direction and @var{yrange[j]} to
@@ -833,7 +833,7 @@ The cumulative probability for the bins is stored in an array of
 @var{nx}*@var{ny} elements pointed to by @var{sum}.
 @end table
 @end deftp
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The following functions allow you to create a @code{gsl_histogram2d_pdf}
 struct which represents a two dimensional probability distribution and

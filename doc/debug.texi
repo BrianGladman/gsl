@@ -19,7 +19,7 @@ errors. You can add a breakpoint for every session by putting
 @example
 break gsl_error
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 into your @file{.gdbinit} file in the directory where your program is
 started. If the breakpoint catches an error then you can use a backtrace
@@ -63,7 +63,7 @@ Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer",
     file=0x8052b04 "c_init.c", line=108, gsl_errno=1) at error.c:14
 14        if (gsl_error_handler) 
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 The first argument of @code{gsl_error} is always a string describing the
 error. Now we can look at the backtrace to see what caused the problem,
@@ -77,7 +77,7 @@ error. Now we can look at the backtrace to see what caused the problem,
 #2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
 #3  0x80488be in ___crt_dummy__ ()
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 We can see that the error was generated in the function
 @code{gsl_fft_complex_wavetable_alloc} when it was called with an
@@ -96,7 +96,7 @@ caused the error,
 #2  0x8048a00 in main (argc=1, argv=0xbffff9bc) at test_trap.c:94
 94        status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
 @end example
-@c ----------------------------------------------------------------------
+@comment 
 @noindent
 Thus we have found the line that caused the problem.  From this point we
 could also print out the values of other variables such as

@@ -3,15 +3,16 @@
 @cindex integration, numerical (quadrature)
 @cindex QUADPACK
 
-This chapter describes functions for performing numerical integration
-(quadrature) of functions in one dimension. There are functions for both
-adaptive and non-adaptive integration of general functions, specialised
-routines for integration over infinite and semi-infinite ranges,
-singular integrals, including logarithmic singularities and computation
-of Cauchy principal values, and oscillatory integrals. The library
-reimplements the algorithms used in QUADPACK, a numerical integration
-package written by Piessens, Doncker-Kapenga, Uberhuber and
-Kahaner. Fortran code for QUADPACK is available on Netlib.
+This chapter describes routines for performing numerical integration
+(quadrature) of a function in one dimension. There are routines for
+adaptive and non-adaptive integration of general functions, with
+specialised routines for specific cases. These include integration over
+infinite and semi-infinite ranges, singular integrals, including
+logarithmic singularities, computation of Cauchy principal values and
+oscillatory integrals. The library reimplements the algorithms used in
+QUADPACK, a numerical integration package written by Piessens,
+Doncker-Kapenga, Uberhuber and Kahaner. Fortran code for QUADPACK is
+available on Netlib.
 
 Each algorithm computes an approximation to a definite integral of the
 form,
@@ -30,15 +31,15 @@ I = \int_a^b f(x) w(x) dx
 @end ifinfo
 
 @noindent
-where @math{w(x)} is a weight function.  The user provides absolute and
-relative error bounds 
+where @math{w(x)} is a weight function (for general integrands @math{w(x)=1}).
+The user provides absolute and relative error bounds 
 @c{$(\hbox{\it epsabs}, \hbox{\it epsrel})$}
 @math{(epsabs, epsrel)} which specify the following accuracy requirement,
 
 @tex
 \beforedisplay
 $$
-|\hbox{\it RESULT} - I|  \leq \max \{ \hbox{\it epsabs}, \hbox{\it epsrel} |I| \}
+|\hbox{\it RESULT} - I|  \leq \max \{ \hbox{\it epsabs}, \hbox{\it epsrel}\, |I| \}
 $$
 \afterdisplay
 @end tex
@@ -60,7 +61,7 @@ holds,
 @tex
 \beforedisplay
 $$
-|\hbox{\it RESULT} - I| \leq \hbox{\it ABSERR} \leq \max \{ \hbox{\it epsabs}, \hbox{\it epsrel} |I| \}
+|\hbox{\it RESULT} - I| \leq \hbox{\it ABSERR} \leq \max \{ \hbox{\it epsabs}, \hbox{\it epsrel}\,|I| \}
 $$
 \afterdisplay
 @end tex
@@ -72,7 +73,8 @@ $$
 
 @noindent
 The routines will fail to converge if the error bounds are too
-stringent, but will return the best approximation obtained.
+stringent, but always return the best approximation obtained up to that
+stage.
 
 The algorithms in QUADPACK use a naming convention based on the
 following letters,
@@ -674,7 +676,7 @@ This function works to an overall absolute tolerance of
 @tex
 \beforedisplay
 $$
-TOL_k = u_k abserr
+TOL_k = u_k \hbox{\it abserr}
 $$
 \afterdisplay
 @end tex
@@ -697,7 +699,7 @@ accuracy requirement for subsequent intervals is relaxed,
 @tex
 \beforedisplay
 $$
-TOL_k = u_k \max \{abserr, \max_{i<k}\{E_i\}\}
+TOL_k = u_k \max \{\hbox{\it abserr}, \max_{i<k}\{E_i\}\}
 $$
 \afterdisplay
 @end tex
