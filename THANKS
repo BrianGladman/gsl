@@ -87,7 +87,7 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 
 * Remy Bruno <remy.bruno@libertysurf.fr> for bug fix
 
-* M. Lavasani <lavasani@connect.org.uk> for a bug report and testing on HPUX11
+* M. Lavasani <lavasani@connect.org.uk> for bug reports and testing on HPUX11
 
 * Jason Beegan <jasontd@indigo.ie> for NetBSD support
 

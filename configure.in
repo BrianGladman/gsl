@@ -164,7 +164,7 @@ case "$host" in
         AC_DEFINE(HAVE_SOLARIS_IEEE_INTERFACE)
         AC_MSG_RESULT([solaris]) 
         ;;
-    *-*-hpux11) 
+    *-*-hpux11*) 
         AC_DEFINE(HAVE_HPUX11_IEEE_INTERFACE)
         AC_MSG_RESULT([hpux11]) 
         ;;
