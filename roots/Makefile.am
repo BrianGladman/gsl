@@ -8,9 +8,7 @@ noinst_HEADERS = roots.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslroots_la_SOURCES = bisection.c brent.c falsepos.c \
-			newton.c  secant.c steffenson.c \
-			convergence.c fsolver.c fdfsolver.c 
+libgslroots_la_SOURCES = bisection.c brent.c falsepos.c	newton.c  secant.c steffenson.c	convergence.c fsolver.c fdfsolver.c 
 
 check_PROGRAMS = test
 

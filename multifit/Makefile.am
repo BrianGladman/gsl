@@ -6,8 +6,7 @@ INCLUDES= -I$(top_builddir)
 
 libgslmultifit_la_SOURCES = multilinear.c work.c lmder.c fsolver.c fdfsolver.c convergence.c gradient.c covar.c
 
-noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c \
-        test_filip.c test_fn.c test_longley.c test_pontius.c test_fn.c
+noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c test_filip.c test_fn.c test_longley.c test_pontius.c test_fn.c
 
 check_PROGRAMS = test #demo
 
