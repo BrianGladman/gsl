@@ -473,7 +473,7 @@ $$
 assuming that the true root @math{r^*} is contained within the interval.
 @end deftypefun
 
-@deftypefun int gsl_root_test_delta (double @var{x1}, double @var{x0}, double @var{epsrel}, double @var{epsabs})
+@deftypefun int gsl_root_test_delta (double @var{x1}, double @var{x0}, double @var{epsabs}, double @var{epsrel})
 
 This function tests for the convergence of the sequence @dots{}, @var{x0},
 @var{x1} with absolute error @var{epsabs} and relative error

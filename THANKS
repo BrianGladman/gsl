@@ -273,3 +273,5 @@ minimisers.
 
 * Jussi Piitulainen <jpiitula@ling.helsinki.fi> documenation bug report for
 gsl_ran_hypergeometric_pdf
+
+* Bas Zoetekouw <bas@debian.org> documentation bug report
