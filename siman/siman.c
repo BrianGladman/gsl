@@ -22,6 +22,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
@@ -33,6 +34,9 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 		 gsl_siman_step_t take_step,
 		 gsl_siman_metric_t distance,
 		 gsl_siman_print_t print_position,
+		 gsl_siman_copy_t copyfunc,
+		 gsl_siman_copy_construct_t copy_constructor,
+		 gsl_siman_destroy_t destructor,
 		 size_t element_size,
 		 gsl_siman_params_t params)
 {
@@ -42,13 +46,24 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
   double T;
   int n_evals = 0, n_iter = 0, n_accepts, n_rejects, n_eless;
 
+  /* this function requires that either the dynamic functions (copy,
+     copy_constructor and destrcutor) are passed, or that an element
+     size is given */
+  assert((copyfunc != NULL && copy_constructor != NULL && destructor != NULL)
+	 || (element_size != 0));
+
   distance = 0 ; /* This parameter is not currently used */
 
-  x = (void *) malloc (element_size);
-  new_x = (void *) malloc (element_size);
+  if (copyfunc) {
+    x = copy_constructor(x0_p);
+    new_x = copy_constructor(x0_p);
+  } else {
+    x = (void *) malloc (element_size);
+    memcpy (x, x0_p, element_size);
+    new_x = (void *) malloc (element_size);
+  }
 
   T = params.t_initial;
-  memcpy (x, x0_p, element_size);
   done = 0;
 
   if (print_position) {
@@ -61,7 +76,12 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
     n_rejects = 0;
     n_eless = 0;
     for (i = 0; i < params.n_tries - 1; ++i) {
-      memcpy (new_x, x, element_size);
+      if (copyfunc) {
+	copyfunc(x, new_x);
+      } else {
+	memcpy (new_x, x, element_size);
+      }
+
       take_step (r, new_x, params.step_size);
       new_E = Ef (new_x);
       ++n_evals;		/* keep track of Ef() evaluations */
@@ -69,13 +89,22 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 	 or not, as determined by the boltzman probability */
       if (new_E < E) {
 	/* yay! take a step */
-	memcpy (x, new_x, element_size);
+	if (copyfunc) {
+	  copyfunc(new_x, x);
+	} else {
+	  memcpy (x, new_x, element_size);
+	}
 	E = new_E;
 	++n_eless;
-      } else if (exp (-(E - new_E) / (params.k * T))
-		 * gsl_rng_uniform (r) < 0.5) {
+      } else if ((new_E > E)
+		 && (exp (-(E - new_E) / (params.k * T))
+		     * gsl_rng_uniform (r) < 0.5)) {
 	/* yay! take a step */
-	memcpy (x, new_x, element_size);
+	if (copyfunc) {
+	  copyfunc(new_x, x);
+	} else {
+	  memcpy(x, new_x, element_size);
+	}
 	E = new_E;
 	++n_accepts;
       } else {
@@ -104,10 +133,19 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
 
   /* at the end, copy the result onto the initial point, so we pass it
      back to the caller */
-  memcpy (x0_p, x, element_size);
+  if (copyfunc) {
+    copyfunc(x, x0_p);
+  } else {
+    memcpy (x0_p, x, element_size);
+  }
 
-  free (x);
-  free (new_x);
+  if (copyfunc) {
+    destructor(&x);
+    destructor(&new_x);
+  } else {
+    free (x);
+    free (new_x);
+  }
 }
 
 /* implementation of a simulated annealing algorithm with many tries */
@@ -141,6 +179,7 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_Efunc_t Ef,
   sum_probs = (double *) malloc (params.n_tries * sizeof (double));
 
   T = params.t_initial;
+/*    memcpy (x, x0_p, element_size); */
   memcpy (x, x0_p, element_size);
   done = 0;
 

@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
 
   gsl_ieee_env_setup ();
 
-  gsl_siman_solve(r, &x_initial, E1, S1, M1, P1, sizeof(double), params);
+  gsl_siman_solve(r, &x_initial, E1, S1, M1, P1, NULL, NULL, NULL,
+		  sizeof(double), params);
 
   return 0;
 

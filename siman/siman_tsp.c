@@ -194,7 +194,7 @@ int main(void)
 
 /*   exhaustive_search(); */
 
-  gsl_siman_solve(r, x_initial, Etsp, Stsp, Mtsp, Ptsp,
+  gsl_siman_solve(r, x_initial, Etsp, Stsp, Mtsp, Ptsp, NULL, NULL, NULL,
 		  N_CITIES*sizeof(int), params);
 
   printf("# final order of cities:\n");

@@ -251,25 +251,30 @@ int main(void)
   gsl_ieee_env_setup ();
 
   x = -10.0 ;
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
+		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=-10") ;
 
   x = +10.0 ;
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
+		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=10") ;
 
   /* Start at the false minimum */
 
   x = +0.6 ; 
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
+		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.6") ;
 
   x = +0.5 ; 
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
+		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.5") ;
 
   x = +0.4 ; 
-  gsl_siman_solve(r, &x, E1, S1, M1, 0, sizeof(double), params);
+  gsl_siman_solve(r, &x, E1, S1, M1, NULL, NULL, NULL, NULL,
+		  sizeof(double), params);
   gsl_test_rel(x, x_min, 1e-3, "f(x)= exp(-(x-1)^2) sin(8x), x0=0.4") ;
 
   return gsl_test_summary ();

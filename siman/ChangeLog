@@ -1,3 +1,18 @@
+2000-12-15  Mark Galassi  <rosalia@galassi.org>
+
+	* gsl_siman.h, siman.c, siman_test.c, siman_tsp.c, test.c: changed
+	the siman_solve API to allow for more general search spaces.  The
+	problem was that we assumed that points in the search space were
+	data structures that were allocated in continguous memory, so they
+	could not be linked structures.  I replaced the malloc(), memcpy()
+	and free() calls with copy_constructor(), copyfunc() and
+	copy_destructor() functions.  The user passes these functions,
+	which means that siman_solve() now takes three more arguments of
+	type gsl_siman_copy_t, gsl_siman_copy_construct_t and
+	gsl_siman_destroy_t.  If these arguments are NULL (and all three
+	of them have to be NULL together), the traditional memcpy()
+	approach is used.
+
 1999-02-14  Mark Galassi  <rosalia@cygnus.com>
 
 	* minor fixes.

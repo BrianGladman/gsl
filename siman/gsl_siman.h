@@ -39,6 +39,9 @@ typedef double (*gsl_Efunc_t) (void *xp);
 typedef void (*gsl_siman_step_t) (const gsl_rng *r, void *xp, double step_size);
 typedef double (*gsl_siman_metric_t) (void *xp, void *yp);
 typedef void (*gsl_siman_print_t) (void *xp);
+typedef void (*gsl_siman_copy_t) (void *source, void *dest);
+typedef void * (*gsl_siman_copy_construct_t) (void *xp);
+typedef void (*gsl_siman_destroy_t) (void *xp);
 
 /* this structure contains all the information needed to structure the
    search, beyond the energy function, the step function and the
@@ -78,6 +81,9 @@ void gsl_siman_solve(const gsl_rng * r,
 		     gsl_siman_step_t take_step,
 		     gsl_siman_metric_t distance,
 		     gsl_siman_print_t print_position,
+		     gsl_siman_copy_t copyfunc,
+		     gsl_siman_copy_construct_t copy_constructor,
+		     gsl_siman_destroy_t destructor,
 		     size_t element_size,
 		     gsl_siman_params_t params);
 
