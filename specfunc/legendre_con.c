@@ -17,6 +17,75 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 
+/* Backward recursion for
+ * y_n := 1/Gamma[1+mu+n] P^{mu+n}_{-1/2 + I tau}(x)
+ * x > 1
+ * mu_min > -1
+ * n = N, N-1, ..., 0
+ */
+static
+int
+backward_recurse_pos_mu_xgt1(const double mu_min, const double tau, const double x,
+                             const int N,
+                             const double y_N, const double y_Np1,
+			     double * result_y_0, double * result_y_1)
+{
+  const double c1 = 1.0/sqrt(x*x-1.0);
+  const double t2 = tau*tau;
+  double y_np1 = y_Np1;
+  double y_n   = y_N;
+  double y_nm1;
+  int n;
+
+  for(n=N; n>=1; n--) {
+    const double mu = mu_min + n;
+    const double d  = (mu - 0.5)*(mu-0.5) + t2;
+    y_nm1 = -mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
+    y_np1 = y_n;
+    y_n   = y_nm1;
+    mu -= 1.0;
+  }
+  
+  *result_y_0 = y_n;
+  *result_y_1 = y_np1;
+}
+			 
+
+/* Backward recursion for
+ * y_n := 1/Gamma[1-mu-n] P^{-mu-n}_{-1/2 + I tau}(x)
+ * x > 1
+ * mu_max < 0
+ * n = N, N-1, ..., 0
+ * mu != integer
+ */
+static
+int
+backward_recurse_neg_mu_xgt1(const double mu, const double tau, const double x,
+                             const int N,
+                             const double y_N, const double y_Np1,
+			     double * result_y_0, double * result_y_1)
+{ 
+  const double c1 = 1.0/sqrt(x*x-1.0);
+  const double t2 = tau*tau;
+  double y_np1 = y_Np1;
+  double y_n   = y_N;
+  double y_nm1;
+  int n;
+
+  for(n=N; n>=1; n--) {
+    const double mupn = mu + n;
+    double d = (mupn+0.5)*(mupn+0.5) + t2;
+    y_nm1 = -2.0*mupn*c1/(mupn-1.0)*y_n - d/(mupn*(mupn-1.0))*y_np1;
+    y_np1 = y_n;
+    y_n   = y_nm1;
+    mu -= 1.0;
+  }
+  
+  *result_y_0 = y_n;
+  *result_y_1 = y_np1;
+}
+
+
 /* Implementation of large negative mu asymptotic
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
  */
@@ -67,8 +136,9 @@ static double olver_U3(double beta2, double p)
 		 ) / den;
 }
 
-/* Large mu asymptotic.
+/* Large negative mu asymptotic
  * P^{-mu}_{-1/2 + I tau}, mu -> Inf
+ * |x| < 1
  */
 static
 int
@@ -76,10 +146,12 @@ conicalP_xlt1_large_neg_mu(double mu, double tau, double x, double * result)
 {
   double beta  = tau/mu;
   double beta2 = beta*beta;
-  double S     = beta * acos((1.-beta2)/(1.+beta2));
-  double p     = x/sqrt(beta2*(1.-x*x) + 1.);
-  double ln_pre_1 =  0.5*mu*(S - log(1.+beta2) + log((1.-p)/(1.+p))) - gsl_sf_lngamma(mu+1.);
-  double ln_pre_2 = -0.25 * log(1. + beta2*(1.-x));
+  double S     = beta * acos((1.0-beta2)/(1.0+beta2));
+  double p     = x/sqrt(beta2*(1.0-x*x) + 1.);
+  double lg_mup1;
+  int lg_stat = gsl_sf_lngamma_impl(mu+1.0, &lg_mup1);
+  double ln_pre_1 =  0.5*mu*(S - log(1.0+beta2) + log((1.0-p)/(1.0+p))) - lg_mup1;
+  double ln_pre_2 = -0.25 * log(1.0 + beta2*(1.0-x));
   double ln_pre_3 = -tau * atan(p*beta);
   double ln_pre = ln_pre_1 + ln_pre_2 + ln_pre_3;
   
@@ -139,8 +211,8 @@ static double olver_A1_th(double mu, double theta, double x)
  */
 static
 int
-conicalP_xlt1_negorder_largetau_impl(const double mu, const double tau,
-                                     const double x, double * result)
+conicalP_xlt1_neg_mu_largetau_impl(const double mu, const double tau,
+                                   const double x, double * result)
 {
   double theta = acos(x);
   double th_pre;

@@ -62,7 +62,7 @@ hyperg_1F1_series(const double a, const double b, const double x,
     bn += 1.0;
     n  += 1.0;
   }
-  
+
   max_abs_del *= GSL_MACH_EPS;
   err     = fabs(GSL_MACH_EPS * n + max_abs_del);
   *prec   = err/(err + fabs(sum));
@@ -187,8 +187,8 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   int bma_neg_integer;  /*  b-a negative integer  */
   int amb_neg_integer;  /*  a-b negative integer  */
 
-  double bma = b - a;
-  double amb = a - b;
+  const double bma = b - a;
+  const double amb = a - b;
 
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
@@ -202,6 +202,7 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
 
   /* case: denominator zeroes before numerator */
   if(b_neg_integer && !(a_neg_integer && a > b + 0.1)) {
+    *result = 0.0;
     return GSL_EDOM;
   }
 
@@ -255,7 +256,24 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
    * including the error cases, so we are left with a well-behaved
    * series evaluation, though the arguments may be large.
    */
-  if(fabs(x) < 30.0) {
+  if(fabs(x) < 10.0) {
+  /*
+    const double cut = 10.0;
+    if(b > fabs(a)/cut) {
+      if(b > cut*a) {
+        double prec;
+        return hyperg_1F1_series(a, b, x, result, &prec); 
+      }
+      else {
+        double prec;
+        double Ex = exp(x);
+        double Kummer_1F1;
+        int stat_Kummer = hyperg_1F1_series(b-a, b, x, &Kummer_1F1, &prec);
+        *result = Ex * Kummer_1F1;
+        return stat_Kummer;
+      }
+    }
+    */
     if((fabs(a) < 30.0*fabs(b))  ||  (fabs(a) < 30.0 && fabs(b) < 30.0)) {
       double prec;
       return hyperg_1F1_series(a, b, x, result, &prec); 
