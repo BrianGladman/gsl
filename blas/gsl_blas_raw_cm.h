@@ -11,6 +11,17 @@
 #include <gsl/gsl_blas_raw_L1.h>
 #include <gsl/gsl_blas_types.h>
 
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
 
 /*
  * ===========================================================================
@@ -820,18 +831,6 @@ void gsl_blas_raw_zher2k_cm (CBLAS_UPLO_t Uplo,
 
 #if defined(HAVE_INLINE) && defined(HAVE_CBLAS)
 #include <cblas.h>
-
-#undef __BEGIN_DECLS
-#undef __END_DECLS
-#ifdef __cplusplus
-# define __BEGIN_DECLS extern "C" {
-# define __END_DECLS }
-#else
-# define __BEGIN_DECLS /* empty */
-# define __END_DECLS /* empty */
-#endif
-
-__BEGIN_DECLS
 
 /* insert inline cblas implementation of above here */
 
