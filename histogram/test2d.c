@@ -237,13 +237,13 @@ int main (void)
   }
 
   {
-    FILE * f = fopen("test.dat","w") ;
-    gsl_histogram2d_fprintf(f, h, "%.18g") ;
+    FILE * f = fopen("test.txt","w") ;
+    gsl_histogram2d_fprintf(f, h, "%.19g") ;
     fclose(f) ;
   }
 
   {
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     gsl_histogram2d * hh = gsl_histogram2d_alloc (N1,M1);
     int status = 0 ;
 

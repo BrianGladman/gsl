@@ -166,13 +166,13 @@ int main (void)
 
 
   {
-    FILE * f = fopen("test.dat","w") ;
-    gsl_histogram_fprintf(f, h, "%.18g") ;
+    FILE * f = fopen("test.txt","w") ;
+    gsl_histogram_fprintf(f, h, "%.19g") ;
     fclose(f) ;
   }
 
   {
-    FILE * f = fopen("test.dat","r") ;
+    FILE * f = fopen("test.txt","r") ;
     gsl_histogram * hh = gsl_histogram_alloc (N);
     int status = 0 ;
 
