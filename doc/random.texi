@@ -504,6 +504,48 @@ Generators", @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
 @end itemize
 @end deffn
 
+@deffn {Generator} gsl_rng_gfsr4
+@cindex Four-tap Generalized Feedback Shift Register
+The @code{gfsr4} generator is like a lagged-fibonacci generator, and 
+produces each number as an @code{xor}'d sum of four previous values.
+@equation
+ r_n = r_@{n-A@} \oplus r_@{n-B@} \oplus r_@{n-C@} \oplus r_@{n-D@}
+@end equation
+
+Ziff (ref below) notes that "it is now widely known" that two-tap
+registers (such as R250, which is described below)
+have serious flaws, the most obvious one being the three-point
+correlation that comes from the defn of the generator.  Nice
+mathematical properties can be derived for GFSR's, and numerics bears
+out the claim that 4-tap GFSR's with appropriately chosen offsets are as
+random as can be measured, using the author's test.
+
+This implementation uses the values suggested the the example on p392 of
+Ziff's article: A=471, B=1586, C=6988, D=9689.
+
+If the offsets are appropriately chosen (such the one ones in
+this implementation), then the sequence is said to be maximal.
+I'm not sure what that means, but I would guess that means all
+states are part of the same cycle, which would mean that the
+period for this generator is astronomical; it is
+@math{(2^K)^D \approx 10^@{93334@}}
+where @math{K=32} is the number of bits in the word, and D is the longest
+lag.  This would also mean that any one random number could 
+easily be zero; ie @math{0 \le r \lt 2^@{32@}}.
+
+Ziff doesn't say so, but it seems to me that the bits are
+completely independent here, so one could use this as an efficient
+bit generator; each number supplying 32 random bits.
+
+For more information see,
+@itemize @asis
+@item
+Robert M. Ziff, "Four-tap shift-register-sequence random-number 
+generators", @cite{Computers in Physics}, 12(4), Jul/Aug
+1998, pp 385-392.
+@end itemize
+@end deffn
+
 @node Generators provided for compatibility
 @subsection Generators provided for compatibility
 
@@ -934,6 +976,7 @@ The functions described in this section are declared in
 * The Spherical Distribution (2D & 3D)::  
 * The Weibull Distribution::    
 * The Gumbel Distribution::     
+* General Discrete Distributions::
 * The Poisson Distribution::    
 * The Bernoulli Distribution::  
 * The Binomial Distribution::   
@@ -967,6 +1010,16 @@ transformation @math{z = \mu + x} on the numbers returned by
 This function computes the probability density @math{p(x)} at @var{x}
 for a gaussian distribution with standard deviation @var{sigma}, using
 the formula given above.
+@end deftypefun
+
+@deftypefun double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{tail})
+This function provides random numbers distributed as a unit-variance gaussian,
+but only provides values larger than @var{tail}.  For large values of @var{tail},
+it would be inefficient to use @code{gsl_ran_gaussian} and then reject all
+values less than @var{tail}.  The algorithm used is based on Marsaglia's
+famous rectangle-wedge-tail algorithm (Ann Math Stat 32, 894-899 (1961)),
+with this aspect explained in Knuth, v2, 3rd ed, p139,586 (exercise 11).
+
 @end deftypefun
 
 @tex
@@ -1829,6 +1882,21 @@ the steps of a random walk.
 This function returns a random direction vector @math{v} =
 (@var{x},@var{y}) in two dimenions. The vector is normalized
 such that @math{|v|^2 = x^2 + y^2 = 1}.
+The obvious way to do this is to take a uniform random number between 
+0 and @math{2\pi} and let @var{x} and @var{y} be the sine and cosine
+respectively.  Two trig functions would have been expensive in the old
+days, but with modern hardware implementations, this is sometimes the
+fastest way to go.  This is the case for my home Pentium (but not the
+case for my Sun Sparcstation 20 at work).  Once can 
+avoid the trig evaluations by choosing @var{x} and @var{y} in the
+interior of a unit circle (choose them at random from the interior
+of the enclosing square, and then reject those that are outside the
+unit circle), and then dividing by @math{\sqrt@{x^2 + y^2@}}.
+A much
+cleverer approach,  attributed to von Neumann (See Knuth, v2, 3rd ed, p140, 
+exercise 23), requires neither trig nor a square root.  In this approach,
+@var{u} and @var{v} are chosen at random from the interior of a unit
+circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and @math{y=uv/(u^2+v^2)}.
 @end deftypefn
 
 @deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
@@ -1838,7 +1906,26 @@ such that @math{|v|^2 = x^2 + y^2 = 1}.
 This function returns a random direction vector @math{v} =
 (@var{x},@var{y},@var{z}) in three dimenions. The vector is
 normalized such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.
+The method employed is due to Robert E. Knop (CACM 13, 326 (1970)),
+and explained in Knuth, v2, 3rd ed, p136.  It uses the 
+surprising fact that the distribution projected along any axis is 
+actually uniform (this is only true for 3d).
 @end deftypefn
+
+@deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, int @var{n}, double *@var{x})
+@cindex N-dimensional random direction vector
+@cindex direction vector, random N-dimensional
+@cindex spherical random numbers, N-dimensional
+This function returns a random direction vector @math{v} =
+@math{x_1,x_2,\ldots,x_n} in @var{n} dimenions. The vector is
+normalized such that @math{|v|^2 = x_1^2 + x_2^2 + \cdots + x_n^2 = 1}.
+The method uses the fact that a multivariate gaussian distribution
+is spherically symmetric.  Each component is generated to have a gaussian
+distribution, and then the components are normalized.  The method
+is described by Knuth, v2, 3rd ed, p135-136, and attributed to
+G. W. Brown, Modern Mathematics for the Engineer (1956).
+@end deftypefn
+
 @noindent
 The follwing program generates a random walk in two dimensions.
 
@@ -1950,8 +2037,86 @@ Cumulative distribution function,
 @math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
 @end itemize
 
+@c ----------------------------------------------------------------------
 @page
 @section Discrete distributions
+
+@c ----------------------------------------------------------------------
+@node General Discrete Distributions
+@subsection General Discrete Distributions
+
+Given @var{K} discrete events with different probabilities @var{P[k]},
+produce a random value @var{k} consistent with its probability.
+
+The obvious way to do this is to preprocess the probability list by
+generating a cumulative probability array with @math{K+1} elements:
+@code{C[0] = 0; C[k+1] = C[k]+P[k]}.  Note that this construction
+produces @math{C[K]=1}.  Now choose a uniform deviate @var{u} between 0
+and 1, and find the value of @var{k} such that @math{C[k]\le u <
+C[k+1]}.  Although this in principle requires of order @math{\log K}
+steps per random number generation, they are fast steps, and if you use
+something like @math{\lfloor uK\rfloor} as a starting point, you can
+often do pretty well.
+
+But faster methods have been devised.  Again, the idea is to preprocess
+the probability list, and save the result in some form of lookup table;
+then the individual calls for a random discrete event can go rapidly.
+An approach invented by G. Marsaglia (Generating discrete random numbers
+in a computer, Comm ACM 6, 37-38 (1963)) is very clever, and readers
+interested in examples of good algorithm design are directed to this
+short and well-written paper.  Unfortuantely, for large @var{K},
+Marsaglia's lookup table can be quite large.  A much better approach is
+due to Alastair J. Walker (An efficient method for generating discrete
+random variables with general distributions, ACM Trans on Mathematical
+Software 3, 253-256 (1977); see also Knuth, v2, 3rd ed, p120-121,139).
+This requires two lookup tables, one floating point and one integer, but
+both only of size @var{K}.  After preprocessing, the random numbers are
+generated in O(1) time, even for large @var{K}.  The preprocessing
+suggested by Walker requires @math{O(K^2)} effort, but that is not
+actually necessary, and the implementation provided here only takes
+@math{O(K)} effort.  In general, more preprocessing leads to faster
+generation of the individual random numbers, but a diminishing return
+is reached pretty early.  Knuth points out that the optimal preprocessing
+is combinatorially difficult for large @var{K}.
+
+This method can be used to speed up some of the discrete random number
+generators below, such as the binomial distribution.  To use if for
+something like the Poisson Distribution, a modification would have to
+be made, since it only takes a finite set of @var{K} outcomes.
+
+@deftypefn Random {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (int @var{K}, const 
+double * @var{P})
+@cindex Discrete random numbers
+@cindex Discrete random numbers, preprocessing
+This function returns a pointer to a structure that contains the lookup
+table for the discrete random number generator.  The array @code{P[]} contains
+the probabilities of the discrete events; these array elements must all be 
+positive, but they needn't add up to one (so you can think of them more
+generally as "weights") -- the preprocessor will normalize appropriately.
+This return value is used
+as an argument for the @code{gsl_ran_discrete} function below.
+@end deftypefn
+
+@deftypefn Random {int} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
+@cindex Discrete random numbers
+After the preprocessor, above, has been called, you use this function to
+get the discrete random numbers.
+@end deftypefn
+
+@deftypefn Random {double} gsl_ran_discrete_pdf (int @var{k}, const gsl_ran_discrete_t * @var{g})
+@cindex Discrete random numbers
+Returns the probability @var{P[k]} of observing the variable @var{k}.
+Since @var{P[k]} is not stored as part of the lookup table, it must be
+recomputed; this computation takes @var{O(K)}, so if @var{K} is large
+and you care about the original array @var{P[k]} used to create the
+lookup table, then you should just
+keep this original array @var{P[k]} around.
+@end deftypefn
+
+@deftypefn Random {void} gsl_ran_discrete_free (gsl_ran_discrete_t * @var{g})
+@cindex Discrete random numbers
+De-allocates the lookup table pointed to by @var{g}.
+@end deftypefn
 
 @c ----------------------------------------------------------------------
 @node The Poisson Distribution
