@@ -633,8 +633,8 @@ gsl_sf_gamma_inc_e(const double a, const double x, gsl_sf_result * result)
     } while(alpha > a);
 
     result->val = gax;
-    result->err = (2.0 + fabs(a))*GSL_DBL_EPSILON*fabs(gax);
-    return GSL_SUCCESS;
+    result->err = 2.0*(1.0 + fabs(a))*GSL_DBL_EPSILON*fabs(gax);
+    return stat_g_da;
   }
 
 }
