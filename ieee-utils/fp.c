@@ -28,6 +28,8 @@
 #include "fp-os2emx.c"
 #elif defined(HAVE_NETBSD_IEEE_INTERFACE)
 #include "fp-netbsd.c"
+#elif defined(HAVE_OPENBSD_IEEE_INTERFACE)
+#include "fp-openbsd.c"
 #elif defined(HAVE_DARWIN_IEEE_INTERFACE)
 #include "fp-darwin.c"
 #else

@@ -1,3 +1,7 @@
+Mon Jun 25 20:47:33 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fp-openbsd.c (gsl_ieee_set_mode): added support for openbsd
+
 Tue May  8 10:49:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-aix.c: changed macros from TRAP_ to TRP_..
