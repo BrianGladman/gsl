@@ -5,7 +5,7 @@
 
 /* The chisq distributions has the form
 
-   p(x) dx = (1/Gamma(nu/2)) x^(nu/2 - 1) exp(-x) dx
+   p(x) dx = (1/Gamma(nu/2)) (x/2)^(nu/2 - 1) exp(-x/2) dx
 
    for x = 0 ... +infty */
 
