@@ -53,6 +53,7 @@ following CFLAGS:
     -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
     -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common
     -Wmissing-prototypes -Wnested-externs -Werror -g -O4
+    -Dinline=''
 
 ----------
 
