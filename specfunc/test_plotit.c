@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <gsl_math.h>
 #include "gsl_sf.h"
 
@@ -21,18 +22,24 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+/*
+printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);
+exit(0);
+*/
+
+
 plotto();
 exit(0);
 
+
 /*
-  for(x=-5; x < 10.; x += .05) {
-    printf("%20.16g    %20.16g %20.16g     %20.16g %20.16g\n",
-           x,
-	   gsl_sf_airy_Ai(x),
-	   gsl_sf_airy_Bi(x),
-	   gsl_sf_airy_Ai_scaled(x),
-	   gsl_sf_airy_Bi_scaled(x)
-           );
+  for(nu=2; nu < 1000; nu += 1) {
+    x = 100.*nu;
+    gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(nu,x,&y);
+    printf("%20.16g  %20.16g    %20.16g\n",
+           nu,
+	   x,
+	   y);
   }
   exit(0);
 */

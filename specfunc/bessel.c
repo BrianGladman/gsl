@@ -85,6 +85,13 @@ static double debye_u5(const double * tpow)
           284499769554.*tpow[9]   - 614135872350.*tpow[11] + 
           566098157625.*tpow[13]  - 188699385875.*tpow[15])/6688604160.;
 }
+static double debye_u6(const double * tpow)
+{
+  return (2757049477875.*tpow[6] - 127577298354750.*tpow[8] + 
+          1050760774457901.*tpow[10] - 3369032068261860.*tpow[12] + 
+          5104696716244125.*tpow[14] - 3685299006138750.*tpow[16] + 
+          1023694168371875.*tpow[18])/4815794995200.;
+}
 
 /* and Debye functions for imaginary argument */
 
@@ -110,6 +117,13 @@ static double debye_u5_im(const double * tpow)  /* u_5(i t)/i */
   return (1519035525.*tpow[5]     + 49286948607.*tpow[7] + 
           284499769554.*tpow[9]   + 614135872350.*tpow[11] + 
           566098157625.*tpow[13]  + 188699385875.*tpow[15])/6688604160.;
+}
+static double debye_u6_im(const double * tpow)
+{
+  return (-2757049477875.*tpow[6] - 127577298354750.*tpow[8] -
+           1050760774457901.*tpow[10] - 3369032068261860.*tpow[12] -
+           5104696716244125.*tpow[14] - 3685299006138750.*tpow[16] - 
+           1023694168371875.*tpow[18])/4815794995200.;
 }
 
 /* [Abramowitz+Stegun, 9.3.17] */
@@ -169,17 +183,23 @@ static double trans_g3(const double * zpow)
 void plotto(void)
 {
   double x;
-  for(x=-1.; x<=1.; x += 0.02) {
+  for(x=0.; x<=3.; x += 0.02) {
     int j;
     double xpow[16];
     xpow[0] = 1.;
     for(j=1; j<16; j++) xpow[j] = x * xpow[j-1];
     printf("%6.4g   %8.4g %8.4g %8.4g %8.4g   %8.4g %8.4g %8.4g %8.4g\n",
            x,
+	   /*
            trans_f1(xpow), trans_f2(xpow), trans_f3(xpow),
 	   trans_f4(xpow),
 	   trans_g0(xpow), trans_g1(xpow), trans_g2(xpow),
 	   trans_g3(xpow)
+	   */
+	   fabs(debye_u1(xpow))/xpow[1], fabs(debye_u2(xpow))/xpow[2],
+	   fabs(debye_u3(xpow))/xpow[3], fabs(debye_u4(xpow))/xpow[4],
+	   fabs(debye_u5(xpow))/xpow[5], fabs(debye_u6(xpow))/xpow[6],
+	   2200*pow(x,18)
 	   );
   }
 }
@@ -419,6 +439,9 @@ int gsl_sf_bessel_Jnu_asymp_Debye_osc_impl(const double nu, const double x, doub
   for(i=0; i<16; i++) tpow[i] = t * tpow[i-1];
   L = debye_L(nu, tpow);
   M = debye_M(nu, tpow);
+  printf("--  %g    %g  %g  %g  --  %g  %g\n",
+         nu, L, M, Psi, tan_b, atan(tan_b)/((double)M_PI/2.)
+	 );
   *result = pre * (L*cos(Psi) + M*sin(Psi));
   return GSL_SUCCESS;
 }
