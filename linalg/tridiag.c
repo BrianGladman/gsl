@@ -417,19 +417,26 @@ gsl_linalg_solve_symm_tridiag(
   const gsl_vector * rhs,
   gsl_vector * solution)
 {
-  if(diag->size != rhs->size ||
-          (offdiag->size != rhs->size && offdiag->size != rhs->size-1) ||
-          (solution->size != rhs->size)
-          ) {
-    return GSL_EBADLEN;
-  }
-  else {
-    return solve_tridiag(diag->data, diag->stride,
-                         offdiag->data, offdiag->stride,
-                         rhs->data, rhs->stride,
-                         solution->data, solution->stride,
-                         diag->size);
-  }
+  if(diag->size != rhs->size)
+    {
+      GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
+    }
+  else if (offdiag->size != rhs->size && offdiag->size != rhs->size-1)
+    {
+      GSL_ERROR ("size of offdiag must match rhs or rhs-1", GSL_EBADLEN);
+    }
+  else if (solution->size != rhs->size)
+    {
+      GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
+    }
+  else 
+    {
+      return solve_tridiag(diag->data, diag->stride,
+                           offdiag->data, offdiag->stride,
+                           rhs->data, rhs->stride,
+                           solution->data, solution->stride,
+                           diag->size);
+    }
 }
 
 int
@@ -440,20 +447,31 @@ gsl_linalg_solve_tridiag(
   const gsl_vector * rhs,
   gsl_vector * solution)
 {
-  if (diag->size != rhs->size
-      || (abovediag->size != rhs->size && abovediag->size != rhs->size-1)
-      || (belowdiag->size != rhs->size && belowdiag->size != rhs->size-1)
-      || (solution->size != rhs->size)) {
-    return GSL_EBADLEN;
-  }
-  else {
-    return solve_tridiag_nonsym(diag->data, diag->stride,
-                                abovediag->data, abovediag->stride,
-                                belowdiag->data, belowdiag->stride,
-                                rhs->data, rhs->stride,
-                                solution->data, solution->stride,
-                                diag->size);
-  }
+  if(diag->size != rhs->size)
+    {
+      GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
+    }
+  else if (abovediag->size != rhs->size && abovediag->size != rhs->size-1)
+    {
+      GSL_ERROR ("size of abovediag must match rhs or rhs-1", GSL_EBADLEN);
+    }
+  else if (belowdiag->size != rhs->size && belowdiag->size != rhs->size-1)
+    {
+      GSL_ERROR ("size of belowdiag must match rhs or rhs-1", GSL_EBADLEN);
+    }
+  else if (solution->size != rhs->size)
+    {
+      GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
+    }
+  else 
+    {
+      return solve_tridiag_nonsym(diag->data, diag->stride,
+                                  abovediag->data, abovediag->stride,
+                                  belowdiag->data, belowdiag->stride,
+                                  rhs->data, rhs->stride,
+                                  solution->data, solution->stride,
+                                  diag->size);
+    }
 }
 
 
@@ -464,19 +482,26 @@ gsl_linalg_solve_symm_cyc_tridiag(
   const gsl_vector * rhs,
   gsl_vector * solution)
 {
-  if(diag->size != rhs->size ||
-          offdiag->size != rhs->size ||
-          solution->size != rhs->size
-          ) {
-    return GSL_EBADLEN;
-  }
-  else {
-    return solve_cyc_tridiag(diag->data, diag->stride,
-                             offdiag->data, offdiag->stride,
-                             rhs->data, rhs->stride,
-                             solution->data, solution->stride,
-                             diag->size);
-  }
+  if(diag->size != rhs->size)
+    {
+      GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
+    }
+  else if (offdiag->size != rhs->size)
+    {
+      GSL_ERROR ("size of offdiag must match rhs", GSL_EBADLEN);
+    }
+  else if (solution->size != rhs->size)
+    {
+      GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
+    }
+  else 
+    {
+      return solve_cyc_tridiag(diag->data, diag->stride,
+                               offdiag->data, offdiag->stride,
+                               rhs->data, rhs->stride,
+                               solution->data, solution->stride,
+                               diag->size);
+    }
 }
 
 int
@@ -487,18 +512,29 @@ gsl_linalg_solve_cyc_tridiag(
   const gsl_vector * rhs,
   gsl_vector * solution)
 {
-  if (diag->size != rhs->size
-      || abovediag->size != rhs->size
-      || belowdiag->size != rhs->size
-      || solution->size != rhs->size) {
-    return GSL_EBADLEN;
-  }
-  else {
-    return solve_cyc_tridiag_nonsym(diag->data, diag->stride,
-                                    abovediag->data, abovediag->stride,
-                                    belowdiag->data, belowdiag->stride,
-                                    rhs->data, rhs->stride,
-                                    solution->data, solution->stride,
-                                    diag->size);
-  }
+  if(diag->size != rhs->size)
+    {
+      GSL_ERROR ("size of diag must match rhs", GSL_EBADLEN);
+    }
+  else if (abovediag->size != rhs->size)
+    {
+      GSL_ERROR ("size of abovediag must match rhs", GSL_EBADLEN);
+    }
+  else if (belowdiag->size != rhs->size)
+    {
+      GSL_ERROR ("size of belowdiag must match rhs", GSL_EBADLEN);
+    }
+  else if (solution->size != rhs->size)
+    {
+      GSL_ERROR ("size of solution must match rhs", GSL_EBADLEN);
+    }
+  else 
+    {
+      return solve_cyc_tridiag_nonsym(diag->data, diag->stride,
+                                      abovediag->data, abovediag->stride,
+                                      belowdiag->data, belowdiag->stride,
+                                      rhs->data, rhs->stride,
+                                      solution->data, solution->stride,
+                                      diag->size);
+    }
 }
