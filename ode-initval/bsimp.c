@@ -19,7 +19,7 @@
 #define SCALMX 0.1
 
 
-static const int nseq[IMAXX + 1] = { 0, 2, 6, 10, 14, 22, 34, 50, 70 };
+static const int nseq[IMAXX] = { 2, 6, 10, 14, 22, 34, 50, 70 };
 
 
 typedef  struct gsl_odeiv_step_bsimp_struct  gsl_odeiv_step_bsimp;
@@ -28,21 +28,22 @@ struct gsl_odeiv_step_bsimp_struct
 {
   gsl_odeiv_step parent;  /* inherits from gsl_odeiv_step */
 
+  size_t dimension;
+  size_t dimension_old;
+
   gsl_matrix  *  a;
   gsl_vector  *  indx;
 
-  double ** d;
+  gsl_matrix  * d;
   double x[KMAXX];
-
-  double ab[IMAXX + 1];
-  double alf[KMAXX + 1][KMAXX + 1];
-
   double err[KMAXX];
+
+  double ab[IMAXX];
+  double alf[KMAXX][KMAXX];
 
   int first;
   int kmax;
   int kopt;
-  int nvold;
 
   double xnew;
 
@@ -56,8 +57,8 @@ struct gsl_odeiv_step_bsimp_struct
   double * ysav;
   double * yseq;
 
-  double  * dfdx;
-  double ** dfdy;
+  double * dfdt;
+  gsl_matrix * dfdy;
 
   gsl_vector rhs_temp_vec;
   gsl_vector delta_temp_vec;
@@ -65,8 +66,62 @@ struct gsl_odeiv_step_bsimp_struct
 
 
 static int  bsimp_step(void * self, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
-static int  bsimp_reset(void * self);
-static void bsimp_free(void * self);
+
+
+/* Perform basic allocation of temporaries
+ * given the dimension of the system vector.
+ */
+static int
+bsimp_alloc(gsl_odeiv_step_bsimp * self, size_t dim)
+{
+  self->ysav = (double *) malloc(dim * sizeof(double));
+  self->yseq = (double *) malloc(dim * sizeof(double));
+  self->dfdt = (double *) malloc(dim * sizeof(double));
+
+  self->dfdy = gsl_matrix_alloc(dim, dim);
+  self->d = gsl_matrix_double_alloc(dim, KMAXX);
+  self->a = gsl_matrix_double_alloc(dim, dim);
+}
+
+
+/* Perform basic dallocation of temporaries.
+ */
+static void
+bsimp_dealloc(gsl_odeiv_step_bsimp * self)
+{
+  if(self->ysav != 0) free(self->ysav);
+  if(self->yseq != 0) free(self->yseq);
+  if(self->dfdt != 0) free(self->dfdt);
+  if(self->dfdy != 0) gsl_matrix_free(self->dfdy);
+  if(self->d != 0) gsl_matrix_free(self->d);
+  if(self->a != 0) gsl_matrix_free(self->a);
+}
+
+
+static void
+bsimp_reset(void * self)
+{
+  if(self != 0) {
+    gsl_odeiv_step_bsimp * my = (gsl_odeiv_step_bsimp *) self;
+    my->first = 1;
+    my->dimension_old = -1;
+    my->epsold = -1.0;
+    bsimp_dealloc(my);
+    if(my->dimension > 0) {
+      bsimp_alloc(my, my->dimension);
+    }
+  }
+}
+
+
+static void
+bsimp_free(void * self)
+{
+  if(self != 0) {
+    bsimp_dealloc((gsl_odeiv_step_bsimp *) self);
+    free(self);
+  }
+}
 
 
 gsl_odeiv_step *
@@ -82,30 +137,68 @@ gsl_odeiv_step_bsimp_new(const double * yscal, double eps)
       bsimp_free,
       0,
       0,
-      2);
+      2 /* FIXME */);
       s->a = 0;
       s->indx = 0;
       s->d = 0;
-      s->first = 1;
-      s->nvold = -1;
-      s->epsold = -1.0;
       s->ysav = 0;
       s->yseq = 0;
-      s->dfdx = 0;
+      s->dfdt = 0;
       s->dfdy = 0;
-      s->yscal = yscal;
+      s->yscal = yscal; /* FIXME */
       s->eps = eps;
+      s->dimension = 0;
   }
   return (gsl_odeiv_step *) s;
 }
 
 
+/* Reset the Deuflhard error control data.
+ */
+static void
+bsimp_reset_deuf(gsl_odeiv_step_bsimp * self)
+{
+  size_t k;
+  size_t iq;
 
+  /* my->hnext = my->xnew = -1.0e29; */
+  const double eps1 = SAFE1 * self->eps;
 
-extern double **d, *x;		/* Defined in bsstep. */
+  self->ab[0] = nseq[0] + 1;
+
+  for(k=0; k<KMAXX; k++) {
+    self->ab[k + 1] = self->ab[k] + nseq[k + 1];
+  }
+
+  for(iq=1; iq < KMAXX; iq++) {
+    for(k=0; k < iq; k++) {
+      const double tmp1 = self->ab[k + 1] - self->ab[iq + 1];
+      const double tmp2 = (self->ab[iq + 1] - self->ab[1] + 1.0) * (2 * k + 1);
+      self->alf[k][iq] = pow(eps1, tmp1/tmp2);
+    }
+  }
+
+  self->epsold = self->eps;
+  self->ab[0] += self->dimension;
+  self->dimension_old = self->dimension;
+
+  for(k=0; k < KMAXX; k++) {
+    self->ab[k + 1] = self->ab[k] + nseq[k + 1];
+  }
+
+  /* determine an optimal order */
+  for(k = 1; k < KMAXX-1; k++) {
+    if (self->ab[k + 1] > self->ab[k] * self->alf[k - 1][k]) {
+      self->kopt = k;
+      break;
+    }
+  }
+  self->kmax = self->kopt;
+}
+
 
 void 
-pzextr (int iest, double xest, double yest[], double yz[], double dy[], int nv)
+pzextr(double ** d, double * x, int iest, double xest, double yest[], double yz[], double dy[], int nv)
 /*
    Use polynomial extrapolation to evaluate nv functions at x = 0 by tting a polynomial to a
    sequence of estimates with progressively smaller values x = xest, and corresponding function
@@ -151,10 +244,8 @@ pzextr (int iest, double xest, double yest[], double yz[], double dy[], int nv)
 
 
 
-extern double **d, *x; /* Defined in bsstep. */
-
 void 
-rzextr (int iest, double xest, double yest[], double yz[], double dy[], int nv)
+rzextr(double ** d, double * x, int iest, double xest, double yest[], double yz[], double dy[], int nv)
 /*
    Exact substitute for pzextr, but uses diagonal rational function extrapolation instead of poly-
    nomial extrapolation.
@@ -204,6 +295,8 @@ rzextr (int iest, double xest, double yest[], double yz[], double dy[], int nv)
 }
 
 
+/* Basic implicit Bulirsch-Stoer step.
+ */
 static int
 bsimp_step_local(
   gsl_odeiv_step_bsimp * step,
@@ -216,12 +309,7 @@ bsimp_step_local(
   double h_total,
   unsigned int nstep,
   double yout[],
-  const gsl_odeiv_system * sys
-)
-/* simpr (double y[], double dydx[], double dfdx[], double **dfdy, int n,
-       double xs, double htot, int nstep, double yout[],
-       void (*derivs) (double, double[], double[]))
-       */
+  const gsl_odeiv_system * sys)
 {
   int signum;
   unsigned int i, j;
@@ -234,7 +322,7 @@ bsimp_step_local(
   /* shameless confusion... use these for temp space */
   double * ytemp = step->ysav;
   double * delta_temp = step->yseq;
-  double * delta = step->dfdx;
+  double * delta = step->dfdt;
 
   step->delta_temp_vec.data = delta_temp;
   step->delta_temp_vec.size = dim;
@@ -305,6 +393,55 @@ bsimp_step_local(
 }
 
 
+static int
+bsimp_iter_test(
+  gsl_odeiv_step_bsimp * self,
+  size_t k,
+  double * reduction_factor,
+  const double * yerr,
+  const double * yscal)
+{
+  const size_t km = k - 1;
+  double errmax = DBL_MIN;
+  size_t i;
+
+  for(i=0; i<self->dimension; i++) {
+    errmax = GSL_MAX_DBL(errmax, fabs(yerr[i])/(fabs(yscal[i]) + GSL_SQRT_DBL_EPSILON));
+  }
+  errmax /= self->eps;
+
+  self->err[km] = pow(errmax / SAFE1, 1.0 / (2 * km + 1));
+
+  if(k >= self->kopt - 1 || self->first) {
+
+    if(errmax < 1.0) {
+      return 1; /* done */
+    }
+    else if (k == self->kmax || k == self->kopt + 1) {
+      *reduction_factor = SAFE2 / self->err[km];
+      return 0;
+    }
+    else if (k == self->kopt && self->alf[self->kopt - 1][self->kopt] < self->err[km]) {
+      *reduction_factor = 1.0 / self->err[km];
+      return 0;
+    }
+    else if (self->kopt == self->kmax && self->alf[km][self->kmax - 1] < self->err[km]) {
+      *reduction_factor = self->alf[km][self->kmax - 1] * SAFE2 / self->err[km];
+      return 0;
+    }
+    else if (self->alf[km][self->kopt] < self->err[km]) {
+      *reduction_factor = self->alf[km][self->kopt - 1] / self->err[km];
+      return 0;
+    }
+    else {
+      return 0; /* FIXME: ??? */
+    }
+
+  }
+  else {
+    return 0; /* FIXME: ??? */
+  }
+}
 
 
 static int
@@ -352,198 +489,111 @@ stifbs (double y[], double dydx[], int nv, double *xx, double htry,
 {
   gsl_odeiv_step_bsimp * my = (gsl_odeiv_step_bsimp *) self;
 
-  size_t dim = sys->dimension;
-
-  int i, iq, k, kk, km;
-
-  double eps1, errmax, fact, red, scale, work, wrkmin, xest;
-
   const double * yscal = ( my->yscal != 0 ? my->yscal : y );
 
-  int reduct;
+  double h = htry;
+  double t_local = t;
 
   int exitflag = 0;
+  int k, k_exit;
+  int reduct;
 
-  double h = htry;
-
-  double xx = t;
+  double scale, wrkmin;
 
   if(sys->dimension <= 0) {
     return GSL_EINVAL;
   }
 
+  if(my->dimension != sys->dimension) {
+    my->dimension = sys->dimension;
+    bsimp_dealloc(my);
+    bsimp_alloc(my, my->dimension);
+    my->hnext = my->xnew = -GSL_SQRT_DBL_MAX;
+    bsimp_reset_deuf(my);
+  }
+  else if(my->eps != my->epsold) {
+    my->hnext = my->xnew = -GSL_SQRT_DBL_MAX;
+    bsimp_reset_deuf(my);
+  }
 
-/*
-  d = matrix (1, nv, 1, KMAXX);
+  memcpy(my->ysav, y, my->dimension * sizeof(double));
 
-*/
-/*
-  dfdx = vector (1, nv);
-  dfdy = matrix (1, nv, 1, nv);
-*/
-  /*
-  err = vector (1, KMAXX);
-  x = vector (1, KMAXX);
-  */
-  /* yerr = vector (1, nv); */
+  GSL_ODEIV_JA_EVAL(sys, t_local, y, my->dfdy, my->dfdt);
 
-/*
-  ysav = vector (1, nv);
-  yseq = vector (1, nv);
-*/
-
-  if (my->eps != my->epsold || dim != my->nvold)
-    {
-      /* Reinitialize also if nv has changed. */
-
-      my->hnext = my->xnew = -1.0e29;
-      eps1 = SAFE1 * my->eps;
-      my->ab[1] = nseq[1] + 1;
-
-      for (k = 1; k <= KMAXX; k++)
-	my->ab[k + 1] = my->ab[k] + nseq[k + 1];
- 
-      for (iq = 2; iq <= KMAXX; iq++)
-	{
-	  for (k = 1; k < iq; k++)
-	    my->alf[k][iq] = pow (eps1, ((my->ab[k + 1] - my->ab[iq + 1]) /
-				 ((my->ab[iq + 1] - my->ab[1] + 1.0) * (2 * k + 1))));
-	}
-      my->epsold = my->eps;
-      my->nvold = dim;  /* Save nv. */
-      my->ab[1] += dim; /* Add cost of Jacobian evaluations to work coefficients. */
-      for (k = 1; k <= KMAXX; k++)
-	my->ab[k + 1] = my->ab[k] + nseq[k + 1];
-
-      /* determine an optimal order */
-      for (my->kopt = 2; my->kopt < KMAXX; my->kopt++)
-	if (my->ab[my->kopt + 1] > my->ab[my->kopt] * my->alf[my->kopt - 1][my->kopt])
-	  break;
-      my->kmax = my->kopt;
-    }
-
-
-  for(i=0; i<dim; i++)
-    my->ysav[i] = y[i];
-
-/*
-  jacobn (*xx, y, dfdx, dfdy, dim);
-*/
-  if (xx != my->xnew || h != my->hnext)
-    {
-      my->first = 1;
-      my->kopt = my->kmax;
-    }
+  if(t_local != my->xnew || h != my->hnext) {
+    my->first = 1;
+    my->kopt = my->kmax;
+  }
 
   reduct = 0;
 
-  while(1) {
+  while(!exitflag) {
+    double xest;
+    double red;
 
     /* tries extrapolations up to a max order... */
 
-    for (k = 1; k <= my->kmax; k++)
-      {
-        my->xnew = xx + h;
+    for(k=1; k <= my->kmax && !exitflag; k++) {
+      my->xnew = t_local + h;
 
-        if (my->xnew == xx)
-          nrerror ("step size underflow in stifbs");
+      if (my->xnew == t_local)
+        nrerror ("step size underflow in stifbs");
 
-/*
-        simpr (my->ysav, dydx, dfdx, dfdy, nv, *xx, h, nseq[k], my->yseq, derivs);
-*/
-        xest = SQR (h / nseq[k]);
+      bsimp_step_local(self,
+        	       my->ysav, dydt_in,
+        	       my->dfdt,
+        	       my->dfdy,
+        	       my->dimension,
+        	       t_local,
+        	       h,
+        	       nseq[k],
+        	       my->yseq,
+        	       sys);
 
+      xest = SQR (h / nseq[k]);
 
-        /* The rest of the routine is identical to bsstep. */
+      /* The rest of the routine is identical to bsstep. */
 
-        pzextr (k, xest, my->yseq, y, yerr, dim);
+      pzextr(my->d, my->x, k, xest, my->yseq, y, yerr, my->dimension);
 
-
-        if (k != 1)
-          {
-            errmax = TINY;
-            for(i=0; i<dim; i++) {
-              errmax = FMAX (errmax, fabs(yerr[i])/(fabs(yscal[i]) + GSL_SQRT_DBL_EPSILON));
-            }
-            errmax /= my->eps;
-            km = k - 1;
-            my->err[km] = pow (errmax / SAFE1, 1.0 / (2 * km + 1));
-          }
-
-        if (k != 1 && (k >= my->kopt - 1 || my->first))
-          {
-            if (errmax < 1.0)
-              {
-        	exitflag = 1;
-        	break;
-              }
-            if (k == my->kmax || k == my->kopt + 1)
-              {
-        	red = SAFE2 / my->err[km];
-        	break;
-              }
-            else if (k == my->kopt && my->alf[my->kopt - 1][my->kopt] < my->err[km])
-              {
-        	red = 1.0 / my->err[km];
-        	break;
-              }
-            else if (my->kopt == my->kmax && my->alf[km][my->kmax - 1] < my->err[km])
-              {
-        	red = my->alf[km][my->kmax - 1] * SAFE2 / my->err[km];
-        	break;
-              }
-            else if (my->alf[km][my->kopt] < my->err[km])
-              {
-        	red = my->alf[km][my->kopt - 1] / my->err[km];
-        	break;
-              }
-          }
+      if(k != 1) {
+        exitflag = bsimp_iter_test(my, k, &red, yerr, my->yscal);
       }
 
-    if (exitflag) break;
+      k_exit = k;
+    }
 
-    red = FMIN (red, REDMIN);
-    red = FMAX (red, REDMAX);
-    h *= red;
-    reduct = 1;
+    if(!exitflag) {
+      red = GSL_MIN_DBL(red, REDMIN);
+      red = GSL_MAX_DBL(red, REDMAX);
+      h *= red;
+      reduct = 1;
+    }
   }
 
-  xx = my->xnew;
+  t_local = my->xnew;
   my->hdid = h;
   my->first = 0;
-  wrkmin = 1.0e35;
-  for (kk = 1; kk <= km; kk++)
-    {
-      fact = FMAX (my->err[kk], SCALMX);
-      work = fact * my->ab[kk + 1];
-      if (work < wrkmin)
-	{
-	  scale = fact;
-	  wrkmin = work;
-	  my->kopt = kk + 1;
-	}
+  wrkmin = GSL_DBL_MAX;
+
+  for(k=0; k < k_exit-1; k++) {
+    double fact = FMAX (my->err[k], SCALMX);
+    double work = fact * my->ab[k + 1];
+    if(work < wrkmin) {
+        scale = fact;
+        wrkmin = work;
+        my->kopt = k + 1;
     }
+  }
 
   my->hnext = h / scale;
 
-  if (my->kopt >= k && my->kopt != my->kmax && !reduct)
-    {
-      fact = FMAX (scale / my->alf[my->kopt - 1][my->kopt], SCALMX);
-      if (my->ab[my->kopt + 1] * fact <= wrkmin)
-	{
-	  my->hnext = h / fact;
-	  my->kopt++;
-	}
+  if(my->kopt >= k && my->kopt != my->kmax && !reduct) {
+    double fact = FMAX (scale / my->alf[my->kopt - 1][my->kopt], SCALMX);
+    if(my->ab[my->kopt + 1] * fact <= wrkmin) {
+      my->hnext = h / fact;
+      my->kopt++;
     }
+  }
 
-/*
-  free_vector (yseq, 1, nv);
-  free_vector (ysav, 1, nv);
-  free_vector (yerr, 1, nv);
-  free_vector (x, 1, KMAXX);
-  free_vector (err, 1, KMAXX);
-  free_matrix (dfdy, 1, nv, 1, nv);
-  free_vector (dfdx, 1, nv);
-  free_matrix (d, 1, nv, 1, KMAXX);
-  */
 }
