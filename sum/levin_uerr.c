@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gsl_math.h>
 #include <gsl_test.h>
 #include <gsl_errno.h>
@@ -53,7 +54,7 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
   else
     {
       const double SMALL = 0.01;
-      const size_t nmax = MAX (max_terms, array_size) - 1;
+      const size_t nmax = GSL_MAX (max_terms, array_size) - 1;
       double noise_n = 0.0, noise_nm1 = 0.0;
       double trunc_n = 0.0, trunc_nm1 = 0.0;
       double result_n = 0.0, result_nm1 = 0.0;
@@ -121,11 +122,8 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	  converging = converging || (better && before);
 	  before = better;
 
-	  printf("trun = %g  noise = %g\n", trunc_n, noise_n) ;
-
 	  if (converging)
 	    {
-
 	      if (trunc_n < least_trunc)
 		{
 		  /* Found a low truncation point in
@@ -136,12 +134,9 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 		  least_trunc_noise = noise_n;
 		}
 
-	      if (trunc_n < 3.0 * noise_n)
-		{
-		  printf("trun = %g < 3* noise = %g\n", trunc_n, noise_n) ;
-		  break;
-		}
-
+	      if (noise_n > trunc_n / 3.0)
+		break;
+	      
 	      if (trunc_n < 10.0 * GSL_MACH_EPS * fabs(result_n))
 		break;
 	    }
@@ -154,7 +149,8 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	     error estimate.  */
 
 	  *sum_accel = least_trunc_result;
-	  *precision = MAX(least_trunc,least_trunc_noise) / fabs(*sum_accel);
+	  *precision = (GSL_MAX(least_trunc,least_trunc_noise) 
+			/ fabs(*sum_accel));
 	  return GSL_SUCCESS;
 	}
       else
@@ -163,7 +159,7 @@ gsl_sum_levin_u_with_derivs_accel_minmax (const double *array,
 	     calculated values.  */
 
 	  *sum_accel = result_n;
-	  *precision = MAX(trunc_n, noise_n) / fabs(result_n);
+	  *precision = GSL_MAX(trunc_n, noise_n) / fabs(result_n);
 	  return GSL_SUCCESS;
 	}
     }
@@ -183,7 +179,7 @@ gsl_sum_levin_u_with_derivs_step (const double term,
 				  double *sum_plain)
 {
 
-#define IN(i,j) ((i)*nmax + j)
+#define IN(i,j) ((i)*(nmax+1) + j)
 
 
   if (n == 0)
@@ -216,10 +212,10 @@ gsl_sum_levin_u_with_derivs_step (const double term,
       for (i = 0; i < n; i++)
 	{
 	  dq_den[IN(i,n)] = 0;
-	  dq_num[IN(i,n)] = q_den[i] ;
+	  dq_num[IN(i,n)] = q_den[n] ;
 	}
 
-      dq_den[IN(n,n)] = -q_den[n]/ term;
+      dq_den[IN(n,n)] = -q_den[n] / term;
       dq_num[IN(n,n)] = q_den[n] + (*sum_plain) * (dq_den[IN(n,n)]);
 
       for (j = n - 1; j >= 0; j--)
@@ -243,8 +239,8 @@ gsl_sum_levin_u_with_derivs_step (const double term,
 
       for (i = 0; i <= n; i++)
 	{
-	  dsum[i] = ((dq_num[IN(i,0)] - q_num[0] * dq_den[IN(i,0)] / q_den[0]) 
-		     / q_den[0]);
+	  dsum[i] = (dq_num[IN(i,0)] / q_den[0] 
+		     - q_num[0] * dq_den[IN(i,0)] / (q_den[0] * q_den[0]));
 	}
 
       return GSL_SUCCESS;

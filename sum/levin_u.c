@@ -48,7 +48,7 @@ gsl_sum_levin_u_accel_minmax (const double *array, const size_t array_size,
   else
     {
       const double SMALL = 0.01;
-      const size_t nmax = MAX (max_terms, array_size) - 1;
+      const size_t nmax = GSL_MAX (max_terms, array_size) - 1;
       double trunc_n = 0.0, trunc_nm1 = 0.0;
       double result_n = 0.0, result_nm1 = 0.0;
       size_t n;
