@@ -4,7 +4,7 @@
 #include <gsl_vector.h>
 #include <gsl_test.h>
 
-int err_status = 0;
+int status = 0;
 
 #ifndef DESC
 #define DESC ""
@@ -178,5 +178,5 @@ my_error_handler (const char *reason, const char *file, int line, int err)
 {
   if (0)
     printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err);
-  err_status = 1;
+  status = 1;
 }
