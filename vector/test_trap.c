@@ -1,6 +1,8 @@
 #include <stdio.h>
 
-#define GSL_CHECK_RANGE yes
+#define GSL_CHECK_RANGE
+#define GSL_WARNINGS_OFF
+
 #include <gsl_vector.h>
 #include <gsl_test.h>
 
