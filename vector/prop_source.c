@@ -1,5 +1,5 @@
 int
-FUNCTION (gsl_vector, isnull) (TYPE (gsl_vector) * v)
+FUNCTION (gsl_vector, isnull) (const TYPE (gsl_vector) * v)
 {
   const size_t n = v->size;
   const size_t stride = v->stride ;

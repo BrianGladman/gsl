@@ -79,7 +79,7 @@ size_t gsl_vector_uint_min_index (const gsl_vector_uint * v);
 void gsl_vector_uint_minmax_index (const gsl_vector_uint * v, size_t * imin, size_t * imax);
 
 
-int gsl_vector_uint_isnull (gsl_vector_uint * v);
+int gsl_vector_uint_isnull (const gsl_vector_uint * v);
 
 extern int gsl_check_range;
 

@@ -1,5 +1,8 @@
 Wed Apr 26 14:17:14 2000  Brian Gough  <bjg@network-theory.co.uk>
 
+	* prop_source.c (FUNCTION): added const to argument of
+ 	gsl_vector_isnull
+
 	* init_source.c (FUNCTION): added gsl_vector_set_basis(v,i) to set
  	v to basis vector v = e_i  (0,0,...,1,...,0)
 

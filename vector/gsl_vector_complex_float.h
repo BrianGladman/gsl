@@ -85,7 +85,7 @@ int gsl_vector_complex_float_reverse (gsl_vector_complex_float * v);
 int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, gsl_vector_complex_float * w);
 int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const size_t i, const size_t j);
 
-int gsl_vector_complex_float_isnull (gsl_vector_complex_float * v);
+int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 
 extern int gsl_check_range;
 

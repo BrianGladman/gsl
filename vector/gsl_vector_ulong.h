@@ -79,7 +79,7 @@ size_t gsl_vector_ulong_min_index (const gsl_vector_ulong * v);
 void gsl_vector_ulong_minmax_index (const gsl_vector_ulong * v, size_t * imin, size_t * imax);
 
 
-int gsl_vector_ulong_isnull (gsl_vector_ulong * v);
+int gsl_vector_ulong_isnull (const gsl_vector_ulong * v);
 
 extern int gsl_check_range;
 
