@@ -95,7 +95,7 @@ LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
-Makefile.in NEWS TODO acconfig.h aclocal.m4 config.guess config.h.in \
+Makefile.in NEWS acconfig.h aclocal.m4 config.guess config.h.in \
 config.sub configure configure.in install-sh mdate-sh missing \
 mkinstalldirs stamp-h.in texinfo.tex
 
@@ -455,7 +455,7 @@ strict:
 
 # a flaky attempt to build a single libgsl.a file (can someone improve on it?)
 
-libgsl.a: err/libgslerr.a err/libgsltest.a fft/libgslfft.a histogram/libgslhistogram.a integration/libgslintegration.a matrix/libgslmatrix.a randist/libgslrandist.a random/libgslrancmrg.a random/libgslrandom.a random/libgslranmrg.a random/libgslranrand.a random/libgslrantaus.a random/libgslranuni.a random/libgslranuni32.a random/libgslranzuf.a roots/libgslroots.a siman/libgslsiman.a specfunc/libgslspecfunc.a statistics/libgslstatistics.a utils/libutils.a vector/libgslvector.a
+libgsl.a: 
 	for dir in $(SUBDIRS) ;\
 	do \
 	(cd $$dir ; \
