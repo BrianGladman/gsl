@@ -83,7 +83,7 @@ C***END PROLOGUE  UNI
 #include <gsl_rng.h>
 
 unsigned long int uni_get (void * vstate);
-void uni_set (void * state, unsigned int s);
+void uni_set (void * state, unsigned long int s);
 
 static const unsigned int MDIG=16;                /* Machine digits in int */
 static const unsigned int m1 = 32767;             /* 2^(MDIG-1) - 1 */
@@ -127,7 +127,7 @@ unsigned long uni_get (void * vstate)
     return k;
 }
 
-void uni_set(void * vstate, unsigned int s)
+void uni_set(void * vstate, unsigned long int s)
 {
   unsigned int i, seed, k0, k1, j0, j1;
   

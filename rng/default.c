@@ -5,7 +5,7 @@
 #include <gsl_rng.h>
 #include <gsl_errno.h>
 
-unsigned int gsl_rng_default_seed = 1 ;
+unsigned long int gsl_rng_default_seed = 1 ;
 const gsl_rng_type * gsl_rng_default ;
 
 static void 
@@ -14,7 +14,7 @@ check (const gsl_rng_type ** def, const gsl_rng_type * test, const char * p) ;
 int
 gsl_rng_env_setup (void)
 {
-  unsigned int seed = 1;
+  unsigned long int seed = 1;
   const char * p = getenv ("GSL_RNG_TYPE") ;
 
   if (p)
@@ -51,7 +51,7 @@ gsl_rng_env_setup (void)
    if (p) 
      {
        seed = strtoul(p, 0, 0) ;
-       printf("GSL_RNG_SEED=%u\n", seed) ;
+       printf("GSL_RNG_SEED=%lu\n", seed) ;
      } ;
 
    gsl_rng_default_seed = seed ;

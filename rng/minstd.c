@@ -22,22 +22,22 @@
    No 10, pages 1192-1201. */
 
 unsigned long int minstd_get (void * vstate);
-void minstd_set (void * state, unsigned int s);
+void minstd_set (void * state, unsigned long int s);
 
-static const int m = 2147483647, a = 16807, q = 127773, r = 2836 ;
+static const long int m = 2147483647, a = 16807, q = 127773, r = 2836 ;
 
 typedef struct {
-  unsigned int x ;
+  unsigned long int x ;
 } minstd_state_t ;
 
 unsigned long int minstd_get (void *vstate)
 {
     minstd_state_t * state = (minstd_state_t *)vstate;
 
-    const unsigned int x = state->x ;
+    const unsigned long int x = state->x ;
     
-    const int h  = x / q;    
-    const int t = a * (x - h * q) - h * r;
+    const long int h  = x / q;    
+    const long int t = a * (x - h * q) - h * r;
 
     if (t < 0) 
       {
@@ -52,7 +52,7 @@ unsigned long int minstd_get (void *vstate)
 }
 
 void 
-minstd_set(void * vstate, unsigned int s)
+minstd_set(void * vstate, unsigned long int s)
 {
   minstd_state_t * state = (minstd_state_t *) vstate;
   

@@ -14,28 +14,28 @@
    The period of this generator is 2^32. */
 
 unsigned long int vax_get (void * vstate);
-void vax_set (void * state, unsigned int s);
+void vax_set (void * state, unsigned long int s);
 void vax_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned int s);
+			 unsigned long int s);
 
-static const int a = 69069 ;
-static const int c = 1 ;
-static const unsigned int m = 4294967295UL ;
-static const int q = 62183 ;
-static const int r = 49669 ;
+static const long int a = 69069 ;
+static const long int c = 1 ;
+static const unsigned long int m = 4294967295UL ;
+static const long int q = 62183 ;
+static const long int r = 49669 ;
 
 typedef struct {
-  unsigned int x;
+  unsigned long int x;
 } vax_state_t ;
 
 unsigned long int vax_get (void *vstate)
 {
     vax_state_t * state = (vax_state_t *)vstate;
 
-    const unsigned int x = state->x ;
+    const unsigned long int x = state->x ;
 
-    const int h = x / q ;
-    const int t = a * (x - h * q) - h * r + c;
+    const long int h = x / q ;
+    const long int t = a * (x - h * q) - h * r + c;
 
     if (t < 0) 
       {
@@ -49,7 +49,7 @@ unsigned long int vax_get (void *vstate)
     return state->x;
 }
 
-void vax_set(void * vstate, unsigned int s)
+void vax_set(void * vstate, unsigned long int s)
 {
   vax_state_t * state = (vax_state_t *) vstate;
   

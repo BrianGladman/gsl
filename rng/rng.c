@@ -70,7 +70,7 @@ gsl_rng_clone (const gsl_rng * q)
   return r;
 }
 
-void gsl_rng_set (const gsl_rng * r, unsigned int seed)
+void gsl_rng_set (const gsl_rng * r, unsigned long int seed)
 {
   (r->set)(r->state, seed) ;
 }

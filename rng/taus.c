@@ -33,10 +33,10 @@
    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/tausme.ps */
 
 unsigned long int taus_get (void * vstate);
-void taus_set (void * state, unsigned int s);
+void taus_set (void * state, unsigned long int s);
 
 typedef struct {
-    unsigned int s1, s2, s3;
+    unsigned long int s1, s2, s3;
 } taus_state_t ;
 
 unsigned long taus_get(void * vstate)
@@ -54,7 +54,7 @@ unsigned long taus_get(void * vstate)
 /* LCG is a "quick and dirty" (Press et al, p284) generator */ 
 #define LCG(n) ((n)*8121+28411)%134456
 
-void taus_set(void * vstate, unsigned int s)
+void taus_set(void * vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding!  L'Ecuyer suggests: s1,s2,s3 >=
      2,8,16, and says "In practice, it is better to take larger

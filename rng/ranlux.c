@@ -35,13 +35,13 @@
     Communications, 101 (1997) 249-253  */
 
 unsigned long int ranlux_get (void * vstate);
-void ranlux_set_impl (void * state, unsigned int s, unsigned int luxury);
-void ranlux_set (void * state, unsigned int s);
-void ranlux389_set (void * state, unsigned int s);
+void ranlux_set_impl (void * state, unsigned long int s, unsigned int luxury);
+void ranlux_set (void * state, unsigned long int s);
+void ranlux389_set (void * state, unsigned long int s);
 
-static const unsigned int mask_lo =  0x00ffffffUL ; /* 2^24 - 1 */
-static const unsigned int mask_hi = ~0x00ffffffUL ; 
-static const unsigned int two24 = 16777216 ; /* 2^24 */
+static const unsigned long int mask_lo =  0x00ffffffUL ; /* 2^24 - 1 */
+static const unsigned long int mask_hi = ~0x00ffffffUL ; 
+static const unsigned long int two24 = 16777216 ; /* 2^24 */
 
 typedef struct {
   unsigned int i;
@@ -49,17 +49,17 @@ typedef struct {
   unsigned int n;
   unsigned int skip;
   unsigned int carry;
-  unsigned int u[24];
+  unsigned long int u[24];
 } ranlux_state_t;
 
-static inline unsigned int increment_state (ranlux_state_t * state) ;
+static inline unsigned long int increment_state (ranlux_state_t * state) ;
 
 unsigned long int 
 ranlux_get (void *vstate)
 {
     ranlux_state_t * state = (ranlux_state_t *) vstate;
     const unsigned int skip = state->skip ;
-    unsigned int r = increment_state(state) ;
+    unsigned long int r = increment_state(state) ;
 
     state->n++ ;
 
@@ -74,12 +74,12 @@ ranlux_get (void *vstate)
     return r;
 }    
 
-static inline unsigned int  
+static inline unsigned long int  
 increment_state (ranlux_state_t * state)
 {
   unsigned int i = state->i ;
   unsigned int j = state->j ;
-  int delta = state->u[j] - state->u[i] - state->carry;
+  long int delta = state->u[j] - state->u[i] - state->carry;
 
   if (delta & mask_hi) 
     {
@@ -120,16 +120,16 @@ increment_state (ranlux_state_t * state)
 
 
 void 
-ranlux_set_impl (void * vstate, unsigned int s, unsigned int luxury)
+ranlux_set_impl (void * vstate, unsigned long int s, unsigned int luxury)
 {
   ranlux_state_t * state = (ranlux_state_t *) vstate;
   int i ;
 
-  int seed = s ;
+  long int seed = s ;
 
   for (i = 0; i < 24; i++)
     {
-      unsigned int k = seed / 53668 ;
+      unsigned long int k = seed / 53668 ;
       seed = 40014 * (seed - k * 53668) - k * 12211 ;
       if (seed < 0)
 	{
@@ -153,12 +153,12 @@ ranlux_set_impl (void * vstate, unsigned int s, unsigned int luxury)
     }
 } 
 
-void ranlux_set(void * vstate, unsigned int s)
+void ranlux_set(void * vstate, unsigned long int s)
 {
   ranlux_set_impl(vstate, s, 223) ;
 } 
 
-void ranlux389_set(void * vstate, unsigned int s)
+void ranlux389_set(void * vstate, unsigned long int s)
 {
   ranlux_set_impl(vstate, s, 389) ;
 } 

@@ -122,7 +122,7 @@ C
 #include <gsl_rng.h>
 
 unsigned long int rand_get (void * vstate);
-void rand_set (void * state, unsigned int s);
+void rand_set (void * state, unsigned long int s);
 
 typedef struct {
     long int x0, x1;
@@ -149,7 +149,7 @@ unsigned long int rand_get (void *vstate)
     return state->x1 * 2048 + state->x0;
 }
 
-void rand_set(void * vstate, unsigned int s)
+void rand_set(void * vstate, unsigned long int s)
 {
   rand_state_t * state = (rand_state_t *) vstate;
   

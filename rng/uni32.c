@@ -83,11 +83,11 @@ C***END PROLOGUE  UNI
 #include <gsl_rng.h>
 
 unsigned long int uni32_get (void * vstate);
-void uni32_set (void * state, unsigned int s);
+void uni32_set (void * state, unsigned long int s);
 
-static const unsigned int MDIG=32;                /* Machine digits in int */
-static const unsigned int m1 = 2147483647;        /* 2^(MDIG-1) - 1 */
-static const unsigned int m2 = 65536;             /* 2^(MDIG/2) */
+static const unsigned long int MDIG=32;            /* Machine digits in int */
+static const unsigned long int m1 = 2147483647;    /* 2^(MDIG-1) - 1 */
+static const unsigned long int m2 = 65536;         /* 2^(MDIG/2) */
 
 typedef struct {
     int i,j;
@@ -97,8 +97,8 @@ typedef struct {
 unsigned long uni32_get (void * vstate)
 {
     uni32_state_t * state = (uni32_state_t *) vstate;
-    const int i = state->i ;
-    const int j = state->j ;
+    const long int i = state->i ;
+    const long int j = state->j ;
 
     /* important k not be unsigned */
     long k = state->m[i] - state->m[j];
@@ -127,9 +127,10 @@ unsigned long uni32_get (void * vstate)
     return k;
 }
 
-void uni32_set(void * vstate, unsigned int s)
+void uni32_set(void * vstate, unsigned long int s)
 {
-  unsigned int i, seed, k0, k1, j0, j1;
+  unsigned long int seed, k0, k1, j0, j1 ;
+  int i;
   
   uni32_state_t * state = (uni32_state_t *) vstate;
   

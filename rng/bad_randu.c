@@ -21,27 +21,27 @@
    No 10, pages 1192-1201. */
 
 unsigned long int bad_randu_get (void * vstate);
-void bad_randu_set (void * state, unsigned int s);
+void bad_randu_set (void * state, unsigned long int s);
 void bad_randu_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned int s);
+			 unsigned long int s);
 
-static const int a = 65539 ;
+static const long int a = 65539 ;
 static const unsigned long int m = 2147483648UL ;
-static const int q = 32766 ;
-static const int r = 32774 ;
+static const long int q = 32766 ;
+static const long int r = 32774 ;
 
 typedef struct {
-  unsigned int x;
+  unsigned long int x;
 } bad_randu_state_t ;
 
 unsigned long int bad_randu_get (void *vstate)
 {
     bad_randu_state_t * state = (bad_randu_state_t *)vstate;
 
-    const unsigned int x = state->x ;
+    const unsigned long int x = state->x ;
 
-    const int h = x / q ;
-    const int t = a * (x - h * q) - h * r ;
+    const long int h = x / q ;
+    const long int t = a * (x - h * q) - h * r ;
 
     if (t < 0) 
       {
@@ -55,7 +55,7 @@ unsigned long int bad_randu_get (void *vstate)
     return state->x;
 }
 
-void bad_randu_set(void * vstate, unsigned int s)
+void bad_randu_set(void * vstate, unsigned long int s)
 {
   bad_randu_state_t * state = (bad_randu_state_t *) vstate;
   

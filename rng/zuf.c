@@ -3,14 +3,14 @@
 #include <gsl_rng.h>
 
 unsigned long int zuf_get (void * vstate);
-void zuf_set (void * state, unsigned int s);
+void zuf_set (void * state, unsigned long int s);
 
 /* It is crucial that m == n-273 mod 607 at all times;
    For speed of execution, however, this is never enforced.
    Instead is is set in the initializer: note 607-273=334
    Note also that the state.u[607] is not initialized */
 
-static const unsigned int zuf_randmax = 16777216 ; /* 2^24 */
+static const unsigned long int zuf_randmax = 16777216 ; /* 2^24 */
 
 typedef struct {
     int n;
@@ -45,20 +45,20 @@ unsigned long int zuf_get (void *vstate)
     return t;
 }    
 
-void zuf_set(void * vstate, unsigned int s)
+void zuf_set(void * vstate, unsigned long int s)
 {
   /* A very elaborate seeding procedure is provided with the
      zufall package; this is virtually a copy of that procedure */
     
   /* Initialized data */
   
-  int kl = 9373;
-  int ij = 1802;
+  long int kl = 9373;
+  long int ij = 1802;
   
   /* Local variables */
-  int i, j, k, l, m;
+  long int i, j, k, l, m;
   double x, y;
-  int ii, jj;
+  long int ii, jj;
   
   zuf_state_t * state = (zuf_state_t *) vstate;
   

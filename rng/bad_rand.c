@@ -17,28 +17,28 @@
    numbers are correlated. */
 
 unsigned long int bad_rand_get (void * vstate);
-void bad_rand_set (void * state, unsigned int s);
+void bad_rand_set (void * state, unsigned long int s);
 void bad_rand_set_with_state (void * vstate, const void * vinit_state,
-			 unsigned int s);
+			 unsigned long int s);
 
 static const unsigned long int m = 2147483648UL ;
-static const int a = 1103515245 ;
-static const int q = 2 ;
-static const int r = -59546842 ;
-static const int c = 12345 ;
+static const long int a = 1103515245 ;
+static const long int q = 2 ;
+static const long int r = -59546842 ;
+static const long int c = 12345 ;
 
 typedef struct {
-  unsigned int x;
+  unsigned long int x;
 } bad_rand_state_t ;
 
 unsigned long int bad_rand_get (void *vstate)
 {
     bad_rand_state_t * state = (bad_rand_state_t *)vstate;
 
-    const unsigned int x = state->x ;
+    const unsigned long int x = state->x ;
 
-    const int h  = x / q;    
-    const int t = a * (x - h * q) - h * r + c;
+    const long int h  = x / q;    
+    const long int t = a * (x - h * q) - h * r + c;
 
     if (t < 0) 
       {
@@ -53,7 +53,7 @@ unsigned long int bad_rand_get (void *vstate)
 }
 
 
-void bad_rand_set(void * vstate, unsigned int s)
+void bad_rand_set(void * vstate, unsigned long int s)
 {
   bad_rand_state_t * state = (bad_rand_state_t *) vstate;
   

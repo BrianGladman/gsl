@@ -3,7 +3,7 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-void rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n, 
+void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n, 
 	       unsigned long int result);
 void generic_rng_test (const gsl_rng_type * T);
 
@@ -48,7 +48,7 @@ main (void)
 void
 generic_rng_test (const gsl_rng_type * T)
 {
-  int n = 1000000;
+  long int n = 1000000;
 
   gsl_rng *r = gsl_rng_alloc (T);
   const unsigned long int ran_max = gsl_rng_max (r);
@@ -111,7 +111,7 @@ generic_rng_test (const gsl_rng_type * T)
 
 
 void 
-rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n, 
+rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n, 
 	  unsigned long int result)
 {
   gsl_rng * r = gsl_rng_alloc (T);

@@ -32,9 +32,9 @@
    Modeling and Computer Simulation 3, 87-98 (1993). */
 
 unsigned long int mrg_get (void * vstate);
-void mrg_set (void * state, unsigned int s);
+void mrg_set (void * state, unsigned long int s);
 
-static const int m = 2147483647,
+static const long int m = 2147483647,
   a1 = 107374182,   q1 = 20,      r1 = 7,
   a5 = 104480,      q5 = 20554,   r5 = 1727;
 
@@ -66,7 +66,7 @@ unsigned long int mrg_get (void *vstate)
 
 #define LCG(n) ((n)*8121+28411)%134456
 
-void mrg_set(void * vstate, unsigned int s)
+void mrg_set(void * vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding! This does **not** come from
      L'Ecuyer et al */

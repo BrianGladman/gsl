@@ -1,5 +1,9 @@
 Sat Jun 20 13:58:40 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* ensured that 32 bit quantities are defined as 'long', as
+ 	required by ANSI. On a 16 bit platform 'int' is usually just 16
+ 	bits.
+	
 	* ranlux.c: added the RANLUX generator
 
 Fri Jun 19 11:12:06 1998  Brian Gough  <bjg@vvv.lanl.gov>

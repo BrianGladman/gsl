@@ -49,14 +49,14 @@
     ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
 
 unsigned long int cmrg_get (void * vstate);
-void cmrg_set (void * state, unsigned int s);
+void cmrg_set (void * state, unsigned long int s);
 
-static const int m1 = 2147483647, m2 = 2145483479;
+static const long int m1 = 2147483647, m2 = 2145483479;
 
-static const int a12 =   63308, q12 = 33921, r12 = 12979,
-                 a13 = -183326, q13 = 11714, r13 =  2883,
-                 a21 =   86098, q21 = 24919, r21 =  7417,
-                 a23 = -539608, q23 =  3976, r23 =  2071 ;
+static const long int a12 =   63308, q12 = 33921, r12 = 12979,
+                      a13 = -183326, q13 = 11714, r13 =  2883,
+                      a21 =   86098, q21 = 24919, r21 =  7417,
+                      a23 = -539608, q23 =  3976, r23 =  2071 ;
 
 typedef struct {
   long int x10, x11, x12;           /* first component */
@@ -65,7 +65,7 @@ typedef struct {
 
 unsigned long int cmrg_get (void * vstate)
 {
-  int h,p12,p13,p21,p23;
+  long int h, p12, p13, p21, p23;
   cmrg_state_t * state = (cmrg_state_t *) vstate;
   
   /* Component 1 */
@@ -96,7 +96,7 @@ unsigned long int cmrg_get (void * vstate)
     return (state->x12 - state->x22);
 }
 
-void cmrg_set(void * vstate, unsigned int s)
+void cmrg_set(void * vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding! This does **not** come from
      L'Ecuyer et al */
