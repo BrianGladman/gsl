@@ -338,9 +338,9 @@ int gsl_sf_bessel_il_scaled_array_e(int lmax, double x, double * result_array);
  *
  * exceptions: none
  */
-int gsl_sf_bessel_k0_scaled_impl(double x, double * result);
-int gsl_sf_bessel_k0_scaled_e(double x, double * result);
-double gsl_sf_bessel_k0_scaled(double x);
+int     gsl_sf_bessel_k0_scaled_impl(double x, double * result);
+int     gsl_sf_bessel_k0_scaled_e(double x, double * result);
+double  gsl_sf_bessel_k0_scaled(double x);
 
 
 /* Irregular modified spherical Bessel function k_1(x)
@@ -408,7 +408,7 @@ int gsl_sf_bessel_JnuYnu_scaled_impl(double numin, double x, int kmax,
                                      double * result_Jp_array,
                                      double * result_Yp_array);
 
- 
+
 /* Regular cylindrical Bessel functions J_nu(x) */
 int     gsl_sf_bessel_Jnu_e(double nu, double x, double * result);
 double  gsl_sf_bessel_Jnu(double nu, double x);

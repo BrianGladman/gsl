@@ -116,6 +116,11 @@ int check_airy(void)
 
 int check_bessel(void)
 {
+  const int nmax = 100;
+  double J[nmax+1], Jp[nmax+1];
+  double Y[nmax+1], Yp[nmax+1];
+  double I[nmax+1], Ip[nmax+1];
+  double K[nmax+1], Kp[nmax+1];
   int status = 0;
   int s;
 
@@ -220,6 +225,13 @@ int check_bessel(void)
   gsl_test(s, "  gsl_sf_bessel_Jnu");
   status += s;
 
+  s = 0;
+  gsl_sf_bessel_InuKnu_scaled_impl(2.0/3.0, 1.0, nmax, &I, &K, &Ip, &Kp);
+  s += ( frac_diff(I[0], 0.29707048038646619444 )  > 1.e-12 );
+  s += ( frac_diff(K[0], 1.3441225759440271958  )  > 1.e-12 );
+  gsl_test(s, "  gsl_sf_bessel_InuKnu_scaled");
+  printf("%22.18g  %22.18g\n", I[0], K[0]);
+  status += s;
 
   return status;
 }
