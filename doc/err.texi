@@ -1,11 +1,11 @@
 @cindex error handling
 @cindex GSL, error handling
 This chapter describes the way that GSL functions report and handle
-errors.  By examining the status information returned by every GSL
-function you can determine whether it succeeded or failed, and if it
-failed you can find out what the precise cause of failure was.  You can
-also define your own error handling functions to modify the default
-behavior of the library.  
+errors.  By examining the status information returned by every function
+you can determine whether it succeeded or failed, and if it failed you
+can find out what the precise cause of failure was.  You can also define
+your own error handling functions to modify the default behavior of the
+library.
 
 The functions described in this section are declared in the header file
 @file{gsl_errno.h}.
@@ -26,8 +26,8 @@ The functions described in this section are declared in the header file
 @node Error Reporting
 @section Error Reporting
 
-GSL follows the thread-safe error reporting conventions of the @sc{posix}
-Threads library.  Functions in GSL return a non-zero error code to
+The library follows the thread-safe error reporting conventions of the
+@sc{posix} Threads library.  Functions return a non-zero error code to
 indicate an error and @code{0} to indicate success.
 
 @example
@@ -39,14 +39,14 @@ if (status) @{ /* an error occurred */
 @}
 @end example
 
-GSL routines report an error whenever they cannot perform the task
+The routines report an error whenever they cannot perform the task
 requested of them.  For example, a root-finding function would return a
 non-zero error code if could not converge to the requested accuracy, or
-exceeded a limit on the number of iterations.  Situations like this are a
-normal occurrence when using any mathematical library and you should
-check the return status of the GSL functions that you call.
+exceeded a limit on the number of iterations.  Situations like this are
+a normal occurrence when using any mathematical library and you should
+check the return status of the functions that you call.
 
-Whenever a GSL routine reports an error the return value specifies the
+Whenever a routine reports an error the return value specifies the
 type of error.  The return value is analogous to the value of the
 variable @code{errno} in the C library.  However, the C library's
 @code{errno} is a global variable, which is not thread-safe (There can
@@ -213,9 +213,9 @@ old_handler = gsl_set_error_handler (NULL);
 @deftypefun gsl_error_handler_t gsl_set_error_handler_off ()
 This function turns off the error handler by defining an error handler
 which does nothing. This will cause the program to continue after any
-error, so the return values from GSL routines must be checked.  This is
-the recommended behavior for production programs.  The previous handler
-is returned (so that you can restore it later).
+error, so the return values from any library routines must be checked.
+This is the recommended behavior for production programs.  The previous
+handler is returned (so that you can restore it later).
 @end deftypefun
 
 The error behavior can be changed for specific applications by
