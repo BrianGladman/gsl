@@ -1,0 +1,33 @@
+This chapter describes functions for performing interpolation.
+
+@deftypefun gsl_interp_accel * gsl_interp_accel_new(void)
+@end deftypefun
+
+@deftypefun size_t gsl_interp_accel_find(gsl_interp_accel * @var{a}, const double x_array[], size_t @var{size}, double @var{x})
+@end deftypefun
+
+@deftypefun int gsl_interp_eval_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefunx int gsl_interp_eval_e(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@end deftypefun
+
+@deftypefun double gsl_interp_eval(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+@end deftypefun
+
+@deftypefun int gsl_interp_eval_deriv_impl(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@end deftypefun
+
+@deftypefun int gsl_interp_eval_deriv_e(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@end deftypefun
+
+@deftypefun double gsl_interp_eval_deriv(const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
+@end deftypefun
+
+@deftypefun void gsl_interp_obj_free(gsl_interp_obj * @var{interp_obj})
+@end deftypefun
+
+
+
+
+
+
+

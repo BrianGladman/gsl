@@ -154,10 +154,11 @@ This file documents the @value{GSL}, a collection of numerical
 routines for scientific computing.
 
 As of @value{UPDATED}, the complete packages are the random number suite
-(@pxref{Random Number Generation}), the FFT package (@pxref{FFTs}), the
-simulated annealing package (@pxref{Simulated Annealing}) and the root
-finding package (@pxref{Root finding}).  Work is under way on a special
-function library and numerical integration.
+(@pxref{Random Number Generation}), the quadrature package
+(@pxref{Numerical Integration}), the FFT package (@pxref{Fast Fourier
+Transforms}), the simulated annealing package (@pxref{Simulated
+Annealing}) and the root finding package (@pxref{Solutions of Nonlinear
+Equations}).  Work is under way on a special function library.
 @end ifinfo
 
 @menu
@@ -166,10 +167,13 @@ function library and numerical integration.
 * Error handling in GSL::       
 * Random Number Generation::    
 * Random Number Distributions::  
-* Statistics::                  
-* FFTs::                        
-* Root finding::                
+* Statistics::
+* Fast Fourier Transforms::     
+* Solutions of Nonlinear Equations::  
+* Roots of Polynomials::        
 * Special Functions::           
+* Discrete Hankel Transforms::  
+* Interpolation::               
 * Series Acceleration::         
 * Simulated Annealing::         
 * Vectors and Matrices::        
@@ -217,27 +221,43 @@ allowing wrappers to be written for very high level languages.
 @include randist.texi
 
 @comment Section on statistics
-@node Statistics, FFTs, Random Number Distributions, Top
+@node Statistics, Fast Fourier Transforms, Random Number Distributions, Top
 @chapter Statistics
 @include statistics.texi
 
 @comment Section on FFTs
-@node FFTs, Root finding, Statistics, Top
+@node Fast Fourier Transforms, Solutions of Nonlinear Equations, Statistics, Top
 @chapter Fast Fourier Transforms (FFTs)
 @include fft.texi
 
 @comment Section on root finding
-@node Root finding, Special Functions, FFTs, Top
-@chapter Root finding
+@node  Solutions of Nonlinear Equations, Roots of Polynomials, Fast Fourier Transforms, Top
+@chapter Solutions of Nonlinear Equations
 @include roots.texi
 
+@comment Section on polynomial root finding
+@node  Roots of Polynomials, Special Functions, Solutions of Nonlinear Equations, Top
+@chapter Roots of Polynomials
+@include poly.texi
+
+
 @comment Section on special functions
-@node Special Functions, Series Acceleration, Root finding, Top
+@node Special Functions, Discrete Hankel Transforms, Roots of Polynomials, Top
 @chapter Special Functions
 @include specfunc.texi
 
+@comment Section on Discrete Hankel Transforms
+@node  Discrete Hankel Transforms, Interpolation, Special Functions, Top
+@chapter Discrete Hankel Transforms
+@include dht.texi
+
+@comment Section on Interpolation
+@node   Interpolation, Series Acceleration, Discrete Hankel Transforms, Top
+@chapter Interpolation
+@include interp.texi
+
 @comment Section on series acceleration
-@node Series Acceleration, Simulated Annealing, Special Functions, Top
+@node Series Acceleration, Simulated Annealing, Interpolation, Top
 @chapter Series Acceleration
 @include sum.texi
 

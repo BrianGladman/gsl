@@ -1,0 +1,48 @@
+This chapter describes functions for solving polynomials.
+
+@menu
+* Quadratic equations::         
+* Cubic equations::             
+@end menu
+
+
+@node  Quadratic equations
+@section Quadratic equations
+
+
+@deftypefun int gsl_poly_solve_quadratic (double a, double b, double c, double x[])
+This function solves the quadratic equation
+
+@tex
+\beforedisplay
+$$
+a x^2 + b x + c = 0
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+a x^2 + b x + c = 0
+@end example
+@end ifinfo
+
+@noindent
+
+
+
+@end deftypefun
+
+
+@deftypefun int gsl_poly_complex_solve_quadratic (double a, double b, double c, gsl_complex z[])
+@end deftypefun
+
+
+@node Cubic equations
+@section Cubic equations
+
+@deftypefun int gsl_poly_solve_cubic (double a, double b, double c, double x[])
+@end deftypefun
+
+@deftypefun int gsl_poly_complex_solve_cubic (double a, double b, double c, gsl_complex z[])
+@end deftypefun
+
