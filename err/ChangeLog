@@ -1,3 +1,8 @@
+Sun Mar  7 17:00:08 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* gsl_errno.h, test_errnos.c, strerror.c: added GSL_EDIVERGE for
+ 	divergent integrals and series
+
 Sat Feb 20 12:14:47 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* test_errnos.c (main): added the new error codes to the tests

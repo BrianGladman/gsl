@@ -54,6 +54,8 @@ gsl_strerror (const int gsl_errno)
       return "matrix not square" ;
     case GSL_ESING:
       return "singularity or extremely bad function behavior detected" ;
+    case GSL_EDIVERGE:
+      return "integral or series is divergent" ;
     case GSL_EUNSUP:
       return "the required feature is not supported by this hardware platform";
     case GSL_EUNIMPL:

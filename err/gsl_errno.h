@@ -29,8 +29,9 @@ enum {
   GSL_EBADLEN  = 19,  /* matrix, vector lengths are not conformant */
   GSL_ENOTSQR  = 20,  /* matrix not square */
   GSL_ESING    = 21,  /* apparent singularity detected */
-  GSL_EUNSUP   = 22,  /* requested feature is not supported by the hardware */
-  GSL_EUNIMPL  = 23   /* requested feature not (yet) implemented */
+  GSL_EDIVERGE = 22,  /* integral or series is divergent */
+  GSL_EUNSUP   = 23,  /* requested feature is not supported by the hardware */
+  GSL_EUNIMPL  = 24   /* requested feature not (yet) implemented */
 } ;
 
 void gsl_error (const char * reason, const char * file, int line,
