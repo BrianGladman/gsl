@@ -13,7 +13,7 @@ static const long m = 2147483647,
     a1 = 107374182,   q1 = 20,      r1 = 7,
     a5 = 104480,      q5 = 20554,   r5 = 1727;
 
-static const double  Invmp1 = 4.656612873077393e-10; /* = 1/m */
+#define gsl_ran_mrg_RANDMAX 2147483647
 
 typedef struct {
     long x1,x2,x3,x4,x5;
@@ -47,18 +47,6 @@ unsigned long gsl_ran_mrg_random_wstate(void *vState)
     return theState->x1;
 }
 
-inline double gsl_ran_mrg_uniform_wstate(void *vState)
-{
-    long Z;
-    Z = gsl_ran_mrg_random_wstate(vState);
-    if (Z == 0) Z = m;
-    return (Z * Invmp1);
-}
-
-inline double gsl_ran_mrg_max(void)
-{
-    return (double)m;
-}
 /* LCG is a "quick and dirty" (Press et al, p284) generator 
  */ 
 #define LCG(n) ((n)*8121+28411)%134456

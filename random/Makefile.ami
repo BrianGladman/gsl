@@ -1,9 +1,10 @@
-## $Id$
-## This file is a template for Makefile.am (which is a template for 
-## Makefile.in, which is a template for Makefile...) 
-## You can bootstrap your way to a regular
-## Makefile with 'make -f Makefile.ami Makefile.am' followed by the usual
-## automake/configure routines
+### $Id$
+### This file is a template for Makefile.am (which is a template for 
+### Makefile.in, which is a template for Makefile...) 
+
+### You can bootstrap your way to a regular Makefile with 
+###     make -f Makefile.ami Makefile.am
+### followed by the usual automake/configure routines
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
@@ -13,53 +14,30 @@ FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
-gauss_SOURCES= rungauss.c gauss.c
-test_gauss_SOURCES= test-gauss.c gauss.c
-bench_gauss_SOURCES= bench-gauss.c gauss.c
-
-gauss_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-test_gauss_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-bench_gauss_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-
-poisson_SOURCES= runpoisson.c poisson.c
-test_poisson_SOURCES= test-poisson.c poisson.c
-bench_poisson_SOURCES= bench-poisson.c poisson.c
-
-poisson_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-test_poisson_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-bench_poisson_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-
 test_switch_SOURCES= test-switch.c switch.c 
 
-switch.c gsl_ran_switch.h: switch.xc makeswitch
+switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
 	makeswitch $(ALLRAN) 
 
 ## The user doesn't really _need_ these, but 'make all' does,
 ## and probably it is fair for the user to have them, since that
 ## permits him/her to contribute to the project!!
 ##
-EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
+EXTRA_DIST= xxx-switch.xc makeswitch xxx-gen.xc xxx-state.xc \
 	makeam Makefile.ami $(BUILT_SOURCES)
 
 CLEANFILES= tmp.out tmp.in
+
+tooclean: clean
+	/bin/rm -f $(BUILT_SOURCES)
+	/bin/rm -rf .deps
 
 ## The rest of the Makefile.am is generated from the script 'makeam'
 ## which includes numerous loops over $(ALLRAN)
 
 Makefile.am: Makefile.ami makeam
-	cat Makefile.ami    > Makefile.am
+	cat Makefile.ami   | egrep -v '^###' > Makefile.am
 	./makeam $(ALLRAN) >> Makefile.am
-
-
-## need to automake'ify...somehow
-
-test-shuffle: test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-	$(LINK) -o $@ test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o -lm
-
-test-shuffle.o: shuffle.c
-	$(COMPILE) -c -DMAIN -o $@ shuffle.c
-
-
 
 
 

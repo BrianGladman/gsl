@@ -5,7 +5,7 @@
 
 
 list="$*"
-auxlist="gauss poisson"
+auxlist=""
 auxbin="test-switch"
 
 echo -n "bin_PROGRAMS= "
@@ -23,11 +23,11 @@ done
 echo ""
 echo ""
 for i in $list; do
-    echo "libgslran${i}_a_SOURCES= $i.c $i-gen.c gauss.c "
+    echo "libgslran${i}_a_SOURCES= $i.c $i-gen.c "
 done
 echo ""
 
-echo -n "libgslrandom_a_SOURCES= switch.c shuffle.c "
+echo -n "libgslrandom_a_SOURCES= switch.c "
 for i in $list $auxlist; do
     echo -n "$i.c "
 done
@@ -61,20 +61,18 @@ echo ""
 
 for i in $list; do
     echo "$i-state.c: xxx-state.xc"
-    echo "	sed s/gsl_ran_xxx_/gsl_ran_${i}_/g xxx-state.xc > \$@"
+    echo "	sed s/gsl_ran_XXX_/gsl_ran_${i}_/g xxx-state.xc > \$@"
     echo "$i.h: gsl_ran.h"
     echo "	sed s/gsl_ran_/gsl_ran_${i}_/g gsl_ran.h > \$@"
     echo "$i-gen.c: xxx-gen.xc"
-    echo "	sed s/xxx/$i/g xxx-gen.xc > \$@"
+    echo "	sed s/XXX/$i/g xxx-gen.xc > \$@"
 done
 echo ""
 
-## Cleanup..
 echo -n "BUILT_SOURCES= "
-echo -n "switch.c gsl_ran_switch.h "
 for i in $list; do
-    echo -n "$i-state.c $i.h $i-gen.c "
+    echo -n "$i.h $i-state.c $i-gen.c "
 done
-
+echo -n "gsl_ran_switch.h switch.c"
 
 ##

@@ -86,6 +86,7 @@ static const int MDIG=16;                /* Machine digits in int */
 static const int m1 = 32767;             /* 2^(MDIG-1) - 1 */
 static const int m2 = 256;               /* 2^(MDIG/2) */
 
+#define gsl_ran_uni_RANDMAX 32767 /*m1*/
 
 typedef struct {
     int i,j;
@@ -119,14 +120,6 @@ inline unsigned long gsl_ran_uni_random_wstate(void *vState)
 
     return k;
 
-}
-inline double gsl_ran_uni_uniform_wstate(void *vState)
-{
-    return (double)gsl_ran_uni_random_wstate(vState)/m1;
-}
-double gsl_ran_uni_max()
-{
-    return (double)m1;
 }
 
 void gsl_ran_uni_seed_wstate(void *vState, int jd)

@@ -1,9 +1,10 @@
-## $Id$
-## This file is a template for Makefile.am (which is a template for 
-## Makefile.in, which is a template for Makefile...) 
-## You can bootstrap your way to a regular
-## Makefile with 'make -f Makefile.ami Makefile.am' followed by the usual
-## automake/configure routines
+### $Id$
+### This file is a template for Makefile.am (which is a template for 
+### Makefile.in, which is a template for Makefile...) 
+
+### You can bootstrap your way to a regular Makefile with 
+###     make -f Makefile.ami Makefile.am
+### followed by the usual automake/configure routines
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
@@ -13,69 +14,46 @@ FAVORITERAN= taus
 
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
-gauss_SOURCES= rungauss.c gauss.c
-test_gauss_SOURCES= test-gauss.c gauss.c
-bench_gauss_SOURCES= bench-gauss.c gauss.c
-
-gauss_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-test_gauss_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-bench_gauss_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-
-poisson_SOURCES= runpoisson.c poisson.c
-test_poisson_SOURCES= test-poisson.c poisson.c
-bench_poisson_SOURCES= bench-poisson.c poisson.c
-
-poisson_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-test_poisson_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-bench_poisson_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-
 test_switch_SOURCES= test-switch.c switch.c 
 
-switch.c gsl_ran_switch.h: switch.xc makeswitch
+switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
 	makeswitch $(ALLRAN) 
 
 ## The user doesn't really _need_ these, but 'make all' does,
 ## and probably it is fair for the user to have them, since that
 ## permits him/her to contribute to the project!!
 ##
-EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
+EXTRA_DIST= xxx-switch.xc makeswitch xxx-gen.xc xxx-state.xc \
 	makeam Makefile.ami $(BUILT_SOURCES)
 
 CLEANFILES= tmp.out tmp.in
+
+tooclean: clean
+	/bin/rm -f $(BUILT_SOURCES)
+	/bin/rm -rf .deps
 
 ## The rest of the Makefile.am is generated from the script 'makeam'
 ## which includes numerous loops over $(ALLRAN)
 
 Makefile.am: Makefile.ami makeam
-	cat Makefile.ami    > Makefile.am
+	cat Makefile.ami   | egrep -v '^###' > Makefile.am
 	./makeam $(ALLRAN) >> Makefile.am
 
 
-## need to automake'ify...somehow
 
-test-shuffle: test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o
-	$(LINK) -o $@ test-shuffle.o $(FAVORITERAN).o $(FAVORITERAN)-gen.o -lm
-
-test-shuffle.o: shuffle.c
-	$(COMPILE) -c -DMAIN -o $@ shuffle.c
-
-
-
-
-
-bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss poisson test-poisson bench-poisson test-switch 
+bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
 
 lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
 
-libgslrantaus_a_SOURCES= taus.c taus-gen.c gauss.c 
-libgslranmrg_a_SOURCES= mrg.c mrg-gen.c gauss.c 
-libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c gauss.c 
-libgslranuni_a_SOURCES= uni.c uni-gen.c gauss.c 
-libgslranuni32_a_SOURCES= uni32.c uni32-gen.c gauss.c 
-libgslranzuf_a_SOURCES= zuf.c zuf-gen.c gauss.c 
-libgslranrand_a_SOURCES= rand.c rand-gen.c gauss.c 
+libgslrantaus_a_SOURCES= taus.c taus-gen.c 
+libgslranmrg_a_SOURCES= mrg.c mrg-gen.c 
+libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c 
+libgslranuni_a_SOURCES= uni.c uni-gen.c 
+libgslranuni32_a_SOURCES= uni32.c uni32-gen.c 
+libgslranzuf_a_SOURCES= zuf.c zuf-gen.c 
+libgslranrand_a_SOURCES= rand.c rand-gen.c 
 
-libgslrandom_a_SOURCES= switch.c shuffle.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c gauss.c poisson.c 
+libgslrandom_a_SOURCES= switch.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c 
 
 test_switch_DEPENDENCIES= gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o 
 test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
@@ -144,46 +122,46 @@ bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o
 
 taus-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_taus_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_taus_/g xxx-state.xc > $@
 taus.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_taus_/g gsl_ran.h > $@
 taus-gen.c: xxx-gen.xc
-	sed s/xxx/taus/g xxx-gen.xc > $@
+	sed s/XXX/taus/g xxx-gen.xc > $@
 mrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_mrg_/g xxx-state.xc > $@
 mrg.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_mrg_/g gsl_ran.h > $@
 mrg-gen.c: xxx-gen.xc
-	sed s/xxx/mrg/g xxx-gen.xc > $@
+	sed s/XXX/mrg/g xxx-gen.xc > $@
 cmrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_cmrg_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_cmrg_/g xxx-state.xc > $@
 cmrg.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_cmrg_/g gsl_ran.h > $@
 cmrg-gen.c: xxx-gen.xc
-	sed s/xxx/cmrg/g xxx-gen.xc > $@
+	sed s/XXX/cmrg/g xxx-gen.xc > $@
 uni-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_uni_/g xxx-state.xc > $@
 uni.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_uni_/g gsl_ran.h > $@
 uni-gen.c: xxx-gen.xc
-	sed s/xxx/uni/g xxx-gen.xc > $@
+	sed s/XXX/uni/g xxx-gen.xc > $@
 uni32-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni32_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_uni32_/g xxx-state.xc > $@
 uni32.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_uni32_/g gsl_ran.h > $@
 uni32-gen.c: xxx-gen.xc
-	sed s/xxx/uni32/g xxx-gen.xc > $@
+	sed s/XXX/uni32/g xxx-gen.xc > $@
 zuf-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_zuf_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_zuf_/g xxx-state.xc > $@
 zuf.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_zuf_/g gsl_ran.h > $@
 zuf-gen.c: xxx-gen.xc
-	sed s/xxx/zuf/g xxx-gen.xc > $@
+	sed s/XXX/zuf/g xxx-gen.xc > $@
 rand-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_rand_/g xxx-state.xc > $@
+	sed s/gsl_ran_XXX_/gsl_ran_rand_/g xxx-state.xc > $@
 rand.h: gsl_ran.h
 	sed s/gsl_ran_/gsl_ran_rand_/g gsl_ran.h > $@
 rand-gen.c: xxx-gen.xc
-	sed s/xxx/rand/g xxx-gen.xc > $@
+	sed s/XXX/rand/g xxx-gen.xc > $@
 
-BUILT_SOURCES= switch.c gsl_ran_switch.h taus-state.c taus.h taus-gen.c mrg-state.c mrg.h mrg-gen.c cmrg-state.c cmrg.h cmrg-gen.c uni-state.c uni.h uni-gen.c uni32-state.c uni32.h uni32-gen.c zuf-state.c zuf.h zuf-gen.c rand-state.c rand.h rand-gen.c 
+BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c

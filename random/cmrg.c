@@ -15,6 +15,7 @@ static int a12=63308,   q12=33921, r12=12979,
            a21=86098,   q21=24919, r21=7417,
            a23=-539608, q23=3976,  r23=2071;
 
+#define gsl_ran_cmrg_RANDMAX 2147483647 /* m1 */
 
 typedef struct {
     long x10,x11,x12;           /* first component */
@@ -29,8 +30,6 @@ gsl_ran_cmrg_printState_p(gsl_ran_cmrg_randomState *s)
 	   s->x20,s->x21,s->x22);
 }
 
-
-static const double Invmp1 = 4.656612873077393e-10;
 
 #define POSITIVE(x,m) if (x<0) x += m
 
@@ -65,15 +64,6 @@ inline unsigned long gsl_ran_cmrg_random_wstate(void *vState)
     else
         return (theState->x12-theState->x22);
 }
-inline double gsl_ran_cmrg_uniform_wstate(void *vState)
-{
-    int Z;
-    Z = gsl_ran_cmrg_random_wstate(vState);
-    if (Z==0) Z=m1;
-    return(Z*Invmp1);
-}
-
-double gsl_ran_cmrg_max() { return (double)m1; }
 
 #define LCG(n) ((n)*8121+28411)%134456
 void gsl_ran_cmrg_seed_wstate(void *vState, int s)

@@ -9,6 +9,7 @@
 
 #include <stdlib.h>             /* calloc() */
 #include "gsl_ran.h"
+#define gsl_ran_taus_RANDMAX 4294967295.0 /* = 2^32  */
 
 #define TAUSWORTHE(s,a,b,c,d) ((( s & c ) << d ) ^ ((( s << a) ^ s ) >> b))
 
@@ -33,14 +34,6 @@ unsigned long gsl_ran_taus_random_wstate(void *vState)
     newState->s3 = TAUSWORTHE(newState->s3,  3, 11, 4294967280UL, 17);
 
     return newState->s1 ^ newState->s2 ^ newState->s3;
-}
-inline double gsl_ran_taus_uniform_wstate(void *vState)
-{
-    return (double)gsl_ran_taus_random_wstate(vState)*2.3283064365e-10;
-}
-double gsl_ran_taus_max()
-{
-    return 4294967296.0;          /* = 2^32 */
 }
 
 /* LCG is a "quick and dirty" (Press et al, p284) generator 

@@ -132,12 +132,13 @@ gsl_ran_rand_printState_p(gsl_ran_rand_randomState *s)
 	   s->x0,s->x1);
 }
 
+#define gsl_ran_rand_RANDMAX 4194304
 
-const long P=4194304;
-const long a1=1536;
-const long a0=1029;
-const long a1ma0 = 507;
-const long c = 1731;
+static const long P=4194304;
+static const long a1=1536;
+static const long a0=1029;
+static const long a1ma0 = 507;
+static const long c = 1731;
 
 inline unsigned long gsl_ran_rand_random_wstate(void *vState)
 {
@@ -153,14 +154,6 @@ inline unsigned long gsl_ran_rand_random_wstate(void *vState)
     theState->x1 = y1 % 2048;
       
     return theState->x1*2048 + theState->x0;
-}
-inline double gsl_ran_rand_uniform_wstate(void *vState)
-{
-    return (double)gsl_ran_rand_random_wstate(vState)/P;
-}
-double gsl_ran_rand_max()
-{
-    return (double)P;
 }
 
 void gsl_ran_rand_seed_wstate(void *vState, int jd)
