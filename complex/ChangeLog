@@ -1,3 +1,8 @@
+Wed Mar 21 14:40:34 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_complex.h (GSL_COMPLEX_P): added macro to point to beginning
+ 	of complex array within the struct
+
 Mon Dec  4 12:29:12 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* math.c (gsl_complex_rect): changed the function gsl_complex_xy
