@@ -5,7 +5,6 @@
 #define GSL_SUM_H_
 
 
-
 /* Basic Levin-u acceleration method.
  * No derivative information.
  * Based on WHIZ(), TOMS-602.
@@ -15,18 +14,56 @@
  *   q_num       = backward diagonal of numerator; length >= array_size
  *   q_den       = backward diagonal of numerator; length >= array_size
  *   sum_accel   = result of summation acceleration
- *   sum_plain   = simple sum of series 
+ *   sum_plain   = simple sum of series
+ *   precision   = precision estimate
+ *
+ * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602]
  */
 int gsl_sum_levin_u_impl(const double * array, unsigned int array_size,
                          double * q_num,
                          double * q_den,
                          double * sum_accel,
-                         double * sum_plain);
+                         double * sum_plain,
+                         double * precision);
 int gsl_sum_levin_u_e(const double * array, unsigned int array_size,
                       double * q_num,
                       double * q_den,
                       double * sum_accel,
-                      double * sum_plain);
+                      double * sum_plain,
+                      double * precision);
+
+
+/* Basic Levin-u acceleration method
+ * with constraints on the terms used.
+ * No derivative information.
+ * Based on WHIZ(), TOMS-602.
+ *
+ *   array       = array of series elements
+ *   array_size  = size of array
+ *   q_num       = backward diagonal of numerator; length >= array_size
+ *   min_terms   = minimum number of terms to sum
+ *   max_terms   = maximum number of terms to sum
+ *   q_den       = backward diagonal of numerator; length >= array_size
+ *   sum_accel   = result of summation acceleration
+ *   sum_plain   = simple sum of series
+ *   precision   = precision estimate
+ *
+ * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602]
+ */
+int gsl_sum_levin_u_con_impl(const double * array, unsigned int array_size,
+                             unsigned int min_terms, unsigned int max_terms,
+                             double * q_num,
+                             double * q_den,
+                             double * sum_accel,
+                             double * sum_plain,
+                             double * precision);
+int gsl_sum_levin_u_con_e(const double * array, unsigned int array_size,
+                          int min_terms, int max_terms,
+                          double * q_num,
+                          double * q_den,
+                          double * sum_accel,
+                          double * sum_plain,
+                          double * precision);
 
 
 /* Basic Levin-u step w/o reference to the array of terms.

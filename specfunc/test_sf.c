@@ -1626,6 +1626,53 @@ int check_expint(void)
 }
 
 
+int check_fermidirac(void)
+{
+  int status = 0;
+  int s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_m1(-10.0), 0.00004539786870243439450 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_m1( -1.0), 0.26894142136999512075 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_m1(  1.0), 0.7310585786300048793  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_m1( 10.0), 0.9999546021312975656  ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_m1");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_0(-10.0), 0.00004539889921686464677 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_0( -1.0), 0.31326168751822283405 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_0(  1.0), 1.3132616875182228340  ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_0( 10.0), 10.000045398899216865  ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_0");
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(gsl_sf_fermi_dirac_half(-10.0), 0.00004539920105268629 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half( -1.0), 0.3277951592609735 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half( -0.4), 0.5522452153694544 ) > 1.0e-12 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half(  0.4), 1.038679750339489 ) > 1.0e-12 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half(  1.0), 1.575640776151897 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half(  1.5), 2.144860877583692 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half(  2.5), 3.606975377950898 ) > 1.0e-14 );
+  s += ( frac_diff(gsl_sf_fermi_dirac_half( 10.0), 24.08465757670313 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_fermi_dirac_half");
+  printf("%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n%22.18g\n",
+  gsl_sf_fermi_dirac_half(-10.0),
+gsl_sf_fermi_dirac_half( -1.0),
+gsl_sf_fermi_dirac_half( -0.4),
+gsl_sf_fermi_dirac_half(  0.4),
+gsl_sf_fermi_dirac_half(  1.0),
+gsl_sf_fermi_dirac_half(  1.5),
+gsl_sf_fermi_dirac_half(  2.5),
+gsl_sf_fermi_dirac_half( 10.0)
+);
+  status += s;
+
+  return status;
+}
+
+
 int check_gamma(void)
 {
   double y;
@@ -5308,7 +5355,7 @@ int main(int argc, char * argv[])
   gsl_test(check_erf(),        "Error Functions");
   gsl_test(check_exp(),        "Exponential Functions");
   gsl_test(check_expint(),     "Exponential/Sine/Cosine Integrals");
-
+  gsl_test(check_fermidirac(), "Fermi-Dirac Functions");
   gsl_test(check_gamma(),      "Gamma Functions");
   gsl_test(check_gegen(),      "Gegenbauer Polynomials");
   gsl_test(check_hyperg(),     "Hypergeometric Functions");

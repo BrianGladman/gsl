@@ -15,6 +15,15 @@
  */
 
 
+/* Complete integral F_{-1}(x) = e^x / (1 + e^x)
+ *
+ * exceptions: GSL_EUNDRFLW
+ */
+int     gsl_sf_fermi_dirac_m1_impl(double x, double * result);
+int     gsl_sf_fermi_dirac_m1_e(double x, double * result);
+double  gsl_sf_fermi_dirac_m1(double x);
+
+
 /* Complete integral F_0(x) = ln(1 + e^x)
  *
  * exceptions: GSL_EUNDRFLW
@@ -24,13 +33,23 @@ int     gsl_sf_fermi_dirac_0_e(double x, double * result);
 double  gsl_sf_fermi_dirac_0(double x);
 
 
-/* Complete integral F_{-1}(x) = e^x / (1 + e^x)
+/* Complete integral F_j(x)
+ * for integer j
  *
  * exceptions: GSL_EUNDRFLW
  */
-int     gsl_sf_fermi_dirac_m1_impl(double x, double * result);
-int     gsl_sf_fermi_dirac_m1_e(double x, double * result);
-double  gsl_sf_fermi_dirac_m1(double x);
+int     gsl_sf_fermi_dirac_int_impl(int j, double x, double * result);
+int     gsl_sf_fermi_dirac_int_e(int j, double x, double * result);
+double  gsl_sf_fermi_dirac_int(int j, double x);
+
+
+/* Complete integral F_{1/2}(x)
+ *
+ * exceptions: GSL_EUNDRFLW
+ */
+int     gsl_sf_fermi_dirac_half_impl(double x, double * result);
+int     gsl_sf_fermi_dirac_half_e(double x, double * result);
+double  gsl_sf_fermi_dirac_half(double x);
 
 
 /* Incomplete integral F_0(x,b) = ln(1 + e^(b-x)) - (b-x)
@@ -48,20 +67,6 @@ double  gsl_sf_fermi_dirac_inc_0(double x, double b);
  */
 double gsl_sf_fermi_dirac(double beta, double zeta_inverse, double E);
 
-/* Calculate the integral over the Fermi-Dirac function
-   that gives the number density. Specifically,
-   
-   fermi_integral_1(A) = int_0^infty dy y^(1/2)/(A e^y + 1)
- */
-double gsl_sf_fermi_integral_1(double A);
-
-
-/* Calculate the Fermi-Dirac integral which is minus the
-   logarithmic derivative of the F1 integral. Specifically
-
-   fermi_integral_2(A) = int_0^infty dy y^(1/2)/(A e^y + 1)^2
- */
-double gsl_sf_fermi_integral_2(double A);
 
 
 /* Calculate the inverse fugacity given the density
