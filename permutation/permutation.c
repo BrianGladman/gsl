@@ -135,3 +135,110 @@ gsl_permutation_inverse (gsl_permutation * inv, const gsl_permutation * p)
   
   return GSL_SUCCESS ;
 }
+
+int
+gsl_permutation_next (gsl_permutation * p)
+{
+  /* Replaces p with the next permutation (in the standard lexiographical
+   * ordering).  Returns GSL_FAILURE if there is no next permutation.
+   */
+  const size_t size = p->size;
+  size_t i, j, k;
+
+  if (size < 2)
+    {
+      return GSL_FAILURE;
+    }
+
+  i = size - 2;
+
+  while ((p->data[i] > p->data[i+1]) && (i != 0))
+    {
+      i--;
+    }
+
+  if ((i == 0) && (p->data[0] > p->data[1]))
+    {
+     return GSL_FAILURE;
+    }
+
+  k = i + 1;
+
+  for (j = i + 2; j < size; j++ )
+    {
+      if ((p->data[j] > p->data[i]) && (p->data[j] < p->data[k]))
+        {
+          k = j;
+        }
+    }
+
+  /* swap i and k */
+
+  {
+    size_t tmp = p->data[i];
+    p->data[i] = p->data[k];
+    p->data[k] = tmp;
+  }
+
+  for (j = i + 1; j <= ((size + i) / 2); j++)
+    {
+      size_t tmp = p->data[j];
+      p->data[j] = p->data[size + i - j];
+      p->data[size + i - j] = tmp;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_permutation_prev (gsl_permutation * p)
+{
+  const size_t size = p->size;
+  size_t i, j, k;
+
+  if (size < 2)
+    {
+      return GSL_FAILURE;
+    }
+
+  i = size - 2;
+
+  while ((p->data[i] < p->data[i+1]) && (i != 0))
+    {
+      i--;
+    }
+
+  if ((i == 0) && (p->data[0] < p->data[1]))
+    {
+      return GSL_FAILURE;
+    }
+
+  k = i + 1;
+
+  for (j = i + 2; j < size; j++ )
+    {
+      if ((p->data[j] < p->data[i]) && (p->data[j] > p->data[k]))
+        {
+          k = j;
+        }
+    }
+
+  /* swap i and k */
+
+  {
+    size_t tmp = p->data[i];
+    p->data[i] = p->data[k];
+    p->data[k] = tmp;
+  }
+
+  for (j = i + 1; j <= ((size + i) / 2); j++)
+    {
+      size_t tmp = p->data[j];
+      p->data[j] = p->data[size + i - j];
+      p->data[size + i - j] = tmp;
+    }
+
+  return GSL_SUCCESS;
+}
+
+

@@ -1,3 +1,10 @@
+Sat Dec 30 21:30:16 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: added the start of a test program
+
+	* permutation.c: added gsl_permutation_next and
+ 	gsl_permutation_prev as in STL, from vattervi@msu.edu
+
 Mon Apr 24 20:54:03 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_permutation.h: renamed gsl_permutation_invert to

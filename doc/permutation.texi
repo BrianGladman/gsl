@@ -124,6 +124,23 @@ This function computes the inverse of the permuation @var{p}, storing
 the result in @var{inv}.
 @end deftypefun
 
+@deftypefun int gsl_permutation_next (gsl_permutation * @var{p})
+@cindex iterating through permutations
+This function advances the permutation @var{p} to the next permutation
+in lexicographic order and returns @code{GSL_SUCCESS}.  If no further
+permutations are available it returns @code{GSL_FAILURE} and leaves
+@var{p} unmodified.  Starting with the identity permutation and
+repeatedly applying this function will iterate through all possible
+permutations of a given order.
+@end deftypefun
+
+@deftypefun int gsl_permutation_prev (gsl_permutation * @var{p})
+This function steps backwards from the permutation @var{p} to the
+previous permutation in lexicographic order, returning
+@code{GSL_SUCCESS}.  If no previous permutation is available it returns
+@code{GSL_FAILURE} and leaves @var{p} unmodified.
+@end deftypefun
+
 @node Applying Permutations
 @section Applying Permutations
 
@@ -239,6 +256,46 @@ inverse permutation: 6 0 3 1 7 2 5 4 9 8
 The random permutation @code{p[i]} and its inverse @code{q[i]} are
 related through the identity @code{p[q[i]] = i}, which can be verified
 from the output.
+
+The next example program steps forwards through all possible 3-rd order
+permutations, starting from the identity,
+
+@example
+#include <stdio.h>
+#include <gsl/gsl_permutation.h>
+
+int 
+main (void) 
+@{
+  gsl_permutation * p = gsl_permutation_alloc (3) ;
+
+  gsl_permutation_init (p) ;
+
+  do 
+   @{
+      gsl_permutation_fprintf (stdout, p, " %u") ;
+      printf("\n") ;
+   @}
+  while (gsl_permutation_next(p) == GSL_SUCCESS);
+@}
+@end example
+@noindent
+Here is the output from the program,
+
+@example
+bash$ ./a.out 
+ 0 1 2
+ 0 2 1
+ 1 0 2
+ 1 2 0
+ 2 0 1
+ 2 1 0
+@end example
+@noindent
+All 6 permutations are generated in lexicographic order.  To reverse the
+sequence, begin with the final permutation (which is the reverse of the
+identity) and replace @code{gsl_permutation_next} with
+@code{gsl_permutation_prev}.
 
 @node Permutation References and Further Reading
 @section References and Further Reading

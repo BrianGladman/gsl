@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** Iterator functions are now available for permutations,
+gsl_permutation_next and gsl_permutation_prev.
+
 ** The function gsl_complex_xy has been renamed gsl_complex_rect
 
 ** The API for simulated annealing has been changed to support search

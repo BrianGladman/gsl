@@ -8,13 +8,13 @@ libgslpermutation_la_SOURCES = init.c file.c permutation.c permute.c
 
 noinst_HEADERS = permute_source.c
 
-#TESTS = test
+TESTS = test
 
-#check_PROGRAMS = test
+check_PROGRAMS = test
 
-#test_SOURCES = test.c
-#test_DEPENDENCIES = libgslpermutation.la
-#test_LDADD = ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_SOURCES = test.c
+test_DEPENDENCIES = libgslpermutation.la
+test_LDADD = libgslpermutation.la ../vector/libgslvector.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la
 
 #CLEANFILES = test.txt test.dat
 
