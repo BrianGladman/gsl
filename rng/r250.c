@@ -34,7 +34,8 @@
    masking the lower triangle below the diagonal to zero.
 
    With this initialization procedure the theoretical value of
-   x_{10001} is FIXME for s = 1. The subscript 10001 means (1) seed the
+   x_{10001} is 1100653588 for s = 1 (Actually I got this by running
+   the original code). The subscript 10001 means (1) seed the
    generator with s = 1 and then do 10000 actual iterations.
 
    The period of this generator is about 2^250.

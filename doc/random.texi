@@ -17,6 +17,7 @@ distributions such as the gaussian, log-normal or poisson distributions.
 * General comments on random numbers::  
 * Random number generator initialization::  
 * Sampling from a random number generator::  
+* Auxiliary random number generator functions::  
 * Random number environment::   
 * Saving and restoring random number generator state::  
 * Available random number generator algorithms::  
@@ -97,28 +98,31 @@ If there is insufficient memory to create the generator then the
 function returns a null pointer and the error handler is invoked with an
 error code of @code{GSL_ENOMEM}.
 
-The defined generator types are currently,
+The defined generator types are,
 
 @example
-gsl_rng_bad_rand, gsl_rng_bad_randu, gsl_rng_cmrg, gsl_rng_minstd,
-gsl_rng_mrg, gsl_rng_mt19937, gsl_rng_ran0, gsl_rng_ran1, gsl_rng_ran2,
-gsl_rng_ran3, gsl_rng_rand, gsl_rng_ranlux, gsl_rng_ranlux389,
-gsl_rng_r250, gsl_rng_taus, gsl_rng_tt800, gsl_rng_uni, gsl_rng_uni32,
-gsl_rng_vax, gsl_rng_zuf
+gsl_rng_bad_rand, gsl_rng_bad_randu,
+gsl_rng_cmrg, gsl_rng_minstd, gsl_rng_mrg,
+gsl_rng_mt19937, gsl_rng_ran0, gsl_rng_ran1,
+gsl_rng_ran2, gsl_rng_ran3, gsl_rng_rand,
+gsl_rng_ranlux, gsl_rng_ranlux389, gsl_rng_r250,
+gsl_rng_taus, gsl_rng_tt800, gsl_rng_uni,
+gsl_rng_uni32, gsl_rng_vax, gsl_rng_zuf
 @end example
 @end deftypefn
 
 @deftypefn Random void gsl_rng_set (const gsl_rng * @var{r}, unsigned long int @var{s})
-@code{gsl_rng_set} initializes (or `seeds') the random number generator.
-If the random number generator is seeded with the same value of @var{s}
-on two different runs, the same stream of random numbers will be
-generated (by successive calls to the routines below). If different
-values of @code{s} are supplied, then the generated streams of random
-numbers should be completely different. If the seed @var{s} is zero then
-the generator is initialized to its ``conventional'' state, whatever
-that might be. For example, the Fortran source code for the original
-@code{ranlux} generator used a seed of 314159265, and so choosing
-@var{s} equal to zero reproduces this.
+@code{gsl_rng_set} initializes (or `seeds') the random number
+generator.  If the random number generator is seeded with the same
+value of @var{s} on two different runs, the same stream of random
+numbers will be generated (by successive calls to the routines
+below). If different values of @var{s} are supplied, then the
+generated streams of random numbers should be completely different. If
+the seed @var{s} is zero then the generator is initialized to its
+``conventional'' state, whatever that might be. For example, the
+Fortran source code for the original @code{ranlux} generator used a
+seed of 314159265, and so choosing @var{s} equal to zero reproduces
+this.
 @end deftypefn
 
 @deftypefn Random void gsl_rng_free (gsl_rng * @var{r})
@@ -149,6 +153,8 @@ number is obtained by sampling the generator until it returns a non-zero
 value. This value is then divided by @code{gsl_rng_max(r)}. 
 @end deftypefn
 
+@node Auxiliary random number generator functions
+@section Auxiliary random number generator functions
 The following functions provide information about the generator.
 
 @deftypefn Random {const char *} gsl_rng_name (const gsl_rng * @var{r})
@@ -173,7 +179,6 @@ algorithms that cannot return zero, and for these generators the minimum
 value is 1.
 @end deftypefn
 
-
 @node Random number environment
 @section Random number environment
 
@@ -190,10 +195,10 @@ variables @code{GSL_RNG_TYPE} and @code{GSL_RNG_SEED} and the function
 @node Saving and restoring random number generator state
 @section Saving and restoring random number generator state
 
-The above methods blithely ignore the random number `state' which
-changes from call to call.  But it is often practical to be able to
-"save" and "restore" the state.  To permit these practices, a few
-somewhat more advanced functions are supplied.  These include:
+The above methods ignore the random number `state' which changes from
+call to call.  It is often useful to be able to "save" and "restore" the
+state.  To permit these practices, a few somewhat more advanced
+functions are supplied.  These include:
 
 @deftypefn Random {gsl_rng *} gsl_rng_cpy (gsl_rng * @var{dest}, const gsl_rng * @var{src})
 This function copies the random number generator @var{src} into the
@@ -217,50 +222,283 @@ stdout. At the moment its only use is for debugging.
 
 The above functions make no reference to the actual algorithm used.
 This is deliberate so that you can switch algorithms without having to
-change any of your application source code.
+change any of your application source code. The library provides a
+large number of generators of different types, including simulation
+quality generators, generators provided for compatibility with other
+libraries and historically famous (or infamous) generators known to
+produce poor quality random numbers.
 
-Among the algorithms available are: 
-@deftypefn {Generator} mrg       Multiple recursive
-@end deftypefn
+@subsection Simulation quality generators
 
-@deftypefn {Generator} cmrg      Combined MRG
-@end deftypefn
+The following generators are recommended for use in simulation. They
+have extremely long periods and pass all or most known statistical
+tests.
 
-taus      Combined Tausworthe
+@deffn {Generator} gsl_rng_mt19937
+The MT19937 generator of Makoto Matsumoto and Takuji Nishimura is
+based on a variant of twisted generalized feedback shift-register
+generator, with a Mersenne prime period of @math{2^@{19937@} - 1}
+(about @math{10^@{6000@}}).  It is equi-distributed in up to 623
+dimensions and has passed the @sc{DIEHARD} statistical tests. It uses
+about 631 words of storage for its internal state per generator and is
+comparable in speed to the other generators.
+
+For more information see,
+@itemize @asis
+@item
+Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
+623-dimensionally equidistributerd uniform pseudorandom number
+generator". @cite{ACM Transactions on Modeling and Computer
+Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
+@end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_ranlux
+@deffnx {Generator} gsl_rng_ranlux389
+The @code{ranlux} generator uses the lagged-fibonacci "luxury random
+number" algorithm of Luscher. It is a 24-bit generator, originally
+designed for IEEE floating point numbers. The period of the generator
+is about @math{10^@{171@}}. The generator is slow, but has the
+advantage that the algorithm has been mathematically proven to provide
+decorrelated numbers at a known level. The generator
+@code{gsl_rng_ranlux} is the default level of decorrelation
+recommended by Luscher and @code{gsl_rng_ranlux389} provides the
+highest level of randomness, with all bits decorrelated. Both types of
+generator use about 35 words of storage per generator.
+
+For more information see,
+@itemize @asis
+@item
+M. Luscher, "A portable high-quality random number generator for
+lattice field theory calculations", @cite{Computer Physics
+Communications}, 79 (1994) 100-110.
+@item
+F. James, "RANLUX: A Fortran implementation of the high-quality
+pseudo-random number generator of Luscher", @cite{Computer Physics
+Communications}, 79 (1994) 111-114
+@end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_cmrg
+This is a combined multiple recursive generator by L'Ecuyer. Its
+sequence is,
+@c
+@equation
+z_n = (x_n - y_n) mod m_1
+@end equation
+@noindent
+where the two underlying generators @math{x_n} and @math{y_n} are,
+@c
+@equation
+x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@} + a_3 x_@{n-3@}) mod m_1
+@end equation
+and
+@equation
+y_n = (b_1 y_@{n-1@} + b_2 y_@{n-2@} + b_3 y_@{n-3@}) mod m_2
+@end equation
+@noindent
+with coefficients @math{a_1 = 0}, @math{a_2 = 63308}, @math{a_3 =
+-183326}, @math{b_1 = 86098}, @math{b_2 = 0}, @math{b_3 = -539608},
+and moduli @math{m_1 = 2^@{31@} - 1 = 2147483647} and @math{m_2 =
+2145483479}.
+
+The period of this generator is about @math{2^@{205@}}. It uses about
+13 words of storage per generator. For more information see,
+
+@itemize @asis
+@item
+P. L'Ecuyer, "Combined Multiple Recursive Random Number
+Generators," @cite{Operations Research}, 44, 5 (1996), 816--822.
+@end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_mrg
+This is a fifth-order multiple recursive generator by L'Ecuyer, Blouin
+and Coutre.  Its sequence is,
+@c
+@equation
+   x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) mod m
+@end equation
+@noindent
+with @math{a_1 = 107374182}, @math{a_2 = a_3 = a_4 = 0}, @math{a_5 = 104480}
+and @math{m = 2^@{31@}-1}.
+
+The period of this generator is about @math{10^@{46@}}. It uses about
+13 words of storage per generator. More information can be found in
+the following paper,
+@itemize @asis
+@item
+P. L'Ecuyer, F. Blouin, and R. Coutre, "A search for good multiple
+recursive random number generators", @cite{ACM Transactions on Modeling and
+Computer Simulation} 3, 87-98 (1993).
+@end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_taus
+This is a maximally equidistributed combined Tausworthe generator by
+L'Ecuyer. The sequence is,
+@c
+@equation
+x_n = (s^1_n \oplus s^2_n \oplus s^3_n) 
+@end equation
+@noindent
+where,
+@c
+@equation
+s^1_@{n+1@} = (((s^1_n and 4294967294) <<12) \oplus (((s^1_n <<13) \oplus s^1_n) >>19))
+@end equation
+@equation
+s^2_@{n+1@} = (((s^2_n and 4294967288) << 4) \oplus (((s^2_n << 2) \oplus s^2_n) >>25))
+@end equation
+@equation
+s^3_@{n+1@} = (((s^3_n and 4294967280) <<17) \oplus (((s^3_n << 3) \oplus s^3_n) >>11))
+@end equation
+@noindent
+computed modulo @math{2^@{32@}}. In the formulas above @math{\oplus}
+means "exclusive-or". Note that the algorithm relies on the properties
+of 32-bit unsigned integers and has been implemented using a bitmask
+of @code{0xFFFFFFFF} to make it work on 64 bit machines.
+
+The period of this generator is about 2^@{88@}. It uses about 10 words of
+storage per generator. For more information see,
+
+@itemize @asis
+@item
+P. L'Ecuyer, "Maximally Equidistributed Combined Tausworthe
+Generators", @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
+@end itemize
+@end deffn
+
+@deffn {Generator} gsl_rng_tt800
+This is an earlier version of of twisted generalized feedback shift-register
+@c generator, with a Mersenne prime period of @math{2^@{800} - 1}
+@c (about @math{10^@{6000@}}). It has been superseded by MT19937.
+@c It uses about 631 words of storage for its internal state per
+@c generator and is comparable in speed to the other generators.
+
+For more information see,
+@itemize @asis
+@item
+Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
+623-dimensionally equidistributerd uniform pseudorandom number
+generator". @cite{ACM Transactions on Modeling and Computer
+Simulation}, Vol. 8, No. 1 (Jan. 1998), Pages 3-30
+@end itemize
+@end deffn
+
+
+@subsection Generators provided for compatibility
+
+The following generators are provided for compatibility with
+@cite{Numerical Recipes}. Although we have implemented the same
+algorithms for the underlying integer generators there will be minor
+discrepancies between the floating point values obtained from
+@code{gsl_rng_uniform} and the corresponding routine from Numerical
+Recipes. First, the original routines used single precision while we
+use double precision. Second, some of the original routines have an
+additional check to exclude 1.0 from the range of allowed return
+values by substituting 0.99999988 in its place. We have not
+implemented this feature so occasionally 1.0 will be returned when the
+Numerical Recipes code would have returned 0.99999988.
+
+@deffn {Generator} ran0 
+Numerical recipes @code{ran0}
+@end deffn
+
+@deffn {Generator} ran1 
+Numerical recipes @code{ran1}
+@end deffn
+
+@deffn {Generator} ran2 
+Numerical recipes @code{ran2}
+@end deffn
+
+@deffn {Generator} ran3 
+Numerical recipes @code{ran3}
+@end deffn
+
+@subsection Historical generators
+
+The following generators are included only for historical reasons, so
+that you can reproduce results from old programs that used them. These
+generators should not be used for real simulations since they have
+poor statistical properties by modern standards.
+
+vax
 
 uni       Fibonacci subtraction
 uni32     32 bit version of uni
 
-zuf       Another Fibonacci subtraction method, but with a much longer lag than uni.
 
 rand      Linear congruential 
 
-ran0 Numerical recipes ran0
-ran1 Numerical recipes ran1
-ran2 Numerical recipes ran2
-ran3 Numerical recipes ran3
 
-ranlux  Luschers luxury random number algorithm
+
 
 minstd Park and Miller's minimal standard generator
 mt19937
 r250
 tt800
-vax
+
+
+@smallexample
+ bad-randu ------------------------------------------------
+  bad-rand ---------------------------------------------
+       vax ------------------------------------------
+      r250 ---------------------------------------
+      taus ----------------------------------
+       uni ----------------------------------
+     uni32 ---------------------------------
+     tt800 -------------------------------
+      rand ---------------------------
+       zuf ---------------------------
+   mt19937 -----------------------
+    minstd ----------------------
+       mrg ---------------
+      cmrg --------
+    ranlux -----
+ ranlux389 ---
+
+           |------------------|--------------------|--------------------|
+           0                  1                    2                    3
+
+                     Millions of random numbers per second
+@end smallexample
+
 
 @node Random Number Distributions
 @section Random Number Distributions
 
-Given 
+Distributions of random numbers can be obtained from any of the
+generators using the following transformation functions. In the simplest
+cases the distributions are obtained by transforming samples from the
+uniform distribution into samples from the desired distribution, and use
+one call to the random number generator. More complicated distributions
+use the @dfn{acceptance-rejection} method which often requires multiple
+samples from the generator.
 
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r})
-@code{gsl_ran_gaussian} returns a gaussian random number, with mean zero and
-variance one.
+@code{gsl_ran_gaussian} returns a gaussian random number, with mean zero
+and variance one. The probability distribution for gaussian random
+numbers is,
+@c
+@equation
+p(x) dx = @{1 \over \sqrt@{2 \pi@}@} \exp (-x^2/2) dx
+@end equation
+@noindent
+for @math{x} in the range @math{-\infty} to @math{+\infty}.
 @end deftypefn
 
 @deftypefn Random int gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
-@code{gsl_ran_poisson} returns a poisson--distributed random number,
-with mean @var{mu}.
+@code{gsl_ran_poisson} returns a poisson--distributed random integer,
+with mean @var{mu}. The probability distribution for poisson random
+numbers is,
+@c
+@equation
+p(n) = @{\mu^n \over n!@} \exp(-\mu)
+@end equation
+@noindent
+for @math{n \ge 0}.
 @end deftypefn
 
 @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
@@ -271,12 +509,21 @@ poisson--distributed random numbers with mean @var{mu} into the array
 
 @deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
 @code{gsl_ran_exponential} returns a exponential--distributed random
-number, with mean @var{mu}.  This is calculated with @math{-mu*log(x)}.
+number, with mean @var{mu}.  
+@c
+@equation
+p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
+@end equation
+@noindent
+for @math{x \ge 0}.
+
+This is calculated with @math{-mu*log(x)}.
 @end deftypefn
 
 @deftypefn Random int gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a})
 @code{gsl_ran_gamma} returns a gamma-distributed random number.  The
 distribution function is
+@c
 @equation
 F(x) = @{ @{1@} \over @{ \Gamma(a)@} \int_0^x t^@{a-1@} e^@{-t@} dt @}
 @end equation
@@ -317,8 +564,23 @@ See the pLab home page (http://random.mat.sbg.ac.at/) for a lot of information
 on the state-of-the-art in random number generation, and for numerous links
 to various "random" WWW sites.  
 
+For physicists the Particle Data Group provides a useful short review of
+techniques for generating distributions of random numbers in the
+"Monte Carlo" section of its Annual Review of Particle Physics.
+
+@itemize @asis
+@item
+@cite{Review of Particle Properties}
+R.M. Barnett et al., Physical Review D54, 1 (1996)
+@end itemize
+@noindent
+The Review of Particle Physics is available online in postscript and pdf
+format at @url{http://pdg.lbl.gov/}.
+
+
 @node Random Number Acknowledgements
 @section Random Number Acknowledgements
+@noindent
 Thanks to Makoto Matsumoto and Takuji Nishimura for making the source
 code to their MT19937 generator available under the GNU Library General
 Public License.

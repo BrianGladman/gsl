@@ -1,3 +1,8 @@
+Wed Jul  1 11:56:06 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* replace do { u = gsl_rng_uniform(r) } while (u == 0) by a direct
+ 	call to gsl_rng_uniform_pos.
+
 Sun Jun 28 14:21:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* converted everything to work with rng style generators

@@ -6,7 +6,7 @@
 
    x_n = (a_1 x_{n-1} + a_5 x_{n-5}) mod m
 
-   with a_1 = 107374182, a_2 ... a_4 = 0, a_5 = 104480 and m = 2^31-1.
+   with a_1 = 107374182, a_2 = a_3 = a_4 = 0, a_5 = 104480 and m = 2^31-1.
 
    We initialize the generator with x_n = s_n MOD m for n = 1..5,
    where s_n = (69069 * s_{n-1}) mod 2^32, and s_0 = s is the
@@ -28,7 +28,7 @@
    The period of this generator is about 2^155.
 
    From: P. L'Ecuyer, F. Blouin, and R. Coutre, "A search for good
-   multiple recursive random number generators, ACM Transactions on
+   multiple recursive random number generators", ACM Transactions on
    Modeling and Computer Simulation 3, 87-98 (1993). */
 
 unsigned long int mrg_get (void *vstate);

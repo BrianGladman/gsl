@@ -18,8 +18,21 @@
    by Topher Cooper and Marc Rieffel in July-Aug. 1997, "A C-program
    for MT19937: Integer version (1998/4/6)"
 
-   When you use this, send an email to: matumoto@math.keio.ac.jp with
-   an appropriate reference to your work.  */
+   The original code included the comment: "When you use this, send an
+   email to: matumoto@math.keio.ac.jp with an appropriate reference to
+   your work".
+
+   The algorithm is too mathematical to explain here. See the paper
+   for details.
+
+   From: Makoto Matsumoto and Takuji Nishimura, "Mersenne Twister: A
+   623-dimensionally equidistributerd uniform pseudorandom number
+   generator". ACM Transactions on Modeling and Computer Simulation,
+   Vol. 8, No. 1 (Jan. 1998), Pages 3-30
+
+   The period of this generator is 2^{19937} - 1.
+
+*/
 
 #include <gsl_rng.h>
 

@@ -5,13 +5,7 @@
 double
 gsl_ran_exponential (const gsl_rng * r, double mu)
 {
-  double u;
-
-  do
-    {
-      u = gsl_rng_uniform (r);
-    }
-  while (u == 0.0);
+  double u = gsl_rng_uniform_pos (r);
 
   return -mu * log (u);
 }

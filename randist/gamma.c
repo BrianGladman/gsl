@@ -98,11 +98,8 @@ gamma_frac (const gsl_rng * r, double a)
   do
     {
       u = gsl_rng_uniform (r);
-      do
-	{
-	  v = gsl_rng_uniform (r);
-	}
-      while (v == 0);
+      v = gsl_rng_uniform_pos (r);
+
       if (u < p)
 	{
 	  x = exp ((1 / a) * log (v));

@@ -5,7 +5,7 @@
 
 /* This is an implementation of the algorithm used in Numerical
    Recipe's ran0 generator. It is the same as MINSTD with an XOR mask
-   of 123459876.
+   of 123459876 on the seed.
 
    The period of this generator is 2^31.  
 
