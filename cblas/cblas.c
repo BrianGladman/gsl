@@ -727,7 +727,9 @@ cblas_strsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const float *A, const int lda, float *X,
 	     const int incX)
 {
-  cblas_stbsv (order, Uplo, TransA, Diag, N, N - 1, A, lda, X, incX);
+#define BASE float
+#include "source_trsv_r.h"
+#undef BASE
 }
 
 void
@@ -736,7 +738,9 @@ cblas_dtrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const double *A, const int lda, double *X,
 	     const int incX)
 {
-  cblas_dtbsv (order, Uplo, TransA, Diag, N, N - 1, A, lda, X, incX);
+#define BASE double
+#include "source_trsv_r.h"
+#undef BASE
 }
 
 void
@@ -745,7 +749,9 @@ cblas_ctrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const void *A, const int lda, void *X,
 	     const int incX)
 {
-  cblas_ctbsv (order, Uplo, TransA, Diag, N, N - 1, A, lda, X, incX);
+#define BASE float
+#include "source_trsv_c.h"
+#undef BASE
 }
 
 void
@@ -754,7 +760,9 @@ cblas_ztrsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const void *A, const int lda, void *X,
 	     const int incX)
 {
-  cblas_ztbsv (order, Uplo, TransA, Diag, N, N - 1, A, lda, X, incX);
+#define BASE double
+#include "source_trsv_c.h"
+#undef BASE
 }
 
 
@@ -767,9 +775,7 @@ cblas_stbsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     float *X, const int incX)
 {
 #define BASE float
-#define MATRIX_VAR_NAME A
 #include "source_tbsv_r.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -780,9 +786,7 @@ cblas_dtbsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     double *X, const int incX)
 {
 #define BASE double
-#define MATRIX_VAR_NAME A
 #include "source_tbsv_r.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -793,9 +797,7 @@ cblas_ctbsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int incX)
 {
 #define BASE float
-#define MATRIX_VAR_NAME A
 #include "source_tbsv_c.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -806,9 +808,7 @@ cblas_ztbsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int incX)
 {
 #define BASE double
-#define MATRIX_VAR_NAME A
 #include "source_tbsv_c.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -821,9 +821,7 @@ cblas_stpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const float *Ap, float *X, const int incX)
 {
 #define BASE float
-#define MATRIX_VAR_NAME Ap
 #include "source_tpsv_r.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -833,9 +831,7 @@ cblas_dtpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const double *Ap, double *X, const int incX)
 {
 #define BASE double
-#define MATRIX_VAR_NAME Ap
 #include "source_tpsv_r.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -845,9 +841,7 @@ cblas_ctpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const void *Ap, void *X, const int incX)
 {
 #define BASE float
-#define MATRIX_VAR_NAME Ap
 #include "source_tpsv_c.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -857,9 +851,7 @@ cblas_ztpsv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const int N, const void *Ap, void *X, const int incX)
 {
 #define BASE double
-#define MATRIX_VAR_NAME Ap
 #include "source_tpsv_c.h"
-#undef MATRIX_VAR_NAME
 #undef BASE
 }
 
@@ -1060,7 +1052,9 @@ cblas_chemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const void *X, const int incX, const void *beta, void *Y,
 	     const int incY)
 {
-  cblas_chbmv (order, Uplo, N, N - 1, alpha, A, lda, X, incX, beta, Y, incY);
+#define BASE float
+#include "source_hemv.h"
+#undef BASE
 }
 
 void
@@ -1069,7 +1063,9 @@ cblas_zhemv (const enum CBLAS_ORDER order, const enum CBLAS_UPLO Uplo,
 	     const void *X, const int incX, const void *beta, void *Y,
 	     const int incY)
 {
-  cblas_zhbmv (order, Uplo, N, N - 1, alpha, A, lda, X, incX, beta, Y, incY);
+#define BASE double
+#include "source_hemv.h"
+#undef BASE
 }
 
 
@@ -1273,6 +1269,9 @@ cblas_sgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 	     const float *B, const int ldb, const float beta, float *C,
 	     const int ldc)
 {
+#define BASE float
+#include "source_gemm_r.h"
+#undef BASE
 }
 
 void
@@ -1282,6 +1281,9 @@ cblas_dgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 	     const double *B, const int ldb, const double beta, double *C,
 	     const int ldc)
 {
+#define BASE double
+#include "source_gemm_r.h"
+#undef BASE
 }
 
 void
@@ -1291,6 +1293,9 @@ cblas_cgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 	     const void *B, const int ldb, const void *beta, void *C,
 	     const int ldc)
 {
+#define BASE float
+#include "source_gemm_c.h"
+#undef BASE
 }
 
 void
@@ -1300,6 +1305,9 @@ cblas_zgemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
 	     const void *B, const int ldb, const void *beta, void *C,
 	     const int ldc)
 {
+#define BASE double
+#include "source_gemm_c.h"
+#undef BASE
 }
 
 
@@ -1311,6 +1319,9 @@ cblas_ssymm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const float alpha, const float *A, const int lda, const float *B,
 	     const int ldb, const float beta, float *C, const int ldc)
 {
+#define BASE float
+#include "source_symm_r.h"
+#undef BASE
 }
 
 void
@@ -1320,6 +1331,9 @@ cblas_dsymm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const double *B, const int ldb, const double beta, double *C,
 	     const int ldc)
 {
+#define BASE double
+#include "source_symm_r.h"
+#undef BASE
 }
 
 void
@@ -1328,6 +1342,9 @@ cblas_csymm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, const void *B,
 	     const int ldb, const void *beta, void *C, const int ldc)
 {
+#define BASE float
+#include "source_symm_c.h"
+#undef BASE
 }
 
 void
@@ -1336,6 +1353,34 @@ cblas_zsymm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, const void *B,
 	     const int ldb, const void *beta, void *C, const int ldc)
 {
+#define BASE double
+#include "source_symm_c.h"
+#undef BASE
+}
+
+
+/* HEMM */
+
+void
+cblas_chemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
+	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
+	     const void *alpha, const void *A, const int lda, const void *B,
+	     const int ldb, const void *beta, void *C, const int ldc)
+{
+#define BASE float
+#include "source_hemm.h"
+#undef BASE
+}
+
+void
+cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
+	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
+	     const void *alpha, const void *A, const int lda, const void *B,
+	     const int ldb, const void *beta, void *C, const int ldc)
+{
+#define BASE double
+#include "source_hemm.h"
+#undef BASE
 }
 
 
@@ -1347,6 +1392,9 @@ cblas_ssyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const float alpha, const float *A, const int lda, float beta,
 	     float *C, const int ldc)
 {
+#define BASE float
+#include "source_syrk_r.h"
+#undef BASE
 }
 
 void
@@ -1355,6 +1403,9 @@ cblas_dsyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const double alpha, const double *A, const int lda,
 	     const double beta, double *C, const int ldc)
 {
+#define BASE double
+#include "source_syrk_r.h"
+#undef BASE
 }
 
 void
@@ -1363,6 +1414,9 @@ cblas_csyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const void *alpha, const void *A, const int lda,
 	     const void *beta, void *C, const int ldc)
 {
+#define BASE float
+#include "source_sryk_c.h"
+#undef BASE
 }
 
 void
@@ -1371,6 +1425,34 @@ cblas_zsyrk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	     const void *alpha, const void *A, const int lda,
 	     const void *beta, void *C, const int ldc)
 {
+#define BASE double
+#include "source_sryk_c.h"
+#undef BASE
+}
+
+
+/* HERK */
+
+void
+cblas_cherk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
+	     const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
+	     const float alpha, const void *A, const int lda,
+	     const float beta, void *C, const int ldc)
+{
+#define BASE float
+#include "source_herk.h"
+#undef BASE
+}
+
+void
+cblas_zherk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
+	     const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
+	     const double alpha, const void *A, const int lda,
+	     const double beta, void *C, const int ldc)
+{
+#define BASE double
+#include "source_herk.h"
+#undef BASE
 }
 
 
@@ -1383,6 +1465,9 @@ cblas_ssyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	      const float *B, const int ldb, const float beta, float *C,
 	      const int ldc)
 {
+#define BASE float
+#include "source_syr2k_r.h"
+#undef BASE
 }
 
 void
@@ -1392,6 +1477,9 @@ cblas_dsyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	      const double *B, const int ldb, const double beta, double *C,
 	      const int ldc)
 {
+#define BASE double
+#include "source_syr2k_r.h"
+#undef BASE
 }
 
 void
@@ -1400,6 +1488,9 @@ cblas_csyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	      const void *alpha, const void *A, const int lda, const void *B,
 	      const int ldb, const void *beta, void *C, const int ldc)
 {
+#define BASE float
+#include "source_syr2k_c.h"
+#undef BASE
 }
 
 void
@@ -1408,6 +1499,35 @@ cblas_zsyr2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
 	      const void *alpha, const void *A, const int lda, const void *B,
 	      const int ldb, const void *beta, void *C, const int ldc)
 {
+#define BASE double
+#include "source_syr2k_c.h"
+#undef BASE
+}
+
+
+/* HER2K */
+
+void
+cblas_cher2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
+	      const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
+	      const void *alpha, const void *A, const int lda, const void *B,
+	      const int ldb, const float beta, void *C, const int ldc)
+{
+#define BASE float
+#include "source_her2k.h"
+#undef BASE
+}
+
+
+void
+cblas_zher2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
+	      const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
+	      const void *alpha, const void *A, const int lda, const void *B,
+	      const int ldb, const double beta, void *C, const int ldc)
+{
+#define BASE double
+#include "source_her2k.h"
+#undef BASE
 }
 
 
@@ -1420,6 +1540,9 @@ cblas_strmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const float alpha, const float *A, const int lda, float *B,
 	     const int ldb)
 {
+#define BASE float
+#include "source_trmm_r.h"
+#undef BASE
 }
 
 void
@@ -1429,6 +1552,10 @@ cblas_dtrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const double alpha, const double *A, const int lda, double *B,
 	     const int ldb)
 {
+#define BASE double
+#include "source_trmm_r.h"
+#undef BASE
+
 }
 
 void
@@ -1438,6 +1565,9 @@ cblas_ctrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, void *B,
 	     const int ldb)
 {
+#define BASE float
+#include "source_trmm_c.h"
+#undef BASE
 }
 
 void
@@ -1447,6 +1577,9 @@ cblas_ztrmm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, void *B,
 	     const int ldb)
 {
+#define BASE double
+#include "source_trmm_c.h"
+#undef BASE
 }
 
 
@@ -1459,6 +1592,10 @@ cblas_strsm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const float alpha, const float *A, const int lda, float *B,
 	     const int ldb)
 {
+#define BASE float
+#include "source_trsm_r.h"
+#undef BASE
+
 }
 
 void
@@ -1468,6 +1605,9 @@ cblas_dtrsm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const double alpha, const double *A, const int lda, double *B,
 	     const int ldb)
 {
+#define BASE double
+#include "source_trsm_r.h"
+#undef BASE
 }
 
 void
@@ -1477,6 +1617,9 @@ cblas_ctrsm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, void *B,
 	     const int ldb)
 {
+#define BASE float
+#include "source_trsm_c.h"
+#undef BASE
 }
 
 void
@@ -1486,64 +1629,8 @@ cblas_ztrsm (const enum CBLAS_ORDER Order, const enum CBLAS_SIDE Side,
 	     const void *alpha, const void *A, const int lda, void *B,
 	     const int ldb)
 {
+#define BASE double
+#include "source_trsm_c.h"
+#undef BASE
 }
-
-
-/* HEMM */
-
-void
-cblas_chemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
-	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
-	     const void *alpha, const void *A, const int lda, const void *B,
-	     const int ldb, const void *beta, void *C, const int ldc)
-{
-}
-
-void
-cblas_zhemm (const enum CBLAS_ORDER Order, const enum CBLAS_TRANSPOSE TransA,
-	     const enum CBLAS_TRANSPOSE TransB, const int M, const int N,
-	     const void *alpha, const void *A, const int lda, const void *B,
-	     const int ldb, const void *beta, void *C, const int ldc)
-{
-}
-
-
-/* HERK */
-
-void
-cblas_cherk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
-	     const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
-	     const float alpha, const void *A, const int lda,
-	     const float beta, void *C, const int ldc)
-{
-}
-
-void
-cblas_zherk (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
-	     const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
-	     const double alpha, const void *A, const int lda,
-	     const double beta, void *C, const int ldc)
-{
-}
-
-
-/* HER2K */
-
-void
-cblas_cher2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
-	      const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
-	      const void *alpha, const void *A, const int lda, const void *B,
-	      const int ldb, const float beta, void *C, const int ldc)
-{
-}
-
-
-void
-cblas_zher2k (const enum CBLAS_ORDER Order, const enum CBLAS_UPLO Uplo,
-	      const enum CBLAS_TRANSPOSE Trans, const int N, const int K,
-	      const void *alpha, const void *A, const int lda, const void *B,
-	      const int ldb, const double beta, void *C, const int ldc)
-{
-}
-
 #endif
