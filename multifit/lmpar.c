@@ -77,7 +77,7 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
 
   if (nsing > 0)
     {
-      for (j = nsing - 1; j > 0; j--)
+      for (j = nsing; j > 0 && j--;)
         {
           double rjj = gsl_matrix_get (r, j, j);
           double temp = gsl_vector_get (x, j) / rjj;
@@ -92,13 +92,6 @@ compute_newton_direction (const gsl_matrix * r, const gsl_permutation * perm,
             }
         }
     }
-
-  {
-    double r00 = gsl_matrix_get (r, 0, 0);
-    double temp = gsl_vector_get (x, 0) / r00;
-    
-    gsl_vector_set (x, j, temp);
-  }
 
   gsl_permute_vector (perm, x);
 }
