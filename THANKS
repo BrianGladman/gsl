@@ -1,9 +1,10 @@
 Barak Pearlmutter <bap@cs.unm.edu>
 Frederick W. Wheeler <wheeler@cipr.rpi.edu>
 Bernd Petrovitsch <bernd@ict.tuwien.ac.at>
+Jacek Pliszka <Jacek.Pliszka@fuw.edu.pl> for bug report
 
-Nelson H. F. Beebe <beebe@math.utah.edu>: references and testing the
+Nelson H. F. Beebe <beebe@math.utah.edu> for references and testing the
 software on many different platforms.
 
-Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu>: IEEE support for Tru64,
+Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu> for IEEE support for Tru64,
 AIX, IRIX, fixes for odes, and testing

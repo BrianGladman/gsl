@@ -385,7 +385,7 @@ was chosen at random.
 #include <gsl_math.h>
 #include <gsl_monte_vegas.h>
 
-double f1(double x[]) 
+double f0(double x[]) 
 @{
   int i;
   double product = 1.0;
@@ -409,13 +409,13 @@ main ()
   unsigned long dimension = 10;
 
   gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(10);
-  gsl_monte_plain_init(s);
+  gsl_monte_vegas_init(s);
 
   s->alpha = 1.5; /* default */
   s->verbose = 0; /* default, we prefer to remain ignorant! */
   s->stage = 0; /* default.  Start at the beginning */
-  s->acc = -1.0 /* default. don't terminate when accuracy is reached */
-  s->max_it_num = 5 /* default.  Do five iterations before quitting */
+  s->acc = -1.0; /* default. don't terminate when accuracy is reached */
+  s->max_it_num = 5; /* default.  Do five iterations before quitting */
   
   status = gsl_monte_vegas_integrate(s, f0, xl, xu, dimension, calls,
                                     &res, &err, &chisq);
