@@ -1746,7 +1746,7 @@ Example output from the program, three 10-step random walks from the origin.
 
 @node Random Number Distribution References and Further Reading
 @section References and Further Reading
-
+@noindent
 For an encyclopaedic coverage of the subject readers are advised to
 consult the book @cite{Non-Uniform Random Variate Generation} by Luc
 Devroye.  It covers every imaginable distribution and provides hundreds

@@ -333,7 +333,7 @@ exact   = -0.177596771314338292
 
 @node Special Functions References and Further Reading
 @section References and Further Reading
-
+@noindent
 The library follows the conventions of @cite{Abramowitz & Stegun} where
 possible,
 @itemize @asis

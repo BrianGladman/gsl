@@ -518,7 +518,7 @@ following main loop prints the solution at the fixed points @math{t = 0,
 
 @node ODE References and Further Reading
 @section References and Further Reading
-
+@noindent
 Many of the the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 

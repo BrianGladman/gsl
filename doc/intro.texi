@@ -86,7 +86,12 @@ GNU Scientific Library are found in the GNU General Public License
 (@pxref{GNU General Public License}).  Further information about this
 license is available from the GNU Project webpage @cite{Frequently Asked
 Questions about the GNU GPL},
-@url{http://www.gnu.org/copyleft/gpl-faq.html}.
+
+@itemize @asis
+@item 
+@url{http://www.gnu.org/copyleft/gpl-faq.html}
+@end itemize
+
 
 @node Obtaining GSL
 @section Obtaining GSL
@@ -94,9 +99,21 @@ Questions about the GNU GPL},
 @cindex downloading GSL
 @cindex mailing list for GSL announcements
 @cindex gsl-announce mailing list
-The source code for the library can be downloaded from the development
-website, @url{http://sources.redhat.com/gsl/}.  It compiles on most Unix
-platforms, and is also available for Microsoft Windows.
+The source code for the library can be obtained in different ways, by
+copying it from a friend, purchasing it on @sc{cdrom} or downloading it
+from the internet. A list of public ftp servers which carry the source
+code can be found on the development website,
+
+@itemize @asis
+@item 
+@url{http://sources.redhat.com/gsl/}
+@end itemize
+@noindent
+The preferred platform for the library is a GNU system, which
+allows it to take advantage of additional features.  The library is
+portable and compiles on most Unix platforms. It is also available for
+Microsoft Windows.  Precompiled versions of the library can be purchased
+from commercial redistributors listed on the website.
 
 Announcements of new releases, updates and other relevant events are
 made on the @code{gsl-announce} mailing list.  To subscribe to this
@@ -109,11 +126,6 @@ Subject: subscribe
 @noindent
 You will receive a response asking to you to reply in order to confirm
 your subscription.
-
-@ifset publish
-Precompiled versions of the library can be obtained from
-@url{http://www.network-theory.co.uk/gsl/}.
-@end ifset
 
 @node   An Example Program
 @section An Example Program
@@ -164,6 +176,12 @@ Public License}).
 @cindex contacting the GSL developers
 Additional information, including online copies of this manual, links to
 related projects, and mailing list archives are available from the
-website @url{http://sources.redhat.com/gsl/}.  The developers of the
-library can be reached via the public mailing list
-@code{gsl-discuss@@sources.redhat.com}.
+development website mentioned above.  The developers of the library can
+be reached via the project's public mailing list,
+
+@itemize @asis
+@code{gsl-discuss@@sources.redhat.com}
+@end itemize
+@noindent
+This mailing list can be used to report bugs or to ask questions not
+covered by this manual.

@@ -463,7 +463,7 @@ maximum = 21.0 minutes
 
 @node Physical Constant References and Further Reading
 @section References and Further Reading
-
+@noindent
 Further information on the values of physical constants is available
 from the NIST website,
 

@@ -1049,6 +1049,7 @@ on FFTs and explicit derivations of the implementation for each
 routine.  There are also references to the relevant literature.  For
 convenience some of the more important references are reproduced below.
 
+@noindent
 There are several introductory books on the FFT with example programs,
 such as @cite{The Fast Fourier Transform} by Brigham and @cite{DFT/FFT
 and Convolution Algorithms} by Burrus and Parks,

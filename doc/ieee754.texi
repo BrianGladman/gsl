@@ -448,7 +448,7 @@ The reference for the IEEE standard is,
 @item
 ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic
 @end itemize
-
+@noindent
 A more pedagogical introduction to the standard can be found in the
 paper ``What Every Computer Scientist Should Know About Floating-Point
 Arithmetic''.

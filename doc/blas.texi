@@ -660,10 +660,10 @@ $ ./a.out
 
 @node BLAS References and Further Reading
 @section References and Further Reading
-
-Information on the @sc{blas} standards, including both the legacy and draft
-interface standards, is available online from the @sc{blas} Homepage and @sc{blas}
-Technical Forum web-site.
+@noindent
+Information on the @sc{blas} standards, including both the legacy and
+draft interface standards, is available online from the @sc{blas}
+Homepage and @sc{blas} Technical Forum web-site.
 
 @itemize @asis
 @item

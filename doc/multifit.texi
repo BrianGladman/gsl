@@ -441,19 +441,34 @@ fitting function is given by,
 @tex
 \beforedisplay
 $$
-f_i = (y_i - (A \exp(-\lambda t_i) + b))/\sigma_i
+f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-f_i = (y_i - (A \exp(-\lambda t_i) + b))/\sigma_i
+f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
 @end example
 @end ifinfo
 @noindent
-where we have chosen @math{t_i = i}.  The Jacobian is the derivative of
-these functions with respect to the three parameters (@math{A},
-@math{\lambda}, @math{b}).
+where we have chosen @math{t_i = i}.  The Jacobian matrix @math{J} is
+the derivative of these functions with respect to the three parameters
+(@math{A}, @math{\lambda}, @math{b}).  It is given by,
+
+@tex
+\beforedisplay
+$$
+J_{ij} = {\partial f_i \over \partial x_j}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+J_@{ij@} = d f_i / d x_j
+@end example
+@end ifinfo
+@noindent
+where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
 
 @example
 #include <stdlib.h>
@@ -478,17 +493,18 @@ expb_f (const gsl_vector * x, void *params,
   double *y = ((struct data *)params)->y;
   double *sigma = ((struct data *) params)->sigma;
 
-  double b = gsl_vector_get (x, 0);
-  double A = gsl_vector_get (x, 1);
-  double lambda = gsl_vector_get (x, 2);
+  double A = gsl_vector_get (x, 0);
+  double lambda = gsl_vector_get (x, 1);
+  double b = gsl_vector_get (x, 2);
 
   size_t i;
 
   for (i = 0; i < n; i++)
     @{
+      /* Model Yi = A * exp(-lambda * i) + b */
       double t = i;
-      double Yi = b + A * exp (lambda * t);
-      gsl_vector_set (f, i, (y[i] - Yi)/sigma[i]);
+      double Yi = A * exp (-lambda * t) + b;
+      gsl_vector_set (f, i, (Yi - y[i])/sigma[i]);
     @}
 
   return GSL_SUCCESS;
@@ -496,25 +512,29 @@ expb_f (const gsl_vector * x, void *params,
 
 int
 expb_df (const gsl_vector * x, void *params, 
-         gsl_matrix * df)
+         gsl_matrix * J)
 @{
   size_t n = ((struct data *)params)->n;
   double *sigma = ((struct data *) params)->sigma;
 
-  double A = gsl_vector_get (x, 1);
-  double lambda = gsl_vector_get (x, 2);
+  double A = gsl_vector_get (x, 0);
+  double lambda = gsl_vector_get (x, 1);
 
   size_t i;
 
   for (i = 0; i < n; i++)
     @{
-      /*  Yi = b + A * exp(lambda * i)  */
+      /* Jacobian matrix J(i,j) = dfi / dxj, */
+      /* where fi = (Yi - yi)/sigma[i],      */
+      /*       Yi = A * exp(-lambda * i) + b  */
+      /* and the xj are the parameters (A,lambda,b) */
       double t = i;
       double s = sigma[i];
-      double explt = exp(lambda * t);
-      gsl_matrix_set (df, i, 0, -1/s);
-      gsl_matrix_set (df, i, 1, -explt/s); 
-      gsl_matrix_set (df, i, 2, -t * A * explt/s);
+      double e = exp(-lambda * t);
+      gsl_matrix_set (J, i, 0, e/s); 
+      gsl_matrix_set (J, i, 1, -t * A * e/s);
+      gsl_matrix_set (J, i, 2, 1/s);
+
 
     @}
   return GSL_SUCCESS;
@@ -522,10 +542,10 @@ expb_df (const gsl_vector * x, void *params,
 
 int
 expb_fdf (const gsl_vector * x, void *params,
-          gsl_vector * f, gsl_matrix * df)
+          gsl_vector * f, gsl_matrix * J)
 @{
   expb_f (x, params, f);
-  expb_df (x, params, df);
+  expb_df (x, params, J);
 
   return GSL_SUCCESS;
 @}
@@ -533,7 +553,7 @@ expb_fdf (const gsl_vector * x, void *params,
 @noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
 some simulated random data. The data uses the known parameters
-(1.0,5.0,-0.1) combined with gaussian noise (standard deviation = 0.1)
+(1.0,5.0,0.1) combined with gaussian noise (standard deviation = 0.1)
 over a range of 40 timesteps. The initial guess for the parameters is
 chosen as (0.0, 1.0, 0.0).
 
@@ -558,7 +578,7 @@ main (void)
   
   gsl_multifit_function_fdf f;
 
-  double x_init[3] = @{ 0.0, 1.0, -0.0 @};
+  double x_init[3] = @{ 1.0, 0.0, 0.0 @};
 
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
 
@@ -619,9 +639,9 @@ main (void)
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
 
-  printf("b      = %g +/- %g\n", FIT(0), ERR(0));
-  printf("A      = %g +/- %g\n", FIT(1), ERR(1));
-  printf("lambda = %g +/- %g\n", FIT(2), ERR(2));
+  printf("A      = %.5f +/- %.5f\n", FIT(0), ERR(0));
+  printf("lambda = %.5f +/- %.5f\n", FIT(1), ERR(1));
+  printf("b      = %.5f +/- %.5f\n", FIT(2), ERR(2));
 
   printf ("status = %s\n", gsl_strerror (status));
 
@@ -647,15 +667,19 @@ both an absolute and relative change.  Here are the results of running
 the program,
 
 @smallexample
-iter:   0 x = 0.00000000 1.00000000 -0.00000000 |f(x)| = 118.574
-iter:   1 x = 0.64919194 1.64919194 -0.01780026 |f(x)| = 77.2069
-                                   
-iter:  12 x = 1.01071542 5.01240495 -0.10056293 |f(x)| = 6.37893
-iter:  13 x = 1.01060903 5.01278421 -0.10056277 |f(x)| = 6.37815
+iter: 0 x = 1.00000000 0.00000000 0.00000000 |f(x)| = 118.574
+iter: 1 x = 1.64919392 0.01780040 0.64919392 |f(x)| = 77.2068
+iter: 2 x = 2.86269020 0.08032198 1.45913464 |f(x)| = 38.0579
+iter: 3 x = 4.97908864 0.11510525 1.06649948 |f(x)| = 10.1548
+iter: 4 x = 5.03295496 0.09912462 1.00939075 |f(x)| = 6.4982
+iter: 5 x = 5.05811477 0.10055914 0.99819876 |f(x)| = 6.33121
+iter: 6 x = 5.05827645 0.10051697 0.99756444 |f(x)| = 6.33119
+iter: 7 x = 5.05828006 0.10051819 0.99757710 |f(x)| = 6.33119
 
-b      = 1.01061 +/- 0.0394169
-A      = 5.01278 +/- 0.0598364
-lambda = -0.100563 +/- 0.00311668
+A      = 5.05828 +/- 0.05983
+lambda = 0.10052 +/- 0.00309
+b      = 0.99758 +/- 0.03944
+status = success
 @end smallexample
 @noindent
 The approximate values of the parameters are found correctly.  The

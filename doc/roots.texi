@@ -1053,7 +1053,7 @@ changing @code{gsl_root_fdfsolver_newton} to
 
 @node Root Finding References and Further Reading
 @section References and Further Reading
-
+@noindent
 For information on the Brent-Dekker algorithm see the following two
 papers,
 

@@ -296,6 +296,7 @@ Note the cut-off at the lower bound.
 @section References and Further Reading
 @cindex PAW
 @cindex HBOOK
+@noindent
 Further information on the use of ntuples can be found in the
 documentation for the @sc{cern} packages @sc{paw} and @sc{hbook}
 (available online).

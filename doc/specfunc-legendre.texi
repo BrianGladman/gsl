@@ -87,9 +87,9 @@ no trouble for small @math{m}, but overflow occurs when @math{m} and
 refuse to calculate @math{P_l^m(x)} and return @code{GSL_EOVRFLW} when
 they can sense that @math{l} and @math{m} are too big.
 
-If you want to calculate a spherical harmonic, then DO NOT use these
-functions.  Instead use @code{gsl_sf_legendre_sphPlm()} below, which
-uses a similar recursion, but with the normalized functions.
+If you want to calculate a spherical harmonic, then @emph{do not} use
+these functions.  Instead use @code{gsl_sf_legendre_sphPlm()} below,
+which uses a similar recursion, but with the normalized functions.
 
 @deftypefun double gsl_sf_legendre_Plm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_Plm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})

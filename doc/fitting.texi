@@ -532,7 +532,7 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 
 @node Fitting References and Further Reading
 @section References and Further Reading
-
+@noindent
 A summary of formulas and techniques for least squares fitting can be
 found in the "Statistics" chapter of the Annual Review of Particle
 Physics prepared by the Particle Data Group.
@@ -547,6 +547,7 @@ R.M. Barnett et al., Physical Review D54, 1 (1996)
 The Review of Particle Physics is available online at the website given
 above.
 
+@noindent
 The tests used to prepare these routines are based on the NIST
 Statistical Reference Datasets. The datasets and their documentation are
 available from NIST at the following website,

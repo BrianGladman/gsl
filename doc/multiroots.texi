@@ -301,10 +301,10 @@ powell_df (gsl_vector * x, void * p, gsl_matrix * J)
    double A = (params->A);
    double x0 = gsl_vector_get(x,0);
    double x1 = gsl_vector_get(x,1);
-   gsl_vector_set (df, 0, 0, A * x1)
-   gsl_vector_set (df, 0, 1, A * x0)
-   gsl_vector_set (df, 1, 0, -exp(-x0))
-   gsl_vector_set (df, 1, 1, -exp(-x1))
+   gsl_vector_set (J, 0, 0, A * x1)
+   gsl_vector_set (J, 0, 1, A * x0)
+   gsl_vector_set (J, 1, 0, -exp(-x0))
+   gsl_vector_set (J, 1, 1, -exp(-x1))
    return GSL_SUCCESS
 @}
 
@@ -900,7 +900,7 @@ below.
 @example
 int
 rosenbrock_df (const gsl_vector * x, void *params, 
-               gsl_matrix * df)
+               gsl_matrix * J)
 @{
   double a = ((struct rparams *) params)->a;
   double b = ((struct rparams *) params)->b;
@@ -912,20 +912,20 @@ rosenbrock_df (const gsl_vector * x, void *params,
   double df10 = -2 * b  * x0;
   double df11 = b;
 
-  gsl_matrix_set (df, 0, 0, df00);
-  gsl_matrix_set (df, 0, 1, df01);
-  gsl_matrix_set (df, 1, 0, df10);
-  gsl_matrix_set (df, 1, 1, df11);
+  gsl_matrix_set (J, 0, 0, df00);
+  gsl_matrix_set (J, 0, 1, df01);
+  gsl_matrix_set (J, 1, 0, df10);
+  gsl_matrix_set (J, 1, 1, df11);
 
   return GSL_SUCCESS;
 @}
 
 int
 rosenbrock_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * df)
+                gsl_vector * f, gsl_matrix * J)
 @{
   rosenbrock_f (x, params, f);
-  rosenbrock_df (x, params, df);
+  rosenbrock_df (x, params, J);
 
   return GSL_SUCCESS;
 @}

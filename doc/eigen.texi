@@ -262,7 +262,7 @@ sign of an eigenvector is arbitrary.
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading
-
+@noindent
 Further information on the algorithms described in this section can be
 found in the following book,
 

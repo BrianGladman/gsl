@@ -852,7 +852,7 @@ accordance with the equation @math{A x = b}.
 
 @node Linear Algebra References and Further Reading
 @section References and Further Reading
-
+@noindent
 Further information on the algorithms described in this section can be
 found in the following book,
 
@@ -875,6 +875,7 @@ ISBN 0-89871-447-8.
 The @sc{lapack} source code can be found at the website above, along
 with an online copy of the users guide.
 
+@noindent
 The Modified Golub-Reinsch algorithm is described in the following paper,
 
 @itemize @asis

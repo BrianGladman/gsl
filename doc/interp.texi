@@ -285,7 +285,7 @@ interpolation method can changed simply by varying the first argument of
 
 @node Interpolation References and Further Reading
 @section References and Further Reading
-
+@noindent
 Descriptions of the interpolation algorithms and further references can
 be found in the following book,
 

@@ -1190,7 +1190,7 @@ which offer the best performance are @code{taus}, @code{gfsr4} and
 
 @node Random Number References and Further Reading
 @section References and Further Reading
-
+@noindent
 The subject of random number generation and testing is reviewed
 extensively in Knuth's @cite{Seminumerical Algorithms}.
 
@@ -1210,12 +1210,13 @@ Handbook on Simulation, Jerry Banks Ed., Wiley, 1998, 93--137.
 @url{http://www.iro.umontreal.ca/~lecuyer/papers.html}
 in the file @file{handsim.ps}.
 @end itemize
-
+@noindent
 On the World Wide Web, see the pLab home page
 (@url{http://random.mat.sbg.ac.at/}) for a lot of information on the
 state-of-the-art in random number generation, and for numerous links to
 various "random" WWW sites.
 
+@noindent
 The source code for the @sc{diehard} random number generator tests is also
 available online.
 

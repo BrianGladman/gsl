@@ -258,7 +258,7 @@ which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 
 @node Roots of Polynomials References and Further Reading
 @section References and Further Reading
-
+@noindent
 The balanced-QR method and its error analysis is described in the
 following papers.
 
