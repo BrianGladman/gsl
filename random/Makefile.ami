@@ -2,43 +2,59 @@
 ### This file is a template for Makefile.am (which is a template for 
 ### Makefile.in, which is a template for Makefile...) 
 
-### You can bootstrap your way to a regular Makefile with 
-###     make -f Makefile.ami Makefile.am
-### followed by the usual automake/configure routines
+#####################################################################
+
+## I have removed the "automagic" making of Makefile.am from
+## Makefile.ami  --- It was just too finicky.  
+
+## If you consider yourself a casual user, then you shouldn't need to
+## edit the Makefile.am, but if you do, nobody will mind.
+
+## If instead you think of yourself as a developer/contributor [eg if
+## you are working from a distribution you got from the CVS master
+## source instead of a numbered release], and if you want to edit the
+## Makefile.am file, you should instead edit the Makefile.ami template
+## file, and/or modify the 'makeam' shell script.  Then you can remake
+## the Makefile.am file using the 'makeam' script:
+
+##      ./makeam Makefile.ami > Makefile.am
+
+## After you are done, be sure the 'cvs commit' the Makefile.am file,
+## as well as your changes to 'Makefile.ami' and 'makeam'
+
+## A similar warning applies to the sources *-state.c, *-gen.c, and
+## some of the *.h files; if you want to edit them, you should instead
+## edit the template files, xx-state.xc, xx-gen.c, and gsl_ran.h
+## and then run './makesrc Makefile.ami' to remake all the built-sources.
+
+#####################################################################
 
 ## Include here the list of algorithms for random number generation
 ## The first one should be the "favorite" (ie, default)
 
 ALLRAN= taus mrg cmrg uni uni32 zuf rand
-FAVORITERAN= taus
 
-INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
 
-switch.c gsl_ran_switch.h: xxx-switch.xc makeswitch
-	./makeswitch $(ALLRAN) 
+switch.c gsl_ran_switch.h:
+	./makesrc --switch
 
-## The user doesn't really _need_ these, but 'make all' does,
-## and probably it is fair for the user to have them, since that
-## permits him/her to contribute to the project!!
+## The user doesn't really _need_ these, assuming that the
+## distribution includes all the .c and .h sources.
+## But it is fair for the user to have them, in case one of
+## those sources needs to be rebuilt, and also because it
+## permits the user to contribute to the project!!
 ##
-EXTRA_DIST= xxx-switch.xc makeswitch xxx-gen.xc xxx-state.xc \
-	makeam Makefile.ami $(BUILT_SOURCES)
+EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
+	makeam makesrc Makefile.ami 
 
 CLEANFILES= tmp.out tmp.in
 
-tooclean: clean
-	/bin/rm -f $(BUILT_SOURCES)
-	/bin/rm -rf .deps
 
-## The rest of the Makefile.am is generated from the script 'makeam'
-## which includes numerous loops over $(ALLRAN)
 
-Makefile.am: Makefile.ami makeam
-	cat Makefile.ami   | egrep -v '^###' > Makefile.am
-	./makeam $(ALLRAN) >> Makefile.am
+
 
 
 
