@@ -2,49 +2,24 @@
 #include <math.h>
 #include <gsl_integration.h>
 
-double f (double x) ;
+double qtest1 (double x) ;
 double g (double x) ;
 double stepfn (double x) ;
+
+double alpha = 0 ;
+
 int main (void)
 {
-  double result, abserr, resabs, resasc ;
   size_t neval ;
   int status ;
-
-  gsl_integration_qk15(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("15: result = %.30g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
-  gsl_integration_qk21(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("21: result = %.18g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
-  gsl_integration_qk31(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("31: result = %.18g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
-  gsl_integration_qk41(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("41: result = %.18g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
-  gsl_integration_qk51(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("51: result = %.18g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
-
-  gsl_integration_qk61(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
-
-  printf("61: result = %.18g, abserr = %.18g, resabs = %.18g, resasc = %.18g\n",
-	 result, abserr, resabs, resasc) ;
-
+      
+  {
+    double result = 0, abserr = 0, resabs = 0, resasc = 0 ;
+    quad_rule (f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
+  }
 
   gsl_integration_qng(f,0.0,1.0,0.0,1e-5,&result,&abserr,&neval) ;
-
+  
   printf("qng: result = %.18g, abserr = %.18g, neval = %d\n",
 	 result, abserr, neval) ;
 
@@ -60,7 +35,6 @@ int main (void)
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
   }
-
 #endif
 
   {
@@ -75,7 +49,6 @@ int main (void)
 	   result, abserr, neval) ;
     printf("status=%d\n",status) ;
   }
-
 
 #ifdef JUNK
   {
@@ -109,8 +82,8 @@ int main (void)
   return 0 ;
 } 
 
-double f (double x) {
-  return log(x)/sqrt(x) ;
+double qtest1 (double x) {
+  return pow(x,alpha) * log(1/x) ;
 }
 
 double g (double x) {
