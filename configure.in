@@ -144,7 +144,7 @@ if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   AC_DEFINE(HAVE_EXIT_SUCCESS_AND_FAILURE)
 fi ;
 
-AC_MSG_CHECKING(for desirable IEEE arithmetic flags)
+AC_MSG_CHECKING(for IEEE compilation options)
 case "$host" in
     alpha*-*-*) 
 	CFLAGS="-mieee $CFLAGS"
@@ -187,13 +187,16 @@ dnl
 dnl extern double hypot(double, double);
 dnl
 
-AC_MSG_CHECKING([whether printf works with long double])
+AC_MSG_CHECKING([whether printf/scanf works with long double])
 AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
 int main (void) 
 { 
-long double x = 1.234 ; fprintf(stderr,"%Lg\n",x) ; exit (0) ; 
+const char * s = "5678"; long double x = 1.234 ; 
+fprintf(stderr,"%Lg\n",x) ; 
+scanf(s, "%Lg", &x);
+if (x == 5678) exit (0) else exit(1); 
 }],
 ac_cv_func_longdouble_printf=yes, 
 ac_cv_func_longdouble_printf=no, 

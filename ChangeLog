@@ -1,6 +1,7 @@
 1998-11-06    <bjg@ancho.lanl.gov>
 
-	* configure.in: add -mieee on alpha platforms
+	* configure.in: add -mieee on alpha platforms, also check for both
+	scanf and printf working with long double
 
 1998-08-31  James Theiler  <jt@lanl.gov>
 

@@ -1995,8 +1995,8 @@ EOF
 
 fi ;
 
-echo $ac_n "checking for desirable IEEE arithmetic flags""... $ac_c" 1>&6
-echo "configure:2000: checking for desirable IEEE arithmetic flags" >&5
+echo $ac_n "checking for IEEE compilation options""... $ac_c" 1>&6
+echo "configure:2000: checking for IEEE compilation options" >&5
 case "$host" in
     alpha*-*-*) 
 	CFLAGS="-mieee $CFLAGS"
@@ -2045,8 +2045,8 @@ esac
 
 
 
-echo $ac_n "checking whether printf works with long double""... $ac_c" 1>&6
-echo "configure:2050: checking whether printf works with long double" >&5
+echo $ac_n "checking whether printf/scanf works with long double""... $ac_c" 1>&6
+echo "configure:2050: checking whether printf/scanf works with long double" >&5
 if test "$cross_compiling" = yes; then
   ac_cv_func_longdouble_printf=no
 else
@@ -2058,10 +2058,13 @@ else
 #include <stdio.h>
 int main (void) 
 { 
-long double x = 1.234 ; fprintf(stderr,"%Lg\n",x) ; exit (0) ; 
+const char * s = "5678"; long double x = 1.234 ; 
+fprintf(stderr,"%Lg\n",x) ; 
+scanf(s, "%Lg", &x);
+if (x == 5678) exit (0) else exit(1); 
 }
 EOF
-if { (eval echo configure:2065: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:2068: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
 then
   ac_cv_func_longdouble_printf=yes
 else
