@@ -5,7 +5,7 @@ Testing:
 The results of these functions should agree almost exactly with the
 results from the original QUADPACK versions. I have been able to get
 agreement up to the last digit (i.e. the last digit differs but the
-other are ok).
+other are ok) when small numbers of evaluations are involved.
 
 If you want to compile the fortran versions to compare them with the
 GSL versions you need to bear in mind the following points to get full
@@ -14,6 +14,23 @@ agreement:
 -- Make sure you compile everything in double precision.  i.e. use -r8,
    otherwise some float values may enter the calculation and wipe out
    your full double precision accuracy
+
+-- Make sure the machine parameters D1MACH(1)..D1MACH(4), EPMACH and UFLOW
+   are set correctly. EPMACH and UFLOW need to be the same as the
+   parameters DBL_EPSILON and DBL_MIN. Using f2c I had problems using
+   the D1MACH common block which seemed to end up substituting
+   incorrect values. I manually had to go into all the source files
+   and change
+
+              EPMACH = D1MACH(1)
+              UFLOW = D1MACH(4)
+
+   to
+
+              EPMACH = 2.2204460492503131d-16 
+              UFLOW = 2.2250738585072014d-308
+
+   so that the values weren't zero.
 
 -- Make sure you enter double precision numbers as 1.0d-23 and not 1.0e-23 
    if you are using f2c.

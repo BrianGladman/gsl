@@ -190,7 +190,7 @@ gsl_integration_qage_impl (double (*f) (double x),
   {
     double result_sum = 0;
     size_t k;
-    for (k = 0; k <= i; k++)
+    for (k = 0; k < i; k++)
       {
 	result_sum += rlist[k];
       }
@@ -198,6 +198,8 @@ gsl_integration_qage_impl (double (*f) (double x),
   }
 
   *abserr = errsum;
+
+  *last = i;
 
   /* Number of rule evaluations: one initial call, two for each iteration */
 
