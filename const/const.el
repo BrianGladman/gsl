@@ -59,7 +59,7 @@
          ("fath"          "FATHOM")
 
          ("mil"           "MIL")
-         ("pt"            "POINT")
+         ("point"         "POINT")
          ("tpt"           "TEXPOINT")
 
          ("u"             "MICRON")
@@ -100,7 +100,6 @@
 
          ("cal"           "CALORIE")
          ("btu"           "BTU")
-         ("ev"            "ELECTRON_VOLT")
          ("therm"         "THERM")
 
          ("hp"            "HORSEPOWER")
@@ -165,7 +164,7 @@
 (setq mks (nth 1 (assq 'mks math-standard-units-systems)))
 
 (defun display (prefix system constants)
-  (princ (format "#ifdef __%s__\n" prefix))
+  (princ (format "#ifndef __%s__\n" prefix))
   (princ (format "#define __%s__\n\n" prefix))
   (mapcar (lambda (x) (apply 'fn prefix system x)) constants)
   (princ (format "\n#endif /* __%s__ */\n" prefix))

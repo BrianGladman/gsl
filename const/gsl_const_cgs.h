@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef __GSL_CONST_CGS__
+#ifndef __GSL_CONST_CGS__
 #define __GSL_CONST_CGS__
 
 #define GSL_CONST_CGS_SPEED_OF_LIGHT (2.99792458e10) /* cm / s */
@@ -53,7 +53,7 @@
 #define GSL_CONST_CGS_NAUTICAL_MILE (185200) /* cm */
 #define GSL_CONST_CGS_FATHOM (1.8288e2) /* cm */
 #define GSL_CONST_CGS_MIL (2.54e-3) /* cm */
-#define GSL_CONST_CGS_POINT (4.73176473002e2) /* cm^3 */
+#define GSL_CONST_CGS_POINT (3.52777777778e-2) /* cm */
 #define GSL_CONST_CGS_TEXPOINT (3.51459803515e-2) /* cm */
 #define GSL_CONST_CGS_MICRON (1e-4) /* cm */
 #define GSL_CONST_CGS_ANGSTROM (1e-8) /* cm */
@@ -87,7 +87,6 @@
 #define GSL_CONST_CGS_POUNDAL (1.38255e4) /* cm g / s^2 */
 #define GSL_CONST_CGS_CALORIE (4.1868e7) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_BTU (btu) /* 1 */
-#define GSL_CONST_CGS_ELECTRON_VOLT (1.60217733e-12) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_THERM (1.05506e15) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_HORSEPOWER (7.457e9) /* g cm^2 / s^3 */
 #define GSL_CONST_CGS_BAR (1e6) /* g / cm s^2 */

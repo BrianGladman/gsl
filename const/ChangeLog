@@ -1,0 +1,5 @@
+Tue Jan 23 16:19:50 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* const.el (gsl-constants): fixed definition of POINT (from pt to
+ 	point, was previously measuring 'pints')
+

@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef __GSL_CONST_MKS__
+#ifndef __GSL_CONST_MKS__
 #define __GSL_CONST_MKS__
 
 #define GSL_CONST_MKS_SPEED_OF_LIGHT (2.99792458e8) /* m / s */
@@ -53,7 +53,7 @@
 #define GSL_CONST_MKS_NAUTICAL_MILE (1852) /* m */
 #define GSL_CONST_MKS_FATHOM (1.8288e0) /* m */
 #define GSL_CONST_MKS_MIL (2.54e-5) /* m */
-#define GSL_CONST_MKS_POINT (4.73176473002e-4) /* m^3 */
+#define GSL_CONST_MKS_POINT (3.52777777778e-4) /* m */
 #define GSL_CONST_MKS_TEXPOINT (3.51459803515e-4) /* m */
 #define GSL_CONST_MKS_MICRON (1e-6) /* m */
 #define GSL_CONST_MKS_ANGSTROM (1e-10) /* m */
@@ -87,7 +87,6 @@
 #define GSL_CONST_MKS_POUNDAL (1.38255e-1) /* kg m / s^2 */
 #define GSL_CONST_MKS_CALORIE (4.1868e0) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_BTU (btu) /* 1 */
-#define GSL_CONST_MKS_ELECTRON_VOLT (1.60217733e-19) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_THERM (105506000) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_HORSEPOWER (7.457e2) /* kg m^2 / s^3 */
 #define GSL_CONST_MKS_BAR (1e5) /* kg / m s^2 */

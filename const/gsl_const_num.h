@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef __GSL_CONST_NUM__
+#ifndef __GSL_CONST_NUM__
 #define __GSL_CONST_NUM__
 
 #define GSL_CONST_NUM_FINE_STRUCTURE (7.29735307964e-3) /* 1 */
