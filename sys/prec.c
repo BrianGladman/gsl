@@ -2,10 +2,8 @@
  * RCS:     $Id$
  */
 #include <config.h>
-#include <gsl_mode.h>
 #include <gsl_machine.h>
 #include <gsl_precision.h>
-
 
 const double gsl_prec_eps[_GSL_PREC_T_NUM] = {
   GSL_DBL_EPSILON,
@@ -46,9 +44,14 @@ const double gsl_prec_root6_eps[_GSL_PREC_T_NUM] = {
 
 /* We need this somewhere, in case the inline is ignored.
  */
-#ifndef GSL_MODE_PREC
+
+typedef unsigned int gsl_mode_t;
+
+unsigned int GSL_MODE_PREC(gsl_mode_t mt);
+
 unsigned int
 GSL_MODE_PREC(gsl_mode_t mt)
-{ return  (mt & (unsigned int)7); }
-#endif /* GSL_MODE_PREC */
+{ 
+  return  (mt & (unsigned int)7); 
+}
 
