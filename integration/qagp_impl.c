@@ -48,6 +48,11 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
   /* Test on validity of parameters */
 
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
+
   if (npts > workspace->limit)
     {
       *result = 0;

@@ -3,20 +3,26 @@
 #include <gsl_integration.h>
 #include <gsl_errno.h>
 
-gsl_integration_qawo_workspace *
-gsl_integration_qawo_workspace_alloc (double omega, double L, 
-				      enum gsl_integration_qawo_enum sine,
-				      size_t n)
+gsl_integration_qawo_table *
+gsl_integration_qawo_table_alloc (double omega, double L, 
+				  enum gsl_integration_qawo_enum sine,
+				  size_t n)
 {
-  gsl_integration_qawo_workspace *t;
+  gsl_integration_qawo_table *t;
   double * chebmo;
 
-  t = (gsl_integration_qawo_workspace *)
-    malloc (sizeof (gsl_integration_qawo_workspace));
+  if (n == 0)
+    {
+      GSL_ERROR_RETURN ("cache length n must be positive integer",
+			GSL_EDOM, 0);
+    }
+
+  t = (gsl_integration_qawo_table *)
+    malloc (sizeof (gsl_integration_qawo_table));
 
   if (t == 0)
     {
-      GSL_ERROR_RETURN ("failed to allocate space for qawo_workspace struct",
+      GSL_ERROR_RETURN ("failed to allocate space for qawo_table struct",
 			GSL_ENOMEM, 0);
     }
 
@@ -25,7 +31,7 @@ gsl_integration_qawo_workspace_alloc (double omega, double L,
   if (chebmo == 0)
     {
       free (t);
-      GSL_ERROR_RETURN ("failed to allocate space for chebmo block",
+      GSL_ERROR_RETURN ("failed to allocate space for chebmo cache block",
 			GSL_ENOMEM, 0);
     }
 
@@ -41,7 +47,7 @@ gsl_integration_qawo_workspace_alloc (double omega, double L,
 }
 
 int
-gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * t,
+gsl_integration_qawo_table_set (gsl_integration_qawo_table * t,
 				    double omega, double L,
 				    enum gsl_integration_qawo_enum sine)
 {
@@ -56,7 +62,7 @@ gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * t,
 
 
 int
-gsl_integration_qawo_workspace_set_length (gsl_integration_qawo_workspace * t,
+gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
 					   double L)
 {
   /* return immediately if the length is the same as the old length */
@@ -75,7 +81,7 @@ gsl_integration_qawo_workspace_set_length (gsl_integration_qawo_workspace * t,
 
 
 void
-gsl_integration_qawo_workspace_free (gsl_integration_qawo_workspace * t)
+gsl_integration_qawo_table_free (gsl_integration_qawo_table * t)
 {
   free (t->chebmo);
   free (t);

@@ -24,6 +24,21 @@ gsl_integration_qawc_impl (gsl_function * f,
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
   int err_reliable;
+  int sign = 1;
+
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
+
+  if (b < a) 
+    {
+      double lower = b ;
+      double higher = a ;
+      a = lower ;
+      b = higher ;
+      sign = -1 ;
+    }
 
   initialise (workspace, a, b);
 
@@ -154,7 +169,7 @@ gsl_integration_qawc_impl (gsl_function * f,
     }
   while (iteration < limit && !error_type && errsum > tolerance);
 
-  *result = sum_results (workspace);
+  *result = sign * sum_results (workspace);
   *abserr = errsum;
 
   if (errsum <= tolerance)

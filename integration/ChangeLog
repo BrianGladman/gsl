@@ -1,3 +1,9 @@
+Fri Apr  2 20:57:09 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* qelg.c (qelg): removed debugging code
+
+	* qpsrt.c (qpsrt): removed debugging code
+
 Thu Mar 11 15:15:46 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* qags_impl.c (gsl_integration_qags_impl): removed dependency in

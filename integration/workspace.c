@@ -117,3 +117,18 @@ gsl_integration_workspace_free (gsl_integration_workspace * w)
   free (w->alist) ;
   free (w) ;
 }
+
+/*
+size_t 
+gsl_integration_workspace_limit (gsl_integration_workspace * w) 
+{
+  return w->limit ;
+}
+
+
+size_t 
+gsl_integration_workspace_size (gsl_integration_workspace * w) 
+{
+  return w->size ;
+}
+*/

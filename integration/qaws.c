@@ -25,6 +25,11 @@ gsl_integration_qaws (gsl_function * f,
   size_t iteration = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
 
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
+
   initialise (workspace, a, b);
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
@@ -89,7 +94,7 @@ gsl_integration_qaws (gsl_function * f,
   area = result0;
   errsum = abserr0;
 
-  iteration = 1;
+  iteration = 2;
 
   do
     {

@@ -17,12 +17,12 @@ static void compute_moments (double par, double *moment);
 
 static void
 qc25f (gsl_function * f, double a, double b, 
-       gsl_integration_qawo_workspace * wf, size_t level,
+       gsl_integration_qawo_table * wf, size_t level,
        double *result, double *abserr, double *resabs, double *resasc);
 
 static void
 qc25f (gsl_function * f, double a, double b, 
-       gsl_integration_qawo_workspace * wf, size_t level,
+       gsl_integration_qawo_table * wf, size_t level,
        double *result, double *abserr, double *resabs, double *resasc)
 {
   const double center = 0.5 * (a + b);
@@ -62,7 +62,7 @@ qc25f (gsl_function * f, double a, double b,
       double result_abs, res12_cos, res12_sin, res24_cos, res24_sin;
       double est_cos, est_sin;
       double c, s;
-      size_t i;
+      size_t i, j;
 
       gsl_integration_qcheb (f, a, b, cheb12, cheb24);
 
@@ -74,11 +74,11 @@ qc25f (gsl_function * f, double a, double b,
 	}
       else
 	{
-	  compute_moments (par, chebmo);
-	  
 	  moment = chebmo;
 
-	  /* check for overflowing the table here (size n) */
+	  compute_moments (par, moment);
+	  
+	  /* cache the moments if we can */
 
 	  if (level < wf->n)
 	    {
@@ -91,11 +91,13 @@ qc25f (gsl_function * f, double a, double b,
 	      
 	      /* copy the moments for the current level into the cache too */
 
-	      for (i = 0; i < 25; i++)
+	      for (j = 0; j < 25; j++)
 		{
-		  wf->chebmo[25 * level + i] = moment[i];
+		  wf->chebmo[25 * level + j] = moment[j];
 		}
-	    }
+
+	      wf->i = level + 1 ;
+	    } 
 	}
 
 

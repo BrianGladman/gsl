@@ -1637,8 +1637,8 @@ int main (void)
     double result = 0, abserr=0;
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
-    gsl_integration_qawo_workspace * wo 
-      = gsl_integration_qawo_workspace_alloc (10.0 * M_PI, 1.0,
+    gsl_integration_qawo_table * wo 
+      = gsl_integration_qawo_table_alloc (10.0 * M_PI, 1.0,
 					      GSL_INTEG_SINE, 1000) ;
 
     /* All results are for GSL_IEEE_MODE=double-precision */
@@ -1715,7 +1715,7 @@ int main (void)
     for (i = 0; i < 9 ; i++) 
 	gsl_test_int((int)w->order[i],order[i]-1,"qawo(f456) order");
 
-    gsl_integration_qawo_workspace_free (wo) ;
+    gsl_integration_qawo_table_free (wo) ;
     gsl_integration_workspace_free (w) ;
 
   }
@@ -1728,8 +1728,8 @@ int main (void)
 
     gsl_integration_workspace * w = gsl_integration_workspace_alloc (1000) ;
     gsl_integration_workspace * wc = gsl_integration_workspace_alloc (1000) ;
-    gsl_integration_qawo_workspace * wo 
-      = gsl_integration_qawo_workspace_alloc (M_PI / 2.0, 1.0,
+    gsl_integration_qawo_table * wo 
+      = gsl_integration_qawo_table_alloc (M_PI / 2.0, 1.0,
 					      GSL_INTEG_COSINE, 1000) ;
 
     /* All results are for GSL_IEEE_MODE=double-precision */
@@ -1788,7 +1788,7 @@ int main (void)
 	gsl_test_rel(w->elist[i],e[i],50.0,"qawf(f457) elist") ;
 
 
-    gsl_integration_qawo_workspace_free (wo) ;
+    gsl_integration_qawo_table_free (wo) ;
     gsl_integration_workspace_free (wc) ;
     gsl_integration_workspace_free (w) ;
 

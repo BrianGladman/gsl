@@ -18,7 +18,7 @@ gsl_integration_qawo (gsl_function * f,
 		      const double epsabs, const double epsrel,
 		      const size_t limit,
 		      gsl_integration_workspace * workspace,
-		      gsl_integration_qawo_workspace * wf,
+		      gsl_integration_qawo_table * wf,
 		      double *result, double *abserr)
 {
   double area, errsum;
@@ -43,6 +43,11 @@ gsl_integration_qawo (gsl_function * f,
   struct extrapolation_table table;
 
   double b = a + wf->L ;
+
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
 
   initialise (workspace, a, b);
 
@@ -92,7 +97,7 @@ gsl_integration_qawo (gsl_function * f,
 
   initialise_table (&table);
 
-  if (0.5 * wf->omega * fabs(b - a) <= 2)
+  if (0.5 * fabs(wf->omega) * fabs(b - a) <= 2)
     {
       append_table (&table, result0);
       extall = 1;
@@ -131,6 +136,11 @@ gsl_integration_qawo (gsl_function * f,
       b2 = b_i;
 
       iteration++;
+
+      if (current_level >= wf->n) 
+	{
+	  GSL_ERROR ("exceeded limit of trigonometric cache", GSL_ECACHE);
+	}
 
       qc25f (f, a1, b1, wf, current_level, &area1, &error1, &resabs1, &resasc1);
       qc25f (f, a2, b2, wf, current_level, &area2, &error2, &resabs2, &resasc2);

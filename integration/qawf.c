@@ -17,7 +17,7 @@ gsl_integration_qawf (gsl_function * f,
 		      const size_t limit,
 		      gsl_integration_workspace * workspace,
 		      gsl_integration_workspace * cycle_workspace,
-		      gsl_integration_qawo_workspace * wf,
+		      gsl_integration_qawo_table * wf,
 		      double *result, double *abserr)
 {
   double area, errsum;
@@ -36,6 +36,11 @@ gsl_integration_qawf (gsl_function * f,
   double factor = 1;
   double initial_eps, eps;
   int error_type = 0;
+
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
 
   initialise (workspace, a, a);
 
@@ -93,7 +98,7 @@ gsl_integration_qawf (gsl_function * f,
 
   cycle = (2 * floor (fabs (omega)) + 1) * M_PI / fabs (omega);
 
-  gsl_integration_qawo_workspace_set_length (wf, cycle);
+  gsl_integration_qawo_table_set_length (wf, cycle);
 
   initialise_table (&table);
 

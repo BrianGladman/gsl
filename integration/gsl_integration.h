@@ -53,7 +53,7 @@ gsl_integration_qaws_table_set (gsl_integration_qaws_table * t,
 void
 gsl_integration_qaws_table_free (gsl_integration_qaws_table * t);
 
-/* Workspace for QAWS integrator */
+/* Workspace for QAWO integrator */
 
 enum gsl_integration_qawo_enum { GSL_INTEG_COSINE, GSL_INTEG_SINE };
 
@@ -67,24 +67,24 @@ typedef struct
   enum gsl_integration_qawo_enum sine;
   double *chebmo;
 }
-gsl_integration_qawo_workspace;
+gsl_integration_qawo_table;
 
-gsl_integration_qawo_workspace * 
-gsl_integration_qawo_workspace_alloc (double omega, double L, 
+gsl_integration_qawo_table * 
+gsl_integration_qawo_table_alloc (double omega, double L, 
 				      enum gsl_integration_qawo_enum sine,
 				      size_t n);
 
 int
-gsl_integration_qawo_workspace_set (gsl_integration_qawo_workspace * t,
+gsl_integration_qawo_table_set (gsl_integration_qawo_table * t,
 				    double omega, double L,
 				    enum gsl_integration_qawo_enum sine);
 
 int
-gsl_integration_qawo_workspace_set_length (gsl_integration_qawo_workspace * t,
+gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
 					   double L);
 
 void
-gsl_integration_qawo_workspace_free (gsl_integration_qawo_workspace * t);
+gsl_integration_qawo_table_free (gsl_integration_qawo_table * t);
 
 
 /* Definition of an integration rule */
@@ -194,7 +194,7 @@ int gsl_integration_qawo (gsl_function * f,
 			  const double epsabs, const double epsrel,
 			  const size_t limit,
 			  gsl_integration_workspace * workspace,
-			  gsl_integration_qawo_workspace * wf,
+			  gsl_integration_qawo_table * wf,
 			  double *result, double *abserr);
 
 int gsl_integration_qawf (gsl_function * f,
@@ -203,7 +203,7 @@ int gsl_integration_qawf (gsl_function * f,
 			  const size_t limit,
 			  gsl_integration_workspace * workspace,
 			  gsl_integration_workspace * cycle_workspace,
-			  gsl_integration_qawo_workspace * wf,
+			  gsl_integration_qawo_table * wf,
 			  double *result, double *abserr);
 
 #endif /* GSL_INTEGRATION_H */

@@ -39,6 +39,11 @@ gsl_integration_qags_impl (const gsl_function * f,
 
   struct extrapolation_table table;
 
+  if (limit > workspace->limit)
+    {
+      GSL_ERROR ("iteration limit exceeds available workspace", GSL_EINVAL) ;
+    }
+
   initialise (workspace, a, b);
 
   /* Test on accuracy */
