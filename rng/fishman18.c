@@ -25,17 +25,21 @@
  * Addison-Wesley
  * Page 106-108
  *
- * It is called "Fishman - Moore III"
+ * It is called "Fishman - Moore III".
  *
- * This implementation copyright (C) 2001 Carlo Perassi.
+ * This implementation copyright (C) 2001 Carlo Perassi
+ * and (C) 2003 Heiko Bauke.
  */
 
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_rng.h>
 
-#define AA 62089911UL
-#define MM 0x7fffffffUL		/* 2 ^ 31 - 1 */
+#include "schrage.c"
+
+#define AA           62089911UL
+#define MM           0x7fffffffUL	/* 2 ^ 31 - 1 */
+#define CEIL_SQRT_MM 46341UL	/* ceil(sqrt(2 ^ 31 - 1)) */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
@@ -52,7 +56,7 @@ ran_get (void *vstate)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  state->x = (AA * state->x) & MM;
+  state->x = schrage_mult (AA, state->x, MM, CEIL_SQRT_MM);
 
   return state->x;
 }
@@ -62,7 +66,7 @@ ran_get_double (void *vstate)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  return ran_get (state) / 2147483648.0;
+  return ran_get (state) / 2147483647.0;
 }
 
 static void
@@ -70,18 +74,18 @@ ran_set (void *vstate, unsigned long int s)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  if (s == 0)
+  if ((s % MM) == 0)
     s = 1;			/* default seed is 1 */
 
-  state->x = s & MM;
+  state->x = s % MM;
 
   return;
 }
 
 static const gsl_rng_type ran_type = {
   "fishman18",			/* name */
-  MM,				/* RAND_MAX */
-  0,				/* RAND_MIN */
+  MM - 1,			/* RAND_MAX */
+  1,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

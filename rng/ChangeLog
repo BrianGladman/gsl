@@ -1,5 +1,17 @@
 2003-06-02  Brian Gough  <bjg@network-theory.co.uk>
 
+	* knuthran2.c (ran_get): use schrage multiplication to avoid
+	overflow in intermediate results
+
+	* fishman2x.c (ran_get): use schrage multiplication to avoid
+	overflow in intermediate results
+
+	* fishman18.c (ran_get): use schrage multiplication to avoid
+	overflow in intermediate results
+
+	* schrage.c (schrage): utility functions for multiplication of
+	long integers
+
 	* test.c (main): updated incorrect test values for
 	gsl_rng_fishman18 gsl_rng_fishman2x gsl_rng_knuthran2
 

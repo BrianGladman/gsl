@@ -27,7 +27,8 @@
  *
  * It is called "Fishman - L'Ecuyer"
  *
- * This implementation copyright (C) 2001 Carlo Perassi.
+ * This implementation copyright (C) 2001 Carlo Perassi
+ * and (C) 2003 Heiko Bauke.
  */
 
 #include <config.h>
@@ -37,6 +38,8 @@
 /* Fishman */
 #define AAA_F 48271UL
 #define MMM_F 0x7fffffffUL	/* 2 ^ 31 - 1 */
+#define QQQ_F 44488UL
+#define RRR_F 3399UL
 
 /* L'Ecuyer */
 #define AAA_L 40692UL
@@ -61,16 +64,22 @@ ran_get (void *vstate)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  long int y = state->y;
-  long int r = RRR_L * (y / QQQ_L);
+  long int y, r;
 
-  y = AAA_L * (y % QQQ_L) - r;
+  r = RRR_F * (state->x / QQQ_F);
+  y = AAA_F * (state->x % QQQ_F) - r;
+  if (y < 0)
+    y += MMM_F;
+  state->x = y;
+
+  r = RRR_L * (state->y / QQQ_L);
+  y = AAA_L * (state->y % QQQ_L) - r;
   if (y < 0)
     y += MMM_L;
-
   state->y = y;
-  state->x = (AAA_F * state->x) & MMM_F;
-  state->z = (state->x - state->y) & MMM_F;
+
+  state->z = (state->x > state->y) ? (state->x - state->y) :
+    MMM_F + state->x - state->y;
 
   return state->z;
 }
@@ -80,7 +89,7 @@ ran_get_double (void *vstate)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  return ran_get (state) / 2147483648.0;
+  return ran_get (state) / 2147483647.0;
 }
 
 static void
@@ -88,19 +97,20 @@ ran_set (void *vstate, unsigned long int s)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  if (s == 0)
+  if ((s % MMM_F) == 0 || (s % MMM_L) == 0)
     s = 1;			/* default seed is 1 */
 
-  state->x = s & MMM_F;
-  state->y = s & MMM_L;
-  state->z = s & MMM_F;
+  state->x = s % MMM_F;
+  state->y = s % MMM_L;
+  state->z = (state->x > state->y) ? (state->x - state->y) :
+    MMM_F + state->x - state->y;
 
   return;
 }
 
 static const gsl_rng_type ran_type = {
   "fishman2x",			/* name */
-  MMM_F,			/* RAND_MAX */
+  MMM_F - 1,			/* RAND_MAX */
   0,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
