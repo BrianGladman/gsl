@@ -1,3 +1,7 @@
+Sun Feb 14 20:47:07 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* Makefile.am: added gsl_mode.h to include_HEADERS
+
 Mon Feb  8 18:39:35 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* added new type gsl_function for arbitrary functions with
