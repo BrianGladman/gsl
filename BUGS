@@ -52,14 +52,6 @@ The correct value is -2.
 
 ----------------------------------------------------------------------
 
-BUG#5 -- broken error terms for implicit odes 
-
-The error terms for the implicit ode integrators are broken.  They
-have 'FIXME' entries still in the code.  Only the bsimp error term is
-implemented.
-
-----------------------------------------------------------------------
-
 BUG#8 -- inexact coefficients in rk8pd.c 
 
 From: Luc Maisonobe <Luc.Maisonobe@c-s.fr>
