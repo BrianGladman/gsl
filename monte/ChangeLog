@@ -1,3 +1,9 @@
+Sat Jan  6 19:56:49 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* miser.c (gsl_monte_miser_free): fixed memory leak for s->hits_{r,l}
+
+	* vegas.c (gsl_monte_vegas_free): fixed memory leak for s->x
+
 Fri Dec 22 21:43:04 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* miser.c: removed max-min estimation method for subvolumes. We
