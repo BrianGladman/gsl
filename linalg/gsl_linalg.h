@@ -8,6 +8,14 @@
 #include <gsl_matrix.h>
 
 typedef enum {
+  GSL_LA_MOD_NONE=0,
+  GSL_LA_MOD_TRANSPOSE=1,
+  GSL_LA_MOD_CONJUGATE=2
+}
+gsl_la_matrix_mod_t;
+
+
+typedef enum {
   GSL_LA_EIGEN_SORT_VALUE,
   GSL_LA_EIGEN_SORT_ABSVALUE
 }
@@ -20,6 +28,18 @@ gsl_la_eigen_sort_t;
  */
 int
 gsl_la_matmult_impl(const gsl_matrix * A, const gsl_matrix * B, gsl_matrix * C);
+
+
+/* Simple implementation of matrix multiply.
+ * Allows transposition of either matrix, so it
+ * can compute Trans(A).B or A.Trans(B) or Trans(A).Trans(B)
+ *
+ * exceptions: GSL_EFAULT, GSL_EBADLEN
+ */
+int
+gsl_la_matmult_mod_impl(const gsl_matrix * A, gsl_la_matrix_mod_t modA,
+                        const gsl_matrix * B, gsl_la_matrix_mod_t modB,
+                        gsl_matrix * C);
 
 
 /* Singular Value Decomposition
