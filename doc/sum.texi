@@ -1,0 +1,133 @@
+@cindex acceleration of series
+@cindex summation, acceleration
+@cindex series, acceleration
+@cindex u-transform for series
+@cindex Levin u-transform
+@cindex convergence, accelerating a series
+
+The functions described in this chapter accelerate the convergence of a
+series using the Levin u-transform. This method takes a small number of
+terms from the start of a series and uses a systematic approximation to
+compute an extrapolated value, with an estimate of its error. The
+u-transform works for both convergent and divergent series, including
+asymptotic series.
+
+These functions are declared in the header file @file{gsl_sum.h}.
+
+@menu
+* Acceleration functions::      
+* Example of accelerating a series::  
+* Series Acceleration References::  
+@end menu
+
+@node Acceleration functions
+@section Acceleration functions
+
+@deftypefun int gsl_sum_levin_u (const double * @var{array}, size_t @var{array_size}, double * @var{q_num}, double * @var{q_den}, double * @var{dq_num}, double * @var{dq_den}, double * @var{dsum}, double * @var{sum_accel}, double * @var{sum_plain}, double * @var{precision})
+
+This function takes the terms of a series in @var{array} of size
+@var{array_size} and computes the extrapolated limit of the series using
+a Levin u-transform. The extrapolated sum is stored in @var{sum_accel},
+with an estimate of the relative error stored in @var{precision}. The
+actual term-by-term sum is returned in @var{sum_plain}. Additional
+working space must be provided in the arrays @var{q_num}, @var{q_den},
+@var{dsum} of size @var{array_size} elements each and in @var{dq_num},
+@var{dq_den} of size @var{array_size}**2. The algorithm estimates both
+truncation error and round-off error to choose an optimal number of
+terms for the extrapolation.
+
+@end deftypefun
+
+@node Example of accelerating a series
+@section Example of accelerating a series
+
+The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
+using the series,
+
+@equation
+\zeta(2) = 1 + 1/2^3 + 1/3^2 + 1/4^2 + \dots
+@end equation
+@noindent
+After @var{N} terms the error in the sum is @math{O(1/N)}, making direct
+summation of the series converge slowly.
+
+
+@example
+#include <stdio.h>
+#include <gsl_math.h>
+#include <gsl_sum.h>
+
+#define N 20
+
+int 
+main (void)
+@{
+  double t[N], qnum[N], qden[N], dsum[N], dqnum[N * N], dqden[N * N];
+  double sum_accel, sum_plain, prec;
+  double sum = 0;
+  size_t n_used ;
+  int n;
+  
+  const double zeta_2 = M_PI * M_PI / 6.0;
+  
+  /* terms for zeta(2) = \sum_@{n=0@}^@{\infty@} 1/n^2 */
+
+  for (n = 0; n < N; n++)
+    @{
+      double np1 = n + 1.0;
+      t[n] = 1.0 / (np1 * np1);
+      sum += t[n] ;
+    @}
+  
+  gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
+			 &sum_accel, &n_used, &sum_plain, &prec);
+
+  printf("term-by-term sum = %.16f using %d terms\n", sum, N) ;
+  printf("term-by-term sum = %.16f using %d terms\n", sum_plain, n_used) ;
+  printf("accelerated sum  = %.16f using %d terms\n", sum_accel, n_used) ;
+  printf("exact value      = %.16f\n", zeta_2) ;
+  printf("estimated error  = %.16f\n", prec * sum_accel) ;
+  printf("actual error     = %.16f\n", sum_accel - zeta_2) ;
+        
+  return 0;
+@}
+@end example
+@noindent
+The Levin u-transform is able to obtain an estimate of the sum to 1 part
+in @math{10^@{10@}} using the first eleven terms of the series. The
+error estimate returned by the function safely bounds the correct value
+and is conservatively large. By comparison a direct summation would
+require @math{10^@{10@}} terms to achieve the same precision.
+
+@example
+bjg|vvv> ./a.out 
+term-by-term sum = 1.5961632439130233 using 20 terms
+term-by-term sum = 1.5649766384209025 using 11 terms
+accelerated sum  = 1.6449340668936467 using 11 terms
+exact value      = 1.6449340668482264
+estimated error  = 0.0000000002517837
+actual error     = 0.0000000000454203
+@end example
+
+@node Series Acceleration References
+@section Series Acceleration References
+@noindent
+The algorithms used are described in the following papers
+
+@itemize @asis
+@item
+T. Fessler, W.F. Ford, D.A. Smith,
+@sc{hurry}: An acceleration algorithm for scalar sequences and series
+@cite{ACM Transactions on Mathematical Software}, 9(3):346--354, 1983.
+and Algorithm 602 9(3):355--357, 1983.
+@end itemize
+
+@noindent
+The theory of the u-transform was first presented by Levin,
+
+@itemize @asis
+@item
+D. Levin,
+Development of Non-Linear Transformations for Improving Covergence of
+Sequences, @cite{Intern. J. Computer Math.} B3:371--388, 1973
+@end itemize

@@ -119,6 +119,7 @@ function library and numerical integration.
 * FFTs::                        
 * Root finding::                
 * Special Functions::           
+* Series Acceleration::         
 * Simulated Annealing::         
 * Vectors and Matrices::        
 * Histograms::                  
@@ -170,12 +171,17 @@ allowing wrappers to be written for very high level languages.
 @include roots.texi
 
 @c Section on special functions
-@node Special Functions, Simulated Annealing, Root finding, Top
+@node Special Functions, Series Acceleration, Root finding, Top
 @chapter Special Functions
 @include specfunc.texi
 
+@c Section on series acceleration
+@node Series Acceleration, Simulated Annealing, Special Functions, Top
+@chapter Series Acceleration
+@include sum.texi
+
 @c Section on simulated annealing
-@node Simulated Annealing, Vectors and Matrices, Special Functions, Top
+@node Simulated Annealing, Vectors and Matrices, Series Acceleration, Top
 @chapter Simulated Annealing
 @include siman.texi
 
@@ -208,7 +214,7 @@ allowing wrappers to be written for very high level languages.
 
 @table @strong
 @item Mark Galassi
-Conceived GSL (with James Theiler) and wrote the design document.  Wrote
+Conceived GSL (with James Theiler) and wrote the design document. Wrote
 the simulated annealing package and the relevant chapter in the manual.
 
 @item James Theiler
