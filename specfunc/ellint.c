@@ -399,7 +399,20 @@ gsl_sf_ellint_Kcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    return gsl_sf_ellint_RF_e(0.0, 1.0 - k*k, 1.0, mode, result);
+    /* This was previously computed as,
+
+         return gsl_sf_ellint_RF_e(0.0, 1.0 - k*k, 1.0, mode, result);
+
+       but this underestimated the total error for small k, since the 
+       argument y=1-k^2 is not exact (there is an absolute error of
+       GSL_DBL_EPSILON near y=0 due to cancellation in the subtraction).
+       Taking the singular behavior of -log(y) above gives an error
+       of 0.5*epsilon/y near y=0. (BJG) */
+
+    double y = 1.0 - k*k;
+    int status = gsl_sf_ellint_RF_e(0.0, y, 1.0, mode, result);
+    result->err += 0.5 * GSL_DBL_EPSILON / y;
+    return status ;
   }
 }
 

@@ -1,5 +1,9 @@
 * What is new in gsl-1.2:
 
+** The error estimate for the elliptic function gsl_sf_ellint_Kcomp_e
+has been improved to take account of numerical cancellation for small
+arguments.
+
 ** Extended gsl_linalg_SV_decomp to handle exact zeroes in the
 singular values, and added tests for 3x3 matrices.
 
