@@ -1,3 +1,7 @@
+Mon Jul 27 12:46:25 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* bitreverse.c: removed gsl_ftt_ prefix from non-exported functions
+
 Wed Jun 10 17:36:01 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* test.c: Eliminated the need for getopt

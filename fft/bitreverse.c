@@ -3,9 +3,10 @@
 
 #include "bitreverse.h"
 
-int gsl_fft_complex_bitreverse_order (gsl_complex data[], 
-				      const size_t n,
-				      const size_t logn)
+int 
+bitreverse_complex (gsl_complex data[], 
+		    const size_t n,
+		    const size_t logn)
 {
   size_t i;
 
@@ -32,9 +33,9 @@ int gsl_fft_complex_bitreverse_order (gsl_complex data[],
   return 0;
 }
 
-int gsl_fft_real_bitreverse_order (double data[], 
-				   const size_t n,
-				   const size_t logn)
+int bitreverse_real (double data[], 
+		     const size_t n,
+		     const size_t logn)
 {
   size_t i;
 
@@ -62,8 +63,9 @@ int gsl_fft_real_bitreverse_order (double data[],
 }
 
 
-int gsl_fft_complex_goldrader_bitreverse_order (gsl_complex data[], 
-						const size_t n)
+int 
+goldrader_bitreverse_order_complex (gsl_complex data[], 
+				    const size_t n)
 {
   size_t i;
   size_t j = 0;
@@ -93,9 +95,10 @@ int gsl_fft_complex_goldrader_bitreverse_order (gsl_complex data[],
 }
 
 
-int gsl_fft_complex_rodriguez_bitreverse_order (gsl_complex data[], 
-						const size_t n,
-						const size_t logn)
+int 
+rodriguez_bitreverse_order_complex (gsl_complex data[], 
+				    const size_t n,
+				    const size_t logn)
 {
   size_t i;
   size_t j = 0 ;

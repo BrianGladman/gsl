@@ -6,6 +6,7 @@ include_HEADERS = 			\
 	gsl_matrix.h 			\
 	gsl_matrix_char.h		\
 	gsl_matrix_complex_double.h	\
+	gsl_matrix_complex_float.h	\
 	gsl_matrix_complex_long_double.h\
 	gsl_matrix_double.h		\
 	gsl_matrix_float.h		\

@@ -7,13 +7,13 @@
 #include "fft_complex.h"
 
 int
-gsl_fft_complex_pass_3 (const gsl_complex from[],
-			gsl_complex to[],
-			const gsl_fft_direction sign,
-			const size_t product,
-			const size_t n,
-			const gsl_complex * twiddle1,
-			const gsl_complex * twiddle2)
+fft_complex_pass_3 (const gsl_complex from[],
+		    gsl_complex to[],
+		    const gsl_fft_direction sign,
+		    const size_t product,
+		    const size_t n,
+		    const gsl_complex * twiddle1,
+		    const gsl_complex * twiddle2)
 {
   size_t i = 0, j = 0;
   size_t k, k1;

@@ -12,8 +12,8 @@ extern int passed;
 extern int failed;
 
 int
-compare_complex_results (const char *name_a, const gsl_complex a[],
-			 const char *name_b, const gsl_complex b[],
+compare_complex_results (const char *name_a, const double a[],
+			 const char *name_b, const double b[],
 			 size_t n,
 			 const double allowed_ticks)
 {
@@ -24,8 +24,8 @@ compare_complex_results (const char *name_a, const gsl_complex a[],
 
   for (i = 0; i < n; i++)
     {
-      dr = b[i].real - a[i].real;
-      di = b[i].imag - a[i].imag;
+      dr = b[2*i] - a[2*i];
+      di = b[2*i+1] - a[2*i+1];
       ticks = (fabs (dr) + fabs (di)) / DBL_EPSILON;
       if (ticks > max_ticks)
 	{
@@ -42,8 +42,8 @@ compare_complex_results (const char *name_a, const gsl_complex a[],
 
   for (i = 0; i < n; i++)
     {
-      dr = b[i].real - a[i].real;
-      di = b[i].imag - a[i].imag;
+      dr = b[2*i] - a[2*i];
+      di = b[2*i+1] - a[2*i+1];
       ticks = (fabs (dr) + fabs (di)) / DBL_EPSILON;
 
       if (ticks > 1000)
@@ -56,9 +56,9 @@ compare_complex_results (const char *name_a, const gsl_complex a[],
 	}
 
       printf ("%15s: %d  %.16f %.16f %s\n", name_a, i,
-	      a[i].real, a[i].imag, flag);
+	      a[2*i], a[2*i+1], flag);
       printf ("%15s: %d  %.16f %.16f %e %s\n", name_b, i,
-	      b[i].real, b[i].imag, ticks, flag);
+	      b[2*i], b[2*i+1], ticks, flag);
     }
 
   return -1;

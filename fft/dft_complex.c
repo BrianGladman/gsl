@@ -49,10 +49,8 @@ gsl_dft_complex_inverse (const gsl_complex data[],
 }
 
 int
-gsl_dft_complex (const gsl_complex data[],
-		 gsl_complex result[],
-		 const size_t n,
-		 const gsl_fft_direction sign)
+gsl_dft_complex (const double data[], double result[],
+		 const size_t n, const gsl_fft_direction sign)
 {
 
   size_t i, j, exponent;
@@ -73,8 +71,8 @@ gsl_dft_complex (const gsl_complex data[],
 	  double w_real = cos (theta);
 	  double w_imag = sin (theta);
 
-	  double data_real = data[j].real;
-	  double data_imag = data[j].imag;
+	  double data_real = ;
+	  double data_imag = ;
 
 	  sum_real += w_real * data_real - w_imag * data_imag;
 	  sum_imag += w_real * data_imag + w_imag * data_real;

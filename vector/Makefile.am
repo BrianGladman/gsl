@@ -5,6 +5,7 @@ check_PROGRAMS = test test_static
 include_HEADERS = 		\
 	gsl_vector.h		\
 	gsl_vector_char.h	\
+	gsl_vector_complex.h	\
 	gsl_vector_complex_double.h	\
 	gsl_vector_complex_float.h	 \
 	gsl_vector_complex_long_double.h \

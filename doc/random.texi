@@ -1049,7 +1049,7 @@ Characteristic function, @math{\phi(t) = FIXME}
 
 @item
 Cumulative distribution function, 
-@math{CDF(x) = \int_0^x p(x') dx' = FIXME
+@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
 @item
 Confidence limits:
 
