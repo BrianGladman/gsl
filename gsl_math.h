@@ -132,7 +132,7 @@ typedef struct gsl_function_struct gsl_function ;
 
 /* Definition of an arbitrary function returning two values, r1, r2 */
 
-struct gsl_fdf_struct 
+struct gsl_function_fdf_struct 
 {
   double (* f) (double x, void * params);
   double (* df) (double x, void * params);
@@ -140,11 +140,11 @@ struct gsl_fdf_struct
   void * params;
 };
 
-typedef struct gsl_fdf_struct gsl_fdf ;
+typedef struct gsl_function_fdf_struct gsl_function_fdf ;
 
-#define GSL_FDF_EVAL_F(FDF,x) (*((FDF)->f))(x,(FDF)->params)
-#define GSL_FDF_EVAL_DF(FDF,x) (*((FDF)->df))(x,(FDF)->params)
-#define GSL_FDF_EVAL_F_DF(FDF,x,y,dy) (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
+#define GSL_FN_FDF_EVAL_F(FDF,x) (*((FDF)->f))(x,(FDF)->params)
+#define GSL_FN_FDF_EVAL_DF(FDF,x) (*((FDF)->df))(x,(FDF)->params)
+#define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
 
 /* Definition of an interval */
 
