@@ -1,5 +1,8 @@
 1999-12-03  Mark Galassi  <rosalia@lanl.gov>
 
+	* configure.in: upped the version to 0.5+, so that snaphots built
+	out of CVS will not be confused with the 0.5 release.
+
 	* AUTHORS, README, HACKING: changed my email address.
 
 	* README: updated with some of Brian's suggestions.
