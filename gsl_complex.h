@@ -52,4 +52,6 @@ gsl_complex_float;
 #define GSL_SET_REAL(zp,x) do {(zp)->dat[0]=(x);} while(0)
 #define GSL_SET_IMAG(zp,y) do {(zp)->dat[1]=(y);} while(0)
 
+#define GSL_SET_COMPLEX_PACKED(zp,n,x,y) do {*((zp)+2*(n))=(x); *((zp)+(2*(n)+1))=(y);} while(0)
+
 #endif /* _GSL_COMPLEX_H */
