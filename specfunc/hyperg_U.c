@@ -345,7 +345,7 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
      */
     double lnr = -a * log(x);
     int stat_e =  gsl_sf_exp_impl(lnr, result);
-    result->err += SQRT_EPS * fabs(result->val);
+    result->err += 2.0 * SQRT_EPS * fabs(result->val);
     return stat_e;
   }
   else {
@@ -460,8 +460,10 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
 	         + fabs(c0_multiplier_2) * b0_err
 		 + fabs(c0_val) * 8.0 * 2.0 * GSL_DBL_EPSILON
 		 + fabs(b0_val * c0_multiplier_2) * 16.0 * 2.0 * GSL_DBL_EPSILON;
-        t_val = c0_val + xeps1_val*b0_val;
-	t_err = c0_err + fabs(xeps1_val)*b0_err + fabs(b0_val*lnx) * dexprl.err + fabs(b0_val)*xeps1_err;
+        t_val  = c0_val + xeps1_val*b0_val;
+	t_err  = c0_err + fabs(xeps1_val)*b0_err;
+	t_err += fabs(b0_val*lnx) * dexprl.err;
+	t_err += fabs(b0_val)*xeps1_err;
 	dchu_val += t_val;
 	dchu_err += t_err;
         if(fabs(t_val) < EPS*fabs(dchu_val)) break;
@@ -470,7 +472,8 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       result->val  = dchu_val;
       result->err  = 2.0 * dchu_err;
       result->err += 2.0 * fabs(t_val);
-      result->err += 4.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+2.0) * fabs(dchu_val);
+      result->err *= 2.0; /* FIXME: fudge factor */
 
       if(i >= 2000) {
         return GSL_EMAXITER;
@@ -524,7 +527,8 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       result->val  = dchu_val;
       result->err  = 2.0 * dchu_err;
       result->err += 2.0 * fabs(t_val);
-      result->err += 4.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+2.0) * fabs(dchu_val);
+      result->err *= 2.0; /* FIXME: fudge factor */
 
       if(i >= 2000) {
         return GSL_EMAXITER;

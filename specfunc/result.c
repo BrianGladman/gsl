@@ -11,20 +11,28 @@
 int
 gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
 {
-  const double av = fabs(re->val);
-  const double ae = fabs(re->err);
-
-  if(   GSL_SQRT_DBL_MIN < av && av < GSL_SQRT_DBL_MAX
-     && GSL_SQRT_DBL_MIN < ae && ae < GSL_SQRT_DBL_MAX
-     && 0.49*GSL_LOG_DBL_MIN  < re->e10 && re->e10 < 0.49*GSL_LOG_DBL_MAX
-     ) {
-    const double scale = exp(re->e10 * M_LN10);
-    r->val = re->val * scale;
-    r->err = re->err * scale;
+  if(re->e10 == 0) {
+    /* nothing to smash */
+    r->val = re->val;
+    r->err = re->err;
     return GSL_SUCCESS;
   }
   else {
-    return gsl_sf_exp_mult_err_impl(re->e10*M_LN10, 0.0, re->val, re->err, r);
+    const double av = fabs(re->val);
+    const double ae = fabs(re->err);
+
+    if(   GSL_SQRT_DBL_MIN < av && av < GSL_SQRT_DBL_MAX
+       && GSL_SQRT_DBL_MIN < ae && ae < GSL_SQRT_DBL_MAX
+       && 0.49*GSL_LOG_DBL_MIN  < re->e10 && re->e10 < 0.49*GSL_LOG_DBL_MAX
+       ) {
+      const double scale = exp(re->e10 * M_LN10);
+      r->val = re->val * scale;
+      r->err = re->err * scale;
+      return GSL_SUCCESS;
+    }
+    else {
+      return gsl_sf_exp_mult_err_impl(re->e10*M_LN10, 0.0, re->val, re->err, r);
+    }
   }
 /*
   int stat_v;
