@@ -24,4 +24,4 @@ dnl Checks for library functions.
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
 
-AC_OUTPUT(fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile Makefile)
+AC_OUTPUT(fft/Makefile statistics/Makefile roots/Makefile random/Makefile randist/Makefile siman/Makefile doc/Makefile Makefile)
