@@ -10,6 +10,8 @@ gsl_strerror (const int gsl_errno)
       return "success" ;
     case GSL_FAILURE:
       return "failure" ;
+    case GSL_CONTINUE:
+      return "the iteration has not converged yet";
     case GSL_EDOM:
       return "input domain error" ;
     case GSL_ERANGE:
