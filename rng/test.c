@@ -3,50 +3,52 @@
 #include <gsl_rng.h>
 #include <gsl_test.h>
 
-void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n, 
+void rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	       unsigned long int result);
 void generic_rng_test (const gsl_rng_type * T);
 void rng_state_test (const gsl_rng_type * T);
 void rng_parallel_state_test (const gsl_rng_type * T);
-int rng_max_test (gsl_rng * r, unsigned long int * kmax, unsigned long int ran_max) ;
-int rng_sum_test (gsl_rng * r, double * sigma) ;
+int rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max);
+int rng_sum_test (gsl_rng * r, double *sigma);
 
-#define N 10000
-#define N2 1000000
+#define N  10000
+#define N2 100000
 
 int
 main (void)
 {
-  gsl_rng_env_setup() ;
+  gsl_rng_env_setup ();
 
-  /* specific tests of known results for 10000 iterations with seed = 1*/
+  /* specific tests of known results for 10000 iterations with seed = 1 */
 
-  rng_test (gsl_rng_bad_rand,1,10000,1910041713); 
-  rng_test (gsl_rng_bad_randu,1,10000,1623524161); 
-  rng_test (gsl_rng_cmrg,1,10000,1477798470); 
-  rng_test (gsl_rng_minstd,1,10000,1043618065); 
-  rng_test (gsl_rng_mrg,1,10000,1711374253); 
-  rng_test (gsl_rng_taus,1,10000,676146779);
-  rng_test (gsl_rng_vax,1,10000,3051034865UL); 
+  rng_test (gsl_rng_bad_rand, 1, 10000, 1910041713);
+  rng_test (gsl_rng_bad_randu, 1, 10000, 1623524161);
+  rng_test (gsl_rng_cmrg, 1, 10000, 719452880);
+  rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
+  rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
+  rng_test (gsl_rng_taus, 1, 10000, 2733957125UL);
+  rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
   /* FIXME: the ranlux tests below were made by running the fortran code and
      getting the expected value from that. An analytic calculation
      would be preferable. */
 
-  rng_test (gsl_rng_ranlux,314159265,10000,12077992); 
-  rng_test (gsl_rng_ranlux389,314159265,10000,165942); 
+  rng_test (gsl_rng_ranlux, 314159265, 10000, 12077992);
+  rng_test (gsl_rng_ranlux389, 314159265, 10000, 165942);
 
   /* FIXME: the tests below were made by running the original code in
      the ../random directory and getting the expected value from
      that. An analytic calculation would be preferable. */
 
-  rng_test (gsl_rng_rand,1,10000,45776); 
-  rng_test (gsl_rng_uni,1,10000,9214); 
-  rng_test (gsl_rng_uni32,1,10000,1155229825); 
-  rng_test (gsl_rng_zuf,1,10000,3970); 
+  rng_test (gsl_rng_rand, 1, 10000, 45776);
+  rng_test (gsl_rng_uni, 1, 10000, 9214);
+  rng_test (gsl_rng_uni32, 1, 10000, 1155229825);
+  rng_test (gsl_rng_zuf, 1, 10000, 3970);
 
-  rng_test (gsl_rng_mt19937,4357,1000,1309179303); 
-  rng_test (gsl_rng_tt800,0,10000,2856609219UL); 
+  rng_test (gsl_rng_r250, 1, 10000, 1100653588);
+
+  rng_test (gsl_rng_mt19937, 4357, 1000, 1309179303);
+  rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
 
   /* Test save/restore functions */
 
@@ -109,154 +111,155 @@ main (void)
 }
 
 
-void 
-rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n, 
+void
+rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
 	  unsigned long int result)
 {
-  gsl_rng * r = gsl_rng_alloc (T);
-  unsigned int i ;
+  gsl_rng *r = gsl_rng_alloc (T);
+  unsigned int i;
   unsigned long int k = 0;
   int status;
 
-  if (seed != 0) {
-    gsl_rng_set(r,seed) ;
-  }
+  if (seed != 0)
+    {
+      gsl_rng_set (r, seed);
+    }
 
   for (i = 0; i < n; i++)
     {
-      k = gsl_rng_get(r) ;
+      k = gsl_rng_get (r);
     }
 
-  status = (k != result) ;
-  gsl_test(status, "%s, %u iterations (%u observed vs %u expected)",
-	   gsl_rng_name(r), n, k, result) ;
- 
-  gsl_rng_free(r) ;
+  status = (k != result);
+  gsl_test (status, "%s, %u iterations (%u observed vs %u expected)",
+	    gsl_rng_name (r), n, k, result);
+
+  gsl_rng_free (r);
 }
 
 
 void
 rng_state_test (const gsl_rng_type * T)
 {
-  unsigned long int test_a[N], test_b[N] ;
+  unsigned long int test_a[N], test_b[N];
 
-  int i ;
+  int i;
 
-  gsl_rng * r = gsl_rng_alloc (T);
-  gsl_rng * r_save = gsl_rng_alloc (T) ;
-
-  for (i = 0; i < N; ++i)
-    {
-      gsl_rng_get (r) ;   /* throw away N iterations */
-    }
-
-  gsl_rng_cpy(r_save, r) ;  /* save the intermediate state */
+  gsl_rng *r = gsl_rng_alloc (T);
+  gsl_rng *r_save = gsl_rng_alloc (T);
 
   for (i = 0; i < N; ++i)
     {
-      test_a[i] = gsl_rng_get (r) ;
+      gsl_rng_get (r);	/* throw away N iterations */
     }
-    
-  gsl_rng_cpy(r, r_save) ;  /* restore the intermediate state */
-  gsl_rng_free(r_save) ;
+
+  gsl_rng_cpy (r_save, r);	/* save the intermediate state */
 
   for (i = 0; i < N; ++i)
     {
-      test_b[i] = gsl_rng_get (r) ;
+      test_a[i] = gsl_rng_get (r);
     }
 
-  { 
-    int status = 0 ;
+  gsl_rng_cpy (r, r_save);	/* restore the intermediate state */
+  gsl_rng_free (r_save);
+
+  for (i = 0; i < N; ++i)
+    {
+      test_b[i] = gsl_rng_get (r);
+    }
+
+  {
+    int status = 0;
     for (i = 0; i < N; ++i)
       {
-	status |= (test_b[i] != test_a[i]) ;
+	status |= (test_b[i] != test_a[i]);
       }
     gsl_test (status, "%s, random number state consistency",
-	      gsl_rng_name(r)) ;
+	      gsl_rng_name (r));
   }
-  
-  gsl_rng_free(r) ;
+
+  gsl_rng_free (r);
 }
 
 
 void
 rng_parallel_state_test (const gsl_rng_type * T)
 {
-  unsigned long int test_a[N], test_b[N] ;
+  unsigned long int test_a[N], test_b[N];
 
-  int i ;
+  int i;
 
-  gsl_rng * r1 = gsl_rng_alloc (T);
-  gsl_rng * r2 = gsl_rng_alloc (T) ;
-
-  for (i = 0; i < N; ++i)
-    {
-      gsl_rng_get (r1) ;   /* throw away N iterations */
-    }
-
-  gsl_rng_cpy(r2, r1) ;  /* save the intermediate state */
+  gsl_rng *r1 = gsl_rng_alloc (T);
+  gsl_rng *r2 = gsl_rng_alloc (T);
 
   for (i = 0; i < N; ++i)
     {
-      test_a[i] = gsl_rng_get (r1) ; /* check that there is no hidden state */
-      test_b[i] = gsl_rng_get (r2) ;
+      gsl_rng_get (r1);		/* throw away N iterations */
     }
 
-  { 
-    int status = 0 ;
+  gsl_rng_cpy (r2, r1);		/* save the intermediate state */
+
+  for (i = 0; i < N; ++i)
+    {
+      test_a[i] = gsl_rng_get (r1);	/* check that there is no hidden state */
+      test_b[i] = gsl_rng_get (r2);
+    }
+
+  {
+    int status = 0;
     for (i = 0; i < N; ++i)
       {
-	status |= (test_b[i] != test_a[i]) ;
+	status |= (test_b[i] != test_a[i]);
       }
-    gsl_test (status, "%s, parallel random number state consistency", 
-	      gsl_rng_name(r1)) ;
+    gsl_test (status, "%s, parallel random number state consistency",
+	      gsl_rng_name (r1));
   }
 
-  gsl_rng_free (r1) ;
-  gsl_rng_free (r2) ;
+  gsl_rng_free (r1);
+  gsl_rng_free (r2);
 
 }
 
 void
 generic_rng_test (const gsl_rng_type * T)
 {
-  gsl_rng * r = gsl_rng_alloc (T);
+  gsl_rng *r = gsl_rng_alloc (T);
   const char *name = gsl_rng_name (r);
-  unsigned long int kmax = 0 ;
-  double sigma = 0 ;
+  unsigned long int kmax = 0;
+  double sigma = 0;
   const unsigned long int ran_max = gsl_rng_max (r);
-  
- int status = rng_max_test(r, &kmax, ran_max) ;
+
+  int status = rng_max_test (r, &kmax, ran_max);
 
   gsl_test (status,
 	    "%s, observed vs theoretical maximum (%lu vs %lu)",
 	    name, kmax, ran_max);
 
-  status = rng_sum_test(r, &sigma) ;
+  status = rng_sum_test (r, &sigma);
 
   gsl_test (status,
 	    "%s, sum test within acceptable sigma (observed %.2g sigma)",
 	    name, sigma);
 
-  gsl_rng_set(r, 1) ; /* set seed to 1 */
-  status = rng_max_test(r, &kmax, ran_max) ;
+  gsl_rng_set (r, 1);	/* set seed to 1 */
+  status = rng_max_test (r, &kmax, ran_max);
 
-  gsl_rng_set(r, 1) ; /* set seed to 1 */
-  status |= rng_sum_test(r, &sigma) ;
+  gsl_rng_set (r, 1);	/* set seed to 1 */
+  status |= rng_sum_test (r, &sigma);
 
-  gsl_rng_set(r, 12345) ; /* set seed to 1 */
-  status |= rng_max_test(r, &kmax, ran_max) ;
+  gsl_rng_set (r, 12345);	/* set seed to 1 */
+  status |= rng_max_test (r, &kmax, ran_max);
 
-  gsl_rng_set(r, 12345) ; /* set seed to 1 */
-  status |= rng_sum_test(r, &sigma) ;
+  gsl_rng_set (r, 12345);	/* set seed to 1 */
+  status |= rng_sum_test (r, &sigma);
 
   gsl_test (status, "%s, maximum and sum tests for non-default seeds", name);
 
-  gsl_rng_free (r) ;
+  gsl_rng_free (r);
 }
 
 int
-rng_max_test (gsl_rng * r, unsigned long int * kmax, unsigned long int ran_max)
+rng_max_test (gsl_rng * r, unsigned long int *kmax, unsigned long int ran_max)
 {
   unsigned long int actual_uncovered;
   double expected_uncovered;
@@ -270,45 +273,43 @@ rng_max_test (gsl_rng * r, unsigned long int * kmax, unsigned long int ran_max)
       if (k > max)
 	max = k;
     }
-  
-  *kmax = max ;
+
+  *kmax = max;
 
   actual_uncovered = ran_max - max;
   expected_uncovered = (double) ran_max / (double) N2;
-  
+
   /* The uni generator never actually reaches its ran_max in practice,
      due to the way the initial state is generated from the seed.
      Thus it only hits 32766 instead of 32767. 
-     
+
      We'll let it pass by checking if the observed max is just 1 below
      the theoretical max.  */
-  
-  status = (max > ran_max)
-    || (actual_uncovered > 4 * expected_uncovered  && actual_uncovered > 1);
 
-  return status ;
+  status = (max > ran_max)
+    || (actual_uncovered > 4 * expected_uncovered && actual_uncovered > 1);
+
+  return status;
 }
 
 int
-rng_sum_test (gsl_rng * r, double * sigma)
+rng_sum_test (gsl_rng * r, double *sigma)
 {
   double sum = 0;
   int i, status;
-  
+
   for (i = 0; i < N2; ++i)
     {
       double x = gsl_rng_get_uni (r) - 0.5;
-      sum += x ;
+      sum += x;
     }
-  
+
   sum /= N2;
-  
+
   /* expect the average to have a variance of 1/(12 n) */
-  
+
   *sigma = sum * sqrt (12.0 * N2);
-  status = (fabs (*sigma) > 3);	/* more than 3 sigma is an error */
-  
-  return status ;
+  status = (fabs (*sigma) > 3);		/* more than 3 sigma is an error */
+
+  return status;
 }
-
-

@@ -3,184 +3,188 @@
 #include <gsl_rng.h>
 
 /* This is lagged fibonacci generator with skipping developed by Luscher.
-   The sequence is
+   The sequence is a series of 24-bit integers, x_n, 
 
-       x_n = d_n + b_n
+   x_n = d_n + b_n
 
-   where d_n = x_{n-10} - x_{n-24} - c_{n-1},
-         b_n = 0    if d_n >= 0
-               2^24 if d_n <  0
-         c_n = 0    if d_n >= 0 
-             = 1    if d_n < 0
+   where d_n = x_{n-10} - x_{n-24} - c_{n-1}, b_n = 0 if d_n >= 0 and
+   b_n = 2^24 if d_n < 0, c_n = 0 if d_n >= 0 and c_n = 1 if d_n < 0
 
+   The period of the generator is around 10^171. 
 
-    The period of the generator is around 10^171.
+   From: M. Luscher, "A portable high-quality random number generator
+   for lattice field theory calculations", Computer Physics
+   Communications, 79 (1994) 100-110.
 
-    From: M. Luscher, "A portable high-quality random number generator
-    for lattice field theory calculations", Computer Physics
-    Communications, 79 (1994) 100-110.
+   Available on the net as hep-lat/9309020 at http://xxx.lanl.gov/
 
-    Available on the net as hep-lat/9309020 at http://xxx.lanl.gov/
+   See also,
 
-    See also,
+   F. James, "RANLUX: A Fortran implementation of the high-quality
+   pseudo-random number generator of Luscher", Computer Physics
+   Communications, 79 (1994) 111-114
 
-    F. James, "RANLUX: A Fortran implementation of the high-quality
-    pseudo-random number generator of Luscher", Computer Physics
-    Communications, 79 (1994) 111-114
+   Kenneth G. Hamilton, F. James, "Acceleration of RANLUX", Computer
+   Physics Communications, 101 (1997) 241-248
 
-    Kenneth G. Hamilton, F. James, "Acceleration of RANLUX", Computer
-    Physics Communications, 101 (1997) 241-248
+   Kenneth G. Hamilton, "Assembler RANLUX for PCs", Computer Physics
+   Communications, 101 (1997) 249-253  */
 
-    Kenneth G. Hamilton, "Assembler RANLUX for PCs", Computer Physics
-    Communications, 101 (1997) 249-253  */
+unsigned long int ranlux_get (void *vstate);
+void ranlux_set_impl (void *state, unsigned long int s, unsigned int luxury);
+void ranlux_set (void *state, unsigned long int s);
+void ranlux389_set (void *state, unsigned long int s);
 
-unsigned long int ranlux_get (void * vstate);
-void ranlux_set_impl (void * state, unsigned long int s, unsigned int luxury);
-void ranlux_set (void * state, unsigned long int s);
-void ranlux389_set (void * state, unsigned long int s);
+static const unsigned long int mask_lo = 0x00ffffffUL;	/* 2^24 - 1 */
+static const unsigned long int mask_hi = ~0x00ffffffUL;
+static const unsigned long int two24 = 16777216;	/* 2^24 */
 
-static const unsigned long int mask_lo =  0x00ffffffUL ; /* 2^24 - 1 */
-static const unsigned long int mask_hi = ~0x00ffffffUL ; 
-static const unsigned long int two24 = 16777216 ; /* 2^24 */
+typedef struct
+  {
+    unsigned int i;
+    unsigned int j;
+    unsigned int n;
+    unsigned int skip;
+    unsigned int carry;
+    unsigned long int u[24];
+  }
+ranlux_state_t;
 
-typedef struct {
-  unsigned int i;
-  unsigned int j;
-  unsigned int n;
-  unsigned int skip;
-  unsigned int carry;
-  unsigned long int u[24];
-} ranlux_state_t;
+static inline unsigned long int increment_state (ranlux_state_t * state);
 
-static inline unsigned long int increment_state (ranlux_state_t * state) ;
-
-unsigned long int 
+unsigned long int
 ranlux_get (void *vstate)
 {
-    ranlux_state_t * state = (ranlux_state_t *) vstate;
-    const unsigned int skip = state->skip ;
-    unsigned long int r = increment_state(state) ;
+  ranlux_state_t *state = (ranlux_state_t *) vstate;
+  const unsigned int skip = state->skip;
+  unsigned long int r = increment_state (state);
 
-    state->n++ ;
+  state->n++;
 
-    if (state->n == 24)
-      {
-	unsigned int i ;
-	state->n = 0 ;
-	for (i = 0 ; i < skip; i++)
-	  increment_state(state) ;
-      }
+  if (state->n == 24)
+    {
+      unsigned int i;
+      state->n = 0;
+      for (i = 0; i < skip; i++)
+	increment_state (state);
+    }
 
-    return r;
-}    
+  return r;
+}
 
-static inline unsigned long int  
+static inline unsigned long int
 increment_state (ranlux_state_t * state)
 {
-  unsigned int i = state->i ;
-  unsigned int j = state->j ;
+  unsigned int i = state->i;
+  unsigned int j = state->j;
   long int delta = state->u[j] - state->u[i] - state->carry;
 
-  if (delta & mask_hi) 
+  if (delta & mask_hi)
     {
-      state->carry = 1 ;
-      delta &= mask_lo ;
+      state->carry = 1;
+      delta &= mask_lo;
     }
   else
     {
-      state->carry = 0 ;
-    }
-  
-  state->u[i] = delta ;
-
-  if (i == 0) 
-    {
-      i = 23 ;
-    }
-  else 
-    {
-      i-- ;
+      state->carry = 0;
     }
 
-  state->i = i ;
-  
-  if (j == 0) 
+  state->u[i] = delta;
+
+  if (i == 0)
     {
-      j = 23 ;
+      i = 23;
     }
-  else 
+  else
     {
-      j-- ;
+      i--;
     }
 
-  state->j = j ;
+  state->i = i;
 
-  return delta ;
+  if (j == 0)
+    {
+      j = 23;
+    }
+  else
+    {
+      j--;
+    }
+
+  state->j = j;
+
+  return delta;
 }
 
 
-void 
-ranlux_set_impl (void * vstate, unsigned long int s, unsigned int luxury)
+void
+ranlux_set_impl (void *vstate, unsigned long int s, unsigned int luxury)
 {
-  ranlux_state_t * state = (ranlux_state_t *) vstate;
-  int i ;
+  ranlux_state_t *state = (ranlux_state_t *) vstate;
+  int i;
 
-  long int seed ;
+  long int seed;
 
-  if (s == 0) 
-    s = 314159265 ; /* default seed is 314159265 */
+  if (s == 0)
+    s = 314159265;	/* default seed is 314159265 */
 
-  seed = s ;
-  
+  seed = s;
+
+  /* This is the initialization algorithm of F. James, widely in use
+     for RANLUX. */
+
   for (i = 0; i < 24; i++)
     {
-      unsigned long int k = seed / 53668 ;
-      seed = 40014 * (seed - k * 53668) - k * 12211 ;
+      unsigned long int k = seed / 53668;
+      seed = 40014 * (seed - k * 53668) - k * 12211;
       if (seed < 0)
 	{
-	  seed += 2147483563 ;
+	  seed += 2147483563;
 	}
-      state->u[i] = seed % two24 ;
+      state->u[i] = seed % two24;
     }
-	  
-  state->i = 23 ;
-  state->j = 9 ;
-  state->n = 0 ;
-  state->skip = luxury - 24 ;
+
+  state->i = 23;
+  state->j = 9;
+  state->n = 0;
+  state->skip = luxury - 24;
 
   if (state->u[23] & mask_hi)
     {
-      state->carry = 1 ;
+      state->carry = 1;
     }
-  else 
+  else
     {
-      state->carry = 0 ;
+      state->carry = 0;
     }
-} 
+}
 
-void ranlux_set(void * vstate, unsigned long int s)
+void
+ranlux_set (void *vstate, unsigned long int s)
 {
-  ranlux_set_impl(vstate, s, 223) ;
-} 
+  ranlux_set_impl (vstate, s, 223);
+}
 
-void ranlux389_set(void * vstate, unsigned long int s)
+void
+ranlux389_set (void *vstate, unsigned long int s)
 {
-  ranlux_set_impl(vstate, s, 389) ;
-} 
+  ranlux_set_impl (vstate, s, 389);
+}
 
 
-static const gsl_rng_type ranlux_type = { "ranlux",  /* name */
-					  16777216,  /* RAND_MAX */
-					  sizeof(ranlux_state_t), 
-					  &ranlux_set, 
-					  &ranlux_get } ;
+static const gsl_rng_type ranlux_type =
+{"ranlux",			/* name */
+ 0x00ffffffUL,			/* RAND_MAX */
+ sizeof (ranlux_state_t),
+ &ranlux_set,
+ &ranlux_get};
 
-static const gsl_rng_type ranlux389_type = { "ranlux389",  /* name */
-					     16777216,  /* RAND_MAX */
-					     sizeof(ranlux_state_t), 
-					     &ranlux389_set, 
-					     &ranlux_get } ;
+static const gsl_rng_type ranlux389_type =
+{"ranlux389",			/* name */
+ 0x00ffffffUL,			/* RAND_MAX */
+ sizeof (ranlux_state_t),
+ &ranlux389_set,
+ &ranlux_get};
 
-const gsl_rng_type * gsl_rng_ranlux = &ranlux_type ;
-const gsl_rng_type * gsl_rng_ranlux389 = &ranlux389_type ;
-
+const gsl_rng_type *gsl_rng_ranlux = &ranlux_type;
+const gsl_rng_type *gsl_rng_ranlux389 = &ranlux389_type;

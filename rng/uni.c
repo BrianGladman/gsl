@@ -82,94 +82,92 @@ C***END PROLOGUE  UNI
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-unsigned long int uni_get (void * vstate);
-void uni_set (void * state, unsigned long int s);
+unsigned long int uni_get (void *vstate);
+void uni_set (void *state, unsigned long int s);
 
-static const unsigned int MDIG=16;                /* Machine digits in int */
-static const unsigned int m1 = 32767;             /* 2^(MDIG-1) - 1 */
-static const unsigned int m2 = 256;               /* 2^(MDIG/2) */
+static const unsigned int MDIG = 16;	/* Machine digits in int */
+static const unsigned int m1 = 32767;	/* 2^(MDIG-1) - 1 */
+static const unsigned int m2 = 256;	/* 2^(MDIG/2) */
 
-typedef struct {
-    int i,j;
+typedef struct
+  {
+    int i, j;
     unsigned long m[17];
-} uni_state_t;
+  }
+uni_state_t;
 
-unsigned long uni_get (void * vstate)
+unsigned long
+uni_get (void *vstate)
 {
-    uni_state_t * state = (uni_state_t *) vstate;
-    const int i = state->i ;
-    const int j = state->j ;
+  uni_state_t *state = (uni_state_t *) vstate;
+  const int i = state->i;
+  const int j = state->j;
 
-    /* important k not be unsigned */
-    long k = state->m[i] - state->m[j];
+  /* important k not be unsigned */
+  long k = state->m[i] - state->m[j];
 
-    if (k < 0) k += m1;
-    state->m[j] = k;
-    
-    if (i == 0) 
-      {
-	state->i = 16 ;
-      } 
-    else
-      {
-	(state->i)-- ;
-      }
+  if (k < 0)
+    k += m1;
+  state->m[j] = k;
 
-    if (j == 0) 
-      {
-	state->j = 16 ;
-      } 
-    else
-      {
-	(state->j)-- ;
-      }
+  if (i == 0)
+    {
+      state->i = 16;
+    }
+  else
+    {
+      (state->i)--;
+    }
 
-    return k;
+  if (j == 0)
+    {
+      state->j = 16;
+    }
+  else
+    {
+      (state->j)--;
+    }
+
+  return k;
 }
 
-void uni_set(void * vstate, unsigned long int s)
+void
+uni_set (void *vstate, unsigned long int s)
 {
   unsigned int i, seed, k0, k1, j0, j1;
-  
-  uni_state_t * state = (uni_state_t *) vstate;
-  
+
+  uni_state_t *state = (uni_state_t *) vstate;
+
   /* For this routine, the seeding is very elaborate! */
   /* A flaw in this approach is that seeds 1,2 give exactly the
      same random number sequence!  */
-  
-  s = 2*s+1;                   /* enforce seed be odd */
-  seed = (s < m1 ? s : m1);    /* seed should be less than m1 */
-  
-  k0 = 9069%m2;
-  k1 = 9069/m2;
-  j0 = seed%m2;
-  j1 = seed/m2;
-  
-  for (i=0; i<17; ++i) {
-    seed = j0*k0;
-    j1 = (seed/m2 + j0*k1 + j1*k0) % (m2/2);
-    j0 = seed%m2;
-    state->m[i] = j0+m2*j1;
-  }
-  state->i=4;
-  state->j=16;
-  
+
+  s = 2 * s + 1;	/* enforce seed be odd */
+  seed = (s < m1 ? s : m1);	/* seed should be less than m1 */
+
+  k0 = 9069 % m2;
+  k1 = 9069 / m2;
+  j0 = seed % m2;
+  j1 = seed / m2;
+
+  for (i = 0; i < 17; ++i)
+    {
+      seed = j0 * k0;
+      j1 = (seed / m2 + j0 * k1 + j1 * k0) % (m2 / 2);
+      j0 = seed % m2;
+      state->m[i] = j0 + m2 * j1;
+    }
+  state->i = 4;
+  state->j = 16;
+
   return;
 }
 
-static const gsl_rng_type uni_type = { "uni",  /* name */
-					32767,  /* RAND_MAX */
-					sizeof(uni_state_t), 
-					&uni_set, 
-					&uni_get } ;
+static const gsl_rng_type uni_type =
+{"uni",				/* name */
+ 32767,				/* RAND_MAX */
+ sizeof (uni_state_t),
+ &uni_set,
+ &uni_get};
 
-const gsl_rng_type * gsl_rng_uni = &uni_type ; 
-
-
-
-
-
-
-    
-    
-    
+const gsl_rng_type *gsl_rng_uni = &uni_type;

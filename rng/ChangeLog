@@ -1,3 +1,14 @@
+Wed Jun 24 12:10:23 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* benchmark.c: added a simple benchmark program to measure rng's
+ 	per second
+
+	* test.c (N2): reduced the number of tests from 1 million to 100k
+ 	to speed things up a bit
+
+	* changed the generic seeding algorithm to s -> (69069*s) &
+ 	0xFFFFFFFF which covers all 32 bits.
+
 Sun Jun 21 23:24:36 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added the MT19937 and TT880 mersenne prime generators

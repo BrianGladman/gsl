@@ -7,10 +7,10 @@
 void benchmark (const gsl_rng_type * T);
 
 #define N  1000000
-int sum ;
+int sum;
 
 int
-main (int argc, char *argv[])
+main (void)
 {
   benchmark (gsl_rng_bad_rand);
   benchmark (gsl_rng_bad_randu);
@@ -28,23 +28,24 @@ main (int argc, char *argv[])
   benchmark (gsl_rng_uni32);
   benchmark (gsl_rng_vax);
   benchmark (gsl_rng_zuf);
-} 
+  return 0 ;
+}
 
-void 
+void
 benchmark (const gsl_rng_type * T)
 {
-  int start, end ;
+  int start, end;
   int i = 0;
-  double t ;
+  double t;
 
-  gsl_rng * r = gsl_rng_alloc(T) ;
+  gsl_rng *r = gsl_rng_alloc (T);
 
-  start = clock () ;
+  start = clock ();
 
   do
     {
-      int j ;
-      for (j = 0 ; j < N ; j++)
+      int j;
+      for (j = 0; j < N; j++)
 	sum += gsl_rng_get (r);
 
       i += N;
@@ -52,9 +53,8 @@ benchmark (const gsl_rng_type * T)
     }
   while (end < start + CLOCKS_PER_SEC);
 
-  t = (end - start) / (double)CLOCKS_PER_SEC ;
-  printf("%15s %.2e random numbers per second\n", gsl_rng_name(r), i/t) ;
-  
-  gsl_rng_free(r) ;
-}
+  t = (end - start) / (double) CLOCKS_PER_SEC;
+  printf ("%15s %.2e random numbers per second\n", gsl_rng_name (r), i / t);
 
+  gsl_rng_free (r);
+}

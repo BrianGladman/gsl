@@ -6,8 +6,8 @@
    not particularly good).
 
    The sequence is
-   
-         x_{n+1} = (a x_n) mod m
+
+   x_{n+1} = (a x_n) mod m
 
    with a = 16807 and m = 2^31 - 1 = 2147483647. The seed specifies
    the initial value, x_1.  
@@ -21,52 +21,57 @@
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */
 
-unsigned long int minstd_get (void * vstate);
-void minstd_set (void * state, unsigned long int s);
+unsigned long int minstd_get (void *vstate);
+void minstd_set (void *state, unsigned long int s);
 
-static const long int m = 2147483647, a = 16807, q = 127773, r = 2836 ;
+static const long int m = 2147483647, a = 16807, q = 127773, r = 2836;
 
-typedef struct {
-  unsigned long int x ;
-} minstd_state_t ;
+typedef struct
+  {
+    unsigned long int x;
+  }
+minstd_state_t;
 
-unsigned long int minstd_get (void *vstate)
+unsigned long int
+minstd_get (void *vstate)
 {
-    minstd_state_t * state = (minstd_state_t *)vstate;
+  minstd_state_t *state = (minstd_state_t *) vstate;
 
-    const unsigned long int x = state->x ;
-    
-    const long int h  = x / q;    
-    const long int t = a * (x - h * q) - h * r;
+  const unsigned long int x = state->x;
 
-    if (t < 0) 
-      {
-	state->x = t + m;
-      }
-    else
-      {
-	state->x = t ;
-      }
+  const long int h = x / q;
+  const long int t = a * (x - h * q) - h * r;
 
-    return state->x;
+  if (t < 0)
+    {
+      state->x = t + m;
+    }
+  else
+    {
+      state->x = t;
+    }
+
+  return state->x;
 }
 
-void 
-minstd_set(void * vstate, unsigned long int s)
+void
+minstd_set (void *vstate, unsigned long int s)
 {
-  minstd_state_t * state = (minstd_state_t *) vstate;
-  
-  if (s == 0) s = 1; /* default seed is 1 */
+  minstd_state_t *state = (minstd_state_t *) vstate;
 
-  state->x = s ;
-  
-  return ;
+  if (s == 0)
+    s = 1;	/* default seed is 1 */
+
+  state->x = s;
+
+  return;
 }
 
-static const gsl_rng_type minstd_type = { "minstd",  /* name */
-					  2147483647,  /* RAND_MAX */
-					  sizeof(minstd_state_t), 
-					  &minstd_set, 
-					  &minstd_get } ;
+static const gsl_rng_type minstd_type =
+{"minstd",			/* name */
+ 2147483646,			/* RAND_MAX */
+ sizeof (minstd_state_t),
+ &minstd_set,
+ &minstd_get};
 
-const gsl_rng_type * gsl_rng_minstd = &minstd_type ; 
+const gsl_rng_type *gsl_rng_minstd = &minstd_type;

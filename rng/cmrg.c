@@ -2,117 +2,153 @@
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-/*  This is a combined multiple recursive generator. The sequence is,
+/* This is a combined multiple recursive generator. The sequence is,
 
-         z_n = (x_n - y_n) mod m1
+   z_n = (x_n - y_n) mod m1
 
-    where the two underlying generators x and y are,
-         
-         x_n = (a_{11} x_{n-1} + a_{12} x_{n-2} + a_{13{ x_{n-3}) mod m1
-         y_n = (a_{21} y_{n-1} + a_{22{ y_{n-2} + a_{23} y_{n-3}) mod m2
-    
-    with coefficients a11 ... a23,
+   where the two underlying generators x and y are,
 
-         a_{11} = 0, a_{12} = 63308, a_{13} = -183326
-         a_{21} = 86098, a_{22} = 0, a_{23} = -539608
+   x_n = (a_{1} x_{n-1} + a_{2} x_{n-2} + a_{3} x_{n-3}) mod m1
+   y_n = (b_{1} y_{n-1} + b_{2} y_{n-2} + b_{3} y_{n-3}) mod m2
 
-    and moduli m1, m2,
-         
-         m1 = 2^31 - 1 = 2147483647
-         m2 = 2^31 - 2000169 = 2145483479
+   with coefficients a11 ... a23,
 
-    We seed the generator with the following sequence,
+   a_{1} = 0,     a_{2} = 63308, a_{3} = -183326
+   b_{1} = 86098, b_{2} = 0,     b_{3} = -539608
 
-        x0 = (A * seed + B) mod M
-        x1 = (A * x0 + B) mod M
-        x2 = (A * x1 + B) mod M
-        y0 = (A * x2 + B) mod M
-        y1 = (A * y0 + B) mod M
-        y2 = (A * y1 + B) mod M
+   and moduli m1, m2,
 
-    where A = 8121, B = 28411, M = 134456, and then use 7 iterations
-    of the generator to "warm up" the internal state.
+   m1 = 2^31 - 1 = 2147483647
+   m2 = 2^31 - 2000169 = 2145483479
 
-    The theoretical value of z_{10008} is 1477798470. The subscript
-    10008 means (1) seed the generator with s=1, (2) do the seven
-    warm-up iterations that are part of the seeding process, (3) then
-    do 10000 actual iterations.
+   We initialize the generator with 
 
-    The period of this generator is about 2^205.
+   x_1 = s_1 MOD m1, x_2 = s_2 MOD m1, x_3 = s_3 MOD m1
+   y_1 = s_4 MOD m2, y_2 = s_5 MOD m2, y_3 = s_6 MOD m2
 
-    From: P. L'Ecuyer, "Combined Multiple Recursive Random Number
-    Generators," Operations Research, 44, 5 (1996), 816--822.
+   where s_n = (69069 * s_{n-1}) mod 2^32 and s_0 = s is the
+   user-supplied seed.
 
-    This is available on the net from L'Ecuyer's home page,
+   NOTE: According to the paper the initial values for x_n must lie in
+   the range 0 <= x_n <= (m1 - 1) and the initial values for y_n must
+   lie in the range 0 <= y_n <= (m2 - 1), with at least one non-zero
+   value -- our seeding procedure satisfies these constraints.
 
-    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/combmrg.ps
-    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
+   We then use 7 iterations of the generator to "warm up" the internal
+   state.
 
-unsigned long int cmrg_get (void * vstate);
-void cmrg_set (void * state, unsigned long int s);
+   The theoretical value of z_{10008} is 719452880. The subscript 10008
+   means (1) seed the generator with s=1, (2) do the seven warm-up
+   iterations that are part of the seeding process, (3) then do 10000
+   actual iterations.
+
+   The period of this generator is about 2^205.
+
+   From: P. L'Ecuyer, "Combined Multiple Recursive Random Number
+   Generators," Operations Research, 44, 5 (1996), 816--822.
+
+   This is available on the net from L'Ecuyer's home page,
+
+   http://www.iro.umontreal.ca/~lecuyer/myftp/papers/combmrg.ps
+   ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
+
+unsigned long int cmrg_get (void *vstate);
+void cmrg_set (void *state, unsigned long int s);
 
 static const long int m1 = 2147483647, m2 = 2145483479;
 
-static const long int a12 =   63308, q12 = 33921, r12 = 12979,
-                      a13 = -183326, q13 = 11714, r13 =  2883,
-                      a21 =   86098, q21 = 24919, r21 =  7417,
-                      a23 = -539608, q23 =  3976, r23 =  2071 ;
+static const long int a2 = 63308, qa2 = 33921, ra2 = 12979;
+static const long int a3 = -183326, qa3 = 11714, ra3 = 2883;
+static const long int b1 = 86098, qb1 = 24919, rb1 = 7417;
+static const long int b3 = -539608, qb3 = 3976, rb3 = 2071;
 
-typedef struct {
-  long int x10, x11, x12;           /* first component */
-  long int x20, x21, x22;           /* second component */
-} cmrg_state_t;
+typedef struct
+  {
+    long int x1, x2, x3;	/* first component */
+    long int y1, y2, y3;	/* second component */
+  }
+cmrg_state_t;
 
-unsigned long int cmrg_get (void * vstate)
+unsigned long int
+cmrg_get (void *vstate)
 {
-  long int h, p12, p13, p21, p23;
-  cmrg_state_t * state = (cmrg_state_t *) vstate;
-  
+  cmrg_state_t *state = (cmrg_state_t *) vstate;
+
   /* Component 1 */
-  h = state->x10 / q13 ; p13 = -a13 * (state->x10 - h * q13) - h * r13;
-  h = state->x11 / q12 ; p12 =  a12 * (state->x11 - h * q12) - h * r12;
-#define POSITIVE(x,m) if (x<0) x += m
-  POSITIVE(p13,m1);
-  POSITIVE(p12,m1);
-  state->x10 = state->x11;
-  state->x11 = state->x12;
-  state->x12 = p12 - p13;
-  POSITIVE(state->x12,m1);
-  
+
+  {
+    long int h3 = state->x3 / qa3;
+    long int p3 = -a3 * (state->x3 - h3 * qa3) - h3 * ra3;
+
+    long int h2 = state->x2 / qa2;
+    long int p2 = a2 * (state->x2 - h2 * qa2) - h2 * ra2;
+
+    if (p3 < 0)
+      p3 += m1;
+    if (p2 < 0)
+      p2 += m1;
+
+    state->x3 = state->x2;
+    state->x2 = state->x1;
+    state->x1 = p2 - p3;
+    if (state->x1 < 0)
+      state->x1 += m1;
+  }
+
   /* Component 2 */
-  h = state->x20 / q23 ; p23 = -a23 * (state->x20 - h * q23)  - h * r23;
-  h = state->x22 / q21 ; p21 =  a21 * (state->x22 - h * q21)  - h * r21;
-  POSITIVE(p23,m2);
-  POSITIVE(p21,m2);
-  state->x20 = state->x21;
-  state->x21 = state->x22;
-  state->x22 = p21 - p23;
-  POSITIVE(state->x22,m2);
-  
+
+  {
+    long int h3 = state->y3 / qb3;
+    long int p3 = -b3 * (state->y3 - h3 * qb3) - h3 * rb3;
+
+    long int h1 = state->y1 / qb1;
+    long int p1 = b1 * (state->y1 - h1 * qb1) - h1 * rb1;
+
+    if (p3 < 0)
+      p3 += m2;
+    if (p1 < 0)
+      p1 += m2;
+
+    state->y3 = state->y2;
+    state->y2 = state->y1;
+    state->y1 = p1 - p3;
+    if (state->y1 < 0)
+      state->y1 += m2;
+  }
+
   /* Combination */
-  if(state->x12 < state->x22)
-    return (state->x12 - state->x22 + m1);
+  if (state->x1 < state->y1)
+    return (state->x1 - state->y1 + m1);
   else
-    return (state->x12 - state->x22);
+    return (state->x1 - state->y1);
 }
 
-void cmrg_set(void * vstate, unsigned long int s)
+void
+cmrg_set (void *vstate, unsigned long int s)
 {
   /* An entirely adhoc way of seeding! This does **not** come from
      L'Ecuyer et al */
-  
-  cmrg_state_t * state = (cmrg_state_t *) vstate;
-  
-  if (s == 0) s = 1; /* default seed is 1 */
-  
-#define LCG(n) ((n)*8121+28411)%134456
-  state->x10 = LCG(s);
-  state->x11 = LCG(state->x10);
-  state->x12 = LCG(state->x11);
-  state->x20 = LCG(state->x12);
-  state->x21 = LCG(state->x20);
-  state->x22 = LCG(state->x21);
-  
+
+  cmrg_state_t *state = (cmrg_state_t *) vstate;
+
+  if (s == 0)
+    s = 1;	/* default seed is 1 */
+
+#define LCG(n) ((69069 * n) & 0xffffffffUL)
+  s = LCG (s);
+  state->x1 = s % m1;
+  s = LCG (s);
+  state->x2 = s % m1;
+  s = LCG (s);
+  state->x3 = s % m1;
+
+  s = LCG (s);
+  state->y1 = s % m2;
+  s = LCG (s);
+  state->y2 = s % m2;
+  s = LCG (s);
+  state->y3 = s % m2;
+
   /* "warm it up" */
   cmrg_get (state);
   cmrg_get (state);
@@ -123,16 +159,11 @@ void cmrg_set(void * vstate, unsigned long int s)
   cmrg_get (state);
 }
 
-static const gsl_rng_type cmrg_type = { "cmrg",  /* name */
-					2147483647,  /* RAND_MAX */
-					sizeof(cmrg_state_t), 
-					&cmrg_set, 
-					&cmrg_get } ;
+static const gsl_rng_type cmrg_type =
+{"cmrg",			/* name */
+ 2147483646,			/* RAND_MAX */
+ sizeof (cmrg_state_t),
+ &cmrg_set,
+ &cmrg_get};
 
-const gsl_rng_type * gsl_rng_cmrg = &cmrg_type ;
-
-
-
-    
-    
-    
+const gsl_rng_type *gsl_rng_cmrg = &cmrg_type;

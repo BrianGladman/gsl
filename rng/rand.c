@@ -121,12 +121,14 @@ C
 #include <stdlib.h>
 #include <gsl_rng.h>
 
-unsigned long int rand_get (void * vstate);
-void rand_set (void * state, unsigned long int s);
+unsigned long int rand_get (void *vstate);
+void rand_set (void *state, unsigned long int s);
 
-typedef struct {
+typedef struct
+  {
     long int x0, x1;
-} rand_state_t ;
+  }
+rand_state_t;
 
 static const long P = 4194304;
 static const long a1 = 1536;
@@ -134,41 +136,42 @@ static const long a0 = 1029;
 static const long a1ma0 = 507;
 static const long c = 1731;
 
-unsigned long int rand_get (void *vstate)
+unsigned long int
+rand_get (void *vstate)
 {
-    long y0,y1;
-    rand_state_t * state = (rand_state_t *) vstate ;
+  long y0, y1;
+  rand_state_t *state = (rand_state_t *) vstate;
 
-    y0 = a0 * state->x0;
-    y1 = a1 * state->x1 + a1ma0 * (state->x0 - state->x1) + y0;
-    y0 = y0 + c;
-    state->x0 = y0 % 2048;
-    y1 = y1 + (y0 - state->x0)/2048;
-    state->x1 = y1 % 2048;
-      
-    return state->x1 * 2048 + state->x0;
+  y0 = a0 * state->x0;
+  y1 = a1 * state->x1 + a1ma0 * (state->x0 - state->x1) + y0;
+  y0 = y0 + c;
+  state->x0 = y0 % 2048;
+  y1 = y1 + (y0 - state->x0) / 2048;
+  state->x1 = y1 % 2048;
+
+  return state->x1 * 2048 + state->x0;
 }
 
-void rand_set(void * vstate, unsigned long int s)
+void
+rand_set (void *vstate, unsigned long int s)
 {
-  rand_state_t * state = (rand_state_t *) vstate;
-  
+  rand_state_t *state = (rand_state_t *) vstate;
+
   /* Only eight seeds are permitted.  This is pretty limiting, but
      at least we are guaranteed that the eight sequences are different */
 
   s = s % 8;
-  s *= P/8;
+  s *= P / 8;
 
   state->x0 = s % 2048;
-  state->x1 = (s - state->x0)/2048;
+  state->x1 = (s - state->x0) / 2048;
 }
 
-static const gsl_rng_type rand_type = { "rand",  /* name */
-					4194304,  /* RAND_MAX */
-					sizeof(rand_state_t), 
-					&rand_set, 
-					&rand_get } ;
+static const gsl_rng_type rand_type =
+{"rand",			/* name */
+ 4194304,			/* RAND_MAX */
+ sizeof (rand_state_t),
+ &rand_set,
+ &rand_get};
 
-const gsl_rng_type * gsl_rng_rand = &rand_type ;
-
-
+const gsl_rng_type *gsl_rng_rand = &rand_type;
