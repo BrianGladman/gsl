@@ -1,3 +1,10 @@
+Fri Oct  1 15:48:07 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* the matrix struct now supports a separate 'trailing dimension'
+ 	to allow handling of submatrices
+
+	* now uses separate block directory for memory management
+
 Mon Mar  1 20:05:52 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
 	* rowcol_source.c: fix rowcol to use strides

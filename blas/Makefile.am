@@ -15,7 +15,7 @@ pkginclude_HEADERS = 		\
 # noinst_HEADERS = 
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../vector -I$(srcdir)/../matrix
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block
 
 # TESTS = test_blas
 

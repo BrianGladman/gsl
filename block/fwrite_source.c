@@ -33,8 +33,8 @@ FUNCTION (gsl_block, fwrite) (FILE * stream, const TYPE(gsl_block) * b)
 }
 
 int
-FUNCTION (gsl_block, fread_with_stride) (FILE * stream, ATOMIC * data, 
-                                         const size_t n, const size_t stride)
+FUNCTION (gsl_block, raw_fread) (FILE * stream, ATOMIC * data, 
+                                 const size_t n, const size_t stride)
 {
   if (stride == 1)
     {
@@ -60,12 +60,12 @@ FUNCTION (gsl_block, fread_with_stride) (FILE * stream, ATOMIC * data,
 	}
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 int
-FUNCTION (gsl_block, fwrite_with_stride) (FILE * stream, const ATOMIC * data,
-                                          const size_t n, const size_t stride)
+FUNCTION (gsl_block, raw_fwrite) (FILE * stream, const ATOMIC * data,
+                                  const size_t n, const size_t stride)
 {
 
   if (stride == 1)
@@ -93,5 +93,5 @@ FUNCTION (gsl_block, fwrite_with_stride) (FILE * stream, const ATOMIC * data,
 	}
     }
 
-  return 0;
+  return GSL_SUCCESS;
 }

@@ -10,8 +10,7 @@ int status = 0;
 #define DESC ""
 #endif
 
-#define N 10000
-
+#define N 1027
 
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"

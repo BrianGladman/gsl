@@ -21,10 +21,10 @@ int gsl_block_long_fwrite (FILE * stream, const gsl_block_long * b);
 int gsl_block_long_fscanf (FILE * stream, gsl_block_long * b);
 int gsl_block_long_fprintf (FILE * stream, const gsl_block_long * b, const char *format);
 
-int gsl_block_long_fread_with_stride (FILE * stream, long * b, size_t n, size_t stride);
-int gsl_block_long_fwrite_with_stride (FILE * stream, const long * b, size_t n, size_t stride);
-int gsl_block_long_fscanf_with_stride (FILE * stream, long * b, size_t n, size_t stride);
-int gsl_block_long_fprintf_with_stride (FILE * stream, const long * b, size_t n, size_t stride, const char *format);
+int gsl_block_long_raw_fread (FILE * stream, long * b, size_t n, size_t stride);
+int gsl_block_long_raw_fwrite (FILE * stream, const long * b, size_t n, size_t stride);
+int gsl_block_long_raw_fscanf (FILE * stream, long * b, size_t n, size_t stride);
+int gsl_block_long_raw_fprintf (FILE * stream, const long * b, size_t n, size_t stride, const char *format);
 
 size_t gsl_block_long_size (const gsl_block_long * b);
 long * gsl_block_long_data (const gsl_block_long * b);

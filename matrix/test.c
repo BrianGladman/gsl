@@ -5,7 +5,7 @@
 #include <gsl_test.h>
 
 #define N 107
-#define M 239
+#define M 53
 
 int status = 0;
 

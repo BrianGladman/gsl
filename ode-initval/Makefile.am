@@ -8,7 +8,7 @@ pkginclude_HEADERS = \
 noinst_HEADERS = odeiv_util.h
 
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../vector -I$(srcdir)/../matrix
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err -I$(srcdir)/../linalg -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block 
 
 TESTS = test_odeiv
 
@@ -17,9 +17,11 @@ test_odeiv_LDADD = libgslodeiv.a \
 	../sys/libgslsys.a \
 	../err/libgslerr.a \
 	../err/libgsltest.a \
-	../vector/libgslvector.a \
+	../linalg/libgsllinalg.a \
 	../matrix/libgslmatrix.a \
-	../linalg/libgsllinalg.a
+	../vector/libgslvector.a \
+	../vector/libgslblock.a \
+        ../utils/libutils.a
 test_odeiv_DEPENDENCIES = libgslodeiv.a
 test_odeiv_SOURCES = test_odeiv.c
 

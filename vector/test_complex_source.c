@@ -5,15 +5,14 @@ void FUNCTION (test, trap) (void);
 void
 FUNCTION (test, func) (void)
 {
-  TYPE (gsl_vector) * v;
   size_t i;
 
-  v = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_block) * b = FUNCTION (gsl_block, alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc_from_block) (b,0,N,1);
 
   gsl_test (v->data == 0, NAME (gsl_vector) "_alloc returns valid pointer");
   gsl_test (v->size != N, NAME (gsl_vector) "_alloc returns valid size");
   gsl_test (v->stride != 1, NAME (gsl_vector) "_alloc returns unit stride");
-  gsl_test (v->parent != 0, NAME (gsl_vector) "_alloc sets parent to zero");
 
   for (i = 0; i < N; i++)
     {
@@ -46,19 +45,6 @@ FUNCTION (test, func) (void)
     };
   gsl_test (status, NAME (gsl_vector) "_get reads from array correctly");
 
-  status = 0;
-
-  for (i = 0; i < N; i++)
-    {
-      BASE x, y;
-      GSL_REAL (x) = i;
-      GSL_IMAG (x) = i + 1234;
-      y = *FUNCTION (gsl_vector, ptr) (v, i);
-      if (!GSL_COMPLEX_EQ (x, y))
-	status = 1;
-    };
-  gsl_test (status, NAME (gsl_vector) "_ptr accesses array correctly");
-
   /* Now set stride to 2 */
 
   v->stride = 2 ;
@@ -75,20 +61,6 @@ FUNCTION (test, func) (void)
 	status = 1;
     };
   gsl_test (status, NAME (gsl_vector) "_get reads from array correctly with stride");
-
-  status = 0;
-
-  for (i = 0; i < N / 2; i++)
-    {
-      BASE x, y;
-      GSL_REAL (x) = 2 * i;
-      GSL_IMAG (x) = 2 * i + 1234;
-      y = *FUNCTION (gsl_vector, ptr) (v, i);
-      if (!GSL_COMPLEX_EQ (x, y))
-	status = 1;
-    };
-  gsl_test (status, NAME (gsl_vector) "_ptr accesses array correctly with stride");
-
 
   for (i = 0; i < N / 2; i++)
     {
@@ -110,30 +82,17 @@ FUNCTION (test, func) (void)
 
   
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
+  FUNCTION (gsl_block, free) (b);
 
-  v = FUNCTION (gsl_vector, calloc) (N);
-
-  gsl_test (v->data == 0, NAME (gsl_vector) "_calloc returns valid pointer");
-  gsl_test (v->size != N, NAME (gsl_vector) "_calloc returns valid size");
-
-  status = 0;
-  
-  for (i = 0; i < N; i++)
-    {
-      if (v->data[2 * i] != 0.0 || v->data[2 * i + 1] != 0.0)
-	status = 1;
-    };
-  
-  FUNCTION (gsl_vector, free) (v);
-
-  gsl_test (status, NAME (gsl_vector) "_calloc initializes array to zero");
 }
 
 void
 FUNCTION (test, binary) (void)
 {
-  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
-  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, calloc) (N);
+  TYPE (gsl_block) * bv = FUNCTION (gsl_block, alloc) (N);
+  TYPE (gsl_block) * bw = FUNCTION (gsl_block, alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc_from_block) (bv,0,N,1);
+  TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc_from_block) (bw,0,N,1);
 
   size_t i;
 
@@ -169,6 +128,8 @@ FUNCTION (test, binary) (void)
 
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
+  FUNCTION (gsl_block, free) (bv);
+  FUNCTION (gsl_block, free) (bw);
 
   gsl_test (status, NAME (gsl_vector) "_write and read work correctly");
 
@@ -178,7 +139,9 @@ FUNCTION (test, binary) (void)
 void
 FUNCTION (test, trap) (void)
 {
-  TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc) (N);
+  TYPE (gsl_block) * bc = FUNCTION (gsl_block, alloc) (N);
+  TYPE (gsl_vector) * vc = FUNCTION (gsl_vector, alloc_from_block) (bc,0,N,1);
+
   BASE z = {{1.2, 3.4}};
   BASE z1 = {{4.5, 6.7}};
   BASE *zp ;
@@ -225,27 +188,8 @@ FUNCTION (test, trap) (void)
   gsl_test (GSL_IMAG (z1) != 0,
 	    NAME (gsl_vector) "_get returns zero imag at upper bound");
 
-  status = 0;
-  zp = FUNCTION (gsl_vector, ptr) (vc, j - 1);
-  gsl_test (!status,
-	    NAME (gsl_vector) "_ptr traps index below lower bound");
-  gsl_test (zp != 0,
-	    NAME (gsl_vector) "_ptr returns zero below lower bound");
-
-  status = 0;
-  zp = FUNCTION (gsl_vector, ptr) (vc, N + 1);
-  gsl_test (!status,
-	    NAME (gsl_vector) "_ptr traps index above upper bound");
-  gsl_test (zp != 0,
-	    NAME (gsl_vector) "_ptr returns zero above upper bound");
-
-  status = 0;
-  zp = FUNCTION (gsl_vector, ptr) (vc, N);
-  gsl_test (!status, NAME (gsl_vector) "_ptr traps index at upper bound");
-  gsl_test (zp != 0,
-	    NAME (gsl_vector) "_ptr returns zero at upper bound");
-
   FUNCTION (gsl_vector, free) (vc);
+  FUNCTION (gsl_block, free) (bc);
 }
 
 

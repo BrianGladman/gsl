@@ -15,7 +15,7 @@ FUNCTION (gsl_matrix, get) (const TYPE (gsl_matrix) * m,
 	  GSL_ERROR_RETURN ("second index out of range", GSL_EINVAL, zero);
 	}
     }
-  return *(BASE *) (m->data + MULTIPLICITY * (i * m->size2 + j));
+  return *(BASE *) (m->data + MULTIPLICITY * (i * m->dim2 + j));
 }
 
 inline void
@@ -34,5 +34,5 @@ FUNCTION (gsl_matrix, set) (TYPE (gsl_matrix) * m,
 	  GSL_ERROR_RETURN_NOTHING ("second index out of range", GSL_EINVAL);
 	}
     }
-  *(BASE *) (m->data + MULTIPLICITY * (i * m->size2 + j)) = x;
+  *(BASE *) (m->data + MULTIPLICITY * (i * m->dim2 + j)) = x;
 }

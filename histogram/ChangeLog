@@ -1,3 +1,7 @@
+Fri Oct  1 15:47:01 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* file.c file2d.c: converted to use new block i/o functions
+
 Wed Aug 18 11:41:40 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eliminated obvious memory leaks from the tests, so that we can

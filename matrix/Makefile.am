@@ -19,12 +19,12 @@ pkginclude_HEADERS = 			\
 	gsl_matrix_ulong.h		\
 	gsl_matrix_ushort.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../block -I$(srcdir)/../err
 
 TESTS = test test_static 
 
-test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslmatrix.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_static_LDADD = libgslmatrix.a ../vector/libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslmatrix.a
 test_SOURCES = test.c

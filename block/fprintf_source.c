@@ -74,11 +74,11 @@ FUNCTION (gsl_block, fscanf) (FILE * stream, TYPE(gsl_block) * b)
 
 
 int
-FUNCTION (gsl_block, fprintf_with_stride) (FILE * stream, 
-                                           const ATOMIC * data,
-                                           const size_t n,
-                                           const size_t stride, 
-                                           const char *format)
+FUNCTION (gsl_block, raw_fprintf) (FILE * stream, 
+                                   const ATOMIC * data,
+                                   const size_t n,
+                                   const size_t stride, 
+                                   const char *format)
 {
   size_t i;
 
@@ -119,10 +119,10 @@ FUNCTION (gsl_block, fprintf_with_stride) (FILE * stream,
 }
 
 int
-FUNCTION (gsl_block, fscanf_with_stride) (FILE * stream, 
-                                          ATOMIC * data,
-                                          const size_t n, 
-                                          const size_t stride)
+FUNCTION (gsl_block, raw_fscanf) (FILE * stream, 
+                                  ATOMIC * data,
+                                  const size_t n, 
+                                  const size_t stride)
 {
   size_t i;
 

@@ -1,3 +1,8 @@
+Fri Oct  1 15:51:02 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* temporary changes resulting from changes to block/vector/matrix
+ 	organization
+
 Fri Aug  6 14:42:23 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* linalg_simple.c: include <string.h> to declare memcpy

@@ -20,12 +20,12 @@ pkginclude_HEADERS = 		\
 	gsl_vector_ulong.h	\
 	gsl_vector_ushort.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../block -I$(srcdir)/../err
 
 TESTS = test test_static
 
-test_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test_static_LDADD = libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
+test_static_LDADD = libgslvector.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 
 test_DEPENDENCIES = libgslvector.a
 test_static_DEPENDENCIES = libgslvector.a
@@ -35,7 +35,7 @@ test_static_SOURCES = test_static.c
 
 CLEANFILES = test.txt test.dat
 
-noinst_HEADERS = vector_source.c init_source.c file_source.c fprintf_block.c \
+noinst_HEADERS = vector_source.c init_source.c file_source.c \
 	test_complex_source.c test_source.c test_io.c test_complex_io.c
 
 libgslvector_a_SOURCES = init.c file.c vector.c

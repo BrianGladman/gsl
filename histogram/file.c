@@ -1,30 +1,30 @@
 #include <config.h>
 #include <stdio.h>
 #include <gsl_errno.h>
-#include <gsl_vector.h>
+#include <gsl_block.h>
 #include <gsl_histogram.h>
 
 int
 gsl_histogram_fread (FILE * stream, gsl_histogram * h)
 {
-  int status = gsl_block_fread (stream, h->range, h->n + 1, 1);
+  int status = gsl_block_raw_fread (stream, h->range, h->n + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fread (stream, h->bin, h->n, 1);
+  status = gsl_block_raw_fread (stream, h->bin, h->n, 1);
   return status;
 }
 
 int
 gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
 {
-  int status = gsl_block_fwrite (stream, h->range, h->n + 1, 1);
+  int status = gsl_block_raw_fwrite (stream, h->range, h->n + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fwrite (stream, h->bin, h->n, 1);
+  status = gsl_block_raw_fwrite (stream, h->bin, h->n, 1);
   return status;
 }
 

@@ -21,10 +21,10 @@ int gsl_block_uint_fwrite (FILE * stream, const gsl_block_uint * b);
 int gsl_block_uint_fscanf (FILE * stream, gsl_block_uint * b);
 int gsl_block_uint_fprintf (FILE * stream, const gsl_block_uint * b, const char *format);
 
-int gsl_block_uint_fread_with_stride (FILE * stream, unsigned int * b, size_t n, size_t stride);
-int gsl_block_uint_fwrite_with_stride (FILE * stream, const unsigned int * b, size_t n, size_t stride);
-int gsl_block_uint_fscanf_with_stride (FILE * stream, unsigned int * b, size_t n, size_t stride);
-int gsl_block_uint_fprintf_with_stride (FILE * stream, const unsigned int * b, size_t n, size_t stride, const char *format);
+int gsl_block_uint_raw_fread (FILE * stream, unsigned int * b, size_t n, size_t stride);
+int gsl_block_uint_raw_fwrite (FILE * stream, const unsigned int * b, size_t n, size_t stride);
+int gsl_block_uint_raw_fscanf (FILE * stream, unsigned int * b, size_t n, size_t stride);
+int gsl_block_uint_raw_fprintf (FILE * stream, const unsigned int * b, size_t n, size_t stride, const char *format);
 
 size_t gsl_block_uint_size (const gsl_block_uint * b);
 unsigned int * gsl_block_uint_data (const gsl_block_uint * b);

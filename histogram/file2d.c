@@ -1,23 +1,23 @@
 #include <config.h>
 #include <stdio.h>
 #include <gsl_errno.h>
-#include <gsl_vector.h>
+#include <gsl_block.h>
 #include <gsl_histogram2d.h>
 
 int
 gsl_histogram2d_fread (FILE * stream, gsl_histogram2d * h)
 {
-  int status = gsl_block_fread (stream, h->xrange, h->nx + 1, 1);
+  int status = gsl_block_raw_fread (stream, h->xrange, h->nx + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fread (stream, h->yrange, h->ny + 1, 1);
+  status = gsl_block_raw_fread (stream, h->yrange, h->ny + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fread (stream, h->bin, h->nx * h->ny, 1);
+  status = gsl_block_raw_fread (stream, h->bin, h->nx * h->ny, 1);
 
   return status;
 }
@@ -25,17 +25,17 @@ gsl_histogram2d_fread (FILE * stream, gsl_histogram2d * h)
 int
 gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
 {
-  int status = gsl_block_fwrite (stream, h->xrange, h->nx + 1, 1);
+  int status = gsl_block_raw_fwrite (stream, h->xrange, h->nx + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fwrite (stream, h->yrange, h->ny + 1, 1);
+  status = gsl_block_raw_fwrite (stream, h->yrange, h->ny + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fwrite (stream, h->bin, h->nx * h->ny, 1);
+  status = gsl_block_raw_fwrite (stream, h->bin, h->nx * h->ny, 1);
   return status;
 }
 

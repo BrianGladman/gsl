@@ -2,7 +2,7 @@ pkglib_LIBRARIES = libgslhistogram.a
 
 pkginclude_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../block -I$(srcdir)/../err
 
 bin_PROGRAMS = gsl-histogram
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
@@ -10,15 +10,15 @@ check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
 
 gsl_histogram_SOURCES = gsl-histogram.c
-gsl_histogram_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
+gsl_histogram_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a
 noinst_HEADERS = urand.c
 
-test_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
-test2d_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
-test_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test2d_resample_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
-test_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a ../err/libgslerr.a ../err/libgsltest.a
-test2d_trap_LDADD = libgslhistogram.a ../vector/libgslvector.a  ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a
+test2d_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a
+test_resample_LDADD = libgslhistogram.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a
+test2d_resample_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a
+test_trap_LDADD = libgslhistogram.a ../block/libgslblock.a ../err/libgslerr.a ../err/libgsltest.a
+test2d_trap_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a
 
 test_DEPENDENCIES = libgslhistogram.a
 test2d_DEPENDENCIES = libgslhistogram.a
