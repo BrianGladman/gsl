@@ -149,21 +149,21 @@ double gsl_sf_bessel_il(int l, double x);
 
 /* Irregular modified spherical Bessel functions k_0(x), k_1(x), k_2(x) */
 
-int gsl_sf_bessel_k0_e(double x, double * result);   /* none */
-int gsl_sf_bessel_k1_e(double x, double * result);   /* GSL_EUNDRFLW */
-int gsl_sf_bessel_k2_e(double x, double * result);   /* GSL_EUNDRFLW */
+int gsl_sf_bessel_k0_scaled_e(double x, double * result);   /* none */
+int gsl_sf_bessel_k1_scaled_e(double x, double * result);   /* GSL_EUNDRFLW */
+int gsl_sf_bessel_k2_scaled_e(double x, double * result);   /* GSL_EUNDRFLW */
 
-double gsl_sf_bessel_k0(double x);   /* none      */
-double gsl_sf_bessel_k1(double x);   /* underflow */
-double gsl_sf_bessel_k2(double x);   /* underflow */
+double gsl_sf_bessel_k0_scaled(double x);   /* none      */
+double gsl_sf_bessel_k1_scaled(double x);   /* underflow */
+double gsl_sf_bessel_k2_scaled(double x);   /* underflow */
 
 
 /* Irregular modified spherical Bessel functions k_l(x) = Sqrt[Pi/(2x)] BesselK[l+1/2,x] */
 
-int gsl_sf_bessel_kl_e(int l, double x, double * result);
-int gsl_sf_bessel_kl_array_e(int lmax, double x, double * result_array);
+int gsl_sf_bessel_kl_scaled_e(int l, double x, double * result);
+int gsl_sf_bessel_kl_scaled_array_e(int lmax, double x, double * result_array);
 
-double gsl_sf_bessel_kl(int l, double x);
+double gsl_sf_bessel_kl_scaled(int l, double x);
 
 
 
@@ -265,11 +265,16 @@ int gsl_sf_bessel_yl_array_impl(int lmax, double x, double * result_array);
 int gsl_sf_bessel_i0_scaled_impl(double x, double * result);
 int gsl_sf_bessel_i1_scaled_impl(double x, double * result);
 int gsl_sf_bessel_i2_scaled_impl(double x, double * result);
+int gsl_sf_bessel_il_scaled_impl(int l, double x, double * result);
 
+int gsl_sf_bessel_il_scaled_array_impl(int lmax, double x, double * result_array);
 
 int gsl_sf_bessel_k0_scaled_impl(double x, double * result);
 int gsl_sf_bessel_k1_scaled_impl(double x, double * result);
 int gsl_sf_bessel_k2_scaled_impl(double x, double * result);
+int gsl_sf_bessel_kl_scaled_impl(int l, double x, double * result);
+
+int gsl_sf_bessel_kl_scaled_array_impl(int lmax, double x, double * result_array);
 
 
 #endif /* !GSL_BESSEL_H_ */
