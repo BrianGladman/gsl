@@ -43,6 +43,15 @@ int     gsl_sf_fermi_dirac_1_e(double x, double * result);
 double  gsl_sf_fermi_dirac_1(double x);
 
 
+/* Complete integral F_2(x)
+ *
+ * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
+ */
+int     gsl_sf_fermi_dirac_2_impl(double x, double * result);
+int     gsl_sf_fermi_dirac_2_e(double x, double * result);
+double  gsl_sf_fermi_dirac_2(double x);
+
+
 /* Complete integral F_j(x)
  * for integer j
  *

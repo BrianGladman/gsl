@@ -195,6 +195,176 @@ static struct gsl_sf_cheb_series fd_1_e_cs = {
 };
 
 
+/* Chebyshev fit for F_{2}(t);  -1 < t < 1, -1 < x < 1
+ */
+static double fd_2_a_data[21] = {
+  2.1573661917148458336,
+  0.8849670334241132182,
+  0.1784163467613519713,
+  0.0208333333333333333,
+  0.0012708226459768508,
+  0.e-30,
+ -5.0619314244895e-6,
+  0.e-30,
+  4.32026533989e-8,
+  0.e-30,
+ -4.870544166e-10,
+  0.e-20,
+  6.4203740e-12,
+  0.e-30,
+ -9.37424e-14,
+  0.e-30,
+  1.4715e-15,
+  0.e-30,
+ -2.44e-17,
+  0.e-30,
+  4.e-19
+};
+static struct gsl_sf_cheb_series fd_2_a_cs = {
+  fd_2_a_data,
+  20,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{2}(3/2(t+1) + 1);  -1 < t < 1, 1 < x < 4
+ */
+static double fd_2_b_data[22] = {
+  16.508258811798623599,
+  7.421719394793067988,
+  1.458309885545603821,
+  0.128773850882795229,
+  0.001963612026198147,
+ -0.000237458988738779,
+  0.000018539661382641,
+ -1.92805649479e-7,
+ -2.01950028452e-7,
+  3.2963497518e-8,
+ -1.885817092e-9,
+ -2.72632744e-10,
+  8.0554561e-11,
+ -8.313223e-12,
+ -2.24489e-13,
+  2.18778e-13,
+ -3.4290e-14,
+  1.225e-15,
+  5.81e-16,
+ -1.37e-16,
+  1.2e-17,
+  1.e-18
+};
+static struct gsl_sf_cheb_series fd_2_b_cs = {
+  fd_2_b_data,
+  21,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{1}(3(t+1) + 4);  -1 < t < 1, 4 < x < 10
+ */
+static double fd_2_c_data[20] = {
+  168.87129776686440711,
+  81.80260488091659458,
+  15.75408505947931513,
+  1.12325586765966440,
+  0.00059057505725084,
+ -0.00016469712946921,
+  0.00003885607810107,
+ -7.89873660613e-6,
+  1.39786238616e-6,
+ -2.1534528656e-7,
+  2.831510953e-8,
+ -2.94978583e-9,
+  1.6755082e-10,
+  2.234229e-11,
+ -1.035130e-11,
+  2.41117e-12,
+ -4.3531e-13,
+  6.447e-14,
+ -7.39e-15,
+  4.3e-16
+};
+static struct gsl_sf_cheb_series fd_2_c_cs = {
+  fd_2_c_data,
+  19,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{1}(x) / x^3
+ * 10 < x < 30 
+ * -1 < t < 1
+ * t = 1/10 (x-10) - 1 = x/10 - 2
+ * x = 10(t+2)
+ */
+static double fd_2_d_data[30] = {
+  0.3459960518965277589,
+ -0.00633136397691958024,
+  0.00248382959047594408,
+ -0.00087651191884005114,
+  0.00029139255351719932,
+ -0.00009322746111846199,
+  0.00002904021914564786,
+ -8.86962264810663e-6,
+  2.66844972574613e-6,
+ -7.9331564996004e-7,
+  2.3359868615516e-7,
+ -6.824790880436e-8,
+  1.981036528154e-8,
+ -5.71940426300e-9,
+  1.64379426579e-9,
+ -4.7064937566e-10,
+  1.3432614122e-10,
+ -3.823400534e-11,
+  1.085771994e-11,
+ -3.07727465e-12,
+  8.7064848e-13,
+ -2.4595431e-13,
+  6.938531e-14,
+ -1.954939e-14,
+  5.50162e-15,
+ -1.54657e-15,
+  4.3429e-16,
+ -1.2178e-16,
+  3.394e-17,
+ -8.81e-18
+};
+static struct gsl_sf_cheb_series fd_2_d_cs = {
+  fd_2_d_data,
+  29,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{2}(x) / x^3
+ * 30 < x < Inf
+ * -1 < t < 1
+ * t = 60/x - 1
+ * x = 60/(t+1)
+ */
+static double fd_2_e_data[4] = {
+  0.3347041117223735227,
+  0.00091385225936012645,
+  0.00022846306484003205,
+  5.2e-19
+};
+static struct gsl_sf_cheb_series fd_2_e_cs = {
+  fd_2_e_data,
+  3,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
 /* Chebyshev fit for F_{1/2}(t);  -1 < t < 1, -1 < x < 1
  */
 static double fd_half_a_data[23] = {
@@ -780,6 +950,65 @@ int gsl_sf_fermi_dirac_1_impl(const double x, double * result)
 }
 
 
+int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
+{
+  if(x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else if(x < -1.0) {
+    /* series [Goano (6)]
+     */
+    double ex   = exp(x);
+    double term = ex;
+    double sum  = term;
+    int n;
+    for(n=2; n<100 ; n++) {
+      double rat = (n-1.0)/n;
+      term *= -ex * rat * rat * rat;
+      sum  += term;
+      if(fabs(term/sum) < GSL_MACH_EPS) break;
+    }
+    *result = sum;
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0) {
+    *result = gsl_sf_cheb_eval(&fd_2_a_cs, x);
+    return GSL_SUCCESS;
+  }
+  else if(x < 4.0) {
+    double t = 2.0/3.0*(x-1.0) - 1.0;
+    *result  = gsl_sf_cheb_eval(&fd_2_b_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < 10.0) {
+    double t = 1.0/3.0*(x-4.0) - 1.0;
+    *result  = gsl_sf_cheb_eval(&fd_2_c_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < 30.0) {
+    double t = 0.1*x - 2.0;
+    double c = gsl_sf_cheb_eval(&fd_2_d_cs, t);
+    *result  = c * x*x*x;
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0/GSL_ROOT3_MACH_EPS) {
+    double t = 60.0/x - 1.0;
+    double c = gsl_sf_cheb_eval(&fd_2_e_cs, t);
+    *result  = c * x*x*x;
+    return GSL_SUCCESS;
+  }
+  else if(x < GSL_ROOT3_DBL_MAX) {
+    *result = 1.0/6.0 * x*x*x;
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
+}
+
+
 int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
 {
   if(j == 0) {
@@ -950,6 +1179,14 @@ int gsl_sf_fermi_dirac_1_e(const double x, double * result)
   return status;
 }
 
+int gsl_sf_fermi_dirac_2_e(const double x, double * result)
+{
+  int status = gsl_sf_fermi_dirac_2_impl(x, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_dirac_2_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_fermi_dirac_int_e(const int j, const double x, double * result)
 {
@@ -1022,6 +1259,17 @@ double gsl_sf_fermi_dirac_1(const double x)
   int status = gsl_sf_fermi_dirac_1_impl(x, &y);
   if(status != GSL_SUCCESS){
     GSL_WARNING("gsl_sf_fermi_dirac_1", status);
+  }
+  return y;
+}
+
+
+double gsl_sf_fermi_dirac_2(const double x)
+{
+  double y;
+  int status = gsl_sf_fermi_dirac_2_impl(x, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_dirac_2", status);
   }
   return y;
 }
