@@ -1,3 +1,7 @@
+Tue Nov 17 17:09:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gfsr4.c: added #include <config.h> which was missing
+
 1998-11-04    <bjg@ancho.lanl.gov>
 
 	* ranf.c: fix portability problems on alpha, by ensuring that

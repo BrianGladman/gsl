@@ -62,6 +62,7 @@
    the example mt.c in the GSL, as implemented by Brian Gough.
 */
 
+#include <config.h>
 #include <stdlib.h>
 #include "gsl_rng.h"
 
