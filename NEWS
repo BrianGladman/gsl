@@ -1,5 +1,7 @@
 * What is new in gsl-0.7+:
 
+** The function gsl_complex_xy has been renamed gsl_complex_rect
+
 ** The API for simulated annealing has been changed to support search
 spaces in which the points cannot be represented as contiguous-memory
 data structures.  gsl_siman_solve() now takes three extra arguments: a
