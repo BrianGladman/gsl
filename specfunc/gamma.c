@@ -14,108 +14,7 @@
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
-/* coefficients for gamma=7, kmax=8  Lanczos method */
-static double lanczos_7_c[9] = {
-  0.99999999999980993227684700473478,
-  676.520368121885098567009190444019,
- -1259.13921672240287047156078755283,
-  771.3234287776530788486528258894,
- -176.61502916214059906584551354,
-  12.507343278686904814458936853,
- -0.13857109526572011689554707,
-  9.984369578019570859563e-6,
-  1.50563273514931155834e-7
-};
-
-/* Lanczos with gamma=7, truncated at 1/(z+8) 
- * [J. SIAM Numer. Anal, Ser. B, 1 (1964) 86]
- */
-int gsl_sf_lngamma_impl(double x, double * result)
-{
-  if(x <= 0.0) {
-    return GSL_EDOM;
-  }
-  else {
-    int k;
-    double Ag;
-
-    x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
-  
-    Ag = lanczos_7_c[0];
-    for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
-
-    *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
-    return GSL_SUCCESS;
-  }
-}
-
-
-/* complex version of Lanczos method; this is not safe for export
- * since it becomes bad in the left half-plane
- */
-static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
-{
-  int k;
-  double log1_r,    log1_i;
-  double logAg_r,   logAg_i;
-  double Ag_r, Ag_i;
-
-  zr -= 1.; /* Lanczos writes z! instead of Gamma(z) */
-
-  Ag_r = lanczos_7_c[0];
-  Ag_i = 0.;
-  for(k=1; k<=8; k++) {
-    double R = zr + k;
-    double I = zi;
-    double a = lanczos_7_c[k] / (R*R + I*I);
-    Ag_r +=  a * R;
-    Ag_i -=  a * I;
-  }
-
-  gsl_sf_complex_log_impl(zr + 7.5, zi, &log1_r,  &log1_i);
-  gsl_sf_complex_log_impl(Ag_r, Ag_i,   &logAg_r, &logAg_i);
-
-  /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
-  *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
-  *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
-  gsl_sf_angle_restrict_symm_impl(yi, 1.e-12);
-}
-
-
-int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
-{
-  if(zr <= 0.5) {
-    /* transform to right half plane using reflection;
-     * in fact we can do a little better by stopping at 1/2
-     */
-    int status;
-    double x = 1.-zr;
-    double y = -zi;
-    double a, b;
-    double lnsin_r, lnsin_i;
-    
-    lngamma_lanczos_complex(x, y, &a, &b);
-    status = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
-    
-    if(status == GSL_SUCCESS) {
-      *lnr = LogPi_ - lnsin_r - a;
-      *arg =        - lnsin_i - b;
-      gsl_sf_angle_restrict_symm_impl(arg, 10.*GSL_MACH_EPS);
-      return GSL_SUCCESS;
-    }
-    else {
-      return GSL_EDOM;
-    }
-  }
-  else {
-    /* otherwise plain vanilla Lanczos */
-    lngamma_lanczos_complex(zr, zi, lnr, arg);
-    return GSL_SUCCESS;
-  }
-}
-
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 #define FACT_TABLE_MAX  170
 #define FACT_TABLE_SIZE (FACT_TABLE_MAX+1)
@@ -328,6 +227,106 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
     */
 };
 
+/* coefficients for gamma=7, kmax=8  Lanczos method */
+static double lanczos_7_c[9] = {
+  0.99999999999980993227684700473478,
+  676.520368121885098567009190444019,
+ -1259.13921672240287047156078755283,
+  771.3234287776530788486528258894,
+ -176.61502916214059906584551354,
+  12.507343278686904814458936853,
+ -0.13857109526572011689554707,
+  9.984369578019570859563e-6,
+  1.50563273514931155834e-7
+};
+
+/* complex version of Lanczos method; this is not safe for export
+ * since it becomes bad in the left half-plane
+ */
+static void lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
+{
+  int k;
+  double log1_r,    log1_i;
+  double logAg_r,   logAg_i;
+  double Ag_r, Ag_i;
+
+  zr -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+
+  Ag_r = lanczos_7_c[0];
+  Ag_i = 0.;
+  for(k=1; k<=8; k++) {
+    double R = zr + k;
+    double I = zi;
+    double a = lanczos_7_c[k] / (R*R + I*I);
+    Ag_r +=  a * R;
+    Ag_i -=  a * I;
+  }
+
+  gsl_sf_complex_log_impl(zr + 7.5, zi, &log1_r,  &log1_i);
+  gsl_sf_complex_log_impl(Ag_r, Ag_i,   &logAg_r, &logAg_i);
+
+  /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
+  *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
+  *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
+  gsl_sf_angle_restrict_symm_impl(yi, 1.e-12);
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* Lanczos with gamma=7, truncated at 1/(z+8) 
+ * [J. SIAM Numer. Anal, Ser. B, 1 (1964) 86]
+ */
+int gsl_sf_lngamma_impl(double x, double * result)
+{
+  if(x <= 0.0) {
+    return GSL_EDOM;
+  }
+  else {
+    int k;
+    double Ag;
+
+    x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+  
+    Ag = lanczos_7_c[0];
+    for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
+
+    *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
+    return GSL_SUCCESS;
+  }
+}
+
+int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
+{
+  if(zr <= 0.5) {
+    /* transform to right half plane using reflection;
+     * in fact we can do a little better by stopping at 1/2
+     */
+    int status;
+    double x = 1.-zr;
+    double y = -zi;
+    double a, b;
+    double lnsin_r, lnsin_i;
+    
+    lngamma_lanczos_complex(x, y, &a, &b);
+    status = gsl_sf_complex_logsin_impl(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
+    
+    if(status == GSL_SUCCESS) {
+      *lnr = LogPi_ - lnsin_r - a;
+      *arg =        - lnsin_i - b;
+      gsl_sf_angle_restrict_symm_impl(arg, 10.*GSL_MACH_EPS);
+      return GSL_SUCCESS;
+    }
+    else {
+      return GSL_EDOM;
+    }
+  }
+  else {
+    /* otherwise plain vanilla Lanczos */
+    lngamma_lanczos_complex(zr, zi, lnr, arg);
+    return GSL_SUCCESS;
+  }
+}
 
 int gsl_sf_fact_impl(const int n, double * result)
 {

@@ -8,31 +8,7 @@
 #include "gsl_sf_psi.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
-
-/* simple implementation for integer argument */
-int gsl_sf_psi_int_impl(const int n, double * result)
-{
-  if(n == 1) {
-    *result = -M_EULER;
-    return GSL_SUCCESS;
-  }
-  else if(n <= 0) {
-    *result = 0.;
-    return GSL_EDOM;
-  }
-  else {
-    int k;
-    double ans;
-    ans = -M_EULER;
-    for(k=1; k<n; k++) {
-      ans += 1./k;
-    }
-    *result = ans;
-    return GSL_SUCCESS;
-  }
-}
-
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* Chebyshev fits from SLATEC code for psi(x)
 
@@ -107,6 +83,33 @@ static struct gsl_sf_ChebSeries apsi_cs = {
   (double *)0,
   (double *)0
 };
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+
+/* simple implementation for integer argument */
+int gsl_sf_psi_int_impl(const int n, double * result)
+{
+  if(n == 1) {
+    *result = -M_EULER;
+    return GSL_SUCCESS;
+  }
+  else if(n <= 0) {
+    *result = 0.;
+    return GSL_EDOM;
+  }
+  else {
+    int k;
+    double ans;
+    ans = -M_EULER;
+    for(k=1; k<n; k++) {
+      ans += 1./k;
+    }
+    *result = ans;
+    return GSL_SUCCESS;
+  }
+}
+
 
 
 int gsl_sf_psi_impl(const double x, double * result)

@@ -10,6 +10,8 @@
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* [Abramowitz+Stegun, 9.6.11] 
  * checked OK [GJ] Sun May  3 20:48:26 EDT 1998 
  */

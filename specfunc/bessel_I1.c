@@ -8,7 +8,7 @@
 #include "gsl_sf_bessel.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* based on SLATEC besi1(), besi1e() */
 
@@ -122,6 +122,9 @@ struct gsl_sf_ChebSeries ai12_cs = {
 
 
 #define ROOT_EIGHT 2.82842712474619
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_I1_scaled_impl(const double x, double * result)
 {

@@ -8,7 +8,7 @@
 #include "gsl_sf_bessel.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* based on SLATEC bk0(), bk0e() */
 
@@ -107,6 +107,9 @@ static struct gsl_sf_ChebSeries ak02_cs = {
   (double *)0,
   (double *)0
 };
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_K0_scaled_impl(const double x, double * result)
 {

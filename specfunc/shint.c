@@ -5,7 +5,7 @@
 #include "gsl_sf_expint.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* based on SLATEC shi.f, W. Fullerton
 
@@ -62,6 +62,9 @@ int gsl_sf_Shi_impl(const double x, double * result)
     }
   }
 }
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] */
 int gsl_sf_Chi_impl(const double x, double * result)

@@ -4,11 +4,12 @@
 
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_bessel.h"
-
 #include "bessel.h"
 #include "bessel_amp_phase.h"
+#include "gsl_sf_bessel.h"
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] Sun May  3 23:25:41 EDT 1998 */
 static int bessel_Yn_small_x(const int n, const double x, double * result)

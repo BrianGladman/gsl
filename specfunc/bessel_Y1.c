@@ -4,15 +4,12 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
-#include "bessel_amp_phase.h"
 
-
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* based on SLATEC besy1, 1977 version, w. fullerton */
 
@@ -49,6 +46,9 @@ static struct gsl_sf_ChebSeries by1_cs = {
   (double *)0,
   (double *)0
 };
+
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_bessel_Y1_impl(const double x, double * result)
 {

@@ -21,7 +21,13 @@ double gsl_sf_laguerre_5(double a, double x);
  * functions, which are faster by approximately
  * a factor of 2--3.
  */
-double gsl_sf_laguerre_cp(int n, double a, double x);
+ 
+int gsl_sf_laguerre_n_e(int n, double a, double x, double * result);
+
+double gsl_sf_laguerre_n(int n, double a, double x);
+
+
+int gsl_sf_laguerre_n_impl(const int n, const double a, const double x, double * result);
 
 
 #endif /* GSL_SF_LAGUERRE_H_ */

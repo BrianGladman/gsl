@@ -5,6 +5,8 @@
 #include "gsl_sf_laguerre.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* polynomial based on confluent hypergeometric representation */
 static int laguerre_n_cp(const int n, const double a, const double x, double * result)
 {
@@ -57,6 +59,17 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x, double *
   }
 }
 
+/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_laguerre_n_e(int n, double a, double x, double * result)
+{
+  int status = gsl_sf_laguerre_n_impl(n, a, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_laguerre_n_e", status);
+  }
+  return status;
+}
+
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -101,4 +114,14 @@ double gsl_sf_laguerre_5(const double a, const double x)
   double c4 = -1./(2.*(4.+a));
   double c5 = -1./(5.*(5.+a));
   return c0 + c1*x*(1. + c2*x*(1. + c3*x*(1. + c4*x*(1. + c5*x))));
+}
+
+double gsl_sf_laguerre_n(int n, double a, double x)
+{
+  double y;
+  int status = gsl_sf_laguerre_n_impl(n, a, x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_laguerre_n_e", status);
+  }
+  return y;
 }

@@ -9,7 +9,7 @@
 #include "gsl_sf_trig.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, double * szi)
 {
@@ -48,7 +48,6 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
   return gsl_sf_angle_restrict_symm_impl(lszi, GSL_MACH_EPS * 1.e5);
 }
 
-
 int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, double * czi)
 {
   if(fabs(zi) < GSL_LOG_DBL_MAX) {
@@ -63,7 +62,6 @@ int gsl_sf_complex_cos_impl(const double zr, const double zi, double * czr, doub
     return GSL_EOVRFLW;
   }
 }
-
 
 int gsl_sf_polar_to_rect_impl(const double r, const double theta, double * x, double * y)
 {
@@ -159,7 +157,6 @@ int gsl_sf_complex_cos_e(const double zr, const double zi, double * czr, double 
   }
   return status;
 }
-
 
 int gsl_sf_polar_to_rect_e(const double r, const double theta, double * x, double * y)
 {

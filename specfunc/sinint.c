@@ -5,7 +5,7 @@
 #include "gsl_sf_expint.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* based on SLATEC r9sifg.f, W. Fullerton */
 
@@ -249,6 +249,8 @@ static struct gsl_sf_ChebSeries si_cs = {
   (double *)0
 };
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] */
 int gsl_sf_Si_impl(const double x, double * result)

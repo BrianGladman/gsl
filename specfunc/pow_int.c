@@ -8,6 +8,8 @@
 #include "gsl_sf_pow_int.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
+
 inline double gsl_sf_pow_2(const double x) { return x*x;   }
 inline double gsl_sf_pow_3(const double x) { return x*x*x; }
 inline double gsl_sf_pow_4(const double x) { double x2 = x*x;   return x2*x2;    }

@@ -8,6 +8,9 @@
 #include "gsl_sf_airy.h"
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
+
+
 /* based on SLATEC aide.f, bide.f, aid.f, bid.f, r9admp.f */
  
 /* 

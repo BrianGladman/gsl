@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
-poltesty();
+testy();
 
 /*
 printf("%g %f %lg\n", (double)M_PI, M_PI, (double)M_PI);

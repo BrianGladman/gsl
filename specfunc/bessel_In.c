@@ -12,6 +12,8 @@
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 
 
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
+
 /* standard backward recursion with arbitrary starting values
  * assumes: n >= 2, x > 0
  * checked OK [GJ] Sun May  3 09:09:40 EDT 1998 

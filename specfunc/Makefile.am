@@ -20,7 +20,8 @@ include_HEADERS = \
 	gsl_sf_poly.h		\
 	gsl_sf_pow_int.h 	\
 	gsl_sf_psi.h		\
-	gsl_sf_trig.h
+	gsl_sf_trig.h		\
+	gsl_sf_zeta.h
 
 
 noinst_HEADERS = \
@@ -77,7 +78,8 @@ libgslspecfunc_a_SOURCES = 	\
 	sig2lamp.c		\
 	sinint.c		\
 	t-erf.c			\
-	trig.c
+	trig.c			\
+	zeta.c
 
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -g -O4 -Dinline=''"

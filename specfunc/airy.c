@@ -8,6 +8,10 @@
 #include "gsl_sf_airy.h"
 
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
+
+
 /* chebyshev expansions for Airy modulus and phase
    based on SLATEC r9aimp()
 
@@ -595,7 +599,6 @@ static struct gsl_sf_ChebSeries bip2_cs = {
   (double *) 0
 };
 
-/* FIXME: something is wrong with this... not accurate to more than 3 digits */
 /* should only be called for x >= 1.0 */
 static double airy_aie(const double x)
 {

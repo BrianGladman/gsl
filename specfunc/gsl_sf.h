@@ -20,5 +20,6 @@
 #include <gsl_sf_pow_int.h>
 #include <gsl_sf_psi.h>
 #include <gsl_sf_trig.h>
+#include <gsl_sf_zeta.h>
 
 #endif /* !GSL_SF_H_ */

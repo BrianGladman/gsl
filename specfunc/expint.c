@@ -8,7 +8,7 @@
 #include "gsl_sf_expint.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /*
  Chebyshev expansions: based on SLATEC e1.f, W. Fullerton
@@ -279,6 +279,8 @@ static struct gsl_sf_ChebSeries AE14_cs = {
   (double *)0
 };
 
+
+/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* checked OK [GJ] */
 int gsl_sf_expint_E1_impl(const double x, double * result)
