@@ -5,7 +5,9 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_chebyshev.h"
+#include "gsl_sf_exp.h"
 #include "gsl_sf_gamma.h"
+#include "gsl_sf_hyperg.h"
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
@@ -359,6 +361,156 @@ static double fd_2_e_data[4] = {
 static struct gsl_sf_cheb_series fd_2_e_cs = {
   fd_2_e_data,
   3,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{-1/2}(t);  -1 < t < 1, -1 < x < 1
+ */
+static double fd_mhalf_a_data[20] = {
+  1.2663290042859741974,
+  0.3697876251911153071,
+  0.0278131011214405055,
+ -0.0033332848565672007,
+ -0.0004438108265412038,
+  0.0000616495177243839,
+  8.7589611449897e-6,
+ -1.2622936986172e-6,
+ -1.837464037221e-7,
+  2.69495091400e-8,
+  3.9760866257e-9,
+ -5.894468795e-10,
+ -8.77321638e-11,
+  1.31016571e-11,
+  1.9621619e-12,
+ -2.945887e-13,
+ -4.43234e-14,
+  6.6816e-15,
+  1.0084e-15,
+ -1.561e-16
+};
+static struct gsl_sf_cheb_series fd_mhalf_a_cs = {
+  fd_mhalf_a_data,
+  19,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{-1/2}(3/2(t+1) + 1);  -1 < t < 1, 1 < x < 4
+ */
+static double fd_mhalf_b_data[20] = {
+  3.270796131942071484,
+  0.5809004935853417887,
+ -0.0299313438794694987,
+ -0.0013287935412612198,
+  0.0009910221228704198,
+ -0.0001690954939688554,
+  6.5955849946915e-6,
+  3.5953966033618e-6,
+ -9.430672023181e-7,
+  8.75773958291e-8,
+  1.06247652607e-8,
+ -4.9587006215e-9,
+  7.160432795e-10,
+  4.5072219e-12,
+ -2.36954250e-11,
+  4.9122208e-12,
+ -2.905277e-13,
+ -9.59291e-14,
+  3.00028e-14,
+ -3.4970e-15
+};
+static struct gsl_sf_cheb_series fd_mhalf_b_cs = {
+  fd_mhalf_b_data,
+  19,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{-1/2}(3(t+1) + 4);  -1 < t < 1, 4 < x < 10
+ */
+static double fd_mhalf_c_data[25] = {
+  5.828283273430595507,
+  0.677521118293264655,
+ -0.043946248736481554,
+  0.005825595781828244,
+ -0.000864858907380668,
+  0.000110017890076539,
+ -6.973305225404e-6,
+ -1.716267414672e-6,
+  8.59811582041e-7,
+ -2.33066786976e-7,
+  4.8503191159e-8,
+ -8.130620247e-9,
+  1.021068250e-9,
+ -5.3188423e-11,
+ -1.9430559e-11,
+  8.750506e-12,
+ -2.324897e-12,
+  4.83102e-13,
+ -8.1207e-14,
+  1.0132e-14,
+ -4.64e-16,
+ -2.24e-16,
+  9.7e-17,
+ -2.6e-17,
+  5.e-18
+};
+static struct gsl_sf_cheb_series fd_mhalf_c_cs = {
+  fd_mhalf_c_data,
+  24,
+  -1, 1,
+  (double *)0,
+  (double *)0
+};
+
+
+/* Chebyshev fit for F_{-1/2}(x) / x^(1/2)
+ * 10 < x < 30 
+ * -1 < t < 1
+ * t = 1/10 (x-10) - 1 = x/10 - 2
+ */
+static double fd_mhalf_d_data[30] = {
+  2.2530744202862438709,
+  0.0018745152720114692,
+ -0.0007550198497498903,
+  0.0002759818676644382,
+ -0.0000959406283465913,
+  0.0000324056855537065,
+ -0.0000107462396145761,
+  3.5126865219224e-6,
+ -1.1313072730092e-6,
+  3.577454162766e-7,
+ -1.104926666238e-7,
+  3.31304165692e-8,
+ -9.5837381008e-9,
+  2.6575790141e-9,
+ -7.015201447e-10,
+  1.747111336e-10,
+ -4.04909605e-11,
+  8.5104999e-12,
+ -1.5261885e-12,
+  1.876851e-13,
+  1.00574e-14,
+ -1.82002e-14,
+  8.6634e-15,
+ -3.2058e-15,
+  1.0572e-15,
+ -3.259e-16,
+  9.60e-17,
+ -2.74e-17,
+  7.6e-18,
+ -1.9e-18
+};
+static struct gsl_sf_cheb_series fd_mhalf_d_cs = {
+  fd_mhalf_d_data,
+  29,
   -1, 1,
   (double *)0,
   (double *)0
@@ -845,6 +997,152 @@ fd_asymp(const double j, const double x, double * result)
 }
 
 
+/* Series evaluation for small x, generic j.
+ * [Goano (8)]
+ */
+static
+int
+fd_series(const double j, const double x, double * result)
+{
+  const int nmax = 1000;
+  int n;
+  double sum = 0.0;
+  double prev;
+  double pow_factor = 1.0;
+  double eta_factor;
+  gsl_sf_eta_impl(j + 1.0, &eta_factor);
+  prev = pow_factor * eta_factor;
+  sum += prev;
+  for(n=1; n<nmax; n++) {
+    double term;
+    gsl_sf_eta_impl(j+1.0-n, &eta_factor);
+    pow_factor *= x/n;
+    term = pow_factor * eta_factor;
+    sum += term;
+    if(fabs(term/sum) < GSL_MACH_EPS && fabs(prev/sum) < GSL_MACH_EPS) break;
+    prev = term;
+  }
+
+  *result = sum;
+  return GSL_SUCCESS;
+}
+
+
+/* Series evaluation for small x, integer j > 0.
+ * [Goano (8)]
+ */
+static
+int
+fd_series_int(const int j, const double x, double * result)
+{
+  const int nmax = 2000;
+  int n;
+  double sum = 0.0;
+  double pow_factor = 1.0;
+  double eta_factor;
+  double del;
+  gsl_sf_eta_int_impl(j + 1, &eta_factor);
+  del = pow_factor * eta_factor;
+  sum += del;
+
+  /* Sum terms where the argument
+   * of eta() is positive.
+   */
+  for(n=1; n<=j+2; n++) {
+    gsl_sf_eta_int_impl(j+1-n, &eta_factor);
+    pow_factor *= x/n;
+    del  = pow_factor * eta_factor;
+    sum += del;
+    if(fabs(del/sum) < GSL_MACH_EPS) break;
+  }
+
+  /* Explicitly avoid the terms
+   * where eta() is zero.
+   */
+  for(n=j+4; n<nmax; n += 2) {
+    gsl_sf_eta_int_impl(j+1-n, &eta_factor);
+    pow_factor *= (x/(n-1))*(x/n);
+    del  = pow_factor * eta_factor;
+    sum += del;
+    if(fabs(del/sum) < GSL_MACH_EPS) break;
+  }
+
+  *result = sum;
+
+  if(n == nmax)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* series of hypergeometric functions for integer j > 0, x > 0
+ * [Goano (7)]
+ */
+static
+int
+fd_UMseries_int(const int j, const double x, double * result)
+{
+  const int nmax = 2000;
+  double lg;
+  double pre;
+  double lnpre;
+  double sgn = 1.0;
+  double sum = 1.0;
+  int stat_sum;
+  int stat_e;
+  int stat_h = GSL_SUCCESS;
+  int n;
+
+  if(x < 500.0 && j < 80) {
+    double p = gsl_sf_pow_int(x, j+1);
+    double g;
+    gsl_sf_fact_impl(j+1, &g); /* Gamma(j+2) */
+    lnpre = 0.0;
+    pre   = p/g;
+  }
+  else {
+    gsl_sf_lngamma_impl(j + 2.0, &lg);
+    lnpre = (j+1.0)*log(x) - lg;
+    pre = 1.0;
+  }
+
+  for(n=1; n<nmax; n++) {
+    double del;
+    double U, M;
+    int stat_h_local;
+
+    stat_h_local = gsl_sf_hyperg_U_int_impl(1, j+2, n*x, &U);
+    if(stat_h_local == GSL_ELOSS) {
+      stat_h = GSL_ELOSS;
+    }
+    else if(stat_h_local != GSL_SUCCESS) {
+      stat_h = stat_h_local;
+      break;
+    }
+
+    stat_h_local = gsl_sf_hyperg_1F1_int_impl(1, j+2, -n*x, &M);
+    if(stat_h_local == GSL_ELOSS) {
+      stat_h = GSL_ELOSS;
+    }
+    else if(stat_h_local != GSL_SUCCESS) {
+      stat_h = stat_h_local;
+      break;
+    }
+
+    del  = sgn * ((j+1.0)*U - M);
+    sum += del;
+    sgn  = -sgn;
+    if(fabs(del/sum) < GSL_MACH_EPS) break;
+  }
+
+  stat_sum = ( n == nmax ? GSL_EMAXITER : GSL_SUCCESS );
+  stat_e   = gsl_sf_exp_mult_impl(lnpre, pre*sum, result);
+
+  return GSL_ERROR_SELECT_3(stat_e, stat_h, stat_sum);
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* [Goano, TOMS-745, (4)] */
@@ -1011,26 +1309,89 @@ int gsl_sf_fermi_dirac_2_impl(const double x, double * result)
 
 int gsl_sf_fermi_dirac_int_impl(const int j, const double x, double * result)
 {
-  if(j == 0) {
-    return gsl_sf_fermi_dirac_0_impl(x, result);
-  }
-  else if(j == -1) {
-    return gsl_sf_fermi_dirac_m1_impl(x, result);
-  }
-  else if(j < 0) {
+  if(j < -1) {
     return fd_nint(j, x, result);
   }
-  else if(x <= 0.0) {
+  else if (j == -1) {
+    return gsl_sf_fermi_dirac_m1_impl(x, result);
+  }
+  else if(j == 0) {
+    return gsl_sf_fermi_dirac_0_impl(x, result);
+  }
+  else if(j == 1) {
+    return gsl_sf_fermi_dirac_1_impl(x, result);
+  }
+  else if(j == 2) {
+    return gsl_sf_fermi_dirac_2_impl(x, result);
+  }
+  else if(x < 0.0) {
     return fd_neg(j, x, result);
   }
+  else if(x == 0.0) {
+    return gsl_sf_eta_int_impl(j+1, result);
+  }
+  else if(x < 1.5) {
+    return fd_series_int(j, x, result);
+  }
   else {
-    double k_div = -log10(10.0*GSL_MACH_EPS);
-    double a1    = 2.0*k_div - j*(2.0+k_div/10.0);
-    double a2    = sqrt(fabs((2.0*k_div - 1.0 - j)*(2.0*k_div - j)));
-    double a     = locMAX(a1, a2);
-    double xasymp = locMAX(j-1.0, a);
     double fasymp;
     int stat_asymp = fd_asymp(j, x, &fasymp);
+
+    if(stat_asymp == GSL_SUCCESS) {
+      *result = fasymp;
+      return stat_asymp;
+    }
+    else {
+      return fd_UMseries_int(j, x, result);
+    }
+  }
+}
+
+
+int gsl_sf_fermi_dirac_mhalf_impl(const double x, double * result)
+{
+  if(x < GSL_LOG_DBL_MIN) {
+    *result = 0.0;
+    return GSL_EUNDRFLW;
+  }
+  else if(x < -1.0) {
+    /* series [Goano (6)]
+     */
+    double ex   = exp(x);
+    double term = ex;
+    double sum  = term;
+    int n;
+    for(n=2; n<200 ; n++) {
+      double rat = (n-1.0)/n;
+      term *= -ex * sqrt(rat);
+      sum  += term;
+      if(fabs(term/sum) < GSL_MACH_EPS) break;
+    }
+    *result = sum;
+    return GSL_SUCCESS;
+  }
+  else if(x < 1.0) {
+    *result = gsl_sf_cheb_eval(&fd_mhalf_a_cs, x);
+    return GSL_SUCCESS;
+  }
+  else if(x < 4.0) {
+    double t = 2.0/3.0*(x-1.0) - 1.0;
+    *result  = gsl_sf_cheb_eval(&fd_mhalf_b_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < 10.0) {
+    double t = 1.0/3.0*(x-4.0) - 1.0;
+    *result  = gsl_sf_cheb_eval(&fd_mhalf_c_cs, t);
+    return GSL_SUCCESS;
+  }
+  else if(x < 30.0) {
+    double t = 0.1*x - 2.0;
+    double c = gsl_sf_cheb_eval(&fd_mhalf_d_cs, t);
+    *result  = c * sqrt(x);
+    return GSL_SUCCESS;
+  }
+  else {
+    return fd_asymp(-0.5, x, result);
   }
 }
 
@@ -1198,6 +1559,16 @@ int gsl_sf_fermi_dirac_int_e(const int j, const double x, double * result)
 }
 
 
+int gsl_sf_fermi_dirac_mhalf_e(const double x, double * result)
+{
+  int status = gsl_sf_fermi_dirac_mhalf_impl(x, result);
+  if(status != GSL_SUCCESS){
+    GSL_ERROR("gsl_sf_fermi_dirac_mhalf_e", status);
+  }
+  return status;
+}
+
+
 int gsl_sf_fermi_dirac_half_e(const double x, double * result)
 {
   int status = gsl_sf_fermi_dirac_half_impl(x, result);
@@ -1281,6 +1652,17 @@ double gsl_sf_fermi_dirac_int(const int j, const double x)
   int status = gsl_sf_fermi_dirac_int_impl(j, x, &y);
   if(status != GSL_SUCCESS){
     GSL_WARNING("gsl_sf_fermi_dirac_int", status);
+  }
+  return y;
+}
+
+
+double gsl_sf_fermi_dirac_mhalf(const double x)
+{
+  double y;
+  int status = gsl_sf_fermi_dirac_mhalf_impl(x, &y);
+  if(status != GSL_SUCCESS){
+    GSL_WARNING("gsl_sf_fermi_dirac_mhalf", status);
   }
   return y;
 }

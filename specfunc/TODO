@@ -10,11 +10,12 @@ should be finished before a 1.0 level release.
 * Implement the conicalP_sph_reg() functions.
   DONE: Fri Nov  6 23:33:53 MST 1998 [GJ]
 
-* Implement toroidal functions, toroidalP_...().
-
 * Irregular (Q) Legendre functions, at least
   the integer order ones. More general cases
   can probably wait.
+  DONE: Sat Nov  7 15:47:35 MST 1998 [GJ]
+
+* Implement toroidal functions, toroidalP_...().
 
 * Make hyperg_1F1() work right.
 
@@ -25,9 +26,10 @@ should be finished before a 1.0 level release.
 
 * Clean-up the Fermi-Dirac code. The full Fermi-Dirac
   functions can probably wait until a later release,
-  but we should have at least the j = integer and
-  j = 1/2-integer cases for the 1.0 release. The
-  latter are not too hard.
+  but we should have at least the common j = integer and
+  j = 1/2-integer cases for the 1.0 release. These
+  are not too hard.
+  DONE: Sat Nov  7 19:46:27 MST 1998 [GJ]
 
 * Go over the tests and make sure nothing is left out.
 
