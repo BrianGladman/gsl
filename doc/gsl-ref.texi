@@ -57,6 +57,9 @@ by the Foundation.
 @author
 @author Brian Gough @footnote{Theoretical Particle Physics group, Los Alamos National Laboratory}
 @author @email{bjg@@vvv.lanl.gov}
+@author
+@author Reid Priedhorsky @footnote{Mathematical Modeling and Analysis group, Los Alamos National Laboratory}
+@author @email{rp@@lanl.gov}
 
 @page
 @vskip 0pt plus 1filll
@@ -655,6 +658,9 @@ manual.
 
 @item Brian Gough
 Wrote the FFT package and the relevant chapter in this manual.
+
+@item Reid Priedhorsky
+Wrote the root finding package and the relevant chapter in this manual.
 
 @end table
 
