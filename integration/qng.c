@@ -163,5 +163,5 @@ gsl_integration_qng (double (*f) (double x),
   * abserr = err ;
   * neval = 87;
 
-  return GSL_ETOL ;
+  GSL_ERROR("failed to reach tolerance with highest-order rule", GSL_ETOL) ;
 }
