@@ -3,13 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gsl_ran.h"
-
+#include "gsl_randist.h"
 int
 main(int argc, char **argv)
 {
     int i,n=1;
     double mu=1.0;
-    double rmax;
     int randseed=17;
     if (argc == 1) {
         printf("Usage: %s <mu> <n> [seed]\n",argv[0]);
