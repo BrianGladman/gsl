@@ -7,12 +7,16 @@
 
 /* Provide an exp() function with GSL semantics,
  * i.e. with proper error checking, etc.
+ *
+ * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
 int gsl_sf_exp_impl(double x, double * result);
 int gsl_sf_exp_e(double x, double * result);
 
 
-/* Similarly for exp(x)-1.
+/* Similarly for exp(x)-1
+ *
+ * exceptions: GSL_EOVRFLW
  */
 int gsl_sf_expm1_impl(double x, double * result);
 int gsl_sf_expm1_e(double x, double * result);

@@ -4,9 +4,13 @@
 #ifndef GSL_SF_POLY_H_
 #define GSL_SF_POLY_H_
 
+
 /* c[0] + c[1] x + c[2] x^2 + ... + c[len-1] x^(len-1)
+ *
+ * exceptions: none
  */
 double gsl_sf_poly_eval(const double c[], const int len, const double x);
+
 
 #ifdef HAVE_INLINE
 extern inline double gsl_sf_poly_eval(const double c[], const int len, const double x)
@@ -17,5 +21,6 @@ extern inline double gsl_sf_poly_eval(const double c[], const int len, const dou
   return ans;
 }
 #endif /* HAVE_INLINE */
+
 
 #endif  /* !GSL_SF_POLY_H_ */

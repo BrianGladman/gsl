@@ -7,6 +7,8 @@
 
 /* 3j Symbols:  / ja jb jc \
  *              \ ma mb mc /
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
                             int two_ma, int two_mb, int two_mc,
@@ -23,6 +25,8 @@ double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
 
 /* 6j Symbols:  / ja jb jc \
  *              \ jd je jf /
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
                             int two_jd, int two_je, int two_jf,
@@ -40,6 +44,8 @@ double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
 /* 9j Symbols:  / ja jb jc \
  *              | jd je jf |
  *              \ jg jh ji /
+ *
+ * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
 int gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
                             int two_jd, int two_je, int two_jf,

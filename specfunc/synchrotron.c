@@ -256,4 +256,44 @@ int gsl_sf_synchrotron_2_impl(const double x, double * result)
     *result = 0.0;
     return GSL_EUNDRFLW;
   }
-};
+}
+
+
+int gsl_sf_synchrotron_1_e(const double x, double * result)
+{
+  int status = gsl_sf_synchrotron_1_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_synchrotron_1_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_synchrotron_2_e(const double x, double * result)
+{
+  int status = gsl_sf_synchrotron_2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_synchrotron_2_e", status);
+  }
+  return status;
+}
+
+
+double gsl_sf_synchrotron_1(const double x)
+{
+  double y;
+  int status = gsl_sf_synchrotron_1_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_synchrotron_1", status);
+  }
+  return y;
+}
+
+double gsl_sf_synchrotron_2(const double x)
+{
+  double y;
+  int status = gsl_sf_synchrotron_2_impl(x, &y);
+  if(status != GSL_SUCCESS) {
+    GSL_WARNING("gsl_sf_synchrotron_2", status);
+  }
+  return y;
+}
