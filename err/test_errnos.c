@@ -1,6 +1,7 @@
 #include <gsl_errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddefs.h>
 
 #define CHECK(x) {x,#x}
 #define MAX_ERRS 16
