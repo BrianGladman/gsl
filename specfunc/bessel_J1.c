@@ -7,6 +7,8 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
+#include "bessel_J1_impl.h"
+
 #include "bessel_amp_phase.h"
 
 #define ROOT_EIGHT 2.82842712474619009760337744842

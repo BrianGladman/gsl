@@ -20,6 +20,8 @@ int main(int argc, char * argv[])
   double nu = 100.;
   int n = 2;
 
+  plotto();
+  return 0;
 /*
   for(n=0; n<=1; n++) {
     double y2 = gsl_sf_hydrogenicR_2(n, 1., 1.);
@@ -88,8 +90,9 @@ int main(int argc, char * argv[])
   }
 */
 
+/*
   bessel_In_scaled(10, 3., &y, y_array);
   printf("%d  %22.17g     %22.17g   %22.17g\n", 10, 3., y, y_array[0]);
-
+*/
   exit(0);
 }

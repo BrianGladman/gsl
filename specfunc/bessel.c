@@ -8,6 +8,8 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
+#include "bessel.h"
+
 #define Root_2Pi_  2.50662827463100050241576528481
 
 extern int gsl_sf_fact_impl(int, double *);
@@ -53,6 +55,47 @@ static int Inu_Jnu_taylorsum(const double nu, const double x,
   }
   else {
     return GSL_SUCCESS;
+  }
+}
+
+
+/* Debye functions [Abramowitz+Stegun, 9.3.9-10] */
+
+static double debye_u1(double * tpow)
+{
+  return (3*tpow[1] - 5*tpow[3])/24.;
+}
+static double debye_u2(double * tpow)
+{
+  return (81*tpow[2] - 462*tpow[4] + 385*tpow[6])/1152.;
+}
+static double debye_u3(double * tpow)
+{
+  return (30375.*tpow[3] - 369603.*tpow[5] + 765765.*tpow[7] - 425425.*tpow[9])/414720.;
+}
+static double debye_u4(double * tpow)
+{
+  return (4465125.*tpow[4] - 94121676.*tpow[6] + 349922430.*tpow[8] - 
+          446185740.*tpow[10] + 185910725.*tpow[12])/39813120.;
+}
+static double debye_u5(double * tpow)
+{
+  return (1519035525.*tpow[5]     - 49286948607.*tpow[7] + 
+          284499769554.*tpow[9]   - 614135872350.*tpow[11] + 
+          566098157625.*tpow[13]  - 188699385875.*tpow[15])/6688604160.;
+}
+
+
+/* FIXME: flotsam */
+void plotto(void)
+{
+  double x;
+  for(x=1.; x<=2.; x += 0.01) {
+    int j;
+    double xpow[16];
+    xpow[0] = 1.;
+    for(j=1; j<16; j++) xpow[j] = x * xpow[j-1];
+    printf("%6.4g  %6.4g %6.4g %6.4g %6.4g %6.4g\n", x, debye_u1(xpow), debye_u2(xpow), debye_u3(xpow), debye_u4(xpow), debye_u5(xpow));
   }
 }
 
@@ -104,7 +147,7 @@ int gsl_sf_bessel_Inu_Jnu_taylor_impl(const double nu, const double x,
   }
   
   if(nu == 0.) {
-    int status = Jnu_taylorsum(nu, x, kmax, result);
+    int status = Inu_Jnu_taylorsum(nu, x, sign, kmax, result);
     return status;
   }
 }
@@ -135,9 +178,44 @@ int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * resu
   return GSL_SUCCESS;
 }
 
-/* nu -> Inf; x >> nu */
+/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
+  int i;
+  double sinh_a = nu/x;                            /* 1 < sinh_a < Inf       */
+  double coth_a = sqrt(1. + 1./(sinh_a*sinh_a));   /* 1 < coth_a < sqrt(2)   */
+  double cosh_a = sinh_a * coth_a;                 /* 1 < cosh_a < Inf       */
+  double tanh_a = 1./coth_a;                       /* 1/sqrt(2) < tanh_a < 1 */
+  double ea  = 0.5*(cosh_a + sinh_a);              /* 1 < ea < Inf           */
+  double lnt = nu*(tanh_a - log(ea));
+  double pre = 1./sqrt(2.*M_PI*nu*tanh_a) * exp(lnt);
+  double tpow[16];
+  double sum;
+  tpow[0] = 1.;
+  for(i=1; i<16; i++) tpow[i] = coth_a * tpow[i-1];
+  sum = 1. + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
+        + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
+  return pre * sum;
+}
+
+/* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
+int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double * result)
+{
+  int i;
+  double sinh_a = nu/x;                            /* 1 < sinh_a < Inf       */
+  double coth_a = sqrt(1. + 1./(sinh_a*sinh_a));   /* 1 < coth_a < sqrt(2)   */
+  double cosh_a = sinh_a * coth_a;                 /* 1 < cosh_a < Inf       */
+  double tanh_a = 1./coth_a;                       /* 1/sqrt(2) < tanh_a < 1 */
+  double ea  = 0.5*(cosh_a + sinh_a);              /* 1 < ea < Inf           */
+  double lnt = nu*(tanh_a - log(ea));
+  double pre = 1./sqrt(2.*M_PI*nu*tanh_a) * exp(-lnt);
+  double tpow[16];
+  double sum;
+  tpow[0] = 1.;
+  for(i=1; i<16; i++) tpow[i] = coth_a * tpow[i-1];
+  sum = 1. - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
+        + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
+  return -2.*pre * sum;
 }
 
 /* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
