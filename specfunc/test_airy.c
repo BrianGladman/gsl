@@ -38,7 +38,16 @@ int test_airy(void)
   TEST_SF(s, gsl_sf_airy_Ai_e, (-5.0, m, &r),                0.3507610090241142,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_e, (-0.3000000000000094, m, &r), 0.4309030952855831,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_e, (0.6999999999999907, m, &r),  0.1891624003981519,    TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_airy_Ai_e, (1.649999999999991, m, &r),   0.05831058618720882,   TEST_TOL0, GSL_SUCCESS);
+
+  /*  This original value seemed to be slightly inaccurate in the last place.
+      I recomputed it with pari to get the new value which end in 885 
+      instead of 882 */
+  /*
+    TEST_SF(s, gsl_sf_airy_Ai_e, (1.649999999999991, m, &r),   0.05831058618720882,   TEST_TOL0, GSL_SUCCESS);
+    */
+  
+  TEST_SF(s, gsl_sf_airy_Ai_e, (1.649999999999991, m, &r),   0.0583105861872088521,   TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_airy_Ai_e, (2.54999999999999, m, &r),    0.01446149513295428,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_e, (3.499999999999987, m, &r),   0.002584098786989702,  TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_airy_Ai_e, (5.39999999999998, m, &r),    4.272986169411866e-05, TEST_TOL0, GSL_SUCCESS);
