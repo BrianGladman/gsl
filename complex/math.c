@@ -56,28 +56,27 @@ gsl_complex_abs2 (gsl_complex z)
   return (x * x + y * y);
 }
 
-/* The behavior of these functions can be improved by handling
-   underflows more gracefully, as shown here: */
-
 double
 gsl_complex_logabs (gsl_complex z)
 {				/* return log|z| */
   double xabs = fabs(GSL_REAL (z));
   double yabs = fabs(GSL_IMAG (z));
-  double max, r;
+  double max, u;
 
   if (xabs >= yabs)
     {
       max = xabs;
-      r = yabs/xabs;
+      u = yabs/xabs;
     }
   else
     {
       max = yabs;
-      r = xabs/yabs;
+      u = xabs/yabs;
     }
 
-  return log (max) + 0.5 * log1p(r*r) ;   /* FIXME: non-ansi log1p */
+  /* Handle underflow when u is close to 0 */
+
+  return log (max) + 0.5 * gsl_log1p(u*u) ;
 }
 
 

@@ -15,6 +15,8 @@ struct f1
   };
 
 #define FN(x) "gsl_complex_" #x, gsl_complex_ ## x
+#define ARG(x,y) x, y
+#define RES(x,y) x, y
 
 struct f1 list1[] =
 {
