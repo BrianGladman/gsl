@@ -20,18 +20,20 @@ cat Makefile.ami   | egrep -v '^### '
     
 auxbin="test-switch"
 
-echo -n "bin_PROGRAMS= "
+progs=""
 for i in $list; do
-    echo -n "$i test-$i bench-$i "
+    progs="$progs $i test-$i bench-$i"
 done
-echo -n "$auxbin "
+progs="$progs $auxbin"
+echo "bin_PROGRAMS=$progs"
 echo ""
 echo ""
 
-echo -n "lib_LIBRARIES= libgslrandom.a "
+libs=""
 for i in $list; do
-    echo -n "libgslran$i.a "
+    libs="$libs libgslran$i.a"
 done
+echo "lib_LIBRARIES= libgslrandom.a $libs"
 echo ""
 echo ""
 for i in $list; do
@@ -39,31 +41,35 @@ for i in $list; do
 done
 echo ""
 
-echo -n "libgslrandom_a_SOURCES= switch.c "
+sources="switch.c "
 for i in $list; do
-    echo -n "$i.c "
+    sources="$sources $i.c"
 done
+echo "libgslrandom_a_SOURCES=$sources"
 echo ""
 echo ""
 
-echo -n "TESTS="
+tests=""
 for i in $list; do
-    echo -n " test-$i"
+    tests="$tests test-$i"
 done
+echo "TESTS=$tests"
 echo ""
 echo ""
 
-echo -n "test_switch_DEPENDENCIES= gsl_ran_switch.h "
+deps="gsl_ran_switch.h"
 for i in $list; do
-    echo -n "$i.h $i.o "
+    deps="$deps $i.h $i.o"
 done
+echo "test_switch_DEPENDENCIES=$deps"
 echo ""
 
-echo -n "test_switch_LDADD= "
+obj=""
 for i in $list; do
-    echo -n "$i.o "
+    obj="$obj $i.o"
 done
-echo -n "../utils/libutils.a "
+obj="$obj ../utils/libutils.a "
+echo "test_switch_LDADD=$obj"
 echo ""
     
     for i in $list; do
@@ -84,11 +90,12 @@ echo "## Note, BUILT_SOURCES has special meaning to automake"
 echo "## I'm deliberately trying to avoid having the casual user"
 echo "## build sources.  If you want to build THE_BUILT_SOURCESS"
 echo "## then run the program './makesrc'"
-echo -n "## THE_BUILT_SOURCES= "
+built_src=""
 for i in $list; do
-    echo -n "$i.h $i-state.c $i-gen.c "
+    built_src="$built_src $i.h $i-state.c $i-gen.c"
 done
-echo -n "gsl_ran_switch.h switch.c"
+built_src="$built_src gsl_ran_switch.h switch.c"
+echo "## THE_BUILT_SOURCES=$built_src"
 echo ""
 echo "## If you need to build these sources, use the 'makesrc' script"
 for i in $list; do

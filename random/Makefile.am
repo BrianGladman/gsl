@@ -1,3 +1,5 @@
+### $Id$
+
 #####################################################################
 
 ## I have removed the "automagic" making of Makefile.am from
@@ -36,9 +38,10 @@ ALLRAN= taus mrg cmrg uni uni32 zuf rand
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
+test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
 
 switch.c gsl_ran_switch.h:
-	$(srcdir)/makesrc $(srcdir) --switch
+	./makesrc --switch
 
 ## The user doesn't really _need_ these, assuming that the
 ## distribution includes all the .c and .h sources.
@@ -57,9 +60,11 @@ CLEANFILES= tmp.out tmp.in
 
 
 
-bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch 
+bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand test-switch
 
-lib_LIBRARIES= libgslrandom.a libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a 
+
+lib_LIBRARIES= libgslrandom.a  libgslrantaus.a libgslranmrg.a libgslrancmrg.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
+
 
 libgslrantaus_a_SOURCES= taus.c taus-gen.c 
 libgslranmrg_a_SOURCES= mrg.c mrg-gen.c 
@@ -69,10 +74,16 @@ libgslranuni32_a_SOURCES= uni32.c uni32-gen.c
 libgslranzuf_a_SOURCES= zuf.c zuf-gen.c 
 libgslranrand_a_SOURCES= rand.c rand-gen.c 
 
-libgslrandom_a_SOURCES= switch.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c 
+libgslrandom_a_SOURCES=switch.c  taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c
 
-test_switch_DEPENDENCIES= gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o 
-test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
+
+TESTS= test-taus test-mrg test-cmrg test-uni test-uni32 test-zuf test-rand
+
+
+test_switch_DEPENDENCIES=gsl_ran_switch.h taus.h taus.o mrg.h mrg.o cmrg.h cmrg.o uni.h uni.o uni32.h uni32.o zuf.h zuf.o rand.h rand.o
+
+test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o ../utils/libutils.a 
+
 taus_SOURCES=             ran.c taus.c
 taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
 taus_LDADD=               taus-gen.o
@@ -142,27 +153,28 @@ bench_rand_LDADD=         rand.o rand-gen.o
 ## build sources.  If you want to build THE_BUILT_SOURCESS
 ## then run the program './makesrc'
 ## THE_BUILT_SOURCES= taus.h taus-state.c taus-gen.c mrg.h mrg-state.c mrg-gen.c cmrg.h cmrg-state.c cmrg-gen.c uni.h uni-state.c uni-gen.c uni32.h uni32-state.c uni32-gen.c zuf.h zuf-state.c zuf-gen.c rand.h rand-state.c rand-gen.c gsl_ran_switch.h switch.c
+
 ## If you need to build these sources, use the 'makesrc' script
 taus.h taus-state.c taus-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) taus
+	./makesrc taus
 
 mrg.h mrg-state.c mrg-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) mrg
+	./makesrc mrg
 
 cmrg.h cmrg-state.c cmrg-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) cmrg
+	./makesrc cmrg
 
 uni.h uni-state.c uni-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) uni
+	./makesrc uni
 
 uni32.h uni32-state.c uni32-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) uni32
+	./makesrc uni32
 
 zuf.h zuf-state.c zuf-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) zuf
+	./makesrc zuf
 
 rand.h rand-state.c rand-gen.c: makesrc
-	$(srcdir)/makesrc $(srcdir) rand
+	./makesrc rand
 
 ## This target is kind of like 'distclean'
 tooclean:
