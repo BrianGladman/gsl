@@ -21,6 +21,9 @@ main (void)
     const char * name; 
   } errors[MAX_ERRS] ;
 
+  CHECK(GSL_SUCCESS);
+  CHECK(GSL_FAILURE);
+  CHECK(GSL_CONTINUE);
   CHECK(GSL_EDOM);
   CHECK(GSL_ERANGE);
   CHECK(GSL_EFAULT);
@@ -40,8 +43,10 @@ main (void)
   CHECK(GSL_ELOSS);
   CHECK(GSL_EROUND);
   CHECK(GSL_EBADLEN);
+  CHECK(GSL_ENOTSQR);
   CHECK(GSL_ESING);
   CHECK(GSL_EUNSUP);
+  CHECK(GSL_EUNIMPL);
 
   for (i = 0 ; i < n ; i++) 
     {
@@ -73,9 +78,6 @@ main (void)
 	      status |= (gsl_strerror(e1) == gsl_strerror(e2)) ;
 	    }
 	}
-
-      status |= (gsl_strerror(e1) == gsl_strerror(-1)) ;
-
       gsl_test (status, "%s has a distinct error message",
 		errors[i].name);
     }
