@@ -1,3 +1,11 @@
+Wed Aug 29 16:34:50 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp_jacobi): make sure all singular
+ 	vectors are zero, not just first.
+
+	* svdstep.c (svd2): added explicit calculation of 2x2 svd, fixes
+ 	bug that prevents convergence.
+
 Thu Aug  2 18:19:08 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* svdstep.c (trailing_eigenvalue): chose better value of mu when

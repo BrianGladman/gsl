@@ -82,6 +82,153 @@ trailing_eigenvalue (const gsl_vector * d, const gsl_vector * f)
 }
 
 static void
+create_schur (double d0, double f0, double d1, double * c, double * s)
+{
+  double apq = 2.0 * d0 * f0;
+  
+  if (apq != 0.0)
+    {
+      double t;
+      double tau = (f0*f0 + (d1 + d0)*(d1 - d0)) / apq;
+      
+      if (tau >= 0.0)
+        {
+          t = 1.0/(tau + hypot(1.0, tau));
+        }
+      else
+        {
+          t = -1.0/(-tau + hypot(1.0, tau));
+        }
+
+      *c = 1.0 / hypot(1.0, t);
+      *s = t * (*c);
+    }
+  else
+    {
+      *c = 1.0;
+      *s = 0.0;
+    }
+}
+
+static void
+svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
+{
+  size_t i;
+  double c, s, a11, a12, a21, a22;
+
+  const size_t M = U->size1;
+  const size_t N = V->size1;
+
+  double d0 = gsl_vector_get (d, 0);
+  double f0 = gsl_vector_get (f, 0);
+  
+  double d1 = gsl_vector_get (d, 1);
+
+  if (d0 == 0.0)
+    {
+      /* Eliminate off-diagonal element in [0,f1;0,d1] */
+
+      create_givens (f0, d1, &c, &s);
+
+      /* compute B <= G^T B */
+
+      gsl_vector_set (f, 0, c * f0 - s * d1);
+      gsl_vector_set (d, 1, s * f0 + c * d1);
+      
+      /* Compute U <= U G */
+
+      for (i = 0; i < M; i++)
+	{
+	  double Uip = gsl_matrix_get (U, i, 0);
+	  double Uiq = gsl_matrix_get (U, i, 1);
+	  gsl_matrix_set (U, i, 0, c * Uip - s * Uiq);
+	  gsl_matrix_set (U, i, 1, s * Uip + c * Uiq);
+	}
+
+      return;
+    }
+  else if (d1 == 0.0)
+    {
+      /* Eliminate off-diagonal element in [d0,f1;0,0] */
+
+      create_givens (d0, f0, &c, &s);
+
+      /* compute B <= B G */
+
+      gsl_vector_set (d, 0, d0 * c - f0 * s);
+      gsl_vector_set (f, 0, d0 * s + f0 * c);
+
+      /* Compute V <= V G */
+
+      for (i = 0; i < N; i++)
+        {
+          double Vip = gsl_matrix_get (V, i, 0);
+          double Viq = gsl_matrix_get (V, i, 1);
+          gsl_matrix_set (V, i, 0, c * Vip - s * Viq);
+          gsl_matrix_set (V, i, 1, s * Vip + c * Viq);
+        }
+
+      return;
+    }
+  else
+    {
+      /* Make columns orthogonal, A = [d0, f1; 0, d1] * G */
+      
+      create_schur (d0, f0, d1, &c, &s);
+      
+      /* compute B <= B G */
+      
+      a11 = c * d0 - s * f0;
+      a21 = - s * d1;
+      
+      a12 = s * d0 + c * f0;
+      a22 = c * d1;
+      
+      /* Compute V <= V G */
+      
+      for (i = 0; i < N; i++)
+        {
+          double Vip = gsl_matrix_get (V, i, 0);
+          double Viq = gsl_matrix_get (V, i, 1);
+          gsl_matrix_set (V, i, 0, c * Vip - s * Viq);
+          gsl_matrix_set (V, i, 1, s * Vip + c * Viq);
+        }
+      
+      /* Eliminate off-diagonal elements, work with the column that
+         has the largest norm */
+      
+      if (fabs(a11) + fabs(a21) > fabs(a12) + fabs(a22))
+        {
+          create_givens (a11, a21, &c, &s);
+        } 
+      else
+        {
+          create_givens (a22, -a12, &c, &s);
+        }
+      
+      /* compute B <= G^T B */
+      
+      gsl_vector_set (d, 0, c * a11 - s * a21);
+      gsl_vector_set (f, 0, c * a12 - s * a22);
+      gsl_vector_set (d, 1, s * a12 + c * a22);
+      
+      /* Compute U <= U G */
+      
+      for (i = 0; i < M; i++)
+        {
+          double Uip = gsl_matrix_get (U, i, 0);
+          double Uiq = gsl_matrix_get (U, i, 1);
+          gsl_matrix_set (U, i, 0, c * Uip - s * Uiq);
+          gsl_matrix_set (U, i, 1, s * Uip + c * Uiq);
+        }
+
+      return;
+    }
+}
+
+
+
+static void
 qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 {
   const size_t M = U->size1;
@@ -91,27 +238,37 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
   double ak, bk, zk, ap, bp, aq, bq;
   size_t i, k;
 
-  double d0 = gsl_vector_get (d, 0);
-  double f0 = gsl_vector_get (f, 0);
+  if (n == 2)
+    {
+      svd2 (d, f, U, V);
+      return;
+    }
 
-  double d1 = gsl_vector_get (d, 1);
-  double f1 = (n > 2) ? gsl_vector_get (f, 1) : 0.0;
-
-  double mu = trailing_eigenvalue (d, f);
-
-  y = d0 * d0 - mu;
-  z = d0 * f0;
-
-  /* Set up the recurrence for Givens rotations on a bidiagonal matrix */
-
-  ak = 0;
-  bk = 0;
-
-  ap = d0;
-  bp = f0;
-
-  aq = d1;
-  bq = f1;
+  {
+    double d0 = gsl_vector_get (d, 0);
+    double f0 = gsl_vector_get (f, 0);
+    
+    double d1 = gsl_vector_get (d, 1);
+    double f1 = (n > 2) ? gsl_vector_get (f, 1) : 0.0;
+    
+    {
+      double mu = trailing_eigenvalue (d, f);
+    
+      y = d0 * d0 - mu;
+      z = d0 * f0;
+    }
+    
+    /* Set up the recurrence for Givens rotations on a bidiagonal matrix */
+    
+    ak = 0;
+    bk = 0;
+    
+    ap = d0;
+    bp = f0;
+    
+    aq = d1;
+    bq = f1;
+  }
 
   for (k = 0; k < n - 1; k++)
     {

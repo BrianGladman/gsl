@@ -553,12 +553,13 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
 	       criteria used in the main loop above (i.e. comparison
 	       with norm of previous column). */
 
-	    if (norm == 0 || (j > 0 && norm <= tolerance * prev_norm))
+	    if (norm == 0.0 || prev_norm == 0.0 
+                || (j > 0 && norm <= tolerance * prev_norm))
 	      {
 		gsl_vector_set (S, j, 0.0);	/* singular */
 		gsl_vector_set_zero (&column.vector);	/* annihilate column */
 
-		prev_norm = 0;
+		prev_norm = 0.0;
 	      }
 	    else
 	      {
