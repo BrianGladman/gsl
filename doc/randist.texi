@@ -2049,38 +2049,13 @@ distribution functions for the standard normal distribution at
 @math{x=2}.
 
 @example
-#include <stdio.h>
-#include <gsl/gsl_cdf.h>
-
-int
-main (void)
-@{
-  double P, Q;
-  double x = 2.0;
-
-  P = gsl_cdf_ugaussian_P (x);
-  printf ("prob(x < %f) = %f\n", x, P);
-
-  Q = gsl_cdf_ugaussian_Q (x);
-  printf ("prob(x > %f) = %f\n", x, Q);
-
-  x = gsl_cdf_ugaussian_Pinv (P);
-  printf ("Pinv(%f) = %f\n", P, x);
-
-  x = gsl_cdf_ugaussian_Qinv (Q);
-  printf ("Qinv(%f) = %f\n", Q, x);
-
-  return 0;
-@}
+@verbatiminclude examples/cdf.c
 @end example
 @noindent
 Here is the output of the program,
 
 @example
-prob(x < 2.000000) = 0.977250
-prob(x > 2.000000) = 0.022750
-Pinv(0.977250) = 2.000000
-Qinv(0.022750) = 2.000000
+@verbatiminclude examples/cdf.out
 @end example
 
 @node Random Number Distribution References and Further Reading
