@@ -249,15 +249,18 @@ static
 int
 coulomb_G_recur(double lam_min, int kmax,
                 double eta, double x,
-                double G, double Gp,
+                double G_lam_min, double Gp_lam_min,
                 double * gc, double * gcp
                 )
 {
   double x_inv = 1.0/x;
-  double gcl = G;
-  double gpl = Gp;
+  double gcl = G_lam_min;
+  double gpl = Gp_lam_min;
   double lam = lam_min + 1.0;
   int k;
+
+  gc[0]  = gcl;
+  gcp[0] = gpl;
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
@@ -473,9 +476,9 @@ coulomb_CF2(double lam_min, double eta, double x,
       break;
     }
   }
-  while(fabs(dp)+fabs(dq) >= (fabs(P)+fabs(Q))*CF2_acc);
+  while(fabs(dp)+fabs(dq) > (fabs(P)+fabs(Q))*CF2_acc);
 
-  if(Q <= CF2_abort*GSL_MACH_EPS*fabs(P)) {
+  if(Q < CF2_abort*GSL_MACH_EPS*fabs(P)) {
     status = GSL_ELOSS;
   }
 
@@ -545,6 +548,7 @@ static
 int
 coulomb_lam_min_values(double lam_min,
                        double eta, double x,
+		       int keep_Fmin_values, /* replace F and Fp at lam_min ? */
 		       double F_sign,
                        double * F_lam_min,   double * G_lam_min,
                        double * Fp_lam_min,  double * Gp_lam_min,
@@ -588,15 +592,19 @@ coulomb_lam_min_values(double lam_min,
       double F_ratio = *Fp_lam_min / *F_lam_min;
       double gamma = (F_ratio - P)/Q;
       double omega = 1.0/sqrt((F_ratio - P)*gamma + Q);
-      *F_lam_min  =  F_sign * omega;
+      if(! keep_Fmin_values) {
+        *F_lam_min  =  F_sign * omega;
+        *Fp_lam_min = *F_lam_min * F_ratio;
+      }
       *G_lam_min  = *F_lam_min * gamma;
-      *Fp_lam_min = *F_lam_min * F_ratio;
       *Gp_lam_min = *G_lam_min * (P - Q/gamma);
       return GSL_SUCCESS;
     }
     else {
       double Fp_sign_lam_min = (*Fp_lam_min > 0.0 ? 1.0 : -1.0);
-      *Fp_lam_min = Fp_sign_lam_min * sqrt(fabs(Q));
+      if(! keep_Fmin_values) {
+        *Fp_lam_min = Fp_sign_lam_min * sqrt(fabs(Q));
+      }
       *G_lam_min  = *Fp_lam_min / Q;
       *Gp_lam_min = *G_lam_min * P;
       return GSL_SUCCESS;
@@ -605,12 +613,14 @@ coulomb_lam_min_values(double lam_min,
   else {
     if(x_less_turn) {
       /* Fallback on WKB values if CF2 claims it failed. */
-      *F_lam_min  = fjwkb;
+      if(! keep_Fmin_values) {
+        *F_lam_min  = fjwkb;
+      }
       *G_lam_min  = gjwkb;
       return GSL_SUCCESS;
     }
     else {
-      /* This is bad news. We are int the oscillating
+      /* This is bad news. We are in the oscillating
        * region, but CF2 claims it failed. This should
        * not happen.
        */
@@ -638,6 +648,8 @@ coulomb_small_args(double lam_min, int kmax,
   double F_lam_max, Fp_lam_max;
   double F_lam_min, Fp_lam_min;
   double G_lam_min, Gp_lam_min;
+  double G_e, F_e;
+  double F_sign_lam_max;
   double lam_max = lam_min + kmax; 
   
   int stat_CF2 = GSL_SUCCESS;
@@ -650,7 +662,8 @@ coulomb_small_args(double lam_min, int kmax,
   r = CL * gsl_sf_pow_int(x, lam_max + 1.0);
   F_lam_max  *= r;
   Fp_lam_max *= r/x;
-  
+  F_sign_lam_max = (F_lam_max > 0.0 ? 1.0 : -1.0);
+
   /* backward recurrence to get values at lam_min and fill fc[] and fcp[] */
   stat_Fre = coulomb_F_recur(lam_min, kmax, eta, x,
                              F_lam_max, Fp_lam_max,
@@ -659,13 +672,21 @@ coulomb_small_args(double lam_min, int kmax,
   
   if(gc != (double *)0) {
   
+    coulomb_lam_min_values(lam_min, eta, x,
+                           1 /* keep F_lam_min and Fp_lam_min */,
+		           F_sign_lam_max,
+                           &F_lam_min,  &G_lam_min,
+                           &Fp_lam_min, &Gp_lam_min,
+		           &F_e, &G_e
+                           );
+#if 0
     /* continued fraction to get the ratio (G' + i F')/(G + i F) */
     stat_CF2 = coulomb_CF2(lam_min, eta, x, &P, &Q);
   
     /* solve for the values of G,G' at lam_min */
     G_lam_min  = (Fp_lam_min - P * F_lam_min)/Q;
     Gp_lam_min = P*G_lam_min - Q*F_lam_min;
-    
+#endif
     /* forward recurrence to get gc[] and gcp[] */
     coulomb_G_recur(lam_min,  kmax, eta, x, G_lam_min, Gp_lam_min, gc, gcp);
   }
@@ -775,9 +796,11 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
   if(x == 0.0) {
     return coulomb_zero_x(lam_min, kmax, eta, fc, fcp, gc, gcp);
   }
+  /*
   else if(x < 3.0 && fabs(eta) < 10.0) {
     return coulomb_small_args(lam_min, kmax, eta, x, fc, fcp, gc, gcp);
   }
+  */
   else {
     int k;
     double F_sign_lam_max = 1.0;
@@ -812,6 +835,7 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
 
     /* Obtain the properly normalized values at the minimum lambda. */
     coulomb_lam_min_values(lam_min, eta, x,
+                           0 /* replace F_lam_min and Fp_lam_min */,
                            F_sign_lam_max,
                            &F_lam_min,  &G_lam_min,
                            &Fp_lam_min, &Gp_lam_min,

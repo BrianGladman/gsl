@@ -133,35 +133,86 @@ int check_bessel(void)
 }
 
 
-#define PRINT0 printf("%20.16g  %20.16g  %20.16g  %20.16g\n", F[0], Fp[0], G[0], Gp[0])
+#define PRINT(n) printf("%20.16g  %20.16g  %20.16g  %20.16g    %20.16g\n", F[n], Fp[n], G[n], Gp[n], Fp[n]*G[n]-Gp[n]*F[n])
 
 int check_coulomb(void)
 {
   int status = 0;
   int s;
   
-  int kmax = 9;
-  double F[10], Fp[10], G[10], Gp[10];
+  const int kmax = 20;
+  double F[kmax+1], Fp[kmax+1], G[kmax+1], Gp[kmax+1];
   double Fe, Ge;
   double lam_min;
   double eta, x;
 
+  lam_min = 0.0;
+  eta = -1000.0;
+  x = 1.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  9.68222518991e-02 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  5.12063396274e+00 ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  1.13936784380e-01 ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -4.30243486522e+00 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(0, -1000, 1)");
+  PRINT(0);
+  status += s;
 
-  /***** test small args *****/
+  lam_min = 0.0;
+  eta = -50.0;
+  x = 5.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  1.52236975714e-01 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  2.03091041166e+00 ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  4.41680690236e-01 ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -6.76485374767e-01 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(0, -50, 5)");
+  PRINT(0);
+  status += s;
+
+  s = 0;
+  s += ( frac_diff(  F[10], -3.68114360218e-01 ) > 1.e-10 );
+  s += ( frac_diff( Fp[10],  1.33846751032e+00 ) > 1.e-10 );
+  s += ( frac_diff(  G[10],  3.31588324611e-01 ) > 1.e-10 );
+  s += ( frac_diff( Gp[10],  1.51088862814e+00 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(10, -50, 5)");
+  PRINT(10);
+  status += s;
+
+  lam_min = 0.0;
+  eta = -4.0;
+  x = 5.0;
+  gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
+  s = 0;
+  s += ( frac_diff(  F[0],  4.07862723006e-01 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  1.09821233636e+00 ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  6.74327035383e-01 ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -6.36110427280e-01 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(0, -4, 5)");
+  PRINT(0);
+  status += s;
+  s = 0;
+  s += ( frac_diff(  F[3], -2.56863093558e-01 ) > 1.e-10 );
+  s += ( frac_diff( Fp[3],  1.14322942201e+00 ) > 1.e-10 );
+  s += ( frac_diff(  G[3],  7.87989922393e-01 ) > 1.e-10 );
+  s += ( frac_diff( Gp[3],  3.85990587811e-01 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(3, -4, 5)");
+  PRINT(3);
+  status += s;
 
   lam_min = 0.0;
   eta = 1.0;
   x = 2.0;
   gsl_sf_coulomb_wave_FGp_impl(lam_min, kmax, eta, x, F, Fp, G, Gp, &Fe, &Ge);
   s = 0;
-  s += ( frac_diff(  F[0],  6.61781613833e-01 ) > 1.e-8 );
-  s += ( frac_diff( Fp[0],  4.81557455710e-01 ) > 1.e-8 );
-  /*
-  s += ( frac_diff(  G[0],  1.27577878477e+00 ) > 1.e-8 );
-  s += ( frac_diff( Gp[0], -5.82728813097e-01 ) > 1.e-8 );
-  */
-  gsl_test(s, "  coulomb(0, 1, 2) : small args");
-  PRINT0;
+  s += ( frac_diff(  F[0],  6.61781613833e-01 ) > 1.e-10 );
+  s += ( frac_diff( Fp[0],  4.81557455710e-01 ) > 1.e-10 );
+  s += ( frac_diff(  G[0],  1.27577878477e+00 ) > 1.e-10 );
+  s += ( frac_diff( Gp[0], -5.82728813097e-01 ) > 1.e-10 );
+  gsl_test(s, "  coulomb(0, 1, 2)");
+  PRINT(0);
   status += s;
 
   lam_min = 0.0;
@@ -171,16 +222,11 @@ int check_coulomb(void)
   s = 0;
   s += ( frac_diff(  F[0],  9.88270778102e-09 ) > 1.e-6 );
   s += ( frac_diff( Fp[0],  4.00516771647e-08 ) > 1.e-6 );
-  /*
   s += ( frac_diff(  G[0],  1.33312774446e+07 ) > 1.e-6 );
-  s += ( frac_diff( Gp[0], -4.71591379533e+07) > 1.e-6 );
-  */
-  gsl_test(s, "  coulomb(0, 8, 1.05) : small args");
-  PRINT0;
+  s += ( frac_diff( Gp[0], -4.71591379533e+07 ) > 1.e-6 );
+  gsl_test(s, "  coulomb(0, 8, 1.05)");
+  PRINT(0);
   status += s;
-
-
-  /***** test standard regime *****/
 
   lam_min = 0.0;
   eta = 10.0;
@@ -192,7 +238,7 @@ int check_coulomb(void)
   s += ( frac_diff(  G[0],  1.67638043033e+05 ) > 1.e-11 );
   s += ( frac_diff( Gp[0], -2.79371561379e+05 ) > 1.e-11 );
   gsl_test(s, "  coulomb(0, 10, 5)");
-  PRINT0;
+  PRINT(0);
   status += s;
 
   lam_min = 0.0;
@@ -205,7 +251,7 @@ int check_coulomb(void)
   s += ( frac_diff(  G[0],  0.4416806902362398 ) > 1.e-14 );
   s += ( frac_diff( Gp[0], -0.6764853747666485 ) > 1.e-14 );
   gsl_test(s, "  coulomb(0, -50, 5)");
-  PRINT0;
+  PRINT(0);
   status += s;
 
   lam_min = 0.0;
@@ -217,7 +263,7 @@ int check_coulomb(void)
   s += ( frac_diff( Fp[0], 6.761540253864853e-05 ) > 1.e-14 );
   /* FIXME: gc[], gcp[] */
   gsl_test(s, "  coulomb(0, 5, 1)");
-  PRINT0;
+  PRINT(0);
   status += s;
 
   lam_min = 0.0;
@@ -230,7 +276,7 @@ int check_coulomb(void)
   s += ( frac_diff(  G[0], 2.69e+21 ) > 1.e-2 );
   /* FIXME: gcp[0] ?? */
   gsl_test(s, "  coulomb(0, 20, 1,)");
-  PRINT0;
+  PRINT(0);
   status += s;
   
   lam_min = 0.0;
@@ -246,7 +292,7 @@ int check_coulomb(void)
    * are there typos in A+S ??
    */
   gsl_test(s, "  coulomb(0, 1, 20)");
-  PRINT0;
+  PRINT(0);
   status += s;
 
   lam_min = 0.0;
@@ -259,7 +305,7 @@ int check_coulomb(void)
   s += ( frac_diff(  G[0],  307.8732176248016   ) > 1.e-14 );
   s += ( frac_diff( Gp[0], -291.9277247696547   ) > 1.e-14 );
   gsl_test(s, "  coulomb(0, 10, 10)");
-  PRINT0;
+  PRINT(0);
   status += s;
 
   return status;
