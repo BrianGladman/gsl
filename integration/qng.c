@@ -10,7 +10,7 @@ int
 gsl_integration_qng (double (*f) (double x),
 		     double a, double b,
 		     double epsabs, double epsrel,
-		     double * result, double * abserr, int * neval)
+		     double * result, double * abserr, size_t * neval)
 {
   double fv1[5], fv2[5], fv3[5], fv4[5];
   double savfun[21];  /* array of function values which have been computed */

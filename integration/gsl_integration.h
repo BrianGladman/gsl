@@ -1,5 +1,6 @@
 #ifndef GSL_INTEGRATION_H
 #define GSL_INTEGRATION_H
+#include <stdlib.h>
 
 /* Quadrature of f() on (a,b) by Simpson rule.
    Attempts evaluation to precision specified by eps.
@@ -21,6 +22,11 @@ double gsl_integ_lorenz(double (*f)(double),
 			double a, double b, double eps);
 
 
+typedef void gsl_integration_rule_t (double (*f)(double x), 
+				     const double a, const double b,
+				     double * result, double * abserr,
+				     double * defabs, double * resabs) ;
+       
 void gsl_integration_qk15 (double (*f) (double x),
 			  const double a, const double b,
 			  double * result, double * abserr,
@@ -63,7 +69,28 @@ int gsl_integration_qng (double (*f) (double x),
 			 double a, double b,
 			 double epsabs, double epsrel,
 			 double * result, double * abserr,
-			 int * neval);
+			 size_t * neval);
+
+int
+gsl_integration_qage (double (*f)(double x),
+		      double a, double b,
+		      double epsabs, double epsrel,
+		      int key,
+		      size_t limit,
+		      double alist[], double blist[], double rlist[], 
+		      double elist[], size_t iord[], size_t * last,
+		      double * result, double * abserr, size_t * neval) ;
+
+int
+gsl_integration_qage_impl (double (*f)(double x),
+			   const double a, const double b,
+			   const double epsabs, const double epsrel,
+			   const size_t limit,
+			   double alist[], double blist[], double rlist[], 
+			   double elist[], size_t iord[], size_t * last,
+			   double * result, double * abserr, size_t * nqeval,
+			   gsl_integration_rule_t * const q) ;
+
 
 
 /* The low-level integration rules in QUADPACK are identified by small
@@ -78,12 +105,6 @@ enum {
   GSL_INTEG_GAUSS61 = 6   /* 61 point Gauss-Kronrod rule */
 } ;
 
-typedef double gsl_function_t (double x) ;
-typedef void gsl_integration_rule_t (double (*f)(double x), 
-				     const double a, const double b,
-				     double * result, double * abserr,
-				     double * defabs, double * resabs) ;
-       
 
 #endif /* GSL_INTEGRATION_H */
 

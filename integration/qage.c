@@ -3,6 +3,8 @@
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
+#include "qpsrt.h"
+
 int
 gsl_integration_qage (double (*f)(double x),
 		      double a, double b,
@@ -11,9 +13,10 @@ gsl_integration_qage (double (*f)(double x),
 		      size_t limit,
 		      double alist[], double blist[], double rlist[], 
 		      double elist[], size_t iord[], size_t * last,
-		      double * result, double * abserr, double * neval)
+		      double * result, double * abserr, size_t * neval)
 {
-  gsl_integration_rule_t * integration_rule ;
+  int status ;
+  gsl_integration_rule_t * integration_rule = &gsl_integration_qk15 ;
 
   if (key < GSL_INTEG_GAUSS15)
     {
@@ -46,9 +49,11 @@ gsl_integration_qage (double (*f)(double x),
       break ;      
     }
 
-  gsl_integration_qage_impl (f, a, b, epsabs, epsrel, limit,
-			     alist, blist, rlist, elist, iord, last,
-			     result, abserr, neval, integration_rule) ;
+  status = gsl_integration_qage_impl (f, a, b, epsabs, epsrel, limit,
+				      alist, blist, rlist, elist, iord, last,
+				      result, abserr, neval, 
+				      integration_rule) ;
+  return status ;
 }
 
 int
@@ -58,8 +63,8 @@ gsl_integration_qage_impl (double (*f)(double x),
 			   const size_t limit,
 			   double alist[], double blist[], double rlist[], 
 			   double elist[], size_t iord[], size_t * last,
-			   double * result, double * abserr, double * nqeval,
-			   const gsl_integration_rule_t * const q)
+			   double * result, double * abserr, size_t * nqeval,
+			   gsl_integration_rule_t * const q)
 {
   double q_result, q_abserr, q_defabs, q_resabs ;
   double tolerance,  maxerr_value, area, errsum ;
@@ -137,7 +142,9 @@ gsl_integration_qage_impl (double (*f)(double x),
   errsum = q_abserr ;
   nrmax = 1 ;
 
-  for (i = 1; i < limit; i++)
+  i = 1; 
+
+  do
     {
       /* Bisect the subinterval with the largest error estimate */
 
@@ -156,6 +163,8 @@ gsl_integration_qage_impl (double (*f)(double x),
       double defab1, defab2 ;
       double resabs ;
 
+      printf("i=%d, limit=%d\n",i,limit) ;
+
       q (f, a1, b1, &area1, &error1, &resabs, &defab1) ;
       q (f, a2, b2, &area2, &error2, &resabs, &defab2) ;
       
@@ -166,12 +175,12 @@ gsl_integration_qage_impl (double (*f)(double x),
       
       if (defab1 != error1 && defab2 != error2) 
 	{
-	  if (fabs(rlist[maxerr_index] - area12) < 0.0001 * abs(area12)
-	      && error12 > 0.99 * maxerr_value)
+	  if (fabs(rlist[maxerr_index] - area12) <= 0.00001 * fabs(area12)
+	      && error12 >= 0.99 * maxerr_value)
 	    {
 	      roundoff_type1++ ;
 	    }
-	  if (i > 10 && error12 > maxerr_value)
+	  if (i >= 10 && error12 > maxerr_value)
 	    {
 	      roundoff_type2++ ;
 	    }
@@ -195,23 +204,15 @@ gsl_integration_qage_impl (double (*f)(double x),
 	{
 	  if (roundoff_type1 >= 6 || roundoff_type2 >=20)
 	    {
-	      error_type = 2 ;
+	      error_type = 2 ; /* round off error */
 	    } 
-
-	  /* set error flag in the case that the number of
-             subintervals equals limit */
-	  
-	  if (i == limit)
-	    {
-	      error_type = 1;
-	    }
 
 	  /* set error flag in the case of bad integrand behaviour at
 	     a point of the integration range */
 
 	  {
-	    double tmp = 1 + 100 * DBL_EPSILON *(fabs(a2) + 1000 * DBL_MIN) ;
-	    if (fabs(a1) <= tmp || fabs(a2) <= tmp)
+	    double tmp = (1 + 100 * DBL_EPSILON)*(fabs(a2) + 1000 * DBL_MIN) ;
+	    if (fabs(a1) <= tmp && fabs(b2) <= tmp)
 	      {
 		error_type = 3;
 	      }
@@ -246,12 +247,14 @@ gsl_integration_qage_impl (double (*f)(double x),
 	 the list of error estimates and select the subinterval with the
 	 largest error estimate (to be bisected next) */
       
-      dqpsrt(limit,i,&maxerr_index,&maxerr_value,elist,iord,&nrmax) ;
+      qpsrt(limit,i,&maxerr_index,&maxerr_value,elist,iord,&nrmax) ;
       
-      if (error_type != 0 || errsum <= tolerance)
-	last ;
-    }
-  
+      printf("maxerr_value=%g\n", maxerr_value) ;
+      printf("errsum=%g tolerance=%g\n", errsum, tolerance) ;
+      i++ ;
+    } while (i < limit && !error_type && errsum > tolerance)  ;
+
+
   {
     double result_sum = 0 ;
     size_t k ;
@@ -259,11 +262,31 @@ gsl_integration_qage_impl (double (*f)(double x),
       {
 	result_sum += rlist[k] ;
       }
-    * result = result_sum ;
+    *result = result_sum ;
   }
   
   *abserr = errsum ;
   
+  if (errsum <= tolerance) 
+    {
+      return GSL_SUCCESS ;
+    }
+
+  if (error_type == 2) 
+    {
+      GSL_ERROR ("roundoff", GSL_EROUND) ;
+    }
+  else if (error_type == 3) 
+    {
+      GSL_ERROR ("loss of whatsits", GSL_ELOSS) ;
+    }
+  else if (i == limit)
+    {
+      GSL_ERROR ("max out", GSL_EMAXITER) ;
+    }
+
+  return -1;
+
 }
   
 

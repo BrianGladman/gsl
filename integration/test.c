@@ -7,7 +7,7 @@ double f (double x) ;
 int main (void)
 {
   double result, abserr, resabs, resasc ;
-  int neval ;
+  size_t neval ;
 
   gsl_integration_qk15(f,0.0,1.0,&result,&abserr,&resabs,&resasc) ;
 
@@ -46,11 +46,22 @@ int main (void)
   printf("qnd: result = %.18g, abserr = %.18g, neval = %d\n",
 	 result, abserr, neval) ;
 
-
-
+  {
+    double alist[1000], blist[1000], rlist[1000], elist[1000];
+    size_t iord[1000] ;
+    size_t last;
+    result = 0 ; abserr=0; neval=0  ;
+    gsl_integration_qage(f, 0.0, 1.0, 0.0, 1e-10, 1, 1000,
+			 alist, blist, rlist, elist, iord, &last,
+			 &result, &abserr, &neval) ;
+    printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
+	   result, abserr, neval) ;
+  }
   return 0 ;
 } 
 
 double f (double x) {
-  return  sin(60*M_PI*x) ;
+  return sqrt(1.1+sin(10*x)) ;
 }
+
+
