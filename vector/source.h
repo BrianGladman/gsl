@@ -6,13 +6,14 @@
 
 #ifndef BASE  /* default to double */
 #define BASE double
-#define CONCAT(a,b) a ## _ ## b 
-#define FUNCTION(dir,name) CONCAT(dir,name)
+#define CONCAT2(a,b) a ## _ ## b 
+#define FUNCTION(dir,name) CONCAT2(dir,name)
 #define TYPE(dir) dir
 #else
-#define CONCAT(a,b) a ## _ ## b 
-#define CONCAT(a,b,c) a ## _ ## b ## _ ## c
-#define CONCAT1(a,b) CONCAT(a,b)
-#define CONCAT1(a,b,c) CONCAT(a,b,c)
-#define TYPE(dir) CONCAT1(dir,BASE)
+#define CONCAT2x(a,b) a ## _ ## b 
+#define CONCAT2(a,b) CONCAT2x(a,b)
+#define CONCAT3x(a,b,c) a ## _ ## b ## _ ## c
+#define CONCAT3(a,b,c) CONCAT3x(a,b,c)
+#define FUNCTION(a,c) CONCAT3(a,BASE,c)
+#define TYPE(dir) CONCAT2(dir,BASE)
 #endif

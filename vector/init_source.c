@@ -5,7 +5,7 @@
 TYPE(gsl_vector) * 
 FUNCTION(gsl_vector,alloc) (size_t n)
 {
-  gsl_vector * v ;
+  TYPE(gsl_vector) * v ;
 
   if (n == 0)
     {

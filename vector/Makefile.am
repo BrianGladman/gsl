@@ -2,7 +2,7 @@ lib_LIBRARIES = libgslvector.a
 
 noinst_PROGRAMS = test test_trap
 
-include_HEADERS = gsl_vector.h
+include_HEADERS = gsl_vector.h gsl_vector_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
@@ -18,8 +18,11 @@ test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
 libgslvector_a_SOURCES = \
-vector_init.c \
+init.c \
 vector.c \
-gsl_vector.h
+gsl_vector.h \
+init_int.c \
+vector_int.c \
+gsl_vector_int.h
 
 

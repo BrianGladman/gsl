@@ -73,7 +73,7 @@ lib_LIBRARIES = libgslvector.a
 
 noinst_PROGRAMS = test test_trap
 
-include_HEADERS = gsl_vector.h
+include_HEADERS = gsl_vector.h gsl_vector_int.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../utils
 
@@ -89,9 +89,12 @@ test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
 libgslvector_a_SOURCES = \
-vector_init.c \
+init.c \
 vector.c \
-gsl_vector.h
+gsl_vector.h \
+init_int.c \
+vector_int.c \
+gsl_vector_int.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -103,7 +106,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslvector_a_LIBADD = 
-libgslvector_a_OBJECTS =  vector_init.o vector.o
+libgslvector_a_OBJECTS =  init.o vector.o init_int.o vector_int.o
 AR = ar
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -123,8 +126,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/test.P .deps/test_trap.P .deps/vector.P \
-.deps/vector_init.P
+DEP_FILES =  .deps/init.P .deps/init_int.P .deps/test.P \
+.deps/test_trap.P .deps/vector.P .deps/vector_int.P
 SOURCES = $(libgslvector_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES)
 OBJECTS = $(libgslvector_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS)
 
