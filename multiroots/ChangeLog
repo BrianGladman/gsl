@@ -1,0 +1,9 @@
+Fri Feb 18 18:45:02 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fixed various .c files to use permutation
+
+Wed Feb 16 21:13:24 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fixed Makefiles that include gsl_linalg.h to add
+ 	-I$(srcdir)/../permutation to their include path
+
