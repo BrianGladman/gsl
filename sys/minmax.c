@@ -1,5 +1,8 @@
 #include <config.h>
 
+#define GSL_MAX(a,b) ((a) > (b) ? (a) : (b))
+#define GSL_MIN(a,b) ((a) < (b) ? (a) : (b))
+
 int GSL_MAX_INT (int a, int b);
 int GSL_MIN_INT (int a, int b);
 int GSL_MAX_DBL (double a, double b);
