@@ -1,3 +1,13 @@
+2004-12-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* blas.c (gsl_blas_ssyrk): corrected K to be A->size2 instead of
+	A->size1
+	(gsl_blas_dsyrk): as above
+	(gsl_blas_csyrk): as above
+	(gsl_blas_zsyrk): as above
+	(gsl_blas_cherk): as above
+	(gsl_blas_zherk): as above
+
 Mon Mar 18 19:39:34 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* blas.c (gsl_blas_zgemv): added missing case of CblasConjTrans to
