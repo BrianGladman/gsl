@@ -54,7 +54,7 @@ Care must be taken when a function may have a root of second-order or
 higher multiplicity (such as @math{f(x) = (x-c)^2} or @math{f(x) =
 (x-c)^3}).  Routines which maintain a strict bound on the root should
 not have problems with odd-multiplicity roots (e.g. cubic, quintic,
-@dots), since they make use only of the occurrence zero-crossings and
+@dots{}), since they make use only of the occurrence zero-crossings and
 not the behavior of the function. However it is impossible to use these
 routines for even-multiplicity roots because they require a bound on the
 initial root which guarantees a zero-crossing (below zero at one end of

@@ -86,7 +86,7 @@ test_sum_DEPENDENCIES = libgslsum.a
 test_sum_SOURCES = test_sum.c
 
 libgslsum_a_SOURCES = 	\
-	levin_u.c
+	levin_u.c levin_uerr.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -98,7 +98,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslsum_a_LIBADD = 
-libgslsum_a_OBJECTS =  levin_u.o
+libgslsum_a_OBJECTS =  levin_u.o levin_uerr.o
 AR = ar
 test_sum_OBJECTS =  test_sum.o
 test_sum_LDFLAGS = 
@@ -114,7 +114,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/levin_u.P .deps/test_sum.P
+DEP_FILES =  .deps/levin_u.P .deps/levin_uerr.P .deps/test_sum.P
 SOURCES = $(libgslsum_a_SOURCES) $(test_sum_SOURCES)
 OBJECTS = $(libgslsum_a_OBJECTS) $(test_sum_OBJECTS)
 
