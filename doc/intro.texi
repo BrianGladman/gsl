@@ -90,6 +90,9 @@ Questions about the GNU GPL},
 @item 
 @url{http://www.gnu.org/copyleft/gpl-faq.html}
 @end itemize
+@noindent
+The Free Software Foundation also operates a license consulting service
+for commercial users.
 
 @node Obtaining GSL
 @section Obtaining GSL
@@ -114,11 +117,11 @@ most systems.  Precompiled versions of the library can be purchased from
 commercial redistributors listed on the website.
 
 Announcements of new releases, updates and other relevant events are
-made on the @code{gsl-announce} mailing list.  To subscribe to this
+made on the @code{info-gsl@@gnu.org} mailing list.  To subscribe to this
 low-volume list, send an email of the following form,
 
 @example
-To: gsl-announce-request@@sources.redhat.com 
+To: info-gsl-request@@gnu.org 
 Subject: subscribe
 @end example
 @noindent
@@ -172,12 +175,21 @@ when the library is compiled without optimization. Thank you.
 @cindex contacting the GSL developers
 Additional information, including online copies of this manual, links to
 related projects, and mailing list archives are available from the
-development website mentioned above.  The developers of the library can
-be reached via the project's public mailing list,
+website mentioned above.  
 
-@itemize @asis
-@code{gsl-discuss@@sources.redhat.com}
-@end itemize
+Any questions about the use and installation of the library can be asked
+on the mailing list @code{help-gsl@@gnu.org}.  To subscribe to this send
+an email of the following form,
+
+@example
+To: help-gsl-request@@gnu.org
+Subject: subscribe
+@end example
 @noindent
 This mailing list can be used to ask questions not covered by this
 manual.
+
+The developers of the library can be reached via the development
+mailing list @code{gsl-discuss@@sources.redhat.com}.
+
+
