@@ -101,6 +101,25 @@ create_general_matrix(size_t size1, size_t size2)
 }
 
 gsl_matrix *
+create_singular_matrix(size_t size1, size_t size2)
+{
+  size_t i, j;
+  gsl_matrix * m = gsl_matrix_alloc(size1, size2);
+  for(i=0; i<size1; i++) {
+    for(j=0; j<size2; j++) {
+      gsl_matrix_set(m, i, j, 1.0/(i+j+1.0));
+    }
+  }
+
+  /* zero the first column */
+  for(j = 0; j <size2; j++)
+    gsl_matrix_set(m,0,j,0.0);
+
+  return m;
+}
+
+
+gsl_matrix *
 create_vandermonde_matrix(size_t size)
 {
   size_t i, j;
@@ -130,6 +149,9 @@ create_moler_matrix(size_t size)
 gsl_matrix * m35;
 gsl_matrix * m53;
 gsl_matrix * m97;
+
+gsl_matrix * s35;
+gsl_matrix * s53;
 
 gsl_matrix * hilb2;
 gsl_matrix * hilb3;
@@ -807,6 +829,14 @@ int test_QRPT_decomp(void)
 
   f = test_QRPT_decomp_dim(m53, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp m(5,3)");
+  s += f;
+
+  f = test_QRPT_decomp_dim(s35, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_decomp s(3,5)");
+  s += f;
+
+  f = test_QRPT_decomp_dim(s53, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  QRPT_decomp s(5,3)");
   s += f;
 
   f = test_QRPT_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
@@ -1552,6 +1582,9 @@ int main(void)
   m35 = create_general_matrix(3,5);
   m53 = create_general_matrix(5,3);
   m97 = create_general_matrix(9,7);
+
+  s35 = create_singular_matrix(3,5);
+  s53 = create_singular_matrix(5,3);
 
   hilb2 = create_hilbert_matrix(2);
   hilb3 = create_hilbert_matrix(3);

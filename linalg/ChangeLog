@@ -1,3 +1,8 @@
+Sun Jul  8 18:03:05 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qrpt.c (gsl_linalg_QRPT_decomp): fix bug where null column
+ 	caused division by zero in norm-update calculation
+
 Sun Jul  1 22:43:22 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* modified to use new-style vector views, affects most

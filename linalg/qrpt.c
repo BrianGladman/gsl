@@ -158,22 +158,29 @@ gsl_linalg_QRPT_decomp (gsl_matrix * A, gsl_vector * tau, gsl_permutation * p, i
                 {
                   double y = 0;
                   double x = gsl_vector_get (norm, j);
-                  double temp = gsl_matrix_get (A, i, j) / x;
+
+		  if (x > 0.0)
+		    {
+		      double temp= gsl_matrix_get (A, i, j) / x;
                   
-                  if (fabs (temp) >= 1)
-                    y = 0.0;
-                  else
-                    y = y * sqrt (1 - temp * temp);
+		      if (fabs (temp) >= 1)
+			y = 0.0;
+		      else
+			y = y * sqrt (1 - temp * temp);
+		      
+		      /* recompute norm to prevent loss of accuracy */
+
+		      if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
+			{
+			  gsl_vector_view c_full = gsl_matrix_column (A, j);
+			  gsl_vector_view c = 
+			    gsl_vector_subvector(&c_full.vector,
+						 i+1, M - (i+1));
+			  y = gsl_blas_dnrm2 (&c.vector);
+			}
                   
-                  if (fabs (y / x) < sqrt (20.0) * GSL_SQRT_DBL_EPSILON)
-                    {
-                      gsl_vector_view c_full = gsl_matrix_column (A, j);
-                      gsl_vector_view c = gsl_vector_subvector(&c_full.vector,
-                                                               i+1, M - (i+1));
-                      y = gsl_blas_dnrm2 (&c.vector);
-                    }
-                  
-                  gsl_vector_set (norm, j, y);
+		      gsl_vector_set (norm, j, y);
+		    }
                 }
             }
         }
