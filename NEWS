@@ -1,4 +1,9 @@
-* What is new in gsl-1.6:
+* What will be new in gsl-1.7:
+
+** gsl_linalg_SV_decomp_jacobi now reports an error for the
+unimplemented case M<N correctly.
+
+* What was new in gsl-1.6:
 
 ** Added a new wavelet directory, with 1-dimensional and 2-dimensional
 discrete wavelet transforms.

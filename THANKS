@@ -334,3 +334,4 @@ histogram range calculations
 * Dirk Eddelbuettel <edd@debian.org> for bug reports and testing, and
 maintaining the Debian package for GSL.
 
+* Jari Häkkinen <jari@chiralcomp.com> for svd bug reports

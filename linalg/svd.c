@@ -438,7 +438,7 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
 int
 gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
 {
-  if (Q->size1 < Q->size2)
+  if (A->size1 < A->size2)
     {
       /* FIXME: only implemented  M>=N case so far */
 
