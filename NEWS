@@ -1,4 +1,4 @@
-* What was new in gsl-0.9.1:
+* What is new in gsl-0.9.1:
 
 ** The single precision ffts now uses float throughout, rather than
 mixing float and double.
@@ -21,9 +21,9 @@ SunPro compiler.
 ** Renamed gsl_Efunc_t to gsl_siman_Efunc_t, in accordance with
 namespace conventions.
 
-** Improved accuracy and fixed bugs in gsl_sf_bessel_I0_scaled,
-gsl_sf_erfc, gsl_sf_log_erfc, gsl_sf_legendre_Q0 and
-gsl_sf_legendre_Q1, and gsl_sf_zeta.
+** Improved accuracy and fixed bugs in gsl_sf_hyperg_1F1,
+gsl_sf_bessel_I0_scaled, gsl_sf_erfc, gsl_sf_log_erfc,
+gsl_sf_legendre_Q0 and gsl_sf_legendre_Q1, and gsl_sf_zeta.
 
 ** Improved IEEE compliance of special functions, overflows now return
 Inf and domain errors return NaN.
