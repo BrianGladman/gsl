@@ -178,6 +178,19 @@ int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, double * resu
   return GSL_SUCCESS;
 }
 
+/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
+{
+  double mu   = 4.*nu*nu;
+  double mum1 = mu-1.;
+  double mum9 = mu-9.;
+  *result = 1./(Root_2Pi_* sqrt(x)) * (1. - mum1/(8.*x) + mum1*mum9/(128.*x*x));
+  if(*result == 0.)
+    return GSL_EUNDRFLW;
+  else 
+    return GSL_SUCCESS;
+}
+
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {
@@ -195,7 +208,8 @@ int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double *
   for(i=1; i<16; i++) tpow[i] = coth_a * tpow[i-1];
   sum = 1. + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
-  return pre * sum;
+  *result = pre * sum;
+  return GSL_SUCCESS;
 }
 
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
@@ -215,21 +229,49 @@ int gsl_sf_bessel_Ynu_asymp_Debye_impl(const double nu, const double x, double *
   for(i=1; i<16; i++) tpow[i] = coth_a * tpow[i-1];
   sum = 1. - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
         + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
-  return -2.*pre * sum;
+  *result = -2.*pre * sum;
+  return GSL_SUCCESS;
 }
 
-/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
-int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double * result)
+/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.7] */
+int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
 {
-  double mu   = 4.*nu*nu;
-  double mum1 = mu-1.;
-  double mum9 = mu-9.;
-  *result = 1./(Root_2Pi_* sqrt(x)) * (1. - mum1/(8.*x) + mum1*mum9/(128.*x*x));
-  if(*result == 0.)
-    return GSL_EUNDRFLW;
-  else 
-    return GSL_SUCCESS;
+  int i;
+  double z = x/nu;
+  double root_term = sqrt(1. + z*z);
+  double pre = 1./(sqrt(2.*M_PI*nu) * sqrt(root_term));
+  double eta = root_term + log(z/(1.+root_term));
+  double ex  = ( z < 1./GSL_SQRT_MACH_EPS ? exp(nu*(-z + eta)) : exp(nu/(2.*z)) );
+  double t = 1./root_term;
+  double sum;
+  double tpow[16];
+  for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
+  sum = 1. + debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) + debye_u3(tpow)/(nu*nu*nu)
+        + debye_u4(tpow)/(nu*nu*nu*nu) + debye_u5(tpow)/(nu*nu*nu*nu*nu);
+  *result = pre * ex * sum;
+  return GSL_SUCCESS;
 }
+
+/* nu -> Inf; uniform in x > 0  [Abramowitz+Stegun, 9.7.8] */
+int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, double * result)
+{
+  int i;
+  double z = x/nu;
+  double root_term = sqrt(1. + z*z);
+  double pre = sqrt(M_PI/(2.*nu*root_term));
+  double eta = root_term + log(z/(1.+root_term));
+  double ex  = ( z < 1./GSL_SQRT_MACH_EPS ? exp(nu*(z - eta)) : exp(-nu/(2.*z)) );
+  double t = 1./root_term;
+  double sum;
+  double tpow[16];
+  for(i=1; i<16; i++) tpow[i] = t * tpow[i-1];
+  sum = 1. - debye_u1(tpow)/nu + debye_u2(tpow)/(nu*nu) - debye_u3(tpow)/(nu*nu*nu)
+        + debye_u4(tpow)/(nu*nu*nu*nu) - debye_u5(tpow)/(nu*nu*nu*nu*nu);
+  *result = pre * ex * sum;
+  return GSL_SUCCESS;
+}
+
+
 
 
 /************************************************************************
