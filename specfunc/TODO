@@ -1,6 +1,19 @@
 * Could probably return immediately for exact zeros in 3j,6j,9j
 functions.  Easiest to implement for 3j.
 
+  Note from Serge Winitzki <serge@cosmos.phy.tufts.edu>:
+
+  The package "matpack" (www.matpack.de) includes many special functions, 
+  also the 3j symbols. They refer to some quite complicated numerical 
+  methods using recursion relations to get the right answers for large 
+  momenta, and to 1975-1976 papers by Schulten and Gordon for the 
+  description of the algorithms. The papers can be downloaded for free at
+  http://www.ks.uiuc.edu/Publications/Papers/ 
+
+  http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU76B
+  http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU75A
+  http://www.ks.uiuc.edu/Publications/Papers/abstract.cgi?tbcode=SCHU75
+
 * add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
 errata.
 
