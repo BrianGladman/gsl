@@ -65,13 +65,13 @@ AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run 
 #include <string.h>
 
 char*
-my_strdup (char *str)
+my_strdup (const char *str)
 {
   char *new_str;
   
   if (str)
     {
-      new_str = malloc ((strlen (str) + 1) * sizeof(char));
+      new_str = (char *)malloc ((strlen (str) + 1) * sizeof(char));
       strcpy (new_str, str);
     }
   else
@@ -80,7 +80,7 @@ my_strdup (char *str)
   return new_str;
 }
 
-int main ()
+int main (void)
 {
   int major = 0, minor = 0, micro = 0;
   int n;
@@ -102,7 +102,7 @@ int main ()
       (($gsl_major_version == major) && ($gsl_minor_version > minor)) ||
       (($gsl_major_version == major) && ($gsl_minor_version == minor) && ($gsl_micro_version >= micro)))
     {
-      return 0;
+      exit(0);
     }
   else
     {
@@ -112,7 +112,7 @@ int main ()
       printf("*** If gsl-config was wrong, set the environment variable GSL_CONFIG\n");
       printf("*** to point to the correct copy of gsl-config, and remove the file\n");
       printf("*** config.cache before re-running configure\n");
-      return 1;
+      exit(1);
     }
 }
 
