@@ -1,20 +1,14 @@
-#include <config.h>
-#include <math.h>
-
-#include <gsl_complex.h>
-#include <gsl_fft_real.h>
-
 #include "real_pass.h"
 
-int
-gsl_fft_real_pass_3 (const double in[], 
-		     const size_t istride,
-		     double out[],
-		     const size_t ostride,
-		     const size_t product,
-		     const size_t n,
-		     const gsl_complex twiddle1[],
-		     const gsl_complex twiddle2[])
+void
+FUNCTION(fft_real,pass_3) (const BASE in[], 
+			   const size_t istride,
+			   BASE out[],
+			   const size_t ostride,
+			   const size_t product,
+			   const size_t n,
+			   const gsl_complex twiddle1[],
+			   const gsl_complex twiddle2[])
 {
   size_t k, k1;
 
@@ -50,7 +44,7 @@ gsl_fft_real_pass_3 (const double in[],
     }
 
   if (product_1 == 1)
-    return 0;
+    return;
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
@@ -126,7 +120,7 @@ gsl_fft_real_pass_3 (const double in[],
     }
   
   if (product_1 % 2 == 1)
-    return 0;
+    return;
 
   for (k1 = 0; k1 < q; k1++)
     {
@@ -151,5 +145,5 @@ gsl_fft_real_pass_3 (const double in[],
       VECTOR(out,ostride,to1) = x1_real;
     }
 
-  return 0;
+  return;
 }

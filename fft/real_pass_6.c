@@ -1,24 +1,17 @@
-#include <config.h>
-#include <math.h>
-
-#include <gsl_complex.h>
-#include <gsl_fft_real.h>
-
 #include "real_pass.h"
-
+ 
 /* NOT USED */
 
-int
-gsl_fft_real_pass_6 (const double from[], double to[],
-		     const size_t product,
-		     const size_t n,
-		     const gsl_complex twiddle1[],
-		     const gsl_complex twiddle2[],
-		     const gsl_complex twiddle3[],
-		     const gsl_complex twiddle4[],
-		     const gsl_complex twiddle5[])
+void
+FUNCTION(fft_real,pass_6) (const BASE from[], BASE to[],
+			   const size_t product,
+			   const size_t n,
+			   const gsl_complex twiddle1[],
+			   const gsl_complex twiddle2[],
+			   const gsl_complex twiddle3[],
+			   const gsl_complex twiddle4[],
+			   const gsl_complex twiddle5[])
 {
-
   size_t i, j, k, k1, jump;
   size_t factor, q, m, product_1;
   size_t from0, from1, from2, from3, from4;
@@ -132,7 +125,7 @@ gsl_fft_real_pass_6 (const double from[], double to[],
     }
 
   if (product_1 == 1)
-    return 0;
+    return;
 
   for (k = 1; k < (product_1 + 1) / 2; k++)
     {
@@ -265,7 +258,7 @@ gsl_fft_real_pass_6 (const double from[], double to[],
     }
 
   if (product_1 % 2 == 1)
-    return 0;
+    return;
 
   printf ("BARF q = %d, product_1 = %d\n", q, product_1);
 
@@ -309,5 +302,5 @@ gsl_fft_real_pass_6 (const double from[], double to[],
       to[to2] = x0 - t5;
     }
 
-  return 0;
+  return;
 }

@@ -1,27 +1,22 @@
-#include <config.h>
-#include <math.h>
-#include <gsl_errno.h>
-#include <gsl_fft_halfcomplex.h>
-
 #include "factorize.h"
 #include "complex_internal.h"
 #include "bitreverse.h"
 
 int
-gsl_fft_halfcomplex_radix2_backward (double data[],
-				     const size_t stride,
-				     const size_t n)
+FUNCTION(gsl_fft_halfcomplex,radix2_backward) (BASE data[],
+					       const size_t stride,
+					       const size_t n)
 {
-  int status = gsl_fft_halfcomplex_radix2 (data, stride, n) ;
+  int status = FUNCTION(gsl_fft_halfcomplex,radix2_transform) (data, stride, n) ;
   return status ;
 }
 
 int
-gsl_fft_halfcomplex_radix2_inverse (double data[],
-				    const size_t stride,
-				    const size_t n)
+FUNCTION(gsl_fft_halfcomplex,radix2_inverse) (BASE data[],
+					      const size_t stride,
+					      const size_t n)
 {
-  int status = gsl_fft_halfcomplex_radix2 (data, stride, n);
+  int status = FUNCTION(gsl_fft_halfcomplex,radix2_transform) (data, stride, n);
 
   if (status)
     {
@@ -42,9 +37,9 @@ gsl_fft_halfcomplex_radix2_inverse (double data[],
 }
 
 int
-gsl_fft_halfcomplex_radix2 (double data[],
-			    const size_t stride,
-			    const size_t n)
+FUNCTION(gsl_fft_halfcomplex,radix2_transform) (BASE data[],
+						const size_t stride,
+						const size_t n)
 {
   int result ;
   size_t p, p_1, q;
@@ -59,7 +54,7 @@ gsl_fft_halfcomplex_radix2 (double data[],
 
   /* make sure that n is a power of 2 */
 
-  result = gsl_fft_binary_logn(n) ;
+  result = fft_binary_logn(n) ;
 
   if (result == -1) 
     {

@@ -9,20 +9,20 @@
 #include "hc_pass.h"
 
 int
-gsl_fft_halfcomplex_backward (double data[], const size_t stride, 
-			      const size_t n,
-			      const gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,backward) (BASE data[], const size_t stride, 
+					const size_t n,
+					const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, stride, n, wavetable) ;
+  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable) ;
   return status ;
 }
 
 int
-gsl_fft_halfcomplex_inverse (double data[], const size_t stride, 
-			     const size_t n,
-			     const gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,inverse) (BASE data[], const size_t stride, 
+				       const size_t n,
+				       const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
-  int status = gsl_fft_halfcomplex (data, stride, n, wavetable);
+  int status = FUNCTION(gsl_fft_halfcomplex,transform) (data, stride, n, wavetable);
 
   if (status)
     {
@@ -43,8 +43,8 @@ gsl_fft_halfcomplex_inverse (double data[], const size_t stride,
 }
 
 int
-gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
-		     const gsl_fft_halfcomplex_wavetable * wavetable)
+FUNCTION(gsl_fft_halfcomplex,transform) (BASE data[], const size_t stride, const size_t n,
+					 const TYPE(gsl_fft_wavetable_halfcomplex) * wavetable)
 {
   size_t factor, product, q, state;
   size_t i;
@@ -53,11 +53,11 @@ gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
   int tskip;
   gsl_complex *twiddle1, *twiddle2, *twiddle3, *twiddle4;
 
-  double * const scratch = wavetable->scratch;
+  BASE * const scratch = wavetable->scratch;
 
-  double * in = data;
+  BASE * in = data;
   size_t istride = stride;
-  double * out = scratch;
+  BASE * out = scratch;
   size_t ostride = 1;
 
   if (n == 0)
@@ -108,24 +108,24 @@ gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
       if (factor == 2)
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_halfcomplex_pass_2 (in, istride, out, ostride, 
-				      product, n, twiddle1);
+	  FUNCTION(fft_halfcomplex,pass_2) (in, istride, out, ostride, 
+					    product, n, twiddle1);
 	}
       else if (factor == 3)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
-	  gsl_fft_halfcomplex_pass_3 (in, istride, out, ostride,
-				      product, n, twiddle1, twiddle2);
+	  FUNCTION(fft_halfcomplex,pass_3) (in, istride, out, ostride,
+					    product, n, twiddle1, twiddle2);
 	}
       else if (factor == 4)
 	{
 	  twiddle1 = wavetable->twiddle[i];
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
-	  gsl_fft_halfcomplex_pass_4 (in, istride, out, ostride,
-				      product, n, twiddle1, twiddle2, 
-				      twiddle3);
+	  FUNCTION(fft_halfcomplex,pass_4) (in, istride, out, ostride,
+					    product, n, twiddle1, twiddle2, 
+					    twiddle3);
 	}
       else if (factor == 5)
 	{
@@ -133,15 +133,15 @@ gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
 	  twiddle2 = twiddle1 + tskip;
 	  twiddle3 = twiddle2 + tskip;
 	  twiddle4 = twiddle3 + tskip;
-	  gsl_fft_halfcomplex_pass_5 (in, istride, out, ostride,
-				      product, n, twiddle1, twiddle2, 
-				      twiddle3, twiddle4);
+	  FUNCTION(fft_halfcomplex,pass_5) (in, istride, out, ostride,
+					    product, n, twiddle1, twiddle2, 
+					    twiddle3, twiddle4);
 	}
       else
 	{
 	  twiddle1 = wavetable->twiddle[i];
-	  gsl_fft_halfcomplex_pass_n (in, istride, out, ostride,
-				      factor, product, n, twiddle1);
+	  FUNCTION(fft_halfcomplex,pass_n) (in, istride, out, ostride,
+					    factor, product, n, twiddle1);
 	}
     }
 

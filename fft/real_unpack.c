@@ -1,15 +1,9 @@
-#include <config.h>
-
-#include <gsl_complex.h>
-#include <gsl_errno.h>
-#include <gsl_fft_real.h>
-
 #include "complex_internal.h"
 
 int
-gsl_fft_real_unpack (const double real_coefficient[],
-		     double complex_coefficient[],
-		     const size_t n)
+FUNCTION(gsl_fft_real,unpack) (const BASE real_coefficient[],
+			       BASE complex_coefficient[],
+			       const size_t stride, const size_t n)
 {
   size_t i;
 
@@ -20,8 +14,8 @@ gsl_fft_real_unpack (const double real_coefficient[],
 
   for (i = 0; i < n; i++)
     {
-      REAL(complex_coefficient,1,i) = real_coefficient[i];
-      IMAG(complex_coefficient,1,i) = 0.0;
+      REAL(complex_coefficient,stride,i) = real_coefficient[i * stride];
+      IMAG(complex_coefficient,stride,i) = 0.0;
     }
 
   return 0;

@@ -20,9 +20,8 @@
 #include "c_pass_6.c"
 #include "c_pass_7.c"
 #include "c_pass_n.c"
-
-#include "bitreverse.c"
 #include "c_radix2.c"
-
+#include "bitreverse.c"
 #include "templates_off.h"
 #undef  BASE_DOUBLE
+

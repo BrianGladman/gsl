@@ -83,7 +83,7 @@ main (int argc, char *argv[])
   /* compute the fft with radix2 */
   memcpy (fft_data, data, n * 2 * sizeof (double));
 
-  result = gsl_fft_binary_logn(n) ;
+  result = fft_binary_logn(n) ;
 
   if (result == -1) {
     exit(EXIT_SUCCESS) ;

@@ -1,17 +1,8 @@
-#include <config.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <math.h>
-
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_fft_real.h>
-
 #include "factorize.h"
 
 int
-gsl_fft_real_init (size_t n,
-		   gsl_fft_real_wavetable * wavetable)
+FUNCTION(gsl_fft_real,init) (size_t n,
+			     TYPE(gsl_fft_wavetable_real) * wavetable)
 {
   int status;
   size_t n_factors;
@@ -32,7 +23,7 @@ gsl_fft_real_init (size_t n,
 
   wavetable->nf = n_factors;
 
-  status = gsl_fft_real_generate_wavetable (n, wavetable);
+  status = FUNCTION(gsl_fft_real,generate_wavetable) (n, wavetable);
 
   if (status)
     {
@@ -43,8 +34,8 @@ gsl_fft_real_init (size_t n,
 }
 
 int
-gsl_fft_real_generate_wavetable (size_t n,
-				 gsl_fft_real_wavetable * wavetable)
+FUNCTION(gsl_fft_real,generate_wavetable) (size_t n,
+					   TYPE(gsl_fft_wavetable_real) * wavetable)
 {
   size_t i;
   double d_theta;
@@ -99,24 +90,24 @@ gsl_fft_real_generate_wavetable (size_t n,
   return 0;
 }
 
-gsl_fft_real_wavetable *
-gsl_fft_real_wavetable_alloc (size_t n)
+TYPE(gsl_fft_wavetable_real) *
+FUNCTION(gsl_fft_real,wavetable_alloc) (size_t n)
 {
-  gsl_fft_real_wavetable * w;
+  TYPE(gsl_fft_wavetable_real) * w;
 
   if (n == 0)
     {
       GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  w = (gsl_fft_real_wavetable *) malloc(sizeof(gsl_fft_real_wavetable));
+  w = (TYPE(gsl_fft_wavetable_real) *) malloc(sizeof(TYPE(gsl_fft_wavetable_real)));
 
   if (w == NULL)
     {
       GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  w->scratch = (double *) malloc (n * sizeof (double));
+  w->scratch = (BASE *) malloc (n * sizeof (BASE));
 
   if (w->scratch == NULL)
     {
@@ -137,7 +128,7 @@ gsl_fft_real_wavetable_alloc (size_t n)
 }
 
 void
-gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * wavetable)
+FUNCTION(gsl_fft_real,wavetable_free) (TYPE(gsl_fft_wavetable_real) * wavetable)
 {
 
   /* release scratch space and trigonometric lookup tables */

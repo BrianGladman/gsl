@@ -1,7 +1,7 @@
 #include "signals.h"
 
 int
-FUNCTION(fft_signal_complex,pulse) (const size_t k,
+FUNCTION(fft_signal,complex_pulse) (const size_t k,
 				    const size_t n,
 				    const size_t stride,
 				    const double z_real,
@@ -44,7 +44,7 @@ FUNCTION(fft_signal_complex,pulse) (const size_t k,
 
 
 int
-FUNCTION(fft_signal_complex,constant) (const size_t n,
+FUNCTION(fft_signal,complex_constant) (const size_t n,
 				       const size_t stride,
 				       const double z_real,
 				       const double z_imag,
@@ -83,7 +83,7 @@ FUNCTION(fft_signal_complex,constant) (const size_t n,
 
 
 int
-FUNCTION(fft_signal_complex,exp) (const int k,
+FUNCTION(fft_signal,complex_exp) (const int k,
 				  const size_t n,
 				  const size_t stride,
 				  const double z_real,
@@ -139,7 +139,7 @@ FUNCTION(fft_signal_complex,exp) (const int k,
 
 
 int
-FUNCTION(fft_signal_complex,exppair) (const int k1,
+FUNCTION(fft_signal,complex_exppair) (const int k1,
 				      const int k2,
 				      const size_t n,
 				      const size_t stride,
@@ -215,7 +215,7 @@ FUNCTION(fft_signal_complex,exppair) (const int k1,
 
 
 int
-FUNCTION(fft_signal_complex,noise) (const size_t n,
+FUNCTION(fft_signal,complex_noise) (const size_t n,
 				    const size_t stride,
 				    BASE data[],
 				    BASE fft[])
@@ -235,14 +235,14 @@ FUNCTION(fft_signal_complex,noise) (const size_t n,
     }
 
   /* compute the dft */
-  status = FUNCTION(gsl_dft_complex,forward) (data, 1, n, fft);
+  status = FUNCTION(gsl_dft_complex,forward) (data, stride, n, fft);
 
   return status;
 }
 
 
 int
-FUNCTION(fft_signal_real,noise) (const size_t n,
+FUNCTION(fft_signal,real_noise) (const size_t n,
 				 const size_t stride,
 				 BASE data[],
 				 BASE fft[])
@@ -262,7 +262,7 @@ FUNCTION(fft_signal_real,noise) (const size_t n,
     }
 
   /* compute the dft */
-  status = FUNCTION(gsl_dft_complex,forward) (data, 1, n, fft);
+  status = FUNCTION(gsl_dft_complex,forward) (data, stride, n, fft);
 
   return status;
 }

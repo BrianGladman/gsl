@@ -77,7 +77,7 @@ void check_complex_bitreverse_order (size_t n)
 
   memcpy (complex_tmp, complex_data, 2 * n * sizeof(double)) ;
 
-  result = gsl_fft_binary_logn(n) ;
+  result = fft_binary_logn(n) ;
   
   if (result == -1) {
     abort() ;

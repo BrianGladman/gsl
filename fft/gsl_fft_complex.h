@@ -47,8 +47,6 @@ int
 gsl_fft_complex_radix2_dif_transform (double data[], size_t stride, size_t n,
 				      gsl_fft_direction sign);
 
-int gsl_fft_binary_logn (size_t n);
-
 int gsl_fft_complex_bitreverse_order (double data[][], 
 				      size_t stride,
 				      size_t n,

@@ -30,7 +30,7 @@ int
 gsl_fft_complex_float_radix2_inverse (float data[], size_t stride, size_t n);
 
 int
-gsl_fft_complex_float_radix2 (float data[], 
+gsl_fft_complex_float_radix2_transform (float data[], 
 			      size_t stride, 
 			      size_t n,
 			      gsl_fft_direction sign);
@@ -51,12 +51,10 @@ gsl_fft_complex_float_radix2_dif_inverse (float data[],
 					  size_t n);
 
 int
-gsl_fft_complex_float_radix2_dif (float data[], 
+gsl_fft_complex_float_radix2_dif_transform (float data[], 
 				  size_t stride, 
 				  size_t n,
 				  gsl_fft_direction sign);
-
-int gsl_fft_binary_logn (size_t n);
 
 int gsl_fft_complex_float_bitreverse_order (float data[][], 
 					    size_t stride,

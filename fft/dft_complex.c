@@ -43,8 +43,8 @@ gsl_dft_complex_inverse (const double data[],
     size_t i;
     for (i = 0; i < n; i++)
       {
-	REAL(result,1,i) *= norm;
-	IMAG(result,1,i) *= norm;
+	REAL(result,stride,i) *= norm;
+	IMAG(result,stride,i) *= norm;
       }
   }
   return status;
@@ -86,8 +86,8 @@ gsl_dft_complex (const double data[],
 
 	  exponent = (exponent + i) % n;
 	}
-      REAL(result,1,i) = sum_real;
-      IMAG(result,1,i) = sum_imag;
+      REAL(result,stride,i) = sum_real;
+      IMAG(result,stride,i) = sum_imag;
     }
 
   return 0;

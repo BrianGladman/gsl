@@ -129,7 +129,7 @@ fft_factorize (const size_t n,
 }
 
 
-int gsl_fft_binary_logn (const size_t n)
+int fft_binary_logn (const size_t n)
 {
   size_t ntest ;
   size_t binary_logn = 0 ;

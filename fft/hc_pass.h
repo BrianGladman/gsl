@@ -1,6 +1,6 @@
 #include "complex_internal.h"
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_2) (const BASE in[],
 				  size_t istride,
 				  BASE out[],
@@ -9,7 +9,7 @@ FUNCTION(fft_halfcomplex,pass_2) (const BASE in[],
 				  size_t n,
 				  const gsl_complex twiddle[]);
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_3) (const BASE in[], 
 				  size_t istride,
 				  BASE out[],
@@ -19,7 +19,7 @@ FUNCTION(fft_halfcomplex,pass_3) (const BASE in[],
 				  const gsl_complex twiddle1[],
 				  const gsl_complex twiddle2[]);
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_4) (const BASE in[],
 				  size_t istride,
 				  BASE out[],
@@ -30,7 +30,7 @@ FUNCTION(fft_halfcomplex,pass_4) (const BASE in[],
 				  const gsl_complex twiddle2[],
 				  const gsl_complex twiddle3[]);
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_5) (const BASE in[],
 				  size_t istride,
 				  BASE out[],
@@ -42,7 +42,7 @@ FUNCTION(fft_halfcomplex,pass_5) (const BASE in[],
 				  const gsl_complex twiddle3[],
 				  const gsl_complex twiddle4[]);
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_6) (const BASE in[], 
 				  size_t istride,
 				  const BASE out[],
@@ -54,7 +54,7 @@ FUNCTION(fft_halfcomplex,pass_6) (const BASE in[],
 				  gsl_complex twiddle4[],
 				  gsl_complex twiddle5[]);
 
-int
+void
 FUNCTION(fft_halfcomplex,pass_n) (const BASE in[],
 				  size_t istride,
 				  BASE out[],

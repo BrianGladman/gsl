@@ -78,7 +78,11 @@ include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real
 
 noinst_HEADERS = c_pass.h hc_pass.h real_pass.h \
 signals.h c_main.c c_init.c c_pass_2.c c_pass_3.c c_pass_4.c c_pass_5.c \
-c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c bitreverse.c 
+c_pass_6.c c_pass_7.c c_pass_n.c c_radix2.c bitreverse.c \
+hc_init.c hc_pass_2.c hc_pass_3.c \
+hc_pass_4.c hc_pass_5.c hc_pass_n.c hc_radix2.c hc_unpack.c \
+real.c real_init.c real_pass_2.c real_pass_3.c \
+real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
@@ -103,7 +107,8 @@ test_SOURCES = test.c signals.c
 libgslfft_a_SOURCES = compare.c compare.h dft.c \
 gsl_dft_complex.h gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h \
 gsl_fft_real.h \
-c.c c_float.c  factorize.c factorize.h bitreverse.h
+c.c c_float.c  factorize.c factorize.h bitreverse.h \
+hc.c real.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -115,7 +120,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslfft_a_LIBADD = 
-libgslfft_a_OBJECTS =  compare.o dft.o c.o c_float.o factorize.o
+libgslfft_a_OBJECTS =  compare.o dft.o c.o c_float.o factorize.o hc.o \
+real.o
 AR = ar
 test_OBJECTS =  test.o signals.o
 test_LDFLAGS = 
@@ -132,7 +138,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/c.P .deps/c_float.P .deps/compare.P .deps/dft.P \
-.deps/factorize.P .deps/signals.P .deps/test.P
+.deps/factorize.P .deps/hc.P .deps/real.P .deps/signals.P .deps/test.P
 SOURCES = $(libgslfft_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslfft_a_OBJECTS) $(test_OBJECTS)
 
@@ -364,12 +370,6 @@ install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-#hc.c hc_init.c hc_pass_2.c hc_pass_3.c
-#hc_pass_4.c hc_pass_5.c hc_pass_n.c hc_radix2.c hc_unpack.c
-
-#real.c real_init.c real_pass_2.c real_pass_3.c
-#real_pass_4.c real_pass_5.c real_pass_n.c real_radix2.c real_unpack.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,12 +1,3 @@
-#include <config.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <math.h>
-
-#include <gsl_errno.h>
-#include <gsl_complex.h>
-#include <gsl_fft_halfcomplex.h>
-
 #include "factorize.h"
 
 int
@@ -23,7 +14,7 @@ FUNCTION(gsl_fft_halfcomplex,init) (size_t n,
 
   wavetable->n = n;
 
-  status = FUNCTION(fft_halfcomplex,factorize) (n, &n_factors, wavetable->factor);
+  status = fft_halfcomplex_factorize (n, &n_factors, wavetable->factor);
 
   if (status)
     {

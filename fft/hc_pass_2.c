@@ -1,19 +1,13 @@
-#include <config.h>
-#include <math.h>
-
-#include <gsl_complex.h>
-#include <gsl_fft_halfcomplex.h>
-
 #include "hc_pass.h"
 
-int
-gsl_fft_halfcomplex_pass_2 (const double in[],
-			    const size_t istride,
-			    double out[],
-			    const size_t ostride,
-			    const size_t product,
-			    const size_t n,
-			    const gsl_complex twiddle[])
+void
+FUNCTION(fft_halfcomplex,pass_2) (const BASE in[],
+				  const size_t istride,
+				  BASE out[],
+				  const size_t ostride,
+				  const size_t product,
+				  const size_t n,
+				  const gsl_complex twiddle[])
 {
   size_t i, j, k, k1, jump;
   size_t factor, q, m, product_1;
@@ -39,7 +33,7 @@ gsl_fft_halfcomplex_pass_2 (const double in[],
     }
 
   if (q == 1)
-    return 0;
+    return;
 
   for (k = 1; k < (q + 1) / 2; k++)
     {
@@ -80,7 +74,7 @@ gsl_fft_halfcomplex_pass_2 (const double in[],
     }
 
   if (q % 2 == 1)
-    return 0;
+    return;
 
   for (k1 = 0; k1 < product_1; k1++)
     {
@@ -91,5 +85,5 @@ gsl_fft_halfcomplex_pass_2 (const double in[],
       VECTOR(out,ostride,to0) = 2 * VECTOR(in,istride,from0);
       VECTOR(out,ostride,to1) = -2 * VECTOR(in,istride,from0 + 1);
     }
-  return 0;
+  return;
 }
