@@ -11,26 +11,29 @@ strict:
 
 # Extend 'make all' through automake to build a single libgsl.a file
 
+# The three following targets work around automake
+
 libgsl.a.o:
 
 libgsl.a.c:
 
 .PHONY: libgsl.a.o libgsl.a.c libgsl.a
 
+# The next target builds a new libgsl.a if any of the subdir/lib.a's are newer
+
 libgsl.a: 
-	-test -f libgsl.a && touch -r libgsl.a stamp-h1
+	@for dir in $(SUBDIRS) ; do (cd $$dir ; for lib in lib*.a ; \
+	  do test -f $$lib \
+	  && test $$lib -nt ../libgsl.a \
+	  && rm -f ../libgsl.a || true ; \
+	  done ) ; \
+	done	
+	@test ! -f libgsl.a && \
 	for dir in $(SUBDIRS) ; \
 	do (cd $$dir ; \
 	  for lib in lib*.a ; \
 	  do test -f $$lib \
-	  && (test ! -f ../stamp-h1 || test $$lib -nt ../stamp-h1)\
 	  && echo ar q libgsl.a `ar t $$lib` \
 	  && ar q ../libgsl.a `ar t $$lib` || true ; \
 	  done ) ; \
-	done	
-	for dir in $(SUBDIRS) ; do (cd $$dir ; for lib in lib*.a ; \
-	  do test -f $$lib && test $$lib -nt ../libgsl.a \
-	  && touch -r ../libgsl.a $$lib || true ; \
-	  done ) ; \
-	done	
-	-rm -f stamp-h1
+	done || echo libgsl.a is up to date
