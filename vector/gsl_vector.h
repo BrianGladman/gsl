@@ -32,7 +32,7 @@ extern int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifndef __STRICT_ANSI__
+#if !defined(__STRICT_ANSI__) && !defined(inline)
 extern inline 
 double
 gsl_vector_get(const gsl_vector * v, const size_t i)

@@ -1,7 +1,7 @@
 
-inline static double max (double x, double y) ;
+static inline double max (double x, double y) ;
 
-inline static double
+static inline double
 max (double x, double y)
 {
   if (x > y)
