@@ -17,7 +17,7 @@ and related declarations.
 * Search Bounds and Guesses::   
 * Search Stopping Parameters::  
 * Bisection::                   
-* Brent's Method::              
+* Brent-Dekker Method::         
 * False Position::              
 * Secant Method::               
 * Newtons Method::              
@@ -429,8 +429,8 @@ The maximum allowed difference between @code{f(*lower_bound)} and
 @end deftypefun
 
 
-@node Brent's Method
-@section Brent's Method
+@node Brent-Dekker Method
+@section Brent-Dekker Method
 @cindex brent's method for finding roots
 @cindex root finding, brent's method
 
