@@ -618,7 +618,7 @@ out the claim that 4-tap GFSR's with appropriately chosen offsets are as
 random as can be measured, using the author's test.
 
 This implementation uses the values suggested the the example on p392 of
-Ziff's article: A=471, B=1586, C=6988, D=9689.
+Ziff's article: @math{A=471}, @math{B=1586}, @math{C=6988}, @math{D=9689}.
 
 If the offsets are appropriately chosen (such the one ones in
 this implementation), then the sequence is said to be maximal.
@@ -627,10 +627,7 @@ states are part of the same cycle, which would mean that the
 period for this generator is astronomical; it is
 @c{$(2^K)^D \approx 10^{93334}$}
 @math{(2^K)^D \approx 10^@{93334@}}
-where 
-@c{$K=32$}
-@math{K=32} 
-is the number of bits in the word, and D is the longest
+where @math{K=32} is the number of bits in the word, and D is the longest
 lag.  This would also mean that any one random number could 
 easily be zero; ie 
 @c{$0 \le r < 2^{32}$}

@@ -1,3 +1,7 @@
+@cindex standards conformance, ANSI C
+@cindex ANSI C, use of
+@cindex C extensions, compatible use of
+@cindex compatibility
 This chapter describes how to compile programs that use GSL. The library
 is written in ANSI C and is intended to conform to the standard. The
 library does not make use of any extensions in the interface it exports
@@ -14,14 +18,58 @@ results.
 * Compiling and Linking::       
 * Inline functions::            
 * Long double::                 
+* Alternative optimized functions::  
 @end menu
 
 @node Compiling and Linking
 @section Compiling and Linking
+@cindex compiling programs, include paths
+@cindex including GSL header files
+@cindex header files, including
+The library header files are installed in their own @code{gsl}
+directory. To include them you can write,
+
+@example
+#include <gsl/gsl_math.h>
+@end example
+
+@noindent
+and provide the appropriate path to the preprocessor where
+necessary. For example, if the files are installed in the default
+location of @file{/usr/local/include} then the command line,
+
+@example
+gcc -I/usr/local/include -c file.c
+@end example
+
+@noindent 
+It is also possible to write @code{#include <gsl_math.h>} instead if you
+specify the full path to the directory as a compilation option. 
+
+@cindex compiling programs, library paths
+@cindex linking with GSL libraries
+@cindex libraries, linking with
+The libraries themselves are also installed in a separate @code{gsl}
+directory. To link against the libraries you need to specify the
+location of this directory. For example, the following compilation
+options,
+
+@example
+gcc -L/usr/local/lib/gsl file.o -lgslspecfunc
+@end example
+
+@noindent
+would apply for a program using the @code{libgslspecfunc.a} special
+functions library installed in the default location. The individual
+libraries are interdependent and it is often necessary to link with
+several to provide all the necessary functions.
 
 @node Inline functions
 @section Inline functions
 
+@cindex inline functions
+@cindex HAVE_INLINE
+@cindex autoconf, using with GSL
 The @code{inline} keyword is not part of ANSI C, only C++. Since the
 library header files conform to the ANSI standard this prevents the use
 of @code{inline}. The library does not export any inline function
@@ -47,6 +95,7 @@ slower non-inlined versions of the functions are used instead.
 
 @node Long double
 @section Long double
+@cindex long double
 The extended numerical type @code{long double} is part of the ANSI C
 standard and should be available in every modern compiler. However, in
 some system libraries the @code{stdio.h} formatted input/output
@@ -73,6 +122,8 @@ writing.
 @node Alternative optimized functions
 @section Alternative optimized functions
 
+@cindex alternative optimized functions
+@cindex optimized functions, alternatives
 The implementation of some frequently-used functions may not be optimal
 on all architectures. For example, the Gaussian random number generator
 can be implemented in different ways, using the polar method or ratio

@@ -57,8 +57,8 @@ The functions described in this section are declared in
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian random numbers
 This function returns a gaussian random number, with mean zero and
-standard deviation @var{sigma}. The probability
-distribution for gaussian random numbers is,
+standard deviation @var{sigma}. The probability distribution for
+gaussian random numbers is,
 
 @tex
 \beforedisplay
@@ -73,16 +73,9 @@ p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-(x-\mu)^2 / 2\sigma^2) dx
 @end example
 @end ifinfo
 @noindent
-for @math{x} in the range 
-@c{$-\infty$}
-@math{-\infty} to 
-@c{$+\infty$}
-@math{+\infty}. Use the
-transformation 
-@c{$z = \mu + x$}
-@math{z = \mu + x} on the numbers returned by
+for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
+transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a gaussian distribution with mean
-@c{$\mu$}
 @math{\mu}.
 @end deftypefn
 
@@ -97,62 +90,31 @@ the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @c{$\mu$}
-@math{\mu},
-Variance = @c{$\sigma^2$}
-@math{\sigma^2},
+
+@tex
+Mean = $\mu$,
+Variance = $\sigma^2$,
 Skewness = 0,
 Excess = 0
 
-@item
-Cumulants, 
-@c{$\kappa_1=\mu$} 
-@math{\kappa_1=\mu}, 
-@c{$\kappa_2=\sigma^2$}
-@math{\kappa_2=\sigma^2},
-@c{$\kappa_n=0$}
-@math{\kappa_n=0} for 
-@math{n>2}
+Cumulants, $\kappa_1=\mu$, $\kappa_2=\sigma^2$, $\kappa_n=0$ for $n>2$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)$}
-@math{\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)}
+Characteristic function, $\phi(t) = \exp(-i\mu t - \sigma^2 t^2/2)$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_{-\infty}^x p(x') dx' = {1 \over 2 }(1 - \hbox{erf}((x-m)/\sqrt{2\sigma^2}))$}
-@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @}(1 - erf((x-m)/\sqrt@{2\sigma^2@}))}
+$CDF(x) = \int_{-\infty}^x p(x') dx' = {1 \over 2 }(1 - \hbox{erf}((x-m)/\sqrt{2\sigma^2}))$
 
-@item
 Confidence limits:
+$p(|x-\mu| < \sigma) = 0.683$,
+$p(|x-\mu| < 2\sigma) = 0.954$,
+$p(|x-\mu| < 3\sigma) = 0.9973$
 
-@c{$p(|x-\mu| < \sigma) = 0.683$}
-@math{p(|x-\mu| < \sigma) = 0.683},
-@c{$p(|x-\mu| < 2\sigma) = 0.954$}
-@math{p(|x-\mu| < 2\sigma) = 0.954},
-@c{$p(|x-\mu| < 3\sigma) = 0.9973$}
-@math{p(|x-\mu| < 3\sigma) = 0.9973}
-
-@item
 Useful integral:
 
-@tex
-\beforedisplay
 $$
 \int_{-\infty}^{+\infty} x^{2n} p(x) dx = 2^n \sigma^{2n+1} \Gamma(n+ {1 \over 2}) / \sqrt\pi
 $$
-\afterdisplay
 @end tex
-@ifinfo
-@example
-\int_@{-\infty@}^@{+\infty@} x^@{2n@} p(x) dx = 2^n \sigma^@{2n+1@} \Gamma(n+ @{1 \over 2@}) / \sqrt\pi
-@end example
-@end ifinfo
-
-@end itemize
 
 @comment
 @page
@@ -182,7 +144,8 @@ p(x) dx = @{1 \over N(a;\sigma)@} \exp (- x^2/(2 \sigma^2)) dx
 @end example
 @end ifinfo
 
-for @math{x>a} where @math{N(a;\sigma)} is the normalization constant,
+@noindent
+for @math{x > a} where @math{N(a;\sigma)} is the normalization constant,
 
 @tex
 \beforedisplay
@@ -234,20 +197,13 @@ p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2
 @end ifinfo
 
 @noindent
-for @c{$x,y$}
-@math{x,y} in the range 
-@c{$-\infty$}
-@math{-\infty} to 
-@c{$+\infty$}
-@math{+\infty}.  The
+for @math{x,y} in the range @math{-\infty} to @math{+\infty}.  The
 correlation coefficient @var{rho} should lie between @math{1} and
 @math{-1}.
 @end deftypefn
 
 @deftypefun double gsl_ran_bivariate_gaussian_pdf (double @var{x}, double @var{y}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho})
-This function computes the probability density 
-@c{$p(x,y)$}
-@math{p(x,y)} at
+This function computes the probability density @math{p(x,y)} at
 (@var{x},@var{y}) for a bivariate gaussian distribution with standard
 deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @var{rho}, using the formula given above.
@@ -278,9 +234,9 @@ $$
 p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
 @end example
 @end ifinfo
+
 @noindent
-for 
-@c{$x \ge 0$}
+for @c{$x \ge 0$}
 @math{x >= 0}. 
 @end deftypefn
 
@@ -294,62 +250,30 @@ given above.
 \centerline{\input rand-exponential.tex}
 @end tex
 
-@subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\mu$}
-@math{\mu}, 
-Variance = 
-@c{$\mu^2$}
-@math{\mu^2}, 
+@tex
+Mean = $\mu$,
+Variance = $\mu^2$,
 Skewness = 2, 
 Excess = 6
 
-@item
-Cumulants, 
-@c{$\kappa_1=\mu$}
-@math{\kappa_1=\mu}, 
-@c{$\kappa_n=\mu^n \Gamma(n)$}
-@math{\kappa_n=\mu^n \Gamma(n)},
-for @math{n>1}
+Cumulants, $\kappa_1=\mu$, $\kappa_n=\mu^n \Gamma(n)$ for $n>1$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = 1/(1-i\mu t)$}
-@math{\phi(t) = 1/(1-i\mu t)}
+Characteristic function, $\phi(t) = 1/(1-i\mu t)$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-x/\mu)$}
-@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-x/\mu)}
-@item
+$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-x/\mu)$
+
 Confidence limits:
+$p(x < \mu) = 0.632$,
+$p(x < 2\mu) = 0.865$,
+$p(x < 3\mu) = 0.950$
 
-@c{$p(x < \mu) = 0.632$}
-@math{p(x < \mu) = 0.632},
-@c{$p(x < 2\mu) = 0.865$}
-@math{p(x < 2\mu) = 0.865},
-@c{$p(x < 3\mu) = 0.950$}
-@math{p(x < 3\mu) = 0.950}
-
-@item
 Useful integral:
 
-@tex
-\beforedisplay
 $$
 \int_0^\infty x^n p(x) dx = n! \mu^{n+1}
 $$
-\afterdisplay
 @end tex
-@ifinfo
-@example
-\int_0^\infty x^n p(x) dx = n! \mu^@{n+1@}
-@end example
-@end ifinfo
-
-@end itemize
 
 @comment
 @page
@@ -375,9 +299,7 @@ p(x) dx = @{1 \over 2 \mu@}  \exp(-|x/\mu|) dx
 @end ifinfo
 
 @noindent
-for 
-@c{$-\infty < x < \infty$}
-@math{-\infty < x < \infty}.
+for @math{-\infty < x < \infty}.
 @end deftypefn
 
 @deftypefun double gsl_ran_laplace_pdf (double @var{x}, double @var{mu})
@@ -390,48 +312,32 @@ given above.
 \centerline{\input rand-laplace.tex}
 @end tex
 
-@subheading Properties
-@itemize @asis
-@item
-Mean = @math{0}, 
-Variance = 
-@c{$2\mu^2$} 
-@math{2\mu^2}, 
-Skewness = @math{0}, 
-Excess = @math{6}
+@tex
+Mean = 0, 
+Variance = $2\mu^2$,
+Skewness = 0, 
+Excess = 6
 
-@item
 Cumulants, 
-@c{$\kappa_1=0$} 
-@math{\kappa_1=0}, 
-@c{$\kappa_2=2 \mu^2$}
-@math{\kappa_2=2 \mu^2},
-@c{$\kappa_{2n+1}=0$}
-@math{\kappa_@{2n+1@}=0}, 
-@c{$\kappa_{2n}=(2n)!\mu^{2n}/n$}
-@math{\kappa_@{2n@}=(2n)!\mu^@{2n@}/n}
+$\kappa_1=0$ 
+$\kappa_2=2 \mu^2$
+$\kappa_{2n+1}=0$
+$\kappa_{2n}=(2n)!\mu^{2n}/n$
 
-@item
 Characteristic function, 
-@c{$\phi(t) = 1/(1+\mu^2 t^2)$}
-@math{\phi(t) = 1/(1+\mu^2 t^2)}
+$\phi(t) = 1/(1+\mu^2 t^2)$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = {1 \over 2} \exp(-|x|)$}
-@math{CDF(x) = \int_0^x p(x') dx' = @{1 \over 2@} \exp(-|x|)}
-for @math{x<0} and 
-@c{$1 - {1 \over 2}\exp(-|x|)$}
-@math{1 - @{1 \over 2@}\exp(-|x|)}
-for @math{x>0}.
+$CDF(x) = \int_0^x p(x') dx' = {1 \over 2} \exp(-|x|)$
+for $x < 0$ and 
+$1 - {1 \over 2}\exp(-|x|)$
+for $x > 0$.
 
-@item
 Confidence limits:
 
-@item
 Useful integral:
 
-@end itemize
+@end tex
 
 @comment
 @page
@@ -440,7 +346,7 @@ Useful integral:
 @deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Exponential power distribution, random numbers
 This function returns a random number from the exponential power distribution
-with scale parameter @var{mu} and exponent @var{a}.
+with scale parameter @var{mu} and exponent @var{a}. The distribution is,
 
 @tex
 \beforedisplay
@@ -456,11 +362,9 @@ p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
-@math{x >= 0}. 
-
-For @math{a = 1} this reduces to the Laplace distribution. For @math{a = 2} 
-it has the same form as a gaussian distribution, but with 
-@c{$\mu = \sqrt{2} \sigma$} 
+@math{x >= 0}. For @math{a = 1} this reduces to the Laplace
+distribution. For @math{a = 2} it has the same form as a gaussian
+distribution, but with @c{$\mu = \sqrt{2} \sigma$}
 @math{\mu = \sqrt@{2@} \sigma}.
 @end deftypefn
 
@@ -474,30 +378,19 @@ and exponent @var{a}, using the formula given above.
 \centerline{\input rand-exppow.tex}
 @end tex
 
-@subheading Properties
-@itemize @asis
-@item
-Mean = @math{0}, 
-Variance = 
-@c{$\mu^2 \Gamma(3/a)/\Gamma(1/a)$}
-@math{\mu^2 \Gamma(3/a)/\Gamma(1/a)},
-Skewness = @math{0}, 
-Excess = 
-@c{$\Gamma(5/a)\Gamma(1/a)/\Gamma(3/a)^2$}
-@math{\Gamma(5/a)\Gamma(1/a)/\Gamma(3/a)^2}
+@tex
+Mean = 0, 
+Variance = $\mu^2 \Gamma(3/a)/\Gamma(1/a)$,
+Skewness = 0, 
+Excess = $\Gamma(5/a)\Gamma(1/a)/\Gamma(3/a)^2$
 
-@item
-Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
-for @math{n>1}
+Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$, for $n>1$
 
-@item
-Characteristic function, @math{\phi(t) = FIXME}
+Characteristic function, $\phi(t) = FIXME$
 
-@item
-Cumulative distribution function, 
-@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
+Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = FIXME$
+@end tex
 
-@end itemize
 
 @comment
 @page
@@ -521,13 +414,10 @@ $$
 p(x) dx = @{1 \over \mu\pi (1 + (x/\mu)^2) @} dx
 @end example
 @end ifinfo
+
 @noindent
-for @math{x} in the range 
-@c{$-\infty$}
-@math{-\infty} to 
-@c{$+\infty$} 
-@math{+\infty}.
-The Cauchy distribution is also known as the Lorentz distribution.
+for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
+distribution is also known as the Lorentz distribution.
 @end deftypefn
 
 @deftypefun double gsl_ran_cauchy_pdf (double @var{x}, double @var{mu})
@@ -541,35 +431,21 @@ given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-The Cauchy distribution decreases as 
-@c{$1/|x|^2$}
-@math{1/|x|^2} for large
-@math{x}. This makes the variance infinite. Other higher moments are
-either infinite or undefined.
+@tex
+The Cauchy distribution decreases as $1/|x|^2$ for large $x$. This
+makes the variance infinite. Other higher moments are either infinite or
+undefined.
 
-@item
-Characteristic function, 
-@c{$\phi(t) = \exp(-i\alpha t - \beta |t|)$}
-@math{\phi(t) = \exp(-i\alpha t - \beta |t|)}
+Characteristic function, $\phi(t) = \exp(-i\alpha t - \beta |t|)$
 
-@item
-Cumulative distribution function, 
-@c{$CDF(x) = \int_{-\infty}^x p(x') dx' = {1 \over 2} + {1\over \pi} \arctan(x/\mu)$}
-@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = @{1 \over 2 @} + @{1\over \pi@} \arctan(x/\mu)}
+Cumulative distribution function, $CDF(x) = \int_{-\infty}^x p(x') dx' =
+{1 \over 2} + {1\over \pi} \arctan(x/\mu)$
 
-@item
 Confidence limits:
-
-@c{$p(|x| < \mu) = 0.5$}
-@math{p(|x| < \mu) = 0.5},
-@c{$p(|x| < 2\mu) = 0.705$}
-@math{p(|x| < 2\mu) = 0.705},
-@c{$p(|x| < 3\mu) = 0.795$}
-@math{p(|x| < 3\mu) = 0.795}
-
-@end itemize
+$p(|x| < \mu) = 0.5$,
+$p(|x| < 2\mu) = 0.705$,
+$p(|x| < 3\mu) = 0.795$
+@end tex
 
 @comment
 @page
@@ -594,7 +470,7 @@ p(x) dx = @{x \over \sigma^2@} \exp(- x^2/(2 \sigma^2)) dx
 @end example
 @end ifinfo
 @noindent
-for @math{x>0}.
+for @math{x > 0}.
 @end deftypefn
 
 @deftypefun double gsl_ran_rayleigh_pdf (double @var{x}, double @var{sigma})
@@ -608,10 +484,9 @@ formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
+@tex
 
-@end itemize
+@end tex
 
 @comment
 @page
@@ -637,7 +512,8 @@ p(x) dx = @{x \over \sigma^2@} \exp ((a^2 - x^2) /(2 \sigma^2)) dx
 @end example
 @end ifinfo
 
-for @math{x>a}.
+@noindent
+for @math{x > a}.
 @end deftypefn
 
 @deftypefun double gsl_ran_rayleigh_tail_pdf (double @var{x}, double @var{a}, double @var{sigma})
@@ -651,25 +527,8 @@ lower limit @var{a}, using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-
-@comment -- @item
-@comment -- Characteristic function, @xmath{\phi(t) = \exp(-i\alpha t - \beta |t|)}
-
-@item
-Cumulative distribution function, 
-@c{$CDF(x) = \int_{-\infty}^x p(x') dx' = 1 - \exp((a^2-x^2)/(2 \sigma^2))$}
-@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1 - \exp((a^2-x^2)/(2 \sigma^2))}
-
-@comment ---@item
-@comment ---Confidence limits:
-
-@comment ---@xmath{p(|x| < \mu) = 0.5},
-@comment ---@xmath{p(|x| < 2\mu) = 0.705},
-@comment ---@xmath{p(|x| < 3\mu) = 0.795}
-
-@end itemize
+@tex
+@end tex
 
 @comment
 @page
@@ -694,16 +553,13 @@ p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a)
 @end example
 @end ifinfo
 @noindent
-There is no explicit solution for the form of @math{p(x)}. For 
-@math{a = 1} 
-the distribution reduces to the Cauchy distribution. For @math{a = 2}
-it is a Gaussian distribution with 
-@c{$\sigma = \sqrt{2} \mu$}
-@math{\sigma = \sqrt@{2@} \mu}. For
-@math{a < 1} the tails of the distribution become extremely wide.
+There is no explicit solution for the form of @math{p(x)}. For @math{a =
+1} the distribution reduces to the Cauchy distribution. For @math{a = 2}
+it is a Gaussian distribution with @c{$\sigma = \sqrt{2} \mu$}
+@math{\sigma = \sqrt@{2@} \mu}. For @math{a < 1} the tails of the
+distribution become extremely wide.
 
-The algorithm only works for 
-@c{$0 < a \le 2$}
+The algorithm only works for @c{$0 < a \le 2$}
 @math{0 < a <= 2}.
 @end deftypefn
 
@@ -718,22 +574,19 @@ exponent @var{a}, using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{0}, Variance = @math{FIXME}, Skewness = @math{0}, Excess = FIXME
+@tex
+Mean = 0, 
+Variance = FIXME, 
+Skewness = 0, 
+Excess = FIXME
 
-@item
-Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
-for @math{n>1}
+Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
 
-@item
-Characteristic function, @math{\phi(t) = FIXME}
+Characteristic function, $\phi(t) = FIXME$
 
-@item
 Cumulative distribution function, 
-@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
-
-@end itemize
+$CDF(x) = \int_0^x p(x') dx' = FIXME$
+@end tex
 
 @comment
 @page
@@ -773,50 +626,37 @@ formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{ab}, 
-Variance = @math{ab^2}, 
-Skewness = 
-@c{$2/\sqrt{a}$}
-@math{2/\sqrt@{a@}}, 
-Excess = @math{6/a}
+@tex
+Mean = $ab$, 
+Variance = $ab^2$, 
+Skewness = $2/\sqrt{a}$,
+Excess = $6/a$
 
-@item
-Cumulants, 
-@c{$\kappa_1=ab$} 
-@math{\kappa_1=ab}, 
-@c{$\kappa_n=a\Gamma(n) b^n$}
-@math{\kappa_n=a\Gamma(n) b^n},
-for @math{n>1}
+Cumulants, $\kappa_1=ab$, $\kappa_n=a\Gamma(n) b^n$ for $n>1$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = 1 - i bt$}
-@math{\phi(t) = 1 - i bt}
+Characteristic function, $\phi(t) = 1 - i bt$
+@end tex
 
-@end itemize
-
-@comment -@comment
-@comment - @page
-@comment - @node The Erlang distribution
-@comment - @section The Erlang distribution
+@comment @comment
+@comment @page
+@comment @node The Erlang distribution
+@comment @section The Erlang distribution
 @comment The Erlang distribution is the sum of @xmath{n} exponential variates,
 @comment each with mean @xmath{a}. 
 
-@comment - @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
-@comment - @cindex Erlang random numbers
+@comment @deftypefn Random double gsl_ran_erlang (const gsl_rng * @var{r}, double @var{a}, double @var{n})
+@comment @cindex Erlang random numbers
 @comment This function returns a random number from the Erlang distribution.
-@comment - @c
-@comment - @equation{
+@comment @c
+@comment @equation{
 @comment p(x) dx = @{x^@{n-1@} \over (n-1)! a^n @} \exp (-x/a)  dx
-@comment - }
-@comment - @noindent
+@comment }
+@comment @noindent
 @comment for @xmath{x \ge 0}. 
-@comment - @end deftypefn
-@comment - @tex
+@comment @end deftypefn
+@comment @tex
 @comment \centerline{\input rand-erlang.tex}
-@comment - @end tex
+@comment @end tex
 
 @comment
 @page
@@ -840,8 +680,7 @@ p(x) dx = @{1 \over (b-a)@} dx
 @end example
 @end ifinfo
 @noindent
-if 
-@c{$a \le x < b$}
+if @c{$a \le x < b$}
 @math{a <= x < b} and 0 otherwise.
 @end deftypefn
 
@@ -856,33 +695,20 @@ given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$(a+b)/2$}
-@math{(a+b)/2}, 
-Variance = 
-@c{$(b-a)^2/12$} 
-@math{(b-a)^2/12}, 
-Skewness = @math{0}, 
-Excess = @math{-6/5} 
+@tex
+Mean = $(a+b)/2$,
+Variance = $(b-a)^2/12$, 
+Skewness = 0, 
+Excess = -6/5
 
-@item
 Cumulants, 
-@c{$\kappa_1=(a+b)/2$} 
-@math{\kappa_1=(a+b)/2}, 
-@c{$\kappa_{2n+1}=0$}
-@math{\kappa_@{2n+1@}=0},
-@c{$\kappa_{2n}=(b-a)^{2n} B_{2n} / (2n)$}
-@math{\kappa_@{2n@}=(b-a)^@{2n@} B_@{2n@} / (2n)},
+$\kappa_1=(a+b)/2$, 
+$\kappa_{2n+1}=0$,
+$\kappa_{2n}=(b-a)^{2n} B_{2n}/(2n)$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = (2 \sin(ht/2)/(ht)) \exp(i t (b+a)/2)$}
-@math{\phi(t) = (2 \sin(ht/2)/(ht)) \exp(i t (b+a)/2)}
-where @math{h = (b - a)}.
-
-@end itemize
+Characteristic function, $\phi(t) = (2 \sin(ht/2)/(ht)) \exp(i t (b+a)/2)$
+where $h = (b - a)$.
+@end tex
 
 @comment
 @page
@@ -920,43 +746,24 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{st}, 
-Variance = 
-@c{$s(s-1)t^2$} 
-@math{s(s-1)t^2}, 
-Skewness = 
-@c{$(s+2)\sqrt{s-1}$} 
-@math{(s+2)\sqrt@{s-1@}}, 
-Excess = 
-@c{$(s-1)(s^3+3s^2+6s+6)$}
-@math{(s-1)(s^3+3s^2+6s+6)}
+@tex
+Mean = $st$, 
+Variance = $s(s-1)t^2$,
+Skewness = $(s+2)\sqrt{s-1}$,
+Excess = $(s-1)(s^3+3s^2+6s+6)$
+where $s = \exp(\sigma^2)$ and $t = \exp(\zeta)$.
 
-where 
-@c{$s = \exp(\sigma^2)$}
-@math{s = \exp(\sigma^2)} and 
-@c{$t = \exp(\zeta)$}
-@math{t = \exp(\zeta)}.
+The mode (maximum) occurs at $x = \exp(\zeta - \sigma^2)$.
 
-The mode (maximum) occurs at 
-@c{$x = \exp(\zeta - \sigma^2)$}
-@math{x = \exp(\zeta - \sigma^2)}.
-
-@item
-Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = {1 \over 2} erfc((\zeta-\ln(x))/ (\sqrt{2} \sigma))$}
-@math{CDF(x) = \int_0^x p(x') dx' = @{1 \over 2@} erfc((\zeta-\ln(x))/ (\sqrt@{2@} \sigma))}
-
-@end itemize
+Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = {1
+\over 2} erfc((\zeta-\ln(x))/(\sqrt{2} \sigma))$
+@end tex
 
 @comment
 @page
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
-The chi-squared distribution arises in statistics If 
-@c{$Y_i$}
-@math{Y_i} are
+The chi-squared distribution arises in statistics If @math{Y_i} are
 @math{n} independent gaussian random numbers with unit variance then the
 sum-of-squares,
 
@@ -994,8 +801,7 @@ p(x) dx = @{1 \over \Gamma(\nu/2) @} (x/2)^@{\nu/2 - 1@} \exp(-x/2) dx
 @end ifinfo
 
 @noindent
-for 
-@c{$x \ge 0$}
+for @c{$x \ge 0$}
 @math{x >= 0}. 
 @end deftypefn
 
@@ -1010,56 +816,31 @@ the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\nu$}
-@math{\nu}, 
-Variance = 
-@c{$2\nu$} 
-@math{2\nu}, 
-Skewness = 
-@c{$2\sqrt{2/\nu}$} 
-@math{2\sqrt@{2/\nu@}}, 
-Excess = 
-@c{$12/\nu$}
-@math{12/\nu}
+@tex
+Mean = $\nu$,
+Variance = $2\nu$,
+Skewness = $2\sqrt{2/\nu}$,
+Excess = $12/\nu$
 
-@item
-Cumulants, 
-@math{\kappa_1=FIXME}, 
-@math{\kappa_n=FIXME},
-for @math{n>1}
+Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
 
-@item
-Characteristic function, @math{\phi(t) = FIXME}
+Characteristic function, $\phi(t) = FIXME$
 
-@item
-Cumulative distribution function, 
-@math{CDF(x) = \int_0^x p(x') dx' = FIXME}
-@item
+Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = FIXME$
+
 Confidence limits:
 
-@item
 Useful integral:
 
-@end itemize
+@end tex
 
 @comment
 @page
 @node The F-distribution
 @section The F-distribution
-The F-distribution arises in statistics. If 
-@c{$Y_1$}
-@math{Y_1} and 
-@c{$Y_2$}
-@math{Y_2} are
-chi-squared deviates with 
-@c{$\nu_1$}
-@math{\nu_1} and 
-@c{$\nu_2$}
-@math{\nu_2} degrees of freedom
-then the ratio,
+The F-distribution arises in statistics. If @math{Y_1} and @math{Y_2}
+are chi-squared deviates with @math{\nu_1} and @math{\nu_2} degrees of
+freedom then the ratio,
 
 @tex
 \beforedisplay
@@ -1074,9 +855,7 @@ X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
 @end example
 @end ifinfo
 @noindent
-has an F-distribution 
-@c{$F(x;\nu_1,\nu_2)$}
-@math{F(x;\nu_1,\nu_2)}.
+has an F-distribution @math{F(x;\nu_1,\nu_2)}.
 
 @deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
 @cindex F-distribution random numbers
@@ -1104,8 +883,7 @@ p(x) dx =
 @end ifinfo
 
 @noindent
-for 
-@c{$x \ge 0$} 
+for @c{$x \ge 0$}
 @math{x >= 0}. 
 @end deftypefn
 
@@ -1120,35 +898,19 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\nu_2/(\nu_2 - 2)$}
-@math{\nu_2/(\nu_2 - 2)} (for 
-@c{$\nu_2 > 2$}
-@math{\nu_2 > 2}), 
-Variance = 
-@c{$2\nu_2^2 (\nu_1 + \nu_2 - 2)/(\nu_1 (\nu_2 - 2)^2 (\nu_2 - 4))$}
-@math{2\nu_2^2 (\nu_1 + \nu_2 - 2)/(\nu_1 (\nu_2 - 2)^2 (\nu_2 - 4))}
-(for 
-@c{$\nu_2 > 4$}
-@math{\nu_2 > 4})
-
-@end itemize
+@tex
+Mean = $\nu_2/(\nu_2 - 2)$ (for $\nu_2 > 2$), 
+Variance = $2\nu_2^2 (\nu_1 + \nu_2 - 2)/(\nu_1 (\nu_2 - 2)^2 (\nu_2 - 4))$
+(for $\nu_2 > 4$
+@end tex
 
 @comment
 @page
 @node The t-distribution
 @section The t-distribution
-The t-distribution arises in statistics. If 
-@c{$Y_1$}
-@math{Y_1} has a normal
-distribution and 
-@c{$Y_2$}
-@math{Y_2} has a  chi-squared distribution with 
-@c{$\nu$}
-@math{\nu}
-degrees of freedom then the ratio
+The t-distribution arises in statistics. If @math{Y_1} has a normal
+distribution and @math{Y_2} has a chi-squared distribution with
+@math{\nu} degrees of freedom then the ratio
 
 @tex
 \beforedisplay
@@ -1164,11 +926,7 @@ X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
 @end ifinfo
 
 @noindent
-has a t-distribution 
-@c{$t(x;\nu)$}
-@math{t(x;\nu)} with 
-@c{$\nu$}
-@math{\nu} degrees of freedom.
+has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
 
 @deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
 @cindex t-distribution random numbers
@@ -1238,30 +996,19 @@ formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$a/(a+b)$}
-@math{a/(a+b)}, 
-Variance = 
-@c{$ab/((a+b)^2 (a+b+1))$} 
-@math{ab/((a+b)^2 (a+b+1))}, 
-Skewness = 
-@c{$2(a-b)/(a+b+2)$} 
-@math{2(a-b)/(a+b+2)}, 
-Excess = 
-@c{$\sqrt{(a+b+1) \over ab} \left( {3(a+b+1)(2(a+b)^2 + ab(a+b-6)) \over ab(a+b+2)(a+b+3)} - 3 \right)$}
-@math{\sqrt@{(a+b+1) \over ab@} ( @{3(a+b+1)(2(a+b)^2 + ab(a+b-6)) \over ab(a+b+2)(a+b+3)@} - 3)}
+@tex
+Mean = $a/(a+b)$,
+Variance = $ab/((a+b)^2 (a+b+1))$, 
+Skewness = $2(a-b)/(a+b+2)$,
+Excess = $\sqrt{(a+b+1) \over ab} \left( {3(a+b+1)(2(a+b)^2 + ab(a+b-6)) \over ab(a+b+2)(a+b+3)} - 3 \right)$
 
-In the symmetric case @math{a=b} these results simplify to,
+In the symmetric case $a=b$ these results simplify to,
 
-Mean = @math{1/2}, 
-Variance = @math{1/(4(2a+1))}, 
-Skewness = @math{0},
-Excess = 
-@c{$-6 \sqrt@{2a + 1@}/(a(2a+3))$}
-@math{-6 \sqrt@{2a + 1@}/(a(2a+3))}
-@end itemize
+Mean = 1/2, 
+Variance = $1/(4(2a+1))$, 
+Skewness = 0,
+Excess = $-6 \sqrt{2a + 1}/(a(2a+3))$
+@end tex
 
 @comment
 @page
@@ -1300,26 +1047,20 @@ formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{0}, 
-Variance = 
-@c{$\pi^2 \mu^2 / 3$}
-@math{\pi^2 \mu^2 / 3}, 
-Skewness = @math{0}, 
-Excess = @math{6/5}
+@tex
+Mean = 0, 
+Variance = $\pi^2 \mu^2 / 3$,
+Skewness = 0, 
+Excess = 6/5
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_{-\infty}^x p(x') dx' = 1/(1+\exp(-x/\mu))$}
-@math{CDF(x) = \int_@{-\infty@}^x p(x') dx' = 1/(1+\exp(-x/\mu))}
-@item
+$CDF(x) = \int_{-\infty}^x p(x') dx' = 1/(1+\exp(-x/\mu))$
+
 Confidence limits:
 
-@item
 Useful integral:
 
-@end itemize
+@end tex
 
 @comment
 @page
@@ -1343,8 +1084,7 @@ p(x) dx = a b^a / x^@{a+1@} dx
 @end example
 @end ifinfo
 
-for 
-@c{$x \ge b$}
+for @c{$x \ge b$}
 @math{x >= b}
 @end deftypefn
 
@@ -1359,39 +1099,24 @@ the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{ab/(a-1)} (for @math{a>1}), 
-Variance = 
-@c{$a b^2/((a-2)(a-1)^2)$} 
-@math{a b^2/((a-2)(a-1)^2)} 
-(for @math{a>2}),
-Skewness = 
-@c{$2(a+1)\sqrt{(a-2)/a}/(a-3)$}
-@math{2(a+1)\sqrt@{(a-2)/a@}/(a-3)} (for @math{a>3}),
-Excess = 
-@c{$6(a(a^2+a-6)-2)/(a(a-3)(a-4))$}
-@math{6(a(a^2+a-6)-2)/(a(a-3)(a-4))} (for @math{a>4}),  
-Mode = @math{b}
+@tex
+Mean = $ab/(a-1)$ (for $a>1$), 
+Variance = $a b^2/((a-2)(a-1)^2)$ (for $a>2$),
+Skewness = $2(a+1)\sqrt{(a-2)/a}/(a-3)$,
+Excess = $6(a(a^2+a-6)-2)/(a(a-3)(a-4))$,
+Mode = $b$
 
-@item
-Cumulants, @math{\kappa_1=FIXME}, @math{\kappa_n=FIXME},
-for @math{n>1}
+Cumulants, $\kappa_1=FIXME$, $\kappa_n=FIXME$ for $n>1$
 
-@item
-Characteristic function, @math{\phi(t) = FIXME}
+Characteristic function, $\phi(t) = FIXME$
 
-@item
-Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = 1 - (b / x)^a$}
-@math{CDF(x) = \int_0^x p(x') dx' = 1 - (b / x)^a}
-@item
+Cumulative distribution function, $CDF(x) = \int_0^x p(x') dx' = 1 - (b / x)^a$
+
 Confidence limits:
 
-@item
 Useful integral:
 
-@end itemize
+@end tex
 
 @comment
 @page
@@ -1407,32 +1132,22 @@ the steps of a random walk.
 @cindex direction vector, random 2D
 @cindex spherical random numbers, 2D
 This function returns a random direction vector @math{v} =
-(@var{x},@var{y}) in two dimensions. The vector is normalized
-such that 
-@c{$|v|^2 = x^2 + y^2 = 1$}
-@math{|v|^2 = x^2 + y^2 = 1}.
-The obvious way to do this is to take a uniform random number between 
-0 and 
-@c{$2\pi$} 
-@math{2\pi} 
-and let @var{x} and @var{y} be the sine and cosine
-respectively.  Two trig functions would have been expensive in the old
-days, but with modern hardware implementations, this is sometimes the
-fastest way to go.  This is the case for my home Pentium (but not the
-case for my Sun Sparcstation 20 at work).  Once can 
-avoid the trig evaluations by choosing @var{x} and @var{y} in the
-interior of a unit circle (choose them at random from the interior
-of the enclosing square, and then reject those that are outside the
-unit circle), and then dividing by 
-@c{$\sqrt{x^2 + y^2}$}
+(@var{x},@var{y}) in two dimensions. The vector is normalized such that
+@math{|v|^2 = x^2 + y^2 = 1}.  The obvious way to do this is to take a
+uniform random number between 0 and @math{2\pi} and let @var{x} and
+@var{y} be the sine and cosine respectively.  Two trig functions would
+have been expensive in the old days, but with modern hardware
+implementations, this is sometimes the fastest way to go.  This is the
+case for my home Pentium (but not the case for my Sun Sparcstation 20 at
+work).  Once can avoid the trig evaluations by choosing @var{x} and
+@var{y} in the interior of a unit circle (choose them at random from the
+interior of the enclosing square, and then reject those that are outside
+the unit circle), and then dividing by @c{$\sqrt{x^2 + y^2}$}
 @math{\sqrt@{x^2 + y^2@}}.
 A much cleverer approach, attributed to von Neumann (See Knuth, v2, 3rd
 ed, p140, exercise 23), requires neither trig nor a square root.  In
 this approach, @var{u} and @var{v} are chosen at random from the
-interior of a unit circle, and then 
-@c{$x=(u^2-v^2)/(u^2+v^2)$}
-@math{x=(u^2-v^2)/(u^2+v^2)} and
-@c{$y=uv/(u^2+v^2)$}
+interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=uv/(u^2+v^2)}.
 @end deftypefn
 
@@ -1441,14 +1156,11 @@ interior of a unit circle, and then
 @cindex direction vector, random 3D
 @cindex spherical random numbers, 3D
 This function returns a random direction vector @math{v} =
-(@var{x},@var{y},@var{z}) in three dimensions. The vector is
-normalized such that 
-@c{$|v|^2 = x^2 + y^2 + z^2 = 1$}
-@math{|v|^2 = x^2 + y^2 + z^2 = 1}.
-The method employed is due to Robert E. Knop (CACM 13, 326 (1970)),
-and explained in Knuth, v2, 3rd ed, p136.  It uses the 
-surprising fact that the distribution projected along any axis is 
-actually uniform (this is only true for 3d).
+(@var{x},@var{y},@var{z}) in three dimensions. The vector is normalized
+such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.  The method employed is
+due to Robert E. Knop (CACM 13, 326 (1970)), and explained in Knuth, v2,
+3rd ed, p136.  It uses the surprising fact that the distribution
+projected along any axis is actually uniform (this is only true for 3d).
 @end deftypefn
 
 @deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, int @var{n}, double *@var{x})
@@ -1525,9 +1237,7 @@ p(x) dx = @{a \over \mu^a@} x^@{a-1@}  \exp(-(x/\mu)^a) dx
 @end ifinfo
 
 @noindent
-for 
-@c{$-\infty < x < \infty$}
-@math{-\infty < x < \infty}.
+for @math{-\infty < x < \infty}.
 @end deftypefn
 
 @deftypefun double gsl_ran_weibull_pdf (double @var{x}, double @var{mu}, double @var{a})
@@ -1541,20 +1251,13 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\Gamma(1+1/a) \mu$} 
-@math{\Gamma(1+1/a) \mu}, 
-Variance = 
-@c{$(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$}
-@math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
+@tex
+Mean = $\Gamma(1+1/a) \mu$, 
+Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$}
-@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
-@end itemize
+$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
+@end tex
 
 @comment
 @page
@@ -1580,9 +1283,7 @@ p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
 @end ifinfo
 
 @noindent
-for 
-@c{$-\infty < x < \infty$}
-@math{-\infty < x < \infty}. 
+for @math{-\infty < x < \infty}. 
 @end deftypefn
 
 @deftypefun double gsl_ran_gumbel1_pdf (double @var{x}, double @var{a}, double @var{b})
@@ -1596,20 +1297,14 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\Gamma(1+1/a) \mu$} 
-@math{\Gamma(1+1/a) \mu}, 
-Variance = 
-@c{$(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$}
-@math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
+@tex
+?????????????FIXME
+Mean = $\Gamma(1+1/a) \mu$ 
+Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$}
-@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
-@end itemize
+$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
+@end tex
 
 @comment
 @page
@@ -1635,9 +1330,7 @@ p(x) dx = a b x^@{-a-1@} \exp(-b x^@{-a@}) dx
 @end ifinfo
 
 @noindent
-for 
-@c{$0 < x < \infty$}
-@math{0 < x < \infty}.
+for @math{0 < x < \infty}.
 @end deftypefn
 
 @deftypefun double gsl_ran_gumbel2_pdf (double @var{x}, double @var{a}, double @var{b})
@@ -1651,24 +1344,13 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\Gamma(1+1/a) \mu$} 
-@math{\Gamma(1+1/a) \mu}, 
-Variance = 
-@c{$(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$}
-@math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
+@tex
+Mean = $\Gamma(1+1/a) \mu$, 
+Variance = $(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$
 
-@item
 Cumulative distribution function, 
-@c{$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$}
-@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
-@end itemize
-
-@comment
-@page
-@section Discrete distributions
+$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
+@end tex
 
 @comment
 @node General Discrete Distributions
@@ -1700,17 +1382,12 @@ C[k+1] = C[k]+P[k].
 @noindent
 Note that this construction produces @math{C[K]=1}.  Now choose a
 uniform deviate @var{u} between 0 and 1, and find the value of @var{k}
-such that
-@c{$C[k] \le u < C[k+1]$}  
+such that @c{$C[k] \le u < C[k+1]$}
 @math{C[k] <= u < C[k+1]}.  
-Although this in principle requires of order 
-@c{$\log K$}
-@math{\log K}
-steps per random number generation, they are fast steps, and if you use
-something like 
-@c{$\lfloor uK \rfloor$} 
-@math{\lfloor uK \rfloor} 
-as a starting point, you can often do pretty well.
+Although this in principle requires of order @math{\log K} steps per
+random number generation, they are fast steps, and if you use something
+like @math{\lfloor uK \rfloor} as a starting point, you can often do
+pretty well.
 
 But faster methods have been devised.  Again, the idea is to preprocess
 the probability list, and save the result in some form of lookup table;
@@ -1726,17 +1403,12 @@ Software 3, 253-256 (1977); see also Knuth, v2, 3rd ed, p120-121,139).
 This requires two lookup tables, one floating point and one integer, but
 both only of size @var{K}.  After preprocessing, the random numbers are
 generated in O(1) time, even for large @var{K}.  The preprocessing
-suggested by Walker requires 
-@c{$O(K^2)$} 
-@math{O(K^2)} 
-effort, but that is not actually necessary, and the implementation
-provided here only takes 
-@c{$O(K)$}
-@math{O(K)} 
-effort.  In general, more preprocessing leads to faster generation of
-the individual random numbers, but a diminishing return is reached
-pretty early.  Knuth points out that the optimal preprocessing is
-combinatorially difficult for large @var{K}.
+suggested by Walker requires @math{O(K^2)} effort, but that is not
+actually necessary, and the implementation provided here only takes
+@math{O(K)} effort.  In general, more preprocessing leads to faster
+generation of the individual random numbers, but a diminishing return is
+reached pretty early.  Knuth points out that the optimal preprocessing
+is combinatorially difficult for large @var{K}.
 
 This method can be used to speed up some of the discrete random number
 generators below, such as the binomial distribution.  To use if for
@@ -1800,8 +1472,7 @@ p(k) = @{\mu^k \over k!@} \exp(-\mu)
 @end ifinfo
 
 @noindent
-for 
-@c{$k \ge 0$}
+for @c{$k \ge 0$}
 @math{k >= 0}.
 @end deftypefn
 
@@ -1816,33 +1487,16 @@ given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$\mu$} 
-@math{\mu}, 
-Variance = 
-@c{$\mu^2$}
-@math{\mu^2}, 
-Skewness = 
-@c{$1/\sqrt\mu$} 
-@math{1/\sqrt\mu}, 
-Excess = 
-@c{$1/\mu$}
-@math{1/\mu}
+@tex
+Mean = $\mu$,
+Variance = $\mu^2$,
+Skewness = $1/\sqrt\mu$,
+Excess = $1/\mu$
 
-@item
-Cumulants, 
-@c{$\kappa_n=m$} 
-@math{\kappa_n=m} 
-for all @math{n}
+Cumulants, $\kappa_n=m$ for all $n$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = \exp(m(e^{it}-1))$}
-@math{\phi(t) = \exp(m(e^@{it@}-1))}
-
-@end itemize
+Characteristic function, $\phi(t) = \exp(m(e^{it}-1))$
+@end tex
 
 @comment
 @page
@@ -1884,24 +1538,16 @@ This function computes the probability @math{p(k)} of obtaining
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = @math{p}, 
-Variance = @math{p(1-p)}, 
-Skewness = 
-@c{$(1-2p)/\sqrt{p(1-p)}$} 
-@math{(1-2p)/\sqrt@{p(1-p)@}}, 
-Excess = 
-@c{$1-6p(1-p))/(p(1-p))$}
-@math{1-6p(1-p))/(p(1-p))}
+@tex
+Mean = $p$, 
+Variance = $p(1-p)$, 
+Skewness = $(1-2p)/\sqrt{p(1-p)}$, 
+Excess = $1-6p(1-p))/(p(1-p))$
 
-@item
-Cumulants, @math{\kappa_n=FIXME} for all @math{n}
+Cumulants, $\kappa_n=FIXME$ for all $n$
 
-@item
-Characteristic function, @math{\phi(t) = FIXME}
-
-@end itemize
+Characteristic function, $\phi(t) = FIXME$
+@end tex
 
 @comment
 @page
@@ -1926,8 +1572,7 @@ p(k) = @{n! \over k! (n-k)! @} p^k (1-p)^@{n-k@}
 @end example
 @end ifinfo
 @noindent
-for 
-@c{$0 \le k \le n$}
+for @c{$0 \le k \le n$}
 @math{0 <= k <= n}.
 @end deftypefn
 
@@ -1942,33 +1587,16 @@ the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
+@tex
 Mean = @math{np}, 
-Variance = 
-@c{$np(1-p)$} 
-@math{np(1-p)}, 
-Skewness = 
-@c{$(1-2p)/\sqrt{np(1-p)}$}
-@math{(1-2p)/\sqrt@{np(1-p)@}}, 
-Excess = 
-@c{$(1-6p(1-p))/(np(1-p))$}
-@math{(1-6p(1-p))/(np(1-p))}
+Variance = $np(1-p)$,
+Skewness = $(1-2p)/\sqrt{np(1-p)}$,
+Excess = $(1-6p(1-p))/(np(1-p))$
 
-@item
-Cumulants, 
-@c{$\kappa_1=np$} 
-@math{\kappa_1=np}, 
-@c{$\kappa_{r+1}=p(1-p)(d\kappa_r/dp)$}
-@math{\kappa_@{r+1@}=p(1-p)(d\kappa_r/dp)},
-for @math{n > 1}
+Cumulants, $\kappa_1=np$, $\kappa_{r+1}=p(1-p)(d\kappa_r/dp)$ for $n > 1$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = (1-p + p\exp(it))^n$}
-@math{\phi(t) = (1-p + p\exp(it))^n}
-
-@end itemize
+Characteristic function, $\phi(t) = (1-p + p\exp(it))^n$
+@end tex
 
 @comment
 @page
@@ -2035,21 +1663,12 @@ from a Pascal distribution with parameters @var{p} and
 @end deftypefun
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$n(1-p)/p$} 
-@math{n(1-p)/p}, 
-Variance = 
-@c{$n(1-p)/p^2$} 
-@math{n(1-p)/p^2}, 
-Skewness = 
-@c{$(2-p)/\sqrt{n(1-p)}$}
-@math{(2-p)/\sqrt@{n(1-p)@}}, 
-Excess = 
-@c{$(1/n)(6+{p^2 \over 1 - p})$}
-@math{(1/n)(6+@{p^2 \over 1 - p@})}
-@end itemize
+@tex
+Mean = $n(1-p)/p$,
+Variance = $n(1-p)/p^2$,
+Skewness = $(2-p)/\sqrt{n(1-p)}$,
+Excess = $(1/n)(6+{p^2 \over 1 - p})$
+@end tex
 
 @comment
 @page
@@ -2076,8 +1695,7 @@ p(k) =  p (1-p)^k
 @end ifinfo
 
 @noindent
-for 
-@c{$k \ge 1$}
+for @c{$k \ge 1$}
 @math{k >= 1}.
 @end deftypefn
 
@@ -2092,35 +1710,16 @@ the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$(1-p)/p$} 
-@math{(1-p)/p}, 
-Variance = 
-@c{$(1-p)/p^2$} 
-@math{(1-p)/p^2}, 
-Skewness =
-@c{$(2-p)/\sqrt{1-p}$}
-@math{(2-p)/\sqrt@{1-p@}}, 
-Excess = 
-@c{$6+(p^2/(1-p))$}
-@math{6+(p^2/(1-p))}
+@tex
+Mean = $(1-p)/p$,
+Variance = $(1-p)/p^2$,
+Skewness = $(2-p)/\sqrt{1-p}$,
+Excess = $6+(p^2/(1-p))$
 
-@item
-Cumulants, 
-@c{$\kappa_1=(1-p)/p$}
-@math{\kappa_1=(1-p)/p},
-@c{$\kappa_{r+1}=-(1-p)(d\kappa_r/dp)$}
-@math{\kappa_@{r+1@}=-(1-p)(d\kappa_r/dp)}, 
-for @math{r > 1}
+Cumulants, $\kappa_1=(1-p)/p$, $\kappa_{r+1}=-(1-p)(d\kappa_r/dp)$ for $r > 1$
 
-@item
-Characteristic function, 
-@c{$\phi(t) = p/(1 - (1-p)\exp(it)$}
-@math{\phi(t) = p/(1 - (1-p)\exp(it)}
-
-@end itemize
+Characteristic function, $\phi(t) = p/(1 - (1-p)\exp(it)$
+@end tex
 
 @comment
 @page
@@ -2145,9 +1744,7 @@ p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1 + n_2,k)
 @end example
 @end ifinfo
 @noindent
-where 
-@c{$C(a,b) = a!/(b!(a-b)!)$}
-@math{C(a,b) = a!/(b!(a-b)!)}. The domain of @math{k} is
+where @math{C(a,b) = a!/(b!(a-b)!)}. The domain of @math{k} is
 @c{$\hbox{max}(0\,t-n_2), \ldots, \hbox{max}(t,n_1)$}
 @math{max(0,t-n_2), ..., max(t,n_1)}.
 @end deftypefn
@@ -2163,21 +1760,11 @@ from a hypergeometric distribution with parameters @var{n1}, @var{n2},
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$t n_1 / N$}
-@math{t n_1 / N}, 
-Variance = 
-@c{$t n_1 n_2 (N-t)/(N^2(N-1))$}
-@math{t n_1 n_2 (N-t)/(N^2(N-1))},
-Skewness = 
-@c{$(n_2 - n_1)(N-2t) \sqrt{(N-1)/(t n_1 n_2 (N-t))}$}
-@math{(n_2 - n_1)(N-2t) \sqrt@{(N-1)/(t n_1 n_2 (N-t))@}}, 
-where
-@c{$N = n_1 + n_2$}
-@math{N = n_1 + n_2}.
-@end itemize
+@tex
+Mean = $t n_1 / N$, 
+Variance = $t n_1 n_2 (N-t)/(N^2(N-1))$,
+Skewness = $(n_2 - n_1)(N-2t) \sqrt{(N-1)/(t n_1 n_2 (N-t))}$ where $N = n_1 + n_2$.
+@end tex
 
 @comment
 @page
@@ -2202,8 +1789,7 @@ p(k) = @{-1 \over \log(1-p)@} @{(p^k \over k)@}
 @end example
 @end ifinfo
 @noindent
-for 
-@c{$k \ge 1$}
+for @c{$k \ge 1$}
 @math{k >= 1}.
 @end deftypefn
 
@@ -2218,18 +1804,10 @@ using the formula given above.
 @end tex
 
 @subheading Properties
-@itemize @asis
-@item
-Mean = 
-@c{$a p / (1-p)$} 
-@math{a p / (1-p)}, 
-Variance = 
-@c{$a p (1-a p)/(1-p)^2$}
-@math{a p (1-a p)/(1-p)^2}
-where 
-@c{$a = -1/\log(1-p)$}
-@math{a = -1/\log(1-p)}
-@end itemize
+@tex
+Mean = $a p / (1-p)$, 
+Variance = $a p (1-a p)/(1-p)^2$ where $a = -1/\log(1-p)$
+@end tex
 
 @comment
 @comment - @deftypefn Random void gsl_ran_poisson_array (const gsl_rng * @var{r}, double @var{mu}, int @var{N}, int *@var{p})
@@ -2285,6 +1863,5 @@ for (i = 0; i < 100; i++)
 
 gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end example
-
 
 @end deftypefn
