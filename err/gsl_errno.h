@@ -61,6 +61,11 @@ gsl_errhandler_t * gsl_set_error_handler (gsl_errhandler_t * new_handler);
        GSL_WARNING(reason) ; \
        return value ; \
        } while (0)
+#define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
+       do { \
+       GSL_WARNING(reason) ; \
+       return ; \
+       } while (0)
 #else
 #define GSL_ERROR(reason, gsl_errno) \
        do { \
@@ -73,6 +78,12 @@ gsl_errhandler_t * gsl_set_error_handler (gsl_errhandler_t * new_handler);
        GSL_WARNING(reason) ; \
        gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
        return value ; \
+       } while (0)
+#define GSL_ERROR_RETURN_NOTHING(reason, gsl_errno) \
+       do { \
+       GSL_WARNING(reason) ; \
+       gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
+       return ; \
        } while (0)
 #endif /* GSL_ERRHANDLER_OFF */
 
