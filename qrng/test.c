@@ -6,19 +6,31 @@
 
 int test_sobol(void)
 {
+  int status = 0;
   double v[3];
-  int i;
+  /* int i; */
 
-  gsl_qrng * g = gsl_qrng_alloc(gsl_qrng_sobol, 3);
-
-  for(i=0; i<16*1024; i++) {
-    gsl_qrng_get(g, v);
-    /* printf("%g %g %g\n", v[0], v[1], v[2]); */
-  }
-
+  /* test in dimension 2 */
+  gsl_qrng * g = gsl_qrng_alloc(gsl_qrng_sobol, 2);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.25 || v[1] != 0.75 );
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.375 || v[1] != 0.375 );
   gsl_qrng_free(g);
 
-  return 0;
+  /* test in dimension 3 */
+  g = gsl_qrng_alloc(gsl_qrng_sobol, 3);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.25 || v[1] != 0.75 || v[2] != 0.25 );
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.375 || v[1] != 0.375 || v[2] != 0.625 );
+  gsl_qrng_free(g);
+
+  return status;
 }
 
 
