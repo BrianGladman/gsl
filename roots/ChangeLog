@@ -1,3 +1,7 @@
+Fri Aug 21 14:48:13 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test.c: clean up of tests to get rid of warnings
+
 Thu Aug 20 10:21:15 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* roots.h (_WITHIN_TOL): added extra parens in macro definition,
