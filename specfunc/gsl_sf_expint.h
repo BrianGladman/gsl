@@ -11,4 +11,18 @@ double gsl_sf_expint_E1(double x);  /* domain, underflow */
 double gsl_sf_expint_Ei(double x);  /* domain, underflow */
 
 
+int gsl_sf_Shi_e(double x, double * result);  /* GSL_EUNDRFLW */
+int gsl_sf_Chi_e(double x, double * result);  /* GSL_EDOM, GSL_EUNDRFLW */
+
+double gsl_sf_Shi(double x);  /* underflow */
+double gsl_sf_Chi(double x);  /* domain, underflow */
+
+
+int gsl_sf_Si_e(double x, double * result);
+int gsl_sf_Ci_e(double x, double * result);  /* GSL_EDOM */
+
+double gsl_sf_Si(double x);
+double gsl_sf_Ci(double x);  /* domain */
+
+
 #endif /* !GSL_EXPINT_H_ */

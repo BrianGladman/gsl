@@ -62,7 +62,9 @@ libgslspecfunc_a_SOURCES = 	\
 	log.c			\
 	pow_int.c		\
 	psi.c			\
+	shint.c			\
 	sig2lamp.c		\
+	sinint.c		\
 	t-erf.c			\
 	trig.c
 
