@@ -1,3 +1,8 @@
+2000-05-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* fp-tru64.c: include `/usr/include/float.h', if necessary for
+	picking up FP_RND_RN and friends.
+
 Sun Apr  2 14:25:52 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fp-m68klinux.c: added file for m68k support (not complete, some

@@ -33,5 +33,10 @@
 #undef HAVE_IRIX_IEEE_INTERFACE
 #undef HAVE_AIX_IEEE_INTERFACE
 
+/* Define this if we need to include /usr/include/float.h explicitly
+   in order to get FP_RND_RN and related macros.  This is known to be
+   a problem on some Compaq Tru64 unix systems when compiled with GCC. */
+#undef FIND_FP_RND_IN_USR_INCLUDE_FLOAT_H
+
 /* Define this if printf can handle %Lf for long double */
 #undef HAVE_PRINTF_LONGDOUBLE

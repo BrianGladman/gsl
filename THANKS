@@ -57,3 +57,6 @@ functions
 * Bracy H. Elton for correcting a reference in the FFT Algorithms document
 
 * Tadhg O'Meara <tadhg@net-cs.ucd.ie> for finding a bug in gsl-randist
+
+* Steve Robbins <stever@bic.mni.mcgill.ca> patch to work around FP_RND
+  problems on Tru64

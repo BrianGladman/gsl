@@ -159,6 +159,7 @@ case "$host" in
     *-*-osf*) 
         AC_DEFINE(HAVE_TRU64_IEEE_INTERFACE)
         AC_MSG_RESULT([osf/tru64]) 
+	need_fp_rnd_rn=yes
         ;;
     *-*-aix*) 
         AC_DEFINE(HAVE_AIX_IEEE_INTERFACE)
@@ -172,6 +173,29 @@ case "$host" in
         AC_MSG_RESULT([unknown])
         ;;
 esac
+
+# On some systems requiring symbols FP_RND_{RN,RM,RP,RZ} for setting the 
+# floating-point rounding strategy, the symbols are defined in 
+# /usr/include/float.h.  However, some versions of GCC do not have
+# the symbols in the `fixed' version of float.h, so simply including
+# <float.h> does not find the symbols.  We detect this and work around
+# it in ieee-utils/fp-foo.c
+#
+if test "x$need_fp_rnd_rn" = xyes; then
+    AC_MSG_CHECKING(for FP_RND_RN in <float.h>)
+    AC_TRY_COMPILE( [#include <float.h>],
+		    [unsigned int rnd = FP_RND_RN;],
+	            result=yes, result=no )
+    AC_MSG_RESULT($result)
+    if test "$result" = no; then
+	AC_MSG_CHECKING(for FP_RND_RN in /usr/include/float.h)
+        AC_TRY_COMPILE( [#include "/usr/include/float.h"],
+	                [unsigned int rnd = FP_RND_RN;],
+                        AC_MSG_RESULT(yes),
+		        AC_MSG_ERROR([cannot find required FP_RND_* macros]) )
+        AC_DEFINE(FIND_FP_RND_IN_USR_INCLUDE_FLOAT_H)
+    fi
+fi        
 
 
 AC_MSG_CHECKING([for rounding-control compiler flags])

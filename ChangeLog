@@ -1,3 +1,10 @@
+2000-05-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* acconfig.h: 
+	* configure.in: look in both <float.h> and /usr/include/float.h,
+	to find FP_RND_RN, as some versions of GCC don't copy these
+	symbols into the `fixed' header.
+
 Wed May 10 11:30:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_math.h (GSL_POSINF): make use of HUGE_VAL which is actually
