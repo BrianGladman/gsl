@@ -1,6 +1,8 @@
 ** The library is now installed as a single shared or static libgsl
 file using libtool.
 
+** The gsl-config script now works.
+
 ** All header files are now in installed as pkginclude headers in a
 gsl/ subdirectory.
 
@@ -29,6 +31,9 @@ improved clarity. Consult manual for details.
 
 ** The environment variable GSL_IEEE_MODE now uses , as a separator
 instead of ;
+
+** The autogen.sh script, mostly for use by developers who use the CVS
+repository, now does not run configure.
 
 * Was new in gsl-0.5:
 

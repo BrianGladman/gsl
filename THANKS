@@ -46,7 +46,11 @@ functions
 
 * Brett Viren <bviren@superk.physics.sunysb.edu> for debugging qpsrt.c.
 
+<<<<<<< THANKS
+* Christopher Gabriel <cgabriel@firenze.linux.it> contributed the
+  gsl-config we use.
+=======
 * Christopher Gabriel <cgabriel@firenze.linux.it> for help with
   gsl-config.
 
-* C M Murphy <C.M.Murphy@bath.ac.uk> patch to fix up consts in header files
+* C M Murphy <C.M.Murphy@bath.ac.uk> patch to fix up consts in header files>>>>>>> 1.17

@@ -211,6 +211,11 @@ case "$host" in
 esac
 # Now restore our (possibly augmented) CFLAGS.
 CFLAGS="$save_cflags"
+GSL_CFLAGS="$CFLAGS -I$prefix/include/gsl"
+GSL_LIBS="-L$prefix/lib/gsl -lgsl"
+
+AC_SUBST(GSL_CFLAGS)
+AC_SUBST(GSL_LIBS)
 
 
 AC_MSG_CHECKING([for IEEE-conformance compiler flags])
