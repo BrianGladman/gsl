@@ -10,7 +10,7 @@ FUNCTION(gsl_stats,mean) (const BASE data[], const size_t size)
 
   for (i = 0; i < size; i++)
     {
-      mean += (data[i] - mean)/((double)(i + 1));
+      mean += (data[i] - mean)/(i + 1);
     }
 
   return mean;

@@ -15,16 +15,16 @@ FUNCTION(gsl_stats,lag1_autocorrelation_with_mean)
 
   size_t i;
 
-  double r1 ;
-  double q = 0 ;
-  double v = (data[0] - mean) * (data[0] - mean) ;
+  long double r1 ;
+  long double q = 0 ;
+  long double v = (data[0] - mean) * (data[0] - mean) ;
 
   for (i = 1; i < size ; i++)
     {
-      const double delta0 = (data[i-1] - mean);
-      const double delta1 = (data[i] - mean);
-      q += (delta0 * delta1 - q)/((double)(i + 1));
-      v += (delta1 * delta1 - v)/((double)(i + 1));
+      const long double delta0 = (data[i-1] - mean);
+      const long double delta1 = (data[i] - mean);
+      q += (delta0 * delta1 - q)/(i + 1);
+      v += (delta1 * delta1 - v)/(i + 1);
     }
 
   r1 = q / v ;

@@ -1,5 +1,8 @@
 Wed Aug  5 12:34:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* converted functions to use 'long double' for internal calculations,
+	for extra range.
+
 	* converted all the functions to use templates_on.h and
  	templates_off.h
 

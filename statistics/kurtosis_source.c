@@ -17,7 +17,7 @@ FUNCTION(gsl_stats,kurtosis_with_mean_and_sd) (const BASE data[],
 {
   /* takes a dataset and finds the kurtosis */
 
-  double avg = 0, kurtosis;
+  long double avg = 0, kurtosis;
   size_t i;
 
   /* find the fourth moment the deviations, normalized by the sd */
@@ -27,8 +27,8 @@ FUNCTION(gsl_stats,kurtosis_with_mean_and_sd) (const BASE data[],
 
   for (i = 0; i < n; i++)
     {
-      const double x = (data[i] - mean) / sd;
-      avg += (x * x * x * x - avg)/((double)(i + 1));
+      const long double x = (data[i] - mean) / sd;
+      avg += (x * x * x * x - avg)/(i + 1);
     }
 
   kurtosis = avg - 3.0;  /* makes kurtosis zero for a Gaussian */
