@@ -1,3 +1,7 @@
+Sun Aug  1 20:29:43 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* discrete.c: converted to GSL_ERROR macros for error handling
+
 Tue Jul 27 14:14:38 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* sphere.c (gsl_ran_dir_3d): use the Knop method only -- it is the
