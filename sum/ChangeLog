@@ -1,3 +1,8 @@
+Mon Nov  9 22:05:45 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* levin_u.c (gsl_sum_levin_u_accel_minmax): got rid of noise
+ 	variables since they aren't used in the non-derivative case
+
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* test_sum.c: replace variable N by macro to avoid variable length
