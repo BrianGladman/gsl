@@ -12,7 +12,8 @@
 extern double hypot(double, double);
 
 
-#define LogRootTwoPi_ 0.918938533204673
+#define LogRootTwoPi_  0.9189385332046727418
+#define LogPi_         1.1447298858494001741
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
@@ -21,7 +22,7 @@ static double gamma_cof[6] = {76.18009172947146, -86.50532032941677,
 			    	  0.1208650973866179e-2, -0.5395239384953e-5
 	    	    	    	  };
 
-double gsl_sf_lngamma(double xx)
+double gsl_sf_lngamma_old(double xx)
 {
   int j;
   double x = xx;
@@ -34,129 +35,116 @@ double gsl_sf_lngamma(double xx)
   return -tmp + log(2.5066282746310005 * ser / x);
 }
 
+/* coefficients for gamma=7, kmax=8  Lanczos method */
+static double lanczos_7_c[9] = {
+  0.99999999999980993227684700473478,
+  676.520368121885098567009190444019,
+ -1259.13921672240287047156078755283,
+  771.3234287776530788486528258894,
+ -176.61502916214059906584551354,
+  12.507343278686904814458936853,
+ -0.13857109526572011689554707,
+  9.984369578019570859563e-6,
+  1.50563273514931155834e-7
+};
 
-/* series which appears in stirling approximation for ln(gamma(z)), z = x + iy;
-   see Carrier,Krook,Pearson p.188
-   the coefficients are c_n = B_2n/((2n-1)(2n))
+
+/* Lanczos with gamma=7, truncated at 1/(z+8) 
+ * J. SIAM Numer. Anal, Ser. B, 1 (1964) 86
  */
-static void ln_stirling_series(double x, double y, double * sx, double * sy)
+int gsl_sf_lngamma_e(double x, double * result)
 {
-  int i;
-  double r2 = x*x + y*y;
-  double z_inv_pow_x[18], z_inv_pow_y[18];
-  static double c[10] = 
-    {1., 1./12., -1./360., 1./1260., -1./1680., 1./1188.,
-     -691./360360., 1./156., -3617./122400., 43867./244188.
-    };
+  if(x <= 0.0) {
+    GSL_ERROR("gsl_sf_lngamma_e: x <= 0", GSL_EDOM);
+  }
+  else {
+    int k;
+    double Ag;
 
-  z_inv_pow_x[0] = 1.;
-  z_inv_pow_y[0] = 0.;
-  z_inv_pow_x[1] =  x/r2;
-  z_inv_pow_y[1] = -y/r2;
-  for(i=2; i<18; i++) { /* create powers of 1/z */
-    z_inv_pow_x[i] = z_inv_pow_x[1]*z_inv_pow_x[i-1] - z_inv_pow_y[1]*z_inv_pow_y[i-1];
-    z_inv_pow_y[i] = z_inv_pow_x[1]*z_inv_pow_y[i-1] + z_inv_pow_y[1]*z_inv_pow_x[i-1];
+    x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+  
+    Ag = lanczos_7_c[0];
+    for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
+
+    *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
+    return GSL_SUCCESS;
+  }
+}
+
+double gsl_sf_lngamma(double x)
+{
+  double y;
+  int status = gsl_sf_lngamma_e(x, &y);
+  if(status == GSL_SUCCESS) {
+    return y;
+  }
+  else {
+    GSL_WARNING("gsl_sf_lngamma: domain error detected");
+    return 0.;
+  }
+}
+
+
+/* complex version of Lanczos method; this is not safe for export
+ * since it becomes bad in the left half-plane
+ */
+static void gsl_sf_lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
+{
+  int k;
+  double log1_r,    log1_i;
+  double logAg_r,   logAg_i;
+  double Ag_r, Ag_i;
+
+  zr -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+
+  Ag_r = lanczos_7_c[0];
+  Ag_i = 0.;
+  for(k=1; k<=8; k++) {
+    double R = zr + k;
+    double I = zi;
+    double a = lanczos_7_c[k] / (R*R + I*I);
+    Ag_r +=  a * R;
+    Ag_i -=  a * I;
   }
 
-  *sx = 0.;
-  *sy = 0.;
-  for(i=1; i<10; i++) {
-    *sx += c[i] * z_inv_pow_x[2*i-1];
-    *sy += c[i] * z_inv_pow_y[2*i-1];
-  }
+  gsl_sf_complex_log(zr + 7.5, zi, &log1_r,  &log1_i);
+  gsl_sf_complex_log(Ag_r, Ag_i,   &logAg_r, &logAg_i);
+
+  /* (z+0.5)*log(z+7.5) - (z+7.5) + LogRootTwoPi_ + log(Ag(z)) */
+  *yr = (zr+0.5)*log1_r - zi*log1_i - (zr+7.5) + LogRootTwoPi_ + logAg_r;
+  *yi = zi*log1_r + (zr+0.5)*log1_i - zi + logAg_i;
+  gsl_sf_angle_restrict_symm(yi);
 }
 
 
 int gsl_sf_lngamma_complex_e(double zr, double zi, double * lnr, double * arg)
 {
-  double stirl_cut = 50.;        /* use stirling above this point */
-  double za = hypot(zr, zi);
-  double x, y, r, theta;         /* transformed variables */
-  double t_lnr, t_arg;           /* log(abs) and arg of intermediate result */
-  double lr;                     /* log(r) */
-  double ln_sr, s_theta;         /* Stirling series result */
-
-  /* normalization factor from recursion step */
-  double ln_renorm_r, ln_renorm_theta;
-
-  if(za == 0.) {
-    char buff[100];
-    sprintf(buff,"gsl_sf_complex_lngamma: zr= %g  zi= %g", zr, zi);
-    *lnr = 0.;
-    *arg = 0.;
-    GSL_ERROR(buff, GSL_EDOM);
-  }
-
-  /* transform to positive real part using reflection */
-  if(zr <= 0.) {
-    x = 1.-zr;
-    y = -zi;
+  if(zr <= 0.5) {
+    /* transform to right half plane using reflection;
+     * in fact we can do a little better by stopping at 1/2
+     */
+    double x = 1.-zr;
+    double y = -zi;
+    double a, b;
+    double lnsin_r, lnsin_i;
+    
+    gsl_sf_lngamma_lanczos_complex(x, y, &a, &b);
+    gsl_sf_complex_logsin(M_PI*zr, M_PI*zi, &lnsin_r, &lnsin_i);
+ 
+    *lnr = LogPi_ - lnsin_r - a;
+    *arg =        - lnsin_i - b;
+    gsl_sf_angle_restrict_symm(arg);
+    return GSL_SUCCESS;
   }
   else {
-    x = zr;
-    y = zi;
+    /* otherwise plain vanilla Lanczos */
+    gsl_sf_lngamma_lanczos_complex(zr, zi, lnr, arg);
+    return GSL_SUCCESS;
   }
-
-  /* make (x,y) large and keep track of the
-     renormalization factor from the recursion relation
-   */
-  ln_renorm_r = 0.;
-  ln_renorm_theta = 0.;
-  if(za < stirl_cut) {
-    int n;
-    int num_recurse = Max((int)(stirl_cut - x), 0);
-    for(n=0; n<num_recurse; n++) {
-      double a,b;
-      gsl_sf_complex_log(x, y, &a, &b);
-      ln_renorm_r += a;
-      ln_renorm_theta += b;
-      x += 1.;
-    }
-  }
-
-  /* calculate Gamma(x+iy) using Stirling */
-  r = hypot(x, y);
-  theta = atan2(y, x);
-  lr = log(r);
-  ln_stirling_series(x, y, &ln_sr, &s_theta);
-  t_lnr = LogRootTwoPi_ - x - theta*y + (x-0.5)*lr + ln_sr;
-  t_arg = theta*x + y * lr - y + s_theta;
-
-  /* divide by the renormalization factor */
-  t_lnr -= ln_renorm_r;
-  t_arg -= ln_renorm_theta;
-
-  /* undo the reflection */
-  if(zr <= 0.0) {
-    double prefactor_x, prefactor_y;
-    double denom_x, denom_y, denom_abs2;
-
-    gsl_sf_complex_sin(M_PI*zr, M_PI*zi, &denom_x, &denom_y);
-    denom_abs2 = denom_x*denom_x + denom_y*denom_y;
-
-    if(denom_abs2 < 1.e-60) {
-      char buff[100];
-      sprintf(buff,"complex_lngamma: z= (%g,%g) near a negative integer",
-	      zr, zi);
-      GSL_ERROR(buff, GSL_EDOM);
-      *lnr = 0.;
-      *arg = 0.;
-    }
-    prefactor_x =  M_PI*denom_x/denom_abs2;
-    prefactor_y = -M_PI*denom_y/denom_abs2;
-    *lnr = 0.5*log(prefactor_x*prefactor_x + prefactor_y*prefactor_y) - t_lnr;
-    *arg = -t_arg + atan2(prefactor_y, prefactor_x);
-  }
-  else {
-    *lnr = t_lnr;
-    *arg = t_arg;
-  }
-
-  gsl_sf_angle_restrict_symm(arg);
-  return GSL_SUCCESS;
 }
 
-#define FACT_TABLE_MAX  200
+
+#define FACT_TABLE_MAX  170
 #define FACT_TABLE_SIZE (FACT_TABLE_MAX+1)
 static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
     { 0,  0.0,     0      },
@@ -333,6 +321,7 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
     { 169, 4.26906800900470527493925188890e304,  0 },
     { 170, 7.25741561530799896739672821113e306,  0 },
 
+    /*
     { 171, 1.24101807021766782342484052410e309,  0 },
     { 172, 2.13455108077438865629072570146e311,  0 },
     { 173, 3.69277336973969237538295546352e313,  0 },
@@ -363,6 +352,7 @@ static struct {int n; double f; long i; } fact_table[FACT_TABLE_SIZE] = {
     { 198, 1.98155243056480026018181712043e370,  0 },
     { 199, 3.94328933682395251776181606966e372,  0 },
     { 200, 7.88657867364790503552363213932e374,  0 }
+    */
 };
 
 

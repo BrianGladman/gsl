@@ -5,10 +5,14 @@
 #define GSL_GAMMAFUNCTION_H_
 
 
-/* Logarithm of Gamma(x).
-   Lanczos method.
+/* Log[Gamma(x)]; Lanczos method
+ * Return GSL_SUCCESS on success, GSL_EDOM if x <= 0
  */
-double gsl_sf_lngamma(double);
+int gsl_sf_lngamma_e(double x, double * result);
+
+
+/* Log[Gamma(x)]; Lanczos method */
+double gsl_sf_lngamma(double);    /* domain error can occur */
 
 
 /* Gamma(z) for z complex.

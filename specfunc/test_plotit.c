@@ -1,25 +1,27 @@
 #include <stdio.h>
 #include "gsl_sf.h"
 
+extern double gsl_sf_lngamma_test(double);
+
 
 int main(int argc, char * argv[])
 {
   double x;
-  double xmin = 0.;
-  double xmax = 10.;
-  double dx   = 0.1;
+  double xmin = 0.5;
+  double xmax = 50.;
+  double dx   = 0.5;
 
   double nu = 100.;
   int n = 2;
 
   for(x=xmin; x<xmax; x += dx){
 
-    double y;
-    int status = gsl_sf_bessel_Jnu_taylor_e(nu, x, 10, &y);
-
-    printf("%20.15g  %20.15g", x, y);
-    if(status) printf("     *");
-    printf("\n");
+    double xi = 3.;
+    double yr, yi;
+    printf("%22.17g    %22.17g\n",
+	    x,
+	    gsl_sf_lngamma(x)
+	    );
   }
 
   exit(0);

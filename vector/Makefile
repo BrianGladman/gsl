@@ -57,8 +57,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i586-pc-linux-gnulibc1
-host_triplet = i586-pc-linux-gnulibc1
+host_alias = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
 CC = gcc
 CPP = gcc -E
 LN_S = ln -s
@@ -66,8 +66,8 @@ MAKEINFO = makeinfo
 PACKAGE = gsl
 RANLIB = ranlib
 VERSION = 0.3c-interim
-full_top_builddir = /home/bjg/gsl
-full_top_srcdir = /home/bjg/gsl
+full_top_builddir = /home/jungman/gsl
+full_top_srcdir = /home/jungman/gsl
 
 lib_LIBRARIES = libgslvector.a 
 
