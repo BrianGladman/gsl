@@ -15,7 +15,10 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* chebyshev fit for (s(t)-1)Zeta[s(t)],  s(t)= (t+1)/2,  -1 <= t <= 1 */
+/* chebyshev fit for (s(t)-1)Zeta[s(t)]
+ * s(t)= (t+1)/2
+ * -1 <= t <= 1
+ */
 static double zeta_xlt1_data[14] = {
   1.48018677156931561235192914649,
   0.25012062539889426471999938167,
@@ -41,7 +44,10 @@ static gsl_sf_cheb_series zeta_xlt1_cs = {
   8
 };
 
-/* chebyshev fit for (s(t)-1)Zeta[s(t)],  s(t)= (19t+21)/2,  -1 <= t <= 1 */
+/* chebyshev fit for (s(t)-1)Zeta[s(t)]
+ * s(t)= (19t+21)/2
+ * -1 <= t <= 1
+ */
 static double zeta_xgt1_data[30] = {
   19.3918515726724119415911269006,
    9.1525329692510756181581271500,
@@ -540,12 +546,28 @@ int gsl_sf_zeta_impl(const double s, double * result)
     double ln_pre = s * LogTwoPi_;
     const double zeta_one_minus_s = riemann_zeta_sgt0(1.0-s);
     const double sin_term = sin(0.5*M_PI*s)/M_PI;
-    double ln_term;
 
     gsl_sf_lngamma_impl(1.0-s, &ln_gamma);
-    ln_term  = ln_pre + ln_gamma;
 
-    return gsl_sf_exp_mult_impl(ln_term, sin_term*zeta_one_minus_s, result);
+    /* The prefactor for the result is exp(ln_pre + ln_gamma);
+     * ln_pre is negative and ln_gamma is positive, so there
+     * is some error in the subtraction. This error is a
+     * problem because of the amplification in the exponential.
+     * So we try to sidestep it.
+     */
+    if(     ln_pre > GSL_LOG_DBL_MIN+1.0
+       && ln_gamma < GSL_LOG_DBL_MAX-1.0
+       && zeta_one_minus_s < 2.0
+       ) {
+      double factor_1 = exp(ln_pre);
+      double factor_2 = exp(ln_gamma);
+      *result = factor_1 * factor_2 * sin_term * zeta_one_minus_s;
+      return GSL_SUCCESS;
+    }
+    else {
+      double ln_term  = ln_pre + ln_gamma;
+      return gsl_sf_exp_mult_impl(ln_term, sin_term*zeta_one_minus_s, result);
+    }
   }
 }
 
@@ -619,7 +641,7 @@ int gsl_sf_eta_impl(const double s, double * result)
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(fabs(s-1.0) < 10.0*GSL_ROOT5_MACH_EPS) {
+  else if(fabs(s-1.0) < 10.0*GSL_ROOT5_DBL_EPSILON) {
     double del = s-1.0;
     double c0  = M_LN2;
     double c1  = M_LN2 * (M_EULER - 0.5*M_LN2);

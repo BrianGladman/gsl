@@ -540,35 +540,35 @@ static struct {int n; double f; long i; } doub_fact_table[DOUB_FACT_TABLE_SIZE] 
  */
 static double gstar_a_data[30] = {
   2.16786447866463034423060819465,
- -0.055332490187455842580358328025,
-  0.0180039243146071996088831974812,
- -0.0058091926946893771448001981385,
-  0.00186523689488400339978881560307,
- -0.00059746524113955531852595158689,
-  0.000191251699077833539254267215674,
- -0.000061249965469446857359096968124,
-  0.0000196388963313084258644094464050,
- -6.3067741254637180272515795142e-6,
-  2.02886984058613925268727898628e-6,
- -6.5384896660838465981983750582e-7,
-  2.11086980589088654764807349107e-7,
- -6.8260714912274941677892994580e-8,
-  2.21085608758805605555839785095e-8,
- -7.1710331930255456643627187187e-9,
-  2.32908929839854067546025647451e-9,
+ -0.05533249018745584258035832802,
+  0.01800392431460719960888319748,
+ -0.00580919269468937714480019814,
+  0.00186523689488400339978881560,
+ -0.00059746524113955531852595159,
+  0.00019125169907783353925426722,
+ -0.00006124996546944685735909697,
+  0.00001963889633130842586440945,
+ -6.3067741254637180272515795142e-06,
+  2.0288698405861392526872789863e-06,
+ -6.5384896660838465981983750582e-07,
+  2.1108698058908865476480734911e-07,
+ -6.8260714912274941677892994580e-08,
+  2.2108560875880560555583978510e-08,
+ -7.1710331930255456643627187187e-09,
+  2.3290892983985406754602564745e-09,
  -7.5740371598505586754890405359e-10,
-  2.46582672225943343985253120841e-10,
+  2.4658267222594334398525312084e-10,
  -8.0362243171659883803428749516e-11,
-  2.62156168263415946535213462287e-11,
+  2.6215616826341594653521346229e-11,
  -8.5596155025948750540420068109e-12,
-  2.79708314994879636143153154441e-12,
+  2.7970831499487963614315315444e-12,
  -9.1471771211886202805502562414e-13,
-  2.99347201980633970949164159269e-13,
+  2.9934720198063397094916415927e-13,
  -9.8026575909753445931073620469e-14,
   3.2116773667767153777571410671e-14,
- -1.05180353338781470296505072541e-14,
+ -1.0518035333878147029650507254e-14,
   3.4144405720185253938994854173e-15,
- -1.01151539430811870523226438193e-15
+ -1.0115153943081187052322643819e-15
 };
 static gsl_sf_cheb_series gstar_a_cs = {
   gstar_a_data,
@@ -585,34 +585,34 @@ static gsl_sf_cheb_series gstar_a_cs = {
  */
 static double gstar_b_data[] = {
   0.0057502277273114339831606096782,
-  0.00044966895349656850382541478072,
- -0.000167276315318871730890504740496,
-  0.000061513701491315479477667094574,
- -0.0000223726551711525016380862194900,
-  8.0507405356647954540694800545e-6,
- -2.86710771075833955697667464475e-6,
-  1.01067270537427475683622541062e-6,
- -3.5265558477595061262310873482e-7,
-  1.21792160464194011932472545908e-7,
- -4.1619640180795366971160162267e-8,
-  1.40662835007952068924872412943e-8,
- -4.6982570380537099016106141654e-9,
-  1.54912486646206126864231089364e-9,
+  0.0004496689534965685038254147807,
+ -0.0001672763153188717308905047405,
+  0.0000615137014913154794776670946,
+ -0.0000223726551711525016380862195,
+  8.0507405356647954540694800545e-06,
+ -2.8671077107583395569766746448e-06,
+  1.0106727053742747568362254106e-06,
+ -3.5265558477595061262310873482e-07,
+  1.2179216046419401193247254591e-07,
+ -4.1619640180795366971160162267e-08,
+  1.4066283500795206892487241294e-08,
+ -4.6982570380537099016106141654e-09,
+  1.5491248664620612686423108936e-09,
  -5.0340936319394885789686867772e-10,
-  1.60844486737360322499594750055e-10,
+  1.6084448673736032249959475006e-10,
  -5.0349733196835456497619787559e-11,
-  1.53571549397621369975918084605e-11,
+  1.5357154939762136997591808461e-11,
  -4.5233809655775649997667176224e-12,
-  1.26644291792544472810685389641e-12,
+  1.2664429179254447281068538964e-12,
  -3.2648287937449326771785041692e-13,
   7.1528272726086133795579071407e-14,
  -9.4831735252566034505739531258e-15,
- -2.31240019914132072931209066905e-15,
-  2.84066132771703914825901294739e-15,
- -1.72453703216188164212817709267e-15,
+ -2.3124001991413207293120906691e-15,
+  2.8406613277170391482590129474e-15,
+ -1.7245370321618816421281770927e-15,
   8.6507923128671112154695006592e-16,
  -3.9506563665427555895391869919e-16,
-  1.67793421320747610787923611651e-16,
+  1.6779342132074761078792361165e-16,
  -6.0483153034414765129837716260e-17
 };
 static gsl_sf_cheb_series gstar_b_cs = {
@@ -650,10 +650,10 @@ lngamma_lanczos_complex(double zr, double zi, double * yr, double * yi)
   double logAg_r,   logAg_i;
   double Ag_r, Ag_i;
 
-  zr -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+  zr -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
 
   Ag_r = lanczos_7_c[0];
-  Ag_i = 0.;
+  Ag_i = 0.0;
   for(k=1; k<=8; k++) {
     double R = zr + k;
     double I = zi;
@@ -683,12 +683,12 @@ lngamma_lanczos(double x, double * result)
   int k;
   double Ag;
 
-  x -= 1.; /* Lanczos writes z! instead of Gamma(z) */
+  x -= 1.0; /* Lanczos writes z! instead of Gamma(z) */
   
   Ag = lanczos_7_c[0];
   for(k=1; k<=8; k++) { Ag += lanczos_7_c[k]/(x+k); }
 
-  *result =  (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
+  *result = (x+0.5)*log(x+7.5) - (x+7.5) + LogRootTwoPi_ + log(Ag);
   return GSL_SUCCESS;
 }
 
@@ -909,6 +909,104 @@ lngamma_2_pade(const double eps, double * result)
 }
 
 
+/* series for gammastar(x)
+ * double-precision for x > 10.0
+ */
+static
+int
+gammastar_ser(const double x, double * result)
+{
+  /* Use the Stirling series for the correction to Log(Gamma(x)),
+   * which is better behaved and easier to compute than the
+   * regular Stirling series for Gamma(x). 
+   */
+  const double y = 1.0/(x*x);
+  const double c0 =  1.0/12.0;
+  const double c1 = -1.0/360.0;
+  const double c2 =  1.0/1260.0;
+  const double c3 = -1.0/1680.0;
+  const double c4 =  1.0/1188.0;
+  const double c5 = -691.0/360360.0;
+  const double c6 =  1.0/156.0;
+  const double c7 = -3617.0/122400.0;
+  const double ser = c0 + y*(c1 + y*(c2 + y*(c3 + y*(c4 + y*(c5 + y*(c6 + y*c7))))));
+  *result = exp(ser/x);
+  return GSL_SUCCESS;
+}
+
+
+/* gamma(x) for x >= 1/2
+ * assumes x >= 1/2
+ */
+static
+int
+gamma_xgthalf(const double x, double * result)
+{
+  const double xmax = 171.0;
+
+  if(x == 0.5) {
+    *result = 1.77245385090551602729817;
+    return GSL_SUCCESS;
+  }
+  else if(fabs(x - 1.0) < 0.01) {
+    /* Use series for Gamma[1+eps] - 1/(1+eps).
+     */
+    const double eps = x - 1.0;
+    const double c1 =  0.4227843350984671394;
+    const double c2 = -0.01094400467202744461;
+    const double c3 =  0.09252092391911371098;
+    const double c4 = -0.018271913165599812664;
+    const double c5 =  0.018004931096854797895;
+    const double c6 = -0.006850885378723806846;
+    const double c7 =  0.003998239557568466030;
+    *result = 1.0/x + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*c7))))));
+    return GSL_SUCCESS;
+  }
+  else if(fabs(x - 2.0) < 0.01) {
+    /* Use series for Gamma[1 + eps].
+     */
+    const double eps = x - 2.0;
+    const double c1 =  0.4227843350984671394;
+    const double c2 =  0.4118403304264396948;
+    const double c3 =  0.08157691924708626638;
+    const double c4 =  0.07424901075351389832;
+    const double c5 = -0.00026698206874501476832;
+    const double c6 =  0.011154045718130991049;
+    const double c7 = -0.002852645821155340816;
+    const double c8 =  0.0021039333406973880085;
+    *result = 1.0 + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
+    return GSL_SUCCESS;
+  }
+  else if(x < 10.0) {
+    /* Exponentiating the logarithm is fine, as
+     * long as the exponential is not so large
+     * that it greatly amplifies the error.
+     */
+    double lg;
+    lngamma_lanczos(x, &lg);
+    *result = exp(lg);
+    return GSL_SUCCESS;
+  }
+  else if(x < xmax) {
+    /* We do not want to exponentiate the logarithm
+     * if x is large because of the inevitable
+     * inflation of the error.
+     */
+    double p = pow(x, 0.5*(x-0.5));
+    double e = exp(-0.5*x);
+    double pre = M_SQRT2 * M_SQRTPI * (p*e) * (p*e);
+    double gstar;
+    int stat_gs = gammastar_ser(x, &gstar);
+    *result = pre * gstar;
+    return stat_gs;
+  }
+  else {
+    *result = 0.0;
+    return GSL_EOVRFLW;
+  }
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 
@@ -1034,36 +1132,7 @@ int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
 int
 gsl_sf_gamma_impl(const double x, double * result)
 {
-  if(fabs(x - 1.0) < 0.01) {
-    /* Use series for Gamma[1+eps] - 1/(1+eps).
-     */
-    const double eps = x - 1.0;
-    const double c1 =  0.4227843350984671394;
-    const double c2 = -0.01094400467202744461;
-    const double c3 =  0.09252092391911371098;
-    const double c4 = -0.018271913165599812664;
-    const double c5 =  0.018004931096854797895;
-    const double c6 = -0.006850885378723806846;
-    const double c7 =  0.003998239557568466030;
-    *result = 1.0/x + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*c7))))));
-    return GSL_SUCCESS;
-  }
-  else if(fabs(x - 2.0) < 0.01) {
-    /* Use series for Gamma[1 + eps].
-     */
-    const double eps = x - 2.0;
-    const double c1 =  0.4227843350984671394;
-    const double c2 =  0.4118403304264396948;
-    const double c3 =  0.08157691924708626638;
-    const double c4 =  0.07424901075351389832;
-    const double c5 = -0.00026698206874501476832;
-    const double c6 =  0.011154045718130991049;
-    const double c7 = -0.002852645821155340816;
-    const double c8 =  0.0021039333406973880085;
-    *result = 1.0 + eps*(c1+eps*(c2+eps*(c3+eps*(c4+eps*(c5+eps*(c6+eps*(c7+eps*c8)))))));
-    return GSL_SUCCESS;
-  }
-  else {  
+  if(x < 0.5) {
     double lng, sgn;
     int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
     if(stat_lng != GSL_SUCCESS) {
@@ -1073,6 +1142,9 @@ gsl_sf_gamma_impl(const double x, double * result)
     else {
       return gsl_sf_exp_sgn_impl(lng, sgn, result);
     }
+  }
+  else {
+    return gamma_xgthalf(x, result);
   }
 }
 
@@ -1103,23 +1175,7 @@ gsl_sf_gammastar_impl(const double x, double * result)
     return GSL_SUCCESS;
   }
   else if(x < 1.0/GSL_ROOT4_DBL_EPSILON) {
-    /* Use the Stirling series for the correction to Log(Gamma(x)),
-     * which is better behaved and easier to compute than the
-     * regular Stirling series for Gamma(x). However, it does
-     * require a little extra work and a call to exp().
-     */
-    const double xi  = 1.0/x;
-    const double xi2 = xi*xi;
-    const double t0  = 3617.0/122400.0 - xi2*43867.0/244188.0;
-    const double t1  = 1.0/156.0 - xi2 * t0;
-    const double t2  = 691.0/360360.0 - xi2 * t1;
-    const double t3  = 1.0/1188.0 - xi2 * t2;
-    const double t4  = 1.0/1680.0 - xi2 * t3;
-    const double t5  = 1.0/1260.0 - xi2 * t4;
-    const double t6  = 1.0/360.0  - xi2 * t5;
-    const double ln_term = xi * (1.0/12.0 - xi2 * t6);
-    *result = exp(ln_term);
-    return GSL_SUCCESS;
+    return gammastar_ser(x, result);
   }
   else if(x < 1.0/GSL_DBL_EPSILON) {
     /* Use Stirling formula for Gamma(x).
@@ -1138,18 +1194,37 @@ gsl_sf_gammastar_impl(const double x, double * result)
 int
 gsl_sf_gammainv_impl(const double x, double * result)
 {
-  double lng, sgn;
-  int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
-  if(stat_lng == GSL_EDOM) {
-    *result = 0.0;
-    return GSL_SUCCESS;
-  }
-  else if(stat_lng != GSL_SUCCESS) {
-    *result = 0.0;
-    return stat_lng;
+  if(x < 0.5) {
+    double lng, sgn;
+    int stat_lng = gsl_sf_lngamma_sgn_impl(x, &lng, &sgn);
+    if(stat_lng == GSL_EDOM) {
+      *result = 0.0;
+      return GSL_SUCCESS;
+    }
+    else if(stat_lng != GSL_SUCCESS) {
+      *result = 0.0;
+      return stat_lng;
+    }
+    else {
+      return gsl_sf_exp_sgn_impl(-lng, sgn, result);
+    }
   }
   else {
-    return gsl_sf_exp_sgn_impl(-lng, sgn, result);
+    double g;
+    int stat_g = gamma_xgthalf(x, &g);
+    if(stat_g == GSL_EOVRFLW) {
+      *result = 0.0;
+      return GSL_EUNDRFLW;
+    }
+    else {
+      *result = 1.0/g;
+      if(*result == 0.0) {
+        return GSL_EUNDRFLW;
+      }
+      else {
+        return GSL_SUCCESS;
+      }
+    }
   }
 }
 

@@ -47,14 +47,14 @@ gamma_inc_P_series(const double a, const double x, double * result)
 
   double D;
   int stat_D = gamma_inc_D(a, x, &D);
-  
+
   double sum  = 1.0;
   double term = 1.0;
   int n;
   for(n=1; n<nmax; n++) {
     term *= x/(a+n);
     sum  += term;
-    if(fabs(term/sum) < GSL_MACH_EPS) break;
+    if(fabs(term/sum) < GSL_DBL_EPSILON) break;
   }
 
   *result = D * sum;
@@ -85,7 +85,7 @@ gamma_inc_Q_large_x(const double a, const double x, double * result)
   for(n=1; n<nmax; n++) {
     term *= (a-n)/x;
     if(fabs(term/last) > 1.0) break;
-    if(fabs(term/sum)  < GSL_MACH_EPS) break;
+    if(fabs(term/sum)  < GSL_DBL_EPSILON) break;
     sum  += term;
     last  = term;
   }
@@ -119,7 +119,7 @@ gamma_inc_Q_asymp_unif(const double a, const double x, double * result)
   double R;
   double c0, c1;
   
-  if(fabs(eps) < GSL_ROOT5_MACH_EPS) {
+  if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     c0 = -1.0/3.0 + eps*(1.0/12.0 - eps*(23.0/540.0 - eps*(353.0/12960.0 - eps*589.0/30240.0)));
     c1 = 0.0;
   }
@@ -170,7 +170,7 @@ gamma_inc_Q_CF(const double a, const double x, double * result)
     rhok  = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
     tk   *= rhok;
     sum  += tk;
-    if(fabs(tk/sum) < GSL_MACH_EPS) break;
+    if(fabs(tk/sum) < GSL_DBL_EPSILON) break;
   }
 
   *result = pre * sum;
@@ -271,7 +271,7 @@ gamma_inc_Q_series(const double a, const double x, double * result)
     for(n=1; n<nmax; n++) {
       t *= -x/(n+1.0);
       sum += (a+1.0)/(a+n+1.0)*t;
-      if(fabs(t/sum) < GSL_MACH_EPS) break;
+      if(fabs(t/sum) < GSL_DBL_EPSILON) break;
     }
     
     if(n == nmax)

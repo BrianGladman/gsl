@@ -78,6 +78,8 @@ int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, doub
     return GSL_SUCCESS;
   }
   else {
+    *szr = 0.0;
+    *szi = 0.0;
     return GSL_EOVRFLW;
   }
 }
@@ -117,7 +119,7 @@ int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, 
   }
   else if(zi < -60.0) {
     *lszr = -M_LN2 - zi;
-    *lszi = -0.5*M_PI + zr; 
+    *lszi = -0.5*M_PI + zr;
   }
   else {
     double sin_r, sin_i;

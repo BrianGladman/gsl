@@ -28,7 +28,7 @@ dilog_series(const double x, double * result)
     term *= x;
     term *= rk*rk;
     sum += term;
-    if(fabs(term/sum) < GSL_MACH_EPS) break;
+    if(fabs(term/sum) < GSL_DBL_EPSILON) break;
   }
 
   *result = sum;
@@ -117,7 +117,7 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
   double rk = r;
   double real_sum = r*ck;
   double imag_sum = r*sk;
-  int kmax = 50 + (int)(20.0/(-log(r)));
+  int kmax = 50 + (int)(22.0/(-log(r))); /* tuned for double-precision */
   int k;
   for(k=2; k<kmax; k++) {
     double ck_tmp = ck;

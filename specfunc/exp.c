@@ -126,7 +126,8 @@ int gsl_sf_exp_mult_impl(const double x, const double y, double * result)
   else if(   ( x < 0.5*GSL_LOG_DBL_MAX   &&   x > 0.5*GSL_LOG_DBL_MIN)
           && (ay < 0.8*GSL_SQRT_DBL_MAX  &&  ay > 1.2*GSL_SQRT_DBL_MIN)
     ) {
-    *result = y * exp(x);
+    double ex = exp(x);
+    *result = y * ex;
     return GSL_SUCCESS;
   }
   else {
