@@ -42,9 +42,9 @@ main (void)
   h1 = gsl_histogram_calloc (N);
   g = gsl_histogram_calloc (N);
 
-  gsl_test (h->range == 0, "gsl_histogram_calloc returns valid range pointer");
-  gsl_test (h->bin == 0, "gsl_histogram_calloc returns valid bin pointer");
-  gsl_test (h->n != N, "gsl_histogram_calloc returns valid size");
+  gsl_test (h->range == 0, "gsl_histogram_alloc returns valid range pointer");
+  gsl_test (h->bin == 0, "gsl_histogram_alloc returns valid bin pointer");
+  gsl_test (h->n != N, "gsl_histogram_alloc returns valid size");
 
 
   hr = gsl_histogram_calloc_range (NR, xr);

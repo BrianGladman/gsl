@@ -47,6 +47,8 @@ typedef struct {
   double * sum ;
 } gsl_histogram_pdf ;
 
+gsl_histogram * gsl_histogram_alloc (size_t n);
+
 gsl_histogram * gsl_histogram_calloc (size_t n);
 gsl_histogram * gsl_histogram_calloc_uniform (const size_t n, const double xmin, const double xmax);
 void gsl_histogram_free (gsl_histogram * h);
@@ -121,7 +123,8 @@ int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h,
 			   const char * range_format, const char * bin_format);
 int gsl_histogram_fscanf (FILE * stream, gsl_histogram * h);
 
-gsl_histogram_pdf * gsl_histogram_pdf_alloc (const gsl_histogram * h);
+gsl_histogram_pdf * gsl_histogram_pdf_alloc (const size_t n);
+int gsl_histogram_pdf_init (gsl_histogram_pdf * p, const gsl_histogram * h);
 void gsl_histogram_pdf_free (gsl_histogram_pdf * p);
 double gsl_histogram_pdf_sample (const gsl_histogram_pdf * p, double r);
 

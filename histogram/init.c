@@ -23,37 +23,7 @@
 #include <gsl/gsl_histogram.h>
 
 gsl_histogram *
-gsl_histogram_calloc_uniform (const size_t n, const double xmin,
-			      const double xmax)
-{
-  gsl_histogram *h;
-
-  if (xmin >= xmax)
-    {
-      GSL_ERROR_VAL ("xmin must be less than xmax", GSL_EINVAL, 0);
-    }
-
-  h = gsl_histogram_calloc (n);
-
-  if (h == 0)
-    {
-      return h;
-    }
-
-  {
-    size_t i;
-
-    for (i = 0; i < n + 1; i++)
-      {
-	h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
-      }
-  }
-
-  return h;
-}
-
-gsl_histogram *
-gsl_histogram_calloc (size_t n)
+gsl_histogram_alloc (size_t n)
 {
   gsl_histogram *h;
 
@@ -90,6 +60,51 @@ gsl_histogram_calloc (size_t n)
 
       GSL_ERROR_VAL ("failed to allocate space for histogram bins",
 			GSL_ENOMEM, 0);
+    }
+
+  h->n = n;
+
+  return h;
+}
+
+gsl_histogram *
+gsl_histogram_calloc_uniform (const size_t n, const double xmin,
+			      const double xmax)
+{
+  gsl_histogram *h;
+
+  if (xmin >= xmax)
+    {
+      GSL_ERROR_VAL ("xmin must be less than xmax", GSL_EINVAL, 0);
+    }
+
+  h = gsl_histogram_calloc (n);
+
+  if (h == 0)
+    {
+      return h;
+    }
+
+  {
+    size_t i;
+
+    for (i = 0; i < n + 1; i++)
+      {
+	h->range[i] = xmin + ((double) i / (double) n) * (xmax - xmin);
+      }
+  }
+
+  return h;
+}
+
+gsl_histogram *
+gsl_histogram_calloc (size_t n)
+{
+  gsl_histogram * h = gsl_histogram_alloc (n);
+
+  if (h == 0)
+    {
+      return h;
     }
 
   {

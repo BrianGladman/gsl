@@ -44,9 +44,11 @@ main (void)
   gsl_histogram_increment (h, 0.3);
 
   {
-    gsl_histogram_pdf *p = gsl_histogram_pdf_alloc (h);
+    gsl_histogram_pdf *p = gsl_histogram_pdf_alloc (10);
 
     gsl_histogram *hh = gsl_histogram_calloc_uniform (100, 0.0, 1.0);
+
+    gsl_histogram_pdf_init (p, h);
 
     for (i = 0; i < 100000; i++)
       {

@@ -1,3 +1,18 @@
+Thu Oct 18 14:48:07 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* pdf2d.c (gsl_histogram2d_pdf_alloc): changed the definition of
+ 	the pdf alloc function to be consistent with the rest of the
+ 	library
+
+	* pdf.c (gsl_histogram_pdf_alloc): changed the definition of the
+ 	pdf alloc function to be consistent with the rest of the library
+
+	* init2d.c (gsl_histogram2d_alloc): added an alloc function for
+ 	consistency
+
+	* init.c (gsl_histogram_alloc): added an alloc function for
+ 	consistency
+
 Wed Sep 12 13:38:40 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* stat.c (gsl_histogram_mean): fixed calculation of mean/sigma and

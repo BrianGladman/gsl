@@ -64,29 +64,16 @@ gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
 }
 
 gsl_histogram2d_pdf *
-gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
+gsl_histogram2d_pdf_alloc (const size_t nx, const size_t ny)
 {
-  size_t i;
-  const size_t nx = h->nx;
-  const size_t ny = h->ny;
   const size_t n = nx * ny;
 
   gsl_histogram2d_pdf *p;
 
   if (n == 0)
     {
-      GSL_ERROR_VAL ("histogram2d length n must be positive integer",
+      GSL_ERROR_VAL ("histogram2d pdf length n must be positive integer",
 			GSL_EDOM, 0);
-    }
-
-  for (i = 0; i < n; i++)
-    {
-      if (h->bin[i] < 0)
-	{
-	  GSL_ERROR_VAL ("histogram bins must be non-negative to compute"
-			    "a probability distribution",
-			    GSL_EDOM, 0);
-	}
     }
 
   p = (gsl_histogram2d_pdf *) malloc (sizeof (gsl_histogram2d_pdf));
@@ -130,6 +117,34 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
 			GSL_ENOMEM, 0);
     }
 
+  p->nx = nx;
+  p->ny = ny;
+
+  return p;
+}
+
+int
+gsl_histogram2d_pdf_init (gsl_histogram2d_pdf * p, const gsl_histogram2d * h)
+{
+  size_t i;
+  const size_t nx = p->nx;
+  const size_t ny = p->ny;
+  const size_t n = nx * ny;
+
+  if (nx != h->nx || ny != h->ny)
+    {
+      GSL_ERROR ("histogram2d size must match pdf size", GSL_EDOM);
+    }
+
+  for (i = 0; i < n; i++)
+    {
+      if (h->bin[i] < 0)
+	{
+	  GSL_ERROR ("histogram bins must be non-negative to compute"
+		     "a probability distribution", GSL_EDOM);
+	}
+    }
+
   for (i = 0; i < nx + 1; i++)
     {
       p->xrange[i] = h->xrange[i];
@@ -157,11 +172,9 @@ gsl_histogram2d_pdf_alloc (const gsl_histogram2d * h)
       }
   }
 
-  p->nx = nx;
-  p->ny = ny;
-
-  return p;
+  return GSL_SUCCESS;
 }
+
 
 void
 gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * p)

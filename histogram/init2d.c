@@ -23,6 +23,70 @@
 #include <gsl/gsl_histogram2d.h>
 
 gsl_histogram2d *
+gsl_histogram2d_alloc (const size_t nx, const size_t ny)
+{
+  gsl_histogram2d *h;
+
+  if (nx == 0)
+    {
+      GSL_ERROR_VAL ("histogram2d length nx must be positive integer",
+			GSL_EDOM, 0);
+    }
+
+  if (ny == 0)
+    {
+      GSL_ERROR_VAL ("histogram2d length ny must be positive integer",
+			GSL_EDOM, 0);
+    }
+
+  h = (gsl_histogram2d *) malloc (sizeof (gsl_histogram2d));
+
+  if (h == 0)
+    {
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d struct",
+			GSL_ENOMEM, 0);
+    }
+
+  h->xrange = (double *) malloc ((nx + 1) * sizeof (double));
+
+  if (h->xrange == 0)
+    {
+      free (h);		/* exception in constructor, avoid memory leak */
+
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d x ranges",
+			GSL_ENOMEM, 0);
+    }
+
+  h->yrange = (double *) malloc ((ny + 1) * sizeof (double));
+
+  if (h->yrange == 0)
+    {
+      free (h->xrange);
+      free (h);		/* exception in constructor, avoid memory leak */
+
+      GSL_ERROR_VAL ("failed to allocate space for histogram2d y ranges",
+			GSL_ENOMEM, 0);
+    }
+
+  h->bin = (double *) malloc (nx * ny * sizeof (double));
+
+  if (h->bin == 0)
+    {
+      free (h->xrange);
+      free (h->yrange);
+      free (h);		/* exception in constructor, avoid memory leak */
+
+      GSL_ERROR_VAL ("failed to allocate space for histogram bins",
+			GSL_ENOMEM, 0);
+    }
+
+  h->nx = nx;
+  h->ny = ny;
+
+  return h;
+}
+
+gsl_histogram2d *
 gsl_histogram2d_calloc_uniform (const size_t nx, const size_t ny,
 				const double xmin, const double xmax,
 				const double ymin, const double ymax)

@@ -51,11 +51,13 @@ main (void)
     }
 
   {
-    gsl_histogram2d_pdf *p = gsl_histogram2d_pdf_alloc (h);
+    gsl_histogram2d_pdf *p = gsl_histogram2d_pdf_alloc (10,10);
 
     gsl_histogram2d *hh = gsl_histogram2d_calloc_uniform (20, 20,
 							  0.0, 1.0,
 							  0.0, 1.0);
+
+    gsl_histogram2d_pdf_init (p, h);
 
     for (i = 0; i < N; i++)
       {
