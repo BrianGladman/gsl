@@ -1977,7 +1977,7 @@ int
 test_LQ_update_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
-  size_t i,j,k, M = m->size1, N = m->size2;
+  size_t i,j, M = m->size1, N = m->size2;
 
   gsl_matrix * lq1  = gsl_matrix_alloc(N,M);
   gsl_matrix * lq2  = gsl_matrix_alloc(N,M);
