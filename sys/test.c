@@ -167,6 +167,40 @@ main (void)
   y = gsl_atanh (-0.9); y_expected = -1.4722194895832202300045137159439e0;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_atanh(0.9)");
 
+  /* Test for pow_int */
+
+  y = gsl_pow_2 (-3.14); y_expected = pow(-3.14, 2.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_2(-3.14)");
+
+  y = gsl_pow_3 (-3.14); y_expected = pow(-3.14, 3.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_3(-3.14)");
+
+  y = gsl_pow_4 (-3.14); y_expected = pow(-3.14, 4.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_4(-3.14)");
+
+  y = gsl_pow_5 (-3.14); y_expected = pow(-3.14, 5.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_5(-3.14)");
+
+  y = gsl_pow_6 (-3.14); y_expected = pow(-3.14, 6.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_6(-3.14)");
+
+  y = gsl_pow_7 (-3.14); y_expected = pow(-3.14, 7.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_7(-3.14)");
+
+  y = gsl_pow_8 (-3.14); y_expected = pow(-3.14, 8.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_8(-3.14)");
+
+  y = gsl_pow_9 (-3.14); y_expected = pow(-3.14, 9.0);
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_9(-3.14)");
+
+  { 
+    int n;
+    for (n = -9; n < 10; n++) {
+      y = gsl_pow_int (-3.14, n); y_expected = pow(-3.14, n);
+      gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_n(-3.14,%d)", n);
+    }
+  }
+
   return gsl_test_summary ();
 }
 

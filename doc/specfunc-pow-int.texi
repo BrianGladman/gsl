@@ -18,21 +18,8 @@ example, @math{x^8} is computed as @math{((x^2)^2)^2}, requiring only 3
 multiplications.
 @end deftypefun
 
-@deftypefun double gsl_sf_pow_2 (const double @var{x})
-@deftypefunx double gsl_sf_pow_3 (const double @var{x})
-@deftypefunx double gsl_sf_pow_4 (const double @var{x})
-@deftypefunx double gsl_sf_pow_5 (const double @var{x})
-@deftypefunx double gsl_sf_pow_6 (const double @var{x})
-@deftypefunx double gsl_sf_pow_7 (const double @var{x})
-@deftypefunx double gsl_sf_pow_8 (const double @var{x})
-@deftypefunx double gsl_sf_pow_9 (const double @var{x})
-These functions can be used to compute small integer powers @math{x^2},
-@math{x^3}, etc. efficiently. The functions will be inlined when
-possible so that use of these functions should be as efficient as
-explicitly writing the corresponding product expression.
-@end deftypefun
-
 @example
 #include <gsl/gsl_sf_pow_int.h>
 double y = gsl_sf_pow_int(3.0, 12)  /* compute 3.0**12 */
 @end example
+

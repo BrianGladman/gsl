@@ -93,6 +93,7 @@
 /* magic constants; mostly for the benefit of the implementation */
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_precision.h>
+#include <gsl/gsl_pow_int.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
