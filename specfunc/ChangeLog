@@ -1,3 +1,12 @@
+2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma.c (gsl_sf_choose_e): declare k as unsigned int instead of
+	int
+	(gsl_sf_gamma_e): avoid shadowed declaration of sgn
+
+	* bessel_sequence.c (gsl_sf_bessel_sequence_Jnu_e): declare i as
+	size_t instead of int
+
 2003-06-11  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coupling.c (gsl_sf_coupling_6j_INCORRECT_e): fixed typo in test

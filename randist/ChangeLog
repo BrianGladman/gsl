@@ -1,3 +1,13 @@
+2003-07-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* dirichlet.c: include gsl_sf_gamma.h instead of gsl_sf.h
+
+2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* binomial_tpe.c (gsl_ran_binomial_tpe): convert to double to
+	avoid possible signed/unsigned problems in comparison (ix > n)
+	(Stirling): removed spurious trailing ;
+
 2003-05-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* binomial_tpe.c: fast binomial algorithm using TPE method
