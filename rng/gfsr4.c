@@ -75,11 +75,11 @@ void gfsr4_set (void *state, unsigned long int s);
 #define C 6988
 #define D 9689
 #define M 16383 /* = 2^14-1 */
-
+/* #define M 0x0003fff */
 
 typedef struct
   {
-    unsigned short nd;
+    int nd;
     unsigned long ra[M+1];
   }
 gfsr4_state_t;
@@ -89,16 +89,13 @@ gfsr4_get (void *vstate)
 {
   gfsr4_state_t *state = (gfsr4_state_t *) vstate;
 
-  unsigned short nd;
-  unsigned long int *const ra = state->ra;
-
-  nd = ++(state->nd);
-
-  return ra[nd&M] =
-      ra[(nd-A)&M]^
-      ra[(nd-B)&M]^
-      ra[(nd-C)&M]^
-      ra[(nd-D)&M];
+  state->nd = ((state->nd)+1)&M;
+  return state->ra[(state->nd)] =
+      state->ra[((state->nd)+(M+1-A))&M]^
+      state->ra[((state->nd)+(M+1-B))&M]^
+      state->ra[((state->nd)+(M+1-C))&M]^
+      state->ra[((state->nd)+(M+1-D))&M];
+  
 }
 
 double
@@ -111,12 +108,14 @@ void
 gfsr4_set (void *vstate, unsigned long int s)
 {
   gfsr4_state_t *state = (gfsr4_state_t *) vstate;
-  unsigned short i;
+  int i;
+  /* Masks for turning on the diagonal bit and turning off the
+     leftmost bits */
+  unsigned long int msb = 0x80000000UL;
+  unsigned long int mask = 0xffffffffUL;
 
   if (s == 0)
     s = 4357;	/* the default seed is 4357 */
-
-  state->ra[0] = s & 0xffffffffUL;
 
   /* We use the congruence s_{n+1} = (69069*s_n) mod 2^32 to
      initialize the state. This works because ANSI-C unsigned long
@@ -125,8 +124,28 @@ gfsr4_set (void *vstate, unsigned long int s)
 
 #define LCG(n) ((69069 * n) & 0xffffffffUL)
 
-  for (i = 1; i <= M; i++)
-    state->ra[i] = LCG (state->ra[i - 1]);
+  /* Brian Gough suggests this to avoid low-order bit correlations */
+  for (i = 0; i <= M; i++)
+    {
+      unsigned long t1, t2 ;
+      s = LCG(s) ;
+      t1 = s >> 16 ;
+      s = LCG(s) ;
+      t2 = s >> 16 ;
+      state->ra[i] = ((t1 << 16) | t2) & 0xffffffffUL;
+    }
+
+  /* Perform the "orthogonalization" of the matrix */
+  /* Based on the orthogonalization used in r250, as suggested initially
+   * by Kirkpatrick and Stoll, and pointed out to me by Brian Gough
+   */
+  for (i=0; i<32; ++i) {
+      int k=7+i*3;
+      state->ra[k] &= mask;	/* Turn off bits left of the diagonal */
+      state->ra[k] |= msb;	/* Turn on the diagonal bit           */
+      mask >>= 1;
+      msb >>= 1;
+  }
 
   state->nd = i;
 }
