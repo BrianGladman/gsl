@@ -366,6 +366,8 @@ int test_erf(void)
   int s = 0;
 
   TEST_SF(s, gsl_sf_erfc_e, (-10.0, &r), 2.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_erfc_e, (-5.0000002, &r), 1.9999999999984625433, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_erfc_e, (-5.0, &r), 1.9999999999984625402, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_erfc_e, (-1.0, &r), 1.8427007929497148693, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_erfc_e, (-0.5, &r), 1.5204998778130465377, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_erfc_e, (1.0, &r), 0.15729920705028513066, TEST_TOL0, GSL_SUCCESS);

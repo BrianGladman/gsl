@@ -1,3 +1,8 @@
+Thu Jul  5 16:16:13 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* erfc.c (gsl_sf_erfc_e): corrected case of -10<x<-5 to take into
+ 	account that chebyshev fit is defined in terms of positive x.
+
 Tue Jul  3 12:09:33 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eval.h (EVAL_DOUBLE): avoid returning the status value as a
