@@ -775,7 +775,7 @@ gsl_sf_coulomb_wave_impl(double lam_min, int kmax,
   if(x == 0.0) {
     return coulomb_zero_x(lam_min, kmax, eta, fc, fcp, gc, gcp);
   }
-  else if(x < 2.0 && fabs(eta) < 10.0) {
+  else if(x < 3.0 && fabs(eta) < 10.0) {
     return coulomb_small_args(lam_min, kmax, eta, x, fc, fcp, gc, gcp);
   }
   else {
