@@ -603,9 +603,18 @@ not desirable.
 
 Iterative algorithms should be decomposed into an INITIALIZE, ITERATE,
 TEST form, so that the user can control the progress of the iteration
-and print out intermediate results.  This is better than using call-backs
-or using flags to control whether the function prints out intermediate
-results.
+and print out intermediate results.  This is better than using
+call-backs or using flags to control whether the function prints out
+intermediate results.  In fact, call-backs should not be used -- if they
+seem necessary then it's a sign that the algorithm should be broken down
+further into individual components so that the user has complete control
+over them.  
+
+For example, when solving a differential equation the user needs to be
+able to advance the solution by individual steps, while tracking a
+realtime process.  This is only possible if the algorithm is broken down
+into step-level components.  Higher level decompositions would not give
+sufficient flexibility.
 
 @node Memory allocation and ownership
 @section Memory allocation and ownership

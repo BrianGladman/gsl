@@ -35,7 +35,7 @@ the behavior for other arrangements is not defined.
 
 @section Functions
 
-@deftypefun {gsl_interp_accel *} gsl_interp_accel_new (void)
+@deftypefun {gsl_interp_accel *} gsl_interp_accel_alloc (void)
 Create an accelerator object, which is a kind of iterator
 for interpolation lookups.  It tracks the state of lookups,
 thus allowing for application of various acceleration
@@ -85,7 +85,7 @@ use the interpolation object and accelerator, and finally free resources.
   ...
   gsl_interp_factory f = gsl_interp_factory_linear;
   gsl_interp * interp = f.create(x, y, 64);
-  gsl_interp_accel * a = gsl_interp_accel_new ();
+  gsl_interp_accel * a = gsl_interp_accel_alloc ();
   ...
   x0 = 5.7;
   status = gsl_interp_eval(interp, x, y, x0, a, &y0);
