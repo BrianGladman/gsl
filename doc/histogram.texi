@@ -30,8 +30,11 @@ data.
 * Two dimensional histograms::  
 * The 2D histogram struct::     
 * 2D Histogram allocation::     
+* Copying 2D Histograms::       
 * Updating and accessing 2D histogram elements::  
 * Searching 2D histogram ranges::  
+* 2D Histogram Statistics::     
+* 2D Histogram Operations::     
 * Reading and writing 2D histograms::  
 * Resampling from 2D histograms::  
 * Example programs for 2D histograms::  
@@ -93,11 +96,11 @@ In this picture the values of the @var{range} array are denoted by
 @math{r}.  On the left-hand side of each bin the square bracket
 "@code{[}" denotes an inclusive lower bound 
 (@c{$r \le x$}
-@math{r <= x}), and the round
-parentheses "@code{)}" on the right-hand side denote an exclusive upper
-bound (@math{x < r}).  Thus any samples which fall on the upper end of the
-histogram are excluded.  If you want to include this value for the last
-bin you will need to add an extra bin to your histogram.
+@math{r <= x}), and the round parentheses "@code{)}" on the right-hand
+side denote an exclusive upper bound (@math{x < r}).  Thus any samples
+which fall on the upper end of the histogram are excluded.  If you want
+to include this value for the last bin you will need to add an extra bin
+to your histogram.
 
 The @code{gsl_histogram} struct and its associated functions are defined
 in the header file @file{gsl_histogram.h}.
@@ -699,9 +702,29 @@ error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_uniform (size_t @var{nx}, size_t @var{ny}, double @var{xmin}, double @var{xmax}, double @var{ymin}, double @var{ymax})
 @end deftypefun
 
+@deftypefun gsl_histogram2d * gsl_histogram2d_calloc_range (size_t @var{nx}, size_t @var{ny}, double * @var{xrange}, double * @var{yrange})
+This function allocates a histogram of size @var{nx}-by-@var{ny} using
+the @math{nx+1} and @math{ny+1} bin ranges specified by the arrays
+@var{xrange} and @var{xyrange}.
+@end deftypefun
+
 @deftypefun void gsl_histogram2d_free (gsl_histogram2d * @var{h})
 This function frees the 2D histogram @var{h} and all of the memory
 associated with it.
+@end deftypefun
+
+@node Copying 2D Histograms
+@section Copying 2D Histograms
+
+@deftypefun int gsl_histogram2d_memcpy (gsl_histogram2d * @var{dest}, const gsl_histogram2d * @var{src})
+This function copies the histogram @var{src} into the pre-existing
+histogram @var{dest}, making @var{dest} into an exact copy of @var{src}.
+The two histograms must be of the same size.
+@end deftypefun
+
+@deftypefun gsl_histogram2d * gsl_histogram2d_clone (const gsl_histogram2d * @var{src})
+This function returns a pointer to a newly created histogram which is an
+exact copy of the histogram @var{src}.
 @end deftypefun
 
 @node Updating and accessing 2D histogram elements
@@ -800,6 +823,83 @@ found then the function sets the indices (@var{i},@var{j}) and returns
 zero to indicate success.  If @math{(x,y)} lies outside the valid
 range of the histogram then the function returns @code{GSL_EDOM} and the
 error handler is invoked.
+@end deftypefun
+
+@node 2D Histogram Statistics
+@section 2D Histogram Statistics
+
+@deftypefun double gsl_histogram2d_max_val (const gsl_histogram2d * @var{h})
+This function returns the maximum value contained in the histogram bins.
+@end deftypefun
+
+@deftypefun void gsl_histogram2d_max_bin (const gsl_histogram2d * @var{h}, size_t * @var{i}, size_t * @var{j})
+This function returns the indices (@var{i},@var{j}) of the bin
+containing the maximum value in the histogram @var{h}. In the case where
+several bins contain the same maximum value the first bin found is
+returned.
+@end deftypefun
+
+@deftypefun double gsl_histogram2d_min_val (const gsl_histogram2d * @var{h})
+This function returns the minimum value contained in the histogram bins.
+@end deftypefun
+
+@deftypefun void gsl_histogram2d_min_bin (const gsl_histogram2d * @var{h}, size_t * @var{i}, size_t * @var{j})
+This function returns the indices (@var{i},@var{j}) of the bin
+containing the minimum value in the histogram @var{h}. In the case where
+several bins contain the same maximum value the first bin found is
+returned.
+@end deftypefun
+
+@comment @deftypefun double gsl_histogram2d_mean (const gsl_histogram2d * @var{h})
+@comment This function returns the mean of the histogrammed variable, where the
+@comment histogram is regarded as a probability distribution. Negative bin values
+@comment are ignored for the purposes of this calculation.
+@comment @end deftypefun
+
+@comment @deftypefun double gsl_histogram2d_sigma (const gsl_histogram2d * @var{h})
+@comment This function returns the standard deviation of the histogrammed
+@comment variable, where the histogram is regarded as a probability
+@comment distribution. Negative bin values are ignored for the purposes of this
+@comment calculation.
+@comment @end deftypefun
+
+@node 2D Histogram Operations
+@section 2D Histogram Operations
+
+@deftypefun int gsl_histogram2d_equal_bins_p (const gsl_histogram2d *@var{h1}, const gsl_histogram2d *@var{h2})
+This function returns true (@code{1}) if the all of the individual bin
+ranges of the two histograms are identical, and false (@code{0})
+otherwise.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_add (gsl_histogram2d *@var{h1}, const gsl_histogram2d *@var{h2})
+This function adds the contents of the bins in histogram @var{h2} to the
+corresponding bins of histogram @var{h1}.
+i.e. @math{h'_1(i,j) = h_1(i,j) + h_2(i,j)}.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_sub (gsl_histogram2d *@var{h1}, const gsl_histogram2d *@var{h2})
+This function subtracts the contents of the bins in histogram @var{h2} from the
+corresponding bins of histogram @var{h1}.
+i.e. @math{h'_1(i,j) = h_1(i,j) - h_2(i,j)}.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_mul (gsl_histogram2d *@var{h1}, const gsl_histogram2d *@var{h2})
+This function multiplies the contents of the bins of histogram @var{h1}
+by the contents of the corresponding bins in histogram @var{h2}.
+i.e. @math{h'_1(i,j) = h_1(i,j) * h_2(i,j)}.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_div (gsl_histogram2d *@var{h1}, const gsl_histogram2d *@var{h2})
+This function divides the contents of the bins of histogram @var{h1}
+by the contents of the corresponding bins in histogram @var{h2}.
+i.e. @math{h'_1(i,j) = h_1(i,j) / h_2(i,j)}.
+@end deftypefun
+
+@deftypefun int gsl_histogram2d_scale (gsl_histogram2d *@var{h}, double @var{scale})
+This function multiplies the contents of the bins of histogram @var{h}
+by the constant @var{scale}. 
+i.e. @math{h'_1(i,j) = h_1(i,j) scale}.
 @end deftypefun
 
 @node Reading and writing 2D histograms

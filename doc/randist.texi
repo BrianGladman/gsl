@@ -904,7 +904,7 @@ interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=uv/(u^2+v^2)}.
 @end deftypefn
 
-@deftypefn Random void gsl_ran_dir_2d_trid_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
+@deftypefn Random void gsl_ran_dir_2d_trig_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
 @end deftypefn
 
 
@@ -1524,10 +1524,10 @@ output of the random number generator @var{r} is used to make the
 selection.  The algorithm ensures all possible samples are equally
 likely, assuming a perfect source of randomness.
 
-The objects are sampled without replacement, thus each object can only
-appear once in @var{dest}[k].  It is required that @var{k} be less than
-or equal to @code{n}.  The objects in @var{dest} will be in the same
-relative order as those in @var{src}.  You will need to call
+The objects are sampled @emph{without} replacement, thus each object can
+only appear once in @var{dest}[k].  It is required that @var{k} be less
+than or equal to @code{n}.  The objects in @var{dest} will be in the
+same relative order as those in @var{src}.  You will need to call
 @code{gsl_ran_shuffle(r, dest, n, size)} if you want to randomize the
 order.
 
@@ -1546,6 +1546,15 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end example
 
 @end deftypefn
+
+@deftypefn Random {void *} gsl_ran_sample (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+This function is like @code{gsl_ran_choose} but samples @var{k} items
+from the original array of @var{n} items @var{src} with replacement, so
+the same object can appear more than once in the output sequence
+@var{dest}.  There is no requirement that @var{k} be less than @var{n}
+in this case.
+@end deftypefn
+
 
 @node Random Number Distribution Examples
 @section Examples

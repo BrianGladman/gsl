@@ -31,6 +31,7 @@ BLAS routines.
 * Copying matrices::            
 * Copying rows and columns::    
 * Exchanging rows and columns::  
+* Matrix Properties::           
 * Example programs for matrices::  
 @end menu
 
@@ -350,6 +351,15 @@ This function sets the value of the @var{i}-th element of a vector
 @var{n-1} then the error handler is invoked.
 @end deftypefun
 
+@deftypefun void gsl_vector_set_all (gsl_vector * @var{v}, double @var{x})
+This function sets all the elements of the vector @var{v} to the value
+@var{x}.
+@end deftypefun
+
+@deftypefun void gsl_vector_set_zero (gsl_vector * @var{v})
+This function sets all the elements of the vector @var{v} to zero.
+@end deftypefun
+
 @node Reading and writing vectors
 @section Reading and writing vectors
 
@@ -405,19 +415,63 @@ This function copies the elements of the vector @var{src} into the
 vector @var{dest}.  The two vectors must be the same length.
 @end deftypefun
 
+@deftypefun int gsl_vector_swap (gsl_vector * @var{v}, gsl_vector * @var{w})
+This function exchanges the elements of the vectors @var{v} and @var{w}
+by copying.
+@end deftypefun
+
+
 @node Exchanging elements
 @section Exchanging elements
 
 The following function can be used to exchange, or permute, the elements
 of a vector.
 
-@deftypefun int gsl_vector_swap (gsl_vector * @var{v}, size_t i, size_t j)
+
+
+@deftypefun int gsl_vector_swap_elements (gsl_vector * @var{v}, size_t i, size_t j)
 This function exchanges the @var{i}-th and @var{j}-th elements of the
 vector @var{v} in-place.
 @end deftypefun
 
+@deftypefun int gsl_vector_reverse (gsl_vector * @var{v})
+This function reverses the order of the elements of the vector @var{v}.
+@end deftypefun
+
 @node Vector properties
 @section Vector properties
+
+@deftypefun double gsl_vector_max (const gsl_vector * @var{v})
+This function returns the maximum value in the vector @var{v}.
+@end deftypefun
+
+@deftypefun double gsl_vector_min (const gsl_vector * @var{v})
+This function returns the minimum value in the vector @var{v}.
+@end deftypefun
+
+@deftypefun void gsl_vector_minmax (const gsl_vector * @var{v}, double * @var{min_out}, double * @var{max_out})
+This function returns the minimum and maximum values in the vector
+@var{v}, storing them in @var{min_out} and @var{max_out}.
+@end deftypefun
+
+@deftypefun size_t gsl_vector_max_index (const gsl_vector * @var{v})
+This function returns the index of the maximum value in the vector @var{v}.
+When there are several equal maximum elements then the lowest index is
+returned.
+@end deftypefun
+
+@deftypefun size_t gsl_vector_min_index (const gsl_vector * @var{v})
+This function returns the index of the mimimum value in the vector @var{v}.
+When there are several equal minimum elements then the lowest index is
+returned.
+@end deftypefun
+
+@deftypefun void gsl_vector_minmax_index (const gsl_vector * @var{v}, size_t * @var{imin}, size_t * @var{imax})
+This function returns the indices of the minimum and maximum values in
+the vector @var{v}, storing them in @var{imin} and @var{imax}. When
+there are several equal minimum or maximum elements then the lowest
+indices are returned.
+@end deftypefun
 
 @deftypefun int gsl_vector_isnull (gsl_vector * @var{v})
 This function returns 1 if all the elements of the vector @var{v} are
@@ -680,6 +734,22 @@ allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
 @end deftypefun
 
+@deftypefun void gsl_matrix_set_all (gsl_matrix * @var{m}, double @var{x})
+This function sets all the elements of the matrix @var{m} to the value
+@var{x}.
+@end deftypefun
+
+
+@deftypefun void gsl_matrix_set_zero (gsl_matrix * @var{m})
+This function sets all the elements of the matrix @var{m} to zero.
+@end deftypefun
+
+@deftypefun void gsl_matrix_set_identity (gsl_matrix * @var{m})
+This function sets the elements of the matrix @var{m} to the
+corresponding elements of the identity matrix, @math{m(i,j) =
+\delta(i,j)}, i.e. a unit diagonal with all off-diagonal elements zero.
+@end deftypefun
+
 @node Reading and writing matrices
 @section Reading and writing matrices
 
@@ -807,6 +877,42 @@ This function exchanges the @var{i}-th row and @var{j}-th column of the
 matrix @var{m} in-place.  The matrix must be square for this operation to
 be possible.
 @end deftypefun
+
+@node Matrix Properties
+@section Matrix Properties
+
+@deftypefun double gsl_matrix_max (const gsl_matrix * @var{m})
+This function returns the maximum value in the matrix @var{m}.
+@end deftypefun
+
+@deftypefun double gsl_matrix_min (const gsl_matrix * @var{m})
+This function returns the minimum value in the matrix @var{m}.
+@end deftypefun
+
+@deftypefun void gsl_matrix_minmax (const gsl_matrix * @var{m}, double * @var{min_out}, double * @var{max_out})
+This function returns the minimum and maximum values in the matrix
+@var{m}, storing them in @var{min_out} and @var{max_out}.
+@end deftypefun
+
+@deftypefun void gsl_matrix_max_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
+This function returns the indices of the maximum value in the matrix
+@var{m}, storing them in @var{imax} and @var{jmax}.  When there are
+several equal maximum elements then the first element found is returned.
+@end deftypefun
+
+@deftypefun void gsl_matrix_min_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
+This function returns the indices of the mimimum value in the matrix
+@var{m}, storing them in @var{imax} and @var{jmax}.  When there are
+several equal minimum elements then the first element found is returned.
+@end deftypefun
+
+@deftypefun void gsl_matrix_minmax_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{imax})
+This function returns the indices of the minimum and maximum values in
+the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
+(@var{imax},@var{jmax}. When there are several equal minimum or maximum
+elements then the first elements found are returned.
+@end deftypefun
+
 
 @node Example programs for matrices
 @section Example programs for matrices

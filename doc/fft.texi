@@ -222,6 +222,8 @@ All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
 @deftypefun int gsl_fft_complex_radix2_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
+@deftypefunx int gsl_fft_complex_radix2_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+
 @deftypefunx int gsl_fft_complex_radix2_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
 @deftypefunx int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
@@ -243,6 +245,8 @@ The length of the data @var{n} is not a power of two.
 
 
 @deftypefun int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
+
+@deftypefunx int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
 @deftypefunx int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n})
 
@@ -502,8 +506,9 @@ factors for each pass.
 @end deftp
 
 @deftypefun int gsl_fft_complex_forward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_complex_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_transform (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_wavetable * @var{wavetable})
 @deftypefunx int gsl_fft_complex_backward (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_complex_inverse (gsl_complex_packed_array @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_complex_wavetable * @var{wavetable})
 
 These functions compute forward, backward and inverse FFTs of length
 @var{n} with stride @var{stride}, on the packed complex array
@@ -696,7 +701,7 @@ are a power of 2.
 The radix-2 FFT functions for real data are declared in the header files
 @file{gsl_fft_real.h} 
 
-@deftypefun int gsl_fft_real_radix2 (double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_fft_real_radix2_transform (double @var{data}[], size_t @var{stride}, size_t @var{n})
 
 This function computes an in-place radix-2 FFT of length @var{n} and
 stride @var{stride} on the real array @var{data}.  The output is a
@@ -740,7 +745,7 @@ The radix-2 FFT functions for halfcomplex data are declared in the
 header file @file{gsl_fft_halfcomplex.h}.
 
 @deftypefun int gsl_fft_halfcomplex_radix2_inverse (double @var{data}[], size_t @var{stride}, size_t @var{n})
-@deftypefunx int gsl_fft_halfcomplex_radix2_backwards (double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx int gsl_fft_halfcomplex_radix2_backward (double @var{data}[], size_t @var{stride}, size_t @var{n})
 
 These functions compute the inverse or backwards in-place radix-2 FFT of
 length @var{n} and stride @var{stride} on the half-complex sequence
@@ -782,7 +787,7 @@ purely real too.
 The storage scheme is best shown by some examples.  The table below
 shows the output for an odd-length sequence, @math{n=5}.  The two columns
 give the correspondence between the 5 values in the half-complex
-sequence returned by @code{gsl_fft_real}, @var{halfcomplex}[] and the
+sequence returned by @code{gsl_fft_real_transform}, @var{halfcomplex}[] and the
 values @var{complex}[] that would be returned if the same real input
 sequence were passed to @code{gsl_fft_complex_backward} as a complex
 sequence (with imaginary parts set to @code{0}),
@@ -896,13 +901,13 @@ be needed.
 @end deftypefun
 
 
-@deftypefun int gsl_fft_real (double @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_real_wavetable * @var{wavetable})
-@deftypefunx int gsl_fft_halfcomplex (double @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_halfcomplex_wavetable * @var{wavetable})
+@deftypefun int gsl_fft_real_transform (double @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_real_wavetable * @var{wavetable})
+@deftypefunx int gsl_fft_halfcomplex_transform (double @var{data}[], size_t @var{stride}, size_t @var{n}, const gsl_fft_halfcomplex_wavetable * @var{wavetable})
 
 These functions compute the FFT of @var{data}, a real or half-complex
 array of length @var{n}, using a mixed radix decimation-in-frequency
-algorithm.  For @code{gsl_fft_real} @var{data} is an array of
-time-ordered real data.  For @code{gsl_fft_halfcomplex} @var{data}
+algorithm.  For @code{gsl_fft_real_transform} @var{data} is an array of
+time-ordered real data.  For @code{gsl_fft_halfcomplex_transform} @var{data}
 contains fourier coefficients in the half-complex ordering described
 above.
 
@@ -960,7 +965,7 @@ is zero).
 @deftypefun int gsl_fft_halfcomplex_unpack (const double @var{halfcomplex_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}[], size_t @var{stride}, size_t @var{n})
 
 This function converts @var{halfcomplex_coefficient}, an array of
-half-complex coefficients as returned by @code{gsl_fft_real}, into an
+half-complex coefficients as returned by @code{gsl_fft_real_transform}, into an
 ordinary complex array, @var{complex_coefficient}.  It fills in the
 complex array using the symmetry 
 @c{$z_k = z_{N-k}^*$}
@@ -1002,11 +1007,12 @@ is zero).
 @comment @node Example of using mixed-radix FFT routines for real data
 @comment @subsection Example of using mixed-radix FFT routines for real data
 
-Here is an example program using @code{gsl_fft_real} and
-@code{gsl_fft_halfcomplex}.  It generates a real signal in the shape of a
-square pulse.  The pulse is fourier transformed to frequency space, and
-all but the lowest ten frequency components are removed from the array
-of fourier coefficients returned by @code{gsl_fft_real}.
+Here is an example program using @code{gsl_fft_real_transform} and
+@code{gsl_fft_halfcomplex_inverse}.  It generates a real signal in the
+shape of a square pulse.  The pulse is fourier transformed to frequency
+space, and all but the lowest ten frequency components are removed from
+the array of fourier coefficients returned by
+@code{gsl_fft_real_transform}.
 
 The remaining fourier coefficients are transformed back to the
 time-domain, to give a filtered version of the square pulse.  Since
@@ -1047,7 +1053,7 @@ int main ()
 
   real_wavetable = gsl_fft_real_alloc (n);
 
-  gsl_fft_real (data, 1, n, real_wavetable);
+  gsl_fft_real_transform (data, 1, n, real_wavetable);
   gsl_fft_real_free (real_wavetable);
 
   for (i = 11; i < n; i++)
