@@ -87,6 +87,14 @@ tests have been rewritten to use less stack space now).
 * IRIX
 ------
 
+The library should be compiled with the following option,
+
+        -OPT:IEEE_NaN_inf=ON 
+
+to ensure correct IEEE arithmetic.  The tests in sys/ will fail
+without this option.  The older deprecated option
+-OPT:IEEE_comparisons=ON will also work.
+
 The 32 bit IRIX compiler gives warnings about "long double" not being
 supported. These can be ignored or turned off with,
 
