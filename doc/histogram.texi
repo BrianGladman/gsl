@@ -1,34 +1,34 @@
 This chapter describes functions for creating histograms. A histogram
 provides a convenient way of summarizing a set of data by recording the
-distribution of values. The bins of a histogram contain floating-point
-numbers, so they can be used to record both integer distributions, such
-as a number of counts, and non-integer distributions, such as an amount
-of energy deposited in a detector.
+distribution of its values. In GSL the bins of a histogram are
+floating-point numbers, so they can be used to record both integer and
+non-integer distributions.
 
 Once a histogram has been created it can also be converted into a
 probability distribution. The library provides efficient functions for
-generating random samples from this distribution, which can be useful
-for generating simulations based real data.
+generating random samples from a probability distribution, which can be
+useful for generating simulations based real data.
 
 @section The histogram struct
 
 A histogram consists of a set of @dfn{bins} which count the number of
-events falling into a given range. In GSL a histogram is defined by the
-following struct,
+events falling into a given range of a continuous variable @math{x}.  A
+histogram is defined by the following struct,
 
 @example
 typedef struct @{
   size_t nbins ;
-  double range[] ;
-  double bin[] ;
+  double * range ;
+  double * bin ;
 @} gsl_histogram
 @end example
 @c
 @noindent
 The number of bins is given by @var{nbins}, and the counts for each bin
-are stored in the @var{bin[]} array. The bins are stored as
+are stored in an array pointed to by @var{bin} . The bins are
 floating-point numbers, so you can increment them by non-integer values
-if necessary. The range for @var{bin[i]} is given by @var{range[i]} to
+if necessary. The ranges are stored in an array pointed to by
+@var{range}. The range for @var{bin[i]} is given by @var{range[i]} to
 @var{range[i+1]}. For @math{n} bins there are @math{n+1} entries in the
 array @var{range}. Each bin is inclusive at the lower end and exclusive
 at the upper end. Mathematically this means that the bins are defined by
@@ -39,21 +39,22 @@ bin[i] corresponds to   @math{range[i] \le x < range[i+1]}
 @end display
 
 @noindent
-Here is a diagram of the correspondence between ranges and bins,
+Here is a diagram of the correspondence between ranges and bins on the
+number-line for @math{x},
 
 @example
      r[0]      r[1]      r[2]      r[3]      r[4]      r[5]
-       |---------|---------|---------|---------|---------|
+    ---|---------|---------|---------|---------|---------|---  x
        [ bin[0] )[ bin[1] )[ bin[2] )[ bin[3] )[ bin[5] )
 @end example
 
 @noindent
 In this picture the values of the @var{range} array are denoted by
-@code{r}. The square bracket "[" denotes an inclusive bound (@code{x>r}),
-and the round parentheses denote an exclusive bound (@code{x<=r}). Note
-that any samples which are exactly equal to the maximum value of the
-range are actually excluded. If you need to include this value you can
-make your histogram larger by one extra bin.
+@math{r}. The square bracket "@code{[}" denotes an inclusive bound
+(@math{x>=r}), and the round parentheses "@code{)}" denote an exclusive
+bound (@math{x<r}). Thus any samples which fall on the upper end of the
+histogram are excluded. If you want to include this value you will need
+to add an extra bin to your histogram.
 
 The @code{gsl_histogram} struct and the functions in this chapter are
 defined in the header file @file{gsl_histogram.h}.
@@ -62,14 +63,14 @@ defined in the header file @file{gsl_histogram.h}.
 The functions for allocating memory to a histogram follow the style of
 @code{malloc} and @code{free}. In addition they also perform their own
 error checking. If there is insufficient memory available to allocate a
-vector then the functions call the GSL error handler (with an error
+histogram then the functions call the GSL error handler (with an error
 number of @code{GSL_ENOMEM}) in addition to returning a null pointer.
 Thus if you use the library error handler to abort your program then it
-isn't necessary to check every @code{alloc}.
+isn't necessary to check every histogram @code{alloc}.
 
 @deftypefun {gsl_histogram *} gsl_histogram_calloc (size_t @var{n})
 This function allocates memory for a histogram with @var{n} bins, and
-returns a pointer to the newly initialized @code{gsl_histogram} struct.
+returns a pointer to its newly initialized @code{gsl_histogram} struct.
 The bins are uniformly spaced with a total range of @math{0 \le x < n},
 as shown in the table below.
 
@@ -80,7 +81,7 @@ bin[1] corresponds to   @math{1 \le x < 2}
 bin[n-1] corresponds to   @math{n-1 \le x < n}
 @end display
 @noindent
-The bins are automatically initialized to zero.
+The bins are initialized to zero so the histogram is ready for use.
 
 If insufficient memory is available a null pointer is returned and the
 error handler is invoked with an error code of @code{GSL_ENOMEM}.
@@ -99,18 +100,18 @@ bin[1] corresponds to   @math{xmin + d \le x < xmin + 2 d}
 bin[n-1] corresponds to   @math{xmin + (n-1)d \le x < xmax}
 @end display
 @noindent
-where @math{d} is the bin spacing, @math{(xmax-xmin)/n}. The bins are
-automatically initialized to zero.
+where @math{d} is the bin spacing, @math{(xmax-xmin)/n}. Each bin is 
+initialized to zero.
 
 If insufficient memory is available a null pointer is returned and the
 error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-To create a histogram with non-uniform bins you will need to allocate a
-@code{gsl_histogram} struct and modify the @code{range} array to your
-desired bin limits. For example, the following code fragment shows how
-to create a histogram with logarithmic bins from 1-10, 10-100 and
-100-1000.
+To create a histogram with non-uniform bins you will need to call
+@code{gsl_histogram_calloc} to create a new histogram struct and then
+modify the @code{range} array to your desired bin limits. For example,
+the following code fragment shows how to create a histogram with
+logarithmic bins from 1---10, 10---100 and 100---1000.
 
 @example
 gsl_histogram * h = gsl_histogram_calloc (3) ;
@@ -121,9 +122,10 @@ h->range[2] = 100.0 ;   /* bin[2] covers the range 100 <= x < 1000 */
 h->range[3] = 1000.0 ;
 @end example
 @noindent
-Note that the @var{range} array is automatically defined as
-@var{range[n+1]}, which is valid from 0 to @var{n} and includes extra
-space for the final upper value.
+Note that the size of the @var{range} array is defined as @code{double
+range[4]} by @code{gsl_histogram_calloc}, and is one element bigger than
+the array of bins @code{double bin[3]}. Thus the range array safely
+includes extra space for the final upper value, @var{range[3]}.
 
 @deftypefun void gsl_histogram_free (gsl_histogram * h)
 This function frees the histogram @var{h} and all of the memory
@@ -133,20 +135,22 @@ associated with it.
 @section Updating and accessing histogram elements
 
 @deftypefun int gsl_histogram_increment (gsl_histogram * h, double x)
-This function adds one to the bin whose range contains the value @var{x}
-of the histogram @var{h}. If @var{x} is less than the lower limit of the
-histogram (then the function returns -1, and none of bins are modified.
-Similarly, if the value of @var{x} is greater than or equal to the upper
-limit of the histogram then the function returns +1, and the bins are
-not updated. The error handler is not called if the value lies outside
-the range of the histogram, since it is often necessary to compute
-histogram a small range of a larger dataset, ignoring the values outside
-the range of interest.
+This function updates the histogram @var{h} by adding one (1.0) to the
+bin whose range contains the value @var{x}. 
+
+If @var{x} is less than the lower limit of the histogram then the
+function returns -1, and none of bins are modified.  Similarly, if the
+value of @var{x} is greater than or equal to the upper limit of the
+histogram then the function returns +1, and the bins are not updated.
+In these cases the error handler is not called , since it is often
+necessary to compute histogram for a small range of a larger dataset,
+ignoring the values outside the range of interest.
 @end deftypefun
 
 @deftypefun int gsl_histogram_accumulate (gsl_histogram * @var{h}, double @var{x}, double @var{weight})
-This function is similar to @code{gsl_histogram_increment} but adds the
-floating-point number @var{weight} to the appropriate bin instead of one.
+This function is similar to @code{gsl_histogram_increment} but increases
+the value of the appropriate bin in the histogram @var{h} by the
+floating-point number @var{weight}.
 @end deftypefun
 
 @deftypefun double gsl_histogram_get (const gsl_histogram * @var{h}, size_t @var{i})
@@ -178,7 +182,7 @@ struct directly.
 @end deftypefun
 
 @deftypefun void gsl_histogram_reset (gsl_histogram * @var{h})
-This function resets the all the bins in the histogram @var{h} to zero.
+This function resets all the bins in the histogram @var{h} to zero.
 @end deftypefun
 
 @deftypefun int gsl_histogram_find (const gsl_histogram * @var{h}, double @var{x}, size_t * @var{i})
@@ -189,13 +193,57 @@ This function resets the all the bins in the histogram @var{h} to zero.
 
 @section Reading and writing histograms
 
-@deftypefun int gsl_histogram_fread (FILE * stream, gsl_histogram * h)
-@end deftypefun
+The library provides functions for reading and writing histograms to a file
+as binary data or formatted text.
+
 @deftypefun int gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
+This function writes the ranges and bins of the histogram @var{h} to the
+stream @var{stream} in binary format. The return value is 0 for success
+and @code{GSL_EFAILED} if there was a problem writing to the file. Since
+the data is written in the native binary format it may not be portable
+between different architectures.
 @end deftypefun
-@deftypefun int gsl_histogram_fprintf (FILE * stream, gsl_histogram * h, const char * format)
+
+@deftypefun int gsl_histogram_fread (FILE * stream, gsl_histogram * h)
+This function reads into the histogram @var{h} from the open stream
+@var{stream} in binary format. The histogram @var{h} must be
+preallocated with the correct size since the function uses the number of
+bins in @var{h} to determine how many bytes to read. The return value is
+0 for success and @code{GSL_EFAILED} if there was a problem reading from
+the file. The data is assumed to have been written in the native binary
+format on the same architecture.
 @end deftypefun
+
+@deftypefun int gsl_histogram_fprintf (FILE * stream, const gsl_histogram * h, const char * range_format, const char * bin_format)
+This function writes the ranges and bins of the vector @var{v}
+line-by-line to the stream @var{stream} using the format specifiers
+@var{range_format} and @var{bin_format}. These should be one of the
+@code{%g}, @code{%e} or @code{%f} formats for floating point
+numbers. The function returns 0 for success and @code{GSL_EFAILED} if
+there was a problem writing to the file. The histogram output is
+formatted in three columns, and the columns are separated by spaces,
+like this,
+
+@example
+range[0] range[1] bin[0]
+range[1] range[2] bin[1]
+range[2] range[3] bin[2]
+....
+range[n-1] range[n] bin[n-1]
+@end example
+@noindent
+Each line contains the lower and upper limit of the bin and the contents
+of the bin. Since the upper limit of the each bin is the lower limit of
+the next bin there is duplication of these values but this allows the
+histogram to be manipulated with line-oriented tools.
+@end deftypefun
+
 @deftypefun int gsl_histogram_fscanf (FILE * stream, gsl_histogram * h)
+This function reads formatted data from the stream @var{stream} into the
+histogram @var{h}. The histogram @var{h} must be preallocated with the correct
+length since the function uses the size of @var{h} to determine how many
+numbers to read.  The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
 @section Resampling from histograms
@@ -209,6 +257,74 @@ This function resets the all the bins in the histogram @var{h} to zero.
 
 
 @section Example programs for histograms
+
+The following program shows how to make a simple histogram of a column
+of numerical data supplied on @code{stdin}. The program takes three
+arguments, specifying the upper and lower bounds of the histogram and
+the number of bins. It then reads numbers from @code{stdin}, one line at
+a time, and adds them to the histogram. When there is no more data to
+read it prints out the accumulated histogram using
+@code{gsl_histogram_fprintf}.
+
+@example
+#include <stdio.h>
+#include <stdlib.h>
+#include <gsl_histogram.h>
+
+int
+main (int argc, char **argv)
+@{
+  double a, b ;
+  size_t n;
+
+  if (argc != 4)
+    @{
+      printf ("Usage: gsl-histogram xmin xmax n\n"
+              "Computes a histogram of the data on stdin"
+              "using n bins from xmin to xmax\n");
+      exit (0);
+    @}
+
+  a = atof (argv[1]);
+  b = atof (argv[2]);
+  n = atoi (argv[3]);
+
+  @{
+    gsl_histogram * h = gsl_histogram_calloc_uniform (n, a, b) ;
+    int status ;
+    
+    do @{
+      double x ;
+      status = fscanf(stdin, "%lg", &x) ;
+      
+      gsl_histogram_increment (h, x) ;
+
+    @} while (status == 1) ;
+
+    gsl_histogram_fprintf (stdout, h, "%g", "%g") ;
+  @}
+  
+  exit (0) ;
+@}
+@end example
+@noindent
+Here is an example of the program in use. We generate 10000 random
+samples from a lorentz distribution with width of 30 and histogram them
+over the range -100 to 100, using 200 bins.
+
+@example
+gsl-lorentz 30 10000 | gsl-histogram -100 100 200 > histogram.dat
+@end example
+@noindent
+A plot of the resulting histogram shows the familiar shape of the
+lorentz distribution and the fluctations caused by the finite sample
+size.
+@tex
+\input epsf
+\medskip
+\centerline{\epsfbox{histogram.eps}}
+\medskip
+@end tex
 
 @section Two dimensional histograms
 
@@ -272,7 +388,7 @@ typedef struct @{
 @end deftypefun
 @deftypefun int gsl_histogram2d_fwrite (FILE * stream, const gsl_histogram2d * h)
 @end deftypefun
-@deftypefun int gsl_histogram2d_fprintf (FILE * stream, gsl_histogram2d * h, const char * format)
+@deftypefun int gsl_histogram2d_fprintf (FILE * stream, const gsl_histogram2d * h, const char * range_format, const char * bin_format)
 @end deftypefun
 @deftypefun int gsl_histogram2d_fscanf (FILE * stream, gsl_histogram2d * h)
 @end deftypefun
