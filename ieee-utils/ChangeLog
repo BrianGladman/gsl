@@ -1,5 +1,8 @@
 Mon Jun  1 15:27:08 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* renamed fp-mode-string.c to fp-env.c, in order to avoid short
+ 	filename problems
+
 	* added support for setting the IEEE mode from the environment
 	variable GSL_IEEE_MODE (only works for the Linux kernel so far)
 

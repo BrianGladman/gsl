@@ -4,7 +4,7 @@ include_HEADERS = gsl_ieee_utils.h
 
 libgslieeeutils_a_SOURCES = endian.c print-ieee.c standardize.c \
 	make_rep.c gsl_ieee_utils.h ieee_utils.h \
-	fp-mode-string.c fp-mode.c 
+	fp-env.c fp-mode.c 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
