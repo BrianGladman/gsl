@@ -194,6 +194,7 @@ These routines compute the normalized incomplete Gamma Function
 for @math{a > 0}, @c{$x \ge 0$}
 @math{x >= 0}.
 @comment exceptions: GSL_EDOM
+@end deftypefun
 
 @deftypefun double gsl_sf_gamma_inc_P (double @var{a}, double @var{x})
 @deftypefunx int gsl_sf_gamma_inc_P_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
