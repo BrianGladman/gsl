@@ -880,7 +880,7 @@ int
 main ()
 @{
   gsl_histogram2d * h = gsl_histogram2d_calloc_uniform (10, 10,
-							0, 1, 0, 1) ;
+                                                        0, 1, 0, 1) ;
   
   gsl_histogram2d_accumulate (h, 0.3, 0.3, 1) ;
   gsl_histogram2d_accumulate (h, 0.8, 0.1, 5) ;

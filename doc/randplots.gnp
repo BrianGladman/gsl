@@ -18,6 +18,26 @@ p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
 plot sigma=1.0, p(x) title "$\sigma=1$", \
 	sigma=2.0, p(x) title "$\sigma=2$"
 
+set xrange [0:5]
+set yrange [0:0.2]
+set ytics 0.1
+set xtics 1
+set output "rand-gaussian-tail.tex"
+set title "Gaussian Tail Distribution"
+p(x)= x > a ? 1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2)) : 0
+plot a=1.5, sigma=1.0, p(x) title "$\sigma=1,a=1.5$"
+
+set xrange [0:5]
+set yrange [0:1.09]
+set ytics 0.1
+set xtics 1
+set output "rand-rayleigh-tail.tex"
+set title "Rayleigh Tail Distribution"
+p(x)= x > a ? (x/sigma**2)*exp((a**2 - x**2)/(2*sigma**2)) : 0
+plot a=1.0, sigma=1.0, p(x) title "$a=1,\sigma=1$", \
+	a=0.5, sigma=2.0, p(x) title "$a=0.5,\sigma=2$"
+
+
 set xlabel "$x$"
 set ylabel "$y$"
 set xrange [-2:2]
@@ -214,12 +234,19 @@ set xrange [-2:2]
 set yrange [0:0.7]
 set ytics 0.1
 set xtics 0.5
-set output "rand-gumbel.tex"
-set title "Gumbel Distributions"
+set output "rand-gumbel1.tex"
+set title "Type 1 Gumbel Distribution"
 p1(x)=a*b*exp(-(b*exp(-a*x)+a*x))
+plot a=1.0, b=1.0, p1(x) title "Type 1, $a=1,b=1$"
+
+set xrange [0:2]
+set yrange [0:0.7]
+set ytics 0.1
+set xtics 0.5
+set output "rand-gumbel2.tex"
+set title "Type 2 Gumbel Distribution"
 p2(x)=x > 0 ? a*b*x**(-a-1)*exp(-b*x**-a) : 0
-plot a=1.0, b=1.0, p1(x) title "Type 1, $a=1,b=1$", \
-	a=1.0, b=1.0, p2(x) title "Type 2, $a=1,b=1$"
+plot a=1.0, b=1.0, p2(x) title "Type 2, $a=1,b=1$"
 
 # Discrete distributions
 

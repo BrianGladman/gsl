@@ -17,8 +17,12 @@ document @cite{GSL FFT Algorithms} (@pxref{FFT References and Further Reading})
 
 @menu
 * Mathematical Definitions::    
-* FFTs of complex data::        
-* FFTs of real data::           
+* Overview of complex data FFTs::  
+* Radix-2 FFT routines for complex data::  
+* Mixed-radix FFT routines for complex data::  
+* Overview of real data FFTs::  
+* Radix-2 FFT routines for real data::  
+* Mixed-radix FFT routines for real data::  
 * FFT References and Further Reading::  
 @end menu
 
@@ -135,8 +139,8 @@ When the overall scale of the result is unimportant it is often
 convenient to use the backwards FFT instead of the inverse to save
 unnecessary divisions.
 
-@node FFTs of complex data
-@section FFTs of complex data
+@node Overview of complex data FFTs
+@section Overview of complex data FFTs
 @cindex FFT, complex data
 
 The inputs and outputs for the complex FFT routines are @dfn{packed
@@ -216,15 +220,9 @@ and negative frequencies
 which are equivalent. If @math{N} is odd then general structure of the
 table above still applies, but @math{N/2} does not appear.
 
-@menu
-* Radix-2 FFT routines for complex data::  
-* Example of using radix-2 FFT routines for complex data::  
-* Mixed-radix FFT routines for complex data::  
-* Example of using mixed-radix FFT routines for complex data::  
-@end menu
 
 @node Radix-2 FFT routines for complex data
-@subsection Radix-2 FFT routines for complex data
+@section Radix-2 FFT routines for complex data
 @cindex FFT of complex data, radix-2 algorithm
 @cindex Radix-2 FFT, complex data
 
@@ -270,8 +268,8 @@ These are decimation-in-frequency versions of the radix-2 FFT functions.
 @end deftypefun
 
 
-@node Example of using radix-2 FFT routines for complex data
-@subsection Example of using radix-2 FFT routines for complex data
+@comment @node Example of using radix-2 FFT routines for complex data
+@comment @subsection Example of using radix-2 FFT routines for complex data
 
 Here is an example program which computes the FFT of a short pulse in a
 sample of length 128. To make the resulting fourier transform real the
@@ -352,7 +350,7 @@ $$
 @end tex
 
 @node Mixed-radix FFT routines for complex data
-@subsection Mixed-radix FFT routines for complex data
+@section Mixed-radix FFT routines for complex data
 @cindex FFT of complex data, mixed-radix algorithm
 @cindex Mixed-radix FFT, complex data
 
@@ -572,8 +570,8 @@ The length of the data @var{n} and the length used to compute the given
 @end table
 @end deftypefun
 
-@node Example of using mixed-radix FFT routines for complex data
-@subsection Example of using mixed-radix FFT routines for complex data
+@comment @node Example of using mixed-radix FFT routines for complex data
+@comment @subsection Example of using mixed-radix FFT routines for complex data
 
 Here is an example program which computes the FFT of a short pulse in a
 sample of length 630 (@math{=2*3*3*5*7}) using the mixed-radix
@@ -623,7 +621,7 @@ int main ()
        printf("# factor %d: %d\n", i, wavetable->factor[i]);
     @}
 
-  gsl_fft_complex_forward (data, n, wavetable);
+  gsl_fft_complex_forward (data, 1, n, wavetable);
 
   for (i = 0; i < n; i++)
     @{
@@ -641,8 +639,8 @@ error handler (which calls @code{abort} for any errors).  If you are not
 using a safe error handler you would need to check the return status of
 of all the @code{gsl} routines.
 
-@node FFTs of real data
-@section FFTs of real data
+@node Overview of real data FFTs
+@section Overview of real data FFTs
 @cindex FFT of real data
 The functions for real data are similar to those for complex data.
 However, there is an important difference between forward and inverse
@@ -723,14 +721,8 @@ far apart. The mixed-radix algorithm does not have this restriction, and
 it stores the real and imaginary parts of a given term in neighboring
 locations. This is desirable for better locality of memory accesses.
 
-@menu
-* Radix-2 FFT routines for real data::  
-* Mixed-radix FFT routines for real data::  
-* Example of using mixed-radix FFT routines for real data::  
-@end menu
-
 @node Radix-2 FFT routines for real data
-@subsection Radix-2 FFT routines for real data
+@section Radix-2 FFT routines for real data
 @cindex FFT of real data, radix-2 algorithm
 @cindex Radix-2 FFT for real data
 
@@ -798,7 +790,7 @@ order.
 
 
 @node Mixed-radix FFT routines for real data
-@subsection Mixed-radix FFT routines for real data
+@section Mixed-radix FFT routines for real data
 @cindex FFT of real data, mixed-radix algorithm
 @cindex Mixed-radix FFT, real data
 
@@ -1062,8 +1054,8 @@ is zero).
 @end table
 @end deftypefun
 
-@node Example of using mixed-radix FFT routines for real data
-@subsection Example of using mixed-radix FFT routines for real data
+@comment @node Example of using mixed-radix FFT routines for real data
+@comment @subsection Example of using mixed-radix FFT routines for real data
 
 Here is an example program using @code{gsl_fft_real} and
 @code{gsl_fft_halfcomplex}. It generates a real signal in the shape of a
@@ -1110,7 +1102,7 @@ int main ()
 
   real_wavetable = gsl_fft_real_wavetable_alloc (n);
   gsl_fft_real_init (n, real_wavetable);
-  gsl_fft_real (data, n, real_wavetable);
+  gsl_fft_real (data, 1, n, real_wavetable);
   gsl_fft_real_wavetable_free (real_wavetable);
 
   for (i = 11; i < n; i++)
@@ -1120,7 +1112,7 @@ int main ()
 
   halfcomplex_wavetable = gsl_fft_halfcomplex_wavetable_alloc (n);
   gsl_fft_halfcomplex_init (n, halfcomplex_wavetable);
-  gsl_fft_halfcomplex_inverse (data, n, halfcomplex_wavetable);
+  gsl_fft_halfcomplex_inverse (data, 1, n, halfcomplex_wavetable);
   gsl_fft_halfcomplex_wavetable_free (halfcomplex_wavetable);
 
   for (i = 0; i < n; i++)

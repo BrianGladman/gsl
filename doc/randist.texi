@@ -18,6 +18,7 @@ The functions described in this section are declared in
 @comment 
 @menu
 * The Gaussian Distribution::   
+* The Gaussian Tail Distribution::  
 * The Bivariate Gaussian Distribution::  
 * The Exponential Distribution::  
 * The Laplace Distribution::    
@@ -37,7 +38,8 @@ The functions described in this section are declared in
 * The Pareto Distribution::     
 * The Spherical Distribution (2D & 3D)::  
 * The Weibull Distribution::    
-* The Gumbel Distribution::     
+* The Type-1 Gumbel Distribution::  
+* The Type-2 Gumbel Distribution::  
 * General Discrete Distributions::  
 * The Poisson Distribution::    
 * The Bernoulli Distribution::  
@@ -88,17 +90,6 @@ transformation
 This function computes the probability density @math{p(x)} at @var{x}
 for a gaussian distribution with standard deviation @var{sigma}, using
 the formula given above.
-@end deftypefun
-
-@deftypefun double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{tail})
-This function provides random numbers distributed as a unit-variance
-gaussian, but only provides values larger than @var{tail}.  For large
-values of @var{tail}, it would be inefficient to use
-@code{gsl_ran_gaussian} and then reject all values less than @var{tail}.
-The algorithm used is based on Marsaglia's famous rectangle-wedge-tail
-algorithm (Ann Math Stat 32, 894-899 (1961)), with this aspect explained
-in Knuth, v2, 3rd ed, p139,586 (exercise 11).
-
 @end deftypefun
 
 @tex
@@ -162,6 +153,61 @@ $$
 @end ifinfo
 
 @end itemize
+
+@comment
+@page
+@node The Gaussian Tail Distribution
+@section The Gaussian Tail Distribution
+@deftypefn Random double gsl_ran_gaussian_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
+@cindex Gaussian Tail random numbers
+This function provides random numbers from the upper tail of a Gaussian
+distribution with standard deviation @var{sigma}. The values returned
+are larger than the lower limit @var{a}, which must be positive.  The
+method is based on Marsaglia's famous rectangle-wedge-tail algorithm (Ann
+Math Stat 32, 894-899 (1961)), with this aspect explained in Knuth, v2,
+3rd ed, p139,586 (exercise 11).
+
+The probability distribution for Gaussian tail random numbers is,
+
+@tex
+\beforedisplay
+$$
+p(x) dx = {1 \over N(a;\sigma)} \exp (- x^2 / 2\sigma^2) dx
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+p(x) dx = @{1 \over N(a;\sigma)@} \exp (- x^2/(2 \sigma^2)) dx
+@end example
+@end ifinfo
+
+for @math{x>a} where @math{N(a;\sigma)} is the normalization constant,
+
+@tex
+\beforedisplay
+$$
+N(a;\sigma) = {1 \over 2} \hbox{erfc}\left({a \over \sqrt{2 \sigma^2}}\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+N(a;\sigma) = (1/2) erfc(a / sqrt(2 sigma^2))
+@end example
+@end ifinfo
+
+@end deftypefn
+
+@deftypefun double gsl_ran_gaussian_tail_pdf (double @var{x}, double @var{a}, double @var{sigma})
+This function computes the probability density @math{p(x)} at @var{x}
+for a Gaussian tail distribution with standard deviation @var{sigma} and
+lower limit @var{a}, using the formula given above.
+@end deftypefun
+
+@tex
+\centerline{\input rand-gaussian-tail.tex}
+@end tex
 
 @page
 @node The Bivariate Gaussian Distribution
@@ -1512,13 +1558,13 @@ Cumulative distribution function,
 
 @comment
 @page
-@node The Gumbel Distribution
-@section The Gumbel Distribution
+@node The Type-1 Gumbel Distribution
+@section  The Type-1 Gumbel Distribution
 @deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@deftypefnx Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-@cindex Gumbel distribution, random numbers
-These functions return random numbers from the Type-1 and Type-2 Gumbel
-distributions. The Type-1 Gumbel distribution is,
+@cindex Gumbel distribution (Type 1), random numbers
+@cindex Type 1 Gumbel distribution, random numbers
+This function returns random numbers from the Type-1 Gumbel
+distribution. The Type-1 Gumbel distribution is,
 
 @tex
 \beforedisplay
@@ -1537,7 +1583,43 @@ p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
 for 
 @c{$-\infty < x < \infty$}
 @math{-\infty < x < \infty}. 
-The Type-2 Gumbel distribution is,
+@end deftypefn
+
+@deftypefun double gsl_ran_gumbel1_pdf (double @var{x}, double @var{a}, double @var{b})
+This function computes the probability density @math{p(x)} at @var{x}
+for a Type-1 Gumbel distribution with parameters @var{a} and @var{b},
+using the formula given above.
+@end deftypefun
+
+@tex
+\centerline{\input rand-gumbel1.tex}
+@end tex
+
+@subheading Properties
+@itemize @asis
+@item
+Mean = 
+@c{$\Gamma(1+1/a) \mu$} 
+@math{\Gamma(1+1/a) \mu}, 
+Variance = 
+@c{$(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2$}
+@math{(\Gamma(1+2/a)-\Gamma(1+1/a))\mu^2}
+
+@item
+Cumulative distribution function, 
+@c{$CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$}
+@math{CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)}
+@end itemize
+
+@comment
+@page
+@node The Type-2 Gumbel Distribution
+@section  The Type-2 Gumbel Distribution
+@deftypefn Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@cindex Gumbel distribution (Type 2), random numbers
+@cindex Type 2 Gumbel distribution, random numbers
+This function returns random numbers from the Type-2 Gumbel
+distribution. The Type-2 Gumbel distribution is,
 
 @tex
 \beforedisplay
@@ -1558,15 +1640,14 @@ for
 @math{0 < x < \infty}.
 @end deftypefn
 
-@deftypefun double gsl_ran_gumbel1_pdf (double @var{x}, double @var{a}, double @var{b})
-@deftypefunx double gsl_ran_gumbel2_pdf (double @var{x}, double @var{a}, double @var{b})
-These function computes the probability density @math{p(x)} at @var{x}
-for a Type-1 or Type-2 Gumbel distribution with parameters @var{a} and
-@var{b}, using the formulas given above.
+@deftypefun double gsl_ran_gumbel2_pdf (double @var{x}, double @var{a}, double @var{b})
+This function computes the probability density @math{p(x)} at @var{x}
+for a Type-2 Gumbel distribution with parameters @var{a} and @var{b},
+using the formula given above.
 @end deftypefun
 
 @tex
-\centerline{\input rand-gumbel.tex}
+\centerline{\input rand-gumbel2.tex}
 @end tex
 
 @subheading Properties

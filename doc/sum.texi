@@ -92,7 +92,7 @@ main (void)
     @}
   
   gsl_sum_levin_u_accel (t, N, qnum, qden, dqnum, dqden, dsum,
-			 &sum_accel, &n_used, &sum_plain, &prec);
+                         &sum_accel, &n_used, &sum_plain, &prec);
 
   printf("term-by-term sum = %.16f using %d terms\n", sum, N) ;
   printf("term-by-term sum = %.16f using %d terms\n", sum_plain, n_used) ;

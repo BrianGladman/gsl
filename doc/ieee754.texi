@@ -40,20 +40,21 @@ $$
 @noindent
 @cindex normalized form, IEEE format
 @cindex denormalized form, IEEE format
-The sign bit is either zero or one.  The exponent ranges from
+The sign bit is either zero or one.  The exponent ranges from a minimum value
 @c{$E_{min}$}
 @math{E_min} 
-to 
+to a maximum value
 @c{$E_{max}$}
-@math{E_max}. It is converted to an unsigned number
+@math{E_max} depending on the precision. The exponent is converted to an 
+unsigned number
 @math{e}, known as the @dfn{biased exponent}, for storage by adding a
 @dfn{bias} parameter,
 @c{$e = E + \hbox{\it bias}$}
 @math{e = E + bias}.
 The sequence @math{fffff...} represents the digits of the binary
 fraction @math{f}. The binary digits are stored in @dfn{normalized
-form}, by adjusting the exponent to give a leading bit of @math{1}. 
-Since the leading digit is always 1 for normalized numbers it can then be
+form}, by adjusting the exponent to give a leading digit of @math{1}. 
+Since the leading digit is always 1 for normalized numbers it is
 assumed implicitly and does not have to be stored.
 Numbers smaller than 
 @c{$2^{E_{min}}$}
@@ -173,9 +174,9 @@ main ()
 
   double fd = f; /* promote from float to double */
   
-  printf(" float 1/3 = "); gsl_ieee_printf_float(&f); printf("\n");
-  printf("  promoted = "); gsl_ieee_printf_double(&fd); printf("\n");
-  printf("double 1/3 = "); gsl_ieee_printf_double(&d); printf("\n");
+  printf("   float ="); gsl_ieee_printf_float(&f); printf("\n");
+  printf("promoted ="); gsl_ieee_printf_double(&fd); printf("\n");
+  printf("  double ="); gsl_ieee_printf_double(&d); printf("\n");
 @}
 @end example
 
@@ -185,9 +186,9 @@ output below shows that the IEEE format normalizes this fraction to give
 a leading digit of 1,
 
 @example
- float 1/3 =  1.01010101010101010101011*2^-2
-  promoted =  1.0101010101010101010101100000000000000000000000000000*2^-2
-double 1/3 =  1.0101010101010101010101010101010101010101010101010101*2^-2
+   float = 1.01010101010101010101011*2^-2
+promoted = 1.0101010101010101010101100000000000000000000000000000*2^-2
+  double = 1.0101010101010101010101010101010101010101010101010101*2^-2
 @end example
 
 @noindent

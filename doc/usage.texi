@@ -11,9 +11,13 @@ impossible to link a program that would use them and give incorrect
 results.
 
 @menu
+* Compiling and Linking::       
 * Inline functions::            
 * Long double::                 
 @end menu
+
+@node Compiling and Linking
+@section Compiling and Linking
 
 @node Inline functions
 @section Inline functions
@@ -62,6 +66,34 @@ work on a given system then it will not be possible to link a program
 which uses GSL functions relying on @code{long double} formatted i/o.
 
 If it is necessary to work on a system which does not support formatted
-@code{long double} i/o then the options are to use binary i/o or to
+@code{long double} i/o then the options are to use binary formats or to
 convert @code{long double} results into @code{double} for reading and
 writing.
+
+@node Alternative optimized functions
+@section Alternative optimized functions
+
+The implementation of some frequently-used functions may not be optimal
+on all architectures. For example, the Gaussian random number generator
+can be implemented in different ways, using the polar method or ratio
+method, and the relative speeds of these algorithms depend on different
+factors. In these cases an alternate implementation of the function has
+been provided with exactly the same interface. If you write your
+application using calls to the standard implementations of the functions
+you can select the alternative versions later via a preprocessor
+macro. It is also possible to introduce your own optimized functions
+this way while retaining portability. For example,
+
+@example
+#ifdef SPARC
+#define gsl_ran_gaussian gsl_ran_gaussian_ratio_method
+#endif
+#ifdef INTEL
+#define gsl_ran_gaussian my_gaussian
+#endinf
+@end example
+
+Note that the alternative implementations will not produce bit-for-bit
+identical results, and in the case of random number distributions will
+produce an entirely different stream of random variates.
+

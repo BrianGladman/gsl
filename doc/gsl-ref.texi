@@ -13,6 +13,9 @@
 @end direntry
 
 @tex
+% Mathematical macros taken from the GNU Calc Manual
+% ==================================================
+%
 % Some special kludges to make TeX formatting prettier.
 % Because makeinfo.c exists, we can't just define new commands.
 % So instead, we take over little-used existing commands.

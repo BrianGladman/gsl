@@ -342,7 +342,7 @@ its @var{dy} argument -- both of these should be pointers to
 @node Search Bounds and Guesses
 @section Search Bounds and Guesses
 @cindex root finding, search bounds
-@cindex root finding, guess(es)
+@cindex root finding, initial guess
 
 You provide either search bounds or an initial guess; this section
 explains how search bounds and guesses work and how function arguments
@@ -888,7 +888,7 @@ main ()
   printf ("using %s method\n", gsl_root_fsolver_name (s));
 
   printf ("%5s [%9s, %9s] %9s %9s %10s %9s\n",
-	  "iter", "lower", "upper", "root", "actual", "err", "err(est)");
+          "iter", "lower", "upper", "root", "actual", "err", "err(est)");
 
   do
     @{
@@ -899,11 +899,11 @@ main ()
       status = gsl_root_test_interval (x, 0, 0.001);
 
       if (status == GSL_SUCCESS)
-	printf ("Converged:\n");
+        printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] %.7f %.7f %+.7f %.7f\n",
-	      iterations, x.lower, x.upper,
-	      r, r_expected, r - r_expected, x.upper - x.lower);
+              iterations, x.lower, x.upper,
+              r, r_expected, r - r_expected, x.upper - x.lower);
     @}
   while (status == GSL_CONTINUE && iterations < max_iterations);
 
@@ -983,7 +983,7 @@ main ()
   printf ("using %s method\n", gsl_root_fdfsolver_name (s));
 
   printf ("%-5s %10s %10s %10s %10s\n",
-	  "iter", "root", "actual", "err", "err(est)");
+          "iter", "root", "actual", "err", "err(est)");
   do
     @{
       iterations++;
@@ -993,10 +993,10 @@ main ()
       status = gsl_root_test_delta (x, x0, 0, 0.001);
 
       if (status == GSL_SUCCESS)
-	printf ("Converged:\n");
+        printf ("Converged:\n");
 
       printf ("%5d %10.7f %10.7f %+10.7f %10.7f\n",
-	      iterations, x, r_expected, x - r_expected, x - x0);
+              iterations, x, r_expected, x - r_expected, x - x0);
     @}
   while (status == GSL_CONTINUE && iterations < max_iterations);
 
