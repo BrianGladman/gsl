@@ -1372,7 +1372,7 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, gsl_sf_resu
       ln_pre_err = fabs(lnx) * 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(b));
     }
 
-    if(U.val != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
+    if(U.val != 0.0) {
       double ln_r_val = ln_pre_val + ln_multiplier;
       double ln_r_err = 2.0 * GSL_DBL_EPSILON * fabs(ln_multiplier) + ln_pre_err;
       int stat_e = gsl_sf_exp_mult_err_impl(ln_r_val, ln_r_err,

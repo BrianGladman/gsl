@@ -169,7 +169,7 @@ int gsl_sf_exp_mult_err_impl(const double x, const double dx,
     double ex = exp(x);
     result->val  = y * ex;
     result->err  = ex * (fabs(dy) + fabs(y*dx));
-    result->err += GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {

@@ -56,16 +56,19 @@ int
 laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * result)
 {
   gsl_sf_result lnfact;
-  gsl_sf_result lnpoch;
+  gsl_sf_result lg1;
+  gsl_sf_result lg2;
+  double s1, s2;
   int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
-  int stat_p = gsl_sf_lnpoch_impl(a+1.0, n, &lnpoch);
+  int stat_g1 = gsl_sf_lngamma_sgn_impl(a+1.0+n, &lg1, &s1);
+  int stat_g2 = gsl_sf_lngamma_sgn_impl(a+1.0, &lg2, &s2);
   double poly_1F1_val = 1.0;
   double poly_1F1_err = 0.0;
   int stat_e;
   int k;
 
-  double lnpre_val = lnpoch.val - lnfact.val;
-  double lnpre_err = lnpoch.err + lnfact.err + GSL_DBL_EPSILON * fabs(lnpre_val);
+  double lnpre_val = (lg1.val - lg2.val) - lnfact.val;
+  double lnpre_err = lg1.err + lg2.err + lnfact.err + 2.0 * GSL_DBL_EPSILON * fabs(lnpre_val);
 
   for(k=n-1; k>=0; k--) {
     double t = (-n+k)/(a+1.0+k) * (x/(k+1));
@@ -86,7 +89,7 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
                                     poly_1F1_val, poly_1F1_err,
                                     result);
 
-  return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
+  return GSL_ERROR_SELECT_4(stat_e, stat_f, stat_g1, stat_g2);
 }
 
 
@@ -242,11 +245,17 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
     return laguerre_n_cp(n, a, x, result);
   }
   else if(n < 5 || (x > 0.0 && a < -n-1)) {
-    /* Either polynomial will not lose too much accuracy
-     * or all the terms are negative.
-     * In any case, the error estimate here is good.
+    /* Either the polynomial will not lose too much accuracy
+     * or all the terms are negative. In any case,
+     * the error estimate here is good. We try both
+     * explicit summation methods, as they have different
+     * characteristics. One may underflow/overflow while the
+     * other does not.
      */
-    return laguerre_n_poly_safe(n, a, x, result);
+    if(laguerre_n_cp(n, a, x, result) == GSL_SUCCESS)
+      return GSL_SUCCESS;
+    else
+      return laguerre_n_poly_safe(n, a, x, result);
   }
   else if(n > 1.0e+07 && x > 0.0 && a > -1.0 && x < 2.0*(a+1.0)+4.0*n) {
     return laguerre_large_n(n, a, x, result);
