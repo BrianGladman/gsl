@@ -268,3 +268,11 @@ int main() {
   printf("%.18e\n", x);
 }
 ----------------------------------------------------------------------
+BUG#29 - eigen/jacobi.c is similar to Numerical Recipes
+
+From: Alisa Neeman <aneeman@soe.ucsc.edu>
+Subject: jacobi.c
+  Umm, I just happened to notice that the source code jacobi.c
+is very similar to that in the book, Numerical Recipes in C, the
+jacobi function (page 467). Even the local variables have the same names.
+----------------------------------------------------------------------
