@@ -59,11 +59,25 @@ hyperg_1F1_renorm_b0(const double a, const double x, double * result)
 }
 
 
-/* 1F1(a+N+1,b,x)/1F1(a+N,b,x)
+/* 1F1'(a,b,x)/1F1(a,b,x)
+ * Uses Gautschi's version of the CF.
+ * [Gautschi, Math. Comp. 31, 994 (1977)]
+ *
+ * Supposedly this suffers from the "anomalous convergence"
+ * problem when b < x. I have seen anomalous convergence
+ * in several of the continued fractions associated with
+ * 1F1(a,b,x). This particular CF formulation seems stable
+ * for b > x. However, it does display a painful artifact
+ * of the anomalous convergence; the convergence plateaus
+ * unless b >>> x. For example, even for b=1000, x=1, this
+ * method locks onto a ratio which is only good to about
+ * 4 digits. Apparently the rest of the digits are hiding
+ * way out on the plateau, but finite-precision lossage
+ * means you will never get them.
  */
 static
 int
-hyperg_1F1_CF1(const double a, const double b, const int N, const double x, double * result)
+hyperg_1F1_CF1_p(const double a, const double b, const double x, double * result)
 {
   const double RECUR_BIG = GSL_SQRT_DBL_MAX;
   const int maxiter = 5000;
@@ -72,8 +86,8 @@ hyperg_1F1_CF1(const double a, const double b, const int N, const double x, doub
   double Bnm2 = 0.0;
   double Anm1 = 0.0;
   double Bnm1 = 1.0;
-  double a1 =  2.0*(a+N+1.0) - b + x;
-  double b1 = -(b - a - N - 1.0);
+  double a1 = 1.0;
+  double b1 = 1.0;
   double An = b1*Anm1 + a1*Anm2;
   double Bn = b1*Bnm1 + a1*Bnm2;
   double an, bn;
@@ -87,8 +101,95 @@ hyperg_1F1_CF1(const double a, const double b, const int N, const double x, doub
     Bnm2 = Bnm1;
     Anm1 = An;
     Bnm1 = Bn;
-    an = 2.0*(a + N + n) - b + x;
-    bn = (a + N + n - 1.0) * (b - a - N - n);
+    an = (a+n)*x/((b-x+n-1)*(b-x+n));
+    bn = 1.0;
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+
+  *result = a/(b-x) * fn;
+
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* 1F1'(a,b,x)/1F1(a,b,x)
+ * Uses Gautschi's series transformation of the
+ * continued fraction. This is apparently the best
+ * method for getting this ratio in the stable region.
+ * The convergence is monotone and supergeometric
+ * when b > x.
+ */
+static
+int
+hyperg_1F1_CF1_p_ser(const double a, const double b, const double x, double * result)
+{
+  double sum  = 1.0;
+  double pk   = 1.0;
+  double rhok = 0.0;
+  int k;
+  for(k=1; k<1000; k++) {
+    double ak = (a + k)*x/((b-x+k-1.0)*(b-x+k));
+    rhok = -ak*(1.0 + rhok)/(1.0 + ak*(1.0+rhok));
+    pk  *= rhok;
+    sum += pk;
+  }
+  *result = a/(b-x) * sum;
+  return GSL_SUCCESS;
+}
+
+
+/* 1F1(a+1,b,x)/1F1(a,b,x)
+ *
+ * I think this suffers from typical "anomalous convergence".
+ * I could not find a region where it was truly useful.
+ */
+static
+int
+hyperg_1F1_CF1(const double a, const double b, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = b - a - 1.0;
+  double b1 = b - x - 2.0*(a+1.0);
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = (a + n - 1.0) * (b - a - n);
+    bn = b - x - 2.0*(a+n);
     An = bn*Anm1 + an*Anm2;
     Bn = bn*Bnm1 + an*Bnm2;
 
@@ -115,6 +216,65 @@ hyperg_1F1_CF1(const double a, const double b, const int N, const double x, doub
     return GSL_SUCCESS;
 }
 
+
+/* 1F1(a,b+1,x)/1F1(a,b,x)
+ *
+ * This seemed to suffer from "anomalous convergence".
+ * However, I have no theory for this recurrence.
+ */
+static
+int
+hyperg_1F1_CF1_b(const double a, const double b, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = b + 1.0;
+  double b1 = (b + 1.0) * (b - x);
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = (b + n) * (b + n - 1.0 - a) * x;
+    bn = (b + n) * (b + n - 1.0 - x);
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+
+  *result = fn;
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
 
 
 /* We define two scaled functions for general use.
@@ -989,11 +1149,65 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
       return GSL_EFAILED;
     }
   }
+  else if(b > 2*a) {
+    double rap;
+    int stat_CF1 = hyperg_1F1_CF1_p_ser(a, b, x, &rap);
+    double ra = 1.0 + x/a * rap;
+    /*
+    double ra;
+    int stat_CF1 = hyperg_1F1_CF1(a, b, x, &ra);
+    */
+    double Ma   = GSL_SQRT_DBL_MIN;
+    double Map1 = ra * Ma;
+    double Mnp1 = Map1;
+    double Mn   = Ma;
+    double Mnm1;
+    int n;
+    for(n=a; n>0; n--) {
+        Mnm1 = (n * Mnp1 - (2*n-b+x) * Mn) / (b-n);
+        Mnp1 = Mn;
+        Mn   = Mnm1;
+    }
+    *result = Ma/Mn;
+    return GSL_SUCCESS;
+
+    /* Recurse down in b, using a CF1 continued fraction
+     * at the starting point. Normalize by the value
+     * at (a,a)
+     */
+     /*
+    double rb;
+    int stat_CF1_b = hyperg_1F1_CF1_b(a, b, x, &rb);  1F1(a,b+1,x)/1F1(a,b,x) 
+    double Mab   = GSL_SQRT_DBL_MIN;
+    double Mabp1 = rb * Mab;
+    double Maa;
+    double Mnp1 = Mabp1;
+    double Mn   = Mab;
+    double Mnm1;
+    int stat_aa;
+    int n;
+    for(n=b; n>a; n--) {
+      Mnm1 = -(n*(1.0-n-x)*Mn + x*(n-a)*Mnp1)/(n*(n-1.0));
+      Mnp1 = Mn;
+      Mn   = Mnm1;
+    }
+    stat_aa = gsl_sf_exp_impl(x, &Maa);   1F1(a,a,x) 
+    if(stat_aa == GSL_SUCCESS) {
+      Mab *= (Maa/Mn);
+      *result = Mab;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return stat_aa;
+    }
+    */
+  }
   else if(x > 0.0 && 2*a + x > b) {
     const double a0 = (b-x)/2.0;
     const int ia0   = (int)floor(locMAX(a0,0.0));
     double r;
-    int stat_CF1 = hyperg_1F1_CF1(0.0, b, ia0, x, &r);
+    int stat_CF1 = hyperg_1F1_CF1(ia0, b, x, &r);
     double M0 = GSL_SQRT_DBL_MIN;
     double Mnm1  = M0;        /* 1F1(ia0,b,x)   */
     double Mn    = r * M0;    /* 1F1(ia0+1,b,x) */
@@ -1026,7 +1240,7 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, double * result)
     return GSL_SUCCESS;
     */
     double r;
-    int stat_CF1 = hyperg_1F1_CF1(0.0, b, a, x, &r);
+    int stat_CF1 = hyperg_1F1_CF1(a, b, x, &r);
     /* r = 1.1096587924011110925; */
     if(stat_CF1 == GSL_SUCCESS) {
       double Mnp1 = GSL_SQRT_DBL_MIN;
