@@ -691,7 +691,8 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
  *
  * checked OK [GJ] Sun May  3 22:36:29 EDT 1998 
  */
-int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
+int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result,
+                                       const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x <= 0.0 || nu <= 0.0) {
     *result = 0.0;
@@ -705,6 +706,7 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
     double ai, aip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
+    int stat_a;
 
     if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
@@ -737,13 +739,14 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
 
     asum = olver_Asum(nu, z, abs_zeta);
     bsum = olver_Bsum(nu, z, abs_zeta);
+
     arg  = crnu*crnu * zeta;
-    gsl_sf_airy_Ai_impl(arg, &ai);
-    gsl_sf_airy_Ai_deriv_impl(arg, &aip);
+    stat_a = gsl_sf_airy_Ai_impl(arg, &ai, goal, err_bits);
+    gsl_sf_airy_Ai_deriv_impl(arg, &aip, goal, err_bits);
 
     *result = pre * (ai*asum/crnu + aip*bsum/(nu*crnu*crnu));
 
-    return GSL_SUCCESS;
+    return stat_a;
   }
 }
 
@@ -755,7 +758,8 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, double * result)
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
  */
-int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
+int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result,
+                                       const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(x <= 0.0 || nu <= 0.0) {
     *result = 0.0;
@@ -769,6 +773,7 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
     double bi, bip;
     double z = x/nu;
     double crnu = pow(nu, 1.0/3.0);
+    int stat_b;
 
     if(fabs(1.0-z) < 0.02) {
       const double a = 1.0-z;
@@ -801,11 +806,12 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, double * result)
 
     asum = olver_Asum(nu, z, abs_zeta);
     bsum = olver_Bsum(nu, z, abs_zeta);
+
     arg  = crnu*crnu * zeta;
-    gsl_sf_airy_Bi_impl(arg, &bi);
-    gsl_sf_airy_Bi_deriv_impl(arg, &bip);
+    stat_b = gsl_sf_airy_Bi_impl(arg, &bi, goal, err_bits);
+    gsl_sf_airy_Bi_deriv_impl(arg, &bip, goal, err_bits);
 
     *result = -pre * (bi*asum/crnu + bip*bsum/(nu*crnu*crnu));
-    return GSL_SUCCESS;
+    return stat_b;
   }
 }

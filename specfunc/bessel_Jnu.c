@@ -58,7 +58,8 @@ bessel_J_CF1(const double nu, const double x, double * result, double * sign)
  */
 static
 int
-bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnup1)
+bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnup1,
+                     const gsl_prec_t goal, const unsigned int err_bits)
 {
   const double nu_cut = 25.0;
   int n;
@@ -68,8 +69,8 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
   double Jnm1;
   double Jnp1_save;
   
-  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps + 1.0, x, &Jnp1);
-  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps,       x, &Jn);
+  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps + 1.0, x, &Jnp1, goal, err_bits);
+  gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps,       x, &Jn, goal, err_bits);
   
   for(n=steps; n>0; n--) {
     Jnm1 = 2.0*(nu+n)/x * Jn - Jnp1;
@@ -87,7 +88,8 @@ bessel_J_recur_asymp(const double nu, const double x, double * Jnu, double * Jnu
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
+gsl_sf_bessel_Jnu_impl(const double nu, const double x, double * result,
+                       const gsl_prec_t goal, const unsigned int err_bits)
 {
   const double nu_cut = 25.0;
 
@@ -105,11 +107,11 @@ gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
     return gsl_sf_bessel_Inu_Jnu_taylor_impl(nu, x, -1, 100, GSL_MACH_EPS, result);
   }
   else if(nu > nu_cut) {
-    return gsl_sf_bessel_Jnu_asymp_Olver_impl(nu, x, result);
+    return gsl_sf_bessel_Jnu_asymp_Olver_impl(nu, x, result, goal, err_bits);
   }
   else {
     double Jnu, Jnup1;
-    int status = bessel_J_recur_asymp(nu, x, &Jnu, &Jnup1);
+    int status = bessel_J_recur_asymp(nu, x, &Jnu, &Jnup1, goal, err_bits);
     *result = Jnu;
     return status;
   }
@@ -119,9 +121,10 @@ gsl_sf_bessel_Jnu_impl(double nu, double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Jnu_e(double nu, double x, double * result)
+gsl_sf_bessel_Jnu_e(const double nu, const double x, double * result,
+                    const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_bessel_Jnu_impl(nu, x, result);
+  int status = gsl_sf_bessel_Jnu_impl(nu, x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Jnu_e", status);
   }
@@ -132,10 +135,11 @@ gsl_sf_bessel_Jnu_e(double nu, double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
 double
-gsl_sf_bessel_Jnu(double nu, double x)
+gsl_sf_bessel_Jnu(const double nu, const double x,
+                  const gsl_prec_t goal, const unsigned int err_bits )
 {
   double y;
-  int status = gsl_sf_bessel_Jnu_impl(nu, x, &y);
+  int status = gsl_sf_bessel_Jnu_impl(nu, x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_bessel_Jnu", status);
   }

@@ -12,9 +12,9 @@
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int     gsl_sf_hyperg_0F1_impl(double c, double x, double * result);
-int     gsl_sf_hyperg_0F1_e(double c, double x, double * result);
-double  gsl_sf_hyperg_0F1(double c, double x);
+int     gsl_sf_hyperg_0F1_impl(double c, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
+int     gsl_sf_hyperg_0F1_e(double c, double x, double * result, gsl_prec_t goal, unsigned int err_bits);
+double  gsl_sf_hyperg_0F1(double c, double x, gsl_prec_t goal, unsigned int err_bits);
 
 
 /* Confluent hypergeometric function  for integer parameters.

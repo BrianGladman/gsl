@@ -75,7 +75,8 @@ static int bessel_Yn_small_x(const int n, const double x, double * result)
 
 
 int
-gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
+gsl_sf_bessel_Yn_impl(int n, const double x, double * result,
+                      const gsl_prec_t goal, const unsigned int err_bits)
 {
   int sign = 1;
 
@@ -116,7 +117,7 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
     }
     else if(n > 50) {
       double b0 = 0.0;
-      int status = gsl_sf_bessel_Ynu_asymp_Olver_impl((double)n, x, &b0);
+      int status = gsl_sf_bessel_Ynu_asymp_Olver_impl((double)n, x, &b0, goal, err_bits);
       *result = sign * b0;
       return status;
     }
@@ -139,7 +140,8 @@ gsl_sf_bessel_Yn_impl(int n, const double x, double * result)
 
 
 int
-gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, double * result_array)
+gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, double * result_array,
+                            const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(nmin < 0 || nmax < nmin || x <= 0.0) {
     int j;
@@ -152,8 +154,8 @@ gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, doub
     double Ynm1;
     int n;
 
-    int stat_nm1 = gsl_sf_bessel_Yn_impl(nmin,   x, &Ynm1);
-    int stat_n   = gsl_sf_bessel_Yn_impl(nmin+1, x, &Yn);
+    int stat_nm1 = gsl_sf_bessel_Yn_impl(nmin,   x, &Ynm1, goal, err_bits);
+    int stat_n   = gsl_sf_bessel_Yn_impl(nmin+1, x, &Yn, goal, err_bits);
 
     int stat = GSL_ERROR_SELECT_2(stat_nm1, stat_n);
 
@@ -179,9 +181,10 @@ gsl_sf_bessel_Yn_array_impl(const int nmin, const int nmax, const double x, doub
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Yn_e(const int n, const double x, double * result)
+gsl_sf_bessel_Yn_e(const int n, const double x, double * result,
+                   const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_bessel_Yn_impl(n, x, result);
+  int status = gsl_sf_bessel_Yn_impl(n, x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Yn_e", status);
   }
@@ -190,9 +193,10 @@ gsl_sf_bessel_Yn_e(const int n, const double x, double * result)
 
 
 int
-gsl_sf_bessel_Yn_array_e(const int nmin, const int nmax, const double x, double * result_array)
+gsl_sf_bessel_Yn_array_e(const int nmin, const int nmax, const double x, double * result_array,
+                         const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_bessel_Yn_array_impl(nmin, nmax, x, result_array);
+  int status = gsl_sf_bessel_Yn_array_impl(nmin, nmax, x, result_array, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_bessel_Yn_array_e", status);
   }
@@ -202,10 +206,11 @@ gsl_sf_bessel_Yn_array_e(const int nmin, const int nmax, const double x, double 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
-double gsl_sf_bessel_Yn(const int n, const double x)
+double gsl_sf_bessel_Yn(const int n, const double x,
+                        const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_bessel_Yn_impl(n, x, &y);
+  int status = gsl_sf_bessel_Yn_impl(n, x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_bessel_Yn", status);
   }

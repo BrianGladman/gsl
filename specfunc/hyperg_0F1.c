@@ -169,7 +169,8 @@ hyperg_0F1_bessel_I(const double nu, const double x, double * result)
  */
 static
 int
-hyperg_0F1_bessel_J(const double nu, const double x, double * result)
+hyperg_0F1_bessel_J(const double nu, const double x, double * result,
+                    const gsl_prec_t goal, const unsigned int err_bits)
 {
   if(nu < 0.0) { 
     const double anu = -nu;
@@ -177,8 +178,8 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result)
     const double c   = cos(anu*M_PI);
     double J = 0.0;
     double Y = 0.0;
-    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
-    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
+    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J, goal, err_bits);
+    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y, goal, err_bits);
     *result = c * J - s * Y;
     if(stat_Y != GSL_SUCCESS)
       return stat_Y;
@@ -186,7 +187,7 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result)
       return stat_J;
   }
   else {
-    return gsl_sf_bessel_Jnu_impl(nu, x, result);
+    return gsl_sf_bessel_Jnu_impl(nu, x, result, goal, err_bits);
   }
 }
 
@@ -194,7 +195,8 @@ hyperg_0F1_bessel_J(const double nu, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
+gsl_sf_hyperg_0F1_impl(double c, double x, double * result,
+                       const gsl_prec_t goal, unsigned int err_bits)
 {
   const double rintc = floor(c + 0.5);
   const int c_neg_integer = (c < 0.0 && fabs(c - rintc) < locEPS);
@@ -208,7 +210,7 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
     double Jcm1;
     double lg_c, sgn;
     int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
-    int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1);
+    int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1, goal, err_bits);
     if(stat_g != GSL_SUCCESS) {
       *result = 0.0;
       return stat_g;
@@ -250,9 +252,10 @@ gsl_sf_hyperg_0F1_impl(double c, double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hyperg_0F1_e(const double c, const double x, double * result)
+gsl_sf_hyperg_0F1_e(const double c, const double x, double * result,
+                    const gsl_prec_t goal, const unsigned int err_bits)
 {
-  int status = gsl_sf_hyperg_0F1_impl(c, x, result);
+  int status = gsl_sf_hyperg_0F1_impl(c, x, result, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_ERROR("gsl_sf_hyperg_0F1_e", status);
   }
@@ -263,10 +266,11 @@ gsl_sf_hyperg_0F1_e(const double c, const double x, double * result)
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*-*/
 
 double
-gsl_sf_hyperg_0F1(const double c, const double x)
+gsl_sf_hyperg_0F1(const double c, const double x,
+                  const gsl_prec_t goal, const unsigned int err_bits)
 {
   double y;
-  int status = gsl_sf_hyperg_0F1_impl(c, x, &y);
+  int status = gsl_sf_hyperg_0F1_impl(c, x, &y, goal, err_bits);
   if(status != GSL_SUCCESS) {
     GSL_WARNING("gsl_sf_hyperg_0F1", status);
   }
