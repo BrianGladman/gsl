@@ -29,11 +29,12 @@ libgsl.a:
 	  done ) ; \
 	done	
 	@test ! -f libgsl.a && \
-	for dir in $(SUBDIRS) ; \
+	( for dir in $(SUBDIRS) ; \
 	do (cd $$dir ; \
 	  for lib in lib*.a ; \
 	  do test -f $$lib \
-	  && echo ar q libgsl.a `ar t $$lib` \
-	  && ar q ../libgsl.a `ar t $$lib` || true ; \
+	  && echo ar q libgsl.a `$(AR) t $$lib` \
+	  && $(AR) q ../libgsl.a `$(AR) t $$lib` || true ; \
 	  done ) ; \
-	done || echo libgsl.a is up to date
+	done ; echo $(RANLIB) libgsl.a ; $(RANLIB) libgsl.a ) \
+	|| echo libgsl.a is up to date
