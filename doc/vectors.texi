@@ -4,7 +4,16 @@ terms of vectors and matrices you can pass a single structure containing
 both their data and dimensions without needing additional function
 arguments.
 
-@section The vector @code{struct}
+@menu
+* The vector struct::    
+* Vector allocation::           
+* Accessing vector elements::   
+* Reading and writing vectors::  
+* Examples of vectors::         
+@end menu
+
+@node The vector struct
+@section The vector struct
 
 Vectors are defined by a @code{gsl_vector} structure which contains two
 members, the size and a pointer to a block of memory where the elements
@@ -24,6 +33,7 @@ The library also defines two other types of vectors, for @code{floats}
 and @code{ints} which have the names @code{gsl_vector_float} and
 @code{gsl_vector_int}.
 
+@node Vector allocation
 @section Vector allocation
 
 @deftypefun {gsl_vector *} gsl_vector_alloc (size_t n)
@@ -54,10 +64,11 @@ These functions free a vector previously allocated with
 @code{gsl_vector_alloc} or @code{gsl_vector_calloc}.
 @end deftypefun
 
+@node Accessing vector elements
 @section Accessing vector elements
 
-Unlike @sc{fortran}, the C language does not provide support for vectors
-or matrices with range checking.  However, the functions
+Unlike @sc{fortran}, the C language does not provide support for range
+checking of vectors and matrices. However, the functions
 @code{gsl_vector_get} and @code{gsl_vector_set} can perform this check
 for you and report an error if you attempt to access elements outside
 the allowed range.
@@ -72,15 +83,36 @@ your program with the preprocessor definition
 @deftypefun double gsl_vector_get (const gsl_vector * v, size_t i)
 @deftypefunx float gsl_vector_float_get (const gsl_vector_float * v, size_t i)
 @deftypefunx int gsl_vector_int_get (const gsl_vector_int * v, size_t i)
+These functions return the @var{i}th element of a vector @var{v}. If
+@var{i} lies outside the allowed range of 0 to @var{n-1} then the error
+handler is invoked and 0 is returned.
 @end deftypefun
 
 @deftypefun void gsl_vector_set (gsl_vector * v, size_t i, double x)
 @deftypefunx void gsl_vector_float_set (gsl_vector_float * v, size_t i, float x)
 @deftypefunx void gsl_vector_int_set (gsl_vector_int * v, size_t i, int x)
+These functions set the value of the @var{i}th element of a vector
+@var{v} to @var{x}. If @var{i} lies outside the allowed range of 0 to
+@var{n-1} then the error handler is invoked.
 @end deftypefun
 
-@section Examples
+@node Reading and writing vectors
+@section  Reading and writing vectors
 
+@deftypefun int gsl_vector_fread (FILE * stream, gsl_vector * v)
+This function reads from the open file @var{stream}. The vector @var{v}
+must be preallocated with the correct length. The function uses the size
+of @var{v} to determine how many bytes to read. The function returns 0
+for success and @code{GSL_EFAILED} to indicate that there was a problem
+reading from the file.
+@end deftypefun
+
+@deftypefun int gsl_vector_fwrite (FILE * stream, const gsl_vector * v)
+This function writes the elements of the vector @var{v} on 
+@end deftypefun
+
+@node Examples of vectors
+@section Examples of vectors
 
 @example
 #include <stdio.h>
