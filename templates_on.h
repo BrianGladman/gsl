@@ -48,6 +48,7 @@
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
 #define ZERO 0
+#define BASE_EPSILON DBL_EPSILON
 
 #elif defined(BASE_FLOAT)
 #define BASE float
@@ -57,6 +58,7 @@
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
 #define ZERO 0
+#define BASE_EPSILON FLT_EPSILON
 
 #elif defined(BASE_ULONG)
 #define BASE unsigned long

@@ -27,6 +27,7 @@
 #endif
 
 #undef BASE
+#undef BASE_EPSILON
 #undef SHORT
 #undef ATOMIC
 #undef MULTIPLICITY
