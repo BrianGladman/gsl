@@ -3,11 +3,14 @@ programs which use GSL.
 
 @menu
 * Using gdb::                   
+* GCC warning options for numerical programs::  
 @end menu
 
 @node Using gdb
 @section Using gdb
-
+@cindex gdb
+@cindex debugging numerical programs
+@cindex breakpoints
 Any errors reported by the library are routed through the function
 @code{gsl_error}. By running your programs under gdb and setting a
 breakpoint in this function you can automatically catch any library
@@ -94,4 +97,173 @@ Thus we have found the line that caused the problem.  From this point we
 could also print out the values of other variables such as
 @code{complex_wavetable}.
 
+@node GCC warning options for numerical programs
+@section GCC warning options for numerical programs
+@cindex warning options
+@cindex gcc warning options
+@cindex -Wall
+
+Writing reliable numerical programs in C requires great
+care. Uninitialized variables, conversions from integers to floating
+point or from signed to unsigned integers can all cause hard-to-find
+problems.  For many non-numerical programs compiling with @code{gcc}'s
+warning option @code{-Wall} provides . However, for numerical programs
+@code{-Wall} is not enough. If you are unconvinced take a look at this
+program which contains two common errors that occur in numerical code,
+
+@example
+#include <math.h>
+#include <stdio.h>
+
+double f (int x) ;
+
+int main ()
+@{
+  double x ;
+  double a = 1.5 ;
+  double y = f(a) ;
+  printf("x = %g, sqrt(1.5) = %g\n", x, y) ;  
+  return 0 ;
+@}
+
+double f(x) @{
+  return sqrt(x) ;
+@}
+@end example
+@noindent
+This code compiles cleanly with @code{-Wall} but produces some very
+strange output,
+
+@example
+bjg|zeke> gcc -Wall tmp.c -lm
+bjg|zeke> ./a.out 
+x = -1.99849, sqrt(1.5) = 1
+@end example
+@noindent
+Note that adding @code{-ansi} does not help here, since the program is
+valid ANSI C. What is happening is that the variable @var{x} is declared
+but not initialized. In C an uninitialized variable is not necessarily
+zero -- it is undefined, it contains whatever happens to be in its
+memory location, in this case @code{-1.99849}.  Also, the prototype for
+the function @code{f(int x)} is not consistent with the function call
+@code{f(y)}, where @code{y} is a floating point number. This results in
+the argument being silently converted to an integer. This is valid C,
+but in a numerical program it could also be a programming error so we
+would like to be warned about it. (If we genuinely wanted to convert
+@code{y} to an integer then we could use an explicit cast,
+@code{(int)y}).  @footnote{The unitialized variable would be caught if
+we used @code{-O -Wall}}
+
+Fortunately GCC provides many additional warnings which can alert you to
+common problems. You just have to remember to use them. Here is a set
+of recommended warning options for numerical programs.
+
+@example
+gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
+  -Wstrict-prototypes -Wtraditional -Wconversion -Wshadow
+  -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
+  -Waggregate-return -fshort-enums -fno-common -Wnested-externs
+  -Dinline= -g -O4
+@end example
+@noindent
+It saves time if you to put these options in your @file{Makefile} (for
+example, under the target @code{make strict}) or define them as a shell
+variable or alias. For the details of these options consult the manual
+@cite{Using and porting GCC}. The following table gives a brief
+explanation of what types of errors these warnings catch.
+
+@table @code
+@item -ansi -pedantic 
+Use ANSI C, and reject any non-ANSI extensions. These flags help in
+writing portable programs that will compile on other systems.
+@item -Werror 
+Consider warnings to be errors, so that compilation stops. This prevents
+warnings from scrolling off the top of the screen and being lost. You
+won't be able to compile the program until it is completely
+warning-free.
+@item -Wall 
+This turns on a set of warnings for common programming problems. You
+need it, but it is not enough on its own, as explained above.
+@item -O4
+The warnings for unitialized variables in @code{-Wall} rely on the
+optimizer to analyze the code. If there is no optimization then the
+warnings aren't generated.
+@item -W 
+This turns on some extra warnings not included in @code{-Wall}, such as
+missing return values and comparisons between signed and unsigned
+integers.
+@item -Wmissing-prototypes -Wstrict-prototypes 
+Warn if there are any missing or inconsistent prototypes. If your
+prototypes are missing then you will never detect problems with
+incorrect arguments. If your prototypes are inconsistent then you
+already have a problem.
+@item -Wtraditional 
+This warns about certain constructs that behave differently in
+traditional and ANSI C. Whether the traditional or ANSI interpretation
+is used might be unpredictable on other compilers. 
+@item -Wconversion 
+The main use of this option is to warn about conversions from signed to
+unsigned integers. For example, @code{unsigned int x = -1}.. If you need
+to perform such a conversion you can use an explicit cast.
+@item -Wshadow
+This warns whenever a local variable shadows another local variable. If
+two variables have the same name then it is a potential source of
+confusion.
+@item -Wpointer-arith -Wcast-qual -Wcast-align 
+These options warn if you try to do pointer arithmetic for types which
+don't have a size, such as @code{void}, if you remove a @code{const}
+cast from a pointer, or if you cast a pointer to a type which has a
+different size, causing an invalid alignment.
+@item -Wwrite-strings
+This option gives string constants a @code{const} qualifier so that it
+will be a compiler error to attempt to overwrite them.
+@item -Waggregate-return 
+Warn if any functions that return structures or unions are defined or
+called. Some older compilers might have problems with such a construct.
+@item -fshort-enums 
+This option makes the type of @code{enum} as short as possible.
+FIXME: I can't remember why this is needed.
+@item -fno-common
+This option prevents global variables being simultaneously defined in
+different object files (you get an error at link time). Such a variable
+should be defined in one file and referred to in other files with an
+@code{extern} declaration.
+@item -Wnested-externs 
+This warns if an @code{extern} declaration is encountered within an
+function.
+@item -Dinline= 
+The @code{inline} keyword is not part of ANSI C. Thus if you want to use
+@code{-ansi} with a program which uses inline functions you can use this
+preprocessor definition to remove the @code{inline} keywords.
+@item -g 
+It always makes sense to put debugging symbols in the executable so that
+you can debug it using @code{gdb}. Their only effect is to increase the
+size, and you can always use @code{strip} to remove them later.
+@end table
+
+For comparison, this is what happens when the test program above is
+compiled with these options.
+
+@example
+bjg|zeke> gcc -ansi -pedantic -Werror -W -Wall -Wtraditional 
+-Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align 
+-Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums 
+-fno-common -Wmissing-prototypes -Wnested-externs -Dinline= 
+-g -O4 tmp.c 
+cc1: warnings being treated as errors
+tmp.c:7: warning: function declaration isn't a prototype
+tmp.c: In function `main':
+tmp.c:10: warning: passing arg 1 of `f' as integer rather than floating 
+due to prototype
+tmp.c:8: warning: `x' might be used uninitialized in this function
+tmp.c: In function `f':
+tmp.c:15: warning: type of `x' defaults to `int'
+tmp.c:16: warning: passing arg 1 of `sqrt' as floating rather than integer 
+due to prototype
+make: *** [tmp] Error 1
+@end example
+@noindent
+Both the errors are caught, plus the fact that we should have defined
+main as @code{int main (void)} in ANSI C. Clearly there is some work to
+do before this program is ready to run.
 
