@@ -182,7 +182,7 @@ int gsl_sf_synchrotron_1_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 2.0*M_SQRT2 * GSL_SQRT_DBL_EPSILON) {
     result->val = 2.14952824153447863671 * pow(x, 1.0/3.0);
-    result->err = GSL_DBL_EPSILON/3.0 * result->val;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
@@ -194,8 +194,9 @@ int gsl_sf_synchrotron_1_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_c2;
     gsl_sf_cheb_eval_impl(&synchrotron1_cs, t, &result_c1);
     gsl_sf_cheb_eval_impl(&synchrotron2_cs, t, &result_c2);
-    result->val = px * result_c1.val - px11 * result_c2.val - c0 * x;
-    result->err = px * result_c1.err + px11 * result_c2.err + c0 * x * GSL_DBL_EPSILON;
+    result->val  = px * result_c1.val - px11 * result_c2.val - c0 * x;
+    result->err  = px * result_c1.err + px11 * result_c2.err + c0 * x * GSL_DBL_EPSILON;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < -8.0*GSL_LOG_DBL_MIN/7.0) {
@@ -204,7 +205,7 @@ int gsl_sf_synchrotron_1_impl(const double x, gsl_sf_result * result)
     gsl_sf_result result_c1;
     gsl_sf_cheb_eval_impl(&synchrotron1a_cs, t, &result_c1);
     result->val = sqrt(x) * result_c1.val * exp(c0 - x);
-    result->err = GSL_DBL_EPSILON * result->val * fabs(c0-x);
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val * (fabs(c0-x)+1.0);
     return GSL_SUCCESS;
   }
   else {
@@ -227,7 +228,7 @@ int gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.07476412076723931836 * pow(x, 1.0/3.0);
-    result->err = GSL_DBL_EPSILON/3.0 * result->val;
+    result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
@@ -238,8 +239,9 @@ int gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result)
     gsl_sf_result cheb2;
     gsl_sf_cheb_eval_impl(&synchrotron21_cs, t, &cheb1);
     gsl_sf_cheb_eval_impl(&synchrotron22_cs, t, &cheb2);
-    result->val = px * cheb1.val - px5 * cheb2.val;
-    result->err = px * cheb1.err + px5 * cheb2.err;
+    result->val  = px * cheb1.val - px5 * cheb2.val;
+    result->err  = px * cheb1.err + px5 * cheb2.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < -8.0*GSL_LOG_DBL_MIN/7.0) {
@@ -248,7 +250,7 @@ int gsl_sf_synchrotron_2_impl(const double x, gsl_sf_result * result)
     gsl_sf_result cheb1;
     gsl_sf_cheb_eval_impl(&synchrotron2a_cs, t, &cheb1);
     result->val = sqrt(x) * exp(c0-x) * cheb1.val;
-    result->err = GSL_DBL_EPSILON * result->val * fabs(c0-x);
+    result->err = GSL_DBL_EPSILON * result->val * (fabs(c0-x)+1.0);
     return GSL_SUCCESS;
   }
   else {

@@ -27,34 +27,19 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
-  else if(   (ax < 0.8*GSL_SQRT_DBL_MAX && ay < 0.8*GSL_SQRT_DBL_MAX)
-          && (ax > 1.2*GSL_SQRT_DBL_MIN && ay > 1.2*GSL_SQRT_DBL_MIN)
-    ) {
-    /* Not too big or too small. But just right...
-     */
-    result->val = x*y;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
-  }
   else {
-    const double lx = log(ax);
-    const double ly = log(ay);
-    if(lx+ly < GSL_LOG_DBL_MIN) {
-      result->val = 0.0;
-      result->err = 0.0;
-      return GSL_EUNDRFLW;
+    const double f = 1.0 - 2.0 * GSL_DBL_EPSILON;
+    double min = GSL_MIN_DBL(fabs(x), fabs(y));
+    double max = GSL_MAX_DBL(fabs(x), fabs(y));
+    if(max < 0.9 * GSL_SQRT_DBL_MAX || min < f * DBL_MAX/max) {
+      result->val = x*y;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      return (fabs(result->val) == 0.0 ? GSL_EUNDRFLW : GSL_SUCCESS);
     }
-    else if(lx+ly > GSL_LOG_DBL_MAX) {
+    else {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
       return GSL_EOVRFLW;
-    }
-    else {
-      /* Well... ok then.
-       */
-      result->val = x*y;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-      return GSL_SUCCESS;
     }
   }
 }

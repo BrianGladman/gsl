@@ -137,13 +137,15 @@ int gsl_sf_exp_mult_impl(const double x, const double y, gsl_sf_result * result)
       return GSL_EUNDRFLW;
     }
     else {
-      const double sy  = GSL_SIGN(y);
-      const double M   = floor(x);
-      const double N   = floor(ly);
-      const double a   = x  - M;
-      const double b   = ly - N;
-      result->val = sy * exp(M+N) * exp(a+b);
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      const double sy   = GSL_SIGN(y);
+      const double M    = floor(x);
+      const double N    = floor(ly);
+      const double a    = x  - M;
+      const double b    = ly - N;
+      const double berr = GSL_DBL_EPSILON * (fabs(ly) + fabs(N));
+      result->val  = sy * exp(M+N) * exp(a+b);
+      result->err  = berr * fabs(result->val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
   }

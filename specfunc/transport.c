@@ -201,12 +201,12 @@ gsl_sf_transport_2_impl(const double x, gsl_sf_result * result)
     const double t = 2.0 * log(x) - x + log(sumexp);
     if(t < GSL_LOG_DBL_EPSILON) {
       result->val = val_infinity;
-      result->val = 2.0 * GSL_DBL_EPSILON * val_infinity;
+      result->err = 2.0 * GSL_DBL_EPSILON * val_infinity;
     }
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -214,12 +214,12 @@ gsl_sf_transport_2_impl(const double x, gsl_sf_result * result)
     const double t = 2.0 * log(x) - x;
     if(t < GSL_LOG_DBL_EPSILON) {
       result->val = val_infinity;
-      result->val = 2.0 * GSL_DBL_EPSILON * val_infinity;
+      result->err = 2.0 * GSL_DBL_EPSILON * val_infinity;
     }
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -246,7 +246,7 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = 0.5*x*x;
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else
@@ -288,7 +288,7 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -301,7 +301,7 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -350,12 +350,12 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
     const double t = 4.0 * log(x) - x + log(sumexp);
     if(t < GSL_LOG_DBL_EPSILON) {
       result->val = val_infinity;
-      result->val = 2.0 * GSL_DBL_EPSILON * val_infinity;
+      result->err = 2.0 * GSL_DBL_EPSILON * val_infinity;
     }
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -365,12 +365,12 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
     const double t = 4.0 * log(x) - x + log(sumexp);
     if(t < GSL_LOG_DBL_EPSILON) {
       result->val = val_infinity;
-      result->val = 2.0 * GSL_DBL_EPSILON * val_infinity;
+      result->err = 2.0 * GSL_DBL_EPSILON * val_infinity;
     }
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -378,12 +378,12 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
     const double t = 4.0 * log(x) - x;
     if(t < GSL_LOG_DBL_EPSILON) {
       result->val = val_infinity;
-      result->val = 2.0 * GSL_DBL_EPSILON * val_infinity;
+      result->err = 2.0 * GSL_DBL_EPSILON * val_infinity;
     }
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -410,7 +410,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
   }
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x*x*x*x/4.0;
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 4.0 * GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
       return GSL_EUNDRFLW;
     else
@@ -437,7 +437,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -452,7 +452,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }
@@ -465,7 +465,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
     else {
       const double et = exp(t);
       result->val = val_infinity - et;
-      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + fabs(t) * et);
+      result->err = 2.0 * GSL_DBL_EPSILON * (val_infinity + (fabs(t)+1.0) * et);
     }
     return GSL_SUCCESS;
   }

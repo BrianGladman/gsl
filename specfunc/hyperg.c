@@ -37,9 +37,9 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
       return GSL_EDOM;
     }
     if(an == 0.0 || n > 200.0) {
-      max_abs_del *= GSL_DBL_EPSILON;
-      result->val = sum;
-      result->err = fabs(GSL_DBL_EPSILON * n + max_abs_del);
+      result->val  = sum;
+      result->err  = GSL_DBL_EPSILON * fabs(n + max_abs_del);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(sum);
       return GSL_SUCCESS;
     }
 
@@ -48,7 +48,7 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     if(abs_u > 1.0 && max_abs_del > DBL_MAX/abs_u) {
       result->val = sum;
       result->err = fabs(sum);
-      return GSL_SUCCESS;
+      return GSL_EOVRFLW;
     }
     del *= u;
     sum += del;
@@ -67,9 +67,10 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     n  += 1.0;
   }
 
-  max_abs_del *= GSL_DBL_EPSILON;
-  result->val = sum;
-  result->err = fabs(GSL_DBL_EPSILON * n + max_abs_del);
+  result->val  = sum;
+  result->err  = GSL_DBL_EPSILON * fabs(n + max_abs_del);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(sum);
+
   return GSL_SUCCESS;
 }
 
@@ -87,8 +88,9 @@ gsl_sf_hyperg_1F1_large_b_impl(const double a, const double b, const double x, g
     const double t2a = a*(a+1.0)/(24.0*b*b)*uv2;
     const double t2b = 12.0 + 16.0*(a+2.0)*uv + 3.0*(a+2.0)*(a+3.0)*uv2;
     const double t2  = t2a*t2b;
-    result->val = pre * (1.0 - t1 + t2);
-    result->err = pre * 3.0 * GSL_DBL_EPSILON;
+    result->val  = pre * (1.0 - t1 + t2);
+    result->err  = pre * (1.0 + fabs(t1) + fabs(t2));
+    result->err += pre * 3.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -128,15 +130,16 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
       gsl_sf_hyperg_1F1_large_b_impl(a, b, x, &M);
     }
     if(lnpre > GSL_LOG_DBL_MAX-10.0) {
-      result->val = M.val;
-      result->err = M.err;
+      result->val  = M.val;
+      result->err  = M.err;
       *ln_multiplier = lnpre;
       return GSL_EOVRFLW;
     }
     else {
-      double epre = exp(lnpre);
-      result->val = epre * M.val;
-      result->err = epre * M.err;
+      double epre  = exp(lnpre);
+      result->val  = epre * M.val;
+      result->err  = epre * M.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       *ln_multiplier = 0.0;
       return GSL_SUCCESS;
     }
@@ -167,14 +170,22 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
       double max_lnpre = GSL_MAX(lnpre1,lnpre2);
       double lp1 = lnpre1 - max_lnpre;
       double lp2 = lnpre2 - max_lnpre;
-      result->val = sgpre1*exp(lp1)*M1.val + sgpre2*exp(lp2)*M2.val;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      double t1  = sgpre1*exp(lp1);
+      double t2  = sgpre2*exp(lp2);
+      result->val  = t1*M1.val + t2*M2.val;
+      result->err  = fabs(t1)*M1.err + fabs(t2)*M2.err;
+      result->err += GSL_DBL_EPSILON * (fabs(t1*M1.val) + fabs(t2*M2.val));
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       *ln_multiplier = max_lnpre;
       return GSL_EOVRFLW;
     }
     else {
-      result->val = sgpre1*exp(lnpre1)*M1.val + sgpre2*exp(lnpre2)*M2.val;
-      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      double t1 = sgpre1*exp(lnpre1);
+      double t2 = sgpre2*exp(lnpre2);
+      result->val  = t1*M1.val + t2*M2.val;
+      result->err  = fabs(t1) * M1.err + fabs(t2)*M2.err;
+      result->err += GSL_DBL_EPSILON * (fabs(t1*M1.val) + fabs(t2*M2.val));
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       *ln_multiplier = 0.0;
       return GSL_SUCCESS;
     }

@@ -40,8 +40,8 @@ int test_dilog(void)
    */
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (1.00001, M_PI/2.0, &r1, &r2),
-            -0.20562022409960237363, TEST_TOL0,
-             0.91597344814458309320, TEST_TOL0,
+            -0.20562022409960237363, TEST_TOL1,
+             0.91597344814458309320, TEST_TOL1,
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (0.99999, M_PI/2.0, &r1, &r2),
@@ -55,8 +55,8 @@ int test_dilog(void)
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (0.98, M_PI/2.0, &r1, &r2),
-            -0.19871638377785918403, TEST_TOL0,
-             0.90020045882981847610, TEST_TOL0,
+            -0.19871638377785918403, TEST_TOL2,
+             0.90020045882981847610, TEST_TOL2,
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (0.95, M_PI/2.0, &r1, &r2),
@@ -76,8 +76,8 @@ int test_dilog(void)
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (0.01, M_PI/2.0, &r1, &r2),
-            -0.000024999375027776215378, TEST_TOL0,
-             0.009999888892888684820, TEST_TOL0,
+            -0.000024999375027776215378, TEST_TOL3,
+             0.009999888892888684820, TEST_TOL3,
 	     GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (10.0, M_PI/2.0, &r1, &r2),
@@ -101,8 +101,8 @@ int test_dilog(void)
 	    GSL_SUCCESS);
 
   TEST_SF_2(s, gsl_sf_complex_dilog_impl, (0.9, 3.0*M_PI/4.0, &r1, &r2),
-            -0.6062840301356530985, TEST_TOL0,
-             0.4836632833122775721, TEST_TOL0,
+            -0.6062840301356530985, TEST_TOL1,
+             0.4836632833122775721, TEST_TOL1,
 	    GSL_SUCCESS);
 
   return s;

@@ -133,7 +133,7 @@ dilog_xge0(const double x, gsl_sf_result * result)
 static
 int
 dilogc_series_1(double r, double cos_theta, double sin_theta,
-                double * real_result, double * imag_result)
+                gsl_sf_result * real_result, gsl_sf_result * imag_result)
 {
   double alpha = 1.0 - cos_theta;
   double beta  = sin_theta;
@@ -152,9 +152,12 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
     real_sum += rk/((double)k*k) * ck;
     imag_sum += rk/((double)k*k) * sk;
   }
-  
-  *real_result = real_sum;
-  *imag_result = imag_sum;
+
+  real_result->val = real_sum;
+  real_result->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(real_sum);
+  imag_result->val = imag_sum;
+  imag_result->err = 2.0 * kmax * GSL_DBL_EPSILON * fabs(imag_sum);
+
   return GSL_SUCCESS;
 }
 
@@ -165,7 +168,7 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
  *   Li_2(z) = Sum[ a^n/n! H_n(theta), {n, 0, Infinity}]
  *
  * where
- *   H_n(theta) = Li_2(Exp(I theta))
+ *   H_n(theta) = Sum[ e^(i m theta) m^n / m^2, {m, 1, Infinity}]
  *   a = ln(r)
  *
  *  H_0(t) = Gl_2(t) + i Cl_2(t)
@@ -181,7 +184,7 @@ dilogc_series_1(double r, double cos_theta, double sin_theta,
 static
 int
 dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
-                double * real_result, double * imag_result)
+                gsl_sf_result * real_result, gsl_sf_result * imag_result)
 {
   double a = log(r);
   double omc = 1.0 - cos_theta;
@@ -195,41 +198,44 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
   H_re[0] = M_PI*M_PI/6.0 + 0.25*(theta*theta - 2.0*M_PI*fabs(theta));
   gsl_sf_clausen_impl(theta, &Him0);
   H_im[0] = Him0.val;
-  
-  H_re[1] = 0.5*log(2.0*omc);
-  H_im[1] = atan2(-sin_theta, omc);
-  
+
+  H_re[1] = -0.5*log(2.0*omc);
+  H_im[1] = -atan2(-sin_theta, omc);
+
   H_re[2] = -0.5;
   H_im[2] = 0.5 * sin_theta/omc;
-  
+
   H_re[3] = -0.5/omc;
   H_im[3] = 0.0;
-  
+
   H_re[4] = 0.0;
   H_im[4] = -0.5*sin_theta/(omc*omc);
-  
+
   H_re[5] = 0.5 * (2.0 + cos_theta)/(omc*omc);
   H_im[5] = 0.0;
-  
+
   H_re[6] = 0.0;
   H_im[6] = 0.5 * sin_theta/(omc*omc*omc*omc*omc)
             * (8*omc - sin_theta*sin_theta*(3 + cos_theta));
- 
+
   sum_re = H_re[0];
   sum_im = H_im[0];
   an = 1.0;
   nfact = 1.0;
   for(n=1; n<=6; n++) {
     double t;
-    an *= -a;
+    an *= a;
     nfact *= n;
     t = an/nfact;
     sum_re += t * H_re[n];
     sum_im += t * H_im[n];
   }
-  
-  *real_result = sum_re;
-  *imag_result = sum_im;
+
+  real_result->val = sum_re;
+  real_result->err = 2.0 * 6.0 * GSL_DBL_EPSILON * fabs(sum_re) + fabs(an/nfact);
+  imag_result->val = sum_im;
+  imag_result->err = 2.0 * 6.0 * GSL_DBL_EPSILON * fabs(sum_im) + Him0.err + fabs(an/nfact);
+
   return GSL_SUCCESS;
 }
 
@@ -239,45 +245,58 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
  */
 static
 int
-dilogc_unitdisk(double r, double theta, double * real_dl, double * imag_dl)
+dilogc_unitdisk(double r, double theta, gsl_sf_result * real_dl, gsl_sf_result * imag_dl)
 {
   const double zeta2 = M_PI*M_PI/6.0;
   int stat_dilog;
-  double cos_theta = cos(theta);
-  double sin_theta = sin(theta);
-  double x = r * cos_theta;
-  double y = r * sin_theta;
-  double x_tmp, y_tmp, r_tmp;
-  double result_re_tmp, result_im_tmp;
+  gsl_sf_result cos_theta;
+  gsl_sf_result sin_theta;
+  int stat_cos = gsl_sf_cos_impl(theta, &cos_theta);
+  int stat_sin = gsl_sf_sin_impl(theta, &sin_theta);
+  gsl_sf_result x;
+  gsl_sf_result y;
+  gsl_sf_result x_tmp, y_tmp, r_tmp;
+  gsl_sf_result result_re_tmp, result_im_tmp;
+  double cos_theta_tmp;
+  double sin_theta_tmp;
+  x.val = r * cos_theta.val;
+  x.err = r * cos_theta.err;
+  y.val = r * sin_theta.val;
+  y.err = r * sin_theta.err;
 
   /* Reflect away from z = 1 if
    * we are too close.
    */
-  if(x > 0.5) {
-    x_tmp = 1.0 - x;
-    y_tmp = -y;
-    r_tmp = sqrt(x_tmp*x_tmp + y_tmp*y_tmp);
+  if(x.val > 0.5) {
+    x_tmp.val = 1.0 - x.val;
+    x_tmp.err = GSL_DBL_EPSILON * (1.0 + fabs(x.val)) + x.err;
+    y_tmp.val = -y.val;
+    y_tmp.err = y.err;
+    r_tmp.val = sqrt(x_tmp.val*x_tmp.val + y_tmp.val*y_tmp.val);
+    r_tmp.err = (x_tmp.err*fabs(x_tmp.val) + y_tmp.err*fabs(y_tmp.val))/fabs(r_tmp.val);
   }
   else {
-    x_tmp = x;
-    y_tmp = y;
-    r_tmp = r;
+    x_tmp.val = x.val;
+    x_tmp.err = x.err;
+    y_tmp.val = y.val;
+    y_tmp.err = y.err;
+    r_tmp.val = r;
+    r_tmp.err = r * GSL_DBL_EPSILON;
   }
+
+  cos_theta_tmp = x_tmp.val / r_tmp.val;
+  sin_theta_tmp = y_tmp.val / r_tmp.val;
 
   /* Calculate dilog of the transformed variable.
    */
-  if(r_tmp < 0.98) {
-    double cos_theta_tmp = x_tmp / r_tmp;
-    double sin_theta_tmp = y_tmp / r_tmp;
-    stat_dilog = dilogc_series_1(r_tmp, cos_theta_tmp, sin_theta_tmp,
+  if(r_tmp.val < 0.98) {
+    stat_dilog = dilogc_series_1(r_tmp.val, cos_theta_tmp, sin_theta_tmp,
 				 &result_re_tmp, &result_im_tmp
 				 );
   }
   else {
-    double cos_theta_tmp = x_tmp / r_tmp;
-    double sin_theta_tmp = y_tmp / r_tmp;
-    double theta_tmp = atan2(y_tmp, x_tmp);
-    stat_dilog = dilogc_series_2(r_tmp, theta_tmp, cos_theta_tmp, sin_theta_tmp,
+    double theta_tmp = atan2(y_tmp.val, x_tmp.val);
+    stat_dilog = dilogc_series_2(r_tmp.val, theta_tmp, cos_theta_tmp, sin_theta_tmp,
                                  &result_re_tmp, &result_im_tmp
 				 );
   }
@@ -286,20 +305,28 @@ dilogc_unitdisk(double r, double theta, double * real_dl, double * imag_dl)
    *
    * Li2(z) = -Li2(1-z) + zeta(2) - ln(z) ln(1-z)
    */
-  if(x > 0.5) {
-    double lnz    =  log(r);                 /*  log(|z|)   */
-    double lnomz  =  log(r_tmp);             /*  log(|1-z|) */
-    double argz   =  theta;                  /*  arg(z)     */
-    double argomz =  atan2(y_tmp, x_tmp);    /*  arg(1-z)   */
-    *real_dl = -result_re_tmp + zeta2 - lnz*lnomz + argz*argomz;
-    *imag_dl = -result_im_tmp - argz*lnomz - argomz*lnz;
+  if(x.val > 0.5) {
+    double lnz    =  log(r);                         /*  log(|z|)   */
+    double lnomz  =  log(r_tmp.val);                 /*  log(|1-z|) */
+    double argz   =  theta;                          /*  arg(z)     */
+    double argomz =  atan2(y_tmp.val, x_tmp.val);    /*  arg(1-z)   */
+    real_dl->val  = -result_re_tmp.val + zeta2 - lnz*lnomz + argz*argomz;
+    real_dl->err  =  result_re_tmp.err;
+    real_dl->err +=  GSL_DBL_EPSILON * (zeta2 + fabs(lnz*lnomz) + fabs(argz*argomz));
+    real_dl->err +=  2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
+    imag_dl->val  = -result_im_tmp.val - argz*lnomz - argomz*lnz;
+    imag_dl->err  =  result_im_tmp.err;
+    imag_dl->err +=  GSL_DBL_EPSILON * (fabs(argz*lnomz) + fabs(argomz*lnz));
+    imag_dl->err +=  2.0 * GSL_DBL_EPSILON * fabs(imag_dl->val);
   }
   else {
-    *real_dl = result_re_tmp;
-    *imag_dl = result_im_tmp;
+    real_dl->val = result_re_tmp.val;
+    real_dl->err = result_re_tmp.err;
+    imag_dl->val = result_im_tmp.val;
+    imag_dl->err = result_im_tmp.err;
   }
 
-  return stat_dilog;
+  return GSL_ERROR_SELECT_3(stat_dilog, stat_sin, stat_cos);
 }
 
 
@@ -310,7 +337,10 @@ dilogc_unitdisk(double r, double theta, double * real_dl, double * imag_dl)
 int
 gsl_sf_dilog_impl(const double x, gsl_sf_result * result)
 {
-  if(x >= 0.0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(x >= 0.0) {
     return dilog_xge0(x, result);
   }
   else {
@@ -329,8 +359,8 @@ int
 gsl_sf_complex_dilog_impl(const double r, double theta,
                           gsl_sf_result * real_dl, gsl_sf_result * imag_dl)
 {
-  if(theta < 0.0 || theta > 2.0*M_PI) {
-    gsl_sf_angle_restrict_pos_impl(&theta);
+  if(real_dl == 0 || imag_dl == 0) {
+    return GSL_EFAULT;
   }
 
   if(r == 0.0) {
@@ -341,28 +371,42 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
     return GSL_SUCCESS;
   }
 
+/*
+  if(theta < 0.0 || theta > 2.0*M_PI) {
+    gsl_sf_angle_restrict_pos_impl(&theta);
+  }
+*/
+
   /* Trap cases of real-valued argument.
    */
   if(theta == 0.0) {
+    int stat_d;
     imag_dl->val = ( r > 1.0 ? -M_PI * log(r) : 0.0 );
     imag_dl->err = 2.0 * GSL_DBL_EPSILON * fabs(imag_dl->val);
-    return gsl_sf_dilog_impl(r, real_dl);
+    stat_d = gsl_sf_dilog_impl(r, real_dl);
+    return stat_d;
   }
   if(theta == M_PI) {
+    int stat_d;
     imag_dl->val = 0.0;
     imag_dl->err = 0.0;
-    return gsl_sf_dilog_impl(-r, real_dl);
+    stat_d = gsl_sf_dilog_impl(-r, real_dl);
+    return stat_d;
   }
 
   /* Trap unit circle case.
    */
   if(r == 1.0) {
-    double term1 = theta*theta;
-    double term2 = 2.0*M_PI*fabs(theta);
+    double theta_restrict = theta;
+    int stat_restrict = gsl_sf_angle_restrict_pos_impl(&theta_restrict);
+    int stat_c;
+    double term1 = theta_restrict*theta_restrict;
+    double term2 = 2.0*M_PI*fabs(theta_restrict);
     real_dl->val  = M_PI*M_PI/6.0 + 0.25*(term1 - term2);
-    real_dl->err  = GSL_DBL_EPSILON * 0.25 * (fabs(term1) + fabs(term2));
+    real_dl->err  = GSL_DBL_EPSILON * (M_PI*M_PI/6.0 + 0.25 * (fabs(term1) + fabs(term2)));
     real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
-    return gsl_sf_clausen_impl(theta, imag_dl);
+    stat_c = gsl_sf_clausen_impl(theta, imag_dl);
+    return GSL_ERROR_SELECT_2(stat_c, stat_restrict);
   }
 
   /* Generic case.
@@ -370,13 +414,13 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
   {
     int stat_dilog;
     double r_tmp, theta_tmp;
-    double result_re_tmp, result_im_tmp;
+    gsl_sf_result result_re_tmp, result_im_tmp;
 
     /* Reduce argument to unit disk.
      */
     if(r > 1.0) {
       r_tmp     = 1.0 / r;
-      theta_tmp = 2.0*M_PI - theta;
+      theta_tmp = /* 2.0*M_PI */ - theta;
     }
     else {
       r_tmp     = r;
@@ -403,29 +447,34 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
       double lnr = log(r);
       double pmt = M_PI - theta;
       gsl_sf_result Cl_a, Cl_b, Cl_c;
-      double r1, r2, r3, r4;
-      gsl_sf_clausen_impl(2.0*omega, &Cl_a);
-      gsl_sf_clausen_impl(2.0*theta, &Cl_b);
-      gsl_sf_clausen_impl(2.0*(omega+theta), &Cl_c);
-      r1 = -result_re_tmp;
+      double r1, r2, r3, r4, r5;
+      int stat_c1 = gsl_sf_clausen_impl(2.0*omega, &Cl_a);
+      int stat_c2 = gsl_sf_clausen_impl(2.0*theta, &Cl_b);
+      int stat_c3 = gsl_sf_clausen_impl(2.0*(omega+theta), &Cl_c);
+      int stat_c  = GSL_ERROR_SELECT_3(stat_c1, stat_c2, stat_c3);
+      r1 = -result_re_tmp.val;
       r2 = -0.5*lnr*lnr;
       r3 =  0.5*pmt*pmt;
       r4 = -zeta2;
+      r5 =  omega*lnr;
       real_dl->val  = r1 + r2 + r3 + r4;
-      real_dl->err  = GSL_DBL_EPSILON * (fabs(r1) + fabs(r2) + fabs(r3) + fabs(r4));
+      real_dl->err  = result_re_tmp.err;
+      real_dl->err += GSL_DBL_EPSILON * (fabs(r1) + fabs(r2) + fabs(r3) + fabs(r4));
       real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
-      imag_dl->val  = omega*log(r) + 0.5*(Cl_a.val + Cl_b.val - Cl_c.val);
+      imag_dl->val  = r5 + 0.5*(Cl_a.val + Cl_b.val - Cl_c.val);
+      imag_dl->err  = GSL_DBL_EPSILON * fabs(r5);
+      imag_dl->err += GSL_DBL_EPSILON * 0.5*(fabs(Cl_a.val) + fabs(Cl_b.val) + fabs(Cl_c.val));
       imag_dl->err += 0.5*(Cl_a.err + Cl_b.err + Cl_c.err);
       imag_dl->err += 2.0*GSL_DBL_EPSILON * fabs(imag_dl->val);
+      return GSL_ERROR_SELECT_2(stat_dilog, stat_c);
     }
     else {
-      real_dl->val = result_re_tmp;
-      real_dl->err = 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
-      imag_dl->val = result_im_tmp;
-      imag_dl->err = 2.0 * GSL_DBL_EPSILON * fabs(imag_dl->val);
+      real_dl->val = result_re_tmp.val;
+      real_dl->err = result_re_tmp.err;
+      imag_dl->val = result_im_tmp.val;
+      imag_dl->err = result_im_tmp.err;
+      return stat_dilog;
     }
-
-    return stat_dilog;
   }
 }
 

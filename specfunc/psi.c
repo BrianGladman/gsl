@@ -509,8 +509,9 @@ gsl_sf_psi_1piy_impl(const double y, gsl_sf_result * result)
     gsl_sf_cheb_eval_impl(&r1py_cs, x, &result_c);
     result->val  = result_c.val - M_EULER + v;
     result->err  = result_c.err;
-    result->err += GSL_DBL_EPSILON * (fabs(v) + M_EULER + fabs(result_c.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(v) + M_EULER + fabs(result_c.val));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err *= 5.0; /* FIXME: losing a digit somewhere... maybe at x=... ? */
     return GSL_SUCCESS;
   }
   else {

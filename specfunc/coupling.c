@@ -94,7 +94,10 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
                         int two_ma, int two_mb, int two_mc,
 			gsl_sf_result * result)
 {
-  if(two_ja < 0 || two_jb < 0 || two_jc < 0) {
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(two_ja < 0 || two_jb < 0 || two_jc < 0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EDOM;
@@ -191,7 +194,10 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
                         int two_jd, int two_je, int two_jf,
 			gsl_sf_result * result)
 {
-  if(   two_ja < 0 || two_jb < 0 || two_jc < 0
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(   two_ja < 0 || two_jb < 0 || two_jc < 0
      || two_jd < 0 || two_je < 0 || two_je < 0
      ) {
     result->val = 0.0;
@@ -215,6 +221,7 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
     double phase;
     double sum_pos = 0.0;
     double sum_neg = 0.0;
+    double sumsq_err = 0.0;
     int status = 0;
     status += delta(two_ja, two_jb, two_je, &d1);
     status += delta(two_ja, two_jc, two_jf, &d2);
@@ -243,6 +250,8 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
 
     for(tk=tkmin; tk<=tkmax; tk += 2) {
       double term;
+      double term_err;
+      gsl_sf_result den_1, den_2;
       gsl_sf_result d1_a, d1_b;
       status = 0;
       
@@ -262,21 +271,38 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
       }
 
       d1.val = d1_a.val * d1_b.val;
-      
-      term  = phase * n1.val / (d1.val*d2.val*d3.val) / (d4.val*d5.val*d6.val);
-      phase = -phase;
+      d1.err = d1_a.err * fabs(d1_b.val) + fabs(d1_a.val) * d1_b.err;
 
-      if(norm*term >= 0.0) {
+      den_1.val  = d1.val*d2.val*d3.val;
+      den_1.err  = d1.err * fabs(d2.val*d3.val);
+      den_1.err += d2.err * fabs(d1.val*d3.val);
+      den_1.err += d3.err * fabs(d1.val*d2.val);
+
+      den_2.val  = d4.val*d5.val*d6.val;
+      den_2.err  = d4.err * fabs(d5.val*d6.val);
+      den_2.err += d5.err * fabs(d4.val*d6.val);
+      den_2.err += d6.err * fabs(d4.val*d5.val);
+
+      term  = phase * n1.val / den_1.val / den_2.val;
+      phase = -phase;
+      term_err  = n1.err / fabs(den_1.val) / fabs(den_2.val);
+      term_err += fabs(term / den_1.val) * den_1.err;
+      term_err += fabs(term / den_2.val) * den_2.err;
+
+      if(term >= 0.0) {
         sum_pos += norm*term;
       }
       else {
         sum_neg -= norm*term;
-      }      
+      }
+
+      sumsq_err += norm*norm * term_err*term_err;
     }
-    
+
     result->val  = sum_pos - sum_neg;
     result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
-    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax - tkmin) * fabs(result->val);
+    result->err += sqrt(sumsq_err / (0.5*(tkmax-tkmin)+1.0));
+    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax - tkmin + 2.0) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
@@ -289,7 +315,10 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
 			int two_jg, int two_jh, int two_ji,
 			gsl_sf_result * result)
 {
-  if(   two_ja < 0 || two_jb < 0 || two_jc < 0
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else if(   two_ja < 0 || two_jb < 0 || two_jc < 0
      || two_jd < 0 || two_je < 0 || two_jf < 0
      || two_jg < 0 || two_jh < 0 || two_ji < 0
      ) {
@@ -334,7 +363,7 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
       term_err += s2.err * fabs(s1.val*s3.val);
       term_err += s3.err * fabs(s1.val*s2.val);
 
-      if((tk + 1) * term >= 0.0) {
+      if(term >= 0.0) {
         sum_pos += (tk + 1) * term;
       }
       else {
@@ -348,8 +377,8 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
 
     result->val  = phase * (sum_pos - sum_neg);
     result->err  = 2.0 * GSL_DBL_EPSILON * (sum_pos + sum_neg);
-    result->err += sqrt(sumsq_err / (tkmax-tkmin+1.0));
-    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax-tkmin) * fabs(result->val);
+    result->err += sqrt(sumsq_err / (0.5*(tkmax-tkmin)+1.0));
+    result->err += 2.0 * GSL_DBL_EPSILON * (tkmax-tkmin + 2.0) * fabs(result->val);
 
     return GSL_SUCCESS;
   }
