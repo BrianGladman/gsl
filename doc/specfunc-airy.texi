@@ -29,124 +29,60 @@ Bi(x) = @{1 / \pi@} \int_0^\infty (e^@{-t^3/3@} + \sin(@{1/3@} t^3 + xt) dt.
 
 @subsection Airy Functions
 
-@deftypefun  int gsl_sf_airy_Ai_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Ai_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Ai_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Ai_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Bi_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Bi_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Bi_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Bi_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Ai_scaled_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Ai_scaled_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Ai_scaled_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Ai_scaled_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Bi_scaled_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Bi_scaled_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Bi_scaled_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Bi_scaled_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
 
 @subsection Derivatives of Airy Functions
 
-@deftypefun  int gsl_sf_airy_Ai_deriv_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Ai_deriv_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Ai_deriv_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Ai_deriv_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Bi_deriv_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Bi_deriv_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Bi_deriv_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Bi_deriv_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Ai_deriv_scaled_impl (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Ai_deriv_scaled_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Ai_deriv_scaled_impl (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Ai_deriv_scaled_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_Bi_deriv_scaled_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_Bi_deriv_scaled_e (
-  double x,
-  gsl_mode_t mode,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_Bi_deriv_scaled_e (double x, gsl_mode_t mode, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_Bi_deriv_scaled_e (double x, gsl_mode_t mode, gsl_sf_result * result)
 @end deftypefun
 
 
 @subsection Zeros of Airy Functions
 
-@deftypefun  int gsl_sf_airy_zero_Ai_e (
-  int s,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_zero_Ai_e (
-  int s,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_zero_Ai_e (int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_zero_Ai_e (int s, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_zero_Bi_e (
-  int s,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_zero_Bi_e (
-  int s,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_zero_Bi_e (int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_zero_Bi_e (int s, gsl_sf_result * result)
 @end deftypefun
 
 
 @subsection Zeros of Derivatives of Airy Functions
 
-@deftypefun  int gsl_sf_airy_zero_Ai_deriv_e (
-  int s,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_zero_Ai_deriv_e (
-  int s,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_zero_Ai_deriv_e (int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_zero_Ai_deriv_e (int s, gsl_sf_result * result)
 @end deftypefun
 
-@deftypefun  int gsl_sf_airy_zero_Bi_deriv_e (
-  int s,
-  gsl_sf_result * result)
-@deftypefunx int gsl_sf_airy_zero_Bi_deriv_e (
-  int s,
-  gsl_sf_result * result)
+@deftypefun  int gsl_sf_airy_zero_Bi_deriv_e (int s, gsl_sf_result * result)
+@deftypefunx int gsl_sf_airy_zero_Bi_deriv_e (int s, gsl_sf_result * result)
 @end deftypefun
 

@@ -1,5 +1,7 @@
 This chapter describes functions for computing eigenvalues and eigenvectors.
 
+The following functions work only for real, symmetric matrices.
+
 @deftypefun int gsl_eigen_jacobi_impl (gsl_matrix * @var{matrix}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, unsigned int @var{max_rot}, unsigned int * @var{nrot})
 @end deftypefun
 
