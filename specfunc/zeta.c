@@ -265,8 +265,25 @@ static double zeta_neg_int_table[ZETA_NEG_TABLE_SIZE] = {
 };
 
 
-/* coefficients for Maclaurin summation in hzeta() */
-static double hzeta_c[14] = {
+/* coefficients for Maclaurin summation in hzeta()
+ * B_{2j}/(2j)!
+ */
+static double hzeta_c[15] = {
+  1.00000000000000000000000000000,
+  0.083333333333333333333333333333,
+ -0.00138888888888888888888888888889,
+  0.000033068783068783068783068783069,
+ -8.2671957671957671957671957672e-7,
+  2.08767569878680989792100903212e-8,
+ -5.2841901386874931848476822022e-10,
+  1.33825365306846788328269809751e-11,
+ -3.3896802963225828668301953912e-13,
+  8.5860620562778445641359054504e-15,
+ -2.17486869855806187304151642387e-16,
+  5.5090028283602295152026526089e-18,
+ -1.39544646858125233407076862641e-19,
+  3.5347070396294674716932299778e-21,
+ -8.9535174270375468504026113181e-23
 };
 
 
@@ -274,7 +291,7 @@ static double hzeta_c[14] = {
 
 int gsl_sf_hzeta_impl(const double s, const double q, double * result)
 {
-  if(s <= 1.0 || q < 0) {
+  if(s <= 1.0 || q <= 0.0) {
     return GSL_EDOM;
   }
   else if(-s * log(q) < GSL_LOG_DBL_MIN) {
@@ -282,7 +299,9 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     return GSL_EUNDRFLW;
   }
   else {
-    /* Euler-Maclaurin summation formula [Moshier, p. 400] */
+    /* Euler-Maclaurin summation formula 
+       [Moshier, p. 400, with several typo corrections]
+     */
     int j, k;
     const int jmax = 12;
     const int kmax = 10;
@@ -291,23 +310,25 @@ int gsl_sf_hzeta_impl(const double s, const double q, double * result)
     double pcp = pmax / (kmax + q);
     double ans = pmax*((kmax+q)/(s-1) - 0.5);
     
-    for(k=1; k<kmax; k++) {
+    for(k=0; k<kmax; k++) {
       ans += pow(k + q, -s);
     }
     ans += pmax; /* avoids one unnecessary call to pow() */
-    
+
     for(j=0; j<=jmax; j++) {
       double delta = hzeta_c[j] * scp * pcp;
       ans += delta;
       if(fabs(delta/ans) < GSL_MACH_EPS) break;
-      scp *= (s+2*j-1)*(s+2*j);
-      pcp *= (kmax + q)*(kmax + q);
+      scp *= (s+2*j+1)*(s+2*j+2);
+      pcp /= (kmax + q)*(kmax + q);
     }
     
+    *result = ans;
     return GSL_SUCCESS;
   }
 }
 
+/* checked OK [GJ] Tue May  5 20:38:59 MDT 1998 */
 int gsl_sf_zeta_impl(const double s, double * result)
 {
   if(s == 1.0) {
@@ -337,6 +358,7 @@ int gsl_sf_zeta_impl(const double s, double * result)
   }
 }
 
+/* checked OK [GJ] Tue May  5 20:34:39 MDT 1998 */
 int gsl_sf_zeta_int_impl(const int n, double * result)
 {
   if(n < 0) {
@@ -345,7 +367,7 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
       return GSL_SUCCESS;
     }
     else if(n > -ZETA_NEG_TABLE_NMAX) {
-      *result = zeta_neg_int_table[(n+1)/2];
+      *result = zeta_neg_int_table[-(n+1)/2];
       return GSL_SUCCESS;
     }
     else {
@@ -368,11 +390,12 @@ int gsl_sf_zeta_int_impl(const int n, double * result)
 void testy(void)
 {
   double x;
+  double q = 1.1;
   int n;
-  for(n=-110; n<=-90; n++) {
+  for(x = 1.0; x <= 30; x += 0.1 ) {
     double y;
-    y = gsl_sf_zeta_int(n);
-    printf("%4d  %28.18g\n", n, y);
+    int status = gsl_sf_hzeta_impl(x, q, &y);
+    printf("%24.18g  %8.5g   %24.18g  %2d\n", x, q, y, status);
   }
   exit(0);
 }
