@@ -12,31 +12,31 @@ F_j(x)   := 1/Gamma[j+1] Integral[ t^j /(Exp[t-x] + 1), (t,0,Infinity)]
 
 /* Complete integral F_(-1)(x) = e^x / (1 + e^x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_m1_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_m1_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_m1_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_m1_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
 /* Complete integral F_0(x) = ln(1 + e^x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_0_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_0_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_0_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_0_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
 
 /* Complete integral F_1(x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_1_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_1_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_1_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_1_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
 
 /* Complete integral F_2(x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_2_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_2_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_2_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_2_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
@@ -44,32 +44,32 @@ Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 /* Complete integral F_j(x)
  * for integer j
  *
-@deftypefun  int gsl_sf_fermi_dirac_int_impl(int j, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_int_e(int j, double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_int_impl (int j, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_int_e (int j, double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
 
 /* Complete integral F_(-1/2)(x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_mhalf_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_mhalf_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_mhalf_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_mhalf_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
 
 /* Complete integral F_(1/2)(x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_half_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_half_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_half_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_half_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
 
 /* Complete integral F_(3/2)(x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_3half_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_3half_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_3half_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_3half_e (double x, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
@@ -81,8 +81,8 @@ F_j(x,b) := 1/Gamma[j+1] Integral[ t^j /(Exp[t-x] + 1), (t,b,Infinity)]
  
 /* Incomplete integral F_0(x,b) = ln(1 + e^(b-x)) - (b-x)
  *
-@deftypefun  int gsl_sf_fermi_dirac_inc_0_impl(double x, double b, gsl_sf_result * result)
-@deftypefunx int gsl_sf_fermi_dirac_inc_0_e(double x, double b, gsl_sf_result * result)
+@deftypefun  int gsl_sf_fermi_dirac_inc_0_impl (double x, double b, gsl_sf_result * result)
+@deftypefunx int gsl_sf_fermi_dirac_inc_0_e (double x, double b, gsl_sf_result * result)
 Exceptional Return Values: GSL_EUNDRFLW, GSL_EDOM
 @end deftypefun
 

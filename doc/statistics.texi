@@ -651,7 +651,7 @@ The lower quartile is 16.5
 @end example
 
 @node Statistics References and Further Reading
-@section Statistics References and Further Reading
+@section References and Further Reading
 @noindent
 The standard reference for almost any topic in statistics is the
 multi-volume @cite{Advanced Theory of Statistics} by Kendall and Stuart.

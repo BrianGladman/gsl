@@ -1884,7 +1884,7 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end deftypefn
 
 @node Random Number Distribution Examples
-@section Random Number Distribution Examples
+@section Examples
 
 The following program demonstrates the use of a random number generator
 to produce variates from a distribution. It prints 10 samples from the
@@ -1954,7 +1954,7 @@ GSL_RNG_SEED=123
 @end example
 
 @node Random Number Distribution References and Further Reading
-@section Random Number Distribution References and Further Reading
+@section References and Further Reading
 
 For an encyclopaedic coverage of the subject readers are advised to
 consult the book @cite{Non-Uniform Random Variate Generation} by Luc

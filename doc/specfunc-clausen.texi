@@ -11,6 +11,6 @@ It is related to the dilogarithm by
 @math{ Cl_2(theta) = Im  Li_2(\exp(i theta)) }.
 
 
-@deftypefun  int gsl_sf_clausen_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_clausen_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_clausen_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_clausen_e (double x, gsl_sf_result * result)
 @end deftypefun

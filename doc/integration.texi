@@ -730,7 +730,7 @@ The integration over each subinterval uses the memory provided by
 @end deftypefun
 
 @node Numerical integration error codes
-@section Numerical integration error codes
+@section Error codes
 
 In addition to the standard error codes for invalid arguments the
 functions can return the following values,
@@ -749,7 +749,7 @@ the integral is divergent, or slowly convergent.
 @end table
 
 @node Numerical integration examples
-@section Numerical integration examples
+@section Examples
 
 The integrator @code{QAGS} will handle a large class of definite
 integrals. For example, consider the following integral, which has a
@@ -827,7 +827,7 @@ magnitude.
 
 
 @node Numerical integration References and Further Reading
-@section Numerical integration  References and Further Reading
+@section References and Further Reading
 
 @noindent
 The following book is the definitive reference for QUADPACK, and was

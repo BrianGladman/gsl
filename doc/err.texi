@@ -71,7 +71,7 @@ representable because of overflow or underflow (like ERANGE in the C
 library)
 @end deftypefn
 
-@deftypefn {Macro} int GSL_NOMEM
+@deftypefn {Macro} int GSL_ENOMEM
 No memory available. The system cannot allocate more virtual memory
 because its capacity is full (like ENOMEM in the C library). This error
 is reported when a GSL routine encounters problems when trying to

@@ -1186,7 +1186,7 @@ which offer the best performance are @code{taus}, @code{gfsr4} and
 @end smallexample
 
 @node Random Number References and Further Reading
-@section Random Number References and Further Reading
+@section References and Further Reading
 
 The subject of random number generation and testing is reviewed
 extensively in Knuth's @cite{Seminumerical Algorithms}.
@@ -1217,7 +1217,7 @@ G. Marsaglia
 @end itemize
 
 @node Random Number Acknowledgements
-@section Random Number Acknowledgements
+@section Acknowledgements
 @noindent
 Thanks to Makoto Matsumoto, Takuji Nishimura and Yoshiharu Kurita for
 making the source code to their generators (MT19937, MM&TN; TT800,

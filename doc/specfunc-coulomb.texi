@@ -10,11 +10,11 @@
 
 /* R_1 := 2Z sqrt(Z) exp(-Z r)
  */
-@deftypefun  int gsl_sf_hydrogenicR_1_impl(
+@deftypefun  int gsl_sf_hydrogenicR_1_impl (
   double Z, 
   double r, 
   gsl_sf_result * result)
-@deftypefunx int gsl_sf_hydrogenicR_1_e(
+@deftypefunx int gsl_sf_hydrogenicR_1_e (
   double Z, 
   double r, 
   gsl_sf_result * result)
@@ -24,13 +24,13 @@
  *
  * normalization such that psi(n,l,r) = R_n Y_(lm)
  */
-@deftypefun  int gsl_sf_hydrogenicR_impl(
+@deftypefun  int gsl_sf_hydrogenicR_impl (
   int n, 
   int l, 
   double Z, 
   double r, 
   gsl_sf_result * result)
-@deftypefunx int gsl_sf_hydrogenicR_e(
+@deftypefunx int gsl_sf_hydrogenicR_e (
   int n, 
   int l, 
   double Z, 
@@ -71,14 +71,14 @@ gsl_sf_coulomb_wave_FG_impl(
 
 /* F_L(eta,x)
  */
-@deftypefun  int gsl_sf_coulomb_wave_F_array_impl(
+@deftypefun  int gsl_sf_coulomb_wave_F_array_impl (
   double lam_min, 
   int kmax, 
   double eta,  
   double x, 
   double * fc_array, 
   double * F_exponent )
-@deftypefunx int gsl_sf_coulomb_wave_F_array_e(
+@deftypefunx int gsl_sf_coulomb_wave_F_array_e (
   double lam_min,  
   int kmax, 
   double eta, 
@@ -89,13 +89,13 @@ gsl_sf_coulomb_wave_FG_impl(
 
 /* F_L(eta,x), G_L(eta,x)
  */
-@deftypefun  int gsl_sf_coulomb_wave_FG_array_impl(
+@deftypefun  int gsl_sf_coulomb_wave_FG_array_impl (
   double lam_min, int kmax,
   double eta, double x,
   double * fc_array, double * gc_array,
   double * F_exponent,
   double * G_exponent)
-@deftypefunx int gsl_sf_coulomb_wave_FG_array_e(
+@deftypefunx int gsl_sf_coulomb_wave_FG_array_e (
   double lam_min, int kmax,
   double eta, double x,
   double * fc_array, double * gc_array,
@@ -106,14 +106,14 @@ gsl_sf_coulomb_wave_FG_impl(
 
 /* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x)
  */
-@deftypefun  int gsl_sf_coulomb_wave_FGp_impl(
+@deftypefun  int gsl_sf_coulomb_wave_FGp_impl (
   double lam_min, int kmax,
   double eta, double x,
   gsl_sf_result * fc, gsl_sf_result * fcp,
   gsl_sf_result * gc, gsl_sf_result * gcp,
   double * F_exponent,
   double * G_exponent)
-@deftypefunx int gsl_sf_coulomb_wave_FGp_e(
+@deftypefunx int gsl_sf_coulomb_wave_FGp_e (
   double lam_min, int kmax,
   double eta, double x,
   gsl_sf_result * fc, gsl_sf_result * fcp,
@@ -127,7 +127,7 @@ gsl_sf_coulomb_wave_FG_impl(
  * F(xi, eta)/xi. This is the function which reduces to
  * spherical Bessel functions in the limit eta->0.
  */
-@deftypefun  int gsl_sf_coulomb_wave_sphF_array_impl(
+@deftypefun  int gsl_sf_coulomb_wave_sphF_array_impl (
   double lam_min, int kmax,
   double eta, double x,
   double * fc_array,
@@ -139,11 +139,11 @@ gsl_sf_coulomb_wave_FG_impl(
 
 [Abramowitz+Stegun 14.1.8, 14.1.9]
 
-@deftypefun  int gsl_sf_coulomb_CL_impl(
+@deftypefun  int gsl_sf_coulomb_CL_impl (
   double L,
   double eta,
   gsl_sf_result * result)
-@deftypefunx int gsl_sf_coulomb_CL_list(
+@deftypefunx int gsl_sf_coulomb_CL_list (
   double Lmin,
   int kmax,
   double eta,

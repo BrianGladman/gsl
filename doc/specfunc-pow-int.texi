@@ -12,7 +12,7 @@ these functions do not check for overflow or underflow conditions.
 
 int     gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result);
 int     gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result); 
-@deftypefun double gsl_sf_pow_int(double x, int n)
+@deftypefun double gsl_sf_pow_int (double x, int n)
 @end deftypefun
 
 double gsl_sf_pow_2(const double x);

@@ -13,15 +13,15 @@ where @math{ \psi(0,x) } is called the di-gamma function.
 
 @subsection Digamma Function
 
-@deftypefun  int gsl_sf_psi_int_impl(int n, gsl_sf_result * result)
-@deftypefunx int gsl_sf_psi_int_e(int n, gsl_sf_result * result)
+@deftypefun  int gsl_sf_psi_int_impl (int n, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_int_e (int n, gsl_sf_result * result)
 Domain: n integer, n > 0
 Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_psi_impl(double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_psi_e(double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_psi_impl (double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_e (double x, gsl_sf_result * result)
 Domain: x != 0.0
 Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
@@ -30,8 +30,8 @@ Exceptional Return Values: GSL_EDOM, GSL_ELOSS
  *
  * exceptions: none
  */
-@deftypefun  int gsl_sf_psi_1piy_impl(double y, gsl_sf_result * result)
-@deftypefunx int gsl_sf_psi_1piy_e(double y, gsl_sf_result * result)
+@deftypefun  int gsl_sf_psi_1piy_impl (double y, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_1piy_e (double y, gsl_sf_result * result)
 Computes @math{ Re psi(1 + I y) }.
 Exceptional Return Values: none
 @end deftypefun
@@ -39,8 +39,8 @@ Exceptional Return Values: none
 
 @subsection Trigamma Function
 
-@deftypefun  int gsl_sf_psi_1_int_impl(int n, gsl_sf_result * result)
-@deftypefunx int gsl_sf_psi_1_int_e(int n, gsl_sf_result * result)
+@deftypefun  int gsl_sf_psi_1_int_impl (int n, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_1_int_e (int n, gsl_sf_result * result)
 Domain: n integer, n > 0
 Exceptional Return Values: GSL_EDOM
 @end deftypefun
@@ -48,8 +48,8 @@ Exceptional Return Values: GSL_EDOM
 
 @subsection Polygamma Function
 
-@deftypefun  int gsl_sf_psi_n_impl(int m, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_psi_n_e(int m, double x, gsl_sf_result * result)
+@deftypefun  int gsl_sf_psi_n_impl (int m, double x, gsl_sf_result * result)
+@deftypefunx int gsl_sf_psi_n_e (int m, double x, gsl_sf_result * result)
 Domain: m >= 0, x > 0.0
 Exceptional Return Values: GSL_EDOM
 @end deftypefun

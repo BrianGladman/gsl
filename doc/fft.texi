@@ -1282,7 +1282,7 @@ int main ()
 @comment -@end table
 
 @node FFT References and Further Reading
-@section FFT References and Further Reading
+@section References and Further Reading
 
 @noindent
 A good starting point for learning more about the FFT is the review

@@ -129,7 +129,7 @@ Note that a direct summation of this series would require
 sum does in 13 terms.
 
 @node Series Acceleration References
-@section Series Acceleration References
+@section References and Further Reading
 @noindent
 The algorithms used by these functions are described in the following papers,
 

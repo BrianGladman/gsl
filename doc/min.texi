@@ -31,7 +31,7 @@ algorithms to find the maximum of a function simply invert its sign.
 @end menu
 
 @node Minimization Overview
-@section Minimization Overview
+@section Overview
 @cindex minimization, overview
 
 The minimization algorithms begin with a bounded region known to contain
@@ -92,7 +92,7 @@ struct. The updating procedure uses only function evaluations (not
 derivatives).
 
 @node Minimization Caveats
-@section Minimization Caveats
+@section Caveats
 @cindex Minimization, caveats
 
 Note that minimization functions can only search for one minimum at a
@@ -195,7 +195,7 @@ functions are defined by a @code{gsl_function} data type
 (@pxref{Providing the function to solve}).
 
 @node Minimization Iteration
-@section Minimization Iteration
+@section Iteration
 
 The following functions drive the iteration of each algorithm. Each
 function performs one iteration to update the state of any minimizer of the
@@ -233,7 +233,7 @@ This function returns the current bounding interval for the minimizer @var{s}.
 @end deftypefun
 
 @node Minimization Stopping Parameters
-@section Minimization Stopping Parameters
+@section Stopping Parameters
 @cindex minimization, stopping parameters
 
 A minimization procedure should stop when one of the following
@@ -360,7 +360,7 @@ to improve convergence.
 @comment ============================================================
 
 @node Minimization Examples
-@section Minimization Examples
+@section Examples
 
 The following program uses the Brent algorithm to find the minimum of
 the function @math{f(x) = \cos(x) + 1}, which occurs at @math{x = \pi}.
@@ -447,7 +447,7 @@ Converged:
 @end example
 
 @node Minimization References and Further Reading
-@section Minimization References and Further Reading
+@section References and Further Reading
 
 Further information on Brent's algorithm is available in the following
 book,

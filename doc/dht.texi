@@ -1,23 +1,23 @@
 This chapter describes functions for performing Discrete Hankel Transforms
 (DHTs).
 
-@deftypefun {gsl_dht_transform *} gsl_dht_transform_new(size_t @var{size}, double @var{nu}, double @var{xmax})
+@deftypefun {gsl_dht_transform *} gsl_dht_transform_new (size_t @var{size}, double @var{nu}, double @var{xmax})
 @end deftypefun
 
-@deftypefun void gsl_dht_transform_free(gsl_dht_transform * @var{t})
+@deftypefun void gsl_dht_transform_free (gsl_dht_transform * @var{t})
 @end deftypefun
 
-@deftypefun double gsl_dht_transform_x_sample(const gsl_dht_transform * @var{t}, int @var{n})
+@deftypefun double gsl_dht_transform_x_sample (const gsl_dht_transform * @var{t}, int @var{n})
 @end deftypefun
 
-@deftypefun double gsl_dht_transform_k_sample(const gsl_dht_transform * @var{t}, int @var{n})
+@deftypefun double gsl_dht_transform_k_sample (const gsl_dht_transform * @var{t}, int @var{n})
 @end deftypefun
 
-@deftypefun int gsl_dht_transform_apply(const gsl_dht_transform * @var{t}, double * @var{f_in}, double * @var{f_out})
+@deftypefun int gsl_dht_transform_apply (const gsl_dht_transform * @var{t}, double * @var{f_in}, double * @var{f_out})
 @end deftypefun
 
-@deftypefun int gsl_dht_transform_recalc_impl(gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
-@deftypefunx int gsl_dht_transform_recalc_e(gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
+@deftypefun int gsl_dht_transform_recalc_impl (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
+@deftypefunx int gsl_dht_transform_recalc_e (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
 @end deftypefun
 
 

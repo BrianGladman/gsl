@@ -123,7 +123,7 @@ instance of a bisection solver,
 
 @example
 gsl_root_fsolver * s = 
-    gsl_root_fsolver_alloc (gsl_root_fsolver_bisection);
+    gsl_root_fsolver_alloc (gsl_root_fsolver_bisection, f, x);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -139,7 +139,7 @@ instance of a Newton-Raphson solver,
 
 @example
 gsl_root_fdfsolver * s = 
-    gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton);
+    gsl_root_fdfsolver_alloc (gsl_root_fdfsolver_newton, fdf, r);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -1030,8 +1030,11 @@ Converged:
 @end example
 
 @noindent
-The other derivative solvers can be investigated by changing
-@code{gsl_root_fdfsolver_newton} to @code{gsl_root_fdfsolver_secant} or
+Note that the error can be estimated more accurately by taking the
+difference between the current iterate and next iterate rather than the
+previous iterate. The other derivative solvers can be investigated by
+changing @code{gsl_root_fdfsolver_newton} to
+@code{gsl_root_fdfsolver_secant} or
 @code{gsl_root_fdfsolver_steffenson}.
 
 @node Root Finding References and Further Reading

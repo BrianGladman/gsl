@@ -416,7 +416,7 @@ iterations further does not decrease the error because all the
 subsequent results are rounded to the same value.
 
 @node IEEE References and Further Reading
-@section IEEE References and Further Reading
+@section References and Further Reading
 
 The reference for the IEEE standard is,
 

@@ -4,7 +4,7 @@
 @cindex polynomial manipulation
 
 
-@deftypefun  double gsl_sf_poly_eval(const double c[], const int len, const double x)
+@deftypefun  double gsl_sf_poly_eval (const double c[], const int len, const double x)
 Evaluate a polynomial, @math{ c[0] + c[1] x + c[2] x^2 + ... + c[len-1] x^(len-1) }.
 Exceptional Return Values: none
 @end deftypefun

@@ -270,13 +270,13 @@ the integrator itself, and of course a function to free the space
 when done.  For an integrator algorithm, call it COOL
 (substitute any of the currently existing algorithms) we then 
 have
-@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc(size_t @var{dim})
-@deftypefunx int gsl_monte_COOL_init(gsl_monte_COOL_state* @var{s})
-@deftypefunx int gsl_monte_COOL_free(gsl_monte_COOL_state* @var{s}), 
-@deftypefunx int gsl_monte_COOL_validate(gsl_monte_COOL_state* @var{s}, 
+@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc (size_t @var{dim})
+@deftypefunx int gsl_monte_COOL_init (gsl_monte_COOL_state* @var{s})
+@deftypefunx int gsl_monte_COOL_free (gsl_monte_COOL_state* @var{s}), 
+@deftypefunx int gsl_monte_COOL_validate (gsl_monte_COOL_state* @var{s}, 
         double *@var{x_lower}, double *@var{x_upper}, 
         unsigned long @var{dimension}, unsigned long @var{function_calls})
-@deftypefunx int gsl_monte_COOL_integrate(gsl_monte_COOL_state* @var{s}, 
+@deftypefunx int gsl_monte_COOL_integrate (gsl_monte_COOL_state* @var{s}, 
         double* @var{x_lower}, double* @var{x_upper}, 
         unsigned long @var{dimension}, unsigned long @var{function_calls}, 
         double* @var{result}, double* @var{error},

@@ -177,7 +177,7 @@ The functions returns @code{GSL_SUCCESS} if all the roots are found and
 @end deftypefun
 
 @node Roots of Polynomials Examples
-@section Roots of Polynomials Examples
+@section Examples
 
 To demonstrate the use of the general polynomial solver we will take the
 polynomial @math{P(x) = x^5 - 1} which has the following roots,
@@ -238,7 +238,7 @@ z4 = +1.000000000000000000 +0.000000000000000000
 
 
 @node Roots of Polynomials References and Further Reading
-@section Roots of Polynomials References and Further Reading
+@section References and Further Reading
 
 The balanced-QR method and its error analysis is described in the
 following papers.

@@ -115,7 +115,7 @@ file @code{gsl_blas_raw.h}.
 
 
 @node BLAS References and Further Reading
-@section BLAS References and Further Reading
+@section References and Further Reading
 
 Information on the BLAS standards, including both the legacy and draft
 interface standards, is available online from the BLAS Technical Forum
