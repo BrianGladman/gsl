@@ -21,6 +21,14 @@ gauss_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 test_gauss_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 bench_gauss_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 
+poisson_SOURCES= runpoisson.c poisson.c
+test_poisson_SOURCES= test-poisson.c poisson.c
+bench_poisson_SOURCES= bench-poisson.c poisson.c
+
+poisson_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+test_poisson_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+bench_poisson_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+
 test_switch_SOURCES= test-switch.c switch.c 
 
 switch.c gsl_ran_switch.h: switch.xc makeswitch

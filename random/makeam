@@ -2,7 +2,7 @@
 ## Bugs: too clever by half!
 
 list="$*"
-auxlist="gauss"
+auxlist="gauss poisson"
 auxbin="test-switch"
 
 echo -n "bin_PROGRAMS= "

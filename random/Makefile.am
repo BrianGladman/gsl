@@ -21,6 +21,14 @@ gauss_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 test_gauss_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 bench_gauss_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 
+poisson_SOURCES= runpoisson.c poisson.c
+test_poisson_SOURCES= test-poisson.c poisson.c
+bench_poisson_SOURCES= bench-poisson.c poisson.c
+
+poisson_LDADD=       $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+test_poisson_LDADD=  $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+bench_poisson_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
+
 test_switch_SOURCES= test-switch.c switch.c 
 
 switch.c gsl_ran_switch.h: switch.xc makeswitch
@@ -55,22 +63,31 @@ test-shuffle.o: shuffle.c
 
 
 
-bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus bench-taus uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss test-switch 
+bin_PROGRAMS= taus test-taus bench-taus mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss poisson test-poisson bench-poisson test-switch 
 
-lib_LIBRARIES= libgslrandom.a libgslranmrg.a libgslrancmrg.a libgslrantaus.a libgslranuni.a libgslranuni32.a libgslranzuf.a libgslranrand.a
+lib_LIBRARIES= gslrandom gslrantaus gslranmrg gslrancmrg gslranuni gslranuni32 gslranzuf gslranrand 
 
-libgslranmrg_a_SOURCES= mrg.c mrg-gen.c gauss.c 
-libgslrancmrg_a_SOURCES= cmrg.c cmrg-gen.c gauss.c 
-libgslrantaus_a_SOURCES= taus.c taus-gen.c gauss.c 
-libgslranuni_a_SOURCES= uni.c uni-gen.c gauss.c 
-libgslranuni32_a_SOURCES= uni32.c uni32-gen.c gauss.c 
-libgslranzuf_a_SOURCES= zuf.c zuf-gen.c gauss.c 
-libgslranrand_a_SOURCES= rand.c rand-gen.c gauss.c 
+gslrantaus_SOURCES= taus.c taus-gen.c gauss.c 
+gslranmrg_SOURCES= mrg.c mrg-gen.c gauss.c 
+gslrancmrg_SOURCES= cmrg.c cmrg-gen.c gauss.c 
+gslranuni_SOURCES= uni.c uni-gen.c gauss.c 
+gslranuni32_SOURCES= uni32.c uni32-gen.c gauss.c 
+gslranzuf_SOURCES= zuf.c zuf-gen.c gauss.c 
+gslranrand_SOURCES= rand.c rand-gen.c gauss.c 
 
-libgslrandom_a_SOURCES= switch.c shuffle.c mrg.c cmrg.c taus.c uni.c uni32.c zuf.c rand.c gauss.c 
+gslrandom_SOURCES= switch.c shuffle.c taus.c mrg.c cmrg.c uni.c uni32.c zuf.c rand.c gauss.c poisson.c 
 
-test_switch_DEPENDENCIES= gsl_ran_switch.h mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
-test_switch_LDADD= mrg.o cmrg.o taus.o uni.o uni32.o zuf.o rand.o 
+test_switch_DEPENDENCIES= gsl_ran_switch.h taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
+test_switch_LDADD= taus.o mrg.o cmrg.o uni.o uni32.o zuf.o rand.o 
+taus_SOURCES=             ran.c taus.c
+taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
+taus_LDADD=               taus-gen.o
+test_taus_SOURCES=        testran.c
+test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
+test_taus_LDADD=          taus.o taus-gen.o
+bench_taus_SOURCES=       benchran.c
+bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
+bench_taus_LDADD=         taus.o taus-gen.o
 mrg_SOURCES=             ran.c mrg.c
 mrg_DEPENDENCIES=        mrg-state.c mrg.h mrg-gen.o
 mrg_LDADD=               mrg-gen.o
@@ -89,15 +106,6 @@ test_cmrg_LDADD=          cmrg.o cmrg-gen.o
 bench_cmrg_SOURCES=       benchran.c
 bench_cmrg_DEPENDENCIES=  cmrg.o cmrg-gen.o cmrg.h
 bench_cmrg_LDADD=         cmrg.o cmrg-gen.o
-taus_SOURCES=             ran.c taus.c
-taus_DEPENDENCIES=        taus-state.c taus.h taus-gen.o
-taus_LDADD=               taus-gen.o
-test_taus_SOURCES=        testran.c
-test_taus_DEPENDENCIES=   taus.o taus-gen.o taus.h
-test_taus_LDADD=          taus.o taus-gen.o
-bench_taus_SOURCES=       benchran.c
-bench_taus_DEPENDENCIES=  taus.o taus-gen.o taus.h
-bench_taus_LDADD=         taus.o taus-gen.o
 uni_SOURCES=             ran.c uni.c
 uni_DEPENDENCIES=        uni-state.c uni.h uni-gen.o
 uni_LDADD=               uni-gen.o
@@ -135,47 +143,47 @@ bench_rand_SOURCES=       benchran.c
 bench_rand_DEPENDENCIES=  rand.o rand-gen.o rand.h
 bench_rand_LDADD=         rand.o rand-gen.o
 
-mrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g $(srcdir)/xxx-state.xc > $@
-mrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_mrg_/g $(srcdir)/gsl_ran.h > $@
-mrg-gen.c: xxx-gen.xc
-	sed s/xxx/mrg/g $(srcdir)/xxx-gen.xc > $@
-cmrg-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_cmrg_/g $(srcdir)/xxx-state.xc > $@
-cmrg.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_cmrg_/g $(srcdir)/gsl_ran.h > $@
-cmrg-gen.c: xxx-gen.xc
-	sed s/xxx/cmrg/g $(srcdir)/xxx-gen.xc > $@
 taus-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_taus_/g $(srcdir)/xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_taus_/g xxx-state.xc > $@
 taus.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_taus_/g $(srcdir)/gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_taus_/g gsl_ran.h > $@
 taus-gen.c: xxx-gen.xc
-	sed s/xxx/taus/g $(srcdir)/xxx-gen.xc > $@
+	sed s/xxx/taus/g xxx-gen.xc > $@
+mrg-state.c: xxx-state.xc
+	sed s/gsl_ran_xxx_/gsl_ran_mrg_/g xxx-state.xc > $@
+mrg.h: gsl_ran.h
+	sed s/gsl_ran_/gsl_ran_mrg_/g gsl_ran.h > $@
+mrg-gen.c: xxx-gen.xc
+	sed s/xxx/mrg/g xxx-gen.xc > $@
+cmrg-state.c: xxx-state.xc
+	sed s/gsl_ran_xxx_/gsl_ran_cmrg_/g xxx-state.xc > $@
+cmrg.h: gsl_ran.h
+	sed s/gsl_ran_/gsl_ran_cmrg_/g gsl_ran.h > $@
+cmrg-gen.c: xxx-gen.xc
+	sed s/xxx/cmrg/g xxx-gen.xc > $@
 uni-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni_/g $(srcdir)/xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_uni_/g xxx-state.xc > $@
 uni.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni_/g $(srcdir)/gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_uni_/g gsl_ran.h > $@
 uni-gen.c: xxx-gen.xc
-	sed s/xxx/uni/g $(srcdir)/xxx-gen.xc > $@
+	sed s/xxx/uni/g xxx-gen.xc > $@
 uni32-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_uni32_/g $(srcdir)/xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_uni32_/g xxx-state.xc > $@
 uni32.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_uni32_/g $(srcdir)/gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_uni32_/g gsl_ran.h > $@
 uni32-gen.c: xxx-gen.xc
-	sed s/xxx/uni32/g $(srcdir)/xxx-gen.xc > $@
+	sed s/xxx/uni32/g xxx-gen.xc > $@
 zuf-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_zuf_/g $(srcdir)/xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_zuf_/g xxx-state.xc > $@
 zuf.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_zuf_/g $(srcdir)/gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_zuf_/g gsl_ran.h > $@
 zuf-gen.c: xxx-gen.xc
-	sed s/xxx/zuf/g $(srcdir)/xxx-gen.xc > $@
+	sed s/xxx/zuf/g xxx-gen.xc > $@
 rand-state.c: xxx-state.xc
-	sed s/gsl_ran_xxx_/gsl_ran_rand_/g $(srcdir)/xxx-state.xc > $@
+	sed s/gsl_ran_xxx_/gsl_ran_rand_/g xxx-state.xc > $@
 rand.h: gsl_ran.h
-	sed s/gsl_ran_/gsl_ran_rand_/g $(srcdir)/gsl_ran.h > $@
+	sed s/gsl_ran_/gsl_ran_rand_/g gsl_ran.h > $@
 rand-gen.c: xxx-gen.xc
-	sed s/xxx/rand/g $(srcdir)/xxx-gen.xc > $@
+	sed s/xxx/rand/g xxx-gen.xc > $@
 
-BUILT_SOURCES= switch.c gsl_ran_switch.h mrg-state.c mrg.h mrg-gen.c cmrg-state.c cmrg.h cmrg-gen.c taus-state.c taus.h taus-gen.c uni-state.c uni.h uni-gen.c uni32-state.c uni32.h uni32-gen.c zuf-state.c zuf.h zuf-gen.c rand-state.c rand.h rand-gen.c 
+BUILT_SOURCES= switch.c gsl_ran_switch.h taus-state.c taus.h taus-gen.c mrg-state.c mrg.h mrg-gen.c cmrg-state.c cmrg.h cmrg-gen.c uni-state.c uni.h uni-gen.c uni32-state.c uni32.h uni32-gen.c zuf-state.c zuf.h zuf-gen.c rand-state.c rand.h rand-gen.c 
