@@ -20,7 +20,6 @@
 /* Runge-Kutta 8(9), Prince-Dormand */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <stdlib.h>

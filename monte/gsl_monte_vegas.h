@@ -18,7 +18,6 @@
  */
 
 /* header for the gsl "vegas" routines.  Mike Booth, May 1998 */
-/* RCS $Id$ */
 
 #ifndef __GSL_MONTE_VEGAS_H__
 #define __GSL_MONTE_VEGAS_H__

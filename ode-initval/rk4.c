@@ -20,7 +20,6 @@
 /* Runge-Kutta 4, Classical */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <stdlib.h>

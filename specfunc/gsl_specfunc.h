@@ -1,6 +1,5 @@
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 	
 /* Convenience header */
 #ifndef __GSL_SPECFUNC_H__

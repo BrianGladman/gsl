@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #ifndef __GSL_INTERP_BSEARCH_H__
 #define __GSL_INTERP_BSEARCH_H__

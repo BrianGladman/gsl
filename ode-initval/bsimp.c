@@ -20,7 +20,6 @@
 /* Bulirsch-Stoer Implicit */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 /* Bader-Deuflhard implicit extrapolative stepper.
  * [Numer. Math., 41, 373 (1983)]

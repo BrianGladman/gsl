@@ -1,6 +1,4 @@
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
 /*
  * Automatic generation of error handling versions
  * of functions. Given a "func_name", these will

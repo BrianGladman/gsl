@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <gsl/gsl_errno.h>

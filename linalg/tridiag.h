@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 /* Low level tridiagonal solvers.
  * Used internally in other areas of GSL.

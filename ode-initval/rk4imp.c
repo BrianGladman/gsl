@@ -19,9 +19,8 @@
 
 /* Runge-Kutta 4, Gaussian implicit */
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>

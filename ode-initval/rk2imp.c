@@ -20,7 +20,6 @@
 /* Runge-Kutta 2, Gaussian implicit */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <stdlib.h>

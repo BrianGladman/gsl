@@ -19,7 +19,6 @@
 
 /* Some things common to all the Monte-Carlo implementations */
 /* Author: MJB */
-/* RCS: $Id$ */
 
 #ifndef __GSL_MONTE_H__
 #define __GSL_MONTE_H__

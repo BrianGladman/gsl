@@ -17,9 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
 /* Miscellaneous support functions for Bessel function evaluations.
  */
 #include <config.h>

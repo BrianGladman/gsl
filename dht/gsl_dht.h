@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #ifndef __GSL_DHT_H__
 #define __GSL_DHT_H__

@@ -26,8 +26,6 @@
  * Author: S. Piccardi
  * Jan. 2000
  *
- * $Id$
- *
  ***************************************************************/
 #include <config.h>
 #include <stdlib.h>

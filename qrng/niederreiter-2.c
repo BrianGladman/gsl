@@ -1,5 +1,4 @@
 /* Author: G. Jungman
- * RCS:    $Id$
  */
 /* Implement Niederreiter base 2 generator.
  * See:

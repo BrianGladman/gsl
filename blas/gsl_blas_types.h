@@ -19,7 +19,6 @@
 
 /*
  * Author:  G. Jungman
- * RCS:     $Id$
  */
 /* Based on draft BLAST C interface specification  [Jul 7 1998]
  */

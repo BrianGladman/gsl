@@ -1,5 +1,4 @@
 /* Author: G. Jungman
- * RCS:    $Id$
  */
 #include <config.h>
 #include <gsl/gsl_ieee_utils.h>

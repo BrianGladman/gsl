@@ -1,5 +1,8 @@
 Wed Oct  3 11:06:51 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* removed auto-expanding RCS tokens from comments as they
+ 	interfere with making patches
+
 	* configure.in: check for isinf(), finite(), isnan() as
  	macros. Also check for isfinite() as an alternative to finite().
 

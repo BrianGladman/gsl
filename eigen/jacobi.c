@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 /* Simple linear algebra operations, operating directly
  * on the gsl_vector and gsl_matrix objects. These are

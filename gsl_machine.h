@@ -1,6 +1,4 @@
-/* Author:  B. Gough and G. Jungman
- * RCS:     $Id$
- */
+/* Author:  B. Gough and G. Jungman */
 #ifndef __GSL_MACHINE_H__
 #define __GSL_MACHINE_H__
 

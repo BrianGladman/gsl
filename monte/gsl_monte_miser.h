@@ -18,7 +18,6 @@
  */
 
 /* Author: MJB */
-/* RCS: $Id$ */
 
 #ifndef __GSL_MONTE_MISER_H__
 #define __GSL_MONTE_MISER_H__

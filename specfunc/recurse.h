@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author: G. Jungman
- * RCS: $Id$
- */
+/* Author: G. Jungman */
+
 #ifndef _RECURSE_H_
 #define _RECURSE_H_
 

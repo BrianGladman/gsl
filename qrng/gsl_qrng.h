@@ -1,5 +1,4 @@
 /* Author: G. Jungman
- * RCS:    $Id$
  */
 #ifndef __GSL_QRNG_H__
 #define __GSL_QRNG_H__

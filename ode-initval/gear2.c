@@ -20,7 +20,6 @@
 /* Gear 2 */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <stdlib.h>

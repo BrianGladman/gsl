@@ -19,7 +19,6 @@
 
 /*
  * Author:  G. Jungman
- * RCS:     $Id$
  */
 #ifndef __GSL_BLAS_H__
 #define __GSL_BLAS_H__

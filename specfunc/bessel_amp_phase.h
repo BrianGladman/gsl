@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 #ifndef _BESSEL_AMP_PHASE_H_
 #define _BESSEL_AMP_PHASE_H_
 

@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 /* Calculate series for Y_nu and K_nu for small x and nu.
  * This is applicable for x < 2 and |nu|<=1/2.
  * These functions assume x > 0.

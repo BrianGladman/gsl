@@ -20,7 +20,6 @@
 /* Runge-Kutta 2(3), Euler-Cauchy */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #include <config.h>
 #include <stdlib.h>

@@ -1,5 +1,4 @@
 /* Author: G. Jungman
- * RCS:    $Id$
  */
 /* Implementation for Sobol generator.
  * See

@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  J. Theiler (modifications by G. Jungman)
- * RCS:     $Id$
- */
+/* Author:  J. Theiler (modifications by G. Jungman) */
+
 /*
  * See Hart et al, Computer Approximations, John Wiley and Sons, New York (1968)
  * (This applies only to the erfc8 stuff, which is the part

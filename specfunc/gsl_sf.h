@@ -1,6 +1,5 @@
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 #ifndef __GSL_SF_H__
 #define __GSL_SF_H__
 

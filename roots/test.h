@@ -17,9 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
-/* $Id$ */
-
 gsl_function create_function (double (*f)(double, void *)) ;
 gsl_function_fdf create_fdf (double (*f)(double, void *),
                              double (*df)(double, void *),

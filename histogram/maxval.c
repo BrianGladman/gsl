@@ -30,8 +30,6 @@
  * Author: S. Piccardi
  * Jan. 2000
  *
- * $Id$
- *
  ***************************************************************/
 #include <config.h>
 #include <gsl/gsl_errno.h>

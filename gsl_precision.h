@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  B. Gough and G. Jungman
- * RCS:     $Id$
- */
+/* Author:  B. Gough and G. Jungman */
+
 #ifndef __GSL_PRECISION_H__
 #define __GSL_PRECISION_H__
 

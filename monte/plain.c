@@ -20,7 +20,6 @@
 /* Plain Monte-Carlo. */
 
 /* Author: MJB */
-/* RCS: $Id$ */
 
 #include <config.h>
 #include <math.h>

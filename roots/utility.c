@@ -18,8 +18,6 @@
  */
 
 /* utility.c -- various root finding utility routines */
-/* $Id$ */
-
 
 /* config headers */
 #include <config.h>

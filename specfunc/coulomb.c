@@ -17,9 +17,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Author:  G. Jungman
- * RCS:     $Id$
- */
+/* Author:  G. Jungman */
+
 /* Evaluation of Coulomb wave functions F_L(eta, x), G_L(eta, x),
  * and their derivatives. A combination of Steed's method, asymptotic
  * results, and power series.

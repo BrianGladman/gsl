@@ -18,7 +18,6 @@
  */
 
 /* Author:  G. Jungman
- * RCS:     $Id$
  */
 #ifndef __GSL_ODEIV_H__
 #define __GSL_ODEIV_H__

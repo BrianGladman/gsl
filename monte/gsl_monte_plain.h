@@ -20,7 +20,6 @@
 /* Plain Monte-Carlo. */
 
 /* Author: MJB */
-/* RCS: $Id$ */
 
 #ifndef __GSL_MONTE_PLAIN_H__
 #define __GSL_MONTE_PLAIN_H__
