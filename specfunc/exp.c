@@ -195,8 +195,9 @@ int gsl_sf_exp_mult_err_impl(const double x, const double dx,
       const double eMN = exp(M+N);
       const double eab = exp(a+b);
       result->val  = sy * eMN * eab;
-      result->err  = eMN * eab * (GSL_DBL_EPSILON +  fabs(dx) + fabs(dy));
-      result->err += GSL_DBL_EPSILON * fabs(result->val);
+      result->err  = eMN * eab * 2.0*GSL_DBL_EPSILON;
+      result->err += eMN * eab * fabs(dy/y);
+      result->err += eMN * eab * fabs(dx);
       return GSL_SUCCESS;
     }
   }
