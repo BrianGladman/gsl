@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libgslsys.a 
 
-libgslsys_a_SOURCES = minmax.c
+libgslsys_a_SOURCES = minmax.c prec.c
 
 #check_PROGRAMS = test_errnos
 #TESTS = test_errnos

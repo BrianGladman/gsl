@@ -1,8 +1,6 @@
 #ifndef _GSL_MATH_H
 #define _GSL_MATH_H
 #include <math.h>
-#include <limits.h>
-#include <float.h>
 
 #ifndef M_E
 #define M_E        2.71828182845904523536028747135	/* e */

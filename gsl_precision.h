@@ -19,15 +19,21 @@
  * desired precisions.
  */
 typedef
-enum { GSL_APPROX_PREC, GSL_SINGLE_PREC, GSL_DOUBLE_PREC }
+enum { GSL_APPROX_PREC=0, GSL_SINGLE_PREC=1, GSL_DOUBLE_PREC=2 }
 gsl_prec_t;
+#define _GSL_PREC_T_NUM 3
 
 
-#define GSL_APPROX_EPS     5.0e-04
-
-#define GSL_SINGLE_EPS     1.0e-07
-
-#define GSL_DOUBLE_EPS       (3.0*GSL_MACH_EPS)
+/* Arrays containing derived
+ * precision constants for the
+ * different precision levels.
+ */
+extern const double gsl_prec_eps[];
+extern const double gsl_sqrt_prec_eps[];
+extern const double gsl_root3_prec_eps[];
+extern const double gsl_root4_prec_eps[];
+extern const double gsl_root5_prec_eps[];
+extern const double gsl_root6_prec_eps[];
 
 
 #endif /* !GSL_PRECISION_H */

@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslsys.a 
 
-libgslsys_a_SOURCES = minmax.c
+libgslsys_a_SOURCES = minmax.c prec.c
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -84,19 +84,19 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslsys_a_LIBADD = 
-libgslsys_a_OBJECTS =  minmax.o
+libgslsys_a_OBJECTS =  minmax.o prec.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-DEP_FILES =  .deps/minmax.P
+DEP_FILES =  .deps/minmax.P .deps/prec.P
 SOURCES = $(libgslsys_a_SOURCES)
 OBJECTS = $(libgslsys_a_OBJECTS)
 
