@@ -1,6 +1,6 @@
 lib_LIBRARIES = libgslhistogram.a 
 
-include_HEADERS = gsl_histogram.h
+include_HEADERS = gsl_histogram.h gsl_histogram2d.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err -I$(srcdir)/../utils
 
@@ -23,7 +23,8 @@ test_trap_SOURCES = test_trap.c
 libgslhistogram_a_SOURCES = \
 	add.c find.c get.c init.c params.c reset.c file.c pdf.c \
 	gsl_histogram.h \
-	init2d.c add2d.c file2d.c get2d.c params2d.c reset2d.c gsl_histgram2d.h 
+	init2d.c add2d.c file2d.c get2d.c params2d.c reset2d.c \
+	gsl_histgram2d.h 
 
 
 
