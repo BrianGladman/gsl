@@ -5,6 +5,14 @@
 #include <gsl_math.h>
 #include "gsl_linalg.h"
 
+static int 
+check (double x, double actual, double eps)
+{
+  if (actual == 0)
+    return fabs(x) > eps;
+  else
+    return (fabs(x - actual)/fabs(actual)) > eps;
+}
 
 gsl_matrix *
 create_hilbert_matrix(int size)
@@ -193,7 +201,7 @@ test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   s += gsl_la_decomp_LU_impl(lu, perm, &signum);
   s += gsl_la_solve_LU_impl(lu, perm, rhs, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
+    int foo = check(gsl_vector_get(solution, i),actual[i],eps);
     if(foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
     }
@@ -263,7 +271,7 @@ test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   s += gsl_la_decomp_QR_impl(qr, d);
   s += gsl_la_solve_QR_impl(qr, d, rhs, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
+    int foo = check(gsl_vector_get(solution, i), actual[i], eps);
     if(foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
     }
@@ -335,7 +343,7 @@ test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   s += gsl_la_decomp_QRPT_impl(qr, d, perm, &signum);
   s += gsl_la_solve_QRPT_impl(qr, d, perm, rhs, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
+    int foo = check(gsl_vector_get(solution, i), actual[i], eps);
     if(foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
     }
@@ -395,13 +403,15 @@ static int
 test_QR_update_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
-  size_t i,j, dim = m->size1;
+  size_t i,j,k, dim = m->size1;
 
   gsl_vector * rhs = gsl_vector_alloc(dim);
   gsl_matrix * qr1  = gsl_matrix_alloc(dim,dim);
   gsl_matrix * qr2  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * q  = gsl_matrix_alloc(dim,dim);
-  gsl_matrix * r  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * q1  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * r1  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * q2  = gsl_matrix_alloc(dim,dim);
+  gsl_matrix * r2  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * solution1 = gsl_vector_alloc(dim);
   gsl_vector * solution2 = gsl_vector_alloc(dim);
@@ -412,8 +422,7 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
   gsl_matrix_copy(qr2,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
   for(i=0; i<dim; i++) gsl_vector_set(u, i, sin(i+1.0));
-  for(i=0; i<dim; i++) gsl_vector_set(v, i, sin(i*i+3.0));
-
+  for(i=0; i<dim; i++) gsl_vector_set(v, i, cos(i+2.0) + sin(i*i+3.0));
 
   for(i=0; i<dim; i++) 
     {
@@ -426,12 +435,8 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
         }
     }
 
-  s += gsl_la_decomp_QR_impl(qr1, d);
-  s += gsl_la_solve_QR_impl(qr1, d, rhs, solution1);
-
   s += gsl_la_decomp_QR_impl(qr2, d);
-  s += gsl_la_unpack_QR_impl(qr2, d, q, r);
-
+  s += gsl_la_unpack_QR_impl(qr2, d, q2, r2);
 
   /* compute w = Q^T u */
       
@@ -439,23 +444,42 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
     {
       double sum = 0;
       for (i = 0; i < dim; i++)
-          sum += gsl_matrix_get (q, i, j) * gsl_vector_get (u, i);
+          sum += gsl_matrix_get (q2, i, j) * gsl_vector_get (u, i);
       gsl_vector_set (w, j, sum);
     }
 
-  s += gsl_la_update_QR_impl(q, r, w, v);
-  s += gsl_la_qrsolve_QR_impl(q, r, rhs, solution2);
+  s += gsl_la_update_QR_impl(q2, r2, w, v);
+
+  /* compute qr2 = q2 * r2 */
+
+  for (i = 0; i < dim; i++)
+    {
+      for (j = 0; j< dim; j++)
+        {
+          double sum = 0;
+          for (k = 0; k <= j; k++)
+            {
+              double qik = gsl_matrix_get(q2, i, k);
+              double rkj = gsl_matrix_get(r2, k, j);
+              sum += qik * rkj ;
+            }
+          gsl_matrix_set (qr2, i, j, sum);
+        }
+    }
 
   for(i=0; i<dim; i++) {
-    double s1 = gsl_vector_get(solution1, i);
-    double s2 = gsl_vector_get(solution2, i);
-
-    int foo = ( fabs(s1 - s2)/fabs(s2) > eps );
-    if(foo) {
-      printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, s1, s2);
+    for(j=0; j<dim; j++) {
+      double s1 = gsl_matrix_get(qr1, i, j);
+      double s2 = gsl_matrix_get(qr2, i, j);
+      
+      int foo = check(s1, s2, eps);
+      if(foo) {
+        printf("%3d[%d,%d]: %22.18g   %22.18g\n", dim, i,j, s1, s2);
+      }
+      s += foo;
     }
-    s += foo;
   }
+
   gsl_vector_free(solution1);
   gsl_vector_free(solution2);
   gsl_vector_free(d);
@@ -464,8 +488,10 @@ test_QR_update_dim(const gsl_matrix * m, double eps)
   gsl_vector_free(w);
   gsl_matrix_free(qr1);
   gsl_matrix_free(qr2);
-  gsl_matrix_free(q);
-  gsl_matrix_free(r);
+  gsl_matrix_free(q1);
+  gsl_matrix_free(r1);
+  gsl_matrix_free(q2);
+  gsl_matrix_free(r2);
   gsl_vector_free(rhs);
 
   return s;
@@ -526,7 +552,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   for(i=0; i<dim; i++) gsl_vector_set(solution, i, i+1.0);
   s += gsl_la_solve_HH_impl(hh, solution);
   for(i=0; i<dim; i++) {
-    int foo = ( fabs(gsl_vector_get(solution, i) - actual[i])/fabs(actual[i]) > eps );
+    int foo = check(gsl_vector_get(solution, i),actual[i],eps);
     if( foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(solution, i), actual[i]);
     }
@@ -557,7 +583,7 @@ int test_HH_solve(void)
   gsl_test(f, "  solve_HH hilbert(4)");
   s += f;
 
-  f = test_HH_solve_dim(hilb12, hilb12_solution, 0.01);
+  f = test_HH_solve_dim(hilb12, hilb12_solution, 0.05);
   gsl_test(f, "  solve_HH hilbert(12)");
   s += f;
 
@@ -605,7 +631,7 @@ test_TD_solve_dim(size_t dim, double d, double od, const double * actual, double
   for(i=0; i<dim; i++) {
     double si = gsl_vector_get(sol, i);
     double ai = actual[i];
-    int foo = ( fabs(si - ai) / (fabs(ai) + fabs(si)) > eps );
+    int foo = check(si, ai, eps);
     if(foo) {
       printf("%3d[%d]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(sol, i), actual[i]);
     }

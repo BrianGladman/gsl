@@ -564,6 +564,8 @@ gsl_la_update_QR_impl (gsl_matrix * q, gsl_matrix * r,
           
           create_givens (diag, offdiag, &c, &s);
           apply_givens_qr (M, N, q, r, k - 1, k, c, s);
+
+          gsl_matrix_set(r,k, k-1, 0.0); /* exact zero of G^T */
         }
       
       return GSL_SUCCESS;
