@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <gsl/gsl_sys.h>
 
 #if HAVE_VPRINTF
 #ifdef STDC_HEADERS
@@ -85,9 +86,15 @@ gsl_test_rel (double result, double expected, double relative_error,
 {
   int status ;
 
-  if (result != result) 
+  /* Check for NaN vs inf vs number */
+
+  if (gsl_isnan(result) || gsl_isnan(expected)) 
     {
-      status = (expected == expected);   /* Check for NaN vs number */
+      status = gsl_isnan(result) != gsl_isnan(expected); 
+    }
+  else if (gsl_isinf(result) || gsl_isinf(expected)) 
+    {
+      status = gsl_isinf(result) != gsl_isinf(expected); 
     }
   else if (expected != 0 ) 
     {
@@ -155,9 +162,15 @@ gsl_test_abs (double result, double expected, double absolute_error,
 {
   int status ;
 
-  if (result != result) 
+  /* Check for NaN vs inf vs number */
+
+  if (gsl_isnan(result) || gsl_isnan(expected)) 
     {
-      status = (expected == expected);   /* Check for NaN vs number */
+      status = gsl_isnan(result) != gsl_isnan(expected); 
+    }
+  else if (gsl_isinf(result) || gsl_isinf(expected)) 
+    {
+      status = gsl_isinf(result) != gsl_isinf(expected); 
     }
   else 
     {
