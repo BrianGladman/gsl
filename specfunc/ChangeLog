@@ -1,3 +1,7 @@
+Mon Aug  3 14:43:16 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* bessel_amp_phase.h: undefined consts are now declared extern
+
 Mon Jul 13 12:40:27 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gamma.c: changed all the factorial functions to take unsigned
