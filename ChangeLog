@@ -1,3 +1,8 @@
+Sun Aug  5 20:35:09 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.in: move PPC bug test to beginning of configure
+ 	script, to save waiting for it to appear at the end
+
 Sat Jul 14 21:13:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_nan.h: use C99X macro INFINITY where available
