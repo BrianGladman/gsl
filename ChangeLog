@@ -1,3 +1,7 @@
+2003-03-06  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_types.h: changed from internal macro _DLL to GSL_DLL
+
 2003-02-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: added [] quotes in AC_TRY_COMPILE to protect

@@ -144,8 +144,8 @@ the following setting:
         Category: Code Generation
           Multithreaded DLL
 
-The /MD option also defines the preprocessor variable
-_DLL, which ensures that the appropriate DLL
+You also need to define the preprocessor variable
+GSL_DLL, which ensures that the appropriate DLL
 functions are imported in the header files.
 
 To run a program compiled with 'ReleaseDLL' option

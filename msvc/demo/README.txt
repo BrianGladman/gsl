@@ -27,6 +27,11 @@ workspace using the project configuration
 option, or the using the 'ReleaseDLL' configuration
 compiled with the /MD option.  
 
+Note that the project settings for the ReleaseDLL
+and DebugDLL configurations define the macro
+GSL_DLL, which imports the DLL versions of the
+functions.
+
 To run a program compiled with 'ReleaseDLL' option
 you will need to make the DLLs gsl.dll and
 gslcblas.dll available by copying them from

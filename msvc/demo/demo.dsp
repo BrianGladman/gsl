@@ -138,8 +138,8 @@ LINK32=link.exe
 # PROP Output_Dir "ReleaseDLL"
 # PROP Intermediate_Dir "ReleaseDLL"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "HAVE_INLINE" /D "inline=__inline" /D "GSL_IMPORTS" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /Op- /D "HAVE_INLINE" /D "inline=__inline" /D "GSL_IMPORTS" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD BASE CPP /nologo /W3 /GX /O2 /Op- /D "GSL_DLL" /D "HAVE_INLINE" /D "inline=__inline" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /Op- /D "GSL_DLL" /D "HAVE_INLINE" /D "inline=__inline" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -162,8 +162,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "DebugDLL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od  /D "GSL_IMPORTS" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od  /D "GSL_IMPORTS" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od  /D "GSL_DLL" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od  /D "GSL_DLL" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ  /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe

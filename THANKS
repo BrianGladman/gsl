@@ -232,3 +232,10 @@ functions
 
 * Mario Pernici <Mario.Pernici@mi.infn.it> bug report for
 gsl_permutation_canonical_to_linear
+
+* Heiko Bauke <Heiko.Bauke@Physik.Uni-Magdeburg.DE> bug reports and patches
+for random number generators
+
+* Vincent Sacksteder <vincent@sacksteder.com> bug reports for MSVC7
+
+

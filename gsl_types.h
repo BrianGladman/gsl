@@ -23,7 +23,7 @@
 #ifndef GSL_VAR
 
 #ifdef WIN32
-#  ifdef _DLL
+#  if defined(GSL_DLL) || defined(_DLL)
 #    ifdef DLL_EXPORT
 #      define GSL_VAR extern __declspec(dllexport)
 #    else
