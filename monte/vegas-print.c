@@ -20,21 +20,22 @@ void vegas_close_log(void)
   fclose(o_file);
 }
 
-void prn_lim(double a[], double b[], int m)
+void prn_lim(double xl[], double xu[], unsigned long dim)
 {
   int j;
 
   fprintf(o_file, "The limits of integration are:\n");
-  for (j = 0; j < m; ++j)
-    fprintf(o_file, "\nxl[%d]=%f    xu[%d]=%f", j, a[j], j, b[j]);
+  for (j = 0; j < dim; ++j)
+    fprintf(o_file, "\nxl[%d]=%f    xu[%d]=%f", j, xl[j], j, xu[j]);
   fprintf(o_file, "\n");
   fflush(o_file);
 }
 
 void prn_head(gsl_monte_vegas_state* state, 
-	      int num_dim, int calls, int it_num, int bins, int boxes)
+	      unsigned long num_dim, unsigned long calls, 
+	      int it_num, int bins, int boxes)
 {
-  fprintf(o_file, "\nnum_dim=%d, calls=%d, it_num=%d, max_it_num=%d, acc=%.3f, ",
+  fprintf(o_file, "\nnum_dim=%lu, calls=%lu, it_num=%d, max_it_num=%d, acc=%.3f, ",
 	  num_dim, calls, it_num, state->max_it_num, state->acc);
   fprintf(o_file, "verb=%d, alph=%.2f,\nmode=%d, bins=%d, boxes=%d\n",
 	  state->verbose, state->alpha, state->mode, bins, boxes);
@@ -47,21 +48,22 @@ void prn_head(gsl_monte_vegas_state* state,
 
 }
 
-void prn_res(int a, double b, double c, double d, double e, double f)
+void prn_res(int itr, double res, double err, double cum_res, double cum_err, 
+	     double chi_sq)
 {
   fprintf(o_file, "%4d        %6.4e %10.2e          %6.4e      %8.2e  %10.2e\n",
-	  a, b, c, d, e, f);
+	  itr, res, err, cum_res, cum_err, chi_sq);
   fflush(o_file);
 }
 
-void prn_grid(gsl_monte_vegas_state* state, int m)
+void prn_grid(gsl_monte_vegas_state* state, unsigned long dim)
 {
   int mod, i, j;
   int p = state->verbose;
   if (p < 1 ) 
     return;
 
-  for (j = 0; j < m; ++j) {
+  for (j = 0; j < dim; ++j) {
     fprintf(o_file, "\n axis %d \n", j);
     fprintf(o_file, "      x          delta         x     ");
     fprintf(o_file, "    delta         x          delta\n");

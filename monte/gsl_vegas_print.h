@@ -4,11 +4,13 @@
 #ifndef GSL_VEGAS_PRINT_H
 #define GSL_VEGAS_PRINT_H
 
-void prn_lim(double a[], double b[], int m);
+void prn_lim(double xl[], double xu[], unsigned long dim);
 void prn_head(gsl_monte_vegas_state* state, 
-	      int num_dim, int calls, int it_num, int bins, int boxes);
-void prn_res(int a, double b, double c, double d, double e, double f);
-void prn_grid(gsl_monte_vegas_state* state, int m);
+	      unsigned long num_dim, unsigned long calls, 
+	      int it_num, int bins, int boxes);
+void prn_res(int itr, double res, double err, double cum_res, double cum_err, 
+	     double chi_sq);
+void prn_grid(gsl_monte_vegas_state* state, unsigned long dim);
 void vegas_open_log(void);
 void vegas_close_log(void);
 

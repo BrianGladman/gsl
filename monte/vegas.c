@@ -69,14 +69,15 @@ void adjust_bins(gsl_monte_vegas_state *state,
 		 double bin[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
 		 double weight[GSL_V_BINS_MAX+1], 
 		 double pts_per_bin, int j, int bins_prev, int bins);
-inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], int ng, int j);
+inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], 
+			   int ng, unsigned long j);
 inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
-		       int n1, int n2);
+		       int imax, unsigned long jmax);
 
 
 int gsl_monte_vegas(gsl_monte_vegas_state *state,
 		    gsl_monte_f_T fxn, double xl[], double xu[], 
-		    int num_dim, int calls,
+		    unsigned long num_dim, unsigned long calls,
 		    double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int j;
@@ -110,7 +111,7 @@ int gsl_monte_vegas(gsl_monte_vegas_state *state,
 
 int gsl_monte_vegas1(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     int num_dim, int calls,
+		     unsigned long num_dim, unsigned long calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
   int status;
@@ -129,7 +130,7 @@ int gsl_monte_vegas1(gsl_monte_vegas_state *state,
 
 int gsl_monte_vegas2(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     int num_dim, int calls,
+		     unsigned long num_dim, unsigned long calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -215,7 +216,7 @@ int gsl_monte_vegas2(gsl_monte_vegas_state *state,
 
 int gsl_monte_vegas3(gsl_monte_vegas_state *state,
 		     gsl_monte_f_T fxn, double xl[], double xu[], 
-		     int num_dim, int calls,
+		     unsigned long num_dim, unsigned long calls,
 		     double* tot_int, double* tot_sig, double* chi_sq_ptr)
 {
 
@@ -406,7 +407,8 @@ void adjust_bins(gsl_monte_vegas_state *state,
   return;
 }
 
-inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], int ng, int j_start)
+inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], 
+			   int ng, unsigned long j_start)
 {
   int j = j_start;
   while ( j >= 0 ) {
@@ -419,12 +421,12 @@ inline int change_box_cord(int box_cord[GSL_V_MAX_DIM], int ng, int j_start)
 }
 
 inline void init_array(double array[GSL_V_BINS_MAX+1][GSL_V_MAX_DIM], 
-		       int n1, int n2)
+		       int imax, unsigned long jmax)
 {
   int i, j;
 
-  for (j = 0; j < n2; ++j) {
-    for (i = 0; i <= n1; ++i)
+  for (j = 0; j < jmax; ++j) {
+    for (i = 0; i <= imax; ++i)
       array[i][j] = 0;
   }
 }
@@ -495,7 +497,6 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state)
     GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
   }
 
-  state->calls = 1000;
   state->acc = -1;
   state->alpha = 1.5;
   state->verbose = -1;
