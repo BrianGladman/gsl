@@ -25,8 +25,8 @@ noinst_HEADERS = \
 	source_dot_r.h		\
 	source_gbmv_c.h		\
 	source_gbmv_r.h		\
-	source_gemv_r.h		\
 	source_gemv_c.h		\
+	source_gemv_r.h		\
 	source_ger.h		\
 	source_gerc.h		\
 	source_geru.h		\
@@ -56,8 +56,13 @@ noinst_HEADERS = \
 	source_symv.h		\
 	source_syr.h		\
 	source_syr2.h		\
+	source_tXsv_r.h		\
+	source_tbmv_c.h		\
 	source_tbmv_r.h		\
-	source_tpmv_r.h
+	source_tbsv_r.h		\
+	source_tpmv_c.h		\
+	source_tpmv_r.h		\
+	source_tpsv_r.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block
