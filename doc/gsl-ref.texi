@@ -276,14 +276,13 @@ Sets and gets the epsilon value used in Newton's method.
 @end deftypefn
 
 
-@deftypefn {Root finding} double gsl_newton1D (double (*fn)(double x), double (*dfn)(double x), double guess)
+@deftypefn {Root finding} double gsl_newton1D (double (*@var{fn})(double x), double (*@var{dfn})(double x), double @var{guess})
 Uses Newton's method to find a root of the function @var{fn}, starting
 at @var{guess}.  User has to supply both the function @var{fn} and its
 first derivative @var{dfn}.
 
 Example: @code{gsl_newton1D(sin, cos, 2.3)}
 @end deftypefn
-
 
 
 @node Simulated annealing
