@@ -39,9 +39,10 @@ as an argument.
    e.g. status = gsl_fft_wavetable_alloc(n, w)
    is now    w = gsl_fft_wavetable_alloc(n) in accordance with usual practice
 
-** The statistics directory now has functions for computing the
-lag1-autocorrelation and an extra set of numerical accuracy tests from
-NIST as part of 'make check'.
+** The statistics directory now works with all the builtin
+types. It has a new function for computing the lag1-autocorrelation and
+an extra set of numerical accuracy tests from NIST as part of 'make
+check'.
 
 ** The simulated annealing routines no longer set the random number
 seed with the time of day.  You'll need to reseed the generator
