@@ -42,7 +42,6 @@
 #define M_EULER    0.57721566490153286060651209008	/* Euler constant */
 #endif
 
-
 /* magic constants; mostly for the benefit of the implementation */
 #include <gsl/gsl_machine.h>
 #include <gsl/gsl_precision.h>
@@ -58,7 +57,6 @@
 #endif
 
 __BEGIN_DECLS
-
 
 /* other needlessly compulsive abstractions */
 
@@ -130,6 +128,32 @@ GSL_MIN_LDBL (long double a, long double b)
 #define GSL_MIN_LDBL(a,b)  GSL_MIN(a,b)
 #endif /* HAVE_INLINE */
 
+
+#ifdef HAVE_INLINE
+extern inline double gsl_hypot (const double x, const double y);
+
+extern inline double gsl_hypot (const double x, const double y) {
+  double xabs = fabs(x) ;
+  double yabs = fabs(y) ;
+  double min, max;
+
+  if (xabs < yabs) {
+    min = xabs ; max = yabs ;
+  } else {
+    min = yabs ; max = xabs ;
+  }
+
+  if (min == 0)  return max ;
+
+  {
+    double u = min / max ;
+    return max * sqrt (1 + u * u) ;
+  }
+}
+#else
+double gsl_hypot (const double x, const double y);
+#endif
+
 /* Definition of an arbitrary function with parameters */
 
 struct gsl_function_struct 
@@ -181,6 +205,18 @@ struct gsl_interval_struct
 };
 
 typedef struct gsl_interval_struct gsl_interval;
+
+#ifdef NAN
+#define GSL_NAN NAN
+#else
+#define GSL_NAN (0.0/0.0)
+#endif
+
+#ifdef INF
+#define GSL_INF INF
+#else
+#define GSL_INF (1.0/0.0)
+#endif
 
 __END_DECLS
 

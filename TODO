@@ -1,5 +1,7 @@
 TODO  -- see also individual TODO files in each directory
 
+* Add Lattice Method and Quasi-random Method to monte carlo integration
+
 * Standardize function names, in particular VERB vs NOUN (e.g. _invert
 vs _inverse). Also adopt a convection for functions which can operate
 in place vs use of workspace (e.g linalg_solve functions).
@@ -17,10 +19,6 @@ in place vs use of workspace (e.g linalg_solve functions).
 * Make a sorted datatype for the median and quantile functions so that
 the user can be prevented from passing unsorted data, which is not
 checked for.
-
-* Add a vector layer to statistics and ffts, sometime in the future.
-
-* Switch to library interface versioning for libtool (eventually).
 
 * Eliminate use of volatile where it has been used to force rounding
 (integration/). It is better to write the code to avoid dependence on
@@ -54,8 +52,10 @@ Linux.
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
-for HAVE_INLINE use in installed headers.  (in particular, grep
-config.h gsl/*.h shouldn't match anything).
+for HAVE_INLINE use in installed headers.  
+
+ grep config.h gsl/*.h    --- shouldn't match anything
+ grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
 
 * Make the return value EINVAL vs EDOM consistent for invalid
 parameters. EDOM means a domain error (i.e. float or mathematically
@@ -72,10 +72,8 @@ different error code.
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
 
-* Upgrade to texinfo-4.0. Fix texinfo files so that sentences
-consistently use a double space after the preceding period (n.b. do
-this by hand, because there are names in the references which need
-only a single space, e.g. D. E. Knuth).
+* Upgrade to texinfo-4.0.  Use GNU Free Documentation License for
+reference manual?
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that
@@ -93,6 +91,10 @@ fft.
 * Some header files for physical constants (speed of light, etc),
 using data from the Particle Data Book. (e.g. gsl_physics.h, could
 also have gsl_chemistry.h, gsl_astro.h, etc)
+
+* Switch to library interface versioning for libtool (eventually).
+
+* Add a vector layer to statistics and ffts, sometime in the future.
 
 
 

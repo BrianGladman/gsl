@@ -1,3 +1,7 @@
+Tue Mar 21 12:44:07 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hypot.c: added a quick gsl_hypot function for sqrt(x^2+y^2)
+
 1999-07-14  Mark Galassi  <rosalia@cygnus.com>
 
 	* prec.c (GSL_MODE_PREC): surrounded this with function with an
