@@ -1,3 +1,8 @@
+2003-06-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_sf.c (test_coupling): added some regression tests for
+	coupling functions
+
 2003-06-02  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma_inc.c (gamma_inc_D): handle x<a, a>10 as a special case
