@@ -1,0 +1,36 @@
+This file is the GSL bug tracking system.  The CVS version of this
+file should be kept up-to-date.
+
+----------------------------------------------------------------------
+From: keith.briggs@bt.com
+To: gsl-discuss@sources.redhat.com
+Subject: gsl_sf_hyperg_2F1 bug report
+Date: Thu, 31 Jan 2002 12:30:04 -0000
+
+gsl_sf_hyperg_2F1_e fails with arguments (1,13,14,0.999227196008978,&r).
+It should return 53.4645... .
+
+#include <gsl/gsl_sf.h>
+#include <stdio.h>
+
+int main (void)
+{
+  gsl_sf_result r;
+  gsl_sf_hyperg_2F1_e (1,13,14,0.999227196008978,&r);
+  printf("r = %g %g\n", r.val, r.err);
+}
+
+NOTES: The program overflows the maximum number of iterations in
+gsl_sf_hyperg_2F1, due to the presence of a nearby singularity at
+(c=a+b,x=1) so the sum is slowly convergent.
+
+The exact result is 53.46451441879150950530608621 as calculated by
+gp-pari using sumpos(k=0,gamma(a+k)*gamma(b+k)*gamma(c)*gamma(1)/
+(gamma(c+k)*gamma(1+k)*gamma(a)*gamma(b))*x^k)
+
+The code needs to be extended to handle the case c=a+b. This is the
+main problem. The case c=a+b is special and needs to be computed
+differently.  There is a special formula given for it in Abramowitz &
+Stegun 15.3.10
+
+----------------------------------------------------------------------
