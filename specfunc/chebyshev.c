@@ -7,6 +7,7 @@
 #include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 
+	
 int gsl_sf_cheb_calc(struct gsl_sf_ChebSeries * cs, double (*func)(double))
 {
   if(cs == 0) {
@@ -20,7 +21,7 @@ int gsl_sf_cheb_calc(struct gsl_sf_ChebSeries * cs, double (*func)(double))
     double * f = malloc((cs->order+1) * sizeof(double));
 
     if(f == 0) {
-      GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
+      GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, GSL_ENOMEM);
     }
   
     for(k = 0; k<=cs->order; k++) {
@@ -38,6 +39,7 @@ int gsl_sf_cheb_calc(struct gsl_sf_ChebSeries * cs, double (*func)(double))
     return GSL_SUCCESS;
   }
 }
+
 
 struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
     	    	    	    	    	   double a, double b,
@@ -65,10 +67,16 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new(double (*func)(double),
       GSL_ERROR_RETURN("gsl_sf_cheb_new: out of memory", GSL_ENOMEM, 0);
     }
   
-    gsl_sf_cheb_calc(cs, func);
-    return cs;
+    if(gsl_sf_cheb_calc(cs, func) != GSL_SUCCESS) {
+      free(cs);
+      return 0;
+    }
+    else {
+      return cs;
+    }
   }
 }
+
 
 double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)
 {
@@ -88,6 +96,7 @@ double gsl_sf_cheb_eval_n(double x, int n, const struct gsl_sf_ChebSeries * cs)
   }
   return y*d - dd + 0.5 * cs->c[0];
 }
+
 
 double gsl_sf_cheb_eval(double x, const struct gsl_sf_ChebSeries * cs)
 {

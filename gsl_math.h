@@ -37,7 +37,8 @@
 /* other needlessly compulsive abstractions */
 
 #define GSL_IS_ODD(n) ((n) & 1)
-#define GSL_IS_EVN(n) (!(GSL_IS_ODD(n))
+#define GSL_IS_EVN(n) (!(GSL_IS_ODD(n)))
+#define GSL_SIGN(x)   ((x) >= 0.0 ? 1 : -1)
 
 
 #endif /* !_GSL_MATH_H_ */

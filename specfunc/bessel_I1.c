@@ -123,7 +123,10 @@ double gsl_sf_bessel_I1_scaled(double x)
 
   double y = fabs(x);
 
-  if(y < xmin) {
+  if(y == 0.) {
+    return 0.;
+  }
+  else if(y < xmin) {
     err_status = GSL_EUNDRFLW;
     return 0.;
   }
@@ -153,7 +156,9 @@ double gsl_sf_bessel_I1(double x)
 
   double y = fabs(x);
 
-  if(y < xmin) {
+  if(y == 0.) {
+  }
+  else if(y < xmin) {
     err_status = GSL_EUNDRFLW;
     return 0.;
   }

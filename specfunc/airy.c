@@ -220,9 +220,8 @@ static struct gsl_sf_ChebSeries ath2_cs = {
 
 
 /* Airy modulus and phase for x < -1 */
-static void airy_mod_phase(double x, double * mod, double * phase)
+static int airy_mod_phase(double x, double * mod, double * phase)
 {
-  static double pi4 = 0.25 * M_PI;
   double sqx;
 
   if(x < -2.0) {
@@ -236,17 +235,17 @@ static void airy_mod_phase(double x, double * mod, double * phase)
     *phase = -0.625 + gsl_sf_cheb_eval(z, &ath2_cs);
   }
   else {
-    char buff[50];
-    sprintf(buff,"airy_mod_phase: x= %g  > -1", x);
-    GSL_ERROR(buff, GSL_EDOM);
+    char buff[64];
     *mod = 0.;
     *phase = 0.;
-    return;
+    sprintf(buff,"airy_mod_phase: x= %20.15g  > -1", x);
+    GSL_ERROR(buff, GSL_EDOM);
   }
 
   sqx = sqrt(-x);
   *mod = sqrt(*mod/sqx);
-  *phase = pi4 - x*sqx * *phase;
+  *phase = M_PI_4 - x*sqx * *phase;
+  return GSL_SUCCESS;
 }
 
 
@@ -531,31 +530,21 @@ static struct gsl_sf_ChebSeries cs_bip2 = {
 };
    
 
+/* should only be called for x >= 1.0 */
 static double airy_aie(double x)
 {
-  if(x < 1.0) {
-    char buff[50];
-    sprintf(buff,"airy_aie: x= %g  < 1", x);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
-  }
-  else {
-    double sqx = sqrt(x);
-    double z = 2.0/(x*sqx) - 1.0;
-    return (.28125 + gsl_sf_cheb_eval(z, &cs_aip))/sqrt(sqx);
-  }
+  double sqx = sqrt(x);
+  double z = 2.0/(x*sqx) - 1.0;
+  return (.28125 + gsl_sf_cheb_eval(z, &cs_aip))/sqrt(sqx);
 }
 
+/* should only be called for x >= 2.0 */
 static double airy_bie(double x)
 {
-  static double ATR =  8.7506905708484345;
-  static double BTR = -2.093836321356054;
+  const double ATR =  8.7506905708484345;
+  const double BTR = -2.093836321356054;
 
-  if(x < 2.0) {
-    char buff[50];
-    sprintf(buff,"airy_bie: x= %g  < 2", x);
-    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
-  }
-  else if(x < 4.0) {
+  if(x < 4.0) {
     double sqx = sqrt(x);
     double z   = ATR/(x*sqx) + BTR;
     return (0.625 + gsl_sf_cheb_eval(z, &cs_bip))/sqrt(sqx);
@@ -585,26 +574,50 @@ double gsl_sf_airy_Ai(double x)
 }
 
 
-double gsl_sf_airy_Bi(double x)
+int gsl_sf_airy_Bi_pe(double x, double * result)
 {
   if(x < -1.0) {
     double mod, theta;
     airy_mod_phase(x, &mod, &theta);
-    return mod * sin(theta);
+    *result = mod * sin(theta);
+    return GSL_SUCCESS;
   }
   else if(x < 1.0) {
     double z = x*x*x;
-    return 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
+    *result = 0.625 + gsl_sf_cheb_eval(z, &bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z, &big_cs));
+    return GSL_SUCCESS;
   }
   else if(x <= 2.) {
     double z = (2.0*x*x*x - 9.0)/7.0;
-    return 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
+    *result = 1.125 + gsl_sf_cheb_eval(z, &bif2_cs) + x*(0.625 + gsl_sf_cheb_eval(z, &big2_cs));
+    return GSL_SUCCESS;
   }
   else {
-    return airy_bie(x) * exp(2.0*x*sqrt(x)/3.0);
+    double y = 2.0*x*sqrt(x)/3.0;
+
+    if(y > GSL_LOG_DBL_MAX - 1.) {
+      *result = 0.; /* FIXME: should be Inf */
+      GSL_ERROR("gsl_sf_airy_Bi_pe: overflow", GSL_EOVRFLW);
+    }
+    else {
+      *result = airy_bie(x) * exp(y);
+      return GSL_SUCCESS;
+    }
   }
 }
 
+double gsl_sf_airy_Bi(double x)
+{
+  double y;
+  int error_status = gsl_sf_airy_Bi_pe(x, &y);
+
+  if(error_status == GSL_EOVRFLW) {
+    GSL_WARNING("gsl_sf_airy_Bi: overflow detected");
+  }
+  else { /* success */
+    return y;
+  }
+}
 
 double gsl_sf_airy_Bi_scaled(double x)
 {

@@ -118,7 +118,6 @@ static struct gsl_sf_ChebSeries ai02_cs = {
 double gsl_sf_bessel_I0_scaled(double x)
 {
   const double x_small = 2.0 * GSL_SQRT_MACH_EPS; 
-
   double y = fabs(x);
 
   if(y < x_small) {
@@ -135,11 +134,34 @@ double gsl_sf_bessel_I0_scaled(double x)
   }
 }
 
+int gsl_sf_bessel_I0_pe(double x, double * result)
+{
+  const double x_small = 2. * GSL_SQRT_MACH_EPS;
+  const double xmax    = GSL_LOG_DBL_MAX - 1.;   /* alog (r1mach(2)) */
+  double y = fabs(x);
+
+  if(y < x_small) {
+    *result = 1.;
+    return GSL_SUCCESS;
+  }
+  else if(y <= 3.0) {
+    *result = 2.75 + gsl_sf_cheb_eval(y*y/4.5-1.0, &bi0_cs);
+    return GSL_SUCCESS;
+  }
+  else if(y < xmax) {
+    *result = exp(y) * gsl_sf_bessel_I0_scaled(x);
+    return GSL_SUCCESS;
+  }
+  else {
+    *result = 0.0; /* FIXME: should be Inf */
+    GSL_ERROR("gsl_sf_bessel_I0: overflow", GSL_EOVRFLW);
+  }
+}
 
 double gsl_sf_bessel_I0(double x)
 {
   const double x_small = 2. * GSL_SQRT_MACH_EPS;
-  const double xmax    = GSL_LOG_DBL_MAX; /* alog (r1mach(2)) */
+  const double xmax    = GSL_LOG_DBL_MAX - 1.;   /* alog (r1mach(2)) */
 
   double y = fabs(x);
 
@@ -147,12 +169,13 @@ double gsl_sf_bessel_I0(double x)
     return 1.;
   }
   else if(y <= 3.0) {
-    return  2.75 + gsl_sf_cheb_eval(y*y/4.5-1.0, &bi0_cs);
+    return 2.75 + gsl_sf_cheb_eval(y*y/4.5-1.0, &bi0_cs);
   }
   else if(y < xmax) {
     return exp(y) * gsl_sf_bessel_I0_scaled(x);
   }
   else {
-    GSL_ERROR_RETURN("gsl_sf_bessel_I0: x too large", GSL_EOVRFLW, 0.);
+    GSL_WARNING("gsl_sf_bessel_I0: overflow detected");
+    return 0.0; /* FIXME: should be Inf */
   }
 }
