@@ -87,11 +87,13 @@ Cubic spline with periodic boundary conditions
 
 @deffn {Interpolation Type} gsl_interp_akima
 @cindex Akima splines
-Akima spline with natural boundary conditions.
+Non-rounded Akima spline with natural boundary conditions.  This method
+uses the non-rounded corner algorithm of Wodicka.
 @end deffn
 
 @deffn {Interpolation Type} gsl_interp_akima_periodic
-Akima spline with periodic boundary conditions.
+Non-rounded Akima spline with periodic boundary conditions.  This method
+uses the non-rounded corner algorithm of Wodicka.
 @end deffn
 
 The following related functions are available:
