@@ -1046,9 +1046,10 @@ functions in this library are available on nearly every platform (but
 not all).  
 
 In this case, it is best to write code in terms of these native
-functions to take advantage of the vendor-supplied system library, but
-to also provide portable implementations e.g. @code{gsl_hypot} which can
-be used as an automatic fall back via autoconf when necessary. See the
+functions to take advantage of the vendor-supplied system library (for
+example log1p is a machine instruction on the Intel x86). The library
+also provides portable implementations e.g. @code{gsl_hypot} which are
+used as an automatic fall back via autoconf when necessary. See the
 usage of @code{hypot} in @file{gsl/complex/math.c}, the implementation
 of @code{gsl_hypot} and the corresponding parts of files
 @file{configure.in} and @file{config.h.in} as an example.

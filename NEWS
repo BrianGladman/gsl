@@ -1,4 +1,19 @@
-* What is new in gsl-0.9:
+* What was new in gsl-0.9.1:
+
+** Renamed gsl_Efunc_t to gsl_siman_Efunc_t, in accordance with
+namespace conventions.
+
+** Improved accuracy and fixed bugs in gsl_sf_bessel_I0_scaled,
+gsl_sf_erfc, gsl_sf_log_erfc, gsl_sf_legendre_Q0 and
+gsl_sf_legendre_Q1, and gsl_sf_zeta.
+
+** Improved IEEE compliance of special functions, overflows now return
+Inf and domain errors return NaN.
+
+** Improved checking for underflows in special functions when using
+extended precision registers
+
+* What was new in gsl-0.9:
 
 ** There is a new system of vector and matrix views.  Any code using
 vector and matrix views will need to be updated.  
