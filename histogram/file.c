@@ -7,24 +7,24 @@
 int
 gsl_histogram_fread (FILE * stream, gsl_histogram * h)
 {
-  int status = gsl_block_fread (stream, h->range, h->n + 1);
+  int status = gsl_block_fread (stream, h->range, h->n + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fread (stream, h->bin, h->n);
+  status = gsl_block_fread (stream, h->bin, h->n, 1);
   return status;
 }
 
 int
 gsl_histogram_fwrite (FILE * stream, const gsl_histogram * h)
 {
-  int status = gsl_block_fwrite (stream, h->range, h->n + 1);
+  int status = gsl_block_fwrite (stream, h->range, h->n + 1, 1);
 
   if (status)
     return status;
 
-  status = gsl_block_fwrite (stream, h->bin, h->n);
+  status = gsl_block_fwrite (stream, h->bin, h->n, 1);
   return status;
 }
 
