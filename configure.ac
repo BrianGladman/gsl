@@ -1,7 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(gsl_math.h)
 
-AM_INIT_AUTOMAKE(gsl,"1.3+")
+AC_INIT(gsl,1.3+,bug-gsl@gnu.org)
+AC_CONFIG_SRCDIR(gsl_math.h)
+
+AM_INIT_AUTOMAKE([gnu])
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -20,13 +22,14 @@ GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
 
 dnl things required by automake
-AC_ARG_PROGRAM
+dnl AC_ARG_PROGRAM
 AC_PROG_MAKE_SET
 
 dnl Check for which system.
 AC_CANONICAL_HOST
 
 dnl Checks for programs.
+AC_LANG(C)
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
@@ -38,7 +41,8 @@ AC_PROG_LIBTOOL
 
 dnl Check compiler features
 AC_TYPE_SIZE_T
-AC_C_CONST
+dnl AC_C_CONST
+AC_C_VOLATILE
 AC_C_INLINE
 
 GSL_CFLAGS="-I$includedir"
@@ -100,41 +104,23 @@ fi ;
 dnl Use alternate libm if specified by user
 
 if test "x$LIBS" = "x" ; then
-  AC_HAVE_LIBRARY(-lm)
+  AC_CHECK_LIB(m, cos)
 fi
 
-dnl Check for a math function which might also be a macro
-AC_DEFUN(AC_CHECK_MFUNCS,
-[ac_func="$1"
-ac_tr_func=HAVE_`echo $ac_func | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
-AC_MSG_CHECKING([for $1])
-AC_CACHE_VAL(ac_cv_func_$1,
-[AC_TRY_LINK([#include <math.h>], 
-                [$1 ($2)],
-                eval "ac_cv_func_$1=yes", 
-                eval "ac_cv_func_$1=no")])
-if eval "test \"`echo '$ac_cv_func_'$1`\" = yes"; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE_UNQUOTED($ac_tr_func,1)
-  AC_SUBST($ac_tr_func)
-else
-  AC_MSG_RESULT(no)
-fi])
-
 dnl Remember to put a definition in acconfig.h for each of these
-AC_CHECK_MFUNCS(feenableexcept,0) 
-AC_CHECK_MFUNCS(fesettrapenable,0) 
-AC_CHECK_MFUNCS(hypot,[1.0,2.0]) 
-AC_CHECK_MFUNCS(expm1,2.0)
-AC_CHECK_MFUNCS(acosh,2.0)
-AC_CHECK_MFUNCS(asinh,2.0)
-AC_CHECK_MFUNCS(atanh,0.5)
-AC_CHECK_MFUNCS(ldexp,[0.5,3])
-AC_CHECK_MFUNCS(frexp,[0.5,0])
-AC_CHECK_MFUNCS(isinf,1.0)
-AC_CHECK_MFUNCS(finite,1.0)
-AC_CHECK_MFUNCS(isfinite,1.0);
-AC_CHECK_MFUNCS(isnan,1.0);
+AC_CHECK_DECLS(feenableexcept,,,[#include <math.h>]) 
+AC_CHECK_DECLS(fesettrapenable,,,[#include <math.h>]) 
+AC_CHECK_DECLS(hypot,,,[#include <math.h>]) 
+AC_CHECK_DECLS(expm1,,,[#include <math.h>])
+AC_CHECK_DECLS(acosh,,,[#include <math.h>])
+AC_CHECK_DECLS(asinh,,,[#include <math.h>])
+AC_CHECK_DECLS(atanh,,,[#include <math.h>])
+AC_CHECK_DECLS(ldexp,,,[#include <math.h>])
+AC_CHECK_DECLS(frexp,,,[#include <math.h>])
+AC_CHECK_DECLS(isinf,,,[#include <math.h>])
+AC_CHECK_DECLS(finite,,,[#include <math.h>])
+AC_CHECK_DECLS(isfinite,,,[#include <math.h>])
+AC_CHECK_DECLS(isnan,,,[#include <math.h>])
 
 dnl OpenBSD has a broken implementation of log1p.
 case "$host" in
@@ -142,16 +128,9 @@ case "$host" in
        AC_MSG_RESULT([avoiding OpenBSD system log1p - using gsl version])
        ;;
     *)
-        AC_CHECK_MFUNCS(log1p,2.0)
+        AC_CHECK_DECLS(log1p,,,[#include <math.h>])
        ;;
 esac
-
-dnl
-dnl FIXME: on Solaris we will need a prototype for hypot, since it is 
-dnl missing from their math.h according to Jerry.
-dnl
-dnl extern double hypot(double, double);
-dnl
 
 AC_CACHE_CHECK([for long double stdio], ac_cv_func_printf_longdouble,
 [AC_TRY_RUN([
@@ -260,9 +239,27 @@ AC_CACHE_CHECK([for IEEE arithmetic interface type], ac_cv_c_ieee_interface,
 esac
 ])
 
-ac_tr_ieee_interface=HAVE_`echo $ac_cv_c_ieee_interface | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
-AC_DEFINE_UNQUOTED($ac_tr_ieee_interface,1)
-AC_SUBST($ac_tr_ieee_interface)
+ac_tr_ieee_interface=HAVE_`echo $ac_cv_c_ieee_interface | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`_IEEE_INTERFACE
+AC_DEFINE_UNQUOTED($ac_tr_ieee_interface,1,[IEEE Interface Type])
+
+AC_SUBST(HAVE_GNUSPARC_IEEE_INTERFACE)
+AC_SUBST(HAVE_GNUM68K_IEEE_INTERFACE)
+AC_SUBST(HAVE_GNUPPC_IEEE_INTERFACE)
+AC_SUBST(HAVE_GNUX86_IEEE_INTERFACE)
+AC_SUBST(HAVE_SUNOS4_IEEE_INTERFACE)
+AC_SUBST(HAVE_SOLARIS_IEEE_INTERFACE)
+AC_SUBST(HAVE_HPUX11_IEEE_INTERFACE)
+AC_SUBST(HAVE_HPUX_IEEE_INTERFACE)
+AC_SUBST(HAVE_TRU64_IEEE_INTERFACE)
+AC_SUBST(HAVE_IRIX_IEEE_INTERFACE)
+AC_SUBST(HAVE_AIX_IEEE_INTERFACE)
+AC_SUBST(HAVE_FREEBSD_IEEE_INTERFACE)
+AC_SUBST(HAVE_OS2EMX_IEEE_INTERFACE)
+AC_SUBST(HAVE_NETBSD_IEEE_INTERFACE)
+AC_SUBST(HAVE_OPENBSD_IEEE_INTERFACE)
+AC_SUBST(HAVE_DARWIN_IEEE_INTERFACE)
+
+
 
 dnl Check for IEEE control flags
 
@@ -340,7 +337,6 @@ if test "$ac_cv_c_ieee_denormals" != no ; then
   AC_DEFINE(HAVE_IEEE_DENORMALS,1)
   AC_SUBST(HAVE_IEEE_DENORMALS)
 fi
-
 
 dnl
 AC_OUTPUT(gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile sort/Makefile complex/Makefile diff/Makefile cheb/Makefile Makefile)

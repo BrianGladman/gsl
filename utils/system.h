@@ -26,7 +26,7 @@
 
 /* <unistd.h> should be included before any preprocessor test
    of _POSIX_VERSION.  */
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H */
 
@@ -34,14 +34,14 @@
 #include <sys/types.h>
 #include <ctype.h>
 
-#ifdef HAVE_LOCALE_H
+#if HAVE_LOCALE_H
 #include <locale.h>
 #endif
 #include <libintl.h>
 
 /* Don't use bcopy!  Use memmove if source and destination may overlap,
    memcpy otherwise.  */
-#ifdef HAVE_STRING_H
+#if HAVE_STRING_H
 # if !STDC_HEADERS && HAVE_MEMORY_H
 #  include <memory.h>
 # endif
@@ -73,23 +73,23 @@ extern int errno;
 
 #include <sys/stat.h>
 
-#ifdef HAVE_SYS_FILE_H
+#if HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif /* HAVE_SYS_FILE_H */
 
 #ifndef O_RDONLY
 /* Since <fcntl.h> is POSIX, prefer that to <sys/fcntl.h>.
    This also avoids some useless warnings on (at least) Linux.  */
-#ifdef HAVE_FCNTL_H
+#if HAVE_FCNTL_H
 #include <fcntl.h>
 #else /* not HAVE_FCNTL_H */
-#ifdef HAVE_SYS_FCNTL_H
+#if HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif /* not HAVE_SYS_FCNTL_H */
 #endif /* not HAVE_FCNTL_H */
 #endif /* not O_RDONLY */
 
-#ifdef HAVE_PWD_H
+#if HAVE_PWD_H
 #include <pwd.h>
 #endif
 /* Some systems don't declare this function in pwd.h. */

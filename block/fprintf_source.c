@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
+#if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 
 int
 FUNCTION (gsl_block, fprintf) (FILE * stream, const TYPE(gsl_block) * b, const char *format)

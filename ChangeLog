@@ -1,3 +1,14 @@
+2003-06-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: converted configure.in to autoconf 2.5x, involved
+	extensive renaming macros of HAVE_... to HAVE_DECL_.. and changing
+	usage from #ifdef HAVE to #if HAVE
+
+2003-06-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl/Makefile.am (header-links): added a test for the existing
+	file to avoid spurious error messages when making the symlinks
+
 2003-06-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: Tidying up, removed old test for bug in gcc 2.95

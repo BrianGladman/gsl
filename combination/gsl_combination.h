@@ -70,13 +70,13 @@ int gsl_combination_prev (gsl_combination * c);
 
 GSL_VAR int gsl_check_range;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline
 size_t
 gsl_combination_get (const gsl_combination * c, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= c->k)
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);

@@ -1,20 +1,4 @@
 @BOTTOM@
-/* Define if you have these functions */
-#undef HAVE_FEENABLEEXCEPT
-#undef HAVE_FESETTRAPENABLE
-#undef HAVE_HYPOT
-#undef HAVE_EXPM1
-#undef HAVE_ACOSH
-#undef HAVE_ASINH
-#undef HAVE_ATANH
-#undef HAVE_LDEXP
-#undef HAVE_FREXP
-#undef HAVE_ISINF
-#undef HAVE_FINITE
-#undef HAVE_ISFINITE
-#undef HAVE_ISNAN
-#undef HAVE_LOG1P
-
 /* Define if you have inline */
 #undef HAVE_INLINE
 
@@ -25,10 +9,13 @@
 #undef HAVE_EXIT_SUCCESS_AND_FAILURE
 
 /* Use 0 and 1 for EXIT_SUCCESS and EXIT_FAILURE if we don't have them */
-#ifndef HAVE_EXIT_SUCCESS_AND_FAILURE
+#if !HAVE_EXIT_SUCCESS_AND_FAILURE
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 #endif
+
+/* Define this if printf can handle %Lf for long double */
+#undef HAVE_PRINTF_LONGDOUBLE
 
 /* Define one of these if you have a known IEEE arithmetic interface */
 #undef HAVE_GNUSPARC_IEEE_INTERFACE
@@ -48,10 +35,11 @@
 #undef HAVE_OPENBSD_IEEE_INTERFACE
 #undef HAVE_DARWIN_IEEE_INTERFACE
 
-/* Define this if we need to include /usr/include/float.h explicitly
-   in order to get FP_RND_RN and related macros.  This is known to be
-   a problem on some Compaq Tru64 unix systems when compiled with GCC. */
-#undef FIND_FP_RND_IN_USR_INCLUDE_FLOAT_H
+/* Define this is IEEE comparisons work correctly (e.g. NaN != NaN) */
+#undef HAVE_IEEE_COMPARISONS
+
+/* Define this is IEEE denormalized numbers are available */
+#undef HAVE_IEEE_DENORMALS
 
 /* Define a rounding function which moves extended precision values
    out of registers and rounds them to double-precision. This should
@@ -69,70 +57,60 @@
 
 #undef HAVE_EXTENDED_PRECISION_REGISTERS
 
-#ifdef HAVE_EXTENDED_PRECISION_REGISTERS
+#if HAVE_EXTENDED_PRECISION_REGISTERS
 #define GSL_COERCE_DBL(x) (gsl_coerce_double(x))
 #else
 #define GSL_COERCE_DBL(x) (x)
 #endif
 
-/* Define this if printf can handle %Lf for long double */
-#undef HAVE_PRINTF_LONGDOUBLE
-
-/* Define this is IEEE comparisons work correctly (e.g. NaN != NaN) */
-#undef HAVE_IEEE_COMPARISONS
-
-/* Define this is IEEE denormalized numbers are available */
-#undef HAVE_IEEE_DENORMALS
-
 /* Substitute gsl functions for missing system functions */
 
-#ifndef HAVE_HYPOT
+#if !HAVE_DECL_HYPOT
 #define hypot gsl_hypot
 #endif
 
-#ifndef HAVE_LOG1P
+#if !HAVE_DECL_LOG1P
 #define log1p gsl_log1p
 #endif
 
-#ifndef HAVE_EXPM1
+#if !HAVE_DECL_EXPM1
 #define expm1 gsl_expm1
 #endif
 
-#ifndef HAVE_ACOSH
+#if !HAVE_DECL_ACOSH
 #define acosh gsl_acosh
 #endif
 
-#ifndef HAVE_ASINH
+#if !HAVE_DECL_ASINH
 #define asinh gsl_asinh
 #endif
 
-#ifndef HAVE_ATANH
+#if !HAVE_DECL_ATANH
 #define atanh gsl_atanh
 #endif
 
-#ifndef HAVE_ISINF
-#define isinf gsl_isinf
-#endif
-
-#ifndef HAVE_ISNAN
-#define isnan gsl_isnan
-#endif
-
-#ifndef HAVE_LDEXP
+#if !HAVE_DECL_LDEXP
 #define ldexp gsl_ldexp
 #endif
 
-#ifndef HAVE_FREXP
+#if !HAVE_DECL_FREXP
 #define frexp gsl_frexp
 #endif
 
+#if !HAVE_DECL_ISINF
+#define isinf gsl_isinf
+#endif
 
-#ifndef HAVE_FINITE
-#ifdef HAVE_ISFINITE
+#if !HAVE_DECL_FINITE
+#if HAVE_DECL_ISFINITE
 #define finite isfinite
 #else
 #define finite gsl_finite
 #endif
+#endif
+
+#if !HAVE_DECL_ISNAN
+#define isnan gsl_isnan
 #endif
 
 #ifdef __GNUC__
@@ -141,6 +119,6 @@
 #define DISCARD_POINTER(p) /* ignoring discarded pointer */
 #endif
 
-#ifndef GSL_RANGE_CHECK_ON
-#define GSL_RANGE_CHECK_OFF  /* turn off range checking by default */
+#ifndef GSL_RANGE_CHECK
+#define GSL_RANGE_CHECK 0  /* turn off range checking by default */
 #endif

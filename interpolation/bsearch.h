@@ -52,7 +52,7 @@ gsl_interp_bsearch(
   );
 
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern
 inline
 size_t

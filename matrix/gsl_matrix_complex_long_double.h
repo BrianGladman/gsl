@@ -229,14 +229,14 @@ int gsl_matrix_complex_long_double_set_col(gsl_matrix_complex_long_double * m, c
 
 GSL_VAR int gsl_check_range ;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline 
 gsl_complex_long_double
 gsl_matrix_complex_long_double_get(const gsl_matrix_complex_long_double * m, 
 		     const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   gsl_complex_long_double zero = {{0,0}};
 
   if (i >= m->size1)
@@ -256,7 +256,7 @@ void
 gsl_matrix_complex_long_double_set(gsl_matrix_complex_long_double * m, 
 		     const size_t i, const size_t j, const gsl_complex_long_double x)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
@@ -274,7 +274,7 @@ gsl_complex_long_double *
 gsl_matrix_complex_long_double_ptr(gsl_matrix_complex_long_double * m, 
                              const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
@@ -292,7 +292,7 @@ const gsl_complex_long_double *
 gsl_matrix_complex_long_double_const_ptr(const gsl_matrix_complex_long_double * m, 
                                    const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;

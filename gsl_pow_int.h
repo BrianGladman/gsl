@@ -32,7 +32,7 @@
 
 __BEGIN_DECLS
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern inline double gsl_pow_2(const double x);
 extern inline double gsl_pow_3(const double x);
 extern inline double gsl_pow_4(const double x);

@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslerr.la
 
 pkginclude_HEADERS = gsl_errno.h gsl_message.h
 
-libgslerr_la_SOURCES = error.c stream.c message.c strerror.c warn.c
+libgslerr_la_SOURCES = error.c stream.c message.c strerror.c
 
 check_PROGRAMS = test
 

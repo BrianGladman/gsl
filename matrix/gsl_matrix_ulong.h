@@ -241,12 +241,12 @@ GSL_VAR int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern inline 
 unsigned long
 gsl_matrix_ulong_get(const gsl_matrix_ulong * m, const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_VAL("first index out of range", GSL_EINVAL, 0) ;
@@ -263,7 +263,7 @@ extern inline
 void
 gsl_matrix_ulong_set(gsl_matrix_ulong * m, const size_t i, const size_t j, const unsigned long x)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
@@ -280,7 +280,7 @@ extern inline
 unsigned long *
 gsl_matrix_ulong_ptr(gsl_matrix_ulong * m, const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
@@ -297,7 +297,7 @@ extern inline
 const unsigned long *
 gsl_matrix_ulong_const_ptr(const gsl_matrix_ulong * m, const size_t i, const size_t j)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= m->size1)
     {
       GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;

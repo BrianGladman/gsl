@@ -3,7 +3,7 @@ header-links: remove-links
 	HEADERLIST="$(top_srcdir)/gsl*.h $(top_srcdir)/*/gsl*.h"; \
 	for h in $$HEADERLIST; do \
 	  BASENAME=`basename $$h`; \
-	  $(LN_S) $$h $$BASENAME; \
+	  test -e $$BASENAME || $(LN_S) $$h $$BASENAME; \
 	done
 
 remove-links: 

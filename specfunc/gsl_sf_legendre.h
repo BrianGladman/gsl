@@ -311,7 +311,7 @@ double gsl_sf_legendre_H3d(const int l, const double lambda, const double eta);
 int gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double eta, double * result_array);
 
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern inline
 int
 gsl_sf_legendre_array_size(const int lmax, const int m)

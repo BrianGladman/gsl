@@ -163,13 +163,13 @@ int gsl_vector_short_isnull (const gsl_vector_short * v);
 
 GSL_VAR int gsl_check_range;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline
 short
 gsl_vector_short_get (const gsl_vector_short * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
@@ -182,7 +182,7 @@ extern inline
 void
 gsl_vector_short_set (gsl_vector_short * v, const size_t i, short x)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
@@ -195,7 +195,7 @@ extern inline
 short *
 gsl_vector_short_ptr (gsl_vector_short * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
@@ -208,7 +208,7 @@ extern inline
 const short *
 gsl_vector_short_const_ptr (const gsl_vector_short * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);

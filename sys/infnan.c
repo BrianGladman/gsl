@@ -71,7 +71,7 @@ gsl_finite (const double x)
 {
   return _finite(x);
 }
-#elif defined(HAVE_IEEE_COMPARISONS)
+#elif HAVE_IEEE_COMPARISONS
 int
 gsl_isnan (const double x)
 {
@@ -102,7 +102,7 @@ gsl_finite (const double x)
 }
 #else
 
-#ifdef HAVE_ISNAN
+#if HAVE_DECL_ISNAN
 int
 gsl_isnan (const double x)
 {
@@ -110,7 +110,7 @@ gsl_isnan (const double x)
 }
 #endif
 
-#ifdef HAVE_ISINF
+#if HAVE_DECL_ISINF
 int
 gsl_isinf (const double x)
 {
@@ -118,13 +118,13 @@ gsl_isinf (const double x)
 }
 #endif
 
-#ifdef HAVE_FINITE
+#if HAVE_DECL_FINITE
 int
 gsl_finite (const double x)
 {
   return finite(x);
 }
-#elif defined(HAVE_ISFINITE)
+#elif HAVE_DECL_ISFINITE
 int
 gsl_finite (const double x)
 {

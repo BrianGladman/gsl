@@ -179,14 +179,14 @@ int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 
 GSL_VAR int gsl_check_range;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline
 gsl_complex_float
 gsl_vector_complex_float_get (const gsl_vector_complex_float * v,
 			      const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       gsl_complex_float zero = {{0, 0}};
@@ -201,7 +201,7 @@ void
 gsl_vector_complex_float_set (gsl_vector_complex_float * v,
 			      const size_t i, gsl_complex_float z)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
@@ -215,7 +215,7 @@ gsl_complex_float *
 gsl_vector_complex_float_ptr (gsl_vector_complex_float * v,
 			      const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
@@ -229,7 +229,7 @@ const gsl_complex_float *
 gsl_vector_complex_float_const_ptr (const gsl_vector_complex_float * v,
                                     const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);

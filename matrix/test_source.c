@@ -292,7 +292,7 @@ FUNCTION (test, func) (void)
  FUNCTION (gsl_vector, free) (v);
 }
 
-#if !(defined(USES_LONGDOUBLE) && !defined(HAVE_PRINTF_LONGDOUBLE))
+#if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 void
 FUNCTION (test, text) (void)
 {

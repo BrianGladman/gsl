@@ -25,10 +25,10 @@
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_test.h>
 
-#if defined(HAVE_IRIX_IEEE_INTERFACE)
+#if HAVE_IRIX_IEEE_INTERFACE
 /* don't test denormals on IRIX */
 #else
-#ifdef HAVE_IEEE_DENORMALS
+#if HAVE_IEEE_DENORMALS
 #define TEST_DENORMAL 1
 #endif
 #endif

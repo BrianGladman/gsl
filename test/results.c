@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
 #ifdef STDC_HEADERS
 #include <stdarg.h>
 #else
@@ -61,7 +61,7 @@ gsl_test (int status, const char *test_description,...)
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS
@@ -117,7 +117,7 @@ gsl_test_rel (double result, double expected, double relative_error,
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS
@@ -183,7 +183,7 @@ gsl_test_abs (double result, double expected, double absolute_error,
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS
@@ -255,7 +255,7 @@ gsl_test_factor (double result, double expected, double factor,
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS
@@ -310,7 +310,7 @@ gsl_test_int (int result, int expected, const char *test_description,...)
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS
@@ -359,7 +359,7 @@ gsl_test_str (const char * result, const char * expected,
   if (verbose)
     {
 
-#ifdef HAVE_VPRINTF
+#if HAVE_VPRINTF
       va_list ap;
 
 #ifdef STDC_HEADERS

@@ -30,7 +30,7 @@ USA.  */
 #define _NO_PROTO
 #endif
 
-#ifdef HAVE_CONFIG_H
+#if HAVE_CONFIG_H
 #include <config.h>
 #endif
 
@@ -88,7 +88,7 @@ USA.  */
 #ifndef _
 /* This is for other GNU distributions with internationalized messages.
    When compiling libc, the _ macro is predefined.  */
-#ifdef HAVE_LIBINTL_H
+#if HAVE_LIBINTL_H
 # include <libintl.h>
 # define _(msgid)	gettext (msgid)
 #else

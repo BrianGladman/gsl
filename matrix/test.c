@@ -19,8 +19,9 @@
 
 #include <config.h>
 
-#ifdef GSL_RANGE_CHECK_OFF
-#undef GSL_RANGE_CHECK_OFF
+#if !GSL_RANGE_CHECK
+#undef GSL_RANGE_CHECK
+#define GSL_RANGE_CHECK 1
 #endif
 
 #include <stdlib.h>
@@ -149,7 +150,7 @@ main (void)
 
   test_text ();
   test_float_text ();
-#ifdef HAVE_PRINTF_LONGDOUBLE
+#if HAVE_PRINTF_LONGDOUBLE
   test_long_double_text ();
 #endif
   test_ulong_text ();
@@ -162,7 +163,7 @@ main (void)
   test_char_text ();
   test_complex_text ();
   test_complex_float_text ();
-#ifdef HAVE_PRINTF_LONGDOUBLE
+#if HAVE_PRINTF_LONGDOUBLE
   test_complex_long_double_text ();
 #endif
 
@@ -180,8 +181,6 @@ main (void)
   test_complex_binary ();
   test_complex_float_binary ();
   test_complex_long_double_binary ();
-
-  gsl_warnings_off = 1;
 
   gsl_set_error_handler (&my_error_handler);
 

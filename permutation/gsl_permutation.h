@@ -78,13 +78,13 @@ size_t gsl_permutation_canonical_cycles (const gsl_permutation * q);
 
 GSL_VAR int gsl_check_range;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline
 size_t
 gsl_permutation_get (const gsl_permutation * p, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= p->size)
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);

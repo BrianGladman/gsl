@@ -164,9 +164,9 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 #endif
     }
 
-#ifdef HAVE_FEENABLEEXCEPT
+#if HAVE_DECL_FEENABLEEXCEPT
   feenableexcept (mode) ;
-#elif defined(HAVE_FESETTRAPENABLE)
+#elif HAVE_DECL_FESETTRAPENABLE
   fesettrapenable (mode);
 #else
   GSL_ERROR ("unknown exception trap method", GSL_EUNSUP)

@@ -1,3 +1,7 @@
+2003-06-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* warn.c: removed, the functions are not used
+
 Sat Apr 27 21:27:32 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* error.c (gsl_error): added an explanatory message in the default

@@ -163,13 +163,13 @@ int gsl_vector_ulong_isnull (const gsl_vector_ulong * v);
 
 GSL_VAR int gsl_check_range;
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline
 unsigned long
 gsl_vector_ulong_get (const gsl_vector_ulong * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
@@ -182,7 +182,7 @@ extern inline
 void
 gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
@@ -195,7 +195,7 @@ extern inline
 unsigned long *
 gsl_vector_ulong_ptr (gsl_vector_ulong * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
@@ -208,7 +208,7 @@ extern inline
 const unsigned long *
 gsl_vector_ulong_const_ptr (const gsl_vector_ulong * v, const size_t i)
 {
-#ifndef GSL_RANGE_CHECK_OFF
+#if GSL_RANGE_CHECK
   if (i >= v->size)
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);

@@ -77,9 +77,6 @@ enum {
 void gsl_error (const char * reason, const char * file, int line,
 		int gsl_errno);
 
-void gsl_warning (const char * reason, const char * file, int line,
-		  int gsl_errno) ;
-
 void gsl_stream_printf (const char *label, const char *file,
 			int line, const char *reason);
 
@@ -130,32 +127,6 @@ FILE * gsl_set_stream (FILE * new_stream);
 /* GSL_ERROR_NULL suitable for out-of-memory conditions */
 
 #define GSL_ERROR_NULL(reason, gsl_errno) GSL_ERROR_VAL(reason, gsl_errno, 0)
-
-
-/* GSL library code can occasionally generate warnings, which are not
-   intended to be fatal. You can compile a version of the library with
-   warnings turned off globally by defining the preprocessor constant
-   GSL_WARNINGS_OFF. This turns off the warnings, but does not disable
-   error handling in any way or turn off error messages.
- 
-   GSL_WARNING() is not intended for use in client code -- use
-   GSL_MESSAGE() instead.  */
-    
-#ifdef GSL_WARNINGS_OFF   /* throw away warnings */
-#define GSL_WARNING(warning, gsl_errno) \
-       do { } while(0)
-#else                     /* output all warnings */
-#define GSL_WARNING(warning, gsl_errno) \
-       do { \
-       gsl_warning (warning, __FILE__, __LINE__, gsl_errno) ; \
-       } while (0)
-#endif
-
-/* Warnings can also be turned off at runtime by setting the variable
-   gsl_warnings_off to a non-zero value */
-
-GSL_VAR int gsl_warnings_off ;
-
 
 /* Sometimes you have several status results returned from
  * function calls and you want to combine them in some sensible

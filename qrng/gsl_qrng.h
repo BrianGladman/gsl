@@ -94,7 +94,7 @@ void * gsl_qrng_state (const gsl_qrng * r);
 int gsl_qrng_get (const gsl_qrng * r, double x[]);
 
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern inline int gsl_qrng_get (const gsl_qrng * r, double x[]);
 extern inline int gsl_qrng_get (const gsl_qrng * r, double x[])
 {

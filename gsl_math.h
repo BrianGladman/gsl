@@ -127,7 +127,7 @@ double gsl_max (double a, double b);
 double gsl_min (double a, double b);
 
 /* inline-friendly strongly typed versions */
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 
 extern inline int GSL_MAX_INT (int a, int b);
 extern inline int GSL_MIN_INT (int a, int b);

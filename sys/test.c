@@ -320,7 +320,7 @@ main (void)
   }
     
 
-#ifdef HAVE_IEEE_COMPARISONS
+#if HAVE_IEEE_COMPARISONS
   /* Test for isinf, isnan, finite */
 
   {

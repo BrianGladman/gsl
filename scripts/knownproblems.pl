@@ -11,6 +11,7 @@ for ($i = 0 ; $i < @lines ; $i++) {
 	&& !/PASS:/ 
 	&& !/mdate-sh/
 	&& !/cp: .\/libgsl.a.c: No such file or directory/
+	&& !/config.status/
 	&& !/sh internal 2K buffer overflow/ 
 	&& !/cvs server: Updating \S+$/ 
 	&& !/Entering directory/
@@ -23,7 +24,7 @@ for ($i = 0 ; $i < @lines ; $i++) {
 
 for ($i = 0 ; $i < @lines ; $i++) {
     if ($n[$i]) {
-	$c = 1 ;
+	$c = 7 ;
     } else {
 	$c = 0 if $lines[$i] =~ /^Making/ ;
 	$n[$i] = 1 if $c > 0 ;
@@ -32,7 +33,7 @@ for ($i = 0 ; $i < @lines ; $i++) {
 }
 
 for ($i = @lines - 1 ; $i >= 0 ; $i--) {
-    $c = 1 if $n[$i] ;
+    $c = 7 if $n[$i] ;
     next if $n[$i] ;
     $n[$i] = 1 if $c > 0 ;
     $c-- if $c > 0 ;

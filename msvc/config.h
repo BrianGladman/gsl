@@ -140,7 +140,7 @@
 
 #undef HAVE_EXTENDED_PRECISION_REGISTERS
 
-#ifdef HAVE_EXTENDED_PRECISION_REGISTERS
+#if HAVE_EXTENDED_PRECISION_REGISTERS
 #define GSL_COERCE_DBL(x) (gsl_coerce_double(x))
 #else
 #define GSL_COERCE_DBL(x) (x)
@@ -199,7 +199,7 @@
 
 
 #ifndef HAVE_FINITE
-#ifdef HAVE_ISFINITE
+#if HAVE_ISFINITE
 #define finite isfinite
 #else
 #define finite gsl_finite

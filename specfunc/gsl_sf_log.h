@@ -78,7 +78,7 @@ int gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result);
 double gsl_sf_log_1plusx_mx(const double x);
 
 
-#ifdef HAVE_INLINE
+#if HAVE_INLINE
 extern inline
 int
 gsl_sf_log_e(const double x, gsl_sf_result * result)
