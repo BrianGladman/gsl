@@ -1,5 +1,8 @@
 Tue Jul 10 22:00:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
+	* erfc.c (gsl_sf_log_erfc_e): introduce an additional log(erfc)
+ 	branch to prevent loss of accuracy for small x
+
 	* test_sf.c (test_zeta): increased tolerance on zeta function test
  	to take into account differences in rounding
 

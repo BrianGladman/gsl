@@ -312,7 +312,13 @@ int gsl_sf_log_erfc_e(double x, gsl_sf_result * result)
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
-  else {
+  else if (fabs(x) < 1) {
+    gsl_sf_result result_erf;
+    gsl_sf_erf_e(x, &result_erf);
+    result->val  = log1p(-result_erf.val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  } else {
     gsl_sf_result result_erfc;
     gsl_sf_erfc_e(x, &result_erfc);
     result->val  = log(result_erfc.val);
