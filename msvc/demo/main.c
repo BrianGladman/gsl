@@ -3,6 +3,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 
+/* See the file README.txt for information on compiling this program */
+
 int
 main (void)
 {
