@@ -1,23 +1,18 @@
 ## Process this file with automake to produce Makefile.in
 
 noinst_LIBRARIES = libgslstatistics.a
-include_HEADERS = gsl_statistics.h gsl_statistics_int.h
+include_HEADERS = gsl_statistics.h \
+ gsl_statistics_char.h gsl_statistics_double.h gsl_statistics_float.h \
+ gsl_statistics_int.h gsl_statistics_long.h gsl_statistics_long_double.h \
+ gsl_statistics_short.h gsl_statistics_uchar.h gsl_statistics_uint.h \
+ gsl_statistics_ulong.h gsl_statistics_ushort.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
-noinst_HEADERS = mean_source.c \
-variance_source.c  \
-absdev_source.c \
-skew_source.c \
-kurtosis_source.c \
-lag1_source.c \
-p_variance_source.c \
-minmax_source.c \
-ttest_source.c \
-sort_source.c \
-median_source.c \
-percentiles_source.c \
-source.h
+noinst_HEADERS = mean_source.c variance_source.c absdev_source.c \
+ skew_source.c kurtosis_source.c lag1_source.c p_variance_source.c \
+ minmax_source.c ttest_source.c sort_source.c median_source.c \
+ percentiles_source.c source.h
 
 check_PROGRAMS = test test_int test_nist
 TESTS = test test_int test_nist
@@ -35,28 +30,6 @@ test_nist_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_nist_DEPENDENCIES = libgslstatistics.a
 
 
-libgslstatistics_a_SOURCES = \
-mean.c \
-variance.c  \
-absdev.c \
-skew.c \
-kurtosis.c \
-lag1.c \
-p_variance.c \
-minmax.c \
-ttest.c \
-sort.c \
-median.c \
-percentiles.c \
-mean_int.c \
-variance_int.c  \
-absdev_int.c \
-skew_int.c \
-kurtosis_int.c \
-lag1_int.c \
-p_variance_int.c \
-minmax_int.c \
-ttest_int.c \
-sort_int.c \
-median_int.c \
-percentiles_int.c
+libgslstatistics_a_SOURCES =  mean.c variance.c absdev.c skew.c \
+ kurtosis.c lag1.c p_variance.c minmax.c ttest.c sort.c median.c \
+ percentiles.c
