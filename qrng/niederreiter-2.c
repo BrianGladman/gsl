@@ -251,6 +251,12 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
       px[k] = primitive_poly[poly_index][k];
       pb[k] = 0;
     }
+
+    for (;k<NIED2_MAX_DEGREE+1;k++) {
+      px[k] = 0;
+      pb[k] = 0;
+    }
+
     pb[0] = 1;
 
     for(j=0; j<NIED2_NBITS; j++) {
