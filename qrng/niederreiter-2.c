@@ -82,7 +82,7 @@ static size_t nied2_state_size(unsigned int dimension)
  * Notice use of a temporary vector,
  * side-stepping aliasing issues when
  * one of inputs is the same as the output
- * [especially important in the original fortran version].
+ * [especially important in the original fortran version, I guess].
  */
 static void poly_multiply(
   const int pa[], int pa_degree,
@@ -223,6 +223,7 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
 
   for(i_dim=0; i_dim<dimension; i_dim++) {
 
+    const int poly_index = i_dim + 1;
     int j, k;
 
     /* Niederreiter (page 56, after equation (7), defines two
@@ -241,11 +242,11 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
      */
     int pb[NIED2_MAX_DEGREE+1];
     int px[NIED2_MAX_DEGREE+1];
-    int px_degree = poly_degree[i_dim];
+    int px_degree = poly_degree[poly_index];
     int pb_degree = 0;
 
     for(k=0; k<px_degree; k++) {
-      px[k] = primitive_poly[i_dim][k];
+      px[k] = primitive_poly[poly_index][k];
       pb[k] = 0;
     }
     pb[0] = 1;
