@@ -22,6 +22,7 @@
  */
 #include <config.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
 #include "gsl_interp.h"
 
 #define DISCARD_STATUS(s) if ((s) != GSL_SUCCESS) { GSL_ERROR_VAL("interpolation error", (s),  GSL_NAN); }
