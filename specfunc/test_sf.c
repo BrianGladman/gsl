@@ -255,8 +255,8 @@ int test_coupling(void)
 
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 2, &r), 1.0/6.0, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, 2, &r), -0.040824829046386, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_coupling_9j_e, (8, 4, 10, 7, 3, 8, 1, 1, 2, &r), 0.025458753860866, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, 2, &r), - sqrt(1.0/6.0) / 10.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (8, 4, 10, 7, 3, 8, 1, 1, 2, &r), sqrt(7.0/3.0)/60.0, TEST_TOL2, GSL_SUCCESS);
 
   return s;
 }
