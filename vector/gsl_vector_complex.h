@@ -9,6 +9,7 @@
 typedef struct
 {
   size_t size;
+  size_t stride;
   gsl_complex * data;
 } 
 gsl_vector_complex ;

@@ -8,6 +8,7 @@
 typedef struct
 {
   size_t size;
+  size_t stride;
   float * data;
 } 
 gsl_vector_float ;
