@@ -83,6 +83,7 @@ main (void)
   benchmark(gsl_rng_ranmar);
   benchmark(gsl_rng_slatec);
   benchmark(gsl_rng_taus);
+  benchmark(gsl_rng_taus113);
   benchmark(gsl_rng_transputer);
   benchmark(gsl_rng_tt800);
   benchmark(gsl_rng_uni);

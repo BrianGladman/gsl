@@ -58,6 +58,7 @@ main (void)
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
   rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
   rng_test (gsl_rng_taus, 1, 10000, 2733957125UL);
+  rng_test (gsl_rng_taus113, 1, 1000, 1925420673UL);
   rng_test (gsl_rng_transputer, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
 
@@ -110,7 +111,8 @@ main (void)
      would be preferable. */
 
   rng_test (gsl_rng_r250, 1, 10000, 1100653588);
-  rng_test (gsl_rng_mt19937, 4357, 1000, 1030650439);
+  rng_test (gsl_rng_mt19937, 4357, 1000, 1186927261);
+  rng_test (gsl_rng_mt19937_1999, 4357, 1000, 1030650439);
   rng_test (gsl_rng_mt19937_1998, 4357, 1000, 1309179303);
   rng_test (gsl_rng_tt800, 0, 10000, 2856609219UL);
 
