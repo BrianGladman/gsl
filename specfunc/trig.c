@@ -863,3 +863,22 @@ int gsl_sf_sinc_e(const double x, gsl_sf_result * result)
   }
   return status;
 }
+
+
+int gsl_sf_sin_err_e(const double x, const double dx, gsl_sf_result * result)
+{
+  int status = gsl_sf_sin_err_impl(x, dx, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_sin_err_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_exp_cos_e(const double x, const double dx, gsl_sf_result * result)
+{
+  int status = gsl_sf_cos_err_impl(x, dx, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_cos_err_e", status);
+  }
+  return status;
+}
