@@ -9,9 +9,6 @@
 #include "complex_internal.h"
 #include "gsl_blas_raw.h"
 
-#define S_REAL(X,inc,i) REAL((float *)X,inc,i)
-#define D_REAL(X,inc,i) REAL((double *)X,inc,i)
-
 
 
 /* ===========================================================================
@@ -101,8 +98,8 @@ void gsl_blas_raw_cdotu (size_t N,
     i += incX;
     j += incY;
   }
-  REAL(dotu,0,0) = rr;
-  IMAG(dotu,0,0) = ri;
+  REAL0(dotu) = rr;
+  IMAG0(dotu) = ri;
 }
 
 void gsl_blas_raw_cdotc (size_t N,
@@ -119,8 +116,8 @@ void gsl_blas_raw_cdotc (size_t N,
     i += incX;
     j += incY;
   }
-  REAL(dotc,0,0) = rr;
-  IMAG(dotc,0,0) = 0.0;
+  REAL0(dotc) = rr;
+  IMAG0(dotc) = 0.0;
 }
 
 void gsl_blas_raw_zdotu (size_t N,
@@ -139,8 +136,8 @@ void gsl_blas_raw_zdotu (size_t N,
     i += incX;
     j += incY;
   }
-  REAL(dotu,0,0) = rr;
-  IMAG(dotu,0,0) = ri; 
+  REAL0(dotu) = rr;
+  IMAG0(dotu) = ri; 
 }
 
 void gsl_blas_raw_zdotc (size_t N,
@@ -157,8 +154,8 @@ void gsl_blas_raw_zdotc (size_t N,
     i += incX;
     j += incY;
   }
-  REAL(dotc,0,0) = rr;
-  IMAG(dotc,0,0) = 0.0;
+  REAL0(dotc) = rr;
+  IMAG0(dotc) = 0.0;
 }
 
 
