@@ -1,3 +1,7 @@
+Tue Nov 17 16:52:00 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* test_interp.c: got rid of unused function alloc_xy_table
+
 Fri Nov 13 16:50:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* clean up for make strict, use size_t instead of unsigned int

@@ -10,10 +10,8 @@
 #include <gsl_errno.h>
 #include <gsl_interp.h>
 
-
 typedef double TEST_FUNC (double);
 typedef struct _xy_table xy_table;
-
 
 struct _xy_table
   {
@@ -21,16 +19,6 @@ struct _xy_table
     double *y;
     size_t n;
   };
-
-
-static void
-alloc_xy_table (xy_table * data_table, size_t size)
-{
-  data_table->n = size;
-  data_table->x = (double *) malloc (data_table->n * sizeof (double));
-  data_table->y = (double *) malloc (data_table->n * sizeof (double));
-}
-
 
 static int
 test_interp (xy_table * data_table, const gsl_interp_factory * factory, xy_table * test_table)
