@@ -113,6 +113,7 @@ gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
     if(nu == 0.0) {
       prefactor.val = 1.0;
       prefactor.err = 0.0;
+      stat_pre = GSL_SUCCESS;
     }
     else if(nu < INT_MAX-1) {
       /* Separate the integer part and use
