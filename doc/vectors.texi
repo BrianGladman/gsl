@@ -1,8 +1,8 @@
- The functions described in this chapter provide a simple vector and
+@cindex vectors
+The functions described in this chapter provide a simple vector and
 matrix interface to ordinary C arrays. By writing your functions in
 terms of vectors and matrices you can pass a single structure containing
 both data and dimensions without needing additional function arguments.
-
 
 @menu
 * The vector struct::           
@@ -99,6 +99,8 @@ with the struct @code{gsl_vector_int}.
 
 @node Accessing vector elements
 @section Accessing vector elements
+@cindex vectors, range-checking
+@cindex range-checking for vectors
 
 Unlike @sc{fortran}, the C language does not provide support for range
 checking of vectors and matrices. However, the functions
@@ -294,6 +296,7 @@ elements of @code{v}, written using the format specifier
 
 @node The matrix struct
 @section The matrix struct
+@cindex matrices
 
 Matrices are defined by a @code{gsl_matrix} structure which contains
 three members, the two dimensions of the matrix and a pointer to a block
@@ -376,6 +379,8 @@ with the struct @code{gsl_matrix_int}.
 
 @node Accessing matrix elements
 @section Accessing matrix elements
+@cindex matrices, range-checking
+@cindex range-checking for matrices
 
 The functions for accessing the elements of a matrix use the same range
 checking system as vectors. You turn off range checking by recompiling
