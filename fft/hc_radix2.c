@@ -156,7 +156,7 @@ gsl_fft_halfcomplex_radix2 (double data[],
   /* bit reverse the ordering of output data for decimation in
      frequency algorithm */
   
-  status = fft_bitreverse_order_real(data, stride, n, logn) ;
+  status = fft_bitreverse_order(data, stride, n, logn) ;
 
   return 0;
 

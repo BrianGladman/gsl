@@ -37,7 +37,7 @@ gsl_fft_real_radix2 (double data[], const size_t stride,  const size_t n)
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
-  status = fft_bitreverse_order_real(data, stride, n, logn) ;
+  status = fft_bitreverse_order(data, stride, n, logn) ;
 
   /* apply fft recursion */
 

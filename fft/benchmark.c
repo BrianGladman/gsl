@@ -12,6 +12,7 @@
 
 #include <gsl_errno.h>
 
+#include "fft.h"
 #include "bitreverse.h"
 
 void my_error_handler (const char *reason, const char *file,
@@ -20,7 +21,7 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (int argc, char *argv[])
 {
-  gsl_complex *data, *fft_data;
+  double *data, *fft_data;
   gsl_fft_complex_wavetable * cw;
   unsigned int i, logn;
   int result;
@@ -45,25 +46,25 @@ main (int argc, char *argv[])
   status = gsl_fft_complex_init (n, cw);
   status = gsl_fft_complex_generate_wavetable (n, cw);
 
-  data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  fft_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  data = (double *) malloc (n * 2 * sizeof (double));
+  fft_data = (double *) malloc (n * 2 * sizeof (double));
 
   for (i = 0; i < n; i++)
     {
-      data[i].real = ((double) rand ()) / RAND_MAX;
-      data[i].imag = ((double) rand ()) / RAND_MAX;
+      REAL(data,1,i) = ((double) rand ()) / RAND_MAX;
+      IMAG(data,1,i) = ((double) rand ()) / RAND_MAX;
     }
 
 
   /* compute the fft */
 
-  memcpy (fft_data, data, n * sizeof (gsl_complex));
+  memcpy (fft_data, data, n * 2 * sizeof (double));
 
   start = clock ();
   i = 0;
   do
     {
-      status = gsl_fft_complex_forward (fft_data, n, cw);
+      status = gsl_fft_complex_forward (fft_data, 1, n, cw);
       i++;
       end = clock ();
     }
@@ -80,7 +81,7 @@ main (int argc, char *argv[])
 
 
   /* compute the fft with radix2 */
-  memcpy (fft_data, data, n * sizeof (gsl_complex));
+  memcpy (fft_data, data, n * 2 * sizeof (double));
 
   result = gsl_fft_binary_logn(n) ;
 
@@ -94,7 +95,7 @@ main (int argc, char *argv[])
   i = 0;
   do
     {
-      status = gsl_fft_complex_radix2_forward (fft_data, n);
+      status = gsl_fft_complex_radix2_forward (fft_data, 1, n);
       i++;
       end = clock ();
     }
@@ -113,7 +114,7 @@ main (int argc, char *argv[])
   i = 0;
   do
     {
-      status = gsl_fft_complex_bitreverse_order (fft_data, n, logn);
+      status = fft_complex_bitreverse_order (fft_data, 1, n, logn);
       i++;
       end = clock ();
     }
@@ -121,33 +122,6 @@ main (int argc, char *argv[])
 
   printf ("n = %d gsl_fft_complex_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
 
-  start = clock ();
-  i = 0;
-  do
-    {
-      status = gsl_fft_complex_goldrader_bitreverse_order (fft_data, n);
-      i++;
-      end = clock ();
-    }
-  while (end < start + resolution && status == 0);
-
-  printf ("n = %d gsl_fft_complex_goldrader_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
-
-
-  start = clock ();
-  i = 0;
-  do
-    {
-      status = gsl_fft_complex_rodriguez_bitreverse_order (fft_data, n, logn);
-      i++;
-      end = clock ();
-    }
-  while (end < start + resolution && status == 0);
-
-  printf ("n = %d gsl_fft_complex_rodriguez_bitreverse_order %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
-
-
-  
 
   return 0;
 }

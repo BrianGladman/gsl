@@ -72,7 +72,7 @@ full_top_srcdir = @full_top_srcdir@
 
 noinst_LIBRARIES = libgslfft.a 
 
-check_PROGRAMS = test_trap test_radix2 test benchmark errs
+check_PROGRAMS = test test_trap test_radix2 benchmark errs
 
 include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
@@ -80,7 +80,7 @@ noinst_HEADERS = fft.h fft_complex.h fft_halfcomplex.h fft_real.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
-TESTS = test_trap test_radix2 test
+TESTS = test test_radix2 test_trap
 
 test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
@@ -161,12 +161,12 @@ hc_pass_3.o hc_pass_4.o hc_pass_5.o hc_pass_n.o hc_radix2.o hc_unpack.o \
 real.o real_init.o real_pass_2.o real_pass_3.o real_pass_4.o \
 real_pass_5.o real_pass_n.o real_radix2.o real_unpack.o
 AR = ar
+test_OBJECTS =  test.o signals.o
+test_LDFLAGS = 
 test_trap_OBJECTS =  test_trap.o signals.o
 test_trap_LDFLAGS = 
 test_radix2_OBJECTS =  test_radix2.o signals.o
 test_radix2_LDFLAGS = 
-test_OBJECTS =  test.o signals.o
-test_LDFLAGS = 
 benchmark_OBJECTS =  benchmark.o
 benchmark_LDFLAGS = 
 errs_SOURCES = errs.c
@@ -196,8 +196,8 @@ DEP_FILES =  .deps/benchmark.P .deps/bitreverse.P .deps/c.P \
 .deps/real_pass_5.P .deps/real_pass_n.P .deps/real_radix2.P \
 .deps/real_unpack.P .deps/signals.P .deps/test.P .deps/test_radix2.P \
 .deps/test_trap.P
-SOURCES = $(libgslfft_a_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) errs.c
-OBJECTS = $(libgslfft_a_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) errs.o
+SOURCES = $(libgslfft_a_SOURCES) $(test_SOURCES) $(test_trap_SOURCES) $(test_radix2_SOURCES) $(benchmark_SOURCES) errs.c
+OBJECTS = $(libgslfft_a_OBJECTS) $(test_OBJECTS) $(test_trap_OBJECTS) $(test_radix2_OBJECTS) $(benchmark_OBJECTS) errs.o
 
 all: Makefile $(LIBRARIES) $(HEADERS)
 
@@ -250,6 +250,10 @@ distclean-checkPROGRAMS:
 
 maintainer-clean-checkPROGRAMS:
 
+test: $(test_OBJECTS) $(test_DEPENDENCIES)
+	@rm -f test
+	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
+
 test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
 	@rm -f test_trap
 	$(LINK) $(test_trap_LDFLAGS) $(test_trap_OBJECTS) $(test_trap_LDADD) $(LIBS)
@@ -257,10 +261,6 @@ test_trap: $(test_trap_OBJECTS) $(test_trap_DEPENDENCIES)
 test_radix2: $(test_radix2_OBJECTS) $(test_radix2_DEPENDENCIES)
 	@rm -f test_radix2
 	$(LINK) $(test_radix2_LDFLAGS) $(test_radix2_OBJECTS) $(test_radix2_LDADD) $(LIBS)
-
-test: $(test_OBJECTS) $(test_DEPENDENCIES)
-	@rm -f test
-	$(LINK) $(test_LDFLAGS) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 benchmark: $(benchmark_OBJECTS) $(benchmark_DEPENDENCIES)
 	@rm -f benchmark

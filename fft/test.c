@@ -14,6 +14,7 @@
 #include <gsl_fft_halfcomplex.h>
 #include <gsl_test.h>
 
+#include "fft.h"
 #include "fft_signals.h"
 
 #include "compare.h"
@@ -56,18 +57,18 @@ void check_complex (size_t n)
 
   double *real_data, *real_tmp;
   double *fft_real_data, *fft_real_tmp;
-  gsl_complex *complex_data, *complex_tmp;
-  gsl_complex *fft_complex_data, *fft_complex_tmp;
+  double *complex_data, *complex_tmp;
+  double *fft_complex_data, *fft_complex_tmp;
 
   gsl_fft_complex_wavetable * cw ;
   gsl_fft_real_wavetable * rw ;
   gsl_fft_halfcomplex_wavetable * hcw ;
 
   real_data = (double *) malloc (n * sizeof (double));
-  complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  fft_complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  fft_complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+  complex_data = (double *) malloc (n * 2 * sizeof (double));
+  complex_tmp = (double *) malloc (n * 2 * sizeof (double));
+  fft_complex_data = (double *) malloc (n * 2 * sizeof (double));
+  fft_complex_tmp = (double *) malloc (n * 2 * sizeof (double));
 
   gsl_set_error_handler (NULL);	/* abort on any errors */
 
@@ -83,25 +84,19 @@ void check_complex (size_t n)
   status = gsl_fft_complex_generate_wavetable (n, cw);
   gsl_test (status, "gsl_fft_complex_generate_wavetable, n = %d", n);
   
-  complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  fft_complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  fft_complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-  
-  real_data = (double *) malloc (n * sizeof (double));
-  
   /* mixed radix fft */
   gsl_fft_signal_complex_noise (n, complex_data, fft_complex_data);
-  memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
-  gsl_fft_complex_forward (complex_data, n, cw);
-  memcpy (fft_complex_tmp, complex_data, n * sizeof (gsl_complex));
+  memcpy (complex_tmp, complex_data, 2 * n * sizeof (double));
+  gsl_fft_complex_forward (complex_data, 1, n, cw);
+  memcpy (fft_complex_tmp, complex_data, 2 * n * sizeof (double));
   status = compare_complex_results ("dft", fft_complex_data,
 				    "fft of noise", complex_data,
 				    n, 1e6);
   gsl_test (status, "gsl_fft_complex_forward with signal_noise, n = %d", n);
+
   
   /* compute the inverse fft */
-  status = gsl_fft_complex_inverse (complex_data, n, cw);
+  status = gsl_fft_complex_inverse (complex_data, 1, n, cw);
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft inverse", complex_data,
 				    n, 1e6);
@@ -109,12 +104,12 @@ void check_complex (size_t n)
   
   /* compute the backward fft */
 
-  status = gsl_fft_complex_backward (fft_complex_tmp, n, cw);
+  status = gsl_fft_complex_backward (fft_complex_tmp, 1, n, cw);
 
   for (i = 0; i < n; i++)
     {
-      complex_tmp[i].real *= n;
-      complex_tmp[i].imag *= n;
+      REAL(complex_tmp,1,i) *= n;
+      IMAG(complex_tmp,1,i) *= n;
     }
   status = compare_complex_results ("orig", complex_tmp,
 				    "fft backward", fft_complex_tmp,
@@ -142,10 +137,10 @@ void check_complex (size_t n)
 
   for (i = 0; i < n; i++)
     {
-      real_data[i] = complex_data[i].real;
+      real_data[i] = REAL(complex_data,1,i);
     }
   
-  gsl_fft_real (real_data, n, rw);
+  gsl_fft_real (real_data, 1, n, rw);
   gsl_fft_halfcomplex_unpack (real_data, complex_data, n);
   
   status = compare_complex_results ("dft", fft_complex_data,
@@ -166,7 +161,7 @@ void check_complex (size_t n)
 						   hcw);
   gsl_test (status, "gsl_fft_halfcomplex_generate_wavetable, n = %d", n);
   
-  status = gsl_fft_halfcomplex (real_data, n, hcw);
+  status = gsl_fft_halfcomplex (real_data, 1, n, hcw);
   
   for (i = 0; i < n; i++)
     {
@@ -183,14 +178,14 @@ void check_complex (size_t n)
   /* pulse */
   gsl_fft_signal_complex_pulse (1, n, 1.0, 0.0, complex_data,
 				     fft_complex_data);
-  gsl_fft_complex_forward (complex_data, n, cw);
+  gsl_fft_complex_forward (complex_data, 1, n, cw);
   status = compare_complex_results ("analytic", fft_complex_data,
 				    "fft of pulse", complex_data, n, 1e6);
   gsl_test (status, "gsl_fft_complex_forward with signal_pulse, n = %d", n);
   
   gsl_fft_signal_complex_constant (n, 1.0, 0.0, complex_data,
 					fft_complex_data);
-  gsl_fft_complex_forward (complex_data, n, cw);
+  gsl_fft_complex_forward (complex_data, 1, n, cw);
   status = compare_complex_results ("analytic", fft_complex_data,
 				    "fft of constant", complex_data,
 				    n, 1e6);
@@ -201,7 +196,7 @@ void check_complex (size_t n)
     {
       gsl_fft_signal_complex_exp ((int)i, n, 1.0, 0.0, complex_data,
 				       fft_complex_data);
-      gsl_fft_complex_forward (complex_data, n, cw);
+      gsl_fft_complex_forward (complex_data, 1, n, cw);
       status |= compare_complex_results ("analytic", fft_complex_data,
 					 "fft of exp", complex_data,
 					 n, 1e6);

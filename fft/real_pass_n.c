@@ -126,7 +126,7 @@ gsl_fft_real_pass_n (const double in[],
 		    {
 		      const size_t t_index = (k - 1) + (e2 - 1) * tskip;
 		      tw_real = GSL_REAL(twiddle[t_index]);
-		      tw_imag = -GSL_REAL(twiddle[t_index]);
+		      tw_imag = -GSL_IMAG(twiddle[t_index]);
 		    }
 
 		  {

@@ -33,10 +33,10 @@ main (void)
   int status ;
 
   double real_x ;
-  gsl_complex complex_x ;
+  double complex_x ;
 
   double * real_data = &real_x ;
-  gsl_complex * complex_data = &complex_x  ; 
+  double * complex_data = &complex_x  ; 
 
   gsl_fft_complex_wavetable * cw;
   gsl_fft_real_wavetable * rw;
@@ -84,65 +84,65 @@ main (void)
 
   /* n = 0 in fft forward */
 
-  status = gsl_fft_complex_forward (complex_data, 0, cw);
+  status = gsl_fft_complex_forward (complex_data, 1, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_forward");
 
-  status = gsl_fft_real (real_data, 0, rw);
+  status = gsl_fft_real (real_data, 1, 0, rw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_real");
 
-  status = gsl_fft_halfcomplex (real_data, 0, hcw);
+  status = gsl_fft_halfcomplex (real_data, 1, 0, hcw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex");
 
-  status = gsl_fft_complex_radix2_forward (complex_data, 0);
+  status = gsl_fft_complex_radix2_forward (complex_data, 1, 0);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_radix2_forward");
 
   /* n = 0 in fft backward */
 
-  status = gsl_fft_complex_backward (complex_data, 0, cw);
+  status = gsl_fft_complex_backward (complex_data, 1, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_backward");
 
-  status = gsl_fft_complex_radix2_backward (complex_data, 0);
+  status = gsl_fft_complex_radix2_backward (complex_data, 1, 0);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_radix2_backward");
 
   /* n = 0 in fft inverse */
 
-  status = gsl_fft_complex_inverse (complex_data, 0, cw);
+  status = gsl_fft_complex_inverse (complex_data, 1, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_inverse");
 
-  status = gsl_fft_complex_radix2_inverse (complex_data, 0);
+  status = gsl_fft_complex_radix2_inverse (complex_data, 1, 0);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_radix2_inverse");
 
   /* n != 2^k in power of 2 routines */
 
-  status = gsl_fft_complex_radix2_forward (complex_data, 17);
+  status = gsl_fft_complex_radix2_forward (complex_data, 1, 17);
   gsl_test (!status, "trap for n != 2^k in gsl_fft_complex_radix2_forward");
 
-  status = gsl_fft_complex_radix2_backward (complex_data, 17);
+  status = gsl_fft_complex_radix2_backward (complex_data, 1, 17);
   gsl_test (!status, "trap for n != 2^k in gsl_fft_complex_radix2_backward");
 
-  status = gsl_fft_complex_radix2_inverse (complex_data, 17);
+  status = gsl_fft_complex_radix2_inverse (complex_data, 1, 17);
   gsl_test (!status, "trap for n != 2^k in gsl_fft_complex_radix2_inverse");
 
   /* n != wavetable.n in mixed radix routines */
 
   cw->n = 3;
-  status = gsl_fft_complex_forward (complex_data, 4, cw);
+  status = gsl_fft_complex_forward (complex_data, 1, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_forward");
 
   cw->n = 3;
-  status = gsl_fft_complex_backward (complex_data, 4, cw);
+  status = gsl_fft_complex_backward (complex_data, 1, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_backward");
 
   cw->n = 3;
-  status = gsl_fft_complex_inverse (complex_data, 4, cw);
+  status = gsl_fft_complex_inverse (complex_data, 1, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_inverse");
 
   rw->n = 3;
-  status = gsl_fft_real (real_data, 4, rw);
+  status = gsl_fft_real (real_data, 1, 4, rw);
   gsl_test (!status, "trap for n != nw in gsl_fft_real");
 
   hcw->n = 3;
-  status = gsl_fft_halfcomplex (real_data, 4, hcw);
+  status = gsl_fft_halfcomplex (real_data, 1, 4, hcw);
   gsl_test (!status, "trap for n != nw in gsl_fft_halfcomplex");
 
   return gsl_test_summary ();

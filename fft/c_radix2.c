@@ -125,7 +125,7 @@ gsl_fft_complex_radix2 (double data[], const size_t stride, const size_t n,
 
   /* bit reverse the ordering of input data for decimation in time algorithm */
   
-  status = fft_bitreverse_order_complex(data, stride, n, logn) ;
+  status = fft_complex_bitreverse_order(data, stride, n, logn) ;
 
   /* apply fft recursion */
 
@@ -281,7 +281,7 @@ gsl_fft_complex_radix2_dif (double data[], const size_t stride, const size_t n,
   /* bit reverse the ordering of output data for decimation in
      frequency algorithm */
   
-  status = fft_bitreverse_order_complex(data, stride, n, logn) ;
+  status = fft_complex_bitreverse_order(data, stride, n, logn) ;
 
   return 0;
 

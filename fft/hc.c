@@ -149,7 +149,7 @@ gsl_fft_halfcomplex (double data[], const size_t stride, const size_t n,
     {
       for (i = 0; i < n; i++)
 	{
-	  data[istride*i] = scratch[i] ;
+	  data[stride*i] = scratch[i] ;
 	}
     }
 

@@ -76,7 +76,7 @@ fft_complex_pass_2 (const double in[],
 	  
 	  /* out1 = w * x1 */
 	  REAL(out,ostride,j+product_1) = w_real * x1_real - w_imag * x1_imag;
-	  REAL(out,ostride,j+product_1) = w_real * x1_imag + w_imag * x1_real;
+	  IMAG(out,ostride,j+product_1) = w_real * x1_imag + w_imag * x1_real;
 	  
 	  i++;
 	  j++;

@@ -45,7 +45,7 @@ gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable);
 
 int
 gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
-			    gsl_complex complex_coefficient[],
+			    double complex_coefficient[],
 			    size_t n);
 
 #endif /* GSL_FFT_HALFCOMPLEX_H */

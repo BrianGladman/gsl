@@ -7,6 +7,7 @@
 
 #include <gsl_dft_complex.h>
 
+#include "fft.h"
 #include "fft_signals.h"
 
 int
@@ -14,8 +15,8 @@ gsl_fft_signal_complex_pulse (const size_t k,
 			      const size_t n,
 			      const double z_real,
 			      const double z_imag,
-			      gsl_complex data[],
-			      gsl_complex fft[])
+			      double data[],
+			      double fft[])
 {
   size_t j;
 
@@ -28,12 +29,12 @@ gsl_fft_signal_complex_pulse (const size_t k,
 
   for (j = 0; j < n; j++)
     {
-      data[j].real = 0.0;
-      data[j].imag = 0.0;
+      REAL(data,1,j) = 0.0;
+      IMAG(data,1,j) = 0.0;
     }
 
-  data[k % n].real = z_real;
-  data[k % n].imag = z_imag;
+  REAL(data,1,k % n) = z_real;
+  IMAG(data,1,k % n) = z_imag;
 
   /* fourier transform, fft[j] = z * exp(-2 pi i j k / n) */
 
@@ -42,8 +43,8 @@ gsl_fft_signal_complex_pulse (const size_t k,
       const double arg = -2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
       const double w_real = cos (arg);
       const double w_imag = sin (arg);
-      fft[j].real = w_real * z_real - w_imag * z_imag;
-      fft[j].imag = w_real * z_imag + w_imag * z_real;
+      REAL(fft,1,j) = w_real * z_real - w_imag * z_imag;
+      IMAG(fft,1,j) = w_real * z_imag + w_imag * z_real;
     }
 
   return 0;
@@ -53,10 +54,10 @@ gsl_fft_signal_complex_pulse (const size_t k,
 
 int
 gsl_fft_signal_complex_constant (const size_t n,
-				      const double z_real,
-				      const double z_imag,
-				      gsl_complex data[],
-				      gsl_complex fft[])
+				 const double z_real,
+				 const double z_imag,
+				 double data[],
+				 double fft[])
 {
   size_t j;
 
@@ -69,20 +70,20 @@ gsl_fft_signal_complex_constant (const size_t n,
 
   for (j = 0; j < n; j++)
     {
-      data[j].real = z_real;
-      data[j].imag = z_imag;
+      REAL(data,1,j) = z_real;
+      IMAG(data,1,j) = z_imag;
     }
 
   /* fourier transform, fft[j] = n z delta_{j0} */
 
   for (j = 0; j < n; j++)
     {
-      fft[j].real = 0.0;
-      fft[j].imag = 0.0;
+      REAL(fft,1,j) = 0.0;
+      IMAG(fft,1,j) = 0.0;
     }
 
-  fft[0].real = ((double) n) * z_real;
-  fft[0].imag = ((double) n) * z_imag;
+  REAL(fft,1,0) = ((double) n) * z_real;
+  IMAG(fft,1,0) = ((double) n) * z_imag;
 
   return 0;
 
@@ -91,11 +92,11 @@ gsl_fft_signal_complex_constant (const size_t n,
 
 int
 gsl_fft_signal_complex_exp (const int k,
-				 const size_t n,
-				 const double z_real,
-				 const double z_imag,
-				 gsl_complex data[],
-				 gsl_complex fft[])
+			    const size_t n,
+			    const double z_real,
+			    const double z_imag,
+			    double data[],
+			    double fft[])
 {
   size_t j;
 
@@ -111,16 +112,16 @@ gsl_fft_signal_complex_exp (const int k,
       const double arg = 2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
       const double w_real = cos (arg);
       const double w_imag = sin (arg);
-      data[j].real = w_real * z_real - w_imag * z_imag;
-      data[j].imag = w_real * z_imag + w_imag * z_real;
+      REAL(data,1,j) = w_real * z_real - w_imag * z_imag;
+      IMAG(data,1,j) = w_real * z_imag + w_imag * z_real;
     }
 
   /* fourier transform, fft[j] = z * delta{(j - k),0} */
 
   for (j = 0; j < n; j++)
     {
-      fft[j].real = 0.0;
-      fft[j].imag = 0.0;
+      REAL(fft,1,j) = 0.0;
+      IMAG(fft,1,j) = 0.0;
     }
 
   {
@@ -135,8 +136,8 @@ gsl_fft_signal_complex_exp (const int k,
 	freq = (k % n);
       };
 
-    fft[freq].real = ((double) n) * z_real;
-    fft[freq].imag = ((double) n) * z_imag;
+    REAL(fft,1,freq) = ((double) n) * z_real;
+    IMAG(fft,1,freq) = ((double) n) * z_imag;
   }
 
   return 0;
@@ -152,8 +153,8 @@ gsl_fft_signal_complex_exppair (const int k1,
 				     const double z1_imag,
 				     const double z2_real,
 				     const double z2_imag,
-				     gsl_complex data[],
-				     gsl_complex fft[])
+				     double data[],
+				     double fft[])
 {
   size_t j;
 
@@ -172,10 +173,10 @@ gsl_fft_signal_complex_exppair (const int k1,
       const double arg2 = 2 * M_PI * ((double) ((j * k2) % n)) / ((double) n);
       const double w2_real = cos (arg2);
       const double w2_imag = sin (arg2);
-      data[j].real = w1_real * z1_real - w1_imag * z1_imag;
-      data[j].imag = w1_real * z1_imag + w1_imag * z1_real;
-      data[j].real += w2_real * z2_real - w2_imag * z2_imag;
-      data[j].imag += w2_real * z2_imag + w2_imag * z2_real;
+      REAL(data,1,j) = w1_real * z1_real - w1_imag * z1_imag;
+      IMAG(data,1,j) = w1_real * z1_imag + w1_imag * z1_real;
+      REAL(data,1,j) += w2_real * z2_real - w2_imag * z2_imag;
+      IMAG(data,1,j) += w2_real * z2_imag + w2_imag * z2_real;
     }
 
   /* fourier transform, fft[j] = z1 * delta{(j - k1),0} + z2 *
@@ -183,8 +184,8 @@ gsl_fft_signal_complex_exppair (const int k1,
 
   for (j = 0; j < n; j++)
     {
-      fft[j].real = 0.0;
-      fft[j].imag = 0.0;
+      REAL(fft,1,j) = 0.0;
+      IMAG(fft,1,j) = 0.0;
     }
 
   {
@@ -208,10 +209,10 @@ gsl_fft_signal_complex_exppair (const int k1,
 	freq2 = (k2 % n);
       };
 
-    fft[freq1].real += ((double) n) * z1_real;
-    fft[freq1].imag += ((double) n) * z1_imag;
-    fft[freq2].real += ((double) n) * z2_real;
-    fft[freq2].imag += ((double) n) * z2_imag;
+    REAL(fft,1,freq1) += ((double) n) * z1_real;
+    IMAG(fft,1,freq1) += ((double) n) * z1_imag;
+    REAL(fft,1,freq2) += ((double) n) * z2_real;
+    IMAG(fft,1,freq2) += ((double) n) * z2_imag;
   }
 
   return 0;
@@ -221,8 +222,8 @@ gsl_fft_signal_complex_exppair (const int k1,
 
 int
 gsl_fft_signal_complex_noise (const size_t n,
-				   gsl_complex data[],
-				   gsl_complex fft[])
+			      double data[],
+			      double fft[])
 {
   size_t i;
   int status;
@@ -234,12 +235,12 @@ gsl_fft_signal_complex_noise (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      data[i].real = ((double) rand ()) / RAND_MAX;
-      data[i].imag = ((double) rand ()) / RAND_MAX;
+      REAL(data,1,i) = ((double) rand ()) / RAND_MAX;
+      IMAG(data,1,i) = ((double) rand ()) / RAND_MAX;
     }
 
   /* compute the dft */
-  status = gsl_dft_complex_forward (data, fft, n);
+  status = gsl_dft_complex_forward (data, 1, n, fft);
 
   return status;
 }
@@ -247,8 +248,8 @@ gsl_fft_signal_complex_noise (const size_t n,
 
 int
 gsl_fft_signal_real_noise (const size_t n,
-				gsl_complex data[],
-				gsl_complex fft[])
+			   double data[],
+			   double fft[])
 {
   size_t i;
   int status;
@@ -260,12 +261,12 @@ gsl_fft_signal_real_noise (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      data[i].real = ((double) rand ()) / RAND_MAX;
-      data[i].imag = 0.0;
+      REAL(data,1,i) = ((double) rand ()) / RAND_MAX;
+      IMAG(data,1,i) = 0.0;
     }
 
   /* compute the dft */
-  status = gsl_dft_complex_forward (data, fft, n);
+  status = gsl_dft_complex_forward (data, 1, n, fft);
 
   return status;
 }

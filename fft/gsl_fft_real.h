@@ -33,7 +33,7 @@ gsl_fft_real_wavetable * gsl_fft_real_wavetable_alloc (size_t n);
 void  gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * wavetable);
 
 int gsl_fft_real_unpack (const double real_coefficient[],
-			 gsl_complex complex_coefficient[],
+			 double complex_coefficient[],
 			 size_t n);
 
 #endif /* GSL_FFT_REAL_H */

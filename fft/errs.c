@@ -13,6 +13,7 @@
 
 #include <gsl_test.h>
 #include "compare.h"
+#include "fft.h"
 
 int verbose = 0;
 
@@ -25,7 +26,7 @@ main (int argc, char *argv[])
 {
   int status, factor_sum;
   size_t i, start, end, n;
-  gsl_complex *complex_data, *complex_tmp;
+  double *complex_data, *complex_tmp;
   double rms, total;
 
   gsl_fft_complex_wavetable * cw;
@@ -44,8 +45,8 @@ main (int argc, char *argv[])
   for (n = start; n < end; n++)
     {
 
-      complex_data = (gsl_complex *) malloc (n * sizeof (gsl_complex));
-      complex_tmp = (gsl_complex *) malloc (n * sizeof (gsl_complex));
+      complex_data = (double *) malloc (n * 2 * sizeof (double));
+      complex_tmp = (double *) malloc (n * 2 * sizeof (double));
 
       cw = gsl_fft_complex_wavetable_alloc (n);
       status = gsl_fft_complex_init (n, cw);
@@ -53,19 +54,19 @@ main (int argc, char *argv[])
 
       for (i = 0; i < n; i++)
 	{
-	  complex_data[i].real = ((double) rand ()) / RAND_MAX;
-	  complex_data[i].imag = ((double) rand ()) / RAND_MAX;
+	  REAL(complex_data,1,i) = ((double) rand ()) / RAND_MAX;
+	  IMAG(complex_data,1,i) = ((double) rand ()) / RAND_MAX;
 	}
 
-      memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
-      gsl_fft_complex_forward (complex_data, n, cw);
-      gsl_fft_complex_inverse (complex_data, n, cw);
+      memcpy (complex_tmp, complex_data, n * 2 * sizeof (double));
+      gsl_fft_complex_forward (complex_data, 1, n, cw);
+      gsl_fft_complex_inverse (complex_data, 1, n, cw);
 
       total = 0.0;
       for (i = 0; i < n; i++)
 	{
-	  double dr = complex_data[i].real - complex_tmp[i].real;
-	  double di = complex_data[i].imag - complex_tmp[i].imag;
+	  double dr = REAL(complex_data,1,i) - REAL(complex_tmp,1,i);
+	  double di = IMAG(complex_data,1,i) - IMAG(complex_tmp,1,i);
 	  total += dr * dr + di * di;
 	}
 

@@ -5,7 +5,7 @@
 #include "bitreverse.h"
 
 int 
-fft_bitreverse_order_complex (double data[], 
+fft_complex_bitreverse_order (double data[], 
 			      const size_t stride,
 			      const size_t n,
 			      size_t logn)
@@ -45,10 +45,8 @@ fft_bitreverse_order_complex (double data[],
 
 
 int 
-fft_bitreverse_order_real (double data[], 
-			   const size_t stride,
-			   const size_t n,
-			   size_t logn)
+fft_bitreverse_order (double data[], const size_t stride, const size_t n,
+		      size_t logn)
 {
   /* This is the Goldrader bit-reversal algorithm */
 
@@ -64,7 +62,7 @@ fft_bitreverse_order_real (double data[],
       if (i < j)
 	{
 	  const double tmp = VECTOR(data,stride,i);
-	  VECTOR(data,stride,i) = REAL(data,stride,j);
+	  VECTOR(data,stride,i) = VECTOR(data,stride,j);
 	  VECTOR(data,stride,j) = tmp;
 	}
 

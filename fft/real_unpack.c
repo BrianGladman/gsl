@@ -4,9 +4,11 @@
 #include <gsl_errno.h>
 #include <gsl_fft_real.h>
 
+#include "fft.h"
+
 int
 gsl_fft_real_unpack (const double real_coefficient[],
-		     gsl_complex complex_coefficient[],
+		     double complex_coefficient[],
 		     const size_t n)
 {
   size_t i;
@@ -18,8 +20,8 @@ gsl_fft_real_unpack (const double real_coefficient[],
 
   for (i = 0; i < n; i++)
     {
-      GSL_REAL(complex_coefficient[i]) = real_coefficient[i];
-      GSL_IMAG(complex_coefficient[i]) = 0.0;
+      REAL(complex_coefficient,1,i) = real_coefficient[i];
+      IMAG(complex_coefficient,1,i) = 0.0;
     }
 
   return 0;

@@ -1,7 +1,7 @@
 #include "fft.h"
 
 int
-gsl_fft_complex_pass_2 (const double in[],
+fft_complex_pass_2 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -11,7 +11,7 @@ gsl_fft_complex_pass_2 (const double in[],
 			const gsl_complex twiddle[]);
 
 int
-gsl_fft_complex_pass_3 (const double in[],
+fft_complex_pass_3 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -22,7 +22,7 @@ gsl_fft_complex_pass_3 (const double in[],
 			const gsl_complex twiddle2[]);
 
 int
-gsl_fft_complex_pass_4 (const double in[],
+fft_complex_pass_4 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -34,7 +34,7 @@ gsl_fft_complex_pass_4 (const double in[],
 			const gsl_complex twiddle3[]);
 
 int
-gsl_fft_complex_pass_5 (const double in[],
+fft_complex_pass_5 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -47,7 +47,7 @@ gsl_fft_complex_pass_5 (const double in[],
 			const gsl_complex twiddle4[]);
 
 int
-gsl_fft_complex_pass_6 (const double in[],
+fft_complex_pass_6 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -61,7 +61,7 @@ gsl_fft_complex_pass_6 (const double in[],
 			const gsl_complex twiddle5[]);
 
 int
-gsl_fft_complex_pass_7 (const double in[],
+fft_complex_pass_7 (const double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,
@@ -77,7 +77,7 @@ gsl_fft_complex_pass_7 (const double in[],
 
 
 int
-gsl_fft_complex_pass_n (double in[],
+fft_complex_pass_n (double in[],
 			size_t istride,
 			double out[],
 			size_t ostride,

@@ -85,17 +85,17 @@ fft_complex_pass_6 (const double in[],
       for (k1 = 0; k1 < p_1; k1++)
 	{
 	  const double z0_real = REAL(in,istride,i);
-	  const double z0_imag = REAL(in,istride,i);
+	  const double z0_imag = IMAG(in,istride,i);
 	  const double z1_real = REAL(in,istride,i+m);
-	  const double z1_imag = REAL(in,istride,i+m);
+	  const double z1_imag = IMAG(in,istride,i+m);
 	  const double z2_real = REAL(in,istride,i+2*m);
-	  const double z2_imag = REAL(in,istride,i+2*m);
+	  const double z2_imag = IMAG(in,istride,i+2*m);
 	  const double z3_real = REAL(in,istride,i+3*m);
-	  const double z3_imag = REAL(in,istride,i+3*m);
+	  const double z3_imag = IMAG(in,istride,i+3*m);
 	  const double z4_real = REAL(in,istride,i+4*m);
-	  const double z4_imag = REAL(in,istride,i+4*m);
+	  const double z4_imag = IMAG(in,istride,i+4*m);
 	  const double z5_real = REAL(in,istride,i+5*m);
-	  const double z5_imag = REAL(in,istride,i+5*m);
+	  const double z5_imag = IMAG(in,istride,i+5*m);
 
 	  /* compute x = W(6) z */
 

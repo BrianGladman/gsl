@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libgslfft.a 
 
-check_PROGRAMS = test_trap test_radix2 test benchmark errs
+check_PROGRAMS = test test_trap test_radix2 benchmark errs
 
 include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_dft_complex.h
 
@@ -8,7 +8,7 @@ noinst_HEADERS = fft.h fft_complex.h fft_halfcomplex.h fft_real.h
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../vector -I$(srcdir)/../err
 
-TESTS = test_trap test_radix2 test
+TESTS = test test_radix2 test_trap
 
 test_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a
 test_trap_LDADD = libgslfft.a ../err/libgslerr.a ../err/libgsltest.a

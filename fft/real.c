@@ -64,9 +64,9 @@ gsl_fft_real (double data[], const size_t stride, const size_t n,
       else
 	{
 	  in = scratch;
-	  istride = stride;
+	  istride = 1;
 	  out = data;
-	  ostride = 1;
+	  ostride = stride;
 	  state = 0;
 	}
 
@@ -111,7 +111,7 @@ gsl_fft_real (double data[], const size_t stride, const size_t n,
     {
       for (i = 0; i < n; i++)
 	{
-	  data[istride*i] = scratch[i] ;
+	  data[stride*i] = scratch[i] ;
 	}
     }
 
