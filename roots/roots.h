@@ -91,19 +91,22 @@ do { \
 /* Function Prototypes */
 
 int
-_gsl_root_validate_bfp_args(void * root, void * f, double * lower_bound,
+_gsl_root_validate_bfp_args(double * root, double (* f)(double), 
+			    double * lower_bound,
                             double * upper_bound, double rel_epsilon,
                             double abs_epsilon, unsigned int max_iterations,
                             double max_deltay);
 
 int
-_gsl_root_validate_sn_args(void * root, void * f, double * where1,
+_gsl_root_validate_sn_args(double * root, double (* f)(double),
+			   double * where1,
                            double * where2, double rel_epsilon,
                            double abs_epsilon, unsigned int max_iterations,
                            double max_step_size);
 
 int
-_gsl_root_validate_args(void * root, void * f, double * lower_bound,
+_gsl_root_validate_args(double * root, double (* f)(double), 
+			double * lower_bound,
                         double * upper_bound, double rel_epsilon,
                         double abs_epsilon, unsigned int max_iterations);
 

@@ -22,7 +22,7 @@
 /* See the documentation for information about this function. */
 int
 gsl_root_newton(double * root,
-                void (* fdf)(double *, double *, double, int, int),
+                double (* fdf)(double *, double *, double, int, int),
                 double * guess, double rel_epsilon, double abs_epsilon,
                 unsigned int max_iterations, double max_step_size)
 {
@@ -30,7 +30,8 @@ gsl_root_newton(double * root,
   {
     double y, yprime;
     
-    /* Validate arguments. */
+    /* Validate arguments. */  /* FIXME: can't use the same check for fdf */
+
     if (_gsl_root_validate_sn_args(root, fdf, guess, guess, rel_epsilon,
                                    abs_epsilon, max_iterations, max_step_size))
       return GSL_FAILURE; /* GSL_ERROR was already called. */

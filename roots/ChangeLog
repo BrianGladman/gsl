@@ -1,3 +1,8 @@
+Mon Jun 15 22:22:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* started to eliminate void * arguments for function types (they
+ 	are not a good idea and can easily be specified)
+
 1998-02-09  Mark Galassi  <rosalia@cygnus.com>
 
 	* test.c (main): added an extra argument so that the $(srcdir) can

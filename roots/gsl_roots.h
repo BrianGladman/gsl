@@ -43,7 +43,7 @@ gsl_root_secant(double * root, double (* f)(double), double * guess1,
 
 int
 gsl_root_newton(double * root,
-                void (* fdf)(double *, double *, double, int, int),
+                double (* fdf)(double *, double *, double, int, int),
                 double * guess, double rel_epsilon, double abs_epsilon,
                 unsigned int max_iterations, double max_step_size);
 
