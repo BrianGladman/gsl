@@ -205,7 +205,7 @@ These routines compute the relative Pochhammer symbol @math{((a,x) -
 @cindex incomplete Gamma function
 These routines compute the normalized incomplete Gamma Function
 @c{$Q(a,x) = 1/\Gamma(a) \int_x^\infty dt\, t^{(a-1)} \exp(-t)$}
-@math{Q(a,x) = 1/\Gamma(a) \int_x\infty dt t^@{a-1@} \exp(-t)}
+@math{Q(a,x) = 1/\Gamma(a) \int_x^\infty dt t^@{a-1@} \exp(-t)}
 for @math{a > 0}, @c{$x \ge 0$}
 @math{x >= 0}.
 @comment exceptions: GSL_EDOM
@@ -232,7 +232,7 @@ These functions compute the incomplete Gamma Function
 @c{$\Gamma(a,x)$} @math{\Gamma(a,x)}, without
 the normalization factor included in the previously defined functions:
 @c{$\Gamma(a,x) = \int_x^\infty dt\, t^{(a-1)} \exp(-t)$}
-@math{\Gamma(a,x) = \int_x\infty dt t^@{a-1@} \exp(-t)}
+@math{\Gamma(a,x) = \int_x^\infty dt t^@{a-1@} \exp(-t)}
 for @math{a} real and @c{$x \ge 0$}
 @math{x >= 0}.
 @comment exceptions: GSL_EDOM
