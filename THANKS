@@ -59,4 +59,4 @@ functions
 * Tadhg O'Meara <tadhg@net-cs.ucd.ie> for finding a bug in gsl-randist
 
 * Steve Robbins <stever@bic.mni.mcgill.ca> patch to work around FP_RND
-  problems on Tru64
+  problems on Tru64, testing and other patches.

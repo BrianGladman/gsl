@@ -1,3 +1,9 @@
+2000-05-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
+
+	* Makefile.am (test_LDADD): put libgslpermutation ahead of
+	libgslvector in the link beccause the former uses
+	`gsl_check_range' which is defined in the latter.
+
 Tue Apr 11 19:59:01 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bsimp.c (bsimp_step_local): changed gsl_la prefix to gsl_linalg,
