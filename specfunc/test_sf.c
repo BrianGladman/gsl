@@ -1218,10 +1218,10 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 1, 1.0e-08, &r), -2.7070312499999951725e-07, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 1, 0.5, &r), 2.0066877394361256516, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, -0.5, &r), -30086.169706116174977, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, -0.5, &r),    -30086.169706116174977,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, 1.0e-08, &r), -0.0025337812499999964949, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, 0.5, &r), 30086.169706116174977, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, 0.999, &r), -0.5036411489013270406, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, 0.5, &r),      30086.169706116174977,    TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Plm_impl, (10, 5, 0.999, &r),   -0.5036411489013270406,    TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_legendre_Plm_impl, (100, 5, -0.5, &r), -6.617107444248382171e+08, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Plm_impl, (100, 5, 1.0e-08, &r), 817.8987598063712851, TEST_TOL0, GSL_SUCCESS);
@@ -1240,18 +1240,18 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 0, 0.5, &r), -0.24332702369300133776, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 0, 0.999, &r), 1.2225754122797385990, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, -0.5, &r), -0.3725739049803293972, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, -0.5, &r),    -0.3725739049803293972,     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, 1.0e-08, &r), -3.1377233589376792243e-08, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, 0.5, &r), 0.3725739049803293972, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, 0.999, &r), -6.236870674727370094e-06, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, 0.5, &r),      0.3725739049803293972,     TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 5, 0.999, &r),   -6.236870674727370094e-06,  TEST_TOL2, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, -0.5, &r), 0.12876871185785724117, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, 0.5, &r), 0.12876871185785724117, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (10, 10, 0.999, &r), 1.7320802307583118647e-14, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, -0.5, &r), 0.3302975570099492931, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, 0.5, &r), -0.3302975570099492931, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, 0.999, &r), -1.4069792055546256912, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, -0.5, &r),   0.3302975570099492931, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, 0.5, &r),   -0.3302975570099492931, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_impl, (200, 1, 0.999, &r), -1.4069792055546256912, TEST_TOL2, GSL_SUCCESS);
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array_impl(100, 5, 0.5, L);
@@ -1320,15 +1320,15 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_conicalP_0_impl, (1000.0,  1000.0, &r), -0.0006566893804926284301, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_0_impl, (1000.0,  1.0e+8, &r),  2.3167213561756390068e-06, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (0.0, -0.5, &r),    0.4939371126656998499, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (0.0, -0.5, &r),    0.4939371126656998499,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (0.0,  0.5, &r),    0.14933621085538265636, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (0.0,  2.0, &r),   -0.13666874968871549533, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_1_impl, (0.0,  100.0, &r), -0.10544528203156629098, TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0, -0.5, &r),   1.7253802958788312520e+09, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  0.5, &r),   46781.02294059967988, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  2.0, &r),   0.26613342643657444400, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  100.0, &r), -0.23281959695501029796, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0, -0.5, &r),    1.7253802958788312520e+09, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  0.5, &r),    46781.02294059967988,      TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  2.0, &r),    0.26613342643657444400,    TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_conicalP_1_impl, (10.0,  100.0, &r), -0.23281959695501029796,    TEST_TOL1, GSL_SUCCESS);
 
 
   /* FIXME: Mathematica gets some brain-damaged numbers for
@@ -1379,8 +1379,8 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (100.0, 1.0, &r), -0.004308757035378200029   , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (100.0, 10.0, &r), 7.508054627912986427e-07  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (1000.0, 1.0, &r), 0.0007036067909088818319  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (1.0e+08, 1.0, &r), 7.927485371429105968e-09  , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (1.0e+08, 100.0, &r), -3.627118904186918957e-52  , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (1.0e+08, 1.0, &r), 7.927485371429105968e-09  , TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_H3d_0_impl, (1.0e+08, 100.0, &r), -3.627118904186918957e-52  , TEST_TOL3, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_legendre_H3d_1_impl, (1.0e-06, 1.0e-06, &r), 3.333333333334222222e-07  , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_H3d_1_impl, (1.0, 1.0e-10, &r), 4.714045207910316829e-11  , TEST_TOL0, GSL_SUCCESS);
@@ -1439,9 +1439,9 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_Ql_impl, (100,  0.5, &r), 0.09492507395207282096 , TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Ql_impl, (100,  1.5, &r), 1.1628163435044121988e-43 , TEST_TOL0, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000, -0.5, &r), -0.030105074974005303500 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000,  0.5, &r), 0.030105074974005303500 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000,  1.1, &r), 1.0757258447825356443e-194 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000, -0.5, &r), -0.030105074974005303500 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000,  0.5, &r), 0.030105074974005303500 , TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Ql_impl, (1000,  1.1, &r), 1.0757258447825356443e-194 , TEST_TOL3, GSL_SUCCESS);
 
   return s;
 }

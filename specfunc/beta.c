@@ -41,15 +41,16 @@ gsl_sf_lnbeta_impl(const double x, const double y, gsl_sf_result * result)
       lnpre = log(gsx.val*gsy.val/gsxy.val * M_SQRT2*M_SQRTPI);
       lnpow = min*log(rat) - 0.5*log(min) - (x+y-0.5)*lnopr.val;
       result->val = lnpre + lnpow;
-      result->err = GSL_DBL_EPSILON * (fabs(lnpre) + fabs(lnpow));
+      result->err = 2.0 * GSL_DBL_EPSILON * (fabs(lnpre) + fabs(lnpow));
     }
     else {
       gsl_sf_result lgx, lgy, lgxy;
       gsl_sf_lngamma_impl(x, &lgx);
       gsl_sf_lngamma_impl(y, &lgy);
       gsl_sf_lngamma_impl(x+y, &lgxy);
-      result->val = lgx.val + lgy.val - lgxy.val;
-      result->err = lgx.err + lgy.err + lgxy.err;
+      result->val  = lgx.val + lgy.val - lgxy.val;
+      result->err  = lgx.err + lgy.err + lgxy.err;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     }
 
     return GSL_SUCCESS;
@@ -69,6 +70,7 @@ gsl_sf_beta_impl(const double x, const double y, gsl_sf_result * result)
     result->err  = gx.err * gy.val/gxy.val;
     result->err += gy.err * gx.val/gxy.val;
     result->err += (gx.val*gy.val)/(gxy.val*gxy.val) * gxy.err;
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {

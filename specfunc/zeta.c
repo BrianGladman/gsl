@@ -492,7 +492,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
     }
     else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
       result->val = pow(q, -s);
-      result->err = GSL_DBL_EPSILON * result->val;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     else if(s > 0.5*max_bits && q < 1.0) {
@@ -500,7 +500,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
       const double p2 = pow(q/(1.0+q), s);
       const double p3 = pow(q/(2.0+q), s);
       result->val = p1 * (1.0 + p2 + p3);
-      result->err = GSL_DBL_EPSILON * result->val;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -528,7 +528,7 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
       }
 
       result->val = ans;
-      result->err = GSL_DBL_EPSILON * ans;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(ans);
       return GSL_SUCCESS;
     }
   }
@@ -547,7 +547,7 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
   }
   else if(s >= 0.0) {
     result->val = riemann_zeta_sgt0(s);
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -594,7 +594,7 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
       gsl_sf_result g;
       int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
       result->val = p * g.val * sin_term * zeta_one_minus_s;
-      result->err = 4.0 * GSL_DBL_EPSILON * result->val;
+      result->err = 4.0 * GSL_DBL_EPSILON * fabs(result->val);
       return stat_g;
     }
     else {
@@ -629,7 +629,7 @@ int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
     }
     else if(n > -ZETA_NEG_TABLE_NMAX) {
       result->val = zeta_neg_int_table[-(n+1)/2];
-      result->err = GSL_DBL_EPSILON * result->val;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -643,7 +643,7 @@ int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
   }
   else if(n <= ZETA_POS_TABLE_NMAX){
     result->val = zeta_pos_int_table[n];
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -663,7 +663,7 @@ int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
   }
   else if(n >= 0) {
     result->val = eta_pos_int_table[n];
-    result->err = GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -677,7 +677,7 @@ int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
     }
     else if(n > -ETA_NEG_TABLE_NMAX) {
       result->val = eta_neg_int_table[-(n+1)/2];
-      result->err = GSL_DBL_EPSILON * result->val;
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -686,7 +686,8 @@ int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
       int stat_z = gsl_sf_zeta_int_impl(n, &z);
       int stat_p = gsl_sf_exp_impl((1.0-n)*M_LN2, &p);
       int stat_m = gsl_sf_multiply_impl(-p.val, z.val, result);
-      result->err = fabs(p.err * (M_LN2*(1.0-n)) * z.val) + z.err * fabs(p.val);
+      result->err  = fabs(p.err * (M_LN2*(1.0-n)) * z.val) + z.err * fabs(p.val);
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
     }
   }
@@ -711,7 +712,7 @@ int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
     double c3  =  0.0015689917054155150;
     double c4  =  0.00074987242112047532;
     result->val = c0 + del * (c1 + del * (c2 + del * (c3 + del * c4)));
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -720,7 +721,8 @@ int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
     int stat_z = gsl_sf_zeta_impl(s, &z);
     int stat_p = gsl_sf_exp_impl((1.0-s)*M_LN2, &p);
     int stat_m = gsl_sf_multiply_impl(1.0-p.val, z.val, result);
-    result->err = fabs(p.err * (M_LN2*(1.0-s)) * z.val) + z.err * fabs(p.val);
+    result->err  = fabs(p.err * (M_LN2*(1.0-s)) * z.val) + z.err * fabs(p.val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
   }
 }

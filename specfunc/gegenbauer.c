@@ -18,12 +18,12 @@ gsl_sf_gegenpoly_1_impl(double lambda, double x, gsl_sf_result * result)
   }
   else if(lambda == 0.0) {
     result->val = 2.0*x;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     result->val = 2.0*lambda*x;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 4.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -36,13 +36,14 @@ gsl_sf_gegenpoly_2_impl(double lambda, double x, gsl_sf_result * result)
   }
   else if(lambda == 0.0) {
     const double txx = 2.0*x*x;
-    result->val = -1.0 + txx;
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(txx);
+    result->val  = -1.0 + txx;
+    result->err  = 2.0 * GSL_DBL_EPSILON * fabs(txx);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     result->val = lambda*(-1.0 + 2.0*(1.0+lambda)*x*x);
-    result->err = GSL_DBL_EPSILON * (fabs(result->val) + fabs(lambda));
+    result->err = GSL_DBL_EPSILON * (2.0 * fabs(result->val) + fabs(lambda));
     return GSL_SUCCESS;
   }
 }
@@ -55,13 +56,13 @@ gsl_sf_gegenpoly_3_impl(double lambda, double x, gsl_sf_result * result)
   }
   else if(lambda == 0.0) {
     result->val = x*(-2.0 + 4.0/3.0*x*x);
-    result->err = GSL_DBL_EPSILON * (fabs(result->val) + fabs(x));
+    result->err = GSL_DBL_EPSILON * (2.0 * fabs(result->val) + fabs(x));
     return GSL_SUCCESS;
   }
   else {
     double c = 4.0 + lambda*(6.0 + 2.0*lambda);
     result->val = 2.0*lambda * x * ( -1.0 - lambda + c*x*x/3.0 );
-    result->err = GSL_DBL_EPSILON * (fabs(result->val) + fabs(lambda * x));
+    result->err = GSL_DBL_EPSILON * (2.0 * fabs(result->val) + fabs(lambda * x));
     return GSL_SUCCESS;
   }
 }
@@ -97,7 +98,7 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
       /* 2 T_n(x)/n */
       const double z = n * acos(x);
       result->val = 2.0 * cos(z) / n;
-      result->err = GSL_DBL_EPSILON * fabs(z * result->val);
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(z * result->val);
       return GSL_SUCCESS;
     }
     else {
@@ -116,7 +117,7 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
 	gkm1 = gk;
       }
       result->val = gk;
-      result->err = GSL_DBL_EPSILON * 0.5 * n * fabs(gk);
+      result->err = 2.0 * GSL_DBL_EPSILON * 0.5 * n * fabs(gk);
       return stat_g;
     }
   }

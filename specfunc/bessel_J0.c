@@ -81,7 +81,7 @@ int gsl_sf_bessel_J0_impl(const double x, gsl_sf_result * result)
     result->val  = ampl * cp.val;
     result->err  = fabs(cp.val) * ca.err/sqrty + fabs(ampl) * cp.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    return GSL_ERROR_SELECT_3(stat_ca, stat_ct, stat_cp);
   }
 }
 

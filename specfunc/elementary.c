@@ -24,7 +24,7 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
     /* Straddling 1.0 is always safe.
      */
     result->val = x*y;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(   (ax < 0.8*GSL_SQRT_DBL_MAX && ay < 0.8*GSL_SQRT_DBL_MAX)
@@ -33,7 +33,7 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
     /* Not too big or too small. But just right...
      */
     result->val = x*y;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
@@ -53,7 +53,7 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
       /* Well... ok then.
        */
       result->val = x*y;
-      result->err = GSL_DBL_EPSILON * fabs(result->val);
+      result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
   }

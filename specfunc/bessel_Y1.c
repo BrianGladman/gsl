@@ -4,6 +4,7 @@
 #include <config.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "bessel.h"
 #include "bessel_amp_phase.h"
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_trig.h"
@@ -105,7 +106,7 @@ int gsl_sf_bessel_Y1_impl(const double x, gsl_sf_result * result)
     result->val  = -ampl * cp.val;
     result->err  = fabs(cp.val) * ca.err/sqrtx + fabs(ampl) * cp.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    return GSL_ERROR_SELECT_3(stat_ca, stat_ct, stat_cp);
   }
   else {
     result->val = 0.0;

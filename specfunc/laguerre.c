@@ -27,15 +27,15 @@ laguerre_large_n(const int n, const double alpha, const double x,
   const double sin2th = 1.0 - cos2th;
   const double th = acos(sqrt(cos2th));
   const double pre_h  = 0.25*M_PI*M_PI*eta*eta*cos2th*sin2th;
-  double ser;
-  double lnpre;
   gsl_sf_result lg_b;
   gsl_sf_result lnfact;
-  gsl_sf_lngamma_impl(b+n, &lg_b);
-  gsl_sf_lnfact_impl(n, &lnfact);
-  lnpre = lg_b.val - lnfact.val + 0.5*x + 0.5*(1.0-b)*log(0.25*x*eta) - 0.25*log(pre_h);
-  ser   = sin(a*M_PI) + sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
-  return gsl_sf_exp_mult_impl(lnpre, ser, result);
+  int stat_lg = gsl_sf_lngamma_impl(b+n, &lg_b);
+  int stat_lf = gsl_sf_lnfact_impl(n, &lnfact);
+  double lnpre = lg_b.val - lnfact.val + 0.5*x + 0.5*(1.0-b)*log(0.25*x*eta) - 0.25*log(pre_h);
+  double ser   = sin(a*M_PI) + sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
+  int stat_e = gsl_sf_exp_mult_impl(lnpre, ser, result);
+  result->err += 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
+  return GSL_ERROR_SELECT_3(stat_e, stat_lf, stat_lg);
 }
 
 
@@ -90,6 +90,7 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
     int stat_e = gsl_sf_exp_mult_impl(lnpre, poly_1F1, result);
     result->val *= pre_correct;
     result->err  = exp(fabs(lnpoch.err) + fabs(lnfact.err));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_3(stat_e, stat_f, stat_p);
   }
 }
@@ -105,7 +106,7 @@ gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result)
   }
   else {
     result->val = 1.0 + a - x;
-    result->err = GSL_DBL_EPSILON * (fabs(a) + fabs(x));
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a) + fabs(x));
     return GSL_SUCCESS;
   }
 }
@@ -120,8 +121,9 @@ gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result)
     double c0 = 0.5 * (2.0+a)*(1.0+a);
     double c1 = -(2.0+a);
     double c2 = -0.5/(2.0+a);
-    result->val = c0 + c1*x*(1.0 + c2*x);
-    result->err = GSL_DBL_EPSILON * (fabs(c0) + 2.0 * fabs(c1*x) * (1.0 + 2.0 * fabs(c2*x)));
+    result->val  = c0 + c1*x*(1.0 + c2*x);
+    result->err  = GSL_DBL_EPSILON * (fabs(c0) + 2.0 * fabs(c1*x) * (1.0 + 2.0 * fabs(c2*x)));
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -137,11 +139,11 @@ gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result)
     double c1 = -c0 * 3.0 / (1.0+a);
     double c2 = -1.0/(2.0+a);
     double c3 = -1.0/(3.0*(3.0+a));
-    result->val = c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x));
-    result->err = 1.0 + 2.0 * fabs(c3*x);
-    result->err = 1.0 + 2.0 * fabs(c2*x) * result->err;
-    result->err = fabs(c0) + 2.0 * fabs(c1*x) * result->err;
-    result->err *= GSL_DBL_EPSILON;
+    result->val  = c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x));
+    result->err  = 1.0 + 2.0 * fabs(c3*x);
+    result->err  = 1.0 + 2.0 * fabs(c2*x) * result->err;
+    result->err  = GSL_DBL_EPSILON * (fabs(c0) + 2.0 * fabs(c1*x) * result->err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
 }
@@ -165,7 +167,7 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
   }
   else if(n == 1) {
     result->val = 1.0 + a - x;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else if(x < 0.0 || n < 5) {
@@ -192,7 +194,7 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
       Lk   = Lkp1;
     }
     result->val = Lk;
-    result->err = GSL_DBL_EPSILON * 0.5 * n * fabs(result->val);
+    result->err = GSL_DBL_EPSILON * n * fabs(result->val);
     return stat_lg2;
   }
 }
