@@ -15,7 +15,7 @@ list=`egrep '^ALLRAN=' $ami | sed s/ALLRAN=//`
 ##
 ## First line is to get a $_Id_$ string without having
 ## RCS expand it here!
-echo '### $xIxdx:x$' | sed s/x//g
+#echo '### $xIxdx:x$' | sed s/x//g
 cat Makefile.ami   | egrep -v '^### '
     
 auxbin="test-switch"
