@@ -195,6 +195,7 @@ not recommended for general use.
 * Sorting::                     
 * Statistics::                  
 * Histograms::                  
+* N-tuples::                    
 * Fitting::                     
 * Nonlinear Fitting::           
 * One dimensional Root-Finding::  
@@ -300,11 +301,15 @@ will be announced for general use.
 @chapter Statistics
 @include statistics.texi
 
-@node Histograms, Fitting, Statistics, Top
+@node Histograms, N-tuples, Statistics, Top
 @chapter Histograms
 @include histogram.texi
 
-@node Fitting, Nonlinear Fitting, Histograms, Top
+@node  N-tuples, Fitting, Histograms, Top
+@chapter N-tuples
+@include ntuple.texi
+
+@node Fitting, Nonlinear Fitting, N-tuples, Top
 @chapter Fitting
 @include fitting.texi
 
