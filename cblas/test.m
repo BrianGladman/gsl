@@ -204,6 +204,24 @@ function T = test_sbmatvectors (S, j)
   endif
 endfunction
 
+function T = test_spmatvectors (S, j)
+  T.n =  1+ fix(j/2);
+  N = T.n * (T.n + 1) / 2;
+  T.trans = trans(S);
+  T.s1 = (-1)**(rem(fix(j/2),2));
+  T.s2 = (-1)**(rem(j,2)) ;
+
+  if (S.complex == 0)
+    T.A = random_vector(N);
+    T.v1 = random_vector(T.n);
+    T.v2 = random_vector(T.n);
+  else
+    T.A = random_vector(N) + I * random_vector(N);
+    T.v1 = random_vector(T.n) + I * random_vector(T.n);
+    T.v2 = random_vector(T.n) + I * random_vector(T.n);
+  endif
+endfunction
+
 
 function v = random_vector(n)
   v = fix((rand(1,n)-0.5)*2000)/10;
@@ -746,6 +764,20 @@ function YY = blas_hemv (order, uplo, N, alpha, A, lda, X, incX, beta, Y, \
   YY = vout(Y, incY, N, y);
 endfunction
 
+function YY = blas_sbmv (order, uplo, N, K, alpha, A, lda, X, incX, beta, Y, \
+                         incY)
+  a = tbmatrix (order, uplo, 131, A, lda, N, K); # nounit
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t.';  # make symmetric
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  
+  y = alpha * a * x + beta * y;
+  
+  YY = vout(Y, incY, N, y);
+endfunction
+
+
 function YY = blas_hbmv (order, uplo, N, K, alpha, A, lda, X, incX, beta, Y, \
                          incY)
   a = tbmatrix (order, uplo, 131, A, lda, N, K); # nounit
@@ -758,6 +790,19 @@ function YY = blas_hbmv (order, uplo, N, K, alpha, A, lda, X, incX, beta, Y, \
   
   YY = vout(Y, incY, N, y);
 endfunction
+
+function YY = blas_hpmv (order, uplo, N, alpha, A, X, incX, beta, Y, incY)
+  a = tpmatrix (order, uplo, 131, A, N); # nounit
+  t = triu(a,1) + tril(a,-1);
+  a = diag(real(diag(a))) + t + t';  # make hermitian
+  x = vector (X, incX, N);
+  y = vector (Y, incY, N);
+  
+  y = alpha * a * x + beta * y;
+  
+  YY = vout(Y, incY, N, y);
+endfunction
+
 
 
 ######################################################################
@@ -1265,6 +1310,28 @@ function test_hbsbmv (S, fn, order, uplo, N, k, alpha, A, lda,  X, incX, \
   end_block();
 endfunction
 
+function test_hpspmv (S, fn, order, uplo, N, alpha, A,  X, incX, \
+                    beta, Y, incY)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "uplo", uplo);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "scalar", "beta", beta);
+  define(S, "int", "N", N);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  define(S, "vector", "Y", Y);
+  define(S, "int", "incY", incY);
+
+  YY = feval(strcat("blas_", fn), order, uplo, N, alpha, A, X, incX, \
+             beta, Y, incY);
+  define(S, "vector", "y_expected", YY);
+  call("cblas_", S.prefix, fn, "(order, uplo, N, alpha, A, X, incX, beta, Y, incY)");
+  test(S, "vector", "Y", "y_expected", strcat(S.prefix, fn), Y);
+  end_block();
+endfunction
+
 ######################################################################
 
 s=1;d=2;c=3;z=4;
@@ -1534,8 +1601,27 @@ n=16;
 #   endfor
 # endfor
 
-for j = 31
-  for i = [c,z]
+# for j = 31
+#   for i = [c,z]
+#     S = context(i);
+#     T = test_sbmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for beta = coeff(S)
+#         for order = [101, 102]
+#           for uplo = [121, 122]
+#             for diag = [131, 132]
+#               test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
+#                            T.s1, beta, T.v2, T.s2);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
+for j = 1:16
+  for i = [s,d]
     S = context(i);
     T = test_sbmatvectors(S, j);
     for alpha = coeff(S)
@@ -1543,7 +1629,7 @@ for j = 31
         for order = [101, 102]
           for uplo = [121, 122]
             for diag = [131, 132]
-              test_hbsbmv (S, "hbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
+              test_hbsbmv (S, "sbmv", order, uplo, T.n, T.k, alpha, T.A, T.lda, T.v1, \
                            T.s1, beta, T.v2, T.s2);
             endfor
           endfor
@@ -1552,3 +1638,23 @@ for j = 31
     endfor
   endfor
 endfor
+
+
+# for j = 1:n
+#   for i = [c,z]
+#     S = context(i);
+#     T = test_spmatvectors(S, j);
+#     for alpha = coeff(S)
+#       for beta = coeff(S)
+#         for order = [101, 102]
+#           for uplo = [121, 122]
+#             for diag = [131, 132]
+#               test_hpspmv (S, "hpmv", order, uplo, T.n, alpha, T.A, T.v1, \
+#                            T.s1, beta, T.v2, T.s2);
+#             endfor
+#           endfor
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
