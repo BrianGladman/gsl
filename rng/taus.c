@@ -1,28 +1,48 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl_rng.h>
+#include <stdio.h>
 
-/* From:
-   P. L'Ecuyer, "Maximally equidistributed combined Tausworthe
-   generators" [***insert ref ***]
-   This is available on the net from L'Ecuyer's home page.
-   [*** insert URL ***]  */
+/* This is a maximally equidistributed combined Tausworthe
+   generator. The sequence is,
+   
+   x_n = (s1_n ^ s2_n ^ s3_n) 
+
+   s1_{n+1} = (((s1_n & 4294967294) << 12) ^ (((s1_n << 13) ^ s1_n) >> 19))
+   s2_{n+1} = (((s2_n & 4294967288) <<  4) ^ (((s2_n <<  2) ^ s2_n) >> 25))
+   s3_{n+1} = (((s3_n & 4294967280) << 17) ^ (((s3_n <<  3) ^ s3_n) >> 11))
+
+   computed modulo 2^32, where '^' means exclusive-or. Note that the
+   algorithm relies on 32-bit unsigned integers (it is formally
+   defined on bit-vectors of length 32).
+
+   For checking, the theoretical value of x_{10007} is 676146779.  The
+   subscript 10007 means (1) seed the generator with s=1 (this gives
+   s1_1 = 36532, s2_2 = 94847, s3_2 = 116930), (2) do six warm-up
+   iterations, (3) then do 10000 actual iterations.
+
+   The period of this generator is about 2^{88}.
+
+   From: P. L'Ecuyer, "Maximally Equidistributed Combined Tausworthe
+   Generators", Mathematics of Computation, 65, 213 (1996), 203--213.
+
+   This is available on the net from L'Ecuyer's home page,
+
+   http://www.iro.umontreal.ca/~lecuyer/myftp/papers/tausme.ps
+   ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/tausme.ps */
 
 unsigned long int taus_get (void * vstate);
 void taus_set (void * state, unsigned int s);
 
 typedef struct {
-    unsigned long int s1, s2, s3;
+    unsigned int s1, s2, s3;
 } taus_state_t ;
 
 unsigned long taus_get(void * vstate)
 {
     taus_state_t * state = (taus_state_t *) vstate;
 
-    /* GNU's gcc likes the 'UL' suffix to indicate unsigned long */
-
-#define TAUSWORTHE(s,a,b,c,d) ((( s & c ) << d ) ^ ((( s << a) ^ s ) >> b))
-
+#define TAUSWORTHE(s,a,b,c,d) (((s & c) << d) ^ (((s << a) ^ s) >> b))
     state->s1 = TAUSWORTHE(state->s1, 13, 19, 4294967294UL, 12);
     state->s2 = TAUSWORTHE(state->s2,  2, 25, 4294967288UL,  4);
     state->s3 = TAUSWORTHE(state->s3,  3, 11, 4294967280UL, 17);

@@ -14,11 +14,11 @@ main (void)
 
   /* specific tests of known results */
 
-  rng_test (gsl_rng_minstd,1,10000,1043618065);
-  rng_test (gsl_rng_bad_rand,1,10000,1910041713);
-  rng_test (gsl_rng_bad_randu,1,10000,1623524161);
-
-  rng_test (gsl_rng_cmrg,1,10000,1477798470);
+  rng_test (gsl_rng_minstd,1,10000,1043618065); 
+  rng_test (gsl_rng_bad_rand,1,10000,1910041713); 
+  rng_test (gsl_rng_bad_randu,1,10000,1623524161); 
+  rng_test (gsl_rng_cmrg,1,10000,1477798470); 
+  rng_test (gsl_rng_taus,1,10000,676146779);
 
   /* generic statistical tests */
 
@@ -108,10 +108,12 @@ rng_test (const gsl_rng_type * T, unsigned int seed, unsigned int n,
   unsigned long int k = 0;
   int status;
 
-  if (seed) {
+  unsigned long int x  = 36532 ;
+
+  if (seed != 1) {
     gsl_rng_set(r,seed) ;
   }
-  
+
   for (i = 0; i < n; i++)
     {
       k = gsl_rng_get(r) ;

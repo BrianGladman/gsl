@@ -163,7 +163,7 @@ void rand_set(void * vstate, unsigned int s)
   state->x1 = (s - state->x0)/2048;
 }
 
-static const gsl_rng_type rand_type = { "gsl-rand",  /* name */
+static const gsl_rng_type rand_type = { "rand",  /* name */
 					4194304,  /* RAND_MAX */
 					sizeof(rand_state_t), 
 					&rand_set, 

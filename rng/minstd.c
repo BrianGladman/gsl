@@ -12,6 +12,11 @@
    with a = 16807 and m = 2^31 - 1 = 2147483647. The seed specifies
    the initial value, x_0.  
 
+   For checking the theoretical value of x_{10001} is 1043618065.
+
+   The period of this generator is about 2^31. This is pretty small,
+   so don't use this generator for real work.
+
    From: Park and Miller, "Random Number Generators: Good ones are
    hard to find" Communications of the ACM, October 1988, Volume 31,
    No 10, pages 1192-1201. */

@@ -30,16 +30,18 @@
     internal state.
 
     For checking the theoretical value of z_{10008} is 1477798470.
-    The subscript 10008 means (1) seed the generator, (2) do seven
-    warm-up iterations, (3) then do 10000 actual iterations.
+    The subscript 10008 means (1) seed the generator with s=1, (2) do
+    seven warm-up iterations, (3) then do 10000 actual iterations.
 
     The period of this generator is about 2^{205}.
 
-    From:
-    P. L'Ecuyer, "Combined Multiple Recursive Random Number Generators,"
-    to appear in Operations Research, 1996.
-    (Preprint obtained as file combmrg.ps from L'Ecuyer's web page.
-    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps) */
+    From: P. L'Ecuyer, "Combined Multiple Recursive Random Number
+    Generators," Operations Research, 44, 5 (1996), 816--822.
+
+    This is available on the net from L'Ecuyer's home page,
+
+    http://www.iro.umontreal.ca/~lecuyer/myftp/papers/combmrg.ps
+    ftp://ftp.iro.umontreal.ca/pub/simulation/lecuyer/papers/combmrg.ps */
 
 unsigned long int cmrg_get (void * vstate);
 void cmrg_set (void * state, unsigned int s);
