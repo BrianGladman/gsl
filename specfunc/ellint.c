@@ -243,7 +243,7 @@ gsl_sf_ellint_RJ_impl(double x, double y, double z, double p, gsl_mode_t mode, g
   const double lolim =       pow(5.0 * GSL_DBL_MIN, 1.0/3.0);
   const double uplim = 0.3 * pow(0.2 * GSL_DBL_MAX, 1.0/3.0);
 
-  if(x < 0.0 || y < 0.0 || y < 0.0) {
+  if(x < 0.0 || y < 0.0 || z < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_EDOM;
@@ -340,21 +340,26 @@ gsl_sf_ellint_F_impl(double phi, double k, gsl_mode_t mode, gsl_sf_result * resu
 int
 gsl_sf_ellint_E_impl(double phi, double k, gsl_mode_t mode, gsl_sf_result * result)
 {
-  double sin_phi  = sin(phi);
-  double sin2_phi = sin_phi  * sin_phi;
-  double sin3_phi = sin2_phi * sin_phi;
-  double x = 1.0 - sin2_phi;
-  double y = 1.0 - k*k*sin2_phi;
-  gsl_sf_result rf;
-  gsl_sf_result rd;
-  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, mode, &rf);
-  int rdstatus = gsl_sf_ellint_RD_impl(x, y, 1.0, mode, &rd);
-  result->val  = sin_phi * rf.val - k*k/3.0 * sin3_phi * rd.val;
-  result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
-  result->err += fabs(sin_phi*rf.err);
-  result->err += k*k/3.0 * GSL_DBL_EPSILON * fabs(sin3_phi * rd.val);
-  result->err += k*k/3.0 * fabs(sin3_phi*rd.err);
-  return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+  const double sin_phi  = sin(phi);
+  const double sin2_phi = sin_phi  * sin_phi;
+  const double x = 1.0 - sin2_phi;
+  const double y = 1.0 - k*k*sin2_phi;
+  if(x < GSL_DBL_EPSILON) {
+    return gsl_sf_ellint_Ecomp_impl(k, mode, result);
+  }
+  else {
+    gsl_sf_result rf;
+    gsl_sf_result rd;
+    const double sin3_phi = sin2_phi * sin_phi;
+    const int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, mode, &rf);
+    const int rdstatus = gsl_sf_ellint_RD_impl(x, y, 1.0, mode, &rd);
+    result->val  = sin_phi * rf.val - k*k/3.0 * sin3_phi * rd.val;
+    result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
+    result->err += fabs(sin_phi*rf.err);
+    result->err += k*k/3.0 * GSL_DBL_EPSILON * fabs(sin3_phi * rd.val);
+    result->err += k*k/3.0 * fabs(sin3_phi*rd.err);
+    return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+  }
 }
 
 
@@ -362,15 +367,15 @@ gsl_sf_ellint_E_impl(double phi, double k, gsl_mode_t mode, gsl_sf_result * resu
 int
 gsl_sf_ellint_P_impl(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result)
 {
-  double sin_phi  = sin(phi);
-  double sin2_phi = sin_phi  * sin_phi;
-  double sin3_phi = sin2_phi * sin_phi;
-  double x = 1.0 - sin2_phi;
-  double y = 1.0 - k*k*sin2_phi;
+  const double sin_phi  = sin(phi);
+  const double sin2_phi = sin_phi  * sin_phi;
+  const double sin3_phi = sin2_phi * sin_phi;
+  const double x = 1.0 - sin2_phi;
+  const double y = 1.0 - k*k*sin2_phi;
   gsl_sf_result rf;
   gsl_sf_result rj;
-  int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, mode, &rf);
-  int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin2_phi, mode, &rj);
+  const int rfstatus = gsl_sf_ellint_RF_impl(x, y, 1.0, mode, &rf);
+  const int rjstatus = gsl_sf_ellint_RJ_impl(x, y, 1.0, 1.0 + n*sin2_phi, mode, &rj);
   result->val  = sin_phi * rf.val - n/3.0*sin3_phi * rj.val;
   result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
   result->err += n/3.0 * fabs(sin3_phi*rj.err);
@@ -382,13 +387,13 @@ gsl_sf_ellint_P_impl(double phi, double k, double n, gsl_mode_t mode, gsl_sf_res
 int
 gsl_sf_ellint_D_impl(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result)
 {
-  double sin_phi  = sin(phi);
-  double sin2_phi = sin_phi  * sin_phi;
-  double sin3_phi = sin2_phi * sin_phi;
-  double x = 1.0 - sin2_phi;
-  double y = 1.0 - k*k*sin2_phi;
+  const double sin_phi  = sin(phi);
+  const double sin2_phi = sin_phi  * sin_phi;
+  const double sin3_phi = sin2_phi * sin_phi;
+  const double x = 1.0 - sin2_phi;
+  const double y = 1.0 - k*k*sin2_phi;
   gsl_sf_result rd;
-  int status = gsl_sf_ellint_RD_impl(x, y, 1.0, mode, &rd);
+  const int status = gsl_sf_ellint_RD_impl(x, y, 1.0, mode, &rd);
   result->val = sin3_phi/3.0 * rd.val;
   result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(sin3_phi/3.0 * rd.err);
   return status;
@@ -399,7 +404,25 @@ gsl_sf_ellint_D_impl(double phi, double k, double n, gsl_mode_t mode, gsl_sf_res
 int
 gsl_sf_ellint_Kcomp_impl(double k, gsl_mode_t mode, gsl_sf_result * result)
 {
-  return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, mode, result);
+  if(k*k >= 1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EDOM;
+  }
+  else if(k*k >= 1.0 - GSL_SQRT_DBL_EPSILON) {
+    /* [Abramowitz+Stegun, 17.3.33] */
+    const double y = 1.0 - k*k;
+    const double a[] = { 1.38629436112, 0.09666344259, 0.03590092383 };
+    const double b[] = { 0.5, 0.12498593597, 0.06880248576 };
+    const double ta = a[0] + y*(a[1] + y*a[2]);
+    const double tb = -log(y) * (b[0] * y*(b[1] + y*b[2]));
+    result->val = ta + tb;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else {
+    return gsl_sf_ellint_RF_impl(0.0, 1.0 - k*k, 1.0, mode, result);
+  }
 }
 
 
@@ -407,14 +430,32 @@ gsl_sf_ellint_Kcomp_impl(double k, gsl_mode_t mode, gsl_sf_result * result)
 int
 gsl_sf_ellint_Ecomp_impl(double k, gsl_mode_t mode, gsl_sf_result * result)
 {
-  double y = 1.0 - k*k;
-  gsl_sf_result rf;
-  gsl_sf_result rd;
-  int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, mode, &rf);
-  int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, mode, &rd);
-  result->val = rf.val - k*k/3.0 * rd.val;
-  result->err = rf.err + k*k/3.0 * rd.err;
-  return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+  if(k*k >= 1.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_EDOM;
+  }
+  else if(k*k >= 1.0 - GSL_SQRT_DBL_EPSILON) {
+    /* [Abramowitz+Stegun, 17.3.36] */
+    const double y = 1.0 - k*k;
+    const double a[] = { 0.44325141463, 0.06260601220, 0.04757383546 };
+    const double b[] = { 0.24998368310, 0.09200180037, 0.04069697526 };
+    const double ta = 1.0 + y*(a[0] + y*(a[1] + a[2]*y));
+    const double tb = -y*log(y) * (b[0] + y*(b[1] + b[2]*y));
+    result->val = ta + tb;
+    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else {
+    gsl_sf_result rf;
+    gsl_sf_result rd;
+    const double y = 1.0 - k*k;
+    const int rfstatus = gsl_sf_ellint_RF_impl(0.0, y, 1.0, mode, &rf);
+    const int rdstatus = gsl_sf_ellint_RD_impl(0.0, y, 1.0, mode, &rd);
+    result->val = rf.val - k*k/3.0 * rd.val;
+    result->err = rf.err + k*k/3.0 * rd.err;
+    return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+  }
 }
 
 

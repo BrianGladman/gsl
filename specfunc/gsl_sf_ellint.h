@@ -58,6 +58,12 @@ int gsl_sf_ellint_Ecomp_e(double k, gsl_mode_t mode, gsl_sf_result * result);
  * F(phi,k)   = Integral[1/Sqrt[1 - k^2 Sin[t]^2], {t, 0, phi}]
  * E(phi,k)   = Integral[  Sqrt[1 - k^2 Sin[t]^2], {t, 0, phi}]
  * P(phi,k,n) = Integral[(1 + n Sin[t]^2)^(-1)/Sqrt[1 - k^2 Sin[t]^2], {t, 0, phi}]
+ * D(phi,k,n) = R_D(1-Sin[phi]^2, 1-k^2 Sin[phi]^2, 1.0)
+ *
+ * F: [Carlson, Numerische Mathematik 33 (1979) 1, (4.1)]
+ * E: [Carlson, ", (4.2)]
+ * P: [Carlson, ", (4.3)]
+ * D: [Carlson, ", (4.4)]
  *
  * exceptions: GSL_EDOM
  */
