@@ -7,7 +7,7 @@ cat > test.exp.1.tmp <<EOF
 4 5 1
 EOF
 
-echo 1 2 2.5 4 | ./gsl-histogram 1 5 4 > test.obs.1.tmp
+echo 1 2 2.5 4 | ./gsl-histogram 1 5 4 | tr -d '\r' > test.obs.1.tmp
 
 cmp test.exp.1.tmp test.obs.1.tmp
 STATUS=$?
