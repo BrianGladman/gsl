@@ -48,8 +48,8 @@ checkout and to use a nice cvs diff option, like
 
   cvs diff -u
 
-Recent versions of patch can now cope with cvs diffs across multiple
-directories.
+There is a script fixpatch.pl in gsl/scripts which will make the
+resulting output suitable for piping to 'patch'.
 
 If your patch contains lines longer than 80 characters please check
 that your mailer does not break these lines.  If in doubt, send the
