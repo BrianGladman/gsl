@@ -1,3 +1,7 @@
+2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: added stdlib.h for exit()
+
 2004-03-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* const.el: added CGS and MKS systems back in, with CGSM electrical

@@ -1,3 +1,7 @@
+2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: added <stdlib.h> for exit()
+
 2002-11-16  Brian Gough  <bjg@network-theory.co.uk>
 
 	* niederreiter-2.c (calculate_cj): clear uninitialized memory
