@@ -425,7 +425,7 @@ declared @code{const}.
 @end deftypefun
 
 
-@deftypefun gsl_vector gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
+@deftypefun gsl_vector_view gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
 @deftypefunx {gsl_vector_const_view} gsl_vector_const_subvector_with_stride (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
 These functions return a vector view of a subvector of another vector
 @var{v} with an additional stride argument. The subvector is formed in
