@@ -46,6 +46,8 @@ main (void)
           test_f ("Powell singular", &powellsing, powellsing_initpt, f, *T1);
           test_f ("Wood", &wood, wood_initpt, f, *T1);
           test_f ("Helical", &helical, helical_initpt, f, *T1);
+          test_f ("Discrete BVP", &dbv, dbv_initpt, f, *T1);
+          test_f ("Trig", &trig, trig_initpt, f, *T1);
           T1++;
         }
       
@@ -60,6 +62,8 @@ main (void)
           test_fdf ("Powell singular", &powellsing, powellsing_initpt, f, *T2);
           test_fdf ("Wood", &wood, wood_initpt, f, *T2);
           test_fdf ("Helical", &helical, helical_initpt, f, *T2);
+          test_fdf ("Discrete BVP", &dbv, dbv_initpt, f, *T2);
+          test_fdf ("Trig", &trig, trig_initpt, f, *T2);
           T2++;
         }
     }
@@ -101,6 +105,7 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
   size_t i, n = function->n, iter = 0;
   
   gsl_vector *x = gsl_vector_alloc (n);
+  gsl_matrix *J = gsl_matrix_alloc (n, n);
 
   gsl_multiroot_fdfsolver *s;
 
@@ -109,7 +114,7 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
   if (factor != 1.0) scale(x, factor);
 
   s = gsl_multiroot_fdfsolver_alloc (T, function, x);
-
+ 
   do
     {
       iter++;
@@ -123,12 +128,41 @@ test_fdf (const char * desc, gsl_multiroot_function_fdf * function,
   printf("f "); gsl_vector_fprintf (stdout, s->f, "%g"); printf("\n");
 #endif
 
+
+#ifdef TEST_JACOBIAN
+ {
+    double r,sum; size_t j;
+
+    gsl_multiroot_function f1 ;
+    f1.f = function->f ;
+    f1.n = function->n ;
+    f1.params = function->params ;
+    
+    gsl_multiroot_fdjacobian (&f1, s->x, s->f, GSL_SQRT_DBL_EPSILON, J);
+  
+    /* compare J and s->J */
+    
+    r=0;sum=0;
+    for (i = 0; i < n; i++)
+      for (j = 0; j< n ; j++)
+        {
+          double u = gsl_matrix_get(J,i,j);
+          double su = gsl_matrix_get(s->J, i, j);
+          r = fabs(u - su)/(1e-6 + 1e-6 * fabs(u)); sum+=r;
+          if (fabs(u - su) > 1e-6 + 1e-6 * fabs(u))
+            printf("broken jacobian %g\n", r);
+        }
+    printf("avg r = %g\n", sum/(n*n));
+  }
+#endif
+
   for (i = 0; i < n ; i++)
     {
       residual += fabs(gsl_vector_get(s->f, i));
     }
 
   gsl_multiroot_fdfsolver_free (s);
+  gsl_matrix_free(J);
   gsl_vector_free(x);
 
   gsl_test(status, "%s with %s (%g), %u iterations, residual = %.2g", desc, T->name, factor, iter, residual);

@@ -66,8 +66,7 @@ each iteration proposed by Newton's method, or taking downwards steps in
 the direction of the negative gradient of @math{|F|}.
 
 The evaluation of the Hessian matrix can be problematic, either because
-the function is sufficiently complicated for programming of the
-derivatives to be intractable or because the repeated computation of the
+programming the derivatives is intractable or because computation of the
 @math{n^2} terms of the matrix becomes too expensive. For these reasons
 the algorithms provided by the library fall into two classes according
 to whether the derivatives are available or not.
@@ -89,11 +88,11 @@ estimate the matrix @math{J} or @c{$J^{-1}$}
 This function returns a pointer to a a newly allocated instance of a
 solver of type @var{T} for the function @var{f}, with an initial bracket
 on the root of @var{x}. For example, the following code creates an
-instance of a bisection solver,
+instance of a Brent solver,
 
 @example
 gsl_multiroot_fsolver * s = 
-    gsl_multiroot_fsolver_alloc (gsl_multiroot_fsolver_broyden, f, x);
+    gsl_multiroot_fsolver_alloc (gsl_multiroot_fsolver_brent, f, x);
 @end example
 
 If there is insufficient memory to create the solver then the function
@@ -148,19 +147,18 @@ would print something like @code{s is a 'newton' solver}
 @section Providing the function to solve
 @cindex multidimensional root finding, providing a function to solve
 
-You must provide a continuous function of n variables for the root
-finders to operate on, and, sometimes, its first derivative. In order to
-allow for general parameters the functions are defined by the following
-data types:
+You must provide @math{n} functions of @math{n} variables for the root
+finders to operate on. In order to allow for general parameters the
+functions are defined by the following data types:
 
 @deftp {Data Type} gsl_multiroot_function 
-This data type defines a general function with parameters. 
+This data type defines a general system of functions with parameters.
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
 this function should store the vector result
 @c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} in $var{f} for argument @var{x} and parameters @var{params},
+@math{f(x,params)} in @var{f} for argument @var{x} and parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
 @item size_t @var{n}
@@ -171,63 +169,65 @@ vectors @var{x} and @var{f}
 a pointer to the parameters of the function
 @end table
 
-Here is an example for the general quadratic function,
+Here is an example for Powell's test function,
 
 @tex
 \beforedisplay
 $$
-f(x) = a x^2 + b x + c
+f_1(x) = A x_0 x_1 - 1,
+f_2(x) = \exp(-x_0) + \exp(-x_1) - (1 + 1/A)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-f(x) = a x^2 + b x + c
+f_1(x) = A x_0 x_1 - 1,
+f_2(x) = exp(-x_0) + exp(-x_1) - (1 + 1/A)
 @end example
 @end ifinfo
 
 @noindent
-with @math{a = 3}, @math{b = 2}, @math{c = 1}. The following code
-defines a @code{gsl_function} @code{F} which you could pass to a root
-finder:
+with @math{A = 10^4}. The following code defines a
+@code{gsl_multiroot_function} system @code{F} which you could pass to a
+solver:
 
 @example
-struct my_f_params @{ double a ; double b ; double c ; @} ;
+struct powell_params @{ double A ; @} ;
 
-double
-my_f (double x, void * p) @{
-   struct my_f_params * params = *(struct my_f_params *)p ;
-   double a = (params->a) ;
-   double b = (params->b) ;
-   double c = (params->c) ;
-
-   return  (a * x + b) * x + c ;
+int
+powell (gsl_vector * x, void * p, gsl_vector * f) @{
+   struct powell_params * params = *(struct powell_params *)p ;
+   double A = (params->A) ;
+   double x0 = gsl_vector_get(x,0);
+   double x1 = gsl_vector_get(x,1);
+   gsl_vector_set (f, 0, A * x0 * x1 - 1)
+   gsl_vector_set (f, 1, exp(-x0) + exp(-x1) - (1 + 1/A))
+   return GSL_SUCCESS
 @}
 
-gsl_function F ;
-struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
+gsl_multiroot_function F ;
+struct powell_params params = @{ 10000.0 @};
 
-F.function = &my_f ;
+F.function = &powell ;
+F.n = 2 ;
 F.params = &params ;
 @end example
 
-The function @math{f(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_EVAL(F,x) (*((F)->function))(x,(F)->params)
-@end example
 
 @end deftp
 
 @deftp {Data Type} gsl_multiroot_function_fdf
-This data type defines a general function with parameters and its first
-derivative.
+This data type defines a general system of functions with parameters and
+their Hessian matrix of derivatives.
 
 @table @code
-@item double (* @var{f}) (double @var{x}, void * @var{params})
+@item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
 this function should return the value of
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}
+
+@item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_matrix * @var{J})
+@item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
 
 @item double (* @var{df}) (double @var{x}, void * @var{params})
 this function should return the value of the derivative of @var{f} with

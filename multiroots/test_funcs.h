@@ -42,3 +42,16 @@ void helical_initpt (gsl_vector * x);
 int helical_f (const gsl_vector * x, void *params, gsl_vector * f);
 int helical_df (const gsl_vector * x, void *params, gsl_matrix * df);
 int helical_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+
+extern gsl_multiroot_function_fdf dbv;
+void dbv_initpt (gsl_vector * x);
+int dbv_f (const gsl_vector * x, void *params, gsl_vector * f);
+int dbv_df (const gsl_vector * x, void *params, gsl_matrix * df);
+int dbv_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+
+extern gsl_multiroot_function_fdf trig;
+void trig_initpt (gsl_vector * x);
+int trig_f (const gsl_vector * x, void *params, gsl_vector * f);
+int trig_df (const gsl_vector * x, void *params, gsl_matrix * df);
+int trig_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df);
+

@@ -241,7 +241,7 @@ brownscal_df (const gsl_vector * x, void *params, gsl_matrix * df)
   double x1 = gsl_vector_get (x, 1);
 
   double df00 = 1.0, df01 = 0.0;
-  double df10 = 1.0, df11 = 1.0;
+  double df10 = x1, df11 = x0;
 
   gsl_matrix_set (df, 0, 0, df00);
   gsl_matrix_set (df, 0, 1, df01);
@@ -448,6 +448,8 @@ wood_fdf (const gsl_vector * x, void *params,
 }
 
 
+/* Helical Valley Function */
+
 gsl_multiroot_function_fdf helical =
 {&helical_f,
  &helical_df,
@@ -537,6 +539,185 @@ helical_fdf (const gsl_vector * x, void *params,
 {
   helical_f (x, params, f);
   helical_df (x, params, df);
+
+  return GSL_SUCCESS;
+}
+
+
+/* Discrete Boundary Value Function */
+
+#define N 10
+
+gsl_multiroot_function_fdf dbv =
+{&dbv_f,
+ &dbv_df,
+ &dbv_fdf,
+ N, 0};
+
+void
+dbv_initpt (gsl_vector * x)
+{
+  size_t i;
+  double h = 1.0 / (N + 1.0);
+
+  for (i = 0; i < N; i++)
+    {
+      double t = (i + 1) * h;
+      double z = t * (t - 1);
+      gsl_vector_set (x, i, z);
+    }
+}
+
+int
+dbv_f (const gsl_vector * x, void *params, gsl_vector * f)
+{
+  size_t i;
+
+  double h = 1.0 / (N + 1.0);
+
+  for (i = 0; i < N; i++)
+    {
+      double z, ti = (i + 1) * h;
+      double xi = 0, xim1 = 0, xip1 = 0;
+
+      xi = gsl_vector_get (x, i);
+      
+      if (i > 0)
+        xim1 = gsl_vector_get (x, i - 1);
+
+      if (i < N - 1)
+        xip1 = gsl_vector_get (x, i + 1);
+
+      z = 2 * xi - xim1 - xip1 + h * h * pow(xi + ti + 1, 3.0) / 2.0;
+
+      gsl_vector_set (f, i, z);
+
+    }
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+dbv_df (const gsl_vector * x, void *params, gsl_matrix * df)
+{
+  size_t i, j;
+
+  double h = 1.0 / (N + 1.0);
+
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      gsl_matrix_set (df, i, j, 0.0);
+
+  for (i = 0; i < N; i++)
+    {
+      double dz_dxi, ti = (i + 1) * h;
+
+      double xi = gsl_vector_get (x, i);
+      
+      dz_dxi = 2.0 + (3.0 / 2.0) * h * h * pow(xi + ti + 1, 2.0) ;
+      
+      gsl_matrix_set (df, i, i, dz_dxi);
+
+      if (i > 0)
+        gsl_matrix_set (df, i, i-1, -1.0);
+
+      if (i < N - 1)
+        gsl_matrix_set (df, i, i+1, -1.0);
+
+    }
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+dbv_fdf (const gsl_vector * x, void *params,
+		    gsl_vector * f, gsl_matrix * df)
+{
+  dbv_f (x, params, f);
+  dbv_df (x, params, df);
+
+  return GSL_SUCCESS;
+}
+
+/* Trigonometric Function */
+
+gsl_multiroot_function_fdf trig =
+{&trig_f,
+ &trig_df,
+ &trig_fdf,
+ N, 0};
+
+void
+trig_initpt (gsl_vector * x)
+{
+  size_t i;
+
+  for (i = 0; i < N; i++)
+    {
+      gsl_vector_set (x, i, 1.0 / N);
+    }
+}
+
+int
+trig_f (const gsl_vector * x, void *params, gsl_vector * f)
+{
+  size_t i,j;
+
+  for (i = 0; i < N; i++)
+    {
+      double z, sum = 0;
+      double xi = gsl_vector_get (x,i);
+
+      for (j = 0; j < N; j++)
+        sum += cos(gsl_vector_get(x,j));
+      
+      z = N - sum + (i + 1) * (1 - cos(xi)) - sin(xi);
+
+      gsl_vector_set (f, i, z);
+    }
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+trig_df (const gsl_vector * x, void *params, gsl_matrix * df)
+{
+  size_t i, j;
+
+  for (i = 0; i < N; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          double dz;
+          double xi = gsl_vector_get(x, i);
+          double xj = gsl_vector_get(x, j);
+
+          if (j == i)
+            dz = sin(xi) + (i + 1) * sin(xi) - cos(xi);
+          else
+            dz = sin(xj);
+          
+          gsl_matrix_set(df, i, j, dz);
+        }
+    }
+
+  params = 0;			/* avoid warning about unused parameters */
+
+  return GSL_SUCCESS;
+}
+
+int
+trig_fdf (const gsl_vector * x, void *params,
+		    gsl_vector * f, gsl_matrix * df)
+{
+  trig_f (x, params, f);
+  trig_df (x, params, df);
 
   return GSL_SUCCESS;
 }
