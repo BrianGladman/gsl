@@ -1,3 +1,8 @@
+Wed Dec  5 19:25:26 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_1F1.c (hyperg_1F1_ab_posint):  fix bug in recurrence
+ 	initialisation, as done for hyperg_1F1_ab_pos
+
 Thu Oct 18 11:37:25 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coulomb.c (gsl_sf_coulomb_CL_array): renamed from

@@ -1084,13 +1084,28 @@ hyperg_1F1_ab_posint(const int a, const int b, const double x, gsl_sf_result * r
 	Ma0p1b = (b*(a0+x)*Ma0b + x*(a0-b)*Ma0bp1)/(a0*b);
       }
 
-      Mnm1 = Ma0b;
-      Mn   = Ma0p1b;
-      for(n=a0+1; n<a; n++) {
-    	Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
-    	Mnm1 = Mn;
-    	Mn   = Mnp1;
-      }
+      /* Initialise the recurrence correctly BJG */
+
+      if (a0 >= a)
+        { 
+          Mn = Ma0b;
+        }
+      else if (a0 + 1>= a)
+        {
+          Mn = Ma0p1b;
+        }
+      else
+        {
+          Mnm1 = Ma0b;
+          Mn   = Ma0p1b;
+
+          for(n=a0+1.0; n<a;n ++) {
+            Mnp1 = ((b-n)*Mnm1 + (2*n-b+x)*Mn)/n;
+            Mnm1 = Mn;
+            Mn   = Mnp1;
+          }
+        }
+
       result->val  = Mn;
       result->err  = (fabs(x) + 1.0) * GSL_DBL_EPSILON *  fabs(Mn);
       result->err *= fabs(b-a)+1.0;
