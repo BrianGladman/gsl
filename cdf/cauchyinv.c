@@ -59,7 +59,7 @@ gsl_cdf_cauchy_Qinv (const double Q, const double a)
     }
   else if (Q == 1.0)
     {
-      return 0.0;
+      return GSL_NEGINF;
     }
 
   if (Q > 0.5)

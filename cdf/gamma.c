@@ -85,16 +85,18 @@ gsl_cdf_gamma_P (double x, double a, double b)
       return 0.0;
     }
 
-  if (b < LARGE_A)
+#if 0  /* Not currently working to sufficient accuracy in tails */
+  if (a > LARGE_A)
     {
-      P = gsl_sf_gamma_inc_P (a, y);
-    }
-  else
-    {
-      /* Use Peizer and Pratt's normal approximation. */
+      /* Use Peizer and Pratt's normal approximation for large A. */
 
       double z = norm_arg (y, a);
       P = gsl_cdf_ugaussian_P (z);
+    }
+  else
+#endif
+    {
+      P = gsl_sf_gamma_inc_P (a, y);
     }
 
   return P;
@@ -111,17 +113,19 @@ gsl_cdf_gamma_Q (double x, double a, double b)
       return 1.0;
     }
 
-  if (a < LARGE_A)
-    {
-      P = gsl_sf_gamma_inc_Q (a, y);
-    }
-  else
+#if 0  /* Not currently working to sufficient accuracy in tails */
+  if (a > LARGE_A)
     {
       /*
        * Peizer and Pratt's approximation mentioned above.
        */
       double z = norm_arg (y, a);
       P = gsl_cdf_ugaussian_Q (z);
+    }
+  else
+#endif
+    {
+      P = gsl_sf_gamma_inc_Q (a, y);
     }
 
   return P;

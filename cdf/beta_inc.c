@@ -94,7 +94,7 @@ beta_cont_frac (const double a, const double b, const double x,
 
 /* The function beta_inc_AXPY(A,Y,a,b,x) computes A * beta_inc(a,b,x)
    + Y taking account of possible cancellations when using the
-   hypergeometric transformation beta_inc(a,b,x)=1-beta(b,a,1-x).
+   hypergeometric transformation beta_inc(a,b,x)=1-beta_inc(b,a,1-x).
 
    It also adjusts the accuracy of beta_inc() to fit the overall
    absolute error when A*beta_inc is added to Y. (e.g. if Y >>

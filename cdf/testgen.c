@@ -293,4 +293,6 @@ main (void)
   TEST2(pareto, 1.3, 2.7, xpos, Npos);
   TEST(logistic, 1.3, xall, N);
 
+  TEST2(gamma, 1.3,123.0, xpos, Npos);
+
 }
