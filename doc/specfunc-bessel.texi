@@ -283,7 +283,7 @@ Exceptional Return Values: GSL_EUNDRFLW
 
 @subsection Regular Modified Spherical Bessel Functions
 
-@math{ i_l(x) = \sqrt{\pi/(2x)} I_{l+1/2}(x) }
+@math{ i_l(x) = \sqrt@{\pi/(2x)@} I_@{l+1/2@}(x) }
 
 @deftypefun  int gsl_sf_bessel_i0_scaled_impl (double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_i0_scaled_e (double x, gsl_sf_result * result)
@@ -328,7 +328,7 @@ Exceptional Return Values: GSL_EUNDRFLW
 
 @subsection Irregular Modified Spherical Bessel Functions
 
-@math{ k_l(x) = \sqrt{\pi/(2x)]} K_{l+1/2}(x) }
+@math{ k_l(x) = \sqrt@{\pi/(2x)]@} K_@{l+1/2@}(x) }
 
 
 @deftypefun  int gsl_sf_bessel_k0_scaled_impl (double x, gsl_sf_result * result)
@@ -409,7 +409,8 @@ Exceptional Return Values:
 
 @deftypefun  int gsl_sf_bessel_Inu_scaled_impl (double nu, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_Inu_scaled_e (double nu, double x, gsl_sf_result * result)
-@math{ \exp(-|x|) I_{\nu}(x) } 
+@c{$ \exp(-|x|) I_{\nu}(x) $} 
+@math{ \exp(-|x|) I_@{\nu@}(x) } 
 Domain: x >= 0, nu >= 0 
 Exceptional Return Values: GSL_EDOM
 @end deftypefun
@@ -417,7 +418,8 @@ Exceptional Return Values: GSL_EDOM
 
 @deftypefun  int gsl_sf_bessel_Inu_impl (double nu, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_Inu_e (double nu, double x, gsl_sf_result * result)
-@math{ I_{\nu}(x) } 
+@c{$ I_{\nu}(x) $} 
+@math{ I_@{\nu@}(x) } 
 Domain: x >= 0, nu >= 0 
 Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
@@ -429,7 +431,8 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 
 @deftypefun  int gsl_sf_bessel_Knu_scaled_impl (double nu, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_Knu_scaled_e (double nu, double x, gsl_sf_result * result)
-@math{ \exp(+|x|) K_{\nu}(x) } 
+@c{$ \exp(+|x|) K_{\nu}(x) $} 
+@math{ \exp(+|x|) K_@{\nu@}(x) } 
 Domain: x > 0, nu >= 0 
 Exceptional Return Values: GSL_EDOM
 @end deftypefun
@@ -437,7 +440,8 @@ Exceptional Return Values: GSL_EDOM
 
 @deftypefun  int gsl_sf_bessel_Knu_impl (double nu, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_Knu_e (double nu, double x, gsl_sf_result * result)
-@math{ K_{\nu}(x) } 
+@c{$ K_{\nu}(x) $} 
+@math{ K_@{\nu@}(x) } 
 Domain: x > 0, nu >= 0 
 Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
@@ -445,7 +449,8 @@ Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 
 @deftypefun  int gsl_sf_bessel_lnKnu_impl (double nu, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_bessel_lnKnu_e (double nu, double x, gsl_sf_result * result)
-@math{ \ln(K_{\nu}(x)) } 
+@c{$ \ln(K_{\nu}(x)) $} 
+@math{ \ln(K_@{\nu@}(x)) } 
 Domain: x > 0, nu >= 0 
 Exceptional Return Values: GSL_EDOM
 @end deftypefun

@@ -80,13 +80,15 @@ Apply a transform object to a data vector, f_in[0] ... f_in[size-1].
 
 @deftypefun double gsl_dht_transform_x_sample (const gsl_dht_transform * @var{t}, int @var{n})
 Return the value of the n'th sample point in the unit interval,
-@math{{{j_{\nu,n+1}}\over{j_{\nu,M}}} X}. These are the
+@c{${{j_{\nu,n+1}}\over{j_{\nu,M}}} X$}
+@math{(j_@{\nu,n+1@}/j_@{\nu,M@}) X}. These are the
 points where the function @math{f(t)} is assumed to be sampled.
 @end deftypefun
 
 @deftypefun double gsl_dht_transform_k_sample (const gsl_dht_transform * @var{t}, int @var{n})
 Return the value of the n'th sample point in "k-space",
-@math{{{j_{\nu,n+1}}\over X}}.
+@c{${{j_{\nu,n+1}}\over X}$}
+@math{j_@{\nu,n+1@}/X}.
 @end deftypefun
 
 @deftypefun int gsl_dht_transform_recalc_impl (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
