@@ -1,3 +1,6 @@
+* Could probably return immediately for exact zeros in 3j,6j,9j
+functions.  Easiest to implement for 3j.
+
 * add Fresnel Integrals to specfunc.  See TOMS 723 + 2 subsequent
 errata.
 
