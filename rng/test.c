@@ -66,13 +66,52 @@ main (void)
   rng_test (gsl_rng_rand48, 0, 10000, 0xDE095043UL);
   rng_test (gsl_rng_rand48, 1, 10000, 0xEDA54977UL);
 
+  rng_test (gsl_rng_glibc2random, 0, 10000, 1908609430);
+  rng_test (gsl_rng_glibc2random0, 0, 10000, 1910041713);
+  rng_test (gsl_rng_glibc2random32, 0, 10000, 1587395585);
+  rng_test (gsl_rng_glibc2random64, 0, 10000, 52848624);
+  rng_test (gsl_rng_glibc2random128, 0, 10000, 1908609430);
+  rng_test (gsl_rng_glibc2random256, 0, 10000, 179943260);
+
+  rng_test (gsl_rng_bsdrandom, 0, 10000, 1457025928);
+  rng_test (gsl_rng_bsdrandom0, 0, 10000, 1910041713);
+  rng_test (gsl_rng_bsdrandom32, 0, 10000, 1663114331);
+  rng_test (gsl_rng_bsdrandom64, 0, 10000, 864469165);
+  rng_test (gsl_rng_bsdrandom128, 0, 10000, 1457025928);
+  rng_test (gsl_rng_bsdrandom256, 0, 10000, 1216357476);
+
+  rng_test (gsl_rng_libc5random, 0, 10000, 428084942);
+  rng_test (gsl_rng_libc5random0, 0, 10000, 1910041713);
+  rng_test (gsl_rng_libc5random32, 0, 10000, 1967452027);
+  rng_test (gsl_rng_libc5random64, 0, 10000, 2106639801);
+  rng_test (gsl_rng_libc5random128, 0, 10000, 428084942);
+  rng_test (gsl_rng_libc5random256, 0, 10000, 116367984);
+
   rng_test (gsl_rng_ranf, 0, 10000, 2152890433UL);
   rng_test (gsl_rng_ranf, 2, 10000, 339327233);
 
   /* Test constant relationship between int and double functions */
 
+  rng_float_test (gsl_rng_bsdrandom);
+  rng_float_test (gsl_rng_bsdrandom0);
+  rng_float_test (gsl_rng_bsdrandom32);
+  rng_float_test (gsl_rng_bsdrandom64);
+  rng_float_test (gsl_rng_bsdrandom128);
+  rng_float_test (gsl_rng_bsdrandom256);
   rng_float_test (gsl_rng_cmlib);
   rng_float_test (gsl_rng_cmrg);
+  rng_float_test (gsl_rng_glibc2random);
+  rng_float_test (gsl_rng_glibc2random0);
+  rng_float_test (gsl_rng_glibc2random32);
+  rng_float_test (gsl_rng_glibc2random64);
+  rng_float_test (gsl_rng_glibc2random128);
+  rng_float_test (gsl_rng_glibc2random256);
+  rng_float_test (gsl_rng_libc5random);
+  rng_float_test (gsl_rng_libc5random0);
+  rng_float_test (gsl_rng_libc5random32);
+  rng_float_test (gsl_rng_libc5random64);
+  rng_float_test (gsl_rng_libc5random128);
+  rng_float_test (gsl_rng_libc5random256);
   rng_float_test (gsl_rng_minstd);
   rng_float_test (gsl_rng_mrg);
   rng_float_test (gsl_rng_mt19937);
@@ -98,8 +137,26 @@ main (void)
 
   /* Test save/restore functions */
 
+  rng_state_test (gsl_rng_bsdrandom);
+  rng_state_test (gsl_rng_bsdrandom0);
+  rng_state_test (gsl_rng_bsdrandom32);
+  rng_state_test (gsl_rng_bsdrandom64);
+  rng_state_test (gsl_rng_bsdrandom128);
+  rng_state_test (gsl_rng_bsdrandom256);
   rng_state_test (gsl_rng_cmlib);
   rng_state_test (gsl_rng_cmrg);
+  rng_state_test (gsl_rng_glibc2random);
+  rng_state_test (gsl_rng_glibc2random0);
+  rng_state_test (gsl_rng_glibc2random32);
+  rng_state_test (gsl_rng_glibc2random64);
+  rng_state_test (gsl_rng_glibc2random128);
+  rng_state_test (gsl_rng_glibc2random256);
+  rng_state_test (gsl_rng_libc5random);
+  rng_state_test (gsl_rng_libc5random0);
+  rng_state_test (gsl_rng_libc5random32);
+  rng_state_test (gsl_rng_libc5random64);
+  rng_state_test (gsl_rng_libc5random128);
+  rng_state_test (gsl_rng_libc5random256);
   rng_state_test (gsl_rng_minstd);
   rng_state_test (gsl_rng_mrg);
   rng_state_test (gsl_rng_mt19937);
@@ -123,8 +180,26 @@ main (void)
   rng_state_test (gsl_rng_vax);
   rng_state_test (gsl_rng_zuf);
 
-  rng_parallel_state_test (gsl_rng_cmrg);
+  rng_parallel_state_test (gsl_rng_bsdrandom);
+  rng_parallel_state_test (gsl_rng_bsdrandom0);
+  rng_parallel_state_test (gsl_rng_bsdrandom32);
+  rng_parallel_state_test (gsl_rng_bsdrandom64);
+  rng_parallel_state_test (gsl_rng_bsdrandom128);
+  rng_parallel_state_test (gsl_rng_bsdrandom256);
   rng_parallel_state_test (gsl_rng_cmlib);
+  rng_parallel_state_test (gsl_rng_cmrg);
+  rng_parallel_state_test (gsl_rng_glibc2random);
+  rng_parallel_state_test (gsl_rng_glibc2random0);
+  rng_parallel_state_test (gsl_rng_glibc2random32);
+  rng_parallel_state_test (gsl_rng_glibc2random64);
+  rng_parallel_state_test (gsl_rng_glibc2random128);
+  rng_parallel_state_test (gsl_rng_glibc2random256);
+  rng_parallel_state_test (gsl_rng_libc5random);
+  rng_parallel_state_test (gsl_rng_libc5random0);
+  rng_parallel_state_test (gsl_rng_libc5random32);
+  rng_parallel_state_test (gsl_rng_libc5random64);
+  rng_parallel_state_test (gsl_rng_libc5random128);
+  rng_parallel_state_test (gsl_rng_libc5random256);
   rng_parallel_state_test (gsl_rng_minstd);
   rng_parallel_state_test (gsl_rng_mrg);
   rng_parallel_state_test (gsl_rng_mt19937);
@@ -152,8 +227,26 @@ main (void)
      don't get any crazy results back from the generator, i.e. they
      aren't a test of the algorithm, just the implementation) */
 
-  generic_rng_test (gsl_rng_cmrg);
+  generic_rng_test (gsl_rng_bsdrandom);
+  generic_rng_test (gsl_rng_bsdrandom0);
+  generic_rng_test (gsl_rng_bsdrandom32);
+  generic_rng_test (gsl_rng_bsdrandom64);
+  generic_rng_test (gsl_rng_bsdrandom128);
+  generic_rng_test (gsl_rng_bsdrandom256);
   generic_rng_test (gsl_rng_cmlib);
+  generic_rng_test (gsl_rng_cmrg);
+  generic_rng_test (gsl_rng_glibc2random);
+  generic_rng_test (gsl_rng_glibc2random0);
+  generic_rng_test (gsl_rng_glibc2random32);
+  generic_rng_test (gsl_rng_glibc2random64);
+  generic_rng_test (gsl_rng_glibc2random128);
+  generic_rng_test (gsl_rng_glibc2random256);
+  generic_rng_test (gsl_rng_libc5random);
+  generic_rng_test (gsl_rng_libc5random0);
+  generic_rng_test (gsl_rng_libc5random32);
+  generic_rng_test (gsl_rng_libc5random64);
+  generic_rng_test (gsl_rng_libc5random128);
+  generic_rng_test (gsl_rng_libc5random256);
   generic_rng_test (gsl_rng_minstd);
   generic_rng_test (gsl_rng_mrg);
   generic_rng_test (gsl_rng_mt19937);
@@ -201,7 +294,7 @@ rng_test (const gsl_rng_type * T, unsigned long int seed, unsigned int n,
     }
 
   status = (k != result);
-  gsl_test (status, "%s, %u iterations (%u observed vs %u expected)",
+  gsl_test (status, "%s, %u steps (%u observed vs %u expected)",
 	    gsl_rng_name (r), n, k, result);
 
   gsl_rng_free (r);

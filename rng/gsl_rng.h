@@ -31,8 +31,26 @@ gsl_rng_type;
 /* These structs also need to appear in default.c so you can select
    them via the environment variable GSL_RNG_TYPE */
 
+extern const gsl_rng_type *gsl_rng_bsdrandom;
+extern const gsl_rng_type *gsl_rng_bsdrandom0;
+extern const gsl_rng_type *gsl_rng_bsdrandom32;
+extern const gsl_rng_type *gsl_rng_bsdrandom64;
+extern const gsl_rng_type *gsl_rng_bsdrandom128;
+extern const gsl_rng_type *gsl_rng_bsdrandom256;
 extern const gsl_rng_type *gsl_rng_cmrg;
 extern const gsl_rng_type *gsl_rng_cmlib;
+extern const gsl_rng_type *gsl_rng_glibc2random;
+extern const gsl_rng_type *gsl_rng_glibc2random0;
+extern const gsl_rng_type *gsl_rng_glibc2random32;
+extern const gsl_rng_type *gsl_rng_glibc2random64;
+extern const gsl_rng_type *gsl_rng_glibc2random128;
+extern const gsl_rng_type *gsl_rng_glibc2random256;
+extern const gsl_rng_type *gsl_rng_libc5random;
+extern const gsl_rng_type *gsl_rng_libc5random0;
+extern const gsl_rng_type *gsl_rng_libc5random32;
+extern const gsl_rng_type *gsl_rng_libc5random64;
+extern const gsl_rng_type *gsl_rng_libc5random128;
+extern const gsl_rng_type *gsl_rng_libc5random256;
 extern const gsl_rng_type *gsl_rng_minstd;
 extern const gsl_rng_type *gsl_rng_mrg;
 extern const gsl_rng_type *gsl_rng_mt19937;

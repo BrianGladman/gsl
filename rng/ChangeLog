@@ -1,3 +1,11 @@
+Wed Jul  8 17:06:54 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* added random() functions. There are three(!) versions: the
+ 	original BSD, linux libc5 (had a typo in the multiplier, but got
+ 	installed on millions of machines so is now a defacto standard)
+ 	and GNU glibc2 (fixes the typo and has an improved seeding
+ 	procedure)
+
 Sun Jul  5 15:59:29 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* rand.c: renamed rand.c to cmlib.c and bsdrand.c to rand.c.
