@@ -1,10 +1,8 @@
-
-
-
-
 #include <math.h>
 #include <gsl_complex.h>
 #include <gsl_fft_real.h>
+
+#include <fft_real.h>
 
 int
 gsl_fft_real_pass_6 (const double from[], double to[],

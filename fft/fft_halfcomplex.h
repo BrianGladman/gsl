@@ -46,9 +46,4 @@ int
 			      const unsigned int n,
 			      const complex twiddle[]);
 
-int
-  gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
-			      complex complex_coefficient[],
-			      const unsigned int n);
-
 

@@ -2,6 +2,8 @@
 #include <gsl_complex.h>
 #include <gsl_fft_halfcomplex.h>
 
+#include <fft_halfcomplex.h>
+
 int
 gsl_fft_halfcomplex_pass_2 (const double from[],
 			    double to[],

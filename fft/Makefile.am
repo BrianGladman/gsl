@@ -4,6 +4,8 @@ noinst_PROGRAMS = test_trap test_radix2 test benchmark errs
 
 include_HEADERS = gsl_fft.h gsl_fft_complex.h gsl_fft_halfcomplex.h gsl_fft_real.h gsl_fft_signals.h gsl_dft_complex.h gsl_complex.h gsl_math.h
 
+noinst_HEADERS = fft_complex.h fft_halfcomplex.h fft_real.h
+
 INCLUDES = -I$(srcdir)/../err -I$(srcdir)/../utils
 
 TESTS = test_trap test_radix2 test

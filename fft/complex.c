@@ -5,6 +5,8 @@
 #include <gsl_complex.h>
 #include <gsl_fft_complex.h>
 
+#include <fft_complex.h>
+
 int
 gsl_fft_complex_forward (complex data[],
 			 const unsigned int n,
