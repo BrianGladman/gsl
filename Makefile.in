@@ -70,7 +70,7 @@ VERSION = @VERSION@
 full_top_builddir = @full_top_builddir@
 full_top_srcdir = @full_top_srcdir@
 
-SUBDIRS = err ieee-utils rng random vector matrix randist fft roots specfunc statistics siman integration interpolation histogram monte doc
+SUBDIRS = err ieee-utils rng vector matrix randist fft roots specfunc statistics siman integration interpolation histogram monte doc
 
 include_HEADERS = gsl_config.h gsl_complex.h gsl_math.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
