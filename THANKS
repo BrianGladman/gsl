@@ -85,3 +85,5 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 * Henry Sobotka <sobotka@axess.com> for ieee support for OS/2
 
 * Remy Bruno <remy.bruno@libertysurf.fr> for bug fix
+
+* M. Lavasani <lavasani@connect.org.uk> for a bug report and testing on HPUX11

@@ -8,6 +8,8 @@
 #include "fp-ppclinux.c"
 #elif defined(HAVE_X86LINUX_IEEE_INTERFACE)
 #include "fp-x86linux.c"
+#elif defined(HAVE_HPUX11_IEEE_INTERFACE)
+#include "fp-hpux11.c"
 #elif defined(HAVE_HPUX_IEEE_INTERFACE)
 #include "fp-hpux.c"
 #elif defined(HAVE_SUNOS4_IEEE_INTERFACE)

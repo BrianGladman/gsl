@@ -1,5 +1,7 @@
 * What is new in gsl-0.7+:
 
+** IEEE support for HPUX-11 is now included
+
 ** The library now includes implementations of log1p, expm1, hypot,
 acosh, asinh, atanh for platforms which do not provide them.
 
