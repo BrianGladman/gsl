@@ -75,6 +75,17 @@ double gsl_sf_erf_Z(double x);
 double gsl_sf_erf_Q(double x);
 
 
+/* Hazard function, also known as the inverse Mill's ratio.
+ *
+ *   H(x) := Z(x)/Q(x)
+ *         = Sqrt[2/Pi] Exp[-x^2 / 2] / Erfc[x/Sqrt[2]]
+ *
+ * exceptions: GSL_EUNDRFLW
+ */
+int gsl_sf_hazard_e(double x, gsl_sf_result * result);
+double gsl_sf_hazard(double x);
+
+
 __END_DECLS
 
 #endif /* __GSL_SF_ERF_H__ */

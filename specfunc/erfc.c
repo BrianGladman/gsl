@@ -1,6 +1,6 @@
 /* specfunc/erfc.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_sf_erf.h>
 
 #include "check.h"
@@ -399,6 +400,32 @@ int gsl_sf_erf_Q_e(double x, gsl_sf_result * result)
     return stat;
   }
 }
+
+
+int gsl_sf_hazard_e(double x, gsl_sf_result * result)
+{
+  if(x < 25.0)
+  {
+    gsl_sf_result result_ln_erfc;
+    const int stat_l = gsl_sf_log_erfc_e(x/M_SQRT2, &result_ln_erfc);
+    const double lnc = -0.22579135264472743236; /* ln(sqrt(2/pi)) */
+    const double arg = lnc - 0.5*x*x - result_ln_erfc.val;
+    const int stat_e = gsl_sf_exp_e(arg, result);
+    result->err += 3.0 * (1.0 + fabs(x)) * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_ERROR_SELECT_2(stat_l, stat_e);
+  }
+  else
+  {
+    const double ix2 = 1.0/(x*x);
+    const double corrB = 1.0 - 9.0*ix2 * (1.0 - 11.0*ix2);
+    const double corrM = 1.0 - 5.0*ix2 * (1.0 - 7.0*ix2 * corrB);
+    const double corrT = 1.0 - ix2 * (1.0 - 3.0*ix2*corrM);
+    result->val = x / corrT;
+    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+}
+
 
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
