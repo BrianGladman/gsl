@@ -11,16 +11,12 @@ AC_ARG_WITH(gsl-exec-prefix,[  --with-gsl-exec-prefix=PFX Exec prefix where GSL 
 AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run a test GSL program],
 		    , enable_gsltest=yes)
 
-  if test x$gsl_exec_prefix != x ; then
-     gsl_args="$gsl_args --exec-prefix=$gsl_exec_prefix"
-     if test x${GSL_CONFIG+set} != xset ; then
-        GSL_CONFIG=$gsl_exec_prefix/bin/gsl-config
+  if test "x${GSL_CONFIG+set}" != xset ; then
+     if test "x$gsl_prefix" != x ; then
+         GSL_CONFIG="$gsl_prefix/bin/gsl-config"
      fi
-  fi
-  if test x$gsl_prefix != x ; then
-     gsl_args="$gsl_args --prefix=$gsl_prefix"
-     if test x${GSL_CONFIG+set} != xset ; then
-        GSL_CONFIG=$gsl_prefix/bin/gsl-config
+     if test "x$gsl_exec_prefix" != x ; then
+        GSL_CONFIG="$gsl_exec_prefix/bin/gsl-config"
      fi
   fi
 
@@ -31,22 +27,22 @@ AC_ARG_ENABLE(gsltest, [  --disable-gsltest       Do not try to compile and run 
   if test "$GSL_CONFIG" = "no" ; then
     no_gsl=yes
   else
-    GSL_CFLAGS=`$GSL_CONFIG $gslconf_args --cflags`
-    GSL_LIBS=`$GSL_CONFIG $gslconf_args --libs`
+    GSL_CFLAGS=`$GSL_CONFIG --cflags`
+    GSL_LIBS=`$GSL_CONFIG --libs`
 
-    gsl_major_version=`$GSL_CONFIG $gsl_args --version | \
+    gsl_major_version=`$GSL_CONFIG --version | \
            sed 's/^\([[0-9]]*\).*/\1/'`
     if test "x${gsl_major_version}" = "x" ; then
        gsl_major_version=0
     fi
 
-    gsl_minor_version=`$GSL_CONFIG $gsl_args --version | \
+    gsl_minor_version=`$GSL_CONFIG --version | \
            sed 's/^\([[0-9]]*\)\.\{0,1\}\([[0-9]]*\).*/\2/'`
     if test "x${gsl_minor_version}" = "x" ; then
        gsl_minor_version=0
     fi
 
-    gsl_micro_version=`$GSL_CONFIG $gsl_config_args --version | \
+    gsl_micro_version=`$GSL_CONFIG --version | \
            sed 's/^\([[0-9]]*\)\.\{0,1\}\([[0-9]]*\)\.\{0,1\}\([[0-9]]*\).*/\3/'`
     if test "x${gsl_micro_version}" = "x" ; then
        gsl_micro_version=0
