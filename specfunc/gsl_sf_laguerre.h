@@ -46,12 +46,12 @@ __BEGIN_DECLS
  *
  * exceptions: none
  */
-int gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result);
-int gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result);
-int gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result);
-int gsl_sf_laguerre_1_e(double a, double x, gsl_sf_result * result);
-int gsl_sf_laguerre_2_e(double a, double x, gsl_sf_result * result);
-int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_1_e(const double a, const double x, gsl_sf_result * result);
+int gsl_sf_laguerre_2_e(const double a, const double x, gsl_sf_result * result);
+int gsl_sf_laguerre_3_e(const double a, const double x, gsl_sf_result * result);
+double gsl_sf_laguerre_1(double a, double x);
+double gsl_sf_laguerre_2(double a, double x);
+double gsl_sf_laguerre_3(double a, double x);
 
 
 /* Evaluate generalized Laguerre polynomials.
@@ -60,8 +60,8 @@ int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result);
  * n >= 0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_laguerre_n_impl(const int n, const double a, const double x, gsl_sf_result * result);
-int     gsl_sf_laguerre_n_e(int n, double a, double x, gsl_sf_result * result);
+int     gsl_sf_laguerre_n_e(const int n, const double a, const double x, gsl_sf_result * result);
+double     gsl_sf_laguerre_n(int n, double a, double x);
 
 
 __END_DECLS

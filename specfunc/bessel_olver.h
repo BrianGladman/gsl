@@ -25,8 +25,8 @@
 
 #include "gsl_sf_result.h"
 
-int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result);
-int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Jnu_asymp_Olver_e(double nu, double x, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_asymp_Olver_e(double nu, double x, gsl_sf_result * result);
 
 double gsl_sf_bessel_Olver_zofmzeta(double minus_zeta);
 

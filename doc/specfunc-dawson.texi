@@ -6,7 +6,7 @@
 The Dawson integral is defined by
 @math{ \exp(-x^2) \int_0^x dt \exp(t^2) }.
 
-@deftypefun  int gsl_sf_dawson_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_dawson_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_dawson (double @var{x})
+@deftypefunx int gsl_sf_dawson_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun

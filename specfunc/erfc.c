@@ -253,20 +253,19 @@ log_erfc_asymptotic(double x)
 #endif /* 0 */
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_erfc_impl(double x, gsl_sf_result * result)
+int gsl_sf_erfc_e(double x, gsl_sf_result * result)
 {
   const double ax = fabs(x);
   double e_val, e_err;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(ax <= 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(ax <= 1.0) {
     double t = 2.0*ax - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&erfc_xlt1_cs, t, &c);
+    gsl_sf_cheb_eval_e(&erfc_xlt1_cs, t, &c);
     e_val = c.val;
     e_err = c.err;
   }
@@ -274,7 +273,7 @@ int gsl_sf_erfc_impl(double x, gsl_sf_result * result)
     double ex2 = exp(-x*x);
     double t = 0.5*(ax-3.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&erfc_x15_cs, t, &c);
+    gsl_sf_cheb_eval_e(&erfc_x15_cs, t, &c);
     e_val = ex2 * c.val;
     e_err = ex2 * (c.err + 2.0*fabs(x)*GSL_DBL_EPSILON);
   }
@@ -282,7 +281,7 @@ int gsl_sf_erfc_impl(double x, gsl_sf_result * result)
     double exterm = exp(-x*x) / x;
     double t = (2.0*x - 15.0)/5.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&erfc_x510_cs, t, &c);
+    gsl_sf_cheb_eval_e(&erfc_x510_cs, t, &c);
     e_val = exterm * c.val;
     e_err = exterm * (c.err + 2.0*fabs(x)*GSL_DBL_EPSILON + GSL_DBL_EPSILON);
   }
@@ -306,19 +305,18 @@ int gsl_sf_erfc_impl(double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_log_erfc_impl(double x, gsl_sf_result * result)
+int gsl_sf_log_erfc_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x > 8.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x > 8.0) {
     result->val = log_erfc8(x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
   }
   else {
     gsl_sf_result result_erfc;
-    gsl_sf_erfc_impl(x, &result_erfc);
+    gsl_sf_erfc_e(x, &result_erfc);
     result->val  = log(result_erfc.val);
     result->err  = fabs(result_erfc.err / result_erfc.val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -327,17 +325,16 @@ int gsl_sf_log_erfc_impl(double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_erf_impl(double x, gsl_sf_result * result)
+int gsl_sf_erf_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(fabs(x) < 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(fabs(x) < 1.0) {
     return erfseries(x, result);
   }
   else {
     gsl_sf_result result_erfc;
-    gsl_sf_erfc_impl(x, &result_erfc);
+    gsl_sf_erfc_e(x, &result_erfc);
     result->val  = 1.0 - result_erfc.val;
     result->err  = result_erfc.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -346,18 +343,17 @@ int gsl_sf_erf_impl(double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_erf_Z_impl(double x, gsl_sf_result * result)
+int gsl_sf_erf_Z_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     const double ex2 = exp(-x*x/2.0);
     result->val  = ex2 / (M_SQRT2 * M_SQRTPI);
     result->err  = fabs(x * result->val) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0) {
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     }
     else {
       return GSL_SUCCESS;
@@ -366,14 +362,13 @@ int gsl_sf_erf_Z_impl(double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result)
+int gsl_sf_erf_Q_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     gsl_sf_result result_erfc;
-    int stat = gsl_sf_erfc_impl(x/M_SQRT2, &result_erfc);
+    int stat = gsl_sf_erfc_e(x/M_SQRT2, &result_erfc);
     result->val  = 0.5 * result_erfc.val;
     result->err  = 0.5 * result_erfc.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -382,53 +377,31 @@ int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_erfc_e(double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_erfc(double x)
 {
-  int status = gsl_sf_erfc_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_erfc_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_erfc_e(x, &result));
 }
 
-
-int gsl_sf_log_erfc_e(double x, gsl_sf_result * result)
+double gsl_sf_log_erfc(double x)
 {
-  int status = gsl_sf_log_erfc_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_log_erfc_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_log_erfc_e(x, &result));
 }
 
-
-int gsl_sf_erf_e(double x, gsl_sf_result * result)
+double gsl_sf_erf(double x)
 {
-  int status = gsl_sf_erf_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_erf_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_erf_e(x, &result));
 }
 
-
-int gsl_sf_erf_Z_e(double x, gsl_sf_result * result)
+double gsl_sf_erf_Z(double x)
 {
-  int status = gsl_sf_erf_Z_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_erf_Z_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_erf_Z_e(x, &result));
 }
 
-
-int gsl_sf_erf_Q_e(double x, gsl_sf_result * result)
+double gsl_sf_erf_Q(double x)
 {
-  int status = gsl_sf_erf_Q_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_erf_Q_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_erf_Q_e(x, &result));
 }

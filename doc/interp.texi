@@ -48,16 +48,14 @@ This is how lookups are performed during evaluation of an interpolation.
 Returns an index such that @code{xarray[index] <= x < xarray[index+1]}.
 @end deftypefun
 
-@deftypefun  int gsl_interp_eval_impl (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun  double gsl_interp_eval (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
 @deftypefunx int gsl_interp_eval_e (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
-@deftypefunx double gsl_interp_eval (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
 Evaluate an interpolation at a given point, doing lookup with
 the given accelerator state.
 @end deftypefun
 
-@deftypefun  int gsl_interp_eval_deriv_impl (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
+@deftypefun double gsl_interp_eval_deriv (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
 @deftypefunx int gsl_interp_eval_deriv_e (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a}, double * @var{y})
-@deftypefunx double gsl_interp_eval_deriv (const gsl_interp_obj * @var{obj}, const double xa[], const double ya[], double @var{x}, gsl_interp_accel * @var{a})
 Evaluate the derivative of an interpolation at a given point.
 @end deftypefun
 
@@ -83,13 +81,14 @@ use the interpolation object and accelerator, and finally free resources.
   double y[64];
   double x0;
   double y0;
+  int status;
   ...
   gsl_interp_factory f = gsl_interp_factory_linear;
   gsl_interp_obj * interp = f.create(x, y, 64);
   gsl_interp_accel * a = gsl_interp_accel_new ();
   ...
   x0 = 5.7;
-  gsl_interp_eval_impl(interp, x, y, x0, a, &y0);
+  status = gsl_interp_eval(interp, x, y, x0, a, &y0);
   ...
   gsl_interp_accel_free (a);
   gsl_interp_obj_free (interp);

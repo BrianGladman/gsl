@@ -85,23 +85,22 @@ static double debye_u6(const double * tpow)
 #endif
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
+gsl_sf_bessel_IJ_taylor_e(const double nu, const double x,
                              const int sign,
                              const int kmax,
                              const double threshold,
                              gsl_sf_result * result
                              )
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(nu < 0.0 || x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(nu < 0.0 || x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     if(nu == 0.0) {
@@ -136,8 +135,8 @@ gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
       const double f = nu - N;
       gsl_sf_result poch_factor;
       gsl_sf_result tc_factor;
-      const int stat_poch = gsl_sf_poch_impl(N+1.0, f, &poch_factor);
-      const int stat_tc   = gsl_sf_taylorcoeff_impl(N, 0.5*x, &tc_factor);
+      const int stat_poch = gsl_sf_poch_e(N+1.0, f, &poch_factor);
+      const int stat_tc   = gsl_sf_taylorcoeff_e(N, 0.5*x, &tc_factor);
       const double p = pow(0.5*x,f);
       prefactor.val  = tc_factor.val * p / poch_factor.val;
       prefactor.err  = tc_factor.err * p / poch_factor.val;
@@ -147,12 +146,12 @@ gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
     }
     else {
       gsl_sf_result lg;
-      const int stat_lg = gsl_sf_lngamma_impl(nu+1.0, &lg);
+      const int stat_lg = gsl_sf_lngamma_e(nu+1.0, &lg);
       const double term1  = nu*log(0.5*x);
       const double term2  = lg.val;
       const double ln_pre = term1 - term2;
       const double ln_pre_err = GSL_DBL_EPSILON * (fabs(term1)+fabs(term2)) + lg.err;
-      const int stat_ex = gsl_sf_exp_err_impl(ln_pre, ln_pre_err, &prefactor);
+      const int stat_ex = gsl_sf_exp_err_e(ln_pre, ln_pre_err, &prefactor);
       stat_pre = GSL_ERROR_SELECT_2(stat_ex, stat_lg);
     }
 
@@ -178,7 +177,7 @@ gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
       stat_sum = ( k >= kmax ? GSL_EMAXITER : GSL_SUCCESS );
     }
 
-    stat_mul = gsl_sf_multiply_err_impl(prefactor.val, prefactor.err,
+    stat_mul = gsl_sf_multiply_err_e(prefactor.val, prefactor.err,
                                         sum.val, sum.err,
                                         result);
 
@@ -199,7 +198,7 @@ gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
  * for this particular method.
  */
 int
-gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Jnu_asympx_e(const double nu, const double x, gsl_sf_result * result)
 {
   double mu   = 4.0*nu*nu;
   double mum1 = mu-1.0;
@@ -221,14 +220,14 @@ gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, gsl_sf_result * r
 /* x >> nu*nu+1
  */
 int
-gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Ynu_asympx_e(const double nu, const double x, gsl_sf_result * result)
 {
   double ampl;
   double theta;
   double alpha = x;
   double beta  = -0.5*nu*M_PI;
-  int stat_a = gsl_sf_bessel_asymp_Mnu_impl(nu, x, &ampl);
-  int stat_t = gsl_sf_bessel_asymp_thetanu_corr_impl(nu, x, &theta);
+  int stat_a = gsl_sf_bessel_asymp_Mnu_e(nu, x, &ampl);
+  int stat_t = gsl_sf_bessel_asymp_thetanu_corr_e(nu, x, &theta);
   double sin_alpha = sin(alpha);
   double cos_alpha = cos(alpha);
   double sin_chi   = sin(beta + theta);
@@ -253,7 +252,7 @@ gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, gsl_sf_result * r
 /* x >> nu*nu+1
  */
 int
-gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Inu_scaled_asympx_e(const double nu, const double x, gsl_sf_result * result)
 {
   double mu   = 4.0*nu*nu;
   double mum1 = mu-1.0;
@@ -268,7 +267,7 @@ gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, gsl_sf_res
 /* x >> nu*nu+1
  */
 int
-gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Knu_scaled_asympx_e(const double nu, const double x, gsl_sf_result * result)
 {
   double mu   = 4.0*nu*nu;
   double mum1 = mu-1.0;
@@ -312,7 +311,7 @@ gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_res
  * nu fixed will decrease the error.
  */
 int
-gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Inu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_result * result)
 {
   int i;
   double z = x/nu;
@@ -321,7 +320,7 @@ gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
   double eta = root_term + log(z/(1.0+root_term));
   double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(-z + eta) : -0.5*nu/z*(1.0 - 1.0/(12.0*z*z)) );
   gsl_sf_result ex_result;
-  int stat_ex = gsl_sf_exp_impl(ex_arg, &ex_result);
+  int stat_ex = gsl_sf_exp_e(ex_arg, &ex_result);
   if(stat_ex == GSL_SUCCESS) {
     double t = 1.0/root_term;
     double sum;
@@ -350,7 +349,7 @@ gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
  *   identical to that above for Inu_scaled
  */
 int
-gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Knu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_result * result)
 {
   int i;
   double z = x/nu;
@@ -359,7 +358,7 @@ gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf
   double eta = root_term + log(z/(1.0+root_term));
   double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(z - eta) : 0.5*nu/z*(1.0 + 1.0/(12.0*z*z)) );
   gsl_sf_result ex_result;
-  int stat_ex = gsl_sf_exp_impl(ex_arg, &ex_result);
+  int stat_ex = gsl_sf_exp_e(ex_arg, &ex_result);
   if(stat_ex == GSL_SUCCESS) {
     double t = 1.0/root_term;
     double sum;
@@ -389,10 +388,12 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
                                gsl_sf_result * Jmu, gsl_sf_result * Jmup1,
                                gsl_sf_result * Ymu, gsl_sf_result * Ymup1)
 {
-  if(Jmu == 0 || Jmup1 == 0 || Ymu == 0 || Ymup1 == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0 || fabs(mu) > 0.5) {
+  /* CHECK_POINTER(Jmu) */
+  /* CHECK_POINTER(Jmup1) */
+  /* CHECK_POINTER(Ymu) */
+  /* CHECK_POINTER(Ymup1) */
+
+  if(x < 0.0 || fabs(mu) > 0.5) {
     Jmu->val   = 0.0;
     Jmu->err   = 0.0;
     Jmup1->val = 0.0;
@@ -401,7 +402,7 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
     Ymu->err   = 0.0;
     Ymup1->val = 0.0;
     Ymup1->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     if(mu == 0.0) {
@@ -418,7 +419,7 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
     Ymu->err   = 0.0;
     Ymup1->val = 0.0;
     Ymup1->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     int stat_Y;
@@ -431,8 +432,8 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
        * case mu < 0.
        */
       gsl_sf_result Jmup2;
-      int stat_J1 = gsl_sf_bessel_IJ_taylor_impl(mu+1.0, x, -1, 100, GSL_DBL_EPSILON,  Jmup1);
-      int stat_J2 = gsl_sf_bessel_IJ_taylor_impl(mu+2.0, x, -1, 100, GSL_DBL_EPSILON, &Jmup2);
+      int stat_J1 = gsl_sf_bessel_IJ_taylor_e(mu+1.0, x, -1, 100, GSL_DBL_EPSILON,  Jmup1);
+      int stat_J2 = gsl_sf_bessel_IJ_taylor_e(mu+2.0, x, -1, 100, GSL_DBL_EPSILON, &Jmup2);
       double c = 2.0*(mu+1.0)/x;
       Jmu->val  = c * Jmup1->val - Jmup2.val;
       Jmu->err  = c * Jmup1->err + Jmup2.err;
@@ -462,10 +463,10 @@ gsl_sf_bessel_JY_mu_restricted(const double mu, const double x,
     else {
       /* Use asymptotics for large argument.
        */
-      const int stat_J0 = gsl_sf_bessel_Jnu_asympx_impl(mu,     x, Jmu);
-      const int stat_J1 = gsl_sf_bessel_Jnu_asympx_impl(mu+1.0, x, Jmup1);
-      const int stat_Y0 = gsl_sf_bessel_Ynu_asympx_impl(mu,     x, Ymu);
-      const int stat_Y1 = gsl_sf_bessel_Ynu_asympx_impl(mu+1.0, x, Ymup1);
+      const int stat_J0 = gsl_sf_bessel_Jnu_asympx_e(mu,     x, Jmu);
+      const int stat_J1 = gsl_sf_bessel_Jnu_asympx_e(mu+1.0, x, Jmup1);
+      const int stat_Y0 = gsl_sf_bessel_Ynu_asympx_e(mu,     x, Ymu);
+      const int stat_Y1 = gsl_sf_bessel_Ynu_asympx_e(mu+1.0, x, Ymup1);
       stat_J = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
       stat_Y = GSL_ERROR_SELECT_2(stat_Y0, stat_Y1);
       return GSL_ERROR_SELECT_2(stat_J, stat_Y);
@@ -528,7 +529,7 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
   *sgn   = s;
 
   if(n >= maxiter)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
@@ -570,7 +571,7 @@ gsl_sf_bessel_J_CF1_ser(const double nu, const double x,
   *sgn   = s;
 
   if(k == maxk)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
@@ -600,7 +601,7 @@ gsl_sf_bessel_I_CF1_ser(const double nu, const double x, double * ratio)
   *ratio = x/(2.0*(nu+1.0)) * sum;
 
   if(k == maxk)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
@@ -657,7 +658,7 @@ gsl_sf_bessel_JY_steed_CF2(const double nu, const double x,
   *Q = q;
 
   if(i == max_iter)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
@@ -716,13 +717,13 @@ gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
   *K_nup1 = *K_nu * (nu + x + 0.5 - hi)/x;
   *Kp_nu  = - *K_nup1 + nu/x * *K_nu;
   if(i == maxiter)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
 
 
-int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result)
+int gsl_sf_bessel_cos_pi4_e(double y, double eps, gsl_sf_result * result)
 {
   const double sy = sin(y);
   const double cy = cos(y);
@@ -760,7 +761,7 @@ int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result)
+int gsl_sf_bessel_sin_pi4_e(double y, double eps, gsl_sf_result * result)
 {
   const double sy = sin(y);
   const double cy = cos(y);

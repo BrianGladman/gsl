@@ -43,7 +43,7 @@ hyperg_0F1_bessel_I(const double nu, const double x, gsl_sf_result * result)
   if(x > GSL_LOG_DBL_MAX) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
 
   if(nu < 0.0) { 
@@ -52,8 +52,8 @@ hyperg_0F1_bessel_I(const double nu, const double x, gsl_sf_result * result)
     const double ex  = exp(x);
     gsl_sf_result I;
     gsl_sf_result K;
-    int stat_I = gsl_sf_bessel_Inu_scaled_impl(anu, x, &I);
-    int stat_K = gsl_sf_bessel_Knu_scaled_impl(anu, x, &K);
+    int stat_I = gsl_sf_bessel_Inu_scaled_e(anu, x, &I);
+    int stat_K = gsl_sf_bessel_Knu_scaled_e(anu, x, &K);
     result->val  = ex * I.val + s * (K.val / ex);
     result->err  = ex * I.err + fabs(s * K.err/ex);
     result->err += fabs(s * (K.val/ex)) * GSL_DBL_EPSILON * anu * M_PI;
@@ -62,7 +62,7 @@ hyperg_0F1_bessel_I(const double nu, const double x, gsl_sf_result * result)
   else {
     const double ex  = exp(x);
     gsl_sf_result I;
-    int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &I);
+    int stat_I = gsl_sf_bessel_Inu_scaled_e(nu, x, &I);
     result->val = ex * I.val;
     result->err = ex * I.err + GSL_DBL_EPSILON * fabs(result->val);
     return stat_I;
@@ -85,40 +85,39 @@ hyperg_0F1_bessel_J(const double nu, const double x, gsl_sf_result * result)
     const double c   = cos(anu*M_PI);
     gsl_sf_result J;
     gsl_sf_result Y;
-    int stat_J = gsl_sf_bessel_Jnu_impl(anu, x, &J);
-    int stat_Y = gsl_sf_bessel_Ynu_impl(anu, x, &Y);
+    int stat_J = gsl_sf_bessel_Jnu_e(anu, x, &J);
+    int stat_Y = gsl_sf_bessel_Ynu_e(anu, x, &Y);
     result->val  = c * J.val - s * Y.val;
     result->err  = fabs(c * J.err) + fabs(s * Y.err);
     result->err += fabs(anu * M_PI) * GSL_DBL_EPSILON * fabs(J.val + Y.val);
     return GSL_ERROR_SELECT_2(stat_Y, stat_J);
   }
   else {
-    return gsl_sf_bessel_Jnu_impl(nu, x, result);
+    return gsl_sf_bessel_Jnu_e(nu, x, result);
   }
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
+gsl_sf_hyperg_0F1_e(double c, double x, gsl_sf_result * result)
 {
   const double rintc = floor(c + 0.5);
   const int c_neg_integer = (c < 0.0 && fabs(c - rintc) < locEPS);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(c == 0.0 || c_neg_integer) {
+  /* CHECK_POINTER(result) */
+
+  if(c == 0.0 || c_neg_integer) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 0.0) {
     gsl_sf_result Jcm1;
     gsl_sf_result lg_c;
     double sgn;
-    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
+    int stat_g = gsl_sf_lngamma_sgn_e(c, &lg_c, &sgn);
     int stat_J = hyperg_0F1_bessel_J(c-1.0, 2.0*sqrt(-x), &Jcm1);
     if(stat_g != GSL_SUCCESS) {
       result->val = 0.0;
@@ -134,7 +133,7 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
       const double tl = log(-x)*0.5*(1.0-c);
       double ln_pre_val = lg_c.val + tl;
       double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
-      return gsl_sf_exp_mult_err_impl(ln_pre_val, ln_pre_err,
+      return gsl_sf_exp_mult_err_e(ln_pre_val, ln_pre_err,
                                       sgn*Jcm1.val, Jcm1.err,
 				      result);
     }
@@ -148,7 +147,7 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
     gsl_sf_result Icm1;
     gsl_sf_result lg_c;
     double sgn;
-    int stat_g = gsl_sf_lngamma_sgn_impl(c, &lg_c, &sgn);
+    int stat_g = gsl_sf_lngamma_sgn_e(c, &lg_c, &sgn);
     int stat_I = hyperg_0F1_bessel_I(c-1.0, 2.0*sqrt(x), &Icm1);
     if(stat_g != GSL_SUCCESS) {
       result->val = 0.0;
@@ -164,7 +163,7 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
       const double tl = log(x)*0.5*(1.0-c);
       const double ln_pre_val = lg_c.val + tl;
       const double ln_pre_err = lg_c.err + 2.0 * GSL_DBL_EPSILON * fabs(tl);
-      return gsl_sf_exp_mult_err_impl(ln_pre_val, ln_pre_err,
+      return gsl_sf_exp_mult_err_e(ln_pre_val, ln_pre_err,
                                       sgn*Icm1.val, Icm1.err,
 				      result);
     }
@@ -172,14 +171,11 @@ gsl_sf_hyperg_0F1_impl(double c, double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_hyperg_0F1_e(const double c, const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_hyperg_0F1(const double c, const double x)
 {
-  int status = gsl_sf_hyperg_0F1_impl(c, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_hyperg_0F1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_hyperg_0F1_e(c, x, &result));
 }

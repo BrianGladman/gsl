@@ -42,12 +42,12 @@ static int bessel_yl_small_x(int l, const double x, gsl_sf_result * result)
 {
   gsl_sf_result num_fact;
   double den = gsl_sf_pow_int(x, l+1);
-  int stat_df = gsl_sf_doublefact_impl(2*l-1, &num_fact);
+  int stat_df = gsl_sf_doublefact_e(2*l-1, &num_fact);
 
   if(stat_df != GSL_SUCCESS || den == 0.0) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     const int lmax = 200;
@@ -72,27 +72,26 @@ static int bessel_yl_small_x(int l, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-int gsl_sf_bessel_y0_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_y0_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(1.0/GSL_DBL_MAX > 0.0 && x < 1.0/GSL_DBL_MAX) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     gsl_sf_result cos_result;
-    const int stat = gsl_sf_cos_impl(x, &cos_result);
+    const int stat = gsl_sf_cos_e(x, &cos_result);
     result->val  = -cos_result.val/x;
     result->err  = fabs(cos_result.err/x);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -101,20 +100,19 @@ int gsl_sf_bessel_y0_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_y1_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_y1_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0/GSL_SQRT_DBL_MAX) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else if(x < 0.25) {
     const double y = x*x;
@@ -132,8 +130,8 @@ int gsl_sf_bessel_y1_impl(const double x, gsl_sf_result * result)
   else {
     gsl_sf_result cos_result;
     gsl_sf_result sin_result;
-    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
-    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const int stat_cos = gsl_sf_cos_e(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_e(x, &sin_result);
     const double cx = cos_result.val;
     const double sx = sin_result.val;
     result->val  = -(cx/x + sx)/x;
@@ -144,20 +142,19 @@ int gsl_sf_bessel_y1_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_y2_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_y2_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0/GSL_ROOT3_DBL_MAX) {
     result->val = 0.0;  /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else if(x < 0.5) {
     const double y = x*x;
@@ -176,8 +173,8 @@ int gsl_sf_bessel_y2_impl(const double x, gsl_sf_result * result)
   else {
     gsl_sf_result cos_result;
     gsl_sf_result sin_result;
-    const int stat_cos = gsl_sf_cos_impl(x, &cos_result);
-    const int stat_sin = gsl_sf_sin_impl(x, &sin_result);
+    const int stat_cos = gsl_sf_cos_e(x, &cos_result);
+    const int stat_sin = gsl_sf_sin_e(x, &sin_result);
     const double sx = sin_result.val;
     const double cx = cos_result.val;
     const double a  = 3.0/(x*x);
@@ -189,37 +186,36 @@ int gsl_sf_bessel_y2_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_yl_impl(int l, const double x, gsl_sf_result * result)
+int gsl_sf_bessel_yl_e(int l, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(l < 0 || x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(l < 0 || x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(l == 0) {
-    return gsl_sf_bessel_y0_impl(x, result);
+    return gsl_sf_bessel_y0_e(x, result);
   }
   else if(l == 1) {
-    return gsl_sf_bessel_y1_impl(x, result);
+    return gsl_sf_bessel_y1_e(x, result);
   }
   else if(l == 2) {
-    return gsl_sf_bessel_y2_impl(x, result);
+    return gsl_sf_bessel_y2_e(x, result);
   }
   else if(x < 3.0) {
     return bessel_yl_small_x(l, x, result);
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1.0)) {
-    int status = gsl_sf_bessel_Ynu_asympx_impl(l + 0.5, x, result);
+    int status = gsl_sf_bessel_Ynu_asympx_e(l + 0.5, x, result);
     double pre = sqrt((0.5*M_PI)/x);
     result->val *= pre;
     result->err *= pre;
     return status;
   }
   else if(l > 40) {
-    int status = gsl_sf_bessel_Ynu_asymp_Olver_impl(l + 0.5, x, result);
+    int status = gsl_sf_bessel_Ynu_asymp_Olver_e(l + 0.5, x, result);
     double pre = sqrt((0.5*M_PI)/x);
     result->val *= pre;
     result->err *= pre;
@@ -229,8 +225,8 @@ int gsl_sf_bessel_yl_impl(int l, const double x, gsl_sf_result * result)
     /* recurse upward */
     gsl_sf_result r_by;
     gsl_sf_result r_bym;
-    int stat_1 = gsl_sf_bessel_y1_impl(x, &r_by);
-    int stat_0 = gsl_sf_bessel_y0_impl(x, &r_bym);
+    int stat_1 = gsl_sf_bessel_y1_e(x, &r_by);
+    int stat_0 = gsl_sf_bessel_y0_e(x, &r_bym);
     double bym = r_bym.val;
     double by  = r_by.val;
     double byp;
@@ -248,19 +244,18 @@ int gsl_sf_bessel_yl_impl(int l, const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_yl_array_impl(const int lmax, const double x, double * result_array)
+int gsl_sf_bessel_yl_array(const int lmax, const double x, double * result_array)
 {
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lmax < 1 || x <= 0.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(result_array) */
+
+  if(lmax < 1 || x <= 0.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     gsl_sf_result r_yell;
     gsl_sf_result r_yellm1;
-    int stat_1 = gsl_sf_bessel_y1_impl(x, &r_yell);
-    int stat_0 = gsl_sf_bessel_y0_impl(x, &r_yellm1);
+    int stat_1 = gsl_sf_bessel_y1_e(x, &r_yell);
+    int stat_0 = gsl_sf_bessel_y0_e(x, &r_yellm1);
     double yellp1;
     double yell   = r_yell.val;
     double yellm1 = r_yellm1.val;
@@ -281,50 +276,28 @@ int gsl_sf_bessel_yl_array_impl(const int lmax, const double x, double * result_
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_y0_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_y0(const double x)
 {
-  int status = gsl_sf_bessel_y0_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_y0_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_y0_e(x, &result));
 }
 
-int gsl_sf_bessel_y1_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_y1(const double x)
 {
-  int status = gsl_sf_bessel_y1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_y1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_y1_e(x, &result));
 }
 
-int gsl_sf_bessel_y2_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_y2(const double x)
 {
-  int status = gsl_sf_bessel_y2_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_y2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_y2_e(x, &result));
 }
 
-int gsl_sf_bessel_yl_e(const int l, const double x, gsl_sf_result * result)
+double gsl_sf_bessel_yl(const int l, const double x)
 {
-  int status = gsl_sf_bessel_yl_impl(l, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_yl_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_yl_e(l, x, &result));
 }
 
 
-int gsl_sf_bessel_yl_array_e(const int lmax, const double x, double * result_array)
-{
-  int status = gsl_sf_bessel_yl_array_impl(lmax, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_yl_array_e", status);
-  }
-  return status;
-}

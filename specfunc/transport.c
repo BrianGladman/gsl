@@ -170,20 +170,19 @@ transport_sumexp(const int numexp, const int order, const double t, double x)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_transport_2_impl(const double x, gsl_sf_result * result)
+gsl_sf_transport_2_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 3.289868133696452873;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x;
@@ -193,7 +192,7 @@ gsl_sf_transport_2_impl(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     double t = (x*x/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&transport2_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&transport2_cs, t, &result_c);
     result->val  = x * result_c.val;
     result->err  = x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -246,17 +245,16 @@ gsl_sf_transport_2_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
+gsl_sf_transport_3_e(const double x, gsl_sf_result * result)
 { 
   const double val_infinity = 7.212341418957565712;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -267,7 +265,7 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
     result->val = 0.5*x*x;
     result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
@@ -275,7 +273,7 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&transport3_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&transport3_cs, t, &result_c);
     result->val  = x2 * result_c.val;
     result->err  = x2 * result_c.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -328,17 +326,16 @@ gsl_sf_transport_3_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
+gsl_sf_transport_4_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 25.97575760906731660;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -349,7 +346,7 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
     result->val = x*x*x/3.0;
     result->err = 3.0 * GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
@@ -357,7 +354,7 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&transport4_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&transport4_cs, t, &result_c);
     result->val  = x2*x * result_c.val;
     result->err  = x2*x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -410,17 +407,16 @@ gsl_sf_transport_4_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
+gsl_sf_transport_5_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 124.4313306172043912;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -431,7 +427,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
     result->val = x*x*x*x/4.0;
     result->err = 4.0 * GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
@@ -439,7 +435,7 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
     const double x2 = x*x;
     const double t = (x2/8.0 - 0.5) - 0.5;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&transport5_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&transport5_cs, t, &result_c);
     result->val  = x2*x2 * result_c.val;
     result->err  = x2*x2 * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -490,41 +486,26 @@ gsl_sf_transport_5_impl(const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_transport_2_e(const double x, gsl_sf_result * result)
+double gsl_sf_transport_2(const double x)
 {
-  int status = gsl_sf_transport_2_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_transport_2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_transport_2_e(x, &result));
 }
 
-int gsl_sf_transport_3_e(const double x, gsl_sf_result * result)
+double gsl_sf_transport_3(const double x)
 {
-  int status = gsl_sf_transport_3_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_transport_3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_transport_3_e(x, &result));
 }
 
-int gsl_sf_transport_4_e(const double x, gsl_sf_result * result)
+double gsl_sf_transport_4(const double x)
 {
-  int status = gsl_sf_transport_4_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_transport_4_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_transport_4_e(x, &result));
 }
 
-int gsl_sf_transport_5_e(const double x, gsl_sf_result * result)
+double gsl_sf_transport_5(const double x)
 {
-  int status = gsl_sf_transport_5_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_transport_5_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_transport_5_e(x, &result));
 }

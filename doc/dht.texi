@@ -91,8 +91,7 @@ Return the value of the n'th sample point in "k-space",
 @math{j_@{\nu,n+1@}/X}.
 @end deftypefun
 
-@deftypefun int gsl_dht_transform_recalc_impl (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
-@deftypefunx int gsl_dht_transform_recalc_e (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
+@deftypefun int gsl_dht_transform_recalc (gsl_dht_transform * @var{t}, double @var{nu}, double @var{xmax})
 Recalculate a transform object for a different @math{\nu} and @math{X}. The
 size cannot be changed, because the internal allocation is not changed.
 @end deftypefun

@@ -38,14 +38,12 @@ double gsl_sf_pow_8(const double x) { double x2 = x*x;   double x4 = x2*x2; retu
 double gsl_sf_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
 
 
-int gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result)
+int gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result)
 {
   double value = 1.0;
   int count = 0;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
+  /* CHECK_POINTER(result) */
 
   if(n < 0) {
     if(x == 0.0) return 0.0; /* FIXME: should be Inf */
@@ -69,23 +67,11 @@ int gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result)
   return GSL_SUCCESS;
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_pow_int_e(const double x, const int n, gsl_sf_result * result)
-{
-  int status = gsl_sf_pow_int_impl(x, n, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_pow_int", status);
-  }
-  return status;
-  
-}
+#include "eval.h"
 
 double gsl_sf_pow_int(const double x, const int n)
 {
-  gsl_sf_result p;
-  int status = gsl_sf_pow_int_impl(x, n, &p);
-  if(status != GSL_SUCCESS) {
-    GSL_WARNING("gsl_sf_pow_int", status);
-  }
-  return p.val;
+  EVAL_RESULT(gsl_sf_pow_int_e(x, n, &result));
 }

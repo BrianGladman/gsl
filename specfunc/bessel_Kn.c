@@ -47,10 +47,10 @@ bessel_Kn_scaled_small_x(const int n, const double x, gsl_sf_result * result)
   double term1, sum1, ln_pre1;
   double term2, sum2, pre2;
 
-  gsl_sf_lnfact_impl((unsigned int)(n-1), &ln_nm1_fact);
+  gsl_sf_lnfact_e((unsigned int)(n-1), &ln_nm1_fact);
 
   ln_pre1 = -n*ln_x_2 + ln_nm1_fact.val;
-  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.0) return GSL_EOVRFLW;
+  if(ln_pre1 > GSL_LOG_DBL_MAX - 3.0) GSL_ERROR ("error", GSL_EOVRFLW);
 
   sum1 = 1.0;
   k_term = 1.0;
@@ -69,8 +69,8 @@ bessel_Kn_scaled_small_x(const int n, const double x, gsl_sf_result * result)
     double k_fact  = 1.0;
     double psi_kp1 = -M_EULER;
     double psi_npkp1;
-    gsl_sf_psi_int_impl(n, &psi_n);
-    gsl_sf_fact_impl((unsigned int)n, &npk_fact);
+    gsl_sf_psi_int_e(n, &psi_n);
+    gsl_sf_fact_e((unsigned int)n, &npk_fact);
     psi_npkp1 = psi_n.val + 1.0/n;
     sum2 = (psi_kp1 + psi_npkp1 - 2.0*ln_x_2)/npk_fact.val;
     for(k=1; k<KMAX; k++) {
@@ -96,40 +96,39 @@ bessel_Kn_scaled_small_x(const int n, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, gsl_sf_result * result)
+int gsl_sf_bessel_Kn_scaled_e(int n, const double x, gsl_sf_result * result)
 {
   n = abs(n); /* K(-n, z) = K(n, z) */
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(n == 0) {
-    return gsl_sf_bessel_K0_scaled_impl(x, result);
+    return gsl_sf_bessel_K0_scaled_e(x, result);
   }
   else if(n == 1) {
-    return gsl_sf_bessel_K1_scaled_impl(x, result);
+    return gsl_sf_bessel_K1_scaled_e(x, result);
   }
   else if(x <= 5.0) {
     return bessel_Kn_scaled_small_x(n, x, result);
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > 0.25 * (n*n + 1)) {
-    return gsl_sf_bessel_Knu_scaled_asympx_impl((double)n, x, result);
+    return gsl_sf_bessel_Knu_scaled_asympx_e((double)n, x, result);
   }
   else if(GSL_MIN(0.29/(n*n), 0.5/(n*n + x*x)) < GSL_ROOT3_DBL_EPSILON) {
-    return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
+    return gsl_sf_bessel_Knu_scaled_asymp_unif_e((double)n, x, result);
   }
   else {
     /* Upward recurrence. [Gradshteyn + Ryzhik, 8.471.1] */
     double two_over_x = 2.0/x;
     gsl_sf_result r_b_jm1;
     gsl_sf_result r_b_j;
-    int stat_0 = gsl_sf_bessel_K0_scaled_impl(x, &r_b_jm1);
-    int stat_1 = gsl_sf_bessel_K1_scaled_impl(x, &r_b_j);
+    int stat_0 = gsl_sf_bessel_K0_scaled_e(x, &r_b_jm1);
+    int stat_1 = gsl_sf_bessel_K1_scaled_e(x, &r_b_j);
     double b_jm1 = r_b_jm1.val;
     double b_j   = r_b_j.val;
     double b_jp1;
@@ -150,9 +149,9 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_Kn_impl(const int n, const double x, gsl_sf_result * result)
+int gsl_sf_bessel_Kn_e(const int n, const double x, gsl_sf_result * result)
 {
-  const int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
+  const int status = gsl_sf_bessel_Kn_scaled_e(n, x, result);
   const double ex = exp(-x);
   result->val *= ex;
   result->err *= ex;
@@ -161,19 +160,18 @@ int gsl_sf_bessel_Kn_impl(const int n, const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const double x, double * result_array)
+int gsl_sf_bessel_Kn_scaled_array(const int nmin, const int nmax, const double x, double * result_array)
 {
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
-  else if(nmin < 0 || nmax < nmin || x <= 0.0) {
+  /* CHECK_POINTER(result_array) */
+
+  if(nmin < 0 || nmax < nmin || x <= 0.0) {
     int j;
     for(j=0; j<=nmax-nmin; j++) result_array[j] = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(nmax == 0) {
     gsl_sf_result b;
-    int stat = gsl_sf_bessel_K0_scaled_impl(x, &b);
+    int stat = gsl_sf_bessel_K0_scaled_e(x, &b);
     result_array[0] = b.val;
     return stat;
   }
@@ -181,8 +179,8 @@ int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const dou
     double two_over_x = 2.0/x;
     gsl_sf_result r_Knm1;
     gsl_sf_result r_Kn;
-    int stat_0 = gsl_sf_bessel_Kn_scaled_impl(nmin,   x, &r_Knm1);
-    int stat_1 = gsl_sf_bessel_Kn_scaled_impl(nmin+1, x, &r_Kn);
+    int stat_0 = gsl_sf_bessel_Kn_scaled_e(nmin,   x, &r_Knm1);
+    int stat_1 = gsl_sf_bessel_Kn_scaled_e(nmin+1, x, &r_Kn);
     int stat = GSL_ERROR_SELECT_2(stat_0, stat_1);
     double Knp1;
     double Kn   = r_Kn.val;
@@ -206,7 +204,7 @@ int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const dou
 	 */
         int j;
 	for(j=n; j<=nmax+1; j++) result_array[j-1-nmin] = 0.0;
-        return GSL_EOVRFLW;
+        GSL_ERROR ("error", GSL_EOVRFLW);
       }
     }
 
@@ -216,9 +214,9 @@ int gsl_sf_bessel_Kn_scaled_array_impl(const int nmin, const int nmax, const dou
 
 
 int
-gsl_sf_bessel_Kn_array_impl(const int nmin, const int nmax, const double x, double * result_array)
+gsl_sf_bessel_Kn_array(const int nmin, const int nmax, const double x, double * result_array)
 {
-  int status = gsl_sf_bessel_Kn_scaled_array_impl(nmin, nmax, x, result_array);
+  int status = gsl_sf_bessel_Kn_scaled_array(nmin, nmax, x, result_array);
   double ex = exp(-x);
   int i;
   for(i=0; i<=nmax-nmin; i++) result_array[i] *= ex;
@@ -226,42 +224,16 @@ gsl_sf_bessel_Kn_array_impl(const int nmin, const int nmax, const double x, doub
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_Kn_scaled_e(const int n, const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_Kn_scaled(const int n, const double x)
 {
-  int status = gsl_sf_bessel_Kn_scaled_impl(n, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Kn_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Kn_scaled_e(n, x, &result));
 }
 
-
-int gsl_sf_bessel_Kn_e(const int n, const double x, gsl_sf_result * result)
+double gsl_sf_bessel_Kn(const int n, const double x)
 {
-  int status = gsl_sf_bessel_Kn_impl(n, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Kn_e", status);
-  }
-  return status;
-}
-
-
-int gsl_sf_bessel_Kn_scaled_array_e(const int nmin, const int nmax, const double x, double * result)
-{
-  int status = gsl_sf_bessel_Kn_scaled_array_impl(nmin, nmax, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Kn_scaled_array_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_bessel_Kn_array_e(const int nmin, const int nmax, const double x, double * result)
-{
-  int status = gsl_sf_bessel_Kn_array_impl(nmin, nmax, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Kn_array_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Kn_e(n, x, &result));
 }

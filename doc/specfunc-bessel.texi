@@ -3,482 +3,511 @@
 @section Bessel Functions
 @cindex Bessel functions
 
+The routines described in this section compute the Cylindrical Bessel
+functions @math{J_n(x)}, @math{Y_n(x)}, Modified cylindrical Bessel
+functions @math{I_n(x)}, @math{K_n(x)}, Spherical Bessel functions
+@math{j_l(x)}, @math{y_l(x)}, and Modified Spherical Bessel functions
+@math{i_l(x)}, @math{k_l(x)}.  For information see Abramowitz & Stegun,
+Chapters 9 and 10.  The Bessel functions are defined in the header file
+@file{gsl_sf_bessel.h}.
 
 @subsection Regular Cylindrical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_J0_impl (double x,  gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_J0_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_bessel_J0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_J0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular cylindrical Bessel function of zeroth
+order, @math{J_0(x)}.
+@comment Exceptional Return Values: none
 @end deftypefun
 
-@deftypefun  int gsl_sf_bessel_J1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_J1_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_J1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_J1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular cylindrical Bessel function of first
+order, @math{J_1(x)}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Jn_impl (int n, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Jn_e (int n, double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Jn (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Jn_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular cylindrical Bessel function of 
+order @var{n}, @math{J_n(x)}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Jn_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_Jn_array_e (int nmin, int nmax, double x, double * result_array)
-Conditions: nmin <= n <= nmax 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_Jn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the regular cylindrical Bessel
+functions @math{J_n(x)} for @math{n} from @var{nmin} to @var{nmax}
+inclusive, storing the results in the array @var{result_array}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Irregular Cylindrical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_Y0_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Y0_e (double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Y0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_Y0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular cylindrical Bessel function of zeroth
+order, @math{Y_0(x)}, for @math{x>0}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Y1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Y1_e (double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Y1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_Y1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular cylindrical Bessel function of first
+order, @math{Y_1(x)}, for @math{x>0}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Yn_impl (int n,double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Yn_e (int n,double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Yn (int @var{n},double @var{x})
+@deftypefunx int gsl_sf_bessel_Yn_e (int @var{n},double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular cylindrical Bessel function of 
+order @var{n}, @math{Y_n(x)}, for @math{x>0}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Yn_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_Yn_array_e (int nmin, int nmax, double x, double * result_array)
-Domain: x > 0.0 
-Conditions: nmin <= n <= nmax 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_Yn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the irregular cylindrical Bessel
+functions @math{Y_n(x)} for @math{n} from @var{nmin} to @var{nmax}
+inclusive, storing the results in the array @var{result_array}.  The
+domain of the function is @math{x>0}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Regular Modified Cylindrical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_I0_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_I0_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EOVRFLW
+@deftypefun double gsl_sf_bessel_I0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_I0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular modified cylindrical Bessel function
+of zeroth order, @math{I_0(x)}.
+@comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_I1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_I1_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_I1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_I1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular modified cylindrical Bessel function
+of first order, @math{I_1(x)}.
+@comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_In_impl (int n, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_In_e (int n, double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_In (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_In_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular modified cylindrical Bessel function
+of order @var{n}, @math{I_n(x)}.
+@comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_In_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_In_array_e (int nmin, int nmax, double x, double * result_array)
-Domain: nmin >=0, nmax >= nmin 
-Conditions: n=nmin,...,nmax, nmin >=0, nmax >= nmin 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_In_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the regular modified cylindrical
+Bessel functions @math{I_n(x)} for @math{n} from @var{nmin} to
+@var{nmax} inclusive, storing the results in the array
+@var{result_array}.  The start of the range @var{nmin} must be positive
+or zero.
+@comment Domain: nmin >=0, nmax >= nmin 
+@comment Conditions: n=nmin,...,nmax, nmin >=0, nmax >= nmin 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_I0_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_I0_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(-|x|) I_0(x) } 
-Exceptional Return Values: none
+@deftypefun double gsl_sf_bessel_I0_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_I0_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified cylindrical Bessel
+function of zeroth order @math{\exp(-|x|) I_0(x)}.
+@comment Exceptional Return Values: none
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_I1_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_I1_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(-|x|) I_1(x) } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_I1_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_I1_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified cylindrical Bessel
+function of first order @math{\exp(-|x|) I_1(x)}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_In_scaled_impl (int n, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_In_scaled_e (int n, double x, gsl_sf_result * result)
-@math{ \exp(-|x|) I_n(x) } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_In_scaled (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_In_scaled_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified cylindrical Bessel
+function of order @var{n}, @math{\exp(-|x|) I_n(x)} 
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_In_scaled_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_In_scaled_array_e (int nmin, int nmax, double x, double * result_array)
-@math{ \exp(-|x|) I_n(x) } 
-Domain: nmin >=0, nmax >= nmin 
-Conditions:  n=nmin,...,nmax 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_In_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the scaled regular cylindrical
+Bessel functions @math{\exp(-|x|) I_n(x)} for @math{n} from
+@var{nmin} to @var{nmax} inclusive, storing the results in the array
+@var{result_array}. The start of the range @var{nmin} must be positive
+or zero.
+@comment Domain: nmin >=0, nmax >= nmin 
+@comment Conditions:  n=nmin,...,nmax 
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Irregular Modified Cylindrical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_K0_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_K0_e (double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_K0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_K0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular modified cylindrical Bessel
+function of zeroth order, @math{K_0(x)}, for @math{x > 0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_K1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_K1_e (double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_K1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_K1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular modified cylindrical Bessel
+function of first order, @math{K_1(x)}, for @math{x > 0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Kn_impl (int n, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Kn_e (int n, double x, gsl_sf_result * result)
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Kn (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Kn_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular modified cylindrical Bessel
+function of order @var{n}, @math{K_n(x)}, for @math{x > 0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Kn_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_Kn_array_e (int nmin, int nmax, double x, double * result_array)
-Conditions: n=nmin,...,nmax 
-Domain: x > 0.0, nmin >=0, nmax >= nmin 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_Kn_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the irregular modified cylindrical
+Bessel functions @math{K_n(x)} for @math{n} from @var{nmin} to
+@var{nmax} inclusive, storing the results in the array
+@var{result_array}. The start of the range @var{nmin} must be positive
+or zero. The domain of the function is @math{x>0}.
+@comment Conditions: n=nmin,...,nmax 
+@comment Domain: x > 0.0, nmin>=0, nmax >= nmin
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_K0_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_K0_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(x) K_0(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_bessel_K0_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_K0_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified cylindrical Bessel
+function of zeroth order @math{\exp(x) K_0(x)} for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_K1_scaled_impl (double x, gsl_sf_result * result) 
-@deftypefunx int gsl_sf_bessel_K1_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(x) K_1(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_K1_scaled (double @var{x}) 
+@deftypefunx int gsl_sf_bessel_K1_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified cylindrical Bessel
+function of first order @math{\exp(x) K_1(x)} for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Kn_scaled_impl (int n, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Kn_scaled_e (int n, double x, gsl_sf_result * result)
-@math{ \exp(x) K_n(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_Kn_scaled (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Kn_scaled_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified cylindrical Bessel
+function of order @var{n}, @math{\exp(x) K_n(x)}, for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_Kn_scaled_array_impl (int nmin, int nmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_Kn_scaled_array_e (int nmin, int nmax, double x, double * result_array)
-@math{ \exp(x) K_n(x) } 
-Domain: x > 0.0, nmin >=0, nmax >= nmin 
-Conditions: n=nmin,...,nmax 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_Kn_scaled_array (int @var{nmin}, int @var{nmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the scaled irregular cylindrical
+Bessel functions @math{\exp(x) K_n(x)} for @math{n} from
+@var{nmin} to @var{nmax} inclusive, storing the results in the array
+@var{result_array}. The start of the range @var{nmin} must be positive
+or zero.  The domain of the function is @math{x>0}.
+@comment Domain: x > 0.0, nmin >=0, nmax >= nmin 
+@comment Conditions: n=nmin,...,nmax 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Regular Spherical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_j0_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_j0_e (double x, gsl_sf_result * result)
-@math{ j_0(x) = \sin(x)/x } 
-Exceptional Return Values: none
+@deftypefun double gsl_sf_bessel_j0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_j0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular spherical Bessel function of zeroth
+order, @math{j_0(x) = \sin(x)/x}.
+@comment Exceptional Return Values: none
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_j1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_j1_e (double x, gsl_sf_result * result)
-@math{ j_1(x) = (\sin(x)/x - \cos(x))/x } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_j1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_j1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular spherical Bessel function of first
+order, @math{j_1(x) = (\sin(x)/x - \cos(x))/x} .
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_j2_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_j2_e (double x, gsl_sf_result * result)
-@math{ j_2(x) = ((3/x^2 - 1)\sin(x) - 3\cos(x)/x)/x } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_j2 (double @var{x})
+@deftypefunx int gsl_sf_bessel_j2_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular spherical Bessel function of second
+order, @math{j_2(x) = ((3/x^2 - 1)\sin(x) - 3\cos(x)/x)/x} .
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_jl_impl (int l, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_jl_e (int l, double x, gsl_sf_result * result)
-Domain: l >= 0, x >= 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_jl (int @var{l}, double @var{x})
+@deftypefunx int gsl_sf_bessel_jl_e (int @var{l}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular spherical Bessel function of 
+order @var{l}, @math{j_l(x)}, for @c{$l \geq 0$}
+@math{l >= 0} and @c{$x \geq 0$}
+@math{x >= 0}.
+@comment Domain: l >= 0, x >= 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_jl_array_impl (int lmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_jl_array_e (int lmax, double x, double * result_array)
-Domain: lmax >= 0 
-Conditions: l=0,1,...,lmax 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_jl_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the regular spherical Bessel
+functions @math{j_l(x)} for @math{l} from 0 to @var{lmax}
+inclusive  for @c{$lmax \geq 0$}
+@math{lmax >= 0} and @c{$x \geq 0$}
+@math{x >= 0}, storing the results in the array @var{result_array}.
+@comment Domain: lmax >= 0 
+@comment Conditions: l=0,1,...,lmax 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_jl_steed_array_impl (int lmax, double x, double * jl_x_array)
-Uses Steed's method.
-Domain: lmax >= 0 
-Conditions: l=0,1,...,lmax 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_jl_steed_array (int @var{lmax}, double @var{x}, double * @var{jl_x_array})
+This routine uses Steed's method to compute the values of the regular
+spherical Bessel functions @math{j_l(x)} for @math{l} from 0 to
+@var{lmax} inclusive for @c{$lmax \geq 0$}
+@math{lmax >= 0} and @c{$x \geq 0$}
+@math{x >= 0}, storing the results in the array
+@var{result_array}.
+The Steed/Barnett algorithm is described in @cite{Comp. Phys. Comm.} 21,
+297 (1981).
+@comment Domain: lmax >= 0 
+@comment Conditions: l=0,1,...,lmax 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Irregular Spherical Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_y0_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_y0_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_bessel_y0 (double @var{x})
+@deftypefunx int gsl_sf_bessel_y0_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular spherical Bessel function of zeroth
+order, @math{y_0(x) = -\cos(x)/x}.
+@comment Exceptional Return Values: none
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_y1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_y1_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_y1 (double @var{x})
+@deftypefunx int gsl_sf_bessel_y1_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular spherical Bessel function of first
+order, @math{y_1(x) = -(\cos(x)/x + \sin(x))/x}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_y2_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_y2_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_y2 (double @var{x})
+@deftypefunx int gsl_sf_bessel_y2_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular spherical Bessel function of second
+order, @math{y_2(x) = (-3/x^2 + 1/x)\cos(x) - (3/x^2)\sin(x)} .
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_yl_impl (int l, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_yl_e (int l, double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_yl (int @var{l}, double @var{x})
+@deftypefunx int gsl_sf_bessel_yl_e (int @var{l}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular spherical Bessel function of 
+order @var{l}, @math{y_l(x)}, for @c{$l \geq 0$}
+@math{l >= 0}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_yl_array_impl (int lmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_yl_array_e (int lmax, double x, double * result_array)
-Domain: lmax >= 0 
-Conditions: l=0,1,...,lmax 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_yl_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the irregular spherical Bessel
+functions @math{y_l(x)} for @math{l} from 0 to @var{lmax}
+inclusive  for @c{$lmax \geq 0$}
+@math{lmax >= 0}, storing the results in the array @var{result_array}.
+@comment Domain: lmax >= 0 
+@comment Conditions: l=0,1,...,lmax 
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
-
-
 
 
 @subsection Regular Modified Spherical Bessel Functions
 
 @math{ i_l(x) = \sqrt@{\pi/(2x)@} I_@{l+1/2@}(x) }
 
-@deftypefun  int gsl_sf_bessel_i0_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_i0_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(-|x|) i_0(x) } 
-Exceptional Return Values: none
+@deftypefun double gsl_sf_bessel_i0_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_i0_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified spherical Bessel
+function of zeroth order, @math{\exp(-|x|) i_0(x)}.
+@comment Exceptional Return Values: none
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_i1_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_i1_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(-|x|) i_1(x) } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_i1_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_i1_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified spherical Bessel
+function of first order, @math{\exp(-|x|) i_1(x)}.
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_i2_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_i2_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(-|x|) i_2(x) } 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_i2_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_i2_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified spherical Bessel
+function of second order, @math{ \exp(-|x|) i_2(x) } 
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_il_scaled_impl (int l, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_il_scaled_e (int l, double x, gsl_sf_result * result)
-@math{ \exp(-|x|) i_l(x) } 
-Domain: l >= 0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_il_scaled (int @var{l}, double @var{x})
+@deftypefunx int gsl_sf_bessel_il_scaled_e (int @var{l}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified spherical Bessel
+function of order @var{l}, @math{ \exp(-|x|) i_l(x) }
+@comment Domain: l >= 0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_il_scaled_array_impl (int lmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_il_scaled_array_e (int lmax, double x, double * result_array)
-@math{ \exp(-|x|) i_l(x) } 
-Domain: lmax >= 0 
-Conditions: l=0,1,...,lmax 
-Exceptional Return Values: GSL_EUNDRFLW
+@deftypefun int gsl_sf_bessel_il_scaled_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the scaled regular modified
+cylindrical Bessel functions @math{\exp(-|x|) i_l(x)} for @math{l} from
+0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
+@math{lmax >= 0}, storing the results in
+the array @var{result_array}. 
+@comment Domain: lmax >= 0 
+@comment Conditions: l=0,1,...,lmax 
+@comment Exceptional Return Values: GSL_EUNDRFLW
 @end deftypefun
-
-
-
 
 
 @subsection Irregular Modified Spherical Bessel Functions
 
 @math{ k_l(x) = \sqrt@{\pi/(2x)]@} K_@{l+1/2@}(x) }
 
+@deftypefun double gsl_sf_bessel_k0_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_k0_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified spherical Bessel
+function of zeroth order, @math{\exp(x) k_0(x)}, for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
 
-@deftypefun  int gsl_sf_bessel_k0_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_k0_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(x) k_0(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_k1_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_k1_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified spherical Bessel
+function of first order, @math{\exp(x) k_1(x)}, for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@end deftypefun
+
+@deftypefun double gsl_sf_bessel_k2_scaled (double @var{x})
+@deftypefunx int gsl_sf_bessel_k2_scaled_e (double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified spherical Bessel
+function of second order, @math{\exp(x) k_2(x)}, for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@end deftypefun
+
+@deftypefun double gsl_sf_bessel_kl_scaled (int @var{l}, double @var{x})
+@deftypefunx int gsl_sf_bessel_kl_scaled_e (int @var{l}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified spherical Bessel
+function of order @var{l}, @math{\exp(x) k_l(x)}, for @math{x>0}.
+@comment Domain: x > 0.0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
+
+@deftypefun int gsl_sf_bessel_kl_scaled_array (int @var{lmax}, double @var{x}, double * @var{result_array})
+This routine computes the values of the scaled irregular modified
+spherical Bessel functions @math{\exp(x) k_l(x)} for @math{l} from
+0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
+@math{lmax >= 0} and @math{x>0}, storing the results in
+the array @var{result_array}. 
+@comment Domain: lmax >= 0 
+@comment Conditions: l=0,1,...,lmax 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_bessel_k1_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_k1_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(x) k_1(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@subsection Regular Bessel Function - Fractional Order
+
+@deftypefun double gsl_sf_bessel_Jnu (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Jnu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular cylindrical Bessel function of
+fractional order @math{nu}, @math{J_\nu(x)}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@end deftypefun
+
+@deftypefun int gsl_sf_bessel_sequence_Jnu_e (double @var{nu}, gsl_mode_t @var{mode}, size_t @var{size}, double * @var{v})
+This function computes the regular cylindrical Bessel function of
+fractional order @math{\nu}, @math{J_\nu(x)}, evaluated at a series of
+@math{x} values.  The array @var{v} of length @var{size} contains the
+@math{x} values.  They are assumed to be strictly ordered and positive.
+The array is over-written with the values of @math{J_\nu(x_i)}.
+@comment Exceptional Return Values: GSL_EDOM, GSL_EINVAL
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_bessel_k2_scaled_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_k2_scaled_e (double x, gsl_sf_result * result)
-@math{ \exp(x) k_2(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@subsection Irregular Bessel Functions - Fractional Order
+
+@deftypefun double gsl_sf_bessel_Ynu (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Ynu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular cylindrical Bessel function of
+fractional order @math{nu}, @math{Y_\nu(x)}.
+@comment Exceptional Return Values: 
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_bessel_kl_scaled_impl (int l, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_kl_scaled_e (int l, double x, gsl_sf_result * result)
-@math{ \exp(x) k_l(x) } 
-Domain: x > 0.0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@subsection Regular Modified Bessel Functions - Fractional Order
+
+@deftypefun double gsl_sf_bessel_Inu (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Inu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the regular modified Bessel function of
+fractional order @math{nu}, @math{I_\nu(x)} for @math{x>0},
+@math{\nu>0}.
+@comment Domain: x >= 0, nu >= 0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@end deftypefun
+
+@deftypefun double gsl_sf_bessel_Inu_scaled (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Inu_scaled_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled regular modified Bessel function of
+fractional order @math{nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
+@math{\nu>0}.
+@comment @math{ \exp(-|x|) I_@{\nu@}(x) } 
+@comment Domain: x >= 0, nu >= 0 
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_bessel_kl_scaled_array_impl (int lmax, double x, double * result_array)
-@deftypefunx int gsl_sf_bessel_kl_scaled_array_e (int lmax, double x, double * result_array)
-@math{ \exp(x) k_l(x) } 
-Domain: lmax >= 0 
-Conditions: l=0,1,...,lmax 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@subsection Irregular Modified Bessel Functions - Fractional Order
+
+@deftypefun double gsl_sf_bessel_Knu (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Knu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the irregular modified Bessel function of
+fractional order @math{nu}, @math{K_\nu(x)} for @math{x>0},
+@math{\nu>0}.
+@comment Domain: x > 0, nu >= 0 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-
-
-@subsection Regular Bessel Function, Fractional Order
-
-
-@deftypefun  int gsl_sf_bessel_Jnu_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Jnu_e (double nu, double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_bessel_lnKnu (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_lnKnu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the logarithm of the irregular modified Bessel
+function of fractional order @math{nu}, @math{\ln(K_\nu(x))} for
+@math{x>0}, @math{\nu>0}. 
+@comment Domain: x > 0, nu >= 0 
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_sequence_Jnu_impl (double nu, gsl_mode_t mode, size_t size, double * v)
-@deftypefunx int gsl_sf_bessel_sequence_Jnu_e (double nu, gsl_mode_t mode, size_t size, double * v)
-Regular cylindrical Bessel function J_nu(x)
-evaluated at a series of x values.  The array
-contains the x values.  They are assumed to be
-strictly ordered and positive.  The array is
-over-written with the values of J_nu(x_i). 
-Exceptional Return Values: GSL_EDOM, GSL_EINVAL
+@deftypefun double gsl_sf_bessel_Knu_scaled (double @var{nu}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Knu_scaled_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the scaled irregular modified Bessel function of
+fractional order @math{nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
+@math{\nu>0}.
+@comment Domain: x > 0, nu >= 0 
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
-
-
-
-
-@subsection Irregular Bessel Functions, Fractional Order
-
-@deftypefun  int gsl_sf_bessel_Ynu_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Ynu_e (double nu, double x, gsl_sf_result * result)
-Exceptional Return Values: 
-@end deftypefun
-
-
-
-@subsection Regular Modified Bessel Functions, Fractional Order
-
-
-@deftypefun  int gsl_sf_bessel_Inu_scaled_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Inu_scaled_e (double nu, double x, gsl_sf_result * result)
-@c{$ \exp(-|x|) I_{\nu}(x) $} 
-@math{ \exp(-|x|) I_@{\nu@}(x) } 
-Domain: x >= 0, nu >= 0 
-Exceptional Return Values: GSL_EDOM
-@end deftypefun
-
-
-@deftypefun  int gsl_sf_bessel_Inu_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Inu_e (double nu, double x, gsl_sf_result * result)
-@c{$ I_{\nu}(x) $} 
-@math{ I_@{\nu@}(x) } 
-Domain: x >= 0, nu >= 0 
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
-@end deftypefun
-
-
-
-@subsection Irregular Modified Bessel Functions, Fractional Order
-
-
-@deftypefun  int gsl_sf_bessel_Knu_scaled_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Knu_scaled_e (double nu, double x, gsl_sf_result * result)
-@c{$ \exp(+|x|) K_{\nu}(x) $} 
-@math{ \exp(+|x|) K_@{\nu@}(x) } 
-Domain: x > 0, nu >= 0 
-Exceptional Return Values: GSL_EDOM
-@end deftypefun
-
-
-@deftypefun  int gsl_sf_bessel_Knu_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_Knu_e (double nu, double x, gsl_sf_result * result)
-@c{$ K_{\nu}(x) $} 
-@math{ K_@{\nu@}(x) } 
-Domain: x > 0, nu >= 0 
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
-@end deftypefun
-
-
-@deftypefun  int gsl_sf_bessel_lnKnu_impl (double nu, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_lnKnu_e (double nu, double x, gsl_sf_result * result)
-@c{$ \ln(K_{\nu}(x)) $} 
-@math{ \ln(K_@{\nu@}(x)) } 
-Domain: x > 0, nu >= 0 
-Exceptional Return Values: GSL_EDOM
-@end deftypefun
-
-
-
 
 @subsection Zeros of Regular Bessel Functions
 
-
-@deftypefun  int gsl_sf_bessel_zero_J0_impl (int s, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_zero_J0_e (int s, gsl_sf_result * result)
-s'th positive zero of the Bessel function @math{J_0(x)}. 
-Exceptional Return Values: 
+@deftypefun double gsl_sf_bessel_zero_J0 (int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_J0_e (int @var{s}, gsl_sf_result * @var{result})
+These routines compute the location of the @var{s}-th positive zero of
+the Bessel function @math{J_0(x)}.
+@comment Exceptional Return Values: 
 @end deftypefun
 
-
-@deftypefun  int gsl_sf_bessel_zero_J1_impl (int s, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_zero_J1_e (int s, gsl_sf_result * result)
-s'th positive zero of the Bessel function @math{J_1(x)}.
-Exceptional Return Values: 
+@deftypefun double gsl_sf_bessel_zero_J1 (int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_J1_e (int @var{s}, gsl_sf_result * @var{result})
+These routines compute the location of the @var{s}-th positive zero of
+the Bessel function @math{J_1(x)}.
+@comment Exceptional Return Values: 
 @end deftypefun
 
-
-
-@deftypefun  int gsl_sf_bessel_zero_Jnu_impl (double nu, int s, gsl_sf_result * result)
-@deftypefunx int gsl_sf_bessel_zero_Jnu_e (double nu, int s, gsl_sf_result * result)
-s'th positive zero of the Bessel function @math{J_nu(x)}. 
-Exceptional Return Values: 
+@deftypefun double gsl_sf_bessel_zero_Jnu (double @var{nu}, int @var{s})
+@deftypefunx int gsl_sf_bessel_zero_Jnu_e (double @var{nu}, int @var{s}, gsl_sf_result * @var{result})
+These routines compute the location of the @var{s}-th positive zero of
+the Bessel function @math{J_nu(x)}.
+@comment Exceptional Return Values: 
 @end deftypefun
 

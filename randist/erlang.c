@@ -46,11 +46,9 @@ gsl_ran_erlang_pdf (const double x, const double a, const double n)
   else
     {
       double p;
-      gsl_sf_result lngamma;
-      
-      gsl_sf_lngamma_impl (n, &lngamma);
-      p = exp ((n - 1) * log (x/a) - x/a - lngamma.val) / a;
+      double lngamma = gsl_sf_lngamma (n);
 
+      p = exp ((n - 1) * log (x/a) - x/a - lngamma) / a;
       return p;
     }
 }

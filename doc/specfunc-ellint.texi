@@ -28,58 +28,58 @@ The Carlson symmetric forms are defined by
 
 @subsection Legendre Form of Complete Elliptic Integrals
 
-@deftypefun  int gsl_sf_ellint_Kcomp_impl (double k, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_Kcomp_e (double k, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values:  GSL_EDOM
+@deftypefun double gsl_sf_ellint_Kcomp (double @var{k}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_Kcomp_e (double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values:  GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_Ecomp_impl (double k, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_Ecomp_e (double k, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values:  GSL_EDOM
+@deftypefun double gsl_sf_ellint_Ecomp (double @var{k}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_Ecomp_e (double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values:  GSL_EDOM
 @end deftypefun
 
 
 @subsection Legendre Form of Incomplete Elliptic Integrals
 
-@deftypefun  int gsl_sf_ellint_F_impl (double phi, double k, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_F_e (double phi, double k, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_F (double @var{phi}, double @var{k}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_F_e (double @var{phi}, double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_E_impl (double phi, double k, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_E_e (double phi, double k, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_E (double @var{phi}, double @var{k}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_E_e (double @var{phi}, double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_P_impl (double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_P_e (double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_P (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_P_e (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_D_impl (double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_D_e (double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_D (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_D_e (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
 @subsection Carlson Forms
 
-@deftypefun  int gsl_sf_ellint_RC_impl (double x, double y, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_RC_e (double x, double y, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_RC (double @var{x}, double @var{y}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_RC_e (double @var{x}, double @var{y}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_RD_impl (double x, double y, double z, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_RD_e (double x, double y, double z, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_RD (double @var{x}, double @var{y}, double @var{z}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_RD_e (double @var{x}, double @var{y}, double @var{z}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_RF_impl (double x, double y, double z, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_RF_e (double x, double y, double z, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_RF (double @var{x}, double @var{y}, double @var{z}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_RF_e (double @var{x}, double @var{y}, double @var{z}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_ellint_RJ_impl (double x, double y, double z, double p, gsl_mode_t mode, gsl_sf_result * result);
-@deftypefunx int gsl_sf_ellint_RJ_e (double x, double y, double z, double p, gsl_mode_t mode, gsl_sf_result * result);
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_ellint_RJ (double @var{x}, double @var{y}, double @var{z}, double @var{p}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_RJ_e (double @var{x}, double @var{y}, double @var{z}, double @var{p}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun

@@ -44,8 +44,8 @@ __BEGIN_DECLS
  * n=integer, n != 1
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result);
 int gsl_sf_zeta_int_e(const int n, gsl_sf_result * result);
+double gsl_sf_zeta_int(const int n);
 
 
 /* Riemann Zeta Function
@@ -54,8 +54,8 @@ int gsl_sf_zeta_int_e(const int n, gsl_sf_result * result);
  * s != 1.0
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int gsl_sf_zeta_impl(const double s, gsl_sf_result * result);
 int gsl_sf_zeta_e(const double s, gsl_sf_result * result);
+double gsl_sf_zeta(const double s);
 
 
 /* Hurwitz Zeta Function
@@ -64,8 +64,8 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result);
  * s > 1.0, q > 0.0
  * exceptions: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result);
 int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result);
+double gsl_sf_hzeta(const double s, const double q);
 
 
 /* Eta Function
@@ -73,8 +73,8 @@ int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result);
  *
  * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int gsl_sf_eta_int_impl(int n, gsl_sf_result * result);
-int gsl_sf_eta_int_e(const int n, gsl_sf_result * result);
+int gsl_sf_eta_int_e(int n, gsl_sf_result * result);
+double gsl_sf_eta_int(const int n);
 
 
 /* Eta Function
@@ -82,8 +82,8 @@ int gsl_sf_eta_int_e(const int n, gsl_sf_result * result);
  *
  * exceptions: GSL_EUNDRFLW, GSL_EOVRFLW
  */
-int gsl_sf_eta_impl(const double s, gsl_sf_result * result);
 int gsl_sf_eta_e(const double s, gsl_sf_result * result);
+double gsl_sf_eta(const double s);
 
 
 __END_DECLS

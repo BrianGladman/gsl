@@ -31,30 +31,29 @@
 #include "gsl_sf_bessel.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
+gsl_sf_bessel_Inu_scaled_e(double nu, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0 || nu < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0 || nu < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x*x < 10.0*(nu+1.0)) {
     gsl_sf_result b;
     double ex = exp(-x);
-    int stat = gsl_sf_bessel_IJ_taylor_impl(nu, x, 1, 100, GSL_DBL_EPSILON, &b);
+    int stat = gsl_sf_bessel_IJ_taylor_e(nu, x, 1, 100, GSL_DBL_EPSILON, &b);
     result->val  = b.val * ex;
     result->err  = b.err * ex;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat;
   }
   else if(0.5/(nu*nu + x*x) < GSL_ROOT3_DBL_EPSILON) {
-    return gsl_sf_bessel_Inu_scaled_asymp_unif_impl(nu, x, result);
+    return gsl_sf_bessel_Inu_scaled_asymp_unif_e(nu, x, result);
   }
   else {
     int N = (int)(nu + 0.5);
@@ -97,36 +96,28 @@ gsl_sf_bessel_Inu_scaled_impl(double nu, double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_bessel_Inu_impl(double nu, double x, gsl_sf_result * result)
+gsl_sf_bessel_Inu_e(double nu, double x, gsl_sf_result * result)
 {
   gsl_sf_result b;
-  int stat_I = gsl_sf_bessel_Inu_scaled_impl(nu, x, &b);
-  int stat_e = gsl_sf_exp_mult_err_impl(x, fabs(x*GSL_DBL_EPSILON),
+  int stat_I = gsl_sf_bessel_Inu_scaled_e(nu, x, &b);
+  int stat_e = gsl_sf_exp_mult_err_e(x, fabs(x*GSL_DBL_EPSILON),
                                         b.val, b.err,
 					result);
   return GSL_ERROR_SELECT_2(stat_e, stat_I);
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_bessel_Inu_scaled_e(double nu, double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_Inu_scaled(double nu, double x)
 {
-  int status = gsl_sf_bessel_Inu_scaled_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Inu_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Inu_scaled_e(nu, x, &result));
 }
 
 
-int
-gsl_sf_bessel_Inu_e(double nu, double x, gsl_sf_result * result)
+double gsl_sf_bessel_Inu(double nu, double x)
 {
-  int status = gsl_sf_bessel_Inu_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Inu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Inu_e(nu, x, &result));
 }

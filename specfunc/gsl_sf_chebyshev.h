@@ -78,24 +78,23 @@ gsl_sf_cheb_series * gsl_sf_cheb_new(double (*func)(double),
  * was initially created; if you want to change these, then
  * use gsl_sf_cheb_new() instead.
  *
- * exceptions: GSL_EFAULT, GSL_ENOMEM
+ * exceptions: GSL_ENOMEM
  */
-int gsl_sf_cheb_calc_impl(gsl_sf_cheb_series * cs, double (*func)(double));
 int gsl_sf_cheb_calc_e(gsl_sf_cheb_series * cs, double (*func)(double));
 
 
 /* Evaluate a Chebyshev series at a given point.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_impl(const gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
-int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_e(const gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
+double gsl_sf_cheb_eval(const gsl_sf_cheb_series * cs, double x);
 
 
 /* Evaluate a Chebyshev series at a given point, to (at most) the given order.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_n_impl(const gsl_sf_cheb_series * cs, const int order, const double x, gsl_sf_result * result);
-int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, const int order, const double x, gsl_sf_result * result);
+double gsl_sf_cheb_eval_n(const gsl_sf_cheb_series * cs, int order, double x);
 
 
 /* Evaluate a Chebyshev series at a given point, using the default
@@ -103,14 +102,14 @@ int gsl_sf_cheb_eval_n_e(const gsl_sf_cheb_series * cs, int order, double x, gsl
  * order for other modes.
  * No errors can occur for a struct obtained from gsl_sf_cheb_new().
  */
-int gsl_sf_cheb_eval_mode_impl(const gsl_sf_cheb_series * cs, const double x, gsl_mode_t mode, gsl_sf_result * result);
-int gsl_sf_cheb_eval_mode_e(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode, gsl_sf_result * result);
+int gsl_sf_cheb_eval_mode_e(const gsl_sf_cheb_series * cs, const double x, gsl_mode_t mode, gsl_sf_result * result);
+double gsl_sf_cheb_eval_mode(const gsl_sf_cheb_series * cs, double x, gsl_mode_t mode);
 
 
 /* Evaluate derivative of a Chebyshev series at a given point.
  */
-int gsl_sf_cheb_eval_deriv_impl(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
-int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
+double gsl_sf_cheb_eval_deriv(gsl_sf_cheb_series * cs, double x);
 
 
 /* Evaluate integal of a Chebyshev series at a given point. The
@@ -118,8 +117,8 @@ int gsl_sf_cheb_eval_deriv_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * 
  * the left end-point, ie it is precisely
  *       Integrate[cs(t; a,b), {t, a, x}]
  */
-int gsl_sf_cheb_eval_integ_impl(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
-int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, double x, gsl_sf_result * result);
+int gsl_sf_cheb_eval_integ_e(gsl_sf_cheb_series * cs, const double x, gsl_sf_result * result);
+double gsl_sf_cheb_eval_integ(gsl_sf_cheb_series * cs, double x);
 
 
 /* Free a Chebyshev series previously calculated with gsl_sf_cheb_new().

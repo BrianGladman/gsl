@@ -70,31 +70,30 @@ static gsl_sf_cheb_series bj0_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J0_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_J0_e(const double x, gsl_sf_result * result)
 {
   double y = fabs(x);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(y < 2.0*GSL_SQRT_DBL_EPSILON) {
+  /* CHECK_POINTER(result) */
+
+  if(y < 2.0*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0;
     result->err = y*y;
     return GSL_SUCCESS;
   }
   else if(y <= 4.0) {
-    return gsl_sf_cheb_eval_impl(&bj0_cs, 0.125*y*y - 1.0, result);
+    return gsl_sf_cheb_eval_e(&bj0_cs, 0.125*y*y - 1.0, result);
   }
   else {
     const double z = 32.0/(y*y) - 1.0;
     gsl_sf_result ca;
     gsl_sf_result ct;
     gsl_sf_result cp;
-    const int stat_ca = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &ca);
-    const int stat_ct = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &ct);
-    const int stat_cp = gsl_sf_bessel_cos_pi4_impl(y, ct.val/y, &cp);
+    const int stat_ca = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm0_cs,  z, &ca);
+    const int stat_ct = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth0_cs, z, &ct);
+    const int stat_cp = gsl_sf_bessel_cos_pi4_e(y, ct.val/y, &cp);
     const double sqrty = sqrt(y);
     const double ampl  = (0.75 + ca.val) / sqrty;
     result->val  = ampl * cp.val;
@@ -104,14 +103,11 @@ int gsl_sf_bessel_J0_impl(const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_bessel_J0_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_J0(const double x)
 {
-  int status = gsl_sf_bessel_J0_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_J0_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_J0_e(x, &result));
 }

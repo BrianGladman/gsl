@@ -156,7 +156,7 @@ static gsl_sf_cheb_series cos_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 /* I would have prefered just using the library sin() function.
  * But after some experimentation I decided that there was
@@ -164,12 +164,11 @@ static gsl_sf_cheb_series cos_cs = {
  * So we have to roll our own.
  */
 int
-gsl_sf_sin_impl(double x, gsl_sf_result * result)
+gsl_sf_sin_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     const double P1 = 7.85398125648498535156e-1;
     const double P2 = 3.77489470793079817668e-8;
     const double P3 = 2.69515142907905952645e-15;
@@ -206,13 +205,13 @@ gsl_sf_sin_impl(double x, gsl_sf_result * result)
       if(octant == 0) {
         gsl_sf_result sin_cs_result;
 	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, t, &sin_cs_result);
+	stat_cs = gsl_sf_cheb_eval_e(&sin_cs, t, &sin_cs_result);
         result->val = z * (1.0 + z*z * sin_cs_result.val);
       }
       else { /* octant == 2 */
         gsl_sf_result cos_cs_result;
 	const double t = 8.0*fabs(z)/M_PI - 1.0;
-	stat_cs = gsl_sf_cheb_eval_impl(&cos_cs, t, &cos_cs_result);
+	stat_cs = gsl_sf_cheb_eval_e(&cos_cs, t, &cos_cs_result);
         result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
       }
 
@@ -238,12 +237,11 @@ gsl_sf_sin_impl(double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_cos_impl(double x, gsl_sf_result * result)
+gsl_sf_cos_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     const double P1 = 7.85398125648498535156e-1;
     const double P2 = 3.77489470793079817668e-8;
     const double P3 = 2.69515142907905952645e-15;
@@ -283,13 +281,13 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
       if(octant == 0) {
         gsl_sf_result cos_cs_result;
         const double t = 8.0*fabs(z)/M_PI - 1.0;
-        stat_cs = gsl_sf_cheb_eval_impl(&cos_cs, t, &cos_cs_result);
+        stat_cs = gsl_sf_cheb_eval_e(&cos_cs, t, &cos_cs_result);
         result->val = 1.0 - 0.5*z*z * (1.0 - z*z * cos_cs_result.val);
       }
       else { /* octant == 2 */
         gsl_sf_result sin_cs_result;
         const double t = 8.0*fabs(z)/M_PI - 1.0;
-        stat_cs = gsl_sf_cheb_eval_impl(&sin_cs, t, &sin_cs_result);
+        stat_cs = gsl_sf_cheb_eval_e(&sin_cs, t, &sin_cs_result);
         result->val = z * (1.0 + z*z * sin_cs_result.val);
       }
 
@@ -315,12 +313,11 @@ gsl_sf_cos_impl(double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_hypot_impl(const double x, const double y, gsl_sf_result * result)
+gsl_sf_hypot_e(const double x, const double y, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x == 0.0 && y == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x == 0.0 && y == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -341,20 +338,20 @@ gsl_sf_hypot_impl(const double x, const double y, gsl_sf_result * result)
     else {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
   }
 }
 
 
 int
-gsl_sf_complex_sin_impl(const double zr, const double zi,
+gsl_sf_complex_sin_e(const double zr, const double zi,
                         gsl_sf_result * szr, gsl_sf_result * szi)
 {
-  if(szr == 0 || szi == 0) {
-    return GSL_EFAULT;
-  }
-  else if(fabs(zi) < 1.0) {
+  /* CHECK_POINTER(szr) */
+  /* CHECK_POINTER(szi) */
+
+  if(fabs(zi) < 1.0) {
     double ch_m1, sh;
     sinh_series(zi, &sh);
     cosh_m1_series(zi, &ch_m1);
@@ -379,19 +376,19 @@ gsl_sf_complex_sin_impl(const double zr, const double zi,
     szi->val = 0.0;
     szr->err = 0.0;
     szi->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
 }
 
 
 int
-gsl_sf_complex_cos_impl(const double zr, const double zi,
+gsl_sf_complex_cos_e(const double zr, const double zi,
                         gsl_sf_result * czr, gsl_sf_result * czi)
 {
-  if(czr == 0 || czi == 0) {
-    return GSL_EFAULT;
-  }
-  else if(fabs(zi) < 1.0) {
+  /* CHECK_POINTER(czr) */
+  /* CHECK_POINTER(czi) */
+
+  if(fabs(zi) < 1.0) {
     double ch_m1, sh;
     sinh_series(zi, &sh);
     cosh_m1_series(zi, &ch_m1);
@@ -416,19 +413,19 @@ gsl_sf_complex_cos_impl(const double zr, const double zi,
     czi->val = 0.0;
     czr->err = 0.0;
     czi->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
 }
 
 
 int
-gsl_sf_complex_logsin_impl(const double zr, const double zi,
+gsl_sf_complex_logsin_e(const double zr, const double zi,
                            gsl_sf_result * lszr, gsl_sf_result * lszi)
 {
-  if(lszr == 0 || lszi == 0) {
-    return GSL_EFAULT;
-  }
-  else if(zi > 60.0) {
+  /* CHECK_POINTER(lszr) */
+  /* CHECK_POINTER(lszi) */
+
+  if(zi > 60.0) {
     lszr->val = -M_LN2 + zi;
     lszi->val =  0.5*M_PI - zr;
     lszr->err = 2.0 * GSL_DBL_EPSILON * fabs(lszr->val);
@@ -443,30 +440,29 @@ gsl_sf_complex_logsin_impl(const double zr, const double zi,
   else {
     gsl_sf_result sin_r, sin_i;
     int status;
-    gsl_sf_complex_sin_impl(zr, zi, &sin_r, &sin_i); /* ok by construction */
-    status = gsl_sf_complex_log_impl(sin_r.val, sin_i.val, lszr, lszi);
+    gsl_sf_complex_sin_e(zr, zi, &sin_r, &sin_i); /* ok by construction */
+    status = gsl_sf_complex_log_e(sin_r.val, sin_i.val, lszr, lszi);
     if(status == GSL_EDOM) {
       lszr->val = 0.0;
       lszi->val = 0.0;
       lszr->err = 0.0;
       lszi->err = 0.0;
-      return GSL_EDOM;
+      GSL_ERROR ("error", GSL_EDOM);
     }
   }
-  return gsl_sf_angle_restrict_symm_impl(&(lszi->val));
+  return gsl_sf_angle_restrict_symm_e(&(lszi->val));
 }
 
 
 int
-gsl_sf_lnsinh_impl(const double x, gsl_sf_result * result)
+gsl_sf_lnsinh_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(fabs(x) < 1.0) {
     double eps;
@@ -488,15 +484,14 @@ gsl_sf_lnsinh_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_lncosh_impl(const double x, gsl_sf_result * result)
+int gsl_sf_lncosh_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(fabs(x) < 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(fabs(x) < 1.0) {
     double eps;
     cosh_m1_series(x, &eps);
-    return gsl_sf_log_1plusx_impl(eps, result);
+    return gsl_sf_log_1plusx_e(eps, result);
   }
   else if(x < -0.5*GSL_LOG_DBL_EPSILON) {
     result->val = x + log(0.5*(1.0 + exp(-2.0*x)));
@@ -512,7 +507,7 @@ int gsl_sf_lncosh_impl(const double x, gsl_sf_result * result)
 
 
 /*
-inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
+inline int gsl_sf_sincos_e(const double theta, double * s, double * c)
 {
   double tan_half = tan(0.5 * theta);
   double den = 1. + tan_half*tan_half;
@@ -522,11 +517,11 @@ inline int gsl_sf_sincos_impl(const double theta, double * s, double * c)
 */
 
 int
-gsl_sf_polar_to_rect_impl(const double r, const double theta,
+gsl_sf_polar_to_rect_e(const double r, const double theta,
                           gsl_sf_result * x, gsl_sf_result * y)
 {
   double t   = theta;
-  int status = gsl_sf_angle_restrict_symm_impl(&t);
+  int status = gsl_sf_angle_restrict_symm_e(&t);
   double c = cos(t);
   double s = sin(t);
   x->val = r * cos(t);
@@ -540,10 +535,10 @@ gsl_sf_polar_to_rect_impl(const double r, const double theta,
 
 
 int
-gsl_sf_rect_to_polar_impl(const double x, const double y,
+gsl_sf_rect_to_polar_e(const double x, const double y,
                           gsl_sf_result * r, gsl_sf_result * theta)
 {
-  int stat_h = gsl_sf_hypot_impl(x, y, r);
+  int stat_h = gsl_sf_hypot_e(x, y, r);
   if(r->val > 0.0) {
     theta->val = atan2(y, x);
     theta->err = 2.0 * GSL_DBL_EPSILON * fabs(theta->val);
@@ -552,12 +547,12 @@ gsl_sf_rect_to_polar_impl(const double x, const double y,
   else {
     theta->val = 0.0;
     theta->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
 }
 
 
-int gsl_sf_angle_restrict_symm_err_impl(const double theta, gsl_sf_result * result)
+int gsl_sf_angle_restrict_symm_err_e(const double theta, gsl_sf_result * result)
 {
   /* synthetic extended precision constants */
   const double P1 = 4 * 7.8539812564849853515625e-01;
@@ -573,7 +568,7 @@ int gsl_sf_angle_restrict_symm_err_impl(const double theta, gsl_sf_result * resu
 
   if(theta > 0.0625/GSL_DBL_EPSILON) {
     result->err = fabs(result->val);
-    return GSL_ELOSS;
+    GSL_ERROR ("error", GSL_ELOSS);
   }
   else if(theta > 0.0625/GSL_SQRT_DBL_EPSILON) {
     result->err = GSL_SQRT_DBL_EPSILON * fabs(result->val);
@@ -586,7 +581,7 @@ int gsl_sf_angle_restrict_symm_err_impl(const double theta, gsl_sf_result * resu
 }
 
 
-int gsl_sf_angle_restrict_pos_err_impl(const double theta, gsl_sf_result * result)
+int gsl_sf_angle_restrict_pos_err_e(const double theta, gsl_sf_result * result)
 {
   /* synthetic extended precision constants */
   const double P1 = 4 * 7.85398125648498535156e-01;
@@ -600,7 +595,7 @@ int gsl_sf_angle_restrict_pos_err_impl(const double theta, gsl_sf_result * resul
 
   if(theta > 0.0625/GSL_DBL_EPSILON) {
     result->err = fabs(result->val);
-    return GSL_ELOSS;
+    GSL_ERROR ("error", GSL_ELOSS);
   }
   else if(theta > 0.0625/GSL_SQRT_DBL_EPSILON) {
     result->err = GSL_SQRT_DBL_EPSILON * fabs(result->val);
@@ -613,36 +608,36 @@ int gsl_sf_angle_restrict_pos_err_impl(const double theta, gsl_sf_result * resul
 }
 
 
-int gsl_sf_angle_restrict_symm_impl(double * theta)
+int gsl_sf_angle_restrict_symm_e(double * theta)
 {
   gsl_sf_result r;
-  int stat = gsl_sf_angle_restrict_symm_err_impl(*theta, &r);
+  int stat = gsl_sf_angle_restrict_symm_err_e(*theta, &r);
   *theta = r.val;
   return stat;
 }
 
 
-int gsl_sf_angle_restrict_pos_impl(double * theta)
+int gsl_sf_angle_restrict_pos_e(double * theta)
 {
   gsl_sf_result r;
-  int stat = gsl_sf_angle_restrict_pos_err_impl(*theta, &r);
+  int stat = gsl_sf_angle_restrict_pos_err_e(*theta, &r);
   *theta = r.val;
   return stat;
 }
 
 
-int gsl_sf_sin_err_impl(const double x, const double dx, gsl_sf_result * result)
+int gsl_sf_sin_err_e(const double x, const double dx, gsl_sf_result * result)
 {
-  int stat_s = gsl_sf_sin_impl(x, result);
+  int stat_s = gsl_sf_sin_e(x, result);
   result->err += fabs(cos(x) * dx);
   result->err += GSL_DBL_EPSILON * fabs(result->val);
   return stat_s;
 }
 
 
-int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
+int gsl_sf_cos_err_e(const double x, const double dx, gsl_sf_result * result)
 {
-  int stat_c = gsl_sf_cos_impl(x, result);
+  int stat_c = gsl_sf_cos_e(x, result);
   result->err += fabs(sin(x) * dx);
   result->err += GSL_DBL_EPSILON * fabs(result->val);
   return stat_c;
@@ -651,12 +646,11 @@ int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
 
 #if 0
 int
-gsl_sf_sin_pi_x_impl(const double x, gsl_sf_result * result)
+gsl_sf_sin_pi_x_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(-100.0 < x && x < 100.0) {
+  /* CHECK_POINTER(result) */
+
+  if(-100.0 < x && x < 100.0) {
     result->val = sin(M_PI * x) / (M_PI * x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -694,12 +688,11 @@ gsl_sf_sin_pi_x_impl(const double x, gsl_sf_result * result)
 #endif
 
 
-int gsl_sf_sinc_impl(double x, gsl_sf_result * result)
+int gsl_sf_sinc_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     const double ax = fabs(x);
 
     if(ax < 0.8) {
@@ -707,7 +700,7 @@ int gsl_sf_sinc_impl(double x, gsl_sf_result * result)
        * there is a zero there and the Chebyshev
        * accuracy will go to zero.
        */
-      return gsl_sf_cheb_eval_impl(&sinc_cs, 2.0*ax-1.0, result);
+      return gsl_sf_cheb_eval_e(&sinc_cs, 2.0*ax-1.0, result);
     }
     else if(ax < 100.0) {
       /* Small arguments are no problem.
@@ -723,7 +716,7 @@ int gsl_sf_sinc_impl(double x, gsl_sf_result * result)
        */
       const double r = M_PI*ax;
       gsl_sf_result s;
-      int stat_s = gsl_sf_sin_impl(r, &s);
+      int stat_s = gsl_sf_sin_e(r, &s);
       result->val = s.val/r;
       result->err = s.err/r + 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return stat_s;
@@ -733,152 +726,58 @@ int gsl_sf_sinc_impl(double x, gsl_sf_result * result)
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
+#include "eval.h"
 
-int gsl_sf_sin_e(const double x, gsl_sf_result * r)
+double gsl_sf_sin(const double x)
 {
-  int status = gsl_sf_sin_impl(x, r);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_sin_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_sin_e(x, &result));
 }
 
-int gsl_sf_cos_e(const double x, gsl_sf_result * r)
+double gsl_sf_cos(const double x)
 {
-  int status = gsl_sf_cos_impl(x, r);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_cos_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_cos_e(x, &result));
 }
 
-int gsl_sf_hypot_e(const double x, const double y, gsl_sf_result * r)
+double gsl_sf_hypot(const double x, const double y)
 {
-  int status = gsl_sf_hypot_impl(x, y, r);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_hypot_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_hypot_e(x, y, &result));
 }
 
-int gsl_sf_complex_sin_e(const double zr, const double zi, gsl_sf_result * szr, gsl_sf_result * szi)
+double gsl_sf_lnsinh(const double x)
 {
-  int status = gsl_sf_complex_sin_impl(zr, zi, szr, szi);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_complex_sin_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_lnsinh_e(x, &result));
 }
 
-int gsl_sf_complex_logsin_e(const double zr, const double zi, gsl_sf_result * lszr, gsl_sf_result * lszi)
+double gsl_sf_lncosh(const double x)
 {
-  int status = gsl_sf_complex_logsin_impl(zr, zi, lszr, lszi);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_complex_logsin_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_lncosh_e(x, &result));
 }
 
-int gsl_sf_complex_cos_e(const double zr, const double zi, gsl_sf_result * czr, gsl_sf_result * czi)
+double gsl_sf_angle_restrict_symm(const double theta)
 {
-  int status = gsl_sf_complex_cos_impl(zr, zi, czr, czi);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_complex_cos_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_angle_restrict_symm_e(&result));
 }
 
-int gsl_sf_lnsinh_e(const double x, gsl_sf_result * result)
+double gsl_sf_angle_restrict_pos(const double theta)
 {
-  int status = gsl_sf_lnsinh_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_lnsinh_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_lncosh_e(const double x, gsl_sf_result * result)
-{
-  int status = gsl_sf_lncosh_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_lncosh_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_polar_to_rect_e(const double r, const double theta, gsl_sf_result * x, gsl_sf_result * y)
-{
-  int status = gsl_sf_polar_to_rect_impl(r, theta, x, y);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_polar_to_rect_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_rect_to_polar_e(const double x, const double y, gsl_sf_result * r, gsl_sf_result * theta)
-{
-  int status = gsl_sf_rect_to_polar_impl(x, y, r, theta);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_rect_to_polar_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_angle_restrict_symm_e(double * theta)
-{
-  int status = gsl_sf_angle_restrict_symm_impl(theta);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_angle_restrict_symm_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_angle_restrict_pos_e(double * theta)
-{
-  int status = gsl_sf_angle_restrict_pos_impl(theta);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_angle_restrict_pos_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_angle_restrict_pos_e(&result));
 }
 
 #if 0
-int gsl_sf_sin_pi_x_e(const double x, gsl_sf_result * result)
+double gsl_sf_sin_pi_x(const double x)
 {
-  int status = gsl_sf_sin_pi_x_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_sin_pi_x_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_sin_pi_x_e(x, &result));
 }
 #endif
 
-int gsl_sf_sinc_e(const double x, gsl_sf_result * result)
+double gsl_sf_sinc(const double x)
 {
-  int status = gsl_sf_sinc_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_sinc_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_sinc_e(x, &result));
 }
 
-
-int gsl_sf_sin_err_e(const double x, const double dx, gsl_sf_result * result)
+double gsl_sf_exp_cos(const double x, const double dx)
 {
-  int status = gsl_sf_sin_err_impl(x, dx, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_sin_err_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_exp_cos_e(const double x, const double dx, gsl_sf_result * result)
-{
-  int status = gsl_sf_cos_err_impl(x, dx, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_cos_err_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_cos_err_e(x, dx, &result));
 }

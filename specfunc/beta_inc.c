@@ -86,17 +86,17 @@ beta_cont_frac(
   result->err = iter_count * 4.0 * GSL_DBL_EPSILON * fabs(cf);
 
   if(iter_count >= max_iter)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_beta_inc_impl(
+gsl_sf_beta_inc_e(
   const double a,
   const double b,
   const double x,
@@ -106,7 +106,7 @@ gsl_sf_beta_inc_impl(
   if(a <= 0.0 || b <= 0.0 || x < 0.0 || x > 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -123,19 +123,19 @@ gsl_sf_beta_inc_impl(
     gsl_sf_result ln_x;
     gsl_sf_result ln_1mx;
     gsl_sf_result prefactor;
-    const int stat_ln_beta = gsl_sf_lnbeta_impl(a, b, &ln_beta);
-    const int stat_ln_1mx = gsl_sf_log_1plusx_impl(-x, &ln_1mx);
-    const int stat_ln_x = gsl_sf_log_impl(x, &ln_x);
+    const int stat_ln_beta = gsl_sf_lnbeta_e(a, b, &ln_beta);
+    const int stat_ln_1mx = gsl_sf_log_1plusx_e(-x, &ln_1mx);
+    const int stat_ln_x = gsl_sf_log_e(x, &ln_x);
     const int stat_ln = GSL_ERROR_SELECT_3(stat_ln_beta, stat_ln_1mx, stat_ln_x);
 
     const double ln_pre_val = -ln_beta.val + a * ln_x.val + b * ln_1mx.val;
     const double ln_pre_err =  ln_beta.err + fabs(a*ln_x.err) + fabs(b*ln_1mx.err);
-    const int stat_exp = gsl_sf_exp_err_impl(ln_pre_val, ln_pre_err, &prefactor);
+    const int stat_exp = gsl_sf_exp_err_e(ln_pre_val, ln_pre_err, &prefactor);
 
     if(stat_ln != GSL_SUCCESS) {
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_ESANITY;
+      GSL_ERROR ("error", GSL_ESANITY);
     }
 
     if(x < (a + 1.0)/(a+b+2.0)) {
@@ -148,7 +148,7 @@ gsl_sf_beta_inc_impl(
 
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
       if(result->val == 0.0 && stat == GSL_SUCCESS) {
-        return GSL_EUNDRFLW;
+        GSL_ERROR ("error", GSL_EUNDRFLW);
       }
       else {
         return stat;
@@ -166,7 +166,7 @@ gsl_sf_beta_inc_impl(
       result->err += 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(term));
       stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
       if(result->val == 0.0 && stat == GSL_SUCCESS) {
-        return GSL_EUNDRFLW;
+        GSL_ERROR ("error", GSL_EUNDRFLW);
       }
       else {
         return stat;
@@ -176,21 +176,11 @@ gsl_sf_beta_inc_impl(
 }
 
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-
-int
-gsl_sf_beta_inc_e(
-  const double a,
-  const double b,
-  const double x,
-  gsl_sf_result * result
-  )
+double gsl_sf_beta_inc(const double a, const double b, const double x)
 {
-  int status = gsl_sf_beta_inc_impl(a, b, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_beta_inc_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_beta_inc_e(a, b, x, &result));
 }

@@ -30,21 +30,21 @@
  *   sign = -1  ==> Jnu
  *   sign = +1  ==> Inu
  */
-int gsl_sf_bessel_IJ_taylor_impl(const double nu, const double x,
+int gsl_sf_bessel_IJ_taylor_e(const double nu, const double x,
                                  const int sign,
                                  const int kmax,
 				 const double threshold,
                                  gsl_sf_result * result
                                  );
 
-int gsl_sf_bessel_Jnu_asympx_impl(const double nu, const double x, gsl_sf_result * result);
-int gsl_sf_bessel_Ynu_asympx_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Jnu_asympx_e(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Ynu_asympx_e(const double nu, const double x, gsl_sf_result * result);
 
-int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Inu_scaled_asympx_e(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Knu_scaled_asympx_e(const double nu, const double x, gsl_sf_result * result);
 
-int gsl_sf_bessel_Inu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result);
-int gsl_sf_bessel_Knu_scaled_asymp_unif_impl(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Inu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_result * result);
+int gsl_sf_bessel_Knu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_result * result);
 
 
 /* ratio = J_{nu+1}(x) / J_nu(x)
@@ -86,8 +86,8 @@ gsl_sf_bessel_K_scaled_steed_temme_CF2(const double nu, const double x,
  *   cos(y - pi/4 + eps)
  *   sin(y - pi/4 + eps)
  */
-int gsl_sf_bessel_cos_pi4_impl(double y, double eps, gsl_sf_result * result);
-int gsl_sf_bessel_sin_pi4_impl(double y, double eps, gsl_sf_result * result);
+int gsl_sf_bessel_cos_pi4_e(double y, double eps, gsl_sf_result * result);
+int gsl_sf_bessel_sin_pi4_e(double y, double eps, gsl_sf_result * result);
 
 
 #endif /* !_BESSEL_H_ */

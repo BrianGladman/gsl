@@ -85,10 +85,9 @@ gsl_ran_gaussian_tail_pdf (const double x, const double a, const double sigma)
       double N, p;
       double u = x / sigma ;
 
-      gsl_sf_result f;
-      gsl_sf_erfc_impl (a / (sqrt (2.0) * sigma), &f);
+      double f = gsl_sf_erfc (a / (sqrt (2.0) * sigma));
 
-      N = 0.5 * f.val;
+      N = 0.5 * f;
 
       p = (1 / (N * sqrt (2 * M_PI) * sigma)) * exp (-u * u / 2);
 

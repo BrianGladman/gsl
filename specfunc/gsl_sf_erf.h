@@ -43,16 +43,16 @@ __BEGIN_DECLS
  *
  * exceptions: none
  */
-int gsl_sf_erfc_impl(double x, gsl_sf_result * result);
 int gsl_sf_erfc_e(double x, gsl_sf_result * result);
+double gsl_sf_erfc(double x);
 
 
 /* Log Complementary Error Function
  *
  * exceptions: none
  */
-int gsl_sf_log_erfc_impl(double x, gsl_sf_result * result);
 int gsl_sf_log_erfc_e(double x, gsl_sf_result * result);
+double gsl_sf_log_erfc(double x);
 
 
 /* Error Function
@@ -60,8 +60,8 @@ int gsl_sf_log_erfc_e(double x, gsl_sf_result * result);
  *
  * exceptions: none
  */
-int gsl_sf_erf_impl(double x, gsl_sf_result * result);
 int gsl_sf_erf_e(double x, gsl_sf_result * result);
+double gsl_sf_erf(double x);
 
 
 /* Probability functions:
@@ -70,10 +70,10 @@ int gsl_sf_erf_e(double x, gsl_sf_result * result);
  *
  * exceptions: none
  */
-int gsl_sf_erf_Z_impl(double x, gsl_sf_result * result);
-int gsl_sf_erf_Q_impl(double x, gsl_sf_result * result);
 int gsl_sf_erf_Z_e(double x, gsl_sf_result * result);
 int gsl_sf_erf_Q_e(double x, gsl_sf_result * result);
+double gsl_sf_erf_Z(double x);
+double gsl_sf_erf_Q(double x);
 
 
 __END_DECLS

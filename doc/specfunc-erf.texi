@@ -11,17 +11,17 @@
 We have
 @math{ erfc(x) = 2/\sqrt(Pi) \int_x^\infty \exp(-t^2) }.
 
-@deftypefun  int gsl_sf_erfc_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_erfc_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_erfc (double @var{x})
+@deftypefunx int gsl_sf_erfc_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: none
 @end deftypefun
 
 
 @subsection Log Complementary Error Function
 
-@deftypefun  int gsl_sf_log_erfc_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_log_erfc_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_log_erfc (double @var{x})
+@deftypefunx int gsl_sf_log_erfc_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: none
 @end deftypefun
 
 
@@ -29,9 +29,9 @@ Exceptional Return Values: none
 We have
 @math{ erf(x) = 2/\sqrt(Pi) \int_0^x dt \exp(-t^2) }.
 
-@deftypefun  int gsl_sf_erf_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_erf_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_erf (double @var{x})
+@deftypefunx int gsl_sf_erf_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: none
 @end deftypefun
 
 
@@ -40,9 +40,9 @@ Exceptional Return Values: none
 Z(x) :  Abramowitz+Stegun 26.2.1
 Q(x) :  Abramowitz+Stegun 26.2.3
 
-@deftypefun  int gsl_sf_erf_Z_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_erf_Q_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_erf_Z_e (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_erf_Q_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_erf_Z (double @var{x})
+@deftypefunx double gsl_sf_erf_Q (double @var{x})
+@deftypefunx int gsl_sf_erf_Z_e (double @var{x}, gsl_sf_result * @var{result})
+@deftypefunx int gsl_sf_erf_Q_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: none
 @end deftypefun

@@ -50,7 +50,7 @@ gsl_odeiv_evolve_new(void)
  * and/or a monitor object if given.
  */
 int
-gsl_odeiv_evolve_impl(
+gsl_odeiv_evolve_apply(
   gsl_odeiv_evolve * e, 
   gsl_odeiv_evolve_mon * mon,
   gsl_odeiv_evolve_control * con,
@@ -61,8 +61,6 @@ gsl_odeiv_evolve_impl(
 {
   double h = fabs(hstart);
   double t = t0;
-
-  if(e == 0 || step == 0 || dydt == 0) return GSL_EFAULT;
 
   if(e->yerr == 0 || e->y0 == 0 || e->dimension != dydt->dimension) {
     if(e->yerr != 0) free(e->yerr);
@@ -110,10 +108,10 @@ gsl_odeiv_evolve_impl(
       if(h < 8.0 * GSL_DBL_EPSILON) return GSL_EUNDRFLW; /* FIXME */
 
       if(step->can_use_dydt) {
-        step_stat = gsl_odeiv_step_impl(step, t, h, y, e->yerr, e->dydt_in, e->dydt_out, dydt);
+        step_stat = gsl_odeiv_step_apply(step, t, h, y, e->yerr, e->dydt_in, e->dydt_out, dydt);
       }
       else {
-        step_stat = gsl_odeiv_step_impl(step, t, h, y, e->yerr, 0, e->dydt_out, dydt);
+        step_stat = gsl_odeiv_step_apply(step, t, h, y, e->yerr, 0, e->dydt_out, dydt);
       }
       t += h;
       e->last_step = h;

@@ -7,22 +7,22 @@ The Debye integrals are defined by
 @math{ D_n(x) = n/x^n \int_0^x dt t^n/(e^t - 1) }.
 
 
-@deftypefun  int gsl_sf_debye_1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_debye_1_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EDOM
+@deftypefun double gsl_sf_debye_1 (double @var{x})
+@deftypefunx int gsl_sf_debye_1_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
-@deftypefun  int gsl_sf_debye_2_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_debye_2_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_debye_2 (double @var{x})
+@deftypefunx int gsl_sf_debye_2_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun  int gsl_sf_debye_3_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_debye_3_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_debye_3 (double @var{x})
+@deftypefunx int gsl_sf_debye_3_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun  int gsl_sf_debye_4_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_debye_4_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@deftypefun double gsl_sf_debye_4 (double @var{x})
+@deftypefunx int gsl_sf_debye_4_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun

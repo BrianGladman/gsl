@@ -111,15 +111,14 @@ gsl_ran_hypergeometric_pdf (const unsigned int k,
     }
   else 
     {
-      double f;
-      gsl_sf_result c1, c2, c3;
+      double p;
       
-      gsl_sf_lnchoose_impl(n1,k, &c1);
-      gsl_sf_lnchoose_impl(n2,t-k, &c2);
-      gsl_sf_lnchoose_impl(n1+n2,t,&c3);
+      double c1 = gsl_sf_lnchoose(n1,k);
+      double c2 = gsl_sf_lnchoose(n2,t-k);
+      double c3 = gsl_sf_lnchoose(n1+n2,t);
 
-      f = (c1.val + c2.val - c3.val) ;
+      p = exp(c1 + c2 - c3) ;
 
-      return exp(f);
+      return p;
     }
 }

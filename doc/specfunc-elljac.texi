@@ -4,9 +4,8 @@
 @cindex elliptic functions (Jacobi)
 
 
-@deftypefun  int gsl_sf_elljac_impl (double u, double m, double * sn, double * cn, double * dn)
-@deftypefunx int gsl_sf_elljac_e (double u, double m, double * sn, double * cn, double * dn)
+@deftypefun int gsl_sf_elljac_e (double @var{u}, double @var{m}, double * @var{sn}, double * @var{cn}, double * @var{dn})
 Jacobian elliptic functions sn, dn, cn,
 calculated by descending Landen transformations.
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun

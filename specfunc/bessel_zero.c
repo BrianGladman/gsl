@@ -1020,15 +1020,14 @@ olver_f1(double z, double minus_zeta)
 
 
 int
-gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(s == 0){
+  /* CHECK_POINTER(result) */
+
+  if(s == 0){
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EINVAL;
+    GSL_ERROR ("error", GSL_EINVAL);
   }
   else {
     /* See [F. Lether, J. Comp. Appl .Math. 67, 167 (1996)]. */
@@ -1057,12 +1056,11 @@ gsl_sf_bessel_zero_J0_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(s == 0) {
+  /* CHECK_POINTER(result) */
+
+  if(s == 0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -1094,15 +1092,14 @@ gsl_sf_bessel_zero_J1_impl(int s, gsl_sf_result * result)
 
 
 int
-gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
+gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(nu <= -1.0 || s < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(nu <= -1.0 || s < 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(s == 0) {
     result->val = 0.0;
@@ -1113,7 +1110,7 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
     /* This can be done, I'm just lazy now. */
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(s == 1) {
     /* Chebyshev fits for the first positive zero.
@@ -1179,7 +1176,7 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
     const double beta = (s + 0.5*nu - 0.25) * M_PI;
     const double mc   = mcmahon_correction(4.0*nu*nu, beta);
     gsl_sf_result rat12;
-    gsl_sf_pow_int_impl(nu/beta, 14, &rat12);
+    gsl_sf_pow_int_e(nu/beta, 14, &rat12);
     result->val  = beta * mc;
     result->err  = 4.0 * fabs(beta) * rat12.val;
     result->err += 4.0 * fabs(GSL_DBL_EPSILON * result->val);
@@ -1188,7 +1185,7 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
   else {
     /* Olver uniform asymptotic. */
     gsl_sf_result as;
-    const int stat_as = gsl_sf_airy_zero_Ai_impl(s, &as);
+    const int stat_as = gsl_sf_airy_zero_Ai_e(s, &as);
     const double minus_zeta = -pow(nu,-2.0/3.0) * as.val;
     const double z  = gsl_sf_bessel_Olver_zofmzeta(minus_zeta);
     const double f1 = olver_f1(z, minus_zeta);
@@ -1200,33 +1197,21 @@ gsl_sf_bessel_zero_Jnu_impl(double nu, int s, gsl_sf_result * result)
 }
 
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_bessel_zero_J0_e(int s, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_zero_J0(int s)
 {
-  int status = gsl_sf_bessel_zero_J0_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_zero_J0_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_zero_J0_e(s, &result));
 }
 
-int
-gsl_sf_bessel_zero_J1_e(int s, gsl_sf_result * result)
+double gsl_sf_bessel_zero_J1(int s)
 {
-  int status = gsl_sf_bessel_zero_J1_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_zero_J1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_zero_J1_e(s, &result));
 }
 
-int
-gsl_sf_bessel_zero_Jnu_e(double nu, int s, gsl_sf_result * result)
+double gsl_sf_bessel_zero_Jnu(double nu, int s)
 {
-  int status = gsl_sf_bessel_zero_Jnu_impl(nu, s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_zero_Jnu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_zero_Jnu_e(nu, s, &result));
 }

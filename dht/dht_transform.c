@@ -35,20 +35,20 @@ dht_transform_allocator(gsl_dht_transform * t, size_t size)
 {
   t->j = (double *)malloc((size+2)*sizeof(double));
   if(t->j == 0) {
-    return GSL_ENOMEM;
+    GSL_ERROR("could not allocate memory for j", GSL_ENOMEM);
   }
 
   t->Jjj = (double *)malloc(size*(size+1)/2 * sizeof(double));
   if(t->Jjj == 0) {
     free(t->j);
-    return GSL_ENOMEM;
+    GSL_ERROR("could not allocate memory for Jjj", GSL_ENOMEM);
   }
 
   t->J2 = (double *)malloc((size+1)*sizeof(double));
   if(t->J2 == 0) {
     free(t->Jjj);
     free(t->j);
-    return GSL_ENOMEM;
+    GSL_ERROR("could not allocate memory for J2", GSL_ENOMEM);
   }
 
   return GSL_SUCCESS;
@@ -64,11 +64,11 @@ dht_bessel_zeros(gsl_dht_transform * t)
   int stat_z = 0;
   t->j[0] = 0.0;
   for(s=1; s < t->size + 2; s++) {
-    stat_z += gsl_sf_bessel_zero_Jnu_impl(t->nu, s, &z);
+    stat_z += gsl_sf_bessel_zero_Jnu_e(t->nu, s, &z);
     t->j[s] = z.val;
   }
   if(stat_z != 0) {
-    return GSL_EFAILED;
+    GSL_ERROR("could not compute bessel zeroes", GSL_EFAILED);
   }
   else {
     return GSL_SUCCESS;
@@ -102,7 +102,7 @@ gsl_dht_transform_new(size_t size, double nu, double xmax)
 	GSL_ERROR_VAL("gsl_dht_transform_new: alloc failed", GSL_ENOMEM, 0);
       }
       else {
-        if(gsl_dht_transform_recalc_impl(t, nu, xmax) != GSL_SUCCESS) {
+        if(gsl_dht_transform_recalc(t, nu, xmax) != GSL_SUCCESS) {
 	  free(t->J2);
 	  free(t->Jjj);
 	  free(t->j);
@@ -117,10 +117,12 @@ gsl_dht_transform_new(size_t size, double nu, double xmax)
 
 
 int
-gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax)
+gsl_dht_transform_recalc(gsl_dht_transform * t, double nu, double xmax)
 {
-  if(xmax <= 0.0 || nu < 0.0) {
-    return GSL_EDOM;
+  if(xmax <= 0.0) {
+    GSL_ERROR ("xmax is not positive", GSL_EDOM);
+  } else if(nu < 0.0) {
+    GSL_ERROR ("nu is negative", GSL_EDOM);
   }
   else {
     size_t n, m;
@@ -142,7 +144,7 @@ gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax)
     t->J2[0] = 0.0;
     for(m=1; m<t->size+1; m++) {
       gsl_sf_result J;
-      stat_J += gsl_sf_bessel_Jnu_impl(nu + 1.0, t->j[m], &J);
+      stat_J += gsl_sf_bessel_Jnu_e(nu + 1.0, t->j[m], &J);
       t->J2[m] = J.val * J.val;
     }
 
@@ -152,13 +154,13 @@ gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax)
       for(m=1; m<=n; m++) {
         double arg = t->j[n] * t->j[m] / jN;
         gsl_sf_result J;
-        stat_J += gsl_sf_bessel_Jnu_impl(nu, arg, &J);
+        stat_J += gsl_sf_bessel_Jnu_e(nu, arg, &J);
         t->Jjj[n*(n-1)/2 + m - 1] = J.val;
       }
     }
 
     if(stat_J != 0) {
-      return GSL_EFAILED;
+      GSL_ERROR("error computing bessel function", GSL_EFAILED);
     }
     else {
       return stat_bz;
@@ -227,13 +229,3 @@ gsl_dht_transform_apply(const gsl_dht_transform * t, double * f_in, double * f_o
   return GSL_SUCCESS;
 }
 
-
-int
-gsl_dht_transform_recalc_e(gsl_dht_transform * t, double nu, double xmax)
-{
-  int status = gsl_dht_transform_recalc_impl(t, nu, xmax);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_dht_transform_recalc_e", status);
-  }
-  return status;
-}

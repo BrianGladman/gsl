@@ -26,24 +26,11 @@
 
 
 int
-gsl_interp_eval_impl (const gsl_interp_obj * obj,
+gsl_interp_eval_e (const gsl_interp_obj * obj,
 		      const double xa[], const double ya[], double x,
 		      gsl_interp_accel * a, double *y)
 {
-  return obj->eval_impl (obj, xa, ya, x, a, y);
-}
-
-int
-gsl_interp_eval_e (const gsl_interp_obj * obj,
-		   const double xa[], const double ya[], double x,
-		   gsl_interp_accel * a, double *y)
-{
-  int status = obj->eval_impl (obj, xa, ya, x, a, y);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_ERROR ("gsl_interp_eval_e", status);
-    }
-  return status;
+  return obj->eval (obj, xa, ya, x, a, y);
 }
 
 double
@@ -52,7 +39,7 @@ gsl_interp_eval (const gsl_interp_obj * obj,
 		 gsl_interp_accel * a)
 {
   double y;
-  int status = obj->eval_impl (obj, xa, ya, x, a, &y);
+  int status = obj->eval (obj, xa, ya, x, a, &y);
   if (status != GSL_SUCCESS)
     {
       GSL_WARNING ("gsl_interp_eval", status);
@@ -62,26 +49,12 @@ gsl_interp_eval (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_deriv_impl (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv_e (const gsl_interp_obj * obj,
 			    const double xa[], const double ya[], double x,
 			    gsl_interp_accel * a,
 			    double *dydx)
 {
-  return obj->eval_d_impl (obj, xa, ya, x, a, dydx);
-}
-
-int
-gsl_interp_eval_deriv_e (const gsl_interp_obj * obj,
-			 const double xa[], const double ya[], double x,
-			 gsl_interp_accel * a,
-			 double *dydx)
-{
-  int status = obj->eval_d_impl (obj, xa, ya, x, a, dydx);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_ERROR ("gsl_interp_eval_deriv_e", status);
-    }
-  return status;
+  return obj->eval_d (obj, xa, ya, x, a, dydx);
 }
 
 double
@@ -90,7 +63,7 @@ gsl_interp_eval_deriv (const gsl_interp_obj * obj,
 		       gsl_interp_accel * a)
 {
   double dydx;
-  int status = obj->eval_d_impl (obj, xa, ya, x, a, &dydx);
+  int status = obj->eval_d (obj, xa, ya, x, a, &dydx);
   if (status != GSL_SUCCESS)
     {
       GSL_WARNING ("gsl_interp_eval_deriv", status);
@@ -100,26 +73,12 @@ gsl_interp_eval_deriv (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_deriv2_impl (const gsl_interp_obj * obj,
+gsl_interp_eval_deriv2_e (const gsl_interp_obj * obj,
 			     const double xa[], const double ya[], double x,
 			     gsl_interp_accel * a,
 			     double * d2)
 {
-  return obj->eval_d2_impl (obj, xa, ya, x, a, d2);
-}
-
-int
-gsl_interp_eval_deriv2_e (const gsl_interp_obj * obj,
-			  const double xa[], const double ya[], double x,
-			  gsl_interp_accel * a,
-			  double *d2)
-{
-  int status = obj->eval_d2_impl (obj, xa, ya, x, a, d2);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_ERROR ("gsl_interp_eval_deriv2_e", status);
-    }
-  return status;
+  return obj->eval_d2 (obj, xa, ya, x, a, d2);
 }
 
 double
@@ -128,7 +87,7 @@ gsl_interp_eval_deriv2 (const gsl_interp_obj * obj,
 		        gsl_interp_accel * a)
 {
   double d2;
-  int status = obj->eval_d2_impl (obj, xa, ya, x, a, &d2);
+  int status = obj->eval_d2 (obj, xa, ya, x, a, &d2);
   if (status != GSL_SUCCESS)
     {
       GSL_WARNING ("gsl_interp_eval_deriv2", status);
@@ -138,29 +97,15 @@ gsl_interp_eval_deriv2 (const gsl_interp_obj * obj,
 
 
 int
-gsl_interp_eval_integ_impl (const gsl_interp_obj * obj,
+gsl_interp_eval_integ_e (const gsl_interp_obj * obj,
 			    const double xa[], const double ya[],
                             double a, double b,
 			    gsl_interp_accel * acc,
 			    double * result)
 {
-  return obj->eval_i_impl (obj, xa, ya, acc, a, b, result);
+  return obj->eval_i (obj, xa, ya, acc, a, b, result);
 }
 
-int
-gsl_interp_eval_integ_e (const gsl_interp_obj * obj,
-			 const double xa[], const double ya[],
-                         double a, double b,
-			 gsl_interp_accel * acc,
-			 double * result)
-{
-  int status = obj->eval_i_impl (obj, xa, ya, acc, a, b, result);
-  if (status != GSL_SUCCESS)
-    {
-      GSL_ERROR ("gsl_interp_eval_integ_e", status);
-    }
-  return status;
-}
 
 double
 gsl_interp_eval_integ (const gsl_interp_obj * obj,
@@ -169,7 +114,7 @@ gsl_interp_eval_integ (const gsl_interp_obj * obj,
 		       gsl_interp_accel * acc)
 {
   double result;
-  int status = obj->eval_i_impl (obj, xa, ya, acc, a, b, &result);
+  int status = obj->eval_i (obj, xa, ya, acc, a, b, &result);
   if (status != GSL_SUCCESS)
     {
       GSL_WARNING ("gsl_interp_eval_integ", status);

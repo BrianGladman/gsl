@@ -86,10 +86,8 @@ double
 gsl_ran_poisson_pdf (const unsigned int k, const double mu)
 {
   double p;
-  gsl_sf_result lf;
+  double lf = gsl_sf_lnfact (k); 
 
-  gsl_sf_lnfact_impl (k, &lf); 
-
-  p = exp (log (mu) * k - lf.val - mu);
+  p = exp (log (mu) * k - lf - mu);
   return p;
 }

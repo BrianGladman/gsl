@@ -141,13 +141,13 @@ gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
   if(minus_zeta < 1.0) {
     const double x = 2.0*minus_zeta - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zofmzeta_a_cs, x, &c);
+    gsl_sf_cheb_eval_e(&zofmzeta_a_cs, x, &c);
     return c.val;
   }
   else if(minus_zeta < 10.0) {
     const double x = (2.0*minus_zeta - 11.0)/9.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zofmzeta_b_cs, x, &c);
+    gsl_sf_cheb_eval_e(&zofmzeta_b_cs, x, &c);
     return c.val;
   }
   else {
@@ -155,7 +155,7 @@ gsl_sf_bessel_Olver_zofmzeta(double minus_zeta)
     const double p = pow(minus_zeta, 3.0/2.0);
     const double x = 2.0*TEN_32/p - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zofmzeta_c_cs, x, &c);
+    gsl_sf_cheb_eval_e(&zofmzeta_c_cs, x, &c);
     return c.val * p;
   }
 }
@@ -618,7 +618,7 @@ static double olver_B2(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&B2_lt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&B2_lt1_cs, x, &c);
     return  c.val / z;
   }
   else if(z <= 1.2) {
@@ -639,7 +639,7 @@ static double olver_B2(double z, double abs_zeta)
     const double zi = 1.0/z;
     const double x  = 12.0/5.0 * zi - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&B2_gt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&B2_gt1_cs, x, &c);
     return c.val * zi*zi*zi;
   }
 }
@@ -650,7 +650,7 @@ static double olver_B3(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&B3_lt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&B3_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.2) {
@@ -668,7 +668,7 @@ static double olver_B3(double z, double abs_zeta)
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&B3_gt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&B3_gt1_cs, x, &c);
     return  c.val * zi2*zi2*zi2;
   }
 }
@@ -773,7 +773,7 @@ static double olver_A3(double z, double abs_zeta)
   if(z < 0.9) {
     const double x = 20.0*z/9.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&A3_lt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&A3_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.1) {
@@ -791,7 +791,7 @@ static double olver_A3(double z, double abs_zeta)
     const double x   = 11.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&A3_gt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&A3_gt1_cs, x, &c);
     return  c.val * zi2*zi2*zi2;
   }
 }
@@ -802,7 +802,7 @@ static double olver_A4(double z, double abs_zeta)
   if(z < 0.8) {
     const double x = 5.0*z/2.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&A4_lt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&A4_lt1_cs, x, &c);
     return c.val;
   }
   else if(z < 1.2) {
@@ -819,7 +819,7 @@ static double olver_A4(double z, double abs_zeta)
     const double x   = 12.0/(5.0*z) - 1.0;
     const double zi2 = 1.0/(z*z);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&A4_gt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&A4_gt1_cs, x, &c);
     return c.val * zi2*zi2*zi2*zi2;
   }
 }
@@ -858,15 +858,14 @@ static double olver_Bsum(double nu, double z, double abs_zeta)
  *    nu = 20: uniformly good to > 13D
  *
  */
-int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result)
+int gsl_sf_bessel_Jnu_asymp_Olver_e(double nu, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0 || nu <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }  
   else {
     double zeta, abs_zeta;
@@ -914,8 +913,8 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_a  = gsl_sf_airy_Ai_impl(arg, GSL_MODE_DEFAULT, &ai);
-    stat_ap = gsl_sf_airy_Ai_deriv_impl(arg, GSL_MODE_DEFAULT, &aip);
+    stat_a  = gsl_sf_airy_Ai_e(arg, GSL_MODE_DEFAULT, &ai);
+    stat_ap = gsl_sf_airy_Ai_deriv_e(arg, GSL_MODE_DEFAULT, &aip);
 
     result->val  = pre * (ai.val*asum/crnu + aip.val*bsum/(nu*crnu*crnu));
     result->err  = pre * (ai.err * fabs(asum/crnu));
@@ -936,15 +935,14 @@ int gsl_sf_bessel_Jnu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
  *    nu = 10: uniformly good to > 10D
  *    nu = 20: uniformly good to > 13D
  */
-int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * result)
+int gsl_sf_bessel_Ynu_asymp_Olver_e(double nu, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0 || nu <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }  
   else {
     double zeta, abs_zeta;
@@ -993,8 +991,8 @@ int gsl_sf_bessel_Ynu_asymp_Olver_impl(double nu, double x, gsl_sf_result * resu
     bsum = olver_Bsum(nu, z, abs_zeta);
 
     arg  = crnu*crnu * zeta;
-    stat_b = gsl_sf_airy_Bi_impl(arg, GSL_MODE_DEFAULT, &bi);
-    stat_d = gsl_sf_airy_Bi_deriv_impl(arg, GSL_MODE_DEFAULT, &bip);
+    stat_b = gsl_sf_airy_Bi_e(arg, GSL_MODE_DEFAULT, &bi);
+    stat_d = gsl_sf_airy_Bi_deriv_e(arg, GSL_MODE_DEFAULT, &bip);
 
     result->val  = -pre * (bi.val*asum/crnu + bip.val*bsum/(nu*crnu*crnu));
     result->err  =  pre * (bi.err * fabs(asum/crnu));

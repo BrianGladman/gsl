@@ -44,13 +44,12 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EOVRFLW, GSL_EUNDRFLW
  */
-int gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result);
 int gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result);
+double gsl_sf_multiply(const double x, const double y);
 
 
 /* Multiplication of quantities with associated errors.
  */
-int gsl_sf_multiply_err_impl(const double x, const double dx, const double y, const double dy, gsl_sf_result * result);
 int gsl_sf_multiply_err_e(const double x, const double dx, const double y, const double dy, gsl_sf_result * result);
 
 

@@ -43,15 +43,15 @@ __BEGIN_DECLS
 
 /* R_1 := 2Z sqrt(Z) exp(-Z r)
  */
-int gsl_sf_hydrogenicR_1_impl(const double Z, const double r, gsl_sf_result * result);
 int gsl_sf_hydrogenicR_1_e(const double Z, const double r, gsl_sf_result * result);
+double gsl_sf_hydrogenicR_1(const double Z, const double r);
 
 /* R_n := norm exp(-Z r/n) (2Z/n)^l Laguerre[n-l-1, 2l+1, 2Z/n r]
  *
  * normalization such that psi(n,l,r) = R_n Y_{lm}
  */
-int gsl_sf_hydrogenicR_impl(const int n, const int l, const double Z, const double r, gsl_sf_result * result);
 int gsl_sf_hydrogenicR_e(const int n, const int l, const double Z, const double r, gsl_sf_result * result);
+double gsl_sf_hydrogenicR(const int n, const int l, const double Z, const double r);
 
 
 /* Coulomb wave functions F_{lam_F}(eta,x), G_{lam_G}(eta,x)
@@ -73,7 +73,7 @@ int gsl_sf_hydrogenicR_e(const int n, const int l, const double Z, const double 
  *   G_L'(eta,x) = gcp[k_L] * exp(exp_G)
  */
 int
-gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
+gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
                             const double lam_F,
 			    const int  k_lam_G,
                             gsl_sf_result * F, gsl_sf_result * Fp,
@@ -82,13 +82,7 @@ gsl_sf_coulomb_wave_FG_impl(const double eta, const double x,
 
 
 /* F_L(eta,x) as array */
-int gsl_sf_coulomb_wave_F_array_impl(
-  double lam_min, int kmax,
-  double eta, double x,
-  double * fc_array,
-  double * F_exponent
-  );
-int gsl_sf_coulomb_wave_F_array_e(
+int gsl_sf_coulomb_wave_F_array(
   double lam_min, int kmax,
   double eta, double x,
   double * fc_array,
@@ -96,40 +90,27 @@ int gsl_sf_coulomb_wave_F_array_e(
   );
 
 /* F_L(eta,x), G_L(eta,x) as arrays */
-int gsl_sf_coulomb_wave_FG_array_impl(double lam_min, int kmax,
+int gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
                                 double eta, double x,
                                 double * fc_array, double * gc_array,
 				double * F_exponent,
 				double * G_exponent
                                 );
-int gsl_sf_coulomb_wave_FG_array_e(double lam_min, int kmax,
-                             double eta, double x,
-                             double * fc_array, double * gc_array,
-			     double * F_exponent,
-			     double * G_exponent
-                             );
 
 /* F_L(eta,x), G_L(eta,x), F'_L(eta,x), G'_L(eta,x) as arrays */
-int gsl_sf_coulomb_wave_FGp_array_impl(double lam_min, int kmax,
+int gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
                                 double eta, double x,
                                 double * fc_array, double * fcp_array,
 				double * gc_array, double * gcp_array,
 				double * F_exponent,
 				double * G_exponent
                                 );
-int gsl_sf_coulomb_wave_FGp_array_e(double lam_min, int kmax,
-                             double eta, double x,
-                             double * fc_array, double * fcp_array,
-			     double * gc_array, double * gcp_array,
-			     double * F_exponent,
-			     double * G_exponent
-                             );
 
 /* Coulomb wave function divided by the argument,
  * F(xi, eta)/xi. This is the function which reduces to
  * spherical Bessel functions in the limit eta->0.
  */
-int gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
+int gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
                                         double eta, double x,
 	              	                double * fc_array,
 			                double * F_exponent
@@ -139,7 +120,7 @@ int gsl_sf_coulomb_wave_sphF_array_impl(double lam_min, int kmax,
 /* Coulomb wave function normalization constant.
  * [Abramowitz+Stegun 14.1.8, 14.1.9]
  */
-int gsl_sf_coulomb_CL_impl(double L, double eta, gsl_sf_result * result);
+int gsl_sf_coulomb_CL_e(double L, double eta, gsl_sf_result * result);
 int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double * cl);
 
 

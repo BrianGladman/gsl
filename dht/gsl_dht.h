@@ -58,9 +58,7 @@ gsl_dht_transform * gsl_dht_transform_new(size_t size, double nu, double xmax);
  * You cannot change the size of the object since the internal
  * allocation is reused.
  */
-int gsl_dht_transform_recalc_impl(gsl_dht_transform * t, double nu, double xmax);
-int gsl_dht_transform_recalc_e(gsl_dht_transform * t, double nu, double xmax);
-
+int gsl_dht_transform_recalc(gsl_dht_transform * t, double nu, double xmax);
 
 /* The n'th computed x sample point for a given transform.
  * 0 <= n <= size-1

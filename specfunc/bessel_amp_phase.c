@@ -172,7 +172,7 @@ const gsl_sf_cheb_series _gsl_sf_bessel_amp_phase_bth1_cs = {
 
 
 int
-gsl_sf_bessel_asymp_Mnu_impl(const double nu, const double x, double * result)
+gsl_sf_bessel_asymp_Mnu_e(const double nu, const double x, double * result)
 {
   const double r  = 2.0*nu/x;
   const double r2 = r*r;
@@ -186,7 +186,7 @@ gsl_sf_bessel_asymp_Mnu_impl(const double nu, const double x, double * result)
 
 
 int
-gsl_sf_bessel_asymp_thetanu_corr_impl(const double nu, const double x, double * result)
+gsl_sf_bessel_asymp_thetanu_corr_e(const double nu, const double x, double * result)
 {
   const double r  = 2.0*nu/x;
   const double r2 = r*r;

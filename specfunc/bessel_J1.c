@@ -70,16 +70,15 @@ static gsl_sf_cheb_series bj1_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
 {
   double y = fabs(x);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(y == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(y == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -87,7 +86,7 @@ int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
   else if(y < 2.0*GSL_DBL_MIN) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
   else if(y < ROOT_EIGHT * GSL_SQRT_DBL_EPSILON) {
     result->val = 0.5*x;
@@ -96,7 +95,7 @@ int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
   }
   else if(y < 4.0) {
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&bj1_cs, 0.125*y*y-1.0, &c);
+    gsl_sf_cheb_eval_e(&bj1_cs, 0.125*y*y-1.0, &c);
     result->val = x * (0.25 + c.val);
     result->err = fabs(x * c.err);
     return GSL_SUCCESS;
@@ -110,9 +109,9 @@ int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
     gsl_sf_result ca;
     gsl_sf_result ct;
     gsl_sf_result sp;
-    const int stat_ca = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
-    const int stat_ct = gsl_sf_cheb_eval_impl(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
-    const int stat_sp = gsl_sf_bessel_sin_pi4_impl(y, ct.val/y, &sp);
+    const int stat_ca = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bm1_cs,  z, &ca);
+    const int stat_ct = gsl_sf_cheb_eval_e(&_gsl_sf_bessel_amp_phase_bth1_cs, z, &ct);
+    const int stat_sp = gsl_sf_bessel_sin_pi4_e(y, ct.val/y, &sp);
     const double sqrty = sqrt(y);
     const double ampl  = (0.75 + ca.val) / sqrty;
     result->val  = (x < 0.0 ? -ampl : ampl) * sp.val;
@@ -122,14 +121,11 @@ int gsl_sf_bessel_J1_impl(const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_bessel_J1_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_J1(const double x)
 {
-  int status = gsl_sf_bessel_J1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_J1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_J1_e(x, &result));
 }

@@ -1,3 +1,14 @@
+Mon Apr 23 10:21:06 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed tests for EFAULT into a commented-out macro, since
+ 	EFAULT should only apply to invalid non-null pointers, but it
+ 	might be useful to keep the tests around for debugging in this
+ 	directory.
+
+	* unified error handling conventions to _e for error handling
+ 	functions and no suffix for plain functions, so _impl functions
+ 	are no longer needed.
+
 1999-08-02  Mark Galassi  <rosalia@lanl.gov>
 
 	* fermi_dirac.c: took out the use of some "const int" constants

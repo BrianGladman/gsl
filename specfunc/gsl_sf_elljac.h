@@ -41,7 +41,6 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_elljac_impl(double u, double m, double * sn, double * cn, double * dn);
 int gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn);
 
 

@@ -412,10 +412,6 @@ bsimp_step(
 
   size_t k;
 
-  if(sys->jacobian == 0) {
-    return GSL_EFAULT; /* FIXME: error condition */
-  }
-
   if(sys->dimension <= 0) {
     return GSL_EINVAL;
   }

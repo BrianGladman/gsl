@@ -43,7 +43,8 @@ noinst_HEADERS = \
 	bessel_temme.h		\
 	bessel.h		\
 	hyperg.h		\
-	legendre.h
+	legendre.h              \
+        eval.h
 
 INCLUDES= -I$(top_builddir)
 

@@ -626,25 +626,25 @@ airy_deriv_mod_phase(const double x, gsl_mode_t mode,
 
   if(x <= -4.0) {
     double z = 128.0/(x*x*x) + 1.0;
-    gsl_sf_cheb_eval_mode_impl(&an20_cs, z, mode, &result_a);
-    gsl_sf_cheb_eval_mode_impl(&aph0_cs, z, mode, &result_p);
+    gsl_sf_cheb_eval_mode_e(&an20_cs, z, mode, &result_a);
+    gsl_sf_cheb_eval_mode_e(&aph0_cs, z, mode, &result_p);
   }
   else if(x <= -2.0) {
     double z = (128.0/(x*x*x) + 9.0) / 7.0;
-    gsl_sf_cheb_eval_mode_impl(&an21_cs, z, mode, &result_a);
-    gsl_sf_cheb_eval_mode_impl(&aph1_cs, z, mode, &result_p);
+    gsl_sf_cheb_eval_mode_e(&an21_cs, z, mode, &result_a);
+    gsl_sf_cheb_eval_mode_e(&aph1_cs, z, mode, &result_p);
   }
   else if(x <= -1.0) {
     double z = (16.0/(x*x*x) + 9.0) / 7.0;
-    gsl_sf_cheb_eval_mode_impl(&an22_cs, z, mode, &result_a);
-    gsl_sf_cheb_eval_mode_impl(&aph2_cs, z, mode, &result_p);
+    gsl_sf_cheb_eval_mode_e(&an22_cs, z, mode, &result_a);
+    gsl_sf_cheb_eval_mode_e(&aph2_cs, z, mode, &result_p);
   }
   else {
     ampl->val = 0.0;
     ampl->err = 0.0;
     phi->val  = 0.0;
     phi->err  = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("x is greater than 1.0", GSL_EDOM);
   }
 
   a =  0.3125 + result_a.val;
@@ -662,15 +662,14 @@ airy_deriv_mod_phase(const double x, gsl_mode_t mode,
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
+gsl_sf_airy_Ai_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < -1.0) {
     gsl_sf_result a;
     gsl_sf_result p;
     int status_ap = airy_deriv_mod_phase(x, mode, &a, &p);
@@ -685,8 +684,8 @@ gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double x2 = x*x;
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_impl(&aif_cs, x3, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_impl(&aig_cs, x3, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&aif_cs, x3, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&aig_cs, x3, mode, &result_c1);
 
     result->val  = (x2*(0.125 + result_c0.val) - result_c1.val) - 0.25;
     result->err  = fabs(x2*result_c0.val) + result_c1.err;
@@ -706,7 +705,7 @@ gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double z = (16.0/(x*sqrtx) - 9.0)/7.0;
     const double s = sqrt(sqrtx);
     gsl_sf_result result_c0;
-    gsl_sf_cheb_eval_mode_impl(&aip1_cs, z, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&aip1_cs, z, mode, &result_c0);
     result->val  = -(0.28125 + result_c0.val) * s;
     result->err  = result_c0.err * s;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -717,7 +716,7 @@ gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double z = 16.0/(x*sqrtx) - 1.0;
     const double s = sqrt(sqrtx);
     gsl_sf_result result_c0;
-    gsl_sf_cheb_eval_mode_impl(&aip2_cs, z, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&aip2_cs, z, mode, &result_c0);
     result->val  = -(0.28125 + result_c0.val) * s;
     result->err  = result_c0.err * s;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -727,12 +726,11 @@ gsl_sf_airy_Ai_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
 
 
 int
-gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
+gsl_sf_airy_Ai_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < -1.0) {
     gsl_sf_result a;
     gsl_sf_result p;
     int status_ap = airy_deriv_mod_phase(x, mode, &a, &p);
@@ -746,8 +744,8 @@ gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
     const double x3 = x*x*x;
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_mode_impl(&aif_cs, x3, mode, &result_c1);
-    gsl_sf_cheb_eval_mode_impl(&aig_cs, x3, mode, &result_c2);
+    gsl_sf_cheb_eval_mode_e(&aif_cs, x3, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&aig_cs, x3, mode, &result_c2);
     result->val  = (x*x*(0.125 + result_c1.val) - result_c2.val) - 0.25;
     result->err  = fabs(x*x*result_c1.err) + result_c2.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -756,8 +754,8 @@ gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
   else if(x*x*x < 9.0/4.0 * GSL_LOG_DBL_MIN*GSL_LOG_DBL_MIN) {
     gsl_sf_result result_aps;
     const double arg = -2.0*x*sqrt(x)/3.0;
-    const int stat_a = gsl_sf_airy_Ai_deriv_scaled_impl(x, mode, &result_aps);
-    const int stat_e = gsl_sf_exp_mult_err_impl(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
+    const int stat_a = gsl_sf_airy_Ai_deriv_scaled_e(x, mode, &result_aps);
+    const int stat_e = gsl_sf_exp_mult_err_e(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
                                                 result_aps.val, result_aps.err,
 						result);
     return GSL_ERROR_SELECT_2(stat_e, stat_a);
@@ -765,21 +763,20 @@ gsl_sf_airy_Ai_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
   else {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
 }
 
 
 int
-gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
+gsl_sf_airy_Bi_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
   const double atr =  8.7506905708484345;   /* 16./(sqrt(8)-1) */
   const double btr = -2.0938363213560543;   /* -(sqrt(8)+1)/(sqrt(8)-1) */
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < -1.0) {
     gsl_sf_result a;
     gsl_sf_result p;
     int status_ap = airy_deriv_mod_phase(x, mode, &a, &p);
@@ -794,8 +791,8 @@ gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double x2 = x*x;
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_mode_impl(&bif_cs, x3, mode, &result_c1);
-    gsl_sf_cheb_eval_mode_impl(&big_cs, x3, mode, &result_c2);
+    gsl_sf_cheb_eval_mode_e(&bif_cs, x3, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&big_cs, x3, mode, &result_c2);
     result->val  = x2 * (result_c1.val + 0.25) + result_c2.val + 0.5;
     result->err  = x2 * result_c1.err + result_c2.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -814,8 +811,8 @@ gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double s = exp(-2.0*x*sqrt(x)/3.0);
     gsl_sf_result result_c0;
     gsl_sf_result result_c1;
-    gsl_sf_cheb_eval_mode_impl(&bif2_cs, z, mode, &result_c0);
-    gsl_sf_cheb_eval_mode_impl(&big2_cs, z, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&bif2_cs, z, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&big2_cs, z, mode, &result_c1);
     result->val  = s * (x*x * (0.25 + result_c0.val) + 0.5 + result_c1.val);
     result->err  = s * (x*x * result_c0.err + result_c1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -826,7 +823,7 @@ gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double z = atr/(x*sqrtx) + btr;
     const double s = sqrt(sqrtx);
     gsl_sf_result result_c0;
-    gsl_sf_cheb_eval_mode_impl(&bip1_cs, z, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&bip1_cs, z, mode, &result_c0);
     result->val  = s * (0.625 + result_c0.val);
     result->err  = s * result_c0.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -837,7 +834,7 @@ gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
     const double z = 16.0/(x*sqrtx) - 1.0;
     const double s = sqrt(sqrtx);
     gsl_sf_result result_c0;
-    gsl_sf_cheb_eval_mode_impl(&bip2_cs, z, mode, &result_c0);
+    gsl_sf_cheb_eval_mode_e(&bip2_cs, z, mode, &result_c0);
     result->val  = s * (0.625 + result_c0.val);
     result->err  = s * result_c0.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -847,12 +844,11 @@ gsl_sf_airy_Bi_deriv_scaled_impl(const double x, gsl_mode_t mode, gsl_sf_result 
 
 
 int
-gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * result)
+gsl_sf_airy_Bi_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < -1.0) {
     gsl_sf_result a;
     gsl_sf_result p;
     int status_ap = airy_deriv_mod_phase(x, mode, &a, &p);
@@ -867,8 +863,8 @@ gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
     const double x2 = x*x;
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_mode_impl(&bif_cs, x3, mode, &result_c1);
-    gsl_sf_cheb_eval_mode_impl(&big_cs, x3, mode, &result_c2);
+    gsl_sf_cheb_eval_mode_e(&bif_cs, x3, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&big_cs, x3, mode, &result_c2);
     result->val  = x2 * (result_c1.val + 0.25) + result_c2.val + 0.5;
     result->err  = x2 * result_c1.err + result_c2.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -878,8 +874,8 @@ gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
     const double z = (2.0*x*x*x - 9.0) / 7.0;
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_mode_impl(&bif2_cs, z, mode, &result_c1);
-    gsl_sf_cheb_eval_mode_impl(&big2_cs, z, mode, &result_c2);
+    gsl_sf_cheb_eval_mode_e(&bif2_cs, z, mode, &result_c1);
+    gsl_sf_cheb_eval_mode_e(&big2_cs, z, mode, &result_c2);
     result->val  = x*x * (result_c1.val + 0.25) + result_c2.val + 0.5;
     result->err  = x*x * result_c1.err + result_c2.err;
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -888,8 +884,8 @@ gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
   else if(x < GSL_ROOT3_DBL_MAX*GSL_ROOT3_DBL_MAX) {
     gsl_sf_result result_bps;
     const double arg = 2.0*(x*sqrt(x)/3.0);
-    int stat_b = gsl_sf_airy_Bi_deriv_scaled_impl(x, mode, &result_bps);
-    int stat_e = gsl_sf_exp_mult_err_impl(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
+    int stat_b = gsl_sf_airy_Bi_deriv_scaled_e(x, mode, &result_bps);
+    int stat_e = gsl_sf_exp_mult_err_e(arg, 1.5*fabs(arg*GSL_DBL_EPSILON),
                                           result_bps.val, result_bps.err,
 				          result);
     return GSL_ERROR_SELECT_2(stat_e, stat_b);
@@ -897,45 +893,30 @@ gsl_sf_airy_Bi_deriv_impl(const double x, gsl_mode_t mode, gsl_sf_result * resul
   else {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_airy_Ai_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
+double gsl_sf_airy_Ai_deriv_scaled(const double x, gsl_mode_t mode)
 {
-  int status = gsl_sf_airy_Ai_deriv_scaled_impl(x, mode, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_airy_Ai_deriv_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_airy_Ai_deriv_scaled_e(x, mode, &result));
 }
 
-int gsl_sf_airy_Ai_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
+double gsl_sf_airy_Ai_deriv(const double x, gsl_mode_t mode)
 {
-  int status = gsl_sf_airy_Ai_deriv_impl(x, mode, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_airy_Ai_deriv_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_airy_Ai_deriv_e(x, mode, &result));
 }
 
-int gsl_sf_airy_Bi_deriv_scaled_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
+double gsl_sf_airy_Bi_deriv_scaled(const double x, gsl_mode_t mode)
 {
-  int status = gsl_sf_airy_Bi_deriv_scaled_impl(x, mode, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_airy_Bi_deriv_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_airy_Bi_deriv_scaled_e(x, mode, &result));
 }
 
-int gsl_sf_airy_Bi_deriv_e(const double x, gsl_mode_t mode, gsl_sf_result * result)
+double gsl_sf_airy_Bi_deriv(const double x, gsl_mode_t mode)
 {
-  int status = gsl_sf_airy_Bi_deriv_impl(x, mode, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_airy_Bi_deriv_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_airy_Bi_deriv_e(x, mode, &result));
 }

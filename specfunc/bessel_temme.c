@@ -94,8 +94,8 @@ gsl_sf_temme_gamma(const double nu, double * g_1pnu, double * g_1mnu, double * g
   const double x = 4.0*anu - 1.0;
   gsl_sf_result r_g1;
   gsl_sf_result r_g2;
-  gsl_sf_cheb_eval_impl(&g1_cs, x, &r_g1);
-  gsl_sf_cheb_eval_impl(&g2_cs, x, &r_g2);
+  gsl_sf_cheb_eval_e(&g1_cs, x, &r_g1);
+  gsl_sf_cheb_eval_e(&g2_cs, x, &r_g2);
   *g1 = r_g1.val;
   *g2 = r_g2.val;
   *g_1mnu = 1.0/(r_g2.val + nu * r_g1.val);

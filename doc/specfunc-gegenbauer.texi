@@ -4,29 +4,28 @@
 @cindex Gegenbauer functions
 
 
-@deftypefun  int gsl_sf_gegenpoly_1_impl (double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_2_impl (double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_3_impl (double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_1_e (double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_2_e (double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_3_e (double lambda, double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_gegenpoly_1 (double @var{lambda}, double @var{x})
+@deftypefunx double gsl_sf_gegenpoly_2 (double @var{lambda}, double @var{x})
+@deftypefunx double gsl_sf_gegenpoly_3 (double @var{lambda}, double @var{x})
+@deftypefunx int gsl_sf_gegenpoly_1_e (double @var{lambda}, double @var{x}, gsl_sf_result * @var{result})
+@deftypefunx int gsl_sf_gegenpoly_2_e (double @var{lambda}, double @var{x}, gsl_sf_result * @var{result})
+@deftypefunx int gsl_sf_gegenpoly_3_e (double @var{lambda}, double @var{x}, gsl_sf_result * @var{result})
 Evaluate Gegenbauer polynomials using explicit representations.
-Exceptional Return Values: none
+@comment Exceptional Return Values: none
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_gegenpoly_n_impl (int n, double lambda, double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_gegenpoly_n_e (int n, double lambda, double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_gegenpoly_n (int @var{n}, double @var{lambda}, double @var{x})
+@deftypefunx int gsl_sf_gegenpoly_n_e (int @var{n}, double @var{lambda}, double @var{x}, gsl_sf_result * @var{result})
 Evaluate Gegenbauer polynomials.
 Domain: lambda > -1/2, n >= 0
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_gegenpoly_array_impl (int nmax, double lambda, double x, double * result_array);
-@deftypefunx int gsl_sf_gegenpoly_array_e (int nmax, double lambda, double x, double * result_array);
+@deftypefun int gsl_sf_gegenpoly_array (int @var{nmax}, double @var{lambda}, double @var{x}, double * @var{result_array})
 Calculate array of Gegenbauer polynomials.
 Conditions: n = 0, 1, 2, ... nmax
 Domain: lambda > -1/2, nmax >= 0
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun

@@ -55,7 +55,7 @@ dilog_series(const double x, gsl_sf_result * result)
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(k == kmax)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS;
 }
@@ -215,7 +215,7 @@ dilogc_series_2(double r, double theta, double cos_theta, double sin_theta,
   int n;
 
   H_re[0] = M_PI*M_PI/6.0 + 0.25*(theta*theta - 2.0*M_PI*fabs(theta));
-  gsl_sf_clausen_impl(theta, &Him0);
+  gsl_sf_clausen_e(theta, &Him0);
   H_im[0] = Him0.val;
 
   H_re[1] = -0.5*log(2.0*omc);
@@ -270,8 +270,8 @@ dilogc_unitdisk(double r, double theta, gsl_sf_result * real_dl, gsl_sf_result *
   int stat_dilog;
   gsl_sf_result cos_theta;
   gsl_sf_result sin_theta;
-  int stat_cos = gsl_sf_cos_impl(theta, &cos_theta);
-  int stat_sin = gsl_sf_sin_impl(theta, &sin_theta);
+  int stat_cos = gsl_sf_cos_e(theta, &cos_theta);
+  int stat_sin = gsl_sf_sin_e(theta, &sin_theta);
   gsl_sf_result x;
   gsl_sf_result y;
   gsl_sf_result x_tmp, y_tmp, r_tmp;
@@ -350,16 +350,15 @@ dilogc_unitdisk(double r, double theta, gsl_sf_result * real_dl, gsl_sf_result *
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
 int
-gsl_sf_dilog_impl(const double x, gsl_sf_result * result)
+gsl_sf_dilog_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x >= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x >= 0.0) {
     return dilog_xge0(x, result);
   }
   else {
@@ -375,12 +374,11 @@ gsl_sf_dilog_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_complex_dilog_impl(const double r, double theta,
+gsl_sf_complex_dilog_e(const double r, double theta,
                           gsl_sf_result * real_dl, gsl_sf_result * imag_dl)
 {
-  if(real_dl == 0 || imag_dl == 0) {
-    return GSL_EFAULT;
-  }
+  /* CHECK_POINTER(real_dl) */
+  /* CHECK_POINTER(imag_dl) */
 
   if(r == 0.0) {
     real_dl->val = 0.0;
@@ -392,7 +390,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
 
 /*
   if(theta < 0.0 || theta > 2.0*M_PI) {
-    gsl_sf_angle_restrict_pos_impl(&theta);
+    gsl_sf_angle_restrict_pos_e(&theta);
   }
 */
 
@@ -402,14 +400,14 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
     int stat_d;
     imag_dl->val = ( r > 1.0 ? -M_PI * log(r) : 0.0 );
     imag_dl->err = 2.0 * GSL_DBL_EPSILON * fabs(imag_dl->val);
-    stat_d = gsl_sf_dilog_impl(r, real_dl);
+    stat_d = gsl_sf_dilog_e(r, real_dl);
     return stat_d;
   }
   if(theta == M_PI) {
     int stat_d;
     imag_dl->val = 0.0;
     imag_dl->err = 0.0;
-    stat_d = gsl_sf_dilog_impl(-r, real_dl);
+    stat_d = gsl_sf_dilog_e(-r, real_dl);
     return stat_d;
   }
 
@@ -417,7 +415,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
    */
   if(r == 1.0) {
     gsl_sf_result theta_restrict;
-    int stat_r = gsl_sf_angle_restrict_pos_err_impl(theta, &theta_restrict);
+    int stat_r = gsl_sf_angle_restrict_pos_err_e(theta, &theta_restrict);
     int stat_c;
     const double term1 = theta_restrict.val*theta_restrict.val;
     const double term2 = 2.0*M_PI*fabs(theta_restrict.val);
@@ -427,7 +425,7 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
     real_dl->err  = 2.0 * GSL_DBL_EPSILON * (M_PI*M_PI/6.0 + 0.25 * (fabs(term1) + fabs(term2)));
     real_dl->err += 0.25 * (term1_err + term2_err);
     real_dl->err += 2.0 * GSL_DBL_EPSILON * fabs(real_dl->val);
-    stat_c = gsl_sf_clausen_impl(theta, imag_dl);
+    stat_c = gsl_sf_clausen_e(theta, imag_dl);
     stat_r = 0;  /* discard restrict status */
     return stat_c;
   }
@@ -471,9 +469,9 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
       double pmt = M_PI - theta;
       gsl_sf_result Cl_a, Cl_b, Cl_c;
       double r1, r2, r3, r4, r5;
-      int stat_c1 = gsl_sf_clausen_impl(2.0*omega, &Cl_a);
-      int stat_c2 = gsl_sf_clausen_impl(2.0*theta, &Cl_b);
-      int stat_c3 = gsl_sf_clausen_impl(2.0*(omega+theta), &Cl_c);
+      int stat_c1 = gsl_sf_clausen_e(2.0*omega, &Cl_a);
+      int stat_c2 = gsl_sf_clausen_e(2.0*theta, &Cl_b);
+      int stat_c3 = gsl_sf_clausen_e(2.0*(omega+theta), &Cl_c);
       int stat_c  = GSL_ERROR_SELECT_3(stat_c1, stat_c2, stat_c3);
       r1 = -result_re_tmp.val;
       r2 = -0.5*lnr*lnr;
@@ -502,27 +500,12 @@ gsl_sf_complex_dilog_impl(const double r, double theta,
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_dilog_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_dilog(const double x)
 {
-  int status = gsl_sf_dilog_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_dilog_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_dilog_e(x, &result));
 }
 
-
-int
-gsl_sf_complex_dilog_e(const double x, const double y,
-                       gsl_sf_result * result_re,
-                       gsl_sf_result * result_im)
-{
-  int status = gsl_sf_complex_dilog_impl(x, y, result_re, result_im);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_complex_dilog_e", status);
-  }
-  return status;
-}

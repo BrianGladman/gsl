@@ -13,8 +13,8 @@ It is defined by the integral representation
 Note that
 @math{ Im Li_2(x) = ( 0 for x <= 1, -Pi*log(x) for x > 1 ) }.
 
-@deftypefun  int gsl_sf_dilog_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_dilog_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_dilog (double @var{x})
+@deftypefunx int gsl_sf_dilog_e (double @var{x}, gsl_sf_result * @var{result})
 @end deftypefun
 
 
@@ -24,6 +24,5 @@ Note that
 This is the full complex-valued dilogarithm for complex argument.
 The argument is @math{ z = r \exp(i theta) }.
 
-@deftypefun  int gsl_sf_complex_dilog_impl (double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im)
-@deftypefunx int gsl_sf_complex_dilog_e (double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im)
+@deftypefun int gsl_sf_complex_dilog_e (double @var{r}, double @var{theta}, gsl_sf_result * @var{result_re}, gsl_sf_result * @var{result_im})
 @end deftypefun

@@ -1,3 +1,13 @@
+Mon Apr 23 10:29:51 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* unified error handling conventions to _e for error handling
+ 	functions and no suffix for plain functions, so _impl functions
+ 	are no longer needed.
+
+	* removed tests for EFAULT, since EFAULT should only apply to
+ 	invalid non-null pointers.
+
+
 Tue Apr 11 19:56:25 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cspline.c (cspline_calc_periodic): changed occurrence of gsl_la

@@ -1,9 +1,25 @@
 @cindex Special Functions
 
-This chapter describes the GSL special function library.
+This chapter describes the GSL special function library.  The library
+includes routines for calculating the values of Airy functions, Bessel
+functions, Chebyshev polynomials, Clausen functions, Coulomb wave
+functions, Coupling coefficients, the Dawson function, Debye functions,
+Dilogarithms, Elliptic integrals, Jacobi elliptic functions, Error
+functions, Exponential integrals, Fermi-Dirac functions, Gamma
+functions, Gegenbauer functions, Hypergeometric functions, Laguerre
+functions, Legendre functions and Spherical Harmonics, Psi (Digamma)
+Function, Synchrotron functions, Transport functions, Trigonometric
+functions and Zeta functions.  Each routine also computes an estimate of
+the numerical error in the calculated value of the function.
+
+The functions are declared in individual header files, such as
+@file{gsl_sf_airy.h}, @file{gsl_sf_bessel.h}, etc.  The complete set of
+header files can be including the file @file{gsl_sf.h}.
 
 @menu
+* Special Function Usage::
 * The gsl_sf_result struct::
+* Special Function Modes::
 * Airy Functions::
 * Bessel Functions:: 
 * Chebyshev Polynomials::
@@ -33,8 +49,9 @@ This chapter describes the GSL special function library.
 * Transport Functions::
 * Trigonometric Functions::
 * Zeta Functions::
+* Special Functions Examples::
+* Special Functions References and Further Reading::
 @end menu
-
 
 @include specfunc-result.texi
 @include specfunc-airy.texi
@@ -66,3 +83,15 @@ This chapter describes the GSL special function library.
 @include specfunc-transport.texi
 @include specfunc-trig.texi
 @include specfunc-zeta.texi
+
+@node Special Functions Examples
+@section Examples
+
+
+@node Special Functions References and Further Reading
+@section References and Further Reading
+
+@itemize @asis
+@item
+Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
+@end itemize

@@ -41,12 +41,12 @@ static int bessel_kl_scaled_small_x(int l, const double x, gsl_sf_result * resul
 {
   gsl_sf_result num_fact;
   double den  = gsl_sf_pow_int(x, l+1);
-  int stat_df = gsl_sf_doublefact_impl((unsigned int) (2*l-1), &num_fact);
+  int stat_df = gsl_sf_doublefact_e((unsigned int) (2*l-1), &num_fact);
 
   if(stat_df != GSL_SUCCESS || den == 0.0) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     const int lmax = 50;
@@ -70,7 +70,7 @@ static int bessel_kl_scaled_small_x(int l, const double x, gsl_sf_result * resul
       if(fabs(delta/sum) < GSL_DBL_EPSILON) break;
     }
 
-    stat_il = gsl_sf_bessel_il_scaled_impl(l, x, &ipos_term);
+    stat_il = gsl_sf_bessel_il_scaled_e(l, x, &ipos_term);
     ineg_term =  sgn * num_fact.val/den * sum;
     result->val = -sgn * 0.5*M_PI * (ex*ipos_term.val - ineg_term);
     result->val *= ex;
@@ -80,107 +80,104 @@ static int bessel_kl_scaled_small_x(int l, const double x, gsl_sf_result * resul
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_k0_scaled_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_k0_scaled_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     result->val = M_PI/(2.0*x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else 
       return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_bessel_k1_scaled_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_k1_scaled_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < (M_SQRTPI+1.0)/(M_SQRT2*GSL_SQRT_DBL_MAX)) {
     result->val = 0.0;  /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 1.0/x);
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else 
       return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_bessel_k2_scaled_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_k2_scaled_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0/GSL_ROOT3_DBL_MAX) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     result->val = M_PI/(2.0*x) * (1.0 + 3.0/x * (1.0 + 1.0/x));
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else 
       return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_bessel_kl_scaled_impl(int l, const double x, gsl_sf_result * result)
+int gsl_sf_bessel_kl_scaled_e(int l, const double x, gsl_sf_result * result)
 {
   if(l < 0 || x <= 0.0) {
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(l == 0) {
-    return gsl_sf_bessel_k0_scaled_impl(x, result);
+    return gsl_sf_bessel_k0_scaled_e(x, result);
   }
   else if(l == 1) {
-    return gsl_sf_bessel_k1_scaled_impl(x, result);
+    return gsl_sf_bessel_k1_scaled_e(x, result);
   }
   else if(l == 2) {
-    return gsl_sf_bessel_k2_scaled_impl(x, result);
+    return gsl_sf_bessel_k2_scaled_e(x, result);
   }
   else if(x < 3.0) {
     return bessel_kl_scaled_small_x(l, x, result);
   }
   else if(GSL_ROOT3_DBL_EPSILON * x > (l*l + l + 1)) {
-    int status = gsl_sf_bessel_Knu_scaled_asympx_impl(l + 0.5, x, result);
+    int status = gsl_sf_bessel_Knu_scaled_asympx_e(l + 0.5, x, result);
     double pre = sqrt((0.5*M_PI)/x);
     result->val *= pre;
     result->err *= pre;
     return status;
   }
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < GSL_ROOT3_DBL_EPSILON) {
-    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
+    int status = gsl_sf_bessel_Knu_scaled_asymp_unif_e(l + 0.5, x, result);
     double pre = sqrt((0.5*M_PI)/x);
     result->val *= pre;
     result->err *= pre;
@@ -190,8 +187,8 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, gsl_sf_result * result)
     /* recurse upward */
     gsl_sf_result r_bk;
     gsl_sf_result r_bkm;
-    int stat_1 = gsl_sf_bessel_k1_scaled_impl(x, &r_bk);
-    int stat_0 = gsl_sf_bessel_k0_scaled_impl(x, &r_bkm);
+    int stat_1 = gsl_sf_bessel_k1_scaled_e(x, &r_bk);
+    int stat_0 = gsl_sf_bessel_k0_scaled_e(x, &r_bkm);
     double bkp;
     double bk  = r_bk.val;
     double bkm = r_bkm.val;
@@ -209,18 +206,18 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, gsl_sf_result * result)
   }
 }
 
-int gsl_sf_bessel_kl_scaled_array_impl(const int lmax, const double x, double * result_array)
+int gsl_sf_bessel_kl_scaled_array(const int lmax, const double x, double * result_array)
 {
   if(lmax < 1 || x <= 0.0) {
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     int ell;
     double kellp1, kell, kellm1;
     gsl_sf_result r_kell;
     gsl_sf_result r_kellm1;
-    gsl_sf_bessel_k1_scaled_impl(x, &r_kell);
-    gsl_sf_bessel_k0_scaled_impl(x, &r_kellm1);
+    gsl_sf_bessel_k1_scaled_e(x, &r_kell);
+    gsl_sf_bessel_k0_scaled_e(x, &r_kellm1);
     kell   = r_kell.val;
     kellm1 = r_kellm1.val;
     result_array[0] = kellm1;
@@ -236,50 +233,28 @@ int gsl_sf_bessel_kl_scaled_array_impl(const int lmax, const double x, double * 
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_k0_scaled_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_k0_scaled(const double x)
 {
-  int status = gsl_sf_bessel_k0_scaled_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_k0_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_k0_scaled_e(x, &result));
 }
 
-int gsl_sf_bessel_k1_scaled_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_k1_scaled(const double x)
 {
-  int status = gsl_sf_bessel_k1_scaled_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_k1_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_k1_scaled_e(x, &result));
 }
 
-int gsl_sf_bessel_k2_scaled_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_k2_scaled(const double x)
 {
-  int status = gsl_sf_bessel_k2_scaled_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_k2_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_k2_scaled_e(x, &result));
 }
 
-int gsl_sf_bessel_kl_scaled_e(const int l, const double x, gsl_sf_result * result)
+double gsl_sf_bessel_kl_scaled(const int l, const double x)
 {
-  int status = gsl_sf_bessel_kl_scaled_impl(l, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_kl_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_kl_scaled_e(l, x, &result));
 }
 
 
-int gsl_sf_bessel_kl_scaled_array_e(const int lmax, const double x, double * result_array)
-{
-  int status = gsl_sf_bessel_kl_scaled_array_impl(lmax, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_kl_scaled_array_e", status);
-  }
-  return status;
-}

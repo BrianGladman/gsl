@@ -130,22 +130,21 @@ static gsl_sf_cheb_series ak12_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_K1_scaled_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*GSL_DBL_MIN) {
     result->val = 0.0;  /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else if(x <= 2.0) {
     const double lx = log(x);
@@ -153,8 +152,8 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, gsl_sf_result * result)
     int stat_I1;
     gsl_sf_result I1;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&bk1_cs, 0.5*x*x-1.0, &c);
-    stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    gsl_sf_cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
+    stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
     result->val  = ex * ((lx-M_LN2)*I1.val + (0.75 + c.val)/x);
     result->err  = ex * (c.err/x + fabs(lx)*I1.err);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -163,7 +162,7 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, gsl_sf_result * result)
   else if(x <= 8.0) {
     const double sx = sqrt(x);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&ak1_cs, (16.0/x-5.0)/3.0, &c);
+    gsl_sf_cheb_eval_e(&ak1_cs, (16.0/x-5.0)/3.0, &c);
     result->val  = (1.25 + c.val) / sx;
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -172,7 +171,7 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, gsl_sf_result * result)
   else {
     const double sx = sqrt(x);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&ak12_cs, 16.0/x-1.0, &c);
+    gsl_sf_cheb_eval_e(&ak12_cs, 16.0/x-1.0, &c);
     result->val  = (1.25 + c.val) / sx;
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -181,28 +180,27 @@ int gsl_sf_bessel_K1_scaled_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_bessel_K1_impl(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_K1_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*GSL_DBL_MIN) {
     result->val = 0.0; /* FIXME: should be Inf */
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else if(x <= 2.0) {
     const double lx = log(x);
     int stat_I1;
     gsl_sf_result I1;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&bk1_cs, 0.5*x*x-1.0, &c);
-    stat_I1 = gsl_sf_bessel_I1_impl(x, &I1);
+    gsl_sf_cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
+    stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
     result->val  = (lx-M_LN2)*I1.val + (0.75 + c.val)/x;
     result->err  = c.err/x + fabs(lx)*I1.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -210,8 +208,8 @@ int gsl_sf_bessel_K1_impl(const double x, gsl_sf_result * result)
   }
   else {
     gsl_sf_result K1_scaled;
-    int stat_K1 = gsl_sf_bessel_K1_scaled_impl(x, &K1_scaled);
-    int stat_e  = gsl_sf_exp_mult_err_impl(-x, 0.0,
+    int stat_K1 = gsl_sf_bessel_K1_scaled_e(x, &K1_scaled);
+    int stat_e  = gsl_sf_exp_mult_err_e(-x, 0.0,
                                            K1_scaled.val, K1_scaled.err,
 					   result);
     result->err = fabs(result->val) * (GSL_DBL_EPSILON*fabs(x) + K1_scaled.err/K1_scaled.val);
@@ -219,23 +217,16 @@ int gsl_sf_bessel_K1_impl(const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_K1_scaled(const double x)
 {
-  int status = gsl_sf_bessel_K1_scaled_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_K1_scaled_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_K1_scaled_e(x, &result));
 }
 
-int gsl_sf_bessel_K1_e(const double x, gsl_sf_result * result)
+double gsl_sf_bessel_K1(const double x)
 {
-  int status = gsl_sf_bessel_K1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_K1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_K1_e(x, &result));
 }

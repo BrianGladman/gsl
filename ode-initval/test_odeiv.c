@@ -181,7 +181,7 @@ int test_stepper_linear(gsl_odeiv_step * stepper, double h, double base_prec)
   y[1] = 0.0;
 
   for(t=0.0; t<4.0; t += h) {
-    gsl_odeiv_step_impl(stepper, t, h, y, yerr, 0, 0, &rhs_func_lin);
+    gsl_odeiv_step_apply(stepper, t, h, y, yerr, 0, 0, &rhs_func_lin);
     /* if(count % 100 == 0) */ {
       del = fabs((y[1] - (t+h))/y[1]);
       if(del > (count+1.0) * base_prec) {
@@ -212,7 +212,7 @@ int test_stepper_sin(gsl_odeiv_step * stepper, double h, double base_prec)
   for(t=0.0; t<M_PI; t += h) {
     int stat;
     double sin_th = sin(t+h);
-    gsl_odeiv_step_impl(stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
+    gsl_odeiv_step_apply(stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
     del = fabs((y[1] - sin_th)/y[1]);
     delmax = GSL_MAX_DBL(del, delmax);
     {
@@ -242,7 +242,7 @@ int test_stepper_sin(gsl_odeiv_step * stepper, double h, double base_prec)
 
 
   for(; t< 100.5 * M_PI; t += h) {
-    gsl_odeiv_step_impl(stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
+    gsl_odeiv_step_apply(stepper, t, h, y, yerr, 0, 0, &rhs_func_sin);
     count++;
   }
   del = fabs((y[1] - sin(t))/y[1]);
@@ -269,7 +269,7 @@ int test_stepper_exp(gsl_odeiv_step * stepper, double h, double base_prec)
 
   for(t=0.0; t<20.0; t += h) {
     double ex = exp(t + h);
-    gsl_odeiv_step_impl(stepper, t, h, y, yerr, 0, 0, &rhs_func_exp);
+    gsl_odeiv_step_apply(stepper, t, h, y, yerr, 0, 0, &rhs_func_exp);
     del = fabs((y[1] - ex)/y[1]);
     if(del > (count+1.0) * 2.0 * base_prec) {
       printf("  EXP(%20.17g)  %20.17g  %20.17g  %8.4g\n", t+h, y[1], ex, del);
@@ -295,7 +295,7 @@ int test_stepper_stiff(gsl_odeiv_step * stepper, double h, double base_prec)
   y[1] = 0.0;
 
   for(t=0.0; t<20.0; t += h) {
-    gsl_odeiv_step_impl(stepper, t, h, y, yerr, 0, 0, &rhs_func_stiff);
+    gsl_odeiv_step_apply(stepper, t, h, y, yerr, 0, 0, &rhs_func_stiff);
     if(t > 0.04) {
       double arg = t + h;
       double e1 = exp(-arg);
@@ -609,7 +609,7 @@ int test_evolve_system_flat(
 
   gsl_odeiv_evolve * e = gsl_odeiv_evolve_new();
 
-  gsl_odeiv_evolve_impl(e, mon, 0, step, sys, t0, t1, hstart, y);
+  gsl_odeiv_evolve_apply(e, mon, 0, step, sys, t0, t1, hstart, y);
 
   frac = fabs((y[1] - yfin[1])/y[1]) + fabs((y[0] - yfin[0])/y[0]);
   if(frac > 2.0 * e->count * err_target) {
@@ -636,7 +636,7 @@ int test_evolve_system(
   gsl_odeiv_evolve_control * c = gsl_odeiv_evolve_control_standard_new(err_target, 0.0, 1.0, 1.0);
   gsl_odeiv_evolve * e = gsl_odeiv_evolve_new();
 
-  gsl_odeiv_evolve_impl(e, mon, c, step, sys, t0, t1, hstart, y);
+  gsl_odeiv_evolve_apply(e, mon, c, step, sys, t0, t1, hstart, y);
 
   frac = fabs((y[1] - yfin[1])/y[1]) + fabs((y[0] - yfin[0])/y[0]);
   if(frac > 2.0 * e->count * err_target) {

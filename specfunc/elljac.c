@@ -31,13 +31,13 @@
 
 
 int
-gsl_sf_elljac_impl(double u, double m, double * sn, double * cn, double * dn)
+gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
 {
   if(fabs(m) > 1.0) {
     *sn = 0.0;
     *cn = 0.0;
     *dn = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(fabs(m) < 2.0*GSL_DBL_EPSILON) {
     *sn = sin(u);
@@ -91,15 +91,3 @@ gsl_sf_elljac_impl(double u, double m, double * sn, double * cn, double * dn)
   }
 }
 
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
-
-int
-gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
-{
-  int status = gsl_sf_elljac_impl(u, m, sn, cn, dn);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_elljac_e", status);
-  }
-  return status;
-}

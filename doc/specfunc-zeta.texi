@@ -16,17 +16,17 @@ $$
 @end tex
 
 
-@deftypefun  int gsl_sf_zeta_int_impl (int n, gsl_sf_result * result)
-@deftypefunx int gsl_sf_zeta_int_e (int n, gsl_sf_result * result)
+@deftypefun double gsl_sf_zeta_int (int @var{n})
+@deftypefunx int gsl_sf_zeta_int_e (int @var{n}, gsl_sf_result * @var{result})
 Domain: n integer, n != 1
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_zeta_impl (double s, gsl_sf_result * result)
-@deftypefunx int gsl_sf_zeta_e (double s, gsl_sf_result * result)
+@deftypefun double gsl_sf_zeta (double @var{s})
+@deftypefunx int gsl_sf_zeta_e (double @var{s}, gsl_sf_result * @var{result})
 Domain: s != 1.0
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
 
@@ -37,10 +37,10 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 The Hurwitz zeta function is defined by
 @math{ zeta(s,q) = \sum_0^\infty (k+q)^(-s) }.
 
-@deftypefun  int gsl_sf_hzeta_impl (double s, double q, gsl_sf_result * result)
-@deftypefunx int gsl_sf_hzeta_e (double s, double q, gsl_sf_result * result)
+@deftypefun double gsl_sf_hzeta (double @var{s}, double @var{q})
+@deftypefunx int gsl_sf_hzeta_e (double @var{s}, double @var{q}, gsl_sf_result * @var{result})
 Domain: s > 1.0, q > 0.0
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
 
@@ -49,12 +49,12 @@ Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW, GSL_EOVRFLW
 The eta function is defined by
 @math{ \eta(s) = (1-2^(1-s)) zeta(s) }.
 
-@deftypefun  int gsl_sf_eta_int_impl (int n, gsl_sf_result * result)
-@deftypefunx int gsl_sf_eta_int_e (int n, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
+@deftypefun double gsl_sf_eta_int (int @var{n})
+@deftypefunx int gsl_sf_eta_int_e (int @var{n}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun
 
-@deftypefun  int gsl_sf_eta_impl (double s, gsl_sf_result * result)
-@deftypefunx int gsl_sf_eta_e (double s, gsl_sf_result * result)
-Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
+@deftypefun double gsl_sf_eta (double @var{s})
+@deftypefunx int gsl_sf_eta_e (double @var{s}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EUNDRFLW, GSL_EOVRFLW
 @end deftypefun

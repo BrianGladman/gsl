@@ -39,11 +39,11 @@ R_norm(const int n, const int l, const double Z, gsl_sf_result * result)
   double pre = sqrt(A*A*A /(2.0*n));
   gsl_sf_result ln_a, ln_b;
   gsl_sf_result ex;
-  int stat_a = gsl_sf_lnfact_impl(n+l, &ln_a);
-  int stat_b = gsl_sf_lnfact_impl(n-l-1, &ln_b);
+  int stat_a = gsl_sf_lnfact_e(n+l, &ln_a);
+  int stat_b = gsl_sf_lnfact_e(n-l-1, &ln_b);
   double diff_val = 0.5*(ln_b.val - ln_a.val);
   double diff_err = 0.5*(ln_b.err + ln_a.err) + GSL_DBL_EPSILON * fabs(diff_val);
-  int stat_e = gsl_sf_exp_err_impl(diff_val, diff_err, &ex);
+  int stat_e = gsl_sf_exp_err_e(diff_val, diff_err, &ex);
   result->val  = pre * ex.val;
   result->err  = pre * ex.err;
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -51,10 +51,10 @@ R_norm(const int n, const int l, const double Z, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_hydrogenicR_1_impl(const double Z, const double r, gsl_sf_result * result)
+gsl_sf_hydrogenicR_1_e(const double Z, const double r, gsl_sf_result * result)
 {
   if(Z > 0.0 && r >= 0.0) {
     double A = 2.0*Z;
@@ -67,20 +67,20 @@ gsl_sf_hydrogenicR_1_impl(const double Z, const double r, gsl_sf_result * result
   else {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
 }
 
 
 int
-gsl_sf_hydrogenicR_impl(const int n, const int l,
+gsl_sf_hydrogenicR_e(const int n, const int l,
                         const double Z, const double r,
                         gsl_sf_result * result)
 {
   if(n < 1 || l > n-1 || Z <= 0.0 || r < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     double A = 2.0*Z/n;
@@ -90,7 +90,7 @@ gsl_sf_hydrogenicR_impl(const int n, const int l,
     double ea = exp(-0.5*rho);
     double pp = gsl_sf_pow_int(rho, l);
     gsl_sf_result lag;
-    int stat_lag = gsl_sf_laguerre_n_impl(n-l-1, 2*l+1, rho, &lag);
+    int stat_lag = gsl_sf_laguerre_n_e(n-l-1, 2*l+1, rho, &lag);
     int stat_uf;
     double W_val = norm.val * ea * pp;
     double W_err = norm.err * ea * pp;
@@ -104,26 +104,17 @@ gsl_sf_hydrogenicR_impl(const int n, const int l,
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int
-gsl_sf_hydrogenicR_1_e(const double Z, const double r, gsl_sf_result * result)
+double gsl_sf_hydrogenicR_1(const double Z, const double r)
 {
-  int status = gsl_sf_hydrogenicR_1_impl(Z, r, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_hydrogenicR_1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_hydrogenicR_1_e(Z, r, &result));
 }
 
 
-int
-gsl_sf_hydrogenicR_e(const int n, const int l, const double Z, const double r, gsl_sf_result * result)
+double gsl_sf_hydrogenicR(const int n, const int l, const double Z, const double r)
 {
-  int status = gsl_sf_hydrogenicR_impl(n, l, Z, r, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_hydrogenicR_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_hydrogenicR_e(n, l, Z, r, &result));
 }

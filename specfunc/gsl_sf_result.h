@@ -52,7 +52,6 @@ struct gsl_sf_result_e10_struct {
 typedef struct gsl_sf_result_e10_struct gsl_sf_result_e10;
 
 
-int gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r);
 int gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r);
 
 

@@ -1,3 +1,12 @@
+Mon Apr 23 10:31:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* unified error handling conventions to _e for error handling
+ 	functions and no suffix for plain functions, so _impl functions
+ 	are no longer needed.
+
+	* removed tests for EFAULT, since EFAULT should only apply to
+ 	invalid non-null pointers.
+	
 Fri Apr 13 20:33:18 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eigen/test.c (test_invert_jacobi): removed matmult and replaced

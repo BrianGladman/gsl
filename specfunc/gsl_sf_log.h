@@ -42,16 +42,16 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_impl(const double x, gsl_sf_result * result);
 int gsl_sf_log_e(const double x, gsl_sf_result * result);
+double gsl_sf_log(const double x);
 
 
 /* Log(|x|)
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_abs_impl(const double x, gsl_sf_result * result);
 int gsl_sf_log_abs_e(const double x, gsl_sf_result * result);
+double gsl_sf_log_abs(const double x);
 
 
 /* Complex Logarithm
@@ -60,7 +60,6 @@ int gsl_sf_log_abs_e(const double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_complex_log_impl(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
 int gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta);
 
 
@@ -68,30 +67,29 @@ int gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, 
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result);
 int gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result);
+double gsl_sf_log_1plusx(const double x);
 
 
 /* Log(1 + x) - x
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result);
 int gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result);
+double gsl_sf_log_1plusx_mx(const double x);
 
 
 #ifdef HAVE_INLINE
 extern inline
 int
-gsl_sf_log_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     result->val = log(x);
@@ -101,15 +99,14 @@ gsl_sf_log_impl(const double x, gsl_sf_result * result)
 }
 extern inline
 int
-gsl_sf_log_abs_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     result->val = log(fabs(x));

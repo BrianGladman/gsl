@@ -1,3 +1,12 @@
+Mon Apr 23 10:26:22 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* unified error handling conventions to _e for error handling
+ 	functions and no suffix for plain functions, so _impl functions
+ 	are no longer needed.
+
+	* removed tests for EFAULT, since EFAULT should only apply to
+ 	invalid non-null pointers.
+
 2000-05-14  Steve Robbins  <steve@nyongwa.montreal.qc.ca>
 
 	* Makefile.am (test_LDADD): put libgslpermutation ahead of

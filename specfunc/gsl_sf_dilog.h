@@ -45,14 +45,13 @@ __BEGIN_DECLS
  *
  * Note that Im[Li_2(x)] = { 0 for x <= 1, -Pi*log(x) for x > 1 }
  */
-int     gsl_sf_dilog_impl(const double x, gsl_sf_result * result);
 int     gsl_sf_dilog_e(const double x, gsl_sf_result * result);
+double     gsl_sf_dilog(const double x);
 
 
 /* DiLogarithm(z), for complex argument z = r Exp[i theta].
  */
-int gsl_sf_complex_dilog_impl(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
-int gsl_sf_complex_dilog_e(const double r, const double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
+int gsl_sf_complex_dilog_e(const double r, double theta, gsl_sf_result * result_re, gsl_sf_result * result_im);
 
 
 __END_DECLS

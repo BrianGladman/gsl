@@ -28,7 +28,7 @@
 
 
 int
-gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
+gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r)
 {
   if(re->e10 == 0) {
     /* nothing to smash */
@@ -50,7 +50,7 @@ gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
       return GSL_SUCCESS;
     }
     else {
-      return gsl_sf_exp_mult_err_impl(re->e10*M_LN10, 0.0, re->val, re->err, r);
+      return gsl_sf_exp_mult_err_e(re->e10*M_LN10, 0.0, re->val, re->err, r);
     }
   }
 /*
@@ -65,7 +65,7 @@ gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
     gsl_sf_result r_val;
     const double s = GSL_SIGN(re->val);
     const double x_v = re->e10*M_LN10 + log(fabs(re->val));
-    stat_v = gsl_sf_exp_impl(x_v, &r_val);
+    stat_v = gsl_sf_exp_e(x_v, &r_val);
     r->val = s * r_val.val;
   }
 
@@ -80,7 +80,7 @@ gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
   else {
     gsl_sf_result r_err;
     const double x_e = re->e10*M_LN10 + log(fabs(re->err));
-    stat_e = gsl_sf_exp_impl(x_e, &r_err);
+    stat_e = gsl_sf_exp_e(x_e, &r_err);
     r->err = r_err.val;
   }
 
@@ -88,12 +88,3 @@ gsl_sf_result_smash_impl(const gsl_sf_result_e10 * re, gsl_sf_result * r)
 */
 }
 
-
-int gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r)
-{
-  int status = gsl_sf_result_smash_impl(re, r);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_result_smash_e", status);
-  }
-  return status;
-}

@@ -42,8 +42,8 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EUNDRFLW;
  */
-int     gsl_sf_dawson_impl(double x, gsl_sf_result * result);
 int     gsl_sf_dawson_e(double x, gsl_sf_result * result);
+double     gsl_sf_dawson(double x);
 
 
 __END_DECLS

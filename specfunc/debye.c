@@ -141,20 +141,19 @@ static gsl_sf_cheb_series adeb4_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_debye_1_impl(const double x, gsl_sf_result * result)
+int gsl_sf_debye_1_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 1.64493406684822644;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 0.25*x + x*x/36.0;
@@ -164,7 +163,7 @@ int gsl_sf_debye_1_impl(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&adeb1_cs, t, &c);
+    gsl_sf_cheb_eval_e(&adeb1_cs, t, &c);
     result->val = c.val - 0.25 * x;
     result->err = c.err + 0.25 * x * GSL_DBL_EPSILON;
     return GSL_SUCCESS;
@@ -199,18 +198,17 @@ int gsl_sf_debye_1_impl(const double x, gsl_sf_result * result)
 }
 
     
-int gsl_sf_debye_2_impl(const double x, gsl_sf_result * result)
+int gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 4.80822761263837714;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - x/3.0 + x*x/24.0;
@@ -220,7 +218,7 @@ int gsl_sf_debye_2_impl(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&adeb2_cs, t, &c);
+    gsl_sf_cheb_eval_e(&adeb2_cs, t, &c);
     result->val = c.val - x/3.0;
     result->err = c.err + GSL_DBL_EPSILON * x/3.0;
     return GSL_SUCCESS;
@@ -253,25 +251,24 @@ int gsl_sf_debye_2_impl(const double x, gsl_sf_result * result)
     result->val = (val_infinity/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_debye_3_impl(const double x, gsl_sf_result * result)
+int gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 19.4818182068004875;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 3.0*x/8.0 + x*x/20.0;
@@ -281,7 +278,7 @@ int gsl_sf_debye_3_impl(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&adeb3_cs, t, &c);
+    gsl_sf_cheb_eval_e(&adeb3_cs, t, &c);
     result->val = c.val - 0.375*x;
     result->err = c.err + GSL_DBL_EPSILON * 0.375*x;
     return GSL_SUCCESS;
@@ -315,25 +312,24 @@ int gsl_sf_debye_3_impl(const double x, gsl_sf_result * result)
     result->val = ((val_infinity/x)/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
 }
 
 
-int gsl_sf_debye_4_impl(const double x, gsl_sf_result * result)
+int gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 99.5450644937635129;
   const double xcut = -GSL_LOG_DBL_MIN;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
     result->val = 1.0 - 2.0*x/5.0 + x*x/18.0;
@@ -343,7 +339,7 @@ int gsl_sf_debye_4_impl(const double x, gsl_sf_result * result)
   else if(x <= 4.0) {
     const double t = x*x/8.0 - 1.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&adeb4_cs, t, &c);
+    gsl_sf_cheb_eval_e(&adeb4_cs, t, &c);
     result->val = c.val - 2.0*x/5.0;
     result->err = c.err + GSL_DBL_EPSILON * 2.0*x/5.0;
     return GSL_SUCCESS;
@@ -378,51 +374,33 @@ int gsl_sf_debye_4_impl(const double x, gsl_sf_result * result)
     result->val = (((val_infinity/x)/x)/x)/x;
     result->err = GSL_DBL_EPSILON * result->val;
     if(result->val == 0.0)
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     else
       return GSL_SUCCESS;
   }
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_debye_1_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_debye_1(const double x)
 {
-  int status = gsl_sf_debye_1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_debye_1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_debye_1_e(x, &result));
 }
 
-int
-gsl_sf_debye_2_e(const double x, gsl_sf_result * result)
+double gsl_sf_debye_2(const double x)
 {
-  int status = gsl_sf_debye_2_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_debye_2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_debye_2_e(x, &result));
 }
 
-int
-gsl_sf_debye_3_e(const double x, gsl_sf_result * result)
+double gsl_sf_debye_3(const double x)
 {
-  int status = gsl_sf_debye_3_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_debye_3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_debye_3_e(x, &result));
 }
 
-int
-gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
+double gsl_sf_debye_4(const double x)
 {
-  int status = gsl_sf_debye_4_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_debye_4_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_debye_4_e(x, &result));
 }

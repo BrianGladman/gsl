@@ -30,12 +30,11 @@
 
 
 int
-gsl_sf_gegenpoly_1_impl(double lambda, double x, gsl_sf_result * result)
+gsl_sf_gegenpoly_1_e(double lambda, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lambda == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(lambda == 0.0) {
     result->val = 2.0*x;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -48,12 +47,11 @@ gsl_sf_gegenpoly_1_impl(double lambda, double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_gegenpoly_2_impl(double lambda, double x, gsl_sf_result * result)
+gsl_sf_gegenpoly_2_e(double lambda, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lambda == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(lambda == 0.0) {
     const double txx = 2.0*x*x;
     result->val  = -1.0 + txx;
     result->err  = 2.0 * GSL_DBL_EPSILON * fabs(txx);
@@ -68,12 +66,11 @@ gsl_sf_gegenpoly_2_impl(double lambda, double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_gegenpoly_3_impl(double lambda, double x, gsl_sf_result * result)
+gsl_sf_gegenpoly_3_e(double lambda, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lambda == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(lambda == 0.0) {
     result->val = x*(-2.0 + 4.0/3.0*x*x);
     result->err = GSL_DBL_EPSILON * (2.0 * fabs(result->val) + fabs(x));
     return GSL_SUCCESS;
@@ -88,15 +85,14 @@ gsl_sf_gegenpoly_3_impl(double lambda, double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
+gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lambda <= -0.5 || n < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(lambda <= -0.5 || n < 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(n == 0) {
     result->val = 1.0;
@@ -104,13 +100,13 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(n == 1) {
-    return gsl_sf_gegenpoly_1_impl(lambda, x, result);
+    return gsl_sf_gegenpoly_1_e(lambda, x, result);
   }
   else if(n == 2) {
-    return gsl_sf_gegenpoly_2_impl(lambda, x, result);
+    return gsl_sf_gegenpoly_2_e(lambda, x, result);
   }
   else if(n == 3) {
-    return gsl_sf_gegenpoly_3_impl(lambda, x, result);
+    return gsl_sf_gegenpoly_3_e(lambda, x, result);
   }
   else {
     if(lambda == 0.0 && (x >= -1.0 || x <= 1.0)) {
@@ -124,8 +120,8 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
       int k;
       gsl_sf_result g2;
       gsl_sf_result g3;
-      int stat_g2 = gsl_sf_gegenpoly_2_impl(lambda, x, &g2);
-      int stat_g3 = gsl_sf_gegenpoly_3_impl(lambda, x, &g3);
+      int stat_g2 = gsl_sf_gegenpoly_2_e(lambda, x, &g2);
+      int stat_g3 = gsl_sf_gegenpoly_3_e(lambda, x, &g3);
       int stat_g  = GSL_ERROR_SELECT_2(stat_g2, stat_g3);
       double gkm2 = g2.val;
       double gkm1 = g3.val;
@@ -144,16 +140,14 @@ gsl_sf_gegenpoly_n_impl(int n, double lambda, double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_array)
+gsl_sf_gegenpoly_array(int nmax, double lambda, double x, double * result_array)
 {
   int k;
 
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
+  /* CHECK_POINTER(result_array) */
 
   if(lambda <= -0.5 || nmax < 0) {
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
 
   /* n == 0 */
@@ -177,54 +171,26 @@ gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * result_a
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_gegenpoly_1_e(double lambda, double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_gegenpoly_1(double lambda, double x)
 {
-  int status = gsl_sf_gegenpoly_1_impl(lambda, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gegenpoly_1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gegenpoly_1_e(lambda, x, &result));
 }
 
-int
-gsl_sf_gegenpoly_2_e(double lambda, double x, gsl_sf_result * result)
+double gsl_sf_gegenpoly_2(double lambda, double x)
 {
-  int status = gsl_sf_gegenpoly_2_impl(lambda, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gegenpoly_2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gegenpoly_2_e(lambda, x, &result));
 }
 
-int
-gsl_sf_gegenpoly_3_e(double lambda, double x, gsl_sf_result * result)
+double gsl_sf_gegenpoly_3(double lambda, double x)
 {
-  int status = gsl_sf_gegenpoly_3_impl(lambda, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gegenpoly_3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gegenpoly_3_e(lambda, x, &result));
 }
 
-int
-gsl_sf_gegenpoly_n_e(int n, double lambda, double x, gsl_sf_result * result)
+double gsl_sf_gegenpoly_n(int n, double lambda, double x)
 {
-  int status = gsl_sf_gegenpoly_n_impl(n, lambda, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gegenpoly_n_e", status);
-  }
-  return status;
-}
-
-int
-gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array)
-{
-  int status = gsl_sf_gegenpoly_array_impl(nmax, lambda, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gegenpoly_array_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gegenpoly_n_e(n, lambda, x, &result));
 }

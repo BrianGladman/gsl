@@ -61,21 +61,20 @@ bessel_Y_recur(const double nu_min, const double x, const int kmax,
 #endif
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
+gsl_sf_bessel_Ynu_e(double nu, double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0 || nu < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(nu > 50.0) {
-    return gsl_sf_bessel_Ynu_asymp_Olver_impl(nu, x, result);
+    return gsl_sf_bessel_Ynu_asymp_Olver_e(nu, x, result);
   }
   else {
     /* -1/2 <= mu <= 1/2 */
@@ -123,14 +122,11 @@ gsl_sf_bessel_Ynu_impl(double nu, double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_bessel_Ynu_e(const double nu, const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_Ynu(const double nu, const double x)
 {
-  int status = gsl_sf_bessel_Ynu_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Ynu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Ynu_e(nu, x, &result));
 }

@@ -1,3 +1,8 @@
+Mon Apr 23 10:29:01 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* tridiag.c: removed EFAULT test since this should only apply to
+ 	non-null invalid pointers
+
 Fri Apr 13 20:43:38 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: replaced uses of matmult by dgemm

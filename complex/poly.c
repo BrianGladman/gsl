@@ -503,7 +503,7 @@ void gsl_complex_poly_newton(gsl_complex *xmin,gsl_complex *L,int n,
 }
 
 int
-gsl_complex_poly_solve_impl(gsl_complex *coeff, int n,
+gsl_complex_poly_solve(gsl_complex *coeff, int n,
 			    gsl_complex *Roots, double *maxerr,
 			    gsl_complex *coeff_deflated,
 			    struct gsl_complex_poly_workspace *w,
@@ -578,7 +578,7 @@ gsl_complex_poly_solve(gsl_complex *coeff, int n,
   defspace=(gsl_complex *)malloc(n*sizeof(gsl_complex));  
   
   if (!maxerr) maxerr=&dummy;
-  res=gsl_complex_poly_solve_impl(coeff,n,Roots,maxerr,defspace,&w,compcoef);
+  res=gsl_complex_poly_solve(coeff,n,Roots,maxerr,defspace,&w,compcoef);
 			     
   free(defspace);
   return res;

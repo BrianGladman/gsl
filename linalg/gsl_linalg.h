@@ -53,7 +53,7 @@ gsl_linalg_matrix_mod_t;
 /* Simple implementation of matrix multiply.
  * Calculates C = A.B
  *
- * exceptions: GSL_EFAULT, GSL_EBADLEN
+ * exceptions: GSL_EBADLEN
  */
 int gsl_linalg_matmult (const gsl_matrix * A,
 			const gsl_matrix * B,
@@ -64,7 +64,7 @@ int gsl_linalg_matmult (const gsl_matrix * A,
  * Allows transposition of either matrix, so it
  * can compute A.B or Trans(A).B or A.Trans(B) or Trans(A).Trans(B)
  *
- * exceptions: GSL_EFAULT, GSL_EBADLEN
+ * exceptions: GSL_EBADLEN
  */
 int gsl_linalg_matmult_mod (const gsl_matrix * A,
 			    gsl_linalg_matrix_mod_t modA,

@@ -32,10 +32,10 @@
 /* cubic spline interpolation object */
 typedef struct
   {
-    int (*eval_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-    int (*eval_d_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_d2_impl) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_i_impl) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
+    int (*eval) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+    int (*eval_d) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_d2) (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+    int (*eval_i) (const struct _gsl_interp_obj_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
     void (*free) (gsl_interp_obj *);
     double xmin;
     double xmax;
@@ -58,19 +58,19 @@ cspline_free (gsl_interp_obj * interp);
 
 static
 int
-cspline_eval_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
+cspline_eval (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
 
 static
 int
-cspline_eval_d_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+cspline_eval_d (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
 
 static
 int
-cspline_eval_d2_impl (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
+cspline_eval_d2 (const gsl_interp_obj *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
 
 static
 int
-cspline_eval_i_impl (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
+cspline_eval_i (const gsl_interp_obj *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
 
 
 /* global cubic spline factory objects */
@@ -95,10 +95,10 @@ cspline_new (const double xa[], size_t size)
   gsl_interp_cspline *interp = (gsl_interp_cspline *) malloc (sizeof (gsl_interp_cspline));
   if (interp != 0)
     {
-      interp->eval_impl = cspline_eval_impl;
-      interp->eval_d_impl = cspline_eval_d_impl;
-      interp->eval_i_impl = cspline_eval_i_impl;
-      interp->eval_d2_impl = cspline_eval_d2_impl;
+      interp->eval = cspline_eval;
+      interp->eval_d = cspline_eval_d;
+      interp->eval_i = cspline_eval_i;
+      interp->eval_d2 = cspline_eval_d2;
       interp->free = cspline_free;
       interp->xmin = xa[0];
       interp->xmax = xa[size - 1];
@@ -314,7 +314,7 @@ do {                                                         \
 
 static
 int
-cspline_eval_impl (const gsl_interp_obj * cspline_interp,
+cspline_eval (const gsl_interp_obj * cspline_interp,
 		   const double x_array[], const double y_array[],
 		   double x,
 		   gsl_interp_accel * a,
@@ -374,7 +374,7 @@ cspline_eval_impl (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_d_impl (const gsl_interp_obj * cspline_interp,
+cspline_eval_d (const gsl_interp_obj * cspline_interp,
 		     const double x_array[], const double y_array[],
 		     double x,
 		     gsl_interp_accel * a,
@@ -433,7 +433,7 @@ cspline_eval_d_impl (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_d2_impl (const gsl_interp_obj * cspline_interp,
+cspline_eval_d2 (const gsl_interp_obj * cspline_interp,
 		      const double x_array[], const double y_array[],
 		      double x,
 		      gsl_interp_accel * a,
@@ -492,7 +492,7 @@ cspline_eval_d2_impl (const gsl_interp_obj * cspline_interp,
 
 static
 int
-cspline_eval_i_impl (const gsl_interp_obj * cspline_interp,
+cspline_eval_i (const gsl_interp_obj * cspline_interp,
 		     const double x_array[], const double y_array[],
 		     gsl_interp_accel * acc,
                      double a, double b,

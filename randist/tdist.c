@@ -68,11 +68,11 @@ double
 gsl_ran_tdist_pdf (const double x, const double nu)
 {
   double p;
-  gsl_sf_result lg1, lg2;
-  gsl_sf_lngamma_impl (nu / 2, &lg1);
-  gsl_sf_lngamma_impl ((nu + 1) / 2, &lg2);
 
-  p = ((exp (lg2.val - lg1.val) / sqrt (M_PI * nu)) 
+  double lg1 = gsl_sf_lngamma (nu / 2);
+  double lg2 = gsl_sf_lngamma ((nu + 1) / 2);
+
+  p = ((exp (lg2 - lg1) / sqrt (M_PI * nu)) 
        * pow ((1 + x * x / nu), -(nu + 1) / 2));
   return p;
 }

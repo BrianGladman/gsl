@@ -40,52 +40,51 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result);
 int     gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result);
+double     gsl_sf_legendre_Pl(const int l, const double x);
 
 
 /* P_l(x) for l=0,...,lmax; |x| <= 1
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * result_array);
-int gsl_sf_legendre_Pl_array_e(const int lmax, const double x, double * result_array);
+int gsl_sf_legendre_Pl_array(const int lmax, const double x, double * result_array);
 
 
 /* P_l(x), l=1,2,3
  *
  * exceptions: none
  */
-int gsl_sf_legendre_P1_impl(double x, gsl_sf_result * result);
-int gsl_sf_legendre_P2_impl(double x, gsl_sf_result * result);
-int gsl_sf_legendre_P3_impl(double x, gsl_sf_result * result);
-int gsl_sf_legendre_P1_e(const double x, gsl_sf_result * result);
-int gsl_sf_legendre_P2_e(const double x, gsl_sf_result * result);
-int gsl_sf_legendre_P3_e(const double x, gsl_sf_result * result);
+int gsl_sf_legendre_P1_e(double x, gsl_sf_result * result);
+int gsl_sf_legendre_P2_e(double x, gsl_sf_result * result);
+int gsl_sf_legendre_P3_e(double x, gsl_sf_result * result);
+double gsl_sf_legendre_P1(const double x);
+double gsl_sf_legendre_P2(const double x);
+double gsl_sf_legendre_P3(const double x);
 
 
 /* Q_0(x), x > -1, x != 1
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_Q0_impl(const double x, gsl_sf_result * result);
 int gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result);
+double gsl_sf_legendre_Q0(const double x);
 
 
 /* Q_1(x), x > -1, x != 1
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_Q1_impl(const double x, gsl_sf_result * result);
 int gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result);
+double gsl_sf_legendre_Q1(const double x);
 
 
 /* Q_l(x), x > -1, x != 1, l >= 0
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result);
 int gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result);
+double gsl_sf_legendre_Ql(const int l, const double x);
 
 
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
@@ -105,8 +104,8 @@ int gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result);
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int     gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result * result);
 int     gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result);
+double     gsl_sf_legendre_Plm(const int l, const int m, const double x);
 
 
 /* P_l^m(x)  m >= 0; l >= m; |x| <= 1.0
@@ -114,8 +113,7 @@ int     gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_r
  *
  * exceptions: GSL_EDOM, GSL_EOVRFLW
  */
-int gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, double * result_array);
-int gsl_sf_legendre_Plm_array_e(const int lmax, const int m, const double x, double * result_array);
+int gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * result_array);
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
@@ -130,8 +128,8 @@ int gsl_sf_legendre_Plm_array_e(const int lmax, const int m, const double x, dou
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * result);
-int     gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, gsl_sf_result * result);
+int     gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * result);
+double     gsl_sf_legendre_sphPlm(const int l, const int m, const double x);
 
 
 /* P_l^m(x), normalized properly for use in spherical harmonics
@@ -140,8 +138,7 @@ int     gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, gsl_s
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double * result_array);
-int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, double * result_array);
+int gsl_sf_legendre_sphPlm_array(const int lmax, int m, const double x, double * result_array);
 
 
 /* size of result_array[] needed for the array versions of Plm
@@ -156,8 +153,8 @@ int gsl_sf_legendre_array_size(const int lmax, const int m);
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_half_impl(const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_half_e(const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_half(const double lambda, const double x);
 
 
 /* Regular Spherical Conical Function
@@ -166,8 +163,8 @@ int gsl_sf_conicalP_half_e(const double lambda, const double x, gsl_sf_result * 
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_mhalf_impl(const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_mhalf_e(const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_mhalf(const double lambda, const double x);
 
 
 /* Conical Function
@@ -176,8 +173,8 @@ int gsl_sf_conicalP_mhalf_e(const double lambda, const double x, gsl_sf_result *
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_0_impl(const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_0_e(const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_0(const double lambda, const double x);
 
 
 /* Conical Function
@@ -186,8 +183,8 @@ int gsl_sf_conicalP_0_e(const double lambda, const double x, gsl_sf_result * res
  * x > -1.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_1_impl(const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_1_e(const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_1(const double lambda, const double x);
 
 
 /* Regular Spherical Conical Function
@@ -196,8 +193,8 @@ int gsl_sf_conicalP_1_e(const double lambda, const double x, gsl_sf_result * res
  * x > -1.0, l >= -1
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_sph_reg_impl(const int l, const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_sph_reg_e(const int l, const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_sph_reg(const int l, const double lambda, const double x);
 
 
 /* Regular Cylindrical Conical Function
@@ -206,8 +203,8 @@ int gsl_sf_conicalP_sph_reg_e(const int l, const double lambda, const double x, 
  * x > -1.0, m >= -1
  * exceptions: GSL_EDOM
  */
-int gsl_sf_conicalP_cyl_reg_impl(const int m, const double lambda, const double x, gsl_sf_result * result);
 int gsl_sf_conicalP_cyl_reg_e(const int m, const double lambda, const double x, gsl_sf_result * result);
+double gsl_sf_conicalP_cyl_reg(const int m, const double lambda, const double x);
 
 
 /* The following spherical functions are specializations
@@ -228,8 +225,8 @@ int gsl_sf_conicalP_cyl_reg_e(const int m, const double lambda, const double x, 
  * eta >= 0.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_H3d_0_impl(const double lambda, const double eta, gsl_sf_result * result);
 int gsl_sf_legendre_H3d_0_e(const double lambda, const double eta, gsl_sf_result * result);
+double gsl_sf_legendre_H3d_0(const double lambda, const double eta);
 
 
 /* First radial eigenfunction of the Laplacian on the
@@ -245,8 +242,8 @@ int gsl_sf_legendre_H3d_0_e(const double lambda, const double eta, gsl_sf_result
  * eta >= 0.0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_H3d_1_impl(const double lambda, const double eta, gsl_sf_result * result);
 int gsl_sf_legendre_H3d_1_e(const double lambda, const double eta, gsl_sf_result * result);
+double gsl_sf_legendre_H3d_1(const double lambda, const double eta);
 
 
 /* l'th radial eigenfunction of the Laplacian on the
@@ -258,14 +255,13 @@ int gsl_sf_legendre_H3d_1_e(const double lambda, const double eta, gsl_sf_result
  * eta >= 0.0, l >= 0
  * exceptions: GSL_EDOM
  */
-int gsl_sf_legendre_H3d_impl(const int l, const double lambda, const double eta, gsl_sf_result * result);
 int gsl_sf_legendre_H3d_e(const int l, const double lambda, const double eta, gsl_sf_result * result);
+double gsl_sf_legendre_H3d(const int l, const double lambda, const double eta);
 
 
 /* Array of H3d(ell),  0 <= ell <= lmax
  */
-int gsl_sf_legendre_H3d_array_impl(const int lmax, const double lambda, const double eta, double * result_array);
-int gsl_sf_legendre_H3d_array_e(const int lmax, const double lambda, const double eta, double * result_array);
+int gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double eta, double * result_array);
 
 
 #ifdef HAVE_INLINE

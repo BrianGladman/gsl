@@ -48,8 +48,8 @@ laguerre_large_n(const int n, const double alpha, const double x,
   const double pre_h  = 0.25*M_PI*M_PI*eta*eta*cos2th*sin2th;
   gsl_sf_result lg_b;
   gsl_sf_result lnfact;
-  int stat_lg = gsl_sf_lngamma_impl(b+n, &lg_b);
-  int stat_lf = gsl_sf_lnfact_impl(n, &lnfact);
+  int stat_lg = gsl_sf_lngamma_e(b+n, &lg_b);
+  int stat_lf = gsl_sf_lnfact_e(n, &lnfact);
   double pre_term1 = 0.5*(1.0-b)*log(0.25*x*eta);
   double pre_term2 = 0.25*log(pre_h);
   double lnpre_val = lg_b.val - lnfact.val + 0.5*x + pre_term1 - pre_term2;
@@ -58,7 +58,7 @@ laguerre_large_n(const int n, const double alpha, const double x,
   double ser_term2 = sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
   double ser_val = ser_term1 + ser_term2;
   double ser_err = GSL_DBL_EPSILON * (fabs(ser_term1) + fabs(ser_term2));
-  int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err, ser_val, ser_err, result);
+  int stat_e = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err, ser_val, ser_err, result);
   result->err += 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_3(stat_e, stat_lf, stat_lg);
 }
@@ -78,9 +78,9 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
   gsl_sf_result lg1;
   gsl_sf_result lg2;
   double s1, s2;
-  int stat_f = gsl_sf_lnfact_impl(n, &lnfact);
-  int stat_g1 = gsl_sf_lngamma_sgn_impl(a+1.0+n, &lg1, &s1);
-  int stat_g2 = gsl_sf_lngamma_sgn_impl(a+1.0, &lg2, &s2);
+  int stat_f = gsl_sf_lnfact_e(n, &lnfact);
+  int stat_g1 = gsl_sf_lngamma_sgn_e(a+1.0+n, &lg1, &s1);
+  int stat_g2 = gsl_sf_lngamma_sgn_e(a+1.0, &lg2, &s2);
   double poly_1F1_val = 1.0;
   double poly_1F1_err = 0.0;
   int stat_e;
@@ -95,7 +95,7 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
     if(r > 0.9*GSL_DBL_MAX/poly_1F1_val) {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
     else {
       /* Collect the Horner terms. */
@@ -104,7 +104,7 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
     }
   }
 
-  stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err,
+  stat_e = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err,
                                     poly_1F1_val, poly_1F1_err,
                                     result);
 
@@ -125,7 +125,7 @@ laguerre_n_poly_safe(const int n, const double a, const double x, gsl_sf_result 
   const double mx = -x;
   const double tc_sgn = (x < 0.0 ? 1.0 : (GSL_IS_ODD(n) ? -1.0 : 1.0));
   gsl_sf_result tc;
-  int stat_tc = gsl_sf_taylorcoeff_impl(n, fabs(x), &tc);
+  int stat_tc = gsl_sf_taylorcoeff_e(n, fabs(x), &tc);
 
   if(stat_tc == GSL_SUCCESS) {
     double term = tc.val * tc_sgn;
@@ -155,15 +155,14 @@ laguerre_n_poly_safe(const int n, const double a, const double x, gsl_sf_result 
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_laguerre_1_e(const double a, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     result->val = 1.0 + a - x;
     result->err = 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(a) + fabs(x));
     return GSL_SUCCESS;
@@ -171,12 +170,11 @@ gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_laguerre_2_e(const double a, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(a == -2.0) {
+  /* CHECK_POINTER(result) */
+
+  if(a == -2.0) {
     result->val = 0.5*x*x;
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -193,12 +191,11 @@ gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_laguerre_3_e(const double a, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(a == -2.0) {
+  /* CHECK_POINTER(result) */
+
+  if(a == -2.0) {
     double x2_6  = x*x/6.0;
     result->val  = x2_6 * (3.0 - x);
     result->err  = x2_6 * (3.0 + fabs(x)) * 2.0 * GSL_DBL_EPSILON;
@@ -225,16 +222,15 @@ gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
+int gsl_sf_laguerre_n_e(const int n, const double a, const double x,
                            gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(n < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(n < 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(n == 0) {
     result->val = 1.0;
@@ -281,7 +277,7 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
   }
   else if(a > 0.0 || (x > 0.0 && a < -n-1)) {
     gsl_sf_result lg2;
-    int stat_lg2 = gsl_sf_laguerre_2_impl(a, x, &lg2);
+    int stat_lg2 = gsl_sf_laguerre_2_e(a, x, &lg2);
     double Lkm1 = 1.0 + a - x;
     double Lk   = lg2.val;
     double Lkp1;
@@ -303,40 +299,26 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_laguerre_1_e(double a, double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_laguerre_1(double a, double x)
 {
-  int status = gsl_sf_laguerre_1_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_laguerre_1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_laguerre_1_e(a, x, &result));
 }
 
-int gsl_sf_laguerre_2_e(double a, double x, gsl_sf_result * result)
+double gsl_sf_laguerre_2(double a, double x)
 {
-  int status = gsl_sf_laguerre_2_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_laguerre_2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_laguerre_2_e(a, x, &result));
 }
 
-int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result)
+double gsl_sf_laguerre_3(double a, double x)
 {
-  int status = gsl_sf_laguerre_3_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_laguerre_3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_laguerre_3_e(a, x, &result));
 }
 
-int gsl_sf_laguerre_n_e(int n, double a, double x, gsl_sf_result * result)
+double gsl_sf_laguerre_n(int n, double a, double x)
 {
-  int status = gsl_sf_laguerre_n_impl(n, a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_laguerre_n_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_laguerre_n_e(n, a, x, &result));
 }

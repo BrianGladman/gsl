@@ -10,17 +10,17 @@ We have
 @math{ E_1(x) := Re \int_1^\infty dt \exp(-xt)/t };
 @math{ E_2(x) := Re \int_1^\infty dt \exp(-xt)/t^2 }.
 
-@deftypefun  int gsl_sf_expint_E1_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_expint_E1_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_expint_E1 (double @var{x})
+@deftypefunx int gsl_sf_expint_E1_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x != 0.0
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_expint_E2_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_expint_E2_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_expint_E2 (double @var{x})
+@deftypefunx int gsl_sf_expint_E2_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x != 0.0
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
@@ -30,10 +30,10 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 We have
 @math{ Ei(x) := PV \int_(-x)^\infty dt \exp(-t)/t }.
 
-@deftypefun  int gsl_sf_expint_Ei_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_expint_Ei_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_expint_Ei (double @var{x})
+@deftypefunx int gsl_sf_expint_Ei_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x != 0.0
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
@@ -44,16 +44,16 @@ We have
 @math{ Chi(x) := Re[ M_EULER + log(x) + \int_0^x dt (Cosh[t]-1)/t }.
 
 
-@deftypefun  int     gsl_sf_Shi_impl (double x, gsl_sf_result * result)
-@deftypefunx int     gsl_sf_Shi_e (double x, gsl_sf_result * result)
-Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
+@deftypefun double gsl_sf_Shi (double @var{x})
+@deftypefunx int gsl_sf_Shi_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_Chi_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_Chi_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_Chi (double @var{x})
+@deftypefunx int gsl_sf_Chi_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x != 0.0
-Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
@@ -62,10 +62,10 @@ Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 We have
 @math{ Ei_3(x) = \int_0^x dt \exp(-t^3) }.
 
-@deftypefun  int gsl_sf_expint_3_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_expint_3_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_expint_3 (double @var{x})
+@deftypefunx int gsl_sf_expint_3_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x >= 0.0
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
@@ -77,16 +77,16 @@ We have
 @math{ Ci(x) = -\int_x^\infty \cos(t)/t }.
 
 
-@deftypefun  int gsl_sf_Si_impl (const double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_Si_e (double x, gsl_sf_result * result)
-Exceptional Return Values: none
+@deftypefun double gsl_sf_Si (const double @var{x})
+@deftypefunx int gsl_sf_Si_e (double @var{x}, gsl_sf_result * @var{result})
+@comment Exceptional Return Values: none
 @end deftypefun
 
  
-@deftypefun  int gsl_sf_Ci_impl (const double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_Ci_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_Ci (const double @var{x})
+@deftypefunx int gsl_sf_Ci_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: x > 0.0
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
@@ -95,8 +95,8 @@ Exceptional Return Values: GSL_EDOM
 We have
 @math{ AtanInt(x) = \int_0^x dt \arctan(t)/t }.
 
-@deftypefun  int gsl_sf_atanint_impl (double x, gsl_sf_result * result);
-@deftypefunx int gsl_sf_atanint_e (double x, gsl_sf_result * result);
+@deftypefun double gsl_sf_atanint (double @var{x})
+@deftypefunx int gsl_sf_atanint_e (double @var{x}, gsl_sf_result * @var{result})
 Domain: 
-Exceptional Return Values: 
+@comment Exceptional Return Values: 
 @end deftypefun

@@ -62,8 +62,8 @@ int test_eigen_jacobi(void)
 
   /* 10x10 Hilbert matrix */
   gsl_matrix * hm = create_hilbert_matrix(10);
-  gsl_eigen_jacobi_impl(hm, eval, evec, 1000, &nrot);
-  gsl_eigen_sort_impl(eval, evec, GSL_EIGEN_SORT_VALUE);
+  gsl_eigen_jacobi(hm, eval, evec, 1000, &nrot);
+  gsl_eigen_sort(eval, evec, GSL_EIGEN_SORT_VALUE);
 
   s += ( fabs(eval_h10[0] - eval->data[9]) > 1.0e-15 );
   s += ( fabs(eval_h10[1] - eval->data[8]) > 1.0e-14 );
@@ -90,7 +90,7 @@ int test_invert_jacobi(void)
 
   /* 10x10 Hilbert matrix */
   gsl_matrix * hm = create_hilbert_matrix(10);
-  gsl_eigen_invert_jacobi_impl(hm, hminv, 1000);
+  gsl_eigen_invert_jacobi(hm, hminv, 1000);
 
   /* gsl_linalg_matmult(hm, hminv, id); */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, hm, hminv, 0.0, id);

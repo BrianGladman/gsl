@@ -27,7 +27,7 @@
 
 
 int
-gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
+gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result)
 {
   const double ax = fabs(x);
   const double ay = fabs(y);
@@ -63,44 +63,29 @@ gsl_sf_multiply_impl(const double x, const double y, gsl_sf_result * result)
     else {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
   }
 }
 
 
 int
-gsl_sf_multiply_err_impl(const double x, const double dx,
+gsl_sf_multiply_err_e(const double x, const double dx,
                          const double y, const double dy,
                          gsl_sf_result * result)
 {
-  int status = gsl_sf_multiply_impl(x, y, result);
+  int status = gsl_sf_multiply_e(x, y, result);
   result->err += fabs(dx*y) + fabs(dy*x);
   return status;
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_multiply_e(const double x, const double y, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_multiply(const double x, const double y)
 {
-  int status = gsl_sf_multiply_impl(x, y, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_multiply_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_multiply_e(x, y, &result));
 }
 
-
-int
-gsl_sf_multiply_err_e(const double x, const double dx,
-                      const double y, const double dy,
-                      gsl_sf_result * result)
-{
-  int status = gsl_sf_multiply_err_impl(x, dx, y, dy, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_multiply_err_e", status);
-  }
-  return status;
-}

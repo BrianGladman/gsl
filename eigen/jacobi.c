@@ -51,16 +51,13 @@ jac_rotate(gsl_matrix * a,
 }
 
 int
-gsl_eigen_jacobi_impl(gsl_matrix * a,
+gsl_eigen_jacobi(gsl_matrix * a,
                          gsl_vector * eval,
                          gsl_matrix * evec,
                          unsigned int max_rot, 
                          unsigned int * nrot)
 {
-  if(a == 0 || eval == 0 || evec == 0) {
-    return GSL_EFAULT;
-  }
-  else if(a->size1 != a->size2) {
+  if(a->size1 != a->size2) {
     return GSL_ENOTSQR;
   }
   else if(a->size1 != evec->size1 || a->size1 != evec->size2) {
@@ -185,14 +182,11 @@ gsl_eigen_jacobi_impl(gsl_matrix * a,
 }
 
 int
-gsl_eigen_invert_jacobi_impl(const gsl_matrix * a,
+gsl_eigen_invert_jacobi(const gsl_matrix * a,
                              gsl_matrix * ainv,
                              unsigned int max_rot)
 {
-  if(a == 0 || ainv == 0) {
-    return GSL_EFAULT;
-  }
-  else if(a->size1 != a->size2 || ainv->size1 != ainv->size2) {
+  if(a->size1 != a->size2 || ainv->size1 != ainv->size2) {
     return GSL_ENOTSQR;
   }
   else if(a->size1 != ainv->size2) {
@@ -221,7 +215,7 @@ gsl_eigen_invert_jacobi_impl(const gsl_matrix * a,
 
     memcpy(ainv->data, a->data, n*n*sizeof(REAL));
 
-    gsl_eigen_jacobi_impl(ainv, eval, evec, max_rot, &nrot);
+    gsl_eigen_jacobi(ainv, eval, evec, max_rot, &nrot);
 
     for(i=0; i<n; i++) {
       if(fabs(gsl_vector_get(eval, i)) < 100.0 * GSL_DBL_EPSILON) {

@@ -54,16 +54,15 @@ rk_step(double nu, double x, double dx, double * Jp, double * J)
 
 
 int
-gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double * v)
+gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v)
 {
-  if(v == 0) {
-    return GSL_EFAULT;
-  }
-  else if(nu < 0.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(v) */
+
+  if(nu < 0.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(size == 0) {
-    return GSL_EINVAL;
+    GSL_ERROR ("error", GSL_EINVAL);
   }
   else {
     const gsl_prec_t goal   = GSL_MODE_PREC(mode);
@@ -82,7 +81,7 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
 
     /* Calculate the first point. */
     x = v[0];
-    gsl_sf_bessel_Jnu_impl(nu, x, &J0);
+    gsl_sf_bessel_Jnu_e(nu, x, &J0);
     v[0] = J0.val;
     ++i;
 
@@ -92,10 +91,10 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
     if(x == 0.0) {
       if(v[1] <= x) {
         /* Strict ordering failure. */
-        return GSL_EFAILED;
+        GSL_ERROR ("error", GSL_EFAILED);
       }
       x = v[1];
-      gsl_sf_bessel_Jnu_impl(nu, x, &J0);
+      gsl_sf_bessel_Jnu_e(nu, x, &J0);
       v[1] = J0.val;
       ++i;
     }
@@ -107,10 +106,10 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
     while(v[i] < x_small && i < size) {
       if(v[i] <= x) {
         /* Strict ordering failure. */
-	return GSL_EFAILED;
+	GSL_ERROR ("error", GSL_EFAILED);
       }
       x = v[i];
-      gsl_sf_bessel_Jnu_impl(nu, x, &J0);
+      gsl_sf_bessel_Jnu_e(nu, x, &J0);
       v[i] = J0.val;
       ++i;
     }
@@ -122,7 +121,7 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
      * calculate nu+1 at x as well to get
      * the derivative, then we go forward.
      */
-    gsl_sf_bessel_Jnu_impl(nu+1.0, x, &J1);
+    gsl_sf_bessel_Jnu_e(nu+1.0, x, &J1);
     J  = J0.val;
     Jp = -J1.val + nu/x * J0.val;
 
@@ -135,7 +134,7 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
 
       if(v[i] <= x) {
         /* Strict ordering failure. */
-	return GSL_EFAILED;
+	GSL_ERROR ("error", GSL_EFAILED);
       }
 
       /* Integrate over interval up to next sample point.
@@ -152,15 +151,4 @@ gsl_sf_bessel_sequence_Jnu_impl(double nu, gsl_mode_t mode, size_t size, double 
 
     return GSL_SUCCESS;
   }
-}
-
-
-int
-gsl_sf_bessel_sequence_Jnu_e(double nu, gsl_mode_t mode, size_t size, double * v)
-{
-  int status = gsl_sf_bessel_sequence_Jnu_impl(nu, mode, size, v);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_sequence_Jnu_e", status);
-  }
-  return status;
 }

@@ -62,14 +62,14 @@ delta(int ta, int tb, int tc, gsl_sf_result * d)
 {
   gsl_sf_result f1, f2, f3, f4;
   int status = 0;
-  status += gsl_sf_fact_impl((ta + tb - tc)/2, &f1);
-  status += gsl_sf_fact_impl((ta + tc - tb)/2, &f2);
-  status += gsl_sf_fact_impl((tb + tc - ta)/2, &f3);
-  status += gsl_sf_fact_impl((ta + tb + tc)/2 + 1, &f4);
+  status += gsl_sf_fact_e((ta + tb - tc)/2, &f1);
+  status += gsl_sf_fact_e((ta + tc - tb)/2, &f2);
+  status += gsl_sf_fact_e((tb + tc - ta)/2, &f3);
+  status += gsl_sf_fact_e((ta + tb + tc)/2 + 1, &f4);
   if(status != 0) {
     d->val = 0.0;
     d->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   d->val = f1.val * f2.val * f3.val / f4.val;
   d->err = 4.0 * GSL_DBL_EPSILON * fabs(d->val);
@@ -101,20 +101,19 @@ m_selection_fails(int two_ja, int two_jb, int two_jc,
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
+gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
                         int two_ma, int two_mb, int two_mc,
 			gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(two_ja < 0 || two_jb < 0 || two_jc < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(two_ja < 0 || two_jb < 0 || two_jc < 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(   triangle_selection_fails(two_ja, two_jb, two_jc)
           || m_selection_fails(two_ja, two_jb, two_jc, two_ma, two_mb, two_mc)
@@ -135,21 +134,21 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
     double sum_neg = 0.0;
     double phase;
     int status = 0;
-    status += gsl_sf_fact_impl((two_jc + two_ja - two_jb)/2, &n1_a);
-    status += gsl_sf_fact_impl((two_jc - two_ja + two_jb)/2, &n1_b);
-    status += gsl_sf_fact_impl((two_ja + two_jb - two_jc)/2, &n2);
-    status += gsl_sf_fact_impl((two_jc - two_mc)/2, &n3_a);
-    status += gsl_sf_fact_impl((two_jc + two_mc)/2, &n3_b);
-    status += gsl_sf_fact_impl((two_ja + two_jb + two_jc)/2 + 1, &d1);
-    status += gsl_sf_fact_impl((two_ja - two_ma)/2, &d2_a);
-    status += gsl_sf_fact_impl((two_ja + two_ma)/2, &d2_b);
-    status += gsl_sf_fact_impl((two_jb - two_mb)/2, &d3_a);
-    status += gsl_sf_fact_impl((two_jb + two_mb)/2, &d3_b);
+    status += gsl_sf_fact_e((two_jc + two_ja - two_jb)/2, &n1_a);
+    status += gsl_sf_fact_e((two_jc - two_ja + two_jb)/2, &n1_b);
+    status += gsl_sf_fact_e((two_ja + two_jb - two_jc)/2, &n2);
+    status += gsl_sf_fact_e((two_jc - two_mc)/2, &n3_a);
+    status += gsl_sf_fact_e((two_jc + two_mc)/2, &n3_b);
+    status += gsl_sf_fact_e((two_ja + two_jb + two_jc)/2 + 1, &d1);
+    status += gsl_sf_fact_e((two_ja - two_ma)/2, &d2_a);
+    status += gsl_sf_fact_e((two_ja + two_ma)/2, &d2_b);
+    status += gsl_sf_fact_e((two_jb - two_mb)/2, &d3_a);
+    status += gsl_sf_fact_e((two_jb + two_mb)/2, &d3_b);
 
     if(status != 0) {
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
 
     n1.val = n1_a.val * n1_b.val;
@@ -168,17 +167,17 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
       double term;
 
       status = 0;
-      status += gsl_sf_fact_impl((two_jb + two_jc + two_ma - tk)/2, &n1);
-      status += gsl_sf_fact_impl((two_ja - two_ma + tk)/2, &n2);
-      status += gsl_sf_fact_impl(tk/2, &d1_a);
-      status += gsl_sf_fact_impl((two_jc - two_ja + two_jb - tk)/2, &d1_b);
-      status += gsl_sf_fact_impl((two_jc - two_mc - tk)/2, &d2);
-      status += gsl_sf_fact_impl((two_ja - two_jb + two_mc + tk)/2, &d3);
+      status += gsl_sf_fact_e((two_jb + two_jc + two_ma - tk)/2, &n1);
+      status += gsl_sf_fact_e((two_ja - two_ma + tk)/2, &n2);
+      status += gsl_sf_fact_e(tk/2, &d1_a);
+      status += gsl_sf_fact_e((two_jc - two_ja + two_jb - tk)/2, &d1_b);
+      status += gsl_sf_fact_e((two_jc - two_mc - tk)/2, &d2);
+      status += gsl_sf_fact_e((two_ja - two_jb + two_mc + tk)/2, &d3);
 
       if(status != 0) {
         result->val = 0.0;
 	result->err = 0.0;
-	return GSL_EOVRFLW;
+	GSL_ERROR ("error", GSL_EOVRFLW);
       }
 
       d1.val = d1_a.val * d1_b.val;
@@ -204,19 +203,18 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
 
 
 int
-gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
+gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
                         int two_jd, int two_je, int two_jf,
 			gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(   two_ja < 0 || two_jb < 0 || two_jc < 0
+  /* CHECK_POINTER(result) */
+
+  if(   two_ja < 0 || two_jb < 0 || two_jc < 0
      || two_jd < 0 || two_je < 0 || two_je < 0
      ) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(   triangle_selection_fails(two_ja, two_jb, two_je)
           || triangle_selection_fails(two_ja, two_jc, two_jf)
@@ -244,7 +242,7 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
     if(status != GSL_SUCCESS) {
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
     norm = sqrt(d1.val) * sqrt(d2.val) * sqrt(d3.val) * sqrt(d4.val);
     
@@ -269,19 +267,19 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
       gsl_sf_result d1_a, d1_b;
       status = 0;
       
-      status += gsl_sf_fact_impl((two_ja + two_jb + two_jc + two_jd - tk)/2 + 1, &n1);
-      status += gsl_sf_fact_impl(tk/2, &d1_a);
-      status += gsl_sf_fact_impl((two_je + two_jf - two_ja - two_jd + tk)/2, &d1_b);
-      status += gsl_sf_fact_impl((two_je + two_jf - two_jb - two_jc + tk)/2, &d2);
-      status += gsl_sf_fact_impl((two_ja + two_jb - two_je - tk)/2, &d3);
-      status += gsl_sf_fact_impl((two_jc + two_jd - two_je - tk)/2, &d4);
-      status += gsl_sf_fact_impl((two_ja + two_jc - two_jf - tk)/2, &d5);
-      status += gsl_sf_fact_impl((two_jb + two_jd - two_jf - tk)/2, &d6);
+      status += gsl_sf_fact_e((two_ja + two_jb + two_jc + two_jd - tk)/2 + 1, &n1);
+      status += gsl_sf_fact_e(tk/2, &d1_a);
+      status += gsl_sf_fact_e((two_je + two_jf - two_ja - two_jd + tk)/2, &d1_b);
+      status += gsl_sf_fact_e((two_je + two_jf - two_jb - two_jc + tk)/2, &d2);
+      status += gsl_sf_fact_e((two_ja + two_jb - two_je - tk)/2, &d3);
+      status += gsl_sf_fact_e((two_jc + two_jd - two_je - tk)/2, &d4);
+      status += gsl_sf_fact_e((two_ja + two_jc - two_jf - tk)/2, &d5);
+      status += gsl_sf_fact_e((two_jb + two_jd - two_jf - tk)/2, &d6);
       
       if(status != GSL_SUCCESS) {
         result->val = 0.0;
 	result->err = 0.0;
-	return GSL_EOVRFLW;
+	GSL_ERROR ("error", GSL_EOVRFLW);
       }
 
       d1.val = d1_a.val * d1_b.val;
@@ -324,21 +322,20 @@ gsl_sf_coupling_6j_impl(int two_ja, int two_jb, int two_jc,
 
 
 int
-gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
+gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
                         int two_jd, int two_je, int two_jf,
 			int two_jg, int two_jh, int two_ji,
 			gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(   two_ja < 0 || two_jb < 0 || two_jc < 0
+  /* CHECK_POINTER(result) */
+
+  if(   two_ja < 0 || two_jb < 0 || two_jc < 0
      || two_jd < 0 || two_je < 0 || two_jf < 0
      || two_jg < 0 || two_jh < 0 || two_ji < 0
      ) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(   triangle_selection_fails(two_ja, two_jb, two_jc)
           || triangle_selection_fails(two_jd, two_je, two_jf)
@@ -364,13 +361,13 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
       double term;
       double term_err;
       int status = 0;
-      status += gsl_sf_coupling_6j_impl(two_ja, two_ji, two_jd,  two_jh, tk, two_jg,  &s1);
-      status += gsl_sf_coupling_6j_impl(two_jb, two_jf, two_jh,  two_jd, tk, two_je,  &s2);
-      status += gsl_sf_coupling_6j_impl(two_ja, two_ji, two_jb,  two_jf, tk, two_jc,  &s3);
+      status += gsl_sf_coupling_6j_e(two_ja, two_ji, two_jd,  two_jh, tk, two_jg,  &s1);
+      status += gsl_sf_coupling_6j_e(two_jb, two_jf, two_jh,  two_jd, tk, two_je,  &s2);
+      status += gsl_sf_coupling_6j_e(two_ja, two_ji, two_jb,  two_jf, tk, two_jc,  &s3);
       if(status != GSL_SUCCESS) {
         result->val = 0.0;
 	result->err = 0.0;
-	return GSL_EOVRFLW;
+	GSL_ERROR ("error", GSL_EOVRFLW);
       }
       term = s1.val * s2.val * s3.val;
       term_err  = s1.err * fabs(s2.val*s3.val);
@@ -399,47 +396,34 @@ gsl_sf_coupling_9j_impl(int two_ja, int two_jb, int two_jc,
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
-                         int two_ma, int two_mb, int two_mc,
-		         gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_coupling_3j(int two_ja, int two_jb, int two_jc,
+                          int two_ma, int two_mb, int two_mc)
 {
-  int status = gsl_sf_coupling_3j_impl(two_ja, two_jb, two_jc,
-                                       two_ma, two_mb, two_mc,
-				       result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_coupling_3j_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_coupling_3j_e(two_ja, two_jb, two_jc,
+                                   two_ma, two_mb, two_mc,
+                                   &result));
 }
 
 
-int gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
-                         int two_jd, int two_je, int two_jf,
-			 gsl_sf_result * result)
+double gsl_sf_coupling_6j(int two_ja, int two_jb, int two_jc,
+                          int two_jd, int two_je, int two_jf)
 {
-  int status = gsl_sf_coupling_6j_impl(two_ja, two_jb, two_jc,
-                                       two_jd, two_je, two_jf,
-				       result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_coupling_6j_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_coupling_6j_e(two_ja, two_jb, two_jc,
+                                   two_jd, two_je, two_jf,
+                                   &result));
 }
 
 
-int gsl_sf_coupling_9j_e(int two_ja, int two_jb, int two_jc,
-                         int two_jd, int two_je, int two_jf,
-			 int two_jg, int two_jh, int two_ji,
-			 gsl_sf_result * result)
+double gsl_sf_coupling_9j(int two_ja, int two_jb, int two_jc,
+                          int two_jd, int two_je, int two_jf,
+                          int two_jg, int two_jh, int two_ji)
 {
-  int status = gsl_sf_coupling_9j_impl(two_ja, two_jb, two_jc,
-                                       two_jd, two_je, two_jf,
-				       two_jg, two_jh, two_ji,
-				       result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_coupling_9j_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_coupling_9j_e(two_ja, two_jb, two_jc,
+                                   two_jd, two_je, two_jf,
+                                   two_jg, two_jh, two_ji,
+                                   &result));
 }

@@ -54,9 +54,9 @@ static gsl_sf_cheb_series aclaus_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_clausen_impl(double x, gsl_sf_result *result)
+int gsl_sf_clausen_e(double x, gsl_sf_result *result)
 {
   const double x_cut = M_PI * GSL_SQRT_DBL_EPSILON;
 
@@ -69,7 +69,7 @@ int gsl_sf_clausen_impl(double x, gsl_sf_result *result)
   }
 
   /* Argument reduction to [0, 2pi) */
-  status_red = gsl_sf_angle_restrict_pos_impl(&x);
+  status_red = gsl_sf_angle_restrict_pos_e(&x);
 
   /* Further reduction to [0,pi) */
   if(x > M_PI) {
@@ -91,7 +91,7 @@ int gsl_sf_clausen_impl(double x, gsl_sf_result *result)
   else {
     const double t = 2.0*(x*x / (M_PI*M_PI) - 0.5);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&aclaus_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&aclaus_cs, t, &result_c);
     result->val = x * (result_c.val - log(x));
     result->err = x * (result_c.err + GSL_DBL_EPSILON);
   }
@@ -102,13 +102,11 @@ int gsl_sf_clausen_impl(double x, gsl_sf_result *result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_clausen_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_clausen(const double x)
 {
-  int status = gsl_sf_clausen_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_clausen_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_clausen_e(x, &result));
 }

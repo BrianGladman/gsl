@@ -225,10 +225,10 @@ static gsl_sf_cheb_series dawa_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_dawson_impl(double x, gsl_sf_result * result)
+gsl_sf_dawson_e(double x, gsl_sf_result * result)
 {
   const double xsml = 1.225 * GSL_SQRT_DBL_EPSILON;
   const double xbig = 1.0/(M_SQRT2*GSL_SQRT_DBL_EPSILON);
@@ -243,7 +243,7 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
   }
   else if(y < 1.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&daw_cs, 2.0*y*y - 1.0, &result_c);
+    gsl_sf_cheb_eval_e(&daw_cs, 2.0*y*y - 1.0, &result_c);
     result->val = x * (0.75 + result_c.val);
     result->err = y * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -251,7 +251,7 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
   }
   else if(y < 4.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&daw2_cs, 0.125*y*y - 1.0, &result_c);
+    gsl_sf_cheb_eval_e(&daw2_cs, 0.125*y*y - 1.0, &result_c);
     result->val = x * (0.25 + result_c.val);
     result->err = y * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -259,7 +259,7 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
   }
   else if(y < xbig) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
+    gsl_sf_cheb_eval_e(&dawa_cs, 32.0/(y*y) - 1.0, &result_c);
     result->val  = (0.5 + result_c.val) / x;
     result->err  = result_c.err / y;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -273,19 +273,16 @@ gsl_sf_dawson_impl(double x, gsl_sf_result * result)
   else {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_dawson_e(double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_dawson(double x)
 {
-  int status = gsl_sf_dawson_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_dawson_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_dawson_e(x, &result));
 }

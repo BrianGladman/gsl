@@ -231,8 +231,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
   if(x <= xbnd) {
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_impl(&f1_cs, (1.0/x2-0.04125)/0.02125, &result_c1);
-    gsl_sf_cheb_eval_impl(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
+    gsl_sf_cheb_eval_e(&f1_cs, (1.0/x2-0.04125)/0.02125, &result_c1);
+    gsl_sf_cheb_eval_e(&g1_cs, (1.0/x2-0.04125)/0.02125, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
     f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
@@ -241,8 +241,8 @@ static void fg_asymp(const double x, gsl_sf_result * f, gsl_sf_result * g)
   else if(x <= xbig) {
     gsl_sf_result result_c1;
     gsl_sf_result result_c2;
-    gsl_sf_cheb_eval_impl(&f2_cs, 100.0/x2-1.0, &result_c1);
-    gsl_sf_cheb_eval_impl(&g2_cs, 100.0/x2-1.0, &result_c2);
+    gsl_sf_cheb_eval_e(&f2_cs, 100.0/x2-1.0, &result_c1);
+    gsl_sf_cheb_eval_e(&g2_cs, 100.0/x2-1.0, &result_c2);
     f->val = (1.0 + result_c1.val)/x;
     g->val = (1.0 + result_c2.val)/x2;
     f->err = result_c1.err/x  + 2.0 * GSL_DBL_EPSILON * fabs(f->val);
@@ -324,23 +324,22 @@ static gsl_sf_cheb_series ci_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
+int gsl_sf_Si_e(const double x, gsl_sf_result * result)
 {
   double ax = fabs(x);
   
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(ax < GSL_SQRT_DBL_EPSILON) {
+  /* CHECK_POINTER(result) */
+
+  if(ax < GSL_SQRT_DBL_EPSILON) {
     result->val = x;
     result->err = 0.0;
     return GSL_SUCCESS;
   }
   else if(ax <= 4.0) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&si_cs, (x*x-8.0)*0.125, &result_c);
+    gsl_sf_cheb_eval_e(&si_cs, (x*x-8.0)*0.125, &result_c);
     result->val  =  x * (0.75 + result_c.val);
     result->err  = ax * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -362,21 +361,20 @@ int gsl_sf_Si_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_Ci_impl(const double x, gsl_sf_result * result)
+int gsl_sf_Ci_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x <= 4.0) {
     const double lx = log(x);
     const double y  = (x*x-8.0)*0.125;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&ci_cs, y, &result_c);
+    gsl_sf_cheb_eval_e(&ci_cs, y, &result_c);
     result->val  = lx - 0.5 + result_c.val;
     result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(lx) + 0.5) + result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -385,8 +383,8 @@ int gsl_sf_Ci_impl(const double x, gsl_sf_result * result)
   else {
     gsl_sf_result sin_result;
     gsl_sf_result cos_result;
-    int stat_sin = gsl_sf_sin_impl(x, &sin_result);
-    int stat_cos = gsl_sf_cos_impl(x, &cos_result);
+    int stat_sin = gsl_sf_sin_e(x, &sin_result);
+    int stat_cos = gsl_sf_cos_e(x, &cos_result);
     gsl_sf_result f;
     gsl_sf_result g;
     fg_asymp(x, &f, &g);
@@ -401,22 +399,16 @@ int gsl_sf_Ci_impl(const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Si_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_Si(const double x)
 {
-  int status = gsl_sf_Si_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_Si_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_Si_e(x, &result));
 }
 
-int gsl_sf_Ci_e(const double x, gsl_sf_result * result)
+double gsl_sf_Ci(const double x)
 {
-  int status = gsl_sf_Ci_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_Ci_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_Ci_e(x, &result));
 }

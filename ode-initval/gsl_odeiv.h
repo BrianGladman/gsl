@@ -155,7 +155,7 @@ gsl_odeiv_step * gsl_odeiv_step_bsimp_new(double eps);
 /* General stepper object methods.
  */
 const char * gsl_odeiv_step_name(const gsl_odeiv_step *);
-int  gsl_odeiv_step_impl(gsl_odeiv_step *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
+int  gsl_odeiv_step_apply(gsl_odeiv_step *, double t, double h, double y[], double yerr[], const double dydt_in[], double dydt_out[], const gsl_odeiv_system * dydt);
 int  gsl_odeiv_step_reset(gsl_odeiv_step *);
 void gsl_odeiv_step_free(gsl_odeiv_step *);
 
@@ -253,7 +253,7 @@ gsl_odeiv_evolve;
 /* Evolution object methods.
  */
 gsl_odeiv_evolve * gsl_odeiv_evolve_new(void);
-int gsl_odeiv_evolve_impl(gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * mon, gsl_odeiv_evolve_control * con, gsl_odeiv_step * step, const gsl_odeiv_system * dydt, double t0, double t1, double hstart, double y[]);
+int gsl_odeiv_evolve_apply(gsl_odeiv_evolve *, gsl_odeiv_evolve_mon * mon, gsl_odeiv_evolve_control * con, gsl_odeiv_step * step, const gsl_odeiv_system * dydt, double t0, double t1, double hstart, double y[]);
 void gsl_odeiv_evolve_free(gsl_odeiv_evolve *);
 
 

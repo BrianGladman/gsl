@@ -1,5 +1,8 @@
 * What is new in gsl-0.7+:
 
+** The error handling conventions have been unified across the
+library.  This simplifies the use of the special functions.
+
 ** A full CBLAS implementation is now included for systems where ATLAS
 has not been installed. The CBLAS library can also be used
 independently of GSL.  The organisation of the BLAS directories has be

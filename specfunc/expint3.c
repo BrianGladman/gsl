@@ -97,19 +97,18 @@ static gsl_sf_cheb_series expint3a_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_expint_3_impl(const double x, gsl_sf_result * result)
+int gsl_sf_expint_3_e(const double x, gsl_sf_result * result)
 {
   const double val_infinity = 0.892979511569249211;
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.6*GSL_ROOT3_DBL_EPSILON) {
     result->val = x;
@@ -119,7 +118,7 @@ int gsl_sf_expint_3_impl(const double x, gsl_sf_result * result)
   else if(x <= 2.0) {
     const double t = x*x*x/4.0 - 1.0;
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&expint3_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&expint3_cs, t, &result_c);
     result->val = x * result_c.val;
     result->err = x * result_c.err;
     return GSL_SUCCESS;
@@ -128,7 +127,7 @@ int gsl_sf_expint_3_impl(const double x, gsl_sf_result * result)
     const double t = 16.0/(x*x*x) - 1.0;
     const double s = exp(-x*x*x)/(3.0*x*x);
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&expint3a_cs, t, &result_c);
+    gsl_sf_cheb_eval_e(&expint3a_cs, t, &result_c);
     result->val = val_infinity - result_c.val * s;
     result->err = val_infinity * GSL_DBL_EPSILON + s * result_c.err;
     return GSL_SUCCESS;
@@ -141,13 +140,11 @@ int gsl_sf_expint_3_impl(const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_expint_3_e(double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_expint_3(double x)
 {
-  int status = gsl_sf_expint_3_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_expint_3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_expint_3_e(x, &result));
 }

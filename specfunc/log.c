@@ -107,18 +107,17 @@ static gsl_sf_cheb_series lopxmx_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_log_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     result->val = log(x);
@@ -129,15 +128,14 @@ gsl_sf_log_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_log_abs_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     result->val = log(fabs(x));
@@ -148,12 +146,12 @@ gsl_sf_log_abs_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_complex_log_impl(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta)
+gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta)
 {
-  if(lnr == 0 || theta == 0) {
-    return GSL_EFAULT;
-  }
-  else if(zr != 0.0 || zi != 0.0) {
+  /* CHECK_POINTER(lnr) */
+  /* CHECK_POINTER(theta) */
+
+  if(zr != 0.0 || zi != 0.0) {
     const double ax = fabs(zr);
     const double ay = fabs(zi);
     const double min = GSL_MIN(ax, ay);
@@ -169,21 +167,20 @@ gsl_sf_complex_log_impl(const double zr, const double zi, gsl_sf_result * lnr, g
     lnr->err = 0.0;
     theta->val = 0.0;
     theta->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
 }
 
 
 int
-gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= -1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(fabs(x) < GSL_ROOT6_DBL_EPSILON) {
     const double c1 = -0.5;
@@ -203,7 +200,7 @@ gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result)
   else if(fabs(x) < 0.5) {
     double t = 0.5*(8.0*x + 1.0)/(x+2.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&lopx_cs, t, &c);
+    gsl_sf_cheb_eval_e(&lopx_cs, t, &c);
     result->val = x * c.val;
     result->err = fabs(x * c.err);
     return GSL_SUCCESS;
@@ -217,15 +214,14 @@ gsl_sf_log_1plusx_impl(const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result)
+gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= -1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= -1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(fabs(x) < GSL_ROOT5_DBL_EPSILON) {
     const double c1 = -0.5;
@@ -245,7 +241,7 @@ gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result)
   else if(fabs(x) < 0.5) {
     double t = 0.5*(8.0*x + 1.0)/(x+2.0);
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&lopxmx_cs, t, &c);
+    gsl_sf_cheb_eval_e(&lopxmx_cs, t, &c);
     result->val = x*x * c.val;
     result->err = x*x * c.err;
     return GSL_SUCCESS;
@@ -260,58 +256,26 @@ gsl_sf_log_1plusx_mx_impl(const double x, gsl_sf_result * result)
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_log_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_log(const double x)
 {
-  int status = gsl_sf_log_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_log_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_log_e(x, &result));
 }
 
-
-int
-gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
+double gsl_sf_log_abs(const double x)
 {
-  int status = gsl_sf_log_abs_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_log_abs_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_log_abs_e(x, &result));
 }
 
-
-int
-gsl_sf_complex_log_e(const double zr, const double zi, gsl_sf_result * lnr, gsl_sf_result * theta)
+double gsl_sf_log_1plusx(const double x)
 {
-  int status = gsl_sf_complex_log_impl(zr, zi, lnr, theta);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_complex_log_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_log_1plusx_e(x, &result));
 }
 
-
-int
-gsl_sf_log_1plusx_e(const double x, gsl_sf_result * result)
+double gsl_sf_log_1plusx_mx(const double x)
 {
-  int status = gsl_sf_log_1plusx_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_log_1plusx_e", status);
-  }
-  return status;
-}
-
-
-int
-gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result)
-{
-  int status = gsl_sf_log_1plusx_mx_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_log_1plusx_mx_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_log_1plusx_mx_e(x, &result));
 }

@@ -52,7 +52,7 @@ gsl_eigen_sort_t;
  * exceptions: 
  */
 int
-gsl_eigen_jacobi_impl(gsl_matrix * matrix,
+gsl_eigen_jacobi(gsl_matrix * matrix,
                       gsl_vector * eval,
                       gsl_matrix * evec,
                       unsigned int max_rot, 
@@ -64,7 +64,7 @@ gsl_eigen_jacobi_impl(gsl_matrix * matrix,
  * exceptions: 
  */
 int
-gsl_eigen_invert_jacobi_impl(const gsl_matrix * matrix,
+gsl_eigen_invert_jacobi(const gsl_matrix * matrix,
                              gsl_matrix * ainv,
                              unsigned int max_rot);
 
@@ -73,10 +73,10 @@ gsl_eigen_invert_jacobi_impl(const gsl_matrix * matrix,
  * Sorts in order of increasing value or increasing
  * absolute value.
  *
- * exceptions: GSL_EFAULT, GSL_EBADLEN
+ * exceptions: GSL_EBADLEN
  */
 int
-gsl_eigen_sort_impl(gsl_vector * eval,
+gsl_eigen_sort(gsl_vector * eval,
                     gsl_matrix * evec,
                     gsl_eigen_sort_t sort_type);
 

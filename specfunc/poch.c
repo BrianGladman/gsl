@@ -90,7 +90,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
   const double ALNEPS = GSL_LOG_DBL_EPSILON - M_LN2;
 
   if(x == 0.0) {
-    return gsl_sf_psi_impl(a, result);
+    return gsl_sf_psi_e(a, result);
   }
   else {
     const double bp   = (  (a < -0.5) ? 1.0-a-x : a );
@@ -124,7 +124,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
         /* nterms = 20; */
 	result->val = 0.0;
 	result->err = 0.0;
-	return GSL_ESANITY;
+	GSL_ERROR ("error", GSL_ESANITY);
       }
 
       for(k=2; k<=nterms; k++) {
@@ -139,7 +139,7 @@ pochrel_smallx(const double a, const double x, gsl_sf_result * result)
       }
     }
 
-    stat_dexprl = gsl_sf_expm1_impl(q, &dexprl);
+    stat_dexprl = gsl_sf_expm1_e(q, &dexprl);
     if(stat_dexprl != GSL_SUCCESS) {
       result->val = 0.0;
       result->err = 0.0;
@@ -198,8 +198,8 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
        */
       gsl_sf_result g1;
       gsl_sf_result g2;
-      gsl_sf_gammainv_impl(a,   &g1);
-      gsl_sf_gammainv_impl(a+x, &g2);
+      gsl_sf_gammainv_e(a,   &g1);
+      gsl_sf_gammainv_e(a+x, &g2);
       result->val  = -log(g2.val/g1.val);
       result->err  = g1.err/fabs(g1.val) + g2.err/fabs(g2.val);
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -210,8 +210,8 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
        */
       gsl_sf_result lg1;
       gsl_sf_result lg2;
-      int stat_1 = gsl_sf_lngamma_impl(a,   &lg1);
-      int stat_2 = gsl_sf_lngamma_impl(a+x, &lg2);
+      int stat_1 = gsl_sf_lngamma_e(a,   &lg1);
+      int stat_2 = gsl_sf_lngamma_e(a+x, &lg2);
       result->val  = lg2.val - lg1.val;
       result->err  = lg2.err + lg1.err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -253,7 +253,7 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
     double term1 = x * log(a/M_E);
     double term2;
     gsl_sf_result ln_1peps;
-    gsl_sf_log_1plusx_impl(eps, &ln_1peps);  /* log(1 + x/a) */
+    gsl_sf_log_1plusx_e(eps, &ln_1peps);  /* log(1 + x/a) */
     term2 = (x + a - 0.5) * ln_1peps.val;
 
     result->val  = term1 + term2 + ser;
@@ -267,7 +267,7 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
     gsl_sf_result poch_rel;
     int stat_p = pochrel_smallx(a, x, &poch_rel);
     double eps = x*poch_rel.val;
-    int stat_e = gsl_sf_log_1plusx_impl(eps, result);
+    int stat_e = gsl_sf_log_1plusx_e(eps, result);
     result->err  = 2.0 * fabs(x * poch_rel.err / (1.0 + eps));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_e, stat_p);
@@ -275,18 +275,17 @@ lnpoch_pos(const double a, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_lnpoch_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(a <= 0.0 || a+x <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(a <= 0.0 || a+x <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 1.0;
@@ -300,14 +299,14 @@ gsl_sf_lnpoch_impl(const double a, const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_lnpoch_sgn_impl(const double a, const double x,
+gsl_sf_lnpoch_sgn_e(const double a, const double x,
                        gsl_sf_result * result, double * sgn)
 {
   if(a == 0.0 || a+x == 0.0) {
     *sgn = 0.0;
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     *sgn = 1.0;
@@ -328,7 +327,7 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
       result->val = 0.0;
       result->err = 0.0;
       *sgn = 0.0;
-      return GSL_EDOM;
+      GSL_ERROR ("error", GSL_EDOM);
     }
     else {
       gsl_sf_result lnp_pos;
@@ -348,8 +347,8 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
     gsl_sf_result lg_apn;
     gsl_sf_result lg_a;
     double s_apn, s_a;
-    int stat_apn = gsl_sf_lngamma_sgn_impl(a+x, &lg_apn, &s_apn);
-    int stat_a   = gsl_sf_lngamma_sgn_impl(a,   &lg_a,   &s_a);
+    int stat_apn = gsl_sf_lngamma_sgn_e(a+x, &lg_apn, &s_apn);
+    int stat_a   = gsl_sf_lngamma_sgn_e(a,   &lg_a,   &s_a);
     if(stat_apn == GSL_SUCCESS && stat_a == GSL_SUCCESS) {
       result->val  = lg_apn.val - lg_a.val;
       result->err  = lg_apn.err + lg_a.err;
@@ -361,7 +360,7 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
       result->val = 0.0;
       result->err = 0.0;
       *sgn = 0.0;
-      return GSL_EDOM;
+      GSL_ERROR ("error", GSL_EDOM);
     }
     else {
       result->val = 0.0;
@@ -374,12 +373,11 @@ gsl_sf_lnpoch_sgn_impl(const double a, const double x,
 
 
 int
-gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_poch_e(const double a, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x == 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x == 0.0) {
     result->val = 1.0;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -387,8 +385,8 @@ gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result)
   else {
     gsl_sf_result lnpoch;
     double sgn;
-    int stat_lnpoch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
-    int stat_exp    = gsl_sf_exp_err_impl(lnpoch.val, lnpoch.err, result);
+    int stat_lnpoch = gsl_sf_lnpoch_sgn_e(a, x, &lnpoch, &sgn);
+    int stat_exp    = gsl_sf_exp_err_e(lnpoch.val, lnpoch.err, result);
     result->val *= sgn;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
@@ -397,22 +395,21 @@ gsl_sf_poch_impl(const double a, const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_pochrel_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_pochrel_e(const double a, const double x, gsl_sf_result * result)
 {
   const double absx = fabs(x);
   const double absa = fabs(a);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(absx > 0.1*absa || absx*log(GSL_MAX(absa,2.0)) > 0.1) {
+  /* CHECK_POINTER(result) */
+
+  if(absx > 0.1*absa || absx*log(GSL_MAX(absa,2.0)) > 0.1) {
     gsl_sf_result lnpoch;
     double sgn;
-    int stat_poch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
+    int stat_poch = gsl_sf_lnpoch_sgn_e(a, x, &lnpoch, &sgn);
     if(lnpoch.val > GSL_LOG_DBL_MAX) {
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
     else {
       const double el = exp(lnpoch.val);
@@ -428,46 +425,21 @@ gsl_sf_pochrel_impl(const double a, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_lnpoch(const double a, const double x)
 {
-  int status = gsl_sf_lnpoch_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_lnpoch_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_lnpoch_e(a, x, &result));
 }
 
-
-int
-gsl_sf_lnpoch_sgn_e(const double a, const double x, gsl_sf_result * result, double * sgn)
+double gsl_sf_poch(const double a, const double x)
 {
-  int status = gsl_sf_lnpoch_sgn_impl(a, x, result, sgn);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_lnpoch_sgn_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_poch_e(a, x, &result));
 }
 
-
-int
-gsl_sf_poch_e(const double a, const double x, gsl_sf_result * result)
+double gsl_sf_pochrel(const double a, const double x)
 {
-  int status = gsl_sf_poch_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_poch", status);
-  }
-  return status;
-}
-
-
-int gsl_sf_pochrel_e(const double a, const double x, gsl_sf_result * result)
-{
-  int status = gsl_sf_pochrel_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_pochrel_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_pochrel_e(a, x, &result));
 }

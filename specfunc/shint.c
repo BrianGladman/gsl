@@ -56,9 +56,9 @@ static gsl_sf_cheb_series shi_cs = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
+int gsl_sf_Shi_e(const double x, gsl_sf_result * result)
 {
   const double xsml = GSL_SQRT_DBL_EPSILON;  /* sqrt (r1mach(3)) */
   const double ax   = fabs(x);
@@ -70,7 +70,7 @@ int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
   }
   else if(ax <= 0.375) {
     gsl_sf_result result_c;
-    gsl_sf_cheb_eval_impl(&shi_cs, 128.0*x*x/9.0-1.0, &result_c);
+    gsl_sf_cheb_eval_e(&shi_cs, 128.0*x*x/9.0-1.0, &result_c);
     result->val  = x * (1.0 + result_c.val);
     result->err  = x * result_c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
@@ -79,16 +79,16 @@ int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
   else {
     gsl_sf_result result_Ei;
     gsl_sf_result result_E1;
-    int status_Ei = gsl_sf_expint_Ei_impl(x, &result_Ei);
-    int status_E1 = gsl_sf_expint_E1_impl(x, &result_E1);
+    int status_Ei = gsl_sf_expint_Ei_e(x, &result_Ei);
+    int status_E1 = gsl_sf_expint_E1_e(x, &result_E1);
     result->val  = 0.5*(result_Ei.val + result_E1.val);
     result->err  = 0.5*(result_Ei.err + result_E1.err);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     }
     else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
     else {
       return GSL_SUCCESS;
@@ -97,26 +97,26 @@ int gsl_sf_Shi_impl(const double x, gsl_sf_result * result)
 }
 
 
-int gsl_sf_Chi_impl(const double x, gsl_sf_result * result)
+int gsl_sf_Chi_e(const double x, gsl_sf_result * result)
 {
   gsl_sf_result result_Ei;
   gsl_sf_result result_E1;
-  int status_Ei = gsl_sf_expint_Ei_impl(x, &result_Ei);
-  int status_E1 = gsl_sf_expint_E1_impl(x, &result_E1);
+  int status_Ei = gsl_sf_expint_Ei_e(x, &result_Ei);
+  int status_E1 = gsl_sf_expint_E1_e(x, &result_E1);
   if(status_Ei == GSL_EDOM || status_E1 == GSL_EDOM) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(status_Ei == GSL_EUNDRFLW && status_E1 == GSL_EUNDRFLW) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
   else if(status_Ei == GSL_EOVRFLW || status_E1 == GSL_EOVRFLW) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     result->val  = 0.5 * (result_Ei.val - result_E1.val);
@@ -126,23 +126,16 @@ int gsl_sf_Chi_impl(const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int gsl_sf_Shi_e(const double x, gsl_sf_result * result)
+double gsl_sf_Shi(const double x)
 {
-  int status = gsl_sf_Shi_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_Shi_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_Shi_e(x, &result));
 }
 
-int gsl_sf_Chi_e(const double x, gsl_sf_result * result)
+double gsl_sf_Chi(const double x)
 {
-  int status = gsl_sf_Chi_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_Chi_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_Chi_e(x, &result));
 }

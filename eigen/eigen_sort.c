@@ -26,23 +26,20 @@
 #include "gsl_eigen.h"
 
 
-/* The eigen_sort_impl below is not very good, but it is
+/* The eigen_sort below is not very good, but it is
  * simple and self-contained. We can implement an
- * eigen_qsort_impl later by creating an array of
+ * eigen_qsort later by creating an array of
  * struct { val, index } and sorting those using
  * standard library qsort().
  */
 
 
 int
-gsl_eigen_sort_impl(gsl_vector * eval,
+gsl_eigen_sort(gsl_vector * eval,
                     gsl_matrix * evec,
                     gsl_eigen_sort_t sort_type)
 {
-  if(eval == 0 || evec == 0) {
-    return GSL_EFAULT;
-  }
-  else if(evec->size1 != evec->size2 || eval->size != evec->size1) {
+  if(evec->size1 != evec->size2 || eval->size != evec->size1) {
     return GSL_EBADLEN;
   }
   else {

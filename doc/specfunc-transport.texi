@@ -8,29 +8,29 @@ The transport functions are defined by the integral representations
 @math{ J(n,x) := \int_0^x dt t^n e^t /(e^t - 1)^2 }.
 
 
-@deftypefun  int gsl_sf_transport_2_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_transport_2_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_transport_2 (double @var{x})
+@deftypefunx int gsl_sf_transport_2_e (double @var{x}, gsl_sf_result * @var{result})
 Calculates J(2,x).
-Exceptional Return Values: GSL_EDOM
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_transport_3_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_transport_3_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_transport_3 (double @var{x})
+@deftypefunx int gsl_sf_transport_3_e (double @var{x}, gsl_sf_result * @var{result})
 Calculates J(3,x).
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_transport_4_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_transport_4_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_transport_4 (double @var{x})
+@deftypefunx int gsl_sf_transport_4_e (double @var{x}, gsl_sf_result * @var{result})
 Calculates J(4,x).
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
 
-@deftypefun  int gsl_sf_transport_5_impl (double x, gsl_sf_result * result)
-@deftypefunx int gsl_sf_transport_5_e (double x, gsl_sf_result * result)
+@deftypefun double gsl_sf_transport_5 (double @var{x})
+@deftypefunx int gsl_sf_transport_5_e (double @var{x}, gsl_sf_result * @var{result})
 Calculates J(5,x).
-Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
+@comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun

@@ -86,7 +86,7 @@ legendreQ_CF1_xgt1(int ell, double a, double b, double x, double * result)
   *result = fn;
 
   if(n == maxiter)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return GSL_SUCCESS; 
 }
@@ -124,12 +124,12 @@ legendre_Ql_asymp_unif(const double ell, const double x, gsl_sf_result * result)
       pre = sqrt(th/sin_th);
     }
 
-    stat_Y0 = gsl_sf_bessel_Y0_impl(u*th, &Y0);
-    stat_Y1 = gsl_sf_bessel_Y1_impl(u*th, &Y1);
+    stat_Y0 = gsl_sf_bessel_Y0_e(u*th, &Y0);
+    stat_Y1 = gsl_sf_bessel_Y1_e(u*th, &Y1);
 
     sum = -0.5*M_PI * (Y0.val + th/u * Y1.val * B00);
 
-    stat_m = gsl_sf_multiply_impl(pre, sum, result);
+    stat_m = gsl_sf_multiply_e(pre, sum, result);
     result->err += 0.5*M_PI * fabs(pre) * (Y0.err + fabs(th/u*B00)*Y1.err);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
 
@@ -159,12 +159,12 @@ legendre_Ql_asymp_unif(const double ell, const double x, gsl_sf_result * result)
       pre = sqrt(xi/sinh_xi);
     }
 
-    stat_K0 = gsl_sf_bessel_K0_scaled_impl(u*xi, &K0_scaled);
-    stat_K1 = gsl_sf_bessel_K1_scaled_impl(u*xi, &K1_scaled);
+    stat_K0 = gsl_sf_bessel_K0_scaled_e(u*xi, &K0_scaled);
+    stat_K1 = gsl_sf_bessel_K1_scaled_e(u*xi, &K1_scaled);
 
     sum = K0_scaled.val - xi/u * K1_scaled.val * B00;
 
-    stat_e = gsl_sf_exp_mult_impl(-u*xi, pre * sum, result);
+    stat_e = gsl_sf_exp_mult_e(-u*xi, pre * sum, result);
     result->err  = GSL_DBL_EPSILON * fabs(result->val) * fabs(u*xi);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
@@ -174,18 +174,17 @@ legendre_Ql_asymp_unif(const double ell, const double x, gsl_sf_result * result)
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_legendre_Q0_impl(const double x, gsl_sf_result * result)
+gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= -1.0 || x == 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= -1.0 || x == 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0){
     result->val = 0.5 * log((1.0+x)/(1.0-x));
@@ -213,21 +212,20 @@ gsl_sf_legendre_Q0_impl(const double x, gsl_sf_result * result)
   else {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
 }
 
 
 int
-gsl_sf_legendre_Q1_impl(const double x, gsl_sf_result * result)
+gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= -1.0 || x == 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= -1.0 || x == 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x < 1.0){
     result->val = 0.5 * x * log((1.0+x)/(1.0-x)) - 1.0;
@@ -257,27 +255,26 @@ gsl_sf_legendre_Q1_impl(const double x, gsl_sf_result * result)
   else {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EUNDRFLW;
+    GSL_ERROR ("error", GSL_EUNDRFLW);
   }
 }
 
 
 int
-gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result)
+gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= -1.0 || x == 1.0 || l < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= -1.0 || x == 1.0 || l < 0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(l == 0) {
-    return gsl_sf_legendre_Q0_impl(x, result);
+    return gsl_sf_legendre_Q0_e(x, result);
   }
   else if(l == 1) {
-    return gsl_sf_legendre_Q1_impl(x, result);
+    return gsl_sf_legendre_Q1_e(x, result);
   }
   else if(l > 100000) {
     return legendre_Ql_asymp_unif(l, x, result);
@@ -286,8 +283,8 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result)
     /* Forward recurrence.
      */
     gsl_sf_result Q0, Q1;
-    int stat_Q0 = gsl_sf_legendre_Q0_impl(x, &Q0);
-    int stat_Q1 = gsl_sf_legendre_Q1_impl(x, &Q1);
+    int stat_Q0 = gsl_sf_legendre_Q0_e(x, &Q0);
+    int stat_Q1 = gsl_sf_legendre_Q1_e(x, &Q1);
     double Qellm1 = Q0.val;
     double Qell   = Q1.val;
     double Qellp1;
@@ -319,13 +316,13 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result)
 
     if(fabs(Qell) > fabs(Qellp1)) {
       gsl_sf_result Q0;
-      stat_Q = gsl_sf_legendre_Q0_impl(x, &Q0);
+      stat_Q = gsl_sf_legendre_Q0_e(x, &Q0);
       result->val = GSL_SQRT_DBL_MIN * Q0.val / Qell;
       result->err = l * GSL_DBL_EPSILON * fabs(result->val);
     }
     else {
       gsl_sf_result Q1;
-      stat_Q = gsl_sf_legendre_Q1_impl(x, &Q1);
+      stat_Q = gsl_sf_legendre_Q1_e(x, &Q1);
       result->val = GSL_SQRT_DBL_MIN * Q1.val / Qellp1;
       result->err = l * GSL_DBL_EPSILON * fabs(result->val);
     }
@@ -335,36 +332,21 @@ gsl_sf_legendre_Ql_impl(const int l, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_legendre_Q0_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_legendre_Q0(const double x)
 {
-  int status = gsl_sf_legendre_Q0_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Q0_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_Q0_e(x, &result));
 }
 
-
-int
-gsl_sf_legendre_Q1_e(const double x, gsl_sf_result * result)
+double gsl_sf_legendre_Q1(const double x)
 {
-  int status = gsl_sf_legendre_Q1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Q1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_Q1_e(x, &result));
 }
 
-
-int
-gsl_sf_legendre_Ql_e(const int l, const double x, gsl_sf_result * result)
+double gsl_sf_legendre_Ql(const int l, const double x)
 {
-  int status = gsl_sf_legendre_Ql_impl(l, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Ql_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_Ql_e(l, x, &result));
 }

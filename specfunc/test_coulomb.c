@@ -47,25 +47,25 @@ int test_coulomb(void)
   double eta, x;
   int k_G;
 
-  TEST_SF(s, gsl_sf_hydrogenicR_1_impl, (3.0, 2.0, &r),  0.025759948256148471036,  TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_1_impl, (3.0, 10.0, &r), 9.724727052062819704e-13, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_1_e, (3.0, 2.0, &r),  0.025759948256148471036,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_1_e, (3.0, 10.0, &r), 9.724727052062819704e-13, TEST_TOL1, GSL_SUCCESS);
   status += s;
 
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 0, 3.0, 2.0, &r), -0.03623182256981820062,  TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 1, 3.0, 2.0, &r), -0.028065049083129581005, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (4, 2, 3.0, 2.0, &r),  0.14583027278668431009,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 0, 3.0, 2.0, &r), -0.03623182256981820062,  TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 1, 3.0, 2.0, &r), -0.028065049083129581005, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (4, 2, 3.0, 2.0, &r),  0.14583027278668431009,  TEST_TOL0, GSL_SUCCESS);
   status += s;
 
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (100,  0, 3.0, 2.0, &r), -0.00007938950980052281367, TEST_TOL3, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (100, 10, 3.0, 2.0, &r),  7.112823375353605977e-12,  TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hydrogenicR_impl, (100, 90, 3.0, 2.0, &r),  5.845231751418131548e-245, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (100,  0, 3.0, 2.0, &r), -0.00007938950980052281367, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (100, 10, 3.0, 2.0, &r),  7.112823375353605977e-12,  TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hydrogenicR_e, (100, 90, 3.0, 2.0, &r),  5.845231751418131548e-245, TEST_TOL2, GSL_SUCCESS);
   status += s;
 
   lam_F = 0.0;
   k_G   = 0;
   eta = 1.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.6849374120059439677, TEST_TOL3);
@@ -73,14 +73,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G, -0.8984143590920205487, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -0.5108047585190350106, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s,"  gsl_sf_coulomb_wave_FG_impl(1.0, 5.0, lam_F=0, lam_G=0)");
+  gsl_test(s,"  gsl_sf_coulomb_wave_FG_e(1.0, 5.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 10.0;
   k_G   = 2;
   eta = 1.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.0006423773354915823698, TEST_TOL3);
@@ -88,14 +88,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  33.27615734455096130,     TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -45.49180102261540580,     TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s,"  gsl_sf_coulomb_wave_FG_impl(1.0, 5.0, lam_F=10, lam_G=8)");
+  gsl_test(s,"  gsl_sf_coulomb_wave_FG_e(1.0, 5.0, lam_F=10, lam_G=8)");
   status += s;
 
   lam_F = 4.0;
   k_G   = 2;
   eta = 50.0;
   x = 120.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.0735194711823798495, TEST_TOL3);
@@ -105,14 +105,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff, Gp, , TEST_TOL5);
   */
   printf("%s", message_buff);
-  gsl_test(s,"  gsl_sf_coulomb_wave_FG_impl(50.0, 120.0, lam_F=4, lam_G=2)");
+  gsl_test(s,"  gsl_sf_coulomb_wave_FG_e(50.0, 120.0, lam_F=4, lam_G=2)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = -1000.0;
   x = 1.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  9.68222518991341e-02, TEST_TOL3);
@@ -120,13 +120,13 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.13936784379472e-01, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -4.30243486522438e+00, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-1000.0, 1.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-1000.0, 1.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_min = 0.0;
   eta = -50.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  1.52236975714236e-01, TEST_TOL3);
@@ -134,13 +134,13 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  4.41680690236251e-01, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -6.76485374766869e-01, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-50.0, 5.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-50.0, 5.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_min = 0.0;
   eta = -50.0;
   x = 1000.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F, -0.2267212182760888523, TEST_TOL3);
@@ -148,14 +148,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G, -0.9497684438900352186, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp,  0.2377656295411961399, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-50.0, 1000.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-50.0, 1000.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 10.0;
   k_G = 0;
   eta = -50.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F, -3.681143602184922e-01, TEST_TOL3);
@@ -163,14 +163,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  3.315883246109351e-01, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp,  1.510888628136180e+00, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-50.0, 5.0, lam_F=10, lam_G=10)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-50.0, 5.0, lam_F=10, lam_G=10)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = -4.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  4.078627230056172e-01, TEST_TOL3);
@@ -178,14 +178,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  6.743270353832442e-01, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -6.361104272804447e-01, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-4.0, 5.0, lam_F=0, lam_G=0");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-4.0, 5.0, lam_F=0, lam_G=0");
   status += s;
 
   lam_F = 3.0;
   k_G = 0;
   eta = -4.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F, -2.568630935581323e-01, TEST_TOL3);
@@ -193,14 +193,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  7.879899223927996e-01, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp,  3.859905878106713e-01, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(-4.0, 5.0, lam_F=3, lam_G=3");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(-4.0, 5.0, lam_F=3, lam_G=3");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 1.0;
   x = 2.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  6.61781613832681e-01, TEST_TOL3);
@@ -208,14 +208,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.27577878476828e+00, TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -5.82728813097184e-01, TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 2.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.0, 2.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 1.0;
   x = 0.5;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.08315404535022023302, TEST_TOL3);
@@ -223,14 +223,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  3.1060069279548875140,  TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -3.549156038719924236,   TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 0.5, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.0, 0.5, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.5;
   k_G = 0;
   eta = 1.0;
   x = 0.5;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.04049078073829290935, TEST_TOL3);
@@ -238,14 +238,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  4.720553853049677897,   TEST_TOL3);
   s += test_sf_check_result(message_buff, Gp, -8.148033852319180005,   TEST_TOL3);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 0.5, lam_F=0.5, lam_G=0.5)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.0, 0.5, lam_F=0.5, lam_G=0.5)");
   status += s;
 
   lam_F = 0.1;
   k_G = 0;
   eta = 1.0;
   x = 0.5;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.07365466672379703418, TEST_TOL5);
@@ -253,14 +253,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  3.306705446241024890, TEST_TOL5);
   s += test_sf_check_result(message_buff, Gp, -4.082931670935696644, TEST_TOL5);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 0.5, lam_F=0.1, lam_G=0.1)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.0, 0.5, lam_F=0.1, lam_G=0.1)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 8.0;
   x = 1.05;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  9.882706082810274357e-09, TEST_TOL5);
@@ -268,14 +268,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.333127992006686320e+07, TEST_SQRT_TOL0);
   s += test_sf_check_result(message_buff, Gp, -4.715914530842402330e+07, TEST_SQRT_TOL0);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(8.0, 1.05, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(8.0, 1.05, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.1;
   k_G = 0;
   eta = 8.0;
   x = 1.05;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  9.611416736061987761e-09, TEST_TOL5);
@@ -283,14 +283,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.365928464219262581e+07, 4.0*TEST_SQRT_TOL0);
   s += test_sf_check_result(message_buff, Gp, -4.848117385783386850e+07, 4.0*TEST_SQRT_TOL0);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(8.0, 1.05, lam_F=0.1, lam_G=0.1)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(8.0, 1.05, lam_F=0.1, lam_G=0.1)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 50.0;
   x = 0.1;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  2.807788027954216071e-67, TEST_TOL5);
@@ -298,14 +298,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  5.579810686998358766e+64, TEST_SQRT_TOL0);
   s += test_sf_check_result(message_buff, Gp, -1.638329512756321424e+66, TEST_SQRT_TOL0);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(50.0, 0.1, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(50.0, 0.1, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 10.0;
   x = 5.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  1.7207454091787930614e-06, 10.0*WKB_TOL);
@@ -313,14 +313,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  167637.56609459967623, 10.0*WKB_TOL);
   s += test_sf_check_result(message_buff, Gp, -279370.76655361803075, 10.0*WKB_TOL);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(10.0, 5.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(10.0, 5.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 25.0;
   x = 10.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  1.5451274501076114315e-16, 5.0*WKB_TOL);
@@ -328,14 +328,14 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.6177129008336318136e+15, 5.0*WKB_TOL);
   s += test_sf_check_result(message_buff, Gp, -3.1854062013149740860e+15, 5.0*WKB_TOL);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(25.0, 10.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(25.0, 10.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   k_G = 0;
   eta = 1.0;
   x = 9.2;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F, -0.25632012319757955655, TEST_TOL5);
@@ -343,13 +343,13 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  1.03120585918973466110, TEST_SQRT_TOL0);
   s += test_sf_check_result(message_buff, Gp,  0.21946326717491250193, TEST_SQRT_TOL0);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(1.0, 9.2, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.0, 9.2, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   eta = 10.0;
   x = 10.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  0.0016262711250135878249, WKB_TOL);
@@ -357,13 +357,13 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  307.87321661090837987, WKB_TOL);
   s += test_sf_check_result(message_buff, Gp, -291.92772380826822871, WKB_TOL);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(10.0, 10.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(10.0, 10.0, lam_F=0, lam_G=0)");
   status += s;
 
   lam_F = 0.0;
   eta = 100.0;
   x = 1.0;
-  gsl_sf_coulomb_wave_FG_impl(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
   s += test_sf_check_result(message_buff,  F,  8.999367996930662705e-126, 10.0*WKB_TOL);
@@ -371,7 +371,7 @@ int test_coulomb(void)
   s += test_sf_check_result(message_buff,  G,  3.936654148133683610e+123, 10.0*WKB_TOL);
   s += test_sf_check_result(message_buff, Gp, -5.456942268061526371e+124, 10.0*WKB_TOL);
   printf("%s", message_buff);
-  gsl_test(s, "  gsl_sf_coulomb_wave_FG_impl(100.0, 1.0, lam_F=0, lam_G=0)");
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(100.0, 1.0, lam_F=0, lam_G=0)");
   status += s;
 
 

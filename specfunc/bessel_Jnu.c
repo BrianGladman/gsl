@@ -45,8 +45,8 @@ bessel_J_recur_asymp(const double nu, const double x,
 
   gsl_sf_result r_Jnp1;
   gsl_sf_result r_Jn;
-  int stat_O1 = gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps + 1.0, x, &r_Jnp1);
-  int stat_O2 = gsl_sf_bessel_Jnu_asymp_Olver_impl(nu + steps,       x, &r_Jn);
+  int stat_O1 = gsl_sf_bessel_Jnu_asymp_Olver_e(nu + steps + 1.0, x, &r_Jnp1);
+  int stat_O2 = gsl_sf_bessel_Jnu_asymp_Olver_e(nu + steps,       x, &r_Jn);
   double r_fe = fabs(r_Jnp1.err/r_Jnp1.val) + fabs(r_Jn.err/r_Jn.val);
   double Jnp1 = r_Jnp1.val;
   double Jn   = r_Jn.val;
@@ -70,18 +70,17 @@ bessel_J_recur_asymp(const double nu, const double x,
 #endif
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Jnu_e(const double nu, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x < 0.0 || nu < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0 || nu < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     if(nu == 0.0) {
@@ -95,10 +94,10 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else if(x*x < 10.0*(nu+1.0)) {
-    return gsl_sf_bessel_IJ_taylor_impl(nu, x, -1, 100, GSL_DBL_EPSILON, result);
+    return gsl_sf_bessel_IJ_taylor_e(nu, x, -1, 100, GSL_DBL_EPSILON, result);
   }
   else if(nu > 50.0) {
-    return gsl_sf_bessel_Jnu_asymp_Olver_impl(nu, x, result);
+    return gsl_sf_bessel_Jnu_asymp_Olver_e(nu, x, result);
   }
   else {
     /* -1/2 <= mu <= 1/2 */
@@ -169,15 +168,11 @@ gsl_sf_bessel_Jnu_impl(const double nu, const double x, gsl_sf_result * result)
   }
 }
 
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+#include "eval.h"
 
-int
-gsl_sf_bessel_Jnu_e(const double nu, const double x, gsl_sf_result * result)
+double gsl_sf_bessel_Jnu(const double nu, const double x)
 {
-  int status = gsl_sf_bessel_Jnu_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Jnu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Jnu_e(nu, x, &result));
 }

@@ -31,15 +31,14 @@
 #include "gsl_sf_legendre.h"
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_legendre_P1_impl(double x, gsl_sf_result * result)
+gsl_sf_legendre_P1_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     result->val = x;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -47,12 +46,11 @@ gsl_sf_legendre_P1_impl(double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_legendre_P2_impl(double x, gsl_sf_result * result)
+gsl_sf_legendre_P2_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     result->val = 0.5*(3.0*x*x - 1.0);
     result->err = GSL_DBL_EPSILON * (fabs(3.0*x*x) + 1.0);
     return GSL_SUCCESS;
@@ -60,12 +58,11 @@ gsl_sf_legendre_P2_impl(double x, gsl_sf_result * result)
 }
 
 int
-gsl_sf_legendre_P3_impl(double x, gsl_sf_result * result)
+gsl_sf_legendre_P3_e(double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else {
+  /* CHECK_POINTER(result) */
+
+  {
     result->val = 0.5*x*(5.0*x*x - 3.0);
     result->err = GSL_DBL_EPSILON * (fabs(result->val) + 0.5 * fabs(x) * (fabs(5.0*x*x) + 3.0));
     return GSL_SUCCESS;
@@ -74,15 +71,14 @@ gsl_sf_legendre_P3_impl(double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
+gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
 { 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(l < 0 || x < -1.0 || x > 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(l < 0 || x < -1.0 || x > 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(l == 0) {
     result->val = 1.0;
@@ -135,8 +131,8 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
     double th = acos(x);
     gsl_sf_result J0;
     gsl_sf_result Jm1;
-    int stat_J0  = gsl_sf_bessel_J0_impl(u*th, &J0);
-    int stat_Jm1 = gsl_sf_bessel_Jn_impl(-1, u*th, &Jm1);
+    int stat_J0  = gsl_sf_bessel_J0_e(u*th, &J0);
+    int stat_Jm1 = gsl_sf_bessel_Jn_e(-1, u*th, &Jm1);
     double pre;
     double B00;
     double c1;
@@ -167,13 +163,12 @@ gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * result_array)
+gsl_sf_legendre_Pl_array(const int lmax, const double x, double * result_array)
 {
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
-  else if(lmax < 0 || x < -1.0 || x > 1.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(result_array) */
+
+  if(lmax < 0 || x < -1.0 || x > 1.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(lmax == 0) {
     result_array[0] = 1.0;
@@ -206,7 +201,7 @@ gsl_sf_legendre_Pl_array_impl(const int lmax, const double x, double * result_ar
 
 
 int
-gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result * result)
+gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result)
 {
   /* If l is large and m is large, then we have to worry
    * about overflow. Calculate an approximate exponent which
@@ -218,19 +213,18 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
                    + 0.5 * dif * (log(dif)-1.0)
                    - 0.5 * sum * (log(sum)-1.0);
 
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(m < 0 || l < m || x < -1.0 || x > 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(m < 0 || l < m || x < -1.0 || x > 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
     /* Bail out. */
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     /* Account for the error due to the
@@ -289,7 +283,7 @@ gsl_sf_legendre_Plm_impl(const int l, const int m, const double x, gsl_sf_result
 
 
 int
-gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, double * result_array)
+gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * result_array)
 {
   /* If l is large and m is large, then we have to worry
    * about overflow. Calculate an approximate exponent which
@@ -301,11 +295,10 @@ gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, doub
                      + 0.5 * dif * (log(dif)-1.0)
                      - 0.5 * sum * (log(sum)-1.0);
 
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
-  else if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(result_array) */
+
+  if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(m > 0 && (x == 1.0 || x == -1.0)) {
     int ell;
@@ -315,7 +308,7 @@ gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, doub
   else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
     /* Bail out.
      */
-    return GSL_EOVRFLW;
+    GSL_ERROR ("error", GSL_EOVRFLW);
   }
   else {
     double p_mm;                 /* P_m^m(x)     */
@@ -369,19 +362,18 @@ gsl_sf_legendre_Plm_array_impl(const int lmax, const int m, const double x, doub
 
 
 int
-gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * result)
+gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(m < 0 || l < m || x < -1.0 || x > 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(m < 0 || l < m || x < -1.0 || x > 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(m == 0) {
     gsl_sf_result P;
-    int stat_P = gsl_sf_legendre_Pl_impl(l, x, &P);
+    int stat_P = gsl_sf_legendre_Pl_e(l, x, &P);
     double pre = sqrt((2.0*l + 1.0)/(4.0*M_PI));
     result->val  = pre * P.val;
     result->err  = pre * P.err;
@@ -410,11 +402,11 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
     const double y_mmp1_factor = x * sqrt(2.0*m + 3.0);
     double y_mm, y_mm_err;
     double y_mmp1;
-    gsl_sf_log_1plusx_impl(-x*x, &lncirc);
-    gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
+    gsl_sf_log_1plusx_e(-x*x, &lncirc);
+    gsl_sf_lnpoch_e(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
     lnpre_val = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
     lnpre_err = 0.25*M_LNPI*GSL_DBL_EPSILON + 0.5 * (lnpoch.err + fabs(m)*lncirc.err);
-    gsl_sf_exp_err_impl(lnpre_val, lnpre_err, &ex_pre);
+    gsl_sf_exp_err_e(lnpre_val, lnpre_err, &ex_pre);
     sr    = sqrt((2.0+1.0/m)/(4.0*M_PI));
     y_mm   = sgn * sr * ex_pre.val;
     y_mmp1 = y_mmp1_factor * y_mm;
@@ -459,13 +451,12 @@ gsl_sf_legendre_sphPlm_impl(const int l, int m, const double x, gsl_sf_result * 
 
 
 int
-gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double * result_array)
+gsl_sf_legendre_sphPlm_array(const int lmax, int m, const double x, double * result_array)
 {
-  if(result_array == 0) {
-    return GSL_EFAULT;
-  }
-  else if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
-    return GSL_EDOM;
+  /* CHECK_POINTER(result_array) */
+
+  if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(m > 0 && (x == 1.0 || x == -1.0)) {
     int ell;
@@ -487,8 +478,8 @@ gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double 
       gsl_sf_result lnpoch;
       double lnpre;
       const double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
-      gsl_sf_log_1plusx_impl(-x*x, &lncirc);
-      gsl_sf_lnpoch_impl(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
+      gsl_sf_log_1plusx_e(-x*x, &lncirc);
+      gsl_sf_lnpoch_e(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
       lnpre = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
       y_mm   = sqrt((2.0+1.0/m)/(4.0*M_PI)) * sgn * exp(lnpre);
       y_mmp1 = x * sqrt(2.0*m + 3.0) * y_mm;
@@ -528,85 +519,37 @@ gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double 
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_legendre_P1_e(const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_legendre_P1(const double x)
 {
-  int status = gsl_sf_legendre_P1_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_P1_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_P1_e(x, &result));
 }
 
-int gsl_sf_legendre_P2_e(const double x, gsl_sf_result * result)
+double gsl_sf_legendre_P2(const double x)
 {
-  int status = gsl_sf_legendre_P2_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_P2_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_P2_e(x, &result));
 }
 
-int gsl_sf_legendre_P3_e(const double x, gsl_sf_result * result)
+double gsl_sf_legendre_P3(const double x)
 {
-  int status = gsl_sf_legendre_P3_impl(x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_P3_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_P3_e(x, &result));
 }
 
-int gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
+double gsl_sf_legendre_Pl(const int l, const double x)
 {
-  int status = gsl_sf_legendre_Pl_impl(l, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Pl_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_Pl_e(l, x, &result));
 }
 
-int gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result)
+double gsl_sf_legendre_Plm(const int l, const int m, const double x)
 {
-  int status = gsl_sf_legendre_Plm_impl(l, m, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Plm_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_Plm_e(l, m, x, &result));
 }
 
-int gsl_sf_legendre_sphPlm_e(const int l, const int m, const double x, gsl_sf_result * result)
+double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
 {
-  int status = gsl_sf_legendre_sphPlm_impl(l, m, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_sphPlm_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_legendre_sphPlm_e(l, m, x, &result));
 }
 
-int gsl_sf_legendre_Pl_array_e(const int lmax, const double x, double * result_array)
-{
-  int status = gsl_sf_legendre_Pl_array_impl(lmax, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Pl_array_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_legendre_Plm_array_e(const int lmax, const int m, const double x, double * result_array)
-{
-  int status = gsl_sf_legendre_Plm_array_impl(lmax, m, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_Plm_array_e", status);
-  }
-  return status;
-}
-
-int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, double * result_array)
-{
-  int status = gsl_sf_legendre_sphPlm_array_impl(lmax, m, x, result_array);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_legendre_sphPlm_array_e", status);
-  }
-  return status;
-}

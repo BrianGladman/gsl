@@ -34,7 +34,7 @@ gsl_odeiv_step_name(const gsl_odeiv_step * s)
 
 
 int
-gsl_odeiv_step_impl(
+gsl_odeiv_step_apply(
   gsl_odeiv_step * step,
   double t,
   double h,

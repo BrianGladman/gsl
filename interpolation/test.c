@@ -114,9 +114,9 @@ test_interp (
       double deriv;
       double integ;
       double diff_y, diff_deriv, diff_integ;
-      gsl_interp_eval_impl (interp, data_table->x, data_table->y, x, a, &y);
-      gsl_interp_eval_deriv_impl (interp, data_table->x, data_table->y, x, a, &deriv);
-      gsl_interp_eval_integ_impl (interp, data_table->x, data_table->y, 0.0, x, a, &integ);
+      gsl_interp_eval_e (interp, data_table->x, data_table->y, x, a, &y);
+      gsl_interp_eval_deriv_e (interp, data_table->x, data_table->y, x, a, &deriv);
+      gsl_interp_eval_integ_e (interp, data_table->x, data_table->y, 0.0, x, a, &integ);
       diff_y = y - test_table->y[i];
       diff_deriv = deriv - test_d_table->y[i];
       diff_integ = integ - test_i_table->y[i];

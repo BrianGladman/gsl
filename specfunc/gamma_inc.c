@@ -39,7 +39,7 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
   if(a < 10.0) {
     double lnr;
     gsl_sf_result lg;
-    gsl_sf_lngamma_impl(a+1.0, &lg);
+    gsl_sf_lngamma_e(a+1.0, &lg);
     lnr = a * log(x) - x - lg.val;
     result->val = exp(lnr);
     result->err = 2.0 * GSL_DBL_EPSILON * (fabs(lnr) + 1.0) * fabs(result->val);
@@ -50,8 +50,8 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     double term1;
     gsl_sf_result gstar;
     gsl_sf_result ln_term;
-    gsl_sf_log_1plusx_mx_impl(mu, &ln_term);  /* log(1+mu) - mu */
-    gsl_sf_gammastar_impl(a, &gstar);
+    gsl_sf_log_1plusx_mx_e(mu, &ln_term);  /* log(1+mu) - mu */
+    gsl_sf_gammastar_e(a, &gstar);
     term1 = exp(a*ln_term.val)/sqrt(2.0*M_PI*a);
     result->val  = term1/gstar.val;
     result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(a*ln_term.val) + 1.0) * fabs(result->val);
@@ -86,7 +86,7 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(n == nmax)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return stat_D;
 }
@@ -120,7 +120,7 @@ gamma_inc_Q_large_x(const double a, const double x, gsl_sf_result * result)
   result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   if(n == nmax)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return stat_D;
 }
@@ -138,7 +138,7 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   const double eps = (x-a)/a;
 
   gsl_sf_result ln_term;
-  const int stat_ln = gsl_sf_log_1plusx_mx_impl(eps, &ln_term);  /* log(1+eps) - eps */
+  const int stat_ln = gsl_sf_log_1plusx_mx_e(eps, &ln_term);  /* log(1+eps) - eps */
   const double eta  = eps * sqrt(-2.0*ln_term.val/(eps*eps));
 
   gsl_sf_result erfc;
@@ -146,7 +146,7 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
   double R;
   double c0, c1;
 
-  gsl_sf_erfc_impl(eta*M_SQRT2*rta, &erfc);
+  gsl_sf_erfc_e(eta*M_SQRT2*rta, &erfc);
 
   if(fabs(eps) < GSL_ROOT5_DBL_EPSILON) {
     c0 = -1.0/3.0 + eps*(1.0/12.0 - eps*(23.0/540.0 - eps*(353.0/12960.0 - eps*589.0/30240.0)));
@@ -214,7 +214,7 @@ gamma_inc_Q_CF(const double a, const double x, gsl_sf_result * result)
   result->err += GSL_DBL_EPSILON * (2.0 + 0.5*k) * fabs(result->val);
 
   if(k == kmax)
-    return GSL_EMAXITER;
+    GSL_ERROR ("error", GSL_EMAXITER);
   else
     return stat_D;
 }
@@ -365,15 +365,15 @@ gamma_inc_Q_series(const double a, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_gamma_inc_Q_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
 {
   if(a <= 0.0 || x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 1.0;
@@ -445,12 +445,12 @@ gsl_sf_gamma_inc_Q_impl(const double a, const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_gamma_inc_P_impl(const double a, const double x, gsl_sf_result * result)
+gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result)
 {
   if(a <= 0.0 || x < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(x == 0.0) {
     result->val = 0.0;
@@ -511,25 +511,16 @@ gsl_sf_gamma_inc_P_impl(const double a, const double x, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
+#include "eval.h"
 
-int
-gsl_sf_gamma_inc_P_e(const double a, const double x, gsl_sf_result * result)
+double gsl_sf_gamma_inc_P(const double a, const double x)
 {
-  int status = gsl_sf_gamma_inc_P_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gamma_inc_P_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gamma_inc_P_e(a, x, &result));
 }
 
-int
-gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
+double gsl_sf_gamma_inc_Q(const double a, const double x)
 {
-  int status = gsl_sf_gamma_inc_Q_impl(a, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_gamma_inc_Q_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_gamma_inc_Q_e(a, x, &result));
 }

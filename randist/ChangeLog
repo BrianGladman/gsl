@@ -1,3 +1,8 @@
+Mon Apr 23 10:25:44 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed calls to old specfunc _impl functions to use new error
+ 	handling conventions
+
 Tue Apr 17 19:57:59 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* weibull.c (gsl_ran_weibull): changed parameter mu to a, since it

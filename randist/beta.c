@@ -47,17 +47,12 @@ gsl_ran_beta_pdf (const double x, const double a, const double b)
     }
   else 
     {
-      double p, gab, ga, gb;
-      gsl_sf_result result_ab, result_a, result_b ;
+      double p;
 
-      gsl_sf_lngamma_impl (a + b, &result_ab);
-      gsl_sf_lngamma_impl (a, &result_a);
-      gsl_sf_lngamma_impl (b, &result_b);
+      double gab = gsl_sf_lngamma (a + b);
+      double ga = gsl_sf_lngamma (a);
+      double gb = gsl_sf_lngamma (b);
 
-      gab = result_ab.val ;
-      ga = result_a.val ;
-      gb = result_b.val ;
-      
       p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
 
       return p;

@@ -176,7 +176,7 @@ gear2_step(
      */
     int status;
     memcpy(my->state.yim1, y, dim * sizeof(double));
-    status = gsl_odeiv_step_impl(my->state.primer, t, h, y, yerr, dydt_in, dydt_out, sys);
+    status = gsl_odeiv_step_apply(my->state.primer, t, h, y, yerr, dydt_in, dydt_out, sys);
 
     /* Make note of step size and indicate readiness for a Gear step. */
     my->state.last_h = h;
@@ -191,15 +191,10 @@ gear2_step(
 static int
 gear2_reset(void * self)
 {
-  if(self != 0) {
-    gsl_odeiv_step_gear2 * my = (gsl_odeiv_step_gear2 *) self;
-    my->state.primed = 0;
-    my->state.last_h = 0.0;
-    return GSL_SUCCESS;
-  }
-  else {
-    return GSL_EFAULT;
-  }
+  gsl_odeiv_step_gear2 * my = (gsl_odeiv_step_gear2 *) self;
+  my->state.primed = 0;
+  my->state.last_h = 0.0;
+  return GSL_SUCCESS;
 }
 
 

@@ -117,7 +117,7 @@ riemann_zeta_sgt0(double s, gsl_sf_result * result)
 {
   if(s < 1.0) {
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
+    gsl_sf_cheb_eval_e(&zeta_xlt1_cs, 2.0*s - 1.0, &c);
     result->val = c.val / (s - 1.0);
     result->err = c.err / fabs(s-1.0) + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -125,7 +125,7 @@ riemann_zeta_sgt0(double s, gsl_sf_result * result)
   else if(s <= 20.0) {
     double x = (2.0*s - 21.0)/19.0;
     gsl_sf_result c;
-    gsl_sf_cheb_eval_impl(&zeta_xgt1_cs, x, &c);
+    gsl_sf_cheb_eval_e(&zeta_xgt1_cs, x, &c);
     result->val = c.val / (s - 1.0);
     result->err = c.err / (s - 1.0) + GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -486,18 +486,17 @@ static double eta_neg_int_table[ETA_NEG_TABLE_SIZE] = {
 };
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
-int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
+int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(s <= 1.0 || q <= 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(s <= 1.0 || q <= 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     const double max_bits = 54.0;
@@ -506,12 +505,12 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
     if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_EUNDRFLW;
+      GSL_ERROR ("error", GSL_EUNDRFLW);
     }
     else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
       result->val = 0.0; /* FIXME: should be Inf */
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
     else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
       result->val = pow(q, -s);
@@ -558,15 +557,14 @@ int gsl_sf_hzeta_impl(const double s, const double q, gsl_sf_result * result)
 }
 
 
-int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
+int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(s == 1.0) {
+  /* CHECK_POINTER(result) */
+
+  if(s == 1.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(s >= 0.0) {
     return riemann_zeta_sgt0(s, result);
@@ -614,7 +612,7 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
       const double p = pow(2.0*M_PI, fs) / twopi_pow[n];
 
       gsl_sf_result g;
-      const int stat_g = gsl_sf_gamma_impl(1.0-s, &g);
+      const int stat_g = gsl_sf_gamma_e(1.0-s, &g);
       result->val  = p * g.val * sin_term * zeta_one_minus_s.val;
       result->err  = fabs(p * g.val * sin_term) * zeta_one_minus_s.err;
       result->err += fabs(p * sin_term * zeta_one_minus_s.val) * g.err;
@@ -634,18 +632,17 @@ int gsl_sf_zeta_impl(const double s, gsl_sf_result * result)
        */
       result->val = 0.0;
       result->err = 0.0;
-      return GSL_EOVRFLW;
+      GSL_ERROR ("error", GSL_EOVRFLW);
     }
   }
 }
 
 
-int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
+int gsl_sf_zeta_int_e(const int n, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(n < 0) {
+  /* CHECK_POINTER(result) */
+
+  if(n < 0) {
     if(!GSL_IS_ODD(n)) {
       result->val = 0.0; /* exactly zero at even negative integers */
       result->err = 0.0;
@@ -657,13 +654,13 @@ int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
       return GSL_SUCCESS;
     }
     else {
-      return gsl_sf_zeta_impl((double)n, result);
+      return gsl_sf_zeta_e((double)n, result);
     }
   }
   else if(n == 1){
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(n <= ZETA_POS_TABLE_NMAX){
     result->val = zeta_pos_int_table[n];
@@ -678,7 +675,7 @@ int gsl_sf_zeta_int_impl(const int n, gsl_sf_result * result)
 }
 
 
-int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
+int gsl_sf_eta_int_e(int n, gsl_sf_result * result)
 {
   if(n > ETA_POS_TABLE_NMAX) {
     result->val = 1.0;
@@ -707,9 +704,9 @@ int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
     else {
       gsl_sf_result z;
       gsl_sf_result p;
-      int stat_z = gsl_sf_zeta_int_impl(n, &z);
-      int stat_p = gsl_sf_exp_impl((1.0-n)*M_LN2, &p);
-      int stat_m = gsl_sf_multiply_impl(-p.val, z.val, result);
+      int stat_z = gsl_sf_zeta_int_e(n, &z);
+      int stat_p = gsl_sf_exp_e((1.0-n)*M_LN2, &p);
+      int stat_m = gsl_sf_multiply_e(-p.val, z.val, result);
       result->err  = fabs(p.err * (M_LN2*(1.0-n)) * z.val) + z.err * fabs(p.val);
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
@@ -718,12 +715,11 @@ int gsl_sf_eta_int_impl(int n, gsl_sf_result * result)
 }
 
 
-int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
+int gsl_sf_eta_e(const double s, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(s > 100.0) {
+  /* CHECK_POINTER(result) */
+
+  if(s > 100.0) {
     result->val = 1.0;
     result->err = GSL_DBL_EPSILON;
     return GSL_SUCCESS;
@@ -742,9 +738,9 @@ int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
   else {
     gsl_sf_result z;
     gsl_sf_result p;
-    int stat_z = gsl_sf_zeta_impl(s, &z);
-    int stat_p = gsl_sf_exp_impl((1.0-s)*M_LN2, &p);
-    int stat_m = gsl_sf_multiply_impl(1.0-p.val, z.val, result);
+    int stat_z = gsl_sf_zeta_e(s, &z);
+    int stat_p = gsl_sf_exp_e((1.0-s)*M_LN2, &p);
+    int stat_m = gsl_sf_multiply_e(1.0-p.val, z.val, result);
     result->err  = fabs(p.err * (M_LN2*(1.0-s)) * z.val) + z.err * fabs(p.val);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_3(stat_m, stat_p, stat_z);
@@ -752,50 +748,31 @@ int gsl_sf_eta_impl(const double s, gsl_sf_result * result)
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_zeta(const double s)
 {
-  int status = gsl_sf_zeta_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_zeta_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_zeta_e(s, &result));
 }
 
-int gsl_sf_hzeta_e(const double s, const double a, gsl_sf_result * result)
+double gsl_sf_hzeta(const double s, const double a)
 {
-  int status = gsl_sf_hzeta_impl(s, a, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_hzeta_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_hzeta_e(s, a, &result));
 }
 
-int gsl_sf_zeta_int_e(const int s, gsl_sf_result * result)
+double gsl_sf_zeta_int(const int s)
 {
-  int status = gsl_sf_zeta_int_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_zeta_int_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_zeta_int_e(s, &result));
 }
 
-int gsl_sf_eta_int_e(const int s, gsl_sf_result * result)
+double gsl_sf_eta_int(const int s)
 {
-  int status = gsl_sf_eta_int_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_eta_int_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_eta_int_e(s, &result));
 }
 
-
-int gsl_sf_eta_e(const double s, gsl_sf_result * result)
+double gsl_sf_eta(const double s)
 {
-  int status = gsl_sf_eta_impl(s, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_eta_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_eta_e(s, &result));
 }

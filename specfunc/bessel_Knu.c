@@ -32,18 +32,17 @@
 
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 int
-gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0 || nu < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else {
     int N = (int)(nu + 0.5);
@@ -77,25 +76,24 @@ gsl_sf_bessel_Knu_scaled_impl(const double nu, const double x, gsl_sf_result * r
 
 
 int
-gsl_sf_bessel_Knu_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_Knu_e(const double nu, const double x, gsl_sf_result * result)
 {
   gsl_sf_result b;
-  int stat_K = gsl_sf_bessel_Knu_scaled_impl(nu, x, &b);
-  int stat_e = gsl_sf_exp_mult_err_impl(-x, 0.0, b.val, b.err, result);
+  int stat_K = gsl_sf_bessel_Knu_scaled_e(nu, x, &b);
+  int stat_e = gsl_sf_exp_mult_err_e(-x, 0.0, b.val, b.err, result);
   return GSL_ERROR_SELECT_2(stat_e, stat_K);
 }
 
 
 int
-gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result)
+gsl_sf_bessel_lnKnu_e(const double nu, const double x, gsl_sf_result * result)
 {
-  if(result == 0) {
-    return GSL_EFAULT;
-  }
-  else if(x <= 0.0 || nu < 0.0) {
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu < 0.0) {
     result->val = 0.0;
     result->err = 0.0;
-    return GSL_EDOM;
+    GSL_ERROR ("error", GSL_EDOM);
   }
   else if(nu == 0.0) {
     gsl_sf_result K_scaled;
@@ -103,7 +101,7 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
      * it will not throw GSL_EDOM
      * since that is already checked.
      */
-    gsl_sf_bessel_K0_scaled_impl(x, &K_scaled);
+    gsl_sf_bessel_K0_scaled_e(x, &K_scaled);
     result->val  = -x + log(fabs(K_scaled.val));
     result->err  = GSL_DBL_EPSILON * fabs(x) + fabs(K_scaled.err/K_scaled.val);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -119,7 +117,7 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
      */
     double ln_bound;
     gsl_sf_result lg_nu;
-    gsl_sf_lngamma_impl(nu, &lg_nu);
+    gsl_sf_lngamma_e(nu, &lg_nu);
     ln_bound = -M_LN2 - nu*log(0.5*x) + lg_nu.val;
     if(ln_bound > GSL_LOG_DBL_MAX - 20.0) {
       /* x must be very small or nu very large (or both).
@@ -142,7 +140,7 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
      * in the above code!
      */
     gsl_sf_result K_scaled;
-    gsl_sf_bessel_Knu_scaled_impl(nu, x, &K_scaled);
+    gsl_sf_bessel_Knu_scaled_e(nu, x, &K_scaled);
     result->val  = -x + log(fabs(K_scaled.val));
     result->err  = GSL_DBL_EPSILON * fabs(x) + fabs(K_scaled.err/K_scaled.val);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
@@ -151,33 +149,21 @@ gsl_sf_bessel_lnKnu_impl(const double nu, const double x, gsl_sf_result * result
 }
 
 
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
-int
-gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * result)
+#include "eval.h"
+
+double gsl_sf_bessel_Knu_scaled(const double nu, const double x)
 {
-  int status = gsl_sf_bessel_Knu_scaled_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Knu_scaled_e", status);
-  }
-  return status;
-}
-int
-gsl_sf_bessel_Knu_e(const double nu, const double x, gsl_sf_result * result)
-{
-  int status = gsl_sf_bessel_Knu_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_Knu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Knu_scaled_e(nu, x, &result));
 }
 
-int
-gsl_sf_bessel_lnKnu_e(const double nu, const double x, gsl_sf_result * result)
+double gsl_sf_bessel_Knu(const double nu, const double x)
 {
-  int status = gsl_sf_bessel_lnKnu_impl(nu, x, result);
-  if(status != GSL_SUCCESS) {
-    GSL_ERROR("gsl_sf_bessel_lnKnu_e", status);
-  }
-  return status;
+  EVAL_RESULT(gsl_sf_bessel_Knu_e(nu, x, &result));
+}
+
+double gsl_sf_bessel_lnKnu(const double nu, const double x)
+{
+  EVAL_RESULT(gsl_sf_bessel_lnKnu_e(nu, x, &result));
 }

@@ -78,11 +78,9 @@ gsl_ran_binomial_pdf (const unsigned int k, const double p,
       double a = k;
       double b = n - k;
       double P;
-      gsl_sf_result cnk ;
+      double Cnk = gsl_sf_choose (n, k) ;
 
-      gsl_sf_choose_impl (n, k, &cnk) ;
-
-      P = cnk.val * pow (p, a) * pow (1 - p, b);
+      P = Cnk * pow (p, a) * pow (1 - p, b);
       
       return P;
     }

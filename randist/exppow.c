@@ -125,9 +125,8 @@ double
 gsl_ran_exppow_pdf (const double x, const double a, const double b)
 {
   double p ;
-  gsl_sf_result lg;
-  gsl_sf_lngamma_impl (1+1/b, &lg) ;
-  p = (1/(2*a)) * exp(-pow(fabs(x/a),b) - lg.val);
+  double lngamma = gsl_sf_lngamma (1+1/b) ;
+  p = (1/(2*a)) * exp(-pow(fabs(x/a),b) - lngamma);
   return p;
 }
 

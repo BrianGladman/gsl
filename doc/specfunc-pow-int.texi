@@ -10,19 +10,20 @@ a simple function to fill this gap.  For reasons of efficiency,
 these functions do not check for overflow or underflow conditions.
 
 
-int     gsl_sf_pow_int_impl(double x, int n, gsl_sf_result * result);
-int     gsl_sf_pow_int_e(double x, int n, gsl_sf_result * result); 
-@deftypefun double gsl_sf_pow_int (double x, int n)
+
+@deftypefun double gsl_sf_pow_int (double @var{x}, int @var{n})
+@deftypefunx int gsl_sf_pow_int_e (double @var{x}, int @var{n}, gsl_sf_result * @var{result}) 
 @end deftypefun
 
-double gsl_sf_pow_2(const double x);
-double gsl_sf_pow_3(const double x);
-double gsl_sf_pow_4(const double x);
-double gsl_sf_pow_5(const double x);
-double gsl_sf_pow_6(const double x);
-double gsl_sf_pow_7(const double x);
-double gsl_sf_pow_8(const double x);
-double gsl_sf_pow_9(const double x);
+@deftypefun double gsl_sf_pow_2 (const double @var{x})
+@deftypefunx double gsl_sf_pow_3 (const double @var{x})
+@deftypefunx double gsl_sf_pow_4 (const double @var{x})
+@deftypefunx double gsl_sf_pow_5 (const double @var{x})
+@deftypefunx double gsl_sf_pow_6 (const double @var{x})
+@deftypefunx double gsl_sf_pow_7 (const double @var{x})
+@deftypefunx double gsl_sf_pow_8 (const double @var{x})
+@deftypefunx double gsl_sf_pow_9 (const double @var{x})
+@end deftypefun
 
 @example
 #include <gsl/gsl_sf_pow_int.h>
