@@ -12,9 +12,20 @@
 (calc-extensions)
 
 (setq  gsl-constants
-  '(("c" "SPEED_OF_LIGHT")
-    ("au" "ASTRONOMICAL_UNIT")
-    ("Grav" "GRAVITATIONAL_CONSTANT"))
+  '(("c"      "SPEED_OF_LIGHT")
+    ("au"     "ASTRONOMICAL_UNIT")
+    ("Grav"   "GRAVITATIONAL_CONSTANT")
+    ("float(lyr)"    "LIGHT_YEAR")
+    ("pc"     "PARSEC")
+    ("ga"     "GRAV_ACCEL")
+    ("ev"     "ELECTRON_VOLT")
+    ("h"      "PLANCKS_CONSTANT_H")
+    ("hbar"   "PLANCKS_CONSTANT_HBAR")
+    ("me"     "MASS_ELECTRON")
+    ("mu"     "MASS_MUON")
+    ("mp"     "MASS_PROTON")
+    ("mn"     "MASS_NEUTRON")
+    )
   )
 
 ;;; work around bug in calc 2.02f
@@ -25,13 +36,6 @@
     (if (math-units-in-expr-p expr nil) expr 1))
 )
 
-
-
-;;  (nth 1 (assq 'cgs math-standard-units-systems))
-
-
-
-
 (defun fn (prefix system expr name)
   (let* ((x (calc-eval expr 'raw))
          (y (math-to-standard-units x system))
@@ -39,20 +43,22 @@
          (quantity (calc-eval (math-remove-units z)))
          (units (calc-eval (math-extract-units z)))
          )
-    (print x)
-    (print y)
-    (print z)
-    (print (math-extract-units z))
-    (print quantity)
-    (print units)
+    ;;(print x)
+    ;;(print y)
+    ;;(print z)
+    ;;(print (math-extract-units z))
+    ;;(print quantity)
+    ;;(print units)
     (princ (format "#define %s_%s (%s) /* %s */\n" prefix name quantity units))
     )
   )
 
 (setq cgs (nth 1 (assq 'cgs math-standard-units-systems)))
+(setq mks (nth 1 (assq 'mks math-standard-units-systems)))
 
 
 (defun run ()
-  (mapcar (lambda (x) (apply 'fn "GSL_CONST" cgs x)) gsl-constants)
+  (mapcar (lambda (x) (apply 'fn "GSL_CONST_MKS" mks x)) gsl-constants)
+  (mapcar (lambda (x) (apply 'fn "GSL_CONST_CGS" cgs x)) gsl-constants)
 )
 
