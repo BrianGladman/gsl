@@ -3,23 +3,20 @@ noinst_LIBRARIES = libgslintegration.a
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../ieee-utils -I$(srcdir)/../err
 
 libgslintegration_a_SOURCES = \
-	qk15.c qk15.h \
-	qk21.c qk21.h \
-	qk31.c qk31.h \
-	qk41.c qk41.h \
-	qk51.c qk51.h \
-	qk61.c qk61.h \
+	qk15.c qk21.c qk31.c qk41.c qk51.c qk61.c \
 	qk.c \
 	qng.c qng.h \
-	qag.c qag_impl.c qpsrt.c qpsrt.h \
-	qags.c qags_impl.c qelg.c \
+	qag.c qag_impl.c \
+	qags.c qags_impl.c \
 	qagi.c qagiu.c qagil.c \
 	qagp.c qagp_impl.c \
 	err.c err.h \
-	workspace.c partition.c \
-	qcheb.c qc25c.c
+	workspace.c
+
+#	qcheb.c qc25c.c qawc.c qawc_impl.c
 
 include_HEADERS = gsl_integration.h
+noinst_HEADERS = integration.h qpsrt.c qelg.c
 
 TESTS = test
 check_PROGRAMS = test

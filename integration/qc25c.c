@@ -13,9 +13,7 @@ struct fn_cauchy_params
 
 static double fn_cauchy (double t, void *params);
 
-static void compute_moments (double cc,
-			     double *cheb12, double *cheb24,
-			     double *result, double *abserr);
+static void compute_moments (double cc, double *moment);
 
 void
 qc25c (gsl_function * f, double a, double b, double c, 
@@ -46,9 +44,25 @@ qc25c (gsl_function * f, double a, double b, double c,
     }
   else
     {
-      double cheb12[13], cheb24[25];
+      double cheb12[13], cheb24[25], moment[25];
+      double res12 = 0, res24 = 0;
+      size_t i;
       gsl_integration_qcheb (f, a, b, cheb12, cheb24);
-      compute_moments (cc, cheb12, cheb24, result, abserr);
+      compute_moments (cc, moment);
+
+      for (i = 0; i < 13; i++)
+	{
+	  res12 += cheb12[i] * moment[i];
+	}
+
+      for (i = 0; i < 25; i++)
+	{
+	  res24 += cheb24[i] * moment[i];
+	}
+
+      *result = res24;
+      *abserr = fabs(res24 - res12) ;
+
       return;
     }
 }
@@ -63,48 +77,33 @@ fn_cauchy (double x, void *params)
 }
 
 static void
-compute_moments (double cc, double *cheb12, double *cheb24,
-		 double *result, double *abserr)
+compute_moments (double cc, double *moment)
 {
   size_t k;
 
-  double amom0 = log (fabs ((1.0 - cc) / (1.0 + cc)));
-  double amom1 = 2 + amom0 * cc;
+  double a0 = log (fabs ((1.0 - cc) / (1.0 + cc)));
+  double a1 = 2 + a0 * cc;
 
-  double res12 = cheb12[0] * amom0 + cheb12[1] * amom1;
-  double res24 = cheb24[0] * amom0 + cheb24[1] * amom1;
+  moment[0] = a0;
+  moment[1] = a1;
 
-  for (k = 2; k < 13; k++)
+  for (k = 2; k < 25; k++)
     {
-      double amom2 = 2.0 * cc * amom1 - amom0;
+      double a2;
 
       if ((k % 2) == 0)
 	{
-	  amom2 -= 4.0 / ((k - 1.0) * (k - 1.0) - 1.0);
+	  const double km1 = k - 1.0;
+	  a2 = 2.0 * cc * a1 - a0 - 4.0 / (km1 * km1 - 1.0);
 	}
-
-      res12 += cheb12[k] * amom2;
-      res24 += cheb24[k] * amom2;
-
-      amom0 = amom1;
-      amom1 = amom2;
-    }
-
-  for (k = 13; k < 25; k++)
-    {
-      double amom2 = 2.0 * cc * amom1 - amom0;
-
-      if ((k % 2) == 0)
+      else
 	{
-	  amom2 -= 4.0 / ((k - 1.0) * (k - 1.0) - 1.0);
+	  a2 = 2.0 * cc * a1 - a0;
 	}
 
-      res24 += cheb24[k] * amom2;
+      moment[k] = a2;
 
-      amom0 = amom1;
-      amom1 = amom2;
+      a0 = a1;
+      a1 = a2;
     }
-
-  *result = res24;
-  *abserr = fabs (res24 - res12);
 }

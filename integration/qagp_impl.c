@@ -5,61 +5,55 @@
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
-#include "qpsrt.h"
+#include "integration.h"
+
+#include "util.c"
+#include "qelg.c"
+#include "qpsrt2.c"
 
 int
 gsl_integration_qagp_impl (const gsl_function * f,
 			   const double *pts, const size_t npts,
-			   const double epsabs, const double epsrel,
+			   const double epsabs, const double epsrel, 
+			   size_t limit,
 			   gsl_integration_workspace * workspace,
-			   gsl_integration_workspace_pts * workspace_pts,
 			   double *result, double *abserr,
-			   size_t * last, size_t * nqeval,
-			   gsl_integration_rule_t * const q)
+			   gsl_integration_rule * q)
 {
-  double q_result, q_abserr, q_resabs;
-  double tolerance, maxerr_value, area, errsum, last_maxerr_value;
+  double result0, abserr0, resabs0;
+  double tolerance, area, errsum;
   double ertest = 0;
   double error_over_large_intervals = 0;
   double reseps = 0, abseps = 0, correc = 0;
-  size_t maxerr_index, nrmax = 0, i = 0, nres = 0, numrl2, ktmin = 0;
-  size_t maximum_level = 1;
+  size_t i = 0, ktmin = 0;
   int roundoff_type1 = 0, roundoff_type2 = 0, roundoff_type3 = 0;
   int error_type = 0, error_type2 = 0;
 
   const size_t nint = npts - 1;	/* number of intervals */
 
-  const size_t limit = workspace->limit;
-  double *alist = workspace->alist;
-  double *blist = workspace->blist;
-  double *rlist = workspace->rlist;
-  double *elist = workspace->elist;
-  size_t *iord = workspace->iord;
-
-  unsigned int *level = workspace_pts->level;
-  unsigned int *ndin = workspace_pts->ndin;
+  size_t *ndin = workspace->level; /* temporarily use level as space for ndin */
 
   int positive_integrand = 0;
   int extrapolate = 0;
   int disallow_extrapolation = 0;
 
-  double res3la[3], rlist2[52];
+  struct extrapolation_table table;
 
   /* Test on validity of parameters */
 
-  if (npts > workspace_pts->npts)
+  if (npts > workspace->limit)
     {
       *result = 0;
       *abserr = 0;
-      *nqeval = 0;
-      GSL_ERROR ("npts exceeds size of workspace_pts", GSL_EINVAL);
+
+      GSL_ERROR ("npts exceeds size of workspace", GSL_EINVAL);
     }
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       *result = 0;
       *abserr = 0;
-      *nqeval = 0;
+
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
     }
@@ -77,9 +71,11 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
   /* Perform the first integration */
 
-  q_result = 0;
-  q_abserr = 0;
-  q_resabs = 0;
+  result0 = 0;
+  abserr0 = 0;
+  resabs0 = 0;
+
+  initialise (workspace, 0.0, 0.0) ;
 
   for (i = 0; i < nint; i++)
     {
@@ -89,16 +85,11 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
       q (f, a1, b1, &area1, &error1, &resabs1, &resasc1);
 
-      q_result = q_result + area1;
-      q_abserr = q_abserr + error1;
-      q_resabs = q_resabs + resabs1;
+      result0 = result0 + area1;
+      abserr0 = abserr0 + error1;
+      resabs0 = resabs0 + resabs1;
 
-      alist[i] = a1;
-      blist[i] = b1;
-      rlist[i] = area1;
-      elist[i] = error1;
-      iord[i] = i;
-      level[i] = 0;
+      append_interval (workspace, a1, b1, area1, error1);
 
       if (error1 == resasc1 && error1 != 0.0)
 	{
@@ -118,80 +109,50 @@ gsl_integration_qagp_impl (const gsl_function * f,
     {
       if (ndin[i])
 	{
-	  elist[i] = q_abserr;
+	  workspace->elist[i] = abserr0;
 	}
-      errsum = errsum + elist[i];
+      errsum = errsum + workspace->elist[i];
+      workspace->level[i] = 0;
     }
+
 
   /* Sort results into order of decreasing error via the indirection
-     array iord[] */
+     array order[] */
 
-  for (i = 0; i < nint; i++)
-    {
-      size_t i1 = iord[i];
-      size_t e1 = elist[i1];
-      size_t i_max = i1;
-      size_t j;
-
-      for (j = i + 1; j < nint; j++)
-	{
-	  size_t i2 = iord[j];
-	  size_t e2 = elist[i2];
-
-	  if (e2 >= e1)
-	    {
-	      i_max = i2;
-	      e1 = e2;
-	    }
-	}
-
-      if (i_max != i1)
-	{
-	  iord[i] = iord[i_max];
-	  iord[i_max] = i1;
-	}
-    }
+  sort_results (workspace);
 
   /* Test on accuracy */
 
-  tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (q_result));
+  tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (result0));
 
-  if (q_abserr <= 100 * GSL_DBL_EPSILON * q_resabs && q_abserr > tolerance)
+  if (abserr0 <= 100 * GSL_DBL_EPSILON * resabs0 && abserr0 > tolerance)
     {
-      *result = q_result;
-      *abserr = q_abserr;
-      *nqeval = nint;
-      *last = 0;
+      *result = result0;
+      *abserr = abserr0;
 
       GSL_ERROR ("cannot reach tolerance because of roundoff error"
 		 "on first attempt", GSL_EROUND);
     }
-  else if ((q_abserr <= tolerance && q_abserr != q_resabs) || q_abserr == 0)
+  else if ((abserr0 <= tolerance && abserr0 != resabs0) || abserr0 == 0)
     {
-      *result = q_result;
-      *abserr = q_abserr;
-      *nqeval = nint;
-      *last = 0;
+      *result = result0;
+      *abserr = abserr0;
+
       return GSL_SUCCESS;
     }
   else if (limit == 1)
     {
-      *result = q_result;
-      *abserr = q_abserr;
-      *nqeval = nint;
-      *last = 0;
+      *result = result0;
+      *abserr = abserr0;
+
       GSL_ERROR ("a maximum of one iteration was insufficient", GSL_EMAXITER);
     }
 
   /* Initialization */
 
-  numrl2 = 0;
-  rlist2[0] = q_result;
+  initialise_table (&table, result0);
 
-  maxerr_index = iord[0];
-  maxerr_value = elist[maxerr_index];
-
-  area = q_result;
+  area = result0;
 
   *abserr = GSL_DBL_MAX;
 
@@ -201,7 +162,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
   /* Compare the integral of f(x) with the integral of |f(x)|
      to determine if f(x) covers both positive and negative values */
 
-  if (fabs (q_result) >= (1 - 50 * GSL_DBL_EPSILON) * q_resabs)
+  if (fabs (result0) >= (1 - 50 * GSL_DBL_EPSILON) * resabs0)
     {
       positive_integrand = 1;
     }
@@ -214,21 +175,25 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
   do
     {
-      /* Bisect the subinterval with the nrmax-th largest error estimate */
-
-      const double left = alist[maxerr_index];
-      const double right = blist[maxerr_index];
-      const double midpoint = 0.5 * (left + right);
-
-      const double a1 = left, b1 = midpoint;
-      const double a2 = midpoint, b2 = right;
-
+      size_t current_level;
+      double a1, b1, a2, b2;
+      double a_i, b_i, r_i, e_i;
       double area1 = 0, area2 = 0, area12 = 0;
       double error1 = 0, error2 = 0, error12 = 0;
       double resasc1, resasc2;
       double resabs1, resabs2;
+      double last_e_i;
 
-      const size_t current_level = level[maxerr_index] + 1;
+      /* Bisect the subinterval with the largest error estimate */
+
+      retrieve (workspace, &a_i, &b_i, &r_i, &e_i);
+
+      current_level = workspace->level[workspace->i] + 1;
+
+      a1 = a_i;
+      b1 = 0.5 * (a_i + b_i);
+      a2 = b1;
+      b2 = b_i;
 
       i++;
 
@@ -237,7 +202,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
       area12 = area1 + area2;
       error12 = error1 + error2;
-      last_maxerr_value = maxerr_value;
+      last_e_i = e_i;
 
       /* Improve previous approximations to the integral and test for
          accuracy.
@@ -246,15 +211,15 @@ gsl_integration_qagp_impl (const gsl_function * f,
          QUADPACK code so that the rounding errors are the same, which
          makes testing easier. */
 
-      errsum = errsum + error12 - maxerr_value;
-      area = area + area12 - rlist[maxerr_index];
+      errsum = errsum + error12 - e_i;
+      area = area + area12 - r_i;
 
       tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (area));
 
       if (resasc1 != error1 && resasc2 != error2)
 	{
-	  if (fabs (rlist[maxerr_index] - area12) <= 1e-5 * fabs (area12)
-	      && error12 >= 0.99 * maxerr_value)
+	  if (fabs (r_i - area12) <= 1e-5 * fabs (area12)
+	      && error12 >= 0.99 * e_i)
 	    {
 	      if (!extrapolate)
 		{
@@ -266,7 +231,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
 		}
 	    }
 
-	  if (i > 10 && error12 > maxerr_value)
+	  if (i > 10 && error12 > e_i)
 	    {
 	      roundoff_type3++;
 	    }
@@ -298,38 +263,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
       /* append the newly-created intervals to the list */
 
-      if (error2 > error1)
-	{
-	  alist[maxerr_index] = a2;	/* blist[maxerr] is already == b2 */
-	  rlist[maxerr_index] = area2;
-	  elist[maxerr_index] = error2;
-	  level[maxerr_index] = current_level;
-
-	  alist[i] = a1;
-	  blist[i] = b1;
-	  rlist[i] = area1;
-	  elist[i] = error1;
-	  level[i] = current_level;
-	}
-      else
-	{
-	  blist[maxerr_index] = b1;	/* alist[maxerr] is already == a1 */
-	  rlist[maxerr_index] = area1;
-	  elist[maxerr_index] = error1;
-	  level[maxerr_index] = current_level;
-
-	  alist[i] = a2;
-	  blist[i] = b2;
-	  rlist[i] = area2;
-	  elist[i] = error2;
-	  level[i] = current_level;
-	}
-
-      /* call subroutine dqpsrt to maintain the descending ordering in
-         the list of error estimates and select the subinterval with
-         the nrmax-th largest error estimate (to be bisected next) */
-
-      qpsrt (limit, i, &maxerr_index, &maxerr_value, elist, iord, &nrmax);
+      update (workspace, a1, b1, area1, error1, a2, b2, area2, error2);
 
       if (errsum <= tolerance)
 	{
@@ -352,9 +286,9 @@ gsl_integration_qagp_impl (const gsl_function * f,
 	  continue;
 	}
 
-      error_over_large_intervals += -last_maxerr_value;
+      error_over_large_intervals += -last_e_i;
 
-      if (current_level < maximum_level)
+      if (current_level < workspace->maximum_level)
 	{
 	  error_over_large_intervals += error12;
 	}
@@ -363,60 +297,34 @@ gsl_integration_qagp_impl (const gsl_function * f,
 	{
 	  /* test whether the interval to be bisected next is the
 	     smallest interval. */
-	  if (level[maxerr_index] < maximum_level)
-	    {
-	      continue;
-	    }
+	  if (large_interval (workspace))
+	    continue;
+
 	  extrapolate = 1;
-	  nrmax = 1;
+	  workspace->nrmax = 1;
 	}
+
+      /* The smallest interval has the largest error.  Before
+	 bisecting decrease the sum of the errors over the larger
+	 intervals (error_over_large_intervals) and perform
+	 extrapolation. */
 
       if (!error_type2 && error_over_large_intervals > ertest)
 	{
-	  /* The smallest interval has the largest error.  Before
-	     bisecting decrease the sum of the errors over the larger
-	     intervals (error_over_large_intervals) and perform
-	     extrapolation. */
-
-	  int k, flag = 0;
-	  int id = nrmax;
-	  int jupbnd;
-	  if (i > (1 + limit / 2))
-	    {
-	      jupbnd = limit + 1 - i;
-	    }
-	  else
-	    {
-	      jupbnd = i;
-	    }
-
-	  for (k = id; k <= jupbnd && !flag; k++)
-	    {
-
-	      maxerr_index = iord[nrmax];
-	      maxerr_value = elist[maxerr_index];
-	      if (level[maxerr_index] < maximum_level)
-		{
-		  flag = 1;
-		  break;
-		}
-	      nrmax++;
-	    }
-	  if (flag)
+	  if (increase_nrmax (workspace))
 	    continue;
 	}
 
       /* Perform extrapolation */
 
-      numrl2++;
-      rlist2[numrl2] = area;
+      append_table (&table, area);
 
-      if (numrl2 < 2) 
+      if (table.n < 2) 
 	{
 	  goto skip_extrapolation;
 	} 
 
-      gsl_integration_qelg (&numrl2, rlist2, &reseps, &abseps, res3la, &nres);
+      qelg (&table, &reseps, &abseps);
 
       ktmin++;
 
@@ -438,7 +346,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
       /* Prepare bisection of the smallest interval. */
 
-      if (numrl2 == 0)
+      if (table.n == 0)
 	{
 	  disallow_extrapolation = 1;
 	}
@@ -449,11 +357,9 @@ gsl_integration_qagp_impl (const gsl_function * f,
 	}
 
     skip_extrapolation:
-      maxerr_index = iord[0];
-      maxerr_value = elist[maxerr_index];
-      nrmax = 0;
+
+      reset_nrmax (workspace);
       extrapolate = 0;
-      maximum_level++;
       error_over_large_intervals = errsum;
 
     }
@@ -492,7 +398,7 @@ gsl_integration_qagp_impl (const gsl_function * f,
   {
     double max_area = GSL_MAX_DBL (fabs (*result), fabs (area));
 
-    if (!positive_integrand && max_area < 0.01 * q_resabs)
+    if (!positive_integrand && max_area < 0.01 * resabs0)
       goto return_error;
   }
 
@@ -507,24 +413,10 @@ gsl_integration_qagp_impl (const gsl_function * f,
 
 compute_result:
 
-  {
-    /* Compute global integral sum. */
-
-    double result_sum = 0;
-    size_t k;
-    for (k = 0; k <= i; k++)
-      {
-	result_sum += rlist[k];
-      }
-    *result = result_sum;
-  }
-
+  *result = sum_results (workspace);
   *abserr = errsum;
 
 return_error:
-
-  *nqeval = 2 * (i + 1 - nint) + nint;
-  *last = i + 1;
 
   if (error_type > 2)
     error_type--;

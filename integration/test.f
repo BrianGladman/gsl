@@ -132,21 +132,21 @@ c      write(6,3) result, abserr, neval, ier, last
 c      do 11 i=1,10
 c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
 c 11   continue
-
-c     alpha = 1.3
-c     a = 0.3
-c     b = 2.71
-c     epsabs = 1d-14
-c     epsrel = 0
-c     key = 3
-c     limit = 1000
-c     print *, 'DQAGE oscill'
-c     call dqage(book3,a,b,epsabs,epsrel,KEY,LIMIT,result,abserr,
-c    $     neval,ier,alist,blist,rlist,elist,iord,last)
-c     write(6,3) result, abserr, neval, ier, last
-c     do 12 i=1,10
-c        write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
-c12   continue
+      
+      alpha = 1.3
+      a = 0.3
+      b = 2.71
+      epsabs = 1d-14
+      epsrel = 0
+      key = 3
+      limit = 1000
+      print *, 'DQAGE oscill'
+      call dqage(book3,a,b,epsabs,epsrel,KEY,LIMIT,result,abserr,
+     $     neval,ier,alist,blist,rlist,elist,iord,last)
+      write(6,3) result, abserr, neval, ier, last
+      do 12 i=1,10
+         write(6,4) i,alist(i),blist(i),rlist(i),elist(i),iord(i)
+ 12   continue
 
 c     alpha = 2.0
 c     a = -1.0

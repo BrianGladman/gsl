@@ -5,33 +5,42 @@
 #include <gsl_errno.h>
 #include <gsl_integration.h>
 
-#include "integration.h"
-#include "util.c"
+#include "qpsrt.h"
 
 int
-gsl_integration_qag_impl (const gsl_function * f,
-			  const double a, const double b,
+gsl_integration_qawc_impl (const gsl_function *f,
+			  const double a, const double b, const double c,
 			  const double epsabs, const double epsrel,
-			  const size_t limit,
 			  gsl_integration_workspace * workspace,
-			  double *result, double *abserr,
-			  gsl_integration_rule * q)
+			  double * result, double * abserr)
 {
-  double area, errsum;
   double result0, abserr0, resabs0, resasc0;
-  double tolerance;
-  size_t iteration = 0;
+  double tolerance ;
+  double e_max, area, errsum;
+  size_t i_max, nrmax, i;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
 
-  volatile double round_off;	/* "volatile" helps with IEEE behavior */
+  volatile double round_off ; /* volatile is needed for strict IEEE behavior */
 
-  initialise (workspace, a, b);
+  const size_t limit = workspace->limit ;
+  double * alist = workspace->alist ;
+  double * blist = workspace->blist ;
+  double * rlist = workspace->rlist ;
+  double * elist = workspace->elist ;
+  size_t * order = workspace->order ;
+
+  alist[0] = a;
+  blist[0] = b;
+  rlist[0] = 0;
+  elist[0] = 0;
+  order[0] = 0;
+  workspace->size = 0;
 
   if (epsabs <= 0 && (epsrel < 50 * GSL_DBL_EPSILON || epsrel < 0.5e-28))
     {
       *result = 0;
       *abserr = 0;
-
+      *nqeval = 0;
       GSL_ERROR ("tolerance cannot be acheived with given epsabs and epsrel",
 		 GSL_EBADTOL);
     };
@@ -40,13 +49,16 @@ gsl_integration_qag_impl (const gsl_function * f,
 
   q (f, a, b, &result0, &abserr0, &resabs0, &resasc0);
 
-  set_initial_result (workspace, result0, abserr0);
+  rlist[0] = result0;
+  elist[0] = abserr0;
+  order[0] = 0;
+  workspace->size = 1;
 
   /* Test on accuracy */
 
   tolerance = GSL_MAX_DBL (epsabs, epsrel * fabs (result0));
 
-  round_off = 50 * GSL_DBL_EPSILON * resabs0;
+  round_off = 50 * GSL_DBL_EPSILON * resabs0 ;
 
   if (abserr0 <= round_off && abserr0 > tolerance)
     {
@@ -71,46 +83,58 @@ gsl_integration_qag_impl (const gsl_function * f,
       GSL_ERROR ("a maximum of one iteration was insufficient", GSL_EMAXITER);
     }
 
+  e_max = abserr0;
+  i_max = 0;
   area = result0;
   errsum = abserr0;
+  nrmax = 0;
 
-  iteration = 1;
+  i = 1;
 
   do
     {
-      double a1, b1, a2, b2;
-      double a_i, b_i, r_i, e_i;
+      /* Bisect the subinterval with the largest error estimate */
+
+      const double left = alist[i_max];
+      const double right = blist[i_max];
+      const double midpoint = 0.5 * (left + right);
+
+      const double a1 = left, b1 = midpoint;
+      const double a2 = midpoint, b2 = right;
+
       double area1 = 0, area2 = 0, area12 = 0;
       double error1 = 0, error2 = 0, error12 = 0;
       double resasc1, resasc2;
       double resabs1, resabs2;
 
-      /* Bisect the subinterval with the largest error estimate */
-
-      retrieve (workspace, &a_i, &b_i, &r_i, &e_i);
-
-      a1 = a_i; 
-      b1 = 0.5 * (a_i + b_i);
-      a2 = b1;
-      b2 = b_i;
-
-      q (f, a1, b1, &area1, &error1, &resabs1, &resasc1);
-      q (f, a2, b2, &area2, &error2, &resabs2, &resasc2);
+      if (c > a1 && c < b1) 
+	{
+	  b1 = 0.5 * (c + b2) ;
+	  a2 = b1;
+	}
+      else if (c > b1 && c < b2)
+	{
+	  b1 = 0.5 * (a1 + c) ;
+	  a2 = b1;
+	}
+      
+      q (f, a1, b1, c, &area1, &error1, neval);
+      q (f, a2, b2, c, &area2, &error2, neval);
 
       area12 = area1 + area2;
       error12 = error1 + error2;
 
-      errsum += (error12 - e_i);
-      area += area12 - r_i;
+      errsum += (error12 - e_max);
+      area += area12 - rlist[i_max];
 
       if (resasc1 != error1 && resasc2 != error2)
 	{
-	  if (fabs (r_i - area12) <= 0.00001 * fabs (area12)
-	      && error12 >= 0.99 * e_i)
+	  if (fabs (rlist[i_max] - area12) <= 0.00001 * fabs (area12)
+	      && error12 >= 0.99 * e_max)
 	    {
 	      roundoff_type1++;
 	    }
-	  if (iteration >= 10 && error12 > e_i)
+	  if (i >= 10 && error12 > e_max)
 	    {
 	      roundoff_type2++;
 	    }
@@ -129,7 +153,7 @@ gsl_integration_qag_impl (const gsl_function * f,
 	     a point of the integration range */
 
 	  {
-	    volatile double tmp = ((1 + 100 * GSL_DBL_EPSILON)
+	    volatile double tmp = ((1 + 100 * GSL_DBL_EPSILON) 
 				   * (fabs (a2) + 1000 * GSL_DBL_MIN));
 	    if (fabs (a1) <= tmp && fabs (b2) <= tmp)
 	      {
@@ -138,16 +162,54 @@ gsl_integration_qag_impl (const gsl_function * f,
 	  }
 	}
 
-      update (workspace, a1, b1, area1, error1, a2, b2, area2, error2);
+      /* append the newly-created intervals to the list */
 
-      retrieve (workspace, &a_i, &b_i, &r_i, &e_i);
+      if (error2 > error1)
+	{
+	  alist[i_max] = a2;	/* blist[maxerr] is already == b2 */
+	  rlist[i_max] = area2;
+	  elist[i_max] = error2;
 
-      iteration++;
+	  alist[i] = a1;
+	  blist[i] = b1;
+	  rlist[i] = area1;
+	  elist[i] = error1;
+	  workspace->size = i + 1;
+	}
+      else
+	{
+	  blist[i_max] = b1;	/* alist[maxerr] is already == a1 */
+	  rlist[i_max] = area1;
+	  elist[i_max] = error1;
+
+	  alist[i] = a2;
+	  blist[i] = b2;
+	  rlist[i] = area2;
+	  elist[i] = error2;
+	  workspace->size = i + 1;
+	}
+
+      /* call subroutine dqpsrt to maintain the descending ordering in
+         the list of error estimates and select the subinterval with the
+         largest error estimate (to be bisected next) */
+
+      qpsrt (limit, i, &i_max, &e_max, elist, order, &nrmax);
+
+      i++;
 
     }
-  while (iteration < limit && !error_type && errsum > tolerance);
+  while (i < limit && !error_type && errsum > tolerance);
 
-  *result = sum_results (workspace);
+  {
+    double result_sum = 0;
+    size_t k;
+    for (k = 0; k < i; k++)
+      {
+	result_sum += rlist[k];
+      }
+    *result = result_sum;
+  }
+
   *abserr = errsum;
 
   if (errsum <= tolerance)
@@ -164,14 +226,13 @@ gsl_integration_qag_impl (const gsl_function * f,
       GSL_ERROR ("bad integrand behavior found in the integration interval",
 		 GSL_ESING);
     }
-  else if (iteration == limit)
+  else if (i == limit)
     {
       GSL_ERROR ("maximum number of subdivisions reached", GSL_EMAXITER);
     }
-
+  
   /* FIXME: we get here if there was a NAN in the function evaluations */
 
   GSL_ERROR ("shouldn't happen", GSL_ESANITY);
 
 }
-
