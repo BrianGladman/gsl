@@ -119,7 +119,7 @@ compromise that Vegas (ie, Peter Lepage) adopts is to assume that
 @math{g} factors: @math{g(x_1, x_2, \ldots) = g_1(x_1) g_2(x_2)
 \ldots} so that the number of bins required is only @math{d K}.  In
 this case, it is not hard to show that the optimal distribution is
-@begin equation
+@equation
 g_1(x_1) = [\int dx_1 \ldots dx_n 
         @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^(1/2)
 @end equation
