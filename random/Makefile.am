@@ -2,7 +2,7 @@
 #####################################################################
 
 ## I have removed the "automagic" making of Makefile.lam from
-## Makefile.lami  --- It was just too finicky.  
+## Makefile.ami  --- It was just too finicky.  
 
 ## If you consider yourself a casual user, then you shouldn't need to
 ## edit the Makefile.lam, but if you do, nobody will mind.
@@ -10,14 +10,14 @@
 ## If instead you think of yourself as a developer/contributor [eg if
 ## you are working from a distribution you got from the CVS master
 ## source instead of a numbered release], and if you want to edit the
-## Makefile.lam file, you should instead edit the Makefile.lami template
+## Makefile.am file, you should instead edit the Makefile.ami template
 ## file, and/or modify the 'makeam' shell script.  Then you can remake
 ## the Makefile.lam file using the 'makeam' script:
 
-##      ./makeam Makefile.lami > Makefile.lam
+##      ./makeam Makefile.ami > Makefile.am
 
-## After you are done, be sure the 'cvs commit' the Makefile.lam file,
-## as well as your changes to 'Makefile.lami' and 'makeam'
+## After you are done, be sure the 'cvs commit' the Makefile.am file,
+## as well as your changes to 'Makefile.ami' and 'makeam'
 
 ## A similar warning applies to the sources *-state.c, *-gen.c, and
 ## some of the *.h files; if you want to edit them, you should instead
@@ -49,7 +49,7 @@ switch.c gsl_ran_switch.h:
 ## permits the user to contribute to the project!!
 ##
 EXTRA_DIST= xxx-switch.xc xxx-gen.xc xxx-state.xc \
-	makeam makesrc Makefile.lami 
+	makeam makesrc Makefile.ami 
 
 CLEANFILES= tmp.lout tmp.in
 
