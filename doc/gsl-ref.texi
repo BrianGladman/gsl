@@ -92,7 +92,7 @@ by the Foundation.
 
 @author Mark Galassi 
 Cygnus Solutions and Los Alamos National Laboratory @*
-@email{rosalia@@nis.lanl.gov}
+@email{rosalia@@lanl.gov}
 @sp 1
 
 @author Jim Davies 

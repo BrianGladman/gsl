@@ -46,7 +46,7 @@ by the Foundation.
 @subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
 @subtitle @value{UPDATED}
 @author Mark Galassi @footnote{Cygnus Solutions and Los Alamos National Laboratory}
-@author @email{rosalia@@cygnus.com}
+@author @email{rosalia@@lanl.gov}
 @author
 @author James Theiler @footnote{Astrophysics and Radiation Measurements group, Los Alamos National Laboratory}
 @author @email{jt@@nis.lanl.gov}
