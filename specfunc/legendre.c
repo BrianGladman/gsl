@@ -23,19 +23,17 @@ double gsl_sf_legendre(int l, int m, double x)
   if(m < 0){
     char buff[100];
     sprintf(buff, "gsl_sf_legendre: negative m= %d  will be sign-stripped", m);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
   }
   if(am > l){
     char buff[100];
     sprintf(buff, "gsl_sf_legendre: bad m argument for legendre: m= %d  l= %d",m,l);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   if(fabs(x) > 1.){
     char buff[100];
     sprintf(buff, "gsl_sf_legendre: bad x argument for legendre: x= %g", x);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   
   /* If l is large and m is large, then we have to worry
@@ -53,8 +51,7 @@ double gsl_sf_legendre(int l, int m, double x)
   if(exp_check < GSL_LOG_DBL_MIN + 10.){
     char buff[100];
     sprintf(buff, "gsl_sf_legendre: apparent overflow condition: l= %d  m= %d",l,m);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
 
   /* If m > 0, then calculate P_m^m from the analytic result:
@@ -115,14 +112,12 @@ double gsl_sf_Ylm_legendre(int l, int m, double x)
   if(abs(m) > l){
     char buff[100];
     sprintf(buff, "Ylm_legendre: bad m argument: m= %d  l= %d", m, l);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   if(fabs(x) > 1.){
     char buff[100];
     sprintf(buff, "Ylm_legendre: bad x argument: x= %g", x);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
 
   /* strip sign of m */

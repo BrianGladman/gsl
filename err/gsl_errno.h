@@ -48,6 +48,15 @@ void gsl_message(const char * message, const char * file, int line);
        return value ; \
        } while (0)
 
+#ifdef GSL_WARNINGS  /* output all warnings */
+#define GSL_WARNING(warning) \
+       do { \
+       gsl_message (warning, __FILE__, __LINE__) ; \
+       } while (0)
+#else /* throw away warning */
+#define GSL_WARNING(warning) do { } while(0)
+#endif
+
 #ifdef GSL_MESSAGING /* output all messages */
 #define GSL_MESSAGE(message) \
        do { \
@@ -57,4 +66,4 @@ void gsl_message(const char * message, const char * file, int line);
 #define GSL_MESSAGE(message) do { } while(0)
 #endif
 
-#endif /* _GSL_ERRNO_H */
+#endif /* !_GSL_ERRNO_H */

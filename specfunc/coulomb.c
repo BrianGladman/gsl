@@ -44,8 +44,7 @@ double gsl_sf_hydrogenicR_2(int l, double Z, double r)
   else {
     char buff[100];
     sprintf(buff,"hydrogenicR_2: l= %d", l);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
 }
 
@@ -112,8 +111,7 @@ double gsl_sf_coulomb_CL(double lam, double eta)
   if(lam <= -1.) {
     char buff[100];
     sprintf(buff,"coulomb_CL: lam= %g <= -1", lam);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 0.);
   }
   if(fabs(lam) < 10.*GSL_MACH_EPS) {
     /* saves a calculation of complex_lngamma(),
@@ -170,9 +168,9 @@ static void coulfg_zero_x(double eta, double xlmin, double xlmax,
   for(i=0; i<=i_delta_lam; i++) { fc[i] = 0.; }
   if(mode==Mode_FGp || mode==Mode_FG) {
     if(fabs(xlmin) > GSL_MACH_EPS || fabs(xlmax) > GSL_MACH_EPS) {
-      GSL_ERROR_MESSAGE("coulfg_zero_x: x=0.0: G,Gprime undefined for L>0",
-	      	      	GSL_EDOM
-	      	      	);
+      GSL_ERROR("coulfg_zero_x: x=0.0: G,Gprime undefined for L>0",
+	      	GSL_EDOM
+	      	);
     }
     else {
       gc[0] = 1./sqrt(C0sq(eta));
@@ -210,7 +208,7 @@ static void coulfg_small_args(double x, double eta, double xlmin, double xlmax,
    */
   double * cl = (double *)malloc((i_delta_lam+1)*sizeof(double));
   if(cl == 0){
-    GSL_ERROR_MESSAGE("coulfg_small_args: out of memory", GSL_ENOMEM);
+    GSL_ERROR("coulfg_small_args: out of memory", GSL_ENOMEM);
     return;
   }
   coulomb_CL_list(xlmin, i_delta_lam+1, eta, cl);
@@ -275,7 +273,7 @@ static void jwkb(double x, double eta, double xl,
     if(*iexp > 300)  {
       char buff[100];
       sprintf(buff,"coul: overflow in G: scale all F,G by 10^%d", *iexp);
-      GSL_ERROR_MESSAGE(buff, GSL_EFAILED);
+      GSL_ERROR(buff, GSL_EFAILED);
       over_exp_ = *iexp;
       *gjwkb = pow(10., phi10 - *iexp);
     }
@@ -286,9 +284,9 @@ static void jwkb(double x, double eta, double xl,
     *fjwkb = 0.5/(gh * *gjwkb);
   }
   else {
-    GSL_ERROR_MESSAGE("jwkb: called above turning point: INTERNAL ERROR",
-	      	      GSL_EFAILED
-	      	      );
+    GSL_ERROR("jwkb: called above turning point: INTERNAL ERROR",
+	      GSL_EFAILED
+	      );
   }
 }
 #undef ALOGE
@@ -372,7 +370,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
   if(xlmin <= -1. || xlmax < xlmin) {
     char buff[100];
     sprintf(buff, "coulfg: problem with lambda inputs: %g %g", xlmax, xlmin);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
     return;
   }
 
@@ -380,7 +378,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
     int i;
     char buff[100];
     sprintf(buff,"coulfg: x= %g   < 0", x);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
     for(i=0; i<=i_delta_lam; i++) {
       fc[i] = 0.;
       if(mode==Mode_FGp || mode==Mode_FG) {
@@ -402,7 +400,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
     char buff[100];
     sprintf(buff,"coulfg: x= %g  eta= %g  x.eta= %g  not yet implemented",
 	    x, eta, x*eta);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
   }
   else {
     /* check if x is below the turning point */
@@ -468,7 +466,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
       if( pk > px ) {
 	char buff[100];
 	sprintf(buff, "coulfg: first continued fraction not converging");
-	GSL_ERROR_MESSAGE(buff, GSL_EFAILED);
+	GSL_ERROR(buff, GSL_EFAILED);
 	return;
       }
     }
@@ -561,7 +559,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
 	if(pk > ta) {
 	  char buff[100];
 	  sprintf(buff,"coulfg: second continued fraction not converging");
-	  GSL_ERROR_MESSAGE(buff, GSL_EFAILED);
+	  GSL_ERROR(buff, GSL_EFAILED);
 	  return;
 	}
       }
@@ -572,7 +570,7 @@ static void coulfg(double x, double eta, double xlmin, double xlmax,
        */
       gam = (F - P)/Q;
       if(Q <= CFG_ACC4*fabs(P)) {
-	GSL_ERROR_MESSAGE("coulfg: final Q < abs(P)*CFG_ACC*1e4", GSL_EFAILED);
+	GSL_ERROR("coulfg: final Q < abs(P)*CFG_ACC*1e4", GSL_EFAILED);
       }
       W	= 1.0/sqrt((F - P)*gam + Q);
     }

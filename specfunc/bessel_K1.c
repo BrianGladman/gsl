@@ -106,13 +106,13 @@ double gsl_sf_bessel_K1_scaled(double x)
 {
   static double xmin    = DBL_MIN; /* exp (amax1(alog(r1mach(1)), -alog(r1mach(2))) + .01) */
   static double x_small = 2.0*GSL_SQRT_MACH_EPS; 
+  int err_status = GSL_SUCCESS;
 
   if(x <= 0.) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1_scaled: x <= 0", GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K1_scaled: x <= 0", GSL_EDOM, 0.);
   }
   else if(x < xmin) {
-    gsl_errno = GSL_EUNDRFLW;
+    err_status = GSL_EUNDRFLW;
     return 0.;
   }
   else if(x < x_small) {
@@ -144,14 +144,13 @@ double gsl_sf_bessel_K1(double x)
     xmax = -alog(r1mach(1))
     xmax = xmax - 0.5*xmax*alog(xmax)/(xmax+0.5) - 0.01
   */
+  int err_status = GSL_SUCCESS;
 
   if(x <= 0.) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1: x <= 0", GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K1: x <= 0", GSL_EDOM, 0.);
   }
   else if(x < xmin) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K1: x too small", GSL_EOVRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K1: x too small", GSL_EOVRFLW, 0.);
   }
   else if(x < x_small) {
     return log(0.5*x)*gsl_sf_bessel_I1(x) +
@@ -166,7 +165,7 @@ double gsl_sf_bessel_K1(double x)
     return exp(-x) * gsl_sf_bessel_K1_scaled(x);
   }
   else {
-    gsl_errno = GSL_EUNDRFLW;
+    err_status = GSL_EUNDRFLW;
     return 0.;
   }
 }

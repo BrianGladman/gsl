@@ -67,7 +67,6 @@ double gsl_sf_bessel_J0(double x)
     return ampl * cos(theta);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_J0: |x| too large", GSL_EOVRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_J0: |x| too large", GSL_EOVRFLW, 0.);
   }
-};
+}

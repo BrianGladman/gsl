@@ -5,7 +5,7 @@ double gsl_ran_cmrg_uniform(void);
 void gsl_ran_cmrg_seed(int);
 
 unsigned long gsl_ran_cmrg_random(void);
-double gsl_ran_cmrg_max();
+double gsl_ran_cmrg_max(void);
 
 void *gsl_ran_cmrg_getRandomState(void);
 void gsl_ran_cmrg_setRandomState(void *);

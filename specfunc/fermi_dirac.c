@@ -66,8 +66,7 @@ double gsl_sf_fermi_integral_1(double A)
   if(A <= 0.) {
     char buff[100];
     sprintf(buff, "fermi_integral_1: bad arg  %18.12g\n", A);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
-    return 6600.;
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 6600.);
   }
   else if(A < 0.01) {
     /* asymptotic */
@@ -145,7 +144,7 @@ double gsl_sf_fermi_integral_2(double A)
   if(A <= 0.) {
     char buff[100];
     sprintf(buff, "fermi_integral_2: bad arg  %18.12g\n", A);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR_RETURN(buff, GSL_EDOM, 6666.);
     return 6666.;
   }
   else if(A < 0.01) {

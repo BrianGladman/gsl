@@ -208,9 +208,10 @@ void gsl_sf_bessel_j_steed(double x, int lmax, double * jl_x)
       FP += del;
       if(D < 0.) F = -F;
       if(B > end) {
-	GSL_ERROR_MESSAGE(
+	GSL_ERROR_RETURN(
 		"gsl_sf_bessel_j_steed: continued fraction not converging",
-		GSL_EFAILED
+		GSL_EFAILED,
+		0.
 		);
       }
     }

@@ -18,7 +18,7 @@ double gsl_sf_pow_int(double x, int n)
       return 0.;
     }
     else {
-      return GSL_INF;
+      return 0. /* GSL_INF */ ; /* FIXME */
     }
   }
   else {

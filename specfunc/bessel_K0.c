@@ -106,8 +106,7 @@ double gsl_sf_bessel_K0_scaled(double x)
   const double x_small = 2.0 * GSL_SQRT_MACH_EPS;
 
   if(x <= 0.0) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K0_scaled: x <= 0", GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K0_scaled: x <= 0", GSL_EDOM, 0.);
   }
   else if(x < x_small) {
     return  exp(x) * (-log(0.5*x)*gsl_sf_bessel_I0(x) - .25
@@ -139,8 +138,7 @@ double gsl_sf_bessel_K0(double x)
     */
 
   if(x <= 0.) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K0: x <= 0", GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K0: x <= 0", GSL_EDOM, 0.);
   }
   else if(x < x_small) {
     return -log(0.5*x)*gsl_sf_bessel_I0(x) - .25 + gsl_sf_cheb_eval(-1., &bk0_cs);
@@ -153,7 +151,6 @@ double gsl_sf_bessel_K0(double x)
     return exp(-x) * gsl_sf_bessel_K0_scaled(x);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_K0: x too large", GSL_EUNDRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_K0: x too large", GSL_EUNDRFLW, 0.);
   }
 }

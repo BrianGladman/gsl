@@ -52,10 +52,11 @@ double gsl_sf_bessel_J1(double x)
   const double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   const double xmax = 1./GSL_MACH_EPS;
   const double xmin = DBL_MIN;
+  int err_status = GSL_SUCCESS;
 
   double y = abs(x);
   if(y < xmin) {
-    gsl_errno = GSL_EUNDRFLW;
+    err_status = GSL_EUNDRFLW;
     return 0.;
   }
   else if(y < x_small) {
@@ -71,7 +72,6 @@ double gsl_sf_bessel_J1(double x)
     return fortran_sign(ampl, x) * cos (theta);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_J1: x too large", GSL_EOVRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_J1: x too large", GSL_EOVRFLW, 0.);
   }
-};
+}

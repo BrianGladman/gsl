@@ -119,11 +119,12 @@ double gsl_sf_bessel_I1_scaled(double x)
 {
   static double xmin    = 2.0 * DBL_MIN;
   static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
+  int err_status = GSL_SUCCESS;
 
   double y = fabs(x);
 
   if(y < xmin) {
-    gsl_errno = GSL_EUNDRFLW;
+    err_status = GSL_EUNDRFLW;
     return 0.;
   }
   else if(y < x_small) {
@@ -148,11 +149,12 @@ double gsl_sf_bessel_I1(double x)
   static double xmin    = 2.0 * DBL_MIN;
   static double x_small = ROOT_EIGHT * GSL_SQRT_MACH_EPS;
   static double xmax    = GSL_LOG_DBL_MAX; /* alog (r1mach(2)) */
+  int err_status = GSL_SUCCESS;
 
   double y = fabs(x);
 
   if(y < xmin) {
-    gsl_errno = GSL_EUNDRFLW;
+    err_status = GSL_EUNDRFLW;
     return 0.;
   }
   else if(y < x_small) {
@@ -165,7 +167,6 @@ double gsl_sf_bessel_I1(double x)
     return exp(y) * gsl_sf_bessel_I1_scaled(x);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_I1: x too large", GSL_EOVRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_I1: x too large", GSL_EOVRFLW, 0.);
   }
 }

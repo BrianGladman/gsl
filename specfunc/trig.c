@@ -53,7 +53,7 @@ void gsl_sf_angle_restrict_symm(double * theta)
     char buff[100];
     sprintf(buff,"gsl_sf_angle_restrict_symm: loss of precision for theta= %g",
 	    *theta);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
   }
   else {
     int i_2pi = (int) floor(*theta/(2.*M_PI));
@@ -68,7 +68,7 @@ void gsl_sf_angle_restrict_pos(double * theta)
     char buff[100];
     sprintf(buff,"gsl_sf_angle_restrict_pos: loss of precision for theta= %g",
 	    *theta);
-    GSL_ERROR_MESSAGE(buff, GSL_EDOM);
+    GSL_ERROR(buff, GSL_EDOM);
   }
   else {
     int i_2pi = (int) floor(*theta/(2.*M_PI));

@@ -153,7 +153,6 @@ double gsl_sf_bessel_I0(double x)
     return exp(y) * gsl_sf_bessel_I0_scaled(x);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_I0: x too large", GSL_EOVRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_I0: x too large", GSL_EOVRFLW, 0.);
   }
 }

@@ -7,7 +7,7 @@
 /* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x), J_n(x) */
 double gsl_sf_bessel_J0(double x);
 double gsl_sf_bessel_J1(double x);
-double gsl_sf_bessel_J(int n, double x)
+double gsl_sf_bessel_J(int n, double x);
 
 /* Evaluate regular modified cylindrical Bessel functions I_0(x), I_1(x), I_n(x) */
 double gsl_sf_bessel_I0(double x);

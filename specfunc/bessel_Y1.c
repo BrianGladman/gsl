@@ -54,12 +54,10 @@ double gsl_sf_bessel_Y1(double x)
   const double xmax    = 1./GSL_MACH_EPS;
   
   if(x <= 0.) {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_Y1: x <= 0", GSL_EDOM);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_Y1: x <= 0", GSL_EDOM, 0.);
   }
   else if(x < xmin) {
-    GSl_ERROR_MESSAGE("gsl_sf_bessel_Y1: x too small", GSL_EOVRFLW);
-    return 0.;
+    GSl_ERROR_RETURN("gsl_sf_bessel_Y1: x too small", GSL_EOVRFLW, 0.);
   }
   else if(x < x_small) {
     return two_over_pi * log(0.5*x) * gsl_sf_bessel_J1(x) +
@@ -76,7 +74,6 @@ double gsl_sf_bessel_Y1(double x)
     return ampl * sin (theta);
   }
   else {
-    GSL_ERROR_MESSAGE("gsl_sf_bessel_Y1: x too large", GSL_EUNDRFLW);
-    return 0.;
+    GSL_ERROR_RETURN("gsl_sf_bessel_Y1: x too large", GSL_EUNDRFLW, 0.);
   }
-};
+}
