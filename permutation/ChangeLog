@@ -1,3 +1,11 @@
+Sat Apr  6 19:08:40 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added tests for canonical representation
+ 	functions
+
+	* canonical.c: functions for canonical representations	
+	(Nicolas Darnis)
+
 Mon Apr  1 17:29:49 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* permutation.c (gsl_permutation_mul): added function for

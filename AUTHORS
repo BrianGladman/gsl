@@ -14,3 +14,8 @@ Gerard Jungman (jungman@lanl.gov) special functions, interpolation,
 Michael Booth (booth@debian.org (email address not working)) - Monte 
   Carlo integration
 Fabrice Rossi (rossi@ufrmd.dauphine.fr) - Multidimensional minimization
+Simone Piccardi (piccardi@fi.infn.it) - Ntuples
+Carlo Perassi (carlo@linux.it) - Additional random number generators
+Dan, Ho-Jin (hjdan@sys713.kaist.ac.kr) - divided differences interpolation
+Szymon Jaroszewicz (sj@cs.umb.edu) - combinations
+Nicolas Darnis (ndarnis@cvf.fr) - canonical permutation functions

@@ -81,8 +81,8 @@ gsl_permutation_linear_to_canonical (gsl_permutation * q,
 }
 
 int
-gsl_permutation_canonical_to_linear (gsl_permutation * q,
-				     const gsl_permutation * p)
+gsl_permutation_canonical_to_linear (gsl_permutation * p,
+				     const gsl_permutation * q)
 {
   size_t i, k, kk, first;
   const size_t n = p->size;
@@ -191,3 +191,4 @@ gsl_permutation_canonical_cycles (const gsl_permutation * p)
 
   return count;
 }
+

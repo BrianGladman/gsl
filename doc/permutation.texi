@@ -27,6 +27,7 @@ The functions described in this chapter are defined in the header file
 * Permutation functions::       
 * Applying Permutations::       
 * Reading and writing permutations::  
+* Permutations in Cyclic Form::  
 * Permutation Examples::        
 * Permutation References and Further Reading::  
 @end menu
@@ -230,6 +231,75 @@ determine how many numbers to read.  The function returns
 @code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
+@node Permutations in Cyclic Form
+@section Permutations in Cyclic Form
+
+A permutation can be represented in both linear and cyclic notations.
+The functions described in this section can be used to convert between
+the two forms.
+
+The linear notation is an index mapping, and has already been described
+above.  The cyclic notation represents a permutation as a series of
+circular rearrangements of groups of elements, or @dfn{cycles}.
+
+Any permutation can be decomposed into a combination of cycles.  For
+example, under the cycle (1 2 3), 1 is replaced by 2, 2 is replaced by 3
+and 3 is replaced by 1 in a circular fashion. Cycles of different sets
+of elements can be combined independently, for example (1 2 3) (4 5)
+combines the cycle (1 2 3) with the cycle (4 5), which is an exchange of
+elements 4 and 5.  A cycle of length one  represents an element which is
+unchanged by the permutation and is referred to as a @dfn{singleton}.
+
+The cyclic notation for a permutation is not unique, but can be
+rearranged into a unique @dfn{canonical form} by a reordering of
+elements.  The library uses the canonical form defined in Knuth's
+@cite{Art of Computer Programming} (Vol 1, 3rd Ed, 1997) Section 1.3.3,
+p.178.
+
+The procedure for obtaining the canonical form given by Knuth is,
+
+@enumerate
+@item Write all singleton cycles explicitly
+@item Within each cycle, put the smallest number first
+@item Order the cycles in decreasing order of the first number in the cycle.
+@end enumerate
+@noindent
+For example, the linear representation (2 4 3 0 1) is represented as (1
+4) (0 2 3) in canonical form. The permutation corresponds to an
+exchange of elements 1 and 4, and rotation of elements 0, 2 and 3.
+
+The important property of the canonical form is that it can be
+reconstructed from the contents of each cycle without the brackets. In
+addition, by removing the brackets it can be considered as a linear
+representation of a different permutation. In the example given above
+the permutation (2 4 3 0 1) would become (1 4 0 2 3).  This mapping
+between linear permutations defined by the canonical form has many
+important uses in the theory of permutations.
+
+@deftypefun int gsl_permutation_linear_to_canonical (gsl_permutation * @var{q}, const gsl_permutation * @var{p})
+This function computes the canonical form of the permutation @var{p} and
+stores it in the output argument @var{q}.
+@end deftypefun
+
+@deftypefun int gsl_permutation_canonical_to_linear (gsl_permutation * @var{p}, const gsl_permutation * @var{q})
+This function converts a permutation @var{q} in canonical form back into
+linear form storing it in the output argument @var{p}.
+@end deftypefun
+
+@deftypefun size_t gsl_permutation_inversions (const gsl_permutation * @var{p})
+This function counts the number of inversions in the permutation @var{p}.
+@end deftypefun
+
+@deftypefun size_t gsl_permutation_linear_cycles (const gsl_permutation * @var{p})
+This function counts the number of cycles in the permutation @var{p}.
+@end deftypefun
+
+@deftypefun size_t gsl_permutation_canonical_cycles (const gsl_permutation * @var{q})
+This function counts the number of cycles in the permutation @var{q},
+where @var{q} is given in canonical form.
+@end deftypefun
+
+
 @node Permutation Examples
 @section Examples
 The example program below creates a random permutation by shuffling and
@@ -340,3 +410,13 @@ The subject of permutations is covered extensively in Knuth's
 Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
 Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
 @end itemize
+@noindent
+For the definition of the @dfn{canonical form} see,
+
+@itemize @asis
+@item
+Donald E. Knuth, @cite{The Art of Computer Programming: Fundamental
+Algorithms} (Vol 1, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
+Section 1.3.3, @cite{An Unusual Correspondence}, p.178-179.
+@end itemize
+

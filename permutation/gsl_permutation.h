@@ -68,11 +68,11 @@ int gsl_permutation_prev (gsl_permutation * p);
 int gsl_permutation_mul (gsl_permutation * p, const gsl_permutation * pa, const gsl_permutation * pb);
 
 int gsl_permutation_linear_to_canonical (gsl_permutation * q, const gsl_permutation * p);
-int gsl_permutation_canonical_to_linear (gsl_permutation * q, const gsl_permutation * p);
+int gsl_permutation_canonical_to_linear (gsl_permutation * p, const gsl_permutation * q);
 
 size_t gsl_permutation_inversions (const gsl_permutation * p);
 size_t gsl_permutation_linear_cycles (const gsl_permutation * p);
-size_t gsl_permutation_canonical_cycles (const gsl_permutation * p);
+size_t gsl_permutation_canonical_cycles (const gsl_permutation * q);
 
 
 extern int gsl_check_range;
