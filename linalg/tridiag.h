@@ -4,8 +4,8 @@
 /* Low level tridiagonal solvers.
  * Used internally in other areas of GSL.
  */
-#ifndef _GSL_TRIDIAG_H_
-#define _GSL_TRIDIAG_H_
+#ifndef __GSL_TRIDIAG_H__
+#define __GSL_TRIDIAG_H__
 
 #include <stdlib.h>
 
@@ -28,4 +28,4 @@ int solve_cyc_tridiag(
   );
 
 
-#endif  /* !_GSL_TRIDIAG_H_ */
+#endif /* __GSL_TRIDIAG_H__ */

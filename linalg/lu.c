@@ -20,13 +20,11 @@
 #define REAL double
 
 int
-gsl_la_decomp_LU_impl (gsl_matrix * matrix,
-		       gsl_permutation * permutation,
-		       int *signum)
+gsl_la_decomp_LU_impl (gsl_matrix * matrix, gsl_permutation * permutation, int *signum)
 {
   if (matrix->size1 != matrix->size2)
     {
-      GSL_ERROR ("LU implemented only for square matrices", GSL_ENOTSQR);
+      GSL_ERROR ("LU decomposition requires square matrix", GSL_ENOTSQR);
     }
   else if (permutation->size != matrix->size1)
     {
@@ -41,7 +39,7 @@ gsl_la_decomp_LU_impl (gsl_matrix * matrix,
 
       if (scale == 0)
 	{
-	  return GSL_ENOMEM;
+	  GSL_ERROR ("failed to allocate memory for scale", GSL_ENOMEM);
 	}
 
       /* Prepare permutation and scaling information. */
@@ -63,7 +61,7 @@ gsl_la_decomp_LU_impl (gsl_matrix * matrix,
 	      /* Trap exact singularity. */
 	      *signum = 0;
 	      free (scale);
-	      return GSL_ESING;
+	      GSL_ERROR ("exact singularity", GSL_ESING);
 	    }
 
 	  scale[i] = 1.0 / max_row_element;
@@ -128,7 +126,7 @@ gsl_la_decomp_LU_impl (gsl_matrix * matrix,
 	    {
 	      *signum = 0;
 	      free (scale);
-	      return GSL_ESING;
+	      GSL_ERROR ("apparent singularity", GSL_ESING);
 	    }
 
 	  if (j != N - 1)
@@ -147,12 +145,8 @@ gsl_la_decomp_LU_impl (gsl_matrix * matrix,
     }
 }
 
-
 int
-gsl_la_solve_LU_impl (const gsl_matrix * lu_matrix,
-		      const gsl_permutation * permutation,
-		      const gsl_vector * rhs,
-		      gsl_vector * solution)
+gsl_la_solve_LU_impl (const gsl_matrix * lu_matrix, const gsl_permutation * permutation, const gsl_vector * rhs, gsl_vector * solution)
 {
   if (lu_matrix->size1 != lu_matrix->size2)
     {
@@ -222,7 +216,7 @@ gsl_la_solve_LU_impl (const gsl_matrix * lu_matrix,
 
 	  if (lum_kk == 0.0)
 	    {
-	      return GSL_EINVAL;
+	      GSL_ERROR ("singularity in solution", GSL_EINVAL);
 	    }
 	  else
 	    {
@@ -240,7 +234,7 @@ gsl_la_invert_LU_impl (const gsl_matrix * lu_matrix,
 		       const gsl_permutation * permutation,
 		       gsl_matrix * inverse)
 {
-  size_t i, j, n = lu_matrix->size1;
+  size_t i, n = lu_matrix->size1;
 
   gsl_matrix_set_identity (inverse);
 

@@ -21,8 +21,7 @@
 /* [Engeln-Mullges + Uhlig, Alg. 4.42]
  */
 int
-gsl_la_solve_HH_impl (gsl_matrix * matrix,
-		      gsl_vector * vec)
+gsl_la_solve_HH (gsl_matrix * matrix, gsl_vector * vec)
 {
   if (matrix->size1 > matrix->size2)
     {
@@ -43,7 +42,7 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 
       if (d == 0)
 	{
-	  return GSL_ENOMEM;
+	  GSL_ERROR ("could not allocate memory for workspace", GSL_ENOMEM);
 	}
 
       /* Perform Householder transformation. */
@@ -66,8 +65,8 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 	  if (r == 0.0)
 	    {
 	      /* Rank of matrix is less than size1. */
-	      free (d);
-	      return GSL_ESING;
+              free (d);
+              GSL_ERROR ("matrix is rank deficient", GSL_ESING);
 	    }
 
 	  alpha = sqrt (r) * GSL_SIGN (elem_ii);
@@ -104,7 +103,7 @@ gsl_la_solve_HH_impl (gsl_matrix * matrix,
 	    {
 	      /* Apparent singularity. */
 	      free (d);
-	      return GSL_ESING;
+	      GSL_ERROR("apparent singularity detected", GSL_ESING);
 	    }
 
 	  /* Perform update of RHS. */

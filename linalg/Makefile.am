@@ -10,7 +10,7 @@ INCLUDES= -I$(top_builddir)
 
 TESTS = test_la
 
-test_la_LDADD = libgsllinalg.la ../sys/libgslsys.la ../err/libgsltest.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../permutation/libgslpermutation.la ../block/libgslblock.la ../err/libgslerr.la ../utils/libutils.la
+test_la_LDADD = libgsllinalg.la ../sys/libgslsys.la ../err/libgsltest.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../permutation/libgslpermutation.la ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../utils/libutils.la
 
 test_la_DEPENDENCIES = libgsllinalg.la
 test_la_SOURCES = test_la.c

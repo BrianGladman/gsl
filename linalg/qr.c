@@ -26,7 +26,7 @@
 
    A = Q R
 
-   where Q is orthogonal and R is upper triangular.
+   where Q is orthogonal (NxM) and R is upper triangular (NxN).
 
    Q: diagonal and lower triangle of matrix contains a packed set of
    Householder transformations (see unpack_QR subroutine for unpacking 
@@ -49,11 +49,11 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
     }
   else
     {
-      const int N = matrix->size1;
-      const int M = matrix->size2;
+      const int M = matrix->size1;
+      const int N = matrix->size2;
       int i, j, k;
 
-      for (j = 0; j < N; j++)
+      for (j = 0; j < M; j++)
 	{
 	  /* Compute the Householder transformation to reduce the j-th
 	     column of the matrix to a multiple of the j-th unit vector */
@@ -69,7 +69,7 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 	  if (gsl_matrix_get (matrix, j, j) < 0)
 	    ajnorm *= -1;
 
-	  for (i = j; i < M; i++)
+	  for (i = j; i < N; i++)
 	    {
 	      REAL aij = gsl_matrix_get (matrix, i, j);
 	      gsl_matrix_set (matrix, i, j, aij / ajnorm);
@@ -82,11 +82,11 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 	  /* Apply the transformation to the remaining columns and
 	     update the norms */
 
-	  for (k = j + 1; k < N; k++)
+	  for (k = j + 1; k < M; k++)
 	    {
 	      REAL temp, sum = 0.0;
 
-	      for (i = j; i < M; i++)
+	      for (i = j; i < N; i++)
 		{
 		  REAL aij = gsl_matrix_get (matrix, i, j);
 		  REAL aik = gsl_matrix_get (matrix, i, k);
@@ -95,7 +95,7 @@ gsl_la_decomp_QR_impl (gsl_matrix * matrix, gsl_vector * rdiag)
 
 	      temp = sum / gsl_matrix_get (matrix, j, j);
 
-	      for (i = j; i < M; i++)
+	      for (i = j; i < N; i++)
 		{
 		  REAL aij = gsl_matrix_get (matrix, i, j);
 		  REAL aik = gsl_matrix_get (matrix, i, k);

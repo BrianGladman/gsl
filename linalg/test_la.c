@@ -3,6 +3,7 @@
  */
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_ieee_utils.h>
 #include "gsl_linalg.h"
 
 static int 
@@ -590,7 +591,7 @@ test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector * solution = gsl_vector_alloc(dim);
   gsl_matrix_memcpy(hh,m);
   for(i=0; i<dim; i++) gsl_vector_set(solution, i, i+1.0);
-  s += gsl_la_solve_HH_impl(hh, solution);
+  s += gsl_la_solve_HH(hh, solution);
   for(i=0; i<dim; i++) {
     int foo = check(gsl_vector_get(solution, i),actual[i],eps);
     if( foo) {
@@ -723,6 +724,8 @@ int test_TD_solve(void)
 
 int main()
 {
+  gsl_ieee_env_setup ();
+
   hilb2 = create_hilbert_matrix(2);
   hilb3 = create_hilbert_matrix(3);
   hilb4 = create_hilbert_matrix(4);
