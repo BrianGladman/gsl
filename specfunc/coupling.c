@@ -195,11 +195,19 @@ gsl_sf_coupling_3j_e(int two_ja, int two_jb, int two_jc,
   }
 }
 
-
 int
 gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
                                int two_jd, int two_je, int two_jf,
                                gsl_sf_result * result)
+{
+  return gsl_sf_coupling_6j_e(two_ja, two_jb, two_je, two_jd, two_jc, two_jf, result);
+}
+
+
+int
+gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
+                     int two_jd, int two_je, int two_jf,
+                     gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -208,10 +216,10 @@ gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
      ) {
     DOMAIN_ERROR(result);
   }
-  else if(   triangle_selection_fails(two_ja, two_jb, two_je)
-          || triangle_selection_fails(two_ja, two_jc, two_jf)
+  else if(   triangle_selection_fails(two_ja, two_jb, two_jc)
+          || triangle_selection_fails(two_ja, two_je, two_jf)
           || triangle_selection_fails(two_jb, two_jd, two_jf)
-          || triangle_selection_fails(two_jc, two_jd, two_je)
+          || triangle_selection_fails(two_je, two_jd, two_jc)
      ) {
     result->val = 0.0;
     result->err = 0.0;
@@ -227,26 +235,26 @@ gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
     double sum_neg = 0.0;
     double sumsq_err = 0.0;
     int status = 0;
-    status += delta(two_ja, two_jb, two_je, &d1);
-    status += delta(two_ja, two_jc, two_jf, &d2);
+    status += delta(two_ja, two_jb, two_jc, &d1);
+    status += delta(two_ja, two_je, two_jf, &d2);
     status += delta(two_jb, two_jd, two_jf, &d3);
-    status += delta(two_jc, two_jd, two_je, &d4);
+    status += delta(two_je, two_jd, two_jc, &d4);
     if(status != GSL_SUCCESS) {
       OVERFLOW_ERROR(result);
     }
     norm = sqrt(d1.val) * sqrt(d2.val) * sqrt(d3.val) * sqrt(d4.val);
     
     tkmin = locMax3(0,
-                   two_ja + two_jd - two_je - two_jf,
-                   two_jb + two_jc - two_je - two_jf);
+                   two_ja + two_jd - two_jc - two_jf,
+                   two_jb + two_je - two_jc - two_jf);
 
-    tkmax = locMin5(two_ja + two_jb + two_jc + two_jd + 2,
-                    two_ja + two_jb - two_je,
-		    two_jc + two_jd - two_je,
-		    two_ja + two_jc - two_jf,
+    tkmax = locMin5(two_ja + two_jb + two_je + two_jd + 2,
+                    two_ja + two_jb - two_jc,
+		    two_je + two_jd - two_jc,
+		    two_ja + two_je - two_jf,
 		    two_jb + two_jd - two_jf);
 
-    phase = GSL_IS_ODD((two_ja + two_jb + two_jc + two_jd + tkmin)/2)
+    phase = GSL_IS_ODD((two_ja + two_jb + two_je + two_jd + tkmin)/2)
             ? -1.0
             :  1.0;
 
@@ -257,13 +265,13 @@ gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
       gsl_sf_result d1_a, d1_b;
       status = 0;
 
-      status += gsl_sf_fact_e((two_ja + two_jb + two_jc + two_jd - tk)/2 + 1, &n1);
+      status += gsl_sf_fact_e((two_ja + two_jb + two_je + two_jd - tk)/2 + 1, &n1);
       status += gsl_sf_fact_e(tk/2, &d1_a);
-      status += gsl_sf_fact_e((two_je + two_jf - two_ja - two_jd + tk)/2, &d1_b);
-      status += gsl_sf_fact_e((two_je + two_jf - two_jb - two_jc + tk)/2, &d2);
-      status += gsl_sf_fact_e((two_ja + two_jb - two_je - tk)/2, &d3);
-      status += gsl_sf_fact_e((two_jc + two_jd - two_je - tk)/2, &d4);
-      status += gsl_sf_fact_e((two_ja + two_jc - two_jf - tk)/2, &d5);
+      status += gsl_sf_fact_e((two_jc + two_jf - two_ja - two_jd + tk)/2, &d1_b);
+      status += gsl_sf_fact_e((two_jc + two_jf - two_jb - two_je + tk)/2, &d2);
+      status += gsl_sf_fact_e((two_ja + two_jb - two_jc - tk)/2, &d3);
+      status += gsl_sf_fact_e((two_je + two_jd - two_jc - tk)/2, &d4);
+      status += gsl_sf_fact_e((two_ja + two_je - two_jf - tk)/2, &d5);
       status += gsl_sf_fact_e((two_jb + two_jd - two_jf - tk)/2, &d6);
 
       if(status != GSL_SUCCESS) {
@@ -310,20 +318,11 @@ gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
 
 
 int
-gsl_sf_coupling_6j_e(int two_ja, int two_jb, int two_jc,
-                     int two_jd, int two_je, int two_jf,
-                     gsl_sf_result * result)
-{
-  return gsl_sf_coupling_6j_INCORRECT_e(two_ja, two_jb, two_je, two_jd, two_jc, two_jf, result);
-}
-
-
-int
 gsl_sf_coupling_RacahW_e(int two_ja, int two_jb, int two_jc,
                          int two_jd, int two_je, int two_jf,
                          gsl_sf_result * result)
 {
-  int status = gsl_sf_coupling_6j_INCORRECT_e(two_ja, two_jb, two_jc, two_jd, two_je, two_jf, result);
+  int status = gsl_sf_coupling_6j_e(two_ja, two_jb, two_je, two_jd, two_jc, two_jf, result);
   int phase_sum = (two_ja + two_jb + two_jc + two_jd)/2;
   result->val *= ( GSL_IS_ODD(phase_sum) ? -1.0 : 1.0 );
   return status;

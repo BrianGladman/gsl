@@ -2,6 +2,8 @@
 
 	* coupling.c (gsl_sf_coupling_6j_INCORRECT_e): fixed typo in test
 	for two_jf < 0
+	(gsl_sf_coupling_6j_e): moved the implementation from the
+	INCORRECT function into the correct function
 
 2003-06-05  Brian Gough  <bjg@network-theory.co.uk>
 
