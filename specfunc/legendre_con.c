@@ -985,16 +985,19 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, gsl_sf_result * resu
       const double sqrt_xp1 = sqrt(x + 1.0);
       const double sh = sqrt_xm1 * sqrt_xp1;  /* sinh(xi)      */
       const double xi = log(x + sh);          /* xi = acosh(x) */
+      const double xi_lam = xi * lambda;
       gsl_sf_result J0, J1;
-      int stat_J0 = gsl_sf_bessel_J0_impl(xi * lambda, &J0);
-      int stat_J1 = gsl_sf_bessel_J1_impl(xi * lambda, &J1);
-      int stat_J  = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
-      int stat_V  = conicalP_1_V(xi, x/sh, lambda, 1.0, &V0, &V1);
-      double bessterm = V0 * J0.val + V1 * J1.val;
-      double besserr  = fabs(V0) * J0.err + fabs(V1) * J1.err
+      const int stat_J0 = gsl_sf_bessel_J0_impl(xi_lam, &J0);
+      const int stat_J1 = gsl_sf_bessel_J1_impl(xi_lam, &J1);
+      const int stat_J  = GSL_ERROR_SELECT_2(stat_J0, stat_J1);
+      const int stat_V  = conicalP_1_V(xi, x/sh, lambda, 1.0, &V0, &V1);
+      const double bessterm = V0 * J0.val + V1 * J1.val;
+      const double besserr  = fabs(V0) * J0.err + fabs(V1) * J1.err
                        + 512.0 * 2.0 * GSL_DBL_EPSILON * fabs(V0 * J0.val)
-		       + 512.0 * 2.0 * GSL_DBL_EPSILON * fabs(V1 * J1.val);
-      double pre = sqrt(xi/sh);
+		       + 512.0 * 2.0 * GSL_DBL_EPSILON * fabs(V1 * J1.val)
+                       + GSL_DBL_EPSILON * fabs(xi_lam * V0 * J1.val)
+                       + GSL_DBL_EPSILON * fabs(xi_lam * V1 * J0.val);
+      const double pre = sqrt(xi/sh);
       result->val  = pre * bessterm;
       result->err  = pre * besserr * sqrt_xp1 / sqrt_xm1;
       result->err += 4.0 * GSL_DBL_EPSILON * fabs(result->val);
