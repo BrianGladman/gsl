@@ -9,8 +9,6 @@
 
 #include "bessel_amp_phase.h"
 
-#include "bessel_J1_impl.h"
-
 #define ROOT_EIGHT 2.82842712474619009760337744842
 
 

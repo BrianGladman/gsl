@@ -8,10 +8,6 @@
 
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "bessel_Y0_impl.h"
-#include "bessel_Y1_impl.h"
-
-#include "bessel_Yn_impl.h"
 
 
 /* checked OK [GJ] Sun May  3 23:25:41 EDT 1998 */

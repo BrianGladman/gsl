@@ -7,8 +7,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
-#include "bessel_I1_impl.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

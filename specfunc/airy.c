@@ -7,8 +7,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
-#include "airy_impl.h"
-
 
 /* chebyshev expansions for Airy modulus and phase
    based on SLATEC r9aimp()

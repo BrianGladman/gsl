@@ -5,8 +5,6 @@
 #include <gsl_errno.h>
 #include "gsl_sf_log.h"
 
-#include "log_impl.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

@@ -5,14 +5,7 @@
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
-
-#include "psi_impl.h"
-#include "gamma_impl.h"
 #include "bessel.h"
-#include "bessel_K0_impl.h"
-#include "bessel_K1_impl.h"
-
-#include "bessel_Kn_impl.h"
 
 #define Min(a,b) ((a) < (b) ? (a) : (b))
 

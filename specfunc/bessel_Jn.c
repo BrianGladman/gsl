@@ -9,10 +9,6 @@
 
 #include "bessel.h"
 #include "bessel_amp_phase.h"
-#include "bessel_J0_impl.h"
-#include "bessel_J1_impl.h"
-
-#include "bessel_Jn_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/

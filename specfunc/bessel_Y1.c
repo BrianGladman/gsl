@@ -8,9 +8,7 @@
 #include "gsl_sf_bessel.h"
 
 #include "bessel_amp_phase.h"
-#include "bessel_J1_impl.h"
 
-#include "bessel_Y1_impl.h"
 
 
 

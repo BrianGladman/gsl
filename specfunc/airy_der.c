@@ -7,8 +7,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
 
-#include "airy_impl.h"
-
 
 /* based on SLATEC aide.f, bide.f, aid.f, bid.f, r9admp.f */
  

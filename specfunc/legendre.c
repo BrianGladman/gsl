@@ -7,8 +7,6 @@
 #include <gsl_errno.h>
 #include "gsl_sf_legendre.h"
 
-#include "legendre_impl.h"
-
 
 /* [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991) */
 

@@ -8,8 +8,6 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_legendre.h"
 
-#include "legendre_impl.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

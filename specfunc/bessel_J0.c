@@ -7,8 +7,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
-#include "bessel_J0_impl.h"
-
 #include "bessel_amp_phase.h"
 
 

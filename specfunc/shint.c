@@ -4,9 +4,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_expint.h"
 
-#include "expint_impl.h"
-#include "shint_impl.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

@@ -3,9 +3,7 @@
 #include <gsl_math.h>
 #include "gsl_sf.h"
 
-#include "airy_impl.h"
 #include "bessel.h"
-#include "bessel_Jn_impl.h"
 
 
 int main(int argc, char * argv[])

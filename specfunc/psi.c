@@ -7,8 +7,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_psi.h"
 
-#include "psi_impl.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 

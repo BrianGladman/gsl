@@ -4,10 +4,9 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
-#include "gsl_sf_chebyshev.h"
-
-#include "airy_impl.h"
 #include "bessel.h"
+#include "gsl_sf_airy.h"
+#include "gsl_sf_chebyshev.h"
 
 #define CubeRoot2_ 1.25992104989487316476721060728
 

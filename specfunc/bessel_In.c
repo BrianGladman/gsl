@@ -7,10 +7,6 @@
 #include "gsl_sf_bessel.h"
 
 #include "bessel.h"
-#include "bessel_I0_impl.h"
-#include "bessel_I1_impl.h"
-
-#include "bessel_In_impl.h"
 
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 #define Min(a,b) ((a) < (b) ? (a) : (b))

@@ -5,11 +5,8 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
-
-#include "log_impl.h"
-
-#include "trig_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Implementations *-*-*-*-*-*-*-*-*-*-*-*/
