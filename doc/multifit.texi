@@ -38,14 +38,14 @@ the minimization of the squared residuals of @math{n} functions,
 @tex
 \beforedisplay
 $$
-\Phi(x) = {1 \over 2} \sum_{i=1}^{n} f_i (x_1, \dots, x_p)  
+\Phi(x) = {1 \over 2} \sum_{i=1}^{n} f_i (x_1, \dots, x_p)^2
         = {1 \over 2} || F(x) ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\Phi(x) = (1/2) \sum_@{i=1@}^@{n@} f_i (x_1, ..., x_p) 
+\Phi(x) = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
         = (1/2) || F(x) ||^2
 @end example
 @end ifinfo
