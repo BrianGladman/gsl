@@ -112,7 +112,7 @@ in the header file @file{gsl_histogram.h}.
 The functions for allocating memory to a histogram follow the style of
 @code{malloc} and @code{free}.  In addition they also perform their own
 error checking.  If there is insufficient memory available to allocate a
-histogram then the functions call the GSL error handler (with an error
+histogram then the functions call the error handler (with an error
 number of @code{GSL_ENOMEM}) in addition to returning a null pointer.
 Thus if you use the library error handler to abort your program then it
 isn't necessary to check every histogram @code{alloc}.
@@ -125,13 +125,25 @@ The bins are uniformly spaced with a total range of
 @math{0 <=  x < n},
 as shown in the table below.
 
+@tex
+\beforedisplay
+$$
+\matrix{
+\hbox{bin[0]}&\hbox{corresponds to}& 0 \le x < 1\cr
+\hbox{bin[1]}&\hbox{corresponds to}& 1 \le x < 2\cr
+\dots&\dots&\dots\cr
+\hbox{bin[n-1]}&\hbox{corresponds to}&n-1 \le x < n}
+$$
+\afterdisplay
+@end tex
+@ifinfo
 @display
-bin[0] corresponds to @math{0 \le x < 1}
-bin[1] corresponds to @math{1 \le x < 2}
-......
-bin[n-1] corresponds to @math{n-1 \le x < n}
+bin[0] corresponds to 0 <= x < 1
+bin[1] corresponds to 1 <= x < 2
+@dots{}
+bin[n-1] corresponds to n-1 <= x < n
 @end display
-
+@end ifinfo
 @noindent
 The bins are initialized to zero so the histogram is ready for use.
 
@@ -145,12 +157,24 @@ spaced bins from @var{xmin} to @var{xmax}, and returns a pointer to the
 newly initialized @code{gsl_histogram} struct.  The bins are shown in the
 table below,
 
+@tex
+\beforedisplay
+$$
+\matrix{\hbox{bin[0]}&\hbox{corresponds to}& xmin \le  x < xmin + d\cr
+\hbox{bin[1]} &\hbox{corresponds to}& xmin + d \le  x < xmin + 2 d\cr
+\dots&\dots&\dots\cr
+\hbox{bin[n-1]} & \hbox{corresponds to}& xmin + (n-1)d \le  x < xmax}
+$$
+\afterdisplay
+@end tex
+@ifinfo
 @display
-bin[0] corresponds to @math{xmin \le  x < xmin + d}
-bin[1] corresponds to @math{xmin + d \le  x < xmin + 2 d}
+bin[0] corresponds to xmin <= x < xmin + d
+bin[1] corresponds to xmin + d <= x < xmin + 2 d
 ......
-bin[n-1] corresponds to @math{xmin + (n-1)d \le  x < xmax}
+bin[n-1] corresponds to xmin + (n-1)d <= x < xmax
 @end display
+@end ifinfo
 @noindent
 where @math{d} is the bin spacing, @math{(xmax-xmin)/n}.  Each bin is 
 initialized to zero.
@@ -681,11 +705,23 @@ The range for @code{bin(i,j)} is given by @code{xrange[i]} to
 end and exclusive at the upper end.  Mathematically this means that the
 bins are defined by the following inequality,
 
+@tex
+\beforedisplay
+$$
+\matrix{
+\hbox{bin(i,j) corresponds to} & 
+          \hbox{\it xrange}[i] \le x < \hbox{\it xrange}[i+1] \cr
+   \hbox{and} & \hbox{\it yrange}[j] \le y < \hbox{\it yrange}[j+1]}
+$$
+\afterdisplay
+@end tex
+@ifinfo
 @display
 bin(i,j) corresponds to xrange[i] <= x < xrange[i+1]
                     and yrange[j] <= y < yrange[j+1]
 @end display
-
+@end ifinfo
+@noindent
 Note that any samples which fall on the upper sides of the histogram are
 excluded.  If you want to include these values for the side bins you will
 need to add an extra row or column to your histogram.
@@ -699,7 +735,7 @@ defined in the header file @file{gsl_histogram2d.h}.
 The functions for allocating memory to a 2D histogram follow the style
 of @code{malloc} and @code{free}.  In addition they also perform their
 own error checking.  If there is insufficient memory available to
-allocate a histogram then the functions call the GSL error handler (with
+allocate a histogram then the functions call the error handler (with
 an error number of @code{GSL_ENOMEM}) in addition to returning a null
 pointer.  Thus if you use the library error handler to abort your program
 then it isn't necessary to check every 2D histogram @code{alloc}.
