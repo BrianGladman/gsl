@@ -1,11 +1,5 @@
-/* Based on the algorithm described in Numerical recipes, 
-   but we make a few changes.  
+/* MISER.  Based on the algorithm described in Numerical recipes. */
 
-   
-   Seperate vectors of the upper and lower limits are used, 
-   as in our version of vegas.  Also, arrays are zero based.
-
-   */
 /* Author: MJB */
 /* RCS: $Id$ */
 
@@ -29,27 +23,25 @@
 #define myMIN(a,b) ((a) <= (b) ? (a) : (b))
 
 /* these should be in the state structure */
-size_t min_calls = 15;
-size_t min_calls_per_bisection = 60;
+unsigned long min_calls = 15;
+unsigned long min_calls_per_bisection = 60;
 double estimate_frac =  0.1;
 double ALPHA = 2.0/3.0; 
 double dither;
-
-enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
-      ESTIMATE_STYLE_MC = 1};
 
 int estimate_style = ESTIMATE_STYLE_NR;
 
 int gsl_monte_miser(const gsl_rng * r, 
 		    double (*func)(double []), double xl[], double xu[], 
-		    size_t num_dim, size_t calls, double *res, double *err)
+		    unsigned long num_dim, unsigned long calls, 
+		    double *res, double *err)
 {
   int status = 0;
 
   gsl_vector *xl_tmp, *xu_tmp;
 
-  size_t n, estimate_calls, calls_l, calls_r;
-  size_t i;
+  unsigned long n, estimate_calls, calls_l, calls_r;
+  unsigned long i;
   int i_bisect;
   double res_l, err_l;
   double fraction_l;
@@ -74,7 +66,7 @@ int gsl_monte_miser(const gsl_rng * r,
        or near to num_dim, because then we will get subplanes.  This
        is also an issue for min_calls. 
     */
-    estimate_calls = myMAX(min_calls, (size_t)(calls*estimate_frac) );
+    estimate_calls = myMAX(min_calls, (unsigned long)(calls*estimate_frac) );
     if (estimate_calls <= num_dim) {
       GSL_WARNING("estimate calls is close to nun_dim!", GSL_ESANITY);
     }
@@ -183,16 +175,16 @@ int gsl_monte_miser(const gsl_rng * r,
       for (i = 0; i < num_dim; i++) {
 	fraction_l = (x_mid->data[i] - xl[i])/(xu[i] - xl[i]);
 	if (hits_l->data[i] > 0 ) {
-	  sum2_l->data[i] /= SQR(hits_l->data[i]);
 	  sum_l->data[i] /= hits_l->data[i];
-	  sigma_l->data[i] = sqrt(sum2_l->data[i] - SQR(sum_l->data[i]));
-	  sigma_l->data[i] *= fraction_l*vol;
+	  sigma_l->data[i] = 
+	    sqrt(sum2_l->data[i] - SQR(sum_l->data[i])/hits_l->data[i]);
+	  sigma_l->data[i] *= fraction_l*vol/hits_l->data[i];
 	}
 	if (hits_l->data[i] > 0 ) {
-	  sum2_r->data[i] /= SQR(hits_r->data[i]);
 	  sum_r->data[i] /= hits_r->data[i];
-	  sigma_r->data[i] = sqrt(sum2_r->data[i] - SQR(sum_r->data[i]));
-	  sigma_r->data[i] *= (1 - fraction_l)*vol;
+	  sigma_r->data[i] = 
+	    sqrt(sum2_r->data[i] - SQR(sum_r->data[i])/hits_r->data[i]);
+	  sigma_r->data[i] *= (1 - fraction_l)*vol/hits_r->data[i];;
 	}
       }
 
@@ -203,8 +195,15 @@ int gsl_monte_miser(const gsl_rng * r,
       gsl_vector_free(sum_r);
       gsl_vector_free(sum2_r);
     }
+    else if (estimate_style == ESTIMATE_STYLE_MC) {
+      /* FIXME */
+      /* Would do complete mc estimate for each half space.  Trick is
+	 how to use these results - it would be a shame to waste them.
+      */
+      GSL_ERROR("ESTIMATE_STYLE_MC not yet implemented", GSL_EUNSUP);
+    }
     else {
-      GSL_ERROR("estimate_style has two possibilities!", GSL_ESANITY);
+      GSL_ERROR("estimate_style has three possibilities!", GSL_ESANITY);
     }
 
     /* Now find direction with the smallest total "variance" */
@@ -228,11 +227,11 @@ int gsl_monte_miser(const gsl_rng * r,
 	char warning[100];
 	if (sigma_l->data[i] < 0) 
 	  /* FIXME: Get a proper error code here */
-	  sprintf(warning, "no points in left-half space(%d)!?", i);
+	  sprintf(warning, "no points in left-half space(%lu)!?", i);
 	  GSL_WARNING(warning, GSL_ESANITY);
 	if (sigma_r->data[i] < 0) 
 	  /* FIXME: Get a proper error code here */
-	  sprintf(warning, "no points in right-half space(%d)!?", i);
+	  sprintf(warning, "no points in right-half space(%lu)!?", i);
 	  GSL_WARNING(warning, GSL_ESANITY);
       }
     }
@@ -250,7 +249,7 @@ int gsl_monte_miser(const gsl_rng * r,
     /* get the actual fractional sizes of the two "halves" */
     fraction_l = fabs((xbi_m - xbi_l)/(xbi_r - xbi_l));
     calls_l = min_calls;
-    calls_l += (size_t)
+    calls_l += (unsigned long)
       (calls - estimate_calls - 2*min_calls)*fraction_l*weight_l
        /(fraction_l*weight_l + (1.0 - fraction_l)*weight_r);
     calls_r = calls - estimate_calls - calls_l;
@@ -282,3 +281,82 @@ int gsl_monte_miser(const gsl_rng * r,
 
   return status;
 }
+
+gsl_monte_miser_state* gsl_monte_miser_alloc(void)
+{
+  gsl_monte_miser_state *s =  
+    (gsl_monte_miser_state *) malloc(sizeof (gsl_monte_miser_state));
+  
+  if ( s == (gsl_monte_miser_state*) NULL) {
+    GSL_ERROR_RETURN ("failed to allocate space for miser state struct",
+                        GSL_ENOMEM, 0);
+  }
+
+  return s;
+}
+
+int gsl_monte_miser_validate(gsl_monte_miser_state* state,
+			     double xl[], double xu[], 
+			     unsigned long num_dim, unsigned long calls)
+{
+  unsigned long i;
+  char warning[100];
+
+  if (state == (gsl_monte_miser_state*) NULL) {
+    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+
+  }
+
+  if (state->check_done) 
+    return GSL_SUCCESS;
+    
+  if (num_dim <= 0) {
+    sprintf(warning, "number of dimensions must be greater than zero, not %lu",
+	    num_dim);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+  
+  for (i=0; i < num_dim; i++ ) {
+    if (xu[i] - xl[i] <= 0 ) {
+      sprintf(warning, "xu[%lu] must be greater than xu[%lu]", i, i);
+    GSL_ERROR(warning, GSL_EINVAL);
+    }
+    if (xu[i] - xl[i] > DBL_MAX) {
+      sprintf(warning, 
+	      "Range of integration is too large for cord %lu, please rescale", 
+	      i);
+      GSL_ERROR(warning, GSL_EINVAL);
+    }
+  }
+
+  if ( calls <= 0 ) {
+    sprintf(warning, "number of calls must be greater than zero, not %lu",
+	    calls);
+    GSL_ERROR(warning, GSL_EINVAL);
+  }
+  
+  state->check_done = 1;
+
+  return GSL_SUCCESS;
+}  
+
+/* Set some default values and whatever */
+int gsl_monte_miser_init(gsl_monte_miser_state* state)
+{
+
+  if (state == (gsl_monte_miser_state*) NULL) {
+    GSL_ERROR("Allocate state structure before calling!", GSL_EINVAL);
+  }
+
+  state->min_calls = 15;
+  state->min_calls_per_bisection = 60;
+  state->estimate_frac =  0.1;
+  state->ALPHA = 2.0/3.0; 
+  state->dither = 0.0;
+  state->estimate_style = ESTIMATE_STYLE_NR;
+  state->ranf = gsl_rng_alloc(gsl_rng_env_setup());
+
+  state->init_done = 1;
+  return GSL_SUCCESS;
+}
+
