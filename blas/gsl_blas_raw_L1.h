@@ -30,38 +30,38 @@ double gsl_blas_raw_ddot (size_t N,
                           const double Y[], size_t incY);
 
 void gsl_blas_raw_cdotu (size_t N,
-                         const gsl_complex_packed_array_float X, size_t incX,
-                         const gsl_complex_packed_array_float Y, size_t incY,
+                         const gsl_const_complex_packed_array_float X, size_t incX,
+                         const gsl_const_complex_packed_array_float Y, size_t incY,
 		         gsl_complex_packed_float dotu);
 
 void gsl_blas_raw_cdotc (size_t N,
-                         const gsl_complex_packed_array_float X, size_t incX,
-                         const gsl_complex_packed_array_float Y, size_t incY,
+                         const gsl_const_complex_packed_array_float X, size_t incX,
+                         const gsl_const_complex_packed_array_float Y, size_t incY,
                          gsl_complex_packed_float dotc);
 
 void gsl_blas_raw_zdotu (size_t N,
-                         const gsl_complex_packed_array X, size_t incX,
-                         const gsl_complex_packed_array Y, size_t incY,
+                         const gsl_const_complex_packed_array X, size_t incX,
+                         const gsl_const_complex_packed_array Y, size_t incY,
                          gsl_complex_packed dotu);
 
 void gsl_blas_raw_zdotc (size_t N,
-                         const gsl_complex_packed_array X, size_t incX,
-                         const gsl_complex_packed_array Y, size_t incY,
+                         const gsl_const_complex_packed_array X, size_t incX,
+                         const gsl_const_complex_packed_array Y, size_t incY,
                          gsl_complex_packed dotc);
 
 float  gsl_blas_raw_snrm2  (size_t N, const float  X[], size_t incX);
 double gsl_blas_raw_dnrm2  (size_t N, const double X[], size_t incX);
-float  gsl_blas_raw_scnrm2 (size_t N, const gsl_complex_packed_array_float X, size_t incX);
-double gsl_blas_raw_dznrm2 (size_t N, const gsl_complex_packed_array X, size_t incX);
+float  gsl_blas_raw_scnrm2 (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
+double gsl_blas_raw_dznrm2 (size_t N, const gsl_const_complex_packed_array X, size_t incX);
 float  gsl_blas_raw_sasum  (size_t N, const float  X[], size_t incX);
 double gsl_blas_raw_dasum  (size_t N, const double X[], size_t incX);
-float  gsl_blas_raw_scasum (size_t N, const gsl_complex_packed_array_float X, size_t incX);
-double gsl_blas_raw_dzasum (size_t N, const gsl_complex_packed_array X, size_t incX);
+float  gsl_blas_raw_scasum (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
+double gsl_blas_raw_dzasum (size_t N, const gsl_const_complex_packed_array X, size_t incX);
 
 CBLAS_INDEX gsl_blas_raw_isamax (size_t N, const float  X[], size_t incX);
 CBLAS_INDEX gsl_blas_raw_idamax (size_t N, const double X[], size_t incX);
-CBLAS_INDEX gsl_blas_raw_icamax (size_t N, const gsl_complex_packed_array_float X, size_t incX);
-CBLAS_INDEX gsl_blas_raw_izamax (size_t N, const gsl_complex_packed_array X, size_t incX);
+CBLAS_INDEX gsl_blas_raw_icamax (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
+CBLAS_INDEX gsl_blas_raw_izamax (size_t N, const gsl_const_complex_packed_array X, size_t incX);
 
 
 void gsl_blas_raw_sswap (size_t N,
@@ -89,11 +89,11 @@ void gsl_blas_raw_dcopy (size_t N,
                          double Y[], size_t incY);
 
 void gsl_blas_raw_ccopy (size_t N,
-                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_const_complex_packed_array_float X, size_t incX,
                          gsl_complex_packed_array_float Y, size_t incY);
 
 void gsl_blas_raw_zcopy (size_t N,
-                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_const_complex_packed_array X, size_t incX,
                          gsl_complex_packed_array Y, size_t incY);
 
 void gsl_blas_raw_saxpy (size_t N,
@@ -109,13 +109,13 @@ void gsl_blas_raw_daxpy (size_t N,
 
 
 void gsl_blas_raw_caxpy (size_t N,
-                         const gsl_complex_packed_float alpha,
-                         const gsl_complex_packed_array_float X, size_t incX,
+                         const gsl_const_complex_packed_float alpha,
+                         const gsl_const_complex_packed_array_float X, size_t incX,
                          gsl_complex_packed_array_float Y, size_t incY);
 
 void gsl_blas_raw_zaxpy (size_t N,
-                         const gsl_complex_packed alpha,
-                         const gsl_complex_packed_array X, size_t incX,
+                         const gsl_const_complex_packed alpha,
+                         const gsl_const_complex_packed_array X, size_t incX,
                          gsl_complex_packed_array Y, size_t incY);
 
 void gsl_blas_raw_srotg (float a[], float b[], float c[], float s[]);
@@ -146,8 +146,8 @@ void gsl_blas_raw_drotm (size_t N,
 
 void gsl_blas_raw_sscal  (size_t N, float  alpha, float  X[], size_t incX);
 void gsl_blas_raw_dscal  (size_t N, double alpha, double X[], size_t incX);
-void gsl_blas_raw_cscal  (size_t N, const gsl_complex_packed_float alpha, gsl_complex_packed_array_float X, size_t incX);
-void gsl_blas_raw_zscal  (size_t N, const gsl_complex_packed alpha, gsl_complex_packed_array X, size_t incX);
+void gsl_blas_raw_cscal  (size_t N, const gsl_const_complex_packed_float alpha, gsl_complex_packed_array_float X, size_t incX);
+void gsl_blas_raw_zscal  (size_t N, const gsl_const_complex_packed alpha, gsl_complex_packed_array X, size_t incX);
 void gsl_blas_raw_csscal (size_t N, float  alpha, gsl_complex_packed_array_float X, size_t incX);
 void gsl_blas_raw_zdscal (size_t N, double alpha, gsl_complex_packed_array X, size_t incX);
 
