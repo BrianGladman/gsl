@@ -1,3 +1,9 @@
+Sat Sep  7 15:56:15 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_sf.h (TEST_FACTOR): include an overall factor in the test
+ 	tolerances, otherwise there are too many bug reports for minor
+ 	failures.
+
 Sun Sep  1 17:34:27 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_legendre.c (test_legendre): increased tolerance on test

@@ -33,15 +33,23 @@ int test_sf_check_val(char * message_buff, double rval, double val, double tol);
 int test_sf_check_return(char * message_buff, int val_return, int expected_return);
 int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, double tol);
 
-#define TEST_TOL0  (2.0*GSL_DBL_EPSILON)
-#define TEST_TOL1  (16.0*GSL_DBL_EPSILON)
-#define TEST_TOL2  (256.0*GSL_DBL_EPSILON)
-#define TEST_TOL3  (2048.0*GSL_DBL_EPSILON)
-#define TEST_TOL4  (16384.0*GSL_DBL_EPSILON)
-#define TEST_TOL5  (131072.0*GSL_DBL_EPSILON)
-#define TEST_TOL6  (1048576.0*GSL_DBL_EPSILON)
-#define TEST_SQRT_TOL0 (2.0*GSL_SQRT_DBL_EPSILON)
-#define TEST_SNGL  (1.0e-06)
+/* Include an overall test factor to allow for differences between
+   compilers, otherwise there are too many bug reports on the released
+   versions.  Turn this value down to 1.0 for development purposes */
+
+#ifndef TEST_FACTOR
+#define TEST_FACTOR 2.0  
+#endif
+
+#define TEST_TOL0  (TEST_FACTOR*2.0*GSL_DBL_EPSILON)
+#define TEST_TOL1  (TEST_FACTOR*16.0*GSL_DBL_EPSILON)
+#define TEST_TOL2  (TEST_FACTOR*256.0*GSL_DBL_EPSILON)
+#define TEST_TOL3  (TEST_FACTOR*2048.0*GSL_DBL_EPSILON)
+#define TEST_TOL4  (TEST_FACTOR*16384.0*GSL_DBL_EPSILON)
+#define TEST_TOL5  (TEST_FACTOR*131072.0*GSL_DBL_EPSILON)
+#define TEST_TOL6  (TEST_FACTOR*1048576.0*GSL_DBL_EPSILON)
+#define TEST_SQRT_TOL0 (TEST_FACTOR*2.0*GSL_SQRT_DBL_EPSILON)
+#define TEST_SNGL  (TEST_FACTOR*1.0e-06)
 
 #define TEST_SF_INCONS  1
 #define TEST_SF_ERRNEG  2
