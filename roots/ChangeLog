@@ -1,5 +1,12 @@
 Mon Mar  1 15:38:06 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
 
+	* moved static class data out of gsl_root_fsolver and
+ 	gsl_root_fdfsolver and into gsl_root_fsolver_type and
+ 	gsl_root_fdfsolver_type
+
+ 
+Mon Mar  1 15:38:06 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
 	* renamed f_solver to fsolver and fdf_solver to fdfsolver, since
  	these look neater
 

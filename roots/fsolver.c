@@ -28,10 +28,7 @@ gsl_root_fsolver_alloc (const gsl_root_fsolver_type * T,
 			GSL_ENOMEM, 0);
     };
 
-  s->name = T->name ;
-  s->size = T->size ;
-  s->set = T->set ;
-  s->iterate = T->iterate ;
+  s->type = T ;
 
   status = gsl_root_fsolver_set (s, f, x); /* seed the generator */
 
@@ -58,14 +55,14 @@ gsl_root_fsolver_set (gsl_root_fsolver * s, gsl_function * f, gsl_interval x)
       GSL_ERROR ("invalid interval (lower > upper)", GSL_EINVAL);
     }
 
-  return (s->set) (s->state, s->function, &(s->root), &(s->interval));
+  return (s->type->set) (s->state, s->function, &(s->root), &(s->interval));
 }
 
 int
 gsl_root_fsolver_iterate (gsl_root_fsolver * s)
 {
-  return (s->iterate) (s->state, 
-			      s->function, &(s->root), &(s->interval));
+  return (s->type->iterate) (s->state, 
+			     s->function, &(s->root), &(s->interval));
 }
 
 void
@@ -78,7 +75,7 @@ gsl_root_fsolver_free (gsl_root_fsolver * s)
 const char *
 gsl_root_fsolver_name (const gsl_root_fsolver * s)
 {
-  return s->name;
+  return s->type->name;
 }
 
 double
@@ -92,5 +89,4 @@ gsl_root_fsolver_interval (const gsl_root_fsolver * s)
 {
   return s->interval;
 }
-
 

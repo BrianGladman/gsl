@@ -27,10 +27,7 @@ gsl_root_fdfsolver_alloc (const gsl_root_fdfsolver_type * T,
 			GSL_ENOMEM, 0);
     };
 
-  s->name = T->name ;
-  s->size = T->size ;
-  s->set = T->set ;
-  s->iterate = T->iterate ;
+  s->type = T ;
 
   gsl_root_fdfsolver_set (s, f, root); /* seed the generator */
 
@@ -43,13 +40,13 @@ gsl_root_fdfsolver_set (gsl_root_fdfsolver * s, gsl_function_fdf * f, double roo
   s->fdf = f;
   s->root = root;
 
-  return (s->set) (s->state, s->fdf, &(s->root));
+  return (s->type->set) (s->state, s->fdf, &(s->root));
 }
 
 int
 gsl_root_fdfsolver_iterate (gsl_root_fdfsolver * s)
 {
-  return (s->iterate) (s->state, s->fdf, &(s->root));
+  return (s->type->iterate) (s->state, s->fdf, &(s->root));
 }
 
 void
@@ -62,7 +59,7 @@ gsl_root_fdfsolver_free (gsl_root_fdfsolver * s)
 const char *
 gsl_root_fdfsolver_name (const gsl_root_fdfsolver * s)
 {
-  return s->name;
+  return s->type->name;
 }
 
 double

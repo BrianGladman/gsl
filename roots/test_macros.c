@@ -1,5 +1,8 @@
 #include <gsl_test.h>
 #include <gsl_math.h>
+#include <gsl_roots.h>
+
+#include "test.h"
 
 /* Test certain macros. */
 void
