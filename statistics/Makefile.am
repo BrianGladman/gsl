@@ -6,6 +6,18 @@ include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 noinst_PROGRAMS = test test_int
+noinst_HEADERS = mean_source.c \
+variance_source.c  \
+absdev_source.c \
+skew_source.c \
+kurtosis_source.c \
+pooled_variance_source.c \
+minmax_source.c \
+ttest_source.c \
+sort_source.c \
+median_source.c \
+percentiles_source.c \
+source.h
 
 TESTS = test test_int
 
@@ -16,7 +28,6 @@ test_DEPENDENCIES = libgslstatistics.a
 test_int_SOURCES = test_int.c test.h
 test_int_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_int_DEPENDENCIES = libgslstatistics.a
-
 
 libgslstatistics_a_SOURCES = \
 mean.c \

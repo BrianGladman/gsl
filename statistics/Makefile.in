@@ -75,6 +75,18 @@ include_HEADERS = gsl_statistics.h gsl_statistics_int.h
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 noinst_PROGRAMS = test test_int
+noinst_HEADERS = mean_source.c \
+variance_source.c  \
+absdev_source.c \
+skew_source.c \
+kurtosis_source.c \
+pooled_variance_source.c \
+minmax_source.c \
+ttest_source.c \
+sort_source.c \
+median_source.c \
+percentiles_source.c \
+source.h
 
 TESTS = test test_int
 
@@ -135,7 +147,7 @@ test_int_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
