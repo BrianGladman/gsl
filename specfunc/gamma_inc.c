@@ -147,7 +147,7 @@ gamma_inc_Q_asymp_unif(const double a, const double x, gsl_sf_result * result)
 
   gsl_sf_result ln_term;
   const int stat_ln = gsl_sf_log_1plusx_mx_e(eps, &ln_term);  /* log(1+eps) - eps */
-  const double eta  = eps * sqrt(-2.0*ln_term.val/(eps*eps));
+  const double eta  = GSL_SIGN(eps) * sqrt(-2.0*ln_term.val);
 
   gsl_sf_result erfc;
 
