@@ -3,6 +3,7 @@
 #include <gsl_integration.h>
 
 double f (double x) ;
+double g (double x) ;
 
 int main (void)
 {
@@ -58,7 +59,6 @@ int main (void)
     printf("qage: result = %.18g, abserr = %.18g, neval = %d\n",
 	   result, abserr, neval) ;
   }
-#endif
 
   {
     double alist[1000], blist[1000], rlist[1000], elist[1000];
@@ -72,13 +72,30 @@ int main (void)
 	   result, abserr, neval) ;
     printf("status=%d\n",status) ;
   }
+#endif
 
+  {
+    double alist[1000], blist[1000], rlist[1000], elist[1000];
+    size_t iord[1000] ;
+    size_t last;
+    result = 0 ; abserr=0; neval=0  ;
+    status = gsl_integration_qagse(g, 0.0, 1.0, 0, 1e-10, 10,
+			 alist, blist, rlist, elist, iord, &last,
+			 &result, &abserr, &neval) ;
+    printf("qagse: result = %.18g, abserr = %.18g, neval = %d\n",
+	   result, abserr, neval) ;
+    printf("status=%d\n",status) ;
+  }
 
   return 0 ;
 } 
 
 double f (double x) {
   return log(x)/sqrt(x) ;
+}
+
+double g (double x) {
+  return 1/sqrt(fabs(x*x + 2*x - 2)) ;
 }
 
 

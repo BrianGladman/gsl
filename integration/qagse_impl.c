@@ -244,7 +244,6 @@ gsl_integration_qagse_impl (double (*f)(double x),
 	 the nrmax-th largest error estimate (to be bisected next) */
       
       qpsrt(limit,i,&maxerr_index,&maxerr_value,elist,iord,&nrmax) ;
-
       
       if (errsum <= tolerance)
 	{
@@ -255,8 +254,11 @@ gsl_integration_qagse_impl (double (*f)(double x),
       if(error_type) 
 	break; 
 
-      if (i == limit)
-	break ;
+      if (i >= limit - 1)
+	{
+	  error_type = 1 ;
+	  break ;
+	}
 
       if(i == 1) /* set up variables on first iteration */
 	{
@@ -305,8 +307,8 @@ gsl_integration_qagse_impl (double (*f)(double x),
 	  int k, flag = 0 ;
 	  int id = nrmax ;
 	  int jupbnd ;
-	  if(i > (2+limit/2)) {   /* FIXME */
-	    abort () ;
+	  if(i > (2+limit/2)) {  
+	    printf("Loop hit limit = %d\n",limit) ;  /* FIXME */
 	    jupbnd = limit+3-i ;
 	  } else {
 	    jupbnd = i ;
