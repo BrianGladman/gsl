@@ -36,19 +36,39 @@ int test_sobol(void)
 
 int test_nied2(void)
 {
+  int status = 0;
   double v[3];
-  int i;
+  /* int i; */
 
-  gsl_qrng * g = gsl_qrng_alloc(gsl_qrng_niederreiter_2, 3);
-
-  for(i=0; i<16*1024; i++) {
-    gsl_qrng_get(g, v);
-    printf("%g %g %g\n", v[0], v[1], v[2]);
-  }
-
+  /* test in dimension 2 */
+  gsl_qrng * g = gsl_qrng_alloc(gsl_qrng_niederreiter_2, 2);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.75 || v[1] != 0.25 );
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.25 || v[1] != 0.75 );
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.625 || v[1] != 0.125 );
   gsl_qrng_free(g);
 
-  return 0;
+  /* test in dimension 3 */
+  g = gsl_qrng_alloc(gsl_qrng_niederreiter_2, 3);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.75 || v[1] != 0.25 || v[2] != 0.3125 );
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.25 || v[1] != 0.75 || v[2] != 0.5625 );
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  gsl_qrng_get(g, v);
+  status += ( v[0] != 0.625 || v[1] != 0.125 || v[2] != 0.6875 );
+  gsl_qrng_free(g);
+
+  return status;
 }
 
 
@@ -56,8 +76,8 @@ int main()
 {
   int status = 0;
 
-  status += test_sobol(); 
-  /* status += test_nied2(); */
+  /* status += test_sobol(); */
+  status += test_nied2();
 
   return status;
 }

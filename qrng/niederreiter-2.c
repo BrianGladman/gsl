@@ -12,7 +12,8 @@
 #define NIED2_BASE 2
 
 #define NIED2_MAX_DIMENSION 12
-#define NIED2_MAX_DEGREE 5
+#define NIED2_MAX_PRIM_DEGREE 5
+#define NIED2_MAX_DEGREE 50
 
 #define NIED2_BIT_COUNT 30
 #define NIED2_NBITS (NIED2_BIT_COUNT+1)
@@ -40,7 +41,7 @@ static const gsl_qrng_type nied2_type =
 const gsl_qrng_type * gsl_qrng_niederreiter_2 = &nied2_type;
 
 /* primitive polynomials in binary encoding */
-static const int primitive_poly[NIED2_MAX_DIMENSION+1][NIED2_MAX_DEGREE+1] =
+static const int primitive_poly[NIED2_MAX_DIMENSION+1][NIED2_MAX_PRIM_DEGREE+1] =
 {
   { 1, 0, 0, 0, 0, 0 },  /*  1               */
   { 0, 1, 0, 0, 0, 0 },  /*  x               */
@@ -97,7 +98,8 @@ static void poly_multiply(
   for(k=0; k<=pt_degree; k++) {
     int term = 0;
     for(j=0; j<=k; j++) {
-      term += NIED2_ADD(term, NIED2_MUL(pa[k-j], pb[j]));
+      const int conv_term = NIED2_MUL(pa[k-j], pb[j]);
+      term = NIED2_ADD(term, conv_term);
     }
     pt[k] = term;
   }
@@ -245,7 +247,7 @@ static void calculate_cj(nied2_state_t * ns, unsigned int dimension)
     int px_degree = poly_degree[poly_index];
     int pb_degree = 0;
 
-    for(k=0; k<px_degree; k++) {
+    for(k=0; k<=px_degree; k++) {
       px[k] = primitive_poly[poly_index][k];
       pb[k] = 0;
     }
@@ -307,7 +309,7 @@ static int nied2_init(void * state, unsigned int dimension)
 
 static int nied2_get(void * state, unsigned int dimension, double * v)
 {
-  static const double recip = 1.0/(double)(1 << NIED2_NBITS); /* 2^(-nbits) */
+  static const double recip = 1.0/(double)(1U << NIED2_NBITS); /* 2^(-nbits) */
   nied2_state_t * n_state = (nied2_state_t *) state;
   int r;
   int c;
