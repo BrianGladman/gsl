@@ -27,7 +27,7 @@ double gsl_pow_6(const double x);
 double gsl_pow_7(const double x);
 double gsl_pow_8(const double x);
 double gsl_pow_9(const double x);
-double gsl_pow_int(double x, const int n);
+double gsl_pow_int(double x, int n);
 
 double gsl_pow_2(const double x) { return x*x;   }
 double gsl_pow_3(const double x) { return x*x*x; }
