@@ -1,0 +1,95 @@
+%%comments:
+Copyright (C) 2000 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts. A copy of the license is included in the file COPYING.
+
+%%name: GSL
+
+%%short-description: GNU Scientific Library
+
+%%full-description: The GNU Scientific Library (GSL) is a collection
+of routines for numerical computing.  The routines are written from
+scratch by the GSL team in C, and are meant to present a modern
+Applications Programming Interface (API) for C programmers, while
+allowing wrappers to be written for very high level languages.
+
+%%category: 
+
+%%license: GPL
+%%license verified by: 
+%%license verified on: 
+
+%%maintainer: GSL Team <gsl-discuss@sources.redhat.com>
+
+%%updated: 
+
+%%keywords: scientific, numerical
+
+%%interface: 
+
+%%programs: 
+
+%%GNU: 
+
+%%web-page: http://sources.redhat.com/gsl/
+
+%%support:
+
+%%doc: English programmer reference in Texinfo
+
+%%developers: Mark Galassi <rosalia@lanl.gov>, Jim Davies
+<jimmyd@nis.lanl.gov>, James Theiler <jt@nis.lanl.gov>, Brian Gough
+<bjg@network-theory.co.uk>, Reid Priedhorsky <rp@lanl.gov>, Gerard
+Jungman <jungman@lanl.gov>, Michael Booth <booth@debian.org>, Fabrice
+Rossi <rossi@ufrmd.dauphine.fr>
+
+%%contributors: 
+
+%%sponsors: 
+
+%%source: ftp://sources.redhat.com/pub/gsl/
+
+%%debian:
+
+%%redhat:
+
+%%repository:
+
+%%related: 
+
+%%source-language: C
+
+%%supported-languages: C, C++
+
+%%use-requirements:
+
+%%build-prerequisites:
+
+%%weak-prerequisites: 
+
+%%source-prerequisites:
+
+%%version: 
+
+%%announce-list:
+
+%%announce-news:
+
+%%help-list: 
+
+%%help-news:
+
+%%dev-list: 
+
+%%dev-news:
+
+%%bug-list: 
+
+%%bug-database: 
+
+%%entry written by: 
+
