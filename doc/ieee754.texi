@@ -73,69 +73,93 @@ ld 1.20000000000000000004
 @end example
 
 
-
-control of rounding mode, precision, exception masks.
-
-    sqrt(2) = 1.414213562373095048801688724209698078569671...
-long double   1.4142135623730950488
-     double   1.414213562373095
-      float   1.4142135
-
-
 @section Setting up your IEEE environment
 
-The IEEE standard defines several @dfn{modes} which control the behavior
+The IEEE standard defines several @dfn{modes} for controlling the behavior
 of floating point operations. These modes specify three important
 properties of computer arithmetic: the direction used for rounding
 (e.g. round-up or round-down), the precision used for rounding
 intermediate results and how the program should handle arithmetic
 exceptions, such as division by zero.
 
-
-
-Unfortunately the standard does not specify an API for controlling these
-features -- each system has its own way of accessing them.  For example,
-the Linux kernel uses the function @code{__setfpucw}
+Unfortunately there is no universal API for controlling these features --
+each system has its own way of accessing them.  For example, the Linux
+kernel provides the function @code{__setfpucw}
 (@dfn{set-fpu-control-word}) to set IEEE modes, while HP-UX and Solaris
 use the functions @code{fpsetround} and @code{fpsetmask}. To help you
-write portable programs GSL allows you to put a platform-independent
-description of the modes you want in the environment variable
-@code{GSL_IEEE_MODE} and then attempts to take care of the necessary
-machine-specific initialization for you.
+write portable programs GSL allows you to specify modes in a
+platform-independent using the environment variable
+@code{GSL_IEEE_MODE}.  The library then takes care of all the necessary
+machine-specific initializations for you when you call the function
+@code{gsl_ieee_env_setup}.
 
 
 @deftypefun void gsl_ieee_env_setup ()
 This function reads the environment variable @code{GSL_IEEE_MODE} and
-attempts to set up the corresponding specified IEEE modes. The
-environment variable should have the form
+attempts to set up the corresponding specified IEEE modes.  The
+environment variable should be a list of keywords, separated by
+semicolons, like this,
 
 @display
 @code{GSL_IEEE_MODE} = "@var{keyword};@var{keyword};..."
 @end display
 @noindent
-where @var{keyword} is one of the following modes,
+where @var{keyword} is one of the following mode-names,
 
+@itemize @asis
+@item 
 @code{single-precision}
+@item 
 @code{double-precision}
-extended-precision
+@item 
+@code{extended-precision}
+@item 
+@code{round-to-nearest}
+@item 
+@code{round-down}
+@item 
+@code{round-up}
+@item 
+@code{round-to-zero}
+@item 
+@code{mask-all}
+@item 
+@code{mask-invalid}
+@item 
+@code{mask-denormalized}
+@item 
+@code{mask-division-by-zero}
+@item 
+@code{mask-overflow}
+@item 
+@code{mask-underflow}
+@item 
+@code{trap-inexact}
+@item 
+@code{trap-common}
+@end itemize
+
+If @code{GSL_IEEE_MODE} is empty or undefined then the function returns
+immediately and no attempt is made to change the system's IEEE
+mode. When the modes from @code{GSL_IEEE_MODE} are turned on the
+function prints a short message showing the new settings to remind you
+that the results of the program will be affected.
+
+If the requested modes are not supported by the platform being used then
+the function calls the error handler and returns an error code of
+@code{GSL_EUNSUP}.
 
 @end deftypefun
 
+To demonstrate the effects of different rounding modes consider
+following the program computes @math{e}, the base of natural logarithms,
+by summing a rapidly-decreasing series,
 
+@equation
+e = 1 + @{1 \over 2!@} + @{1 \over 3!@} + @{1 \over 4!@} + \dots 
+  = 2.71828182846...
+@end equation
 
-round-to-nearest
-round-down
-round-up
-round-to-zero
-mask-all
-mask-invalid
-mask-denormalized
-mask-division-by-zero
-mask-overflow
-trap-inexact
-trap-common
-
-For example,
         
 @example
 #include <math.h>
@@ -144,11 +168,10 @@ For example,
 
 int main (void)
 @{
-  double x = 1, sum = 0; 
-  double oldsum
+  double x = 1, oldsum = 0, sum = 0; 
   int i = 0 ;
 
-  gsl_ieee_env_setup () ;
+  gsl_ieee_env_setup () ; /* read GSL_IEEE_MODE */
 
   do 
     @{
@@ -162,20 +185,24 @@ int main (void)
     @}  
   while (sum != oldsum) ;
 
-}
+@}
 @end example
-
+@noindent
+Here are the results of running the program in @code{round-to-nearest}
+mode. This is the IEEE default so it isn't really necessary to specify
+it here,
 @example
 GSL_IEEE_MODE="round-to-nearest" ./a.out 
 i= 1 sum=1.000000000000000000 error=-1.71828
 i= 2 sum=2.000000000000000000 error=-0.718282
-i= 3 sum=2.500000000000000000 error=-0.218282
-i= 4 sum=2.666666666666666519 error=-0.0516152
 ....
 i=18 sum=2.718281828459045535 error=4.44089e-16
 i=19 sum=2.718281828459045535 error=4.44089e-16
 @end example
-
+@noindent
+After nineteen terms the sum converges to within @math{4 \times
+10^@{-16@}} of the correct value.  If we now change the rounding mode to
+@code{round-down} the final result is less accurate,
 
 @example
 GSL_IEEE_MODE="round-down" ./a.out 
@@ -183,9 +210,35 @@ i= 1 sum=1.000000000000000000 error=-1.71828
 ....
 i=19 sum=2.718281828459041094 error=-3.9968e-15
 @end example
+@noindent
+The result is about @math{4 \times 10^@{-15@}} below the correct value, an
+order of magnitude worse than the result obtained in the
+@code{round-to-nearest} mode.
+
+If we change to rounding mode to @code{round-up} then the series no
+longer converges (the reason is that although the terms in the series
+decrease rapidly when we add them to the sum the result is always
+rounded up, which is guaranteed to increases the sum by at least one
+tick). To avoid this problem we would need to use a safer converge
+criterion, such as @code{while (fabs(sum - oldsum) > epsilon)}, with a
+suitably chosen value of epsilon.
+
+Finally we can see the effect of computing the sum using
+single-precision rounding, in the default @code{round-to-nearest}
+mode. In this case the program still works with double precision numbers
+but the result of each floating point operation is internally rounded to
+single-precision accuracy by the CPU. This simulates the effect of
+writing the program using single-precision @code{float} variables
+instead of @code{double} variables. The iteration stops after about half
+the number of iterations and the final result is much less accurate,
 
 @example
 GSL_IEEE_MODE="single-precision" ./a.out 
 ....
 i=12 sum=2.718281984329223633 error=1.5587e-07
 @end example
+@noindent
+with an error of @math{O(10^@{-7@})}, which corresponds to single
+precision accuracy (about 1 part in @math{10^7}). Continuing the
+iterations further does not decrease the error because all the
+subsequent results are rounded to the same value.
