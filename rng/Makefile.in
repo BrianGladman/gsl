@@ -77,13 +77,15 @@ include_HEADERS = gsl_rng.h
 INCLUDES = -I$(srcdir)/..  -I$(srcdir)/../err
 
 libgslrng_a_SOURCES = gsl_rng.h rng.c default.c \
-cmrg.c slatec.c minstd.c mrg.c mt.c r250.c ran0.c \
+cmrg.c gfsr4.c slatec.c minstd.c mrg.c mt.c r250.c ran0.c \
 ran1.c ran2.c ran3.c rand.c random.c rand48.c randu.c \
 ranf.c ranlux.c ranmar.c \
 taus.c transputer.c tt.c uni.c uni32.c vax.c zuf.c
 
 test_SOURCES = test.c
-test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_LDADD = libgslrng.a ../err/libgslerr.a ../err/libgsltest.a \
+             ../utils/libutils.a
+
 TESTS = test
 check_PROGRAMS = test benchmark rng-dump
 
@@ -91,7 +93,8 @@ benchmark_SOURCES = benchmark.c
 benchmark_LDADD = libgslrng.a ../err/libgslerr.a
 
 rng_dump_SOURCES = rng-dump.c 
-rng_dump_LDADD = libgslrng.a ../err/libgslerr.a
+rng_dump_LDADD = libgslrng.a ../err/libgslerr.a \
+             ../utils/libutils.a
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -103,19 +106,21 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgslrng_a_LIBADD = 
-libgslrng_a_OBJECTS =  rng.o default.o cmrg.o slatec.o minstd.o mrg.o \
-mt.o r250.o ran0.o ran1.o ran2.o ran3.o rand.o random.o rand48.o \
+libgslrng_a_OBJECTS =  rng.o default.o cmrg.o gfsr4.o slatec.o minstd.o \
+mrg.o mt.o r250.o ran0.o ran1.o ran2.o ran3.o rand.o random.o rand48.o \
 randu.o ranf.o ranlux.o ranmar.o taus.o transputer.o tt.o uni.o uni32.o \
 vax.o zuf.o
 AR = ar
 test_OBJECTS =  test.o
-test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a
+test_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a ../err/libgsltest.a \
+../utils/libutils.a
 test_LDFLAGS = 
 benchmark_OBJECTS =  benchmark.o
 benchmark_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a
 benchmark_LDFLAGS = 
 rng_dump_OBJECTS =  rng-dump.o
-rng_dump_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a
+rng_dump_DEPENDENCIES =  libgslrng.a ../err/libgslerr.a \
+../utils/libutils.a
 rng_dump_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
@@ -130,12 +135,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/benchmark.P .deps/cmrg.P .deps/default.P \
-.deps/minstd.P .deps/mrg.P .deps/mt.P .deps/r250.P .deps/ran0.P \
-.deps/ran1.P .deps/ran2.P .deps/ran3.P .deps/rand.P .deps/rand48.P \
-.deps/random.P .deps/randu.P .deps/ranf.P .deps/ranlux.P .deps/ranmar.P \
-.deps/rng-dump.P .deps/rng.P .deps/slatec.P .deps/taus.P .deps/test.P \
-.deps/transputer.P .deps/tt.P .deps/uni.P .deps/uni32.P .deps/vax.P \
-.deps/zuf.P
+.deps/gfsr4.P .deps/minstd.P .deps/mrg.P .deps/mt.P .deps/r250.P \
+.deps/ran0.P .deps/ran1.P .deps/ran2.P .deps/ran3.P .deps/rand.P \
+.deps/rand48.P .deps/random.P .deps/randu.P .deps/ranf.P .deps/ranlux.P \
+.deps/ranmar.P .deps/rng-dump.P .deps/rng.P .deps/slatec.P .deps/taus.P \
+.deps/test.P .deps/transputer.P .deps/tt.P .deps/uni.P .deps/uni32.P \
+.deps/vax.P .deps/zuf.P
 SOURCES = $(libgslrng_a_SOURCES) $(test_SOURCES) $(benchmark_SOURCES) $(rng_dump_SOURCES)
 OBJECTS = $(libgslrng_a_OBJECTS) $(test_OBJECTS) $(benchmark_OBJECTS) $(rng_dump_OBJECTS)
 
