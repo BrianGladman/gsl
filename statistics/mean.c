@@ -287,7 +287,67 @@ double ddttest (double *array1, double *array2, int size1, int size2)
   t = (mean1-mean2)/(sqrt(pv*((1.0/size1)+(1.0/size2))));
   
   return t;
-
 }
 
+int imax (int *array, int size)
+{
+  
+  /* finds the highest member of an integer array */
+  int max, i;
+  
+  max = array[0];
+  
+  for (i=0; i < size; i++){
+    if (array[i] > max) 
+	      max = array[i];
+  }
+  return max;
+}
+
+double dmax (double *array, int size)
+{
+  
+  /* finds the highest member of an integer array */
+  double max;
+  int i;
+
+  max = array[0];
+  
+  for (i=0; i < size; i++){
+    if (array[i] > max)
+	      max = array[i];
+  }
+  return max;
+}
+
+int imin (int *array, int size)
+{
+  
+  /* finds the highest member of an integer array */
+  int min, i;
+
+  min = array[0];
+  
+  for (i=0; i < size; i++){
+    if (array[i] < min)
+	      min = array[i];
+  }
+  return min;
+}
+
+double dmin (double *array, int size)
+{
+  
+  /* finds the highest member of an integer array */
+  double min;
+  int i;
+
+  min = array[0];
+  
+  for (i=0; i < size; i++){
+    if (array[i] <min)
+	      min = array[i];
+  }
+  return min;
+}
 

@@ -12,7 +12,7 @@ int main()
   double groupa[14];
   double groupb[14];
   double sd1, var1, pv, mean1, t;
-  int i; 
+  int i, maximum, minumum; 
   double lkj;
 
 
@@ -208,10 +208,10 @@ int main()
   
   sd1 = dest_sd(groupa, 14);
   if (sd1 > .034  && sd1 < .036){
-    printf("success: iest_sd\n");
+    printf("success: dest_sd\n");
   }
   else{
-    printf("ERROR: iest_sd (calculated %f)\n", sd1);
+    printf("ERROR: dest_sd (calculated %f)\n", sd1);
   }
   
   sd1 = 0;
@@ -262,7 +262,57 @@ int main()
   }
   
   t = 0;
+
+  /* test imax */
   
+  maximum = imax(groupone, 20);
+  if (maximum == 22){
+    printf("success: imax (%d)\n", maximum);
+  }
+  else{
+    printf("ERROR: imax (calculated %d)\n", maximum);
+  }
+  
+  maximum = 0;
+
+  /* test dmax */
+  
+  t = dmax(groupa, 14);
+  if (t > 0.132 && t < 0.134){
+    printf("success: dmax (%f)\n", t);
+  }
+  else{
+    printf("ERROR: dmax (calculated %f)\n", t);
+  }
+  
+  t = 0;
+
+  /* test imin */
+  
+  minumum = imin(groupone, 20);
+  if (minumum == 8){
+    printf("success: imin (%d)\n", minumum);
+  }
+  else{
+    printf("ERROR: imin (calculated %d)\n", minumum);
+  }
+  
+  minumum = 0;
+
+  /* test dmin */
+  
+  t = dmin(groupa, 14);
+  if (t > 0.023 && t < 0.025){
+    printf("success: dmin (%f)\n", t);
+  }
+  else{
+    printf("ERROR: dmin (calculated %f)\n", t);
+  }
+  
+  t = 0;
+
+
+
   return 0;
 }  
 

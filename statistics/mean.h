@@ -19,4 +19,11 @@ double ddpvariance(double *array1, double *array2, int size1, int size2);
 double iittest (int *array1, int *array2, int size1, int size2);
 double ddttest (double *array1, double *array2, int size1, int size2);
 
+int imax (int *array, int size);
+double dmax (double *array, int size);
+
+int imin (int *array, int size);
+double dmin (double *array, int size);
+
+
 
