@@ -37,6 +37,14 @@
 
 __BEGIN_DECLS
 
+
+int
+gsl_multifit_linear (const gsl_matrix * X,
+                     const gsl_vector * y,
+                     gsl_vector * c,
+                     gsl_matrix * cov,
+                     double * chisq);
+
 int
 gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
