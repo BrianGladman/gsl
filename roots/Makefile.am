@@ -1,5 +1,4 @@
 # -*-makefile-*-
-# $Id$
 
 lib_LIBRARIES = libgslroots.a 
 

@@ -1,5 +1,3 @@
-### $Id$
-
 #####################################################################
 
 ## I have removed the "automagic" making of Makefile.am from
