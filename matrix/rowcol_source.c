@@ -19,15 +19,14 @@ FUNCTION (gsl_matrix, copy_row) (const TYPE (gsl_matrix) * m,
 
   {
     ATOMIC *row_data = m->data + MULTIPLICITY * i * row_length;
+    const size_t stride = v->stride ;
     size_t j;
 
     for (j = 0; j < MULTIPLICITY * row_length; j++)
       {
-	v->data[j] = row_data[j];
+	v->data[stride * j] = row_data[j];
       }
   }
-
-  v->stride = 1;
 
   return 0;
 }
@@ -54,6 +53,7 @@ FUNCTION (gsl_matrix, copy_col) (const TYPE (gsl_matrix) * m,
 
   {
     ATOMIC *column_data = m->data + MULTIPLICITY * j;
+    const size_t stride = v->stride ;
     size_t i;
 
     for (i = 0; i < row_length; i++)
@@ -61,7 +61,7 @@ FUNCTION (gsl_matrix, copy_col) (const TYPE (gsl_matrix) * m,
 	int k;
 	for (k = 0; k < MULTIPLICITY; k++)
 	  {
-	    v->data[MULTIPLICITY * j + k] =
+	    v->data[stride * MULTIPLICITY * j + k] =
 	      column_data[MULTIPLICITY * i * row_length + k];
 	  }
       }
@@ -94,11 +94,12 @@ FUNCTION (gsl_matrix, set_row) (TYPE (gsl_matrix) * m,
   {
     const ATOMIC *v_data = v->data;
     ATOMIC *row_data = m->data + MULTIPLICITY * i * row_length;
+    const size_t stride = v->stride ;
     size_t j;
 
     for (j = 0; j < MULTIPLICITY * row_length; j++)
       {
-	row_data[j] = v_data[j];
+	row_data[j] = v_data[stride * j];
       }
   }
 
@@ -127,11 +128,12 @@ FUNCTION (gsl_matrix, set_col) (TYPE (gsl_matrix) * m,
   {
     const ATOMIC *v_data = v->data;
     ATOMIC *column_data = m->data + MULTIPLICITY * j;
+    const size_t stride = v->stride ;
     size_t i;
 
     for (i = 0; i < column_length; i++)
       {
-	column_data[MULTIPLICITY * i * row_length] = v_data[i];
+	column_data[MULTIPLICITY * i * row_length] = v_data[stride * i];
       }
   }
 
