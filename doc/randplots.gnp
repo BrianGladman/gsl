@@ -103,7 +103,7 @@ p(x)=gamma((v1+v2)/2.0)*v1**(v1/2.0)*v2**(v2/2.0)\
 	/gamma(v1/2.0)/gamma(v2/2.0) * \
 	x**(v1/2.0-1)*(v2+v1*x)**-(v1/2.0+v2/2.0)
 plot v1=1.0, v2=1.0, p(x) title "$\nu_1=1, \nu_2=1$", \
-      v1=3.0, v2=1.0, p(x) title "$\nu_1=1, \nu_2=2$"
+      v1=3.0, v2=1.0, p(x) title "$\nu_1=3, \nu_2=2$"
 
 set xrange [0:5]
 set output "rand-flat.tex"
@@ -209,7 +209,7 @@ set output "rand-exppow.tex"
 set title "Exponential Power Distribution"
 p(x)=exp(-(abs(x/a))**b)/2/a/gamma(1.0+1.0/b)
 plot a=1.0, b=2.5, p(x) title "$a=1, b=2.5$", \
-	a=1.0, b=0.5, p(x) title "$a=2, b=0.5$"
+	a=1.0, b=0.5, p(x) title "$a=1, b=0.5$"
 
 set xrange [-5:10]
 set yrange [0:0.2]
