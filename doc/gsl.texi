@@ -428,10 +428,28 @@ analysis of Psychological experiment data.
 
 [contributed by Mark Galassi]
 
-@deftypefn gsl_newton1D (double (*fn)(double x), double (*dfn)(double x), double guess)
+There is a program @code{rtest} which does sample runs of many of these
+routines.
+
+@subsection Newton's method
+
+This is a half-assed implementation of Newton's method, meant mostly as
+an example for the GSL coding conventions.
+
+The epsilon value is static, and can be set and verified with:
+
+@deftypefn {Root finding} void gsl_set_newton_epsilon (double new_val)
+@deftypefnx {Root finding} double gsl_get_newton_epsilon ()
+Sets and gets the epsilon value used in Newton's method.
+@end deftypefn
+
+
+@deftypefn {Root finding} double gsl_newton1D (double (*fn)(double x), double (*dfn)(double x), double guess)
 Uses Newton's method to find a root of the function @var{fn}, starting
 at @var{guess}.  User has to supply both the function @var{fn} and its
 first derivative @var{dfn}.
+
+Example: @code{gsl_newton1D(sin, cos, 2.3)}
 @end deftypefn
 
 
