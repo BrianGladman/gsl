@@ -20,8 +20,8 @@ float  gsl_blas_raw_sdsdot (size_t N,
                             float alpha,
                             const float X[], int incX,
                             const float Y[], int incY)
-{ /* FIXME: is this right ?? */
-  float r = 0.0;
+{
+  float r = alpha;
   size_t n;
   size_t i = 0;
   size_t j = 0;
@@ -30,7 +30,7 @@ float  gsl_blas_raw_sdsdot (size_t N,
     i += incX;
     j += incY;
   }
-  return r + alpha;
+  return r;
 }
 
 double gsl_blas_raw_dsdot (size_t N,
@@ -108,16 +108,18 @@ void gsl_blas_raw_cdotc (size_t N,
                          gsl_complex_packed_float dotc)
 {
   float rr = 0.0;
+  float ri = 0.0;
   size_t n;
   size_t i;
   size_t j;
   for(n=0; n<N; n++) {
     rr += REAL(X, incX, i)*REAL(Y, incY, j) + IMAG(X, incX, i)*IMAG(Y, incY, j);
+    ri += REAL(X, incX, i)*IMAG(Y, incY, j) - IMAG(X, incX, i)*REAL(Y, incY, j);
     i += incX;
     j += incY;
   }
   REAL0(dotc) = rr;
-  IMAG0(dotc) = 0.0;
+  IMAG0(dotc) = ri;
 }
 
 void gsl_blas_raw_zdotu (size_t N,
@@ -125,8 +127,8 @@ void gsl_blas_raw_zdotu (size_t N,
                          const gsl_complex_packed_array Y, int incY,
                          gsl_complex_packed dotu)
 {
-  float rr = 0.0;
-  float ri = 0.0;
+  double rr = 0.0;
+  double ri = 0.0;
   size_t n;
   size_t i;
   size_t j;
@@ -146,65 +148,115 @@ void gsl_blas_raw_zdotc (size_t N,
                          gsl_complex_packed dotc)
 {
   double rr = 0.0;
+  double ri = 0.0;
   size_t n;
   size_t i;
   size_t j;
   for(n=0; n<N; n++) {
     rr += REAL(X, incX, i)*REAL(Y, incY, j) + IMAG(X, incX, i)*IMAG(Y, incY, j);
+    ri += REAL(X, incX, i)*IMAG(Y, incY, j) - IMAG(X, incX, i)*REAL(Y, incY, j);
     i += incX;
     j += incY;
   }
   REAL0(dotc) = rr;
-  IMAG0(dotc) = 0.0;
+  IMAG0(dotc) = ri;
 }
 
 
 float  gsl_blas_raw_snrm2  (size_t N, const float  X[], int incX)
 {
-  float r = 0.0;
+  float scale = 0.0;
+  float ssq   = 1.0;
   size_t n;
   size_t i;
   for(n=0; n<N; n++) {
-    r += X[i]*X[i];
+    float axi = fabs(X[i]);
+    if(scale < axi) {
+      ssq   = 1.0 + ssq*(scale/axi)*(scale/axi);
+      scale = axi;
+    }
+    else {
+      ssq += (axi/scale)*(axi/scale);
+    }
     i += incX;
   }
-  return sqrt(r);
+  return scale * sqrt(ssq);
 }
 
 double gsl_blas_raw_dnrm2  (size_t N, const double X[], int incX)
 {
-  double r = 0.0;
+  double scale = 0.0;
+  double ssq   = 1.0;
   size_t n;
   size_t i;
   for(n=0; n<N; n++) {
-    r += X[i]*X[i];
+    double axi = fabs(X[i]);
+    if(scale < axi) {
+      ssq   = 1.0 + ssq*(scale/axi)*(scale/axi);
+      scale = axi;
+    }
+    else {
+      ssq += (axi/scale)*(axi/scale);
+    }
     i += incX;
   }
-  return sqrt(r);
+  return scale * sqrt(ssq);
 }
 
 float  gsl_blas_raw_scnrm2 (size_t N, const gsl_complex_packed_array_float X, int incX)
 {
-  float r = 0.0;
+  float scale = 0.0;
+  float ssq   = 1.0;
   size_t n;
   size_t i;
   for(n=0; n<N; n++) {
-    r += REAL(X, incX, i)*REAL(X, incX, i) + IMAG(X, incX, i)*IMAG(X, incX, i);
+    float axi = fabs(REAL(X,incX,i));
+    float ayi = fabs(IMAG(X,incX,i));
+    if(scale < axi) {
+      ssq   = 1.0 + ssq*(scale/axi)*(scale/axi);
+      scale = axi;
+    }
+    else {
+      ssq += (axi/scale)*(axi/scale);
+    }
+    if(scale < ayi) {
+      ssq   = 1.0 + ssq*(scale/ayi)*(scale/ayi);
+      scale = axi;
+    }
+    else {
+      ssq += (ayi/scale)*(ayi/scale);
+    }
     i += incX;
   }
-  return sqrt(r);
+  return scale * sqrt(ssq);
 }
 
 double gsl_blas_raw_dznrm2 (size_t N, const gsl_complex_packed_array X, int incX)
 {
-  double r = 0.0;
+  double scale = 0.0;
+  double ssq   = 1.0;
   size_t n;
   size_t i;
   for(n=0; n<N; n++) {
-    r += REAL(X, incX, i)*REAL(X, incX, i) + IMAG(X, incX, i)*IMAG(X, incX, i);
+    double axi = fabs(REAL(X,incX,i));
+    double ayi = fabs(IMAG(X,incX,i));
+    if(scale < axi) {
+      ssq   = 1.0 + ssq*(scale/axi)*(scale/axi);
+      scale = axi;
+    }
+    else {
+      ssq += (axi/scale)*(axi/scale);
+    }
+    if(scale < ayi) {
+      ssq   = 1.0 + ssq*(scale/ayi)*(scale/ayi);
+      scale = axi;
+    }
+    else {
+      ssq += (ayi/scale)*(ayi/scale);
+    }
     i += incX;
   }
-  return sqrt(r);
+  return scale * sqrt(ssq);
 }
 
 float  gsl_blas_raw_sasum (size_t N, const float X[], int incX)
@@ -382,8 +434,8 @@ void gsl_blas_raw_zswap (size_t N,
   size_t i;
   size_t j;
   for(n=0; n<N; n++) {
-    float tmpr = REAL(X, incX, i);
-    float tmpi = IMAG(X, incX, i);
+    double tmpr = REAL(X, incX, i);
+    double tmpi = IMAG(X, incX, i);
     REAL(X, incX, i) = REAL(Y, incY, j);
     IMAG(X, incX, i) = IMAG(Y, incY, j);
     REAL(Y, incY, j) = tmpr;
@@ -456,6 +508,30 @@ void gsl_blas_raw_saxpy (size_t N,
                          const float X[], int incX,
                          float Y[], int incY)
 {
+  size_t i;
+  
+  if(incX == 1 && incY == 1) {
+    int m = N % 4;
+    for(i=0; i<m; i++) {
+      Y[i] += alpha * X[i];
+    }
+    for(i=m; i<N-3; i += 4) {
+      Y[i]   += alpha*X[i];
+      Y[i+1] += alpha*X[i+1];
+      Y[i+2] += alpha*X[i+2];
+      Y[i+3] += alpha*X[i+3];
+    }
+  }
+  else {
+    size_t ix = 0;
+    size_t iy = 0;
+    
+    for(i=0; i<N; i++) {
+      Y[iy] += alpha*X[ix];
+      ix += incX;
+      iy += incY;
+    }
+  }
 }
 
 
@@ -484,6 +560,7 @@ void gsl_blas_raw_zaxpy (size_t N,
 
 void gsl_blas_raw_srotg (float a[], float b[], float c[], float s[])
 {
+  
 }
 void gsl_blas_raw_drotg (double a[], double b[], double c[], double s[])
 {
@@ -493,57 +570,124 @@ void gsl_blas_raw_srotmg (float d1[], float d2[], float b1[], float b2, float P[
 {
 }
 void gsl_blas_raw_drotmg (double d1[], double d2[], double b1[],
-                             double b2, double P[])
+                          double b2, double P[])
 {
 }
 
 
 void gsl_blas_raw_srot (size_t N,
-                           float X[], int incX,
-                           float Y[], int incY,
-                           float c, float s)
+                        float X[], int incX,
+                        float Y[], int incY,
+                        float c, float s)
 {
+  size_t i;
+  size_t ix = 0;
+  size_t iy = 0;
+  for(i=0; i<N; i++) {
+    float x = X[ix];
+    float y = Y[iy];
+    X[ix] =  c*x + s*y;
+    Y[iy] = -s*x + c*y;
+    ix += incX;
+    iy += incY;
+  }
 }
-
 void gsl_blas_raw_drot (size_t N,
-                           double X[], int incX,
-                           double Y[], int incY,
-                           const double c, const double s)
+                        double X[], int incX,
+                        double Y[], int incY,
+                        const double c, const double s)
 {
+  size_t i;
+  size_t ix = 0;
+  size_t iy = 0;
+  for(i=0; i<N; i++) {
+    double x = X[ix];
+    double y = Y[iy];
+    X[ix] =  c*x + s*y;
+    Y[iy] = -s*x + c*y;
+    ix += incX;
+    iy += incY;
+  }
 }
 
 void gsl_blas_raw_srotm (size_t N,
-                            float X[], int incX,
-                            float Y[], int incY,
-                            const float P[])
+                         float X[], int incX,
+                         float Y[], int incY,
+                         const float P[])
 {
 }
 
 void gsl_blas_raw_drotm (size_t N,
-                            double X[], int incX,
-                            double Y[], int incY,
-                            const double P[])
+                         double X[], int incX,
+                         double Y[], int incY,
+                         const double P[])
 {
 }
 
 
 void gsl_blas_raw_sscal  (size_t N, float  alpha, float  X[], int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    X[ix] *= alpha;
+    ix += incX;
+  }
 }
 void gsl_blas_raw_dscal  (size_t N, double alpha, double X[], int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    X[ix] *= alpha;
+    ix += incX;
+  }
 }
+
 void gsl_blas_raw_cscal  (size_t N, const gsl_complex_packed_float alpha, gsl_complex_packed_array_float X, int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    float tmpR = REAL(X,incX,ix);
+    float tmpI = IMAG(X,incX,ix);
+    REAL(X,incX,ix) = tmpR*REAL0(alpha) - tmpI*IMAG0(alpha);
+    IMAG(X,incX,ix) = tmpR*IMAG0(alpha) + tmpI*REAL0(alpha);
+    ix += incX;
+  }
 }
 void gsl_blas_raw_zscal  (size_t N, const gsl_complex_packed alpha, gsl_complex_packed_array X, int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    float tmpR = REAL(X,incX,ix);
+    float tmpI = IMAG(X,incX,ix);
+    REAL(X,incX,ix) = tmpR*REAL0(alpha) - tmpI*IMAG0(alpha);
+    IMAG(X,incX,ix) = tmpR*IMAG0(alpha) + tmpI*REAL0(alpha);
+    ix += incX;
+  }
 }
+
 void gsl_blas_raw_csscal (size_t N, float  alpha, gsl_complex_packed_array_float X, int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    REAL(X,incX,ix) *= alpha;
+    IMAG(X,incX,ix) *= alpha;
+    ix += incX;
+  }
 }
 void gsl_blas_raw_zdscal (size_t N, double alpha, gsl_complex_packed_array X, int incX)
 {
+  size_t n;
+  size_t ix = 0;
+  for(n=0; n<N; n++) {
+    REAL(X,incX,ix) *= alpha;
+    IMAG(X,incX,ix) *= alpha;
+    ix += incX;
+  }
 }
 
 
@@ -567,21 +711,47 @@ void FUNC(gsl_blas_raw_sgemv) (CBLAS_TRANSPOSE TransA,
                                float Y[], int incY)
 {
   size_t i, j;
+  size_t ix, iy;
+  size_t lenX, lenY;
+  
+  if(TransA == CblasNoTrans) {
+    lenX = N;
+    lenY = M;
+  }
+  else {
+    lenX = M;
+    lenY = N;
+  }
+
+  iy = 0;
+  for(i=0; i<lenY; i++) {
+    Y[iy] *= beta;
+    iy += incY;
+  }
 
   if(TransA == CblasNoTrans) {
-    for(i=0; i<M; i++) {
-      for(j=0; j<N; j++) {
-        Y[i * incY] = alpha * A[MACCESS(lda, i ,j)] * X[j * incX]
-	              + beta * Y[i * incY];
+    iy = 0;
+    for(i=0; i<lenY; i++) {
+      float dot = 0.0;
+      ix = 0;
+      for(j=0; j<lenX; j++) {
+        dot += X[ix]*A[lda*i + j];
+        ix += incX;
       }
+      Y[iy] += alpha * dot;
+      iy += incY;
     }
   }
-  else {  /* CBlasTrans || CBlasConjTrans */
-    for(i=0; i<N; i++) {
-      for(j=0; j<M; j++) {
-        Y[i * incY] = alpha * A[MACCESS(lda, j ,i)] * X[j * incX]
-	              + beta * Y[i * incY];
+  else {
+    ix = 0;
+    for(j=0; j<lenX; j++) {
+      float tmp = alpha * X[ix];
+      iy = 0;
+      for(i=0; i<lenY; i++) {
+        Y[iy] += A[lda*j + i] * tmp;
+	iy += incY;
       }
+      ix += incX;
     }
   }
 }
@@ -662,11 +832,13 @@ void FUNC(gsl_blas_raw_zgbmv) (CBLAS_TRANSPOSE TransA,
 /* TRMV */
 
 void FUNC(gsl_blas_raw_strmv) (CBLAS_UPLO Uplo,
-                               CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                               CBLAS_TRANSPOSE TransA,
+                               CBLAS_DIAG Diag,
                                size_t N,
                                const float A[], int lda,
                                float X[], int incX)
 {
+
 }
 
 void FUNC(gsl_blas_raw_dtrmv) (CBLAS_UPLO Uplo,
@@ -878,6 +1050,54 @@ void FUNC(gsl_blas_raw_ssymv) (CBLAS_UPLO Uplo,
                                float beta,
                                float Y[], int incY)
 {
+  size_t i, j;
+  size_t ix, iy, jx, jy;
+
+  iy = 0;
+  for(i=0; i<N; i++) {
+    Y[iy] *= beta;
+    iy += incY;
+  }
+
+  if(Uplo == CblasUpper) {
+    jx = 0;
+    jy = 0;
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha * X[jx];
+      float tmp2 = 0.0;
+      Y[jy] += tmp1*A[lda*j + j];
+      ix = jx;
+      iy = jy;
+      for(i=j+1; i<N; i++) {
+        ix += incX;
+        iy += incY;
+        Y[iy] += tmp1 * A[lda*j + i];
+	tmp2  += A[lda*j + i] * X[ix];
+      }
+      Y[jy] += alpha * tmp2;
+      jx += incX;
+      jy += incY;
+    }
+  }
+  else {
+    jx = 0;
+    jy = 0;
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha * X[jx];
+      float tmp2 = 0.0;
+      ix = 0;
+      iy = 0;
+      for(i=0; i<j; i++) {
+        Y[iy] += tmp1 * A[lda*j + i];
+	tmp2  += A[lda*j + i] * X[ix];
+	ix += incX;
+        iy += incY;
+      }
+      Y[jy] += tmp1*A[lda*j + j] + alpha * tmp2;
+      jx += incX;
+      jy += incY;
+    }
+  }
 }
 
 void FUNC(gsl_blas_raw_dsymv) (CBLAS_UPLO Uplo,
@@ -901,6 +1121,37 @@ void FUNC(gsl_blas_raw_ssbmv) (CBLAS_UPLO Uplo,
                                float beta,
                                float Y[], int incY)
 {
+  size_t i, j, ell;
+  size_t ix, iy, jx, jy;
+  size_t kp1 = K + 1;
+
+  iy=0;
+  for(i=0; i<N; i++) {
+    Y[iy] *= beta;
+    iy += incY;
+  }
+  
+  jx = 0;
+  jy = 0;
+  for(j=0; j<N; j++) {
+    float tmp1 = alpha * X[jx];
+    float tmp2 = 0.0;
+    ix = 0;
+    iy = 0;
+    ell = kp1 - j;
+    for(i=locMAX(0, j-K); i<j; i++) {
+      float ajli = A[lda*j + ell+i];
+      Y[iy] += tmp1 * ajli;
+      tmp2  += ajli * X[ix];
+      ix += incX;
+      iy += incY;
+    }
+    Y[jy] += tmp1*A[lda*j + kp1] + alpha*tmp2;
+    jx += incX;
+    jy += incY;
+  }
+  
+  /* FIXME */
 }
 
 void FUNC(gsl_blas_raw_dsbmv) (CBLAS_UPLO Uplo,
@@ -923,6 +1174,59 @@ void FUNC(gsl_blas_raw_sspmv) (CBLAS_UPLO Uplo,
                                float beta,
                                float Y[], int incY)
 {
+  size_t i, j, k;
+  size_t ix, iy, jx, jy;
+  size_t kk = 0;
+
+  iy=0;
+  for(i=0; i<N; i++) {
+    Y[iy] *= beta;
+    iy += incY;
+  }
+  
+  if(Uplo == CblasUpper) {
+    jx = 0;
+    jy = 0;
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha*X[jx];
+      float tmp2 = 0.0;
+      ix = 0;
+      iy = 0;
+      for(k=kk; k<kk+j-1; k++) {
+        float apk = Ap[k];
+        Y[iy] += tmp1 * apk;
+        tmp2  += apk * X[ix];
+        ix += incX;
+        iy += incY;
+      }
+      Y[jy] += tmp1*Ap[kk + j - 1] + alpha*tmp2;
+      jx += incX;
+      jy += incY;
+      kk += j;
+    }
+  }
+  else {
+    jx = 0;
+    jy = 0;
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha*X[jx];
+      float tmp2 = 0.0;
+      Y[jy] += tmp1*Ap[kk];
+      ix = jx;
+      iy = jy;
+      for(k=kk+1; k<=kk+N-j; k++) {
+        float apk = Ap[k];
+        ix += incX;
+	iy += incY;
+	Y[iy] += tmp1 * apk;
+	tmp2  += apk * X[ix];
+      }
+      Y[jy] += alpha*tmp2;
+      jx += incX;
+      jy += incY;
+      kk += N - j + 1;
+    }
+  }
 }
 
 void FUNC(gsl_blas_raw_dspmv) (CBLAS_UPLO Uplo,
@@ -943,6 +1247,19 @@ void FUNC(gsl_blas_raw_sger) (size_t M, size_t N,
                               const float Y[], int incY,
                               float A[], int lda)
 {
+  size_t i, j;
+  size_t ix, jy;
+  
+  jy = 0;
+  for(j=0; j<M; j++) {
+    float tmp = alpha * Y[jy];
+    ix = 0;
+    for(i=0; i<N; i++) {
+      A[lda*j + i] += X[ix]*tmp;
+      ix += incX;
+    }
+    jy += incY;
+  }
 }
 
 void FUNC(gsl_blas_raw_dger) (size_t M, size_t N,
@@ -962,6 +1279,33 @@ void FUNC(gsl_blas_raw_ssyr) (CBLAS_UPLO Uplo,
                               const float X[], int incX,
                               float A[], int lda)
 {
+  size_t i, j;
+  size_t ix, jx;
+
+  if(Uplo == CblasUpper) {
+    jx = 0;
+    for(j=0; j<N; j++) {
+      float tmp = alpha * X[jx];
+      ix = jx;
+      for(i=j; i<N; i++) {
+        A[lda*j + i] += X[ix] * tmp;
+        ix += incX;
+      }
+      jx += incX;
+    }
+  }
+  else {
+    jx = 0;
+    for(j=0; j<N; j++) {
+      float tmp = alpha * X[jx];
+      ix = 0;
+      for(i=0; i<j; i++) {
+        A[lda*j + i] += X[ix]*tmp;
+        ix += incX;
+      }
+      jx += incX;
+    }
+  }
 }
 
 void FUNC(gsl_blas_raw_dsyr) (CBLAS_UPLO Uplo,
@@ -981,6 +1325,36 @@ void FUNC(gsl_blas_raw_sspr) (CBLAS_UPLO Uplo,
                               const float X[], int incX,
                               float Ap[])
 {
+  size_t i, j, k;
+  size_t ix, iy, jx, jy, kk;
+  
+  kk = 0;
+
+  if(Uplo == CblasUpper) {
+    jx = 0;
+    for(j=0; j<N; j++) {
+      float tmp = alpha * X[jx];
+      ix = 0;
+      for(k=kk; k<kk+j; k++) {
+        Ap[k] += X[ix] * tmp;
+        ix += incX;
+      }
+      jx += incX;
+      kk += j;
+    }
+  }
+  else {
+    jx = 0;
+    for(j=0; j<N; j++) {
+      float tmp = alpha * X[jx];
+      ix = jx;
+      for(k=kk; k<=kk+N-j; k++) {
+        Ap[k] += X[ix]*tmp;
+      }
+      jx += incX;
+      kk += N - j + 1;
+    }
+  }
 }
 
 void FUNC(gsl_blas_raw_dspr) (CBLAS_UPLO Uplo,
@@ -1001,6 +1375,42 @@ void FUNC(gsl_blas_raw_ssyr2) (CBLAS_UPLO Uplo,
                                const float Y[], int incY,
                                float A[], int lda)
 {
+  size_t i, j;
+  size_t ix, iy, jx, jy;
+  
+  jx = 0;
+  jy = 0;
+  
+  if(Uplo == CblasUpper) {
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha * Y[jy];
+      float tmp2 = alpha * X[jx];
+      ix = jx;
+      iy = jy;
+      for(i=j; i<N; i++) {
+        A[lda*j + i] += X[ix]*tmp1 + Y[iy]*tmp2;
+	ix += incX;
+	iy += incY;
+      }
+      jx += incX;
+      jy += incY;
+    }
+  }
+  else {
+    for(j=0; j<N; j++) {
+      float tmp1 = alpha * Y[jy];
+      float tmp2 = alpha * X[jx];
+      ix = 0;
+      iy = 0;
+      for(i=0; i<j; i++) {
+        A[lda*j + i] += X[ix]*tmp1 + Y[iy]*tmp2;
+        ix += incX;
+        iy += incY;
+      }
+      jx += incX;
+      jy += incY;
+    }
+  }
 }
 
 void FUNC(gsl_blas_raw_dsyr2) (CBLAS_UPLO Uplo,
@@ -1363,7 +1773,8 @@ void FUNC(gsl_blas_raw_zsyrk) (CBLAS_UPLO Uplo,
 
 /* SYR2K */
 
-void FUNC(gsl_blas_raw_ssyr2k) (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+void FUNC(gsl_blas_raw_ssyr2k) (CBLAS_UPLO Uplo,
+                                CBLAS_TRANSPOSE Trans,
                                 size_t N, size_t K,
                                 float alpha,
                                 const float A[], int lda,
@@ -1565,4 +1976,3 @@ void FUNC(gsl_blas_raw_zher2k) (CBLAS_UPLO Uplo,
                                 gsl_complex_packed_array C, int ldc)
 {
 }
-
