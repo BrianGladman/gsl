@@ -2,7 +2,7 @@
 #include <gsl_multiroots.h>
 
 int
-gsl_multiroots_fdjacobian (gsl_multiroot_function * F,
+gsl_multiroot_fdjacobian (gsl_multiroot_function * F,
                            const gsl_vector * x, const gsl_vector * f,
                            double epsrel, gsl_matrix * jacobian)
 {

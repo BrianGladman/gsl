@@ -280,6 +280,25 @@ interval includes the origin then @math{\min(|a|,|b|)} is replaced by
 zero (which is the minimum value of @math{|x|} over the interval). This
 ensures that the relative error is accurately estimated for minima close
 to the origin.
+
+This condition on the interval also implies that any estimate of the
+minimum @math{x_m} in the interval satisfies the same condition with respect
+to the true minimum @math{x_m^*},
+
+@tex
+\beforedisplay
+$$
+|x_m - x_m^*| < \hbox{\it epsabs} + \hbox{\it epsrel\/}\, x_m^*
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+|x_m - x_m^*| < epsabs + epsrel x_m^*
+@end example
+@end ifinfo
+@noindent
+assuming that the true minimum @math{x_m^*} is contained within the interval.
 @end deftypefun
 
 @comment ============================================================

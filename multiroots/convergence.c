@@ -36,6 +36,8 @@ gsl_multiroot_test_residual (const gsl_vector * f, double epsabs)
 {
   size_t i;
 
+  double residual = 0;
+
   const size_t n = f->size;
 
   if (epsabs < 0.0)
@@ -47,10 +49,13 @@ gsl_multiroot_test_residual (const gsl_vector * f, double epsabs)
     {
       double fi = gsl_vector_get(f, i);
       
-      if (fabs(fi) > epsabs)
-        {
-          return GSL_CONTINUE;
-        }
+      residual += fabs(fi);
+    }
+
+
+  if (residual > epsabs)
+    {
+      return GSL_CONTINUE;
     }
   
   return GSL_SUCCESS ;

@@ -458,6 +458,25 @@ interval includes the origin then @math{\min(|a|,|b|)} is replaced by
 zero (which is the minimum value of @math{|x|} over the interval). This
 ensures that the relative error is accurately estimated for roots close
 to the origin.
+
+This condition on the interval also implies that any estimate of the
+root @math{r} in the interval satisfies the same condition with respect
+to the true root @math{r^*},
+
+@tex
+\beforedisplay
+$$
+|r - r^*| < \hbox{\it epsabs} + \hbox{\it epsrel\/}\, r^*
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+|r - r^*| < epsabs + epsrel r^*
+@end example
+@end ifinfo
+@noindent
+assuming that the true root @math{r^*} is contained within the interval.
 @end deftypefun
 
 @deftypefun int gsl_root_test_delta (double @var{x1}, double @var{x0}, double @var{epsrel}, double @var{epsabs})
@@ -762,13 +781,14 @@ R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} + x_@{i@})
 
 @noindent
 which converges faster than the original sequence under reasonable
-conditions. The new sequence requires three terms before it can produce
+conditions.  The new sequence requires three terms before it can produce
 its first value so the method returns accelerated values on the second
 and subsequent iterations. On the first iteration it returns the
-ordinary Newton estimate.
+ordinary Newton estimate.  The Newton iterate is also returned if the
+denominator of the acceleration term ever becomes zero.
 
 As with all acceleration procedures this method can become unstable if
-the function is not well-behaved.
+the function is not well-behaved. 
 @end deffn
 
 @node Root Finding Examples

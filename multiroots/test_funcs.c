@@ -327,18 +327,31 @@ helical_f (const gsl_vector * x, void *params, gsl_vector * f)
   double x1 = gsl_vector_get (x, 1);
   double x2 = gsl_vector_get (x, 2);
 
-  double t1 = x1 - x0 * x0;
-  double t2 = x3 - x2 * x2;
+  double t1, t2;
+  double y0, y1, y2;
 
-  double y0 = -200.0 * x0 * t1 - (1 - x0);
-  double y1 = 200.0 * t1 + 20.2 * (x1 - 1) + 19.8 * (x3 - 1);
-  double y2 = -180.0 * x2 * t2 - (1 - x2);
-  double y3 = 180.0 * t2 + 20.2 * (x3 - 1) + 19.8 * (x1 - 1);
+  if (x0 > 0) 
+    {
+      t1 = atan(x1/x0) / (2.0 * M_PI);
+    }
+  else if (x0 < 0)
+    {
+      t1 = 0.5 + atan(x1/x0) / (2.0 * M_PI);
+    }
+  else
+    {
+      t1 = 0.25 * (x1 > 0 ? +1 : -1);
+    }
+
+  t2 = sqrt(x0*x0 + x1*x1) ;
+  
+  y0 = 10 * (x2 - 10 * t1);
+  y1 = 10 * (t2 - 1);
+  y2 = x2 ;
 
   gsl_vector_set (f, 0, y0);
   gsl_vector_set (f, 1, y1);
   gsl_vector_set (f, 2, y2);
-  gsl_vector_set (f, 3, y3);
 
   params = 0;			/* avoid warning about unused parameters */
 
@@ -350,36 +363,26 @@ helical_df (const gsl_vector * x, void *params, gsl_matrix * df)
 {
   double x0 = gsl_vector_get (x, 0);
   double x1 = gsl_vector_get (x, 1);
-  double x2 = gsl_vector_get (x, 2);
-  double x3 = gsl_vector_get (x, 3);
 
-  double t1 = x1 - 3 * x0 * x0;
-  double t2 = x3 - 3 * x2 * x2;
+  double t = x0 * x0 + x1 * x1 ;
+  double t1 = 2 * M_PI * t ;
+  double t2 = sqrt(t) ;
 
-  double df00 = -200.0 * t1 + 1, df01 = -200.0 * x0, df02 = 0, df03 = 0;
-  double df10 = -400.0*x0, df11 = 200.0 + 20.2, df12 = 0, df13 = 19.8;
-  double df20 = 0, df21 = 0, df22 = -180.0 * t2 + 1, df23 = -180.0 * x2;
-  double df30 = 0, df31 = 19.8, df32 = -2 * 180 * x2, df33 = 180.0 + 20.2;
+  double df00 = 100*x1/t1, df01 = -100.0 * x0/t1, df02 = 10.0;
+  double df10 = 10*x0/t2, df11 = 10*x1/t2, df12 = 0;
+  double df20 = 0, df21 = 0, df22 = 1.0;
 
   gsl_matrix_set (df, 0, 0, df00);
   gsl_matrix_set (df, 0, 1, df01);
   gsl_matrix_set (df, 0, 2, df02);
-  gsl_matrix_set (df, 0, 3, df03);
 
   gsl_matrix_set (df, 1, 0, df10);
   gsl_matrix_set (df, 1, 1, df11);
   gsl_matrix_set (df, 1, 2, df12);
-  gsl_matrix_set (df, 1, 3, df13);
 
   gsl_matrix_set (df, 2, 0, df20);
   gsl_matrix_set (df, 2, 1, df21);
   gsl_matrix_set (df, 2, 2, df22);
-  gsl_matrix_set (df, 2, 3, df23);
-
-  gsl_matrix_set (df, 3, 0, df30);
-  gsl_matrix_set (df, 3, 1, df31);
-  gsl_matrix_set (df, 3, 2, df32);
-  gsl_matrix_set (df, 3, 3, df33);
 
   params = 0;			/* avoid warning about unused parameters */
 
