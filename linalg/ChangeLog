@@ -1,5 +1,9 @@
 2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* householder.c (gsl_linalg_householder_hm):
+	(gsl_linalg_householder_mh):
+	(gsl_linalg_householder_hm1): added blas code (but ifdef'd out)
+
 	* test.c (test_SV_decomp_dim): skip NaNs in test
 	(test_SV_decomp_mod_dim): skip NaNs in test
 

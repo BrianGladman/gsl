@@ -74,6 +74,27 @@ gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
       return GSL_SUCCESS;
     }
 
+#ifdef USE_BLAS
+  {
+    gsl_vector_const_view v1 = gsl_vector_const_subvector (v, 1, v->size - 1);
+    gsl_matrix_view A1 = gsl_matrix_submatrix (A, 1, 0, A->size1 - 1, A->size2);
+    
+    for (j = 0; j < A->size2; j++)
+      {
+        double wj = 0.0;
+        gsl_vector_view A1j = gsl_matrix_column(&A1.matrix, j);
+        gsl_blas_ddot (&A1j.vector, &v1.vector, &wj);
+        wj += gsl_matrix_get(A,0,j);
+
+        {
+          double A0j = gsl_matrix_get (A, 0, j);
+          gsl_matrix_set (A, 0, j, A0j - tau *  wj);
+        }
+
+        gsl_blas_daxpy (-tau * wj, &v1.vector, &A1j.vector);
+      }
+  }
+#else
   for (j = 0; j < A->size2; j++)
     {
       /* Compute wj = Akj vk */
@@ -102,6 +123,7 @@ gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
           gsl_matrix_set (A, i, j, Aij - tau * vi * wj);
         }
     }
+#endif
 
   return GSL_SUCCESS;
 }
@@ -119,6 +141,27 @@ gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
 
   /* A = A - tau w v' */
 
+#ifdef USE_BLAS
+  {
+    gsl_vector_const_view v1 = gsl_vector_const_subvector (v, 1, v->size - 1);
+    gsl_matrix_view A1 = gsl_matrix_submatrix (A, 0, 1, A->size1, A->size2-1);
+
+    for (i = 0; i < A->size1; i++)
+      {
+        double wi = 0.0;
+        gsl_vector_view A1i = gsl_matrix_row(&A1.matrix, i);
+        gsl_blas_ddot (&A1i.vector, &v1.vector, &wi);
+        wi += gsl_matrix_get(A,i,0);  
+        
+        {
+          double Ai0 = gsl_matrix_get (A, i, 0);
+          gsl_matrix_set (A, i, 0, Ai0 - tau *  wi);
+        }
+        
+        gsl_blas_daxpy(-tau * wi, &v1.vector, &A1i.vector);
+      }
+  }
+#else
   for (i = 0; i < A->size1; i++)
     {
       double wi = gsl_matrix_get(A,i,0);  
@@ -144,6 +187,7 @@ gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
           gsl_matrix_set (A, i, j, Aij - tau * wi * vj);
         }
     }
+#endif
 
   return GSL_SUCCESS;
 }
@@ -212,6 +256,30 @@ gsl_linalg_householder_hm1 (double tau, gsl_matrix * A)
 
   /* w = A' v */
 
+#ifdef USE_BLAS
+  {
+    gsl_matrix_view A1 = gsl_matrix_submatrix (A, 1, 0, A->size1 - 1, A->size2);
+    gsl_vector_view v1 = gsl_matrix_column (&A1.matrix, 0);
+
+    for (j = 1; j < A->size2; j++)
+      {
+        double wj = 0.0;   /* A0j * v0 */
+        
+        gsl_vector_view A1j = gsl_matrix_column(&A1.matrix, j);
+        gsl_blas_ddot (&A1j.vector, &v1.vector, &wj);
+
+        /* A = A - tau v w' */
+        
+        gsl_matrix_set (A, 0, j, - tau *  wj);
+        
+        gsl_blas_daxpy(-tau*wj, &v1.vector, &A1j.vector);
+      }
+
+    gsl_blas_dscal(-tau, &v1.vector);
+    
+    gsl_matrix_set (A, 0, 0, 1.0 - tau);
+  }
+#else
   for (j = 1; j < A->size2; j++)
     {
       double wj = 0.0;   /* A0j * v0 */
@@ -241,6 +309,7 @@ gsl_linalg_householder_hm1 (double tau, gsl_matrix * A)
     }
 
   gsl_matrix_set (A, 0, 0, 1.0 - tau);
+#endif
 
   return GSL_SUCCESS;
 }
