@@ -1,25 +1,59 @@
 #! /bin/sh
-##
+## Bugs: too clever by half!
 
 list="$*"
 auxlist="gauss"
+auxbin="test-switch"
 
 echo -n "bin_PROGRAMS= "
 for i in $list $auxlist; do
     echo -n "$i test-$i bench-$i "
 done
+echo -n "$auxbin "
 echo ""
+echo ""
+
+echo -n "test_switch_DEPENDENCIES= gsl_ran_switch.h "
+for i in $list; do
+    echo -n "$i.o "
+done
+echo ""
+
+echo -n "test_switch_LDADD= "
+for i in $list; do
+    echo -n "$i.o "
+done
 echo ""
     
 for i in $list; do
     echo "${i}_SOURCES=             ran.c $i.c"
+    echo "${i}_DEPENDENCIES=        $i-state.c $i.h $i-gen.o"
+    echo "${i}_LDADD=               $i-gen.o"
     echo "test_${i}_SOURCES=        testran.c"
-    echo "test_${i}_DEPENDENCIES=   $i.o"
-    echo "test_${i}_LDADD=          $i.o"
+    echo "test_${i}_DEPENDENCIES=   $i.o $i-gen.o $i.h"
+    echo "test_${i}_LDADD=          $i.o $i-gen.o"
     echo "bench_${i}_SOURCES=       benchran.c"
-    echo "bench_${i}_DEPENDENCIES=  $i.o"
-    echo "bench_${i}_LDADD=         $i.o"
+    echo "bench_${i}_DEPENDENCIES=  $i.o $i-gen.o $i.h"
+    echo "bench_${i}_LDADD=         $i.o $i-gen.o"
 done
 echo ""
+
+for i in $list; do
+    echo "$i-state.c: xxx-state.xc"
+    echo "	sed s/gsl_ran_xxx_/gsl_ran_${i}_/g xxx-state.xc > \$@"
+    echo "$i.h: gsl_ran.h"
+    echo "	sed s/gsl_ran_/gsl_ran_${i}_/g gsl_ran.h > \$@"
+    echo "$i-gen.c: xxx-gen.xc"
+    echo "	sed s/xxx/$i/g xxx-gen.xc > \$@"
+done
+echo ""
+
+## Cleanup..
+echo -n "BUILT_SOURCES= "
+echo -n "switch.c gsl_ran_switch.h "
+for i in $list; do
+    echo -n "$i-state.c $i.h $i-gen.c "
+done
+
 
 ##
