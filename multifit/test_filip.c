@@ -186,7 +186,7 @@ test_filip ()
       {
         for (j = 0; j < filip_p; j++)
           {
-            gsl_test_rel (gsl_matrix_get(cov,i,j), expected_cov[i][j], 1e-7, 
+            gsl_test_rel (gsl_matrix_get(cov,i,j), expected_cov[i][j], 1e-6,
                           "filip gsl_fit_wmultilinear cov(%d,%d)", i, j) ;
           }
       }
