@@ -164,7 +164,7 @@ d9chu(const double a, const double b, const double x, gsl_sf_result * result)
   }
   
   result->val = aa[3]/bb[3];
-  result->err = 4.0 * GSL_DBL_EPSILON * fabs(result->val);
+  result->err = 8.0 * GSL_DBL_EPSILON * fabs(result->val);
   
   if(i == maxiter) {
     return GSL_EMAXITER;
@@ -224,25 +224,32 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
                     gsl_sf_result * result)
 {
   int i;
-  double sum;
+  double sum_val;
+  double sum_err;
 
   if(N <= 0) {
-    double t = 1.0;
+    double t_val = 1.0;
+    double t_err = 0.0;
     gsl_sf_result poch;
     int stat_poch;
 
-    sum = 1.0;
+    sum_val = 1.0;
+    sum_err = 0.0;
     for(i=1; i<= -N; i++) {
-      double xi1 = i - 1;
-      t   *= (a+xi1)*x/((b+xi1)*(xi1+1.0));
-      sum += t;
+      double xi1  = i - 1;
+      double mult = (a+xi1)*x/((b+xi1)*(xi1+1.0));
+      t_val *= mult;
+      t_err += fabs(mult) * t_err + fabs(t_val) * 4.0 * 2.0 * GSL_DBL_EPSILON;
+      sum_val += t_val;
+      sum_err += t_err;
     }
 
     stat_poch = gsl_sf_poch_impl(1.0+a-b, -a, &poch);
 
     if(stat_poch == GSL_SUCCESS || stat_poch == GSL_EUNDRFLW) {
-      result->val  = sum * poch.val;
-      result->err  = fabs(sum) * poch.err;
+      result->val  = sum_val * poch.val;
+      result->err  = fabs(sum_val) * poch.err + sum_err * fabs(poch.val);
+      result->err += fabs(poch.val) * (fabs(N) + 1.0) * GSL_DBL_EPSILON * fabs(sum_val);
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
       return GSL_SUCCESS;
     }
@@ -264,12 +271,17 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
       gsl_sf_result gamr;
       int stat_gbm1;
       int stat_gamr;
-      double t = 1.0;
+      double t_val = 1.0;
+      double t_err = 0.0;
 
-      sum = 1.0;
+      sum_val = 1.0;
+      sum_err = 0.0;
       for(i=1; i<=M; i++) {
-        t   *= (a-b+i)*x/((1.0-b+i)*i);
-        sum += t;
+        double mult = (a-b+i)*x/((1.0-b+i)*i);
+        t_val *= mult;
+	t_err += t_err * fabs(mult) + fabs(t_val) * 4.0 * 2.0 * GSL_DBL_EPSILON;
+        sum_val += t_val;
+	sum_err += t_err;
       }
 
       stat_gbm1 = gsl_sf_gamma_impl(b-1.0, &gbm1);
@@ -279,10 +291,12 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
         double pe = pow(x,1.0-N) * xeps;
         double coeff_val = gbm1.val * gamr.val * pe;
 	double coeff_err = gbm1.err * fabs(gamr.val * pe)
-	                   + gamr.err * fabs(gbm1.val*pe);
-	result->val  = sum * coeff_val;
-	result->err  = fabs(sum) * coeff_err;
-	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(M)+1.0) * fabs(result->val);
+                           + gamr.err * fabs(gbm1.val*pe)
+                           + fabs(gbm1.val * gamr.val) * GSL_DBL_EPSILON * fabs(N * pe);
+
+	result->val  = sum_val * coeff_val;
+	result->err  = fabs(sum_val) * coeff_err + sum_err * fabs(coeff_val);
+	result->err += 2.0 * GSL_DBL_EPSILON * (M+1.0) * fabs(result->val);
 	return GSL_SUCCESS;
       }
       else {
@@ -343,7 +357,8 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
     double powx   = gsl_sf_pow_int(x, istrt);
     double sarg   = beps*M_PI;
     double sfact  = ( sarg != 0.0 ? sarg/sin(sarg) : 1.0 );
-    double factor = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * gamr.val * powx;
+    double factor_val = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * gamr.val * powx;
+    double factor_err = fabs(gamr.val) * GSL_DBL_EPSILON * fabs(powx * istrt) + fabs(powx) * gamr.err; 
    
     gsl_sf_result pochai;
     gsl_sf_result gamri1;
@@ -351,7 +366,6 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
     int stat_pochai = gsl_sf_poch_impl(a, xi, &pochai);
     int stat_gamri1 = gsl_sf_gammainv_impl(xi + 1.0, &gamri1);
     int stat_gamrni = gsl_sf_gammainv_impl(aintb + xi, &gamrni);
-
     int stat_gamall = GSL_ERROR_SELECT_5(stat_sum, stat_gamr, stat_pochai, stat_gamri1, stat_gamrni);
 
     gsl_sf_result pochaxibeps;
@@ -361,7 +375,11 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
 
     int stat_all = GSL_ERROR_SELECT_3(stat_gamall, stat_pochaxibeps, stat_gamrxi1beps);
 
-    double b0 = factor * pochaxibeps.val * gamrni.val * gamrxi1beps.val;
+    double b0_val = factor_val * pochaxibeps.val * gamrni.val * gamrxi1beps.val;
+    double b0_err =  fabs(factor_val * pochaxibeps.val * gamrni.val) * gamrxi1beps.err
+                   + fabs(factor_val * pochaxibeps.val * gamrxi1beps.val) * gamrni.err
+		   + fabs(factor_val * gamrni.val * gamrxi1beps.val) * pochaxibeps.err
+		   + fabs(pochaxibeps.val * gamrni.val * gamrxi1beps.val) * factor_err;
 
     if(fabs(xeps-1.0) < 0.5) {
       /*
@@ -375,8 +393,16 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       int stat_pch1ai = gsl_sf_pochrel_impl(a + xi, -beps, &pch1ai);
       int stat_pch1i  = gsl_sf_pochrel_impl(xi + 1.0 - beps, beps, &pch1i);
       int stat_poch1bxibeps = gsl_sf_pochrel_impl(b+xi, -beps, &poch1bxibeps);
-      double c0 = factor * pochai.val * gamrni.val * gamri1.val
-                  * (-poch1bxibeps.val + pch1ai.val - pch1i.val + beps*pch1ai.val*pch1i.val);
+      double c0_t1_val = beps*pch1ai.val*pch1i.val;
+      double c0_t1_err = fabs(beps) * (fabs(pch1ai.val) * pch1i.err + fabs(pch1i.val) * pch1ai.err);
+      double c0_t2_val = -poch1bxibeps.val + pch1ai.val - pch1i.val + c0_t1_val;
+      double c0_t2_err =  poch1bxibeps.err + pch1ai.err + pch1i.err + c0_t1_err;
+      double c0_val = factor_val * pochai.val * gamrni.val * gamri1.val * c0_t2_val;
+      double c0_err =  fabs(factor_val * pochai.val * gamrni.val * gamri1.val) * c0_t2_err
+                     + fabs(factor_val * pochai.val * gamrni.val * c0_t2_val) * gamri1.err
+		     + fabs(factor_val * pochai.val * gamri1.val * c0_t2_val) * gamrni.err
+		     + fabs(factor_val * gamrni.val * gamri1.val * c0_t2_val) * pochai.err
+		     + fabs(pochai.val * gamrni.val * gamri1.val * c0_t2_val) * factor_err;
 
       /*
        C  XEPS1 = (1.0 - X**(-BEPS))/BEPS = (X**(-BEPS) - 1.0)/(-BEPS)
@@ -385,7 +411,9 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       int stat_dexprl = gsl_sf_exprel_impl(-beps*lnx, &dexprl);
       double xeps1 = lnx * dexprl.val;
 
-      double dchu = sum.val + c0 + xeps1*b0;
+      double dchu_val = sum.val + c0_val + xeps1*b0_val;
+      double dchu_err = sum.err + c0_err + fabs(xeps1)*b0_err + fabs(b0_val*lnx)*dexprl.err
+                       + GSL_DBL_EPSILON * (fabs(sum.val) + fabs(c0_val) + fabs(xeps1*b0_val));
       double xn = N;
 
       stat_all = GSL_ERROR_SELECT_5(stat_all, stat_dexprl, stat_poch1bxibeps, stat_pch1i, stat_pch1ai);
@@ -394,16 +422,28 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
         double xi  = istrt + i;
         double xi1 = istrt + i - 1;
 	double tmp = (a-1.0)*(xn+2.0*xi-1.0) + xi*(xi-beps);
-	double t;
-        b0 = (a+xi1-beps)*b0*x/((xn+xi1)*(xi-beps));
-        c0 = (a+xi1)*c0*x/((b+xi1)*xi) - tmp * b0 / (xi*(b+xi1)*(a+xi1-beps));
-        t = c0 + xeps1*b0;
-	dchu += t;
-        if (fabs(t) < EPS*fabs(dchu)) break;
+	double t_val;
+	double t_err;
+	double b0_multiplier = (a+xi1-beps)*x/((xn+xi1)*(xi-beps));
+	double c0_multiplier_1 = (a+xi1)*x/((b+xi1)*xi);
+	double c0_multiplier_2 = tmp / (xi*(b+xi1)*(a+xi1-beps));
+        b0_val *= b0_multiplier;
+	b0_err += fabs(b0_multiplier) * b0_err + fabs(b0_val) * 4.0 * 2.0 * GSL_DBL_EPSILON;
+        c0_val  = c0_multiplier_1 * c0_val - c0_multiplier_2 * b0_val;
+	c0_err  =  fabs(c0_multiplier_1) * c0_err
+	         + fabs(c0_multiplier_2) * b0_err
+		 + fabs(c0_val) * 4.0 * 2.0 * GSL_DBL_EPSILON
+		 + fabs(b0_val * c0_multiplier_2) * 4.0 * 2.0 * GSL_DBL_EPSILON;
+        t_val = c0_val + xeps1*b0_val;
+	t_err = c0_err + fabs(xeps1)*b0_err + fabs(b0_val*lnx) * dexprl.err;
+	dchu_val += t_val;
+	dchu_err += t_err;
+        if (fabs(t_val) < EPS*fabs(dchu_val)) break;
       }
      
-      result->val = dchu;
-      result->err = 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu);
+      result->val  = dchu_val;
+      result->err  = dchu_err;
+      result->err += 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
 
       if(i == 1000) {
         return GSL_EMAXITER;
@@ -418,30 +458,45 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
        C  STRAIGHTFORWARD FORMULATION IS STABLE.
        */
       int i;
-      double dchu;
+      double dchu_val;
+      double dchu_err;
       gsl_sf_result dgamrbxi;
       int stat_dgamrbxi = gsl_sf_gammainv_impl(b+xi, &dgamrbxi);
-      double a0 = factor * pochai.val * dgamrbxi.val * gamri1.val / beps;
-
+      double a0_val = factor_val * pochai.val * dgamrbxi.val * gamri1.val / beps;
+      double a0_err =  fabs(factor_val * pochai.val * dgamrbxi.val / beps) * gamri1.err
+                     + fabs(factor_val * pochai.val * gamri1.val / beps) * dgamrbxi.err
+		     + fabs(factor_val * dgamrbxi.val * gamri1.val / beps) * pochai.err
+		     + fabs(pochai.val * dgamrbxi.val * gamri1.val / beps) * factor_err;
       stat_all = GSL_ERROR_SELECT_2(stat_all, stat_dgamrbxi);
 
-      b0 = xeps * b0 / beps;
-      dchu = sum.val + a0 - b0;
-      
+      b0_val = xeps * b0_val / beps;
+      b0_err = fabs(xeps / beps) * b0_err;
+      dchu_val = sum.val + a0_val - b0_val;
+      dchu_err = sum.err + a0_err + b0_err
+                 + GSL_DBL_EPSILON * (fabs(sum.val) + fabs(a0_val) + fabs(b0_val));
+
       for(i=1; i<1000; i++) {
         double xi = istrt + i;
         double xi1 = istrt + i - 1;
-	double t;
-        a0 = (a+xi1)*a0*x/((b+xi1)*xi);
-        b0 = (a+xi1-beps)*b0*x/((aintb+xi1)*(xi-beps));
-        t = a0 - b0;
-        dchu += t;
-        if(fabs(t) < EPS*fabs(dchu)) break;
+	double t_val;
+	double t_err;
+	double a0_multiplier = (a+xi1)*x/((b+xi1)*xi);
+	double b0_multiplier = (a+xi1-beps)*x/((aintb+xi1)*(xi-beps));
+        a0_val *= a0_multiplier;
+	a0_err += fabs(a0_multiplier) * a0_err;
+        b0_val *= b0_multiplier;
+	b0_err += fabs(b0_multiplier) * b0_err;
+        t_val = a0_val - b0_val;
+	t_err = a0_err + b0_err;
+        dchu_val += t_val;
+	dchu_err += t_err;
+        if(fabs(t_val) < EPS*fabs(dchu_val)) break;
       }
       
-      result->val = dchu;
-      result->err = 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu);
-      if(i == 1000) {
+      result->val  = dchu_val;
+      result->err  = dchu_err;
+      result->err += 2.0 * GSL_DBL_EPSILON * (i+1.0) * fabs(dchu_val);
+      if(i >= 1000) {
         return GSL_EMAXITER;
       }
       else {
@@ -479,6 +534,7 @@ hyperg_U_small_ab(const double a, const double b, const double x, gsl_sf_result 
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     result->val  = asymp.val * p;
     result->err  = asymp.err * p;
+    result->err += fabs(asymp.val) * GSL_DBL_EPSILON * fabs(a) * p;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_asymp;
   }
@@ -533,8 +589,9 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x,
         Ubm1 = Ub;
         Ub   = Ubp1;
       }
-      result->val = Ub;
-      result->err = 2.0 * GSL_DBL_EPSILON * (fabs(b-b0)+1.0) * fabs(Ub);
+      result->val  = Ub;
+      result->err  = (fabs(r_Ubm1.err/r_Ubm1.val) + fabs(r_Ub.err/r_Ub.val)) * fabs(Ub);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-b0)+1.0) * fabs(Ub);
       *ln_multiplier = 0.0;
       return GSL_SUCCESS;
     }
@@ -662,8 +719,9 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
         RESCALE_2(Ua,Uam1,scale_factor,scale_count);
       }
 
-      result->val = Ua;
-      result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a) + 1.0) * fabs(Ua);
+      result->val  = Ua;
+      result->err  = fabs(r_Ua.err/r_Ua.val) * fabs(Ua);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a) + 1.0) * fabs(Ua);
       *ln_multiplier = lm + scale_count * log(scale_factor);
       return stat_1;
     }
@@ -717,15 +775,19 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	}
 	else {
 	  double lnscl = -scale_count*log(scale_factor);
-	  double lnpre = lnU_target + lnscl;
-	  int stat_e = gsl_sf_exp_mult_impl(lnpre, 1.0/Ua, result);
+	  double lnpre_val = lnU_target + lnscl;
+	  double lnpre_err = GSL_DBL_EPSILON * (fabs(lnU_target) + fabs(lnscl));
+	  double oUa_err   = 2.0 * (fabs(a_target-a) + 1.0) * GSL_DBL_EPSILON * fabs(1.0/Ua);
+	  int stat_e = gsl_sf_exp_mult_err_impl(lnpre_val, lnpre_err,
+                                                1.0/Ua, oUa_err,
+                                                result);
 	  if(stat_e == GSL_SUCCESS) {
 	    *ln_multiplier = 0.0;
 	  }
 	  else {
 	    result->val = 1.0/Ua;
-	    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a_target-a)+1.0) * fabs(result->val);
-	    *ln_multiplier = lnpre;
+	    result->err = oUa_err;
+	    *ln_multiplier = lnpre_val;
 	  }
 	  return stat_CF1;
 	}
@@ -838,16 +900,26 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
       }
       else {
         double lns = (scale_count_for - scale_count_bck)*log(scale_factor);
-        double lnr = lm_for + log(fabs(Ua1_for)) - log(fabs(Ua1_bck)) + lns;
+	double ln_for_val = log(fabs(Ua1_for));
+	double ln_for_err = GSL_DBL_EPSILON * (fabs(a1-a)+1.0);
+	double ln_bck_val = log(fabs(Ua1_bck));
+	double ln_bck_err = GSL_DBL_EPSILON * (fabs(a0-a1)+1.0);
+        double lnr_val = lm_for + ln_for_val - ln_bck_val + lns;
+	double lnr_err = ln_for_err + ln_bck_err
+	                 + GSL_DBL_EPSILON * (fabs(lm_for) + fabs(ln_for_val)
+                                              + fabs(ln_bck_val) + fabs(lns)
+                                              );
 	double sgn = GSL_SIGN(Ua1_for) * GSL_SIGN(Ua1_bck);
-        int stat_e = gsl_sf_exp_mult_impl(lnr, sgn, result);
+        int stat_e = gsl_sf_exp_err_impl(lnr_val, lnr_err, result);
+	result->val *= sgn;
+
         if(stat_e == GSL_SUCCESS) {
           *ln_multiplier = 0.0;
         }
         else {
           result->val = sgn;
 	  result->err = 0.0;
-          *ln_multiplier = lnr;
+          *ln_multiplier = lnr_val;
         }
 	if(stat_bck == GSL_EFAILED || stat_for == GSL_EFAILED)
           return GSL_EFAILED;
@@ -888,7 +960,9 @@ hyperg_U_bge1(const double a, const double b, const double x,
     const int stat_L = gsl_sf_laguerre_n_impl(n, b-1.0, x, &L);
     gsl_sf_lnfact_impl(n, &lnfact);
     if(L.val != 0.0 || (stat_L == GSL_SUCCESS || stat_L == GSL_ELOSS)) {
-      const int stat_e = gsl_sf_exp_mult_impl(lnfact.val, sgn*L.val, result);
+      const int stat_e = gsl_sf_exp_mult_err_impl(lnfact.val, lnfact.err,
+                                                  sgn*L.val, L.err,
+                                                  result);
       if(stat_e == GSL_SUCCESS) {
         *ln_multiplier = 0.0;
       }
@@ -959,8 +1033,12 @@ hyperg_U_bge1(const double a, const double b, const double x,
       if(b < 2.0) {
         /* b == b0, so no recursion necessary
 	 */
-	result->val = Ua;
-	result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
+	result->val  = Ua;
+	result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ua);
+	result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ua);
+	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
+	result->err *= fabs(lm_0-lm_max) + 1.0;
+	result->err *= fabs(lm_1-lm_max) + 1.0;
 	*ln_multiplier = lm_max + scale_count * log(scale_factor);
       }
       else {
@@ -977,7 +1055,11 @@ hyperg_U_bge1(const double a, const double b, const double x,
 	  RESCALE_2(Ub,Ubm1,scale_factor,scale_count);
         }
         result->val = Ub;
-	result->err = 2.0 * GSL_DBL_EPSILON * (fabs(b-b0) + 1.0) * fabs(Ub);
+	result->err  = fabs(r_Uap1.err/r_Uap1.val) * fabs(Ub);
+	result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ub);
+	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(b-b0) + fabs(a-a0) + 1.0) * fabs(Ub);
+	result->err *= fabs(lm_0-lm_max) + 1.0;
+	result->err *= fabs(lm_1-lm_max) + 1.0;	
         *ln_multiplier = lm_max + scale_count * log(scale_factor);
       }
       if(stat_0 == GSL_ELOSS || stat_1 == GSL_ELOSS)
@@ -1024,8 +1106,12 @@ hyperg_U_bge1(const double a, const double b, const double x,
         Ua   = Uap1;
         RESCALE_2(Ua,Uam1,scale_factor,scale_count);
       }
-      result->val = Ua;
-      result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
+      result->val  = Ua;
+      result->err  = fabs(r_Uam1.err/r_Uam1.val) * fabs(Ua);
+      result->err += fabs(r_Ua.err/r_Ua.val) * fabs(Ua);
+      result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a-a0) + 1.0) * fabs(Ua);
+      result->err *= fabs(lm_0-lm_max) + 1.0;
+      result->err *= fabs(lm_1-lm_max) + 1.0;
       *ln_multiplier = lm_max + scale_count * log(scale_factor);
       return GSL_SUCCESS;
     }
@@ -1062,18 +1148,20 @@ hyperg_U_bge1(const double a, const double b, const double x,
         Ua   = Uam1;
 	RESCALE_2(Ua,Uap1,scale_factor,scale_count);
       }
-      
+
       stat_U0 = hyperg_U_small_a_bgt0(a0, b, x, &U0, &lm_0);
 
       if(stat_U0 == GSL_SUCCESS) {
-        result->val = GSL_SQRT_DBL_MIN*(U0.val/Ua);
-	result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + 1.0) * fabs(result->val);
+        result->val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
+	result->err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
+	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + 1.0) * fabs(result->val);
 	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
 	return stat_CF1;
       }
       else if(stat_U0 == GSL_ELOSS) {
-        result->val = GSL_SQRT_DBL_MIN*(U0.val/Ua);
-	result->err = 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + 1.0) * fabs(result->val);
+        result->val  = GSL_SQRT_DBL_MIN*(U0.val/Ua);
+	result->err  = GSL_SQRT_DBL_MIN*(U0.err/fabs(Ua));
+	result->err += 2.0 * GSL_DBL_EPSILON * (fabs(a0-a) + 1.0) * fabs(result->val);
 	*ln_multiplier = lm_0 - scale_count * log(scale_factor);
 	return GSL_ELOSS;
       }
@@ -1188,26 +1276,34 @@ gsl_sf_hyperg_U_int_impl(const int a, const int b, const double x, gsl_sf_result
   }
   else {
     double ln_multiplier;
-    double ln_pre;
+    double ln_pre_val;
+    double ln_pre_err;
     gsl_sf_result U;
     int stat_U;
     if(b >= 1) {
       stat_U = hyperg_U_int_bge1(a, b, x, &U, &ln_multiplier);
-      ln_pre = 0.0;
+      ln_pre_val = 0.0;
+      ln_pre_err = 0.0;
     }
     else {
       /* Use the reflection formula
        * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
        */
+      double ln_x = log(x);
       int ap = 1 + a - b;
       int bp = 2 - b;
       stat_U = hyperg_U_int_bge1(ap, bp, x, &U, &ln_multiplier);
-      ln_pre = (1.0-b)*log(x);
+      ln_pre_val  = (1.0-b)*ln_x;
+      ln_pre_err  = GSL_DBL_EPSILON * (fabs(b)+1.0) * fabs(ln_x);
+      ln_pre_err += GSL_DBL_EPSILON * fabs(1.0-b); /* error in log(x) */
     }
 
     if(U.val != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-      double ln_r = ln_pre + ln_multiplier;
-      int stat_e = gsl_sf_exp_mult_impl(ln_r, U.val, result);
+      double ln_r_val = ln_pre_val + ln_multiplier;
+      double ln_r_err = ln_pre_err + GSL_DBL_EPSILON * fabs(ln_multiplier);
+      int stat_e = gsl_sf_exp_mult_err_impl(ln_r_val, ln_r_err,
+                                            U.val, U.err,
+                                            result);
       return GSL_ERROR_SELECT_2(stat_e, stat_U);
     }
     else {
@@ -1242,28 +1338,35 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, gsl_sf_resu
   }
   else {
     double ln_multiplier;
-    double ln_pre;
+    double ln_pre_val;
+    double ln_pre_err;
     gsl_sf_result U;
     int stat_U;
     if(b >= 1.0) {
       /* Use b >= 1 function.
        */
       stat_U = hyperg_U_bge1(a, b, x, &U, &ln_multiplier);
-      ln_pre = 0.0;
+      ln_pre_val = 0.0;
+      ln_pre_err = 0.0;
     }
     else {
       /* Use the reflection formula
        * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
        */
+      double lnx = log(x);
       double ap = 1.0 + a - b;
       double bp = 2.0 - b;
       stat_U = hyperg_U_bge1(ap, bp, x, &U, &ln_multiplier);
-      ln_pre = (1.0-b)*log(x);
+      ln_pre_val = (1.0-b)*lnx;
+      ln_pre_err = fabs(lnx) * GSL_DBL_EPSILON * (1.0 + fabs(b));
     }
 
     if(U.val != 0.0 && (stat_U == GSL_SUCCESS || stat_U == GSL_ELOSS)) {
-      double ln_r = ln_pre + ln_multiplier;
-      int stat_e = gsl_sf_exp_mult_impl(ln_r, U.val, result);
+      double ln_r_val = ln_pre_val + ln_multiplier;
+      double ln_r_err = 2.0 * GSL_DBL_EPSILON * fabs(ln_multiplier) + ln_pre_err;
+      int stat_e = gsl_sf_exp_mult_err_impl(ln_r_val, ln_r_err,
+                                            U.val, U.err,
+                                            result);
       return GSL_ERROR_SELECT_2(stat_e, stat_U);
     }
     else {
