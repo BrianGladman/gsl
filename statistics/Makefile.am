@@ -3,6 +3,8 @@
 lib_LIBRARIES = libgslstatistics.a
 include_HEADERS = gsl_statistics.h
 
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
+
 noinst_PROGRAMS = test
 
 TESTS = test
@@ -12,6 +14,13 @@ test_LDADD = libgslstatistics.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslstatistics.a
 
 libgslstatistics_a_SOURCES = \
-mean.c variance.c \
-mean.h variance.h \
-minmax.c
+mean.c \
+variance.c  \
+pooled_variance.c \
+minmax.c \
+ttest.c \
+imean.c \
+ivariance.c  \
+ipooled_variance.c \
+iminmax.c \
+ittest.c

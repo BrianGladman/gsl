@@ -6,10 +6,17 @@ double gsl_stats_variance (const double data[], unsigned int n);
 double gsl_stats_stddev (const double data[], unsigned int n);
 double gsl_stats_est_variance (const double data[], unsigned int n);
 double gsl_stats_est_stddev (const double data[], unsigned int n);
-double gsl_stats_pvariance (const double data1[], const double data2[], 
+
+double gsl_stats_variance_with_mean (const double data[], unsigned int n, double mean);
+double gsl_stats_stddev_with_mean (const double data[], unsigned int n, double mean);
+double gsl_stats_est_variance_with_mean (const double data[], unsigned int n, double mean);
+double gsl_stats_est_stddev_with_mean (const double data[], unsigned int n, double mean);
+
+
+double gsl_stats_pvariance (const double data1[], const double data2[],
 			    unsigned int n1, unsigned int n2);
 double gsl_stats_ttest (const double data1[], const double data2[],
-			 unsigned int n1, unsigned int n2);
+			unsigned int n1, unsigned int n2);
 
 double gsl_stats_max (const double data[], unsigned int n);
 double gsl_stats_min (const double data[], unsigned int n);
@@ -19,6 +26,13 @@ double gsl_stats_ivariance (const int data[], unsigned int n);
 double gsl_stats_istddev (const int data[], unsigned int n);
 double gsl_stats_iest_variance (const int data[], unsigned int n);
 double gsl_stats_iest_stddev (const int data[], unsigned int n);
+
+double gsl_stats_ivariance_with_mean (const int data[], unsigned int n, double mean);
+double gsl_stats_istddev_with_mean (const int data[], unsigned int n, double mean);
+double gsl_stats_iest_variance_with_mean (const int data[], unsigned int n, double mean);
+double gsl_stats_iest_stddev_with_mean (const int data[], unsigned int n, double mean);
+
+
 double gsl_stats_ipvariance (const int data1[], const int data2[], unsigned int n1, unsigned int n2);
 double gsl_stats_ittest (const int data1[], const int data2[], unsigned int n1, unsigned int n2);
 int gsl_stats_imax (const int data[], unsigned int n);

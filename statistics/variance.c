@@ -1,140 +1,92 @@
 #include <math.h>
 #include <gsl_statistics.h>
 
-double sum_of_squares (const double data[], unsigned int n) ;
+#include "variance.h"
 
-double gsl_stats_variance (const double data[], unsigned int n)
+double 
+gsl_stats_variance (const double data[], unsigned int n)
 {
-  double sum = sum_of_squares(data, n) ;
-  double variance = sum / n ; 
-
-  return variance ; 
+  double mean = gsl_stats_mean (data, n);
+  return gsl_stats_variance_with_mean(data, n, mean);
 }
 
-double gsl_stats_est_variance (const double data[], unsigned int n)
+double 
+gsl_stats_est_variance (const double data[], unsigned int n)
 {
-  double sum = sum_of_squares(data, n) ;
-  double variance = sum / (n - 1) ; 
-
-  return variance ; 
+  double mean = gsl_stats_mean (data, n);
+  return gsl_stats_est_variance_with_mean(data, n, mean);
 
 }
 
-double gsl_stats_stddev (const double data[], unsigned int n)
+double 
+gsl_stats_stddev (const double data[], unsigned int n)
 {
-  double variance = gsl_stats_variance(data, n);
-  double stddev = sqrt(variance);
+  double mean = gsl_stats_mean (data, n);
+  return gsl_stats_stddev_with_mean (data, n, mean) ;
+}
+
+double 
+gsl_stats_est_stddev (const double data[], unsigned int n)
+{
+  double mean = gsl_stats_mean (data, n);
+  return gsl_stats_est_stddev_with_mean (data, n, mean) ;
+}
+
+
+double 
+gsl_stats_variance_with_mean (const double data[], unsigned int n, double mean)
+{
+  double sum = sum_of_squares (data, n, mean);
+  double variance = sum / n;
+
+  return variance;
+}
+
+double 
+gsl_stats_est_variance_with_mean (const double data[], unsigned int n,
+				  double mean)
+{
+  double sum = sum_of_squares (data, n, mean);
+  double est_variance = sum / (n - 1);
+
+  return est_variance;
+}
+
+double 
+gsl_stats_stddev_with_mean (const double data[], unsigned int n, double mean)
+{
+  double sum = sum_of_squares (data, n, mean);
+  double stddev = sqrt (sum / n);
 
   return stddev;
 }
 
-double gsl_stats_est_stddev (const double data[], unsigned int n)
+double 
+gsl_stats_est_stddev_with_mean (const double data[], unsigned int n,
+				double mean)
 {
-  double est_variance = gsl_stats_est_variance(data, n);
-  double est_stddev = sqrt(est_variance);
+  double sum = sum_of_squares (data, n, mean);
+  double est_stddev = sqrt (sum / (n - 1));
 
   return est_stddev;
 }
 
-double sum_of_squares (const double data[], unsigned int n)
+double 
+sum_of_squares (const double data[], unsigned int n, double mean)
 {
-  /* takes an data of doubles and finds the variance */
+  /* takes a dataset and finds the variance */
 
-  double sum = 0, mean ;
-  int i;
-  
-  mean = gsl_stats_mean(data, n);   /* find the mean */
+  double sum = 0, sum2 = 0;
+  unsigned int i;
 
   /* find the sum of the squares */
   for (i = 0; i < n; i++)
     {
-      double delta = (data[i] - mean) ;
-      sum += delta*delta ;
+      double delta = (data[i] - mean);
+      sum += delta ;  /* FIXME: round off correction, does it work??*/
+      sum2 += delta * delta;
     }
 
-  return sum ; 
+  return sum2 - (sum * sum / n) ;
 }
-
-
-double gsl_stats_ivariance (const int data[], unsigned int n)
-{
-  
-  /* takes an array of integers and finds the variance */
-
-  double sum, the_mean;
-  double square, difference;
-  int i;
-  
-  sum = square = difference = 0;
-  
-  /* find the mean */
-  the_mean = gsl_stats_imean(data, n);
-
-  /* find sum of the squares */
-  for (i=0; i<n; i++){
-    difference = data[i] - the_mean;
-    square = difference * difference;
-    sum = sum + square;
-  }
-
-  /* find variance */
-  return sum / n;
-}
-
-
-double gsl_stats_iest_variance (const int data[], unsigned int n)
-{
-  /* takes an data of integers and finds the variance */
-
-  double sum, the_mean;
-  double square, difference;
-  int i;
-  
-  sum = square = difference = 0;
-  
-  /* find the mean */
-  the_mean = gsl_stats_imean(data, n);
-
-  /* find sum of the squares */
-  for (i=0; i<n; i++){
-    difference = data[i] - the_mean;
-    square = difference * difference;
-    sum = sum + square;
-  }
-
-  /* find variance */
-  return sum / (n-1);
-}
-
-
-double gsl_stats_isd (const int data[], unsigned int n)
-{
-  /* finds the standard deviation of an data of integers */
-
-  double variance, sd;
-
-  variance = gsl_stats_ivariance(data, n);
-
-  sd = sqrt(variance);
-
-  return sd;
-}
-
-
-double gsl_stats_iest_sd (const int data[], unsigned int n)
-{
-  /* finds the standard deviation of an data of integers */
-
-  double variance, sd;
-
-  variance = gsl_stats_iest_variance(data, n);
-
-  sd = sqrt(variance);
-
-  return sd;
-}
-
-
-
-
 

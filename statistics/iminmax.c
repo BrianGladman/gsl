@@ -1,11 +1,11 @@
 #include <gsl_statistics.h>
 
-double 
-gsl_stats_max (const double data[], unsigned int n)
+int
+gsl_stats_imax (const int data[], unsigned int n)
 {
-  /* finds the largest member of a dataset */
+  /* finds the largest member of an integer dataset */
 
-  double max = data[0];
+  int max = data[0];
   unsigned int i;
 
   for (i = 0; i < n; i++)
@@ -17,12 +17,12 @@ gsl_stats_max (const double data[], unsigned int n)
   return max;
 }
 
-double 
-gsl_stats_min (const double data[], unsigned int n)
+int
+gsl_stats_imin (const int data[], unsigned int n)
 {
-  /* finds the smallest member of a dataset */
+  /* finds the smallest member of an integer dataset */
 
-  double min = data[0];
+  int min = data[0];
   unsigned int i;
 
   for (i = 0; i < n; i++)
