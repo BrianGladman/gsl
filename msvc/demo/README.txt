@@ -49,7 +49,7 @@ using GSL on Unix,
   $ gcc main.c  -lgsl  -lgslcblas -lm
   $ ./a.out 
   Here are ten random numbers in the range 0-99:
-   66 36 72 68 57 81 27 83 13 95
+   99 16 28 94 23 48 95 74 54 73
   blas operation DAXPY
   x: 1 2 3 4 5  y: 5.5 4.4 3.3 2.2 1.1  a x + y: 6.5 6.4 6.3 6.2 6.1
 
