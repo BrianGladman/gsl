@@ -83,7 +83,7 @@ the skewed Levy alpha-stable variates gsl_ran_levy_skew
 
 * Vince <vattervi@msu.edu> for permutation iterator functions
 
-* Henry Sobotka <sobotka@axess.com> for ieee support for OS/2
+* Henry Sobotka <sobotka@axess.com> for ieee support for OS/2 and bug fixes
 
 * Remy Bruno <remy.bruno@libertysurf.fr> for bug fix
 

@@ -1,3 +1,8 @@
+Sun Aug 26 17:19:24 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* acconfig.h: fixed incorrect #ifdef for HAVE_FINITE (Henry
+ 	Sobotka)
+
 Sat Aug 25 10:25:41 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_math.h: moved includes to beginning of file to avoid
