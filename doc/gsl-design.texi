@@ -209,23 +209,8 @@ been released under the GPL.
 @emph{COLT} is a free numerical library in Java developed at CERN by
 Wolfgang Hoschek.  It is under a BSD-style license.
 
-[JT section: written by James Theiler, and not incorporated into the
-above motivation]
-
-And we furthermore promise to try as hard as possible to document
-the software: this will ideally involve discussion of why you might want
-to use it, what precisely it does, how precisely to invoke it, 
-how more-or-less it works, and where we learned about the algorithm,
-and (unless we wrote it from scratch) where we got the code.
-We do not plan to write this entire package from scratch, but to cannibalize
-existing mathematical freeware, just as we expect our own software to
-be cannibalized.
-
 The long-term goal will be to provide a framework to which the real
-numerical experts (or their graduate students) will contribute.  Such
-contributors will have to contribute copylefted software and they cannot
-mind that evil profit-making companies (such as those which sell
-"environments") might use this software as part of their packages.
+numerical experts (or their graduate students) will contribute. 
 
 @node Design, Copying, Motivation, Top
 @chapter Design
@@ -261,6 +246,7 @@ mind that evil profit-making companies (such as those which sell
 * Pointers::                    
 * Constness::                   
 * Pseudo-templates::            
+* Arbitrary Constants::         
 * Test suites::                 
 * Compilation::                 
 * Thread-safety::               
@@ -293,60 +279,60 @@ Use standard tools to make wrappers: swig, g-wrap
 Anything which is in any of the existing libraries.  Obviously it makes
 sense to prioritize and write code for the most important areas first.
 
-@itemize @bullet
-@item Random number generators
+@c @itemize @bullet
+@c @item Random number generators
 
-Includes both random number generators and routines to give various
-interesting distributions.
+@c Includes both random number generators and routines to give various
+@c interesting distributions.
 
-@item Statistics
+@c @item Statistics
 
-@item Special Functions
+@c @item Special Functions
 
-What I (jt) envision for this section is a collection of routines for
-reliable and accurate (but not necessarily fast or efficient) estimation
-of values for special functions, explicitly using Taylor series, asymptotic 
-expansions, continued fraction expansions, etc.  As well as these routines,
-fast approximations will also be provided, primarily based on Chebyschev
-polynomials and ratios of polynomials.  In this vision, the approximations
-will be the "standard" routines for the users, and the exact (so-called)
-routines will be used for verification of the approximations.  It may also
-be useful to provide various identity-checking routines as part of the
-verification suite.
+@c What I (jt) envision for this section is a collection of routines for
+@c reliable and accurate (but not necessarily fast or efficient) estimation
+@c of values for special functions, explicitly using Taylor series, asymptotic 
+@c expansions, continued fraction expansions, etc.  As well as these routines,
+@c fast approximations will also be provided, primarily based on Chebyschev
+@c polynomials and ratios of polynomials.  In this vision, the approximations
+@c will be the "standard" routines for the users, and the exact (so-called)
+@c routines will be used for verification of the approximations.  It may also
+@c be useful to provide various identity-checking routines as part of the
+@c verification suite.
 
-@item Curve fitting
+@c @item Curve fitting
 
-polynomial, special functions, spline
+@c polynomial, special functions, spline
 
-@item Ordinary differential equations
+@c @item Ordinary differential equations
 
-@item Partial differential equations
+@c @item Partial differential equations
 
-@item Fourier Analysis
+@c @item Fourier Analysis
 
-@item Wavelets
+@c @item Wavelets
 
-@item Matrix operations: linear equations
+@c @item Matrix operations: linear equations
 
-@item Matrix operations: eigenvalues and spectral analysis
+@c @item Matrix operations: eigenvalues and spectral analysis
 
-@item Matrix operations: any others?
+@c @item Matrix operations: any others?
 
-@item Direct integration
+@c @item Direct integration
 
-@item Monte carlo methods
+@c @item Monte carlo methods
 
-@item Simulated annealing
+@c @item Simulated annealing
 
-@item Genetic algorithms
+@c @item Genetic algorithms
 
-We need to think about what kinds of algorithms are basic generally
-useful numerical algorithms, and which ones are special purpose
-research projects.  We should concentrate on supplying the former.
+@c We need to think about what kinds of algorithms are basic generally
+@c useful numerical algorithms, and which ones are special purpose
+@c research projects.  We should concentrate on supplying the former.
 
-@item Cellular automata
+@c @item Cellular automata
 
-@end itemize
+@c @end itemize
 
 @node What routines are not implemented, Design of  Numerical Libraries, What routines are implemented, Design
 @section What routines are not implemented
@@ -570,6 +556,16 @@ If you need help in tracking down references, ask on the
 access to good libraries who have offered to help GSL developers get
 copies of papers.
 
+[JT section: written by James Theiler
+
+And we furthermore promise to try as hard as possible to document
+the software: this will ideally involve discussion of why you might want
+to use it, what precisely it does, how precisely to invoke it, 
+how more-or-less it works, and where we learned about the algorithm,
+and (unless we wrote it from scratch) where we got the code.
+We do not plan to write this entire package from scratch, but to cannibalize
+existing mathematical freeware, just as we expect our own software to
+be cannibalized.]
 
 @node Namespace, Header files, Documentation, Design
 @section Namespace
@@ -584,6 +580,9 @@ All installed libraries should have a name like libgslhistogram.a
 
 Any installed executables (utility programs etc) should have the prefix
 @code{gsl-} (with a hyphen, not an underscore).
+
+All function names, variables, etc should be in lower case.  Macros and
+preprocessor variables should be in upper case.
 
 @node Header files, Target system, Namespace, Design
 @section Header files
@@ -981,7 +980,7 @@ you from accidentally modifying a variable which should be constant
 optimization.  These comments also apply to arguments passed by value
 which should be made @code{const} when that is meaningful.
 
-@node Pseudo-templates, Test suites, Constness, Design
+@node Pseudo-templates, Arbitrary Constants, Constness, Design
 @section Pseudo-templates
 
 There are some pseudo-template macros available in @file{templates_on.h}
@@ -1008,7 +1007,47 @@ unavoidable that other data-types will be encountered.
 For floating point work "double" is considered a "natural type".  This
 sort of idea is a part of the C language.
 
-@node Test suites, Compilation, Pseudo-templates, Design
+@node  Arbitrary Constants, Test suites, Pseudo-templates, Design
+@section Arbitrary Constants
+
+Avoid arbitrary constants.
+
+For example, don't hard code "small" values like '1e-30', '1e-100' or
+@code{10*GSL_DBL_EPSILON} into the routines.  This is not appropriate
+for a general purpose library.
+
+Compute values accurately using IEEE arithmetic.  If errors are
+potentially significant then error terms should be estimated reliably
+and returned to the user, by analytically deriving an error propagation
+formula, not using guesswork.
+
+A careful consideration of the algorithm usually shows that arbitrary
+constants are unnecessary, and represent an important parameter which
+should be accessible to the user.
+
+For example, consider the following code:
+
+@example
+if (residual < 1e-30) @{
+   return 0.0;  /* residual is zero within round-off error */
+@}
+@end example
+@noindent
+This should be rewritten as,
+
+@example
+   return residual;
+@end example
+@noindent
+in order to allow the user to determine whether the residual is 
+significant or not.
+
+The only place where it is acceptable to use constants like
+@code{GSL_DBL_EPSILON} is in function approximations, (e.g. taylor
+series, asymptotic expansions, etc).  In these cases it is not an
+arbitrary constant, but an inherent part of the algorithm.
+
+@node Test suites, Compilation, Arbitrary Constants, Design
 @section Test suites
 
 The implementor of each module should provide a reasonable test suite
