@@ -63,7 +63,7 @@ to the mailing list gsl-discuss@sources.redhat.com.
 
 All bug reports should include:
 
-       The version number of GSL
+       The version number of GSL, and where you obtained it.
        The hardware and operating system
        The compiler used, including version number and compilation options
        A description of the bug behaviour
