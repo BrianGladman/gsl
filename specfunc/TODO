@@ -578,3 +578,96 @@ be implemented for a version 1.0 release.
 
 * Weierstrass elliptic functions.
 
+
+----------------------------------------------------------------------
+
+Improve accuracy of ERF
+
+NNTP-Posting-Date: Thu, 11 Sep 2003 07:41:42 -0500
+From: "George Marsaglia" <geo@stat.fsu.edu>
+Newsgroups: comp.lang.c
+References: <t4J7b.18514$98.4310@nwrddc03.gnilink.net>
+Subject: Re: When (32-bit) double precision isn't precise enough
+Date: Thu, 11 Sep 2003 08:41:40 -0400
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Newsreader: Microsoft Outlook Express 6.00.2800.1158
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1165
+Message-ID: <wq2dnQBikNwb8P2iU-KYvg@comcast.com>
+Lines: 265
+NNTP-Posting-Host: 68.35.247.101
+X-Trace: sv3-4YY+jkhhdeQvGKAREa99vDBFHJoKVqVBdUTSuRxA71OwlgxX0uUFnKYs54FlnUs0Xb6BRngKigkd75d!tKin8l8rAQKylaP+4vzTI3AO33bivOw1lKDZUUtXe4lUMW1qn+goUp/Pfksstg==
+X-Complaints-To: abuse@comcast.net
+X-DMCA-Complaints-To: dmca@comcast.net
+X-Abuse-and-DMCA-Info: Please be sure to forward a copy of ALL headers
+X-Abuse-and-DMCA-Info: Otherwise we will be unable to process your complaint properly
+X-Postfilter: 1.1
+
+
+Why most of those who deal with the normal integral in probability
+theory are still stuck with the historical baggage of the error function
+is a puzzle to me, as is the poor quality of the results one gets from
+standard library implementations of erf().  (One of the most common
+ is based on ALGORITHM AS66, APPL. STATIST.(1973) Vol.22, .424 by HILL,
+ which gives only 6-8 digit accuracy).
+
+Here is a listing of my method:
+
+/*
+Marsaglia Complementary Normal Distribution Function
+   cPhi(x) = integral from x to infinity of exp(-.5*t^2)/sqrt(2*pi), x<15
+ 15-digit accuracy for x<15, returns 0 for x>15.
+#include <math.h>
+*/
+
+double cPhi(double x){
+long double v[]={0.,.65567954241879847154L,
+.42136922928805447322L,.30459029871010329573L,
+.23665238291356067062L,.19280810471531576488L,
+.16237766089686746182L,.14010418345305024160L,
+.12313196325793229628L,.10978728257830829123L,
+.99028596471731921395e-1L,.90175675501064682280e-1L,
+.82766286501369177252e-1L,.76475761016248502993e-1L,
+.71069580538852107091e-1L,.66374235823250173591e-1L};
+long double h,a,b,z,t,sum,pwr;
+int i,j;
+      if(x>15.) return (0.);
+      if(x<-15.) return (1.);
+        j=fabs(x)+1.;
+        z=j;
+        h=fabs(x)-z;
+        a=v[j];
+        b=z*a-1.;
+        pwr=1.;
+        sum=a+h*b;
+           for(i=2;i<60;i+=2){
+           a=(a+z*b)/i;
+           b=(b+z*a)/(i+1);
+           pwr=pwr*h*h;
+           t=sum;
+           sum=sum+pwr*(a+h*b);
+           if(sum==t) break; }
+      sum=sum*exp(-.5*x*x-.91893853320467274178L);
+      if(x<0.) sum=1.-sum;
+      return ((double) sum);
+                      }
+*/
+ end of listing
+*/
+
+The method is based on defining phi(x)=exp(-x^2)/sqrt(2pi) and
+
+       R(x)=cPhi(x)/phi(x).
+
+The function R(x) is well-behaved  and terms of its Taylor
+series are readily obtained by a two-term recursion.   With an accurate
+representation of R(x) at ,say, x=0,1,2,...,15, a simple evaluation
+of the Taylor series at intermediate points provides up to
+15 digits of accuracy.
+An article describing the method will be in the new version of
+my Diehard CDROM.   A new version of the Diehard tests
+of randomness (but not yet the new DVDROM) is at
+   http://www.csis.hku.hk/~diehard/
+
+
+ George Marsaglia
