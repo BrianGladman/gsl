@@ -377,6 +377,8 @@ bsimp_step_local(
   gsl_vector ytemp_vec;
   ytemp_vec.data = ytemp;
   ytemp_vec.size = step->parent.dimension;
+  ytemp_vec.parent = 0;
+  ytemp_vec.stride = 1;
 
   /* Calculate the matric for the linear system. */
   for(i=0; i<dim; i++) {
