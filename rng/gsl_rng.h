@@ -22,20 +22,20 @@ typedef struct {
 /* These structs also need to appear in default.c so you can select
    them via the environment variable GSL_RNG_TYPE */
 
-extern const gsl_rng_type * gsl_rng_bad_randu ;
 extern const gsl_rng_type * gsl_rng_bad_rand ;
-extern const gsl_rng_type * gsl_rng_vax ;
-extern const gsl_rng_type * gsl_rng_ranlux ;
-extern const gsl_rng_type * gsl_rng_ranlux389 ;
+extern const gsl_rng_type * gsl_rng_bad_randu ;
 extern const gsl_rng_type * gsl_rng_cmrg ;
 extern const gsl_rng_type * gsl_rng_minstd ;
-extern const gsl_rng_type * gsl_rng_mt19937 ;
 extern const gsl_rng_type * gsl_rng_mrg ;
+extern const gsl_rng_type * gsl_rng_mt19937 ;
 extern const gsl_rng_type * gsl_rng_rand ;
+extern const gsl_rng_type * gsl_rng_ranlux ;
+extern const gsl_rng_type * gsl_rng_ranlux389 ;
 extern const gsl_rng_type * gsl_rng_taus ;
 extern const gsl_rng_type * gsl_rng_tt800 ;
 extern const gsl_rng_type * gsl_rng_uni ;
 extern const gsl_rng_type * gsl_rng_uni32 ;
+extern const gsl_rng_type * gsl_rng_vax ;
 extern const gsl_rng_type * gsl_rng_zuf ;
 
 extern const gsl_rng_type * gsl_rng_default ;
