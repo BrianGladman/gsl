@@ -35,8 +35,9 @@
  *
  *   A = U D Q^T
  *
- * where U is a an M x N matrix (U^T U = I), D is a diagonal N x N
- * matrix and Q is an N x N orthogonal matrix (Q^T Q = I)
+ * where U is a column-orthogonal M x N matrix (U^T U = I), 
+ * D is a diagonal N x N matrix, 
+ * and Q is an N x N orthogonal matrix (Q^T Q = Q Q^T = I)
  *
  * U is stored in the original matrix A, which has the same size
  *
@@ -45,12 +46,15 @@
  *
  * The diagonal matrix D is stored in the vector S,  D_ii = S_i
  *
- * The one-sided Jacobi algorithm is used (see Algorithm 4.1 in the
- * following paper). 
- *
- * See James Demmel, Kresimir Veselic, "Jacobi's Method is more
+ * Algorithm due to J.C. Nash, Compact Numerical Methods for
+ * Computers (New York: Wiley and Sons, 1979), chapter 3.
+ * See also Algorithm 4.1 in
+ * James Demmel, Kresimir Veselic, "Jacobi's Method is more
  * accurate than QR", Lapack Working Note 15 (LAWN15), October 1989.
- * Available from netlib.  
+ * Available from netlib.
+ *
+ * Based on code by Arthur Kosowsky, Rutgers University
+ *                  kosowsky@physics.rutgers.edu  
  */
 
 int
@@ -130,6 +134,9 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
 		   * But I'm too lazy. This will have to do. [GJ]
 		   */
 
+                  /* FIXME: This routine is a hack. We need to get the
+                     state of the art in Jacobi SVD's here ! */
+                  
                   /* This is an adhoc method of testing for a "zero"
                      singular value. We consider it to be zero if it
                      is sufficiently small compared with the currently
@@ -194,24 +201,34 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
        * Orthogonalization complete. Compute singular values.
        */
 
-      for (j = 0; j < N; j++)
-	{
-	  /* Calculate singular values. */
+      {
+        double prev_norm = -1.0;
 
-          gsl_vector column = gsl_matrix_column (A, j);
-          double norm = gsl_blas_dnrm2 (&column);
+        for (j = 0; j < N; j++)
+          {
+            gsl_vector column = gsl_matrix_column (A, j);
+            double norm =  gsl_blas_dnrm2 (&column);
+            
+            /* Determine if singular value is zero, according to the
+               criteria used in the main loop above (i.e. comparison
+               with norm of previous column). */
 
-	  gsl_vector_set (S, j, norm);
+            if (norm == 0 || (j > 0 && norm <= tolerance * prev_norm))
+              {
+                gsl_vector_set (S, j, 0.0);       /* singular */
+                gsl_vector_set_zero (&column);    /* annihilate column */
 
-	  /* Normalize vectors. */
+                prev_norm = 0;        
+              }
+            else
+              {
+                gsl_vector_set (S, j, norm);            /* non-singular */
+                gsl_vector_scale (&column, 1.0/norm);   /* normalize column */
 
-	  for (i = 0; i < M; i++)
-	    {
-	      const REAL Aij = gsl_matrix_get (A, i, j);
-	      const REAL Sj = gsl_vector_get (S, j);
-	      gsl_matrix_set (A, i, j, Aij / Sj);
-	    }
-	}
+                prev_norm = norm;   
+              }
+          }
+      }
 
       if (count > 0)
 	{
