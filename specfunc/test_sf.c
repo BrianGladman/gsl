@@ -1551,7 +1551,6 @@ int check_gamma(void)
   y = gsl_sf_gamma_inc_Q(0.001, 10.0);
   s += ( frac_diff(y, 4.169307817190261516e-09 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_gamma_inc_Q(0.001, 10.0)");
-  printf("%22.18g\n", y);
   status += s;
 
   s = 0;
@@ -1576,7 +1575,6 @@ int check_gamma(void)
   y = gsl_sf_gamma_inc_Q(10.0, 10.01);
   s += ( frac_diff(y, 0.4566792413306589430 ) > 1.0e-12 );
   gsl_test(s, "  gsl_sf_gamma_inc_Q(10.0, 10.01)");
-  printf("%22.18g\n", y);
   status += s;
 
   s = 0;

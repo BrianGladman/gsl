@@ -163,7 +163,7 @@ gamma_inc_Q_CF(const double a, const double x, double * result)
   for(k=1; k<kmax; k++) {
     double ak;
     if(GSL_IS_ODD(k))
-      ak = (k-a)/x;
+      ak = (0.5*(k+1.0)-a)/x;
     else
       ak = 0.5*k/x;
     rhok  = -ak*(1.0 + rhok)/(1.0 + ak*(1.0 + rhok));
@@ -297,29 +297,62 @@ gsl_sf_gamma_inc_Q_impl(const double a, const double x, double * result)
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(x < 0.5*a) {
+  else if(x <= 0.5*a) {
+    /* If the series is quick, do that. It is
+     * robust and simple.
+     */
     double P;
     int stat_P = gamma_inc_P_series(a, x, &P);
     *result = 1.0 - P;
     return stat_P;
   }
-  else if(a < 0.25 && x < 10.0) {
-    return gamma_inc_Q_series(a, x, result);
-  }
-  else if(x < 100.0 && x > a) {
-    return gamma_inc_Q_CF(a, x, result);
-  }
-  else if(a > 1.0e+05 && (x-a)*(x-a) < a) {
+  else if(a >= 1.0e+06 && (x-a)*(x-a) < a) {
+    /* Then try the difficult asymptotic regime.
+     * This is the only way to do this region.
+     */
     return gamma_inc_Q_asymp_unif(a, x, result);
   }
-  else if(x < a) {
-    double P;
-    int stat_P = gamma_inc_P_series(a, x, &P);
-    *result = 1.0 - P;
-    return stat_P;
+  else if(a < 0.2 && x < 5.0) {
+    /* Cancellations at small a must be handled
+     * analytically; x should not be too big
+     * either since the series terms grow
+     * with x and log(x).
+     */
+    return gamma_inc_Q_series(a, x, result);
+  }
+  else if(a <= x) {
+    if(x <= 1.0e+06) {
+      /* Continued fraction is excellent for x >~ a.
+       * We do not let x be too large when x > a since
+       * it is somewhat pointless to try this there;
+       * the function is rapidly decreasing for
+       * x large and x > a, and it will just
+       * underflow in that region anyway. We 
+       * catch that case in the standard
+       * large-x method.
+       */
+      return gamma_inc_Q_CF(a, x, result);
+    }
+    else {
+      return gamma_inc_Q_large_x(a, x, result);
+    }
   }
   else {
-    return gamma_inc_Q_large_x(a, x, result);
+    if(a < 0.8*x) {
+      /* Continued fraction again. The convergence
+       * is a little slower here, but that is fine.
+       * We have to trade that off against the slow
+       * convergence of the series, which is the
+       * only other option.
+       */
+      return gamma_inc_Q_CF(a, x, result);
+    }
+    else {
+      double P;
+      int stat_P = gamma_inc_P_series(a, x, &P);
+      *result = 1.0 - P;
+      return stat_P;
+    }
   }
 }
 
@@ -335,24 +368,52 @@ gsl_sf_gamma_inc_P_impl(const double a, const double x, double * result)
     *result = 0.0;
     return GSL_SUCCESS;
   }
-  else if(x < 30.0 || x < 0.5*a) {
+  else if(x < 20.0 || x < 0.5*a) {
+    /* Do the easy series cases. Robust and quick.
+     */
     return gamma_inc_P_series(a, x, result);
   }
-  else if(a > 1.0e+05 && (x-a)*(x-a) < a) {
+  else if(a > 1.0e+06 && (x-a)*(x-a) < a) {
+    /* Crossover region. Note that Q and P are
+     * roughly the same order of magnitude here,
+     * so the subtraction is stable.
+     */
     double Q;
     int stat_Q = gamma_inc_Q_asymp_unif(a, x, &Q);
     *result = 1.0 - Q;
     return stat_Q;
   }
-  else if(x < a) {
-    return gamma_inc_P_series(a, x, result);
-  }
-  else {
+  else if(a <= x) {
+    /* Q <~ P in this area, so the
+     * subtractions are stable.
+     */
     double Q;
-    int stat_Q = gamma_inc_Q_large_x(a, x, &Q);
+    int stat_Q;
+    if(a > 0.2*x) {
+      stat_Q = gamma_inc_Q_CF(a, x, &Q);
+    }
+    else {
+      stat_Q = gamma_inc_Q_large_x(a, x, &Q);
+    }
     *result = 1.0 - Q;
     return stat_Q;
   }
+  else {
+    if((x-a)*(x-a) < a) {
+      /* This condition is meant to insure
+       * that Q is not very close to 1,
+       * so the subtraction is stable.
+       */
+      double Q;
+      int stat_Q = gamma_inc_Q_CF(a, x, &Q);
+      *result = 1.0 - Q;
+      return stat_Q;
+    }
+    else {
+      return gamma_inc_P_series(a, x, result);
+    }
+  }
+
 }
 
 
