@@ -3,7 +3,7 @@ pkglib_LIBRARIES = 			\
 	libgslblasnative.a		\
 	libgslblascblas.a
 
-# check_PROGRAMS = test_blas
+check_PROGRAMS = test_blas_raw
 
 pkginclude_HEADERS = 		\
 	gsl_blas.h		\
@@ -60,11 +60,10 @@ noinst_HEADERS = \
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../matrix -I$(srcdir)/../vector -I$(srcdir)/../block
 
-# TESTS = test_blas
+TESTS = test_blas_raw
 
-#test_blas_LDADD = libgslblas.a ../err/libgslerr.a ../err/libgsltest.a
-#test_blas_DEPENDENCIES = libgslblas.a
-#test_blas_SOURCES = test_blas.c
+test_blas_raw_LDADD = libgslblasnative.a ../err/libgslerr.a ../err/libgsltest.a ../sys/libgslsys.a
+test_blas_raw_SOURCES = test_blas_raw.c test_cases.c test_cases.h
 
 libgslblas_a_SOURCES = 		\
 	blas.c
