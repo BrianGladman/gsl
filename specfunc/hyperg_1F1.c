@@ -13,6 +13,222 @@
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
+/* We define two scaled functions for general use.
+ * One is used for a > 0, the other for a < 0.
+ *
+ * a > 0, a = ap + N: 
+ *   Y(ap,N,b,x) := Gamma[ap+N]/Gamma[1+ap+N-b] 1F1(ap+N, b, x)
+ *
+ * a < 0, a = ap - N: 
+ *   Z(ap,N,b,x) := 1/Gamma(1+ap-N-b) 1F1(ap-N,b,x)
+ *
+ * Recursion relations will be written in terms of
+ * these. This was convenient since the discussion
+ * in Temme's paper on U(a,b,x) is in terms of 
+ * these recursions. We make use of some of his
+ * statements about the dominant solutions of these.
+ */
+
+
+/* Determine 1F1(a,b,x), 1F1(a+1,b,x)
+ * from Y(a,0,b,x) and Y(a,1,b,x).
+ */
+static
+int
+hyperg_1F1_from_Y(const double a, const double b, const double x,
+                  const double Y0, const double Y1,
+                  double * Fa, double * Fap1)
+{
+  double lg_a, sg_a;
+  double lg_ab, sg_ab;
+  int stat_a  = gsl_sf_lngamma_sgn_impl(a,       &lg_a,  &sg_a);
+  int stat_ab = gsl_sf_lngamma_sgn_impl(1.0+a-b, &lg_ab, &sg_ab);
+  if(stat_a == GSL_SUCCESS && stat_ab == GSL_SUCCESS) {
+    /* FIXME: handle overflows properly */
+    double pre = sg_a * sg_ab * exp(lg_ab - lg_a);
+    *Fa   = pre * Y0;
+    *Fap1 = pre * (1.0+a-b)/a * Y1;
+    return GSL_SUCCESS;
+  }
+  else {
+    *Fa   = 0.0;
+    *Fap1 = 0.0;
+    return GSL_EDOM;
+  }
+}
+
+
+/* Upward recursion on the parameter 'a', which
+ * a forward recursion for the function Y(a,n,b,x).
+ *
+ *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
+ *
+ * Note that this will bomb if a-b+1 is a negative integer and
+ * the recursion passes through that integer.
+ */
+static
+int
+hyperg_1F1_Y_recurse_up(double a, double b, double x,
+                        int n, double Ynm1, double Yn,
+		        int N,
+		        double * YNm1, double * YN)
+{
+  int k;
+  double Ykm1 = Ynm1;
+  double Yk   = Yn;
+  double Ykp1;
+
+  for(k=n; k<N; k++) {
+    double ckp1 = (a + k + 1 - b);
+    double ck   = b - 2*a - 2*k - x;
+    double ckm1 = a + k - 1;
+    
+    if(fabs(ckp1) < GSL_MACH_EPS) {
+      *YN = 0.0;
+      return GSL_EDOM;
+    }
+    Ykp1 = (-ck*Yk - ckm1*Ykm1)/ckp1;
+    
+    Ykm1 = Yk;
+    Yk   = Ykp1;
+  }
+  
+  *YNm1 = Ykm1;
+  *YN   = Yk;
+  return GSL_SUCCESS;
+}
+
+
+/* Evaluate Y(ap,N+1,b,x)/Y(ap,N,b,x) by Steed's continued fraction method.
+ * As usual, this is used to pick out the minimal solution of the
+ * associated recursion relation.
+ */
+static
+int
+hyperg_1F1_Y_CF1(const double ap, const double b, const int N, const double x, double * result)
+{
+  const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const int maxiter = 5000;
+  int n = 1;
+  double Anm2 = 1.0;
+  double Bnm2 = 0.0;
+  double Anm1 = 0.0;
+  double Bnm1 = 1.0;
+  double a1 = -(ap + N);
+  double b1 =  (b - 2.0*ap - x - 2.0*(N+1));
+  double An = b1*Anm1 + a1*Anm2;
+  double Bn = b1*Bnm1 + a1*Bnm2;
+  double an, bn;
+  double fn = An/Bn;
+
+  while(n < maxiter) {
+    double old_fn;
+    double del;
+    n++;
+    Anm2 = Anm1;
+    Bnm2 = Bnm1;
+    Anm1 = An;
+    Bnm1 = Bn;
+    an = -(ap + N + n - b)*(ap + N + n - 1.0);
+    bn =  (b - 2.0*ap - x - 2.0*(N+n));
+    An = bn*Anm1 + an*Anm2;
+    Bn = bn*Bnm1 + an*Bnm2;
+
+    if(fabs(An) > RECUR_BIG || fabs(Bn) > RECUR_BIG) {
+      An /= RECUR_BIG;
+      Bn /= RECUR_BIG;
+      Anm1 /= RECUR_BIG;
+      Bnm1 /= RECUR_BIG;
+      Anm2 /= RECUR_BIG;
+      Bnm2 /= RECUR_BIG;
+    }
+
+    old_fn = fn;
+    fn = An/Bn;
+    del = old_fn/fn;
+    
+    if(fabs(del - 1.0) < 10.0*GSL_MACH_EPS) break;
+  }
+
+  *result = fn;
+  if(n == maxiter)
+    return GSL_EMAXITER;
+  else
+    return GSL_SUCCESS;
+}
+
+
+/* Recursion in the negative a direction. This is
+ * forward recursion on the function Z(a, n, b, x).
+ *
+ * Z[n+1] + (b-2a-x+2n) Z[n] + (a-n)(1+a-n-b) Z[n-1] = 0
+ */
+static
+int
+hyperg_1F1_Z_recurse(const double a, const double b, const double x,
+                     int n, double Znm1, double Zn,
+		     int N,
+		     double * ZNm1, double * ZN)
+{
+  int k;
+  double Zkm1 = Znm1;
+  double Zk   = Zn;
+  double Zkp1;
+
+  for(k=n; k<N; k++) {
+    Zkp1 = -(b-2.0*a-x+2.0*k) * Zk - (a-k)*(1.0+a-k-b) * Zkm1;
+    Zkm1 = Zk;
+    Zk   = Zkp1;
+  }
+  
+  *ZNm1 = Zkm1;
+  *ZN   = Zk;
+  return GSL_SUCCESS;
+}
+
+
+/* Downward recursion on the parameter 'a'. This
+ * is backward recursion for the function Y(a,n,b,x).
+ *
+ *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
+ *
+ * Note that this will bomb if a-b+1 is a negative integer and
+ * the recursion passes through that integer.
+ * It will also bomb if a=0 and N=0.
+ */
+static
+int
+hyperg_1F1_Y_recurse_down(double a, double b, double x,
+                          int n, double Ynp1, double Yn,
+		          int N,
+		          double * YNp1, double * YN)
+{
+  int k;
+  double Ykp1 = Ynp1;
+  double Yk   = Yn;
+  double Ykm1;
+
+  for(k=n; k>N; k--) {
+    double ckp1 = (a + k + 1 - b);
+    double ck   = b - 2*a - 2*k - x;
+    double ckm1 = a + k - 1;
+    
+    if(fabs(ckm1) < GSL_MACH_EPS) {
+      *YN = 0.0;
+      return GSL_EDOM;
+    }
+    Ykm1 = (-ck*Yk - ckp1*Ykp1)/ckm1;
+    
+    Ykp1 = Yk;
+    Yk   = Ykm1;
+  }
+
+  *YNp1 = Ykp1;
+  *YN   = Yk;
+  return GSL_SUCCESS;
+}
+
+
 /* Luke's rational approximation.
  * See [Luke, Algorithms for the Computation of Mathematical Functions, p.182]
  *
@@ -104,7 +320,8 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
 }
 
 
-/* Assumes b-a != neg integer and b != neg integer.
+/* Asymptotic result for 1F1(a, b, x)  x -> -Infinity.
+ * Assumes b-a != neg integer and b != neg integer.
  */
 static
 int
@@ -143,7 +360,8 @@ hyperg_1F1_asymp_negx(const double a, const double b, const double x,
 }
 
 
-/* Assumes b != neg integer and a != neg integer
+/* Asymptotic result for 1F1(a, b, x)  x -> +Infinity
+ * Assumes b != neg integer and a != neg integer
  */
 static
 int
@@ -182,10 +400,7 @@ hyperg_1F1_asymp_posx(const double a, const double b, const double x,
 }
 
 
-/* Use this as it is used below. Basically, it assumes
- * that a is small and that either x or b is large since,
- * if they were all small, the series would have been
- * evaluated directly.
+/* Use this when a is small.
  * We have to handle a few cases for a=0,a=-1,... to be correct.
  */
 static
@@ -249,46 +464,73 @@ hyperg_1F1_small_a(const double a, const double b, const double x, double * resu
 }
 
 
-/* Do the (stable) upward recursion on the parameter 'a'.
- * Work in terms of the function
- *     Y(n) := Gamma(a+n)/Gamma(1+a+n-b) 1F1(a+n;b;x)
- *
- *     (a+n+1-b)Y(n+1) + (b-2a-2n-x)Y(n) + (a+n-1)Y(n-1) = 0
- *
- * Note that this will bomb if a-b+1 is a negative integer and
- * the recursion passes through that integer.
+/* Evaluate for small a:
+ *   Y(a,0,b,x)  when a > 0
+ *   Z(a,0,b,x)  when a < 0
+ * Not defined for a = 0.
  */
 static
 int
-hyperg_1F1_Y_recurse_posa(double a, double b, double x,
-                          int n, double Ynm1, double Yn,
-		          int N,
-		          double * YNm1, double * YN)
+hyperg_1F1_YZ_small_a(const double a, const double b, const double x, double * result)
 {
-  int k;
-  double Ykm1 = Ynm1;
-  double Yk   = Yn;
-  double Ykp1;
+  double F;
+  hyperg_1F1_small_a(a, b, x, &F);
 
-  for(k=n; k<N; k++) {
-    double ckp1 = (a + k + 1 - b);
-    double ck   = b - 2*a - 2*k - x;
-    double ckm1 = a + k - 1;
-    
-    if(fabs(ckp1) < GSL_MACH_EPS) {
-      *YN = 0.0;
+  if(F == 0.0) {
+    *result = 0.0;
+    return GSL_SUCCESS;
+  }
+
+  if(a == 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(a > 0.0) {
+    /* Y(a,0,b,x) := Gamma[a]/Gamma[1+a-b] 1F1(a, b, x)
+     */
+    double lg_ab, lg_a, sg_ab, sg_a;
+    int stat_a  = gsl_sf_lngamma_sgn_impl(a,       &lg_a,  &sg_a);
+    int stat_ab = gsl_sf_lngamma_sgn_impl(1.0+a-b, &lg_ab, &sg_ab);
+    if(stat_a == GSL_SUCCESS && stat_ab == GSL_SUCCESS) {
+      double sgF = (F > 0.0 ? 1.0 : -1.0);
+      double lnF = log(fabs(F));
+      double lnr = lnF + lg_a - lg_ab;
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = sg_a * sg_ab * sgF * exp(lnr);
+	return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0;
+	return GSL_EOVRFLW;
+      }
+    }
+    else {
+      *result = 0.0;
       return GSL_EDOM;
     }
-    Ykp1 = (-ck*Yk - ckm1*Ykm1)/ckp1;
-    
-    Ykm1 = Yk;
-    Yk   = Ykp1;
   }
-  
-  *YNm1 = Ykm1;
-  *YN   = Yk;
-  return GSL_SUCCESS;
+  else {
+    /* Z(a,0,b,x) := 1/Gamma(1+a-b) 1F1(a,b,x)
+     */
+    double lg_ab, sg_ab;
+    int stat_ab = gsl_sf_lngamma_sgn_impl(1.0+a-b, &lg_ab, &sg_ab);
+    if(stat_ab == GSL_SUCCESS) {
+      double sgF = (F > 0.0 ? 1.0 : -1.0);
+      double lnF = log(fabs(F));
+      double lnr = lnF - lg_ab;
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = sg_ab * sgF * exp(lnr);
+	return GSL_SUCCESS;
+      }
+      else {
+        *result = 0.0;
+	return GSL_EOVRFLW;
+      }
+    }
+  }
 }
+
+
 
 
 /* Evaluates 1F1(a+N,b,x) and 1F1(a+N+1,b,x) by recursing
@@ -338,7 +580,7 @@ hyperg_1F1_recurse_posa(double a, double b, double x, int N, double * FN, double
       double ln_FN, ln_FNp1;
       double YN, YNp1;
 
-      hyperg_1F1_Y_recurse_posa(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
+      hyperg_1F1_Y_recurse_up(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
 
       ln_FN   = -(lg_aN - lg_abN) + log(fabs(YN));
       ln_FNp1 = -(lg_aN - lg_abN) + log(fabs((1.0+a+N-b)/(a+N)*YNp1));
@@ -359,34 +601,6 @@ hyperg_1F1_recurse_posa(double a, double b, double x, int N, double * FN, double
 }
 
 
-/* Recursion in the negative a direction.
- *
- * Y[n] := 1F1(a-n,b,x)/Gamma(1+a-n-b)
- *
- * Y[n+1] + (b-2a-x+2n) Y[n] + (a-n)(1+a-n-b) Y[n-1] = 0
- */
-static
-int
-hyperg_1F1_Y_recurse_nega(const double a, const double b, const double x,
-                          int n, double Ynm1, double Yn,
-		          int N,
-		          double * YNm1, double * YN)
-{
-  int k;
-  double Ykm1 = Ynm1;
-  double Yk   = Yn;
-  double Ykp1;
-
-  for(k=n; k<N; k++) {
-    Ykp1 = -(b-2.0*a-x+2.0*k) * Yk - (a-k)*(1.0+a-k-b) * Ykm1;
-    Ykm1 = Yk;
-    Yk   = Ykp1;
-  }
-  
-  *YNm1 = Ykm1;
-  *YN   = Yk;
-  return GSL_SUCCESS;
-}
 
 
 /* Evaluates 1F1(a-N,b,x) and 1F1(a-N-1,b,x) by recursing
@@ -431,7 +645,7 @@ hyperg_1F1_recurse_nega(double a, double b, double x, int N, double * FN, double
       double ln_FN, ln_FNp1;
       double YN, YNp1;
 
-      hyperg_1F1_Y_recurse_nega(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
+      hyperg_1F1_Z_recurse(a, b, x, 1, Y0, Y1, N+1, &YN, &YNp1);
 
       ln_FN   = lg_abN + log(fabs(YN));
       ln_FNp1 = lg_abN + log(fabs(YNp1/(a-N-b)));
@@ -483,6 +697,88 @@ hyperg_1F1_a_negint(int a, const double b, const double x, double * result)
 }
 
 
+/* Evaluate Y(a, 0, b, x), Y(a, 1, b, x) for b > 2a, a > 0.
+ * Since we cannot recurse forward on a in this regime,
+ * we use Steed's continued fraction, then recurse backward
+ * and evaluate at small a to obtain the normalization.
+ */
+static
+int
+hyperg_1F1_Y_agt0_bgt2a_recurse(const double a, const double b, const double x,
+                                double * Ya, double * Yap1)
+{
+  int N     = floor(a);
+  double ap = a - N;
+  double yapp1, yap;
+  double yNp1, yN;
+  double fN;
+  double yap_true;
+  double scale;
+  double lg_a, sg_a, lg_ab, sg_ab;
+  double pre;
+  int stat_CF1;
+  int stat_rec;
+
+  /* We cannot allow the lower a value to be zero since
+   * we are working in terms of Y.
+   */
+  if(ap == 0.0) {
+    ap += 1.0;
+    N  -= 1;
+  }
+
+  stat_CF1 = hyperg_1F1_Y_CF1(ap, b, N, x, &fN);  /* fN = Y_{N+1}/Y_N */
+
+  yN   = GSL_SQRT_DBL_MIN;
+  yNp1 = fN * yN;
+
+  stat_rec = hyperg_1F1_Y_recurse_down(ap, b, x, N, yNp1, yN, 0, &yapp1, &yap);
+
+  hyperg_1F1_YZ_small_a(ap, b, x, &yap_true);
+  scale = yap_true / yap;
+
+  *Ya   = scale * yN;
+  *Yap1 = scale * yNp1;
+
+  return GSL_SUCCESS;
+}
+
+
+
+/* Evaluate 1F1(a, b, x) for b < 2a, a > 0.
+ * We evaluate near b=2a and then recurse forward.
+ */
+static
+int
+hyperg_1F1_Y_agt0_blt2a_recurse(const double a, const double b, const double x,
+                                double * Ya, double * Yap1)
+{
+  /* a = N + ap
+   * a_start = M + ap
+   * M <= N
+   */
+  int N = floor(a);
+  int M = ( b > 0.0 ? floor(0.5*b) : 0 );
+  double ap = a - N;
+  double aM = ap + M + 1.0;
+  double YM, YMp1;
+  double YN, YNm1;
+
+  int stat_1 = hyperg_1F1_Y_agt0_bgt2a_recurse(aM, b, x, &YM, &YMp1);
+
+  int stat_2 = hyperg_1F1_Y_recurse_up(aM, b, x, 0, YM, YMp1, N-M, &YNm1, &YN);
+
+  *Ya   = YNm1;
+  *Yap1 = YN;
+  if(stat_1 != GSL_SUCCESS)
+    return stat_1;
+  else if(stat_2 != GSL_SUCCESS)
+    return stat_2;
+  else
+    return GSL_SUCCESS;
+}
+			      
+			      
 int
 gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
                        double * result
@@ -496,10 +792,6 @@ gsl_sf_hyperg_1F1_impl(const double a, const double b, const double x,
   const double bma = b - a;
   const double amb = a - b;
 
-/*
-double prec;
-return hyperg_1F1_luke(a, b, x, result, &prec);
-*/
   a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
   b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
   bma_neg_integer = ( bma < 0.0  &&  fabs(bma - rint(bma)) < locEPS );
@@ -515,7 +807,13 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  
+
+  /* case: b==0 (and a != 0, by above) */
+  if(fabs(b) < locEPS) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+
   /* case: a==b,  exp(x) */
   if(fabs(bma) < locEPS) {
     return gsl_sf_exp_impl(x, result);
@@ -539,7 +837,7 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
       double prec;
       return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
     }
-    
+
     if( (fabs(bma) < 20.0 && fabs(b) < 20.0) || (b >= fabs(bma)) ) {
       /* Use Kummer transformation to render series safe.
        * We do not have to worry about overflow in
@@ -548,24 +846,104 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
       double prec;
       double Kummer_1F1;
       double Ex = exp(x);
-      int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, x, &Kummer_1F1, &prec);
+      int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, -x, &Kummer_1F1, &prec);
       *result = Ex * Kummer_1F1;
       return stat_K;
     }
   }
 
 
-  /* a = negative integer
+  /* When b is positive, the series can be dominated,
+   * as long as x is not relatively too large.
    */
-  if(a_neg_integer) {
+  if(b > locMAX(fabs(a),1.0)*fabs(x)) {
+    double prec;
+    return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
+  }
+
+  /* Kummer transformed version of above.
+   */
+  if(b > locMAX(fabs(bma),1.0)*fabs(x)) {
+    double prec;
+    double Kummer_1F1;
+    int stat_K = gsl_sf_hyperg_1F1_series_impl(bma, b, -x, &Kummer_1F1, &prec);
+    if(Kummer_1F1 == 0.0) {
+      *result = 0.0;
+      return stat_K;
+    }
+    else {
+      double lnr = log(fabs(Kummer_1F1)) + x;
+      double sgK = (Kummer_1F1 > 0.0 ? 1.0 : -1.0);
+      if(lnr < GSL_LOG_DBL_MAX) {
+        *result = sgK * exp(lnr);
+        return stat_K;
+      }
+      else {
+        *result = 0.0; /* FIXME: should be Inf */
+        return GSL_EOVRFLW;
+      }
+    }
+  }
+
+  /* Handle small a explicitly. This helps clarify
+   * the thinking for the recursize cases below.
+   * It is also a minor premature optimization.
+   */
+  if(fabs(a) < 2.0) {
+    return hyperg_1F1_small_a(a, b, x, result);
+  }
+
+
+  if(a > 0.0 && b > 0.0) {
+    int N     = floor(a);
+    double ap = a - N;
+    int n     = 2;
+    double Ynm1, Yn;
+    double Ya, Yap1;
+    double Fa, Fap1;
+    hyperg_1F1_YZ_small_a(ap + n - 1, b, x, &Ynm1);
+    hyperg_1F1_YZ_small_a(ap + n,     b, x, &Yn);
+    hyperg_1F1_Y_recurse_up(ap, b, x, n, Ynm1, Yn, N+1, &Ya, &Yap1);
+    hyperg_1F1_from_Y(a, b, x, Ya, Yap1, &Fa, &Fap1);
+    *result = Fa;
+    return GSL_SUCCESS;
+  }
+
+  /* Handle the region where we cannot recurse forward.
+   */
+  if(a > 0.0 && b >= 2.0*a) {
+    double Ya, Yap1;
+    double Fap1;
+    int stat_r = hyperg_1F1_Y_agt0_bgt2a_recurse(a, b, x, &Ya, &Yap1);
+    return hyperg_1F1_from_Y(a, b, x, Ya, Yap1, result, &Fap1);
+  }
+
+
+  /* Handle the region involving stable forward recursion.
+   */
+  if(a > 0.0 && b < 2.0*a) {
+    double Ya, Yap1;
+    double Fap1;
+    int stat_r = hyperg_1F1_Y_agt0_blt2a_recurse(a, b, x, &Ya, &Yap1);
+    return hyperg_1F1_from_Y(a, b, x, Ya, Yap1, result, &Fap1);
+  }
+
+
+  /* a = negative integer
+   * Backward recursion should be stable for
+   * any value of x, but we must be careful
+   * about b.
+   */
+  if(a_neg_integer && b > -1.0) {
     int inta = floor(a + 0.1);
     return hyperg_1F1_a_negint(inta, b, x, result);
   }
 
 
   /* b-a = negative integer
+   * Use Kummer and backward recursion.
    */
-  if(bma_neg_integer) {
+  if(bma_neg_integer && b > -1.0) {
     int    intbma = floor(bma + 0.1);
     double Kummer_1F1;
     int    stat_K = hyperg_1F1_a_negint(intbma, b, -x, &Kummer_1F1);
@@ -603,9 +981,6 @@ return hyperg_1F1_luke(a, b, x, result, &prec);
     double prec;
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
   }
-
-
-
 
 
   /* Large positive a obtained by recursion.
