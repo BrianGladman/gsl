@@ -1,3 +1,9 @@
+2000-10-19  Brian Gough  <bjg@inweb.aethos.co.uk>
+
+	* hc_init.c (FUNCTION): scratch space changed to n elements
+	instead of 2*n (apparently the routine previously allocated too
+	much space)
+
 Wed Feb 16 14:43:42 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (pkginclude_HEADERS): added missing
