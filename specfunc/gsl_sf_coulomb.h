@@ -120,7 +120,7 @@ int gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
  * [Abramowitz+Stegun 14.1.8, 14.1.9]
  */
 int gsl_sf_coulomb_CL_e(double L, double eta, gsl_sf_result * result);
-int gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double * cl);
+int gsl_sf_coulomb_CL_array(double Lmin, int kmax, double eta, double * cl);
 
 
 __END_DECLS

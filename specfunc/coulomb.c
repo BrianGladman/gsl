@@ -124,7 +124,7 @@ gsl_sf_coulomb_CL_e(double lam, double eta, gsl_sf_result * result)
 /* cl[0] .. cl[kmax] = C_{lam_min}(eta) .. C_{lam_min+kmax}(eta)
  */
 int
-gsl_sf_coulomb_CL_list(double lam_min, int kmax, double eta, double * cl)
+gsl_sf_coulomb_CL_array(double lam_min, int kmax, double eta, double * cl)
 {
   int k;
   gsl_sf_result cl_0;

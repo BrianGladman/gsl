@@ -1,3 +1,8 @@
+Thu Oct 18 11:37:25 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* coulomb.c (gsl_sf_coulomb_CL_array): renamed from
+ 	gsl_sf_coulomb_CL_list for consistency
+
 Sat Oct 13 15:55:56 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cheb_eval.c (cheb_eval_e): keep track of cancellation error to
