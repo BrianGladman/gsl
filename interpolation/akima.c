@@ -24,137 +24,85 @@
 #include <stdlib.h>
 #include <math.h>
 #include <gsl/gsl_errno.h>
-#include "integ_eval_macro.h"
+#include "integ_eval.h"
 #include "gsl_interp.h"
 
-
-/* akima interpolation object */
 typedef struct
-  {
-    int (*eval) (const gsl_interp *,
-		      const double xa[], const double ya[],
-		      double x,
-		      gsl_interp_accel *, double *y);
-    int (*eval_d) (const gsl_interp *,
-			const double xa[], const double ya[],
-			double x,
-			gsl_interp_accel *, double *dydx);
-    int (*eval_d2) (const gsl_interp *,
-			 const double xa[], const double ya[],
-			 double x,
-			 gsl_interp_accel *, double *y_pp);
-    int (*eval_i) (const gsl_interp *,
-			const double xa[], const double ya[],
-			gsl_interp_accel *, double a, double b, double * result);
-    void (*free) (gsl_interp *);
-    double xmin;
-    double xmax;
-    size_t size;
-    double *b;
-    double *c;
-    double *d;
-  }
-gsl_interp_akima;
-
-
-static
-gsl_interp *
-akima_natural_create (const double xa[], const double ya[], size_t size);
-
-static
-gsl_interp *
-akima_periodic_create (const double xa[], const double ya[], size_t size);
-
-
-static
-void
-akima_free (gsl_interp * interp);
-
-static
-int
-akima_eval (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-
-static
-int
-akima_eval_d (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_p);
-
-static
-int
-akima_eval_d2 (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y_pp);
-
-static
-int
-akima_eval_i (const gsl_interp *, const double xa[], const double ya[], gsl_interp_accel *, double, double, double *);
-
-
-const gsl_interp_factory gsl_interp_factory_akima_natural =
 {
-  "akima_natural",
-  akima_natural_create
-};
-const gsl_interp_factory gsl_interp_factory_akima_periodic =
-{
-  "akima_periodic",
-  akima_periodic_create
-};
+  double * b;
+  double * c;
+  double * d;
+  double * _m;
+} akima_state_t;
 
 
 /* common creation */
-static
-gsl_interp_akima *
-interp_akima_new (const double x_array[], const double y_array[], size_t size)
+static void *
+akima_alloc (size_t size)
 {
-  y_array = 0;			/* prevent warning about unused parameter */
-
-  if (size <= 4)
-    return 0;
-  else
+  akima_state_t *state = (akima_state_t *) malloc (sizeof (akima_state_t));
+  
+  if (state == NULL)
     {
-      gsl_interp_akima *interp = (gsl_interp_akima *) malloc (sizeof (gsl_interp_akima));
-      if (interp != 0)
-	{
-	  interp->eval = akima_eval;
-	  interp->eval_d = akima_eval_d;
-	  interp->eval_d2 = akima_eval_d2;
-	  interp->eval_i = akima_eval_i;
-	  interp->free = akima_free;
-	  interp->xmin = x_array[0];
-	  interp->xmax = x_array[size - 1];
-	  interp->size = size;
-	  interp->b = (double *) malloc (size * sizeof (double));
-	  interp->c = (double *) malloc (size * sizeof (double));
-	  interp->d = (double *) malloc (size * sizeof (double));
-	  if (interp->b == 0 || interp->c == 0 || interp->d == 0)
-	    {
-	      if (interp->b != 0)
-		free (interp->b);
-	      if (interp->c != 0)
-		free (interp->c);
-	      if (interp->d != 0)
-		free (interp->d);
-	      free (interp);
-	      return 0;
-	    }
-	}
-      return interp;
+      GSL_ERROR_NULL("failed to allocate space for state", GSL_ENOMEM);
     }
+  
+  state->b = (double *) malloc (size * sizeof (double));
+  
+  if (state->b == NULL)
+    {
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for b", GSL_ENOMEM);
+    }
+  
+  state->c = (double *) malloc (size * sizeof (double));
+  
+  if (state->c == NULL)
+    {
+      free (state->b);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for c", GSL_ENOMEM);
+    }
+  
+  state->d = (double *) malloc (size * sizeof (double));
+  
+  if (state->d == NULL)
+    {
+      free (state->c);
+      free (state->b);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for d", GSL_ENOMEM);
+    }
+
+  state->_m = (double *) malloc ((size + 4) * sizeof (double));
+
+  if (state->_m == NULL)
+    {
+      free (state->d);
+      free (state->c);
+      free (state->b);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for _m", GSL_ENOMEM);
+    }
+  
+  return state;
 }
 
 
 /* common calculation */
-static
-void
-interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double * m)
+static void
+akima_calc (const double x_array[], double b[],  double c[],  double d[], size_t size, double m[])
 {
   size_t i;
-  for (i = 0; i < interp->size - 1; i++)
+
+  for (i = 0; i < (size - 1); i++)
     {
       const double NE = fabs (m[i + 1] - m[i]) + fabs (m[i - 1] - m[i - 2]);
       if (NE == 0.0)
 	{
-	  interp->b[i] = m[i];
-	  interp->c[i] = 0.0;
-	  interp->d[i] = 0.0;
+	  b[i] = m[i];
+	  c[i] = 0.0;
+	  d[i] = 0.0;
 	}
       else
 	{
@@ -170,375 +118,273 @@ interp_akima_calc (gsl_interp_akima * interp, const double x_array[], double * m
 	  else
 	    {
 	      alpha_ip1 = fabs (m[i] - m[i - 1]) / NE_next;
-	      tL_ip1 = (1 - alpha_ip1) * m[i] + alpha_ip1 * m[i + 1];
+	      tL_ip1 = (1.0 - alpha_ip1) * m[i] + alpha_ip1 * m[i + 1];
 	    }
-	  interp->b[i] = (1 - alpha_i) * m[i - 1] + alpha_i * m[i];
-	  interp->c[i] = (3 * m[i] - 2 * interp->b[i] - tL_ip1) / h_i;
-	  interp->d[i] = (interp->b[i] + tL_ip1 - 2 * m[i]) / (h_i * h_i);
+	  b[i] = (1.0 - alpha_i) * m[i - 1] + alpha_i * m[i];
+	  c[i] = (3.0 * m[i] - 2.0 * b[i] - tL_ip1) / h_i;
+	  d[i] = (b[i] + tL_ip1 - 2.0 * m[i]) / (h_i * h_i);
 	}
     }
 }
 
 
-static
-gsl_interp *
-akima_natural_create (const double x_array[],
-		      const double y_array[],
-		      size_t size)
+static int
+akima_init (void * vstate, const double x_array[], const double y_array[],
+            size_t size)
 {
-  gsl_interp_akima *interp = interp_akima_new (x_array, y_array, size);
+  akima_state_t *state = (akima_state_t *) vstate;
 
-  if (interp != 0)
+  double * m = state->_m + 2; /* offset so we can address the -1,-2
+                                 components */
+
+  size_t i;
+  for (i = 0; i <= size - 2; i++)
     {
-      double * _m = (double *) malloc ((size + 4) * sizeof (double));
-      if (_m != 0)
-	{
-	  double * m = _m + 2; /* offset so we can address the -1,-2 components */
-	  size_t i;
-	  for (i = 0; i <= size - 2; i++)
-	    {
-	      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
-	    }
-
-	  /* non-periodic boundary conditions */
-	  m[-2] = 3.0 * m[0] - 2.0 * m[1];
-	  m[-1] = 2.0 * m[0] - m[1];
-	  m[size - 1] = 2.0 * m[size - 2] - m[size - 3];
-	  m[size] = 3.0 * m[size - 2] - 2.0 * m[size - 3];
-
-	  interp_akima_calc (interp, x_array, m);
-	  free (_m);
-	}
-      else
-	{
-	  free (interp);
-	  return 0;
-	}
+      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
     }
-
-  return (gsl_interp *) interp;
+  
+  /* non-periodic boundary conditions */
+  m[-2] = 3.0 * m[0] - 2.0 * m[1];
+  m[-1] = 2.0 * m[0] - m[1];
+  m[size - 1] = 2.0 * m[size - 2] - m[size - 3];
+  m[size] = 3.0 * m[size - 2] - 2.0 * m[size - 3];
+  
+  akima_calc (x_array, state->b, state->c, state->d, size, m);
+  
+  return GSL_SUCCESS;
 }
 
 
-static
-gsl_interp *
-akima_periodic_create (const double x_array[],
-		       const double y_array[],
-		       size_t size)
+static int
+akima_init_periodic (void * vstate,
+                     const double x_array[],
+                     const double y_array[],
+                     size_t size)
 {
-  gsl_interp_akima *interp = interp_akima_new (x_array, y_array, size);
+  akima_state_t *state = (akima_state_t *) vstate;
+  
+  double * m = state->_m + 2; /* offset so we can address the -1,-2
+                                 components */
 
-  if (interp != 0)
+  size_t i;
+  for (i = 0; i <= size - 2; i++)
     {
-      double * _m = (double *) malloc ((size + 4) * sizeof (double));
-      if (_m != 0)
-	{
-	  double * m = _m + 2; /* offset so we can address the -1,-2 components */
-	  size_t i;
-	  for (i = 0; i <= size - 2; i++)
-	    {
-	      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
-	    }
-
-	  /* periodic boundary conditions */
-	  m[-2] = m[size - 1 - 2];
-	  m[-1] = m[size - 1 - 1];
-	  m[size - 1] = m[0];
-	  m[size] = m[1];
-
-	  interp_akima_calc (interp, x_array, m);
-	  free (_m);
-	}
-      else
-	{
-	  free (interp);
-	  return 0;
-	}
+      m[i] = (y_array[i + 1] - y_array[i]) / (x_array[i + 1] - x_array[i]);
     }
+  
+  /* periodic boundary conditions */
+  m[-2] = m[size - 1 - 2];
+  m[-1] = m[size - 1 - 1];
+  m[size - 1] = m[0];
+  m[size] = m[1];
+  
+  akima_calc (x_array, state->b, state->c, state->d, size, m);
 
-  return (gsl_interp *) interp;
+  return GSL_SUCCESS;
 }
 
-
-static
-void
-akima_free (gsl_interp * akima_interp)
+static void
+akima_free (void * vstate)
 {
-  gsl_interp_akima *interp = (gsl_interp_akima *) akima_interp;
-  if (interp != 0)
-    {
-      if (interp->b != 0)
-	free (interp->b);
-      if (interp->c != 0)
-	free (interp->c);
-      if (interp->d != 0)
-	free (interp->d);
-      free (interp);
-    }
+  akima_state_t *state = (akima_state_t *) vstate;
+
+  free (state->b);
+  free (state->c);
+  free (state->d);
+  free (state->_m);
+  free (state);
 }
 
 
 static
 int
-akima_eval (const gsl_interp * akima_interp,
-		 const double x_array[], const double y_array[],
-		 double x,
-		 gsl_interp_accel * a,
-		 double *y)
+akima_eval (const void * vstate,
+            const double x_array[], const double y_array[], size_t size,
+            double x,
+            gsl_interp_accel * a,
+            double *y)
 {
-  const gsl_interp_akima *interp = (const gsl_interp_akima *) akima_interp;
+  const akima_state_t *state = (const akima_state_t *) vstate;
 
-  if (x < interp->xmin)
+  size_t index;
+  
+  if (a != 0)
     {
-      *y = y_array[0];
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *y = y_array[interp->size - 1];
-      return GSL_EDOM;
+      index = gsl_interp_accel_find (a, x_array, size, x);
     }
   else
     {
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      {
-	const double x_lo = x_array[index];
-	const double delx = x - x_lo;
-	const double b = interp->b[index];
-	const double c = interp->c[index];
-	const double d = interp->d[index];
-	*y = y_array[index] + delx * (b + delx * (c + d * delx));
-	return GSL_SUCCESS;
-      }
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
     }
+  
+  /* evaluate */
+  {
+    const double x_lo = x_array[index];
+    const double delx = x - x_lo;
+    const double b = state->b[index];
+    const double c = state->c[index];
+    const double d = state->d[index];
+    *y = y_array[index] + delx * (b + delx * (c + d * delx));
+    return GSL_SUCCESS;
+  }
+}
+
+
+static int
+akima_eval_deriv (const void * vstate,
+                  const double x_array[], const double y_array[], size_t size,
+                  double x,
+                  gsl_interp_accel * a,
+                  double *dydx)
+{
+  const akima_state_t *state = (const akima_state_t *) vstate;
+
+  size_t index;
+
+  y_array = 0;			/* prevent warning about unused parameter */
+  
+  if (a != 0)
+    {
+      index = gsl_interp_accel_find (a, x_array, size, x);
+    }
+  else
+    {
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
+    }
+  
+  /* evaluate */
+  {
+    double x_lo = x_array[index];
+    double delx = x - x_lo;
+    double b = state->b[index];
+    double c = state->c[index];
+    double d = state->d[index];
+    *dydx = b + delx * (2.0 * c + 3.0 * d * delx);
+    return GSL_SUCCESS;
+  }
 }
 
 
 static
 int
-akima_eval_d (const gsl_interp * akima_interp,
-		   const double x_array[], const double y_array[],
-		   double x,
-		   gsl_interp_accel * a,
-		   double *dydx)
+akima_eval_deriv2 (const void * vstate,
+                   const double x_array[], const double y_array[], size_t size,
+                   double x,
+                   gsl_interp_accel * a,
+                   double *y_pp)
 {
-  const gsl_interp_akima *interp = (const gsl_interp_akima *) akima_interp;
+  const akima_state_t *state = (const akima_state_t *) vstate;
+
+  size_t index;
 
   y_array = 0;			/* prevent warning about unused parameter */
 
-  if (x < interp->xmin)
+  if (a != 0)
     {
-      *dydx = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *dydx = 0.0;
-      return GSL_EDOM;
+      index = gsl_interp_accel_find (a, x_array, size, x);
     }
   else
     {
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      {
-	double x_lo = x_array[index];
-	double delx = x - x_lo;
-	double b = interp->b[index];
-	double c = interp->c[index];
-	double d = interp->d[index];
-	*dydx = b + delx * (2.0 * c + 3.0 * d * delx);
-	return GSL_SUCCESS;
-      }
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
     }
+  
+  /* evaluate */
+  {
+    const double x_lo = x_array[index];
+    const double delx = x - x_lo;
+    const double c = state->c[index];
+    const double d = state->d[index];
+    *y_pp = 2.0 * c + 6.0 * d * delx;
+    return GSL_SUCCESS;
+  }
 }
 
 
 static
 int
-akima_eval_d2 (const gsl_interp * akima_interp,
-		    const double x_array[], const double y_array[],
-		    double x,
-		    gsl_interp_accel * a,
-		    double *y_pp)
+akima_eval_integ (const void * vstate,
+                  const double x_array[], const double y_array[], size_t size,
+                  gsl_interp_accel * acc,
+                  double a, double b,
+                  double * result)
 {
-  const gsl_interp_akima *interp = (const gsl_interp_akima *) akima_interp;
+  const akima_state_t *state = (const akima_state_t *) vstate;
 
-  y_array = 0;			/* prevent warning about unused parameter */
+  size_t i, index_a, index_b;
 
-  if (x < interp->xmin)
+  if (acc != 0)
     {
-      *y_pp = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *y_pp = 0.0;
-      return GSL_EDOM;
+      index_a = gsl_interp_accel_find (acc, x_array, size, a);
+      index_b = gsl_interp_accel_find (acc, x_array, size, b);
     }
   else
     {
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      {
-	const double x_lo = x_array[index];
-	const double delx = x - x_lo;
-	const double c = interp->c[index];
-	const double d = interp->d[index];
-	*y_pp = 2.0 * c + 6.0 * d * delx;
-	return GSL_SUCCESS;
-      }
+      index_a = gsl_interp_bsearch (x_array, a, 0, size - 1);
+      index_b = gsl_interp_bsearch (x_array, b, 0, size - 1);
     }
+  
+  *result = 0.0;
+
+  /* interior intervals */
+  
+  for(i=index_a; i<=index_b; i++) {
+    const double x_hi = x_array[i + 1];
+    const double x_lo = x_array[i];
+    const double y_lo = y_array[i];
+    const double dx = x_hi - x_lo;
+    if(dx != 0.0) {
+
+      if (i == index_a || i == index_b)
+        {
+          double x1 = (i == index_a) ? a : x_lo;
+          double x2 = (i == index_b) ? b : x_hi;
+          *result += integ_eval (y_lo, state->b[i], state->c[i], state->d[i],
+                                 x_lo, x1, x2);
+        }
+      else
+        {
+          *result += dx * (y_lo 
+                           + dx*(0.5*state->b[i] 
+                                 + dx*(state->c[i]/3.0 
+                                       + 0.25*state->d[i]*dx)));
+        }
+    }
+    else {
+      *result = 0.0;
+      return GSL_FAILURE;
+    }
+  }
+  
+  return GSL_SUCCESS;
 }
 
 
-static
-int
-akima_eval_i (const gsl_interp * akima_interp,
-		   const double x_array[], const double y_array[],
-		   gsl_interp_accel * acc,
-                   double a, double b,
-		   double * result)
+static const gsl_interp_type akima_type = 
 {
-  const gsl_interp_akima *interp = (const gsl_interp_akima *) akima_interp;
+  "akima", 
+  5,
+  &akima_alloc,
+  &akima_init,
+  &akima_eval,
+  &akima_eval_deriv,
+  &akima_eval_deriv2,
+  &akima_eval_integ,
+  &akima_free
+};
 
-  if (a > b || a < interp->xmin || b > interp->xmax)
-    {
-      *result = 0.0;
-      return GSL_EDOM;
-    }
-  else if(a == b)
-    {
-      *result = 0.0;
-      return GSL_SUCCESS;
-    }
-  else
-    {
-      size_t index_a, index_b;
+const gsl_interp_type * gsl_interp_akima = &akima_type;
 
-      if (acc != 0)
-	{
-	  index_a = gsl_interp_accel_find (acc, x_array, interp->size, a);
-	  index_b = gsl_interp_accel_find (acc, x_array, interp->size, b);
-	}
-      else
-	{
-	  index_a = gsl_interp_bsearch (x_array, a, 0, interp->size - 1);
-	  index_b = gsl_interp_bsearch (x_array, b, 0, interp->size - 1);
-	}
+static const gsl_interp_type akima_periodic_type = 
+{
+  "akima-periodic", 
+  5,
+  &akima_alloc,
+  &akima_init_periodic,
+  &akima_eval,
+  &akima_eval_deriv,
+  &akima_eval_deriv2,
+  &akima_eval_integ,
+  &akima_free
+};
 
-      if(index_a == index_b) {
-        /* endpoints inside same interval */
-        const double x_hi = x_array[index_a + 1];
-        const double x_lo = x_array[index_a];
-	const double y_lo = y_array[index_a];
-	const double dx = x_hi - x_lo;
-	if(dx != 0.0) {
-	  const double b_i = interp->b[index_a];
-	  const double c_i = interp->c[index_a];
-	  const double d_i = interp->d[index_a];
-	  INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, a, b, *result);
-	  return GSL_SUCCESS;
-	}
-	else {
-	  *result = 0.0;
-	  return GSL_FAILURE;
-	}
-      }
-      else {
-        /* endpoints span more than one interval */
-	size_t i;
-	*result = 0.0;
-
-	/* interior intervals */
-	for(i=index_a+1; i<index_b; i++) {
-	  const double x_hi = x_array[i + 1];
-          const double x_lo = x_array[i];
-	  const double y_lo = y_array[i];
-	  const double dx = x_hi - x_lo;
-	  if(dx != 0.0) {
-	    const double b_i = interp->b[i];
-	    const double c_i = interp->c[i];
-	    const double d_i = interp->d[i];
-	    *result += dx * (y_lo + dx*(0.5*b_i + dx*(c_i/3.0 + 0.25*d_i*dx)));
-	  }
-	  else {
-	    *result = 0.0;
-	    return GSL_FAILURE;
-	  }
-	}
-
-        /* lower end interval */
-	{
-          const double x_hi = x_array[index_a + 1];
-          const double x_lo = x_array[index_a];
-	  const double y_lo = y_array[index_a];
-	  const double dx = x_hi - x_lo;
-	  if(dx != 0.0) {
-	    const double b_i = interp->b[index_a];
-	    const double c_i = interp->c[index_a];
-	    const double d_i = interp->d[index_a];
-	    double tmp;
-	    INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, a, x_hi, tmp);
-	    *result += tmp;
-          }
-	  else {
-            *result = 0.0;
-            return GSL_FAILURE;
-	  }
-	}
-
-        /* upper end interval */
-	{
-          const double x_hi = x_array[index_b + 1];
-          const double x_lo = x_array[index_b];
-	  const double y_lo = y_array[index_b];
-	  const double dx = x_hi - x_lo;
-	  if(dx != 0.0) {
-	    const double b_i = interp->b[index_a];
-	    const double c_i = interp->c[index_a];
-	    const double d_i = interp->d[index_a];
-	    double tmp;
-	    INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, x_lo, b, tmp);
-	    *result += tmp;
-          }
-	  else {
-            *result = 0.0;
-            return GSL_FAILURE;
-	  }
-	}
-
-        return GSL_SUCCESS;
-      }
-    }
-}
+const gsl_interp_type * gsl_interp_akima_periodic = &akima_periodic_type;

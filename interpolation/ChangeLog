@@ -1,3 +1,8 @@
+Mon Jun 25 19:58:45 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* standardized to gsl conventions, added high-level 'spline'
+ 	interface
+
 Mon Apr 30 13:29:34 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* renamed gsl_interp_obj to gsl_interp

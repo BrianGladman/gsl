@@ -25,171 +25,131 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_vector.h>
-#include "integ_eval_macro.h"
+#include "integ_eval.h"
 #include "gsl_interp.h"
 
-
-/* cubic spline interpolation object */
 typedef struct
-  {
-    int (*eval) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-    int (*eval_d) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_d2) (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-    int (*eval_i) (const struct _gsl_interp_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
-    void (*free) (gsl_interp *);
-    double xmin;
-    double xmax;
-    size_t size;
-    double *c;
-  }
-gsl_interp_cspline;
-
-static
-gsl_interp *
-cspline_natural_create (const double xa[], const double ya[], size_t size);
-
-static
-gsl_interp *
-cspline_periodic_create (const double xa[], const double ya[], size_t size);
-
-static
-void
-cspline_free (gsl_interp * interp);
-
-static
-int
-cspline_eval (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *y);
-
-static
-int
-cspline_eval_d (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-
-static
-int
-cspline_eval_d2 (const gsl_interp *, const double xa[], const double ya[], double x, gsl_interp_accel *, double *dydx);
-
-static
-int
-cspline_eval_i (const gsl_interp *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
-
-
-/* global cubic spline factory objects */
-const gsl_interp_factory gsl_interp_factory_cspline_natural =
 {
-  "cspline_natural",
-  cspline_natural_create
-};
-const gsl_interp_factory gsl_interp_factory_cspline_periodic =
-{
-  "cspline_periodic",
-  cspline_periodic_create
-};
-
+  double * c;
+  double * g;
+  double * diag;
+  double * offdiag;
+} cspline_state_t;
 
 
 /* common initialization */
-static
-gsl_interp_cspline *
-cspline_new (const double xa[], size_t size)
+static void *
+cspline_alloc (size_t size)
 {
-  gsl_interp_cspline *interp = (gsl_interp_cspline *) malloc (sizeof (gsl_interp_cspline));
-  if (interp != 0)
+  cspline_state_t * state = (cspline_state_t *) malloc (sizeof (cspline_state_t));
+
+  if (state == NULL)
     {
-      interp->eval = cspline_eval;
-      interp->eval_d = cspline_eval_d;
-      interp->eval_i = cspline_eval_i;
-      interp->eval_d2 = cspline_eval_d2;
-      interp->free = cspline_free;
-      interp->xmin = xa[0];
-      interp->xmax = xa[size - 1];
-      interp->size = size;
-      interp->c = (double *) malloc (size * sizeof (double));
-      if (interp->c == 0)
-	{
-	  free (interp);
-	  return 0;
-	}
+      GSL_ERROR_NULL("failed to allocate space for state", GSL_ENOMEM);
     }
-  return interp;
+  
+  state->c = (double *) malloc (size * sizeof (double));
+  
+  if (state->c == NULL)
+    {
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for c", GSL_ENOMEM);
+    }
+
+  state->g = (double *) malloc (size * sizeof (double));
+  
+  if (state->g == NULL)
+    {
+      free (state->c);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for g", GSL_ENOMEM);
+    }
+
+  state->diag = (double *) malloc (size * sizeof (double));
+  
+  if (state->diag == NULL)
+    {
+      free (state->g);
+      free (state->c);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for diag", GSL_ENOMEM);
+    }
+
+  state->offdiag = (double *) malloc (size * sizeof (double));
+  
+  if (state->offdiag == NULL)
+    {
+      free (state->diag);
+      free (state->g);
+      free (state->c);
+      free (state);
+      GSL_ERROR_NULL("failed to allocate space for offdiag", GSL_ENOMEM);
+    }
+
+  return state;
 }
 
 
 /* natural spline calculation
  * see [Engeln-Mullges + Uhlig, p. 254]
  */
-static
-int
-cspline_calc_natural (
-  gsl_interp_cspline * interp,
-  const double xa[],
-  const double ya[])
+static int
+cspline_init (void * vstate, const double xa[], const double ya[],
+              size_t size)
 {
+  cspline_state_t *state = (cspline_state_t *) vstate;
+
   size_t i;
-  size_t num_points = interp->size;
+  size_t num_points = size;
   size_t max_index = num_points - 1;	/* Engeln-Mullges + Uhlig "n" */
-  size_t sys_size = max_index - 1;	/* linear system is sys_size x sys_size */
-  int status;
-
-  gsl_vector * g = gsl_vector_alloc(sys_size);
-  gsl_vector * diag = gsl_vector_alloc(sys_size);
-  gsl_vector * offdiag = gsl_vector_alloc(sys_size);
-
-  gsl_vector solution_vec;
-  solution_vec.size   = sys_size;
-  solution_vec.stride = 1;
-  solution_vec.data   = interp->c + 1;
-  solution_vec.block  = 0;
-
-  if (g == 0 || diag == 0 || offdiag == 0)
+  size_t sys_size = max_index - 1;   /* linear system is sys_size x sys_size */
+  
+  state->c[0] = 0.0;
+  state->c[max_index] = 0.0;
+  
+  for (i = 0; i < sys_size; i++)
     {
-      status = GSL_ENOMEM;
+      const double h_i   = xa[i + 1] - xa[i];
+      const double h_ip1 = xa[i + 2] - xa[i + 1];
+      const double ydiff_i   = ya[i + 1] - ya[i];
+      const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
+      state->offdiag[i] = h_ip1;
+      state->diag[i] = 2.0 * (h_ip1 + h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i);
     }
-  else
-    {
-      interp->c[0] = 0.0;
-      interp->c[max_index] = 0.0;
-
-      for (i = 0; i < sys_size; i++)
-	{
-	  const double h_i   = xa[i + 1] - xa[i];
-	  const double h_ip1 = xa[i + 2] - xa[i + 1];
-	  const double ydiff_i   = ya[i + 1] - ya[i];
-	  const double ydiff_ip1 = ya[i + 2] - ya[i + 1];
-          gsl_vector_set(offdiag, i, h_ip1);
-          gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
-          gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i));
-	}
-
-      status = gsl_linalg_solve_symm_tridiag(diag, offdiag, g, &solution_vec);
-    }
-
-  if (g != 0) gsl_vector_free (g);
-  if (diag != 0) gsl_vector_free (diag);
-  if (offdiag != 0) gsl_vector_free (offdiag);
-
-  return status;
+  
+  {
+    gsl_vector g_vec = gsl_vector_view(state->g, sys_size);
+    gsl_vector diag_vec = gsl_vector_view(state->diag, sys_size);
+    gsl_vector offdiag_vec = gsl_vector_view(state->offdiag, sys_size);
+    gsl_vector solution_vec = gsl_vector_view ((state->c) + 1, sys_size);
+    
+    int status = gsl_linalg_solve_symm_tridiag(&diag_vec, 
+                                               &offdiag_vec, 
+                                               &g_vec, 
+                                               &solution_vec);
+    return status;
+  }
 }
 
 
 /* periodic spline calculation
  * see [Engeln-Mullges + Uhlig, p. 256]
  */
-static
-int
-cspline_calc_periodic (
-  gsl_interp_cspline * interp,
-  const double xa[],
-  const double ya[])
+static int
+cspline_init_periodic (void * vstate, const double xa[], const double ya[],
+                       size_t size)
 {
+  cspline_state_t *state = (cspline_state_t *) vstate;
+
   size_t i;
-  size_t num_points = interp->size;
+  size_t num_points = size;
   size_t max_index = num_points - 1;  /* Engeln-Mullges + Uhlig "n" */
-  size_t sys_size = max_index;        /* linear system is sys_size x sys_size */
-  int status;
+  size_t sys_size = max_index;    /* linear system is sys_size x sys_size */
 
   if (sys_size == 2) {
     /* solve 2x2 system */
-
+    
     const double h0 = xa[1] - xa[0];
     const double h1 = xa[2] - xa[1];
     const double h2 = xa[3] - xa[2];
@@ -197,420 +157,298 @@ cspline_calc_periodic (
     const double B = h0 + h1;
     double g[2];
     double det;
-
+    
     g[0] = 3.0 * ((ya[2] - ya[1]) / h1 - (ya[1] - ya[0]) / h0);
     g[1] = 3.0 * ((ya[1] - ya[2]) / h2 - (ya[2] - ya[1]) / h1);
-
+    
     det = 3.0 * (h0 + h1) * (h0 + h1);
-    interp->c[1] = ( A * g[0] - B * g[1])/det;
-    interp->c[2] = (-B * g[0] + A * g[1])/det;
-    interp->c[0] = interp->c[2];
-
-    status = GSL_SUCCESS;
-  }
-  else {
-    gsl_vector * g = gsl_vector_alloc(sys_size);
-    gsl_vector * diag = gsl_vector_alloc(sys_size);
-    gsl_vector * offdiag = gsl_vector_alloc(sys_size);
-    gsl_vector solution_vec;
-    solution_vec.size   = sys_size;
-    solution_vec.stride = 1;
-    solution_vec.data   = interp->c + 1;
-    solution_vec.block  = 0;
-
-    if (g == 0 || diag == 0 || offdiag == 0) {
-      status = GSL_ENOMEM;
+    state->c[1] = ( A * g[0] - B * g[1])/det;
+    state->c[2] = (-B * g[0] + A * g[1])/det;
+    state->c[0] = state->c[2];
+    
+    return GSL_SUCCESS;
+  } else {
+    
+    state->offdiag[max_index] =  xa[1]-xa[0];
+    
+    for (i = 0; i < sys_size; i++) {
+      const double h_i   = xa[i + 1] - xa[i];
+      const double h_ip1 = xa[(i + 2) % num_points] - xa[i + 1];
+      const double ydiff_i   = ya[i + 1] - ya[i];
+      const double ydiff_ip1 = ya[(i + 2) % num_points] - ya[i + 1];
+      state->offdiag[i] = h_ip1;
+      state->diag[i] = 2.0 * (h_ip1 + h_i);
+      state->g[i] = 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i);
     }
-    else {
-      gsl_vector_set(offdiag, max_index, xa[1]-xa[0]);
-
-      for (i = 0; i < sys_size; i++) {
-    	const double h_i   = xa[i + 1] - xa[i];
-        const double h_ip1 = xa[i + 2] - xa[i + 1];
-        const double ydiff_i   = ya[i + 1] - ya[i];
-        const double ydiff_ip1 = ya[(i + 2) % num_points] - ya[i + 1];
-        gsl_vector_set(offdiag, i, h_ip1);
-        gsl_vector_set(diag, i, 2.0 * (h_ip1 + h_i));
-        gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i));
-      }
-
-      status = gsl_linalg_solve_symm_cyc_tridiag(diag, offdiag, g, &solution_vec);
-      interp->c[0] = interp->c[max_index];
-    }
-
-    if (g != 0) gsl_vector_free (g);
-    if (diag != 0) gsl_vector_free (diag);
-    if (offdiag != 0) gsl_vector_free (offdiag);
-  }
-
-  return status;
-}
-
-
-/* factory method */
-static
-gsl_interp *
-cspline_natural_create (const double x_array[], const double y_array[], size_t size)
-{
-  if (size <= 1)
-    return 0;
-  else
+    
     {
-      gsl_interp_cspline *interp = cspline_new (x_array, size);
-      if (interp != 0)
-	{
-	  int status = cspline_calc_natural (interp, x_array, y_array);
-	  if(status != GSL_SUCCESS) interp->free((gsl_interp *)interp);
-	}
-      return (gsl_interp *) interp;
+      gsl_vector g_vec = gsl_vector_view(state->g, sys_size);
+      gsl_vector diag_vec = gsl_vector_view(state->diag, sys_size);
+      gsl_vector offdiag_vec = gsl_vector_view(state->offdiag, sys_size);
+      gsl_vector solution_vec = gsl_vector_view ((state->c) + 1, sys_size);
+      
+      int status = gsl_linalg_solve_symm_cyc_tridiag(&diag_vec, 
+                                                     &offdiag_vec, 
+                                                     &g_vec, 
+                                                     &solution_vec);
+      state->c[0] = state->c[max_index];
+      
+      return status;
     }
-}
-
-
-/* factory method */
-static
-gsl_interp *
-cspline_periodic_create (const double x_array[], const double y_array[], size_t size)
-{
-  if (size <= 1)
-    return 0;
-  else
-    {
-      gsl_interp_cspline *interp = cspline_new (x_array, size);
-      if (interp != 0)
-	{
-	  int status = cspline_calc_periodic (interp, x_array, y_array);
-	  if(status != GSL_SUCCESS) interp->free((gsl_interp *)interp);
-	}
-      return (gsl_interp *) interp;
-    }
+  }
 }
 
 
 static
 void
-cspline_free (gsl_interp * interp_cspline)
+cspline_free (void * vstate)
 {
-  gsl_interp_cspline *interp = (gsl_interp_cspline *) interp_cspline;
-
-  if (interp != 0)
-    {
-      if (interp->c != 0)
-	free (interp->c);
-      free (interp);
-    }
+  cspline_state_t *state = (cspline_state_t *) vstate;
+  
+  free (state->c);
+  free (state->g);
+  free (state->diag);
+  free (state->offdiag);
+  free (state);
 }
 
-/* disgusting macro for common coefficient determination
+/* function for common coefficient determination
  */
-#define COEFF_CALC(c_array, dy, dx, index,  b_i, c_i, d_i)   \
-do {                                                         \
-  const double _c_ip1 = c_array[(index) + 1];                \
-  c_i = c_array[index];                                      \
-  b_i = (dy) / (dx) - (dx) * (_c_ip1 + 2.0 * c_i) / 3.0;     \
-  d_i = (_c_ip1 - c_i) / (3.0 * (dx));                       \
-} while(0)
-
-
-static
-int
-cspline_eval (const gsl_interp * cspline_interp,
-		   const double x_array[], const double y_array[],
-		   double x,
-		   gsl_interp_accel * a,
-		   double *y
-)
+static inline void
+coeff_calc (const double c_array[], double dy, double dx, size_t index,  
+            double * b, double * c, double * d)
 {
-  const gsl_interp_cspline *interp = (const gsl_interp_cspline *) cspline_interp;
-
-  if (x < interp->xmin)
-    {
-      *y = y_array[0];
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *y = y_array[interp->size - 1];
-      return GSL_EDOM;
-    }
-  else
-    {
-      double x_lo, x_hi;
-      double dx;
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      x_hi = x_array[index + 1];
-      x_lo = x_array[index];
-      dx = x_hi - x_lo;
-      if (dx > 0.0)
-	{
-	  const double y_lo = y_array[index];
-	  const double y_hi = y_array[index + 1];
-	  const double dy = y_hi - y_lo;
-	  double delx = x - x_lo;
-	  double b_i, c_i, d_i; 
-	  COEFF_CALC(interp->c, dy, dx, index,  b_i, c_i, d_i);
-	  *y = y_lo + delx * (b_i + delx * (c_i + delx * d_i));
-	  return GSL_SUCCESS;
-	}
-      else
-	{
-	  *y = 0.0;
-	  return GSL_EINVAL;
-	}
-    }
+  const double c_i = c_array[index];
+  const double c_ip1 = c_array[index + 1];
+  *b = (dy / dx) - dx * (c_ip1 + 2.0 * c_i) / 3.0;
+  *c = c_i;
+  *d = (c_ip1 - c_i) / (3.0 * dx);
 }
 
 
 static
 int
-cspline_eval_d (const gsl_interp * cspline_interp,
-		     const double x_array[], const double y_array[],
-		     double x,
-		     gsl_interp_accel * a,
-		     double *dydx)
+cspline_eval (const void * vstate,
+              const double x_array[], const double y_array[], size_t size,
+              double x,
+              gsl_interp_accel * a,
+              double *y)
 {
-  const gsl_interp_cspline *interp = (const gsl_interp_cspline *) cspline_interp;
+  cspline_state_t *state = (cspline_state_t *) vstate;
 
-  if (x > interp->xmax)
+  double x_lo, x_hi;
+  double dx;
+  size_t index;
+  
+  if (a != 0)
     {
-      *dydx = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x < interp->xmin)
-    {
-      *dydx = 0.0;
-      return GSL_EDOM;
+      index = gsl_interp_accel_find (a, x_array, size, x);
     }
   else
     {
-      double x_lo, x_hi;
-      double dx;
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      x_hi = x_array[index + 1];
-      x_lo = x_array[index];
-      dx = x_hi - x_lo;
-      if (dx > 0.0)
-	{
-	  const double y_lo = y_array[index];
-	  const double y_hi = y_array[index + 1];
-	  const double dy = y_hi - y_lo;
-	  double delx = x - x_lo;
-	  double b_i, c_i, d_i; 
-	  COEFF_CALC(interp->c, dy, dx, index,  b_i, c_i, d_i);
-	  *dydx = b_i + delx * (2.0 * c_i + 3.0 * d_i * delx);
-	  return GSL_SUCCESS;
-	}
-      else
-	{
-	  *dydx = 0.0;
-	  return GSL_FAILURE;
-	}
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
     }
-}
-
-
-static
-int
-cspline_eval_d2 (const gsl_interp * cspline_interp,
-		      const double x_array[], const double y_array[],
-		      double x,
-		      gsl_interp_accel * a,
-		      double * y_pp)
-{
-  const gsl_interp_cspline *interp = (const gsl_interp_cspline *) cspline_interp;
-
-  if (x > interp->xmax)
+  
+  /* evaluate */
+  x_hi = x_array[index + 1];
+  x_lo = x_array[index];
+  dx = x_hi - x_lo;
+  if (dx > 0.0)
     {
-      *y_pp = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x < interp->xmin)
-    {
-      *y_pp = 0.0;
-      return GSL_EDOM;
-    }
-  else
-    {
-      double x_lo, x_hi;
-      double dx;
-      size_t index;
-
-      if (a != 0)
-	{
-	  index = gsl_interp_accel_find (a, x_array, interp->size, x);
-	}
-      else
-	{
-	  index = gsl_interp_bsearch (x_array, x, 0, interp->size - 1);
-	}
-
-      /* evaluate */
-      x_hi = x_array[index + 1];
-      x_lo = x_array[index];
-      dx = x_hi - x_lo;
-      if (dx > 0.0)
-	{
-	  const double y_lo = y_array[index];
-	  const double y_hi = y_array[index + 1];
-	  const double dy = y_hi - y_lo;
-	  double delx = x - x_lo;
-	  double b_i, c_i, d_i;
-	  COEFF_CALC(interp->c, dy, dx, index,  b_i, c_i, d_i);
-	  *y_pp = 2.0 * c_i + 6.0 * d_i * delx;
-	  return GSL_SUCCESS;
-	}
-      else
-	{
-	  *y_pp = 0.0;
-	  return GSL_FAILURE;
-	}
-    }
-}
-
-
-static
-int
-cspline_eval_i (const gsl_interp * cspline_interp,
-		     const double x_array[], const double y_array[],
-		     gsl_interp_accel * acc,
-                     double a, double b,
-		     double * result)
-{
-  const gsl_interp_cspline *interp = (const gsl_interp_cspline *) cspline_interp;
-
-  if (a > b || a < interp->xmin || b > interp->xmax)
-    {
-      *result = 0.0;
-      return GSL_EDOM;
-    }
-  else if(a == b)
-    {
-      *result = 0.0;
+      const double y_lo = y_array[index];
+      const double y_hi = y_array[index + 1];
+      const double dy = y_hi - y_lo;
+      double delx = x - x_lo;
+      double b_i, c_i, d_i; 
+      coeff_calc(state->c, dy, dx, index,  &b_i, &c_i, &d_i);
+      *y = y_lo + delx * (b_i + delx * (c_i + delx * d_i));
       return GSL_SUCCESS;
     }
   else
     {
-      size_t index_a, index_b;
-
-      if (acc != 0)
-	{
-	  index_a = gsl_interp_accel_find (acc, x_array, interp->size, a);
-	  index_b = gsl_interp_accel_find (acc, x_array, interp->size, b);
-	}
-      else
-	{
-	  index_a = gsl_interp_bsearch (x_array, a, 0, interp->size - 1);
-	  index_b = gsl_interp_bsearch (x_array, b, 0, interp->size - 1);
-	}
-
-      if(index_a == index_b) {
-        /* endpoints inside same interval */
-        const double x_hi = x_array[index_a + 1];
-        const double x_lo = x_array[index_a];
-	const double y_lo = y_array[index_a];
-	const double y_hi = y_array[index_a + 1];
-	const double dx = x_hi - x_lo;
-	const double dy = y_hi - y_lo;
-	if(dx != 0.0) {
-	  double b_i, c_i, d_i; 
-	  COEFF_CALC(interp->c, dy, dx, index_a,  b_i, c_i, d_i);
-	  INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, a, b, *result);
-	  return GSL_SUCCESS;
-	}
-	else {
-	  *result = 0.0;
-	  return GSL_FAILURE;
-	}
-      }
-      else {
-        /* endpoints span more than one interval */
-	size_t i;
-	*result = 0.0;
-
-	/* interior intervals */
-	for(i=index_a+1; i<index_b; i++) {
-	  const double x_hi = x_array[i + 1];
-          const double x_lo = x_array[i];
-	  const double y_lo = y_array[i];
-	  const double y_hi = y_array[i + 1];
-	  const double dx = x_hi - x_lo;
-	  const double dy = y_hi - y_lo;
-	  if(dx != 0.0) {
-	    double b_i, c_i, d_i; 
-	    COEFF_CALC(interp->c, dy, dx, i,  b_i, c_i, d_i);
-	    *result += dx * (y_lo + dx*(0.5*b_i + dx*(c_i/3.0 + 0.25*d_i*dx)));
-	  }
-	  else {
-	    *result = 0.0;
-	    return GSL_FAILURE;
-	  }
-	}
-
-        /* lower end interval */
-	{
-          const double x_hi = x_array[index_a + 1];
-          const double x_lo = x_array[index_a];
-	  const double y_lo = y_array[index_a];
-	  const double y_hi = y_array[index_a + 1];
-	  const double dx = x_hi - x_lo;
-	  const double dy = y_hi - y_lo;
-	  if(dx != 0.0) {
-	    double b_i, c_i, d_i; 
-	    double tmp;
-	    COEFF_CALC(interp->c, dy, dx, index_a,  b_i, c_i, d_i);
-	    INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, a, x_hi, tmp);
-	    *result += tmp;
-          }
-	  else {
-            *result = 0.0;
-            return GSL_FAILURE;
-	  }
-	}
-
-        /* upper end interval */
-	{
-          const double x_hi = x_array[index_b + 1];
-          const double x_lo = x_array[index_b];
-	  const double y_lo = y_array[index_b];
-	  const double y_hi = y_array[index_b + 1];
-	  const double dx = x_hi - x_lo;
-	  const double dy = y_hi - y_lo;
-	  if(dx != 0.0) {
-	    double b_i, c_i, d_i; 
-	    double tmp;
-	    COEFF_CALC(interp->c, dy, dx, index_a,  b_i, c_i, d_i);
-	    INTEG_EVAL(y_lo, b_i, c_i, d_i, x_lo, x_lo, b, tmp);
-	    *result += tmp;
-          }
-	  else {
-            *result = 0.0;
-            return GSL_FAILURE;
-	  }
-	}
-
-        return GSL_SUCCESS;
-      }
+      *y = 0.0;
+      return GSL_EINVAL;
     }
 }
+
+
+static
+int
+cspline_eval_deriv (const void * vstate,
+                    const double x_array[], const double y_array[], size_t size,
+                    double x,
+                    gsl_interp_accel * a,
+                    double *dydx)
+{
+  cspline_state_t *state = (cspline_state_t *) vstate;
+
+  double x_lo, x_hi;
+  double dx;
+  size_t index;
+  
+  if (a != 0)
+    {
+      index = gsl_interp_accel_find (a, x_array, size, x);
+    }
+  else
+    {
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
+    }
+  
+  /* evaluate */
+  x_hi = x_array[index + 1];
+  x_lo = x_array[index];
+  dx = x_hi - x_lo;
+  if (dx > 0.0)
+    {
+      const double y_lo = y_array[index];
+      const double y_hi = y_array[index + 1];
+      const double dy = y_hi - y_lo;
+      double delx = x - x_lo;
+      double b_i, c_i, d_i; 
+      coeff_calc(state->c, dy, dx, index,  &b_i, &c_i, &d_i);
+      *dydx = b_i + delx * (2.0 * c_i + 3.0 * d_i * delx);
+      return GSL_SUCCESS;
+    }
+  else
+    {
+      *dydx = 0.0;
+      return GSL_FAILURE;
+    }
+}
+
+
+static
+int
+cspline_eval_deriv2 (const void * vstate,
+                     const double x_array[], const double y_array[], size_t size,
+                     double x,
+                     gsl_interp_accel * a,
+                     double * y_pp)
+{
+  cspline_state_t *state = (cspline_state_t *) vstate;
+
+  double x_lo, x_hi;
+  double dx;
+  size_t index;
+  
+  if (a != 0)
+    {
+      index = gsl_interp_accel_find (a, x_array, size, x);
+    }
+  else
+    {
+      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
+    }
+  
+  /* evaluate */
+  x_hi = x_array[index + 1];
+  x_lo = x_array[index];
+  dx = x_hi - x_lo;
+  if (dx > 0.0)
+    {
+      const double y_lo = y_array[index];
+      const double y_hi = y_array[index + 1];
+      const double dy = y_hi - y_lo;
+      double delx = x - x_lo;
+      double b_i, c_i, d_i;
+      coeff_calc(state->c, dy, dx, index,  &b_i, &c_i, &d_i);
+      *y_pp = 2.0 * c_i + 6.0 * d_i * delx;
+      return GSL_SUCCESS;
+    }
+  else
+    {
+      *y_pp = 0.0;
+      return GSL_FAILURE;
+    }
+}
+
+
+static
+int
+cspline_eval_integ (const void * vstate,
+                    const double x_array[], const double y_array[], size_t size,
+                    gsl_interp_accel * acc,
+                    double a, double b,
+                    double * result)
+{
+  cspline_state_t *state = (cspline_state_t *) vstate;
+
+  size_t i, index_a, index_b;
+  
+  if (acc != 0)
+    {
+      index_a = gsl_interp_accel_find (acc, x_array, size, a);
+      index_b = gsl_interp_accel_find (acc, x_array, size, b);
+    }
+  else
+    {
+      index_a = gsl_interp_bsearch (x_array, a, 0, size - 1);
+      index_b = gsl_interp_bsearch (x_array, b, 0, size - 1);
+    }
+
+  *result = 0.0;
+  
+  /* interior intervals */
+  for(i=index_a; i<=index_b; i++) {
+    const double x_hi = x_array[i + 1];
+    const double x_lo = x_array[i];
+    const double y_lo = y_array[i];
+    const double y_hi = y_array[i + 1];
+    const double dx = x_hi - x_lo;
+    const double dy = y_hi - y_lo;
+    if(dx != 0.0) {
+      double b_i, c_i, d_i; 
+      coeff_calc(state->c, dy, dx, i,  &b_i, &c_i, &d_i);
+      
+      if (i == index_a || i == index_b)
+        {
+          double x1 = (i == index_a) ? a : x_lo;
+          double x2 = (i == index_b) ? b : x_hi;
+          *result += integ_eval(y_lo, b_i, c_i, d_i, x_lo, x1, x2);
+        }
+      else
+        {
+          *result += dx * (y_lo + dx*(0.5*b_i + dx*(c_i/3.0 + 0.25*d_i*dx)));
+        }
+    }
+    else {
+      *result = 0.0;
+      return GSL_FAILURE;
+    }
+  }
+  
+  return GSL_SUCCESS;
+}
+
+static const gsl_interp_type cspline_type = 
+{
+  "cspline", 
+  2,
+  &cspline_alloc,
+  &cspline_init,
+  &cspline_eval,
+  &cspline_eval_deriv,
+  &cspline_eval_deriv2,
+  &cspline_eval_integ,
+  &cspline_free
+};
+
+const gsl_interp_type * gsl_interp_cspline = &cspline_type;
+
+static const gsl_interp_type cspline_periodic_type = 
+{
+  "cspline-periodic", 
+  2,
+  &cspline_alloc,
+  &cspline_init_periodic,
+  &cspline_eval,
+  &cspline_eval_deriv,
+  &cspline_eval_deriv2,
+  &cspline_eval_integ,
+  &cspline_free
+};
+
+const gsl_interp_type * gsl_interp_cspline_periodic = &cspline_periodic_type;
+
+

@@ -45,35 +45,37 @@ typedef struct {
 gsl_interp_accel;
 
 
+/* interpolation object type */
+typedef struct {
+  const char * name;
+  unsigned int min_size;
+  void *  (*alloc) (size_t size);
+  int     (*init)    (void *, const double xa[], const double ya[], size_t size);
+  int     (*eval)    (const void *, const double xa[], const double ya[], size_t size, double x, gsl_interp_accel *, double * y);
+  int     (*eval_deriv)  (const void *, const double xa[], const double ya[], size_t size, double x, gsl_interp_accel *, double * y_p);
+  int     (*eval_deriv2) (const void *, const double xa[], const double ya[], size_t size, double x, gsl_interp_accel *, double * y_pp);
+  int     (*eval_integ)  (const void *, const double xa[], const double ya[], size_t size, gsl_interp_accel *, double a, double b, double * result);
+  void    (*free)         (void *);
+
+} gsl_interp_type;
+
+
 /* general interpolation object */
-struct _gsl_interp_struct {
-  int     (*eval)    (const struct _gsl_interp_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y);
-  int     (*eval_d)  (const struct _gsl_interp_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y_p);
-  int     (*eval_d2) (const struct _gsl_interp_struct *, const double xa[], const double ya[], double x, gsl_interp_accel *, double * y_pp);
-  int     (*eval_i)  (const struct _gsl_interp_struct *, const double xa[], const double ya[], gsl_interp_accel *, double a, double b, double * result);
-  void    (*free)         (struct _gsl_interp_struct *);
+typedef struct {
+  const gsl_interp_type * type;
   double  xmin;
   double  xmax;
   size_t  size;
-};
-typedef  struct _gsl_interp_struct  gsl_interp;
+  void * state;
+} gsl_interp;
 
 
-/* interpolation object factory */
-typedef struct {
-  const char * name;
-  gsl_interp *  (*create) (const double x_array[], const double y_array[], size_t size);
-}
-gsl_interp_factory;
-
-
-/* available factories */
-extern const gsl_interp_factory   gsl_interp_factory_linear;
-extern const gsl_interp_factory   gsl_interp_factory_cspline_natural;
-extern const gsl_interp_factory   gsl_interp_factory_cspline_periodic;
-extern const gsl_interp_factory   gsl_interp_factory_akima_natural;
-extern const gsl_interp_factory   gsl_interp_factory_akima_periodic;
-
+/* available types */
+extern const gsl_interp_type * gsl_interp_linear;
+extern const gsl_interp_type * gsl_interp_cspline;
+extern const gsl_interp_type * gsl_interp_cspline_periodic;
+extern const gsl_interp_type * gsl_interp_akima;
+extern const gsl_interp_type * gsl_interp_akima_periodic;
 
 gsl_interp_accel *
 gsl_interp_accel_alloc(void);
@@ -87,73 +89,75 @@ gsl_interp_accel_reset (gsl_interp_accel * a);
 void
 gsl_interp_accel_free(gsl_interp_accel * a);
 
+gsl_interp *
+gsl_interp_alloc(const gsl_interp_type * T, size_t n);
+     
+int
+gsl_interp_init(gsl_interp * obj, const double xa[], const double ya[], size_t size);
+
+const char * gsl_interp_name(const gsl_interp * interp);
+unsigned int gsl_interp_min_size(const gsl_interp * interp);
+
+
 int
 gsl_interp_eval_e(const gsl_interp * obj,
                   const double xa[], const double ya[], double x,
-                  gsl_interp_accel * a, double * y
-                  );
+                  gsl_interp_accel * a, double * y);
 
 double
 gsl_interp_eval(const gsl_interp * obj,
                 const double xa[], const double ya[], double x,
-                gsl_interp_accel * a
-                );
+                gsl_interp_accel * a);
 
 int
 gsl_interp_eval_deriv_e(const gsl_interp * obj,
                         const double xa[], const double ya[], double x,
 			gsl_interp_accel * a,
-                        double * y
-                        );
+                        double * d);
 
 double
 gsl_interp_eval_deriv(const gsl_interp * obj,
                       const double xa[], const double ya[], double x,
-		      gsl_interp_accel * a
-                      );
+		      gsl_interp_accel * a);
 
 int
 gsl_interp_eval_deriv2_e(const gsl_interp * obj,
                          const double xa[], const double ya[], double x,
 			 gsl_interp_accel * a,
-                         double * y
-                         );
+                         double * d2);
 
 double
 gsl_interp_eval_deriv2(const gsl_interp * obj,
                        const double xa[], const double ya[], double x,
-		       gsl_interp_accel * a
-                       );
+		       gsl_interp_accel * a);
 
 int
 gsl_interp_eval_integ_e(const gsl_interp * obj,
                         const double xa[], const double ya[],
                         double a, double b,
 			gsl_interp_accel * acc,
-                        double * y
-                        );
+                        double * result);
 
 double
 gsl_interp_eval_integ(const gsl_interp * obj,
                       const double xa[], const double ya[],
                       double a, double b,
-		      gsl_interp_accel * acc
-                      );
+		      gsl_interp_accel * acc);
 
 void
 gsl_interp_free(gsl_interp * interp);
 
 size_t gsl_interp_bsearch(const double x_array[], double x,
-                          size_t index_lo, size_t index_hi );
+                          size_t index_lo, size_t index_hi);
 
 #ifdef HAVE_INLINE
 extern inline size_t
 gsl_interp_bsearch(const double x_array[], double x,
-               size_t index_lo, size_t index_hi );
+                   size_t index_lo, size_t index_hi);
 
 extern inline size_t
 gsl_interp_bsearch(const double x_array[], double x,
-               size_t index_lo, size_t index_hi )
+                   size_t index_lo, size_t index_hi)
 {
   size_t ilo = index_lo;
   size_t ihi = index_hi;

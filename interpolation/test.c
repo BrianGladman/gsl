@@ -105,7 +105,7 @@ make_xy_table (double x[], double y[], size_t n)
 static int
 test_interp (
   const xy_table * data_table,
-  const gsl_interp_factory * factory,
+  const gsl_interp_type * T,
   xy_table * test_table,
   xy_table * test_d_table,
   xy_table * test_i_table
@@ -115,9 +115,9 @@ test_interp (
   size_t i;
 
   gsl_interp_accel *a = gsl_interp_accel_alloc ();
-  gsl_interp *interp = factory->create (data_table->x,
-					    data_table->y,
-					    data_table->n);
+  gsl_interp *interp = gsl_interp_alloc (T, data_table->n);
+
+  gsl_interp_init (interp, data_table->x, data_table->y, data_table->n);
 
   for (i = 0; i < test_table->n; i++)
     {
@@ -160,14 +160,14 @@ test_linear (void)
   xy_table test_d_table = make_xy_table(test_x, test_dy, 6);
   xy_table test_i_table = make_xy_table(test_x, test_iy, 6);
 
-  s = test_interp (&data_table, &gsl_interp_factory_linear, &test_table, &test_d_table, &test_i_table);
+  s = test_interp (&data_table, gsl_interp_linear, &test_table, &test_d_table, &test_i_table);
   gsl_test (s, "linear interpolation");
   return s;
 }
 
 
 static int
-test_cspline_natural (void)
+test_cspline (void)
 {
   int s;
 
@@ -183,14 +183,14 @@ test_cspline_natural (void)
   xy_table test_d_table = make_xy_table(test_x, test_dy, 4);
   xy_table test_i_table = make_xy_table(test_x, test_iy, 4);
 
-  s = test_interp (&data_table, &gsl_interp_factory_cspline_natural, &test_table, &test_d_table, &test_i_table);
-  gsl_test (s, "natural cspline interpolation");
+  s = test_interp (&data_table, gsl_interp_cspline, &test_table, &test_d_table, &test_i_table);
+  gsl_test (s, "cspline interpolation");
   return s;
 }
 
 
 static int
-test_akima_natural (void)
+test_akima (void)
 {
   int s;
 
@@ -206,8 +206,8 @@ test_akima_natural (void)
   xy_table test_d_table = make_xy_table(test_x, test_dy, 4);
   xy_table test_i_table = make_xy_table(test_x, test_iy, 4);
 
-  s = test_interp (&data_table, &gsl_interp_factory_akima_natural, &test_table, &test_d_table, &test_i_table);
-  gsl_test (s, "natural akima interpolation");
+  s = test_interp (&data_table, gsl_interp_akima, &test_table, &test_d_table, &test_i_table);
+  gsl_test (s, "akima interpolation");
   return s;
 }
 
@@ -222,8 +222,8 @@ main (int argc, char **argv)
 
   status += test_bsearch();
   status += test_linear();
-  status += test_cspline_natural();
-  status += test_akima_natural();
+  status += test_cspline();
+  status += test_akima();
 
   exit (gsl_test_summary());
 }
