@@ -22,7 +22,7 @@ gsl_odeiv_step_gear2_state;
 
 /* gear2 stepper object */
 typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
+  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
   int  (*_reset) (void * state);
   void (*_free)  (void * state);
   void * _state;
@@ -32,7 +32,7 @@ gsl_odeiv_step_gear2;
 
 
 static gsl_odeiv_step * gear2_create(unsigned int dimension);
-static int  gear2_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
+static int  gear2_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
 static int  gear2_reset(void *);
 static void gear2_free(void *);
 
@@ -93,7 +93,7 @@ gear2_create(unsigned int dimension)
 
 static
 int
-gear2_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt)
+gear2_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt)
 {
   gsl_odeiv_step_gear2_state * s = (gsl_odeiv_step_gear2_state *) state;
 

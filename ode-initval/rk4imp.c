@@ -18,7 +18,7 @@ gsl_odeiv_step_rk4imp_state;
 
 /* rk4imp stepper object */
 typedef struct {
-  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
+  int  (*_step)  (void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
   int  (*_reset) (void * state);
   void (*_free)  (void * state);
   void * _state;
@@ -28,7 +28,7 @@ gsl_odeiv_step_rk4imp;
 
 
 static gsl_odeiv_step * rk4imp_create(unsigned int dimension);
-static int  rk4imp_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt);
+static int  rk4imp_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt);
 static int  rk4imp_reset(void *);
 static void rk4imp_free(void *);
 
@@ -75,7 +75,7 @@ rk4imp_create(unsigned int dimension)
 
 static
 int
-rk4imp_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_function * dydt)
+rk4imp_step(void * state, unsigned int dim, double t, double h, double y[], double yerr[], gsl_odeiv_system * dydt)
 {
   gsl_odeiv_step_rk4imp_state * s = (gsl_odeiv_step_rk4imp_state *) state;
 

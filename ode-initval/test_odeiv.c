@@ -20,8 +20,9 @@ int rhs_linear(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
-gsl_odeiv_function rhs_func_lin = {
+gsl_odeiv_system rhs_func_lin = {
   rhs_linear,
+  0,
   0
 };
 
@@ -35,8 +36,9 @@ int rhs_sin(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
-gsl_odeiv_function rhs_func_sin = {
+gsl_odeiv_system rhs_func_sin = {
   rhs_sin,
+  0,
   0
 };
 
@@ -50,8 +52,9 @@ int rhs_exp(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
-gsl_odeiv_function rhs_func_exp = {
+gsl_odeiv_system rhs_func_exp = {
   rhs_exp,
+  0,
   0
 };
 
@@ -65,8 +68,9 @@ int rhs_stiff(double t, const double y[], double f[], void * params)
   return GSL_SUCCESS;
 }
 
-gsl_odeiv_function rhs_func_stiff = {
+gsl_odeiv_system rhs_func_stiff = {
   rhs_stiff,
+  0,
   0
 };
 
