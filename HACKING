@@ -53,3 +53,22 @@ following CFLAGS:
     -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
     -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common
     -Wmissing-prototypes -Wnested-externs -Werror -g -O4
+
+----------
+
+When compiling the library it's important to use the local copies of
+the header files, and not ones that have been installed previously in
+/usr/local/include.
+
+There can be confusing errors if the installed and local copies of the
+headers get mixed up!  (In particular, some of them only show up when
+doing 'make distcheck')
+
+To put the local copies on your include path you need, in your Makefile.am,
+
+INCLUDES = -I$(srcdir)/..
+
+srcdir is always your working dir, and so $(srcdir)/.. is the
+top-level dir where gsl_math.h and gsl_complex.h are located.
+
+----------
