@@ -34,7 +34,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv.h>
-#include <gsl/gsl_linalg.h>
 
 #include "odeiv_util.h"
 
@@ -286,11 +285,9 @@ rk2imp_apply (void *vstate,
   
   /* Error estimation */
 
-  /* Note: No coefficient of 0.5 for better reliability */  
-
   for (i = 0; i < dim; i++) 
     {
-      yerr[i] = (y[i] - y_onestep[i]);
+      yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 3.0;
     }
 
   return status;

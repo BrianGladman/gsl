@@ -328,11 +328,9 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
 
   /* Error estimation */
 
-  /* Note: No coefficient of 0.5 for better reliability */
-
   for (i = 0; i < dim; i++)
     {
-      yerr[i] = y[i] - y_onestep[i];
+      yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 3.0;
     }
 
   return status;

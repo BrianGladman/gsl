@@ -225,11 +225,9 @@ gear1_apply(void * vstate,
   
   /* Error estimation */
 
-  /* Note: No coefficient of 0.5 for better reliability */
-
   for (i = 0; i < dim; i++) 
     {
-      yerr[i] = (y[i] - y_onestep[i]);
+      yerr[i] = 4.0 * (y[i] - y_onestep[i]);
     }
 
   return status;

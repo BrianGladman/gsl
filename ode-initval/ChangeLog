@@ -1,3 +1,11 @@
+2004-11-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gear1.c (gear1_apply): use 90% error bound
+
+	* rk2imp.c (rk2imp_apply): use 90% error bound
+
+	* rk2simp.c (rk2simp_apply): use 90% error bound
+
 2004-11-18  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: new test program (Tuomo Keskitalo)

@@ -320,7 +320,7 @@ rk4_apply (void *vstate,
 
   for (i = 0; i < dim; i++)
     {
-      yerr[i] = 8.0 * 0.5 * (y[i] - y_onestep[i]) / 15.0;
+      yerr[i] = 4.0 * (y[i] - y_onestep[i]) / 15.0;
     }
 
   return status;
