@@ -3,7 +3,7 @@
 * Will be new in gsl-0.4:
 
 ** A single libgsl.a file is built in the top level directory and
-installed, instead of multiple .a files for each subdirectory.
+installed, instead of separate .a files for each subdirectory.
 
 ** The parts of the complex struct gsl_complex, .real and .imag, are
 not supported anymore. The macros GSL_REAL(z) and GSL_IMAG(z) do the
