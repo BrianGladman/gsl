@@ -112,7 +112,7 @@ main (void)
 
   T = gsl_multifit_fdfsolver_lmsder;
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
-  gsl_multifit_fdfsolver (s, &f, &x);
+  gsl_multifit_fdfsolver_set (s, &f, &x);
 
   print_state (iter, s);
 
