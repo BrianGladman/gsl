@@ -7,9 +7,8 @@ gsl_integration_qage (double (*f)(double x),
 		      double a, double b,
 		      double epsabs, double epsrel,
 		      int key,
-		      size_t limit,
-		      double alist[], double blist[], double rlist[], 
-		      double elist[], size_t iord[], size_t * last,
+		      gsl_integration_workspace * workspace,
+		      size_t * last,
 		      double * result, double * abserr, size_t * neval)
 {
   int status ;
@@ -45,10 +44,13 @@ gsl_integration_qage (double (*f)(double x),
     case GSL_INTEG_GAUSS61:
       integration_rule = &gsl_integration_qk61 ;
       break ;      
+    default:
+      GSL_ERROR("value of key does specify a known integration rule", 
+		GSL_EINVAL) ;
     }
 
-  status = gsl_integration_qage_impl (f, a, b, epsabs, epsrel, limit,
-				      alist, blist, rlist, elist, iord, last,
+  status = gsl_integration_qage_impl (f, a, b, epsabs, epsrel, 
+				      workspace, last, 
 				      result, abserr, &nqeval, 
 				      integration_rule) ;
 

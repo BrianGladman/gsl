@@ -84,7 +84,8 @@ libgslintegration_a_SOURCES = integration.c \
 	qng.c qng.h \
 	qage.c qage_impl.c qpsrt.c qpsrt.h \
 	qagse.c	qagse_impl.c qelg.c \
-	err.c err.h max.h
+	err.c err.h max.h \
+	workspace.c
 
 include_HEADERS = gsl_integration.h
 
@@ -107,7 +108,7 @@ LIBS = @LIBS@
 libgslintegration_a_LIBADD = 
 libgslintegration_a_OBJECTS =  integration.o qk15.o qk21.o qk31.o qk41.o \
 qk51.o qk61.o qk.o qng.o qage.o qage_impl.o qpsrt.o qagse.o \
-qagse_impl.o qelg.o err.o
+qagse_impl.o qelg.o err.o workspace.o
 AR = ar
 test_OBJECTS =  test.o tests.o
 test_DEPENDENCIES =  libgslintegration.a ../err/libgslerr.a \
@@ -129,7 +130,7 @@ DEP_FILES =  .deps/err.P .deps/integration.P .deps/qage.P \
 .deps/qage_impl.P .deps/qagse.P .deps/qagse_impl.P .deps/qelg.P \
 .deps/qk.P .deps/qk15.P .deps/qk21.P .deps/qk31.P .deps/qk41.P \
 .deps/qk51.P .deps/qk61.P .deps/qng.P .deps/qpsrt.P .deps/test.P \
-.deps/tests.P
+.deps/tests.P .deps/workspace.P
 SOURCES = $(libgslintegration_a_SOURCES) $(test_SOURCES)
 OBJECTS = $(libgslintegration_a_OBJECTS) $(test_OBJECTS)
 

@@ -10,9 +10,8 @@ int
 gsl_integration_qage_impl (double (*f) (double x),
 			   const double a, const double b,
 			   const double epsabs, const double epsrel,
-			   const size_t limit,
-			   double alist[], double blist[], double rlist[],
-			   double elist[], size_t iord[], size_t * last,
+			   gsl_integration_workspace * workspace,
+			   size_t * last,
 			   double *result, double *abserr, size_t * nqeval,
 			   gsl_integration_rule_t * const q)
 {
@@ -20,6 +19,13 @@ gsl_integration_qage_impl (double (*f) (double x),
   double tolerance, maxerr_value, area, errsum;
   size_t maxerr_index, nrmax, i;
   int roundoff_type1 = 0, roundoff_type2 = 0, error_type = 0;
+
+  const size_t limit = workspace->limit ;
+  double * alist = workspace->alist ;
+  double * blist = workspace->blist ;
+  double * rlist = workspace->rlist ;
+  double * elist = workspace->elist ;
+  size_t * iord = workspace->iord ;
 
   alist[0] = a;
   blist[0] = b;
@@ -43,8 +49,6 @@ gsl_integration_qage_impl (double (*f) (double x),
   rlist[0] = q_result;
   elist[0] = q_abserr;
   iord[0] = 0;
-
-  printf ("result = %.18g abserr = %.18g\n", q_result, q_abserr);
 
   /* Test on accuracy */
 
@@ -102,21 +106,14 @@ gsl_integration_qage_impl (double (*f) (double x),
       double defab1, defab2;
       double resabs = 0;
 
-      printf ("splitting [%g,%g] into [%g,%g] and [%g,%g]\n", left, right, a1, b1, a2, b2);
-
       q (f, a1, b1, &area1, &error1, &resabs, &defab1);
       q (f, a2, b2, &area2, &error2, &resabs, &defab2);
 
       area12 = area1 + area2;
       error12 = error1 + error2;
 
-      printf ("errsum = %.18g\n", errsum);
       errsum += (error12 - maxerr_value);
       area += area12 - rlist[maxerr_index];
-
-      printf ("error1 = %.10g error2 = %.10g\n", error1, error2);
-      printf ("errsum = %.18g\n", errsum);
-      printf ("result = %.15f abserr = %.16g\n", area, errsum);
 
       if (defab1 != error1 && defab2 != error2)
 	{
