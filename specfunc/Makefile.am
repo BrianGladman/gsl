@@ -77,7 +77,8 @@ libgslspecfunc_a_SOURCES = 	\
 	chebyshev.c		\
 	clausen.c		\
 	coupling.c		\
-#	coulomb.c		\ doesn't work yet
+	coulomb.c		\
+	coulomb_bound.c		\
 	debye.c			\
 	dilog.c			\
 	ellint.c		\

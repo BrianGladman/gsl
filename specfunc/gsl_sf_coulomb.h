@@ -5,7 +5,14 @@
 #define COULOMB_H_
 
 
-/* Normalized hydrogenic bound states, radial dependence. */
+/* Normalized hydrogenic bound states, radial dependence.
+ */
+int    gsl_sf_hydrogenicR_1_impl(double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_2_impl(int l, double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_impl(int n, int l, double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_1_e(double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_2_e(int l, double Z, double r, double * result);
+int    gsl_sf_hydrogenicR_e(int n, int l, double Z, double r, double * result);
 double gsl_sf_hydrogenicR_1(double Z, double r);
 double gsl_sf_hydrogenicR_2(int l, double Z, double r);
 double gsl_sf_hydrogenicR(int n, int l, double Z, double r);
@@ -13,29 +20,33 @@ double gsl_sf_hydrogenicR(int n, int l, double Z, double r);
 
 /* Coulomb wave function normalization constant.
    [Abramowitz+Stegun 14.1.8, 14.1.9]
-   coulomb_CL() calculates recursively in the same
-   manner as coulomb_CL_list()
  */
-double gsl_sf_coulomb_CL(double lam, double eta);
-int    gsl_sf_coulomb_CL_list(double l_min, int count, double eta, double *cl);
+int    gsl_sf_coulomb_CL_impl(double L, double eta, double * result);
+int    gsl_sf_coulomb_CL_e(double L, double eta, double * result);
+double gsl_sf_coulomb_CL(double L, double eta);
+int    gsl_sf_coulomb_CL_list(double Lmin, int kmax, double eta, double *cl);
 
 
 /* Coulomb wave functions F,G for general lambda > -1
    conventions of Abramowitz and Stegun
  */
-void gsl_sf_coulomb_wave_FGp(double x, double eta,
- 		      	     double lam_min, double lam_max,
- 		      	     double * fc, double * gc,
- 		      	     double * fc_prime, double * gc_prime
-	      	      	     );
-void gsl_sf_coulomb_wave_FG(double x, double eta,
- 		      	    double lam_min, double lam_max,
- 		      	    double * fc, double * gc
-	      	      	    );
-void gsl_sf_coulomb_wave_F(double x, double eta,
-	      	      	   double lam_min, double lam_max,
-	              	   double * fc
-	      	      	   );
+int gsl_sf_coulomb_wave_F_impl(double x, double eta,
+	      	      	       double lam_min, double lam_max,
+                               double * fc
+                               );
+
+int gsl_sf_coulomb_wave_FG_impl(double x, double eta,
+                                double lam_min, double lam_max,
+                                double * fc, double * gc
+                                );
+
+int gsl_sf_coulomb_wave_FGp_impl(double x, double eta,
+                                 double lam_min, double lam_max,
+                                 double * fc, double * gc,
+                                 double * fc_prime, double * gc_prime
+	      	      	         );
+
+
 
 /* Coulomb wave function divided by the argument,
    F(xi, eta)/xi. This is the function which reduces to
