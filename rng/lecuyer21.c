@@ -25,7 +25,8 @@
  * Addison-Wesley
  * Page 108
  *
- * This implementation copyright (C) 2001 Brian Gough, Carlo Perassi.
+ * This implementation copyright (C) 2001 Brian Gough, Carlo Perassi
+ * and (C) 2003 Heiko Bauke.
  */
 
 #include <config.h>
@@ -69,7 +70,7 @@ ran_get_double (void *vstate)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  return ran_get (state) / 2147483400.0;
+  return ran_get (state) / 2147483399.0;
 }
 
 static void
@@ -77,18 +78,18 @@ ran_set (void *vstate, unsigned long int s)
 {
   ran_state_t *state = (ran_state_t *) vstate;
 
-  if (s == 0)
+  if ((s%MMM) == 0)
     s = 1;			/* default seed is 1 */
 
-  state->x = s & MMM;
+  state->x = s % MMM;
 
   return;
 }
 
 static const gsl_rng_type ran_type = {
   "lecuyer21",			/* name */
-  MMM,				/* RAND_MAX */
-  0,				/* RAND_MIN */
+  MMM-1,			/* RAND_MAX */
+  1,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

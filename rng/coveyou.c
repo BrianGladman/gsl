@@ -25,8 +25,9 @@
  * Addison-Wesley
  * Section 3.2.2
  *
- * This implementation copyright (C) 2001 Carlo Perassi.
- * I reorganized the code to use the rng framework of GSL.
+ * This implementation copyright (C) 2001 Carlo Perassi
+ * and (C) 2003 Heiko Bauke.
+ * Carlo Perassi reorganized the code to use the rng framework of GSL.
  */
 
 #include <config.h>
@@ -80,8 +81,8 @@ ran_set (void *vstate, unsigned long int s)
 
 static const gsl_rng_type ran_type = {
   "coveyou",			/* name */
-  MM,				/* RAND_MAX */
-  0,				/* RAND_MIN */
+  MM-1,				/* RAND_MAX */
+  2,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

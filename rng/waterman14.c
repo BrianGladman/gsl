@@ -25,9 +25,10 @@
  * Addison-Wesley
  * Page 106-108
  *
- * It is called "Waterman"
+ * It is called "Waterman".
  *
- * This implementation copyright (C) 2001 Carlo Perassi.
+ * This implementation copyright (C) 2001 Carlo Perassi
+ * and (C) 2003 Heiko Bauke.
  */
 
 #include <config.h>
@@ -35,7 +36,7 @@
 #include <gsl/gsl_rng.h>
 
 #define AA 1566083941UL
-#define MM 0xffffffffUL		/* 2 ^ 32 */
+#define MM 0xffffffffUL		/* 2 ^ 32 - 1 */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
@@ -81,7 +82,7 @@ ran_set (void *vstate, unsigned long int s)
 static const gsl_rng_type ran_type = {
   "waterman14",			/* name */
   MM,				/* RAND_MAX */
-  0,				/* RAND_MIN */
+  1,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

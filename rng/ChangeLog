@@ -1,5 +1,17 @@
 2003-06-02  Brian Gough  <bjg@network-theory.co.uk>
 
+	* waterman14.c: increased RAND_MIN to 1
+
+	* lecuyer21.c: corrections to RAND_MIN, RAND_MAX, floating point
+	denominator and seeding modulus
+
+	* fishman20.c (ran_get): use schrage multiplication to avoid
+	overflow
+
+	* coveyou.c: corrected value of RAND_MIN to 1 and RAND_MAX to 2^32-1
+
+	* borosh13.c: increased RAND_MIN to 1
+
 	* knuthran2.c (ran_get): use schrage multiplication to avoid
 	overflow in intermediate results
 

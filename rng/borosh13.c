@@ -27,7 +27,8 @@
  *
  * It is called "Borosh - Niederreiter"
  *
- * This implementation copyright (C) 2001 Carlo Perassi.
+ * This implementation copyright (C) 2001 Carlo Perassi and
+ * (C) 2003 Heiko Bauke.
  */
 
 #include <config.h>
@@ -81,7 +82,7 @@ ran_set (void *vstate, unsigned long int s)
 static const gsl_rng_type ran_type = {
   "borosh13",			/* name */
   MM,				/* RAND_MAX */
-  0,				/* RAND_MIN */
+  1,				/* RAND_MIN */
   sizeof (ran_state_t),
   &ran_set,
   &ran_get,

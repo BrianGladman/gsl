@@ -2,7 +2,9 @@
 
 ** Fixed bugs in the random number generators gsl_rng_fishman18,
 gsl_rng_fishman2x, and gsl_rng_knuthran2 which caused them to return
-incorrect results.
+incorrect results.  Minor corrections were made to the parameters in
+the other Knuth generators borosh13, coveyou, fishman20, lecuyer21,
+and waterman14.
 
 ** gsl_linalg_householder_hv now uses BLAS routines internally
 
