@@ -66,6 +66,7 @@ test_sf_SOURCES = test_sf.c		\
 libgslspecfunc_a_SOURCES = 	\
 	airy.c			\
 	airy_der.c		\
+	airy_zero.c		\
 	atanint.c		\
 	bessel.c		\
 	bessel.h                \
