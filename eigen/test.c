@@ -72,7 +72,7 @@ int test_invert_jacobi(void)
   gsl_matrix * hm = create_hilbert_matrix(10);
   gsl_eigen_invert_jacobi_impl(hm, hminv, 1000);
 
-  gsl_la_matmult(hm, hminv, id);
+  gsl_linalg_matmult(hm, hminv, id);
 
   for(i=0; i<10; i++) {
     for(j=0; j<10; j++) {

@@ -47,10 +47,10 @@ gsl_eigen_sort_impl(gsl_vector * eval,
 
       if(k != i) {
         /* swap eigenvalues */
-	gsl_vector_swap(eval, i, k);
+	gsl_vector_swap_elements(eval, i, k);
 
         /* swap eigenvectors */
-	gsl_matrix_swap_cols(evec, i, k);
+	gsl_matrix_swap_columns(evec, i, k);
       }
     }
 

@@ -131,7 +131,7 @@ cspline_calc_natural (
           gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1  -  ydiff_i / h_i));
 	}
 
-      status = gsl_la_solve_symm_tridiag_impl(diag, offdiag, g, &solution_vec);
+      status = gsl_linalg_solve_symm_tridiag(diag, offdiag, g, &solution_vec);
     }
 
   if (g != 0) gsl_vector_free (g);
@@ -201,7 +201,7 @@ cspline_calc_periodic (
         gsl_vector_set(g, i, 3.0 * (ydiff_ip1 / h_ip1 - ydiff_i / h_i));
       }
 
-      status = gsl_la_solve_symm_cyc_tridiag_impl(diag, offdiag, g, &solution_vec);
+      status = gsl_linalg_solve_symm_cyc_tridiag(diag, offdiag, g, &solution_vec);
       interp->c[0] = interp->c[max_index];
     }
 

@@ -316,7 +316,7 @@ bsimp_step_local(
   }
 
   /* LU decomposition for the linear system. */
-  gsl_la_decomp_LU_impl(step->a_mat, step->p_vec, &signum);
+  gsl_linalg_LU_decomp(step->a_mat, step->p_vec, &signum);
 
 
   /* Initial step. */
@@ -325,7 +325,7 @@ bsimp_step_local(
     ytemp[i] = h * (yp[i] + h * dfdt[i]);
   }
 
-  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, &ytemp_vec, step->delta_temp_vec);
+  gsl_linalg_LU_solve(step->a_mat, step->p_vec, &ytemp_vec, step->delta_temp_vec);
 
   for (i=0; i<dim; i++) {
     const double di = gsl_vector_get(step->delta_temp_vec, i);
@@ -344,7 +344,7 @@ bsimp_step_local(
       gsl_vector_set(step->rhs_temp_vec, i, h * y_out[i] - step->delta[i]);
     }
 
-    gsl_la_solve_LU_impl(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
+    gsl_linalg_LU_solve(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
 
     for(i=0; i<dim; i++) {
       step->delta[i] += 2.0 * gsl_vector_get(step->delta_temp_vec, i);
@@ -363,7 +363,7 @@ bsimp_step_local(
     gsl_vector_set(step->rhs_temp_vec, i, h * y_out[i] - step->delta[i]);
   }
 
-  gsl_la_solve_LU_impl(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
+  gsl_linalg_LU_solve(step->a_mat, step->p_vec, step->rhs_temp_vec, step->delta_temp_vec);
 
   for(i=0; i<dim; i++) {
     y_out[i] = ytemp[i] + gsl_vector_get(step->delta_temp_vec, i);
