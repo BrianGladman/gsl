@@ -4,6 +4,7 @@
 #include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
+#include "gsl_sf_pow_int.h"
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_hyperg.h"
 
@@ -333,15 +334,15 @@ int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
   
   if(x > 0.75 && !d_integer) {
     double pre1, pre2, F1, F2;
-    double status_F1, status_F2;
     double prec_F1, prec_F2;
+    int status_F1, status_F2;
     {
       /* these gamma functions appear in the denominator, so we
          catch their harmless domain errors and set the terms to zero
       */
       double ln_g1ca, ln_g1cb, ln_g2a, ln_g2b;
       int stat_1ca = gsl_sf_lngamma_impl(c-a, &ln_g1ca);
-      int stat_1cb = gsl_sf_lngamma_impl(c-b, &ln_g1ca);
+      int stat_1cb = gsl_sf_lngamma_impl(c-b, &ln_g1cb);
       int stat_2a  = gsl_sf_lngamma_impl(a, &ln_g2a);
       int stat_2b  = gsl_sf_lngamma_impl(b, &ln_g2b);
       int ok1 = (stat_1ca == GSL_SUCCESS && stat_1cb == GSL_SUCCESS);
