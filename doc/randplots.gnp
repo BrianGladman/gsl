@@ -18,6 +18,8 @@ p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
 plot sigma=1.0, p(x) title "$\sigma=1$", \
 	sigma=2.0, p(x) title "$\sigma=2$"
 
+set xlabel "$x$"
+set ylabel "$y$"
 set xrange [-2:2]
 set yrange [-2:2]
 set ytics 1
@@ -33,6 +35,8 @@ set view 0,0
 set nosurface
 splot rho=0.9, p(x,y) title "$\sigma_x=1, \sigma_y=1, \rho=0.9$"
 
+set xlabel "$x$"
+set ylabel "$p(x)$"
 
 set xrange [-5:5]
 set yrange [0:0.4]
