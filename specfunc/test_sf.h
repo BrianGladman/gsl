@@ -7,9 +7,9 @@
 #include <gsl_machine.h>
 #include "gsl_sf_result.h"
 
-int test_sf_analyze(const char * message, gsl_sf_result r,
-                    double expect_val, double tol,
-                    int return_val, int expect_return);
+double test_sf_frac_diff(double x1, double x2);
+int test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol);
+int test_sf_check_return(char * message_buff, int val_return, int expected_return);
 
 #define TEST_TOL0  (2.0*GSL_DBL_EPSILON)
 #define TEST_TOL1  (16.0*GSL_DBL_EPSILON)
@@ -73,6 +73,9 @@ do {                                                                            
 
 
 int test_airy(void);
+int test_bessel(void);
+int test_gamma(void);
+int test_hyperg(void);
 
 
 #endif /* !TEST_SF_H */

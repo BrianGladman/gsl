@@ -13,6 +13,45 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
+int
+gsl_sf_legendre_P1_impl(double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = x;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_sf_legendre_P2_impl(double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = 0.5*(3.0*x*x - 1.0);
+    result->err = GSL_DBL_EPSILON * 0.5 * (fabs(3.0*x*x) + 1.0);
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_sf_legendre_P3_impl(double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = 0.5*x*(5.0*x*x - 3.0);
+    result->err = GSL_DBL_EPSILON * (fabs(result->val) + 0.5 * fabs(x) * (fabs(5.0*x*x) + 3.0));
+    return GSL_SUCCESS;
+  }
+}
+
 
 int
 gsl_sf_legendre_Pl_impl(const int l, const double x, gsl_sf_result * result)
@@ -454,6 +493,33 @@ gsl_sf_legendre_sphPlm_array_impl(const int lmax, int m, const double x, double 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
+int gsl_sf_legendre_P1_e(const double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_legendre_P1_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_P1_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_legendre_P2_e(const double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_legendre_P2_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_P2_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_legendre_P3_e(const double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_legendre_P3_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_legendre_P3_e", status);
+  }
+  return status;
+}
+
 int gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
 {
   int status = gsl_sf_legendre_Pl_impl(l, x, result);
@@ -507,10 +573,3 @@ int gsl_sf_legendre_sphPlm_array_e(const int lmax, const int m, const double x, 
   }
   return status;
 }
-
-
-double gsl_sf_legendre_P1(double x) { return x; }
-double gsl_sf_legendre_P2(double x) { return 0.5*(3.0*x*x - 1.0); }
-double gsl_sf_legendre_P3(double x) { return 0.5*x*(5.0*x*x - 3.0); }
-double gsl_sf_legendre_P4(double x) { double x2 = x*x; return (35.0*x2*x2 -30.0*x2 + 3.0)/8.0; }
-double gsl_sf_legendre_P5(double x) { double x2 = x*x; return x*(63.0*x2*x2 -70.0*x2 + 15.0)/8.0; }

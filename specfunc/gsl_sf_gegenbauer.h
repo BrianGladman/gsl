@@ -1,8 +1,8 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#ifndef GSL_SF_GEGENBAUER_H_
-#define GSL_SF_GEGENBAUER_H_
+#ifndef GSL_SF_GEGENBAUER_H
+#define GSL_SF_GEGENBAUER_H
 
 #include <gsl_sf_result.h>
 
@@ -12,9 +12,12 @@
  *
  * exceptions: none
  */
-double gsl_sf_gegenpoly_1(double lambda, double x);
-double gsl_sf_gegenpoly_2(double lambda, double x);
-double gsl_sf_gegenpoly_3(double lambda, double x);
+int gsl_sf_gegenpoly_1_impl(double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_2_impl(double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_3_impl(double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_1_e(double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_2_e(double lambda, double x, gsl_sf_result * result);
+int gsl_sf_gegenpoly_3_e(double lambda, double x, gsl_sf_result * result);
 
 
 /* Evaluate Gegenbauer polynomials.
@@ -36,4 +39,4 @@ int gsl_sf_gegenpoly_array_impl(int nmax, double lambda, double x, double * resu
 int gsl_sf_gegenpoly_array_e(int nmax, double lambda, double x, double * result_array);
 
 
-#endif  /* !GSL_SF_GEGENBAUER_H_ */
+#endif  /* !GSL_SF_GEGENBAUER_H */

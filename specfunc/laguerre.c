@@ -97,6 +97,56 @@ laguerre_n_cp(const int n, const double a, const double x, gsl_sf_result * resul
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*/
 
+int
+gsl_sf_laguerre_1_impl(const double a, const double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    result->val = 1.0 + a - x;
+    result->err = GSL_DBL_EPSILON * (fabs(a) + fabs(x));
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_sf_laguerre_2_impl(const double a, const double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    double c0 = 0.5 * (2.0+a)*(1.0+a);
+    double c1 = -(2.0+a);
+    double c2 = -0.5/(2.0+a);
+    result->val = c0 + c1*x*(1.0 + c2*x);
+    result->err = GSL_DBL_EPSILON * (fabs(c0) + 2.0 * fabs(c1*x) * (1.0 + 2.0 * fabs(c2*x)));
+    return GSL_SUCCESS;
+  }
+}
+
+int
+gsl_sf_laguerre_3_impl(const double a, const double x, gsl_sf_result * result)
+{
+  if(result == 0) {
+    return GSL_EFAULT;
+  }
+  else {
+    double c0 = (3.0+a)*(2.0+a)*(1.0+a) / 6.0;
+    double c1 = -c0 * 3.0 / (1.0+a);
+    double c2 = -1.0/(2.0+a);
+    double c3 = -1.0/(3.0*(3.0+a));
+    result->val = c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x));
+    result->err = 1.0 + 2.0 * fabs(c3*x);
+    result->err = 1.0 + 2.0 * fabs(c2*x) * result->err;
+    result->err = fabs(c0) + 2.0 * fabs(c1*x) * result->err;
+    result->err *= GSL_DBL_EPSILON;
+    return GSL_SUCCESS;
+  }
+}
+
+
 int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
                            gsl_sf_result * result)
 {
@@ -129,8 +179,10 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
     return laguerre_large_n(n, a, x, result);
   }
   else {
+    gsl_sf_result lg2;
+    int stat_lg2 = gsl_sf_laguerre_2_impl(a, x, &lg2);
     double Lkm1 = 1.0 + a - x;
-    double Lk   = gsl_sf_laguerre_2(a, x);
+    double Lk   = lg2.val;
     double Lkp1;
     int k;
 
@@ -140,13 +192,40 @@ int gsl_sf_laguerre_n_impl(const int n, const double a, const double x,
       Lk   = Lkp1;
     }
     result->val = Lk;
-    result->err = GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    result->err = GSL_DBL_EPSILON * 0.5 * n * fabs(result->val);
+    return stat_lg2;
   }
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Error Handling Versions *-*-*-*-*-*-*-*-*-*-*-*/
+
+int gsl_sf_laguerre_1_e(double a, double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_laguerre_1_impl(a, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_laguerre_1_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_laguerre_2_e(double a, double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_laguerre_2_impl(a, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_laguerre_2_e", status);
+  }
+  return status;
+}
+
+int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_laguerre_3_impl(a, x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_laguerre_3_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_laguerre_n_e(int n, double a, double x, gsl_sf_result * result)
 {
@@ -155,50 +234,4 @@ int gsl_sf_laguerre_n_e(int n, double a, double x, gsl_sf_result * result)
     GSL_ERROR("gsl_sf_laguerre_n_e", status);
   }
   return status;
-}
-
-
-/*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*/
-
-double gsl_sf_laguerre_1(const double a, const double x)
-{
-  return 1.0 + a - x;
-}
-
-double gsl_sf_laguerre_2(const double a, const double x)
-{
-  double c0 = 0.5 * (2.0+a)*(1.0+a);
-  double c1 = -(2.0+a);
-  double c2 = -0.5/(2.0+a);
-  return c0 + c1*x*(1.0 + c2*x);
-}
-
-double gsl_sf_laguerre_3(const double a, const double x)
-{
-  double c0 = (3.0+a)*(2.0+a)*(1.0+a) / 6.0;
-  double c1 = -c0 * 3.0 / (1.+a);
-  double c2 = -1.0/(2.0+a);
-  double c3 = -1.0/(3.0*(3.0+a));
-  return c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x));
-}
-
-double gsl_sf_laguerre_4(const double a, const double x)
-{
-  double c0 = (4.0+a)*(3.0+a)*(2.0+a)*(1.0+a) / 24.0;
-  double c1 = -c0 * 4.0 / (1.0+a);
-  double c2 = -3.0/(2.0*(2.0+a));
-  double c3 = -2.0/(3.0*(3.0+a));
-  double c4 = -1.0/(4.0*(4.0+a));
-  return c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x*(1.0 + c4*x)));
-}
-
-double gsl_sf_laguerre_5(const double a, const double x)
-{
-  double c0 = (5.0+a)*(4.0+a)*(3.0+a)*(2.0+a)*(1.0+a) / 120.0;
-  double c1 = -c0 * 5.0 / (1.0+a);
-  double c2 = -2.0/(2.0+a);
-  double c3 = -1.0/(3.0+a);
-  double c4 = -1.0/(2.0*(4.0+a));
-  double c5 = -1.0/(5.0*(5.0+a));
-  return c0 + c1*x*(1.0 + c2*x*(1.0 + c3*x*(1.0 + c4*x*(1.0 + c5*x))));
 }

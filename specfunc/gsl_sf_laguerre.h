@@ -15,11 +15,12 @@
  *
  * exceptions: none
  */
-double gsl_sf_laguerre_1(double a, double x);
-double gsl_sf_laguerre_2(double a, double x);
-double gsl_sf_laguerre_3(double a, double x);
-double gsl_sf_laguerre_4(double a, double x);
-double gsl_sf_laguerre_5(double a, double x);
+int gsl_sf_laguerre_1_impl(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_2_impl(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_3_impl(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_1_e(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_2_e(double a, double x, gsl_sf_result * result);
+int gsl_sf_laguerre_3_e(double a, double x, gsl_sf_result * result);
 
 
 /* Evaluate generalized Laguerre polynomials.

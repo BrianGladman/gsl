@@ -54,7 +54,11 @@ test_sf_LDADD = libgslspecfunc.a ../sys/libgslsys.a \
 test_sf_DEPENDENCIES = libgslspecfunc.a
 test_sf_SOURCES = test_sf.c		\
 		  test_sf.h		\
-		  test_airy.c
+		  test_airy.c		\
+		  test_bessel.c		\
+		  test_gamma.c		\
+		  test_hyperg.c
+
 
 libgslspecfunc_a_SOURCES = 	\
 	airy.c			\

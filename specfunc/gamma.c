@@ -1661,6 +1661,14 @@ int gsl_sf_lngamma_e(const double x, gsl_sf_result * result)
   return status;
 }
 
+int gsl_sf_lngamma_sgn_e(const double x, gsl_sf_result * result, double * sgn)
+{
+  int status = gsl_sf_lngamma_sgn_impl(x, result, sgn);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_lngamma_sgn_e", status);
+  }
+  return status;
+}
 
 int gsl_sf_gamma_e(const double x, gsl_sf_result * result)
 {

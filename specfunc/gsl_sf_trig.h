@@ -31,6 +31,14 @@ int gsl_sf_complex_logsin_impl(double zr, double zi, gsl_sf_result * lszr, gsl_s
 int gsl_sf_complex_logsin_e(double zr, double zi, gsl_sf_result * lszr, gsl_sf_result * lszi);
 
 
+/* sin(pi x)
+ *
+ * exceptions: none
+ */
+int gsl_sf_sin_pi_x_impl(double x, gsl_sf_result * result);
+int gsl_sf_sin_pi_x_e(double x, gsl_sf_result * result);
+
+
 /* log(sinh(x)), x > 0
  *
  * exceptions: GSL_EDOM

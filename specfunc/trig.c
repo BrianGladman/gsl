@@ -443,3 +443,12 @@ int gsl_sf_angle_restrict_pos_e(double * theta)
   }
   return status;
 }
+
+int gsl_sf_sin_pi_x_e(const double x, gsl_sf_result * result)
+{
+  int status = gsl_sf_sin_pi_x_impl(x, result);
+  if(status != GSL_SUCCESS) {
+    GSL_ERROR("gsl_sf_sin_pi_x_e", status);
+  }
+  return status;
+}
