@@ -28,5 +28,5 @@ EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
         rand-pareto.tex rand-poisson.tex \
 	rand-hypergeometric.tex rand-nbinomial.tex \
 	rand-bivariate-gaussian.tex rand-rayleigh.tex rand-rayleigh-tail.tex \
-	rand-tdist.tex rand-weibull.tex randplots.gnp \
+	rand-tdist.tex rand-weibull.tex random-walk.tex randplots.gnp \
 	rand-exppow.tex rand-levy.tex rand-gumbel.tex rand-bernoulli.tex
