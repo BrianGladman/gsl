@@ -112,18 +112,24 @@ of two then the call to the library function will return
 
 In addition to reporting errors the library also provides an optional
 error handler.  The error handler is called by library functions when
-they are about to report an error (for example, just before they
-return).  The purpose of the handler is to provide a function where a
-breakpoint can be set when running under the debugger.
+they report an error, just before they return to the caller.  The
+purpose of the handler is to provide a function where a breakpoint can
+be set that will catch library errors when running under the debugger.
+It is not intended for use in production programs. These should handle
+any errors using the error return codes described above.
 
 The default behavior of the error handler is to print a short message
-and call @code{abort()} whenever an error is reported by the library.  If
-a library routine reports an error then the whole program will
-core-dump.  This is a safe default for lazy programmers who do not check
+and call @code{abort()} whenever an error is reported by the library.
+If this default is not turned off then any program using the library
+will stop with a core-dump whenever a library routine reports an error.
+This is intended as a fail-safe default for programs which do not check
 the return status of library routines (we don't encourage you to write
-programs this way).  If you turn off the default error handler or provide
-your own error handler then it is your responsibility to check the
-return values of the GSL routines.
+programs this way).  If you turn off the default error handler it is
+your responsibility to check the return values of the GSL routines.  You
+can customize the error behavior by providing a new error handler. For
+example, an alternative error handler could log all errors to a file,
+ignore certain error conditions (such as underflows), or start the
+debugger and attach it to the current process when an error occurs.
 
 All GSL error handlers have the type @code{gsl_error_handler_t}, which is
 defined in @file{gsl_errno.h},
@@ -131,15 +137,17 @@ defined in @file{gsl_errno.h},
 @deftp {Data Type} gsl_error_handler_t
 
 This is the type of GSL error handler functions.  An error handler will
-be passed three arguments, specifying the reason for the error, the
-source file in which it occurred, and the line number in that file. 
-The source file and line number are set at compile time using
-the @code{__FILE__} and @code{__LINE__} directives in the preprocessor.
-An error handler function returns type @code{void}.  Error handler
-functions should be defined like this,
+be passed four arguments which specify the reason for the error (a
+string), the name of the source file in which it occurred (also a
+string), the line number in that file (an integer) and the error number
+(an integer).  The source file and line number are set at compile time
+using the @code{__FILE__} and @code{__LINE__} directives in the
+preprocessor.  An error handler function returns type @code{void}.
+Error handler functions should be defined like this,
 
 @example
-void @var{handler} (const char * reason, const char * file, int line)
+void 
+@var{handler} (const char * reason, const char * file, int line, int gsl_errno)
 @end example
 @end deftp
 @comment 
@@ -154,7 +162,10 @@ This functions sets a new error handler, @var{new_handler}, for the GSL
 library routines.  The previous handler is returned (so that you can
 restore it later).  Note that the pointer to a user defined error
 handler function is stored in a static variable, so there can only be
-one error handler per program.
+one error handler per program.  This function should be not be used in
+multi-threaded programs except to set up a program-wide error handler
+from a master thread.  The following example shows how to set and
+restore a new error handler,
 
 @example
 old_handler = gsl_set_error_handler (&my_error_handler); 
@@ -172,56 +183,85 @@ handler to @code{NULL},
 old_handler = gsl_set_error_handler (NULL); 
 @end example
 @end deftypefun
-
 @noindent
-Here is a skeleton outline of a program which defines its own error
-handler.  Imagine that the program does interactive data analysis --
-there is a main loop which reads commands from the user and calls
-library routines with user-supplied arguments,
+The error handler can be turned off by defining an error handler which
+does nothing,
 
 @example
-#include <setjmp.h>
 #include <gsl/gsl_errno.h>
 
-jmp_buf main_loop;
-void my_error_handler (const char *reason, const char *file, int line);
+void no_error_handler (const char *reason, const char *file, int line, int gsl_errno);
 
 main ()
 @{
-   gsl_set_error_handler (&my_error_handler);
-
-   while (1) 
-     @{
-       .... /* read command from user */
-
-       if (setjmp (main_loop) == 0)
-         @{
-            .... /* call GSL routines requested by user */
-         @}
-       else 
-         @{
-            .... /* my_error_handler bailed out, GSL gave an error */
-         @}
-     @}
+   gsl_set_error_handler (&no_error_handler);
+   ....
 @}
 
 void
-my_error_handler (const char *reason, const char *file, int line)
+no_error_handler (const char *reason, const char *file, int line, int gsl_errno)
 @{
-    fprintf (stderr, "GSL error: %s\n", reason);
-    longjmp (main_loop, 1);
+    /* do nothing */
+    return;
 @}
 @end example
-
 @noindent
-Before entering the interactive loop the program uses
-@code{gsl_set_error_handler} to provide its own error handler
-@code{my_error_handler} for GSL error reports.  After this point the
-function @code{my_error_handler} will be invoked whenever an error is
-reported by GSL. The new error handler prints the cause of the error
-(the string @code{reason}) and then does a non-local jump back to the
-main loop.  This would allow the user to fix the command which
-caused the error and try again.
+This will cause the program to continue after any error, so the return
+values from GSL routines must be checked.  
+
+The error behavior can be for specific applications by recompiling the
+library with a customized definition of the @code{GSL_ERROR} macro in
+the file @file{gsl_errno.h}.
+
+@c @noindent
+@c Here is a skeleton outline of a program which defines its own error
+@c handler.  Imagine that the program does interactive data analysis --
+@c there is a main loop which reads commands from the user and calls
+@c library routines with user-supplied arguments,
+
+@c @example
+@c #include <setjmp.h>
+@c #include <gsl/gsl_errno.h>
+
+@c jmp_buf main_loop;
+@c void my_error_handler (const char *reason, const char *file, int line);
+
+@c main ()
+@c @{
+@c    gsl_set_error_handler (&my_error_handler);
+
+@c    while (1) 
+@c      @{
+@c        .... /* read command from user */
+
+@c        if (setjmp (main_loop) == 0)
+@c          @{
+@c             .... /* call GSL routines requested by user */
+@c          @}
+@c        else 
+@c          @{
+@c             .... /* my_error_handler bailed out, GSL gave an error */
+@c          @}
+@c      @}
+@c @}
+
+@c void
+@c my_error_handler (const char *reason, const char *file, int line)
+@c @{
+@c     fprintf (stderr, "GSL error: %s\n", reason);
+@c     longjmp (main_loop, 1);
+@c @}
+@c @end example
+
+@c @noindent
+@c Before entering the interactive loop the program uses
+@c @code{gsl_set_error_handler} to provide its own error handler
+@c @code{my_error_handler} for GSL error reports.  After this point the
+@c function @code{my_error_handler} will be invoked whenever an error is
+@c reported by GSL. The new error handler prints the cause of the error
+@c (the string @code{reason}) and then does a non-local jump back to the
+@c main loop.  This would allow the user to fix the command which
+@c caused the error and try again.
 
 @comment @node Error streams
 @comment @section Error streams
@@ -343,8 +383,8 @@ conventions as in the library.
 To report an error you need to call the function @code{gsl_error} with a
 string describing the error and then return an appropriate error code
 from @code{gsl_errno.h}, or a special value, such as @code{NaN}.  For
-convenience @file{gsl_errno.h} defines two macros to carry out these
-steps:
+convenience the file @file{gsl_errno.h} defines two macros which carry
+out these steps:
 
 @deffn {Macro} GSL_ERROR (@var{reason}, @var{gsl_errno})
 
