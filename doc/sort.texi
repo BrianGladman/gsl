@@ -1,20 +1,17 @@
 @cindex sorting 
 @cindex heapsort
 This chapter describes functions for sorting data, both directly and
-indirectly (using an index).
-
-All the functions use the @dfn{heapsort} algorithm. Heapsort is an
-@c{$O(N \log N)$}
-@math{O(N \log N)} algorithm which operates
-in-place and does not require any additional storage. It provides
-consistent performance, with a running time for its worst-case (ordered
-data) which is not significantly different from the average and best
-cases.
-
-Note that the heapsort algorithm does not preserve the relative ordering
-of equal elements --- it is an @dfn{unstable} sort. However the
-resulting order of equal elements will be consistent across different
-platforms.
+indirectly (using an index). All the functions use the @dfn{heapsort}
+algorithm. Heapsort is an 
+@c{$O(N \log N)$} 
+@math{O(N \log N)} 
+algorithm which operates in-place. It does not require any additional
+storage and provides consistent performance. The running time for its
+worst-case (ordered data) which is not significantly different from the
+average and best cases. Note that the heapsort algorithm does not
+preserve the relative ordering of equal elements --- it is an
+@dfn{unstable} sort. However the resulting order of equal elements will
+be consistent across different platforms when using these functions.
 
 @menu
 * Sorting objects::             
@@ -72,8 +69,8 @@ gsl_heapsort (array, size, sizeof(double), compare_doubles);
 Note that unlike @code{qsort} the heapsort algorithm cannot be made into
 a stable sort by pointer arithmetic. The trick of comparing pointers for
 equal elements in the comparison function does not work for the heapsort
-algorithm. This is due to the internal rearrangement of data in heapsort
-which destroys the initial ordering.
+algorithm. The heapsort algorithm performs an internal rearrangement of
+the data which destroys its initial ordering.
 @end deftypefun
 
 @cindex indirect sorting
@@ -153,6 +150,8 @@ The following example shows how to use the permutation @var{p} to print
 the elements of the vector @var{v} in ascending order,
 
 @example
+gsl_sort_vector_index (p, v);
+
 for (i = 0; i < v->size; i++)
 @{
     double vpi = gsl_vector_get(v, p->data[i]);

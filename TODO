@@ -1,13 +1,20 @@
-TODO 
+TODO  -- see also individual TODO files in each directory
 
-* Automatically put the version and date into the KNOWN-PROBLEMS file
+* Should doc/mdate-sh be in CVS. Automake needs it unless you supply --missing
+
+* Make a sorted datatype for the median and quantile functions so that
+the user can be prevented from passing unsorted data, which is not
+checked for.
+
+* Add a vector layer to statistics and ffts.
 
 * Switch to libtool and --disable-shared (even though it is still
 slower) and build a single libgsl. This will also be easier for making
 the debian package hopefully.
 
 * Add support for C++ (Use #ifdef __cplusplus extern "C" { #pragma }
-#endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB).
+#endif ... #ifdef __cplusplus #pragma { } #endif as in GLIB. See also
+the libtool manual).
 
 * Eliminate use of volatile where it has been used to force rounding
 (integration/). It is better to write the code to avoid dependence on
@@ -25,6 +32,9 @@ do that.  Files with strict target are
     ode-initval/Makefile.am
     specfunc/Makefile.am
     sum/Makefile.am
+
+* In matrix struct change dim2 to tda, otherwise the distinction of
+size2 vs dim2 is totally confusing.
 
 * Run tests where matrix dim2 != size2, note that dim2 is a physical
 dimension and size2 is the number of columns in the matrix. This will
@@ -60,7 +70,10 @@ different error code.
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
 
-* Upgrade to texinfo-4.0
+* Upgrade to texinfo-4.0. Fix texinfo files so that sentences
+consistently use a double space after the preceding period (n.b. do
+this by hand, because there are names in the references which need
+only a single space, e.g. D. E. Knuth).
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that

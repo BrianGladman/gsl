@@ -1,6 +1,7 @@
 ** A new sort directory has been added for sorting objects and vectors.
 
-** Statistics functions now support a stride argument for generality
+** Statistics functions now support a stride argument for generality, and
+also support weighted samples
 
 ** gsl_vector_copy (dest, src) has been renamed gsl_vector_cpy (dest, src);
 

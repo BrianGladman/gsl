@@ -1,15 +1,19 @@
 @cindex permutations
 
 This chapter describes functions for creating and manipulating
-permutations. A permutation is represented by an array @math{p_i} of
-@var{n} integers in the range 0 .. @math{n-1}, where each value occurs
-once and only once. For example, the array @math{(0,1,3,2)} represents a
-permutation of length 4 which exchanges the last two elements. The
-identity permutation of length 4 is @math{(0,1,2,3)}. The application of
-a permutation @math{p} to a vector @math{v} yields a new vector
-@math{v'} where @math{v'_i = v_@{p_i@}}.
+permutations. A permutation @math{p} is represented by an array of
+@math{n} integers in the range 0 .. @math{n-1}, where each value
+@math{p_i} occurs once and only once. The application of a permutation
+@math{p} to a vector @math{v} yields a new vector @math{v'} where
+@c{$v'_i = v_{p_i}$}
+@math{v'_i = v_@{p_i@}}. 
+For example, the array @math{(0,1,3,2)} represents a permutation of
+which exchanges the last two elements of a four element vector.
+The corresponding identity permutation is @math{(0,1,2,3)}. 
 
-These functions are defined in the header file @file{gsl_permutation.h}.
+
+The functions described in this chapter are defined in the header file
+@file{gsl_permutation.h}.
 
 @menu
 * The Permutation struct::      
@@ -51,12 +55,13 @@ returned if insufficient memory is available to create the permutation.
 
 @deftypefun {gsl_permutation *} gsl_permutation_calloc (size_t @var{n})
 This function allocates memory for a new permutation of size @var{n} and
-initializes it to the identity.
+initializes it to the identity. A null pointer is returned if
+insufficient memory is available to create the permutation.
 @end deftypefun
 
 @deftypefun void gsl_permutation_init (gsl_permutation * @var{p})
 This function initializes the permutation @var{p} to the identity, i.e.
-(0,1,2,...,n-1).
+@math{(0,1,2,...,n-1)}.
 @end deftypefun
 
 @deftypefun void gsl_permutation_free (gsl_permutation * @var{p})
@@ -112,9 +117,9 @@ file as binary data or formatted text.
 
 @deftypefun int gsl_permutation_fwrite (FILE * @var{stream}, const gsl_permutation * @var{p})
 This function writes the elements of the permutation @var{p} to the
-stream @var{stream} in binary format. The return value is 0 for success
-and @code{GSL_EFAILED} if there was a problem writing to the file. Since
-the data is written in the native binary format it may not be portable
+stream @var{stream} in binary format. The function returns
+@code{GSL_EFAILED} if there was a problem writing to the file. Since the
+data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
@@ -122,10 +127,10 @@ between different architectures.
 This function reads into the permutation @var{p} from the open stream
 @var{stream} in binary format. The permutation @var{p} must be
 preallocated with the correct length since the function uses the size of
-@var{p} to determine how many bytes to read. The return value is 0 for
-success and @code{GSL_EFAILED} if there was a problem reading from the
-file. The data is assumed to have been written in the native binary
-format on the same architecture.
+@var{p} to determine how many bytes to read. The function returns
+@code{GSL_EFAILED} if there was a problem reading from the file. The
+data is assumed to have been written in the native binary format on the
+same architecture.
 @end deftypefun
 
 @deftypefun int gsl_permutation_fprintf (FILE * @var{stream}, const gsl_permutation * @var{p}, const char *@var{format})
@@ -133,7 +138,7 @@ This function writes the elements of the permutation @var{p}
 line-by-line to the stream @var{stream} using the format specifier
 @var{format}, which should be suitable for a type of @var{size_t}. On a
 GNU system the type modifier @code{Z} represents @code{size_t}, so
-@code{"%Zu\n"} is a suitable format. The function returns 0 for success and
+@code{"%Zu\n"} is a suitable format. The function returns
 @code{GSL_EFAILED} if there was a problem writing to the file.
 @end deftypefun
 
@@ -141,12 +146,14 @@ GNU system the type modifier @code{Z} represents @code{size_t}, so
 This function reads formatted data from the stream @var{stream} into the
 permutation @var{p}. The permutation @var{p} must be preallocated with
 the correct length since the function uses the size of @var{p} to
-determine how many numbers to read. The function returns 0 for success
-and @code{GSL_EFAILED} if there was a problem reading from the file.
+determine how many numbers to read. The function returns
+@code{GSL_EFAILED} if there was a problem reading from the file.
 @end deftypefun
 
 @node Permutation Examples
 @section Examples
+
+TO be written
 
 @node Permutation References and Further Reading
 @section References and Further Reading
