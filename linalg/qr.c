@@ -625,3 +625,175 @@ gsl_la_rform_QR_impl (const gsl_matrix * qr, const gsl_vector * rdiag,
       return GSL_SUCCESS;
     }
 }
+
+/* Generate a Givens rotation (cos,sin) which takes v=(x,y) to (|v|,0) 
+
+   From Golub and Van Loan, "Matrix Computations", Section 5.1.8 */
+
+inline static void
+create_givens (const double a, const double b, double * c, double * s)
+{
+  if (b == 0)
+    {
+      *c = 1; *s = 0;
+    }
+  else if (fabs(b) > fabs(a))
+    {
+      double t = -a / b;
+      double s1 = 1.0/sqrt(1 + t * t);
+      *s = s1;
+      *c = s1 * t;
+    }
+  else
+    {
+      double t = -b / a;
+      double c1 = 1.0/sqrt(1 + t * t);
+      *c = c1;
+      *s = c1 * t;
+    }
+}
+
+inline static double 
+mag (const double x, const double y)
+{
+  if (y == 0)
+    {
+      return fabs(x);
+    }
+  else 
+    {
+      double ay = fabs(y);
+      double ax = fabs(x);
+      if (ay > ax)
+        {
+          double u = ax/ay;
+          return ay * sqrt(1 + u*u);
+        }
+      else 
+        {
+          double u = ay/ax;
+          return ax * sqrt(1 + u*u);
+        }
+    }
+}
+
+inline static void
+apply_givens_qr (size_t M, size_t N, gsl_matrix *q, gsl_matrix *r, 
+                 size_t i, size_t j, double c, double s)
+{
+  /* N.B  i must be less than j */
+  size_t k;
+  /* Apply rotation to matrix q,  q' = q G*/
+
+  for (k = 0; k < N; k++)
+    {
+      double qki = gsl_matrix_get(q,k,i);      
+      double qkj = gsl_matrix_get(q,k,j);
+      gsl_matrix_set(q,k,i, qki * c - qkj * s);
+      gsl_matrix_set(q,k,j, qki * s + qkj * c);
+    }
+
+  /* Apply rotation to matrix R, R' = GT R (note: upper triangular so zero for
+     column < row) */
+
+  for (k = i; k < N; k++)
+    {
+      double rik = gsl_matrix_get(r,i,k);      
+      double rjk = gsl_matrix_get(r,j,k);
+      gsl_matrix_set(r,i,k, c * rik - s* rjk);
+      gsl_matrix_set(r,j,k, s * rik + c* rjk);
+    }
+}
+
+inline static void
+apply_givens_vec (gsl_vector *v, size_t i, size_t j, double c, double s)
+{
+  double vi = gsl_vector_get(v,i);      
+  double vj = gsl_vector_get(v,j);
+  gsl_vector_set(v,i, c * vi - s * vj);
+  gsl_vector_set(v,j, s * vi + c * vj);
+}
+
+
+
+/* Update a QR matrix 
+
+    Q' R' = QR + u v^T
+
+   From Golub and Van Loan, "Matrix Computations", Section 12.5
+   (Updating Matrix Factorizations, Rank-One Changes)
+
+*/
+
+int 
+gsl_la_update_QR_impl (gsl_matrix * q, gsl_matrix * r, 
+                       const gsl_vector_int * permutation,
+                       const gsl_vector * u, const gsl_vector * v, 
+                       gsl_vector * w)
+{
+  size_t i, j, k;
+  const size_t M = q->size1;
+  const size_t N = q->size2;
+  double w0;
+
+  /* First compute w = Q^T u, (Equation 12.5.1) */
+  
+  for (j = 0; j < M ; j++)
+    {
+      double sum = 0;
+
+      for (i = 0; i < N; i++)
+        {
+          sum += gsl_matrix_get(q,i,j) * gsl_vector_get(u, i);
+        }
+      
+      gsl_vector_set(w, j, sum);
+    }
+      
+  /* Apply Given's rotations to reduce w to (|w|, 0, 0, ... , 0) 
+
+     J_1^T .... J_(n-1)^T w = +/- |w| e_1
+
+     simultaneously applied to R,  H = J_1^T ... J^T_(n-1) R
+     so that H is upper Hessenberg.  (12.5.2) */
+
+  for (k = N-1; k > 0; k--)
+    {
+      double c,s;
+      double wk = gsl_vector_get(w, k);
+      double wkm1 = gsl_vector_get(w, k-1);
+
+      create_givens(wkm1,wk,&c,&s);
+      apply_givens_vec(w,k-1,k,c,s);
+      apply_givens_qr(M,N,q,r,k-1,k,c,s);
+    }
+
+  w0 = gsl_vector_get(w,0);
+
+  /* Add in w v^T  (Equation 12.5.3) */
+
+  for (j = 0; j < N; j++)
+    {
+      double r0j = gsl_matrix_get(r, 0, j);
+      int perm_j = gsl_vector_int_get(permutation, j);
+      double vj = gsl_vector_get(v, perm_j);
+      gsl_matrix_set(r, 0, j, r0j + w0 * vj);
+    }
+
+  /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H  
+     Equation 12.5.4 */
+
+  for (k = 1; k < N; k++)
+    {
+      double c,s;
+      double diag = gsl_matrix_get(r, k-1, k-1);
+      double offdiag = gsl_matrix_get(r, k, k-1);
+
+      create_givens (diag, offdiag, &c, &s);
+      apply_givens_qr (M,N,q,r,k-1,k,c,s);
+    }
+
+  return GSL_SUCCESS;
+}
+
+
