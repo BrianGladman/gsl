@@ -166,6 +166,7 @@ gsl_ran_landau_pdf(const double x)
   return DENLAN;
 }
 
+#if 0 /* Not needed yet */
 /* This function is a translation from the original Fortran of the
  * CERN library routine DISLAN, the integral from -inf to x of the
  * Landau p.d.f.
@@ -310,6 +311,7 @@ gsl_ran_landau_dislan(const double x)
 
   return DISLAN;
 }
+#endif
 
 double
 gsl_ran_landau(const gsl_rng * r)
