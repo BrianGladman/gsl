@@ -6,6 +6,10 @@ gsl_strerror (const int gsl_errno)
 {
   switch (gsl_errno)
     {
+    case GSL_SUCCESS:
+      return "success" ;
+    case GSL_FAILURE:
+      return "failure" ;
     case GSL_EDOM:
       return "input domain error" ;
     case GSL_ERANGE:
