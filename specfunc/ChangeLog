@@ -1,3 +1,11 @@
+Fri Jul  6 20:16:19 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* zeta.c (riemann_zeta1m_slt0): added a function to compute
+ 	zeta(1-s) without loss of accuracy for s near zero, as used by the
+ 	reflection formula.  This fixes a bug in the accuracy of results
+ 	of zeta(-x) for small x, where loss of precision previously
+ 	occurred by evaluating 1-x.
+
 2001-07-06  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel_I0.c (gsl_sf_bessel_I0_scaled_e): added missing scaling

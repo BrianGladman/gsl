@@ -139,6 +139,28 @@ riemann_zeta_sgt0(double s, gsl_sf_result * result)
   }
 }
 
+inline
+static int
+riemann_zeta1m_slt0(double s, gsl_sf_result * result)
+{
+  if(s > -19.0) {
+    double x = (-19 - 2.0*s)/19.0;
+    gsl_sf_result c;
+    cheb_eval_e(&zeta_xgt1_cs, x, &c);
+    result->val = c.val / (-s);
+    result->err = c.err / (-s) + GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+  else {
+    double f2 = 1.0 - pow(2.0,-(1.0-s));
+    double f3 = 1.0 - pow(3.0,-(1.0-s));
+    double f5 = 1.0 - pow(5.0,-(1.0-s));
+    double f7 = 1.0 - pow(7.0,-(1.0-s));
+    result->val = 1.0/(f2*f3*f5*f7);
+    result->err = 3.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return GSL_SUCCESS;
+  }
+}
 
 /* zeta(n) */
 #define ZETA_POS_TABLE_NMAX   100
@@ -571,7 +593,7 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
     /* reflection formula, [Abramowitz+Stegun, 23.2.5] */
 
     gsl_sf_result zeta_one_minus_s;
-    const int stat_zoms = riemann_zeta_sgt0(1.0-s, &zeta_one_minus_s);
+    const int stat_zoms = riemann_zeta1m_slt0(s, &zeta_one_minus_s);
     const double sin_term = sin(0.5*M_PI*s)/M_PI;
 
     if(sin_term == 0.0) {
