@@ -297,3 +297,6 @@ gsl_ran_hypergeometric_pdf
 conditions
 
 * Andris Pavenis <pavenis@latnet.lv> Makefile fix for EXEEXT
+
+* Daniel Webb <lists@danielwebb.us> bug report for potential cspline
+division by zero

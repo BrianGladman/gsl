@@ -324,3 +324,16 @@ there is small error in FUNCTION (gsl_vector, swap), line 27:
 
 this should be: s2 = ... w->stride
 ----------------------------------------------------------------------
+BUG#25 - ungraceful handling of equal abscissae in cspline
+
+From: Daniel Webb <lists@danielwebb.us>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] Cspline interpolation problem
+Date: Sun, 5 Sep 2004 20:17:49 -0600 (MDT)
+
+cspline_init has a division by zero when two x-coordinates are the
+same. This case could be handled more gracefully, or an error
+signalled in the initialisation.  For example, akima interpolation
+does not have this problem.
+
+----------------------------------------------------------------------
