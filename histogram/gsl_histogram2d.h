@@ -61,5 +61,5 @@ int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * p,
 				   double r1, double r2, 
 				   double * x, double * y);
 
-#endif /* GSL_HISTOGRAM_H */
+#endif /* GSL_HISTOGRAM2D_H */
 
