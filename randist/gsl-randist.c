@@ -213,10 +213,10 @@ main (int argc, char *argv[])
     }
   else if (NAME("lognormal"))
     {
-      ARGS(2, "mu = scale parameter, a = power (1=exponential, 2=gaussian)");
+      ARGS(2, "zeta = location parameter, sigma = scale parameter");
       DBL_ARG(mu) ;
-      DBL_ARG(a) ;
-      OUTPUT(gsl_ran_exppow (r, mu, a));
+      DBL_ARG(sigma) ;
+      OUTPUT(gsl_ran_exppow (r, mu, sigma));
     }
   else if (NAME("negative-binomial"))
     {

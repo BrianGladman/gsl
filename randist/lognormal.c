@@ -5,13 +5,13 @@
 
 /* The lognormal distribution has the form 
 
-   p(x) dx = 1/(x * sqrt(2 pi)) exp(-ln(x)^2/2) dx
+   p(x) dx = 1/(x * sqrt(2 pi sigma^2)) exp(-(ln(x) - zeta)^2/2 sigma^2) dx
 
    for x > 0. Lognormal random numbers are the exponentials of
    gaussian random numbers */
 
 double
-gsl_ran_lognormal (const gsl_rng * r)
+gsl_ran_lognormal (const gsl_rng * r, const double zeta, const double sigma)
 {
   double u, v, r2, normal, z;
 
@@ -29,13 +29,13 @@ gsl_ran_lognormal (const gsl_rng * r)
 
   normal = u * sqrt (-2.0 * log (r2) / r2);
 
-  z = exp (normal);
+  z =  exp (sigma * normal + zeta);
 
   return z;
 }
 
 double
-gsl_ran_lognormal_pdf (const double x)
+gsl_ran_lognormal_pdf (const double x, const double zeta, const double sigma)
 {
   if (x <= 0)
     {
@@ -43,8 +43,8 @@ gsl_ran_lognormal_pdf (const double x)
     }
   else
     {
-      double u = log (x);
-      double p = 1 / (x * sqrt (2 * M_PI)) * exp (-u * u / 2);
+      double u = (log (x) - zeta)/sigma;
+      double p = 1 / (x * fabs(sigma) * sqrt (2 * M_PI)) * exp (-(u * u) /2);
       return p;
     }
 }

@@ -1,5 +1,7 @@
 Wed Aug 12 14:02:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* lognormal.c: added zeta and sigma (location and scale parameters)
+
 	* logarithmic.c (gsl_ran_logarithmic): added logarithmic distribution
 
 Mon Aug 10 14:41:15 1998  Brian Gough  <bjg@vvv.lanl.gov>

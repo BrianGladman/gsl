@@ -5,7 +5,11 @@ parameter.
 x2. Check for off by one error in the shuffle algorithm. DONE. checked
 against Knuth.
 
-3. If the user runs gsl-dist for two different distributions then the
+x3. If the user runs gsl-dist for two different distributions then the
 variates will be correlated because they come from the same stream of
-random numbers.
+random numbers. DONE, the user now has to supply a seed
 
+4. Do something about the possibility of the user providing invalid
+parameters (e.g. negative variance etc)
+
+5. Add the triangular distribution.
