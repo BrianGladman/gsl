@@ -94,8 +94,8 @@ main (void)
 
   rng_test (gsl_rng_coveyou, 6, 10000, 1416754246UL);
 
-  /* Fishman20 test value from PARI: ((48271*6)^10000)%(2^31-1)
-  rng_test (gsl_rng_fishman20, 6, 10000, 890747149UL);
+  /* Fishman20 test value from PARI: (6*48271^10000)%(2^31-1) */
+  rng_test (gsl_rng_fishman20, 6, 10000, 248127575UL);
 
   /* FIXME: the ranlux tests below were made by running the fortran code and
      getting the expected value from that. An analytic calculation
