@@ -66,22 +66,21 @@ gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n)
 }
 
 double
-gsl_ran_binomial_pdf (const unsigned int k, const double p, 
+gsl_ran_binomial_pdf (const unsigned int k, const double p,
 		      const unsigned int n)
 {
   if (k > n)
     {
-      return 0 ;
+      return 0;
     }
-  else 
+  else
     {
-      double a = k;
-      double b = n - k;
       double P;
-      double Cnk = gsl_sf_choose (n, k) ;
 
-      P = Cnk * pow (p, a) * pow (1 - p, b);
-      
+      double ln_Cnk = gsl_sf_lnchoose (n, k);
+      P = ln_Cnk + k * log (p) + (n - k) * log (1 - p);
+      P = exp (P);
+
       return P;
     }
 }

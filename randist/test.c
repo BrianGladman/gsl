@@ -46,8 +46,10 @@ double test_beta_pdf (double x);
 double test_bernoulli (void);
 double test_bernoulli_pdf (unsigned int n);
 double test_binomial (void);
+double test_binomial_tpe (void);
 double test_binomial_pdf (unsigned int n);
 double test_binomial_large (void);
+double test_binomial_large_tpe (void);
 double test_binomial_large_pdf (unsigned int n);
 double test_cauchy (void);
 double test_cauchy_pdf (double x);
@@ -584,6 +586,12 @@ test_binomial (void)
 }
 
 double
+test_binomial_tpe (void)
+{
+  return gsl_ran_binomial_tpe (r_global, 0.3, 5);
+}
+
+double
 test_binomial_pdf (unsigned int n)
 {
   return gsl_ran_binomial_pdf (n, 0.3, 5);
@@ -593,6 +601,12 @@ double
 test_binomial_large (void)
 {
   return gsl_ran_binomial (r_global, 0.3, 55);
+}
+
+double
+test_binomial_large_tpe (void)
+{
+  return gsl_ran_binomial_tpe (r_global, 0.3, 55);
 }
 
 double
