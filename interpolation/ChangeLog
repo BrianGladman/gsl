@@ -1,3 +1,7 @@
+Fri Nov 13 16:50:05 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* clean up for make strict, use size_t instead of unsigned int
+
 1998-11-06    <bjg@ancho.lanl.gov>
 
 	* added const to several declarations where needed.

@@ -19,10 +19,10 @@ gsl_interp_accel_new(void)
 }
 
 
-unsigned long
-gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], unsigned long len, double x)
+size_t
+gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x)
 {
-  unsigned long x_index = a->cache;
+  size_t x_index = a->cache;
  
   if(x < xa[x_index]) {
     a->miss_count++;

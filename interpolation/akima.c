@@ -15,7 +15,7 @@ typedef struct {
   void    (*free)        (gsl_interp_obj *);
   double  xmin;
   double  xmax;
-  int     size;
+  size_t  size;
   double *  b;
   double *  c;
   double *  d;
@@ -24,10 +24,10 @@ gsl_interp_akima;
 
 
 gsl_interp_obj *
-gsl_interp_akima_natural_create(const double xa[], const double ya[], int size);
+gsl_interp_akima_natural_create(const double xa[], const double ya[], size_t size);
 
 gsl_interp_obj *
-gsl_interp_akima_periodic_create(const double xa[], const double ya[], int size);
+gsl_interp_akima_periodic_create(const double xa[], const double ya[], size_t size);
 
 
 void
@@ -54,8 +54,10 @@ const gsl_interp_factory gsl_interp_factory_akima_periodic = {
 /* common creation */
 static
 gsl_interp_akima *
-interp_akima_new(const double x_array[], const double y_array[], int size)
+interp_akima_new(const double x_array[], const double y_array[], size_t size)
 {
+  y_array = 0; /* prevent warning about unused parameter */
+
   if(size <= 4)
     return 0;
   else {
@@ -88,7 +90,7 @@ static
 void
 interp_akima_calc(gsl_interp_akima * interp, const double  x_array[], double * m)
 {
-  int i;
+  size_t i;
   for(i=0; i<interp->size; i++) {
     double NE = fabs(m[i+1]-m[i]) + fabs(m[i-1]-m[i-2]);
     if(NE == 0.0) {
@@ -118,7 +120,7 @@ interp_akima_calc(gsl_interp_akima * interp, const double  x_array[], double * m
 
 
 gsl_interp_obj *
-gsl_interp_akima_natural_create(const double x_array[], const double y_array[], int size)
+gsl_interp_akima_natural_create(const double x_array[], const double y_array[], size_t size)
 {
   gsl_interp_akima * interp = interp_akima_new(x_array, y_array, size);
   
@@ -126,7 +128,7 @@ gsl_interp_akima_natural_create(const double x_array[], const double y_array[], 
     double * _m = (double *) malloc((size+4) * sizeof(double));
     if(_m != 0) {
       double *  m = _m + 2;
-      int i;
+      size_t i;
       for(i=0; i<size-2; i++) {
         m[i] = (y_array[i+1]-y_array[i]) / (x_array[i+1]-x_array[i]);
       }
@@ -150,7 +152,7 @@ gsl_interp_akima_natural_create(const double x_array[], const double y_array[], 
 }
 
 gsl_interp_obj *
-gsl_interp_akima_periodic_create(const double x_array[], const double y_array[], int size)
+gsl_interp_akima_periodic_create(const double x_array[], const double y_array[], size_t size)
 {
   gsl_interp_akima * interp = interp_akima_new(x_array, y_array, size);
   
@@ -158,7 +160,7 @@ gsl_interp_akima_periodic_create(const double x_array[], const double y_array[],
     double * _m = (double *) malloc((size+4) * sizeof(double));
     if(_m != 0) {
       double *  m = _m + 2;
-      int i;
+      size_t i;
       for(i=0; i<size-2; i++) {
         m[i] = (y_array[i+1]-y_array[i]) / (x_array[i+1]-x_array[i]);
       }
@@ -213,7 +215,7 @@ gsl_interp_akima_eval_impl(const gsl_interp_obj * akima_interp,
     return GSL_EDOM;
   }
   else {
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);
@@ -246,6 +248,8 @@ gsl_interp_akima_eval_d_impl(const gsl_interp_obj * akima_interp,
 {
   const gsl_interp_akima * interp = (const gsl_interp_akima * ) akima_interp;
 
+  y_array = 0; /* prevent warning about unused parameter */
+
   if(x < interp->xmin) {
     *dydx = 0.0;
     return GSL_EDOM;
@@ -255,7 +259,7 @@ gsl_interp_akima_eval_d_impl(const gsl_interp_obj * akima_interp,
     return GSL_EDOM;
   }
   else {
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);

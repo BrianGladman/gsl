@@ -14,14 +14,14 @@ typedef struct {
   void    (*free)        (gsl_interp_obj *);
   double  xmin;
   double  xmax;
-  int     size;
+  size_t  size;
 }
 gsl_interp_linear;
 
 
 static
 gsl_interp_obj *
-linear_create(const double xa[], const double ya[], int size);
+linear_create(const double xa[], const double ya[], size_t size);
 
 static
 void
@@ -46,8 +46,10 @@ const gsl_interp_factory gsl_interp_factory_linear = {
 
 static
 gsl_interp_obj *
-linear_create(const double x_array[], const double y_array[], int size)
+linear_create(const double x_array[], const double y_array[], size_t size)
 {
+  y_array = 0; /* prevent warning about unused parameter */
+
   if(size <= 1)
     return 0;
   else {
@@ -96,7 +98,7 @@ linear_eval_impl(const gsl_interp_obj * linear_interp,
     double x_lo, x_hi;
     double y_lo, y_hi;
     double dx;
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);
@@ -147,7 +149,7 @@ linear_eval_d_impl(const gsl_interp_obj * linear_interp,
     double y_lo, y_hi;
     double dx;
     double dy;
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);
@@ -173,3 +175,4 @@ linear_eval_d_impl(const gsl_interp_obj * linear_interp,
     }
   } 
 }
+

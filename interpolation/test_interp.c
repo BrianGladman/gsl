@@ -17,12 +17,12 @@ typedef  struct _xy_table    xy_table;
 struct _xy_table {
   double * x;
   double * y;
-  int n;
+  size_t n;
 };
 
 
-void
-alloc_xy_table(xy_table * data_table, int size)
+static void
+alloc_xy_table(xy_table * data_table, size_t size)
 {
   data_table->n = size;
   data_table->x = (double *) malloc(data_table->n * sizeof(double));
@@ -30,17 +30,16 @@ alloc_xy_table(xy_table * data_table, int size)
 }
 
 
-int
+static int
 test_interp(xy_table * data_table, const gsl_interp_factory * factory, xy_table * test_table)
 {
   int status = 0;
-  int i;
+  size_t i;
 
   gsl_interp_accel * a      = gsl_interp_accel_new();
   gsl_interp_obj   * interp = factory->create(data_table->x,
                                               data_table->y,
-					      data_table->n
-					      );
+					      data_table->n);
   
   for(i=0; i<test_table->n; i++) {
     double x = test_table->x[i];
@@ -58,7 +57,8 @@ test_interp(xy_table * data_table, const gsl_interp_factory * factory, xy_table 
 }
 
 
-int test_linear(void)
+static int 
+test_linear(void)
 {
   int s;
   
@@ -75,7 +75,8 @@ int test_linear(void)
   return s;
 }
 
-int test_cspline_natural(void)
+static int 
+test_cspline_natural(void)
 { 
   int s ;
   

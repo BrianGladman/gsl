@@ -15,18 +15,18 @@ typedef struct {
   void      (*free)        (gsl_interp_obj *);
   double    xmin;
   double    xmax;
-  int       size;
+  size_t    size;
   double *  c;
 }
 gsl_interp_cspline;
 
 static
 gsl_interp_obj *
-cspline_natural_create(const double xa[], const double ya[], int size);
+cspline_natural_create(const double xa[], const double ya[], size_t size);
 
 static
 gsl_interp_obj *
-cspline_periodic_create(const double xa[], const double ya[], int size);
+cspline_periodic_create(const double xa[], const double ya[], size_t size);
 
 static
 void
@@ -55,7 +55,7 @@ const gsl_interp_factory gsl_interp_factory_cspline_periodic = {
 
 /* common initialization */
 static
-gsl_interp_cspline * cspline_new(const double xa[], int size)
+gsl_interp_cspline * cspline_new(const double xa[], size_t size)
 {
   gsl_interp_cspline * interp = (gsl_interp_cspline *) malloc(sizeof(gsl_interp_cspline));
   if(interp != 0) {
@@ -84,10 +84,10 @@ cspline_calc_natural(gsl_interp_cspline * interp,
                      const double xa[], const double ya[]
                      )
 {
-  int i;
-  int num_points   = interp->size;
-  int max_index    = num_points - 1; /* Engeln-Mullges + Uhlig "n" */
-  int sys_size     = max_index  - 1; /* linear system is sys_size x sys_size */
+  size_t i;
+  size_t num_points   = interp->size;
+  size_t max_index    = num_points - 1; /* Engeln-Mullges + Uhlig "n" */
+  size_t sys_size     = max_index  - 1; /* linear system is sys_size x sys_size */
   int status;
   double * g       = (double *) malloc(sys_size * sizeof(double));
   double * diag    = (double *) malloc(sys_size * sizeof(double));
@@ -130,10 +130,10 @@ cspline_calc_periodic(gsl_interp_cspline * interp,
                       const double xa[], const double ya[]
                       )
 {
-  int i;
-  int num_points   = interp->size;
-  int max_index    = num_points - 1; /* Engeln-Mullges + Uhlig "n" */
-  int sys_size     = max_index;      /* linear system is sys_size x sys_size */
+  size_t i;
+  size_t num_points   = interp->size;
+  size_t max_index    = num_points - 1; /* Engeln-Mullges + Uhlig "n" */
+  size_t sys_size     = max_index;      /* linear system is sys_size x sys_size */
   int status;
   double * g       = (double *) malloc(sys_size * sizeof(double));
   double * diag    = (double *) malloc(sys_size * sizeof(double));
@@ -182,7 +182,7 @@ cspline_calc_periodic(gsl_interp_cspline * interp,
 /* factory method */
 static
 gsl_interp_obj *
-cspline_natural_create(const double x_array[], const double y_array[], int size)
+cspline_natural_create(const double x_array[], const double y_array[], size_t size)
 {
   if(size <= 1)
     return 0;
@@ -199,7 +199,7 @@ cspline_natural_create(const double x_array[], const double y_array[], int size)
 /* factory method */
 static
 gsl_interp_obj *
-cspline_periodic_create(const double x_array[], const double y_array[], int size)
+cspline_periodic_create(const double x_array[], const double y_array[], size_t size)
 {
   if(size <= 1)
     return 0;
@@ -248,7 +248,7 @@ cspline_eval_impl(const gsl_interp_obj * cspline_interp,
   else {
     double x_lo, x_hi;
     double dx;
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);
@@ -303,7 +303,7 @@ cspline_eval_d_impl(const gsl_interp_obj * cspline_interp,
   else {
     double x_lo, x_hi;
     double dx;
-    unsigned long index;
+    size_t index;
 
     if(a != 0) {
       index = gsl_interp_accel_find(a, x_array, interp->size, x);

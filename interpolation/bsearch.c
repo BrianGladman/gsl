@@ -1,19 +1,21 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
+#include <config.h>
+#include <stdlib.h>
+
 #include "bsearch.h"
 
-
-unsigned long
+size_t
 interp_bsearch(const double x_array[], double x,
-               unsigned long index_lo,
-               unsigned long index_hi
+               size_t index_lo,
+               size_t index_hi
                )
 {
-  int ilo = index_lo;
-  int ihi = index_hi;
-  while(ihi - ilo > 1) {
-    int i = (ihi + ilo)/2;
+  size_t ilo = index_lo;
+  size_t ihi = index_hi;
+  while(ihi > ilo + 1) {
+    size_t i = (ihi + ilo)/2;
     if(x_array[i] > x)
       ihi = i;
     else

@@ -7,12 +7,12 @@
 
 int solve_tridiag(const double diag[], const double offdiag[], const double b[],
                   double * x,
-                  int N
+                  size_t N
                   );
 
 int solve_cyctridiag(const double diag[], const double offdiag[], const double b[],
                      double * x,
-                     int N
+                     size_t N
                      );
 
 

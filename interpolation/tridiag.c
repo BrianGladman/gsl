@@ -11,8 +11,7 @@
 
 int solve_tridiag(const double diag[], const double offdiag[], const double b[],
                   double * x,
-                  int N
-                  )
+                  size_t N)
 {
   int status;
   double * gamma = (double *) malloc(N * sizeof(double));
@@ -24,7 +23,7 @@ int solve_tridiag(const double diag[], const double offdiag[], const double b[],
     status = GSL_ENOMEM;
   }
   else {
-    int i;
+    size_t i, j;
 
     /* Cholesky decomposition
        A = L.D.L^t
@@ -50,9 +49,12 @@ int solve_tridiag(const double diag[], const double offdiag[], const double b[],
     
     /* backsubstitution */
     x[N-1] = c[N-1];
-    for(i=N-2; i>=0; i--) {
-      x[i] = c[i] - gamma[i]*x[i+1];
-    }
+    if (N >= 2) 
+      {
+	for(i=N-2, j=0; j<=N-2; j++, i--) {
+	  x[i] = c[i] - gamma[i]*x[i+1];
+	}
+      }
     
     status = GSL_SUCCESS;
   }
@@ -71,7 +73,7 @@ int solve_tridiag(const double diag[], const double offdiag[], const double b[],
 
 int solve_cyctridiag(const double diag[], const double offdiag[], const double b[],
                      double * x,
-                     int N
+                     size_t N
                      )
 {
   int status;
@@ -85,7 +87,7 @@ int solve_cyctridiag(const double diag[], const double offdiag[], const double b
     status = GSL_ENOMEM;
   }
   else {
-    int i;
+    size_t i,j;
     double sum = 0.0;
     
     /* factor */
@@ -121,8 +123,10 @@ int solve_cyctridiag(const double diag[], const double offdiag[], const double b
     /* backsubstitution */
     x[N-1] = c[N-1];
     x[N-2] = c[N-2] - gamma[N-2]*x[N-1];
-    for(i=N-3; i>= 0; i--) {
-      x[i] = c[i] - gamma[i]*x[i+1] - delta[i]*x[N-1];
+    if (N >= 3) {
+      for(i=N-3, j=0; j<=N-3; j++, i--) {
+	x[i] = c[i] - gamma[i]*x[i+1] - delta[i]*x[N-1];
+      }
     }
     
     status = GSL_SUCCESS;
