@@ -1,6 +1,6 @@
 Wed Jun  7 19:18:15 2000  Brian Gough  <bjg@network-theory.co.uk>
 
-	* fp-ppclinux.c: added support for ppc linux
+	* fp-ppclinux.c: added support for ppc linux 
 
 Tue Jun  6 19:59:50 2000  Brian Gough  <bjg@network-theory.co.uk>
 
