@@ -110,4 +110,11 @@ void
 qelg (size_t * n, double epstab[], double * result, double * abserr,
        double res3la[], size_t * nres) ;
 
+int
+qagse_impl (double (*f)(double x), double a, double b, 
+	    double epsabs, double epsrel, size_t limit,
+	    double * result, double * abserr, 
+	    double alist[], double blist[], double rlist[], double elist[],
+	    size_t iord[], size_t * last) ;
+
 #endif /* GSL_INTEGRATION_H */
