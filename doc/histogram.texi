@@ -174,7 +174,7 @@ Note that the size of the @var{range} array is automatically defined as
 @code{double range[4]} by @code{gsl_histogram_calloc}, and is one
 element bigger than the array of bins @code{double bin[3]}.  Thus the
 range array safely includes extra space for the final upper value,
-@var{range[3]}.
+@var{range}[3].
 
 @deftypefun void gsl_histogram_free (gsl_histogram * h)
 This function frees the histogram @var{h} and all of the memory
@@ -249,7 +249,7 @@ This function resets all the bins in the histogram @var{h} to zero.
 The following functions are used by the access and update routines to
 locate the bin which corresponds to a given @math{x} coordinate.
 
-@deftypefun int gsl_histogram_find_impl (size_t @var{n}, const double @var{range[]}, double @var{x}, size_t * @var{i})
+@deftypefun int gsl_histogram_find_impl (size_t @var{n}, const double @var{range}[], double @var{x}, size_t * @var{i})
 This function finds and sets the index @var{i} to the offset in the
 array @var{range} of size @var{n} which bounds the value of @var{x},
 such that @math{range[i] \le  x < range[i+1]}.  The binary search function

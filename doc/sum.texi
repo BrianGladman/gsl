@@ -41,9 +41,7 @@ terms for the extrapolation.
 @node Example of accelerating a series
 @section Example of accelerating a series
 
-The following code calculates an estimate of 
-@c{$\zeta(2) = \pi^2 / 6$}
-@math{\zeta(2) = \pi^2 / 6}
+The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
 using the series,
 
 @tex

@@ -1076,8 +1076,8 @@ using the formula given above.
 @node General Discrete Distributions
 @section General Discrete Distributions
 
-Given @var{K} discrete events with different probabilities @var{P[k]},
-produce a random value @var{k} consistent with its probability.
+Given @math{K} discrete events with different probabilities @math{P[k]},
+produce a random value @math{k} consistent with its probability.
 
 The obvious way to do this is to preprocess the probability list by
 generating a cumulative probability array with @math{K+1} elements:
@@ -1101,7 +1101,7 @@ C[k+1] = C[k]+P[k].
 
 @noindent
 Note that this construction produces @math{C[K]=1}.  Now choose a
-uniform deviate @var{u} between 0 and 1, and find the value of @var{k}
+uniform deviate @math{u} between 0 and 1, and find the value of @math{k}
 such that @c{$C[k] \le u < C[k+1]$}
 @math{C[k] <= u < C[k+1]}.  
 Although this in principle requires of order @math{\log K} steps per
@@ -1115,31 +1115,31 @@ then the individual calls for a random discrete event can go rapidly.
 An approach invented by G. Marsaglia (Generating discrete random numbers
 in a computer, Comm ACM 6, 37-38 (1963)) is very clever, and readers
 interested in examples of good algorithm design are directed to this
-short and well-written paper.  Unfortunately, for large @var{K},
+short and well-written paper.  Unfortunately, for large @math{K},
 Marsaglia's lookup table can be quite large.  A much better approach is
 due to Alastair J. Walker (An efficient method for generating discrete
 random variables with general distributions, ACM Trans on Mathematical
 Software 3, 253-256 (1977); see also Knuth, v2, 3rd ed, p120-121,139).
 This requires two lookup tables, one floating point and one integer, but
-both only of size @var{K}.  After preprocessing, the random numbers are
-generated in O(1) time, even for large @var{K}.  The preprocessing
+both only of size @math{K}.  After preprocessing, the random numbers are
+generated in O(1) time, even for large @math{K}.  The preprocessing
 suggested by Walker requires @math{O(K^2)} effort, but that is not
 actually necessary, and the implementation provided here only takes
 @math{O(K)} effort.  In general, more preprocessing leads to faster
 generation of the individual random numbers, but a diminishing return is
 reached pretty early.  Knuth points out that the optimal preprocessing
-is combinatorially difficult for large @var{K}.
+is combinatorially difficult for large @math{K}.
 
 This method can be used to speed up some of the discrete random number
 generators below, such as the binomial distribution.  To use if for
 something like the Poisson Distribution, a modification would have to
-be made, since it only takes a finite set of @var{K} outcomes.
+be made, since it only takes a finite set of @math{K} outcomes.
 
 @deftypefn Random {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (size_t @var{K}, const double * @var{P})
 @cindex Discrete random numbers
 @cindex Discrete random numbers, preprocessing
 This function returns a pointer to a structure that contains the lookup
-table for the discrete random number generator.  The array @code{P[]} contains
+table for the discrete random number generator.  The array @var{P}[] contains
 the probabilities of the discrete events; these array elements must all be 
 positive, but they needn't add up to one (so you can think of them more
 generally as "weights") -- the preprocessor will normalize appropriately.
@@ -1155,12 +1155,12 @@ get the discrete random numbers.
 
 @deftypefn Random {double} gsl_ran_discrete_pdf (size_t @var{k}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
-Returns the probability @var{P[k]} of observing the variable @var{k}.
-Since @var{P[k]} is not stored as part of the lookup table, it must be
-recomputed; this computation takes @var{O(K)}, so if @var{K} is large
-and you care about the original array @var{P[k]} used to create the
-lookup table, then you should just
-keep this original array @var{P[k]} around.
+Returns the probability @math{P[k]} of observing the variable @var{k}.
+Since @math{P[k]} is not stored as part of the lookup table, it must be
+recomputed; this computation takes @math{O(K)}, so if @var{K} is large
+and you care about the original array @math{P[k]} used to create the
+lookup table, then you should just keep this original array @math{P[k]}
+around.
 @end deftypefn
 
 @deftypefn Random {void} gsl_ran_discrete_free (gsl_ran_discrete_t * @var{g})
@@ -1506,7 +1506,7 @@ gsl_ran_shuffle (r, a, 52, sizeof (int));
 @end deftypefn
 
 @deftypefn Random {void *} gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
-This function fills the array @var{dest[k]} with @var{k} objects taken
+This function fills the array @var{dest}[k] with @var{k} objects taken
 randomly from the @var{n} elements of the array
 @var{src}[0..@var{n}-1].  The objects are each of size @var{size}.  The
 output of the random number generator @var{r} is used to make the
@@ -1514,7 +1514,7 @@ selection.  The algorithm ensures all possible samples are equally
 likely, assuming a perfect source of randomness.
 
 The objects are sampled without replacement, thus each object can only
-appear once in @var{dest[k]}.  It is required that @var{k} be less than
+appear once in @var{dest}[k].  It is required that @var{k} be less than
 or equal to @code{n}.  The objects in @var{dest} will be in the same
 relative order as those in @var{src}.  You will need to call
 @code{gsl_ran_shuffle(r, dest, n, size)} if you want to randomize the

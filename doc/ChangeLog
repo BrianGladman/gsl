@@ -1,3 +1,7 @@
+Tue Apr  4 21:45:27 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* upgraded texinfo.tex to texinfo-4.0
+
 2000-04-01  Mark Galassi  <rosalia@lanl.gov>
 
 	* roots.texi (Providing the function to solve): fixed a typo,

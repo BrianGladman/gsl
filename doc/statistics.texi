@@ -39,7 +39,7 @@ a stable way, without large intermediate values that might overflow.
 @node Mean and standard deviation and variance
 @section Mean, Standard Deviation and Variance
 
-@deftypefn Statistics double gsl_stats_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_mean (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the arithmetic mean of @var{data}, a dataset of
 length @var{n} with stride @var{stride}.  The arithmetic mean, or
 @dfn{sample mean}, is denoted by @math{\Hat\mu} and defined as,
@@ -63,7 +63,7 @@ samples drawn from a gaussian distribution the variance of
 @math{\Hat\mu} is @math{\sigma^2 / N}.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_variance (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_variance (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the estimated, or @dfn{sample}, variance of
 @var{data}, a dataset of length @var{n} with stride @var{stride}.  The
 estimated variance is denoted by @math{\Hat\sigma^2} and is defined by,
@@ -93,7 +93,7 @@ you have already computed the mean then you can pass it directly to
 @code{gsl_stats_variance_m}.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_variance_m (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_variance_m (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function returns the sample variance of @var{data} relative to the
 given value of @var{mean}.  The function is computed with @math{\Hat\mu}
 replaced by the value of @var{mean} that you supply,
@@ -112,14 +112,14 @@ $$
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
-@deftypefnx Statistics double gsl_stats_sd_m (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_sd (const double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefnx Statistics double gsl_stats_sd_m (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 The standard deviation is defined as the square root of the variance.
 These functions return the square root of the corresponding variance
 functions above.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_variance_with_fixed_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_variance_with_fixed_mean (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function computes an unbiased estimate of the variance of
 @var{data} when the population mean @var{mean} of the underlying
 distribution is known @emph{a priori}.  In this case the estimator for
@@ -142,7 +142,7 @@ $$
 @end deftypefn
 
 
-@deftypefn Statistics double gsl_stats_sd_with_fixed_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_sd_with_fixed_mean (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function calculates the standard deviation of @var{data} for a a
 fixed population mean @var{mean}.  The result is the square root of the
 corresponding variance function.
@@ -151,7 +151,7 @@ corresponding variance function.
 @node Absolute deviation
 @section Absolute deviation
 
-@deftypefn Statistics double gsl_stats_absdev (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_absdev (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the absolute deviation from the mean of
 @var{data}, a dataset of length @var{n} with stride @var{stride}.  The
 absolute deviation from the mean is defined as,
@@ -176,7 +176,7 @@ width of a distribution than the variance.  This function computes the
 mean of @var{data} via a call to @code{gsl_stats_mean}.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_absdev_m (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
+@deftypefn Statistics double gsl_stats_absdev_m (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function computes the absolute deviation of the dataset @var{data}
 relative to the given value of @var{mean},
 
@@ -203,7 +203,7 @@ median).
 @node Higher moments (skewness and kurtosis)
 @section Higher moments (skewness and kurtosis)
 
-@deftypefn Statistics double gsl_stats_skew (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_skew (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the skewness of @var{data}, a dataset of length
 @var{n} with stride @var{stride}.  The skewness is defined as,
 
@@ -229,7 +229,7 @@ The function computes the mean and estimated standard deviation of
 @var{data} via calls to @code{gsl_stats_mean} and @code{gsl_stats_sd}.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_skew_m_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefn Statistics double gsl_stats_skew_m_sd (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
 This function computes the skewness of the dataset @var{data} using the
 given values of the mean @var{mean} and standard deviation @var{sd},
 
@@ -251,7 +251,7 @@ These functions are useful if you have already computed the mean and
 standard deviation of @var{data} and want to avoid recomputing them.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_kurtosis (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the kurtosis of @var{data}, a dataset of length
 @var{n} with stride @var{stride}.  The kurtosis is defined as,
 
@@ -277,7 +277,7 @@ its width.  The kurtosis is normalized to zero for a gaussian
 distribution.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_kurtosis_m_sd (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
+@deftypefn Statistics double gsl_stats_kurtosis_m_sd (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean}, double @var{sd})
 This function computes the kurtosis of the dataset @var{data} using the
 given values of the mean @var{mean} and standard deviation @var{sd},
 
@@ -313,7 +313,7 @@ distribution with variance @math{\sigma_i^2}.  The sample weight
 1/\sigma_i^2}.  Setting a weight to zero corresponds to removing a
 sample from a dataset.
 
-@deftypefn Statistics double gsl_stats_wmean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wmean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the weighted mean of the dataset @var{data} with
 stride @var{stride} and length @var{n}, using the set of weights @var{w}
 with stride @var{wstride} and length @var{n}.  The weighted mean is defined as,
@@ -332,7 +332,7 @@ $$
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wvariance (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wvariance (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the estimated variance of the dataset @var{data}
 with stride @var{stride} and length @var{n}, using the set of weights
 @var{w} with stride @var{wstride} and length @var{n}.  The estimated
@@ -358,19 +358,19 @@ familiar @math{1/(N-1)} factor when there are @math{N} equal non-zero
 weights.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wvariance_m (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@deftypefn Statistics double gsl_stats_wvariance_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wsd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wsd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 The standard deviation is defined as the square root of the variance.
 This function returns the square root of the corresponding variance
 function above.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wsd_m (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@deftypefn Statistics double gsl_stats_wsd_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes an unbiased estimate of the variance of weighted
 dataset @var{data} when the population mean @var{mean} of the underlying
 distribution is known @emph{a priori}.  In this case the estimator for
@@ -391,13 +391,13 @@ $$
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wsd_with_fixed_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wsd_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 The standard deviation is defined as the square root of the variance.
 This function returns the square root of the corresponding variance
 function above.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wabsdev (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wabsdev (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the absolute deviation from the mean of
 @var{data}.  The absolute deviation from the mean is defined as,
 
@@ -415,10 +415,10 @@ absdev = (\sum w_i |x_i - \Hat\mu|) / (\sum w_i)
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wabsdev_m (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean})
+@deftypefn Statistics double gsl_stats_wabsdev_m (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wskew (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wskew (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 @tex
 \beforedisplay
 $$
@@ -433,10 +433,10 @@ skew = (\sum w_i ((x_i - xbar)/\sigma)^3) / (\sum w_i)
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wskew_m_sd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
+@deftypefn Statistics double gsl_stats_wskew_m_sd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wkurtosis (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_wkurtosis (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 @tex
 \beforedisplay
 $$
@@ -451,13 +451,13 @@ kurtosis = ((\sum w_i ((x_i - xbar)/sigma)^4) / (\sum w_i)) - 3
 @end ifinfo
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_wkurtosis_m_sd (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
+@deftypefn Statistics double gsl_stats_wkurtosis_m_sd (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean}, double @var{wsd})
 @end deftypefn
 
 @node Maximum and Minimum values
 @section Maximum and Minimum values
 
-@deftypefn Statistics double gsl_stats_max (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_max (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the maximum value in @var{data}, a dataset of
 length @var{n} with stride @var{stride}.  The maximum value is defined
 as the value of the element @math{x_i} which satisfies @c{$x_i \ge x_j$}
@@ -468,7 +468,7 @@ magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_min (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_min (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the minimum value in @var{data}, a dataset of
 length @var{n} with stride @var{stride}.  The minimum value is defined
 as the value of the element @math{x_i} which satisfies @c{$x_i \le x_j$}
@@ -479,12 +479,12 @@ magnitude you will need to apply @code{fabs} or @code{abs} to your data
 before calling this function.
 @end deftypefn
 
-@deftypefn Statistics void gsl_stats_minmax (double * @var{min}, double * @var{max}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics void gsl_stats_minmax (double * @var{min}, double * @var{max}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function finds both the minimum and maximum values @var{min},
 @var{max} in @var{data} in a single pass.
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_max_index (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics size_t gsl_stats_max_index (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the index of the maximum value in @var{data}, a
 dataset of length @var{n} with stride @var{stride}.  The maximum value is
 defined as the value of the element @math{x_i} which satisfies 
@@ -493,7 +493,7 @@ defined as the value of the element @math{x_i} which satisfies
 elements then the first one is chosen.
 @end deftypefn
 
-@deftypefn Statistics size_t gsl_stats_min_index (const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics size_t gsl_stats_min_index (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the index of the minimum value in @var{data}, a
 dataset of length @var{n} with stride @var{stride}.  The minimum value
 is defined as the value of the element @math{x_i} which satisfies
@@ -502,7 +502,7 @@ is defined as the value of the element @math{x_i} which satisfies
 minimum elements then the first one is chosen.
 @end deftypefn
 
-@deftypefn Statistics void gsl_stats_minmax_index (size_t * @var{min_index}, size_t * @var{max_index}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics void gsl_stats_minmax_index (size_t * @var{min_index}, size_t * @var{max_index}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the indexes @var{min_index}, @var{max_index} of
 the minimum and maximum values in @var{data} in a single pass.
 @end deftypefn
@@ -514,7 +514,7 @@ The median and percentile functions described in this section operate on
 sorted data.  For convenience we use @dfn{quantiles}, measured on a scale
 of 0 to 1, instead of percentiles (which use a scale of 0 to 100).
 
-@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data[]}, size_t @var{stride}, size_t @var{n})
+@deftypefn Statistics double gsl_stats_median_from_sorted_data (const double @var{sorted_data}[], size_t @var{stride}, size_t @var{n})
 This function returns the median value of @var{sorted_data}, a dataset
 of length @var{n} with stride @var{stride}.  The elements of the array
 must be in ascending numerical order.  There are no checks to see
@@ -529,7 +529,7 @@ computing the median involves interpolation this function always returns
 a floating-point number, even for integer data types.
 @end deftypefn
 
-@deftypefn Statistics double gsl_stats_quantile_from_sorted_data (const double @var{sorted_data[]}, size_t @var{stride}, size_t @var{n}, double @var{f})
+@deftypefn Statistics double gsl_stats_quantile_from_sorted_data (const double @var{sorted_data}[], size_t @var{stride}, size_t @var{n}, double @var{f})
 This function returns a quantile value of @var{sorted_data}, a
 double-precision array of length @var{n} with stride @var{stride}.  The
 elements of the array must be in ascending numerical order.  The
@@ -573,11 +573,11 @@ for integer data types.
 
 FIXME, do more work on the statistical tests
 
-@comment -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
-@comment -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1[]}, double @var{data2[]}, size_t @var{n1}, size_t @var{n2})
+@comment -@deftypefn Statistics double gsl_stats_ttest (const double @var{data1}[], double @var{data2}[], size_t @var{n1}, size_t @var{n2})
+@comment -@deftypefnx Statistics double gsl_stats_int_ttest (const double @var{data1}[], double @var{data2}[], size_t @var{n1}, size_t @var{n2})
 
 @comment The function @code{gsl_stats_ttest} computes the t-test statistic for
-@comment the two arrays @var{data1[]} and @var{data2[]}, of lengths @var{n1} and
+@comment the two arrays @var{data1}[] and @var{data2}[], of lengths @var{n1} and
 @comment -@var{n2} respectively.
 
 @comment The t-test statistic measures the difference between the means of two

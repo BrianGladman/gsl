@@ -121,8 +121,7 @@ different error code.
 constant pointers (const gsl_roots_fsolver_type * const
 gsl_roots_fsolver_brent)??
 
-* Upgrade to texinfo-4.0.  Use GNU Free Documentation License for
-reference manual?
+* Use GNU Free Documentation License for reference manual?
 
 * More tests. We should (at least) have a test for every error
 condition. Write a perl script to check for error conditions that

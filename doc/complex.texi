@@ -10,8 +10,9 @@ For multiple-valued functions the branch cuts have been chosen to follow
 the conventions of Abramowitz and Stegun in the @cite{Handbook of
 Mathematical Functions}. The functions return principal values which are
 are the same as those is GNU Calc, which in turn are the same as those
-in @cite{Common Lisp, The Language (Second Edition)} and the HP-28/48
-series of calculators.
+in @cite{Common Lisp, The Language (Second Edition)} @footnote{The first
+edition of @cite{Common Lisp, The Language} used different definitions
+from the second edition.} and the HP-28/48 series of calculators.
 
 @menu
 * Complex numbers::             
@@ -46,10 +47,9 @@ typedef struct
 @end example
 @noindent
 The real and imaginary part are stored in contiguous elements of a two
-element array. This eliminates padding between the real and imaginary
-parts, @code{dat[0]} and @code{dat[1]}, allowing the struct to be mapped
-correctly onto packed complex arrays.
-
+element array. This eliminates any padding between the real and
+imaginary parts, @code{dat[0]} and @code{dat[1]}, allowing the struct to
+be mapped correctly onto packed complex arrays.
 
 @deftypefun gsl_complex gsl_complex_xy (double @var{x}, double @var{y})
 This function uses the cartesian components (@var{x},@var{y}) to return
@@ -186,7 +186,7 @@ This function returns the complex conjugate of the complex number
 @var{z}, @math{z^* = x - i y}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_inverse (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_inverse (gsl_complex @var{z})
 This function returns the inverse, or reciprocal, of the complex number
 @var{z}, @math{1/z = (x - i y)/(x^2 + y^2)}.
 @end deftypefun
@@ -208,42 +208,42 @@ This function returns the complex square root of the real number
 @end deftypefun
 
 
-@deftypefun gsl_complex gsl_complex_pow (gsl_complex @var{a}, gsl_complex @var{b})
+@deftypefun gsl_complex gsl_complex_pow (gsl_complex @var{z}, gsl_complex @var{a})
 @cindex power of complex number
 @cindex exponentiation of complex number
-The function returns the complex number @var{a} raised to the complex
-power @var{b}, @math{a^b}. This is computed as @math{\exp(\log(a)*b)}
+The function returns the complex number @var{z} raised to the complex
+power @var{a}, @math{z^a}. This is computed as @math{\exp(\log(z)*a)}
 using complex logarithms and complex exponentials.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_pow_real (gsl_complex @var{a}, double @var{b})
-This function returns the complex number @var{a} raised to the real
-power @var{b}, @math{a^b}.
+@deftypefun gsl_complex gsl_complex_pow_real (gsl_complex @var{z}, double @var{a})
+This function returns the complex number @var{z} raised to the real
+power @var{b}, @math{z^b}.
 @end deftypefun
 
 
-@deftypefun gsl_complex gsl_complex_exp (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_exp (gsl_complex @var{z})
 This function returns the complex exponential of the complex number
-@var{a}, @math{\exp(a)}.
+@var{z}, @math{\exp(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_log (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_log (gsl_complex @var{z})
 @cindex logarithm of complex number
 This function returns the complex natural logarithm (base @math{e}) of
-the complex number @var{a}, @math{\log(a)}.  The branch cut is the
+the complex number @var{z}, @math{\log(z)}.  The branch cut is the
 negative real axis. 
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_log10 (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_log10 (gsl_complex @var{z})
 This function returns the complex base-10 logarithm of
-the complex number @var{a}, @c{$\log_{10}(a)$}
-@math{\log_10 (a)}.
+the complex number @var{z}, @c{$\log_{10}(z)$}
+@math{\log_10 (z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_log_b (gsl_complex @var{a}, gsl_complex @var{b})
+@deftypefun gsl_complex gsl_complex_log_b (gsl_complex @var{z}, gsl_complex @var{b})
 This function returns the complex base-@var{b} logarithm of the complex
-number @var{a}, @math{\log_b(a)}. This quantity is computed as the ratio
-@math{\log(a)/\log(b)}.
+number @var{z}, @math{\log_b(z)}. This quantity is computed as the ratio
+@math{\log(z)/\log(b)}.
 @end deftypefun
 
 
@@ -251,37 +251,37 @@ number @var{a}, @math{\log_b(a)}. This quantity is computed as the ratio
 @section Complex Trigonometric Functions
 @cindex trigonometric functions of complex numbers
 
-@deftypefun gsl_complex gsl_complex_sin (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_sin (gsl_complex @var{z})
 @cindex sin of complex number
-This function returns the complex sine of the complex number @var{a},
-@math{\sin(a) = (\exp(ia) - \exp(-ia))/(2i)}.
+This function returns the complex sine of the complex number @var{z},
+@math{\sin(z) = (\exp(iz) - \exp(-iz))/(2i)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_cos (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_cos (gsl_complex @var{z})
 @cindex cosine of complex number
-This function returns the complex cosine of the complex number @var{a},
-@math{\cos(a) = (\exp(ia) + \exp(-ia))/2}.
+This function returns the complex cosine of the complex number @var{z},
+@math{\cos(z) = (\exp(iz) + \exp(-iz))/2}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_tan (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_tan (gsl_complex @var{z})
 @cindex tangent of complex number
-This function returns the complex tangent of the complex number @var{a},
-@math{\tan(a) = \sin(a)/\cos(a)}.
+This function returns the complex tangent of the complex number @var{z},
+@math{\tan(z) = \sin(z)/\cos(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_sec (gsl_complex @var{a})
-This function returns the complex secant of the complex number @var{a},
-@math{\sec(a) = 1/\cos(a)}.
+@deftypefun gsl_complex gsl_complex_sec (gsl_complex @var{z})
+This function returns the complex secant of the complex number @var{z},
+@math{\sec(z) = 1/\cos(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_csc (gsl_complex @var{a})
-This function returns the complex cosecant of the complex number @var{a},
-@math{\csc(a) = 1/\sin(a)}.
+@deftypefun gsl_complex gsl_complex_csc (gsl_complex @var{z})
+This function returns the complex cosecant of the complex number @var{z},
+@math{\csc(z) = 1/\sin(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_cot (gsl_complex @var{a})
-This function returns the complex cotangent of the complex number @var{a},
-@math{\cot(a) = 1/\tan(a)}.
+@deftypefun gsl_complex gsl_complex_cot (gsl_complex @var{z})
+This function returns the complex cotangent of the complex number @var{z},
+@math{\cot(z) = 1/\tan(z)}.
 @end deftypefun
 
 
@@ -289,65 +289,64 @@ This function returns the complex cotangent of the complex number @var{a},
 @section Inverse Complex Trigonometric Functions
 @cindex inverse complex trigonometric functions
 
-
-@deftypefun gsl_complex gsl_complex_arcsin (gsl_complex @var{a})
-This function returns the complex arcsine of the complex number @var{a},
-@math{\arcsin(a)}. The branch cuts are on the real axis, less than -1
+@deftypefun gsl_complex gsl_complex_arcsin (gsl_complex @var{z})
+This function returns the complex arcsine of the complex number @var{z},
+@math{\arcsin(z)}. The branch cuts are on the real axis, less than -1
 and greater than 1.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arcsin_real (double @var{a})
-This function returns the complex arcsine of the real number @var{a},
-@math{\arcsin(a)}. For @math{a} between -1 and 1, the function returns a
-real value in the range @math{(-\pi,\pi]}. For @math{a} less than -1 the
+@deftypefun gsl_complex gsl_complex_arcsin_real (double @var{z})
+This function returns the complex arcsine of the real number @var{z},
+@math{\arcsin(z)}. For @math{z} between -1 and 1, the function returns a
+real value in the range @math{(-\pi,\pi]}. For @math{z} less than -1 the
 result has a real part of @math{-\pi/2} and a positive imaginary part.
-For @math{a} greater than 1 the result has a real part of @math{\pi/2}
+For @math{z} greater than 1 the result has a real part of @math{\pi/2}
 and a negative imaginary part.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccos (gsl_complex @var{a})
-This function returns the complex arccosine of the complex number @var{a},
-@math{\arccos(a)}. The branch cuts are on the real axis, less than -1
+@deftypefun gsl_complex gsl_complex_arccos (gsl_complex @var{z})
+This function returns the complex arccosine of the complex number @var{z},
+@math{\arccos(z)}. The branch cuts are on the real axis, less than -1
 and greater than 1.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccos_real (double @var{a})
-This function returns the complex arccosine of the real number @var{a},
-@math{\arccos(a)}. For @math{a} between -1 and 1, the function returns a
-real value in the range @math{[0,\pi]}. For @math{a} less than -1 the
+@deftypefun gsl_complex gsl_complex_arccos_real (double @var{z})
+This function returns the complex arccosine of the real number @var{z},
+@math{\arccos(z)}. For @math{z} between -1 and 1, the function returns a
+real value in the range @math{[0,\pi]}. For @math{z} less than -1 the
 result has a real part of @math{\pi/2} and a negative imaginary part.
-For @math{a} greater than 1 the result is purely imaginary and positive.
+For @math{z} greater than 1 the result is purely imaginary and positive.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arctan (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arctan (gsl_complex @var{z})
 This function returns the complex arctangent of the complex number
-@var{a}, @math{\arctan(a)}. The branch cuts are on the imaginary axis,
+@var{z}, @math{\arctan(z)}. The branch cuts are on the imaginary axis,
 below @math{-i} and above @math{i}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arcsec (gsl_complex @var{a})
-This function returns the complex arcsecant of the complex number @var{a},
-@math{\arcsec(a) = \arccos(1/a)}. 
+@deftypefun gsl_complex gsl_complex_arcsec (gsl_complex @var{z})
+This function returns the complex arcsecant of the complex number @var{z},
+@math{\arcsec(z) = \arccos(1/z)}. 
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arcsec_real (double @var{a})
-This function returns the complex arcsecant of the real number @var{a},
-@math{\arcsec(a) = \arccos(1/a)}. 
+@deftypefun gsl_complex gsl_complex_arcsec_real (double @var{z})
+This function returns the complex arcsecant of the real number @var{z},
+@math{\arcsec(z) = \arccos(1/z)}. 
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccsc (gsl_complex @var{a})
-This function returns the complex arccosecant of the complex number @var{a},
-@math{\arccsc(a) = \arcsin(1/a)}. 
+@deftypefun gsl_complex gsl_complex_arccsc (gsl_complex @var{z})
+This function returns the complex arccosecant of the complex number @var{z},
+@math{\arccsc(z) = \arcsin(1/z)}. 
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccsc_real (double @var{a})
-This function returns the complex arccosecant of the real number @var{a},
-@math{\arccsc(a) = \arcsin(1/a)}. 
+@deftypefun gsl_complex gsl_complex_arccsc_real (double @var{z})
+This function returns the complex arccosecant of the real number @var{z},
+@math{\arccsc(z) = \arcsin(1/z)}. 
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccot (gsl_complex @var{a})
-This function returns the complex arccotangent of the complex number @var{a},
-@math{\arccot(a) = \arctan(1/a)}. 
+@deftypefun gsl_complex gsl_complex_arccot (gsl_complex @var{z})
+This function returns the complex arccotangent of the complex number @var{z},
+@math{\arccot(z) = \arctan(1/z)}. 
 @end deftypefun
 
 
@@ -355,35 +354,35 @@ This function returns the complex arccotangent of the complex number @var{a},
 @section Complex Hyperbolic Functions
 @cindex hyperbolic functions, complex numbers
 
-@deftypefun gsl_complex gsl_complex_sinh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_sinh (gsl_complex @var{z})
 This function returns the complex hyperbolic sine of the complex number
-@var{a}, @math{\sinh(a) = (\exp(a) - \exp(-a))/2}.
+@var{z}, @math{\sinh(z) = (\exp(z) - \exp(-z))/2}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_cosh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_cosh (gsl_complex @var{z})
 This function returns the complex hyperbolic cosine of the complex number
-@var{a}, @math{\cosh(a) = (\exp(a) + \exp(-a))/2}.
+@var{z}, @math{\cosh(z) = (\exp(z) + \exp(-z))/2}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_tanh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_tanh (gsl_complex @var{z})
 This function returns the complex hyperbolic tangent of the complex number
-@var{a}, @math{\tanh(a) = \sinh(a)/\cosh(a)}.
+@var{z}, @math{\tanh(z) = \sinh(z)/\cosh(z)}.
 @end deftypefun
 
 
-@deftypefun gsl_complex gsl_complex_sech (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_sech (gsl_complex @var{z})
 This function returns the complex hyperbolic secant of the complex
-number @var{a}, @math{\sech(a) = 1/\cosh(a)}.
+number @var{z}, @math{\sech(z) = 1/\cosh(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_csch (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_csch (gsl_complex @var{z})
 This function returns the complex hyperbolic cosecant of the complex
-number @var{a}, @math{\csch(a) = 1/\sinh(a)}.
+number @var{z}, @math{\csch(z) = 1/\sinh(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_coth (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_coth (gsl_complex @var{z})
 This function returns the complex hyperbolic cotangent of the complex
-number @var{a}, @math{\coth(a) = 1/\tanh(a)}.
+number @var{z}, @math{\coth(z) = 1/\tanh(z)}.
 @end deftypefun
 
 
@@ -391,47 +390,47 @@ number @var{a}, @math{\coth(a) = 1/\tanh(a)}.
 @section Inverse Complex Hyperbolic Functions
 @cindex inverse hyperbolic functions, complex numbers
 
-@deftypefun gsl_complex gsl_complex_arcsinh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arcsinh (gsl_complex @var{z})
 This function returns the complex hyperbolic arcsine of the
-complex number @var{a}, @math{\arcsinh(a)}.  The branch cuts are on the
+complex number @var{z}, @math{\arcsinh(z)}.  The branch cuts are on the
 imaginary axis, below @math{-i} and above @math{i}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccosh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arccosh (gsl_complex @var{z})
 This function returns the complex hyperbolic arccosine of the complex
-number @var{a}, @math{\arccosh(a)}.  The branch cut is on the real less
+number @var{z}, @math{\arccosh(z)}.  The branch cut is on the real less
 than 1.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccosh_real (double @var{a})
+@deftypefun gsl_complex gsl_complex_arccosh_real (double @var{z})
 This function returns the complex hyperbolic arccosine of
-the real number @var{a}, @math{\arccosh(a)}.
+the real number @var{z}, @math{\arccosh(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arctanh (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arctanh (gsl_complex @var{z})
 This function returns the complex hyperbolic arctangent of the complex
-number @var{a}, @math{\arctanh(a)}.  The branch cuts are on the real
+number @var{z}, @math{\arctanh(z)}.  The branch cuts are on the real
 axis, less than -1 and greater than 1.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arctanh_real (double @var{a})
+@deftypefun gsl_complex gsl_complex_arctanh_real (double @var{z})
 This function returns the complex hyperbolic arctangent of the real
-number @var{a}, @math{\arctanh(a)}.
+number @var{z}, @math{\arctanh(z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arcsech (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arcsech (gsl_complex @var{z})
 This function returns the complex hyperbolic arcsecant of the complex
-number @var{a}, @math{\arcsech(a) = \arccosh(1/a)}.
+number @var{z}, @math{\arcsech(z) = \arccosh(1/z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccsch (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arccsch (gsl_complex @var{z})
 This function returns the complex hyperbolic arccosecant of the complex
-number @var{a}, @math{\arccsch(a) = \arcsin(1/a)}.
+number @var{z}, @math{\arccsch(z) = \arcsin(1/z)}.
 @end deftypefun
 
-@deftypefun gsl_complex gsl_complex_arccoth (gsl_complex @var{a})
+@deftypefun gsl_complex gsl_complex_arccoth (gsl_complex @var{z})
 This function returns the complex hyperbolic arccotangent of the complex
-number @var{a}, @math{\arccoth(a) = \arctanh(1/a)}.
+number @var{z}, @math{\arccoth(z) = \arctanh(1/z)}.
 @end deftypefun
 
 @node Complex Number References and Further Reading
@@ -460,8 +459,14 @@ following books,
 @itemize @asis
 @item
 Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
+"Circular Functions in Terms of Real and Imaginary Parts", Formulas
+4.3.55--58,
 "Inverse Circular Functions in Terms of Real and Imaginary Parts",
-Formulas 4.4.37, 4.4.38, 4.4.39
+Formulas 4.4.37--39,
+"Hyperbolic Functions in Terms of Real and Imaginary Parts",
+Formulas 4.5.49--52,
+"Inverse Hyperbolic Functions -- relation to Inverse Circular Functions",
+Formulas 4.6.14--19.
 
 @item
 Dave Gillespie, @cite{Calc Manual}, Free Software Foundation, ISBN
