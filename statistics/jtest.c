@@ -12,7 +12,10 @@ int main()
   double groupa[14];
   double groupb[14];
   double sd1, var1, pv, mean1, t;
-  
+  int i; 
+  double lkj;
+
+
   /* sample sets of integers */
 
   groupone[0] = 17 ;
@@ -88,9 +91,9 @@ int main()
   groupb[11] = .1856;
   groupb[12] = .1688;
   groupb[13] = .1512;
-
+  
   /* test imean */
- 
+  
   mean1 = imean(groupone, 20);
   if (mean1 == 17){
     printf("success: imean\n");
@@ -100,9 +103,9 @@ int main()
   }
   
   mean1 = 0;
-
+  
   /* test dmean */
- 
+  
   mean1 = dmean(groupa, 14);
   if (mean1 > .072 && mean1 < .073){
     printf("success: dmean\n");
@@ -112,9 +115,9 @@ int main()
   }
   
   mean1 = 0;
-
+  
   /* test ivariance */
-
+  
   var1 = ivariance(groupone, 20);
   
   if (var1 > 13.6 && var1 < 13.8){
@@ -123,11 +126,24 @@ int main()
   else{
     printf("ERROR: ivariance (calculated %f)\n", var1);
   }
-
+  
   var1 = 0;
- 
+  
+  /* test dvariance */
+  
+  var1 = dvariance(groupa, 14);
+  
+  if (var1 > .001135 && var1 < .001139){
+    printf("success: dvariance (%f)\n", var1);
+  }
+  else{
+    printf("ERROR: dvariance (calculated %f)\n", var1);
+  }
+  
+  var1 = 0;
+  
   /* test iest_variance */
-
+  
   var1 = iest_variance(groupone, 20);
   
   if (var1 > 14.42 && var1 < 14.425){
@@ -136,11 +152,24 @@ int main()
   else{
     printf("ERROR: iest_variance (calculated %f)\n", var1);
   }
-
+  
   var1 = 0;
-
+  
+  /* test dest_variance */
+  
+  var1 = dest_variance(groupb, 14);
+  
+  if (var1 > .001 && var1 < .0013){
+    printf("success: dest_variance (%f)\n", var1);
+  }
+  else{
+    printf("ERROR: dest_variance (calculated %f)\n", var1);
+  }
+  
+  var1 = 0;
+  
   /* test isd */
-
+  
   sd1 = isd(groupone, 20);
   if (sd1 > 3.6 && sd1 < 3.78){
     printf("success: isd\n");
@@ -148,12 +177,23 @@ int main()
   else{
     printf("ERROR: isd (calculated %f)\n", sd1);
   }
-
+  
   sd1 = 0;
 
-
+  /* test dsd */
+  
+  sd1 = dsd(groupa, 14);
+  if (sd1 > 0.0336 && sd1 < 0.0338){
+    printf("success: dsd (%f)\n", sd1);
+  }
+  else{
+    printf("ERROR: dsd (calculated %f)\n", sd1);
+  }
+  
+  sd1 = 0;
+  
   /* test iest_sd */
-
+  
   sd1 = iest_sd(groupone, 20);
   if (sd1 > 3.79 && sd1 < 3.8){
     printf("success: iest_sd\n");
@@ -161,11 +201,23 @@ int main()
   else{
     printf("ERROR: iest_sd (calculated %f)\n", sd1);
   }
-
+  
   sd1 = 0;
-
+  
+  /* test dest_sd */
+  
+  sd1 = dest_sd(groupa, 14);
+  if (sd1 > .034  && sd1 < .036){
+    printf("success: iest_sd\n");
+  }
+  else{
+    printf("ERROR: iest_sd (calculated %f)\n", sd1);
+  }
+  
+  sd1 = 0;
+  
   /* test iipvariance */
-
+  
   pv = iipvariance(groupone, grouptwo, 20, 20);
   if (pv > 18.84 && pv < 18.85 ){
     printf("success: iipvariance\n");
@@ -173,9 +225,20 @@ int main()
   else{
     printf("ERROR: iipvariance (calculated %f)\n", pv);
   }
-
+  
   pv = 0;
-
+  
+  /* test ddpvariance */
+  
+  pv = ddpvariance(groupa, groupb, 14, 14);
+  if (pv > 0.00122 && pv < 0.00124 ){
+    printf("success: iipvariance\n");
+  }
+  else
+    printf("ERROR: ddpvariance (calculated %f)\n", pv);
+  
+  pv = 0;
+  
   /* test iittest */
   
   t = iittest(groupone, grouptwo, 20, 20);
@@ -185,21 +248,23 @@ int main()
   else{
     printf("ERROR: iittest (calculated %f)\n", t);
   }
-
+  
   t = 0;
-
-
+  
+  /* test ddttest */
+  
+  t = ddttest(groupa, groupb, 14, 14);
+  if (t > -5.68 && t < -5.66){
+    printf("success: ddttest (%f)\n", t);
+  }
+  else{
+    printf("ERROR: ddttest (calculated %f)\n", t);
+  }
+  
+  t = 0;
+  
   return 0;
-}
-
-
-
-
-
-
-
-
-
+}  
 
 
 

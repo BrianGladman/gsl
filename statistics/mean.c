@@ -79,12 +79,12 @@ double dvariance (double *array, int size)
 
   double sum, the_mean;
   int i;
-  
+
   sum=0;
   
   /* find the mean */
   the_mean = dmean(array, size);
-  
+
   /* find sum of the squares */
   for (i=0; i<size; i++){
     sum += ((array[i] - the_mean) * (array[i] - the_mean));
@@ -171,7 +171,6 @@ double dsd (double *array, int size)
   return sd;
 }
 
-
 double iest_sd (int *array, int size)
 {
 
@@ -219,6 +218,25 @@ double iipvariance(int *array1, int *array2, int size1, int size2)
 
 }
 
+double ddpvariance(double *array1, double *array2, int size1, int size2)
+{
+  /* Find the pooled variance of two double arrays */
+
+  double var1, var2, pooled_variance;
+
+  pooled_variance = 0;
+
+  /* find the variances */
+  var1 = dest_variance(array1, size1);
+  var2 = dest_variance(array2, size2);
+
+  /* calculate the pooled variance */
+  pooled_variance = (((size1 - 1)*var1)+((size2-1)*var2)) / (size1+size2-2);
+
+  return pooled_variance;
+
+}
+
 
 double iittest (int *array1, int *array2, int size1, int size2)
 {
@@ -246,5 +264,30 @@ double iittest (int *array1, int *array2, int size1, int size2)
 
 }
 
+double ddttest (double *array1, double *array2, int size1, int size2)
+{
 
-/* double ddttest (int *array1, int *array2, int size1, int size2);*/
+  /* runs a t-test between two arrays of doubles representing 
+      independent samples. Tests to see if the difference between
+      means of the samples is different from zero */
+
+  double mean1, mean2;  /* means of the two samples */
+  double sd1, sd2;      /* standard deviations */
+  double pv;            /* pooled variance */
+  double t;             /* the t statistic */
+  
+  /* find means and standard deviations for the two samples */
+  mean1 = dmean(array1, size1);
+  mean2 = dmean(array2, size2);
+  sd1 = dest_sd(array1, size1);
+  sd2 = dest_sd(array2, size2);
+  pv = ddpvariance (array1, array2, size1, size2); 
+
+  /* calculate the t statistic */
+  t = (mean1-mean2)/(sqrt(pv*((1.0/size1)+(1.0/size2))));
+  
+  return t;
+
+}
+
+
