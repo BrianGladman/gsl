@@ -416,7 +416,18 @@ gsl_complex_cos (gsl_complex a)
   double R = GSL_REAL (a), I = GSL_IMAG (a);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, cos (R) * cosh (I), -sin (R) * sinh (I));
+
+  if (I == 0.0) 
+    {
+      /* avoid returing negative zero (-0.0) for the imaginary part  */
+
+      GSL_SET_COMPLEX (&z, cos (R), 0.0);  
+    } 
+  else 
+    {
+      GSL_SET_COMPLEX (&z, cos (R) * cosh (I), sin (R) * sinh (-I));
+    }
+
   return z;
 }
 
