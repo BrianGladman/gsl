@@ -1,3 +1,8 @@
+Mon May 15 14:21:00 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): increased one test limit slightly to allow for
+ 	rounding errors
+
 Wed Feb 23 14:35:31 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qpsrt.c (qpsrt): changed ordering of while conditions to avoid

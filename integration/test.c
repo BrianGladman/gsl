@@ -1451,7 +1451,7 @@ int main (void)
 	gsl_test_rel(w->blist[i],b[i],1e-15,"qagiu(myfn1) smooth blist") ;
 
     for (i = 0; i < 5 ; i++) 
-	gsl_test_rel(w->rlist[i],r[i],1e-15,"qagiu(myfn1) smooth rlist") ;
+	gsl_test_rel(w->rlist[i],r[i],1e-14,"qagiu(myfn1) smooth rlist") ;
 
     for (i = 0; i < 5 ; i++) 
 	gsl_test_rel(w->elist[i],e[i],1e-4,"qagiu(myfn1) smooth elist") ;
