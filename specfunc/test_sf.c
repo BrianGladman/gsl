@@ -1094,7 +1094,7 @@ int check_erf(void)
 
 int check_gamma(void)
 {
-  double zr, zi, lg_r, lg_i;
+  double zr, zi, lg_r, lg_i, lg, sgn;
   int status = 0;
   int s;
   
@@ -1103,17 +1103,54 @@ int check_gamma(void)
   gsl_test(s, "  gsl_sf_lngamma(1/10)");
   status += s;
 
+  s = 0;
   s += ( frac_diff( gsl_sf_lngamma(100.0),  359.1342053695753 ) > 1.e-14 );
   gsl_test(s, "  gsl_sf_lngamma(100)");
   status += s;
 
   s = 0;
   s += ( frac_diff( gsl_sf_lngamma(-0.1),    2.368961332728788655 ) > 1.e-14 );
-  gsl_test(s, "  gsl_sf_lngamma(-1/10)");
+  gsl_test(s, "  gsl_sf_lngamma(-0.1)");
   status += s;
 
+  s = 0;
   s += ( frac_diff( gsl_sf_lngamma(-100.5), -364.9009683094273518 ) > 1.e-14 );
   gsl_test(s, "  gsl_sf_lngamma(-100.5)");
+  status += s;
+
+  s = 0;
+  gsl_sf_lngamma_sgn_impl(0.7, &lg, &sgn);
+  s += ( frac_diff( lg,  0.26086724653166651439 ) > 1.e-14 );
+  s += ( frac_diff( sgn, 1.0) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_sgn_impl(0.7)");
+  status += s;
+
+  s = 0;
+  gsl_sf_lngamma_sgn_impl(0.1, &lg, &sgn);
+  s += ( frac_diff( lg,  2.2527126517342059599 ) > 1.e-14 );
+  s += ( frac_diff( sgn, 1.0) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_sgn_impl(0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_lngamma_sgn_impl(-0.1, &lg, &sgn);
+  s += ( frac_diff( lg,   2.368961332728788655 ) > 1.e-14 );
+  s += ( frac_diff( sgn, -1.0) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_sgn_impl(-0.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_lngamma_sgn_impl(-3.1, &lg, &sgn);
+  s += ( frac_diff( lg,  0.4003116967039859208 ) > 1.e-14 );
+  s += ( frac_diff( sgn, 1.0) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_sgn_impl(-3.1)");
+  status += s;
+
+  s = 0;
+  gsl_sf_lngamma_sgn_impl(-100.5, &lg, &sgn);
+  s += ( frac_diff( lg,  -364.9009683094273518   ) > 1.e-14 );
+  s += ( frac_diff( sgn, -1.0) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_lngamma_sgn_impl(-100.5)");
   status += s;
 
   s = 0;

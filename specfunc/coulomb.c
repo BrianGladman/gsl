@@ -198,7 +198,7 @@ coulomb_Phi_series(const double lam, const double eta, const double x,
 }
 
 
-/* Deterine the connection phase phi_lambda.
+/* Determine the connection phase, phi_lambda.
  * See coulomb_FG_series() below. We have
  * to be careful about sin(phi)->0. Note that
  * there is an underflow condition for large 

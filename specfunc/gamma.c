@@ -625,6 +625,30 @@ int gsl_sf_lngamma_impl(double x, double * result)
   }
 }
 
+int gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double * sgn)
+{
+  if(x >= 0.5) {
+    *sgn = 1.0;
+    return lngamma_lanczos(x, result_lg);
+  }
+  else {
+    double z = 1.0 - x;
+    double s = sin(M_PI*x);
+    if(s == 0.0) {
+      *sgn = 0.0;
+      *result_lg = 0.0;
+      return GSL_EDOM;
+    }
+    else {
+      double lg_z;
+      lngamma_lanczos(z, &lg_z);
+      *sgn = (s > 0.0 ? 1.0 : -1.0);
+      *result_lg = log(M_PI/fabs(s)) - lg_z;
+      return GSL_SUCCESS;
+    }
+  }
+}
+
 int gsl_sf_lngamma_complex_impl(double zr, double zi, double * lnr, double * arg)
 {
   if(zr <= 0.5) {

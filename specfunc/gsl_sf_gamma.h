@@ -17,6 +17,17 @@ int     gsl_sf_lngamma_e(double x, double * result);
 double  gsl_sf_lngamma(double);   
 
 
+/* Log[Gamma(x)], x not a negative integer
+ * Uses real Lanczos method. Determines
+ * the sign of Gamma[x] as well as Log[|Gamma[x]|] for x < 0.
+ * So Gamma[x] = sgn * Exp[result_lg].
+ *
+ * exceptions: GSL_EDOM
+ */
+int     gsl_sf_lngamma_sgn_impl(double x, double * result_lg, double *sgn);
+int     gsl_sf_lngamma_sgn_e(double x, double * result_lg, double * sgn);
+
+
 /* Log[Gamma(z)] for z complex, z not a negative integer
  * Uses complex Lanczos method.
  *
