@@ -516,6 +516,7 @@ $in_bibliography = 0;			# am I inside a bibliography
 $in_glossary = 0;			# am I inside a glossary
 $in_top = 0;				# am I inside the top node
 $in_pre = 0;				# am I inside a preformatted section
+$in_verbatim = 0;			# am I inside a verbatiminclude
 $in_list = 0;				# am I inside a list
 $in_html = 0;				# am I inside an HTML section (@ifhtml)
 $in_raw_html = 0;			# am I inside an HTML section (@html)
@@ -556,6 +557,14 @@ eval("sub simple_substitutions { $subst_code }");
 
 &init_input;
 while ($_ = &next_line) {
+
+    # Added support for @verbatiminclude FILE  (BJG 7/03)
+    if ($in_verbatim) {
+        $_ = &protect_html($_) unless $dont_html;
+        push(@lines, $_);
+        next;
+    }
+
     #
     # remove \input on the first lines only
     #
@@ -669,8 +678,8 @@ while ($_ = &next_line) {
 		push(@sections, $node);
 	    }
 	    next;
-	} elsif ($tag eq 'include') {
-	    if (/^\@include\s+($FILERE)\s*$/o) {
+	} elsif ($tag eq 'include' || $tag eq 'verbatiminclude') {
+	    if (/^\@\w*include\s+($FILERE)\s*$/o) {
 		$file = $1;
 		unless (-e $file) {
 		    foreach $dir (@include_dirs) {
@@ -680,6 +689,7 @@ while ($_ = &next_line) {
 		}
 		if (-e $file) {
 		    &open($file);
+                    $in_verbatim = 1 if $tag eq 'verbatiminclude';
 		    print "# including $file\n" if $verbose;
 		} else {
 		    warn "$ERROR Can't find $file, skipping";
@@ -1694,6 +1704,7 @@ sub next_line {
 	return($line) if $line;
 	close($fh);
 	shift(@fhs);
+        $in_verbatim = 0 if $in_verbatim = 1;
     }
     return(undef);
 }
