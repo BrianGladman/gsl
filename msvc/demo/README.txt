@@ -3,11 +3,12 @@ Demonstration Workspace for GSL with Microsoft Visual C++
 
 Workspace:  demo.dsw
 
-The workspace is set up to look for include files in c:\gsl\include
-and library files in c:\gsl\lib.
+The workspace is set up to look for include files in ..\include
+and library files in ..\lib.
 
-Select either 'Release' or 'Debug' as your project configuration
-depending on which version of GSL you built.
+The 'Release' project configuration links with the libraries
+libgsl.lib and libgslcblas.lib.  The 'Debug' configuration links with
+libgsld.lib and libgslcblasd.lib.
 
 If you can compile and link the program main.c in this directory then
 your library is correctly installed.

@@ -6,7 +6,7 @@ This is GSL, the GNU Scientific Library.
 GSL is free software, you can redistribute it and/or modify it under
 the terms of the GNU General Public License.
 
-The GNU General Public License does not permit the library to be
+The GNU General Public License does not permit this software to be
 redistributed in proprietary programs.
 
 This library is distributed in the hope that it will be useful, but

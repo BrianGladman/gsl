@@ -132,8 +132,10 @@ configure, make, make check.
 * Preparing a windows version (Microsoft Visual C).
 
    Unpack the unix distribution tar file
-   Copy the directory msvc/ into it as a subdirectory
    Run configure, and (cd gsl; make) to prepare the header files
+   ( cd doc ;  mkdir html ; cd html ; 
+     ../texi2html -split_chapter -expandinfo ~/gsl/doc/gsl-ref.texi ; )
+   Copy the directory msvc/ into it as a subdirectory (from CVS)
    cd msvc/ ; make    # this should produce various *.{dsw,dsp} files
    go back to the top-level and make a zip file of the whole distribution,
    e.g.  zip -l -r GSL-0_8.zip gsl-0.8/
