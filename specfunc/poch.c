@@ -8,9 +8,6 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_gamma.h"
 
-#define locMAX(a,b)   ((a) > (b) ? (a) : (b))
-#define locMIN(a,b)   ((a) > (b) ? (a) : (b))
-
 
 int
 gsl_sf_lnpoch_impl(const double a, const double x, double * result)
@@ -161,7 +158,7 @@ gsl_sf_pochrel_impl(const double a, const double x, double * result)
     double absx = fabs(x);
     double absa = fabs(a);
     
-    if(absx > 0.1*absa || absx*log(locMAX(absa,2.0)) > 0.1) {
+    if(absx > 0.1*absa || absx*log(GSL_MAX(absa,2.0)) > 0.1) {
       double lnpoch, sgn;
       int stat_poch = gsl_sf_lnpoch_sgn_impl(a, x, &lnpoch, &sgn);
       if(lnpoch > GSL_LOG_DBL_MAX) {

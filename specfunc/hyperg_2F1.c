@@ -9,7 +9,6 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_hyperg.h"
 
-#define locMAX(a, b)    ((a) > (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
@@ -38,7 +37,7 @@ static int hyperg_2F1_series(const double a, const double b, const double c,
     }
     del *= (a+k)*(b+k) * x / ((c+k) * (k+1.0));  /* Gauss series */
     sum += del;
-    delmax = locMAX(fabs(del), delmax);
+    delmax = GSL_MAX(fabs(del), delmax);
     k += 1.0;
   } while(fabs(del/sum) > GSL_MACH_EPS);
 
@@ -69,7 +68,7 @@ hyperg_2F1_conj_series(const double aR, const double aI, const double c,
       del *= ((aR+k)*(aR+k) + aI*aI)/((k+1.0)*(c+k)) * x;
       sum += del;
       absdel = fabs(del);
-      delmax = locMAX(absdel, delmax);
+      delmax = GSL_MAX(absdel, delmax);
       if(++k > 20000) {
         *prec   = 1.0;
         *result = sum;
@@ -611,7 +610,7 @@ gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
       return hyperg_2F1_luke(a, b, c, x, result, &prec);
     }
 
-    if(locMAX(fabs(a),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
+    if(GSL_MAX(fabs(a),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
       /* If c is large enough or x is small enough,
        * we can attempt the series anyway.
        */

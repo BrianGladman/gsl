@@ -17,10 +17,9 @@ should be finished before a 1.0 level release.
 
 * Make hyperg_1F1() work right.
 
-* Implement the low-energy regime for the Coulomb
-  wave functions. This is fairly well understood in
-  the recent literature but will require some
-  detailed work.
+* Clean-up Coulomb wave functions. This does not
+  mean completing a fully controlled low-energy
+  evaluation, which is a larger project.
 
 * Clean-up the Fermi-Dirac code. The full Fermi-Dirac
   functions can probably wait until a later release,
@@ -127,6 +126,7 @@ should be finished before a 1.0 level release.
     OK: Sun Nov  8 16:41:37 MST 1998 [GJ]  *
 
   - coulomb.c
+    OK: Sun Nov 15 16:30:43 MST 1998 [GJ]  *
 
   - coulomb_bound.c
     OK: Sun Nov  8 19:17:28 MST 1998 [GJ]  *
@@ -252,6 +252,13 @@ not see completion before a 1.0 level release.
   Other Fermi-Dirac functions, including the
   generic 1/2-integer case, which was not done.
 
+* Implement the low-energy regime for the Coulomb
+  wave functions. This is fairly well understood in
+  the recent literature but will require some
+  detailed work. Specifically this means creating
+  a drop-in replacement for coulomb_jwkb() which
+  is controlled and extensible.
+
 * General Legendre functions (at least on the cut).
   This subsumes the toroidal functions, so we need not
   consider those separately. SLATEC code exists (originally
@@ -264,8 +271,8 @@ not see completion before a 1.0 level release.
 
 ----------------------------------------------------------------------
 
-The following are extra features which need not be implemented
-for a version 1.0 release.
+The following are extra features which need not
+be implemented for a version 1.0 release.
 
 * Spheroidal wave functions.
 

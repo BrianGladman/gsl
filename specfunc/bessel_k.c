@@ -8,7 +8,6 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_bessel.h"
 
-#define locMin(a,b) ((a) < (b) ? (a) : (b))
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
@@ -118,7 +117,7 @@ int gsl_sf_bessel_kl_scaled_impl(int l, const double x, double * result)
     if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
     return status;
   }
-  else if(locMin(0.29/(l*l+1.), 0.5/(l*l+1.+x*x)) < GSL_ROOT3_MACH_EPS) {
+  else if(GSL_MIN(0.29/(l*l+1.), 0.5/(l*l+1.+x*x)) < GSL_ROOT3_MACH_EPS) {
     int status = gsl_sf_bessel_Knu_scaled_asymp_unif_impl(l + 0.5, x, result);
     if(status == GSL_SUCCESS) *result *= sqrt(M_PI/(2.0*x));
     return status;

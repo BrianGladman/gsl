@@ -11,8 +11,6 @@
 #include "gsl_sf_zeta.h"
 #include "gsl_sf_fermi_dirac.h"
 
-
-#define locMAX(a,b)   ((a) > (b) ? (a) : (b))
 #define locEPS        (1000.0*GSL_MACH_EPS)
 
 

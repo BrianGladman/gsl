@@ -6,9 +6,6 @@
 #include "bessel.h"
 #include "gsl_sf_bessel.h"
 
-#define locMAX(a,b) ((a) > (b) ? (a) : (b))
-#define locMIN(a,b) ((a) < (b) ? (a) : (b))
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -26,7 +23,7 @@ asymp_recurse_In_scaled(const int n, const double x, double * b_n, double * b_nm
   double two_over_x = 2./x;
   
   /* go high enough to apply asymptotic result */
-  int big_nu = 2 + locMAX(n, (int)sqrt(locMAX(0.0, 0.5/GSL_ROOT3_MACH_EPS - x*x)));
+  int big_nu = 2 + GSL_MAX(n, (int)sqrt(GSL_MAX(0.0, 0.5/GSL_ROOT3_MACH_EPS - x*x)));
 
   gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu  , x, &b_jp1);
   gsl_sf_bessel_Inu_scaled_asymp_unif_impl(big_nu-1, x, &b_j);
@@ -79,7 +76,7 @@ bessel_In_scaled(const int n, const double x, double * b_n, double * b_nm1)
   else if(x*x < 10.0*(n+1)/M_E) {
     return taylor_In_scaled(14, n, x, b_n, b_nm1);
   }
-  else if( locMIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
+  else if( GSL_MIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n);
     if(b_nm1 != (double *)0) {
       gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n-1, x, b_nm1);

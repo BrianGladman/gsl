@@ -8,9 +8,6 @@
 #include "bessel_temme.h"
 #include "gsl_sf_bessel.h"
 
-#define locMax(a,b)  ((a) > (b) ? (a) : (b))
-#define locMin(a,b)  ((a) < (b) ? (a) : (b))
-
 
 #if 0
 static
@@ -27,7 +24,7 @@ bessel_J_CF1(const double nu, const double x, double * result, double * sign)
   double b = 2.0*nu*x_inv;
   double d = 0.0;
   double c;
-  r = locMax(r, SMALL);
+  r = GSL_MAX(r, SMALL);
   c = r;
   while(i < max_iter) {
     double del;

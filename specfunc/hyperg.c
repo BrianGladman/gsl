@@ -10,8 +10,6 @@
 #include "gsl_sf_gamma.h"
 #include "hyperg.h"
 
-#define locMAX(a,b)  ((a) > (b) ? (a) : (b))
-#define locMIN(a,b)  ((a) < (b) ? (a) : (b))
 #define locEPS       (1000.0*GSL_MACH_EPS)
 #define SUM_LARGE    (1.0e-5*DBL_MAX)
 
@@ -65,7 +63,7 @@ gsl_sf_hyperg_1F1_series_impl(const double a, const double b, const double x,
     }
 
     abs_del = fabs(del);
-    max_abs_del = locMAX(abs_del, max_abs_del);
+    max_abs_del = GSL_MAX(abs_del, max_abs_del);
 
     an += 1.0;
     bn += 1.0;
@@ -168,7 +166,7 @@ gsl_sf_hyperg_U_large_b_impl(const double a, const double b, const double x,
     sgpre2 = sgn_bm1 * sgn_a;
 
     if(lnpre1 > GSL_LOG_DBL_MAX-10.0 || lnpre2 > GSL_LOG_DBL_MAX-10.0) {
-      double max_lnpre = locMAX(lnpre1,lnpre2);
+      double max_lnpre = GSL_MAX(lnpre1,lnpre2);
       double lp1 = lnpre1-max_lnpre;
       double lp2 = lnpre2-max_lnpre;
       *result = sgpre1*exp(lp1)*M1 + sgpre2*exp(lp2)*M2;
@@ -228,7 +226,7 @@ gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
     if(abs_del > last_abs_del) break; /* series is probably starting to grow */
 
     last_abs_del = abs_del;
-    max_abs_del  = locMAX(abs_del, max_abs_del);
+    max_abs_del  = GSL_MAX(abs_del, max_abs_del);
 
     an += 1.0;
     bn += 1.0;

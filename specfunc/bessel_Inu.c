@@ -10,9 +10,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_bessel.h"
 
-#define locMin(a,b)  ((a) < (b) ? (a) : (b))
-#define locMax(a,b)  ((a) > (b) ? (a) : (b))
-
 
 /* Perform backward recurrence for I_nu(x) and I'_nu(x)
  *

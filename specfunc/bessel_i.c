@@ -7,9 +7,6 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
-#define locMin(a,b) ((a) < (b) ? (a) : (b))
-#define locMax(a,b) ((a) > (b) ? (a) : (b))
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -106,7 +103,7 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, double * result)
     *result = sgn * sqrt(M_PI/(2.0*x)) * b;
     return status;
   }
-  else if(locMin(0.29/(l*l+1.), 0.5/(l*l+1.+x*x)) < GSL_ROOT3_MACH_EPS) {
+  else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < GSL_ROOT3_MACH_EPS) {
     double b = 0.0;
     int status = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(l + 0.5, x, &b);
     *result = sgn * sqrt(M_PI/(2.0*x)) * b;
@@ -135,7 +132,7 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, double * result)
     double rt_term = sqrt(M_PI/(2.0*x));
     double iellp1, iell, iellm1;
     int ell;
-    const int LMAX = sqrt(locMax(0.5/GSL_ROOT3_MACH_EPS - x*x,
+    const int LMAX = sqrt(GSL_MAX(0.5/GSL_ROOT3_MACH_EPS - x*x,
                           0.29/GSL_ROOT3_MACH_EPS));
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX + 1 + 0.5, x, &iellp1);
     gsl_sf_bessel_Inu_scaled_asymp_unif_impl(LMAX     + 0.5, x, &iell);

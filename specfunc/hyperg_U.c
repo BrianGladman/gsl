@@ -12,8 +12,6 @@
 #include "gsl_sf_hyperg.h"
 
 #define locEPS       (1000.0*GSL_MACH_EPS)
-#define locMAX(a,b)  ((a) > (b) ? (a) : (b))
-#define locMIN(a,b)  ((a) < (b) ? (a) : (b))
 
 
 /* Log[U(a,2a,x)]
@@ -199,7 +197,7 @@ hyperg_zaU_asymp(const double a, const double b, const double x, double *result)
     /* Evaluate 2F0 polynomial.
      */
     double mxi = -1.0/x;
-    double nmax = -(int)(locMIN(ap,bp) - 0.1);
+    double nmax = -(int)(GSL_MIN(ap,bp) - 0.1);
     double tn  = 1.0;
     double sum = 1.0;
     double n   = 1.0;
@@ -461,7 +459,7 @@ hyperg_U_small_ab(const double a, const double b, const double x, double * resul
     *result = 1.0;
     return GSL_SUCCESS;
   }
-  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
+  else if(GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp * pow(x, -a);
@@ -585,7 +583,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
      */
     return gsl_sf_exp_impl(-a*log(x), result);
   }
-  else if(fabs(a)*locMAX(fabs(1+a-b),1.0) < 0.99*fabs(x)) {
+  else if(fabs(a)*GSL_MAX(fabs(1+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp;
@@ -764,7 +762,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
 	double U00, U12;
 	hyperg_lnU_beq2a(a1-1.0, x, &lnU00);
 	hyperg_lnU_beq2a(a1,	 x, &lnU12);
-	lm_for = locMAX(lnU00, lnU12);
+	lm_for = GSL_MAX(lnU00, lnU12);
 	U00 = exp(lnU00 - lm_for);
 	U12 = exp(lnU12 - lm_for);
 	Ua1_for = (x * U12 - U00) /(2.0*a1 - 2.0);
@@ -872,7 +870,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
       return stat_L;
     }
   }
-  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
+  else if(GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)) {
     double asymp;
     int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
     *result = asymp;
@@ -900,7 +898,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
     double ap;
     int stat_0 = hyperg_U_small_a_bgt0(a0+1.0, b0, x, &Uap1, &lm_0);
     int stat_1 = hyperg_U_small_a_bgt0(a0,     b0, x, &Ua,   &lm_1);
-    lm_max = locMAX(lm_0, lm_1);
+    lm_max = GSL_MAX(lm_0, lm_1);
     Uap1 *= exp(lm_0-lm_max);
     Ua   *= exp(lm_1-lm_max);
 
@@ -967,7 +965,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
     double ap;
     int stat_0 = hyperg_U_small_a_bgt0(a0-1.0, b, x, &Uam1, &lm_0);
     int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
-    lm_max = locMAX(lm_0, lm_1);
+    lm_max = GSL_MAX(lm_0, lm_1);
     Uam1 *= exp(lm_0-lm_max);
     Ua   *= exp(lm_1-lm_max);
     
@@ -1087,7 +1085,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
         double ap;
         int stat_0 = hyperg_U_small_a_bgt0(a0-1.0, b, x, &Uam1, &lm_0);
         int stat_1 = hyperg_U_small_a_bgt0(a0,     b, x, &Ua,   &lm_1);
-	lm_for = locMAX(lm_0, lm_1);
+	lm_for = GSL_MAX(lm_0, lm_1);
 	Uam1 *= exp(lm_0 - lm_for);
 	Ua   *= exp(lm_1 - lm_for);
 

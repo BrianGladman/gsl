@@ -20,7 +20,6 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-#define locMAX(a,b)    ((a) > (b) ? (a) : (b))
 
 #define RECURSE_LARGE  (1.0e-5*DBL_MAX)
 #define RECURSE_SMALL  (1.0e+5*DBL_MIN)
@@ -742,7 +741,7 @@ gsl_sf_conicalP_0_impl(const double lambda, const double x, double * result)
     ) {
     return gsl_sf_hyperg_2F1_conj_impl(0.5, lambda, 1.0, (1.0-x)/2, result);
   }
-  else if(1.5 < x && lambda < locMAX(x,20.0)) {
+  else if(1.5 < x && lambda < GSL_MAX(x,20.0)) {
     double P;
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(0.0, lambda, x,
@@ -853,7 +852,7 @@ gsl_sf_conicalP_1_impl(const double lambda, const double x, double * result)
     *result = pre * F;
     return stat_F;
   }
-  else if(1.5 <= x && lambda < locMAX(x,20.0)) {
+  else if(1.5 <= x && lambda < GSL_MAX(x,20.0)) {
     double P;
     double lm;
     int stat_P = gsl_sf_conicalP_large_x_impl(1.0, lambda, x,

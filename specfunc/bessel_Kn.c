@@ -8,8 +8,6 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_bessel.h"
 
-#define locMIN(a,b) ((a) < (b) ? (a) : (b))
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -92,7 +90,7 @@ int gsl_sf_bessel_Kn_scaled_impl(int n, const double x, double * result)
   else if(GSL_ROOT3_MACH_EPS * x > 0.25 * (n*n + 1)) {
     return gsl_sf_bessel_Knu_scaled_asympx_impl((double)n, x, result);
   }
-  else if(locMIN( 0.29/(n*n), 0.5/(n*n + x*x) ) < GSL_ROOT3_MACH_EPS) {
+  else if(GSL_MIN(0.29/(n*n), 0.5/(n*n + x*x)) < GSL_ROOT3_MACH_EPS) {
     return gsl_sf_bessel_Knu_scaled_asymp_unif_impl((double)n, x, result);
   }
   else {

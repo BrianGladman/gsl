@@ -6,9 +6,6 @@
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_log.h"
 
-#define locMAX(a,b) ((a) > (b) ? (a) : (b))
-#define locMIN(a,b) ((a) < (b) ? (a) : (b))
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -128,8 +125,8 @@ int gsl_sf_complex_log_impl(const double zr, const double zi, double * lnr, doub
   if(zr != 0.0 || zi != 0.0) {
     double ax = fabs(zr);
     double ay = fabs(zi);
-    double min = locMIN(ax, ay);
-    double max = locMAX(ax, ay);
+    double min = GSL_MIN(ax, ay);
+    double max = GSL_MAX(ax, ay);
     *lnr   = log(max) + 0.5 * log(1.0 + (min/max)*(min/max));
     *theta = atan2(zi, zr);
     return GSL_SUCCESS;

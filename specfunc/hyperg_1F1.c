@@ -1,7 +1,6 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  */
-#include <math.h>
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "hyperg.h"
@@ -12,8 +11,6 @@
 #include "gsl_sf_laguerre.h"
 #include "gsl_sf_hyperg.h"
 
-#define locMAX(a,b)     ((a) > (b) ? (a) : (b))
-#define locMIN(a,b)     ((a) < (b) ? (a) : (b))
 #define locEPS          (1000.0*GSL_MACH_EPS)
 
 
@@ -298,7 +295,7 @@ hyperg_1F1_1(const double b, const double x, double * result)
     if(ax < 10.0 && b < 10.0) {
       return hyperg_1F1_1_series(b, x, result);
     }
-    else if(ax >= 100.0 && locMAX(fabs(2.0-b),1.0) < 0.99*ax) {
+    else if(ax >= 100.0 && GSL_MAX(fabs(2.0-b),1.0) < 0.99*ax) {
       double prec;
       return hyperg_1F1_asymp_negx(1.0, b, x, result, &prec);
     }
@@ -654,7 +651,7 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, double *
       double prec;
       return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
     }
-    else if(ax >= 100.0 && locMAX(abs_ap1mb,1.0) < 0.99*ax) {
+    else if(ax >= 100.0 && GSL_MAX(abs_ap1mb,1.0) < 0.99*ax) {
       double prec;
       return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
     }
@@ -743,7 +740,7 @@ hyperg_1F1_beq2a_pos(const double a, const double x, double * result)
       double lg;
       double lnpre;
       gsl_sf_lngamma_impl(a + 0.5, &lg);
-      lnpre = lg + locMAX(x,0.0) + (0.5-a)*log(0.25*fabs(x));
+      lnpre = lg + GSL_MAX(x,0.0) + (0.5-a)*log(0.25*fabs(x));
       return gsl_sf_exp_mult_impl(lnpre, I, result);
     }
     else {
@@ -1240,7 +1237,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
   else if(   x < -100.0
-          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.7*fabs(x)
+          && GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.7*fabs(x)
     ) {
     /* Large negative x asymptotic.
      */
@@ -1248,7 +1245,7 @@ hyperg_1F1_ab_pos(const double a, const double b,
     return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
   }
   else if(   x > 100.0
-          && locMAX(fabs(b-a),1.0)*locMAX(fabs(1.0-a),1.0) < 0.7*fabs(x)
+          && GSL_MAX(fabs(b-a),1.0)*GSL_MAX(fabs(1.0-a),1.0) < 0.7*fabs(x)
     ) {
     /* Large positive x asymptotic.
      */
@@ -1507,11 +1504,11 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
   const double abs_x = fabs(x);
   const double abs_a = fabs(a);
   const double abs_b = fabs(b);
-  const double size_a = locMAX(abs_a, 1.0);
-  const double size_b = locMAX(abs_b, 1.0);
+  const double size_a = GSL_MAX(abs_a, 1.0);
+  const double size_b = GSL_MAX(abs_b, 1.0);
 
   if(   (abs_a < 10.0 && abs_b < 10.0 && abs_x < 5.0)
-     || (b > 0.8*locMAX(fabs(a),1.0)*fabs(x))
+     || (b > 0.8*GSL_MAX(fabs(a),1.0)*fabs(x))
     ) {
     double prec;
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
@@ -1528,7 +1525,7 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     return gsl_sf_hyperg_1F1_series_impl(a, b, x, result, &prec);
   }
   else if(   (abs_x < 5.0 && fabs(bma) < 10.0 && abs_b < 10.0)
-          || (b > 0.8*locMAX(fabs(bma),1.0)*abs_x)
+          || (b > 0.8*GSL_MAX(fabs(bma),1.0)*abs_x)
     ) {
     /* Use Kummer transformation to render series safe.
      */
@@ -1544,7 +1541,7 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     }
   }
   else if(   x < -30.0
-          && locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
+          && GSL_MAX(fabs(a),1.0)*GSL_MAX(fabs(1.0+a-b),1.0) < 0.99*fabs(x)
     ) {
     /* Large negative x asymptotic.
      * Note that we do not check if b-a is a negative integer.
@@ -1553,7 +1550,7 @@ hyperg_1F1_ab_neg(const double a, const double b, const double x,
     return hyperg_1F1_asymp_negx(a, b, x, result, &prec);
   }
   else if(   x > 100.0
-          && locMAX(fabs(bma),1.0)*locMAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
+          && GSL_MAX(fabs(bma),1.0)*GSL_MAX(fabs(1.0-a),1.0) < 0.99*fabs(x)
     ) {
     /* Large positive x asymptotic.
      * Note that we do not check if a is a negative integer.
@@ -1595,13 +1592,13 @@ gsl_sf_hyperg_1F1_int_impl(const int a, const int b, const double x, double * re
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(x > 100.0  && locMAX(1.0,fabs(b-a))*locMAX(1.0,fabs(1-a)) < 0.5 * x) {
+  else if(x > 100.0  && GSL_MAX(1.0,fabs(b-a))*GSL_MAX(1.0,fabs(1-a)) < 0.5 * x) {
     /* x -> +Inf asymptotic
      */
     double prec;
     return hyperg_1F1_asymp_posx(a, b, x, result, &prec);
   }
-  else if(x < -100.0 && locMAX(1.0,fabs(a))*locMAX(1.0,fabs(1+a-b)) < 0.5 * fabs(x)) {
+  else if(x < -100.0 && GSL_MAX(1.0,fabs(a))*GSL_MAX(1.0,fabs(1+a-b)) < 0.5 * fabs(x)) {
     /* x -> -Inf asymptotic
      */
     double prec;

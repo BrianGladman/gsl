@@ -6,8 +6,6 @@
 #include "gsl_sf_gamma.h"
 #include "gsl_sf_coupling.h"
 
-#define locMax(a,b)  ((a)>(b) ? (a) : (b))
-#define locMin(a,b)  ((a)<(b) ? (a) : (b))
 
 #ifdef HAVE_INLINE
 inline
@@ -15,8 +13,8 @@ inline
 static
 int locMax3(const int a, const int b, const int c)
 {
-  int d = locMax(a, b);
-  return locMax(d, c);
+  int d = GSL_MAX(a, b);
+  return GSL_MAX(d, c);
 }
 
 #ifdef HAVE_INLINE
@@ -25,8 +23,8 @@ inline
 static
 int locMin3(const int a, const int b, const int c)
 {
-  int d = locMin(a, b);
-  return locMin(d, c);
+  int d = GSL_MIN(a, b);
+  return GSL_MIN(d, c);
 }
 
 #ifdef HAVE_INLINE
@@ -35,10 +33,10 @@ inline
 static
 int locMin5(const int a, const int b, const int c, const int d, const int e)
 {
-  int f = locMin(a, b);
-  int g = locMin(c, d);
-  int h = locMin(f, g);
-  return locMin(e, h);
+  int f = GSL_MIN(a, b);
+  int g = GSL_MIN(c, d);
+  int h = GSL_MIN(f, g);
+  return GSL_MIN(e, h);
 }
 
 
@@ -137,8 +135,8 @@ gsl_sf_coupling_3j_impl(int two_ja, int two_jb, int two_jc,
 
     norm = sign * sqrt(n1*n2*n3)/sqrt(d1*d2*d3);
 
-    tkmin = locMax(0, two_jb - two_ja - two_mc);
-    tkmax = locMin(two_jc - two_ja + two_jb, two_jc - two_mc);
+    tkmin = GSL_MAX(0, two_jb - two_ja - two_mc);
+    tkmax = GSL_MIN(two_jc - two_ja + two_jb, two_jc - two_mc);
     
     phase = GSL_IS_ODD((tkmin + two_jb + two_mb)/2) ? -1.0 : 1.0;
 

@@ -9,8 +9,7 @@
 #include "gsl_sf_hyperg.h"
 
 #define locEPS        (1000.0*GSL_MACH_EPS)
-#define locMAX(a,b)   ((a) > (b) ? (a) : (b))
-#define locMIN(a,b)   ((a) < (b) ? (a) : (b))
+
 
 #if 0
 static
@@ -99,7 +98,7 @@ hyperg_0F1_series(double c, double x, double * result, double * prec)
 
     sum += del;
     abs_del = fabs(del);
-    max_abs_del = locMAX(abs_del, max_abs_del);
+    max_abs_del = GSL_MAX(abs_del, max_abs_del);
 
     cn += 1.0;
     n  += 1.0;

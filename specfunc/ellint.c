@@ -5,9 +5,6 @@
 #include <gsl_errno.h>
 #include "gsl_sf_ellint.h"
 
-#define locMIN(x,y)  ((x) < (y) ? (x) : (y))
-#define locMAX(x,y)  ((x) > (y) ? (x) : (y))
-
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -16,8 +13,8 @@ inline
 #endif
 static double locMAX3(double x, double y, double z)
 {
-  double xy = locMAX(x, y);
-  return locMAX(xy, z);
+  double xy = GSL_MAX(x, y);
+  return GSL_MAX(xy, z);
 }
 
 #ifdef HAVE_INLINE
@@ -25,9 +22,9 @@ inline
 #endif
 static double locMAX4(double x, double y, double z, double w)
 {
-  double xy  = locMAX(x,  y);
-  double xyz = locMAX(xy, z);
-  return locMAX(xyz, w);
+  double xy  = GSL_MAX(x,  y);
+  double xyz = GSL_MAX(xy, z);
+  return GSL_MAX(xyz, w);
 }
 
 
@@ -69,7 +66,7 @@ int gsl_sf_ellint_RC_impl(double x, double y, double errtol, double * result)
     *result = 0.0;
     return GSL_EDOM;
   }
-  else if(locMAX(x, y) < uplim) { 
+  else if(GSL_MAX(x, y) < uplim) { 
     const double c1 = 1.0 / 7.0;
     const double c2 = 9.0 / 22.0;
     double xn = x;
@@ -102,7 +99,7 @@ int gsl_sf_ellint_RD_impl(double x, double y, double z, double errtol, double * 
     *result = 0.0;
     return GSL_EBADTOL;
   }
-  else if(locMIN(x,y) < 0.0 || locMIN(x+y,z) < lolim) {
+  else if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
     return GSL_EDOM;
   }
   else if(locMAX3(x,y,z) < uplim) {

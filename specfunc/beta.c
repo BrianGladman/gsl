@@ -8,9 +8,6 @@
 #include "gsl_sf_psi.h"
 #include "gsl_sf_gamma.h"
 
-#define locMAX(a,b) ((a) > (b) ? (a) : (b))
-#define locMIN(a,b) ((a) < (b) ? (a) : (b))
-
 
 int
 gsl_sf_lnbeta_impl(const double x, const double y, double * result)
@@ -20,8 +17,8 @@ gsl_sf_lnbeta_impl(const double x, const double y, double * result)
     return GSL_EDOM;
   }
   else {
-    const double max = locMAX(x,y);
-    const double min = locMIN(x,y);
+    const double max = GSL_MAX(x,y);
+    const double min = GSL_MIN(x,y);
     const double rat = min/max;
 
     if(rat < 0.1) {
