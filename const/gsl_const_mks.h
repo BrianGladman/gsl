@@ -42,24 +42,24 @@
 #define GSL_CONST_MKS_PROTON_MAGNETIC_MOMENT (1.41060761072e-26) /* A m^2 */
 #define GSL_CONST_MKS_MOLAR_GAS (8.31447086363e0) /* kg m^2 / K mol s^2 */
 #define GSL_CONST_MKS_STANDARD_GAS_VOLUME (2.2413992e-2) /* m^3 / mol */
-#define GSL_CONST_MKS_MINUTE (60) /* s */
-#define GSL_CONST_MKS_HOUR (3600) /* s */
-#define GSL_CONST_MKS_DAY (86400) /* s */
-#define GSL_CONST_MKS_WEEK (604800) /* s */
+#define GSL_CONST_MKS_MINUTE (6e1) /* s */
+#define GSL_CONST_MKS_HOUR (3.6e3) /* s */
+#define GSL_CONST_MKS_DAY (8.64e4) /* s */
+#define GSL_CONST_MKS_WEEK (6.048e5) /* s */
 #define GSL_CONST_MKS_INCH (2.54e-2) /* m */
 #define GSL_CONST_MKS_FOOT (3.048e-1) /* m */
 #define GSL_CONST_MKS_YARD (9.144e-1) /* m */
 #define GSL_CONST_MKS_MILE (1.609344e3) /* m */
-#define GSL_CONST_MKS_NAUTICAL_MILE (1852) /* m */
+#define GSL_CONST_MKS_NAUTICAL_MILE (1.852e3) /* m */
 #define GSL_CONST_MKS_FATHOM (1.8288e0) /* m */
 #define GSL_CONST_MKS_MIL (2.54e-5) /* m */
 #define GSL_CONST_MKS_POINT (3.52777777778e-4) /* m */
 #define GSL_CONST_MKS_TEXPOINT (3.51459803515e-4) /* m */
 #define GSL_CONST_MKS_MICRON (1e-6) /* m */
 #define GSL_CONST_MKS_ANGSTROM (1e-10) /* m */
-#define GSL_CONST_MKS_HECTARE (10000) /* m^2 */
+#define GSL_CONST_MKS_HECTARE (1e4) /* m^2 */
 #define GSL_CONST_MKS_ACRE (4.04685642241e3) /* m^2 */
-#define GSL_CONST_MKS_BARN (barn) /* 1 */
+#define GSL_CONST_MKS_BARN (1e-28) /* m^2 */
 #define GSL_CONST_MKS_LITER (1e-3) /* m^3 */
 #define GSL_CONST_MKS_US_GALLON (3.78541178402e-3) /* m^3 */
 #define GSL_CONST_MKS_QUART (9.46352946004e-4) /* m^3 */
@@ -76,7 +76,7 @@
 #define GSL_CONST_MKS_POUND_MASS (4.5359237e-1) /* kg */
 #define GSL_CONST_MKS_OUNCE_MASS (2.8349523125e-2) /* kg */
 #define GSL_CONST_MKS_TON (9.0718474e2) /* kg */
-#define GSL_CONST_MKS_METRIC_TON (1000) /* kg */
+#define GSL_CONST_MKS_METRIC_TON (1e3) /* kg */
 #define GSL_CONST_MKS_UK_TON (1.0160469088e3) /* kg */
 #define GSL_CONST_MKS_TROY_OUNCE (3.1103475e-2) /* kg */
 #define GSL_CONST_MKS_CARAT (2e-4) /* kg */
@@ -86,11 +86,11 @@
 #define GSL_CONST_MKS_KILOPOUND_FORCE (4.44822161526e3) /* kg m / s^2 */
 #define GSL_CONST_MKS_POUNDAL (1.38255e-1) /* kg m / s^2 */
 #define GSL_CONST_MKS_CALORIE (4.1868e0) /* kg m^2 / s^2 */
-#define GSL_CONST_MKS_BTU (btu) /* 1 */
-#define GSL_CONST_MKS_THERM (105506000) /* kg m^2 / s^2 */
+#define GSL_CONST_MKS_BTU (1.05505585262e3) /* kg m^2 / s^2 */
+#define GSL_CONST_MKS_THERM (1.05506e8) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_HORSEPOWER (7.457e2) /* kg m^2 / s^3 */
 #define GSL_CONST_MKS_BAR (1e5) /* kg / m s^2 */
-#define GSL_CONST_MKS_STD_ATMOSPHERE (101325) /* kg / m s^2 */
+#define GSL_CONST_MKS_STD_ATMOSPHERE (1.01325e5) /* kg / m s^2 */
 #define GSL_CONST_MKS_TORR (1.33322368421e2) /* kg / m s^2 */
 #define GSL_CONST_MKS_METER_OF_MERCURY (1.33322368421e5) /* kg / m s^2 */
 #define GSL_CONST_MKS_INCH_OF_MERCURY (3.38638815789e3) /* kg / m s^2 */
@@ -102,8 +102,8 @@
 #define GSL_CONST_MKS_ELECTRON_CHARGE (1.60217733e-19) /* A s */
 #define GSL_CONST_MKS_GAUSS (1e-4) /* kg / A s^2 */
 #define GSL_CONST_MKS_STILB (1e4) /* cd / m^2 */
-#define GSL_CONST_MKS_LUMEN (1) /* cd sr */
-#define GSL_CONST_MKS_LUX (1) /* cd sr / m^2 */
+#define GSL_CONST_MKS_LUMEN (1e0) /* cd sr */
+#define GSL_CONST_MKS_LUX (1e0) /* cd sr / m^2 */
 #define GSL_CONST_MKS_PHOT (1e4) /* cd sr / m^2 */
 #define GSL_CONST_MKS_FOOTCANDLE (1.076e1) /* cd sr / m^2 */
 #define GSL_CONST_MKS_LAMBERT (1e4) /* cd sr / m^2 */

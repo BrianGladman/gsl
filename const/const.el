@@ -67,7 +67,7 @@
 
          ("hect"          "HECTARE")
          ("acre"          "ACRE")
-         ("barn"          "BARN")
+         ("b"             "BARN")
 
          ("l"             "LITER")
          ("gal"           "US_GALLON")
@@ -99,7 +99,7 @@
          ("pdl"           "POUNDAL")
 
          ("cal"           "CALORIE")
-         ("btu"           "BTU")
+         ("Btu"           "BTU")
          ("therm"         "THERM")
 
          ("hp"            "HORSEPOWER")
@@ -147,7 +147,8 @@
   (let* ((x (calc-eval expr 'raw))
          (y (math-to-standard-units x system))
          (z (math-simplify-units y))
-         (quantity (calc-eval (math-remove-units z)))
+         (q (calc-eval (math-remove-units z)))
+         (quantity (calc-eval (format "%s + 0.0" q)))
          (units (calc-eval (math-extract-units z)))
          )
     ;;(print x)

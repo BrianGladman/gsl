@@ -42,24 +42,24 @@
 #define GSL_CONST_CGS_PROTON_MAGNETIC_MOMENT (1.41060761072e-22) /* A cm^2 */
 #define GSL_CONST_CGS_MOLAR_GAS (8.31447086363e7) /* g cm^2 / K mol s^2 */
 #define GSL_CONST_CGS_STANDARD_GAS_VOLUME (2.2413992e4) /* cm^3 / mol */
-#define GSL_CONST_CGS_MINUTE (60) /* s */
-#define GSL_CONST_CGS_HOUR (3600) /* s */
-#define GSL_CONST_CGS_DAY (86400) /* s */
-#define GSL_CONST_CGS_WEEK (604800) /* s */
+#define GSL_CONST_CGS_MINUTE (6e1) /* s */
+#define GSL_CONST_CGS_HOUR (3.6e3) /* s */
+#define GSL_CONST_CGS_DAY (8.64e4) /* s */
+#define GSL_CONST_CGS_WEEK (6.048e5) /* s */
 #define GSL_CONST_CGS_INCH (2.54e0) /* cm */
 #define GSL_CONST_CGS_FOOT (3.048e1) /* cm */
 #define GSL_CONST_CGS_YARD (9.144e1) /* cm */
 #define GSL_CONST_CGS_MILE (1.609344e5) /* cm */
-#define GSL_CONST_CGS_NAUTICAL_MILE (185200) /* cm */
+#define GSL_CONST_CGS_NAUTICAL_MILE (1.852e5) /* cm */
 #define GSL_CONST_CGS_FATHOM (1.8288e2) /* cm */
 #define GSL_CONST_CGS_MIL (2.54e-3) /* cm */
 #define GSL_CONST_CGS_POINT (3.52777777778e-2) /* cm */
 #define GSL_CONST_CGS_TEXPOINT (3.51459803515e-2) /* cm */
 #define GSL_CONST_CGS_MICRON (1e-4) /* cm */
 #define GSL_CONST_CGS_ANGSTROM (1e-8) /* cm */
-#define GSL_CONST_CGS_HECTARE (100000000) /* cm^2 */
+#define GSL_CONST_CGS_HECTARE (1e8) /* cm^2 */
 #define GSL_CONST_CGS_ACRE (4.04685642241e7) /* cm^2 */
-#define GSL_CONST_CGS_BARN (barn) /* 1 */
+#define GSL_CONST_CGS_BARN (1e-24) /* cm^2 */
 #define GSL_CONST_CGS_LITER (1e3) /* cm^3 */
 #define GSL_CONST_CGS_US_GALLON (3.78541178402e3) /* cm^3 */
 #define GSL_CONST_CGS_QUART (9.46352946004e2) /* cm^3 */
@@ -86,7 +86,7 @@
 #define GSL_CONST_CGS_KILOPOUND_FORCE (4.44822161526e8) /* cm g / s^2 */
 #define GSL_CONST_CGS_POUNDAL (1.38255e4) /* cm g / s^2 */
 #define GSL_CONST_CGS_CALORIE (4.1868e7) /* g cm^2 / s^2 */
-#define GSL_CONST_CGS_BTU (btu) /* 1 */
+#define GSL_CONST_CGS_BTU (1.05505585262e10) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_THERM (1.05506e15) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_HORSEPOWER (7.457e9) /* g cm^2 / s^3 */
 #define GSL_CONST_CGS_BAR (1e6) /* g / cm s^2 */
@@ -96,17 +96,17 @@
 #define GSL_CONST_CGS_INCH_OF_MERCURY (3.38638815789e4) /* g / cm s^2 */
 #define GSL_CONST_CGS_INCH_OF_WATER (2.4884e3) /* g / cm s^2 */
 #define GSL_CONST_CGS_PSI (6.89475729317e4) /* g / cm s^2 */
-#define GSL_CONST_CGS_POISE (1) /* g / cm s */
-#define GSL_CONST_CGS_STOKES (1) /* cm^2 / s */
+#define GSL_CONST_CGS_POISE (1e0) /* g / cm s */
+#define GSL_CONST_CGS_STOKES (1e0) /* cm^2 / s */
 #define GSL_CONST_CGS_FARADAY (9.6485308989e4) /* A s / mol */
 #define GSL_CONST_CGS_ELECTRON_CHARGE (1.60217733e-19) /* A s */
 #define GSL_CONST_CGS_GAUSS (1e-1) /* g / A s^2 */
-#define GSL_CONST_CGS_STILB (1) /* cd / cm^2 */
-#define GSL_CONST_CGS_LUMEN (1) /* cd sr */
+#define GSL_CONST_CGS_STILB (1e0) /* cd / cm^2 */
+#define GSL_CONST_CGS_LUMEN (1e0) /* cd sr */
 #define GSL_CONST_CGS_LUX (1e-4) /* cd sr / cm^2 */
-#define GSL_CONST_CGS_PHOT (1) /* cd sr / cm^2 */
+#define GSL_CONST_CGS_PHOT (1e0) /* cd sr / cm^2 */
 #define GSL_CONST_CGS_FOOTCANDLE (1.076e-3) /* cd sr / cm^2 */
-#define GSL_CONST_CGS_LAMBERT (1) /* cd sr / cm^2 */
+#define GSL_CONST_CGS_LAMBERT (1e0) /* cd sr / cm^2 */
 #define GSL_CONST_CGS_FOOTLAMBERT (1.07639104e-3) /* cd sr / cm^2 */
 #define GSL_CONST_CGS_CURIE (3.7e10) /* 1 / s */
 #define GSL_CONST_CGS_ROENTGEN (2.58e-7) /* A s / g */

@@ -1,3 +1,9 @@
+Tue Sep 25 15:15:33 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* const.el (fn): make all output double precision to avoid
+ 	possibility of unexpected integer division.
+	(gsl-constants): fix definition of barn and btu
+
 Tue Jan 23 16:19:50 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* const.el (gsl-constants): fixed definition of POINT (from pt to
