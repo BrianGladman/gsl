@@ -77,6 +77,8 @@ libgslieeeutils_a_SOURCES = endian.c print-ieee.c standardize.c \
 	make_rep.c gsl_ieee_utils.h ieee_utils.h \
 	fp-env.c fp-mode.c 
 
+noinst_HEADERS = fp-hpux.c fp-linux.c fp-unknown.c
+
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err
 
 TESTS = test
@@ -103,7 +105,7 @@ test_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
