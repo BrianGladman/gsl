@@ -2,7 +2,7 @@
 ## Assumes that ../ranunif/gsl_ran.h and ../ranunif/libgslran.a exist
 ## ...and are built!
 
-bin_PROGRAMS= gauss test-gauss bench-gauss poisson bench-poisson test-shuffle gamma bench-gamma
+bin_PROGRAMS= gauss test-gauss bench-gauss exponential poisson bench-poisson test-shuffle gamma bench-gamma
 
 include_HEADERS= gsl_randist.h
 
@@ -12,6 +12,8 @@ LDADD= ../ranunif/libgslrantaus.a
 gauss_SOURCES= rungauss.c gauss.c
 test_gauss_SOURCES= test-gauss.c gauss.c
 bench_gauss_SOURCES= bench-gauss.c gauss.c
+
+exponential_SOURCES= runexponential.c exponential.c
 
 poisson_SOURCES= runpoisson.c poisson.c 
 poisson_LDADD= exponential.o $(LDADD)
