@@ -315,8 +315,8 @@ random samples from it.
 @deftypefun {gsl_histogram_pdf *} gsl_histogram_pdf_alloc (const gsl_histogram * @var{h})
 This function allocates memory for a probability distribution calculated
 from the histogram @var{h} and returns a pointer to a newly initialized
-@code{gsl_histogram_pdf} struct. If any of the bins of @var{h} contain
-negative then the a null pointer is returned and the error handler is
+@code{gsl_histogram_pdf} struct. If any of the bins of @var{h} are
+negative then a null pointer is returned and the error handler is
 invoked with an error code of @code{GSL_EDOM} because a probability
 distribution cannot contain negative values.
 
@@ -334,7 +334,6 @@ This function uses @var{r}, a uniform random number between zero and
 one, to compute a single random sample from the probability distribution
 @var{p}.
 @end deftypefun
-
 
 @section Example programs for histograms
 
@@ -428,7 +427,7 @@ histogrammed as the joint distribution @math{n(x,E)}.
 
 Two dimensional histograms are defined by the following struct,
 
-@deftp {Data Type} {gsl_histogram}
+@deftp {Data Type} {gsl_histogram2d}
 @table @code
 @item size_t nx, ny
 This is the number of histogram bins in the x and y directions.
@@ -492,6 +491,12 @@ associated with it.
 @end deftypefun
 
 @section Updating and accessing 2D histogram elements
+
+You can access the bins of a two-dimensional histogram either by
+specifying a pair of @math{(x,y)} coordinates or by using the bin
+indices @math{(i,j)} directly. The functions for accessing the histogram
+using @math{(x,y)} coordinates employ a binary search in the x and y
+directions to identify the bin which covers the appropriate range.
 
 @deftypefun int gsl_histogram2d_increment (gsl_histogram2d * @var{h}, double @var{x}, double @var{y})
 This function updates the histogram @var{h} by adding one (1.0) to the
@@ -557,7 +562,7 @@ locate the bin which corresponds to a given @math{(x,y)} coordinate.
 @deftypefun int gsl_histogram2d_find_impl (const gsl_histogram2d * @var{h}, double @var{x}, double @var{y}, size_t * @var{i}, size_t * @var{j})
 This function finds and sets the indices @var{i} and @var{j} to the
 offsets in the arrays @var{xrange} and @var{yrange} which bound the
-value of (@var{x},@var{y}, such that @math{xrange[i] <= x < xrange[i+1]}
+value of (@var{x},@var{y}), such that @math{xrange[i] <= x < xrange[i+1]}
 and @math{yrange[j] <= y < yrange[j+1]}. The binary search function
 @code{bsearch} from the system C-library is used to locate the
 appropriate ranges. If suitable values of @var{i} and @var{j} are found
@@ -674,26 +679,78 @@ struct which represents a two dimensional probability distribution and
 generate random samples from it.
 
 @deftypefun {gsl_histogram2d_pdf *} gsl_histogram2d_pdf_alloc (const gsl_histogram2d * @var{h})
-This function allocates memory for a probability distribution calculated
-from the histogram @var{h} and returns a pointer to a newly initialized
-@code{gsl_histogram_pdf} struct. If any of the bins of @var{h} contain
-negative then the a null pointer is returned and the error handler is
-invoked with an error code of @code{GSL_EDOM} because a probability
-distribution cannot contain negative values.
+This function allocates memory for a two-dimensional probability
+distribution calculated from the histogram @var{h} and returns a pointer
+to a newly initialized @code{gsl_histogram2d_pdf} struct. If any of the
+bins of @var{h} are negative then a null pointer is returned and the
+error handler is invoked with an error code of @code{GSL_EDOM} because a
+probability distribution cannot contain negative values.
 
 If insufficient memory is available a null pointer is returned and the
 error handler is invoked with an error code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun void gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * @var{p})
-This function frees the probability distribution function @var{p} and
-all of the memory associated with it.
+This function frees the two-dimensional probability distribution
+function @var{p} and all of the memory associated with it.
 @end deftypefun
 
 @deftypefun int gsl_histogram2d_pdf_sample (const gsl_histogram2d_pdf * @var{p}, double @var{r1}, double @var{r2}, double * @var{x}, double * @var{y})
-This function uses @var{r}, a uniform random number between zero and
-one, to compute a single random sample from the probability distribution
-@var{p}.
+This function uses two uniform random numbers between zero and one,
+@var{r1} and @var{r2}, to compute a single random sample from the
+two-dimensional probability distribution @var{p}.
 @end deftypefun
 
+@section Example programs for 2D histograms
+This program demonstrates two features of two-dimensional histograms.
+First a 10 by 10 2d-histogram is created with x and y running from 0 to
+1. Then a few sample points are added to the histogram, at (0.3,0.3)
+with a height of 1, at (0.8,0.1) with a height of 5 and at (0.7,0.9)
+with a height of 0.5. This histogram with three events is used to
+generate a random sample of 1000 simulated events, which are printed
+out.
 
+@example
+#include <stdio.h>
+#include <gsl_histogram2d.h>
+
+int
+main ()
+@{
+  gsl_histogram2d * h = gsl_histogram2d_calloc_uniform (10, 10,
+							0, 1, 0, 1) ;
+  
+  gsl_histogram2d_accumulate (h, 0.3, 0.3, 1) ;
+  gsl_histogram2d_accumulate (h, 0.8, 0.1, 5) ;
+  gsl_histogram2d_accumulate (h, 0.7, 0.9, 0.5) ;
+  
+  @{
+    int i ;
+    gsl_histogram2d_pdf * p = gsl_histogram2d_pdf_alloc (h) ;
+    
+    for (i = 0 ; i < 1000 ; i++) @{
+      double x, y ;
+      double u = ((double) rand ()) / RAND_MAX;
+      double v = ((double) rand ()) / RAND_MAX;
+       
+      int status = gsl_histogram2d_pdf_sample (p, u, v, &x, &y) ;
+      
+      printf("%g %g\n", x, y) ;
+    @}
+  @}
+  
+ return 0 ;
+@}
+@end example
+
+The following plot shows the distribution of the simulated events. Using
+a higher resolution grid we can see the original underlying histogram
+and also the statistical fluctuations caused by the events being
+uniformly distributed over the the area of these original bins.
+
+@tex
+\input epsf
+\medskip
+\centerline{\epsfxsize=5in\epsfbox{histogram2d.eps}}
+\medskip
+@end tex
