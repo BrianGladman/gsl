@@ -494,8 +494,8 @@ Analysis Group.
 @comment email: reid@reidster.net
 
 @item Gerard Jungman
-Series acceleration, ODEs, BLAS, Linear Algebra, Eigensystems,
-Hankel Transforms.
+Special Functions, Series acceleration, ODEs, BLAS, Linear Algebra,
+Eigensystems, Hankel Transforms.
 
 @item Mike Booth
 Wrote the Monte Carlo library.
