@@ -58,10 +58,10 @@ double gsl_blas_raw_dasum  (size_t N, const double X[], size_t incX);
 float  gsl_blas_raw_scasum (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
 double gsl_blas_raw_dzasum (size_t N, const gsl_const_complex_packed_array X, size_t incX);
 
-CBLAS_INDEX gsl_blas_raw_isamax (size_t N, const float  X[], size_t incX);
-CBLAS_INDEX gsl_blas_raw_idamax (size_t N, const double X[], size_t incX);
-CBLAS_INDEX gsl_blas_raw_icamax (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
-CBLAS_INDEX gsl_blas_raw_izamax (size_t N, const gsl_const_complex_packed_array X, size_t incX);
+CBLAS_INDEX_t gsl_blas_raw_isamax (size_t N, const float  X[], size_t incX);
+CBLAS_INDEX_t gsl_blas_raw_idamax (size_t N, const double X[], size_t incX);
+CBLAS_INDEX_t gsl_blas_raw_icamax (size_t N, const gsl_const_complex_packed_array_float X, size_t incX);
+CBLAS_INDEX_t gsl_blas_raw_izamax (size_t N, const gsl_const_complex_packed_array X, size_t incX);
 
 
 void gsl_blas_raw_sswap (size_t N,

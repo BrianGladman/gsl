@@ -14,12 +14,12 @@ native implementations:
 
  X gsl_blas_raw_stbsv
  X gsl_blas_raw_dtbsv
- o gsl_blas_raw_ctbsv
- o gsl_blas_raw_ztbsv
+ X gsl_blas_raw_ctbsv
+ X gsl_blas_raw_ztbsv
 
  X gsl_blas_raw_stpsv
  X gsl_blas_raw_dtpsv
- o gsl_blas_raw_ctpsv
- o gsl_blas_raw_ztpsv
+ X gsl_blas_raw_ctpsv
+ X gsl_blas_raw_ztpsv
 
 

@@ -14,8 +14,8 @@
 
 /* GEMM */
 
-void gsl_blas_raw_sgemm (CBLAS_TRANSPOSE TransA,
-                         CBLAS_TRANSPOSE TransB,
+void gsl_blas_raw_sgemm (CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_TRANSPOSE_t TransB,
 			 size_t M, size_t N, size_t K,
 			 float alpha,
 			 const float A[], int lda,
@@ -23,8 +23,8 @@ void gsl_blas_raw_sgemm (CBLAS_TRANSPOSE TransA,
                          float beta,
 			 float C[], int ldc);
 
-void gsl_blas_raw_dgemm (CBLAS_TRANSPOSE TransA,
-                         CBLAS_TRANSPOSE TransB,
+void gsl_blas_raw_dgemm (CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_TRANSPOSE_t TransB,
 			 size_t M, size_t N, size_t K,
 			 double alpha,
 			 const double A[], int lda,
@@ -32,8 +32,8 @@ void gsl_blas_raw_dgemm (CBLAS_TRANSPOSE TransA,
                          double beta,
 			 double C[], int ldc);
 
-void gsl_blas_raw_cgemm (CBLAS_TRANSPOSE TransA,
-                         CBLAS_TRANSPOSE TransB,
+void gsl_blas_raw_cgemm (CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_TRANSPOSE_t TransB,
 			 size_t M, size_t N, size_t K,
 			 const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda, 
@@ -41,8 +41,8 @@ void gsl_blas_raw_cgemm (CBLAS_TRANSPOSE TransA,
                          const gsl_const_complex_packed_float beta,
 			 gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zgemm (CBLAS_TRANSPOSE TransA,
-                         CBLAS_TRANSPOSE TransB,
+void gsl_blas_raw_zgemm (CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_TRANSPOSE_t TransB,
 			 size_t M, size_t N, size_t K,
 			 const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -53,7 +53,7 @@ void gsl_blas_raw_zgemm (CBLAS_TRANSPOSE TransA,
 
 /* SYMM */
 
-void gsl_blas_raw_ssymm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+void gsl_blas_raw_ssymm (CBLAS_SIDE_t Side, CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          float alpha,
 			 const float A[], int lda,
@@ -61,8 +61,8 @@ void gsl_blas_raw_ssymm (CBLAS_SIDE Side, CBLAS_UPLO Uplo,
 			 float beta,
                          float C[], int ldc);
 
-void gsl_blas_raw_dsymm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo,
+void gsl_blas_raw_dsymm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          double alpha,
 			 const double A[], int lda,
@@ -70,8 +70,8 @@ void gsl_blas_raw_dsymm (CBLAS_SIDE Side,
 			 double beta,
                          double C[], int ldc);
 
-void gsl_blas_raw_csymm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo,
+void gsl_blas_raw_csymm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
@@ -79,8 +79,8 @@ void gsl_blas_raw_csymm (CBLAS_SIDE Side,
 			 const gsl_const_complex_packed_float beta,
                          gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zsymm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo,
+void gsl_blas_raw_zsymm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -91,31 +91,31 @@ void gsl_blas_raw_zsymm (CBLAS_SIDE Side,
 
 /* SYRK */
 
-void gsl_blas_raw_ssyrk (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_ssyrk (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          float alpha,
 			 const float A[], int lda,
                          float beta,
 			 float C[], int ldc);
 
-void gsl_blas_raw_dsyrk (CBLAS_UPLO Uplo,
-                         CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_dsyrk (CBLAS_UPLO_t Uplo,
+                         CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          double alpha,
 			 const double A[], int lda,
                          double beta,
 			 double C[], int ldc);
 
-void gsl_blas_raw_csyrk (CBLAS_UPLO Uplo,
-                         CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_csyrk (CBLAS_UPLO_t Uplo,
+                         CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
                          const gsl_const_complex_packed_float beta,
 			 gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zsyrk (CBLAS_UPLO Uplo,
-                         CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_zsyrk (CBLAS_UPLO_t Uplo,
+                         CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -125,7 +125,7 @@ void gsl_blas_raw_zsyrk (CBLAS_UPLO Uplo,
 
 /* SYR2K */
 
-void gsl_blas_raw_ssyr2k (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_ssyr2k (CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           float alpha,
 			  const float A[], int lda,
@@ -133,8 +133,8 @@ void gsl_blas_raw_ssyr2k (CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
 			  float beta,
                           float C[], int ldc);
 
-void gsl_blas_raw_dsyr2k (CBLAS_UPLO Uplo,
-                          CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_dsyr2k (CBLAS_UPLO_t Uplo,
+                          CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           double alpha,
 			  const double A[], int lda,
@@ -142,8 +142,8 @@ void gsl_blas_raw_dsyr2k (CBLAS_UPLO Uplo,
 			  double beta,
                           double C[], int ldc);
 
-void gsl_blas_raw_csyr2k (CBLAS_UPLO Uplo,
-                          CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_csyr2k (CBLAS_UPLO_t Uplo,
+                          CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           const gsl_const_complex_packed_float alpha,
 			  const gsl_const_complex_packed_array_float A, int lda,
@@ -151,8 +151,8 @@ void gsl_blas_raw_csyr2k (CBLAS_UPLO Uplo,
 			  const gsl_const_complex_packed_float beta,
                           gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zsyr2k (CBLAS_UPLO Uplo,
-                          CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_zsyr2k (CBLAS_UPLO_t Uplo,
+                          CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           const gsl_const_complex_packed alpha,
 			  const gsl_const_complex_packed_array A, int lda,
@@ -163,33 +163,33 @@ void gsl_blas_raw_zsyr2k (CBLAS_UPLO Uplo,
 
 /* TRMM */
 
-void gsl_blas_raw_strmm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_strmm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          float alpha,
 			 const float A[], int lda,
                          float B[], int ldb);
 
-void gsl_blas_raw_dtrmm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_dtrmm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          double alpha,
 			 const double A[], int lda,
                          double B[], int ldb);
 
-void gsl_blas_raw_ctrmm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_ctrmm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
                          gsl_complex_packed_array_float B, int ldb);
 
-void gsl_blas_raw_ztrmm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_ztrmm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -198,33 +198,33 @@ void gsl_blas_raw_ztrmm (CBLAS_SIDE Side,
 
 /* TRSM */
 
-void gsl_blas_raw_strsm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_strsm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          float alpha,
 			 const float A[], int lda,
                          float B[], int ldb);
 
-void gsl_blas_raw_dtrsm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_dtrsm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          double alpha,
 			 const double A[], int lda,
                          double B[], int ldb);
 
-void gsl_blas_raw_ctrsm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_ctrsm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
                          gsl_complex_packed_array_float B, int ldb);
 
-void gsl_blas_raw_ztrsm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                         CBLAS_DIAG Diag,
+void gsl_blas_raw_ztrsm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo, CBLAS_TRANSPOSE_t TransA,
+                         CBLAS_DIAG_t Diag,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -233,8 +233,8 @@ void gsl_blas_raw_ztrsm (CBLAS_SIDE Side,
 
 /* HEMM */
 
-void gsl_blas_raw_chemm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo,
+void gsl_blas_raw_chemm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed_float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
@@ -242,8 +242,8 @@ void gsl_blas_raw_chemm (CBLAS_SIDE Side,
 			 const gsl_const_complex_packed_float beta,
                          gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zhemm (CBLAS_SIDE Side,
-                         CBLAS_UPLO Uplo,
+void gsl_blas_raw_zhemm (CBLAS_SIDE_t Side,
+                         CBLAS_UPLO_t Uplo,
 			 size_t M, size_t N,
                          const gsl_const_complex_packed alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -254,16 +254,16 @@ void gsl_blas_raw_zhemm (CBLAS_SIDE Side,
 
 /* HERK */
 
-void gsl_blas_raw_cherk (CBLAS_UPLO Uplo,
-                         CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_cherk (CBLAS_UPLO_t Uplo,
+                         CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          float alpha,
 			 const gsl_const_complex_packed_array_float A, int lda,
                          float beta,
 			 gsl_complex_packed_array_float C, int ldc);
 
-void gsl_blas_raw_zherk (CBLAS_UPLO Uplo,
-                         CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_zherk (CBLAS_UPLO_t Uplo,
+                         CBLAS_TRANSPOSE_t Trans,
 			 size_t N, size_t K,
                          double alpha,
 			 const gsl_const_complex_packed_array A, int lda,
@@ -273,8 +273,8 @@ void gsl_blas_raw_zherk (CBLAS_UPLO Uplo,
 
 /* HER2K */
 
-void gsl_blas_raw_cher2k (CBLAS_UPLO Uplo,
-                          CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_cher2k (CBLAS_UPLO_t Uplo,
+                          CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           const gsl_const_complex_packed_float alpha,
 			  const gsl_const_complex_packed_array_float A, int lda,
@@ -283,8 +283,8 @@ void gsl_blas_raw_cher2k (CBLAS_UPLO Uplo,
                           gsl_complex_packed_array_float C, int ldc);
 
 
-void gsl_blas_raw_zher2k (CBLAS_UPLO Uplo,
-                          CBLAS_TRANSPOSE Trans,
+void gsl_blas_raw_zher2k (CBLAS_UPLO_t Uplo,
+                          CBLAS_TRANSPOSE_t Trans,
 			  size_t N, size_t K,
                           const gsl_const_complex_packed alpha,
 			  const gsl_const_complex_packed_array A, int lda,
