@@ -406,7 +406,18 @@ gsl_complex_sin (gsl_complex a)
   double R = GSL_REAL (a), I = GSL_IMAG (a);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, sin (R) * cosh (I), cos (R) * sinh (I));
+
+  if (I == 0.0) 
+    {
+      /* avoid returing negative zero (-0.0) for the imaginary part  */
+
+      GSL_SET_COMPLEX (&z, sin (R), 0.0);  
+    } 
+  else 
+    {
+      GSL_SET_COMPLEX (&z, sin (R) * cosh (I), cos (R) * sinh (I));
+    }
+
   return z;
 }
 
@@ -835,10 +846,23 @@ gsl_complex
 gsl_complex_tanh (gsl_complex a)
 {				/* z = tanh(a) */
   double R = GSL_REAL (a), I = GSL_IMAG (a);
-  double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
 
   gsl_complex z;
-  GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
+
+  if (fabs(R) < 1.0) 
+    {
+      double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
+      
+      GSL_SET_COMPLEX (&z, sinh (R) * cosh (R) / D, 0.5 * sin (2 * I) / D);
+    }
+  else
+    {
+      double D = pow (cos (I), 2.0) + pow (sinh (R), 2.0);
+      double F = 1 + pow (cos (I) / sinh (R), 2.0);
+
+      GSL_SET_COMPLEX (&z, 1.0 / (tanh (R) * F), 0.5 * sin (2 * I) / D);
+    }
+
   return z;
 }
 
