@@ -20,135 +20,23 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_multimin.h>
-#include <gsl/gsl_min.h>
 #include <gsl/gsl_ieee_utils.h>
 
 #include "test_funcs.h"
 
-/* stopping parameters for line search */
-
-const double EPSABS_LINE = 1e-2 ;
-const double EPSREL_LINE = 1e-2 ;
-/*const double EPSABS_LINE = GSL_SQRT_DBL_EPSILON ;
-  const double EPSREL_LINE = GSL_SQRT_DBL_EPSILON ;*/
-const double EPSABS = GSL_DBL_EPSILON ;
-
-const unsigned int MAX_ITERATIONS_LINE = 100;
-const unsigned int MAX_ITERATIONS = 100000;
-
-
 int
-test_fdf(const char * desc, gsl_multimin_function_fdf *f,
-	 initpt_function initpt,
-	 const gsl_multimin_fdfminimizer_type *T,
-	 int restarting_period)
-{
-  size_t iterations = 0;
-  size_t iterations_line = 0;
-  size_t total_i_line = 0;
-  int status;
-  int just_started = 1;
-  double minimum,a,b;
-  
-  gsl_vector *x = gsl_vector_alloc (f->n);
+test_fdf(const char * desc, gsl_multimin_function_fdf *f, initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
 
-  gsl_multimin_fdfminimizer *s;
-
-  gsl_ieee_env_setup ();
-
-  (*initpt) (x);
-
-  s = gsl_multimin_fdfminimizer_alloc(T,f,x,
-				       gsl_min_find_bracket,
-				       gsl_min_fminimizer_brent);
-#ifdef DEBUG
-  printf("x "); gsl_vector_fprintf (stdout, s->history->x, "%g"); 
-  printf("g "); gsl_vector_fprintf (stdout, s->history->g, "%g"); 
-#endif
-  do 
-    {
-      iterations++;
-      status = gsl_multimin_fdfminimizer_next_direction(s);
-      status = gsl_multimin_fdfminimizer_bracket(s,10.0,50);
-      if (status == GSL_FAILURE) 
-	{
-	  if (just_started)
-	    {
-	      GSL_ERROR ("Can't find bracketing interval after restarting", GSL_FAILURE);
-	    }
-	  else
-	    {
-#ifdef DEBUG
-	      printf("%i: automatic restart\n",iterations);
-#endif
-	      gsl_multimin_fdfminimizer_restart(s);
-	      just_started = 1;
-	      status = GSL_CONTINUE;
-	      continue;
-	    }
-	}
-      else 
-	{
-	  iterations_line = 0;
-	  do 
-	    {
-	      iterations_line++;
-	      status = gsl_multimin_fdfminimizer_iterate(s);
-	      
-	      minimum = gsl_min_fminimizer_minimum(s->line_search);
-	      a = gsl_min_fminimizer_x_lower(s->line_search);
-	      b = gsl_min_fminimizer_x_upper(s->line_search);
-	      
-	      
-#ifdef DEBUG
-	      printf("%.12f %.18f %.12f %.18f %.12f %.18f\n", 
-		     a, s->line_search->f_lower, minimum,s->line_search->f_minimum, b,s->line_search->f_upper);
-#endif
-	      status = gsl_min_test_interval (a, b, EPSABS_LINE, EPSREL_LINE);
-	    }
-	  while (status == GSL_CONTINUE && iterations_line < MAX_ITERATIONS_LINE);
-	  total_i_line += iterations_line;
-	  gsl_multimin_fdfminimizer_best_step(s);
-	}
-
-#ifdef DEBUG
-      printf("%i: \n",iterations);
-      printf("x "); gsl_vector_fprintf (stdout, s->history->x, "%g"); 
-      printf("old x "); gsl_vector_fprintf (stdout, s->history->x1, "%g"); 
-      printf("g "); gsl_vector_fprintf (stdout, s->history->g, "%g"); 
-      printf("old g "); gsl_vector_fprintf (stdout, s->history->g1, "%g"); 
-      printf("f(x) %g\n",s->line_search->f_minimum);
-      printf("\n");
-#endif
-      /* This is not mandatory */
-      if (iterations%restarting_period == 0)
-	{
-	  gsl_multimin_fdfminimizer_restart(s);
-	  just_started = 1;
-	}
-      else
-	{
-	  just_started = 0;
-	}
-      status = gsl_multimin_test_gradient_sqr_norm(s->history,EPSABS);
-    }
-  while (iterations <= MAX_ITERATIONS && status == GSL_CONTINUE);
-  gsl_test(status,
-	   "%s (restarting every %d), on %s: %i iterations (%d), f(x)=%g",
-	   T->name,restarting_period,desc,iterations,total_i_line,
-	   s->line_search->f_minimum);
-  gsl_multimin_fdfminimizer_free(s);
-  gsl_vector_free(x);
-
-  return status;
-}
 
 int
 main (void)
 {
   const gsl_multimin_fdfminimizer_type *fdfminimizers[5];
   const gsl_multimin_fdfminimizer_type ** T;
+
+  gsl_ieee_env_setup ();
 
   fdfminimizers[0] = gsl_multimin_fdfminimizer_steepest_descent;
   fdfminimizers[1] = gsl_multimin_fdfminimizer_conjugate_pr;
@@ -160,9 +48,9 @@ main (void)
 
   while (*T != 0) 
     {
-      test_fdf("Roth", &roth, roth_initpt,*T,5*roth.n);
-      test_fdf("Wood", &wood, wood_initpt,*T,5*wood.n);
-      test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T,5*rosenbrock.n);
+      test_fdf("Roth", &roth, roth_initpt,*T);
+      test_fdf("Wood", &wood, wood_initpt,*T);
+      test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T);
       T++;
     }
 
@@ -170,11 +58,67 @@ main (void)
 
   while (*T != 0) 
     {
-      test_fdf("NRoth", &Nroth, roth_initpt,*T,5*Nroth.n);
-      test_fdf("NWood", &Nwood, wood_initpt,*T,5*Nwood.n);
-      test_fdf("NRosenbrock", &Nrosenbrock, rosenbrock_initpt,*T,5*Nrosenbrock.n);
+      test_fdf("NRoth", &Nroth, roth_initpt,*T);
+      test_fdf("NWood", &Nwood, wood_initpt,*T);
+      test_fdf("NRosenbrock", &Nrosenbrock, rosenbrock_initpt,*T);
       T++;
     }
 
   exit (gsl_test_summary());
+}
+
+int
+test_fdf(const char * desc, 
+         gsl_multimin_function_fdf *f,
+	 initpt_function initpt,
+	 const gsl_multimin_fdfminimizer_type *T)
+{
+  int status;
+  size_t iter = 0;
+  double step_size;
+  
+  gsl_vector *x = gsl_vector_alloc (f->n);
+
+  gsl_multimin_fdfminimizer *s;
+
+  (*initpt) (x);
+
+  step_size = 0.1 * gsl_blas_dnrm2 (x);
+
+  s = gsl_multimin_fdfminimizer_alloc(T, f->n);
+
+  gsl_multimin_fdfminimizer_set (s, f, x, step_size);
+
+#ifdef DEBUG
+  printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); 
+  printf("g "); gsl_vector_fprintf (stdout, s->gradient, "%g"); 
+#endif
+
+  do 
+    {
+      iter++;
+      status = gsl_multimin_fdfminimizer_iterate(s);
+
+#ifdef DEBUG
+      printf("%i: \n",iter);
+      printf("x "); gsl_vector_fprintf (stdout, s->x, "%g"); 
+      printf("g "); gsl_vector_fprintf (stdout, s->gradient, "%g"); 
+      printf("f(x) %g\n",s->f);
+      printf("dx %g\n",gsl_blas_dnrm2(s->dx));
+      printf("\n");
+#endif
+
+      status = gsl_multimin_test_gradient(s->gradient,1e-3);
+    }
+  while (iter < 5000 && status == GSL_CONTINUE);
+
+  status |= (fabs(s->f) > 1e-5);
+
+  gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
+	   T->name,desc, iter, s->f);
+
+  gsl_multimin_fdfminimizer_free(s);
+  gsl_vector_free(x);
+
+  return status;
 }

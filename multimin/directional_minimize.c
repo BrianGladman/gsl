@@ -17,159 +17,220 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* directional_minimize.c -- wrapper for calling the one dimensional
-   minimization algorithm for vector functions */
-
-#include <config.h>
-#include <gsl/gsl_multimin.h>
-#include <gsl/gsl_blas_types.h>
-#include <gsl/gsl_blas.h>
-
-void
-gsl_multimin_compute_evaluation_point(gsl_vector *evaluation_point,
-				      const gsl_vector *starting_point,
-				      double x,
-				      const gsl_vector *direction) 
+static void
+take_step (const gsl_vector * x, const gsl_vector * p,
+           double step, double lambda, gsl_vector * x1, gsl_vector * dx)
 {
-  /* evaluation_point = starting_point + x * direction */
-  size_t i;
-  for(i=0;i<starting_point->size;i++) 
+  gsl_vector_set_zero (dx);
+  gsl_blas_daxpy (-step * lambda, p, dx);
+
+  gsl_vector_memcpy (x1, x);
+  gsl_blas_daxpy (1.0, dx, x1);
+}
+
+static void 
+intermediate_point (gsl_multimin_function_fdf * fdf,
+                    const gsl_vector * x, const gsl_vector * p,
+                    double lambda, 
+                    double pg,
+                    double stepa, double stepc,
+                    double fa, double fc,
+                    gsl_vector * x1, gsl_vector * dx, gsl_vector * gradient,
+                    double * step, double * f)
+{
+  double stepb, fb;
+
+trial:
+  {
+    double u = fabs (pg * lambda * stepc);
+    stepb = 0.5 * stepc * u / ((fc - fa) + u);
+  }
+
+  take_step (x, p, stepb, lambda, x1, dx);
+
+  fb = GSL_MULTIMIN_FN_EVAL_F (fdf, x1);
+
+#ifdef DEBUG
+  printf ("trying stepb = %g  fb = %.18e\n", stepb, fb);
+#endif
+
+  if (fb >= fa)
     {
-      gsl_vector_set(evaluation_point,i,
-		     gsl_vector_get(starting_point,i)
-		     + x * gsl_vector_get(direction,i));
+      /* downhill step failed, reduce step-size and try again */
+      fc = fb;
+      stepc = stepb;
+      goto trial;
+    }
+#ifdef DEBUG
+  printf ("ok!\n");
+#endif
+
+  *step = stepb;
+  *f = fb;
+  GSL_MULTIMIN_FN_EVAL_DF(fdf, x1, gradient);
+}
+
+static void
+minimize (gsl_multimin_function_fdf * fdf,
+          const gsl_vector * x, const gsl_vector * p,
+          double lambda,
+          double stepa, double stepb, double stepc,
+          double fa, double fb, double fc,
+          gsl_vector * x1, gsl_vector * dx1, 
+          gsl_vector * x2, gsl_vector * dx2, gsl_vector * gradient,          
+          double * step, double * f, double * gnorm)
+{
+  /* Starting at (x0, f0) move along the direction p to find a minimum
+     f(x0 - lambda * p), returning the new point x1 = x0-lambda*p,
+     f1=f(x1) and g1 = grad(f) at x1.  */
+
+  double u = stepb;
+  double v = stepa;
+  double w = stepc;
+  double fu = fb;
+  double fv = fa;
+  double fw = fc;
+
+  double tol2 = fabs(w - v);
+  double tol1 = fabs(v - u);
+
+  double stepm, fm, pg, gnorm1;
+
+  double iter = 0;
+
+  gsl_vector_memcpy (x2, x1);
+  gsl_vector_memcpy (dx2, dx1);
+
+  *f = fb;
+  *step = stepb;
+  *gnorm = gsl_blas_dnrm2 (gradient);
+
+mid_trial:
+
+  iter++;
+
+  if (iter > 10)
+    {
+      return;  /* MAX ITERATIONS */
+    }
+
+  {
+    double dw = w - u;
+    double dv = v - u;
+    double du = 0.0;
+
+    double e1 = ((fv - fu) * dw * dw + (fu - fw) * dv * dv);
+    double e2 = 2.0 * ((fv - fu) * dw + (fu - fw) * dv);
+
+    if (e2 != 0.0)
+      {
+	du = e1 / e2;
+      }
+
+    if (du > 0 && du < (stepc - stepb) && fabs(du) < 0.5 * tol2)
+      {
+	stepm = u + du;
+      }
+    else if (du < 0 && du > (stepa - stepb) && fabs(du) < 0.5 * tol2)
+      {
+	stepm = u + du;
+      }
+    else if ((stepc - stepb) > (stepb - stepa))
+      {
+	stepm = 0.38 * (stepc - stepb) + stepb;
+      }
+    else
+      {
+	stepm = stepb - 0.38 * (stepb - stepa);
+      }
+  }
+
+  take_step (x, p, stepm, lambda, x1, dx1);
+
+  fm = GSL_MULTIMIN_FN_EVAL_F (fdf, x1);
+
+#ifdef DEBUG
+  printf ("trying stepm = %g  fm = %.18e\n", stepm, fm);
+#endif
+
+  if (fm > fb)
+    {
+      if (fm < fv)
+	{
+	  w = v;
+	  v = stepm;
+	  fw = fv;
+	  fv = fm;
+	}
+      else if (fm < fw)
+	{
+	  w = stepm;
+	  fw = fm;
+	}
+
+      if (stepm < stepb)
+	{
+	  stepa = stepm;
+	  fa = fm;
+	}
+      else
+	{
+	  stepc = stepm;
+	  fc = fm;
+	}
+      goto mid_trial;
+    }
+  else if (fm <= fb)
+    {
+      tol2 = tol1;
+      tol1 = fabs(u - stepm);
+      w = v;
+      v = u;
+      u = stepm;
+      fw = fv;
+      fv = fu;
+      fu = fm;
+
+      gsl_vector_memcpy (x2, x1);
+      gsl_vector_memcpy (dx2, dx1);
+
+      GSL_MULTIMIN_FN_EVAL_DF (fdf, x1, gradient);
+      gsl_blas_ddot (p, gradient, &pg);
+      gnorm1 = gsl_blas_dnrm2 (gradient);
+
+#ifdef DEBUG
+      printf ("p: "); gsl_vector_fprintf(stdout, p, "%g");
+      printf ("g: "); gsl_vector_fprintf(stdout, gradient, "%g");
+      printf ("gnorm: %.18e\n", gnorm1);
+      printf ("pg: %.18e\n", pg);
+      printf ("orth: %g\n", fabs (pg * lambda/ gnorm1));
+#endif
+      *f = fm;
+      *step = stepm;
+      *gnorm = gnorm1;
+
+      if (fabs (pg * lambda / gnorm1) < 1.0e-4)
+        {
+#ifdef DEBUG
+          printf("ok!\n");
+#endif
+          return; /* SUCCESS */
+        }
+
+      if (stepm < stepb)
+	{
+	  stepc = stepb;
+	  fc = fb;
+	  stepb = stepm;
+	  fb = fm;
+	}
+      else
+	{
+	  stepa = stepb;
+	  fa = fb;
+	  stepb = stepm;
+	  fb = fm;
+	}
+      goto mid_trial;
     }
 }
-
-void
-gsl_multimin_compute_ep(gsl_multimin_to_single *params,double x) 
-{
-  gsl_multimin_compute_evaluation_point(params->evaluation_point,
-					params->starting_point,
-					x,
-					params->direction);
-}
-
-double gsl_multimin_to_single_eval(double x, void * oparams)
-{
-  gsl_multimin_to_single *params = (gsl_multimin_to_single *)oparams;
-  
-  gsl_multimin_compute_ep(params,x);
-  return GSL_MULTIMIN_FN_EVAL(&(params->f),params->evaluation_point);
-}
-
-gsl_multimin_to_single *
-gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
-			     const gsl_vector * starting_point,
-			     gsl_vector * direction) {
-  gsl_multimin_to_single *wrapper;
-  const size_t n = f->n ;
-  int status;
-
-  if (starting_point->size != n || direction->size != n) {
-    GSL_ERROR_VAL ("vector length not compatible with function", 
-		      GSL_EBADLEN, 0);
-  }
-  wrapper = (gsl_multimin_to_single *)malloc (sizeof (gsl_multimin_to_single));
-
-  if (wrapper == 0) {
-    GSL_ERROR_VAL ("failed to allocate space for multimin wrapper struct",
-		      GSL_ENOMEM, 0);
-  }
-
-  wrapper->evaluation_point = gsl_vector_calloc (starting_point->size); 
-
-  if (wrapper->evaluation_point == 0) {
-    free(wrapper);
-
-    GSL_ERROR_VAL ("failed to allocate space for evaluation_point", GSL_ENOMEM, 0);
-  }
-
-  status = gsl_multimin_to_single_set(wrapper,f,starting_point,direction);
-
-  if (status != GSL_SUCCESS) {
-    free(wrapper);
-    gsl_vector_free (wrapper->evaluation_point);
-    
-    GSL_ERROR_VAL ("failed to set multimin wrapper params", status, 0);
-  }
-
-  return wrapper;
-}
-
-int
-gsl_multimin_to_single_set(gsl_multimin_to_single *w,
-			   const gsl_multimin_function *f,
-			   const gsl_vector * starting_point,
-			   gsl_vector * direction) {
-  if (w->evaluation_point->size != starting_point->size 
-      || w->evaluation_point->size != direction->size) {
-      
-    GSL_ERROR_VAL ("vector length not compatible with function", 
-		      GSL_EBADLEN, 0);
-  }
-  w->starting_point = starting_point;
-  w->direction = direction;
-  w->f.f = f->f;
-  w->f.n = f->n;
-  w->f.params = f->params;
-  return GSL_SUCCESS;
-}
-
-void
-gsl_multimin_to_single_free(gsl_multimin_to_single *w) {
-  gsl_vector_free (w->evaluation_point);
-  free(w);
-}
-
-gsl_function *
-gsl_multimin_to_single_function_alloc(gsl_multimin_to_single *w) {
-  gsl_function *f;
-  
-  f = (gsl_function*)malloc (sizeof (gsl_function));
-  if (f == 0) {
-     GSL_ERROR_VAL ("failed to allocate space for function struct",
-		       GSL_ENOMEM, 0);
-  }
-  f->params = (void *)w;
-  f->function = gsl_multimin_to_single_eval;
-
-  return f;
-}
-
-void
-gsl_multimin_to_single_function_free(gsl_function *f) 
-{  
-  gsl_multimin_to_single *params = (gsl_multimin_to_single *)(f->params);
-  gsl_multimin_to_single_free(params);
-  free (f);
-}
-
-gsl_multimin_to_single *
-gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *fdf,
-				 const gsl_vector * starting_point,
-				 gsl_vector * direction) {
-  gsl_multimin_function f;
-
-  f.f = fdf->f;
-  f.n = fdf->n;
-  f.params = fdf->params;
-
-  return gsl_multimin_to_single_alloc(&f,starting_point,direction);
-}
-
-int
-gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
-			       const gsl_multimin_function_fdf *fdf,
-			       const gsl_vector * starting_point,
-			       gsl_vector * direction) {
-  gsl_multimin_function f;
-
-  f.f = fdf->f;
-  f.n = fdf->n;
-  f.params = fdf->params;
-
-  return gsl_multimin_to_single_set(w,&f,starting_point,direction);
-}
-
-

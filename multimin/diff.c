@@ -24,68 +24,35 @@ int
 gsl_multimin_diff (const gsl_multimin_function * f,
 		   const gsl_vector * x, gsl_vector * g)
 {
-  /* This is nearly identical to gsl_diff_central except that the
-     multimin functions are used to restrict a function requiring
-     vecor input to a single real valued input. */
-  size_t i, k, n;
-  gsl_vector *direction;
-  gsl_multimin_to_single *w;
+  size_t i, n = f->n;
+
   double h = GSL_SQRT_DBL_EPSILON;
-  double a[4], d[4], a3;
-  double fl, fh;
 
-  direction = gsl_vector_calloc (f->n);
-  w = gsl_multimin_to_single_alloc (f, x, direction);
 
-  for (n = 0; n < f->n; n++)
+  gsl_vector * x1 = gsl_vector_alloc (n);  /* FIXME: pass as argument */
+
+  gsl_vector_memcpy (x1, x);
+
+  for (i = 0; i < n; i++)
     {
-      gsl_vector_set_basis (direction, n);
+      double fl, fh;
+  
+      double xi = gsl_vector_get (x, i);
+      double dx = fabs(xi) * h;
 
-      /* Algorithm based on description on pg. 204 of Conte and de Boor
-         (CdB) - coefficients of Newton form of polynomial of degree 3. */
+      if (dx == 0.0) dx = h;
 
-      for (i = 0; i < 4; i++)
-	{
-	  a[i] = (i - 2.0) * h;
-	  gsl_multimin_compute_ep (w, a[i]);
-	  d[i] = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
-	  /*      d[i] = gsl_multimin_to_single_eval(a[i], w); */
-	}
+      gsl_vector_set (x1, i, xi + dx);
+      fh = GSL_MULTIMIN_FN_EVAL(f, x1);
 
-      for (k = 1; k < 5; k++)
-	{
-	  for (i = 0; i < 4 - k; i++)
-	    {
-	      d[i] = (d[i + 1] - d[i]) / (a[i + k] - a[i]);
-	    }
-	}
+      gsl_vector_set (x1, i, xi - dx);
+      fl = GSL_MULTIMIN_FN_EVAL(f, x1);
 
-      /* Adapt procedure described on pg. 282 of CdB to find best
-         value of step size. */
-
-      a3 = fabs (d[0] + d[1] + d[2] + d[3]);
-
-      if (a3 < 100.0 * GSL_SQRT_DBL_EPSILON)
-	{
-	  a3 = 100.0 * GSL_SQRT_DBL_EPSILON;
-	}
-
-      h = pow (GSL_SQRT_DBL_EPSILON / (2.0 * a3), 1.0 / 3.0);
-
-      if (h > 100.0 * GSL_SQRT_DBL_EPSILON)
-	{
-	  h = 100.0 * GSL_SQRT_DBL_EPSILON;
-	}
-
-      gsl_multimin_compute_ep (w, h);
-      fh = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
-      gsl_multimin_compute_ep (w, -h);
-      fl = GSL_MULTIMIN_FN_EVAL(f, w->evaluation_point);
-      gsl_vector_set (g, n, (fh - fl) / (2.0 * h));
+      gsl_vector_set (x1, i, xi);
+      gsl_vector_set (g, i, (fh - fl) / (2.0 * dx));
     }
 
-  gsl_vector_free (direction);
-  gsl_multimin_to_single_free (w);
+  gsl_vector_free (x1);
 
   return GSL_SUCCESS;
 }

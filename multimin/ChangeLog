@@ -1,3 +1,8 @@
+Wed Oct 24 23:18:46 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* modified all routines to use a single minimiztion iteration,
+ 	instead of nested iterations for line and gradient search.
+
 Thu Oct 18 22:56:52 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* renamed gsl_multimin_f_minimizer to gsl_multimin_fminimizer for

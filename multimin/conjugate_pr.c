@@ -1,4 +1,4 @@
-/* multimin/vector_bfgs.c
+/* multimin/conjugate_pr.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Fabrice Rossi
  * 
@@ -17,8 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* vector_bfgs.c -- Limited memory Broyden-Fletcher-Goldfarb-Shanno
-   conjugate gradient method */
+/* conjugate_pr.c -- Conjugate gradient Polak-Ribiere algorithm */
 
 /* Modified by Brian Gough to use single iteration structure */
 
@@ -38,17 +37,15 @@ typedef struct
   gsl_vector *x2;
   double pnorm;
   gsl_vector *p;
-  gsl_vector *x0;
+  double g0norm;
   gsl_vector *g0;
-  gsl_vector *dx0;
-  gsl_vector *dg0;
 }
-vector_bfgs_state_t;
+conjugate_pr_state_t;
 
 static int
-vector_bfgs_alloc (void *vstate, size_t n)
+conjugate_pr_alloc (void *vstate, size_t n)
 {
-  vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
+  conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
   state->x1 = gsl_vector_calloc (n);
 
@@ -84,49 +81,10 @@ vector_bfgs_alloc (void *vstate, size_t n)
       GSL_ERROR ("failed to allocate space for p", GSL_ENOMEM);
     }
 
-  state->x0 = gsl_vector_calloc (n);
-
-  if (state->x0 == 0)
-    {
-      gsl_vector_free (state->p);
-      gsl_vector_free (state->x2);
-      gsl_vector_free (state->dx1);
-      gsl_vector_free (state->x1);
-      GSL_ERROR ("failed to allocate space for g0", GSL_ENOMEM);
-    }
-
   state->g0 = gsl_vector_calloc (n);
 
   if (state->g0 == 0)
     {
-      gsl_vector_free (state->x0);
-      gsl_vector_free (state->p);
-      gsl_vector_free (state->x2);
-      gsl_vector_free (state->dx1);
-      gsl_vector_free (state->x1);
-      GSL_ERROR ("failed to allocate space for g0", GSL_ENOMEM);
-    }
-
-  state->dx0 = gsl_vector_calloc (n);
-
-  if (state->dx0 == 0)
-    {
-      gsl_vector_free (state->g0);
-      gsl_vector_free (state->x0);
-      gsl_vector_free (state->p);
-      gsl_vector_free (state->x2);
-      gsl_vector_free (state->dx1);
-      gsl_vector_free (state->x1);
-      GSL_ERROR ("failed to allocate space for g0", GSL_ENOMEM);
-    }
-
-  state->dg0 = gsl_vector_calloc (n);
-
-  if (state->dg0 == 0)
-    {
-      gsl_vector_free (state->dx0);
-      gsl_vector_free (state->g0);
-      gsl_vector_free (state->x0);
       gsl_vector_free (state->p);
       gsl_vector_free (state->x2);
       gsl_vector_free (state->dx1);
@@ -138,11 +96,11 @@ vector_bfgs_alloc (void *vstate, size_t n)
 }
 
 static int
-vector_bfgs_set (void *vstate, gsl_multimin_function_fdf * fdf,
-		 const gsl_vector * x, double *f, gsl_vector * gradient,
-		 double step_size)
+conjugate_pr_set (void *vstate, gsl_multimin_function_fdf * fdf,
+		  const gsl_vector * x, double *f, gsl_vector * gradient,
+		  double step_size)
 {
-  vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
+  conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
   state->iter = 0;
   state->step = step_size;
@@ -153,26 +111,24 @@ vector_bfgs_set (void *vstate, gsl_multimin_function_fdf * fdf,
   /* Use the gradient as the initial direction */
 
   gsl_vector_memcpy (state->p, gradient);
-  gsl_vector_memcpy (state->x0, x);
   gsl_vector_memcpy (state->g0, gradient);
 
   {
-    double pnorm = gsl_blas_dnrm2 (state->p);
-    state->pnorm = pnorm;
+    double gnorm = gsl_blas_dnrm2 (gradient);
+
+    state->pnorm = gnorm;
+    state->g0norm = gnorm;
   }
 
   return GSL_SUCCESS;
 }
 
 static void
-vector_bfgs_free (void *vstate)
+conjugate_pr_free (void *vstate)
 {
-  vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
+  conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
-  gsl_vector_free (state->dg0);
-  gsl_vector_free (state->dx0);
   gsl_vector_free (state->g0);
-  gsl_vector_free (state->x0);
   gsl_vector_free (state->p);
   gsl_vector_free (state->x2);
   gsl_vector_free (state->dx1);
@@ -180,29 +136,29 @@ vector_bfgs_free (void *vstate)
 }
 
 static int
-vector_bfgs_restart (void *vstate)
+conjugate_pr_restart (void *vstate)
 {
-  vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
+  conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
   state->iter = 0;
   return GSL_SUCCESS;
 }
 
 static int
-vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
-		     gsl_vector * x, double *f,
-		     gsl_vector * gradient, gsl_vector * dx)
+conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
+		      gsl_vector * x, double *f,
+		      gsl_vector * gradient, gsl_vector * dx)
 {
-  vector_bfgs_state_t *state = (vector_bfgs_state_t *) vstate;
+  conjugate_pr_state_t *state = (conjugate_pr_state_t *) vstate;
 
   gsl_vector *x1 = state->x1;
   gsl_vector *dx1 = state->dx1;
   gsl_vector *x2 = state->x2;
   gsl_vector *p = state->p;
   gsl_vector *g0 = state->g0;
-  gsl_vector *x0 = state->x0;
 
   double pnorm = state->pnorm;
+  double g0norm = state->g0norm;
 
   double fa = *f, fb, fc;
   double dir;
@@ -264,42 +220,21 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
     }
   else
     {
-      /* This is the BFGS update: */
-      /* p' = g1 - A dx - B dg */
-      /* A = - (1+ dg.dg/dx.dg) B + dg.g/dx.dg */
-      /* B = dx.g/dx.dg */
+      /* p' = g1 - beta * p */
 
-      gsl_vector *dx0 = state->dx0;
-      gsl_vector *dg0 = state->dg0;
+      double g0g1, beta;
 
-      double dxg, dgg, dxdg, dgnorm, A, B;
+      gsl_blas_daxpy (-1.0, gradient, g0); /* g0' = g0 - g1 */
+      gsl_blas_ddot(g0, gradient, &g0g1);  /* g1g0 = (g0-g1).g1 */
+      beta = g0g1 / (g0norm*g0norm);       /* beta = -((g1 - g0).g1)/(g0.g0) */
 
-      /* dx0 = x - x0 */
-      gsl_vector_memcpy (dx0, x);
-      gsl_blas_daxpy (-1.0, x0, dx0);
-
-      /* dg0 = g - g0 */
-      gsl_vector_memcpy (dg0, gradient);
-      gsl_blas_daxpy (-1.0, g0, dg0);
-
-      gsl_blas_ddot (dx0, gradient, &dxg);
-      gsl_blas_ddot (dg0, gradient, &dgg);
-      gsl_blas_ddot (dx0, dg0, &dxdg);
-
-      dgnorm = gsl_blas_dnrm2 (dg0);
-
-      B = dxg / dxdg;
-      A = -(1.0 + dgnorm * dgnorm / dxdg) * B + dgg / dxdg;
-
-      gsl_vector_memcpy (p, gradient);
-      gsl_blas_daxpy (-A, dx0, p);
-      gsl_blas_daxpy (-B, dg0, p);
-
+      gsl_blas_dscal (-beta, p);
+      gsl_blas_daxpy (1.0, gradient, p);
       state->pnorm = gsl_blas_dnrm2 (p);
     }
 
+  state->g0norm = g1norm;
   gsl_vector_memcpy (g0, gradient);
-  gsl_vector_memcpy (x0, x);
 
 #ifdef DEBUG
   printf ("updated conjugate directions\n");
@@ -312,15 +247,17 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
   return GSL_SUCCESS;
 }
 
-static const gsl_multimin_fdfminimizer_type vector_bfgs_type = {
-  "vector_bfgs",		/* name */
-  sizeof (vector_bfgs_state_t),
-  &vector_bfgs_alloc,
-  &vector_bfgs_set,
-  &vector_bfgs_iterate,
-  &vector_bfgs_restart,
-  &vector_bfgs_free
+
+
+static const gsl_multimin_fdfminimizer_type conjugate_pr_type = {
+  "conjugate_pr",		/* name */
+  sizeof (conjugate_pr_state_t),
+  &conjugate_pr_alloc,
+  &conjugate_pr_set,
+  &conjugate_pr_iterate,
+  &conjugate_pr_restart,
+  &conjugate_pr_free
 };
 
 const gsl_multimin_fdfminimizer_type
-  * gsl_multimin_fdfminimizer_vector_bfgs = &vector_bfgs_type;
+  * gsl_multimin_fdfminimizer_conjugate_pr = &conjugate_pr_type;

@@ -71,106 +71,20 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 int gsl_multimin_diff (const gsl_multimin_function * f,
                        const gsl_vector * x, gsl_vector * g);
 
-/* wrapper for using a vector input function as a real input function */
-typedef struct 
-{
-  gsl_multimin_function f;
-  const gsl_vector * starting_point;
-  gsl_vector * direction;
-  gsl_vector * evaluation_point;
-}
-gsl_multimin_to_single;
-
-gsl_multimin_to_single *
-gsl_multimin_to_single_alloc(const gsl_multimin_function *f,
-			     const gsl_vector * starting_point,
-			     gsl_vector * direction);
-int
-gsl_multimin_to_single_set(gsl_multimin_to_single *w,
-			   const gsl_multimin_function *f,
-			   const gsl_vector * starting_point,
-			   gsl_vector * direction);
-
-double gsl_multimin_to_single_eval(double x, void * oparams);
-
-void
-gsl_multimin_to_single_free(gsl_multimin_to_single *w);
-
-gsl_function *
-gsl_multimin_to_single_function_alloc(gsl_multimin_to_single *w);
-
-void
-gsl_multimin_to_single_function_free(gsl_function *f);
-
-gsl_multimin_to_single *
-gsl_multimin_to_single_alloc_fdf(const gsl_multimin_function_fdf *f,
-				 const gsl_vector * starting_point,
-				 gsl_vector * direction);
-int
-gsl_multimin_to_single_set_fdf(gsl_multimin_to_single *w,
-			       const gsl_multimin_function_fdf *f,
-			       const gsl_vector * starting_point,
-			       gsl_vector * direction);
-
-void
-gsl_multimin_compute_ep(gsl_multimin_to_single *params,double x);
-
-void
-gsl_multimin_compute_evaluation_point(gsl_vector *evaluation_point,
-				      const gsl_vector *starting_point,
-				      double x,
-				      const gsl_vector *direction);
-
 /* minimisation of differentiable functions */
-
-typedef struct 
-{
-  double f; /* function value */
-  double f1; /* previous function value */
-  gsl_vector *x; /* minimum estimate */
-  gsl_vector *x1; /* previous minimum estimate */
-  gsl_vector *g; /* gradient */
-  gsl_vector *g1; /* previous gradient */
-}
-gsl_multimin_fdf_history;
-
-gsl_multimin_fdf_history *
-gsl_multimin_fdf_history_alloc(gsl_multimin_function_fdf *fdf,
-			       const gsl_vector * x);
-
-int
-gsl_multimin_fdf_history_set(gsl_multimin_fdf_history *h,
-			     gsl_multimin_function_fdf *fdf,
-			     const gsl_vector * x);
-
-int
-gsl_multimin_fdf_history_set_with_value(gsl_multimin_fdf_history *h,
-					gsl_multimin_function_fdf *fdf,
-					const gsl_vector * x,
-					double fx);
-
-void
-gsl_multimin_fdf_history_free(gsl_multimin_fdf_history *h);
-
-int
-gsl_multimin_fdf_history_step(gsl_multimin_fdf_history *h,
-			      gsl_multimin_function_fdf *fdf,
-			      const gsl_vector * direction,
-			      double step);
-
-int
-gsl_multimin_fdf_history_step_with_value(gsl_multimin_fdf_history *h,
-					 gsl_multimin_function_fdf *fdf,
-					 const gsl_vector * direction,
-					 double step,double fx);
 
 typedef struct 
 {
   const char *name;
   size_t size;
   int (*alloc) (void *state, size_t n);
+  int (*set) (void *state, gsl_multimin_function_fdf * fdf,
+              const gsl_vector * x, double * f, 
+              gsl_vector * gradient, double step_size);
+  int (*iterate) (void *state,gsl_multimin_function_fdf * fdf, 
+                  gsl_vector * x, double * f, 
+                  gsl_vector * gradient, gsl_vector * dx);
   int (*restart) (void *state);
-  int (*direction) (void *state,gsl_multimin_fdf_history *h,gsl_vector * dir);
   void (*free) (void *state);
 }
 gsl_multimin_fdfminimizer_type;
@@ -180,61 +94,47 @@ typedef struct
   /* multi dimensional part */
   const gsl_multimin_fdfminimizer_type *type;
   gsl_multimin_function_fdf *fdf;
-  gsl_multimin_fdf_history *history;
-  /* one dimensional part */
-  gsl_min_bracketing_function bracketing;
-  gsl_function *f_directional;
-  const gsl_min_fminimizer_type * line_search_type;
-  gsl_min_fminimizer *line_search;
+
+  double f;
+  gsl_vector * x;
+  gsl_vector * gradient;
+  gsl_vector * dx;
+
   void *state;
 }
 gsl_multimin_fdfminimizer;
 
 gsl_multimin_fdfminimizer *
 gsl_multimin_fdfminimizer_alloc(const gsl_multimin_fdfminimizer_type *T,
-				 gsl_multimin_function_fdf *fdf,
-				 const gsl_vector * x,
-				 gsl_min_bracketing_function bracket,
-				 const gsl_min_fminimizer_type * T_line);
+                                size_t n);
+
+int 
+gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
+                               gsl_multimin_function_fdf *fdf,
+                               const gsl_vector * x,
+                               double step_size);
+
 void
 gsl_multimin_fdfminimizer_free(gsl_multimin_fdfminimizer *s);
-
-const gsl_vector *
-gsl_multimin_fdfminimizer_direction(gsl_multimin_fdfminimizer *s);
-
-int
-gsl_multimin_fdfminimizer_next_direction(gsl_multimin_fdfminimizer *s);
-
-int
-gsl_multimin_fdfminimizer_bracket(gsl_multimin_fdfminimizer *s,
-				   double first_step,size_t eval_max);
 
 int
 gsl_multimin_fdfminimizer_iterate(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdfminimizer_step(gsl_multimin_fdfminimizer *s,
-				double step);
-int
-gsl_multimin_fdfminimizer_best_step(gsl_multimin_fdfminimizer *s);
-
-int
 gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
 
 int
-gsl_multimin_fdfminimizer_step_with_value(gsl_multimin_fdfminimizer *s,
-					   double step,double f_at_end);
+gsl_multimin_test_gradient(const gsl_vector * g,double epsabs);
 
-extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
+extern const 
+gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
+extern const 
+gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
+extern const 
+gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
+extern const 
+gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
 
-extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
-
-extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
-
-extern const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
-
-int
-gsl_multimin_test_gradient_sqr_norm(gsl_multimin_fdf_history *h,double epsabs);
 
 __END_DECLS
 
