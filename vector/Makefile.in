@@ -88,7 +88,10 @@ test_trap_DEPENDENCIES = libgslvector.a
 test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
+noinst_HEADERS = vector_source.c init_source.c
+
 libgslvector_a_SOURCES = \
+source.h \
 init.c \
 vector.c \
 gsl_vector.h \
@@ -121,7 +124,7 @@ test_trap_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 

@@ -1,3 +1,8 @@
+Wed Apr  8 13:55:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* gsl_errno.h (GSL_ERROR_RETURN_NOTHING): added an error macro
+ 	suitable for void functions
+
 Mon Apr  6 14:10:48 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* gsl_errno.h: use enum instead of #define for symbolic constants,

@@ -23,7 +23,7 @@ FUNCTION(gsl_vector,set)(TYPE(gsl_vector) * v, const size_t i, const BASE x)
     {
       if (i >= v->size) /* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN("index out of range", GSL_EINVAL, /* nothing */) ;
+	  GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
 	}
     }
   v->data[i] = x ;

@@ -42,7 +42,7 @@ gsl_vector_set(gsl_vector * v, const size_t i, const double x)
 #ifndef GSL_RANGE_CHECK_OFF
   if (i >= v->size) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("index out of range", GSL_EINVAL, /* nothing */) ;
+      GSL_ERROR_RETURN_NOTHING("index out of range", GSL_EINVAL) ;
     }
 #endif
   v->data[i] = x ;

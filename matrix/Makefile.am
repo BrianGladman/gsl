@@ -17,7 +17,11 @@ test_trap_DEPENDENCIES = libgslmatrix.a
 test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
+noinst_HEADERS = matrix_source.c init_source.c
+
+
 libgslmatrix_a_SOURCES = \
+source.h \
 init.c \
 matrix.c \
 gsl_matrix.h \

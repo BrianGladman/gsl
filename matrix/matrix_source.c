@@ -32,11 +32,11 @@ FUNCTION(gsl_matrix,set)(TYPE(gsl_matrix) * m,
     {
       if (i >= m->size1) /* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, /* void */);
+	  GSL_ERROR_RETURN_NOTHING("first index out of range", GSL_EINVAL);
 	}
       else if (j >= m->size2) /* size_t is unsigned, can't be negative */
 	{
-	  GSL_ERROR_RETURN("second index out of range", GSL_EINVAL,/* void */);
+	  GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL);
 	}
     }
   m->data[i * m->size2 + j] = x ;

@@ -2200,7 +2200,7 @@ fi
 
 echo "$ac_t""$ac_cv_decl_exit_success_and_failure" 1>&6
 
-if test "$ac_cv_decl_clocks_per_sec" = yes ; then
+if test "$ac_cv_decl_exit_success_and_failure" = yes ; then
   cat >> confdefs.h <<\EOF
 #define HAVE_EXIT_SUCCESS_AND_FAILURE 1
 EOF

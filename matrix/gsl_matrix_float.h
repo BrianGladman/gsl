@@ -45,11 +45,11 @@ gsl_matrix_float_set(gsl_matrix_float * m,
 #ifdef GSL_CHECK_RANGE
   if (i >= m->size) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("first index out of range", GSL_EINVAL, /* nothing */) ;
+      GSL_ERROR_RETURN_NOTHING("first index out of range", GSL_EINVAL) ;
     }
   else if (j >= m->size2) /* size_t is unsigned, can't be negative */
     {
-      GSL_ERROR_RETURN("second index out of range", GSL_EINVAL, /* nothing */) ;
+      GSL_ERROR_RETURN_NOTHING("second index out of range", GSL_EINVAL) ;
     }
 #endif
   m->data[i * m->size2 + j] = x ;

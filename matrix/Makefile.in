@@ -88,7 +88,10 @@ test_trap_DEPENDENCIES = libgslmatrix.a
 test_SOURCES = test.c
 test_trap_SOURCES = test_trap.c
 
+noinst_HEADERS = matrix_source.c init_source.c
+
 libgslmatrix_a_SOURCES = \
+source.h \
 init.c \
 matrix.c \
 gsl_matrix.h \
@@ -121,9 +124,9 @@ test_trap_LDFLAGS =
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(include_HEADERS)
+HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
