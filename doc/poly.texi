@@ -163,7 +163,7 @@ approximate locations of roots of higher order polynomials.
 
 @deftypefun {gsl_poly_complex_workspace *} gsl_poly_complex_workspace_alloc (size_t @var{n})
 This function allocates space for a @code{gsl_poly_complex_workspace}
-struct and a scratch area suitable for solving a polynomial with @var{n}
+struct and a workspace suitable for solving a polynomial with @var{n}
 coefficients using the routine @code{gsl_poly_complex_solve}.
 
 The function returns a pointer to the newly allocated

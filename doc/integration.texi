@@ -724,7 +724,7 @@ The subintervals and their results are stored in the memory provided by
 @var{workspace}.  The maximum number of subintervals is given by
 @var{limit}, which may not exceed the allocated size of the workspace.
 The integration over each subinterval uses the memory provided by
-@var{cycle_workspace} as scratch space for the QAWO algorithm.
+@var{cycle_workspace} as workspace for the QAWO algorithm.
 
 @end deftypefun
 

@@ -36,7 +36,7 @@ The functions described in this section are defined in the header file
 @cindex comparison functions, definition
 @deftypefun void gsl_heapsort (void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
-This function sorts the @var{count} members of the array @var{array},
+This function sorts the @var{count} elements of the array @var{array},
 each of size @var{size}, into ascending order using the comparison
 function @var{compare}.  The type of the comparison function is defined by,
 
@@ -76,7 +76,7 @@ the data which destroys its initial ordering.
 @cindex indirect sorting
 @deftypefun int gsl_heapsort_index (size_t * p, const void * @var{array}, size_t @var{count}, size_t @var{size}, gsl_comparison_fn_t @var{compare})
 
-This function indirectly sorts the @var{count} members of the array
+This function indirectly sorts the @var{count} elements of the array
 @var{array}, each of size @var{size}, into ascending order using the
 comparison function @var{compare}.  The resulting permutation is stored
 in @var{p}, an array of length @var{n}.  The elements of @var{p} give the

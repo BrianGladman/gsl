@@ -29,7 +29,7 @@ The functions described in this chapter are defined in the header file
 @node The Permutation struct
 @section The Permutation struct
 
-A permutation is stored by a structure containing two members, the size
+A permutation is stored by a structure containing two components, the size
 of the permutation and a pointer to the permutation array.  The elements
 of the permutation array are all of type @code{size_t}.  The
 @code{gsl_permutation} structure looks like this,

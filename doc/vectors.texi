@@ -55,7 +55,7 @@ Corresponding types exist for the @code{gsl_vector} and
 @section Blocks
 
 For consistency all memory is allocated through a @code{gsl_block}
-structure.  The structure contains two members, the size of an area of
+structure.  The structure contains two components, the size of an area of
 memory and a pointer to the memory.  The @code{gsl_block} structure looks
 like this,
 
@@ -196,7 +196,7 @@ slice of a block.  Different vectors can be created which point to the
 same block.  A vector slice is a set of equally-spaced elements of an
 area of memory.
 
-The @code{gsl_vector} structure contains four members, the @dfn{size},
+The @code{gsl_vector} structure contains four components, the @dfn{size},
 the @dfn{stride}, a pointer to the memory where the elements are stored,
 @var{data}, and a pointer to the block owned by the vector, @var{block},
 if any.  The structure is very simple and looks like this,
@@ -256,7 +256,7 @@ then it isn't necessary to check every @code{alloc}.
 @deftypefun {gsl_vector *} gsl_vector_alloc (size_t @var{n})
 This function creates a vector of length @var{n}, returning a pointer to
 a newly initialized vector struct. A new block is allocated for the
-elements of the vector, and stored in the @var{block} member of the
+elements of the vector, and stored in the @var{block} component of the
 vector struct.  The block is ``owned'' by the vector, and will be
 deallocated when the vector is deallocated.
 @end deftypefun
@@ -390,7 +390,7 @@ defined for both constant and non-constant vectors, using separate types
 that preserve constness.  A vector view has the type
 @code{gsl_vector_view} and a constant vector view has the type
 @code{gsl_vector_const_view}.  In both cases the elements of the view
-can be accessed as a @code{gsl_vector} using the @code{vector} attribute
+can be accessed as a @code{gsl_vector} using the @code{vector} component
 of the view object.  A pointer to a vector of type @code{gsl_vector *}
 or @code{const gsl_vector *} can be obtained by taking the address of
 this component with the @code{&} operator.
@@ -807,7 +807,7 @@ Matrices are defined by a @code{gsl_matrix} structure which describes a
 generalized slice of a block.  Like a vector it represents a set of
 elements in an area of memory, but uses two indices instead of one.
 
-The @code{gsl_matrix} structure contains five members, the two
+The @code{gsl_matrix} structure contains five components, the two
 dimensions of the matrix, a physical dimension, a pointer to the memory
 where the elements of the matrix are stored, @var{data}, and a pointer
 to the block owned by the matrix @var{block}, if any.  The physical
@@ -894,7 +894,7 @@ necessary to check every @code{alloc}.
 This function creates a matrix of size @var{n1} rows by @var{n2}
 columns, returning a pointer to a newly initialized matrix struct. A new
 block is allocated for the elements of the matrix, and stored in the
-@var{block} member of the matrix struct.  The block is ``owned'' by the
+@var{block} component of the matrix struct.  The block is ``owned'' by the
 matrix, and will be deallocated when the matrix is deallocated.
 @end deftypefun
 
@@ -1018,9 +1018,9 @@ defined for both constant and non-constant matrices using separate types
 that preserve constness.  A matrix view has the type
 @code{gsl_matrix_view} and a constant matrix view has the type
 @code{gsl_matrix_const_view}.  In both cases the elements of the view
-can by accessed using the @code{matrix} attribute of the view object.  A
+can by accessed using the @code{matrix} component of the view object.  A
 pointer @code{gsl_matrix *} or @code{const gsl_matrix *} can be obtained
-by taking the address of the @code{matrix} attribute with the @code{&}
+by taking the address of the @code{matrix} component with the @code{&}
 operator.  In addition to matrix views it is also possible to create
 vector views of a matrix, such as row or column views.
 

@@ -466,7 +466,7 @@ the random number generator @var{r}. A previously allocated workspace
 @var{result}, with an estimated absolute error @var{abserr}.  The result
 and its error estimate are based on a weighted average of independent
 samples. The chi-squared per degree of freedom for the weighted average
-is returned via the state struct element, @var{s->chisq}, and must be
+is returned via the state struct component, @var{s->chisq}, and must be
 consistent with 1 for the weighted average to be reliable.
 @end deftypefun
 

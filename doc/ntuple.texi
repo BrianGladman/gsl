@@ -118,7 +118,7 @@ typedef struct @{
 @} gsl_ntuple_select_fn;
 @end example
 @noindent
-The struct element @var{function} should return a non-zero value for
+The struct component @var{function} should return a non-zero value for
 each ntuple row that is to be included in the histogram.
 
 @cindex value function, ntuples
@@ -131,7 +131,7 @@ typedef struct @{
 @} gsl_ntuple_value_fn;
 @end example
 @noindent
-In this case the struct element @var{function} should return the value
+In this case the struct component @var{function} should return the value
 to be added to the histogram for the ntuple row.  
 
 @cindex histogram, from ntuple
