@@ -1,19 +1,19 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl_errno.h>
+#include <gsl_math.h>
 #include "gsl_sf_log.h"
 #include "gsl_sf_trig.h"
 #include "gsl_sf_gamma.h"
 
 extern double hypot(double, double);
 
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
+
 #define LogRootTwoPi_ 0.918938533204673
 #define Max(a,b) ((a) > (b) ? (a) : (b))
 
 
-static double gsl_gamma_cof[6] = {76.18009172947146, -86.50532032941677,
+static double gamma_cof[6] = {76.18009172947146, -86.50532032941677,
 			    	  24.01409824083091, -1.231739572450155,
 			    	  0.1208650973866179e-2, -0.5395239384953e-5
 	    	    	    	  };
@@ -26,7 +26,7 @@ double gsl_sf_lngamma(double xx)
   double tmp = x + 5.5 - (x + 0.5) * log(x + 5.5);
   double ser = 1.000000000190015;
   
-  for(j=0; j<=5; j++) ser += gsl_gamma_cof[j]/(++y);
+  for(j=0; j<=5; j++) ser += gamma_cof[j]/(++y);
   
   return -tmp + log(2.5066282746310005 * ser / x);
 }
@@ -66,7 +66,7 @@ static void ln_stirling_series(double x, double y, double * sx, double * sy)
 
 void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg)
 {
-  double stirl_cut = 50.;       /* use stirling above this point */
+  double stirl_cut = 50.;        /* use stirling above this point */
   double za = hypot(zr, zi);
   double x, y, r, theta;         /* transformed variables */
   double t_lnr, t_arg;           /* log(abs) and arg of intermediate result */
@@ -129,7 +129,7 @@ void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg)
     double prefactor_x, prefactor_y;
     double denom_x, denom_y, denom_abs2;
 
-    gsl_sf_complex_sin(constPi_*zr, constPi_*zi, &denom_x, &denom_y);
+    gsl_sf_complex_sin(M_PI*zr, M_PI*zi, &denom_x, &denom_y);
     denom_abs2 = denom_x*denom_x + denom_y*denom_y;
 
     if(denom_abs2 < 1.e-60) {
@@ -140,8 +140,8 @@ void gsl_sf_complex_lngamma(double zr, double zi, double * lnr, double * arg)
       *lnr = 0.;
       *arg = 0.;
     }
-    prefactor_x =  constPi_*denom_x/denom_abs2;
-    prefactor_y = -constPi_*denom_y/denom_abs2;
+    prefactor_x =  M_PI*denom_x/denom_abs2;
+    prefactor_y = -M_PI*denom_y/denom_abs2;
     *lnr = 0.5*log(prefactor_x*prefactor_x + prefactor_y*prefactor_y) - t_lnr;
     *arg = -t_arg + atan2(prefactor_y, prefactor_x);
   }

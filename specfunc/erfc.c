@@ -175,13 +175,13 @@ double gsl_sf_erf(double x)
 }
 
 
-double gsl_sf_Z(double x)
+double gsl_sf_erf_Z(double x)
 {
     const double oneover_sqrt_twopi = .39894228040143267794;
-    exp(-x*x/2.0)*oneover_sqrt_twopi;
+    return exp(-x*x/2.0)*oneover_sqrt_twopi;
 }
 
-double gsl_sf_Q(double x)
+double gsl_sf_erf_Q(double x)
 {
     /* Abramowitz+Stegun, 26.2.17 */
     const double p=0.2316419;
@@ -195,7 +195,7 @@ double gsl_sf_Q(double x)
     double t,e;
     
     t = 1.0/(1.0+p*fabs(x));
-    e = gsl_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
+    e = gsl_sf_erf_Z(x)*t*(b[0] + t*(b[1] + t*(b[2] + t*(b[3] + t*b[4]))));
     if (x < 0) e = 1.0-e;
     return e;
 }

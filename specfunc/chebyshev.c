@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <gsl_errno.h>
+#include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
-
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
 
 
 struct gsl_sf_ChebSeries * gsl_sf_cheb_new( double (*func)(double),
@@ -38,13 +36,13 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new( double (*func)(double),
   }
   
   for(k = 0; k<=order; k++) {
-    double y = cos(constPi_ * (k+0.5)/(order+1));
+    double y = cos(M_PI * (k+0.5)/(order+1));
     f[k] = func(y*bma + bpa);
   }
 
   for(j = 0; j<=order; j++) {
     double sum = 0.0;
-    for(k = 0; k<=order; k++) sum += f[k]*cos(constPi_ * j*(k+0.5)/(order+1));
+    for(k = 0; k<=order; k++) sum += f[k]*cos(M_PI * j*(k+0.5)/(order+1));
     cs->c[j] = fac * sum;
   }
 
@@ -54,7 +52,7 @@ struct gsl_sf_ChebSeries * gsl_sf_cheb_new( double (*func)(double),
 }
 
 
-double gs_sf_cheb_eval(double x, const struct gsl_sf_ChebSeries * cs)
+double gsl_sf_cheb_eval(double x, const struct gsl_sf_ChebSeries * cs)
 {
   int j;
   double d  = 0.;

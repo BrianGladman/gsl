@@ -1,12 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl_errno.h>
-#include "integration.h"
+#include <gsl_math.h>
+#include <gsl_integration.h>
 #include "gsl_sf_dilog.h"
-
-
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
 
 
 /* data for summation loop for dilog()
@@ -190,8 +187,8 @@ double gsl_sf_dilog_c(double r, double cos_theta)
     return 0.;
   }
   else if(fabs(r-1.) < 1.e-10) {
-    double arg = constPi_ - acos(cos_theta);
-    return 0.25 * arg*arg - constPi_*constPi_/12.;
+    double arg = M_PI - acos(cos_theta);
+    return 0.25 * arg*arg - M_PI*M_PI/12.;
   }
   else {
     /* restrict to (0,1) using the standard functional relation */
@@ -213,8 +210,8 @@ double gsl_sf_dilog_c(double r, double cos_theta)
     
     if(r > 1.) {
       double lgr = log(r);
-      double arg = constPi_ - acos(cos_theta);
-      return -tmp_result - 0.5*lgr*lgr + 0.5*arg*arg - constPi_*constPi_/6.;
+      double arg = M_PI - acos(cos_theta);
+      return -tmp_result - 0.5*lgr*lgr + 0.5*arg*arg - M_PI*M_PI/6.;
     }
     else {
       return tmp_result;

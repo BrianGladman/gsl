@@ -1,15 +1,10 @@
 #include <math.h>
-#include <stdio.h>
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
 
-	
 /************************************************************************
  *                                                                      *
-  Excerpt from Arthur's original comments:
   Asymptotic approximations 8.11.5, 8.12.5, and 8.42.7 from
   G.N.Watson, A Treatise on the Theory of Bessel Functions,
   2nd Edition (Cambridge University Press, 1944).
@@ -37,7 +32,7 @@ double besselJ_meissel(double nu, double x)
       /* Small argument and order. Use a Taylor expansion. */
       int k;
       double xo2 = 0.5 * x;
-      double gamfactor = pow(nu,nu) * exp(-nu) * sqrt(nu * 2. * constPi_)
+      double gamfactor = pow(nu,nu) * exp(-nu) * sqrt(nu * 2. * M_PI)
 	* (1. + 1./(12.*nu) + 1./(288.*nu*nu));
       double prefactor = pow(xo2, nu) / gamfactor;
       double C[5];
@@ -69,7 +64,7 @@ double besselJ_meissel(double nu, double x)
       
       /* Calculate the harmless prefactor. */
       double sterlingsum = 1. + 1./(12.*nu) + 1./(288*nu2);
-      double harmless = 1. / (sqrt(rtomz2*2.*constPi_*nu) * sterlingsum);
+      double harmless = 1. / (sqrt(rtomz2*2.*M_PI*nu) * sterlingsum);
 
       /* Calculate the logarithm of the nu dependent prefactor. */
       double ln_nupre = rtomz2 + log(z) - log(1. + rtomz2);
@@ -102,7 +97,7 @@ double besselJ_meissel(double nu, double x)
       result += B[3] * gam[3] * sf[3] / pow(xo6, 4./3.);
       result += B[4] * gam[4] * sf[4] / pow(xo6, 5./3.);
 
-      result /= (3.*constPi_);
+      result /= (3.*M_PI);
     }
   else 
     {
@@ -115,7 +110,7 @@ double besselJ_meissel(double nu, double x)
       double cotb = 1./sqrt(sec2b-1.);      /* cotb=cot(beta) */
 
       double beta = acos(nu/x);
-      double trigarg = nu/cotb - nu*beta - 0.25 * constPi_;
+      double trigarg = nu/cotb - nu*beta - 0.25 * M_PI;
       
       double cot3b = cotb * cotb * cotb;
       double cot6b = cot3b * cot3b;
@@ -131,7 +126,7 @@ double besselJ_meissel(double nu, double x)
       expterm = sum2 * sec2b * cot6b / (16.0 * nu2);
 
       expterm = exp(-expterm);
-      prefactor = sqrt(2. * cotb / (nu * constPi_));
+      prefactor = sqrt(2. * cotb / (nu * M_PI));
       
       result = prefactor * expterm * trigcos;
     }
@@ -148,7 +143,7 @@ double besselJprime_meissel(double nu, double x, double J_nu)
 
 double sphbesselj_meissel(double el, double x)
 {
-  return sqrt(constPi_/(2. * x)) * besselJ_meissel(el+0.5, x);
+  return sqrt(M_PI/(2. * x)) * besselJ_meissel(el+0.5, x);
 }
 
 
@@ -161,7 +156,7 @@ double sphbesseljprime_meissel(double el, double x, double j_l)
 void asymp_sphbesselj_meissel(double l, double x,
 			      double *jl, double *jlp, int dflag)
 {
-  double arg = x - (l+0.5)*0.5*constPi_;
+  double arg = x - (l+0.5)*0.5*M_PI;
   double x2 = x*x;
   double c = cos(arg);
   double s = sin(arg);
@@ -170,46 +165,6 @@ void asymp_sphbesselj_meissel(double l, double x,
   if(dflag){
     *jlp = -(s*(8.*x2 + 2.) + 7.*x*c)/ (8.*x2*x);
   }
-}
-
-
-double gsl_sf_bessel_J1(double x)
-{
-  double ax = fabs(x);
-  double z, xx, y, ans, ans1, ans2;
-
-  if(ax < 8.){
-    y = x*x;
-    ans1 = x * (72362614232. 
-		+ y * (-7895059235. 
-		       + y *(242396853.1 
-			     + y*(-2972611.439
-				  + y*(15704.4826 + y*(-30.16036606))))));
-    ans2 = 144725228442. 
-      + y *(2300535178.
-	    + y *(18583304.74
-		  + y *(99447.43394
-			+ y *(376.9991397 
-			      + y))));
-    ans = ans1 / ans2;
-  }
-  else {
-    z = 8./ax;
-    y = z*z;
-    xx = ax - 2.356194491;
-    ans1 = 1. + y *(0.183105e-2
-		    + y *(-0.3516396496e-4
-			  + y *(0.2457520174e-5
-				+ y *(-0.240337019e-6))));
-    ans2 = 0.04687499995 + y * (-0.2002690873e-3
-				+ y *(0.8449199096e-5
-				      + y *(-0.88228987e-6
-					    + y * 0.105787412e-6)));
-    ans = sqrt(0.636619772 / ax) * (cos(xx) * ans1 - z*sin(xx)*ans2);
-    if(x<0.) ans = -ans;
-  }
-
-  return ans;
 }
 
 

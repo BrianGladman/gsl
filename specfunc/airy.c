@@ -1,11 +1,10 @@
+/* $Id$ */
 #include <stdio.h>
 #include <math.h>
 #include <gsl_errno.h>
+#include <gsl_math.h>
 #include "gsl_sf_chebyshev.h"
 #include "gsl_sf_airy.h"
-
-/* FIXME: I hate this. This should be included from elsewhere. */
-#define constPi_ 3.14159265358979323846264338328
 
 
 /* chebyshev expansions for Airy modulus and phase
@@ -192,25 +191,25 @@ static double ath2_data[32] = {
 };
 
 
-struct gsl_sf_ChebSeries am21_cs = {
+static struct gsl_sf_ChebSeries am21_cs = {
   am21_data,
   39,
   -1, 1
 };
 
-struct gsl_sf_ChebSeries ath1_cs = {
+static struct gsl_sf_ChebSeries ath1_cs = {
   ath1_data,
   35,
   -1, 1
 };
 
-struct gsl_sf_ChebSeries am22_cs = {
+static struct gsl_sf_ChebSeries am22_cs = {
   am22_data,
   32,
   -1, 1
 };
 
-struct gsl_sf_ChebSeries ath2_cs = {
+static struct gsl_sf_ChebSeries ath2_cs = {
   ath2_data,
   31,
   -1, 1
@@ -221,7 +220,7 @@ struct gsl_sf_ChebSeries ath2_cs = {
 /* Airy modulus and phase for x < -1 */
 static void airy_mod_phase(double x, double * mod, double * phase)
 {
-  static double pi4 = 0.25 * constPi_;
+  static double pi4 = 0.25 * M_PI;
   double sqx;
 
   if(x < -2.0) {
@@ -237,7 +236,7 @@ static void airy_mod_phase(double x, double * mod, double * phase)
   else {
     char buff[50];
     sprintf(buff,"airy_mod_phase: x= %g  > -1", x);
-    GSL_MESSAGE(buff); /* GSL_ERROR() is stupid; functions should not just die */
+    GSL_MESSAGE(buff);
     *mod = 0.;
     *phase = 0.;
     return;
@@ -265,7 +264,7 @@ static void airy_mod_phase(double x, double * mod, double * phase)
                           significant figures required  15.19
                                decimal places required  17.27
  */
-double ai_data_f[9] = {
+static double ai_data_f[9] = {
   -.03797135849666999750,
    .05919188853726363857,
    .00098629280577279975,
@@ -277,7 +276,7 @@ double ai_data_f[9] = {
    .00000000000000000010
 };
 
-double ai_data_g[8] = {
+static double ai_data_g[8] = {
    .01815236558116127,
    .02157256316601076,
    .00025678356987483,
@@ -288,12 +287,13 @@ double ai_data_g[8] = {
    .00000000000000001
 };
 
-struct gsl_sf_ChebSeries aif_cs = {
+static struct gsl_sf_ChebSeries aif_cs = {
   ai_data_f,
   8,
   -1, 1
 };
-struct gsl_sf_ChebSeries aig_cs = {
+
+static struct gsl_sf_ChebSeries aig_cs = {
   ai_data_g,
   7,
   -1, 1
@@ -326,6 +326,7 @@ static double data_bif[9] = {
    .00000000000000020810,
    .00000000000000000018
 };
+   
 static double data_big[8] = {
    .02246622324857452,
    .03736477545301955,
@@ -567,7 +568,7 @@ static double airy_bie(double x)
 }
 
 
-double sl_sf_airy_Ai(double x)
+double gsl_sf_airy_Ai(double x)
 {
   if(x < -1.0) {
     double mod, theta;
@@ -608,12 +609,12 @@ double gsl_sf_airy_Bi(double x)
 double gsl_sf_airy_Bi_scaled(double x)
 {
   if(x <= 0.) {
-    return airy_Bi(x);
+    return gsl_sf_airy_Bi(x);
   }
   else if(x < 1.0) {
     double scale = exp(2.0*x*sqrt(x)/3.0);
     double z = x*x*x;
-    double bi= 0.625 + gsl_sf_cheb_eval(z,&bif_cs) + x*(0.4375 +gsl_sf_cheb_eval(z,&big_cs));
+    double bi= 0.625 + gsl_sf_cheb_eval(z,&bif_cs) + x*(0.4375 + gsl_sf_cheb_eval(z,&big_cs));
     return bi/scale;
   }
   else if(x <= 2.) {

@@ -1,7 +1,8 @@
 #ifndef GSL_BESSEL_H_
 #define GSL_BESSEL_H_
 
-/* Evaluate regular cylindrical Bessel function J_1(x). */
+/* Evaluate regular cylindrical Bessel functions J_0(x), J_1(x). */
+double gsl_sf_bessel_J0(double x);
 double gsl_sf_bessel_J1(double x);
 
 /* Evaluate regular modified cylindrical Bessel funcions I_0(x), I_1(x). */
@@ -78,4 +79,4 @@ void asymp_sphbesselj_meissel(double l, double x,
 
 
 
-#endif /* GSL_BESSEL_H_ */
+#endif /* !GSL_BESSEL_H_ */
