@@ -29,8 +29,8 @@ eigenvalue decomposition.
 ** The Nelder-Mead simplex algorithm for multidimensional 
 minimisation has been added.
 
-** The random number distributions now include the Dirichlet
-distribution.
+** The random number distributions now include the Dirichlet and
+Multinomial distributions.
 
 ** Added a new function gsl_fcmp for approximate comparison of
 floating point numbers using Knuth's algorithm.

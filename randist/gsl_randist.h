@@ -55,8 +55,8 @@ double gsl_ran_chisq (const gsl_rng * r, const double nu);
 double gsl_ran_chisq_pdf (const double x, const double nu);
 
 void gsl_ran_dirichlet (const gsl_rng * r, const size_t K, const double alpha[], double theta[]);
-double
-gsl_ran_dirichlet_pdf (const size_t K, const double alpha[], const double theta[]);
+double gsl_ran_dirichlet_pdf (const size_t K, const double alpha[], const double theta[]);
+double gsl_ran_dirichlet_lnpdf (const size_t K, const double alpha[], const double theta[]);
 
 double gsl_ran_erlang (const gsl_rng * r, const double a, const double n);
 double gsl_ran_erlang_pdf (const double x, const double a, const double n);
@@ -111,6 +111,15 @@ double gsl_ran_lognormal_pdf (const double x, const double zeta, const double si
 
 unsigned int gsl_ran_logarithmic (const gsl_rng * r, const double p);
 double gsl_ran_logarithmic_pdf (const unsigned int k, const double p);
+
+void gsl_ran_multinomial (const gsl_rng * r, const size_t K,
+                          const unsigned int N, const double p[],
+                          unsigned int n[] );
+double gsl_ran_multinomial_pdf (const size_t K,
+                                const double p[], const unsigned int n[] );
+double gsl_ran_multinomial_lnpdf (const size_t K,
+                           const double p[], const unsigned int n[] );
+
 
 unsigned int gsl_ran_negative_binomial (const gsl_rng * r, double p, double n);
 double gsl_ran_negative_binomial_pdf (const unsigned int k, const double p, double n);

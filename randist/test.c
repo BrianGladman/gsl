@@ -28,6 +28,11 @@
 #include <gsl/gsl_ieee_utils.h>
 
 #define N 100000
+
+/* Convient test dimension for multivariant distributions */
+#define MULTI_DIM 10
+
+
 void testMoments (double (*f) (void), const char *name,
 		  double a, double b, double p);
 void testPDF (double (*f) (void), double (*pdf) (double), const char *name);
@@ -153,6 +158,11 @@ double test_lognormal (void);
 double test_lognormal_pdf (double x);
 double test_logarithmic (void);
 double test_logarithmic_pdf (unsigned int n);
+double test_multinomial (void);
+double test_multinomial_pdf (unsigned int n);
+double test_multinomial_large (void);
+double test_multinomial_large_pdf (unsigned int n);
+void test_multinomial_moments (void);
 double test_negative_binomial (void);
 double test_negative_binomial_pdf (unsigned int n);
 double test_pascal (void);
@@ -216,6 +226,7 @@ main (void)
   testMoments (FUNC (discrete1), 1.5, 3.5, 0.01);
 
   test_dirichlet_moments ();
+  test_multinomial_moments ();
 
   testPDF (FUNC2 (beta));
   testPDF (FUNC2 (cauchy));
@@ -296,6 +307,8 @@ main (void)
   testDiscretePDF (FUNC2 (hypergeometric5));
   testDiscretePDF (FUNC2 (hypergeometric6));
   testDiscretePDF (FUNC2 (logarithmic));
+  testDiscretePDF (FUNC2 (multinomial));
+  testDiscretePDF (FUNC2 (multinomial_large));
   testDiscretePDF (FUNC2 (negative_binomial));
   testDiscretePDF (FUNC2 (pascal));
 
@@ -718,8 +731,8 @@ test_dirichlet (void)
   /* This is a bit of a lame test, since when K=2, the Dirichlet distribution
      becomes a beta distribution */
   size_t K = 2;
-  double alpha[] = { 2.5, 5.0 };
-  double theta[2];
+  double alpha[2] = { 2.5, 5.0 };
+  double theta[2] = { 0.0, 0.0 };
 
   gsl_ran_dirichlet (r_global, K, alpha, theta);
 
@@ -730,7 +743,7 @@ double
 test_dirichlet_pdf (double x)
 {
   size_t K = 2;
-  double alpha[] = { 2.5, 5.0 };
+  double alpha[2] = { 2.5, 5.0 };
   double theta[2];
 
   if (x <= 0.0 || x >= 1.0)
@@ -786,6 +799,50 @@ test_dirichlet_moments (void)
 
       gsl_test (status,
 		"test gsl_ran_dirichlet: mean (%g observed vs %g expected)",
+		obs_mean, mean);
+    }
+}
+
+
+/* Check that the observed means of the multinomial variables are
+   within reasonable statistical errors of their correct values. */
+
+void
+test_multinomial_moments (void)
+{
+  const unsigned int sum_n = 100;
+
+  const double p[MULTI_DIM] ={ 0.2, 0.20, 0.17, 0.14, 0.12,
+                               0.07, 0.05, 0.02, 0.02, 0.01 };
+
+  unsigned int  x[MULTI_DIM];
+  double x_sum[MULTI_DIM];
+
+  double mean, obs_mean, sd, sigma;
+  int status, k, n;
+
+  for (k = 0; k < MULTI_DIM; k++)
+    x_sum[k] =0.0;
+
+  for (n = 0; n < N; n++)
+    {
+      gsl_ran_multinomial (r_global, MULTI_DIM, sum_n, p, x);
+      for (k = 0; k < MULTI_DIM; k++)
+	x_sum[k] += x[k];
+    }
+
+  for (k = 0; k < MULTI_DIM; k++)
+    {
+      mean = p[k] * sum_n;
+      sd = p[k] * (1.-p[k]) * sum_n;
+
+      obs_mean = x_sum[k] / N;
+      sigma = sqrt ((double) N) * fabs (mean - obs_mean) / sd;
+
+      status = (sigma > 3.0);
+
+      gsl_test (status,
+		"test gsl_ran_multinomial: mean (%g observed vs %g expected)",
 		obs_mean, mean);
     }
 }
@@ -1456,6 +1513,56 @@ double
 test_lognormal_pdf (double x)
 {
   return gsl_ran_lognormal_pdf (x, 2.7, 1.3);
+}
+
+double
+test_multinomial (void)
+{
+  const size_t K = 3;
+  const unsigned int sum_n = BINS;
+  unsigned int n[3];
+  /* Test use of weights instead of probabilities. */
+  const double p[] = { 2., 7., 1.};
+
+  gsl_ran_multinomial ( r_global, K, sum_n, p, n);
+
+  return n[0];
+}
+
+double
+test_multinomial_pdf (unsigned int n_0)
+{
+  /* The margional distribution of just 1 variate  is binomial. */
+  size_t K = 2;
+  /* Test use of weights instead of probabilities */
+  double p[] = { 0.4, 1.6};
+  const unsigned int sum_n = BINS;
+  unsigned int n[2];
+
+  n[0] = n_0;
+  n[1] =sum_n - n_0;
+
+  return gsl_ran_multinomial_pdf (K, p, n);
+}
+
+
+double
+test_multinomial_large (void)
+{
+  const unsigned int sum_n = BINS;
+  unsigned int n[MULTI_DIM];
+  const double p[MULTI_DIM] = { 0.2, 0.20, 0.17, 0.14, 0.12,
+                                0.07, 0.05, 0.04, 0.01, 0.00  };
+
+  gsl_ran_multinomial ( r_global, MULTI_DIM, sum_n, p, n);
+
+  return n[0];
+}
+
+double
+test_multinomial_large_pdf (unsigned int n_0)
+{
+  return test_multinomial_pdf(n_0);
 }
 
 double

@@ -1,3 +1,11 @@
+2002-12-10  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multinomial.c (gsl_ran_multinomial): added multinomial
+	distribution
+
+	* dirichlet.c (gsl_ran_dirichlet_lnpdf): added logpdf function for
+	accuracy
+
 Tue Aug 27 19:08:33 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* dirichlet.c: added dirichlet distribution
