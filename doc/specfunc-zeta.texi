@@ -5,9 +5,10 @@ The Riemann zeta function is defined in Abramowitz & Stegun, Section
 header file @file{gsl_sf_zeta.h}.
 
 @menu
-* Riemann Zeta Function::       
-* Hurwitz Zeta Function::       
-* Eta Function::                
+* Riemann Zeta Function::
+* Riemann Zeta Function Minus One::
+* Hurwitz Zeta Function::
+* Eta Function::
 @end menu
 
 @node Riemann Zeta Function
@@ -34,6 +35,31 @@ for arbitrary @var{s},
 @comment Domain: s != 1.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
+
+
+@node Riemann Zeta Function Minus One
+@subsection Riemann Zeta Function Minus One
+
+For large positive argument, the Riemann zeta function approaches one.
+In this region the fractional part is interesting, and therefore we
+need a function to evaluate it explicitly.
+
+@deftypefun double gsl_sf_zetam1_int (int @var{n})
+@deftypefunx int gsl_sf_zetam1_int_e (int @var{n}, gsl_sf_result * @var{result})
+These routines compute @math{\zeta(n) - 1} for integer @var{n},
+@math{n \ne 1}.
+@comment Domain: n integer, n != 1
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@end deftypefun
+
+@deftypefun double gsl_sf_zetam1 (double @var{s})
+@deftypefunx int gsl_sf_zetam1_e (double @var{s}, gsl_sf_result * @var{result})
+These routines compute @math{\zeta(s) - 1} for arbitrary @var{s},
+@math{s \ne 1}.
+@comment Domain: s != 1.0
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
+@end deftypefun
+
 
 @node Hurwitz Zeta Function
 @subsection Hurwitz Zeta Function
