@@ -1,3 +1,7 @@
+Mon Jan 22 16:01:55 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_errno.h: added EOF for end of file
+
 Sat Aug 26 19:26:59 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_errno.h: added error codes ETOLF, ETOLX, ETOLG for

@@ -74,6 +74,7 @@ main (void)
   CHECK(GSL_ETOLF);
   CHECK(GSL_ETOLX);
   CHECK(GSL_ETOLG);
+  CHECK(GSL_EOF);
 
   for (i = 0 ; i < n ; i++) 
     {

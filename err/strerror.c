@@ -93,6 +93,8 @@ gsl_strerror (const int gsl_errno)
       return "cannot reach the specified tolerance in X";
     case GSL_ETOLG:
       return "cannot reach the specified tolerance in gradient";
+    case GSL_EOF:
+      return "end of file";
     default:
       return "unknown error code" ;
     }
