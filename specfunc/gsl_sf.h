@@ -16,6 +16,7 @@
 #include <gsl_sf_ellint.h>
 #include <gsl_sf_elljac.h>
 #include <gsl_sf_erf.h>
+#include <gsl_sf_exp.h>
 #include <gsl_sf_expint.h>
 #include <gsl_sf_fermi_dirac.h>
 #include <gsl_sf_gamma.h>

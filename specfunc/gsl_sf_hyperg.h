@@ -78,10 +78,13 @@ int     gsl_sf_hyperg_2F1_conj_renorm_e(double aR, double aI, double c, double x
 double  gsl_sf_hyperg_2F1_conj_renorm(double aR, double aI, double c, double x);
 
 
-/* Mysterious hypergeometric function
+/* Mysterious hypergeometric function. The series representation
+ * is a divergent hypergeometric series. However, for x < 0 we
+ * have 2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x)
  *
- * exceptions:
+ * exceptions: GSL_EDOM
  */
+int     gsl_sf_hyperg_2F0_series_impl(double a, double b, double x, int n_trunc, double * result);
 int     gsl_sf_hyperg_2F0_impl(double a, double b, double x, double * result);
 int     gsl_sf_hyperg_2F0_e(double a, double b, double x, double * result);
 double  gsl_sf_hyperg_2F0(double a, double b, double x);

@@ -9,13 +9,25 @@
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_hyperg.h"
 
+#define locEPS       (1000.0*GSL_MACH_EPS)
 #define locMAX(a,b)  ((a) > (b) ? (a) : (b))
+#define locMIN(a,b)  ((a) < (b) ? (a) : (b))
 
 
 /* Large x asymptotic for  x^a U(a,b,x)
  * Based on SLATEC D9CHU() [W. Fullerton]
  *
  * Uses a rational approximation due to Luke.
+ * See [Luke, Algorithms for the Computation of Special Functions, p. 252]
+ *     [Luke, Utilitas Math. (1977)]
+ *
+ * z^a U(a,b,z) ~ 2F0(a,1+a-b,-1/z)
+ *
+ * This assumes that a is not a negative integer and
+ * that 1+a-b is not a negative integer. If one of them
+ * is, then the 2F0 actually terminates, the above
+ * relation is an equality, and the sum should be
+ * evaluated directly [see below].
  */
 static
 int
@@ -24,10 +36,10 @@ d9chu(const double a, const double b, const double x, double * result)
   const double EPS   = 8.0 * GSL_MACH_EPS;  /* EPS = 4.0D0*D1MACH(4)   */
   const double SQEPS = GSL_MACH_EPS;        /* SQEPS = SQRT(D1MACH(4)) */
   const int maxiter = 500;
-  double aa[5], bb[5];
+  double aa[4], bb[4];
   int i;
 
-  double bp = 1.0 - a + b;
+  double bp = 1.0 + a - b;
   double ab = a*bp;
   double ct2 = 2.0 * (x - ab);
   double sab = a + bp;
@@ -36,14 +48,14 @@ d9chu(const double a, const double b, const double x, double * result)
   double anbn = ct3 + sab + 3.0;
   double ct1 = 1.0 + 2.0*x/anbn;
 
-  bb[1] = 1.0;
-  aa[1] = 1.0;
+  bb[0] = 1.0;
+  aa[0] = 1.0;
 
-  bb[2] = 1.0 + 2.0*x/ct3;
-  aa[2] = 1.0 + ct2/ct3;
+  bb[1] = 1.0 + 2.0*x/ct3;
+  aa[1] = 1.0 + ct2/ct3;
   
-  bb[3] = 1.0 + 6.0*ct1*x/ct3;
-  aa[3] = 1.0 + 6.0*ab/anbn + 3.0*ct1*ct2/ct3;
+  bb[2] = 1.0 + 6.0*ct1*x/ct3;
+  aa[2] = 1.0 + 6.0*ab/anbn + 3.0*ct1*ct2/ct3;
 
   for(i=4; i<maxiter; i++) {
     int j;
@@ -62,18 +74,18 @@ d9chu(const double a, const double b, const double x, double * result)
     g2  = d1z - c2;
     g3  = ct1*(1.0 - ct3 - 2.0*ct2);
     
-    bb[4] = g1*bb[3] + g2*bb[2] + g3*bb[1];
-    aa[4] = g1*aa[3] + g2*aa[2] + g3*aa[1];
+    bb[3] = g1*bb[2] + g2*bb[1] + g3*bb[0];
+    aa[3] = g1*aa[2] + g2*aa[1] + g3*aa[0];
     
-    if(fabs(aa[4]*bb[1]-aa[1]*bb[4]) < EPS*fabs(bb[4]*bb[1])) break;
+    if(fabs(aa[3]*bb[0]-aa[0]*bb[3]) < EPS*fabs(bb[3]*bb[0])) break;
     
-    for(j=1; j<=3; j++) {
+    for(j=0; j<3; j++) {
       aa[j] = aa[j+1];
       bb[j] = bb[j+1];
     }
   }
   
-  *result = aa[4]/bb[4];
+  *result = aa[3]/bb[3];
   
   if(i == maxiter) {
     return GSL_EMAXITER;
@@ -83,6 +95,44 @@ d9chu(const double a, const double b, const double x, double * result)
   }
   else {
     return GSL_SUCCESS;
+  }
+}
+
+
+/* Evaluate asymptotic for z^a U(a,b,z) ~ 2F0(a,1+a-b,-1/z)
+ * We check for termination of the 2F0 as a special case.
+ * Assumes x > 0.
+ * Also assumes a,b are not too large compared to x.
+ */
+static
+int
+hyperg_zaU_asymp(const double a, const double b, const double x, double *result)
+{
+  const double ap = a;
+  const double bp = 1.0 + a - b;
+  const int ap_neg_int = ( ap < 0.0 && fabs(ap - rint(ap)) < locEPS );
+  const int bp_neg_int = ( bp < 0.0 && fabs(bp - rint(bp)) < locEPS );
+
+  if(ap_neg_int || bp_neg_int) {
+    /* Evaluate 2F0 polynomial.
+     */
+    double mxi = -1.0/x;
+    double nmax = -(int)(locMIN(ap,bp) - 0.1);
+    double tn  = 1.0;
+    double sum = 1.0;
+    double n   = 1.0;
+    while(n < nmax) {
+      double apn = (ap+n-1.0);
+      double bpn = (bp+n-1.0);
+      tn  *= ((apn/n)*mxi)*bpn;
+      sum += tn;
+      n++;
+    }
+    *result = sum;
+    return GSL_SUCCESS;
+  }
+  else {
+    return d9chu(a,b,x,result);
   }
 }
 
@@ -159,24 +209,24 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
 
 
 /* Based on SLATEC DCHU() [W. Fullerton]
+ * Assumes x > 0.
+ * This is just a series summation method, and
+ * it is not good for large a.
  *
- * If fixed up the window for 1+a-b near zero. [GJ]
+ * I patched up the window for 1+a-b near zero. [GJ]
  */
+static
 int
-gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
+hyperg_U(const double a, const double b, const double x, double * result)
 {
   const double EPS      = 2.0 * GSL_MACH_EPS;  /* EPS = D1MACH(3) */
   const double SQRT_EPS = M_SQRT2 * GSL_SQRT_MACH_EPS;
 
-  if(x <= 0.0) {
-    *result = 0.0;
-    return GSL_EDOM;
-  }
-  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99 * fabs(x)) {
-    double d9;
-    int stat_d9 = d9chu(a, b, x, &d9);
-    *result = d9 * pow(x, -a);
-    return stat_d9;
+  if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < 0.99 * fabs(x)) {
+    double asymp;
+    int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
+    *result = asymp * pow(x, -a);
+    return stat_asymp;
   }  
   else if(fabs(1.0 + a - b) < SQRT_EPS) {
     /* ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X
@@ -189,7 +239,7 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
     return gsl_sf_exp_impl(lnr, result);
   }
   else {
-    double aintb = ( b < 0.0 ? (int)(b-0.5) : (int)(b+0.5) );
+    double aintb = ( b < 0.0 ? ceil(b-0.5) : floor(b+0.5) );
     double beps  = b - aintb;
     int N = aintb;
     
@@ -237,7 +287,7 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
       double pch1i;
       double poch1bxibeps;
       int stat_pch1ai = gsl_sf_pochrel_impl(a + xi, -beps, &pch1ai);
-      int stat_pch1i  = gsl_sf_pochrel_impl(xi + 1.0, -beps, &pch1i);
+      int stat_pch1i  = gsl_sf_pochrel_impl(xi + 1.0 - beps, beps, &pch1i);
       int stat_poch1bxibeps = gsl_sf_pochrel_impl(b+xi, -beps, &poch1bxibeps);
       double c0 = factor * pochai * gamrni * gamri1
                   * (-poch1bxibeps + pch1ai - pch1i + beps*pch1ai*pch1i);
@@ -246,8 +296,8 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
        C  XEPS1 = (1.0 - X**(-BEPS))/BEPS = (X**(-BEPS) - 1.0)/(-BEPS)
        */
       double dexprl;
-      int stat_dexprl = gsl_sf_expm1_impl(-beps*lnx, &dexprl);
-      double xeps1 = lnx * dexprl / (-beps*lnx);
+      int stat_dexprl = gsl_sf_exprel_impl(-beps*lnx, &dexprl);
+      double xeps1 = lnx * dexprl;
 
       double dchu = sum + c0 + xeps1*b0;
       double xn = N;
@@ -305,6 +355,50 @@ gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * re
         return GSL_SUCCESS;
       }
     }
+  }
+}
+
+
+int
+gsl_sf_hyperg_U_impl(const double a, const double b, const double x, double * result)
+{
+  if(x <= 0.0) {
+    *result = 0.0;
+    return GSL_EDOM;
+  }
+  else if(locMAX(fabs(a),1.0)*locMAX(fabs(1.0+a-b),1.0) < fabs(x)) {
+    double asymp;
+    int stat_asymp = hyperg_zaU_asymp(a, b, x, &asymp);
+    *result = asymp * pow(x, -a);
+    return stat_asymp;
+  }
+#if 0
+  else if(b <= 0.0) {
+    /* Use the reflection formula
+     * U(a,b,x) = x^(1-b) U(1+a-b,2-b,x)
+     */
+    double ap = 1.0 + a - b;
+    double bp = 2.0 - b;
+    double powx;
+    double U;
+    int stat_powx = gsl_sf_exp_impl((1.0-b)*log(x), &powx);
+    int stat_U = hyperg_U(ap, bp, x, &U);
+    if(stat_powx == GSL_EUNDRFLW || stat_U == GSL_EUNDRFLW) {
+      *result = 0.0;
+      return GSL_EUNDRFLW;
+    }
+    else if(stat_powx == GSL_SUCCESS && stat_U == GSL_SUCCESS) {
+      *result = powx * U;
+      return GSL_SUCCESS;
+    }
+    else {
+      *result = 0.0;
+      return GSL_EFAILED;
+    }
+  }
+#endif
+  else {
+    return hyperg_U(a, b, x, result);
   }
 }
 

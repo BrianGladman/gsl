@@ -38,7 +38,8 @@ include_HEADERS = \
 noinst_HEADERS = \
 	bessel_amp_phase.h	\
 	bessel_temme.h		\
-	bessel.h
+	bessel.h		\
+	hyperg.h
 
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../err -I$(srcdir)/../integration 
@@ -100,6 +101,7 @@ libgslspecfunc_a_SOURCES = 	\
 	hyperg_1F1.c		\
 	hyperg_2F1.c		\
 	hyperg_U.c		\
+	hyperg.c		\
 	laguerre.c		\
 	legendre_con.c		\
 	legendre_poly.c		\

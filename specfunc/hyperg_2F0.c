@@ -11,11 +11,16 @@
 
 
 /* [Carlson, p.109] says the error in truncating this asymptotic series
- * is less than the absolute value of the first neglected term
+ * is less than the absolute value of the first neglected term.
+ *
+ * A termination argument is provided, so that the series will
+ * be summed at most up to n=n_trunc. If n_trunc is set negative,
+ * then the series is summed until it appears to start diverging.
  */
 static
 int
 hyperg_2F0_series(const double a, const double b, const double x,
+                  int n_trunc,
                   double * result, double * prec
                   )
 {
@@ -43,7 +48,7 @@ hyperg_2F0_series(const double a, const double b, const double x,
     del *= u;
     sum += del;
 
-    abs_del      = fabs(del);
+    abs_del = fabs(del);
 
     if(abs_del > last_abs_del) break; /* series is probably starting to grow */
 
@@ -54,7 +59,9 @@ hyperg_2F0_series(const double a, const double b, const double x,
     bn += 1.0;
     n  += 1.0;
     
-    if(an == 0.0 || bn == 0.0) break;  /* series terminated */
+    if(an == 0.0 || bn == 0.0) break;        /* series terminated */
+    
+    if(n_trunc >= 0 && n >= n_trunc) break;  /* reached requested timeout */
   }
 
   err     = GSL_MACH_EPS * n + abs_del;
@@ -68,17 +75,36 @@ hyperg_2F0_series(const double a, const double b, const double x,
 
 
 int
-gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x,
-                       double * result
-                       )
+gsl_sf_hyperg_2F0_series_impl(const double a, const double b, const double x,
+                              int n_trunc,
+                              double * result
+                              )
 {
-  if(fabs(x) < 0.1 && fabs(a) < 1.0 && fabs(b) < 1.0) {
-    double prec;
-    return hyperg_2F0_series(a, b, x, result, &prec);
+  double prec;
+  return hyperg_2F0_series(a, b, x, n_trunc, result, &prec);
+}
+
+
+int
+gsl_sf_hyperg_2F0_impl(const double a, const double b, const double x, double * result)
+{
+  if(x < 0.0) {
+    /* Use "definition" 2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x)
+     */
+    double U;
+    double pre = pow(-1.0/x, a);
+    int stat_U = gsl_sf_hyperg_U_impl(a, 1.0+a-b, -1.0/x, &U);
+    *result = pre * U;
+    return stat_U;
+  }
+  else if(x == 0.0) {
+    *result = 1.0;
+    return GSL_SUCCESS;
   }
   else {
-    /* FIXME: can we do something here? */
-    *result = 0.0;
+    /* Use asymptotic series. ??
+     */
+    /* return hyperg_2F0_series(a, b, x, -1, result, &prec); */
     return GSL_EDOM;
   }
 }
@@ -103,21 +129,4 @@ gsl_sf_hyperg_2F0(const double a, const double b, const double x)
     GSL_WARNING("gsl_sf_hyperg_2F0", status);
   }
   return y;
-}
-
-
-int
-test_hyperg2F0_stuff(void)
-{
-  double x = -0.1;
-  double a = 1.0;
-  double b = 1.0;
-  double p;
-  double r;
-  
-  hyperg_2F0_series(a, b, x, &r, &p);
-  
-  printf("%9.6g  %9.6g  %9.6g    %20.16g  %20.16g\n", a, b, x, r, p);
-  
-  return 0;
 }
