@@ -52,16 +52,60 @@ main (int argc, char *argv[])
       data[i].imag = ((double) rand ()) / RAND_MAX;
     }
 
+
+  /* compute the fft */
+
+  memcpy (fft_data, data, n * sizeof (complex));
+
+  start = clock ();
+  i = 0;
+  do
+    {
+      status = gsl_fft_complex_forward (fft_data, n, &complex_wavetable);
+      i++;
+      end = clock ();
+    }
+  while (end < start + resolution && status == 0);
+
+  if (status == 0)
+    {
+      printf ("n = %d gsl_fft_complex_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+    }
+  else
+    {
+      printf ("MR fft failed\n");
+    }
+
+
   /* compute the fft with radix2 */
   memcpy (fft_data, data, n * sizeof (complex));
 
   result = gsl_fft_binary_logn(n) ;
 
   if (result == -1) {
-    GSL_ERROR ("n is not a power of 2", GSL_EINVAL);
+    exit(EXIT_SUCCESS) ;
   } else {
     logn = result ;
   }
+
+  start = clock ();
+  i = 0;
+  do
+    {
+      status = gsl_fft_complex_radix2_forward (fft_data, n);
+      i++;
+      end = clock ();
+    }
+  while (end < start + resolution && status == 0);
+
+  if (status == 0)
+    {
+      printf ("n = %d gsl_fft_complex_radix2_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
+    }
+  else
+    {
+      printf ("fft_radix2: not a power of 2\n");
+    }
 
   start = clock ();
   i = 0;
@@ -102,48 +146,6 @@ main (int argc, char *argv[])
 
 
   
-
-  start = clock ();
-  i = 0;
-  do
-    {
-      status = gsl_fft_complex_radix2_forward (fft_data, n);
-      i++;
-      end = clock ();
-    }
-  while (end < start + resolution && status == 0);
-
-  if (status == 0)
-    {
-      printf ("n = %d gsl_fft_complex_radix2_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
-    }
-  else
-    {
-      printf ("fft_radix2: not a power of 2\n");
-    }
-
-  /* compute the fft */
-
-  memcpy (fft_data, data, n * sizeof (complex));
-
-  start = clock ();
-  i = 0;
-  do
-    {
-      status = gsl_fft_complex_forward (fft_data, n, &complex_wavetable);
-      i++;
-      end = clock ();
-    }
-  while (end < start + resolution && status == 0);
-
-  if (status == 0)
-    {
-      printf ("n = %d gsl_fft_complex_forward %f seconds\n", n, (end - start) / ((double) i) / ((double) CLOCKS_PER_SEC));
-    }
-  else
-    {
-      printf ("MR fft failed\n");
-    }
 
   return 0;
 }
