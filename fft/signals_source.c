@@ -23,8 +23,8 @@ int
 FUNCTION(fft_signal,complex_pulse) (const size_t k,
 				    const size_t n,
 				    const size_t stride,
-				    const double z_real,
-				    const double z_imag,
+				    const BASE z_real,
+				    const BASE z_imag,
 				    BASE data[],
 				    BASE fft[])
 {
@@ -51,8 +51,8 @@ FUNCTION(fft_signal,complex_pulse) (const size_t k,
   for (j = 0; j < n; j++)
     {
       const double arg = -2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
-      const double w_real = cos (arg);
-      const double w_imag = sin (arg);
+      const BASE w_real = (BASE)cos (arg);
+      const BASE w_imag = (BASE)sin (arg);
       REAL(fft,stride,j) = w_real * z_real - w_imag * z_imag;
       IMAG(fft,stride,j) = w_real * z_imag + w_imag * z_real;
     }
@@ -65,8 +65,8 @@ FUNCTION(fft_signal,complex_pulse) (const size_t k,
 int
 FUNCTION(fft_signal,complex_constant) (const size_t n,
 				       const size_t stride,
-				       const double z_real,
-				       const double z_imag,
+				       const BASE z_real,
+				       const BASE z_imag,
 				       BASE data[],
 				       BASE fft[])
 {
@@ -93,8 +93,8 @@ FUNCTION(fft_signal,complex_constant) (const size_t n,
       IMAG(fft,stride,j) = 0.0;
     }
 
-  REAL(fft,stride,0) = ((double) n) * z_real;
-  IMAG(fft,stride,0) = ((double) n) * z_imag;
+  REAL(fft,stride,0) = ((BASE) n) * z_real;
+  IMAG(fft,stride,0) = ((BASE) n) * z_imag;
 
   return 0;
 
@@ -105,8 +105,8 @@ int
 FUNCTION(fft_signal,complex_exp) (const int k,
 				  const size_t n,
 				  const size_t stride,
-				  const double z_real,
-				  const double z_imag,
+				  const BASE z_real,
+				  const BASE z_imag,
 				  BASE data[],
 				  BASE fft[])
 {
@@ -122,8 +122,8 @@ FUNCTION(fft_signal,complex_exp) (const int k,
   for (j = 0; j < n; j++)
     {
       const double arg = 2 * M_PI * ((double) ((j * k) % n)) / ((double) n);
-      const double w_real = cos (arg);
-      const double w_imag = sin (arg);
+      const BASE w_real = (BASE)cos (arg);
+      const BASE w_imag = (BASE)sin (arg);
       REAL(data,stride,j) = w_real * z_real - w_imag * z_imag;
       IMAG(data,stride,j) = w_real * z_imag + w_imag * z_real;
     }
@@ -148,8 +148,8 @@ FUNCTION(fft_signal,complex_exp) (const int k,
 	freq = (k % n);
       };
 
-    REAL(fft,stride,freq) = ((double) n) * z_real;
-    IMAG(fft,stride,freq) = ((double) n) * z_imag;
+    REAL(fft,stride,freq) = ((BASE) n) * z_real;
+    IMAG(fft,stride,freq) = ((BASE) n) * z_imag;
   }
 
   return 0;
@@ -162,10 +162,10 @@ FUNCTION(fft_signal,complex_exppair) (const int k1,
 				      const int k2,
 				      const size_t n,
 				      const size_t stride,
-				      const double z1_real,
-				      const double z1_imag,
-				      const double z2_real,
-				      const double z2_imag,
+				      const BASE z1_real,
+				      const BASE z1_imag,
+				      const BASE z2_real,
+				      const BASE z2_imag,
 				      BASE data[],
 				      BASE fft[])
 {
@@ -181,11 +181,11 @@ FUNCTION(fft_signal,complex_exppair) (const int k1,
   for (j = 0; j < n; j++)
     {
       const double arg1 = 2 * M_PI * ((double) ((j * k1) % n)) / ((double) n);
-      const double w1_real = cos (arg1);
-      const double w1_imag = sin (arg1);
+      const BASE w1_real = (BASE)cos (arg1);
+      const BASE w1_imag = (BASE)sin (arg1);
       const double arg2 = 2 * M_PI * ((double) ((j * k2) % n)) / ((double) n);
-      const double w2_real = cos (arg2);
-      const double w2_imag = sin (arg2);
+      const BASE w2_real = (BASE)cos (arg2);
+      const BASE w2_imag = (BASE)sin (arg2);
       REAL(data,stride,j) = w1_real * z1_real - w1_imag * z1_imag;
       IMAG(data,stride,j) = w1_real * z1_imag + w1_imag * z1_real;
       REAL(data,stride,j) += w2_real * z2_real - w2_imag * z2_imag;
@@ -222,10 +222,10 @@ FUNCTION(fft_signal,complex_exppair) (const int k1,
 	freq2 = (k2 % n);
       };
 
-    REAL(fft,stride,freq1) += ((double) n) * z1_real;
-    IMAG(fft,stride,freq1) += ((double) n) * z1_imag;
-    REAL(fft,stride,freq2) += ((double) n) * z2_real;
-    IMAG(fft,stride,freq2) += ((double) n) * z2_imag;
+    REAL(fft,stride,freq1) += ((BASE) n) * z1_real;
+    IMAG(fft,stride,freq1) += ((BASE) n) * z1_imag;
+    REAL(fft,stride,freq2) += ((BASE) n) * z2_real;
+    IMAG(fft,stride,freq2) += ((BASE) n) * z2_imag;
   }
 
   return 0;
@@ -249,8 +249,8 @@ FUNCTION(fft_signal,complex_noise) (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      REAL(data,stride,i) = urand();
-      IMAG(data,stride,i) = urand();
+      REAL(data,stride,i) = (BASE)urand();
+      IMAG(data,stride,i) = (BASE)urand();
     }
 
   /* compute the dft */
@@ -276,7 +276,7 @@ FUNCTION(fft_signal,real_noise) (const size_t n,
 
   for (i = 0; i < n; i++)
     {
-      REAL(data,stride,i) = urand();
+      REAL(data,stride,i) = (BASE)urand();
       IMAG(data,stride,i) = 0.0;
     }
 

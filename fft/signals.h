@@ -17,47 +17,48 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-int FUNCTION(fft_signal,complex_pulse) (size_t k, 
-					size_t n,
-					size_t stride,
-					double z_real, double z_imag,
+int FUNCTION(fft_signal,complex_pulse) (const size_t k, 
+					const size_t n,
+					const size_t stride,
+					const BASE z_real, 
+                                        const BASE z_imag,
 					BASE data[],
 					BASE fft[]);
 
-int FUNCTION(fft_signal,complex_constant) (size_t n,
-					   size_t stride,
-					   double z_real,
-					   double z_imag,
+int FUNCTION(fft_signal,complex_constant) (const size_t n,
+					   const size_t stride,
+					   const BASE z_real,
+					   const BASE z_imag,
 					   BASE data[],
 					   BASE fft[]);
 
-int FUNCTION(fft_signal,complex_exp) (int k,
-				      size_t n,
-				      size_t stride,
-				      double z_real,
-				      double z_imag,
+int FUNCTION(fft_signal,complex_exp) (const int k,
+				      const size_t n,
+				      const size_t stride,
+				      const BASE z_real,
+				      const BASE z_imag,
 				      BASE data[],
 				      BASE fft[]);
 
 
-int FUNCTION(fft_signal,complex_exppair) (int k1,
-					  int k2,
-					  size_t n,
-					  size_t stride,
-					  double z1_real,
-					  double z1_imag,
-					  double z2_real,
-					  double z2_imag,
+int FUNCTION(fft_signal,complex_exppair) (const int k1,
+					  const int k2,
+					  const size_t n,
+					  const size_t stride,
+					  const BASE z1_real,
+					  const BASE z1_imag,
+					  const BASE z2_real,
+					  const BASE z2_imag,
 					  BASE data[],
 					  BASE fft[]);
 
-int FUNCTION(fft_signal,complex_noise) (size_t n,
-					size_t stride,
+int FUNCTION(fft_signal,complex_noise) (const size_t n,
+					const size_t stride,
 					BASE data[],
 					BASE fft[]);
 
-int FUNCTION(fft_signal,real_noise) (size_t n,
-				     size_t stride,
+int FUNCTION(fft_signal,real_noise) (const size_t n,
+				     const size_t stride,
 				     BASE data[],
 				     BASE fft[]);
 

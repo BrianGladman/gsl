@@ -40,14 +40,14 @@ void FUNCTION(test_real,func) (size_t stride, size_t n)
 
   for (i = 0 ; i < n * stride ; i++)
     {
-      real_data[i] = i ;
+      real_data[i] = (BASE)i ;
     }
 
   for (i = 0 ; i < 2 * n * stride ; i++)
     {
-      complex_data[i] = i + 1000.0 ;
-      complex_tmp[i] = i + 2000.0 ;
-      fft_complex_data[i] = i + 3000.0 ;
+      complex_data[i] = (BASE)(i + 1000.0) ;
+      complex_tmp[i] = (BASE)(i + 2000.0) ;
+      fft_complex_data[i] = (BASE)(i + 3000.0) ;
     }
 
   gsl_set_error_handler (NULL);	/* abort on any errors */
@@ -119,7 +119,7 @@ FUNCTION(test_real,bitreverse_order) (size_t stride, size_t n)
   
   for (i = 0; i <  stride * n; i++) 
     {
-      data[i] = i ;
+      data[i] = (BASE)i ;
     }
 
   memcpy (tmp, data, n * stride * sizeof(BASE)) ;
@@ -172,14 +172,14 @@ void FUNCTION(test_real,radix2) (size_t stride, size_t n)
 
   for (i = 0 ; i < n * stride ; i++)
     {
-      real_data[i] = i ;
+      real_data[i] = (BASE)i ;
     }
 
   for (i = 0 ; i < 2 * n * stride ; i++)
     {
-      complex_data[i] = i + 1000.0 ;
-      complex_tmp[i] = i + 2000.0 ;
-      fft_complex_data[i] = i + 3000.0 ;
+      complex_data[i] = (BASE)(i + 1000.0) ;
+      complex_tmp[i] = (BASE)(i + 2000.0) ;
+      fft_complex_data[i] = (BASE)(i + 3000.0) ;
     }
 
   gsl_set_error_handler (NULL);	/* abort on any errors */
