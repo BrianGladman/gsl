@@ -149,3 +149,15 @@ gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s)
 {
   return s->x;
 }
+
+gsl_vector *
+gsl_multiroot_fsolver_dx (const gsl_multiroot_fsolver * s)
+{
+  return s->dx;
+}
+
+gsl_vector *
+gsl_multiroot_fsolver_f (const gsl_multiroot_fsolver * s)
+{
+  return s->f;
+}

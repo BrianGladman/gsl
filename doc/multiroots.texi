@@ -376,6 +376,18 @@ This information can be accessed with the following auxiliary functions,
 These functions return the current estimate of the root for the solver @var{s}.
 @end deftypefun
 
+@deftypefun {gsl_vector *} gsl_multiroot_fsolver_f (const gsl_multiroot_fsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_f (const gsl_multiroot_fdfsolver * @var{s})
+These functions return the function value @math{f(x)} at the current
+estimate of the root for the solver @var{s}.
+@end deftypefun
+
+@deftypefun {gsl_vector *} gsl_multiroot_fsolver_dx (const gsl_multiroot_fsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_dx (const gsl_multiroot_fdfsolver * @var{s})
+These functions return the last step @math{dx} taken by the solver
+@var{s}.
+@end deftypefun
+
 @node Search Stopping Parameters for the multidimensional solver
 @section Search Stopping Parameters
 @cindex root finding, stopping parameters

@@ -152,3 +152,6 @@ for linear algebra, interpolation, additional tridiagonal solvers
 
 * Atakan Gurkan <ato@northwestern.edu> for bug reports and patches for the 
 random number generators.
+
+* David Ronis <ronis@ronispc.chem.mcgill.ca> for bug reports and
+patches

@@ -90,6 +90,8 @@ int gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s);
 
 const char * gsl_multiroot_fsolver_name (const gsl_multiroot_fsolver * s);
 gsl_vector * gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * s);
+gsl_vector * gsl_multiroot_fsolver_dx (const gsl_multiroot_fsolver * s);
+gsl_vector * gsl_multiroot_fsolver_f (const gsl_multiroot_fsolver * s);
 
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
@@ -149,6 +151,8 @@ gsl_multiroot_fdfsolver_free (gsl_multiroot_fdfsolver * s);
 
 const char * gsl_multiroot_fdfsolver_name (const gsl_multiroot_fdfsolver * s);
 gsl_vector * gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * s);
+gsl_vector * gsl_multiroot_fdfsolver_dx (const gsl_multiroot_fdfsolver * s);
+gsl_vector * gsl_multiroot_fdfsolver_f (const gsl_multiroot_fdfsolver * s);
 
 int gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x, 
                               double epsabs, double epsrel);

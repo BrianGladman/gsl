@@ -163,4 +163,14 @@ gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * s)
   return s->x;
 }
 
+gsl_vector *
+gsl_multiroot_fdfsolver_dx (const gsl_multiroot_fdfsolver * s)
+{
+  return s->dx;
+}
 
+gsl_vector *
+gsl_multiroot_fdfsolver_f (const gsl_multiroot_fdfsolver * s)
+{
+  return s->f;
+}

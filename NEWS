@@ -1,5 +1,8 @@
 * What is new in gsl-1.2:
 
+** New multiroot functions now allow access to the current values of f
+and dx.
+
 ** Removed unnecessary endpoint subtraction in chebyshev-based
 QUADPACK routines to avoid possible loss of precision.
 
