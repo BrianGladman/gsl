@@ -13,54 +13,19 @@ typedef struct
   }
 gsl_complex;
 
-
 typedef struct
   {
     float dat[2];
   }
 gsl_complex_float;
 
-
-#define  GSL_COMPLEX_REAL(z)     (z.dat[0])
-#define  GSL_COMPLEX_IMAG(z)     (z.dat[1])
-#define  GSL_COMPLEX_P_REAL(zp)  (zp->dat[0])
-#define  GSL_COMPLEX_P_IMAG(zp)  (zp->dat[1])
-
-
-void   gsl_complex_set(gsl_complex * z, double re, double im);
-double gsl_complex_real(const gsl_complex * z);
-double gsl_complex_imag(const gsl_complex * z);
-
-void   gsl_complex_float_set(gsl_complex_float * z, float re, float im);
-double gsl_complex_float_real(const gsl_complex_float * z);
-double gsl_complex_float_imag(const gsl_complex_float * z);
-
-
-#ifdef HAVE_INLINE
-
-extern inline
-void
-gsl_complex_set(gsl_complex * z, double re, double im)
-{
-  GSL_COMPLEX_P_REAL(z) = re;
-  GSL_COMPLEX_P_IMAG(z) = im;
-}
-
-extern inline
-double
-gsl_complex_real(const gsl_complex * z)
-{
-  return GSL_COMPLEX_P_REAL(z);
-}
-
-extern inline
-double
-gsl_complex_imag(const gsl_complex * z)
-{
-  return GSL_COMPLEX_P_IMAG(z);
-}
-
-#endif /* HAVE_INLINE */
-
+/* #define GSL_COMPLEX(x,y) {{(x),(y)}} */
+#define GSL_COMPLEX_REAL(z)     ((z).dat[0])
+#define GSL_COMPLEX_IMAG(z)     ((z).dat[1])
+#define GSL_COMPLEX_P_REAL(zp)  ((zp)->dat[0])
+#define GSL_COMPLEX_P_IMAG(zp)  ((zp)->dat[1])
+#define GSL_COMPLEX_EQ(z1,z2) ((z1).dat[0] == (z2).dat[0] && \
+			       ((z1).dat[1] == (z2).dat[1]))
+#define GSL_COMPLEX_SET(z,x,y) do {(z).dat[0]=(x); (z).dat[1]=(y);} while(0)
 
 #endif /* _GSL_COMPLEX_H */

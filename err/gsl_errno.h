@@ -85,6 +85,14 @@ FILE * gsl_set_stream (FILE * new_stream);
        return ; \
        } while (0)
 
+/* GSL_ERROR_CONTINUE: call the error handler, and continue */
+
+#define GSL_ERROR_CONTINUE(reason, gsl_errno) \
+       do { \
+       gsl_error (reason, __FILE__, __LINE__, gsl_errno) ; \
+       } while (0)
+
+
 /* GSL library code can occasionally generate warnings, which are not
    intended to be fatal. You can compile a version of the library with
    warnings turned off globally by defining the preprocessor constant
