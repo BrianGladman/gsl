@@ -99,7 +99,12 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
   else 
     {
       double u = (x - x_1) ;
-      *root = x_1 - u * u / (x_new - 2 * x + x_1) ;
+      double v = (x_new - 2 * x + x_1);
+
+      if (v == 0)
+        *root = x_new;  /* avoid division by zero */
+      else
+        *root = x_1 - u * u / v ;  /* accelerated value */
     }
 
   if (!GSL_IS_REAL (df_new))

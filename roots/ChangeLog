@@ -1,3 +1,15 @@
+Wed Nov  3 11:59:35 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fixed test failures
+
+	* test.c (main): added a call to gsl_ieee_env_setup for testing
+
+	* test_roots.c: increased the maximum number of iterations to 150
+ 	so that the tests still work on the difficult cases.
+
+	* steffenson.c (steffenson_iterate): add a check to avoid division
+ 	by zero
+
 Sat Oct 16 19:43:14 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* removed GSL_ROOT_EPSILON_BUFFER, not needed anymore

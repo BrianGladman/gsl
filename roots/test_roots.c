@@ -9,13 +9,13 @@
 /* stopping parameters */
 const double EPSREL = (10 * GSL_DBL_EPSILON);
 const double EPSABS = (10 * GSL_DBL_EPSILON);
-const unsigned int MAX_ITERATIONS = 100;
+const unsigned int MAX_ITERATIONS = 150;
 
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
 
 #define WITHIN_TOL(a, b, epsrel, epsabs) \
- (fabs((a) - (b)) < (epsrel) * GSL_MIN(fabs(a), fabs(b)) + (epsabs))
+ ((fabs((a) - (b)) < (epsrel) * GSL_MIN(fabs(a), fabs(b)) + (epsabs)))
 
 void
 test_roots (void)
@@ -148,9 +148,15 @@ test_f (const gsl_root_fsolver_type * T, const char * description, gsl_function 
     }
   while (status == GSL_CONTINUE && iterations < MAX_ITERATIONS);
 
+
   gsl_test (status, "%s, %s (%g obs vs %g expected) ", 
 	    gsl_root_fsolver_name(s), description, 
 	    gsl_root_fsolver_root(s), correct_root);
+
+  if (iterations == MAX_ITERATIONS)
+    {
+      gsl_test (GSL_FAILURE, "exceeded maximum number of iterations");
+    }
 
   /* check the validity of the returned result */
 
@@ -221,16 +227,17 @@ test_fdf (const gsl_root_fdfsolver_type * T, const char * description,
 	    gsl_root_fdfsolver_name(s), description, 
 	    gsl_root_fdfsolver_root(s), correct_root);
 
-  if (status)
-    return ;
+  if (iterations == MAX_ITERATIONS)
+    {
+      gsl_test (GSL_FAILURE, "exceeded maximum number of iterations");
+    }
 
   /* check the validity of the returned result */
 
   if (!WITHIN_TOL (gsl_root_fdfsolver_root(s), correct_root, 
 		   EPSREL, EPSABS))
     {
-      status = 1; /* failed */ ;
-      gsl_test (status, "incorrect precision (%g obs vs %g expected)", 
+      gsl_test (GSL_FAILURE, "incorrect precision (%g obs vs %g expected)", 
 		gsl_root_fdfsolver_root(s), correct_root);
 
     }
