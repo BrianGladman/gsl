@@ -1,3 +1,8 @@
+2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* tridiag.c (solve_cyc_tridiag_nonsym): fixed declarations of i so
+	they do not shadow each other
+
 2003-05-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* householder.c (gsl_linalg_householder_hv): converted to use blas

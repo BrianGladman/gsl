@@ -315,8 +315,6 @@ int solve_cyc_tridiag_nonsym(
     }
   else
     {
-      size_t i, j;
-
       /* Bidiagonalization (eliminating belowdiag)
          & rhs update
          diag' = alpha
@@ -334,7 +332,10 @@ int solve_cyc_tridiag_nonsym(
       zu[0] = beta;
       alpha[0] = diag[0] - beta;
 
-      for (i = 1; i+1 < N; i++)
+
+      { 
+        size_t i;
+        for (i = 1; i+1 < N; i++)
         {
           const double t = belowdiag[b_stride*(i - 1)]/alpha[i-1];
           alpha[i] = diag[d_stride*i] - t*abovediag[a_stride*(i - 1)];
@@ -346,9 +347,10 @@ int solve_cyc_tridiag_nonsym(
             goto solve_cyc_tridiag_nonsym_END;
           }
         }
+      }
 
       {
-        const int i = N-1;
+        const size_t i = N-1;
         const double t = belowdiag[b_stride*(i - 1)]/alpha[i-1];
         alpha[i] = diag[d_stride*i]
                    - abovediag[a_stride*i]*belowdiag[b_stride*i]/beta
@@ -362,15 +364,19 @@ int solve_cyc_tridiag_nonsym(
         }
       }
 
-      /* backsubstitution */
-      w[N-1] = zu[N-1]/alpha[N-1];
-      x[N-1] = zb[N-1]/alpha[N-1];
-      for (i = N - 2, j = 0; j <= N - 2; j++, i--)
-        {
-          w[i] = (zu[i] - abovediag[a_stride*i] * w[i+1])/alpha[i];
-          x[i*x_stride] = (zb[i] - abovediag[a_stride*i] * x[x_stride*(i + 1)])/alpha[i];
-        }
 
+      /* backsubstitution */
+      {
+        size_t i, j;
+        w[N-1] = zu[N-1]/alpha[N-1];
+        x[N-1] = zb[N-1]/alpha[N-1];
+        for (i = N - 2, j = 0; j <= N - 2; j++, i--)
+          {
+            w[i] = (zu[i] - abovediag[a_stride*i] * w[i+1])/alpha[i];
+            x[i*x_stride] = (zb[i] - abovediag[a_stride*i] * x[x_stride*(i + 1)])/alpha[i];
+          }
+      }
+      
       /* Sherman-Morrison */
       {
         const double vw = w[0] + belowdiag[b_stride*(N - 1)]/beta * w[N-1];
@@ -380,8 +386,12 @@ int solve_cyc_tridiag_nonsym(
           status = GSL_EZERODIV;
           goto solve_cyc_tridiag_nonsym_END;
         }
-        for (i = 0; i < N; i++)
-          x[i] -= vx/(1 + vw)*w[i];
+
+        {
+          size_t i;
+          for (i = 0; i < N; i++)
+            x[i] -= vx/(1 + vw)*w[i];
+        }
       }
 
       status = GSL_SUCCESS;
