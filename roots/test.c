@@ -175,16 +175,55 @@ main (void)
     gsl_test_rel(x[0], -1.75, 1e-9, "gsl_root_solve_quadratic, x(4x + 7) = 0");
     gsl_test_rel(x[1], 0.0, 1e-9, "gsl_root_solve_quadratic, x(4x + 7) = 0");
 
-
     n = gsl_root_solve_quadratic (5.0, 0.0, -20.0, x);
     
     gsl_test(n != 2, "gsl_root_solve_quadratic, two roots b = 0, 5 x^2 = 20") ;
     gsl_test_rel(x[0], -2.0, 1e-9, "gsl_root_solve_quadratic, 5 x^2 = 20");
     gsl_test_rel(x[1], 2.0, 1e-9, "gsl_root_solve_quadratic, 5 x^2 = 20");
-
-
-
   }
+
+  {
+    int n = 0 ;
+    double x[3] ;
+
+    n = gsl_root_solve_cubic (0.0, 0.0, -27.0, x) ;
+    
+    gsl_test(n != 1, "gsl_root_solve_cubic, one root, x^3 = 27");
+    gsl_test_rel(x[0], 3.0, 1e-9, "gsl_root_solve_cubic, x^3 = 27");
+
+    n = gsl_root_solve_cubic (-51.0, 867.0, -4913.0, x);
+
+    gsl_test(n != 3, "gsl_root_solve_cubic, three roots, (x-17)^3=0") ;
+    gsl_test_rel(x[0], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)^3=0");
+    gsl_test_rel(x[1], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)^3=0");
+    gsl_test_rel(x[2], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)^3=0");
+
+    n = gsl_root_solve_cubic (-57.0, 1071.0, -6647.0, x);
+    
+    gsl_test(n != 3, "gsl_root_solve_cubic, three roots, (x-17)(x-17)(x-23)=0") ;
+    gsl_test_rel(x[0], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(x[1], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-17)(x-23)=0");
+    gsl_test_rel(x[2], 23.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-17)(x-23)=0");
+
+    n = gsl_root_solve_cubic (-53.0, 775.0, -1875.0, x);
+    
+    gsl_test(n != 3, "gsl_root_solve_cubic, three roots, (x-25)(x-25)(x-3)=0") ;
+    gsl_test_rel(x[0], 3.0, 1e-9, "gsl_root_solve_cubic, (x-25)(x-25)(x-3)=0");
+    gsl_test_rel(x[1], 25.0, 1e-9, "gsl_root_solve_cubic, (x-25)(x-25)(x-3)=0");
+    gsl_test_rel(x[2], 25.0, 1e-9, "gsl_root_solve_cubic, (x-25)(x-25)(x-3)=0");
+
+    n = gsl_root_solve_cubic (-143.0, 5087.0, -50065.0, x);
+    
+    gsl_test(n != 3, "gsl_root_solve_cubic, three roots, (x-17)(x-31)(x-95)=0") ;
+    gsl_test_rel(x[0], 17.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(x[1], 31.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-31)(x-95)=0");
+    gsl_test_rel(x[2], 95.0, 1e-9, "gsl_root_solve_cubic, (x-17)(x-31)(x-95)=0")
+;
+
+ 
+  }
+
+
 
 
   /* now summarize the results */

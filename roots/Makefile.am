@@ -17,4 +17,4 @@ test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 test_DEPENDENCIES = libgslroots.a
 
 libgslroots_a_SOURCES = bisection.c falsepos.c secant.c newton.c \
-  solve_quadratic.c 
+  solve_quadratic.c solve_cubic.c

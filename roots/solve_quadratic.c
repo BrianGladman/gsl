@@ -3,6 +3,8 @@
 #include <config.h>
 #include <math.h>
 
+#include <gsl_roots.h>
+
 int 
 gsl_root_solve_quadratic (double a, double b, double c, double x[])
 {
@@ -45,3 +47,4 @@ gsl_root_solve_quadratic (double a, double b, double c, double x[])
       return 0;
     }
 }
+
