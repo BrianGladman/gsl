@@ -183,6 +183,10 @@ case "$host" in
         AC_DEFINE(HAVE_FREEBSD_IEEE_INTERFACE)
         AC_MSG_RESULT([freebsd]) 
         ;;
+    *-*-os2*)
+        AC_DEFINE(HAVE_OS2EMX_IEEE_INTERFACE)
+        AC_MSG_RESULT([os2emx]) 
+        ;;
     *)
         AC_MSG_RESULT([unknown])
         ;;
