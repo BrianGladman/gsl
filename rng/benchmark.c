@@ -6,7 +6,7 @@
 
 void benchmark (const gsl_rng_type * T);
 
-#define N  1000000
+#define N  100000
 int sum;
 
 int
@@ -21,14 +21,16 @@ main (void)
   benchmark (gsl_rng_rand);
   benchmark (gsl_rng_ranlux);
   benchmark (gsl_rng_ranlux389);
+  benchmark (gsl_rng_ranmar);
   benchmark (gsl_rng_r250);
   benchmark (gsl_rng_taus);
+  benchmark (gsl_rng_tds);
   benchmark (gsl_rng_tt800);
   benchmark (gsl_rng_uni);
   benchmark (gsl_rng_uni32);
   benchmark (gsl_rng_vax);
   benchmark (gsl_rng_zuf);
-  return 0 ;
+  return 0;
 }
 
 void
@@ -51,7 +53,7 @@ benchmark (const gsl_rng_type * T)
       i += N;
       end = clock ();
     }
-  while (end < start + CLOCKS_PER_SEC);
+  while (end < start + CLOCKS_PER_SEC/10);
 
   t = (end - start) / (double) CLOCKS_PER_SEC;
   printf ("%15s %.2e random numbers per second\n", gsl_rng_name (r), i / t);
