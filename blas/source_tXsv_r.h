@@ -51,7 +51,7 @@
       for(i=1; i<N; i++) {
         BASE_TYPE tmp = X[ix];
 	const size_t j0 = (i > KBAND ? i-KBAND : 0 );
-	jx = 0;
+	jx = j0*incX;
 	for(j=j0; j<i; j++) {
 	  const BASE_TYPE Aij = ACCESS_LO(MATRIX_VAR_NAME,N,LDA,i,j);
 	  tmp -= Aij * X[jx];
@@ -81,7 +81,7 @@
       for(i=1; i<N; i++) {
         BASE_TYPE tmp = X[ix];
 	const size_t j0 = ( i > KBAND ? i-KBAND : 0 );
-	jx = 0;
+	jx = j0*incX;
 	for(j=j0; j<i; j++) {
 	  const BASE_TYPE Aji = ACCESS_UP(MATRIX_VAR_NAME,N,LDA,j,i);
 	  tmp -= Aji * X[jx];

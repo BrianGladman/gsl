@@ -1341,7 +1341,114 @@ int test_tbsv(void)
   float  tmp_f[32];
   double tmp_d[32];
 
-/* FIXME */
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 3, matrix_t_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || frac_diff(tmp_f[1], -23.0/6.0) > eps_f ||
+        tmp_f[2] !=  1.5 || tmp_f[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv A");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != 1.0 || frac_diff(tmp_f[1], -23.0/6.0) > eps_f ||
+        tmp_f[2] != 1.5 || tmp_f[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv B");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 2);
+  gsl_blas_raw_stbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_f, 4, tmp_f, 2);
+  s = ( tmp_f[0] !=  1.0 || frac_diff(tmp_f[2], -23.0/6.0) > eps_f ||
+        tmp_f[4] !=  1.5 || tmp_f[6] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv C");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbsv(CblasUpper, CblasTrans, CblasNonUnit, 4, 2, matrix_t_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 ||
+        frac_diff(tmp_f[1], -1.0/3.0) > eps_f ||
+	frac_diff(tmp_f[2],  7.0/3.0) > eps_f ||
+	frac_diff(tmp_f[3], 13.0/6.0) > eps_f
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv D");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbsv(CblasLower, CblasNoTrans, CblasNonUnit, 4, 2, matrix_t_4_f, 4, tmp_f, 1);
+  s = ( tmp_f[0] != -2.0 || tmp_f[1] != 0.0 ||
+        tmp_f[2] != -4.0 || tmp_f[3] != 5.0
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv E");
+  status += s;
+
+  gsl_blas_raw_scopy(4, vector_4_f, 1, tmp_f, 1);
+  gsl_blas_raw_stbsv(CblasLower, CblasTrans, CblasNonUnit, 4, 2, matrix_t_4_f, 4, tmp_f, 1);
+  s = ( frac_diff(tmp_f[0],-35.0/6.0) > eps_f ||
+        frac_diff(tmp_f[1],  5.0/3.0) > eps_f ||
+        tmp_f[2] !=  1.5 || tmp_f[3] != 3.0
+       );
+  gsl_test(s, "gsl_blas_raw_stbsv F");
+  status += s;
+
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_gen_4_c, 4, tmp_f, 1);
+  s = ( tmp_f[0] !=  63.0/2.0 || tmp_f[1] !=  21.0/2.0 ||
+        tmp_f[2] != -47.0/2.0 || tmp_f[3] != -33.0/2.0 ||
+	tmp_f[4] !=  23.0/2.0 || tmp_f[5] !=  21.0/2.0 ||
+	tmp_f[6] !=  5.0 || tmp_f[7] != -3.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctbsv A");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 2);
+  gsl_blas_raw_ctbsv(CblasUpper, CblasNoTrans, CblasNonUnit, 4, 2, matrix_gen_4_c, 4, tmp_f, 2);
+  s = ( tmp_f[0] !=  63.0/2.0 || tmp_f[1] !=  21.0/2.0 ||
+        tmp_f[4] != -47.0/2.0 || tmp_f[5] != -33.0/2.0 ||
+	tmp_f[8] !=  23.0/2.0 || tmp_f[9] !=  21.0/2.0 ||
+	tmp_f[12] !=  5.0 || tmp_f[13] != -3.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctbsv B");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctbsv(CblasUpper, CblasNoTrans, CblasUnit, 4, 2, matrix_gen_4_c, 4, tmp_f, 1);
+  s = ( tmp_f[0] !=  33.0/2.0 || tmp_f[1] != -59.0/2.0 ||
+        tmp_f[2] != -67.0     || tmp_f[3] !=  24.0     ||
+	tmp_f[4] !=  27.0/2.0 || tmp_f[5] != -17.0/2.0 ||
+	tmp_f[6] !=  3.0 || tmp_f[7] != 5.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctbsv C");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctbsv(CblasLower, CblasNoTrans, CblasNonUnit, 4, 2, matrix_gen_4_c, 4, tmp_f, 1);
+  s = ( tmp_f[0] !=  -2.0 || tmp_f[1] != 1.0 ||
+        frac_diff(tmp_f[2], 0.05) > eps_f ||
+	frac_diff(tmp_f[3], 0.15) > eps_f ||
+	frac_diff(tmp_f[4],-51.0/10.0) > eps_f ||
+	frac_diff(tmp_f[5],-33.0/10.0) > eps_f ||
+	frac_diff(tmp_f[6], 59.0/5.0) > eps_f ||
+	frac_diff(tmp_f[7],-13.0/5.0) > eps_f
+       );
+  gsl_test(s, "gsl_blas_raw_ctbsv D");
+  status += s;
+
+  gsl_blas_raw_ccopy(4, vector_4_c, 1, tmp_f, 1);
+  gsl_blas_raw_ctbsv(CblasLower, CblasTrans, CblasNonUnit, 4, 2, matrix_gen_4_c, 4, tmp_f, 1);
+  s = ( frac_diff(tmp_f[0], -133.0/10.0) > eps_f ||
+	frac_diff(tmp_f[1], -17.0/5.0) > eps_f ||
+	frac_diff(tmp_f[2],   8.0/5.0) > eps_f ||
+	frac_diff(tmp_f[3], -21.0/5.0) > eps_f ||
+	tmp_f[4] !=  5.5 || tmp_f[5] !=  0.5 ||
+	tmp_f[6] !=  5.0 || tmp_f[7] != -3.0
+       );
+  gsl_test(s, "gsl_blas_raw_ctbsv E");
+  status += s;
+
 
   return status;
 }
