@@ -1,8 +1,14 @@
 Wed Nov  4 16:08:32 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
+	* test.c (test_brent): allow the brent tests to run for more
+ 	iterations since they take longer on the pathological cases.
+
 	* brent.c (gsl_root_brent): on each iteration keep track of
  	current best estimates of the root and the bounds so that they are
  	returned to the user if the function exits prematurely.
+
+	clean up the brent algorithm based on remarks in the original
+ 	paper
 
 Mon Oct 26 16:31:21 1998  Brian Gough  <bjg@vvv.lanl.gov>
 

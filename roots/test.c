@@ -429,9 +429,13 @@ test_brent (const char *description,
   int status;
   double root;
 
+  /* The Brent algorithm can be up to 3 times slower than bisection on
+     pathological cases, so we'll allow more iterations here. The
+     factor of 3 is a guaranteed bound. */
+
   status = gsl_root_brent (&root, f, &lower_bound, &upper_bound,
 			   REL_EPSILON, ABS_EPSILON,
-			   MAX_ITERATIONS);
+			   3 * MAX_ITERATIONS);
 
   gsl_test (status, description, root - correct_root);
 

@@ -19,6 +19,10 @@ your program.
 @c mention extended vs double precision on Pentium, and how to get around
 @c it (-ffloat-store, or selective use of volatile)
 
+@c On the alpha the option -mieee is needed with gcc
+@c In Digital's compiler the equivalent is -ieee, -ieee-with-no-inexact 
+@c and -ieee-with-inexact,  or -fpe1 or -fpe2
+
 @menu
 * Representation of floating point numbers::  
 * Setting up your IEEE environment::  

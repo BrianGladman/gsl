@@ -1,4 +1,12 @@
-/* brent.c -- brent root finding algorithm */
+/* brent.c -- brent root finding algorithm 
+
+   The original paper is,
+
+   "An algorithm with guaranteed convergence for finding a zero of a
+   function", R. P. Brent, The Computer Journal, Volume 14, Number 4,
+   pages 422-425.
+
+*/
 
 #include <config.h>
 
@@ -20,7 +28,7 @@ gsl_root_brent (double *root, double (*f) (double),
 		unsigned int max_iterations)
 {
   unsigned int iterations;
-  double fu, fl, a, b, c, d, e, tol, fa, fb, fc, xm;
+  double fu, fl, a, b, c, d, e, tol, fa, fb, fc, m;
 
   if (*lower_bound >= *upper_bound)
     GSL_ERROR ("lower bound larger than upper_bound", GSL_EINVAL);
@@ -64,20 +72,24 @@ gsl_root_brent (double *root, double (*f) (double),
   fc = fb;
 
   d = b - a;
-  e = d;
+  e = b - a;
 
   for (iterations = 0; iterations < max_iterations; iterations++)
     {
-      if ((fb < 0 && fc < 0.0) || (fb > 0 && fc > 0))
+      int ac_equal = 0;
+
+      if ((fb < 0 && fc < 0) || (fb > 0 && fc > 0))
 	{
+	  ac_equal = 1;
 	  c = a;
 	  fc = fa;
 	  d = b - a;
-	  e = d;
+	  e = b - a;
 	}
 
       if (fabs (fc) < fabs (fb))
 	{
+	  ac_equal = 1;
 	  a = b;
 	  b = c;
 	  c = a;
@@ -87,7 +99,7 @@ gsl_root_brent (double *root, double (*f) (double),
 	}
 
       tol = 0.5 * MAX (rel_epsilon * fabs (b), abs_epsilon);
-      xm = 0.5 * (c - b);
+      m = 0.5 * (c - b);
 
       if (fb == 0)
 	{
@@ -97,7 +109,8 @@ gsl_root_brent (double *root, double (*f) (double),
 
 	  return GSL_SUCCESS;
 	}
-      else if (fabs (xm) <= tol)
+      
+      if (fabs (m) <= tol)
 	{
 	  *root = b;
 	  *lower_bound = b;
@@ -108,36 +121,37 @@ gsl_root_brent (double *root, double (*f) (double),
 
       if (fabs (e) < tol || fabs (fa) <= fabs (fb))
 	{
-	  d = xm;		/* use bisection */
-	  e = d;
+	  d = m;		/* use bisection */
+	  e = m;
 	}
       else
 	{
 	  double p, q, r;	/* use inverse cubic interpolation */
 	  double s = fb / fa;
 
-	  if (a == c)
+	  if (ac_equal)
 	    {
-	      p = 2 * xm * s;
+	      p = 2 * m * s;
 	      q = 1 - s;
 	    }
 	  else
 	    {
 	      q = fa / fc;
 	      r = fb / fc;
-	      p = s * (2 * xm * q * (q - r) - (b - a) * (r - 1));
+	      p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
 	      q = (q - 1) * (r - 1) * (s - 1);
 	    }
-	  if (p <= 0)
-	    {
-	      p = -p;
-	    }
-	  else
+
+	  if (p > 0)
 	    {
 	      q = -q;
 	    }
+	  else
+	    {
+	      p = -p;
+	    }
 
-	  if (2 * p < MIN (3 * xm * q - fabs (tol * q), fabs (e * q)))
+	  if (2 * p < MIN (3 * m * q - fabs (tol * q), fabs (e * q)))
 	    {
 	      e = d;
 	      d = p / q;
@@ -145,8 +159,9 @@ gsl_root_brent (double *root, double (*f) (double),
 	  else
 	    {
 	      /* interpolation failed, fall back to bisection */
-	      d = xm;
-	      e = d;
+
+	      d = m;
+	      e = m;
 	    }
 	}
 
@@ -159,7 +174,7 @@ gsl_root_brent (double *root, double (*f) (double),
 	}
       else
 	{
-	  b += (xm < 0 ? -tol : +tol);
+	  b += (m > 0 ? +tol : -tol);
 	}
 
       SAFE_FUNC_CALL (f, b, fb);
@@ -168,8 +183,17 @@ gsl_root_brent (double *root, double (*f) (double),
          iteration */
 
       *root = b;
-      *lower_bound = b;
-      *upper_bound = c;
+
+      if (b < c)
+	{
+	  *lower_bound = b;
+	  *upper_bound = c;
+	}
+      else
+	{
+	  *lower_bound = c;
+	  *upper_bound = b;
+	}
     }
 
   GSL_ERROR ("exceeded maximum number of iterations", GSL_EMAXITER);
