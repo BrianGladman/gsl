@@ -1,0 +1,364 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename gsl-ref.info
+@settitle GNU Scientific Library -- Reference Manual
+@finalout
+@c @setchapternewpage odd
+@c %**end of header
+
+@dircategory Scientific software
+@direntry
+* gsl-ref: (gsl-ref).                   GNU Scientific Library -- Reference
+@end direntry
+
+@include version-ref.texi
+@set GSL @emph{GNU Scientific Library}
+
+@ifinfo
+This file documents the @value{GSL}.
+
+Copyright (C) 1996 The GSL Project.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title GNU Scientific Library -- Reference Manual
+@subtitle Edition @value{EDITION}, for gsl Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author Mark Galassi @footnote{Space Data Systems group, Los Alamos National Laboratory}
+@author @email{rosalia@@nis.lanl.gov}
+@author
+@author Jim Davies @footnote{Space Data Systems Group, Los Alamos National Laboratory and Department of Computer Science, Georgia Institute of Technology}
+@author @email{jimmyd@@nis.lanl.gov}
+@author
+@author James Theiler @footnote{Astrophysics and Radiation Measurements group, Los Alamos National Laboratory}
+@author @email{jt@@nis.lanl.gov}
+@author
+@author Brian Gough @footnote{Theoretical Particle Physics group, Los Alamos National Laboratory}
+@author @email{bjg@@vvv.lanl.gov}
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996,1997 The GSL Project.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@ifinfo
+@node Top, Preliminaries, (dir), (dir)
+@top GSL
+@end ifinfo
+
+@ifinfo
+This file documents the the @value{GSL}, a collection of numerical
+routines for scientific computing.
+
+As of @value{UPDATED}, the only complete packages are the random number
+suite (@pxref{Random number generation}) and the FFT package
+(@pxref{FFTs}).
+@end ifinfo
+
+
+@menu
+* Preliminaries::               
+* Random number generation::    
+* Statistics::                  
+* FFTs::                        
+* Root finding::                
+* Simulated annealing::         
+* Copying::                     
+* Concept Index::               
+* Function Index::              
+* Variable Index::              
+* Type Index::                  
+@end menu
+
+@node Preliminaries
+@chapter Preliminaries
+
+bla
+
+@node Random number generation
+@chapter Random number generation
+@include random.texi
+
+@node Statistics
+@chapter Statistics
+@cindex statistics
+@cindex mean
+@cindex standard deviation
+@cindex variance
+@cindex estimated standard deviation
+@cindex estimated variance
+@cindex t-test
+@cindex range
+@cindex min
+@cindex max
+
+[contributed by Jim Davies]
+
+The following commands were created primarily to be used for statistical
+analysis of Psychological experiment data.
+
+@deftypefn Statistics double gsl_stats_dmean (double *array, int size)
+@code{gsl_stats_dmean} returns the mean of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_imean (int *array, int size)
+@code{gsl_stats_imean} returns the mean of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dvariance (double *array, int size)
+@code{gsl_stats_dvariance} returns the variance of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_ivariance (int *array, int size)
+@code{gsl_stats_ivariance} returns the variance of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dsd (double *array, int size)
+@code{gsl_stats_dsd} returns the standard deviation of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_isd (int *array, int size)
+@code{gsl_stats_isd} returns the standard deviation of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dest_variance (double *array, int size)
+@code{gsl_stats_dest_variance} returns the estimated variance for an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_iest_variance (int *array, int size)
+@code{gsl_stats_iest_variance} returns the estimated variance for an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dest_sd (double *array, int size);
+@code{gsl_stats_dest_sd} returns the estimated standard deviation of an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_iest_sd (int *array, int size)
+@code{gsl_stats_iest_sd} returns the estimated standard deviation of an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_ddpvariance (double *array1, double *array2, int size1, int size2)
+@code{gsl_stats_ddpvariance} returns the pooled variance of two arrays of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_ipvariance (int *array1, int *array2, int size1, int size2)
+@code{gsl_stats_ipvariance} returns the pooled variance of two arrays of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dttest (double *array1, double *array2, int size1, int size2);
+@code{gsl_stats_dttest} returns the t statistic from two arrays of doubles.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_ittest (int *array1, int *array2, int size1, int size2);
+@code{gsl_stats_ittest} returns the t statistic from two arrays of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dmax (double *array1, int size);
+@code{gsl_stats_dmax} returns the highest number in an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics int gsl_stats_imax (int *array1, int size);
+@code{gsl_stats_imax} returns the highest number in an array of integers.
+@end deftypefn
+
+@deftypefn Statistics double gsl_stats_dmin (double *array1, int size);
+@code{gsl_stats_imin} returns the lowest number in an array of doubles.
+@end deftypefn
+
+@deftypefn Statistics int gsl_stats_imin (int *array1, int size);
+@code{gsl_stats_imin} returns the lowest number in an array of integers.
+@end deftypefn
+
+Here is a basic example of how to use these functions:
+
+@smallexample
+#include<stdio.h>
+
+#include "mean.h"
+#include "variance.h"
+#include "test.h"
+
+/* to compile: gcc file_name.c libgsl_statistics.a -lm */
+
+int main()
+@{
+  double data[5];
+  double data_variance;
+
+  data[0] = 17.2 ;
+  data[1] = 18.1 ;
+  data[2] = 16.5 ;
+  data[3] = 18.3 ;
+  data[4] = 12.6 ;
+
+  data_variance = gsl_stats_dmean(data, 5);
+@}
+@end smallexample
+
+@c Section on FFTs
+@node FFTs
+@chapter FFTs
+@include fft.texi
+
+@node Root finding
+@chapter Root finding
+@cindex root finding
+@cindex Newton's Method
+
+[contributed by Mark Galassi]
+
+There is a program @code{rtest} which does sample runs of many of these
+routines.
+
+@section Newton's method
+
+This is a half-assed implementation of Newton's method, meant mostly as
+an example for the GSL coding conventions.
+
+The epsilon value is static, and can be set and verified with:
+
+@deftypefn {Root finding} void gsl_set_newton_epsilon (double new_val)
+@deftypefnx {Root finding} double gsl_get_newton_epsilon ()
+Sets and gets the epsilon value used in Newton's method.
+@end deftypefn
+
+
+@deftypefn {Root finding} double gsl_newton1D (double (*fn)(double x), double (*dfn)(double x), double guess)
+Uses Newton's method to find a root of the function @var{fn}, starting
+at @var{guess}.  User has to supply both the function @var{fn} and its
+first derivative @var{dfn}.
+
+Example: @code{gsl_newton1D(sin, cos, 2.3)}
+@end deftypefn
+
+
+
+@node Simulated annealing
+@chapter Simulated annealing
+@cindex simulated annealing
+@cindex combinatorial searches
+
+[just a stub for kicks; still have to contribute this to the library and
+right it up well.]
+
+@deftp {Simulated annealing} Union Element
+Element is a union.  Each field in the union describes one of the
+possible spaces through which the simulated annealing package can
+search.
+
+Users should add more types to the union Element; here's the definition
+of @var{Element} I ship (allows @math{R^1}, @math{R^2}, @math{R^3}
+and cellular automata spaces):
+@smallexample
+union u_Element @{
+  double D1;
+  double D2[2];
+  double D3[3];
+  struct CA_rule rule;
+@};
+
+typedef union u_Element Element;
+@end smallexample
+
+@end deftp
+
+
+@deftypefn {Simulated annealing} void siman_solve (Element *x0_p, double (*Efunc)(Element x), void (*take_step)(Element *x_p, double step_size), double distance(Element x, Element y), void print_position(Element x), Ssiman_params params)
+
+Does a @emph{simulated annealing} search through a given space (defined
+by the type @code{Element}).
+@end deftypefn
+
+@node Copying
+@unnumbered Copying
+
+   The subroutines and source code in the @value{GSL} package are "free";
+this means that everyone is free to use them and free to redistribute
+them on a free basis.  The @value{GSL}-related programs are not in the
+public domain; they are copyrighted and there are restrictions on their
+distribution, but these restrictions are designed to permit everything
+that a good cooperating citizen would want to do.  What is not allowed
+is to try to prevent others from further sharing any version of these
+programs that they might get from you.
+
+   Specifically, we want to make sure that you have the right to give
+away copies of the programs that relate to @value{GSL}, that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+   To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the @value{GSL}-related code, you must give the recipients all
+the rights that you have.  You must make sure that they, too, receive or
+can get the source code.  And you must tell them their rights.
+
+   Also, for our own protection, we must make certain that everyone
+finds out that there is no warranty for the programs that relate to
+@value{GSL}.  If these programs are modified by someone else and passed
+on, we want their recipients to know that what they have is not what we
+distributed, so that any problems introduced by others will not reflect
+on our reputation.
+
+   The precise conditions of the licenses for the programs currently
+being distributed that relate to @value{GSL} are found in the General
+Public Licenses that accompany them.
+
+@node Concept Index
+@unnumbered Concept Index
+
+@printindex cp
+
+@node Function Index
+@unnumbered Function Index
+
+@printindex fn
+
+@node Variable Index
+@unnumbered Variable Index
+
+@printindex vr
+
+@node Type Index
+@unnumbered Type Index
+
+@printindex tp
+
+@c @shortcontents
+@contents
+@bye

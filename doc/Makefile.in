@@ -42,17 +42,18 @@ PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 CC = @CC@
 
-info_TEXINFOS = gsl.texi 
-gsl_TEXINFOS = fft.texi
+info_TEXINFOS = gsl-ref.texi
+noinst_TEXINFOS = gsl-design.texi
+gsl_ref_TEXINFOS = fft.texi random.texi
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 MAKEINFO = makeinfo
 TEXI2DVI = texi2dvi
-INFO_DEPS = gsl.info
-DVIS = gsl.dvi
-TEXINFOS = gsl.texi 
-DIST_COMMON =  $(gsl_TEXINFOS) ChangeLog Makefile.am Makefile.in \
-mdate-sh stamp-vti texinfo.tex version.texi
+INFO_DEPS = gsl-ref.info
+DVIS = gsl-ref.dvi
+TEXINFOS = gsl-ref.texi
+DIST_COMMON =  $(gsl_ref_TEXINFOS) Makefile.am Makefile.in mdate-sh \
+stamp-vti texinfo.tex version-ref.texi
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) \
@@ -71,14 +72,14 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-version.texi: stamp-vti
+version-ref.texi: stamp-vti
 
-stamp-vti: gsl.texi $(top_srcdir)/configure.in
+stamp-vti: gsl-ref.texi $(top_srcdir)/configure.in
 	echo "@set UPDATED `cd $(srcdir) \
-	  && $(SHELL) ./mdate-sh gsl.texi`" > vti.tmp
+	  && $(SHELL) ./mdate-sh gsl-ref.texi`" > vti.tmp
 	echo "@set EDITION $(VERSION)" >> vti.tmp
 	echo "@set VERSION $(VERSION)" >> vti.tmp
-	cmp -s vti.tmp $(srcdir)/version.texi || cp vti.tmp $(srcdir)/version.texi
+	cmp -s vti.tmp $(srcdir)/version-ref.texi || cp vti.tmp $(srcdir)/version-ref.texi
 	rm vti.tmp
 	echo timestamp > $(srcdir)/stamp-vti
 
@@ -90,10 +91,10 @@ clean-vti:
 distclean-vti:
 
 maintainer-clean-vti:
-	rm -f stamp-vti version.texi
+	rm -f stamp-vti version-ref.texi
 
-gsl.info: gsl.texi version.texi $(gsl_TEXINFOS)
-gsl.dvi: gsl.texi version.texi $(gsl_TEXINFOS)
+gsl-ref.info: gsl-ref.texi version-ref.texi $(gsl_ref_TEXINFOS)
+gsl-ref.dvi: gsl-ref.texi version-ref.texi $(gsl_ref_TEXINFOS)
 
 
 DVIPS = dvips
@@ -154,8 +155,9 @@ dist-info: $(INFO_DEPS)
 	done
 
 mostlyclean-info:
-	rm -f gsl.aux gsl.cp gsl.cps gsl.dvi gsl.fn gsl.fns gsl.ky gsl.log \
-	  gsl.pg gsl.toc gsl.tp gsl.vr gsl.op
+	rm -f gsl-ref.aux gsl-ref.cp gsl-ref.cps gsl-ref.dvi gsl-ref.fn \
+	  gsl-ref.fns gsl-ref.ky gsl-ref.log gsl-ref.pg gsl-ref.toc \
+	  gsl-ref.tp gsl-ref.vr gsl-ref.op
 
 clean-info:
 
