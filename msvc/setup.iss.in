@@ -37,6 +37,7 @@ Source: "..\*.dsw"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.bat"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.h"; DestDir: "{app}\src"; Flags: recursesubdirs;
 Source: "..\*.c"; DestDir: "{app}\src"; Flags: recursesubdirs;
+Source: "..\*.def"; DestDir: "{app}\src"; Flags: recursesubdirs;
 ;
 Source: "..\GSLDLL\Release\libgsl.dll"; DestDir: "{sys}"; DestName: "libgsl.dll"
 Source: "..\GSLDLL\Release\libgslcblas.dll"; DestDir: "{sys}"; DestName: "libgslcblas.dll";
