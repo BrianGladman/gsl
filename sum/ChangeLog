@@ -1,3 +1,8 @@
+Sat Feb  6 20:35:26 1999  Brian Gough  <bjg@netsci.freeserve.co.uk>
+
+	* test.c: adjusted the precision check to allow for "infinite
+ 	accuracy" which occurs when two results agree to machine precision
+
 Thu Nov 19 13:10:19 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* added an n_used parameter to all routines which gives the number

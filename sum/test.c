@@ -55,7 +55,7 @@ main (void)
     gsl_test_rel (sum_accel, zeta_2, 1e-10, "roundoff for zeta(2)");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - zeta_2) / zeta_2);
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - zeta_2) / zeta_2);
 
     gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for zeta(2)");
   }
@@ -78,7 +78,7 @@ main (void)
     gsl_test_rel (sum_accel, exp (x), 1e-12, "roundoff for exp(10)");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - exp (x)) / exp (x));
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - exp (x)) / exp (x));
 
     gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for exp(10)");
   }
@@ -101,7 +101,7 @@ main (void)
     gsl_test_rel (sum_accel, exp (x), 1e-6, "roundoff for exp(-10)");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - exp (x)) / exp (x));
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - exp (x)) / exp (x));
 
     gsl_test_abs (sd_est, sd_actual, 1.5, "correct digits for exp(-10)");
   }
@@ -125,7 +125,7 @@ main (void)
     gsl_test_rel (sum_accel, M_LN2, 1e-12, "roundoff for -log(1/2)");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - M_LN2) / M_LN2);
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - M_LN2) / M_LN2);
 
     gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for -log(1/2)");
   }
@@ -148,7 +148,7 @@ main (void)
     gsl_test_rel (sum_accel, -M_LN2, 1e-12, "roundoff for -log(2)");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - (-M_LN2)) / M_LN2);
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - (-M_LN2)) / M_LN2);
 
     gsl_test_abs (sd_est, sd_actual, 1.0, "correct digits for -log(2)");
   }
@@ -175,7 +175,7 @@ main (void)
     gsl_test_rel (sum_accel, result, 1e-10, "roundoff for asymptotic series");
 
     sd_est = -log10 (prec);
-    sd_actual = -log10 (fabs (sum_accel - result) / result);
+    sd_actual = -log10 (DBL_EPSILON + fabs (sum_accel - result) / result);
 
     gsl_test_abs (sd_est, sd_actual, 1.0,
 		  "correct digits of asymptotic series");
