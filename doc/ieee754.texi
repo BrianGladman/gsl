@@ -301,6 +301,15 @@ If the requested modes are not supported by the platform being used then
 the function calls the error handler and returns an error code of
 @code{GSL_EUNSUP}.
 
+The following combination of modes is convenient for many purposes,
+
+@example
+GSL_IEEE_MODE=double-precision,mask-underflow,mask-denormalized
+@end example
+@noindent
+This choice ignores any errors relating to small numbers (either
+denormalized, or underflowing to zero) but traps overflows, division by
+zero and invalid operations.
 @end deftypefun
 
 To demonstrate the effects of different rounding modes consider
