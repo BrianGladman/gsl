@@ -1,3 +1,8 @@
+Fri Jul 10 19:57:49 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* configure.in: removed AC_FUNC_ALLOCA since we don't use alloca
+ 	(it is not ansi)
+
 Sun Jun 28 14:31:31 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* replaced the random/ directory by the rng/ directory and made
