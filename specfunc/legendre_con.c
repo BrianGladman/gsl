@@ -22,6 +22,8 @@
  * x > 1
  * mu_min > -1
  * n = N, N-1, ..., 0
+ *
+ * checked OK: [GJ] Tue Sep 15 19:25:35 MDT 1998 
  */
 static
 int
@@ -43,7 +45,6 @@ backward_recurse_pos_mu_xgt1(const double mu_min, const double tau, const double
     y_nm1 = -mu*(mu+1.0)/d * (y_np1 + 2.0*mu*x*c1*y_n/(mu+1.0));
     y_np1 = y_n;
     y_n   = y_nm1;
-    mu -= 1.0;
   }
   
   *result_y_0 = y_n;
@@ -57,6 +58,8 @@ backward_recurse_pos_mu_xgt1(const double mu_min, const double tau, const double
  * mu_max < 0
  * n = N, N-1, ..., 0
  * mu != integer
+ *
+ * checked OK: Tue Sep 15 19:53:20 MDT 1998 
  */
 static
 int
@@ -74,17 +77,50 @@ backward_recurse_neg_mu_xgt1(const double mu, const double tau, const double x,
 
   for(n=N; n>=1; n--) {
     const double mupn = mu + n;
-    double d = (mupn+0.5)*(mupn+0.5) + t2;
-    y_nm1 = -2.0*mupn*c1/(mupn-1.0)*y_n - d/(mupn*(mupn-1.0))*y_np1;
+    const double d = (mupn+0.5)*(mupn+0.5) + t2;
+    y_nm1 = -2.0*mupn*x*c1/(mupn-1.0)*y_n - d/(mupn*(mupn-1.0))*y_np1;
     y_np1 = y_n;
     y_n   = y_nm1;
-    mu -= 1.0;
   }
   
   *result_y_0 = y_n;
   *result_y_1 = y_np1;
 }
 
+
+void test_recurse(void)
+{
+  /*
+  CHECKED OK
+  double mu_min = 0.0;
+  double tau    = 5.0;
+  double x      = 3.0;
+  int N = 1000;
+  double y_n   =   3.0675657594269025813e-148;
+  double y_np1 =  -2.1670387291373776638e-148;
+  double y_0, y_1;
+  backward_recurse_pos_mu_xgt1(mu_min, tau, x,
+                               N,
+                               y_n, y_np1,
+			       &y_0, &y_1);
+  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
+  exit(0);
+  */
+  
+  double mu  = 1.0/3.0;
+  double tau = 5.0;
+  double x   = 3.0;
+  int N = 500;
+  double y_n   =   2.5799943898780086603e-79 ;
+  double y_np1 =  -1.8208744513179016911e-79 ;
+  double y_0, y_1;
+  backward_recurse_neg_mu_xgt1(mu, tau, x,
+                               N,
+                               y_n, y_np1,
+			       &y_0, &y_1);
+  printf("%24.18g   %24.18g    %24.18g  %24.18g\n", y_n, y_np1, y_0, y_1);
+  exit(0);
+}
 
 /* Implementation of large negative mu asymptotic
  * [Dunster, Proc. Roy. Soc. Edinburgh 119A, 311 (1991), p. 326]
@@ -404,7 +440,8 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
     p[0] = lambda*lambda;
     p[1] = x/sqrt(one_m_x*one_p_x);
     gsl_sf_conical_sph_reg_0_impl(lambda, one_m_x, one_p_x, &f0);  /* l =  0  */ 
-    recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
+    /*recurse_backward_minimal_simple_conical_sph_reg_xlt1(l_start, lmax, 0, p, f0, harvest, result);
+    */
     
   }
   else if(x > 1.0) {
@@ -414,7 +451,7 @@ int gsl_sf_conical_sph_reg_impl(const int lmax, const double lambda,
     p[0] = lambda*lambda;
     p[1] = x/sqrt(-one_m_x*one_p_x);
     gsl_sf_conical_sph_reg_0_impl(lambda, one_m_x, one_p_x, &f0);
-    recurse_backward_minimal_simple_conical_sph_reg_xgt1(l_start, lmax, 0, p, f0, harvest, result);
+    /*recurse_backward_minimal_simple_conical_sph_reg_xgt1(l_start, lmax, 0, p, f0, harvest, result);*/
   }
   else {
     return GSL_EDOM;

@@ -1739,7 +1739,7 @@ int check_zeta(void)
 int main(int argc, char * argv[])
 {
 /* test_coulomb(); */
-
+test_recurse();
   gsl_test(check_airy(),       "Airy Functions");
   gsl_test(check_bessel(),     "Bessel Functions");
   gsl_test(check_cheb(),       "Chebyshev Evaluation");
