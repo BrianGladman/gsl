@@ -1826,6 +1826,13 @@ EOF
 
 	echo "$ac_t""yes (microseconds)" 1>&6 
         ;;
+    *-*-nextstep*) 
+				        cat >> confdefs.h <<\EOF
+#define HAVE_GUESSED_CLOCKS_PER_SEC 64
+EOF
+
+	echo "$ac_t""yes (15.625 milliseconds)" 1>&6 
+        ;;
     *) 
         cat >> confdefs.h <<\EOF
 #define HAVE_GUESSED_CLOCKS_PER_SEC 1000000
@@ -1839,12 +1846,12 @@ fi
 for ac_func in rand
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:1843: checking for $ac_func" >&5
+echo "configure:1850: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1848 "configure"
+#line 1855 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -1867,7 +1874,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:1871: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:1878: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -1893,12 +1900,12 @@ done
 
 
 echo $ac_n "checking for RAND_MAX""... $ac_c" 1>&6
-echo "configure:1897: checking for RAND_MAX" >&5
+echo "configure:1904: checking for RAND_MAX" >&5
 if eval "test \"`echo '$''{'ac_cv_decl_rand_max'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1902 "configure"
+#line 1909 "configure"
 #include "confdefs.h"
 
 #include <stdlib.h>
@@ -1930,7 +1937,7 @@ EOF
 
 else
 echo $ac_n "checking whether RAND_MAX is known for $host_os""... $ac_c" 1>&6
-echo "configure:1934: checking whether RAND_MAX is known for $host_os" >&5
+echo "configure:1941: checking whether RAND_MAX is known for $host_os" >&5
   case "$host" in
     *-*-sunos4.*) 
         cat >> confdefs.h <<\EOF
@@ -1951,12 +1958,12 @@ fi
 
 
 echo $ac_n "checking for EXIT_SUCCESS and EXIT_FAILURE""... $ac_c" 1>&6
-echo "configure:1955: checking for EXIT_SUCCESS and EXIT_FAILURE" >&5
+echo "configure:1962: checking for EXIT_SUCCESS and EXIT_FAILURE" >&5
 if eval "test \"`echo '$''{'ac_cv_decl_exit_success_and_failure'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1960 "configure"
+#line 1967 "configure"
 #include "confdefs.h"
 
 #include <stdlib.h>
@@ -1989,7 +1996,7 @@ fi ;
 
 
 echo $ac_n "checking for IEEE arithmetic interface type""... $ac_c" 1>&6
-echo "configure:1993: checking for IEEE arithmetic interface type" >&5
+echo "configure:2000: checking for IEEE arithmetic interface type" >&5
 case "$host" in
     *-*-linux*) 
 	cat >> confdefs.h <<\EOF

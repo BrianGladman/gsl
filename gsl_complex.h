@@ -3,6 +3,12 @@
 
 typedef struct
   {
+    long double dat[2];
+  }
+gsl_complex_long_double;
+
+typedef struct
+  {
     double dat[2];
   }
 gsl_complex;
