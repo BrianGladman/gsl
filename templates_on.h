@@ -122,7 +122,7 @@
 #define ATOMIC unsigned char
 #define MULTIPLICITY 1
 #define IN_FORMAT "%c%*c"
-#define OUT_FORMAT "%c"
+#define OUT_FORMAT "%u"
 #define ZERO 0
 
 #elif defined(BASE_CHAR)
@@ -131,7 +131,7 @@
 #define ATOMIC char
 #define MULTIPLICITY 1
 #define IN_FORMAT "%c%*c"
-#define OUT_FORMAT "%c"
+#define OUT_FORMAT "%d"
 #define ZERO 0
 
 #else
