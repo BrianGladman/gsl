@@ -1,7 +1,11 @@
 This chapter describes some tips and tricks for debugging numerical
 programs which use GSL.
 
-@node
+@menu
+* Using gdb::                   
+@end menu
+
+@node Using gdb
 @section Using gdb
 
 The time-honored way of debugging numerical programs is to insert

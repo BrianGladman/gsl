@@ -142,7 +142,8 @@ functions should be defined like this,
 void @var{handler} (const char * reason, const char * file, int line)
 @end example
 @end deftp
-
+@c
+@noindent
 To request the use of your own error handler you need to call the
 function @code{gsl_set_error_handler} which is also declared in
 @file{gsl_errno.h},
@@ -171,7 +172,8 @@ old_handler = gsl_set_error_handler (NULL);
 @end example
 @noindent
 @end deftypefun
-
+@c
+@noindent
 Here is a skeleton outline of a program which defines its own error
 handler.  Imagine that the program does interactive data analysis --
 there is a main loop which reads commands from the user and calls
@@ -222,11 +224,12 @@ caused the error and try again.
 
 @node Error Streams
 @section Error Streams
+
 GSL supports the concert of an error stream, which is a place where
 errors are logged as they occur. An error stream allows the library to
 report an error message directly to the user rather than to the calling
-program. This can be useful because it reduces the amount of error
-checking that the program needs to do. 
+program. This can sometimes be useful because it reduces the amount of
+error checking that the program needs to do.
 
 For example, many mathematical functions compute floating point numbers
 or other numerical values. The standard versions of these functions
@@ -254,38 +257,40 @@ an alternative interface which allows this,
 @example
 double result = gsl_sf_bessel_J1 (1.23)
 @end example
-
+@c
+@noindent
 However, in this case there is no way for the calling program to test
 for an error. Instead if there are any errors (such as underflow) they
 are logged to the error stream, and can be examined by the user at the
 end of the run. It is up to the programmer to decide which form is best
 suited to a given application. For a truly robust program the standard
-error checking versions of the program should certainly be used, since
-they don't rely on the user examining the error stream.
+error checking versions of the functions should be used, since they
+don't rely on the user examining the error stream.
 
 @node  Manipulating the Error Stream
 @section Manipulating the Error Stream
 
 By default the error stream is sent to @code{stderr}, and you can
 redirect it to a file on the command line. There are also two ways to
-change this within your program. First, the stream can be redirected to
-another file by providing a suitable file pointer. Alternatively you can
-set up an error stream handler, which is a function that accepts error
-message strings. By using an error stream handler function you have
-complete control over where the messages are stored.
+change this within your program. Firstly, the stream can be redirected
+to another file by providing a suitable file pointer. Alternatively you
+can set up an error stream handler, which is a function that accepts
+error message strings. By using an error stream handler function you
+have complete control over where the messages are stored.
 
 @deftypefun FILE * gsl_set_stream (FILE * new_stream)
 This function selects the stream used for GSL error messages. After
-calling @code{gsl_set_stream} any further messages will be sent to
-@var{new_stream}. The previous stream is returned, so that you can close
-it or restore it later. Note that the stream is stored in a static
-variable, so there can only be one error stream per program.
+calling @code{gsl_set_stream} any further messages sent to the default
+stream handler will be printed on @var{new_stream}. The previous stream
+is returned, so that you can close it or restore it later. Note that the
+stream is stored in a static variable, so there can only be one error
+stream per program.
 @end deftypefun
 
 @deftp {Data Type} void gsl_stream_handler_t
 This is the type of GSL stream handler functions. A stream handler will
-be passed four arguments, specifying a label (such as @sc{ERROR} or
-@sc{WARNING}), the source file in which the error occurred, the line
+be passed four arguments, specifying a label (such as @sc{error} or
+@sc{warning}), the source file in which the error occurred, the line
 number in that file and a description of the error. The source file and
 line number are set at compile time using the @code{__FILE__} and
 @code{__LINE__} directives in the preprocessor. A stream handler
@@ -293,7 +298,8 @@ function returns type @code{void}. Stream handler functions should be
 defined like this,
 
 @example
-void @var{handler} (const char * label, const char * file, int line, const char * reason)
+void @var{handler} (const char * label, const char * file,
+              int line, const char * reason)
 @end example
 @end deftp
 
