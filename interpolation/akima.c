@@ -202,7 +202,7 @@ gsl_interp_akima_eval_impl(const gsl_interp_obj * akima_interp,
 			   double * y
 		           )
 {
-  gsl_interp_akima * interp = (gsl_interp_akima * ) akima_interp;
+  const gsl_interp_akima * interp = (const gsl_interp_akima * ) akima_interp;
 
   if(x < interp->xmin) {
     *y = y_array[0];
@@ -244,7 +244,7 @@ gsl_interp_akima_eval_d_impl(const gsl_interp_obj * akima_interp,
                              double * dydx
                              )
 {
-  gsl_interp_akima * interp = (gsl_interp_akima * ) akima_interp;
+  const gsl_interp_akima * interp = (const gsl_interp_akima * ) akima_interp;
 
   if(x < interp->xmin) {
     *dydx = 0.0;

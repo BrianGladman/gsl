@@ -235,7 +235,7 @@ cspline_eval_impl(const gsl_interp_obj * cspline_interp,
 		  double * y
 		  )
 {
-  gsl_interp_cspline * interp = (gsl_interp_cspline * ) cspline_interp;
+  const gsl_interp_cspline * interp = (const gsl_interp_cspline * ) cspline_interp;
 
   if(x < interp->xmin) {
     *y = y_array[0];
@@ -290,7 +290,7 @@ cspline_eval_d_impl(const gsl_interp_obj * cspline_interp,
                     double * dydx
                     )
 {
-  gsl_interp_cspline * interp = (gsl_interp_cspline * )cspline_interp;
+  const gsl_interp_cspline * interp = (const gsl_interp_cspline * )cspline_interp;
 
   if(x > interp->xmax) {
     *dydx = 0.0;

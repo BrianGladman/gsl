@@ -82,7 +82,7 @@ linear_eval_impl(const gsl_interp_obj * linear_interp,
 		 double * y
 		 )
 {
-  gsl_interp_linear * interp = (gsl_interp_linear * ) linear_interp;
+  const gsl_interp_linear * interp = (const gsl_interp_linear * ) linear_interp;
 
   if(x < interp->xmin) {
     *y = y_array[0];
@@ -132,7 +132,7 @@ linear_eval_d_impl(const gsl_interp_obj * linear_interp,
                    double * dydx
                    )
 {
-  gsl_interp_linear * interp = (gsl_interp_linear * ) linear_interp;
+  const gsl_interp_linear * interp = (const gsl_interp_linear * ) linear_interp;
 
   if(x < interp->xmin) {
     *dydx = 0.0;

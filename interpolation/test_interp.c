@@ -97,8 +97,14 @@ int main(int argc, char ** argv)
 {
   int status = 0;
   
+  argc = 0;  /* prevent warnings about unused parameters */
+  argv = 0;
+
   status += test_linear();
   status += test_cspline_natural();
 
   return gsl_test_summary();
 }
+
+
+
