@@ -28,11 +28,11 @@ int gsl_sf_complex_sin_impl(const double zr, const double zi, double * szr, doub
 
 int gsl_sf_complex_logsin_impl(const double zr, const double zi, double * lszr, double * lszi)
 {
-  if(zi > 60.) {
+  if(zi > 60.0) {
     *lszr = -M_LN2 + zi;
     *lszi =  0.5*M_PI - zr;
   }
-  else if(zi < -60.) {
+  else if(zi < -60.0) {
     *lszr = -M_LN2 - zi;
     *lszi = -0.5*M_PI + zr; 
   }

@@ -336,19 +336,19 @@ int check_coupling(void)
   gsl_sf_coupling_6j_impl(2, 2, 4, 2, 2, 2, &y);
   s = 0;
   s += ( frac_diff( y, 1.0/6.0 ) > 1.0e-14 );
-  gsl_test(s, "  6j(ja=1    jb=1    jc=2    jd=1    je=1    jf=1)");
+  gsl_test(s, "  6j(ja=1   jb=1   jc=2    jd=1     je=1     jf=1)");
   status += s;
 
   gsl_sf_coupling_9j_impl(4, 2, 4, 3, 3, 2, 1, 1, 2, &y);
   s = 0;
   s += ( frac_diff( y, -0.040824829046386 ) > 1.0e-13 );
-  gsl_test(s, "  9j(ja=2    jb=1    jc=2    jd=3/2    je=3/2    jf=1    jg=1/2  jh=1/2  ji=1)");
+  gsl_test(s, "  9j(ja=2   jb=1   jc=2    jd=3/2   je=3/2   jf=1   jg=1/2  jh=1/2  ji=1)");
   status += s;
 
   gsl_sf_coupling_9j_impl(8, 4, 10, 7, 3, 8, 1, 1, 2, &y);
   s = 0;
   s += ( frac_diff( y, 0.025458753860866 ) > 1.0e-13 );
-  gsl_test(s, "  9j(ja=4    jb=2    jc=5    jd=7/2    je=3/2    jf=4    jg=1/2  jh=1/2  ji=1)");
+  gsl_test(s, "  9j(ja=4   jb=2   jc=5    jd=7/2   je=3/2   jf=4   jg=1/2  jh=1/2  ji=1)");
   status += s;
 
   return status;
@@ -570,56 +570,67 @@ int check_psi(void)
 
 int check_trig(void)
 {
+  double zr, zi;
+  double yr, yi;
   double theta;
   int status = 0;
   int s;
 
+  yr = 1.0;
+  yi = 5.0;
+  gsl_sf_complex_sin_impl(yr, yi, &zr, &zi);
+  s = 0;
+  s += ( frac_diff( zr, 62.44551846769653403 ) > 1.0e-14 );
+  s += ( frac_diff( zi, 40.09216577799840254 ) > 1.0e-14 );
+  gsl_test(s, "  gsl_sf_complex_sin_impl");
+  status += s;
+  
   theta = 5.0*M_PI + M_PI/2.0;
   gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, 3.0/2.0*M_PI ) > 1.e-14);
+  s += ( frac_diff( theta, 3.0/2.0*M_PI ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_pos_impl: theta =  11/2 Pi");
   status += s;
 
   theta = -5.0*M_PI - M_PI/2.0;
   gsl_sf_angle_restrict_pos_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_pos_impl: theta = -11/2 Pi");
   status += s;
 
   theta = 5.0*M_PI + M_PI/2.0;
   gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, -M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, -M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  11/2 Pi");
   status += s;
 
   theta = -5.0*M_PI - M_PI/2.0;
   gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -11/2 Pi");
   status += s;
 
   theta =  5.0*M_PI - M_PI/2.0;
   gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -9/2 Pi");
   status += s;
 
   theta =  3.0/2.0*M_PI;
   gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, -M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, -M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta =  3/2 Pi");
   status += s;
 
   theta = -3.0/2.0*M_PI;
   gsl_sf_angle_restrict_symm_impl(&theta, GSL_SQRT_MACH_EPS);
   s = 0;
-  s += (frac_diff( theta, M_PI/2.0 ) > 1.e-14);
+  s += ( frac_diff( theta, M_PI/2.0 ) > 1.e-14 );
   gsl_test(s, "  gsl_angle_restrict_symm_impl: theta = -3/2 Pi");
   status += s;
 
