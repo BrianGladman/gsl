@@ -416,7 +416,7 @@ gsl_sf_legendre_Plm_deriv_array(
 {
   if(m < 0 || m > lmax)
   {
-    GSL_ERROR("domain", GSL_EDOM);
+    GSL_ERROR("m < 0 or m > lmax", GSL_EDOM);
   }
   else if(m == 0)
   {
@@ -468,7 +468,7 @@ gsl_sf_legendre_Plm_deriv_array(
           const double diff_a = 1.0 + x;
           const double diff_b = 1.0 - x;
           result_deriv_array[0] = - m * x / (diff_a * diff_b) * result_array[0];
-          if(lmax >= 1) result_deriv_array[1] = (2.0 * m + 1.0) * (x * result_deriv_array[0] + result_array[0]);
+          if(lmax-m >= 1) result_deriv_array[1] = (2.0 * m + 1.0) * (x * result_deriv_array[0] + result_array[0]);
           for(ell = m+2; ell <= lmax; ell++)
           {
             result_deriv_array[ell-m] = - (ell * x * result_array[ell-m] - (ell+m) * result_array[ell-1-m]) / (diff_a * diff_b);
@@ -653,9 +653,7 @@ gsl_sf_legendre_sphPlm_deriv_array(
   }
   else if(m == 0)
   {
-    /* As above, we like to handle the m=0 case separately,
-     * so that handling the possible divergences is easier.
-     */
+    /* m = 0 is easy to trap */
     const int stat_array = gsl_sf_legendre_Pl_deriv_array(lmax, x, result_array, result_deriv_array);
     int ell;
     for(ell = 0; ell <= lmax; ell++)
@@ -666,29 +664,45 @@ gsl_sf_legendre_sphPlm_deriv_array(
     }
     return stat_array;
   }
+  else if(m == 1)
+  {
+    /* Trapping m = 1 is necessary because of the possible divergence.
+     * Recall that this divergence is handled properly in ..._Plm_deriv_array(),
+     * and the scaling factor is not large for small m, so we just scale.
+     */
+    const int stat_array = gsl_sf_legendre_Plm_deriv_array(lmax, m, x, result_array, result_deriv_array);
+    int ell;
+    for(ell = 1; ell <= lmax; ell++)
+    {
+      const double prefactor = sqrt((2.0 * ell + 1.0)/(ell + 1.0) / (4.0*M_PI*ell));
+      result_array[ell-1] *= prefactor;
+      result_deriv_array[ell-1] *= prefactor;
+    }
+    return stat_array;
+  }
   else
   {
+    /* as for the derivative of P_lm, everything is regular for m >= 2 */
+
     int stat_array = gsl_sf_legendre_sphPlm_array(lmax, m, x, result_array);
 
     if(stat_array == GSL_SUCCESS)
     {
       int ell;
 
-      if((fabs(x) - 1.0) < GSL_DBL_EPSILON)
+      if(1.0 - fabs(x) < GSL_DBL_EPSILON)
       {
-        /* m > 0, so the derivative is divergent */
         for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = 0.0;
-        GSL_ERROR("overflow: |x| near 1", GSL_EOVRFLW);
       }
       else
       {
         const double diff_a = 1.0 + x;
         const double diff_b = 1.0 - x;
-        result_deriv_array[0] = -2.0 * x / (diff_a * diff_b) * result_array[0];
-        if(lmax >= 1) result_deriv_array[1] = (2 * m + 1) * (x * result_deriv_array[0] + result_array[0]);
+        result_deriv_array[0] = - m * x / (diff_a * diff_b) * result_array[0];
+        if(lmax-m >= 1) result_deriv_array[1] = sqrt(2.0 * m + 3.0) * (x * result_deriv_array[0] + result_array[0]);
         for(ell = m+2; ell <= lmax; ell++)
         {
-          const double c1 = sqrt(((2.0*ell+1.0)/(2.0*ell-1.0))*((ell-m)*(ell+m)));
+          const double c1 = sqrt(((2.0*ell+1.0)/(2.0*ell-1.0)) * ((double)(ell-m)/(double)(ell+m)));
           result_deriv_array[ell-m] = - (ell * x * result_array[ell-m] - c1 * (ell+m) * result_array[ell-1-m]) / (diff_a * diff_b);
         }
         return GSL_SUCCESS;
@@ -709,6 +723,7 @@ gsl_sf_legendre_array_size(const int lmax, const int m)
   return lmax-m+1;
 }
 #endif
+
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
