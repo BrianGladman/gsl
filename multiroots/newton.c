@@ -14,7 +14,7 @@
 typedef struct
   {
     gsl_matrix * lu;
-    gsl_vector_int * permutation;
+    gsl_permutation * permutation;
   }
 newton_state_t;
 
@@ -27,7 +27,7 @@ static int
 newton_alloc (void * vstate, size_t n)
 {
   newton_state_t * state = (newton_state_t *) vstate;
-  gsl_vector_int * p;
+  gsl_permutation * p;
   gsl_matrix * m;
 
   m = gsl_matrix_calloc (n,n);
@@ -39,7 +39,7 @@ newton_alloc (void * vstate, size_t n)
 
   state->lu = m ;
 
-  p = gsl_vector_int_calloc (n);
+  p = gsl_permutation_calloc (n);
 
   if (p == 0)
     {
@@ -110,7 +110,7 @@ newton_free (void * vstate)
 
   gsl_matrix_free(state->lu);
 
-  gsl_vector_int_free(state->permutation);
+  gsl_permutation_free(state->permutation);
 }
 
 

@@ -21,7 +21,7 @@ typedef struct
     gsl_vector * x_trial;
     gsl_vector * d;
     gsl_matrix * lu;
-    gsl_vector_int * permutation;
+    gsl_permutation * permutation;
   }
 gnewton_state_t;
 
@@ -35,7 +35,7 @@ gnewton_alloc (void * vstate, size_t n)
 {
   gnewton_state_t * state = (gnewton_state_t *) vstate;
   gsl_vector * d, * x_trial ;
-  gsl_vector_int * p;
+  gsl_permutation * p;
   gsl_matrix * m;
 
   m = gsl_matrix_calloc (n,n);
@@ -47,7 +47,7 @@ gnewton_alloc (void * vstate, size_t n)
 
   state->lu = m ;
 
-  p = gsl_vector_int_calloc (n);
+  p = gsl_permutation_calloc (n);
 
   if (p == 0)
     {
@@ -62,7 +62,7 @@ gnewton_alloc (void * vstate, size_t n)
 
   if (d == 0)
     {
-      gsl_vector_int_free(p);
+      gsl_permutation_free(p);
       gsl_matrix_free(m);
 
       GSL_ERROR_RETURN ("failed to allocate space for d", GSL_ENOMEM, 0);
@@ -75,7 +75,7 @@ gnewton_alloc (void * vstate, size_t n)
   if (x_trial == 0)
     {
       gsl_vector_free(d);
-      gsl_vector_int_free(p);
+      gsl_permutation_free(p);
       gsl_matrix_free(m);
 
       GSL_ERROR_RETURN ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
@@ -178,7 +178,7 @@ gnewton_free (void * vstate)
   gsl_vector_free(state->d);
   gsl_vector_free(state->x_trial);
   gsl_matrix_free(state->lu);
-  gsl_vector_int_free(state->permutation);
+  gsl_permutation_free(state->permutation);
 }
 
 

@@ -22,7 +22,7 @@ typedef struct
   {
     gsl_matrix * J;
     gsl_matrix * lu;
-    gsl_vector_int * permutation;
+    gsl_permutation * permutation;
   }
 dnewton_state_t;
 
@@ -35,7 +35,7 @@ static int
 dnewton_alloc (void * vstate, size_t n)
 {
   dnewton_state_t * state = (dnewton_state_t *) vstate;
-  gsl_vector_int * p;
+  gsl_permutation * p;
   gsl_matrix * m, * J;
 
   m = gsl_matrix_calloc (n,n);
@@ -47,7 +47,7 @@ dnewton_alloc (void * vstate, size_t n)
 
   state->lu = m ;
 
-  p = gsl_vector_int_calloc (n);
+  p = gsl_permutation_calloc (n);
 
   if (p == 0)
     {
@@ -62,7 +62,7 @@ dnewton_alloc (void * vstate, size_t n)
 
   if (J == 0)
     {
-      gsl_vector_int_free(p);
+      gsl_permutation_free(p);
       gsl_matrix_free(m);
 
       GSL_ERROR_RETURN ("failed to allocate space for d", GSL_ENOMEM, 0);
@@ -131,7 +131,7 @@ dnewton_free (void * vstate)
 
   gsl_matrix_free(state->J);
   gsl_matrix_free(state->lu);
-  gsl_vector_int_free(state->permutation);
+  gsl_permutation_free(state->permutation);
 }
 
 

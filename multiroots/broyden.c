@@ -26,7 +26,7 @@ typedef struct
   {
     gsl_matrix *H;
     gsl_matrix *lu;
-    gsl_vector_int *permutation;
+    gsl_permutation *permutation;
     gsl_vector *v;
     gsl_vector *w;
     gsl_vector *y;
@@ -48,7 +48,7 @@ broyden_alloc (void *vstate, size_t n)
 {
   broyden_state_t *state = (broyden_state_t *) vstate;
   gsl_vector *v, *w, *y, *fnew, *x_trial, *p;
-  gsl_vector_int *perm;
+  gsl_permutation *perm;
   gsl_matrix *m, *H;
 
   m = gsl_matrix_calloc (n, n);
@@ -60,7 +60,7 @@ broyden_alloc (void *vstate, size_t n)
 
   state->lu = m;
 
-  perm = gsl_vector_int_calloc (n);
+  perm = gsl_permutation_calloc (n);
 
   if (perm == 0)
     {
@@ -75,7 +75,7 @@ broyden_alloc (void *vstate, size_t n)
 
   if (H == 0)
     {
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for d", GSL_ENOMEM, 0);
@@ -88,7 +88,7 @@ broyden_alloc (void *vstate, size_t n)
   if (v == 0)
     {
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for v", GSL_ENOMEM, 0);
@@ -102,7 +102,7 @@ broyden_alloc (void *vstate, size_t n)
     {
       gsl_vector_free (v);
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for w", GSL_ENOMEM, 0);
@@ -117,7 +117,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_vector_free (w);
       gsl_vector_free (v);
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for y", GSL_ENOMEM, 0);
@@ -133,7 +133,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_vector_free (w);
       gsl_vector_free (v);
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for fnew", GSL_ENOMEM, 0);
@@ -150,7 +150,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_vector_free (w);
       gsl_vector_free (v);
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for x_trial", GSL_ENOMEM, 0);
@@ -168,7 +168,7 @@ broyden_alloc (void *vstate, size_t n)
       gsl_vector_free (w);
       gsl_vector_free (v);
       gsl_matrix_free (H);
-      gsl_vector_int_free (perm);
+      gsl_permutation_free (perm);
       gsl_matrix_free (m);
 
       GSL_ERROR_RETURN ("failed to allocate space for p", GSL_ENOMEM, 0);
@@ -221,7 +221,7 @@ broyden_iterate (void *vstate, gsl_multiroot_function * function, gsl_vector * x
   gsl_vector *fnew = state->fnew;
   gsl_vector *x_trial = state->x_trial;
   gsl_matrix *lu = state->lu;
-  gsl_vector_int *perm = state->permutation;
+  gsl_permutation *perm = state->permutation;
 
   size_t i, j, iter;
 
@@ -399,7 +399,7 @@ broyden_free (void *vstate)
   gsl_matrix_free (state->H);
 
   gsl_matrix_free (state->lu);
-  gsl_vector_int_free (state->permutation);
+  gsl_permutation_free (state->permutation);
   
   gsl_vector_free (state->v);
   gsl_vector_free (state->w);
