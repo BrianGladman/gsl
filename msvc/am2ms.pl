@@ -562,6 +562,7 @@ sub begin_check {
 @REM
 
 @echo "Testing GSL library" 
+if exist result.dat del result.dat
 EOF
 } 
 
@@ -576,7 +577,7 @@ EOF
 sub end_check {
     return <<'EOF'
 @echo Number of failures:
-@FIND /V /C "result.dat"
+@FIND /V /C "PASS:" result.dat
 @echo Full test log is in result.dat
 EOF
 }
