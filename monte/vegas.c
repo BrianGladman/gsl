@@ -147,6 +147,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       state->sum_wgts = 0;
       state->chi_sum = 0;
       state->it_num = 1;
+      state->samples = 0;
     }
 
   if (state->stage <= 2)
@@ -211,7 +212,6 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
   cum_sig = 0.0;
 
   state->chisq = 0.0;
-  state->samples = 0;
 
   for (; state->it_num <= state->max_it_num; ++state->it_num)
     {
@@ -333,6 +333,11 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 	}
 
     }
+
+  /* By setting stage to 1 further calls will generate independent
+     estimates based on the same grid. */
+
+  state->stage = 1;  
 
   *result = cum_int;
   *abserr = cum_sig;
@@ -463,7 +468,6 @@ gsl_monte_vegas_init (gsl_monte_vegas_state * state)
   state->verbose = -1;
   state->max_it_num = 5;
   state->mode = GSL_VEGAS_MODE_IMPORTANCE;
-  state->init_done = 1;
   state->chisq = 0;
   state->bins = state->bins_max;
   state->ostream = stdout;

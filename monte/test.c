@@ -41,9 +41,9 @@
 #define DBLGAUSSIAN
 #define TSUDA
 
-#define PLAIN
+//#define PLAIN
 #define MISER
-#define VEGAS
+//#define VEGAS
 
 double xl[11]  = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 double xu[11]  = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };

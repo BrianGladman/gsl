@@ -532,7 +532,7 @@ gsl_monte_miser_init (gsl_monte_miser_state * s)
   /* We use 8 points in each halfspace to estimate the variance. There are
      2*dim halfspaces, and each requires a minimum of 2 points. */
   s->min_calls = 16 * s->dim;
-  s->min_calls_per_bisection = 64 * s->min_calls;
+  s->min_calls_per_bisection = 32 * s->min_calls;
   s->estimate_frac = 0.1;
   s->alpha = 2.0;
   s->dither = 0.0;

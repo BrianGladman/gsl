@@ -1,28 +1,72 @@
-@cindex Monte Carlo integrators
+@cindex Monte Carlo integration
+
+This chapter describes routines for multidimensional Monte Carlo
+integration.  These include the traditional Monte Carlo method of pure
+random sampling and adaptive algorithms such as @sc{vegas} and
+@sc{miser}, which use importance sampling and stratified sampling.
+
+Each algorithm computes an estimate of a definite integral of the form,
+
+@tex
+\beforedisplay
+$$
+I = \int_{xl}^{xu} \int_{yl}^{yu} ... dx\,dy ... f(x,y,...)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+I = \int_xl^xu \int_yl^yu ... dx dy ..  f(x, y, ...)
+@end example
+@end ifinfo
+@noindent
+over a hypercubic region (xl,xu) (yl,yu) ... using a fixed number of
+function calls specified by the user. Each routine also provides an
+estimate of the error on the result.  These error estimates should be
+taken as a guide rather than as a strict error bound, since random
+sampling of the region may not uncover all the important features of the
+function.
+
 @menu
-* Algorithms::                  
-* Interface::                   
-* Example::                     
-* The Future::                  
+* Monte Carlo Interface::       
+* PLAIN (or Simple) Monte Carlo::  
+* MISER::                       
+* VEGAS::                       
+* Monte Carlo Examples::        
+* Monte Carlo Integration References and Further Reading::  
 @end menu
 
-@comment ----------------------------------------------------------------------
-@comment RCS: $Id$
-@comment ----------------------------------------------------------------------
 
-This chapter describes the Monte Carlo integration routines in the
-library.  At the moment the algorithms implemented are: plain
-non-adaptive, Monte Carlo, VEGAS (following Peter Lepage) and MISER
-(following Numerical recipes).  We will dispense with an introduction
-and simply describe the algorithms and interfaces.  Note that the
-documentation (as well as the code) is still evolving - the code at a
-faster rate.
+@node Monte Carlo Interface
+@section Interface
+All of the Monte Carlo integration routines use the same interface.
+There is an allocator to allocate memory to hold control variables and
+workspace, a routine to initialize those control variables, the
+integrator itself, and a function to free the space when done.  Each
+integration function requires a random number generator to be supplied.
 
-@node Algorithms
-@section Algorithms
 
-@subsection PLAIN (or Simple) Monte Carlo
 
+
+Notice the ellipses in the last argument to the actual integration routine.
+This is because the vegas algorithm (and perhaps others in the future)
+returns extra information -- in the case of vegas, it is the @math{\chi^2}
+of the result.  
+
+In addition to the common function interface, the routines also share
+the state variables 
+@deftypevr {Control} gsl_rng* ranf
+which determines which random number generator will be used.
+@end deftypevr
+and
+@deftypevr {Control} int verbose
+which says whether to print information about the calculation (though
+the actual use depends on the algorithm).
+@end deftypevr
+
+@node PLAIN (or Simple) Monte Carlo
+@section PLAIN (or Simple) Monte Carlo
+@cindex plain monte carlo
 We begin by establishing some notation.  Let @math{I(f)} denote the
 integral of the function @math{f} (for convenience, we take @math{I(1)=1})
 We will write the Monte Carlo estimate of the integral as
@@ -105,8 +149,23 @@ $$
 
 That's all there is to simple Monte Carlo.
 
+@deftypefun {gsl_monte_plain_state *} gsl_monte_plain_alloc (size_t @var{dim})
 
-@subsection MISER
+@end deftypefun
+
+@deftypefun int gsl_monte_plain_init (gsl_monte_plain_state* @var{s})
+@end deftypefun
+
+@deftypefun int gsl_monte_plain_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_plain_state * @var{s}, double * @var{result}, double * @var{abserr})
+@end deftypefun
+
+@deftypefun void gsl_monte_plain_free (gsl_monte_plain_state* @var{s}), 
+@end deftypefun
+
+@node MISER
+@section MISER
+@cindex MISER monte carlo integration
+@cindex recursive stratified sampling, MISER
 
 The starting point of all stratified sampling techniques is
 the observation that for two disjoint regions @math{a} and @math{b} with
@@ -184,7 +243,41 @@ variance @math{Var_L(f)} in the various sub-regions, it is estimated
 using some fraction of the total number of points alloted to the
 estimate.
 
-@subsection VEGAS
+MISER:
+@deftypevr {Control} double alpha
+alpha controls how the variances for the two sub-regions are combined.
+The Numerical Recipes gang argue that for recursive sampling there
+is no reason to expect that the variance should scale like @math{1/N} and
+so they allow the scaling to depend on @math{\alpha}
+
+@tex
+\beforedisplay
+$$
+Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}
+@end example
+@end ifinfo
+
+@end deftypevr
+
+@deftypevr {Control} double dither
+Rather than exactly bisection the integration region, dither allows the
+user to introduce a bit of fuzz.  This helps in the case when the
+function to be integrated has some symmetry, say if it is peaked in the
+center of the hypercube.  If needed, dither should be around 0.1.
+@end deftypevr 
+
+
+@node VEGAS
+@section VEGAS
+@cindex VEGAS monte carlo integration
+@cindex importance sampling, VEGAS
+
 Vegas takes another approach to obtaining good results, namely it
 tries to sample points from the probability distribution described
 by the function @math{f}.  More precisely, suppose we estimate
@@ -257,82 +350,6 @@ a fractional number of bins, but if bins/box is less than two,
 Vegas switches to a kind variance reduction (rather than importance
 sampling). 
 
-@node Interface
-@section Interface
-
-All of the integration routines use the same interface.  There
-is an allocator to allocate memory to hold control variables and
-workspace, a routine to initialize those control variables,
-the integrator itself, and of course a function to free the space
-when done.  For an integrator algorithm, call it COOL
-(substitute any of the currently existing algorithms) we then 
-have
-@deftypefun gsl_monte_COOL_state* gsl_monte_COOL_alloc (size_t @var{dim})
-@deftypefunx int gsl_monte_COOL_init (gsl_monte_COOL_state* @var{s})
-@deftypefunx int gsl_monte_COOL_free (gsl_monte_COOL_state* @var{s}), 
-@deftypefunx int gsl_monte_COOL_validate (gsl_monte_COOL_state* @var{s}, 
-        double *@var{x_lower}, double *@var{x_upper}, 
-        unsigned long @var{dimension}, unsigned long @var{function_calls})
-@deftypefunx int gsl_monte_COOL_integrate (gsl_monte_COOL_state* @var{s}, 
-        double* @var{x_lower}, double* @var{x_upper}, 
-        unsigned long @var{dimension}, unsigned long @var{function_calls}, 
-        double* @var{result}, double* @var{error},
-        ...)
-@end deftypefun
-
-Notice the ellipses in the last argument to the actual integration routine.
-This is because the vegas algorithm (and perhaps others in the future)
-returns extra information -- in the case of vegas, it is the @math{\chi^2}
-of the result.  
-
-In addition to the common function interface, the routines also share
-the state variables 
-@deftypevr {Control} gsl_rng* ranf
-which determines which random number generator will be used.
-@end deftypevr
-and
-@deftypevr {Control} int verbose
-which says whether to print information about the calculation (though
-the actual use depends on the algorithm).
-@end deftypevr
-In the near future, we expect that there will be a common interface
-for selecting a ``log'' stream for reporting various information
-about the performance of the particular algorithm.  
-
-
-We describe the algorithm-specific variables.  
-
-PLAIN: None
-
-MISER:
-@deftypevr {Control} double alpha
-alpha controls how the variances for the two sub-regions are combined.
-The Numerical Recipes gang argue that for recursive sampling there
-is no reason to expect that the variance should scale like @math{1/N} and
-so they allow the scaling to depend on @math{\alpha}
-
-@tex
-\beforedisplay
-$$
-Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}
-@end example
-@end ifinfo
-
-@end deftypevr
-
-@deftypevr {Control} double dither
-Rather than exactly bisection the integration region, dither allows the
-user to introduce a bit of fuzz.  This helps in the case when the
-function to be integrated has some symmetry, say if it is peaked in the
-center of the hypercube.  If needed, dither should be around 0.1.
-@end deftypevr 
-
 VEGAS:
 @deftypevr {Control} double alpha
 For Vegas, @code{alpha} controls the stiffness of the rebinning algorithm:
@@ -369,11 +386,40 @@ chosen if there are fewer than 2 bins per box).
 
 
 
-@node Example
-@section Example
 
-Here we provide s simple example of using the integration routines.  Vegas
-was chosen at random.
+
+
+
+
+@node Monte Carlo Examples
+@section Examples
+
+The following examples use the Monte Carlo routines to estimate the
+value of a 3-dimensional integral which occurs in the theory of
+random-walks.  The integral is given by,
+
+@tex
+\beforedisplay
+$$
+I = \int_{-\pi}^{+\pi} {dk_x \over 2\pi} 
+    \int_{-\pi}^{+\pi} {dk_y \over 2\pi} 
+    \int_{-\pi}^{+\pi} {dk_z \over 2\pi} 
+     { 1 \over 1 - \cos(k_x)\cos(k_y)\cos(k_z)}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+I = \int_@{-pi@}^@{+pi@} @{dk_x/(2 pi)@} 
+    \int_@{-pi@}^@{+pi@} @{dk_y/(2 pi)@} 
+    \int_@{-pi@}^@{+pi@} @{dk_z/(2 pi)@} 
+     1 / (1 - cos(k_x)cos(k_y)cos(k_z))
+@end example
+@end ifinfo
+@noindent
+The analytic value of this integral is @math{\Gamma(1/4)^4/(4 \pi^3) =
+1.393203929685676859...}.  This is the mean time spent at the origin by
+a random walk on a body-centered cubic lattice in three dimensions.
 
 @example
 #include <math.h>
@@ -425,21 +471,35 @@ main ()
 @end example
 
 
-@node The Future
-@section The Future
-
-In the future, the author of the Monte Carlo routines intends to add
-more algorithms, greater control over the current ones,  more error
-handling, and a more consistent interface.  Probably something like
-the rng interface will evolve, so that something like 
-
-@example
-  integrator = gsl_monte_alloc(gsl_monte_vegas, dimension)
-@end example 
+@node Monte Carlo Integration References and Further Reading
+@section References and Further Reading
 
 @noindent
-will be possible.  The old interface will probably stay around for a
-while (though, since this is @math{version < 1}, the author does not
-want to be held to such as statement).
+The @sc{miser} algorithm is described in the following article,
+
+@itemize @asis
+@item
+@item
+W.H. Press, G.R. Farrar, @cite{Recursive Stratified Sampling for
+Multidimensional Monte Carlo Integration},
+Computers in Physics, v4 (1990), pp190-195.
+@end itemize
+@noindent
+The @sc{vegas} algorithm is described in the following papers,
+
+@itemize @asis
+@item
+G.P. Lepage,
+@cite{A New Algorithm for Adaptive Multidimensional Integration},
+Journal of Computational Physics 27, 192-203, (1978)
+
+@item
+G.P. Lepage,
+@cite{VEGAS: An Adaptive Multi-dimensional Integration Program},
+Cornell preprint CLNS 80-447, March 1980
+@end itemize
+
+@noindent
+
 
 
