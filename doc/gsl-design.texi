@@ -417,6 +417,10 @@ The references for these standards are the @cite{GNU Coding Standards}
 document, Harbison and Steele @cite{C: A Reference Manual}, the
 @cite{GNU C Library Manual} (version 2), and the Glib source code.
 
+For mathematical formulas, always follow the conventions in Abramowitz &
+Stegun, the @cite{Handbook of Mathematical Functions}, since it is the
+definitive reference and also in the public domain.
+
 If the project has a philosophy it is to "Think in C".  Since we are
 working in C we should only do what is natural in C, rather than trying
 to simulate features of other languages.  If there is something which is
@@ -654,6 +658,10 @@ resize_grid (struct grid * g, int k_new)
 ...
 @}
 @end smallexample
+@noindent
+Similarly, if you have a frequently recurring code fragment within a
+single file you can define a static or static inline function for it.
+This is typesafe and saves writing out everything in full.
 
 
 @node Comments, Minimal structs, Object-orientation, Design
