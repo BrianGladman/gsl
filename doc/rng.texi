@@ -232,7 +232,27 @@ void * state = gsl_rng_state (r);
 size_t n = gsl_rng_size (r);
 fwrite (state, n, 1, stream);
 @end example
+@end deftypefn
 
+@deftypefn {const gsl_rng_type **} gsl_rng_types_setup (void)
+This function returns a pointer to an array of all the available
+generator types, terminated by a null pointer. The function should be
+called once at the start of the program, if needed.  The following code
+fragment shows how to iterate over the array of generator types to print
+the names of the available algorithms,
+
+@example
+const gsl_rng_type **t, **t0;
+
+t0 = gsl_rng_types_setup ();
+
+printf("Available generators:\n");
+
+for (t = t0; *t != 0; t++)
+  @{
+    printf("%s\n", (*t)->name);
+  @}
+@end example
 @end deftypefn
 
 @node Random number environment variables
