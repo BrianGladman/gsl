@@ -102,17 +102,17 @@ gsl_integration_qawo_table;
 
 gsl_integration_qawo_table * 
 gsl_integration_qawo_table_alloc (double omega, double L, 
-				      enum gsl_integration_qawo_enum sine,
-				      size_t n);
+                                  enum gsl_integration_qawo_enum sine,
+                                  size_t n);
 
 int
 gsl_integration_qawo_table_set (gsl_integration_qawo_table * t,
-				    double omega, double L,
-				    enum gsl_integration_qawo_enum sine);
+                                double omega, double L,
+                                enum gsl_integration_qawo_enum sine);
 
 int
 gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
-					   double L);
+                                       double L);
 
 void
 gsl_integration_qawo_table_free (gsl_integration_qawo_table * t);
@@ -149,6 +149,8 @@ void gsl_integration_qk61 (const gsl_function * f, double a, double b,
 			   double *result, double *abserr,
 			   double *resabs, double *resasc);
 
+void gsl_integration_qcheb (gsl_function * f, double a, double b, 
+                            double *cheb12, double *cheb24);
 
 /* The low-level integration rules in QUADPACK are identified by small
    integers (1-6). We'll use symbolic constants to refer to them.  */
@@ -162,6 +164,15 @@ enum
     GSL_INTEG_GAUSS51 = 5,	/* 51 point Gauss-Kronrod rule */
     GSL_INTEG_GAUSS61 = 6	/* 61 point Gauss-Kronrod rule */
   };
+
+void 
+gsl_integration_qk (const int n, const double xgk[], 
+                    const double wg[], const double wgk[],
+                    double fv1[], double fv2[],
+                    const gsl_function *f, double a, double b,
+                    double * result, double * abserr, 
+                    double * resabs, double * resasc);
+
 
 int gsl_integration_qng (const gsl_function * f,
 			 double a, double b,

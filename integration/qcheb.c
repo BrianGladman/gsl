@@ -22,7 +22,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_integration.h>
 
-#include "integration.h"
 
 /* This function computes the 12-th order and 24-th order Chebyshev
    approximations to f(x) on [a,b] */

@@ -6,10 +6,9 @@ libgslintegration_la_SOURCES = \
 	qk15.c qk21.c qk31.c qk41.c qk51.c qk61.c \
 	qk.c \
 	qng.c qng.h \
-	qag.c qag_impl.c \
-	qags.c qags_impl.c \
-	qagi.c qagiu.c qagil.c \
-	qagp.c qagp_impl.c \
+	qag.c  \
+	qags.c  \
+	qagp.c  \
 	workspace.c \
 	qcheb.c qawc.c \
 	qmomo.c qaws.c \
@@ -17,7 +16,7 @@ libgslintegration_la_SOURCES = \
 	qawf.c 
 
 pkginclude_HEADERS = gsl_integration.h
-noinst_HEADERS = integration.h qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c err.c
+noinst_HEADERS = qpsrt.c qpsrt2.c qelg.c qc25c.c qc25s.c qc25f.c ptsort.c util.c err.c
 
 TESTS = test
 check_PROGRAMS = test

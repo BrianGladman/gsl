@@ -19,7 +19,6 @@
 
 #include <config.h>
 #include <gsl/gsl_integration.h>
-#include "integration.h"
 
 /* Gauss quadrature weights and kronrod quadrature abscissae and
    weights as evaluated with 80 decimal digit arithmetic by
