@@ -47,6 +47,14 @@ encounter this problem.
 This may be fixed in more recent versions of gcc.  Compiling without
 optimisation will work around the bug.
 
+The library should compile successfully with Compaq's C compiler using
+the -std option for ANSI conformance.  Use
+
+    CC=cc ./configure    
+    make CFLAGS="-std"
+
+to build the library this way.
+
 DOS
 ---
 
