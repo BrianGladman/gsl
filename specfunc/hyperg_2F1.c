@@ -112,7 +112,7 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
     double F1 =  (3.0*n2 + (a+b-6)*n + 2 - a*b - 2*(a+b)) / (2*tnm3*npcm1);
     double F2 = -(3.0*n2 - (a+b+6)*n + 2 - a*b)*npam1*npbm1/(4*tnm1*tnm3*npcm2*npcm1);
     double F3 = (npam2*npam1*npbm2*npbm1*(n-a-2)*(n-b-2)) / (8*tnm3*tnm3*tnm5*(n+c-3)*npcm2*npcm1);
-    double E  = npam1*npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
+    double E  = -npam1*npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
 
     double An = (1.0+F1*x)*Anm1 + (E + F2*x)*x*Anm2 + F3*x3*Anm3;
     double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
@@ -131,7 +131,7 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
     Anm2 = Anm1;
     Anm1 = An;
   }
-  
+
   *result = F;
 
   if(*prec > locEPS)
@@ -143,11 +143,11 @@ static int hyperg_2F1_luke(const double a, const double b, const double c,
 void testy(void)
 {
   double y, prec;
-  double a = 10.0;
-  double b = 3.0;
+  double a = 50.0;
+  double b = 50.3;
   double c = 1.0;
   double x = 0.8;
-  int stat = hyperg_2F1_luke(a, b, c, x, &y, &prec);
+  int stat = gsl_sf_hyperg_2F1_impl(a, b, c, x, &y);
   printf("%24.18g   %24.18g   %6.4g  %2d\n", x, y, prec, stat);
   exit(0);
 }
@@ -190,7 +190,7 @@ static int hyperg_2F1_conj_luke(const double aR, const double aI, const double c
     double F1 =  (3.0*n2 + (apb-6)*n + 2 - atimesb - 2*apb) / (2*tnm3*npcm1);
     double F2 = -(3.0*n2 - (apb+6)*n + 2 - atimesb)*npam1_npbm1/(4*tnm1*tnm3*npcm2*npcm1);
     double F3 = (npam2_npbm2*npam1_npbm1*(nm2*nm2 - nm2*apb + atimesb)) / (8*tnm3*tnm3*tnm5*(n+c-3)*npcm2*npcm1);
-    double E  = npam1_npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
+    double E  = -npam1_npbm1*(n-c-1) / (2*tnm3*npcm2*npcm1);
 
     double An = (1.0+F1*x)*Anm1 + (E + F2*x)*x*Anm2 + F3*x3*Anm3;
     double Bn = (1.0+F1*x)*Bnm1 + (E + F2*x)*x*Bnm2 + F3*x3*Bnm3;
@@ -243,29 +243,42 @@ static int pow_omx(const double x, const double p, double * result)
   }
 }
 
-int gsl_sf_hyperg_2F1_impl(const double a, const double b, const double c,
+int gsl_sf_hyperg_2F1_impl(double a, double b, const double c,
                            const double x,
-			   double * result
-			   )
+                           double * result
+                           )
 {
   const double ax = fabs(x);
-  const double d  = c - a - b;
-  const int a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
-  const int b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
-  const int c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
-  const int d_integer     = ( fabs(d - rint(d)) < locEPS );
+  double d;
+  int a_neg_integer;
+  int b_neg_integer;
+  int c_neg_integer;
+  int d_integer;
   
   if(ax >= 1.0) return GSL_EDOM;
 
+  if(fabs(a) > fabs(b)) {
+    double tmp = a;
+    a = b;
+    b = tmp;
+  }
+
+  d  = c - a - b;
+  a_neg_integer = ( a < 0.0  &&  fabs(a - rint(a)) < locEPS );
+  b_neg_integer = ( b < 0.0  &&  fabs(b - rint(b)) < locEPS );
+  c_neg_integer = ( c < 0.0  &&  fabs(c - rint(c)) < locEPS );
+  d_integer	= ( fabs(d - rint(d)) < locEPS );
+
   if(c_neg_integer) {
-    if(! (a_neg_integer && a > c)) return GSL_EDOM;
-    if(! (b_neg_integer && b > c)) return GSL_EDOM;
+    if(! (a_neg_integer && a > c + 0.1)) return GSL_EDOM;
+    if(! (b_neg_integer && b > c + 0.1)) return GSL_EDOM;
   }
   
   if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
     return pow_omx(x, c-a-b, result);  /* (1-x)^(c-a-b) */
   }
-  
+
+
   if(x < -0.5 && b > 0.0) {
     double F, F_prec, p;
     int status_F = hyperg_2F1_series(a, c-b, c, -x/(1.0-x), &F, &F_prec);
