@@ -1,45 +1,17 @@
 /* Author:  G. Jungman
  * RCS:     $Id$
  *
- * DESCRIPTION:
- *
- * Returns Bessel function of order n, where n is a
- * (possibly negative) integer.
- *
- * The ratio of jn(x) to j0(x) is computed by backward
- * recurrence.  First the ratio jn/jn-1 is found by a
- * continued fraction expansion.  Then the recurrence
- * relating successive orders is applied until j0 or j1 is
- * reached.
- *
-
- *
- * ACCURACY:
- *
- *                      Absolute error:
- * arithmetic   range      # trials      peak         rms
- *    DEC       0, 30        5500       6.9e-17     9.3e-18
- *    IEEE      0, 30        5000       4.4e-16     7.9e-17
- *
- *
- * Not suitable for large n or x. Use jv() instead.
- *
  */
-
-/*							jn.c
-Cephes Math Library Release 2.0:  April, 1987
-Copyright 1984, 1987 by Stephen L. Moshier
-Direct inquiries to 30 Frost Street, Cambridge, MA 02140
-*/
-
 #include <gsl_math.h>
 #include <gsl_errno.h>
 #include "gsl_sf_pow_int.h"
 #include "gsl_sf_bessel.h"
 
-extern int gsl_sf_bessel_J0_impl(const double, double *);
-extern int gsl_sf_bessel_J1_impl(const double, double *);
-extern int gsl_sf_fact_impl(const int, double *);
+#include "bessel.h"
+#include "bessel_J0_impl.h"
+#include "bessel_J1_impl.h"
+
+#include "bessel_Jn_impl.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-* (semi)Private Implementations *-*-*-*-*-*-*-*-*-*-*-*/
@@ -51,7 +23,7 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
   if(n < 0) {
     /* reduce to case n >= 0 */
     n = -n;
-    if(GSL_IS_ODD(n)) sign = -1;
+    if(GSL_IS_ODD(n)) sign = -sign;
   }  
 
   if(x < 0.) {
@@ -72,6 +44,7 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
     *result = sign * b1;
     return GSL_SUCCESS;
   }
+  /*
   else if(n == 2) {
     if(x == 0.) {
       *result = 0.;
@@ -94,21 +67,26 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       return GSL_SUCCESS;
     }    
   }
+  */
   else {
     if(x == 0.) {
       *result = 0.;
       return GSL_SUCCESS;
     }
-    else if(x < 2.*GSL_SQRT_MACH_EPS * n) {
-      double nfact;
-      gsl_sf_fact_impl(n, &nfact);
-      *result = gsl_sf_pow_int(0.5*x, n)/nfact;
-      if(*result == 0.) {
-	return GSL_EUNDRFLW;
-      }
-      else {
-	return GSL_SUCCESS;
-      }
+    else if(x*x < 2.*(n+1)*GSL_SQRT_MACH_EPS) {
+      int status = gsl_sf_bessel_Inu_Jnu_taylor_impl((double)n, x, -1, 4, result);
+      *result *= sign;
+      return status;
+    }
+    else if(x > (n*n+1) * GSL_ROOT3_MACH_EPS) {
+      int status = gsl_sf_bessel_Jnu_asympx_impl((double)n, x, result);
+      *result *= sign;
+      return status;
+    }
+    else if(n > 700 && x < 0.7*n) {
+      int status = gsl_sf_bessel_Jnu_asymp_Debye_impl((double)n, x, result);
+      *result *= sign;
+      return status;
     }
     else {
       double pkm2, pkm1, r;
@@ -142,10 +120,14 @@ int gsl_sf_bessel_Jn_impl(int n, double x, double * result)
       while( --k > 0 );
 
       if(fabs(pk) > fabs(pkm1)) {
-	ans = gsl_sf_bessel_J1(x)/pk;
+        double b1;
+	gsl_sf_bessel_J1_impl(x, &b1);
+	ans = b1/pk;
       }
       else {
-	ans = gsl_sf_bessel_J0(x)/pkm1;
+        double b0;
+	gsl_sf_bessel_J0_impl(x, &b0);
+	ans = b0/pkm1;
       }
 
       *result = sign * ans;

@@ -191,6 +191,19 @@ int gsl_sf_bessel_Inu_scaled_asympx_impl(const double nu, const double x, double
     return GSL_SUCCESS;
 }
 
+/* x >> nu*nu+1; error ~ O( ((nu*nu+1)/x)^3 ) */
+int gsl_sf_bessel_Knu_scaled_asympx_impl(const double nu, const double x, double * result)
+{
+  double mu   = 4.*nu*nu;
+  double mum1 = mu-1.;
+  double mum9 = mu-9.;
+  *result = sqrt(M_PI/(2.*x)) * (1. + mum1/(8.*x) + mum1*mum9/(128.*x*x));
+  if(*result == 0.)
+    return GSL_EUNDRFLW;
+  else 
+    return GSL_SUCCESS;
+}
+
 /* nu -> Inf; x < nu   [Abramowitz+Stegun, 9.3.7] */
 int gsl_sf_bessel_Jnu_asymp_Debye_impl(const double nu, const double x, double * result)
 {

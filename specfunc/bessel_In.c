@@ -6,6 +6,7 @@
 #include <gsl_errno.h>
 #include "gsl_sf_bessel.h"
 
+#include "bessel.h"
 #include "bessel_I0_impl.h"
 #include "bessel_I1_impl.h"
 
@@ -38,7 +39,7 @@ static int bessel_In_scaled(const int n, const double x, double * b_n, double * 
       return GSL_SUCCESS;
   }
   else if(n > 700) {
-    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n  );
+    gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n, x, b_n);
     if(b_nm1 != (double *)0) {
       gsl_sf_bessel_Inu_scaled_asymp_unif_impl(n-1, x, b_nm1);
     }
@@ -170,7 +171,7 @@ int gsl_sf_bessel_In_impl(int n, const double x, double * result)
   int j;
   double ax = fabs(x);
   
-  n = abs(n);
+  n = abs(n);  /* I(-n, z) = I(n, z) */
   
   if(ax > GSL_LOG_DBL_MAX - 1.) {
     *result = 0.; /* FIXME: should be Inf */
@@ -188,7 +189,7 @@ int gsl_sf_bessel_In_array_impl(int n, const double x, double * result_array)
   int j;
   double ax = fabs(x);
   
-  n = abs(n);
+  n = abs(n);  /* I(-n, z) = I(n, z) */
 
   if(ax > GSL_LOG_DBL_MAX - 1.) {
     for(j=0; j<=n; j++) result_array[j] = 0.; /* FIXME: should be Inf */
