@@ -2338,6 +2338,15 @@ R.M. Barnett et al., Physical Review D54, 1 (1996)
 The Review of Particle Physics is available online in postscript and pdf
 format.
 
+The source code for the @sc{diehard} random number generator tests is also
+available online.
+
+@itemize @asis
+@item
+@cite{DIEHARD source code} 
+G. Marsaglia
+@url{http://stat.fsu.edu/pub/diehard/}
+@end itemize
 
 @node Random Number Acknowledgements
 @section Random Number Acknowledgements
