@@ -1067,7 +1067,7 @@ hyperg_U_bge1(const double a, const double b, const double x,
     else {
       /* Upward recursion on b.
        */
-      const err_mult = fabs(b-b0) + fabs(a-a0) + 1.0;
+      const double err_mult = fabs(b-b0) + fabs(a-a0) + 1.0;
       const double lnscale = log(scale_factor);
       gsl_sf_result lnm;
       gsl_sf_result y;
