@@ -223,3 +223,75 @@ FD_9(500) = 2.692738498426942915e+20 +- 2.629627439870118259e+47
 Exact     = 2.692738498...e+20
 
 ----------------------------------------------------------------------
+
+BUG#11 -- SVD does not handle N=1 STATUS: open
+
+From: Tiago de Paula Peixoto <count0@fissionauthority.com>
+To: gsl-discuss@sources.redhat.com
+Subject: Problem with least-squares fitting.
+Date: Mon, 4 Nov 2002 14:46:02 -0200
+
+ I'm experiencing a weird error message using the GSL linear least squares
+multi-parameter fitting. When I try to fit a function with only one
+parameter, such as "y = a * x", I get the following error:
+
+subvector_source.c:28: vector length n must be positive integer
+(gsl_error: invalid argument supplied by user)
+
+The fit results seem OK, and I don't know what I'm doing wrong. When I fit
+with 2 parameters or more, everything works fine.
+
+The calling stack is:
+
+#0  least_gsl_error_handler (
+    reason=0x4019be80 "vector length n must be positive integer",
+    file=0x4019be4e "subvector_source.c", line=28, gsl_errno=4)
+    at least_test.c:11
+#1  0x4008fc92 in gsl_error () from /usr/lib/libgsl.so.0
+#2  0x40169857 in gsl_vector_subvector () from /usr/lib/libgsl.so.0
+#3  0x400ba859 in gsl_linalg_SV_decomp () from /usr/lib/libgsl.so.0
+#4  0x400bb4c4 in gsl_linalg_SV_decomp_mod () from /usr/lib/libgsl.so.0
+#5  0x400ea171 in gsl_multifit_linear () from /usr/lib/libgsl.so.0
+#6  0x080489a5 in main () at least_test.c:50
+
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_fit.h>
+#include <gsl/gsl_multifit.h>
+void least_gsl_error_handler( const char * reason,
+			      const char * file,
+			      int line,
+			      int gsl_errno)
+{
+  printf("%s:%d: %s (gsl_error: %s)\n", 
+	 file, line, reason, gsl_strerror(gsl_errno));
+}
+int main()
+{
+  gsl_vector *x,*y,*p;
+  gsl_multifit_linear_workspace *workspace;
+  gsl_matrix *X, *cov;
+  double chi2;
+  int i;
+  double xi[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
+  double yi[5] = {4.0, 8.0, 12.0, 16.0, 20.0};
+  gsl_set_error_handler( &least_gsl_error_handler );
+  workspace = gsl_multifit_linear_alloc(5, 1);
+  cov = gsl_matrix_alloc(1, 1);
+  p = gsl_vector_alloc(1);
+  x = gsl_vector_alloc(5);
+  y = gsl_vector_alloc(5);
+  X = gsl_matrix_alloc( 5, 1 );
+  for (i = 0; i < 5; i++)
+    {
+      gsl_vector_set(x, i, xi[i]);
+      gsl_vector_set(y, i, yi[i]);
+      gsl_matrix_set(X, i, 0, xi[i]); /* straight line */
+    }
+  gsl_multifit_linear(X, y, p, cov, &chi2, workspace);
+  printf(" a = %e +/- %e\n chi2 = %e\n", 
+	 gsl_vector_get(p, 0), sqrt(gsl_matrix_get(cov,0,0)), chi2);
+  return 0;
+}
+
+----------------------------------------------------------------------
