@@ -13,60 +13,71 @@ struct data {
 };
 
 int
-expb_f (const gsl_vector * x, void *params, gsl_vector * f)
+expb_f (const gsl_vector * x, void *params, 
+        gsl_vector * f)
 {
   size_t n = ((struct data *)params)->n;
   double *y = ((struct data *)params)->y;
   double *sigma = ((struct data *) params)->sigma;
 
-  double x0 = gsl_vector_get (x, 0);
-  double A = gsl_vector_get (x, 1);
-  double lambda = gsl_vector_get (x, 2);
+  double A = gsl_vector_get (x, 0);
+  double lambda = gsl_vector_get (x, 1);
+  double b = gsl_vector_get (x, 2);
 
   size_t i;
 
   for (i = 0; i < n; i++)
     {
+      /* Model Yi = A * exp(-lambda * i) + b */
       double t = i;
-      double Yi = x0 + A * exp (lambda * t);
-      gsl_vector_set (f, i, (y[i] - Yi)/sigma[i]);
+      double Yi = A * exp (-lambda * t) + b;
+      gsl_vector_set (f, i, (Yi - y[i])/sigma[i]);
     }
 
   return GSL_SUCCESS;
 }
 
 int
-expb_df (const gsl_vector * x, void *params, gsl_matrix * df)
+expb_df (const gsl_vector * x, void *params, 
+         gsl_matrix * J)
 {
   size_t n = ((struct data *)params)->n;
   double *sigma = ((struct data *) params)->sigma;
 
-  double A = gsl_vector_get (x, 1);
-  double lambda = gsl_vector_get (x, 2);
+  double A = gsl_vector_get (x, 0);
+  double lambda = gsl_vector_get (x, 1);
 
   size_t i;
 
   for (i = 0; i < n; i++)
     {
-      /*  Yi = x0 + A * exp(lambda * i)  */
+      /* Jacobian matrix J(i,j) = dfi / dxj, */
+      /* where fi = (Yi - yi)/sigma[i],      */
+      /*       Yi = A * exp(-lambda * i) + b  */
+      /* and the xj are the parameters (A,lambda,b) */
       double t = i;
       double s = sigma[i];
-      gsl_matrix_set (df, i, 0, -1/s);
-      gsl_matrix_set (df, i, 1, -exp (lambda * t)/s);
-      gsl_matrix_set (df, i, 2, -t * A * exp (lambda * t)/s);
+      double e = exp(-lambda * t);
+      gsl_matrix_set (J, i, 0, e/s); 
+      gsl_matrix_set (J, i, 1, -t * A * e/s);
+      gsl_matrix_set (J, i, 2, 1/s);
+
 
     }
   return GSL_SUCCESS;
 }
 
 int
-expb_fdf (const gsl_vector * x, void *params, gsl_vector * f, gsl_matrix * df)
+expb_fdf (const gsl_vector * x, void *params,
+          gsl_vector * f, gsl_matrix * J)
 {
   expb_f (x, params, f);
-  expb_df (x, params, df);
+  expb_df (x, params, J);
 
   return GSL_SUCCESS;
 }
+
+#define N 40
 
 int
 main (void)
@@ -77,42 +88,51 @@ main (void)
   int status;
   size_t i, iter = 0;
 
-  const size_t n = 40;
+  const size_t n = N;
   const size_t p = 3;
 
-  gsl_vector *g = gsl_vector_calloc (p);
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
 
-  double * y = malloc(n * sizeof(double));
-  double * sigma = malloc(n * sizeof(double));
+  double y[N], sigma[N];
 
   struct data d = { n, y, sigma};
   
-  gsl_multifit_function_fdf f =
-    { &expb_f, &expb_df, &expb_fdf, n, p, (void *) &d };
+  gsl_multifit_function_fdf f;
 
-  double x_init[3] = { 0.0, 1.0, -0.0 };
+  double x_init[3] = { 1.0, 0.0, 0.0 };
 
-  gsl_vector x = gsl_vector_view (x_init, p);
+  gsl_vector_view x = gsl_vector_view_array (x_init, p);
 
+  const gsl_rng_type * type;
   gsl_rng * r;
 
   gsl_rng_env_setup();
-  r = gsl_rng_alloc (gsl_rng_default);
+
+  type = gsl_rng_default;
+  r = gsl_rng_alloc (type);
+
+  f.f = &expb_f;
+  f.df = &expb_df;
+  f.fdf = &expb_fdf;
+  f.n = n;
+  f.p = p;
+  f.params = &d;
 
   /* This is the data to be fitted */
 
   for (i = 0; i < n; i++)
     {
       double t = i;
-      y[i] = 1.0 + 5 * exp (-0.1 * t) + gsl_ran_gaussian(r, 0.1);
+      y[i] = 1.0 + 5 * exp (-0.1 * t) 
+                 + gsl_ran_gaussian (r, 0.1);
       sigma[i] = 0.1;
-      printf("data: %d %g %g\n", i, y[i], sigma[i]);
+      printf ("data: %d %g %g\n", i, y[i], sigma[i]);
     };
+
 
   T = gsl_multifit_fdfsolver_lmsder;
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
-  gsl_multifit_fdfsolver_set (s, &f, &x);
+  gsl_multifit_fdfsolver_set (s, &f, &x.vector);
 
   print_state (iter, s);
 
@@ -126,9 +146,10 @@ main (void)
       print_state (iter, s);
 
       if (status)
-	break;
+        break;
 
-      status = gsl_multifit_test_delta (s->dx, s->x, 0.0001, 0.0001);
+      status = gsl_multifit_test_delta (s->dx, s->x,
+                                        1e-4, 1e-4);
     }
   while (status == GSL_CONTINUE && iter < 500);
 
@@ -139,24 +160,29 @@ main (void)
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
 
-  printf("b      = %g +/- %g\n", FIT(0), ERR(0));
-  printf("A      = %g +/- %g\n", FIT(1), ERR(1));
-  printf("lambda = %g +/- %g\n", FIT(2), ERR(2));
+  printf ("A      = %.5f +/- %.5f\n", FIT(0), ERR(0));
+  printf ("lambda = %.5f +/- %.5f\n", FIT(1), ERR(1));
+  printf ("b      = %.5f +/- %.5f\n", FIT(2), ERR(2));
 
+  { 
+    double chi = gsl_blas_dnrm2(s->f);
+    printf("chisq/dof = %g\n",  pow(chi, 2.0)/ (n - p));
+  }
 
   printf ("status = %s\n", gsl_strerror (status));
 
   gsl_multifit_fdfsolver_free (s);
+  return 0;
 }
 
 int
 print_state (size_t iter, gsl_multifit_fdfsolver * s)
 {
-  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f |f(x)| = %g\n",
-	  iter,
-	  gsl_vector_get (s->x, 0), gsl_vector_get (s->x, 1),
-	  gsl_vector_get (s->x, 2), gsl_blas_dnrm2 (s->f));
+  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
+          "|f(x)| = %g\n",
+          iter,
+          gsl_vector_get (s->x, 0), 
+          gsl_vector_get (s->x, 1),
+          gsl_vector_get (s->x, 2), 
+          gsl_blas_dnrm2 (s->f));
 }
-
-
-
