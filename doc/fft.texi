@@ -19,7 +19,7 @@ currently not available in @code{gsl}.
 * Test Signals::                
 @end menu
 
-@node Mathematical Definitions
+@node Mathematical Definitions, Radix-2 algorithms for complex data
 @section Mathematical Definitions 
 
 All the FFT functions offer three types of transform: forwards, inverse
@@ -60,7 +60,7 @@ When the overall scale of the result is unimportant it is often
 convenient to use the backwards FFT instead of the inverse to save
 unnecessary divisions.
 
-@node Radix-2 algorithms for complex data
+@node Radix-2 algorithms for complex data, Mixed-Radix radix for complex data, Mathematical Definitions
 @section Radix-2 algorithms for complex data
 
 The radix-2 algorithms described in this section are simple and compact,
@@ -138,7 +138,7 @@ These are decimation-in-frequency versions of the radix-2 FFT functions.
 * Radix-2 Examples::            
 @end menu
 
-@node Radix-2 Examples
+@node Radix-2 Examples,  , Radix-2 algorithms for complex data, Radix-2 algorithms for complex data
 @subsection Radix-2 Examples
 
 Here is an example program which computes the FFT of a short pulse in a
@@ -191,7 +191,7 @@ error handler (which calls @code{abort} for any errors).  If you are not
 using a safe error handler you would need to check the return status of
 @code{gsl_fft_complex_radix2_forward}.
 
-@node Mixed-Radix radix for complex data
+@node Mixed-Radix radix for complex data, Radix-2 routines for real data, Radix-2 algorithms for complex data
 @section Mixed-Radix radix for complex data
 
 This section describes mixed-radix FFT algorithms for complex data.  The
@@ -395,8 +395,8 @@ The length of the data @var{n} and the length used to compute the given
 * Mixed-Radix Real Examples::   
 @end menu
 
-@node Mixed-Radix Real Examples
-@subsection Mixed-Radix Real Examples
+@node  Mixed-Radix Complex Examples,  , Mixed-Radix radix for complex data, Mixed-Radix radix for complex data
+@subsection Mixed-Radix Complex Examples
 
 Here is an example program which computes the FFT of a short pulse in a
 sample of length 630 (@math{=2*3*3*5*7}) using the mixed-radix
@@ -460,18 +460,14 @@ error handler (which calls @code{abort} for any errors).  If you are not
 using a safe error handler you would need to check the return status of
 of all the @code{gsl} routines.
 
-@node Mixed-Radix routines for real data
-@section Mixed-Radix routines for real data
+@node Radix-2 routines for real data, Mixed-Radix routines for real data, Mixed-Radix radix for complex data
+@section Radix-2 routines for real data
 
-This section describes mixed-radix FFT algorithms for real data. The
-mixed-radix functions work for FFTs of any length. They are a
-reimplementation of the real-FFT routines in the Fortran FFTPACK library
-by Paul Swarztrauber. The theory behind the algorithm is explained in
-the article "Fast Mixed-Radix Real Fourier Transforms" by Clive
-Temperton. The routines here use the same indexing scheme and basic
-algorithms as FFTPACK.
+This section describes radix-2 FFT algorithms for real data. They use
+the Cooley-Tukey algorithm to compute FFTs for lengths which are a power
+of 2.
 
-These functions for real data are similar to those for complex data.
+The functions for real data are similar to those for complex data.
 However, there is an important difference between forward and inverse
 transforms. The fourier transform, @math{z}, of a real data sequence,
 @math{x}, is not real. It is a complex sequence with a special symmetry:
@@ -510,6 +506,24 @@ value, where @math{k=n/2}, is also real). Only @var{n} real numbers are
 required to store the half-complex sequence the transform of a real
 sequence of length @var{n} can be stored in the same size array as the
 original data.
+
+All these functions are declared in the header files
+@file{gsl_fft_real.h} and @file{gsl_fft_halfcomplex.h}.
+
+@deftypefun int gsl_fft_real_radix2 (complex data[], const unsigned int n)
+
+@end deftypefun
+
+@node Mixed-Radix routines for real data, Test Signals, Radix-2 routines for real data
+@section Mixed-Radix routines for real data
+
+This section describes mixed-radix FFT algorithms for real data. The
+mixed-radix functions work for FFTs of any length. They are a
+reimplementation of the real-FFT routines in the Fortran FFTPACK library
+by Paul Swarztrauber. The theory behind the algorithm is explained in
+the article "Fast Mixed-Radix Real Fourier Transforms" by Clive
+Temperton. The routines here use the same indexing scheme and basic
+algorithms as FFTPACK.
 
 The functions use the FFTPACK storage convention for half-complex
 sequences. In this convention the half-complex transform of a real
@@ -764,7 +778,7 @@ is zero).
 * Mixed-Radix Complex Examples::  
 @end menu
 
-@node Mixed-Radix Complex Examples
+@node Mixed-Radix Complex Examples,  , Mixed-Radix routines for real data, Mixed-Radix routines for real data
 @subsection Mixed-Radix Complex Examples
 
 Here is an example program using @code{gsl_fft_real} and
@@ -833,7 +847,7 @@ int main ()
 @end example
 
 
-@node Test Signals
+@node Test Signals,  , Mixed-Radix routines for real data
 @section Test Signals
 
 [FIXME: these need to be made consistent with the new FFT definition]
