@@ -62,12 +62,17 @@ solve_tridiag(
        */
       alpha[0] = diag[0];
       gamma[0] = offdiag[0] / alpha[0];
+
       for (i = 1; i < N - 1; i++)
 	{
 	  alpha[i] = diag[d_stride * i] - offdiag[o_stride*(i - 1)] * gamma[i - 1];
 	  gamma[i] = offdiag[o_stride * i] / alpha[i];
 	}
-      alpha[N - 1] = diag[d_stride * (N - 1)] - offdiag[o_stride*(N - 2)] * gamma[N - 2];
+
+      if (N > 1) 
+        {
+          alpha[N - 1] = diag[d_stride * (N - 1)] - offdiag[o_stride*(N - 2)] * gamma[N - 2];
+        }
 
       /* update RHS */
       z[0] = b[0];
