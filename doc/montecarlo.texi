@@ -121,7 +121,7 @@ compromise that Vegas (ie, Peter Lepage) adopts is to assume that
 this case, it is not hard to show that the optimal distribution is
 @equation
 g_1(x_1) = [\int dx_1 \ldots dx_n 
-        @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^{(1/2)}
+        @{f^2(x_1,\dots,x_n)\over g_2(x_2)\ldots g_n(x_n) @} ]^@{(1/2)@}
 @end equation
 
 Lepage's Vegas is actually a bit fancier than this, combining
