@@ -68,6 +68,15 @@ int gsl_vector_ulong_reverse (gsl_vector_ulong * v);
 int gsl_vector_ulong_swap (gsl_vector_ulong * v, gsl_vector_ulong * w);
 int gsl_vector_ulong_swap_elements (gsl_vector_ulong * v, const size_t i, const size_t j);
 
+unsigned long gsl_vector_ulong_max (const gsl_vector_ulong * v);
+unsigned long gsl_vector_ulong_min (const gsl_vector_ulong * v);
+void gsl_vector_ulong_minmax (const gsl_vector_ulong * v, unsigned long * min_out, unsigned long * max_out);
+
+size_t gsl_vector_ulong_max_index (const gsl_vector_ulong * v);
+size_t gsl_vector_ulong_min_index (const gsl_vector_ulong * v);
+void gsl_vector_ulong_minmax_index (const gsl_vector_ulong * v, size_t * imin, size_t * imax);
+
+
 int gsl_vector_ulong_isnull (gsl_vector_ulong * v);
 
 extern int gsl_check_range;

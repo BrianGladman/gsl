@@ -101,6 +101,70 @@ FUNCTION (test, func) (void)
 
   gsl_test (status, NAME(gsl_vector) "_reverse" DESC " reverses elements correctly") ;
 
+  {
+    BASE exp_max = FUNCTION(gsl_vector,get)(v, 0);
+    BASE exp_min = FUNCTION(gsl_vector,get)(v, 0);
+    size_t exp_imax = 0, exp_imin = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        BASE k = FUNCTION(gsl_vector, get) (v, i) ;
+        if (k > exp_max) {
+          exp_max = k;
+          exp_imax = i;
+        }
+        if (k < exp_min) {
+          exp_min = k;
+          exp_imin = i;
+        }
+      }
+
+    {
+      BASE max = FUNCTION(gsl_vector, max) (v) ;
+
+      gsl_test (max != exp_max, NAME(gsl_vector) "_max returns correct maximum value");
+    }
+
+    {
+      BASE min = FUNCTION(gsl_vector, min) (v) ;
+      
+      gsl_test (min != exp_min, NAME(gsl_vector) "_min returns correct minimum value");
+    }
+
+    {
+      BASE min, max;
+      FUNCTION(gsl_vector, minmax) (v, &min, &max);
+
+      gsl_test (max != exp_max, NAME(gsl_vector) "_minmax returns correct maximum value");
+      gsl_test (min != exp_min, NAME(gsl_vector) "_minmax returns correct minimum value");
+    }
+
+
+    {
+      size_t imax =  FUNCTION(gsl_vector, max_index) (v) ;
+
+      gsl_test (imax != exp_imax, NAME(gsl_vector) "_max_index returns correct maximum i");
+    }
+
+    {
+      size_t imin = FUNCTION(gsl_vector, min_index) (v) ;
+
+      gsl_test (imin != exp_imin, NAME(gsl_vector) "_min_index returns correct minimum i");
+    }
+
+    {
+      size_t imin, imax;
+
+      FUNCTION(gsl_vector, minmax_index) (v,  &imin, &imax);
+
+      gsl_test (imax != exp_imax, NAME(gsl_vector) "_minmax_index returns correct maximum i");
+      gsl_test (imin != exp_imin, NAME(gsl_vector) "_minmax_index returns correct minimum i");
+    }
+  }
+
+
+
+
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 }
 

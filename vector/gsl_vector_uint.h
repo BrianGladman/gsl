@@ -68,6 +68,15 @@ int gsl_vector_uint_reverse (gsl_vector_uint * v);
 int gsl_vector_uint_swap (gsl_vector_uint * v, gsl_vector_uint * w);
 int gsl_vector_uint_swap_elements (gsl_vector_uint * v, const size_t i, const size_t j);
 
+unsigned int gsl_vector_uint_max (const gsl_vector_uint * v);
+unsigned int gsl_vector_uint_min (const gsl_vector_uint * v);
+void gsl_vector_uint_minmax (const gsl_vector_uint * v, unsigned int * min_out, unsigned int * max_out);
+
+size_t gsl_vector_uint_max_index (const gsl_vector_uint * v);
+size_t gsl_vector_uint_min_index (const gsl_vector_uint * v);
+void gsl_vector_uint_minmax_index (const gsl_vector_uint * v, size_t * imin, size_t * imax);
+
+
 int gsl_vector_uint_isnull (gsl_vector_uint * v);
 
 extern int gsl_check_range;
