@@ -1,3 +1,7 @@
+Mon Apr 10 14:31:01 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* added functions for permuting data and vectors
+
 Thu Feb 24 17:53:55 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* permutation.c (gsl_permutation_invert): add an inverse function

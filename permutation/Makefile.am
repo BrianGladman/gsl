@@ -1,10 +1,12 @@
 noinst_LTLIBRARIES = libgslpermutation.la 
 
-pkginclude_HEADERS = gsl_permutation.h
+pkginclude_HEADERS = gsl_permutation.h gsl_permute.h
 
 INCLUDES= -I$(top_builddir)
 
-libgslpermutation_la_SOURCES = init.c file.c permutation.c
+libgslpermutation_la_SOURCES = init.c file.c permutation.c permute.c
+
+noinst_HEADERS = permute_source.c
 
 #TESTS = test
 
