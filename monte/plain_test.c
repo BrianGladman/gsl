@@ -52,16 +52,17 @@ int main()
   for (num_dim = 9; num_dim < 10; num_dim++) {
     calls *= 1.8;
     gsl_monte_plain(r, fconst, xl, xu2, num_dim, calls, &res, &err);
-    gsl_test_rel(res, pow(2, num_dim), tol, "plain(f0), dim=%d, err=%.4f", 
-		 num_dim, err); 
+    gsl_test_rel(res, pow(2, num_dim), tol, 
+		 "plain(f0), calls=%d, dim=%d, err=%.4f", 
+		 calls, num_dim, err); 
   }
 
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
     gsl_monte_plain(r, f0, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "plain(f0), dim=%d, err=%.4f", 
-		 num_dim, err); 
+    gsl_test_rel(res, 1.0, tol, "plain(f0), calls=%d, dim=%d, err=%.4f", 
+		 calls, num_dim, err); 
   }
 
   /*  verbose = 1;*/
@@ -84,8 +85,8 @@ int main()
       tol = 0.14;
     }
     status = gsl_monte_plain(r, f1, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "plain(f1), dim=%d, err=%.4f", 
-		 num_dim, err); 
+    gsl_test_rel(res, 1.0, tol, "plain(f1), calls=%d, dim=%d, err=%.4f", 
+		 calls, num_dim, err); 
   }
 
   /*  verbose = 1; */
@@ -111,8 +112,8 @@ int main()
       break;
     }
     status = gsl_monte_plain(r, f2, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "plain(f2), dim=%d, err=%.4f", 
-		 num_dim, err); 
+    gsl_test_rel(res, 1.0, tol, "plain(f2), calls=%d, dim=%d, err=%.4f", 
+		 calls, num_dim, err); 
   }
 
   /*  verbose = 1; */
@@ -125,8 +126,8 @@ int main()
     if ( num_dim == 6 )
       tol *= 3;
     status = gsl_monte_plain(r, f3, xl, xu, num_dim, calls, &res, &err);
-    gsl_test_rel(res, 1.0, tol, "plain(f3), dim=%d, err=%.4f", 
-		 num_dim, err); 
+    gsl_test_rel(res, 1.0, tol, "plain(f3), calls=%d, dim=%d, err=%.4f", 
+		 calls, num_dim, err); 
   }
 
   return gsl_test_summary();

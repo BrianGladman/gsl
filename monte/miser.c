@@ -35,9 +35,10 @@ double estimate_frac =  0.1;
 double ALPHA = 2.0/3.0; 
 double dither;
 
-enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_MC = 1};
+enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
+      ESTIMATE_STYLE_MC = 1};
 
-int estimate_style = -1;
+int estimate_style = ESTIMATE_STYLE_NR;
 
 int gsl_monte_miser(const gsl_rng * r, 
 		    double (*func)(double []), double xl[], double xu[], 
@@ -59,9 +60,7 @@ int gsl_monte_miser(const gsl_rng * r,
   double var, best_var;
   double vol;
 
-  gsl_vector *fmax_l, *fmax_r, *fmin_l, *fmin_r;
   gsl_vector *sigma_l, *sigma_r;
-  gsl_vector *sum_l, *sum_r, *sum2_l, *sum2_r;
   gsl_vector_int *hits_l, *hits_r;
   gsl_vector *x, *x_mid;
 
@@ -76,7 +75,7 @@ int gsl_monte_miser(const gsl_rng * r,
        is also an issue for min_calls. 
     */
     estimate_calls = myMAX(min_calls, (size_t)(calls*estimate_frac) );
-    if (estimate_calls >= num_dim) {
+    if (estimate_calls <= num_dim) {
       GSL_WARNING("estimate calls is close to nun_dim!", GSL_ESANITY);
     }
 
@@ -102,6 +101,7 @@ int gsl_monte_miser(const gsl_rng * r,
     */
     if (estimate_style == ESTIMATE_STYLE_NR ) {
       /* NR way */
+      gsl_vector *fmax_l, *fmax_r, *fmin_l, *fmin_r;
       fmax_l = gsl_vector_alloc(num_dim);
       fmax_r = gsl_vector_alloc(num_dim);
       fmin_l = gsl_vector_alloc(num_dim);
@@ -145,8 +145,9 @@ int gsl_monte_miser(const gsl_rng * r,
       gsl_vector_free(fmax_r);
       gsl_vector_free(fmax_l);
     }
-    else if (estimate_style == ESTIMATE_STYLE_MC) {
+    else if (estimate_style == ESTIMATE_STYLE_CORRELATED_MC) {
       /* assert estimate_style = 1 */
+      gsl_vector *sum_l, *sum_r, *sum2_l, *sum2_r;
 
       hits_l = gsl_vector_int_alloc(num_dim);
       hits_r = gsl_vector_int_alloc(num_dim);
@@ -224,12 +225,15 @@ int gsl_monte_miser(const gsl_rng * r,
 	}
       }
       else {
+	char warning[100];
 	if (sigma_l->data[i] < 0) 
 	  /* FIXME: Get a proper error code here */
-	  GSL_WARNING("no points in left half-space!?", GSL_ESANITY);
+	  sprintf(warning, "no points in left-half space(%d)!?", i);
+	  GSL_WARNING(warning, GSL_ESANITY);
 	if (sigma_r->data[i] < 0) 
 	  /* FIXME: Get a proper error code here */
-	  GSL_WARNING("no points in right half-space!?", GSL_ESANITY);
+	  sprintf(warning, "no points in right-half space(%d)!?", i);
+	  GSL_WARNING(warning, GSL_ESANITY);
       }
     }
 
