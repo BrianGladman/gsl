@@ -19,15 +19,30 @@
 
 {
     size_t i, j;
-    size_t jy = 0;
 
-    for (j = 0; j < M; j++) {
+    if (order == CblasRowMajor) {
+      size_t ix = OFFSET(M, incX);
+      for (i = 0; i < M; i++) {
+	const BASE tmp = alpha * X[ix];
+	size_t jy = OFFSET(N, incY);
+	for (j = 0; j < N; j++) {
+          A[lda * i + j] += Y[jy] * tmp;
+          jy += incY;
+	}
+	ix += incX;
+      }
+    } else if (order == CblasColMajor) {
+      size_t jy = OFFSET(N, incY);
+      for (j = 0; j < N; j++) {
 	const BASE tmp = alpha * Y[jy];
-	size_t ix = 0;
-	for (i = 0; i < N; i++) {
-	    A[lda * j + i] += X[ix] * tmp;
-	    ix += incX;
+	size_t ix = OFFSET(M, incX);
+	for (i = 0; i < M; i++) {
+          A[i + lda * j] += X[ix] * tmp;
+          ix += incX;
 	}
 	jy += incY;
+      }
+    } else {
+      BLAS_ERROR ("unrecognized operation");
     }
 }

@@ -845,6 +845,39 @@ function XX = blas_tpsv (order, uplo, trans, diag, N, A, X, incX)
   XX = vout(X, incX, N, y);
 endfunction
 
+function YY = blas_ger (order, M, N, alpha, X, incX, Y, incY, A, lda)
+  a = matrix (order, A, lda, M, N);
+
+  x = vector (X, incX, columns(a));
+  y = vector (Y, incY, rows(a));
+
+  a = alpha * x * y' + a;
+  
+  YY = mout(order, A, lda, M, N, a);
+endfunction
+
+function YY = blas_geru (order, M, N, alpha, X, incX, Y, incY, A, lda)
+  a = matrix (order, A, lda, M, N);
+
+  x = vector (X, incX, columns(a));
+  y = vector (Y, incY, rows(a));
+
+  a = alpha * x * (y.') + a;
+  
+  YY = mout(order, A, lda, M, N, a);
+endfunction
+
+function YY = blas_gerc (order, M, N, alpha, X, incX, Y, incY, A, lda)
+  a = matrix (order, A, lda, M, N);
+
+  x = vector (X, incX, columns(a));
+  y = vector (Y, incY, rows(a));
+
+  a = alpha * x * y' + a;
+  
+  YY = mout(order, A, lda, M, N, a);
+endfunction
+
 
 ######################################################################
 
@@ -1379,6 +1412,27 @@ function test_hpspmv (S, fn, order, uplo, N, alpha, A,  X, incX, \
 endfunction
 
 
+function test_ger (S, fn, order, M, N, alpha, X, incX, \
+                   Y, incY, A, lda)
+  begin_block();
+  define(S, "int", "order", order);
+  define(S, "int", "M", M);
+  define(S, "int", "N", N);
+  define(S, "int", "lda", lda);
+  define(S, "scalar", "alpha", alpha);
+  define(S, "matrix", "A", A);
+  define(S, "vector", "X", X);
+  define(S, "int", "incX", incX);
+  define(S, "vector", "Y", Y);
+  define(S, "int", "incY", incY);
+  AA = feval(strcat("blas_", fn), order, M, N, alpha, X, incX, Y, incY, A, lda);
+  define(S, "matrix", "A_expected", AA);
+  call("cblas_", S.prefix, fn, "(order, M, N, alpha, X, incX, Y, incY, A, lda)");
+  test(S, "vector", "A", "A_expected", strcat(S.prefix, fn), A);
+  end_block();
+endfunction
+
+
 
 ######################################################################
 
@@ -1757,15 +1811,37 @@ n=16;
 #   endfor
 # endfor
 
+# for j = 1:n
+#   for i = [s,d,c,z]
+#     S = context(i);
+#     T = test_tpmatvector(S, j);
+#     for order = [101, 102]
+#       for uplo = [121, 122]
+#         for diag = [131, 132]
+#           test_tpmv (S, "tpsv", order, uplo, T.trans, diag, T.n, 
+#                      T.A, T.v, T.s);
+#         endfor
+#       endfor
+#     endfor
+#   endfor
+# endfor
+
 for j = 1:n
-  for i = [s,d,c,z]
+  for i = [s,d,c,z];
     S = context(i);
-    T = test_tpmatvector(S, j);
-    for order = [101, 102]
-      for uplo = [121, 122]
-        for diag = [131, 132]
-          test_tpmv (S, "tpsv", order, uplo, T.trans, diag, T.n, 
-                     T.A, T.v, T.s);
+    T = test_matvectors(S, j);
+    for alpha = coeff(S)
+      for beta = coeff(S)
+          for order = [101, 102]
+            if (S.complex == 0)
+              test_ger (S, "ger", order, T.m, T.n, alpha, T.v1, T.s1, \
+                        T.v2, T.s2, T.A, T.lda);
+            else
+              test_ger (S, "geru", order, T.m, T.n, alpha, T.v1, T.s1, \
+                        T.v2, T.s2, T.A, T.lda);
+              test_ger (S, "gerc", order, T.m, T.n, alpha, T.v1, T.s1, \
+                        T.v2, T.s2, T.A, T.lda);
+            endif
         endfor
       endfor
     endfor

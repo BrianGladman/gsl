@@ -17,27 +17,45 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * Author:  G. Jungman
- * RCS:     $Id$
- */
-
 {
     size_t i, j;
-    const BASE conj = -1.0;
+    const BASE alpha_real = REAL0(alpha), alpha_imag = IMAG0(alpha);
 
-    for (j = 0; j < M; j++) {
-	const BASE tmpR =
-	    REAL0(alpha) * REAL(X, incX, j) - IMAG0(alpha) * IMAG(X, incX,
-								  j);
-	const BASE tmpI =
-	    REAL0(alpha) * IMAG(X, incX, j) + IMAG0(alpha) * REAL(X, incX,
-								  j);
-	for (i = 0; i < N; i++) {
-	    REAL(A, 1, lda * j + i) +=
-		REAL(Y, incY, i) * tmpR - conj * IMAG(Y, incY, i) * tmpI;
-	    IMAG(A, 1, lda * j + i) +=
-		REAL(Y, incY, i) * tmpI + conj * IMAG(Y, incY, i) * tmpR;
+    if (order == CblasRowMajor) {
+      size_t ix = OFFSET(M, incX);
+      for (i = 0; i < M; i++) {
+        const BASE X_real = REAL(X, ix);
+        const BASE X_imag = IMAG(X, ix);
+	const BASE tmp_real = alpha_real * X_real - alpha_imag * X_imag;
+        const BASE tmp_imag = alpha_imag * X_real + alpha_real * X_imag;
+	size_t jy = OFFSET(N, incY);
+	for (j = 0; j < N; j++) {
+          const BASE Y_real = REAL(Y, jy);
+          const BASE Y_imag = (-1.0) * IMAG(Y, jy);
+          REAL(A, lda * i + j) += Y_real * tmp_real - Y_imag * tmp_imag;
+          IMAG(A, lda * i + j) += Y_imag * tmp_real + Y_real * tmp_imag;
+          jy += incY;
 	}
+	ix += incX;
+      }
+    } else if (order == CblasColMajor) {
+      size_t jy = OFFSET(N, incY);
+      for (j = 0; j < N; j++) {
+        const BASE Y_real = REAL(Y, jy);
+        const BASE Y_imag = (-1.0) * IMAG(Y, jy);
+	const BASE tmp_real = alpha_real * Y_real - alpha_imag * Y_imag;
+        const BASE tmp_imag = alpha_imag * Y_real + alpha_real * Y_imag;
+	size_t ix = OFFSET(M, incX);
+	for (i = 0; i < M; i++) {
+          const BASE X_real = REAL(X, ix);
+          const BASE X_imag = IMAG(X, ix);
+          REAL(A, i + lda * j) += X_real * tmp_real - X_imag * tmp_imag;
+          IMAG(A, i + lda * j) += X_imag * tmp_real + X_real * tmp_imag;
+          ix += incX;
+	}
+	jy += incY;
+      }
+    } else {
+      BLAS_ERROR ("unrecognized operation");
     }
 }
