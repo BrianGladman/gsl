@@ -29,6 +29,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl Checks for library functions.
 dnl Replace `main' with a function in -lm:
 AC_CHECK_LIB(m, main)
+AC_CHECK_FUNCS(isinf)
 AC_FUNC_ALLOCA
 AC_FUNC_VPRINTF
 dnl strcasecmp, strerror, xmalloc, xrealloc, probably others should be added.

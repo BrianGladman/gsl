@@ -71,7 +71,8 @@ noinst_HEADERS = roots.h
 
 INCLUDES = -I$(srcdir)/../err
 
-TESTS = test-macros test-bisection test-falsepos test-secant test-newton
+TESTS = $(srcdir)/test-macros $(srcdir)/test-bisection \
+	$(srcdir)/test-falsepos $(srcdir)/test-secant $(srcdir)/test-newton
 
 test_LDADD = libgslroots.a ../err/libgslerr.a ../err/libgsltest.a
 
@@ -103,7 +104,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in TODO
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

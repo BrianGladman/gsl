@@ -1,7 +1,5 @@
 /* test -- program to test root finding functions
    Interfaces correctly with `make check'. */
-/* $Id$ */
-
 
 /* config headers */
 #include <config.h>
@@ -26,8 +24,8 @@
 #include <gsl_test.h>
 
 /* stopping parameters */
-#define REL_EPSILON    10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER
-#define ABS_EPSILON    10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER
+#define REL_EPSILON    (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
+#define ABS_EPSILON    (10 * DBL_EPSILON * GSL_ROOT_EPSILON_BUFFER)
 #define MAX_ITERATIONS 100
 #define MAX_DELTAY     2000000.0
 #define MAX_STEP_SIZE  100.0
