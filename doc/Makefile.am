@@ -9,7 +9,8 @@ noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
 	fft-complex-radix2.eps fft-real-mixedradix.eps \
 	roots-bisection.eps roots-false-position.eps \
-	roots-newtons-method.eps roots-secant-method.eps
+	roots-newtons-method.eps roots-secant-method.eps \
+	histogram.eps
 
 EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
@@ -18,4 +19,5 @@ EXTRA_DIST = siman-test.eps siman-energy.eps 12-cities.eps \
 	fft-complex-radix2-f.eps fft-complex-radix2-t.eps \
 	fft-complex-radix2.eps fft-real-mixedradix.eps \
 	roots-bisection.eps roots-false-position.eps \
-	roots-newtons-method.eps roots-secant-method.eps
+	roots-newtons-method.eps roots-secant-method.eps \
+	histogram.eps
