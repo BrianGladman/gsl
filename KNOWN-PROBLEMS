@@ -68,69 +68,6 @@ Making all in monte
 *** ../../monte/plain.c:120: warning: long unsigned int format, size_t arg (arg 4)
     echo timestamp > plain.lo
 --------
-Making all in doc
-      && makeinfo `echo ../../doc/gsl-ref.texi | sed 's,.*/,,'`
-*** ./vectors.texi:1106: `Vector and Matrix References and Further Reading' has no Up field.
-*** ./vectors.texi:1106: warning: unreferenced node `Vector and Matrix References and Further Reading'.
-*** makeinfo: Removing output file `/home/bjg/gsl/doc/gsl-ref.info' due to errors; use --force to preserve.
-*** make[2]: *** [gsl-ref.info] Error 2
-*** make[2]: Target `all' not remade because of errors.
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/doc'
---------
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build'
-*** make[1]: *** [all-recursive] Error 1
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
-*** make: *** [all-recursive-am] Error 2
-*** make: Target `all' not remade because of errors.
---------
-Making check in vector
-    PASS: gsl_vector_float_mul multiplies correctly
-*** FAIL: gsl_vector_float_div divides correctly
-    PASS: gsl_vector_long_double_alloc returns valid pointer
---------
-    PASS: gsl_vector_complex_long_double_get returns zero imag at upper bound
-*** FAIL: test
-    PASS: gsl_vector_alloc returns valid pointer
---------
-    PASS: gsl_vector_float_mul multiplies correctly
-*** FAIL: gsl_vector_float_div divides correctly
-    PASS: gsl_vector_long_double_alloc returns valid pointer
---------
-    PASS: gsl_vector_complex_long_double_get returns zero imag at upper bound
-*** FAIL: test_static
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/vector'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/vector'
---------
-Making check in matrix
-    PASS: gsl_matrix_float_mul_elements multiplies correctly
-*** FAIL: gsl_matrix_float_div_elements divides correctly
-    PASS: gsl_matrix_long_double_alloc returns valid pointer
---------
-    PASS: gsl_matrix_complex_long_double_get, zero imag for 2nd index at u.b.
-*** FAIL: test
-    PASS: gsl_matrix_alloc returns valid pointer
---------
-    PASS: gsl_matrix_float_mul_elements multiplies correctly
-*** FAIL: gsl_matrix_float_div_elements divides correctly
-    PASS: gsl_matrix_long_double_alloc returns valid pointer
---------
-    PASS: gsl_matrix_complex_long_double_get, zero imag for 2nd index at u.b.
-*** FAIL: test_static
-    ===================
---------
-    ===================
-*** make[2]: *** [check-TESTS] Error 1
-    make[2]: Leaving directory `/home/bjg/gsl/=gsl.build/matrix'
-*** make[1]: *** [check-am] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/matrix'
---------
 Making check in blas
     gcc -DHAVE_CONFIG_H -I. -I../../blas -I.. -I../..    -g -O2 -Wall -c ../../blas/test_blas_raw.c
 *** ../../blas/test_blas_raw.c: In function `test_tbsv':
@@ -180,27 +117,7 @@ Making check in monte
 *** ../../monte/plain_test.c:205: warning: unused variable `prod'
     /bin/sh ../libtool --mode=link gcc  -g -O2 -Wall  -o plain_test  plain_test.o libgslmonte.la ../rng/libgslrng.la ../vector/libgslvector.la 		../block/libgslblock.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la -lm 
 --------
-Making check in min
-    gcc -DHAVE_CONFIG_H -I. -I../../min -I.. -I..    -g -O2 -Wall -c ../../min/test.c
-*** ../../min/test.c: In function `test_bracket':
-*** ../../min/test.c:201: warning: control reaches end of non-void function
-    gcc -DHAVE_CONFIG_H -I. -I../../min -I.. -I..    -g -O2 -Wall -c ../../min/test_funcs.c
---------
-Making check in multimin
-    gcc -DHAVE_CONFIG_H -I. -I../../multimin -I.. -I..    -g -O2 -Wall -c ../../multimin/test.c
-*** ../../multimin/test.c: In function `test_fdf':
-*** ../../multimin/test.c:141: warning: control reaches end of non-void function
-    gcc -DHAVE_CONFIG_H -I. -I../../multimin -I.. -I..    -g -O2 -Wall -c ../../multimin/test_funcs.c
---------
 Making check in doc
-      && makeinfo `echo ../../doc/gsl-ref.texi | sed 's,.*/,,'`
-*** ./vectors.texi:1176: `Vector and Matrix References and Further Reading' has no Up field.
-*** ./vectors.texi:1176: warning: unreferenced node `Vector and Matrix References and Further Reading'.
-*** makeinfo: Removing output file `/home/bjg/gsl/doc/gsl-ref.info' due to errors; use --force to preserve.
-*** make[1]: *** [gsl-ref.info] Error 2
-*** make[1]: Target `check' not remade because of errors.
-    make[1]: Leaving directory `/home/bjg/gsl/=gsl.build/doc'
---------
     make[1]: Leaving directory `/home/bjg/gsl/=gsl.build'
 *** make: *** [check-recursive] Error 1
 *** make: Target `check' not remade because of errors.
