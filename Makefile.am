@@ -7,7 +7,20 @@ include_HEADERS = gsl_complex.h gsl_math.h
 strict:
 	$(MAKE) CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes -Wnested-externs -Dinline='' -g -O4"
 
-# a flaky attempt to build a single libgsl.la file (can someone improve on it?)
+# a flaky attempt to build a single libgsl.a file (can someone improve on it?)
+
+libgsl.a: 
+	for dir in $(SUBDIRS) ;\
+	do \
+	(cd $$dir ; \
+	for lib in lib*.a ; \
+	do \
+	test -f $$lib && ar r ../libgsl.a `ar t $$lib` || true ; \
+	done ) ;\
+	done
+
+# flaky attempt to generalize the above flaky version to work with libtool.
+# Not yet, baby. 
 
 libgsl.la: 
 	for dir in $(SUBDIRS) ;\
