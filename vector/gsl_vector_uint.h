@@ -45,12 +45,12 @@ unsigned int *
 gsl_vector_uint_ptr (const gsl_vector_uint * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return (unsigned int *) (v->data + i);
+  return (unsigned int *) (v->data + i * v->stride);
 }
 
 extern inline
@@ -58,12 +58,12 @@ unsigned int
 gsl_vector_uint_get (const gsl_vector_uint * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return v->data[i];
+  return v->data[i * v->stride];
 }
 
 extern inline
@@ -71,12 +71,12 @@ void
 gsl_vector_uint_set (gsl_vector_uint * v, const size_t i, unsigned int x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
     }
 #endif
-  v->data[i] = x;
+  v->data[i * v->stride] = x;
 }
 
 #endif /* HAVE_INLINE */

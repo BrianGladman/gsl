@@ -1,3 +1,4 @@
+
 #ifndef GSL_VECTOR_COMPLEX
 
 #define  GSL_VECTOR_COMPLEX_REAL(z, i)  ((z)->data[2*(i)*(z)->stride])

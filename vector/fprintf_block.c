@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int
-FUNCTION (gsl_block, fprintf) (FILE * stream, const ATOMIC * data, 
+FUNCTION (gsl_block, fprintf) (FILE * stream, const ATOMIC * data,
 			       const size_t n,
 			       const size_t stride, const char *format)
 {
@@ -17,16 +17,23 @@ FUNCTION (gsl_block, fprintf) (FILE * stream, const ATOMIC * data,
 	  if (k > 0)
 	    {
 	      status = putc (' ', stream);
+
 	      if (status == EOF)
-		GSL_ERROR ("putc failed", GSL_EFAILED);
+		{
+		  GSL_ERROR ("putc failed", GSL_EFAILED);
+		}
 	    }
-	  status = fprintf (stream, format, data[MULTIPLICITY * i * stride + k]);
+	  status = fprintf (stream,
+			    format,
+			    data[MULTIPLICITY * i * stride + k]);
 	  if (status < 0)
 	    {
 	      GSL_ERROR ("fprintf failed", GSL_EFAILED);
 	    }
 	}
+
       status = putc ('\n', stream);
+
       if (status == EOF)
 	{
 	  GSL_ERROR ("putc failed", GSL_EFAILED);
@@ -37,7 +44,8 @@ FUNCTION (gsl_block, fprintf) (FILE * stream, const ATOMIC * data,
 }
 
 int
-FUNCTION (gsl_block, fscanf) (FILE * stream, ATOMIC * data, const size_t n, const size_t stride)
+FUNCTION (gsl_block, fscanf) (FILE * stream, ATOMIC * data,
+			      const size_t n, const size_t stride)
 {
   size_t i;
 

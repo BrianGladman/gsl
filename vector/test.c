@@ -99,7 +99,7 @@ int err_status = 0;
 void my_error_handler (const char *reason, const char *file,
 		       int line, int err);
 
-int 
+int
 main (void)
 {
   test_func ();

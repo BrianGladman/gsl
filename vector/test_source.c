@@ -3,7 +3,7 @@ void FUNCTION (test, text) (void);
 void FUNCTION (test, binary) (void);
 
 void
-  FUNCTION (test, func) (void)
+FUNCTION (test, func) (void)
 {
   TYPE (gsl_vector) * v;
   size_t i;
@@ -21,61 +21,60 @@ void
 
   {
     int status = 0;
-    
+
     for (i = 0; i < N; i++)
       {
 	if (v->data[i] != (ATOMIC) i)
 	  status = 1;
       };
-    
-    gsl_test (status, 
+
+    gsl_test (status,
 	      NAME (gsl_vector) "_set" DESC " writes into array correctly");
   }
 
   {
     int status = 0;
-    
+
     for (i = 0; i < N; i++)
       {
 	if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) i)
 	  status = 1;
       };
-    gsl_test (status, 
+    gsl_test (status,
 	      NAME (gsl_vector) "_get" DESC " reads from array correctly");
   }
 
   /* Now set stride to 2 */
 
-  v->stride = 2 ;
+  v->stride = 2;
 
   {
     int status = 0;
 
-    for (i = 0; i < N/2; i++)
+    for (i = 0; i < N / 2; i++)
       {
-	if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (2*i))
+	if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (2 * i))
 	  status = 1;
       };
-    gsl_test (status, NAME (gsl_vector) "_get" DESC " reads from array correctly with stride");
+    gsl_test (status, NAME (gsl_vector) "_get" DESC " reads correctly with stride");
   }
 
-  for (i = 0; i < N/2; i++)
+  for (i = 0; i < N / 2; i++)
     {
-      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (i+1000));
+      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (i + 1000));
     };
 
   {
     int status = 0;
 
-    for (i = 0; i < N/2; i++)
+    for (i = 0; i < N / 2; i++)
       {
-	if (v->data[2*i] != (ATOMIC) (i+1000))
+	if (v->data[2 * i] != (ATOMIC) (i + 1000))
 	  status = 1;
       };
 
-    gsl_test (status, NAME (gsl_vector) "_set" DESC " writes into array correctly with stride");
+    gsl_test (status, NAME (gsl_vector) "_set" DESC " writes correctly with stride");
   }
-
 
   FUNCTION (gsl_vector, free) (v);	/* free whatever is in v */
 
@@ -98,7 +97,7 @@ void
 }
 
 void
-  FUNCTION (test, text) (void)
+FUNCTION (test, text) (void)
 {
   TYPE (gsl_vector) * v, *w;
   size_t i;
@@ -138,9 +137,8 @@ void
   }
 }
 
-
 void
-  FUNCTION (test, binary) (void)
+FUNCTION (test, binary) (void)
 {
   TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
   TYPE (gsl_vector) * w = FUNCTION (gsl_vector, alloc) (N);
@@ -176,46 +174,46 @@ void
 
     fclose (f);
   }
- 
+
 }
 
 void FUNCTION (test, trap) (void);
 
 void
-  FUNCTION (test, trap) (void)
+FUNCTION (test, trap) (void)
 {
-  TYPE (gsl_vector) * v = FUNCTION(gsl_vector,alloc) (N);
+  TYPE (gsl_vector) * v = FUNCTION (gsl_vector, alloc) (N);
 
   size_t j = 0;
   double x;
 
   err_status = 0;
-  FUNCTION(gsl_vector,set) (v, j - 1, 1.2);
-  gsl_test (!err_status, NAME(gsl_vector) "_set traps index below lower array bound");
+  FUNCTION (gsl_vector, set) (v, j - 1, 1.2);
+  gsl_test (!err_status, NAME (gsl_vector) "_set traps index below lower bound");
 
   err_status = 0;
-  FUNCTION(gsl_vector,set) (v, N + 1, 1.2);
-  gsl_test (!err_status, NAME(gsl_vector) "_set traps index above upper array bound");
+  FUNCTION (gsl_vector, set) (v, N + 1, 1.2);
+  gsl_test (!err_status, NAME (gsl_vector) "_set traps index above upper bound");
 
   err_status = 0;
-  FUNCTION(gsl_vector,set) (v, N, 1.2);
-  gsl_test (!err_status, NAME(gsl_vector) "_set traps index at upper array bound");
+  FUNCTION (gsl_vector, set) (v, N, 1.2);
+  gsl_test (!err_status, NAME (gsl_vector) "_set traps index at upper bound");
 
   err_status = 0;
-  x = FUNCTION(gsl_vector,get) (v, j - 1);
-  gsl_test (!err_status, NAME(gsl_vector) "_get traps index below lower array bound");
-  gsl_test(x != 0,
-	   NAME(gsl_vector) "_get returns zero for index below lower array bound") ;
+  x = FUNCTION (gsl_vector, get) (v, j - 1);
+  gsl_test (!err_status, NAME (gsl_vector) "_get traps index below lower bound");
+  gsl_test (x != 0,
+	 NAME (gsl_vector) "_get returns zero for index below lower bound");
 
   err_status = 0;
-  x = FUNCTION(gsl_vector,get) (v, N + 1);
-  gsl_test (!err_status, NAME(gsl_vector) "_get traps index above upper array bound");
-  gsl_test(x != 0,
-	   NAME(gsl_vector) "_get returns zero for index above upper array bound") ;
+  x = FUNCTION (gsl_vector, get) (v, N + 1);
+  gsl_test (!err_status, NAME (gsl_vector) "_get traps index above upper bound");
+  gsl_test (x != 0,
+	 NAME (gsl_vector) "_get returns zero for index above upper bound");
 
   err_status = 0;
-  x = FUNCTION(gsl_vector,get) (v, N);
-  gsl_test (!err_status, NAME(gsl_vector) "_get traps index at upper array bound");
-  gsl_test(x != 0,
-	   NAME(gsl_vector) "_get returns zero for index at upper array bound") ;
+  x = FUNCTION (gsl_vector, get) (v, N);
+  gsl_test (!err_status, NAME (gsl_vector) "_get traps index at upper bound");
+  gsl_test (x != 0,
+	    NAME (gsl_vector) "_get returns zero for index at upper bound");
 }

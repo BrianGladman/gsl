@@ -45,12 +45,12 @@ unsigned long *
 gsl_vector_ulong_ptr (const gsl_vector_ulong * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return (unsigned long *) (v->data + i);
+  return (unsigned long *) (v->data + i * v->stride);
 }
 
 extern inline
@@ -58,12 +58,12 @@ unsigned long
 gsl_vector_ulong_get (const gsl_vector_ulong * v, const size_t i)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN ("index out of range", GSL_EINVAL, 0);
     }
 #endif
-  return v->data[i];
+  return v->data[i * v->stride];
 }
 
 extern inline
@@ -71,15 +71,15 @@ void
 gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x)
 {
 #ifndef GSL_RANGE_CHECK_OFF
-  if (i >= v->size)		/* size_t is unsigned, can't be negative */
+  if (i >= v->size)	/* size_t is unsigned, can't be negative */
     {
       GSL_ERROR_RETURN_NOTHING ("index out of range", GSL_EINVAL);
     }
 #endif
-  v->data[i] = x;
+  v->data[i * v->stride] = x;
 }
 
 #endif /* HAVE_INLINE */
 
 
-#endif /* !GSL_VECTOR_ULONG_H */
+#endif /* GSL_VECTOR_ULONG_H */

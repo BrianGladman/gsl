@@ -2,9 +2,8 @@
 #include <unistd.h>
 #include <gsl_errno.h>
 
-
 int
-  FUNCTION (gsl_vector, fread) (FILE * stream, TYPE (gsl_vector) * v)
+FUNCTION (gsl_vector, fread) (FILE * stream, TYPE (gsl_vector) * v)
 {
   int status = FUNCTION (gsl_block, fread) (stream,
 					    v->data,
@@ -14,7 +13,7 @@ int
 }
 
 int
-  FUNCTION (gsl_vector, fwrite) (FILE * stream, const TYPE (gsl_vector) * v)
+FUNCTION (gsl_vector, fwrite) (FILE * stream, const TYPE (gsl_vector) * v)
 {
   int status = FUNCTION (gsl_block, fwrite) (stream,
 					     v->data,
@@ -24,8 +23,8 @@ int
 }
 
 int
-  FUNCTION (gsl_vector, fprintf) (FILE * stream, const TYPE (gsl_vector) * v,
-				  const char *format)
+FUNCTION (gsl_vector, fprintf) (FILE * stream, const TYPE (gsl_vector) * v,
+				const char *format)
 {
   int status = FUNCTION (gsl_block, fprintf) (stream,
 					      v->data,
@@ -36,7 +35,7 @@ int
 }
 
 int
-  FUNCTION (gsl_vector, fscanf) (FILE * stream, TYPE (gsl_vector) * v)
+FUNCTION (gsl_vector, fscanf) (FILE * stream, TYPE (gsl_vector) * v)
 {
   int status = FUNCTION (gsl_block, fscanf) (stream,
 					     v->data,
@@ -46,8 +45,8 @@ int
 }
 
 int
-  FUNCTION (gsl_block, fread) (FILE * stream, ATOMIC * data, const size_t n,
-			       const size_t stride)
+FUNCTION (gsl_block, fread) (FILE * stream, ATOMIC * data, const size_t n,
+			     const size_t stride)
 {
   if (stride == 1)
     {
@@ -65,8 +64,7 @@ int
       for (i = 0; i < n; i++)
 	{
 	  size_t item = fread (data + MULTIPLICITY * i * stride,
-			       MULTIPLICITY * sizeof (ATOMIC),
-			       1, stream);
+			       MULTIPLICITY * sizeof (ATOMIC), 1, stream);
 	  if (item != 1)
 	    {
 	      GSL_ERROR ("fread failed", GSL_EFAILED);
@@ -78,8 +76,8 @@ int
 }
 
 int
-  FUNCTION (gsl_block, fwrite) (FILE * stream, const ATOMIC * data, const size_t n,
-				const size_t stride)
+FUNCTION (gsl_block, fwrite) (FILE * stream, const ATOMIC * data,
+			      const size_t n, const size_t stride)
 {
 
   if (stride == 1)

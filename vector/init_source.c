@@ -24,7 +24,7 @@ FUNCTION (gsl_vector, alloc) (const size_t n)
 
   if (v->data == 0)
     {
-      free (v);			/* exception in constructor, avoid memory leak */
+      free (v);		/* exception in constructor, avoid memory leak */
 
       GSL_ERROR_RETURN ("failed to allocate space for vector data",
 			GSL_ENOMEM, 0);
@@ -46,7 +46,9 @@ FUNCTION (gsl_vector, calloc) (const size_t n)
   if (v == 0)
     return 0;
 
-  for (i = 0; i < MULTIPLICITY * n; i++)	/* initialize vector to zero */
+  /* initialize vector to zero */
+
+  for (i = 0; i < MULTIPLICITY * n; i++)
     {
       v->data[i] = 0.0;
     }
@@ -54,9 +56,8 @@ FUNCTION (gsl_vector, calloc) (const size_t n)
   return v;
 }
 
-
 void
-  FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
+FUNCTION (gsl_vector, free) (TYPE (gsl_vector) * v)
 {
   free (v->data);
   free (v);

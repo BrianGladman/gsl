@@ -4,4 +4,3 @@
 #endif
 #define DESC " (static)"
 #include "test.c"
-

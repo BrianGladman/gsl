@@ -22,4 +22,4 @@
 #include <gsl_vector_char.h>
 
 
-#endif /* !GSL_VECTOR_H_ */
+#endif /* GSL_VECTOR_H_ */
