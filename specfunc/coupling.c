@@ -204,7 +204,7 @@ gsl_sf_coupling_6j_INCORRECT_e(int two_ja, int two_jb, int two_jc,
   /* CHECK_POINTER(result) */
 
   if(   two_ja < 0 || two_jb < 0 || two_jc < 0
-     || two_jd < 0 || two_je < 0 || two_je < 0
+     || two_jd < 0 || two_je < 0 || two_jf < 0
      ) {
     DOMAIN_ERROR(result);
   }
