@@ -1,4 +1,4 @@
-/* linalg/hetd.c
+/* linalg/hermtd.c
  * 
  * Copyright (C) 2001 Brian Gough
  * 
@@ -30,9 +30,9 @@
  * U is stored as a packed set of Householder transformations in the
  * lower triangular part of the input matrix below the first subdiagonal.
  *
- *  * The full matrix for Q can be obtained as the product
+ * The full matrix for Q can be obtained as the product
  *
- *       Q = Q_N .. Q_2 Q_1
+ *       Q = Q_N ... Q_2 Q_1
  *
  * where 
  *
@@ -40,7 +40,7 @@
  *
  * and where v_i is a Householder vector
  *
- *       v_i = [1, A(i+2,i), A(i+3,i), ... , A(N,i)]
+ *       v_i = [0, ..., 0, 1, A(i+2,i), A(i+3,i), ... , A(N,i)]
  *
  * This storage scheme is the same as in LAPACK.  See LAPACK's
  * chetd2.f for details.
