@@ -220,7 +220,8 @@ nmsimplex_set (void *vstate, gsl_multimin_function * f,
 	       const gsl_vector * x,
 	       double *size, const gsl_vector * step_size)
 {
-  int i, status;
+  int status;
+  size_t i;
   double val;
 
   nmsimplex_state_t *state = (nmsimplex_state_t *) vstate;
