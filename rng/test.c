@@ -12,12 +12,13 @@ main (void)
 {
   gsl_rng_env_setup() ;
 
-  /* specific tests of known results */
+  /* specific tests of known results for 10000 iterations with seed = 1*/
 
   rng_test (gsl_rng_minstd,1,10000,1043618065); 
   rng_test (gsl_rng_bad_rand,1,10000,1910041713); 
   rng_test (gsl_rng_bad_randu,1,10000,1623524161); 
   rng_test (gsl_rng_cmrg,1,10000,1477798470); 
+  rng_test (gsl_rng_mrg,1,10000,1711374253); 
   rng_test (gsl_rng_taus,1,10000,676146779);
 
   /* generic statistical tests */

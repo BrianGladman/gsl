@@ -7,10 +7,14 @@
          x_{n+1} = (a x_n + c) mod m 
 
    with a = 1103515245, c = 12345 and m = 2^31 = 2147483648. The seed
-   specifies the initial value, x_0.
+   specifies the initial value, x_1.
 
-   It is not very good. The low bits of successive numbers are
-   correlated. */
+   The theoretical value of x_{10001} is 1910041713.
+
+   The period of this generator is 2^31.
+
+   The rand() generator is not very good -- the low bits of successive
+   numbers are correlated. */
 
 unsigned long int bad_rand_get (void * vstate);
 void bad_rand_set (void * state, unsigned int s);

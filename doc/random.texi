@@ -322,6 +322,10 @@ maintain the convention in the GSL random number package that not
 initializing a random number generator is equivalent to initializing
 with a seed of 1.
 
+@c mrg
+@c [(x([x1, x2, x3, x4, x5]) := [107374182 mod 2147483647 * x1 + 104480 mod 2147483647 * x5, x1, x2, x3, x4])]
+
+@c tausworthe
 @c    [ b1(x) := rsh(xor(lsh(x, 13), x), 19),
 @c      q1(x) := xor(lsh(and(x, 4294967294), 12), b1(x)),
 @c      b2(x) := rsh(xor(lsh(x, 2), x), 25),

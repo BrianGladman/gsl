@@ -8,9 +8,13 @@
          x_{n+1} = (a x_n) mod m
 
    with a = 65539 and m = 2^31 = 2147483648. The seed specifies
-   the initial value, x_0.
+   the initial value, x_1.
 
-   Knuth describes this generator as "really horrible". 
+   The theoretical value of x_{10001} is 1623524161.
+
+   The period of this generator is ?FIXME.
+
+   Note: Knuth describes this generator as "really horrible". 
 
    From: Park and Miller, "Random Number Generators: Good ones are
    hard to find" Communications of the ACM, October 1988, Volume 31,

@@ -10,12 +10,12 @@
          x_{n+1} = (a x_n) mod m
 
    with a = 16807 and m = 2^31 - 1 = 2147483647. The seed specifies
-   the initial value, x_0.  
+   the initial value, x_1.  
 
-   For checking the theoretical value of x_{10001} is 1043618065.
+   The theoretical value of x_{10001} is 1043618065, starting with a
+   seed of x_1 = 1.
 
-   The period of this generator is about 2^31. This is pretty small
-   (about 2 x 10^9) so don't use this generator for large simulations.
+   The period of this generator is 2^31.
 
    From: Park and Miller, "Random Number Generators: Good ones are
    hard to find" Communications of the ACM, October 1988, Volume 31,

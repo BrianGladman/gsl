@@ -12,16 +12,17 @@
        s2_{n+1} = (((s2_n & 4294967288) << 4) ^ (((s2_n << 2) ^ s2_n) >>25))
        s3_{n+1} = (((s3_n & 4294967280) <<17) ^ (((s3_n << 3) ^ s3_n) >>11))
 
-   computed modulo 2^32, where '^' means exclusive-or. Note that the
-   algorithm relies on 32-bit unsigned integers (it is formally
-   defined on bit-vectors of length 32).
+   computed modulo 2^32. In the three formulas above '^' means
+   exclusive-or (C-notation), not exponentiation. Note that the
+   algorithm relies on the properties of 32-bit unsigned integers (it
+   is formally defined on bit-vectors of length 32).
 
-   For checking, the theoretical value of x_{10007} is 676146779.  The
-   subscript 10007 means (1) seed the generator with s=1 (this gives
-   s1_1 = 36532, s2_2 = 94847, s3_2 = 116930), (2) do six warm-up
-   iterations, (3) then do 10000 actual iterations.
+    The theoretical value of x_{10007} is 676146779. The subscript
+    10007 means (1) seed the generator with s=1 (this gives s1_1 =
+    36532, s2_2 = 94847, s3_2 = 116930), (2) do six warm-up
+    iterations, (3) then do 10000 actual iterations.
 
-   The period of this generator is about 2^{88}.
+   The period of this generator is about 2^88.
 
    From: P. L'Ecuyer, "Maximally Equidistributed Combined Tausworthe
    Generators", Mathematics of Computation, 65, 213 (1996), 203--213.

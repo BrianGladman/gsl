@@ -6,18 +6,22 @@
 
          z_n = (x_n - y_n) mod m1
 
-    where,
+    where the two underlying generators x and y are,
          
          x_n = (a_{11} x_{n-1} + a_{12} x_{n-2} + a_{13{ x_{n-3}) mod m1
          y_n = (a_{21} y_{n-1} + a_{22{ y_{n-2} + a_{23} y_{n-3}) mod m2
     
+    with coefficients a11 ... a23,
+
          a_{11} = 0, a_{12} = 63308, a_{13} = -183326
          a_{21} = 86098, a_{22} = 0, a_{23} = -539608
+
+    and moduli m1, m2,
          
          m1 = 2^31 - 1 = 2147483647
          m2 = 2^31 - 2000169 = 2145483479
 
-    We seed the generator with
+    We seed the generator with the following sequence,
 
         x0 = (A * seed + B) mod M
         x1 = (A * x0 + B) mod M
@@ -26,14 +30,15 @@
         y1 = (A * y0 + B) mod M
         y2 = (A * y1 + B) mod M
 
-    and then use 7 iterations of the generator to "warm up" the
-    internal state.
+    where A = 8121, B = 28411, M = 134456, and then use 7 iterations
+    of the generator to "warm up" the internal state.
 
-    For checking the theoretical value of z_{10008} is 1477798470.
-    The subscript 10008 means (1) seed the generator with s=1, (2) do
-    seven warm-up iterations, (3) then do 10000 actual iterations.
+    The theoretical value of z_{10008} is 1477798470. The subscript
+    10008 means (1) seed the generator with s=1, (2) do the seven
+    warm-up iterations that are part of the seeding process, (3) then
+    do 10000 actual iterations.
 
-    The period of this generator is about 2^{205}.
+    The period of this generator is about 2^205.
 
     From: P. L'Ecuyer, "Combined Multiple Recursive Random Number
     Generators," Operations Research, 44, 5 (1996), 816--822.
