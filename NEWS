@@ -1,4 +1,4 @@
-* Will be new in gsl-0.4.2 (or 0.5; number is not yet decided):
+* Will be new in gsl-0.5:
 
 ** There is now a KNOWN-PROBLEMS file which lists compilation problems
 and test failures which are known to the developers.

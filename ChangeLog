@@ -1,3 +1,7 @@
+1999-12-03  Mark Galassi  <rosalia@lanl.gov>
+
+	* configure.in, NEWS: fixed the new version to 0.5.
+
 Tue Oct 19 11:15:16 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* added the eigen value directory, eigen/
