@@ -69,7 +69,22 @@ struct problem {
   double expected_error;
   char * description;
 } ;
- 
+
+gsl_monte_function 
+make_function (double (*f)(double *, size_t, void *), size_t d, void * p);
+
+gsl_monte_function 
+make_function (double (*f)(double *, size_t, void *), size_t d, void * p)
+{
+  gsl_monte_function f_new;
+
+  f_new.f = f;
+  f_new.dim = d;
+  f_new.params = p;
+
+  return f_new;
+}
+
 #define TRIALS 10
 
 int
@@ -79,11 +94,11 @@ main (void)
   double a = 0.1;
   double c = (1.0 + sqrt (10.0)) / 9.0;
 
-  gsl_monte_function Fc = { &fconst, 0, 0 };
-  gsl_monte_function F0 = { &f0, 0, &a };
-  gsl_monte_function F1 = { &f1, 0, &a };
-  gsl_monte_function F2 = { &f2, 0, &a };
-  gsl_monte_function F3 = { &f3, 0, &c };
+  gsl_monte_function Fc = make_function(&fconst, 0, 0);
+  gsl_monte_function F0 = make_function(&f0, 0, &a);
+  gsl_monte_function F1 = make_function(&f1, 0, &a);
+  gsl_monte_function F2 = make_function(&f2, 0, &a);
+  gsl_monte_function F3 = make_function(&f3, 0, &c);
 
   /* The relationship between the variance of the function itself, the
      error on the integral and the number of calls is,
