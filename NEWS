@@ -1,8 +1,40 @@
 * What is new in gsl-0.9.3:
 
+* Routines for complex LU decomposition are now available, allowing
+the solution of systems of equations with complex coefficients.
+
+* Matrix views of vectors now correctly require a unit stride for the
+original vector.
+
+* Permutations can now be applied to complex arrays and vectors.
+
+* gsl_sf_pow_int now handles the case x = 0, n < 0
+
+* The static versions of inline functions can now be hidden by
+defining the preprocessor macro HIDE_INLINE_STATIC.  This is needed
+for some compilers.
+
 * The original seeding procedure of mt19937 is available through the
 generator gsl_rng_mt19937_1998.  The seeding procedure was flawed, but
 is available for compatibility.
+
+* Added missing functions gsl_complex_div_real and
+gsl_complex_div_imag.
+
+* Missing functions for constant vector and matrix views have now been
+added.
+
+* Statistical calculations for histograms are now available, and the
+gsl-histogram command also displays the histogram mean and standard
+deviation.
+
+* The behavior of GSL_IEEE_MODE for denormalized exceptions has been
+fixed on Openbsd and Netbsd.
+
+* A pkg-config file gsl.pc is included in the distribution
+
+* The reference manual can now be printed in @smallbook format without
+overflow.
 
 * What was new in gsl-0.9.2:
 
