@@ -212,6 +212,11 @@ conjugate_pr_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
   intermediate_point (fdf, x, p, dir / pnorm, pg,
 		      stepa, stepc, fa, fc, x1, dx1, gradient, &stepb, &fb);
 
+  if (stepb == 0.0)
+    {
+      return GSL_ENOPROG;
+    }
+
   minimize (fdf, x, p, dir / pnorm,
 	    stepa, stepb, stepc, fa, fb, fc, tol,
 	    x1, dx1, x2, dx, gradient, &(state->step), f, &g1norm);

@@ -54,7 +54,7 @@ trial:
   printf ("trying stepb = %g  fb = %.18e\n", stepb, fb);
 #endif
 
-  if (fb >= fa)
+  if (fb >= fa  && stepb > 0.0)
     {
       /* downhill step failed, reduce step-size and try again */
       fc = fb;
