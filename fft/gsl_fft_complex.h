@@ -89,11 +89,9 @@ int
   gsl_fft_complex_generate_wavetable (size_t n,
 				      gsl_fft_complex_wavetable * wavetable);
 
-int
-  gsl_fft_complex_wavetable_alloc (size_t n,
-				   gsl_fft_complex_wavetable * wavetable);
+gsl_fft_complex_wavetable * gsl_fft_complex_wavetable_alloc (size_t n);
 
-int
+void
   gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
 
 int

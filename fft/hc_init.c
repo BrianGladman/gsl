@@ -99,33 +99,48 @@ gsl_fft_halfcomplex_generate_wavetable (size_t n,
   return 0;
 }
 
-int
-gsl_fft_halfcomplex_wavetable_alloc (size_t n,
-				  gsl_fft_halfcomplex_wavetable * wavetable)
+gsl_fft_halfcomplex_wavetable *
+gsl_fft_halfcomplex_wavetable_alloc (size_t n)
 {
+  gsl_fft_halfcomplex_wavetable * w ;
+
   if (n == 0)
     {
-      GSL_ERROR ("length n must be positive integer", GSL_EDOM);
+      GSL_ERROR_RETURN ("length n must be positive integer", GSL_EDOM, 0);
     }
 
-  wavetable->scratch = malloc (n * sizeof (gsl_complex));
+  w = (gsl_fft_halfcomplex_wavetable *) 
+    malloc(sizeof(gsl_fft_halfcomplex_wavetable));
 
-  if (wavetable->scratch == NULL)
+  if (w == NULL)
     {
-      GSL_ERROR ("failed to allocate scratch space", GSL_ENOMEM);
+      GSL_ERROR_RETURN ("failed to allocate struct", GSL_ENOMEM, 0);
     }
 
-  wavetable->trig = malloc (n * sizeof (gsl_complex));
+  w->scratch = malloc (n * sizeof (gsl_complex));
 
-  if (wavetable->trig == NULL)
+  if (w->scratch == NULL)
     {
-      GSL_ERROR ("failed to allocate trigonometric lookup table", GSL_ENOMEM);
+      free(w) ; /* error in constructor, prevent memory leak */
+
+      GSL_ERROR_RETURN ("failed to allocate scratch space", GSL_ENOMEM, 0);
     }
 
-  return 0;
+  w->trig = malloc (n * sizeof (gsl_complex));
+
+  if (w->trig == NULL)
+    {
+      free(w->scratch) ; /* error in constructor, prevent memory leak */
+      free(w) ; 
+
+      GSL_ERROR_RETURN ("failed to allocate trigonometric lookup table", 
+			GSL_ENOMEM, 0);
+    }
+
+  return w;
 }
 
-int
+void
 gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable)
 {
 
@@ -137,5 +152,5 @@ gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable)
   free (wavetable->trig);
   wavetable->trig = NULL;
 
-  return 0;
+  free (wavetable);
 }

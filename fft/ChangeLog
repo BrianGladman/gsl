@@ -1,3 +1,8 @@
+Mon Apr 27 18:48:58 1998  Brian Gough  <bjg@vvv.lanl.gov>
+
+	* fft_alloc functions now return a pointer to a newly allocated
+ 	wavetable struct (or a null pointer if there isn't enough memory)
+
 Fri Apr 10 15:12:37 1998  Brian Gough  <bjg@vvv.lanl.gov>
 
 	* renamed complex_*.c and halfcomplex_*.c to c_*.c and hc_*.c to

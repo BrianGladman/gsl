@@ -29,7 +29,7 @@ main (int argc, char *argv[])
   gsl_complex *complex_data, *complex_tmp;
   double rms, total;
 
-  gsl_fft_complex_wavetable complex_wavetable;
+  gsl_fft_complex_wavetable * cw;
 
   if (argc == 2)
     {
@@ -50,9 +50,9 @@ main (int argc, char *argv[])
       /*    fft_complex_data = malloc (n * sizeof (gsl_complex));
          fft_complex_tmp = malloc (n * sizeof (gsl_complex)); */
 
-      status = gsl_fft_complex_wavetable_alloc (n, &complex_wavetable);
-      status = gsl_fft_complex_init (n, &complex_wavetable);
-      status = gsl_fft_complex_generate_wavetable (n, &complex_wavetable);
+      cw = gsl_fft_complex_wavetable_alloc (n);
+      status = gsl_fft_complex_init (n, cw);
+      status = gsl_fft_complex_generate_wavetable (n, cw);
 
       for (i = 0; i < n; i++)
 	{
@@ -61,8 +61,8 @@ main (int argc, char *argv[])
 	}
 
       memcpy (complex_tmp, complex_data, n * sizeof (gsl_complex));
-      gsl_fft_complex_forward (complex_data, n, &complex_wavetable);
-      gsl_fft_complex_inverse (complex_data, n, &complex_wavetable);
+      gsl_fft_complex_forward (complex_data, n, cw);
+      gsl_fft_complex_inverse (complex_data, n, cw);
 
       total = 0.0;
       for (i = 0; i < n; i++)
@@ -75,9 +75,9 @@ main (int argc, char *argv[])
       rms = sqrt (total / n);
 
       factor_sum = 0;
-      for (i = 0; i < complex_wavetable.nf; i++)
+      for (i = 0; i < cw->nf; i++)
 	{
-	  int j = complex_wavetable.factor[i];
+	  int j = cw->factor[i];
 	  factor_sum += j;
 	}
 

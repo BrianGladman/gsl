@@ -35,12 +35,9 @@ int
   gsl_fft_real_generate_wavetable (size_t n,
 				   gsl_fft_real_wavetable * wavetable);
 
-int
-  gsl_fft_real_wavetable_alloc (size_t n,
-				gsl_fft_real_wavetable * wavetable);
+gsl_fft_real_wavetable * gsl_fft_real_wavetable_alloc (size_t n);
 
-int
-  gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * wavetable);
+void  gsl_fft_real_wavetable_free (gsl_fft_real_wavetable * wavetable);
 
 int
   gsl_fft_real_unpack (const double real_coefficient[],

@@ -50,9 +50,9 @@ main (int argc, char * argv[])
   double * real_data = &real_x ;
   gsl_complex * complex_data = &complex_x  ; 
 
-  gsl_fft_complex_wavetable complex_wavetable;
-  gsl_fft_real_wavetable real_wavetable;
-  gsl_fft_halfcomplex_wavetable halfcomplex_wavetable;
+  gsl_fft_complex_wavetable * cw;
+  gsl_fft_real_wavetable * rw;
+  gsl_fft_halfcomplex_wavetable * hcw;
 
 
   while (1) {
@@ -91,48 +91,51 @@ main (int argc, char * argv[])
 
   /* n = 0 in alloc */
 
-  status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
-  gsl_test (!status, "trap for n = 0 in gsl_fft_complex_wavetable_alloc");
+  cw = gsl_fft_complex_wavetable_alloc (0);
+  gsl_test (cw != 0, "trap for n = 0 in gsl_fft_complex_wavetable_alloc");
 
-  status = gsl_fft_real_wavetable_alloc (0, &real_wavetable);
-  gsl_test (!status, "trap for n = 0 in gsl_fft_real_wavetable_alloc" );
+  rw = gsl_fft_real_wavetable_alloc (0);
+  gsl_test (rw != 0, "trap for n = 0 in gsl_fft_real_wavetable_alloc" );
 
-  status = gsl_fft_halfcomplex_wavetable_alloc (0, &halfcomplex_wavetable);
-  gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex_wavetable_alloc ");
+  hcw = gsl_fft_halfcomplex_wavetable_alloc (0);
+  gsl_test (hcw != 0, "trap for n = 0 in gsl_fft_halfcomplex_wavetable_alloc");
 
   /* n = 0 in wavetable_init */
 
-  status = gsl_fft_complex_init (0, &complex_wavetable);
+  status = gsl_fft_complex_init (0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_wavetable_init");
 
-  status = gsl_fft_real_init (0, &real_wavetable);
+  status = gsl_fft_real_init (0, rw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_real_wavetable_init");
 
-  status = gsl_fft_halfcomplex_init (0, &halfcomplex_wavetable);
+  status = gsl_fft_halfcomplex_init (0, hcw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex_wavetable_init");
 
 
   /* n = 0 in generate_wavetable */
 
-  status = gsl_fft_complex_generate_wavetable (0, &complex_wavetable);
+  status = gsl_fft_complex_generate_wavetable (0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_generate_wavetable");
 
-  status = gsl_fft_real_generate_wavetable (0, &real_wavetable);
+  status = gsl_fft_real_generate_wavetable (0, rw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_real_generate_wavetable");
 
-  status = gsl_fft_halfcomplex_generate_wavetable (0, &halfcomplex_wavetable);
+  status = gsl_fft_halfcomplex_generate_wavetable (0, hcw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex_generate_wavetable");
 
+  cw = gsl_fft_complex_wavetable_alloc (10);
+  hcw = gsl_fft_halfcomplex_wavetable_alloc (10);
+  rw = gsl_fft_real_wavetable_alloc (10);
 
   /* n = 0 in fft forward */
 
-  status = gsl_fft_complex_forward (complex_data, 0, &complex_wavetable);
+  status = gsl_fft_complex_forward (complex_data, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_forward");
 
-  status = gsl_fft_real (real_data, 0, &real_wavetable);
+  status = gsl_fft_real (real_data, 0, rw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_real");
 
-  status = gsl_fft_halfcomplex (real_data, 0, &halfcomplex_wavetable);
+  status = gsl_fft_halfcomplex (real_data, 0, hcw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_halfcomplex");
 
   status = gsl_fft_complex_radix2_forward (complex_data, 0);
@@ -140,7 +143,7 @@ main (int argc, char * argv[])
 
   /* n = 0 in fft backward */
 
-  status = gsl_fft_complex_backward (complex_data, 0, &complex_wavetable);
+  status = gsl_fft_complex_backward (complex_data, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_backward");
 
   status = gsl_fft_complex_radix2_backward (complex_data, 0);
@@ -148,7 +151,7 @@ main (int argc, char * argv[])
 
   /* n = 0 in fft inverse */
 
-  status = gsl_fft_complex_inverse (complex_data, 0, &complex_wavetable);
+  status = gsl_fft_complex_inverse (complex_data, 0, cw);
   gsl_test (!status, "trap for n = 0 in gsl_fft_complex_inverse");
 
   status = gsl_fft_complex_radix2_inverse (complex_data, 0);
@@ -167,24 +170,24 @@ main (int argc, char * argv[])
 
   /* n != wavetable.n in mixed radix routines */
 
-  complex_wavetable.n = 3;
-  status = gsl_fft_complex_forward (complex_data, 4, &complex_wavetable);
+  cw->n = 3;
+  status = gsl_fft_complex_forward (complex_data, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_forward");
 
-  complex_wavetable.n = 3;
-  status = gsl_fft_complex_backward (complex_data, 4, &complex_wavetable);
+  cw->n = 3;
+  status = gsl_fft_complex_backward (complex_data, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_backward");
 
-  complex_wavetable.n = 3;
-  status = gsl_fft_complex_inverse (complex_data, 4, &complex_wavetable);
+  cw->n = 3;
+  status = gsl_fft_complex_inverse (complex_data, 4, cw);
   gsl_test (!status, "trap for n != nw in gsl_fft_complex_inverse");
 
-  real_wavetable.n = 3;
-  status = gsl_fft_real (real_data, 4, &real_wavetable);
+  rw->n = 3;
+  status = gsl_fft_real (real_data, 4, rw);
   gsl_test (!status, "trap for n != nw in gsl_fft_real");
 
-  halfcomplex_wavetable.n = 3;
-  status = gsl_fft_halfcomplex (real_data, 4, &halfcomplex_wavetable);
+  hcw->n = 3;
+  status = gsl_fft_halfcomplex (real_data, 4, hcw);
   gsl_test (!status, "trap for n != nw in gsl_fft_halfcomplex");
 
   return gsl_test_summary ();

@@ -53,12 +53,10 @@ int
   gsl_fft_halfcomplex_generate_wavetable (size_t n,
 				 gsl_fft_halfcomplex_wavetable * wavetable);
 
-int
-  gsl_fft_halfcomplex_wavetable_alloc (size_t n,
-				 gsl_fft_halfcomplex_wavetable * wavetable);
+gsl_fft_halfcomplex_wavetable * gsl_fft_halfcomplex_wavetable_alloc (size_t n);
 
-int
-  gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable);
+void
+gsl_fft_halfcomplex_wavetable_free (gsl_fft_halfcomplex_wavetable * wavetable);
 
 int
   gsl_fft_halfcomplex_unpack (const double halfcomplex_coefficient[],
