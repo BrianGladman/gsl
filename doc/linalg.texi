@@ -699,7 +699,7 @@ where @math{v} is a vector (called the @dfn{Householder vector}) and
 rank-1 structure of the Householder matrix to create and apply
 Householder transformations efficiently.
 
-@deftypefun double gsl_linalg_houlsehoulder_transform (gsl_vector * @var{v})
+@deftypefun double gsl_linalg_householder_transform (gsl_vector * @var{v})
 This function prepares a Householder transformation @math{P = I - \tau v
 v^T} which can be used to zero all the elements of the input vector except
 the first.  On output the transformation is stored in the vector @var{v}

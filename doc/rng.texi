@@ -686,7 +686,7 @@ Note that the implementation of this generator using a 32-bit
 integer amounts to 32 parallel implementations of one-bit
 generators.  One consequence of this is that the period of this
 32-bit generator is the same as for the one-bit generator.
-Moreover, this inedpendence means that all 32-bit patterns are
+Moreover, this independence means that all 32-bit patterns are
 equally likely, and in particular that 0 is an allowed random
 value.  (We are grateful to Heiko Bauke for clarifying for us these
 properties of GFSR random number generators.)
@@ -871,7 +871,7 @@ prevent the seed taking an even value.  The upper 16 bits of
 are set to 0. A consequence of this procedure is that the pairs of seeds
 2 and 3, 4 and 5, etc produce the same sequences.
 
-The generator compatibile with the CRAY MATHLIB routine RANF. It
+The generator compatible with the CRAY MATHLIB routine RANF. It
 produces double precision floating point numbers which should be
 identical to those from the original RANF.
 
