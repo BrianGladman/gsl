@@ -1,5 +1,5 @@
 #! /bin/bash
-DIR=/tmp/gsl.build
+DIR=${DIR:-/tmp/gsl.build}
 SRCDIR=`pwd`/..			# assume we build in $(srcdir)/scripts
 echo building in $DIR 
 mkdir $DIR
