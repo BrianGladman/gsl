@@ -30,6 +30,6 @@ gsl_error (const char *reason, const char *file, int line)
       return;
     }
 
-  fprintf (stderr, "%s:%d: error: %s\n", file, line, reason);
+  fprintf (stderr, "\n%s:%d: error: %s\n", file, line, reason);
   abort ();
 }

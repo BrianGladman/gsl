@@ -8,7 +8,7 @@
 #define CHECK(x) {x,#x}
 #define MAX_ERRS 16
 
-main () {
+int main (void) {
 
   struct { 
     int number; 
@@ -21,7 +21,7 @@ main () {
 			  CHECK(GSL_EFACTOR),
 			  CHECK(GSL_ESANITY),
 			  CHECK(GSL_ENOMEM),
-			  -1 } ;
+			  {-1, "end"} } ;
   
   int errs, i, j ;
   int failed = 0 ;
