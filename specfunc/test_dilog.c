@@ -166,5 +166,15 @@ int test_dilog(void)
             -0.51995305609998319025, TEST_TOL1,
              GSL_SUCCESS);
 
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1, -M_PI/128.0, &r1, &r2),
+            1.8881719454909716580, TEST_TOL1,
+           -0.3556738764969238976, TEST_TOL1,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_dilog_e, (1.1,  M_PI/128.0, &r1, &r2),
+            1.8881719454909716580, TEST_TOL1,
+            0.3556738764969238976, TEST_TOL1,
+            GSL_SUCCESS);
+
   return s;
 }
