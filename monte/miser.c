@@ -22,17 +22,8 @@
 #define myMAX(a,b) ((a) >= (b) ? (a) : (b))
 #define myMIN(a,b) ((a) <= (b) ? (a) : (b))
 
-/* these should be in the state structure */
-unsigned long min_calls = 15;
-unsigned long min_calls_per_bisection = 60;
-double estimate_frac =  0.1;
-double ALPHA = 2.0/3.0; 
-double dither;
-
-int estimate_style = ESTIMATE_STYLE_NR;
-
-int gsl_monte_miser(const gsl_rng * r, 
-		    double (*func)(double []), double xl[], double xu[], 
+int gsl_monte_miser(gsl_monte_miser_state* state,
+		    gsl_monte_f_T func, double xl[], double xu[], 
 		    unsigned long num_dim, unsigned long calls, 
 		    double *res, double *err)
 {
@@ -56,9 +47,15 @@ int gsl_monte_miser(const gsl_rng * r,
   gsl_vector_int *hits_l, *hits_r;
   gsl_vector *x, *x_mid;
 
+  gsl_rng *r;
+
+  status = gsl_monte_miser_validate(state, xl, xu, num_dim, calls);
+
+  r = state->ranf;
+
   x = gsl_vector_alloc(num_dim);
 
-  if (calls < min_calls_per_bisection) {
+  if (calls < state->min_calls_per_bisection) {
     status = gsl_monte_plain(r, func, xl, xu, num_dim, calls, res, err);
   }
   else {
@@ -66,7 +63,8 @@ int gsl_monte_miser(const gsl_rng * r,
        or near to num_dim, because then we will get subplanes.  This
        is also an issue for min_calls. 
     */
-    estimate_calls = myMAX(min_calls, (unsigned long)(calls*estimate_frac) );
+    estimate_calls = myMAX(state->min_calls, 
+			   (unsigned long)(calls*(state->estimate_frac)) );
     if (estimate_calls <= num_dim) {
       GSL_WARNING("estimate calls is close to nun_dim!", GSL_ESANITY);
     }
@@ -79,7 +77,7 @@ int gsl_monte_miser(const gsl_rng * r,
     vol = 1;
     for (i = 0; i < num_dim; i++) {
       /* flip a coin to bisect the integration region with some fuzz */
-      s = (0.5 - gsl_rng_uniform(r) >= 0.0 ? dither : -dither ); 
+      s = (0.5 - gsl_rng_uniform(r) >= 0.0 ? state->dither : -state->dither ); 
       x_mid->data[i] = (0.5 + s)*xl[i] + (0.5 - s)*xu[i];
       vol *= xu[i] - xl[i];
     }
@@ -91,7 +89,7 @@ int gsl_monte_miser(const gsl_rng * r,
        the variances by finding the min and max function values 
        for each half-region for each bisection.
     */
-    if (estimate_style == ESTIMATE_STYLE_NR ) {
+    if (state->estimate_style == ESTIMATE_STYLE_NR ) {
       /* NR way */
       gsl_vector *fmax_l, *fmax_r, *fmin_l, *fmin_r;
       fmax_l = gsl_vector_alloc(num_dim);
@@ -137,7 +135,7 @@ int gsl_monte_miser(const gsl_rng * r,
       gsl_vector_free(fmax_r);
       gsl_vector_free(fmax_l);
     }
-    else if (estimate_style == ESTIMATE_STYLE_CORRELATED_MC) {
+    else if (state->estimate_style == ESTIMATE_STYLE_CORRELATED_MC) {
       /* assert estimate_style = 1 */
       gsl_vector *sum_l, *sum_r, *sum2_l, *sum2_r;
 
@@ -195,7 +193,7 @@ int gsl_monte_miser(const gsl_rng * r,
       gsl_vector_free(sum_r);
       gsl_vector_free(sum2_r);
     }
-    else if (estimate_style == ESTIMATE_STYLE_MC) {
+    else if (state->estimate_style == ESTIMATE_STYLE_MC) {
       /* FIXME */
       /* Would do complete mc estimate for each half space.  Trick is
 	 how to use these results - it would be a shame to waste them.
@@ -215,12 +213,13 @@ int gsl_monte_miser(const gsl_rng * r,
     for (i = 0; i < num_dim; i++) {
       if (sigma_l->data[i] >= 0 && sigma_r->data[i] >= 0) {
 	/* estimates are okay */
-	var = pow(sigma_l->data[i], ALPHA) + pow(sigma_r->data[i], ALPHA);
+	var = pow(sigma_l->data[i], state->ALPHA) + 
+	  pow(sigma_r->data[i], state->ALPHA);
 	if (var <= best_var) {
 	  best_var = var;
 	  i_bisect = i;
-	  weight_l = pow(sigma_l->data[i], ALPHA);
-	  weight_r = pow(sigma_r->data[i], ALPHA);
+	  weight_l = pow(sigma_l->data[i], state->ALPHA);
+	  weight_r = pow(sigma_r->data[i], state->ALPHA);
 	}
       }
       else {
@@ -248,9 +247,9 @@ int gsl_monte_miser(const gsl_rng * r,
 
     /* get the actual fractional sizes of the two "halves" */
     fraction_l = fabs((xbi_m - xbi_l)/(xbi_r - xbi_l));
-    calls_l = min_calls;
+    calls_l = state->min_calls;
     calls_l += (unsigned long)
-      (calls - estimate_calls - 2*min_calls)*fraction_l*weight_l
+      (calls - estimate_calls - 2*state->min_calls)*fraction_l*weight_l
        /(fraction_l*weight_l + (1.0 - fraction_l)*weight_r);
     calls_r = calls - estimate_calls - calls_l;
 
@@ -262,12 +261,12 @@ int gsl_monte_miser(const gsl_rng * r,
     }
 
     xu_tmp->data[i_bisect] = x_mid->data[i_bisect];
-    status = gsl_monte_miser(r, func, xl_tmp->data, xu_tmp->data, 
-		   num_dim, calls_l, &res_l, &err_l);
+    status = gsl_monte_miser(state, func, xl_tmp->data, xu_tmp->data, 
+			     num_dim, calls_l, &res_l, &err_l);
     xl_tmp->data[i_bisect] = x_mid->data[i_bisect];
     xu_tmp->data[i_bisect] = xu[i_bisect];
-    status = gsl_monte_miser(r, func, xl_tmp->data, xu_tmp->data, 
-		   num_dim, calls_r, res, err);
+    status = gsl_monte_miser(state, func, xl_tmp->data, xu_tmp->data, 
+			     num_dim, calls_r, res, err);
 
     *res += res_l;
     *err = sqrt( SQR(err_l) + SQR(*err) );   

@@ -1,16 +1,14 @@
 /* Author: MJB */
 /* RCS: $Id$ */
+
+#ifndef GSL_MISER_H
+#define GSL_MISER_H
+
 #include <gsl_rng.h>
+#include <gsl_monte.h>
 
 enum {ESTIMATE_STYLE_NR = -1,  ESTIMATE_STYLE_CORRELATED_MC = 0,  
       ESTIMATE_STYLE_MC = 1};
-
-extern unsigned long min_calls;
-extern unsigned long min_calls_per_bisection;
-extern double dither;
-extern double estimate_frac;
-extern double ALPHA;
-extern int estimate_style;
 
 typedef struct {
   unsigned long min_calls;
@@ -25,8 +23,8 @@ typedef struct {
   gsl_rng *ranf;
 } gsl_monte_miser_state; 
 
-int gsl_monte_miser(const gsl_rng * r,
-		    double (*func)(double []), double xl[], double xh[], 
+int gsl_monte_miser(gsl_monte_miser_state* state,
+		    gsl_monte_f_T func, double xl[], double xh[], 
 		    unsigned long num_dim, unsigned long calls, 
 		    double *ave, double *var);
 
@@ -40,3 +38,4 @@ int gsl_monte_miser_validate(gsl_monte_miser_state* state,
 int gsl_monte_miser_init(gsl_monte_miser_state* state);
 
 
+#endif /* GSL_MISER_H */

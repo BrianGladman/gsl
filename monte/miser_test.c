@@ -9,6 +9,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <gsl_math.h>
 #include <gsl_errno.h>
 #include <gsl_test.h>
 
@@ -24,12 +25,16 @@ int num_dim = 1;
 double xl[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 double xu[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 double xu2[11] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+double xu3[2] = {DBL_MAX, DBL_MAX};
 
 double fconst(double x[]);
 double f0(double x[]);
 double f1(double x[]);
 double f2(double x[]);
 double f3(double x[]);
+
+void my_error_handler (const char *reason, const char *file,
+                       int line, int err);
 
 int main() 
 {
@@ -40,35 +45,57 @@ int main()
   double tol = 1e-2;
   int step = 1;
   size_t calls = 1000;
-  gsl_rng * r = gsl_rng_alloc(gsl_rng_env_setup()) ;
 
-  dither = 0.0;
+  gsl_monte_miser_state* s = gsl_monte_miser_alloc();
+  s->dither = 0.0;
+
   c = (1.0 + sqrt(10.0))/9.0 ;
 
-  /*  verbose = 1; */
-
   gsl_test_verbose(1);
+  gsl_set_error_handler (&my_error_handler);
+
+  
+  printf("testing allocation/innput checks\n");
+
+  status = gsl_monte_miser_validate(s, xl, xu, 4, 10);
+  gsl_test(status != 0,  "error if not initialized");
+
+  gsl_monte_miser_init(s);
+  status = gsl_monte_miser_validate(s, xl, xu3, 1, 1);
+  gsl_test(status != 0,  "error if limits too large");
+  status = gsl_monte_miser_validate(s, xl, xu, 0, 10);
+  gsl_test(status != 0,  "error if num_dim = 0");
+  status = gsl_monte_miser_validate(s, xl, xu, 1, 0);
+  gsl_test(status != 0,  "error if calls = 0");
+  status = gsl_monte_miser_validate(s, xu, xl, 1, 10);
+  gsl_test(status != 0,  "error if xu < xl");
+
 
   printf("Testing constant function and normalization\n");
+  gsl_monte_miser_validate(s, xl, xu2, num_dim, calls);
+
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.2;
-    gsl_monte_miser(r, fconst, xl, xu2, num_dim, calls, &res, &err);
+    gsl_monte_miser_validate(s, xl, xu2, num_dim, calls);
+    gsl_monte_miser(s, fconst, xl, xu2, num_dim, calls, &res, &err);
     gsl_test_rel(res, pow(2, num_dim), tol, "miser(fconst), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
+
 
   calls = 1000;
   printf("Testing product function\n");
   for (num_dim = 1; num_dim < 10; num_dim++) {
     calls *= 1.8;
-    gsl_monte_miser(r, f0, xl, xu, num_dim, calls, &res, &err);
+    gsl_monte_miser_validate(s, xl, xu, num_dim, calls);
+    gsl_monte_miser(s, f0, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f0), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
 
   /*  verbose = 1;*/
   calls =  10000;
-  dither = 0.15;
+  s->dither = 0.15;
   tol = 0.04;
 
   printf("Testing single gaussian\n");
@@ -86,7 +113,7 @@ int main()
     if ( num_dim == 9) {
       tol = 0.14;
     }
-    status = gsl_monte_miser(r, f1, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(s, f1, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f1), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -94,7 +121,7 @@ int main()
   /*  verbose = 1; */
   calls = 20000;
   tol = 2e-2;
-  dither = 0.0;
+  s->dither = 0.0;
   step = 2;
 
   printf("Testing double gaussian\n");
@@ -108,15 +135,15 @@ int main()
       calls = 50000;
       break;
     case 7:
-      dither = 0.1;
+      s->dither = 0.1;
       calls = 120000;
       break;
     case 9:
-      dither = 0.1;
+      s->dither = 0.1;
       calls = 210000;
       break;
     }
-    status = gsl_monte_miser(r, f2, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(s, f2, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f2), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -130,7 +157,7 @@ int main()
     calls *= 1.2;
     if ( num_dim == 6 )
       tol *= 3;
-    status = gsl_monte_miser(r, f3, xl, xu, num_dim, calls, &res, &err);
+    status = gsl_monte_miser(s, f3, xl, xu, num_dim, calls, &res, &err);
     gsl_test_rel(res, 1.0, tol, "miser(f3), dim=%d, err=%.4f", 
 		 num_dim, err); 
   }
@@ -203,3 +230,9 @@ double f3(double x[])
   return prod;
 }
   
+
+void
+my_error_handler (const char *reason, const char *file, int line, int err)
+{
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+}
