@@ -515,7 +515,7 @@ coulomb_jwkb(double lam, double eta, double x,
   double gh   = sqrt(gh2 + hll)/x;
   double phi  = x*gh - 0.5*(hl*log((gh+sl)*(gh+sl)/rl2) - log(gh));
 
-  if(eta != 0.0) phi -= eta*atan2(x*gh,x - eta);
+  if(eta != 0.0) phi -= eta*atan2(x*gh, x - eta);
 
   if(-phi < GSL_LOG_DBL_MAX) {
     *gjwkb = exp(-phi);
@@ -610,7 +610,7 @@ coulomb_lam_min_values(double lam_min,
       LAM_MIN_RETURN(GSL_EZERODIV);
     }
 
-    if(stat_WKB == GSL_EOVRFLW) {
+    if(stat_WKB == GSL_EOVRFLW || gjwkb > 1.0/(GSL_SQRT_MACH_EPS*100.0)) {
       /* WKB detects a large G value. Do not attempt the
        * continued fraction; bug out now. The WKB values
        * should be accurate enough anyway.
