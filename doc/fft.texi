@@ -326,28 +326,32 @@ Note that we have assumed that the program is using the default error
 handler (which calls @code{abort} for any errors).  If you are not using
 a safe error handler you would need to check the return status of
 @code{gsl_fft_complex_radix2_forward}.
+
+@iftex
+@sp 1
+@center @image{fft-complex-radix2-t,3.4in} @image{fft-complex-radix2-f,3.4in}
+
+@display
+A pulse (left) and its discrete fourier transform (right), output from
+the example program.
+@end display
+
+@noindent
+The transformed data is rescaled by @math{1/\sqrt N} so that it fits on
+the same plot as the input. Only the real part is shown, by the choice
+of the input data the imaginary part is zero. Allowing for the
+wrap-around of negative times at @math{t=128}, and working in units of 
+@math{k/N}, the DFT approximates the continuum fourier transform of a modulated
+@math{\sin} function,
+
 @tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=3.4in\epsfbox{fft-complex-radix2-t.eps}%
-\epsfxsize=3.4in\epsfbox{fft-complex-radix2-f.eps}}
-\medskip
-%
-\centerline{A pulse (left) and its discrete fourier transform (right),
-output from the example program.}
-%
-\noindent The transformed data is rescaled by ${1/\sqrt{N}}$ so that it
-fits on the same plot as the input. Only the real part is shown, by the
-choice of the input data the imaginary part is zero. Allowing for the
-wrap-around of negative times at $t=128$, and working in units of $k/N$,
-the DFT approximates the continuum fourier transform of a modulated
-$\sin$ function,
-%
-$$ 
+\beforedisplay
+$$
 \int_{-a}^{+a} e^{-2 \pi i k x} dx = {\sin(2\pi k a) \over\pi k} .
 $$
-\medskip
+\afterdisplay
 @end tex
+@end iftex
 
 @node Mixed-radix FFT routines for complex data
 @section Mixed-radix FFT routines for complex data
@@ -1121,23 +1125,20 @@ int main ()
     @}
 @}
 @end example
-@tex
-\input epsf
-\medskip
-\centerline{\epsfbox{fft-real-mixedradix.eps}}
-\medskip
-%
-\centerline{Low-pass filtered version of a real pulse, output from the example
-program.}
-%
-%\noindent
-%The fourier expansion of the square wave 
-%$$
-%f(x) = {4 \over \pi} (\cos x - {1 \over 3} \cos 3x + {1 \over 5} \cos
-%5x - \dots)
-%$$
-\medskip
-@end tex
+
+@iftex
+@sp 1
+@center @image{fft-real-mixedradix}
+
+@center Low-pass filtered version of a real pulse, output from the example program.
+@end iftex
+
+
+@comment The fourier expansion of the square wave 
+@comment $$
+@comment f(x) = {4 \over \pi} (\cos x - {1 \over 3} \cos 3x + {1 \over 5} \cos
+@comment 5x - \dots)
+@comment $$
 
 
 @comment -@node Test Signals

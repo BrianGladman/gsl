@@ -512,12 +512,10 @@ size.
 gnuplot> plot 'histogram.dat' using 1:3 with step
 @end example
 
-@tex
-\input epsf
-\medskip
-\centerline{\epsfbox{histogram.eps}}
-\medskip
-@end tex
+@iftex
+@sp 1
+@center @image{histogram}
+@end iftex
 
 @node Two dimensional histograms
 @section Two dimensional histograms
@@ -910,9 +908,7 @@ a higher resolution grid we can see the original underlying histogram
 and also the statistical fluctuations caused by the events being
 uniformly distributed over the the area of these original bins.
 
-@tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=5in\epsfbox{histogram2d.eps}}
-\medskip
-@end tex
+@iftex
+@sp 1
+@center @image{histogram2d,5in}
+@end iftex

@@ -141,7 +141,7 @@ this way while retaining portability. For example,
 #endif
 #ifdef INTEL
 #define gsl_ran_gaussian my_gaussian
-#endinf
+#endif
 @end example
 
 Note that the alternative implementations will not produce bit-for-bit

@@ -1368,6 +1368,7 @@ $CDF(x) = \int_0^x p(x') dx' = 1 - \exp(-(x/\mu)^a)$
 @end tex
 
 @comment
+@page
 @node General Discrete Distributions
 @section General Discrete Distributions
 

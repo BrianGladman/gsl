@@ -545,11 +545,9 @@ the interval.
 
 @comment eps file "roots-bisection.eps"
 @iftex
-@tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=5in\epsfbox{roots-bisection.eps}}
-@end tex
+@sp 1
+@center @image{roots-bisection,5in}
+
 @quotation
 Four iterations of bisection, where @math{a_n} is @math{n}th position of
 the beginning of the interval and @math{b_n} is the @math{n}th position
@@ -581,11 +579,7 @@ the interval on the current iteration.
 
 @comment eps file "roots-false-position.eps"
 @comment @iftex
-@comment @tex
-@comment \input epsf
-@comment \medskip
-@comment \centerline{\epsfxsize=5in\epsfbox{roots-false-position.eps}}
-@comment @end tex
+@comment @image{roots-false-position,5in}
 @comment @quotation
 @comment Several iterations of false position, where @math{a_n} is @math{n}th
 @comment position of the beginning of the interval and @math{b_n} is the
@@ -662,11 +656,9 @@ for multiple roots.
 
 @comment eps file "roots-newtons-method.eps"
 @iftex
-@tex
-\input epsf
-\medskip
-\centerline{\epsfxsize=5in\epsfbox{roots-newtons-method.eps}}
-@end tex
+@sp 1
+@center @image{roots-newtons-method,5in}
+
 @quotation
 Several iterations of Newton's Method, where @math{g_n} is the
 @math{n}th guess.
