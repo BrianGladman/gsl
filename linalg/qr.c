@@ -306,6 +306,28 @@ gsl_linalg_R_solve (const gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
     }
 }
 
+int
+gsl_linalg_R_svx (const gsl_matrix * R, gsl_vector * x)
+{
+  if (R->size1 != R->size2)
+    {
+      GSL_ERROR ("R matrix must be square", GSL_ENOTSQR);
+    }
+  else if (R->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      /* Solve R x = b, storing x inplace in b */
+
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
+
+      return GSL_SUCCESS;
+    }
+}
+
+
 
 /* Form the product Q^T v  from a QR factorized matrix 
  */

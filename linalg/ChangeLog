@@ -1,3 +1,7 @@
+2004-12-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c (gsl_linalg_R_svx): added missing function
+
 2004-09-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: added tests for LQ, P^TLQ solvers
