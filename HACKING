@@ -125,3 +125,14 @@ dist, unpack somewhere and then configure, make, make check.
    make dvi; dvips gsl-ref.dvi ; gzip -v -9 gsl-ref.ps
    scp -v gsl-ref.ps.gz sourceware.cygnus.com:/sourceware/ftp/anonftp/pub/gsl
 
+* Preparing a windows version (Microsoft Visual C).
+
+   Unpack the unix distribution tar file
+   Copy the directory msvc/ into it as a subdirectory
+   cd msvc/ ; make    # this should produce various *.{dsw,dsp} files
+   go back to the top-level and make a zip file of the whole distribution,
+   e.g.  zip -l -r GSL-0_8.zip gsl-0.8/
+
+   The -l option is important -- it converts unix linefeeds into DOS CR-LF's
+   The files won't compile without this because everything appears on
+   a single line.
