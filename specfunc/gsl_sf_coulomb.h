@@ -62,7 +62,7 @@ double gsl_sf_hydrogenicR(const int n, const int l, const double Z, const double
  *
  * Conventions of Abramowitz+Stegun.
  *
- * Because their can be a large dynamic range of values,
+ * Because there can be a large dynamic range of values,
  * overflows are handled gracefully. If an overflow occurs,
  * GSL_EOVRFLW is signalled and exponent(s) are returned
  * through exp_F, exp_G. These are such that
