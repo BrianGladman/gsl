@@ -103,11 +103,12 @@ general users rather than specialists.
 
 @menu
 * Motivation::                  
+* Contributing::                
 * Design::                      
 * Copying::                     
 @end menu
 
-@node Motivation, Design, Top, Top
+@node Motivation, Contributing, Top, Top
 @chapter Motivation
 @cindex numerical analysis
 @cindex free software
@@ -215,7 +216,100 @@ Wolfgang Hoschek.  It is under a BSD-style license.
 The long-term goal will be to provide a framework to which the real
 numerical experts (or their graduate students) will contribute. 
 
-@node Design, Copying, Motivation, Top
+@node  Contributing, Design, Motivation, Top
+@chapter Contributing
+
+This design document was originally written in 1996.  As of 2004, GSL
+itself is essentially feature complete, the developers are not actively
+working on any major new functionality.
+
+The main emphasis is now on ensuring the stability of the existing
+functions, improving consistency, tidying up a few problem areas and
+fixing any bugs that are reported.  Adding large amounts of new code is
+difficult because it leads to differences in the maturity of different
+parts of the library.
+
+To maintain stability, any new functionality is encouraged as
+@dfn{packages}, built on top of GSL and maintained independently by the
+author, as in other free software projects (such as the Perl CPAN
+archive and TeX CTAN archive, etc).
+
+@menu
+* Packages::                    
+@end menu
+
+@node Packages,  , Contributing, Contributing
+@section Packages
+
+The design of GSL permits extensions to be used alongside the existing
+library easily by simple linking.  For example, additional random number
+generators can be provided in a separate library:
+
+@example
+$ tar xvfz rngextra-0.1.tar.gz
+$ cd rngextra-0.1
+$ ./configure; make; make check; make install
+$ ...
+$ gcc -Wall main.c -lrngextra -lgsl -lgslcblas -lm
+@end example
+
+The points below summarise the package design guidelines.  These are
+intended to ensure that packages are consistent with GSL itself, to make
+life easier for the end-user and make it possible to distribute popular
+well-tested packages as part of the core GSL in future.
+
+@itemize @bullet
+@item Follow the GSL and GNU coding standards described in this document
+
+This means using the standard GNU packaging tools, such as Automake,
+providing documentation in Texinfo format, and a test suite.  The test
+suite should run using @samp{make check}, and use the test functions
+provided in GSL to produce the output with @code{PASS:}/@code{FAIL:}
+lines.  It is not essential to use libtool since packages are likely to
+be small, a static library is sufficient and simpler to build.
+
+@item Use a new unique prefix for the package (do not use @samp{gsl_} -- this is reserved for internal use).
+
+For example, a package of additional random number generators might use
+the prefix @code{rngextra}.
+
+@example
+#include <rngextra.h>
+
+gsl_rng * r = gsl_rng_alloc (rngextra_lsfr32);
+@end example
+
+@item Use a meaningful version number which reflects the state of development
+
+Generally, @code{0.x} are alpha versions, which provide no guarantees.
+Following that, @code{0.9.x} are beta versions, which should be essentially
+complete, subject only to minor changes and bug fixes.  The first major
+release is @code{1.0}.  Any version number of @code{1.0} or higher
+should be suitable for production use with a well-defined API.
+
+The API must not change in a major release and should be
+backwards-compatible in its behavior (excluding actual bug-fixes), so
+that existing code do not have to be modified.  Note that the API
+includes all exported definitions, including data-structures defined
+with @code{struct}.  If you need to change the API in a package, it
+requires a new major release (e.g. @code{2.0}).
+
+@item Use the GNU General Public License (GPL)
+
+Follow the normal procedures of obtaining a copyright disclaimer if you
+would like to have the package considered for inclusion in GSL itself in
+the future (@pxref{Legal issues}).
+@end itemize
+
+Post announcements of your package releases to
+@email{gsl-discuss@@sources.redhat.com} so that information about them
+can be added to the GSL webpages.
+
+An example package @samp{rngextra} containing two additional random
+number generators can be found at
+@url{http://www.network-theory.co.uk/download/rngextra/}.
+
+@node Design, Copying, Contributing, Top
 @chapter Design
 
 @menu
@@ -1224,13 +1318,13 @@ Website.
 
 Only use code which is explicitly under a free license: GPL or Public
 Domain.  If there is no license on the code then this does not mean it
-is public domain -- an explicit statement is required (see the Debian
-Free Software Guidelines for details). If in doubt check with the
-author.
+is public domain -- an explicit statement is required. If in doubt check
+with the author.
 
 @item
 I @strong{think} one can reference algorithms from classic books on
-numerical analysis.
+numerical analysis (BJG: yes, provided the code is an independent
+implementation and not copied from any existing software).
 @end itemize
 
 @node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
