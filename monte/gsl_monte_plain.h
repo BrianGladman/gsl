@@ -6,6 +6,7 @@
 #ifndef GSL_MONTE_PLAIN_H
 #define GSL_MONTE_PLAIN_H
 
+#include <stdio.h>
 #include <gsl_monte.h>
 #include <gsl_rng.h>
 
@@ -19,6 +20,7 @@ typedef struct {
 
   size_t num_dim;
 
+  FILE* ostream;
   gsl_rng* ranf;
 
 } gsl_monte_plain_state;

@@ -1,8 +1,8 @@
 /* header for the gsl "vegas" routines.  Mike Booth, May 1998 */
 /* RCS $Id$ */
 
-#ifndef GSL_VEGAS_H
-#define GSL_VEGAS_H
+#ifndef GSL_MONTE_VEGAS_H
+#define GSL_MONTE_VEGAS_H
 
 #include <gsl_rng.h>
 #include <gsl_monte.h>
@@ -11,6 +11,10 @@
 /* This will go away soon. */
 #define GSL_V_BINS_MAX 50  /* even integer because will be divided by two. */
 #define GSL_V_MAX_DIM 10
+
+enum {GSL_VEGAS_MODE_IMPORTANCE = 1, 
+      GSL_VEGAS_MODE_IMPORTANCE_ONLY = 0, 
+      GSL_VEGAS_MODE_STRATIFIED = -1};
 
 typedef struct {
   /* control variables */
@@ -28,7 +32,7 @@ typedef struct {
   int it_num;
   unsigned long num_dim;
   int bins;
-  int boxes;
+  int boxes; /* boxes and bins are counted along the axes */
   int init_done;
   int check_done;
   gsl_rng* ranf;
@@ -65,5 +69,5 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 
 void gsl_monte_vegas_free (gsl_monte_vegas_state* s);
 
-#endif /* !GSL_VEGAS_H */
+#endif /* !GSL_MONTE_VEGAS_H */
 
