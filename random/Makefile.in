@@ -53,6 +53,9 @@ bench_gauss_LDADD= $(FAVORITERAN).o $(FAVORITERAN)-gen.o
 
 test_switch_SOURCES= test-switch.c switch.c 
 
+EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
+	makeam Makefile.ami
+
 CLEANFILES= tmp.out tmp.in
 
 bin_PROGRAMS= mrg test-mrg bench-mrg cmrg test-cmrg bench-cmrg taus test-taus bench-taus uni test-uni bench-uni uni32 test-uni32 bench-uni32 zuf test-zuf bench-zuf rand test-rand bench-rand gauss test-gauss bench-gauss test-switch 

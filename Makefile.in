@@ -38,7 +38,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-SUBDIRS = random roots statistics special doc
+SUBDIRS = random roots statistics doc
 mkinstalldirs = $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
 DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.am \

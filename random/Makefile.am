@@ -23,6 +23,13 @@ test_switch_SOURCES= test-switch.c switch.c
 switch.c gsl_ran_switch.h: switch.xc makeswitch
 	makeswitch $(ALLRAN) 
 
+## The user doesn't really _need_ these, but 'make all' does,
+## and probably it is fair for the user to have them, since that
+## permits him/her to contribute to the project!!
+##
+EXTRA_DIST= switch.xc makeswitch xxx-gen.xc xxx-state.xc \
+	makeam Makefile.ami
+
 CLEANFILES= tmp.out tmp.in
 
 ## The rest of the Makefile.am is generated from the script 'makeam'
