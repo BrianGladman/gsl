@@ -20,6 +20,27 @@
 #include <config.h>
 #include <math.h>
 
+double gsl_nan (void);
+double gsl_posinf (void);
+double gsl_neginf (void);
+double gsl_fdiv (const double x, const double y);
+
+double gsl_nan (void)
+{
+  return gsl_fdiv (0.0, 0.0);
+}
+
+double gsl_posinf (void)
+{
+  return gsl_fdiv (+1.0, 0.0);
+}
+
+double gsl_neginf (void)
+{
+  return gsl_fdiv (-1.0, 0.0);
+}
+
+
 int gsl_isnan (const double x);
 int gsl_isinf (const double x);
 int gsl_finite (const double x);

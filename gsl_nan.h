@@ -20,24 +20,32 @@
 #ifndef __GSL_NAN_H__
 #define __GSL_NAN_H__
 
-#ifdef NAN
-#define GSL_NAN NAN
-#define GSL_POSINF HUGE_VAL
-#define GSL_NEGINF (-HUGE_VAL)
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
-#elif defined(_MSC_VER) /* Microsoft Visual C++ */
-#define GSL_NAN _FPCLASS_QNAN
-#define GSL_POSINF _FPCLASS_PINF
-#define GSL_NEGINF _FPCLASS_NINF
-#define GSL_POSZERO _FPCLASS_PZ
-#define GSL_NEGZERO _FPCLASS_NZ
+#if defined(_MSC_VER) /* Microsoft Visual C++ */
+# define GSL_NAN _FPCLASS_QNAN
+# define GSL_POSINF _FPCLASS_PINF
+# define GSL_NEGINF _FPCLASS_NINF
+# define GSL_POSZERO _FPCLASS_PZ
+# define GSL_NEGZERO _FPCLASS_NZ
 #else
-#define GSL_NAN (gsl_fdiv(0.0,0.0))
-#define GSL_POSINF (gsl_fdiv(+1.0,0.0))
-#define GSL_NEGINF (gsl_fdiv(-1.0,0.0))
-#define GSL_POSZERO (+0)
-#define GSL_NEGZERO (-0)
+# ifdef INFINITY
+#  define GSL_POSINF INFINITY
+#  define GSL_NEGINF (-INFINITY)
+# elif defined(HUGE_VAL)
+#  define GSL_POSINF HUGE_VAL
+#  define GSL_NEGINF (-HUGE_VAL)
+# else
+#  define GSL_POSINF (gsl_posinf())
+#  define GSL_NEGINF (gsl_neginf())
+# endif
+# ifdef NAN
+#  define GSL_NAN NAN
+# elif defined(INFINITY)
+#  define GSL_NAN (INFINITY/INFINITY)
+# else
+#  define GSL_NAN (gsl_nan())
+# endif
+# define GSL_POSZERO (+0)
+# define GSL_NEGZERO (-0)
 #endif
 
 #endif /* __GSL_NAN_H__ */

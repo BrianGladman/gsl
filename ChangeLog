@@ -1,3 +1,7 @@
+Sat Jul 14 21:13:55 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_nan.h: use C99X macro INFINITY where available
+
 Fri Jul 13 21:31:01 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* templates_on.h: added macros for unqualified views, needed for

@@ -38,9 +38,14 @@ double gsl_hypot (const double x, const double y);
 double gsl_acosh (const double x);
 double gsl_asinh (const double x);
 double gsl_atanh (const double x);
+
 int gsl_isnan (const double x);
 int gsl_isinf (const double x);
 int gsl_finite (const double x);
+
+double gsl_nan (void);
+double gsl_posinf (void);
+double gsl_neginf (void);
 double gsl_fdiv (const double x, const double y);
 
 double gsl_coerce_double (const double x);
