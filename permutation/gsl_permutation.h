@@ -21,6 +21,7 @@
 #define __GSL_PERMUTATION_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 
 #undef __BEGIN_DECLS
@@ -75,7 +76,7 @@ size_t gsl_permutation_linear_cycles (const gsl_permutation * p);
 size_t gsl_permutation_canonical_cycles (const gsl_permutation * q);
 
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

@@ -21,6 +21,7 @@
 #define __GSL_VECTOR_LONG_DOUBLE_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_block_long_double.h>
 
@@ -160,7 +161,7 @@ int gsl_vector_long_double_add_constant (gsl_vector_long_double * a, const doubl
 
 int gsl_vector_long_double_isnull (const gsl_vector_long_double * v);
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

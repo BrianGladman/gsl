@@ -22,6 +22,7 @@
 #ifndef __GSL_INTERP_H__
 #define __GSL_INTERP_H__
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -70,12 +71,12 @@ typedef struct {
 
 
 /* available types */
-extern const gsl_interp_type * gsl_interp_linear;
-extern const gsl_interp_type * gsl_interp_polynomial;
-extern const gsl_interp_type * gsl_interp_cspline;
-extern const gsl_interp_type * gsl_interp_cspline_periodic;
-extern const gsl_interp_type * gsl_interp_akima;
-extern const gsl_interp_type * gsl_interp_akima_periodic;
+GSL_VAR const gsl_interp_type * gsl_interp_linear;
+GSL_VAR const gsl_interp_type * gsl_interp_polynomial;
+GSL_VAR const gsl_interp_type * gsl_interp_cspline;
+GSL_VAR const gsl_interp_type * gsl_interp_cspline_periodic;
+GSL_VAR const gsl_interp_type * gsl_interp_akima;
+GSL_VAR const gsl_interp_type * gsl_interp_akima_periodic;
 
 gsl_interp_accel *
 gsl_interp_accel_alloc(void);

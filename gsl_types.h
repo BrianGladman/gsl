@@ -21,14 +21,21 @@
 #define __GSL_TYPES_H__
 
 #ifndef GSL_VAR
+
 #ifdef WIN32
-#ifdef DLL_EXPORT
-#define GSL_VAR __declspec(dllexport)
+#  ifdef _DLL
+#    ifdef DLL_EXPORT
+#      define GSL_VAR __declspec(dllexport)
+#    else
+#      define GSL_VAR __declspec(dllimport)
+#    endif
+#  else
+#    define GSL_VAR extern
+#  endif
 #else
-#define GSL_VAR __declspec(dllimport)
-#endif
-#endif
-#define GSL_VAR extern
+#  define GSL_VAR extern
 #endif
 
-#endif __GSL_TYPES_H__
+#endif
+
+#endif /* __GSL_TYPES_H__ */

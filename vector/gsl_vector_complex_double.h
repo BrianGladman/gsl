@@ -21,6 +21,7 @@
 #define __GSL_VECTOR_COMPLEX_DOUBLE_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_vector_double.h>
@@ -176,7 +177,7 @@ int gsl_vector_complex_swap_elements (gsl_vector_complex * v, const size_t i, co
 
 int gsl_vector_complex_isnull (const gsl_vector_complex * v);
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

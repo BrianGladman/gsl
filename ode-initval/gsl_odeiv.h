@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -107,16 +108,16 @@ gsl_odeiv_step;
  * gear2  : M=2 implicit Gear method
  */
 
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rk2;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rk4;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rkf45;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rkck;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rk8pd;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rk2imp;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_rk4imp;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_bsimp;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_gear1;
-extern const gsl_odeiv_step_type *gsl_odeiv_step_gear2;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk2;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk4;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rkf45;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rkck;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk8pd;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk2imp;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_rk4imp;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_bsimp;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_gear1;
+GSL_VAR const gsl_odeiv_step_type *gsl_odeiv_step_gear2;
 
 
 /* Constructor for specialized stepper objects.

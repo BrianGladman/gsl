@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -66,7 +67,7 @@ int gsl_combination_valid (gsl_combination * c);
 int gsl_combination_next (gsl_combination * c);
 int gsl_combination_prev (gsl_combination * c);
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

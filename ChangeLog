@@ -1,3 +1,11 @@
+Fri Jun 14 22:09:52 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_types.h: define GSL_VAR macro as ANSI C 'export' or
+ 	'__declspec(dllexport/dllimport)' depending on platform
+
+	* changed 'export' to GSL_VAR macro throughout to make it easier
+ 	to build nonstandard shared libraries such as DLLs
+
 Sun May 19 22:24:00 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.in: changed AM_PROG_LIBTOOL to AC_PROG_LIBTOOL,

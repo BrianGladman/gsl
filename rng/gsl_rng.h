@@ -20,6 +20,7 @@
 #ifndef __GSL_RNG_H__
 #define __GSL_RNG_H__
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 
 #undef __BEGIN_DECLS
@@ -57,72 +58,72 @@ gsl_rng;
 /* These structs also need to appear in default.c so you can select
    them via the environment variable GSL_RNG_TYPE */
 
-extern const gsl_rng_type *gsl_rng_borosh13;
-extern const gsl_rng_type *gsl_rng_coveyou;
-extern const gsl_rng_type *gsl_rng_cmrg;
-extern const gsl_rng_type *gsl_rng_fishman18;
-extern const gsl_rng_type *gsl_rng_fishman20;
-extern const gsl_rng_type *gsl_rng_fishman2x;
-extern const gsl_rng_type *gsl_rng_gfsr4;
-extern const gsl_rng_type *gsl_rng_knuthran;
-extern const gsl_rng_type *gsl_rng_knuthran2;
-extern const gsl_rng_type *gsl_rng_lecuyer21;
-extern const gsl_rng_type *gsl_rng_minstd;
-extern const gsl_rng_type *gsl_rng_mrg;
-extern const gsl_rng_type *gsl_rng_mt19937;
-extern const gsl_rng_type *gsl_rng_mt19937_1999;
-extern const gsl_rng_type *gsl_rng_mt19937_1998;
-extern const gsl_rng_type *gsl_rng_r250;
-extern const gsl_rng_type *gsl_rng_ran0;
-extern const gsl_rng_type *gsl_rng_ran1;
-extern const gsl_rng_type *gsl_rng_ran2;
-extern const gsl_rng_type *gsl_rng_ran3;
-extern const gsl_rng_type *gsl_rng_rand;
-extern const gsl_rng_type *gsl_rng_rand48;
-extern const gsl_rng_type *gsl_rng_random128_bsd;
-extern const gsl_rng_type *gsl_rng_random128_glibc2;
-extern const gsl_rng_type *gsl_rng_random128_libc5;
-extern const gsl_rng_type *gsl_rng_random256_bsd;
-extern const gsl_rng_type *gsl_rng_random256_glibc2;
-extern const gsl_rng_type *gsl_rng_random256_libc5;
-extern const gsl_rng_type *gsl_rng_random32_bsd;
-extern const gsl_rng_type *gsl_rng_random32_glibc2;
-extern const gsl_rng_type *gsl_rng_random32_libc5;
-extern const gsl_rng_type *gsl_rng_random64_bsd;
-extern const gsl_rng_type *gsl_rng_random64_glibc2;
-extern const gsl_rng_type *gsl_rng_random64_libc5;
-extern const gsl_rng_type *gsl_rng_random8_bsd;
-extern const gsl_rng_type *gsl_rng_random8_glibc2;
-extern const gsl_rng_type *gsl_rng_random8_libc5;
-extern const gsl_rng_type *gsl_rng_random_bsd;
-extern const gsl_rng_type *gsl_rng_random_glibc2;
-extern const gsl_rng_type *gsl_rng_random_libc5;
-extern const gsl_rng_type *gsl_rng_randu;
-extern const gsl_rng_type *gsl_rng_ranf;
-extern const gsl_rng_type *gsl_rng_ranlux;
-extern const gsl_rng_type *gsl_rng_ranlux389;
-extern const gsl_rng_type *gsl_rng_ranlxd1;
-extern const gsl_rng_type *gsl_rng_ranlxd2;
-extern const gsl_rng_type *gsl_rng_ranlxs0;
-extern const gsl_rng_type *gsl_rng_ranlxs1;
-extern const gsl_rng_type *gsl_rng_ranlxs2;
-extern const gsl_rng_type *gsl_rng_ranmar;
-extern const gsl_rng_type *gsl_rng_slatec;
-extern const gsl_rng_type *gsl_rng_taus;
-extern const gsl_rng_type *gsl_rng_taus2;
-extern const gsl_rng_type *gsl_rng_taus113;
-extern const gsl_rng_type *gsl_rng_transputer;
-extern const gsl_rng_type *gsl_rng_tt800;
-extern const gsl_rng_type *gsl_rng_uni;
-extern const gsl_rng_type *gsl_rng_uni32;
-extern const gsl_rng_type *gsl_rng_vax;
-extern const gsl_rng_type *gsl_rng_waterman14;
-extern const gsl_rng_type *gsl_rng_zuf;
+GSL_VAR const gsl_rng_type *gsl_rng_borosh13;
+GSL_VAR const gsl_rng_type *gsl_rng_coveyou;
+GSL_VAR const gsl_rng_type *gsl_rng_cmrg;
+GSL_VAR const gsl_rng_type *gsl_rng_fishman18;
+GSL_VAR const gsl_rng_type *gsl_rng_fishman20;
+GSL_VAR const gsl_rng_type *gsl_rng_fishman2x;
+GSL_VAR const gsl_rng_type *gsl_rng_gfsr4;
+GSL_VAR const gsl_rng_type *gsl_rng_knuthran;
+GSL_VAR const gsl_rng_type *gsl_rng_knuthran2;
+GSL_VAR const gsl_rng_type *gsl_rng_lecuyer21;
+GSL_VAR const gsl_rng_type *gsl_rng_minstd;
+GSL_VAR const gsl_rng_type *gsl_rng_mrg;
+GSL_VAR const gsl_rng_type *gsl_rng_mt19937;
+GSL_VAR const gsl_rng_type *gsl_rng_mt19937_1999;
+GSL_VAR const gsl_rng_type *gsl_rng_mt19937_1998;
+GSL_VAR const gsl_rng_type *gsl_rng_r250;
+GSL_VAR const gsl_rng_type *gsl_rng_ran0;
+GSL_VAR const gsl_rng_type *gsl_rng_ran1;
+GSL_VAR const gsl_rng_type *gsl_rng_ran2;
+GSL_VAR const gsl_rng_type *gsl_rng_ran3;
+GSL_VAR const gsl_rng_type *gsl_rng_rand;
+GSL_VAR const gsl_rng_type *gsl_rng_rand48;
+GSL_VAR const gsl_rng_type *gsl_rng_random128_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random128_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random128_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_random256_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random256_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random256_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_random32_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random32_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random32_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_random64_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random64_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random64_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_random8_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random8_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random8_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_random_bsd;
+GSL_VAR const gsl_rng_type *gsl_rng_random_glibc2;
+GSL_VAR const gsl_rng_type *gsl_rng_random_libc5;
+GSL_VAR const gsl_rng_type *gsl_rng_randu;
+GSL_VAR const gsl_rng_type *gsl_rng_ranf;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlux;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlux389;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlxd1;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlxd2;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlxs0;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlxs1;
+GSL_VAR const gsl_rng_type *gsl_rng_ranlxs2;
+GSL_VAR const gsl_rng_type *gsl_rng_ranmar;
+GSL_VAR const gsl_rng_type *gsl_rng_slatec;
+GSL_VAR const gsl_rng_type *gsl_rng_taus;
+GSL_VAR const gsl_rng_type *gsl_rng_taus2;
+GSL_VAR const gsl_rng_type *gsl_rng_taus113;
+GSL_VAR const gsl_rng_type *gsl_rng_transputer;
+GSL_VAR const gsl_rng_type *gsl_rng_tt800;
+GSL_VAR const gsl_rng_type *gsl_rng_uni;
+GSL_VAR const gsl_rng_type *gsl_rng_uni32;
+GSL_VAR const gsl_rng_type *gsl_rng_vax;
+GSL_VAR const gsl_rng_type *gsl_rng_waterman14;
+GSL_VAR const gsl_rng_type *gsl_rng_zuf;
 
 const gsl_rng_type ** gsl_rng_types_setup(void);
 
-extern const gsl_rng_type *gsl_rng_default;
-extern unsigned long int gsl_rng_default_seed;
+GSL_VAR const gsl_rng_type *gsl_rng_default;
+GSL_VAR unsigned long int gsl_rng_default_seed;
 
 gsl_rng *gsl_rng_alloc (const gsl_rng_type * T);
 int gsl_rng_memcpy (gsl_rng * dest, const gsl_rng * src);

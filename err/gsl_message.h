@@ -19,6 +19,7 @@
 
 #ifndef __GSL_MESSAGE_H__
 #define __GSL_MESSAGE_H__
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -47,7 +48,7 @@ void gsl_message(const char * message, const char * file, int line,
 #define GSL_MESSAGE_MASK 0xffffffffu /* default all messages allowed */
 #endif
 
-extern unsigned int gsl_message_mask ;
+GSL_VAR unsigned int gsl_message_mask ;
 
 /* Provide some symolic masks for client ease of use. */
 

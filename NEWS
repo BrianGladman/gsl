@@ -1,5 +1,9 @@
 * What is new in gsl-1.2:
 
+** The declarations used to export static objects can now be
+controlled through a macro GSL_VAR and the header file
+<gsl/gsl_types.h>.
+
 ** The simulated annealing routine gsl_siman_solve now keeps track of
 the best solution so far.
 

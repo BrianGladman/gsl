@@ -4,6 +4,7 @@
 #define __GSL_QRNG_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 
 #undef __BEGIN_DECLS
@@ -49,8 +50,8 @@ gsl_qrng;
 
 /* Supported generator types.
  */
-extern const gsl_qrng_type * gsl_qrng_niederreiter_2;
-extern const gsl_qrng_type * gsl_qrng_sobol;
+GSL_VAR const gsl_qrng_type * gsl_qrng_niederreiter_2;
+GSL_VAR const gsl_qrng_type * gsl_qrng_sobol;
 
 
 /* Allocate and initialize a generator

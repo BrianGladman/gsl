@@ -21,6 +21,7 @@
 #define __GSL_ROOTS_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 
 #undef __BEGIN_DECLS
@@ -114,12 +115,12 @@ gsl_root_test_residual (double f, double epsabs);
 int
 gsl_root_test_delta (double x1, double x0, double epsabs, double epsrel);
 
-extern const gsl_root_fsolver_type  * gsl_root_fsolver_bisection;
-extern const gsl_root_fsolver_type  * gsl_root_fsolver_brent;
-extern const gsl_root_fsolver_type  * gsl_root_fsolver_falsepos;
-extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton;
-extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant;
-extern const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson;
+GSL_VAR const gsl_root_fsolver_type  * gsl_root_fsolver_bisection;
+GSL_VAR const gsl_root_fsolver_type  * gsl_root_fsolver_brent;
+GSL_VAR const gsl_root_fsolver_type  * gsl_root_fsolver_falsepos;
+GSL_VAR const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_newton;
+GSL_VAR const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_secant;
+GSL_VAR const gsl_root_fdfsolver_type  * gsl_root_fdfsolver_steffenson;
 
 __END_DECLS
 

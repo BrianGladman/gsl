@@ -21,6 +21,7 @@
 #define __GSL_VECTOR_INT_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_block_int.h>
 
@@ -160,7 +161,7 @@ int gsl_vector_int_add_constant (gsl_vector_int * a, const double x);
 
 int gsl_vector_int_isnull (const gsl_vector_int * v);
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

@@ -21,6 +21,7 @@
 #define __GSL_MIN_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 
 #undef __BEGIN_DECLS
@@ -88,8 +89,8 @@ double gsl_min_fminimizer_minimum (const gsl_min_fminimizer * s);
 int
 gsl_min_test_interval (double x_lower, double x_upper, double epsabs, double epsrel);
 
-extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
-extern const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
+GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
+GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 
 typedef
 int (*gsl_min_bracketing_function)(gsl_function *f,

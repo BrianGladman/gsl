@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -153,7 +154,7 @@ FILE * gsl_set_stream (FILE * new_stream);
 /* Warnings can also be turned off at runtime by setting the variable
    gsl_warnings_off to a non-zero value */
 
-extern int gsl_warnings_off ;
+GSL_VAR int gsl_warnings_off ;
 
 
 /* Sometimes you have several status results returned from

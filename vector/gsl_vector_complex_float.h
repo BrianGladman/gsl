@@ -21,6 +21,7 @@
 #define __GSL_VECTOR_COMPLEX_FLOAT_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_vector_float.h>
@@ -176,7 +177,7 @@ int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const 
 
 int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 
-extern int gsl_check_range;
+GSL_VAR int gsl_check_range;
 
 #ifdef HAVE_INLINE
 

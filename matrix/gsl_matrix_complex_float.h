@@ -21,6 +21,7 @@
 #define __GSL_MATRIX_COMPLEX_FLOAT_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_vector_complex_float.h>
@@ -226,7 +227,7 @@ int gsl_matrix_complex_float_get_col(gsl_vector_complex_float * v, const gsl_mat
 int gsl_matrix_complex_float_set_row(gsl_matrix_complex_float * m, const size_t i, const gsl_vector_complex_float * v);
 int gsl_matrix_complex_float_set_col(gsl_matrix_complex_float * m, const size_t j, const gsl_vector_complex_float * v);
 
-extern int gsl_check_range ;
+GSL_VAR int gsl_check_range ;
 
 #ifdef HAVE_INLINE
 

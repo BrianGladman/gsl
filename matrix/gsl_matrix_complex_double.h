@@ -21,6 +21,7 @@
 #define __GSL_MATRIX_COMPLEX_DOUBLE_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_vector_complex_double.h>
@@ -226,7 +227,7 @@ int gsl_matrix_complex_get_col(gsl_vector_complex * v, const gsl_matrix_complex 
 int gsl_matrix_complex_set_row(gsl_matrix_complex * m, const size_t i, const gsl_vector_complex * v);
 int gsl_matrix_complex_set_col(gsl_matrix_complex * m, const size_t j, const gsl_vector_complex * v);
 
-extern int gsl_check_range ;
+GSL_VAR int gsl_check_range ;
 
 #ifdef HAVE_INLINE
 

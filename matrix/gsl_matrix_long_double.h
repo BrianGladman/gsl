@@ -21,6 +21,7 @@
 #define __GSL_MATRIX_LONG_DOUBLE_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_vector_long_double.h>
 
@@ -236,7 +237,7 @@ int gsl_matrix_long_double_get_col(gsl_vector_long_double * v, const gsl_matrix_
 int gsl_matrix_long_double_set_row(gsl_matrix_long_double * m, const size_t i, const gsl_vector_long_double * v);
 int gsl_matrix_long_double_set_col(gsl_matrix_long_double * m, const size_t j, const gsl_vector_long_double * v);
 
-extern int gsl_check_range ;
+GSL_VAR int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 

@@ -21,6 +21,7 @@
 #define __GSL_MULTIROOTS_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -159,15 +160,15 @@ int gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x,
 
 int gsl_multiroot_test_residual (const gsl_vector * f, double epsabs);
 
-extern const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_dnewton;
-extern const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_broyden;
-extern const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_hybrid;
-extern const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_hybrids;
+GSL_VAR const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_dnewton;
+GSL_VAR const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_broyden;
+GSL_VAR const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_hybrid;
+GSL_VAR const gsl_multiroot_fsolver_type * gsl_multiroot_fsolver_hybrids;
 
-extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_newton;
-extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_gnewton;
-extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridj;
-extern const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridsj;
+GSL_VAR const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_newton;
+GSL_VAR const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_gnewton;
+GSL_VAR const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridj;
+GSL_VAR const gsl_multiroot_fdfsolver_type * gsl_multiroot_fdfsolver_hybridsj;
 
 
 __END_DECLS

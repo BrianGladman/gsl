@@ -21,6 +21,7 @@
 
 #ifndef __GSL_PRECISION_H__
 #define __GSL_PRECISION_H__
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -52,12 +53,12 @@ typedef  unsigned int  gsl_prec_t;
  * precision constants for the
  * different precision levels.
  */
-extern const double gsl_prec_eps[];
-extern const double gsl_prec_sqrt_eps[];
-extern const double gsl_prec_root3_eps[];
-extern const double gsl_prec_root4_eps[];
-extern const double gsl_prec_root5_eps[];
-extern const double gsl_prec_root6_eps[];
+GSL_VAR const double gsl_prec_eps[];
+GSL_VAR const double gsl_prec_sqrt_eps[];
+GSL_VAR const double gsl_prec_root3_eps[];
+GSL_VAR const double gsl_prec_root4_eps[];
+GSL_VAR const double gsl_prec_root5_eps[];
+GSL_VAR const double gsl_prec_root6_eps[];
 
 
 __END_DECLS

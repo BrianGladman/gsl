@@ -21,6 +21,7 @@
 #define __GSL_MULTIMIN_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -141,14 +142,10 @@ gsl_multimin_fdfminimizer_gradient (gsl_multimin_fdfminimizer * s);
 double 
 gsl_multimin_fdfminimizer_minimum (gsl_multimin_fdfminimizer * s);
 
-extern const 
-gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
-extern const 
-gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
-extern const 
-gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
-extern const 
-gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
+GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
+GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
+GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
+GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
 
 
 __END_DECLS

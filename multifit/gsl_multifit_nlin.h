@@ -21,6 +21,7 @@
 #define __GSL_MULTIFIT_NLIN_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -167,8 +168,8 @@ int gsl_multifit_test_gradient (const gsl_vector * g, double epsabs);
 
 /* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
-extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
-extern const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
 
 
 __END_DECLS

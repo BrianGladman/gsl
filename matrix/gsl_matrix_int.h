@@ -21,6 +21,7 @@
 #define __GSL_MATRIX_INT_H__
 
 #include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_vector_int.h>
 
@@ -236,7 +237,7 @@ int gsl_matrix_int_get_col(gsl_vector_int * v, const gsl_matrix_int * m, const s
 int gsl_matrix_int_set_row(gsl_matrix_int * m, const size_t i, const gsl_vector_int * v);
 int gsl_matrix_int_set_col(gsl_matrix_int * m, const size_t j, const gsl_vector_int * v);
 
-extern int gsl_check_range ;
+GSL_VAR int gsl_check_range ;
 
 /* inline functions if you are using GCC */
 
