@@ -338,7 +338,7 @@ allowing wrappers to be written for very high level languages.
 
 @table @strong
 @item Mark Galassi
-Conceived GSL (with James Theiler) and wrote the design document. Wrote
+Conceived GSL (with James Theiler) and wrote the design document.  Wrote
 the simulated annealing package and the relevant chapter in the manual.
 
 @item James Theiler

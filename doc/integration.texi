@@ -4,14 +4,14 @@
 @cindex QUADPACK
 
 This chapter describes routines for performing numerical integration
-(quadrature) of a function in one dimension. There are routines for
+(quadrature) of a function in one dimension.  There are routines for
 adaptive and non-adaptive integration of general functions, with
-specialised routines for specific cases. These include integration over
+specialised routines for specific cases.  These include integration over
 infinite and semi-infinite ranges, singular integrals, including
 logarithmic singularities, computation of Cauchy principal values and
-oscillatory integrals. The library reimplements the algorithms used in
+oscillatory integrals.  The library reimplements the algorithms used in
 QUADPACK, a numerical integration package written by Piessens,
-Doncker-Kapenga, Uberhuber and Kahaner. Fortran code for QUADPACK is
+Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for QUADPACK is
 available on Netlib.
 
 Each algorithm computes an approximation to a definite integral of the
@@ -53,7 +53,7 @@ $$
 where 
 @c{$\hbox{\it RESULT}$}
 @math{RESULT} is the numerical approximation obtained by the
-algorithm. The algorithms attempt to estimate the absolute error
+algorithm.  The algorithms attempt to estimate the absolute error
 @c{$\hbox{\it ABSERR} = |\hbox{\it RESULT} - I|$}
 @math{ABSERR = |RESULT - I|} in such a way that the following inequality
 holds,
@@ -98,7 +98,7 @@ following letters,
 
 @noindent
 The algorithms are built on pairs of quadrature rules, a higher order rule
-and a lower order rule. The higher order rule is used to compute the best
+and a lower order rule.  The higher order rule is used to compute the best
 approximation to an integral over a small range.  The difference between
 the higher order and lower order results gives an estimate of the error
 in the approximation.
@@ -106,7 +106,7 @@ in the approximation.
 @cindex Gauss-Kronrod quadrature
 The algorithms for general functions (without a weight function) are
 based on Gauss-Kronrod rules. A Gauss-Kronrod rule begins with a
-classical Gaussian quadrature rule of order @math{m}. This is extended
+classical Gaussian quadrature rule of order @math{m}.  This is extended
 with additional points between each of the abscissae to give a higher
 order Kronrod rule of order @math{2m+1}.  The Kronrod rule is efficient
 because it reuses existing function evaluations from the Gaussian rule.
@@ -118,18 +118,18 @@ estimate of the error in the approximation.
 @cindex Modified Clenshaw-Curtis quadrature
 For integrands with weight functions the algorithms use Clenshaw-Curtis
 quadrature rules.  A Clenshaw-Curtis rule begins with an @math{n}-th
-order Chebyschev polynomial approximation to the integrand. This
+order Chebyschev polynomial approximation to the integrand.  This
 polynomial can be integrated exactly to give an approximation to the
-integral of the original function. The Chebyschev expansion can be
+integral of the original function.  The Chebyschev expansion can be
 extended to higher orders to improve the approximation.  The presence of
 singularities (or other behavior) in the integrand can cause slow
 convergence in the Chebyschev approximation.  The modified
 Clenshaw-Curtis rules used in QUADPACK separate out several common
-weight functions which cause slow convergence. These weight functions
+weight functions which cause slow convergence.  These weight functions
 are integrated analytically against the Chebyschev polynomials to
-precompute @dfn{modified Chebyschev moments}. Combining the moments with
+precompute @dfn{modified Chebyschev moments}.  Combining the moments with
 the Chebyschev approximation to the function gives the desired
-integral. The use of analytic integration for the singular part of the
+integral.  The use of analytic integration for the singular part of the
 function allows exact cancellations and substantially improves the
 overall convergence behavior of the integration.
 
@@ -153,17 +153,17 @@ overall convergence behavior of the integration.
 
 The QNG algorithm is non-adaptive procedure which uses fixed
 Gauss-Kronrod abscissae to sample the integrand at a maximum of 87
-points. It is provided for fast integration of smooth functions.
+points.  It is provided for fast integration of smooth functions.
 
 @deftypefun int gsl_integration_qng (const gsl_function *@var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, double * @var{result}, double * @var{abserr}, size_t * @var{neval})
 
 This function applies the Gauss-Kronrod 10-point, 21-point, 43-point and
 87-point integration rules in succession until an estimate of the
 integral of @math{f} over @math{(a,b)} is achieved within the desired
-absolute and relative error limits, @var{epsabs} and @var{epsrel}. The
+absolute and relative error limits, @var{epsabs} and @var{epsrel}.  The
 function returns the final approximation, @var{result}, an estimate of
 the absolute error, @var{abserr} and the number of function evaluations
-used, @var{neval}. The Gauss-Kronrod rules are designed in such a way
+used, @var{neval}.  The Gauss-Kronrod rules are designed in such a way
 that each rule uses all the results of its predecessors, in order to
 minimise the total number of function evaluations.
 @end deftypefun
@@ -172,7 +172,7 @@ minimise the total number of function evaluations.
 @node QAG adaptive integration
 @section QAG adaptive integration
 
-The QAG algorithm is a simple adaptive integration procedure. The
+The QAG algorithm is a simple adaptive integration procedure.  The
 integration region is divided into subintervals, and on each iteration
 the subinterval with the largest estimated error is bisected.  This
 reduces the overall error rapidly, as the subintervals become
@@ -195,8 +195,8 @@ This function frees the memory associated with the workspace @var{w}.
 This function applies an integration rule adaptively until an estimate
 of the integral of @math{f} over @math{(a,b)} is achieved within the
 desired absolute and relative error limits, @var{epsabs} and
-@var{epsrel}. The function returns the final approximation,
-@var{result}, and an estimate of the absolute error, @var{abserr}. The
+@var{epsrel}.  The function returns the final approximation,
+@var{result}, and an estimate of the absolute error, @var{abserr}.  The
 integration rule is determined by the value of @var{key}, which should
 be chosen from the following symbolic names,
 
@@ -211,13 +211,13 @@ GSL_INTEG_GAUSS61  (key = 6)
 
 @noindent
 corresponding to the 15, 21, 31, 41, 51 and 61 point Gauss-Kronrod
-rules. The higher-order rules give better accuracy for smooth functions,
+rules.  The higher-order rules give better accuracy for smooth functions,
 while lower-order rules save time when the function contains local
 difficulties, such as discontinuities.
 
 On each iteration the adaptive integration strategy bisects the interval
-with the largest error estimate. The subintervals and their results are
-stored in the memory provided by @var{workspace}. The maximum number of
+with the largest error estimate.  The subintervals and their results are
+stored in the memory provided by @var{workspace}.  The maximum number of
 subintervals is given by @var{limit}, which may not exceed the allocated
 size of the workspace.
 @end deftypefun
@@ -228,10 +228,10 @@ size of the workspace.
 
 The presence of an integrable singularity in the integration region
 causes an adaptive routine to concentrate new subintervals around the
-singularity. As the subintervals decrease in size the successive
-approximations to the integral converge in a limiting fashion. This
+singularity.  As the subintervals decrease in size the successive
+approximations to the integral converge in a limiting fashion.  This
 approach to the limit can be accelerated using an extrapolation
-procedure. The QAGS algorithm combines adaptive bisection with the Wynn
+procedure.  The QAGS algorithm combines adaptive bisection with the Wynn
 epsilon-algorithm to speed up the integration of many types of
 integrable singularities.
 
@@ -240,13 +240,13 @@ integrable singularities.
 This function applies the Gauss-Kronrod 21-point integration rule
 adaptively until an estimate of the integral of @math{f} over
 @math{(a,b)} is achieved within the desired absolute and relative error
-limits, @var{epsabs} and @var{epsrel}. The results are extrapolated
+limits, @var{epsabs} and @var{epsrel}.  The results are extrapolated
 using the epsilon-algorithm, which accelerates the convergence of the
 integral in the presence of discontinuities and integrable
-singularities. The function returns the final approximation from the
+singularities.  The function returns the final approximation from the
 extrapolation, @var{result}, and an estimate of the absolute error,
-@var{abserr}. The subintervals and their results are stored in the
-memory provided by @var{workspace}. The maximum number of subintervals
+@var{abserr}.  The subintervals and their results are stored in the
+memory provided by @var{workspace}.  The maximum number of subintervals
 is given by @var{limit}, which may not exceed the allocated size of the
 workspace.
 
@@ -258,10 +258,10 @@ workspace.
 @deftypefun int gsl_integration_qagp (const gsl_function * @var{f}, double *@var{pts}, size_t @var{npts}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double *@var{result}, double *@var{abserr})
 
 This function applies the adaptive integration algorithm QAGS taking
-account of the user-supplied locations of singular points. The array
+account of the user-supplied locations of singular points.  The array
 @var{pts} of length @var{npts} should contain the endpoints of the
 integration ranges defined by the integration region and locations of
-the singularities. For example, to integrate over the region
+the singularities.  For example, to integrate over the region
 @math{(a,b)} with break-points at @math{x_1, x_2, x_3} (where 
 @math{a < x_1 < x_2 < x_3 < b}) the following @var{pts} array should be used
 
@@ -307,9 +307,9 @@ $$
 @end ifinfo
 
 @noindent
-and then integrated using the QAGS algorithm. The normal 21-point
+and then integrated using the QAGS algorithm.  The normal 21-point
 Gauss-Kronrod rule of QAGS is replaced by a 15-point rule, because the
-transformation can generate an integrable singularity at the origin. In
+transformation can generate an integrable singularity at the origin.  In
 this case a lower-order rule is more efficient.
 @end deftypefun
 
@@ -404,7 +404,7 @@ integration rule.
 @section QAWS adaptive integration for singular functions
 
 The QAWS algorithm is designed for integrands with algebraic-logarithmic
-singularities at the end-points of an integration region. In order to
+singularities at the end-points of an integration region.  In order to
 work efficiently the algorithm requires a precomputed table of
 Chebyschev moments.
 
@@ -429,7 +429,7 @@ W(x) = (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
 
 @noindent
 where @math{\alpha < -1}, @math{\beta < -1}, and @math{\mu = 0, 1},
-@math{\nu = 0, 1}. The weight function can take four different forms
+@math{\nu = 0, 1}.  The weight function can take four different forms
 depending on the values of @math{\mu} and @math{\nu},
 
 @tex
@@ -482,7 +482,7 @@ This function frees all the memory associated with the
 This function computes the integral of the function @math{f(x)} over the
 interval @math{(a,b)} with the singular weight function
 @c{$(x - a)^\alpha (b - x)^\beta \log^\mu (x - a) \log^\nu (b - x)$}
-@math{(x-a)^alpha (b-x)^beta log^\mu (x-a) log^\nu (b-x)}. The parameters 
+@math{(x-a)^alpha (b-x)^beta log^\mu (x-a) log^\nu (b-x)}.  The parameters 
 of the weight function @math{(\alpha, \beta, \mu, \nu)} are taken from the
 table @var{t}.
 
@@ -556,8 +556,8 @@ GSL_INTEG_SINE
 
 @noindent
 The @code{gsl_integration_qawo_table} acts as a cache for trigonometric
-coefficients computed in the integration process. The parameter @var{n}
-determines the number of levels of coefficients that can be stored. Each
+coefficients computed in the integration process.  The parameter @var{n}
+determines the number of levels of coefficients that can be stored.  Each
 level corresponds to one bisection of the interval @math{L}, so that
 @var{n} levels are sufficient for subintervals down to the length
 @math{L/2^n}.
@@ -603,16 +603,16 @@ I = \int_a^b dx f(x) cos(omega x)
 
 @noindent
 The results are extrapolated using the epsilon-algorithm to accelerate
-the convergence of the integral. The function returns the final
+the convergence of the integral.  The function returns the final
 approximation from the extrapolation, @var{result}, and an estimate of
-the absolute error, @var{abserr}. The subintervals and their results are
-stored in the memory provided by @var{workspace}. The maximum number of
+the absolute error, @var{abserr}.  The subintervals and their results are
+stored in the memory provided by @var{workspace}.  The maximum number of
 subintervals is given by @var{limit}, which may not exceed the allocated
 size of the workspace.
 
 Those subintervals with ``large'' widths @math{d}, @math{d\omega > 4} are
 computed using a 25-point Clenshaw-Curtis integration rule, which handles the
-oscillatory behavior. Subintervals with a ``small'' width
+oscillatory behavior.  Subintervals with a ``small'' width
 @math{d\omega < 4} are computed using a 15-point Gauss-Kronrod integration.
 
 @end deftypefun
@@ -645,7 +645,7 @@ I = \int_a^@{+\infty@} dx f(x) cos(omega x)
 
 The parameter @math{\omega} is taken from the table @var{wf} (the length
 @var{L} can take any value, since it is overridden by this function to a
-value appropriate for the fourier integration). The integral is computed
+value appropriate for the fourier integration).  The integral is computed
 using the QAWO algorithm over each of the subintervals,
 
 @tex
@@ -672,14 +672,14 @@ C_k = [a + (k-1) c, a + k c]
 @noindent
 where 
 @c{$c = (2 \,\hbox{floor}(|\omega|) + 1) \pi/|\omega|$}
-@math{c = (2 floor(|\omega|) + 1) \pi/|\omega|}. The width @math{c} is
+@math{c = (2 floor(|\omega|) + 1) \pi/|\omega|}.  The width @math{c} is
 chosen to cover an odd number of periods so that the contributions from
 the intervals alternate in sign and are monotonically decreasing when
-@var{f} is positive and monotonically decreasing. The sum of this
+@var{f} is positive and monotonically decreasing.  The sum of this
 sequence of contributions is accelerated using the epsilon-algorithm.
 
 This function works to an overall absolute tolerance of
-@var{abserr}. The following strategy is used: on each interval
+@var{abserr}.  The following strategy is used: on each interval
 @math{C_k} the algorithm tries to achieve the tolerance
 
 @tex
@@ -722,7 +722,7 @@ TOL_k = u_k max(abserr, max_@{i<k@}@{E_i@})
 where @math{E_k} is the estimated error on the interval @math{C_k}.
 
 The subintervals and their results are stored in the memory provided by
-@var{workspace}. The maximum number of subintervals is given by
+@var{workspace}.  The maximum number of subintervals is given by
 @var{limit}, which may not exceed the allocated size of the workspace.
 The integration over each subinterval uses the memory provided by
 @var{cycle_workspace} as scratch space for the QAWO algorithm.
@@ -752,7 +752,7 @@ the integral is divergent, or slowly convergent.
 @section Examples
 
 The integrator @code{QAGS} will handle a large class of definite
-integrals. For example, consider the following integral, which has a
+integrals.  For example, consider the following integral, which has a
 algebraic-logarithmic singularity at the origin,
 
 @tex
@@ -808,7 +808,7 @@ main ()
 
 @noindent
 The results show that the desired accuracy is achieved after 8
-subdivisions. In fact, the extrapolation procedure used by @code{QAGS}
+subdivisions.  In fact, the extrapolation procedure used by @code{QAGS}
 produces an accuracy of almost twice as many digits.
 
 @example
@@ -831,8 +831,8 @@ magnitude.
 
 @noindent
 The following book is the definitive reference for QUADPACK, and was
-written by the original authors. It provides descriptions of the
-algorithms, program listings, test programs and examples. It also
+written by the original authors.  It provides descriptions of the
+algorithms, program listings, test programs and examples.  It also
 includes useful advice on numerical integration and many references to
 the numerical integration literature used in developing QUADPACK.
 

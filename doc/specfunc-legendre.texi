@@ -71,12 +71,12 @@ Exceptional Return Values: GSL_EDOM
  * than about 150.
  *
  * There is no trouble for small m, but when m and l are both large,
- * then there will be trouble. Rather than allow overflows, these
+ * then there will be trouble.  Rather than allow overflows, these
  * functions refuse to calculate when they can sense that l and m are
  * too big.
  *
  * If you really want to calculate a spherical harmonic, then DO NOT
- * use this. Instead use legendre_sphPlm() below, which  uses a similar
+ * use this.  Instead use legendre_sphPlm() below, which  uses a similar
  * recursion, but with the normalized functions.
  *
 @deftypefun  int gsl_sf_legendre_Plm_impl (int l, int m, double x, gsl_sf_result * result)

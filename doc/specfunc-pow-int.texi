@@ -6,7 +6,7 @@
 
 A common complaint about the standard C library is its lack of
 a function for calculating (small) integer powers. GSL provides
-a simple function to fill this gap. For reasons of efficiency,
+a simple function to fill this gap.  For reasons of efficiency,
 these functions do not check for overflow or underflow conditions.
 
 

@@ -154,7 +154,7 @@ a convenient interface to ``black box'' routines that do standard (and
 not so standard) tasks that arise in scientific research.  More than
 that, it also provides the source code.  Users are welcome to alter,
 adjust, modify, and improve the interfaces and/or implementations of
-whichever routines might be needed for a particular purpose. We are
+whichever routines might be needed for a particular purpose.  We are
 starting small, with random number generators and special functions, but
 hope to expand to include linear algebra, Fourier analysis, etc.
 
@@ -473,17 +473,17 @@ e.g. the module gsl_fft has function names like gsl_fft_init
 The algorithms should be object oriented, but only to the extent that is
 easy in portable ANSI C.  The use of casting or other tricks to simulate
 inheritance is not desirable, and the user should not have to be aware
-of anything like that. This means many types of patterns are ruled
-out. However, this is not considered a problem -- they are too
+of anything like that.  This means many types of patterns are ruled
+out.  However, this is not considered a problem -- they are too
 complicated for the library.  
 
 Note: it is possible to define an abstract base class easily in C, using
-function pointers. See the rng directory for an example. 
+function pointers.  See the rng directory for an example. 
 
 @node Minimal structs
 @section Minimal structs
 
-We prefer to make structs which are minimal. For example, if a certain
+We prefer to make structs which are minimal.  For example, if a certain
 type of problem can be solved by several classes of algorithm (e.g. with
 and without derivative information) it is better to make separate types
 of struct to handle those cases.  i.e. run time type identification is
@@ -516,8 +516,8 @@ pointer-to-pointer arrays.  The matrices are stored in row-major order
 @section Exceptions and Error handling
 
 The basic error handling procedure is the return code (see gsl_errno.h
-for a list of allowed values). Use the GSL_ERROR macro to mark an
-error. The current definition of this macro is not ideal but it can be
+for a list of allowed values).  Use the GSL_ERROR macro to mark an
+error.  The current definition of this macro is not ideal but it can be
 changed at compile time. 
 
 Be sure to free any memory allocated by your function if you return an
@@ -538,8 +538,8 @@ int gsl_foo_fprintf (FILE * stream, const gsl_foo * v, const char *format);
 @end example
 @noindent
 Only dump out the blocks of memory, not any associated parameters such
-as lengths. The idea is for the user to build higher level input/output
-facilities using the functions the library provides. Use the functions
+as lengths.  The idea is for the user to build higher level input/output
+facilities using the functions the library provides.  Use the functions
 
 @example
 int gsl_block_fread (FILE * stream, gsl_block * b);
@@ -565,7 +565,7 @@ to do the actual reading and writing.
 @section Datatype widths
 
 Be aware that in ANSI C the type @code{int} is only guaranteed to
-provide 16-bits (or more). Therefore if you require 32 bits you must use
+provide 16-bits (or more).  Therefore if you require 32 bits you must use
 @code{long int}, which will have 32 bits (or more).  Of course, on many
 platforms the type @code{int} does have 32 bits instead of 16 bits but
 we have to code to the ANSI standard rather than a specific platform.
@@ -596,9 +596,9 @@ to avoid problems with wrap-around at @code{i=0}.
 
 Use @code{const} in function prototypes wherever an object pointed to by
 a pointer is constant (obviously).  For variables which are meaningfully
-constant within a function/scope use @code{const} also. This prevents
+constant within a function/scope use @code{const} also.  This prevents
 you from accidentally modifying a variable which should be constant
-(e.g. length of an array, etc). It can also help the compiler do
+(e.g. length of an array, etc).  It can also help the compiler do
 optimization.  These comments also apply to arguments passed by value
 which should be made @code{const} when that is meaningful.
 
@@ -606,7 +606,7 @@ which should be made @code{const} when that is meaningful.
 @section Pseudo-templates
 
 There are some pseudo-template macros available in @file{templates_on.h}
-and @file{templates_off.h}. See a directory link @file{block} for
+and @file{templates_off.h}.  See a directory link @file{block} for
 details on how to use them.  Use sparingly, they are a bit of a
 nightmare, but unavoidable in places.
 
@@ -614,7 +614,7 @@ nightmare, but unavoidable in places.
 @section Test programs
 
 Provide one test program per directory which aims for 100% path coverage
-of the code. Obviously it would be a lot of work to really achieve this,
+of the code.  Obviously it would be a lot of work to really achieve this,
 so prioritise testing on the critical parts and use inspection for the
 rest.  Test all the error conditions by explicitly provoking them,
 because we consider it a serious defect if the function does not return
@@ -629,7 +629,7 @@ output PASS/FAIL line, so that any failure can be uniquely identified.
 @node Compilation
 @section Compilation
 
-Make sure everything compiles cleanly. Use the strict compilation
+Make sure everything compiles cleanly.  Use the strict compilation
 options for extra checking.
 
 @example
@@ -640,11 +640,11 @@ make CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion
 @end example
 @noindent
 Also use checkergcc to check for memory problems on the stack and the
-heap. It's the best memory checking tool.  If checkergcc isn't available
+heap.  It's the best memory checking tool.  If checkergcc isn't available
 then Electric Fence will check the heap, which is better than nothing.
 
 Make sure that the library will also compile with C++ compilers
-(g++). This should not be too much of a problem if you have been writing
+(g++).  This should not be too much of a problem if you have been writing
 in ANSI C.
 
 @node Thread-safety
@@ -654,7 +654,7 @@ The library should be useable in thread-safe programs.  All the
 functions should be thread-safe.
 
 We don't require everything to be completely thread safe, but any thing
-that isn't should be obvious, and not a function. For example, some
+that isn't should be obvious, and not a function.  For example, some
 global variables are used to control the overall behavior of the library
 (range-checking on/off, function to call on fatal error, etc).  Since
 these are accessed directly by the user they obviously aren't thread

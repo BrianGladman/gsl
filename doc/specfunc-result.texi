@@ -6,7 +6,7 @@
 
 
 Almost all the special functions calculate an error estimate
-along with the value of the result. Therefore, structures are
+along with the value of the result.  Therefore, structures are
 provided for amalgating a value and error estimate.
 
 The gsl_sf_result struct contains value and error fields.
@@ -21,7 +21,7 @@ typedef struct
 
 
 In some cases, an overflow or underflow can be detected
-and handled by a function. In this case, it may be possible
+and handled by a function.  In this case, it may be possible
 to return a scaling exponent as well as an error/value pair.
 The gsl_sf_result struct contains value and error fields as well
 as an exponent field such that the actual result is obtained

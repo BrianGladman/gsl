@@ -1,15 +1,15 @@
 This chapter describes the way that GSL functions report and handle
 errors.  By examining the status information returned by every GSL
 function you can determine whether it succeeded or failed, and if it
-failed you can find out what the precise cause of failure was. You can
+failed you can find out what the precise cause of failure was.  You can
 also define your own error handling functions to modify the default
 behavior of the library.
 
 @comment Note: In this context we use the word @dfn{error} to mean something
-@comment different from a bug. An error report from the library just means that
-@comment the library was not able to compute what you asked. For example, if a
+@comment different from a bug.  An error report from the library just means that
+@comment the library was not able to compute what you asked.  For example, if a
 @comment root finding function cannot reach the level of precision you requested
-@comment the library would return an error. In the case of problems caused
+@comment the library would return an error.  In the case of problems caused
 @comment by real bugs, @pxref{Debugging Numerical Programs}.
 
 @menu
@@ -24,7 +24,7 @@ behavior of the library.
 @section Error reporting
 
 GSL follows the thread-safe error reporting conventions of the POSIX
-Threads library. Functions in GSL return a non-zero error code to
+Threads library.  Functions in GSL return a non-zero error code to
 indicate an error and @code{0} to indicate success.
 
 @example
@@ -36,26 +36,26 @@ if (status) @{ /* an error occurred */
 @end example
 
 GSL routines report an error whenever they cannot perform the task
-requested of them. For example, a root-finding function would return a
+requested of them.  For example, a root-finding function would return a
 non-zero error code if could not converge to the requested accuracy, or
-exceeded a limit on the number of iterations. Situations like this are a
+exceeded a limit on the number of iterations.  Situations like this are a
 normal occurrence when using any mathematical library and you should
 check the return status of the GSL functions that you call.
 
 Whenever a GSL routine reports an error the return value specifies the
-type of error. The return value is analogous to the value of the
-variable @code{errno} in the C library. However, the C library's
+type of error.  The return value is analogous to the value of the
+variable @code{errno} in the C library.  However, the C library's
 @code{errno} is a global variable, which is not thread-safe (There can
-be only one instance of a global variable per program. Different threads
+be only one instance of a global variable per program.  Different threads
 of execution may overwrite @code{errno} simultaneously).  By returning
 the error number directly we can avoid this problem in a simple, portable
-way. The caller can examine the return code and decide what action to take,
+way.  The caller can examine the return code and decide what action to take,
 including ignoring the error if it is not considered serious.
 
-The error code numbers are defined in the file @file{gsl_errno.h}. They
+The error code numbers are defined in the file @file{gsl_errno.h}.  They
 all have the prefix @code{GSL_} and expand to non-zero constant integer
-values. Many of the error codes use the same base name as a
-corresponding error code in C library. Here are some of the most common
+values.  Many of the error codes use the same base name as a
+corresponding error code in C library.  Here are some of the most common
 error codes,
 
 @cindex error codes
@@ -72,14 +72,14 @@ library)
 @end deftypefn
 
 @deftypefn {Macro} int GSL_ENOMEM
-No memory available. The system cannot allocate more virtual memory
-because its capacity is full (like ENOMEM in the C library). This error
+No memory available.  The system cannot allocate more virtual memory
+because its capacity is full (like ENOMEM in the C library).  This error
 is reported when a GSL routine encounters problems when trying to
 allocate memory with @code{malloc}.
 @end deftypefn
 
 @deftypefn {Macro} int GSL_EINVAL
-Invalid argument. This is used to indicate various kinds of problems
+Invalid argument.  This is used to indicate various kinds of problems
 with passing the wrong argument to a library function (like EINVAL in the C
 library). 
 @end deftypefn
@@ -103,9 +103,9 @@ if (status) @{
 @comment 
 @noindent
 The function @code{gsl_fft_complex_radix2} only accepts integer lengths
-which are a power of two. If the variable @code{length} is not a power
+which are a power of two.  If the variable @code{length} is not a power
 of two then the call to the library function will return
-@code{GSL_EINVAL}, indicating that the length argument is invalid. The
+@code{GSL_EINVAL}, indicating that the length argument is invalid.  The
 @code{else} clause catches any other possible errors.
 
 @node Error handlers
@@ -113,16 +113,16 @@ of two then the call to the library function will return
 @cindex Error handlers
 
 In addition to reporting errors the library also provides an optional
-error handler. The error handler is called by library functions when
+error handler.  The error handler is called by library functions when
 they are about to report an error (for example, just before they
 return).
 
 The default behavior of the error handler is to print a short message
-and call @code{abort()} whenever an error is reported by the library. If
+and call @code{abort()} whenever an error is reported by the library.  If
 a library routine reports an error then the whole program will
-core-dump. This is a safe default for lazy programmers who do not check
+core-dump.  This is a safe default for lazy programmers who do not check
 the return status of library routines (we don't encourage you to write
-programs this way). If you turn off the default error handler or provide
+programs this way).  If you turn off the default error handler or provide
 your own error handler then it is your responsibility to check the
 return values of the GSL routines.
 
@@ -131,12 +131,12 @@ defined in @file{gsl_errno.h},
 
 @deftp {Data Type} gsl_error_handler_t
 
-This is the type of GSL error handler functions. An error handler will
+This is the type of GSL error handler functions.  An error handler will
 be passed three arguments, specifying the reason for the error, the
 source file in which it occurred, and the line number in that file. 
 The source file and line number are set at compile time using
 the @code{__FILE__} and @code{__LINE__} directives in the preprocessor.
-An error handler function returns type @code{void}. Error handler
+An error handler function returns type @code{void}.  Error handler
 functions should be defined like this,
 
 @example
@@ -152,7 +152,7 @@ function @code{gsl_set_error_handler} which is also declared in
 @deftypefun gsl_error_handler_t gsl_set_error_handler (gsl_error_handler_t @var{new_handler})
 
 This functions sets a new error handler, @var{new_handler}, for the GSL
-library routines. The previous handler is returned (so that you can
+library routines.  The previous handler is returned (so that you can
 restore it later).  Note that the pointer to a user defined error
 handler function is stored in a static variable, so there can only be
 one error handler per program.
@@ -217,26 +217,26 @@ my_error_handler (const char *reason, const char *file, int line)
 @noindent
 Before entering the interactive loop the program uses
 @code{gsl_set_error_handler} to provide its own error handler
-@code{my_error_handler} for GSL error reports. After this point the
+@code{my_error_handler} for GSL error reports.  After this point the
 function @code{my_error_handler} will be invoked whenever an error is
 reported by GSL. The new error handler prints the cause of the error
 (the string @code{reason}) and then does a non-local jump back to the
-main loop. This would allow the user to fix the command which
+main loop.  This would allow the user to fix the command which
 caused the error and try again.
 
 @node Error streams
 @section Error streams
 
 GSL supports the concert of an error stream, which is a place where
-errors are logged as they occur. An error stream allows the library to
+errors are logged as they occur.  An error stream allows the library to
 report an error message directly to the user rather than to the calling
-program. This can sometimes be useful because it reduces the amount of
+program.  This can sometimes be useful because it reduces the amount of
 error checking that the program needs to do.
 
 For example, many mathematical functions compute floating point numbers
-or other numerical values. The standard versions of these functions
+or other numerical values.  The standard versions of these functions
 accept a pointer for storing their numerical result, so that the status
-can be returned separately. For example, to compute the first-order
+can be returned separately.  For example, to compute the first-order
 Bessel function @math{J_1(x)} for @math{x=1.23} and obtain the status we
 write,
 
@@ -247,13 +247,13 @@ int status = gsl_sf_bessel_J1_e (1.23, &result);
 @comment 
 @noindent
 where @code{gsl_sf_bessel_J1_e} is the appropriate function from the
-special functions (@code{sf}) module. The suffix @code{_e} appended to
+special functions (@code{sf}) module.  The suffix @code{_e} appended to
 the function name indicates that the return value gives the error
-status. This style of function is safe and avoids any confusion about
+status.  This style of function is safe and avoids any confusion about
 what the return value means, but requires a lot of error checking. 
 
 For many numerical functions it would be more intuitive to write
-something like @math{y = f(x)}. The library provides functions with
+something like @math{y = f(x)}.  The library provides functions with
 an alternative interface which allows this,
 
 @example
@@ -262,10 +262,10 @@ double result = gsl_sf_bessel_J1 (1.23)
 @comment 
 @noindent
 However, in this case there is no way for the calling program to test
-for an error. Instead if there are any errors (such as underflow) they
+for an error.  Instead if there are any errors (such as underflow) they
 are logged to the error stream, and can be examined by the user at the
-end of the run. It is up to the programmer to decide which form is best
-suited to a given application. For a truly robust program the error
+end of the run.  It is up to the programmer to decide which form is best
+suited to a given application.  For a truly robust program the error
 checking versions of the functions should be used, since they don't rely
 on the user examining the error stream.
 
@@ -273,18 +273,18 @@ on the user examining the error stream.
 @section Manipulating the error stream
 
 By default the error stream is sent to @code{stderr}, and you can
-redirect it to a file on the command line. There are also two ways to
-change this within your program. Firstly, the stream can be redirected
-to another file by providing a suitable file pointer. Alternatively you
+redirect it to a file on the command line.  There are also two ways to
+change this within your program.  Firstly, the stream can be redirected
+to another file by providing a suitable file pointer.  Alternatively you
 can set up an error stream handler, which is a function that accepts
-error message strings. By using an error stream handler function you
+error message strings.  By using an error stream handler function you
 have complete control over where the messages are stored.
 
 @deftypefun {FILE *} gsl_set_stream (FILE * @var{new_stream})
-This function selects the stream used for GSL error messages. After
+This function selects the stream used for GSL error messages.  After
 calling @code{gsl_set_stream} any further messages sent to the default
-stream handler will be printed on @var{new_stream}. The previous stream
-is returned, so that you can close it or restore it later. Note that the
+stream handler will be printed on @var{new_stream}.  The previous stream
+is returned, so that you can close it or restore it later.  Note that the
 stream is stored in a static variable, so there can only be one error
 stream per program.
 @end deftypefun
@@ -293,10 +293,10 @@ stream per program.
 This is the type of GSL stream handler functions. A stream handler will
 be passed four arguments, specifying a label (such as @sc{error} or
 @sc{warning}), the source file in which the error occurred, the line
-number in that file and a description of the error. The source file and
+number in that file and a description of the error.  The source file and
 line number are set at compile time using the @code{__FILE__} and
 @code{__LINE__} directives in the preprocessor. A stream handler
-function returns type @code{void}. Stream handler functions should be
+function returns type @code{void}.  Stream handler functions should be
 defined like this,
 
 @example
@@ -312,7 +312,7 @@ function @code{gsl_set_stream_handler} which is also declared in
 @deftypefun gsl_stream_handler_t gsl_set_stream_handler (gsl_stream_handler_t @var{new_handler})
 
 This functions sets a new stream handler, @var{new_handler}, for the GSL
-library routines. The previous handler is returned (so that you can
+library routines.  The previous handler is returned (so that you can
 restore it later).  Note that the pointer to a user defined stream
 handler function is stored in a static variable, so there can only be
 one error handler per program.
@@ -343,14 +343,14 @@ conventions as in the library.
 
 To report an error you need to call the function @code{gsl_error} with a
 string describing the error and then return an appropriate error code
-from @code{gsl_errno.h}, or a special value, such as @code{NaN}. For
+from @code{gsl_errno.h}, or a special value, such as @code{NaN}.  For
 convenience @file{gsl_errno.h} defines two macros to carry out these
 steps:
 
 @deffn {Macro} GSL_ERROR (@var{reason}, @var{gsl_errno})
 
 This macro reports an error using the GSL conventions and returns a
-status value of @code{gsl_errno}. It expands to the following code fragment,
+status value of @code{gsl_errno}.  It expands to the following code fragment,
 
 @example
 gsl_error (reason, __FILE__, __LINE__, gsl_errno) ;
@@ -364,7 +364,7 @@ parsing problems.
 @end deffn
 
 Here is an example of how the macro could be used to report that a
-routine did not achieve a requested tolerance. To report the error the
+routine did not achieve a requested tolerance.  To report the error the
 routine needs to return the error code @code{GSL_ETOL}.
 
 @example
@@ -377,7 +377,7 @@ if (residual > tolerance)
 @deffn {Macro} GSL_ERROR_RETURN (@var{reason}, @var{gsl_errno}, @var{value})
 
 This macro is the same as @code{GSL_ERROR} but returns a user-defined
-status value of @var{value} instead of an error code. It can be used for
+status value of @var{value} instead of an error code.  It can be used for
 mathematical functions that return a floating point value.
 @end deffn
 

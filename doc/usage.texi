@@ -25,7 +25,7 @@ compiler.
 
 The library does not rely on any non-ANSI extensions in the interface it
 exports to the user.  Programs you write using GSL can be ANSI
-compliant. Extensions which can be used in a way compatible with pure
+compliant.  Extensions which can be used in a way compatible with pure
 ANSI C are supported, however, via conditional compilation.  This allows
 the library to take advantage of compiler extensions on those platforms
 which support them.
@@ -81,11 +81,11 @@ an alternative blas library @file{libmycblas},
 gcc app.o -lgsl -lgslblascblas -lmycblas -lm
 @end example
 @noindent
-The library must conform to the @sc{cblas} standard. For more
+The library must conform to the @sc{cblas} standard.  For more
 information see @ref{BLAS Support}.
 
 The program @code{gsl-config} provides information on the local version
-of the library. For example, the following command shows that the
+of the library.  For example, the following command shows that the
 library has been installed under the directory @file{/usr/local},
 
 @example
@@ -100,7 +100,7 @@ Further information is available using the command @code{gsl-config --help}.
 
 To run a program linked with the shared version of the library it may be
 necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
-the directory where the library is installed. For example,
+the directory where the library is installed.  For example,
 
 @example
 LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH ./app

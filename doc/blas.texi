@@ -27,7 +27,7 @@ the complexity of this part of GSL is somewhat high.
 Casual users will often find what they need in the
 @code{gsl_linalg} library, which implements a set
 of common high-level linear algebra operations
-on GSL vector and matrix objects. Some familiarity
+on GSL vector and matrix objects.  Some familiarity
 with the BLAS standards, including both the legacy and draft
 interface standards, is assumed in this chapter.
 
@@ -38,21 +38,21 @@ interface standards, is assumed in this chapter.
 GSL provides two layers of BLAS functionality, a low-level
 or "raw" layer, which corresponds directly to the BLAS
 standard, and a GSL specific layer for operation on
-GSL vector and matrix objects. Users who are interested
+GSL vector and matrix objects.  Users who are interested
 in simple operations on GSL vector and matrix objects
 should use the high-level GSL specific layer, which
-is specified in the file @code{gsl_blas.h}. Also, users
+is specified in the file @code{gsl_blas.h}.  Also, users
 interested in simple linear algebra functionality
 for GSL vector and matrix objects are directed
-to the @code{gsl_linalg} library. This should satisfy
-the needs of most users. Note that
+to the @code{gsl_linalg} library.  This should satisfy
+the needs of most users.  Note that
 full BLAS functionality is not available for GSL
 vector and matrix objects since GSL provides only
 standard dense storage-format objects, for which
 much of the BLAS functionality does not apply.
 
 The interface for the @code{gsl_blas_raw} layer is
-specified in the file @code{gsl_blas_raw.h}. The functionality
+specified in the file @code{gsl_blas_raw.h}.  The functionality
 described by this interface is semantically equivalent to the
 BLAST reference draft for a C interface to legacy BLAS implementations.
 
@@ -80,7 +80,7 @@ which in some cases can be detected at configure time).
 Users who have access to a conforming CBLAS implementation
 can use such a library by writing
 their code to the @code{gsl_blas_raw} interface and linking
-with @code{libgslblascblas}. Note that users who have
+with @code{libgslblascblas}.  Note that users who have
 only a legacy Fortran source BLAS library will need to
 first obtain a CBLAS conformant wrapper and compile
 that. A reference CBLAS implementation, written as a wrapper
@@ -89,9 +89,9 @@ draft CBLAS standard and can be obtained via Netlib.
 
 Using the extra layer provided by the @code{gsl_blas_raw} interface,
 users or third-parties can also create their
-own implementations. Any implementation conforming
+own implementations.  Any implementation conforming
 to the @code{gsl_blas_raw} interface (or perhaps some portion thereof)
-can be linked against the same client code. We hope that
+can be linked against the same client code.  We hope that
 this will provide some insulation for client code
 against arbitrariness in BLAS or BLAS-like implementations.
 
@@ -103,7 +103,7 @@ As described elsewhere and noted above, GSL provides dense
 vector and matrix objects, based on the relevant built-in types.
 Therefore, we provide a GSL specific interface to BLAS functionality,
 for those operations which are meaningful with the
-GSL objects. The interface to this functionality
+GSL objects.  The interface to this functionality
 is given in the file @code{gsl_blas.h}.
 
 

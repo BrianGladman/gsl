@@ -1,21 +1,22 @@
 @cindex sorting 
 @cindex heapsort
 This chapter describes functions for sorting data, both directly and
-indirectly (using an index). All the functions use the @dfn{heapsort}
-algorithm. Heapsort is an 
+indirectly (using an index).  All the functions use the @dfn{heapsort}
+algorithm.  Heapsort is an 
 @c{$O(N \log N)$} 
 @math{O(N \log N)} 
-algorithm which operates in-place. It does not require any additional
-storage and provides consistent performance. The running time for its
+algorithm which operates in-place.  It does not require any additional
+storage and provides consistent performance.  The running time for its
 worst-case (ordered data) which is not significantly different from the
-average and best cases. Note that the heapsort algorithm does not
+average and best cases.  Note that the heapsort algorithm does not
 preserve the relative ordering of equal elements --- it is an
-@dfn{unstable} sort. However the resulting order of equal elements will
+@dfn{unstable} sort.  However the resulting order of equal elements will
 be consistent across different platforms when using these functions.
 
 @menu
 * Sorting objects::             
 * Sorting vectors::             
+* Computing the rank::          
 * Sorting Examples::            
 * Sorting References and Further Reading::  
 @end menu
@@ -24,10 +25,10 @@ be consistent across different platforms when using these functions.
 @section Sorting objects
 
 The following function provides a simple alternative to the standard
-library function @code{qsort}. It is intended for systems lacking
-@code{qsort}, not as a replacement for it. The function @code{qsort}
+library function @code{qsort}.  It is intended for systems lacking
+@code{qsort}, not as a replacement for it.  The function @code{qsort}
 should be used whenever possible, as it will be faster and can provide
-stable ordering of equal elements. Documentation for @code{qsort} is
+stable ordering of equal elements.  Documentation for @code{qsort} is
 available in the @cite{GNU C Library Reference Manual}.
 
 The functions described in this section are defined in the header file
@@ -38,7 +39,7 @@ The functions described in this section are defined in the header file
 
 This function sorts the @var{count} members of the array @var{array},
 each of size @var{size}, into ascending order using the comparision
-function @var{compare}. The type of the comparison function is defined by,
+function @var{compare}.  The type of the comparison function is defined by,
 
 @example
 int (*gsl_comparison_fn_t) (const void * a, const void * b)
@@ -67,9 +68,9 @@ gsl_heapsort (array, size, sizeof(double), compare_doubles);
 @end example
 
 Note that unlike @code{qsort} the heapsort algorithm cannot be made into
-a stable sort by pointer arithmetic. The trick of comparing pointers for
+a stable sort by pointer arithmetic.  The trick of comparing pointers for
 equal elements in the comparison function does not work for the heapsort
-algorithm. The heapsort algorithm performs an internal rearrangement of
+algorithm.  The heapsort algorithm performs an internal rearrangement of
 the data which destroys its initial ordering.
 @end deftypefun
 
@@ -78,33 +79,33 @@ the data which destroys its initial ordering.
 
 This function indirectly sorts the @var{count} members of the array
 @var{array}, each of size @var{size}, into ascending order using the
-comparision function @var{compare}. The resulting permutation is stored
-in @var{p}, an array of length @var{n}. The elements of @var{p} give the
+comparision function @var{compare}.  The resulting permutation is stored
+in @var{p}, an array of length @var{n}.  The elements of @var{p} give the
 index of the array element which would have been stored in that position
-if the array had been sorted in place. The first element of @var{p}
+if the array had been sorted in place.  The first element of @var{p}
 gives the index of the least element in @var{array}, and the last
 element of @var{p} gives the index of the greatest element in
-@var{array}. The array itself is not changed.
+@var{array}.  The array itself is not changed.
 @end deftypefun
 
 @node Sorting vectors
 @section Sorting vectors
 
 The following functions will sort the elements of an array or vector,
-either directly or indirectly. They are defined for all real and integer
-types using the normal suffix rules. For example, the @code{float}
+either directly or indirectly.  They are defined for all real and integer
+types using the normal suffix rules.  For example, the @code{float}
 versions of the array functions are @code{gsl_sort_float} and
-@code{gsl_sort_float_index}. The corresponding vector functions are
-@code{gsl_sort_vector_float} and @code{gsl_sort_vector_float_index}. The
+@code{gsl_sort_float_index}.  The corresponding vector functions are
+@code{gsl_sort_vector_float} and @code{gsl_sort_vector_float_index}.  The
 prototypes are available in the header files @file{gsl_sort_float.h}
-@file{gsl_sort_vector_float.h}. The complete set of prototypes can be
+@file{gsl_sort_vector_float.h}.  The complete set of prototypes can be
 included using the header files @file{gsl_sort.h} and
 @file{gsl_sort_vector.h}.
 
 There are no functions for sorting complex arrays or vectors, since the
-ordering of complex numbers is not uniquely defined. To sort a complex
+ordering of complex numbers is not uniquely defined.  To sort a complex
 vector by magnitude compute a real vector containing the the magnitudes
-of the complex elements, and sort this vector indirectly. The resulting
+of the complex elements, and sort this vector indirectly.  The resulting
 index gives the appropriate ordering of the original complex vector.
 
 @cindex sorting vector elements
@@ -123,12 +124,12 @@ stride @var{stride} into ascending numerical order.
 @deftypefun int gsl_sort_vector_index (gsl_permutation * @var{p}, const gsl_vector * @var{v})
 
 This function indirectly sorts the elements of the vector @var{v} into
-ascending order, storing the resulting permutation in @var{p}. The
+ascending order, storing the resulting permutation in @var{p}.  The
 elements of @var{p} give the index of the vector element which would
 have been stored in that position if the vector had been sorted in
-place. The first element of @var{p} gives the index of the least element
+place.  The first element of @var{p} gives the index of the least element
 in @var{v}, and the last element of @var{p} gives the index of the
-greatest element in @var{v}. The vector @var{v} is not changed.
+greatest element in @var{v}.  The vector @var{v} is not changed.
 @end deftypefun
 
 
@@ -136,12 +137,56 @@ greatest element in @var{v}. The vector @var{v} is not changed.
 
 This function indirectly sorts the @var{n} elements of the array
 @var{data} with stride @var{stride} into ascending order, storing the
-resulting permutation in @var{p}. The array @var{p} must be allocated to
+resulting permutation in @var{p}.  The array @var{p} must be allocated to
 a sufficient length to store the @var{n} elements of the permutation.
 The elements of @var{p} give the index of the array element which would
 have been stored in that position if the array had been sorted in place.
 The array @var{data} is not changed.
 @end deftypefun
+
+@node Computing the rank
+@section Computing the rank
+
+The @dfn{rank} of an element is its order in the sorted data.  The rank
+is the inverse of the index permutation, @var{p}.  It can be computed
+using the following algorithm,
+
+@example
+for (i = 0; i < p->size; i++) 
+@{
+    size_t pi = p->data[i];
+    rank->data[pi] = i;
+@}
+@end example
+@noindent
+This can be computed directly from the function
+@code{gsl_permutation_invert(rank,p)}.
+
+The following function will print the rank of each element of the vector
+@var{v},
+
+@example
+void
+print_rank (gsl_vector * v)
+@{
+  size_t i;
+  gsl_permutation * perm = gsl_permutation_alloc(v->size);
+  gsl_permutation * rank = gsl_permutation_alloc(v->size);
+
+  gsl_sort_vector_index (perm, v);
+  gsl_permutation_invert (rank, perm);
+
+  for (i = 0; i < v->size; i++)
+   @{
+    double vi = gsl_vector_get(v, i);
+    printf("element = %d, value = % .5f, rank = %d\n",
+            i, vi, rank->data[i]);
+   @}
+
+  gsl_permutation_free (perm);
+  gsl_permutation_free (rank);
+@}
+@end example
 
 @node Sorting Examples
 @section Examples
@@ -159,34 +204,6 @@ for (i = 0; i < v->size; i++)
 @}
 @end example
 
-The @dfn{rank} of an element is its order in the sorted data. The rank
-is the inverse of the index permutation. It can be computed using the
-following algorithm,
-
-@example
-for (i = 0; i < p->size; i++) 
-@{
-    size_t pi = p->data[i];
-    rank->data[pi] = i;
-@}
-@end example
-@noindent
-This is available directly from the function
-@code{gsl_permutation_invert(rank,p)}. The following example prints the
-rank of each element of the vector @var{v},
-
-@example
-gsl_permutation * rank = gsl_permutation_alloc(p->size);
-
-gsl_permutation_invert (rank, p);
-
-for (i = 0; i < v->size; i++)
-@{
-    double vi = gsl_vector_get(v, i);
-    printf("element = %d, value = %g, rank = %d\n",
-            i, vi, rank->data[i]);
-@}
-@end example
 
 @node Sorting References and Further Reading
 @section References and Further Reading

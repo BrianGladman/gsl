@@ -65,7 +65,7 @@ Exceptional Return Values:  GSL_EOVRFLW
 
 
 /* Similarly for the N-th generalization of
- * the above. The so-called N-relative exponential
+ * the above.  The so-called N-relative exponential
  *
  * exprel_N(x) = N!/x^N (exp(x) - Sum[x^k/k!, (k,0,N-1)])
  *             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...

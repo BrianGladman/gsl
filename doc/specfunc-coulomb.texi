@@ -49,7 +49,7 @@
  * Conventions of Abramowitz+Stegun.
  *
  * Because their can be a large dynamic range of values,
- * overflows are handled gracefully. If an overflow occurs,
+ * overflows are handled gracefully.  If an overflow occurs,
  * GSL_EOVRFLW is signalled and exponent(s) are returned
  * through exp_F, exp_G. These are such that
  *
@@ -124,7 +124,7 @@ gsl_sf_coulomb_wave_FG_impl(
 
 
 /* Coulomb wave function divided by the argument,
- * F(xi, eta)/xi. This is the function which reduces to
+ * F(xi, eta)/xi.  This is the function which reduces to
  * spherical Bessel functions in the limit eta->0.
  */
 @deftypefun  int gsl_sf_coulomb_wave_sphF_array_impl (

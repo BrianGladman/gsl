@@ -12,9 +12,9 @@ programs which use GSL.
 @cindex debugging numerical programs
 @cindex breakpoints
 Any errors reported by the library are routed through the function
-@code{gsl_error}. By running your programs under gdb and setting a
+@code{gsl_error}.  By running your programs under gdb and setting a
 breakpoint in this function you can automatically catch any library
-errors. You can add a breakpoint for every session by putting
+errors.  You can add a breakpoint for every session by putting
 
 @example
 break gsl_error
@@ -22,9 +22,9 @@ break gsl_error
 @comment 
 @noindent
 into your @file{.gdbinit} file in the directory where your program is
-started. If the breakpoint catches an error then you can use a backtrace
+started.  If the breakpoint catches an error then you can use a backtrace
 (@code{bt}) to see the call-tree, and the arguments which possibly
-caused the error. By moving into the caller (@code{up}, @code{up}) you
+caused the error.  By moving into the caller (@code{up}, @code{up}) you
 can investigate the values of variable at that point.
 
 Here is an example from the program @code{fft/test_trap}, which contains
@@ -36,7 +36,7 @@ status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
 
 @noindent
 The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
-an FFT as its first argument. When this line is executed an error will
+an FFT as its first argument.  When this line is executed an error will
 be generated because the length of an FFT is not allowed to be zero.
 
 To debug this problem we start @code{gdb}, using the file
@@ -66,7 +66,7 @@ Breakpoint 1, gsl_error (reason=0x8052b0d "length n must be positive integer",
 @comment 
 @noindent
 The first argument of @code{gsl_error} is always a string describing the
-error. Now we can look at the backtrace to see what caused the problem,
+error.  Now we can look at the backtrace to see what caused the problem,
 
 @example
 (gdb) bt
@@ -81,7 +81,7 @@ error. Now we can look at the backtrace to see what caused the problem,
 @noindent
 We can see that the error was generated in the function
 @code{gsl_fft_complex_wavetable_alloc} when it was called with an
-argument of @var{n=0}. The original call came from line 94 in the
+argument of @var{n=0}.  The original call came from line 94 in the
 file @file{test_trap.c}.
 
 By moving up to the level of the original call we can find the line that
@@ -107,14 +107,14 @@ could also print out the values of other variables such as
 @cindex warning options
 @cindex gcc warning options
 
-Writing reliable numerical programs in C requires great care. The
+Writing reliable numerical programs in C requires great care.  The
 following GCC warning options are recommended when compiling numerical
 programs:
 
 @comment Uninitialized variables, conversions to and from integers or from
 @comment signed to unsigned integers can all cause hard-to-find problems.  For
 @comment many non-numerical programs compiling with @code{gcc}'s warning option
-@comment @code{-Wall} provides a good check against common errors. However, for
+@comment @code{-Wall} provides a good check against common errors.  However, for
 @comment numerical programs @code{-Wall} is not enough. 
 
 @comment If you are unconvinced take a look at this program which contains an
@@ -151,17 +151,17 @@ programs:
 
 @comment @noindent
 @comment Note that adding @code{-ansi} does not help here, since the program does
-@comment not contain any invalid constructs. What is happening is that the
+@comment not contain any invalid constructs.  What is happening is that the
 @comment prototype for the function @code{f(int x)} is not consistent with the
 @comment function call @code{f(y)}, where @code{y} is a floating point
-@comment number. This results in the argument being silently converted to an
-@comment integer. This is valid C, but in a numerical program it also likely to
+@comment number.  This results in the argument being silently converted to an
+@comment integer.  This is valid C, but in a numerical program it also likely to
 @comment be a programming error so we would like to be warned about it. (If we
 @comment genuinely wanted to convert @code{y} to an integer then we could use an
 @comment explicit cast, @code{(int)y}).  
 
 @comment Fortunately GCC provides many additional warnings which can alert you to
-@comment problems such as this. You just have to remember to use them. Here is a
+@comment problems such as this.  You just have to remember to use them.  Here is a
 @comment set of recommended warning options for numerical programs.
 
 @example
@@ -174,33 +174,33 @@ gcc -ansi -pedantic -Werror -Wall -W -Wmissing-prototypes
 
 @noindent
 For details of each option consult the manual @cite{Using and porting
-GCC}. The following table gives a brief explanation of what types of
+GCC}.  The following table gives a brief explanation of what types of
 errors these warnings catch.
 
 @table @code
 @item -ansi -pedantic 
-Use ANSI C, and reject any non-ANSI extensions. These flags help in
+Use ANSI C, and reject any non-ANSI extensions.  These flags help in
 writing portable programs that will compile on other systems.
 @item -Werror 
-Consider warnings to be errors, so that compilation stops. This prevents
-warnings from scrolling off the top of the screen and being lost. You
+Consider warnings to be errors, so that compilation stops.  This prevents
+warnings from scrolling off the top of the screen and being lost.  You
 won't be able to compile the program until it is completely
 warning-free.
 @item -Wall 
-This turns on a set of warnings for common programming problems. You
+This turns on a set of warnings for common programming problems.  You
 need @code{-Wall}, but it is not enough on its own, as explained above.
 @item -O4
-Turn on optimization. The warnings for uninitialized variables in
-@code{-Wall} rely on the optimizer to analyze the code. If there is no
+Turn on optimization.  The warnings for uninitialized variables in
+@code{-Wall} rely on the optimizer to analyze the code.  If there is no
 optimization then the warnings aren't generated.
 @item -W 
 This turns on some extra warnings not included in @code{-Wall}, such as
 missing return values and comparisons between signed and unsigned
 integers.
 @item -Wmissing-prototypes -Wstrict-prototypes 
-Warn if there are any missing or inconsistent prototypes. If your
+Warn if there are any missing or inconsistent prototypes.  If your
 prototypes are missing then you will never detect problems with
-incorrect arguments. If your prototypes are inconsistent then you
+incorrect arguments.  If your prototypes are inconsistent then you
 already have a problem.
 @item -Wtraditional 
 This warns about certain constructs that behave differently in
@@ -208,10 +208,10 @@ traditional and ANSI C. Whether the traditional or ANSI interpretation
 is used might be unpredictable on other compilers. 
 @item -Wconversion 
 The main use of this option is to warn about conversions from signed to
-unsigned integers. For example, @code{unsigned int x = -1}. If you need
+unsigned integers.  For example, @code{unsigned int x = -1}.  If you need
 to perform such a conversion you can use an explicit cast.
 @item -Wshadow
-This warns whenever a local variable shadows another local variable. If
+This warns whenever a local variable shadows another local variable.  If
 two variables have the same name then it is a potential source of
 confusion.
 @item -Wpointer-arith -Wcast-qual -Wcast-align 
@@ -224,15 +224,15 @@ This option gives string constants a @code{const} qualifier so that it
 will be a compile-time error to attempt to overwrite them.
 @item -Waggregate-return 
 Warn if any functions that return structures or unions are defined or
-called. Some older compilers might have problems with such a construct.
+called.  Some older compilers might have problems with such a construct.
 @item -fshort-enums 
-This option makes the type of @code{enum} as short as possible. Normally
-this makes an @code{enum} different from an @code{int}. Consequently any
+This option makes the type of @code{enum} as short as possible.  Normally
+this makes an @code{enum} different from an @code{int}.  Consequently any
 attempts to assign a pointer-to-int to a pointer-to-enum will generate a
 cast-alignment warning.
 @item -fno-common
 This option prevents global variables being simultaneously defined in
-different object files (you get an error at link time). Such a variable
+different object files (you get an error at link time).  Such a variable
 should be defined in one file and referred to in other files with an
 @code{extern} declaration.
 @item -Wnested-externs 
@@ -244,7 +244,7 @@ The @code{inline} keyword is not part of ANSI C. Thus if you want to use
 preprocessor definition to remove the @code{inline} keywords.
 @item -g 
 It always makes sense to put debugging symbols in the executable so that
-you can debug it using @code{gdb}. The only effect of debugging symbols
+you can debug it using @code{gdb}.  The only effect of debugging symbols
 is to increase the size of the file, and you can use the @code{strip}
 command to remove them later if necessary.
 @end table

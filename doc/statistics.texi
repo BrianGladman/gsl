@@ -85,7 +85,7 @@ $$
 where @math{x_i} are the elements of the dataset @var{data}.  Note that
 the normalization factor of @math{1/(N-1)} results from the derivation
 of @math{\Hat\sigma^2} as an unbiased estimator of the population
-variance @math{\sigma^2}. For samples drawn from a gaussian distribution
+variance @math{\sigma^2}.  For samples drawn from a gaussian distribution
 the variance of @math{\Hat\sigma^2} itself is @math{2 \sigma^4 / N}.
 
 This function computes the mean via a call to @code{gsl_stats_mean}.  If
@@ -122,7 +122,7 @@ functions above.
 @deftypefn Statistics double gsl_stats_variance_with_fixed_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function computes an unbiased estimate of the variance of
 @var{data} when the population mean @var{mean} of the underlying
-distribution is known @emph{a priori}. In this case the estimator for
+distribution is known @emph{a priori}.  In this case the estimator for
 the variance uses the factor @math{1/N} and the sample mean
 @math{\Hat\mu} is replaced by the known population mean @math{\mu},
 
@@ -144,7 +144,7 @@ $$
 
 @deftypefn Statistics double gsl_stats_sd_with_fixed_mean (const double @var{data[]}, size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function calculates the standard deviation of @var{data} for a a
-fixed population mean @var{mean}. The result is the square root of the
+fixed population mean @var{mean}.  The result is the square root of the
 corresponding variance function.
 @end deftypefn
 
@@ -170,9 +170,9 @@ absdev  = (1/N) \sum |x_i - \Hat\mu|
 @end ifinfo
 
 @noindent
-where @math{x_i} are the elements of the dataset @var{data}. The
+where @math{x_i} are the elements of the dataset @var{data}.  The
 absolute deviation from the mean provides a more robust measure of the
-width of a distribution than the variance. This function computes the
+width of a distribution than the variance.  This function computes the
 mean of @var{data} via a call to @code{gsl_stats_mean}.
 @end deftypefn
 
@@ -305,10 +305,10 @@ standard deviation of @var{data} and want to avoid recomputing them.
 @section Weighted Samples
 
 The functions described in this section allow the computation of
-statistics for weighted samples. The functions accept an array of
-samples, @math{x_i}, with associated weights, @math{w_i}. Each sample
+statistics for weighted samples.  The functions accept an array of
+samples, @math{x_i}, with associated weights, @math{w_i}.  Each sample
 @math{x_i} is considered as having been drawn from a Gaussian
-distribution with variance @math{\sigma_i^2}. The sample weight
+distribution with variance @math{\sigma_i^2}.  The sample weight
 @math{w_i} is defined as the reciprocal of this variance, @math{w_i =
 1/\sigma_i^2}.  Setting a weight to zero corresponds to removing a
 sample from a dataset.
@@ -316,7 +316,7 @@ sample from a dataset.
 @deftypefn Statistics double gsl_stats_wmean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 This function returns the weighted mean of the dataset @var{data} with
 stride @var{stride} and length @var{n}, using the set of weights @var{w}
-with stride @var{wstride} and length @var{n}. The weighted mean is defined as,
+with stride @var{wstride} and length @var{n}.  The weighted mean is defined as,
 
 @tex
 \beforedisplay
@@ -335,7 +335,7 @@ $$
 @deftypefn Statistics double gsl_stats_wvariance (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 This function returns the estimated variance of the dataset @var{data}
 with stride @var{stride} and length @var{n}, using the set of weights
-@var{w} with stride @var{wstride} and length @var{n}. The estimated
+@var{w} with stride @var{wstride} and length @var{n}.  The estimated
 variance of a weighted dataset is defined as,
 
 @tex
@@ -373,7 +373,7 @@ function above.
 @deftypefn Statistics double gsl_stats_wvariance_with_fixed_mean (const double @var{w[]}, size_t @var{wstride}, const double @var{data[]}, size_t @var{stride}, size_t @var{n})
 This function computes an unbiased estimate of the variance of weighted
 dataset @var{data} when the population mean @var{mean} of the underlying
-distribution is known @emph{a priori}. In this case the estimator for
+distribution is known @emph{a priori}.  In this case the estimator for
 the variance replaces the sample mean @math{\Hat\mu} by the known
 population mean @math{\mu},
 
@@ -524,7 +524,7 @@ always be used first.
 When the dataset has an odd number of elements the median is the value
 of element @math{(n-1)/2}.  When the dataset has an even number of
 elements the median is the mean of the two nearest middle values,
-elements @math{(n-1)/2} and @math{n/2}. Since the algorithm for
+elements @math{(n-1)/2} and @math{n/2}.  Since the algorithm for
 computing the median involves interpolation this function always returns
 a floating-point number, even for integer data types.
 @end deftypefn

@@ -6,9 +6,9 @@
 @cindex convergence, accelerating a series
 
 The functions described in this chapter accelerate the convergence of a
-series using the Levin u-transform. This method takes a small number of
+series using the Levin u-transform.  This method takes a small number of
 terms from the start of a series and uses a systematic approximation to
-compute an extrapolated value and an estimate of its error. The
+compute an extrapolated value and an estimate of its error.  The
 u-transform works for both convergent and divergent series, including
 asymptotic series.
 
@@ -27,12 +27,12 @@ These functions are declared in the header file @file{gsl_sum.h}.
 
 This function takes the terms of a series in @var{array} of size
 @var{array_size} and computes the extrapolated limit of the series using
-a Levin u-transform. The extrapolated sum is stored in @var{sum_accel},
-with an estimate of the relative error stored in @var{precision}. The
-actual term-by-term sum is returned in @var{sum_plain}. Additional
+a Levin u-transform.  The extrapolated sum is stored in @var{sum_accel},
+with an estimate of the relative error stored in @var{precision}.  The
+actual term-by-term sum is returned in @var{sum_plain}.  Additional
 working space must be provided in the arrays @var{q_num}, @var{q_den},
 @var{dsum} of size @var{array_size} elements each and in @var{dq_num},
-@var{dq_den} of size @var{array_size}**2. The algorithm estimates both
+@var{dq_den} of size @var{array_size}**2.  The algorithm estimates both
 truncation error and round-off error to choose an optimal number of
 terms for the extrapolation.
 
@@ -109,7 +109,7 @@ main (void)
 The ouput below shows that the Levin u-transform is able to obtain an 
 estimate of the sum to 1 part in 
 @c{$10^{10}$}
-@math{10^10} using the first eleven terms of the series. The
+@math{10^10} using the first eleven terms of the series.  The
 error estimate returned by the function is also accurate, giving
 the correct number of significant digits. 
 

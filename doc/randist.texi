@@ -1,16 +1,16 @@
 @cindex random number distributions
 
 Distributions of random numbers can be obtained from any of the
-generators using the functions described in this section. In the
+generators using the functions described in this section.  In the
 simplest cases a non-uniform distribution can be obtained analytically
-from the uniform distribution with an appropriate transformation. This
+from the uniform distribution with an appropriate transformation.  This
 method uses one call to the random number generator.
 
 
 More complicated distributions are created by the
 @dfn{acceptance-rejection} method, which compares the desired
 distribution against a distribution which is similar and known
-analytically. This usually requires several samples from the generator.
+analytically.  This usually requires several samples from the generator.
 
 The functions described in this section are declared in
 @file{gsl_randist.h}.
@@ -59,7 +59,7 @@ The functions described in this section are declared in
 @deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian random numbers
 This function returns a Gaussian random number, with mean zero and
-standard deviation @var{sigma}. The probability distribution for
+standard deviation @var{sigma}.  The probability distribution for
 Gaussian random numbers is,
 
 @tex
@@ -75,7 +75,7 @@ p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-x^2 / 2\sigma^2) dx
 @end example
 @end ifinfo
 @noindent
-for @math{x} in the range @math{-\infty} to @math{+\infty}. Use the
+for @math{x} in the range @math{-\infty} to @math{+\infty}.  Use the
 transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
 @math{\mu}.
@@ -89,7 +89,7 @@ the formula given above.
 
 @deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
 @deftypefnx Random double gsl_ran_ugaussian_pdf (double @var{x})
-These functions compute results for the unit Gaussian distribution. They
+These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
 @end deftypefn
@@ -105,7 +105,7 @@ are equivalent to the functions above with a standard deviation of one,
 @deftypefn Random double gsl_ran_gaussian_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
 @cindex Gaussian Tail random numbers
 This function provides random numbers from the upper tail of a Gaussian
-distribution with standard deviation @var{sigma}. The values returned
+distribution with standard deviation @var{sigma}.  The values returned
 are larger than the lower limit @var{a}, which must be positive.  The
 method is based on Marsaglia's famous rectangle-wedge-tail algorithm (Ann
 Math Stat 32, 894-899 (1961)), with this aspect explained in Knuth, v2,
@@ -158,7 +158,7 @@ lower limit @var{a}, using the formula given above.
 @deftypefn Random double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{a})
 @deftypefnx Random double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
 These functions compute results for the tail of a unit Gaussian
-distribution. They are equivalent to the functions above with a standard
+distribution.  They are equivalent to the functions above with a standard
 deviation of one, @var{sigma} = 1.
 @end deftypefn
 
@@ -249,7 +249,7 @@ given above.
 @cindex two-sided exponential random numbers
 @cindex Laplace distribution random numbers
 This function returns a random number from the the Laplace distribution
-with width @var{mu}. The distribution is,
+with width @var{mu}.  The distribution is,
 
 @tex
 \beforedisplay
@@ -285,7 +285,7 @@ given above.
 @deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Exponential power distribution, random numbers
 This function returns a random number from the exponential power distribution
-with scale parameter @var{mu} and exponent @var{a}. The distribution is,
+with scale parameter @var{mu} and exponent @var{a}.  The distribution is,
 
 @tex
 \beforedisplay
@@ -301,8 +301,8 @@ p(x) dx = @{1 \over 2 \mu \Gamma(1+1/a)@} \exp(-|x/\mu|^a) dx
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
-@math{x >= 0}. For @math{a = 1} this reduces to the Laplace
-distribution. For @math{a = 2} it has the same form as a gaussian
+@math{x >= 0}.  For @math{a = 1} this reduces to the Laplace
+distribution.  For @math{a = 2} it has the same form as a gaussian
 distribution, but with @c{$\mu = \sqrt{2} \sigma$}
 @math{\mu = \sqrt@{2@} \sigma}.
 @end deftypefn
@@ -324,7 +324,7 @@ and exponent @var{a}, using the formula given above.
 @deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{mu})
 @cindex Cauchy random numbers
 This function returns a random number from the Cauchy distribution with
-scale parameter @var{mu}. The probability distribution for Cauchy
+scale parameter @var{mu}.  The probability distribution for Cauchy
 random numbers is,
 
 @tex
@@ -362,7 +362,7 @@ given above.
 @deftypefn Random double gsl_ran_rayleigh (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Rayleigh random numbers
 This function returns a random number from the Rayleigh distribution with
-scale parameter @var{sigma}. The probability distribution for Rayleigh
+scale parameter @var{sigma}.  The probability distribution for Rayleigh
 random numbers is,
 
 @tex
@@ -399,7 +399,7 @@ formula given above.
 @cindex Rayleigh Tail random numbers
 This function returns a random number from the tail of the Rayleigh
 distribution with scale parameter @var{sigma} and a lower limit of
-@var{a}. The probability distribution for Rayleigh tail random numbers
+@var{a}.  The probability distribution for Rayleigh tail random numbers
 is,
 
 @tex
@@ -436,7 +436,7 @@ lower limit @var{a}, using the formula given above.
 @deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Levy distribution, random numbers
 This function returns a random number from the symmetric Levy
-distribution with scale @var{mu} and exponent @var{a}. The symmetric
+distribution with scale @var{mu} and exponent @var{a}.  The symmetric
 Levy probability distribution is defined by a fourier transform,
 
 @tex
@@ -452,10 +452,10 @@ p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(it(\mu-x)- |t|^a)
 @end example
 @end ifinfo
 @noindent
-There is no explicit solution for the form of @math{p(x)}. For @math{a =
-1} the distribution reduces to the Cauchy distribution. For @math{a = 2}
+There is no explicit solution for the form of @math{p(x)}.  For @math{a =
+1} the distribution reduces to the Cauchy distribution.  For @math{a = 2}
 it is a Gaussian distribution with @c{$\sigma = \sqrt{2} \mu$}
-@math{\sigma = \sqrt@{2@} \mu}. For @math{a < 1} the tails of the
+@math{\sigma = \sqrt@{2@} \mu}.  For @math{a < 1} the tails of the
 distribution become extremely wide.
 
 The algorithm only works for @c{$0 < a \le 2$}
@@ -640,7 +640,7 @@ the formula given above.
 @page
 @node The F-distribution
 @section The F-distribution
-The F-distribution arises in statistics. If @math{Y_1} and @math{Y_2}
+The F-distribution arises in statistics.  If @math{Y_1} and @math{Y_2}
 are chi-squared deviates with @math{\nu_1} and @math{\nu_2} degrees of
 freedom then the ratio,
 
@@ -703,7 +703,7 @@ using the formula given above.
 @page
 @node The t-distribution
 @section The t-distribution
-The t-distribution arises in statistics. If @math{Y_1} has a normal
+The t-distribution arises in statistics.  If @math{Y_1} has a normal
 distribution and @math{Y_2} has a chi-squared distribution with
 @math{\nu} degrees of freedom then the ratio
 
@@ -725,7 +725,7 @@ has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
 
 @deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
 @cindex t-distribution random numbers
-This function returns a random number from the t-distribution. The
+This function returns a random number from the t-distribution.  The
 distribution is,
 
 @tex
@@ -870,7 +870,7 @@ the formula given above.
 @section The Spherical Distribution (2D & 3D)
 
 The spherical distributions generate random vectors, located on a
-spherical surface. They can be used as random directions, for example in
+spherical surface.  They can be used as random directions, for example in
 the steps of a random walk.
 
 @deftypefn Random void gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
@@ -878,7 +878,7 @@ the steps of a random walk.
 @cindex direction vector, random 2D
 @cindex spherical random numbers, 2D
 This function returns a random direction vector @math{v} =
-(@var{x},@var{y}) in two dimensions. The vector is normalized such that
+(@var{x},@var{y}) in two dimensions.  The vector is normalized such that
 @math{|v|^2 = x^2 + y^2 = 1}.  The obvious way to do this is to take a
 uniform random number between 0 and @math{2\pi} and let @var{x} and
 @var{y} be the sine and cosine respectively.  Two trig functions would
@@ -902,7 +902,7 @@ interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @cindex direction vector, random 3D
 @cindex spherical random numbers, 3D
 This function returns a random direction vector @math{v} =
-(@var{x},@var{y},@var{z}) in three dimensions. The vector is normalized
+(@var{x},@var{y},@var{z}) in three dimensions.  The vector is normalized
 such that @math{|v|^2 = x^2 + y^2 + z^2 = 1}.  The method employed is
 due to Robert E. Knop (CACM 13, 326 (1970)), and explained in Knuth, v2,
 3rd ed, p136.  It uses the surprising fact that the distribution
@@ -916,7 +916,7 @@ projected along any axis is actually uniform (this is only true for 3d).
 
 This function returns a random direction vector
 @c{$v = (x_1,x_2,\ldots,x_n)$}
-@math{v = (x_1,x_2,...,x_n)} in @var{n} dimensions. The vector is normalized
+@math{v = (x_1,x_2,...,x_n)} in @var{n} dimensions.  The vector is normalized
 such that 
 @c{$|v|^2 = x_1^2 + x_2^2 + \cdots + x_n^2 = 1$}
 @math{|v|^2 = x_1^2 + x_2^2 + ... + x_n^2 = 1}.  The method
@@ -966,7 +966,7 @@ Example output from the program, three 10-step random walks from the origin.
 @section The Weibull Distribution
 @deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{mu}, double @var{a})
 @cindex Weibull distribution random numbers
-This function returns a random number from the Weibull distribution. The
+This function returns a random number from the Weibull distribution.  The
 distribution is,
 
 @tex
@@ -1005,7 +1005,7 @@ using the formula given above.
 @cindex Gumbel distribution (Type 1), random numbers
 @cindex Type 1 Gumbel distribution, random numbers
 This function returns random numbers from the Type-1 Gumbel
-distribution. The Type-1 Gumbel distribution is,
+distribution.  The Type-1 Gumbel distribution is,
 
 @tex
 \beforedisplay
@@ -1042,7 +1042,7 @@ using the formula given above.
 @cindex Gumbel distribution (Type 2), random numbers
 @cindex Type 2 Gumbel distribution, random numbers
 This function returns random numbers from the Type-2 Gumbel
-distribution. The Type-2 Gumbel distribution is,
+distribution.  The Type-2 Gumbel distribution is,
 
 @tex
 \beforedisplay
@@ -1173,7 +1173,7 @@ De-allocates the lookup table pointed to by @var{g}.
 @deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
 This function returns a random integer from the Poisson distribution
-with mean @var{mu}. The probability distribution for Poisson random
+with mean @var{mu}.  The probability distribution for Poisson random
 numbers is,
 
 @tex
@@ -1211,7 +1211,7 @@ given above.
 @deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
 @cindex Bernoulli trial, random numbers
 This function returns either 0 or 1, the result of a Bernoulli trial
-with probability @var{p}. The probability distribution for a Bernoulli
+with probability @var{p}.  The probability distribution for a Bernoulli
 trial is,
 
 @tex
@@ -1251,7 +1251,7 @@ This function computes the probability @math{p(k)} of obtaining
 @cindex Binomial random numbers
 This function returns a random integer from the binomial distribution,
 the number of successes in @var{n} independent trials with probability
-@var{p}. The probability distribution for binomial random numbers is,
+@var{p}.  The probability distribution for binomial random numbers is,
 
 @tex
 \beforedisplay
@@ -1288,7 +1288,7 @@ the formula given above.
 @cindex Negative Binomial distribution, random numbers
 This function returns a random integer from the negative binomial
 distribution, the number of failures occurring before @var{n} successes
-in independent trials with probability @var{p} of success. The
+in independent trials with probability @var{p} of success.  The
 probability distribution for negative binomial random numbers is,
 
 @tex
@@ -1324,7 +1324,7 @@ from a negative binomial distribution with parameters @var{p} and
 @section The Pascal Distribution
 
 @deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{k})
-This function returns a random integer from the Pascal distribution. The
+This function returns a random integer from the Pascal distribution.  The
 Pascal distribution is simply a negative binomial distribution with an
 integer value of @math{n}.
 
@@ -1363,7 +1363,7 @@ from a Pascal distribution with parameters @var{p} and
 @cindex Geometric random numbers
 This function returns a random integer from the geometric distribution,
 the number of independent trials with probability @var{p} until the
-first success. The probability distribution for geometric random numbers
+first success.  The probability distribution for geometric random numbers
 is,
 
 @tex
@@ -1401,7 +1401,7 @@ the formula given above.
 @deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 @cindex Geometric random numbers
 This function returns a random integer from the hypergeometric
-distribution. The probability distribution for hypergeometric
+distribution.  The probability distribution for hypergeometric
 random numbers is,
 
 @tex
@@ -1417,7 +1417,7 @@ p(k) =  C(n_1,k) C(n_2, t-k) / C(n_1 + n_2,k)
 @end example
 @end ifinfo
 @noindent
-where @math{C(a,b) = a!/(b!(a-b)!)}. The domain of @math{k} is
+where @math{C(a,b) = a!/(b!(a-b)!)}.  The domain of @math{k} is
 @c{$\hbox{max}(0\,t-n_2), \ldots, \hbox{max}(t,n_1)$}
 @math{max(0,t-n_2), ..., max(t,n_1)}.
 @end deftypefn
@@ -1439,7 +1439,7 @@ from a hypergeometric distribution with parameters @var{n1}, @var{n2},
 @deftypefn Random {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
 @cindex Logarithmic random numbers
 This function returns a random integer from the logarithmic
-distribution. The probability distribution for logarithmic random numbers
+distribution.  The probability distribution for logarithmic random numbers
 is,
 
 @tex
@@ -1475,16 +1475,16 @@ using the formula given above.
 @section Shuffling and Sampling
 
 The following functions allow the shuffling and sampling of a set of
-objects. The algorithms rely on a random number generator as source of
+objects.  The algorithms rely on a random number generator as source of
 randomness and a poor quality generator can lead to correlations in the
-output. In particular it is important to avoid generators with a short
-period. For more information see Knuth, v2, 3rd ed, Section 3.4.2,
+output.  In particular it is important to avoid generators with a short
+period.  For more information see Knuth, v2, 3rd ed, Section 3.4.2,
 ``Random Sampling and Shuffling''.
 
 @deftypefn Random void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
 
 This function randomly shuffles the order of @var{n} objects, each of
-size @var{size}, stored in the array @var{base}[0..@var{n}-1]. The
+size @var{size}, stored in the array @var{base}[0..@var{n}-1].  The
 output of the random number generator @var{r} is used to produce the
 permutation.  The algorithm generates all possible @math{n!}
 permutations with equal probability, assuming a perfect source of random
@@ -1508,14 +1508,14 @@ gsl_ran_shuffle (r, a, 52, sizeof (int));
 @deftypefn Random {void *} gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function fills the array @var{dest[k]} with @var{k} objects taken
 randomly from the @var{n} elements of the array
-@var{src}[0..@var{n}-1]. The objects are each of size @var{size}.  The
+@var{src}[0..@var{n}-1].  The objects are each of size @var{size}.  The
 output of the random number generator @var{r} is used to make the
-selection. The algorithm ensures all possible samples are equally
+selection.  The algorithm ensures all possible samples are equally
 likely, assuming a perfect source of randomness.
 
 The objects are sampled without replacement, thus each object can only
 appear once in @var{dest[k]}.  It is required that @var{k} be less than
-or equal to @code{n}. The objects in @var{dest} will be in the same
+or equal to @code{n}.  The objects in @var{dest} will be in the same
 relative order as those in @var{src}.  You will need to call
 @code{gsl_ran_shuffle(r, dest, n, size)} if you want to randomize the
 order.
@@ -1540,7 +1540,7 @@ gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @section Examples
 
 The following program demonstrates the use of a random number generator
-to produce variates from a distribution. It prints 10 samples from the
+to produce variates from a distribution.  It prints 10 samples from the
 Poisson distribution with a mean of 3.
 
 @example
@@ -1592,7 +1592,7 @@ $ ./a.out
 @end example
 
 @noindent
-The variates depend on the seed used by the generator. The seed for the
+The variates depend on the seed used by the generator.  The seed for the
 default generator type @code{gsl_rng_default} can be changed with the
 @code{GSL_RNG_SEED} environment variable to produce a different stream
 of variates,
@@ -1608,7 +1608,7 @@ GSL_RNG_SEED=123
 
 For an encyclopaedic coverage of the subject readers are advised to
 consult the book @cite{Non-Uniform Random Variate Generation} by Luc
-Devroye. It covers every imaginable distribution and provides hundreds
+Devroye.  It covers every imaginable distribution and provides hundreds
 of algorithms.
 
 @itemize @asis

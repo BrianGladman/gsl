@@ -8,7 +8,7 @@
 /* Log[Gamma(x)], x not a negative integer
  * Uses real Lanczos method.
  * Returns the real part of Log[Gamma[x]] when x < 0,
- * i.e. Log[|Gamma[x]|].
+ * i.e.  Log[|Gamma[x]|].
  *
  * exceptions: GSL_EDOM, GSL_EROUND
  */
@@ -17,7 +17,7 @@ int gsl_sf_lngamma_e(double x, gsl_sf_result * result);
 
 
 /* Log[Gamma(x)], x not a negative integer
- * Uses real Lanczos method. Determines
+ * Uses real Lanczos method.  Determines
  * the sign of Gamma[x] as well as Log[|Gamma[x]|] for x < 0.
  * So Gamma[x] = sgn * Exp[result_lg].
  *
@@ -57,7 +57,7 @@ int gsl_sf_gammainv_e(double x, gsl_sf_result * result);
 
 
 /* Log[Gamma(z)] for z complex, z not a negative integer
- * Uses complex Lanczos method. Note that the phase part (arg)
+ * Uses complex Lanczos method.  Note that the phase part (arg)
  * is not well-determined when |z| is very large, due
  * to inevitable roundoff in restricting to (-Pi,Pi].
  * This will raise the GSL_ELOSS exception when it occurs.

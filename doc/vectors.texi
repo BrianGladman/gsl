@@ -3,7 +3,7 @@
 @cindex matrices
 
 The functions described in this chapter provide a simple vector and
-matrix interface to ordinary C arrays. By writing your functions in
+matrix interface to ordinary C arrays.  By writing your functions in
 terms of vectors and matrices you can pass a single structure containing
 both data and dimensions without needing additional function arguments.
 The structures are compatible with the vector and matrix formats used by
@@ -38,10 +38,10 @@ BLAS routines.
 @section Data types
 
 All the functions are available in versions for each of the standard
-data-types. The versions for @code{double} have the prefix
-@code{gsl_block}, @code{gsl_vector} and @code{gsl_matrix}. Similarly the
+data-types.  The versions for @code{double} have the prefix
+@code{gsl_block}, @code{gsl_vector} and @code{gsl_matrix}.  Similarly the
 versions for single-precision have the prefix @code{gsl_block_float},
-@code{gsl_vector_float} and @code{gsl_matrix_float}. The full list of
+@code{gsl_vector_float} and @code{gsl_matrix_float}.  The full list of
 available types is given below,
 
 @example
@@ -69,8 +69,8 @@ Corresponding types exist for the @code{gsl_vector} and
 @section The block struct
 
 For consistency all memory is allocated through a @code{gsl_block}
-structure. The structure contains two members, the size of an area of
-memory and a pointer to the memory. The @code{gsl_block} structure looks
+structure.  The structure contains two members, the size of an area of
+memory and a pointer to the memory.  The @code{gsl_block} structure looks
 like this,
 
 @example
@@ -91,17 +91,17 @@ The functions for allocating and deallocating blocks are defined in
 @section Block allocation
 
 The functions for allocating memory to a block follow the style of
-@code{malloc} and @code{free}. In addition they also perform their own
-error checking. If there is insufficient memory available to allocate a
+@code{malloc} and @code{free}.  In addition they also perform their own
+error checking.  If there is insufficient memory available to allocate a
 block then the functions call the GSL error handler (with an error
 number of @code{GSL_ENOMEM}) in addition to returning a null
-pointer. Thus if you use the library error handler to abort your program
+pointer.  Thus if you use the library error handler to abort your program
 then it isn't necessary to check every @code{alloc}.
 
 @deftypefun {gsl_block *} gsl_block_alloc (size_t @var{n})
 This function allocates memory for a block of @var{n} double-precision
 elements, returning a pointer to the block struct.  The block is not
-initialized and so the values of its elements are undefined. Use the
+initialized and so the values of its elements are undefined.  Use the
 function @code{gsl_block_calloc} if you want to ensure that all the
 elements are initialized to zero.
 
@@ -127,18 +127,18 @@ as binary data or formatted text.
 
 @deftypefun int gsl_block_fwrite (FILE * @var{stream}, const gsl_block * @var{b})
 This function writes the elements of the block @var{b} to the stream
-@var{stream} in binary format. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem writing to the file. Since the
+@var{stream} in binary format.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file.  Since the
 data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
 @deftypefun int gsl_block_fread (FILE * @var{stream}, gsl_block * @var{b})
 This function reads into the block @var{b} from the open stream
-@var{stream} in binary format. The block @var{b} must be preallocated
+@var{stream} in binary format.  The block @var{b} must be preallocated
 with the correct length since the function uses the size of @var{b} to
-determine how many bytes to read. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem reading from the file. The
+determine how many bytes to read.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.  The
 data is assumed to have been written in the native binary format on the
 same architecture.
 @end deftypefun
@@ -147,14 +147,14 @@ same architecture.
 This function writes the elements of the block @var{b} line-by-line to
 the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
-floating point numbers and @code{%d} for integers. The function returns
+floating point numbers and @code{%d} for integers.  The function returns
 0 for success and @code{GSL_EFAILED} if there was a problem writing to
 the file.
 @end deftypefun
 
 @deftypefun int gsl_block_fscanf (FILE * @var{stream}, gsl_block * @var{b})
 This function reads formatted data from the stream @var{stream} into the
-block @var{b}. The block @var{b} must be preallocated with the correct
+block @var{b}.  The block @var{b} must be preallocated with the correct
 length since the function uses the size of @var{b} to determine how many
 numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
@@ -197,7 +197,7 @@ block data address = 0x804b0d8
 
 Vectors are defined by a @code{gsl_vector} structure which describes a
 slice of a block. A vector represents a @dfn{view} of an area of memory,
-and different vectors can be created which point to the same block. For
+and different vectors can be created which point to the same block.  For
 example, it is possible to make two vectors which point to the even and
 odd elements of a third vector, or to make vectors which correspond to
 the rows and columns of a matrix.
@@ -205,7 +205,7 @@ the rows and columns of a matrix.
 The @code{gsl_vector} structure contains four members, the @dfn{size},
 the @dfn{stride}, a pointer to the memory where the elements are stored,
 @var{data}, and a pointer to the block owned by the vector, @var{block},
-if any. The structure is very simple and looks like this,
+if any.  The structure is very simple and looks like this,
 
 @example
 typedef struct
@@ -218,12 +218,12 @@ typedef struct
 @end example
 @comment
 @noindent
-The @var{size} is simply the number of vector elements. The range of
+The @var{size} is simply the number of vector elements.  The range of
 valid indices runs from 0 to @code{size-1}.  The @var{stride} is the
 step-size from one element to the next.  The pointer @var{data} gives
-the location of the first element of the vector in memory. The pointer
+the location of the first element of the vector in memory.  The pointer
 @var{block} stores the location of the memory block owned by the vector
-(if any). This block will be deallocated when the vector is freed.  If
+(if any).  This block will be deallocated when the vector is freed.  If
 the vector is only a view of another object then the pointer @var{block}
 is null.
 
@@ -234,18 +234,18 @@ The functions for allocating and accessing vectors are defined in
 @section Vector allocation
 
 The functions for allocating memory to a vector follow the style of
-@code{malloc} and @code{free}. In addition they also perform their own
-error checking. If there is insufficient memory available to allocate a
+@code{malloc} and @code{free}.  In addition they also perform their own
+error checking.  If there is insufficient memory available to allocate a
 vector then the functions call the GSL error handler (with an error
 number of @code{GSL_ENOMEM}) in addition to returning a null
-pointer. Thus if you use the library error handler to abort your program
+pointer.  Thus if you use the library error handler to abort your program
 then it isn't necessary to check every @code{alloc}.
 
 @deftypefun {gsl_vector *} gsl_vector_alloc (size_t @var{n})
 This function creates a vector of length @var{n}, returning a pointer to
 a newly initialized vector struct. A new block is allocated for the
 elements of the vector, and stored in the @var{block} member of the
-vector struct. The block is ``owned'' by the vector, and will be
+vector struct.  The block is ``owned'' by the vector, and will be
 deallocated when the vector is deallocated.
 @end deftypefun
 
@@ -256,9 +256,9 @@ initializes all the elements of the vector to zero.
 
 @deftypefun {gsl_vector *} gsl_vector_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 This function creates a vector as a slice of an existing block @var{b},
-returning a pointer to a newly initialized vector struct. The start of
+returning a pointer to a newly initialized vector struct.  The start of
 the vector is offset by @var{offset} elements from the start of the
-block. The vector has @var{n} elements, with a step-size of @var{stride}
+block.  The vector has @var{n} elements, with a step-size of @var{stride}
 from one element to the next.  Mathematically, the @var{i}-th element of
 the vector is given by,
 
@@ -273,17 +273,17 @@ A null pointer is returned if the combined parameters
 insufficient memory is available to store the vector.
 
 The vector is only a view of the block @var{b}, and the block is not
-owned by the vector. When the vector is deallocated the block @var{b}
-will continue to exist. This memory can only be deallocated by freeing
-the block itself. Of course, this block should not be deallocated while
+owned by the vector.  When the vector is deallocated the block @var{b}
+will continue to exist.  This memory can only be deallocated by freeing
+the block itself.  Of course, this block should not be deallocated while
 the vector is still in use.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_vector_alloc_from_vector (gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 This function creates a vector as a slice of another vector @var{v},
-returning a pointer to a newly initialized vector struct. The start of
+returning a pointer to a newly initialized vector struct.  The start of
 the new vector is offset by @var{offset} elements from the start of the
-original vector. The new vector has @var{n} elements, with a step-size
+original vector.  The new vector has @var{n} elements, with a step-size
 of @var{stride} from one element to the next in the original vector.
 Mathematically, the @var{i}-th element of the new vector @var{v'} is
 given by,
@@ -299,15 +299,15 @@ A null pointer is returned if the combined parameters
 vector or if insufficient memory is available store the new vector.
 
 The new vector is only a view of the block underlying the original
-vector, @var{v}. The block is not owned by the new vector. When the new
+vector, @var{v}.  The block is not owned by the new vector.  When the new
 vector is deallocated the original vector @var{v} and its block will
-continue to exist. The original memory can only be deallocated by
-freeing the original vector. Of course, the original vector should not
+continue to exist.  The original memory can only be deallocated by
+freeing the original vector.  Of course, the original vector should not
 be deallocated while the new vector is still in use.
 @end deftypefun
 
 @deftypefun void gsl_vector_free (gsl_vector * @var{v})
-This function frees a previously allocated vector @var{v}. If the vector
+This function frees a previously allocated vector @var{v}.  If the vector
 was created using @code{gsl_vector_alloc} then the block underlying the
 vector will also be deallocated.  If the vector has been created from
 another object (using @code{gsl_vector_alloc_from_block} or
@@ -321,17 +321,17 @@ that object and will not be deallocated.
 @cindex range-checking for vectors
 
 Unlike @sc{fortran} compilers, C compilers do not usually provide
-support for range checking of vectors and matrices. However, the
+support for range checking of vectors and matrices.  However, the
 functions @code{gsl_vector_get} and @code{gsl_vector_set} can perform
 range checking for you and report an error if you attempt to access
 elements outside the allowed range.
 
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
-eliminate function-call overhead. If necessary you can turn off range
+eliminate function-call overhead.  If necessary you can turn off range
 checking completely without modifying any source files by recompiling
 your program with the preprocessor definition
-@code{GSL_RANGE_CHECK_OFF}. Provided your compiler supports inline
+@code{GSL_RANGE_CHECK_OFF}.  Provided your compiler supports inline
 functions the effect of turning off range checking is to replace calls
 to @code{gsl_vector_get(v,i)} by @code{v->data[i*v->stride]} and and
 calls to @code{gsl_vector_set(v,i,x)} by @code{v->data[i*v->stride]=x}.
@@ -339,14 +339,14 @@ Thus there should be no performance penalty for using the range checking
 functions when range checking is turned off.
 
 @deftypefun double gsl_vector_get (const gsl_vector * @var{v}, size_t @var{i})
-This function returns the @var{i}-th element of a vector @var{v}. If
+This function returns the @var{i}-th element of a vector @var{v}.  If
 @var{i} lies outside the allowed range of 0 to @var{n-1} then the error
 handler is invoked and 0 is returned.
 @end deftypefun
 
 @deftypefun void gsl_vector_set (gsl_vector * @var{v}, size_t @var{i}, double @var{x})
 This function sets the value of the @var{i}-th element of a vector
-@var{v} to @var{x}. If @var{i} lies outside the allowed range of 0 to
+@var{v} to @var{x}.  If @var{i} lies outside the allowed range of 0 to
 @var{n-1} then the error handler is invoked.
 @end deftypefun
 
@@ -358,18 +358,18 @@ as binary data or formatted text.
 
 @deftypefun int gsl_vector_fwrite (FILE * @var{stream}, const gsl_vector * @var{v})
 This function writes the elements of the vector @var{v} to the stream
-@var{stream} in binary format. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem writing to the file. Since the
+@var{stream} in binary format.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file.  Since the
 data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
 @deftypefun int gsl_vector_fread (FILE * @var{stream}, gsl_vector * @var{v})
 This function reads into the vector @var{v} from the open stream
-@var{stream} in binary format. The vector @var{v} must be preallocated
+@var{stream} in binary format.  The vector @var{v} must be preallocated
 with the correct length since the function uses the size of @var{v} to
-determine how many bytes to read. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem reading from the file. The
+determine how many bytes to read.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.  The
 data is assumed to have been written in the native binary format on the
 same architecture.
 @end deftypefun
@@ -378,14 +378,14 @@ same architecture.
 This function writes the elements of the vector @var{v} line-by-line to
 the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
-floating point numbers and @code{%d} for integers. The function returns
+floating point numbers and @code{%d} for integers.  The function returns
 0 for success and @code{GSL_EFAILED} if there was a problem writing to
 the file.
 @end deftypefun
 
 @deftypefun int gsl_vector_fscanf (FILE * @var{stream}, gsl_vector * @var{v})
 This function reads formatted data from the stream @var{stream} into the
-vector @var{v}. The vector @var{v} must be preallocated with the correct
+vector @var{v}.  The vector @var{v} must be preallocated with the correct
 length since the function uses the size of @var{v} to determine how many
 numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
@@ -396,13 +396,13 @@ numbers to read.  The function returns 0 for success and
 
 Common operations on vectors such as addition and multiplication are
 available in the BLAS part of the library (@pxref{BLAS
-Support}). However, it is useful to have a small number of utility
-functions which do not require the full BLAS code. The following
+Support}).  However, it is useful to have a small number of utility
+functions which do not require the full BLAS code.  The following
 function falls into this category.
 
 @deftypefun int gsl_vector_memcpy (gsl_vector * @var{dest}, const gsl_vector * @var{src})
 This function copies the elements of the vector @var{src} into the
-vector @var{dest}. The two vectors must be the same length.
+vector @var{dest}.  The two vectors must be the same length.
 @end deftypefun
 
 @node Exchanging elements
@@ -453,7 +453,7 @@ int main ()
 @end example
 @comment
 @noindent
-Here is the output from the program. The final loop attempts to read
+Here is the output from the program.  The final loop attempts to read
 outside the range of the vector @code{v}, and the error is trapped by
 the range-checking code in @code{gsl_vector_get}.
 
@@ -493,7 +493,7 @@ int main ()
 @noindent
 After running this program the file @file{test.dat} should contain the
 elements of @code{v}, written using the format specifier
-@code{%.5g}. The vector could then be read back in using the function
+@code{%.5g}.  The vector could then be read back in using the function
 @code{gsl_vector_fscanf (f, v)}.
 
 @node The matrix struct
@@ -504,7 +504,7 @@ elements of @code{v}, written using the format specifier
 @cindex leading dimension, matrices
 
 Matrices are defined by a @code{gsl_matrix} structure which describes a
-generalized slice of a block. Like a vector it represents a @dfn{view}
+generalized slice of a block.  Like a vector it represents a @dfn{view}
 of an area of memory, but uses two indices instead of one.
 
 The @code{gsl_matrix} structure contains five members, the two
@@ -529,9 +529,9 @@ typedef struct
 @noindent
 Matrices are stored in row-major order, meaning that each row of
 elements forms a contiguous block in memory.  The number of rows is
-@var{size1}. The range of valid row indices runs from 0 to
-@code{size1-1}. Similarly @var{size2} is the number of columns. The
-range of valid column indices runs from 0 to @code{size2-1}. The
+@var{size1}.  The range of valid row indices runs from 0 to
+@code{size1-1}.  Similarly @var{size2} is the number of columns.  The
+range of valid column indices runs from 0 to @code{size2-1}.  The
 physical row dimension @var{tda}, or @dfn{trailing dimension}, specifies
 the size of a row of the matrix as laid out in memory.
 
@@ -548,8 +548,8 @@ in turn.
 @noindent
 Each unused memory location is represented by ``@code{..}''.  The
 pointer @var{data} gives the location of the first element of the matrix
-in memory. The pointer @var{block} stores the location of the memory
-block owned by the matrix (if any). This block will be deallocated when
+in memory.  The pointer @var{block} stores the location of the memory
+block owned by the matrix (if any).  This block will be deallocated when
 the matrix is freed.  If the matrix is only a view of another object
 then the pointer @var{block} is null.
 
@@ -561,9 +561,9 @@ The functions for allocating and accessing matrices are defined in
 
 The functions for allocating memory to a matrix follow the style of
 @code{malloc} and @code{free}.  They also perform their own error
-checking. If there is insufficient memory available to allocate a vector
+checking.  If there is insufficient memory available to allocate a vector
 then the functions call the GSL error handler (with an error number of
-@code{GSL_ENOMEM}) in addition to returning a null pointer. Thus if you
+@code{GSL_ENOMEM}) in addition to returning a null pointer.  Thus if you
 use the library error handler to abort your program then it isn't
 necessary to check every @code{alloc}.
 
@@ -571,7 +571,7 @@ necessary to check every @code{alloc}.
 This function creates a matrix of size @var{n1} rows by @var{n2}
 columns, returning a pointer to a newly initialized matrix struct. A new
 block is allocated for the elements of the matrix, and stored in the
-@var{block} member of the matrix struct. The block is ``owned'' by the
+@var{block} member of the matrix struct.  The block is ``owned'' by the
 matrix, and will be deallocated when the matrix is deallocated.
 @end deftypefun
 
@@ -582,9 +582,9 @@ This function allocates memory for a matrix of size @var{n1} rows by
 
 @deftypefun {gsl_matrix *} gsl_matrix_alloc_from_block (gsl_block * @var{b}, size_t @var{offset}, size_t @var{n1}, size_t @var{n2}, size_t @var{tda})
 This function creates a matrix as a slice of the block @var{b},
-returning a pointer to a newly initialized matrix struct. The start of
+returning a pointer to a newly initialized matrix struct.  The start of
 the matrix is offset by @var{offset} elements from the start of the
-block. The matrix has @var{n1} rows and @var{n2} columns, with the
+block.  The matrix has @var{n1} rows and @var{n2} columns, with the
 physical number of columns in memory given by @var{tda}.
 Mathematically, the (@var{i},@var{j})-th element of the matrix is given by,
 
@@ -600,18 +600,18 @@ A null pointer is returned if the combined parameters
 or if insufficient memory is available to store the matrix.
 
 The matrix is only a view of the block @var{b}, and the block is not
-owned by the matrix. When the matrix is deallocated the block @var{b}
-will continue to exist. This memory can only be deallocated by freeing
-the block itself. Of course, this block should not be deallocated while
+owned by the matrix.  When the matrix is deallocated the block @var{b}
+will continue to exist.  This memory can only be deallocated by freeing
+the block itself.  Of course, this block should not be deallocated while
 the matrix is still in use.
 @end deftypefun
 
 @deftypefun {gsl_matrix *} gsl_matrix_alloc_from_matrix (gsl_matrix * @var{m}, size_t @var{k1}, size_t @var{k2}, size_t @var{n1}, size_t @var{n2})
 
 This function creates a matrix as a submatrix of the matrix @var{m},
-returning a pointer to a newly initialized matrix struct. The upper-left
+returning a pointer to a newly initialized matrix struct.  The upper-left
 element of the submatrix is the element (@var{k1},@var{k2}) of the
-original matrix. The submatrix has @var{n1} rows and @var{n2} columns.
+original matrix.  The submatrix has @var{n1} rows and @var{n2} columns.
 The physical number of columns in memory given by @var{tda} is
 unchanged.  Mathematically, the (@var{i},@var{j})-th element of the
 new matrix is given by,
@@ -628,15 +628,15 @@ A null pointer is returned if the combined parameters
 original matrix or if insufficient memory is available to store the matrix.
 
 The new matrix is only a view of the block underlying the existing
-matrix, @var{m}. The block is not owned by the new matrix. When the new
+matrix, @var{m}.  The block is not owned by the new matrix.  When the new
 matrix is deallocated the original matrix @var{m} and its block will
-continue to exist. The original memory can only be deallocated by
-freeing the original matrix. Of course, the original matrix should not
+continue to exist.  The original memory can only be deallocated by
+freeing the original matrix.  Of course, the original matrix should not
 be deallocated while the new matrix is still in use.
 @end deftypefun
 
 @deftypefun void gsl_matrix_free (gsl_matrix * @var{m})
-This function frees a previously allocated matrix @var{m}. If the matrix
+This function frees a previously allocated matrix @var{m}.  If the matrix
 was created using @code{gsl_matrix_alloc} then the block underlying the
 matrix will also be deallocated.  If the matrix has been created from
 another object (using @code{gsl_matrix_alloc_from_block} or
@@ -650,12 +650,12 @@ that object and will not be deallocated.
 @cindex range-checking for matrices
 
 The functions for accessing the elements of a matrix use the same range
-checking system as vectors. You turn off range checking by recompiling
+checking system as vectors.  You turn off range checking by recompiling
 your program with the preprocessor definition
 @code{GSL_RANGE_CHECK_OFF}.
 
 The elements of the matrix are stored in "C-order", where the second
-index moves continuously through memory. More precisely, the element
+index moves continuously through memory.  More precisely, the element
 accessed by the function @code{gsl_matrix_get(m,i,j)} and
 @code{gsl_matrix_set(m,i,j,x)} is 
 
@@ -668,14 +668,14 @@ where @var{tda} is the physical row-length of the matrix.
 
 @deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 These functions return the (@var{i},@var{j})th element of a matrix
-@var{m}. If @var{i} or @var{j} lie outside the allowed range of 0 to
+@var{m}.  If @var{i} or @var{j} lie outside the allowed range of 0 to
 @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
 is returned.
 @end deftypefun
 
 @deftypefun void gsl_matrix_set (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, double @var{x})
 These functions set the value of the (@var{i},@var{j})th element of a
-matrix @var{m} to @var{x}. If @var{i} or @var{j} lies outside the
+matrix @var{m} to @var{x}.  If @var{i} or @var{j} lies outside the
 allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
 handler is invoked.
 @end deftypefun
@@ -688,18 +688,18 @@ as binary data or formatted text.
 
 @deftypefun int gsl_matrix_fwrite (FILE * @var{stream}, const gsl_matrix * @var{m})
 This function writes the elements of the matrix @var{m} to the stream
-@var{stream} in binary format. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem writing to the file. Since the
+@var{stream} in binary format.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file.  Since the
 data is written in the native binary format it may not be portable
 between different architectures.
 @end deftypefun
 
 @deftypefun int gsl_matrix_fread (FILE * @var{stream}, gsl_matrix * @var{m})
 This function reads into the matrix @var{m} from the open stream
-@var{stream} in binary format. The matrix @var{m} must be preallocated
+@var{stream} in binary format.  The matrix @var{m} must be preallocated
 with the correct length since the function uses the size of @var{m} to
-determine how many bytes to read. The return value is 0 for success and
-@code{GSL_EFAILED} if there was a problem reading from the file. The
+determine how many bytes to read.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.  The
 data is assumed to have been written in the native binary format on the
 same architecture.
 @end deftypefun
@@ -708,14 +708,14 @@ same architecture.
 This function writes the elements of the matrix @var{m} line-by-line to
 the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
-floating point numbers and @code{%d} for integers. The function returns
+floating point numbers and @code{%d} for integers.  The function returns
 0 for success and @code{GSL_EFAILED} if there was a problem writing to
 the file.
 @end deftypefun
 
 @deftypefun int gsl_matrix_fscanf (FILE * @var{stream}, gsl_matrix * @var{m})
 This function reads formatted data from the stream @var{stream} into the
-matrix @var{m}. The matrix @var{m} must be preallocated with the correct
+matrix @var{m}.  The matrix @var{m} must be preallocated with the correct
 length since the function uses the size of @var{m} to determine how many
 numbers to read.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem reading from the file.
@@ -725,8 +725,8 @@ numbers to read.  The function returns 0 for success and
 @section Slicing rows and columns
 
 In general there are two ways to access an object, by reference or by
-copying. The functions described in this section create vectors which
-allow access to a row or column of a matrix by reference. Modifying
+copying.  The functions described in this section create vectors which
+allow access to a row or column of a matrix by reference.  Modifying
 elements of the vector is equivalent to modifying the matrix, since both
 the vector and the matrix point to the same memory block.
 
@@ -745,44 +745,44 @@ the @var{j}-th column of the matrix @var{m}.
 
 Common operations on matrices such as addition and multiplication are
 available in the BLAS part of the library (@pxref{BLAS
-Support}). However, it is useful to have a small number of utility
-functions which do not require the full BLAS code. The following
+Support}).  However, it is useful to have a small number of utility
+functions which do not require the full BLAS code.  The following
 function falls into this category.
 
 @deftypefun int gsl_matrix_memcpy (gsl_matrix * @var{dest}, const gsl_matrix * @var{src})
 This function copies the elements of the matrix @var{src} into the
-matrix @var{dest}. The two matrix must have the same size.
+matrix @var{dest}.  The two matrix must have the same size.
 @end deftypefun
 
 @node Copying rows and columns
 @section Copying rows and columns
 
 The functions described in this section copy a row or column of a matrix
-into a vector. This allows the elements of the vector and the matrix to
-be modified independently. Note that if the matrix and the vector point
+into a vector.  This allows the elements of the vector and the matrix to
+be modified independently.  Note that if the matrix and the vector point
 to overlapping regions of memory then the result will be undefined.
 
 @deftypefun int gsl_matrix_get_row (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{i})
 This function copies the elements of the @var{i}-th row of the matrix
-@var{m} into the vector @var{v}. The length of the vector must be the
+@var{m} into the vector @var{v}.  The length of the vector must be the
 same as the length of the row.
 @end deftypefun
 
 @deftypefun int gsl_matrix_get_col (gsl_vector * @var{v}, const gsl_matrix * @var{m}, size_t @var{j})
 This function copies the elements of the @var{i}-th column of the matrix
-@var{m} into the vector @var{v}. The length of the vector must be the
+@var{m} into the vector @var{v}.  The length of the vector must be the
 same as the length of the column.
 @end deftypefun
 
 @deftypefun int gsl_matrix_set_row (gsl_matrix * @var{m}, size_t @var{i}, const gsl_vector * @var{v})
 This function copies the elements of the vector @var{v} into the
-@var{i}-th row of the matrix @var{m}. The length of the vector must be
+@var{i}-th row of the matrix @var{m}.  The length of the vector must be
 the same as the length of the row.
 @end deftypefun
 
 @deftypefun int gsl_matrix_set_col (gsl_matrix * @var{m}, size_t @var{j}, const gsl_vector * @var{v})
 This function copies the elements of the vector @var{v} into the
-@var{i}-th column of the matrix @var{m}. The length of the vector must be
+@var{i}-th column of the matrix @var{m}.  The length of the vector must be
 the same as the length of the column.
 @end deftypefun
 
@@ -804,7 +804,7 @@ matrix @var{m} in-place.
 
 @deftypefun int gsl_matrix_swap_rowcol (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 This function exchanges the @var{i}-th row and @var{j}-th column of the
-matrix @var{m} in-place. The matrix must be square for this operation to
+matrix @var{m} in-place.  The matrix must be square for this operation to
 be possible.
 @end deftypefun
 
@@ -835,7 +835,7 @@ int main ()
 @end example
 @comment
 @noindent
-Here is the output from the program. The final loop attempts to read
+Here is the output from the program.  The final loop attempts to read
 outside the range of the matrix @code{m}, and the error is trapped by
 the range-checking code in @code{gsl_matrix_get}.
 
@@ -893,6 +893,6 @@ int main ()
 @comment
 @noindent
 After running this program the file @file{test.dat} should contain the
-elements of @code{m}, written in binary format. The matrix which is read
+elements of @code{m}, written in binary format.  The matrix which is read
 back in using the function @code{gsl_matrix_fread} should be exactly
 equal to the original matrix.

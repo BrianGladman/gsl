@@ -9,7 +9,7 @@ The Chebyshev polynomials
 orthogonal basis of polynomials on the interval @math{[-1,1]},
 with the weight function 
 @c{$1 \over \sqrt{1-x^2}$}
-@math{1 \over \sqrt@{1-x^2@}}. The first few such
+@math{1 \over \sqrt@{1-x^2@}}.  The first few such
 polynomials are
 
 @tex
@@ -45,11 +45,11 @@ typedef struct
   double * ci;  /* coefficients of integral    */
 
   /* The following exists (mostly) for the benefit
-   * of the implementation. It is an effective single
+   * of the implementation.  It is an effective single
    * precision order, for use in single precision
-   * evaluation. Users can use it if they like, but
+   * evaluation.  Users can use it if they like, but
    * only they know how to calculate it, since it is
-   * specific to the approximated function. By default,
+   * specific to the approximated function.  By default,
    * order_sp = order.
    * It is used explicitly only by the gsl_sf_cheb_eval_mode
    * functions, which are not meant for casual use.
@@ -75,7 +75,7 @@ Return 0 on failure.
 @deftypefun  int gsl_sf_cheb_calc_impl (gsl_sf_cheb_series * cs, double (*func)(double))
 @deftypefunx int gsl_sf_cheb_calc_e (gsl_sf_cheb_series * cs, double (*func)(double))
 Calculate a Chebyshev series, but do not allocate
-a new cheb_series struct. Instead use the one provided.
+a new cheb_series struct.  Instead use the one provided.
 Uses the interval (a,b) and the order with which it
 was initially created; if you want to change these, then
 use gsl_sf_cheb_new() instead.
@@ -119,7 +119,7 @@ Evaluate derivative of a Chebyshev series at a given point.
 
 @deftypefun  int gsl_sf_cheb_eval_integ_impl (gsl_sf_cheb_series * cs, double x, gsl_sf_result * result)
 @deftypefunx int gsl_sf_cheb_eval_integ_e (gsl_sf_cheb_series * cs, double x, gsl_sf_result * result)
-Evaluate integal of a Chebyshev series at a given point. The
+Evaluate integal of a Chebyshev series at a given point.  The
 integral is fixed by the condition that it equals zero at
 the left end-point, i.e. it is precisely
 @math{ \int_a^x dt cs(t; a,b) }.

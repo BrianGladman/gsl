@@ -6,16 +6,16 @@
 
 This chapter describes functions for finding minima of arbitrary
 one-dimensional functions.  The library provides low level components
-for a variety of iterative minimizers and convergence tests. These can be
+for a variety of iterative minimizers and convergence tests.  These can be
 combined by the user to achieve the desired solution, with full access
-to the intermediate steps of the algorithms. Each class of methods uses
+to the intermediate steps of the algorithms.  Each class of methods uses
 the same framework, so that you can switch between minimizers at runtime
-without needing to recompile your program. Each instance of a minimizer
+without needing to recompile your program.  Each instance of a minimizer
 keeps track of its own state, allowing the minimizers to be used in
 multi-threaded programs.
 
 The header file @file{gsl_min.h} contains prototypes for the
-minimization functions and related declarations. To use the minimization
+minimization functions and related declarations.  To use the minimization
 algorithms to find the maximum of a function simply invert its sign.
 
 @menu
@@ -35,7 +35,7 @@ algorithms to find the maximum of a function simply invert its sign.
 @cindex minimization, overview
 
 The minimization algorithms begin with a bounded region known to contain
-a minimum. The region is described by an lower bound @math{a} and an
+a minimum.  The region is described by an lower bound @math{a} and an
 upper bound @math{b}, with an estimate of the minimum @math{x}.
 
 @iftex
@@ -60,20 +60,20 @@ f(a) > f(x) < f(b)
 
 @noindent
 This condition guarantees that a minimum is contained somewhere within
-the interval. On each iteration a new point @math{x'} is selected using
+the interval.  On each iteration a new point @math{x'} is selected using
 one of the available algorithms.  If the new point is a better estimate
 of the minimum, @math{f(x') < f(x)}, then the current estimate of the
 minimum @math{x} is updated.  The new point also allows the size of the
 bounded interval to be reduced, by choosing the most compact set of
 points which satisfies the constraint @math{f(a) > f(x) < f(b)}.  The
 interval is reduced until it encloses the true minimum to a desired
-tolerance. This provides a best estimate of the location of the minimum
+tolerance.  This provides a best estimate of the location of the minimum
 and a rigorous error estimate.
 
 In GSL different bracketing algorithms are available in a similar
-framework. The user provides a high-level driver for the algorithms, and
+framework.  The user provides a high-level driver for the algorithms, and
 the library provides the individual functions necessary for each of the
-steps.  There are three main phases of the iteration. The steps are,
+steps.  There are three main phases of the iteration.  The steps are,
 
 @itemize @bullet
 @item
@@ -88,7 +88,7 @@ test @var{s} for convergence, and repeat iteration if necessary
 
 @noindent
 The state for the minimizers is held in a @code{gsl_min_fminimizer}
-struct. The updating procedure uses only function evaluations (not
+struct.  The updating procedure uses only function evaluations (not
 derivatives).
 
 @node Minimization Caveats
@@ -103,7 +103,7 @@ reported if you try to find a minimum in an area where there is more
 than one.}
 
 With all minimization algorithms it can be difficult to determine the
-location of the minimum to full numerical precision. The behavior of the
+location of the minimum to full numerical precision.  The behavior of the
 function in the region of the minimum @math{x^*} can be approximated by
 a Taylor expansion,
 
@@ -122,11 +122,11 @@ y = f(x^*) + (1/2) f''(x^*) (x - x^*)^2
 
 @noindent
 and the second term of this expansion can be lost when added to the
-first term at finite precision. This magnifies the error in locating
+first term at finite precision.  This magnifies the error in locating
 @math{x^*}, making it proportional to @math{\sqrt \epsilon} (where
 @math{\epsilon} is the relative accuracy of the floating point numbers).
 For functions with higher order minima, such as @math{x^4}, the
-magnification of the error is correspondingly worse. The best that can
+magnification of the error is correspondingly worse.  The best that can
 be achieved is to converge to the limit of numerical accuracy in the
 function values, rather than the location of the minimum itself.
 
@@ -137,7 +137,7 @@ function values, rather than the location of the minimum itself.
 This function returns a pointer to a a newly allocated instance of a
 minimizer of type @var{T} for the function @var{f}, with an
 initial bracket on the minimum of @var{x} containing a guess for the
-location of the minimum @var{minimum}. For example, the following code
+location of the minimum @var{minimum}.  For example, the following code
 creates an instance of a golden section minimizer,
 
 @example
@@ -175,7 +175,7 @@ This function frees all the memory associated with the minimizer
 @end deftypefun
 
 @deftypefun {const char *} gsl_min_fminimizer_name (const gsl_min_fminimizer * @var{s})
-This function returns a pointer to the name of the minimizer. For example,
+This function returns a pointer to the name of the minimizer.  For example,
 
 @example
 printf("s is a '%s' minimizer\n", gsl_min_fminimizer_name (s)) ;
@@ -190,21 +190,21 @@ would print something like @code{s is a 'brent' minimizer}
 @cindex minimization, providing a function to minimize
 
 You must provide a continuous function of one variable for the
-minimizers to operate on. In order to allow for general parameters the
+minimizers to operate on.  In order to allow for general parameters the
 functions are defined by a @code{gsl_function} data type
 (@pxref{Providing the function to solve}).
 
 @node Minimization Iteration
 @section Iteration
 
-The following functions drive the iteration of each algorithm. Each
+The following functions drive the iteration of each algorithm.  Each
 function performs one iteration to update the state of any minimizer of the
-corresponding type. The same functions work for all minimizers so that
+corresponding type.  The same functions work for all minimizers so that
 different methods can be substituted at runtime without modifications to
 the code.
 
 @deftypefun int gsl_min_fminimizer_iterate (gsl_min_fminimizer * @var{s})
-This function performs a single iteration of the minimizer @var{s}. If the
+This function performs a single iteration of the minimizer @var{s}.  If the
 iteration encounters an unexpected problem then an error code will be
 returned,
 
@@ -220,7 +220,7 @@ bounding interval.
 @end deftypefun
 
 The minimizer maintains a current best estimate of the minimum at all
-times, and the current interval bounding the minimum. This information
+times, and the current interval bounding the minimum.  This information
 can be accessed with the following auxiliary functions,
 
 @deftypefun double gsl_min_fminimizer_minimum (const gsl_min_fminimizer * @var{s})
@@ -277,7 +277,7 @@ $$
 @noindent
 when the interval @math{x = [a,b]} does not include the origin.  If the
 interval includes the origin then @math{\min(|a|,|b|)} is replaced by
-zero (which is the minimum value of @math{|x|} over the interval). This
+zero (which is the minimum value of @math{|x|} over the interval).  This
 ensures that the relative error is accurately estimated for minima close
 to the origin.
 
@@ -309,8 +309,8 @@ assuming that the true minimum @math{x_m^*} is contained within the interval.
 The minimization algorithms described in this section require an initial
 interval which is guaranteed to contain a minimum --- if @math{a} and
 @math{b} are the endpoints of the interval and @math{x} is an estimate
-of the minimum then @math{f(a) > f(x) < f(b)}. This ensures that the
-function has at least one minimum somewhere in the interval. If a valid
+of the minimum then @math{f(a) > f(x) < f(b)}.  This ensures that the
+function has at least one minimum somewhere in the interval.  If a valid
 initial interval is used then these algorithm cannot fail, provided the
 function is well-behaved.
 
@@ -324,12 +324,12 @@ the minimum of a function.  It is the slowest algorithm provided by the
 library, with linear convergence.
 
 On each iteration, the algorithm first compares the subintervals from
-the endpoints to the current minimum. The larger subinterval is divided
+the endpoints to the current minimum.  The larger subinterval is divided
 in a golden section (using the famous ratio @math{(3-\sqrt 5)/2}) and
-the value of the function at this new point is calculated. The new value
+the value of the function at this new point is calculated.  The new value
 is used with the constraint @math{f(a') > f(x') < f(b')} to a select new
 interval containing the minimum, by discarding the least useful
-point. This procedure can be continued indefinitely until the interval
+point.  This procedure can be continued indefinitely until the interval
 is sufficiently small.  Choosing the golden section as the bisection
 ratio can be shown to provide the fastest convergence for this type of
 algorithm.
@@ -343,17 +343,17 @@ algorithm.
 @cindex minimum finding, brent's method
 
 The @dfn{Brent minimization algorithm} combines a parabolic
-interpolation with the golden section algorithm. This produces a fast
+interpolation with the golden section algorithm.  This produces a fast
 algorithm which is still robust.
 
 The outline of the algorithm can be summarized as follows: on each
 iteration Brent's method approximates the function using an
-interpolating parabola through three existing points. The minimum of the
+interpolating parabola through three existing points.  The minimum of the
 parabola is taken as a guess for the minimum.  If it lies within the
 bounds of the current interval then the interpolating point is accepted,
-and used to generate a smaller interval. If the interpolating point is
+and used to generate a smaller interval.  If the interpolating point is
 not accepted then the algorithm falls back to an ordinary golden section
-step. The full details of Brent's method include some additional checks
+step.  The full details of Brent's method include some additional checks
 to improve convergence.
 @end deffn
 

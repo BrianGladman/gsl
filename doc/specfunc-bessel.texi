@@ -385,9 +385,9 @@ Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @deftypefun  int gsl_sf_bessel_sequence_Jnu_impl (double nu, gsl_mode_t mode, size_t size, double * v)
 @deftypefunx int gsl_sf_bessel_sequence_Jnu_e (double nu, gsl_mode_t mode, size_t size, double * v)
 Regular cylindrical Bessel function J_nu(x)
-evaluated at a series of x values. The array
-contains the x values. They are assumed to be
-strictly ordered and positive. The array is
+evaluated at a series of x values.  The array
+contains the x values.  They are assumed to be
+strictly ordered and positive.  The array is
 over-written with the values of J_nu(x_i). 
 Exceptional Return Values: GSL_EDOM, GSL_EINVAL
 @end deftypefun

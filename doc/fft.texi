@@ -5,11 +5,11 @@
 @cindex DFTs, see FFT
 
 This chapter describes functions for performing Fast Fourier Transforms
-(FFTs). The library includes radix-2 routines (for lengths which are a
-power of two) and mixed-radix routines (which work for any length). For
+(FFTs).  The library includes radix-2 routines (for lengths which are a
+power of two) and mixed-radix routines (which work for any length).  For
 efficiency there are separate versions of the routines for real data and
-for complex data. The mixed-radix routines are a reimplementation of the
-FFTPACK library by Paul Swarztrauber. Fortran code for FFTPACK is
+for complex data.  The mixed-radix routines are a reimplementation of the
+FFTPACK library by Paul Swarztrauber.  Fortran code for FFTPACK is
 available on Netlib (FFTPACK also includes some routines for sine and
 cosine transforms but these are currently not available in GSL).  For
 details and derivations of the underlying algorithms consult the
@@ -48,14 +48,14 @@ x_j = \sum_@{k=0@}^@{N-1@} z_k \exp(-2\pi i j k / N)
 
 The DFT usually arises as an approximation to the continuous fourier
 transform when functions are sampled at discrete intervals in space or
-time. The naive evaluation of the discrete fourier transform is a
+time.  The naive evaluation of the discrete fourier transform is a
 matrix-vector multiplication 
 @c{$W\vec{z}$}
 @math{W\vec@{z@}}. A general matrix-vector
 multiplication takes 
 @c{$O(N^2)$}
 @math{O(N^2)} operations for @math{N}
-data-points. Fast fourier transform algorithms use a divide-and-conquer
+data-points.  Fast fourier transform algorithms use a divide-and-conquer
 strategy to factorize the matrix @math{W} into smaller sub-matrices,
 corresponding to the integer factors of the length @math{N}.  If
 @math{N} can be factorized into a product of integers 
@@ -63,12 +63,12 @@ corresponding to the integer factors of the length @math{N}.  If
 @math{f_1 f_2 ... f_n} then the DFT can be computed in 
 @c{$O(N \sum f_i)$}
 @math{O(N \sum f_i)}
-operations. For a radix-2 FFT this gives an operation count of
+operations.  For a radix-2 FFT this gives an operation count of
 @c{$O(N \log_2 N)$}
 @math{O(N \log_2 N)}.
 
 All the FFT functions offer three types of transform: forwards, inverse
-and backwards, based on the same mathematical definitions. The
+and backwards, based on the same mathematical definitions.  The
 definition of the @dfn{forward fourier transform},
 @c{$x = \hbox{FFT}(z)$}
 @math{x = FFT(z)}, is,
@@ -105,7 +105,7 @@ z_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} x_k \exp(2\pi i j k / N).
 @end ifinfo
 
 @noindent
-The factor of @math{1/N} makes this a true inverse. For example, a call
+The factor of @math{1/N} makes this a true inverse.  For example, a call
 to @code{gsl_fft_complex_forward} followed by a call to
 @code{gsl_fft_complex_inverse} should return the original data (within
 numerical errors).
@@ -113,9 +113,9 @@ numerical errors).
 In general there are two possible choices for the sign of the
 exponential in the transform/ inverse-transform pair. GSL follows the
 same convention as FFTPACK, using a negative exponential for the forward
-transform. The advantage of this convention is that the inverse
+transform.  The advantage of this convention is that the inverse
 transform recreates the original function with simple fourier
-synthesis. Numerical Recipes uses the opposite convention, a positive
+synthesis.  Numerical Recipes uses the opposite convention, a positive
 exponential in the forward transform.
 
 The @dfn{backwards FFT} is simply our terminology for an unscaled
@@ -144,9 +144,9 @@ unnecessary divisions.
 @cindex FFT, complex data
 
 The inputs and outputs for the complex FFT routines are @dfn{packed
-arrays} of floating point numbers. In a packed array the real and
+arrays} of floating point numbers.  In a packed array the real and
 imaginary parts of each complex number are placed in alternate
-neighboring elements. For example, the following definition of a packed
+neighboring elements.  For example, the following definition of a packed
 array of length 6,
 
 @example
@@ -179,7 +179,7 @@ the data.
 
 For physical applications it is important to remember that the index
 appearing in the DFT does not correspond directly to a physical
-frequency. If the time-step of the DFT is 
+frequency.  If the time-step of the DFT is 
 @c{$\Delta$}
 @math{\Delta} then the
 frequency-domain includes both positive and negative frequencies,
@@ -217,7 +217,7 @@ and negative frequencies
 @math{+1/(2 \Delta)},
 @c{$-1/(2 \Delta)$}
 @math{-1/(2 \Delta)})
-which are equivalent. If @math{N} is odd then general structure of the
+which are equivalent.  If @math{N} is odd then general structure of the
 table above still applies, but @math{N/2} does not appear.
 
 
@@ -227,7 +227,7 @@ table above still applies, but @math{N/2} does not appear.
 @cindex Radix-2 FFT, complex data
 
 The radix-2 algorithms described in this section are simple and compact,
-although not necessarily the most efficient. They use the Cooley-Tukey
+although not necessarily the most efficient.  They use the Cooley-Tukey
 algorithm to compute in-place complex FFTs for lengths which are a power
 of 2 --- no additional storage is required.  The corresponding
 self-sorting mixed-radix routines offer better performance at the
@@ -243,7 +243,7 @@ All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
 These functions compute forward, backward and inverse FFTs of length
 @var{n} with stride @var{stride}, on the packed complex array @var{data}
-using an in-place radix-2 decimation-in-time algorithm. The length of
+using an in-place radix-2 decimation-in-time algorithm.  The length of
 the transform @var{n} is restricted to powers of two.
 
 The functions return a value of @code{GSL_SUCCESS} if no errors were
@@ -272,7 +272,7 @@ These are decimation-in-frequency versions of the radix-2 FFT functions.
 @comment @subsection Example of using radix-2 FFT routines for complex data
 
 Here is an example program which computes the FFT of a short pulse in a
-sample of length 128. To make the resulting fourier transform real the
+sample of length 128.  To make the resulting fourier transform real the
 pulse is defined for equal positive and negative times (@math{-10}
 @dots{} @math{10}) (the negative times wrap around the end of the
 array).
@@ -338,8 +338,8 @@ the example program.
 
 @noindent
 The transformed data is rescaled by @math{1/\sqrt N} so that it fits on
-the same plot as the input. Only the real part is shown, by the choice
-of the input data the imaginary part is zero. Allowing for the
+the same plot as the input.  Only the real part is shown, by the choice
+of the input data the imaginary part is zero.  Allowing for the
 wrap-around of negative times at @math{t=128}, and working in units of 
 @math{k/N}, the DFT approximates the continuum fourier transform of a modulated
 @math{\sin} function,
@@ -359,15 +359,15 @@ $$
 @cindex Mixed-radix FFT, complex data
 
 This section describes mixed-radix FFT algorithms for complex data.  The
-mixed-radix functions work for FFTs of any length. They are a
+mixed-radix functions work for FFTs of any length.  They are a
 reimplementation of the Fortran FFTPACK library by Paul
-Swarztrauber. The theory is explained in the review article
-@cite{Self-sorting Mixed-radix FFTs} by Clive Temperton. The routines
+Swarztrauber.  The theory is explained in the review article
+@cite{Self-sorting Mixed-radix FFTs} by Clive Temperton.  The routines
 here use the same indexing scheme and basic algorithms as FFTPACK.
 
 The mixed-radix algorithm is based on sub-transform modules -- highly
 optimized small length FFTs which are combined to create larger FFTs.
-There are efficient modules for factors of 2, 3, 4, 5, 6 and 7. The
+There are efficient modules for factors of 2, 3, 4, 5, 6 and 7.  The
 modules for the composite factors of 4 and 6 are faster than combining
 the modules for @math{2*2} and @math{2*3}.
 
@@ -376,10 +376,10 @@ a general length-@math{n} module which uses Singleton's method for
 efficiently computing a DFT. This module is 
 @c{$O(n^2)$}
 @math{O(n^2)}, and slower
-than a dedicated module would be but works for any length @math{n}. Of
+than a dedicated module would be but works for any length @math{n}.  Of
 course, lengths which use the general length-@math{n} module will still
-be factorized as much as possible. For example, a length of 143 will be
-factorized into @math{11*13}. Large prime factors are the worst case
+be factorized as much as possible.  For example, a length of 143 will be
+factorized into @math{11*13}.  Large prime factors are the worst case
 scenario, e.g. as found in 
 @c{$n=2*3*99991$}
 @math{n=2*3*99991}, and should be avoided
@@ -390,28 +390,28 @@ because their
 
 The mixed-radix initialization function @code{gsl_fft_complex_init}
 returns the list of factors chosen by the library for a given length
-@math{N}. It can be used to check how well the length has been
-factorized, and estimate the run-time. To a first approximation the
+@math{N}.  It can be used to check how well the length has been
+factorized, and estimate the run-time.  To a first approximation the
 run-time scales as 
 @c{$N \sum f_i$}
 @math{N \sum f_i}, where the 
 @c{$f_i$}
 @math{f_i} are the
-factors of @math{N}. For programs under user control you may wish to
+factors of @math{N}.  For programs under user control you may wish to
 issue a warning that the transform will be slow when the length is
-poorly factorized. If you frequently encounter data lengths which cannot
+poorly factorized.  If you frequently encounter data lengths which cannot
 be factorized using the existing small-prime modules consult @cite{GSL
 FFT Algorithms} for details on adding support for other factors.
 
 @comment First, the space for the trigonometric lookup tables and scratch area is
-@comment allocated by a call to one of the @code{wavetable_alloc} functions. We
+@comment allocated by a call to one of the @code{wavetable_alloc} functions.  We
 @comment call the combination of factorization, scratch space and trigonometric
-@comment lookup arrays a @dfn{wavetable}. It contains the sine and cosine
+@comment lookup arrays a @dfn{wavetable}.  It contains the sine and cosine
 @comment waveforms for the all the frequencies that will be used in the FFT.
 
 @comment The wavetable is initialized by a call to the corresponding @code{init}
-@comment function. It factorizes the data length, using the implemented
-@comment subtransforms as preferred factors wherever possible. The trigonometric
+@comment function.  It factorizes the data length, using the implemented
+@comment subtransforms as preferred factors wherever possible.  The trigonometric
 @comment lookup table for the chosen factorization is also computed.
 
 @comment An FFT is computed by a call to one of the @code{forward},
@@ -424,12 +424,12 @@ All these functions are declared in the header file @file{gsl_fft_complex.h}.
 
 This function allocates space for a @code{gsl_fft_complex_wavetable}
 struct, and a scratch area and trigonometric lookup table, both of size
-@var{n} complex elements. The relevant components of the wavetable are
+@var{n} complex elements.  The relevant components of the wavetable are
 initialized to point to the newly allocated memory.
 
 The function returns a pointer to the newly allocated
 @code{gsl_fft_complex_wavetable} if no errors were detected, and 0 in
-the case of error. The following @code{gsl_errno} conditions are defined
+the case of error.  The following @code{gsl_errno} conditions are defined
 for this function:
 
 @table @code
@@ -445,25 +445,25 @@ a null pointer).
 
 @deftypefun int gsl_fft_complex_init (size_t @var{n}, gsl_fft_complex_wavetable * @var{wavetable});
 
-This function initializes @var{wavetable}. It selects a factorization of
+This function initializes @var{wavetable}.  It selects a factorization of
 the length @var{n} into the implemented subtransforms, storing the
-details of the factorization in @var{wavetable}. Using this
+details of the factorization in @var{wavetable}.  Using this
 factorization it then prepares a trigonometric lookup table in the
 memory previously allocated by @code{gsl_fft_complex_wavetable_alloc}.
 
 The wavetable is computed using direct calls to @code{sin} and
-@code{cos}, for accuracy. It could be computed faster using recursion
-relations if necessary. If an application performs many FFTs of the same
+@code{cos}, for accuracy.  It could be computed faster using recursion
+relations if necessary.  If an application performs many FFTs of the same
 length then computing the wavetable is a one-off overhead which does not
 affect the final throughput.
 
 The wavetable structure can be used repeatedly for any transform of the
-same length. The table is not modified by calls to any of the other FFT
-functions. The same wavetable can be used for both forward and backward
+same length.  The table is not modified by calls to any of the other FFT
+functions.  The same wavetable can be used for both forward and backward
 (or inverse) transforms of a given length.
 
 The function returns a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
+and @code{-1} in the case of error.  The following @code{gsl_errno}
 conditions are defined for this function:
 
 @table @code
@@ -474,7 +474,7 @@ The length of the data @var{n} is not a positive integer (i.e. @var{n} is zero).
 The length @var{n} could not be factorized (this shouldn't happen).
 
 @item GSL_EFAILED
-A failure was detected in the wavetable generation. This could be caused
+A failure was detected in the wavetable generation.  This could be caused
 by an inconsistency in a user-supplied @var{wavetable} structure.
 @end table
 
@@ -492,23 +492,23 @@ be needed.
 
 The functions @code{gsl_fft_complex_init},
 @code{gsl_fft_wavetable_alloc} and @code{gsl_fft_wavetable_free} all
-operate on a structure @code{gsl_fft_complex_wavetable}. This structure
+operate on a structure @code{gsl_fft_complex_wavetable}.  This structure
 contains internal parameters for the FFT. 
 
 It is not necessary to set any of the members directly except for
 advanced usage.  However, it can useful to examine the wavetable
-returned by @code{gsl_fft_complex_init}. For example, the factorization
+returned by @code{gsl_fft_complex_init}.  For example, the factorization
 chosen by @code{gsl_fft_complex_init} is given and can be used to
 provide an estimate of the run-time or numerical error.
 
-Here is the wavetable structure. It is declared in the header file
+Here is the wavetable structure.  It is declared in the header file
 @file{gsl_fft_complex.h}.
 
 @deftp {Data Type} gsl_fft_complex_wavetable
 
 This is a structure that holds the factorization and pointers to the
 scratch area and trigonometric lookup tables for the mixed radix fft
-algorithm. It has the following members:
+algorithm.  It has the following members:
 
 @table @code
 @item size_t n
@@ -518,7 +518,7 @@ This is the number of complex data points
 This is the number of factors that the length @code{n} was decomposed into.
 
 @item size_t factor[64]
-This is the array of factors. Only the first @code{nf} elements are
+This is the array of factors.  Only the first @code{nf} elements are
 used. 
 
 @comment (FIXME: This is a fixed length array and therefore probably in
@@ -549,18 +549,18 @@ These functions compute forward, backward and inverse FFTs of length
 @var{data}, using a mixed radix decimation-in-frequency algorithm.
 
 The caller must supply a @var{wavetable} containing the chosen
-factorization, trigonometric lookup tables and scratch area. The
+factorization, trigonometric lookup tables and scratch area.  The
 wavetable can be easily prepared using the functions
 @code{gsl_fft_complex_init} and @code{gsl_fft_complex_alloc}.
 
 There is no restriction on the length @var{n}.  Efficient modules are
-provided for subtransforms of length 2, 3, 4, 5, 6 and 7. Any remaining
+provided for subtransforms of length 2, 3, 4, 5, 6 and 7.  Any remaining
 factors are computed with a slow, 
 @c{$O(n^2)$}
 @math{O(n^2)}, general-@math{n} module.
 
 The functions return a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
+and @code{-1} in the case of error.  The following @code{gsl_errno}
 conditions are defined for these functions:
 
 @table @code
@@ -648,7 +648,7 @@ of all the @code{gsl} routines.
 @cindex FFT of real data
 The functions for real data are similar to those for complex data.
 However, there is an important difference between forward and inverse
-transforms. The fourier transform of a real sequence is not real. It is
+transforms.  The fourier transform of a real sequence is not real.  It is
 a complex sequence with a special symmetry:
 
 @tex
@@ -666,7 +666,7 @@ z_k = z_@{N-k@}^*
 
 @noindent
 A sequence with this symmetry is called @dfn{conjugate-complex} or
-@dfn{half-complex}. This different structure requires different
+@dfn{half-complex}.  This different structure requires different
 storage-layouts for the forward transform (from real to half-complex)
 and inverse transform (from half-complex back to real).  As a
 consequence the routines are divided into two sets: functions in
@@ -674,7 +674,7 @@ consequence the routines are divided into two sets: functions in
 @code{gsl_fft_halfcomplex} which operate on half-complex sequences.
 
 Functions in @code{gsl_fft_real} compute the frequency coefficients of a
-real sequence. The half-complex coefficients @math{c} of a real sequence
+real sequence.  The half-complex coefficients @math{c} of a real sequence
 @math{x} are given by fourier analysis,
 
 @tex
@@ -692,7 +692,7 @@ c_k = \sum_@{j=0@}^@{N-1@} x_k \exp(-2 \pi i j k /N)
 
 @noindent
 Functions in @code{gsl_fft_halfcomplex} compute inverse or backwards
-transforms. They reconstruct real sequences by fourier synthesis from
+transforms.  They reconstruct real sequences by fourier synthesis from
 their half-complex frequency coefficients, @math{c},
 
 @tex
@@ -710,27 +710,27 @@ x_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} c_k \exp(2 \pi i j k /N)
 
 @noindent
 The symmetry of the half-complex sequence implies that only half of the
-complex numbers in the output need to be stored. The remaining half can
+complex numbers in the output need to be stored.  The remaining half can
 be reconstructed using the half-complex symmetry condition. (This works
-for all lengths, even and odd. When the length is even the middle value,
-where @math{k=N/2}, is also real). Thus only @var{N} real numbers are
+for all lengths, even and odd.  When the length is even the middle value,
+where @math{k=N/2}, is also real).  Thus only @var{N} real numbers are
 required to store the half-complex sequence, and the transform of a real
 sequence can be stored in the same size array as the original data.
 
 The precise storage arrangements depend on the algorithm, and are
-different for radix-2 and mixed-radix routines. The radix-2 function
+different for radix-2 and mixed-radix routines.  The radix-2 function
 operates in-place, which constrain the locations where each element can
-be stored. The restriction forces real and imaginary parts to be stored
-far apart. The mixed-radix algorithm does not have this restriction, and
+be stored.  The restriction forces real and imaginary parts to be stored
+far apart.  The mixed-radix algorithm does not have this restriction, and
 it stores the real and imaginary parts of a given term in neighboring
-locations. This is desirable for better locality of memory accesses.
+locations.  This is desirable for better locality of memory accesses.
 
 @node Radix-2 FFT routines for real data
 @section Radix-2 FFT routines for real data
 @cindex FFT of real data, radix-2 algorithm
 @cindex Radix-2 FFT for real data
 
-This section describes radix-2 FFT algorithms for real data. They use
+This section describes radix-2 FFT algorithms for real data.  They use
 the Cooley-Tukey algorithm to compute in-place FFTs for lengths which
 are a power of 2. 
 
@@ -740,16 +740,16 @@ The radix-2 FFT functions for real data are declared in the header files
 @deftypefun int gsl_fft_real_radix2 (double @var{data[]}, size_t @var{stride}, size_t @var{n})
 
 This function computes an in-place radix-2 FFT of length @var{n} and
-stride @var{stride} on the real array @var{data}. The output is a
-half-complex sequence, which is stored in-place. The arrangement of the
+stride @var{stride} on the real array @var{data}.  The output is a
+half-complex sequence, which is stored in-place.  The arrangement of the
 half-complex terms uses the following scheme: for @math{k < N/2} the
 real part of the @math{k}-th term is stored in location @math{k}, and
-the corresponding imaginary part is stored in location @math{N-k}. Terms
+the corresponding imaginary part is stored in location @math{N-k}.  Terms
 with @math{k > N/2} can be reconstructed using the symmetry 
 @c{$z_k = z^*_{N-k}$}
 @math{z_k = z^*_@{N-k@}}. 
 The terms for @math{k=0} and @math{k=N/2} are both purely
-real, and count as a special case. Their real parts are stored in
+real, and count as a special case.  Their real parts are stored in
 locations @math{0} and @math{N/2} respectively, while their imaginary
 parts which are zero are not stored.
 
@@ -786,7 +786,7 @@ header file @file{gsl_fft_halfcomplex.h}.
 These functions compute the inverse or backwards in-place radix-2 FFT of
 length @var{n} and stride @var{stride} on the half-complex sequence
 @var{data} stored according the output scheme used by
-@code{gsl_fft_real_radix2}. The result is a real array stored in natural
+@code{gsl_fft_real_radix2}.  The result is a real array stored in natural
 order.
 
 @end deftypefun
@@ -798,22 +798,22 @@ order.
 @cindex FFT of real data, mixed-radix algorithm
 @cindex Mixed-radix FFT, real data
 
-This section describes mixed-radix FFT algorithms for real data. The
-mixed-radix functions work for FFTs of any length. They are a
+This section describes mixed-radix FFT algorithms for real data.  The
+mixed-radix functions work for FFTs of any length.  They are a
 reimplementation of the real-FFT routines in the Fortran FFTPACK library
-by Paul Swarztrauber. The theory behind the algorithm is explained in
+by Paul Swarztrauber.  The theory behind the algorithm is explained in
 the article @cite{Fast Mixed-Radix Real Fourier Transforms} by Clive
-Temperton. The routines here use the same indexing scheme and basic
+Temperton.  The routines here use the same indexing scheme and basic
 algorithms as FFTPACK.
 
 The functions use the FFTPACK storage convention for half-complex
-sequences. In this convention the half-complex transform of a real
+sequences.  In this convention the half-complex transform of a real
 sequence is stored in with frequencies in increasing order, starting at
 zero, with the real and imaginary parts of each frequency in neighboring
-locations. When a value is known to be real the imaginary part is not
-stored. The imaginary part of the zero-frequency component is never
-stored. It is known to be zero (since the zero frequency component is
-simply the sum of the input data (all real)). For a sequence of even
+locations.  When a value is known to be real the imaginary part is not
+stored.  The imaginary part of the zero-frequency component is never
+stored.  It is known to be zero (since the zero frequency component is
+simply the sum of the input data (all real)).  For a sequence of even
 length the imaginary part of the frequency @math{n/2} is not stored
 either, since the symmetry 
 @c{$z_k = z_{N-k}^*$}
@@ -821,7 +821,7 @@ either, since the symmetry
 purely real too.
 
 The storage scheme is best shown by some examples.  The table below
-shows the output for an odd-length sequence, @math{n=5}. The two columns
+shows the output for an odd-length sequence, @math{n=5}.  The two columns
 give the correspondence between the 5 values in the half-complex
 sequence returned by @code{gsl_fft_real}, @var{halfcomplex[]} and the
 values @var{complex[]} that would be returned if the same real input
@@ -867,7 +867,7 @@ complex[5].imag  = -halfcomplex[2]
 
 @noindent
 The upper elements of the @var{complex} array, @code{complex[4]} and
-@code{complex[5]} are be filled in using the symmetry condition. Both
+@code{complex[5]} are be filled in using the symmetry condition.  Both
 @code{complex[0].imag} and @code{complex[3].imag} are known to be zero.
 
 All these functions are declared in the header files
@@ -878,11 +878,11 @@ All these functions are declared in the header files
 
 These functions allocate space for a wavetable struct, a scratch area of
 size @var{n} real elements and a trigonometric lookup table, of size
-@math{n/2} complex elements. The relevant components of the wavetable
+@math{n/2} complex elements.  The relevant components of the wavetable
 are modified to point to the newly allocated memory.
 
 These functions return a pointer to the newly allocated struct if no
-errors were detected, and @code{0} in the case of error. The following
+errors were detected, and @code{0} in the case of error.  The following
 @code{gsl_errno} conditions are defined for these functions:
 
 @table @code
@@ -908,20 +908,20 @@ storing the details of the factorization in @var{wavetable}.
 Using this factorization they then prepare a trigonometric lookup table
 in the memory previously allocated by
 @code{gsl_fft_real_wavetable_alloc} or
-@code{gsl_fft_halfcomplex_wavetable_alloc}. The wavetable is computed
-using direct calls to @code{sin} and @code{cos}, for accuracy. It could
-be computed faster using recursion relations if necessary. If an
+@code{gsl_fft_halfcomplex_wavetable_alloc}.  The wavetable is computed
+using direct calls to @code{sin} and @code{cos}, for accuracy.  It could
+be computed faster using recursion relations if necessary.  If an
 application performs many FFTs of the same length then computing the
 wavetable is a one-off overhead which does not affect the final
 throughput.
 
 The wavetable structure can be used repeatedly for any transform of the
-same length. The table is not modified by calls to any of the other FFT
-functions. The same wavetable can be used for both forward and backward
+same length.  The table is not modified by calls to any of the other FFT
+functions.  The same wavetable can be used for both forward and backward
 (or inverse) transforms of a given length.
 
 The functions return a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
+and @code{-1} in the case of error.  The following @code{gsl_errno}
 conditions are defined for these functions:
 
 @table @code
@@ -933,7 +933,7 @@ is zero).
 The length @var{n} could not be factorized (this shouldn't happen).
 
 @item GSL_EFAILED
-A failure was detected in the wavetable generation. This could be caused
+A failure was detected in the wavetable generation.  This could be caused
 by an inconsistency in a user-supplied @var{wavetable} structure.
 @end table
 
@@ -957,25 +957,25 @@ be needed.
 
 These functions compute the FFT of @var{data}, a real or half-complex
 array of length @var{n}, using a mixed radix decimation-in-frequency
-algorithm. For @code{gsl_fft_real} @var{data} is an array of
+algorithm.  For @code{gsl_fft_real} @var{data} is an array of
 time-ordered real data.  For @code{gsl_fft_halfcomplex} @var{data}
 contains fourier coefficients in the half-complex ordering described
 above.
 
 The caller must supply a @var{wavetable} containing the chosen
-factorization, trigonometric lookup tables and scratch area. The
+factorization, trigonometric lookup tables and scratch area.  The
 wavetable can be easily prepared using the functions
 @code{gsl_fft_real_alloc} and @code{gsl_fft_real_init} or
 @code{gsl_fft_halfcomplex_alloc} and @code{gsl_fft_halfcomplex_init}.
 
 There is no restriction on the length @var{n}.  Efficient modules are
-provided for subtransforms of length 2, 3, 4 and 5. Any remaining
+provided for subtransforms of length 2, 3, 4 and 5.  Any remaining
 factors are computed with a slow, 
 @c{$O(n^2)$}
 @math{O(n^2)}, general-n module.
 
 The functions return a value of @code{0} if no errors were detected,
-and @code{-1} in the case of error. The following @code{gsl_errno}
+and @code{-1} in the case of error.  The following @code{gsl_errno}
 conditions are defined for these functions:
 
 @table @code
@@ -994,7 +994,7 @@ The length of the data @var{n} and the length used to compute the given
 
 This function converts a single real array, @var{real_coefficient} into
 an equivalent complex array, @var{complex_coefficient}, (with imaginary
-part set to zero), suitable for @code{gsl_fft_complex} routines. The
+part set to zero), suitable for @code{gsl_fft_complex} routines.  The
 algorithm for the conversion is simply,
 
 @example
@@ -1006,7 +1006,7 @@ for (i = 0; i < n; i++)
 @end example
 
 The function returns a value of @code{0} if no errors were detected, and
-@code{-1} in the case of error. There is only one @code{gsl_errno}
+@code{-1} in the case of error.  There is only one @code{gsl_errno}
 condition defined for this function:
 
 @table @code
@@ -1020,11 +1020,11 @@ is zero).
 
 This function converts @var{halfcomplex_coefficient}, an array of
 half-complex coefficients as returned by @code{gsl_fft_real}, into an
-ordinary complex array, @var{complex_coefficient}. It fills in the
+ordinary complex array, @var{complex_coefficient}.  It fills in the
 complex array using the symmetry 
 @c{$z_k = z_{N-k}^*$}
 @math{z_k = z_@{N-k@}^*}
-to reconstruct the redundant elements. The algorithm for the conversion
+to reconstruct the redundant elements.  The algorithm for the conversion
 is,
 
 @example  
@@ -1048,7 +1048,7 @@ for (i = 1; i < n - i; i++)
 @end example
 
 The function returns a value of @code{0} if no errors were detected, and
-@code{-1} in the case of error. There is only one @code{gsl_errno}
+@code{-1} in the case of error.  There is only one @code{gsl_errno}
 condition defined for this function:
 
 @table @code
@@ -1062,13 +1062,13 @@ is zero).
 @comment @subsection Example of using mixed-radix FFT routines for real data
 
 Here is an example program using @code{gsl_fft_real} and
-@code{gsl_fft_halfcomplex}. It generates a real signal in the shape of a
-square pulse. The pulse is fourier transformed to frequency space, and
+@code{gsl_fft_halfcomplex}.  It generates a real signal in the shape of a
+square pulse.  The pulse is fourier transformed to frequency space, and
 all but the lowest ten frequency components are removed from the array
 of fourier coefficients returned by @code{gsl_fft_real}.
 
 The remaining fourier coefficients are transformed back to the
-time-domain, to give a filtered version of the square pulse. Since
+time-domain, to give a filtered version of the square pulse.  Since
 fourier coefficients are stored using the half-complex symmetry both
 positive and negative frequencies are removed and the final filtered
 signal is also real.
@@ -1137,9 +1137,9 @@ int main ()
 @section References and Further Reading
 
 For serious FFT work we recommend the use of the dedicated FFTW library
-by Frigo and Johnson. The FFTW library is self-optimizing --- it
+by Frigo and Johnson.  The FFTW library is self-optimizing --- it
 automatically tunes itself for each hardware platform in order to
-achieve maximum performance. It is available under the GNU GPL.
+achieve maximum performance.  It is available under the GNU GPL.
 
 @itemize @asis
 @item
@@ -1160,9 +1160,9 @@ Fast fourier transforms: A tutorial review and a state of the art.
 @noindent
 To find out about the algorithms used in the GSL routines you may want
 to consult the latex document @cite{GSL FFT Algorithms} (it is included
-in GSL, as @file{doc/fftalgorithms.tex}). This has general information
+in GSL, as @file{doc/fftalgorithms.tex}).  This has general information
 on FFTs and explicit derivations of the implementation for each
-routine. There are also references to the relevant literature. For
+routine.  There are also references to the relevant literature.  For
 convenience some of the more important references are reproduced below.
 
 There are several introductory books on the FFT with example programs,
@@ -1211,7 +1211,7 @@ Fast mixed-radix real fourier transforms.
 
 @noindent
 In 1979 the IEEE published a compendium of carefully-reviewed Fortran
-FFT programs in @cite{Programs for Digital Signal Processing}. It is a
+FFT programs in @cite{Programs for Digital Signal Processing}.  It is a
 useful reference for implementations of many different FFT
 algorithms,
 
@@ -1227,7 +1227,7 @@ There is also an annotated bibliography of papers on the FFT and related
 topics by Burrus,
 
 @itemize @asis 
-@item C. S. Burrus. Notes on the FFT.
+@item C. S. Burrus.  Notes on the FFT.
 @end itemize
 @noindent
 The notes are available from @url{http://www-dsp.rice.edu/res/fft/fftnote.asc}.

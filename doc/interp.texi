@@ -6,9 +6,9 @@
 This chapter describes functions for performing interpolation.
 All the interpolation methods conform to a model which tries
 to factor out the various subtasks for creation, lookup and
-evaluation. The state of an interpolation object is stored
+evaluation.  The state of an interpolation object is stored
 in a @code{gsl_interp_obj}; these are created by special purpose
-factories, one for each interpolation method. State for searches
+factories, one for each interpolation method.  State for searches
 is stored in a @code{gsl_interp_accel}, which is a kind of iterator
 for interpolation lookups.
 
@@ -29,9 +29,9 @@ the behaviour for other arrangements is not defined.
 
 @section Functions
 
-@deftypefun gsl_interp_accel * gsl_interp_accel_new (void)
+@deftypefun {gsl_interp_accel *} gsl_interp_accel_new (void)
 Create an accelerator object, which is a kind of iterator
-for interpolation lookups. It tracks the state of lookups,
+for interpolation lookups.  It tracks the state of lookups,
 thus allowing for application of various acceleration
 strategies.
 @end deftypefun
@@ -95,7 +95,7 @@ use the interpolation object and accelerator, and finally free resources.
 To change the above code to use, say cubic splines with
 periodic boundary conditions, the only statement that
 would be changed is the one which obtains the reference
-to the factory. We would do
+to the factory.  We would do
 
 @example
   ...
