@@ -530,7 +530,7 @@ int main ()
         if (gsl_matrix_get(m, i, j) != gsl_matrix_get(a, i, j))
            differences ++ ;
 
-  printf("differences = %d\n", differences) ;
+  printf("differences = %d (should be zero)\n", differences) ;
 
 @}
 @end example
