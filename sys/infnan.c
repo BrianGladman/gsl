@@ -116,7 +116,13 @@ gsl_isinf (const double x)
 {
     return isinf(x);
 }
+#else
+gsl_isinf (const double x)
+{
+    return (! gsl_finite(x)) && (! gsl_isnan(x));
+}
 #endif
+
 
 #if HAVE_DECL_FINITE
 int

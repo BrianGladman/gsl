@@ -1,3 +1,7 @@
+2003-09-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* infnan.c (gsl_isinf): added fallback for missing isinf (IRIX)
+
 2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* invhyp.c: removed duplicate declarations
