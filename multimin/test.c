@@ -137,8 +137,8 @@ test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
 {
   /* currently this function tests only nmsimplex */
 
-  int status, i;
-  size_t iter = 0;
+  int status;
+  size_t i, iter = 0;
   const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex;
 
   gsl_vector *x = gsl_vector_alloc (f->n);
