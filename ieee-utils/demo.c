@@ -1,3 +1,4 @@
+#include <float.h>
 #include <stdio.h>
 #include <gsl_ieee_utils.h>
 
@@ -24,5 +25,12 @@ main ()
     printf("\n") ;
   }
 
+  x = 10 * x * DBL_MAX ;
 
+  printf("%.18g ",x) ; gsl_ieee_printf_double(&x) ; printf("\n") ;
+
+  x = x / 0 ; ;
+
+  printf("%.18g ",x) ; gsl_ieee_printf_double(&x) ; printf("\n") ;
 }
+
