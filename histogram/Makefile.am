@@ -7,7 +7,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../block -I$(srcdir)/../err
 bin_PROGRAMS = gsl-histogram
 check_PROGRAMS = test test2d test_resample test2d_resample test_trap test2d_trap
 
-TESTS = test test2d test_resample test2d_resample test_trap test2d_trap
+TESTS = test test2d test_resample test2d_resample test_trap test2d_trap test_gsl_histogram.sh
 
 gsl_histogram_SOURCES = gsl-histogram.c
 gsl_histogram_LDADD = libgslhistogram.a ../block/libgslblock.a  ../err/libgslerr.a ../err/libgsltest.a ../utils/libutils.a

@@ -40,6 +40,8 @@ main (int argc, char **argv)
       }
 
     gsl_histogram_fprintf (stdout, h, "%g", "%g");
+
+    gsl_histogram_free (h);
   }
 
   return 0;

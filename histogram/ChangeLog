@@ -1,3 +1,11 @@
+Fri Nov 19 15:31:51 1999  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl-histogram.c (main): free memory before exit, eliminates
+ 	warning from checkergcc
+
+	* test_gsl_histogram.sh: added a test for the gsl-histogram
+ 	program
+
 Fri Oct  1 15:47:01 1999  Brian Gough  <bjg@network-theory.co.uk>
 
 	* file.c file2d.c: converted to use new block i/o functions
