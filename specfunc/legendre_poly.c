@@ -353,11 +353,11 @@ gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * 
    * about overflow. Calculate an approximate exponent which
    * measures the normalization of this thing.
    */
-  double dif = lmax-m;
-  double sum = lmax+m;
-  double exp_check = 0.5 * log(2.0*lmax+1.0) 
-                     + 0.5 * dif * (log(dif)-1.0)
-                     - 0.5 * sum * (log(sum)-1.0);
+  const double dif = lmax-m;
+  const double sum = lmax+m;
+  const double t_d = ( dif == 0.0 ? 0.0 : 0.5 * dif * (log(dif)-1.0) );
+  const double t_s = ( dif == 0.0 ? 0.0 : 0.5 * sum * (log(sum)-1.0) );
+  const double exp_check = 0.5 * log(2.0*lmax+1.0) + t_d - t_s;
 
   /* CHECK_POINTER(result_array) */
 
