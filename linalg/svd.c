@@ -202,7 +202,7 @@ gsl_linalg_SV_decomp (gsl_matrix * A,
     }
 }
 
-/*  Solves the system A x = rhs using the SVD factorization
+/*  Solves the system A x = b using the SVD factorization
  *
  *  A = U S Q^T
  *
@@ -214,12 +214,12 @@ int
 gsl_linalg_SV_solve (const gsl_matrix * U,
                      const gsl_matrix * Q,
                      const gsl_vector * S,
-                     const gsl_vector * rhs,
+                     const gsl_vector * b,
                      gsl_vector * x)
 {
-  if (U->size1 != rhs->size)
+  if (U->size1 != b->size)
     {
-      GSL_ERROR ("first dimension of matrix Q must size of vector rhs", GSL_EBADLEN);
+      GSL_ERROR ("first dimension of matrix Q must size of vector b", GSL_EBADLEN);
     }
   else if (U->size2 != S->size)
     {
@@ -244,7 +244,7 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
 
       gsl_vector * w = gsl_vector_calloc (N);
       
-      gsl_blas_dgemv (CblasTrans, 1.0, U, rhs, 0.0, w) ;
+      gsl_blas_dgemv (CblasTrans, 1.0, U, b, 0.0, w) ;
       
       for (i = 0 ; i < N ; i++)
         {

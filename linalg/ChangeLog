@@ -1,3 +1,7 @@
+Wed Apr 26 19:37:46 2000  Brian Gough  <bjg@network-theory.co.uk>
+
+	* renamed rhs -> b, and solution -> x throughout for consistency
+
 Mon Apr 24 17:04:52 2000  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_la.c (main): added tests for MxN matrices

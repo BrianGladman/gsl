@@ -157,9 +157,9 @@ gsl_linalg_QRPT_decomp (gsl_matrix * a, gsl_vector * tau, gsl_permutation * p, i
     }
 }
 
-/* Solves the system A x = rhs using the Q R P^T factorisation,
+/* Solves the system A x = b using the Q R P^T factorisation,
 
-   R z = Q^T rhs
+   R z = Q^T b
 
    x = P z;
 
@@ -169,7 +169,7 @@ int
 gsl_linalg_QRPT_solve (const gsl_matrix * qr,
 		       const gsl_vector * tau,
 		       const gsl_permutation * p,
-		       const gsl_vector * rhs,
+		       const gsl_vector * b,
                        gsl_vector * x)
 {
   if (qr->size1 != qr->size2)
@@ -180,9 +180,9 @@ gsl_linalg_QRPT_solve (const gsl_matrix * qr,
     {
       GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
     }
-  else if (qr->size1 != rhs->size)
+  else if (qr->size1 != b->size)
     {
-      GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
   else if (qr->size2 != x->size)
     {
@@ -190,7 +190,7 @@ gsl_linalg_QRPT_solve (const gsl_matrix * qr,
     }
   else
     {
-      gsl_vector_memcpy (x, rhs);
+      gsl_vector_memcpy (x, b);
 
       gsl_linalg_QRPT_svx (qr, tau, p, x);
       
@@ -236,7 +236,7 @@ gsl_linalg_QRPT_svx (const gsl_matrix * qr,
 int
 gsl_linalg_QRPT_qrsolve (const gsl_matrix * q, const gsl_matrix * r,
 			 const gsl_permutation * p,
-			 const gsl_vector * rhs,
+			 const gsl_vector * b,
 			 gsl_vector * x)
 {
   if (q->size1 != q->size2 || r->size1 != r->size2)
@@ -244,17 +244,17 @@ gsl_linalg_QRPT_qrsolve (const gsl_matrix * q, const gsl_matrix * r,
       return GSL_ENOTSQR;
     }
   else if (q->size1 != p->size || q->size1 != r->size1
-	   || q->size1 != rhs->size)
+	   || q->size1 != b->size)
     {
       return GSL_EBADLEN;
     }
   else
     {
-      /* compute b = Q^T rhs */
+      /* compute b' = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, q, rhs, 0.0, x);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, q, b, 0.0, x);
 
-      /* Solve R x = b, storing x inplace */
+      /* Solve R x = b', storing x inplace */
 
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
 

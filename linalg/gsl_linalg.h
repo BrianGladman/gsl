@@ -77,7 +77,7 @@ int
 gsl_linalg_SV_solve (const gsl_matrix * U,
                      const gsl_matrix * Q,
                      const gsl_vector * S,
-                     const gsl_vector * rhs,
+                     const gsl_vector * b,
                      gsl_vector * x);
 
 
@@ -88,7 +88,7 @@ int gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum);
 
 int gsl_linalg_LU_solve (const gsl_matrix * lu,
 			 const gsl_permutation * p,
-			 const gsl_vector * rhs,
+			 const gsl_vector * b,
                          gsl_vector * x);
 
 int gsl_linalg_LU_svx (const gsl_matrix * lu,
@@ -98,7 +98,7 @@ int gsl_linalg_LU_svx (const gsl_matrix * lu,
 int gsl_linalg_LU_refine (const gsl_matrix * a,
 			  const gsl_matrix * lu,
 			  const gsl_permutation * p,
-			  const gsl_vector * rhs,
+			  const gsl_vector * b,
 			  gsl_vector * x,
 			  gsl_vector * residual);
 
@@ -117,7 +117,7 @@ int gsl_linalg_QR_decomp (gsl_matrix * a,
 
 int gsl_linalg_QR_solve (const gsl_matrix * qr,
 			 const gsl_vector * tau,
-			 const gsl_vector * rhs,
+			 const gsl_vector * b,
 			 gsl_vector * x);
 
 int gsl_linalg_QR_svx (const gsl_matrix * qr,
@@ -126,11 +126,11 @@ int gsl_linalg_QR_svx (const gsl_matrix * qr,
 
 int gsl_linalg_QR_qrsolve (gsl_matrix * q,
 			   gsl_matrix * r,
-			   gsl_vector * rhs,
-			   gsl_vector * solution);
+			   gsl_vector * b,
+			   gsl_vector * x);
 
 int gsl_linalg_QR_rsolve (const gsl_matrix * qr,
-			  gsl_vector * solution);
+			  gsl_vector * x);
 
 int gsl_linalg_QR_update (gsl_matrix * q,
 			  gsl_matrix * r,
@@ -147,7 +147,7 @@ int gsl_linalg_QR_unpack (const gsl_matrix * qr,
 			  gsl_matrix * r);
 
 int gsl_linalg_R_solve (const gsl_matrix * r,
-                        const gsl_vector * rhs,
+                        const gsl_vector * b,
                         gsl_vector * x);
 
 int gsl_linalg_R_svx (const gsl_matrix * r,
@@ -164,7 +164,7 @@ int gsl_linalg_QRPT_decomp (gsl_matrix * a,
 int gsl_linalg_QRPT_solve (const gsl_matrix * qr,
 			   const gsl_vector * tau,
 			   const gsl_permutation * p,
-                           const gsl_vector * rhs,
+                           const gsl_vector * b,
 			   gsl_vector * x);
 
 
@@ -176,13 +176,13 @@ int gsl_linalg_QRPT_svx (const gsl_matrix * qr,
 int gsl_linalg_QRPT_qrsolve (const gsl_matrix * q,
 			     const gsl_matrix * r,
 			     const gsl_permutation * p,
-			     const gsl_vector * rhs,
-			     gsl_vector * solution);
+			     const gsl_vector * b,
+			     gsl_vector * x);
 
 
 int gsl_linalg_QRPT_R_solve (const gsl_matrix * qr,
                              const gsl_permutation * p,
-                             gsl_vector * solution);
+                             gsl_vector * x);
 
 int gsl_linalg_QRPT_update (gsl_matrix * q,
 			    gsl_matrix * r,
@@ -209,8 +209,8 @@ int gsl_linalg_HH_solve (gsl_matrix * matrix, gsl_vector * vec);
  */
 int gsl_linalg_solve_symm_tridiag (const gsl_vector * diag,
 				   const gsl_vector * offdiag,
-				   const gsl_vector * rhs,
-				   gsl_vector * solution);
+				   const gsl_vector * b,
+				   gsl_vector * x);
 
 
 /* Linear solve for a symmetric cyclic tridiagonal system.
@@ -226,8 +226,8 @@ int gsl_linalg_solve_symm_tridiag (const gsl_vector * diag,
  */
 int gsl_linalg_solve_symm_cyc_tridiag (const gsl_vector * diag,
 				       const gsl_vector * offdiag,
-				       const gsl_vector * rhs,
-				       gsl_vector * solution);
+				       const gsl_vector * b,
+				       gsl_vector * x);
 
 
 __END_DECLS

@@ -84,23 +84,23 @@ gsl_linalg_QR_decomp (gsl_matrix * a, gsl_vector * tau)
     }
 }
 
-/* Solves the system A x = rhs using the QR factorisation,
+/* Solves the system A x = b using the QR factorisation,
 
- *  R x = Q^T rhs
+ *  R x = Q^T b
  *
  * to obtain x. Based on SLATEC code. 
  */
 
 int
-gsl_linalg_QR_solve (const gsl_matrix * qr, const gsl_vector * tau, const gsl_vector * rhs, gsl_vector * x)
+gsl_linalg_QR_solve (const gsl_matrix * qr, const gsl_vector * tau, const gsl_vector * b, gsl_vector * x)
 {
   if (qr->size1 != qr->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != rhs->size)
+  else if (qr->size1 != b->size)
     {
-      GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
   else if (qr->size2 != x->size)
     {
@@ -108,9 +108,9 @@ gsl_linalg_QR_solve (const gsl_matrix * qr, const gsl_vector * tau, const gsl_ve
     }
   else
     {
-      /* Copy x <- rhs */
+      /* Copy x <- b */
 
-      gsl_vector_memcpy (x, rhs);
+      gsl_vector_memcpy (x, b);
 
       /* Solve for x */
 
@@ -138,7 +138,7 @@ gsl_linalg_QR_svx (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * x
 
       gsl_linalg_QR_QTvec (qr, tau, x);
 
-      /* Solve R x = rhs, storing x inplace in rhs */
+      /* Solve R x = rhs, storing x in-place */
 
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
 
@@ -148,36 +148,36 @@ gsl_linalg_QR_svx (const gsl_matrix * qr, const gsl_vector * tau, gsl_vector * x
 
 
 int
-gsl_linalgQR_Rsolve (const gsl_matrix * qr, gsl_vector * rhs)
+gsl_linalgQR_Rsolve (const gsl_matrix * qr, gsl_vector * x)
 {
   if (qr->size1 != qr->size2)
     {
       GSL_ERROR ("QR matrix must be square", GSL_ENOTSQR);
     }
-  else if (qr->size1 != rhs->size)
+  else if (qr->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
     }
   else
     {
-      /* Solve R x = rhs, storing x inplace in rhs */
+      /* Solve R x = b, storing x in-place */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, rhs);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, qr, x);
 
       return GSL_SUCCESS;
     }
 }
 
 int
-gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * rhs, gsl_vector *x)
+gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * b, gsl_vector *x)
 {
   if (r->size1 != r->size2)
     {
       GSL_ERROR ("R matrix must be square", GSL_ENOTSQR);
     }
-  else if (r->size1 != rhs->size)
+  else if (r->size1 != b->size)
     {
-      GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
   else if (r->size2 != x->size)
     {
@@ -185,11 +185,11 @@ gsl_linalg_R_solve (const gsl_matrix * r, const gsl_vector * rhs, gsl_vector *x)
     }
   else
     {
-      /* Copy x <- rhs */
+      /* Copy x <- b */
 
-      gsl_vector_memcpy (x, rhs);
+      gsl_vector_memcpy (x, b);
 
-      /* Solve R x = rhs, storing x inplace in rhs */
+      /* Solve R x = b, storing x inplace in b */
 
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
 
@@ -378,7 +378,7 @@ gsl_linalg_QR_update (gsl_matrix * q, gsl_matrix * r,
 }
 
 int
-gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * rhs, gsl_vector * solution)
+gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * b, gsl_vector * x)
 {
   const size_t M = r->size1;
   const size_t N = r->size2;
@@ -387,7 +387,7 @@ gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * rhs, gsl_vec
     {
       return GSL_ENOTSQR;
     }
-  else if (q->size1 != M || rhs->size != M || solution->size != M)
+  else if (q->size1 != M || b->size != M || x->size != M)
     {
       return GSL_EBADLEN;
     }
@@ -395,11 +395,11 @@ gsl_linalg_QR_qrsolve (gsl_matrix * q, gsl_matrix * r, gsl_vector * rhs, gsl_vec
     {
       /* compute sol = Q^T b */
 
-      gsl_blas_dgemv (CblasNoTrans, 1.0, q, rhs, 0.0, solution);
+      gsl_blas_dgemv (CblasNoTrans, 1.0, q, b, 0.0, x);
 
-      /* Solve R x = sol, storing x inplace in sol */
+      /* Solve R x = sol, storing x in-place */
 
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, solution);
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, r, x);
 
       return GSL_SUCCESS;
     }

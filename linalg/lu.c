@@ -14,7 +14,7 @@
 #define REAL double
 
 /* Factorise a general N x N matrix A into,
-
+ *
  *   P A = L U
  *
  * where P is a permutation matrix, L is unit lower triangular and R
@@ -217,7 +217,7 @@ gsl_linalg_LU_decomp (gsl_matrix * a, gsl_permutation * p, int *signum)
 }
 
 int
-gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * rhs, gsl_vector * x)
+gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x)
 {
   if (lu->size1 != lu->size2)
     {
@@ -227,9 +227,9 @@ gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
-  else if (lu->size1 != rhs->size)
+  else if (lu->size1 != b->size)
     {
-      GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
   else if (lu->size2 != x->size)
     {
@@ -237,9 +237,9 @@ gsl_linalg_LU_solve (const gsl_matrix * lu, const gsl_permutation * p, const gsl
     }
   else
     {
-      /* Copy x <- rhs */
+      /* Copy x <- b */
 
-      gsl_vector_memcpy (x, rhs);
+      gsl_vector_memcpy (x, b);
 
       /* Solve for x */
 
@@ -285,7 +285,7 @@ gsl_linalg_LU_svx (const gsl_matrix * lu, const gsl_permutation * p, gsl_vector 
 
 
 int
-gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * rhs, gsl_vector * x, gsl_vector * residual)
+gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_permutation * p, const gsl_vector * b, gsl_vector * x, gsl_vector * residual)
 {
   if (a->size1 != a->size2)
     {
@@ -303,9 +303,9 @@ gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_per
     {
       GSL_ERROR ("permuation length must match matrix size", GSL_EBADLEN);
     }
-  else if (lu->size1 != rhs->size)
+  else if (lu->size1 != b->size)
     {
-      GSL_ERROR ("matrix size must match rhs size", GSL_EBADLEN);
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
     }
   else if (lu->size1 != x->size)
     {
@@ -313,9 +313,9 @@ gsl_linalg_LU_refine (const gsl_matrix * a, const gsl_matrix * lu, const gsl_per
     }
   else
     {
-      /* Compute residual, residual = (a * x  - rhs) */
+      /* Compute residual, residual = (a * x  - b) */
 
-      gsl_vector_memcpy (residual, rhs);
+      gsl_vector_memcpy (residual, b);
       gsl_blas_dgemv (CblasNoTrans, 1.0, a, x, -1.0, residual);
 
       /* Find correction, delta = - (a^-1) * residual, and apply it */
