@@ -265,6 +265,24 @@ int gsl_sf_angle_restrict_pos_impl(double * theta)
 }
 
 
+int gsl_sf_sin_err_impl(const double x, const double dx, gsl_sf_result * result)
+{
+  double s = sin(x);
+  result->val = s;
+  result->err = fabs((1.0 - s*s) * dx) + GSL_DBL_EPSILON * fabs(s);
+  return GSL_SUCCESS;
+}
+
+
+int gsl_sf_cos_err_impl(const double x, const double dx, gsl_sf_result * result)
+{
+  double c = cos(x);
+  result->val = c;
+  result->err = fabs((1.0 - c*c) * dx) + GSL_DBL_EPSILON * fabs(c);
+  return GSL_SUCCESS;
+}
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions w/ Error Handling *-*-*-*-*-*-*-*-*-*-*-*/
 
 int gsl_sf_complex_sin_e(const double zr, const double zi, double * szr, double * szi)

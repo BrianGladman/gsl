@@ -208,14 +208,6 @@ int gsl_sf_bessel_il_scaled_impl(const int l, double x, gsl_sf_result * result)
     result->err = i0_scaled.err * (GSL_SQRT_DBL_MIN / iell);
     return GSL_ERROR_SELECT_2(stat_i0, stat_CF1);
   }
-  /*
-  else if(GSL_ROOT3_MACH_EPS * x > (l*l + l + 1)) {
-    double b = 0.0;
-    int status = gsl_sf_bessel_Inu_scaled_asympx_impl(l + 0.5, x, &b);
-    *result = sgn * sqrt(M_PI/(2.0*x)) * b;
-    return status;
-  }
-  */
   else if(GSL_MIN(0.29/(l*l+1.0), 0.5/(l*l+1.0+x*x)) < 0.5*GSL_ROOT3_DBL_EPSILON) {
     int status = gsl_sf_bessel_Inu_scaled_asymp_unif_impl(l + 0.5, x, result);
     double pre = sqrt((0.5*M_PI)/x);

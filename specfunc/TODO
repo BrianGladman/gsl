@@ -36,24 +36,33 @@ The following should be finished before a 1.0 level release.
   "Software Needs in Special Functions" paper.
 
 * Final Seal of Approval
+  This section has itself gone through several
+  revisions (sigh), proving that the notion of
+  done-ness is ill-defined. So it is worth
+  stating the criteria for done-ness explicitly:
+  o interfaces stabilized
+  o error-estimation in place
+  o all deprecated constructs removed
+  o passes tests
+
 
   - airy.c
-    OK: Sat Nov 21 00:57:16 EST 1998 
+    OK: 
 
   - airy_der.c
-    OK: Sat Nov 21 00:57:21 EST 1998 
+    OK: 
 
   - atanint.c
-    OK: Sat Nov 21 00:57:25 EST 1998 
+    OK: 
 
   - bessel.c
     OK:
 
   - bessel_I0.c
-    OK: Sun Nov 22 07:39:29 EST 1998 
+    OK: 
 
   - bessel_I1.c
-    OK: Sun Nov 22 07:43:15 EST 1998 
+    OK: 
 
   - bessel_In.c
     OK:
@@ -62,10 +71,10 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_J0.c
-    OK: Mon Nov 23 14:41:35 MST 1998 
+    OK: 
     
   - bessel_J1.c
-    OK: Mon Nov 23 14:42:08 MST 1998 
+    OK: 
     
   - bessel_Jn.c
     OK:
@@ -74,22 +83,22 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - bessel_K0.c
-    OK: Sun Nov 22 08:14:44 EST 1998 
+    OK: 
 
   - bessel_K1.c
-    OK: Sun Nov 22 08:21:41 EST 1998 
+    OK: 
 
   - bessel_Kn.c
-    OK: Sun Nov 22 08:26:14 EST 1998 
+    OK: 
 
   - bessel_Knu.c
     OK:
 
   - bessel_Y0.c
-    OK: Mon Nov 23 12:35:06 MST 1998 
+    OK: 
     
   - bessel_Y1.c
-    OK: Mon Nov 23 12:35:09 MST 1998 
+    OK: 
     
   - bessel_Yn.c
     OK:
@@ -119,13 +128,13 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - beta.c
-    OK: Sat Nov 21 18:26:55 EST 1998 
+    OK: 
 
   - chebyshev.c
     OK:
 
   - clausen.c
-    OK: Sat Nov 21 00:59:53 EST 1998 
+    OK: 
 
   - coulomb.c
     OK:
@@ -137,34 +146,34 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - dawson.c
-    OK: Sat Nov 21 01:02:25 EST 1998 
+    OK: 
 
   - debye.c
-    OK: Sun Nov 22 08:39:10 EST 1998 
+    OK: 
 
   - dilog.c
-    OK: Mon Nov 23 03:31:59 EST 1998 
+    OK: 
 
   - elementary.c
-    OK: Sat Nov 21 01:04:35 EST 1998 
+    OK: 
 
   - ellint.c
-    OK: Sat Nov 21 01:15:08 EST 1998 
+    OK: 
 
   - elljac.c
-    OK: Sat Nov 21 01:17:33 EST 1998 
+    OK: 
 
   - erfc.c
-    OK: Sat Nov 21 01:27:49 EST 1998 
+    OK: 
 
   - exp.c
     OK:
 
   - expint.c
-    OK: Sun Nov 22 09:12:16 EST 1998 
+    OK: 
 
   - expint3.c
-    OK: Sat Nov 21 01:30:15 EST 1998 
+    OK: 
 
   - fermi_dirac.c
     OK:
@@ -211,7 +220,7 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - log.c
-    OK: Sun Nov 22 05:39:38 EST 1998 
+    OK: 
 
   - poch.c
     OK:
@@ -220,22 +229,22 @@ The following should be finished before a 1.0 level release.
     OK:
 
   - pow_int.c
-    OK: Sun Nov 22 05:41:20 EST 1998 
+    OK: 
 
   - psi.c
     OK:
 
   - shint.c
-    OK: Sun Nov 22 06:00:09 EST 1998 
+    OK: 
 
   - sinint.c
-    OK: Sun Nov 22 06:41:36 EST 1998 
+    OK: 
 
   - synchrotron.c
-    OK: Sun Nov 22 07:02:09 EST 1998 
+    OK: 
 
   - transport.c
-    OK: Sun Nov 22 06:46:06 EST 1998 
+    OK: 
 
   - trig.c
     OK:

@@ -222,8 +222,8 @@ int     gsl_sf_legendre_H3d_0_e(double lambda, double eta, gsl_sf_result * resul
  * eta >= 0.0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_H3d_1_impl(double lambda, double eta, gsl_sf_result * result);
-int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, gsl_sf_result * result);
+int gsl_sf_legendre_H3d_1_impl(double lambda, double eta, gsl_sf_result * result);
+int gsl_sf_legendre_H3d_1_e(double lambda, double eta, gsl_sf_result * result);
 
 
 /* l'th radial eigenfunction of the Laplacian on the
@@ -235,9 +235,8 @@ int     gsl_sf_legendre_H3d_1_e(double lambda, double eta, gsl_sf_result * resul
  * eta >= 0.0, l >= 0
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, double * result);
-int     gsl_sf_legendre_H3d_e(int l, double lambda, double eta, double * result);
-double  gsl_sf_legendre_H3d(int l, double lambda, double eta);
+int gsl_sf_legendre_H3d_impl(int l, double lambda, double eta, gsl_sf_result * result);
+int gsl_sf_legendre_H3d_e(int l, double lambda, double eta, gsl_sf_result * result);
 
 
 /* Array of H3d(ell),  0 <= ell <= lmax

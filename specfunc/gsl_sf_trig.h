@@ -35,16 +35,16 @@ int gsl_sf_complex_logsin_e(double zr, double zi, double * lszr, double * lszi);
  *
  * exceptions: GSL_EDOM
  */
-int     gsl_sf_lnsinh_impl(double x, gsl_sf_result * result);
-int     gsl_sf_lnsinh_e(double x, gsl_sf_result * result);
+int gsl_sf_lnsinh_impl(double x, gsl_sf_result * result);
+int gsl_sf_lnsinh_e(double x, gsl_sf_result * result);
 
 
 /* log(cosh(x))
  *
  * exceptions: none
  */
-int     gsl_sf_lncosh_impl(double x, gsl_sf_result * result);
-int     gsl_sf_lncosh_e(double x, gsl_sf_result * result);
+int gsl_sf_lncosh_impl(double x, gsl_sf_result * result);
+int gsl_sf_lncosh_e(double x, gsl_sf_result * result);
 
 
 /* Convert polar to rectlinear coordinates.
@@ -80,7 +80,16 @@ int gsl_sf_angle_restrict_pos_impl(double * theta);
 int gsl_sf_angle_restrict_pos_e(double * theta);
 
 
-double gsl_sf_sin_pi_x(double x);
+/* Sin(x) for quantity with an associated error.
+ */
+int gsl_sf_sin_err_impl(double x, double dx, gsl_sf_result * result);
+int gsl_sf_sin_err_e(double x, double dx, gsl_sf_result * result);
+
+
+/* Cos(x) for quantity with an associated error.
+ */
+int gsl_sf_cos_err_impl(double x, double dx, gsl_sf_result * result);
+int gsl_sf_cos_err_e(double x, double dx, gsl_sf_result * result);
 
 
 #endif /* GSL_SF_TRIG_H_ */

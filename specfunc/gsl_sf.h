@@ -4,6 +4,8 @@
 #ifndef GSL_SF_H_
 #define GSL_SF_H_
 
+#include <gsl_sf_result.h>
+
 #include <gsl_sf_airy.h>
 #include <gsl_sf_bessel.h>
 #include <gsl_sf_chebyshev.h>
