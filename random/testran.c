@@ -125,7 +125,7 @@ main(int argc, char *argv[])
   actual_uncovered = ran_max - rmax ;
   expected_uncovered = ran_max / n ;
   
-  status = (actual_uncovered > expected_uncovered) ;
+  status = (rmax > ran_max) || (expected_uncovered < actual_uncovered) ;
   
   gsl_test (status, 
 	    "observed vs theoretical maximum (%lu vs %g)",
