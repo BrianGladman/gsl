@@ -9,4 +9,4 @@ check_PROGRAMS = test
 TESTS = test
 
 test_SOURCES = test.c
-test_LDADD = libgslerr.la ../test/libgsltest.la ../utils/libutils.la
+test_LDADD = libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
