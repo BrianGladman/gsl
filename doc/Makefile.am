@@ -2,7 +2,7 @@
 
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
-gsl_ref_TEXINFOS = err.texi fft.texi random.texi roots.texi roots-high.texi roots-low.texi statistics.texi specfunc.texi siman.texi vectors.texi debug.texi
+gsl_ref_TEXINFOS = err.texi fft.texi random.texi roots.texi roots-high.texi roots-low.texi statistics.texi specfunc.texi siman.texi vectors.texi debug.texi histogram.texi
 
 noinst_DATA = siman-test.eps siman-energy.eps 12-cities.eps \
 	initial-route.eps final-route.eps \
