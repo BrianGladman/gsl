@@ -39,7 +39,7 @@
 
    */
 
-int
+static int
 qrsolv (gsl_matrix * r, const gsl_permutation * p, const double lambda, 
         const gsl_vector * diag, const gsl_vector * qtb, 
         gsl_vector * x, gsl_vector * sdiag, gsl_vector * wa)

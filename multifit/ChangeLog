@@ -1,3 +1,7 @@
+Mon Apr 23 13:40:04 2001  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qrsolv.c (qrsolv): made function static so it is not exported
+
 Wed Apr 18 13:39:33 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lmpar.c (compute_newton_direction): moved final rescaling inside
