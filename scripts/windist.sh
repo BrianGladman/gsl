@@ -21,7 +21,7 @@ tar xvfz $tarfile
   cd html ; 
   ../../../doc/texi2html -htmlhelp -verbose ../gsl-ref.texi ; )
   cp -a ../msvc . ;
- (cd msvc ; rm -rf usr *~ demo/*~ ; make ; cp -a gsl-ref.hhp ../doc/html; )
+ (cd msvc ; rm -rf usr *~ demo/*~ demo/a.out ; make ; cp -a gsl-ref.hhp ../doc/html; )
 ) 
 
 if [ $? != 0 ] ; then
