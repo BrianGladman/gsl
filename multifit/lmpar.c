@@ -267,7 +267,14 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
   {
     double wnorm = enorm (w);
     double phider = wnorm * wnorm;
-    par_lower = fp / (delta * phider);
+
+    /* w == zero if r rank-deficient, 
+       then set lower bound to zero form MINPACK, lmder.f 
+       Hans E. Plesser 2002-02-25 (hans.plesser@itf.nlh.no) */
+    if ( wnorm > 0 )
+      par_lower = fp / (delta * phider);
+    else
+      par_lower = 0.0;
   }
 
 #ifdef DEBUG

@@ -1,3 +1,11 @@
+Thu Feb 28 20:15:33 2002  Brian Gough  <bjg@network-theory.co.uk>
+
+	* lmiterate.c (iterate): return immediately if evaluation raised
+ 	error (Hans E. Plesser)
+
+	* lmpar.c (lmpar): avoid division by zero for w=0 in rank
+ 	deficient case
+
 Mon Oct  8 19:25:55 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added extra nist tests

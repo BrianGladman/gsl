@@ -126,7 +126,7 @@ multiroots
 * Jungemann Markus <Markus.Jungemann@de.bosch.com> documentation fixes
 
 * Hans E. Plesser (hans dot plesser at itf dot nlh dot no) more
-reliable implementation of gamma_inc
+reliable implementation of gamma_inc, multifit bug fixes
 
 * Arin Chaudhuri <achaudh@unity.ncsu.edu> documentation bug reports
 

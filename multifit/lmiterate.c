@@ -69,8 +69,12 @@ lm_iteration:
     }
 
   /* Evaluate function at x + p */
-
-  GSL_MULTIFIT_FN_EVAL_F (fdf, x_trial, f_trial);
+  /* return immediately if evaluation raised error */
+  {
+    int status = GSL_MULTIFIT_FN_EVAL_F (fdf, x_trial, f_trial);
+    if (status)
+      return status;
+  }
 
   fnorm1 = enorm (f_trial);
 
@@ -159,7 +163,12 @@ lm_iteration:
       gsl_vector_memcpy (x, x_trial);
       gsl_vector_memcpy (f, f_trial);
 
-      GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+      /* return immediately if evaluation raised error */
+      {
+        int status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+        if (status)
+          return status;
+      }
 
       /* wa2_j  = diag_j * x_j */
       state->xnorm = scaled_enorm(diag, x);
