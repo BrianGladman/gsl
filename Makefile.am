@@ -44,7 +44,7 @@ libgsl.a: err/libgslerr.a err/libgsltest.a sys/libgslsys.a ieee-utils/libgslieee
 	$(AR) q libgsl.a randist/bernoulli.o randist/beta.o randist/binomial.o randist/cauchy.o randist/chisq.o randist/discrete.o randist/erlang.o randist/exponential.o randist/exppow.o randist/fdist.o randist/flat.o randist/gamma.o randist/gauss.o randist/geometric.o randist/gumbel.o randist/hyperg.o randist/laplace.o randist/levy.o randist/logarithmic.o randist/logistic.o randist/lognormal.o randist/nbinomial.o randist/pareto.o randist/pascal.o randist/poisson.o randist/rayleigh.o randist/shuffle.o randist/sphere.o randist/tdist.o randist/weibull.o
 	$(AR) q libgsl.a fft/compare.o fft/dft.o fft/c.o fft/c_float.o fft/factorize.o fft/hc.o fft/real.o
 	$(AR) q libgsl.a poly/solve_quadratic.o poly/solve_cubic.o poly/zsolve_quadratic.o poly/zsolve_cubic.o
-	$(AR) q libgsl.a roots/bisection.o roots/brent.o roots/falsepos.o roots/secant.o roots/newton.o
+	$(AR) q libgsl.a roots/bisection.o roots/brent.o roots/falsepos.o roots/newton.o roots/secant.o roots/steffenson.o roots/convergence.o roots/fsolver.o roots/fdfsolver.o
 	$(AR) q libgsl.a statistics/mean.o statistics/variance.o statistics/absdev.o statistics/skew.o statistics/kurtosis.o statistics/lag1.o statistics/p_variance.o statistics/minmax.o statistics/ttest.o statistics/sort.o statistics/median.o statistics/quantiles.o
 	$(AR) q libgsl.a siman/siman.o
 	$(AR) q libgsl.a sum/levin_u.o sum/levin_uerr.o
