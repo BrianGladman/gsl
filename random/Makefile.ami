@@ -40,6 +40,7 @@ ALLRAN= taus mrg cmrg uni uni32 zuf rand
 include_HEADERS= gsl_ran.h gsl_ran_switch.h
 
 test_switch_SOURCES= test-switch.c switch.c 
+test_switch_LDADD=../err/libgsltest.a ../utils/libutils.a
 
 switch.c gsl_ran_switch.h:
 	./makesrc --switch
