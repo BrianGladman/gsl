@@ -21,7 +21,7 @@ Cambridge, MA 02139, USA.  */
 #include <limits.h>
 #include <stddef.h>
 #include <stdlib.h>
-
+#include <errno.h>
 
 #ifndef	UNSIGNED
 #define	UNSIGNED	0
@@ -143,9 +143,7 @@ strtol (nptr, endptr, base)
 
   if (overflow)
     {
-        /* Commented out by jt since GSL doesn't have errno:
-           errno = ERANGE;
-        */
+      errno = ERANGE;
 #if	UNSIGNED
       return ULONG_MAX;
 #else

@@ -29,8 +29,11 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-extern void *malloc (), *realloc ();
-static void memory_error_and_abort ();
+extern void *malloc (int), *realloc (void *, int);
+static void memory_error_and_abort (const char *);
+
+extern void *xmalloc (int), *xrealloc (void *, int);
+
 
 /* **************************************************************** */
 /*								    */
@@ -41,9 +44,9 @@ static void memory_error_and_abort ();
 /* Return a pointer to free()able block of memory large enough
    to hold BYTES number of bytes.  If the memory cannot be allocated,
    print an error message and abort. */
+
 void *
-xmalloc (bytes)
-     int bytes;
+xmalloc (int bytes)
 {
   void *temp = malloc (bytes);
 
@@ -53,9 +56,7 @@ xmalloc (bytes)
 }
 
 void *
-xrealloc (pointer, bytes)
-     void *pointer;
-     int bytes;
+xrealloc (void *pointer, int bytes)
 {
   void *temp;
 
@@ -71,8 +72,7 @@ xrealloc (pointer, bytes)
 }
 
 static void
-memory_error_and_abort (fname)
-     char *fname;
+memory_error_and_abort (const char * fname)
 {
   fprintf (stderr, "%s: Out of virtual memory!\n", fname);
   abort ();
