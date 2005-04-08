@@ -264,7 +264,7 @@ rk8pd_apply (void *vstate,
 
       if (s != GSL_SUCCESS)
 	{
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 
@@ -277,7 +277,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -290,7 +290,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -303,7 +303,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -316,7 +316,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -329,7 +329,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -344,7 +344,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -359,7 +359,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -374,7 +374,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -390,7 +390,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -406,7 +406,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -422,7 +422,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -439,7 +439,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -463,7 +463,7 @@ rk8pd_apply (void *vstate,
 	{
 	  /* Restore initial values */
 	  DBL_MEMCPY (y, y0, dim);
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 

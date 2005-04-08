@@ -283,7 +283,7 @@ bsimp_step_local (void *vstate,
 
   if (status)
     {
-      return GSL_EBADFUNC;
+      return status;
     }
 
   for (n_inter = 1; n_inter < n_step; n_inter++)
@@ -315,7 +315,7 @@ bsimp_step_local (void *vstate,
 
       if (status)
         {
-          return GSL_EBADFUNC;
+          return status;
         }
     }
 
@@ -435,7 +435,7 @@ bsimp_apply (void *vstate,
 
       if (s != GSL_SUCCESS)
 	{
-          return GSL_EBADFUNC;
+          return s;
 	}
     }
 
@@ -445,7 +445,7 @@ bsimp_apply (void *vstate,
   
     if (s != GSL_SUCCESS)
       {
-        return GSL_EBADFUNC;
+        return s;
       }
   }
 
@@ -466,16 +466,11 @@ bsimp_apply (void *vstate,
                                      y_extrap_sequence, 
                                      sys);
 
-      if (status == GSL_EBADFUNC) 
-        {
-          return GSL_EBADFUNC;
-        }
-
       if (status == GSL_EFAILED)
         {
           /* If the local step fails, set the error to infinity in
              order to force a reduction in the step size */
-
+	  
           for (i = 0; i < dim; i++)
             {
               yerr[i] = GSL_POSINF;
@@ -483,7 +478,12 @@ bsimp_apply (void *vstate,
 
           break;
         }
-
+      
+      else if (status != GSL_SUCCESS)
+	{
+	  return status;
+	}
+      
       x[k] = x_k;
 
       poly_extrap (d, x, k, x_k, y_extrap_sequence, y, yerr, extrap_work, dim);
@@ -499,7 +499,7 @@ bsimp_apply (void *vstate,
         {
           DBL_MEMCPY (y, y_save, dim);
           DBL_MEMCPY (yerr, yerr_save, dim);
-          return GSL_EBADFUNC;
+          return s;
         }
     }
 

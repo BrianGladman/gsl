@@ -1,3 +1,8 @@
+2005-04-08  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Fixed all functions to consistently return status instead of
+	GSL_EBADFUNC.
+
 2004-12-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_compare_vanderpol): avoid variable size array

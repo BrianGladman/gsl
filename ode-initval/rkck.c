@@ -213,7 +213,7 @@ rkck_apply (void *vstate,
       
       if (s != GSL_SUCCESS)
 	{
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 
@@ -226,7 +226,7 @@ rkck_apply (void *vstate,
       
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -239,7 +239,7 @@ rkck_apply (void *vstate,
       
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -252,7 +252,7 @@ rkck_apply (void *vstate,
     
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -267,7 +267,7 @@ rkck_apply (void *vstate,
       
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -282,7 +282,7 @@ rkck_apply (void *vstate,
       
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -302,7 +302,7 @@ rkck_apply (void *vstate,
 	{
 	  /* Restore initial values */
 	  DBL_MEMCPY (y, y0, dim);
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 

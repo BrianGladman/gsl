@@ -191,7 +191,7 @@ rk4imp_step (double *y, rk4imp_state_t *state,
 	
 	if (s != GSL_SUCCESS)
 	  {
-	    return GSL_EBADFUNC;
+	    return s;
 	  }    
       }
       {
@@ -200,7 +200,7 @@ rk4imp_step (double *y, rk4imp_state_t *state,
 	
 	if (s != GSL_SUCCESS)
 	  {
-	    return GSL_EBADFUNC;
+	    return s;
 	  }    
       }
     }
@@ -253,7 +253,7 @@ rk4imp_apply (void *vstate,
 
       if (s != GSL_SUCCESS)
         {
-          return GSL_EBADFUNC;
+          return s;
         }
     }
 
@@ -268,7 +268,7 @@ rk4imp_apply (void *vstate,
 
     if (s != GSL_SUCCESS) 
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
   
@@ -281,7 +281,7 @@ rk4imp_apply (void *vstate,
       {
 	/* Restore original y vector */
 	DBL_MEMCPY (y, y0_orig, dim);
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -294,7 +294,7 @@ rk4imp_apply (void *vstate,
       {
 	/* Restore original y vector */
 	DBL_MEMCPY (y, y0_orig, dim);
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -307,7 +307,7 @@ rk4imp_apply (void *vstate,
       {
 	/* Restore original y vector */
 	DBL_MEMCPY (y, y0_orig, dim);
-	return GSL_EBADFUNC;
+	return s;
       }
   }
   
@@ -320,7 +320,7 @@ rk4imp_apply (void *vstate,
       if (s != GSL_SUCCESS) {
 	/* Restore original y vector */
 	DBL_MEMCPY (y, y0_orig, dim);
-	return GSL_EBADFUNC;
+	return s;
       } 
     }
     

@@ -130,7 +130,7 @@ gear1_step (double *y, gear1_state_t *state,
 
       if (s != GSL_SUCCESS)
 	{
-	  return GSL_EBADFUNC;
+	  return s;
 	}     
 
       for (i=0; i<dim; i++) 

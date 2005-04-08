@@ -11,6 +11,9 @@ gsl_blas_{s,d,c,z}syrk and gsl_blas_{c,z}herk for non-square matrices.
 
 ** Configure now checks for presence of ieeefp.h if needed.
 
+** Differential equation solvers now propagate error codes returned
+from user-defined functions to the top-level in all cases.
+
 * What was new in gsl-1.6:
 
 ** Added a new wavelet directory, with 1-dimensional and 2-dimensional

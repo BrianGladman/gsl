@@ -147,7 +147,7 @@ gsl_odeiv_evolve_apply (gsl_odeiv_evolve * e,
 
       if (status) 
         {
-          return GSL_EBADFUNC;
+          return status;
         }
     }
 

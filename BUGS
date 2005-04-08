@@ -264,13 +264,6 @@ gsl_vector      *v      = gsl_vector_calloc(3);
         return 0;
 }
 ----------------------------------------------------------------------
-BUG#33 -- odes do not propage error codes consistently
-
-error codes from user functions should be propagated unchanged not
-replaced with EBADFUNC.  Possibly this is also the case in
-min/multimin/roots/multiroots.
-
-----------------------------------------------------------------------
 BUG#34 -- gsl_sf_bessel_yl_array should handle lmax=0
 
 From: Kort Travis <travis@physik.uni-leipzig.de>

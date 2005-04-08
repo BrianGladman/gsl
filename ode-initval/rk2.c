@@ -127,7 +127,7 @@ rk2_apply (void *vstate,
 
       if (s != GSL_SUCCESS)
 	{
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 
@@ -144,7 +144,7 @@ rk2_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -162,7 +162,7 @@ rk2_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -190,7 +190,7 @@ rk2_apply (void *vstate,
 	  /* Restore original values */
 	  DBL_MEMCPY (y, ytmp, dim);
 	  
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 

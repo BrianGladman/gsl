@@ -144,7 +144,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -160,7 +160,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -176,7 +176,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return GSL_EBADFUNC;
+	return s;
       }
   }
 
@@ -221,7 +221,7 @@ rk4_apply (void *vstate,
 
       if (s != GSL_SUCCESS)
 	{
-	  return GSL_EBADFUNC;
+	  return s;
 	}
     }
 
@@ -267,7 +267,7 @@ rk4_apply (void *vstate,
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, y0, dim);
-	return GSL_EBADFUNC;
+	return s;
       }
   }
   
@@ -297,7 +297,7 @@ rk4_apply (void *vstate,
       {
 	/* Restore original values */
 	DBL_MEMCPY (y, k1, dim);
-	return GSL_EBADFUNC;
+	return s;
       }
   }
   

@@ -191,7 +191,7 @@ rk2simp_step (double *y, rk2simp_state_t * state,
 
   if (s != GSL_SUCCESS)
     {
-      return GSL_EBADFUNC;
+      return s;
     }
 
   gsl_matrix_scale (&J.matrix, -h / 2.0);
@@ -212,7 +212,7 @@ rk2simp_step (double *y, rk2simp_state_t * state,
 
   if (s != GSL_SUCCESS)
     {
-      return GSL_EBADFUNC;
+      return s;
     }
 
   /* Calculate Y1 = y0 + h/2 * ((1-h/2 * df/dy)^-1) ytmp */
@@ -235,7 +235,7 @@ rk2simp_step (double *y, rk2simp_state_t * state,
 
   if (s != GSL_SUCCESS)
     {
-      return GSL_EBADFUNC;
+      return s;
     }
 
   for (i = 0; i < dim; i++)
@@ -314,7 +314,7 @@ rk2simp_apply (void *vstate, size_t dim, double t, double h,
         {
           /* Restore original y vector */
           DBL_MEMCPY (y, y0_orig, dim);
-          return GSL_EBADFUNC;
+          return s;
         }
     }
 
