@@ -33,7 +33,7 @@ FUNCTION (my, downheap) (BASE * data, const size_t stride, const size_t N, size_
           j++;
         }
 
-      if (v >= data[j * stride])
+      if (!(v < data[j * stride]))  /* avoid infinite loop if nan */
         {
           break;
         }

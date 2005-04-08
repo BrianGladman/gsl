@@ -1,3 +1,9 @@
+2005-04-08  Brian Gough  <bjg@network-theory.co.uk>
+
+	* sortvecind_source.c sortvec_source.c: write tests in such a way
+	as to avoid an infinite loop if nan, by always comparing in the
+	same direction (note that nan < x and nan > x are both false)
+
 Tue Jun 26 12:06:58 2001  Brian Gough  <bjg@network-theory.co.uk>
 
 	* subset_source. subsetind_source.c: make prototypes match header

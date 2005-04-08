@@ -33,7 +33,7 @@ FUNCTION (index, downheap) (size_t * p, const BASE * data, const size_t stride, 
           j++;
         }
 
-      if (data[pki * stride] >= data[p[j] * stride])
+      if (!(data[pki * stride] < data[p[j] * stride])) /* avoid infinite loop if nan */
         {
           break;
         }
