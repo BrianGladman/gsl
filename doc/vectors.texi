@@ -213,7 +213,7 @@ elements are located (if any).  If the vector owns this block then the
 @var{owner} field is set to one and the block will be deallocated when the
 vector is freed.  If the vector points to a block owned by another
 object then the @var{owner} field is zero and any underlying block will not be
-deallocated.
+deallocated with the vector.
 
 The functions for allocating and accessing vectors are defined in
 @file{gsl_vector.h}
@@ -268,47 +268,49 @@ object and will not be deallocated.
 @subsection Accessing vector elements
 @cindex vectors, range-checking
 @cindex range-checking for vectors
-@cindex Checkergcc
+@cindex bounds checking, extension to GCC
 @cindex gcc extensions, range-checking
 @cindex Fortran range checking, equivalent in gcc
 
 Unlike @sc{fortran} compilers, C compilers do not usually provide
 support for range checking of vectors and matrices.  Range checking is
-available in the GNU C Compiler extension @code{checkergcc} but it is
-not available on every platform.  The functions @code{gsl_vector_get}
-and @code{gsl_vector_set} can perform portable range checking for you
-and report an error if you attempt to access elements outside the
-allowed range.
+available in the GNU C Compiler bounds-checking extension, but it is not
+part of the default installation of GCC.  The functions
+@code{gsl_vector_get} and @code{gsl_vector_set} can perform portable
+range checking for you and report an error if you attempt to access
+elements outside the allowed range.
 
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
 eliminate function-call overhead.  You must compile your program with
-the macro @code{HAVE_INLINE} defined to use these functions.  If
-necessary you can turn off range checking completely without modifying
-any source files by recompiling your program with the preprocessor
-definition @code{GSL_RANGE_CHECK_OFF}.  Provided your compiler supports
-inline functions the effect of turning off range checking is to replace
-calls to @code{gsl_vector_get(v,i)} by @code{v->data[i*v->stride]} and
-calls to @code{gsl_vector_set(v,i,x)} by @code{v->data[i*v->stride]=x}.
-Thus there should be no performance penalty for using the range checking
-functions when range checking is turned off.
+the macro @code{HAVE_INLINE} defined to use these functions.  
+
+If necessary you can turn off range checking completely without
+modifying any source files by recompiling your program with the
+preprocessor definition @code{GSL_RANGE_CHECK_OFF}.  Provided your
+compiler supports inline functions the effect of turning off range
+checking is to replace calls to @code{gsl_vector_get(v,i)} by
+@code{v->data[i*v->stride]} and calls to @code{gsl_vector_set(v,i,x)} by
+@code{v->data[i*v->stride]=x}.  Thus there should be no performance
+penalty for using the range checking functions when range checking is
+turned off.
 
 @deftypefun double gsl_vector_get (const gsl_vector * @var{v}, size_t @var{i})
 This function returns the @var{i}-th element of a vector @var{v}.  If
-@var{i} lies outside the allowed range of 0 to @var{n-1} then the error
+@var{i} lies outside the allowed range of 0 to @math{@var{n}-1} then the error
 handler is invoked and 0 is returned.
 @end deftypefun
 
 @deftypefun void gsl_vector_set (gsl_vector * @var{v}, size_t @var{i}, double @var{x})
 This function sets the value of the @var{i}-th element of a vector
 @var{v} to @var{x}.  If @var{i} lies outside the allowed range of 0 to
-@var{n-1} then the error handler is invoked.
+@math{@var{n}-1} then the error handler is invoked.
 @end deftypefun
 
 @deftypefun {double *} gsl_vector_ptr (gsl_vector * @var{v}, size_t @var{i})
 @deftypefunx {const double *} gsl_vector_const_ptr (const gsl_vector * @var{v}, size_t @var{i})
 These functions return a pointer to the @var{i}-th element of a vector
-@var{v}.  If @var{i} lies outside the allowed range of 0 to @var{n-1}
+@var{v}.  If @var{i} lies outside the allowed range of 0 to @math{@var{n}-1}
 then the error handler is invoked and a null pointer is returned.
 @end deftypefun
 
@@ -393,12 +395,12 @@ of the view object.  A pointer to a vector of type @code{gsl_vector *}
 or @code{const gsl_vector *} can be obtained by taking the address of
 this component with the @code{&} operator.  
 
-When using this pointer, it is important to ensure that the view itself
+When using this pointer it is important to ensure that the view itself
 remains in scope---the simplest way to do so is by always writing the
-pointer as @code{&}@var{view}@code{.vector}, and not storing this value
-in another pointer variable.  
+pointer as @code{&}@var{view}@code{.vector}, and never storing this value
+in another variable.  
 
-@deftypefun gsl_vector_view gsl_vector_subvector (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{n})
+@deftypefun gsl_vector_view gsl_vector_subvector (gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n})
 @deftypefunx {gsl_vector_const_view} gsl_vector_const_subvector (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{n})
 These functions return a vector view of a subvector of another vector
 @var{v}.  The start of the new vector is offset by @var{offset} elements
@@ -430,7 +432,7 @@ declared @code{const}.
 @end deftypefun
 
 
-@deftypefun gsl_vector_view gsl_vector_subvector_with_stride (gsl_vector *@var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
+@deftypefun gsl_vector_view gsl_vector_subvector_with_stride (gsl_vector * @var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
 @deftypefunx {gsl_vector_const_view} gsl_vector_const_subvector_with_stride (const gsl_vector * @var{v}, size_t @var{offset}, size_t @var{stride}, size_t @var{n})
 These functions return a vector view of a subvector of another vector
 @var{v} with an additional stride argument. The subvector is formed in
@@ -459,7 +461,7 @@ gsl_vector_set_zero (&v_even.vector);
 A vector view can be passed to any subroutine which takes a vector
 argument just as a directly allocated vector would be, using
 @code{&}@var{view}@code{.vector}.  For example, the following code
-computes the norm of odd elements of @code{v} using the @sc{blas}
+computes the norm of the odd elements of @code{v} using the @sc{blas}
 routine @sc{dnrm2},
 
 @example
@@ -473,8 +475,8 @@ to @code{gsl_vector_subvector_with_stride} but can be used for vectors
 which are declared @code{const}.
 @end deftypefun
 
-@deftypefun gsl_vector_view gsl_vector_complex_real (gsl_vector_complex *@var{v})
-@deftypefunx {gsl_vector_const_view} gsl_vector_complex_const_real (const gsl_vector_complex *@var{v})
+@deftypefun gsl_vector_view gsl_vector_complex_real (gsl_vector_complex * @var{v})
+@deftypefunx {gsl_vector_const_view} gsl_vector_complex_const_real (const gsl_vector_complex * @var{v})
 These functions return a vector view of the real parts of the complex
 vector @var{v}.
 
@@ -483,8 +485,8 @@ The function @code{gsl_vector_complex_const_real} is equivalent to
 declared @code{const}.
 @end deftypefun
 
-@deftypefun gsl_vector_view gsl_vector_complex_imag (gsl_vector_complex *@var{v})
-@deftypefunx {gsl_vector_const_view} gsl_vector_complex_const_imag (const gsl_vector_complex *@var{v})
+@deftypefun gsl_vector_view gsl_vector_complex_imag (gsl_vector_complex * @var{v})
+@deftypefunx {gsl_vector_const_view} gsl_vector_complex_const_imag (const gsl_vector_complex * @var{v})
 These functions return a vector view of the imaginary parts of the
 complex vector @var{v}.
 
@@ -493,8 +495,8 @@ The function @code{gsl_vector_complex_const_imag} is equivalent to
 declared @code{const}.
 @end deftypefun
 
-@deftypefun gsl_vector_view gsl_vector_view_array (double *@var{base}, size_t @var{n}) 
-@deftypefunx {gsl_vector_const_view} gsl_vector_const_view_array (const double *@var{base}, size_t @var{n})
+@deftypefun gsl_vector_view gsl_vector_view_array (double * @var{base}, size_t @var{n}) 
+@deftypefunx {gsl_vector_const_view} gsl_vector_const_view_array (const double * @var{base}, size_t @var{n})
 These functions return a vector view of an array.  The start of the new
 vector is given by @var{base} and has @var{n} elements.  Mathematically,
 the @var{i}-th element of the new vector @var{v'} is given by,
@@ -545,14 +547,14 @@ for arrays which are declared @code{const}.
 @comment @node Modifying subvector views
 @comment @subsection Modifying subvector views
 @comment 
-@comment @deftypefun int gsl_vector_view_from_vector (gsl_vector *@var{v}, gsl_vector *@var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
+@comment @deftypefun int gsl_vector_view_from_vector (gsl_vector * @var{v}, gsl_vector * @var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 @comment This function modifies and existing vector view @var{v} to form a new
 @comment view of a vector @var{base}, starting from element @var{offset}.  The
 @comment vector has @var{n} elements separated by stride @var{stride}.  Any
 @comment existing view in @var{v} will be lost as a result of this function.
 @comment @end deftypefun
 @comment 
-@comment @deftypefun int gsl_vector_view_from_array (gsl_vector *@var{v}, double *@var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
+@comment @deftypefun int gsl_vector_view_from_array (gsl_vector * @var{v}, double * @var{base}, size_t @var{offset}, size_t @var{n}, size_t @var{stride})
 @comment This function modifies and existing vector view @var{v} to form a new
 @comment view of an array @var{base}, starting from element @var{offset}.  The
 @comment vector has @var{n} elements separated by stride @var{stride}.  Any
@@ -746,11 +748,13 @@ outside the range of the vector @code{v}, and the error is trapped by
 the range-checking code in @code{gsl_vector_get}.
 
 @example
+$ ./a.out
 v_0 = 1.23
 v_1 = 2.23
 v_2 = 3.23
 gsl: vector_source.c:12: ERROR: index out of range
-IOT trap/Abort (core dumped)
+Default GSL error handler invoked.
+Aborted (core dumped)
 @end example
 @comment
 @noindent
@@ -806,7 +810,7 @@ typedef struct
 @noindent
 Matrices are stored in row-major order, meaning that each row of
 elements forms a contiguous block in memory.  This is the standard
-"C-language ordering" of two-dimensional arrays. Note that @sc{fortran}
+``C-language ordering'' of two-dimensional arrays. Note that @sc{fortran}
 stores arrays in column-major order. The number of rows is @var{size1}.
 The range of valid row indices runs from 0 to @code{size1-1}.  Similarly
 @var{size2} is the number of columns.  The range of valid column indices
@@ -897,7 +901,7 @@ checking system as vectors.  You can turn off range checking by recompiling
 your program with the preprocessor definition
 @code{GSL_RANGE_CHECK_OFF}.
 
-The elements of the matrix are stored in "C-order", where the second
+The elements of the matrix are stored in ``C-order'', where the second
 index moves continuously through memory.  More precisely, the element
 accessed by the function @code{gsl_matrix_get(m,i,j)} and
 @code{gsl_matrix_set(m,i,j,x)} is 
@@ -912,14 +916,14 @@ where @var{tda} is the physical row-length of the matrix.
 @deftypefun double gsl_matrix_get (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 This function returns the @math{(i,j)}-th element of a matrix
 @var{m}.  If @var{i} or @var{j} lie outside the allowed range of 0 to
-@var{n1-1} and 0 to @var{n2-1} then the error handler is invoked and 0
+@math{@var{n1}-1} and 0 to @math{@var{n2}-1} then the error handler is invoked and 0
 is returned.
 @end deftypefun
 
 @deftypefun void gsl_matrix_set (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j}, double @var{x})
 This function sets the value of the @math{(i,j)}-th element of a
 matrix @var{m} to @var{x}.  If @var{i} or @var{j} lies outside the
-allowed range of 0 to @var{n1-1} and 0 to @var{n2-1} then the error
+allowed range of 0 to @math{@var{n1}-1} and 0 to @math{@var{n2}-1} then the error
 handler is invoked.
 @end deftypefun
 
@@ -927,7 +931,7 @@ handler is invoked.
 @deftypefunx {const double *} gsl_matrix_const_ptr (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{j})
 These functions return a pointer to the @math{(i,j)}-th element of a
 matrix @var{m}.  If @var{i} or @var{j} lie outside the allowed range of
-0 to @var{n1-1} and 0 to @var{n2-1} then the error handler is invoked
+0 to @math{@var{n1}-1} and 0 to @math{@var{n2}-1} then the error handler is invoked
 and a null pointer is returned.
 @end deftypefun
 
@@ -1262,7 +1266,7 @@ These functions return a vector view of the @var{j}-th column of the
 matrix @var{m}.  The @code{data} pointer of the new vector is set to
 null if @var{j} is out of range.
 
-The function @code{gsl_vector_const_column} equivalent to
+The function @code{gsl_vector_const_column} is equivalent to
 @code{gsl_matrix_column} but can be used for matrices which are declared
 @code{const}.
 @end deftypefun
@@ -1503,6 +1507,7 @@ outside the range of the matrix @code{m}, and the error is trapped by
 the range-checking code in @code{gsl_matrix_get}.
 
 @example
+$ ./a.out
 m(0,0) = 0.23
 m(0,1) = 1.23
 m(0,2) = 2.23
@@ -1512,7 +1517,8 @@ m(1,2) = 102.23
 ...
 m(9,2) = 902.23
 gsl: matrix_source.c:13: ERROR: first index out of range
-IOT trap/Abort (core dumped)
+Default GSL error handler invoked.
+Aborted (core dumped)
 @end example
 @comment
 @noindent
@@ -1529,26 +1535,28 @@ back in using the function @code{gsl_matrix_fread} should be exactly
 equal to the original matrix.
 
 The following program demonstrates the use of vector views.  The program
-computes the column-norms of a matrix.
+computes the column norms of a matrix.
 
 @example
 @verbatiminclude examples/vectorview.c
 @end example
 @noindent
-Here is the output of the program, which can be confirmed using @sc{gnu
-Octave},
+Here is the output of the program, 
 
 @example
 $ ./a.out
 @verbatiminclude examples/vectorview.out
 @end example
+@noindent
+The results can be confirmed using @sc{gnu octave},
 
 @example
+$ octave
+GNU Octave, version 2.0.16.92
 octave> m = sin(0:9)' * ones(1,10) 
                + ones(10,1) * cos(0:9); 
 octave> sqrt(sum(m.^2))
 ans =
-
   4.3146  3.1205  2.1932  3.2611  2.5342  2.5728
   4.2047  3.6520  2.0852  3.0731
 @end example

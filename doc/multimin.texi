@@ -31,7 +31,6 @@ minimization functions and related declarations.
 
 The problem of multidimensional minimization requires finding a point
 @math{x} such that the scalar function,
-
 @tex
 \beforedisplay
 $$
@@ -40,6 +39,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f(x_1, @dots{}, x_n)
 @end example
@@ -48,11 +48,11 @@ f(x_1, @dots{}, x_n)
 takes a value which is lower than at any neighboring point. For smooth
 functions the gradient @math{g = \nabla f} vanishes at the minimum. In
 general there are no bracketing methods available for the
-minimization of @math{n}-dimensional functions.  All algorithms
+minimization of @math{n}-dimensional functions.  The algorithms
 proceed from an initial guess using a search algorithm which attempts
 to move in a downhill direction. 
 
-All algorithms making use of the gradient of the function perform a
+Algorithms making use of the gradient of the function perform a
 one-dimensional line minimisation along this direction until the lowest
 point is found to a suitable tolerance.  The search direction is then
 updated with local information from the function and its derivatives,
@@ -65,10 +65,10 @@ maintains @math{n+1} trial parameter vectors as the vertices of a
 improve the worst vertex by a simple geometrical transformation until
 the size of the simplex falls below a given tolerance.
 
-Several minimization algorithms are available within a single
-framework. The user provides a high-level driver for the algorithms, and
-the library provides the individual functions necessary for each of the
-steps.  There are three main phases of the iteration.  The steps are,
+Both types of algorithms use a standard framework. The user provides a
+high-level driver for the algorithms, and the library provides the
+individual functions necessary for each of the steps.  There are three
+main phases of the iteration.  The steps are,
 
 @itemize @bullet
 @item
@@ -80,7 +80,6 @@ update @var{s} using the iteration @var{T}
 @item
 test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
-
 @noindent
 Each iteration step consists either of an improvement to the
 line-minimisation in the current direction or an update to the search
@@ -110,8 +109,8 @@ The following function initializes a multidimensional minimizer.  The
 minimizer itself depends only on the dimension of the problem and the
 algorithm and can be reused for different problems.
 
-@deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type *@var{T}, size_t @var{n})
-@deftypefunx {gsl_multimin_fminimizer *} gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type *@var{T}, size_t @var{n})
+@deftypefun {gsl_multimin_fdfminimizer *} gsl_multimin_fdfminimizer_alloc (const gsl_multimin_fdfminimizer_type * @var{T}, size_t @var{n})
+@deftypefunx {gsl_multimin_fminimizer *} gsl_multimin_fminimizer_alloc (const gsl_multimin_fminimizer_type * @var{T}, size_t @var{n})
 This function returns a pointer to a newly allocated instance of a
 minimizer of type @var{T} for an @var{n}-dimension function.  If there
 is insufficient memory to create the minimizer then the function returns
@@ -119,7 +118,7 @@ a null pointer and the error handler is invoked with an error code of
 @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * @var{s}, gsl_multimin_function_fdf *@var{fdf}, const gsl_vector * @var{x}, double @var{step_size}, double @var{tol})
+@deftypefun int gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * @var{s}, gsl_multimin_function_fdf * @var{fdf}, const gsl_vector * @var{x}, double @var{step_size}, double @var{tol})
 This function initializes the minimizer @var{s} to minimize the function
 @var{fdf} starting from the initial point @var{x}.  The size of the
 first trial step is given by @var{step_size}.  The accuracy of the line
@@ -130,7 +129,7 @@ orthogonal to the current search direction @math{p} to a relative
 accuracy of @var{tol}, where @c{$p\cdot g < tol |p| |g|$} 
 @math{dot(p,g) < tol |p| |g|}.
 
-@deftypefunx int gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * @var{s}, gsl_multimin_function *@var{f}, const gsl_vector * @var{x}, const gsl_vector * @var{step_size})
+@deftypefunx int gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * @var{s}, gsl_multimin_function * @var{f}, const gsl_vector * @var{x}, const gsl_vector * @var{step_size})
 This function initializes the minimizer @var{s} to minimize the function
 @var{f}, starting from the initial point
 @var{x}. The size of the initial trial steps is given in vector
@@ -138,8 +137,8 @@ This function initializes the minimizer @var{s} to minimize the function
 method used. 
 @end deftypefun
 
-@deftypefun void gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer *@var{s})
-@deftypefunx void gsl_multimin_fminimizer_free (gsl_multimin_fminimizer *@var{s})
+@deftypefun void gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer * @var{s})
+@deftypefunx void gsl_multimin_fminimizer_free (gsl_multimin_fminimizer * @var{s})
 This function frees all the memory associated with the minimizer
 @var{s}.
 @end deftypefun
@@ -164,7 +163,7 @@ minimizers to operate on.  You may also need to provide a routine which
 calculates the gradient of the function and a third routine which
 calculates both the function value and the gradient together.  In order
 to allow for general parameters the functions are defined by the
-following data type:
+following data types:
 
 @deftp {Data Type} gsl_multimin_function_fdf
 This data type defines a general function of @math{n} variables with
@@ -283,8 +282,8 @@ function performs one iteration to update the state of the minimizer.
 The same function works for all minimizers so that different methods can
 be substituted at runtime without modifications to the code.
 
-@deftypefun int gsl_multimin_fdfminimizer_iterate (gsl_multimin_fdfminimizer *@var{s})
-@deftypefunx int gsl_multimin_fminimizer_iterate (gsl_multimin_fminimizer *@var{s})
+@deftypefun int gsl_multimin_fdfminimizer_iterate (gsl_multimin_fdfminimizer * @var{s})
+@deftypefunx int gsl_multimin_fminimizer_iterate (gsl_multimin_fminimizer * @var{s})
 These functions perform a single iteration of the minimizer @var{s}.  If
 the iteration encounters an unexpected problem then an error code will
 be returned.
@@ -305,7 +304,7 @@ minimum, the value of the function at that point, its gradient,
 and minimizer specific characteristic size for the minimizer @var{s}.
 @end deftypefun
 
-@deftypefun int gsl_multimin_fdfminimizer_restart (gsl_multimin_fdfminimizer *@var{s})
+@deftypefun int gsl_multimin_fdfminimizer_restart (gsl_multimin_fdfminimizer * @var{s})
 This function resets the minimizer @var{s} to use the current point as a
 new starting point.
 @end deftypefun
@@ -326,7 +325,6 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
-
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the precision of the current result.
@@ -336,7 +334,6 @@ This function tests the norm of the gradient @var{g} against the
 absolute tolerance @var{epsabs}. The gradient of a multidimensional
 function goes to zero at a minimum. The test returns @code{GSL_SUCCESS}
 if the following condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -345,6 +342,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |g| < epsabs
 @end example
@@ -369,20 +367,22 @@ otherwise @code{GSL_CONTINUE} is returned.
 
 There are several minimization methods available. The best choice of
 algorithm depends on the problem.  All of the algorithms use the value
-of the function and most of its gradient at each evaluation point, too.
+of the function and its gradient at each evaluation point, except for
+the Simplex algorithm which uses function values only.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
 @cindex Fletcher-Reeves conjugate gradient algorithm, minimization
 @cindex Conjugate gradient algorithm, minimization
-@cindex Minimization, conjugate gradient algorithm
+@cindex minimization, conjugate gradient algorithm
 This is the Fletcher-Reeves conjugate gradient algorithm. The conjugate
 gradient algorithm proceeds as a succession of line minimizations. The
 sequence of search directions is used to build up an approximation to the
-curvature of the function in the neighborhood of the minimum.  An
-initial search direction @var{p} is chosen using the gradient and line
+curvature of the function in the neighborhood of the minimum.  
+
+An initial search direction @var{p} is chosen using the gradient, and line
 minimization is carried out in that direction.  The accuracy of the line
-minimization is specified by the parameter @var{tol}.  At the minimum
-along this line the function gradient @var{g} and the search direction
+minimization is specified by the parameter @var{tol}.  The minimum
+along this line occurs when the function gradient @var{g} and the search direction
 @var{p} are orthogonal.  The line minimization terminates when
 @c{$p\cdot g < tol |p| |g|$} 
 @math{dot(p,g) < tol |p| |g|}.  The
@@ -394,7 +394,7 @@ direction.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_pr
 @cindex Polak-Ribiere algorithm, minimization
-@cindex Minimization, Polak-Ribiere algorithm
+@cindex minimization, Polak-Ribiere algorithm
 This is the Polak-Ribiere conjugate gradient algorithm.  It is similar
 to the Fletcher-Reeves method, differing only in the choice of the
 coefficient @math{\beta}. Both methods work well when the evaluation
@@ -404,7 +404,7 @@ is well approximated by a quadratic hypersurface.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
 @cindex BFGS conjugate gradient algorithm, minimization
-@cindex Minimization, BFGS conjugate gradient algorithm
+@cindex minimization, BFGS conjugate gradient algorithm
 This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS) conjugate gradient
 algorithm.  It is a quasi-Newton method which builds up an approximation
 to the second derivatives of the function @math{f} using the difference
@@ -414,8 +414,8 @@ function minimum, assuming quadratic behavior in that region.
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
-@cindex Steepest descent algorithm, minimization
-@cindex Minimization, steepest descent algorithm
+@cindex steepest descent algorithm, minimization
+@cindex minimization, steepest descent algorithm
 The steepest descent algorithm follows the downhill gradient of the
 function at each step. When a downhill step is successful the step-size
 is increased by a factor of two.  If the downhill step leads to a higher
@@ -427,8 +427,8 @@ inefficient and is included only for demonstration purposes.
 
 @deffn {Minimizer} gsl_multimin_fminimizer_nmsimplex
 @cindex Nelder-Mead simplex algorithm for minimization
-@cindex Simplex algorithm, minimization
-@cindex Minimization, simplex algorithm
+@cindex simplex algorithm, minimization
+@cindex minimization, simplex algorithm
 This is the Simplex algorithm of Nelder and Mead. It constructs 
 @math{n} vectors @math{p_i} from the
 starting vector @var{x} and the vector @var{step_size} as follows:
@@ -446,6 +446,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p_0 = (x_0, x_1, ... , x_n) 
 p_1 = (x_0 + step_size_0, x_1, ... , x_n) 
@@ -456,7 +457,7 @@ p_n = (x_0, x_1, ... , x_n+step_size_n)
 @end ifinfo
 @noindent
 These vectors form the @math{n+1} vertices of a simplex in @math{n}
-dimensions.  On each iteration step the algorithm tries to improve
+dimensions.  On each iteration the algorithm tries to improve
 the parameter vector @math{p_i} corresponding to the highest
 function value by simple geometrical transformations.  These
 are reflection, reflection followed by expansion, contraction and multiple
@@ -697,10 +698,15 @@ further references can be found in the following book,
 @itemize @asis
 @item C.W. Ueberhuber,
 @cite{Numerical Computation (Volume 2)}, Chapter 14, Section 4.4
-"Minimization Methods", p. 325---335, Springer (1997), ISBN
+``Minimization Methods'', p.@: 325--335, Springer (1997), ISBN
 3-540-62057-5.
+@end itemize
+@noindent
+The simplex algorithm is described in the following paper, 
+
+@itemize @asis
 @item J.A. Nelder and R. Mead,
 @cite{A simplex method for function minimization}, Computer Journal
-vol. 7 (1965), 308---315.
+vol.@: 7 (1965), 308--315.
 @end itemize
 @noindent

@@ -46,10 +46,10 @@ This function reinitializes the generator @var{q} to its starting point.
 @section Sampling from a quasi-random number generator
 
 @deftypefun int gsl_qrng_get (const gsl_qrng * @var{q}, double @var{x}[])
-This function returns the next point @var{x} from the sequence generator
-@var{q}.  The space available for @var{x} must match the dimension of
-the generator.  The point @var{x} will lie in the range @math{0 < x_i <
-1} for each @math{x_i}.
+This function stores the next point from the sequence generator @var{q}
+in the array @var{x}.  The space available for @var{x} must match the
+dimension of the generator.  The point @var{x} will lie in the range
+@math{0 < x_i < 1} for each @math{x_i}.
 @end deftypefun
 
 @node Auxiliary quasi-random number generator functions
@@ -131,7 +131,9 @@ $ ./a.out
 @noindent
 It can be seen that successive points progressively fill-in the spaces
 between previous points. 
+
 @iftex
+@need 4000
 The following plot shows the distribution in the x-y plane of the first
 1024 points from the Sobol sequence,
 @sp 1
@@ -149,7 +151,8 @@ the algorithms described in the following paper,
 
 @itemize @asis
 P. Bratley and B.L. Fox and H. Niederreiter, ``Algorithm 738: Programs
-to Generate Niederreiter's Low-discrepancy Sequences'', Transactions on
-Mathematical Software, Vol. 20, No. 4, December, 1994, p. 494-495.
+to Generate Niederreiter's Low-discrepancy Sequences'', @cite{ACM
+Transactions on Mathematical Software}, Vol.@: 20, No.@: 4, December, 1994,
+p.@: 494--495.
 @end itemize
 

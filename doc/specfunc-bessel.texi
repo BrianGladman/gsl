@@ -54,7 +54,7 @@ order @var{n}, @math{J_n(x)}.
 This routine computes the values of the regular cylindrical Bessel
 functions @math{J_n(x)} for @math{n} from @var{nmin} to @var{nmax}
 inclusive, storing the results in the array @var{result_array}.  The
-values are computed using recurrence relations, for efficiency, and
+values are computed using recurrence relations for efficiency, and
 therefore may differ slightly from the exact values.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
@@ -90,7 +90,7 @@ This routine computes the values of the irregular cylindrical Bessel
 functions @math{Y_n(x)} for @math{n} from @var{nmin} to @var{nmax}
 inclusive, storing the results in the array @var{result_array}.  The
 domain of the function is @math{x>0}.  The values are computed using
-recurrence relations, for efficiency, and therefore may differ slightly
+recurrence relations for efficiency, and therefore may differ slightly
 from the exact values.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
@@ -127,7 +127,7 @@ This routine computes the values of the regular modified cylindrical
 Bessel functions @math{I_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
 @var{result_array}.  The start of the range @var{nmin} must be positive
-or zero.  The values are computed using recurrence relations, for
+or zero.  The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: nmin >=0, nmax >= nmin 
 @comment Conditions: n=nmin,...,nmax, nmin >=0, nmax >= nmin 
@@ -160,7 +160,7 @@ This routine computes the values of the scaled regular cylindrical
 Bessel functions @math{\exp(-|x|) I_n(x)} for @math{n} from
 @var{nmin} to @var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
-or zero.  The values are computed using recurrence relations, for
+or zero.  The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: nmin >=0, nmax >= nmin 
 @comment Conditions:  n=nmin,...,nmax 
@@ -202,7 +202,7 @@ Bessel functions @math{K_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
 or zero. The domain of the function is @math{x>0}. The values are
-computed using recurrence relations, for efficiency, and therefore
+computed using recurrence relations for efficiency, and therefore
 may differ slightly from the exact values.
 @comment Conditions: n=nmin,...,nmax 
 @comment Domain: x > 0.0, nmin>=0, nmax >= nmin
@@ -239,7 +239,7 @@ Bessel functions @math{\exp(x) K_n(x)} for @math{n} from @var{nmin} to
 @var{nmax} inclusive, storing the results in the array
 @var{result_array}. The start of the range @var{nmin} must be positive
 or zero.  The domain of the function is @math{x>0}. The values are
-computed using recurrence relations, for efficiency, and therefore
+computed using recurrence relations for efficiency, and therefore
 may differ slightly from the exact values.
 @comment Domain: x > 0.0, nmin >=0, nmax >= nmin 
 @comment Conditions: n=nmin,...,nmax 
@@ -289,7 +289,7 @@ functions @math{j_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
 @math{lmax >= 0} and @c{$x \geq 0$}
 @math{x >= 0}, storing the results in the array @var{result_array}.
-The values are computed using recurrence relations, for
+The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
@@ -350,7 +350,7 @@ This routine computes the values of the irregular spherical Bessel
 functions @math{y_l(x)} for @math{l} from 0 to @var{lmax}
 inclusive  for @c{$lmax \geq 0$}
 @math{lmax >= 0}, storing the results in the array @var{result_array}.
-The values are computed using recurrence relations, for
+The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
@@ -403,7 +403,7 @@ cylindrical Bessel functions @math{\exp(-|x|) i_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
 @math{lmax >= 0}, storing the results in
 the array @var{result_array}. 
-The values are computed using recurrence relations, for
+The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
@@ -458,7 +458,7 @@ spherical Bessel functions @math{\exp(x) k_l(x)} for @math{l} from
 0 to @var{lmax} inclusive for @c{$lmax \geq 0$}
 @math{lmax >= 0} and @math{x>0}, storing the results in
 the array @var{result_array}. 
-The values are computed using recurrence relations, for
+The values are computed using recurrence relations for
 efficiency, and therefore may differ slightly from the exact values.
 @comment Domain: lmax >= 0 
 @comment Conditions: l=0,1,...,lmax 
@@ -467,7 +467,7 @@ efficiency, and therefore may differ slightly from the exact values.
 
 
 @node Regular Bessel Function - Fractional Order
-@subsection Regular Bessel Function - Fractional Order
+@subsection Regular Bessel Function---Fractional Order
 @cindex Fractional Order Bessel Functions
 @cindex Bessel Functions, Fractional Order
 @cindex Regular Bessel Functions, Fractional Order
@@ -475,7 +475,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @deftypefun double gsl_sf_bessel_Jnu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Jnu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the regular cylindrical Bessel function of
-fractional order @math{nu}, @math{J_\nu(x)}.
+fractional order @math{\nu}, @math{J_\nu(x)}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
@@ -490,25 +490,25 @@ The array is over-written with the values of @math{J_\nu(x_i)}.
 
 
 @node Irregular Bessel Functions - Fractional Order
-@subsection Irregular Bessel Functions - Fractional Order
+@subsection Irregular Bessel Functions---Fractional Order
 
 @deftypefun double gsl_sf_bessel_Ynu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Ynu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the irregular cylindrical Bessel function of
-fractional order @math{nu}, @math{Y_\nu(x)}.
+fractional order @math{\nu}, @math{Y_\nu(x)}.
 @comment Exceptional Return Values: 
 @end deftypefun
 
 
 @node Regular Modified Bessel Functions - Fractional Order
-@subsection Regular Modified Bessel Functions - Fractional Order
+@subsection Regular Modified Bessel Functions---Fractional Order
 @cindex Modified Bessel Functions, Fractional Order
-@cindex Regular Modified Bessel Functions - Fractional Order
+@cindex Regular Modified Bessel Functions, Fractional Order
 
 @deftypefun double gsl_sf_bessel_Inu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Inu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the regular modified Bessel function of
-fractional order @math{nu}, @math{I_\nu(x)} for @math{x>0},
+fractional order @math{\nu}, @math{I_\nu(x)} for @math{x>0},
 @math{\nu>0}.
 @comment Domain: x >= 0, nu >= 0 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
@@ -517,7 +517,7 @@ fractional order @math{nu}, @math{I_\nu(x)} for @math{x>0},
 @deftypefun double gsl_sf_bessel_Inu_scaled (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Inu_scaled_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the scaled regular modified Bessel function of
-fractional order @math{nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
+fractional order @math{\nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
 @math{\nu>0}.
 @comment @math{ \exp(-|x|) I_@{\nu@}(x) } 
 @comment Domain: x >= 0, nu >= 0 
@@ -526,13 +526,13 @@ fractional order @math{nu}, @math{\exp(-|x|)I_\nu(x)} for @math{x>0},
 
 
 @node Irregular Modified Bessel Functions - Fractional Order
-@subsection Irregular Modified Bessel Functions - Fractional Order
+@subsection Irregular Modified Bessel Functions---Fractional Order
 @cindex Irregular Modified Bessel Functions, Fractional Order
 
 @deftypefun double gsl_sf_bessel_Knu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Knu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the irregular modified Bessel function of
-fractional order @math{nu}, @math{K_\nu(x)} for @math{x>0},
+fractional order @math{\nu}, @math{K_\nu(x)} for @math{x>0},
 @math{\nu>0}.
 @comment Domain: x > 0, nu >= 0 
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
@@ -541,7 +541,7 @@ fractional order @math{nu}, @math{K_\nu(x)} for @math{x>0},
 @deftypefun double gsl_sf_bessel_lnKnu (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_lnKnu_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the logarithm of the irregular modified Bessel
-function of fractional order @math{nu}, @math{\ln(K_\nu(x))} for
+function of fractional order @math{\nu}, @math{\ln(K_\nu(x))} for
 @math{x>0}, @math{\nu>0}. 
 @comment Domain: x > 0, nu >= 0 
 @comment Exceptional Return Values: GSL_EDOM
@@ -550,7 +550,7 @@ function of fractional order @math{nu}, @math{\ln(K_\nu(x))} for
 @deftypefun double gsl_sf_bessel_Knu_scaled (double @var{nu}, double @var{x})
 @deftypefunx int gsl_sf_bessel_Knu_scaled_e (double @var{nu}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the scaled irregular modified Bessel function of
-fractional order @math{nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
+fractional order @math{\nu}, @math{\exp(+|x|) K_\nu(x)} for @math{x>0},
 @math{\nu>0}.
 @comment Domain: x > 0, nu >= 0 
 @comment Exceptional Return Values: GSL_EDOM

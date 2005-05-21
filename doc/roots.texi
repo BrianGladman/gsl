@@ -3,8 +3,8 @@
 @cindex finding roots
 @cindex finding zeros
 @cindex roots
-@cindex solving a non-linear equation
-@cindex non-linear equation, solutions of
+@cindex solving a nonlinear equation
+@cindex nonlinear equation, solutions of
 
 This chapter describes routines for finding roots of arbitrary
 one-dimensional functions.  The library provides low level components
@@ -101,14 +101,14 @@ do not cross zero, but only touch it instantaneously.  Algorithms based
 on root bracketing will still work for odd-multiplicity roots
 (e.g. cubic, quintic, @dots{}). 
 Root polishing algorithms generally work with higher multiplicity roots,
-but at reduced rate of convergence.  In these cases the @dfn{Steffenson
+but at a reduced rate of convergence.  In these cases the @dfn{Steffenson
 algorithm} can be used to accelerate the convergence of multiple roots.
 
 While it is not absolutely required that @math{f} have a root within the
 search region, numerical root finding functions should not be used
 haphazardly to check for the @emph{existence} of roots.  There are better
 ways to do this.  Because it is easy to create situations where numerical
-root finders go awry, it is a bad idea to throw a root finder at a
+root finders can fail, it is a bad idea to throw a root finder at a
 function you do not know much about.  In general it is best to examine
 the function visually by plotting before searching for a root.
 
@@ -175,7 +175,6 @@ These functions return a pointer to the name of the solver.  For example,
 printf ("s is a '%s' solver\n",
         gsl_root_fsolver_name (s));
 @end example
-
 @noindent
 would print something like @code{s is a 'bisection' solver}.
 @end deftypefun
@@ -204,7 +203,6 @@ a pointer to the parameters of the function
 @end deftp
 
 Here is an example for the general quadratic function,
-
 @tex
 \beforedisplay
 $$
@@ -213,11 +211,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f(x) = a x^2 + b x + c
 @end example
 @end ifinfo
-
 @noindent
 with @math{a = 3}, @math{b = 2}, @math{c = 1}.  The following code
 defines a @code{gsl_function} @code{F} which you could pass to a root
@@ -421,7 +419,6 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
-
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the precision of the current result in
@@ -432,7 +429,6 @@ This function tests for the convergence of the interval [@var{x_lower},
 @var{x_upper}] with absolute error @var{epsabs} and relative error
 @var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -441,11 +437,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |a - b| < epsabs + epsrel min(|a|,|b|) 
 @end example
 @end ifinfo
-
 @noindent
 when the interval @math{x = [a,b]} does not include the origin.  If the
 interval includes the origin then @math{\min(|a|,|b|)} is replaced by
@@ -456,7 +452,6 @@ to the origin.
 This condition on the interval also implies that any estimate of the
 root @math{r} in the interval satisfies the same condition with respect
 to the true root @math{r^*},
-
 @tex
 \beforedisplay
 $$
@@ -465,6 +460,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |r - r^*| < epsabs + epsrel r^*
 @end example
@@ -479,7 +475,6 @@ This function tests for the convergence of the sequence @dots{}, @var{x0},
 @var{x1} with absolute error @var{epsabs} and relative error
 @var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -488,6 +483,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |x_1 - x_0| < epsabs + epsrel |x_1|
 @end example
@@ -501,7 +497,6 @@ and returns @code{GSL_CONTINUE} otherwise.
 This function tests the residual value @var{f} against the absolute
 error bound @var{epsabs}.  The test returns @code{GSL_SUCCESS} if the
 following condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -510,11 +505,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |f| < epsabs
 @end example
 @end ifinfo
-
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
 for situations where the precise location of the root, @math{x}, is
@@ -557,16 +552,16 @@ At any time the current estimate of the root is taken as the midpoint of
 the interval.
 
 @comment eps file "roots-bisection.eps"
-@iftex
-@sp 1
-@center @image{roots-bisection,3.4in}
+@comment @iftex
+@comment @sp 1
+@comment @center @image{roots-bisection,3.4in}
 
-@quotation
-Four iterations of bisection, where @math{a_n} is @math{n}th position of
-the beginning of the interval and @math{b_n} is the @math{n}th position
-of the end.  The midpoint of each interval is also indicated.
-@end quotation
-@end iftex
+@comment @quotation
+@comment Four iterations of bisection, where @math{a_n} is @math{n}th position of
+@comment the beginning of the interval and @math{b_n} is the @math{n}th position
+@comment of the end.  The midpoint of each interval is also indicated.
+@comment @end quotation
+@comment @end iftex
 @end deffn
 
 @comment ============================================================
@@ -604,8 +599,8 @@ the interval on the current iteration.
 @comment ============================================================
 
 @deffn {Solver} gsl_root_fsolver_brent
-@cindex brent's method for finding roots
-@cindex root finding, brent's method
+@cindex Brent's method for finding roots
+@cindex root finding, Brent's method
 
 The @dfn{Brent-Dekker method} (referred to here as @dfn{Brent's method})
 combines an interpolation strategy with the bisection algorithm.  This
@@ -641,15 +636,14 @@ quadratic.
 These algorithms make use of both the function and its derivative. 
 
 @deffn {Derivative Solver} gsl_root_fdfsolver_newton
-@cindex Newton's Method algorithm for finding roots
-@cindex root finding, Newton's Method algorithm
+@cindex Newton's method for finding roots
+@cindex root finding, Newton's method
 
 Newton's Method is the standard root-polishing algorithm.  The algorithm
 begins with an initial guess for the location of the root.  On each
 iteration, a line tangent to the function @math{f} is drawn at that
 position.  The point where this line crosses the @math{x}-axis becomes
 the new guess.  The iteration is defined by the following sequence,
-
 @tex
 \beforedisplay
 $$
@@ -658,39 +652,38 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 x_@{i+1@} = x_i - f(x_i)/f'(x_i)
 @end example
 @end ifinfo
-
 @noindent
 Newton's method converges quadratically for single roots, and linearly
 for multiple roots.
 
 @comment eps file "roots-newtons-method.eps"
-@iftex
-@sp 1
-@center @image{roots-newtons-method,3.4in}
+@comment @iftex
+@comment @sp 1
+@comment @center @image{roots-newtons-method,3.4in}
 
-@quotation
-Several iterations of Newton's Method, where @math{g_n} is the
-@math{n}th guess.
-@end quotation
-@end iftex
+@comment @quotation
+@comment Several iterations of Newton's Method, where @math{g_n} is the
+@comment @math{n}th guess.
+@comment @end quotation
+@comment @end iftex
 @end deffn
 
 @comment ============================================================
 
 @deffn {Derivative Solver} gsl_root_fdfsolver_secant
-@cindex Secant Method algorithm for finding roots
-@cindex root finding, Secant Method algorithm
+@cindex secant method for finding roots
+@cindex root finding, secant method
 
 The @dfn{secant method} is a simplified version of Newton's method which does
 not require the computation of the derivative on every step.
 
 On its first iteration the algorithm begins with Newton's method, using
 the derivative to compute a first step,
-
 @tex
 \beforedisplay
 $$
@@ -699,16 +692,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 x_1 = x_0 - f(x_0)/f'(x_0)
 @end example
 @end ifinfo
-
 @noindent
 Subsequent iterations avoid the evaluation of the derivative by
 replacing it with a numerical estimate, the slope of the line through
 the previous two points,
-
 @tex
 \beforedisplay
 $$
@@ -719,12 +711,12 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 x_@{i+1@} = x_i f(x_i) / f'_@{est@} where
  f'_@{est@} = (f(x_i) - f(x_@{i-1@})/(x_i - x_@{i-1@})
 @end example
 @end ifinfo
-
 @noindent
 When the derivative does not change significantly in the vicinity of the
 root the secant method gives a useful saving.  Asymptotically the secant
@@ -755,14 +747,13 @@ roots.
 @comment ============================================================
 
 @deffn {Derivative Solver} gsl_root_fdfsolver_steffenson
-@cindex Steffenson's Method for finding roots
-@cindex root finding, Steffenson's Method
+@cindex Steffenson's method for finding roots
+@cindex root finding, Steffenson's method
 
 The @dfn{Steffenson Method} provides the fastest convergence of all the
 routines.  It combines the basic Newton algorithm with an Aitken
 ``delta-squared'' acceleration.  If the Newton iterates are @math{x_i}
 then the acceleration procedure generates a new sequence @math{R_i},
-
 @tex
 \beforedisplay
 $$
@@ -771,11 +762,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} + x_@{i@})
 @end example
 @end ifinfo
-
 @noindent
 which converges faster than the original sequence under reasonable
 conditions.  The new sequence requires three terms before it can produce
@@ -809,7 +800,6 @@ We place the function definitions in a separate file (@file{demo_fn.c}),
 The first program uses the function solver @code{gsl_root_fsolver_brent}
 for Brent's method and the general quadratic defined above to solve the
 following equation,
-
 @tex
 \beforedisplay
 $$
@@ -818,23 +808,22 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 x^2 - 5 = 0
 @end example
 @end ifinfo
-
 @noindent
 with solution @math{x = \sqrt 5 = 2.236068...}
 
 @example
 @verbatiminclude examples/roots.c
 @end example
-
 @noindent
 Here are the results of the iterations,
 
 @smallexample
-bash$ ./a.out 
+$ ./a.out 
 using brent method
  iter [    lower,     upper]      root        err  err(est)
     1 [1.0000000, 5.0000000] 1.0000000 -1.2360680 4.0000000
@@ -845,7 +834,6 @@ using brent method
 Converged:                            
     6 [2.2360634, 2.2366300] 2.2360634 -0.0000046 0.0005666
 @end smallexample
-
 @noindent
 If the program is modified to use the bisection solver instead of
 Brent's method, by changing @code{gsl_root_fsolver_brent} to
@@ -853,7 +841,7 @@ Brent's method, by changing @code{gsl_root_fsolver_brent} to
 Bisection method can be observed,
 
 @smallexample
-bash$ ./a.out 
+$ ./a.out 
 using bisection method
  iter [    lower,     upper]      root        err  err(est)
     1 [0.0000000, 2.5000000] 1.2500000 -0.9860680 2.5000000
@@ -881,7 +869,7 @@ instead.
 Here are the results for Newton's method,
 
 @example
-bash$ ./a.out 
+$ ./a.out 
 using newton method
 iter        root        err   err(est)
     1  3.0000000 +0.7639320 -2.0000000
@@ -890,7 +878,6 @@ iter        root        err   err(est)
 Converged:      
     4  2.2360689 +0.0000009 -0.0020263
 @end example
-
 @noindent
 Note that the error can be estimated more accurately by taking the
 difference between the current iterate and next iterate rather than the
@@ -907,12 +894,12 @@ papers,
 
 @itemize @asis
 @item
-R. P. Brent, "An algorithm with guaranteed convergence for finding a
-zero of a function", @cite{Computer Journal}, 14 (1971) 422-425
+R. P. Brent, ``An algorithm with guaranteed convergence for finding a
+zero of a function'', @cite{Computer Journal}, 14 (1971) 422--425
 
 @item
-J. C. P. Bus and T. J. Dekker, "Two Efficient Algorithms with Guaranteed
-Convergence for Finding a Zero of a Function", @cite{ACM Transactions of
-Mathematical Software}, Vol. 1 No. 4 (1975) 330-345
+J. C. P. Bus and T. J. Dekker, ``Two Efficient Algorithms with Guaranteed
+Convergence for Finding a Zero of a Function'', @cite{ACM Transactions of
+Mathematical Software}, Vol.@: 1 No.@: 4 (1975) 330--345
 @end itemize
 

@@ -77,7 +77,6 @@ algorithm is based on the expansion @math{2(\exp(x)-1-x)/x^2 =
 These routines compute the @math{N}-relative exponential, which is the
 @var{n}-th generalization of the functions @code{gsl_sf_exprel} and
 @code{gsl_sf_exprel2}.  The @math{N}-relative exponential is given by,
-
 @tex
 \beforedisplay
 $$
@@ -91,6 +90,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 exprel_N(x) = N!/x^N (\exp(x) - \sum_@{k=0@}^@{N-1@} x^k/k!)
             = 1 + x/(N+1) + x^2/((N+1)(N+2)) + ...

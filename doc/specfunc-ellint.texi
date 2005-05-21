@@ -16,7 +16,6 @@ The functions described in this section are declared in the header file
 @cindex Legendre forms of elliptic integrals
 The Legendre forms of elliptic integrals @math{F(\phi,k)},
 @math{E(\phi,k)} and @math{P(\phi,k,n)} are defined by,
-
 @tex
 \beforedisplay
 $$
@@ -29,6 +28,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
   F(\phi,k) = \int_0^\phi dt 1/\sqrt((1 - k^2 \sin^2(t)))
 
@@ -50,7 +50,6 @@ notation used here is based on Carlson, @cite{Numerische Mathematik} 33
 The Carlson symmetric forms of elliptical integrals @math{RC(x,y)},
 @math{RD(x,y,z)}, @math{RF(x,y,z)} and @math{RJ(x,y,z,p)} are defined
 by,
-
 @tex
 \beforedisplay
 $$
@@ -64,6 +63,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
     RC(x,y) = 1/2 \int_0^\infty dt (t+x)^(-1/2) (t+y)^(-1)
 
@@ -131,6 +131,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 D(\phi,k,n) = RD (1-\sin^2(\phi), 1-k^2 \sin^2(\phi), 1).
 @end example

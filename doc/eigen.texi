@@ -10,7 +10,7 @@ These routines are intended for ``small'' systems where simple algorithms are
 acceptable.  Anyone interested in finding eigenvalues and eigenvectors of
 large matrices will want to use the sophisticated routines found in
 @sc{lapack}. The Fortran version of @sc{lapack} is recommended as the
-standard package for linear algebra.
+standard package for large-scale linear algebra.
 
 The functions described in this chapter are declared in the header file
 @file{gsl_eigen.h}.

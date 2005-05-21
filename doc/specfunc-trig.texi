@@ -1,4 +1,4 @@
-@cindex Trigonometric functions
+@cindex trigonometric functions
 
 The library includes its own trigonometric functions in order to provide
 consistency across platforms and reliable error estimates.  These

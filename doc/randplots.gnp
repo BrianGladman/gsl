@@ -1,8 +1,13 @@
 #set term postscript eps enhanced
 set term pstex monochrome
 set samples 300
-#set size 0.8,0.88  # paperback 6x9
-set size 1,1.1      # us letter
+#set size 0.8,0.88  # paperback 6x9  #CHANGE THESE LATER IN FILE ALSO 
+set size 1,1.1      # us letter      #IF MODIFIED 
+set border 31 lw 0.5
+set tics out
+set ticscale 0.5 0.25
+set xtics border nomirror norotate
+set ytics border nomirror norotate
 
 # Continuous distributions
 
@@ -16,8 +21,8 @@ set xtics 1
 set output "rand-gaussian.tex"
 set title "Gaussian Distribution"
 p(x)=1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2))
-plot sigma=1.0, p(x) title "$\sigma=1$", \
-	sigma=2.0, p(x) title "$\sigma=2$"
+plot sigma=1.0, p(x) title "$\\sigma=1$", \
+	sigma=2.0, p(x) title "$\\sigma=2$"
 
 set xrange [0:5]
 set yrange [0:0.2]
@@ -26,19 +31,19 @@ set xtics 1
 set output "rand-gaussian-tail.tex"
 set title "Gaussian Tail Distribution"
 p(x)= x > a ? 1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2)) : 0
-plot a=1.5, sigma=1.0, p(x) title "$\sigma=1,a=1.5$"
+plot a=1.5, sigma=1.0, p(x) title "$\\sigma=1,a=1.5$"
 
 set xrange [0:5]
 set yrange [0:1.09]
-set ytics 0.1
+set ytics 0.5
 set xtics 1
 set output "rand-rayleigh-tail.tex"
 set title "Rayleigh Tail Distribution"
 p(x)= x > a ? (x/sigma**2)*exp((a**2 - x**2)/(2*sigma**2)) : 0
-plot a=1.0, sigma=1.0, p(x) title "$a=1,\sigma=1$", \
-	a=0.5, sigma=2.0, p(x) title "$a=0.5,\sigma=2$"
+plot a=1.0, sigma=1.0, p(x) title "$a=1,\\sigma=1$", \
+	a=0.5, sigma=2.0, p(x) title "$a=0.5,\\sigma=2$"
 
-
+set size ratio -1 0.8,1.143
 set xlabel "$x$"
 set ylabel "$y$"
 set xrange [-2:2]
@@ -54,11 +59,11 @@ set noclabel
 set contour
 set view 0,0
 set nosurface
-splot rho=0.9, p(x,y) title "$\sigma_x=1, \sigma_y=1, \rho=0.9$"
+splot rho=0.9, p(x,y) title "$\\sigma_x=1, \\sigma_y=1, \\rho=0.9$"
+set size noratio 1,1.1  # us letter
 
 set xlabel "$x$"
 set ylabel "$p(x)$"
-
 set ytics 0.1
 set xrange [-5:5]
 set yrange [0:0.4]
@@ -74,17 +79,17 @@ set xrange [0:3]
 set output "rand-exponential.tex"
 set title "Exponential Distribution"
 p(x)=exp(-x/mu)/mu
-plot mu=1.0, p(x) title "$\mu=1$", \
-	mu=2.0, p(x) title "$\mu=2$"
+plot mu=1.0, p(x) title "$\\mu=1$", \
+	mu=2.0, p(x) title "$\\mu=2$"
 
 set yrange [0:1]
 set xrange [0:3]
 set output "rand-chisq.tex"
 set title "Chi-squared Distribution"
 p(x)=(x/2)**(nu/2.0-1.0) *exp(-x/2)/ (2*gamma(nu/2.0))
-plot nu=1.0, p(x) title "$\nu=1$", \
-      nu=2.0, p(x) title "$\nu=2$", \
-	nu=3.0, p(x) title "$\nu=3$"
+plot nu=1.0, p(x) title "$\\nu=1$", \
+      nu=2.0, p(x) title "$\\nu=2$", \
+	nu=3.0, p(x) title "$\\nu=3$"
 
 set yrange [0:1]
 set xrange [0:5]
@@ -102,8 +107,8 @@ set title "F-Distribution"
 p(x)=gamma((v1+v2)/2.0)*v1**(v1/2.0)*v2**(v2/2.0)\
 	/gamma(v1/2.0)/gamma(v2/2.0) * \
 	x**(v1/2.0-1)*(v2+v1*x)**-(v1/2.0+v2/2.0)
-plot v1=1.0, v2=1.0, p(x) title "$\nu_1=1, \nu_2=1$", \
-      v1=3.0, v2=1.0, p(x) title "$\nu_1=3, \nu_2=2$"
+plot v1=1.0, v2=1.0, p(x) title "$\\nu_1=1, \\nu_2=1$", \
+      v1=3.0, v2=1.0, p(x) title "$\\nu_1=3, \\nu_2=2$"
 
 set xrange [0:5]
 set output "rand-flat.tex"
@@ -147,12 +152,12 @@ plot a=1.0, p(x) title "$a=1$", \
 set xrange [0:3]
 set yrange [0:0.7]
 set xtics 1
-set ytics 0.1
+set ytics 0.5
 set output "rand-lognormal.tex"
 set title "Lognormal Distribution"
 p(x)= exp(-(log(x)-zeta)**2/2/sigma**2)/sqrt(2*pi*sigma**2)/x
-plot zeta=0.0, sigma=1.0, p(x) title "$\zeta=0, \sigma=1$", \
-	zeta=1.0, sigma=1.0, p(x) title "$\zeta=1, \sigma=1$"
+plot zeta=0.0, sigma=1.0, p(x) title "$\\zeta=0, \\sigma=1$", \
+	zeta=1.0, sigma=1.0, p(x) title "$\\zeta=1, \\sigma=1$"
 
 set xrange [0:5]
 set yrange [0:2]
@@ -171,18 +176,18 @@ set xtics 1
 set output "rand-rayleigh.tex"
 set title "Rayleigh Distribution"
 p(x)= (x/sigma**2)*exp(-x**2/(2*sigma**2))
-plot sigma=1.0, p(x) title "$\sigma=1$", \
-	sigma=2.0, p(x) title "$\sigma=2$"
+plot sigma=1.0, p(x) title "$\\sigma=1$", \
+	sigma=2.0, p(x) title "$\\sigma=2$"
 
 set xrange [0:5]
 set yrange [0:1.09]
-set ytics 0.1
+set ytics 0.5
 set xtics 1
 set output "rand-rayleigh-tail.tex"
 set title "Rayleigh Tail Distribution"
 p(x)= x > a ? (x/sigma**2)*exp((a**2 - x**2)/(2*sigma**2)) : 0
-plot a=1.0, sigma=1.0, p(x) title "$a=1,\sigma=1$", \
-	a=0.5, sigma=2.0, p(x) title "$a=0.5,\sigma=2$"
+plot a=1.0, sigma=1.0, p(x) title "$a=1,\\sigma=1$", \
+	a=0.5, sigma=2.0, p(x) title "$a=0.5,\\sigma=2$"
 
 set xrange [-4:4]
 set yrange [0:0.5]
@@ -190,8 +195,8 @@ set ytics 0.1
 set output "rand-tdist.tex"
 set title "Student's t distribution"
 p(x)=gamma((v+1.0)/2)/sqrt(pi*v)/gamma(v/2)*(1+(x**2)/v)**-((v+1.0)/2)
-plot v=1.0, p(x) title "$\nu_1=1$", \
-      v=5.0, p(x) title "$\nu_1=5$"
+plot v=1.0, p(x) title "$\\nu_1=1$", \
+      v=5.0, p(x) title "$\\nu_1=5$"
 
 set xrange [-5:5]
 set yrange [0:0.55]
@@ -204,7 +209,7 @@ plot a=1.0, p(x) title "$a=1$", \
 
 set xrange [-5:5]
 set yrange [0:0.8]
-set ytics 0.1
+set ytics 0.2
 set output "rand-exppow.tex"
 set title "Exponential Power Distribution"
 p(x)=exp(-(abs(x/a))**b)/2/a/gamma(1.0+1.0/b)
@@ -225,17 +230,17 @@ set output "rand-levy.tex"
 set title "Levy Distribution"
 p1(x)=1/(pi*mu*(1+(x/mu)**2))
 p2(x)=1/sqrt(2*pi*2*mu**2)*exp(-x**2/(4*mu**2)) 
-plot mu=1.0, a=1, p1(x) title "$c=1, \alpha=1.0$", \
-	mu=1.0, a=2, p2(x) title "$c=1, \alpha=2.0$"
+plot mu=1.0, a=1, p1(x) title "$c=1, \\alpha=1.0$", \
+	mu=1.0, a=2, p2(x) title "$c=1, \\alpha=2.0$"
 
 set xrange [-5:5]
-set yrange [0:0.07]
-set ytics 0.1
+set yrange [0:0.09]
+set ytics 0.05
 set output "rand-levyskew.tex"
 set title "Levy Skew Distribution"
 logp(x)= 1.0990e+01+x*(-3.3388e-01+x*(-4.2372e-01+x*(2.1749e-01+x*(-4.4910e-02 + x*(4.1801e-03 - 1.4456e-04*x)))))
 p1(x)=exp(logp(x))/1000000
-plot mu=1.0, a=1, p1(x) title "$c=1, \alpha=1.0, \beta=1.0$"
+plot mu=1.0, a=1, p1(x) title "$c=1, \\alpha=1.0, \\beta=1.0$"
 
 
 set xrange [0:2]
@@ -249,10 +254,10 @@ plot a=1.0, b=1.0, p(x) title "$a=1,b=1$", \
        a=1.0, b=2.0, p(x) title "$a=1,b=2$", \
 	 a=2.0, b=3.0, p(x) title "$a=2,b=3$"
 
-set xrange [-2:2]
-set yrange [0:0.7]
+set xrange [-2:5]
+set yrange [0:0.5]
 set ytics 0.1
-set xtics 0.5
+set xtics 1.0
 set output "rand-gumbel1.tex"
 set title "Type 1 Gumbel Distribution"
 p1(x)=a*b*exp(-(b*exp(-a*x)+a*x))
@@ -271,7 +276,7 @@ plot a=1.0, b=1.0, p2(x) title "Type 2, $a=1,b=1$"
 
 set xlabel "$k$"
 set ylabel "$p(k)$"
-set ticscale 0 1
+set ticscale 0.5 1
 set mxtics 2
 
 set xrange [-0.5:10.5]
@@ -282,11 +287,11 @@ set function style step
 set output "rand-poisson.tex"
 set title "Poisson Distribution"
 p(x)=mu**int(x)/(int(x)!) * exp(-mu)
-plot mu=2.5, p(x+0.5) title "$\mu=2.5$"
+plot mu=2.5, p(x+0.5) title "$\\mu=2.5$"
 
 set xrange [:1.5]
 set yrange [0:1]
-set ytics 0.1
+set ytics 0.5
 set xtics 1
 set function style step
 set output "rand-bernoulli.tex"
@@ -351,11 +356,12 @@ plot P=0.5,n=3, p(x+0.5) title "$p=0.5,n=3$"
 
 ######################################################################
 
-set xrange [-7:7]
-set yrange [-7:7]
+set ticscale 1 0
+set xrange [-5:5]
+set yrange [-5:5]
 set xtics 1
 set ytics 1
-set size 0.7,1.0
+set size 0.8,1.143
 set size square
 set output "random-walk.tex"
 set title "Random walk"

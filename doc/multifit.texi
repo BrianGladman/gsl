@@ -29,12 +29,11 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @node Overview of Nonlinear Least-Squares Fitting
 @section Overview
-@cindex nonlinear least-squares fitting, overview
+@cindex nonlinear least squares fitting, overview
 
 The problem of multidimensional nonlinear least-squares fitting requires
 the minimization of the squared residuals of @math{n} functions,
 @math{f_i}, in @math{p} parameters, @math{x_i},
-
 @tex
 \beforedisplay
 $$
@@ -44,6 +43,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \Phi(x) = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
         = (1/2) || F(x) ||^2
@@ -51,7 +51,6 @@ $$
 @end ifinfo
 @noindent
 All algorithms proceed from an initial guess using the linearization,
-
 @tex
 \beforedisplay
 $$
@@ -60,6 +59,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \psi(p) = || F(x+p) || ~=~ || F(x) + J p ||
 @end example
@@ -128,7 +128,6 @@ These functions return a pointer to the name of the solver.  For example,
 printf ("s is a '%s' solver\n", 
         gsl_multifit_fdfsolver_name (s));
 @end example
-
 @noindent
 would print something like @code{s is a 'lmder' solver}.
 @end deftypefun
@@ -214,8 +213,7 @@ the code.
 These functions perform a single iteration of the solver @var{s}.  If
 the iteration encounters an unexpected problem then an error code will
 be returned.  The solver maintains a current estimate of the best-fit
-parameters at all times. This information can be accessed with the
-following auxiliary functions,
+parameters at all times. 
 @end deftypefun
 
 The solver struct @var{s} contains the following entries, which can
@@ -236,6 +234,9 @@ i.e. the last step, taken as a vector.
 The Jacobian matrix at the current position (for the
 @code{gsl_multifit_fdfsolver} struct only)
 @end table
+
+The best-fit information also can be accessed with the following
+auxiliary functions,
 
 @deftypefun {gsl_vector *} gsl_multifit_fsolver_position (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * @var{s})
@@ -260,7 +261,6 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
-
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the current estimate of the best-fit
@@ -272,7 +272,6 @@ This function tests for the convergence of the sequence by comparing the
 last step @var{dx} with the absolute error @var{epsabs} and relative
 error @var{epsrel} to the current position @var{x}.  The test returns
 @code{GSL_SUCCESS} if the following condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -281,6 +280,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |dx_i| < epsabs + epsrel |x_i|
 @end example
@@ -295,7 +295,6 @@ This function tests the residual gradient @var{g} against the absolute
 error bound @var{epsabs}.  Mathematically, the gradient should be
 exactly zero at the minimum. The test returns @code{GSL_SUCCESS} if the
 following condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -304,11 +303,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \sum_i |g_i| < epsabs
 @end example
 @end ifinfo
-
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
 for situations where the precise location of the minimum, @math{x},
@@ -328,9 +327,9 @@ This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
 
 The minimization algorithms described in this section make use of both
 the function and its derivative.  They require an initial guess for the
-location of the minimum. There is no absolute guarantee of convergence
--- the function must be suitable for this technique and the initial
-guess must be sufficiently close to the minimum for it to work. 
+location of the minimum. There is no absolute guarantee of
+convergence---the function must be suitable for this technique and the
+initial guess must be sufficiently close to the minimum for it to work.
 
 @comment ============================================================
 @cindex Levenberg-Marquardt algorithms
@@ -402,7 +401,7 @@ There are no algorithms implemented in this section at the moment.
 @section Computing the covariance matrix of best fit parameters
 @cindex covariance of best-fit parameters
 @cindex best-fit parameters, covariance
-@cindex least-squares, covariance of best-fit parameters
+@cindex least squares, covariance of best-fit parameters
 
 @deftypefun int gsl_multifit_covar (const gsl_matrix * @var{J}, double @var{epsrel}, gsl_matrix * @var{covar})
 This function uses the Jacobian matrix @var{J} to compute the covariance
@@ -411,7 +410,6 @@ matrix of the best-fit parameters, @var{covar}.  The parameter
 rank deficient.
 
 The covariance matrix is given by,
-
 @tex
 \beforedisplay
 $$
@@ -420,6 +418,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 covar = (J^T J)^@{-1@}
 @end example
@@ -427,7 +426,6 @@ covar = (J^T J)^@{-1@}
 @noindent
 and is computed by QR decomposition of J with column-pivoting.  Any
 columns of @math{R} which satisfy 
-
 @tex
 \beforedisplay
 $$
@@ -436,6 +434,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |R_@{kk@}| <= epsrel |R_@{11@}|
 @end example
@@ -456,7 +455,6 @@ background to experimental data, @math{Y = A \exp(-\lambda t) + b}. The
 first part of the program sets up the functions @code{expb_f} and
 @code{expb_df} to calculate the model and its Jacobian.  The appropriate
 fitting function is given by,
-
 @tex
 \beforedisplay
 $$
@@ -465,6 +463,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
 @end example
@@ -473,7 +472,6 @@ f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
 where we have chosen @math{t_i = i}.  The Jacobian matrix @math{J} is
 the derivative of these functions with respect to the three parameters
 (@math{A}, @math{\lambda}, @math{b}).  It is given by,
-
 @tex
 \beforedisplay
 $$
@@ -482,6 +480,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 J_@{ij@} = d f_i / d x_j
 @end example
@@ -553,8 +552,6 @@ expb_df (const gsl_vector * x, void *params,
       gsl_matrix_set (J, i, 0, e/s); 
       gsl_matrix_set (J, i, 1, -t * A * e/s);
       gsl_matrix_set (J, i, 2, 1/s);
-
-
     @}
   return GSL_SUCCESS;
 @}
@@ -592,17 +589,11 @@ main (void)
   const size_t p = 3;
 
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
-
   double y[N], sigma[N];
-
   struct data d = @{ n, y, sigma@};
-  
   gsl_multifit_function_fdf f;
-
   double x_init[3] = @{ 1.0, 0.0, 0.0 @};
-
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
-
   const gsl_rng_type * type;
   gsl_rng * r;
 
@@ -730,15 +721,14 @@ The @sc{minpack} algorithm is described in the following article,
 J.J. Mor@'e, @cite{The Levenberg-Marquardt Algorithm: Implementation and
 Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
 @end itemize
-
 @noindent
 The following paper is also relevant to the algorithms described in this
 section,
 
 @itemize @asis
 @item 
-J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, "Testing Unconstrained
-Optimization Software", ACM Transactions on Mathematical Software, Vol
-7, No 1 (1981), p 17-41.
+J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained
+Optimization Software'', ACM Transactions on Mathematical Software, Vol
+7, No 1 (1981), p 17--41.
 @end itemize
 

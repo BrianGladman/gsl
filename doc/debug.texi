@@ -37,7 +37,6 @@ line,
 @smallexample
 status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
 @end smallexample
-
 @noindent
 The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
 an FFT as its first argument.  When this line is executed an error will
@@ -47,7 +46,7 @@ To debug this problem we start @code{gdb}, using the file
 @file{.gdbinit} to define a breakpoint in @code{gsl_error},
 
 @smallexample
-bash$ gdb test_trap
+$ gdb test_trap
 
 GDB is free software and you are welcome to distribute copies
 of it under certain conditions; type "show copying" to see
@@ -57,7 +56,6 @@ Copyright 1996 Free Software Foundation, Inc.
 
 Breakpoint 1 at 0x8050b1e: file error.c, line 14.
 @end smallexample
-
 @noindent
 When we run the program this breakpoint catches the error and shows the
 reason for it. 
@@ -254,7 +252,6 @@ gcc -ansi -pedantic -Werror -Wall -W
   -Wwrite-strings -Wnested-externs 
   -fshort-enums -fno-common -Dinline= -g -O4
 @end example
-
 @noindent
 For details of each option consult the manual @cite{Using and Porting
 GCC}.  The following table gives a brief explanation of what types of
@@ -368,3 +365,14 @@ Foundation, ISBN 1882114388
 R.M. Stallman, R.H. Pesch, @cite{Debugging with GDB: The GNU
 Source-Level Debugger}, Free Software Foundation, ISBN 1882114779
 @end itemize
+@noindent
+For a tutorial introduction to the GNU C Compiler and related programs,
+see 
+
+@itemize @asis
+@item
+B.J. Gough, @cite{An Introduction to GCC}, Network Theory Ltd, ISBN
+0954161793
+@end itemize
+
+

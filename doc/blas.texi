@@ -62,7 +62,7 @@ matrix-matrix product, @math{A B}
 matrix-matrix solve, @math{inv(A) B}
 @end table
 @noindent
-The type of matrices are,
+The types of matrices are,
 
 @table @b
 @item GE
@@ -179,6 +179,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 ||x||_2 = \sqrt @{\sum (\Re(x_i)^2 + \Im(x_i)^2)@}.
 @end example
@@ -208,7 +209,7 @@ imaginary parts of the complex vector @var{x},
 @cindex AMAX, Level-1 BLAS
 These functions return the index of the largest element of the vector
 @var{x}. The largest element is determined by its absolute magnitude for
-real vector and by the sum of the magnitudes of the real and imaginary
+real vectors and by the sum of the magnitudes of the real and imaginary
 parts @math{|\Re(x_i)| + |\Im(x_i)|} for complex vectors.  If the
 largest value occurs several times then the index of the first
 occurrence is returned.
@@ -258,7 +259,6 @@ These functions rescale the vector @var{x} by the multiplicative factor
 @cindex Givens Rotation, BLAS
 These functions compute a Givens rotation @math{(c,s)} which zeroes the
 vector @math{(a,b)},
-
 @tex
 \beforedisplay
 $$
@@ -279,6 +279,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 [  c  s ] [ a ] = [ r ]
 [ -s  c ] [ b ]   [ 0 ]
@@ -298,14 +299,14 @@ x + c y)} to the vectors @var{x}, @var{y}.
 @deftypefunx int gsl_blas_drotmg (double @var{d1}[], double @var{d2}[], double @var{b1}[], double @var{b2}, double @var{P}[])
 @cindex Modified Givens Rotation, BLAS
 @cindex Givens Rotation, Modified, BLAS
-These functions compute a modified Given's transformation.  The modified
-Given's transformation is defined in the original Level-1 @sc{blas}
+These functions compute a modified Givens transformation.  The modified
+Givens transformation is defined in the original Level-1 @sc{blas}
 specification, given in the references.
 @end deftypefun
 
 @deftypefun int gsl_blas_srotm (gsl_vector_float * @var{x}, gsl_vector_float * @var{y}, const float @var{P}[])
 @deftypefunx int gsl_blas_drotm (gsl_vector * @var{x}, gsl_vector * @var{y}, const double @var{P}[])
-These functions apply a modified Given's transformation.  
+These functions apply a modified Givens transformation.  
 @end deftypefun
 
 @node Level 2 GSL BLAS Interface
@@ -344,7 +345,7 @@ are not referenced.
 @deftypefun int gsl_blas_strsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_float * @var{A}, gsl_vector_float * @var{x})
 @deftypefunx int gsl_blas_dtrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix * @var{A}, gsl_vector * @var{x})
 @deftypefunx int gsl_blas_ctrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex_float * @var{A}, gsl_vector_complex_float * @var{x})
-@deftypefunx int gsl_blas_ztrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex * @var{A}, gsl_vector_complex *@var{x})
+@deftypefunx int gsl_blas_ztrsv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex * @var{A}, gsl_vector_complex * @var{x})
 @cindex TRSV, Level-2 BLAS
 These functions compute @math{inv(op(A)) x} for @var{x}, where
 @math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
@@ -514,8 +515,9 @@ not referenced.
 @deftypefunx int gsl_blas_ctrsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, gsl_matrix_complex_float * @var{B})
 @deftypefunx int gsl_blas_ztrsm (CBLAS_SIDE_t @var{Side}, CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, gsl_matrix_complex * @var{B})
 @cindex TRSM, Level-3 BLAS
-These functions compute the matrix-matrix product @math{B = \alpha op(inv(A))
-B} for @var{Side} is @code{CblasLeft} and @math{B = \alpha B op(inv(A))} for
+These functions compute the inverse-matrix matrix product 
+@math{B = \alpha op(inv(A))B} for @var{Side} is 
+@code{CblasLeft} and @math{B = \alpha B op(inv(A))} for
 @var{Side} is @code{CblasRight}.  The matrix @var{A} is triangular and
 @math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
 @code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans} When
@@ -559,7 +561,7 @@ diagonal are automatically set to zero.
 @deftypefun int gsl_blas_ssyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, float @var{alpha}, const gsl_matrix_float * @var{A}, const gsl_matrix_float * @var{B}, float @var{beta}, gsl_matrix_float * @var{C})
 @deftypefunx int gsl_blas_dsyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, double @var{alpha}, const gsl_matrix * @var{A}, const gsl_matrix * @var{B}, double @var{beta}, gsl_matrix * @var{C})
 @deftypefunx int gsl_blas_csyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, const gsl_complex_float @var{alpha}, const gsl_matrix_complex_float * @var{A}, const gsl_matrix_complex_float * @var{B}, const gsl_complex_float @var{beta}, gsl_matrix_complex_float * @var{C})
-@deftypefunx int gsl_blas_zsyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{B}, const gsl_complex @var{beta}, gsl_matrix_complex *@var{C})
+@deftypefunx int gsl_blas_zsyr2k (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{Trans}, const gsl_complex @var{alpha}, const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{B}, const gsl_complex @var{beta}, gsl_matrix_complex * @var{C})
 @cindex SYR2K, Level-3 BLAS
 These functions compute a rank-2k update of the symmetric matrix @var{C},
 @math{C = \alpha A B^T + \alpha B A^T + \beta C} when @var{Trans} is
@@ -590,7 +592,6 @@ diagonal are automatically set to zero.
 
 The following program computes the product of two matrices using the
 Level-3 @sc{blas} function @sc{dgemm},
-
 @tex
 \beforedisplay
 $$
@@ -612,6 +613,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 [ 0.11 0.12 0.13 ]  [ 1011 1012 ]     [ 367.76 368.12 ]
 [ 0.21 0.22 0.23 ]  [ 1021 1022 ]  =  [ 674.06 674.72 ]
@@ -627,6 +629,7 @@ for arrays.
 @end example
 @noindent
 Here is the output from the program,
+
 @example
 $ ./a.out
 @verbatiminclude examples/blas.out
@@ -641,10 +644,10 @@ Homepage and @sc{blas} Technical Forum web-site.
 
 @itemize @asis
 @item
-@cite{BLAS Homepage} 
+@cite{BLAS Homepage} @*
 @uref{http://www.netlib.org/blas/}
 @item
-@cite{BLAS Technical Forum} 
+@cite{BLAS Technical Forum} @*
 @uref{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
 @end itemize
 @noindent
@@ -653,19 +656,19 @@ Level 3 @sc{blas}.
 
 @itemize @asis
 @item
-C. Lawson, R. Hanson, D. Kincaid, F. Krogh, "Basic Linear Algebra
-Subprograms for Fortran Usage", @cite{ACM Transactions on Mathematical
-Software}, Vol. 5 (1979), Pages 308-325.
+C. Lawson, R. Hanson, D. Kincaid, F. Krogh, ``Basic Linear Algebra
+Subprograms for Fortran Usage'', @cite{ACM Transactions on Mathematical
+Software}, Vol.@: 5 (1979), Pages 308--325.
 
 @item
-J.J. Dongarra, J. DuCroz, S. Hammarling, R. Hanson, "An Extended Set of
-Fortran Basic Linear Algebra Subprograms", @cite{ACM Transactions on
-Mathematical Software}, Vol. 14, No. 1 (1988), Pages 1-32.
+J.J. Dongarra, J. DuCroz, S. Hammarling, R. Hanson, ``An Extended Set of
+Fortran Basic Linear Algebra Subprograms'', @cite{ACM Transactions on
+Mathematical Software}, Vol.@: 14, No.@: 1 (1988), Pages 1--32.
 
 @item
-J.J. Dongarra, I. Duff, J. DuCroz, S. Hammarling, "A Set of
-Level 3 Basic Linear Algebra Subprograms", @cite{ACM Transactions on
-Mathematical Software}, Vol. 16 (1990), Pages 1-28.
+J.J. Dongarra, I. Duff, J. DuCroz, S. Hammarling, ``A Set of
+Level 3 Basic Linear Algebra Subprograms'', @cite{ACM Transactions on
+Mathematical Software}, Vol.@: 16 (1990), Pages 1--28.
 @end itemize
 @noindent
 Postscript versions of the latter two papers are available from

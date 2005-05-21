@@ -2,11 +2,11 @@
 
 This chapter describes functions for creating and manipulating
 combinations. A combination @math{c} is represented by an array of
-@math{k} integers in the range 0 .. @math{n-1}, where each value
-@math{c_i} is from the range 0 .. @math{n-1} and occurs at most once.  The
-combination @math{c} corresponds to indices of @math{k} elements chosen from an
-@math{n} element vector.  Combinations are useful for iterating over all
-@math{k}-element subsets of a set.
+@math{k} integers in the range 0 to @math{n-1}, where each value
+@math{c_i} occurs at most once.  The combination @math{c} corresponds to
+indices of @math{k} elements chosen from an @math{n} element vector.
+Combinations are useful for iterating over all @math{k}-element subsets
+of a set.
 
 The functions described in this chapter are defined in the header file
 @file{gsl_combination.h}.
@@ -25,7 +25,7 @@ The functions described in this chapter are defined in the header file
 @node The Combination struct
 @section The Combination struct
 
-A combination is stored by a structure containing three components, the
+A combination is defined by a structure containing three components, the
 values of @math{n} and @math{k}, and a pointer to the combination array.
 The elements of the combination array are all of type @code{size_t}, and
 are stored in increasing order.  The @code{gsl_combination} structure
@@ -63,12 +63,12 @@ available to create the combination.
 
 @deftypefun void gsl_combination_init_first (gsl_combination * @var{c})
 This function initializes the combination @var{c} to the
-lexicographically first combination, i.e.  @math{(0,1,2,...,k-1)}.
+lexicographically first combination, i.e.  @math{(0,1,2,@dots{},k-1)}.
 @end deftypefun
 
 @deftypefun void gsl_combination_init_last (gsl_combination * @var{c})
 This function initializes the combination @var{c} to the
-lexicographically last combination, i.e.  @math{(n-k,n-k+1,...,n-1)}.
+lexicographically last combination, i.e.  @math{(n-k,n-k+1,@dots{},n-1)}.
 @end deftypefun
 
 @deftypefun void gsl_combination_free (gsl_combination * @var{c})
@@ -77,30 +77,30 @@ This function frees all the memory used by the combination @var{c}.
 
 @deftypefun int gsl_combination_memcpy (gsl_combination * @var{dest}, const gsl_combination * @var{src})
 This function copies the elements of the combination @var{src} into the
-combination @var{dest}.  The two combinations must have the same sizes.
+combination @var{dest}.  The two combinations must have the same size.
 @end deftypefun
 
 
 @node Accessing combination elements
 @section Accessing combination elements
 
-The following function can be used to access combinations elements.
+The following function can be used to access the elements of a combination.
 
 @deftypefun size_t gsl_combination_get (const gsl_combination * @var{c}, const size_t @var{i})
 This function returns the value of the @var{i}-th element of the
 combination @var{c}.  If @var{i} lies outside the allowed range of 0 to
-@var{k}-1 then the error handler is invoked and 0 is returned.
+@math{@var{k}-1} then the error handler is invoked and 0 is returned.
 @end deftypefun
 
 @node Combination properties
 @section Combination properties
 
 @deftypefun size_t gsl_combination_n (const gsl_combination * @var{c})
-This function returns the @math{n} parameter of the combination @var{c}.
+This function returns the range (@math{n}) of the combination @var{c}.
 @end deftypefun
 
 @deftypefun size_t gsl_combination_k (const gsl_combination * @var{c})
-This function returns the @math{k} parameter of the combination @var{c}.
+This function returns the number of elements (@math{k}) in the combination @var{c}.
 @end deftypefun
 
 @deftypefun {size_t *} gsl_combination_data (const gsl_combination * @var{c})
@@ -112,8 +112,8 @@ combination @var{c}.
 @cindex checking combination for validity
 @cindex testing combination for validity
 This function checks that the combination @var{c} is valid.  The @var{k}
-elements should contain numbers from range 0 .. @var{n}-1, each number
-at most once.  The numbers have to be in increasing order.
+elements should lie in the range 0 to @math{@var{n}-1}, with each
+value occurring once at most and in increasing order.
 @end deftypefun
 
 @node Combination functions
@@ -152,8 +152,8 @@ between different architectures.
 @end deftypefun
 
 @deftypefun int gsl_combination_fread (FILE * @var{stream}, gsl_combination * @var{c})
-This function reads into the combination @var{c} from the open stream
-@var{stream} in binary format.  The combination @var{c} must be
+This function reads elements from the open stream @var{stream} into the
+combination @var{c} in binary format.  The combination @var{c} must be
 preallocated with correct values of @math{n} and @math{k} since the
 function uses the size of @var{c} to determine how many bytes to read.
 The function returns @code{GSL_EFAILED} if there was a problem reading
@@ -161,7 +161,7 @@ from the file.  The data is assumed to have been written in the native
 binary format on the same architecture.
 @end deftypefun
 
-@deftypefun int gsl_combination_fprintf (FILE * @var{stream}, const gsl_combination * @var{c}, const char *@var{format})
+@deftypefun int gsl_combination_fprintf (FILE * @var{stream}, const gsl_combination * @var{c}, const char * @var{format})
 This function writes the elements of the combination @var{c}
 line-by-line to the stream @var{stream} using the format specifier
 @var{format}, which should be suitable for a type of @var{size_t}.  On a
@@ -192,10 +192,9 @@ ordered lexicographically.
 Here is the output from the program,
 
 @example
-bash$ ./a.out 
+$ ./a.out 
 @verbatiminclude examples/combination.out
 @end example
-@noindent
 
 @noindent
 All 16 subsets are generated, and the subsets of each size are sorted
@@ -205,6 +204,7 @@ lexicographically.
 @node Combination References and Further Reading
 @section References and Further Reading
 
+@noindent
 Further information on combinations can be found in,
 
 @itemize @asis
@@ -212,11 +212,7 @@ Further information on combinations can be found in,
 Donald L. Kreher, Douglas R. Stinson, @cite{Combinatorial Algorithms:
 Generation, Enumeration and Search}, 1998, CRC Press LLC, ISBN
 084933988X
-
-@item
-Donald E. Knuth, @cite{The Art of Computer Programming: Combinatorial
-Algorithms} (Vol 4, pre-fascicle 2c)
-@url{http://www-cs-faculty.stanford.edu/~knuth/fasc2c.ps.gz}
 @end itemize
 @noindent
+
 

@@ -7,13 +7,13 @@ This chapter describes functions for generating random variates and
 computing their probability distributions.  Samples from the
 distributions described in this chapter can be obtained using any of the
 random number generators in the library as an underlying source of
-randomness.  In the simplest cases a non-uniform distribution can be
-obtained analytically from the uniform distribution of a random number
-generator by applying an appropriate transformation.  This method uses
-one call to the random number generator.
+randomness.  
 
-More complicated distributions are created by the
-@dfn{acceptance-rejection} method, which compares the desired
+In the simplest cases a non-uniform distribution can be obtained
+analytically from the uniform distribution of a random number generator
+by applying an appropriate transformation.  This method uses one call to
+the random number generator.  More complicated distributions are created
+by the @dfn{acceptance-rejection} method, which compares the desired
 distribution against a distribution which is similar and known
 analytically.  This usually requires several samples from the generator.
 
@@ -79,7 +79,8 @@ density function, @math{p(x)}, such that the probability of @math{x}
 occurring in the infinitesimal range @math{x} to @math{x+dx} is @c{$p\,dx$}
 @math{p dx}.
 
-The cumulative distribution function for the lower tail is defined by,
+The cumulative distribution function for the lower tail @math{P(x)} is
+defined by the integral,
 @tex
 \beforedisplay
 $$
@@ -88,6 +89,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 P(x) = \int_@{-\infty@}^@{x@} dx' p(x')
 @end example
@@ -95,7 +97,8 @@ P(x) = \int_@{-\infty@}^@{x@} dx' p(x')
 @noindent
 and gives the probability of a variate taking a value less than @math{x}.
 
-The cumulative distribution function for the upper tail is defined by,
+The cumulative distribution function for the upper tail @math{Q(x)} is
+defined by the integral,
 @tex
 \beforedisplay
 $$
@@ -104,12 +107,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 Q(x) = \int_@{x@}^@{+\infty@} dx' p(x')
 @end example
 @end ifinfo
 @noindent
 and gives the probability of a variate taking a value greater than @math{x}.
+
 The upper and lower cumulative distribution functions are related by
 @math{P(x) + Q(x) = 1} and satisfy @c{$0 \le P(x) \le 1$}
 @math{0 <= P(x) <= 1}, @c{$0 \le Q(x) \le 1$}
@@ -124,12 +129,11 @@ They can be used to find confidence limits from probability values.
 @page
 @node The Gaussian Distribution
 @section The Gaussian Distribution
-@deftypefn Random double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
+@deftypefun double gsl_ran_gaussian (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Gaussian distribution
 This function returns a Gaussian random variate, with mean zero and
 standard deviation @var{sigma}.  The probability distribution for
 Gaussian random variates is,
-
 @tex
 \beforedisplay
 $$
@@ -138,6 +142,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-x^2 / 2\sigma^2) dx
 @end example
@@ -148,7 +153,7 @@ transformation @math{z = \mu + x} on the numbers returned by
 @code{gsl_ran_gaussian} to obtain a Gaussian distribution with mean
 @math{\mu}.  This function uses the Box-Mueller algorithm which requires two
 calls to the random number generator @var{r}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_gaussian_pdf (double @var{x}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -166,13 +171,13 @@ This function computes a Gaussian random variate using the
 Kinderman-Monahan ratio method.
 @end deftypefun
 
-@deftypefn Random double gsl_ran_ugaussian (const gsl_rng * @var{r})
-@deftypefnx Function double gsl_ran_ugaussian_pdf (double @var{x})
-@deftypefnx Random double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r})
+@deftypefun double gsl_ran_ugaussian (const gsl_rng * @var{r})
+@deftypefunx double gsl_ran_ugaussian_pdf (double @var{x})
+@deftypefunx double gsl_ran_ugaussian_ratio_method (const gsl_rng * @var{r})
 These functions compute results for the unit Gaussian distribution.  They
 are equivalent to the functions above with a standard deviation of one,
 @var{sigma} = 1.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_cdf_gaussian_P (double @var{x}, double @var{sigma})
 @deftypefunx double gsl_cdf_gaussian_Q (double @var{x}, double @var{sigma})
@@ -195,17 +200,16 @@ distribution.
 @page
 @node The Gaussian Tail Distribution
 @section The Gaussian Tail Distribution
-@deftypefn Random double gsl_ran_gaussian_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
+@deftypefun double gsl_ran_gaussian_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
 @cindex Gaussian Tail distribution
 This function provides random variates from the upper tail of a Gaussian
 distribution with standard deviation @var{sigma}.  The values returned
 are larger than the lower limit @var{a}, which must be positive.  The
-method is based on Marsaglia's famous rectangle-wedge-tail algorithm (Ann
-Math Stat 32, 894-899 (1961)), with this aspect explained in Knuth, v2,
+method is based on Marsaglia's famous rectangle-wedge-tail algorithm (Ann. 
+Math. Stat. 32, 894--899 (1961)), with this aspect explained in Knuth, v2,
 3rd ed, p139,586 (exercise 11).
 
 The probability distribution for Gaussian tail random variates is,
-
 @tex
 \beforedisplay
 $$
@@ -214,14 +218,13 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over N(a;\sigma)@} \exp (- x^2/(2 \sigma^2)) dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{x > a} where @math{N(a;\sigma)} is the normalization constant,
-
 @tex
 \beforedisplay
 $$
@@ -230,12 +233,13 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 N(a;\sigma) = (1/2) erfc(a / sqrt(2 sigma^2)).
 @end example
 @end ifinfo
 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_gaussian_tail_pdf (double @var{x}, double @var{a}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -248,27 +252,26 @@ lower limit @var{a}, using the formula given above.
 \centerline{\input rand-gaussian-tail.tex}
 @end tex
 
-@deftypefn Random double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{a})
-@deftypefnx Function double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
+@deftypefun double gsl_ran_ugaussian_tail (const gsl_rng * @var{r}, double @var{a})
+@deftypefunx double gsl_ran_ugaussian_tail_pdf (double @var{x}, double @var{a})
 These functions compute results for the tail of a unit Gaussian
 distribution.  They are equivalent to the functions above with a standard
 deviation of one, @var{sigma} = 1.
-@end deftypefn
+@end deftypefun
 
 
 @page
 @node The Bivariate Gaussian Distribution
 @section The Bivariate Gaussian Distribution
 
-@deftypefn Random void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho}, double * @var{x}, double * @var{y})
+@deftypefun void gsl_ran_bivariate_gaussian (const gsl_rng * @var{r}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho}, double * @var{x}, double * @var{y})
 @cindex Bivariate Gaussian distribution
-@cindex Two-dimensional Gaussian distribution
+@cindex two dimensional Gaussian distribution
 @cindex Gaussian distribution, bivariate
-This function generates a pair of correlated gaussian variates, with
+This function generates a pair of correlated Gaussian variates, with
 mean zero, correlation coefficient @var{rho} and standard deviations
 @var{sigma_x} and @var{sigma_y} in the @math{x} and @math{y} directions.
-The probability distribution for bivariate gaussian random variates is,
-
+The probability distribution for bivariate Gaussian random variates is,
 @tex
 \beforedisplay
 $$
@@ -277,20 +280,20 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2/\sigma_x^2 + y^2/\sigma_y^2 - 2 \rho x y/(\sigma_x\sigma_y))/2(1-\rho^2)) dx dy
 @end example
 @end ifinfo
-
 @noindent
 for @math{x,y} in the range @math{-\infty} to @math{+\infty}.  The
 correlation coefficient @var{rho} should lie between @math{1} and
 @math{-1}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_bivariate_gaussian_pdf (double @var{x}, double @var{y}, double @var{sigma_x}, double @var{sigma_y}, double @var{rho})
 This function computes the probability density @math{p(x,y)} at
-(@var{x},@var{y}) for a bivariate gaussian distribution with standard
+(@var{x},@var{y}) for a bivariate Gaussian distribution with standard
 deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @var{rho}, using the formula given above.
 @end deftypefun
@@ -303,11 +306,10 @@ deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @page
 @node The Exponential Distribution
 @section The Exponential Distribution
-@deftypefn Random double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
+@deftypefun double gsl_ran_exponential (const gsl_rng * @var{r}, double @var{mu})
 @cindex Exponential distribution
 This function returns a random variate from the exponential distribution
 with mean @var{mu}. The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -316,15 +318,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
 @end example
 @end ifinfo
-
 @noindent
 for @c{$x \ge 0$}
 @math{x >= 0}. 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_exponential_pdf (double @var{x}, double @var{mu})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -349,12 +351,11 @@ distribution with mean @var{mu}.
 @page
 @node The Laplace Distribution
 @section The Laplace Distribution
-@deftypefn Random double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{a})
-@cindex Two-sided exponential distribution
+@deftypefun double gsl_ran_laplace (const gsl_rng * @var{r}, double @var{a})
+@cindex two-sided exponential distribution
 @cindex Laplace distribution
 This function returns a random variate from the Laplace distribution
 with width @var{a}.  The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -363,14 +364,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over 2 a@}  \exp(-|x/a|) dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{-\infty < x < \infty}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_laplace_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -396,11 +397,10 @@ distribution with width @var{a}.
 @page
 @node The Exponential Power Distribution
 @section The Exponential Power Distribution
-@deftypefn Random double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_exppow (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Exponential power distribution
 This function returns a random variate from the exponential power distribution
 with scale parameter @var{a} and exponent @var{b}.  The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -409,6 +409,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over 2 a \Gamma(1+1/b)@} \exp(-|x/a|^b) dx
 @end example
@@ -419,7 +420,7 @@ for @c{$x \ge 0$}
 distribution.  For @math{b = 2} it has the same form as a gaussian
 distribution, but with @c{$a = \sqrt{2} \sigma$}
 @math{a = \sqrt@{2@} \sigma}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_exppow_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -435,12 +436,11 @@ and exponent @var{b}, using the formula given above.
 @page
 @node The Cauchy Distribution
 @section The Cauchy Distribution
-@deftypefn Random double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{a})
+@deftypefun double gsl_ran_cauchy (const gsl_rng * @var{r}, double @var{a})
 @cindex Cauchy distribution
 This function returns a random variate from the Cauchy distribution with
 scale parameter @var{a}.  The probability distribution for Cauchy
 random variates is,
-
 @tex
 \beforedisplay
 $$
@@ -449,15 +449,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over a\pi (1 + (x/a)^2) @} dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
 distribution is also known as the Lorentz distribution.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_cauchy_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -483,11 +483,10 @@ distribution with scale parameter @var{a}.
 @page
 @node The Rayleigh Distribution
 @section The Rayleigh Distribution
-@deftypefn Random double gsl_ran_rayleigh (const gsl_rng * @var{r}, double @var{sigma})
+@deftypefun double gsl_ran_rayleigh (const gsl_rng * @var{r}, double @var{sigma})
 @cindex Rayleigh distribution
 This function returns a random variate from the Rayleigh distribution with
 scale parameter @var{sigma}.  The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -496,13 +495,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{x \over \sigma^2@} \exp(- x^2/(2 \sigma^2)) dx
 @end example
 @end ifinfo
 @noindent
 for @math{x > 0}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_rayleigh_pdf (double @var{x}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -528,12 +528,11 @@ distribution with scale parameter @var{sigma}.
 @page
 @node The Rayleigh Tail Distribution
 @section The Rayleigh Tail Distribution
-@deftypefn Random double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
+@deftypefun double gsl_ran_rayleigh_tail (const gsl_rng * @var{r}, double @var{a}, double @var{sigma})
 @cindex Rayleigh Tail distribution
 This function returns a random variate from the tail of the Rayleigh
 distribution with scale parameter @var{sigma} and a lower limit of
 @var{a}.  The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -542,14 +541,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{x \over \sigma^2@} \exp ((a^2 - x^2) /(2 \sigma^2)) dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{x > a}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_rayleigh_tail_pdf (double @var{x}, double @var{a}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -565,12 +564,11 @@ lower limit @var{a}, using the formula given above.
 @page
 @node The Landau Distribution
 @section The Landau Distribution
-@deftypefn Random double gsl_ran_landau (const gsl_rng * @var{r})
+@deftypefun double gsl_ran_landau (const gsl_rng * @var{r})
 @cindex Landau distribution
 This function returns a random variate from the Landau distribution.  The
 probability distribution for Landau random variates is defined
 analytically by the complex integral,
-
 @tex
 \beforedisplay
 $$
@@ -580,6 +578,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) = (1/(2 \pi i)) \int_@{c-i\infty@}^@{c+i\infty@} ds exp(s log(s) + x s) 
 @end example
@@ -594,11 +593,12 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) = (1/\pi) \int_0^\infty dt \exp(-t \log(t) - x t) \sin(\pi t).
 @end example
 @end ifinfo
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_landau_pdf (double @var{x})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -614,12 +614,11 @@ above.
 @page
 @node The Levy alpha-Stable Distributions
 @section The Levy alpha-Stable Distributions
-@deftypefn Random double gsl_ran_levy (const gsl_rng * @var{r}, double @var{c}, double @var{alpha})
+@deftypefun double gsl_ran_levy (const gsl_rng * @var{r}, double @var{c}, double @var{alpha})
 @cindex Levy distribution
 This function returns a random variate from the Levy symmetric stable
 distribution with scale @var{c} and exponent @var{alpha}.  The symmetric
 stable probability distribution is defined by a fourier transform,
-
 @tex
 \beforedisplay
 $$
@@ -628,6 +627,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha)
 @end example
@@ -642,7 +642,7 @@ distribution become extremely wide.
 
 The algorithm only works for @c{$0 < \alpha \le 2$}
 @math{0 < alpha <= 2}.
-@end deftypefn
+@end deftypefun
 
 @sp 1
 @tex
@@ -653,7 +653,7 @@ The algorithm only works for @c{$0 < \alpha \le 2$}
 @node The Levy skew alpha-Stable Distribution
 @section The Levy skew alpha-Stable Distribution
 
-@deftypefn Random double gsl_ran_levy_skew (const gsl_rng * @var{r}, double @var{c}, double @var{alpha}, double @var{beta})
+@deftypefun double gsl_ran_levy_skew (const gsl_rng * @var{r}, double @var{c}, double @var{alpha}, double @var{beta})
 @cindex Levy distribution, skew
 @cindex Skew Levy distribution
 This function returns a random variate from the Levy skew stable
@@ -661,15 +661,15 @@ distribution with scale @var{c}, exponent @var{alpha} and skewness
 parameter @var{beta}.  The skewness parameter must lie in the range
 @math{[-1,1]}.  The Levy skew stable probability distribution is defined
 by a fourier transform,
-
 @tex
 \beforedisplay
 $$
-p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(-it x - |c t|^\alpha (1-i \beta sign(t) \tan(\pi\alpha/2)))
+p(x) = {1 \over 2 \pi} \int_{-\infty}^{+\infty} dt \exp(-it x - |c t|^\alpha (1-i \beta \sign(t) \tan(\pi\alpha/2)))
 $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha (1-i beta sign(t) tan(pi alpha/2)))
 @end example
@@ -687,7 +687,7 @@ wide.  The symmetric distribution corresponds to @math{\beta =
 
 The algorithm only works for @c{$0 < \alpha \le 2$}
 @math{0 < alpha <= 2}.
-@end deftypefn
+@end deftypefun
 
 The Levy alpha-stable distributions have the property that if @math{N}
 alpha-stable variates are drawn from the distribution @math{p(c, \alpha,
@@ -712,11 +712,10 @@ distributed as an alpha-stable variate,
 @page
 @node The Gamma Distribution
 @section The Gamma Distribution
-@deftypefn Random double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_gamma (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gamma distribution
 This function returns a random variate from the gamma
 distribution.  The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -725,6 +724,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
 @end example
@@ -734,7 +734,7 @@ for @math{x > 0}.
 @comment If @xmath{X} and @xmath{Y} are independent gamma-distributed random
 @comment variables of order @xmath{a} and @xmath{b}, then @xmath{X+Y} has a gamma
 @comment distribution of order @xmath{a+b}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_gamma_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -759,12 +759,11 @@ distribution with parameters @var{a} and @var{b}.
 @page
 @node The Flat (Uniform) Distribution
 @section The Flat (Uniform) Distribution
-@deftypefn Random double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_flat (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex flat distribution
 @cindex uniform distribution
 This function returns a random variate from the flat (uniform)
 distribution from @var{a} to @var{b}. The distribution is,
-
 @tex
 \beforedisplay
 $$
@@ -773,6 +772,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over (b-a)@} dx
 @end example
@@ -780,7 +780,7 @@ p(x) dx = @{1 \over (b-a)@} dx
 @noindent
 if @c{$a \le x < b$}
 @math{a <= x < b} and 0 otherwise.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_flat_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -806,11 +806,10 @@ from @var{a} to @var{b}.
 @page
 @node The Lognormal Distribution
 @section The Lognormal Distribution
-@deftypefn Random double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
+@deftypefun double gsl_ran_lognormal (const gsl_rng * @var{r}, double @var{zeta}, double @var{sigma})
 @cindex Lognormal distribution
 This function returns a random variate from the lognormal
 distribution.  The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -819,13 +818,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over x \sqrt@{2 \pi \sigma^2@} @} \exp(-(\ln(x) - \zeta)^2/2 \sigma^2) dx
 @end example
 @end ifinfo
 @noindent
 for @math{x > 0}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_lognormal_pdf (double @var{x}, double @var{zeta}, double @var{sigma})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -854,7 +854,6 @@ distribution with parameters @var{zeta} and @var{sigma}.
 The chi-squared distribution arises in statistics.  If @math{Y_i} are
 @math{n} independent gaussian random variates with unit variance then the
 sum-of-squares,
-
 @tex
 \beforedisplay
 $$
@@ -863,6 +862,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X_i = \sum_i Y_i^2
 @end example
@@ -870,11 +870,10 @@ X_i = \sum_i Y_i^2
 @noindent
 has a chi-squared distribution with @math{n} degrees of freedom.
 
-@deftypefn Random double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
+@deftypefun double gsl_ran_chisq (const gsl_rng * @var{r}, double @var{nu})
 @cindex Chi-squared distribution
 This function returns a random variate from the chi-squared distribution
 with @var{nu} degrees of freedom. The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -883,15 +882,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{1 \over 2 \Gamma(\nu/2) @} (x/2)^@{\nu/2 - 1@} \exp(-x/2) dx
 @end example
 @end ifinfo
-
 @noindent
 for @c{$x \ge 0$}
 @math{x >= 0}. 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_chisq_pdf (double @var{x}, double @var{nu})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -921,7 +920,6 @@ distribution with @var{nu} degrees of freedom.
 The F-distribution arises in statistics.  If @math{Y_1} and @math{Y_2}
 are chi-squared deviates with @math{\nu_1} and @math{\nu_2} degrees of
 freedom then the ratio,
-
 @tex
 \beforedisplay
 $$
@@ -930,6 +928,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
 @end example
@@ -937,10 +936,9 @@ X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
 @noindent
 has an F-distribution @math{F(x;\nu_1,\nu_2)}.
 
-@deftypefn Random double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
+@deftypefun double gsl_ran_fdist (const gsl_rng * @var{r}, double @var{nu1}, double @var{nu2})
 @cindex F-distribution
 This function returns a random variate from the F-distribution with degrees of freedom @var{nu1} and @var{nu2}. The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -953,6 +951,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = 
    @{ \Gamma((\nu_1 + \nu_2)/2)
@@ -961,11 +960,10 @@ p(x) dx =
    x^@{\nu_1/2 - 1@} (\nu_2 + \nu_1 x)^@{-\nu_1/2 -\nu_2/2@}
 @end example
 @end ifinfo
-
 @noindent
 for @c{$x \ge 0$}
 @math{x >= 0}. 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_fdist_pdf (double @var{x}, double @var{nu1}, double @var{nu2})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -991,7 +989,6 @@ These functions compute the cumulative distribution functions
 The t-distribution arises in statistics.  If @math{Y_1} has a normal
 distribution and @math{Y_2} has a chi-squared distribution with
 @math{\nu} degrees of freedom then the ratio,
-
 @tex
 \beforedisplay
 $$
@@ -1000,20 +997,19 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
 @end example
 @end ifinfo
-
 @noindent
 has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
 
-@deftypefn Random double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
+@deftypefun double gsl_ran_tdist (const gsl_rng * @var{r}, double @var{nu})
 @cindex t-distribution
 @cindex Student t-distribution
 This function returns a random variate from the t-distribution.  The
 distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1023,6 +1019,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
    (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
@@ -1030,7 +1027,7 @@ p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
 @end ifinfo
 @noindent
 for @math{-\infty < x < +\infty}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_tdist_pdf (double @var{x}, double @var{nu})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1055,11 +1052,10 @@ with @var{nu} degrees of freedom.
 @page
 @node The Beta Distribution
 @section The Beta Distribution
-@deftypefn Random double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_beta (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Beta distribution
 This function returns a random variate from the beta
 distribution.  The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1068,6 +1064,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end example
@@ -1075,7 +1072,7 @@ p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @noindent
 for @c{$0 \le x \le 1$}
 @math{0 <= x <= 1}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_beta_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1099,11 +1096,10 @@ parameters @var{a} and @var{b}.
 @node The Logistic Distribution
 @section The Logistic Distribution
 
-@deftypefn Random double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{a})
+@deftypefun double gsl_ran_logistic (const gsl_rng * @var{r}, double @var{a})
 @cindex Logistic distribution
 This function returns a random variate from the logistic
 distribution.  The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1112,13 +1108,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{ \exp(-x/a) \over a (1 + \exp(-x/a))^2 @} dx
 @end example
 @end ifinfo
 @noindent
 for @math{-\infty < x < +\infty}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_logistic_pdf (double @var{x}, double @var{a})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1143,11 +1140,10 @@ distribution with scale parameter @var{a}.
 @page
 @node The Pareto Distribution
 @section The Pareto Distribution
-@deftypefn Random double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_pareto (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Pareto distribution
 This function returns a random variate from the Pareto distribution of
 order @var{a}.  The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1156,6 +1152,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = (a/b) / (x/b)^@{a+1@} dx
 @end example
@@ -1163,7 +1160,7 @@ p(x) dx = (a/b) / (x/b)^@{a+1@} dx
 @noindent
 for @c{$x \ge b$}
 @math{x >= b}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_pareto_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1193,8 +1190,8 @@ The spherical distributions generate random vectors, located on a
 spherical surface.  They can be used as random directions, for example in
 the steps of a random walk.
 
-@deftypefn Random void gsl_ran_dir_2d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
-@deftypefnx Random void gsl_ran_dir_2d_trig_method (const gsl_rng * @var{r}, double *@var{x}, double *@var{y})
+@deftypefun void gsl_ran_dir_2d (const gsl_rng * @var{r}, double * @var{x}, double * @var{y})
+@deftypefunx void gsl_ran_dir_2d_trig_method (const gsl_rng * @var{r}, double * @var{x}, double * @var{y})
 @cindex 2D random direction vector
 @cindex direction vector, random 2D
 @cindex spherical random variates, 2D
@@ -1216,9 +1213,9 @@ ed, p140, exercise 23), requires neither trig nor a square root.  In
 this approach, @var{u} and @var{v} are chosen at random from the
 interior of a unit circle, and then @math{x=(u^2-v^2)/(u^2+v^2)} and
 @math{y=2uv/(u^2+v^2)}.
-@end deftypefn
+@end deftypefun
 
-@deftypefn Random void gsl_ran_dir_3d (const gsl_rng * @var{r}, double *@var{x}, double *@var{y}, double * @var{z})
+@deftypefun void gsl_ran_dir_3d (const gsl_rng * @var{r}, double * @var{x}, double * @var{y}, double * @var{z})
 @cindex 3D random direction vector
 @cindex direction vector, random 3D
 @cindex spherical random variates, 3D
@@ -1229,9 +1226,9 @@ due to Robert E. Knop (CACM 13, 326 (1970)), and explained in Knuth, v2,
 3rd ed, p136.  It uses the surprising fact that the distribution
 projected along any axis is actually uniform (this is only true for 3
 dimensions).
-@end deftypefn
+@end deftypefun
 
-@deftypefn Random void gsl_ran_dir_nd (const gsl_rng * @var{r}, size_t @var{n}, double *@var{x})
+@deftypefun void gsl_ran_dir_nd (const gsl_rng * @var{r}, size_t @var{n}, double * @var{x})
 @cindex N-dimensional random direction vector
 @cindex direction vector, random N-dimensional
 @cindex spherical random variates, N-dimensional
@@ -1245,18 +1242,17 @@ such that
 uses the fact that a multivariate gaussian distribution is spherically
 symmetric.  Each component is generated to have a gaussian distribution,
 and then the components are normalized.  The method is described by
-Knuth, v2, 3rd ed, p135-136, and attributed to G. W. Brown, Modern
+Knuth, v2, 3rd ed, p135--136, and attributed to G. W. Brown, Modern
 Mathematics for the Engineer (1956).
-@end deftypefn
+@end deftypefun
 
 @page
 @node The Weibull Distribution
 @section The Weibull Distribution
-@deftypefn Random double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_weibull (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Weibull distribution
 This function returns a random variate from the Weibull distribution.  The
 distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1265,15 +1261,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = @{b \over a^b@} x^@{b-1@}  \exp(-(x/a)^b) dx
 @end example
 @end ifinfo
-
 @noindent
 for @c{$x \ge 0$}
 @math{x >= 0}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_weibull_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1299,12 +1295,11 @@ distribution with scale @var{a} and exponent @var{b}.
 @page
 @node The Type-1 Gumbel Distribution
 @section  The Type-1 Gumbel Distribution
-@deftypefn Random double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_gumbel1 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gumbel distribution (Type 1)
 @cindex Type 1 Gumbel distribution, random variates
 This function returns  a random variate from the Type-1 Gumbel
 distribution.  The Type-1 Gumbel distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1313,14 +1308,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{-\infty < x < \infty}. 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_gumbel1_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1346,12 +1341,11 @@ distribution with parameters @var{a} and @var{b}.
 @page
 @node The Type-2 Gumbel Distribution
 @section  The Type-2 Gumbel Distribution
-@deftypefn Random double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+@deftypefun double gsl_ran_gumbel2 (const gsl_rng * @var{r}, double @var{a}, double @var{b})
 @cindex Gumbel distribution (Type 2)
 @cindex Type 2 Gumbel distribution
 This function returns a random variate from the Type-2 Gumbel
 distribution.  The Type-2 Gumbel distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1360,14 +1354,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(x) dx = a b x^@{-a-1@} \exp(-b x^@{-a@}) dx
 @end example
 @end ifinfo
-
 @noindent
 for @math{0 < x < \infty}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_gumbel2_pdf (double @var{x}, double @var{a}, double @var{b})
 This function computes the probability density @math{p(x)} at @var{x}
@@ -1393,11 +1387,10 @@ distribution with parameters @var{a} and @var{b}.
 @page
 @node The Dirichlet Distribution
 @section The Dirichlet Distribution
-@deftypefn Random void gsl_ran_dirichlet (const gsl_rng * @var{r}, size_t @var{K}, const double @var{alpha}[], double @var{theta}[])
+@deftypefun void gsl_ran_dirichlet (const gsl_rng * @var{r}, size_t @var{K}, const double @var{alpha}[], double @var{theta}[])
 @cindex Dirichlet distribution 
 This function returns an array of @var{K} random variates from a Dirichlet
 distribution of order @var{K}-1. The distribution function is
-
 @tex
 \beforedisplay
 $$
@@ -1408,6 +1401,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(\theta_1, ..., \theta_K) d\theta_1 ... d\theta_K = 
   (1/Z) \prod_@{i=1@}^K \theta_i^@{\alpha_i - 1@} \delta(1 -\sum_@{i=1@}^K \theta_i) d\theta_1 ... d\theta_K
@@ -1419,7 +1413,6 @@ for @c{$\theta_i \ge 0$}
 and @c{$\alpha_i \ge 0$} 
 @math{alpha_i >= 0}.  The delta function ensures that @math{\sum \theta_i = 1}.
 The normalization factor @math{Z} is
-
 @tex
 \beforedisplay
 $$
@@ -1428,6 +1421,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 Z = @{\prod_@{i=1@}^K \Gamma(\alpha_i)@} / @{\Gamma( \sum_@{i=1@}^K \alpha_i)@}
 @end example
@@ -1439,7 +1433,7 @@ from gamma distributions with parameters
 @math{a=alpha_i, b=1}, 
 and renormalizing. 
 See A.M. Law, W.D. Kelton, @cite{Simulation Modeling and Analysis} (1991).
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_dirichlet_pdf (size_t @var{K}, const double @var{alpha}[], const double @var{theta}[]) 
 This function computes the probability density 
@@ -1466,7 +1460,6 @@ produce a random value @math{k} consistent with its probability.
 
 The obvious way to do this is to preprocess the probability list by
 generating a cumulative probability array with @math{K+1} elements:
-
 @tex
 \beforedisplay
 $$
@@ -1478,12 +1471,12 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
   C[0] = 0 
 C[k+1] = C[k]+P[k].
 @end example
 @end ifinfo
-
 @noindent
 Note that this construction produces @math{C[K]=1}.  Now choose a
 uniform deviate @math{u} between 0 and 1, and find the value of @math{k}
@@ -1498,15 +1491,15 @@ But faster methods have been devised.  Again, the idea is to preprocess
 the probability list, and save the result in some form of lookup table;
 then the individual calls for a random discrete event can go rapidly.
 An approach invented by G. Marsaglia (Generating discrete random numbers
-in a computer, Comm ACM 6, 37-38 (1963)) is very clever, and readers
+in a computer, Comm ACM 6, 37--38 (1963)) is very clever, and readers
 interested in examples of good algorithm design are directed to this
 short and well-written paper.  Unfortunately, for large @math{K},
 Marsaglia's lookup table can be quite large.  
 
 A much better approach is due to Alastair J. Walker (An efficient method
 for generating discrete random variables with general distributions, ACM
-Trans on Mathematical Software 3, 253-256 (1977); see also Knuth, v2,
-3rd ed, p120-121,139).  This requires two lookup tables, one floating
+Trans on Mathematical Software 3, 253--256 (1977); see also Knuth, v2,
+3rd ed, p120--121,139).  This requires two lookup tables, one floating
 point and one integer, but both only of size @math{K}.  After
 preprocessing, the random numbers are generated in O(1) time, even for
 large @math{K}.  The preprocessing suggested by Walker requires
@@ -1529,16 +1522,16 @@ This function returns a pointer to a structure that contains the lookup
 table for the discrete random number generator.  The array @var{P}[] contains
 the probabilities of the discrete events; these array elements must all be 
 positive, but they needn't add up to one (so you can think of them more
-generally as "weights")---the preprocessor will normalize appropriately.
+generally as ``weights'')---the preprocessor will normalize appropriately.
 This return value is used
 as an argument for the @code{gsl_ran_discrete} function below.
 @end deftypefun
 
-@deftypefn Random {size_t} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
+@deftypefun {size_t} gsl_ran_discrete (const gsl_rng * @var{r}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
 After the preprocessor, above, has been called, you use this function to
 get the discrete random numbers.
-@end deftypefn
+@end deftypefun
 
 @deftypefun {double} gsl_ran_discrete_pdf (size_t @var{k}, const gsl_ran_discrete_t * @var{g})
 @cindex Discrete random numbers
@@ -1558,11 +1551,10 @@ De-allocates the lookup table pointed to by @var{g}.
 @page
 @node The Poisson Distribution
 @section The Poisson Distribution
-@deftypefn Random {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
+@deftypefun {unsigned int} gsl_ran_poisson (const gsl_rng * @var{r}, double @var{mu})
 @cindex Poisson random numbers
 This function returns a random integer from the Poisson distribution
 with mean @var{mu}.  The probability distribution for Poisson variates is,
-
 @tex
 \beforedisplay
 $$
@@ -1571,15 +1563,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) = @{\mu^k \over k!@} \exp(-\mu)
 @end example
 @end ifinfo
-
 @noindent
 for @c{$k \ge 0$}
 @math{k >= 0}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_poisson_pdf (unsigned int @var{k}, double @var{mu})
 This function computes the probability @math{p(k)} of obtaining  @var{k}
@@ -1595,12 +1587,11 @@ given above.
 @page
 @node The Bernoulli Distribution
 @section The Bernoulli Distribution
-@deftypefn Random {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
+@deftypefun {unsigned int} gsl_ran_bernoulli (const gsl_rng * @var{r}, double @var{p})
 @cindex Bernoulli trial, random variates
 This function returns either 0 or 1, the result of a Bernoulli trial
 with probability @var{p}.  The probability distribution for a Bernoulli
 trial is,
-
 @tex
 \beforedisplay
 $$
@@ -1612,13 +1603,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(0) = 1 - p
 p(1) = p
 @end example
 @end ifinfo
 
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_bernoulli_pdf (unsigned int @var{k}, double @var{p})
 This function computes the probability @math{p(k)} of obtaining
@@ -1634,12 +1626,11 @@ This function computes the probability @math{p(k)} of obtaining
 @page
 @node The Binomial Distribution
 @section The Binomial Distribution
-@deftypefn Random {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
+@deftypefun {unsigned int} gsl_ran_binomial (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
 @cindex Binomial random variates
 This function returns a random integer from the binomial distribution,
 the number of successes in @var{n} independent trials with probability
 @var{p}.  The probability distribution for binomial variates is,
-
 @tex
 \beforedisplay
 $$
@@ -1648,6 +1639,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) = @{n! \over k! (n-k)! @} p^k (1-p)^@{n-k@}
 @end example
@@ -1655,7 +1647,7 @@ p(k) = @{n! \over k! (n-k)! @} p^k (1-p)^@{n-k@}
 @noindent
 for @c{$0 \le k \le n$}
 @math{0 <= k <= n}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_binomial_pdf (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1672,12 +1664,11 @@ the formula given above.
 @page
 @node The Multinomial Distribution
 @section The Multinomial Distribution
-@deftypefn Random void gsl_ran_multinomial (const gsl_rng * @var{r}, size_t @var{K}, unsigned int @var{N}, const double @var{p}[], unsigned int @var{n}[])
+@deftypefun void gsl_ran_multinomial (const gsl_rng * @var{r}, size_t @var{K}, unsigned int @var{N}, const double @var{p}[], unsigned int @var{n}[])
 @cindex Multinomial distribution 
 
 This function returns an array of @var{K} random variates from a 
 multinomial distribution. The distribution function is,
-
 @tex
 \beforedisplay
 $$
@@ -1687,6 +1678,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 P(n_1, n_2, ..., n_K) = 
   (N!/(n_1! n_2! ... n_K!)) p_1^n_1 p_2^n_2 ... p_K^n_K
@@ -1707,8 +1699,8 @@ treated as weights and normalized appropriately.
 
 Random variates are generated using the conditional binomial method (see
 C.S. David, @cite{The computer generation of multinomial random
-variates}, Comp. Stat. Data Anal. 16 (1993) 205-217 for details).
-@end deftypefn
+variates}, Comp. Stat. Data Anal. 16 (1993) 205--217 for details).
+@end deftypefun
 
 @deftypefun double gsl_ran_multinomial_pdf (size_t @var{K}, const double @var{p}[], const unsigned int @var{n}[]) 
 This function computes the probability 
@@ -1728,13 +1720,12 @@ multinomial distribution @c{$P(n_1, n_2, \ldots, n_K)$}
 @page
 @node The Negative Binomial Distribution
 @section The Negative Binomial Distribution
-@deftypefn Random {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, double @var{n})
+@deftypefun {unsigned int} gsl_ran_negative_binomial (const gsl_rng * @var{r}, double @var{p}, double @var{n})
 @cindex Negative Binomial distribution, random variates
 This function returns a random integer from the negative binomial
 distribution, the number of failures occurring before @var{n} successes
 in independent trials with probability @var{p} of success.  The
 probability distribution for negative binomial variates is,
-
 @tex
 \beforedisplay
 $$
@@ -1743,14 +1734,14 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) = @{\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) @} p^n (1-p)^k
 @end example
 @end ifinfo
-
 @noindent
 Note that @math{n} is not required to be an integer.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_negative_binomial_pdf (unsigned int @var{k}, double @var{p}, double  @var{n})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1767,11 +1758,10 @@ from a negative binomial distribution with parameters @var{p} and
 @node The Pascal Distribution
 @section The Pascal Distribution
 
-@deftypefn Random {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
+@deftypefun {unsigned int} gsl_ran_pascal (const gsl_rng * @var{r}, double @var{p}, unsigned int @var{n})
 This function returns a random integer from the Pascal distribution.  The
 Pascal distribution is simply a negative binomial distribution with an
 integer value of @math{n}.
-
 @tex
 \beforedisplay
 $$
@@ -1780,6 +1770,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) = @{(n + k - 1)! \over k! (n - 1)! @} p^n (1-p)^k
 @end example
@@ -1787,7 +1778,7 @@ p(k) = @{(n + k - 1)! \over k! (n - 1)! @} p^n (1-p)^k
 @noindent
 for @c{$k \ge 0$}
 @math{k >= 0}
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_pascal_pdf (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1803,13 +1794,12 @@ from a Pascal distribution with parameters @var{p} and
 @page
 @node The Geometric Distribution
 @section The Geometric Distribution
-@deftypefn Random {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
+@deftypefun {unsigned int} gsl_ran_geometric (const gsl_rng * @var{r}, double @var{p})
 @cindex Geometric random variates
 This function returns a random integer from the geometric distribution,
 the number of independent trials with probability @var{p} until the
 first success.  The probability distribution for geometric variates
 is,
-
 @tex
 \beforedisplay
 $$
@@ -1818,15 +1808,15 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) =  p (1-p)^(k-1)
 @end example
 @end ifinfo
-
 @noindent
 for @c{$k \ge 1$}
 @math{k >= 1}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_geometric_pdf (unsigned int @var{k}, double @var{p})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1843,12 +1833,11 @@ the formula given above.
 @node The Hypergeometric Distribution
 @section The Hypergeometric Distribution
 @cindex hypergeometric random variates
-@deftypefn Random {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
+@deftypefun {unsigned int} gsl_ran_hypergeometric (const gsl_rng * @var{r}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 @cindex Geometric random variates
 This function returns a random integer from the hypergeometric
 distribution.  The probability distribution for hypergeometric
 random variates is,
-
 @tex
 \beforedisplay
 $$
@@ -1857,6 +1846,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 @end example
@@ -1868,7 +1858,7 @@ where @math{C(a,b) = a!/(b!(a-b)!)} and
 domain of @math{k} is 
 @c{$\hbox{max}(0,t-n_2), \ldots, \hbox{min}(t,n_1)$} 
 @math{max(0,t-n_2), ..., min(t,n_1)}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_hypergeometric_pdf (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1884,12 +1874,11 @@ from a hypergeometric distribution with parameters @var{n1}, @var{n2},
 @page
 @node The Logarithmic Distribution
 @section The Logarithmic Distribution
-@deftypefn Random {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
+@deftypefun {unsigned int} gsl_ran_logarithmic (const gsl_rng * @var{r}, double @var{p})
 @cindex Logarithmic random variates
 This function returns a random integer from the logarithmic
 distribution.  The probability distribution for logarithmic random variates
 is,
-
 @tex
 \beforedisplay
 $$
@@ -1898,6 +1887,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 p(k) = @{-1 \over \log(1-p)@} @{(p^k \over k)@}
 @end example
@@ -1905,7 +1895,7 @@ p(k) = @{-1 \over \log(1-p)@} @{(p^k \over k)@}
 @noindent
 for @c{$k \ge 1$}
 @math{k >= 1}.
-@end deftypefn
+@end deftypefun
 
 @deftypefun double gsl_ran_logarithmic_pdf (unsigned int @var{k}, double @var{p})
 This function computes the probability @math{p(k)} of obtaining @var{k}
@@ -1929,7 +1919,7 @@ output.  In particular it is important to avoid generators with a short
 period.  For more information see Knuth, v2, 3rd ed, Section 3.4.2,
 ``Random Sampling and Shuffling''.
 
-@deftypefn Random void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
+@deftypefun void gsl_ran_shuffle (const gsl_rng * @var{r}, void * @var{base}, size_t @var{n}, size_t @var{size})
 
 This function randomly shuffles the order of @var{n} objects, each of
 size @var{size}, stored in the array @var{base}[0..@var{n}-1].  The
@@ -1951,9 +1941,9 @@ for (i = 0; i < 52; i++)
 gsl_ran_shuffle (r, a, 52, sizeof (int));
 @end example
 
-@end deftypefn
+@end deftypefun
 
-@deftypefn Random int gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+@deftypefun int gsl_ran_choose (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function fills the array @var{dest}[k] with @var{k} objects taken
 randomly from the @var{n} elements of the array
 @var{src}[0..@var{n}-1].  The objects are each of size @var{size}.  The
@@ -1982,15 +1972,15 @@ for (i = 0; i < 100; i++)
 gsl_ran_choose (r, a, 3, b, 100, sizeof (double));
 @end example
 
-@end deftypefn
+@end deftypefun
 
-@deftypefn Random void gsl_ran_sample (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
+@deftypefun void gsl_ran_sample (const gsl_rng * @var{r}, void * @var{dest}, size_t @var{k}, void * @var{src}, size_t @var{n}, size_t @var{size})
 This function is like @code{gsl_ran_choose} but samples @var{k} items
 from the original array of @var{n} items @var{src} with replacement, so
 the same object can appear more than once in the output sequence
 @var{dest}.  There is no requirement that @var{k} be less than @var{n}
 in this case.
-@end deftypefn
+@end deftypefun
 
 
 @node Random Number Distribution Examples
@@ -2009,9 +1999,8 @@ If the library and header files are installed under @file{/usr/local}
 options,
 
 @example
-gcc demo.c -lgsl -lgslcblas -lm
+$ gcc -Wall demo.c -lgsl -lgslcblas -lm
 @end example
-
 @noindent
 Here is the output of the program,
 
@@ -2019,7 +2008,6 @@ Here is the output of the program,
 $ ./a.out 
 @verbatiminclude examples/randpoisson.out
 @end example
-
 @noindent
 The variates depend on the seed used by the generator.  The seed for the
 default generator type @code{gsl_rng_default} can be changed with the
@@ -2030,18 +2018,15 @@ of variates,
 $ GSL_RNG_SEED=123 ./a.out 
 @verbatiminclude examples/randpoisson.2.out
 @end example
-
 @noindent
 The following program generates a random walk in two dimensions.
 
 @example
 @verbatiminclude examples/randwalk.c
 @end example
-
 @noindent
-Example output from the program, three 10-step random walks from the origin.
+Here is the output from the program, three 10-step random walks from the origin,
 
-@sp 1
 @tex
 \centerline{\input random-walk.tex}
 @end tex
@@ -2082,7 +2067,6 @@ describes algorithms for all the major distributions.
 Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
-
 @noindent
 The Particle Data Group provides a short review of techniques for
 generating distributions of random numbers in the ``Monte Carlo''
@@ -2094,7 +2078,6 @@ section of its Annual Review of Particle Physics.
 R.M. Barnett et al., Physical Review D54, 1 (1996)
 @uref{http://pdg.lbl.gov/}.
 @end itemize
-
 @noindent
 The Review of Particle Physics is available online in postscript and pdf
 format.
@@ -2123,11 +2106,11 @@ are based on the following papers,
 @itemize @asis
 @item
 @cite{Rational Chebyshev Approximations Using Linear Equations},
-W.J. Cody, W. Fraser, J.F. Hart. Numerische Mathematik 12, 242-251 (1968).
+W.J. Cody, W. Fraser, J.F. Hart. Numerische Mathematik 12, 242--251 (1968).
 @end itemize
 
 @itemize @asis
 @item
 @cite{Rational Chebyshev Approximations for the Error Function},
-W.J. Cody. Mathematics of Computation 23, n107, 631-637 (July 1969).
+W.J. Cody. Mathematics of Computation 23, n107, 631--637 (July 1969).
 @end itemize

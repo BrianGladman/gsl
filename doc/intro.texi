@@ -23,6 +23,7 @@ General Public License.
 The library covers a wide range of topics in numerical computing.
 Routines are available for the following areas,
 
+@sp 1
 @multitable @columnfractions 0.05 0.45 0.45 0.05
 @item @tab Complex Numbers            @tab Roots of Polynomials        
 @item @tab Special Functions          @tab Vectors and Matrices        
@@ -40,7 +41,9 @@ Routines are available for the following areas,
 @item @tab Root-Finding               @tab Discrete Hankel Transforms 
 @item @tab Least-Squares Fitting      @tab Minimization               
 @item @tab IEEE Floating-Point        @tab Physical Constants         
+@item @tab Wavelets
 @end multitable
+@sp 1
 @noindent
 The use of these routines is described in this manual.  Each chapter
 provides detailed definitions of the functions, followed by example
@@ -100,7 +103,7 @@ for commercial users.
 @cindex obtaining GSL
 @cindex downloading GSL
 @cindex mailing list for GSL announcements
-@cindex gsl-announce mailing list
+@cindex info-gsl mailing list
 The source code for the library can be obtained in different ways, by
 copying it from a friend, purchasing it on @sc{cdrom} or downloading it
 from the internet. A list of public ftp servers which carry the source
@@ -114,8 +117,8 @@ code can be found on the GNU website,
 The preferred platform for the library is a GNU system, which allows it
 to take advantage of additional features in the GNU C compiler and GNU C
 library.  However, the library is fully portable and should compile on
-most systems.  Precompiled versions of the library and support contracts
-can be purchased from commercial redistributors listed on the website above.
+most systems.  Precompiled versions of the library can be purchased from
+commercial redistributors listed on the website above.
 
 Announcements of new releases, updates and other relevant events are
 made on the @code{info-gsl@@gnu.org} mailing list.  To subscribe to this
@@ -126,16 +129,17 @@ To: info-gsl-request@@gnu.org
 Subject: subscribe
 @end example
 @noindent
-You will receive a response asking to you to reply in order to confirm
+You will receive a response asking you to reply in order to confirm
 your subscription.
 
 @node  No Warranty
 @section No Warranty
 @cindex warranty (none)
 The software described in this manual has no warranty, it is provided
-"as is".  It is your responsibility to validate the behavior of the
-routines and their accuracy using the source code provided.  Consult the
-GNU General Public license for further details (@pxref{GNU General
+``as is''.  It is your responsibility to validate the behavior of the
+routines and their accuracy using the source code provided, or to
+purchase support and warranties from commercial redistributors.  Consult
+the GNU General Public license for further details (@pxref{GNU General
 Public License}).
 
 @node  Reporting Bugs

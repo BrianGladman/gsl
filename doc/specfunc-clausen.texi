@@ -9,13 +9,16 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 Cl_2(x) = - \int_0^x dt \log(2 \sin(t/2))
 @end example
 @end ifinfo
 @noindent
-It is related to the dilogarithm by @math{Cl_2(\theta) = \Im Li_2(\exp(i
-\theta))}.  The Clausen functions are declared in the header file
+It is related to the dilogarithm by 
+@c{$Cl_2(\theta) = \Im(Li_2(e^{i\theta}))$}
+@math{Cl_2(\theta) = \Im Li_2(\exp(i\theta))}.  
+The Clausen functions are declared in the header file
 @file{gsl_sf_clausen.h}.
 
 @deftypefun double gsl_sf_clausen (double @var{x})

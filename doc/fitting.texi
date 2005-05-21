@@ -27,7 +27,6 @@ The functions described in this section can be used to perform
 least-squares fits to a straight line model, @math{Y = c_0 + c_1 X}.
 For weighted data the best-fit is found by minimizing the weighted sum of
 squared residuals, @math{\chi^2},
-
 @tex
 \beforedisplay
 $$
@@ -36,11 +35,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \chi^2 = \sum_i w_i (y_i - (c_0 + c_1 x_i))^2
 @end example
 @end ifinfo
-
 @noindent
 for the parameters @math{c_0}, @math{c_1}.  For unweighted data the
 sum is computed with @math{w_i = 1}.
@@ -72,7 +71,7 @@ the residuals from the best-fit line, @math{\chi^2}, is returned in
 @var{chisq}.
 @end deftypefun
 
-@deftypefun int gsl_fit_linear_est (double @var{x}, double @var{c0}, double @var{c1}, double @var{c00}, double @var{c01}, double @var{c11}, double *@var{y}, double *@var{y_err})
+@deftypefun int gsl_fit_linear_est (double @var{x}, double @var{c0}, double @var{c1}, double @var{c00}, double @var{c01}, double @var{c11}, double * @var{y}, double * @var{y_err})
 This function uses the best-fit linear regression coefficients
 @var{c0},@var{c1} and their estimated covariance
 @var{cov00},@var{cov01},@var{cov11} to compute the fitted function
@@ -87,7 +86,6 @@ The functions described in this section can be used to perform
 least-squares fits to a straight line model without a constant term,
 @math{Y = c_1 X}.  For weighted data the best-fit is found by minimizing
 the weighted sum of squared residuals, @math{\chi^2},
-
 @tex
 \beforedisplay
 $$
@@ -96,11 +94,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \chi^2 = \sum_i w_i (y_i - c_1 x_i)^2
 @end example
 @end ifinfo
-
 @noindent
 for the parameter @math{c_1}.  For unweighted data the sum is
 computed with @math{w_i = 1}.
@@ -124,12 +122,12 @@ and stride @var{wstride}, specifies the weight of each datapoint. The
 weight is the reciprocal of the variance for each datapoint in @var{y}.
 
 The variance of the parameter @var{c1} is estimated from the weighted
-data and returned via the parameters @var{cov11}.  The weighted sum of
+data and returned via the parameter @var{cov11}.  The weighted sum of
 squares of the residuals from the best-fit line, @math{\chi^2}, is
 returned in @var{chisq}.
 @end deftypefun
 
-@deftypefun int gsl_fit_mul_est (double @var{x}, double @var{c1}, double @var{c11}, double *@var{y}, double *@var{y_err})
+@deftypefun int gsl_fit_mul_est (double @var{x}, double @var{c1}, double @var{c11}, double * @var{y}, double * @var{y_err})
 This function uses the best-fit linear regression coefficient @var{c1}
 and its estimated covariance @var{cov11} to compute the fitted function
 @var{y} and its standard deviation @var{y_err} for the model @math{Y =
@@ -143,12 +141,10 @@ c_1 X} at the point @var{x}.
 The functions described in this section perform least-squares fits to a
 general linear model, @math{y = X c} where @math{y} is a vector of
 @math{n} observations, @math{X} is an @math{n} by @math{p} matrix of
-predictor variables, and @math{c} are the @math{p} unknown best-fit
-parameters, which are to be estimated.
+predictor variables, and the elements of the vector @math{c} are the @math{p} unknown best-fit parameters which are to be estimated.
 
 The best-fit is found by minimizing the weighted sums of squared
 residuals, @math{\chi^2},
-
 @tex
 \beforedisplay
 $$
@@ -157,6 +153,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \chi^2 = (y - X c)^T W (y - X c)
 @end example
@@ -170,7 +167,6 @@ This formulation can be used for fits to any number of functions and/or
 variables by preparing the @math{n}-by-@math{p} matrix @math{X}
 appropriately.  For example, to fit to a @math{p}-th order polynomial in
 @var{x}, use the following matrix,
-
 @tex
 \beforedisplay
 $$
@@ -179,6 +175,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X_@{ij@} = x_i^j
 @end example
@@ -189,7 +186,6 @@ where the index @math{i} runs over the observations and the index
 
 To fit to a set of @math{p} sinusoidal functions with fixed frequencies
 @math{\omega_1}, @math{\omega_2}, @dots{}, @math{\omega_p}, use,
-
 @tex
 \beforedisplay
 $$
@@ -198,6 +194,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X_@{ij@} = sin(\omega_j x_i)
 @end example
@@ -205,7 +202,6 @@ X_@{ij@} = sin(\omega_j x_i)
 @noindent
 To fit to @math{p} independent variables @math{x_1}, @math{x_2}, @dots{},
 @math{x_p}, use,
-
 @tex
 \beforedisplay
 $$
@@ -214,6 +210,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X_@{ij@} = x_j(i)
 @end example
@@ -255,12 +252,12 @@ zero singular value (to machine precision) are discarded from the fit.
 
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 
-This function computes the best-fit parameters @var{c} of the model
-@math{y = X c} for the observations @var{y} and the matrix of predictor
-variables @var{X}.  The covariance matrix of the model parameters
-@var{cov} is estimated from the weighted data.  The weighted sum of
-squares of the residuals from the best-fit, @math{\chi^2}, is returned
-in @var{chisq}.
+This function computes the best-fit parameters @var{c} of the weighted
+model @math{y = X c} for the observations @var{y} with weights @var{w}
+and the matrix of predictor variables @var{X}.  The covariance matrix of
+the model parameters @var{cov} is estimated from the weighted data.  The
+weighted sum of squares of the residuals from the best-fit,
+@math{\chi^2}, is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix
 @var{X} using the preallocated workspace provided in @var{work}. Any
@@ -301,14 +298,13 @@ $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data
 
 @iftex
 @sp 1
-@center @image{fit-wlinear,3.4in}
+@center @image{fit-wlinear,3.0in}
 @end iftex
 
 The next program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
 x^2} to a weighted dataset using the generalised linear fitting function
 @code{gsl_multifit_wlinear}.  The model matrix @math{X} for a quadratic
 fit is given by,
-
 @tex
 \beforedisplay
 $$
@@ -320,6 +316,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 X = [ 1   , x_0  , x_0^2 ;
       1   , x_1  , x_1^2 ;
@@ -388,14 +385,14 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 
 @iftex
 @sp 1
-@center @image{fit-wlinear2,3.4in}
+@center @image{fit-wlinear2,3.0in}
 @end iftex
 
 @node Fitting References and Further Reading
 @section References and Further Reading
 
 A summary of formulas and techniques for least squares fitting can be
-found in the "Statistics" chapter of the Annual Review of Particle
+found in the ``Statistics'' chapter of the Annual Review of Particle
 Physics prepared by the Particle Data Group,
 
 @itemize @asis
@@ -408,7 +405,6 @@ R.M. Barnett et al., Physical Review D54, 1 (1996)
 The Review of Particle Physics is available online at the website given
 above.
 
-@noindent
 @cindex NIST Statistical Reference Datasets
 @cindex Statistical Reference Datasets (StRD)
 The tests used to prepare these routines are based on the NIST

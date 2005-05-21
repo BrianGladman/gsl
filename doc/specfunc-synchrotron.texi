@@ -1,4 +1,4 @@
-@cindex Synchrotron functions
+@cindex synchrotron functions
 
 The functions described in this section are declared in the header file
 @file{gsl_sf_synchrotron.h}.

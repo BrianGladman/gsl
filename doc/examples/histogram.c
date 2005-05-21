@@ -23,20 +23,15 @@ main (int argc, char **argv)
 
   {
     double x;
-
     gsl_histogram * h = gsl_histogram_alloc (n);
-            
     gsl_histogram_set_ranges_uniform (h, a, b);
 
     while (fscanf (stdin, "%lg", &x) == 1)
       {
         gsl_histogram_increment (h, x);
       }
-
     gsl_histogram_fprintf (stdout, h, "%g", "%g");
-
     gsl_histogram_free (h);
   }
-  
   exit (0);
 }

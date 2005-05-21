@@ -308,6 +308,9 @@ Post announcements of your package releases to
 @email{gsl-discuss@@sources.redhat.com} so that information about them
 can be added to the GSL webpages.
 
+For security, sign your package with GPG (@code{gpg --detach-sign
+@var{file}}).
+
 An example package @samp{rngextra} containing two additional random
 number generators can be found at
 @url{http://www.network-theory.co.uk/download/rngextra/}.

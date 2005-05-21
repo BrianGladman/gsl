@@ -1,11 +1,11 @@
 @cindex autoconf, using with GSL
 
 For applications using @code{autoconf} the standard macro
-@code{AC_CHECK_LIB} can be used to link with the library automatically
+@code{AC_CHECK_LIB} can be used to link with GSL automatically
 from a @code{configure} script.  The library itself depends on the
 presence of a @sc{cblas} and math library as well, so these must also be
 located before linking with the main @code{libgsl} file.  The following
-commands should be placed in the @file{configure.in} file to perform
+commands should be placed in the @file{configure.ac} file to perform
 these tests,
 
 @example
@@ -56,9 +56,7 @@ command and @code{GSL_CFLAGS} is equal to @code{gsl-config --cflags}
 command. For example,
 
 @example
-libgsdv_la_LDFLAGS =    \
-        $(GTK_LIBDIR) \
-        $(GTK_LIBS) -lgsdvgsl $(GSL_LIBS) -lgslcblas
+libfoo_la_LDFLAGS = -lfoo $(GSL_LIBS) -lgslcblas
 @end example
 @noindent
 Note that the macro @code{AM_PATH_GSL} needs to use the C compiler so it

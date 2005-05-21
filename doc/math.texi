@@ -24,10 +24,10 @@ header file @file{gsl_math.h}.
 @section Mathematical Constants
 @cindex mathematical constants, defined as macros
 @cindex numerical constants, defined as macros
-@cindex constants, mathematical --- defined as macros
+@cindex constants, mathematical---defined as macros
 @cindex macros for mathematical constants
 The library ensures that the standard @sc{bsd} mathematical constants
-are defined. For reference here is a list of the constants.
+are defined. For reference, here is a list of the constants:
 
 @table @code
 @item M_E
@@ -190,7 +190,7 @@ alternative to the standard math function @code{atanh(x)}.
 @deftypefun double gsl_ldexp (double @var{x}, int @var{e})
 @cindex ldexp
 This function computes the value of @math{x * 2^e}. It provides an
-alternative to the standard math function @code{ldexp(x)}.
+alternative to the standard math function @code{ldexp(x,e)}.
 @end deftypefun
 
 @deftypefun double gsl_frexp (double @var{x}, int * @var{e})
@@ -198,7 +198,7 @@ alternative to the standard math function @code{ldexp(x)}.
 This function splits the number @math{x} into its normalized fraction
 @math{f} and exponent @math{e}, such that @math{x = f * 2^e} and
 @c{$0.5 \le f < 1$}
-@math{0.5 <= f < 1}. Ihe function returns @math{f} and stores the
+@math{0.5 <= f < 1}. The function returns @math{f} and stores the
 exponent in @math{e}. If @math{x} is zero, both @math{f} and @math{e}
 are set to zero. This function provides an alternative to the standard
 math function @code{frexp(x, e)}.
@@ -214,7 +214,7 @@ do not check for overflow or underflow conditions.
 
 @deftypefun double gsl_pow_int (double @var{x}, int @var{n})
 This routine computes the power @math{x^n} for integer @var{n}.  The
-power is computed efficiently --- for example, @math{x^8} is computed as
+power is computed efficiently---for example, @math{x^8} is computed as
 @math{((x^2)^2)^2}, requiring only 3 multiplications.  A version of this
 function which also computes the numerical error in the result is
 available as @code{gsl_sf_pow_int_e}.
@@ -332,8 +332,8 @@ function @code{frexp()}.
 
 If @math{x} and @math{y} lie within this interval, they are considered
 approximately equal and the function returns 0. Otherwise if @math{x <
-y}, the function returns -1, or if @math{x > y}, the function returns
-+1.
+y}, the function returns @math{-1}, or if @math{x > y}, the function returns
+@math{+1}.
 
 The implementation is based on the package @code{fcmp} by T.C. Belding.
 @end deftypefun

@@ -2,7 +2,7 @@
 @cindex maximization, see minimization
 @cindex minimization, one-dimensional
 @cindex finding minima
-@cindex non-linear functions, minimization
+@cindex nonlinear functions, minimization
 
 This chapter describes routines for finding minima of arbitrary
 one-dimensional functions.  The library provides low level components
@@ -43,22 +43,20 @@ upper bound @math{b}, with an estimate of the location of the minimum
 @sp 1
 @center @image{min-interval,3.4in}
 @end iftex
-
 @noindent
 The value of the function at @math{x} must be less than the value of the
 function at the ends of the interval,
-
 @iftex
 @tex
 $$f(a) > f(x) < f(b)$$
 @end tex
 @end iftex
 @ifinfo
+
 @example
 f(a) > f(x) < f(b)
 @end example
 @end ifinfo
-
 @noindent
 This condition guarantees that a minimum is contained somewhere within
 the interval.  On each iteration a new point @math{x'} is selected using
@@ -86,7 +84,6 @@ update @var{s} using the iteration @var{T}
 @item
 test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
-
 @noindent
 The state for the minimizers is held in a @code{gsl_min_fminimizer}
 struct.  The updating procedure uses only function evaluations (not
@@ -94,7 +91,7 @@ derivatives).
 
 @node Minimization Caveats
 @section Caveats
-@cindex Minimization, caveats
+@cindex minimization, caveats
 
 Note that minimization functions can only search for one minimum at a
 time.  When there are several minima in the search area, the first
@@ -107,7 +104,6 @@ With all minimization algorithms it can be difficult to determine the
 location of the minimum to full numerical precision.  The behavior of the
 function in the region of the minimum @math{x^*} can be approximated by
 a Taylor expansion,
-
 @iftex
 @tex
 $$
@@ -116,11 +112,11 @@ $$
 @end tex
 @end iftex
 @ifinfo
+
 @example
 y = f(x^*) + (1/2) f''(x^*) (x - x^*)^2
 @end example
 @end ifinfo
-
 @noindent
 and the second term of this expansion can be lost when added to the
 first term at finite precision.  This magnifies the error in locating
@@ -180,7 +176,6 @@ This function returns a pointer to the name of the minimizer.  For example,
 printf ("s is a '%s' minimizer\n",
         gsl_min_fminimizer_name (s));
 @end example
-
 @noindent
 would print something like @code{s is a 'brent' minimizer}.
 @end deftypefun
@@ -234,9 +229,9 @@ These functions return the current upper and lower bound of the interval
 for the minimizer @var{s}.
 @end deftypefun
 
-@deftypefun double gsl_min_fminimizer_f_minimum (const gsl_min_fminimizer *@var{s})
-@deftypefunx double gsl_min_fminimizer_f_upper (const gsl_min_fminimizer *@var{s})
-@deftypefunx double gsl_min_fminimizer_f_lower (const gsl_min_fminimizer *@var{s})
+@deftypefun double gsl_min_fminimizer_f_minimum (const gsl_min_fminimizer * @var{s})
+@deftypefunx double gsl_min_fminimizer_f_upper (const gsl_min_fminimizer * @var{s})
+@deftypefunx double gsl_min_fminimizer_f_lower (const gsl_min_fminimizer * @var{s})
 These functions return the value of the function at the current estimate
 of the minimum and at the upper and lower bounds of the interval for the
 minimizer @var{s}.
@@ -259,7 +254,6 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
-
 @noindent
 The handling of these conditions is under user control.  The function
 below allows the user to test the precision of the current result.
@@ -269,7 +263,6 @@ This function tests for the convergence of the interval [@var{x_lower},
 @var{x_upper}] with absolute error @var{epsabs} and relative error
 @var{epsrel}.  The test returns @code{GSL_SUCCESS} if the following
 condition is achieved,
-
 @tex
 \beforedisplay
 $$
@@ -278,11 +271,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |a - b| < epsabs + epsrel min(|a|,|b|) 
 @end example
 @end ifinfo
-
 @noindent
 when the interval @math{x = [a,b]} does not include the origin.  If the
 interval includes the origin then @math{\min(|a|,|b|)} is replaced by
@@ -293,7 +286,6 @@ to the origin.
 This condition on the interval also implies that any estimate of the
 minimum @math{x_m} in the interval satisfies the same condition with respect
 to the true minimum @math{x_m^*},
-
 @tex
 \beforedisplay
 $$
@@ -302,6 +294,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 |x_m - x_m^*| < epsabs + epsrel x_m^*
 @end example
@@ -348,8 +341,8 @@ fastest convergence for this type of algorithm.
 @comment ============================================================
 
 @deffn {Minimizer} gsl_min_fminimizer_brent
-@cindex brent's method for finding minima
-@cindex minimum finding, brent's method
+@cindex Brent's method for finding minima
+@cindex minimum finding, Brent's method
 
 The @dfn{Brent minimization algorithm} combines a parabolic
 interpolation with the golden section algorithm.  This produces a fast
@@ -379,7 +372,6 @@ minimum of @math{2}.
 @example
 @verbatiminclude examples/min.c
 @end example
-
 @noindent
 Here are the results of the minimization procedure.
 

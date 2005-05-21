@@ -1,4 +1,4 @@
-@cindex Special Functions
+@cindex special functions
 
 This chapter describes the GSL special function library.  The library
 includes routines for calculating the values of Airy functions, Bessel
@@ -12,9 +12,9 @@ Synchrotron functions, Transport functions, Trigonometric functions and
 Zeta functions.  Each routine also computes an estimate of the numerical
 error in the calculated value of the function.
 
-The functions are declared in individual header files, such as
-@file{gsl_sf_airy.h}, @file{gsl_sf_bessel.h}, etc.  The complete set of
-header files can be included using the file @file{gsl_sf.h}.
+The functions in this chapter are declared in individual header files,
+such as @file{gsl_sf_airy.h}, @file{gsl_sf_bessel.h}, etc.  The complete
+set of header files can be included using the file @file{gsl_sf.h}.
 
 @menu
 * Special Function Usage::      
@@ -273,6 +273,7 @@ the special functions, in this case to compute the Bessel function
 @end example
 @noindent
 Here are the results of running the program,
+
 @example
 $ ./a.out 
 @verbatiminclude examples/specfun_e.out
@@ -287,6 +288,7 @@ status are not accessible.
 @end example
 @noindent
 The results of the function are the same,
+
 @example
 $ ./a.out 
 @verbatiminclude examples/specfun.out
@@ -310,7 +312,7 @@ to compute the special functions,
 @itemize @asis
 @item
 MISCFUN: A software package to compute uncommon special functions.
-@cite{ACM Trans. Math. Soft.}, vol. 22, 1996, 288-301
+@cite{ACM Trans.@: Math.@: Soft.}, vol.@: 22, 1996, 288--301
 
 @item
 G.N. Watson, A Treatise on the Theory of Bessel Functions,

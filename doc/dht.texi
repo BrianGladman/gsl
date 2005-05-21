@@ -23,7 +23,6 @@ related to the zeroes of the sine or cosine function.
 Specifically, let @math{f(t)} be a function on the unit interval.
 Then the finite @math{\nu}-Hankel transform of @math{f(t)} is defined
 to be the set of numbers @math{g_m} given by,
-
 @tex
 \beforedisplay
 $$
@@ -31,10 +30,8 @@ g_m = \int_0^1 t dt\, J_\nu(j_{\nu,m}t) f(t),
 $$
 \afterdisplay
 @end tex
-
 @noindent
 so that,
-
 @tex
 \beforedisplay
 $$
@@ -42,22 +39,19 @@ f(t) = \sum_{m=1}^\infty {{2 J_\nu(j_{\nu,m}x)}\over{J_{\nu+1}(j_{\nu,m})^2}} g_
 $$
 \afterdisplay
 @end tex
-
 @noindent
 Suppose that @math{f} is band-limited in the sense that
 @math{g_m=0} for @math{m > M}. Then we have the following
 fundamental sampling theorem.
-
 @tex
 \beforedisplay
 $$
 g_m = {{2}\over{j_{\nu,M}^2}}
-      \sum_{k=1}^{M-1} f({{j_{\nu,k}}\over{j_{\nu,M}}})
+      \sum_{k=1}^{M-1} f\left({{j_{\nu,k}}\over{j_{\nu,M}}}\right)
           {{J_\nu(j_{\nu,m} j_{\nu,k} / j_{\nu,M})}\over{J_{\nu+1}(j_{\nu,k})^2}}.
 $$
 \afterdisplay
 @end tex
-
 @noindent
 It is this discrete expression which defines the discrete Hankel
 transform. The kernel in the summation above defines the matrix of the
@@ -110,15 +104,15 @@ in the array @var{f_out} which must be of the same length.
 @end deftypefun
 
 @deftypefun double gsl_dht_x_sample (const gsl_dht * @var{t}, int @var{n})
-This function returns the value of the n'th sample point in the unit interval,
-@c{${{j_{\nu,n+1}}\over{j_{\nu,M}}} X$}
+This function returns the value of the @var{n}-th sample point in the unit interval,
+@c{${({j_{\nu,n+1}} / {j_{\nu,M}}}) X$}
 @math{(j_@{\nu,n+1@}/j_@{\nu,M@}) X}. These are the
 points where the function @math{f(t)} is assumed to be sampled.
 @end deftypefun
 
 @deftypefun double gsl_dht_k_sample (const gsl_dht * @var{t}, int @var{n})
-This function returns the value of the n'th sample point in "k-space",
-@c{${{j_{\nu,n+1}}\over X}$}
+This function returns the value of the @var{n}-th sample point in ``k-space'',
+@c{${{j_{\nu,n+1}} / X}$}
 @math{j_@{\nu,n+1@}/X}.
 @end deftypefun
 
@@ -129,10 +123,10 @@ The algorithms used by these functions are described in the following papers,
 
 @itemize @asis
 @item
-H. Fisk Johnson, Comp. Phys. Comm. 43, 181 (1987).
+H. Fisk Johnson, Comp.@: Phys.@: Comm.@: 43, 181 (1987).
 @end itemize
 
 @itemize @asis
 @item
-D. Lemoine, J. Chem. Phys. 101, 3936 (1994).
+D. Lemoine, J. Chem.@: Phys.@: 101, 3936 (1994).
 @end itemize

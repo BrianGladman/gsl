@@ -136,7 +136,7 @@ to be added to the histogram for the ntuple row.
 
 @cindex histogram, from ntuple
 @cindex projection of ntuples
-@deftypefun int gsl_ntuple_project (gsl_histogram * @var{h}, gsl_ntuple * @var{ntuple}, gsl_ntuple_value_fn *@var{value_func}, gsl_ntuple_select_fn *@var{select_func})
+@deftypefun int gsl_ntuple_project (gsl_histogram * @var{h}, gsl_ntuple * @var{ntuple}, gsl_ntuple_value_fn * @var{value_func}, gsl_ntuple_select_fn * @var{select_func})
 This function updates the histogram @var{h} from the ntuple @var{ntuple}
 using the functions @var{value_func} and @var{select_func}. For each
 ntuple row where the selection function @var{select_func} is non-zero the
@@ -152,7 +152,7 @@ data in the same histogram.
 
 The following example programs demonstrate the use of ntuples in
 managing a large dataset.  The first program creates a set of 10,000
-simulated "events", each with 3 associated values @math{(x,y,z)}.  These
+simulated ``events'', each with 3 associated values @math{(x,y,z)}.  These
 are generated from a gaussian distribution with unit variance, for
 demonstration purposes, and written to the ntuple file @file{test.dat}.
 
@@ -170,6 +170,7 @@ their @math{E^2} values.
 @verbatiminclude examples/ntupler.c
 @end example
 
+@need 3000
 The following plot shows the distribution of the selected events.
 Note the cut-off at the lower bound.
 

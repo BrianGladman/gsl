@@ -53,7 +53,6 @@ directory.  You should write any preprocessor include statements with a
 @example
 #include <gsl/gsl_math.h>
 @end example
-
 @noindent
 If the directory is not installed on the standard search path of your
 compiler you will also need to provide its location to the preprocessor
@@ -61,21 +60,23 @@ as a command line flag.  The default location of the @file{gsl}
 directory is @file{/usr/local/include/gsl}.  A typical compilation
 command for a source file @file{example.c} with the GNU C compiler
 @code{gcc} is,
+
 @example
 $ gcc -Wall -I/usr/local/include -c example.c
 @end example
 @noindent
 This results in an object file @file{example.o}.   The default
 include path for @code{gcc} searches @file{/usr/local/include} automatically so
-the @code{-I} option can be omitted when GSL is installed in its default
-location.
+the @code{-I} option can actually be omitted when GSL is installed 
+in its default location.
 
+@subsection Linking programs with the library
 @cindex compiling programs, library paths
 @cindex linking with GSL libraries
 @cindex libraries, linking with
 The library is installed as a single file, @file{libgsl.a}.  A shared
-version of the library is also installed on systems that support shared
-libraries.  The default location of these files is
+version of the library @file{libgsl.so} is also installed on systems
+that support shared libraries.  The default location of these files is
 @file{/usr/local/lib}.  If this directory is not on the standard search
 path of your linker you will also need to provide its location as a
 command line flag.
@@ -95,8 +96,10 @@ The default library path for @code{gcc} searches @file{/usr/local/lib}
 automatically so the @code{-L} option can be omitted when GSL is
 installed in its default location.
 
+@subsection Linking with an alternative BLAS library
+
 The following command line shows how you would link the same application
-with an alternative blas library called @file{libcblas},
+with an alternative @sc{cblas} library called @file{libcblas},
 
 @example
 $ gcc example.o -lgsl -lcblas -lm
@@ -116,27 +119,39 @@ $ gcc example.o -lgsl -lcblas -latlas -lm
 @noindent
 For more information see @ref{BLAS Support}.
 
-The program @code{gsl-config} provides information on the local version
-of the library.  For example, the following command shows that the
-library has been installed under the directory @file{/usr/local},
+@comment  The program @code{gsl-config} provides information on the local version
+@comment  of the library.  For example, the following command shows that the
+@comment  library has been installed under the directory @file{/usr/local},
 
-@example
-$ gsl-config --prefix
-/usr/local
-@end example
-@noindent
-Further information is available using the command @code{gsl-config --help}.
+@comment  @example
+@comment  $ gsl-config --prefix
+@comment  /usr/local
+@comment  @end example
+@comment  @noindent
+@comment  Further information is available using the command @code{gsl-config --help}.
 
 @node Shared Libraries
 @section Shared Libraries
 @cindex shared libraries
 @cindex libraries, shared
 @cindex LD_LIBRARY_PATH
-To run a program linked with the shared version of the library it may be
-necessary to define the shell variable @code{LD_LIBRARY_PATH} to include
-the directory where the library is installed.  For example, in the
-Bourne shell (@code{/bin/sh} or @code{/bin/bash}), the library path can be set
-with the following commands:
+To run a program linked with the shared version of the library the
+operating system must be able to locate the corresponding @file{.so}
+file at runtime.  If the library cannot be found, the following error
+will occur:
+
+@example
+$ ./a.out 
+./a.out: error while loading shared libraries: 
+libgsl.so.0: cannot open shared object file: No such 
+file or directory
+@end example
+@noindent
+To avoid this error, define the shell variable @code{LD_LIBRARY_PATH} to
+include the directory where the library is installed.
+
+For example, in the Bourne shell (@code{/bin/sh} or @code{/bin/bash}),
+the library search path can be set with the following commands:
 
 @example
 $ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH 
@@ -168,8 +183,8 @@ $ gcc -static example.o -lgsl -lgslcblas -lm
 @section ANSI C Compliance
 
 The library is written in ANSI C and is intended to conform to the ANSI
-C standard.  It should be portable to any system with a working ANSI C
-compiler.
+C standard (C89).  It should be portable to any system with a working
+ANSI C compiler.
 
 The library does not rely on any non-ANSI extensions in the interface it
 exports to the user.  Programs you write using GSL can be ANSI
@@ -197,7 +212,7 @@ The @code{inline} keyword is not part of the original ANSI C standard
 default. However, the library provides optional inline versions of
 performance-critical functions by conditional compilation.  The inline
 versions of these functions can be included by defining the macro
-@code{HAVE_INLINE} when compiling an application.
+@code{HAVE_INLINE} when compiling an application,
 
 @example
 $ gcc -Wall -c -DHAVE_INLINE example.c
@@ -284,7 +299,7 @@ strategy used within GSL itself.
 The main implementation of some functions in the library will not be
 optimal on all architectures.  For example, there are several ways to
 compute a Gaussian random variate and their relative speeds are
-platform-dependent.  In cases like this the library provides alternate
+platform-dependent.  In cases like this the library provides alternative
 implementations of these functions with the same interface.  If you
 write your application using calls to the standard implementation you
 can select an alternative version later via a preprocessor definition.
@@ -314,7 +329,7 @@ variates.
 
 Many functions in the library are defined for different numeric types.
 This feature is implemented by varying the name of the function with a
-type-related modifier --- a primitive form of C++ templates.  The
+type-related modifier---a primitive form of C++ templates.  The
 modifier is inserted into the function name after the initial module
 prefix.  The following table shows the function names defined for all
 the numeric types of an imaginary module @code{gsl_foo} with function

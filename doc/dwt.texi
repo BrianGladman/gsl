@@ -1,8 +1,6 @@
-@cindex Wavelets
-@cindex Discrete wavelet transforms, see Wavelets
-@cindex DWT, see Wavelets
-@cindex Wavelet transforms, discrete, see Wavelets
-@cindex transforms, Wavelet, see Wavelets
+@cindex DWT, see wavelet transforms
+@cindex wavelet transforms
+@cindex transforms, wavelet
 
 This chapter describes functions for performing Discrete Wavelet
 Transforms (DWTs).  The library includes wavelets for real data in both
@@ -23,7 +21,6 @@ files @file{gsl_wavelet.h} and @file{gsl_wavelet2d.h}.
 
 The continuous wavelet transform and its inverse are defined by
 the relations,
-
 @tex
 \beforedisplay
 $$
@@ -32,14 +29,13 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 w(s,\tau) = \int f(t) * \psi^*_@{s,\tau@}(t) dt
 @end example
 @end ifinfo
-
 @noindent
 and,
-
 @tex
 \beforedisplay
 $$
@@ -48,6 +44,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f(t) = \int \int_@{-\infty@}^\infty w(s, \tau) * \psi_@{s,\tau@}(t) d\tau ds
 @end example
@@ -58,10 +55,10 @@ where the basis functions @c{$\psi_{s,\tau}$}
 and translation from a single function, referred to as the @dfn{mother
 wavelet}.
 
-The discrete version of the wavelet transform acts on evenly sampled
-data, with fixed scaling and translation steps (@math{s}, @math{\tau}).
-The frequency and time axes are sampled @dfn{dyadically} on scales of
-@math{2^j} through a level parameter @math{j}.  
+The discrete version of the wavelet transform acts on equally-spaced
+samples, with fixed scaling and translation steps (@math{s},
+@math{\tau}).  The frequency and time axes are sampled @dfn{dyadically}
+on scales of @math{2^j} through a level parameter @math{j}.
 @c  The wavelet @math{\psi}
 @c  can be expressed in terms of a scaling function @math{\varphi},
 @c
@@ -115,8 +112,7 @@ referred to as the @dfn{fast wavelet transform}.
 @cindex DWT initialization
 
 The @code{gsl_wavelet} structure contains the filter coefficients
-defining the wavelet and associated offset parameters (for wavelets with
-centered support).  
+defining the wavelet and any associated offset parameters.
 
 @deftypefun {gsl_wavelet *} gsl_wavelet_alloc (const gsl_wavelet_type * @var{T}, size_t @var{k})
 This function allocates and initializes a wavelet object of type
@@ -134,7 +130,7 @@ The following wavelet types are implemented:
 The is the Daubechies wavelet family of maximum phase with @math{k/2}
 vanishing moments.  The implemented wavelets are 
 @c{$k=4, 6, \dots, 20$}
-@math{k=4, 6, ..., 20}, with @var{k} even.
+@math{k=4, 6, @dots{}, 20}, with @var{k} even.
 @end deffn
 
 @deffn {Wavelet} gsl_wavelet_haar
@@ -173,8 +169,8 @@ This function frees the wavelet object @var{w}.
 @end deftypefun
 
 The @code{gsl_wavelet_workspace} structure contains scratch space of the
-same size as the input data, for holding intermediate results during the
-transform.
+same size as the input data and is used to hold intermediate results
+during the transform.
 
 @deftypefun {gsl_wavelet_workspace *} gsl_wavelet_workspace_alloc (size_t @var{n})
 This function allocates a workspace for the discrete wavelet transform.
@@ -185,8 +181,8 @@ size @var{n}, since the transform operates on individual rows and
 columns.
 @end deftypefun
 
-@deftypefun {void} gsl_wavelet_workspace_free (gsl_wavelet_workspace * @var{workspace})
-This function frees the allocated workspace @var{workspace}.
+@deftypefun {void} gsl_wavelet_workspace_free (gsl_wavelet_workspace * @var{work})
+This function frees the allocated workspace @var{work}.
 @end deftypefun
 
 @node DWT Transform Functions
@@ -207,9 +203,9 @@ of the transform.
 @subsection Wavelet transforms in one dimension
 @cindex DWT, one dimensional
 
-@deftypefun int gsl_dwt_transform (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_direction @var{dir}, gsl_wavelet_workspace * @var{work})
-@deftypefunx int gsl_dwt_transform_forward (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_workspace * @var{work})
-@deftypefunx int gsl_dwt_transform_inverse (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_workspace * @var{work})
+@deftypefun int gsl_wavelet_transform (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_direction @var{dir}, gsl_wavelet_workspace * @var{work})
+@deftypefunx int gsl_wavelet_transform_forward (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_workspace * @var{work})
+@deftypefunx int gsl_wavelet_transform_inverse (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{stride}, size_t @var{n}, gsl_wavelet_workspace * @var{work})
 
 These functions compute in-place forward and inverse discrete wavelet
 transforms of length @var{n} with stride @var{stride} on the array
@@ -232,7 +228,6 @@ and
 @math{k = 0 ... (2^j)-1}.  
 The total number of levels is @math{J = \log_2(n)}.  The output data
 has the following form,
-
 @tex
 \beforedisplay
 $$
@@ -241,6 +236,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 (s_@{-1,0@}, d_@{0,0@}, d_@{1,0@}, d_@{1,1@}, d_@{2,0@}, ..., 
   d_@{j,k@}, ..., d_@{J-1,2^@{J-1@}-1@}) 
@@ -267,19 +263,19 @@ integer power of two.  There are two possible orderings of the rows and
 columns in the two-dimensional wavelet transform, referred to as the
 ``standard'' and ``non-standard'' forms.
 
-The ``standard'' transform performs a discrete wavelet transform on all
-rows of the matrix, followed by a separate discrete wavelet transform on
-the columns of the resulting row-transformed matrix.  This procedure
-uses the same ordering as a two-dimensional fourier transform.
+The ``standard'' transform performs a complete discrete wavelet
+transform on the rows of the matrix, followed by a separate complete
+discrete wavelet transform on the columns of the resulting
+row-transformed matrix.  This procedure uses the same ordering as a
+two-dimensional fourier transform.
 
-The ``non-standard'' transform is performed in interleaved passes of the
-each level of the transform on the rows and columns of the matrix.  The
-first level of the transform is carried out on the matrix rows, and then
-the columns of the partially row-transformed data.  This procedure is
-then repeated across the rows and columns of the data for the subsequent
-levels of the transform, until the full discrete wavelet transform is
-complete.  The non-standard form of the discrete wavelet transform is
-typically used in image analysis.
+The ``non-standard'' transform is performed in interleaved passes on the
+rows and columns of the matrix for each level of the transform.  The
+first level of the transform is applied to the matrix rows, and then to
+the matrix columns.  This procedure is then repeated across the rows and
+columns of the data for the subsequent levels of the transform, until
+the full discrete wavelet transform is complete.  The non-standard form
+of the discrete wavelet transform is typically used in image analysis.
 
 The functions described in this section are declared in the header file
 @file{gsl_wavelet2d.h}.
@@ -327,7 +323,7 @@ in-place wavelet transform on a matrix @var{a}.
 @end deftypefun
 
 @node DWT Examples
-@section Example
+@section Examples
 
 The following program demonstrates the use of the one-dimensional
 wavelet transform functions.  It computes an approximation to an input
@@ -353,10 +349,10 @@ archive of public-domain of medical datasets.
 @sp 1
 @center @image{dwt-orig,3.4in} 
 @center @image{dwt-samp,3.4in} 
-@display
+@quotation
 Original (upper) and wavelet-compressed (lower) ECG signals, using the
 20 largest components of the Daubechies(4) discrete wavelet transform.
-@end display
+@end quotation
 @end iftex
 
 @node DWT References
@@ -387,7 +383,7 @@ and local cosine bases see,
 
 @itemize @asis
 @item
-St@'ephane Mallat.  @cite{A wavelet tour of signal processing} (Second
+S. G. Mallat.  @cite{A wavelet tour of signal processing} (Second
 edition). Academic Press (1999), ISBN 012466606X.
 @end itemize
 @noindent
@@ -404,7 +400,7 @@ Multiresolution Approximations and Wavelet Orthonormal Bases of L@math{^2}(R).
 @itemize @asis
 @item
 S. G. Mallat.
-A Theory for Multiresolution Signal Decomposition --- The Wavelet Representation.
+A Theory for Multiresolution Signal Decomposition---The Wavelet Representation.
 @cite{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 11, 1989,
 674--693. 
 @end itemize

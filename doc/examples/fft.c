@@ -9,13 +9,11 @@
 int
 main (void)
 {
-  int i;
-  double data[2*128];
+  int i; double data[2*128];
 
   for (i = 0; i < 128; i++)
     {
-       REAL(data,i) = 0.0;
-       IMAG(data,i) = 0.0;
+       REAL(data,i) = 0.0; IMAG(data,i) = 0.0;
     }
 
   REAL(data,0) = 1.0;

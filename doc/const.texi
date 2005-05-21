@@ -21,9 +21,9 @@ structure constant, which are pure numbers are defined in
 * Atomic and Nuclear Physics::  
 * Measurement of Time::         
 * Imperial Units ::             
-* Nautical Units::              
+* Speed and Nautical Units::    
 * Printers Units::              
-* Volume::                      
+* Volume Area and Length::      
 * Mass and Weight ::            
 * Thermal Energy and Power::    
 * Pressure::                    
@@ -82,18 +82,6 @@ The Stefan-Boltzmann radiation constant, @math{\sigma}.
 
 @item GSL_CONST_MKSA_GAUSS
 The magnetic field of 1 Gauss.
-
-@item GSL_CONST_MKSA_MICRON
-The length of 1 micron.
-
-@item GSL_CONST_MKSA_HECTARE
-The area of 1 hectare.
-
-@item GSL_CONST_MKSA_MILES_PER_HOUR
-The speed of 1 mile per hour.
-
-@item GSL_CONST_MKSA_KILOMETERS_PER_HOUR
-The speed of 1 kilometer per hour.
 @end table
 
 @node Astronomy and Astrophysics
@@ -219,11 +207,17 @@ The length of 1 mil (1/1000th of an inch).
 @end table
 
 
-@node Nautical Units
-@section Nautical Units
+@node Speed and Nautical Units
+@section Speed and Nautical Units
 @cindex nautical units
 
 @table @code
+@item GSL_CONST_MKSA_KILOMETERS_PER_HOUR
+The speed of 1 kilometer per hour.
+
+@item GSL_CONST_MKSA_MILES_PER_HOUR
+The speed of 1 mile per hour.
+
 @item GSL_CONST_MKSA_NAUTICAL_MILE
 The length of 1 nautical mile.
 
@@ -248,11 +242,17 @@ The length of 1 TeX point (1/72.27 inch).
 @end table
 
 
-@node Volume
-@section Volume
+@node Volume Area and Length
+@section Volume, Area and Length
 @cindex volume units
 
 @table @code
+@item GSL_CONST_MKSA_MICRON
+The length of 1 micron.
+
+@item GSL_CONST_MKSA_HECTARE
+The area of 1 hectare.
+
 @item GSL_CONST_MKSA_ACRE
 The area of 1 acre.
 
@@ -535,14 +535,14 @@ a calculation.  In this case, the goal is to calculate the range of
 light-travel times from Earth to Mars.
 
 The required data is the average distance of each planet from the Sun in
-astronomical units (the eccentricities of the orbits will be neglected
-for the purposes of this calculation).  The average radius of the orbit
-of Mars is 1.52 astronomical units, and for the orbit of Earth it is 1
-astronomical unit (by definition).  These values are combined with the
-MKSA values of the constants for the speed of light and the length of an
-astronomical unit to produce a result for the shortest and longest
-light-travel times in seconds.  The figures are converted into minutes
-before being displayed.
+astronomical units (the eccentricities and inclinations of the orbits
+will be neglected for the purposes of this calculation).  The average
+radius of the orbit of Mars is 1.52 astronomical units, and for the
+orbit of Earth it is 1 astronomical unit (by definition).  These values
+are combined with the MKSA values of the constants for the speed of
+light and the length of an astronomical unit to produce a result for the
+shortest and longest light-travel times in seconds.  The figures are
+converted into minutes before being displayed.
 
 @example
 @verbatiminclude examples/const.c

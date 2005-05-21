@@ -18,7 +18,7 @@ These functions are declared in the header file @file{gsl_deriv.h}.
 @node Numerical Differentiation functions
 @section Functions
 
-@deftypefun int gsl_deriv_central (const gsl_function *@var{f}, double @var{x}, double @var{h}, double *@var{result}, double *@var{abserr})
+@deftypefun int gsl_deriv_central (const gsl_function * @var{f}, double @var{x}, double @var{h}, double * @var{result}, double * @var{abserr})
 This function computes the numerical derivative of the function @var{f}
 at the point @var{x} using an adaptive central difference algorithm with
 a step-size of @var{h}.   The derivative is returned in @var{result} and an
@@ -35,7 +35,7 @@ does not contribute to the derivative calculation, so only 4-points are
 actually used.
 @end deftypefun
 
-@deftypefun int gsl_deriv_forward (const gsl_function *@var{f}, double @var{x}, double @var{h}, double *@var{result}, double *@var{abserr})
+@deftypefun int gsl_deriv_forward (const gsl_function * @var{f}, double @var{x}, double @var{h}, double * @var{result}, double * @var{abserr})
 This function computes the numerical derivative of the function @var{f}
 at the point @var{x} using an adaptive forward difference algorithm with
 a step-size of @var{h}. The function is evaluated only at points greater
@@ -53,7 +53,7 @@ from the difference between the 4-point rule and the corresponding
 2-point rule @math{x+h/2}, @math{x+h}. 
 @end deftypefun
 
-@deftypefun int gsl_deriv_backward (const gsl_function *@var{f}, double @var{x},  double @var{h}, double *@var{result}, double *@var{abserr})
+@deftypefun int gsl_deriv_backward (const gsl_function * @var{f}, double @var{x},  double @var{h}, double * @var{result}, double * @var{abserr})
 This function computes the numerical derivative of the function @var{f}
 at the point @var{x} using an adaptive backward difference algorithm
 with a step-size of @var{h}. The function is evaluated only at points

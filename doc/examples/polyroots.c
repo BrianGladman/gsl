@@ -5,7 +5,7 @@ int
 main (void)
 {
   int i;
-  /* coefficient of P(x) =  -1 + x^5  */
+  /* coefficients of P(x) =  -1 + x^5  */
   double a[6] = { -1, 0, 0, 0, 0, 1 };  
   double z[10];
 

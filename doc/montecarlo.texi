@@ -6,7 +6,6 @@ adaptive algorithms such as @sc{vegas} and @sc{miser} which use
 importance sampling and stratified sampling techniques. Each algorithm
 computes an estimate of a multidimensional definite integral of the
 form,
-
 @tex
 \beforedisplay
 $$
@@ -15,6 +14,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 I = \int_xl^xu dx \int_yl^yu  dy ...  f(x, y, ...)
 @end example
@@ -23,8 +23,8 @@ I = \int_xl^xu dx \int_yl^yu  dy ...  f(x, y, ...)
 over a hypercubic region @math{((x_l,x_u)}, @math{(y_l,y_u), ...)} using
 a fixed number of function calls.  The routines also provide a
 statistical estimate of the error on the result.  This error estimate
-should be taken as a guide rather than as a strict error bound ---
-random sampling of the region may not uncover all the important features
+should be taken as a guide rather than as a strict error bound---random 
+sampling of the region may not uncover all the important features
 of the function, resulting in an underestimate of the error.
 
 The functions are defined in separate header files for each routine,
@@ -72,7 +72,7 @@ Carlo integration.
 @item double (* f) (double * @var{x}, size_t @var{dim}, void * @var{params})
 this function should return the value
 @c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} for argument @var{x} and parameters @var{params},
+@math{f(x,params)} for the argument @var{x} and parameters @var{params},
 where @var{x} is an array of size @var{dim} giving the coordinates of
 the point where the function is to be evaluated.
 
@@ -85,7 +85,6 @@ a pointer to the parameters of the function.
 @end deftp
 @noindent
 Here is an example for a quadratic function in two dimensions,
-
 @tex
 \beforedisplay
 $$
@@ -94,6 +93,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f(x,y) = a x^2 + b x y + c y^2
 @end example
@@ -143,7 +143,6 @@ The plain Monte Carlo algorithm samples points randomly from the
 integration region to estimate the integral and its error.  Using this
 algorithm the estimate of the integral @math{E(f; N)} for @math{N}
 randomly distributed points @math{x_i} is given by,
-
 @tex
 \beforedisplay
 $$
@@ -152,6 +151,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i)
 @end example
@@ -160,7 +160,6 @@ E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i)
 where @math{V} is the volume of the integration region.  The error on
 this estimate @math{\sigma(E;N)} is calculated from the estimated
 variance of the mean,
-
 @tex
 \beforedisplay
 $$
@@ -169,18 +168,19 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \sigma^2 (E; N) = (V / N) \sum_i^N (f(x_i) -  <f>)^2.
 @end example
 @end ifinfo
 @noindent
 For large @math{N} this variance decreases asymptotically as
-@math{var(f)/N}, where @math{var(f)} is the true variance of the
+@math{\Var(f)/N}, where @math{\Var(f)} is the true variance of the
 function over the integration region.  The error estimate itself should
 decrease as @c{$\sigma(f)/\sqrt{N}$}
 @math{\sigma(f)/\sqrt@{N@}}.  The familiar law of errors
 decreasing as @c{$1/\sqrt{N}$}
-@math{1/\sqrt@{N@}} applies --- to reduce the error by a
+@math{1/\sqrt@{N@}} applies---to reduce the error by a
 factor of 10 requires a 100-fold increase in the number of sample
 points.
 
@@ -228,27 +228,26 @@ The idea of stratified sampling begins with the observation that for two
 disjoint regions @math{a} and @math{b} with Monte Carlo estimates of the
 integral @math{E_a(f)} and @math{E_b(f)} and variances
 @math{\sigma_a^2(f)} and @math{\sigma_b^2(f)}, the variance
-@math{Var(f)} of the combined estimate 
+@math{\Var(f)} of the combined estimate 
 @c{$E(f) = {1\over 2} (E_a(f) + E_b(f))$} 
 @math{E(f) = (1/2) (E_a(f) + E_b(f))} 
 is given by,
-
 @tex
 \beforedisplay
 $$
-Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}.
+\Var(f) = {\sigma_a^2(f) \over 4 N_a} + {\sigma_b^2(f) \over 4 N_b}.
 $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
-Var(f) = (\sigma_a^2(f) / 4 N_a) + (\sigma_b^2(f) / 4 N_b).
+\Var(f) = (\sigma_a^2(f) / 4 N_a) + (\sigma_b^2(f) / 4 N_b).
 @end example
 @end ifinfo
 @noindent
 It can be shown that this variance is minimized by distributing the
 points such that,
-
 @tex
 \beforedisplay
 $$
@@ -257,6 +256,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 N_a / (N_a + N_b) = \sigma_a / (\sigma_a + \sigma_b).
 @end example
@@ -348,17 +348,17 @@ recursive sampling the overall variance should scale better than
 a procedure which explicitly minimizes their variance.  To accommodate
 this behavior the @sc{miser} algorithm allows the total variance to
 depend on a scaling parameter @math{\alpha},
-
 @tex
 \beforedisplay
 $$
-Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}.
+\Var(f) = {\sigma_a \over N_a^\alpha} + {\sigma_b \over N_b^\alpha}.
 $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
-Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}.
+\Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}.
 @end example
 @end ifinfo
 @noindent
@@ -374,7 +374,7 @@ This parameter introduces a random fractional variation of size
 symmetry of integrands which are concentrated near the exact center of
 the hypercubic integration region.  The default value of dither is zero,
 so no variation is introduced. If needed, a typical value of
-@var{dither} is around 0.1.
+@var{dither} is 0.1.
 @end deftypevar
 
 @node VEGAS
@@ -390,7 +390,6 @@ that make the largest contribution to the integral.
 In general, if the Monte Carlo integral of @math{f} is sampled with
 points distributed according to a probability distribution described by
 the function @math{g}, we obtain an estimate @math{E_g(f; N)},
-
 @tex
 \beforedisplay
 $$
@@ -399,23 +398,24 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 E_g(f; N) = E(f/g; N)
 @end example
 @end ifinfo
 @noindent
 with a corresponding variance,
-
 @tex
 \beforedisplay
 $$
-Var_g(f; N) = Var(f/g; N).
+\Var_g(f; N) = \Var(f/g; N).
 $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
-Var_g(f; N) = Var(f/g; N).
+\Var_g(f; N) = \Var(f/g; N).
 @end example
 @end ifinfo
 @noindent
@@ -447,7 +447,7 @@ this will increase the efficiency of integration with @sc{vegas}.
 stratified sampling and importance sampling.  The integration region is
 divided into a number of ``boxes'', with each box getting a fixed
 number of points (the goal is 2).  Each box can then have a fractional
-number of bins, but if bins/box is less than two, Vegas switches to a
+number of bins, but if the ratio of bins-per-box is less than two, Vegas switches to a
 kind variance reduction (rather than importance sampling).
 
 
@@ -581,7 +581,6 @@ from the rebinning procedure for each iteration.
 The example program below uses the Monte Carlo routines to estimate the
 value of the following 3-dimensional integral from the theory of random
 walks,
-
 @tex
 \beforedisplay
 $$
@@ -593,6 +592,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 I = \int_@{-pi@}^@{+pi@} @{dk_x/(2 pi)@} 
     \int_@{-pi@}^@{+pi@} @{dk_y/(2 pi)@} 
@@ -644,7 +644,7 @@ error  = -0.002548 = 0.7 sigma
 @end example
 @noindent
 In the case of the @sc{vegas} algorithm the program uses an initial
-warm-up run of 10,000 function calls to prepare, or "warm up", the grid.
+warm-up run of 10,000 function calls to prepare, or ``warm up'', the grid.
 This is followed by a main run with five iterations of 100,000 function
 calls. The chi-squared per degree of freedom for the five iterations are
 checked for consistency with 1, and the run is repeated if the results
@@ -675,13 +675,14 @@ algorithms.
 @node Monte Carlo Integration References and Further Reading
 @section References and Further Reading
 
-The @sc{miser} algorithm is described in the following article,
+The @sc{miser} algorithm is described in the following article by Press
+and Farrar,
 
 @itemize @asis
 @item
 W.H. Press, G.R. Farrar, @cite{Recursive Stratified Sampling for
 Multidimensional Monte Carlo Integration},
-Computers in Physics, v4 (1990), pp190-195.
+Computers in Physics, v4 (1990), pp190--195.
 @end itemize
 @noindent
 The @sc{vegas} algorithm is described in the following papers,
@@ -690,7 +691,7 @@ The @sc{vegas} algorithm is described in the following papers,
 @item
 G.P. Lepage,
 @cite{A New Algorithm for Adaptive Multidimensional Integration},
-Journal of Computational Physics 27, 192-203, (1978)
+Journal of Computational Physics 27, 192--203, (1978)
 
 @item
 G.P. Lepage,

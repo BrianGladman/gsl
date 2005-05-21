@@ -23,7 +23,6 @@ formats for single and double precision numbers.  Each number is composed
 of three parts: a @dfn{sign bit} (@math{s}), an @dfn{exponent}
 (@math{E}) and a @dfn{fraction} (@math{f}).  The numerical value of the
 combination @math{(s,E,f)} is given by the following formula,
-
 @tex
 \beforedisplay
 $$
@@ -32,11 +31,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 (-1)^s (1.fffff...) 2^E
 @end example
 @end ifinfo
-
 @noindent
 @cindex normalized form, IEEE format
 @cindex denormalized form, IEEE format
@@ -60,7 +59,6 @@ Numbers smaller than
 @c{$2^{E_{min}}$}
 @math{2^(E_min)}
 are be stored in @dfn{denormalized form} with a leading zero,
-
 @tex
 \beforedisplay
 $$
@@ -69,11 +67,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 (-1)^s (0.fffff...) 2^(E_min)
 @end example
 @end ifinfo
-
 @noindent
 @cindex zero, IEEE format
 @cindex infinity, IEEE format
@@ -85,7 +83,6 @@ A zero is encoded with the special exponent of
 @math{2^(E_min - 1)} and infinities with the exponent of 
 @c{$2^{E_{max}+1}$}
 @math{2^(E_max + 1)}.
-
 @noindent
 @cindex single precision, IEEE format
 The format for single precision numbers uses 32 bits divided in the
@@ -98,7 +95,6 @@ s = sign bit, 1 bit
 e = exponent, 8 bits  (E_min=-126, E_max=127, bias=127)
 f = fraction, 23 bits
 @end smallexample
-
 @noindent
 @cindex double precision, IEEE format
 The format for double precision numbers uses 64 bits divided in the
@@ -111,7 +107,6 @@ s = sign bit, 1 bit
 e = exponent, 11 bits  (E_min=-1022, E_max=1023, bias=1023)
 f = fraction, 52 bits
 @end smallexample
-
 @noindent
 It is often useful to be able to investigate the behavior of a
 calculation at the bit-level and the library provides functions for
@@ -166,7 +161,6 @@ single to double precision is also printed.
 @example
 @verbatiminclude examples/ieee.c
 @end example
-
 @noindent
 The binary representation of @math{1/3} is @math{0.01010101... }.  The
 output below shows that the IEEE format normalizes this fraction to give
@@ -177,7 +171,6 @@ a leading digit of 1,
 fd= 1.0101010101010101010101100000000000000000000000000000*2^-2
  d= 1.0101010101010101010101010101010101010101010101010101*2^-2
 @end smallexample
-
 @noindent
 The output also shows that a single-precision number is promoted to
 double-precision by adding zeros in the binary representation.
@@ -239,7 +232,6 @@ commas, like this,
 @display
 @code{GSL_IEEE_MODE} = "@var{keyword},@var{keyword},..."
 @end display
-
 @noindent
 where @var{keyword} is one of the following mode-names,
 
@@ -314,7 +306,6 @@ zero and invalid operations.
 To demonstrate the effects of different rounding modes consider the
 following program which computes @math{e}, the base of natural
 logarithms, by summing a rapidly-decreasing series,
-
 @tex
 \beforedisplay
 $$
@@ -324,30 +315,29 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 e = 1 + 1/2! + 1/3! + 1/4! + ... 
   = 2.71828182846...
 @end example
 @end ifinfo
-        
+
 @example
 @verbatiminclude examples/ieeeround.c
 @end example
-
 @noindent
 Here are the results of running the program in @code{round-to-nearest}
 mode.  This is the IEEE default so it isn't really necessary to specify
 it here,
 
 @example
-GSL_IEEE_MODE="round-to-nearest" ./a.out 
+$ GSL_IEEE_MODE="round-to-nearest" ./a.out 
 i= 1 sum=1.000000000000000000 error=-1.71828
 i= 2 sum=2.000000000000000000 error=-0.718282
 ....
 i=18 sum=2.718281828459045535 error=4.44089e-16
 i=19 sum=2.718281828459045535 error=4.44089e-16
 @end example
-
 @noindent
 After nineteen terms the sum converges to within @c{$4 \times 10^{-16}$}
 @math{4 \times 10^-16} of the correct value.  
@@ -355,12 +345,11 @@ If we now change the rounding mode to
 @code{round-down} the final result is less accurate,
 
 @example
-GSL_IEEE_MODE="round-down" ./a.out 
+$ GSL_IEEE_MODE="round-down" ./a.out 
 i= 1 sum=1.000000000000000000 error=-1.71828
 ....
 i=19 sum=2.718281828459041094 error=-3.9968e-15
 @end example
-
 @noindent
 The result is about 
 @c{$4 \times 10^{-15}$}
@@ -385,11 +374,10 @@ program using single-precision @code{float} variables instead of
 of iterations and the final result is much less accurate,
 
 @example
-GSL_IEEE_MODE="single-precision" ./a.out 
+$ GSL_IEEE_MODE="single-precision" ./a.out 
 ....
 i=12 sum=2.718281984329223633 error=1.5587e-07
 @end example
-
 @noindent
 with an error of 
 @c{$O(10^{-7})$}
@@ -415,17 +403,17 @@ Arithmetic''.
 @itemize @asis
 @item
 David Goldberg: What Every Computer Scientist Should Know About
-Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol. 23, No. 1
-(March 1991), pages 5-48.
+Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol.@: 23, No.@: 1
+(March 1991), pages 5--48.
 
-Corrigendum: @cite{ACM Computing Surveys}, Vol. 23, No. 3 (September
+Corrigendum: @cite{ACM Computing Surveys}, Vol.@: 23, No.@: 3 (September
 1991), page 413.
 
 @item
 See also the sections by B. A. Wichmann and Charles B. Dunham in
 Surveyor's Forum: ``What Every Computer Scientist Should Know About
-Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol. 24,
-No. 3 (September 1992), page 319.
+Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol.@: 24,
+No.@: 3 (September 1992), page 319.
 @end itemize
 @noindent
 

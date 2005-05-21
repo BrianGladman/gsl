@@ -67,7 +67,7 @@ terms) to choose an optimal number of terms for the extrapolation.
 @section Acceleration functions without error estimation
 
 The functions described in this section compute the Levin @math{u}-transform of
-series and attempt to estimate the error from the "truncation error" in
+series and attempt to estimate the error from the ``truncation error'' in
 the extrapolation, the difference between the final two approximations.
 Using this method avoids the need to compute an intermediate table of
 derivatives because the error is estimated from the behavior of the
@@ -112,7 +112,6 @@ truncation error, smoothing out any fluctuations.
 
 The following code calculates an estimate of @math{\zeta(2) = \pi^2 / 6}
 using the series,
-
 @tex
 \beforedisplay
 $$
@@ -121,11 +120,11 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 \zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + ...
 @end example
 @end ifinfo
-
 @noindent
 After @var{N} terms the error in the sum is @math{O(1/N)}, making direct
 summation of the series converge slowly.
@@ -142,7 +141,7 @@ error estimate returned by the function is also accurate, giving
 the correct number of significant digits. 
 
 @example
-bash$ ./a.out 
+$ ./a.out 
 @verbatiminclude examples/sum.out
 @end example
 @noindent
@@ -171,7 +170,7 @@ The theory of the @math{u}-transform was presented by Levin,
 @item
 D. Levin,
 Development of Non-Linear Transformations for Improving Convergence of
-Sequences, @cite{Intern. J. Computer Math.} B3:371--388, 1973.
+Sequences, @cite{Intern.@: J.@: Computer Math.} B3:371--388, 1973.
 @end itemize
 
 @noindent
@@ -179,5 +178,5 @@ A review paper on the Levin Transform is available online,
 @itemize @asis
 @item
 Herbert H. H. Homeier, Scalar Levin-Type Sequence Transformations,
-@uref{http://xxx.lanl.gov/abs/math/0005209}.
+@uref{http://arxiv.org/abs/math/0005209}.
 @end itemize

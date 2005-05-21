@@ -12,9 +12,9 @@ For multiple-valued functions the branch cuts have been chosen to follow
 the conventions of Abramowitz and Stegun in the @cite{Handbook of
 Mathematical Functions}. The functions return principal values which are
 the same as those in GNU Calc, which in turn are the same as those in
-@cite{Common Lisp, The Language (Second Edition)} (n.b. The second
-edition uses different definitions from the first edition) and the
-HP-28/48 series of calculators.
+@cite{Common Lisp, The Language (Second Edition)}@footnote{Note that the
+first edition uses different definitions.} and the HP-28/48 series of
+calculators.
 
 The complex types are defined in the header file @file{gsl_complex.h},
 while the corresponding complex functions and arithmetic operations are
@@ -263,7 +263,7 @@ number @var{z}, @math{\log_b(z)}. This quantity is computed as the ratio
 @cindex trigonometric functions of complex numbers
 
 @deftypefun gsl_complex gsl_complex_sin (gsl_complex @var{z})
-@cindex sin of complex number
+@cindex sin, of complex number
 This function returns the complex sine of the complex number @var{z},
 @math{\sin(z) = (\exp(iz) - \exp(-iz))/(2i)}.
 @end deftypefun
@@ -309,7 +309,7 @@ and greater than @math{1}.
 @deftypefun gsl_complex gsl_complex_arcsin_real (double @var{z})
 This function returns the complex arcsine of the real number @var{z},
 @math{\arcsin(z)}. For @math{z} between @math{-1} and @math{1}, the
-function returns a real value in the range @math{(-\pi,\pi]}. For
+function returns a real value in the range @math{[-\pi/2,\pi/2]}. For
 @math{z} less than @math{-1} the result has a real part of @math{-\pi/2}
 and a positive imaginary part.  For @math{z} greater than @math{1} the
 result has a real part of @math{\pi/2} and a negative imaginary part.
@@ -325,7 +325,7 @@ and greater than @math{1}.
 This function returns the complex arccosine of the real number @var{z},
 @math{\arccos(z)}. For @math{z} between @math{-1} and @math{1}, the
 function returns a real value in the range @math{[0,\pi]}. For @math{z}
-less than @math{-1} the result has a real part of @math{\pi/2} and a
+less than @math{-1} the result has a real part of @math{\pi} and a
 negative imaginary part.  For @math{z} greater than @math{1} the result
 is purely imaginary and positive.
 @end deftypefun
@@ -454,15 +454,15 @@ based on the following papers,
 @itemize @asis
 @item
 T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
-"Implementing Complex Elementary Functions Using Exception
-Handling", @cite{ACM Transactions on Mathematical Software}, Volume 20
-(1994), pp 215-244, Corrigenda, p553
+``Implementing Complex Elementary Functions Using Exception
+Handling'', @cite{ACM Transactions on Mathematical Software}, Volume 20
+(1994), pp 215--244, Corrigenda, p553
 
 @item
 T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
-"Implementing the complex arcsin and arccosine functions using exception
-handling", @cite{ACM Transactions on Mathematical Software}, Volume 23
-(1997) pp 299-335
+``Implementing the complex arcsin and arccosine functions using exception
+handling'', @cite{ACM Transactions on Mathematical Software}, Volume 23
+(1997) pp 299--335
 @end itemize
 @noindent
 The general formulas and details of branch cuts can be found in the
@@ -471,13 +471,13 @@ following books,
 @itemize @asis
 @item
 Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
-"Circular Functions in Terms of Real and Imaginary Parts", Formulas
+``Circular Functions in Terms of Real and Imaginary Parts'', Formulas
 4.3.55--58,
-"Inverse Circular Functions in Terms of Real and Imaginary Parts",
+``Inverse Circular Functions in Terms of Real and Imaginary Parts'',
 Formulas 4.4.37--39,
-"Hyperbolic Functions in Terms of Real and Imaginary Parts",
+``Hyperbolic Functions in Terms of Real and Imaginary Parts'',
 Formulas 4.5.49--52,
-"Inverse Hyperbolic Functions -- relation to Inverse Circular Functions",
+``Inverse Hyperbolic Functions---relation to Inverse Circular Functions'',
 Formulas 4.6.14--19.
 
 @item

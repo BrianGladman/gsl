@@ -69,7 +69,7 @@ programs, which should handle any errors using the return codes.
 The error code numbers returned by library functions are defined in the
 file @file{gsl_errno.h}.  They all have the prefix @code{GSL_} and
 expand to non-zero constant integer values.  Many of the error codes use
-the same base name as a corresponding error code in C library.  Here are
+the same base name as the corresponding error code in the C library.  Here are
 some of the most common error codes,
 
 @cindex error codes
@@ -222,7 +222,6 @@ status value of @code{gsl_errno}.  It expands to the following code fragment,
 gsl_error (reason, __FILE__, __LINE__, gsl_errno);
 return gsl_errno;
 @end example
-
 @noindent
 The macro definition in @file{gsl_errno.h} actually wraps the code
 in a @code{do @{ ... @} while (0)} block to prevent possible

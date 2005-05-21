@@ -91,5 +91,9 @@ Check the history of the book, and try reward the publishers that have
 paid or pay the authors to work on it.
 
 The Free Software Foundation maintains a list of free documentation
-published by other publishers, at
-@uref{http://www.fsf.org/doc/other-free-books.html}.
+published by other publishers:
+
+@itemize @asis
+@item
+@uref{http://www.fsf.org/doc/other-free-books.html}
+@end itemize

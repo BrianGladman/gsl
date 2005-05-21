@@ -13,7 +13,6 @@ The functions described in this section are declared in the header file
 @cindex complete Fermi-Dirac integrals
 @cindex Fj(x), Fermi-Dirac integral
 The complete Fermi-Dirac integral @math{F_j(x)} is given by,
-
 @tex
 \beforedisplay
 $$
@@ -22,6 +21,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 F_j(x)   := (1/r\Gamma(j+1)) \int_0^\infty dt (t^j / (\exp(t-x) + 1))
 @end example
@@ -97,7 +97,6 @@ These routines compute the complete Fermi-Dirac integral
 @cindex incomplete Fermi-Dirac integral
 @cindex Fj(x,b), incomplete Fermi-Dirac integral
 The incomplete Fermi-Dirac integral @math{F_j(x,b)} is given by,
-
 @tex
 \beforedisplay
 $$
@@ -106,6 +105,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 F_j(x,b)   := (1/\Gamma(j+1)) \int_b^\infty dt (t^j / (\Exp(t-x) + 1))
 @end example

@@ -16,7 +16,7 @@ The functions described in this chapter are declared in the header file
 @file{gsl_chebyshev.h}.
 
 @menu
-* The gsl_cheb_series struct::  
+* Chebyshev Definitions::       
 * Creation and Calculation of Chebyshev Series::  
 * Chebyshev Series Evaluation::  
 * Derivatives and Integrals::   
@@ -24,8 +24,8 @@ The functions described in this chapter are declared in the header file
 * Chebyshev Approximation References and Further Reading::  
 @end menu
 
-@node The gsl_cheb_series struct
-@section The gsl_cheb_series struct
+@node Chebyshev Definitions
+@section Definitions
 
 A Chebyshev series  is stored using the following structure,
 
@@ -42,7 +42,6 @@ typedef struct
 The approximation is made over the range @math{[a,b]} using
 @var{order}+1 terms, including the coefficient @math{c[0]}.  The series
 is computed using the following convention,
-
 @tex
 \beforedisplay
 $$
@@ -51,6 +50,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 f(x) = (c_0 / 2) + \sum_@{n=1@} c_n T_n(x)
 @end example
@@ -150,7 +150,6 @@ visible.
 @example
 @verbatiminclude examples/cheb.c
 @end example
-
 @noindent
 The output from the program gives the original function, 10-th order
 approximation and 40-th order approximation, all sampled at intervals of
@@ -169,6 +168,6 @@ The following paper describes the use of Chebyshev series,
 @itemize @asis
 @item 
 R. Broucke, ``Ten Subroutines for the Manipulation of Chebyshev Series
-[C1] (Algorithm 446)''. @cite{Communications of the ACM} 16(4), 254-256
+[C1] (Algorithm 446)''. @cite{Communications of the ACM} 16(4), 254--256
 (1973)
 @end itemize

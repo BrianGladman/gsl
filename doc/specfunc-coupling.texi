@@ -25,7 +25,6 @@ section are declared in the header file @file{gsl_sf_coupling.h}.
 @deftypefun double gsl_sf_coupling_3j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_ma}, int @var{two_mb}, int @var{two_mc})
 @deftypefunx int gsl_sf_coupling_3j_e (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_ma}, int @var{two_mb}, int @var{two_mc}, gsl_sf_result * @var{result})
 These routines compute the Wigner 3-j coefficient, 
-
 @tex
 \beforedisplay
 $$
@@ -35,6 +34,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 (ja jb jc
  ma mb mc)
@@ -53,7 +53,6 @@ where the arguments are given in half-integer units, @math{ja} =
 @deftypefun double gsl_sf_coupling_6j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf})
 @deftypefunx int gsl_sf_coupling_6j_e (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf}, gsl_sf_result * @var{result}) 
 These routines compute the Wigner 6-j coefficient, 
-
 @tex
 \beforedisplay
 $$
@@ -63,6 +62,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 @{ja jb jc
  jd je jf@}
@@ -81,7 +81,6 @@ where the arguments are given in half-integer units, @math{ja} =
 @deftypefun double gsl_sf_coupling_9j (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf}, int @var{two_jg}, int @var{two_jh}, int @var{two_ji})
 @deftypefunx int gsl_sf_coupling_9j_e (int @var{two_ja}, int @var{two_jb}, int @var{two_jc}, int @var{two_jd}, int @var{two_je}, int @var{two_jf}, int @var{two_jg}, int @var{two_jh}, int @var{two_ji}, gsl_sf_result * @var{result}) 
 These routines compute the Wigner 9-j coefficient, 
-
 @tex
 \beforedisplay
 $$
@@ -92,6 +91,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 @{ja jb jc
  jd je jf

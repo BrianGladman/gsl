@@ -1,4 +1,4 @@
-@cindex Transport functions
+@cindex transport functions
 
 The transport functions @math{J(n,x)} are defined by the integral 
 representations

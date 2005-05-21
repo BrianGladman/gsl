@@ -28,7 +28,7 @@ The functions described in this section are declared in the header files
 
 Given a set of data points @math{(x_1, y_1) \dots (x_n, y_n)} the
 routines described in this section compute a continuous interpolating
-function @math{y(x)} such that @math{y_i = y(x_i)}.  The interpolation
+function @math{y(x)} such that @math{y(x_i) = y_i}.  The interpolation
 is piecewise smooth, and its behavior at the end-points is determined by
 the type of interpolation used.
 
@@ -108,6 +108,7 @@ printf ("interp uses '%s' interpolation.\n",
 @end example
 @noindent
 would print something like,
+
 @example
 interp uses 'cspline' interpolation.
 @end example
@@ -245,7 +246,7 @@ $ graph -T ps < interp.dat > interp.ps
 
 @iftex
 @sp 1
-@center @image{interp,3in}
+@center @image{interp2,3.4in}
 @end iftex
 @noindent
 The result shows a smooth interpolation of the original points.  The
@@ -261,7 +262,7 @@ be found in the following book,
 
 @itemize @asis
 @item C.W. Ueberhuber,
-@cite{Numerical Computation (Volume 1), Chapter 9 "Interpolation"},
+@cite{Numerical Computation (Volume 1), Chapter 9 ``Interpolation''},
 Springer (1997), ISBN 3-540-62058-3.
 @end itemize
 @noindent

@@ -3,13 +3,13 @@
 This chapter describes functions for sorting data, both directly and
 indirectly (using an index).  All the functions use the @dfn{heapsort}
 algorithm.  Heapsort is an @math{O(N \log N)} algorithm which operates
-in-place.  It does not require any additional storage and provides
-consistent performance.  The running time for its worst-case (ordered
-data)  is not significantly longer than the average and best
-cases.  Note that the heapsort algorithm does not preserve the relative
-ordering of equal elements --- it is an @dfn{unstable} sort.  However
-the resulting order of equal elements will be consistent across
-different platforms when using these functions.
+in-place and does not require any additional storage.  It also provides
+consistent performance, the running time for its worst-case (ordered
+data) being not significantly longer than the average and best cases.
+Note that the heapsort algorithm does not preserve the relative ordering
+of equal elements---it is an @dfn{unstable} sort.  However the resulting
+order of equal elements will be consistent across different platforms
+when using these functions.
 
 @menu
 * Sorting objects::             
@@ -131,7 +131,7 @@ numerical order.
 @deftypefun int gsl_sort_index (size_t * @var{p}, const double * @var{data}, size_t @var{stride}, size_t @var{n})
 This function indirectly sorts the @var{n} elements of the array
 @var{data} with stride @var{stride} into ascending order, storing the
-resulting permutation in @var{p}.  The array @var{p} must be allocated to
+resulting permutation in @var{p}.  The array @var{p} must be allocated with
 a sufficient length to store the @var{n} elements of the permutation.
 The elements of @var{p} give the index of the array element which would
 have been stored in that position if the array had been sorted in place.
@@ -164,7 +164,7 @@ N)} algorithm and obtain the smallest or largest values that way.
 @deftypefun void gsl_sort_smallest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function copies the @var{k} smallest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in ascending
-numerical order in @var{dest}.  The size @var{k} of the subset must be
+numerical order into the array @var{dest}.  The size @var{k} of the subset must be
 less than or equal to @var{n}.  The data @var{src} is not modified by
 this operation.
 @end deftypefun
@@ -172,7 +172,7 @@ this operation.
 @deftypefun void gsl_sort_largest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function copies the @var{k} largest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in descending
-numerical order in @var{dest}. @var{k} must be
+numerical order into the array @var{dest}. @var{k} must be
 less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun

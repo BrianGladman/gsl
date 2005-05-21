@@ -11,7 +11,7 @@ main (void)
     for (j = 0; j < 3; j++)
       gsl_matrix_set (m, i, j, 0.23 + 100*i + j);
   
-  for (i = 0; i < 10; i++)
+  for (i = 0; i < 100; i++)
     for (j = 0; j < 3; j++)
       printf ("m(%d,%d) = %g\n", i, j, 
               gsl_matrix_get (m, i, j));

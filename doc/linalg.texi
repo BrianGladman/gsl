@@ -6,14 +6,14 @@
 This chapter describes functions for solving linear systems.  The
 library provides simple linear algebra operations which operate directly
 on the @code{gsl_vector} and @code{gsl_matrix} objects.  These are
-intended for use with "small" systems where simple algorithms are
+intended for use with ``small'' systems where simple algorithms are
 acceptable.
 
 @cindex LAPACK, recommended for linear algebra
 Anyone interested in large systems will want to use the sophisticated
 routines found in @sc{lapack}. The Fortran version of @sc{lapack} is
-recommended as the standard package for linear algebra.  It supports
-blocked algorithms, specialized data representations and other
+recommended as the standard package for large-scale linear algebra.  It
+supports blocked algorithms, specialized data representations and other
 optimizations.
 
 The functions described in this chapter are declared in the header file
@@ -42,7 +42,6 @@ The functions described in this chapter are declared in the header file
 
 A general square matrix @math{A} has an @math{LU} decomposition into
 upper and lower triangular matrices,
-
 @tex
 \beforedisplay
 $$
@@ -51,6 +50,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 P A = L U
 @end example
@@ -63,8 +63,8 @@ matrices this decomposition can be used to convert the linear system
 @math{U x = y}), which can be solved by forward and back-substitution.
 Note that the @math{LU} decomposition is valid for singular matrices.
 
-@deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
-@deftypefunx int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * @var{A}, gsl_permutation * @var{p}, int *@var{signum})
+@deftypefun int gsl_linalg_LU_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, int * @var{signum})
+@deftypefunx int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * @var{A}, gsl_permutation * @var{p}, int * @var{signum})
 These functions factorize the square matrix @var{A} into the @math{LU}
 decomposition @math{PA = LU}.  On output the diagonal and upper
 triangular part of the input matrix @var{A} contain the matrix
@@ -119,7 +119,10 @@ These functions compute the inverse of a matrix @math{A} from its
 @math{LU} decomposition (@var{LU},@var{p}), storing the result in the
 matrix @var{inverse}. The inverse is computed by solving the system
 @math{A x = b} for each column of the identity matrix.  It is preferable
-to avoid direct computation of the inverse whenever possible.
+to avoid direct use of the inverse whenever possible, as the linear
+solver functions can obtain the same result more efficiently and
+reliably (consult any introductory textbook on numerical linear algebra
+for details).
 @end deftypefun
 
 @cindex determinant of a matrix, by LU decomposition
@@ -136,7 +139,7 @@ permutation @var{signum}.
 @deftypefun double gsl_linalg_LU_lndet (gsl_matrix * @var{LU})
 @deftypefunx double gsl_linalg_complex_LU_lndet (gsl_matrix_complex * @var{LU})
 These functions compute the logarithm of the absolute value of the
-determinant of a matrix @math{A}, @math{\ln|det(A)|}, from its @math{LU}
+determinant of a matrix @math{A}, @math{\ln|\det(A)|}, from its @math{LU}
 decomposition, @var{LU}.  This function may be useful if the direct
 computation of the determinant would overflow or underflow.
 @end deftypefun
@@ -145,7 +148,7 @@ computation of the determinant would overflow or underflow.
 @deftypefun int gsl_linalg_LU_sgndet (gsl_matrix * @var{LU}, int @var{signum})
 @deftypefunx gsl_complex gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * @var{LU}, int @var{signum})
 These functions compute the sign or phase factor of the determinant of a
-matrix @math{A}, @math{det(A)/|det(A)|}, from its @math{LU} decomposition,
+matrix @math{A}, @math{\det(A)/|\det(A)|}, from its @math{LU} decomposition,
 @var{LU}.
 @end deftypefun
 
@@ -157,7 +160,6 @@ A general rectangular @math{M}-by-@math{N} matrix @math{A} has a
 @math{QR} decomposition into the product of an orthogonal
 @math{M}-by-@math{M} square matrix @math{Q} (where @math{Q^T Q = I}) and
 an @math{M}-by-@math{N} right-triangular matrix @math{R},
-
 @tex
 \beforedisplay
 $$
@@ -166,6 +168,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = Q R
 @end example
@@ -286,7 +289,6 @@ replaced by the solution on output.
 
 The @math{QR} decomposition can be extended to the rank deficient case
 by introducing a column permutation @math{P},
-
 @tex
 \beforedisplay
 $$
@@ -295,12 +297,13 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A P = Q R
 @end example
 @end ifinfo
 @noindent
-The first @math{r} columns of this @math{Q} form an orthonormal basis
+The first @math{r} columns of @math{Q} form an orthonormal basis
 for the range of @math{A} for a matrix with column rank @math{r}.  This
 decomposition can also be used to convert the linear system @math{A x =
 b} into the triangular system @math{R y = Q^T b, x = P y}, which can be
@@ -308,7 +311,7 @@ solved by back-substitution and permutation.  We denote the @math{QR}
 decomposition with column pivoting by @math{QRP^T} since @math{A = Q R
 P^T}.
 
-@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm})
+@deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int * @var{signum}, gsl_vector * @var{norm})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the @math{QRP^T} decomposition @math{A = Q R P^T}.  On output the
 diagonal and upper triangular part of the input matrix contain the
@@ -323,7 +326,7 @@ matrix @math{Q} is related to these components by, @math{Q = Q_k ... Q_2
 Q_1} where @math{Q_i = I - \tau_i v_i v_i^T} and @math{v_i} is the
 Householder vector @math{v_i =
 (0,...,1,A(i+1,i),A(i+2,i),...,A(m,i))}. This is the same storage scheme
-as used by @sc{lapack}.  The vector @var{norm} is workspace of length
+as used by @sc{lapack}.  The vector @var{norm} is a workspace of length
 @var{N} used for column pivoting.
 
 The algorithm used to perform the decomposition is Householder QR with
@@ -331,7 +334,7 @@ column pivoting (Golub & Van Loan, @cite{Matrix Computations}, Algorithm
 5.4.1).
 @end deftypefun
 
-@deftypefun int gsl_linalg_QRPT_decomp2 (const gsl_matrix * @var{A}, gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int *@var{signum}, gsl_vector * @var{norm})
+@deftypefun int gsl_linalg_QRPT_decomp2 (const gsl_matrix * @var{A}, gsl_matrix * @var{q}, gsl_matrix * @var{r}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int * @var{signum}, gsl_vector * @var{norm})
 This function factorizes the matrix @var{A} into the decomposition
 @math{A = Q R P^T} without modifying @var{A} itself and storing the
 output in the separate matrices @var{q} and @var{r}.
@@ -386,7 +389,6 @@ singular value decomposition (@sc{svd}) into the product of an
 @math{M}-by-@math{N} orthogonal matrix @math{U}, an @math{N}-by-@math{N}
 diagonal matrix of singular values @math{S} and the transpose of an
 @math{N}-by-@math{N} orthogonal square matrix @math{V},
-
 @tex
 \beforedisplay
 $$
@@ -395,6 +397,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = U S V^T
 @end example
@@ -471,7 +474,6 @@ system is solved in the least squares sense, returning the solution
 A symmetric, positive definite square matrix @math{A} has a Cholesky
 decomposition into a product of a lower triangular matrix @math{L} and
 its transpose @math{L^T},
-
 @tex
 \beforedisplay
 $$
@@ -480,6 +482,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = L L^T
 @end example
@@ -522,7 +525,6 @@ output.
 
 A symmetric matrix @math{A} can be factorized by similarity
 transformations into the form,
-
 @tex
 \beforedisplay
 $$
@@ -531,6 +533,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = Q T Q^T
 @end example
@@ -569,7 +572,6 @@ symmetric tridiagonal decomposition (@var{A}, @var{tau}) obtained from
 
 A hermitian matrix @math{A} can be factorized by similarity
 transformations into the form,
-
 @tex
 \beforedisplay
 $$
@@ -578,12 +580,13 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = U T U^T
 @end example
 @end ifinfo
 @noindent
-where @math{U} is an unitary matrix and @math{T} is a real symmetric
+where @math{U} is a unitary matrix and @math{T} is a real symmetric
 tridiagonal matrix.
 
 
@@ -608,9 +611,9 @@ the real vector of subdiagonal elements @var{subdiag}.
 
 @deftypefun int gsl_linalg_hermtd_unpack_T (const gsl_matrix_complex * @var{A}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the diagonal and subdiagonal of the encoded
-tridiagonal decomposition (@var{A}, @var{tau}) obtained from
-@code{gsl_linalg_hermtd_decomp} into the real vectors @var{diag} and
-@var{subdiag}.
+tridiagonal decomposition (@var{A}, @var{tau}) obtained from the
+@code{gsl_linalg_hermtd_decomp} into the real vectors
+@var{diag} and @var{subdiag}.
 @end deftypefun
 
 @node Bidiagonalization
@@ -619,7 +622,6 @@ tridiagonal decomposition (@var{A}, @var{tau}) obtained from
 
 A general matrix @math{A} can be factorized by similarity
 transformations into the form,
-
 @tex
 \beforedisplay
 $$
@@ -628,6 +630,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = U B V^T
 @end example
@@ -682,7 +685,6 @@ the diagonal vector @var{diag} and superdiagonal vector @var{superdiag}.
 A Householder transformation is a rank-1 modification of the identity
 matrix which can be used to zero out selected elements of a vector.  A
 Householder matrix @math{P} takes the form,
-
 @tex
 \beforedisplay
 $$
@@ -691,6 +693,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 P = I - \tau v v^T
 @end example
@@ -734,8 +737,8 @@ output the result @math{P w} is stored in @var{w}.
 
 @node Householder solver for linear systems
 @section Householder solver for linear systems
-@cindex solution of linear system by householder transformations
-@cindex householder linear solver
+@cindex solution of linear system by Householder transformations
+@cindex Householder linear solver
 
 @deftypefun int gsl_linalg_HH_solve (gsl_matrix * @var{A}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} directly using
@@ -762,7 +765,6 @@ b} where @var{A} is tridiagonal (@c{$N\geq 2$}
 sub-diagonal vectors @var{e} and @var{f} must be one element shorter
 than the diagonal vector @var{diag}.  The form of @var{A} for the 4-by-4
 case is shown below,
-
 @tex
 \beforedisplay
 $$
@@ -774,6 +776,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = ( d_0 e_0  0   0  )
     ( f_0 d_1 e_1  0  )
@@ -789,7 +792,6 @@ b} where @var{A} is symmetric tridiagonal (@c{$N\geq 2$}
 @math{N >= 2}).  The off-diagonal vector
 @var{e} must be one element shorter than the diagonal vector @var{diag}.
 The form of @var{A} for the 4-by-4 case is shown below,
-
 @tex
 \beforedisplay
 $$
@@ -801,6 +803,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = ( d_0 e_0  0   0  )
     ( e_0 d_1 e_1  0  )
@@ -817,7 +820,6 @@ b} where @var{A} is cyclic tridiagonal (@c{$N\geq 3$}
 sub-diagonal vectors @var{e} and @var{f} must have the same number of
 elements as the diagonal vector @var{diag}.  The form of @var{A} for the
 4-by-4 case is shown below,
-
 @tex
 \beforedisplay
 $$
@@ -829,6 +831,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = ( d_0 e_0  0  f_3 )
     ( f_0 d_1 e_1  0  )
@@ -846,7 +849,6 @@ b} where @var{A} is symmetric cyclic tridiagonal (@c{$N\geq 3$}
 off-diagonal vector @var{e} must have the same number of elements as the
 diagonal vector @var{diag}.  The form of @var{A} for the 4-by-4 case is
 shown below,
-
 @tex
 \beforedisplay
 $$
@@ -858,6 +860,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 A = ( d_0 e_0  0  e_3 )
     ( e_0 d_1 e_1  0  )
@@ -872,7 +875,6 @@ A = ( d_0 e_0  0  e_3 )
 
 The following program solves the linear system @math{A x = b}. The
 system to be solved is,
-
 @tex
 \beforedisplay
 $$
@@ -899,6 +901,7 @@ $$
 \afterdisplay
 @end tex
 @ifinfo
+
 @example
 [ 0.18 0.60 0.57 0.96 ] [x0]   [1.0]
 [ 0.41 0.24 0.99 0.58 ] [x1] = [2.0]
@@ -921,6 +924,7 @@ Here is the output from the program,
 @noindent
 This can be verified by multiplying the solution @math{x} by the
 original matrix @math{A} using @sc{gnu octave},
+
 @example
 octave> A = [ 0.18, 0.60, 0.57, 0.96;
               0.41, 0.24, 0.99, 0.58; 
@@ -931,7 +935,6 @@ octave> x = [ -4.05205; -12.6056; 1.66091; 8.69377];
 
 octave> A * x
 ans =
-
   1.0000
   2.0000
   3.0000
@@ -971,8 +974,8 @@ The Modified Golub-Reinsch algorithm is described in the following paper,
 
 @itemize @asis
 @item
-T.F. Chan, "An Improved Algorithm for Computing the Singular Value
-Decomposition", @cite{ACM Transactions on Mathematical Software}, 8
+T.F. Chan, ``An Improved Algorithm for Computing the Singular Value
+Decomposition'', @cite{ACM Transactions on Mathematical Software}, 8
 (1982), pp 72--83.
 @end itemize
 @noindent
@@ -981,13 +984,13 @@ the following papers,
 
 @itemize @asis
 @item
-J.C.Nash, "A one-sided transformation method for the singular value
-decomposition and algebraic eigenproblem", @cite{Computer Journal},
-Volume 18, Number 1 (1973), p 74---76
+J.C. Nash, ``A one-sided transformation method for the singular value
+decomposition and algebraic eigenproblem'', @cite{Computer Journal},
+Volume 18, Number 1 (1973), p 74--76
 
 @item
-James Demmel, Kresimir Veselic, "Jacobi's Method is more accurate than
-QR", @cite{Lapack Working Note 15} (LAWN-15), October 1989. Available
+James Demmel, Kresimir Veselic, ``Jacobi's Method is more accurate than
+QR'', @cite{Lapack Working Note 15} (LAWN-15), October 1989. Available
 from netlib, @uref{http://www.netlib.org/lapack/} in the @code{lawns} or
 @code{lawnspdf} directories.
 @end itemize
