@@ -158,22 +158,7 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
 
   SAFE_FUNC_CALL(f, u, &f_u);
 
-  if (f_u > f_z)
-    {
-      if (u < z)
-        {
-          *x_lower = u;
-          *f_lower = f_u;
-          return GSL_SUCCESS;
-        }
-      else
-        {
-          *x_upper = u;
-          *f_upper = f_u;
-          return GSL_SUCCESS;
-        }
-    }
-  else if (f_u < f_z)
+  if (f_u <= f_z)
     {
       if (u < z)
         {
@@ -194,24 +179,38 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
       *f_minimum = f_u;
       return GSL_SUCCESS;
     }
-  else if (f_u <= f_w || w == z)
-    {
-      state->v = w;
-      state->f_v = f_w;
-      state->w = u;
-      state->f_w = f_u;
-      return GSL_SUCCESS;
-    }
-  else if (f_u <= f_v || v == z || v == w)
-    {
-      state->v = u;
-      state->f_v = f_u;
-      return GSL_SUCCESS;
-    }
   else
     {
-      return GSL_FAILURE;
+      if (u < z)
+        {
+          *x_lower = u;
+          *f_lower = f_u;
+          return GSL_SUCCESS;
+        }
+      else
+        {
+          *x_upper = u;
+          *f_upper = f_u;
+          return GSL_SUCCESS;
+        }
+
+      if (f_u <= f_w || w == z)
+        {
+          state->v = w;
+          state->f_v = f_w;
+          state->w = u;
+          state->f_w = f_u;
+          return GSL_SUCCESS;
+        }
+      else if (f_u <= f_v || v == z || v == w)
+        {
+          state->v = u;
+          state->f_v = f_u;
+          return GSL_SUCCESS;
+        }
     }
+
+  return GSL_FAILURE;
 }
 
 

@@ -340,3 +340,6 @@ maintaining the Debian package for GSL.
 
 * Ben Klemens <klemens@hss.caltech.edu> bug report for sorting vectors
 with NANs
+
+* Peter Brommer <pbro@itap.physik.uni-stuttgart.de> bug report and patch
+for Brent minimisation algorithm.
