@@ -397,8 +397,7 @@ ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic.
 @end itemize
 @noindent
 A more pedagogical introduction to the standard can be found in the
-paper ``What Every Computer Scientist Should Know About Floating-Point
-Arithmetic''.
+following paper,
 
 @itemize @asis
 @item
@@ -407,17 +406,22 @@ Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol.@: 23, No.@: 1
 (March 1991), pages 5--48.
 
 Corrigendum: @cite{ACM Computing Surveys}, Vol.@: 23, No.@: 3 (September
-1991), page 413.
-
-@item
-See also the sections by B. A. Wichmann and Charles B. Dunham in
-Surveyor's Forum: ``What Every Computer Scientist Should Know About
-Floating-Point Arithmetic''. @cite{ACM Computing Surveys}, Vol.@: 24,
-No.@: 3 (September 1992), page 319.
+1991), page 413. and see also the sections by B. A. Wichmann and Charles
+B. Dunham in Surveyor's Forum: ``What Every Computer Scientist Should
+Know About Floating-Point Arithmetic''. @cite{ACM Computing Surveys},
+Vol.@: 24, No.@: 3 (September 1992), page 319.
 @end itemize
 @noindent
 
+A detailed textbook on IEEE arithmetic and its practical use is
+available from SIAM Press,
 
+@itemize @asis
+@item
+Michael L. Overton, @cite{Numerical Computing with IEEE Floating Point Arithmetic},
+SIAM Press, ISBN 0898715717.
+@end itemize
+@noindent
 
 @comment to turn on math exception handling use __setfpucw, see
 @comment /usr/include/i386/fpu_control.h
