@@ -35,7 +35,6 @@
 
 #include "companion.c"
 #include "balance.c"
-/* #include "norm.c" */
 #include "qr.c"
 
 int
