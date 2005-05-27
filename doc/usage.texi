@@ -18,6 +18,7 @@ introduces its conventions.
 * Compatibility with C++::      
 * Aliasing of arrays::          
 * Thread-safety::               
+* Deprecated Functions::        
 * Code Reuse::                  
 @end menu
 
@@ -434,6 +435,18 @@ control the overall behavior of the library (e.g. whether to use
 range-checking, the function to call on fatal error, etc).  These
 variables are set directly by the user, so they should be initialized
 once at program startup and not modified by different threads.
+
+@node Deprecated Functions
+@section Deprecated Functions
+@cindex deprecated functions
+
+From time to time, it may be necessary for the definitions of some
+functions to be altered or removed from the library.  In these
+circumstances the functions will first be declared @dfn{deprecated} and
+then removed from subsequent versions of the library.  Functions that
+are deprecated can be disabled in the current release by setting the
+preprocessor definition @code{GSL_DISABLE_DEPRECATED}.  This allows
+existing code to be tested for forwards compatibility.
 
 @node Code Reuse
 @section Code Reuse

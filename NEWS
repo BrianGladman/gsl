@@ -1,5 +1,13 @@
 * What will be new in gsl-1.7:
 
+** The 'Usage' chapter of the reference manual now explains how to
+handle deprecated functions using the GSL_DISABLE_DEPRECATED macro.
+
+** The conflicting enum definitions for 'forward' and 'backward' in
+gsl_ftt.h and gsl_wavelet.h are deprecated.  User code should switch
+to the new definitions gsl_fft_forward, gsl_fft_backward,
+gsl_wavelet_forward and gsl_wavelet_backward.
+
 ** Fixed an error in the the brent minimisation algorithm.  Iterations
 should now follow Brent's original description correctly.
 

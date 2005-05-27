@@ -280,6 +280,10 @@ main (void)
   return 0;
 }
 
+BJG: These headers have been modified to deprecate the existing
+definition and use gsl_ftt_forward, ... gsl_wavelet_forward, ...
+instead.
+
 ----------------------------------------------------------------------
 BUG#36 -- problem with jacobi svd
 
