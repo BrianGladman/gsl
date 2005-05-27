@@ -42,3 +42,4 @@ config.sub
 depcomp
 ltmain.sh
 stamp-h1
+*.tmp
