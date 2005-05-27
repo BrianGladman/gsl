@@ -1,3 +1,28 @@
+2005-05-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_bessel.c (test_bessel): added test for steed(99,1,...)
+
+	* legendre_H3d.c (legendre_H3d_CF1): use hypot
+	(legendre_H3d_CF1_ser): use hypot
+	(gsl_sf_legendre_H3d_e): use hypot
+	(gsl_sf_legendre_H3d_e): use hypot
+	(gsl_sf_legendre_H3d_array): use hypot
+
+	* dilog.c (dilogc_unitdisk): use hypot
+
+	* coulomb.c (gsl_sf_coulomb_CL_array): use hypot
+	(coulomb_F_recur): use hypot
+	(coulomb_G_recur): use hypot
+	(coulomb_jwkb): use hypot
+	(gsl_sf_coulomb_wave_F_array): use hypot
+	(gsl_sf_coulomb_wave_FG_array): use hypot
+	(gsl_sf_coulomb_wave_FGp_array): use hypot
+
+	* bessel_j.c (gsl_sf_bessel_jl_steed_array): use hypot
+
+	* bessel.c (gsl_sf_bessel_Inu_scaled_asymp_unif_e): use hypot
+	(gsl_sf_bessel_Knu_scaled_asymp_unif_e): use hypot
+
 2005-03-02  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coulomb_bound.c (gsl_sf_hydrogenicR_e): don't check for

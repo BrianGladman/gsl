@@ -133,7 +133,7 @@ gsl_sf_coulomb_CL_array(double lam_min, int kmax, double eta, double * cl)
 
   for(k=1; k<=kmax; k++) {
     double L = lam_min + k;
-    cl[k] = cl[k-1] * sqrt(L*L + eta*eta)/(L*(2.0*L+1.0));
+    cl[k] = cl[k-1] * hypot(L, eta)/(L*(2.0*L+1.0));
   }
 
   return GSL_SUCCESS;
@@ -532,7 +532,7 @@ coulomb_F_recur(double lam_min, int kmax,
 
   for(k=kmax-1; k>=0; k--) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el  + lam*x_inv;
     double fc_lm1;
     fc_lm1 = (fcl*sl + fpl)/rl;
@@ -570,7 +570,7 @@ coulomb_G_recur(const double lam_min, const int kmax,
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el + lam*x_inv;
     double gcl1 = (sl*gcl - gpl)/rl;
     gpl   = rl*gcl - sl*gcl1;
@@ -827,7 +827,7 @@ coulomb_jwkb(const double lam, const double eta, const double x,
   const double llp1_eff  = GSL_MAX(llp1, 0.0);
   const double rho_ghalf = sqrt(x*(2.0*eta - x) + llp1_eff);
   const double sinh_arg  = sqrt(llp1_eff/(eta*eta+llp1_eff)) * rho_ghalf / x;
-  const double sinh_inv  = log(sinh_arg + sqrt(1.0 + sinh_arg*sinh_arg));
+  const double sinh_inv  = log(sinh_arg + hypot(1.0,sinh_arg));
 
   const double phi = fabs(rho_ghalf - eta*atan2(rho_ghalf,x-eta) - sqrt(llp1_eff) * sinh_inv);
 
@@ -1242,7 +1242,7 @@ gsl_sf_coulomb_wave_F_array(double lam_min, int kmax,
 
     for(k=kmax-1; k>=0; k--) {
       double el = eta/lam;
-      double rl = sqrt(1.0 + el*el);
+      double rl = hypot(1.0, el);
       double sl = el  + lam*x_inv;
       double fc_lm1 = (fcl*sl + fpl)/rl;
       fc_array[k]   = fc_lm1;
@@ -1281,7 +1281,7 @@ gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
 
   for(k=kmax-1; k>=0; k--) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el  + lam*x_inv;
     double fc_lm1;
     fc_lm1 = (fcl*sl + fpl)/rl;
@@ -1299,7 +1299,7 @@ gsl_sf_coulomb_wave_FG_array(double lam_min, int kmax,
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el + lam*x_inv;
     double gcl1 = (sl*gcl - gpl)/rl;
     gc_array[k] = gcl1;
@@ -1340,7 +1340,7 @@ gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
 
   for(k=kmax-1; k>=0; k--) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el  + lam*x_inv;
     double fc_lm1;
     fc_lm1 = (fcl*sl + fpl)/rl;
@@ -1360,7 +1360,7 @@ gsl_sf_coulomb_wave_FGp_array(double lam_min, int kmax,
 
   for(k=1; k<=kmax; k++) {
     double el = eta/lam;
-    double rl = sqrt(1.0 + el*el);
+    double rl = hypot(1.0, el);
     double sl = el + lam*x_inv;
     double gcl1 = (sl*gcl - gpl)/rl;
     gc_array[k]  = gcl1;

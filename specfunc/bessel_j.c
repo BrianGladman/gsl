@@ -357,7 +357,7 @@ int gsl_sf_bessel_jl_steed_array(const int lmax, const double x, double * jl_x)
     }
     
     /* normalization */
-    W = x_inv / sqrt(FP*FP + F*F);
+    W = x_inv / hypot(FP, F);
     jl_x[0] = W*F;
     if(lmax > 0) {
       int L;

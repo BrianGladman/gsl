@@ -322,7 +322,7 @@ gsl_sf_bessel_Inu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_re
 {
   int i;
   double z = x/nu;
-  double root_term = sqrt(1.0 + z*z);
+  double root_term = hypot(1.0,z);
   double pre = 1.0/sqrt(2.0*M_PI*nu * root_term);
   double eta = root_term + log(z/(1.0+root_term));
   double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(-z + eta) : -0.5*nu/z*(1.0 - 1.0/(12.0*z*z)) );
@@ -360,7 +360,7 @@ gsl_sf_bessel_Knu_scaled_asymp_unif_e(const double nu, const double x, gsl_sf_re
 {
   int i;
   double z = x/nu;
-  double root_term = sqrt(1.0 + z*z);
+  double root_term = hypot(1.0,z);
   double pre = sqrt(M_PI/(2.0*nu*root_term));
   double eta = root_term + log(z/(1.0+root_term));
   double ex_arg = ( z < 1.0/GSL_ROOT3_DBL_EPSILON ? nu*(z - eta) : 0.5*nu/z*(1.0 + 1.0/(12.0*z*z)) );

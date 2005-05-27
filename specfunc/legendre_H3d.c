@@ -149,7 +149,7 @@ legendre_H3d_CF1(const int ell, const double lambda, const double coth_eta,
   double Bnm2 = 0.0;
   double Anm1 = 0.0;
   double Bnm1 = 1.0;
-  double a1 = sqrt(lambda*lambda + (ell+1.0)*(ell+1.0));
+  double a1 = hypot(lambda, ell+1.0);
   double b1 = (2.0*ell + 3.0) * coth_eta;
   double An = b1*Anm1 + a1*Anm2;
   double Bn = b1*Bnm1 + a1*Bnm2;
@@ -210,7 +210,7 @@ int
 legendre_H3d_CF1_ser(const int ell, const double lambda, const double coth_eta,
                      gsl_sf_result * result)
 {
-  const double pre = sqrt(lambda*lambda+(ell+1.0)*(ell+1.0))/((2.0*ell+3)*coth_eta);
+  const double pre = hypot(lambda, ell+1.0)/((2.0*ell+3)*coth_eta);
   const int maxk = 20000;
   double tk   = 1.0;
   double sum  = 1.0;
@@ -463,8 +463,8 @@ gsl_sf_legendre_H3d_e(const int ell, const double lambda, const double eta,
     double Hlp1  = rH.val * Hl;
     int lp;
     for(lp=ell; lp>0; lp--) {
-      double root_term_0 = sqrt(lambda*lambda + (double)lp*lp);
-      double root_term_1 = sqrt(lambda*lambda + (lp+1.0)*(lp+1.0));
+      double root_term_0 = hypot(lambda,lp);
+      double root_term_1 = hypot(lambda,lp+1.0);
       Hlm1 = ((2.0*lp + 1.0)*coth_eta*Hl - root_term_1 * Hlp1)/root_term_0;
       Hlp1 = Hl;
       Hl   = Hlm1;
@@ -534,8 +534,8 @@ gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double eta,
     result_array[lmax-1] = Hl;
 
     for(ell=lmax-1; ell>0; ell--) {
-      double root_term_0 = sqrt(lambda*lambda + (double)ell*ell);
-      double root_term_1 = sqrt(lambda*lambda + (ell+1.0)*(ell+1.0));
+      double root_term_0 = hypot(lambda,ell);
+      double root_term_1 = hypot(lambda,ell+1.0);
       Hlm1 = ((2.0*ell + 1.0)*coth_eta*Hl - root_term_1 * Hlp1)/root_term_0;
       result_array[ell-1] = Hlm1;
       if(!(Hlm1 < GSL_DBL_MAX)) stat_recursion = GSL_EOVRFLW;

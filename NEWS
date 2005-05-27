@@ -1,5 +1,9 @@
 * What will be new in gsl-1.7:
 
+** Bessl, coulomb, dilogarithm and legendre_H3d functions now use
+hypot internally to avoid overflow when computing terms like
+sqrt(1+x*x).
+
 ** The 'Usage' chapter of the reference manual now explains how to
 handle deprecated functions using the GSL_DISABLE_DEPRECATED macro.
 

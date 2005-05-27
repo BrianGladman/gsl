@@ -488,7 +488,7 @@ dilogc_unitdisk(double x, double y, gsl_sf_result * real_dl, gsl_sf_result * ima
 {
   static const double MAGIC_SPLIT_VALUE = 0.732;
   static const double zeta2 = M_PI*M_PI/6.0;
-  const double r = sqrt(x*x + y*y);
+  const double r = hypot(x, y);
 
   if(x > MAGIC_SPLIT_VALUE)
   {
@@ -498,7 +498,7 @@ dilogc_unitdisk(double x, double y, gsl_sf_result * real_dl, gsl_sf_result * ima
      */
     const double x_tmp = 1.0 - x;
     const double y_tmp =     - y;
-    const double r_tmp = sqrt(x_tmp*x_tmp + y_tmp*y_tmp);
+    const double r_tmp = hypot(x_tmp, y_tmp);
     /* const double cos_theta_tmp = x_tmp/r_tmp; */
     /* const double sin_theta_tmp = y_tmp/r_tmp; */
 
