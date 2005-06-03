@@ -67,7 +67,12 @@ int gsl_sf_bessel_i0_scaled_e(const double x, gsl_sf_result * result)
 
   /* CHECK_POINTER(result) */
 
-  if(ax < 0.2) {
+  if(x == 0.0) {
+    result->val = 1.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;    
+  }
+  else if(ax < 0.2) {
     const double eax = exp(-ax);
     const double y = ax*ax;
     const double c1 = 1.0/6.0;
@@ -97,7 +102,12 @@ int gsl_sf_bessel_i1_scaled_e(const double x, gsl_sf_result * result)
 
   /* CHECK_POINTER(result) */
 
-  if(ax < 3.0*GSL_DBL_MIN) {
+  if(x == 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(ax < 3.0*GSL_DBL_MIN) {
     UNDERFLOW_ERROR(result);
   }
   else if(ax < 0.25) {
@@ -129,7 +139,12 @@ int gsl_sf_bessel_i2_scaled_e(const double x, gsl_sf_result * result)
 
   /* CHECK_POINTER(result) */
 
-  if(ax < 4.0*GSL_SQRT_DBL_MIN) {
+  if(x == 0.0) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;    
+  }
+  else if(ax < 4.0*GSL_SQRT_DBL_MIN) {
     UNDERFLOW_ERROR(result);
   }
   else if(ax < 0.25) {
@@ -170,7 +185,7 @@ int gsl_sf_bessel_il_scaled_e(const int l, double x, gsl_sf_result * result)
     DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
-    result->val = 0.0;
+    result->val = ( l == 0 ? 1.0 : 0.0 );
     result->err = 0.0;
     return GSL_SUCCESS;
   }
