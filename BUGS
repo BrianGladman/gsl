@@ -417,6 +417,47 @@ it is useful to return the true rank (given by the number of SVD
 components that exceed the test >1.0e-7)
 
 My choice of a cutoff of 1.0e-7 is farily arbitrary, but seems to work
+----------------------------------------------------------------------
+BUG#38 --  fix edge cases in gsl_sf_bessel_il_scaled(_array)
+
+From: Roman Schmied <rschmied@Princeton.EDU>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] bug in scaled modified spherical Bessel functions of
+	first kind
+Date: Mon, 23 May 2005 12:03:20 -0400
+
+GSL version: 1.6
+hardware/OS: Mac OS 10.4.1 on a PowerPC G4 (1.2)
+compiler: powerpc-apple-darwin8-gcc-4.0.0 (GCC) 4.0.0 20041026 (Apple  
+Computer, Inc. build 4061)
+compiler options: none other than "-lgsl"
+
+The scaled modified spherical Bessel functions of first kind return  
+wrong values for x=0. The correct results are 1 for L=0 and 0 for  
+L>=1. In particular:
+
+- gsl_sf_bessel_il_scaled(L, 0) returns zero for any value of L, even  
+for L=0 where it should return 1.
+
+- gsl_sf_bessel_il_scaled_array(Lmax, 0, y) returns "nan" values  
+instead of {1,0,0,0,0,...}
+
+example code: (compiled with "gcc -lgsl BesselTest.c")
+
+#include <gsl/gsl_sf_bessel.h>
+#include <stdio.h>
+
+int main() {
+   double y[11];
+   int i;
+   printf("should be equal to 1: %g\n", gsl_sf_bessel_il_scaled(0, 0));
+   gsl_sf_bessel_il_scaled_array(10, 0, y);
+   printf("should be equal to 1: %g\n", y[0]);
+   for(i=1; i<=10; i++)
+     printf("should be equal to 0: %g\n", y[i]);
+   return 0;
+}
+
 
 ----------------------------------------------------------------------
-Last assigned bug number = 37
+Last assigned bug number = 38
