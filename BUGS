@@ -367,4 +367,56 @@ main (void)
 }
 
 ----------------------------------------------------------------------
-Last assigned bug number = 36
+BUG#37 -- improve handling of zero singular values in multifit linear
+
+[The handling of zero singular values could be improved by taking a
+user-specified tolerance or splitting this function in two to expose
+the intermediate results - BJG].
+
+From: Richard Mott <rmott@well.ox.ac.uk>
+To: bug-gsl@gnu.org,  rmott@well.ox.ac.uk
+Subject: [Bug-gsl] bug in gsl_multifit_wlinear
+Date: Fri, 20 May 2005 14:19:27 +0100
+
+There is a bug in gsl_multifit_wlinear (and presumably in 
+gsl_multifit_linear too). The problem manifests itself when the design 
+matrix X is not of full rank. The documentation says that this case is 
+handled correctly in the singular value decompostion by setting the tiny 
+SVD components to 0. In fact his doesn't happen. Instead the function 
+returns a huge and non-sensical chisq value. The block of code in 
+question is
+
+for (j = 0; j < p; j++)
+        {
+          gsl_vector_view column = gsl_matrix_column (QSI, j);
+          double alpha = gsl_vector_get (S, j);
+          if (alpha != 0)
+            alpha = 1.0 / alpha;
+          gsl_vector_scale (&column.vector, alpha);
+        }
+
+and needs to be changed to something like
+
+int rank = 0;
+for (j = 0; j < p; j++)
+        {
+          gsl_vector_view column = gsl_matrix_column (QSI, j);
+          double alpha = gsl_vector_get (S, j);
+          if (alpha >1.0e-7) {
+                rank ++;
+                alpha = 1.0 / alpha;
+        else {
+          alpha = 0.0;
+          gsl_vector_set(S,j,0.0);
+        }
+          gsl_vector_scale (&column.vector, alpha);
+        }
+
+Finally, in the case of when the rank of the design matric is not full, 
+it is useful to return the true rank (given by the number of SVD 
+components that exceed the test >1.0e-7)
+
+My choice of a cutoff of 1.0e-7 is farily arbitrary, but seems to work
+
+----------------------------------------------------------------------
+Last assigned bug number = 37
