@@ -437,10 +437,10 @@ wrong values for x=0. The correct results are 1 for L=0 and 0 for
 L>=1. In particular:
 
 - gsl_sf_bessel_il_scaled(L, 0) returns zero for any value of L, even  
-for L=0 where it should return 1.
+for L=0 where it should return 1.  [CONFIRMED A&S 10.2.13 - BJG]
 
 - gsl_sf_bessel_il_scaled_array(Lmax, 0, y) returns "nan" values  
-instead of {1,0,0,0,0,...}
+instead of {1,0,0,0,0,...} [CONFIRMED - A&S 10.2.5 - BJG]
 
 example code: (compiled with "gcc -lgsl BesselTest.c")
 
@@ -460,4 +460,20 @@ int main() {
 
 
 ----------------------------------------------------------------------
-Last assigned bug number = 38
+BUG#39 - cdf tests fail on IEEE 64 bit double precision
+
+The test value is outside the range of double precision, so it will create problems.
+Can check for these in test/ perhaps too.
+
+From: Charles Wright <charles@asc.edu>
+Subject: [Bug-gsl] I'm having trouble compiling GSL on IA-64 
+Date: Mon, 13 Jun 2005 15:49:26 -0500
+
+Always fails this test no matter how I compile it.  (Itanium2 altix 350)
+
+FAIL: gsl_cdf_fdist_Q(100.0, 200.0, 500.0) (0 observed vs 6.53118978864773816e-316 expected)
+
+Here's some options I've tried.   Any suggestions would be appreciated.
+
+----------------------------------------------------------------------
+Last assigned bug number = 39
