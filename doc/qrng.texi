@@ -4,10 +4,11 @@
 @cindex Niederreiter sequence
 This chapter describes functions for generating quasi-random sequences
 in arbitrary dimensions.  A quasi-random sequence progressively covers a
-@math{d}-dimensional space with a set of points that are uniformly distributed.
-Quasi-random sequences are also known as low-discrepancy sequences.  The
-quasi-random sequence generators use an interface that is similar to the
-interface for random number generators.
+@math{d}-dimensional space with a set of points that are uniformly
+distributed.  Quasi-random sequences are also known as low-discrepancy
+sequences.  The quasi-random sequence generators use an interface that
+is similar to the interface for random number generators, except that
+seeding is not required---each generator produces a single sequence.
 
 The functions described in this section are declared in the header file
 @file{gsl_qrng.h}.
@@ -40,6 +41,8 @@ This function frees all the memory associated with the generator
 
 @deftypefun void gsl_qrng_init (gsl_qrng * @var{q})
 This function reinitializes the generator @var{q} to its starting point.
+Note that quasi-random sequences do not use a seed and always produce
+the same set of values.
 @end deftypefun
 
 @node Sampling from a quasi-random number generator
