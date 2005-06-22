@@ -29,6 +29,8 @@
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_linalg.h>
 
+#define TEST_SVD_4X4 1
+
 int check (double x, double actual, double eps);
 gsl_matrix * create_hilbert_matrix(size_t size);
 gsl_matrix * create_general_matrix(size_t size1, size_t size2);
@@ -84,6 +86,8 @@ int test_SV_decomp_dim(const gsl_matrix * m, double eps);
 int test_SV_decomp(void);
 int test_SV_decomp_mod_dim(const gsl_matrix * m, double eps);
 int test_SV_decomp_mod(void);
+int test_SV_decomp_jacobi_dim(const gsl_matrix * m, double eps);
+int test_SV_decomp_jacobi(void);
 int test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_cholesky_solve(void);
 int test_cholesky_decomp_dim(const gsl_matrix * m, double eps);
@@ -261,6 +265,7 @@ gsl_matrix * row12;
 gsl_matrix * A22;
 gsl_matrix * A33;
 gsl_matrix * A44;
+gsl_matrix * A55;
 
 gsl_matrix_complex * c7;
 
@@ -1995,28 +2000,28 @@ test_LQ_update_dim(const gsl_matrix * m, double eps)
   for(i=0; i<M; i++) gsl_vector_set(u, i, sin(i+1.0));
   for(i=0; i<N; i++) gsl_vector_set(v, i, cos(i+2.0) + sin(i*i+3.0));
 
-  // lq1 is updated 
+  /* lq1 is updated */
 
   gsl_blas_dger(1.0, v, u, lq1);
 
-  // lq2 is first decomposed, updated later
+  /* lq2 is first decomposed, updated later */
 
   s += gsl_linalg_LQ_decomp(lq2, d2);
   s += gsl_linalg_LQ_unpack(lq2, d2, q2, l2);
 
-  // compute w = Q^T u
+  /* compute w = Q^T u */
 
   gsl_blas_dgemv(CblasNoTrans, 1.0, q2, u, 0.0, w);
 
-  // now lq2 is updated
+  /* now lq2 is updated */
 
   s += gsl_linalg_LQ_update(q2, l2, v, w);
 
-  // multiply q2*l2
+  /* multiply q2*l2 */
 
   gsl_blas_dgemm(CblasNoTrans,CblasNoTrans,1.0,l2,q2,0.0,lq2);
 
-  // check lq1==lq2
+  /*  check lq1==lq2 */
 
   for(i=0; i<N; i++) {
     for(j=0; j<M; j++) {
@@ -2024,9 +2029,11 @@ test_LQ_update_dim(const gsl_matrix * m, double eps)
       double s2 = gsl_matrix_get(lq2, i, j);
       
       int foo = check(s1, s2, eps);
+#if 0
       if(foo) {
-	  //printf("LQ:(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, s1, s2);
+	  printf("LQ:(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, s1, s2);
       }
+#endif
       s += foo;
     }
   }
@@ -2656,6 +2663,285 @@ int test_SV_decomp_mod(void)
 
 
 int
+test_SV_decomp_jacobi_dim(const gsl_matrix * m, double eps)
+{
+  int s = 0;
+  double di1;
+  size_t i,j, M = m->size1, N = m->size2;
+
+  gsl_matrix * v  = gsl_matrix_alloc(M,N);
+  gsl_matrix * a  = gsl_matrix_alloc(M,N);
+  gsl_matrix * q  = gsl_matrix_alloc(N,N);
+  gsl_matrix * dqt  = gsl_matrix_alloc(N,N);
+  gsl_vector * d  = gsl_vector_alloc(N);
+
+  gsl_matrix_memcpy(v,m);
+
+  s += gsl_linalg_SV_decomp_jacobi(v, q, d); 
+  if (s)
+    printf("call returned status = %d\n", s);
+
+  /* Check that singular values are non-negative and in non-decreasing
+     order */
+  
+  di1 = 0.0;
+
+  for (i = 0; i < N; i++)
+    {
+      double di = gsl_vector_get (d, i);
+
+      if (gsl_isnan (di))
+        {
+          continue;  /* skip NaNs */
+        }
+
+      if (di < 0) {
+        s++;
+        printf("singular value %d = %22.18g < 0\n", i, di);
+      }
+
+      if(i > 0 && di > di1) {
+        s++;
+        printf("singular value %d = %22.18g vs previous %22.18g\n", i, di, di1);
+      }
+
+      di1 = di;
+    }      
+  
+  /* Scale dqt = D Q^T */
+  
+  for (i = 0; i < N ; i++)
+    {
+      double di = gsl_vector_get (d, i);
+
+      for (j = 0; j < N; j++)
+        {
+          double qji = gsl_matrix_get(q, j, i);
+          gsl_matrix_set (dqt, i, j, qji * di);
+        }
+    }
+            
+  /* compute a = v dqt */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, v, dqt, 0.0, a);
+
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
+      double aij = gsl_matrix_get(a, i, j);
+      double mij = gsl_matrix_get(m, i, j);
+      int foo = check(aij, mij, eps);
+      if(foo) {
+        printf("(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+      }
+      s += foo;
+    }
+  }
+  gsl_vector_free(d);
+  gsl_matrix_free(v);
+  gsl_matrix_free(a);
+  gsl_matrix_free(q);
+  gsl_matrix_free(dqt);
+
+  return s;
+}
+
+int test_SV_decomp_jacobi(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_SV_decomp_jacobi_dim(m11, 2 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi m(1,1)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(m51, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi m(5,1)");
+  s += f;
+
+  /* M<N not implemented yet */
+#if 0
+  f = test_SV_decomp_jacobi_dim(m35, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi m(3,5)");
+  s += f;
+#endif
+  f = test_SV_decomp_jacobi_dim(m53, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi m(5,3)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(moler10, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi moler(10)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi hilbert(2)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi hilbert(3)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi hilbert(4)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi hilbert(12)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(vander2, 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi vander(2)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(vander3, 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi vander(3)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(vander4, 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi vander(4)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(vander12, 1e-4);
+  gsl_test(f, "  SV_decomp_jacobi vander(12)");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(row3, 10 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi row3");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(row5, 128 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi row5");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(row12, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi row12");
+  s += f;
+
+
+#ifdef TEST_JACOBI_INF
+  f = test_SV_decomp_jacobi_dim(inf5, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi inf5");
+  s += f;
+
+  f = test_SV_decomp_jacobi_dim(nan5, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp_jacobi nan5");
+  s += f;
+#endif
+
+  {
+    double i1, i2, i3, i4;
+    double lower = -2, upper = 2;
+
+    for (i1 = lower; i1 <= upper; i1++)
+      {
+        for (i2 = lower; i2 <= upper; i2++)
+          {
+            for (i3 = lower; i3 <= upper; i3++)
+              {
+                for (i4 = lower; i4 <= upper; i4++)
+                  {
+                    gsl_matrix_set (A22, 0,0, i1);
+                    gsl_matrix_set (A22, 0,1, i2);
+                    gsl_matrix_set (A22, 1,0, i3);
+                    gsl_matrix_set (A22, 1,1, i4);
+                    
+                    f = test_SV_decomp_jacobi_dim(A22, 16 * GSL_DBL_EPSILON);
+                    gsl_test(f, "  SV_decomp_jacobi (2x2) A=[%g, %g; %g, %g]", i1,i2,i3,i4);
+                    s += f;
+                  }
+              }
+          }
+      }
+  }
+
+  {
+    int i;
+    double carry = 0, lower = 0, upper = 1;
+    double *a = A33->data;
+
+    for (i=0; i<9; i++) {
+      a[i] = lower;
+    }
+    
+    while (carry == 0.0) {
+      f = test_SV_decomp_jacobi_dim(A33, 64 * GSL_DBL_EPSILON);
+      gsl_test(f, "  SV_decomp_jacobi (3x3) A=[ %g, %g, %g; %g, %g, %g; %g, %g, %g]",
+               a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]);
+      
+      /* increment */
+      carry=1.0;
+      for (i=9; i>0 && i--;) 
+        {
+          double v=a[i]+carry;
+          carry = (v>upper) ? 1.0 : 0.0;
+          a[i] = (v>upper) ? lower : v;
+        }
+    }
+  }
+
+#ifdef TEST_SVD_4X4
+  {
+    int i;
+    unsigned long k = 0;
+    double carry = 0, lower = 0, upper = 1;
+    double *a = A44->data;
+
+    for (i=0; i<16; i++) {
+      a[i] = lower;
+    }
+    
+    while (carry == 0.0) {
+      k++;
+      f = test_SV_decomp_jacobi_dim(A44, 64 * GSL_DBL_EPSILON);
+      gsl_test(f, "  SV_decomp_jacobi (4x4) A=[ %g, %g, %g, %g; %g, %g, %g, %g; %g, %g, %g, %g; %g, %g, %g, %g] %d",
+               a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9],
+               a[10], a[11], a[12], a[13], a[14], a[15], k);
+      /* increment */
+      carry=1.0;
+      for (i=16; i>0 && i--;) 
+        {
+          double v=a[i]+carry;
+          carry = (v>upper) ? 1.0 : 0.0;
+          a[i] = (v>upper) ? lower : v;
+        }
+    }
+  }
+#endif
+
+  {
+    int i;
+    unsigned long k = 0;
+    double carry = 0, lower = 0, upper = 1;
+    double *a = A55->data;
+
+    for (i=0; i<25; i++) {
+      a[i] = lower;
+    }
+    
+    while (carry == 0.0) {
+      k++;
+
+      if (k % 1001 == 0)
+        {
+          f = test_SV_decomp_jacobi_dim(A55, 64 * GSL_DBL_EPSILON);
+          gsl_test(f, "  SV_decomp_jacobi (5x5) case=%d",k);
+        }
+      
+      /* increment */
+      carry=1.0;
+      for (i=25; i>0 && i--;) 
+        {
+          double v=a[i]+carry;
+          carry = (v>upper) ? 1.0 : 0.0;
+          a[i] = (v>upper) ? lower : v;
+        }
+    }
+  }
+
+
+  return s;
+}
+
+
+int
 test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -3265,10 +3551,16 @@ int test_bidiag_decomp(void)
   return s;
 }
 
+void
+my_error_handler (const char *reason, const char *file, int line, int err)
+{
+  if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
+}
 
 int main(void)
 {
   gsl_ieee_env_setup ();
+  gsl_set_error_handler (&my_error_handler);
 
   m11 = create_general_matrix(1,1);
   m51 = create_general_matrix(5,1);
@@ -3301,6 +3593,7 @@ int main(void)
   A22 = create_2x2_matrix (0.0, 0.0, 0.0, 0.0);
   A33 = gsl_matrix_alloc(3,3);
   A44 = gsl_matrix_alloc(4,4);
+  A55 = gsl_matrix_alloc(5,5);
 
   inf5 = create_diagonal_matrix (inf5_data, 5);
   gsl_matrix_set(inf5, 3, 3, GSL_POSINF);
@@ -3336,6 +3629,7 @@ int main(void)
   gsl_test(test_QRPT_solve(),     "QRPT Solve");
   gsl_test(test_QRPT_QRsolve(),   "QRPT QR Solve");
   gsl_test(test_SV_decomp(),      "Singular Value Decomposition");
+  gsl_test(test_SV_decomp_jacobi(), "Singular Value Decomposition (Jacobi)");
   gsl_test(test_SV_decomp_mod(),  "Singular Value Decomposition (Mod)");
   gsl_test(test_SV_solve(),       "SVD Solve");
   gsl_test(test_cholesky_decomp(),"Cholesky Decomposition");

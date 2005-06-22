@@ -467,7 +467,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
       /* Initialize the rotation counter and the sweep counter. */
       int count = 1;
       int sweep = 0;
-      int sweepmax = N;
+      int sweepmax = 5*N;
 
       double tolerance = 10 * GSL_DBL_EPSILON;
 
@@ -477,6 +477,16 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
       /* Set Q to the identity matrix. */
       gsl_matrix_set_identity (Q);
 
+      /* Store the column error estimates in S, for use during the
+         orthogonalization */
+
+      for (j = 0; j < N; j++)
+        {
+          gsl_vector_view cj = gsl_matrix_column (A, j);
+          double sj = gsl_blas_dnrm2 (&cj.vector);
+          gsl_vector_set(S, j, GSL_DBL_EPSILON*sj);
+        }
+    
       /* Orthogonalize A by plane rotations. */
 
       while (count > 0 && sweep <= sweepmax)
@@ -492,63 +502,44 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                   double b = 0.0;
                   double p = 0.0;
                   double q = 0.0;
-                  double r = 0.0;
                   double cosine, sine;
                   double v;
+                  double abserr_a, abserr_b;
 
                   gsl_vector_view cj = gsl_matrix_column (A, j);
                   gsl_vector_view ck = gsl_matrix_column (A, k);
 
                   gsl_blas_ddot (&cj.vector, &ck.vector, &p);
+                  p *= 2.0 ;  /* equation 9a:  p = 2 x.y */
 
                   a = gsl_blas_dnrm2 (&cj.vector);
                   b = gsl_blas_dnrm2 (&ck.vector);
 
-                  q = a * a;
-                  r = b * b;
+                  q = a * a - b * b;
+                  v = hypot(p, q);
 
-                  /* NOTE: this could be handled better by scaling
-                   * the calculation of the inner products above.
-                   * But I'm too lazy. This will have to do. [GJ]
-                   */
+                  /* test for columns j,k orthogonal, or dominant errors */
 
-                  /* FIXME: This routine is a hack. We need to get the
-                     state of the art in Jacobi SVD's here ! */
+                  abserr_a = gsl_vector_get(S,j);
+                  abserr_b = gsl_vector_get(S,k);
 
-                  /* This is an adhoc method of testing for a "zero"
-                     singular value. We consider it to be zero if it
-                     is sufficiently small compared with the currently
-                     leading column. Note that b <= a is guaranteed by
-                     the sweeping algorithm. BJG */
-
-                  if (b <= tolerance * a)
+                  if (q >= 0 && (fabs (p) <= tolerance * (a+abserr_a) * (b+abserr_b) 
+                                 || a < (abserr_a + abserr_b) || b < (abserr_a + abserr_b)))
                     {
-                      /* probably |b| = 0 */
-                      count--;
-                      continue;
-                    }
-
-                  if (fabs (p) <= tolerance * a * b)
-                    {
-                      /* columns j,k orthogonal
-                       * note that p*p/(q*r) is automatically <= 1.0
-                       */
                       count--;
                       continue;
                     }
 
                   /* calculate rotation angles */
-                  if (q < r)
+                  if (v == 0 || q < 0)
                     {
                       cosine = 0.0;
                       sine = 1.0;
                     }
                   else
                     {
-                      q -= r;
-                      v = hypot (2.0 * p, q);
-                      cosine = sqrt ((v + q) / (2.0 * v));
-                      sine = p / (v * cosine);
+                      cosine = sqrt((v + q) / (2.0 * v));
+                      sine = p / (2.0 * v * cosine);
                     }
 
                   /* apply rotation to A */
@@ -559,6 +550,9 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                       gsl_matrix_set (A, i, j, Aij * cosine + Aik * sine);
                       gsl_matrix_set (A, i, k, -Aij * sine + Aik * cosine);
                     }
+
+                  gsl_vector_set(S, j, fabs(cosine) * abserr_a + fabs(sine) * abserr_b);
+                  gsl_vector_set(S, k, fabs(sine) * abserr_a + fabs(cosine) * abserr_b);
 
                   /* apply rotation to Q */
                   for (i = 0; i < N; i++)

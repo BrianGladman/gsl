@@ -1,5 +1,8 @@
 * What will be new in gsl-1.7:
 
+** Fixed bugs in gsl_linalg_SV_decomp_jacobi which caused
+incorrect results for some input matrices.
+
 ** Bessl, coulomb, dilogarithm and legendre_H3d functions now use
 hypot internally to avoid overflow when computing terms like
 sqrt(1+x*x).
