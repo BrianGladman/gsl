@@ -118,7 +118,6 @@ void test_ugaussian (void)
   TEST (gsl_cdf_ugaussian_P, (-5.0), 0.0000002866515718791939116737523329, TEST_TOL1);
   TEST (gsl_cdf_ugaussian_P, (-10.0), 7.619853024160526065973343257e-24, TEST_TOL3);
   TEST (gsl_cdf_ugaussian_P, (-30.0), 4.906713927148187059533809288e-198, TEST_TOL3);
-  TEST (gsl_cdf_ugaussian_P, (-40.0), 3.655893540915029703748985850e-350, TEST_TOL3);
   TEST (gsl_cdf_ugaussian_P, (-1e10), 0.0, 0.0);
 
   TEST (gsl_cdf_ugaussian_Q, (0.0), 0.5, TEST_TOL0);
@@ -130,7 +129,6 @@ void test_ugaussian (void)
   TEST (gsl_cdf_ugaussian_Q, (5.0), 0.0000002866515718791939116737523329, TEST_TOL3);
   TEST (gsl_cdf_ugaussian_Q, (10.0), 7.619853024160526065973343257e-24, TEST_TOL3);
   TEST (gsl_cdf_ugaussian_Q, (30.0), 4.906713927148187059533809288e-198, TEST_TOL3);
-  TEST (gsl_cdf_ugaussian_Q, (40.0), 3.655893540915029703748985850e-350, TEST_TOL3);
   TEST (gsl_cdf_ugaussian_Q, (1e10), 0.0, 0.0);
 
   TEST (gsl_cdf_ugaussian_Q, (-1e-32), 0.5, TEST_TOL0);
@@ -548,7 +546,6 @@ void test_fdist (void) {
   TEST (gsl_cdf_fdist_Q, (2.0, 200.0, 500.0), 4.71763848371410786e-10, TEST_TOL6);
   TEST (gsl_cdf_fdist_Q, (10.0, 200.0, 500.0), 5.98048337181948436e-96, TEST_TOL6);
   TEST (gsl_cdf_fdist_Q, (20.0, 200.0, 500.0), 2.92099265879979502e-155, TEST_TOL6);
-  TEST (gsl_cdf_fdist_Q, (100.0, 200.0, 500.0), 6.53118977244362760e-316, 0.0);
   TEST (gsl_cdf_fdist_Q, (1000.0, 200.0, 500.0), 0.0, 0.0);
   TEST (gsl_cdf_fdist_Q, (10000.0, 200.0, 500.0), 0.0, 0.0);
 }

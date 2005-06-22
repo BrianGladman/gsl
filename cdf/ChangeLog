@@ -1,3 +1,8 @@
+2005-06-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: removed tests using subnormal values, since they tend to
+	fail when extended precision registers are not available.	
+
 2004-10-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* exppow.c: added exppow distribution
