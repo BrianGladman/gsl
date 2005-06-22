@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gsl/gsl_sys.h>
+#include <gsl/gsl_machine.h>
 
 #if HAVE_VPRINTF
 #ifdef STDC_HEADERS
@@ -38,41 +39,68 @@ static unsigned int tests = 0;
 static unsigned int passed = 0;
 static unsigned int failed = 0;
 
-static unsigned int verbose = 1;
+static unsigned int verbose = 0;
 
-void
-gsl_test (int status, const char *test_description,...)
+static void
+initialise (void)
 {
+  const char * p = getenv("GSL_TEST_VERBOSE");
 
+  /* 0 = show failures only (we always want to see these) */
+  /* 1 = show passes and failures */
+
+  if (p == 0)  /* environment variable is not set */
+    return ;
+
+  if (*p == '\0') /* environment variable is empty */
+    return ;
+
+  verbose = strtoul (p, 0, 0);  
+
+  return;
+}
+
+void 
+update (int s)
+{
   tests++;
 
-  if (status == 0)
+  if (s == 0) 
     {
       passed++;
-      if (verbose)
-        printf ("PASS: ");
     }
   else
     {
       failed++;
-      if (verbose)
-        printf ("FAIL: ");
     }
+}
 
-  if (verbose)
+void
+gsl_test (int status, const char *test_description,...)
+{
+  if (!tests) initialise();
+
+  update (status);
+
+  if (status || verbose)
     {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
+
+      if (status && !verbose)
+        printf(" [%u]", tests);
 
       printf("\n");
       fflush (stdout);
@@ -86,6 +114,8 @@ gsl_test_rel (double result, double expected, double relative_error,
 {
   int status ;
 
+  if (!tests) initialise();
+
   /* Check for NaN vs inf vs number */
 
   if (gsl_isnan(result) || gsl_isnan(expected)) 
@@ -96,6 +126,11 @@ gsl_test_rel (double result, double expected, double relative_error,
     {
       status = gsl_isinf(result) != gsl_isinf(expected); 
     }
+  else if ((expected > 0 && expected < GSL_DBL_MIN)
+           || (expected < 0 && expected > -(GSL_DBL_MIN)))
+    {
+      status = -1;
+    }
   else if (expected != 0 ) 
     {
       status = (fabs(result-expected)/fabs(expected) > relative_error) ;
@@ -105,36 +140,25 @@ gsl_test_rel (double result, double expected, double relative_error,
       status = (fabs(result) > relative_error) ;
     }
 
-  tests++;
+  update (status);
 
-  if (status == 0)
+  if (status || verbose)
     {
-      passed++;
-      if (verbose)
-        printf ("PASS: ");
-    }
-  else
-    {
-      failed++;
-      if (verbose)
-        printf ("FAIL: ");
-      
-    }
-
-  if (verbose)
-    {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
+
       if (status == 0)
         {
           if (strlen(test_description) < 45)
@@ -150,6 +174,14 @@ gsl_test_rel (double result, double expected, double relative_error,
         {
           printf(" (%.18g observed vs %.18g expected)", result, expected) ;
         }
+
+      if (status == -1)
+        {
+          printf(" [test uses subnormal value]") ;
+        }
+
+      if (status && !verbose)
+        printf(" [%u]", tests);
 
       printf ("\n") ;
       fflush (stdout);
@@ -162,6 +194,8 @@ gsl_test_abs (double result, double expected, double absolute_error,
 {
   int status ;
 
+  if (!tests) initialise();
+
   /* Check for NaN vs inf vs number */
 
   if (gsl_isnan(result) || gsl_isnan(expected)) 
@@ -172,41 +206,36 @@ gsl_test_abs (double result, double expected, double absolute_error,
     {
       status = gsl_isinf(result) != gsl_isinf(expected); 
     }
+  else if ((expected > 0 && expected < GSL_DBL_MIN)
+           || (expected < 0 && expected > -(GSL_DBL_MIN)))
+    {
+      status = -1;
+    }
   else 
     {
       status = fabs(result-expected) > absolute_error ;
     }
 
-  tests++;
+  update (status);
 
-  if (status == 0)
+  if (status || verbose)
     {
-      passed++;
-      if (verbose)
-        printf ("PASS: ");
-    }
-  else
-    {
-      failed++;
-      if (verbose)
-        printf ("FAIL: ");
-      
-    }
-
-  if (verbose)
-    {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
+        
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
+
       if (status == 0)
         {
           if (strlen(test_description) < 45)
@@ -223,6 +252,14 @@ gsl_test_abs (double result, double expected, double absolute_error,
           printf(" (%.18g observed vs %.18g expected)", result, expected) ;
         }
 
+      if (status == -1)
+        {
+          printf(" [test uses subnormal value]") ;
+        }
+
+      if (status && !verbose)
+        printf(" [%u]", tests);
+
       printf ("\n") ;
       fflush (stdout);
     }
@@ -234,8 +271,15 @@ gsl_test_factor (double result, double expected, double factor,
                  const char *test_description,...)
 {
   int status;
+
+  if (!tests) initialise();
   
-  if (result == expected) 
+  if ((expected > 0 && expected < GSL_DBL_MIN)
+      || (expected < 0 && expected > -(GSL_DBL_MIN)))
+    {
+      status = -1;
+    }
+  else if (result == expected) 
     {
       status = 0;
     }
@@ -249,35 +293,24 @@ gsl_test_factor (double result, double expected, double factor,
       status = (u > factor || u < 1.0 / factor) ;
     }
 
-  tests++;
+  update (status);
 
-  if (status == 0)
+  if (status || verbose)
     {
-      passed++;
-      if (verbose)
-        printf ("PASS: ");
-    }
-  else
-    {
-      failed++;
-      if (verbose)
-        printf ("FAIL: ");
-      
-    }
-
-  if (verbose)
-    {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
+        
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
       if (status == 0)
         {
@@ -295,6 +328,14 @@ gsl_test_factor (double result, double expected, double factor,
           printf(" (%.18g observed vs %.18g expected)", result, expected) ;
         }
 
+      if (status == -1)
+        {
+          printf(" [test uses subnormal value]") ;
+        }
+
+      if (status && !verbose)
+        printf(" [%u]", tests);
+
       printf ("\n") ;
       fflush (stdout);
     }
@@ -305,34 +346,26 @@ gsl_test_int (int result, int expected, const char *test_description,...)
 {
   int status = (result != expected) ;
 
-  tests++;
+  if (!tests) initialise();
 
-  if (status == 0)
-    {
-      passed++;
-      if (verbose)
-        printf ("PASS: ");
-    }
-  else
-    {
-      failed++;
-      if (verbose)
-        printf ("FAIL: ");
-    }
+  update (status);
 
-  if (verbose)
+  if (status || verbose)
     {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
+        
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
       if (status == 0)
         {
@@ -342,6 +375,9 @@ gsl_test_int (int result, int expected, const char *test_description,...)
         {
           printf(" (%d observed vs %d expected)", result, expected) ;
         }
+
+      if (status && !verbose)
+        printf(" [%u]", tests);
 
       printf ("\n");
       fflush (stdout);
@@ -354,47 +390,39 @@ gsl_test_str (const char * result, const char * expected,
 {
   int status = strcmp(result,expected) ;
 
-  tests++;
+  if (!tests) initialise();
 
-  if (status == 0)
-    {
-      passed++;
-      if (verbose)
-        printf ("PASS: ");
-    }
-  else
-    {
-      failed++;
-      if (verbose)
-        printf ("FAIL: ");
-    }
+  update (status);
 
-  if (verbose)
+  if (status || verbose)
     {
+      printf (status ? "FAIL: " : "PASS: ");
 
 #if HAVE_VPRINTF
-      va_list ap;
-
+      {
+        va_list ap;
+        
 #ifdef STDC_HEADERS
-      va_start (ap, test_description);
+        va_start (ap, test_description);
 #else
-      va_start (ap);
+        va_start (ap);
 #endif
-      vprintf (test_description, ap);
-      va_end (ap);
+        vprintf (test_description, ap);
+        va_end (ap);
+      }
 #endif
       if (status)
         {
           printf(" (%s observed vs %s expected)", result, expected) ;
         }
 
+      if (status && !verbose)
+        printf(" [%u]", tests);
+
       printf ("\n");
       fflush (stdout);
     }
 }
-
-
-
 
 void
 gsl_test_verbose (int v)
@@ -405,17 +433,11 @@ gsl_test_verbose (int v)
 int
 gsl_test_summary (void)
 {
-
   if (verbose && 0)             /* FIXME: turned it off, this annoys me */
     printf ("%d tests, passed %d, failed %d.\n", tests, passed, failed);
 
   if (failed != 0)
     {
-
-      if (verbose && 0)         /* FIXME: turned it off, this annoys me */
-        {
-          printf ("%d TEST%s FAILED.\n", failed, failed == 1 ? "" : "S");
-        }
       return EXIT_FAILURE;
     }
 
@@ -429,8 +451,9 @@ gsl_test_summary (void)
 
   if (passed == tests)
     {
-      if (verbose && 0)         /* FIXME: turned it off, this annoys me */
-        printf ("All tests passed successfully\n");
+      if (!verbose)         /* display a summary of passed tests */
+        printf ("Completed [%d/%d]\n", passed, tests);
+
       return EXIT_SUCCESS;
     }
 

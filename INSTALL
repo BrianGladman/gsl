@@ -33,7 +33,9 @@ rather than a terminal, with the command,
 
    make check > log 2>&1
 
-since it is several megabytes in size.
+to allow the results to be examined in detail.  By default, only test
+failures are shown.  To see the complete output, set the environment
+variable GSL_TEST_VERBOSE=1.
 
 If you run "make check" and get some failures, please see the notes on
 platform specific problems below.  If you find failures that are not
@@ -43,7 +45,7 @@ The library can be installed using the command,
 
   make install
 
-The default install directory prefix is /usr/local.  Consult the
+The default installation directory prefix is /usr/local.  Consult the
 "Further Information" section below for instructions on installing the
 library in another location or changing other default compilation
 options.

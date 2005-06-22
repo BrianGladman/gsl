@@ -1,3 +1,8 @@
+2005-06-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* results.c: now displayed PASS lines only if GSL_TEST_VERBOSE=1,
+	otherwise only display fail lines by default.
+
 Thu Sep 12 22:56:31 2002  Brian Gough  <bjg@network-theory.co.uk>
 
 	* results.c (gsl_test_rel): catch NaN

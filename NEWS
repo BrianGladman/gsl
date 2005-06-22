@@ -1,5 +1,11 @@
 * What will be new in gsl-1.7:
 
+** The output of "make check" now only shows test failures by default,
+to reduce the amount of output.  Set the environment variable
+GSL_TEST_VERBOSE=1 to display all the output.  To assist debugging,
+the test number of each failure is shown in square brackets at the
+line-end [NNNN].
+
 ** Fixed bugs in gsl_linalg_SV_decomp_jacobi which caused
 incorrect results for some input matrices.
 
