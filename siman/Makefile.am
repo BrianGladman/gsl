@@ -19,4 +19,3 @@ libgslsiman_la_SOURCES = siman.c
 pkginclude_HEADERS = gsl_siman.h
 
 INCLUDES= -I$(top_builddir)
-check_INCLUDES = -I. -I../rng -I../err
