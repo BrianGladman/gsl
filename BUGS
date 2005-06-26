@@ -254,29 +254,6 @@ two-dimensional arrays where one of the dimensions is "1" are well
 defined and have clearly predicable, cross-platform behavior; etc...).
 
 ----------------------------------------------------------------------
-BUG#35 -- wavelet and fft conflict for defn of forward and backward
-
-From: James Bergstra <james.bergstra@umontreal.ca>
-Subject: [Bug-gsl] fft forward vs. wavelet forward
-Date: Fri, 15 Apr 2005 13:42:56 -0400
-
-Due to an unfortunate collision of the symbols 'forward' and 'backward',
-the files gsl_wavelet.h and gsl_fft.h cannot be included at once. 
-
-#include <gsl/gsl_fft.h>
-#include <gsl/gsl_wavelet.h>
-
-int
-main (void)
-{
-  return 0;
-}
-
-BJG: These headers have been modified to deprecate the existing
-definition and use gsl_ftt_forward, ... gsl_wavelet_forward, ...
-instead.
-
-----------------------------------------------------------------------
 BUG#37 -- improve handling of zero singular values in multifit linear
 
 [The handling of zero singular values could be improved by taking a
