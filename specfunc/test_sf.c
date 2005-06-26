@@ -37,7 +37,9 @@ test_sf_frac_diff(double x1, double x2)
   if(x1 == 0.0 && x2 == 0.0) {
     return 0.0;
   }
-  else if(x1 <= DBL_MAX && x2 <= DBL_MAX && (x1 + x2 != 0.0)) {
+  else if (x1 == 0.0) {
+    return fabs(x2);
+  } else if(x1 <= DBL_MAX && x2 <= DBL_MAX && (x1 + x2 != 0.0)) {
     return fabs((x1-x2)/(x1+x2));
   }
   else {
@@ -1032,9 +1034,9 @@ int test_jac(void)
   m = 0.5;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 0.4707504736556572833 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( cn, 0.8822663948904402865 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( dn, 0.9429724257773856873 ) > TEST_TOL0 );
+  sa += test_sf_val(sn, 0.4707504736556572833, TEST_TOL0, "gsl_sf_elljac_e(0.5|0.5) sn");
+  sa += test_sf_val(cn, 0.8822663948904402865, TEST_TOL0, "gsl_sf_elljac_e(0.5|0.5) cn");
+  sa += test_sf_val(dn, 0.9429724257773856873, TEST_TOL0, "gsl_sf_elljac_e(0.5|0.5) dn");
   gsl_test(s, "  gsl_sf_elljac_e(0.5|0.5)");
   s += sa;
 
@@ -1042,9 +1044,9 @@ int test_jac(void)
   m = 0.3;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 0.8187707145344889190 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( cn, 0.5741206467465548795 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( dn, 0.8938033089590823040 ) > TEST_TOL0 );
+  sa += test_sf_val(sn, 0.8187707145344889190, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.3) sn");
+  sa += test_sf_val(cn, 0.5741206467465548795, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.3) cn");
+  sa += test_sf_val(dn, 0.8938033089590823040, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.3) dn");
   gsl_test(sa, "  gsl_sf_elljac_e(1.0|0.3)");
   s += sa;
 
@@ -1052,9 +1054,9 @@ int test_jac(void)
   m = 0.6;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 0.7949388393365780943 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( cn, 0.6066895760718277578 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( dn, 0.7879361300438814425 ) > TEST_TOL0 );
+  sa += test_sf_val(sn, 0.7949388393365780943, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.6) sn");
+  sa += test_sf_val(cn, 0.6066895760718277578, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.6) cn");
+  sa += test_sf_val(dn, 0.7879361300438814425, TEST_TOL0, "gsl_sf_elljac_e(1.0|0.6) dn");
   gsl_test(sa, "  gsl_sf_elljac_e(1.0|0.6)");
   s += sa;
 
@@ -1062,9 +1064,9 @@ int test_jac(void)
   m = 0.6;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn,  0.7432676860864044186 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( cn, -0.6689941306317733154 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff( dn,  0.8176379933025723259 ) > TEST_TOL0 );
+  sa += test_sf_val(sn,  0.7432676860864044186, TEST_TOL0, " gsl_sf_elljac_e(3.0|0.6) sn");
+  sa += test_sf_val(cn, -0.6689941306317733154, TEST_TOL0, " gsl_sf_elljac_e(3.0|0.6) cn");
+  sa += test_sf_val(dn,  0.8176379933025723259, TEST_TOL0, " gsl_sf_elljac_e(3.0|0.6) dn");
   gsl_test(sa, "  gsl_sf_elljac_e(3.0|0.6)");
   s += sa;
 
@@ -1072,9 +1074,9 @@ int test_jac(void)
   m = 0.999999;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 0.96402778575700186570 ) > TEST_TOL1 );
-  sa += ( test_sf_frac_diff( cn, 0.26580148285600686381 ) > TEST_TOL1 );
-  sa += ( test_sf_frac_diff( dn, 0.26580323105264131136 ) > TEST_TOL1 );
+  sa += test_sf_val(sn, 0.96402778575700186570, TEST_TOL1, "gsl_sf_elljac_e(2.0|0.999999) sn");
+  sa += test_sf_val(cn, 0.26580148285600686381, TEST_TOL1, "gsl_sf_elljac_e(2.0|0.999999) cn");
+  sa += test_sf_val(dn, 0.26580323105264131136, TEST_TOL1, "gsl_sf_elljac_e(2.0|0.999999) dn");
   gsl_test(sa, "  gsl_sf_elljac_e(2.0|0.999999)");
   s += sa;
 
@@ -1083,11 +1085,272 @@ int test_jac(void)
   m = 0.270378013104138;
   sa = 0;
   stat_ej = gsl_sf_elljac_e(u, m, &sn, &cn, &dn);
-  sa += ( test_sf_frac_diff( sn, 1.0 ) > TEST_TOL0 );
-  sa += ( fabs(cn) > TEST_TOL1 );
-  sa += ( test_sf_frac_diff( dn, 0.8541791304497336 ) > TEST_TOL1 );
+  sa += test_sf_val(sn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(1.69..|0.27..) sn");
+  sa += test_sf_val(cn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(1.69..|0.27..) cn");
+  sa += test_sf_val(dn, 0.8541791304497336, TEST_TOL1, "gsl_sf_elljac_e(1.69..|0.27..) dn");
   gsl_test(sa, "  gsl_sf_elljac_e(1.69695970624443|0.270378013104138)");
   s += sa;
+
+
+
+  /* Check known values from Abramowitz & Stegun, Table 16.5 */
+  u = 0;
+  m = 0.1;
+
+  {
+    double mc = 1 - m;
+    /* quarter period K is (pi/2)/agm(1,mc) */
+    double K = (M_PI_2)/ 0.9741726903999478375938128316;
+
+    double A = 1.0 / sqrt(1+sqrt(mc));
+    double B = pow(mc, 0.25) / sqrt(1+sqrt(mc));
+    double C = pow(mc, 0.25);
+    double C2 = sqrt(mc);
+
+    double eps = 1e-10;
+    
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(0.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 0.0, TEST_TOL0, "gsl_sf_elljac_e(0|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(0|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(0|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(0|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -eps, TEST_TOL0, "gsl_sf_elljac_e(-1e-10|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(-1e-10|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-1e-10|0.1)");
+    s += sa;
+    
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, eps, TEST_TOL0, "gsl_sf_elljac_e(1e-10|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(1e-10|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(1e-30, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 1e-30, TEST_TOL0, "gsl_sf_elljac_e(1e-30|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(1e-30|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL0, "gsl_sf_elljac_e(1e-30|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(1e-30|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K / 2.0 - eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A - eps*B*C, TEST_TOL2, "gsl_sf_elljac_e(K/2-1e-10|0.1) sn");
+    sa += test_sf_val(cn, B + eps*A*C, TEST_TOL2, "gsl_sf_elljac_e(K/2-1e-10|0.1) cn");
+    sa += test_sf_val(dn, C + m*eps*A*B, TEST_TOL2, "gsl_sf_elljac_e(K/2-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K/2-1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A, TEST_TOL2, "gsl_sf_elljac_e(K/2|0.1) sn");
+    sa += test_sf_val(cn, B, TEST_TOL2, "gsl_sf_elljac_e(K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K / 2.0 + eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A + eps*B*C, TEST_TOL2, "gsl_sf_elljac_e(K/2+1e-10|0.1) sn");
+    sa += test_sf_val(cn, B - eps*A*C, TEST_TOL2, "gsl_sf_elljac_e(K/2+1e-10|0.1) cn");
+    sa += test_sf_val(dn, C - m*eps*A*B, TEST_TOL2, "gsl_sf_elljac_e(K/2+1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K/2+1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K - eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(K-1e-10|0.1) sn");
+    sa += test_sf_val(cn, eps*C2, TEST_SNGL, "gsl_sf_elljac_e(K-1e-10|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(K-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K-1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(K|0.1) sn");
+    sa += test_sf_val(cn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(K|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(K + eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(K+1e-10|0.1) sn");
+    sa += test_sf_val(cn, -eps*C2, TEST_SNGL, "gsl_sf_elljac_e(K+1e-10|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(K+1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(K+1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(3.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A, TEST_TOL2, "gsl_sf_elljac_e(3K/2|0.1) sn");
+    sa += test_sf_val(cn, -B, TEST_TOL2, "gsl_sf_elljac_e(3K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(3K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(3K/2|0.1)");
+    s += sa;
+
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(2.0*K - eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, eps, TEST_SNGL, "gsl_sf_elljac_e(2K-1e-10|0.1) sn");
+    sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(2K-1e-10|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(2K-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(2K-1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(2.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(2K|0.1) sn");
+    sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(2K|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(2K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(2K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(2.0*K + eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -eps, TEST_SNGL, "gsl_sf_elljac_e(2K+1e-10|0.1) sn");
+    sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(2K+1e-10|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(2K+1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(2K+1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(5.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -A, TEST_TOL2, "gsl_sf_elljac_e(5K/2|0.1) sn");
+    sa += test_sf_val(cn, -B, TEST_TOL2, "gsl_sf_elljac_e(5K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(5K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(5K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(3.0*K - eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(3K-1e-10|0.1) sn");
+    sa += test_sf_val(cn, -C2 * eps, TEST_SNGL, "gsl_sf_elljac_e(3K-1e-10|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(3K-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(3K-1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(3.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(3K|0.1) sn");
+    sa += test_sf_val(cn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(3K|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(3K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(3K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(3.0*K + eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(3K+1e-10|0.1) sn");
+    sa += test_sf_val(cn, +C2 * eps, TEST_SNGL, "gsl_sf_elljac_e(3K+1e-10|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(3K+1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(3K+1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(7.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -A, TEST_TOL2, "gsl_sf_elljac_e(7K/2|0.1) sn");
+    sa += test_sf_val(cn, B, TEST_TOL2, "gsl_sf_elljac_e(7K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(7K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(7K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(4.0*K - eps, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -eps, TEST_SNGL, "gsl_sf_elljac_e(4K-1e-10|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K-1e-10|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K-1e-10|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(4K-1e-10|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(4.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(4K|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(4K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(9.0 * K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A, TEST_TOL2, "gsl_sf_elljac_e(9K/2|0.1) sn");
+    sa += test_sf_val(cn, B, TEST_TOL2, "gsl_sf_elljac_e(9K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(9K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(9K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -A, TEST_TOL2, "gsl_sf_elljac_e(-K/2|0.1) sn");
+    sa += test_sf_val(cn, B, TEST_TOL2, "gsl_sf_elljac_e(-K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(-K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-K/2|0.1)");
+    s += sa;
+    
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(-K|0.1) sn");
+    sa += test_sf_val(cn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(-K|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(-K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-3.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, -A, TEST_TOL2, "gsl_sf_elljac_e(-3K/2|0.1) sn");
+    sa += test_sf_val(cn, -B, TEST_TOL2, "gsl_sf_elljac_e(-3K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(-3K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-3K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-2.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(-2K|0.1) sn");
+    sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(-2K|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(-2K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-2K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-5.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A, TEST_TOL2, "gsl_sf_elljac_e(-5K/2|0.1) sn");
+    sa += test_sf_val(cn, -B, TEST_TOL2, "gsl_sf_elljac_e(-5K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(-5K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-5K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-3.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(-3K|0.1) sn");
+    sa += test_sf_val(cn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(-3K|0.1) cn");
+    sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(-3K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-3K|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-7.0*K / 2.0, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, A, TEST_TOL2, "gsl_sf_elljac_e(-7K/2|0.1) sn");
+    sa += test_sf_val(cn, B, TEST_TOL2, "gsl_sf_elljac_e(-7K/2|0.1) cn");
+    sa += test_sf_val(dn, C, TEST_TOL2, "gsl_sf_elljac_e(-7K/2|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-7K/2|0.1)");
+    s += sa;
+
+    sa = 0;
+    stat_ej = gsl_sf_elljac_e(-4.0*K, m, &sn, &cn, &dn);
+    sa += test_sf_val(sn, 0.0, TEST_TOL1, "gsl_sf_elljac_e(-4K|0.1) sn");
+    sa += test_sf_val(cn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(-4K|0.1) cn");
+    sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(-4K|0.1) dn");
+    gsl_test(sa, "  gsl_sf_elljac_e(-4K|0.1)");
+    s += sa;
+  }
+    
 
   return s;
 }
