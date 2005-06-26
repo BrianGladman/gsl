@@ -85,16 +85,6 @@ FD_9(500) = 2.692738498426942915e+20 +- 2.629627439870118259e+47
 Exact     = 2.692738498...e+20
 
 ----------------------------------------------------------------------
-BUG#14 -- qagil
-
-The extrapolation used in qags gives negative results when integrating
-the small tails of probability distributions using qagil, even though
-each individual term in the sequence is positive and increasing (!).
-This is a feature of the original quadpack and appears to be due to
-the extrapolation algorithm, which should probably be tweaked to avoid
-this undesirable behavior.
-
-----------------------------------------------------------------------
 BUG#18 -- R250 discrepancy, and initialisation in R250 / GSFR4
 
 This bug report is correct. The original paper has the same discrepancy.
