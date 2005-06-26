@@ -42,12 +42,16 @@ These functions evaluate the Legendre polynomial @c{$P_l(x)$}
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_Pl_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
-This function computes an array of Legendre polynomials
-@math{P_l(x)} for @math{l = 0, \dots, lmax}, 
+@deftypefunx int gsl_sf_legendre_Pl_deriv_array (int @var{lmax}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+
+These functions compute an array of Legendre polynomials
+@math{P_l(x)}, and optionally their derivatives @math{dP_l(x)/dx}, 
+for @math{l = 0, \dots, lmax}, 
 @c{$|x| \le 1$}
 @math{|x| <= 1}
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
+
 
 @deftypefun double gsl_sf_legendre_Q0 (double @var{x})
 @deftypefunx int gsl_sf_legendre_Q0_e (double @var{x}, gsl_sf_result * @var{result})
@@ -102,13 +106,16 @@ These routines compute the associated Legendre polynomial
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_Plm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
-This function computes an array of Legendre polynomials
-@math{P_l^m(x)} for @c{$m \ge 0$}
+@deftypefunx int gsl_sf_legendre_Plm_deriv_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+These functions compute an array of Legendre polynomials
+@math{P_l^m(x)}, and optionally their derivatives @math{dP_l^m(x)/dx},
+for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
 @math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
 @math{|x| <= 1}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
+
 
 @deftypefun double gsl_sf_legendre_sphPlm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_sphPlm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
@@ -124,9 +131,11 @@ that occur for the standard normalization of @math{P_l^m(x)}.
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_sphPlm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
-This function computes an array of normalized associated Legendre functions
+@deftypefunx int gsl_sf_legendre_sphPlm_deriv_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+These functions compute an array of normalized associated Legendre functions
 @c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
-@math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$}
+@math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$},
+and optionally their derivatives,
 for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
 @math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
