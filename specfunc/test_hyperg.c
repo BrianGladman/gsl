@@ -253,6 +253,13 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-2.05, 1.0, 5.05, &r), 3.79393389516785e+00, TEST_TOL3, GSL_SUCCESS);
 
+
+  /* Bug report from Ivan Liu */
+
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-26, 2.0, 100.0, &r), 1.444786781107436954e+19, TEST_TOL3, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-26.1, 2.0, 100.0, &r), 1.341557199575986995e+19, TEST_TOL3, GSL_SUCCESS);
+
   /* U for integer parameters */
 
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (1, 1, 0.0001, &r),  8.634088070212725330, TEST_TOL0, GSL_SUCCESS);
