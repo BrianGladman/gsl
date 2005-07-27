@@ -30,6 +30,19 @@ gsl_poly_solve_quadratic (double a, double b, double c,
 {
   double disc = b * b - 4 * a * c;
 
+  if (a == 0) /* Handle linear case */
+    {
+      if (b == 0)
+        {
+          return 0;
+        }
+      else
+        {
+          *x0 = -c / b;
+          return 1;
+        };
+    }
+
   if (disc > 0)
     {
       if (b == 0)

@@ -1,3 +1,13 @@
+2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added tests for linear case
+
+	* zsolve_quadratic.c (gsl_poly_complex_solve_quadratic): handle
+	the linear case
+
+	* solve_quadratic.c (gsl_poly_solve_quadratic): handle the linear
+	case
+
 2005-05-19  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (noinst_HEADERS): removed norm.c (unused)

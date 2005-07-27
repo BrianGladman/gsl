@@ -30,6 +30,20 @@ gsl_poly_complex_solve_quadratic (double a, double b, double c,
 {
   double disc = b * b - 4 * a * c;
 
+  if (a == 0) /* Handle linear case */
+    {
+      if (b == 0)
+        {
+          return 0;
+        }
+      else
+        {
+          GSL_REAL(*z0) = -c / b;
+          GSL_IMAG(*z0) = 0;
+          return 1;
+        };
+    }
+
   if (disc > 0)
     {
       if (b == 0)

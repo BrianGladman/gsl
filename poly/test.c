@@ -102,6 +102,27 @@ main (void)
     gsl_test_rel (x1, 2.0, 1e-9, "x1, 5 x^2 = 20");
   }
 
+
+  {
+    double x0, x1;
+
+    int n = gsl_poly_solve_quadratic (0.0, 3.0, -21.0, &x0, &x1);
+
+    gsl_test (n != 1,
+              "gsl_poly_solve_quadratic, one root (linear) 3 x - 21 = 0");
+    gsl_test_rel (x0, 7.0, 1e-9, "x0, 3x - 21 = 0");
+  }
+
+
+  {
+    double x0, x1;
+    int n = gsl_poly_solve_quadratic (0.0, 0.0, 1.0, &x0, &x1);
+
+    gsl_test (n != 0,
+              "gsl_poly_solve_quadratic, no roots 1 = 0");
+  }
+
+
   /* Cubic */
 
   {
@@ -256,6 +277,30 @@ main (void)
     gsl_test_rel (GSL_REAL (z1), 0.0, 1e-9, "z1.real, 5 x^2 = -20");
     gsl_test_rel (GSL_IMAG (z1), 2.0, 1e-9, "z1.imag, 5 x^2 = -20");
   }
+
+
+  {
+    gsl_complex z0, z1;
+
+    int n = gsl_poly_complex_solve_quadratic (0.0, 3.0, -21.0, &z0, &z1);
+
+    gsl_test (n != 1,
+              "gsl_poly_complex_solve_quadratic, one root (linear) 3 x - 21 = 0");
+
+    gsl_test_rel (GSL_REAL (z0), 7.0, 1e-9, "z0.real, 3x - 21 = 0");
+    gsl_test_rel (GSL_IMAG (z0), 0.0, 1e-9, "z0.imag, 3x - 21 = 0");
+  }
+
+
+  {
+    gsl_complex z0, z1;
+
+    int n = gsl_poly_complex_solve_quadratic (0.0, 0.0, 1.0, &z0, &z1);
+    gsl_test (n != 0,
+              "gsl_poly_complex_solve_quadratic, no roots 1 = 0");
+  }
+
+
 
   /* Cubic with complex roots */
 

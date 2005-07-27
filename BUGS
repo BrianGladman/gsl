@@ -95,13 +95,6 @@ these cases (even though the computed value is reasonable).
   gsl_sf_legendre_sphPlm_e(140,135,0.99998689456491752,&y);
 
 ----------------------------------------------------------------------
-BUG#27 - handling of zero leading coefficients in poly/*solve routines
-
-The poly/solve_ and poly/zsolve_ routines should handle the case of
-leading coefficients being zero more gracefully.  Currently the
-leading coefficient is assumed to be non-zero.
-
-----------------------------------------------------------------------
 BUG#30 - incorrect result from gsl_sf_elljac_e
 
 The function gsl_sf_elljac_e returns an incorrect result in the first
