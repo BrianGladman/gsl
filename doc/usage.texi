@@ -401,8 +401,12 @@ header file, or any other specific type, use its individual filename.
 @section Compatibility with C++
 @cindex C++, compatibility
 The library header files automatically define functions to have
-@code{extern "C"} linkage when included in C++ programs.
+@code{extern "C"} linkage when included in C++ programs.  This allows
+the functions to be called directly from C++.
 
+To use C++ exception handling within user-defined functions passed to
+the library as parameters, the library must be built with the
+additional @code{CFLAGS} compilation option @option{-fexceptions}.
 
 @node Aliasing of arrays
 @section Aliasing of arrays
