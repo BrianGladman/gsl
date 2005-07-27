@@ -48,41 +48,6 @@ int main (void)
 }
 
 The correct value is -2.
-
-----------------------------------------------------------------------
-BUG#10 -- gsl_sf_fermi_dirac_int error estimates 
-
-Some of the error estimates on gsl_sf_fermi_dirac_int are much too
-large.  The value itself is pretty accurate.
-
-In the test_sf_result you need to work in something like
-
-  if(r.err > 1.0e5 * (fabs(r.val - val) + GSL_DBL_EPSILON * fabs(val)))
-        s |= TEST_SF_INCONS;   /* error estimate too large */
-
-in addition to the existing
-
-   if(fabs(val - r.val) > 2.0*r.err) s |= TEST_SF_INCONS;
-
-to catch those.  
-
-#include<stdio.h>
-#include<gsl/gsl_errno.h>
-#include<gsl/gsl_sf.h>
-
-int main() {
-  gsl_sf_result r;
-  int status;
-
-  status = gsl_sf_fermi_dirac_int_e (9, 500.0, &r);
-  printf("FD_9(500) = %.18e +- %.18e\n", r.val, r.err);
-}
-
-result,
-
-FD_9(500) = 2.692738498426942915e+20 +- 2.629627439870118259e+47
-
-Exact     = 2.692738498...e+20
 ----------------------------------------------------------------------
 BUG#20 -- underflow in gsl_sf_legendre_sphPlm functions
 

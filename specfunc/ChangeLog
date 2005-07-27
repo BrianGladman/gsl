@@ -1,14 +1,9 @@
-2005-07-02  Brian Gough  <bjg@network-theory.co.uk>
-
-	* transport.c (gsl_sf_transport_2_e): improve error estimate for
-	small x
-
 2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): compute exponential
 	internally to avoid underflow error when calling gsl_sf_exp_err
 
-2005-06-26  Brian Gough  <bjg@network-theory.co.uk>
+2005-07-02  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel_i.c (gsl_sf_bessel_il_scaled_array): handle x==0 as a
 	special case
@@ -18,6 +13,11 @@
 
 	* bessel_y.c (gsl_sf_bessel_yl_array): added lmax==0 as a special
 	case
+
+	* transport.c (gsl_sf_transport_2_e): improve error estimate for
+	small x
+
+2005-06-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_sf.c (test_jac): added tests over the full period for
 	elljac functions
