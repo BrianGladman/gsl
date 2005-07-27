@@ -484,7 +484,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
         {
           gsl_vector_view cj = gsl_matrix_column (A, j);
           double sj = gsl_blas_dnrm2 (&cj.vector);
-          gsl_vector_set(S, j, GSL_DBL_EPSILON*sj);
+          gsl_vector_set(S, j, GSL_DBL_EPSILON * sj);
         }
     
       /* Orthogonalize A by plane rotations. */
@@ -523,15 +523,15 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                   abserr_a = gsl_vector_get(S,j);
                   abserr_b = gsl_vector_get(S,k);
 
-                  if (q >= 0 && (fabs (p) <= tolerance * (a+abserr_a) * (b+abserr_b) 
-                                 || a < (abserr_a + abserr_b) || b < (abserr_a + abserr_b)))
+                  if (a >= b && (fabs (p) <= tolerance * (a+abserr_a) * (b+abserr_b) 
+                                 || a < abserr_a || b < abserr_b))
                     {
                       count--;
                       continue;
                     }
 
                   /* calculate rotation angles */
-                  if (v == 0 || q < 0)
+                  if (v == 0 || a < b)
                     {
                       cosine = 0.0;
                       sine = 1.0;
