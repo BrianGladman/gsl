@@ -421,6 +421,15 @@ int test_bessel(void)
   s += sa;
 
   sa = 0;
+  gsl_sf_bessel_il_scaled_array(50, 0.0, I);
+  sa += ( test_sf_frac_diff(I[0],  1.0 ) > TEST_TOL2 );
+  sa += ( test_sf_frac_diff(I[1],  0.0 ) > TEST_TOL2 );
+  sa += ( test_sf_frac_diff(I[10], 0.0 ) > TEST_TOL2 );
+  sa += ( test_sf_frac_diff(I[50], 0.0 ) > TEST_TOL2 );
+  gsl_test(sa, "  gsl_sf_bessel_il_scaled_array (L=0)");
+  s += sa;
+
+  sa = 0;
   gsl_sf_bessel_kl_scaled_array(50, 1.0, K);
   sa += ( test_sf_frac_diff(K[0],  1.5707963267948966192     ) > TEST_TOL0 );
   sa += ( test_sf_frac_diff(K[1],  3.1415926535897932385     ) > TEST_TOL0 );

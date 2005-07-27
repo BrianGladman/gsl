@@ -275,22 +275,31 @@ int gsl_sf_bessel_il_scaled_e(const int l, double x, gsl_sf_result * result)
 
 int gsl_sf_bessel_il_scaled_array(const int lmax, const double x, double * result_array)
 {
-  int ell;
-  gsl_sf_result r_iellp1;
-  gsl_sf_result r_iell;
-  int stat_0 = gsl_sf_bessel_il_scaled_e(lmax+1, x, &r_iellp1);
-  int stat_1 = gsl_sf_bessel_il_scaled_e(lmax,   x, &r_iell);
-  double iellp1 = r_iellp1.val;
-  double iell   = r_iell.val;
-  double iellm1;
-  result_array[lmax] = iell;
-  for(ell = lmax; ell >= 1; ell--) {
-    iellm1 = iellp1 + (2*ell + 1)/x * iell;
-    iellp1 = iell;
-    iell   = iellm1;
-    result_array[ell-1] = iellm1;
+  if(x == 0.0) {
+    int ell;
+    result_array[0] = 1.0;
+    for (ell = lmax; ell >= 1; ell--) {
+      result_array[ell] = 0.0;
+    };
+    return GSL_SUCCESS;
+  } else {
+    int ell;
+    gsl_sf_result r_iellp1;
+    gsl_sf_result r_iell;
+    int stat_0 = gsl_sf_bessel_il_scaled_e(lmax+1, x, &r_iellp1);
+    int stat_1 = gsl_sf_bessel_il_scaled_e(lmax,   x, &r_iell);
+    double iellp1 = r_iellp1.val;
+    double iell   = r_iell.val;
+    double iellm1;
+    result_array[lmax] = iell;
+    for(ell = lmax; ell >= 1; ell--) {
+      iellm1 = iellp1 + (2*ell + 1)/x * iell;
+      iellp1 = iell;
+      iell   = iellm1;
+      result_array[ell-1] = iellm1;
+    }
+    return GSL_ERROR_SELECT_2(stat_0, stat_1);
   }
-  return GSL_ERROR_SELECT_2(stat_0, stat_1);
 }
 
 
