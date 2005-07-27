@@ -1,5 +1,12 @@
 * What will be new in gsl-1.7:
 
+** The multilinear fitting functions now have forms which accept a
+user-specified tolerance for the SVD cutoff and return the
+corresponding effective rank of the design matrix.
+
+** The quadratic solvers in poly/ now handle linear equations
+gracefully (i.e. quadratrics with a leading coefficient of zero).
+
 ** The output of "make check" now only shows test failures by default,
 to reduce the amount of output.  Set the environment variable
 GSL_TEST_VERBOSE=1 to display all the output.  To assist debugging,
@@ -19,7 +26,9 @@ handle deprecated functions using the GSL_DISABLE_DEPRECATED macro.
 ** The conflicting enum definitions for 'forward' and 'backward' in
 gsl_ftt.h and gsl_wavelet.h are deprecated.  User code should switch
 to the new definitions gsl_fft_forward, gsl_fft_backward,
-gsl_wavelet_forward and gsl_wavelet_backward.
+gsl_wavelet_forward and gsl_wavelet_backward. Selectively define
+GSL_DISABLE_DEPRECATED before including the headers to use the new
+definitions on either or both modules.
 
 ** Fixed an error in the the brent minimisation algorithm.  Iterations
 should now follow Brent's original description correctly.

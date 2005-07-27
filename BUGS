@@ -127,4 +127,30 @@ int main (void)
   return 0;
 }
 ----------------------------------------------------------------------
-Last assigned bug number = 39
+BUG#39 - problem with gsl_sf_gamma_inc_Q
+
+there is a problem with gsl_sf_gamma_inc_Q returning negative values
+for large a,x, appears to be floating-point issue since it works on non-x86.
+
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_cdf.h>
+#include <stdio.h>
+
+int
+main(int argc, char * argv[])
+{
+    double a, b, x, r, p, q;
+    a=5670; b=0.00240449;
+    x=11;
+    printf("a=%g,b=%g\n", a, b);
+    p = gsl_cdf_gamma_P(x, a, b);
+    q = gsl_cdf_gamma_Q(x, a, b);
+    printf("%lg: P = %lg, Q = %lg\n", x, p, q);
+}
+
+hp$ ./a.out 
+a=5670,b=0.00240449
+11: P = 3.69123e-55, Q = -3.69123e-55
+
+----------------------------------------------------------------------
+Last assigned bug number = 40

@@ -140,7 +140,7 @@ configure, make, make check.  Try running make check under ulimit -v
 65536 to be sure that excessive memory is not required to do the
 compilation.
 
-* Test with bounds checking version of GCC
+* Test with bounds checking version of GCC and valgrind (belt and braces)
 
 * Make html docs using texi2html in cvs, 
 

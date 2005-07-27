@@ -154,4 +154,6 @@ would think about using that as a base, as the full set of operators
 are already included with the correct precedence rules. Being able to
 evaluate C and Fortran expressions could be useful.
 
-
+* We should have an index mapping type object which handles elements
+of size_t for vectors and matrices, or at least vectors and matrices
+of size_t in addition to long, int, etc.
