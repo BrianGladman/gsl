@@ -75,7 +75,7 @@ FUNCTION (test, func) (size_t stride, size_t N)
   if (stride == 1)
     {
       v0 = FUNCTION (gsl_vector, alloc) (N);
-      view = FUNCTION (gsl_vector, subvector) (v, 0, N);
+      view = FUNCTION (gsl_vector, subvector) (v0, 0, N);
       v = &view.vector;
     }
   else
