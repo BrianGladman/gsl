@@ -528,17 +528,20 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
     const double sgn = ( GSL_IS_ODD(m) ? -1.0 : 1.0);
     const double y_mmp1_factor = x * sqrt(2.0*m + 3.0);
     double y_mm, y_mm_err;
-    double y_mmp1;
+    double y_mmp1, y_mmp1_err;
     gsl_sf_log_1plusx_e(-x*x, &lncirc);
     gsl_sf_lnpoch_e(m, 0.5, &lnpoch);  /* Gamma(m+1/2)/Gamma(m) */
     lnpre_val = -0.25*M_LNPI + 0.5 * (lnpoch.val + m*lncirc.val);
     lnpre_err = 0.25*M_LNPI*GSL_DBL_EPSILON + 0.5 * (lnpoch.err + fabs(m)*lncirc.err);
-    gsl_sf_exp_err_e(lnpre_val, lnpre_err, &ex_pre);
+    /* Compute exp(ln_pre) with error term, avoiding call to gsl_sf_exp_err BJG */
+    ex_pre.val = exp(lnpre_val);
+    ex_pre.err = 2.0*(sinh(lnpre_err) + GSL_DBL_EPSILON)*ex_pre.val;
     sr     = sqrt((2.0+1.0/m)/(4.0*M_PI));
     y_mm   = sgn * sr * ex_pre.val;
-    y_mmp1 = y_mmp1_factor * y_mm;
     y_mm_err  = 2.0 * GSL_DBL_EPSILON * fabs(y_mm) + sr * ex_pre.err;
     y_mm_err *= 1.0 + 1.0/(GSL_DBL_EPSILON + fabs(1.0-x));
+    y_mmp1 = y_mmp1_factor * y_mm;
+    y_mmp1_err=fabs(y_mmp1_factor) * y_mm_err;
 
     if(l == m){
       result->val  = y_mm;
@@ -548,7 +551,7 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
     }
     else if(l == m + 1) {
       result->val  = y_mmp1;
-      result->err  = fabs(y_mmp1_factor) * y_mm_err;
+      result->err  = y_mmp1_err;
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(y_mmp1);
       return GSL_SUCCESS;
     }

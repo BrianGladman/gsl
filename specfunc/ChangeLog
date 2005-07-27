@@ -1,3 +1,8 @@
+2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): compute exponential
+	internally to avoid underflow error when calling gsl_sf_exp_err
+
 2005-06-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel_i.c (gsl_sf_bessel_il_scaled_array): handle x==0 as a
