@@ -902,7 +902,7 @@ CERNLIB high-energy physics library.
 @cindex shift-register random number generator
 @cindex R250 shift-register random number generator
 This is the shift-register generator of Kirkpatrick and Stoll.  The
-sequence is
+sequence is based on the recurrence
 @tex
 \beforedisplay
 $$ 

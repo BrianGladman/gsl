@@ -27,6 +27,10 @@
 
    defined on 32-bit words.
 
+   BJG: Note that this implementation actually uses the sequence, x_n
+   = x_{n-147} ^ x_{n-250} which generates the outputs in
+   time-reversed order but is otherwise completely equivalent.
+
    The first 250 elements x_1 .. x_250 are first initialized as x_n =
    s_n, where s_n = (69069*s_{n-1}) mod 2^32 and s_0=s is the
    user-supplied seed. To ensure that the sequence does not lie on a

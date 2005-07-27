@@ -83,39 +83,6 @@ result,
 FD_9(500) = 2.692738498426942915e+20 +- 2.629627439870118259e+47
 
 Exact     = 2.692738498...e+20
-
-----------------------------------------------------------------------
-BUG#18 -- R250 discrepancy, and initialisation in R250 / GSFR4
-
-This bug report is correct. The original paper has the same discrepancy.
-
-From: Andreas Schneider <1@c07.de>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] Wrong algorithm in gsl_rng_r250
-Date: Sun, 25 Apr 2004 13:23:39 +0200
-
-The documentation claims that gsl_rng_r250 does
-
-   x_n = x_{n-103} ^ x_{n-250},
-
-but actually the implementation does
-
-   x_n = x_{n-147} ^ x_{n-250}.
-
-This error seems to be very common. It must have been introduced long time ago.
-
-I fed some data from both variants into Marsaglia's diehard and found that the 
-documented version is better in most tests. Thus the error is probably in the 
-implementation and the documentation is right.
-
-The orthogonalisation routine for R250 is different from the original
-paper (it should be k=7*i+3 instead of k=7+i*3)
-
-Also in the initialisation of GSFR, the initial lower 6695 indices
-never participate in calculations of subsequent random numbers, so the
-"orthogonalisation" has no effect.  Check whether this also affects
-R250.
-
 ----------------------------------------------------------------------
 BUG#20 -- underflow in gsl_sf_legendre_sphPlm functions
 
