@@ -1,3 +1,8 @@
+2005-07-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* transport.c (gsl_sf_transport_2_e): improve error estimate for
+	small x
+
 2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): compute exponential

@@ -179,7 +179,7 @@ gsl_sf_transport_2_e(const double x, gsl_sf_result * result)
   }
   else if(x < 3.0*GSL_SQRT_DBL_EPSILON) {
     result->val = x;
-    result->err = x;
+    result->err = GSL_DBL_EPSILON*fabs(x) + x*x/2.0;
     return GSL_SUCCESS;
   }
   else if(x <= 4.0) {
