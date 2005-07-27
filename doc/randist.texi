@@ -734,6 +734,9 @@ for @math{x > 0}.
 @comment If @xmath{X} and @xmath{Y} are independent gamma-distributed random
 @comment variables of order @xmath{a} and @xmath{b}, then @xmath{X+Y} has a gamma
 @comment distribution of order @xmath{a+b}.
+
+@cindex Erlang distribution
+The gamma distribution with an integer parameter @var{a} is known as the Erlang distribution.
 @end deftypefun
 
 @deftypefun double gsl_ran_gamma_pdf (double @var{x}, double @var{a}, double @var{b})
