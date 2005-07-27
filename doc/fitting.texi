@@ -236,7 +236,8 @@ This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-This function computes the best-fit parameters @var{c} of the model
+@deftypefunx int gsl_multifit_linear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+These functions compute the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of predictor
 variables @var{X}.  The variance-covariance matrix of the model
 parameters @var{cov} is estimated from the scatter of the observations
@@ -248,9 +249,14 @@ The best-fit is found by singular value decomposition of the matrix
 modified Golub-Reinsch SVD algorithm is used, with column scaling to
 improve the accuracy of the singular values. Any components which have
 zero singular value (to machine precision) are discarded from the fit.
+In the second form of the function the components are discarded if the
+ratio of singular values @math{s_i/s_0} falls below the user-specified
+tolerance @var{tol}, and the effective rank is returned in @var{rank}.
+
 @end deftypefun
 
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_wlinear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 
 This function computes the best-fit parameters @var{c} of the weighted
 model @math{y = X c} for the observations @var{y} with weights @var{w}
@@ -262,7 +268,10 @@ weighted sum of squares of the residuals from the best-fit,
 The best-fit is found by singular value decomposition of the matrix
 @var{X} using the preallocated workspace provided in @var{work}. Any
 components which have zero singular value (to machine precision) are
-discarded from the fit.
+discarded from the fit.  In the second form of the function the
+components are discarded if the ratio of singular values @math{s_i/s_0}
+falls below the user-specified tolerance @var{tol}, and the effective
+rank is returned in @var{rank}.
 @end deftypefun
 
 @node Fitting Examples

@@ -38,6 +38,23 @@ gsl_multifit_linear (const gsl_matrix * X,
                      gsl_matrix * cov,
                      double *chisq, gsl_multifit_linear_workspace * work)
 {
+  size_t rank;
+  int status  = gsl_multifit_linear_svd (X, y, GSL_DBL_EPSILON, &rank, c,
+                                         cov, chisq, work);
+  return status;
+}
+
+/* Handle the general case of the SVD with tolerance and rank */
+
+int
+gsl_multifit_linear_svd (const gsl_matrix * X,
+                         const gsl_vector * y,
+                         double tol,
+                         size_t * rank,
+                         gsl_vector * c,
+                         gsl_matrix * cov,
+                         double *chisq, gsl_multifit_linear_workspace * work)
+{
   if (X->size1 != y->size)
     {
       GSL_ERROR
@@ -65,12 +82,16 @@ gsl_multifit_linear (const gsl_matrix * X,
         ("size of workspace does not match size of observation matrix",
          GSL_EBADLEN);
     }
+  else if (tol <= 0)
+    {
+      GSL_ERROR ("tolerance must be positive", GSL_EINVAL);
+    }
   else
     {
       const size_t n = X->size1;
       const size_t p = X->size2;
 
-      size_t i, j;
+      size_t i, j, p_eff;
 
       gsl_matrix *A = work->A;
       gsl_matrix *Q = work->Q;
@@ -99,14 +120,27 @@ gsl_multifit_linear (const gsl_matrix * X,
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0; j < p; j++)
-        {
-          gsl_vector_view column = gsl_matrix_column (QSI, j);
-          double alpha = gsl_vector_get (S, j);
-          if (alpha != 0)
-            alpha = 1.0 / alpha;
-          gsl_vector_scale (&column.vector, alpha);
-        }
+      {
+        double alpha0 = gsl_vector_get (S, 0);
+        p_eff = 0;
+
+        for (j = 0; j < p; j++)
+          {
+            gsl_vector_view column = gsl_matrix_column (QSI, j);
+            double alpha = gsl_vector_get (S, j);
+
+            if (alpha <= tol * alpha0) {
+              alpha = 0.0;
+            } else {
+              alpha = 1.0 / alpha;
+              p_eff++;
+            }
+
+            gsl_vector_scale (&column.vector, alpha);
+          }
+
+        *rank = p_eff;
+      }
 
       gsl_vector_set_zero (c);
 
@@ -131,7 +165,7 @@ gsl_multifit_linear (const gsl_matrix * X,
             r2 += ri * ri;
           }
 
-        s2 = r2 / (n - p);
+        s2 = r2 / (n - p_eff);   /* p_eff == rank */
 
         *chisq = r2;
 
@@ -167,6 +201,23 @@ gsl_multifit_wlinear (const gsl_matrix * X,
                       gsl_vector * c,
                       gsl_matrix * cov,
                       double *chisq, gsl_multifit_linear_workspace * work)
+{
+  size_t rank;
+  int status  = gsl_multifit_wlinear_svd (X, w, y, GSL_DBL_EPSILON, &rank, c,
+                                          cov, chisq, work);
+  return status;
+}
+
+
+int
+gsl_multifit_wlinear_svd (const gsl_matrix * X,
+                          const gsl_vector * w,
+                          const gsl_vector * y,
+                          double tol,
+                          size_t * rank,
+                          gsl_vector * c,
+                          gsl_matrix * cov,
+                          double *chisq, gsl_multifit_linear_workspace * work)
 {
   if (X->size1 != y->size)
     {
@@ -205,7 +256,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       const size_t n = X->size1;
       const size_t p = X->size2;
 
-      size_t i, j;
+      size_t i, j, p_eff;
 
       gsl_matrix *A = work->A;
       gsl_matrix *Q = work->Q;
@@ -257,14 +308,27 @@ gsl_multifit_wlinear (const gsl_matrix * X,
 
       gsl_matrix_memcpy (QSI, Q);
 
-      for (j = 0; j < p; j++)
-        {
-          gsl_vector_view column = gsl_matrix_column (QSI, j);
-          double alpha = gsl_vector_get (S, j);
-          if (alpha != 0)
-            alpha = 1.0 / alpha;
-          gsl_vector_scale (&column.vector, alpha);
-        }
+      {
+        double alpha0 = gsl_vector_get (S, 0);
+        p_eff = 0;
+        
+        for (j = 0; j < p; j++)
+          {
+            gsl_vector_view column = gsl_matrix_column (QSI, j);
+            double alpha = gsl_vector_get (S, j);
+
+            if (alpha <= tol * alpha0) {
+              alpha = 0.0;
+            } else {
+              alpha = 1.0 / alpha;
+              p_eff++;
+            }
+
+            gsl_vector_scale (&column.vector, alpha);
+          }
+
+        *rank = p_eff;
+      }
 
       gsl_vector_set_zero (c);
 
@@ -318,3 +382,4 @@ gsl_multifit_wlinear (const gsl_matrix * X,
       return GSL_SUCCESS;
     }
 }
+
