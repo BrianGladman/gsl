@@ -189,12 +189,17 @@ int gsl_sf_bessel_kl_scaled_e(int l, const double x, gsl_sf_result * result)
   }
 }
 
-int gsl_sf_bessel_kl_scaled_array(const int lmax, const double x, double * result_array)
+int 
+gsl_sf_bessel_kl_scaled_array(const int lmax, const double x, double * result_array)
 {
-  if(lmax < 1 || x <= 0.0) {
+  if(lmax < 0 || x <= 0.0) {
     GSL_ERROR("domain error", GSL_EDOM);
-  }
-  else {
+  } else if (lmax == 0) {
+    gsl_sf_result result;
+    int stat = gsl_sf_bessel_k0_scaled_e(x, &result);
+    result_array[0] = result.val;
+    return stat;
+  } else {
     int ell;
     double kellp1, kell, kellm1;
     gsl_sf_result r_kell;

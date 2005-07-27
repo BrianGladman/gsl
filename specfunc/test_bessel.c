@@ -402,6 +402,15 @@ int test_bessel(void)
   gsl_test(sa, "  gsl_sf_bessel_yl_array");
   s += sa;
 
+  {
+    double Y0[1];
+    sa = 0;
+    gsl_sf_bessel_yl_array(0, 1.0, Y0);
+    sa += ( test_sf_frac_diff(Y0[0],  -0.5403023058681397174 ) > TEST_TOL0 );
+    gsl_test(sa, "  gsl_sf_bessel_yl_array (lmax=0)");
+    s += sa;
+  }
+
   sa = 0;
   gsl_sf_bessel_il_scaled_array(50, 1.0, I);
   sa += ( test_sf_frac_diff(I[0],  0.43233235838169365410 ) > TEST_TOL2 );
@@ -419,6 +428,15 @@ int test_bessel(void)
   sa += ( test_sf_frac_diff(K[50], 1.1578440432804522544e+79 ) > TEST_TOL0 );
   gsl_test(sa, "  gsl_sf_bessel_kl_scaled_array");
   s += sa;
+
+  {
+    double K0[1];
+    sa = 0;
+    gsl_sf_bessel_kl_scaled_array(0, 1.0, K0);
+    sa += ( test_sf_frac_diff(K[0],  1.5707963267948966192     ) > TEST_TOL0 );
+    gsl_test(sa, "  gsl_sf_bessel_kl_scaled_array (lmax=0)");
+    s += sa;
+  }
 
   sa = 0;
   sa += ( gsl_sf_bessel_zero_J0_e(0, &r) != GSL_EINVAL );

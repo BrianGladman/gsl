@@ -233,10 +233,14 @@ int gsl_sf_bessel_yl_array(const int lmax, const double x, double * result_array
 {
   /* CHECK_POINTER(result_array) */
 
-  if(lmax < 1 || x <= 0.0) {
+  if(lmax < 0 || x <= 0.0) {
     GSL_ERROR ("error", GSL_EDOM);
-  }
-  else {
+  } else if (lmax == 0) {
+    gsl_sf_result result;
+    int stat = gsl_sf_bessel_y0_e(x, &result);
+    result_array[0] = result.val;
+    return stat;
+  } else {
     gsl_sf_result r_yell;
     gsl_sf_result r_yellm1;
     int stat_1 = gsl_sf_bessel_y1_e(x, &r_yell);

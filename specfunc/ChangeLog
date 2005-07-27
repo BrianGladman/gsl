@@ -1,5 +1,11 @@
 2005-06-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* bessel_k.c (gsl_sf_bessel_kl_scaled_array): added lmax==0 as a
+	special case
+
+	* bessel_y.c (gsl_sf_bessel_yl_array): added lmax==0 as a special
+	case
+
 	* test_sf.c (test_jac): added tests over the full period for
 	elljac functions
 
