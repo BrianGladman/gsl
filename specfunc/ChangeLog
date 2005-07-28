@@ -1,3 +1,9 @@
+2005-07-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* elljac.c (gsl_sf_elljac_e): use separate iterations to avoid
+	division by zero, new algorithm from Bulirsch avoids inverse trig
+	functions.
+
 2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): compute exponential

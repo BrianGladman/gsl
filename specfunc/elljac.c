@@ -26,8 +26,15 @@
 #include <gsl/gsl_sf_elljac.h>
 
 
-/* See [Thompson, Atlas for Computing Mathematical Functions] */
+/* GJ: See [Thompson, Atlas for Computing Mathematical Functions] */
 
+/* BJG 2005-07: New algorithm based on Algorithm 5 from Numerische
+   Mathematik 7, 78-90 (1965) "Numerical Calculation of Elliptic
+   Integrals and Elliptic Functions" R. Bulirsch.
+
+   Minor tweak is to avoid division by zero when sin(x u_l) = 0 by
+   computing reflected values sn(K-u) cn(K-u) dn(K-u) and using
+   transformation from Abramowitz & Stegun table 16.8 column "K-u"*/
 
 int
 gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
@@ -53,56 +60,69 @@ gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn)
   else {
     int status = GSL_SUCCESS;
     const int N = 16;
-    double   a[16];
-    double   b[16];
-    double   c[16];
-    double phi[16];
-    double psi[16]; /* psi[i] := phi[i] - Pi 2^{i-1} */
-    double two_N;
+    double mu[16];
+    double nu[16];
+    double c[16];
+    double d[16];
+    double sin_umu, cos_umu, t, r;
     int n = 0;
 
-    a[0] = 1.0;
-    b[0] = sqrt(1.0 - m);
-    c[0] = sqrt(m);
+    mu[0] = 1.0;
+    nu[0] = sqrt(1.0 - m);
 
-    while( fabs(c[n]) > 4.0 * GSL_DBL_EPSILON) {
-      a[n+1] = 0.5 * (a[n] + b[n]);
-      b[n+1] = sqrt(a[n] * b[n]);
-      c[n+1] = 0.5 * (a[n] - b[n]);
-      if(n >= N - 2) {
+    while( fabs(mu[n] - nu[n]) > 4.0 * GSL_DBL_EPSILON * fabs(mu[n]+nu[n])) {
+      mu[n+1] = 0.5 * (mu[n] + nu[n]);
+      nu[n+1] = sqrt(mu[n] * nu[n]);
+      ++n;
+      if(n >= N - 1) {
         status = GSL_EMAXITER;
-        c[N-1] = 0.0;
         break;
       }
-      ++n;
     }
 
-    --n;
-    two_N = (double)(1 << n ); /* 2^n */  /* gsl_sf_pow_int(2.0, n); */
-    phi[n] = two_N * a[n] * u;
-    psi[n] = two_N * (a[n]*u - 0.5*M_PI);
+    sin_umu = sin(u * mu[n]);
+    cos_umu = cos(u * mu[n]);
 
-    while(n > 0) {
-      const double psi_sgn = ( n == 1 ? -1.0 : 1.0 );
-      const double phi_asin_arg = c[n] * sin(phi[n])/a[n];
-      const double psi_asin_arg = c[n]/a[n] * psi_sgn * sin(psi[n]);
-      const double phi_asin = asin(phi_asin_arg);
-      const double psi_asin = asin(psi_asin_arg);
-      phi[n-1] = 0.5 * (phi[n] + phi_asin);
-      psi[n-1] = 0.5 * (psi[n] + psi_asin);
-      --n;
-    }
+    /* Since sin(u*mu(n)) can be zero we switch to computing sn(K-u),
+       cn(K-u), dn(K-u) when |sin| < |cos| */
 
-    *sn = sin(phi[0]);
-    *cn = cos(phi[0]);
-    {
-      /* const double dn_method_1 = *cn / cos(phi[1] - phi[0]); */
-      const double dn_method_2 = sin(psi[0])/sin(psi[1] - psi[0]);
-      *dn = dn_method_2;
-      /* printf("%18.16g  %18.16g\n", dn_method_1, dn_method_2); */
-    }
-
+    if (fabs(sin_umu) < fabs(cos_umu))
+      {
+        t = sin_umu / cos_umu;
+        
+        c[n] = mu[n] * t;
+        d[n] = 1.0;
+        
+        while(n > 0) {
+          n--;
+          c[n] = d[n+1] * c[n+1];
+          r = (c[n+1] * c[n+1]) / mu[n+1];
+          d[n] = (r + nu[n]) / (r + mu[n]);
+          }
+        
+        *dn = sqrt(1.0-m) / d[n];
+        *cn = (*dn) * GSL_SIGN(cos_umu) / gsl_hypot(1.0, c[n]);
+        *sn = (*cn) * c[n] /sqrt(1.0-m);
+      }
+    else
+      {
+        t = cos_umu / sin_umu;
+        
+        c[n] = mu[n] * t;
+        d[n] = 1.0;
+        
+        while(n > 0) {
+          --n;
+          c[n] = d[n+1] * c[n+1];
+          r = (c[n+1] * c[n+1]) / mu[n+1];
+          d[n] = (r + nu[n]) / (r + mu[n]);
+        }
+        
+        *dn = d[n];
+        *sn = GSL_SIGN(sin_umu) / gsl_hypot(1.0, c[n]);
+        *cn = c[n] * (*sn);
+      }
+    
     return status;
   }
 }
-
