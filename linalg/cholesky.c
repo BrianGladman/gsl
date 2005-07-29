@@ -21,7 +21,7 @@
  *    periodic cubic splines
  *    approximating splines
  *
- * This algorthm does:
+ * This algorithm does:
  *   A = L * L'
  * with
  *   L  := lower left triangle matrix
@@ -215,4 +215,38 @@ gsl_linalg_cholesky_svx (const gsl_matrix * LLT,
 }
 
 
+int
+gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D)
+{
+  const size_t N = A->size1;
+  size_t i, j;
 
+  /* initial Cholesky */
+  int stat_chol = gsl_linalg_cholesky_decomp(A);
+
+  if(stat_chol == GSL_SUCCESS)
+  {
+    /* calculate D from diagonal part of initial Cholesky */
+    for(i = 0; i < N; ++i)
+    {
+      const double C_ii = gsl_matrix_get(A, i, i);
+      gsl_vector_set(D, i, C_ii*C_ii);
+    }
+
+    /* multiply initial Cholesky by 1/sqrt(D) */
+    for(i = 0; i < N; ++i)
+      for(j = 0; j < N; ++j)
+        gsl_matrix_set(A, i, j, gsl_matrix_get(A, i, j) / sqrt(gsl_vector_get(D, i)));
+
+    /* Because the initial Cholesky contained both L and transpose(L),
+       the result of the multiplication is not symmetric anymore;
+       but the lower triangle _is_ correct. Therefore we reflect
+       it to the upper triangle and declare victory.
+       */
+    for(i = 0; i < N; ++i)
+      for(j = i + 1; j < N; ++j)
+        gsl_matrix_set(A, i, j, gsl_matrix_get(A, j, i));
+  }
+
+  return stat_chol;
+}
