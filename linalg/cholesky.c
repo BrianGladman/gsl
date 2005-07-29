@@ -2,7 +2,9 @@
  *
  * Copyright (C) 2000  Thomas Walter
  *
- * 3 May 2000: Modified for GSL by Brian Gough
+ * 03 May 2000: Modified for GSL by Brian Gough
+ * 29 Jul 2005: Additions by Gerard Jungman
+ * Copyright (C) 2000,2001, 2002, 2003, 2005 Brian Gough, Gerard Jungman
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -233,10 +235,14 @@ gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D)
       gsl_vector_set(D, i, C_ii*C_ii);
     }
 
-    /* multiply initial Cholesky by 1/sqrt(D) */
+    /* multiply initial Cholesky by 1/sqrt(D) on the right */
     for(i = 0; i < N; ++i)
+    {
       for(j = 0; j < N; ++j)
-        gsl_matrix_set(A, i, j, gsl_matrix_get(A, i, j) / sqrt(gsl_vector_get(D, i)));
+      {
+        gsl_matrix_set(A, i, j, gsl_matrix_get(A, i, j) / sqrt(gsl_vector_get(D, j)));
+      }
+    }
 
     /* Because the initial Cholesky contained both L and transpose(L),
        the result of the multiplication is not symmetric anymore;

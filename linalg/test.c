@@ -1,6 +1,7 @@
 /* linalg/test.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004, 2005
+ *               Gerard Jungman, Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3069,6 +3070,113 @@ int test_cholesky_decomp(void)
 
 
 int
+test_cholesky_decomp_unit_dim(const gsl_matrix * m, double eps)
+{
+  int s = 0;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  size_t i,j;
+
+  gsl_matrix * v  = gsl_matrix_alloc(M,N);
+  gsl_matrix * a  = gsl_matrix_alloc(M,N);
+  gsl_matrix * l  = gsl_matrix_alloc(M,N);
+  gsl_matrix * lt = gsl_matrix_alloc(N,N);
+  gsl_matrix * dm = gsl_matrix_alloc(M,N);
+  gsl_vector * dv = gsl_vector_alloc(M);
+
+  gsl_matrix_memcpy(v,m);
+
+  s += gsl_linalg_cholesky_decomp_unit(v, dv);
+
+  /*
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      printf("v[%d,%d]: %22.18e\n", i,j, gsl_matrix_get(v, i, j));
+    }
+  }
+
+
+  for(i = 0; i < M; i++)
+  {
+    printf("d[%d]: %22.18e\n", i, gsl_vector_get(dv, i));
+  }
+  */
+
+  /* put L and transpose(L) into separate matrices */
+
+  for(i = 0; i < N ; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      const double vij = gsl_matrix_get(v, i, j);
+      gsl_matrix_set (l,  i, j, i>=j ? vij : 0);
+      gsl_matrix_set (lt, i, j, i<=j ? vij : 0);
+    }
+  }
+
+  /* put D into its own matrix */
+
+  gsl_matrix_set_zero(dm);
+  for(i = 0; i < M; ++i) gsl_matrix_set(dm, i, i, gsl_vector_get(dv, i));
+
+  /* compute a = L * D * transpose(L); uses v for temp space */
+
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, dm, lt, 0.0, v);
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, l,   v, 0.0, a);
+
+  for(i = 0; i < M; i++)
+  {
+    for(j = 0; j < N; j++)
+    {
+      const double aij = gsl_matrix_get(a, i, j);
+      const double mij = gsl_matrix_get(m, i, j);
+      int foo = check(aij, mij, eps);
+      if(foo)
+      {
+        printf("(%3d,%3d)[%d,%d]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+      }
+      s += foo;
+    }
+  }
+
+  gsl_vector_free(dv);
+  gsl_matrix_free(dm);
+  gsl_matrix_free(lt);
+  gsl_matrix_free(l);
+  gsl_matrix_free(v);
+  gsl_matrix_free(a);
+
+  return s;
+}
+
+int test_cholesky_decomp_unit(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_cholesky_decomp_unit_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_decomp_unit hilbert(2)");
+  s += f;
+
+  f = test_cholesky_decomp_unit_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_decomp_unit hilbert(3)");
+  s += f;
+
+  f = test_cholesky_decomp_unit_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_decomp_unit hilbert(4)");
+  s += f;
+
+  f = test_cholesky_decomp_unit_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_decomp_unit hilbert(12)");
+  s += f;
+
+  return s;
+}
+
+
+int
 test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 {
   int s = 0;
@@ -3604,41 +3712,42 @@ int main(void)
 
   /* Matmult now obsolete */
 #ifdef MATMULT
-  gsl_test(test_matmult(),        "Matrix Multiply"); 
-  gsl_test(test_matmult_mod(),    "Matrix Multiply with Modification"); 
+  gsl_test(test_matmult(),               "Matrix Multiply"); 
+  gsl_test(test_matmult_mod(),           "Matrix Multiply with Modification"); 
 #endif
-  gsl_test(test_bidiag_decomp(),  "Bidiagonal Decomposition");
-  gsl_test(test_LU_solve(),       "LU Decomposition and Solve");
-  gsl_test(test_LUc_solve(),      "Complex LU Decomposition and Solve");
-  gsl_test(test_QR_decomp(),      "QR Decomposition");
-  gsl_test(test_QR_solve(),       "QR Solve");
-  gsl_test(test_LQ_solve(),       "LQ Solve");
-  gsl_test(test_PTLQ_solve(),     "PTLQ Solve");
+  gsl_test(test_bidiag_decomp(),         "Bidiagonal Decomposition");
+  gsl_test(test_LU_solve(),              "LU Decomposition and Solve");
+  gsl_test(test_LUc_solve(),             "Complex LU Decomposition and Solve");
+  gsl_test(test_QR_decomp(),             "QR Decomposition");
+  gsl_test(test_QR_solve(),              "QR Solve");
+  gsl_test(test_LQ_solve(),              "LQ Solve");
+  gsl_test(test_PTLQ_solve(),            "PTLQ Solve");
 
-  gsl_test(test_LQ_decomp(),      "LQ Decomposition");
-  gsl_test(test_LQ_LQsolve(),     "LQ LQ Solve");
-  gsl_test(test_LQ_lssolve(),     "LQ LS Solve");
-  gsl_test(test_LQ_update(),      "LQ Rank-1 Update");
-  gsl_test(test_QRPT_decomp(),    "PTLQ Decomposition");
-  gsl_test(test_PTLQ_solve(),     "PTLQ Solve");
+  gsl_test(test_LQ_decomp(),             "LQ Decomposition");
+  gsl_test(test_LQ_LQsolve(),            "LQ LQ Solve");
+  gsl_test(test_LQ_lssolve(),            "LQ LS Solve");
+  gsl_test(test_LQ_update(),             "LQ Rank-1 Update");
+  gsl_test(test_QRPT_decomp(),           "PTLQ Decomposition");
+  gsl_test(test_PTLQ_solve(),            "PTLQ Solve");
 
-  gsl_test(test_QR_QRsolve(),     "QR QR Solve");
-  gsl_test(test_QR_lssolve(),     "QR LS Solve");
-  gsl_test(test_QR_update(),      "QR Rank-1 Update");
-  gsl_test(test_QRPT_decomp(),    "QRPT Decomposition");
-  gsl_test(test_QRPT_solve(),     "QRPT Solve");
-  gsl_test(test_QRPT_QRsolve(),   "QRPT QR Solve");
-  gsl_test(test_SV_decomp(),      "Singular Value Decomposition");
-  gsl_test(test_SV_decomp_jacobi(), "Singular Value Decomposition (Jacobi)");
-  gsl_test(test_SV_decomp_mod(),  "Singular Value Decomposition (Mod)");
-  gsl_test(test_SV_solve(),       "SVD Solve");
-  gsl_test(test_cholesky_decomp(),"Cholesky Decomposition");
-  gsl_test(test_cholesky_solve(), "Cholesky Solve");
-  gsl_test(test_HH_solve(),       "Householder solve");
-  gsl_test(test_TDS_solve(),      "Tridiagonal symmetric solve");
-  gsl_test(test_TDS_cyc_solve(),  "Tridiagonal symmetric cyclic solve");
-  gsl_test(test_TDN_solve(),      "Tridiagonal nonsymmetric solve");
-  gsl_test(test_TDN_cyc_solve(),  "Tridiagonal nonsymmetric cyclic solve");
+  gsl_test(test_QR_QRsolve(),            "QR QR Solve");
+  gsl_test(test_QR_lssolve(),            "QR LS Solve");
+  gsl_test(test_QR_update(),             "QR Rank-1 Update");
+  gsl_test(test_QRPT_decomp(),           "QRPT Decomposition");
+  gsl_test(test_QRPT_solve(),            "QRPT Solve");
+  gsl_test(test_QRPT_QRsolve(),          "QRPT QR Solve");
+  gsl_test(test_SV_decomp(),             "Singular Value Decomposition");
+  gsl_test(test_SV_decomp_jacobi(),        "Singular Value Decomposition (Jacobi)");
+  gsl_test(test_SV_decomp_mod(),         "Singular Value Decomposition (Mod)");
+  gsl_test(test_SV_solve(),              "SVD Solve");
+  gsl_test(test_cholesky_decomp(),       "Cholesky Decomposition");
+  gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
+  gsl_test(test_cholesky_solve(),        "Cholesky Solve");
+  gsl_test(test_HH_solve(),              "Householder solve");
+  gsl_test(test_TDS_solve(),             "Tridiagonal symmetric solve");
+  gsl_test(test_TDS_cyc_solve(),         "Tridiagonal symmetric cyclic solve");
+  gsl_test(test_TDN_solve(),             "Tridiagonal nonsymmetric solve");
+  gsl_test(test_TDN_cyc_solve(),         "Tridiagonal nonsymmetric cyclic solve");
 
   gsl_matrix_free(m35);
   gsl_matrix_free(m53);
