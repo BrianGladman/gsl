@@ -1,3 +1,8 @@
+2005-07-29  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma_inc.c (gsl_sf_gamma_inc_Q_e): use continued fraction close
+	to peak of the integrand x > a - sqrt(a)
+
 2005-07-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* elljac.c (gsl_sf_elljac_e): use separate iterations to avoid

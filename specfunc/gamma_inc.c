@@ -506,7 +506,7 @@ gsl_sf_gamma_inc_Q_e(const double a, const double x, gsl_sf_result * result)
     }
   }
   else {
-    if(0.8*a < x) {
+    if(x > a - sqrt(a)) {
       /* Continued fraction again. The convergence
        * is a little slower here, but that is fine.
        * We have to trade that off against the slow

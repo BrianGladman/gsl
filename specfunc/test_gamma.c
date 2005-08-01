@@ -216,6 +216,10 @@ int test_gamma(void)
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (100,  99.0, &r), 0.4733043303994607, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (200, 199.0, &r), 0.4811585880878718, TEST_TOL2, GSL_SUCCESS);
 
+  /* Test for x86 cancellation problems */
+  TEST_SF(s, gsl_sf_gamma_inc_P_e, (5670, 4574, &r),  3.063972328743934e-55, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_gamma_inc_Q_e, (5670, 4574, &r), 1.0000000000000000, TEST_TOL2, GSL_SUCCESS);
+
 
   /* test suggested by Michel Lespinasse [gsl-discuss Sat, 13 Nov 2004] */
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (1.0e+06-1.0, 1.0e+06-2.0, &r), 0.50026596175224547004, TEST_TOL3, GSL_SUCCESS);
