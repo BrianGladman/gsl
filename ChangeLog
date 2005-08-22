@@ -1,3 +1,8 @@
+2005-08-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl/Makefile.am: need to remove makefile with later versions of
+	automake
+
 2005-04-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: added ieeefp.h test for solaris

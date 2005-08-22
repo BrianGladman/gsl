@@ -41,10 +41,13 @@ See the NEWS file for recent changes to the library.
 The GSL Manual has been published and can be ordered from most
 bookstores. The publication details are,
 
-  GNU Scientific Library Reference Manual - Second Edition, 
+  GNU Scientific Library Reference Manual - Revised Second Edition, 
   M. Galassi et al, 
   ISBN 0954161734 
   (620 pages, paperback).
+
+All the money raised from sales of the manual supports the development
+of GSL.
 
 Reporting Bugs
 ==============

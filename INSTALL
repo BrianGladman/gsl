@@ -58,6 +58,17 @@ Platform Specific Compilation Notes
 This section documents any known issues with installing GSL on
 specific platforms.
 
+  * General hints for all platforms
+  * AIX
+  * Compaq/DEC Alpha
+  * HP-UX
+  * IRIX
+  * MacOS X / PowerPC
+  * Microsoft Windows
+  * OpenBSD
+  * OS/2
+  * Solaris
+
 Hints for any platform
 ======================
 
@@ -187,8 +198,8 @@ or for gcc
 
   CFLAGS="-mabi-64" LDFLAGS="-mabi=64 -mips4 -L/usr/local/lib/mabi=64"
 
-Hints for MacOS X
-=================
+Hints for MacOS X and PowerPC
+=============================
 
 Note that GSL contains files with filenames of 32 characters or more.
 Therefore you need to be careful in unpacking the tar file, as some
@@ -211,6 +222,17 @@ To avoid warnings about long-double, use the flag
   CFLAGS="-Wno-long-double ....(other options here)"
 
 in addition to the normal compilation options.
+
+The GCC 3.3 compiler shipped by Apple contains a bug which causes the
+wavelet tests to fail on "data untouched" tests at optimisation level
+-O2. You can compile with CFLAGS="-O1 ..."  to work around this.
+
+F J Frankin <MEP95JFF@sheffield.ac.uk> reported that some early
+versions of GCC-2.95 have a problem with long argument lists on PPC
+architecture, and this prevents GSL from compiling correctly (e.g. the
+test program in the blas directory gives a segmentation fault when
+run).  This problem is fixed in more recent versions of GCC.
+
 
 Hints for Microsoft Windows
 ===========================
@@ -235,25 +257,21 @@ a slew of errors 'isnan redefined'.
 To work around this problem, run configure and edit the resulting
 config.h file to comment out the line which defines HAVE_ISINF.
 
-Hints for PowerPC
-=================
-
-F J Frankin <MEP95JFF@sheffield.ac.uk> reported that some early
-versions of GCC-2.95 have a problem with long argument lists on PPC
-architecture, and this prevents GSL from compiling correctly (e.g. the
-test program in the blas directory gives a segmentation fault when
-run).  This problem is fixed in more recent versions of GCC.
-
 Hints for Solaris
 =================
 
 If you are using the Sun compilers then the library should be compiled
-with the Sun C compiler 'cc', not the Sun C++ compiler 'CC'.
+with the Sun C compiler 'cc', not 'CC' which is the C++ compiler.
 
 The Sun compiler tools are stored in non-standard directories -- make
 sure that all the compiler and linker tools (cc, ar, ranlib, ld) are
 on the PATH.  A typical PATH should include the directories
 /opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb in that order.
+
+For example,
+
+  $ PATH=/opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb:$PATH
+  $ ./configure CC=cc CFLAGS=-O
 
 If you see configure output 
   
@@ -261,6 +279,10 @@ If you see configure output
 
 it means that 'ar' has not been found, and the library will fail to
 build.
+
+If you use the Sun compiler you should use the Sun linker and
+assembler.  If you use GCC, you can use the GNU linker and assembler
+or the Sun linker and assembler.
 
 There may be some warnings about "end of loop code not reached". These
 can be ignored -- they come from the do { ... ; return ; } while(0)
