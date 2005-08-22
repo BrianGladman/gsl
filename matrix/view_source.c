@@ -44,7 +44,7 @@ FUNCTION (gsl_matrix, view_array) (QUALIFIER ATOMIC * array,
     m.block = 0;
     m.owner = 0;
 
-    ((VIEW(_gsl_matrix, view) *)&view)->matrix = m;    
+    view.matrix = m;    
     return view;
   }
 }
@@ -84,7 +84,7 @@ FUNCTION(gsl_matrix, view_array_with_tda) (QUALIFIER ATOMIC * base,
     m.block = 0;
     m.owner = 0;
 
-    ((VIEW(_gsl_matrix, view) *)&view)->matrix = m;    
+    view.matrix = m;    
     return view;
   }
 }
@@ -127,7 +127,7 @@ FUNCTION(gsl_matrix, view_vector) (QUALIFIED_TYPE(gsl_vector) * v,
     m.block = v->block;
     m.owner = 0;
 
-    ((VIEW(_gsl_matrix, view) *)&view)->matrix = m;    
+    view.matrix = m;    
     return view;
   }
 }
@@ -177,7 +177,7 @@ FUNCTION(gsl_matrix, view_vector_with_tda) (QUALIFIED_TYPE(gsl_vector) * v,
     m.block = v->block;
     m.owner = 0;
 
-    ((VIEW(_gsl_matrix, view) *)&view)->matrix = m;    
+    view.matrix = m;    
     return view;
   }
 }

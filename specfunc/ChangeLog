@@ -1,3 +1,8 @@
+2005-08-04  Brian Gough  <bjg@network-theory.co.uk>
+
+	* coulomb.c (gsl_sf_coulomb_wave_sphF_array): fix warning about
+	variable shadowing for k
+
 2005-07-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma_inc.c (gsl_sf_gamma_inc_Q_e): use continued fraction close

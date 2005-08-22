@@ -89,7 +89,7 @@ polynomial_eval (const void *vstate,
                  const double xa[], const double ya[], size_t size, double x,
                  gsl_interp_accel * acc, double *y)
 {
-  polynomial_state_t *state = (polynomial_state_t *) vstate;
+  const polynomial_state_t *state = (const polynomial_state_t *) vstate;
 
   *y = gsl_poly_dd_eval (state->d, xa, size, x);
 
@@ -102,7 +102,7 @@ polynomial_deriv (const void *vstate,
                   const double xa[], const double ya[], size_t size, double x,
                   gsl_interp_accel * acc, double *y)
 {
-  polynomial_state_t *state = (polynomial_state_t *) vstate;
+  const polynomial_state_t *state = (const polynomial_state_t *) vstate;
 
   gsl_poly_dd_taylor (state->coeff, x, state->d, xa, size, state->work);
 
@@ -116,7 +116,7 @@ polynomial_deriv2 (const void *vstate,
                    const double xa[], const double ya[], size_t size,
                    double x, gsl_interp_accel * acc, double *y)
 {
-  polynomial_state_t *state = (polynomial_state_t *) vstate;
+  const polynomial_state_t *state = (const polynomial_state_t *) vstate;
 
   gsl_poly_dd_taylor (state->coeff, x, state->d, xa, size, state->work);
 
@@ -130,7 +130,7 @@ polynomial_integ (const void *vstate, const double xa[], const double ya[],
                   size_t size, gsl_interp_accel * acc, double a, double b,
                   double *result)
 {
-  polynomial_state_t *state = (polynomial_state_t *) vstate;
+  const polynomial_state_t *state = (const polynomial_state_t *) vstate;
   size_t i;
   double sum;
 

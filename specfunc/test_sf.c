@@ -1168,7 +1168,7 @@ int test_jac(void)
     sa = 0;
     stat_ej = gsl_sf_elljac_e(K - eps, m, &sn, &cn, &dn);
     sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(K-1e-10|0.1) sn");
-    sa += test_sf_val(cn, eps*C2, TEST_SNGL, "gsl_sf_elljac_e(K-1e-10|0.1) cn");
+    sa += test_sf_val(cn, eps*C2, 10*TEST_SNGL, "gsl_sf_elljac_e(K-1e-10|0.1) cn");
     sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(K-1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(K-1e-10|0.1)");
     s += sa;
@@ -1184,7 +1184,7 @@ int test_jac(void)
     sa = 0;
     stat_ej = gsl_sf_elljac_e(K + eps, m, &sn, &cn, &dn);
     sa += test_sf_val(sn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(K+1e-10|0.1) sn");
-    sa += test_sf_val(cn, -eps*C2, TEST_SNGL, "gsl_sf_elljac_e(K+1e-10|0.1) cn");
+    sa += test_sf_val(cn, -eps*C2, 10*TEST_SNGL, "gsl_sf_elljac_e(K+1e-10|0.1) cn");
     sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(K+1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(K+1e-10|0.1)");
     s += sa;
@@ -1200,7 +1200,7 @@ int test_jac(void)
 
     sa = 0;
     stat_ej = gsl_sf_elljac_e(2.0*K - eps, m, &sn, &cn, &dn);
-    sa += test_sf_val(sn, eps, TEST_SNGL, "gsl_sf_elljac_e(2K-1e-10|0.1) sn");
+    sa += test_sf_val(sn, eps, 10*TEST_SNGL, "gsl_sf_elljac_e(2K-1e-10|0.1) sn");
     sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(2K-1e-10|0.1) cn");
     sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(2K-1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(2K-1e-10|0.1)");
@@ -1216,7 +1216,7 @@ int test_jac(void)
 
     sa = 0;
     stat_ej = gsl_sf_elljac_e(2.0*K + eps, m, &sn, &cn, &dn);
-    sa += test_sf_val(sn, -eps, TEST_SNGL, "gsl_sf_elljac_e(2K+1e-10|0.1) sn");
+    sa += test_sf_val(sn, -eps, 10*TEST_SNGL, "gsl_sf_elljac_e(2K+1e-10|0.1) sn");
     sa += test_sf_val(cn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(2K+1e-10|0.1) cn");
     sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(2K+1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(2K+1e-10|0.1)");
@@ -1233,7 +1233,7 @@ int test_jac(void)
     sa = 0;
     stat_ej = gsl_sf_elljac_e(3.0*K - eps, m, &sn, &cn, &dn);
     sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(3K-1e-10|0.1) sn");
-    sa += test_sf_val(cn, -C2 * eps, TEST_SNGL, "gsl_sf_elljac_e(3K-1e-10|0.1) cn");
+    sa += test_sf_val(cn, -C2 * eps, 10*TEST_SNGL, "gsl_sf_elljac_e(3K-1e-10|0.1) cn");
     sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(3K-1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(3K-1e-10|0.1)");
     s += sa;
@@ -1249,7 +1249,7 @@ int test_jac(void)
     sa = 0;
     stat_ej = gsl_sf_elljac_e(3.0*K + eps, m, &sn, &cn, &dn);
     sa += test_sf_val(sn, -1.0, TEST_TOL1, "gsl_sf_elljac_e(3K+1e-10|0.1) sn");
-    sa += test_sf_val(cn, +C2 * eps, TEST_SNGL, "gsl_sf_elljac_e(3K+1e-10|0.1) cn");
+    sa += test_sf_val(cn, +C2 * eps, 10*TEST_SNGL, "gsl_sf_elljac_e(3K+1e-10|0.1) cn");
     sa += test_sf_val(dn, C2, TEST_TOL2, "gsl_sf_elljac_e(3K+1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(3K+1e-10|0.1)");
     s += sa;
@@ -1264,7 +1264,7 @@ int test_jac(void)
 
     sa = 0;
     stat_ej = gsl_sf_elljac_e(4.0*K - eps, m, &sn, &cn, &dn);
-    sa += test_sf_val(sn, -eps, TEST_SNGL, "gsl_sf_elljac_e(4K-1e-10|0.1) sn");
+    sa += test_sf_val(sn, -eps, 10*TEST_SNGL, "gsl_sf_elljac_e(4K-1e-10|0.1) sn");
     sa += test_sf_val(cn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K-1e-10|0.1) cn");
     sa += test_sf_val(dn, 1.0, TEST_TOL1, "gsl_sf_elljac_e(4K-1e-10|0.1) dn");
     gsl_test(sa, "  gsl_sf_elljac_e(4K-1e-10|0.1)");

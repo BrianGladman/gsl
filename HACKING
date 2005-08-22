@@ -122,7 +122,7 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 for HAVE_INLINE use in installed headers.  
 
  grep config.h gsl/*.h    --- shouldn't match anything
- grep -L config.h */*.c m| grep -v _source  --- gives files not using config.h
+ grep -L config.h */*.c | grep -v _source  --- gives files not using config.h
 
 * Make a master gsl header file of cat gsl/*.h > tmp.c and try
 compiling it to test all possible conflicts
@@ -157,7 +157,8 @@ compilation.
     $ cd manual
     $ cvs -d savannah.gnu.org:/webcvs/gsl import -m 'this is release 0.123' gsl/manual gendocs release-0-123
 
-* Make postscript file in the usual way
+* Make postscript file in the usual way.  Test with different versions
+of ghostscript for compatibility.
 
    make dvi; dvips gsl-ref.dvi ; gzip -v -9 gsl-ref.ps
    scp -v gsl-ref.ps.gz sources.redhat.com:/sourceware/ftp/anonftp/pub/gsl

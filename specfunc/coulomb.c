@@ -1380,12 +1380,11 @@ gsl_sf_coulomb_wave_sphF_array(double lam_min, int kmax,
                                     double * fc_array,
                                     double * F_exp)
 {
-  int k;
-
   if(x < 0.0 || lam_min < -0.5) {
     GSL_ERROR ("domain error", GSL_EDOM);
   }
   else if(x < 10.0/GSL_DBL_MAX) {
+    int k;
     for(k=0; k<=kmax; k++) {
       fc_array[k] = 0.0;
     }

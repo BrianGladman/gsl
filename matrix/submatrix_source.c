@@ -58,8 +58,8 @@ FUNCTION (gsl_matrix, submatrix) (QUALIFIED_TYPE(gsl_matrix) * m,
      s.tda = m->tda;
      s.block = m->block;
      s.owner = 0;
-
-    ((VIEW(_gsl_matrix, view) *)&view)->matrix = s;     
+     
+     view.matrix = s;     
      return view;
   }
 }

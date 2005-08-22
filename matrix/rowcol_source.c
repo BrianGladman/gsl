@@ -36,7 +36,7 @@ FUNCTION (gsl_matrix, row) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i)
     v.block = m->block;
     v.owner = 0;
     
-    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
+    view.vector = v;
     return view;
   }
 }
@@ -60,7 +60,7 @@ FUNCTION (gsl_matrix, column) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j)
     v.block = m->block;
     v.owner = 0;
 
-    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
+    view.vector = v;
     return view;
   }
 }
@@ -77,7 +77,7 @@ FUNCTION (gsl_matrix, diagonal) (QUALIFIED_TYPE(gsl_matrix) * m)
   v.block = m->block;
   v.owner = 0;
 
-  ((VIEW(_gsl_vector, view) *)&view)->vector = v;
+  view.vector = v;
   return view;
 }
 
@@ -101,7 +101,7 @@ FUNCTION (gsl_matrix, subdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     v.block = m->block;
     v.owner = 0;
     
-    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
+    view.vector = v;
     return view;
   }
 }
@@ -127,7 +127,7 @@ FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
     v.block = m->block;
     v.owner = 0;
 
-    ((VIEW(_gsl_vector, view) *)&view)->vector = v;
+    view.vector = v;
     return view;
   }
 }

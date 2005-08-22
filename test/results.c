@@ -60,7 +60,7 @@ initialise (void)
   return;
 }
 
-void 
+static void 
 update (int s)
 {
   tests++;
