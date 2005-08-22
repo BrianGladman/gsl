@@ -1,4 +1,10 @@
-* What will be new in gsl-1.7:
+* What is in gsl-1.7:
+
+** Switched gsl_randist_binomial to use the faster binomial random
+variate TPE algorithm by default.  The previous binomial variate
+algorithm is available as gsl_randist_binomial_knuth.  This will
+result in a different sequence of binomial variates in programs using
+this function.
 
 ** Improved the algorithm for gsl_sf_elljac_e to avoid cancellation
 errors near quarter periods.

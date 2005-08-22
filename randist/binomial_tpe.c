@@ -88,17 +88,30 @@ Stirling (double y1)
 }
 
 unsigned int
-gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
+gsl_ran_binomial_tpe (const gsl_rng * rng, double p, unsigned int n)
+{
+  return gsl_ran_binomial (rng, p, n);
+}
+
+unsigned int
+gsl_ran_binomial (const gsl_rng * rng, double p, unsigned int n)
 {
   int ix;                       /* return value */
-
-  const double p = (pp > 0.5) ? 1 - pp : pp;    /* choose p=min(pp,1-pp) */
-  const double q = 1 - p;
-  const double s = p / q;
-  const double np = n * p;
+  int flipped = 0;
+  double q, s, np;
 
   if (n == 0)
     return 0;
+
+  if (p > 0.5)
+    {
+      p = 1.0 - p;              /* work with small p */
+      flipped = 1;
+    }
+
+  q = 1 - p;
+  s = p / q;
+  np = n * p;
 
   /* Inverse cdf logic for small mean (BINV in K+S) */
 
@@ -228,7 +241,7 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
         {
           /* Right tail */
           ix = (int) (xr - log (v) / lambda_r);
-          if (ix > (double)n)
+          if (ix > (double) n)
             goto TryAgain;
           v *= ((u - p3) * lambda_r);
         }
@@ -364,5 +377,5 @@ gsl_ran_binomial_tpe (const gsl_rng * rng, double pp, unsigned int n)
 
 Finish:
 
-  return (pp > 0.5) ? n - ix : ix;
+  return (flipped) ? (n - ix) : ix;
 }

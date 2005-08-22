@@ -1663,7 +1663,6 @@ the formula given above.
 \centerline{\input rand-binomial.tex}
 @end tex
 
-
 @page
 @node The Multinomial Distribution
 @section The Multinomial Distribution

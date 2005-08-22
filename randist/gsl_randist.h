@@ -40,7 +40,8 @@ double gsl_ran_beta (const gsl_rng * r, const double a, const double b);
 double gsl_ran_beta_pdf (const double x, const double a, const double b);
 
 unsigned int gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n);
-unsigned int gsl_ran_binomial_tpe (const gsl_rng * r, double pp, unsigned int n);
+unsigned int gsl_ran_binomial_knuth (const gsl_rng * r, double p, unsigned int n);
+unsigned int gsl_ran_binomial_tpe (const gsl_rng * r, double p, unsigned int n);
 double gsl_ran_binomial_pdf (const unsigned int k, const double p, const unsigned int n);
 
 double gsl_ran_exponential (const gsl_rng * r, const double mu);

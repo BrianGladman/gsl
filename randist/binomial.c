@@ -29,8 +29,10 @@
 
    This is the algorithm from Knuth */
 
+/* Default binomial generator is now in binomial_tpe.c */
+
 unsigned int
-gsl_ran_binomial (const gsl_rng * r, double p, unsigned int n)
+gsl_ran_binomial_knuth (const gsl_rng * r, double p, unsigned int n)
 {
   unsigned int i, a, b, k = 0;
 
