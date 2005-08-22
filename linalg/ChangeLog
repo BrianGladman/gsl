@@ -1,3 +1,9 @@
+2005-08-22  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp_jacobi): reorganised convergence
+	tests to increase robustness in the presence of extended precision
+	registers.
+
 2005-06-22  Brian Gough  <bjg@network-theory.co.uk>
 
 	* svd.c (gsl_linalg_SV_decomp_jacobi): increased number of sweeps

@@ -469,7 +469,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
       int sweep = 0;
       int sweepmax = 5*N;
 
-      double tolerance = 10 * GSL_DBL_EPSILON;
+      double tolerance = 10 * M * GSL_DBL_EPSILON;
 
       /* Always do at least 12 sweeps. */
       sweepmax = GSL_MAX (sweepmax, 12);
@@ -505,6 +505,7 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                   double cosine, sine;
                   double v;
                   double abserr_a, abserr_b;
+                  int sorted, orthog, noisya, noisyb;
 
                   gsl_vector_view cj = gsl_matrix_column (A, j);
                   gsl_vector_view ck = gsl_matrix_column (A, k);
@@ -523,15 +524,19 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                   abserr_a = gsl_vector_get(S,j);
                   abserr_b = gsl_vector_get(S,k);
 
-                  if (a >= b && (fabs (p) <= tolerance * (a+abserr_a) * (b+abserr_b) 
-                                 || a < abserr_a || b < abserr_b))
+                  sorted = (a>=b);
+                  orthog = (fabs (p) <= tolerance * gsl_coerce_double(a * b));
+                  noisya = (a < abserr_a);
+                  noisyb = (b < abserr_b);
+
+                  if (sorted && (orthog || noisya || noisyb))
                     {
                       count--;
                       continue;
                     }
 
                   /* calculate rotation angles */
-                  if (v == 0 || a < b)
+                  if (v == 0 || !sorted)
                     {
                       cosine = 0.0;
                       sine = 1.0;
