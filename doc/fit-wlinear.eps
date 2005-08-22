@@ -255,7 +255,7 @@ grestore
 gsave
 fgred fggreen fgblue setrgbcolor
 /fontDict printFont findfont printSize scalefont dup setfont def
-/descender fontDict begin 0 [FontBBox] 1 get FontMatrix end
+/descender fontDict begin 0 /FontBBox load 1 get FontMatrix end
 transform exch pop def
 /vertoffset 1 printSize sub descender sub def {
 0 vertoffset moveto show
