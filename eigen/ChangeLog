@@ -1,3 +1,7 @@
+2005-08-22  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_eigenvalues): increased test tolerance
+
 2004-12-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* jacobi.c (gsl_eigen_jacobi): use algorithm from Golub and Van

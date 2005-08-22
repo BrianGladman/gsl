@@ -145,7 +145,8 @@ test_eigenvalues (size_t N, const gsl_vector *eval, const gsl_vector * eval2,
     {
       double ei = gsl_vector_get (eval, i);
       double e2i = gsl_vector_get (eval2, i);
-      gsl_test_rel(ei, e2i, GSL_DBL_EPSILON, "%s, direct eigenvalue(%d), %s",
+      gsl_test_rel(ei, e2i, 10*GSL_DBL_EPSILON, 
+                   "%s, direct eigenvalue(%d), %s",
                    desc, i, desc2);
     }
 }
