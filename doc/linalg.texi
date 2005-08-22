@@ -202,7 +202,8 @@ The algorithm used to perform the decomposition is Householder QR (Golub
 @deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the square system @math{A x = b} using the @math{QR}
 decomposition of @math{A} into (@var{QR}, @var{tau}) given by
-@code{gsl_linalg_QR_decomp}. 
+@code{gsl_linalg_QR_decomp}. The least-squares solution for rectangular systems can
+be found using @code{gsl_linalg_QR_lssolve}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
