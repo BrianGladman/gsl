@@ -389,7 +389,7 @@ int test_bessel(void)
   sa += ( test_sf_frac_diff(J[1],  0.30116867893975678925   ) > TEST_TOL0 );
   sa += ( test_sf_frac_diff(J[10], 7.116552640047313024e-11 ) > TEST_TOL0 );
   sa += ( test_sf_frac_diff(J[50], 3.615274717489787311e-81 ) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(J[80], 1.136352423414503264e-144 ) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff(J[80], 1.136352423414503264e-144 ) > TEST_TOL1 );
   gsl_test(sa, "  gsl_sf_bessel_jl_steed_array");
   s += sa;
 
