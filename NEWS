@@ -9,8 +9,8 @@ this function.
 ** Improved the algorithm for gsl_sf_elljac_e to avoid cancellation
 errors near quarter periods.
 
-** Fixed the branch selection in gsl_sf_gamma_inc_Q_e to prevent
-caused inaccurate results for large a,x where x~=~a.
+** Fixed the branch selection in gsl_sf_gamma_inc_Q_e to avoid
+inaccurate results for large a,x where x~=~a.
 
 ** The multilinear fitting functions now have forms which accept a
 user-specified tolerance for the SVD cutoff and return the
@@ -28,7 +28,7 @@ line-end [NNNN].
 ** Fixed bugs in gsl_linalg_SV_decomp_jacobi which caused
 incorrect results for some input matrices.
 
-** Bessl, coulomb, dilogarithm and legendre_H3d functions now use
+** Bessel, coulomb, dilogarithm and legendre_H3d functions now use
 hypot internally to avoid overflow when computing terms like
 sqrt(1+x*x).
 

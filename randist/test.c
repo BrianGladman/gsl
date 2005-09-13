@@ -213,6 +213,10 @@ double test_weibull1_pdf (double x);
 
 gsl_rng *r_global;
 
+static gsl_ran_discrete_t *g1 = NULL;
+static gsl_ran_discrete_t *g2 = NULL;
+static gsl_ran_discrete_t *g3 = NULL;
+
 int
 main (void)
 {
@@ -336,6 +340,11 @@ main (void)
   testDiscretePDF (FUNC2 (multinomial_large));
   testDiscretePDF (FUNC2 (negative_binomial));
   testDiscretePDF (FUNC2 (pascal));
+
+  gsl_rng_free (r_global);
+  gsl_ran_discrete_free (g1);
+  gsl_ran_discrete_free (g2);
+  gsl_ran_discrete_free (g3);
 
   exit (gsl_test_summary ());
 }
@@ -921,10 +930,6 @@ test_multinomial_moments (void)
     }
 }
 
-
-static gsl_ran_discrete_t *g1 = NULL;
-static gsl_ran_discrete_t *g2 = NULL;
-static gsl_ran_discrete_t *g3 = NULL;
 
 double
 test_discrete1 (void)

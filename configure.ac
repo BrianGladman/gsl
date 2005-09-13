@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.6+])
+AC_INIT([gsl],[1.7])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -18,8 +18,9 @@ dnl gsl-1.3    libgsl 4:0:4  libgslcblas 0:0:0
 dnl gsl-1.4    libgsl 5:0:5  libgslcblas 0:0:0
 dnl gsl-1.5    libgsl 6:0:6  libgslcblas 0:0:0
 dnl gsl-1.6    libgsl 7:0:7  libgslcblas 0:0:0
+dnl gsl-1.7    libgsl 8:0:8  libgslcblas 0:0:0
 
-GSL_LT_VERSION="7:0:7"
+GSL_LT_VERSION="8:0:8"
 AC_SUBST(GSL_LT_VERSION)
 GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)

@@ -151,6 +151,7 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   gsl_permutation_free (p);
   free (small);
   free (large);
+  free (index);
 }
 
 

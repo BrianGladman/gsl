@@ -20,5 +20,6 @@ Dan, Ho-Jin (hjdan@sys713.kaist.ac.kr) - divided differences interpolation
 Szymon Jaroszewicz (sj@cs.umb.edu) - combinations
 Nicolas Darnis (ndarnis@cvf.fr) - canonical permutation functions
 Tuomo Keskitalo (tuomo.keskitalo@iki.fi) - multidimensional minimization
-Ivo Alxneit (ivo.alxneit@psi.ch) - multidimensional minimization
+Ivo Alxneit (ivo.alxneit@psi.ch) - multidimensional minimization, wavelet 
+  transforms
 Jason H. Stover (jason@sakla.net) - cumulative distribution functions

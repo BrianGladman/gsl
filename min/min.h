@@ -21,5 +21,5 @@
 do { \
   *yp = GSL_FN_EVAL(f,x); \
   if (!finite(*yp)) \
-    GSL_ERROR("function not continuous", GSL_EBADFUNC); \
+    GSL_ERROR("computed function value is infinite or NaN", GSL_EBADFUNC); \
 } while (0)

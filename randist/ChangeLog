@@ -1,3 +1,7 @@
+2005-08-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): free allocated memory before exit
+
 2005-08-22  Brian Gough  <bjg@network-theory.co.uk>
 
 	* binomial_tpe.c (gsl_ran_binomial): switch to the TPE algorithm

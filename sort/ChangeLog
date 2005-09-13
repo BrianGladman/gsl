@@ -1,3 +1,7 @@
+2005-08-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_source.c: free index memory as well
+
 2005-04-08  Brian Gough  <bjg@network-theory.co.uk>
 
 	* sortvecind_source.c sortvec_source.c: write tests in such a way

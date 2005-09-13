@@ -721,8 +721,9 @@ test_QR_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector_free(x);
   gsl_vector_free(d);
   gsl_matrix_free(qr);
+  gsl_matrix_free(q);
+  gsl_matrix_free(r);
   gsl_vector_free(rhs);
-
   return s;
 }
 
@@ -1061,6 +1062,8 @@ test_QRPT_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector_free(x);
   gsl_vector_free(d);
   gsl_matrix_free(qr);
+  gsl_matrix_free(q);
+  gsl_matrix_free(r);
   gsl_vector_free(rhs);
   gsl_permutation_free(perm);
 
@@ -2496,6 +2499,7 @@ test_SV_decomp_mod_dim(const gsl_matrix * m, double eps)
   gsl_matrix_free(a);
   gsl_matrix_free(q);
   gsl_matrix_free(dqt);
+  gsl_matrix_free (x);
 
   return s;
 }
@@ -3749,7 +3753,9 @@ int main(void)
   gsl_test(test_TDN_solve(),             "Tridiagonal nonsymmetric solve");
   gsl_test(test_TDN_cyc_solve(),         "Tridiagonal nonsymmetric cyclic solve");
 
+  gsl_matrix_free(m11);
   gsl_matrix_free(m35);
+  gsl_matrix_free(m51);
   gsl_matrix_free(m53);
   gsl_matrix_free(m97);
   gsl_matrix_free(s35);
@@ -3775,6 +3781,10 @@ int main(void)
   gsl_matrix_free(A22);
   gsl_matrix_free(A33);
   gsl_matrix_free(A44);
+  gsl_matrix_free(A55);
+
+  gsl_matrix_free (inf5);
+  gsl_matrix_free (nan5);
 
   exit (gsl_test_summary());
 }
