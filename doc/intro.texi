@@ -170,8 +170,11 @@ A description of the bug behavior
 A short program which exercises the bug
 @end itemize
 @noindent
-It is also useful if you can report whether the same problem occurs
-when the library is compiled without optimization. Thank you.
+It is useful if you can check whether the same problem occurs when the
+library is compiled without optimization.  Thank you.
+
+Any errors or omissions in this manual can also be reported to the
+same address.
 
 @node  Further Information
 @section Further Information
