@@ -35,11 +35,11 @@ set of header files can be included using the file @file{gsl_sf.h}.
 * Exponential Functions::       
 * Exponential Integrals::       
 * Fermi-Dirac Function::        
-* Gamma Function::              
+* Gamma and Beta Functions::    
 * Gegenbauer Functions::        
 * Hypergeometric Functions::    
-* Laguerre Functions::             
-* Lambert W Functions::        
+* Laguerre Functions::          
+* Lambert W Functions::         
 * Legendre Functions and Spherical Harmonics::  
 * Logarithm and Related Functions::  
 * Power Function::              
@@ -209,8 +209,8 @@ accuracy.
 @section Fermi-Dirac Function
 @include specfunc-fermi-dirac.texi
 
-@node Gamma Function
-@section Gamma Function
+@node Gamma and Beta Functions
+@section Gamma and Beta Functions
 @include specfunc-gamma.texi
 
 @node Gegenbauer Functions
