@@ -213,14 +213,14 @@ The probability distribution for Gaussian tail random variates is,
 @tex
 \beforedisplay
 $$
-p(x) dx = {1 \over N(a;\sigma)} \exp (- x^2 / 2\sigma^2) dx
+p(x) dx = {1 \over N(a;\sigma) \sqrt{2 \pi \sigma^2}} \exp (- x^2 / 2\sigma^2) dx
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-p(x) dx = @{1 \over N(a;\sigma)@} \exp (- x^2/(2 \sigma^2)) dx
+p(x) dx = @{1 \over N(a;\sigma) \sqrt@{2 \pi \sigma^2@}@} \exp (- x^2/(2 \sigma^2)) dx
 @end example
 @end ifinfo
 @noindent
