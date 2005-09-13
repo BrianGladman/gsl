@@ -15,9 +15,11 @@ $$
 @end example
 @end ifinfo
 @noindent
-Further information on the Gamma function can be found in Abramowitz &
-Stegun, Chapter 6.  The  functions described in this section are declared
-in the header file @file{gsl_sf_gamma.h}.
+It is related to the factorial function by @math{\Gamma(n)=(n-1)!}
+for positive integer @math{n}.  Further information on the Gamma function
+can be found in Abramowitz & Stegun, Chapter 6.  The functions
+described in this section are declared in the header file
+@file{gsl_sf_gamma.h}.
 
 @deftypefun double gsl_sf_gamma (double @var{x})
 @deftypefunx int gsl_sf_gamma_e (double @var{x}, gsl_sf_result * @var{result})
@@ -167,7 +169,8 @@ equivalent to the sum @math{\log(n!) - \log(m!) - \log((n-m)!)}.
 @cindex Apell symbol, see Pochammer symbol
 These routines compute the Pochhammer symbol @math{(a)_x := \Gamma(a +
 x)/\Gamma(a)}, subject to @math{a} and @math{a+x} not being negative
-integers. The Pochhammer symbol is also known as the Apell symbol.
+integers. The Pochhammer symbol is also known as the Apell symbol and
+sometimes written as @math{(a,x)}.
 @comment exceptions:  GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
@@ -193,8 +196,8 @@ negative integers.
 @deftypefun double gsl_sf_pochrel (double @var{a}, double @var{x})
 @deftypefunx int gsl_sf_pochrel_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 @cindex relative Pochhammer symbol
-These routines compute the relative Pochhammer symbol @math{((a,x) -
-1)/x} where @math{(a,x) = (a)_x := \Gamma(a + x)/\Gamma(a)}.
+These routines compute the relative Pochhammer symbol @math{((a)_x -
+1)/x} where @math{(a)_x := \Gamma(a + x)/\Gamma(a)}.
 @comment exceptions:  GSL_EDOM
 @end deftypefun
 
@@ -261,8 +264,10 @@ for @math{a > 0}, @math{b > 0}.
 @cindex incomplete Beta function, normalized
 @cindex normalized incomplete Beta function
 @cindex Beta function, incomplete normalized 
-These routines compute the normalize incomplete Beta function
-@math{B_x(a,b)/B(a,b)} for @math{a > 0}, @math{b > 0}, and @c{$0 \le x \le 1$}
+These routines compute the normalized incomplete Beta function
+@math{B_x(a,b)/B(a,b)} where @c{$B_x(a,b) = \int_0^x t^{a-1} (1-t)^{b-1} dt$}
+@math{B_x(a,b) = \int_0^x t^@{a-1@} (1-t)^@{b-1@} dt}
+for @math{a > 0}, @math{b > 0}, and @c{$0 \le x \le 1$}
 @math{0 <= x <= 1}.
 @end deftypefun
 
