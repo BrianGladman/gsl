@@ -400,16 +400,6 @@ int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
 int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
                              gsl_vector * x);
 
-
-/* Cholesky decomposition with unit-diagonal triangular parts.
- *   A = L D L^T, where diag(L) = (1,1,...,1).
- *   Upon exit, A contains L and L^T as for Cholesky, and
- *   the diagonal of A is (1,1,...,1). The vector Dis set
- *   to the diagonal elements of the diagonal matrix D.
- */
-int gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D);
-
-
 /* Symmetric to symmetric tridiagonal decomposition */
 
 int gsl_linalg_symmtd_decomp (gsl_matrix * A, 
