@@ -21,15 +21,15 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-{\GNUPLOTspecial{!
-%!PS-Adobe-2.0
+\GNUPLOTpicture(3600,2376)
+{\GNUPLOTspecial{"
+%!PS-Adobe-2.0 EPSF-2.0
 %%Title: rand-landau.tex
-%%Creator: gnuplot 3.7 patchlevel 2
-%%CreationDate: Mon Oct 11 13:28:29 2004
+%%Creator: gnuplot 4.0 patchlevel 0
+%%CreationDate: Wed Aug 31 12:38:29 2005
 %%DocumentFonts: 
 %%BoundingBox: 0 0 360 237
 %%Orientation: Landscape
-%%Pages: (atend)
 %%EndComments
 /gnudict 256 dict def
 gnudict begin
@@ -38,15 +38,19 @@ gnudict begin
 /gnulinewidth 5.000 def
 /userlinewidth gnulinewidth def
 /vshift -33 def
-/dl {10 mul} def
+/dl {10.0 mul} def
 /hpt_ 31.5 def
 /vpt_ 31.5 def
 /hpt hpt_ def
 /vpt vpt_ def
+/Rounded false def
 /M {moveto} bind def
 /L {lineto} bind def
 /R {rmoveto} bind def
 /V {rlineto} bind def
+/N {newpath moveto} bind def
+/C {setrgbcolor} bind def
+/f {rlineto fill} bind def
 /vpt2 vpt 2 mul def
 /hpt2 hpt 2 mul def
 /Lshow { currentpoint stroke M
@@ -58,12 +62,16 @@ gnudict begin
 /UP { dup vpt_ mul /vpt exch def hpt_ mul /hpt exch def
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
- {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke userlinewidth 2 mul setlinewidth } def
-/AL { stroke userlinewidth 2 div setlinewidth } def
+ {pop pop pop 0 setgray Solid {pop []} if 0 setdash} ifelse } def
+/BL { stroke userlinewidth 2 mul setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
+/AL { stroke userlinewidth 2 div setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
 /UL { dup gnulinewidth mul /userlinewidth exch def
       dup 1 lt {pop 1} if 10 mul /udl exch def } def
-/PL { stroke userlinewidth setlinewidth } def
+/PL { stroke userlinewidth setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
+/LTw { PL [] 1 setgray } def
 /LTb { BL [] 0 0 0 DL } def
 /LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
@@ -261,291 +269,334 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/BoxColFill {
+  gsave Rec
+  /Fillden exch def
+  currentrgbcolor
+  /ColB exch def /ColG exch def /ColR exch def
+  /ColR ColR Fillden mul Fillden sub 1 add def
+  /ColG ColG Fillden mul Fillden sub 1 add def
+  /ColB ColB Fillden mul Fillden sub 1 add def
+  ColR ColG ColB setrgbcolor
+  fill grestore } def
+%
+% PostScript Level 1 Pattern Fill routine
+% Usage: x y w h s a XX PatternFill
+%	x,y = lower left corner of box to be filled
+%	w,h = width and height of box
+%	  a = angle in degrees between lines and x-axis
+%	 XX = 0/1 for no/yes cross-hatch
+%
+/PatternFill { gsave /PFa [ 9 2 roll ] def
+    PFa 0 get PFa 2 get 2 div add PFa 1 get PFa 3 get 2 div add translate
+    PFa 2 get -2 div PFa 3 get -2 div PFa 2 get PFa 3 get Rec
+    gsave 1 setgray fill grestore clip
+    currentlinewidth 0.5 mul setlinewidth
+    /PFs PFa 2 get dup mul PFa 3 get dup mul add sqrt def
+    0 0 M PFa 5 get rotate PFs -2 div dup translate
+	0 1 PFs PFa 4 get div 1 add floor cvi
+	{ PFa 4 get mul 0 M 0 PFs V } for
+    0 PFa 6 get ne {
+	0 1 PFs PFa 4 get div 1 add floor cvi
+	{ PFa 4 get mul 0 2 1 roll M PFs 0 V } for
+    } if
+    stroke grestore } def
+%
 /Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
 dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
-currentdict end definefont
+currentdict end definefont pop
 end
 %%EndProlog
-}}%
-\GNUPLOTpicture(3600,2376)
-{\GNUPLOTspecial{"
-%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
 0.100 0.100 scale
 0 setgray
 newpath
-1.000 UL
+0.500 UL
 LTb
-450 300 M
-63 0 V
-2937 0 R
--63 0 V
-450 1188 M
-63 0 V
-2937 0 R
--63 0 V
-450 2076 M
-63 0 V
-2937 0 R
--63 0 V
-450 300 M
-0 63 V
-0 1713 R
-0 -63 V
-650 300 M
-0 63 V
-0 1713 R
-0 -63 V
-850 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1050 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1250 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1450 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1650 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1850 300 M
-0 63 V
-0 1713 R
-0 -63 V
-2050 300 M
-0 63 V
-0 1713 R
-0 -63 V
-2250 300 M
-0 63 V
-0 1713 R
-0 -63 V
-2450 300 M
-0 63 V
-0 1713 R
-0 -63 V
-2650 300 M
-0 63 V
-0 1713 R
-0 -63 V
-2850 300 M
-0 63 V
-0 1713 R
-0 -63 V
-3050 300 M
-0 63 V
-0 1713 R
-0 -63 V
-3250 300 M
-0 63 V
-0 1713 R
-0 -63 V
-3450 300 M
-0 63 V
-0 1713 R
-0 -63 V
-1.000 UL
+481 331 M
+-31 0 V
+0.500 UL
 LTb
-450 300 M
-3000 0 V
-0 1776 V
--3000 0 V
-450 300 L
+481 1204 M
+-31 0 V
+0.500 UL
+LTb
+481 2076 M
+-31 0 V
+0.500 UL
+LTb
+481 331 M
+0 -31 V
+0.500 UL
+LTb
+679 331 M
+0 -31 V
+0.500 UL
+LTb
+877 331 M
+0 -31 V
+0.500 UL
+LTb
+1075 331 M
+0 -31 V
+0.500 UL
+LTb
+1273 331 M
+0 -31 V
+0.500 UL
+LTb
+1471 331 M
+0 -31 V
+0.500 UL
+LTb
+1669 331 M
+0 -31 V
+0.500 UL
+LTb
+1867 331 M
+0 -31 V
+0.500 UL
+LTb
+2064 331 M
+0 -31 V
+0.500 UL
+LTb
+2262 331 M
+0 -31 V
+0.500 UL
+LTb
+2460 331 M
+0 -31 V
+0.500 UL
+LTb
+2658 331 M
+0 -31 V
+0.500 UL
+LTb
+2856 331 M
+0 -31 V
+0.500 UL
+LTb
+3054 331 M
+0 -31 V
+0.500 UL
+LTb
+3252 331 M
+0 -31 V
+0.500 UL
+LTb
+3450 331 M
+0 -31 V
+0.500 UL
+LTb
+0.500 UL
+LTb
+481 331 M
+2969 0 V
+0 1745 V
+-2969 0 V
+481 331 L
+LTb
+LTb
+LTb
+1.000 UP
 1.000 UL
 LT0
-450 300 M
+481 331 M
+20 0 V
+20 0 V
+19 0 V
 20 0 V
 20 0 V
 20 0 V
 20 0 V
+19 0 V
 20 0 V
 20 0 V
 20 0 V
 20 0 V
+19 0 V
 20 0 V
 20 0 V
 20 0 V
-20 0 V
-20 0 V
-20 0 V
-20 0 V
-20 0 V
-20 1 V
+19 1 V
 20 0 V
 20 2 V
 20 3 V
-20 6 V
-20 9 V
+20 5 V
+19 9 V
 20 14 V
 20 21 V
-20 30 V
+20 29 V
 20 39 V
-20 50 V
-20 61 V
-20 72 V
-20 83 V
-20 91 V
-20 98 V
+19 49 V
+20 60 V
+20 71 V
+20 81 V
+20 89 V
+19 97 V
+20 101 V
 20 103 V
-20 105 V
-20 105 V
-20 102 V
-20 98 V
-20 92 V
-20 84 V
-20 75 V
-20 66 V
-20 56 V
-20 46 V
+20 103 V
+20 101 V
+19 96 V
+20 90 V
+20 83 V
+20 74 V
+20 64 V
+19 55 V
+20 45 V
 20 36 V
-20 27 V
-20 18 V
+20 26 V
+19 18 V
 20 9 V
 20 2 V
 20 -5 V
-20 -11 V
-20 -16 V
+20 -10 V
+19 -16 V
 20 -21 V
-20 -25 V
+20 -24 V
 20 -28 V
-20 -31 V
-20 -33 V
+20 -30 V
+19 -33 V
 20 -34 V
+20 -35 V
 20 -36 V
 20 -37 V
-20 -38 V
-20 -37 V
-20 -38 V
-20 -37 V
+19 -37 V
 20 -37 V
 20 -37 V
 20 -36 V
+20 -36 V
+19 -35 V
 20 -35 V
 20 -34 V
-20 -34 V
+20 -33 V
 20 -32 V
-20 -32 V
-20 -31 V
-20 -29 V
+19 -31 V
+20 -30 V
 20 -29 V
 20 -28 V
+20 -27 V
+19 -26 V
 20 -26 V
-20 -26 V
-20 -25 V
 20 -24 V
-20 -23 V
+20 -24 V
+19 -22 V
 20 -22 V
 20 -21 V
-20 -21 V
+20 -20 V
 20 -19 V
-20 -19 V
+19 -19 V
 20 -18 V
-20 -18 V
-20 -16 V
 20 -17 V
+20 -16 V
+20 -16 V
+19 -15 V
 20 -15 V
-20 -15 V
-20 -14 V
 20 -14 V
 20 -13 V
 20 -13 V
-20 -12 V
+19 -13 V
 20 -12 V
 20 -11 V
 20 -11 V
-20 -10 V
+20 -11 V
+19 -10 V
 20 -10 V
 20 -10 V
 20 -9 V
 20 -9 V
-20 -9 V
+stroke
+2540 635 M
+19 -8 V
 20 -8 V
 20 -8 V
 20 -8 V
+19 -7 V
 20 -7 V
-20 -8 V
-20 -6 V
-20 -7 V
 20 -7 V
 20 -6 V
+20 -7 V
+19 -6 V
 20 -6 V
 20 -6 V
 20 -5 V
-20 -6 V
+20 -5 V
+19 -5 V
 20 -5 V
 20 -5 V
 20 -5 V
-20 -5 V
 20 -4 V
-20 -5 V
-20 -4 V
+19 -5 V
 20 -4 V
 20 -4 V
 20 -4 V
 20 -4 V
-20 -3 V
-20 -4 V
+19 -4 V
 20 -3 V
 20 -4 V
 20 -3 V
 20 -3 V
+19 -3 V
+20 -4 V
 20 -3 V
-20 -3 V
+20 -2 V
+19 -3 V
 20 -3 V
 20 -3 V
 20 -2 V
 20 -3 V
+19 -2 V
 20 -3 V
 20 -2 V
 20 -2 V
+20 -2 V
+19 -2 V
+20 -2 V
 20 -3 V
-20 -2 V
-20 -2 V
-20 -3 V
-20 -2 V
-20 -2 V
+0.500 UL
+LTb
+481 331 M
+2969 0 V
+0 1745 V
+-2969 0 V
+481 331 L
+1.000 UP
 stroke
 grestore
 end
 showpage
 }}%
-\put(1950,2226){\cjust{Landau Distribution}}%
-\put(1950,50){\cjust{$x$}}%
-\put(100,1188){%
+\put(1965,2226){\cjust{Landau Distribution}}%
+\put(1965,50){\cjust{$x$}}%
+\put(100,1203){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(x)$}%
 \special{ps: currentpoint grestore moveto}%
 }%
 \put(3450,200){\cjust{ 10}}%
-\put(3250,200){\cjust{ 9}}%
-\put(3050,200){\cjust{ 8}}%
-\put(2850,200){\cjust{ 7}}%
-\put(2650,200){\cjust{ 6}}%
-\put(2450,200){\cjust{ 5}}%
-\put(2250,200){\cjust{ 4}}%
-\put(2050,200){\cjust{ 3}}%
-\put(1850,200){\cjust{ 2}}%
-\put(1650,200){\cjust{ 1}}%
-\put(1450,200){\cjust{ 0}}%
-\put(1250,200){\cjust{-1}}%
-\put(1050,200){\cjust{-2}}%
-\put(850,200){\cjust{-3}}%
-\put(650,200){\cjust{-4}}%
-\put(450,200){\cjust{-5}}%
+\put(3252,200){\cjust{ 9}}%
+\put(3054,200){\cjust{ 8}}%
+\put(2856,200){\cjust{ 7}}%
+\put(2658,200){\cjust{ 6}}%
+\put(2460,200){\cjust{ 5}}%
+\put(2262,200){\cjust{ 4}}%
+\put(2064,200){\cjust{ 3}}%
+\put(1867,200){\cjust{ 2}}%
+\put(1669,200){\cjust{ 1}}%
+\put(1471,200){\cjust{ 0}}%
+\put(1273,200){\cjust{-1}}%
+\put(1075,200){\cjust{-2}}%
+\put(877,200){\cjust{-3}}%
+\put(679,200){\cjust{-4}}%
+\put(481,200){\cjust{-5}}%
 \put(400,2076){\rjust{ 0.2}}%
-\put(400,1188){\rjust{ 0.1}}%
-\put(400,300){\rjust{ 0}}%
+\put(400,1204){\rjust{ 0.1}}%
+\put(400,331){\rjust{ 0}}%
 \endGNUPLOTpicture
 \endgroup
 \endinput

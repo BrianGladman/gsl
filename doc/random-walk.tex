@@ -21,15 +21,15 @@
   \gdef\endGNUPLOTpicture{\hss\egroup\egroup}%
 \fi
 \GNUPLOTunit=0.1bp
-{\GNUPLOTspecial{!
-%!PS-Adobe-2.0
+\GNUPLOTpicture(2880,2468)
+{\GNUPLOTspecial{"
+%!PS-Adobe-2.0 EPSF-2.0
 %%Title: random-walk.tex
-%%Creator: gnuplot 3.7 patchlevel 2
-%%CreationDate: Mon Oct 11 13:28:29 2004
+%%Creator: gnuplot 4.0 patchlevel 0
+%%CreationDate: Wed Aug 31 12:38:29 2005
 %%DocumentFonts: 
-%%BoundingBox: 0 0 251 216
+%%BoundingBox: 0 0 288 246
 %%Orientation: Landscape
-%%Pages: (atend)
 %%EndComments
 /gnudict 256 dict def
 gnudict begin
@@ -38,15 +38,19 @@ gnudict begin
 /gnulinewidth 5.000 def
 /userlinewidth gnulinewidth def
 /vshift -33 def
-/dl {10 mul} def
+/dl {10.0 mul} def
 /hpt_ 31.5 def
 /vpt_ 31.5 def
 /hpt hpt_ def
 /vpt vpt_ def
+/Rounded false def
 /M {moveto} bind def
 /L {lineto} bind def
 /R {rmoveto} bind def
 /V {rlineto} bind def
+/N {newpath moveto} bind def
+/C {setrgbcolor} bind def
+/f {rlineto fill} bind def
 /vpt2 vpt 2 mul def
 /hpt2 hpt 2 mul def
 /Lshow { currentpoint stroke M
@@ -58,12 +62,16 @@ gnudict begin
 /UP { dup vpt_ mul /vpt exch def hpt_ mul /hpt exch def
   /hpt2 hpt 2 mul def /vpt2 vpt 2 mul def } def
 /DL { Color {setrgbcolor Solid {pop []} if 0 setdash }
- {pop pop pop Solid {pop []} if 0 setdash} ifelse } def
-/BL { stroke userlinewidth 2 mul setlinewidth } def
-/AL { stroke userlinewidth 2 div setlinewidth } def
+ {pop pop pop 0 setgray Solid {pop []} if 0 setdash} ifelse } def
+/BL { stroke userlinewidth 2 mul setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
+/AL { stroke userlinewidth 2 div setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
 /UL { dup gnulinewidth mul /userlinewidth exch def
       dup 1 lt {pop 1} if 10 mul /udl exch def } def
-/PL { stroke userlinewidth setlinewidth } def
+/PL { stroke userlinewidth setlinewidth
+      Rounded { 1 setlinejoin 1 setlinecap } if } def
+/LTw { PL [] 1 setgray } def
 /LTb { BL [] 0 0 0 DL } def
 /LTa { AL [1 udl mul 2 udl mul] 0 setdash 0 0 0 setrgbcolor } def
 /LT0 { PL [] 1 0 0 DL } def
@@ -261,288 +269,303 @@ gnudict begin
 /CircW { stroke [] 0 setdash 
   hpt 0 360 arc Opaque stroke } def
 /BoxFill { gsave Rec 1 setgray fill grestore } def
+/BoxColFill {
+  gsave Rec
+  /Fillden exch def
+  currentrgbcolor
+  /ColB exch def /ColG exch def /ColR exch def
+  /ColR ColR Fillden mul Fillden sub 1 add def
+  /ColG ColG Fillden mul Fillden sub 1 add def
+  /ColB ColB Fillden mul Fillden sub 1 add def
+  ColR ColG ColB setrgbcolor
+  fill grestore } def
+%
+% PostScript Level 1 Pattern Fill routine
+% Usage: x y w h s a XX PatternFill
+%	x,y = lower left corner of box to be filled
+%	w,h = width and height of box
+%	  a = angle in degrees between lines and x-axis
+%	 XX = 0/1 for no/yes cross-hatch
+%
+/PatternFill { gsave /PFa [ 9 2 roll ] def
+    PFa 0 get PFa 2 get 2 div add PFa 1 get PFa 3 get 2 div add translate
+    PFa 2 get -2 div PFa 3 get -2 div PFa 2 get PFa 3 get Rec
+    gsave 1 setgray fill grestore clip
+    currentlinewidth 0.5 mul setlinewidth
+    /PFs PFa 2 get dup mul PFa 3 get dup mul add sqrt def
+    0 0 M PFa 5 get rotate PFs -2 div dup translate
+	0 1 PFs PFa 4 get div 1 add floor cvi
+	{ PFa 4 get mul 0 M 0 PFs V } for
+    0 PFa 6 get ne {
+	0 1 PFs PFa 4 get div 1 add floor cvi
+	{ PFa 4 get mul 0 2 1 roll M PFs 0 V } for
+    } if
+    stroke grestore } def
+%
 /Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont
 dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall
-currentdict end definefont
+currentdict end definefont pop
 end
 %%EndProlog
-}}%
-\GNUPLOTpicture(2519,2160)
-{\GNUPLOTspecial{"
-%%Page: 1 1
 gnudict begin
 gsave
 0 0 translate
 0.100 0.100 scale
 0 setgray
 newpath
-1.000 UL
+0.500 UL
 LTb
-350 300 M
-1560 0 R
-350 411 M
-1560 0 R
-350 523 M
-1560 0 R
-350 634 M
-1560 0 R
-350 746 M
-1560 0 R
-350 857 M
-1560 0 R
-350 969 M
-1560 0 R
-350 1080 M
-1560 0 R
-350 1191 M
-1560 0 R
-350 1303 M
-1560 0 R
-350 1414 M
-1560 0 R
-350 1526 M
-1560 0 R
-350 1637 M
-1560 0 R
-350 1749 M
-1560 0 R
-350 1860 M
-1560 0 R
-350 300 M
-0 1560 R
-406 300 M
-0 63 V
-0 1497 R
+413 363 M
+-63 0 V
+0.500 UL
+LTb
+413 544 M
+-63 0 V
+0.500 UL
+LTb
+413 724 M
+-63 0 V
+0.500 UL
+LTb
+413 905 M
+-63 0 V
+0.500 UL
+LTb
+413 1085 M
+-63 0 V
+0.500 UL
+LTb
+413 1266 M
+-63 0 V
+0.500 UL
+LTb
+413 1447 M
+-63 0 V
+0.500 UL
+LTb
+413 1627 M
+-63 0 V
+0.500 UL
+LTb
+413 1808 M
+-63 0 V
+0.500 UL
+LTb
+413 1988 M
+-63 0 V
+0.500 UL
+LTb
+413 2169 M
+-63 0 V
+0.500 UL
+LTb
+413 363 M
 0 -63 V
-461 300 M
-0 1560 R
-517 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+503 363 M
+91 0 R
 0 -63 V
-573 300 M
-0 1560 R
-629 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+684 363 M
+90 0 R
 0 -63 V
-684 300 M
-0 1560 R
-740 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+864 363 M
+91 0 R
 0 -63 V
-796 300 M
-0 1560 R
-851 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1045 363 M
+90 0 R
 0 -63 V
-907 300 M
-0 1560 R
-963 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1226 363 M
+90 0 R
 0 -63 V
-1019 300 M
-0 1560 R
-1074 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1406 363 M
+91 0 R
 0 -63 V
-1130 300 M
-0 1560 R
-1186 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1587 363 M
+90 0 R
 0 -63 V
-1241 300 M
-0 1560 R
-1297 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1767 363 M
+91 0 R
 0 -63 V
-1353 300 M
-0 1560 R
-1409 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+1948 363 M
+90 0 R
 0 -63 V
-1464 300 M
-0 1560 R
-1520 300 M
-0 63 V
-0 1497 R
+0.500 UL
+LTb
+2129 363 M
+90 0 R
 0 -63 V
-1576 300 M
-0 1560 R
-1631 300 M
-0 63 V
-0 1497 R
-0 -63 V
-1687 300 M
-0 1560 R
-1743 300 M
-0 63 V
-0 1497 R
-0 -63 V
-1799 300 M
-0 1560 R
-1854 300 M
-0 63 V
-0 1497 R
-0 -63 V
-1910 300 M
-0 1560 R
+0.500 UL
+LTb
 1.000 UL
 LTa
-350 1080 M
-1560 0 V
+413 1266 M
+1806 0 V
 1.000 UL
 LTa
-1130 300 M
-0 1560 V
-1.000 UL
+1316 363 M
+0 1806 V
+0.500 UL
 LTb
-350 300 M
-1560 0 V
-0 1560 V
--1560 0 V
-350 300 L
+413 363 M
+1806 0 V
+0 1806 V
+-1806 0 V
+413 363 L
+LTb
+LTb
+LTb
+1.000 UP
 1.000 UP
 1.000 UL
 LT0
-1130 1080 M
--66 90 V
-32 107 V
-98 53 V
-86 71 V
--10 -111 V
--100 -50 V
--109 24 V
--76 82 V
-108 29 V
-103 41 V
--66 -336 R
--103 43 V
--108 25 V
-99 50 V
--74 82 V
--69 88 V
-42 -103 V
--91 -63 V
-110 16 V
-57 -96 V
--83 74 V
-220 -116 R
--108 -26 V
--51 99 V
--59 95 V
--106 34 V
-105 -35 V
-17 110 V
--93 -62 V
--9 111 V
--63 -92 V
-44 103 V
-323 -337 R
--107 -32 V
-66 90 V
-68 89 V
--26 108 V
--50 -99 V
--69 -88 V
-100 -50 V
-83 -75 V
-101 46 V
-91 65 V
-1130 1080 Pls
-1064 1170 Pls
-1096 1277 Pls
-1194 1330 Pls
-1280 1401 Pls
-1270 1290 Pls
-1170 1240 Pls
-1061 1264 Pls
-985 1346 Pls
-1093 1375 Pls
-1196 1416 Pls
-1130 1080 Pls
-1027 1123 Pls
-919 1148 Pls
-1018 1198 Pls
-944 1280 Pls
-875 1368 Pls
-917 1265 Pls
-826 1202 Pls
-936 1218 Pls
-993 1122 Pls
-910 1196 Pls
-1130 1080 Pls
-1022 1054 Pls
-971 1153 Pls
-912 1248 Pls
-806 1282 Pls
-911 1247 Pls
-928 1357 Pls
-835 1295 Pls
-826 1406 Pls
-763 1314 Pls
-807 1417 Pls
-1130 1080 Pls
-1023 1048 Pls
-1089 1138 Pls
-1157 1227 Pls
-1131 1335 Pls
-1081 1236 Pls
-1012 1148 Pls
-1112 1098 Pls
-1195 1023 Pls
-1296 1069 Pls
-1387 1134 Pls
+1316 1266 M
+-106 146 V
+51 173 V
+159 86 V
+139 115 V
+-17 -180 V
+-161 -81 V
+-176 40 V
+-124 132 V
+175 47 V
+168 66 V
+1316 1266 M
+-166 70 V
+-176 40 V
+161 81 V
+-121 134 V
+903 1734 L
+68 -168 V
+823 1463 L
+179 27 V
+92 -156 V
+959 1454 L
+357 -188 R
+-176 -42 V
+-82 161 V
+-96 153 V
+-172 55 V
+172 -57 V
+26 179 V
+838 1614 L
+-14 180 V
+721 1646 L
+71 166 V
+524 -546 R
+-173 -51 V
+106 146 V
+110 143 V
+-41 176 V
+-82 -161 V
+1125 1376 L
+161 -82 V
+135 -120 V
+165 74 V
+146 106 V
+1316 1266 Pls
+1210 1412 Pls
+1261 1585 Pls
+1420 1671 Pls
+1559 1786 Pls
+1542 1606 Pls
+1381 1525 Pls
+1205 1565 Pls
+1081 1697 Pls
+1256 1744 Pls
+1424 1810 Pls
+1316 1266 Pls
+1150 1336 Pls
+974 1376 Pls
+1135 1457 Pls
+1014 1591 Pls
+903 1734 Pls
+971 1566 Pls
+823 1463 Pls
+1002 1490 Pls
+1094 1334 Pls
+959 1454 Pls
+1316 1266 Pls
+1140 1224 Pls
+1058 1385 Pls
+962 1538 Pls
+790 1593 Pls
+962 1536 Pls
+988 1715 Pls
+838 1614 Pls
+824 1794 Pls
+721 1646 Pls
+792 1812 Pls
+1316 1266 Pls
+1143 1215 Pls
+1249 1361 Pls
+1359 1504 Pls
+1318 1680 Pls
+1236 1519 Pls
+1125 1376 Pls
+1286 1294 Pls
+1421 1174 Pls
+1586 1248 Pls
+1732 1354 Pls
+0.500 UL
+LTb
+413 363 M
+1806 0 V
+0 1806 V
+-1806 0 V
+413 363 L
+1.000 UP
 stroke
 grestore
 end
 showpage
 }}%
-\put(1130,2010){\cjust{Random walk}}%
-\put(1130,50){\cjust{$k$}}%
-\put(100,1080){%
+\put(1316,2319){\cjust{Random walk}}%
+\put(1316,50){\cjust{$k$}}%
+\put(100,1266){%
 \special{ps: gsave currentpoint currentpoint translate
 270 rotate neg exch neg exch translate}%
 \cstack{$p(k)$}%
 \special{ps: currentpoint grestore moveto}%
 }%
-\put(1910,200){\cjust{ 7}}%
-\put(1799,200){\cjust{ 6}}%
-\put(1687,200){\cjust{ 5}}%
-\put(1576,200){\cjust{ 4}}%
-\put(1464,200){\cjust{ 3}}%
-\put(1353,200){\cjust{ 2}}%
-\put(1241,200){\cjust{ 1}}%
-\put(1130,200){\cjust{ 0}}%
-\put(1019,200){\cjust{-1}}%
-\put(907,200){\cjust{-2}}%
-\put(796,200){\cjust{-3}}%
-\put(684,200){\cjust{-4}}%
-\put(573,200){\cjust{-5}}%
-\put(461,200){\cjust{-6}}%
-\put(350,200){\cjust{-7}}%
-\put(300,1860){\rjust{ 7}}%
-\put(300,1749){\rjust{ 6}}%
-\put(300,1637){\rjust{ 5}}%
-\put(300,1526){\rjust{ 4}}%
-\put(300,1414){\rjust{ 3}}%
-\put(300,1303){\rjust{ 2}}%
-\put(300,1191){\rjust{ 1}}%
-\put(300,1080){\rjust{ 0}}%
-\put(300,969){\rjust{-1}}%
-\put(300,857){\rjust{-2}}%
-\put(300,746){\rjust{-3}}%
-\put(300,634){\rjust{-4}}%
-\put(300,523){\rjust{-5}}%
-\put(300,411){\rjust{-6}}%
-\put(300,300){\rjust{-7}}%
+\put(2219,200){\cjust{ 5}}%
+\put(2038,200){\cjust{ 4}}%
+\put(1858,200){\cjust{ 3}}%
+\put(1677,200){\cjust{ 2}}%
+\put(1497,200){\cjust{ 1}}%
+\put(1316,200){\cjust{ 0}}%
+\put(1135,200){\cjust{-1}}%
+\put(955,200){\cjust{-2}}%
+\put(774,200){\cjust{-3}}%
+\put(594,200){\cjust{-4}}%
+\put(413,200){\cjust{-5}}%
+\put(300,2169){\rjust{ 5}}%
+\put(300,1988){\rjust{ 4}}%
+\put(300,1808){\rjust{ 3}}%
+\put(300,1627){\rjust{ 2}}%
+\put(300,1447){\rjust{ 1}}%
+\put(300,1266){\rjust{ 0}}%
+\put(300,1085){\rjust{-1}}%
+\put(300,905){\rjust{-2}}%
+\put(300,724){\rjust{-3}}%
+\put(300,544){\rjust{-4}}%
+\put(300,363){\rjust{-5}}%
 \endGNUPLOTpicture
 \endgroup
 \endinput
