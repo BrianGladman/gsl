@@ -25,12 +25,12 @@ plot sigma=1.0, p(x) title "$\\sigma=1$", \
 	sigma=2.0, p(x) title "$\\sigma=2$"
 
 set xrange [0:5]
-set yrange [0:0.2]
-set ytics 0.1
+set yrange [0:2]
+set ytics 0.5
 set xtics 1
 set output "rand-gaussian-tail.tex"
 set title "Gaussian Tail Distribution"
-p(x)= x > a ? 1/sqrt(2*pi*sigma**2)*exp(-x**2/(2*sigma**2)) : 0
+p(x)= x > a ? 1/(0.5*erfc(a/sqrt(2*sigma**2))*sqrt(2*pi*sigma**2))*exp(-x**2/(2*sigma**2)) : 0
 plot a=1.5, sigma=1.0, p(x) title "$\\sigma=1,a=1.5$"
 
 set xrange [0:5]
