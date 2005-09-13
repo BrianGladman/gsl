@@ -144,6 +144,9 @@ The Texinfo source for this manual may be obtained from @*
 @ifclear publish
 Printed copies of this manual can be purchased from Network Theory Ltd
 at@* @uref{http://www.network-theory.co.uk/gsl/manual/}.
+
+The money raised from sales of the manual helps support the
+development of GSL.
 @end ifclear
 @end copying
 @end iftex
@@ -209,7 +212,8 @@ University of Paris-Dauphine
 
 This file documents the @value{GSL} (GSL), a collection of numerical
 routines for scientific computing.  It corresponds to release
-@value{VERSION} of the library.
+@value{VERSION} of the library.  Please report any errors in this
+manual to @email{bug-gsl@@gnu.org}.
 
 More information about GSL can be found at the project homepage,
 @uref{http://www.gnu.org/software/gsl/}.
@@ -219,6 +223,10 @@ under the terms of the GNU Free Documentation License.
 
 Printed copies of this manual can be purchased from Network Theory Ltd
 at @uref{http://www.network-theory.co.uk/gsl/manual/}.
+
+The money raised from sales of the manual helps support the
+development of GSL.
+
 @end ifnottex
 
 @menu

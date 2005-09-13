@@ -343,3 +343,5 @@ with NANs
 
 * Peter Brommer <pbro@itap.physik.uni-stuttgart.de> bug report and patch
 for Brent minimisation algorithm.
+
+* Gabriel Withington <gabriel.withington@umassmed.edu> typo in docs
