@@ -1028,7 +1028,7 @@ given by @var{tda} is unchanged.  Mathematically, the
 @math{(i,j)}-th element of the new matrix is given by,
 
 @example
-m'(i,j) = m->data[(k1*m->tda + k1) + i*m->tda + j]
+m'(i,j) = m->data[(k1*m->tda + k2) + i*m->tda + j]
 @end example
 @noindent
 where the index @var{i} runs from 0 to @code{n1-1} and the index @var{j}
