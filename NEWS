@@ -1,4 +1,4 @@
-* What is in gsl-1.7:
+* What is new in gsl-1.7:
 
 ** Switched gsl_randist_binomial to use the faster binomial random
 variate TPE algorithm by default.  The previous binomial variate
