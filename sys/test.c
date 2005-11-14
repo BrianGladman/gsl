@@ -385,18 +385,18 @@ main (void)
   /* Test constants in gsl_math.h */
 
   {
-    double x = ln(M_E);
+    double x = log(M_E);
     gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "ln(M_E)");
   }
   
   {
     double x=pow(2.0,M_LOG2E);
-    gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "2^M_LOG2E");
+    gsl_test_rel (x, exp(1.0), 4 * GSL_DBL_EPSILON, "2^M_LOG2E");
   }
  
   {
     double x=pow(10.0,M_LOG10E);
-    gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "10^M_LOG10E");
+    gsl_test_rel (x, exp(1.0), 4 * GSL_DBL_EPSILON, "10^M_LOG10E");
   }
 
   {
@@ -436,22 +436,12 @@ main (void)
 
   {
     double x = pow(M_2_SQRTPI, 2.0);
-    gsl_test_rel (x, 2*M_PI, 4 * GSL_DBL_EPSILON, "M_2_SQRTPI^2");
-  }    
-
-  {
-    double x = pow(M_2_SQRTPI, 2.0);
     gsl_test_rel (x, 4/M_PI, 4 * GSL_DBL_EPSILON, "M_SQRTPI^2");
   }    
 
   {
-    double x = M_1_SQRTPI;
+    double x = M_1_PI;
     gsl_test_rel (x, 1/M_PI, 4 * GSL_DBL_EPSILON, "M_1_SQRTPI");
-  }    
-
-  {
-    double x = M_1_SQRTPI;
-    gsl_test_rel (x, 1/sqrt(M_PI), 4 * GSL_DBL_EPSILON, "M_1_SQRTPI");
   }    
 
   {
