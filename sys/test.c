@@ -381,5 +381,103 @@ main (void)
     gsl_test_rel (x, 2.0 / 3.0, 4 * GSL_DBL_EPSILON, "gsl_fdiv(2,3)");
   }
 
+
+  /* Test constants in gsl_math.h */
+
+  {
+    double x = ln(M_E);
+    gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "ln(M_E)");
+  }
+  
+  {
+    double x=pow(2.0,M_LOG2E);
+    gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "2^M_LOG2E");
+  }
+ 
+  {
+    double x=pow(10.0,M_LOG10E);
+    gsl_test_rel (x, 1.0, 4 * GSL_DBL_EPSILON, "10^M_LOG10E");
+  }
+
+  {
+    double x=pow(M_SQRT2, 2.0);
+    gsl_test_rel (x, 2.0, 4 * GSL_DBL_EPSILON, "M_SQRT2^2");
+  }    
+
+  {
+    double x=pow(M_SQRT1_2, 2.0);
+    gsl_test_rel (x, 1.0/2.0, 4 * GSL_DBL_EPSILON, "M_SQRT1_2");
+  }    
+
+  {
+    double x=pow(M_SQRT3, 2.0);
+    gsl_test_rel (x, 3.0, 4 * GSL_DBL_EPSILON, "M_SQRT3^2");
+  }    
+
+  {
+    double x = M_PI;
+    gsl_test_rel (x, 3.1415926535897932384626433832795, 4 * GSL_DBL_EPSILON, "M_PI");
+  }    
+
+  {
+    double x = 2 * M_PI_2;
+    gsl_test_rel (x, M_PI, 4 * GSL_DBL_EPSILON, "2*M_PI_2");
+  }    
+
+  {
+    double x = 4 * M_PI_4;
+    gsl_test_rel (x, M_PI, 4 * GSL_DBL_EPSILON, "4*M_PI_4");
+  }    
+
+  {
+    double x = pow(M_SQRTPI, 2.0);
+    gsl_test_rel (x, M_PI, 4 * GSL_DBL_EPSILON, "M_SQRTPI^2");
+  }    
+
+  {
+    double x = pow(M_2_SQRTPI, 2.0);
+    gsl_test_rel (x, 2*M_PI, 4 * GSL_DBL_EPSILON, "M_2_SQRTPI^2");
+  }    
+
+  {
+    double x = pow(M_2_SQRTPI, 2.0);
+    gsl_test_rel (x, 4/M_PI, 4 * GSL_DBL_EPSILON, "M_SQRTPI^2");
+  }    
+
+  {
+    double x = M_1_SQRTPI;
+    gsl_test_rel (x, 1/M_PI, 4 * GSL_DBL_EPSILON, "M_1_SQRTPI");
+  }    
+
+  {
+    double x = M_1_SQRTPI;
+    gsl_test_rel (x, 1/sqrt(M_PI), 4 * GSL_DBL_EPSILON, "M_1_SQRTPI");
+  }    
+
+  {
+    double x = M_2_PI;
+    gsl_test_rel (x, 2.0/M_PI, 4 * GSL_DBL_EPSILON, "M_2_PI");
+  }    
+
+  {
+    double x = exp(M_LN10);
+    gsl_test_rel (x, 10, 4 * GSL_DBL_EPSILON, "exp(M_LN10)");
+  }    
+
+  {
+    double x = exp(M_LN2);
+    gsl_test_rel (x, 2, 4 * GSL_DBL_EPSILON, "exp(M_LN2)");
+  }    
+
+  {
+    double x = exp(M_LNPI);
+    gsl_test_rel (x, M_PI, 4 * GSL_DBL_EPSILON, "exp(M_LNPI)");
+  }    
+
+  {
+    double x = M_EULER;
+    gsl_test_rel (x, 0.5772156649015328606065120900824, 4 * GSL_DBL_EPSILON, "M_EULER");
+  }    
+
   exit (gsl_test_summary ());
 }
