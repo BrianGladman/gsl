@@ -5,8 +5,8 @@
 @setfilename gsl-ref.info
 @settitle GNU Scientific Library -- Reference Manual
 @finalout
-@ifset publish
 @set frontcontents
+@ifset publish
 @setchapternewpage odd
 @end ifset
 @c %**end of header

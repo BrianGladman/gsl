@@ -291,6 +291,40 @@ gsl_wavelet2d_nstransform (const gsl_wavelet * w,
   return GSL_SUCCESS;
 }
 
+
+int
+gsl_wavelet2d_transform_forward (const gsl_wavelet * w, 
+                                 double *data, size_t tda, size_t size1,
+                                 size_t size2, gsl_wavelet_workspace * work)
+{
+  return gsl_wavelet2d_transform (w, data, tda, size1, size2, forward, work);
+}
+
+int
+gsl_wavelet2d_transform_inverse (const gsl_wavelet * w, 
+                                  double *data, size_t tda, size_t size1,
+                                  size_t size2, gsl_wavelet_workspace * work)
+{
+  return gsl_wavelet2d_transform (w, data, tda, size1, size2, backward, work);
+}
+
+int
+gsl_wavelet2d_nstransform_forward (const gsl_wavelet * w, 
+                                 double *data, size_t tda, size_t size1,
+                                 size_t size2, gsl_wavelet_workspace * work)
+{
+  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, forward, work);
+}
+
+int
+gsl_wavelet2d_nstransform_inverse (const gsl_wavelet * w, 
+                                  double *data, size_t tda, size_t size1,
+                                  size_t size2, gsl_wavelet_workspace * work)
+{
+  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, backward, work);
+}
+
+
 int
 gsl_wavelet2d_transform_matrix (const gsl_wavelet * w, 
                                 gsl_matrix * a,

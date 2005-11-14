@@ -339,7 +339,7 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 #---############################################################################
 
 $use_bibliography = 1;
-$use_acc = 0;
+$use_acc = 1;
 $debug = 0;
 $doctype = '';
 $check = 0;
