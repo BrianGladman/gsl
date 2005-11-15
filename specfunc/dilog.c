@@ -145,7 +145,7 @@ dilog_xge0(const double x, gsl_sf_result * result)
     result->val  = t1 - t2 - t3;
     result->err  = GSL_DBL_EPSILON * fabs(log_x) + ser.err;
     result->err += GSL_DBL_EPSILON * (fabs(t1) + fabs(t2) + fabs(t3));
-    result->val += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_ser;
   }
   else if(x > 1.01) {
