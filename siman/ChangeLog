@@ -1,3 +1,8 @@
+2005-11-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* siman.c (safe_exp): added a safe_exp function to avoid underflow
+	for large uphill steps
+	
 2003-03-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* siman.c (gsl_siman_solve): avoid reevaluation for best_E

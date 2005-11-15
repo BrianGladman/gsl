@@ -24,9 +24,16 @@
 #include <string.h>
 #include <assert.h>
 
+#include <gsl/gsl_machine.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
 
+static inline 
+double safe_exp (double x) /* avoid underflow errors for large uphill steps */
+{ 
+  return (x < GSL_LOG_DBL_MIN) ? 0.0 : exp(x);
+}
+      
 /* implementation of a basic simulated annealing algorithm */
 
 void 
@@ -112,7 +119,7 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
         }
         E = new_E;
         ++n_eless;
-      } else if (gsl_rng_uniform(r) < exp (-(new_E - E)/(params.k * T)) ) {
+      } else if (gsl_rng_uniform(r) < safe_exp (-(new_E - E)/(params.k * T)) ) {
         /* yay! take a step */
         if (copyfunc) {
           copyfunc(new_x, x);
@@ -210,12 +217,12 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
           memcpy ((char *)new_x + i * element_size, x, element_size);
           take_step (r, (char *)new_x + i * element_size, params.step_size);
           energies[i] = Ef ((char *)new_x + i * element_size);
-          probs[i] = exp (-(energies[i] - Ex) / (params.k * T));
+          probs[i] = safe_exp (-(energies[i] - Ex) / (params.k * T));
         }
       /* now add in the old value of "x", so it is a contendor */
       memcpy ((char *)new_x + (params.n_tries - 1) * element_size, x, element_size);
       energies[params.n_tries - 1] = Ex;
-      probs[params.n_tries - 1] = exp (-(energies[i] - Ex) / (params.k * T));
+      probs[params.n_tries - 1] = safe_exp (-(energies[i] - Ex) / (params.k * T));
 
       /* now throw biased die to see which new_x[i] we choose */
       sum_probs[0] = probs[0];
