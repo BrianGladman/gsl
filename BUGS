@@ -92,4 +92,25 @@ can safely be set to 'const' since these are only used for
 initialization of another gsl_vector.
 
 ----------------------------------------------------------------------
-Last assigned bug number = 41
+BUG#42 -- gsl_sf_expint_E2 fails for x=0
+
+The implementation for gsl_sf_expint_E2 uses a term "x*E1(x)" but
+E1(x) is infinite at x=0, so there is an error.  E2 needs a 
+separate implementation to handle this.  Also the error term
+
+  else if(x < 100.0) {
+    const double ex = ( scale ? 1.0 : exp(-x) );
+    gsl_sf_result result_E1;
+    int stat_E1 = expint_E1_impl(x, &result_E1, scale);
+    result->val  = ex - x*result_E1.val;
+    result->err  = fabs(x) * (GSL_DBL_EPSILON*ex + result_E1.err);
+    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+    return stat_E1;
+  }
+
+should probably be 
+
+    result->err  = GSL_DBL_EPSILON*ex + fabs(x) * result_E1.err;
+
+----------------------------------------------------------------------
+Last assigned bug number = 42

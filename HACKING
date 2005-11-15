@@ -155,7 +155,9 @@ compilation.
     $ cd doc
     $ gendocs.sh gsl-ref "GNU Scientific Library -- Reference"
     $ cd manual
-    $ cvs -d savannah.gnu.org:/webcvs/gsl import -m 'this is release 0.123' gsl/manual gendocs release-0-123
+    # NOTE DON'T TRY TO IMPORT - it doesn't work as .GZ files tend to be ignored
+    # JUST COPY THE FILES INTO A CHECKED OUT AREA AND CVS ADD/REMOVE AND COMMIT THEM
+    $ ############### cvs -d savannah.gnu.org:/webcvs/gsl import -m 'this is release 0.123' gsl/manual gendocs release-0-123  ############
 
 * Make postscript file in the usual way.  Test with different versions
 of ghostscript for compatibility.
