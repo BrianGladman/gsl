@@ -69,6 +69,10 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
   
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
     {
+      /* do nothing */
+    } 
+  else
+    {
       GSL_ERROR ("the denormalized operand exception has not been implemented for m68k yet. Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
       /*mode |= _FPU_MASK_DM ; ???? */ 
     }

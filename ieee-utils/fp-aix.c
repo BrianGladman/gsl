@@ -80,9 +80,15 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     mode &= ~ TRP_INVALID ;
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    GSL_ERROR ("AIX does not support the denormalized operand exception. "
-               "Use 'mask-denormalized' to work around this.",
-               GSL_EUNSUP) ;
+    {
+      /* do nothing */
+    }
+  else 
+    {
+      GSL_ERROR ("AIX does not support the denormalized operand exception. "
+                 "Use 'mask-denormalized' to work around this.",
+                 GSL_EUNSUP) ;
+    }
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     mode &= ~ TRP_DIV_BY_ZERO ;

@@ -57,18 +57,18 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
       fp_scr.rn = RN_NEAREST ;
     }
 
-
-  /* Turn on all the exceptions apart from 'inexact' */
-  /* I'm not sure what 'Turn on' means.              */
-  /* I'm assuming that enable = 1 and disable = 0    */
-  /* and that disable is what is wanted.             */
-
   if (exception_mask & GSL_IEEE_MASK_INVALID)
     fp_scr.ve = 0 ;                             //ve bit:  invalid op exception enable
 
   if (exception_mask & GSL_IEEE_MASK_DENORMALIZED)
-    GSL_ERROR ("powerpc does not support the denormalized operand exception. "
-               "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
+    {
+      /* do nothing */
+    }
+  else
+    {
+      GSL_ERROR ("powerpc does not support the denormalized operand exception. "
+                 "Use 'mask-denormalized' to work around this.", GSL_EUNSUP) ;
+    }
 
   if (exception_mask & GSL_IEEE_MASK_DIVISION_BY_ZERO)
     fp_scr.ze = 0 ;                             //ze bit:  zero divide exception enable
@@ -85,7 +85,7 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     }
   else
     {
-      fp_scr.xe = 1 ;                  
+      fp_scr.xe = 01 ;                  
     }
 
   set_fp_scr(fp_scr);
