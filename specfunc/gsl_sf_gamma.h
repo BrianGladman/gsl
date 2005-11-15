@@ -280,6 +280,11 @@ double gsl_sf_beta_inc(const double a, const double b, const double x);
  */
 #define GSL_SF_GAMMA_XMAX  171.0
 
+/* The maximum n such that gsl_sf_fact(n) does not give an overflow. */
+#define GSL_SF_FACT_NMAX 170
+
+/* The maximum n such that gsl_sf_doublefact(n) does not give an overflow. */
+#define GSL_SF_DOUBLEFACT_NMAX 297
 
 __END_DECLS
 

@@ -117,6 +117,9 @@ These routines compute the Taylor coefficient @math{x^n / n!} for
 @cindex factorial
 These routines compute the factorial @math{n!}.  The factorial is
 related to the Gamma function by @math{n! = \Gamma(n+1)}.
+The maximum value of @math{n} such that @math{n!} is not
+considered an overflow is given by the macro @code{GSL_SF_FACT_NMAX}
+and is 170.
 @comment exceptions: GSL_EDOM, GSL_OVRFLW
 @end deftypefun
 
@@ -124,6 +127,9 @@ related to the Gamma function by @math{n! = \Gamma(n+1)}.
 @deftypefunx int gsl_sf_doublefact_e (unsigned int @var{n}, gsl_sf_result * @var{result})
 @cindex double factorial
 These routines compute the double factorial @math{n!! = n(n-2)(n-4) \dots}. 
+The maximum value of @math{n} such that @math{n!!} is not
+considered an overflow is given by the macro @code{GSL_SF_DOUBLEFACT_NMAX}
+and is 297.
 @comment exceptions: GSL_EDOM, GSL_OVRFLW
 @end deftypefun
 
