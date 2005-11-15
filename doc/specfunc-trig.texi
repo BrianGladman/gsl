@@ -133,19 +133,19 @@ These routines force the angle @var{theta} to lie in the range @math{[0,
 @node Trigonometric Functions With Error Estimates
 @subsection Trigonometric Functions With Error Estimates
 
-@deftypefun double gsl_sf_sin_err (double @var{x}, double @var{dx})
-@deftypefunx int gsl_sf_sin_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
-These routines compute the sine of an angle @var{x} with an associated 
+@deftypefun int gsl_sf_sin_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
+This routine computes the sine of an angle @var{x} with an associated 
 absolute error @var{dx},
 @c{$\sin(x \pm dx)$}
-@math{\sin(x \pm dx)}.
+@math{\sin(x \pm dx)}.  Note that this function is provided in the error-handling form only since
+its purpose is to compute the propagated error.
 @end deftypefun
 
-@deftypefun double gsl_sf_cos_err (double @var{x}, double @var{dx})
-@deftypefunx int gsl_sf_cos_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
-These routines compute the cosine of an angle @var{x} with an associated
-absolute error @var{dx},
+@deftypefun int gsl_sf_cos_err_e (double @var{x}, double @var{dx}, gsl_sf_result * @var{result})
+This routine computes the cosine of an angle @var{x} with an associated
+absolute error @var{dx}, 
 @c{$\cos(x \pm dx)$}
-@math{\cos(x \pm dx)}.
+@math{\cos(x \pm dx)}.  Note that this function is provided in the error-handling form only since
+its purpose is to compute the propagated error.
 @end deftypefun
 
