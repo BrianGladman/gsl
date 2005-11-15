@@ -1,3 +1,7 @@
+2005-11-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* dilog.c (dilog_xge0): fix calculation of error estimate
+
 2005-08-04  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coulomb.c (gsl_sf_coulomb_wave_sphF_array): fix warning about
