@@ -208,6 +208,12 @@ defined in the header file @file{gsl_spline.h}.
 @deftypefun void gsl_spline_free (gsl_spline * @var{spline})
 @end deftypefun
 
+@deftypefun {const char *} gsl_spline_name (const gsl_spline * @var{spline})
+@end deftypefun
+
+@deftypefun {unsigned int} gsl_spline_min_size (const gsl_spline * @var{spline})
+@end deftypefun
+
 @deftypefun double gsl_spline_eval (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc})
 @deftypefunx int gsl_spline_eval_e (const gsl_spline * @var{spline}, double @var{x}, gsl_interp_accel * @var{acc}, double * @var{y})
 @end deftypefun

@@ -345,3 +345,6 @@ with NANs
 for Brent minimisation algorithm.
 
 * Gabriel Withington <gabriel.withington@umassmed.edu> typo in docs
+
+* Stewart V. Wright <swright+gsl@physics.adelaide.edu.au> patch for missing 
+spline functions

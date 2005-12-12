@@ -49,6 +49,9 @@ gsl_spline_alloc(const gsl_interp_type * T, size_t size);
 int
 gsl_spline_init(gsl_spline * spline, const double xa[], const double ya[], size_t size);
 
+const char * gsl_spline_name(const gsl_spline * spline);
+unsigned int gsl_spline_min_size(const gsl_spline * spline);
+
 
 int
 gsl_spline_eval_e(const gsl_spline * spline, double x,

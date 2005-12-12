@@ -83,6 +83,18 @@ gsl_spline_init (gsl_spline * spline, const double x_array[], const double y_arr
   }
 }
 
+const char *
+gsl_spline_name(const gsl_spline * spline)
+{
+  return gsl_interp_name(spline->interp);
+}
+
+unsigned int
+gsl_spline_min_size(const gsl_spline * spline)
+{
+  return gsl_interp_min_size(spline->interp);
+}
+
 void
 gsl_spline_free (gsl_spline * spline)
 {
