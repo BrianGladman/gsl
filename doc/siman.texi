@@ -24,9 +24,10 @@ The functions described in this chapter are declared in the header file
 * Simulated Annealing algorithm::  
 * Simulated Annealing functions::  
 * Examples with Simulated Annealing::  
+* Simulated Annealing References and Further Reading::  
 @end menu
 
-@node Simulated Annealing algorithm, Simulated Annealing functions, Simulated Annealing, Simulated Annealing
+@node Simulated Annealing algorithm
 @section Simulated Annealing algorithm
 
 The simulated annealing algorithm takes random walks through the problem
@@ -72,7 +73,7 @@ where @math{\mu_T} is slightly greater than 1.
 The slight probability of taking a step that gives higher energy is what
 allows simulated annealing to frequently get out of local minima.
 
-@node Simulated Annealing functions, Examples with Simulated Annealing, Simulated Annealing algorithm, Simulated Annealing
+@node Simulated Annealing functions
 @section Simulated Annealing functions
 
 @deftypefun void gsl_siman_solve (const gsl_rng * @var{r}, void * @var{x0_p}, gsl_siman_Efunc_t @var{Ef}, gsl_siman_step_t @var{take_step}, gsl_siman_metric_t @var{distance}, gsl_siman_print_t @var{print_position}, gsl_siman_copy_t @var{copyfunc}, gsl_siman_copy_construct_t @var{copy_constructor}, gsl_siman_destroy_t @var{destructor}, size_t @var{element_size}, gsl_siman_params_t @var{params})
@@ -201,7 +202,7 @@ The parameters of the Boltzmann distribution and cooling schedule.
 @end deftp
 
 
-@node Examples with Simulated Annealing,  , Simulated Annealing functions, Simulated Annealing
+@node Examples with Simulated Annealing
 @section Examples
 
 The simulated annealing package is clumsy, and it has to be because it
@@ -214,7 +215,7 @@ application with little change and should make things easier.
 * Traveling Salesman Problem::  
 @end menu
 
-@node Trivial example, Traveling Salesman Problem, Examples with Simulated Annealing, Examples with Simulated Annealing
+@node Trivial example
 @subsection Trivial example
 
 The first example, in one dimensional cartesian space, sets up an energy
@@ -252,7 +253,7 @@ temperatures it converges.
 @end quotation
 @end iftex
 
-@node Traveling Salesman Problem,  , Trivial example, Examples with Simulated Annealing
+@node Traveling Salesman Problem
 @subsection Traveling Salesman Problem
 @cindex TSP
 @cindex traveling salesman problem
@@ -356,7 +357,7 @@ Flying Salesman Problem.
 @end quotation
 @end iftex
 
-@comment @node Simulated Annealing References and Further Reading
+@node Simulated Annealing References and Further Reading
 @section References and Further Reading
 
 Further information is available in the following book,
