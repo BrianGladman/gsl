@@ -71,6 +71,12 @@ include path for @code{gcc} searches @file{/usr/local/include} automatically so
 the @code{-I} option can actually be omitted when GSL is installed 
 in its default location.
 
+@menu
+* Linking programs with the library::  
+* Linking with an alternative BLAS library::  
+@end menu
+
+@node Linking programs with the library
 @subsection Linking programs with the library
 @cindex compiling programs, library paths
 @cindex linking with GSL libraries
@@ -97,6 +103,7 @@ The default library path for @code{gcc} searches @file{/usr/local/lib}
 automatically so the @code{-L} option can be omitted when GSL is
 installed in its default location.
 
+@node Linking with an alternative BLAS library
 @subsection Linking with an alternative BLAS library
 
 The following command line shows how you would link the same application

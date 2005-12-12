@@ -121,6 +121,13 @@ the best approximation to an integral over a small range.  The
 difference between the results of the higher order rule and the lower
 order rule gives an estimate of the error in the approximation.
 
+@menu
+* Integrands without weight functions::  
+* Integrands with weight functions::  
+* Integrands with singular weight functions::  
+@end menu
+
+@node Integrands without weight functions
 @subsection Integrands without weight functions
 @cindex Gauss-Kronrod quadrature
 The algorithms for general functions (without a weight function) are
@@ -136,6 +143,7 @@ The higher order Kronrod rule is used as the best approximation to the
 integral, and the difference between the two rules is used as an
 estimate of the error in the approximation.
 
+@node Integrands with weight functions
 @subsection Integrands with weight functions
 @cindex Clenshaw-Curtis quadrature
 @cindex Modified Clenshaw-Curtis quadrature
@@ -149,6 +157,7 @@ original function.  The Chebyshev expansion can be extended to higher
 orders to improve the approximation and provide an estimate of the
 error.
 
+@node Integrands with singular weight functions
 @subsection Integrands with singular weight functions
 
 The presence of singularities (or other behavior) in the integrand can
