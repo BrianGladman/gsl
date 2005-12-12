@@ -1467,14 +1467,14 @@ several equal maximum elements then the first element found is returned,
 searching in row-major order.
 @end deftypefun
 
-@deftypefun void gsl_matrix_min_index (const gsl_matrix * @var{m}, size_t * @var{imax}, size_t * @var{jmax})
+@deftypefun void gsl_matrix_min_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{jmin})
 This function returns the indices of the minimum value in the matrix
-@var{m}, storing them in @var{imax} and @var{jmax}.  When there are
+@var{m}, storing them in @var{imin} and @var{jmin}.  When there are
 several equal minimum elements then the first element found is returned,
 searching in row-major order.
 @end deftypefun
 
-@deftypefun void gsl_matrix_minmax_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{imax})
+@deftypefun void gsl_matrix_minmax_index (const gsl_matrix * @var{m}, size_t * @var{imin}, size_t * @var{jmin}, size_t * @var{imax}, size_t * @var{jmax})
 This function returns the indices of the minimum and maximum values in
 the matrix @var{m}, storing them in (@var{imin},@var{jmin}) and
 (@var{imax},@var{jmax}). When there are several equal minimum or maximum
