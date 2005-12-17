@@ -170,15 +170,27 @@ this function if you need to avoid a singularity at 0.0.
 @end deftypefun
 
 @deftypefun {unsigned long int} gsl_rng_uniform_int (const gsl_rng * @var{r}, unsigned long int @var{n})
-This function returns a random integer from 0 to @math{@var{n}-1} inclusive.
-All integers in the range @math{[0,@var{n}-1]} are equally likely, regardless
-of the generator used.  An offset correction is applied so that zero is
-always returned with the correct probability, for any minimum value of
-the underlying generator.
+This function returns a random integer from 0 to @math{n-1} inclusive
+by scaling down and/or discarding samples from the generator @var{r}.
+All integers in the range @math{[0,n-1]} are produced with equal
+probability.  For generators with a non-zero minimum value an offset
+is applied so that zero is returned with the correct probability.
 
+Note that this function is designed for sampling from ranges smaller
+than the range of the underlying generator.  The parameter @var{n}
+must be less than or equal to the range of the generator @var{r}.
 If @var{n} is larger than the range of the generator then the function
 calls the error handler with an error code of @code{GSL_EINVAL} and
 returns zero.
+
+In particular, this function is not intended for generating the full range of
+unsigned integer values @c{$[0,2^{32}-1]$} 
+@math{[0,2^32-1]}. Instead
+choose a generator with the maximal integer range and zero mimimum
+value, such as @code{gsl_rng_ranlxd1}, @code{gsl_rng_mt19937} or
+@code{gsl_rng_taus}, and sample it directly using
+@code{gsl_rng_get()}.  The range of each generator can be found using
+the auxiliary functions described in the next section.
 @end deftypefun
 
 @node Auxiliary random number generator functions

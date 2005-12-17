@@ -1,4 +1,10 @@
-* What is new in gsl-1.7:
+** Added the missing functions gsl_spline_name() and
+gsl_spline_min_size()
+
+** The function gsl_rng_uniform_int(r,n) now returns an error for n=0,
+which can occur when passing an unsigned integer value of 2^32.
+
+* What was new in gsl-1.7:
 
 ** Switched gsl_randist_binomial to use the faster binomial random
 variate TPE algorithm by default.  The previous binomial variate

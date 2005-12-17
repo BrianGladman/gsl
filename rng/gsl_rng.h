@@ -191,14 +191,16 @@ gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
   unsigned long int offset = r->type->min;
   unsigned long int range = r->type->max - offset;
-  unsigned long int scale = range / n;
+  unsigned long int scale;
   unsigned long int k;
 
-  if (n > range) 
+  if (n > range || n == 0) 
     {
-      GSL_ERROR_VAL ("n exceeds maximum value of generator",
-                        GSL_EINVAL, 0) ;
+      GSL_ERROR_VAL ("invalid n, either 0 or exceeds maximum value of generator",
+                     GSL_EINVAL, 0) ;
     }
+
+  scale = range / n;
 
   do
     {
