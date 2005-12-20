@@ -18,6 +18,7 @@
  */
 
 /* Author:  G. Jungman */
+/* augmented to n=5 and 6 2005-11-08 by R. J. Mathar, http://www.strw.leidenuniv.nl/~mathar */
 
 #include <config.h>
 #include <gsl/gsl_math.h>
@@ -130,6 +131,58 @@ static double adeb4_data[17] = {
 };
 static cheb_series adeb4_cs = {
   adeb4_data,
+  16,
+  -1.0, 1.0,
+  10
+};
+
+static double adeb5_data[17] = {
+   2.8340269546834530149,
+   0.3994098857106266445,
+  -0.164566764773099646e-1,
+   0.10652138340664541e-2,
+  -0.756730374875418e-4,
+   0.55745985240273e-5,
+  -0.4190692330918e-6,
+   0.319456143678e-7,
+  -0.24613318171e-8,
+   0.1912801633e-9,
+  -0.149720049e-10,
+   0.11790312e-11,
+  -0.933329e-13,
+   0.74218e-14,
+  -0.5925e-15,
+   0.475e-16,
+  -0.39e-17
+};
+static cheb_series adeb5_cs = {
+  adeb5_data,
+  16,
+  -1.0, 1.0,
+  10
+};
+
+static double adeb6_data[17] = {
+  2.8726727134130122113,
+  0.4174375352339027746,
+ -0.176453849354067873e-1,
+  0.11629852733494556e-2,
+ -0.837118027357117e-4,
+  0.62283611596189e-5,
+ -0.4718644465636e-6,
+  0.361950397806e-7,
+ -0.28030368010e-8,
+  0.2187681983e-9,
+ -0.171857387e-10,
+  0.13575809e-11,
+ -0.1077580e-12,
+  0.85893e-14,
+ -0.6872e-15,
+  0.552e-16,
+ -0.44e-17
+};
+static cheb_series adeb6_cs = {
+  adeb6_data,
   16,
   -1.0, 1.0,
   10
@@ -361,6 +414,122 @@ int gsl_sf_debye_4_e(const double x, gsl_sf_result * result)
   }
 }
 
+int gsl_sf_debye_5_e(const double x, gsl_sf_result * result)
+{
+  const double val_infinity = 610.405837190669483828710757875 ;
+  const double xcut = -GSL_LOG_DBL_MIN;
+
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
+    DOMAIN_ERROR(result);
+  }
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
+    result->val = 1.0 - 5.0*x/12.0 + 5.0*x*x/84.0;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else if(x <= 4.0) {
+    const double t = x*x/8.0 - 1.0;
+    gsl_sf_result c;
+    cheb_eval_e(&adeb5_cs, t, &c);
+    result->val = c.val - 5.0*x/12.0;
+    result->err = c.err + GSL_DBL_EPSILON * 5.0*x/12.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
+    double xk  = nexp * x;
+    double rk  = nexp;
+    double sum = 0.0;
+    int i;
+    for(i=nexp; i>=1; i--) {
+      double xk_inv = 1.0/xk;
+      sum *= ex;
+      sum += (((((120.0*xk_inv + 120.0)*xk_inv + 60.0)*xk_inv + 20.0)*xk_inv + 5.0)*xk_inv+ 1.0) / rk;
+      rk -= 1.0;
+      xk -= x;
+    }
+    result->val = val_infinity/(x*x*x*x*x) - 5.0 * sum * ex;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else if(x < xcut) {
+    const double x2 = x*x;
+    const double x4 = x2*x2;
+    const double x5 = x4*x;
+    const double sum = 120.0 + 120.0*x + 60.0*x2 + 20.0*x2*x + 5.0*x4 + x5;
+    result->val = (val_infinity - 5.0 * sum * exp(-x)) / x5;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else {
+    result->val = ((((val_infinity/x)/x)/x)/x)/x;
+    result->err = GSL_DBL_EPSILON * result->val;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
+  }
+}
+
+int gsl_sf_debye_6_e(const double x, gsl_sf_result * result)
+{
+  const double val_infinity = 4356.06887828990661194792541535 ;
+  const double xcut = -GSL_LOG_DBL_MIN;
+
+  /* CHECK_POINTER(result) */
+
+  if(x < 0.0) {
+    DOMAIN_ERROR(result);
+  }
+  else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
+    result->val = 1.0 - 3.0*x/7.0 + x*x/16.0;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else if(x <= 4.0) {
+    const double t = x*x/8.0 - 1.0;
+    gsl_sf_result c;
+    cheb_eval_e(&adeb6_cs, t, &c);
+    result->val = c.val - 3.0*x/7.0;
+    result->err = c.err + GSL_DBL_EPSILON * 3.0*x/7.0;
+    return GSL_SUCCESS;
+  }
+  else if(x < -(M_LN2 + GSL_LOG_DBL_EPSILON)) {
+    const int nexp = floor(xcut/x);
+    const double ex  = exp(-x);
+    double xk  = nexp * x;
+    double rk  = nexp;
+    double sum = 0.0;
+    int i;
+    for(i=nexp; i>=1; i--) {
+      double xk_inv = 1.0/xk;
+      sum *= ex;
+      sum += ((((((720.0*xk_inv + 720.0)*xk_inv + 360.0)*xk_inv + 120.0)*xk_inv + 30.0)*xk_inv+ 6.0)*xk_inv+ 1.0) / rk;
+      rk -= 1.0;
+      xk -= x;
+    }
+    result->val = val_infinity/(x*x*x*x*x*x) - 6.0 * sum * ex;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else if(x < xcut) {
+    const double x2 = x*x;
+    const double x4 = x2*x2;
+    const double x6 = x4*x2;
+    const double sum = 720.0 + 720.0*x + 360.0*x2 + 120.0*x2*x + 30.0*x4 + 6.0*x4*x +x6 ;
+    result->val = (val_infinity - 6.0 * sum * exp(-x)) / x6;
+    result->err = GSL_DBL_EPSILON * result->val;
+    return GSL_SUCCESS;
+  }
+  else {
+    result->val = (((((val_infinity/x)/x)/x)/x)/x)/x ;
+    result->err = GSL_DBL_EPSILON * result->val;
+    CHECK_UNDERFLOW(result);
+    return GSL_SUCCESS;
+  }
+}
+
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
@@ -384,4 +553,14 @@ double gsl_sf_debye_3(const double x)
 double gsl_sf_debye_4(const double x)
 {
   EVAL_RESULT(gsl_sf_debye_4_e(x, &result));
+}
+
+double gsl_sf_debye_5(const double x)
+{
+  EVAL_RESULT(gsl_sf_debye_5_e(x, &result));
+}
+
+double gsl_sf_debye_6(const double x)
+{
+  EVAL_RESULT(gsl_sf_debye_6_e(x, &result));
 }

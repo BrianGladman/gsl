@@ -18,6 +18,7 @@
  */
 
 /* Author:  G. Jungman */
+/* augmented by D_5(x) and D_6(x) by Richard J. Mathar, 2005-11-08 */
 
 #ifndef __GSL_SF_DEBYE_H__
 #define __GSL_SF_DEBYE_H__
@@ -69,6 +70,20 @@ double     gsl_sf_debye_3(const double x);
  */
 int     gsl_sf_debye_4_e(const double x, gsl_sf_result * result);
 double     gsl_sf_debye_4(const double x);
+
+/* D_5(x)
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int     gsl_sf_debye_5_e(const double x, gsl_sf_result * result);
+double     gsl_sf_debye_5(const double x);
+
+/* D_6(x)
+ *
+ * exceptions: GSL_EDOM, GSL_EUNDRFLW
+ */
+int     gsl_sf_debye_6_e(const double x, gsl_sf_result * result);
+double     gsl_sf_debye_6(const double x);
 
 
 __END_DECLS

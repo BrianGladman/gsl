@@ -1,3 +1,5 @@
+** Added Debye functions for n=5 and n=6
+
 ** Added the missing functions gsl_spline_name() and
 gsl_spline_min_size()
 

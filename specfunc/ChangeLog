@@ -1,3 +1,8 @@
+2005-12-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* debye.c (gsl_sf_debye_5_e, gsl_sf_debye_6_e): added n=5,6
+	(R. J. Mathar)
+
 2005-11-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* dilog.c (dilog_xge0): fix calculation of error estimate

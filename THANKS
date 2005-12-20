@@ -348,3 +348,5 @@ for Brent minimisation algorithm.
 
 * Stewart V. Wright <swright+gsl@physics.adelaide.edu.au> patch for missing 
 spline functions
+
+* Richard Mathar <mathar@strw.leidenuniv.nl> additional Debye functions n=5,6

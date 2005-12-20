@@ -426,6 +426,14 @@ int test_debye(void)
   TEST_SF(s, gsl_sf_debye_4_e, (1.0, &r),  0.654874068886737049,   TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_debye_4_e, (10.0, &r), 0.00967367556027115896, TEST_TOL0, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_debye_5_e, (0.1, &r),  0.95892849428310568745,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_5_e, (1.0, &r),  0.6421002580217790246,   TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_5_e, (10.0, &r), 0.005701535852992908538, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_debye_6_e, (0.1, &r),  0.95776777382605465878,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_6_e, (1.0, &r),  0.63311142583495107588,  TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_debye_6_e, (10.0, &r), 3.7938493294615955279e-3, TEST_TOL0, GSL_SUCCESS);
+
   return s;
 }
 
