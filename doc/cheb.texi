@@ -36,7 +36,8 @@ typedef struct
   int order;    /* order of expansion             */
   double a;     /* lower interval point           */
   double b;     /* upper interval point           */
-@} gsl_cheb_struct
+  ...
+@} gsl_cheb_series
 @end example
 @noindent
 The approximation is made over the range @math{[a,b]} using
