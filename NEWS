@@ -1,3 +1,6 @@
+** Fixed an invalid memory access that caused incorrect results for
+the special case in periodic cubic spline interpolation of 3 points.
+
 ** Added Debye functions for n=5 and n=6
 
 ** Added the missing functions gsl_spline_name() and

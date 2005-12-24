@@ -159,14 +159,14 @@ cspline_init_periodic (void * vstate, const double xa[], const double ya[],
     
     const double h0 = xa[1] - xa[0];
     const double h1 = xa[2] - xa[1];
-    const double h2 = xa[3] - xa[2];
+
     const double A = 2.0*(h0 + h1);
     const double B = h0 + h1;
     double g[2];
     double det;
     
     g[0] = 3.0 * ((ya[2] - ya[1]) / h1 - (ya[1] - ya[0]) / h0);
-    g[1] = 3.0 * ((ya[1] - ya[2]) / h2 - (ya[2] - ya[1]) / h1);
+    g[1] = 3.0 * ((ya[1] - ya[2]) / h0 - (ya[2] - ya[1]) / h1);
     
     det = 3.0 * (h0 + h1) * (h0 + h1);
     state->c[1] = ( A * g[0] - B * g[1])/det;

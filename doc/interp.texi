@@ -78,11 +78,21 @@ of points.
 
 @deffn {Interpolation Type} gsl_interp_cspline
 @cindex cubic splines
-Cubic spline with natural boundary conditions.
+Cubic spline with natural boundary conditions.  The resulting curve is
+piecewise cubic on each interval, with matching first and second
+derivatives at the supplied data-points.  The second derivative is
+chosen to be zero at the first point and last point.
 @end deffn
 
 @deffn {Interpolation Type} gsl_interp_cspline_periodic
-Cubic spline with periodic boundary conditions
+Cubic spline with periodic boundary conditions.  The resulting curve
+is piecewise cubic on each interval, with matching first and second
+derivatives at the supplied data-points.  The derivatives at the first
+and last points are also matched.  Note that the last point in the
+data must have the same y-value as the first point, otherwise the
+resulting periodic interpolation will have a discontinuity at the
+boundary.
+
 @end deffn
 
 @deffn {Interpolation Type} gsl_interp_akima
@@ -259,16 +269,44 @@ The result shows a smooth interpolation of the original points.  The
 interpolation method can changed simply by varying the first argument of
 @code{gsl_spline_alloc}.
 
+The next program demonstrates a periodic cubic spline with 4 data
+points.  Note that the first and last points must be supplied with 
+the same y-value for a periodic spline.
+
+@example
+@verbatiminclude examples/interpp.c
+@end example
+@noindent
+
+The output can be plotted with @sc{gnu} @code{graph}.
+
+@example
+$ ./a.out > interp.dat
+$ graph -T ps < interp.dat > interp.ps
+@end example
+
+@iftex
+@sp 1
+@center @image{interpp2,3.4in}
+@end iftex
+@noindent
+The result shows a periodic interpolation of the original points. The
+slope of the fitted curve is the same at the beginning and end of the
+data, and the second derivative is also.
 
 @node Interpolation References and Further Reading
 @section References and Further Reading
 
 Descriptions of the interpolation algorithms and further references can
-be found in the following book,
+be found in the following books:
 
 @itemize @asis
 @item C.W. Ueberhuber,
 @cite{Numerical Computation (Volume 1), Chapter 9 ``Interpolation''},
 Springer (1997), ISBN 3-540-62058-3.
+
+@item D.M. Young, R.T. Gregory
+@cite{A Survey of Numerical Mathematics (Volume 1), Chapter 6.8},
+Dover (1988), ISBN 0-486-65691-8.
 @end itemize
 @noindent
