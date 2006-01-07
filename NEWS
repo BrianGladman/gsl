@@ -1,3 +1,7 @@
+** The functions gsl_stats_min/max now return NaN if the data contains
+NaN. Similarly, the functions gsl_stats_min/max_index return the index
+of the first occurring NaN in the data when it contains a NaN.
+
 ** Fixed an invalid memory access that caused incorrect results for
 the special case in periodic cubic spline interpolation of 3 points.
 

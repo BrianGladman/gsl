@@ -11,6 +11,7 @@
 #define ATOMIC long double
 #define USES_LONGDOUBLE 1
 #define MULTIPLICITY 2
+#define FP 1
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
@@ -24,6 +25,7 @@
 #define SHORT_REAL
 #define ATOMIC double
 #define MULTIPLICITY 2
+#define FP 1
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
@@ -37,6 +39,7 @@
 #define SHORT_REAL float
 #define ATOMIC float
 #define MULTIPLICITY 2
+#define FP 1
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
@@ -50,6 +53,7 @@
 #define ATOMIC long double
 #define USES_LONGDOUBLE 1
 #define MULTIPLICITY 1
+#define FP 1
 #define IN_FORMAT "%Lg"
 #define OUT_FORMAT "%Lg"
 #define ATOMIC_IO ATOMIC
@@ -62,6 +66,7 @@
 #define SHORT
 #define ATOMIC double
 #define MULTIPLICITY 1
+#define FP 1
 #define IN_FORMAT "%lg"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC
@@ -74,6 +79,7 @@
 #define SHORT float
 #define ATOMIC float
 #define MULTIPLICITY 1
+#define FP 1
 #define IN_FORMAT "%g"
 #define OUT_FORMAT "%g"
 #define ATOMIC_IO ATOMIC

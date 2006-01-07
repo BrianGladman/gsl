@@ -529,6 +529,12 @@ deviation, @var{wmean} and @var{wsd}.
 @node Maximum and Minimum values
 @section Maximum and Minimum values
 
+The following functions find the maximum and minimum values of a
+dataset (or their indices).  If the data contains @code{NaN}s then a
+@code{NaN} will be returned, since the maximum or minimum value is
+undefined.  For functions which return an index, the location of the
+first @code{NaN} in the array is returned.
+
 @deftypefun double gsl_stats_max (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function returns the maximum value in @var{data}, a dataset of
 length @var{n} with stride @var{stride}.  The maximum value is defined

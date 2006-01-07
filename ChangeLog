@@ -1,3 +1,8 @@
+2006-01-07  Brian Gough  <bjg@network-theory.co.uk>
+
+	* templates_on.h: added an FP=1 definition for the floating point
+	types, FP is undefined for integer types.
+
 2005-08-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl/Makefile.am: need to remove makefile with later versions of

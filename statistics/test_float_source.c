@@ -290,8 +290,93 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
 
   }
 
+  /* Test for IEEE handling - set third element to NaN */
+
+  groupa [3*stridea] = GSL_NAN;
+
+  {
+    BASE max = FUNCTION(gsl_stats,max) (groupa, stridea, na);
+    BASE expected = GSL_NAN;
+    gsl_test  (!isnan(max),
+               NAME(gsl_stats) "_max NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               max, expected);
+  }
+
+  {
+    BASE min = FUNCTION(gsl_stats,min) (groupa, stridea, na);
+    BASE expected = GSL_NAN;
+    gsl_test (!isnan(min),
+              NAME(gsl_stats) "_min NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+              min, expected);
+  }
+
+  {
+    BASE min, max;
+    BASE expected_max = GSL_NAN;
+    BASE expected_min = GSL_NAN;
+    
+    FUNCTION(gsl_stats,minmax) (&min, &max, groupa, stridea, na);
+ 
+    gsl_test  (!isnan(max),
+               NAME(gsl_stats) "_minmax max NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               max, expected_max);
+    gsl_test  (!isnan(min),
+               NAME(gsl_stats) "_minmax min NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               min, expected_min);
+  }
+
+#ifdef FAST
+  {
+    BASE min, max;
+    BASE expected_max = GSL_NAN;
+    BASE expected_min = GSL_NAN;
+    
+    FUNCTION(gsl_stats,minmax) (&min, &max, groupa, stridea, na-1);
+ 
+    gsl_test  (!isnan(max),
+               NAME(gsl_stats) "_minmax(-1) max NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               max, expected_max);
+    gsl_test  (!isnan(min),
+               NAME(gsl_stats) "_minmax(-1) min NaN (" OUT_FORMAT " observed vs " OUT_FORMAT " expected)", 
+               min, expected_min);
+  }
+#endif
+
+
+  {
+    int max_index = FUNCTION(gsl_stats,max_index) (groupa, stridea, na);
+    int expected = 3;
+    gsl_test (max_index != expected,
+              NAME(gsl_stats) "_max_index NaN (%d observed vs %d expected)",
+              max_index, expected);
+  }
+
+  {
+    int min_index = FUNCTION(gsl_stats,min_index) (groupa, stridea, na);
+    int expected = 3;
+    gsl_test (min_index != expected,
+              NAME(gsl_stats) "_min_index NaN (%d observed vs %d expected)",
+              min_index, expected);
+  }
+
+  {
+    size_t min_index, max_index;
+    size_t expected_max_index = 3;
+    size_t expected_min_index = 3;
+
+    FUNCTION(gsl_stats,minmax_index) (&min_index, &max_index, groupa, stridea, na);
+
+    gsl_test  (max_index != expected_max_index,
+               NAME(gsl_stats) "_minmax_index max NaN (%u observed vs %u expected)", 
+               max_index, expected_max_index);
+    gsl_test  (min_index != expected_min_index,
+               NAME(gsl_stats) "_minmax_index min NaN (%u observed vs %u expected)", 
+               min_index, expected_min_index);
+  }
+
   free (sorted);
   free (groupa);
   free (groupb);
   free (w);
+
 }

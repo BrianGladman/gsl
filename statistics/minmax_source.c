@@ -18,8 +18,9 @@
  */
 
 
-BASE 
-FUNCTION(gsl_stats,max) (const BASE data[], const size_t stride, const size_t n)
+BASE
+FUNCTION (gsl_stats,max) (const BASE data[], const size_t stride,
+                          const size_t n)
 {
   /* finds the largest member of a dataset */
 
@@ -28,15 +29,22 @@ FUNCTION(gsl_stats,max) (const BASE data[], const size_t stride, const size_t n)
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] > max)
-        max = data[i * stride];
+      BASE xi = data[i * stride];
+
+      if (xi > max)
+        max = xi;
+#ifdef FP
+      else if (isnan (xi))
+        return xi;
+#endif
     }
 
   return max;
 }
 
 BASE
-FUNCTION(gsl_stats,min) (const BASE data[], const size_t stride, const size_t n)
+FUNCTION (gsl_stats,min) (const BASE data[], const size_t stride,
+                          const size_t n)
 {
   /* finds the smallest member of a dataset */
 
@@ -45,8 +53,14 @@ FUNCTION(gsl_stats,min) (const BASE data[], const size_t stride, const size_t n)
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] < min)
-        min = data[i * stride];
+      BASE xi = data[i * stride];
+
+      if (xi < min)
+        min = xi;
+#ifdef FP
+      else if (isnan (xi))
+        return xi;
+#endif
     }
 
   return min;
@@ -54,7 +68,9 @@ FUNCTION(gsl_stats,min) (const BASE data[], const size_t stride, const size_t n)
 }
 
 void
-FUNCTION(gsl_stats,minmax) (BASE * min_out, BASE * max_out, const BASE data[], const size_t stride, const size_t n)
+FUNCTION (gsl_stats,minmax) (BASE * min_out, BASE * max_out,
+                             const BASE data[], const size_t stride,
+                             const size_t n)
 {
   /* finds the smallest and largest members of a dataset */
 
@@ -64,18 +80,32 @@ FUNCTION(gsl_stats,minmax) (BASE * min_out, BASE * max_out, const BASE data[], c
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] < min)
-        min = data[i * stride];
-      if (data[i * stride] > max)
-        max = data[i * stride];
+      BASE xi = data[i * stride];
+
+      if (xi < min)
+        min = xi;
+
+      if (xi > max)
+        max = xi;
+
+#ifdef FP
+      if (isnan (xi))
+        {
+          min = xi;
+          max = xi;
+          break;
+        }
+#endif
+
     }
 
-  *min_out = min ;
-  *max_out = max ;
+  *min_out = min;
+  *max_out = max;
 }
 
 size_t
-FUNCTION(gsl_stats,max_index) (const BASE data[], const size_t stride, const size_t n)
+FUNCTION (gsl_stats,max_index) (const BASE data[], const size_t stride,
+                                const size_t n)
 {
   /* finds the index of the largest member of a dataset */
   /* if there is more than one largest value then we choose the first */
@@ -85,18 +115,28 @@ FUNCTION(gsl_stats,max_index) (const BASE data[], const size_t stride, const siz
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] > max)
+      BASE xi = data[i * stride];
+
+      if (xi > max)
         {
-          max = data[i * stride];
-          max_index = i ;
+          max = xi;
+          max_index = i;
         }
+
+#ifdef FP
+      if (isnan (xi))
+        {
+          return i;
+        }
+#endif
     }
 
   return max_index;
 }
 
 size_t
-FUNCTION(gsl_stats,min_index) (const BASE data[], const size_t stride, const size_t n)
+FUNCTION (gsl_stats,min_index) (const BASE data[], const size_t stride,
+                                const size_t n)
 {
   /* finds the index of the smallest member of a dataset */
   /* if there is more than one largest value then we choose the first  */
@@ -106,18 +146,29 @@ FUNCTION(gsl_stats,min_index) (const BASE data[], const size_t stride, const siz
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] < min)
+      BASE xi = data[i * stride];
+
+      if (xi < min)
         {
-          min = data[i * stride];
-          min_index = i ;
+          min = xi;
+          min_index = i;
         }
+
+#ifdef FP
+      if (isnan (xi))
+        {
+          return i;
+        }
+#endif
     }
 
   return min_index;
 }
 
 void
-FUNCTION(gsl_stats,minmax_index) (size_t * min_index_out, size_t * max_index_out, const BASE data[], const size_t stride, const size_t n)
+FUNCTION (gsl_stats,minmax_index) (size_t * min_index_out,
+                                   size_t * max_index_out, const BASE data[],
+                                   const size_t stride, const size_t n)
 {
   /* finds the smallest and largest members of a dataset */
 
@@ -127,19 +178,30 @@ FUNCTION(gsl_stats,minmax_index) (size_t * min_index_out, size_t * max_index_out
 
   for (i = 0; i < n; i++)
     {
-      if (data[i * stride] < min)
+      BASE xi = data[i * stride];
+
+      if (xi < min)
         {
-          min = data[i * stride];
+          min = xi;
           min_index = i;
         }
 
-      if (data[i * stride] > max)
+      if (xi > max)
         {
-          max = data[i * stride];
+          max = xi;
           max_index = i;
         }
+
+#ifdef FP
+      if (isnan (xi))
+        {
+          min_index = i;
+          max_index = i;
+          break;
+        }
+#endif
     }
 
-  *min_index_out = min_index ;
-  *max_index_out = max_index ;
+  *min_index_out = min_index;
+  *max_index_out = max_index;
 }
