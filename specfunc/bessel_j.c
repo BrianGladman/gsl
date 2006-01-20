@@ -196,7 +196,7 @@ gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
     result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + pre * b.err;
     return status;
   }
-  else if(x > 1000.0)
+  else if(x > 1000.0 && x > 100.0*l*l)
   {
     /* We need this to avoid feeding large x to CF1; note that
      * due to the above check, we know that n <= 50.

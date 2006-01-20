@@ -354,3 +354,5 @@ spline functions
 * Stefan Jahn <stefan@gruft.de>  bug fix for periodic cubic splines with n=3
 
 * Yoram Burak <yorambu@kitp.ucsb.edu> bug report for scaled bessel function In_scaled
+
+* Mario Santos <mgrsantos@ist.utl.pt> bug report for spherical bessel function 

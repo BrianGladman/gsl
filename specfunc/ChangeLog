@@ -1,5 +1,9 @@
 2006-01-20  Brian Gough  <bjg@network-theory.co.uk>
 
+	* bessel_j.c (gsl_sf_bessel_jl_e): limit the use of
+	gsl_sf_bessel_Jnu_asympx_e to the range x>100*l*l to satisfy
+	the requirement x>>l*l in the asymptotic expansion
+
 	* bessel_In.c (gsl_sf_bessel_In_scaled_e): limit the use of
 	gsl_sf_bessel_I_CF1_ser to the region where the continued
 	converges with the allowed 20000 terms (|x|<1e7)

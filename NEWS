@@ -1,3 +1,7 @@
+** Fixed the spherical bessel function gsl_sf_bessel_jl_e) to limit
+the use of gsl_sf_bessel_Jnu_asympx_e to the range x>100*l*l to
+satisfy he requirement x>>l*l in the asymptotic expansion.
+
 ** The scaled bessel function gsl_sf_bessel_In_scaled now handles
 larger arguments x > 1e7 correctly for n < 150 using the uniform
 asymptotic expansion instead of the continued fraction expansion.
