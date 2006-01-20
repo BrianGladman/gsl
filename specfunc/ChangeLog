@@ -1,3 +1,9 @@
+2006-01-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bessel_In.c (gsl_sf_bessel_In_scaled_e): limit the use of
+	gsl_sf_bessel_I_CF1_ser to the region where the continued
+	converges with the allowed 20000 terms (|x|<1e7)
+
 2005-12-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* debye.c (gsl_sf_debye_5_e, gsl_sf_debye_6_e): added n=5,6

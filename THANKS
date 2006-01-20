@@ -352,3 +352,5 @@ spline functions
 * Richard Mathar <mathar@strw.leidenuniv.nl> additional Debye functions n=5,6
 
 * Stefan Jahn <stefan@gruft.de>  bug fix for periodic cubic splines with n=3
+
+* Yoram Burak <yorambu@kitp.ucsb.edu> bug report for scaled bessel function In_scaled

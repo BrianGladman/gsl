@@ -95,6 +95,13 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_In_scaled_e, (   5,    2.0, &r), 0.0013297610941881578142, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_In_scaled_e, ( 100,  100.0, &r), 1.7266862628167695785e-22, TEST_TOL0, GSL_SUCCESS);
 
+  /* BJG: the "exact" values in the following two tests were computed from the
+     taylor series for I_nu using "long double" and rescaling.  The last few digits
+     are inaccurate due to cumulative roundoff. */
+
+  TEST_SF(s, gsl_sf_bessel_In_scaled_e, (   2,    1e7, &r), 1.261566024466441648e-04, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_In_scaled_e, (   2,    1e8, &r), 3.989422729213446112e-05, TEST_TOL2, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_bessel_I0_e, (0.1, &r), 1.0025015629340956014, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_I0_e, (2.0, &r), 2.2795853023360672674, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_I0_e, (100.0, &r), 1.0737517071310738235e+42, TEST_TOL2, GSL_SUCCESS);

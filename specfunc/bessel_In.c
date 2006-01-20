@@ -61,7 +61,7 @@ gsl_sf_bessel_In_scaled_e(int n, const double x, gsl_sf_result * result)
     if(x < 0.0 && GSL_IS_ODD(n)) result->val = -result->val;
     return stat_In;
   }
-  else if(n < 150) {
+  else if(n < 150 && ax < 1e7) {
     gsl_sf_result I0_scaled;
     int stat_I0 = gsl_sf_bessel_I0_scaled_e(ax, &I0_scaled);
     double rat;

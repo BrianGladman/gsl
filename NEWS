@@ -1,3 +1,7 @@
+** The scaled bessel function gsl_sf_bessel_In_scaled now handles
+larger arguments x > 1e7 correctly for n < 150 using the uniform
+asymptotic expansion instead of the continued fraction expansion.
+
 ** The functions gsl_stats_min/max now return NaN if the data contains
 NaN. Similarly, the functions gsl_stats_min/max_index return the index
 of the first occurring NaN in the data when it contains a NaN.
