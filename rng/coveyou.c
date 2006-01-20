@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_rng.h>
 
-#define MM 0xffffffffUL         /* 2 ^ 32 */
+#define MM 0xffffffffUL         /* 2 ^ 32 - 1 */
 
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
