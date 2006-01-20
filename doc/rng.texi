@@ -524,12 +524,15 @@ and
 @c{$m_2 = 2145483479$}
 @math{m_2 = 2145483479}.
 
-The period of this generator is 
-@c{$2^{205}$}
-@math{2^205} 
+The period of this generator is  
+@c{$\hbox{lcm}(m_1^3-1, m_2^3-1)$}
+@math{lcm(m_1^3-1, m_2^3-1)},
+which is approximately
+@c{$2^{185}$}
+@math{2^185} 
 (about 
-@c{$10^{61}$}
-@math{10^61}).  It uses
+@c{$10^{56}$}
+@math{10^56}).  It uses
 6 words of state per generator.  For more information see,
 
 @itemize @asis
