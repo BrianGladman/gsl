@@ -1,3 +1,9 @@
+2006-01-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* binomial.c (gsl_ran_binomial_pdf): handle the cases p=0 and p=1
+	(gsl_ran_binomial_pdf): use log1p to calculate more accurately
+	near k=0,p=0
+
 2005-08-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): free allocated memory before exit

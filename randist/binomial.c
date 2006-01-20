@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <math.h>
+#include <gsl/gsl_sys.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_sf_gamma.h>
@@ -79,9 +80,20 @@ gsl_ran_binomial_pdf (const unsigned int k, const double p,
     {
       double P;
 
-      double ln_Cnk = gsl_sf_lnchoose (n, k);
-      P = ln_Cnk + k * log (p) + (n - k) * log (1 - p);
-      P = exp (P);
+      if (p == 0) 
+        {
+          P = (k == 0) ? 1 : 0;
+        }
+      else if (p == 1)
+        {
+          P = (k == n) ? 1 : 0;
+        }
+      else
+        {
+          double ln_Cnk = gsl_sf_lnchoose (n, k);
+          P = ln_Cnk + k * log (p) + (n - k) * log1p (-p);
+          P = exp (P);
+        }
 
       return P;
     }

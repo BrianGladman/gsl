@@ -356,3 +356,5 @@ spline functions
 * Yoram Burak <yorambu@kitp.ucsb.edu> bug report for scaled bessel function In_scaled
 
 * Mario Santos <mgrsantos@ist.utl.pt> bug report for spherical bessel function 
+
+* Vincent Plagnol <vincent.plagnol@normalesup.org> bug report for gsl_randist_binomial_pdf

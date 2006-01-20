@@ -52,6 +52,12 @@ double test_binomial_large (void);
 double test_binomial_large_pdf (unsigned int n);
 double test_binomial_huge (void);
 double test_binomial_huge_pdf (unsigned int n);
+double test_binomial0 (void);
+double test_binomial0_pdf (unsigned int n);
+double test_binomial1 (void);
+double test_binomial1_pdf (unsigned int n);
+
+
 
 double test_binomial_knuth (void);
 double test_binomial_knuth_pdf (unsigned int n);
@@ -322,6 +328,8 @@ main (void)
   testDiscretePDF (FUNC2 (poisson_large));
   testDiscretePDF (FUNC2 (bernoulli));
   testDiscretePDF (FUNC2 (binomial));
+  testDiscretePDF (FUNC2 (binomial0));
+  testDiscretePDF (FUNC2 (binomial1));
   testDiscretePDF (FUNC2 (binomial_knuth));
   testDiscretePDF (FUNC2 (binomial_large));
   testDiscretePDF (FUNC2 (binomial_large_knuth));
@@ -610,6 +618,30 @@ double
 test_binomial_pdf (unsigned int n)
 {
   return gsl_ran_binomial_pdf (n, 0.3, 5);
+}
+
+double
+test_binomial0 (void)
+{
+  return gsl_ran_binomial (r_global, 0, 8);
+}
+
+double
+test_binomial0_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 0, 8);
+}
+
+double
+test_binomial1 (void)
+{
+  return gsl_ran_binomial (r_global, 1, 8);
+}
+
+double
+test_binomial1_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 1, 8);
 }
 
 double

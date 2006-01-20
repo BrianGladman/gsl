@@ -1,3 +1,6 @@
+** The binomial pdf gsl_ran_binomial_pdf now handles the cases p=0
+and p=1 and is more accurate for the case of small p with k=0.
+
 ** Fixed the spherical bessel function gsl_sf_bessel_jl_e) to limit
 the use of gsl_sf_bessel_Jnu_asympx_e to the range x>100*l*l to
 satisfy he requirement x>>l*l in the asymptotic expansion.
