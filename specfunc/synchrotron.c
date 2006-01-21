@@ -187,7 +187,12 @@ int gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result)
     DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2 * GSL_SQRT_DBL_EPSILON) {
-    result->val = 2.14952824153447863671 * pow(x, 1.0/3.0);
+    /* BJG: added first order correction term.  The taylor series
+       is  S1(x) = ((4pi)/(sqrt(3)gamma(1/3))) * (x/2)^(1/3) 
+       * (1 - (gamma(1/3)/2)*(x/2)^2/3 + (3/4) * (x/2)^2 ....) */
+    double z = pow(x, 1.0/3.0);
+    double cf = 1 - 8.43812762813205e-01 * z * z;
+    result->val = 2.14952824153447863671 * z * cf;
     result->err = GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }
@@ -228,7 +233,13 @@ int gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result)
     DOMAIN_ERROR(result);
   }
   else if(x < 2.0*M_SQRT2*GSL_SQRT_DBL_EPSILON) {
-    result->val = 1.07476412076723931836 * pow(x, 1.0/3.0);
+    /* BJG: added first order correction term.  The taylor series
+       is  S2(x) = ((2pi)/(sqrt(3)*gamma(1/3))) * (x/2)^(1/3) 
+       * (1 - (gamma(1/3)/gamma(4/3))*(x/2)^(4/3) + (gamma(1/3)/gamma(4/3))*(x/2)^2...) */
+
+    double z = pow(x, 1.0/3.0);
+    double cf = 1 - 1.17767156510235e+00 * z * x;
+    result->val = 1.07476412076723931836 * z * cf ;
     result->err = 2.0 * GSL_DBL_EPSILON * result->val;
     return GSL_SUCCESS;
   }

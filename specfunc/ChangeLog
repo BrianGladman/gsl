@@ -1,3 +1,10 @@
+2006-01-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* synchrotron.c (gsl_sf_synchrotron_1_e): added first order
+	correction term for the taylor expansion
+	(gsl_sf_synchrotron_2_e): added first order correction term for
+	the taylor expansion
+
 2006-01-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel_j.c (gsl_sf_bessel_jl_e): limit the use of

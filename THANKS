@@ -358,3 +358,5 @@ spline functions
 * Mario Santos <mgrsantos@ist.utl.pt> bug report for spherical bessel function 
 
 * Vincent Plagnol <vincent.plagnol@normalesup.org> bug report for gsl_randist_binomial_pdf
+
+* John Houck <houck@space.mit.edu> bug report for gsl_sf_synchrotron_1
