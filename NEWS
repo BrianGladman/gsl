@@ -1,3 +1,7 @@
+** Added new random variate generators gsl_ran_gaussian_ziggurat
+and gsl_ran_gamma_mt for the Gaussian and Gamma distributions based on
+the Marsaglia-Tsang ziggurat and fast gamma methods.
+
 ** Added an extra term to the taylor series of the synchrotron
 functions gsl_sf_synchrotron_1 and gsl_sf_synchrotron_2 for small x to
 ensure smooth matching with the chebyshev expansion.

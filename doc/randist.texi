@@ -166,9 +166,11 @@ the formula given above.
 \centerline{\input rand-gaussian.tex}
 @end tex
 
+@deftypefun double gsl_ran_gaussian_ziggurat (const gsl_rng * @var{r}, double @var{sigma})
 @deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, double @var{sigma})
-This function computes a Gaussian random variate using the
-Kinderman-Monahan ratio method.
+This function computes a Gaussian random variate using the alternative
+Marsaglia-Tsang ziggurat and Kinderman-Monahan ratio methods.  The
+ziggurat algorithm is the fastest.
 @end deftypefun
 
 @deftypefun double gsl_ran_ugaussian (const gsl_rng * @var{r})
@@ -737,6 +739,11 @@ for @math{x > 0}.
 
 @cindex Erlang distribution
 The gamma distribution with an integer parameter @var{a} is known as the Erlang distribution.
+The variates are computed using the algorithms from Knuth (vol 2).
+@end deftypefun
+
+@deftypefun double gsl_ran_gamma_mt (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+This function returns a gamma variate using the Marsaglia-Tsang fast gamma method.
 @end deftypefun
 
 @deftypefun double gsl_ran_gamma_pdf (double @var{x}, double @var{a}, double @var{b})

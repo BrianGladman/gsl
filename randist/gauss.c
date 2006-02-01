@@ -108,3 +108,4 @@ gsl_ran_ugaussian_pdf (const double x)
 {
   return gsl_ran_gaussian_pdf (x, 1.0);
 }
+

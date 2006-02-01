@@ -105,10 +105,24 @@ double test_gamma_int (void);
 double test_gamma_int_pdf (double x);
 double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
+double test_gamma_small (void);
+double test_gamma_small_pdf (double x);
+double test_gamma_mt (void);
+double test_gamma_mt_pdf (double x);
+double test_gamma_mt1 (void);
+double test_gamma_mt1_pdf (double x);
+double test_gamma_mt_int (void);
+double test_gamma_mt_int_pdf (double x);
+double test_gamma_mt_large (void);
+double test_gamma_mt_large_pdf (double x);
+double test_gamma_mt_small (void);
+double test_gamma_mt_small_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
 double test_gaussian_ratio_method (void);
 double test_gaussian_ratio_method_pdf (double x);
+double test_gaussian_ziggurat (void);
+double test_gaussian_ziggurat_pdf (double x);
 double test_gaussian_tail (void);
 double test_gaussian_tail_pdf (double x);
 double test_gaussian_tail1 (void);
@@ -277,8 +291,15 @@ main (void)
   testPDF (FUNC2 (gamma1));
   testPDF (FUNC2 (gamma_int));
   testPDF (FUNC2 (gamma_large));
+  testPDF (FUNC2 (gamma_small));
+  testPDF (FUNC2 (gamma_mt));
+  testPDF (FUNC2 (gamma_mt1));
+  testPDF (FUNC2 (gamma_mt_int));
+  testPDF (FUNC2 (gamma_mt_large));
+  testPDF (FUNC2 (gamma_mt_small));
   testPDF (FUNC2 (gaussian));
   testPDF (FUNC2 (gaussian_ratio_method));
+  testPDF (FUNC2 (gaussian_ziggurat));
   testPDF (FUNC2 (ugaussian));
   testPDF (FUNC2 (ugaussian_ratio_method));
   testPDF (FUNC2 (gaussian_tail));
@@ -1174,6 +1195,82 @@ test_gamma_large_pdf (double x)
   return gsl_ran_gamma_pdf (x, 20.0, 2.17);
 }
 
+double
+test_gamma_small (void)
+{
+  return gsl_ran_gamma (r_global, 0.92, 2.17);
+}
+
+double
+test_gamma_small_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 0.92, 2.17);
+}
+
+
+double
+test_gamma_mt (void)
+{
+  return gsl_ran_gamma_mt (r_global, 2.5, 2.17);
+}
+
+double
+test_gamma_mt_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 2.5, 2.17);
+}
+
+double
+test_gamma_mt1 (void)
+{
+  return gsl_ran_gamma_mt (r_global, 1.0, 2.17);
+}
+
+double
+test_gamma_mt1_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 1.0, 2.17);
+}
+
+
+double
+test_gamma_mt_int (void)
+{
+  return gsl_ran_gamma_mt (r_global, 10.0, 2.17);
+}
+
+double
+test_gamma_mt_int_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 10.0, 2.17);
+}
+
+
+double
+test_gamma_mt_large (void)
+{
+  return gsl_ran_gamma_mt (r_global, 20.0, 2.17);
+}
+
+double
+test_gamma_mt_large_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 20.0, 2.17);
+}
+
+
+double
+test_gamma_mt_small (void)
+{
+  return gsl_ran_gamma_mt (r_global, 0.92, 2.17);
+}
+
+double
+test_gamma_mt_small_pdf (double x)
+{
+  return gsl_ran_gamma_pdf (x, 0.92, 2.17);
+}
+
 
 double
 test_gaussian (void)
@@ -1197,6 +1294,18 @@ double
 test_gaussian_ratio_method_pdf (double x)
 {
   return gsl_ran_gaussian_pdf (x, 3.0);
+}
+
+double
+test_gaussian_ziggurat (void)
+{
+  return gsl_ran_gaussian_ziggurat (r_global, 3.12);
+}
+
+double
+test_gaussian_ziggurat_pdf (double x)
+{
+  return gsl_ran_gaussian_pdf (x, 3.12);
 }
 
 double

@@ -360,3 +360,7 @@ spline functions
 * Vincent Plagnol <vincent.plagnol@normalesup.org> bug report for gsl_randist_binomial_pdf
 
 * John Houck <houck@space.mit.edu> bug report for gsl_sf_synchrotron_1
+
+* Jochen Voss <voss@seehuhn.de> ziggurat gaussian generator
+
+* John D Lamb <J.D.Lamb@btinternet.com> Marsaglia-Tsang gamma generator
