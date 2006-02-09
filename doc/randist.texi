@@ -167,7 +167,7 @@ the formula given above.
 @end tex
 
 @deftypefun double gsl_ran_gaussian_ziggurat (const gsl_rng * @var{r}, double @var{sigma})
-@deftypefun double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, double @var{sigma})
+@deftypefunx double gsl_ran_gaussian_ratio_method (const gsl_rng * @var{r}, double @var{sigma})
 This function computes a Gaussian random variate using the alternative
 Marsaglia-Tsang ziggurat and Kinderman-Monahan ratio methods.  The
 ziggurat algorithm is the fastest.
