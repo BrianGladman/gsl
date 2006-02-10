@@ -40,6 +40,14 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
+static inline 
+double
+quiet_sqrt (double x)  
+     /* avoids runtime error, for checking matrix for positive definiteness */
+{
+  return (x >= 0) ? sqrt(x) : GSL_NAN;
+}
+
 int
 gsl_linalg_cholesky_decomp (gsl_matrix * A)
 {
@@ -61,7 +69,7 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
 
       double A_00 = gsl_matrix_get (A, 0, 0);
       
-      double L_00 = sqrt(A_00);
+      double L_00 = quiet_sqrt(A_00);
       
       if (A_00 <= 0)
         {
@@ -77,7 +85,7 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
           
           double L_10 = A_10 / L_00;
           double diag = A_11 - L_10 * L_10;
-          double L_11 = sqrt(diag);
+          double L_11 = quiet_sqrt(diag);
           
           if (diag <= 0)
             {
@@ -120,7 +128,7 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
             double sum = gsl_blas_dnrm2 (&dk.vector);
             double diag = A_kk - sum * sum;
 
-            double L_kk = sqrt(diag);
+            double L_kk = quiet_sqrt(diag);
             
             if (diag <= 0)
               {
