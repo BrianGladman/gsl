@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.7])
+AC_INIT([gsl],[1.7.90])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -233,7 +233,7 @@ AC_CACHE_CHECK([for IEEE arithmetic interface type], ac_cv_c_ieee_interface,
     *-*-irix*) 
         ac_cv_c_ieee_interface=irix
         ;;
-    *-*-*darwin*) 
+    powerpc-*-*darwin*) 
         ac_cv_c_ieee_interface=darwin
         ;;
     *-*-*netbsd*) 
