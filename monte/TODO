@@ -8,7 +8,8 @@ bisection to ensure that the error does not occur.
 * VEGAS could estimate its roundoff error, caused by dividing up into
 many boxes and then summing (I know this is ridiculous for any
 realistic case, but it shows up on the tests when integrating a
-constant!).
+constant!).  In particular, there are some failures reported for the
+VEGAS constant tests on Windows.
 
 * VEGAS gives a negative chisq for some cases where there are wildly
 inconsistent values.  Calculation should be improved so that chisq>=0.
