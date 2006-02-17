@@ -286,36 +286,6 @@ AC_SUBST(HAVE_NETBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_OPENBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_DARWIN_IEEE_INTERFACE)
 
-
-
-dnl Check for IEEE control flags
-
-save_cflags="$CFLAGS"
-AC_CACHE_CHECK([for IEEE compiler flags], ac_cv_c_ieee_flags,
-[
-case "$host" in
-    alpha*-*-*)
-        if test X"$GCC" = Xyes ; then
-            ieee_flags='-mieee -mfp-rounding-mode=d'
-        else
-            # This assumes Compaq's C compiler.
-            ieee_flags='-ieee -fprm d'
-        fi
-        ;;
-esac
-if test X"$ieee_flags" != X ; then
-  CFLAGS="$ieee_flags $CFLAGS"
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int foo;]])],[ac_cv_c_ieee_flags="$ieee_flags"],[ac_cv_c_ieee_flags="none"])
-else
-  ac_cv_c_ieee_flags="none"
-fi])
-
-if test "$ac_cv_c_ieee_flags" != "none" ; then
-   CFLAGS="$ac_cv_c_ieee_flags $save_cflags"
-else
-   CFLAGS="$save_cflags"
-fi
-
 dnl Check IEEE comparisons, whether "x != x" is true for NaNs
 dnl
 AC_CACHE_CHECK([for IEEE comparisons], ac_cv_c_ieee_comparisons,

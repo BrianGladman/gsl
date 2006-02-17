@@ -142,11 +142,16 @@ incrementally combining the object files in smaller groups.
 Hints for Compaq/DEC Alpha
 ==========================
 
-The library should compile successfully with Compaq's C compiler using
-the -std and -ieee options.  Use
+When comping with GCC use the -mieee and -mfp-rounding-mode options 
+as appropriate, e.g.
 
-    CC=cc ./configure    
-    make CFLAGS="-std -ieee"
+    ./configure CFLAGS="-mieee -mfp-rounding-mode=d -g -O2"
+
+The library should compile successfully with Compaq's C compiler using
+the -std, -ieee and -fprm options.  Use
+
+    ./configure CC=cc 
+    make CFLAGS="-std -ieee -fprm d"
 
 to build the library this way.
 
@@ -237,8 +242,7 @@ run).  This problem is fixed in more recent versions of GCC.
 Hints for Microsoft Windows
 ===========================
 
-GSL should compile cleanly with GCC under Cygwin or MinGW+MSYS on
-Microsoft Windows.
+GSL should compile cleanly with GCC under Cygwin on Microsoft Windows.
 
 Hints for OpenBSD
 =================

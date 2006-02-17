@@ -1,3 +1,7 @@
+* Users on DEC Alpha systems will need to specify their desired IEEE
+arithmetic options via CFLAGS when building the library, as these are
+no longer added automatically.
+
 ** Added new random variate generators gsl_ran_gaussian_ziggurat
 and gsl_ran_gamma_mt for the Gaussian and Gamma distributions based on
 the Marsaglia-Tsang ziggurat and fast gamma methods.
