@@ -98,7 +98,7 @@ $$
 When computing the covariance matrix for unweighted data, i.e. data with unknown errors, 
 the weight factors @math{w_i} in this sum are replaced by the single estimate @math{w =
 1/\sigma^2}, where @math{\sigma^2} is the computed variance of the
-residuals about the best-fit model, @math{\sigma^2 = \sum (y_i - Y(c,x_i))^2 / n}.  
+residuals about the best-fit model, @math{\sigma^2 = \sum (y_i - Y(c,x_i))^2 / (n-p)}.  
 This is referred to as the @dfn{variance-covariance matrix}.
 @cindex variance-covariance matrix, linear fits
 

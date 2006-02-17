@@ -490,7 +490,8 @@ so satisfy @c{$\langle \delta f \delta f^T \rangle = I$}
 
 For an unweighted least-squares function @math{f_i = (Y(x, t_i) -
 y_i)} the covariance matrix above should be multiplied by the variance
-of the residuals about the best-fit to give the variance-covariance
+of the residuals about the best-fit @math{\sigma^2 = \sum (y_i - Y(x,t_i))^2 / (n-p)}
+to give the variance-covariance
 matrix @math{\sigma^2 C}.  This estimates the statistical error on the
 best-fit parameters from the scatter of the underlying data.
 
