@@ -37,16 +37,16 @@ the minimization of the squared residuals of @math{n} functions,
 @tex
 \beforedisplay
 $$
-\Phi(x) = {1 \over 2} \sum_{i=1}^{n} f_i (x_1, \dots, x_p)^2
-        = {1 \over 2} || F(x) ||^2
+\Phi(x)  = {1 \over 2} || F(x) ||^2
+         = {1 \over 2} \sum_{i=1}^{n} f_i (x_1, \dots, x_p)^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-\Phi(x) = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
-        = (1/2) || F(x) ||^2
+\Phi(x) = (1/2) || F(x) ||^2
+        = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
 @end example
 @end ifinfo
 @noindent
@@ -73,6 +73,33 @@ Additional strategies are used to enlarge the region of convergence.
 These include requiring a decrease in the norm @math{||F||} on each
 step or using a trust region to avoid steps which fall outside the linear 
 regime.
+
+To perform a weighted least-squares fit of a nonlinear model
+@math{Y(x,t)} to data (@math{t_i}, @math{y_i}) with independent gaussian
+errors @math{\sigma_i}, use function components of the following form,
+@tex
+\beforedisplay
+$$
+f_i = {(Y(x, t_i) - y_i) \over \sigma_i}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+f_i = (Y(x, t_i) - y_i) / \sigma_i
+@end example
+@end ifinfo
+@noindent
+Note that the model parameters are denoted by @math{x} in this chapter
+since the non-linear least-squares algorithms are described
+geometrically (i.e. finding the minimum of a surface).  The
+independent variable of any data to be fitted is denoted by @math{t}.
+
+With the definition above the Jacobian is 
+@c{$J_{ij} = (1 / \sigma_i) \partial Y_i / \partial x_j$}
+@math{J_@{ij@} =(1 / \sigma_i)  d Y_i / d x_j}, where @math{Y_i = Y(x,t_i)}.  
+
 
 @node Initializing the Nonlinear Least-Squares Solver
 @section Initializing the Solver
@@ -135,17 +162,19 @@ would print something like @code{s is a 'lmder' solver}.
 @node Providing the Function to be Minimized
 @section Providing the Function to be Minimized
 
-You must provide @math{n} functions of @math{p} variables for the minimization algorithms to operate on.  In order to allow for general parameters the
-functions are defined by the following data types:
+You must provide @math{n} functions of @math{p} variables for the
+minimization algorithms to operate on.  In order to allow for
+arbitrary parameters the functions are defined by the following data
+types:
 
 @deftp {Data Type} gsl_multifit_function 
-This data type defines a general system of functions with parameters.
+This data type defines a general system of functions with arbitrary parameters.  
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
 this function should store the vector result
 @c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} in @var{f} for argument @var{x} and parameters @var{params},
+@math{f(x,params)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
 @item size_t n
@@ -154,34 +183,34 @@ vector @var{f}.
 
 @item size_t p
 the number of independent variables, i.e. the number of components of
-the vectors @var{x}.
+the vector @var{x}.
 
 @item void * params
-a pointer to the parameters of the function.
+a pointer to the arbitrary parameters of the function.
 @end table
 @end deftp
 
 @deftp {Data Type} gsl_multifit_function_fdf
-This data type defines a general system of functions with parameters and
+This data type defines a general system of functions with arbitrary parameters and
 the corresponding Jacobian matrix of derivatives,
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
 this function should store the vector result
 @c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} in @var{f} for argument @var{x} and parameters @var{params},
+@math{f(x,params)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
 @item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_matrix * @var{J})
 this function should store the @var{n}-by-@var{p} matrix result
 @c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j$}
 @math{J_ij = d f_i(x,params) / d x_j} in @var{J} for argument @var{x} 
-and parameters @var{params}, returning an appropriate error code if the
+and arbitrary parameters @var{params}, returning an appropriate error code if the
 function cannot be computed.
 
 @item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
 This function should set the values of the @var{f} and @var{J} as above,
-for arguments @var{x} and parameters @var{params}.  This function
+for arguments @var{x} and arbitrary parameters @var{params}.  This function
 provides an optimization of the separate functions for @math{f(x)} and
 @math{J(x)}---it is always faster to compute the function and its
 derivative at the same time.
@@ -192,12 +221,17 @@ vector @var{f}.
 
 @item size_t p
 the number of independent variables, i.e. the number of components of
-the vectors @var{x}.
+the vector @var{x}.
 
 @item void * params
-a pointer to the parameters of the function.
+a pointer to the arbitrary parameters of the function.
 @end table
 @end deftp
+
+Note that when fitting a non-linear model against experimental data,
+the data is passed to the functions above using the
+@var{params} argument and the trial best-fit parameters through the
+@var{x} argument.
 
 @node Iteration of the Minimization Algorithm
 @section Iteration
@@ -399,9 +433,9 @@ There are no algorithms implemented in this section at the moment.
 
 @node Computing the covariance matrix of best fit parameters
 @section Computing the covariance matrix of best fit parameters
-@cindex covariance of best-fit parameters
 @cindex best-fit parameters, covariance
 @cindex least squares, covariance of best-fit parameters
+@cindex covariance matrix, nonlinear fits
 
 @deftypefun int gsl_multifit_covar (const gsl_matrix * @var{J}, double @var{epsrel}, gsl_matrix * @var{covar})
 This function uses the Jacobian matrix @var{J} to compute the covariance
@@ -443,6 +477,24 @@ $$
 are considered linearly-dependent and are excluded from the covariance
 matrix (the corresponding rows and columns of the covariance matrix are
 set to zero).
+
+If the minimisation uses the weighted least-squares function
+@math{f_i = (Y(x, t_i) - y_i) / \sigma_i} then the covariance
+matrix above gives the statistical error on the best-fit parameters
+resulting from the gaussian errors @math{\sigma_i} on 
+the underlying data @math{y_i}.  This can be verified from the relation 
+@math{\delta f = J \delta c} and the fact that the fluctuations in @math{f}
+from the data @math{y_i} are normalised by @math{\sigma_i} and 
+so satisfy @c{$\langle \delta f \delta f^T \rangle = I$}
+@math{<\delta f \delta f^T> = I}.
+
+For an unweighted least-squares function @math{f_i = (Y(x, t_i) -
+y_i)} the covariance matrix above should be multiplied by the variance
+of the residuals about the best-fit to give the variance-covariance
+matrix @math{\sigma^2 C}.  This estimates the statistical error on the
+best-fit parameters from the scatter of the underlying data.
+
+For more information about covariance matrices see @ref{Fitting Overview}.
 @end deftypefun
 
 @comment ============================================================
@@ -489,82 +541,7 @@ J_@{ij@} = d f_i / d x_j
 where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
 
 @example
-#include <stdlib.h>
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_multifit_nlin.h>
-
-struct data @{
-  size_t n;
-  double * y;
-  double * sigma;
-@};
-
-int
-expb_f (const gsl_vector * x, void *params, 
-        gsl_vector * f)
-@{
-  size_t n = ((struct data *)params)->n;
-  double *y = ((struct data *)params)->y;
-  double *sigma = ((struct data *) params)->sigma;
-
-  double A = gsl_vector_get (x, 0);
-  double lambda = gsl_vector_get (x, 1);
-  double b = gsl_vector_get (x, 2);
-
-  size_t i;
-
-  for (i = 0; i < n; i++)
-    @{
-      /* Model Yi = A * exp(-lambda * i) + b */
-      double t = i;
-      double Yi = A * exp (-lambda * t) + b;
-      gsl_vector_set (f, i, (Yi - y[i])/sigma[i]);
-    @}
-
-  return GSL_SUCCESS;
-@}
-
-int
-expb_df (const gsl_vector * x, void *params, 
-         gsl_matrix * J)
-@{
-  size_t n = ((struct data *)params)->n;
-  double *sigma = ((struct data *) params)->sigma;
-
-  double A = gsl_vector_get (x, 0);
-  double lambda = gsl_vector_get (x, 1);
-
-  size_t i;
-
-  for (i = 0; i < n; i++)
-    @{
-      /* Jacobian matrix J(i,j) = dfi / dxj, */
-      /* where fi = (Yi - yi)/sigma[i],      */
-      /*       Yi = A * exp(-lambda * i) + b  */
-      /* and the xj are the parameters (A,lambda,b) */
-      double t = i;
-      double s = sigma[i];
-      double e = exp(-lambda * t);
-      gsl_matrix_set (J, i, 0, e/s); 
-      gsl_matrix_set (J, i, 1, -t * A * e/s);
-      gsl_matrix_set (J, i, 2, 1/s);
-    @}
-  return GSL_SUCCESS;
-@}
-
-int
-expb_fdf (const gsl_vector * x, void *params,
-          gsl_vector * f, gsl_matrix * J)
-@{
-  expb_f (x, params, f);
-  expb_df (x, params, J);
-
-  return GSL_SUCCESS;
-@}
+@verbatiminclude examples/expfit.c
 @end example
 @noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
@@ -574,107 +551,7 @@ over a range of 40 timesteps. The initial guess for the parameters is
 chosen as (0.0, 1.0, 0.0).
 
 @example
-#define N 40
-
-int
-main (void)
-@{
-  const gsl_multifit_fdfsolver_type *T;
-  gsl_multifit_fdfsolver *s;
-
-  int status;
-  size_t i, iter = 0;
-
-  const size_t n = N;
-  const size_t p = 3;
-
-  gsl_matrix *covar = gsl_matrix_alloc (p, p);
-  double y[N], sigma[N];
-  struct data d = @{ n, y, sigma@};
-  gsl_multifit_function_fdf f;
-  double x_init[3] = @{ 1.0, 0.0, 0.0 @};
-  gsl_vector_view x = gsl_vector_view_array (x_init, p);
-  const gsl_rng_type * type;
-  gsl_rng * r;
-
-  gsl_rng_env_setup();
-
-  type = gsl_rng_default;
-  r = gsl_rng_alloc (type);
-
-  f.f = &expb_f;
-  f.df = &expb_df;
-  f.fdf = &expb_fdf;
-  f.n = n;
-  f.p = p;
-  f.params = &d;
-
-  /* This is the data to be fitted */
-
-  for (i = 0; i < n; i++)
-    @{
-      double t = i;
-      y[i] = 1.0 + 5 * exp (-0.1 * t) 
-                 + gsl_ran_gaussian (r, 0.1);
-      sigma[i] = 0.1;
-      printf ("data: %d %g %g\n", i, y[i], sigma[i]);
-    @};
-
-
-  T = gsl_multifit_fdfsolver_lmsder;
-  s = gsl_multifit_fdfsolver_alloc (T, n, p);
-  gsl_multifit_fdfsolver_set (s, &f, &x.vector);
-
-  print_state (iter, s);
-
-  do
-    @{
-      iter++;
-      status = gsl_multifit_fdfsolver_iterate (s);
-
-      printf ("status = %s\n", gsl_strerror (status));
-
-      print_state (iter, s);
-
-      if (status)
-        break;
-
-      status = gsl_multifit_test_delta (s->dx, s->x,
-                                        1e-4, 1e-4);
-    @}
-  while (status == GSL_CONTINUE && iter < 500);
-
-  gsl_multifit_covar (s->J, 0.0, covar);
-
-#define FIT(i) gsl_vector_get(s->x, i)
-#define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
-
-  printf ("A      = %.5f +/- %.5f\n", FIT(0), ERR(0));
-  printf ("lambda = %.5f +/- %.5f\n", FIT(1), ERR(1));
-  printf ("b      = %.5f +/- %.5f\n", FIT(2), ERR(2));
-
-  @{ 
-    double chi = gsl_blas_dnrm2(s->f);
-    printf("chisq/dof = %g\n",  pow(chi, 2.0)/ (n - p));
-  @}
-
-  printf ("status = %s\n", gsl_strerror (status));
-
-  gsl_multifit_fdfsolver_free (s);
-  return 0;
-@}
-
-void
-print_state (size_t iter, gsl_multifit_fdfsolver * s)
-@{
-  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
-          "|f(x)| = %g\n",
-          iter,
-          gsl_vector_get (s->x, 0), 
-          gsl_vector_get (s->x, 1),
-          gsl_vector_get (s->x, 2), 
-          gsl_blas_dnrm2 (s->f));
-@}
+@verbatiminclude examples/nlfit.c
 @end example
 @noindent
 The iteration terminates when the change in x is smaller than 0.0001, as
@@ -682,19 +559,23 @@ both an absolute and relative change.  Here are the results of running
 the program:
 
 @smallexample
-iter: 0 x = 1.00000000 0.00000000 0.00000000 |f(x)| = 118.574
-iter: 1 x = 1.64919392 0.01780040 0.64919392 |f(x)| = 77.2068
-iter: 2 x = 2.86269020 0.08032198 1.45913464 |f(x)| = 38.0579
-iter: 3 x = 4.97908864 0.11510525 1.06649948 |f(x)| = 10.1548
-iter: 4 x = 5.03295496 0.09912462 1.00939075 |f(x)| = 6.4982
-iter: 5 x = 5.05811477 0.10055914 0.99819876 |f(x)| = 6.33121
-iter: 6 x = 5.05827645 0.10051697 0.99756444 |f(x)| = 6.33119
-iter: 7 x = 5.05828006 0.10051819 0.99757710 |f(x)| = 6.33119
-
-A      = 5.05828 +/- 0.05983
-lambda = 0.10052 +/- 0.00309
-b      = 0.99758 +/- 0.03944
-chisq/dof = 1.08335
+iter: 0 x=1.00000000 0.00000000 0.00000000 |f(x)|=117.349
+status=success
+iter: 1 x=1.64659312 0.01814772 0.64659312 |f(x)|=76.4578
+status=success
+iter: 2 x=2.85876037 0.08092095 1.44796363 |f(x)|=37.6838
+status=success
+iter: 3 x=4.94899512 0.11942928 1.09457665 |f(x)|=9.58079
+status=success
+iter: 4 x=5.02175572 0.10287787 1.03388354 |f(x)|=5.63049
+status=success
+iter: 5 x=5.04520433 0.10405523 1.01941607 |f(x)|=5.44398
+status=success
+iter: 6 x=5.04535782 0.10404906 1.01924871 |f(x)|=5.44397
+chisq/dof = 0.800996
+A      = 5.04536 +/- 0.06028
+lambda = 0.10405 +/- 0.00316
+b      = 1.01925 +/- 0.03782
 status = success
 @end smallexample
 @noindent
@@ -702,9 +583,16 @@ The approximate values of the parameters are found correctly, and the
 chi-squared value indicates a good fit (the chi-squared per degree of
 freedom is approximately 1).  In this case the errors on the parameters
 can be estimated from the square roots of the diagonal elements of the
-covariance matrix.  If the chi-squared value indicates a poor fit then
-error estimates obtained from the covariance matrix are not valid, since
-the Gaussian approximation would not apply.
+covariance matrix.  
+
+If the chi-squared value shows a poor fit (i.e. @c{$\chi^2/(n-p) \gg 1$}
+@math{chi^2/dof >> 1}) then the error estimates obtained from the
+covariance matrix will be too small.  In the example program the error estimates
+are multiplied by @c{$\sqrt{\chi^2/(n-p)}$}
+@math{\sqrt@{\chi^2/dof@}} in this case, a common way of increasing the
+errors for a poor fit.  Note that a poor fit will result from the use
+an inappropriate model, and the scaled error estimates may then
+be outside the range of validity for gaussian errors.
 
 @iftex
 @sp 1
