@@ -3,6 +3,9 @@
 	* configure.ac: restrict darwin IEEE detection to powerpc, because
 	new x86 macs are different.
 
+	* removed automatic addition of compilation flags on alpha,
+	these should be specified on the command-line through CFLAGS.
+
 2006-01-07  Brian Gough  <bjg@network-theory.co.uk>
 
 	* templates_on.h: added an FP=1 definition for the floating point
