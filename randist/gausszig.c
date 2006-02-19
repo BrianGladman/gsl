@@ -168,7 +168,7 @@ gsl_ran_gaussian_ziggurat (const gsl_rng * r, double sigma)
 {
   unsigned long int i, j;
   int sign;
-  double x, y, U0;
+  double x, y;
 
   while (1)
     {
