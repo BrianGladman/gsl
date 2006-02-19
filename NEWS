@@ -12,6 +12,9 @@ the Marsaglia-Tsang ziggurat and fast gamma methods.
 ** Improved the speed of the exponential power distribution
 gsl_ran_exppow.
 
+** Improved the speed of the Gaussian ratio method by adding quadratic
+bounds in gsl_ran_gaussian_ratio_method.
+
 ** Added an extra term to the taylor series of the synchrotron
 functions gsl_sf_synchrotron_1 and gsl_sf_synchrotron_2 for small x to
 ensure smooth matching with the chebyshev expansion.

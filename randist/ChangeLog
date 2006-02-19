@@ -1,5 +1,9 @@
 2006-02-19  Brian Gough  <bjg@network-theory.co.uk>
 
+	* gauss.c (gsl_ran_gaussian): reject case where x=-1 || y=-1
+	for true symmetry
+	(gsl_ran_gaussian_ratio_method): add Leva bounds
+
 	* exppow.c (gsl_ran_exppow): added faster rejection methods
 
 2006-02-01  Brian Gough  <bjg@network-theory.co.uk>
