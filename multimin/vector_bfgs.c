@@ -304,8 +304,16 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
       dgnorm = gsl_blas_dnrm2 (dg0);
 
-      B = dxg / dxdg;
-      A = -(1.0 + dgnorm * dgnorm / dxdg) * B + dgg / dxdg;
+      if (dxdg != 0) 
+        {
+          B = dxg / dxdg;
+          A = -(1.0 + dgnorm * dgnorm / dxdg) * B + dgg / dxdg;
+        }
+      else
+        {
+          B = 0;
+          A = 0; 
+        }
 
       gsl_vector_memcpy (p, gradient);
       gsl_blas_daxpy (-A, dx0, p);

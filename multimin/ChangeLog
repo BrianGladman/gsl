@@ -1,3 +1,8 @@
+2006-02-18  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vector_bfgs.c (vector_bfgs_iterate): avoid division by zero if
+	dxdg == 0
+
 2003-07-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* simplex.c (nmsimplex_set): changed index variable i from int to

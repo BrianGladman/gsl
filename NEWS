@@ -1,4 +1,7 @@
-* Users on DEC Alpha systems will need to specify their desired IEEE
+** Avoid division by zero in gsl_multimin_fdfminimizer_vector_bfgs
+if the step-size becomes too small.
+
+** Users on DEC Alpha systems will need to specify their desired IEEE
 arithmetic options via CFLAGS when building the library, as these are
 no longer added automatically.
 
