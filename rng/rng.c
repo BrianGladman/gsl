@@ -126,6 +126,12 @@ gsl_rng_uniform_pos (const gsl_rng * r)
   return x ;
 }
 
+/* Note: to avoid integer overflow in (range+1) we work with scale =
+   range/n = (max-min)/n rather than scale=(max-min+1)/n, this reduces
+   efficiency slightly but avoids having to check for the out of range
+   value.  Note that range is typically O(2^32) so the addition of 1
+   is negligible in most usage. */
+
 unsigned long int
 gsl_rng_uniform_int (const gsl_rng * r, unsigned long int n)
 {
