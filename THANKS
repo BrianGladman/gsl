@@ -364,3 +364,5 @@ spline functions
 * Jochen Voss <voss@seehuhn.de> ziggurat gaussian generator
 
 * John D Lamb <J.D.Lamb@btinternet.com> Marsaglia-Tsang gamma generator
+
+* Giulio Bottazzi <giulio.bottazzi@libero.it> improved exponential power distribution

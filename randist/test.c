@@ -93,6 +93,8 @@ double test_exppow2 (void);
 double test_exppow2_pdf (double x);
 double test_exppow2a (void);
 double test_exppow2a_pdf (double x);
+double test_exppow2b (void);
+double test_exppow2b_pdf (double x);
 double test_fdist (void);
 double test_fdist_pdf (double x);
 double test_flat (void);
@@ -284,6 +286,7 @@ main (void)
   testPDF (FUNC2 (exppow1a));
   testPDF (FUNC2 (exppow2));
   testPDF (FUNC2 (exppow2a));
+  testPDF (FUNC2 (exppow2b));
 
   testPDF (FUNC2 (fdist));
   testPDF (FUNC2 (flat));
@@ -1112,11 +1115,23 @@ test_exppow2_pdf (double x)
 double
 test_exppow2a (void)
 {
-  return gsl_ran_exppow (r_global, 3.7, 7.5);
+  return gsl_ran_exppow (r_global, 3.7, 3.5);
 }
 
 double
 test_exppow2a_pdf (double x)
+{
+  return gsl_ran_exppow_pdf (x, 3.7, 3.5);
+}
+
+double
+test_exppow2b (void)
+{
+  return gsl_ran_exppow (r_global, 3.7, 7.5);
+}
+
+double
+test_exppow2b_pdf (double x)
 {
   return gsl_ran_exppow_pdf (x, 3.7, 7.5);
 }
