@@ -661,13 +661,16 @@ Some of the graphs have been made with gnuplot which is not truly free
 (or GNU) software, and some have been made with proprietary
 programs. These should be replaced with output from GNU plotutils.
 
-When citing references be sure to use the standard, definitive and best
-reference books in the field, rather than lesser known text-books or
-introductory books which happen to be available (e.g. from undergraduate
-studies).  For example, references concerning algorithms should be to
-Knuth, references concerning statistics should be to Kendall & Stuart,
-references concerning special functions should be to Abramowitz & Stegun
-(Handbook of Mathematical Functions AMS-55), etc.
+When citing references be sure to use the standard, definitive and
+best reference books in the field, rather than lesser known text-books
+or introductory books which happen to be available (e.g. from
+undergraduate studies).  For example, references concerning algorithms
+should be to Knuth, references concerning statistics should be to
+Kendall & Stuart, references concerning special functions should be to
+Abramowitz & Stegun (Handbook of Mathematical Functions AMS-55), etc.
+Whereever possible refer to Abramowitz & Stegun rather than other
+reference books because it is a public domain work, so it is
+inexpensive and freely redistributable.
 
 The standard references have a better chance of being available in an
 accessible library for the user.  If they are not available and the user
@@ -688,16 +691,68 @@ If you need help in tracking down references, ask on the
 access to good libraries who have offered to help GSL developers get
 copies of papers.
 
-[JT section: written by James Theiler
+@c [JT section: written by James Theiler
 
-And we furthermore promise to try as hard as possible to document
-the software: this will ideally involve discussion of why you might want
-to use it, what precisely it does, how precisely to invoke it, 
-how more-or-less it works, and where we learned about the algorithm,
-and (unless we wrote it from scratch) where we got the code.
-We do not plan to write this entire package from scratch, but to cannibalize
-existing mathematical freeware, just as we expect our own software to
-be cannibalized.]
+@c And we furthermore promise to try as hard as possible to document
+@c the software: this will ideally involve discussion of why you might want
+@c to use it, what precisely it does, how precisely to invoke it, 
+@c how more-or-less it works, and where we learned about the algorithm,
+@c and (unless we wrote it from scratch) where we got the code.
+@c We do not plan to write this entire package from scratch, but to cannibalize
+@c existing mathematical freeware, just as we expect our own software to
+@c be cannibalized.]
+
+To write mathematics in the texinfo file you can use the @code{@@math}
+command with @emph{simple} TeX commands. These are automatically
+surrounded by @code{$...$} for math mode. For example,
+
+@example
+to calculate the coefficient @@math@{\alpha@} use the function...
+@end example
+@noindent
+will be correctly formatted in both online and TeX versions of the
+documentation.
+
+Note that you cannot use the special characters @{ and @}
+inside the @code{@@math} command because these conflict between TeX
+and Texinfo.  This is a problem if you want to write something like
+@code{\sqrt@{x+y@}}.  
+
+To work around it you can preceed the math command with a special
+macro @code{@@c} which contains the explicit TeX commands you want to
+use (no restrictions), and put an ASCII approximation into the
+@code{@@math} command (you can write @code{@@@{} and
+@code{@@@}} there for the left and right braces).  The explicit TeX
+commands are used in the TeX ouput and the argument of @code{@@math}
+in the plain info output.  
+
+Note that the @code{@@c@{@}} macro must go at the end of the
+preceeding line, because everything else after it is ignored---as far
+as texinfo is concerned it's actually a 'comment'. The comment
+command @@c has been modified to capture a TeX expression which is
+output by the next @@math command. For ordinary comments use the @@comment
+command.
+
+For example,
+
+@example
+this is a test @@c@{$\sqrt@{x+y@}$@}
+@@math@{\sqrt@@@{x+y@@@}@}
+@end example
+@noindent
+is equivalent to @code{this is a test $\sqrt@{x+y@}$} in plain TeX
+and @code{this is a test @@math@{\sqrt@@@{x+y@@@}@}} in Info.  
+
+It looks nicer if some of the more cryptic TeX commands are given
+a C-style ascii version, e.g.
+
+@example
+for @@c@{$x \ge y$@}
+@@math@{x >= y@}
+@end example
+@noindent
+will be appropriately displayed in both TeX and Info.
+
 
 @node Namespace, Header files, Documentation, Design
 @section Namespace
