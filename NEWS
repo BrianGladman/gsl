@@ -1,3 +1,6 @@
+** Added the multilinear fit estimator function gsl_multifit_linear_est
+for computing model values and their errors.
+
 ** Avoid division by zero in gsl_multimin_fdfminimizer_vector_bfgs
 if the step-size becomes too small.
 

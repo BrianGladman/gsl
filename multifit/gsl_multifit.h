@@ -95,6 +95,12 @@ gsl_multifit_wlinear_svd (const gsl_matrix * X,
                           double *chisq, 
                           gsl_multifit_linear_workspace * work);
 
+int
+gsl_multifit_linear_est (const gsl_vector * x,
+                         const gsl_vector * c,
+                         const gsl_matrix * cov, double *y, double *y_err);
+
+
 __END_DECLS
 
 #endif /* __GSL_MULTIFIT_H__ */

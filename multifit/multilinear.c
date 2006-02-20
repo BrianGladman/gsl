@@ -383,3 +383,50 @@ gsl_multifit_wlinear_svd (const gsl_matrix * X,
     }
 }
 
+
+int
+gsl_multifit_linear_est (const gsl_vector * x,
+                         const gsl_vector * c,
+                         const gsl_matrix * cov, double *y, double *y_err)
+{
+
+  if (x->size != c->size)
+    {
+      GSL_ERROR ("number of parameters c does not match number of observations x",
+         GSL_EBADLEN);
+    }
+  else if (cov->size1 != cov->size2)
+    {
+      GSL_ERROR ("covariance matrix is not square", GSL_ENOTSQR);
+    }
+  else if (c->size != cov->size1)
+    {
+      GSL_ERROR ("number of parameters c does not match size of covariance matrix cov",
+         GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i, j;
+      double var = 0;
+      
+      gsl_blas_ddot(x, c, y);       /* y = x.c */
+
+      /* var = x' cov x */
+
+      for (i = 0; i < x->size; i++)
+        {
+          const double xi = gsl_vector_get (x, i);
+          var += xi * xi * gsl_matrix_get (cov, i, i);
+
+          for (j = 0; j < i; j++)
+            {
+              const double xj = gsl_vector_get (x, j);
+              var += 2 * xi * xj * gsl_matrix_get (cov, i, j);
+            }
+        }
+
+      *y_err = sqrt (var);
+
+      return GSL_SUCCESS;
+    }
+}

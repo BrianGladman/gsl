@@ -21,6 +21,7 @@
 #include "test_hahn1.c"
 #include "test_nelson.c"
 #include "test_fn.c"
+#include "test_estimator.c"
 
 void
 test_lmder (gsl_multifit_function_fdf * f, double x0[], 
@@ -39,6 +40,7 @@ main (void)
   test_longley();
   test_filip();
   test_pontius();
+  test_estimator();
 
   {
     gsl_multifit_function_fdf f = make_fdf (&brown_f, &brown_df, &brown_fdf,

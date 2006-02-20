@@ -365,6 +365,7 @@ spline functions
 
 * John D Lamb <J.D.Lamb@btinternet.com> Marsaglia-Tsang gamma generator
 
-* Giulio Bottazzi <giulio.bottazzi@libero.it> improved exponential power distribution
+* Giulio Bottazzi <giulio.bottazzi@libero.it> improved exponential
+power distribution and gsl_multifit_linear_est
 
 * Charles Karney <ckarney@sarnoff.com> added Leva bounds to gaussian ratio method generator

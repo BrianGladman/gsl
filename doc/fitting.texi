@@ -308,6 +308,14 @@ falls below the user-specified tolerance @var{tol}, and the effective
 rank is returned in @var{rank}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_est (const gsl_vector * @var{x}, const gsl_vector * @var{c}, const gsl_matrix * @var{cov}, double * @var{y}, double * @var{y_err})
+This function uses the best-fit multilinear regression coefficients
+@var{c} and their covariance matrix
+@var{cov} to compute the fitted function value
+@var{y} and its standard deviation @var{y_err} for the model @math{y = x.c} 
+at the point @var{x}.
+@end deftypefun
+
 @node Fitting Examples
 @section Examples
 
