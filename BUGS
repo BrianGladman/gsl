@@ -113,4 +113,34 @@ should probably be
     result->err  = GSL_DBL_EPSILON*ex + fabs(x) * result_E1.err;
 
 ----------------------------------------------------------------------
-Last assigned bug number = 42
+BUG#43 -- knuthran is out of date
+
+From: "Charles Karney" <ckarney@sarnoff.com>
+To: James Theiler <jt@lanl.gov>
+Cc: Charles Karney <ckarney@sarnoff.com>,
+	gsl-discuss <gsl-discuss@sources.redhat.com>
+Subject: Re: GSL 1.6 random numbers (gauss.c and rng.c)
+
+One final remark.  knuthran.c is out of date!  See
+
+    http://www-cs-faculty.stanford.edu/~knuth/news02.html#rng
+    http://www-cs-faculty.stanford.edu/~knuth/programs/rng.c
+
+There are two significant changes:
+
+(1) The generator is "warmed up" more thoroughly.  (This avoids problems
+    with correlations between random streams with adjacent seeds.)
+
+(2) Only 100 out of every 1009 random numbers are used.  (This is needed
+    so that the "birthday test" is satisfied.)
+
+-- 
+Charles Karney <ckarney@sarnoff.com>
+Sarnoff Corporation, Princeton, NJ 08543-5300
+
+URL: http://charles.karney.info
+Tel: +1 609 734 2312
+Fax: +1 609 734 2323
+
+======================================================================
+Last assigned bug number = 43
