@@ -374,6 +374,39 @@ int test_coulomb(void)
   gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(100.0, 1.0, lam_F=0, lam_G=0)");
   status += s;
 
+  /* compute F_1(eta=0,x=3.25), F'_1 and G_1(eta=0,x=3.25), G'_1 */
+
+  lam_F = 1.0;
+  eta = 0.0;
+  x = 3.25;
+  k_G = 0;
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  s = 0;
+  message_buff[0] = 0;
+  s += test_sf_check_result(message_buff,  F,  sin(x)/x - cos(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff, Fp,  -sin(x)/(x*x) + cos(x)/x +sin(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff,  G,  cos(x)/x + sin(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff, Gp,  -cos(x)/(x*x) - sin(x)/x + cos(x), TEST_TOL3);
+  printf("%s", message_buff);
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(3.25, 0.0, lam_F=1, lam_G=1)");
+  status += s;
+
+  /* compute F_1(eta=0,x=3.25), F'_1 and G_0(eta=0,x=3.25), G'_0 */
+
+  lam_F = 1.0;
+  eta = 0.0;
+  x = 3.25;
+  k_G = 1;
+  gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
+  s = 0;
+  message_buff[0] = 0;
+  s += test_sf_check_result(message_buff,  F,  sin(x)/x - cos(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff, Fp,  -sin(x)/(x*x) + cos(x)/x +sin(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff,  G,  cos(x), TEST_TOL3);
+  s += test_sf_check_result(message_buff, Gp,  -sin(x), TEST_TOL3);
+  printf("%s", message_buff);
+  gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(3.25, 0.0, lam_F=1, lam_G=0)");
+  status += s;
 
   return status;
 }

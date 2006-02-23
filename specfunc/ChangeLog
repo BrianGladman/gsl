@@ -1,3 +1,9 @@
+2006-02-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* coulomb.c (gsl_sf_coulomb_wave_FG_e): fixed sign of F_lam_min,
+	covers case when k_lam_G is nonzero and F_lam_min and F_lam differ
+	in sign.
+
 2006-01-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* synchrotron.c (gsl_sf_synchrotron_1_e): added first order

@@ -1132,7 +1132,7 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     double G_lam_min, Gp_lam_min;
     double Fp_over_F_lam_F;
     double Fp_over_F_lam_min;
-    double F_sign_lam_F;
+    double F_sign_lam_F, F_sign_lam_min;
     double P_lam_min, Q_lam_min;
     double alpha;
     double gamma;
@@ -1150,7 +1150,7 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
 
     double err_amplify;
 
-    F_lam_F  = SMALL;
+    F_lam_F  = F_sign_lam_F * SMALL;  /* unnormalized */
     Fp_lam_F = Fp_over_F_lam_F * F_lam_F;
 
     /* Backward recurrence to get F,Fp at lam_min */
@@ -1165,7 +1165,10 @@ gsl_sf_coulomb_wave_FG_e(const double eta, const double x,
     stat_CF2 = coulomb_CF2(lam_min, eta, x, &P_lam_min, &Q_lam_min, &CF2_count);
     alpha = Fp_over_F_lam_min - P_lam_min;
     gamma = alpha/Q_lam_min;
-    F_lam_min  = F_sign_lam_F / sqrt(alpha*alpha/Q_lam_min + Q_lam_min);
+
+    F_sign_lam_min = GSL_SIGN(F_lam_min_unnorm) ;
+
+    F_lam_min  = F_sign_lam_min / sqrt(alpha*alpha/Q_lam_min + Q_lam_min);
     Fp_lam_min = Fp_over_F_lam_min * F_lam_min;
     G_lam_min  = gamma * F_lam_min;
     Gp_lam_min = (P_lam_min * gamma - Q_lam_min) * F_lam_min;
