@@ -1,5 +1,7 @@
 2006-02-20  Brian Gough  <bjg@network-theory.co.uk>
 
+	* multilinear.c (gsl_multifit_linear_est): added linear estimator
+
 	* test_estimator.c (test_estimator): added test for gsl_multifit_linear_est
 
 2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
