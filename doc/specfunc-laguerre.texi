@@ -1,12 +1,18 @@
 @cindex Laguerre functions
 @cindex confluent hypergeometric function
 
-The Laguerre polynomials are defined in terms of confluent
+The generalized Laguerre polynomials are defined in terms of confluent
 hypergeometric functions as
 @c{$L^a_n(x) = ((a+1)_n / n!) {}_1F_1(-n,a+1,x)$}
-@math{L^a_n(x) = ((a+1)_n / n!) 1F1(-n,a+1,x)}.  These functions are
-declared in the header file @file{gsl_sf_laguerre.h}.
+@math{L^a_n(x) = ((a+1)_n / n!) 1F1(-n,a+1,x)}, and are sometimes referred to as the
+associated Laguerre polynomials.  They are related to the plain
+Laguerre polynomials @math{L_n(x)} by @math{L^0_n(x) = L_n(x)} and 
+@c{$L^k_n(x) = (-1)^k (d^k/dx^k) L_{(n+k)}(x)$}
+@math{L^k_n(x) = (-1)^k (d^k/dx^k) L_(n+k)(x)}.  For
+more information see Abramowitz & Stegun, Chapter 22.
 
+The functions described in this section are
+declared in the header file @file{gsl_sf_laguerre.h}.  
 
 @deftypefun double gsl_sf_laguerre_1 (double @var{a}, double @var{x})
 @deftypefunx double gsl_sf_laguerre_2 (double @var{a}, double @var{x})
