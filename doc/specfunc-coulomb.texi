@@ -29,22 +29,23 @@ radial wavefunction,
 @tex
 \beforedisplay
 $$
-R_n := {2 Z^{3/2} \over n^2}  \left({2Z \over n}\right)^l  \sqrt{(n-l-1)! \over (n+l)!} \exp(-Z r/n) L^{2l+1}_{n-l-1}(2Z/n r).
+R_n := {2 Z^{3/2} \over n^2}  \left({2Z r \over n}\right)^l  \sqrt{(n-l-1)! \over (n+l)!} \exp(-Z r/n) L^{2l+1}_{n-l-1}(2Z r / n).
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Z/n)^l
-          L^@{2l+1@}_@{n-l-1@}(2Z/n r).  
+R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Zr/n)^l
+          L^@{2l+1@}_@{n-l-1@}(2Zr/n).  
 @end example
 @end ifinfo
 @noindent
+where @math{L^a_b(x)} is the generalized Laguerre polynomial (@pxref{Laguerre Functions}).
 The normalization is chosen such that the wavefunction @math{\psi} is
 given by 
 @c{$\psi(n,l,r) = R_n Y_{lm}$}
-@math{\psi(n,l,r) = R_n Y_@{lm@}}.
+@math{\psi(n,l,r) = R_n Y_@{lm@}}.   
 @end deftypefun
 
 @node Coulomb Wave Functions
