@@ -49,6 +49,8 @@ void test_beta (void);
 void test_gammainv (void);
 void test_chisqinv (void);
 void test_tdistinv (void);
+void test_betainv (void);
+void test_finv (void);
 
 #include "test_auto.c"
 
@@ -74,6 +76,8 @@ main (void)
   test_gammainv (); 
   test_chisqinv (); 
   test_tdistinv (); 
+  test_betainv ();
+  test_finv ();
 
   test_auto_beta ();
   test_auto_fdist ();
@@ -550,6 +554,119 @@ void test_fdist (void) {
   TEST (gsl_cdf_fdist_Q, (10000.0, 200.0, 500.0), 0.0, 0.0);
 }
 
+void test_finv (void) {
+  TEST (gsl_cdf_fdist_Pinv, (0.0, 1.2, 1.3), 0.0, 0.0);
+  TEST (gsl_cdf_fdist_Pinv, ( 6.98194275525039002e-61, 1.2, 1.3), 1e-100, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.10608485860238564e-2, 1.2, 1.3), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 4.38636757068313850e-2, 1.2, 1.3), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.68242392712840734e-1, 1.2, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 3.14130045246195449e-1, 1.2, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.09630779074755253e-01, 1.2, 1.3), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.83998640641553852e-1, 1.2, 1.3), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 6.34733581351938787e-1, 1.2, 1.3), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 8.48446237879200975e-1, 1.2, 1.3), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.00987726336875039e-1, 1.2, 1.3), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.64489127047688435e-1, 1.2, 1.3), 100.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.92012051694116388e-1, 1.2, 1.3), 1000.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.98210862808842585e-1, 1.2, 1.3), 10000.0, TEST_TOL6);
+
+  TEST (gsl_cdf_fdist_Qinv, ( 1.0, 1.2, 1.3), 0.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.88939151413976144e-1, 1.2, 1.3), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.56136324293168615e-1, 1.2, 1.3), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 8.31757607287159265e-1, 1.2, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 6.85869954753804551e-1, 1.2, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.90369220925244747e-1, 1.2, 1.3), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.16001359358446148e-1, 1.2, 1.3), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 3.65266418648061213e-1, 1.2, 1.3), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.51553762120799025e-1, 1.2, 1.3), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.90122736631249612e-2, 1.2, 1.3), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 3.55108729523115643e-2, 1.2, 1.3), 100.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 7.98794830588361109e-3, 1.2, 1.3), 1000.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.7891371911574145e-3, 1.2, 1.3), 10000.0, TEST_TOL6);
+
+
+  TEST (gsl_cdf_fdist_Pinv, ( 0.0, 500.0, 1.3), 0.0, 0.0);
+
+  TEST (gsl_cdf_fdist_Pinv, ( 9.83434460393304765e-141, 500.0, 1.3), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.45915624888550014e-26, 500.0, 1.3), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.89976509619688165e-4, 500.0, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 6.86110486051542533e-2, 500.0, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 3.38475053806404615e-1, 500.0, 1.3), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 4.52016245247457422e-1, 500.0, 1.3), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.27339068937388798e-1, 500.0, 1.3), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 8.16839628578413905e-1, 500.0, 1.3), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 8.81784623056911406e-1, 500.0, 1.3), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.58045057204221295e-1, 500.0, 1.3), 100.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.90585749380655275e-1, 500.0, 1.3), 1000.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.97891924831461387e-1, 500.0, 1.3), 10000.0, TEST_TOL6);
+
+  TEST (gsl_cdf_fdist_Qinv, ( 1.0, 500.0, 1.3), 0.0, TEST_TOL6);
+
+  /*
+   * The algorithm currently implemented in gsl_cdf_fdist_Qinv and Pinv
+   * are not accurate for very large degrees of freedom, so the tests
+   * here are commented out. Another algorithm more suitable for
+   * these extreme values might pass these tests.
+   */
+
+  TEST (gsl_cdf_fdist_Qinv, ( 9.99410023490380312e-1, 500.0, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.31388951394845747e-1, 500.0, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 6.61524946193595385e-1, 500.0, 1.3), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 5.47983754752542572e-1, 500.0, 1.3), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.72660931062611202e-1, 500.0, 1.3), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.83160371421586096e-1, 500.0, 1.3), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.18215376943088595e-1, 500.0, 1.3), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.19549427957787016e-2, 500.0, 1.3), 100.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.41425061934473424e-3, 500.0, 1.3), 1000.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 2.10807516853862603e-3, 500.0, 1.3), 10000.0, TEST_TOL6);
+
+  TEST (gsl_cdf_fdist_Pinv, ( 0.0, 1.2, 500.0), 0.0, 0.0);
+  TEST (gsl_cdf_fdist_Pinv, ( 8.23342055585482999e-61, 1.2, 500.0), 1e-100, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.30461496441289529e-2, 1.2, 500.0), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.18324224608033294e-2, 1.2, 500.0), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 2.02235101716076289e-1, 1.2, 500.0), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 3.90502983219393749e-1, 1.2, 500.0), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 6.67656191574653619e-1, 1.2, 500.0), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 7.75539230271467054e-1, 1.2, 500.0), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 8.45209114904613705e-1, 1.2, 500.0), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.99168017659120988e-1, 1.2, 500.0), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.99998005738371669e-1, 1.2, 500.0), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.0, 1.2, 500.0), GSL_POSINF, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.0, 1.2, 500.0), GSL_POSINF, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.0, 1.2, 500.0), GSL_POSINF, TEST_TOL6);
+
+  TEST (gsl_cdf_fdist_Qinv, ( 1.0, 1.2, 500.0), 0.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.86953850355871047e-1, 1.2, 500.0), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 9.48167577539196671e-1, 1.2, 500.0), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 7.97764898283923711e-1, 1.2, 500.0), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 6.09497016780606251e-1, 1.2, 500.0), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 3.32343808425346381e-1, 1.2, 500.0), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 2.24460769728532946e-1, 1.2, 500.0), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.54790885095386295e-1, 1.2, 500.0), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 8.3198234087901168e-4, 1.2, 500.0), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.99426162833131e-6, 1.2, 500.0), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 6.23302662288217117e-25, 1.2, 500.0), 100.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 1.14328577259666930e-134, 1.2, 500.0), 1000.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 0.0, 1.2, 500.0), GSL_POSINF, 0.0);
+
+  TEST (gsl_cdf_fdist_Pinv, ( 0.0, 200.0, 500.0), 0.0, 0.0);
+  TEST (gsl_cdf_fdist_Pinv, ( 4.09325080403669893e-251, 200.0, 500.0), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.17894325419628688e-151, 200.0, 500.0), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.92430940796861258e-57, 200.0, 500.0), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 3.18220452357263554e-18, 200.0, 500.0), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 5.06746326121168266e-1, 200.0, 500.0), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 9.99794175718712438e-1, 200.0, 500.0), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Pinv, ( 1.0, 200.0, 500.0), GSL_POSINF, TEST_TOL6);
+
+  TEST (gsl_cdf_fdist_Qinv, ( 1.0, 200.0, 500.0), 0.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.93253673878831734e-1, 200.0, 500.0), 1.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 2.05824281287561795e-4, 200.0, 500.0), 1.5, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 4.71763848371410786e-10, 200.0, 500.0), 2.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 5.98048337181948436e-96, 200.0, 500.0), 10.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 2.92099265879979502e-155, 200.0, 500.0), 20.0, TEST_TOL6);
+  TEST (gsl_cdf_fdist_Qinv, ( 0.0, 200.0, 500.0), GSL_POSINF, 0.0);
+}
+
   /* Tests for gamma distribution */
 
   /* p(x, a, b) := gammaP(b, x / a) */
@@ -706,6 +823,32 @@ void test_beta (void) {
   TEST (gsl_cdf_beta_Q, (0.99, 1.2, 1.3), 3.11356165874561958e-3, TEST_TOL6);
   TEST (gsl_cdf_beta_Q, (0.999, 1.2, 1.3), 1.56207166932365759e-4, TEST_TOL6);
   TEST (gsl_cdf_beta_Q, (1.0, 1.2, 1.3), 0.0, TEST_TOL6);
+}
+
+void test_betainv (void) {
+  TEST (gsl_cdf_beta_Pinv, (0.0, 1.2, 1.3), 0.0, 0.0);
+  TEST (gsl_cdf_beta_Pinv, ( 1.34434944656489596e-120, 1.2, 1.3), 1e-100, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 3.37630042504535813e-4, 1.2, 1.3), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 5.34317264038929473e-3, 1.2, 1.3), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 8.33997828306748346e-2, 1.2, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 3.28698654180583916e-1, 1.2, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 5.29781429451299081e-1, 1.2, 1.3), 0.5, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 9.38529397224430659e-1, 1.2, 1.3), 0.9, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 9.96886438341254380e-1, 1.2, 1.3), 0.99, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 9.99843792833067634e-1, 1.2, 1.3), 0.999, TEST_TOL6);
+  TEST (gsl_cdf_beta_Pinv, ( 1.0, 1.2, 1.3), 1.0, TEST_TOL6);
+
+  TEST (gsl_cdf_beta_Qinv, ( 1.0, 1.2, 1.3), 0.0, 0.0);
+  TEST (gsl_cdf_beta_Qinv, ( 1e0, 1.2, 1.3), 0.0, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 9.99662369957495464e-1, 1.2, 1.3), 0.001, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 9.94656827359610705e-1, 1.2, 1.3), 0.01, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 9.16600217169325165e-1, 1.2, 1.3), 0.1, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 6.71301345819416084e-1, 1.2, 1.3), 0.325, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 4.70218570548700919e-1, 1.2, 1.3), 0.5, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 6.14706027755693408e-2, 1.2, 1.3), 0.9, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 3.11356165874561958e-3, 1.2, 1.3), 0.99, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 1.56207166932365759e-4, 1.2, 1.3), 0.999, TEST_TOL6);
+  TEST (gsl_cdf_beta_Qinv, ( 0.0, 1.2, 1.3), 1.0, TEST_TOL6);
 }
 
 void test_gammainv (void) {

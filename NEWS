@@ -1,3 +1,7 @@
+** Added the functions gsl_cdf_beta_{Pinv,Qinv} and
+gsl_cdf_fdist_{Pinv,Qinv} for computing the inverse of the cumulative
+beta and F distributions.
+
 ** Added the multilinear fit estimator function gsl_multifit_linear_est
 for computing model values and their errors.
 

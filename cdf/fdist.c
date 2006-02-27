@@ -1,6 +1,7 @@
-/* cdf/f.c
+/* cdf/fdist.c
  *
  * Copyright (C) 2002 Przemyslaw Sliwa and Jason H. Stover.
+ * Copyright (C) 2006 Brian Gough
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +24,13 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 
+#include "error.h"
 #include "beta_inc.c"
 
 /*
  * Lower tail.
  */
+
 double
 gsl_cdf_fdist_P (const double x, const double nu1, const double nu2)
 {
@@ -53,6 +56,7 @@ gsl_cdf_fdist_P (const double x, const double nu1, const double nu2)
 /*
  * Upper tail.
  */
+
 double
 gsl_cdf_fdist_Q (const double x, const double nu1, const double nu2)
 {

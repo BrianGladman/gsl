@@ -94,8 +94,14 @@ double gsl_cdf_tdist_Qinv (const double Q, const double nu);
 double gsl_cdf_fdist_P (const double x, const double nu1, const double nu2);
 double gsl_cdf_fdist_Q (const double x, const double nu1, const double nu2);
 
+double gsl_cdf_fdist_Pinv (const double P, const double nu1, const double nu2);
+double gsl_cdf_fdist_Qinv (const double Q, const double nu1, const double nu2);
+
 double gsl_cdf_beta_P (const double x, const double a, const double b);
 double gsl_cdf_beta_Q (const double x, const double a, const double b);
+
+double gsl_cdf_beta_Pinv (const double P, const double a, const double b);
+double gsl_cdf_beta_Qinv (const double Q, const double a, const double b);
 
 double gsl_cdf_flat_P (const double x, const double a, const double b);
 double gsl_cdf_flat_Q (const double x, const double a, const double b);
