@@ -69,12 +69,13 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
 
   {
     double lambda, dP, phi;
+    unsigned int n = 0;
 
   start:
     dP = P - gsl_cdf_gamma_P (x, a, 1.0);
     phi = gsl_ran_gamma_pdf (x, a, 1.0);
 
-    if (dP == 0.0)
+    if (dP == 0.0 || n++ > 32)
       goto end;
 
     lambda = dP / GSL_MAX (2 * fabs (dP / x), phi);
@@ -147,12 +148,13 @@ gsl_cdf_gamma_Qinv (const double Q, const double a, const double b)
 
   {
     double lambda, dQ, phi;
+    unsigned int n = 0;
 
   start:
     dQ = Q - gsl_cdf_gamma_Q (x, a, 1.0);
     phi = gsl_ran_gamma_pdf (x, a, 1.0);
 
-    if (dQ == 0.0)
+    if (dQ == 0.0 || n++ > 32)
       goto end;
 
     lambda = -dQ / GSL_MAX (2 * fabs (dQ / x), phi);

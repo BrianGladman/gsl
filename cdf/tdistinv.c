@@ -99,12 +99,13 @@ gsl_cdf_tdist_Pinv (const double P, const double nu)
 
   {
     double dP, phi;
+    unsigned int n = 0;
 
   start:
     dP = P - gsl_cdf_tdist_P (x, nu);
     phi = gsl_ran_tdist_pdf (x, nu);
 
-    if (dP == 0.0)
+    if (dP == 0.0 || n++ > 32)
       goto end;
 
     {
@@ -192,12 +193,13 @@ gsl_cdf_tdist_Qinv (const double Q, const double nu)
 
   {
     double dQ, phi;
+    unsigned int n = 0;
 
   start:
     dQ = Q - gsl_cdf_tdist_Q (x, nu);
     phi = gsl_ran_tdist_pdf (x, nu);
 
-    if (dQ == 0.0)
+    if (dQ == 0.0 || n++ > 32)
       goto end;
 
     {
