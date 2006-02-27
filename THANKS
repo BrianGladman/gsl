@@ -308,7 +308,7 @@ division by zero
 
 * Joerg Wensch <wensch@informatik.uni-halle.de>  LQ decompositions
 
-* Jason Stover <jstover@sdf.lonestar.org> patch for cdf/beta.c
+* Jason Stover <jstover@sdf.lonestar.org> patch for cdf/beta.c, inverse 
 
 * Ralph Menikoff <rtm@lanl.gov> bug report for gsl_sf_expint_scaled
 
