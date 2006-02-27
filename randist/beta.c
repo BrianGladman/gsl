@@ -53,7 +53,7 @@ gsl_ran_beta_pdf (const double x, const double a, const double b)
       double ga = gsl_sf_lngamma (a);
       double gb = gsl_sf_lngamma (b);
 
-      p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+      p = exp (gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
 
       return p;
     }

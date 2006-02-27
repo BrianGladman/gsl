@@ -1,3 +1,8 @@
+2006-02-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* beta.c (gsl_ran_beta_pdf): work with logs avoid
+	underflow/overflow
+
 2006-02-19  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gauss.c (gsl_ran_gaussian): reject case where x=-1 || y=-1
