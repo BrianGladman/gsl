@@ -532,14 +532,14 @@ real sequence.  The half-complex coefficients @math{c} of a real sequence
 @tex
 \beforedisplay
 $$
-c_k = \sum_{j=0}^{N-1} x_k \exp(-2 \pi i j k /N)
+c_k = \sum_{j=0}^{N-1} x_j \exp(-2 \pi i j k /N)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-c_k = \sum_@{j=0@}^@{N-1@} x_k \exp(-2 \pi i j k /N)
+c_k = \sum_@{j=0@}^@{N-1@} x_j \exp(-2 \pi i j k /N)
 @end example
 @end ifinfo
 @noindent
@@ -618,7 +618,7 @@ complex[k].real    =    data[k]
 complex[k].imag    =    data[N-k] 
 ...............         ................
 complex[N/2].real  =    data[N/2]
-complex[N/2].real  =    0
+complex[N/2].imag  =    0
 ...............         ................
 complex[k'].real   =    data[k]        k' = N - k
 complex[k'].imag   =   -data[N-k] 
