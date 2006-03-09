@@ -25,21 +25,21 @@
 
 #include "error.h"
 
-double 
-gsl_cdf_fdist_Pinv (const double p, const double nu1, const double nu2)
+double
+gsl_cdf_fdist_Pinv (const double P, const double nu1, const double nu2)
 {
   double result;
   double y;
 
-  if (p < 0.0)
+  if (P < 0.0)
     {
-      CDF_ERROR ("p < 0.0", GSL_EDOM);
+      CDF_ERROR ("P < 0.0", GSL_EDOM);
     }
-  if (p > 1.0 )
+  if (P > 1.0)
     {
-      CDF_ERROR ("p > 1.0", GSL_EDOM);
+      CDF_ERROR ("P > 1.0", GSL_EDOM);
     }
-  if (nu1 < 1.0 )
+  if (nu1 < 1.0)
     {
       CDF_ERROR ("nu1 < 1", GSL_EDOM);
     }
@@ -48,37 +48,37 @@ gsl_cdf_fdist_Pinv (const double p, const double nu1, const double nu2)
       CDF_ERROR ("nu2 < 1", GSL_EDOM);
     }
 
-  if (p < 0.5)
+  if (P < 0.5)
     {
-      y = gsl_cdf_beta_Pinv(p, nu1 / 2.0, nu2 / 2.0);
+      y = gsl_cdf_beta_Pinv (P, nu1 / 2.0, nu2 / 2.0);
 
       result = nu2 * y / (nu1 * (1.0 - y));
     }
-  else 
+  else
     {
-      y = gsl_cdf_beta_Qinv(p, nu2 / 2.0, nu1 / 2.0);
+      y = gsl_cdf_beta_Qinv (P, nu2 / 2.0, nu1 / 2.0);
 
-      result = nu2 * (1-y) / (nu1 * y);
+      result = nu2 * (1 - y) / (nu1 * y);
     }
-  
+
   return result;
 }
 
-double 
+double
 gsl_cdf_fdist_Qinv (const double Q, const double nu1, const double nu2)
 {
   double result;
   double y;
-  
+
   if (Q < 0.0)
     {
       CDF_ERROR ("Q < 0.0", GSL_EDOM);
     }
-  if (Q > 1.0 )
+  if (Q > 1.0)
     {
       CDF_ERROR ("Q > 1.0", GSL_EDOM);
     }
-  if (nu1 < 1.0 )
+  if (nu1 < 1.0)
     {
       CDF_ERROR ("nu1 < 1", GSL_EDOM);
     }
@@ -89,17 +89,16 @@ gsl_cdf_fdist_Qinv (const double Q, const double nu1, const double nu2)
 
   if (Q > 0.5)
     {
-      y = gsl_cdf_beta_Qinv( Q, nu1 / 2.0, nu2 / 2.0 );
-      
+      y = gsl_cdf_beta_Qinv (Q, nu1 / 2.0, nu2 / 2.0);
+
       result = nu2 * y / (nu1 * (1.0 - y));
     }
   else
     {
-      y = gsl_cdf_beta_Pinv(Q, nu2 / 2.0, nu1 / 2.0 );
-      
-      result = nu2 * (1-y) / (nu1 * y);
+      y = gsl_cdf_beta_Pinv (Q, nu2 / 2.0, nu1 / 2.0);
+
+      result = nu2 * (1 - y) / (nu1 * y);
     }
 
   return result;
 }
-

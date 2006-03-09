@@ -308,7 +308,8 @@ division by zero
 
 * Joerg Wensch <wensch@informatik.uni-halle.de>  LQ decompositions
 
-* Jason Stover <jstover@sdf.lonestar.org> patch for cdf/beta.c, inverse 
+* Jason Stover <jstover@sdf.lonestar.org> patch for cdf/beta.c,
+inverse cumulative distributions, discrete cumulative distributions
 
 * Ralph Menikoff <rtm@lanl.gov> bug report for gsl_sf_expint_scaled
 

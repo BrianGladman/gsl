@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_randist.h>
 #include <gsl/gsl_cdf.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
@@ -54,11 +55,287 @@ void test_finv (void);
 
 #include "test_auto.c"
 
+struct range { unsigned int min; unsigned int max; } ;
+double test_binomial_pdf (unsigned int n);
+double test_binomial_cdf_P (unsigned int n);
+double test_binomial_cdf_Q (unsigned int n);
+
+struct range
+test_binomial_range (void)
+{
+  struct range r = {0, 5};
+  return r;
+}
+
+double
+test_binomial_pdf (unsigned int k)
+{
+  return gsl_ran_binomial_pdf (k, 0.3, 5);
+}
+
+double
+test_binomial_cdf_P (unsigned int k)
+{
+  return gsl_cdf_binomial_P (k, 0.3, 5);
+}
+
+double
+test_binomial_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_binomial_Q (k, 0.3, 5);
+}
+
+struct range
+test_poisson_range (void)
+{
+  struct range r = {0, 25};
+  return r;
+}
+
+double
+test_poisson_pdf (unsigned int k)
+{
+  return gsl_ran_poisson_pdf (k, 2.3);
+}
+
+double
+test_poisson_cdf_P (unsigned int k)
+{
+  return gsl_cdf_poisson_P (k, 2.3);
+}
+
+double
+test_poisson_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_poisson_Q (k, 2.3);
+}
+
+struct range
+test_geometric_range (void)
+{
+  struct range r = {0, 25};
+  return r;
+}
+
+double
+test_geometric_pdf (unsigned int k)
+{
+  return gsl_ran_geometric_pdf (k, 0.3);
+}
+
+double
+test_geometric_cdf_P (unsigned int k)
+{
+  return gsl_cdf_geometric_P (k, 0.3);
+}
+
+double
+test_geometric_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_geometric_Q (k, 0.3);
+}
+
+struct range
+test_negative_binomial_range (void)
+{
+  struct range r = {0, 15};
+  return r;
+}
+
+double
+test_negative_binomial_pdf (unsigned int k)
+{
+  return gsl_ran_negative_binomial_pdf (k, 0.3, 5.3);
+}
+
+double
+test_negative_binomial_cdf_P (unsigned int k)
+{
+  return gsl_cdf_negative_binomial_P (k, 0.3, 5.3);
+}
+
+double
+test_negative_binomial_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_negative_binomial_Q (k, 0.3, 5.3);
+}
+
+struct range
+test_pascal_range (void)
+{
+  struct range r = {0, 15};
+  return r;
+}
+
+double
+test_pascal_pdf (unsigned int k)
+{
+  return gsl_ran_pascal_pdf (k, 0.3, 5);
+}
+
+double
+test_pascal_cdf_P (unsigned int k)
+{
+  return gsl_cdf_pascal_P (k, 0.3, 5);
+}
+
+double
+test_pascal_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_pascal_Q (k, 0.3, 5);
+}
+
+struct range
+test_hypergeometric_range (void)
+{
+  struct range r = {0, 26};
+  return r;
+}
+
+double
+test_hypergeometric_pdf (unsigned int k)
+{
+  return gsl_ran_hypergeometric_pdf (k, 7, 19, 13);
+}
+
+double
+test_hypergeometric_cdf_P (unsigned int k)
+{
+  return gsl_cdf_hypergeometric_P (k, 7, 19, 13);
+}
+
+double
+test_hypergeometric_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_hypergeometric_Q (k, 7, 19, 13);
+}
+
+#ifdef LOGARITHMIC
+struct range
+test_logarithmic_range (void)
+{
+  struct range r = {1, 200};
+  return r;
+}
+
+double
+test_logarithmic_pdf (unsigned int k)
+{
+  return gsl_ran_logarithmic_pdf (k, 0.9);
+}
+
+double
+test_logarithmic_cdf_P (unsigned int k)
+{
+  return gsl_cdf_logarithmic_P (k, 0.9);
+}
+
+double
+test_logarithmic_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_logarithmic_Q (k, 0.9);
+}
+#endif
+
+void
+test_discrete_cdf_P (double (*pdf)(unsigned int), 
+                     double (*cdf_P)(unsigned int), 
+                     struct range (*range)(void), 
+                     const char * desc)
+{
+  double sum;
+  double tol = TEST_TOL2;
+  int i, min, max;
+
+  struct range r = range();
+
+  min = r.min;
+  max = r.max;
+  sum = 0.0;
+
+  for (i = min; i <= max; i++)
+    {
+      double pi = pdf(i);
+      double Pi = cdf_P(i);
+      sum += pi;
+      gsl_test_rel (Pi, sum, tol, desc, i);
+    }
+}
+
+void
+test_discrete_cdf_Q (double (*pdf)(unsigned int), 
+                     double (*cdf_Q)(unsigned int), 
+                     struct range (*range)(void), 
+                     const char * desc)
+{
+  double sum;
+  double tol = TEST_TOL2;
+  int i, min, max;
+
+  struct range r = range();
+
+  min = r.min;
+  max = r.max;
+  sum = cdf_Q(max);
+
+  for (i = max; i >= min; i--)
+    {
+      double pi = pdf(i);
+      double Qi = cdf_Q(i);
+      gsl_test_rel (Qi, sum, tol, desc, i);
+      sum += pi;
+    }
+}
+
+void
+test_discrete_cdf_PQ (double (*cdf_P)(unsigned int), 
+                      double (*cdf_Q)(unsigned int), 
+                      struct range (*range)(void), 
+                      const char * desc)
+{
+  double sum;
+  double tol = GSL_DBL_EPSILON;
+  int i, min, max;
+
+  struct range r = range();
+
+  min = r.min;
+  max = r.max;
+
+  for (i = min; i <= max; i++)
+    {
+      double Pi = cdf_P(i);
+      double Qi = cdf_Q(i);
+      sum = Pi + Qi;
+      gsl_test_rel (sum, 1.0, tol, desc, i);
+    }
+
+}
+
+#define TEST_DISCRETE(name) do {  \
+  test_discrete_cdf_P(&test_ ## name ## _pdf, &test_ ## name ## _cdf_P, &test_ ## name ## _range, "test gsl_cdf_" #name "_P (k=%d)") ; \
+  test_discrete_cdf_Q(&test_ ## name ## _pdf, &test_ ## name ## _cdf_Q, &test_ ## name ## _range, "test gsl_cdf_" #name "_Q (k=%d)") ; \
+  test_discrete_cdf_PQ(&test_ ## name ## _cdf_P, &test_ ## name ## _cdf_Q, &test_ ## name ## _range, "test gsl_cdf_" #name "_P+Q (k=%d)") ; \
+} while (0);
+
 int
 main (void)
 {
   gsl_ieee_env_setup ();
-  
+
+  TEST_DISCRETE(binomial);
+  TEST_DISCRETE(poisson);
+  TEST_DISCRETE(geometric);
+  TEST_DISCRETE(negative_binomial);
+  TEST_DISCRETE(pascal);
+  TEST_DISCRETE(hypergeometric);
+
+#ifdef LOGARITHMIC
+  TEST_DISCRETE(logarithmic);
+#endif
+
+  exit (gsl_test_summary ());
+
   /* Tests for gaussian cumulative distribution function 
      Function values computed with PARI, 28 digits precision */
   

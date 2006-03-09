@@ -142,5 +142,33 @@ URL: http://charles.karney.info
 Tel: +1 609 734 2312
 Fax: +1 609 734 2323
 
+----------------------------------------------------------------------
+BUG#44 -- gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
+
+The sum of gamma_inc_P and gamma_inc_Q doesn't always satisfy the
+identity P+Q=1 exactly (although it is correct within errors), due the
+slightly different branch conditions for the series and continued
+fraction expansions.  These could be made identical so that P+Q=1 exactly.
+
+#include <stdio.h>
+#include <gsl/gsl_sf_gamma.h>
+
+int
+main (void)
+{
+  gsl_sf_result r1, r2;
+  double a = 0.3, x = 1.0;
+  gsl_sf_gamma_inc_P_e (a, x, &r1);
+  gsl_sf_gamma_inc_Q_e (a, x, &r2);
+  printf("%.18e\n", r1.val);
+  printf("%.18e\n", r2.val);
+  printf("%.18e\n", r1.val + r2.val);
+}
+
+$ ./a.out
+9.156741562411074842e-01
+8.432584375889111417e-02
+9.999999999999985567e-01
+
 ======================================================================
 Last assigned bug number = 43

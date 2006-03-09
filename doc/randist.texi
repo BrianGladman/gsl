@@ -126,6 +126,50 @@ The inverse cumulative distributions, @c{$x=P^{-1}(P)$}
 which correspond to a specific value of @math{P} or {Q}.  
 They can be used to find confidence limits from probability values.
 
+For discrete distributions the probability of sampling the integer
+value @math{k} is given by @math{p(k)}, where @math{\sum_k p(k) = 1}.
+The cumulative distribution for the lower tail @math{P(k)} of a
+discrete distribution is defined as,
+@tex
+\beforedisplay
+$$
+P(k) = \sum_{i \le k} p(i) 
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+P(k) = \sum_@{i <= k@} p(i)
+@end example
+@end ifinfo
+@noindent
+where the sum is over the allowed range of the distribution less than
+or equal to @math{k}.
+
+The cumulative distribution for the upper tail of a discrete
+distribution @math{Q(k)} is defined as
+@tex
+\beforedisplay
+$$
+Q(k) = \sum_{i > k} p(i) 
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+Q(k) = \sum_@{i > k@} p(i)
+@end example
+@end ifinfo
+@noindent
+giving the sum of probabilities for all values greater than @math{k}.
+These two definitions satisfy the identity @math{P(k)+Q(k)=1}.
+
+If the range of the distribution is 1 to @math{n} inclusive then
+@math{P(n)=1}, @math{Q(n)=0} while @math{P(1) = p(1)},
+@math{Q(1)=1-p(1)}.
+
 @page
 @node The Gaussian Distribution
 @section The Gaussian Distribution
@@ -434,6 +478,14 @@ and exponent @var{b}, using the formula given above.
 @tex
 \centerline{\input rand-exppow.tex}
 @end tex
+
+@deftypefun double gsl_cdf_exppow_P (double @var{x}, double @var{a}, double @var{b})
+@deftypefunx double gsl_cdf_exppow_Q (double @var{x}, double @var{a}, double @var{b})
+These functions compute the cumulative distribution functions
+@math{P(x)}, @math{Q(x)} for the exponential power distribution with
+parameters @var{a} and @var{b}.
+@end deftypefun
+
 
 @page
 @node The Cauchy Distribution
@@ -1598,6 +1650,14 @@ given above.
 \centerline{\input rand-poisson.tex}
 @end tex
 
+@deftypefun double gsl_cdf_poisson_P (unsigned int @var{k}, double @var{mu})
+@deftypefunx double gsl_cdf_poisson_Q (unsigned int @var{k}, double @var{mu})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)} for the Poisson distribution with parameter
+@var{mu}.
+@end deftypefun
+
+
 @page
 @node The Bernoulli Distribution
 @section The Bernoulli Distribution
@@ -1673,6 +1733,14 @@ the formula given above.
 @tex
 \centerline{\input rand-binomial.tex}
 @end tex
+
+@deftypefun double gsl_cdf_binomial_P (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
+@deftypefunx double gsl_cdf_binomial_Q (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)}  for the binomial
+distribution with parameters @var{p} and @var{n}.
+@end deftypefun
+
 
 @page
 @node The Multinomial Distribution
@@ -1767,6 +1835,13 @@ from a negative binomial distribution with parameters @var{p} and
 \centerline{\input rand-nbinomial.tex}
 @end tex
 
+@deftypefun double gsl_cdf_negative_binomial_P (unsigned int @var{k}, double @var{p}, double @var{n})
+@deftypefunx double gsl_cdf_negative_binomial_Q (unsigned int @var{k}, double @var{p}, double @var{n})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)} for the negative binomial distribution with
+parameters @var{p} and @var{n}.
+@end deftypefun
+
 @page
 @node The Pascal Distribution
 @section The Pascal Distribution
@@ -1804,6 +1879,13 @@ from a Pascal distribution with parameters @var{p} and
 \centerline{\input rand-pascal.tex}
 @end tex
 
+@deftypefun double gsl_cdf_pascal_P (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
+@deftypefunx double gsl_cdf_pascal_Q (unsigned int @var{k}, double @var{p}, unsigned int @var{n})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)} for the Pascal distribution with
+parameters @var{p} and @var{n}.
+@end deftypefun
+
 @page
 @node The Geometric Distribution
 @section The Geometric Distribution
@@ -1828,7 +1910,9 @@ p(k) =  p (1-p)^(k-1)
 @end ifinfo
 @noindent
 for @c{$k \ge 1$}
-@math{k >= 1}.
+@math{k >= 1}.  Note that the distribution begins with @math{k=1} with this
+definition.  There is another convention in which the exponent @math{k-1} 
+is replaced by @math{k}.
 @end deftypefun
 
 @deftypefun double gsl_ran_geometric_pdf (unsigned int @var{k}, double @var{p})
@@ -1841,6 +1925,14 @@ the formula given above.
 @tex
 \centerline{\input rand-geometric.tex}
 @end tex
+
+@deftypefun double gsl_cdf_geometric_P (unsigned int @var{k}, double @var{p})
+@deftypefunx double gsl_cdf_geometric_Q (unsigned int @var{k}, double @var{p})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)} for the geometric distribution with parameter
+@var{p}.
+@end deftypefun
+
 
 @page
 @node The Hypergeometric Distribution
@@ -1867,10 +1959,15 @@ p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 @noindent
 where @math{C(a,b) = a!/(b!(a-b)!)} and 
 @c{$t \leq n_1 + n_2$}
-@math{t <= n_1 + n_2}.  The
-domain of @math{k} is 
+@math{t <= n_1 + n_2}.  The domain of @math{k} is 
 @c{$\hbox{max}(0,t-n_2), \ldots, \hbox{min}(t,n_1)$} 
 @math{max(0,t-n_2), ..., min(t,n_1)}.
+
+If a population contains @math{n_1} elements of ``type 1'' and
+@math{n_2} elements of ``type 2'' then the hypergeometric
+distribution gives the probability of obtaining @math{k} elements of
+``type 1'' in @math{t} samples from the population without
+replacement.
 @end deftypefun
 
 @deftypefun double gsl_ran_hypergeometric_pdf (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
@@ -1883,6 +1980,14 @@ from a hypergeometric distribution with parameters @var{n1}, @var{n2},
 @tex
 \centerline{\input rand-hypergeometric.tex}
 @end tex
+
+@deftypefun double gsl_cdf_hypergeometric_P (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
+@deftypefunx double gsl_cdf_hypergeometric_Q (unsigned int @var{k}, unsigned int @var{n1}, unsigned int @var{n2}, unsigned int @var{t})
+These functions compute the cumulative distribution functions
+@math{P(k)}, @math{Q(k)} for the hypergeometric distribution with
+parameters @var{n1}, @var{n2} and @var{t}.
+@end deftypefun
+
 
 @page
 @node The Logarithmic Distribution

@@ -1,3 +1,26 @@
+2006-03-07  Brian Gough  <bjg@network-theory.co.uk>
+
+	* poisson.c: added poisson cdf
+
+	* nbinomial.c: added negative binomial cdf
+
+	* hypergeometric.c: added hypergeometric cdf
+
+	* geometric.c: added geometric cdf
+
+	* binomial.c (gsl_cdf_binomial_Q): added binomial cdf
+
+	* test.c: added discrete function tests
+
+	* gamma.c (gsl_cdf_gamma_P, gsl_cdf_gamma_Q): clean up unused
+	code, ensure that branches make P+Q=1 always true
+
+	* fdistinv.c (gsl_cdf_fdist_Pinv): use P instead of p for consistency
+
+	* fdist.c (gsl_cdf_fdist_Q): use Q instead of P for consistency
+
+	* beta.c (gsl_cdf_beta_Q): use Q instead of P for consistency
+
 2006-02-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdistinv.c (gsl_cdf_fdist_Pinv, gsl_cdf_fdist_Qinv): added

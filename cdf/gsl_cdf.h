@@ -145,6 +145,26 @@ double gsl_cdf_logistic_Q (const double x, const double a);
 double gsl_cdf_logistic_Pinv (const double P, const double a);
 double gsl_cdf_logistic_Qinv (const double Q, const double a);
 
+double gsl_cdf_binomial_P (const unsigned int k, const double p, const unsigned int n);
+double gsl_cdf_binomial_Q (const unsigned int k, const double p, const unsigned int n);
+
+double gsl_cdf_poisson_P (const unsigned int k, const double mu);
+double gsl_cdf_poisson_Q (const unsigned int k, const double mu);
+
+double gsl_cdf_geometric_P (const unsigned int k, const double p);
+double gsl_cdf_geometric_Q (const unsigned int k, const double p);
+
+double gsl_cdf_negative_binomial_P (const unsigned int k, const double p, const double n);
+double gsl_cdf_negative_binomial_Q (const unsigned int k, const double p, const double n);
+
+double gsl_cdf_pascal_P (const unsigned int k, const double p, const unsigned int n);
+double gsl_cdf_pascal_Q (const unsigned int k, const double p, const unsigned int n);
+
+double gsl_cdf_hypergeometric_P (const unsigned int k, const unsigned int n1,
+                                 const unsigned int n2, const unsigned int t);
+double gsl_cdf_hypergeometric_Q (const unsigned int k, const unsigned int n1,
+                                 const unsigned int n2, const unsigned int t);
+
 __END_DECLS
 
 #endif /* __GSL_CDF_H__ */

@@ -1,6 +1,6 @@
-/* cdf/cdf_beta.c
+/* cdf/pascal.c
  * 
- * Copyright (C) 2003 Brian Gough.
+ * Copyright (C) 2006 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,53 +14,27 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #include <config.h>
 #include <math.h>
-#include <gsl/gsl_cdf.h>
-#include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_cdf.h>
 
-#include "beta_inc.c"
+/* The Pascal distribution is a negative binomial with valued integer n */
+
 
 double
-gsl_cdf_beta_P (const double x, const double a, const double b)
+gsl_cdf_pascal_P (const unsigned int k, const double p, const unsigned int n)
 {
-  double P;
-
-  if (x <= 0.0 )
-    {
-      return 0.0;
-    }
-
-  if ( x >= 1.0 )
-    {
-      return 1.0;
-    }
-
-  P = beta_inc_AXPY (1.0, 0.0, a, b, x);
-
+  double P = gsl_cdf_negative_binomial_P (k, p, (double) n);
   return P;
 }
 
 double
-gsl_cdf_beta_Q (const double x, const double a, const double b)
+gsl_cdf_pascal_Q (const unsigned int k, const double p, const unsigned int n)
 {
-  double Q;
-
-  if ( x >= 1.0)
-    {
-      return 0.0;
-    }
-
-  if ( x <= 0.0 )
-    {
-      return 1.0;
-    }
-
-  Q = beta_inc_AXPY (-1.0, 1.0, a, b, x);
-
+  double Q = gsl_cdf_negative_binomial_Q (k, p, (double) n);
   return Q;
 }

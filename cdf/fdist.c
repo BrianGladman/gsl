@@ -19,6 +19,7 @@
  */
 
 #include <config.h>
+#include <math.h>
 #include <gsl/gsl_cdf.h>
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_math.h>
@@ -60,21 +61,21 @@ gsl_cdf_fdist_P (const double x, const double nu1, const double nu2)
 double
 gsl_cdf_fdist_Q (const double x, const double nu1, const double nu2)
 {
-  double P;
+  double Q;
   double r = nu2 / nu1;
 
   if (x < r)
     {
       double u = x / (r + x);
 
-      P = beta_inc_AXPY (-1.0, 1.0, nu1 / 2.0, nu2 / 2.0, u);
+      Q = beta_inc_AXPY (-1.0, 1.0, nu1 / 2.0, nu2 / 2.0, u);
     }
   else
     {
       double u = r / (r + x);
 
-      P = beta_inc_AXPY (1.0, 0.0, nu2 / 2.0, nu1 / 2.0, u);
+      Q = beta_inc_AXPY (1.0, 0.0, nu2 / 2.0, nu1 / 2.0, u);
     }
 
-  return P;
+  return Q;
 }

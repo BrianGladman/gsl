@@ -1,3 +1,7 @@
+** Added cumulative distribution functions for the discrete
+distributions, including binomial, poisson, geometric, negative
+binomial, pascal and hypergeometric.
+
 ** Added the functions gsl_cdf_beta_{Pinv,Qinv} and
 gsl_cdf_fdist_{Pinv,Qinv} for computing the inverse of the cumulative
 beta and F distributions.
