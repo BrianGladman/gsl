@@ -39,8 +39,8 @@
 gsl_siman_params_t params = {N_TRIES, ITERS_FIXED_T, STEP_SIZE,
                              K, T_INITIAL, MU_T, T_MIN};
 
-inline double square (double x) ;
-inline double square (double x) { return x * x ; } 
+double square (double x) ;
+double square (double x) { return x * x ; } 
 
 double E1(void *xp);
 double M1(void *xp, void *yp);
