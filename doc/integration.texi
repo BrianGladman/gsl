@@ -50,6 +50,7 @@ $$
 @example
 I = \int_a^b f(x) w(x) dx
 @end example
+
 @end ifinfo
 @noindent
 where @math{w(x)} is a weight function (for general integrands @math{w(x)=1}).
@@ -68,6 +69,7 @@ $$
 @example
 |RESULT - I|  <= max(epsabs, epsrel |I|)
 @end example
+
 @end ifinfo
 @noindent
 where 
@@ -89,6 +91,7 @@ $$
 @example
 |RESULT - I| <= ABSERR <= max(epsabs, epsrel |I|)
 @end example
+
 @end ifinfo
 @noindent
 The routines will fail to converge if the error bounds are too
@@ -114,6 +117,7 @@ following letters,
 @code{F} - Fourier integral
 @code{C} - Cauchy principal value
 @end display
+
 @noindent
 The algorithms are built on pairs of quadrature rules, a higher order
 rule and a lower order rule.  The higher order rule is used to compute
@@ -233,6 +237,7 @@ GSL_INTEG_GAUSS41  (key = 4)
 GSL_INTEG_GAUSS51  (key = 5)
 GSL_INTEG_GAUSS61  (key = 6)
 @end example
+
 @noindent
 corresponding to the 15, 21, 31, 41, 51 and 61 point Gauss-Kronrod
 rules.  The higher-order rules give better accuracy for smooth functions,
@@ -296,6 +301,7 @@ pts[2] = x_2
 pts[3] = x_3
 pts[4] = b
 @end example
+
 @noindent
 with @var{npts} = 5.
 
@@ -327,6 +333,7 @@ $$
 \int_@{-\infty@}^@{+\infty@} dx f(x) = 
      \int_0^1 dt (f((1-t)/t) + f((-1+t)/t))/t^2.
 @end example
+
 @end ifinfo
 @noindent
 It is then integrated using the QAGS algorithm.  The normal 21-point
@@ -354,6 +361,7 @@ $$
 \int_@{a@}^@{+\infty@} dx f(x) = 
      \int_0^1 dt f(a + (1-t)/t)/t^2
 @end example
+
 @end ifinfo
 @noindent
 and then integrated using the QAGS algorithm.
@@ -377,6 +385,7 @@ $$
 \int_@{+\infty@}^@{b@} dx f(x) = 
      \int_0^1 dt f(b - (1-t)/t)/t^2
 @end example
+
 @end ifinfo
 @noindent
 and then integrated using the QAGS algorithm.
@@ -407,6 +416,7 @@ $$
 @example
 I = \int_a^b dx f(x) / (x - c)
 @end example
+
 @end ifinfo
 @noindent
 The adaptive bisection algorithm of QAG is used, with modifications to
@@ -444,6 +454,7 @@ $$
 @example
 W(x) = (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x)
 @end example
+
 @end ifinfo
 @noindent
 where @math{\alpha > -1}, @math{\beta > -1}, and @math{\mu = 0, 1},
@@ -473,6 +484,7 @@ W(x) = (x-a)^alpha (b-x)^beta log(x-a)          (mu = 1, nu = 0)
 W(x) = (x-a)^alpha (b-x)^beta log(b-x)          (mu = 0, nu = 1)
 W(x) = (x-a)^alpha (b-x)^beta log(x-a) log(b-x) (mu = 1, nu = 1)
 @end example
+
 @end ifinfo
 @noindent
 The singular points @math{(a,b)} do not have to be specified until the
@@ -514,6 +526,7 @@ $$
 @example
 I = \int_a^b dx f(x) (x-a)^alpha (b-x)^beta log^mu (x-a) log^nu (b-x).
 @end example
+
 @end ifinfo
 @noindent
 The adaptive bisection algorithm of QAG is used.  When a subinterval
@@ -552,6 +565,7 @@ $$
 W(x) = sin(omega x)
 W(x) = cos(omega x)
 @end example
+
 @end ifinfo
 @noindent
 The parameter @var{L} must be the length of the interval over which the
@@ -563,6 +577,7 @@ one of the two following symbolic values:
 GSL_INTEG_COSINE
 GSL_INTEG_SINE
 @end example
+
 @noindent
 The @code{gsl_integration_qawo_table} is a table of the trigonometric
 coefficients required in the integration process.  The parameter @var{n}
@@ -610,6 +625,7 @@ $$
 I = \int_a^b dx f(x) sin(omega x)
 I = \int_a^b dx f(x) cos(omega x)
 @end example
+
 @end ifinfo
 @noindent
 The results are extrapolated using the epsilon-algorithm to accelerate
@@ -678,6 +694,7 @@ C_2 = [a + c, a + 2 c]
 ... = ...
 C_k = [a + (k-1) c, a + k c]
 @end example
+
 @end ifinfo
 @noindent
 where 
@@ -703,6 +720,7 @@ $$
 @example
 TOL_k = u_k abserr
 @end example
+
 @end ifinfo
 @noindent
 where 
@@ -725,6 +743,7 @@ $$
 @example
 TOL_k = u_k max(abserr, max_@{i<k@}@{E_i@})
 @end example
+
 @end ifinfo
 @noindent
 where @math{E_k} is the estimated error on the interval @math{C_k}.
@@ -775,6 +794,7 @@ $$
 @example
 \int_0^1 x^@{-1/2@} log(x) dx = -4
 @end example
+
 @end ifinfo
 @noindent
 The program below computes this integral to a relative accuracy bound of
@@ -783,6 +803,7 @@ The program below computes this integral to a relative accuracy bound of
 @example
 @verbatiminclude examples/integration.c
 @end example
+
 @noindent
 The results below show that the desired accuracy is achieved after 8
 subdivisions. 
@@ -791,6 +812,7 @@ subdivisions.
 $ ./a.out 
 @verbatiminclude examples/integration.out
 @end example
+
 @noindent
 In fact, the extrapolation procedure used by @code{QAGS} produces an
 accuracy of almost twice as many digits.  The error estimate returned by
@@ -813,6 +835,7 @@ R. Piessens, E. de Doncker-Kapenga, C.W. Uberhuber, D.K. Kahaner.
 @cite{@sc{quadpack} A subroutine package for automatic integration}
 Springer Verlag, 1983.
 @end itemize
+
 @noindent
 
 

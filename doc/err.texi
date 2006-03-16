@@ -108,6 +108,7 @@ This function returns a pointer to a string describing the error code
 @example
 printf ("error: %s\n", gsl_strerror (status));
 @end example
+
 @noindent
 would print an error message like @code{error: output range error} for a
 status value of @code{GSL_ERANGE}.
@@ -153,6 +154,7 @@ void handler (const char * reason,
 @end example
 @end deftp
 @comment 
+
 @noindent
 To request the use of your own error handler you need to call the
 function @code{gsl_set_error_handler} which is also declared in
@@ -179,6 +181,7 @@ old_handler = gsl_set_error_handler (&my_handler);
 /* restore original handler */
 gsl_set_error_handler (old_handler); 
 @end example
+
 @noindent
 To use the default behavior (@code{abort} on error) set the error
 handler to @code{NULL},
@@ -222,6 +225,7 @@ status value of @code{gsl_errno}.  It expands to the following code fragment,
 gsl_error (reason, __FILE__, __LINE__, gsl_errno);
 return gsl_errno;
 @end example
+
 @noindent
 The macro definition in @file{gsl_errno.h} actually wraps the code
 in a @code{do @{ ... @} while (0)} block to prevent possible
@@ -289,6 +293,7 @@ function where an error might be reported,
 ...
 @end example
 @comment 
+
 @noindent
 The function @code{gsl_fft_complex_radix2} only accepts integer lengths
 which are a power of two.  If the variable @code{n} is not a power of

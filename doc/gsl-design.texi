@@ -545,6 +545,7 @@ It will be useful to read the following paper,
 Kiem-Phong Vo, ``The Discipline and Method Architecture for Reusable
 Libraries'', Software - Practice & Experience, v.30, pp.107-128, 2000.
 @end itemize
+
 @noindent
 It is available from
 @uref{http://www.research.att.com/sw/tools/sfio/dm-spe.ps} or the earlier
@@ -578,6 +579,7 @@ with spaces not tabs. For example, by using the @code{indent} command:
 @example
 indent -gnu -nut *.c *.h
 @end example
+
 @noindent
 The @code{-nut} option converts tabs into spaces.
 
@@ -620,6 +622,7 @@ undertaken.
 @item SIAM Journal of Scientific Computing
 @end itemize
 @end enumerate
+
 @noindent
 Keep in mind that GSL is not a research project.  Making a good
 implementation is difficult enough, without also needing to invent new
@@ -709,6 +712,7 @@ surrounded by @code{$...$} for math mode. For example,
 @example
 to calculate the coefficient @@math@{\alpha@} use the function...
 @end example
+
 @noindent
 will be correctly formatted in both online and TeX versions of the
 documentation.
@@ -739,6 +743,7 @@ For example,
 this is a test @@c@{$\sqrt@{x+y@}$@}
 @@math@{\sqrt@@@{x+y@@@}@}
 @end example
+
 @noindent
 is equivalent to @code{this is a test $\sqrt@{x+y@}$} in plain TeX
 and @code{this is a test @@math@{\sqrt@@@{x+y@@@}@}} in Info.  
@@ -750,6 +755,7 @@ a C-style ascii version, e.g.
 for @@c@{$x \ge y$@}
 @@math@{x >= y@}
 @end example
+
 @noindent
 will be appropriately displayed in both TeX and Info.
 
@@ -821,6 +827,7 @@ For example, if a fortran program repeatedly uses a subroutine like,
 @example
 SUBROUTINE  RESIZE (X, K, ND, K1)
 @end example
+
 @noindent
 where X(K,D) represents a grid to be resized to X(K1,D) you can make
 this more readable by introducing a struct,
@@ -838,6 +845,7 @@ resize_grid (struct grid * g, int k_new)
 ...
 @}
 @end smallexample
+
 @noindent
 Similarly, if you have a frequently recurring code fragment within a
 single file you can define a static or static inline function for it.
@@ -974,6 +982,7 @@ int gsl_foo_fwrite (FILE * stream, const gsl_foo * v);
 int gsl_foo_fscanf (FILE * stream, gsl_foo * v);
 int gsl_foo_fprintf (FILE * stream, const gsl_foo * v, const char *format);
 @end smallexample
+
 @noindent
 Only dump out the blocks of memory, not any associated parameters such
 as lengths.  The idea is for the user to build higher level input/output
@@ -987,6 +996,7 @@ int gsl_block_fwrite (FILE * stream, const gsl_block * b);
 int gsl_block_fscanf (FILE * stream, gsl_block * b);
 int gsl_block_fprintf (FILE * stream, const gsl_block * b, const char *format);
 @end smallexample
+
 @noindent
 or
 
@@ -998,6 +1008,7 @@ int gsl_block_raw_fscanf (FILE * stream, double * b, size_t n, size_t stride);
 int gsl_block_raw_fprintf (FILE * stream, const double * b, size_t n, size_t str
 ide, const char *format);
 @end smallexample
+
 @noindent
 to do the actual reading and writing.
 
@@ -1014,6 +1025,7 @@ For example, instead of writing,
 @example
 a = f(g(h(x,y)))
 @end example
+
 @noindent
 use temporary variables to store the intermediate values,
 @example
@@ -1023,6 +1035,7 @@ use temporary variables to store the intermediate values,
   a = f(v);
 @}
 @end example
+
 @noindent
 These can then be inspected more easily in the debugger, and breakpoints
 can be placed more precisely.  The compiler will eliminate the temporary
@@ -1090,12 +1103,14 @@ If you need to write a descending loop you have to be careful because
 @example
 for (i = N - 1; i >= 0; i--) @{ ... @} /* DOESN'T WORK */
 @end example
+
 @noindent
 use something like
 
 @example
 for (i = N; i > 0 && i--;) @{ ... @}
 @end example
+
 @noindent
 to avoid problems with wrap-around at @code{i=0}.  
 
@@ -1149,6 +1164,7 @@ while (fabs (f) < 0.5)
   f  *= 2;
 @}
 @end example
+
 @noindent
 is better written as,
 
@@ -1229,12 +1245,14 @@ if (residual < 1e-30) @{
    return 0.0;  /* residual is zero within round-off error */
 @}
 @end example
+
 @noindent
 This should be rewritten as,
 
 @example
    return residual;
 @end example
+
 @noindent
 in order to allow the user to determine whether the residual is 
 significant or not.
@@ -1299,6 +1317,7 @@ make CFLAGS="-ansi -pedantic -Werror -W -Wall -Wtraditional -Wconversion
   -Wstrict-prototypes -fshort-enums -fno-common -Wmissing-prototypes 
   -Wnested-externs -Dinline= -g -O4"
 @end smallexample
+
 @noindent
 Also use @code{checkergcc} to check for memory problems on the stack and
 the heap.  It's the best memory checking tool.  If checkergcc isn't

@@ -80,6 +80,7 @@ using @code{gsl_deriv_forward}.
 @example
 @verbatiminclude examples/diff.c
 @end example
+
 @noindent
 Here is the output of the program,
 

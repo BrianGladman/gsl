@@ -69,6 +69,7 @@ function call will compute the value of the Bessel function
 @example
 double y = gsl_sf_bessel_J0 (x);
 @end example
+
 @noindent
 There is no way to access an error code or to estimate the error using
 this method.  To allow access to this information the alternative
@@ -78,6 +79,7 @@ error-handling form stores the value and error in a modifiable argument,
 gsl_sf_result result;
 int status = gsl_sf_bessel_J0_e (x, &result);
 @end example
+
 @noindent
 The error-handling functions have the suffix @code{_e}. The returned
 status value indicates error conditions such as overflow, underflow or
@@ -103,6 +105,7 @@ typedef struct
   double err;
 @} gsl_sf_result;
 @end example
+
 @noindent
 The field @var{val} contains the value and the field @var{err} contains
 an estimate of the absolute error in the value.
@@ -145,6 +148,7 @@ Single-precision, a relative accuracy of approximately @c{$1 \times 10^{-7}$}
 Approximate values, a relative accuracy of approximately @c{$5 \times 10^{-4}$}
 @math{5 * 10^-4}.
 @end table
+
 @noindent
 The approximate mode provides the fastest evaluation at the lowest
 accuracy.
@@ -271,6 +275,7 @@ the special functions, in this case to compute the Bessel function
 @example
 @verbatiminclude examples/specfun_e.c
 @end example
+
 @noindent
 Here are the results of running the program,
 
@@ -278,6 +283,7 @@ Here are the results of running the program,
 $ ./a.out 
 @verbatiminclude examples/specfun_e.out
 @end example
+
 @noindent
 The next program computes the same quantity using the natural form of
 the function. In this case the error term @var{result.err} and return
@@ -286,6 +292,7 @@ status are not accessible.
 @example
 @verbatiminclude examples/specfun.c
 @end example
+
 @noindent
 The results of the function are the same,
 
@@ -305,6 +312,7 @@ possible,
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
 @end itemize
+
 @noindent
 The following papers contain information on the algorithms used 
 to compute the special functions,

@@ -45,6 +45,7 @@ $$
 @example
 p = e^@{-(E_@{i+1@} - E_i)/(kT)@}
 @end example
+
 @end ifinfo
 @noindent
 if 
@@ -114,6 +115,7 @@ number_of_iterations temperature x x-(*x0_p) Ef(x)
 and the output of the function @var{print_position} itself.  If
 @var{print_position} is null then no information is printed.
 @end deftypefun
+
 @noindent
 The simulated annealing routines require several user-specified
 functions to define the configuration space and energy function.  The
@@ -293,6 +295,7 @@ $ grep final_city_coord tsp.output
     -lt "TSP -- final-order" 
  | xyps -d > final-route.eps
 @end smallexample
+
 @noindent
 This is the output showing the initial order of the cities; longitude is
 negative, since it is west and I want the plot to look like a map.
@@ -343,6 +346,7 @@ Initial and final (optimal) route for the 12 southwestern cities Flying
 Salesman Problem.
 @end quotation
 @end iftex
+
 @noindent
 Here's a plot of the cost function (energy) versus generation (point in
 the calculation at which a new temperature is set) for this problem:

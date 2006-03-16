@@ -31,6 +31,7 @@ computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
 @example
 @verbatiminclude examples/intro.c
 @end example
+
 @noindent
 The output is shown below, and should be correct to double-precision
 accuracy,
@@ -38,6 +39,7 @@ accuracy,
 @example
 @verbatiminclude examples/intro.out
 @end example
+
 @noindent
 The steps needed to compile this program are described in the following
 sections.
@@ -54,6 +56,7 @@ directory.  You should write any preprocessor include statements with a
 @example
 #include <gsl/gsl_math.h>
 @end example
+
 @noindent
 If the directory is not installed on the standard search path of your
 compiler you will also need to provide its location to the preprocessor
@@ -65,6 +68,7 @@ command for a source file @file{example.c} with the GNU C compiler
 @example
 $ gcc -Wall -I/usr/local/include -c example.c
 @end example
+
 @noindent
 This results in an object file @file{example.o}.   The default
 include path for @code{gcc} searches @file{/usr/local/include} automatically so
@@ -98,6 +102,7 @@ example shows how to link an application with the library,
 @example
 $ gcc -L/usr/local/lib example.o -lgsl -lgslcblas -lm
 @end example
+
 @noindent
 The default library path for @code{gcc} searches @file{/usr/local/lib}
 automatically so the @code{-L} option can be omitted when GSL is
@@ -112,6 +117,7 @@ with an alternative @sc{cblas} library called @file{libcblas},
 @example
 $ gcc example.o -lgsl -lcblas -lm
 @end example
+
 @noindent
 For the best performance an optimized platform-specific @sc{cblas}
 library should be used for @code{-lcblas}.  The library must conform to
@@ -124,6 +130,7 @@ and matrix operations.  The following command line will link with the
 @example
 $ gcc example.o -lgsl -lcblas -latlas -lm
 @end example
+
 @noindent
 For more information see @ref{BLAS Support}.
 
@@ -154,6 +161,7 @@ $ ./a.out
 libgsl.so.0: cannot open shared object file: No such 
 file or directory
 @end example
+
 @noindent
 To avoid this error, define the shell variable @code{LD_LIBRARY_PATH} to
 include the directory where the library is installed.
@@ -166,6 +174,7 @@ $ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 $ export LD_LIBRARY_PATH
 $ ./example
 @end example
+
 @noindent
 In the C-shell (@code{/bin/csh} or @code{/bin/tcsh}) the equivalent
 command is,
@@ -173,6 +182,7 @@ command is,
 @example
 % setenv LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
 @end example
+
 @noindent
 The standard prompt for the C-shell in the example above is the percent
 character @samp{%}, and should not be typed as part of the command.
@@ -225,6 +235,7 @@ versions of these functions can be included by defining the macro
 @example
 $ gcc -Wall -c -DHAVE_INLINE example.c
 @end example
+
 @noindent
 If you use @code{autoconf} this macro can be defined automatically.  If
 you do not define the macro @code{HAVE_INLINE} then the slower
@@ -256,6 +267,7 @@ looks like this,
 @example
 checking whether printf works with long double... no
 @end example
+
 @noindent
 Consequently when @code{long double} formatted input/output does not
 work on a given system it should be impossible to link a program which
@@ -286,6 +298,7 @@ available you can include the following macro definitions in a file
 #define hypot gsl_hypot
 #endif
 @end example
+
 @noindent
 The application source files can then use the include command
 @code{#include <config.h>} to replace each occurrence of @code{hypot} by
@@ -324,6 +337,7 @@ distribution,
 #define gsl_ran_gaussian my_gaussian
 #endif
 @end example
+
 @noindent
 These lines would be placed in the configuration header file
 @file{config.h} of the application, which should then be included by all
@@ -356,6 +370,7 @@ gsl_foo_ushort_fn        unsigned short
 gsl_foo_char_fn          char          
 gsl_foo_uchar_fn         unsigned char 
 @end example
+
 @noindent
 The normal numeric precision @code{double} is considered the default and
 does not require a suffix.  For example, the function
@@ -382,6 +397,7 @@ gsl_foo_ushort           unsigned short
 gsl_foo_char             char          
 gsl_foo_uchar            unsigned char 
 @end example
+
 @noindent
 When a module contains type-dependent definitions the library provides
 individual header files for each type.  The filenames are modified as

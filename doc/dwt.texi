@@ -21,6 +21,7 @@ files @file{gsl_wavelet.h} and @file{gsl_wavelet2d.h}.
 
 The continuous wavelet transform and its inverse are defined by
 the relations,
+@iftex
 @tex
 \beforedisplay
 $$
@@ -28,11 +29,13 @@ w(s, \tau) = \int_{-\infty}^\infty f(t) * \psi^*_{s,\tau}(t) dt
 $$
 \afterdisplay
 @end tex
+@end iftex
 @ifinfo
 
 @example
 w(s,\tau) = \int f(t) * \psi^*_@{s,\tau@}(t) dt
 @end example
+
 @end ifinfo
 @noindent
 and,
@@ -48,6 +51,7 @@ $$
 @example
 f(t) = \int \int_@{-\infty@}^\infty w(s, \tau) * \psi_@{s,\tau@}(t) d\tau ds
 @end example
+
 @end ifinfo
 @noindent
 where the basis functions @c{$\psi_{s,\tau}$}
@@ -241,10 +245,12 @@ $$
 (s_@{-1,0@}, d_@{0,0@}, d_@{1,0@}, d_@{1,1@}, d_@{2,0@}, ..., 
   d_@{j,k@}, ..., d_@{J-1,2^@{J-1@}-1@}) 
 @end example
+
 @end ifinfo
 @noindent
-where the first element is the smoothing coefficient @math{s_{-1,0}},
-followed by the detail coefficients @math{d_{j,k}} for each level
+where the first element is the smoothing coefficient @c{$s_{-1,0}$}
+@math{s_@{-1,0@}}, followed by the detail coefficients @c{$d_{j,k}$}
+@math{d_@{j,k@}} for each level
 @math{j}.  The backward transform inverts these coefficients to obtain 
 the original data.
 
@@ -333,6 +339,7 @@ transform, while setting the others to zero.
 @example
 @verbatiminclude examples/dwt.c
 @end example
+
 @noindent
 The output can be used with the @sc{gnu} plotutils @code{graph} program,
 
@@ -368,6 +375,7 @@ Ten Lectures on Wavelets.
 @cite{CBMS-NSF Regional Conference Series in Applied Mathematics} (1992), 
 SIAM, ISBN 0898712742.
 @end itemize
+
 @noindent
 An easy to read introduction to the subject with an emphasis on the
 application of the wavelet transform in various branches of science is,
@@ -377,6 +385,7 @@ application of the wavelet transform in various branches of science is,
 Paul S. Addison. @cite{The Illustrated Wavelet Transform Handbook}.
 Institute of Physics Publishing (2002), ISBN 0750306920.
 @end itemize
+
 @noindent
 For extensive coverage of signal analysis by wavelets, wavelet packets
 and local cosine bases see,
@@ -386,6 +395,7 @@ and local cosine bases see,
 S. G. Mallat.  @cite{A wavelet tour of signal processing} (Second
 edition). Academic Press (1999), ISBN 012466606X.
 @end itemize
+
 @noindent
 The concept of multiresolution analysis underlying the wavelet transform
 is described in,
@@ -404,6 +414,7 @@ A Theory for Multiresolution Signal Decomposition---The Wavelet Representation.
 @cite{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 11, 1989,
 674--693. 
 @end itemize
+
 @noindent
 The coefficients for the individual wavelet families implemented by the
 library can be found in the following papers,

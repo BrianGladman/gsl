@@ -13,6 +13,7 @@ $$
 @example
 Cl_2(x) = - \int_0^x dt \log(2 \sin(t/2))
 @end example
+
 @end ifinfo
 @noindent
 It is related to the dilogarithm by 

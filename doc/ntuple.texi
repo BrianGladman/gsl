@@ -117,6 +117,7 @@ typedef struct @{
   void * params;
 @} gsl_ntuple_select_fn;
 @end smallexample
+
 @noindent
 The struct component @var{function} should return a non-zero value for
 each ntuple row that is to be included in the histogram.
@@ -130,6 +131,7 @@ typedef struct @{
   void * params;
 @} gsl_ntuple_value_fn;
 @end smallexample
+
 @noindent
 In this case the struct component @var{function} should return the value
 to be added to the histogram for the ntuple row.  
@@ -159,6 +161,7 @@ demonstration purposes, and written to the ntuple file @file{test.dat}.
 @example
 @verbatiminclude examples/ntuplew.c
 @end example
+
 @noindent
 The next program analyses the ntuple data in the file @file{test.dat}.
 The analysis procedure is to compute the squared-magnitude of each

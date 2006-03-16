@@ -13,6 +13,7 @@ AC_CHECK_LIB(m,main)
 AC_CHECK_LIB(gslcblas,main)
 AC_CHECK_LIB(gsl,main)
 @end example
+
 @noindent
 It is important to check for @code{libm} and @code{libgslcblas} before
 @code{libgsl}, otherwise the tests will fail.  Assuming the libraries
@@ -23,6 +24,7 @@ checking for main in -lm... yes
 checking for main in -lgslcblas... yes
 checking for main in -lgsl... yes
 @end example
+
 @noindent
 If the library is found then the tests will define the macros
 @code{HAVE_LIBGSL}, @code{HAVE_LIBGSLCBLAS}, @code{HAVE_LIBM} and add
@@ -40,6 +42,7 @@ AM_PATH_GSL(GSL_VERSION,
            [action-if-found],
            [action-if-not-found])
 @end example
+
 @noindent
 The argument @code{GSL_VERSION} should be the two or three digit
 @sc{major.minor} or @sc{major.minor.micro} version number of the release
@@ -48,6 +51,7 @@ you require. A suitable choice for @code{action-if-not-found} is,
 @example
 AC_MSG_ERROR(could not find required version of GSL)
 @end example
+
 @noindent
 Then you can add the variables @code{GSL_LIBS} and @code{GSL_CFLAGS} to
 your Makefile.am files to obtain the correct compiler flags.
@@ -58,6 +62,7 @@ command. For example,
 @example
 libfoo_la_LDFLAGS = -lfoo $(GSL_LIBS) -lgslcblas
 @end example
+
 @noindent
 Note that the macro @code{AM_PATH_GSL} needs to use the C compiler so it
 should appear in the @file{configure.in} file before the macro
@@ -74,6 +79,7 @@ if test "$ac_cv_c_inline" != no ; then
   AC_SUBST(HAVE_INLINE)
 fi
 @end example
+
 @noindent
 and the macro will then be defined in the compilation flags or by
 including the file @file{config.h} before any library headers.  
@@ -107,6 +113,7 @@ configure file @file{configure.in} for your application,
 @example
 AC_CHECK_FUNCS(hypot)
 @end example
+
 @noindent
 and place the following macro definitions in the file
 @file{config.h.in},
@@ -118,6 +125,7 @@ and place the following macro definitions in the file
 #define hypot gsl_hypot
 #endif
 @end example
+
 @noindent
 The application source files can then use the include command
 @code{#include <config.h>} to substitute @code{gsl_hypot} for each

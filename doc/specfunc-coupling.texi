@@ -39,6 +39,7 @@ $$
 (ja jb jc
  ma mb mc)
 @end example
+
 @end ifinfo
 @noindent
 where the arguments are given in half-integer units, @math{ja} =
@@ -67,6 +68,7 @@ $$
 @{ja jb jc
  jd je jf@}
 @end example
+
 @end ifinfo
 @noindent
 where the arguments are given in half-integer units, @math{ja} =
@@ -97,6 +99,7 @@ $$
  jd je jf
  jg jh ji@}
 @end example
+
 @end ifinfo
 @noindent
 where the arguments are given in half-integer units, @math{ja} =

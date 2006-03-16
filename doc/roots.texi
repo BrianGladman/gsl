@@ -175,6 +175,7 @@ These functions return a pointer to the name of the solver.  For example,
 printf ("s is a '%s' solver\n",
         gsl_root_fsolver_name (s));
 @end example
+
 @noindent
 would print something like @code{s is a 'bisection' solver}.
 @end deftypefun
@@ -215,6 +216,7 @@ $$
 @example
 f(x) = a x^2 + b x + c
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 3}, @math{b = 2}, @math{c = 1}.  The following code
@@ -241,6 +243,7 @@ struct my_f_params params = @{ 3.0, 2.0, 1.0 @};
 F.function = &my_f;
 F.params = &params;
 @end example
+
 @noindent
 The function @math{f(x)} can be evaluated using the following macro,
 
@@ -316,6 +319,7 @@ FDF.df = &my_df;
 FDF.fdf = &my_fdf;
 FDF.params = 0;
 @end example
+
 @noindent
 The function @math{f(x)} can be evaluated using the following macro,
 
@@ -323,6 +327,7 @@ The function @math{f(x)} can be evaluated using the following macro,
 #define GSL_FN_FDF_EVAL_F(FDF,x) 
      (*((FDF)->f))(x,(FDF)->params)
 @end example
+
 @noindent
 The derivative @math{f'(x)} can be evaluated using the following macro,
 
@@ -330,6 +335,7 @@ The derivative @math{f'(x)} can be evaluated using the following macro,
 #define GSL_FN_FDF_EVAL_DF(FDF,x) 
      (*((FDF)->df))(x,(FDF)->params)
 @end example
+
 @noindent
 and both the function @math{y = f(x)} and its derivative @math{dy = f'(x)}
 can be evaluated at the same time using the following macro,
@@ -338,6 +344,7 @@ can be evaluated at the same time using the following macro,
 #define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) 
      (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
 @end example
+
 @noindent
 The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
 its @var{dy} argument---both of these should be pointers to
@@ -419,6 +426,7 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
+
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the precision of the current result in
@@ -441,6 +449,7 @@ $$
 @example
 |a - b| < epsabs + epsrel min(|a|,|b|) 
 @end example
+
 @end ifinfo
 @noindent
 when the interval @math{x = [a,b]} does not include the origin.  If the
@@ -464,6 +473,7 @@ $$
 @example
 |r - r^*| < epsabs + epsrel r^*
 @end example
+
 @end ifinfo
 @noindent
 assuming that the true root @math{r^*} is contained within the interval.
@@ -487,6 +497,7 @@ $$
 @example
 |x_1 - x_0| < epsabs + epsrel |x_1|
 @end example
+
 @end ifinfo
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.
@@ -509,6 +520,7 @@ $$
 @example
 |f| < epsabs
 @end example
+
 @end ifinfo
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
@@ -656,6 +668,7 @@ $$
 @example
 x_@{i+1@} = x_i - f(x_i)/f'(x_i)
 @end example
+
 @end ifinfo
 @noindent
 Newton's method converges quadratically for single roots, and linearly
@@ -696,6 +709,7 @@ $$
 @example
 x_1 = x_0 - f(x_0)/f'(x_0)
 @end example
+
 @end ifinfo
 @noindent
 Subsequent iterations avoid the evaluation of the derivative by
@@ -716,6 +730,7 @@ $$
 x_@{i+1@} = x_i f(x_i) / f'_@{est@} where
  f'_@{est@} = (f(x_i) - f(x_@{i-1@})/(x_i - x_@{i-1@})
 @end example
+
 @end ifinfo
 @noindent
 When the derivative does not change significantly in the vicinity of the
@@ -766,6 +781,7 @@ $$
 @example
 R_i = x_i - (x_@{i+1@} - x_i)^2 / (x_@{i+2@} - 2 x_@{i+1@} + x_@{i@})
 @end example
+
 @end ifinfo
 @noindent
 which converges faster than the original sequence under reasonable
@@ -790,12 +806,14 @@ define the function parameters,
 @example
 @verbatiminclude examples/demo_fn.h
 @end example
+
 @noindent
 We place the function definitions in a separate file (@file{demo_fn.c}),
 
 @example
 @verbatiminclude examples/demo_fn.c
 @end example
+
 @noindent
 The first program uses the function solver @code{gsl_root_fsolver_brent}
 for Brent's method and the general quadratic defined above to solve the
@@ -812,6 +830,7 @@ $$
 @example
 x^2 - 5 = 0
 @end example
+
 @end ifinfo
 @noindent
 with solution @math{x = \sqrt 5 = 2.236068...}
@@ -819,6 +838,7 @@ with solution @math{x = \sqrt 5 = 2.236068...}
 @example
 @verbatiminclude examples/roots.c
 @end example
+
 @noindent
 Here are the results of the iterations,
 
@@ -834,6 +854,7 @@ using brent method
 Converged:                            
     6 [2.2360634, 2.2366300] 2.2360634 -0.0000046 0.0005666
 @end smallexample
+
 @noindent
 If the program is modified to use the bisection solver instead of
 Brent's method, by changing @code{gsl_root_fsolver_brent} to
@@ -865,6 +886,7 @@ instead.
 @example
 @verbatiminclude examples/rootnewt.c
 @end example
+
 @noindent
 Here are the results for Newton's method,
 
@@ -878,6 +900,7 @@ iter        root        err   err(est)
 Converged:      
     4  2.2360689 +0.0000009 -0.0020263
 @end example
+
 @noindent
 Note that the error can be estimated more accurately by taking the
 difference between the current iterate and next iterate rather than the

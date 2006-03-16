@@ -51,6 +51,7 @@ typedef struct
   double dat[2];
 @} gsl_complex;
 @end example
+
 @noindent
 The real and imaginary part are stored in contiguous elements of a two
 element array. This eliminates any padding between the real and
@@ -82,6 +83,7 @@ For example,
 @example
 GSL_SET_COMPLEX(&z, 3, 4)
 @end example
+
 @noindent
 sets @var{z} to be @math{3 + 4i}.
 @end defmac
@@ -464,6 +466,7 @@ T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
 handling'', @cite{ACM Transactions on Mathematical Software}, Volume 23
 (1997) pp 299--335
 @end itemize
+
 @noindent
 The general formulas and details of branch cuts can be found in the
 following books,

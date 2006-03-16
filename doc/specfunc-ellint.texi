@@ -36,6 +36,7 @@ $$
 
 P(\phi,k,n) = \int_0^\phi dt 1/((1 + n \sin^2(t))\sqrt(1 - k^2 \sin^2(t)))
 @end example
+
 @end ifinfo
 @noindent
 The complete Legendre forms are denoted by @math{K(k) = F(\pi/2, k)} and

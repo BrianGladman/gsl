@@ -23,7 +23,9 @@ General Public License.
 The library covers a wide range of topics in numerical computing.
 Routines are available for the following areas,
 
+@iftex
 @sp 1
+@end iftex
 @multitable @columnfractions 0.05 0.45 0.45 0.05
 @item @tab Complex Numbers            @tab Roots of Polynomials        
 @item @tab Special Functions          @tab Vectors and Matrices        
@@ -43,7 +45,10 @@ Routines are available for the following areas,
 @item @tab IEEE Floating-Point        @tab Physical Constants         
 @item @tab Wavelets
 @end multitable
+@iftex
 @sp 1
+@end iftex
+
 @noindent
 The use of these routines is described in this manual.  Each chapter
 provides detailed definitions of the functions, followed by example
@@ -94,6 +99,7 @@ Questions about the GNU GPL},
 @item 
 @uref{http://www.gnu.org/copyleft/gpl-faq.html}
 @end itemize
+
 @noindent
 The Free Software Foundation also operates a license consulting service
 for commercial users.
@@ -113,6 +119,7 @@ code can be found on the GNU website,
 @item 
 @uref{http://www.gnu.org/software/gsl/}
 @end itemize
+
 @noindent
 The preferred platform for the library is a GNU system, which allows it
 to take advantage of additional features in the GNU C compiler and GNU C
@@ -128,6 +135,7 @@ low-volume list, send an email of the following form:
 To: info-gsl-request@@gnu.org 
 Subject: subscribe
 @end example
+
 @noindent
 You will receive a response asking you to reply in order to confirm
 your subscription.
@@ -169,6 +177,7 @@ A description of the bug behavior
 @item
 A short program which exercises the bug
 @end itemize
+
 @noindent
 It is useful if you can check whether the same problem occurs when the
 library is compiled without optimization.  Thank you.
@@ -193,6 +202,7 @@ list, send an email of the following form:
 To: help-gsl-request@@gnu.org
 Subject: subscribe
 @end example
+
 @noindent
 This mailing list can be used to ask questions not covered by this
 manual, and to contact the developers of the library.
@@ -209,6 +219,7 @@ A command entered at the terminal is shown like this,
 @example
 $ @i{command}
 @end example
+
 @noindent
 @cindex dollar sign @code{$}, shell prompt
 The first character on the line is the terminal prompt, and should not

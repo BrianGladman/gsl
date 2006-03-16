@@ -39,6 +39,7 @@ $$
 R_n := 2 (Z^@{3/2@}/n^2) \sqrt@{(n-l-1)!/(n+l)!@} \exp(-Z r/n) (2Zr/n)^l
           L^@{2l+1@}_@{n-l-1@}(2Zr/n).  
 @end example
+
 @end ifinfo
 @noindent
 where @math{L^a_b(x)} is the generalized Laguerre polynomial (@pxref{Laguerre Functions}).
@@ -80,6 +81,7 @@ G_L(eta,x)  =  gc[k_L] * exp(exp_G)
 F_L'(eta,x) = fcp[k_L] * exp(exp_F)
 G_L'(eta,x) = gcp[k_L] * exp(exp_G)
 @end example
+
 @end ifinfo
 @noindent
 

@@ -23,6 +23,7 @@ errors.  You can add a breakpoint for every session by putting
 break gsl_error
 @end example
 @comment 
+
 @noindent
 into your @file{.gdbinit} file in the directory where your program is
 started.  
@@ -37,6 +38,7 @@ line,
 @smallexample
 status = gsl_fft_complex_wavetable_alloc (0, &complex_wavetable);
 @end smallexample
+
 @noindent
 The function @code{gsl_fft_complex_wavetable_alloc} takes the length of
 an FFT as its first argument.  When this line is executed an error will
@@ -56,6 +58,7 @@ Copyright 1996 Free Software Foundation, Inc.
 
 Breakpoint 1 at 0x8050b1e: file error.c, line 14.
 @end smallexample
+
 @noindent
 When we run the program this breakpoint catches the error and shows the
 reason for it. 
@@ -71,6 +74,7 @@ Breakpoint 1, gsl_error (reason=0x8052b0d
 14        if (gsl_error_handler) 
 @end smallexample
 @comment 
+
 @noindent
 The first argument of @code{gsl_error} is always a string describing the
 error.  Now we can look at the backtrace to see what caused the problem,
@@ -88,6 +92,7 @@ error.  Now we can look at the backtrace to see what caused the problem,
 #3  0x80488be in ___crt_dummy__ ()
 @end smallexample
 @comment 
+
 @noindent
 We can see that the error was generated in the function
 @code{gsl_fft_complex_wavetable_alloc} when it was called with an
@@ -109,6 +114,7 @@ caused the error,
         &complex_wavetable);
 @end smallexample
 @comment 
+
 @noindent
 Thus we have found the line that caused the problem.  From this point we
 could also print out the values of other variables such as
@@ -138,6 +144,7 @@ command @code{info float} (on supported platforms).
   fopoff: 0x08086820
   fopsel: 0x002b
 @end smallexample
+
 @noindent
 Individual registers can be examined using the variables @var{$reg},
 where @var{reg} is the register name.
@@ -160,6 +167,7 @@ shown with the command @code{info signal SIGFPE}.
 Signal  Stop  Print  Pass to program Description
 SIGFPE  Yes   Yes    Yes             Arithmetic exception
 @end smallexample
+
 @noindent
 Unless the program uses a signal handler the default setting should be
 changed so that SIGFPE is not passed to the program, as this would cause
@@ -170,6 +178,7 @@ it to exit.  The command @code{handle SIGFPE stop nopass} prevents this.
 Signal  Stop  Print  Pass to program Description
 SIGFPE  Yes   Yes    No              Arithmetic exception
 @end smallexample
+
 @noindent
 Depending on the platform it may be necessary to instruct the kernel to
 generate signals for floating point exceptions.  For programs using GSL
@@ -252,6 +261,7 @@ gcc -ansi -pedantic -Werror -Wall -W
   -Wwrite-strings -Wnested-externs 
   -fshort-enums -fno-common -Dinline= -g -O4
 @end example
+
 @noindent
 For details of each option consult the manual @cite{Using and Porting
 GCC}.  The following table gives a brief explanation of what types of
@@ -365,6 +375,7 @@ Foundation, ISBN 1882114388
 R.M. Stallman, R.H. Pesch, @cite{Debugging with GDB: The GNU
 Source-Level Debugger}, Free Software Foundation, ISBN 1882114779
 @end itemize
+
 @noindent
 For a tutorial introduction to the GNU C Compiler and related programs,
 see 

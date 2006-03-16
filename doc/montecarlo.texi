@@ -18,6 +18,7 @@ $$
 @example
 I = \int_xl^xu dx \int_yl^yu  dy ...  f(x, y, ...)
 @end example
+
 @end ifinfo
 @noindent
 over a hypercubic region @math{((x_l,x_u)}, @math{(y_l,y_u), ...)} using
@@ -83,6 +84,7 @@ the number of dimensions for @var{x}.
 a pointer to the parameters of the function.
 @end table
 @end deftp
+
 @noindent
 Here is an example for a quadratic function in two dimensions,
 @tex
@@ -97,6 +99,7 @@ $$
 @example
 f(x,y) = a x^2 + b x y + c y^2
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 3}, @math{b = 2}, @math{c = 1}.  The following code
@@ -128,6 +131,7 @@ F.f = &my_f;
 F.dim = 2;
 F.params = &params;
 @end example
+
 @noindent
 The function @math{f(x)} can be evaluated using the following macro,
 
@@ -155,6 +159,7 @@ $$
 @example
 E(f; N) = =  V <f> = (V / N) \sum_i^N f(x_i)
 @end example
+
 @end ifinfo
 @noindent
 where @math{V} is the volume of the integration region.  The error on
@@ -172,6 +177,7 @@ $$
 @example
 \sigma^2 (E; N) = (V / N) \sum_i^N (f(x_i) -  <f>)^2.
 @end example
+
 @end ifinfo
 @noindent
 For large @math{N} this variance decreases asymptotically as
@@ -244,6 +250,7 @@ $$
 @example
 \Var(f) = (\sigma_a^2(f) / 4 N_a) + (\sigma_b^2(f) / 4 N_b).
 @end example
+
 @end ifinfo
 @noindent
 It can be shown that this variance is minimized by distributing the
@@ -260,6 +267,7 @@ $$
 @example
 N_a / (N_a + N_b) = \sigma_a / (\sigma_a + \sigma_b).
 @end example
+
 @end ifinfo
 @noindent
 Hence the smallest error estimate is obtained by allocating sample
@@ -360,6 +368,7 @@ $$
 @example
 \Var(f) = @{\sigma_a \over N_a^\alpha@} + @{\sigma_b \over N_b^\alpha@}.
 @end example
+
 @end ifinfo
 @noindent
 The authors of the original paper describing @sc{miser} recommend the
@@ -402,6 +411,7 @@ $$
 @example
 E_g(f; N) = E(f/g; N)
 @end example
+
 @end ifinfo
 @noindent
 with a corresponding variance,
@@ -417,6 +427,7 @@ $$
 @example
 \Var_g(f; N) = \Var(f/g; N).
 @end example
+
 @end ifinfo
 @noindent
 If the probability distribution is chosen as @math{g = |f|/I(|f|)} then
@@ -599,6 +610,7 @@ I = \int_@{-pi@}^@{+pi@} @{dk_x/(2 pi)@}
     \int_@{-pi@}^@{+pi@} @{dk_z/(2 pi)@} 
      1 / (1 - cos(k_x)cos(k_y)cos(k_z)).
 @end example
+
 @end ifinfo
 @noindent
 The analytic value of this integral can be shown to be @math{I =
@@ -618,6 +630,7 @@ singularities.
 @smallexample
 @verbatiminclude examples/monte.c
 @end smallexample
+
 @noindent
 With 500,000 function calls the plain Monte Carlo algorithm achieves a
 fractional error of 0.6%.  The estimated error @code{sigma} is
@@ -631,6 +644,7 @@ sigma  =  0.007938
 exact  =  1.393204
 error  = -0.007337 = 0.9 sigma
 @end example
+
 @noindent
 The @sc{miser} algorithm reduces the error by a factor of two, and also
 correctly estimates the error,
@@ -642,6 +656,7 @@ sigma  =  0.003743
 exact  =  1.393204
 error  = -0.002548 = 0.7 sigma
 @end example
+
 @noindent
 In the case of the @sc{vegas} algorithm the program uses an initial
 warm-up run of 10,000 function calls to prepare, or ``warm up'', the grid.
@@ -665,6 +680,7 @@ sigma  =  0.000452
 exact  =  1.393204
 error  = -0.000247 = 0.5 sigma
 @end example
+
 @noindent
 If the value of @code{chisq} had differed significantly from 1 it would
 indicate inconsistent results, with a correspondingly underestimated
@@ -684,6 +700,7 @@ W.H. Press, G.R. Farrar, @cite{Recursive Stratified Sampling for
 Multidimensional Monte Carlo Integration},
 Computers in Physics, v4 (1990), pp190--195.
 @end itemize
+
 @noindent
 The @sc{vegas} algorithm is described in the following papers,
 

@@ -124,6 +124,7 @@ $$
 @example
 \zeta(2) = 1 + 1/2^2 + 1/3^2 + 1/4^2 + ...
 @end example
+
 @end ifinfo
 @noindent
 After @var{N} terms the error in the sum is @math{O(1/N)}, making direct
@@ -132,6 +133,7 @@ summation of the series converge slowly.
 @example
 @verbatiminclude examples/sum.c
 @end example
+
 @noindent
 The output below shows that the Levin @math{u}-transform is able to obtain an 
 estimate of the sum to 1 part in 
@@ -144,6 +146,7 @@ the correct number of significant digits.
 $ ./a.out 
 @verbatiminclude examples/sum.out
 @end example
+
 @noindent
 Note that a direct summation of this series would require 
 @c{$10^{10}$}

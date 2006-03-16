@@ -27,6 +27,7 @@ $$
 @example
 \Gamma(x) = \int_0^\infty dt  t^@{x-1@} \exp(-t)
 @end example
+
 @end ifinfo
 @noindent
 It is related to the factorial function by @math{\Gamma(n)=(n-1)!}

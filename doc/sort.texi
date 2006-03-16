@@ -44,6 +44,7 @@ function @var{compare}.  The type of the comparison function is defined by,
 int (*gsl_comparison_fn_t) (const void * a,
                             const void * b)
 @end example
+
 @noindent
 A comparison function should return a negative integer if the first
 argument is less than the second argument, @code{0} if the two arguments
@@ -66,6 +67,7 @@ compare_doubles (const double * a,
        return 0;
 @}
 @end example
+
 @noindent
 The appropriate function call to perform the sort is,
 
@@ -227,6 +229,7 @@ for (i = 0; i < p->size; i++)
     rank->data[pi] = i;
 @}
 @end example
+
 @noindent
 This can be computed directly from the function
 @code{gsl_permutation_inverse(rank,p)}.
@@ -273,6 +276,7 @@ for (i = 0; i < v->size; i++)
     printf ("order = %d, value = %g\n", i, vpi);
 @}
 @end example
+
 @noindent
 The next example uses the function @code{gsl_sort_smallest} to select
 the 5 smallest numbers from 100000 uniform random variates stored in an
@@ -299,6 +303,7 @@ The subject of sorting is covered extensively in Knuth's
 Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
 Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
 @end itemize
+
 @noindent
 The Heapsort algorithm is described in the following book,
 

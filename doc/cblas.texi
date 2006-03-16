@@ -485,6 +485,7 @@ $$
 [ 0.21 0.22 0.23 ]  [ 1021 1022 ]  =  [ 674.06 674.72 ]
                     [ 1031 1032 ]
 @end example
+
 @end ifinfo
 @noindent
 The matrices are stored in row major order but could be stored in column
@@ -494,12 +495,14 @@ changed to @code{CblasColMajor}.
 @example
 @verbatiminclude examples/cblas.c
 @end example
+
 @noindent
 To compile the program use the following command line,
 
 @example
 $ gcc -Wall demo.c -lgslcblas
 @end example
+
 @noindent
 There is no need to link with the main library @code{-lgsl} in this
 case as the @sc{cblas} library is an independent unit. Here is the output

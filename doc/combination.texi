@@ -40,6 +40,7 @@ typedef struct
 @} gsl_combination;
 @end example
 @comment
+
 @noindent
 
 @node Combination allocation
@@ -188,6 +189,7 @@ ordered lexicographically.
 @example
 @verbatiminclude examples/combination.c
 @end example
+
 @noindent
 Here is the output from the program,
 
@@ -213,6 +215,7 @@ Donald L. Kreher, Douglas R. Stinson, @cite{Combinatorial Algorithms:
 Generation, Enumeration and Search}, 1998, CRC Press LLC, ISBN
 084933988X
 @end itemize
+
 @noindent
 
 

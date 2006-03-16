@@ -93,6 +93,7 @@ $$
 @example
 P(x) = \int_@{-\infty@}^@{x@} dx' p(x')
 @end example
+
 @end ifinfo
 @noindent
 and gives the probability of a variate taking a value less than @math{x}.
@@ -111,6 +112,7 @@ $$
 @example
 Q(x) = \int_@{x@}^@{+\infty@} dx' p(x')
 @end example
+
 @end ifinfo
 @noindent
 and gives the probability of a variate taking a value greater than @math{x}.
@@ -123,7 +125,7 @@ The upper and lower cumulative distribution functions are related by
 The inverse cumulative distributions, @c{$x=P^{-1}(P)$}
 @math{x=P^@{-1@}(P)} and @c{$x=Q^{-1}(Q)$}
 @math{x=Q^@{-1@}(Q)} give the values of @math{x}
-which correspond to a specific value of @math{P} or {Q}.  
+which correspond to a specific value of @math{P} or @math{Q}.  
 They can be used to find confidence limits from probability values.
 
 For discrete distributions the probability of sampling the integer
@@ -142,6 +144,7 @@ $$
 @example
 P(k) = \sum_@{i <= k@} p(i)
 @end example
+
 @end ifinfo
 @noindent
 where the sum is over the allowed range of the distribution less than
@@ -161,6 +164,7 @@ $$
 @example
 Q(k) = \sum_@{i > k@} p(i)
 @end example
+
 @end ifinfo
 @noindent
 giving the sum of probabilities for all values greater than @math{k}.
@@ -190,6 +194,7 @@ $$
 @example
 p(x) dx = @{1 \over \sqrt@{2 \pi \sigma^2@}@} \exp (-x^2 / 2\sigma^2) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  Use the
@@ -268,6 +273,7 @@ $$
 @example
 p(x) dx = @{1 \over N(a;\sigma) \sqrt@{2 \pi \sigma^2@}@} \exp (- x^2/(2 \sigma^2)) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x > a} where @math{N(a;\sigma)} is the normalization constant,
@@ -330,6 +336,7 @@ $$
 @example
 p(x,y) dx dy = @{1 \over 2 \pi \sigma_x \sigma_y \sqrt@{1-\rho^2@}@} \exp (-(x^2/\sigma_x^2 + y^2/\sigma_y^2 - 2 \rho x y/(\sigma_x\sigma_y))/2(1-\rho^2)) dx dy
 @end example
+
 @end ifinfo
 @noindent
 for @math{x,y} in the range @math{-\infty} to @math{+\infty}.  The
@@ -368,6 +375,7 @@ $$
 @example
 p(x) dx = @{1 \over \mu@} \exp(-x/\mu) dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
@@ -414,6 +422,7 @@ $$
 @example
 p(x) dx = @{1 \over 2 a@}  \exp(-|x/a|) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{-\infty < x < \infty}.
@@ -459,6 +468,7 @@ $$
 @example
 p(x) dx = @{1 \over 2 a \Gamma(1+1/b)@} \exp(-|x/a|^b) dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
@@ -507,6 +517,7 @@ $$
 @example
 p(x) dx = @{1 \over a\pi (1 + (x/a)^2) @} dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x} in the range @math{-\infty} to @math{+\infty}.  The Cauchy
@@ -553,6 +564,7 @@ $$
 @example
 p(x) dx = @{x \over \sigma^2@} \exp(- x^2/(2 \sigma^2)) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x > 0}.
@@ -599,6 +611,7 @@ $$
 @example
 p(x) dx = @{x \over \sigma^2@} \exp ((a^2 - x^2) /(2 \sigma^2)) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x > a}.
@@ -685,6 +698,7 @@ $$
 @example
 p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha)
 @end example
+
 @end ifinfo
 @noindent
 There is no explicit solution for the form of @math{p(x)} and the
@@ -727,6 +741,7 @@ $$
 @example
 p(x) = @{1 \over 2 \pi@} \int_@{-\infty@}^@{+\infty@} dt \exp(-it x - |c t|^alpha (1-i beta sign(t) tan(pi alpha/2)))
 @end example
+
 @end ifinfo
 @noindent
 When @math{\alpha = 1} the term @math{\tan(\pi \alpha/2)} is replaced by
@@ -782,6 +797,7 @@ $$
 @example
 p(x) dx = @{1 \over \Gamma(a) b^a@} x^@{a-1@} e^@{-x/b@} dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x > 0}.
@@ -838,6 +854,7 @@ $$
 @example
 p(x) dx = @{1 \over (b-a)@} dx
 @end example
+
 @end ifinfo
 @noindent
 if @c{$a \le x < b$}
@@ -884,6 +901,7 @@ $$
 @example
 p(x) dx = @{1 \over x \sqrt@{2 \pi \sigma^2@} @} \exp(-(\ln(x) - \zeta)^2/2 \sigma^2) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{x > 0}.
@@ -928,6 +946,7 @@ $$
 @example
 X_i = \sum_i Y_i^2
 @end example
+
 @end ifinfo
 @noindent
 has a chi-squared distribution with @math{n} degrees of freedom.
@@ -948,6 +967,7 @@ $$
 @example
 p(x) dx = @{1 \over 2 \Gamma(\nu/2) @} (x/2)^@{\nu/2 - 1@} \exp(-x/2) dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
@@ -994,6 +1014,7 @@ $$
 @example
 X = @{ (Y_1 / \nu_1) \over (Y_2 / \nu_2) @}
 @end example
+
 @end ifinfo
 @noindent
 has an F-distribution @math{F(x;\nu_1,\nu_2)}.
@@ -1021,6 +1042,7 @@ p(x) dx =
    \nu_1^@{\nu_1/2@} \nu_2^@{\nu_2/2@} 
    x^@{\nu_1/2 - 1@} (\nu_2 + \nu_1 x)^@{-\nu_1/2 -\nu_2/2@}
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
@@ -1065,6 +1087,7 @@ $$
 @example
 X = @{ Y_1 \over \sqrt@{Y_2 / \nu@} @}
 @end example
+
 @end ifinfo
 @noindent
 has a t-distribution @math{t(x;\nu)} with @math{\nu} degrees of freedom.
@@ -1088,6 +1111,7 @@ $$
 p(x) dx = @{\Gamma((\nu + 1)/2) \over \sqrt@{\pi \nu@} \Gamma(\nu/2)@}
    (1 + x^2/\nu)^@{-(\nu + 1)/2@} dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{-\infty < x < +\infty}.
@@ -1132,6 +1156,7 @@ $$
 @example
 p(x) dx = @{\Gamma(a+b) \over \Gamma(a) \Gamma(b)@} x^@{a-1@} (1-x)^@{b-1@} dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$0 \le x \le 1$}
@@ -1178,6 +1203,7 @@ $$
 @example
 p(x) dx = @{ \exp(-x/a) \over a (1 + \exp(-x/a))^2 @} dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{-\infty < x < +\infty}.
@@ -1222,6 +1248,7 @@ $$
 @example
 p(x) dx = (a/b) / (x/b)^@{a+1@} dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge b$}
@@ -1331,6 +1358,7 @@ $$
 @example
 p(x) dx = @{b \over a^b@} x^@{b-1@}  \exp(-(x/a)^b) dx
 @end example
+
 @end ifinfo
 @noindent
 for @c{$x \ge 0$}
@@ -1378,6 +1406,7 @@ $$
 @example
 p(x) dx = a b \exp(-(b \exp(-ax) + ax)) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{-\infty < x < \infty}. 
@@ -1424,6 +1453,7 @@ $$
 @example
 p(x) dx = a b x^@{-a-1@} \exp(-b x^@{-a@}) dx
 @end example
+
 @end ifinfo
 @noindent
 for @math{0 < x < \infty}.
@@ -1472,6 +1502,7 @@ $$
 p(\theta_1, ..., \theta_K) d\theta_1 ... d\theta_K = 
   (1/Z) \prod_@{i=1@}^K \theta_i^@{\alpha_i - 1@} \delta(1 -\sum_@{i=1@}^K \theta_i) d\theta_1 ... d\theta_K
 @end example
+
 @end ifinfo
 @noindent
 for @c{$\theta_i \ge 0$} 
@@ -1542,6 +1573,7 @@ $$
   C[0] = 0 
 C[k+1] = C[k]+P[k].
 @end example
+
 @end ifinfo
 @noindent
 Note that this construction produces @math{C[K]=1}.  Now choose a
@@ -1633,6 +1665,7 @@ $$
 @example
 p(k) = @{\mu^k \over k!@} \exp(-\mu)
 @end example
+
 @end ifinfo
 @noindent
 for @c{$k \ge 0$}
@@ -1717,6 +1750,7 @@ $$
 @example
 p(k) = @{n! \over k! (n-k)! @} p^k (1-p)^@{n-k@}
 @end example
+
 @end ifinfo
 @noindent
 for @c{$0 \le k \le n$}
@@ -1764,6 +1798,7 @@ $$
 P(n_1, n_2, ..., n_K) = 
   (N!/(n_1! n_2! ... n_K!)) p_1^n_1 p_2^n_2 ... p_K^n_K
 @end example
+
 @end ifinfo
 @noindent
 where @c{($n_1$, $n_2$, $\ldots$, $n_K$)}
@@ -1819,6 +1854,7 @@ $$
 @example
 p(k) = @{\Gamma(n + k) \over \Gamma(k+1) \Gamma(n) @} p^n (1-p)^k
 @end example
+
 @end ifinfo
 @noindent
 Note that @math{n} is not required to be an integer.
@@ -1862,6 +1898,7 @@ $$
 @example
 p(k) = @{(n + k - 1)! \over k! (n - 1)! @} p^n (1-p)^k
 @end example
+
 @end ifinfo
 @noindent
 for @c{$k \ge 0$}
@@ -1907,6 +1944,7 @@ $$
 @example
 p(k) =  p (1-p)^(k-1)
 @end example
+
 @end ifinfo
 @noindent
 for @c{$k \ge 1$}
@@ -1955,6 +1993,7 @@ $$
 @example
 p(k) =  C(n_1, k) C(n_2, t - k) / C(n_1 + n_2, t)
 @end example
+
 @end ifinfo
 @noindent
 where @math{C(a,b) = a!/(b!(a-b)!)} and 
@@ -2009,6 +2048,7 @@ $$
 @example
 p(k) = @{-1 \over \log(1-p)@} @{(p^k \over k)@}
 @end example
+
 @end ifinfo
 @noindent
 for @c{$k \ge 1$}
@@ -2111,6 +2151,7 @@ Poisson distribution with a mean of 3.
 @example
 @verbatiminclude examples/randpoisson.c
 @end example
+
 @noindent
 If the library and header files are installed under @file{/usr/local}
 (the default location) then the program can be compiled with these
@@ -2119,6 +2160,7 @@ options,
 @example
 $ gcc -Wall demo.c -lgsl -lgslcblas -lm
 @end example
+
 @noindent
 Here is the output of the program,
 
@@ -2126,6 +2168,7 @@ Here is the output of the program,
 $ ./a.out 
 @verbatiminclude examples/randpoisson.out
 @end example
+
 @noindent
 The variates depend on the seed used by the generator.  The seed for the
 default generator type @code{gsl_rng_default} can be changed with the
@@ -2136,12 +2179,14 @@ of variates,
 $ GSL_RNG_SEED=123 ./a.out 
 @verbatiminclude examples/randpoisson.2.out
 @end example
+
 @noindent
 The following program generates a random walk in two dimensions.
 
 @example
 @verbatiminclude examples/randwalk.c
 @end example
+
 @noindent
 Here is the output from the program, three 10-step random walks from the origin,
 
@@ -2156,6 +2201,7 @@ distribution functions for the standard normal distribution at
 @example
 @verbatiminclude examples/cdf.c
 @end example
+
 @noindent
 Here is the output of the program,
 
@@ -2176,6 +2222,7 @@ of algorithms.
 Luc Devroye, @cite{Non-Uniform Random Variate Generation},
 Springer-Verlag, ISBN 0-387-96305-7.
 @end itemize
+
 @noindent
 The subject of random variate generation is also reviewed by Knuth, who
 describes algorithms for all the major distributions.
@@ -2185,6 +2232,7 @@ describes algorithms for all the major distributions.
 Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
+
 @noindent
 The Particle Data Group provides a short review of techniques for
 generating distributions of random numbers in the ``Monte Carlo''
@@ -2196,6 +2244,7 @@ section of its Annual Review of Particle Physics.
 R.M. Barnett et al., Physical Review D54, 1 (1996)
 @uref{http://pdg.lbl.gov/}.
 @end itemize
+
 @noindent
 The Review of Particle Physics is available online in postscript and pdf
 format.
@@ -2217,6 +2266,7 @@ Marcel Dekker, ISBN 0-8247-6898-1.
 Ronald A. Thisted, @cite{Elements of Statistical Computing} (1988), 
 Chapman & Hall, ISBN 0-412-01371-1.
 @end itemize
+
 @noindent
 The cumulative distribution functions for the Gaussian distribution
 are based on the following papers,

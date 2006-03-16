@@ -33,6 +33,7 @@ $$
 @example
 E_1(x) := \Re \int_1^\infty dt \exp(-xt)/t.
 @end example
+
 @end ifinfo
 @noindent
 @comment Domain: x != 0.0
@@ -54,6 +55,7 @@ $$
 @example
 E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2.
 @end example
+
 @end ifinfo
 @noindent
 @comment Domain: x != 0.0
@@ -78,6 +80,7 @@ $$
 @example
 Ei(x) := - PV(\int_@{-x@}^\infty dt \exp(-t)/t)
 @end example
+
 @end ifinfo
 @noindent
 where @math{PV} denotes the principal value of the integral.

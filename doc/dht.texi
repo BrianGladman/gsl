@@ -30,6 +30,12 @@ g_m = \int_0^1 t dt\, J_\nu(j_{\nu,m}t) f(t),
 $$
 \afterdisplay
 @end tex
+@ifinfo
+@example
+g_m = \int_0^1 t dt J_\nu(j_(\nu,m)t) f(t),
+@end example
+
+@end ifinfo
 @noindent
 so that,
 @tex
@@ -39,6 +45,12 @@ f(t) = \sum_{m=1}^\infty {{2 J_\nu(j_{\nu,m}x)}\over{J_{\nu+1}(j_{\nu,m})^2}} g_
 $$
 \afterdisplay
 @end tex
+@ifinfo
+@example
+f(t) = \sum_@{m=1@}^\infty (2 J_\nu(j_(\nu,m)x) / J_(\nu+1)(j_(\nu,m))^2) g_m.
+@end example
+
+@end ifinfo
 @noindent
 Suppose that @math{f} is band-limited in the sense that
 @math{g_m=0} for @math{m > M}. Then we have the following
@@ -52,6 +64,14 @@ g_m = {{2}\over{j_{\nu,M}^2}}
 $$
 \afterdisplay
 @end tex
+@ifinfo
+@example
+g_m = (2 / j_(\nu,M)^2)
+      \sum_@{k=1@}^@{M-1@} f(j_(\nu,k)/j_(\nu,M))
+          (J_\nu(j_(\nu,m) j_(\nu,k) / j_(\nu,M)) / J_(\nu+1)(j_(\nu,k))^2).
+@end example
+
+@end ifinfo
 @noindent
 It is this discrete expression which defines the discrete Hankel
 transform. The kernel in the summation above defines the matrix of the

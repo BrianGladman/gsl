@@ -116,6 +116,7 @@ For example,
 printf ("interp uses '%s' interpolation.\n", 
         gsl_interp_name (interp));
 @end example
+
 @noindent
 would print something like,
 
@@ -251,6 +252,7 @@ spline functions.  It computes a cubic spline interpolation of the
 @example
 @verbatiminclude examples/interp.c
 @end example
+
 @noindent
 The output is designed to be used with the @sc{gnu} plotutils
 @code{graph} program,
@@ -264,6 +266,7 @@ $ graph -T ps < interp.dat > interp.ps
 @sp 1
 @center @image{interp2,3.4in}
 @end iftex
+
 @noindent
 The result shows a smooth interpolation of the original points.  The
 interpolation method can changed simply by varying the first argument of
@@ -276,6 +279,7 @@ the same y-value for a periodic spline.
 @example
 @verbatiminclude examples/interpp.c
 @end example
+
 @noindent
 
 The output can be plotted with @sc{gnu} @code{graph}.
@@ -289,6 +293,7 @@ $ graph -T ps < interp.dat > interp.ps
 @sp 1
 @center @image{interpp2,3.4in}
 @end iftex
+
 @noindent
 The result shows a periodic interpolation of the original points. The
 slope of the fitted curve is the same at the beginning and end of the
@@ -309,4 +314,5 @@ Springer (1997), ISBN 3-540-62058-3.
 @cite{A Survey of Numerical Mathematics (Volume 1), Chapter 6.8},
 Dover (1988), ISBN 0-486-65691-8.
 @end itemize
+
 @noindent

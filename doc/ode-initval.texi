@@ -36,6 +36,7 @@ $$
 @example
 dy_i(t)/dt = f_i(t, y_1(t), ..., y_n(t))
 @end example
+
 @end ifinfo
 @noindent
 for @math{i = 1, \dots, n}.  The stepping functions rely on the vector
@@ -116,6 +117,7 @@ For example,
 printf ("step method is '%s'\n",
          gsl_odeiv_step_name (s));
 @end example
+
 @noindent
 would print something like @code{step method is 'rk4'}.
 @end deftypefun
@@ -232,6 +234,7 @@ $$
 @example
 D_i = eps_abs + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
 @end example
+
 @end ifinfo
 @noindent
 and comparing it with the observed error @math{E_i = |yerr_i|}.  If the
@@ -250,6 +253,7 @@ $$
 @example
 h_new = h_old * S * (E/D)^(-1/q)
 @end example
+
 @end ifinfo
 @noindent
 where @math{q} is the consistency order of the method (e.g. @math{q=4} for
@@ -273,6 +277,7 @@ $$
 @example
 h_new = h_old * S * (E/D)^(-1/(q+1))
 @end example
+
 @end ifinfo
 @noindent
 This encompasses all the standard error scaling methods. To avoid
@@ -314,6 +319,7 @@ $$
 @example
 D_i = eps_abs * s_i + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
 @end example
+
 @end ifinfo
 @noindent
 where @math{s_i} is the @math{i}-th component of the array @var{scale_abs}.
@@ -361,6 +367,7 @@ For example,
 printf ("control method is '%s'\n", 
         gsl_odeiv_control_name (c));
 @end example
+
 @noindent
 would print something like @code{control method is 'standard'}
 @end deftypefun
@@ -431,6 +438,7 @@ $$
 @example
 x''(t) + \mu x'(t) (x(t)^2 - 1) + x(t) = 0
 @end example
+
 @end ifinfo
 @noindent
 This can be converted into a first order system suitable for use with
@@ -452,6 +460,7 @@ $$
 x' = y
 y' = -x + \mu y (1-x^2)
 @end example
+
 @end ifinfo
 @noindent
 The program begins by defining functions for these derivatives and
@@ -460,6 +469,7 @@ their Jacobian,
 @example
 @verbatiminclude examples/ode-initval.c
 @end example
+
 @noindent
 The main loop of the program evolves the solution from @math{(y, y') =
 (1, 0)} at @math{t=0} to @math{t=100}.  The step-size @math{h} is
@@ -497,6 +507,7 @@ following main loop prints the solution at the fixed points @math{t = 0,
       printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     @}
 @end example
+
 @noindent
 It is also possible to work with a non-adaptive integrator, using only
 the stepping function itself.  The following program uses the @code{rk4}
@@ -506,6 +517,7 @@ fourth-order Runge-Kutta stepping function with a fixed stepsize of
 @example
 @verbatiminclude examples/odefixed.c
 @end example
+
 @noindent
 The derivatives must be initialized for the starting point @math{t=0}
 before the first step is taken.  Subsequent steps use the output
@@ -523,6 +535,7 @@ Mathematical Functions,
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions},
 Section 25.5.
 @end itemize
+
 @noindent
 The implicit Bulirsch-Stoer algorithm @code{bsimp} is described in the
 following paper,

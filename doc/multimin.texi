@@ -43,6 +43,7 @@ $$
 @example
 f(x_1, @dots{}, x_n)
 @end example
+
 @end ifinfo
 @noindent
 takes a value which is lower than at any neighboring point. For smooth
@@ -80,6 +81,7 @@ update @var{s} using the iteration @var{T}
 @item
 test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
+
 @noindent
 Each iteration step consists either of an improvement to the
 line-minimisation in the current direction or an update to the search
@@ -151,6 +153,7 @@ This function returns a pointer to the name of the minimizer.  For example,
 printf ("s is a '%s' minimizer\n", 
         gsl_multimin_fdfminimizer_name (s));
 @end example
+
 @noindent
 would print something like @code{s is a 'conjugate_pr' minimizer}.
 @end deftypefun
@@ -215,6 +218,7 @@ vectors @var{x}.
 a pointer to the parameters of the function.
 @end table
 @end deftp
+
 @noindent
 The following example function defines a simple paraboloid with two
 parameters,
@@ -259,6 +263,7 @@ my_fdf (const gsl_vector *x, void *params,
   my_df(x, params, df);
 @}
 @end example
+
 @noindent
 The function can be initialized using the following code,
 
@@ -288,6 +293,7 @@ These functions perform a single iteration of the minimizer @var{s}.  If
 the iteration encounters an unexpected problem then an error code will
 be returned.
 @end deftypefun
+
 @noindent
 The minimizer maintains a current best estimate of the minimum at all
 times.  This information can be accessed with the following auxiliary
@@ -325,6 +331,7 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
+
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the precision of the current result.
@@ -346,6 +353,7 @@ $$
 @example
 |g| < epsabs
 @end example
+
 @end ifinfo
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  A suitable choice of
@@ -454,6 +462,7 @@ p_2 = (x_0, x_1 + step_size_1, ... , x_n)
 ... = ...
 p_n = (x_0, x_1, ... , x_n+step_size_n)
 @end example
+
 @end ifinfo
 @noindent
 These vectors form the @math{n+1} vertices of a simplex in @math{n}
@@ -543,6 +552,7 @@ main (void)
   return 0;
 @}
 @end smallexample  
+
 @noindent
 The initial step-size is chosen as 0.01, a conservative estimate in this
 case, and the line minimization parameter is set at 0.0001.  The program
@@ -566,6 +576,7 @@ terminates when the norm of the gradient has been reduced below
 Minimum found at:
    13 1.00000 2.00000   30.00000
 @end example
+
 @noindent
 Note that the algorithm gradually increases the step size as it
 successfully moves downhill, as can be seen by plotting the successive
@@ -575,6 +586,7 @@ points.
 @sp 1
 @center @image{multimin,3.4in}
 @end iftex
+
 @noindent
 The conjugate gradient algorithm finds the minimum on its second
 direction because the function is purely quadratic. Additional
@@ -652,6 +664,7 @@ main(void)
   return status;
 @}
 @end smallexample
+
 @noindent
 The minimum search stops when the Simplex size drops to 0.01. The output is
 shown below.
@@ -684,6 +697,7 @@ shown below.
 converged to minimum at                  
    25  1.007e+00  2.003e+00 f() = 30.001  size = 0.010
 @end example
+
 @noindent
 The simplex size first increases, while the simplex moves towards the
 minimum. After a while the size begins to decrease as the simplex
@@ -701,6 +715,7 @@ further references can be found in the following book,
 ``Minimization Methods'', p.@: 325--335, Springer (1997), ISBN
 3-540-62057-5.
 @end itemize
+
 @noindent
 The simplex algorithm is described in the following paper, 
 
@@ -709,4 +724,5 @@ The simplex algorithm is described in the following paper,
 @cite{A simplex method for function minimization}, Computer Journal
 vol.@: 7 (1965), 308--315.
 @end itemize
+
 @noindent

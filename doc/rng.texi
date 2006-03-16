@@ -207,6 +207,7 @@ For example,
 printf ("r is a '%s' generator\n", 
         gsl_rng_name (r));
 @end example
+
 @noindent
 would print something like @code{r is a 'taus' generator}.
 @end deftypefun
@@ -289,6 +290,7 @@ If you don't specify a generator for @code{GSL_RNG_TYPE} then
 @code{gsl_rng_default_seed} is zero.
 
 @end deftypefun
+
 @noindent
 @need 2000
 Here is a short program which shows how to create a global
@@ -298,6 +300,7 @@ generator using the environment variables @code{GSL_RNG_TYPE} and
 @example
 @verbatiminclude examples/rng.c
 @end example
+
 @noindent
 Running the program without any environment variables uses the initial
 defaults, an @code{mt19937} generator with a seed of 0,
@@ -306,6 +309,7 @@ defaults, an @code{mt19937} generator with a seed of 0,
 $ ./a.out 
 @verbatiminclude examples/rng.out
 @end example
+
 @noindent
 By setting the two variables on the command line we can
 change the default generator and the seed,
@@ -402,6 +406,7 @@ Makoto Matsumoto and Takuji Nishimura, ``Mersenne Twister: A
 generator''. @cite{ACM Transactions on Modeling and Computer
 Simulation}, Vol.@: 8, No.@: 1 (Jan. 1998), Pages 3--30
 @end itemize
+
 @noindent
 The generator @code{gsl_rng_mt19937} uses the second revision of the
 seeding procedure published by the two authors above in 2002.  The
@@ -489,6 +494,7 @@ $$
 @example
 z_n = (x_n - y_n) mod m_1
 @end example
+
 @end ifinfo
 @noindent
 where the two underlying generators @math{x_n} and @math{y_n} are,
@@ -508,6 +514,7 @@ $$
 x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@} + a_3 x_@{n-3@}) mod m_1
 y_n = (b_1 y_@{n-1@} + b_2 y_@{n-2@} + b_3 y_@{n-3@}) mod m_2
 @end example
+
 @end ifinfo
 @noindent
 with coefficients 
@@ -558,6 +565,7 @@ $$
 @example
 x_n = (a_1 x_@{n-1@} + a_5 x_@{n-5@}) mod m
 @end example
+
 @end ifinfo
 @noindent
 with 
@@ -598,6 +606,7 @@ $$
 @example
 x_n = (s1_n ^^ s2_n ^^ s3_n) 
 @end example
+
 @end ifinfo
 @noindent
 where,
@@ -619,6 +628,7 @@ s1_@{n+1@} = (((s1_n&4294967294)<<12)^^(((s1_n<<13)^^s1_n)>>19))
 s2_@{n+1@} = (((s2_n&4294967288)<< 4)^^(((s2_n<< 2)^^s2_n)>>25))
 s3_@{n+1@} = (((s3_n&4294967280)<<17)^^(((s3_n<< 3)^^s3_n)>>11))
 @end example
+
 @end ifinfo
 @noindent
 computed modulo 
@@ -641,6 +651,7 @@ information see,
 P. L'Ecuyer, ``Maximally Equidistributed Combined Tausworthe
 Generators'', @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
 @end itemize
+
 @noindent
 The generator @code{gsl_rng_taus2} uses the same algorithm as
 @code{gsl_rng_taus} but with an improved seeding procedure described in
@@ -651,6 +662,7 @@ the paper,
 P. L'Ecuyer, ``Tables of Maximally Equidistributed Combined LFSR
 Generators'', @cite{Mathematics of Computation}, 68, 225 (1999), 261--269
 @end itemize
+
 @noindent
 The generator @code{gsl_rng_taus2} should now be used in preference to
 @code{gsl_rng_taus}.
@@ -745,6 +757,7 @@ $$
 @example
 x_@{n+1@} = (a x_n + c) mod m
 @end example
+
 @end ifinfo
 @noindent
 with 
@@ -785,6 +798,7 @@ gsl_rng_random64_bsd
 gsl_rng_random128_bsd
 gsl_rng_random256_bsd
 @end example
+
 @noindent
 where the numeric suffix indicates the buffer length.  The original BSD
 @code{random} function used a 128-byte default buffer and so
@@ -809,6 +823,7 @@ $$
 @example
 x_@{n+1@} = (a x_n + c) mod m
 @end example
+
 @end ifinfo
 @noindent
 defined on 48-bit unsigned integers with 
@@ -869,6 +884,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 defined on 48-bit unsigned integers with @math{a = 44485709377909} and
@@ -930,6 +946,7 @@ $$
 @example
 x_n = x_@{n-103@} ^^ x_@{n-250@}
 @end example
+
 @end ifinfo
 @noindent
 where 
@@ -987,6 +1004,7 @@ $$
 @example
 x_@{n+1@} = (a x_n + c) mod m
 @end example
+
 @end ifinfo
 @noindent
 with 
@@ -1015,6 +1033,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 1664525} and 
@@ -1040,6 +1059,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 65539} and 
@@ -1070,6 +1090,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 16807} and 
@@ -1154,6 +1175,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 1812433253} and 
@@ -1180,6 +1202,7 @@ $$
 @example
 x_@{n+1@} = (x_n (x_n + 1)) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @c{$m = 2^{32}$}
@@ -1205,6 +1228,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 62089911} and 
@@ -1230,6 +1254,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 48271} and 
@@ -1256,6 +1281,7 @@ $$
 @example
 z_@{n+1@} = (x_n - y_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @c{$m = 2^{31}-1$}
@@ -1283,6 +1309,7 @@ $$
 @example
 x_n = (a_1 x_@{n-1@} + a_2 x_@{n-2@}) mod m
 @end example
+
 @end ifinfo
 @noindent
 with 
@@ -1314,6 +1341,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 40692} and 
@@ -1339,6 +1367,7 @@ $$
 @example
 x_@{n+1@} = (a x_n) mod m
 @end example
+
 @end ifinfo
 @noindent
 with @math{a = 1566083941} and 
@@ -1397,6 +1426,7 @@ to produce uniform random numbers in the range [0.0, 1.0),
 @example
 @verbatiminclude examples/rngunif.c
 @end example
+
 @noindent
 Here is the output of the program,
 
@@ -1404,6 +1434,7 @@ Here is the output of the program,
 $ ./a.out 
 @verbatiminclude examples/rngunif.out
 @end example
+
 @noindent
 The numbers depend on the seed used by the generator.  The default seed
 can be changed with the @code{GSL_RNG_SEED} environment variable to
@@ -1428,6 +1459,7 @@ extensively in Knuth's @cite{Seminumerical Algorithms}.
 Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 @end itemize
+
 @noindent
 Further information is available in the review paper written by Pierre
 L'Ecuyer,
@@ -1439,6 +1471,7 @@ Handbook on Simulation, Jerry Banks Ed., Wiley, 1998, 93--137.
 @uref{http://www.iro.umontreal.ca/~lecuyer/papers.html}
 in the file @file{handsim.ps}.
 @end itemize
+
 @noindent
 The source code for the @sc{diehard} random number generator tests is also
 available online,

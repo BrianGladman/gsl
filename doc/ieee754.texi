@@ -35,6 +35,7 @@ $$
 @example
 (-1)^s (1.fffff...) 2^E
 @end example
+
 @end ifinfo
 @noindent
 @cindex normalized form, IEEE format
@@ -71,6 +72,7 @@ $$
 @example
 (-1)^s (0.fffff...) 2^(E_min)
 @end example
+
 @end ifinfo
 @noindent
 @cindex zero, IEEE format
@@ -83,6 +85,7 @@ A zero is encoded with the special exponent of
 @math{2^(E_min - 1)} and infinities with the exponent of 
 @c{$2^{E_{max}+1}$}
 @math{2^(E_max + 1)}.
+
 @noindent
 @cindex single precision, IEEE format
 The format for single precision numbers uses 32 bits divided in the
@@ -95,6 +98,7 @@ s = sign bit, 1 bit
 e = exponent, 8 bits  (E_min=-126, E_max=127, bias=127)
 f = fraction, 23 bits
 @end smallexample
+
 @noindent
 @cindex double precision, IEEE format
 The format for double precision numbers uses 64 bits divided in the
@@ -107,6 +111,7 @@ s = sign bit, 1 bit
 e = exponent, 11 bits  (E_min=-1022, E_max=1023, bias=1023)
 f = fraction, 52 bits
 @end smallexample
+
 @noindent
 It is often useful to be able to investigate the behavior of a
 calculation at the bit-level and the library provides functions for
@@ -152,6 +157,7 @@ with @code{2#} to indicate binary.
 These functions output a formatted version of the IEEE floating-point
 number pointed to by @var{x} to the stream @code{stdout}.
 @end deftypefun
+
 @noindent
 The following program demonstrates the use of the functions by printing
 the single and double precision representations of the fraction
@@ -161,6 +167,7 @@ single to double precision is also printed.
 @example
 @verbatiminclude examples/ieee.c
 @end example
+
 @noindent
 The binary representation of @math{1/3} is @math{0.01010101... }.  The
 output below shows that the IEEE format normalizes this fraction to give
@@ -171,6 +178,7 @@ a leading digit of 1,
 fd= 1.0101010101010101010101100000000000000000000000000000*2^-2
  d= 1.0101010101010101010101010101010101010101010101010101*2^-2
 @end smallexample
+
 @noindent
 The output also shows that a single-precision number is promoted to
 double-precision by adding zeros in the binary representation.
@@ -232,6 +240,7 @@ commas, like this,
 @display
 @code{GSL_IEEE_MODE} = "@var{keyword},@var{keyword},..."
 @end display
+
 @noindent
 where @var{keyword} is one of the following mode-names,
 
@@ -297,11 +306,13 @@ GSL_IEEE_MODE="double-precision,"\
                 "mask-underflow,"\
                   "mask-denormalized"
 @end example
+
 @noindent
 This choice ignores any errors relating to small numbers (either
 denormalized, or underflowing to zero) but traps overflows, division by
 zero and invalid operations.
 @end deftypefun
+
 @noindent
 To demonstrate the effects of different rounding modes consider the
 following program which computes @math{e}, the base of natural
@@ -325,6 +336,7 @@ e = 1 + 1/2! + 1/3! + 1/4! + ...
 @example
 @verbatiminclude examples/ieeeround.c
 @end example
+
 @noindent
 Here are the results of running the program in @code{round-to-nearest}
 mode.  This is the IEEE default so it isn't really necessary to specify
@@ -338,6 +350,7 @@ i= 2 sum=2.000000000000000000 error=-0.718282
 i=18 sum=2.718281828459045535 error=4.44089e-16
 i=19 sum=2.718281828459045535 error=4.44089e-16
 @end example
+
 @noindent
 After nineteen terms the sum converges to within @c{$4 \times 10^{-16}$}
 @math{4 \times 10^-16} of the correct value.  
@@ -350,6 +363,7 @@ i= 1 sum=1.000000000000000000 error=-1.71828
 ....
 i=19 sum=2.718281828459041094 error=-3.9968e-15
 @end example
+
 @noindent
 The result is about 
 @c{$4 \times 10^{-15}$}
@@ -378,6 +392,7 @@ $ GSL_IEEE_MODE="single-precision" ./a.out
 ....
 i=12 sum=2.718281984329223633 error=1.5587e-07
 @end example
+
 @noindent
 with an error of 
 @c{$O(10^{-7})$}
@@ -395,6 +410,7 @@ The reference for the IEEE standard is,
 @item
 ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic.
 @end itemize
+
 @noindent
 A more pedagogical introduction to the standard can be found in the
 following paper,
@@ -411,6 +427,7 @@ B. Dunham in Surveyor's Forum: ``What Every Computer Scientist Should
 Know About Floating-Point Arithmetic''. @cite{ACM Computing Surveys},
 Vol.@: 24, No.@: 3 (September 1992), page 319.
 @end itemize
+
 @noindent
 
 A detailed textbook on IEEE arithmetic and its practical use is
@@ -421,6 +438,7 @@ available from SIAM Press,
 Michael L. Overton, @cite{Numerical Computing with IEEE Floating Point Arithmetic},
 SIAM Press, ISBN 0898715717.
 @end itemize
+
 @noindent
 
 @comment to turn on math exception handling use __setfpucw, see

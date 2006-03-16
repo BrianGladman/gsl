@@ -13,6 +13,7 @@ $$
 @example
 D_n(x) = n/x^n \int_0^x dt (t^n/(e^t - 1))
 @end example
+
 @end ifinfo
 @noindent
 For further information see Abramowitz &

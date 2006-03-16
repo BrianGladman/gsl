@@ -547,6 +547,7 @@ converted into minutes before being displayed.
 @example
 @verbatiminclude examples/const.c
 @end example
+
 @noindent
 Here is the output from the program,
 

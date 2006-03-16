@@ -42,6 +42,7 @@ Matrix-vector operations, e.g. @math{y = \alpha A x + \beta y}
 @item Level 3
 Matrix-matrix operations, e.g. @math{C = \alpha A B + C}
 @end table
+
 @noindent
 Each routine has a name which specifies the operation, the type of
 matrices involved and their precisions.  Some of the most common
@@ -61,6 +62,7 @@ matrix-matrix product, @math{A B}
 @item SM
 matrix-matrix solve, @math{inv(A) B}
 @end table
+
 @noindent
 The types of matrices are,
 
@@ -88,6 +90,7 @@ triangular band
 @item TP
 triangular packed
 @end table
+
 @noindent
 Each operation is defined for four precisions,
 
@@ -101,6 +104,7 @@ single complex
 @item Z
 double complex
 @end table
+
 @noindent
 Thus, for example, the name @sc{sgemm} stands for ``single-precision
 general matrix-matrix multiply'' and @sc{zgemm} stands for
@@ -184,7 +188,6 @@ $$
 ||x||_2 = \sqrt @{\sum (\Re(x_i)^2 + \Im(x_i)^2)@}.
 @end example
 @end ifinfo
-@noindent
 @end deftypefun
 
 @deftypefun float gsl_blas_sasum (const gsl_vector_float * @var{x})
@@ -284,6 +287,7 @@ $$
 [  c  s ] [ a ] = [ r ]
 [ -s  c ] [ b ]   [ 0 ]
 @end example
+
 @end ifinfo
 @noindent
 The variables @var{a} and @var{b} are overwritten by the routine.
@@ -619,6 +623,7 @@ $$
 [ 0.21 0.22 0.23 ]  [ 1021 1022 ]  =  [ 674.06 674.72 ]
                     [ 1031 1032 ]
 @end example
+
 @end ifinfo
 @noindent
 The matrices are stored in row major order, according to the C convention 
@@ -627,6 +632,7 @@ for arrays.
 @example
 @verbatiminclude examples/blas.c
 @end example
+
 @noindent
 Here is the output from the program,
 
@@ -650,6 +656,7 @@ Homepage and @sc{blas} Technical Forum web-site.
 @cite{BLAS Technical Forum} @*
 @uref{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
 @end itemize
+
 @noindent
 The following papers contain the specifications for Level 1, Level 2 and
 Level 3 @sc{blas}.
@@ -670,6 +677,7 @@ J.J. Dongarra, I. Duff, J. DuCroz, S. Hammarling, ``A Set of
 Level 3 Basic Linear Algebra Subprograms'', @cite{ACM Transactions on
 Mathematical Software}, Vol.@: 16 (1990), Pages 1--28.
 @end itemize
+
 @noindent
 Postscript versions of the latter two papers are available from
 @uref{http://www.netlib.org/blas/}. A @sc{cblas} wrapper for Fortran @sc{blas}

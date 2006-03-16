@@ -43,19 +43,19 @@ upper bound @math{b}, with an estimate of the location of the minimum
 @sp 1
 @center @image{min-interval,3.4in}
 @end iftex
+
 @noindent
 The value of the function at @math{x} must be less than the value of the
 function at the ends of the interval,
-@iftex
 @tex
 $$f(a) > f(x) < f(b)$$
 @end tex
-@end iftex
 @ifinfo
 
 @example
 f(a) > f(x) < f(b)
 @end example
+
 @end ifinfo
 @noindent
 This condition guarantees that a minimum is contained somewhere within
@@ -84,6 +84,7 @@ update @var{s} using the iteration @var{T}
 @item
 test @var{s} for convergence, and repeat iteration if necessary
 @end itemize
+
 @noindent
 The state for the minimizers is held in a @code{gsl_min_fminimizer}
 struct.  The updating procedure uses only function evaluations (not
@@ -104,18 +105,17 @@ With all minimization algorithms it can be difficult to determine the
 location of the minimum to full numerical precision.  The behavior of the
 function in the region of the minimum @math{x^*} can be approximated by
 a Taylor expansion,
-@iftex
 @tex
 $$
 y = f(x^*) + {1 \over 2} f''(x^*) (x - x^*)^2
 $$
 @end tex
-@end iftex
 @ifinfo
 
 @example
 y = f(x^*) + (1/2) f''(x^*) (x - x^*)^2
 @end example
+
 @end ifinfo
 @noindent
 and the second term of this expansion can be lost when added to the
@@ -176,6 +176,7 @@ This function returns a pointer to the name of the minimizer.  For example,
 printf ("s is a '%s' minimizer\n",
         gsl_min_fminimizer_name (s));
 @end example
+
 @noindent
 would print something like @code{s is a 'brent' minimizer}.
 @end deftypefun
@@ -254,6 +255,7 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
+
 @noindent
 The handling of these conditions is under user control.  The function
 below allows the user to test the precision of the current result.
@@ -275,6 +277,7 @@ $$
 @example
 |a - b| < epsabs + epsrel min(|a|,|b|) 
 @end example
+
 @end ifinfo
 @noindent
 when the interval @math{x = [a,b]} does not include the origin.  If the
@@ -298,6 +301,7 @@ $$
 @example
 |x_m - x_m^*| < epsabs + epsrel x_m^*
 @end example
+
 @end ifinfo
 @noindent
 assuming that the true minimum @math{x_m^*} is contained within the interval.
@@ -372,6 +376,7 @@ minimum of @math{2}.
 @example
 @verbatiminclude examples/min.c
 @end example
+
 @noindent
 Here are the results of the minimization procedure.
 

@@ -86,6 +86,7 @@ $$
 @example
 h(x) = Z(x)/Q(x) = \sqrt@{2/\pi@} \exp(-x^2 / 2) / \erfc(x/\sqrt 2)
 @end example
+
 @end ifinfo
 @noindent
 It decreases rapidly as @math{x} approaches @math{-\infty} and asymptotes

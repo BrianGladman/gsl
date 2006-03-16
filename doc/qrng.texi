@@ -117,6 +117,7 @@ Sobol sequence.
 @example
 @verbatiminclude examples/qrng.c
 @end example
+
 @noindent
 Here is the output from the program,
 
@@ -131,6 +132,7 @@ $ ./a.out
 0.12500 0.62500
 ....
 @end example
+
 @noindent
 It can be seen that successive points progressively fill-in the spaces
 between previous points. 

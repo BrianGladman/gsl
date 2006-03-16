@@ -56,6 +56,7 @@ $$
 @example
 \Hat\mu = (1/N) \sum x_i
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_i} are the elements of the dataset @var{data}.  For
@@ -79,6 +80,7 @@ $$
 @example
 \Hat\sigma^2 = (1/(N-1)) \sum (x_i - \Hat\mu)^2
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_i} are the elements of the dataset @var{data}.  Note that
@@ -165,6 +167,7 @@ $$
 @example
 absdev  = (1/N) \sum |x_i - \Hat\mu|
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_i} are the elements of the dataset @var{data}.  The
@@ -188,6 +191,7 @@ $$
 @example
 absdev  = (1/N) \sum |x_i - mean|
 @end example
+
 @end ifinfo
 @noindent
 This function is useful if you have already computed the mean of
@@ -215,6 +219,7 @@ $$
 @example
 skew = (1/N) \sum ((x_i - \Hat\mu)/\Hat\sigma)^3
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_i} are the elements of the dataset @var{data}.  The skewness
@@ -240,6 +245,7 @@ $$
 @example
 skew = (1/N) \sum ((x_i - mean)/sd)^3
 @end example
+
 @end ifinfo
 @noindent
 These functions are useful if you have already computed the mean and
@@ -264,6 +270,7 @@ $$
 @example
 kurtosis = ((1/N) \sum ((x_i - \Hat\mu)/\Hat\sigma)^4)  - 3
 @end example
+
 @end ifinfo
 @noindent
 The kurtosis measures how sharply peaked a distribution is, relative to
@@ -288,6 +295,7 @@ $$
 @example
 kurtosis = ((1/N) \sum ((x_i - mean)/sd)^4) - 3
 @end example
+
 @end ifinfo
 @noindent
 This function is useful if you have already computed the mean and
@@ -406,6 +414,7 @@ $$
 \Hat\sigma^2 = ((\sum w_i)/((\sum w_i)^2 - \sum (w_i^2))) 
                 \sum w_i (x_i - \Hat\mu)^2
 @end example
+
 @end ifinfo
 @noindent
 Note that this expression reduces to an unweighted variance with the
@@ -631,6 +640,7 @@ $$
 @example
 quantile = (1 - \delta) x_i + \delta x_@{i+1@}
 @end example
+
 @end ifinfo
 @noindent
 where @math{i} is @code{floor}(@math{(n - 1)f}) and @math{\delta} is
@@ -700,6 +710,7 @@ Maurice Kendall, Alan Stuart, and J. Keith Ord.
 reprinted as @cite{Kendall's Advanced Theory of Statistics}.
 Wiley, ISBN 047023380X.
 @end itemize
+
 @noindent
 Many statistical concepts can be more easily understood by a Bayesian
 approach.  The following book by Gelman, Carlin, Stern and Rubin gives a
@@ -711,6 +722,7 @@ Andrew Gelman, John B. Carlin, Hal S. Stern, Donald B. Rubin.
 @cite{Bayesian Data Analysis}.
 Chapman & Hall, ISBN 0412039915.
 @end itemize
+
 @noindent
 For physicists the Particle Data Group provides useful reviews of
 Probability and Statistics in the ``Mathematical Tools'' section of its
@@ -721,6 +733,7 @@ Annual Review of Particle Physics.
 @cite{Review of Particle Properties}
 R.M. Barnett et al., Physical Review D54, 1 (1996)
 @end itemize
+
 @noindent
 The Review of Particle Physics is available online at
 the website @uref{http://pdg.lbl.gov/}.

@@ -54,6 +54,7 @@ $$
 @example
 P A = L U
 @end example
+
 @end ifinfo
 @noindent
 where @math{P} is a permutation matrix, @math{L} is unit lower
@@ -172,6 +173,7 @@ $$
 @example
 A = Q R
 @end example
+
 @end ifinfo
 @noindent
 This decomposition can be used to convert the linear system @math{A x =
@@ -302,6 +304,7 @@ $$
 @example
 A P = Q R
 @end example
+
 @end ifinfo
 @noindent
 The first @math{r} columns of @math{Q} form an orthonormal basis
@@ -402,6 +405,7 @@ $$
 @example
 A = U S V^T
 @end example
+
 @end ifinfo
 @noindent
 The singular values
@@ -487,6 +491,7 @@ $$
 @example
 A = L L^T
 @end example
+
 @end ifinfo
 @noindent
 This is sometimes referred to as taking the square-root of a matrix. The
@@ -538,6 +543,7 @@ $$
 @example
 A = Q T Q^T
 @end example
+
 @end ifinfo
 @noindent
 where @math{Q} is an orthogonal matrix and @math{T} is a symmetric
@@ -585,6 +591,7 @@ $$
 @example
 A = U T U^T
 @end example
+
 @end ifinfo
 @noindent
 where @math{U} is a unitary matrix and @math{T} is a real symmetric
@@ -635,6 +642,7 @@ $$
 @example
 A = U B V^T
 @end example
+
 @end ifinfo
 @noindent
 where @math{U} and @math{V} are orthogonal matrices and @math{B} is a
@@ -698,6 +706,7 @@ $$
 @example
 P = I - \tau v v^T
 @end example
+
 @end ifinfo
 @noindent
 where @math{v} is a vector (called the @dfn{Householder vector}) and
@@ -909,6 +918,7 @@ $$
 [ 0.14 0.30 0.97 0.66 ] [x2]   [3.0]
 [ 0.51 0.13 0.19 0.85 ] [x3]   [4.0]
 @end example
+
 @end ifinfo
 @noindent
 and the solution is found using LU decomposition of the matrix @math{A}.
@@ -916,12 +926,14 @@ and the solution is found using LU decomposition of the matrix @math{A}.
 @example
 @verbatiminclude examples/linalglu.c
 @end example
+
 @noindent
 Here is the output from the program,
 
 @example
 @verbatiminclude examples/linalglu.out
 @end example
+
 @noindent
 This can be verified by multiplying the solution @math{x} by the
 original matrix @math{A} using @sc{gnu octave},
@@ -941,6 +953,7 @@ ans =
   3.0000
   4.0000
 @end example
+
 @noindent
 This reproduces the original right-hand side vector, @math{b}, in
 accordance with the equation @math{A x = b}.
@@ -956,6 +969,7 @@ found in the following book,
 G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
 @end itemize
+
 @noindent
 The @sc{lapack} library is described in the following manual,
 
@@ -966,6 +980,7 @@ ISBN 0-89871-447-8.
 
 @uref{http://www.netlib.org/lapack} 
 @end itemize
+
 @noindent
 The @sc{lapack} source code can be found at the website above, along
 with an online copy of the users guide.
@@ -979,6 +994,7 @@ T.F. Chan, ``An Improved Algorithm for Computing the Singular Value
 Decomposition'', @cite{ACM Transactions on Mathematical Software}, 8
 (1982), pp 72--83.
 @end itemize
+
 @noindent
 The Jacobi algorithm for singular value decomposition is described in
 the following papers,

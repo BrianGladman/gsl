@@ -39,6 +39,7 @@ typedef struct
   ...
 @} gsl_cheb_series
 @end example
+
 @noindent
 The approximation is made over the range @math{[a,b]} using
 @var{order}+1 terms, including the coefficient @math{c[0]}.  The series
@@ -55,6 +56,7 @@ $$
 @example
 f(x) = (c_0 / 2) + \sum_@{n=1@} c_n T_n(x)
 @end example
+
 @end ifinfo
 @noindent
 which is needed when accessing the coefficients directly.
@@ -151,6 +153,7 @@ visible.
 @example
 @verbatiminclude examples/cheb.c
 @end example
+
 @noindent
 The output from the program gives the original function, 10-th order
 approximation and 40-th order approximation, all sampled at intervals of

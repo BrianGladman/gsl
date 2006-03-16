@@ -20,6 +20,7 @@ $$
 Ai(x) = (1/\pi) \int_0^\infty \cos((1/3) t^3 + xt) dt
 Bi(x) = (1/\pi) \int_0^\infty (e^(-(1/3) t^3) + \sin((1/3) t^3 + xt)) dt
 @end example
+
 @end ifinfo
 @noindent
 For further information see Abramowitz & Stegun, Section 10.4. The Airy

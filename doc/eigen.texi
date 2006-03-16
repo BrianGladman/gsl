@@ -176,6 +176,7 @@ The following program computes the eigenvalues and eigenvectors of the 4-th orde
 @example
 @verbatiminclude examples/eigen.c
 @end example
+
 @noindent
 Here is the beginning of the output from the program,
 
@@ -189,6 +190,7 @@ eigenvector =
 0.514553
 ...
 @end example
+
 @noindent
 This can be compared with the corresponding output from @sc{gnu octave},
 
@@ -210,6 +212,7 @@ v =
    0.791411   0.100228   0.509579   0.322416
   -0.514553   0.638283   0.514048   0.252161
 @end example
+
 @noindent
 Note that the eigenvectors can differ by a change of sign, since the
 sign of an eigenvector is arbitrary.
@@ -225,6 +228,7 @@ found in the following book,
 G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
 @end itemize
+
 @noindent
 The @sc{lapack} library is described in,
 
@@ -235,6 +239,7 @@ ISBN 0-89871-447-8.
 
 @uref{http://www.netlib.org/lapack} 
 @end itemize
+
 @noindent
 The @sc{lapack} source code can be found at the website above along with
 an online copy of the users guide.

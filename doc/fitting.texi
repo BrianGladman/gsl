@@ -42,6 +42,7 @@ $$
 @example
 \chi^2 = \sum_i w_i (y_i - Y(c, x_i))^2
 @end example
+
 @end ifinfo
 @noindent
 The @math{p} parameters of the model are @c{$c = \{c_0, c_1, \dots\}$}
@@ -72,6 +73,7 @@ $$
 $$
 \afterdisplay
 @end tex
+
 @noindent
 allowing the covariance matrix to be written in terms of the errors on the data,
 @tex
@@ -82,6 +84,7 @@ C_{ab} =  \sum_{i,j} {\partial c_a \over \partial y_i}
 $$
 \afterdisplay
 @end tex
+
 @noindent
 For uncorrelated data the fluctuations of the underlying datapoints satisfy
 @c{$\langle \delta y_i \delta y_j \rangle = \sigma_i^2 \delta_{ij}$}
@@ -94,6 +97,7 @@ C_{ab} = \sum_{i} {1 \over w_i} {\partial c_a \over \partial y_i} {\partial c_b 
 $$
 \afterdisplay
 @end tex
+
 @noindent
 When computing the covariance matrix for unweighted data, i.e. data with unknown errors, 
 the weight factors @math{w_i} in this sum are replaced by the single estimate @math{w =
@@ -214,6 +218,7 @@ $$
 @example
 X_@{ij@} = x_i^j
 @end example
+
 @end ifinfo
 @noindent
 where the index @math{i} runs over the observations and the index
@@ -233,6 +238,7 @@ $$
 @example
 X_@{ij@} = sin(\omega_j x_i)
 @end example
+
 @end ifinfo
 @noindent
 To fit to @math{p} independent variables @math{x_1}, @math{x_2}, @dots{},
@@ -249,6 +255,7 @@ $$
 @example
 X_@{ij@} = x_j(i)
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_j(i)} is the @math{i}-th value of the predictor variable
@@ -326,6 +333,7 @@ associated one standard-deviation error bars.
 @example
 @verbatiminclude examples/fitting.c
 @end example
+
 @noindent
 The following commands extract the data from the output of the program
 and display it using the @sc{gnu} plotutils @code{graph} utility, 
@@ -374,6 +382,7 @@ X = [ 1   , x_0  , x_0^2 ;
       1   , x_2  , x_2^2 ;
       ... , ...  , ...   ]
 @end example
+
 @end ifinfo
 @noindent
 where the column of ones corresponds to the constant term @math{c_0}.
@@ -387,6 +396,7 @@ value @var{y}.
 @example
 @verbatiminclude examples/fitting2.c
 @end example
+
 @noindent
 A suitable set of data for fitting can be generated using the following
 program.  It outputs a set of points with gaussian errors from the curve
@@ -395,6 +405,7 @@ program.  It outputs a set of points with gaussian errors from the curve
 @example
 @verbatiminclude examples/fitting3.c
 @end example
+
 @noindent
 The data can be prepared by running the resulting executable program,
 
@@ -409,6 +420,7 @@ $ more exp.dat
 0.6 1.92475 0.182212
 ....
 @end example
+
 @noindent
 To fit the data use the previous program, with the number of data points
 given as the first argument.  In this case there are 19 data points.
@@ -425,6 +437,7 @@ $ ./fit 19 < exp.dat
   +1.94389e-02, -8.48761e-02, +5.60243e-02 ]
 # chisq = 23.0987
 @end example
+
 @noindent
 The parameters of the quadratic fit match the coefficients of the
 expansion of @math{e^x}, taking into account the errors on the
@@ -452,6 +465,7 @@ Physics prepared by the Particle Data Group,
 R.M. Barnett et al., Physical Review D54, 1 (1996)
 @uref{http://pdg.lbl.gov/}
 @end itemize
+
 @noindent
 The Review of Particle Physics is available online at the website given
 above.

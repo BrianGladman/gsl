@@ -79,6 +79,7 @@ $$
 @example
 x_j = \sum_@{k=0@}^@{N-1@} z_k \exp(-2\pi i j k / N) 
 @end example
+
 @end ifinfo
 @noindent
 and the definition of the @dfn{inverse fourier transform},
@@ -96,6 +97,7 @@ $$
 @example
 z_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} x_k \exp(2\pi i j k / N).
 @end example
+
 @end ifinfo
 @noindent
 The factor of @math{1/N} makes this a true inverse.  For example, a call
@@ -125,6 +127,7 @@ $$
 @example
 z^@{backwards@}_j = \sum_@{k=0@}^@{N-1@} x_k \exp(2\pi i j k / N).
 @end example
+
 @end ifinfo
 @noindent
 When the overall scale of the result is unimportant it is often
@@ -145,6 +148,7 @@ array of length 6,
 double x[3*2];
 gsl_complex_packed_array data = x;
 @end example
+
 @noindent
 can be used to hold an array of three complex numbers, @code{z[3]}, in
 the following way,
@@ -157,6 +161,7 @@ data[3] = Im(z[1])
 data[4] = Re(z[2])
 data[5] = Im(z[2])
 @end example
+
 @noindent
 The array indices for the data have the same ordering as those
 in the definition of the DFT---i.e. there are no index transformations
@@ -205,6 +210,7 @@ N-3      z(t = N-3)      x(f = -3/(N Delta))
 N-2      z(t = N-2)      x(f = -2/(N Delta))
 N-1      z(t = N-1)      x(f = -1/(N Delta))
 @end example
+
 @noindent
 When @math{N} is even the location @math{N/2} contains the most positive
 and negative frequencies (@math{+1/(2 \Delta)}, @math{-1/(2 \Delta)})
@@ -271,6 +277,7 @@ array.
 @example
 @verbatiminclude examples/fft.c
 @end example
+
 @noindent
 Note that we have assumed that the program is using the default error
 handler (which calls @code{abort} for any errors).  If you are not using
@@ -385,6 +392,7 @@ This function frees the memory associated with the wavetable
 @var{wavetable}.  The wavetable can be freed if no further FFTs of the
 same length will be needed.
 @end deftypefun
+
 @noindent
 These functions operate on a @code{gsl_fft_complex_wavetable} structure
 which contains internal parameters for the FFT.  It is not necessary to
@@ -422,6 +430,7 @@ This is an array of pointers into @code{trig}, giving the twiddle
 factors for each pass.
 @end table
 @end deftp
+
 @noindent
 The mixed radix algorithms require additional working space to hold
 the intermediate steps of the transform.
@@ -491,6 +500,7 @@ algorithm.
 @example
 @verbatiminclude examples/fftmr.c
 @end example
+
 @noindent
 Note that we have assumed that the program is using the default
 @code{gsl} error handler (which calls @code{abort} for any errors).  If
@@ -516,6 +526,7 @@ $$
 @example
 z_k = z_@{N-k@}^*
 @end example
+
 @end ifinfo
 @noindent
 A sequence with this symmetry is called @dfn{conjugate-complex} or
@@ -541,6 +552,7 @@ $$
 @example
 c_k = \sum_@{j=0@}^@{N-1@} x_j \exp(-2 \pi i j k /N)
 @end example
+
 @end ifinfo
 @noindent
 Functions in @code{gsl_fft_halfcomplex} compute inverse or backwards
@@ -558,6 +570,7 @@ $$
 @example
 x_j = @{1 \over N@} \sum_@{k=0@}^@{N-1@} c_k \exp(2 \pi i j k /N)
 @end example
+
 @end ifinfo
 @noindent
 The symmetry of the half-complex sequence implies that only half of the
@@ -691,6 +704,7 @@ complex[3].imag  = -halfcomplex[4]
 complex[4].real  =  halfcomplex[1]
 complex[4].imag  = -halfcomplex[2]
 @end example
+
 @noindent
 The upper elements of the @var{complex} array, @code{complex[3]} and
 @code{complex[4]} are filled in using the symmetry condition.  The
@@ -714,6 +728,7 @@ complex[4].imag  = -halfcomplex[4]
 complex[5].real  =  halfcomplex[1] 
 complex[5].imag  = -halfcomplex[2] 
 @end example
+
 @noindent
 The upper elements of the @var{complex} array, @code{complex[4]} and
 @code{complex[5]} are filled in using the symmetry condition.  Both
@@ -748,6 +763,7 @@ These functions free the memory associated with the wavetable
 @var{wavetable}. The wavetable can be freed if no further FFTs of the
 same length will be needed.
 @end deftypefun
+
 @noindent
 The mixed radix algorithms require additional working space to hold
 the intermediate steps of the transform,
@@ -763,6 +779,7 @@ This function frees the memory associated with the workspace
 @var{workspace}. The workspace can be freed if no further FFTs of the
 same length will be needed.
 @end deftypefun
+
 @noindent
 The following functions compute the transforms of real and half-complex
 data,
@@ -879,6 +896,7 @@ P. Duhamel and M. Vetterli.
 Fast fourier transforms: A tutorial review and a state of the art.
 @cite{Signal Processing}, 19:259--299, 1990.
 @end itemize
+
 @noindent
 To find out about the algorithms used in the GSL routines you may want
 to consult the document @cite{GSL FFT Algorithms} (it is included
@@ -903,6 +921,7 @@ C. S. Burrus and T. W. Parks.
 @cite{DFT/FFT and Convolution Algorithms}.
 Wiley, 1984.
 @end itemize
+
 @noindent
 Both these introductory books cover the radix-2 FFT in some detail.
 The mixed-radix algorithm at the heart of the @sc{fftpack} routines is
@@ -914,6 +933,7 @@ Clive Temperton.
 Self-sorting mixed-radix fast fourier transforms.
 @cite{Journal of Computational Physics}, 52(1):1--23, 1983.
 @end itemize
+
 @noindent
 The derivation of FFTs for real-valued data is explained in the
 following two articles,
@@ -954,6 +974,7 @@ IEEE Press, 1979.
 @comment  @end itemize
 @comment  @noindent
 @comment The notes are available from @url{http://www-dsp.rice.edu/res/fft/fftnote.asc}.
+
 @noindent
 For large-scale FFT work we recommend the use of the dedicated FFTW library
 by Frigo and Johnson.  The FFTW library is self-optimizing---it
@@ -964,6 +985,7 @@ achieve maximum performance.  It is available under the GNU GPL.
 @item
 FFTW Website, @uref{http://www.fftw.org/}
 @end itemize
+
 @noindent
 The source code for @sc{fftpack} is available from Netlib,
 

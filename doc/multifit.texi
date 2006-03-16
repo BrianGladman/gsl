@@ -48,6 +48,7 @@ $$
 \Phi(x) = (1/2) || F(x) ||^2
         = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
 @end example
+
 @end ifinfo
 @noindent
 All algorithms proceed from an initial guess using the linearization,
@@ -63,6 +64,7 @@ $$
 @example
 \psi(p) = || F(x+p) || ~=~ || F(x) + J p ||
 @end example
+
 @end ifinfo
 @noindent
 where @math{x} is the initial point, @math{p} is the proposed step
@@ -89,6 +91,7 @@ $$
 @example
 f_i = (Y(x, t_i) - y_i) / \sigma_i
 @end example
+
 @end ifinfo
 @noindent
 Note that the model parameters are denoted by @math{x} in this chapter
@@ -155,6 +158,7 @@ These functions return a pointer to the name of the solver.  For example,
 printf ("s is a '%s' solver\n", 
         gsl_multifit_fdfsolver_name (s));
 @end example
+
 @noindent
 would print something like @code{s is a 'lmder' solver}.
 @end deftypefun
@@ -295,6 +299,7 @@ A user-specified maximum number of iterations has been reached.
 @item
 An error has occurred.
 @end itemize
+
 @noindent
 The handling of these conditions is under user control.  The functions
 below allow the user to test the current estimate of the best-fit
@@ -318,6 +323,7 @@ $$
 @example
 |dx_i| < epsabs + epsrel |x_i|
 @end example
+
 @end ifinfo
 @noindent
 for each component of @var{x} and returns @code{GSL_CONTINUE} otherwise.
@@ -341,6 +347,7 @@ $$
 @example
 \sum_i |g_i| < epsabs
 @end example
+
 @end ifinfo
 @noindent
 and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
@@ -413,6 +420,7 @@ the change in the position vector falls below machine precision
 the norm of the gradient, relative to the norm of the function, falls
 below machine precision
 @end table
+
 @noindent
 These error codes indicate that further iterations will be unlikely to
 change the solution from its current value.
@@ -456,6 +464,7 @@ $$
 @example
 covar = (J^T J)^@{-1@}
 @end example
+
 @end ifinfo
 @noindent
 and is computed by QR decomposition of J with column-pivoting.  Any
@@ -472,6 +481,7 @@ $$
 @example
 |R_@{kk@}| <= epsrel |R_@{11@}|
 @end example
+
 @end ifinfo
 @noindent
 are considered linearly-dependent and are excluded from the covariance
@@ -520,6 +530,7 @@ $$
 @example
 f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
 @end example
+
 @end ifinfo
 @noindent
 where we have chosen @math{t_i = i}.  The Jacobian matrix @math{J} is
@@ -537,6 +548,7 @@ $$
 @example
 J_@{ij@} = d f_i / d x_j
 @end example
+
 @end ifinfo
 @noindent
 where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
@@ -544,6 +556,7 @@ where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
 @example
 @verbatiminclude examples/expfit.c
 @end example
+
 @noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
 some simulated random data. The data uses the known parameters
@@ -554,6 +567,7 @@ chosen as (0.0, 1.0, 0.0).
 @example
 @verbatiminclude examples/nlfit.c
 @end example
+
 @noindent
 The iteration terminates when the change in x is smaller than 0.0001, as
 both an absolute and relative change.  Here are the results of running
@@ -579,6 +593,7 @@ lambda = 0.10405 +/- 0.00316
 b      = 1.01925 +/- 0.03782
 status = success
 @end smallexample
+
 @noindent
 The approximate values of the parameters are found correctly, and the
 chi-squared value indicates a good fit (the chi-squared per degree of
@@ -610,6 +625,7 @@ The @sc{minpack} algorithm is described in the following article,
 J.J. Mor@'e, @cite{The Levenberg-Marquardt Algorithm: Implementation and
 Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
 @end itemize
+
 @noindent
 The following paper is also relevant to the algorithms described in this
 section,

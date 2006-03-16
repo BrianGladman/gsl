@@ -80,6 +80,7 @@ $$
 @example
 a x^2 + b x + c = 0
 @end example
+
 @end ifinfo
 @noindent
 The number of real roots (either zero, one or two) is returned, and
@@ -116,6 +117,7 @@ $$
 @example
 a z^2 + b z + c = 0
 @end example
+
 @end ifinfo
 @noindent
 The number of complex roots is returned (either one or two) and the
@@ -146,6 +148,7 @@ $$
 @example
 x^3 + a x^2 + b x + c = 0
 @end example
+
 @end ifinfo
 @noindent
 with a leading coefficient of unity.  The number of real roots (either
@@ -173,6 +176,7 @@ $$
 @example
 z^3 + a z^2 + b z + c = 0
 @end example
+
 @end ifinfo
 @noindent
 The number of complex roots is returned (always three) and the locations
@@ -245,6 +249,7 @@ $$
 @example
 1, e^@{2\pi i /5@}, e^@{4\pi i /5@}, e^@{6\pi i /5@}, e^@{8\pi i /5@}
 @end example
+
 @end ifinfo
 @noindent
 The following program will find these roots.
@@ -252,6 +257,7 @@ The following program will find these roots.
 @example
 @verbatiminclude examples/polyroots.c
 @end example
+
 @noindent
 The output of the program is,
 
@@ -259,6 +265,7 @@ The output of the program is,
 $ ./a.out 
 @verbatiminclude examples/polyroots.out
 @end example
+
 @noindent
 which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 
