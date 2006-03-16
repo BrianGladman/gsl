@@ -1,3 +1,7 @@
+2006-03-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): added taus2 test
+
 2006-02-19  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rng.c: added note about why range=max-min not max-min+1

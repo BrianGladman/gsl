@@ -59,6 +59,7 @@ main (void)
   rng_test (gsl_rng_minstd, 1, 10000, 1043618065);
   rng_test (gsl_rng_mrg, 1, 10000, 2064828650);
   rng_test (gsl_rng_taus, 1, 10000, 2733957125UL);
+  rng_test (gsl_rng_taus2, 1, 10000, 2733957125UL);
   rng_test (gsl_rng_taus113, 1, 1000, 1925420673UL);
   rng_test (gsl_rng_transputer, 1, 10000, 1244127297UL);
   rng_test (gsl_rng_vax, 1, 10000, 3051034865UL);
