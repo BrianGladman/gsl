@@ -7,6 +7,7 @@ and present a modern Applications Programming Interface
 high level languages.  The source code is distributed under the GNU
 General Public License.
 
+
 @menu
 * Routines available in GSL::   
 * GSL is Free Software::        
@@ -55,6 +56,10 @@ provides detailed definitions of the functions, followed by example
 programs and references to the articles on which the algorithms are
 based.
 
+Where possible the routines have been based on reliable public-domain
+packages such as FFTPACK and QUADPACK, which the developers of GSL
+have reimplemented in C with modern coding conventions.
+
 @node GSL is Free Software
 @section GSL is Free Software
 @cindex free software, explanation of
@@ -101,8 +106,9 @@ Questions about the GNU GPL},
 @end itemize
 
 @noindent
-The Free Software Foundation also operates a license consulting service
-for commercial users.
+The Free Software Foundation also operates a license consulting
+service for commercial users (contact details available from
+@uref{http://www.fsf.org/}).
 
 @node Obtaining GSL
 @section Obtaining GSL
@@ -124,7 +130,7 @@ code can be found on the GNU website,
 The preferred platform for the library is a GNU system, which allows it
 to take advantage of additional features in the GNU C compiler and GNU C
 library.  However, the library is fully portable and should compile on
-most systems.  Precompiled versions of the library can be purchased from
+most systems with a C compiler.  Precompiled versions of the library can be purchased from
 commercial redistributors listed on the website above.
 
 Announcements of new releases, updates and other relevant events are
@@ -206,6 +212,13 @@ Subject: subscribe
 @noindent
 This mailing list can be used to ask questions not covered by this
 manual, and to contact the developers of the library.
+
+If you would like to refer to the GNU Scientific Library in a journal
+article, the recommended way is to cite this reference manual,
+e.g. @cite{M. Galassi et al, GNU Scientific Library Reference Manual (2nd
+Ed.), ISBN 0954161734}.
+
+If you want to give a url, use ``@uref{http://www.gnu.org/software/gsl/}''.
 
 @node Conventions used in this manual
 @section Conventions used in this manual
