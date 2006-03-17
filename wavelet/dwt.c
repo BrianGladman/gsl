@@ -75,7 +75,7 @@ dwt_step (const gsl_wavelet * w, double *a, size_t stride, size_t n,
   n1 = n - 1;
   nh = n >> 1;
 
-  if (dir == forward)
+  if (dir == gsl_wavelet_forward)
     {
       for (ii = 0, i = 0; i < n; i += 2, ii++)
         {
@@ -132,7 +132,7 @@ gsl_wavelet_transform (const gsl_wavelet * w,
       return GSL_SUCCESS;
     }
 
-  if (dir == forward)
+  if (dir == gsl_wavelet_forward)
     {
       for (i = n; i >= 2; i >>= 1)
         {
@@ -155,7 +155,7 @@ gsl_wavelet_transform_forward (const gsl_wavelet * w,
                                double *data, size_t stride, size_t n,
                                gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet_transform (w, data, stride, n, forward, work);
+  return gsl_wavelet_transform (w, data, stride, n, gsl_wavelet_forward, work);
 }
 
 int
@@ -163,7 +163,7 @@ gsl_wavelet_transform_inverse (const gsl_wavelet * w,
                                double *data, size_t stride, size_t n,
                                gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet_transform (w, data, stride, n, backward, work);
+  return gsl_wavelet_transform (w, data, stride, n, gsl_wavelet_backward, work);
 }
 
 
@@ -205,7 +205,7 @@ gsl_wavelet2d_transform (const gsl_wavelet * w,
       return GSL_SUCCESS;
     }
 
-  if (dir == forward)
+  if (dir == gsl_wavelet_forward)
     {
       for (i = 0; i < size1; i++)       /* for every row j */
         {
@@ -259,7 +259,7 @@ gsl_wavelet2d_nstransform (const gsl_wavelet * w,
       return GSL_SUCCESS;
     }
 
-  if (dir == forward)
+  if (dir == gsl_wavelet_forward)
     {
       for (i = size1; i >= 2; i >>= 1)
         {
@@ -297,7 +297,7 @@ gsl_wavelet2d_transform_forward (const gsl_wavelet * w,
                                  double *data, size_t tda, size_t size1,
                                  size_t size2, gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet2d_transform (w, data, tda, size1, size2, forward, work);
+  return gsl_wavelet2d_transform (w, data, tda, size1, size2, gsl_wavelet_forward, work);
 }
 
 int
@@ -305,7 +305,7 @@ gsl_wavelet2d_transform_inverse (const gsl_wavelet * w,
                                   double *data, size_t tda, size_t size1,
                                   size_t size2, gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet2d_transform (w, data, tda, size1, size2, backward, work);
+  return gsl_wavelet2d_transform (w, data, tda, size1, size2, gsl_wavelet_backward, work);
 }
 
 int
@@ -313,7 +313,7 @@ gsl_wavelet2d_nstransform_forward (const gsl_wavelet * w,
                                  double *data, size_t tda, size_t size1,
                                  size_t size2, gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, forward, work);
+  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, gsl_wavelet_forward, work);
 }
 
 int
@@ -321,7 +321,7 @@ gsl_wavelet2d_nstransform_inverse (const gsl_wavelet * w,
                                   double *data, size_t tda, size_t size1,
                                   size_t size2, gsl_wavelet_workspace * work)
 {
-  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, backward, work);
+  return gsl_wavelet2d_nstransform (w, data, tda, size1, size2, gsl_wavelet_backward, work);
 }
 
 
@@ -343,7 +343,7 @@ gsl_wavelet2d_transform_matrix_forward (const gsl_wavelet * w,
 {
   return gsl_wavelet2d_transform (w, a->data, 
                                   a->tda, a->size1, a->size2, 
-                                  forward, work);
+                                  gsl_wavelet_forward, work);
 }
 
 int
@@ -353,7 +353,7 @@ gsl_wavelet2d_transform_matrix_inverse (const gsl_wavelet * w,
 {
   return gsl_wavelet2d_transform (w, a->data, 
                                   a->tda, a->size1, a->size2, 
-                                  backward, work);
+                                  gsl_wavelet_backward, work);
 }
 
 int
@@ -374,7 +374,7 @@ gsl_wavelet2d_nstransform_matrix_forward (const gsl_wavelet * w,
 {
   return gsl_wavelet2d_nstransform (w, a->data, 
                                     a->tda, a->size1, a->size2, 
-                                    forward, work);
+                                    gsl_wavelet_forward, work);
 }
 
 int
@@ -384,7 +384,7 @@ gsl_wavelet2d_nstransform_matrix_inverse (const gsl_wavelet * w,
 {
   return gsl_wavelet2d_nstransform (w, a->data, 
                                     a->tda, a->size1, a->size2, 
-                                    backward, work);
+                                    gsl_wavelet_backward, work);
 }
 
 
