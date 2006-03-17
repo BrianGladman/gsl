@@ -97,7 +97,7 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
             w_real = 1 ;
             w_imag = 0 ;
           } else {
-            if (sign == forward) {
+            if (sign == gsl_fft_forward) {
               w_real = GSL_REAL(twiddle[idx - 1]) ;
               w_imag = GSL_IMAG(twiddle[idx - 1]) ;
             } else {
@@ -182,7 +182,7 @@ FUNCTION(fft_complex,pass_n) (BASE in[],
               ATOMIC x_imag = IMAG(in, istride,i + e1 * m);
 
               ATOMIC w_real, w_imag ;
-              if (sign == forward) {
+              if (sign == gsl_fft_forward) {
                 w_real = GSL_REAL(twiddle[(e1-1)*q + k-1]) ;
                 w_imag = GSL_IMAG(twiddle[(e1-1)*q + k-1]) ;
               } else {

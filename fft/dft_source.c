@@ -22,7 +22,7 @@ FUNCTION(gsl_dft_complex,forward) (const BASE data[],
                                    const size_t stride, const size_t n,
                                    BASE result[])
 {
-  gsl_fft_direction sign = forward;
+  gsl_fft_direction sign = gsl_fft_forward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
   return status;
 }
@@ -32,7 +32,7 @@ FUNCTION(gsl_dft_complex,backward) (const BASE data[],
                                     const size_t stride, const size_t n,
                                     BASE result[])
 {
-  gsl_fft_direction sign = backward;
+  gsl_fft_direction sign = gsl_fft_backward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
   return status;
 }
@@ -43,7 +43,7 @@ FUNCTION(gsl_dft_complex,inverse) (const BASE data[],
                                    const size_t stride, const size_t n,
                                    BASE result[])
 {
-  gsl_fft_direction sign = backward;
+  gsl_fft_direction sign = gsl_fft_backward;
   int status = FUNCTION(gsl_dft_complex,transform) (data, stride, n, result, sign);
 
   /* normalize inverse fft with 1/n */

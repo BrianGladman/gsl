@@ -47,7 +47,7 @@ FUNCTION(fft_complex,pass_2) (const BASE in[],
         }
       else
         {
-          if (sign == forward)
+          if (sign == gsl_fft_forward)
             {
               /* forward tranform */
               w_real = GSL_REAL(twiddle[k - 1]);

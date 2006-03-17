@@ -1,3 +1,8 @@
+2006-03-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* changed to gsl_fft_forward and gsl_fft_backward enums throughout
+	internally instead of forward and backward.
+
 2005-05-19  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (noinst_HEADERS): removed unused real.c

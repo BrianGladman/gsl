@@ -26,7 +26,7 @@ FUNCTION(gsl_fft_complex,forward) (TYPE(gsl_complex_packed_array) data,
                                    const TYPE(gsl_fft_complex_wavetable) * wavetable,
                                    TYPE(gsl_fft_complex_workspace) * work)
 {
-  gsl_fft_direction sign = forward;
+  gsl_fft_direction sign = gsl_fft_forward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
                                                     wavetable, work, sign);
   return status;
@@ -39,7 +39,7 @@ FUNCTION(gsl_fft_complex,backward) (TYPE(gsl_complex_packed_array) data,
                                     const TYPE(gsl_fft_complex_wavetable) * wavetable,
                                     TYPE(gsl_fft_complex_workspace) * work)
 {
-  gsl_fft_direction sign = backward;
+  gsl_fft_direction sign = gsl_fft_backward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
                                                     wavetable, work, sign);
   return status;
@@ -52,7 +52,7 @@ FUNCTION(gsl_fft_complex,inverse) (TYPE(gsl_complex_packed_array) data,
                                    const TYPE(gsl_fft_complex_wavetable) * wavetable,
                                    TYPE(gsl_fft_complex_workspace) * work)
 {
-  gsl_fft_direction sign = backward;
+  gsl_fft_direction sign = gsl_fft_backward;
   int status = FUNCTION(gsl_fft_complex,transform) (data, stride, n, 
                                                     wavetable, work, sign);
 
