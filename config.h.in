@@ -276,3 +276,6 @@
 #if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
 #define GSL_RANGE_CHECK 0  /* turn off range checking by default internally */
 #endif
+
+/* Disable deprecated functions and enums while building */
+#define GSL_DISABLE_DEPRECATED 1
