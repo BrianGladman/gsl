@@ -1,3 +1,5 @@
+** Added the Debye unit to physical constants.
+
 ** Added cumulative distribution functions for the discrete
 distributions, including binomial, poisson, geometric, negative
 binomial, pascal and hypergeometric.
