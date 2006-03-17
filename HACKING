@@ -131,7 +131,7 @@ compiling it to test all possible conflicts
 
 ----------- Notes on making a release
 
-* Edit the version number in configure.in. 
+* Edit the version number in configure.ac. 
 
 * Update the NEWS file.
 
@@ -141,6 +141,11 @@ configure, make, make check.  Try running make check under ulimit -v
 compilation.
 
 * Test with bounds checking version of GCC and valgrind (belt and braces)
+Note that you can run all the test under valgrind with the TESTS_ENVIRONMENT
+variable
+
+  $ TESTS_ENVIRONMENT="valgrind --tool=memcheck" make check
+
 
 * Make html docs using texi2html in cvs, 
 
