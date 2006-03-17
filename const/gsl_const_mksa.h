@@ -1,6 +1,7 @@
 /* const/gsl_const_mksa.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+ * 2006 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,5 +121,6 @@
 #define GSL_CONST_MKSA_THOMSON_CROSS_SECTION (6.65245853542e-29) /* m^2 */
 #define GSL_CONST_MKSA_VACUUM_PERMITTIVITY (8.854187817e-12) /* A^2 s^4 / kg m^3 */
 #define GSL_CONST_MKSA_VACUUM_PERMEABILITY (1.25663706144e-6) /* kg m / A^2 s^2 */
+#define GSL_CONST_MKSA_DEBYE (3.33564095198e-27) /* A s^2 / m^2 */
 
 #endif /* __GSL_CONST_MKSA__ */

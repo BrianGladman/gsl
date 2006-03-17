@@ -164,6 +164,9 @@ The magnetic moment of the proton, @math{\mu_p}.
 
 @item GSL_CONST_MKSA_THOMSON_CROSS_SECTION
 The Thomson cross section, @math{\sigma_T}.
+
+@item GSL_CONST_MKSA_DEBYE
+The electric dipole moment of 1 Debye, @math{D}.
 @end table
 
 
