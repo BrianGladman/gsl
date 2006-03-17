@@ -28,6 +28,14 @@ described in this section are declared in @file{gsl_randist.h}.  The
 corresponding cumulative distribution functions are declared in
 @file{gsl_cdf.h}.
 
+Note that the discrete random variate functions always
+return a value of type @code{unsigned int}, and on most platforms this
+has a maximum value of @c{$2^{32}-1 \approx 4.29\times10^9$} 
+@math{2^32-1 ~=~ 4.29e9}. They should only be called with
+a safe range of parameters (where there is a negligible probability of
+a variate exceeding this limit) to prevent incorrect results due to
+overflow.
+
 @menu
 * Random Number Distribution Introduction::  
 * The Gaussian Distribution::   
@@ -148,7 +156,7 @@ P(k) = \sum_@{i <= k@} p(i)
 @end ifinfo
 @noindent
 where the sum is over the allowed range of the distribution less than
-or equal to @math{k}.
+or equal to @math{k}.  
 
 The cumulative distribution for the upper tail of a discrete
 distribution @math{Q(k)} is defined as

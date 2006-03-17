@@ -122,9 +122,8 @@
 @include version-ref.texi
 @set GSL @i{GNU Scientific Library}
 
-@iftex
 @copying
-Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 The GSL Team.
+Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006 The GSL Team.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.2 or
@@ -137,19 +136,7 @@ License''.
 
 (a) The Back-Cover Text is: ``You have freedom to copy and modify this
 GNU Manual, like GNU software.''
-
-The Texinfo source for this manual may be obtained from @*
-@code{ftp://ftp.gnu.org/gnu/gsl/}
-
-@ifclear publish
-Printed copies of this manual can be purchased from Network Theory Ltd
-at@* @uref{http://www.network-theory.co.uk/gsl/manual/}.
-
-The money raised from sales of the manual helps support the
-development of GSL.
-@end ifclear
 @end copying
-@end iftex
 
 @titlepage
 @title GNU Scientific Library
@@ -200,6 +187,13 @@ University of Paris-Dauphine
 @page
 @vskip 0pt plus 1filll
 @insertcopying
+@ifclear publish
+Printed copies of this manual can be purchased from Network Theory Ltd
+at @uref{http://www.network-theory.co.uk/gsl/manual/}.
+
+The money raised from sales of the manual helps support the
+development of GSL.
+@end ifclear
 @end titlepage
 
 @ifset frontcontents
@@ -218,15 +212,11 @@ manual to @email{bug-gsl@@gnu.org}.
 More information about GSL can be found at the project homepage,
 @uref{http://www.gnu.org/software/gsl/}.
 
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License.
-
 Printed copies of this manual can be purchased from Network Theory Ltd
-at @uref{http://www.network-theory.co.uk/gsl/manual/}.
+at @uref{http://www.network-theory.co.uk/gsl/manual/}. The money
+raised from sales of the manual helps support the development of GSL.
 
-The money raised from sales of the manual helps support the
-development of GSL.
-
+@insertcopying
 @end ifnottex
 
 @menu
