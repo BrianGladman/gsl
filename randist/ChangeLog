@@ -1,3 +1,8 @@
+2006-03-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* binomial_tpe.c (gsl_ran_binomial): cast return values to
+	unsigned
+
 2006-02-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* beta.c (gsl_ran_beta_pdf): work with logs avoid

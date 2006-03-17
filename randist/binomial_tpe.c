@@ -377,5 +377,5 @@ gsl_ran_binomial (const gsl_rng * rng, double p, unsigned int n)
 
 Finish:
 
-  return (flipped) ? (n - ix) : ix;
+  return (flipped) ? (n - ix) : (unsigned int)ix;
 }
