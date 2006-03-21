@@ -51,6 +51,11 @@ AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, :)
 AC_CHECK_TOOL(AR, ar, :)
 #AC_PROG_RANLIB
+
+dnl Disable unnecessary libtool tests for c++,fortran,java
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
 dnl Check compiler features
