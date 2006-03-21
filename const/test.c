@@ -72,6 +72,25 @@ main (void)
     gsl_test_rel (mega/kilo, 1/(micro*kilo), 1e-10, "kilo (mega/kilo, 1/(micro*kilo))");
   }
 
+  {
+    double d = GSL_CONST_MKSA_DEBYE;
+    double c = GSL_CONST_MKSA_SPEED_OF_LIGHT;
+    double desu = d * c * 1000.0;
+    
+    gsl_test_rel (desu, 1e-18, 1e-10, "debye (esu)");
+  }
+
+  {
+    double k = GSL_CONST_MKSA_BOLTZMANN;
+    double c = GSL_CONST_MKSA_SPEED_OF_LIGHT;
+    double h = GSL_CONST_MKSA_PLANCKS_CONSTANT_H;
+    double s = 2 * pow(M_PI, 5.0) * pow(k, 4.0) / (15 * pow(c, 2.0) * pow(h, 3.0));
+    double sigma = GSL_CONST_MKSA_STEFAN_BOLTZMANN_CONSTANT;
+    
+    gsl_test_rel(s, sigma, 1e-10, "stefan boltzmann constant");
+  }
+
+
   exit (gsl_test_summary ());
 }
 

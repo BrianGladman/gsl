@@ -169,7 +169,7 @@
 (setq gsl-electrical-constants 
       '(("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
         ("mu0"           "VACUUM_PERMEABILITY")
-        ("(1e-18/c) C/m"  "DEBYE")))
+        ("(1e-21/c) C/m"  "DEBYE")))
 
 
 ;;; work around bug in calc 2.02f
