@@ -20,6 +20,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_const.h>
 #include <gsl/gsl_test.h>
 
