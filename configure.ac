@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.7.90])
+AC_INIT([gsl],[1.7.91])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -19,8 +19,9 @@ dnl gsl-1.4    libgsl 5:0:5  libgslcblas 0:0:0
 dnl gsl-1.5    libgsl 6:0:6  libgslcblas 0:0:0
 dnl gsl-1.6    libgsl 7:0:7  libgslcblas 0:0:0
 dnl gsl-1.7    libgsl 8:0:8  libgslcblas 0:0:0
+dnl gsl-1.8    libgsl 9:0:9  libgslcblas 0:0:0
 
-GSL_LT_VERSION="8:0:8"
+GSL_LT_VERSION="9:0:9"
 AC_SUBST(GSL_LT_VERSION)
 GSL_LT_CBLAS_VERSION="0:0:0"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
@@ -48,9 +49,6 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_CHECK_TOOL(RANLIB, ranlib, :)
-AC_CHECK_TOOL(AR, ar, :)
-#AC_PROG_RANLIB
 
 dnl Disable unnecessary libtool tests for c++,fortran,java
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
@@ -290,6 +288,34 @@ AC_SUBST(HAVE_OS2EMX_IEEE_INTERFACE)
 AC_SUBST(HAVE_NETBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_OPENBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_DARWIN_IEEE_INTERFACE)
+
+dnl Check for IEEE control flags
+
+save_cflags="$CFLAGS"
+AC_CACHE_CHECK([for IEEE compiler flags], ac_cv_c_ieee_flags,
+[
+case "$host" in
+    alpha*-*-*)
+        if test X"$GCC" = Xyes ; then
+            ieee_flags='-mieee -mfp-rounding-mode=d'
+        else
+            # This assumes Compaq's C compiler.
+            ieee_flags='-ieee -fprm d'
+        fi
+        ;;
+esac
+if test X"$ieee_flags" != X ; then
+  CFLAGS="$ieee_flags $CFLAGS"
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[int foo;]])],[ac_cv_c_ieee_flags="$ieee_flags"],[ac_cv_c_ieee_flags="none"])
+else
+  ac_cv_c_ieee_flags="none"
+fi])
+
+if test "$ac_cv_c_ieee_flags" != "none" ; then
+   CFLAGS="$ac_cv_c_ieee_flags $save_cflags"
+else
+   CFLAGS="$save_cflags"
+fi
 
 dnl Check IEEE comparisons, whether "x != x" is true for NaNs
 dnl

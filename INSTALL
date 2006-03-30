@@ -147,8 +147,8 @@ as appropriate, e.g.
 
     ./configure CFLAGS="-mieee -mfp-rounding-mode=d -g -O2"
 
-The library should compile successfully with Compaq's C compiler using
-the -std, -ieee and -fprm options.  Use
+The library should compile successfully with Compaq's C compiler on
+Tru64 Unix 'cc' using the -std, -ieee and -fprm options.  Use
 
     ./configure CC=cc 
     make CFLAGS="-std -ieee -fprm d"
