@@ -1,3 +1,7 @@
+** Added an error check to trap multifit calls with fewer observations
+than parameters.  Previously calling the multifit routines with n<p
+would cause invalid memory access.
+
 ** Added the Debye unit to physical constants.
 
 ** Added cumulative distribution functions for the discrete

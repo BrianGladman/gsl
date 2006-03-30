@@ -110,6 +110,8 @@ With the definition above the Jacobian is
 @deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
 This function returns a pointer to a newly allocated instance of a
 solver of type @var{T} for @var{n} observations and @var{p} parameters.
+The number of observations @var{n} must be greater than or equal to
+parameters @var{p}. 
 
 If there is insufficient memory to create the solver then the function
 returns a null pointer and the error handler is invoked with an error
@@ -119,7 +121,7 @@ code of @code{GSL_ENOMEM}.
 @deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
 This function returns a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
-parameters. For example, the following code creates an instance of a
+parameters.  For example, the following code creates an instance of a
 Levenberg-Marquardt solver for 100 data points and 3 parameters,
 
 @example
@@ -128,6 +130,10 @@ const gsl_multifit_fdfsolver_type * T
 gsl_multifit_fdfsolver * s 
     = gsl_multifit_fdfsolver_alloc (T, 100, 3);
 @end example
+
+@noindent
+The number of observations @var{n} must be greater than or equal to
+parameters @var{p}.
 
 If there is insufficient memory to create the solver then the function
 returns a null pointer and the error handler is invoked with an error

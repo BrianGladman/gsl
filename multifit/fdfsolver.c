@@ -31,6 +31,11 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
 
   gsl_multifit_fdfsolver * s;
 
+  if (n < p)
+    {
+      GSL_ERROR_VAL ("insufficient data points, n < p", GSL_EINVAL, 0);
+    }
+
   s = (gsl_multifit_fdfsolver *) malloc (sizeof (gsl_multifit_fdfsolver));
 
   if (s == 0)
