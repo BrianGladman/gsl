@@ -1,3 +1,8 @@
+2006-03-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fermi_dirac.c (fd_neg): initialize s to zero (avoid spurious
+	warning from compiler)
+
 2006-02-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coulomb.c (gsl_sf_coulomb_wave_FG_e): fixed sign of F_lam_min,

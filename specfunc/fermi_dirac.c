@@ -943,7 +943,7 @@ fd_neg(const double j, const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    double s;
+    double s = 0.0;
     double xn = x;
     double ex  = -exp(x);
     double enx = -ex;
