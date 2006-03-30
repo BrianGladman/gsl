@@ -1,3 +1,8 @@
+2006-03-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multinomial.c (gsl_ran_multinomial_lnpdf): use gsl_sf_lnfact
+	instead of gsl_sf_lngamma for an integer argument
+
 2006-03-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* binomial_tpe.c (gsl_ran_binomial): cast return values to
