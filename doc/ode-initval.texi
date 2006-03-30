@@ -471,6 +471,10 @@ their Jacobian,
 @end example
 
 @noindent
+For functions with multiple parameters, the appropriate information
+can be passed in through the @var{params} argument using a pointer to
+a struct.
+
 The main loop of the program evolves the solution from @math{(y, y') =
 (1, 0)} at @math{t=0} to @math{t=100}.  The step-size @math{h} is
 automatically adjusted by the controller to maintain an absolute
