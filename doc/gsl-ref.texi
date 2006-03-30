@@ -217,6 +217,7 @@ at @uref{http://www.network-theory.co.uk/gsl/manual/}. The money
 raised from sales of the manual helps support the development of GSL.
 
 @insertcopying
+@sp 1
 @end ifnottex
 
 @menu
