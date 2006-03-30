@@ -215,7 +215,7 @@ gsl_eigen_invert_jacobi (const gsl_matrix * a,
   {
     const size_t n = a->size2;
     size_t i,j,k;
-    size_t nrot = 0;
+    unsigned int nrot = 0;
     int status;
 
     gsl_vector * eval = gsl_vector_alloc(n);
