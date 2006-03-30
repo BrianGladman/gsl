@@ -340,6 +340,7 @@ number generators can be found at
 * Memory allocation and ownership::  
 * Memory layout::               
 * Linear Algebra Levels::       
+* Error estimates::             
 * Exceptions and Error handling::  
 * Persistence::                 
 * Using Return Values::         
@@ -913,7 +914,7 @@ We use flat blocks of memory to store matrices and vectors, not C-style
 pointer-to-pointer arrays.  The matrices are stored in row-major order
 -- i.e. the column index (second index) moves continuously through memory. 
 
-@node Linear Algebra Levels, Exceptions and Error handling, Memory layout, Design
+@node Linear Algebra Levels, Error estimates, Memory layout, Design
 @section Linear Algebra Levels
 
 Functions using linear algebra are divided into two levels:
@@ -946,7 +947,17 @@ convenience.
 Please use BLAS routines internally within the library whenever possible
 for efficiency.
 
-@node Exceptions and Error handling, Persistence, Linear Algebra Levels, Design
+@node Error estimates, Exceptions and Error handling, Linear Algebra Levels, Design
+@section Error estimates
+
+In the special functions error bounds are given as twice the expected
+``gaussian'' error.  i.e. 2-sigma, so the result is inside the error
+98% of the time.  People expect the true value to be within +/- the
+quoted error (this wouldn't be the case 32% of the time for 1 sigma).
+Obviously the errors are not gaussian but a factor of two works well
+in practice.
+
+@node Exceptions and Error handling, Persistence, Error estimates, Design
 @section Exceptions and Error handling
 
 The basic error handling procedure is the return code (see gsl_errno.h
