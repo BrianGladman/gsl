@@ -1161,12 +1161,12 @@ printed out.
 @end example
 
 @noindent
+@iftex
 The following plot shows the distribution of the simulated events.  Using
 a higher resolution grid we can see the original underlying histogram
 and also the statistical fluctuations caused by the events being
 uniformly distributed over the area of the original bins.
 
-@iftex
 @sp 1
 @center @image{histogram2d,3.4in}
 @end iftex
