@@ -506,6 +506,9 @@ Wrote the routines for wavelet transforms.
 @item Tuomo Keskitalo
 Improved the implementation of the ODE solvers.
 
+@item Lowell Johnson
+Implementation of the Mathieu functions.
+
 @end table
 
 Thanks to Nigel Lowry for help in proofreading the manual.

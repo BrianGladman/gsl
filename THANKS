@@ -376,3 +376,6 @@ power distribution and gsl_multifit_linear_est
 * Yajun Wang <yalding@cs.ust.hk> - bug report for multifit n<p
 
 * Erik Schnetter <schnetter@cct.lsu.edu> - patch for Macos X on Intel
+
+* Lowell Johnson <ldj00@sio.midco.net> - implementation of mathieu functions
+

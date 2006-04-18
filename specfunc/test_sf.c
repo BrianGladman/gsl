@@ -2049,6 +2049,7 @@ int main(int argc, char * argv[])
   gsl_test(test_lambert(),    "Lambert W Functions");
   gsl_test(test_legendre(),   "Legendre Functions");
   gsl_test(test_log(),        "Logarithm");
+  gsl_test(test_mathieu(),    "Mathieu Functions");
   gsl_test(test_pow_int(),    "Integer Powers");
   gsl_test(test_psi(),        "Psi Functions");
   gsl_test(test_synch(),      "Synchrotron Functions");

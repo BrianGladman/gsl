@@ -1,3 +1,5 @@
+** Added Mathieu functions
+
 * What was new in gsl-1.8:
 
 ** Added an error check to trap multifit calls with fewer observations

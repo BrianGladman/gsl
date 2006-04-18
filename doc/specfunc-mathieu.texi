@@ -1,0 +1,191 @@
+@cindex Mathieu functions
+
+The routines described in this section compute the Mathieu functions.
+The Mathieu functions are solutions of the two Mathieu's equations
+@tex
+\beforedisplay
+$$
+\eqalign{
+{{\partial^2 x}\over{\partial \phi^2}} + (a - 2q\cos 2\phi)x & = 0, \cr
+{{\partial^2 x}\over{\partial u^2}} - (a - 2q\cosh 2u)x & = 0.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+d^2x/d\phi^2 + (a - 2q\cos 2\phi)x = 0
+d^2x/du^2 - (a - 2q\cosh 2u)x = 0
+@end example
+
+@end ifinfo
+@noindent
+Solutions to the first equation above are the angular Mathieu
+functions, whereas solutions to the second equation are the radial
+Mathieu functions.
+
+The angular Mathieu functions can be divided into four types as
+@tex
+\beforedisplay
+$$
+\eqalign{
+x & = \sum_{m=0}^\infty A_{2m+p} \cos(2m+p)\phi, \quad p = 0, 1, \cr
+x & = \sum_{m=0}^\infty B_{2m+p} \sin(2m+p)\phi, \quad p = 0, 1.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x = \sum_(m=0)^\infty A_(2m+p) \cos(2m+p)\phi,   p = 0, 1,
+x = \sum_(m=0)^\infty B_(2m+p) \sin(2m+p)\phi,   p = 0, 1.
+@end example
+
+@end ifinfo
+@noindent
+The nomenclature used for the angular Mathieu functions is @math{ce_n}
+for the first solution and @math{se_n} for the second.
+
+Similar solutions exist for the radial Mathieu functions by replacing
+the trigonometric functions with their corresponding hyperbolic
+functions as shown below.
+@tex
+\beforedisplay
+$$
+\eqalign{
+x & = \sum_{m=0}^\infty A_{2m+p} \cosh(2m+p)u, \quad p = 0, 1, \cr
+x & = \sum_{m=0}^\infty B_{2m+p} \sinh(2m+p)u, \quad p = 0, 1.
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x = \sum_(m=0)^\infty A_(2m+p) \cosh(2m+p)u,   p = 0, 1,
+x = \sum_(m=0)^\infty B_(2m+p) \sinh(2m+p)u,   p = 0, 1.
+@end example
+
+@end ifinfo
+@noindent
+The nomenclature used for the radial Mathieu functions is @math{Mc_n}
+for the first solution and @math{Ms_n} for the second.  The hyperbolic
+series do not always converge at an acceptable rate.  Therefore most
+texts on the subject suggest using the following equivalent equations
+that are expanded in series of Bessel and Hankel functions.
+@tex
+\beforedisplay
+$$
+\eqalign{
+Mc_{2n}^{(j)}(x,q) & = \sum_{m=0}^\infty (-1)^{r+k}
+      A_{2m}^{2n}(q)\left[J_m(u_1)Z_m^{(j)}(u_2) +
+                          J_m(u_1)Z_m^{(j)}(u_2)\right]/A_2^{2n} \cr
+Mc_{2n+1}^{(j)}(x,q) & = \sum_{m=0}^\infty (-1)^{r+k}
+      A_{2m+1}^{2n+1}(q)\left[J_m(u_1)Z_{m+1}^{(j)}(u_2) +
+                              J_{m+1}(u_1)Z_m^{(j)}(u_2)\right]/A_1^{2n+1} \cr
+Ms_{2n}^{(j)}(x,q) & = \sum_{m=1}^\infty (-1)^{r+k}
+      B_{2m}^{2n}(q)\left[J_{m-1}(u_1)Z_{m+1}^{(j)}(u_2) +
+                          J_{m+1}(u_1)Z_{m-1}^{(j)}(u_2)\right]/B_2^{2n} \cr
+Ms_{2n+1}^{(j)}(x,q) & = \sum_{m=0}^\infty (-1)^{r+k}
+      B_{2m+1}^{2n+1}(q)\left[J_m(u_1)Z_{m+1}^{(j)}(u_2) +
+                              J_{m+1}(u_1)Z_m^{(j)}(u_2)\right]/B_1^{2n+1}
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+Mc_(2n)^(j)(x,q) = \sum_(m=0)^\infty (-1)^(r+k) A_(2m)^(2n)(q)
+    [J_m(u_1)Z_m^(j)(u_2) + J_m(u_1)Z_m^(j)(u_2)]/A_2^(2n)
+Mc_(2n+1)^(j)(x,q) = \sum_(m=0)^\infty (-1)^(r+k) A_(2m+1)^(2n+1)(q)
+    [J_m(u_1)Z_(m+1)^(j)(u_2) + J_(m+1)(u_1)Z_m^(j)(u_2)]/A_1^(2n+1)
+Ms_(2n)^(j)(x,q) = \sum_(m=1)^\infty (-1)^(r+k) B_(2m)^(2n)(q)
+    [J_(m-1)(u_1)Z_(m+1)^(j)(u_2) + J_(m+1)(u_1)Z_(m-1)^(j)(u_2)]/B_2^(2n)
+Ms_(2n+1)^(j)(x,q) = \sum_(m=0)^\infty (-1)^(r+k) B_(2m+1)^(2n+1)(q)
+    [J_m(u_1)Z_(m+1)^(j)(u_2) + J_(m+1)(u_1)Z_m^(j)(u_2)]/B_1^(2n+1)
+@end example
+
+@end ifinfo
+@noindent
+where @c{$u_1 = \sqrt{q} \exp(-x)$} 
+@math{u_1 = \sqrt@{q@} \exp(-x)} and @c{$u_2 = \sqrt@{q@} \exp(x)$}
+@math{u_2 = \sqrt@{q@} \exp(x)} and
+@tex
+\beforedisplay
+$$
+\eqalign{
+Z_m^{(1)}(u) & = J_m(u) \cr
+Z_m^{(2)}(u) & = Y_m(u) \cr
+Z_m^{(3)}(u) & = H_m^{(1)}(u) \cr
+Z_m^{(4)}(u) & = H_m^{(2)}(u)
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+Z_m^(1)(u) = J_m(u)
+Z_m^(2)(u) = Y_m(u)
+Z_m^(3)(u) = H_m^(1)(u)
+Z_m^(4)(u) = H_m^(2)(u)
+@end example
+
+@end ifinfo
+@noindent
+where @math{J_m(u)}, @math{Y_m(u)}, @math{H_m^{(1)}(u)}, and
+@math{H_m^{(2)}(u)} are the regular and irregular Bessel functions and
+the Hankel functions, respectively.
+
+For more information, see Abromowitz and Stegun, Chapter 20.
+
+The Mathieu functions are defined in the header file @file{gsl_sf_mathieu.h}.
+
+@menu
+* Angular Mathieu Functions::
+* Radial Mathieu Functions::
+* Support Routines::
+@end menu
+
+@node Angular Mathieu Functions
+@subsection Angular Mathieu Functions
+@cindex Angular Mathieu Functions
+
+@deftypefun int gsl_sf_mathieu_c (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result})
+@deftypefunx int gsl_sf_mathieu_s (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
+These routines compute the angular Mathieu functions @math{ce_n(q,x)}
+and @math{se_n(q,x)}, respectively.
+@end deftypefun
+
+@deftypefun double *gsl_sf_mathieu_c_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work});
+@deftypefunx double *gsl_sf_mathieu_s_array (int @var{nmin}, int @var{nmax}, double @var{qq}, double @var{x}, gsl_sf_mathieu_workspace @var{*work});
+These routines compute a series of the angular Mathieu functions from
+@var{nmin} to @var{nmax} inclusive, storing the results in an array
+pointed to by the return pointer.  The calling routine is responsible
+for freeing the associated memory.
+@end deftypefun
+
+@node Radial Mathieu Functions
+@subsection Radial Mathieu Functions
+@cindex Radial Mathieu Functions
+
+@deftypefun int gsl_sf_mathieu_mc_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
+@deftypefunx int gsl_sf_mathieu_ms_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
+These routines compute the radial Mathieu functions @math{Mc_n^{(1)}(q,x)}
+and @math{Ms_n^{(1)}(q,x)}, respectively.
+@end deftypefun
+
+The remaining radial Mathieu functions (types 2, 3, and 4) have not yet
+been implemented.
+
+@node Support Routines
+@subsection Support Routines
+@cindex Mathieu Function Support Routines
+
+@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (const size_t @var{n});
+@deftypefunx void gsl_sf_mathieu_free (gsl_sf_mathieu_workspace @var{*workspace});
+These routines handle memory allocation and freeing for workspace arrays required by the ``_array'' versions of the Mathieu function routines.  The variable @var{n} specifies the maximum order of the functions to be computed, not the number of functions to be computed.
+@end deftypefun

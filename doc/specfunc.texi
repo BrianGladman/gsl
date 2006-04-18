@@ -42,6 +42,7 @@ set of header files can be included using the file @file{gsl_sf.h}.
 * Lambert W Functions::         
 * Legendre Functions and Spherical Harmonics::  
 * Logarithm and Related Functions::  
+* Mathieu Functions::
 * Power Function::              
 * Psi (Digamma) Function::      
 * Synchrotron Functions::       
@@ -240,6 +241,10 @@ accuracy.
 @node Logarithm and Related Functions
 @section Logarithm and Related Functions
 @include specfunc-log.texi
+
+@node Mathieu Functions
+@section Mathieu Functions
+@include specfunc-mathieu.texi
 
 @node Power Function
 @section Power Function
