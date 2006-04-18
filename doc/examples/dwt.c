@@ -11,13 +11,14 @@ main (int argc, char **argv)
   double *abscoeff = malloc (n * sizeof (double));
   size_t *p = malloc (n * sizeof (size_t));
 
+  FILE * f;
   gsl_wavelet *w;
   gsl_wavelet_workspace *work;
 
   w = gsl_wavelet_alloc (gsl_wavelet_daubechies, 4);
   work = gsl_wavelet_workspace_alloc (n);
 
-  FILE *f = fopen (argv[1], "r");
+  f = fopen (argv[1], "r");
   for (i = 0; i < n; i++)
     {
       fscanf (f, "%lg", &data[i]);
