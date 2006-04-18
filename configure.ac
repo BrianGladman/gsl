@@ -239,6 +239,9 @@ AC_CACHE_CHECK([for IEEE arithmetic interface type], ac_cv_c_ieee_interface,
     powerpc-*-*darwin*) 
         ac_cv_c_ieee_interface=darwin
         ;;
+    *86-*-*darwin*) 
+        ac_cv_c_ieee_interface=darwin86
+        ;;
     *-*-*netbsd*) 
         ac_cv_c_ieee_interface=netbsd
         ;;
@@ -288,6 +291,7 @@ AC_SUBST(HAVE_OS2EMX_IEEE_INTERFACE)
 AC_SUBST(HAVE_NETBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_OPENBSD_IEEE_INTERFACE)
 AC_SUBST(HAVE_DARWIN_IEEE_INTERFACE)
+AC_SUBST(HAVE_DARWIN86_IEEE_INTERFACE)
 
 dnl Check for IEEE control flags
 

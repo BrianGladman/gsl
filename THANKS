@@ -374,3 +374,5 @@ power distribution and gsl_multifit_linear_est
 * Torquil Sorenson <torquil@gmail.com> documentation bug fixes for FFTs
 
 * Yajun Wang <yalding@cs.ust.hk> - bug report for multifit n<p
+
+* Erik Schnetter <schnetter@cct.lsu.edu> - patch for Macos X on Intel

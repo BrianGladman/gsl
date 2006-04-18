@@ -32,11 +32,10 @@
 #include "fp-openbsd.c"
 #elif HAVE_DARWIN_IEEE_INTERFACE
 #include "fp-darwin.c"
+#elif HAVE_DARWIN86_IEEE_INTERFACE
+#include "fp-darwin86.c"
 #elif HAVE_DECL_FEENABLEEXCEPT || HAVE_DECL_FESETTRAPENABLE
 #include "fp-gnuc99.c"
 #else
 #include "fp-unknown.c" 
 #endif
-
-
-
