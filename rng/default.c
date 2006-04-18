@@ -67,6 +67,8 @@ gsl_rng_env_setup (void)
                 }
             }
 
+          putchar ('\n');
+
           GSL_ERROR_VAL ("unknown generator", GSL_EINVAL, 0);
         }
 
