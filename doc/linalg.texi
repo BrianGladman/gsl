@@ -4,17 +4,15 @@
 @cindex factorization of matrices
 
 This chapter describes functions for solving linear systems.  The
-library provides simple linear algebra operations which operate directly
-on the @code{gsl_vector} and @code{gsl_matrix} objects.  These are
-intended for use with ``small'' systems where simple algorithms are
-acceptable.
+library provides linear algebra operations which operate directly on
+the @code{gsl_vector} and @code{gsl_matrix} objects.  These routines
+use the standard algorithms from Golub & Van Loan's @cite{Matrix
+Computations}.
 
 @cindex LAPACK, recommended for linear algebra
-Anyone interested in large systems will want to use the sophisticated
-routines found in @sc{lapack}. The Fortran version of @sc{lapack} is
-recommended as the standard package for large-scale linear algebra.  It
-supports blocked algorithms, specialized data representations and other
-optimizations.
+When dealing with very large systems the routines found in @sc{lapack}
+should be considered.  These support specialized data representations
+and other optimizations.
 
 The functions described in this chapter are declared in the header file
 @file{gsl_linalg.h}.
