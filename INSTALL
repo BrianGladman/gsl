@@ -244,6 +244,9 @@ Hints for Microsoft Windows
 
 GSL should compile cleanly with GCC under Cygwin on Microsoft Windows.
 
+With Mingw/MSYS some floating point issues have been reported which
+cause failures in the monte/ test directory.
+
 Hints for OpenBSD
 =================
 
