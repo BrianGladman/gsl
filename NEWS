@@ -1,3 +1,5 @@
+* What was new in gsl-1.8:
+
 ** Added an error check to trap multifit calls with fewer observations
 than parameters.  Previously calling the multifit routines with n<p
 would cause invalid memory access.
