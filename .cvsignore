@@ -43,3 +43,5 @@ depcomp
 ltmain.sh
 stamp-h1
 *.tmp
+*.gz
+doc/manual

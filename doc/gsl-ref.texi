@@ -196,9 +196,11 @@ development of GSL.
 @end ifclear
 @end titlepage
 
+@iftex
 @ifset frontcontents
 @contents
 @end ifset
+@end iftex
 
 @ifnottex
 @node Top, Introduction, (dir), (dir)
