@@ -46,7 +46,7 @@ This routine computes the confluent hypergeometric function
 @end deftypefun
 
 @deftypefun double gsl_sf_hyperg_U (double @var{a}, double @var{b}, double @var{x})
-@deftypefunx int gsl_sf_hyperg_U_e (double @var{a}, double @var{b}, double @var{x})
+@deftypefunx int gsl_sf_hyperg_U_e (double @var{a}, double @var{b}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the confluent hypergeometric function @math{U(a,b,x)}.
 @comment exceptions:
 @end deftypefun

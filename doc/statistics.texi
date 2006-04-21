@@ -355,7 +355,7 @@ covar = (1/(n - 1)) \sum_@{i = 1@}^@{n@} (x_i - \Hat x) (y_i - \Hat y)
 @end ifinfo
 @end deftypefun
 
-@deftypefun double gsl_stats_covariance_m (const double @var{data1}[], const size_t @var{stride1}, const double @var{data2}[], const size_t @var{n}, const double @var{mean1}, const double @var{mean2})
+@deftypefun double gsl_stats_covariance_m (const double @var{data1}[], const size_t @var{stride1}, const double @var{data2}[], const size_t @var{stride2}, const size_t @var{n}, const double @var{mean1}, const double @var{mean2})
 This function computes the covariance of the datasets @var{data1} and
 @var{data2} using the given values of the means, @var{mean1} and
 @var{mean2}.  This is useful if you have already computed the means of

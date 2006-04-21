@@ -411,9 +411,9 @@ is well approximated by a quadratic hypersurface.
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
-@cindex BFGS conjugate gradient algorithm, minimization
-@cindex minimization, BFGS conjugate gradient algorithm
-This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS) conjugate gradient
+@cindex BFGS algorithm, minimization
+@cindex minimization, BFGS algorithm
+This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS)
 algorithm.  It is a quasi-Newton method which builds up an approximation
 to the second derivatives of the function @math{f} using the difference
 between successive gradient vectors.  By combining the first and second

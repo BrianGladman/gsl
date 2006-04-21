@@ -798,7 +798,7 @@ general-n module.  The caller must supply a @var{wavetable} containing
 trigonometric lookup tables and a workspace @var{work}. 
 @end deftypefun
 
-@deftypefun int gsl_fft_real_unpack (const double @var{real_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}[], size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_fft_real_unpack (const double @var{real_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}, size_t @var{stride}, size_t @var{n})
 
 This function converts a single real array, @var{real_coefficient} into
 an equivalent complex array, @var{complex_coefficient}, (with imaginary

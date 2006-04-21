@@ -145,7 +145,7 @@ This function initializes, or reinitializes, an existing solver @var{s}
 to use the function @var{f} and the initial guess @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_function_fdf * @var{fdf}, gsl_vector * @var{x})
+@deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{x})
 This function initializes, or reinitializes, an existing solver @var{s}
 to use the function and derivative @var{fdf} and the initial guess
 @var{x}.
@@ -156,7 +156,7 @@ to use the function and derivative @var{fdf} and the initial guess
 These functions free all the memory associated with the solver @var{s}.
 @end deftypefun
 
-@deftypefun {const char *} gsl_multifit_fsolver_name (const gsl_multifit_fdfsolver * @var{s})
+@deftypefun {const char *} gsl_multifit_fsolver_name (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {const char *} gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * @var{s})
 These functions return a pointer to the name of the solver.  For example,
 

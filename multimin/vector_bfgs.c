@@ -17,8 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* vector_bfgs.c -- Limited memory Broyden-Fletcher-Goldfarb-Shanno
-   conjugate gradient method */
+/* vector_bfgs.c -- Limited memory Broyden-Fletcher-Goldfarb-Shanno method */
 
 /* Modified by Brian Gough to use single iteration structure */
 
@@ -269,7 +268,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   gsl_vector_memcpy (x, x2);
 
-  /* Choose a new conjugate direction for the next step */
+  /* Choose a new direction for the next step */
 
   state->iter = (state->iter + 1) % x->size;
 
@@ -327,7 +326,7 @@ vector_bfgs_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
   state->g0norm = gsl_blas_dnrm2 (g0);
 
 #ifdef DEBUG
-  printf ("updated conjugate directions\n");
+  printf ("updated directions\n");
   printf ("p: ");
   gsl_vector_fprintf (stdout, p, "%g");
   printf ("g: ");

@@ -130,7 +130,7 @@ numerical order.
 @end deftypefun
 
 @cindex indirect sorting, of vector elements
-@deftypefun int gsl_sort_index (size_t * @var{p}, const double * @var{data}, size_t @var{stride}, size_t @var{n})
+@deftypefun void gsl_sort_index (size_t * @var{p}, const double * @var{data}, size_t @var{stride}, size_t @var{n})
 This function indirectly sorts the @var{n} elements of the array
 @var{data} with stride @var{stride} into ascending order, storing the
 resulting permutation in @var{p}.  The array @var{p} must be allocated with
@@ -163,7 +163,7 @@ subset is a significant part of the total dataset it may be faster
 to sort all the elements of the dataset directly with an @math{O(N \log
 N)} algorithm and obtain the smallest or largest values that way.
 
-@deftypefun void gsl_sort_smallest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_sort_smallest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function copies the @var{k} smallest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in ascending
 numerical order into the array @var{dest}.  The size @var{k} of the subset must be
@@ -171,7 +171,7 @@ less than or equal to @var{n}.  The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
-@deftypefun void gsl_sort_largest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_sort_largest (double * @var{dest}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function copies the @var{k} largest elements of the array
 @var{src}, of size @var{n} and stride @var{stride}, in descending
 numerical order into the array @var{dest}. @var{k} must be
@@ -179,8 +179,8 @@ less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
-@deftypefun void gsl_sort_vector_smallest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
-@deftypefunx void gsl_sort_vector_largest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
+@deftypefun int gsl_sort_vector_smallest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
+@deftypefunx int gsl_sort_vector_largest (double * @var{dest}, size_t @var{k}, const gsl_vector * @var{v})
 These functions copy the @var{k} smallest or largest elements of the
 vector @var{v} into the array @var{dest}. @var{k}
 must be less than or equal to the length of the vector @var{v}.
@@ -189,7 +189,7 @@ must be less than or equal to the length of the vector @var{v}.
 The following functions find the indices of the @math{k} smallest or
 largest elements of a dataset,
 
-@deftypefun void gsl_sort_smallest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_sort_smallest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function stores the indices of the @var{k} smallest elements of
 the array @var{src}, of size @var{n} and stride @var{stride}, in the
 array @var{p}.  The indices are chosen so that the corresponding data is
@@ -198,7 +198,7 @@ less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
-@deftypefun void gsl_sort_largest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
+@deftypefun int gsl_sort_largest_index (size_t * @var{p}, size_t @var{k}, const double * @var{src}, size_t @var{stride}, size_t @var{n})
 This function stores the indices of the @var{k} largest elements of
 the array @var{src}, of size @var{n} and stride @var{stride}, in the
 array @var{p}.  The indices are chosen so that the corresponding data is
@@ -207,8 +207,8 @@ less than or equal to @var{n}. The data @var{src} is not modified by
 this operation.
 @end deftypefun
 
-@deftypefun void gsl_sort_vector_smallest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
-@deftypefunx void gsl_sort_vector_largest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
+@deftypefun int gsl_sort_vector_smallest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
+@deftypefunx int gsl_sort_vector_largest_index (size_t * @var{p}, size_t @var{k}, const gsl_vector * @var{v})
 These functions store the indices of the @var{k} smallest or largest
 elements of the vector @var{v} in the array @var{p}. @var{k} must be less than or equal to the length of the vector
 @var{v}.

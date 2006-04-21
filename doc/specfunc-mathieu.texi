@@ -160,12 +160,11 @@ These routines compute the angular Mathieu functions @math{ce_n(q,x)}
 and @math{se_n(q,x)}, respectively.
 @end deftypefun
 
-@deftypefun double *gsl_sf_mathieu_c_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work});
-@deftypefunx double *gsl_sf_mathieu_s_array (int @var{nmin}, int @var{nmax}, double @var{qq}, double @var{x}, gsl_sf_mathieu_workspace @var{*work});
+@deftypefun int gsl_sf_mathieu_c_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[]);
+@deftypefunx int gsl_sf_mathieu_s_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[]);
 These routines compute a series of the angular Mathieu functions from
-@var{nmin} to @var{nmax} inclusive, storing the results in an array
-pointed to by the return pointer.  The calling routine is responsible
-for freeing the associated memory.
+@var{nmin} to @var{nmax} inclusive, storing the results in the array
+@var{result_array}.
 @end deftypefun
 
 @node Radial Mathieu Functions
