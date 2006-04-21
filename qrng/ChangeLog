@@ -1,3 +1,7 @@
+2006-04-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qrng.c gsl_qrng.h: use q instead of r in all prototypes
+
 2004-05-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: added <stdlib.h> for exit()

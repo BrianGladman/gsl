@@ -11,36 +11,36 @@ gsl_qrng *
 gsl_qrng_alloc (const gsl_qrng_type * T, unsigned int dimension)
 {
 
-  gsl_qrng * r = (gsl_qrng *) malloc (sizeof (gsl_qrng));
+  gsl_qrng * q = (gsl_qrng *) malloc (sizeof (gsl_qrng));
 
-  if (r == 0)
+  if (q == 0)
     {
       GSL_ERROR_VAL ("allocation failed for qrng struct",
                         GSL_ENOMEM, 0);
     };
 
-  r->dimension = dimension;
-  r->state_size = T->state_size(dimension);
-  r->state = malloc (r->state_size);
+  q->dimension = dimension;
+  q->state_size = T->state_size(dimension);
+  q->state = malloc (q->state_size);
 
-  if (r->state == 0)
+  if (q->state == 0)
     {
-      free (r);
+      free (q);
       GSL_ERROR_VAL ("allocation failed for qrng state",
                         GSL_ENOMEM, 0);
     };
 
-  r->type = T;
+  q->type = T;
 
-  T->init_state(r->state, r->dimension);
+  T->init_state(q->state, q->dimension);
 
-  return r;
+  return q;
 }
 
 void
-gsl_qrng_init (gsl_qrng * r)
+gsl_qrng_init (gsl_qrng * q)
 {
-  (r->type->init_state) (r->state, r->dimension);
+  (q->type->init_state) (q->state, q->dimension);
 }
 
 int
@@ -90,38 +90,38 @@ gsl_qrng_clone (const gsl_qrng * q)
 
 #ifndef HIDE_INLINE_STATIC
 int
-gsl_qrng_get (const gsl_qrng * r, double x[])
+gsl_qrng_get (const gsl_qrng * q, double x[])
 {
-  return (r->type->get) (r->state, r->dimension, x);
+  return (q->type->get) (q->state, q->dimension, x);
 }
 #endif
 
 const char *
-gsl_qrng_name (const gsl_qrng * r)
+gsl_qrng_name (const gsl_qrng * q)
 {
-  return r->type->name;
+  return q->type->name;
 }
 
 
 size_t
-gsl_qrng_size (const gsl_qrng * r)
+gsl_qrng_size (const gsl_qrng * q)
 {
-  return r->state_size;
+  return q->state_size;
 }
 
 
 void *
-gsl_qrng_state (const gsl_qrng * r)
+gsl_qrng_state (const gsl_qrng * q)
 {
-  return r->state;
+  return q->state;
 }
 
 
 void
-gsl_qrng_free (gsl_qrng * r)
+gsl_qrng_free (gsl_qrng * q)
 {
-  if(r != 0) {
-    if(r->state != 0) free (r->state);
-    free (r);
+  if(q != 0) {
+    if(q->state != 0) free (q->state);
+    free (q);
   }
 }
