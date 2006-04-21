@@ -431,6 +431,61 @@ int main(char** argv, int args) {
  }
  return 1;
 }
+----------------------------------------------------------------------
+BUG#46 - gsl_root_test_delta uninituitive for x1==0
+
+From: Dave Spiegel <dave@astro.columbia.edu>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] addendum to previous email: bug in gsl_root_test_delta()
+Date: Wed, 12 Apr 2006 20:59:13 -0400
+
+Dear bug-gsl,
+
+I think that I have found a bug in the function gsl_root_test_delta.
+
+When x1 and x0 are both 0.0, gsl_root_test_delta returns -2, indicating 
+failure to converge.
+
+For instance, the following line of code:
+
+   printf("Testing gsl_root_test_delta: %d\n", gsl_root_test_delta(0., 
+0., 0., 1e-3));
+
+results in the following output:
+
+   Testing gsl_root_test_delta: -2
+
+
+Best,
+Dave Spiegel
+
+
+I am running GSL version 1.6 on a Macintosh Powerbook G4 (15 inch), 
+running OS 10.3.  I am using gcc version 3.3.
+
+
+Here's a short program that I called test.c that contains the bug:
+
+I compiled it with:
+gcc test.c -lgsl -lgslcblas -lm
+
+***
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#include <gsl/gsl_roots.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+
+int main (int argc, char *argv[])
+{
+   printf("Testing gsl_root_test_delta: %d\n", gsl_root_test_delta(0., 
+0., 0., 1e-3));
+}
+
+***
 
 ---------------------------------------------------------------------
-Last assigned bug number = 45
+Last assigned bug number = 46

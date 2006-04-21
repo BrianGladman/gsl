@@ -173,7 +173,7 @@ than 1 can be used to take an in-place FFT of the column of a matrix. A
 stride of 1 accesses the array without any additional spacing between
 elements.  
 
-To perform an FFT on a vector argument, such as @code{gsl_complex_vector
+To perform an FFT on a vector argument, such as @code{gsl_vector_complex
 * v}, use the following definitions (or their equivalents) when calling
 the functions described in this chapter:
 
