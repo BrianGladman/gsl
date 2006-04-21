@@ -96,7 +96,7 @@ minimize (gsl_multimin_function_fdf * fdf,
 
   double stepm, fm, pg, gnorm1;
 
-  double iter = 0;
+  int iter = 0;
 
   gsl_vector_memcpy (x2, x1);
   gsl_vector_memcpy (dx2, dx1);
@@ -127,11 +127,11 @@ mid_trial:
         du = e1 / e2;
       }
 
-    if (du > 0 && du < (stepc - stepb) && fabs(du) < 0.5 * old2)
+    if (du > 0.0 && du < (stepc - stepb) && fabs(du) < 0.5 * old2)
       {
         stepm = u + du;
       }
-    else if (du < 0 && du > (stepa - stepb) && fabs(du) < 0.5 * old2)
+    else if (du < 0.0 && du > (stepa - stepb) && fabs(du) < 0.5 * old2)
       {
         stepm = u + du;
       }
