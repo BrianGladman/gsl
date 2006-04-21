@@ -152,7 +152,7 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
 }
 
 double
-gsl_cdf_beta_Qinv (double Q, double a, double b)
+gsl_cdf_beta_Qinv (const double Q, const double a, const double b)
 {
 
   if (Q < 0.0 || Q > 1.0)

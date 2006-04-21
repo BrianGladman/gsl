@@ -164,7 +164,7 @@ static const double wtab[128] = {
 
 
 double
-gsl_ran_gaussian_ziggurat (const gsl_rng * r, double sigma)
+gsl_ran_gaussian_ziggurat (const gsl_rng * r, const double sigma)
 {
   unsigned long int i, j;
   int sign;

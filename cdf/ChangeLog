@@ -1,3 +1,7 @@
+2006-04-18  Brian Gough  <bjg@network-theory.co.uk>
+
+	* betainv.c (gsl_cdf_beta_Qinv): fix prototype const
+
 2006-03-07  Brian Gough  <bjg@network-theory.co.uk>
 
 	* poisson.c: added poisson cdf
