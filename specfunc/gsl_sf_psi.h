@@ -69,6 +69,18 @@ int     gsl_sf_psi_1piy_e(const double y, gsl_sf_result * result);
 double  gsl_sf_psi_1piy(const double y);
 
 
+/* Di-Gamma Function psi(z) for general complex argument z = x + iy
+ *
+ * exceptions: GSL_EDOM
+ */
+int gsl_sf_psi_complex_e(
+  const double x,
+  const double y,
+  gsl_sf_result * result_re,
+  gsl_sf_result * result_im
+  );
+
+
 /* Tri-Gamma Function psi^(1)(n)
  *
  * n > 0

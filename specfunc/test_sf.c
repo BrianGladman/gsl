@@ -1654,6 +1654,23 @@ int test_psi(void)
 }
 
 
+int test_psi_complex(void)
+{
+  gsl_sf_result r1;
+  gsl_sf_result r2;
+  int s = 0;
+
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (1.0, 5.0, &r1, &r2),
+            1.6127848446, TEST_TOL0,
+            1.47080, TEST_TOL0,
+            GSL_SUCCESS);
+
+  return s;
+}
+
+
+
+
 int test_synch(void)
 {
   gsl_sf_result r;
@@ -2052,12 +2069,13 @@ int main(int argc, char * argv[])
   gsl_test(test_mathieu(),    "Mathieu Functions");
   gsl_test(test_pow_int(),    "Integer Powers");
   gsl_test(test_psi(),        "Psi Functions");
+/*  gsl_test(test_psi_complex(), "Psi Function for complex argument"); */
   gsl_test(test_synch(),      "Synchrotron Functions");
   gsl_test(test_transport(),  "Transport Functions");
   gsl_test(test_trig(),       "Trigonometric and Related Functions");
   gsl_test(test_zeta(),       "Zeta Functions");
 
-  gsl_test(test_results(),    "Result Methods");
+  gsl_test(test_results(),     "Result Methods");
 
   exit (gsl_test_summary());
 }

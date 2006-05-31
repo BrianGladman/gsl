@@ -1,6 +1,6 @@
 /* specfunc/psi.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004, 2005, 2006 Gerard Jungman
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_zeta.h>
 #include <gsl/gsl_sf_psi.h>
+#include <gsl/gsl_complex_math.h>
 
 #include "error.h"
 
@@ -451,6 +452,95 @@ psi_x(const double x, gsl_sf_result * result)
 }
 
 
+/* psi(z) for large |z| in the right half-plane; [Abramowitz + Stegun, 6.3.18] */
+static
+gsl_complex
+psi_complex_asymp(gsl_complex z)
+{
+  /* coefficients in the asymptotic expansion for large z;
+   * let w = z^(-2) and write the expression in the form
+   *
+   *   ln(z) - 1/(2z) - 1/12 w (1 + c1 w + c2 w + c3 w + ... )
+   */
+  static const double c1 = -0.1;
+  static const double c2 =  1.0/21.0;
+  static const double c3 = -0.05;
+
+  gsl_complex zi = gsl_complex_inverse(z);
+  gsl_complex w  = gsl_complex_mul(zi, zi);
+  gsl_complex cs;
+
+  /* Horner method evaluation of term in parentheses */
+  gsl_complex sum;
+  sum = gsl_complex_mul_real(w, c3/c2);
+  sum = gsl_complex_add_real(sum, 1.0);
+  sum = gsl_complex_mul_real(sum, c2/c1);
+  sum = gsl_complex_mul(sum, w);
+  sum = gsl_complex_add_real(sum, 1.0);
+  sum = gsl_complex_mul_real(sum, c1);
+  sum = gsl_complex_mul(sum, w);
+  sum = gsl_complex_add_real(sum, 1.0);
+
+  /* correction added to log(z) */
+  cs = gsl_complex_mul(sum, w);
+  cs = gsl_complex_mul_real(cs, -1.0/12.0);
+  cs = gsl_complex_add(cs, gsl_complex_mul_real(zi, -0.5));
+
+  return gsl_complex_add(gsl_complex_log(z), cs);
+}
+
+
+
+/* psi(z) for complex z in the right half-plane */
+static int
+psi_complex_rhp(
+  gsl_complex z,
+  gsl_sf_result * result_re,
+  gsl_sf_result * result_im
+  )
+{
+  int n_recurse = 0;
+  int i;
+  gsl_complex a;
+
+  if(GSL_REAL(z) == 0.0 && GSL_IMAG(z) == 0.0)
+  {
+    result_re->val = 0.0;
+    result_im->val = 0.0;
+    result_re->err = 0.0;
+    result_im->err = 0.0;
+    return GSL_EDOM;
+  }
+
+  /* compute the number of recurrences to apply */
+  if(GSL_REAL(z) < 20.0 && fabs(GSL_IMAG(z)) < 20.0)
+  {
+    const double sp = sqrt(20.0 + GSL_IMAG(z));
+    const double sn = sqrt(20.0 - GSL_IMAG(z));
+    const double rhs = sp*sn - GSL_REAL(z);
+    if(rhs > 0.0) n_recurse = ceil(rhs);
+  }
+
+  /* compute asymptotic at the large value z + n_recurse */
+  a = psi_complex_asymp(gsl_complex_add_real(z, n_recurse));
+
+  /* descend recursively, if necessary */
+  for(i = n_recurse; i >= 1; --i)
+  {
+    gsl_complex zn = gsl_complex_add_real(z, i - 1.0);
+    gsl_complex zn_inverse = gsl_complex_inverse(z);
+    a = gsl_complex_sub(a, zn_inverse);
+  }
+
+  result_re->val = GSL_REAL(a);
+  result_im->val = GSL_IMAG(a);
+  result_re->err = 2.0 * (1.0 + n_recurse) * GSL_DBL_EPSILON * fabs(result_re->val);
+  result_im->err = 2.0 * (1.0 + n_recurse) * GSL_DBL_EPSILON * fabs(result_im->val);
+
+  return GSL_SUCCESS;
+}
+
+
 
 /* generic polygamma; assumes n >= 0 and x > 0
  */
@@ -691,6 +781,41 @@ int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
     return GSL_ERROR_SELECT_3(stat_e, stat_nf, stat_hz);
   }
 }
+
+
+int
+gsl_sf_psi_complex_e(
+  double x,
+  double y,
+  gsl_sf_result * result_re,
+  gsl_sf_result * result_im
+  )
+{
+  if(x >= 0.0)
+  {
+    gsl_complex z = gsl_complex_rect(x, y);
+    return psi_complex_rhp(z, result_re, result_im);
+  }
+  else
+  {
+    gsl_complex z = gsl_complex_rect(1.0 - x, -y);
+    gsl_complex zpi = gsl_complex_mul_real(z, M_PI);
+    gsl_complex cotzpi = gsl_complex_cot(zpi);
+    int ret_val = psi_complex_rhp(z, result_re, result_im);
+
+    if(GSL_IS_REAL(GSL_REAL(cotzpi)) && GSL_IS_REAL(GSL_IMAG(cotzpi)))
+    {
+      result_re->val -= M_PI * GSL_REAL(cotzpi);
+      result_im->val -= M_PI * GSL_IMAG(cotzpi);
+      return ret_val;
+    }
+    else
+    {
+      GSL_ERROR("singularity", GSL_EDOM);
+    }
+  }
+}
+
 
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
