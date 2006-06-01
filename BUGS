@@ -486,6 +486,60 @@ int main (int argc, char *argv[])
 }
 
 ***
+----------------------------------------------------------------------
+BUG#47 - problems compiling gsl_sf_exp.h on MacOS X
+
+[Suggest removing the inline definitions of gsl_sf_log and gsl_sf_exp to
+avoid this]
+
+Kremkow reported a 
+
+/sw/include/gsl/gsl_sf_exp.h:143: error: floating constant exceeds range of 
+'float'
+
+error when compiling a C++ program using GSL.  
+
+I have tracked this problem to an architecture-specific math.h file which 
+defines HUGE_VAL* and INFINITY in a way that conflicts with the C++ standard 
+and is at least odd for C, too.  Under Mac OSX 10.4 with gcc 4.0.1, one finds 
+in
+
+/usr/include/architecture/{ppc,i386}/math.h
+
+the following definitions:
+
+#define HUGE_VAL        1e500
+#define HUGE_VALF       1e50f
+#define HUGE_VALL       1e5000L
+#define INFINITY        HUGE_VALF
+
+All these constants are ill-formed according to ISO C++-Standard, 2.13.3-1, 
+final sentence, since the values of the constants exceed the range of values 
+for the given types.  Whether they are legal in C, I do not know (I have no 
+access to the C standard).
+
+Since gsl_nan.h defines GSL_POSINF in terms of INFINITY or HUGE_VAL, if 
+available, and since gsl_sf_exp.h uses GSL_POSINF, these constants get used. 
+Actually, in practice INFINITY gets used, i.e. 1e50f---a value that certainly 
+is not infinity for doubles.
+
+gcc and g++ accept these values without complaint; if one compiles with 
+-pedantic, gcc will issue a warning, while g++ will stop with an error.
+
+A work around is to include gsl_nan.h before including math.h/cmath in any 
+compilation unit. That way, INFINITY and HUGE_VAL are unknown then GSL_POSINF 
+is defined, and gsl_posinf(), i.e., 1.0/0.0 is used instead.
+
+A fix for gsl_nan.h would be to detect whether one is compiling on OSX and 
+avoid use of INFINITY and HUGE_VAL* in this case.
+
+The proper fix obviously would be for Apple to fix their 
+architecture-dependent math.h; the values used there, though, are actually a 
+documented feature, see Apple's "PowerPC Numerics" book, p. 6-5, 
+http://developer.apple.com/documentation/Performance/Conceptual/Mac_OSX_Numerics/Mac_OSX_Numerics.pdf 
+
+Best regards,
+Hans E. Plesser
 
 ---------------------------------------------------------------------
-Last assigned bug number = 46
+Last assigned bug number = 47
