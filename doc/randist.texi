@@ -1790,8 +1790,9 @@ distribution with parameters @var{p} and @var{n}.
 @deftypefun void gsl_ran_multinomial (const gsl_rng * @var{r}, size_t @var{K}, unsigned int @var{N}, const double @var{p}[], unsigned int @var{n}[])
 @cindex Multinomial distribution 
 
-This function returns an array of @var{K} random variates from a 
-multinomial distribution. The distribution function is,
+This function computes a random sample @var{n}[] from the multinomial
+distribution formed by @var{N} trials from an underlying distribution
+@var{p}[@var{K}]. The distribution function for @var{n}[] is,
 @tex
 \beforedisplay
 $$
@@ -1819,7 +1820,8 @@ and
 @math{(p_1, p_2, ..., p_K)}
 is a probability distribution with @math{\sum p_i = 1}.  
 If the array @var{p}[@var{K}] is not normalized then its entries will be
-treated as weights and normalized appropriately.
+treated as weights and normalized appropriately.  The arrays @var{n}[]
+and @var{p}[] must both be of length @var{K}.
 
 Random variates are generated using the conditional binomial method (see
 C.S. David, @cite{The computer generation of multinomial random
@@ -1839,7 +1841,6 @@ This function returns the logarithm of the probability for the
 multinomial distribution @c{$P(n_1, n_2, \ldots, n_K)$}
 @math{P(n_1, n_2, ..., n_K)} with parameters @var{p}[@var{K}].
 @end deftypefun
-
 
 @page
 @node The Negative Binomial Distribution
