@@ -1,3 +1,8 @@
+2006-04-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svdstep.c apply_givens.c householder.c: perform linear
+	operations with level-1 blas when compiled with USE_BLAS.
+	
 2006-02-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cholesky.c (quiet_sqrt): added a quiet_sqrt to allow checking

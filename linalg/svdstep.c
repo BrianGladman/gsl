@@ -211,11 +211,13 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 static void
 chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, size_t k0)
 {
+#if !USE_BLAS
   const size_t M = U->size1;
+#endif
   const size_t n = d->size;
   double c, s;
   double x, y;
-  size_t i, k;
+  size_t k;
 
   x = gsl_vector_get (f, k0);
   y = gsl_vector_get (d, k0+1);
@@ -225,14 +227,26 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
       create_givens (y, -x, &c, &s);
       
       /* Compute U <= U G */
-      
-      for (i = 0; i < M; i++)
-        {
-          double Uip = gsl_matrix_get (U, i, k0);
-          double Uiq = gsl_matrix_get (U, i, k + 1);
-          gsl_matrix_set (U, i, k0, c * Uip - s * Uiq);
-          gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
-        }
+
+#ifdef USE_BLAS
+      {
+        gsl_vector_view Uk0 = gsl_matrix_column(U,k0);
+        gsl_vector_view Ukp1 = gsl_matrix_column(U,k+1);
+        gsl_blas_drot(&Uk0.vector, &Ukp1.vector, c, -s);
+      }
+#else
+      {
+        size_t i;
+
+        for (i = 0; i < M; i++)
+          {
+            double Uip = gsl_matrix_get (U, i, k0);
+            double Uiq = gsl_matrix_get (U, i, k + 1);
+            gsl_matrix_set (U, i, k0, c * Uip - s * Uiq);
+            gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
+          }
+      }
+#endif
       
       /* compute B <= G^T B */
       
@@ -255,11 +269,13 @@ chase_out_intermediate_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * U, siz
 static void
 chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
 {
+#if !USE_BLAS
   const size_t N = V->size1;
+#endif
   const size_t n = d->size;
   double c, s;
   double x, y;
-  size_t i, k;
+  size_t k;
 
   x = gsl_vector_get (d, n - 2);
   y = gsl_vector_get (f, n - 2);
@@ -269,14 +285,26 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
       create_givens (x, y, &c, &s);
 
       /* Compute V <= V G where G = [c, s ; -s, c] */
-      
-      for (i = 0; i < N; i++)
-        {
-          double Vip = gsl_matrix_get (V, i, k);
-          double Viq = gsl_matrix_get (V, i, n - 1);
-          gsl_matrix_set (V, i, k, c * Vip - s * Viq);
-          gsl_matrix_set (V, i, n - 1, s * Vip + c * Viq);
-        }
+
+#ifdef USE_BLAS
+      {
+        gsl_vector_view Vp = gsl_matrix_column(V,k);
+        gsl_vector_view Vq = gsl_matrix_column(V,n-1);
+        gsl_blas_drot(&Vp.vector, &Vq.vector, c, -s);
+      }
+#else
+      {
+        size_t i;
+   
+        for (i = 0; i < N; i++)
+          {
+            double Vip = gsl_matrix_get (V, i, k);
+            double Viq = gsl_matrix_get (V, i, n - 1);
+            gsl_matrix_set (V, i, k, c * Vip - s * Viq);
+            gsl_matrix_set (V, i, n - 1, s * Vip + c * Viq);
+          }
+      }
+#endif
 
       /* compute B <= B G */
       
@@ -299,8 +327,10 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
 static void
 qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 {
+#if !USE_BLAS
   const size_t M = U->size1;
   const size_t N = V->size1;
+#endif
   const size_t n = d->size;
   double y, z;
   double ak, bk, zk, ap, bp, aq, bq;
@@ -378,6 +408,13 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 
       /* Compute V <= V G */
 
+#ifdef USE_BLAS
+      {
+        gsl_vector_view Vk = gsl_matrix_column(V,k);
+        gsl_vector_view Vkp1 = gsl_matrix_column(V,k+1);
+        gsl_blas_drot(&Vk.vector, &Vkp1.vector, c, -s);
+      }
+#else
       for (i = 0; i < N; i++)
         {
           double Vip = gsl_matrix_get (V, i, k);
@@ -385,6 +422,7 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
           gsl_matrix_set (V, i, k, c * Vip - s * Viq);
           gsl_matrix_set (V, i, k + 1, s * Vip + c * Viq);
         }
+#endif
 
       /* compute B <= B G */
 
@@ -425,6 +463,13 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
 
       /* Compute U <= U G */
 
+#ifdef USE_BLAS
+      {
+        gsl_vector_view Uk = gsl_matrix_column(U,k);
+        gsl_vector_view Ukp1 = gsl_matrix_column(U,k+1);
+        gsl_blas_drot(&Uk.vector, &Ukp1.vector, c, -s);
+      }
+#else
       for (i = 0; i < M; i++)
         {
           double Uip = gsl_matrix_get (U, i, k);
@@ -432,6 +477,7 @@ qrstep (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
           gsl_matrix_set (U, i, k, c * Uip - s * Uiq);
           gsl_matrix_set (U, i, k + 1, s * Uip + c * Uiq);
         }
+#endif
 
       /* compute B <= G^T B */
 

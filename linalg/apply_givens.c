@@ -26,6 +26,14 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
 
   /* Apply rotation to matrix Q,  Q' = Q G */
 
+#if USE_BLAS
+  {
+    gsl_matrix_view Q0M = gsl_matrix_submatrix(Q,0,0,M,j+1);
+    gsl_vector_view Qi = gsl_matrix_column(&Q0M.matrix,i);
+    gsl_vector_view Qj = gsl_matrix_column(&Q0M.matrix,j);
+    gsl_blas_drot(&Qi.vector, &Qj.vector, c, -s);
+  }
+#else
   for (k = 0; k < M; k++)
     {
       double qki = gsl_matrix_get (Q, k, i);
@@ -33,10 +41,20 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
       gsl_matrix_set (Q, k, i, qki * c - qkj * s);
       gsl_matrix_set (Q, k, j, qki * s + qkj * c);
     }
+#endif
 
   /* Apply rotation to matrix R, R' = G^T R (note: upper triangular so
      zero for column < row) */
 
+#if USE_BLAS
+  {
+    k = GSL_MIN(i,j);
+    gsl_matrix_view R0 = gsl_matrix_submatrix(R, 0, k, j+1, N-k);
+    gsl_vector_view Ri = gsl_matrix_row(&R0.matrix,i);
+    gsl_vector_view Rj = gsl_matrix_row(&R0.matrix,j);
+    gsl_blas_drot(&Ri.vector, &Rj.vector, c, -s);
+  }
+#else
   for (k = GSL_MIN (i, j); k < N; k++)
     {
       double rik = gsl_matrix_get (R, i, k);
@@ -44,6 +62,7 @@ apply_givens_qr (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * R,
       gsl_matrix_set (R, i, k, c * rik - s * rjk);
       gsl_matrix_set (R, j, k, s * rik + c * rjk);
     }
+#endif
 }
 
 inline static void
@@ -54,6 +73,14 @@ apply_givens_lq (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * L,
 
   /* Apply rotation to matrix Q,  Q' = G Q */
 
+#if USE_BLAS
+  {
+    gsl_matrix_view Q0M = gsl_matrix_submatrix(Q,0,0,j+1,M);
+    gsl_vector_view Qi = gsl_matrix_row(&Q0M.matrix,i);
+    gsl_vector_view Qj = gsl_matrix_row(&Q0M.matrix,j);
+    gsl_blas_drot(&Qi.vector, &Qj.vector, c, -s);
+  }
+#else
   for (k = 0; k < M; k++)
     {
       double qik = gsl_matrix_get (Q, i, k);
@@ -61,10 +88,20 @@ apply_givens_lq (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * L,
       gsl_matrix_set (Q, i, k, qik * c - qjk * s);
       gsl_matrix_set (Q, j, k, qik * s + qjk * c);
     }
+#endif
 
   /* Apply rotation to matrix L, L' = L G^T (note: lower triangular so
      zero for column > row) */
 
+#if USE_BLAS
+  {
+    k = GSL_MIN(i,j);
+    gsl_matrix_view L0 = gsl_matrix_submatrix(L, k, 0, N-k, j+1);
+    gsl_vector_view Li = gsl_matrix_column(&L0.matrix,i);
+    gsl_vector_view Lj = gsl_matrix_column(&L0.matrix,j);
+    gsl_blas_drot(&Li.vector, &Lj.vector, c, -s);
+  }
+#else
   for (k = GSL_MIN (i, j); k < N; k++)
     {
       double lki = gsl_matrix_get (L, k, i);
@@ -72,6 +109,7 @@ apply_givens_lq (size_t M, size_t N, gsl_matrix * Q, gsl_matrix * L,
       gsl_matrix_set (L, k, i, c * lki - s * lkj);
       gsl_matrix_set (L, k, j, s * lki + c * lkj);
     }
+#endif
 }
 
 inline static void
