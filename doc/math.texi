@@ -328,7 +328,7 @@ equal to a relative accuracy @var{epsilon}.
 The relative accuracy is measured using an interval of size @math{2
 \delta}, where @math{\delta = 2^k \epsilon} and @math{k} is the
 maximum base-2 exponent of @math{x} and @math{y} as computed by the
-function @code{frexp()}.  
+function @code{frexp}.  
 
 If @math{x} and @math{y} lie within this interval, they are considered
 approximately equal and the function returns 0. Otherwise if @math{x <

@@ -189,7 +189,7 @@ unsigned integer values @c{$[0,2^{32}-1]$}
 choose a generator with the maximal integer range and zero mimimum
 value, such as @code{gsl_rng_ranlxd1}, @code{gsl_rng_mt19937} or
 @code{gsl_rng_taus}, and sample it directly using
-@code{gsl_rng_get()}.  The range of each generator can be found using
+@code{gsl_rng_get}.  The range of each generator can be found using
 the auxiliary functions described in the next section.
 @end deftypefun
 
@@ -744,7 +744,7 @@ your program then these generators are quite acceptable.
 
 @deffn {Generator} gsl_rng_rand
 @cindex BSD random number generator
-This is the BSD @code{rand()} generator.  Its sequence is
+This is the BSD @code{rand} generator.  Its sequence is
 @tex
 \beforedisplay
 $$
@@ -776,16 +776,16 @@ generator.
 @deffn {Generator} gsl_rng_random_bsd
 @deffnx {Generator} gsl_rng_random_libc5
 @deffnx {Generator} gsl_rng_random_glibc2
-These generators implement the @code{random()} family of functions, a
+These generators implement the @code{random} family of functions, a
 set of linear feedback shift register generators originally used in BSD
-Unix.  There are several versions of @code{random()} in use today: the
+Unix.  There are several versions of @code{random} in use today: the
 original BSD version (e.g. on SunOS4), a libc5 version (found on
 older GNU/Linux systems) and a glibc2 version.  Each version uses a
 different seeding procedure, and thus produces different sequences.
 
 The original BSD routines accepted a variable length buffer for the
 generator state, with longer buffers providing higher-quality
-randomness.  The @code{random()} function implemented algorithms for
+randomness.  The @code{random} function implemented algorithms for
 buffer lengths of 8, 32, 64, 128 and 256 bytes, and the algorithm with
 the largest length that would fit into the user-supplied buffer was
 used.  To support these algorithms additional generators are available

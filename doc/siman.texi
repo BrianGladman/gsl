@@ -268,7 +268,7 @@ since I am using the great-circle distance between cities, rather than
 the driving distance.  Also: I assume the earth is a sphere, so I don't
 use geoid distances.
 
-The @code{gsl_siman_solve()} routine finds a route which is 3490.62
+The @code{gsl_siman_solve} routine finds a route which is 3490.62
 Kilometers long; this is confirmed by an exhaustive search of all
 possible routes with the same initial city.
 

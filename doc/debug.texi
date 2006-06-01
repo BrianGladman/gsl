@@ -183,7 +183,7 @@ SIGFPE  Yes   Yes    No              Arithmetic exception
 Depending on the platform it may be necessary to instruct the kernel to
 generate signals for floating point exceptions.  For programs using GSL
 this can be achieved using the @code{GSL_IEEE_MODE} environment variable
-in conjunction with the function @code{gsl_ieee_env_setup()} as described
+in conjunction with the function @code{gsl_ieee_env_setup} as described
 in @pxref{IEEE floating-point arithmetic}.
 
 @example
