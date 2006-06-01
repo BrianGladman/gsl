@@ -12,7 +12,7 @@ main (void)
       gsl_vector_set (v, i, 1.23 + i);
     }
   
-  for (i = 0; i < 100; i++)
+  for (i = 0; i < 100; i++) /* demonstrate out of range error */
     {
       printf ("v_%d = %g\n", i, gsl_vector_get (v, i));
     }
