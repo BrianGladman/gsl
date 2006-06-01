@@ -34,7 +34,7 @@ int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
                         gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
+  double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
   double coeff[NUM_MATHIEU_COEFF], aa, fc, fj, fjp;
   double j1c, j2c, j1pc, j2pc;
   double u1, u2;
@@ -141,7 +141,10 @@ int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
   }
 
   result->val = fn;
-  result->err = GSL_DBL_EPSILON*fabs(fn);
+  result->err = 2.0*GSL_DBL_EPSILON;
+  factor = fabs(fn);
+  if (factor > 1.0)
+      result->err *= factor;
   
   return GSL_SUCCESS;
 }
@@ -151,7 +154,7 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
                         gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
+  double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
   double coeff[NUM_MATHIEU_COEFF], aa, fc, fj, fjp, fjm;
   double j1c, j2c, j1mc, j2mc, j1pc, j2pc;
   double u1, u2;
@@ -268,7 +271,10 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
   }
 
   result->val = fn;
-  result->err = GSL_DBL_EPSILON*fabs(fn);
+  result->err = 2.0*GSL_DBL_EPSILON;
+  factor = fabs(fn);
+  if (factor > 1.0)
+      result->err *= factor;
   
   return GSL_SUCCESS;
 }

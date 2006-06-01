@@ -31,7 +31,7 @@
 int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn;
+  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn, factor;
 
 
   norm = 0.0;
@@ -54,7 +54,10 @@ int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
       fn = cos(order*zz)/norm;
       
       result->val = fn;
-      result->err = GSL_DBL_EPSILON*fabs(fn);
+      result->err = 2.0*GSL_DBL_EPSILON;
+      factor = fabs(fn);
+      if (factor > 1.0)
+          result->err *= factor;
       
       return GSL_SUCCESS;
   }
@@ -97,7 +100,10 @@ int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
   fn /= norm;
 
   result->val = fn;
-  result->err = GSL_DBL_EPSILON*fabs(fn);
+  result->err = 2.0*GSL_DBL_EPSILON;
+  factor = fabs(fn);
+  if (factor > 1.0)
+      result->err *= factor;
   
   return GSL_SUCCESS;
 }
@@ -106,7 +112,7 @@ int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
 int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn;
+  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn, factor;
 
 
   norm = 0.0;
@@ -126,7 +132,10 @@ int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
       fn = sin(order*zz);
       
       result->val = fn;
-      result->err = GSL_DBL_EPSILON*fabs(fn);
+      result->err = 2.0*GSL_DBL_EPSILON;
+      factor = fabs(fn);
+      if (factor > 1.0)
+          result->err *= factor;
       
       return GSL_SUCCESS;
   }
@@ -167,7 +176,10 @@ int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
   fn /= norm;
 
   result->val = fn;
-  result->err = GSL_DBL_EPSILON*fabs(fn);
+  result->err = 2.0*GSL_DBL_EPSILON;
+  factor = fabs(fn);
+  if (factor > 1.0)
+      result->err *= factor;
   
   return GSL_SUCCESS;
 }
