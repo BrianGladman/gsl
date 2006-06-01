@@ -561,7 +561,7 @@ Here is the output from the program,
 @node Physical Constant References and Further Reading
 @section References and Further Reading
 
-The authoritative sources for physical constanst are the 2002 CODATA
+The authoritative sources for physical constants are the 2002 CODATA
 recommended values, published in the articles below. Further information
 on the values of physical constants is also available from the cited
 articles and the NIST website. 
