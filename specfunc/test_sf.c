@@ -1660,9 +1660,37 @@ int test_psi_complex(void)
   gsl_sf_result r2;
   int s = 0;
 
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (1.0e+07, 1.0e+06, &r1, &r2),
+            16.1230707668799525, TEST_TOL0,
+            0.09966865744165720, TEST_TOL0,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (10.0, 50.0, &r1, &r2),
+            3.92973987174863660, TEST_TOL0,
+            1.38302847985210276, TEST_TOL0,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (2.0, 21.0, &r1, &r2),
+            3.04697388853248195, TEST_TOL0,
+            1.49947549076817824, TEST_TOL0,
+            GSL_SUCCESS);
+
+  gsl_sf_complex_psi_e(1.5, 0.0, &r1, &r2);
+  TEST_SF_VAL(s, 0.0364899739785765206, +0.0, r1.val, TEST_TOL0);
+
   TEST_SF_2(s, gsl_sf_complex_psi_e, (1.0, 5.0, &r1, &r2),
-            1.6127848446, TEST_TOL0,
-            1.47080, TEST_TOL0,
+            1.612784844615747, TEST_TOL0,
+            1.470796326794968, TEST_TOL0,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (-1.5, 5.0, &r1, &r2),
+            1.68260717336484070, TEST_TOL0,
+            1.95230236730713338, TEST_TOL0,
+            GSL_SUCCESS);
+
+  TEST_SF_2(s, gsl_sf_complex_psi_e, (-20.5, -20.5, &r1, &r2),
+            3.37919358657933066, TEST_TOL0,
+           -2.36829046481731091, TEST_TOL0,
             GSL_SUCCESS);
 
   return s;
@@ -2044,36 +2072,36 @@ int main(int argc, char * argv[])
   gsl_ieee_env_setup ();
   gsl_set_error_handler_off ();
 
-  gsl_test(test_airy(),       "Airy Functions");
-  gsl_test(test_bessel(),     "Bessel Functions");
-  gsl_test(test_clausen(),    "Clausen Integral");
-  gsl_test(test_coulomb(),    "Coulomb Wave Functions");
-  gsl_test(test_coupling(),   "Coupling Coefficients");
-  gsl_test(test_dawson(),     "Dawson Integral");
-  gsl_test(test_debye(),      "Debye Functions");
-  gsl_test(test_dilog(),      "Dilogarithm");
-  gsl_test(test_elementary(), "Elementary Functions (Misc)");
-  gsl_test(test_ellint(),     "Elliptic Integrals");
-  gsl_test(test_jac(),        "Elliptic Functions (Jacobi)");
-  gsl_test(test_erf(),        "Error Functions");
-  gsl_test(test_exp(),        "Exponential Functions");
-  gsl_test(test_expint(),     "Exponential/Sine/Cosine Integrals");
-  gsl_test(test_fermidirac(), "Fermi-Dirac Functions");
-  gsl_test(test_gamma(),      "Gamma Functions");
-  gsl_test(test_gegen(),      "Gegenbauer Polynomials");
-  gsl_test(test_hyperg(),     "Hypergeometric Functions");
-  gsl_test(test_laguerre(),   "Laguerre Polynomials");
-  gsl_test(test_lambert(),    "Lambert W Functions");
-  gsl_test(test_legendre(),   "Legendre Functions");
-  gsl_test(test_log(),        "Logarithm");
-  gsl_test(test_mathieu(),    "Mathieu Functions");
-  gsl_test(test_pow_int(),    "Integer Powers");
-  gsl_test(test_psi(),        "Psi Functions");
-/*  gsl_test(test_psi_complex(), "Psi Function for complex argument"); */
-  gsl_test(test_synch(),      "Synchrotron Functions");
-  gsl_test(test_transport(),  "Transport Functions");
-  gsl_test(test_trig(),       "Trigonometric and Related Functions");
-  gsl_test(test_zeta(),       "Zeta Functions");
+  gsl_test(test_airy(),        "Airy Functions");
+  gsl_test(test_bessel(),      "Bessel Functions");
+  gsl_test(test_clausen(),     "Clausen Integral");
+  gsl_test(test_coulomb(),     "Coulomb Wave Functions");
+  gsl_test(test_coupling(),    "Coupling Coefficients");
+  gsl_test(test_dawson(),      "Dawson Integral");
+  gsl_test(test_debye(),       "Debye Functions");
+  gsl_test(test_dilog(),       "Dilogarithm");
+  gsl_test(test_elementary(),  "Elementary Functions (Misc)");
+  gsl_test(test_ellint(),      "Elliptic Integrals");
+  gsl_test(test_jac(),         "Elliptic Functions (Jacobi)");
+  gsl_test(test_erf(),         "Error Functions");
+  gsl_test(test_exp(),         "Exponential Functions");
+  gsl_test(test_expint(),      "Exponential/Sine/Cosine Integrals");
+  gsl_test(test_fermidirac(),  "Fermi-Dirac Functions");
+  gsl_test(test_gamma(),       "Gamma Functions");
+  gsl_test(test_gegen(),       "Gegenbauer Polynomials");
+  gsl_test(test_hyperg(),      "Hypergeometric Functions");
+  gsl_test(test_laguerre(),    "Laguerre Polynomials");
+  gsl_test(test_lambert(),     "Lambert W Functions");
+  gsl_test(test_legendre(),    "Legendre Functions");
+  gsl_test(test_log(),         "Logarithm");
+  gsl_test(test_mathieu(),     "Mathieu Functions");
+  gsl_test(test_pow_int(),     "Integer Powers");
+  gsl_test(test_psi(),         "Psi Functions");
+  gsl_test(test_psi_complex(), "Psi Function for complex argument");
+  gsl_test(test_synch(),       "Synchrotron Functions");
+  gsl_test(test_transport(),   "Transport Functions");
+  gsl_test(test_trig(),        "Trigonometric and Related Functions");
+  gsl_test(test_zeta(),        "Zeta Functions");
 
   gsl_test(test_results(),     "Result Methods");
 

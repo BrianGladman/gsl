@@ -28,6 +28,8 @@
 #include <gsl/gsl_sf_psi.h>
 #include <gsl/gsl_complex_math.h>
 
+#include <stdio.h>
+
 #include "error.h"
 
 #include "chebyshev.h"
@@ -528,7 +530,7 @@ psi_complex_rhp(
   for(i = n_recurse; i >= 1; --i)
   {
     gsl_complex zn = gsl_complex_add_real(z, i - 1.0);
-    gsl_complex zn_inverse = gsl_complex_inverse(z);
+    gsl_complex zn_inverse = gsl_complex_inverse(zn);
     a = gsl_complex_sub(a, zn_inverse);
   }
 
@@ -784,7 +786,7 @@ int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
 
 
 int
-gsl_sf_psi_complex_e(
+gsl_sf_complex_psi_e(
   double x,
   double y,
   gsl_sf_result * result_re,
@@ -798,10 +800,12 @@ gsl_sf_psi_complex_e(
   }
   else
   {
-    gsl_complex z = gsl_complex_rect(1.0 - x, -y);
+    /* reflection formula [Abramowitz+Stegun, 6.3.7] */
+    gsl_complex z = gsl_complex_rect(x, y);
+    gsl_complex omz = gsl_complex_rect(1.0 - x, -y);
     gsl_complex zpi = gsl_complex_mul_real(z, M_PI);
     gsl_complex cotzpi = gsl_complex_cot(zpi);
-    int ret_val = psi_complex_rhp(z, result_re, result_im);
+    int ret_val = psi_complex_rhp(omz, result_re, result_im);
 
     if(GSL_IS_REAL(GSL_REAL(cotzpi)) && GSL_IS_REAL(GSL_IMAG(cotzpi)))
     {
