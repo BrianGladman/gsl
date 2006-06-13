@@ -345,7 +345,7 @@ This function frees all the memory associated with the control function
 @var{c}.
 @end deftypefun
 
-@deftypefun int gsl_odeiv_control_hadjust (gsl_odeiv_control * @var{c}, gsl_odeiv_step * @var{s}, const double @var{y0}[], const double @var{yerr}[], const double @var{dydt}[], double * @var{h})
+@deftypefun int gsl_odeiv_control_hadjust (gsl_odeiv_control * @var{c}, gsl_odeiv_step * @var{s}, const double @var{y}[], const double @var{yerr}[], const double @var{dydt}[], double * @var{h})
 This function adjusts the step-size @var{h} using the control function
 @var{c}, and the current values of @var{y}, @var{yerr} and @var{dydt}.
 The stepping function @var{step} is also needed to determine the order

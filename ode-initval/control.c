@@ -73,8 +73,8 @@ gsl_odeiv_control_name(const gsl_odeiv_control * c)
 }
 
 int
-gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y0[], const double yerr[], const double dydt[], double * h)
+gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y[], const double yerr[], const double dydt[], double * h)
 {
   return c->type->hadjust(c->state, s->dimension, s->type->order(s->state),
-                          y0, yerr, dydt, h);
+                          y, yerr, dydt, h);
 }

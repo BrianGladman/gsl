@@ -468,7 +468,7 @@ gsl_odeiv_system rhs_func_e5 = {
 void
 test_odeiv_stepper (const gsl_odeiv_step_type *T, const gsl_odeiv_system *sys,
 		    const double h, const double t, const char desc[],
-		    const double y0[], const double yfin[], 
+		    const double ystart[], const double yfin[], 
 		    const double relerr)
 {
   /* tests stepper T with one fixed length step advance of system sys
@@ -482,7 +482,7 @@ test_odeiv_stepper (const gsl_odeiv_step_type *T, const gsl_odeiv_system *sys,
 
   gsl_odeiv_step *step = gsl_odeiv_step_alloc (T, ne);
 
-  DBL_MEMCPY (y, y0, MAXEQ);
+  DBL_MEMCPY (y, ystart, MAXEQ);
 
   {
     int s = gsl_odeiv_step_apply (step, t, h, y, yerr, 0, 0, sys);

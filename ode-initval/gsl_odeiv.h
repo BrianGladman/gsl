@@ -170,7 +170,7 @@ gsl_odeiv_control;
 gsl_odeiv_control * gsl_odeiv_control_alloc(const gsl_odeiv_control_type * T);
 int gsl_odeiv_control_init(gsl_odeiv_control * c, double eps_abs, double eps_rel, double a_y, double a_dydt);
 void gsl_odeiv_control_free(gsl_odeiv_control * c);
-int gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y0[], const double yerr[], const double dydt[], double * h);
+int gsl_odeiv_control_hadjust (gsl_odeiv_control * c, gsl_odeiv_step * s, const double y[], const double yerr[], const double dydt[], double * h);
 const char * gsl_odeiv_control_name(const gsl_odeiv_control * c);
 
 /* Available control object constructors.
