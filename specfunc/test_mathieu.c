@@ -24,15 +24,17 @@
 #include "test_sf.h"
 #include "mathieu.h"
 
-/* static double ce[100]; */
-/* static double co[100]; */
-/* static double se[100]; */
-/* static double so[100]; */
+#define NVAL 100
+
+static double c[NVAL];
+static double s[NVAL];
 
 int test_mathieu(void)
 {
   gsl_sf_result r;
+  gsl_sf_mathieu_workspace *work;
   int s = 0;
+  int sa;
 
   TEST_SF(s, gsl_sf_mathieu_c, (0, 0.0, 0.0, &r),
           0.7071067811865475, TEST_SNGL, GSL_SUCCESS);
@@ -179,5 +181,34 @@ int test_mathieu(void)
   TEST_SF(s, gsl_sf_mathieu_s, (15, 25.0, M_PI_2, &r),
           -0.9467086958780897, TEST_SNGL, GSL_SUCCESS);
 
+  work = gsl_sf_mathieu_alloc(NVAL, 20.0);
+  sa = 0;
+  gsl_sf_mathieu_c_array(0, 5, 0.0, M_PI_2, work, c);
+  sa += (test_sf_frac_diff(c[0], 0.7071067811865475) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[2], -1.0) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[4], 1.0) > TEST_SNGL);
+  gsl_test(sa, "gsl_sf_mathieu_c_array");
+  s += sa;
+
+  sa = 0;
+  gsl_sf_mathieu_c_array(0, 15, 20.0, 0.0, work, c);
+  sa += (test_sf_frac_diff(c[0], 0.0006037438292242197) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[1], 0.005051813764712904) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[2], 0.02864894314707431) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[5], 0.9365755314226215) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[10], 1.117788631259397) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[15], 1.047084344162887) > TEST_SNGL);
+  gsl_test(sa, "gsl_sf_mathieu_c_array");
+  s += sa;
+
+  sa = 0;
+  gsl_sf_mathieu_s_array(1, 15, 20.0, M_PI_2, work, c);
+  sa += (test_sf_frac_diff(c[0], 1.609891592603772) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[4], 0.8635431218533667) > TEST_SNGL);
+  sa += (test_sf_frac_diff(c[14], -0.9570452540612817) > TEST_SNGL);
+  gsl_test(sa, "gsl_sf_mathieu_s_array");
+  s += sa;
+
+  free(work);
   return s;
 }

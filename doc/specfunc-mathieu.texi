@@ -184,7 +184,7 @@ been implemented.
 @subsection Support Routines
 @cindex Mathieu Function Support Routines
 
-@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (const size_t @var{n});
+@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (size_t @var{n}, double @var{q});
 @deftypefunx void gsl_sf_mathieu_free (gsl_sf_mathieu_workspace @var{*workspace});
 These routines handle memory allocation and freeing for workspace arrays required by the ``_array'' versions of the Mathieu function routines.  The variable @var{n} specifies the maximum order of the functions to be computed, not the number of functions to be computed.
 @end deftypefun

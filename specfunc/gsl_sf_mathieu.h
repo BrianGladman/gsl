@@ -57,7 +57,8 @@ typedef struct
 
 
 /* Allocate computational storage space for eigenvalue solution. */
-gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn);
+gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
+                                               const double qq);
 void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace);
 
 /* Compute an angular Mathieu function. */

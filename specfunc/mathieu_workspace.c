@@ -25,12 +25,16 @@
 #include "mathieu.h"
 
 
-gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn)
+gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
+                                               const double qq)
 {
   gsl_sf_mathieu_workspace *workspace;
   unsigned int even_order = nn/2 + 1, odd_order = (nn + 1)/2,
-               extra_values = 5;
+               extra_values;
 
+  /* Compute the maximum number of extra terms required for 10^-18 root
+     accuracy for a given value of q (contributed by Brian Gladman). */
+  extra_values = (int)(2.1*pow(qq, 0.37)) + 9;
   
   if (nn == 0)
   {
