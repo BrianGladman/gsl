@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-#include "mathieu.h"
+#include <gsl/gsl_sf_mathieu.h>
 
 
 gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,

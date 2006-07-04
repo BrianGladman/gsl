@@ -19,8 +19,8 @@
 
 /* Author:  L. Johnson */
 
-#ifndef _GSL_SF_MATHIEU_H_
-#define _GSL_SF_MATHIEU_H_
+#ifndef __GSL_SF_MATHIEU_H__
+#define __GSL_SF_MATHIEU_H__
 
 #include <gsl/gsl_sf_result.h>
 #include <gsl/gsl_eigen.h>
@@ -37,6 +37,8 @@
 
 __BEGIN_DECLS
 
+
+#define NUM_MATHIEU_COEFF 100
 
 typedef struct 
 {
@@ -55,6 +57,20 @@ typedef struct
     gsl_eigen_symmv_workspace *wmat;
 } gsl_sf_mathieu_workspace;
 
+
+/* Compute an array of characteristic (eigen) values from the recurrence
+   matrices for the Mathieu equations. */
+int gsl_sf_mathieu_c_charv_array(double qq, gsl_sf_mathieu_workspace *work);
+int gsl_sf_mathieu_s_charv_array(double qq, gsl_sf_mathieu_workspace *work);
+
+/* Compute the characteristic value for a Mathieu function of order n and
+   type ntype. */
+int gsl_sf_mathieu_c_charv(int order, double qq, gsl_sf_result *result);
+int gsl_sf_mathieu_s_charv(int order, double qq, gsl_sf_result *result);
+
+/* Compute the Fourier coefficients for a Mathieu function. */
+int gsl_sf_mathieu_c_coeff(int order, double qq, double aa, double coeff[]);
+int gsl_sf_mathieu_s_coeff(int order, double qq, double aa, double coeff[]);
 
 /* Allocate computational storage space for eigenvalue solution. */
 gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
@@ -80,4 +96,4 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
 
 __END_DECLS
 
-#endif /* !_GSL_SF_MATHIEU_H_ */
+#endif /* !__GSL_SF_MATHIEU_H__ */

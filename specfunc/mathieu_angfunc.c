@@ -25,8 +25,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_mathieu.h>
 
-#include "mathieu.h"
-
 
 int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
 {

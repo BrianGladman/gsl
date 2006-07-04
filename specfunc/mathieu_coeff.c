@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include "mathieu.h"
+#include <gsl/gsl_sf_mathieu.h>
 
 
 /*****************************************************************************

@@ -145,23 +145,43 @@ For more information, see Abromowitz and Stegun, Chapter 20.
 The Mathieu functions are defined in the header file @file{gsl_sf_mathieu.h}.
 
 @menu
+* Mathieu Function Characteristic Values::
 * Angular Mathieu Functions::
 * Radial Mathieu Functions::
 * Support Routines::
 @end menu
+
+@node Mathieu Function Characteristic Values
+@subsection Mathieu Function Characteristic Values
+@cindex Mathieu Function Characteristic Values
+
+@deftypefun int gsl_sf_mathieu_c_charv (int @var{n}, double @var{q}, gsl_sf_result @var{*result})
+@deftypefunx int gsl_sf_mathieu_s_charv (int @var{n}, double @var{q}, gsl_sf_result @var{*result})
+These routines compute the characteristic values of the Mathieu
+functions @math{ce_n(q,x)} and @math{se_n(q,x)}, respectively.
+@end deftypefun
+
+@deftypefun int gsl_sf_mathieu_c_charv_array (double @var{q}, gsl_sf_mathieu_workspace @var{*work})
+@deftypefunx int gsl_sf_mathieu_s_charv_array (double @var{q}, gsl_sf_mathieu_workspace @var{*work})
+These routines compute a series of characteristic (eigen) values for
+the Mathieu functions @math{ce_n(q,x)} and @math{se_n(q,x)},
+respectively for @math{n = 1} to @math{N}.  The value of @math{N} as
+well as the results are handled by the utility function
+@kbd{gsl_sf_mathieu_workspace()}, discussed in @ref{Support Routines}.
+@end deftypefun
 
 @node Angular Mathieu Functions
 @subsection Angular Mathieu Functions
 @cindex Angular Mathieu Functions
 
 @deftypefun int gsl_sf_mathieu_c (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result})
-@deftypefunx int gsl_sf_mathieu_s (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
+@deftypefunx int gsl_sf_mathieu_s (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result})
 These routines compute the angular Mathieu functions @math{ce_n(q,x)}
 and @math{se_n(q,x)}, respectively.
 @end deftypefun
 
-@deftypefun int gsl_sf_mathieu_c_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[]);
-@deftypefunx int gsl_sf_mathieu_s_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[]);
+@deftypefun int gsl_sf_mathieu_c_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[])
+@deftypefunx int gsl_sf_mathieu_s_array (int @var{nmin}, int @var{nmax}, double @var{q}, double @var{x}, gsl_sf_mathieu_workspace @var{*work}, double @var{result_array}[])
 These routines compute a series of the angular Mathieu functions from
 @var{nmin} to @var{nmax} inclusive, storing the results in the array
 @var{result_array}.
@@ -171,8 +191,8 @@ These routines compute a series of the angular Mathieu functions from
 @subsection Radial Mathieu Functions
 @cindex Radial Mathieu Functions
 
-@deftypefun int gsl_sf_mathieu_mc_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
-@deftypefunx int gsl_sf_mathieu_ms_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result});
+@deftypefun int gsl_sf_mathieu_mc_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result})
+@deftypefunx int gsl_sf_mathieu_ms_1 (int @var{n}, double @var{q}, double @var{x}, gsl_sf_result @var{*result})
 These routines compute the radial Mathieu functions @math{Mc_n^{(1)}(q,x)}
 and @math{Ms_n^{(1)}(q,x)}, respectively.
 @end deftypefun
@@ -184,7 +204,16 @@ been implemented.
 @subsection Support Routines
 @cindex Mathieu Function Support Routines
 
-@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (size_t @var{n}, double @var{q});
-@deftypefunx void gsl_sf_mathieu_free (gsl_sf_mathieu_workspace @var{*workspace});
-These routines handle memory allocation and freeing for workspace arrays required by the ``_array'' versions of the Mathieu function routines.  The variable @var{n} specifies the maximum order of the functions to be computed, not the number of functions to be computed.
+@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (size_t @var{n}, double @var{q})
+@deftypefunx void gsl_sf_mathieu_free (gsl_sf_mathieu_workspace @var{*workspace})
+These routines handle memory allocation and freeing for workspace
+arrays required by the ``_array'' versions of the Mathieu function
+routines.  The variable @var{n} specifies the maximum order of the
+functions to be computed, not the number of functions to be computed.
+The variable @var{q} specifies the maximum value of @math{q} for which
+Mathieu functions will be calculated.  This is required in order to
+properly terminate the infinite eigenvalue matrix for high precision
+solutions.  The characteristic values for all orders @math{0 \to n}
+are stored in the work structure array element
+@kbd{work->char_value}.
 @end deftypefun

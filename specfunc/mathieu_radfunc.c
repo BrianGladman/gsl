@@ -25,8 +25,6 @@
 #include <gsl/gsl_sf.h>
 #include <gsl/gsl_sf_mathieu.h>
 
-#include "mathieu.h"
-
 #define MAX(a, b) ((a) > (b) ? (a) : (b)) 
 
 

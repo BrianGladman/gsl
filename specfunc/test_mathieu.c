@@ -22,7 +22,6 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_sf.h>
 #include "test_sf.h"
-#include "mathieu.h"
 
 #define NVAL 100
 

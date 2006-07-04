@@ -25,7 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_errno.h>
-#include "mathieu.h"
+#include <gsl/gsl_sf_mathieu.h>
 
 
 /* prototypes */
@@ -368,25 +368,26 @@ static double approx_s(int order, double qq)
 }
 
 
-int gsl_sf_mathieu_c_charv(int order, double qq, double *aa)
+int gsl_sf_mathieu_c_charv(int order, double qq, gsl_sf_result *result)
 {
-  int even_odd, nterms = 12, ii, counter = 0, maxcount = 200;
-  double a1, a2, fa, fa1, dela, aa_orig, da = 0.025;
+  int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
+  double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
 
 
   /* If the argument is 0, then the coefficient is simply the square of
      the order. */
   if (qq == 0)
   {
-      *aa = order*order;
+      result->val = order*order;
+      result->err = 0.0;
       return GSL_SUCCESS;
   }
 
   /* Compute an initial approximation for the characteristic value. */
-  *aa = approx_c(order, qq);
+  aa = approx_c(order, qq);
 
   /* Save the original approximation for later comparison. */
-  aa_orig = *aa;
+  aa_orig = aa;
   
   even_odd = 0;
   if (order % 2 != 0)
@@ -396,7 +397,7 @@ int gsl_sf_mathieu_c_charv(int order, double qq, double *aa)
      (with a max limit to avoid potential infinite loop). */
   while (counter < maxcount)
   {
-      a1 = *aa + 0.001;
+      a1 = aa + 0.001;
       ii = 0;
       if (even_odd == 0)
           fa1 = ceer(order, qq, a1, nterms);
@@ -406,44 +407,57 @@ int gsl_sf_mathieu_c_charv(int order, double qq, double *aa)
       for (;;)
       {
           if (even_odd == 0)
-              fa = ceer(order, qq, *aa, nterms);
+              fa = ceer(order, qq, aa, nterms);
           else
-              fa = ceor(order, qq, *aa, nterms);
+              fa = ceor(order, qq, aa, nterms);
       
           a2 = a1;
-          a1 = *aa;
+          a1 = aa;
 
           if (fa == fa1)
+          {
+              result->err = GSL_DBL_EPSILON;
               break;
-          *aa -= (*aa - a2)/(fa - fa1)*fa;
-          dela = fabs(*aa - a2);
-          if (dela < 1e-14)
+          }
+          aa -= (aa - a2)/(fa - fa1)*fa;
+          dela = fabs(aa - a2);
+          if (dela < GSL_DBL_EPSILON)
+          {
+              result->err = GSL_DBL_EPSILON;
               break;
+          }
           if (ii > 20)
+          {
+              result->err = dela;
               break;
+          }
           fa1 = fa;
           ii++;
       }
 
       /* If the solution found is not near the original approximation,
          tweak the approximate value, and try again. */
-      if (fabs(*aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
+      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
       {
           counter++;
           if (counter == maxcount)
+          {
+              result->err = fabs(aa - aa_orig);
               break;
-          
-          if (*aa > aa_orig)
-              *aa = aa_orig - da*counter;
+          }
+          if (aa > aa_orig)
+              aa = aa_orig - da*counter;
           else
-              *aa = aa_orig + da*counter;
+              aa = aa_orig + da*counter;
 
           continue;
       }
       else
           break;
   }
-  
+
+  result->val = aa;
+      
   /* If we went through the maximum number of retries and still didn't
      find the solution, let us know. */
   if (counter == maxcount)
@@ -455,25 +469,26 @@ int gsl_sf_mathieu_c_charv(int order, double qq, double *aa)
 }
 
 
-int gsl_sf_mathieu_s_charv(int order, double qq, double *aa)
+int gsl_sf_mathieu_s_charv(int order, double qq, gsl_sf_result *result)
 {
-  int even_odd, nterms = 12, ii, counter = 0, maxcount = 200;
-  double a1, a2, fa, fa1, dela, aa_orig, da = 0.025;
+  int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
+  double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
 
 
   /* If the argument is 0, then the coefficient is simply the square of
      the order. */
   if (qq == 0)
   {
-      *aa = order*order;
+      result->val = order*order;
+      result->err = 0.0;
       return GSL_SUCCESS;
   }
 
   /* Compute an initial approximation for the characteristic value. */
-  *aa = approx_s(order, qq);
+  aa = approx_s(order, qq);
   
   /* Save the original approximation for later comparison. */
-  aa_orig = *aa;
+  aa_orig = aa;
   
   even_odd = 0;
   if (order % 2 != 0)
@@ -483,7 +498,7 @@ int gsl_sf_mathieu_s_charv(int order, double qq, double *aa)
      (with a max limit to avoid potential infinite loop). */
   while (counter < maxcount)
   {
-      a1 = *aa + 0.001;
+      a1 = aa + 0.001;
       ii = 0;
       if (even_odd == 0)
           fa1 = seer(order, qq, a1, nterms);
@@ -493,36 +508,48 @@ int gsl_sf_mathieu_s_charv(int order, double qq, double *aa)
       for (;;)
       {
           if (even_odd == 0)
-              fa = seer(order, qq, *aa, nterms);
+              fa = seer(order, qq, aa, nterms);
           else
-              fa = seor(order, qq, *aa, nterms);
+              fa = seor(order, qq, aa, nterms);
       
           a2 = a1;
-          a1 = *aa;
+          a1 = aa;
 
           if (fa == fa1)
+          {
+              result->err = GSL_DBL_EPSILON;
               break;
-          *aa -= (*aa - a2)/(fa - fa1)*fa;
-          dela = fabs(*aa - a2);
-          if (dela < 1e-14)
+          }
+          aa -= (aa - a2)/(fa - fa1)*fa;
+          dela = fabs(aa - a2);
+          if (dela < 1e-18)
+          {
+              result->err = GSL_DBL_EPSILON;
               break;
+          }
           if (ii > 20)
+          {
+              result->err = dela;
               break;
+          }
           fa1 = fa;
           ii++;
       }
       
       /* If the solution found is not near the original approximation,
          tweak the approximate value, and try again. */
-      if (fabs(*aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
+      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
       {
           counter++;
           if (counter == maxcount)
+          {
+              result->err = fabs(aa - aa_orig);
               break;
-          if (*aa > aa_orig)
-              *aa = aa_orig - da*counter;
+          }
+          if (aa > aa_orig)
+              aa = aa_orig - da*counter;
           else
-              *aa = aa_orig + da*counter;
+              aa = aa_orig + da*counter;
           
           continue;
       }
@@ -530,6 +557,8 @@ int gsl_sf_mathieu_s_charv(int order, double qq, double *aa)
           break;
   }
   
+  result->val = aa;
+      
   /* If we went through the maximum number of retries and still didn't
      find the solution, let us know. */
   if (counter == maxcount)
