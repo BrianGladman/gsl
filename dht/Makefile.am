@@ -8,7 +8,7 @@ TESTS = $(check_PROGRAMS)
 
 check_PROGRAMS = test
 
-test_LDADD = libgsldht.la ../specfunc/libgslspecfunc.la  ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
+test_LDADD = libgsldht.la ../specfunc/libgslspecfunc.la ../complex/libgslcomplex.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 
 test_SOURCES = test.c
 
