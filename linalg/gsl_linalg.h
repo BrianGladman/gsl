@@ -113,6 +113,10 @@ int gsl_linalg_complex_householder_hv (gsl_complex tau,
                                        const gsl_vector_complex * v, 
                                        gsl_vector_complex * w);
 
+/* Hessenberg reduction */
+
+int gsl_linalg_hessenberg (gsl_matrix * A, gsl_vector * w);
+
 /* Singular Value Decomposition
 
  * exceptions: 
@@ -539,8 +543,8 @@ int gsl_linalg_bidiag_unpack_B (const gsl_matrix * A,
 
 /* Balancing */
 
-int
-gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
+int gsl_linalg_balance_matrix (gsl_matrix * A, gsl_vector * D);
+int gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
 
 
 __END_DECLS

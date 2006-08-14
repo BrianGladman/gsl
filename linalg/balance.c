@@ -60,6 +60,8 @@ gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D)
           continue;
         }
 
+      /* FIXME: we could use frexp() here */
+
       while (s > 1.0)
         {
           s /= 2.0;
