@@ -1,3 +1,8 @@
+2006-08-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* unsymm.c (gsl_eigen_unsymm): support for unsymmetric matrices
+	(P.Alken)
+
 2006-04-18  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_eigenvalues): increase error bound

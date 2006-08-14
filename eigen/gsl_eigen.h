@@ -58,6 +58,17 @@ void gsl_eigen_symmv_free (gsl_eigen_symmv_workspace * w);
 int gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec, gsl_eigen_symmv_workspace * w);
 
 typedef struct {
+  size_t size;    /* size of matrices */
+  unsigned int max_iterations; /* max iterations since last eigenvalue found */
+  gsl_vector *work;
+} gsl_eigen_unsymm_workspace;
+
+gsl_eigen_unsymm_workspace * gsl_eigen_unsymm_alloc (const size_t n);
+void gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * w);
+int gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
+                      gsl_eigen_unsymm_workspace * w);
+
+typedef struct {
   size_t size;
   double * d;
   double * sd;
