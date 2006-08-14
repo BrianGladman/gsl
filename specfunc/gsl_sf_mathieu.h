@@ -60,17 +60,17 @@ typedef struct
 
 /* Compute an array of characteristic (eigen) values from the recurrence
    matrices for the Mathieu equations. */
-int gsl_sf_mathieu_c_charv_array(double qq, gsl_sf_mathieu_workspace *work);
-int gsl_sf_mathieu_s_charv_array(double qq, gsl_sf_mathieu_workspace *work);
+int gsl_sf_mathieu_a_array(double qq, gsl_sf_mathieu_workspace *work);
+int gsl_sf_mathieu_b_array(double qq, gsl_sf_mathieu_workspace *work);
 
 /* Compute the characteristic value for a Mathieu function of order n and
    type ntype. */
-int gsl_sf_mathieu_c_charv(int order, double qq, gsl_sf_result *result);
-int gsl_sf_mathieu_s_charv(int order, double qq, gsl_sf_result *result);
+int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result);
+int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result);
 
 /* Compute the Fourier coefficients for a Mathieu function. */
-int gsl_sf_mathieu_c_coeff(int order, double qq, double aa, double coeff[]);
-int gsl_sf_mathieu_s_coeff(int order, double qq, double aa, double coeff[]);
+int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[]);
+int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[]);
 
 /* Allocate computational storage space for eigenvalue solution. */
 gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
@@ -78,20 +78,26 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
 void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace);
 
 /* Compute an angular Mathieu function. */
-int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result);
-int gsl_sf_mathieu_s(int order, double qq, double zz, gsl_sf_result *result);
-int gsl_sf_mathieu_c_array(int nmin, int nmax, double qq, double zz,
-                           gsl_sf_mathieu_workspace *work,
-                           double result_array[]);
-int gsl_sf_mathieu_s_array(int nmin, int nmax, double qq, double zz,
-                           gsl_sf_mathieu_workspace *work,
-                           double result_array[]);
+int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result);
+int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result);
+int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
+                            gsl_sf_mathieu_workspace *work,
+                            double result_array[]);
+int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
+                            gsl_sf_mathieu_workspace *work,
+                            double result_array[]);
 
 /* Compute a radial Mathieu function. */
-int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
-                        gsl_sf_result *result);
-int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
-                        gsl_sf_result *result);
+int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
+                      gsl_sf_result *result);
+int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
+                      gsl_sf_result *result);
+int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
+                            double zz, gsl_sf_mathieu_workspace *work,
+                            double result_array[]);
+int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
+                            double zz, gsl_sf_mathieu_workspace *work,
+                            double result_array[]);
 
 
 __END_DECLS

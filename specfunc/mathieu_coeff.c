@@ -93,7 +93,7 @@ static void backward_recurse_s(double aa, double qq, double xx, double *ff,
 }
 
 
-int gsl_sf_mathieu_c_coeff(int order, double qq, double aa, double coeff[])
+int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
 {
   int ni, nn, ii, even_odd;
   double eps, g1, g2, x1, x2, e1, e2, de, xh, sum, ratio,
@@ -221,7 +221,7 @@ int gsl_sf_mathieu_c_coeff(int order, double qq, double aa, double coeff[])
 }
 
 
-int gsl_sf_mathieu_s_coeff(int order, double qq, double aa, double coeff[])
+int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
 {
   int ni, nn, ii, even_odd;
   double eps, g1, g2, x1, x2, e1, e2, de, xh, sum, ratio,

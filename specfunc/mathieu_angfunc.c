@@ -26,10 +26,11 @@
 #include <gsl/gsl_sf_mathieu.h>
 
 
-int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
+int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn, factor;
+  double coeff[NUM_MATHIEU_COEFF], norm, fn, factor;
+  gsl_sf_result aa;
 
 
   norm = 0.0;
@@ -61,14 +62,14 @@ int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
   }
   
   /* Compute the characteristic value. */
-  status = gsl_sf_mathieu_c_charv(order, qq, &aa);
+  status = gsl_sf_mathieu_a(order, qq, &aa);
   if (status != GSL_SUCCESS)
   {
       return status;
   }
   
   /* Compute the series coefficients. */
-  status = gsl_sf_mathieu_c_coeff(order, qq, aa, coeff);
+  status = gsl_sf_mathieu_a_coeff(order, qq, aa.val, coeff);
   if (status != GSL_SUCCESS)
   {
       return status;
@@ -107,10 +108,11 @@ int gsl_sf_mathieu_c(int order, double qq, double zz, gsl_sf_result *result)
 }
 
 
-int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
+int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], aa, norm, fn, factor;
+  double coeff[NUM_MATHIEU_COEFF], norm, fn, factor;
+  gsl_sf_result aa;
 
 
   norm = 0.0;
@@ -139,14 +141,14 @@ int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
   }
   
   /* Compute the characteristic value. */
-  status = gsl_sf_mathieu_s_charv(order, qq, &aa);
+  status = gsl_sf_mathieu_b(order, qq, &aa);
   if (status != GSL_SUCCESS)
   {
       return status;
   }
   
   /* Compute the series coefficients. */
-  status = gsl_sf_mathieu_s_coeff(order, qq, aa, coeff);
+  status = gsl_sf_mathieu_b_coeff(order, qq, aa.val, coeff);
   if (status != GSL_SUCCESS)
   {
       return status;
@@ -183,9 +185,9 @@ int gsl_sf_mathieu_s(int order, double qq, double zz,gsl_sf_result *result)
 }
 
 
-int gsl_sf_mathieu_c_array(int nmin, int nmax, double qq, double zz,
-                           gsl_sf_mathieu_workspace *work,
-                           double result_array[])
+int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
+                            gsl_sf_mathieu_workspace *work,
+                            double result_array[])
 {
   int even_odd, order, ii, jj, status;
   double coeff[NUM_MATHIEU_COEFF], *aa = work->char_value, norm;
@@ -211,7 +213,7 @@ int gsl_sf_mathieu_c_array(int nmin, int nmax, double qq, double zz,
   }
 
   /* Compute all of the eigenvalues up to nmax. */
-  gsl_sf_mathieu_c_charv_array(qq, work);
+  gsl_sf_mathieu_a_array(qq, work);
 
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -233,7 +235,7 @@ int gsl_sf_mathieu_c_array(int nmin, int nmax, double qq, double zz,
       }
   
       /* Compute the series coefficients. */
-      status = gsl_sf_mathieu_c_coeff(order, qq, aa[order], coeff);
+      status = gsl_sf_mathieu_a_coeff(order, qq, aa[order], coeff);
       if (status != GSL_SUCCESS)
           return status;
   
@@ -263,9 +265,9 @@ int gsl_sf_mathieu_c_array(int nmin, int nmax, double qq, double zz,
 }
 
 
-int gsl_sf_mathieu_s_array(int nmin, int nmax, double qq, double zz,
-                           gsl_sf_mathieu_workspace *work,
-                           double result_array[])
+int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
+                            gsl_sf_mathieu_workspace *work,
+                            double result_array[])
 {
   int even_odd, order, ii, jj, status;
   double coeff[NUM_MATHIEU_COEFF], *aa = work->char_value, norm;
@@ -291,7 +293,7 @@ int gsl_sf_mathieu_s_array(int nmin, int nmax, double qq, double zz,
   }
 
   /* Compute all of the eigenvalues up to nmax. */
-  gsl_sf_mathieu_s_charv_array(qq, work);
+  gsl_sf_mathieu_b_array(qq, work);
 
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -310,7 +312,7 @@ int gsl_sf_mathieu_s_array(int nmin, int nmax, double qq, double zz,
       }
   
       /* Compute the series coefficients. */
-      status = gsl_sf_mathieu_s_coeff(order, qq, aa[order], coeff);
+      status = gsl_sf_mathieu_b_coeff(order, qq, aa[order], coeff);
       if (status != GSL_SUCCESS)
       {
           return status;

@@ -25,31 +25,31 @@
 #include <gsl/gsl_sf.h>
 #include <gsl/gsl_sf_mathieu.h>
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b)) 
 
-
-int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
-                        gsl_sf_result *result)
+int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
+                      gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
   double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
-  double coeff[NUM_MATHIEU_COEFF], aa, fc, fj, fjp;
-  double j1c, j2c, j1pc, j2pc;
+  double coeff[NUM_MATHIEU_COEFF], fc;
+  double j1c, z2c, j1pc, z2pc;
   double u1, u2;
+  gsl_sf_result aa;
 
 
   /* Check for out of bounds parameters. */
   if (qq == 0.0)
   {
-      return GSL_FAILURE;
+    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+  }
+  if (kind < 1 || kind > 2)
+  {
+    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;
   amax = 0.0;
   fn = 0.0;
-/*   rm3 = (0.0,0.0); */
-/*   rm1p = 0.0; */
-/*   rm3p = (0.0,0.0); */
   u1 = sqrt(qq)*exp(-1.0*zz);
   u2 = sqrt(qq)*exp(zz);
   
@@ -58,14 +58,14 @@ int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
       even_odd = 1;
 
   /* Compute the characteristic value. */
-  status = gsl_sf_mathieu_c_charv(order, qq, &aa);
+  status = gsl_sf_mathieu_a(order, qq, &aa);
   if (status != GSL_SUCCESS)
   {
       return status;
   }
   
   /* Compute the series coefficients. */
-  status = gsl_sf_mathieu_c_coeff(order, qq, aa, coeff);
+  status = gsl_sf_mathieu_a_coeff(order, qq, aa.val, coeff);
   if (status != GSL_SUCCESS)
   {
       return status;
@@ -75,67 +75,51 @@ int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
   {
       for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
       {
-          amax = MAX(amax, fabs(coeff[kk]));
+          amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
               break;
 
           j1c = gsl_sf_bessel_Jn(kk, u1);
-          j2c = gsl_sf_bessel_Jn(kk, u2);
+          if (kind == 1)
+          {
+              z2c = gsl_sf_bessel_Jn(kk, u2);
+          }
+          else /* kind = 2 */
+          {
+              z2c = gsl_sf_bessel_Yn(kk, u2);
+          }
               
-/*          besjyf(u1, k1, j1c, y1c, h11c, h21c, j1p, y1p, h11p, h21p); */
-/*          besjyf(u2, k1, j2c, y2c, h12c, h22c, j2p, y2p, h12p, h22p); */
-
           fc = pow(-1.0, 0.5*order+kk)*coeff[kk];
-          fj = fc*j1c;
-          fn += fj*j2c;
-/*          rm3 += fj*h12c; */
-/*          fj1 = fc*j1p*u1; */
-/*          fj2 = fj*u2; */
-/*          rm1p += -1.0*fj1*j2c + fj2*j2p; */
-/*          rm3p += -1.0*fj1*h12c + fj2*h12p; */
+          fn += fc*j1c*z2c;
       }
 
       fn *= sqrt(pi/2.0)/coeff[0];
-/*           rm3 *= sqrt(pi/2.0)/coeff[0]; */
-/*           rm1p *= sqrt(pi/2.0)/coeff[0]; */
-/*           rm3p *= sqrt(pi/2.0)/coeff[0]; */
   }
   else
   {
       for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
       {
-          amax = MAX(amax, fabs(coeff[kk]));
+          amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
               break;
 
           j1c = gsl_sf_bessel_Jn(kk, u1);
-          j2c = gsl_sf_bessel_Jn(kk, u2);
           j1pc = gsl_sf_bessel_Jn(kk+1, u1);
-          j2pc = gsl_sf_bessel_Jn(kk+1, u2);
-/*          besjyf(u1, k1, j1c, y1c, h11c, h21c, j1p, y1p, h11p, h21p); */
-/*          besjyf(u1, kp1, j1pc, y1pc, h11pc, h21pc, h1pp, y1pp, */
-/*                 h11pp, h21pp); */
-/*          besjyf(u2, k1, j2c, y2c, h12c, h22c, j2p, y2p, h12p, h22p); */
-/*          besjyf(u2, kp1, j2pc, y2pc, h12pc, h22pc, j2pp, y2pp, */
-/*                 h12pp, h22pp); */
-              
+          if (kind == 1)
+          {
+              z2c = gsl_sf_bessel_Jn(kk, u2);
+              z2pc = gsl_sf_bessel_Jn(kk+1, u2);
+          }
+          else /* kind = 2 */
+          {
+              z2c = gsl_sf_bessel_Yn(kk, u2);
+              z2pc = gsl_sf_bessel_Yn(kk+1, u2);
+          }
           fc = pow(-1.0, 0.5*(order-1)+kk)*coeff[kk];
-          fj = fc*j1c;
-          fjp = fc*j1pc;
-          fn += fj*j2pc + fjp*j2c;
-/*          rm3 += fj*h12pc + fjp*h12c; */
-/*          fj1 = fc*j1p*u1; */
-/*          fjp1 = fc*j1pp*u1; */
-/*          fj2 = fj*u2; */
-/*          fjp2 = fc*j1pc*u2; */
-/*          rm1p += -1.0*fj1*j2pc + fj2*j2pp - fjp1*j2c + fjp2*j2p; */
-/*          rm3p += -1.0*fj1*h12pc + fj2*h12pp - fjp1*h12c + fjp2*h12p; */
+          fn += fc*(j1c*z2pc + j1pc*z2c);
       }
 
       fn *= sqrt(pi/2.0)/coeff[0];
-/*      rm3 *= sqrt(pi/2.0)/coeff[0]; */
-/*      rm1p *= sqrt(pi/2.0)/coeff[0]; */
-/*      rm3p *= sqrt(pi/2.0)/coeff[0]; */
   }
 
   result->val = fn;
@@ -148,28 +132,30 @@ int gsl_sf_mathieu_mc_1(int order, double qq, double zz,
 }
 
 
-int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
-                        gsl_sf_result *result)
+int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
+                      gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
   double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
-  double coeff[NUM_MATHIEU_COEFF], aa, fc, fj, fjp, fjm;
-  double j1c, j2c, j1mc, j2mc, j1pc, j2pc;
+  double coeff[NUM_MATHIEU_COEFF], fc;
+  double j1c, z2c, j1mc, z2mc, j1pc, z2pc;
   double u1, u2;
+  gsl_sf_result aa;
 
 
   /* Check for out of bounds parameters. */
   if (qq == 0.0)
   {
-      return GSL_FAILURE;
+    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+  }
+  if (kind < 1 || kind > 2)
+  {
+    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;
   amax = 0.0;
   fn = 0.0;
-/*   rm3 = (0.0,0.0); */
-/*   rm1p = 0.0; */
-/*   rm3p = (0.0,0.0); */
   u1 = sqrt(qq)*exp(-1.0*zz);
   u2 = sqrt(qq)*exp(zz);
   
@@ -178,14 +164,14 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
       even_odd = 1;
   
   /* Compute the characteristic value. */
-  status = gsl_sf_mathieu_s_charv(order, qq, &aa);
+  status = gsl_sf_mathieu_b(order, qq, &aa);
   if (status != GSL_SUCCESS)
   {
       return status;
   }
   
   /* Compute the series coefficients. */
-  status = gsl_sf_mathieu_s_coeff(order, qq, aa, coeff);
+  status = gsl_sf_mathieu_b_coeff(order, qq, aa.val, coeff);
   if (status != GSL_SUCCESS)
   {
       return status;
@@ -195,77 +181,55 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
   {
       for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
       {
-          amax = MAX(amax, fabs(coeff[kk]));
+          amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
               break;
 
           j1mc = gsl_sf_bessel_Jn(kk, u1);
-          j2mc = gsl_sf_bessel_Jn(kk, u2);
           j1pc = gsl_sf_bessel_Jn(kk+2, u1);
-          j2pc = gsl_sf_bessel_Jn(kk+2, u2);
-/*           besjyf(u1, km1, j1mc, y1mc, h11mc, h21mc, j1mp, y1mp, */
-/*                  h11mp, h21mp); */
-/*           besjyf(u2, km1, j2mc, y2mc, h12mc, h22mc, j2mp, y2mp, */
-/*                  h12mp, h22mp); */
-/*           besjyf(u1, kp1, j1pc, y1pc, h11pc, h21pc, j1pp, y1pp, */
-/*                  h11pp, h21pp); */
-/*           besjyf(u2, kp1, j2pc, y2pc, h12pc, h22pc, j2pp, y2pp, */
-/*                  h12pp, h22pp); */
-              
+          if (kind == 1)
+          {
+              z2mc = gsl_sf_bessel_Jn(kk, u2);
+              z2pc = gsl_sf_bessel_Jn(kk+2, u2);
+          }
+          else /* kind = 2 */
+          {
+              z2mc = gsl_sf_bessel_Yn(kk, u2);
+              z2pc = gsl_sf_bessel_Yn(kk+2, u2);
+          }
+          
           fc = pow(-1.0, 0.5*order+kk+1)*coeff[kk];
-          fjm = fc*j1mc;
-          fjp = fc*j1pc;
-          fn += fjm*j2pc - fjp*j2mc;
-/*           rm3 += fjm*h12pc - fjp*h12mc; */
-/*           fjm1 = fc*j1mp*u1; */
-/*           fjp1 = fc*j1pp*u1; */
-/*           fjm2 = fjm*u2; */
-/*           fjp2 = fc*j1pc*u2; */
-/*           rm1p += -1.0*fjm1*j2pc + fjm2*j2pp + fjp1*j2mc - fjp2*j2mp; */
-/*           rm3p += -1.0*fjm1*h12pc + fjm2*h12pp + fjp1*h12mc - fjp2*h12mp; */
+          fn += fc*(j1mc*z2pc - j1pc*z2mc);
       }
 
       fn *= sqrt(pi/2.0)/coeff[0];
-/*       rm3 *= sqrt(pi/2.0)/coeff[0]; */
-/*       rm1p *= sqrt(pi/2.0)/coeff[0]; */
-/*       rm3p *= sqrt(pi/2.0)/coeff[0]; */
   }
   else
   {
       for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
       {
-          amax = MAX(amax, fabs(coeff[kk]));
+          amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
               break;
 
           j1c = gsl_sf_bessel_Jn(kk, u1);
-          j2c = gsl_sf_bessel_Jn(kk, u2);
           j1pc = gsl_sf_bessel_Jn(kk+1, u1);
-          j2pc = gsl_sf_bessel_Jn(kk+1, u2);
-/*           besjyf(u1, k1, j1c, y1c, h11c, h21c, j1p, y1p, h11p, h21p); */
-/*           besjyf(u2, k1, j2c, y2c, h12c, h22c, j2p, y2p, h12p, h22p); */
-/*           besjyf(u1, kp1, j1pc, y1pc, h11pc, h21pc, j1pp, y1pp, */
-/*                  h11pp, h21pp); */
-/*           besjyf(u2, kp1, j2pc, y2pc, h12pc, h22pc, j2pp, y2pp, */
-/*                  h12pp, h22pp); */
-
+          if (kind == 1)
+          {
+              z2c = gsl_sf_bessel_Jn(kk, u2);
+              z2pc = gsl_sf_bessel_Jn(kk+1, u2);
+          }
+          else /* kind = 2 */
+          {
+              z2c = gsl_sf_bessel_Yn(kk, u2);
+              z2pc = gsl_sf_bessel_Yn(kk+1, u2);
+          }
+          
           fc = pow(-1.0, 0.5*(order-1)+kk)*coeff[kk];
-          fj = fc*j1c;
-          fjp = fc*j1pc;
-          fn += fj*j2pc - fjp*j2c;
-/*           rm3 += fj*h12pc - fjp*h12c; */
-/*           fj1 = fc*j1p*u1; */
-/*           fjp1 = fc*j1pp*u1; */
-/*           fj2 = fj*u2; */
-/*           fjp2 = fc*j1pc*u2; */
-/*           rm1p += -1.0*fj1*j2pc + fj2*j2pp + fjp1*j2c - fjp2*j2p; */
-/*           rm3p += -1.0*fj1*h12pc + fj2*h12pp + fjp1*h12c - fjp2*h12p; */
+          fn += fc*(j1c*z2pc - j1pc*z2c);
       }
 
       fn *= sqrt(pi/2.0)/coeff[0];
-/*       rm3 *= sqrt(pi/2.0)/coeff[0]; */
-/*       rm1p *= sqrt(pi/2.0)/coeff[0]; */
-/*       rm3p *= sqrt(pi/2.0)/coeff[0]; */
   }
 
   result->val = fn;
@@ -273,6 +237,222 @@ int gsl_sf_mathieu_ms_1(int order, double qq, double zz,
   factor = fabs(fn);
   if (factor > 1.0)
       result->err *= factor;
+  
+  return GSL_SUCCESS;
+}
+
+
+int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
+                            double zz, gsl_sf_mathieu_workspace *work,
+                            double result_array[])
+{
+  int even_odd, order, ii, kk, mm, status;
+  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
+  double coeff[NUM_MATHIEU_COEFF], fc;
+  double j1c, z2c, j1pc, z2pc;
+  double u1, u2;
+  double *aa = work->char_value;
+
+
+  /* Initialize the result array to zeroes. */
+  for (ii=0; ii<nmax-nmin+1; ii++)
+      result_array[ii] = 0.0;
+  
+  /* Check for out of bounds parameters. */
+  if (qq == 0.0)
+  {
+      return GSL_FAILURE;
+  }
+  if (kind < 1 || kind > 2)
+  {
+      return GSL_FAILURE;
+  }
+
+  mm = 0;
+  amax = 0.0;
+  fn = 0.0;
+  u1 = sqrt(qq)*exp(-1.0*zz);
+  u2 = sqrt(qq)*exp(zz);
+  
+  /* Compute all eigenvalues up to nmax. */
+  gsl_sf_mathieu_a_array(qq, work);
+  
+  for (ii=0, order=nmin; order<=nmax; ii++, order++)
+  {
+      even_odd = 0;
+      if (order % 2 != 0)
+          even_odd = 1;
+
+      /* Compute the series coefficients. */
+      status = gsl_sf_mathieu_a_coeff(order, qq, aa[order], coeff);
+      if (status != GSL_SUCCESS)
+      {
+          return status;
+      }
+
+      if (even_odd == 0)
+      {
+          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          {
+              amax = GSL_MAX(amax, fabs(coeff[kk]));
+              if (fabs(coeff[kk])/amax < maxerr)
+                  break;
+
+              j1c = gsl_sf_bessel_Jn(kk, u1);
+              if (kind == 1)
+              {
+                  z2c = gsl_sf_bessel_Jn(kk, u2);
+              }
+              else /* kind = 2 */
+              {
+                  z2c = gsl_sf_bessel_Yn(kk, u2);
+              }
+              
+              fc = pow(-1.0, 0.5*order+kk)*coeff[kk];
+              fn += fc*j1c*z2c;
+          }
+
+          fn *= sqrt(pi/2.0)/coeff[0];
+      }
+      else
+      {
+          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          {
+              amax = GSL_MAX(amax, fabs(coeff[kk]));
+              if (fabs(coeff[kk])/amax < maxerr)
+                  break;
+
+              j1c = gsl_sf_bessel_Jn(kk, u1);
+              j1pc = gsl_sf_bessel_Jn(kk+1, u1);
+              if (kind == 1)
+              {
+                  z2c = gsl_sf_bessel_Jn(kk, u2);
+                  z2pc = gsl_sf_bessel_Jn(kk+1, u2);
+              }
+              else /* kind = 2 */
+              {
+                  z2c = gsl_sf_bessel_Yn(kk, u2);
+                  z2pc = gsl_sf_bessel_Yn(kk+1, u2);
+              }
+              fc = pow(-1.0, 0.5*(order-1)+kk)*coeff[kk];
+              fn += fc*(j1c*z2pc + j1pc*z2c);
+          }
+
+          fn *= sqrt(pi/2.0)/coeff[0];
+      }
+
+      result_array[ii] = fn;
+  } /* order loop */
+  
+  return GSL_SUCCESS;
+}
+
+
+int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
+                            double zz, gsl_sf_mathieu_workspace *work,
+                            double result_array[])
+{
+  int even_odd, order, ii, kk, mm, status;
+  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
+  double coeff[NUM_MATHIEU_COEFF], fc;
+  double j1c, z2c, j1mc, z2mc, j1pc, z2pc;
+  double u1, u2;
+  double *aa = work->char_value;
+
+
+  /* Initialize the result array to zeroes. */
+  for (ii=0; ii<nmax-nmin+1; ii++)
+      result_array[ii] = 0.0;
+  
+  /* Check for out of bounds parameters. */
+  if (qq == 0.0)
+  {
+    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+  }
+  if (kind < 1 || kind > 2)
+  {
+    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
+  }
+
+  mm = 0;
+  amax = 0.0;
+  fn = 0.0;
+  u1 = sqrt(qq)*exp(-1.0*zz);
+  u2 = sqrt(qq)*exp(zz);
+  
+  /* Compute all eigenvalues up to nmax. */
+  gsl_sf_mathieu_b_array(qq, work);
+  
+  for (ii=0, order=nmin; order<=nmax; ii++, order++)
+  {
+      even_odd = 0;
+      if (order % 2 != 0)
+          even_odd = 1;
+  
+      /* Compute the series coefficients. */
+      status = gsl_sf_mathieu_b_coeff(order, qq, aa[order], coeff);
+      if (status != GSL_SUCCESS)
+      {
+          return status;
+      }
+
+      if (even_odd == 0)
+      {
+          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          {
+              amax = GSL_MAX(amax, fabs(coeff[kk]));
+              if (fabs(coeff[kk])/amax < maxerr)
+                  break;
+
+              j1mc = gsl_sf_bessel_Jn(kk, u1);
+              j1pc = gsl_sf_bessel_Jn(kk+2, u1);
+              if (kind == 1)
+              {
+                  z2mc = gsl_sf_bessel_Jn(kk, u2);
+                  z2pc = gsl_sf_bessel_Jn(kk+2, u2);
+              }
+              else /* kind = 2 */
+              {
+                  z2mc = gsl_sf_bessel_Yn(kk, u2);
+                  z2pc = gsl_sf_bessel_Yn(kk+2, u2);
+              }
+          
+              fc = pow(-1.0, 0.5*order+kk+1)*coeff[kk];
+              fn += fc*(j1mc*z2pc - j1pc*z2mc);
+          }
+
+          fn *= sqrt(pi/2.0)/coeff[0];
+      }
+      else
+      {
+          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          {
+              amax = GSL_MAX(amax, fabs(coeff[kk]));
+              if (fabs(coeff[kk])/amax < maxerr)
+                  break;
+
+              j1c = gsl_sf_bessel_Jn(kk, u1);
+              j1pc = gsl_sf_bessel_Jn(kk+1, u1);
+              if (kind == 1)
+              {
+                  z2c = gsl_sf_bessel_Jn(kk, u2);
+                  z2pc = gsl_sf_bessel_Jn(kk+1, u2);
+              }
+              else /* kind = 2 */
+              {
+                  z2c = gsl_sf_bessel_Yn(kk, u2);
+                  z2pc = gsl_sf_bessel_Yn(kk+1, u2);
+              }
+          
+              fc = pow(-1.0, 0.5*(order-1)+kk)*coeff[kk];
+              fn += fc*(j1c*z2pc - j1pc*z2c);
+          }
+
+          fn *= sqrt(pi/2.0)/coeff[0];
+      }
+
+      result_array[ii] = fn;
+  } /* order loop */
   
   return GSL_SUCCESS;
 }

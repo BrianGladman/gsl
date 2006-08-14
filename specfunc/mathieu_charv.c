@@ -209,8 +209,7 @@ static double approx_c(int order, double qq)
 
   if (order < 0)
   {
-      printf("Error:  Undefined order for Mathieu function.\n");
-      return 0.0;
+    GSL_ERROR_VAL("Undefined order for Mathieu function", GSL_EINVAL, 0.0);
   }
   
   switch (order)
@@ -298,8 +297,7 @@ static double approx_s(int order, double qq)
   
   if (order < 1)
   {
-      printf("Error:  Undefined order for Mathieu function.\n");
-      return 0.0;
+    GSL_ERROR_VAL("Undefined order for Mathieu function", GSL_EINVAL, 0.0);
   }
   
   switch (order)
@@ -368,7 +366,7 @@ static double approx_s(int order, double qq)
 }
 
 
-int gsl_sf_mathieu_c_charv(int order, double qq, gsl_sf_result *result)
+int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
 {
   int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
@@ -469,7 +467,7 @@ int gsl_sf_mathieu_c_charv(int order, double qq, gsl_sf_result *result)
 }
 
 
-int gsl_sf_mathieu_s_charv(int order, double qq, gsl_sf_result *result)
+int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
 {
   int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
@@ -658,7 +656,7 @@ static int figi(int nn, double *tt, double *dd, double *ee,
 }
 
 
-int gsl_sf_mathieu_c_charv_array(double qq, gsl_sf_mathieu_workspace *work)
+int gsl_sf_mathieu_a_array(double qq, gsl_sf_mathieu_workspace *work)
 {
   unsigned int even_order = work->even_order, odd_order = work->odd_order,
       extra_values = work->extra_values, ii, jj;
@@ -741,7 +739,7 @@ int gsl_sf_mathieu_c_charv_array(double qq, gsl_sf_mathieu_workspace *work)
 }
 
 
-int gsl_sf_mathieu_s_charv_array(double qq, gsl_sf_mathieu_workspace *work)
+int gsl_sf_mathieu_b_array(double qq, gsl_sf_mathieu_workspace *work)
 {
   unsigned int even_order = work->even_order-1, odd_order = work->odd_order,
       extra_values = work->extra_values, ii, jj;
