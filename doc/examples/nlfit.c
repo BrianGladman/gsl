@@ -17,10 +17,8 @@ main (void)
 {
   const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
-
   int status;
-  size_t i, iter = 0;
-
+  unsigned int i, iter = 0;
   const size_t n = N;
   const size_t p = 3;
 
@@ -53,7 +51,7 @@ main (void)
       y[i] = 1.0 + 5 * exp (-0.1 * t) 
                  + gsl_ran_gaussian (r, 0.1);
       sigma[i] = 0.1;
-      printf ("data: %d %g %g\n", i, y[i], sigma[i]);
+      printf ("data: %u %g %g\n", i, y[i], sigma[i]);
     };
 
   T = gsl_multifit_fdfsolver_lmsder;
