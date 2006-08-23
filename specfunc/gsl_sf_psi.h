@@ -73,7 +73,7 @@ double  gsl_sf_psi_1piy(const double y);
  *
  * exceptions: GSL_EDOM
  */
-int gsl_sf_psi_complex_e(
+int gsl_sf_complex_psi_e(
   const double x,
   const double y,
   gsl_sf_result * result_re,
