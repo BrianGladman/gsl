@@ -244,7 +244,7 @@ test_eigen_symm(const char * desc, const gsl_matrix * m)
   gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
   test_eigen_results (N, m, eval, evec, desc, "abs/asc");
 
-  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
+  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
   test_eigen_results (N, m, eval, evec, desc, "abs/desc");
 
   gsl_eigen_symm_free (w1);
@@ -287,7 +287,7 @@ test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
   gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
   test_eigen_complex_results (N, m, eval, evec, desc, "abs/asc");
 
-  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
+  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
   test_eigen_complex_results (N, m, eval, evec, desc, "abs/desc");
 
   gsl_eigen_herm_free (w1);
