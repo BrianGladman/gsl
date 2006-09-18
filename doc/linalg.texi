@@ -26,10 +26,12 @@ The functions described in this chapter are declared in the header file
 * Cholesky Decomposition::      
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
+* Hessenberg Decomposition of Real Matrices::
 * Bidiagonalization::           
 * Householder Transformations::  
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
+* Balancing::
 * Linear Algebra Examples::     
 * Linear Algebra References and Further Reading::  
 @end menu
@@ -622,6 +624,66 @@ tridiagonal decomposition (@var{A}, @var{tau}) obtained from the
 @var{diag} and @var{subdiag}.
 @end deftypefun
 
+@node Hessenberg Decomposition of Real Matrices
+@section Hessenberg Decomposition of Real Matrices
+@cindex hessenberg decomposition
+
+A general matrix @math{A} can be decomposed by orthogonal
+similarity transformations into the form
+@tex
+\beforedisplay
+$$
+A = U H U^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+A = U H U^T
+@end example
+
+@end ifinfo
+where @math{U} is orthogonal and @math{H} is an upper Hessenberg matrix,
+meaning that it has zeros below the first subdiagonal. The
+Hessenberg reduction is the first step in the Schur decomposition
+for the unsymmetric eigenvalue problem, but has applications in
+other areas as well.
+
+@deftypefun int gsl_linalg_hessenberg (gsl_matrix * @var{A}, gsl_vector * @var{tau})
+This function computes the Hessenberg decomposition of the matrix
+@var{A} by applying the similarity transformation @math{H = U^T A U}.
+On output, @math{H} is stored in the upper portion of @var{A}. The
+information required to construct the matrix @math{U} is stored in
+the lower triangular portion of @var{A}. @math{U} is a product
+of @math{N - 2} Householder matrices. The Householder vectors
+are stored in the lower portion of @var{A} (below the subdiagonal)
+and the Householder coefficients are stored in the vector @var{tau}.
+@var{tau} must be of length @var{N}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_hessenberg_unpack (gsl_matrix * @var{H}, gsl_vector * @var{tau}, gsl_matrix * @var{U})
+This function constructs the orthogonal matrix @math{U} from the
+information stored in the Hessenberg matrix @var{H} along with the
+vector @var{tau}. @var{H} and @var{tau} are outputs from
+@code{gsl_linalg_hessenberg}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_hessenberg_unpack_accum (gsl_matrix * @var{H}, gsl_vector * @var{tau}, gsl_matrix * @var{V})
+This function is similar to @code{gsl_linalg_hessenberg_unpack}, except
+it accumulates the matrix @var{U} into @var{V}, so that @math{V' = VU}.
+The matrix @var{V} must be initialized prior to calling this function.
+Setting @var{V} to the identity matrix provides the same result as
+@code{gsl_linalg_hessenberg_unpack}. If @var{H} is order @var{N}, then
+@var{V} must have @var{N} columns but may have any number of rows.
+@end deftypefun
+
+@deftypefun void gsl_linalg_hessenberg_set_zero (gsl_matrix * @var{H})
+This function sets the lower triangular portion of @var{H}, below
+the subdiagonal, to zero. It is useful for clearing out the
+Householder vectors after calling @code{gsl_linalg_hessenberg}.
+@end deftypefun
+
 @node Bidiagonalization
 @section Bidiagonalization 
 @cindex bidiagonalization of real matrices
@@ -876,6 +938,38 @@ A = ( d_0 e_0  0  e_3 )
     ( e_3  0  e_2 d_3 )
 @end example
 @end ifinfo
+@end deftypefun
+
+@node Balancing
+@section Balancing
+@cindex balancing matrices
+
+The process of balancing a matrix applies similarity transformations
+to make the rows and columns have comparable norms. This is
+useful, for example, to reduce roundoff errors in the solution
+of eigenvalue problems. Balancing a matrix @math{A} consists
+of replacing @math{A} with a similar matrix
+@tex
+\beforedisplay
+$$
+A' = D^{-1} A D
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+A' = D^(-1) A D
+@end example
+
+@end ifinfo
+where @math{D} is a diagonal matrix whose entries are powers
+of the floating point radix in order to reduce roundoff error.
+
+@deftypefun int gsl_linalg_balance (gsl_matrix * @var{A}, gsl_vector * @var{D})
+This function replaces the matrix @var{A} with its balanced counterpart
+and stores the diagonal elements of the similarity transformation
+into the vector @var{D}.
 @end deftypefun
 
 @node Linear Algebra Examples

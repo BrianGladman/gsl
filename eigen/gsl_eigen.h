@@ -58,15 +58,49 @@ void gsl_eigen_symmv_free (gsl_eigen_symmv_workspace * w);
 int gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec, gsl_eigen_symmv_workspace * w);
 
 typedef struct {
-  size_t size;    /* size of matrices */
-  unsigned int max_iterations; /* max iterations since last eigenvalue found */
-  gsl_vector *work;
+  size_t size;           /* matrix size */
+  size_t max_iterations; /* max iterations since last eigenvalue found */
+  size_t n_iter;         /* number of iterations since last eigenvalue found */
+  size_t n_evals;        /* number of eigenvalues found so far */
+
+  gsl_vector *hv2;       /* temporary 2-by-1 householder vector */
+  gsl_vector *hv3;       /* temporary 3-by-1 householder vector */
+
+  int compute_t;         /* compute Schur form T = Z^t A Z */
+
+  gsl_matrix *H;         /* pointer to Hessenberg matrix */
+
+  gsl_matrix *Z;         /* pointer to Schur vector matrix */
+} gsl_eigen_francis_workspace;
+
+gsl_eigen_francis_workspace * gsl_eigen_francis_alloc (void);
+void gsl_eigen_francis_free (gsl_eigen_francis_workspace * w);
+void gsl_eigen_francis_T (const int compute_t,
+                          gsl_eigen_francis_workspace * w);
+int gsl_eigen_francis (gsl_matrix * H, gsl_vector_complex * eval,
+                       gsl_eigen_francis_workspace * w);
+int gsl_eigen_francis_Z (gsl_matrix * H, gsl_vector_complex * eval,
+                         gsl_matrix * Z,
+                         gsl_eigen_francis_workspace * w);
+
+typedef struct {
+  size_t size;                 /* size of matrices */
+  gsl_vector *diag;            /* diagonal matrix elements from balancing */
+  gsl_vector *tau;             /* Householder coefficients */
+  gsl_matrix *Z;               /* pointer to Z matrix */
+  int do_balance;              /* perform balancing transformation? */
+
+  gsl_eigen_francis_workspace *francis_workspace_p;
 } gsl_eigen_unsymm_workspace;
 
 gsl_eigen_unsymm_workspace * gsl_eigen_unsymm_alloc (const size_t n);
 void gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * w);
+void gsl_eigen_unsymm_params (const int compute_t, const int balance,
+                              gsl_eigen_unsymm_workspace *w);
 int gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
                       gsl_eigen_unsymm_workspace * w);
+int gsl_eigen_unsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                        gsl_matrix * Z, gsl_eigen_unsymm_workspace * w);
 
 typedef struct {
   size_t size;

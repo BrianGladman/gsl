@@ -18,6 +18,7 @@ The functions described in this chapter are declared in the header file
 @menu
 * Real Symmetric Matrices::     
 * Complex Hermitian Matrices::  
+* Real Unsymmetric Matrices::     
 * Sorting Eigenvalues and Eigenvectors::  
 * Eigenvalue and Eigenvector Examples::  
 * Eigenvalue and Eigenvector References::  
@@ -118,6 +119,120 @@ complex eigenvectors are stored in the columns of the matrix @var{evec}.
 For example, the eigenvector in the first column corresponds to the
 first eigenvalue.  The eigenvectors are guaranteed to be mutually
 orthogonal and normalised to unit magnitude.
+@end deftypefun
+
+@node Real Unsymmetric Matrices
+@section Real Unsymmetric Matrices
+@cindex unsymmetric matrix, real, eigensystem
+@cindex real unsymmetric matrix, eigensystem
+
+The solution of the real unsymmetric eigensystem problem for a
+matrix @math{A} involves computing the Schur decomposition
+@tex
+\beforedisplay
+$$
+A = Z T Z^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+A = Z T Z^T
+@end example
+
+@end ifinfo
+where @math{Z} is an orthogonal matrix of Schur vectors and @math{T},
+the Schur form, is quasi upper triangular with diagonal
+@math{1}-by-@math{1} blocks which are real eigenvalues of @math{A}, and
+diagonal @math{2}-by-@math{2} blocks whose eigenvalues are complex
+conjugate eigenvalues of @math{A}. The algorithm used is the double
+shift Francis method.
+
+@deftypefun {gsl_eigen_unsymm_workspace *} gsl_eigen_unsymm_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues of
+@var{n}-by-@var{n} real unsymmetric matrices. The size of the workspace
+is @math{O(2n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_unsymm_params (const int @var{compute_t}, const int @var{balance}, gsl_eigen_unsymm_workspace * @var{w})
+This function sets some parameters which determine how the eigenvalue
+problem is solved in subsequent calls to @code{gsl_eigen_unsymm}.
+
+If @var{compute_t} is set to 1, the full Schur form @math{T} will be
+computed by @code{gsl_eigen_unsymm}. If it is set to 0,
+@math{T} will not be computed (this is the default setting). Computing
+the full Schur form @math{T} requires approximately 1.5-2 times the
+number of flops.
+
+If @var{balance} is set to 1, a balancing transformation is applied
+to the matrix prior to computing eigenvalues. This transformation is
+designed to make the rows and columns of the matrix have comparable
+norms, and can result in more accurate eigenvalues for matrices
+whose entries vary widely in magnitude. See @ref{Balancing} for more
+information. Note that the balancing transformation does not preserve
+the orthogonality of the Schur vectors, so if you wish to compute the
+Schur vectors with @code{gsl_eigen_unsymm_Z} you will obtain the Schur
+vectors of the balanced matrix instead of the original matrix. The
+relationship will be
+@tex
+\beforedisplay
+$$
+T = Q^t D^{-1} A D Q
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+T = Q^t D^(-1) A D Q
+@end example
+
+@end ifinfo
+@noindent
+where @var{Q} is the matrix of Schur vectors for the balanced matrix, and
+@var{D} is the balancing transformation. Then @code{gsl_eigen_unsymm_Z}
+will compute a matrix @var{Z} which satisfies
+@tex
+\beforedisplay
+$$
+T = Z^{-1} A Z
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+T = Z^(-1) A Z
+@end example
+
+@end ifinfo
+@noindent
+with @math{Z = D Q}. Note that @var{Z} will not be orthogonal. For
+this reason, balancing is not performed by default.
+@end deftypefun
+
+@deftypefun int gsl_eigen_unsymm (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_eigen_unsymm_workspace * @var{w})
+This function computes the eigenvalues of the real unsymmetric matrix
+@var{A} and stores them in the vector @var{eval}. If @math{T} is
+desired, it is stored in @var{A} on output, however the lower
+triangular portion will not be zeroed out. Otherwise, on output,
+the diagonal of @var{A} will contain the @math{1}-by-@math{1} real
+eigenvalues and @math{2}-by-@math{2} complex conjugate eigenvalue
+systems, and the rest of @var{A} is destroyed. This function returns the
+number of eigenvalues found. If this value is not equal to @var{n}
+(rare), then too many iterations occured without finding a new
+eigenvalue.  In this case the converged eigenvalues are stored in the
+beginning of the vector @var{eval}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_unsymm_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix * @var{Z}, gsl_eigen_unsymm_workspace * @var{w})
+This function is identical to @code{gsl_eigen_unsymm} except it also
+computes the Schur vectors and stores them into @var{Z}.
 @end deftypefun
 
 @node Sorting Eigenvalues and Eigenvectors

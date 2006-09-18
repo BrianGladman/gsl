@@ -115,7 +115,14 @@ int gsl_linalg_complex_householder_hv (gsl_complex tau,
 
 /* Hessenberg reduction */
 
-int gsl_linalg_hessenberg (gsl_matrix * A, gsl_vector * w);
+int gsl_linalg_hessenberg(gsl_matrix *A, gsl_vector *tau);
+int gsl_linalg_hessenberg_unpack(gsl_matrix * H, gsl_vector * tau,
+                                 gsl_matrix * U);
+int gsl_linalg_hessenberg_unpack_accum(gsl_matrix * H, gsl_vector * tau,
+                                       gsl_matrix * U);
+void gsl_linalg_hessenberg_set_zero(gsl_matrix * H);
+int gsl_linalg_hessenberg_submatrix(gsl_matrix *M, gsl_matrix *A,
+                                    size_t top, gsl_vector *tau);
 
 /* Singular Value Decomposition
 
@@ -544,6 +551,7 @@ int gsl_linalg_bidiag_unpack_B (const gsl_matrix * A,
 /* Balancing */
 
 int gsl_linalg_balance_matrix (gsl_matrix * A, gsl_vector * D);
+int gsl_linalg_balance_accum (gsl_matrix * A, gsl_vector * D);
 int gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
 
 

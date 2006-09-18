@@ -136,3 +136,46 @@ gsl_linalg_balance_matrix (gsl_matrix * A, gsl_vector * D)
 
   return GSL_SUCCESS;
 }
+
+/*
+gsl_linalg_balance_accum()
+  Accumulate a balancing transformation into a matrix.
+This is used during the computation of Schur vectors since the
+Schur vectors computed are the vectors for the balanced matrix.
+We must at some point accumulate the balancing transformation into
+the Schur vector matrix to get the vectors for the original matrix.
+
+A -> D A
+
+where D is the diagonal matrix
+
+Inputs: A - matrix to transform
+        D - vector containing diagonal elements of D
+*/
+
+int
+gsl_linalg_balance_accum(gsl_matrix *A, gsl_vector *D)
+{
+  const size_t N = A->size1;
+
+  if (N != D->size)
+    {
+      GSL_ERROR ("vector must match matrix size", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+      double s;
+      gsl_vector_view r;
+
+      for (i = 0; i < N; ++i)
+        {
+          s = gsl_vector_get(D, i);
+          r = gsl_matrix_row(A, i);
+
+          gsl_blas_dscal(s, &r.vector);
+        }
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_linalg_balance_accum() */
