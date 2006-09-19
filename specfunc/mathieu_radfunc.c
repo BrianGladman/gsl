@@ -38,13 +38,13 @@ int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
 
 
   /* Check for out of bounds parameters. */
-  if (qq == 0.0)
+  if (qq <= 0.0)
   {
-    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+      GSL_ERROR("q must be greater than zero", GSL_EINVAL);
   }
   if (kind < 1 || kind > 2)
   {
-    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
+      GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;
@@ -144,13 +144,13 @@ int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
 
 
   /* Check for out of bounds parameters. */
-  if (qq == 0.0)
+  if (qq <= 0.0)
   {
-    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+      GSL_ERROR("q must be greater than zero", GSL_EINVAL);
   }
   if (kind < 1 || kind > 2)
   {
-    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
+      GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;
@@ -259,13 +259,13 @@ int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
       result_array[ii] = 0.0;
   
   /* Check for out of bounds parameters. */
-  if (qq == 0.0)
+  if (qq <= 0.0)
   {
-      return GSL_FAILURE;
+      GSL_ERROR("q must be greater than zero", GSL_EINVAL);
   }
   if (kind < 1 || kind > 2)
   {
-      return GSL_FAILURE;
+      GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;
@@ -365,13 +365,13 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
       result_array[ii] = 0.0;
   
   /* Check for out of bounds parameters. */
-  if (qq == 0.0)
+  if (qq <= 0.0)
   {
-    GSL_ERROR("q must be nonzero", GSL_EINVAL);
+      GSL_ERROR("q must be greater than zero", GSL_EINVAL);
   }
   if (kind < 1 || kind > 2)
   {
-    GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
+      GSL_ERROR("kind must be 1 or 2", GSL_EINVAL);
   }
 
   mm = 0;

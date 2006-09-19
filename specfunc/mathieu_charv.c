@@ -372,6 +372,10 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
 
 
+  even_odd = 0;
+  if (order % 2 != 0)
+      even_odd = 1;
+
   /* If the argument is 0, then the coefficient is simply the square of
      the order. */
   if (qq == 0)
@@ -381,16 +385,24 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
       return GSL_SUCCESS;
   }
 
+  /* Use symmetry characteristics of the functions to handle cases with
+     negative order and/or argument q.  See Abramowitz & Stegun, 20.8.3. */
+  if (order < 0)
+      order *= -1;
+  if (qq < 0.0)
+  {
+      if (even_odd == 0)
+          return gsl_sf_mathieu_a(order, -qq, result);
+      else
+          return gsl_sf_mathieu_b(order, -qq, result);
+  }
+  
   /* Compute an initial approximation for the characteristic value. */
   aa = approx_c(order, qq);
 
   /* Save the original approximation for later comparison. */
   aa_orig = aa;
   
-  even_odd = 0;
-  if (order % 2 != 0)
-      even_odd = 1;
-
   /* Loop as long as the final value is not near the approximate value
      (with a max limit to avoid potential infinite loop). */
   while (counter < maxcount)
@@ -473,6 +485,16 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
 
 
+  even_odd = 0;
+  if (order % 2 != 0)
+      even_odd = 1;
+
+  /* The order cannot be 0. */
+  if (order == 0)
+  {
+      GSL_ERROR("Characteristic value undefined for order 0", GSL_EFAILED);
+  }
+
   /* If the argument is 0, then the coefficient is simply the square of
      the order. */
   if (qq == 0)
@@ -482,16 +504,24 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
       return GSL_SUCCESS;
   }
 
+  /* Use symmetry characteristics of the functions to handle cases with
+     negative order and/or argument q.  See Abramowitz & Stegun, 20.8.3. */
+  if (order < 0)
+      order *= -1;
+  if (qq < 0.0)
+  {
+      if (even_odd == 0)
+          return gsl_sf_mathieu_b(order, -qq, result);
+      else
+          return gsl_sf_mathieu_a(order, -qq, result);
+  }
+  
   /* Compute an initial approximation for the characteristic value. */
   aa = approx_s(order, qq);
   
   /* Save the original approximation for later comparison. */
   aa_orig = aa;
   
-  even_odd = 0;
-  if (order % 2 != 0)
-      even_odd = 1;
-
   /* Loop as long as the final value is not near the approximate value
      (with a max limit to avoid potential infinite loop). */
   while (counter < maxcount)

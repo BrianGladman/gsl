@@ -38,11 +38,6 @@ int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
   if (order % 2 != 0)
       even_odd = 1;
   
-  if (qq < 0.0)
-  {
-      GSL_ERROR("Negative q not allowed", GSL_EINVAL);
-  }
-
   /* Handle the trivial case where q = 0. */
   if (qq == 0.0)
   {
@@ -61,6 +56,11 @@ int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
       return GSL_SUCCESS;
   }
   
+  /* Use symmetry characteristics of the functions to handle cases with
+     negative order. */
+  if (order < 0)
+      order *= -1;
+
   /* Compute the characteristic value. */
   status = gsl_sf_mathieu_a(order, qq, &aa);
   if (status != GSL_SUCCESS)
@@ -120,12 +120,14 @@ int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
   if (order % 2 != 0)
       even_odd = 1;
   
-  if (qq < 0.0)
+  /* Handle the trivial cases where order = 0 and/or q = 0. */
+  if (order == 0)
   {
-      GSL_ERROR("Negative q not allowed", GSL_EINVAL);
+      result->val = 0.0;
+      result->err = 0.0;
+      return GSL_SUCCESS;
   }
-
-  /* Handle the trivial case where q = 0. */
+  
   if (qq == 0.0)
   {
       norm = 1.0;
@@ -140,6 +142,11 @@ int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
       return GSL_SUCCESS;
   }
   
+  /* Use symmetry characteristics of the functions to handle cases with
+     negative order. */
+  if (order < 0)
+      order *= -1;
+
   /* Compute the characteristic value. */
   status = gsl_sf_mathieu_b(order, qq, &aa);
   if (status != GSL_SUCCESS)
@@ -203,10 +210,6 @@ int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
       GSL_ERROR("Work space not large enough", GSL_EINVAL);
   }
   
-  if (qq < 0.0)
-  {
-      GSL_ERROR("Negative q not allowed", GSL_EINVAL);
-  }
   if (nmin < 0 || nmax < nmin)
   {
       GSL_ERROR("domain error", GSL_EDOM);
@@ -283,10 +286,6 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
       GSL_ERROR("Work space not large enough", GSL_EINVAL);
   }
   
-  if (qq < 0.0)
-  {
-      GSL_ERROR("Negative q not allowed", GSL_EINVAL);
-  }
   if (nmin < 0 || nmax < nmin)
   {
       GSL_ERROR("domain error", GSL_EDOM);

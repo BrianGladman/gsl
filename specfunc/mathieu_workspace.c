@@ -34,9 +34,9 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
 
   /* Compute the maximum number of extra terms required for 10^-18 root
      accuracy for a given value of q (contributed by Brian Gladman). */
-  extra_values = (int)(2.1*pow(qq, 0.37)) + 9;
+  extra_values = (int)(2.1*pow(fabs(qq), 0.37)) + 9;
   
-  if (nn == 0)
+  if (nn + 1 == 0)
   {
       GSL_ERROR_NULL("matrix dimension must be positive integer", GSL_EINVAL);
   }
