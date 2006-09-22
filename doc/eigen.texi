@@ -219,20 +219,44 @@ this reason, balancing is not performed by default.
 @deftypefun int gsl_eigen_unsymm (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_eigen_unsymm_workspace * @var{w})
 This function computes the eigenvalues of the real unsymmetric matrix
 @var{A} and stores them in the vector @var{eval}. If @math{T} is
-desired, it is stored in @var{A} on output, however the lower
-triangular portion will not be zeroed out. Otherwise, on output,
-the diagonal of @var{A} will contain the @math{1}-by-@math{1} real
-eigenvalues and @math{2}-by-@math{2} complex conjugate eigenvalue
-systems, and the rest of @var{A} is destroyed. This function returns the
-number of eigenvalues found. If this value is not equal to @var{n}
-(rare), then too many iterations occured without finding a new
-eigenvalue.  In this case the converged eigenvalues are stored in the
-beginning of the vector @var{eval}.
+desired, it is stored in the upper portion of @var{A} on output.
+Otherwise, on output, the diagonal of @var{A} will contain the
+@math{1}-by-@math{1} real eigenvalues and @math{2}-by-@math{2}
+complex conjugate eigenvalue systems, and the rest of @var{A} is
+destroyed. This function returns the number of eigenvalues found.
+If this value is not equal to @var{n} (rare), then too many iterations
+occured without finding a new eigenvalue. In this case the converged
+eigenvalues are stored in the beginning of the vector @var{eval}.
 @end deftypefun
 
 @deftypefun int gsl_eigen_unsymm_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix * @var{Z}, gsl_eigen_unsymm_workspace * @var{w})
 This function is identical to @code{gsl_eigen_unsymm} except it also
 computes the Schur vectors and stores them into @var{Z}.
+@end deftypefun
+
+@deftypefun {gsl_eigen_unsymmv_workspace *} gsl_eigen_unsymmv_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues and
+eigenvectors of @var{n}-by-@var{n} real unsymmetric matrices. The
+size of the workspace is @math{O(5n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_unsymmv_free (gsl_eigen_unsymmv_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_unsymmv (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_unsymmv_workspace * @var{w})
+This function computes eigenvalues and right eigenvectors of the
+@var{n}-by-@var{n} real unsymmetric matrix @var{A}. It first calls
+@code{gsl_eigen_unsymm} to compute the eigenvalues, Schur form @math{T}, and
+Schur vectors. Then it finds eigenvectors of @math{T} and backtransforms
+them using the Schur vectors. The Schur vectors are destroyed in the
+process, but can be saved by using @code{gsl_eigen_unsymmv_Z}. The
+computed eigenvectors are normalized to have Euclidean norm 1.
+@end deftypefun
+
+@deftypefun int gsl_eigen_unsymmv_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_matrix * @var{Z}, gsl_eigen_unsymmv_workspace * @var{w})
+This function is identical to @code{gsl_eigen_unsymmv} except it also saves
+the Schur vectors into @var{Z}.
 @end deftypefun
 
 @node Sorting Eigenvalues and Eigenvectors
@@ -263,6 +287,15 @@ This function simultaneously sorts the eigenvalues stored in the vector
 @var{eval} and the corresponding complex eigenvectors stored in the
 columns of the matrix @var{evec} into ascending or descending order
 according to the value of the parameter @var{sort_type} as shown above.
+@end deftypefun
+
+@deftypefun int gsl_eigen_unsymmv_sort (gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+This function simultaneously sorts the eigenvalues stored in the vector
+@var{eval} and the corresponding complex eigenvectors stored in the
+columns of the matrix @var{evec} into ascending or descending order
+according to the value of the parameter @var{sort_type} as shown above.
+Only GSL_EIGEN_SORT_ABS_ASC and GSL_EIGEN_SORT_ABS_DESC are supported
+due to the eigenvalues being complex.
 @end deftypefun
 
 
@@ -331,6 +364,51 @@ v =
 @noindent
 Note that the eigenvectors can differ by a change of sign, since the
 sign of an eigenvector is arbitrary.
+
+The following program illustrates the use of the unsymmetric
+eigensolver, by computing the eigenvalues and eigenvectors of
+the Vandermonde matrix @math{V(x;i,j) = x_i^{n - j}} with
+@math{x = (1,2,3,4)}.
+
+@example
+@verbatiminclude examples/eigen_unsymm.c
+@end example
+
+@noindent
+Here is the beginning of the output from the program,
+
+@example
+$ ./a.out 
+eigenvalue = 15.4897 + 0i
+eigenvector = 
+0.106363 + 0i
+0.228569 + 0i
+0.462688 + 0i
+0.849919 + 0i
+...
+@end example
+
+@noindent
+This can be compared with the corresponding output from @sc{gnu octave},
+
+@example
+octave> [v,d] = eig(vander([1 2 3 4]));
+octave> diag(d)
+ans =
+
+   15.489740
+   -7.706289
+    1.294224
+   -0.077675
+
+octave> v
+v =
+
+   0.106363   0.137820  -0.129196   0.052254
+   0.228569   0.036136   0.407586  -0.375568
+   0.462688  -0.289537   0.376326   0.794157
+   0.849919  -0.946503  -0.821925  -0.474902
+@end example
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading

@@ -41,101 +41,106 @@
 
 #include <gsl/gsl_linalg.h>
 
+#define FLOAT_RADIX       2.0
+#define FLOAT_RADIX_SQ    (FLOAT_RADIX * FLOAT_RADIX)
+
 int
-gsl_linalg_balance_matrix (gsl_matrix * A, gsl_vector * D)
+gsl_linalg_balance_matrix(gsl_matrix * A, gsl_vector * D)
 {
-  double row_norm, col_norm;
-  int not_converged;
-  const size_t M = A->size1;
-  const size_t N = A->size2;
+  const size_t N = A->size1;
 
-  if (M != N)
+  if (N != D->size)
     {
-      GSL_ERROR ("matrix for balancing must be square", GSL_EINVAL);
+      GSL_ERROR ("vector must match matrix size", GSL_EBADLEN);
     }
-
-  if (D->size != N)
+  else
     {
-      GSL_ERROR ("length of D must match dimension of A", GSL_EINVAL);
-    }
+      double row_norm,
+             col_norm;
+      int not_converged;
+      gsl_vector_view v;
 
-  gsl_vector_set_all (D, 1.0);
+      /* initialize D to the identity matrix */
+      gsl_vector_set_all(D, 1.0);
 
-  not_converged = 1;
+      not_converged = 1;
 
-  while (not_converged)
-    {
-      size_t i, j;
-      double g, f, s;
-
-      not_converged = 0;
-
-      for (i = 0; i < N; i++)
+      while (not_converged)
         {
-          row_norm = 0.0;
-          col_norm = 0.0;
+          size_t i, j;
+          double g, f, s;
 
-          for (j = 0; j < N; ++j)
+          not_converged = 0;
+
+          for (i = 0; i < N; ++i)
             {
-              if (j != i)
+              row_norm = 0.0;
+              col_norm = 0.0;
+
+              for (j = 0; j < N; ++j)
                 {
-                  col_norm += fabs (gsl_matrix_get (A, j, i));
-                  row_norm += fabs (gsl_matrix_get (A, i, j));
+                  if (j != i)
+                    {
+                      col_norm += fabs(gsl_matrix_get(A, j, i));
+                      row_norm += fabs(gsl_matrix_get(A, i, j));
+                    }
                 }
-            }
 
-          if ((col_norm == 0.0) || (row_norm == 0.0) 
-              || !gsl_finite (col_norm) || !gsl_finite (row_norm))
-            {
-              continue;
-            }
-
-          g = row_norm / 2.0;
-          f = 1.0;
-          s = col_norm + row_norm;
-
-          /* FIXME: we could use frexp() here */
-
-          /*
-           * find the integer power of the machine radix which
-           * comes closest to balancing the matrix
-           */
-          while (col_norm < g)
-            {
-              f *= 2.0;
-              col_norm *= 4.0;
-            }
-
-          g = row_norm * 2.0;
-
-          while (col_norm > g)
-            {
-              f /= 2.0;
-              col_norm /= 4.0;
-            }
-
-          if ((row_norm + col_norm) < 0.95 * s * f)
-            {
-              not_converged = 1;
-
-              gsl_vector_set (D, i, f);
-
-              /* apply similarity transformation */
-
-              if (f != 1.0)
+              if ((col_norm == 0.0) || (row_norm == 0.0))
                 {
-                  gsl_vector_view A_row_i = gsl_matrix_row (A, i);
-                  gsl_vector_view A_col_i = gsl_matrix_column (A, i);
+                  continue;
+                }
+
+              g = row_norm / FLOAT_RADIX;
+              f = 1.0;
+              s = col_norm + row_norm;
+
+              /*
+               * find the integer power of the machine radix which
+               * comes closest to balancing the matrix
+               */
+              while (col_norm < g)
+                {
+                  f *= FLOAT_RADIX;
+                  col_norm *= FLOAT_RADIX_SQ;
+                }
+
+              g = row_norm * FLOAT_RADIX;
+
+              while (col_norm > g)
+                {
+                  f /= FLOAT_RADIX;
+                  col_norm /= FLOAT_RADIX_SQ;
+                }
+
+              if ((row_norm + col_norm) < 0.95 * s * f)
+                {
+                  not_converged = 1;
+
                   g = 1.0 / f;
-                  gsl_blas_dscal (g, &A_row_i.vector);
-                  gsl_blas_dscal (f, &A_col_i.vector);
+
+                  /*
+                   * apply similarity transformation D, where
+                   * D_{ij} = f_i * delta_{ij}
+                   */
+
+                  /* multiply by D^{-1} on the left */
+                  v = gsl_matrix_row(A, i);
+                  gsl_blas_dscal(g, &v.vector);
+
+                  /* multiply by D on the right */
+                  v = gsl_matrix_column(A, i);
+                  gsl_blas_dscal(f, &v.vector);
+
+                  /* keep track of transformation */
+                  gsl_vector_set(D, i, gsl_vector_get(D, i) * f);
                 }
             }
         }
-    }
 
-  return GSL_SUCCESS;
-}
+      return GSL_SUCCESS;
+    }
+} /* gsl_linalg_balance_matrix() */
 
 /*
 gsl_linalg_balance_accum()

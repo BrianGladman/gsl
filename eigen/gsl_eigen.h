@@ -103,6 +103,26 @@ int gsl_eigen_unsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
                         gsl_matrix * Z, gsl_eigen_unsymm_workspace * w);
 
 typedef struct {
+  size_t size;                 /* size of matrices */
+  gsl_vector *work;            /* scratch workspace */
+  gsl_vector *work2;           /* scratch workspace */
+  gsl_vector *work3;           /* scratch workspace */
+
+  gsl_matrix *Z;               /* pointer to Schur vectors */
+
+  gsl_eigen_unsymm_workspace *unsymm_workspace_p;
+} gsl_eigen_unsymmv_workspace;
+
+gsl_eigen_unsymmv_workspace * gsl_eigen_unsymmv_alloc (const size_t n);
+void gsl_eigen_unsymmv_free (gsl_eigen_unsymmv_workspace * w);
+int gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
+                       gsl_matrix_complex * evec,
+                       gsl_eigen_unsymmv_workspace * w);
+int gsl_eigen_unsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                         gsl_matrix_complex * evec, gsl_matrix * Z,
+                         gsl_eigen_unsymmv_workspace * w);
+
+typedef struct {
   size_t size;
   double * d;
   double * sd;
@@ -151,6 +171,10 @@ int gsl_eigen_symmv_sort(gsl_vector * eval, gsl_matrix * evec,
 
 int gsl_eigen_hermv_sort(gsl_vector * eval, gsl_matrix_complex * evec,
                          gsl_eigen_sort_t sort_type);
+
+int gsl_eigen_unsymmv_sort(gsl_vector_complex * eval,
+                           gsl_matrix_complex * evec,
+                           gsl_eigen_sort_t sort_type);
 
 
 /* The following functions are obsolete: */

@@ -1,182 +1,227 @@
-/* compile with gcc -O2 -Wall -g testunsymm.c -I .. .libs/libgsleigen.a ../linalg/.libs/libgsllinalg.a -lgsl -lgslcblas -llapack -lg2c -lm */
+/*
+ * testunsymm.c
+ * Patrick Alken
+ *
+ * Compile: gcc -g -O2 -Wall -lm -lgsl -llapack -lf77blas -lcblas -latlas -lg2c
+ *
+ * Usage: testunsymm [options]
+ *
+ * -i             : incremental matrices
+ * -b             : balance the matrices
+ * -z             : compute Schur vectors and test them
+ * -n size        : size of matrices
+ * -l lower-bound : lower bound for matrix elements
+ * -u upper-bound : upper bound for matrix elements
+ * -c num         : number of matrices to solve
+ */
 
-#include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <gsl/gsl_ieee_utils.h>
-#include <gsl/gsl_complex_math.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_linalg.h>
+#include <string.h>
+#include <errno.h>
+#include <math.h>
+#include <getopt.h>
+#include <sys/times.h>
+
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_test.h>
 
-#define FLIP_FOR_LAPACK 1
-/* #define BALANCE 1  */
+typedef struct
+{
+  gsl_eigen_unsymm_workspace *unsymm_p;
+  gsl_eigen_unsymmv_workspace *unsymmv_p;
+  gsl_matrix *A;
+  gsl_matrix *A2;
+  gsl_vector_complex *eval;
+  gsl_vector_complex *evalv;
+  gsl_matrix_complex *evec;
 
-void alken_free (void);
-void alken_setup (const gsl_matrix * m);
-int alken_unsymm (gsl_matrix * m, gsl_vector_complex * eval);
-void dump_eval (gsl_vector_complex * eval);
-int lapack_dgees (gsl_matrix * m, gsl_vector_complex * eval);
-void lapack_free (void);
-void lapack_setup (const gsl_matrix * m);
-void make_random_matrix (gsl_matrix * m);
-void test_eigen_unsymm (const char *desc, const gsl_matrix * m);
-void sort_complex_vector (gsl_vector_complex * v);
-int test_evals (gsl_vector_complex * e1, gsl_vector_complex * e);
-void my_error_handler (const char *reason, const char *file, int line,
-                       int err);
-void make_start_matrix (gsl_matrix * m);
-int inc_matrix (gsl_matrix * m);
+  int compute_z;
+  gsl_matrix *Z;
+  gsl_matrix *Zv;
+} unsymm_workspace;
 
-void dgees_ (char *jobvs, char *sort, int *select, int *n,
-             double *a, int *lda, int *sdim, double *wr, double *wi,
-             double *vs, int *ldvs, double *work, int *lwork,
-             int *bwork, int *info);
+unsymm_workspace *unsymm_alloc(size_t n, int compute_z, int do_balance);
+void unsymm_free(unsymm_workspace *w);
+int unsymm_proc(unsymm_workspace *w);
 
-void dgebal_ (char *job, int * n, double *a, int *lda, int *ilo, int *ihi,
-              double *scale, int *info);
-
-gsl_vector_complex *eval1, *eval2;
-gsl_matrix *A, *A1, *A2;
-gsl_vector *wr, *wi, *work;
-gsl_eigen_unsymm_workspace *w;
-gsl_rng *r;
-
-int lower = -10;
-int upper = +10;
-int incremental = 0;
+/*
+ * Global variables
+ */
 unsigned long count = 0;
 
-int
-main (int argc, char *argv[])
+/*
+ * Prototypes
+ */
+
+void make_random_matrix(gsl_matrix *m, gsl_rng *r, int lower,
+                        int upper);
+void make_start_matrix(gsl_matrix *m, int lower);
+int inc_matrix (gsl_matrix *m, int lower, int upper);
+void output_matrix(gsl_matrix *m);
+void print_octave(gsl_matrix *m, const char *str);
+void print_matrix(gsl_matrix *m, const char *str);
+void print_hess(gsl_matrix *H, const char *str);
+void print_vector(gsl_vector_complex *eval, const char *str);
+int cmp(double a, double b);
+int compare(const void *a, const void *b);
+void sort_complex_vector(gsl_vector_complex *v);
+int test_evals(gsl_vector_complex *obs, gsl_vector_complex *expected,
+               gsl_matrix *A, const char *obsname, const char *expname);
+int test_Z(gsl_matrix *A, gsl_matrix *Z, gsl_matrix *T);
+int test_eigenvectors(gsl_matrix *A, gsl_vector_complex *eval,
+                      gsl_matrix_complex *evec);
+void my_error_handler(const char *reason, const char *file, int line,
+                      int err);
+
+/**********************************************
+ * GSL routines
+ **********************************************/
+
+unsymm_workspace *
+unsymm_alloc(size_t n, int compute_z, int do_balance)
+
 {
-  int N = 10, status, c;
+  unsymm_workspace *w;
 
-  gsl_ieee_env_setup ();
-  gsl_rng_env_setup() ;
+  w = (unsymm_workspace *) malloc(sizeof(unsymm_workspace));
 
-  r = gsl_rng_alloc (gsl_rng_default);
+  memset(w, '\0', sizeof(unsymm_workspace));
 
-  gsl_set_error_handler (&my_error_handler);
+  w->unsymm_p = gsl_eigen_unsymm_alloc(n);
+  w->unsymmv_p = gsl_eigen_unsymmv_alloc(n);
 
-  while ((c = getopt (argc, argv, "in:l:u:")) != -1)
+  w->A = gsl_matrix_alloc(n, n);
+  w->A2 = gsl_matrix_alloc(n, n);
+
+  if (compute_z)
     {
-      switch (c)
-        {
-        case 'i':
-          incremental = 1;
-          break;
-
-        case 'n':
-          N = strtol (optarg, NULL, 0);
-          break;
-
-        case 'l':
-          lower = strtol (optarg, NULL, 0);
-          break;
-
-        case 'u':
-          upper = strtol (optarg, NULL, 0);
-          break;
-
-        case '?':
-          fprintf (stderr, "unrecognized options\n");
-        default:
-          printf
-            ("usage: test [-i] [-n SIZE] [-l LOWER-BOUND] [-u UPPER-BOUND]\n");
-          printf
-            ("defaults to random testing, to get exhaustive testing over range use -i\n");
-          abort ();
-        }
+      w->Z = gsl_matrix_alloc(n, n);
+      w->Zv = gsl_matrix_alloc(n, n);
+      w->compute_z = 1;
+      gsl_eigen_unsymm_params(1, do_balance, w->unsymm_p);
     }
-
-  A = gsl_matrix_alloc (N, N);
-
-  alken_setup (A);
-  lapack_setup (A);
-
-  printf ("testing N=%d", N);
-  if (incremental)
-    printf (" incrementally");
   else
-    printf (" randomly");
+    gsl_eigen_unsymm_params(0, do_balance, w->unsymm_p);
 
-  printf (" on element range [%d,%d]\n", lower, upper);
+  w->eval = gsl_vector_complex_alloc(n);
+  w->evalv = gsl_vector_complex_alloc(n);
 
-  if (incremental)
-    make_start_matrix (A);
+  w->evec = gsl_matrix_complex_alloc(n, n);
 
-  while (1)
-    {
-      count++;
-
-      if (!incremental)
-        make_random_matrix (A);
-
-#ifdef FLIP_FOR_LAPACK 
-      gsl_matrix_transpose_memcpy (A2, A);
-#else
-      gsl_matrix_memcpy (A2, A);
-#endif
-      status = lapack_dgees (A2, eval2);
-      if (status)
-        {
-          continue;
-        };
-      sort_complex_vector (eval2);
-
-      gsl_matrix_memcpy (A1, A);
-      status = alken_unsymm (A1, eval1);
-      sort_complex_vector (eval1);
-
-      test_evals (eval1, eval2);
-
-      if (incremental)
-        {
-          status = inc_matrix (A);
-          if (status)
-            break;              /* all done */
-        }
-    }
-
-  alken_free ();
-  lapack_free ();
-  gsl_matrix_free (A);
-
-  gsl_rng_free (r);
-  exit (0);
-}
+  return (w);
+} /* unsymm_alloc() */
 
 void
-make_random_matrix (gsl_matrix * m)
+unsymm_free(unsymm_workspace *w)
+
 {
-  size_t i, j;
-  size_t N = A->size1;
+  if (!w)
+    return;
 
-  for (i = 0; i < N; i++)
-    for (j = 0; j < N; j++)
-      gsl_matrix_set (m, i, j, gsl_rng_uniform (r) * (upper - lower) + lower);
-}
+  if (w->unsymm_p)
+    gsl_eigen_unsymm_free(w->unsymm_p);
 
-void
-make_start_matrix (gsl_matrix * m)
-{
-  size_t i, j;
-  size_t N = A->size1;
+  if (w->unsymmv_p)
+    gsl_eigen_unsymmv_free(w->unsymmv_p);
 
-  for (i = 0; i < N; i++)
-    for (j = 0; j < N; j++)
-      gsl_matrix_set (m, i, j, lower);
-}
+  if (w->A)
+    gsl_matrix_free(w->A);
+
+  if (w->A2)
+    gsl_matrix_free(w->A2);
+
+  if (w->Z)
+    gsl_matrix_free(w->Z);
+
+  if (w->Zv)
+    gsl_matrix_free(w->Zv);
+
+  if (w->eval)
+    gsl_vector_complex_free(w->eval);
+
+  if (w->evalv)
+    gsl_vector_complex_free(w->evalv);
+
+  if (w->evec)
+    gsl_matrix_complex_free(w->evec);
+
+  free(w);
+} /* unsymm_free() */
 
 int
-inc_matrix (gsl_matrix * m)
+unsymm_proc(unsymm_workspace *w)
+
+{
+  int s1, s2, s;
+
+  if (w->compute_z)
+    {
+      s1 = gsl_eigen_unsymm_Z(w->A, w->eval, w->Z, w->unsymm_p);
+      s2 = gsl_eigen_unsymmv_Z(w->A2, w->evalv, w->evec, w->Zv, w->unsymmv_p);
+    }
+  else
+    {
+      s1 = gsl_eigen_unsymm(w->A, w->eval, w->unsymm_p);
+      s2 = gsl_eigen_unsymmv(w->A2, w->evalv, w->evec, w->unsymmv_p);
+    }
+
+  s = s1;
+  if (s > s2)
+    s = s2;
+
+  return s;
+} /* unsymm_proc() */
+
+/**********************************************
+ * General routines
+ **********************************************/
+
+void
+make_random_matrix(gsl_matrix *m, gsl_rng *r, int lower, int upper)
+
+{
+  size_t i, j;
+  size_t N = m->size1;
+
+  for (i = 0; i < N; ++i)
+  {
+    for (j = 0; j < N; ++j)
+    {
+      gsl_matrix_set(m,
+                     i,
+                     j,
+                     gsl_rng_uniform(r) * (upper - lower) + lower);
+    }
+  }
+} /* make_random_matrix() */
+
+void
+make_start_matrix(gsl_matrix *m, int lower)
+
+{
+  size_t i, j;
+  size_t N = m->size1;
+
+  for (i = 0; i < N; ++i)
+    for (j = 0; j < N; ++j)
+      gsl_matrix_set(m, i, j, (double)lower);
+} /* make_start_matrix() */
+
+int
+inc_matrix (gsl_matrix *m, int lower, int upper)
 {
   size_t i = 0;
-  size_t N = A->size1 * A->size2;
+  size_t N = m->size1 * m->size2;
   int carry = 1;
 
   for (i = 0; carry > 0 && i < N; i++)
@@ -187,174 +232,194 @@ inc_matrix (gsl_matrix * m)
     }
 
   return carry;
-}
-
+} /* inc_matrix() */
 
 void
-alken_setup (const gsl_matrix * m)
+output_matrix(gsl_matrix *m)
 {
+  size_t i, j;
   size_t N = m->size1;
-  A1 = gsl_matrix_alloc (N, N);
-  eval1 = gsl_vector_complex_alloc (N);
-  w = gsl_eigen_unsymm_alloc (N);
+  size_t M = m->size2;
+
+  for (i = 0; i < N; ++i)
+  {
+    for (j = 0; j < M; ++j)
+      {
+        /*printf("%10.9f%s",*/
+        printf("%10.18e%s",
+               gsl_matrix_get(m, i, j),
+               (j < M - 1) ? "," : ";\n");
+      }
+  }
 }
 
 void
-alken_free (void)
+print_octave(gsl_matrix *m, const char *str)
 {
-  gsl_eigen_unsymm_free (w);
-  gsl_vector_complex_free (eval1);
-  gsl_matrix_free (A1);
-}
+  FILE *fp;
+  size_t i, j;
+  const size_t N = m->size1;
+  const size_t M = m->size2;
 
-int
-alken_unsymm (gsl_matrix * m, gsl_vector_complex * eval)
-{
-  int s;
-  s = gsl_eigen_unsymm (m, eval, w);
-  return s;
-}
+  fp = fopen(str, "w");
 
-void
-lapack_setup (const gsl_matrix * m)
-{
-  int info, lwork, size, sdim, ldvs, ilo, ihi;
-  size_t N = m->size1;
-  char jobvs = 'N', sort = 'N', jobg = 'B';
+  if (!fp)
+    return;
 
-  A2 = gsl_matrix_alloc (N, N);
-  eval2 = gsl_vector_complex_alloc (N);
+  fprintf(fp, "# Created by Octave 2.1.73, Tue Aug 01 15:00:27 2006 MDT <blah@blah>\n");
+  fprintf(fp, "# name: %s\n", str);
+  fprintf(fp, "# type: matrix\n");
+  fprintf(fp, "# rows: %u\n", N);
+  fprintf(fp, "# columns: %u\n", N);
 
-  wr = gsl_vector_alloc (N);
-  wi = gsl_vector_alloc (N);
-  work = gsl_vector_calloc (3 * N);
-
-  info = 0;
-  lwork = -1;
-  sdim = 0;
-  ldvs = 1;
-
-#ifdef BALANCE
-  dgebal_ ((char *)&jobg, (int *)&N, A->data, (int *)&A->tda, 
-           &ilo, &ihi, wr->data, (int *)&info);
-#endif
-
-  dgees_ ((char *) &jobvs, (char *) &sort, (int *) NULL, (int *) &N,
-          A->data, (int *) &(A->tda), (int *) &sdim, wr->data, wi->data,
-          (double *) NULL, (int *) &ldvs, work->data, (int *) &lwork,
-          (int *) NULL, (int *) &info);
-
-  size = work->data[0];
-
-  //printf ("lwork = %d  info = %d\n", lwork, info);
-  //printf ("recommended size is %d\n", size);
-
-  if (size > work->size)
+  for (i = 0; i < N; ++i)
     {
-      gsl_vector_free (work);
-      work = gsl_vector_calloc (size);
-    }
-}
-
-void
-lapack_free (void)
-{
-  gsl_vector_free (wr);
-  gsl_vector_free (wi);
-  gsl_vector_free (work);
-  gsl_matrix_free (A2);
-  gsl_vector_complex_free (eval2);
-}
-
-int
-lapack_dgees (gsl_matrix * m, gsl_vector_complex * eval)
-{
-  int info, lwork, sdim, ldvs;
-  size_t N = m->size1, i;
-  char jobvs = 'N', sort = 'N';
-
-  info = 0;
-  lwork = work->size;
-  sdim = 0;
-  ldvs = 1;
-
-  dgees_ ((char *) &jobvs, (char *) &sort, (int *) NULL, (int *) &N,
-          m->data, (int *) &(m->tda), (int *) &sdim, wr->data, wi->data,
-          (double *) NULL, (int *) &ldvs, work->data, (int *) &lwork,
-          (int *) NULL, (int *) &info);
-
-  if (info != 0)
-    printf ("info = %d\n", info);
-
-  for (i = 0; i < N; i++)
-    {
-      gsl_complex z;
-      GSL_SET_COMPLEX (&z, wr->data[i], wi->data[i]);
-      gsl_vector_complex_set (eval, i, z);
+      for (j = 0; j < M; ++j)
+        {
+          fprintf(fp,
+                  "%10.9f%s",
+                  gsl_matrix_get(m, i, j),
+                  (j < M - 1) ? " " : "\n");
+        }
     }
 
-  return info;
+  fclose(fp);
 }
 
 void
-dump_eval (gsl_vector_complex * eval)
+print_matrix(gsl_matrix *m, const char *str)
+
 {
-  int i;
+  size_t i, j;
+  size_t N = m->size1;
+  size_t M = m->size2;
+  gsl_matrix_view v;
+  size_t rows, cols;
+  size_t r, c;
+  char buf[100];
+
+  /*print_octave(m, str);
+  return;*/
+
+  /*rows = GSL_MIN(15, N);*/
+  rows = N;
+  cols = GSL_MIN(15, N);
+  /*cols = N;*/
+
+  for (i = 0; i < N; i += rows)
+  {
+    for (j = 0; j < M; j += cols)
+    {
+      r = GSL_MIN(rows, N - i);
+      c = GSL_MIN(cols, N - j);
+
+      v = gsl_matrix_submatrix(m,
+                               i,
+                               j,
+                               r,
+                               c);
+
+      sprintf(buf, "%s(%u:%u,%u:%u)",
+              str,
+              i + 1,
+              i + r,
+              j + 1,
+              j + c);
+
+      printf("%s = [\n", buf);
+
+      output_matrix(&v.matrix);
+
+      printf("]\n");
+    }
+  }
+} /* print_matrix() */
+
+void
+print_vector(gsl_vector_complex *eval, const char *str)
+
+{
   size_t N = eval->size;
+  size_t i;
+  gsl_complex z;
 
-  for (i = 0; i < N; i++)
+  printf("%s = [\n", str);
+
+  for (i = 0; i < N; ++i)
     {
-      gsl_complex z = gsl_vector_complex_get (eval, i);
-      printf ("% .18e % .18e\n", GSL_REAL (z), GSL_IMAG (z));
+      z = gsl_vector_complex_get(eval, i);
+      printf("%.18e %.18e;\n", GSL_REAL(z), GSL_IMAG(z));
     }
-  printf ("\n");
-}
 
-inline int
-cmp (double a, double b)
+  printf("\n]\n");
+} /* print_vector() */
+
+int
+cmp(double a, double b)
+
 {
   return ((a > b) ? 1 : ((a < b) ? -1 : 0));
-}
+} /* cmp() */
 
 int
-compare (const void *a, const void *b)
+compare(const void *a, const void *b)
+
 {
   const double *x = a;
   const double *y = b;
-  int r1 = cmp (y[0], x[0]);
-  int r2 = cmp (y[1], x[1]);
-  return r1 ? r1 : r2;
-}
+  int r1 = cmp(y[0], x[0]);
+  int r2 = cmp(y[1], x[1]);
+
+  if (fabs(x[0] - y[0]) < 1.0e-8)
+    {
+      /* real parts are very close to each other */
+      return r2;
+    }
+  else
+    {
+      return r1 ? r1 : r2;
+    }
+} /* compare() */
 
 void
-sort_complex_vector (gsl_vector_complex * v)
+sort_complex_vector(gsl_vector_complex *v)
+
 {
-  qsort (v->data, v->size, 2 * sizeof (double), &compare);
-}
+  qsort(v->data, v->size, 2 * sizeof(double), &compare);
+} /* sort_complex_vector() */
 
 int
-test_evals (gsl_vector_complex * obs, gsl_vector_complex * expected)
-{
-  int i, j, k = 0, idx = -1;
-  size_t N = expected->size;
-  double max = 0.0, max_abserr = 0.0, max_relerr = 0.0;
+test_evals(gsl_vector_complex *obs, gsl_vector_complex *expected,
+           gsl_matrix *A, const char *obsname, const char *expname)
 
-  for (i = 0; i < N; i++)
+{
+  size_t N = expected->size;
+  size_t i, k;
+  double max, max_abserr, max_relerr;
+
+  max = 0.0;
+  max_abserr = 0.0;
+  max_relerr = 0.0;
+  k = 0;
+
+  for (i = 0; i < N; ++i)
     {
-      gsl_complex z = gsl_vector_complex_get (expected, i);
-      max = GSL_MAX_DBL (max, gsl_complex_abs (z));
+      gsl_complex z = gsl_vector_complex_get(expected, i);
+      max = GSL_MAX_DBL(max, gsl_complex_abs(z));
     }
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < N; ++i)
     {
-      gsl_complex z_obs = gsl_vector_complex_get (obs, i);
-      gsl_complex z_exp = gsl_vector_complex_get (expected, i);
+      gsl_complex z_obs = gsl_vector_complex_get(obs, i);
+      gsl_complex z_exp = gsl_vector_complex_get(expected, i);
 
-      double x_obs = GSL_REAL (z_obs), y_obs = GSL_IMAG (z_obs);
-      double x = GSL_REAL (z_exp), y = GSL_IMAG (z_exp);
+      double x_obs = GSL_REAL(z_obs);
+      double y_obs = GSL_IMAG(z_obs);
+      double x_exp = GSL_REAL(z_exp);
+      double y_exp = GSL_IMAG(z_exp);
 
-      double abserr_x = fabs (x_obs - x);
-      double abserr_y = fabs (y_obs - y);
+      double abserr_x = fabs(x_obs - x_exp);
+      double abserr_y = fabs(y_obs - y_exp);
       double noise = max * GSL_DBL_EPSILON * N * N;
 
       max_abserr = GSL_MAX_DBL(max_abserr, abserr_x + abserr_y);
@@ -362,52 +427,393 @@ test_evals (gsl_vector_complex * obs, gsl_vector_complex * expected)
       if (abserr_x < noise && abserr_y < noise)
         continue;
 
-      if (abserr_x > 1e-6 || abserr_y > 1e-6) {
-        k++;;
-      }
+      if (abserr_x > 1.0e-6 || abserr_y > 1.0e-6)
+        ++k;
+    }
 
+    if (k)
       {
-        double relerr_x = abserr_x / fabs (x);
-        double relerr_y = abserr_y / fabs (y);
+        printf("==== CASE %lu ===========================\n\n", count);
 
-        max_relerr = GSL_MAX_DBL(max_relerr, relerr_x + relerr_y);
+        print_matrix(A, "A");
 
-        if (relerr_x > 1e-6 || relerr_y > 1e-6)
-          {
-            k++;
-          }
+        printf("=== eval - %s ===\n", expname);
+        print_vector(expected, expname);
+
+        printf("=== eval - %s ===\n", obsname);
+        print_vector(obs, obsname);
+
+        printf("max abserr = %g  max relerr = %g\n", max_abserr, max_relerr);
+
+        printf("=========================================\n\n");
       }
+
+    return k;
+} /* test_evals() */
+
+/* test if A = ZTZ^t (or AZ = ZT) */
+
+int
+test_Z(gsl_matrix *A, gsl_matrix *Z, gsl_matrix *T)
+
+{
+  size_t N = A->size1;
+  size_t i, j, k;
+  double rhs, lhs;
+  double abserr;
+  gsl_matrix *T1, *T2;
+
+  T1 = gsl_matrix_alloc(N, N);
+  T2 = gsl_matrix_alloc(N, N);
+
+  /* zero the lower triangle of T */
+  if (N > 3)
+    {
+      for (i = 2; i < N; ++i)
+        {
+          for (j = 0; j < (i - 1); ++j)
+            {
+              gsl_matrix_set(T, i, j, 0.0);
+            }
+        }
+    }
+  else if (N == 3)
+    {
+      gsl_matrix_set(T, 2, 0, 0.0);
+    }
+
+  /* compute T1 = A Z */
+  gsl_blas_dgemm(CblasNoTrans,
+                 CblasNoTrans,
+                 1.0,
+                 A,
+                 Z,
+                 0.0,
+                 T1);
+
+  /* compute T2 = Z T */
+  gsl_blas_dgemm(CblasNoTrans,
+                 CblasNoTrans,
+                 1.0,
+                 Z,
+                 T,
+                 0.0,
+                 T2);
+
+  k = 0;
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          lhs = gsl_matrix_get(T1, i, j);
+          rhs = gsl_matrix_get(T2, i, j);
+
+          abserr = fabs(lhs - rhs);
+
+          if (abserr > 1.0e-6)
+            ++k;
+        }
     }
 
   if (k)
     {
-      printf ("==== CASE %lu ==========================\n\n", count);
+      printf("==== CASE %lu ===========================\n\n", count);
 
-      printf (" A = [ \n");
-      for (i = 0; i < N; i++)
-        for (j = 0; j < N; j++)
-          {
-            printf ("% 10.18g%s", gsl_matrix_get (A, i, j),
-                    (j < N - 1) ? "," : ";\n");
-          }
-      printf ("]\n\n");
+      print_matrix(A, "A");
 
-      printf ("=== eval - lapack dgees ===\n");
-      dump_eval (expected);
+      printf("=== Schur Form matrix ===\n");
+      print_matrix(T, "T");
 
-      printf ("=== eval - alken ===\n");
-      dump_eval (obs);
+      printf("=== Similarity matrix ===\n");
+      print_matrix(Z, "Z");
 
-      printf("max abserr = %g  max relerr = %g\n", max_abserr, max_relerr);
+      printf("=== A Z ===\n");
+      print_matrix(T1, "A Z");
 
-      printf ("==================================\n\n");
+      printf("=== Z T ===\n");
+      print_matrix(T2, "Z T");
+
+      printf("=== A Z - Z T ===\n");
+      gsl_matrix_sub(T1, T2);
+      print_matrix(T1, "A Z - Z T");
+
+      printf("=========================================\n\n");
     }
 
+  gsl_matrix_free(T1);
+  gsl_matrix_free(T2);
+
   return k;
-}
+} /* test_Z() */
+
+int
+test_eigenvectors(gsl_matrix *A, gsl_vector_complex *eval,
+                  gsl_matrix_complex *evec)
+{
+  const size_t N = A->size1;
+  size_t i, j;
+  int k, s;
+  gsl_matrix_complex *m;
+  gsl_vector_complex *x, *y;
+  gsl_complex z_one, z_zero;
+
+  m = gsl_matrix_complex_alloc(N, N);
+  y = gsl_vector_complex_alloc(N);
+  x = gsl_vector_complex_alloc(N);
+
+  /* m <- A */
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          gsl_complex z;
+
+          GSL_SET_COMPLEX(&z, gsl_matrix_get(A, i, j), 0.0);
+          gsl_matrix_complex_set(m, i, j, z);
+        }
+    }
+
+  GSL_SET_COMPLEX(&z_one, 1.0, 0.0);
+  GSL_SET_COMPLEX(&z_zero, 0.0, 0.0);
+
+  s = 0;
+
+  /* check eigenvalues */
+  for (i = 0; i < N; ++i)
+    {
+      gsl_vector_complex_view vi = gsl_matrix_complex_column(evec, i);
+      gsl_complex ei = gsl_vector_complex_get(eval, i);
+      double norm = gsl_blas_dznrm2(&vi.vector);
+
+      /* check that eigenvector is normalized */
+      gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON, "case %u, normalized",
+                   count);
+
+      /* compute x = lambda * v */
+      gsl_vector_complex_memcpy(x, &vi.vector);
+      gsl_blas_zscal(ei, x);
+
+      /* compute y = A v */
+      gsl_blas_zgemv(CblasNoTrans, z_one, m, &vi.vector, z_zero, y);
+
+      k = 0;
+
+      /* now test if y = x */
+      for (j = 0; j < N; ++j)
+        {
+          gsl_complex z;
+          double lhs_r, lhs_i;
+          double rhs_r, rhs_i;
+
+          z = gsl_vector_complex_get(y, j);
+          lhs_r = GSL_REAL(z);
+          lhs_i = GSL_IMAG(z);
+
+          z = gsl_vector_complex_get(x, j);
+          rhs_r = GSL_REAL(z);
+          rhs_i = GSL_IMAG(z);
+
+          if (fabs(lhs_r - rhs_r) > 1e8 * GSL_DBL_EPSILON)
+            ++k;
+          if (fabs(lhs_i - rhs_i) > 1e8 * GSL_DBL_EPSILON)
+            ++k;
+        }
+
+      if (k)
+        {
+          s++;
+
+          printf("==== CASE %lu ===========================\n\n", count);
+
+          print_matrix(A, "A");
+
+          printf("eval = %f + %fi\n", GSL_REAL(ei), GSL_IMAG(ei));
+
+          print_vector(&vi.vector, "v");
+
+          print_vector(y, "Av");
+
+          print_vector(x, "ev_v");
+
+          printf("=========================================\n\n");
+        }
+    }
+
+  gsl_matrix_complex_free(m);
+  gsl_vector_complex_free(y);
+  gsl_vector_complex_free(x);
+
+  return s;
+} /* test_eigenvectors() */
 
 void
-my_error_handler (const char *reason, const char *file, int line, int err)
+my_error_handler(const char *reason, const char *file, int line,
+                 int err)
+
 {
-  printf ("[caught: %s:%d: errno=%d %s]\n", file, line, err, reason);
-}
+  printf("[caught: %s:%d: errno=%d %s]\n", file, line, err, reason);
+} /* my_error_handler() */
+
+int
+main(int argc, char *argv[])
+
+{
+  unsymm_workspace *unsymm_workspace_p;
+  size_t N;
+  int c;
+  gsl_matrix *A;
+  gsl_rng *r;
+  int incremental; /* incremental/random matrices */
+  int lower;  /* lower bound */
+  int upper;  /* upper bound */
+  unsigned int nmat;   /* number of matrices to solve */
+  int status;
+  int compute_z;
+  int do_balance;
+
+  gsl_ieee_env_setup();
+  gsl_rng_env_setup();
+
+  /*gsl_set_error_handler(&my_error_handler);*/
+
+  N = 30;
+  incremental = 0;
+  compute_z = 0;
+  do_balance = 0;
+  lower = -10;
+  upper = 10;
+  nmat = 0;
+
+  while ((c = getopt(argc, argv, "izbc:n:l:u:t:")) != (-1))
+    {
+      switch (c)
+        {
+          case 'i':
+            incremental = 1;
+            break;
+
+          case 'n':
+            N = strtol(optarg, NULL, 0);
+            break;
+
+          case 'l':
+            lower = strtol(optarg, NULL, 0);
+            break;
+
+          case 'u':
+            upper = strtol(optarg, NULL, 0);
+            break;
+
+          case 'c':
+            nmat = strtoul(optarg, NULL, 0);
+            break;
+
+          case 'b':
+            do_balance = 1;
+            break;
+
+          case 'z':
+            compute_z = 1;
+            break;
+
+          case '?':
+          default:
+            printf("usage: %s [-i] [-b] [-z] [-n size] [-l lower-bound] [-u upper-bound] [-c num]\n", argv[0]);
+            exit(1);
+            break;
+        } /* switch (c) */
+    }
+
+  A = gsl_matrix_alloc(N, N);
+  unsymm_workspace_p = unsymm_alloc(N, compute_z, do_balance);
+
+  if (!incremental)
+    r = gsl_rng_alloc(gsl_rng_default);
+  else
+  {
+    r = 0;
+    make_start_matrix(A, lower);
+  }
+
+  fprintf(stderr, "testing N = %d", N);
+  if (incremental)
+    fprintf(stderr, " incrementally");
+  else
+    fprintf(stderr, " randomly");
+
+  fprintf(stderr, " on element range [%d, %d]", lower, upper);
+
+  if (compute_z)
+    fprintf(stderr, ", with Schur vectors");
+
+  if (do_balance)
+    fprintf(stderr, ", with balancing");
+
+  fprintf(stderr, "\n");
+
+  while (1)
+    {
+      if (nmat && (count >= nmat))
+        break;
+
+      ++count;
+
+      if (!incremental)
+        make_random_matrix(A, r, lower, upper);
+      else
+        {
+          status = inc_matrix(A, lower, upper);
+          if (status)
+            break; /* all done */
+        }
+
+      /*if (count != 186979)
+        continue;*/
+
+      /* make copies of the matrix */
+      gsl_matrix_memcpy(unsymm_workspace_p->A, A);
+      gsl_matrix_memcpy(unsymm_workspace_p->A2, A);
+
+      /* compute eigenvalues with GSL code */
+
+      status = unsymm_proc(unsymm_workspace_p);
+
+      if (status != (int) N)
+        {
+          printf("=========== CASE %lu ============\n", count);
+          printf("Failed to converge: found %d eigenvalues\n", status);
+          print_matrix(A, "A");
+        }
+
+      /*gsl_eigen_unsymmv_sort(unsymm_workspace_p->evalv,
+                             unsymm_workspace_p->evec,
+                             GSL_EIGEN_SORT_ABS_ASC);*/
+
+      status = test_eigenvectors(A,
+                                 unsymm_workspace_p->evalv,
+                                 unsymm_workspace_p->evec);
+
+      sort_complex_vector(unsymm_workspace_p->eval);
+      sort_complex_vector(unsymm_workspace_p->evalv);
+
+      status = test_evals(unsymm_workspace_p->eval,
+                          unsymm_workspace_p->evalv,
+                          A,
+                          "unsymm",
+                          "unsymmv");
+
+      if (compute_z)
+        {
+          test_Z(A, unsymm_workspace_p->Z, unsymm_workspace_p->A);
+          test_Z(A, unsymm_workspace_p->Zv, unsymm_workspace_p->A2);
+        }
+    }
+
+  gsl_matrix_free(A);
+  unsymm_free(unsymm_workspace_p);
+
+  if (r)
+    gsl_rng_free(r);
+
+  return 0;
+} /* main() */

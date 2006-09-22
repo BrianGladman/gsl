@@ -3,7 +3,7 @@ noinst_LTLIBRARIES = libgsleigen.la
 check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_eigen.h
-libgsleigen_la_SOURCES =  jacobi.c symm.c symmv.c unsymm.c herm.c hermv.c sort.c francis.c schur.c
+libgsleigen_la_SOURCES =  jacobi.c symm.c symmv.c unsymm.c unsymmv.c herm.c hermv.c sort.c francis.c schur.c
 INCLUDES= -I$(top_builddir)
 
 noinst_HEADERS =  qrstep.c 
