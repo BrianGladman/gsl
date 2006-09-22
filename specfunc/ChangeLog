@@ -1,3 +1,10 @@
+2006-09-22  Brian Gough  <bjg@network-theory.co.uk>
+
+	* zeta.c (gsl_sf_zeta_e): make sin_term exactly zero for negative
+	even integers
+	(gsl_sf_zetam1_int_e): return value is -1 for zetam1_int with
+	negative even integers
+
 2006-03-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fermi_dirac.c (fd_neg): initialize s to zero (avoid spurious

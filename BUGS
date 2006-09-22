@@ -48,6 +48,32 @@ int main (void)
 }
 
 The correct value is -2.
+
+See also, 
+
+From: Olaf Wucknitz <wucknitz@jive.nl>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] gsl_sf_hyperg_2F1
+
+Hi,
+
+I am having a problem with gsl_sf_hyperg_2F1.
+With the parameters (-0.5, 0.5, 1, x) the returned values show a jump at 
+x=0.5. For x<0.5 the results seem to be correct, while for x>0.5 they 
+aren't.
+The function gsl_sf_hyperg_2F1_e calls hyperg_2F1_series for x<0.5, but
+hyperg_2F1_reflect for x>0.5. The latter function checks for c-a-b being 
+an integer (which it is in my case). If I change one of the parameters 
+a,b,c by a small amount, the other branch of the function is taken and the 
+results are correct again.
+Unfortunately I know too little about the numerics of 2F1 to suggest a 
+patch at the moment.
+
+Regards,
+Olaf Wucknitz
+-- 
+Joint Institute for VLBI in Europe                wucknitz@jive.nl
+
 ----------------------------------------------------------------------
 BUG#20 -- underflow in gsl_sf_legendre_sphPlm functions
 
@@ -548,5 +574,95 @@ gsl_cheb_eval_mode_e and gsl_cheb_err compute the error in an
 inconsistent way.  Also it would be better to compute the error more
 exactly in the recurrence rather than just adding |c_i|.
 
+----------------------------------------------------------------------
+BUG#49 - fdjacobian step size causes problems
+
+From: eknecronzontas <eknecronzontas@yahoo.com>
+To: help-gsl@gnu.org
+Subject: [Help-gsl] Bug (or not?) in multiroots/fdjacobian.c
+Date: Thu, 8 Jun 2006 13:38:49 -0700 (PDT)
+
+Since I can't quite decide if this is a bug, I'll post
+it here first...
+
+The stepsize for finite-differencing in
+gsl-1.8/multiroots/fdjacobian.c is specified by the
+lines
+
+> double xj = gsl_vector_get (x, j);
+> double dx = epsrel * fabs (xj);
+
+This is, of course mathematically correct.
+Nevertheless, the behavior is less than ideal if one
+of the elements of the vector 'x' is sufficiently
+small. This occurs often if one component of the root
+happens to be zero. If this occurs, then 'dx' can be
+so small that one of the columns of the Jacobian is
+identically zero. This immediately leads to NAN's
+which are not easy to trace.
+
 ---------------------------------------------------------------------
-Last assigned bug number = 48
+BUG#50 - gsl_linalg_solve_symm_tridiag requires positive definite matrix
+
+A zero on the diagonal will cause NaNs even though a reasonable
+solution could be computed in principle. 
+
+#include <gsl/gsl_linalg.h>
+
+int main (void)
+{
+  double d[] = { 0.00, 1.21, 0.80, 1.55, 0.76 } ;
+  double e[] = { 0.82, 0.39, 0.09, 0.68 } ;
+  double b[] = { 0.07, 0.62, 0.81, 0.11, 0.65} ;
+  double x[] = { 0.00, 0.00, 0.00, 0.00, 0.00} ;
+
+  gsl_vector_view dv = gsl_vector_view_array(d, 5);
+  gsl_vector_view ev = gsl_vector_view_array(e, 4);
+  gsl_vector_view bv = gsl_vector_view_array(b, 5);
+  gsl_vector_view xv = gsl_vector_view_array(x, 5);
+
+  gsl_linalg_solve_symm_tridiag(&dv.vector, &ev.vector, &bv.vector, &xv.vector);
+  gsl_vector_fprintf(stdout, &xv.vector, "% .5f");
+
+  d[0] += 1e-5;
+  gsl_linalg_solve_symm_tridiag(&dv.vector, &ev.vector, &bv.vector, &xv.vector);
+  gsl_vector_fprintf(stdout, &xv.vector, "% .5f");
+}
+
+$ ./a.out
+ nan
+ nan
+ nan
+ nan
+ nan
+ 0.13626
+ 0.08536
+ 1.03840
+-0.60009
+ 1.39219
+
+
+----------------------------------------------------------------------
+BUG#51 - matrix max/min functions do not handle NaN (BJG)
+
+The max and min functions should return Nan for any nan entries, to
+allow Nans to propagate. Otherwise there are problems if the first
+entry is Nan, because then the comparisons against other elements are
+not-intuitive.
+
+----------------------------------------------------------------------
+BUG#52 - beta functions do not handle negative arguments 
+
+The beta functions (complete and incomplete) are well defined for
+negative arguments in terms of the gamma function but return domain
+errors or nans.  The relation of I_x(a,b,x) = (1/a) x^a 2F1(a,1-b,a+1,x)/B(a,b)
+could be documented even if it is not implemented.
+
+----------------------------------------------------------------------
+BUG#53 - gsl_sf_zetam1_int(-2) returns incorrect results FIXED
+
+gsl_sf_zetam1_int(-2) returns 0.0, the correct value is -1.0
+
+
+----------------------------------------------------------------------
+Last assigned bug number = 53
