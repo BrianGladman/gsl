@@ -1,3 +1,9 @@
+2006-09-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* laguerre.c (laguerre_large_n): work with small angles to avoid
+	cancellation error, computer angular reduction exactly for integer
+	eta.
+
 2006-09-22  Brian Gough  <bjg@network-theory.co.uk>
 
 	* zeta.c (gsl_sf_zeta_e): make sin_term exactly zero for negative

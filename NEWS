@@ -1,3 +1,6 @@
+** Fixed cancellation error in gsl_sf_laguerre_n for n > 1e7 so that
+larger arguments can be calculated without loss of precision.
+
 ** Improved gsl_sf_zeta_e to return exactly zero for negative even
 integers, avoiding less accurate trigonometric reduction.
 

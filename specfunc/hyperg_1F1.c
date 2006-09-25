@@ -377,7 +377,7 @@ hyperg_1F1_renorm_b0(const double a, const double x, gsl_sf_result * result)
       return GSL_ERROR_SELECT_2(stat_I, GSL_EDOM);
     }
     else {
-      const double lnr_val = 0.5*x + 0.5*log(eta) + fabs(x) + log(I1_scaled.val);
+      const double lnr_val = 0.5*x + 0.5*log(eta) + fabs(2*root_eta) + log(I1_scaled.val);
       const double lnr_err = GSL_DBL_EPSILON * (1.5*fabs(x) + 1.0) + fabs(I1_scaled.err/I1_scaled.val);
       return gsl_sf_exp_err_e(lnr_val, lnr_err, result);
     }

@@ -44,7 +44,7 @@ laguerre_large_n(const int n, const double alpha, const double x,
   const double eta    = 2.0*b - 4.0*a;
   const double cos2th = x/eta;
   const double sin2th = 1.0 - cos2th;
-  const double th = acos(sqrt(cos2th));
+  const double eps = asin(sqrt(cos2th));  /* theta = pi/2 - eps */
   const double pre_h  = 0.25*M_PI*M_PI*eta*eta*cos2th*sin2th;
   gsl_sf_result lg_b;
   gsl_sf_result lnfact;
@@ -54,8 +54,11 @@ laguerre_large_n(const int n, const double alpha, const double x,
   double pre_term2 = 0.25*log(pre_h);
   double lnpre_val = lg_b.val - lnfact.val + 0.5*x + pre_term1 - pre_term2;
   double lnpre_err = lg_b.err + lnfact.err + GSL_DBL_EPSILON * (fabs(pre_term1)+fabs(pre_term2));
-  double ser_term1 = sin(a*M_PI);
-  double ser_term2 = sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
+  double ser_term1 = (fmod(a, 1.0) == 0.0) ? 0.0 : sin(a*M_PI);
+  double eta_reduc = (fmod(eta + 1, 4.0) == 0.0) ? 0.0 : fmod(eta + 1, 8.0);
+  double phi1 = 0.25*eta_reduc*M_PI;
+  double phi2 = 0.25*eta*(2*eps + sin(2.0*eps));
+  double ser_term2 = sin(phi1 - phi2);
   double ser_val = ser_term1 + ser_term2;
   double ser_err = GSL_DBL_EPSILON * (fabs(ser_term1) + fabs(ser_term2));
   int stat_e = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err, ser_val, ser_err, result);
