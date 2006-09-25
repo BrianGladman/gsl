@@ -662,7 +662,23 @@ could be documented even if it is not implemented.
 BUG#53 - gsl_sf_zetam1_int(-2) returns incorrect results FIXED
 
 gsl_sf_zetam1_int(-2) returns 0.0, the correct value is -1.0
+----------------------------------------------------------------------
+BUG#54 - gsl_sf_laguerre_n_e is less accurate for large n
 
+gsl_sf_laguerre_n_e (1e6+1, 2.5, 2.5, &r) should be
+1529948.468637081 instead of 1528526.058500812, and the estimated
+error is too small.
+----------------------------------------------------------------------
+BUG#55 - gsl_sf_hyperg_1F1 fails for some arguments
+
+gsl_sf_hyperg_1F1_e(1.2, 1.1e-15, 1.5, &r) should be
+8254503159672429.02 instead of 7670992068136820
+
+gsl_sf_hyperg_1F1_e(1.0, 1000000.5, 0.8e6 + 0.5, &r) should be
+4.999922505099443804e+00 instead of 0
+
+gsl_sf_hyperg_1F1_e(1.0, 1000000.5, 1001000.5, &r) should be
+3.482610634176769963e+03 instead of 0
 
 ----------------------------------------------------------------------
 Last assigned bug number = 53
