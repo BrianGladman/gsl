@@ -5,8 +5,8 @@
 int
 main (void)
 {
-  double data[] = { 1.0, 1.0, 1.0, 1.0,
-                    8.0, 4.0, 2.0, 1.0,
+  double data[] = { -1.0, 1.0, -1.0, 1.0,
+                    -8.0, 4.0, -2.0, 1.0,
                     27.0, 9.0, 3.0, 1.0,
                     64.0, 16.0, 4.0, 1.0 };
 
@@ -24,7 +24,7 @@ main (void)
   gsl_eigen_unsymmv_free (w);
 
   gsl_eigen_unsymmv_sort (eval, evec, 
-                          GSL_EIGEN_SORT_ABS_ASC);
+                          GSL_EIGEN_SORT_ABS_DESC);
   
   {
     int i, j;
@@ -46,6 +46,9 @@ main (void)
           }
       }
   }
+
+  gsl_vector_complex_free(eval);
+  gsl_matrix_complex_free(evec);
 
   return 0;
 }

@@ -368,7 +368,7 @@ sign of an eigenvector is arbitrary.
 The following program illustrates the use of the unsymmetric
 eigensolver, by computing the eigenvalues and eigenvectors of
 the Vandermonde matrix @math{V(x;i,j) = x_i^{n - j}} with
-@math{x = (1,2,3,4)}.
+@math{x = (-1,-2,3,4)}.
 
 @example
 @verbatiminclude examples/eigen_unsymm.c
@@ -379,12 +379,18 @@ Here is the beginning of the output from the program,
 
 @example
 $ ./a.out 
-eigenvalue = 15.4897 + 0i
+eigenvalue = -6.41391 + 0i
 eigenvector = 
-0.106363 + 0i
-0.228569 + 0i
-0.462688 + 0i
-0.849919 + 0i
+-0.0998822 + 0i
+-0.111251 + 0i
+0.292501 + 0i
+0.944505 + 0i
+eigenvalue = 5.54555 + 3.08545i
+eigenvector = 
+-0.043487 + -0.0076308i
+0.0642377 + -0.142127i
+-0.515253 + 0.0405118i
+-0.840592 + -0.00148565i
 ...
 @end example
 
@@ -392,23 +398,37 @@ eigenvector =
 This can be compared with the corresponding output from @sc{gnu octave},
 
 @example
-octave> [v,d] = eig(vander([1 2 3 4]));
+octave> [v,d] = eig(vander([-1 -2 3 4]));
 octave> diag(d)
 ans =
 
-   15.489740
-   -7.706289
-    1.294224
-   -0.077675
+  -6.4139 + 0.0000i
+   5.5456 + 3.0854i
+   5.5456 - 3.0854i
+   2.3228 + 0.0000i
 
 octave> v
 v =
 
-   0.106363   0.137820  -0.129196   0.052254
-   0.228569   0.036136   0.407586  -0.375568
-   0.462688  -0.289537   0.376326   0.794157
-   0.849919  -0.946503  -0.821925  -0.474902
+ Columns 1 through 3:
+
+  -0.09988 + 0.00000i  -0.04350 - 0.00755i  -0.04350 + 0.00755i
+  -0.11125 + 0.00000i   0.06399 - 0.14224i   0.06399 + 0.14224i
+   0.29250 + 0.00000i  -0.51518 + 0.04142i  -0.51518 - 0.04142i
+   0.94451 + 0.00000i  -0.84059 + 0.00000i  -0.84059 - 0.00000i
+
+ Column 4:
+
+  -0.14493 + 0.00000i
+   0.35660 + 0.00000i
+   0.91937 + 0.00000i
+   0.08118 + 0.00000i
+
 @end example
+Note that the eigenvectors corresponding to the eigenvalue
+@math{5.54555 + 3.08545i} are slightly different. This is because
+they differ by the multiplicative constant
+@math{0.9999984 + 0.0017674i} which has magnitude 1.
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading

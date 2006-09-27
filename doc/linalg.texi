@@ -964,7 +964,7 @@ A' = D^(-1) A D
 
 @end ifinfo
 where @math{D} is a diagonal matrix whose entries are powers
-of the floating point radix in order to reduce roundoff error.
+of the floating point radix.
 
 @deftypefun int gsl_linalg_balance_matrix (gsl_matrix * @var{A}, gsl_vector * @var{D})
 This function replaces the matrix @var{A} with its balanced counterpart
