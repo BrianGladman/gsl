@@ -15,5 +15,7 @@ main (void)
    }
   while (gsl_permutation_next(p) == GSL_SUCCESS);
 
+  gsl_permutation_free (p);
+
   return 0;
 }

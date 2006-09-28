@@ -43,5 +43,8 @@ main (void)
       }
   }
 
+  gsl_vector_free (eval);
+  gsl_matrix_free (evec);
+
   return 0;
 }

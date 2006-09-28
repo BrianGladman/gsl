@@ -30,5 +30,6 @@ main (void)
     }
 
   printf ("\n");
+  gsl_rng_free (r);
   return 0;
 }

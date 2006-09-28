@@ -46,5 +46,7 @@ main (void)
               iter, x, x - r_expected, x - x0);
     }
   while (status == GSL_CONTINUE && iter < max_iter);
+
+  gsl_root_fdfsolver_free (s);
   return status;
 }

@@ -51,5 +51,8 @@ main (void)
               x_hi - x_lo);
     }
   while (status == GSL_CONTINUE && iter < max_iter);
+
+  gsl_root_fsolver_free (s);
+
   return status;
 }

@@ -22,5 +22,8 @@ main (void)
 
       printf ("%g %g %g\n", x, y0 + dy, sigma);
     }
+
+  gsl_rng_free(r);
+
   return 0;
 }

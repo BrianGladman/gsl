@@ -39,7 +39,12 @@ main (void)
       
       printf ("%g %g\n", x, y);
     }
+
+    gsl_histogram2d_pdf_free (p);
   }
-  
- return 0;
+
+  gsl_histogram2d_free (h);
+  gsl_rng_free (r);
+
+  return 0;
 }

@@ -23,5 +23,7 @@ main (void)
       x += dx; y += dy; 
       printf ("%g %g\n", x, y);
     }
+
+  gsl_rng_free (r);
   return 0;
 }

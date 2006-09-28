@@ -97,6 +97,8 @@ main (void)
   printf ("status = %s\n", gsl_strerror (status));
 
   gsl_multifit_fdfsolver_free (s);
+  gsl_matrix_free (covar);
+  gsl_rng_free (r);
   return 0;
 }
 

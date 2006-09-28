@@ -59,5 +59,7 @@ main (void)
     }
   while (status == GSL_CONTINUE && iter < max_iter);
 
+  gsl_min_fminimizer_free (s);
+
   return status;
 }

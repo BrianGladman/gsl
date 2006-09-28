@@ -17,5 +17,7 @@ main (void)
      gsl_vector_fprintf (f, v, "%.5g");
      fclose (f);
   }
+
+  gsl_vector_free (v);
   return 0;
 }

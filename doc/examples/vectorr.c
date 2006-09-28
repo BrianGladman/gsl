@@ -18,5 +18,6 @@ main (void)
       printf ("%g\n", gsl_vector_get(v, i));
     }
 
+  gsl_vector_free (v);
   return 0;
 }

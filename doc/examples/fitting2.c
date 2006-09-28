@@ -69,5 +69,12 @@ main (int argc, char **argv)
                COV(2,0), COV(2,1), COV(2,2));
     printf ("# chisq = %g\n", chisq);
   }
+
+  gsl_matrix_free (X);
+  gsl_vector_free (y);
+  gsl_vector_free (w);
+  gsl_vector_free (c);
+  gsl_matrix_free (cov);
+
   return 0;
 }

@@ -32,6 +32,9 @@ main (void)
         if (mij != aij) k++;
       }
 
+  gsl_matrix_free (m);
+  gsl_matrix_free (a);
+
   printf ("differences = %d (should be zero)\n", k);
   return (k > 0);
 }

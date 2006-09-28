@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gsl/gsl_siman.h>
 
 /* set up parameters for this simulated annealing run */
@@ -75,5 +76,7 @@ main(int argc, char *argv[])
   gsl_siman_solve(r, &x_initial, E1, S1, M1, P1,
                   NULL, NULL, NULL, 
                   sizeof(double), params);
+
+  gsl_rng_free (r);
   return 0;
 }

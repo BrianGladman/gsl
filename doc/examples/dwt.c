@@ -43,4 +43,12 @@ main (int argc, char **argv)
     {
       printf ("%g\n", data[i]);
     }
+  
+  gsl_wavelet_free (w);
+  gsl_wavelet_workspace_free (work);
+
+  free (data);
+  free (abscoeff);
+  free (p);
+  return 0;
 }

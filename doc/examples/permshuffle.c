@@ -32,5 +32,9 @@ main (void)
   gsl_permutation_fprintf (stdout, q, " %u");
   printf ("\n");
 
+  gsl_permutation_free (p);
+  gsl_permutation_free (q);
+  gsl_rng_free (r);
+
   return 0;
 }

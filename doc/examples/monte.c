@@ -99,5 +99,8 @@ main (void)
 
     gsl_monte_vegas_free (s);
   }
+
+  gsl_rng_free (r);
+
   return 0;
 }

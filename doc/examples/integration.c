@@ -31,5 +31,7 @@ main (void)
   printf ("actual error    = % .18f\n", result - expected);
   printf ("intervals =  %d\n", w->size);
 
+  gsl_integration_workspace_free (w);
+
   return 0;
 }

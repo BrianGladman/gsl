@@ -37,5 +37,7 @@ main (void)
     }
   
   gsl_ntuple_close (ntuple);
+  gsl_rng_free (r);
+
   return 0;
 }

@@ -30,5 +30,9 @@ main (void)
     {
       printf ("%d: %.18f\n", i, small[i]);
     }
+
+  free (x);
+  free (small);
+  gsl_rng_free (r);
   return 0;
 }
