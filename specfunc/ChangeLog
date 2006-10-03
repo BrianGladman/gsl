@@ -1,3 +1,9 @@
+2006-10-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* poch.c (gsl_sf_lnpoch_e, gsl_sf_lnpoch_sgn_e): corrected
+	result->val to 0.0 for x==0, previously returned incorrect value
+	1.0
+
 2006-09-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* laguerre.c (laguerre_large_n): work with small angles to avoid

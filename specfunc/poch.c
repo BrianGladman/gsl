@@ -286,7 +286,7 @@ gsl_sf_lnpoch_e(const double a, const double x, gsl_sf_result * result)
     DOMAIN_ERROR(result);
   }
   else if(x == 0.0) {
-    result->val = 1.0;
+    result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
   }
@@ -306,7 +306,7 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x,
   }
   else if(x == 0.0) {
     *sgn = 1.0;
-    result->val = 1.0;
+    result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
   }

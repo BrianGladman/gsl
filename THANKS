@@ -261,7 +261,7 @@ minimisers.
 
 * Carlo Ferrigno <ferrigno@pa.iasf.cnr.it> bug report for CGS units
 
-* Giulio Bottazzi <bottazzi@sssup.it> documentation bug reports
+* Giulio Bottazzi <bottazzi@sssup.it> many useful bug reports
 
 * Olaf Lenz <olenz@Physik.Uni-Bielefeld.DE> rng frwite/fread, bug reports
 
@@ -380,3 +380,10 @@ power distribution and gsl_multifit_linear_est
 * Lowell Johnson <ldj00@sio.midco.net> - implementation of mathieu functions
 
 * Brian Gladman <brg@gladman.plus.com> - useful bug reports
+
+* B. Lazarov <bsl@mek.dtu.dk> - compilation bug report for randist
+
+* Harald Moseby <harald.moseby@fnh.no> - special functions bug reports
+
+* Neil Harvey <neilharvey@gmail.com> - bug report for beta pdf
+
