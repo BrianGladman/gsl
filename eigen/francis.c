@@ -55,8 +55,8 @@ static inline void francis_schur_standardize(gsl_matrix *A,
                                              gsl_complex *eval1,
                                              gsl_complex *eval2,
                                              gsl_eigen_francis_workspace *w);
-static inline void get_submatrix_indices(gsl_matrix *A, gsl_matrix *B,
-                                         size_t *top, size_t *bot);
+static inline void francis_get_submatrix(gsl_matrix *A, gsl_matrix *B,
+                                         size_t *top);
 
 
 /*
@@ -148,12 +148,11 @@ Inputs: H    - upper hessenberg matrix
         eval - where to store eigenvalues
         w    - workspace
 
-Return: number of eigenvalues found (if this is not equal to
-        N, then the QR procedure did not converge in the
-        allowed number of iterations). In the event of non-
+Return: success or error - if error code is returned,
+        then the QR procedure did not converge in the
+        allowed number of iterations. In the event of non-
         convergence, the number of eigenvalues found will
-        still be stored in the first 's' slots of eval,
-        where 's' is the value returned by this function.
+        still be stored in the beginning of eval,
 
 Notes: On output, the diagonal of H contains 1-by-1 or 2-by-2
        blocks containing the eigenvalues. If T is desired,
@@ -217,7 +216,10 @@ gsl_eigen_francis (gsl_matrix * H, gsl_vector_complex * eval,
        */
       francis_schur_decomp(H, eval, w);
 
-      return ((int) w->n_evals);
+      if (w->n_evals != N)
+        return GSL_EMAXITER;
+
+      return GSL_SUCCESS;
     }
 } /* gsl_eigen_francis() */
 
@@ -479,7 +481,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
   gsl_matrix_view m;
   double tau_i;    /* householder coefficient */
   size_t q, r;
-  size_t top, bot; /* location of H in original matrix */
+  size_t top;      /* location of H in original matrix */
   double s,
          disc;
   double h_nn,     /* H(n,n) */
@@ -568,7 +570,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
        * get absolute indices of this (sub)matrix relative to the
        * original Hessenberg matrix
        */
-      get_submatrix_indices(w->H, H, &top, &bot);
+      francis_get_submatrix(w->H, H, &top);
     }
 
   for (i = 0; i < N - 2; ++i)
@@ -749,27 +751,26 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
                           gsl_complex *eval2,
                           gsl_eigen_francis_workspace *w)
 {
-  size_t top, bot;
+  size_t top;
 
   /*
    * figure out where the submatrix A resides in the
    * original matrix H
    */
-  get_submatrix_indices(w->H, A, &top, &bot);
+  francis_get_submatrix(w->H, A, &top);
 
   /* convert A to standard form and store eigenvalues */
   gsl_schur_standardize(w->H, top, eval1, eval2, w->compute_t, w->Z);
 } /* francis_schur_standardize() */
 
 /*
-get_submatrix_indices()
+francis_get_submatrix()
   B is a submatrix of A. The goal of this function is to
 compute the indices in A of where the matrix B resides
 */
 
 static inline void
-get_submatrix_indices(gsl_matrix *A, gsl_matrix *B,
-                      size_t *top, size_t *bot)
+francis_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
 {
   size_t diff;
   double ratio;
@@ -779,5 +780,4 @@ get_submatrix_indices(gsl_matrix *A, gsl_matrix *B,
   ratio = (double)diff / ((double) (A->tda + 1));
 
   *top = (size_t) floor(ratio);
-  *bot = *top + B->size1 - 1;
-} /* get_submatrix_indices() */
+} /* francis_get_submatrix() */

@@ -2,7 +2,7 @@
  * testunsymm.c
  * Patrick Alken
  *
- * Compile: gcc -g -O2 -Wall -lm -lgsl -llapack -lf77blas -lcblas -latlas -lg2c
+ * Compile: gcc -g -O2 -Wall -o testunsymm testunsymm.c -lm -lgsl -lcblas -latlas
  *
  * Usage: testunsymm [options]
  *
@@ -40,7 +40,7 @@ typedef struct
   gsl_eigen_unsymm_workspace *unsymm_p;
   gsl_eigen_unsymmv_workspace *unsymmv_p;
   gsl_matrix *A;
-  gsl_matrix *A2;
+  gsl_matrix *Av;
   gsl_vector_complex *eval;
   gsl_vector_complex *evalv;
   gsl_matrix_complex *evec;
@@ -48,6 +48,8 @@ typedef struct
   int compute_z;
   gsl_matrix *Z;
   gsl_matrix *Zv;
+
+  size_t n_evals;
 } unsymm_workspace;
 
 unsymm_workspace *unsymm_alloc(size_t n, int compute_z, int do_balance);
@@ -83,10 +85,6 @@ int test_eigenvectors(gsl_matrix *A, gsl_vector_complex *eval,
 void my_error_handler(const char *reason, const char *file, int line,
                       int err);
 
-/**********************************************
- * GSL routines
- **********************************************/
-
 unsymm_workspace *
 unsymm_alloc(size_t n, int compute_z, int do_balance)
 
@@ -101,7 +99,7 @@ unsymm_alloc(size_t n, int compute_z, int do_balance)
   w->unsymmv_p = gsl_eigen_unsymmv_alloc(n);
 
   w->A = gsl_matrix_alloc(n, n);
-  w->A2 = gsl_matrix_alloc(n, n);
+  w->Av = gsl_matrix_alloc(n, n);
 
   if (compute_z)
     {
@@ -137,8 +135,8 @@ unsymm_free(unsymm_workspace *w)
   if (w->A)
     gsl_matrix_free(w->A);
 
-  if (w->A2)
-    gsl_matrix_free(w->A2);
+  if (w->Av)
+    gsl_matrix_free(w->Av);
 
   if (w->Z)
     gsl_matrix_free(w->Z);
@@ -167,16 +165,20 @@ unsymm_proc(unsymm_workspace *w)
   if (w->compute_z)
     {
       s1 = gsl_eigen_unsymm_Z(w->A, w->eval, w->Z, w->unsymm_p);
-      s2 = gsl_eigen_unsymmv_Z(w->A2, w->evalv, w->evec, w->Zv, w->unsymmv_p);
+      s2 = gsl_eigen_unsymmv_Z(w->Av, w->evalv, w->evec, w->Zv, w->unsymmv_p);
     }
   else
     {
       s1 = gsl_eigen_unsymm(w->A, w->eval, w->unsymm_p);
-      s2 = gsl_eigen_unsymmv(w->A2, w->evalv, w->evec, w->unsymmv_p);
+      s2 = gsl_eigen_unsymmv(w->Av, w->evalv, w->evec, w->unsymmv_p);
     }
 
-  s = s1;
-  if (s > s2)
+  w->n_evals = w->unsymm_p->n_evals;
+
+  s = 0;
+  if (s1)
+    s = s1;
+  else if (s2)
     s = s2;
 
   return s;
@@ -767,27 +769,23 @@ main(int argc, char *argv[])
             break; /* all done */
         }
 
-      /*if (count != 186979)
-        continue;*/
-
       /* make copies of the matrix */
       gsl_matrix_memcpy(unsymm_workspace_p->A, A);
-      gsl_matrix_memcpy(unsymm_workspace_p->A2, A);
-
-      /* compute eigenvalues with GSL code */
+      gsl_matrix_memcpy(unsymm_workspace_p->Av, A);
 
       status = unsymm_proc(unsymm_workspace_p);
 
-      if (status != (int) N)
+      if (status)
         {
           printf("=========== CASE %lu ============\n", count);
-          printf("Failed to converge: found %d eigenvalues\n", status);
+          printf("Failed to converge: found %u eigenvalues\n",
+                 unsymm_workspace_p->n_evals);
           print_matrix(A, "A");
         }
 
-      /*gsl_eigen_unsymmv_sort(unsymm_workspace_p->evalv,
+      gsl_eigen_unsymmv_sort(unsymm_workspace_p->evalv,
                              unsymm_workspace_p->evec,
-                             GSL_EIGEN_SORT_ABS_ASC);*/
+                             GSL_EIGEN_SORT_ABS_ASC);
 
       status = test_eigenvectors(A,
                                  unsymm_workspace_p->evalv,
@@ -805,7 +803,7 @@ main(int argc, char *argv[])
       if (compute_z)
         {
           test_Z(A, unsymm_workspace_p->Z, unsymm_workspace_p->A);
-          test_Z(A, unsymm_workspace_p->Zv, unsymm_workspace_p->A2);
+          test_Z(A, unsymm_workspace_p->Zv, unsymm_workspace_p->Av);
         }
     }
 

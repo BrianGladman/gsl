@@ -140,8 +140,7 @@ Inputs: A    - general real matrix
         evec - where to store eigenvectors
         w    - workspace
 
-Return: number of eigenvalues found; if this number is less than
-        N, the QR algorithm failed and no eigenvectors are computed
+Return: success or error
 */
 
 int
@@ -200,7 +199,7 @@ gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
         }
 
       /* only compute eigenvectors if we found all eigenvalues */
-      if ((size_t) s == w->size)
+      if (s == GSL_SUCCESS)
         {
           /* compute eigenvectors */
           unsymmv_get_right_eigenvectors(A, &Z, eval, evec, w);
@@ -224,6 +223,8 @@ Inputs: A    - real unsymmetric matrix
         evec - where to store eigenvectors
         Z    - where to store Schur vectors
         w    - unsymmv workspace
+
+Return: success or error
 */
 
 int

@@ -30,8 +30,6 @@
 
 #include "schur.h"
 
-#define GSL_SCHUR_SMLNUM (GSL_DBL_MIN / GSL_DBL_EPSILON)
-
 /*
  * This module contains some routines related to manipulating the
  * Schur form of a matrix which are needed by the eigenvalue solvers

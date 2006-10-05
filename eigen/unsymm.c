@@ -152,7 +152,7 @@ Inputs: A    - general real matrix
         eval - where to store eigenvalues
         w    - workspace
 
-Return: number of eigenvalues found
+Return: success or error
 
 Notes: If T is computed, it is stored in A on output. Otherwise
        the diagonal of A contains the 1-by-1 and 2-by-2 eigenvalue
@@ -217,6 +217,8 @@ gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
           s = gsl_eigen_francis(A, eval, w->francis_workspace_p);
         }
 
+      w->n_evals = w->francis_workspace_p->n_evals;
+
       return s;
     }
 } /* gsl_eigen_unsymm() */
@@ -242,7 +244,7 @@ Inputs: A    - general real matrix
         Z    - where to store Schur vectors
         w    - workspace
 
-Return: number of eigenvalues found
+Return: success or error
 
 Notes: If T is computed, it is stored in A on output. Otherwise
        the diagonal of A contains the 1-by-1 and 2-by-2 eigenvalue

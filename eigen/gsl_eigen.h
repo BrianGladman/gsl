@@ -89,6 +89,7 @@ typedef struct {
   gsl_vector *tau;             /* Householder coefficients */
   gsl_matrix *Z;               /* pointer to Z matrix */
   int do_balance;              /* perform balancing transformation? */
+  size_t n_evals;              /* number of eigenvalues found */
 
   gsl_eigen_francis_workspace *francis_workspace_p;
 } gsl_eigen_unsymm_workspace;

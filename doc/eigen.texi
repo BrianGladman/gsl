@@ -223,10 +223,10 @@ desired, it is stored in the upper portion of @var{A} on output.
 Otherwise, on output, the diagonal of @var{A} will contain the
 @math{1}-by-@math{1} real eigenvalues and @math{2}-by-@math{2}
 complex conjugate eigenvalue systems, and the rest of @var{A} is
-destroyed. This function returns the number of eigenvalues found.
-If this value is not equal to @var{n} (rare), then too many iterations
-occured without finding a new eigenvalue. In this case the converged
-eigenvalues are stored in the beginning of the vector @var{eval}.
+destroyed. In rare cases, this function will fail to find all
+eigenvalues. If this happens, an error code is returned
+and the number of converged eigenvalues is stored in @code{w->n_evals}.
+The converged eigenvalues are stored in the beginning of @var{eval}.
 @end deftypefun
 
 @deftypefun int gsl_eigen_unsymm_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix * @var{Z}, gsl_eigen_unsymm_workspace * @var{w})
@@ -251,7 +251,10 @@ This function computes eigenvalues and right eigenvectors of the
 Schur vectors. Then it finds eigenvectors of @math{T} and backtransforms
 them using the Schur vectors. The Schur vectors are destroyed in the
 process, but can be saved by using @code{gsl_eigen_unsymmv_Z}. The
-computed eigenvectors are normalized to have Euclidean norm 1.
+computed eigenvectors are normalized to have Euclidean norm 1. On
+output, the upper portion of @var{A} contains the Schur form
+@math{T}. If @code{gsl_eigen_unsymm} fails, no eigenvectors are
+computed, and an error code is returned.
 @end deftypefun
 
 @deftypefun int gsl_eigen_unsymmv_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_matrix * @var{Z}, gsl_eigen_unsymmv_workspace * @var{w})
