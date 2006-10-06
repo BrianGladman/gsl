@@ -57,7 +57,7 @@ These routines compute the fifth-order Debye function
 
 @deftypefun double gsl_sf_debye_6 (double @var{x})
 @deftypefunx int gsl_sf_debye_6_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the fourth-order Debye function 
+These routines compute the sixth-order Debye function 
 @math{D_6(x) = (6/x^6) \int_0^x dt (t^6/(e^t - 1))}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
