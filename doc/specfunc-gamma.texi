@@ -38,8 +38,8 @@ described in this section are declared in the header file
 
 @deftypefun double gsl_sf_gamma (double @var{x})
 @deftypefunx int gsl_sf_gamma_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Gamma function @math{\Gamma(x)}, subject to x
-not being a negative integer.  The function is computed using the real
+These routines compute the Gamma function @math{\Gamma(x)}, subject to @math{x}
+not being a negative integer or zero.  The function is computed using the real
 Lanczos method. The maximum value of @math{x} such that @math{\Gamma(x)} is not
 considered an overflow is given by the macro @code{GSL_SF_GAMMA_XMAX}
 and is 171.0.
@@ -50,8 +50,8 @@ and is 171.0.
 @deftypefunx int gsl_sf_lngamma_e (double @var{x}, gsl_sf_result * @var{result})
 @cindex logarithm of Gamma function
 These routines compute the logarithm of the Gamma function,
-@math{\log(\Gamma(x))}, subject to @math{x} not a being negative
-integer.  For @math{x<0} the real part of @math{\log(\Gamma(x))} is
+@math{\log(\Gamma(x))}, subject to @math{x} not being a negative
+integer or zero.  For @math{x<0} the real part of @math{\log(\Gamma(x))} is
 returned, which is equivalent to @math{\log(|\Gamma(x)|)}.  The function
 is computed using the real Lanczos method.
 @comment exceptions: GSL_EDOM, GSL_EROUND
@@ -59,7 +59,7 @@ is computed using the real Lanczos method.
 
 @deftypefun int gsl_sf_lngamma_sgn_e (double @var{x}, gsl_sf_result * @var{result_lg}, double * @var{sgn})
 This routine computes the sign of the gamma function and the logarithm of
-its magnitude, subject to @math{x} not being a negative integer.  The
+its magnitude, subject to @math{x} not being a negative integer or zero.  The
 function is computed using the real Lanczos method.  The value of the
 gamma function can be reconstructed using the relation @math{\Gamma(x) =
 sgn * \exp(resultlg)}.
@@ -103,7 +103,7 @@ These routines compute the reciprocal of the gamma function,
 @deftypefun int gsl_sf_lngamma_complex_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{lnr}, gsl_sf_result * @var{arg})
 @cindex Complex Gamma function
 This routine computes @math{\log(\Gamma(z))} for complex @math{z=z_r+i
-z_i} and @math{z} not a negative integer, using the complex Lanczos
+z_i} and @math{z} not a negative integer or zero, using the complex Lanczos
 method.  The returned parameters are @math{lnr = \log|\Gamma(z)|} and
 @math{arg = \arg(\Gamma(z))} in @math{(-\pi,\pi]}.  Note that the phase
 part (@var{arg}) is not well-determined when @math{|z|} is very large,
@@ -199,7 +199,7 @@ These routines compute the Taylor coefficient @math{x^n / n!} for
 @cindex Apell symbol, see Pochammer symbol
 These routines compute the Pochhammer symbol @math{(a)_x = \Gamma(a +
 x)/\Gamma(a)}, subject to @math{a} and @math{a+x} not being negative
-integers. The Pochhammer symbol is also known as the Apell symbol and
+integers or zero. The Pochhammer symbol is also known as the Apell symbol and
 sometimes written as @math{(a,x)}.
 @comment exceptions:  GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
@@ -219,7 +219,7 @@ These routines compute the sign of the Pochhammer symbol and the
 logarithm of its magnitude.  The computed parameters are @math{result =
 \log(|(a)_x|)} and @math{sgn = \sgn((a)_x)} where @math{(a)_x =
 \Gamma(a + x)/\Gamma(a)}, subject to @math{a}, @math{a+x} not being
-negative integers.
+negative integers or zero.
 @comment exceptions:  GSL_EDOM
 @end deftypefun
 
@@ -300,10 +300,10 @@ for @math{a > 0}, @math{b > 0}.
 @cindex normalized incomplete Beta function
 @cindex Beta function, incomplete normalized 
 These routines compute the normalized incomplete Beta function
-@math{B_x(a,b)/B(a,b)} where @c{$B_x(a,b) = \int_0^x t^{a-1} (1-t)^{b-1} dt$}
+@math{I_x(a,b)=B_x(a,b)/B(a,b)} where @c{$B_x(a,b) = \int_0^x t^{a-1} (1-t)^{b-1} dt$}
 @math{B_x(a,b) = \int_0^x t^@{a-1@} (1-t)^@{b-1@} dt}
 for @math{a > 0}, @math{b > 0}, and @c{$0 \le x \le 1$}
-@math{0 <= x <= 1}.
+@math{0 <= x <= 1}. 
 @end deftypefun
 
 
