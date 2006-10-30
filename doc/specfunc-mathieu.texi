@@ -212,7 +212,7 @@ These routines compute a series of the radial Mathieu functions from
 @subsection Support Routines
 @cindex Mathieu Function Support Routines
 
-@deftypefun gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc (size_t @var{n}, double @var{q})
+@deftypefun {gsl_sf_mathieu_workspace *} gsl_sf_mathieu_alloc (size_t @var{n}, double @var{q})
 @deftypefunx void gsl_sf_mathieu_free (gsl_sf_mathieu_workspace @var{*workspace})
 These routines handle memory allocation and freeing for workspace
 arrays required by the ``_array'' versions of the Mathieu function
