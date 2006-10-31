@@ -23,6 +23,8 @@ void FUNCTION (test, text) (void);
 void FUNCTION (test, binary) (void);
 void FUNCTION (test, arith) (void);
 
+#define TEST(expr,desc) gsl_test((expr), NAME(gsl_matrix) desc " M=%d, N=%d", M, N)
+
 void
 FUNCTION (test, func) (void)
 {
@@ -80,6 +82,161 @@ FUNCTION (test, func) (void)
 
   FUNCTION (gsl_matrix, free) (m);      /* free whatever is in m */
 
+  m = FUNCTION (gsl_matrix, calloc) (M, N);
+
+  {
+    int status = (FUNCTION(gsl_matrix,isnull)(m) != 1);
+    TEST (status, "_isnull" DESC " on calloc matrix");
+    
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on calloc matrix");
+    
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on calloc matrix");
+  }
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 1);
+    TEST (status, "_isnull" DESC " on null matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on null matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on null matrix") ;
+  }
+
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          k++;
+          GSL_REAL (z) = (ATOMIC) (k % 10);
+          GSL_IMAG (z) = (ATOMIC) ((k + 5) % 10);
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on non-negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on non-negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on non-negative matrix") ;
+  }
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          k++;
+          GSL_REAL (z) = (ATOMIC) ((k % 10) - 5);
+          GSL_IMAG (z) = (ATOMIC) (((k + 5) % 10) - 5);
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on mixed matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on mixed matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on mixed matrix") ;
+  }
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          k++;
+          GSL_REAL (z) = -(ATOMIC) (k % 10);
+          GSL_IMAG (z) = -(ATOMIC) ((k + 5) % 10);
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on non-positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on non-positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on non-positive matrix") ;
+  }
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          k++;
+          GSL_REAL (z) = (ATOMIC) (k % 10 + 1);
+          GSL_IMAG (z) = (ATOMIC) ((k + 5) % 10 + 1);
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 1);
+    TEST (status, "_ispos" DESC " on positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on positive matrix") ;
+  }
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          BASE z = ZERO;
+          k++;
+          GSL_REAL (z) = -(ATOMIC) (k % 10 + 1);
+          GSL_IMAG (z) = -(ATOMIC) ((k + 5) % 10 + 1);
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 1);
+    TEST (status, "_isneg" DESC " on negative matrix") ;
+  }
+
+  FUNCTION (gsl_matrix, free) (m);      /* free whatever is in m */
 }
 
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)

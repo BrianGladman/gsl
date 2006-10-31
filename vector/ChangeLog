@@ -1,3 +1,8 @@
+2006-10-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* prop_source.c: added functions gsl_vector_ispos,
+	gsl_vector_isneg
+
 2004-09-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* swap_source.c (gsl_vector_swap): fixed bug where stride of

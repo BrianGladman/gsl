@@ -161,6 +161,8 @@ int gsl_vector_short_scale (gsl_vector_short * a, const double x);
 int gsl_vector_short_add_constant (gsl_vector_short * a, const double x);
 
 int gsl_vector_short_isnull (const gsl_vector_short * v);
+int gsl_vector_short_ispos (const gsl_vector_short * v);
+int gsl_vector_short_isneg (const gsl_vector_short * v);
 
 #ifdef HAVE_INLINE
 

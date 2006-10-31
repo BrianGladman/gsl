@@ -177,6 +177,8 @@ int gsl_vector_complex_long_double_swap (gsl_vector_complex_long_double * v, gsl
 int gsl_vector_complex_long_double_swap_elements (gsl_vector_complex_long_double * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_long_double_isnull (const gsl_vector_complex_long_double * v);
+int gsl_vector_complex_long_double_ispos (const gsl_vector_complex_long_double * v);
+int gsl_vector_complex_long_double_isneg (const gsl_vector_complex_long_double * v);
 
 #ifdef HAVE_INLINE
 

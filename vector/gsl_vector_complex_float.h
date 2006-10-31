@@ -177,6 +177,8 @@ int gsl_vector_complex_float_swap (gsl_vector_complex_float * v, gsl_vector_comp
 int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const size_t i, const size_t j);
 
 int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
+int gsl_vector_complex_float_ispos (const gsl_vector_complex_float * v);
+int gsl_vector_complex_float_isneg (const gsl_vector_complex_float * v);
 
 #ifdef HAVE_INLINE
 

@@ -56,6 +56,12 @@ FUNCTION (test, func) (size_t stride, size_t N)
       {
         int status = (FUNCTION(gsl_vector,isnull)(v) != 1);
         TEST (status, "_isnull" DESC " on calloc vector");
+        
+        status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+        TEST (status, "_ispos" DESC " on calloc vector");
+
+        status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+        TEST (status, "_isneg" DESC " on calloc vector");
       }
 
       FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
@@ -157,6 +163,12 @@ FUNCTION (test, func) (size_t stride, size_t N)
     
     status = (FUNCTION(gsl_vector,isnull)(v) != 1);
     TEST (status, "_isnull" DESC " on null vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on null vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on null vector") ;
   }
 
   {
@@ -164,12 +176,96 @@ FUNCTION (test, func) (size_t stride, size_t N)
 
     for (i = 0; i < N; i++)
       {
-        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
+        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (i % 10));
       }
     
     status = (FUNCTION(gsl_vector,isnull)(v) != 0);
-    TEST (status, "_isnull" DESC " on non-null vector") ;
+    TEST (status, "_isnull" DESC " on non-negative vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on non-negative vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on non-negative vector") ;
   }
+
+
+#ifndef UNSIGNED
+  {
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) ((i % 10) - 5));
+      }
+    
+    status = (FUNCTION(gsl_vector,isnull)(v) != 0);
+    TEST (status, "_isnull" DESC " on mixed vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on mixed vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on mixed vector") ;
+  }
+
+  {
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        FUNCTION (gsl_vector, set) (v, i, -(ATOMIC) (i % 10));
+      }
+    
+    status = (FUNCTION(gsl_vector,isnull)(v) != 0);
+    TEST (status, "_isnull" DESC " on non-positive vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on non-positive vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on non-positive non-null vector") ;
+  }
+#endif
+
+  {
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (i % 10 + 1));
+      }
+    
+    status = (FUNCTION(gsl_vector,isnull)(v) != 0);
+    TEST (status, "_isnull" DESC " on positive vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 1);
+    TEST (status, "_ispos" DESC " on positive vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on positive vector") ;
+  }
+
+
+#ifndef UNSIGNED
+  {
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        FUNCTION (gsl_vector, set) (v, i, -(ATOMIC) (i % 10 + 1));
+      }
+    
+    status = (FUNCTION(gsl_vector,isnull)(v) != 0);
+    TEST (status, "_isnull" DESC " on negative vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on negative vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 1);
+    TEST (status, "_isneg" DESC " on negative vector") ;
+  }
+#endif
 
   {
     int status = 0;

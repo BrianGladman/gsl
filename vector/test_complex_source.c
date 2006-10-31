@@ -56,6 +56,12 @@ FUNCTION (test, func) (size_t stride, size_t N)
       {
         int status = (FUNCTION(gsl_vector,isnull)(v) != 1);
         TEST (status, "_isnull" DESC " on calloc vector");
+
+        status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+        TEST (status, "_ispos" DESC " on calloc vector");
+
+        status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+        TEST (status, "_isneg" DESC " on calloc vector");
       }
 
       FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
@@ -167,6 +173,12 @@ FUNCTION (test, func) (size_t stride, size_t N)
     
     status = (FUNCTION(gsl_vector,isnull)(v) != 1);
     TEST (status, "_isnull" DESC " on null vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on null vector") ;
+
+    status = (FUNCTION(gsl_vector,isneg)(v) != 0);
+    TEST (status, "_isneg" DESC " on null vector") ;
   }
 
   {
@@ -182,6 +194,12 @@ FUNCTION (test, func) (size_t stride, size_t N)
     
     status = (FUNCTION(gsl_vector,isnull)(v) != 0);
     TEST (status, "_isnull" DESC " on non-null vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_ispos" DESC " on non-null vector") ;
+
+    status = (FUNCTION(gsl_vector,ispos)(v) != 0);
+    TEST (status, "_isneg" DESC " on non-null vector") ;
   }
 
   {

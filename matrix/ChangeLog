@@ -1,3 +1,8 @@
+2006-10-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* prop_source.c (FUNCTION): added functions gsl_matrix_ispos,
+	gsl_matrix_isneg
+
 2003-01-01  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* gsl_matrix_complex_float.h (gsl_matrix_complex_float_get):

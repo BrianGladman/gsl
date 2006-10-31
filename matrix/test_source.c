@@ -22,6 +22,7 @@ void FUNCTION (test, trap) (void);
 void FUNCTION (test, text) (void);
 void FUNCTION (test, binary) (void);
 
+#define TEST(expr,desc) gsl_test((expr), NAME(gsl_matrix) desc " M=%d, N=%d", M, N)
 
 void
 FUNCTION (test, func) (void)
@@ -83,6 +84,18 @@ FUNCTION (test, func) (void)
   m = FUNCTION (gsl_matrix, calloc) (M, N);
   v = FUNCTION (gsl_vector, calloc) (N);
 
+  {
+    int status = (FUNCTION(gsl_matrix,isnull)(m) != 1);
+    TEST (status, "_isnull" DESC " on calloc matrix");
+    
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on calloc matrix");
+    
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on calloc matrix");
+  }
+
+
   k = 0;
   for (i = 0; i < M; i++)
     {
@@ -92,6 +105,7 @@ FUNCTION (test, func) (void)
           FUNCTION (gsl_matrix, set) (m, i, j, (BASE) k);
         }
     }
+
 
   {
     status = 0;
@@ -183,6 +197,135 @@ FUNCTION (test, func) (void)
       gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_minmax_index returns correct minimum j");
     }
   }
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          FUNCTION (gsl_matrix, set) (m, i, j, (ATOMIC) 0);
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 1);
+    TEST (status, "_isnull" DESC " on null matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on null matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on null matrix") ;
+  }
+
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, (ATOMIC) (k % 10));
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on non-negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on non-negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on non-negative matrix") ;
+  }
+
+#ifndef UNSIGNED
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, (ATOMIC) ((k % 10) - 5));
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on mixed matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on mixed matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on mixed matrix") ;
+  }
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, -(ATOMIC) (k % 10));
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on non-positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on non-positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on non-positive matrix") ;
+  }
+#endif
+
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, (ATOMIC) (k % 10 + 1));
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 1);
+    TEST (status, "_ispos" DESC " on positive matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 0);
+    TEST (status, "_isneg" DESC " on positive matrix") ;
+  }
+
+#ifndef UNSIGNED
+  k = 0;
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_matrix, set) (m, i, j, -(ATOMIC) (k % 10 + 1));
+        }
+    }
+
+  {
+    status = (FUNCTION(gsl_matrix,isnull)(m) != 0);
+    TEST (status, "_isnull" DESC " on negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,ispos)(m) != 0);
+    TEST (status, "_ispos" DESC " on negative matrix") ;
+
+    status = (FUNCTION(gsl_matrix,isneg)(m) != 1);
+    TEST (status, "_isneg" DESC " on negative matrix") ;
+  }
+#endif
 
   {
     TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, calloc) (M, N);

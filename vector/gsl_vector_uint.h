@@ -161,6 +161,8 @@ int gsl_vector_uint_scale (gsl_vector_uint * a, const double x);
 int gsl_vector_uint_add_constant (gsl_vector_uint * a, const double x);
 
 int gsl_vector_uint_isnull (const gsl_vector_uint * v);
+int gsl_vector_uint_ispos (const gsl_vector_uint * v);
+int gsl_vector_uint_isneg (const gsl_vector_uint * v);
 
 #ifdef HAVE_INLINE
 

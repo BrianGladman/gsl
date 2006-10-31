@@ -1,3 +1,7 @@
+** Added new functions for testing the sign of vectors and matrices,
+gsl_vector_ispos, gsl_vector_isneg, gsl_matrix_ispos and
+gsl_matrix_isneg.
+
 ** Fixed a bug in gsl_sf_lnpoch_e and gsl_sf_lnpoch_sgn_e which caused
 the incorrect value 1.0 instead of 0.0 to be returned for x==0.
 
