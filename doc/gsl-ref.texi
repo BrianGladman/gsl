@@ -514,6 +514,9 @@ Improved the implementation of the ODE solvers.
 @item Lowell Johnson
 Implementation of the Mathieu functions.
 
+@item Patrick Alken
+Implementation of non-symmetric eigensystems and B-splines.
+
 @end table
 
 Thanks to Nigel Lowry for help in proofreading the manual.
@@ -542,7 +545,10 @@ Thanks to Nigel Lowry for help in proofreading the manual.
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
-
+@comment htmlhelp: @printindex fn
+@comment htmlhelp: @printindex vr
+@comment htmlhelp: @printindex tp
+@comment htmlhelp: @printindex cp
 @comment htmlhelp: @bye
 
 @iftex
