@@ -1,3 +1,8 @@
+2006-11-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* templates_on.h templates_off.h: added UNSIGNED definition for
+	detecting types without negative values
+
 2006-02-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: restrict darwin IEEE detection to powerpc, because

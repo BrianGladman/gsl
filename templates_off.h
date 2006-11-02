@@ -85,6 +85,7 @@
 #undef NAME
 #undef STRING
 #undef EXPAND
+#undef UNSIGNED
 
 #ifdef FP
 #undef FP

@@ -97,6 +97,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO 0UL
 #define ONE 1UL
+#define UNSIGNED 1
 
 #elif defined(BASE_LONG)
 #define BASE long
@@ -119,6 +120,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO 0U
 #define ONE 1U
+#define UNSIGNED 1
 
 #elif defined(BASE_INT)
 #define BASE int
@@ -141,6 +143,7 @@
 #define ATOMIC_IO ATOMIC
 #define ZERO 0U
 #define ONE 1U
+#define UNSIGNED 1
 
 #elif defined(BASE_SHORT)
 #define BASE short
@@ -163,6 +166,7 @@
 #define ATOMIC_IO unsigned int
 #define ZERO 0U
 #define ONE 1U
+#define UNSIGNED 1
 
 #elif defined(BASE_CHAR)
 #define BASE char
