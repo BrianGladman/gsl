@@ -1,3 +1,6 @@
+** Added new functions for basis splines, see the "Basis Splines"
+chapter in the GSL Reference Manual for details.
+
 ** Added new functions for testing the sign of vectors and matrices,
 gsl_vector_ispos, gsl_vector_isneg, gsl_matrix_ispos and
 gsl_matrix_isneg.

@@ -260,6 +260,7 @@ raised from sales of the manual helps support the development of GSL.
 * Multidimensional Minimization::  
 * Least-Squares Fitting::       
 * Nonlinear Least-Squares Fitting::  
+* Basis Splines::
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
@@ -421,11 +422,15 @@ raised from sales of the manual helps support the development of GSL.
 @chapter Least-Squares Fitting
 @include fitting.texi
 
-@node Nonlinear Least-Squares Fitting, Physical Constants, Least-Squares Fitting, Top
+@node Nonlinear Least-Squares Fitting, Basis Splines, Least-Squares Fitting, Top
 @chapter Nonlinear Least-Squares Fitting
 @include multifit.texi
 
-@node  Physical Constants, IEEE floating-point arithmetic, Nonlinear Least-Squares Fitting, Top
+@node Basis Splines, Physical Constants, Nonlinear Least-Squares Fitting, Top
+@chapter Basis Splines
+@include bspline.texi
+
+@node  Physical Constants, IEEE floating-point arithmetic, Basis Splines, Top
 @chapter Physical Constants
 @include const.texi
 
