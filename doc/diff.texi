@@ -28,7 +28,7 @@ The initial value of @var{h} is used to estimate an optimal step-size,
 based on the scaling of the truncation error and round-off error in the
 derivative calculation.  The derivative is computed using a 5-point rule
 for equally spaced abscissae at @math{x-h}, @math{x-h/2}, @math{x},
-@math{x+h/2}, @math{x}, with an error estimate taken from the difference
+@math{x+h/2}, @math{x+h}, with an error estimate taken from the difference
 between the 5-point rule and the corresponding 3-point rule @math{x-h},
 @math{x}, @math{x+h}.  Note that the value of the function at @math{x}
 does not contribute to the derivative calculation, so only 4-points are
