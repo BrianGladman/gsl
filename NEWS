@@ -1,3 +1,7 @@
+** A Japanese translation of the reference manual is now available
+from the GSL webpage at http://www.gnu.org/software/gsl/ thanks to
+Daisuke TOMINAGA.
+
 ** Added new functions for basis splines, see the "Basis Splines"
 chapter in the GSL Reference Manual for details.
 
