@@ -334,7 +334,7 @@ These functions compute the matrix-vector product and sum @math{y =
 @deftypefunx int gsl_blas_ztrmv (CBLAS_UPLO_t @var{Uplo}, CBLAS_TRANSPOSE_t @var{TransA}, CBLAS_DIAG_t @var{Diag}, const gsl_matrix_complex * @var{A}, gsl_vector_complex * @var{x})
 @cindex TRMV, Level-2 BLAS
 These functions compute the matrix-vector product 
-@math{x =\alpha op(A) x} for the triangular matrix @var{A}, where
+@math{x = op(A) x} for the triangular matrix @var{A}, where
 @math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
 @code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans}.  When
 @var{Uplo} is @code{CblasUpper} then the upper triangle of @var{A} is
@@ -504,7 +504,7 @@ These functions compute the matrix-matrix product @math{B = \alpha op(A)
 B} for @var{Side} is @code{CblasLeft} and @math{B = \alpha B op(A)} for
 @var{Side} is @code{CblasRight}.  The matrix @var{A} is triangular and
 @math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
-@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans} When
+@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans}. When
 @var{Uplo} is @code{CblasUpper} then the upper triangle of @var{A} is
 used, and when @var{Uplo} is @code{CblasLower} then the lower triangle
 of @var{A} is used.  If @var{Diag} is @code{CblasNonUnit} then the
@@ -524,7 +524,7 @@ These functions compute the inverse-matrix matrix product
 @code{CblasLeft} and @math{B = \alpha B op(inv(A))} for
 @var{Side} is @code{CblasRight}.  The matrix @var{A} is triangular and
 @math{op(A) = A}, @math{A^T}, @math{A^H} for @var{TransA} =
-@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans} When
+@code{CblasNoTrans}, @code{CblasTrans}, @code{CblasConjTrans}. When
 @var{Uplo} is @code{CblasUpper} then the upper triangle of @var{A} is
 used, and when @var{Uplo} is @code{CblasLower} then the lower triangle
 of @var{A} is used.  If @var{Diag} is @code{CblasNonUnit} then the
