@@ -108,8 +108,9 @@ specified @var{nbreak} parameter. The knots are stored in
 @cindex basis splines, evaluation
 
 @deftypefun int gsl_bspline_eval (const double @var{x}, gsl_vector * @var{B}, gsl_bspline_workspace * @var{w})
-This function evaluates all B-spline basis function at the position
-@var{x} and stores them in @var{B}. @var{B} must be of length
+This function evaluates all B-spline basis functions at the position
+@var{x} and stores them in @var{B}, so that the @math{i}th element
+of @var{B} is @math{B_i(x)}. @var{B} must be of length
 @math{n = nbreak + k - 2}. This value is also stored in @code{w->n}.
 It is far more efficient to compute all of the basis functions at
 once than to compute them individually, due to the nature of the
@@ -120,9 +121,10 @@ defining recurrence relation.
 @section Example programs for B-splines
 @cindex basis splines, examples
 
-The following program computes a least squares fit to data using
-B-spline basis functions. The data is generated from the curve
-@math{y(x) = \cos{(x)} \exp{(-0.1 x)}} with gaussian noise added.
+The following program computes a linear least squares fit to data using
+cubic B-spline basis functions with uniform breakpoints. The data is
+generated from the curve @math{y(x) = \cos{(x)} \exp{(-0.1 x)}} on
+@math{[0, 15]} with gaussian noise added.
 
 @example
 @verbatiminclude examples/bspline.c

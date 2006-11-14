@@ -22,20 +22,18 @@
 #include <gsl/gsl_bspline.h>
 
 /*
- * This module contains routines related to fitting cubic
- * B-splines to data. The algorithms used are described in
+ * This module contains routines related to calculating B-splines.
+ * The algorithms used are described in
  *
  * [1] Carl de Boor, "A Practical Guide to Splines", Springer
  *     Verlag, 1978.
  */
 
-static int 
-bspline_eval_all(const double x, gsl_vector *B, size_t *idx,
-                 gsl_bspline_workspace *w);
+static int bspline_eval_all(const double x, gsl_vector *B, size_t *idx,
+                            gsl_bspline_workspace *w);
 
-static inline size_t
-bspline_find_interval(const double x, int *flag,
-                      gsl_bspline_workspace *w);
+static inline size_t bspline_find_interval(const double x, int *flag,
+                                           gsl_bspline_workspace *w);
 
 /*
 gsl_bspline_alloc()
