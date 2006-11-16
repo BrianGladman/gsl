@@ -392,3 +392,5 @@ power distribution and gsl_multifit_linear_est
 * Daisuke TOMINAGA <tominaga@cbrc.jp> - Japanese translation of manual
 
 * Andoline Bucciolini <andoline_bucciolini@women-at-work.org> - documentation bug for BLAS
+
+* Daniel Falster <dfalster@bio.mq.edu.au> bug report for fdist_Pinv

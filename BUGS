@@ -681,4 +681,23 @@ gsl_sf_hyperg_1F1_e(1.0, 1000000.5, 1001000.5, &r) should be
 3.482610634176769963e+03 instead of 0
 
 ----------------------------------------------------------------------
-Last assigned bug number = 53
+BUG#56 - nan in gsl_cdf_fdist_Pinv for large df
+
+From: Daniel Falster <dfalster@bio.mq.edu.au>
+Subject: Re: [Bug-gsl] Error in gsl_cdf_fdist_Pinv
+
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_cdf.h>
+#include <stdio.h>
+
+int main(void)
+{
+  double x= gsl_cdf_fdist_Pinv(0.95,1.0,261.0);
+  printf("x = %g\n", x);
+  return 0;
+} 
+./a.out 
+x = nan
+
+----------------------------------------------------------------------
+Last assigned bug number = 56

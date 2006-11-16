@@ -334,7 +334,7 @@ main (void)
   TEST_DISCRETE(logarithmic);
 #endif
 
-  exit (gsl_test_summary ());
+  /* exit (gsl_test_summary ()); */
 
   /* Tests for gaussian cumulative distribution function 
      Function values computed with PARI, 28 digits precision */
@@ -942,6 +942,8 @@ void test_finv (void) {
   TEST (gsl_cdf_fdist_Qinv, ( 5.98048337181948436e-96, 200.0, 500.0), 10.0, TEST_TOL6);
   TEST (gsl_cdf_fdist_Qinv, ( 2.92099265879979502e-155, 200.0, 500.0), 20.0, TEST_TOL6);
   TEST (gsl_cdf_fdist_Qinv, ( 0.0, 200.0, 500.0), GSL_POSINF, 0.0);
+
+  TEST (gsl_cdf_fdist_Pinv, (0.95,1.0,261.0), 0.7777, TEST_TOL1);
 }
 
   /* Tests for gamma distribution */
