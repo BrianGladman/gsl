@@ -18,7 +18,7 @@ The functions described in this chapter are declared in the header file
 @menu
 * Real Symmetric Matrices::     
 * Complex Hermitian Matrices::  
-* Real Unsymmetric Matrices::     
+* Real Nonsymmetric Matrices::     
 * Sorting Eigenvalues and Eigenvectors::  
 * Eigenvalue and Eigenvector Examples::  
 * Eigenvalue and Eigenvector References::  
@@ -121,12 +121,12 @@ first eigenvalue.  The eigenvectors are guaranteed to be mutually
 orthogonal and normalised to unit magnitude.
 @end deftypefun
 
-@node Real Unsymmetric Matrices
-@section Real Unsymmetric Matrices
-@cindex unsymmetric matrix, real, eigensystem
-@cindex real unsymmetric matrix, eigensystem
+@node Real Nonsymmetric Matrices
+@section Real Nonsymmetric Matrices
+@cindex nonsymmetric matrix, real, eigensystem
+@cindex real nonsymmetric matrix, eigensystem
 
-The solution of the real unsymmetric eigensystem problem for a
+The solution of the real nonsymmetric eigensystem problem for a
 matrix @math{A} involves computing the Schur decomposition
 @tex
 \beforedisplay
@@ -151,7 +151,7 @@ shift Francis method.
 
 @deftypefun {gsl_eigen_unsymm_workspace *} gsl_eigen_unsymm_alloc (const size_t @var{n})
 This function allocates a workspace for computing eigenvalues of
-@var{n}-by-@var{n} real unsymmetric matrices. The size of the workspace
+@var{n}-by-@var{n} real nonsymmetric matrices. The size of the workspace
 is @math{O(2n)}.
 @end deftypefun
 
@@ -217,7 +217,7 @@ this reason, balancing is not performed by default.
 @end deftypefun
 
 @deftypefun int gsl_eigen_unsymm (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_eigen_unsymm_workspace * @var{w})
-This function computes the eigenvalues of the real unsymmetric matrix
+This function computes the eigenvalues of the real nonsymmetric matrix
 @var{A} and stores them in the vector @var{eval}. If @math{T} is
 desired, it is stored in the upper portion of @var{A} on output.
 Otherwise, on output, the diagonal of @var{A} will contain the
@@ -236,7 +236,7 @@ computes the Schur vectors and stores them into @var{Z}.
 
 @deftypefun {gsl_eigen_unsymmv_workspace *} gsl_eigen_unsymmv_alloc (const size_t @var{n})
 This function allocates a workspace for computing eigenvalues and
-eigenvectors of @var{n}-by-@var{n} real unsymmetric matrices. The
+eigenvectors of @var{n}-by-@var{n} real nonsymmetric matrices. The
 size of the workspace is @math{O(5n)}.
 @end deftypefun
 
@@ -246,7 +246,7 @@ This function frees the memory associated with the workspace @var{w}.
 
 @deftypefun int gsl_eigen_unsymmv (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_unsymmv_workspace * @var{w})
 This function computes eigenvalues and right eigenvectors of the
-@var{n}-by-@var{n} real unsymmetric matrix @var{A}. It first calls
+@var{n}-by-@var{n} real nonsymmetric matrix @var{A}. It first calls
 @code{gsl_eigen_unsymm} to compute the eigenvalues, Schur form @math{T}, and
 Schur vectors. Then it finds eigenvectors of @math{T} and backtransforms
 them using the Schur vectors. The Schur vectors are destroyed in the
@@ -368,7 +368,7 @@ v =
 Note that the eigenvectors can differ by a change of sign, since the
 sign of an eigenvector is arbitrary.
 
-The following program illustrates the use of the unsymmetric
+The following program illustrates the use of the nonsymmetric
 eigensolver, by computing the eigenvalues and eigenvectors of
 the Vandermonde matrix @math{V(x;i,j) = x_i^{n - j}} with
 @math{x = (-1,-2,3,4)}.
