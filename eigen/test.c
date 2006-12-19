@@ -28,6 +28,7 @@
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_eigen.h>
+#include <gsl/gsl_linalg.h>
 
 gsl_matrix *
 create_hilbert_matrix(int size)
@@ -75,6 +76,21 @@ create_random_herm_matrix(int size)
       GSL_IMAG(z) = (i == j) ? 0 : k / 4294967296.0;
       gsl_matrix_complex_set(m, i, j, z);
       gsl_matrix_complex_set(m, j, i, gsl_complex_conjugate(z));
+    }
+  }
+  return m;
+}
+
+gsl_matrix *
+create_random_unsymm_matrix(int size)
+{
+  int i, j;
+  unsigned long k = 1;
+  gsl_matrix * m = gsl_matrix_alloc(size, size);
+  for(i=0; i<size; i++) {
+    for(j=0; j<size; j++) {
+      k = (69069 * k + 1) & 0xffffffffUL;
+      gsl_matrix_set(m, i, j, k / 4294967296.0);
     }
   }
   return m;
@@ -151,6 +167,24 @@ test_eigenvalues (size_t N, const gsl_vector *eval, const gsl_vector * eval2,
     }
 }
 
+void
+test_eigenvalues_complex (size_t N, const gsl_vector_complex *eval,
+                          const gsl_vector_complex * eval2, 
+                          const char * desc, const char * desc2)
+{
+  size_t i;
+  for (i = 0; i < N; i++)
+    {
+      gsl_complex ei = gsl_vector_complex_get (eval, i);
+      gsl_complex e2i = gsl_vector_complex_get (eval2, i);
+      gsl_test_rel(GSL_REAL(ei), GSL_REAL(e2i), 10*N*GSL_DBL_EPSILON, 
+                   "%s, direct eigenvalue(%d) real, %s",
+                   desc, i, desc2);
+      gsl_test_rel(GSL_IMAG(ei), GSL_IMAG(e2i), 10*N*GSL_DBL_EPSILON, 
+                   "%s, direct eigenvalue(%d) imag, %s",
+                   desc, i, desc2);
+    }
+}
 
 void
 test_eigen_complex_results (size_t N, const gsl_matrix_complex * m, 
@@ -213,6 +247,100 @@ test_eigen_complex_results (size_t N, const gsl_matrix_complex * m,
   gsl_vector_complex_free(y);
 }
 
+void
+test_eigen_unsymm_results (size_t N, const gsl_matrix * m, 
+                           const gsl_vector_complex * eval, 
+                           const gsl_matrix_complex * evec, 
+                           const char * desc,
+                           const char * desc2)
+{
+  size_t i,j;
+
+  gsl_vector_complex * x = gsl_vector_complex_alloc(N);
+  gsl_vector_complex * y = gsl_vector_complex_alloc(N);
+  gsl_matrix_complex * A = gsl_matrix_complex_alloc(N, N);
+
+  /* we need a complex matrix for the blas routines, so copy m into A */
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          gsl_complex z;
+          GSL_SET_COMPLEX(&z, gsl_matrix_get(m, i, j), 0.0);
+          gsl_matrix_complex_set(A, i, j, z);
+        }
+    }
+
+  for (i = 0; i < N; i++)
+    {
+      gsl_complex ei = gsl_vector_complex_get (eval, i);
+      gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
+      double norm = gsl_blas_dznrm2(&vi.vector);
+
+      /* check that eigenvector is normalized */
+      gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
+                   "%s, normalized(%d), %s", desc, i, desc2);
+
+      gsl_vector_complex_memcpy(x, &vi.vector);
+
+      /* compute y = m x (should = lambda v) */
+      gsl_blas_zgemv (CblasNoTrans, GSL_COMPLEX_ONE, A, x, 
+                      GSL_COMPLEX_ZERO, y);
+
+      /* compute x = lambda v */
+      gsl_blas_zscal(ei, x);
+
+      /* now test if y = x */
+      for (j = 0; j < N; j++)
+        {
+          gsl_complex xj = gsl_vector_complex_get (x, j);
+          gsl_complex yj = gsl_vector_complex_get (y, j);
+
+          /* use abs here in case the values are close to 0 */
+          gsl_test_abs(GSL_REAL(yj), GSL_REAL(xj), 1e8*GSL_DBL_EPSILON, 
+                       "%s, eigenvalue(%d,%d), real, %s", desc, i, j, desc2);
+          gsl_test_abs(GSL_IMAG(yj), GSL_IMAG(xj), 1e8*GSL_DBL_EPSILON, 
+                       "%s, eigenvalue(%d,%d), imag, %s", desc, i, j, desc2);
+        }
+    }
+
+  gsl_vector_complex_free(x);
+  gsl_vector_complex_free(y);
+}
+
+void
+test_eigen_unsymm_Z(size_t N, const gsl_matrix * m, gsl_matrix * Z,
+                    gsl_matrix * T, const char * desc)
+{
+  size_t i, j;
+
+  gsl_matrix * T1 = gsl_matrix_alloc(N, N);
+  gsl_matrix * T2 = gsl_matrix_alloc(N, N);
+
+  /* zero lower triangle of T */
+  gsl_linalg_hessenberg_set_zero(T);
+
+  /* compute T1 = m Z */
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m, Z, 0.0, T1);
+
+  /* compute T2 = Z T */
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, Z, T, 0.0, T2);
+
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          double x = gsl_matrix_get(T1, i, j);
+          double y = gsl_matrix_get(T2, i, j);
+
+          gsl_test_rel(x, y, 1.0e8 * GSL_DBL_EPSILON,
+                       "%s, schur(%d,%d)", desc, i, j);
+        }
+    }
+
+  gsl_matrix_free (T1);
+  gsl_matrix_free (T2);
+}
 
 void
 test_eigen_symm(const char * desc, const gsl_matrix * m)
@@ -299,6 +427,45 @@ test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
   gsl_vector_free(eval2);
 }
 
+void
+test_eigen_unsymm(const char * desc, const gsl_matrix * m)
+{
+  size_t N = m->size1;
+
+  gsl_matrix * A = gsl_matrix_alloc(N, N);
+  gsl_matrix * Z = gsl_matrix_alloc(N, N);
+  gsl_matrix_complex * evec = gsl_matrix_complex_alloc(N, N);
+  gsl_vector_complex * eval = gsl_vector_complex_alloc(N);
+
+  gsl_eigen_unsymmv_workspace * wv = gsl_eigen_unsymmv_alloc (N);
+
+  /*
+   * calculate eigenvalues and eigenvectors - it is sufficient to test
+   * gsl_eigen_unsymmv() since that function calls gsl_eigen_unsymm()
+   * for the eigenvalues
+   */ 
+  gsl_matrix_memcpy(A, m);
+  gsl_eigen_unsymmv(A, eval, evec, wv);
+  test_eigen_unsymm_results (N, m, eval, evec, desc, "unsorted");
+
+  /* test sort routines */
+  gsl_eigen_unsymmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
+  test_eigen_unsymm_results (N, m, eval, evec, desc, "abs/asc");
+
+  gsl_eigen_unsymmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
+  test_eigen_unsymm_results (N, m, eval, evec, desc, "abs/desc");
+
+  /* test Schur vectors */
+  gsl_matrix_memcpy(A, m);
+  gsl_eigen_unsymmv_Z(A, eval, evec, Z, wv);
+  test_eigen_unsymm_Z(N, m, Z, A, desc);
+
+  gsl_eigen_unsymmv_free (wv);
+
+  gsl_matrix_free(A);
+  gsl_matrix_complex_free(evec);
+  gsl_vector_complex_free(eval);
+}
 
 void
 test_eigen_jacobi(const char * desc, const gsl_matrix * m)
@@ -382,6 +549,16 @@ int main()
   }
 
   {
+    double r[] = { 0, 1, 1, 1,
+                   1, 1, 1, 1,
+                   0, 0, 0, 0,
+                   0, 0, 0, 0 };
+    gsl_matrix_view n4 = gsl_matrix_view_array (r, 4, 4);
+
+    test_eigen_unsymm("unsymm(4)", &n4.matrix);
+  }
+
+  {
     double r[] =  { 1,  0,  0,  0, 
                     0,  2,  0,  0,
                     0,  0,  3,  0,
@@ -403,6 +580,16 @@ int main()
   }
 
   {
+    double r[] = { 1, 1, 0, 1,
+                   1, 1, 1, 1,
+                   1, 1, 1, 1,
+                   0, 1, 0, 0 };
+    gsl_matrix_view n4 = gsl_matrix_view_array (r, 4, 4);
+
+    test_eigen_unsymm("unsymm(4) degen", &n4.matrix);
+  }
+
+  {
     gsl_matrix *rs10 = create_random_symm_matrix (10);
     test_eigen_symm("symm(10)", rs10);
     gsl_matrix_free (rs10);
@@ -412,6 +599,12 @@ int main()
     gsl_matrix_complex *rh10 = create_random_herm_matrix (10);
     test_eigen_herm("herm(10)", rh10);
     gsl_matrix_complex_free (rh10);
+  }
+
+  {
+    gsl_matrix *rn10 = create_random_unsymm_matrix (10);
+    test_eigen_unsymm("unsymm(10)", rn10);
+    gsl_matrix_free (rn10);
   }
 
 #if 0 /* Deprecated functions */

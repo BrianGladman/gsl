@@ -647,7 +647,7 @@ A = U H U^T
 where @math{U} is orthogonal and @math{H} is an upper Hessenberg matrix,
 meaning that it has zeros below the first subdiagonal. The
 Hessenberg reduction is the first step in the Schur decomposition
-for the unsymmetric eigenvalue problem, but has applications in
+for the nonsymmetric eigenvalue problem, but has applications in
 other areas as well.
 
 @deftypefun int gsl_linalg_hessenberg (gsl_matrix * @var{A}, gsl_vector * @var{tau})
