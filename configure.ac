@@ -212,7 +212,7 @@ AC_CACHE_CHECK([for IEEE arithmetic interface type], ac_cv_c_ieee_interface,
     powerpc-*-linux*) 
         ac_cv_c_ieee_interface=gnuppc
         ;;
-    *86-*-linux* | *86_64-*-linux*) 
+    *86-*-gnu | *86_64-*-gnu | *86-*-linux* | *86_64-*-linux*) 
         ac_cv_c_ieee_interface=gnux86
         ;;
     *-*-sunos4*) 
