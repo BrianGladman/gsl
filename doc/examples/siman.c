@@ -9,19 +9,19 @@
 #define N_TRIES 200             
 
 /* how many iterations for each T? */
-#define ITERS_FIXED_T 10        
+#define ITERS_FIXED_T 1000
 
 /* max step size in random walk */
-#define STEP_SIZE 10            
+#define STEP_SIZE 1.0            
 
 /* Boltzmann constant */
 #define K 1.0                   
 
 /* initial temperature */
-#define T_INITIAL 0.002         
+#define T_INITIAL 0.008         
 
 /* damping factor for temperature */
-#define MU_T 1.005              
+#define MU_T 1.003              
 #define T_MIN 2.0e-6
 
 gsl_siman_params_t params 
