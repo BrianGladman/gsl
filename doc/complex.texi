@@ -36,6 +36,7 @@ defined in @file{gsl_complex_math.h}.
 @section Complex numbers
 @cindex representations of complex numbers
 @cindex polar form of complex numbers
+@tpindex gsl_complex
 
 Complex numbers are represented using the type @code{gsl_complex}. The
 internal representation of this type may vary across platforms and
@@ -412,8 +413,11 @@ imaginary axis, below @math{-i} and above @math{i}.
 
 @deftypefun gsl_complex gsl_complex_arccosh (gsl_complex @var{z})
 This function returns the complex hyperbolic arccosine of the complex
-number @var{z}, @math{\arccosh(z)}.  The branch cut is on the real axis,
-less than @math{1}.
+number @var{z}, @math{\arccosh(z)}.  The branch cut is on the real
+axis, less than @math{1}.  Note that in this case we use the negative
+square root in formula 4.6.21 of Abramowitz & Stegun giving
+@c{$\arccosh(z)=\log(z-\sqrt{z^2-1})$}
+@math{\arccosh(z)=\log(z-\sqrt@{z^2-1@})}.
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_arccosh_real (double @var{z})
@@ -487,5 +491,3 @@ Formulas 4.6.14--19.
 Dave Gillespie, @cite{Calc Manual}, Free Software Foundation, ISBN
 1-882114-18-3
 @end itemize
-
-
