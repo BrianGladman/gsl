@@ -259,7 +259,7 @@ gcc -ansi -pedantic -Werror -Wall -W
   -Wtraditional -Wconversion -Wshadow
   -Wpointer-arith -Wcast-qual -Wcast-align 
   -Wwrite-strings -Wnested-externs 
-  -fshort-enums -fno-common -Dinline= -g -O4
+  -fshort-enums -fno-common -Dinline= -g -O2
 @end example
 
 @noindent
