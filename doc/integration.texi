@@ -179,6 +179,7 @@ the overall convergence behavior of the integration.
 
 @node QNG non-adaptive Gauss-Kronrod integration
 @section QNG non-adaptive Gauss-Kronrod integration
+@cindex QNG quadrature algorithm
 
 The QNG algorithm is a non-adaptive procedure which uses fixed
 Gauss-Kronrod abscissae to sample the integrand at a maximum of 87
@@ -200,6 +201,7 @@ minimize the total number of function evaluations.
 
 @node QAG adaptive integration
 @section QAG adaptive integration
+@cindex QAG quadrature algorithm
 
 The QAG algorithm is a simple adaptive integration procedure.  The
 integration region is divided into subintervals, and on each iteration
@@ -254,6 +256,7 @@ size of the workspace.
 
 @node QAGS adaptive integration with singularities
 @section QAGS adaptive integration with singularities
+@cindex QAGS quadrature algorithm
 
 The presence of an integrable singularity in the integration region
 causes an adaptive routine to concentrate new subintervals around the
@@ -283,6 +286,7 @@ workspace.
 
 @node QAGP adaptive integration with known singular points
 @section QAGP adaptive integration with known singular points
+@cindex QAGP quadrature algorithm
 @cindex singular points, specifying positions in quadrature
 @deftypefun int gsl_integration_qagp (const gsl_function * @var{f}, double * @var{pts}, size_t @var{npts}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double * @var{result}, double * @var{abserr})
 
@@ -313,6 +317,7 @@ region then this routine will be faster than @code{QAGS}.
 
 @node QAGI adaptive integration on infinite intervals
 @section QAGI adaptive integration on infinite intervals
+@cindex QAGI quadrature algorithm
 
 @deftypefun int gsl_integration_qagi (gsl_function * @var{f}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double * @var{result}, double * @var{abserr})
 
@@ -393,6 +398,7 @@ and then integrated using the QAGS algorithm.
 
 @node  QAWC adaptive integration for Cauchy principal values
 @section QAWC adaptive integration for Cauchy principal values
+@cindex QAWC quadrature algorithm
 @cindex Cauchy principal value, by numerical quadrature
 @deftypefun int gsl_integration_qawc (gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{c}, double @var{epsabs}, double @var{epsrel}, size_t @var{limit}, gsl_integration_workspace * @var{workspace}, double * @var{result}, double * @var{abserr})
 
@@ -431,6 +437,7 @@ integration rule.
 
 @node  QAWS adaptive integration for singular functions
 @section QAWS adaptive integration for singular functions
+@cindex QAWS quadrature algorithm
 @cindex singular functions, numerical integration of
 The QAWS algorithm is designed for integrands with algebraic-logarithmic
 singularities at the end-points of an integration region.  In order to
@@ -440,7 +447,7 @@ Chebyshev moments.
 @deftypefun {gsl_integration_qaws_table *} gsl_integration_qaws_table_alloc (double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
 
 This function allocates space for a @code{gsl_integration_qaws_table}
-struct and associated workspace describing a singular weight function
+struct describing a singular weight function
 @math{W(x)} with the parameters @math{(\alpha, \beta, \mu, \nu)},
 @tex
 \beforedisplay
@@ -491,7 +498,7 @@ The singular points @math{(a,b)} do not have to be specified until the
 integral is computed, where they are the endpoints of the integration
 range.
 
-The function returns a pointer to the newly allocated
+The function returns a pointer to the newly allocated table
 @code{gsl_integration_qaws_table} if no errors were detected, and 0 in
 the case of error.
 @end deftypefun
@@ -539,6 +546,7 @@ Gauss-Kronrod integration rule is used.
 
 @node  QAWO adaptive integration for oscillatory functions
 @section QAWO adaptive integration for oscillatory functions
+@cindex QAWO quadrature algorithm
 @cindex oscillatory functions, numerical integration of
 The QAWO algorithm is designed for integrands with an oscillatory
 factor, @math{\sin(\omega x)} or @math{\cos(\omega x)}.  In order to
@@ -645,6 +653,7 @@ oscillatory behavior.  Subintervals with a ``small'' widths where
 
 @node  QAWF adaptive integration for Fourier integrals
 @section QAWF adaptive integration for Fourier integrals
+@cindex QAWF quadrature algorithm
 @cindex Fourier integrals, numerical
 
 @deftypefun int gsl_integration_qawf (gsl_function * @var{f}, const double @var{a}, const double @var{epsabs}, const size_t @var{limit}, gsl_integration_workspace * @var{workspace}, gsl_integration_workspace * @var{cycle_workspace}, gsl_integration_qawo_table * @var{wf}, double * @var{result}, double * @var{abserr})
