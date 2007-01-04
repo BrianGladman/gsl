@@ -20,7 +20,7 @@
 /*
  * Coefficients for Daubechies wavelets of extremal phase are from
  * I. Daubechies, "Orthonormal Bases of Compactly Supported Wavelets",
- * Communications on Pure and Apllied Mathematics, 41 (1988) 909--996
+ * Communications on Pure and Applied Mathematics, 41 (1988) 909--996
  * (table 1).
  * Additional digits have been obtained using the Mathematica package
  * Daubechies.m by Tong Chen & Meng Xu available at

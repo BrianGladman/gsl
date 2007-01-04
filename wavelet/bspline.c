@@ -19,7 +19,7 @@
 
 /* Coefficients are from A. Cohen, I. Daubechies, and J.-C. Feauveau;
  * "Biorthogonal Bases of Compactly Supported Wavelets", Communications
- * on Pure and Apllied Mathematics, 45 (1992) 485--560 (table 6.1).
+ * on Pure and Applied Mathematics, 45 (1992) 485--560 (table 6.1).
  *
  * Note the following errors in table 1:
  *
