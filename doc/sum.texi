@@ -59,7 +59,8 @@ estimate of the absolute error stored in @var{abserr}.  The actual
 term-by-term sum is returned in @code{w->sum_plain}. The algorithm
 calculates the truncation error (the difference between two successive
 extrapolations) and round-off error (propagated from the individual
-terms) to choose an optimal number of terms for the extrapolation.
+terms) to choose an optimal number of terms for the extrapolation.  
+All the terms of the series passed in through @var{array} should be non-zero.
 @end deftypefun
 
 
