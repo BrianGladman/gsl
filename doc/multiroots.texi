@@ -649,7 +649,8 @@ the algorithms described in the previous section.
 This is a version of the Hybrid algorithm which replaces calls to the
 Jacobian function by its finite difference approximation.  The finite
 difference approximation is computed using @code{gsl_multiroots_fdjac}
-with a relative step size of @code{GSL_SQRT_DBL_EPSILON}.
+with a relative step size of @code{GSL_SQRT_DBL_EPSILON}.  Note that
+this step size will not be suitable for all problems.
 @end deffn
 
 @deffn {Solver} gsl_multiroot_fsolver_hybrid

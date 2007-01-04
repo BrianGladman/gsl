@@ -8,6 +8,7 @@ set tics out
 set ticscale 0.5 0.25
 set xtics border nomirror norotate
 set ytics border nomirror norotate
+set format x "%g"
 
 # Continuous distributions
 

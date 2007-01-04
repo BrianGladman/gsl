@@ -422,8 +422,13 @@ singular value indicates that the matrix is singular. The number of
 non-zero singular values indicates the rank of the matrix.  In practice
 singular value decomposition of a rank-deficient matrix will not produce
 exact zeroes for singular values, due to finite numerical
-precision. Small singular values should be edited by choosing a suitable
+precision.  Small singular values should be edited by choosing a suitable
 tolerance.
+
+For a rank-deficient matrix, the null space of @math{A} is given by
+the columns of @math{V} corresponding to the zero singular values.
+Similarly, the range of @math{A} is given by columns of @math{U}
+corresponding to the non-zero singular values.
 
 @deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{V}, gsl_vector * @var{S}, gsl_vector * @var{work})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
@@ -502,13 +507,15 @@ the linear system @math{A x = b} into a pair of triangular systems
 back-substitution.
 
 @deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
-This function factorizes the positive-definite symmetric square matrix @var{A}
-into the Cholesky decomposition @math{A = L L^T}. On output the diagonal
-and lower triangular part of the input matrix @var{A} contain the matrix
-@math{L}. The upper triangular part of the input matrix contains
-@math{L^T}, the diagonal terms being identical for both @math{L} and
-@math{L^T}.  If the matrix is not positive-definite then the
-decomposition will fail, returning the error code @code{GSL_EDOM}.
+This function factorizes the positive-definite symmetric square matrix
+@var{A} into the Cholesky decomposition @math{A = L L^T}. On input
+only the diagonal and lower-triangular part of the matrix @var{A} are
+needed.  On output the diagonal and lower triangular part of the input
+matrix @var{A} contain the matrix @math{L}. The upper triangular part
+of the input matrix contains @math{L^T}, the diagonal terms being
+identical for both @math{L} and @math{L^T}.  If the matrix is not
+positive-definite then the decomposition will fail, returning the
+error code @code{GSL_EDOM}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -881,6 +888,8 @@ A = ( d_0 e_0  0   0  )
     (  0   0  e_2 d_3 )
 @end example
 @end ifinfo
+The current implementation uses a variant of Cholesky decomposition
+which can cause division by zero if the matrix is not positive definite.
 @end deftypefun
 
 @deftypefun int gsl_linalg_solve_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{f}, const gsl_vector * @var{b}, gsl_vector * @var{x})
