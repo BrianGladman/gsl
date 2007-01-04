@@ -180,6 +180,7 @@ try_step:
 
   if (step_status != GSL_SUCCESS) 
     {
+      *h = h0;  /* notify user of step-size which caused the failure */
       return step_status;
     }
 

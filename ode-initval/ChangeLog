@@ -1,3 +1,8 @@
+2006-07-29  Brian Gough  <bjg@network-theory.co.uk>
+
+	* evolve.c (gsl_odeiv_evolve_apply): notify user of step-size
+	which caused any failure by returning it
+
 2006-06-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_odeiv.h, control.c (gsl_odeiv_control_hadjust): change y0 to

@@ -143,8 +143,11 @@ be stored in @var{dydt_out} if it is not null.
 If the user-supplied functions defined in the system @var{dydt} return a
 status other than @code{GSL_SUCCESS} the step will be aborted.  In this
 case, the elements of @var{y} will be restored to their pre-step values
-and the error code from the user-supplied function will be returned.  To
-distinguish between error codes from the user-supplied functions and
+and the error code from the user-supplied function will be returned. 
+The step-size @var{h} will be set to the step-size which caused the error.  
+If the function is called again with a smaller step-size, e.g. @math{@var{h}/10},  
+it should be possible to get closer to any singularity.
+To distinguish between error codes from the user-supplied functions and
 those from @code{gsl_odeiv_step_apply} itself, any user-defined return
 values should be distinct from the standard GSL error codes.
 @end deftypefun
@@ -396,9 +399,10 @@ The new time and position are stored in @var{t} and @var{y} on output.
 The initial step-size is taken as @var{h}, but this will be modified
 using the control function @var{c} to achieve the appropriate error
 bound if necessary.  The routine may make several calls to @var{step} in
-order to determine the optimum step-size. If the step-size has been
-changed the value of @var{h} will be modified on output.  The maximum
-time @var{t1} is guaranteed not to be exceeded by the time-step.  On the
+order to determine the optimum step-size. An estimate of 
+the local error for the step can be obtained from the components of the array @code{@var{e}->yerr[]}. 
+If the step-size has been changed the value of @var{h} will be modified on output. 
+The maximum time @var{t1} is guaranteed not to be exceeded by the time-step.  On the
 final time-step the value of @var{t} will be set to @var{t1} exactly.
 
 If the user-supplied functions defined in the system @var{dydt} return a
