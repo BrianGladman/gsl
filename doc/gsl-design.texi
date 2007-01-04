@@ -91,6 +91,7 @@ general users rather than specialists.
 * Motivation::                  
 * Contributing::                
 * Design::                      
+* Bibliography::                
 * Copying::                     
 * GNU Free Documentation License::  
 @end menu
@@ -302,7 +303,7 @@ An example package @samp{rngextra} containing two additional random
 number generators can be found at
 @url{http://www.network-theory.co.uk/download/rngextra/}.
 
-@node Design, Copying, Contributing, Top
+@node Design, Bibliography, Contributing, Top
 @chapter Design
 
 @menu
@@ -526,7 +527,7 @@ you are in doubt about something being too complicated ask yourself the
 question "Would I try to write this in macro-assembler?" If the answer
 is obviously "No" then do not try to include it in GSL. [BJG]
 
-It will be useful to read the following paper,
+It will be useful to read the following papers,
 
 @itemize @asis
 @item 
@@ -764,6 +765,16 @@ Any installed executables (utility programs etc) should have the prefix
 
 All function names, variables, etc should be in lower case.  Macros and
 preprocessor variables should be in upper case.
+
+Some common conventions in variable and function names:
+
+@table @code
+@item p1
+plus 1, e.g. function @code{log1p(x)} or a variable like @code{kp1}, @math{=k+1}.
+
+@item m1
+minus 1, e.g. function @code{expm1(x)} or a variable like @code{km1}, @math{=k-1}.
+@end table
 
 @node Header files, Target system, Namespace, Design
 @section Header files
@@ -1402,7 +1413,9 @@ with the author.
 @item
 I @strong{think} one can reference algorithms from classic books on
 numerical analysis (BJG: yes, provided the code is an independent
-implementation and not copied from any existing software).
+implementation and not copied from any existing software.  For
+example, it would be ok to read the papers in ACM TOMS and make an
+independent implementation from their description).
 @end itemize
 
 @node Non-UNIX portability, Compatibility with other libraries, Legal issues, Design
@@ -1455,7 +1468,7 @@ and would carry overhead that other applications do not need.
 @section Precision
 
 For algorithms which use cutoffs or other precision-related terms please
-express these in terms of GSL_DBL_EPSILON and GSL_DBL_MIN, or powers or
+express these in terms of @code{GSL_DBL_EPSILON} and @code{GSL_DBL_MIN}, or powers or
 combinations of these.  This makes it easier to port the routines to
 different precisions.
 
@@ -1469,7 +1482,76 @@ old Fortran programs).
 Final tip: one perfect routine is better than any number of routines
 containing errors.
 
-@node Copying,  , Design, Top
+@node Bibliography, Copying, Design, Top
+@chapter Bibliography 
+
+@section General numerics
+
+@itemize
+
+@item
+@cite{Numerical Computation} (2 Volumes) by C.W. Ueberhuber,
+Springer 1997,  ISBN 3540620583  (Vol 1) and  ISBN 3540620575  (Vol 2).
+
+@item
+@cite{Accuracy and Stability of Numerical Algorithms} by  N.J. Higham, 
+SIAM,  ISBN 0898715210.
+
+@item
+@cite{Sources and Development of Mathematical Software} edited by W.R. Cowell,
+Prentice Hall, ISBN 0138235015.
+
+@item
+@cite{A Survey of Numerical Mathematics (2 vols)} by D.M. Young and R.T. Gregory,
+ ISBN 0486656918, ISBN 0486656926.
+
+@item
+@cite{Methods and Programs for Mathematical Functions} by Stephen L. Moshier,
+Hard to find (ISBN 13578980X or 0135789982, possibly others).
+
+@item
+@cite{Numerical Methods That Work} by Forman S. Acton,
+ ISBN 0883854503.
+
+@item
+@cite{Real Computing Made Real: Preventing Errors in Scientific and Engineering Calculations} by Forman S. Acton,
+ ISBN 0486442217. 
+@end itemize
+
+@section Reference
+
+@itemize
+@item
+@cite{Handbook of Mathematical Functions} edited by Abramowitz & Stegun,
+Dover,  ISBN 0486612724.
+
+@item
+@cite{The Art of Computer Programming} (3rd Edition, 3 Volumes) by D. Knuth,
+Addison Wesley,  ISBN 0201485419.
+@end itemize
+
+@section Subject specific
+
+@itemize
+@item
+@cite{Matrix Computations} (3rd Ed) by G.H. Golub, C.F. Van Loan,
+Johns Hopkins University Press 1996,  ISBN 0801854148.
+
+@item
+@cite{LAPACK Users' Guide} (3rd Edition),
+SIAM 1999,  ISBN 0898714478.
+
+@item
+@cite{Treatise on the Theory of Bessel Functions 2ND Edition} by G N Watson,
+ ISBN 0521483913.
+
+@item
+@cite{Higher Transcendental Functions satisfying nonhomogenous linear differential equations} by A W Babister,
+ ISBN 1114401773.
+
+@end itemize
+
+@node Copying, GNU Free Documentation License, Bibliography, Top
 @unnumbered Copying
 
    The subroutines and source code in the @value{GSL} package are "free";
@@ -1504,7 +1586,7 @@ on our reputation.
 being distributed that relate to @value{GSL} are found in the General
 Public Licenses that accompany them.
 
-@node GNU Free Documentation License, Function Index, GNU General Public License, Top
+@node GNU Free Documentation License,  , Copying, Top
 @unnumbered GNU Free Documentation License
 @include fdl.texi
 
