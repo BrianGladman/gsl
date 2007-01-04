@@ -56,11 +56,11 @@ For unweighted data the chi-squared sum is computed without any weight factors.
 The fitting routines return the best-fit parameters @math{c} and their
 @math{p \times p} covariance matrix.  The covariance matrix measures the
 statistical errors on the best-fit parameters resulting from the 
-errors on the data @math{\sigma_i}, and is defined
+errors on the data, @math{\sigma_i}, and is defined
 @cindex covariance matrix, linear fits
 as @c{$C_{ab} = \langle \delta c_a \delta c_b \rangle$}
-@math{C_@{ab@} = <\delta c_a \delta c_b>} where @math{\langle \, \rangle} denotes an 
-average over the gaussian error distributions of the underlying datapoints.
+@math{C_@{ab@} = <\delta c_a \delta c_b>} where @c{$\langle \, \rangle$}
+@math{< >} denotes an average over the gaussian error distributions of the underlying datapoints.
 
 The covariance matrix is calculated by error propagation from the data
 errors @math{\sigma_i}.  The change in a fitted parameter @math{\delta
@@ -73,18 +73,31 @@ $$
 $$
 \afterdisplay
 @end tex
+@ifinfo
 
+@example
+\delta c_a = \sum_i (dc_a/dy_i) \delta y_i
+@end example
+
+@end ifinfo
 @noindent
 allowing the covariance matrix to be written in terms of the errors on the data,
 @tex
 \beforedisplay
 $$
 C_{ab} =  \sum_{i,j} {\partial c_a \over \partial y_i}
-                       {\partial c_b \over \partial y_j} \langle \delta y_i \delta y_j \rangle
+                     {\partial c_b \over \partial y_j} 
+                     \langle \delta y_i \delta y_j \rangle
 $$
 \afterdisplay
 @end tex
+@ifinfo
 
+@example
+C_@{ab@} = \sum_@{i,j@} (dc_a/dy_i) (dc_b/dy_j) <\delta y_i \delta y_j>
+@end example
+
+@end ifinfo
 @noindent
 For uncorrelated data the fluctuations of the underlying datapoints satisfy
 @c{$\langle \delta y_i \delta y_j \rangle = \sigma_i^2 \delta_{ij}$}
@@ -97,7 +110,13 @@ C_{ab} = \sum_{i} {1 \over w_i} {\partial c_a \over \partial y_i} {\partial c_b 
 $$
 \afterdisplay
 @end tex
+@ifinfo
 
+@example
+C_@{ab@} = \sum_i (1/w_i) (dc_a/dy_i) (dc_b/dy_i) 
+@end example
+
+@end ifinfo
 @noindent
 When computing the covariance matrix for unweighted data, i.e. data with unknown errors, 
 the weight factors @math{w_i} in this sum are replaced by the single estimate @math{w =
@@ -200,7 +219,8 @@ c_1 X} at the point @var{x}.
 The functions described in this section perform least-squares fits to a
 general linear model, @math{y = X c} where @math{y} is a vector of
 @math{n} observations, @math{X} is an @math{n} by @math{p} matrix of
-predictor variables, and the elements of the vector @math{c} are the @math{p} unknown best-fit parameters which are to be estimated.
+predictor variables, and the elements of the vector @math{c} are the @math{p} unknown best-fit parameters which are to be estimated.  The chi-squared value is given by @c{$\chi^2 = \sum_i w_i (y_i - \sum_j X_{ij} c_j)^2$}
+@math{\chi^2 = \sum_i w_i (y_i - \sum_j X_@{ij@} c_j)^2}.
 
 This formulation can be used for fits to any number of functions and/or
 variables by preparing the @math{n}-by-@math{p} matrix @math{X}
