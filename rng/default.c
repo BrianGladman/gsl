@@ -63,11 +63,11 @@ gsl_rng_env_setup (void)
 
               if ((++i) % 4 == 0)
                 {
-                  putchar ('\n');
+                  fputc ('\n', stderr);
                 }
             }
 
-          putchar ('\n');
+          fputc ('\n', stderr);
 
           GSL_ERROR_VAL ("unknown generator", GSL_EINVAL, 0);
         }
