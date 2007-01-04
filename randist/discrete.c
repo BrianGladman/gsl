@@ -144,6 +144,7 @@
 #include <stdio.h>              /* used for NULL, also fprintf(stderr,...) */
 #include <stdlib.h>             /* used for malloc's */
 #include <math.h>
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #define DEBUG 0
@@ -249,7 +250,7 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     E = (double *)malloc(sizeof(double)*Kevents);
 
     if (E==NULL) {
-      GSL_ERROR_VAL ("Cannot allocate memory for randevent", ENOMEM, 0);
+      GSL_ERROR_VAL ("Cannot allocate memory for randevent", GSL_ENOMEM, 0);
     }
 
     for (k=0; k<Kevents; ++k) {
