@@ -639,6 +639,10 @@ complex[k'].imag   =   -data[N-k]
 complex[N-1].real  =    data[1]
 complex[N-1].imag  =   -data[N-1]
 @end example
+@noindent
+Note that the output data can be converted into the full complex
+sequence using the function @code{gsl_fft_halfcomplex_unpack}
+described in the next section.
 
 @end deftypefun
 The radix-2 FFT functions for halfcomplex data are declared in the
