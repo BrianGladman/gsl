@@ -67,7 +67,7 @@ gsl_root_test_delta (double x1, double x0, double epsabs, double epsrel)
   if (epsabs < 0.0)
     GSL_ERROR ("absolute tolerance is negative", GSL_EBADTOL);
   
-  if (fabs(x1 - x0) < tolerance)
+  if (fabs(x1 - x0) < tolerance || x1 == x0)
     return GSL_SUCCESS;
   
   return GSL_CONTINUE ;

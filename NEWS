@@ -1,3 +1,6 @@
+** gsl_root_test_delta now always returns success if two iterates are
+the same, x1==x0.
+
 ** A Japanese translation of the reference manual is now available
 from the GSL webpage at http://www.gnu.org/software/gsl/ thanks to
 Daisuke TOMINAGA.
