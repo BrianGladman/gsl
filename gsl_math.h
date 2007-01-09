@@ -60,7 +60,7 @@
 #endif
 
 #ifndef M_PI_4
-#define M_PI_4     0.78539816339744830966156608458      /* pi/4 */
+#define M_PI_4     0.78539816339744830961566084582     /* pi/4 */
 #endif
 
 #ifndef M_SQRTPI

@@ -1,3 +1,8 @@
+2007-01-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_math.h (M_PI_4): corrected typo in higher digits of M_PI_4
+	(at ~1e-20)
+
 2006-11-02  Brian Gough  <bjg@network-theory.co.uk>
 
 	* templates_on.h templates_off.h: added UNSIGNED definition for

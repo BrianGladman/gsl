@@ -1,3 +1,7 @@
+** Corrected an error in the higher digits of M_PI_4 (this was beyond
+the limit of double precision, so double precision results are not
+affected).
+
 ** gsl_root_test_delta now always returns success if two iterates are
 the same, x1==x0.
 
