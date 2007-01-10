@@ -19,7 +19,7 @@
 
 #include <config.h>
 
-#if !GSL_RANGE_CHECK
+#if (!GSL_RANGE_CHECK) && HAVE_INLINE
 #undef GSL_RANGE_CHECK
 #define GSL_RANGE_CHECK 1
 #endif
@@ -206,6 +206,7 @@ main (void)
         }
     }
 
+#if GSL_RANGE_CHECK
   gsl_set_error_handler (&my_error_handler);
 
   for (N = 1; N < 1024; N *=2) 
@@ -228,6 +229,7 @@ main (void)
           test_complex_long_double_trap (stride, N);
         }
     }
+#endif
 
   exit (gsl_test_summary ());
 }

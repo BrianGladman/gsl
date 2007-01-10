@@ -19,7 +19,7 @@
 
 #include <config.h>
 
-#if !GSL_RANGE_CHECK
+#if (!GSL_RANGE_CHECK) && HAVE_INLINE
 #undef GSL_RANGE_CHECK
 #define GSL_RANGE_CHECK 1
 #endif
@@ -182,6 +182,7 @@ main (void)
   test_complex_float_binary ();
   test_complex_long_double_binary ();
 
+#if GSL_RANGE_CHECK
   gsl_set_error_handler (&my_error_handler);
 
   test_trap ();
@@ -198,6 +199,7 @@ main (void)
   test_complex_trap ();
   test_complex_float_trap ();
   test_complex_long_double_trap ();
+#endif
 
   test_complex_arith ();
   test_complex_float_arith ();
