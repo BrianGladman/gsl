@@ -52,3 +52,7 @@ and the paper on the Ziggurat Method: Journal of Statistical Software,
 Volume 05 Issue 08. George Marsaglia and Wai Wan Tsang. "The ziggurat
 method for generating random variables"
    
+* Should 0 be included in distributions such as the exponential
+distribution? If we want a consistent behaviour, is it included in
+others?  Note that 1-gsl_rng_uniform() can have a slight loss of
+precision when the random float is small.
