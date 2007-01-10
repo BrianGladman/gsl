@@ -2379,7 +2379,7 @@ int test_SV_decomp(void)
       
       /* increment */
       carry=1.0;
-      for (i=9; i>0 && i--;) 
+      for (i=9; carry > 0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2406,7 +2406,7 @@ int test_SV_decomp(void)
       
       /* increment */
       carry=1.0;
-      for (i=16; i>0 && i--;) 
+      for (i=16; carry > 0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2626,7 +2626,7 @@ int test_SV_decomp_mod(void)
       
       /* increment */
       carry=1.0;
-      for (i=9; i>0 && i--;) 
+      for (i=9; carry > 0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2653,7 +2653,7 @@ int test_SV_decomp_mod(void)
       
       /* increment */
       carry=1.0;
-      for (i=16; i>0 && i--;) 
+      for (i=16; carry>0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2873,7 +2873,7 @@ int test_SV_decomp_jacobi(void)
       
       /* increment */
       carry=1.0;
-      for (i=9; i>0 && i--;) 
+      for (i=9; carry > 0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2901,7 +2901,7 @@ int test_SV_decomp_jacobi(void)
                a[10], a[11], a[12], a[13], a[14], a[15], k);
       /* increment */
       carry=1.0;
-      for (i=16; i>0 && i--;) 
+      for (i=16; carry > 0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
@@ -2932,7 +2932,7 @@ int test_SV_decomp_jacobi(void)
       
       /* increment */
       carry=1.0;
-      for (i=25; i>0 && i--;) 
+      for (i=25; carry >0.0 && i>0 && i--;) 
         {
           double v=a[i]+carry;
           carry = (v>upper) ? 1.0 : 0.0;
