@@ -34,7 +34,7 @@ FUNCTION (gsl_stats,max) (const BASE data[], const size_t stride,
       if (xi > max)
         max = xi;
 #ifdef FP
-      else if (isnan (xi))
+      if (isnan (xi))
         return xi;
 #endif
     }
@@ -58,7 +58,7 @@ FUNCTION (gsl_stats,min) (const BASE data[], const size_t stride,
       if (xi < min)
         min = xi;
 #ifdef FP
-      else if (isnan (xi))
+      if (isnan (xi))
         return xi;
 #endif
     }
