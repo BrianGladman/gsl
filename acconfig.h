@@ -38,6 +38,7 @@
 #undef HAVE_NETBSD_IEEE_INTERFACE
 #undef HAVE_OPENBSD_IEEE_INTERFACE
 #undef HAVE_DARWIN_IEEE_INTERFACE
+#undef HAVE_DARWIN86_IEEE_INTERFACE
 
 /* Define this if IEEE comparisons work correctly (e.g. NaN != NaN) */
 #undef HAVE_IEEE_COMPARISONS
