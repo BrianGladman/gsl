@@ -1,9 +1,10 @@
 @cindex eigenvalues and eigenvectors
 This chapter describes functions for computing eigenvalues and
-eigenvectors of matrices.  There are routines for real symmetric and
-complex hermitian matrices, and eigenvalues can be computed with or
-without eigenvectors.  The algorithms used are symmetric
-bidiagonalization followed by QR reduction.
+eigenvectors of matrices.  There are routines for real symmetric,
+real nonsymmetric, and complex hermitian matrices. Eigenvalues can
+be computed with or without eigenvectors. The hermitian matrix algorithms
+used are symmetric bidiagonalization followed by QR reduction. The
+nonsymmetric algorithm is the Francis QR double-shift.
 
 @cindex LAPACK, recommended for linear algebra
 These routines are intended for ``small'' systems where simple algorithms are

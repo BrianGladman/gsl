@@ -33,6 +33,8 @@ singularity it returns the step-size which caused the error code from
 the user-defined function, as opposed to leaving the step-size
 unchanged.
 
+** Added support for nonsymmetric eigensystems
+
 ** Added Mathieu functions
 
 * What was new in gsl-1.8:
