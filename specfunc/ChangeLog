@@ -1,5 +1,9 @@
 2007-01-12  Brian Gough  <bjg@network-theory.co.uk>
 
+	* trig.c (gsl_sf_angle_restrict_symm_err_e): compute edge cases
+	more reliably, return NaN when total loss of precision
+	(gsl_sf_angle_restrict_pos_err_e): as above
+
 	* legendre_poly.c (gsl_sf_legendre_Pl_e): improve error estimate
 	for large l by including rounding error at each step of recurrence
 

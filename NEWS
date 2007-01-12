@@ -1,3 +1,10 @@
+** Corrected error estimates for the angular reduction functions
+gsl_sf_angle_restrict_symm_err and gsl_sf_angle_restrict_pos_err.
+Fixed gsl_sf_angle_restrict_pos to avoid possibility of returning
+small negative values.  Errors are now reported for out of range
+negative arguments as well as positive.  These functions now return
+NaN when there would be significant loss of precision.
+
 ** Corrected an error in the higher digits of M_PI_4 (this was beyond
 the limit of double precision, so double precision results are not
 affected).

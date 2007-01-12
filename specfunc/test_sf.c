@@ -1864,6 +1864,94 @@ int test_trig(void)
             (10.0 * (-sqrt(3.0)/2.0)), TEST_TOL1,
             GSL_SUCCESS);
 
+  /* In double precision M_PI = \pi - 1.2246467991473531772e-16,
+     i.e. the nearest machine number is slightly below the exact value
+     of \pi.  The true value of \pi satisfies
+
+         M_PI < \pi < nextafter(M_PI,+Inf)
+
+     where nextafter(M_PI,+Inf) = M_PI + 2*DBL_EPSILON
+
+     This also means that 2*M_PI is less than \pi by 2.449e-16. The
+     true value of 2\pi satisfies
+
+         2*M_PI < 2\pi < nextafter(2*M_PI,+Inf)
+
+     where nextafter(2*M_PI,+Inf) = 2*M_PI + 4*DBL_EPSILON
+
+     BJG 25/9/06
+ */
+
+#define DELTA (1.2246467991473531772e-16)
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (2.0*M_PI), 2*M_PI, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-2.0*M_PI), 2*DELTA, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (2.0*M_PI+4*GSL_DBL_EPSILON), 4*GSL_DBL_EPSILON-2*DELTA, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-2.0*M_PI-4*GSL_DBL_EPSILON), 2*M_PI-4*GSL_DBL_EPSILON+2*DELTA, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (4.0*M_PI+8*GSL_DBL_EPSILON), 8*GSL_DBL_EPSILON-4*DELTA, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-4.0*M_PI-8*GSL_DBL_EPSILON), 2*M_PI-8*GSL_DBL_EPSILON+4*DELTA, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e9), 0.5773954235013851694, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e12), 5.625560548042800009446, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e9), 5.7057898836782013075, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e12), 0.6576247591367864674792517289, TEST_TOL1);
+
+#ifdef EXTENDED
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e15), 2.1096981170701125979, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e15), 4.1734871901094738790, TEST_TOL1);
+#endif
+
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (2.0*M_PI, &r), 2*M_PI, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-2.0*M_PI, &r), 2*DELTA, TEST_TOL1, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e9, &r), 0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e12, &r), 5.625560548042800009446, TEST_TOL1, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e9, &r), 5.7057898836782013075, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+
+  TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
+  TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (2.0*M_PI), -2*DELTA, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-2.0*M_PI), 2*DELTA, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (M_PI), M_PI, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-M_PI), -M_PI, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (M_PI+2*GSL_DBL_EPSILON), -M_PI+2*(GSL_DBL_EPSILON-DELTA), TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-M_PI-2*GSL_DBL_EPSILON), M_PI-2*(GSL_DBL_EPSILON-DELTA), TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (3*M_PI+6*GSL_DBL_EPSILON), -M_PI+6*GSL_DBL_EPSILON-4*DELTA, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-3*M_PI-6*GSL_DBL_EPSILON), M_PI-6*GSL_DBL_EPSILON+4*DELTA, TEST_TOL1);
+
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e9), 0.5773954235013851694, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e12), -0.6576247591367864674792517289, TEST_TOL1);
+
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e9), -0.5773954235013851694, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e12), 0.6576247591367864674792517289, TEST_TOL1);
+
+#ifdef EXTENDED
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e15), 2.1096981170701125979, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e15), -2.1096981170701125979, TEST_TOL1);
+#endif
+
+  TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (2.0*M_PI, &r), -2*DELTA, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (-2.0*M_PI, &r), 2*DELTA, TEST_TOL1, GSL_SUCCESS);
+
+
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e9, &r), 0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e12, &r), -0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e9, &r), -0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+
+  TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
+  TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
 
   theta = 5.0*M_PI + M_PI/2.0;
   gsl_sf_angle_restrict_pos_e(&theta);
