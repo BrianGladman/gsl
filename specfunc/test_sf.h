@@ -85,6 +85,8 @@ int test_sf_sgn (gsl_sf_result r, double sgn, double val_in, double tol, double 
 
 #define TEST_SF_SGN(stat, func, args, val_in, tol, expect_sgn, expect_return) { int status = func args; stat += test_sf_sgn(r, sgn, val_in, tol, expect_sgn, status, expect_return, #func #args); }
 
+#define TEST_SF_THETA(stat, func, args, val_in, tol) { int status; theta=args; status = func (&theta);  stat += test_sf_val(theta, val_in, tol, #func #args); }
+
 int test_airy(void);
 int test_bessel(void);
 int test_coulomb(void);
