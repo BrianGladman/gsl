@@ -1,3 +1,8 @@
+2007-01-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* legendre_poly.c (gsl_sf_legendre_Pl_e): improve error estimate
+	for large l by including rounding error at each step of recurrence
+
 2006-10-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* poch.c (gsl_sf_lnpoch_e, gsl_sf_lnpoch_sgn_e): corrected

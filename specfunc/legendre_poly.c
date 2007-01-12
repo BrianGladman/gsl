@@ -141,16 +141,26 @@ gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
     double p_ellm2 = 1.0;    /* P_0(x) */
     double p_ellm1 = x;      /* P_1(x) */
     double p_ell = p_ellm1;
+
+    double e_ellm2 = GSL_DBL_EPSILON;
+    double e_ellm1 = fabs(x)*GSL_DBL_EPSILON;
+    double e_ell = e_ellm1;
+
     int ell;
 
     for(ell=2; ell <= l; ell++){
       p_ell = (x*(2*ell-1)*p_ellm1 - (ell-1)*p_ellm2) / ell;
       p_ellm2 = p_ellm1;
       p_ellm1 = p_ell;
+
+      e_ell = fabs(x*(2*ell-1.0)/ell) * e_ellm1 + fabs((ell-1.0)/ell)*e_ellm2;
+      e_ell += fabs(p_ell)*GSL_DBL_EPSILON;
+      e_ellm2 = e_ellm1;
+      e_ellm1 = e_ell;
     }
 
     result->val = p_ell;
-    result->err = (0.5 * ell + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
+    result->err = e_ell;
     return GSL_SUCCESS;
   }
   else {

@@ -63,7 +63,7 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_Pl_e, (99,  1.0, &r), 1.0, TEST_TOL0, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_legendre_Pl_e, (1000, -0.5, &r),   -0.019168251091650277878, TEST_TOL2, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_legendre_Pl_e, (1000,  1.0e-8, &r), 0.02522501817709828,     TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_Pl_e, (1000,  1.0e-8, &r), 0.0252250181770982897470252620,  TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Pl_e, (1000,  0.5, &r),   -0.019168251091650277878, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Pl_e, (1000,  1.0, &r),    1.0,                     TEST_TOL0, GSL_SUCCESS);
 
