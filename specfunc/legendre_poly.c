@@ -153,14 +153,13 @@ gsl_sf_legendre_Pl_e(const int l, const double x, gsl_sf_result * result)
       p_ellm2 = p_ellm1;
       p_ellm1 = p_ell;
 
-      e_ell = fabs(x*(2*ell-1.0)/ell) * e_ellm1 + fabs((ell-1.0)/ell)*e_ellm2;
-      e_ell += fabs(p_ell)*GSL_DBL_EPSILON;
+      e_ell = 0.5*(fabs(x)*(2*ell-1.0) * e_ellm1 + (ell-1.0)*e_ellm2)/ell;
       e_ellm2 = e_ellm1;
       e_ellm1 = e_ell;
     }
 
     result->val = p_ell;
-    result->err = e_ell;
+    result->err = e_ell + l*fabs(p_ell)*GSL_DBL_EPSILON;
     return GSL_SUCCESS;
   }
   else {
@@ -567,22 +566,26 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
     }
     else{
       double y_ell = 0.0;
+      double y_ell_err;
       int ell;
 
       /* Compute Y_l^m, l > m+1, upward recursion on l. */
       for(ell=m+2; ell <= l; ell++){
         const double rat1 = (double)(ell-m)/(double)(ell+m);
         const double rat2 = (ell-m-1.0)/(ell+m-1.0);
-        const double factor1 = sqrt(rat1*(2*ell+1)*(2*ell-1));
-        const double factor2 = sqrt(rat1*rat2*(2*ell+1)/(2*ell-3));
-        y_ell = (x*y_mmp1*factor1 - (ell+m-1)*y_mm*factor2) / (ell-m);
+        const double factor1 = sqrt(rat1*(2.0*ell+1.0)*(2.0*ell-1.0));
+        const double factor2 = sqrt(rat1*rat2*(2.0*ell+1.0)/(2.0*ell-3.0));
+        y_ell = (x*y_mmp1*factor1 - (ell+m-1.0)*y_mm*factor2) / (ell-m);
         y_mm   = y_mmp1;
         y_mmp1 = y_ell;
+
+        y_ell_err = 0.5*(fabs(x*factor1)*y_mmp1_err + fabs((ell+m-1.0)*factor2)*y_mm_err) / fabs(ell-m);
+        y_mm_err = y_mmp1_err;
+        y_mmp1_err = y_ell_err;
       }
 
       result->val  = y_ell;
-      result->err  = (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
-      result->err += fabs(y_mm_err/y_mm) * fabs(y_ell);
+      result->err  = y_ell_err + (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
 
       return GSL_SUCCESS;
     }

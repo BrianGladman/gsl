@@ -1,3 +1,9 @@
+2007-01-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): added explicit
+	computation of error term to allow for case when final term is
+	zero.
+
 2007-01-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* trig.c (gsl_sf_angle_restrict_symm_err_e): compute edge cases
