@@ -70,6 +70,7 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
 
       if(fabs(val - r.val) > 2.0 * TEST_SIGMA * r.err) s |= TEST_SF_INCONS;
       if(r.err < 0.0)                                  s |= TEST_SF_ERRNEG;
+      if(gsl_isinf(r.err))                             s |= TEST_SF_ERRBAD;
       if(f > TEST_FACTOR * tol)                        s |= TEST_SF_TOLBAD;
     }
 
@@ -77,7 +78,7 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
     char buff[2048];
     sprintf(buff, "  expected: %20.16g\n", val);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: %20.16g   %20.16g  %g\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    sprintf(buff, "  obtained: %20.16g +/- %.16g (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
     strcat(message_buff, buff);
     sprintf(buff, "  fracdiff: %20.16g\n", f);
     strcat(message_buff, buff);
@@ -88,6 +89,9 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   }
   if(s & TEST_SF_ERRNEG) {
     strcat(message_buff, "  reported error negative\n");
+  }
+  if(s & TEST_SF_ERRBAD) {
+    strcat(message_buff, "  reported error is bad\n");
   }
   if(s & TEST_SF_TOLBAD) {
     strcat(message_buff, "  value not within tolerance of expected value\n");
@@ -133,13 +137,14 @@ test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, dou
 
   if(f > GSL_MAX_DBL(TEST_SNGL, TEST_FACTOR * tol))   s |= TEST_SF_INCONS;
   if(r.err < 0.0)     s |= TEST_SF_ERRNEG;
+  if(gsl_isinf(r.err))              s |= TEST_SF_ERRBAD;
   if(f > TEST_FACTOR * tol)         s |= TEST_SF_TOLBAD;
 
   if(s != 0) {
     char buff[2048];
     sprintf(buff, "  expected: %20.16g\n", val);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: %20.16g   %20.16g  %g\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    sprintf(buff, "  obtained: %20.16g +/- %.16g  (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
     strcat(message_buff, buff);
     sprintf(buff, "  fracdiff: %20.16g\n", f);
     strcat(message_buff, buff);
@@ -150,6 +155,9 @@ test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, dou
   }
   if(s & TEST_SF_ERRNEG) {
     strcat(message_buff, "  reported error negative\n");
+  }
+  if(s & TEST_SF_ERRBAD) {
+    strcat(message_buff, "  reported error is bad\n");
   }
   if(s & TEST_SF_TOLBAD) {
     strcat(message_buff, "  value not within tolerance of expected value\n");
@@ -1894,10 +1902,10 @@ int test_trig(void)
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-4.0*M_PI-8*GSL_DBL_EPSILON), 2*M_PI-8*GSL_DBL_EPSILON+4*DELTA, TEST_TOL1);
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e9), 0.5773954235013851694, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e12), 5.625560548042800009446, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e12), 5.625560548042800009446, TEST_SNGL);
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e9), 5.7057898836782013075, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e12), 0.6576247591367864674792517289, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e12), 0.6576247591367864674792517289, TEST_SNGL);
 
 #ifdef EXTENDED
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e15), 2.1096981170701125979, TEST_TOL1);
@@ -1908,10 +1916,10 @@ int test_trig(void)
   TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-2.0*M_PI, &r), 2*DELTA, TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e9, &r), 0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e12, &r), 5.625560548042800009446, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e12, &r), 5.625560548042800009446, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e9, &r), 5.7057898836782013075, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
   TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
@@ -1930,10 +1938,10 @@ int test_trig(void)
 
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e9), 0.5773954235013851694, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e12), -0.6576247591367864674792517289, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e12), -0.6576247591367864674792517289, TEST_SNGL);
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e9), -0.5773954235013851694, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e12), 0.6576247591367864674792517289, TEST_TOL1);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e12), 0.6576247591367864674792517289, TEST_SNGL);
 
 #ifdef EXTENDED
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e15), 2.1096981170701125979, TEST_TOL1);
@@ -1945,22 +1953,22 @@ int test_trig(void)
 
 
   TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e9, &r), 0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e12, &r), -0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e12, &r), -0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e9, &r), -0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
   TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
 
-  theta = 5.0*M_PI + M_PI/2.0;
+  theta = 5.0*M_PI + 5*DELTA + M_PI/2.0;
   gsl_sf_angle_restrict_pos_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, 3.0/2.0*M_PI ) > TEST_TOL0 );
   gsl_test(sa, "  gsl_angle_restrict_pos_e: theta =  11/2 Pi");
   s += sa;
 
-  theta = -5.0*M_PI - M_PI/2.0;
+  theta = -5.0*M_PI - 5*DELTA - M_PI/2.0;
   gsl_sf_angle_restrict_pos_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, M_PI/2.0 ) > 2.0*TEST_TOL0 );
@@ -1990,28 +1998,28 @@ int test_trig(void)
   s += sa;
   */
 
-  theta = 5.0*M_PI + M_PI/2.0;
+  theta = 5.0*M_PI + (5.5*DELTA + M_PI/2.0);
   gsl_sf_angle_restrict_symm_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, -M_PI/2.0 ) > 2.0*TEST_TOL0 );
   gsl_test(sa, "  gsl_angle_restrict_symm_e: theta =  11/2 Pi");
   s += sa;
 
-  theta = -5.0*M_PI - M_PI/2.0;
+  theta = -5.0*M_PI - (5.5*DELTA + M_PI/2.0);
   gsl_sf_angle_restrict_symm_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, M_PI/2.0 ) > 2.0*TEST_TOL0 );
   gsl_test(sa, "  gsl_angle_restrict_symm_e: theta = -11/2 Pi");
   s += sa;
 
-  theta =  5.0*M_PI - M_PI/2.0;
+  theta =  5.0*M_PI + 5*DELTA - M_PI/2.0;
   gsl_sf_angle_restrict_symm_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, M_PI/2.0 ) > TEST_TOL0 );
   gsl_test(sa, "  gsl_angle_restrict_symm_e: theta = -9/2 Pi");
   s += sa;
 
-  theta =  3.0/2.0*M_PI;
+  theta =  3.0/2.0*M_PI + 3.0/2.0*DELTA;
   gsl_sf_angle_restrict_symm_e(&theta);
   sa = 0;
   sa += ( test_sf_frac_diff( theta, -M_PI/2.0 ) > TEST_TOL0 );

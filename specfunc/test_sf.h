@@ -68,6 +68,7 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
 #define TEST_SF_ERRNEG  2
 #define TEST_SF_TOLBAD  4
 #define TEST_SF_RETBAD  8
+#define TEST_SF_ERRBAD  16
 
 int test_sf (gsl_sf_result r, double val_in, double tol, int status, int expect_return, const char * desc);
 int test_sf_val (double val, double val_in, double tol, const char * desc);
