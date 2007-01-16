@@ -61,7 +61,7 @@ main (void)
 
       gsl_vector_set(x, i, xi);
       gsl_vector_set(y, i, yi);
-      gsl_vector_set(w, i, sigma);
+      gsl_vector_set(w, i, 1.0 / (sigma*sigma));
 
       printf("%f %f\n", xi, yi);
     }
