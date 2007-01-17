@@ -118,7 +118,44 @@ hyperg_1F1_asymp_posx(const double a, const double b, const double x,
   }
 }
 
+/* Asymptotic result from Slater 4.3.7 
+ * 
+ * To get the general series, write M(a,b,x) as
+ *
+ *  M(a,b,x)=sum ((a)_n/(b)_n) (x^n / n!)
+ *
+ * and expand (b)_n in inverse powers of b as follows
+ *
+ * -log(1/(b)_n) = sum_(k=0)^(n-1) log(b+k)
+ *             = n log(b) + sum_(k=0)^(n-1) log(1+k/b)
+ *
+ * Do a taylor expansion of the log in 1/b and sum the resulting terms
+ * using the standard algebraic formulas for finite sums of powers of
+ * k.  This should then give
+ *
+ * M(a,b,x) = sum_(n=0)^(inf) (a_n/n!) (x/b)^n * (1 - n(n-1)/(2b) 
+ *                          + (n-1)n(n+1)(3n-2)/(24b^2) + ...
+ *
+ * which can be summed explicitly. The trick for summing it is to take
+ * derivatives of sum_(i=0)^(inf) a_n*y^n/n! = (1-y)^(-a);
+ *
+ * [BJG 16/01/2007]
+ */
 
+static 
+int
+hyperg_1F1_largebx(const double a, const double b, const double x, gsl_sf_result * result)
+{
+  double y = x/b;
+  double f = exp(-a*log1p(-y));
+  double t1 = -((a*(a+1.0))/(2*b))*pow((y/(1.0-y)),2.0);
+  double t2 = (1/(24*b*b))*((a*(a+1)*y*y)/pow(1-y,4))*(12+8*(2*a+1)*y+(3*a*a-a-2)*y*y);
+  double t3 = (-1/(48*b*b*b*pow(1-y,6)))*a*((a + 1)*((y*((a + 1)*(a*(y*(y*((y*(a - 2) + 16)*(a - 1)) + 72)) + 96)) + 24)*pow(y, 2)));
+  result->val = f * (1 + t1 + t2 + t3);
+  result->err = 2*fabs(f*t3) + 2*GSL_DBL_EPSILON*fabs(result->val);
+  return GSL_SUCCESS;
+}
+ 
 /* Asymptotic result for x < 2b-4a, 2b-4a large.
  * [Abramowitz+Stegun, 13.5.21]
  *
@@ -139,8 +176,17 @@ hyperg_1F1_large2bm4a(const double a, const double b, const double x, gsl_sf_res
   double t2 = 0.25*log(pre_h);
   double lnpre_val = lg_b.val + 0.5*x + t1 - t2;
   double lnpre_err = lg_b.err + 2.0 * GSL_DBL_EPSILON * (fabs(0.5*x) + fabs(t1) + fabs(t2));
+#if SMALL_ANGLE
+  const double eps = asin(sqrt(cos2th));  /* theta = pi/2 - eps */
+  double s1 = (fmod(a, 1.0) == 0.0) ? 0.0 : sin(a*M_PI);
+  double eta_reduc = (fmod(eta + 1, 4.0) == 0.0) ? 0.0 : fmod(eta + 1, 8.0);
+  double phi1 = 0.25*eta_reduc*M_PI;
+  double phi2 = 0.25*eta*(2*eps + sin(2.0*eps));
+  double s2 = sin(phi1 - phi2);
+#else
   double s1 = sin(a*M_PI);
   double s2 = sin(0.25*eta*(2.0*th - sin(2.0*th)) + 0.25*M_PI);
+#endif
   double ser_val = s1 + s2;
   double ser_err = 2.0 * GSL_DBL_EPSILON * (fabs(s1) + fabs(s2));
   int stat_e = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err,
@@ -240,7 +286,6 @@ hyperg_1F1_luke(const double a, const double c, const double xin,
   return GSL_SUCCESS;
 }
 
-
 /* Series for 1F1(1,b,x)
  * b > 0
  */
@@ -338,8 +383,9 @@ hyperg_1F1_1(const double b, const double x, gsl_sf_result * result)
       result->err  = err_rat * fabs(M.val);
       result->err += 2.0 * GSL_DBL_EPSILON * (fabs(off)+1.0) * fabs(M.val);
       return stat_s;
-    }
-    else {
+    } else if (fabs(x) < fabs(b) && fabs(x) < sqrt(fabs(b)) * fabs(b-x)) {
+      return hyperg_1F1_largebx(1.0, b, x, result);
+    } else {
       return hyperg_1F1_large2bm4a(1.0, b, x, result);
     }
   }
@@ -377,8 +423,16 @@ hyperg_1F1_renorm_b0(const double a, const double x, gsl_sf_result * result)
       return GSL_ERROR_SELECT_2(stat_I, GSL_EDOM);
     }
     else {
-      const double lnr_val = 0.5*x + 0.5*log(eta) + fabs(2*root_eta) + log(I1_scaled.val);
-      const double lnr_err = GSL_DBL_EPSILON * (1.5*fabs(x) + 1.0) + fabs(I1_scaled.err/I1_scaled.val);
+      /* Note that 13.3.7 contains higher terms which are zeroth order
+         in b.  These make a non-negligible contribution to the sum.
+         With the first correction term, the I1 above is replaced by
+         I1 + (2/3)*a*(x/(4a))**(3/2)*I2(2*root_eta).  We will add
+         this as part of the result and error estimate. */
+
+      const double corr1 =(2.0/3.0)*a*pow(x/(4.0*a),1.5)*gsl_sf_bessel_In_scaled(2, 2.0*root_eta)
+ ;
+      const double lnr_val = 0.5*x + 0.5*log(eta) + fabs(2.0*root_eta) + log(I1_scaled.val+corr1);
+      const double lnr_err = GSL_DBL_EPSILON * (1.5*fabs(x) + 1.0) + fabs((I1_scaled.err+corr1)/I1_scaled.val);
       return gsl_sf_exp_err_e(lnr_val, lnr_err, result);
     }
   }
@@ -716,7 +770,9 @@ hyperg_1F1_small_a_bgt0(const double a, const double b, const double x, gsl_sf_r
       result->err += 2.0 * GSL_DBL_EPSILON * fabs(Mb);
       return GSL_ERROR_SELECT_2(stat_0, stat_1);
     }
-    else {
+    else if (fabs(x) < fabs(b) && fabs(a*x) < sqrt(fabs(b)) * fabs(b-x)) {
+      return hyperg_1F1_largebx(a, b, x, result);
+    } else {
       return hyperg_1F1_large2bm4a(a, b, x, result);
     }
   }
@@ -1822,28 +1878,27 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
      * We also test approximate equality later.
      */
     return gsl_sf_exp_e(x, result);
-  }
-  else if(fabs(b) < _1F1_INT_THRESHOLD) {
+  } else if(fabs(b) < _1F1_INT_THRESHOLD && fabs(a) < _1F1_INT_THRESHOLD) {
+    /* a and b near zero: 1 + a/b (exp(x)-1)
+     */
+
     /* Note that neither a nor b is zero, since
      * we eliminated that with the above tests.
      */
-    if(fabs(a) < _1F1_INT_THRESHOLD) {
-      /* a and b near zero: 1 + a/b (exp(x)-1)
-       */
-      gsl_sf_result exm1;
-      int stat_e = gsl_sf_expm1_e(x, &exm1);
-      double sa = ( a > 0.0 ? 1.0 : -1.0 );
-      double sb = ( b > 0.0 ? 1.0 : -1.0 );
-      double lnab = log(fabs(a/b)); /* safe */
-      gsl_sf_result hx;
-      int stat_hx = gsl_sf_exp_mult_err_e(lnab, GSL_DBL_EPSILON * fabs(lnab),
-                                             sa * sb * exm1.val, exm1.err,
-                                             &hx);
-      result->val = (hx.val == GSL_DBL_MAX ? hx.val : 1.0 + hx.val);  /* FIXME: excessive paranoia ? what is DBL_MAX+1 ?*/
-      result->err = hx.err;
-      return GSL_ERROR_SELECT_2(stat_hx, stat_e);
-    }
-    else {
+    
+    gsl_sf_result exm1;
+    int stat_e = gsl_sf_expm1_e(x, &exm1);
+    double sa = ( a > 0.0 ? 1.0 : -1.0 );
+    double sb = ( b > 0.0 ? 1.0 : -1.0 );
+    double lnab = log(fabs(a/b)); /* safe */
+    gsl_sf_result hx;
+    int stat_hx = gsl_sf_exp_mult_err_e(lnab, GSL_DBL_EPSILON * fabs(lnab),
+                                        sa * sb * exm1.val, exm1.err,
+                                        &hx);
+    result->val = (hx.val == GSL_DBL_MAX ? hx.val : 1.0 + hx.val);  /* FIXME: excessive paranoia ? what is DBL_MAX+1 ?*/
+    result->err = hx.err;
+    return GSL_ERROR_SELECT_2(stat_hx, stat_e);
+  } else if (fabs(b) < _1F1_INT_THRESHOLD && fabs(x*a) < 1) {
       /* b near zero and a not near zero
        */
       const double m_arg = 1.0/(0.5*b);
@@ -1853,7 +1908,6 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
                                             0.5*F_renorm.val, 0.5*F_renorm.err,
                                             result);
       return GSL_ERROR_SELECT_2(stat_m, stat_F);
-    }
   }
   else if(a_integer && b_integer) {
     /* Check for reduction to the integer case.

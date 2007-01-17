@@ -1,3 +1,11 @@
+2007-01-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_1F1.c (hyperg_1F1_largebx): asymptotic expansion for
+	large b and x, with |x|<|b| from Slater 4.3.7
+	(hyperg_1F1_1): use new asymptotic expansion for |x|<|b|
+	(hyperg_1F1_small_a_bgt0): use new asymptotic expansion for |x|<|b|
+	(hyperg_1F1_renorm_b0): add neglected terms in expansion for AS13.3.7
+
 2007-01-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* legendre_poly.c (gsl_sf_legendre_sphPlm_e): added explicit
