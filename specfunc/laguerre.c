@@ -33,6 +33,14 @@
 
 /* based on the large 2b-4a asymptotic for 1F1
  * [Abramowitz+Stegun, 13.5.21]
+ * L^a_n(x) = (a+1)_n / n! 1F1(-n,a+1,x)
+ *
+ * The second term (ser_term2) is from Slater,"The Confluent
+ * Hypergeometric Function" p.73.  I think there may be an error in
+ * the first term of the expression given there, comparing with AS
+ * 13.5.21 (cf sin(a\pi+\Theta) vs sin(a\pi) + sin(\Theta)) - but the
+ * second term appears correct.
+ *
  */
 static
 int
@@ -54,13 +62,15 @@ laguerre_large_n(const int n, const double alpha, const double x,
   double pre_term2 = 0.25*log(pre_h);
   double lnpre_val = lg_b.val - lnfact.val + 0.5*x + pre_term1 - pre_term2;
   double lnpre_err = lg_b.err + lnfact.err + GSL_DBL_EPSILON * (fabs(pre_term1)+fabs(pre_term2));
-  double ser_term1 = (fmod(a, 1.0) == 0.0) ? 0.0 : sin(a*M_PI);
-  double eta_reduc = (fmod(eta + 1, 4.0) == 0.0) ? 0.0 : fmod(eta + 1, 8.0);
-  double phi1 = 0.25*eta_reduc*M_PI;
-  double phi2 = 0.25*eta*(2*eps + sin(2.0*eps));
-  double ser_term2 = sin(phi1 - phi2);
+
+  double phi1 = 0.25*eta*(2*eps + sin(2.0*eps));
+  double ser_term1 = -sin(phi1);
+
+  double A1 = (1.0/12.0)*(5.0/(4.0*sin2th)+(3.0*b*b-6.0*b+2.0)*sin2th - 1.0);
+  double ser_term2 = -A1 * cos(phi1)/(0.25*eta*sin(2.0*eps));
+
   double ser_val = ser_term1 + ser_term2;
-  double ser_err = GSL_DBL_EPSILON * (fabs(ser_term1) + fabs(ser_term2));
+  double ser_err = ser_term2*ser_term2 + GSL_DBL_EPSILON * (fabs(ser_term1) + fabs(ser_term2));
   int stat_e = gsl_sf_exp_mult_err_e(lnpre_val, lnpre_err, ser_val, ser_err, result);
   result->err += 2.0 * GSL_SQRT_DBL_EPSILON * fabs(result->val);
   return GSL_ERROR_SELECT_3(stat_e, stat_lf, stat_lg);

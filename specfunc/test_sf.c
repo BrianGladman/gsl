@@ -1409,14 +1409,20 @@ int test_laguerre(void)
   TEST_SF(s, gsl_sf_laguerre_n_e, (1000, 2.0,  0.5, &r), -306.77440254315317525,    TEST_TOL2, GSL_SUCCESS); /**/
   TEST_SF(s, gsl_sf_laguerre_n_e, (100000, 2.0, 1.0, &r), 5107.73491348319,         TEST_TOL4, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e5, 2.5, 2.5, &r), -4.149168039462438901e+04,         TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e5+1, 2.5, 2.5, &r), -4.162944694957807224e+04,         TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e6+1, 2.5, 2.5, &r), -4.801796154529982596e+05,         TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (5e6+1, 2.5, 2.5, &r), -1.517403740042659454e+06,         TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (8e6+1, 2.5, 2.5, &r), 6.325150953351791250e+05,         TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e7+1, 2.5, 2.5, &r), 1.529948468637081329e+06,         TEST_TOL5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e8+1, 2.5, 2.5, &r), 2.364534163212356716e+07,         TEST_TOL5, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (1e9+1, 2.5, 2.5, &r), -1.773099695830937102e+07,         TEST_TOL5, GSL_SUCCESS);
+  /* Compute these with the recurrence
+   * L(0,alpha,x)=1;
+   * L(1,alpha,x)=1+alpha-x;
+   * L(n,alpha,x)=((2*n-1+alpha-x)*L(n-1,alpha,x)-(n+alpha-1)*L(n-2,alpha,x))/k
+   */
+
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e5, 2.5, 2.5, &r),   -0.41491680394598644969113795e5, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e5+1, 2.5, 2.5, &r), -0.41629446949552321027514888e5, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e6+1, 2.5, 2.5, &r), -0.48017961545391273151977118e6, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (5e6+1, 2.5, 2.5, &r), -0.15174037401611122446089494e7, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (8e6+1, 2.5, 2.5, &r),  0.63251509472091810994286362e6, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e7+1, 2.5, 2.5, &r),  0.15299484685632983178033887e7, TEST_TOL6, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e8+1, 2.5, 2.5, &r),  0.23645341644922756725290777e8, TEST_SNGL, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (1e9+1, 2.5, 2.5, &r), -0.17731002248958790286185878e8, 100*TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_laguerre_n_e, (1, -2.0, 1.0, &r),  -2.0,     TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (2, -2.0, 1.0, &r),   0.5,     TEST_TOL0, GSL_SUCCESS);

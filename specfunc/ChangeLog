@@ -1,3 +1,8 @@
+2007-01-19  Brian Gough  <bjg@network-theory.co.uk>
+
+	* laguerre.c (laguerre_large_n): use the second term in the
+	asymptotic expansion from Slater, p.73.
+
 2007-01-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_1F1.c (hyperg_1F1_largebx): asymptotic expansion for
