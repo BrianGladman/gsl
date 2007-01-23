@@ -297,15 +297,15 @@ hyperg_1F1_1_series(const double b, const double x, gsl_sf_result * result)
   double sum_err = 0.0;
   double term = 1.0;
   double n    = 1.0;
-  while(fabs(term/sum_val) > 2.0*GSL_DBL_EPSILON) {
+  while(fabs(term/sum_val) > 0.25*GSL_DBL_EPSILON) {
     term *= x/(b+n-1);
     sum_val += term;
-    sum_err += 2.0 * 4.0 * GSL_DBL_EPSILON * fabs(term);
+    sum_err += 8.0*GSL_DBL_EPSILON*fabs(term) + GSL_DBL_EPSILON*fabs(sum_val);
     n += 1.0;
   }
   result->val  = sum_val;
   result->err  = sum_err;
-  result->err += 2.0 * fabs(term);
+  result->err += 2.0 *  fabs(term);
   return GSL_SUCCESS;
 }
 
@@ -385,6 +385,8 @@ hyperg_1F1_1(const double b, const double x, gsl_sf_result * result)
       return stat_s;
     } else if (fabs(x) < fabs(b) && fabs(x) < sqrt(fabs(b)) * fabs(b-x)) {
       return hyperg_1F1_largebx(1.0, b, x, result);
+    } else if (fabs(x) > fabs(b)) {
+      return hyperg_1F1_1_series(b, x, result);
     } else {
       return hyperg_1F1_large2bm4a(1.0, b, x, result);
     }
@@ -1941,7 +1943,7 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
                                             result);
       return GSL_ERROR_SELECT_2(stat_e, stat_K);
     }
-    else if(a < 0.0) {
+    else if(a < 0.0 && fabs(x) < 100.0) {
       /* Use Kummer to reduce it to the generic positive case.
        * Note that b > a, strictly, since we already trapped b = a.
        * Also b-(b-a)=a, and a is not a negative integer here,
@@ -1954,9 +1956,11 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
                                             result);
       return GSL_ERROR_SELECT_2(stat_e, stat_K);
     }
-    else {
+    else if (a > 0) {
       /* a > 0.0 */
       return hyperg_1F1_ab_pos(a, b, x, result);
+    } else {
+      return gsl_sf_hyperg_1F1_series_e(a, b, x, result);
     }
   }
   else {

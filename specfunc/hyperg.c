@@ -48,18 +48,25 @@ gsl_sf_hyperg_1F1_series_e(const double a, const double b, const double x,
   double sum_val = 1.0;
   double sum_err = 0.0;
 
-  while(abs_del/fabs(sum_val) > GSL_DBL_EPSILON) {
+  while(abs_del/fabs(sum_val) > 0.25*GSL_DBL_EPSILON) {
     double u, abs_u;
 
     if(bn == 0.0) {
       DOMAIN_ERROR(result);
     }
-    if(an == 0.0 || n > 1000.0) {
+
+    if(an == 0.0) {
       result->val  = sum_val;
       result->err  = sum_err;
       result->err += 2.0 * GSL_DBL_EPSILON * n * fabs(sum_val);
       return GSL_SUCCESS;
     }
+
+    if (n > 10000.0) {
+      result->val  = sum_val;
+      result->err  = sum_err;
+      GSL_ERROR ("hypergeometric series failed to converge", GSL_EFAILED);
+    }      
 
     u = x * (an/(bn*n));
     abs_u = fabs(u);

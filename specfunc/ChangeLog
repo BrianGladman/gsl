@@ -1,3 +1,17 @@
+2007-01-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_1F1.c (hyperg_1F1_1_series): increase accuracy by factor
+	of 4 in sum, tighter convergence condition, increase error
+	estimate to allow for accumulated roundoff
+	(hyperg_1F1_1): use series when |x| > |b|
+	(gsl_sf_hyperg_1F1_e): only use Kummer when |x| < 100 otherwise
+	exponential takes extreme value
+
+	* hyperg.c (gsl_sf_hyperg_1F1_series_e): allow 10000 iterations in
+	series to extend valid range
+	(gsl_sf_hyperg_1F1_series_e): increase accuracy by factor of 4 in
+	sum, tighter convergence condition
+
 2007-01-19  Brian Gough  <bjg@network-theory.co.uk>
 
 	* laguerre.c (laguerre_large_n): use the second term in the
