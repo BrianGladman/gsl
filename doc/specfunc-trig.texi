@@ -118,14 +118,23 @@ lies in the range @math{[-\pi, \pi]}.
 @deftypefun double gsl_sf_angle_restrict_symm (double @var{theta})
 @deftypefunx int gsl_sf_angle_restrict_symm_e (double * @var{theta})
 These routines force the angle @var{theta} to lie in the range
-@math{(-\pi,\pi]}.
+@math{(-\pi,\pi]}.  
+
+Note that the mathematical value of @math{\pi} is slightly greater
+than @code{M_PI}, so the machine numbers @code{M_PI} and @code{-M_PI}
+are included in the range.
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
 
 @deftypefun double gsl_sf_angle_restrict_pos (double @var{theta})
 @deftypefunx int gsl_sf_angle_restrict_pos_e (double * @var{theta})
 These routines force the angle @var{theta} to lie in the range @math{[0,
-2\pi)}.
+2\pi)}. 
+
+Note that the mathematical value of @math{2\pi} is slightly greater
+than @code{2*M_PI}, so the machine number @code{2*M_PI} is included in
+the range.
+
 @comment Exceptional Return Values: GSL_ELOSS
 @end deftypefun
 
