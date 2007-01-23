@@ -1,10 +1,10 @@
 /*
- * testunsymm.c
+ * testnonsymm.c
  * Patrick Alken
  *
- * Compile: gcc -g -O2 -Wall -o testunsymm testunsymm.c -lm -lgsl -lcblas -latlas
+ * Compile: gcc -g -O2 -Wall -o testnonsymm testnonsymm.c -lm -lgsl -lcblas -latlas
  *
- * Usage: testunsymm [options]
+ * Usage: testnonsymm [options]
  *
  * -i             : incremental matrices
  * -b             : balance the matrices
@@ -37,8 +37,8 @@
 
 typedef struct
 {
-  gsl_eigen_unsymm_workspace *unsymm_p;
-  gsl_eigen_unsymmv_workspace *unsymmv_p;
+  gsl_eigen_nonsymm_workspace *nonsymm_p;
+  gsl_eigen_nonsymmv_workspace *nonsymmv_p;
   gsl_matrix *A;
   gsl_matrix *Av;
   gsl_vector_complex *eval;
@@ -50,11 +50,11 @@ typedef struct
   gsl_matrix *Zv;
 
   size_t n_evals;
-} unsymm_workspace;
+} nonsymm_workspace;
 
-unsymm_workspace *unsymm_alloc(size_t n, int compute_z, int do_balance);
-void unsymm_free(unsymm_workspace *w);
-int unsymm_proc(unsymm_workspace *w);
+nonsymm_workspace *nonsymm_alloc(size_t n, int compute_z, int do_balance);
+void nonsymm_free(nonsymm_workspace *w);
+int nonsymm_proc(nonsymm_workspace *w);
 
 /*
  * Global variables
@@ -85,18 +85,18 @@ int test_eigenvectors(gsl_matrix *A, gsl_vector_complex *eval,
 void my_error_handler(const char *reason, const char *file, int line,
                       int err);
 
-unsymm_workspace *
-unsymm_alloc(size_t n, int compute_z, int do_balance)
+nonsymm_workspace *
+nonsymm_alloc(size_t n, int compute_z, int do_balance)
 
 {
-  unsymm_workspace *w;
+  nonsymm_workspace *w;
 
-  w = (unsymm_workspace *) malloc(sizeof(unsymm_workspace));
+  w = (nonsymm_workspace *) malloc(sizeof(nonsymm_workspace));
 
-  memset(w, '\0', sizeof(unsymm_workspace));
+  memset(w, '\0', sizeof(nonsymm_workspace));
 
-  w->unsymm_p = gsl_eigen_unsymm_alloc(n);
-  w->unsymmv_p = gsl_eigen_unsymmv_alloc(n);
+  w->nonsymm_p = gsl_eigen_nonsymm_alloc(n);
+  w->nonsymmv_p = gsl_eigen_nonsymmv_alloc(n);
 
   w->A = gsl_matrix_alloc(n, n);
   w->Av = gsl_matrix_alloc(n, n);
@@ -106,10 +106,10 @@ unsymm_alloc(size_t n, int compute_z, int do_balance)
       w->Z = gsl_matrix_alloc(n, n);
       w->Zv = gsl_matrix_alloc(n, n);
       w->compute_z = 1;
-      gsl_eigen_unsymm_params(1, do_balance, w->unsymm_p);
+      gsl_eigen_nonsymm_params(1, do_balance, w->nonsymm_p);
     }
   else
-    gsl_eigen_unsymm_params(0, do_balance, w->unsymm_p);
+    gsl_eigen_nonsymm_params(0, do_balance, w->nonsymm_p);
 
   w->eval = gsl_vector_complex_alloc(n);
   w->evalv = gsl_vector_complex_alloc(n);
@@ -117,20 +117,20 @@ unsymm_alloc(size_t n, int compute_z, int do_balance)
   w->evec = gsl_matrix_complex_alloc(n, n);
 
   return (w);
-} /* unsymm_alloc() */
+} /* nonsymm_alloc() */
 
 void
-unsymm_free(unsymm_workspace *w)
+nonsymm_free(nonsymm_workspace *w)
 
 {
   if (!w)
     return;
 
-  if (w->unsymm_p)
-    gsl_eigen_unsymm_free(w->unsymm_p);
+  if (w->nonsymm_p)
+    gsl_eigen_nonsymm_free(w->nonsymm_p);
 
-  if (w->unsymmv_p)
-    gsl_eigen_unsymmv_free(w->unsymmv_p);
+  if (w->nonsymmv_p)
+    gsl_eigen_nonsymmv_free(w->nonsymmv_p);
 
   if (w->A)
     gsl_matrix_free(w->A);
@@ -154,26 +154,26 @@ unsymm_free(unsymm_workspace *w)
     gsl_matrix_complex_free(w->evec);
 
   free(w);
-} /* unsymm_free() */
+} /* nonsymm_free() */
 
 int
-unsymm_proc(unsymm_workspace *w)
+nonsymm_proc(nonsymm_workspace *w)
 
 {
   int s1, s2, s;
 
   if (w->compute_z)
     {
-      s1 = gsl_eigen_unsymm_Z(w->A, w->eval, w->Z, w->unsymm_p);
-      s2 = gsl_eigen_unsymmv_Z(w->Av, w->evalv, w->evec, w->Zv, w->unsymmv_p);
+      s1 = gsl_eigen_nonsymm_Z(w->A, w->eval, w->Z, w->nonsymm_p);
+      s2 = gsl_eigen_nonsymmv_Z(w->Av, w->evalv, w->evec, w->Zv, w->nonsymmv_p);
     }
   else
     {
-      s1 = gsl_eigen_unsymm(w->A, w->eval, w->unsymm_p);
-      s2 = gsl_eigen_unsymmv(w->Av, w->evalv, w->evec, w->unsymmv_p);
+      s1 = gsl_eigen_nonsymm(w->A, w->eval, w->nonsymm_p);
+      s2 = gsl_eigen_nonsymmv(w->Av, w->evalv, w->evec, w->nonsymmv_p);
     }
 
-  w->n_evals = w->unsymm_p->n_evals;
+  w->n_evals = w->nonsymm_p->n_evals;
 
   s = 0;
   if (s1)
@@ -182,7 +182,7 @@ unsymm_proc(unsymm_workspace *w)
     s = s2;
 
   return s;
-} /* unsymm_proc() */
+} /* nonsymm_proc() */
 
 /**********************************************
  * General routines
@@ -660,7 +660,7 @@ int
 main(int argc, char *argv[])
 
 {
-  unsymm_workspace *unsymm_workspace_p;
+  nonsymm_workspace *nonsymm_workspace_p;
   size_t N;
   int c;
   gsl_matrix *A;
@@ -727,7 +727,7 @@ main(int argc, char *argv[])
     }
 
   A = gsl_matrix_alloc(N, N);
-  unsymm_workspace_p = unsymm_alloc(N, compute_z, do_balance);
+  nonsymm_workspace_p = nonsymm_alloc(N, compute_z, do_balance);
 
   if (!incremental)
     r = gsl_rng_alloc(gsl_rng_default);
@@ -770,45 +770,45 @@ main(int argc, char *argv[])
         }
 
       /* make copies of the matrix */
-      gsl_matrix_memcpy(unsymm_workspace_p->A, A);
-      gsl_matrix_memcpy(unsymm_workspace_p->Av, A);
+      gsl_matrix_memcpy(nonsymm_workspace_p->A, A);
+      gsl_matrix_memcpy(nonsymm_workspace_p->Av, A);
 
-      status = unsymm_proc(unsymm_workspace_p);
+      status = nonsymm_proc(nonsymm_workspace_p);
 
       if (status)
         {
           printf("=========== CASE %lu ============\n", count);
           printf("Failed to converge: found %u eigenvalues\n",
-                 unsymm_workspace_p->n_evals);
+                 nonsymm_workspace_p->n_evals);
           print_matrix(A, "A");
         }
 
-      gsl_eigen_unsymmv_sort(unsymm_workspace_p->evalv,
-                             unsymm_workspace_p->evec,
-                             GSL_EIGEN_SORT_ABS_ASC);
+      gsl_eigen_nonsymmv_sort(nonsymm_workspace_p->evalv,
+                              nonsymm_workspace_p->evec,
+                              GSL_EIGEN_SORT_ABS_ASC);
 
       status = test_eigenvectors(A,
-                                 unsymm_workspace_p->evalv,
-                                 unsymm_workspace_p->evec);
+                                 nonsymm_workspace_p->evalv,
+                                 nonsymm_workspace_p->evec);
 
-      sort_complex_vector(unsymm_workspace_p->eval);
-      sort_complex_vector(unsymm_workspace_p->evalv);
+      sort_complex_vector(nonsymm_workspace_p->eval);
+      sort_complex_vector(nonsymm_workspace_p->evalv);
 
-      status = test_evals(unsymm_workspace_p->eval,
-                          unsymm_workspace_p->evalv,
+      status = test_evals(nonsymm_workspace_p->eval,
+                          nonsymm_workspace_p->evalv,
                           A,
-                          "unsymm",
-                          "unsymmv");
+                          "nonsymm",
+                          "nonsymmv");
 
       if (compute_z)
         {
-          test_Z(A, unsymm_workspace_p->Z, unsymm_workspace_p->A);
-          test_Z(A, unsymm_workspace_p->Zv, unsymm_workspace_p->Av);
+          test_Z(A, nonsymm_workspace_p->Z, nonsymm_workspace_p->A);
+          test_Z(A, nonsymm_workspace_p->Zv, nonsymm_workspace_p->Av);
         }
     }
 
   gsl_matrix_free(A);
-  unsymm_free(unsymm_workspace_p);
+  nonsymm_free(nonsymm_workspace_p);
 
   if (r)
     gsl_rng_free(r);

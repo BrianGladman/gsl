@@ -92,16 +92,16 @@ typedef struct {
   size_t n_evals;              /* number of eigenvalues found */
 
   gsl_eigen_francis_workspace *francis_workspace_p;
-} gsl_eigen_unsymm_workspace;
+} gsl_eigen_nonsymm_workspace;
 
-gsl_eigen_unsymm_workspace * gsl_eigen_unsymm_alloc (const size_t n);
-void gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * w);
-void gsl_eigen_unsymm_params (const int compute_t, const int balance,
-                              gsl_eigen_unsymm_workspace *w);
-int gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
-                      gsl_eigen_unsymm_workspace * w);
-int gsl_eigen_unsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
-                        gsl_matrix * Z, gsl_eigen_unsymm_workspace * w);
+gsl_eigen_nonsymm_workspace * gsl_eigen_nonsymm_alloc (const size_t n);
+void gsl_eigen_nonsymm_free (gsl_eigen_nonsymm_workspace * w);
+void gsl_eigen_nonsymm_params (const int compute_t, const int balance,
+                               gsl_eigen_nonsymm_workspace *w);
+int gsl_eigen_nonsymm (gsl_matrix * A, gsl_vector_complex * eval,
+                       gsl_eigen_nonsymm_workspace * w);
+int gsl_eigen_nonsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                         gsl_matrix * Z, gsl_eigen_nonsymm_workspace * w);
 
 typedef struct {
   size_t size;                 /* size of matrices */
@@ -111,17 +111,17 @@ typedef struct {
 
   gsl_matrix *Z;               /* pointer to Schur vectors */
 
-  gsl_eigen_unsymm_workspace *unsymm_workspace_p;
-} gsl_eigen_unsymmv_workspace;
+  gsl_eigen_nonsymm_workspace *nonsymm_workspace_p;
+} gsl_eigen_nonsymmv_workspace;
 
-gsl_eigen_unsymmv_workspace * gsl_eigen_unsymmv_alloc (const size_t n);
-void gsl_eigen_unsymmv_free (gsl_eigen_unsymmv_workspace * w);
-int gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
-                       gsl_matrix_complex * evec,
-                       gsl_eigen_unsymmv_workspace * w);
-int gsl_eigen_unsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
-                         gsl_matrix_complex * evec, gsl_matrix * Z,
-                         gsl_eigen_unsymmv_workspace * w);
+gsl_eigen_nonsymmv_workspace * gsl_eigen_nonsymmv_alloc (const size_t n);
+void gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w);
+int gsl_eigen_nonsymmv (gsl_matrix * A, gsl_vector_complex * eval,
+                        gsl_matrix_complex * evec,
+                        gsl_eigen_nonsymmv_workspace * w);
+int gsl_eigen_nonsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                          gsl_matrix_complex * evec, gsl_matrix * Z,
+                          gsl_eigen_nonsymmv_workspace * w);
 
 typedef struct {
   size_t size;
@@ -173,9 +173,9 @@ int gsl_eigen_symmv_sort(gsl_vector * eval, gsl_matrix * evec,
 int gsl_eigen_hermv_sort(gsl_vector * eval, gsl_matrix_complex * evec,
                          gsl_eigen_sort_t sort_type);
 
-int gsl_eigen_unsymmv_sort(gsl_vector_complex * eval,
-                           gsl_matrix_complex * evec,
-                           gsl_eigen_sort_t sort_type);
+int gsl_eigen_nonsymmv_sort(gsl_vector_complex * eval,
+                            gsl_matrix_complex * evec,
+                            gsl_eigen_sort_t sort_type);
 
 
 /* The following functions are obsolete: */

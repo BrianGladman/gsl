@@ -1,4 +1,4 @@
-/* eigen/unsymmv.c
+/* eigen/nonsymmv.c
  * 
  * Copyright (C) 2006 Patrick Alken
  * 
@@ -32,32 +32,32 @@
 
 /*
  * This module computes the eigenvalues and eigenvectors of a real
- * unsymmetric matrix.
+ * nonsymmetric matrix.
  */
 
-#define GSL_UNSYMMV_SMLNUM (2.0 * GSL_DBL_MIN)
-#define GSL_UNSYMMV_BIGNUM ((1.0 - GSL_DBL_EPSILON) / GSL_UNSYMMV_SMLNUM)
+#define GSL_NONSYMMV_SMLNUM (2.0 * GSL_DBL_MIN)
+#define GSL_NONSYMMV_BIGNUM ((1.0 - GSL_DBL_EPSILON) / GSL_NONSYMMV_SMLNUM)
 
-static void unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
-                                           gsl_vector_complex *eval,
-                                           gsl_matrix_complex *evec,
-                                           gsl_eigen_unsymmv_workspace *w);
-static inline void unsymmv_solve_equation(gsl_matrix *A, double z,
-                                          gsl_vector *b, gsl_vector *x,
-                                          double *s, double *xnorm,
-                                          double smin);
-static inline void unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
-                                            gsl_vector_complex *b,
-                                            gsl_vector_complex *x,
-                                            double *s, double *xnorm,
-                                            double smin);
-static void unsymmv_normalize_eigenvectors(gsl_vector_complex *eval,
-                                           gsl_matrix_complex *evec);
+static void nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
+                                            gsl_vector_complex *eval,
+                                            gsl_matrix_complex *evec,
+                                            gsl_eigen_nonsymmv_workspace *w);
+static inline void nonsymmv_solve_equation(gsl_matrix *A, double z,
+                                           gsl_vector *b, gsl_vector *x,
+                                           double *s, double *xnorm,
+                                           double smin);
+static inline void nonsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
+                                             gsl_vector_complex *b,
+                                             gsl_vector_complex *x,
+                                             double *s, double *xnorm,
+                                             double smin);
+static void nonsymmv_normalize_eigenvectors(gsl_vector_complex *eval,
+                                            gsl_matrix_complex *evec);
 
 /*
-gsl_eigen_unsymmv_alloc()
+gsl_eigen_nonsymmv_alloc()
 
-Allocate a workspace for solving the unsymmetric eigenvalue problem.
+Allocate a workspace for solving the nonsymmetric eigenvalue problem.
 The size of this workspace is O(5n).
 
 Inputs: n - size of matrices
@@ -65,10 +65,10 @@ Inputs: n - size of matrices
 Return: pointer to workspace
 */
 
-gsl_eigen_unsymmv_workspace *
-gsl_eigen_unsymmv_alloc(const size_t n)
+gsl_eigen_nonsymmv_workspace *
+gsl_eigen_nonsymmv_alloc(const size_t n)
 {
-  gsl_eigen_unsymmv_workspace *w;
+  gsl_eigen_nonsymmv_workspace *w;
 
   if (n == 0)
     {
@@ -76,8 +76,8 @@ gsl_eigen_unsymmv_alloc(const size_t n)
                       GSL_EINVAL);
     }
 
-  w = (gsl_eigen_unsymmv_workspace *)
-      malloc (sizeof (gsl_eigen_unsymmv_workspace));
+  w = (gsl_eigen_nonsymmv_workspace *)
+      malloc (sizeof (gsl_eigen_nonsymmv_workspace));
 
   if (w == 0)
     {
@@ -86,50 +86,50 @@ gsl_eigen_unsymmv_alloc(const size_t n)
 
   w->size = n;
   w->Z = NULL;
-  w->unsymm_workspace_p = gsl_eigen_unsymm_alloc(n);
+  w->nonsymm_workspace_p = gsl_eigen_nonsymm_alloc(n);
 
-  if (w->unsymm_workspace_p == 0)
+  if (w->nonsymm_workspace_p == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for unsymm workspace", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for nonsymm workspace", GSL_ENOMEM);
     }
 
   /*
    * set parameters to compute the full Schur form T and balance
    * the matrices
    */
-  gsl_eigen_unsymm_params(1, 1, w->unsymm_workspace_p);
+  gsl_eigen_nonsymm_params(1, 1, w->nonsymm_workspace_p);
 
   w->work = gsl_vector_alloc(n);
   w->work2 = gsl_vector_alloc(n);
   w->work3 = gsl_vector_alloc(n);
   if (w->work == 0 || w->work2 == 0 || w->work3 == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for unsymmv additional workspace", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for nonsymmv additional workspace", GSL_ENOMEM);
     }
 
   return (w);
-} /* gsl_eigen_unsymmv_alloc() */
+} /* gsl_eigen_nonsymmv_alloc() */
 
 /*
-gsl_eigen_unsymmv_free()
+gsl_eigen_nonsymmv_free()
   Free workspace w
 */
 
 void
-gsl_eigen_unsymmv_free (gsl_eigen_unsymmv_workspace * w)
+gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w)
 {
-  gsl_eigen_unsymm_free(w->unsymm_workspace_p);
+  gsl_eigen_nonsymm_free(w->nonsymm_workspace_p);
   gsl_vector_free(w->work);
   gsl_vector_free(w->work2);
   gsl_vector_free(w->work3);
 
   free(w);
-} /* gsl_eigen_unsymmv_free() */
+} /* gsl_eigen_nonsymmv_free() */
 
 /*
-gsl_eigen_unsymmv()
+gsl_eigen_nonsymmv()
 
-Solve the unsymmetric eigensystem problem
+Solve the nonsymmetric eigensystem problem
 
 A x = \lambda x
 
@@ -144,9 +144,9 @@ Return: success or error
 */
 
 int
-gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
-                   gsl_matrix_complex * evec,
-                   gsl_eigen_unsymmv_workspace * w)
+gsl_eigen_nonsymmv (gsl_matrix * A, gsl_vector_complex * eval,
+                    gsl_matrix_complex * evec,
+                    gsl_eigen_nonsymmv_workspace * w)
 {
   const size_t N = A->size1;
 
@@ -187,7 +187,7 @@ gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
       Z.owner = 0;
 
       /* compute eigenvalues, Schur form, and Schur vectors */
-      s = gsl_eigen_unsymm_Z(A, eval, &Z, w->unsymm_workspace_p);
+      s = gsl_eigen_nonsymm_Z(A, eval, &Z, w->nonsymm_workspace_p);
 
       if (w->Z)
         {
@@ -202,35 +202,35 @@ gsl_eigen_unsymmv (gsl_matrix * A, gsl_vector_complex * eval,
       if (s == GSL_SUCCESS)
         {
           /* compute eigenvectors */
-          unsymmv_get_right_eigenvectors(A, &Z, eval, evec, w);
+          nonsymmv_get_right_eigenvectors(A, &Z, eval, evec, w);
 
           /* normalize so that Euclidean norm is 1 */
-          unsymmv_normalize_eigenvectors(eval, evec);
+          nonsymmv_normalize_eigenvectors(eval, evec);
         }
 
       return s;
     }
-} /* gsl_eigen_unsymmv() */
+} /* gsl_eigen_nonsymmv() */
 
 /*
-gsl_eigen_unsymmv_Z()
-  Compute eigenvalues and eigenvectors of a real unsymmetric matrix
-and also save the Schur vectors. See comments in gsl_eigen_unsymm_Z
+gsl_eigen_nonsymmv_Z()
+  Compute eigenvalues and eigenvectors of a real nonsymmetric matrix
+and also save the Schur vectors. See comments in gsl_eigen_nonsymm_Z
 for more information.
 
-Inputs: A    - real unsymmetric matrix
+Inputs: A    - real nonsymmetric matrix
         eval - where to store eigenvalues
         evec - where to store eigenvectors
         Z    - where to store Schur vectors
-        w    - unsymmv workspace
+        w    - nonsymmv workspace
 
 Return: success or error
 */
 
 int
-gsl_eigen_unsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
-                     gsl_matrix_complex * evec, gsl_matrix * Z,
-                     gsl_eigen_unsymmv_workspace * w)
+gsl_eigen_nonsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                      gsl_matrix_complex * evec, gsl_matrix * Z,
+                      gsl_eigen_nonsymmv_workspace * w)
 {
   /* check matrix and vector sizes */
 
@@ -260,20 +260,20 @@ gsl_eigen_unsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
 
       w->Z = Z;
 
-      s = gsl_eigen_unsymmv(A, eval, evec, w);
+      s = gsl_eigen_nonsymmv(A, eval, evec, w);
 
       w->Z = NULL;
 
       return s;
     }
-} /* gsl_eigen_unsymmv_Z() */
+} /* gsl_eigen_nonsymmv_Z() */
 
 /********************************************
  *           INTERNAL ROUTINES              *
  ********************************************/
 
 /*
-unsymmv_get_right_eigenvectors()
+nonsymmv_get_right_eigenvectors()
   Compute the right eigenvectors of the Schur form T and then
 backtransform them using the Schur vectors to get right eigenvectors of
 the original matrix.
@@ -284,7 +284,7 @@ Inputs: T    - Schur form
                correct eigenvalue is stored in the same position
                as the eigenvectors)
         evec - where to store eigenvectors
-        w    - unsymmv workspace
+        w    - nonsymmv workspace
 
 Return: none
 
@@ -305,10 +305,10 @@ Notes: 1) based on LAPACK routine DTREVC - the algorithm used is
 */
 
 static void
-unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
-                               gsl_vector_complex *eval,
-                               gsl_matrix_complex *evec,
-                               gsl_eigen_unsymmv_workspace *w)
+nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
+                                gsl_vector_complex *eval,
+                                gsl_matrix_complex *evec,
+                                gsl_eigen_nonsymmv_workspace *w)
 {
   const size_t N = T->size1;
   const double smlnum = GSL_DBL_MIN * N / GSL_DBL_EPSILON;
@@ -373,7 +373,7 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
 
       smin = GSL_MAX(GSL_DBL_EPSILON * (fabs(lambda_re) + fabs(lambda_im)),
                      smlnum);
-      smin = GSL_MAX(smin, GSL_UNSYMMV_SMLNUM);
+      smin = GSL_MAX(smin, GSL_NONSYMMV_SMLNUM);
 
       if (lambda_im == 0.0)
         {
@@ -431,13 +431,13 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                  gsl_vector_get(w->work, lu));
                   xv = gsl_vector_view_array(dat_X, 1);
 
-                  unsymmv_solve_equation(&Tv.matrix,
-                                         lambda_re,
-                                         &bv.vector,
-                                         &xv.vector,
-                                         &scale,
-                                         &xnorm,
-                                         smin);
+                  nonsymmv_solve_equation(&Tv.matrix,
+                                          lambda_re,
+                                          &bv.vector,
+                                          &xv.vector,
+                                          &scale,
+                                          &xnorm,
+                                          smin);
 
                   /* scale x to avoid overflow */
                   x = gsl_vector_get(&xv.vector, 0);
@@ -490,13 +490,13 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                  gsl_vector_get(w->work, lu));
                   xv = gsl_vector_view_array(dat_X, 2);
 
-                  unsymmv_solve_equation(&Tv.matrix,
-                                         lambda_re,
-                                         &bv.vector,
-                                         &xv.vector,
-                                         &scale,
-                                         &xnorm,
-                                         smin);
+                  nonsymmv_solve_equation(&Tv.matrix,
+                                          lambda_re,
+                                          &bv.vector,
+                                          &xv.vector,
+                                          &scale,
+                                          &xnorm,
+                                          smin);
 
                   /* scale X(1,1) and X(2,1) to avoid overflow */
                   x11 = gsl_vector_get(&xv.vector, 0);
@@ -686,13 +686,13 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                   gsl_vector_get(w->work2, lu));
                   gsl_vector_complex_set(&bv.vector, 0, bval);
 
-                  unsymmv_solve_equation_z(&Tv.matrix,
-                                           &lambda,
-                                           &bv.vector,
-                                           &xv.vector,
-                                           &scale,
-                                           &xnorm,
-                                           smin);
+                  nonsymmv_solve_equation_z(&Tv.matrix,
+                                            &lambda,
+                                            &bv.vector,
+                                            &xv.vector,
+                                            &scale,
+                                            &xnorm,
+                                            smin);
 
                   if (xnorm > 1.0)
                     {
@@ -753,13 +753,13 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                   gsl_vector_complex_set(&bv.vector, 0, b1);
                   gsl_vector_complex_set(&bv.vector, 1, b2);
 
-                  unsymmv_solve_equation_z(&Tv.matrix,
-                                           &lambda,
-                                           &bv.vector,
-                                           &xv.vector,
-                                           &scale,
-                                           &xnorm,
-                                           smin);
+                  nonsymmv_solve_equation_z(&Tv.matrix,
+                                            &lambda,
+                                            &bv.vector,
+                                            &xv.vector,
+                                            &scale,
+                                            &xnorm,
+                                            smin);
 
                   x1 = gsl_vector_complex_get(&xv.vector, 0);
                   x2 = gsl_vector_complex_get(&xv.vector, 1);
@@ -911,10 +911,10 @@ unsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
           --i;
         } /* if (GSL_IMAG(lambda) != 0.0) */
     } /* for (i = (int) N - 1; i >= 0; --i) */
-} /* unsymmv_get_right_eigenvectors() */
+} /* nonsymmv_get_right_eigenvectors() */
 
 /*
-unsymmv_solve_equation()
+nonsymmv_solve_equation()
 
   Solve the equation which comes up in the back substitution
 when computing eigenvectors corresponding to real eigenvalues.
@@ -943,9 +943,9 @@ Notes: 1) A and b are not changed on output
 */
 
 static inline void
-unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
-                       gsl_vector *x, double *s, double *xnorm,
-                       double smin)
+nonsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
+                        gsl_vector *x, double *s, double *xnorm,
+                        double smin)
 {
   size_t N = A->size1;
   double bnorm;
@@ -978,7 +978,7 @@ unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
       bnorm = fabs(gsl_vector_get(b, 0));
       if (cnorm < 1.0 && bnorm > 1.0)
         {
-          if (bnorm > GSL_UNSYMMV_BIGNUM*cnorm)
+          if (bnorm > GSL_NONSYMMV_BIGNUM*cnorm)
             scale = 1.0 / bnorm;
         }
 
@@ -1048,7 +1048,7 @@ unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
           bnorm = GSL_MAX(fabs(bval1), fabs(bval2));
           if (smin < 1.0 && bnorm > 1.0)
             {
-              if (bnorm > GSL_UNSYMMV_BIGNUM*smin)
+              if (bnorm > GSL_NONSYMMV_BIGNUM*smin)
                 scale = 1.0 / bnorm;
             }
           temp = scale / smin;
@@ -1087,7 +1087,7 @@ unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
       bbnd = GSL_MAX(fabs(b1 * (ur22 * ur11r)), fabs(b2));
       if (bbnd > 1.0 && fabs(ur22) < 1.0)
         {
-          if (bbnd >= GSL_UNSYMMV_BIGNUM * fabs(ur22))
+          if (bbnd >= GSL_NONSYMMV_BIGNUM * fabs(ur22))
             scale = 1.0 / bbnd;
         }
 
@@ -1109,9 +1109,9 @@ unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
       /* further scaling if norm(A) norm(X) > overflow */
       if (*xnorm > 1.0 && cmax > 1.0)
         {
-          if (*xnorm > GSL_UNSYMMV_BIGNUM / cmax)
+          if (*xnorm > GSL_NONSYMMV_BIGNUM / cmax)
             {
-              temp = cmax / GSL_UNSYMMV_BIGNUM;
+              temp = cmax / GSL_NONSYMMV_BIGNUM;
               gsl_blas_dscal(temp, x);
               *xnorm *= temp;
               scale *= temp;
@@ -1120,10 +1120,10 @@ unsymmv_solve_equation(gsl_matrix *A, double z, gsl_vector *b,
     } /* if (N == 2) */
 
   *s = scale;
-} /* unsymmv_solve_equation() */
+} /* nonsymmv_solve_equation() */
 
 /*
-unsymmv_solve_equation_z()
+nonsymmv_solve_equation_z()
 
   Solve the equation which comes up in the back substitution
 when computing eigenvectors corresponding to complex eigenvalues.
@@ -1152,9 +1152,9 @@ Notes: 1) A and b are not changed on output
 */
 
 static inline void
-unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
-                         gsl_vector_complex *b, gsl_vector_complex *x,
-                         double *s, double *xnorm, double smin)
+nonsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
+                          gsl_vector_complex *b, gsl_vector_complex *x,
+                          double *s, double *xnorm, double smin)
 {
   size_t N = A->size1;
   double scale = 1.0;
@@ -1192,7 +1192,7 @@ unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
       bnorm = fabs(GSL_REAL(bval)) + fabs(GSL_IMAG(bval));
       if (cnorm < 1.0 && bnorm > 1.0)
         {
-          if (bnorm > GSL_UNSYMMV_BIGNUM*cnorm)
+          if (bnorm > GSL_NONSYMMV_BIGNUM*cnorm)
             scale = 1.0 / bnorm;
         }
 
@@ -1281,7 +1281,7 @@ unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
                           fabs(GSL_REAL(bval2)) + fabs(GSL_IMAG(bval2)));
           if (smin < 1.0 && bnorm > 1.0)
             {
-              if (bnorm > GSL_UNSYMMV_BIGNUM*smin)
+              if (bnorm > GSL_NONSYMMV_BIGNUM*smin)
                 scale = 1.0 / bnorm;
             }
 
@@ -1371,7 +1371,7 @@ unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
                      fabs(br2) + fabs(bi2));
       if (bbnd > 1.0 && u22abs < 1.0)
         {
-          if (bbnd >= GSL_UNSYMMV_BIGNUM*u22abs)
+          if (bbnd >= GSL_NONSYMMV_BIGNUM*u22abs)
             {
               scale = 1.0 / bbnd;
               br1 *= scale;
@@ -1406,9 +1406,9 @@ unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
       /* further scaling if norm(A) norm(X) > overflow */
       if (*xnorm > 1.0 && cmax > 1.0)
         {
-          if (*xnorm > GSL_UNSYMMV_BIGNUM / cmax)
+          if (*xnorm > GSL_NONSYMMV_BIGNUM / cmax)
             {
-              temp = cmax / GSL_UNSYMMV_BIGNUM;
+              temp = cmax / GSL_NONSYMMV_BIGNUM;
               gsl_blas_zdscal(temp, x);
               *xnorm *= temp;
               scale *= temp;
@@ -1417,10 +1417,10 @@ unsymmv_solve_equation_z(gsl_matrix *A, gsl_complex *z,
     } /* if (N == 2) */
 
   *s = scale;
-} /* unsymmv_solve_equation_z() */
+} /* nonsymmv_solve_equation_z() */
 
 /*
-unsymmv_normalize_eigenvectors()
+nonsymmv_normalize_eigenvectors()
   Normalize eigenvectors so that their Euclidean norm is 1
 
 Inputs: eval - eigenvalues
@@ -1428,8 +1428,8 @@ Inputs: eval - eigenvalues
 */
 
 static void
-unsymmv_normalize_eigenvectors(gsl_vector_complex *eval,
-                               gsl_matrix_complex *evec)
+nonsymmv_normalize_eigenvectors(gsl_vector_complex *eval,
+                                gsl_matrix_complex *evec)
 {
   const size_t N = evec->size1;
   size_t i;     /* looping */
@@ -1462,4 +1462,4 @@ unsymmv_normalize_eigenvectors(gsl_vector_complex *eval,
           gsl_blas_zdscal(scale, &vi.vector);
         }
     }
-} /* unsymmv_normalize_eigenvectors() */
+} /* nonsymmv_normalize_eigenvectors() */

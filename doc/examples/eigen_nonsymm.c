@@ -16,15 +16,15 @@ main (void)
   gsl_vector_complex *eval = gsl_vector_complex_alloc (4);
   gsl_matrix_complex *evec = gsl_matrix_complex_alloc (4, 4);
 
-  gsl_eigen_unsymmv_workspace * w = 
-    gsl_eigen_unsymmv_alloc (4);
+  gsl_eigen_nonsymmv_workspace * w = 
+    gsl_eigen_nonsymmv_alloc (4);
   
-  gsl_eigen_unsymmv (&m.matrix, eval, evec, w);
+  gsl_eigen_nonsymmv (&m.matrix, eval, evec, w);
 
-  gsl_eigen_unsymmv_free (w);
+  gsl_eigen_nonsymmv_free (w);
 
-  gsl_eigen_unsymmv_sort (eval, evec, 
-                          GSL_EIGEN_SORT_ABS_DESC);
+  gsl_eigen_nonsymmv_sort (eval, evec, 
+                           GSL_EIGEN_SORT_ABS_DESC);
   
   {
     int i, j;

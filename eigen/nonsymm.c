@@ -1,4 +1,4 @@
-/* eigen/unsymm.c
+/* eigen/nonsymm.c
  * 
  * Copyright (C) 2006 Patrick Alken
  * 
@@ -28,7 +28,7 @@
 #include <gsl/gsl_matrix.h>
 
 /*
- * This module computes the eigenvalues of a real unsymmetric
+ * This module computes the eigenvalues of a real nonsymmetric
  * matrix, using the double shift Francis method.
  *
  * See the references in francis.c.
@@ -39,9 +39,9 @@
  */
 
 /*
-gsl_eigen_unsymm_alloc()
+gsl_eigen_nonsymm_alloc()
 
-Allocate a workspace for solving the unsymmetric eigenvalue problem.
+Allocate a workspace for solving the nonsymmetric eigenvalue problem.
 The size of this workspace is O(2n)
 
 Inputs: n - size of matrix
@@ -49,10 +49,10 @@ Inputs: n - size of matrix
 Return: pointer to workspace
 */
 
-gsl_eigen_unsymm_workspace *
-gsl_eigen_unsymm_alloc(const size_t n)
+gsl_eigen_nonsymm_workspace *
+gsl_eigen_nonsymm_alloc(const size_t n)
 {
-  gsl_eigen_unsymm_workspace *w;
+  gsl_eigen_nonsymm_workspace *w;
 
   if (n == 0)
     {
@@ -60,8 +60,8 @@ gsl_eigen_unsymm_alloc(const size_t n)
                       GSL_EINVAL);
     }
 
-  w = (gsl_eigen_unsymm_workspace *)
-      malloc (sizeof (gsl_eigen_unsymm_workspace));
+  w = (gsl_eigen_nonsymm_workspace *)
+      malloc (sizeof (gsl_eigen_nonsymm_workspace));
 
   if (w == 0)
     {
@@ -94,15 +94,15 @@ gsl_eigen_unsymm_alloc(const size_t n)
     }
 
   return (w);
-} /* gsl_eigen_unsymm_alloc() */
+} /* gsl_eigen_nonsymm_alloc() */
 
 /*
-gsl_eigen_unsymm_free()
+gsl_eigen_nonsymm_free()
   Free workspace w
 */
 
 void
-gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * w)
+gsl_eigen_nonsymm_free (gsl_eigen_nonsymm_workspace * w)
 {
   gsl_vector_free(w->tau);
 
@@ -111,30 +111,30 @@ gsl_eigen_unsymm_free (gsl_eigen_unsymm_workspace * w)
   gsl_eigen_francis_free(w->francis_workspace_p);
 
   free(w);
-} /* gsl_eigen_unsymm_free() */
+} /* gsl_eigen_nonsymm_free() */
 
 /*
-gsl_eigen_unsymm_params()
+gsl_eigen_nonsymm_params()
   Set some parameters which define how we solve the eigenvalue
 problem.
 
 Inputs: compute_t - 1 if we want to compute T, 0 if not
         balance   - 1 if we want to balance the matrix, 0 if not
-        w         - unsymm workspace
+        w         - nonsymm workspace
 */
 
 void
-gsl_eigen_unsymm_params (const int compute_t, const int balance,
-                         gsl_eigen_unsymm_workspace *w)
+gsl_eigen_nonsymm_params (const int compute_t, const int balance,
+                          gsl_eigen_nonsymm_workspace *w)
 {
   gsl_eigen_francis_T(compute_t, w->francis_workspace_p);
   w->do_balance = balance;
-} /* gsl_eigen_unsymm_params() */
+} /* gsl_eigen_nonsymm_params() */
 
 /*
-gsl_eigen_unsymm()
+gsl_eigen_nonsymm()
 
-Solve the unsymmetric eigenvalue problem
+Solve the nonsymmetric eigenvalue problem
 
 A x = \lambda x
 
@@ -146,7 +146,7 @@ T = Z^t A Z
 
 with the diagonal blocks of T giving us the eigenvalues.
 Z is a matrix of Schur vectors which is not computed by
-this algorithm. See gsl_eigen_unsymm_Z().
+this algorithm. See gsl_eigen_nonsymm_Z().
 
 Inputs: A    - general real matrix
         eval - where to store eigenvalues
@@ -160,8 +160,8 @@ Notes: If T is computed, it is stored in A on output. Otherwise
 */
 
 int
-gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
-                  gsl_eigen_unsymm_workspace * w)
+gsl_eigen_nonsymm (gsl_matrix * A, gsl_vector_complex * eval,
+                   gsl_eigen_nonsymm_workspace * w)
 {
   const size_t N = A->size1;
 
@@ -221,12 +221,12 @@ gsl_eigen_unsymm (gsl_matrix * A, gsl_vector_complex * eval,
 
       return s;
     }
-} /* gsl_eigen_unsymm() */
+} /* gsl_eigen_nonsymm() */
 
 /*
-gsl_eigen_unsymm_Z()
+gsl_eigen_nonsymm_Z()
 
-Solve the unsymmetric eigenvalue problem
+Solve the nonsymmetric eigenvalue problem
 
 A x = \lambda x
 
@@ -252,8 +252,8 @@ Notes: If T is computed, it is stored in A on output. Otherwise
 */
 
 int
-gsl_eigen_unsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
-                    gsl_matrix * Z, gsl_eigen_unsymm_workspace * w)
+gsl_eigen_nonsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
+                     gsl_matrix * Z, gsl_eigen_nonsymm_workspace * w)
 {
   /* check matrix and vector sizes */
 
@@ -275,10 +275,10 @@ gsl_eigen_unsymm_Z (gsl_matrix * A, gsl_vector_complex * eval,
 
       w->Z = Z;
 
-      s = gsl_eigen_unsymm(A, eval, w);
+      s = gsl_eigen_nonsymm(A, eval, w);
 
       w->Z = NULL;
 
       return s;
     }
-} /* gsl_eigen_unsymm_Z() */
+} /* gsl_eigen_nonsymm_Z() */

@@ -62,7 +62,7 @@ static inline void francis_get_submatrix(gsl_matrix *A, gsl_matrix *B,
 /*
 gsl_eigen_francis_alloc()
 
-Allocate a workspace for solving the unsymmetric eigenvalue problem.
+Allocate a workspace for solving the nonsymmetric eigenvalue problem.
 The size of this workspace is O(1)
 
 Inputs: none
@@ -137,7 +137,7 @@ gsl_eigen_francis_T (const int compute_t, gsl_eigen_francis_workspace *w)
 /*
 gsl_eigen_francis()
 
-Solve the unsymmetric eigenvalue problem
+Solve the nonsymmetric eigenvalue problem
 
 H x = \lambda x
 
@@ -226,7 +226,7 @@ gsl_eigen_francis (gsl_matrix * H, gsl_vector_complex * eval,
 /*
 gsl_eigen_francis_Z()
 
-Solve the unsymmetric eigenvalue problem for a Hessenberg
+Solve the nonsymmetric eigenvalue problem for a Hessenberg
 matrix
 
 H x = \lambda x
@@ -241,7 +241,7 @@ T = Q^t H Q
 with the diagonal blocks of T giving us the eigenvalues.
 Q is the matrix of Schur vectors.
 
-Originally, H was obtained from a general unsymmetric matrix
+Originally, H was obtained from a general nonsymmetric matrix
 A via a transformation
 
 H = U^t A U
@@ -465,7 +465,7 @@ Inputs: H - upper Hessenberg matrix
 Notes: The matrix H must be "reduced", ie: have no tiny subdiagonal
        elements. When computing the first householder reflection,
        we divide by H_{21} so it is necessary that this element
-       is not zero. When a subdiagonal element becomes negigible,
+       is not zero. When a subdiagonal element becomes negligible,
        the calling function should call this routine with the
        submatrices split by that element, so that we don't divide
        by zeros.

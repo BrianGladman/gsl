@@ -169,9 +169,9 @@ gsl_eigen_hermv_sort (gsl_vector * eval, gsl_matrix_complex * evec,
 }
 
 int
-gsl_eigen_unsymmv_sort (gsl_vector_complex * eval,
-                        gsl_matrix_complex * evec, 
-                        gsl_eigen_sort_t sort_type)
+gsl_eigen_nonsymmv_sort (gsl_vector_complex * eval,
+                         gsl_matrix_complex * evec, 
+                         gsl_eigen_sort_t sort_type)
 {
   if (evec->size1 != evec->size2)
     {
