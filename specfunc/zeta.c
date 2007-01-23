@@ -788,7 +788,7 @@ int gsl_sf_zeta_e(const double s, gsl_sf_result * result)
 
     gsl_sf_result zeta_one_minus_s;
     const int stat_zoms = riemann_zeta1ms_slt0(s, &zeta_one_minus_s);
-    const double sin_term = (fmod(s,2.0) == 0.0) ? 0.0 : sin(0.5*M_PI*s)/M_PI;
+    const double sin_term = (fmod(s,2.0) == 0.0) ? 0.0 : sin(0.5*M_PI*fmod(s,4.0))/M_PI;
 
     if(sin_term == 0.0) {
       result->val = 0.0;

@@ -2074,7 +2074,12 @@ int test_zeta(void)
   int s = 0;
 
   TEST_SF(s, gsl_sf_zeta_int_e, (-61.0, &r), -3.30660898765775767257e+34, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_zeta_int_e, (-8, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zeta_int_e, (-6, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_int_e, (-5.0, &r),  -0.003968253968253968253968, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_zeta_int_e, (-4, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_int_e, (-3, &r), 1.0/120.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_int_e, (-2, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_int_e, (-1, &r), -1.0/12.0, TEST_TOL0, GSL_SUCCESS);
@@ -2084,6 +2089,10 @@ int test_zeta(void)
 
   TEST_SF(s, gsl_sf_zetam1_int_e, (-61.0, &r), -3.30660898765775767257e+34, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_int_e, (-5.0, &r),  -1.003968253968253968253968, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s, gsl_sf_zetam1_int_e, (-8, &r), -1.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zetam1_int_e, (-6, &r), -1.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zetam1_int_e, (-4, &r), -1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_int_e, (-3, &r), -119.0/120.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_int_e, (-2, &r), -1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_int_e, (-1, &r), -13.0/12.0, TEST_TOL0, GSL_SUCCESS);
@@ -2095,6 +2104,9 @@ int test_zeta(void)
   TEST_SF(s, gsl_sf_zeta_e, (-51, &r), 9.68995788746359406565e+24, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (-5, &r), -0.003968253968253968253968, TEST_TOL1, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_zeta_e, (-8, &r), 0.0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zeta_e, (-6, &r), 0.0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zeta_e, (-4, &r), 0.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (-3, &r), 1.0/120.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (-2, &r), 0.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (-1, &r), -1.0/12.0, TEST_TOL1, GSL_SUCCESS);
@@ -2111,6 +2123,9 @@ int test_zeta(void)
   TEST_SF(s, gsl_sf_zeta_e, (5.0, &r), 1.036927755143369926331365, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zeta_e, (25.5, &r), 1.000000021074106110269959, TEST_TOL0, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_zetam1_e, (-8, &r), -1.0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zetam1_e, (-6, &r), -1.0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_zetam1_e, (-4, &r), -1.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_e, (-3, &r), -119.0/120.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_e, (-2, &r), -1.0, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_zetam1_e, (-1, &r), -13.0/12.0, TEST_TOL1, GSL_SUCCESS);
