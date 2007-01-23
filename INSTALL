@@ -51,10 +51,14 @@ The library can be installed using the command,
 
   make install
 
-The default installation directory prefix is /usr/local.  Consult the
-"Further Information" section below for instructions on installing the
-library in another location or changing other default compilation
-options.
+The default installation directory prefix is /usr/local.  Installing
+in this directory will require root privileges on most systems (use
+"su" or "sudo").
+
+The installation directory can be changed with the --prefix option to
+configure.  Consult the "Further Information" section below for
+instructions on installing the library in another location or changing
+other default compilation options.
 
                     ------------------------------
 
@@ -229,6 +233,9 @@ or for gcc
 
 Hints for MacOS X and PowerPC
 =============================
+
+To install in /usr/local on MacOS systems, do "sudo make install" to
+gain root privileges.
 
 Note that GSL contains files with filenames of 32 characters or more.
 Therefore you need to be careful in unpacking the tar file, as some
