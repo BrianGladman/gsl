@@ -1,3 +1,6 @@
+** Prevented NaN occuring for extreme parameters in
+gsl_cdf_fdist_{P,Q}inv and gsl_cdf_beta_{P,Q}inv
+
 ** Corrected error estimates for the angular reduction functions
 gsl_sf_angle_restrict_symm_err and gsl_sf_angle_restrict_pos_err.
 Fixed gsl_sf_angle_restrict_pos to avoid possibility of returning

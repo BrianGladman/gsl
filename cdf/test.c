@@ -943,7 +943,7 @@ void test_finv (void) {
   TEST (gsl_cdf_fdist_Qinv, ( 2.92099265879979502e-155, 200.0, 500.0), 20.0, TEST_TOL6);
   TEST (gsl_cdf_fdist_Qinv, ( 0.0, 200.0, 500.0), GSL_POSINF, 0.0);
 
-  TEST (gsl_cdf_fdist_Pinv, (0.95,1.0,261.0), 0.7777, TEST_TOL1);
+  TEST (gsl_cdf_fdist_Pinv, (0.95,1.0,261.0), 3.8773340322508720313e+00, TEST_TOL3);
 }
 
   /* Tests for gamma distribution */

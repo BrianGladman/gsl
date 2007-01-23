@@ -91,8 +91,12 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
       double lg_b = gsl_sf_lngamma (b);
 
       double lx = (log (a) + lg_a + lg_b - lg_ab + log (P)) / a;
-      x = exp (lx);             /* first approximation */
-      x *= pow (1 - x, -(b - 1) / a);   /* second approximation */
+      if (lx <= 0) {
+        x = exp (lx);             /* first approximation */
+        x *= pow (1 - x, -(b - 1) / a);   /* second approximation */
+      } else {
+        x = mean;
+      }
 
       if (x > mean)
         x = mean;
