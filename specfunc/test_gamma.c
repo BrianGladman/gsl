@@ -183,6 +183,7 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_pochrel_e, (-5.5,-1.0/256.0, &r), 1.7678268037726177453, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_e, (-5.5,-11.0, &r), 0.09090909090939652475, TEST_TOL0, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_gamma_inc_P_e, (1e-100, 0.001, &r), 1.0, TEST_TOL0, GSL_SUCCESS) ;
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (0.001, 0.001, &r), 0.9936876467088602902, TEST_TOL0, GSL_SUCCESS) ;
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (0.001, 1.0, &r), 0.9997803916424144436, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (0.001, 10.0, &r), 0.9999999958306921828, TEST_TOL0, GSL_SUCCESS);
@@ -201,6 +202,7 @@ int test_gamma(void)
   /* Regression test Martin Jansche <jansche@ling.ohio-state.edu> BUG#12 */
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (10, 1e-16, &r), 2.755731922398588814734648067e-167, TEST_TOL2, GSL_SUCCESS);
 
+  TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.0, 0.001, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.001, 0.001, &r), 0.006312353291139709793, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.001, 1.0, &r), 0.00021960835758555639171, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_gamma_inc_Q_e, (0.001, 2.0, &r), 0.00004897691783098147880, TEST_TOL2, GSL_SUCCESS);
