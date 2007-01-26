@@ -373,12 +373,16 @@ int expint_E2_impl(const double x, gsl_sf_result * result, const int scale)
   if(x < -xmax && !scale) {
     OVERFLOW_ERROR(result);
   }
-  else if(x < 100.0) {
+  else if (x == 0.0) {
+    result->val = (scale ? 1.0 : 1.0);
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  } else if(x < 100.0) {
     const double ex = ( scale ? 1.0 : exp(-x) );
     gsl_sf_result result_E1;
     int stat_E1 = expint_E1_impl(x, &result_E1, scale);
     result->val  = ex - x*result_E1.val;
-    result->err  = fabs(x) * (GSL_DBL_EPSILON*ex + result_E1.err);
+    result->err  = GSL_DBL_EPSILON*ex + fabs(x) * result_E1.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_E1;
   }

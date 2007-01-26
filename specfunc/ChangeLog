@@ -1,5 +1,8 @@
 2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* expint.c (expint_E2_impl): handle x==0.0 as a special case
+	(expint_E2_impl): corrected error term
+
 	* gsl_sf_log.h: removed inline version of log
 
 	* gsl_sf_exp.h: removed inline version of exp

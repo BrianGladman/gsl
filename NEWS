@@ -1,3 +1,6 @@
+** gsl_sf_expint_E2(x) now returns the correct value 1 for x==0,
+instead of NaN.
+
 ** The gsl_ran_gamma function now uses the Marsaglia-Tsang fast gamma
 method of gsl_ran_gamma_mt by default.
 
