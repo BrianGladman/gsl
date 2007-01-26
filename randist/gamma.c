@@ -38,7 +38,7 @@ static double gamma_frac (const gsl_rng * r, const double a);
    The algorithms below are from Knuth, vol 2, 2nd ed, p. 129. */
 
 double
-gsl_ran_gamma (const gsl_rng * r, const double a, const double b)
+gsl_ran_gamma_knuth (const gsl_rng * r, const double a, const double b)
 {
   /* assume a > 0 */
   unsigned int na = floor (a);
@@ -176,6 +176,12 @@ gsl_ran_gamma_pdf (const double x, const double a, const double b)
 
 double
 gsl_ran_gamma_mt (const gsl_rng * r, const double a, const double b)
+{
+  return gsl_ran_gamma (r, a, b);
+}
+
+double
+gsl_ran_gamma (const gsl_rng * r, const double a, const double b)
 {
   /* assume a > 0 */
 

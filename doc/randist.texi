@@ -815,11 +815,14 @@ for @math{x > 0}.
 
 @cindex Erlang distribution
 The gamma distribution with an integer parameter @var{a} is known as the Erlang distribution.
-The variates are computed using the algorithms from Knuth (vol 2).
+
+The variates are computed using the Marsaglia-Tsang fast gamma method.
+This function for this method was previously called
+@code{gsl_ran_gamma_mt} and can still be accessed using this name.
 @end deftypefun
 
-@deftypefun double gsl_ran_gamma_mt (const gsl_rng * @var{r}, double @var{a}, double @var{b})
-This function returns a gamma variate using the Marsaglia-Tsang fast gamma method.
+@deftypefun double gsl_ran_gamma_knuth (const gsl_rng * @var{r}, double @var{a}, double @var{b})
+This function returns a gamma variate using the algorithms from Knuth (vol 2).
 @end deftypefun
 
 @deftypefun double gsl_ran_gamma_pdf (double @var{x}, double @var{a}, double @var{b})

@@ -1,3 +1,10 @@
+2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma.c (gsl_ran_gamma): the Marsaglia Tsang method is now the
+	default
+	(gsl_ran_gamma_knuth): new function name, preserving the original
+	gsl_ran_gamma
+
 2006-08-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* discrete.c (gsl_ran_discrete_preproc): use GSL_ENOMEM instead of

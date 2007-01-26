@@ -1,3 +1,6 @@
+** The gsl_ran_gamma function now uses the Marsaglia-Tsang fast gamma
+method of gsl_ran_gamma_mt by default.
+
 ** The matrix and vector min/max functions now always propagate any
 NaNs in their input.
 

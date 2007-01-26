@@ -426,38 +426,6 @@ main (void)
 }
 
 ----------------------------------------------------------------------
-BUG#45 - integer overflow in gsl_ran_gamma (CONFIRMED)
-
-From: Tino Kluge <t.kluge@statslab.cam.ac.uk>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] gsl_ran_gamma wrong for certain parameters
-Date: Thu, 6 Apr 2006 12:25:26 +0100
-Precedence: list
-
-gsl_ran_gamma doesn't cope with parameters a,b producing a mean of 1
-and very small standard deviations. See the programme below. I'm
-using fedora core precompiled packages (gsl-1.6-2 and
-gsl-devel-1.6-2).
-
-#include <stdio.h>
-#include <math.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
-
-int main(char** argv, int args) {
- int	i;
- double a,b;
- gsl_rng * rgen = gsl_rng_alloc(gsl_rng_taus);
- 
- a=5E9;
- b=1.0/a;
- printf("a=%e, b=%e, mean=%f, std dev=%f\n",a,b,a*b,sqrt(a)*b);
- for(i=1;i<10;i++){
-   printf("%f\n",gsl_ran_gamma(rgen,a,b));
- }
- return 1;
-}
-----------------------------------------------------------------------
 BUG#46 - gsl_root_test_delta uninituitive for x1==0
 
 From: Dave Spiegel <dave@astro.columbia.edu>
