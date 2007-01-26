@@ -36,6 +36,10 @@ FUNCTION (gsl_matrix, max) (const TYPE (gsl_matrix) * m)
           BASE x = m->data[i * tda + j];
           if (x > max)
             max = x;
+#ifdef FP
+          if (isnan (x))
+            return x;
+#endif
         }
     }
 
@@ -61,6 +65,10 @@ FUNCTION (gsl_matrix, min) (const TYPE (gsl_matrix) * m)
           BASE x = m->data[i * tda + j];
           if (x < min)
             min = x;
+#ifdef FP
+          if (isnan (x))
+            return x;
+#endif
         }
     }
 
@@ -97,6 +105,14 @@ FUNCTION (gsl_matrix, minmax) (const TYPE (gsl_matrix) * m,
             {
               max = x;
             }
+#ifdef FP
+          if (isnan (x))
+            {
+              *min_out = x;
+              *max_out = x;
+              return;
+            }
+#endif
         }
     }
 
@@ -128,6 +144,14 @@ FUNCTION (gsl_matrix, max_index) (const TYPE (gsl_matrix) * m, size_t * imax_out
               imax = i;
               jmax = j;
             }
+#ifdef FP
+          if (isnan (x))
+            {
+              *imax_out = i;
+              *jmax_out = j;
+              return;
+            }
+#endif
         }
     }
 
@@ -159,6 +183,14 @@ FUNCTION (gsl_matrix, min_index) (const TYPE (gsl_matrix) * m, size_t * imin_out
               imin = i;
               jmin = j;
             }
+#ifdef FP
+          if (isnan (x))
+            {
+              *imin_out = i;
+              *jmin_out = j;
+              return;
+            }
+#endif
         }
     }
 
@@ -202,6 +234,16 @@ FUNCTION (gsl_matrix, minmax_index) (const TYPE (gsl_matrix) * m,
               imax = i;
               jmax = j;
             }
+#ifdef FP
+          if (isnan (x))
+            {
+              *imin_out = i;
+              *jmin_out = j;
+              *imax_out = i;
+              *jmax_out = j;
+              return;
+            }
+#endif
         }
     }
 

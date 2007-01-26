@@ -196,7 +196,66 @@ FUNCTION (test, func) (void)
       gsl_test (imin != exp_imin, NAME(gsl_matrix) "_minmax_index returns correct minimum i");
       gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_minmax_index returns correct minimum j");
     }
+
+#if FP
+    FUNCTION(gsl_matrix,set)(m, 2, 3, GSL_NAN);
+    exp_min = GSL_NAN; exp_max = GSL_NAN;
+    exp_imin = 2; exp_jmin = 3;
+    exp_imax = 2; exp_jmax = 3;
+
+    {
+      BASE max = FUNCTION(gsl_matrix, max) (m) ;
+
+      gsl_test_abs (max,exp_max, 0, NAME(gsl_matrix) "_max returns correct maximum value for NaN");
+    }
+
+    {
+      BASE min = FUNCTION(gsl_matrix, min) (m) ;
+      
+      gsl_test_abs (min, exp_min, 0, NAME(gsl_matrix) "_min returns correct minimum value for NaN");
+    }
+
+    {
+      BASE min, max;
+      FUNCTION(gsl_matrix, minmax) (m, &min, &max);
+
+      gsl_test_abs (max, exp_max, 0, NAME(gsl_matrix) "_minmax returns correct maximum value for NaN");
+      gsl_test_abs (min, exp_min, 0, NAME(gsl_matrix) "_minmax returns correct minimum value for NaN");
+    }
+
+
+    {
+      size_t imax, jmax;
+      FUNCTION(gsl_matrix, max_index) (m, &imax, &jmax) ;
+
+      gsl_test (imax != exp_imax, NAME(gsl_matrix) "_max_index returns correct maximum i for NaN");
+      gsl_test (jmax != exp_jmax, NAME(gsl_matrix) "_max_index returns correct maximum j for NaN");
+    }
+
+    {
+      size_t imin, jmin;
+      FUNCTION(gsl_matrix, min_index) (m, &imin, &jmin) ;
+
+      gsl_test (imin != exp_imin, NAME(gsl_matrix) "_min_index returns correct minimum i for NaN");
+      gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_min_index returns correct minimum j for NaN");
+    }
+
+    {
+      size_t imin, jmin, imax, jmax;
+
+      FUNCTION(gsl_matrix, minmax_index) (m,  &imin, &jmin, &imax, &jmax);
+
+      gsl_test (imax != exp_imax, NAME(gsl_matrix) "_minmax_index returns correct maximum i for NaN");
+      gsl_test (jmax != exp_jmax, NAME(gsl_matrix) "_minmax_index returns correct maximum j for NaN");
+
+      gsl_test (imin != exp_imin, NAME(gsl_matrix) "_minmax_index returns correct minimum i for NaN");
+      gsl_test (jmin != exp_jmin, NAME(gsl_matrix) "_minmax_index returns correct minimum j for NaN");
+    }
+#endif 
+
+
   }
+
 
   for (i = 0; i < M; i++)
     {

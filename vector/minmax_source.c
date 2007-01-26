@@ -33,6 +33,10 @@ FUNCTION(gsl_vector,max) (const TYPE(gsl_vector) * v)
       BASE x = v->data[i*stride];
       if (x > max)
         max = x;
+#ifdef FP
+      if (isnan (x))
+        return x;
+#endif
     }
 
   return max;
@@ -54,6 +58,10 @@ FUNCTION(gsl_vector,min) (const TYPE(gsl_vector) * v)
       BASE x = v->data[i*stride];
       if (x < min)
         min = x;
+#ifdef FP
+      if (isnan (x))
+        return x;
+#endif
     }
 
   return min;
@@ -85,6 +93,14 @@ FUNCTION(gsl_vector,minmax) (const TYPE(gsl_vector) * v,
         {
           max = x;
         }
+#ifdef FP
+      if (isnan (x))
+        {
+          min = x;
+          max = x;
+          break;
+        }
+#endif
     }
 
   *min_out = min;
@@ -112,6 +128,12 @@ FUNCTION(gsl_vector,max_index) (const TYPE(gsl_vector) * v)
           max = x;
           imax = i;
         }
+#ifdef FP
+      if (isnan (x))
+        {
+          return i;
+        }
+#endif
     }
 
   return imax;
@@ -137,6 +159,12 @@ FUNCTION(gsl_vector,min_index) (const TYPE(gsl_vector) * v)
           min = x;
           imin = i;
         }
+#ifdef FP
+      if (isnan (x))
+        {
+          return i;
+        }
+#endif
     }
 
   return imin;
@@ -172,6 +200,14 @@ FUNCTION(gsl_vector,minmax_index) (const TYPE(gsl_vector) * v,
           max = x;
           imax = i;
         }
+#ifdef FP
+      if (isnan (x))
+        {
+          imin = i;
+          imax = i;
+          break;
+        }
+#endif
     }
 
   *imin_out = imin;

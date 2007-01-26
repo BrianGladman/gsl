@@ -588,14 +588,6 @@ $ ./a.out
 
 
 ----------------------------------------------------------------------
-BUG#51 - matrix max/min functions do not handle NaN (BJG)
-
-The max and min functions should return Nan for any nan entries, to
-allow Nans to propagate. Otherwise there are problems if the first
-entry is Nan, because then the comparisons against other elements are
-not-intuitive.
-
-----------------------------------------------------------------------
 BUG#52 - beta functions do not handle negative arguments 
 
 The beta functions (complete and incomplete) are well defined for

@@ -1,3 +1,6 @@
+** The matrix and vector min/max functions now always propagate any
+NaNs in their input.
+
 ** Prevented NaN occuring for extreme parameters in
 gsl_cdf_fdist_{P,Q}inv and gsl_cdf_beta_{P,Q}inv
 

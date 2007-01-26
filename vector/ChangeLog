@@ -1,3 +1,7 @@
+2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* minmax_source.c: added support for NaNs
+
 2006-10-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* prop_source.c: added functions gsl_vector_ispos,

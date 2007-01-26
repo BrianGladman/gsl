@@ -388,6 +388,65 @@ FUNCTION (test, func) (size_t stride, size_t N)
     TEST (status, "_reverse" DESC " reverses elements") ;
   }
 
+
+  {
+    int status = 0;
+    
+    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, view_array) (v->data, N*stride);
+    
+    for (i = 0; i < N; i++)
+      {
+        if (FUNCTION (gsl_vector, get) (&v1.vector, i*stride) != FUNCTION (gsl_vector, get) (v, i)) 
+          status = 1;
+      };
+
+    TEST (status, "_view_array" DESC);
+  }
+
+  {
+    int status = 0;
+    
+    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, view_array_with_stride) (v->data, stride, N*stride);
+    
+    for (i = 0; i < N; i++)
+      {
+        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, i)) 
+          status = 1;
+      };
+
+    TEST (status, "_view_array_with_stride" DESC);
+  }
+
+
+  {
+    int status = 0;
+    
+    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, subvector) (v, N/3, N/2);
+    
+    for (i = 0; i < N/2; i++)
+      {
+        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, (N/3) + i)) 
+          status = 1;
+      };
+
+    TEST (status, "_view_subvector" DESC);
+  }
+
+  {
+    int status = 0;
+    
+    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, subvector_with_stride) (v, N/5, 3, N/4);
+    
+    for (i = 0; i < N/4; i++)
+      {
+        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, (N/5) + 3*i)) 
+          status = 1;
+      };
+
+    TEST (status, "_view_subvector_with_stride" DESC);
+  }
+
+
   {
     BASE exp_max = FUNCTION(gsl_vector,get)(v, 0);
     BASE exp_min = FUNCTION(gsl_vector,get)(v, 0);
@@ -448,65 +507,53 @@ FUNCTION (test, func) (size_t stride, size_t N)
       TEST (imax != exp_imax, "_minmax_index returns correct maximum i");
       TEST (imin != exp_imin, "_minmax_index returns correct minimum i");
     }
+    
+#if FP
+    i = N/2;
+    FUNCTION(gsl_vector, set) (v, i, GSL_NAN);
+    exp_max = GSL_NAN; exp_min = GSL_NAN;
+    exp_imax = i; exp_imin = i;
+
+    {
+      BASE max = FUNCTION(gsl_vector, max) (v) ;
+      gsl_test_abs (max, exp_max, 0, "_max returns correct maximum value for NaN");
+    }
+
+    {
+      BASE min = FUNCTION(gsl_vector, min) (v) ;
+      gsl_test_abs (min, exp_min, 0, "_min returns correct minimum value for NaN");
+    }
+
+    {
+      BASE min, max;
+      FUNCTION(gsl_vector, minmax) (v, &min, &max);
+
+      gsl_test_abs (max, exp_max, 0, "_minmax returns correct maximum value for NaN");
+      gsl_test_abs (min, exp_min, 0, "_minmax returns correct minimum value for NaN");
+    }
+
+
+    {
+      size_t imax =  FUNCTION(gsl_vector, max_index) (v) ;
+      TEST (imax != exp_imax, "_max_index returns correct maximum i for NaN");
+    }
+
+    {
+      size_t imin = FUNCTION(gsl_vector, min_index) (v) ;
+      TEST (imin != exp_imin, "_min_index returns correct minimum i for NaN");
+    }
+
+    {
+      size_t imin, imax;
+
+      FUNCTION(gsl_vector, minmax_index) (v,  &imin, &imax);
+
+      TEST (imax != exp_imax, "_minmax_index returns correct maximum i for NaN");
+      TEST (imin != exp_imin, "_minmax_index returns correct minimum i for NaN");
+    }
+#endif
+
   }
-
-  {
-    int status = 0;
-    
-    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, view_array) (v->data, N*stride);
-    
-    for (i = 0; i < N; i++)
-      {
-        if (FUNCTION (gsl_vector, get) (&v1.vector, i*stride) != FUNCTION (gsl_vector, get) (v, i)) 
-          status = 1;
-      };
-
-    TEST (status, "_view_array" DESC);
-  }
-
-  {
-    int status = 0;
-    
-    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, view_array_with_stride) (v->data, stride, N*stride);
-    
-    for (i = 0; i < N; i++)
-      {
-        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, i)) 
-          status = 1;
-      };
-
-    TEST (status, "_view_array_with_stride" DESC);
-  }
-
-
-  {
-    int status = 0;
-    
-    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, subvector) (v, N/3, N/2);
-    
-    for (i = 0; i < N/2; i++)
-      {
-        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, (N/3) + i)) 
-          status = 1;
-      };
-
-    TEST (status, "_view_subvector" DESC);
-  }
-
-  {
-    int status = 0;
-    
-    QUALIFIED_VIEW(gsl_vector,view) v1 = FUNCTION(gsl_vector, subvector_with_stride) (v, N/5, 3, N/4);
-    
-    for (i = 0; i < N/4; i++)
-      {
-        if (FUNCTION (gsl_vector, get) (&v1.vector, i) != FUNCTION (gsl_vector, get) (v, (N/5) + 3*i)) 
-          status = 1;
-      };
-
-    TEST (status, "_view_subvector_with_stride" DESC);
-  }
-
 
 
   FUNCTION (gsl_vector, free) (v0);      /* free whatever is in v */
