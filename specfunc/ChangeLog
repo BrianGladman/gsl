@@ -1,3 +1,9 @@
+2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_sf_log.h: removed inline version of log
+
+	* gsl_sf_exp.h: removed inline version of exp
+
 2007-01-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_1F1.c (hyperg_1F1_1_series): increase accuracy by factor

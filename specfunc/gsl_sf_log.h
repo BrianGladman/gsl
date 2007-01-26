@@ -77,48 +77,6 @@ double gsl_sf_log_1plusx(const double x);
 int gsl_sf_log_1plusx_mx_e(const double x, gsl_sf_result * result);
 double gsl_sf_log_1plusx_mx(const double x);
 
-
-#ifdef HAVE_INLINE
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_errno.h>
-
-extern inline
-int
-gsl_sf_log_e(const double x, gsl_sf_result * result)
-{
-  /* CHECK_POINTER(result) */
-
-  if(x <= 0.0) {
-    result->val = GSL_NAN;
-    result->err = GSL_NAN;
-    GSL_ERROR ("domain error", GSL_EDOM);
-  }
-  else {
-    result->val = log(x);
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
-  }
-}
-extern inline
-int
-gsl_sf_log_abs_e(const double x, gsl_sf_result * result)
-{
-  /* CHECK_POINTER(result) */
-
-  if(x == 0.0) {
-    result->val = GSL_NAN;
-    result->err = GSL_NAN;
-    GSL_ERROR ("domain error", GSL_EDOM);
-  }
-  else {
-    result->val = log(fabs(x));
-    result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
-  }
-}
-#endif /* HAVE_INLINE */
-
-
 __END_DECLS
 
 #endif /* __GSL_SF_LOG_H__ */
