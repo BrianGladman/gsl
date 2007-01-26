@@ -1,3 +1,7 @@
+** The functions gsl_multifit_fsolver_set, gsl_multifit_fdfsolver_set
+and gsl_multiroot_fsolver_set, gsl_multiroot_fdfsolver_set now have a
+const qualifier for the input vector x, reflecting their actual usage.
+
 ** gsl_sf_expint_E2(x) now returns the correct value 1 for x==0,
 instead of NaN.
 

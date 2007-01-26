@@ -108,7 +108,7 @@ gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T,
 int
 gsl_multifit_fsolver_set (gsl_multifit_fsolver * s, 
                           gsl_multifit_function * f, 
-                          gsl_vector * x)
+                          const gsl_vector * x)
 {
   if (s->f->size != f->n)
     {

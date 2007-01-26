@@ -85,7 +85,8 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 void gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * s);
 
 int gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s, 
-                               gsl_multiroot_function * f, gsl_vector * x);
+                               gsl_multiroot_function * f, 
+                               const gsl_vector * x);
 
 int gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s);
 
@@ -142,7 +143,7 @@ gsl_multiroot_fdfsolver_alloc (const gsl_multiroot_fdfsolver_type * T,
 int
 gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * s, 
                              gsl_multiroot_function_fdf * fdf,
-                             gsl_vector * x);
+                             const gsl_vector * x);
 
 int
 gsl_multiroot_fdfsolver_iterate (gsl_multiroot_fdfsolver * s);

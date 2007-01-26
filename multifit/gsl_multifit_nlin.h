@@ -88,7 +88,7 @@ void gsl_multifit_fsolver_free (gsl_multifit_fsolver * s);
 
 int gsl_multifit_fsolver_set (gsl_multifit_fsolver * s, 
                                    gsl_multifit_function * f, 
-                                   gsl_vector * x);
+                                   const gsl_vector * x);
 
 int gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * s);
 
@@ -145,7 +145,7 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
 int
 gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s, 
                                  gsl_multifit_function_fdf * fdf,
-                                 gsl_vector * x);
+                                 const gsl_vector * x);
 
 int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s);

@@ -86,38 +86,6 @@ these cases (even though the computed value is reasonable).
   gsl_sf_legendre_sphPlm_e(140,135,0.99998689456491752,&y);
 
 ----------------------------------------------------------------------
-BUG#41 -- improve constness in multifit
-
-Not really a bug but worth fixing.  There are a few others like this
-lurking out there.
-
-From: Jari Häkkinen <jari@chiralcomp.com>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] 'const'ness of function arguments
-Date: Tue, 16 Aug 2005 20:37:13 +0200
-Precedence: list
-Envelope-to: bjg@network-theory.co.uk
-
-Hi all,
-I've noticed two fitting functions that probably should have a 'const' 
-qualifier on the third argument. The 'x' parameter in fdfsolver.c:
-
-int
-gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
-                              gsl_multifit_function_fdf * f,
-                              gsl_vector * x)
-
-and in fsolver.c:
-
-int
-gsl_multifit_fsolver_set (gsl_multifit_fsolver * s,
-                           gsl_multifit_function * f,
-                           gsl_vector * x)
-
-can safely be set to 'const' since these are only used for 
-initialization of another gsl_vector.
-
-----------------------------------------------------------------------
 BUG#43 -- knuthran is out of date
 
 From: "Charles Karney" <ckarney@sarnoff.com>

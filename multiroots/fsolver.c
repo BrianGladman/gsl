@@ -103,7 +103,7 @@ gsl_multiroot_fsolver_alloc (const gsl_multiroot_fsolver_type * T,
 int
 gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * s, 
                            gsl_multiroot_function * f, 
-                           gsl_vector * x)
+                           const gsl_vector * x)
 {
   if (s->x->size != f->n)
     {

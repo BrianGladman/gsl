@@ -120,7 +120,7 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
 int
 gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s, 
                              gsl_multifit_function_fdf * f, 
-                             gsl_vector * x)
+                             const gsl_vector * x)
 {
   if (s->f->size != f->n)
     {
