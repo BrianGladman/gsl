@@ -83,6 +83,12 @@ main (void)
   /* Knuthran test value taken from p188 in Knuth Vol 2. 3rd Ed */
   rng_test (gsl_rng_knuthran, 310952, 1009 * 2009 + 1, 461390032);
 
+  /* Knuthran improved test value from Knuth's source */
+  rng_test (gsl_rng_knuthran2002, 310952, 1, 708622036);
+  rng_test (gsl_rng_knuthran2002, 310952, 2, 1005450560);
+  rng_test (gsl_rng_knuthran2002, 310952, 100 * 2009 + 1, 995235265);
+  rng_test (gsl_rng_knuthran2002, 310952, 1009 * 2009 + 1, 704987132);
+
   /* Lecuyer21 test value from PARI: (40692^10000)%(2^31-249) */
   rng_test (gsl_rng_lecuyer21, 1, 10000, 2006618587UL);
 
@@ -448,8 +454,10 @@ generic_rng_test (const gsl_rng_type * T)
   gsl_rng_set (r, 1);   /* set seed to 1 */
   status |= rng_sum_test (r, &sigma);
 
+  gsl_test (status, "%s, maximum and sum tests for seed=1", name);
+
   gsl_rng_set (r, 12345);       /* set seed to a "typical" value */
-  status |= rng_max_test (r, &kmax, ran_max);
+  status = rng_max_test (r, &kmax, ran_max);
 
   gsl_rng_set (r, 12345);       /* set seed to a "typical" value */
   status |= rng_min_test (r, &kmin, ran_min, ran_max);
@@ -533,9 +541,9 @@ rng_sum_test (gsl_rng * r, double *sigma)
 
   *sigma = sum * sqrt (12.0 * N2);
 
-  /* more than 3 sigma is an error */
+  /* more than 3 sigma is an error (increased to 3.1 to avoid false alarms) */
   
-  status = (fabs (*sigma) > 3 || fabs(*sigma) < 0.003);
+  status = (fabs (*sigma) > 3.1 || fabs(*sigma) < 0.003);
 
   if (status) {
       fprintf(stderr,"sum=%g, sigma=%g\n",sum,*sigma);

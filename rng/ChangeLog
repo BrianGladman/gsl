@@ -1,3 +1,7 @@
+2007-01-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* knuthran2002.c: added revised version from 9th printing
+
 2007-01-04  Brian Gough  <bjg@network-theory.co.uk>
 
 	* default.c (gsl_rng_env_setup): send newline to stderr not stdout

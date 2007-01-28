@@ -1,3 +1,8 @@
+** Added updated Knuth generator, gsl_rng_knuthran2002, from 9th
+printing of "The Art of Computer Programming".  Fixes various
+weaknesses in the earlier version gsl_rng_knuthran.  See
+http://www-cs-faculty.stanford.edu/~knuth/news02.htm
+
 ** The functions gsl_multifit_fsolver_set, gsl_multifit_fdfsolver_set
 and gsl_multiroot_fsolver_set, gsl_multiroot_fdfsolver_set now have a
 const qualifier for the input vector x, reflecting their actual usage.

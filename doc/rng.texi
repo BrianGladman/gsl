@@ -1185,10 +1185,13 @@ and
 @math{m = 2^31 - 1}.
 @end deffn
 
+@deffn {Generator} gsl_rng_knuthran2002
 @deffn {Generator} gsl_rng_knuthran
 This is a second-order multiple recursive generator described by Knuth
 in @cite{Seminumerical Algorithms}, 3rd Ed., Section 3.6.  Knuth
-provides its C code.
+provides its C code.  The updated routine @code{gsl_rng_knuthran2002}
+is from the revised 9th printing and corrects some weaknesses in the
+earlier version, which is implemented as @code{gsl_rng_knuthran}.
 @end deffn
 
 @deffn {Generator} gsl_rng_borosh13

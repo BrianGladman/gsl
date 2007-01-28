@@ -67,6 +67,7 @@ GSL_VAR const gsl_rng_type *gsl_rng_fishman2x;
 GSL_VAR const gsl_rng_type *gsl_rng_gfsr4;
 GSL_VAR const gsl_rng_type *gsl_rng_knuthran;
 GSL_VAR const gsl_rng_type *gsl_rng_knuthran2;
+GSL_VAR const gsl_rng_type *gsl_rng_knuthran2002;
 GSL_VAR const gsl_rng_type *gsl_rng_lecuyer21;
 GSL_VAR const gsl_rng_type *gsl_rng_minstd;
 GSL_VAR const gsl_rng_type *gsl_rng_mrg;
