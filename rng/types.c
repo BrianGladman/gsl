@@ -41,6 +41,7 @@ gsl_rng_types_setup (void)
   ADD(gsl_rng_gfsr4);
   ADD(gsl_rng_knuthran);
   ADD(gsl_rng_knuthran2);
+  ADD(gsl_rng_knuthran2002);
   ADD(gsl_rng_lecuyer21);
   ADD(gsl_rng_minstd);
   ADD(gsl_rng_mrg);

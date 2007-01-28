@@ -1186,7 +1186,7 @@ and
 @end deffn
 
 @deffn {Generator} gsl_rng_knuthran2002
-@deffn {Generator} gsl_rng_knuthran
+@deffnx {Generator} gsl_rng_knuthran
 This is a second-order multiple recursive generator described by Knuth
 in @cite{Seminumerical Algorithms}, 3rd Ed., Section 3.6.  Knuth
 provides its C code.  The updated routine @code{gsl_rng_knuthran2002}
