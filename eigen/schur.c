@@ -33,6 +33,10 @@
 /*
  * This module contains some routines related to manipulating the
  * Schur form of a matrix which are needed by the eigenvalue solvers
+ *
+ * This file contains routines based on original code from LAPACK
+ * which is distributed under the modified BSD license. The LAPACK
+ * routine used is DLANV2.
  */
 
 static inline void schur_standard_form(gsl_matrix *A, gsl_complex *eval1,

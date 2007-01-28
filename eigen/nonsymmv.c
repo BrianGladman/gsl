@@ -33,6 +33,10 @@
 /*
  * This module computes the eigenvalues and eigenvectors of a real
  * nonsymmetric matrix.
+ * 
+ * This file contains routines based on original code from LAPACK
+ * which is distributed under the modified BSD license. The LAPACK
+ * routines used are DTREVC and DLALN2.
  */
 
 #define GSL_NONSYMMV_SMLNUM (2.0 * GSL_DBL_MIN)
