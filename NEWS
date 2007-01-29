@@ -1,3 +1,6 @@
+** Improved gsl_sf_legendre_sphPlm_e to avoid underflow with large
+arguments.
+
 ** Added updated Knuth generator, gsl_rng_knuthran2002, from 9th
 printing of "The Art of Computer Programming".  Fixes various
 weaknesses in the earlier version gsl_rng_knuthran.  See

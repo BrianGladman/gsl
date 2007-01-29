@@ -1,3 +1,8 @@
+2007-01-29  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_legendre.c (test_legendre): added extra test cases for
+	underflow
+
 2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* expint.c (expint_E2_impl): handle x==0.0 as a special case

@@ -235,9 +235,17 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (200, 1, 0.5, &r),   -0.3302975570099492931, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (200, 1, 0.999, &r), -1.4069792055546256912, TEST_TOL2, GSL_SUCCESS);
 
+
+
   /* Test case from alberto@physik.fu-berlin.de */
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (3, 1, 0.0, &r), 0.323180184114150653007, TEST_TOL2, GSL_SUCCESS);
+
+  /* Other test cases */
+
+  TEST_SF(s, gsl_sf_legendre_sphPlm_e, (200, 1, -0.5, &r), 0.3302975570099492931418227583, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_e, (140,135,1,&r), 0.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_legendre_sphPlm_e, (140,135,0.99998689456491752,&r), -6.54265253269093276310395668335e-305, TEST_TOL6, GSL_SUCCESS);
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array(100, 5, 0.5, L);

@@ -75,18 +75,6 @@ Olaf Wucknitz
 Joint Institute for VLBI in Europe                wucknitz@jive.nl
 
 ----------------------------------------------------------------------
-BUG#20 -- underflow in gsl_sf_legendre_sphPlm functions
-
-The functions gsl_sf_legendre_sphPlm and gsl_sf_legendre_sphPlm_array
-have underflows for large l,m.  Also the error can be significant in
-these cases (even though the computed value is reasonable).
-
-  gsl_sf_legendre_sphPlm_e(200, 1, -0.5,&y) -- large error
-  gsl_sf_legendre_sphPlm_e(140,135,1,&y); -- underflow
-  gsl_sf_legendre_sphPlm_e(140,135,0.99998689456491752,&y);
-
-
-----------------------------------------------------------------------
 BUG#44 -- gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
 
 The sum of gamma_inc_P and gamma_inc_Q doesn't always satisfy the
