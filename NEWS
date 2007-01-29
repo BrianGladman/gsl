@@ -1,3 +1,6 @@
+** gsl_cheb_eval_mode now uses the same error estimate as
+gsl_cheb_eval_err.
+
 ** Improved gsl_sf_legendre_sphPlm_e to avoid underflow with large
 arguments.
 

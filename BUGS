@@ -104,13 +104,6 @@ $ ./a.out
 
 
 ----------------------------------------------------------------------
-BUG#48 - cheb errors inconsistent
-
-gsl_cheb_eval_mode_e and gsl_cheb_err compute the error in an
-inconsistent way.  Also it would be better to compute the error more
-exactly in the recurrence rather than just adding |c_i|.
-
-----------------------------------------------------------------------
 BUG#49 - fdjacobian step size causes problems
 
 From: eknecronzontas <eknecronzontas@yahoo.com>

@@ -156,6 +156,8 @@ gsl_cheb_eval_mode_e (const gsl_cheb_series * cs,
   double y = (2. * x - cs->a - cs->b) / (cs->b - cs->a);
   double y2 = 2.0 * y;
 
+  double absc = 0.0;
+
   size_t eval_order;
 
   if (GSL_MODE_PREC (mode) == GSL_PREC_DOUBLE)
@@ -171,7 +173,17 @@ gsl_cheb_eval_mode_e (const gsl_cheb_series * cs,
     }
 
   *result = y * d1 - d2 + 0.5 * cs->c[0];
-  *abserr = fabs (*result) * GSL_DBL_EPSILON + fabs (cs->c[eval_order]);
+
+  /* Estimate cumulative numerical error */
+
+  for (i = 0; i <= eval_order; i++)
+    {
+      absc += fabs(cs->c[i]);
+    }
+
+  /* Combine truncation error and numerical error */
+
+  *abserr = fabs (cs->c[eval_order]) + absc * GSL_DBL_EPSILON;
 
   return GSL_SUCCESS;
 }
