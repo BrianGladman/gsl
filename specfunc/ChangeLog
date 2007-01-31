@@ -1,3 +1,9 @@
+2007-01-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma.c (gsl_sf_lngamma_sgn_e): make error calculations an exact
+	copy of gsl_sf_lngamma_e (these functions could be merged to avoid
+	duplication)
+
 2007-01-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_legendre.c (test_legendre): added extra test cases for

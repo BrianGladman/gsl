@@ -1185,12 +1185,16 @@ int gsl_sf_lngamma_e(double x, gsl_sf_result * result)
 int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
 {
   if(fabs(x - 1.0) < 0.01) {
+    int stat = lngamma_1_pade(x - 1.0, result_lg);
+    result_lg->err *= 1.0/(GSL_DBL_EPSILON + fabs(x - 1.0));
     *sgn = 1.0;
-    return lngamma_1_pade(x-1.0, result_lg);
+    return stat;
   }
   else if(fabs(x - 2.0) < 0.01) {
+   int stat = lngamma_2_pade(x - 2.0, result_lg);
+    result_lg->err *= 1.0/(GSL_DBL_EPSILON + fabs(x - 2.0));
     *sgn = 1.0;
-    return lngamma_2_pade(x-2.0, result_lg);
+    return stat;
   }
   else if(x >= 0.5) {
     *sgn = 1.0;
@@ -1204,6 +1208,9 @@ int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
     return lngamma_sgn_0(x, result_lg, sgn);
   }
   else if(x > -0.5/(GSL_DBL_EPSILON*M_PI)) {
+   /* Try to extract a fractional
+     * part from x.
+     */
     double z = 1.0 - x;
     double s = sin(M_PI*x);
     double as = fabs(s);
