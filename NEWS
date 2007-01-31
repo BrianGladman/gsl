@@ -1,3 +1,8 @@
+** The beta functions gsl_sf_beta_e(a,b) and gsl_sf_lnbeta_e(a,b) now
+handle negative arguments a,b.  Added new function gsl_sf_lnbeta_sgn_e
+for computing magnitude and sign of negative beta values, analagous to
+gsl_sf_lngamma_sgn_e.
+
 ** gsl_cheb_eval_mode now uses the same error estimate as
 gsl_cheb_eval_err.
 

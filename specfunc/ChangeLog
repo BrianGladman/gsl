@@ -1,5 +1,10 @@
 2007-01-31  Brian Gough  <bjg@network-theory.co.uk>
 
+	* beta.c (gsl_sf_lnbeta_sgn_e): added to support calculations with
+	negative a,b
+	(gsl_sf_lnbeta_e): rewritten in terms of gsl_sf_lnbeta_sgn_e
+	(gsl_sf_beta_e): handle negative a,b
+
 	* gamma.c (gsl_sf_lngamma_sgn_e): make error calculations an exact
 	copy of gsl_sf_lngamma_e (these functions could be merged to avoid
 	duplication)

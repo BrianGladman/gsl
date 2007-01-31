@@ -175,9 +175,12 @@ $ ./a.out
 BUG#52 - beta functions do not handle negative arguments 
 
 The beta functions (complete and incomplete) are well defined for
-negative arguments in terms of the gamma function but return domain
-errors or nans.  The relation of I_x(a,b,x) = (1/a) x^a 2F1(a,1-b,a+1,x)/B(a,b)
-could be documented even if it is not implemented.
+non-integer negative arguments in terms of the gamma function but
+return domain errors or nans.  The relation of I_x(a,b,x) = (1/a) x^a
+2F1(a,1-b,a+1,x)/B(a,b) could be documented even if it is not
+implemented.
+
+DONE for beta function, still needed for incomplete beta function.
 
 ----------------------------------------------------------------------
 Last assigned bug number = 56

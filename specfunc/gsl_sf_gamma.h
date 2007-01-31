@@ -254,6 +254,8 @@ double gsl_sf_gamma_inc(const double a, const double x);
 int gsl_sf_lnbeta_e(const double a, const double b, gsl_sf_result * result);
 double gsl_sf_lnbeta(const double a, const double b);
 
+int gsl_sf_lnbeta_sgn_e(const double x, const double y, gsl_sf_result * result, double * sgn);
+
 
 /* Beta Function
  * B(a,b)
