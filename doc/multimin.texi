@@ -129,7 +129,10 @@ parameter depends on the method used.  Typically the line minimization
 is considered successful if the gradient of the function @math{g} is
 orthogonal to the current search direction @math{p} to a relative
 accuracy of @var{tol}, where @c{$p\cdot g < tol |p| |g|$} 
-@math{dot(p,g) < tol |p| |g|}.
+@math{dot(p,g) < tol |p| |g|}.  A @var{tol} value of 0.1 is 
+suitable for most purposes, since line minimization only needs to
+be carried out approximately.    Note that setting @var{tol} to zero will
+force the use of ``exact'' line-searches, which are extremely expensive.
 
 @deftypefunx int gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * @var{s}, gsl_multimin_function * @var{f}, const gsl_vector * @var{x}, const gsl_vector * @var{step_size})
 This function initializes the minimizer @var{s} to minimize the function
@@ -410,7 +413,8 @@ point is close enough to the minimum of the objective function that it
 is well approximated by a quadratic hypersurface.
 @end deffn
 
-@deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
+@deffn {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs2
+@deffnx {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
 @cindex BFGS algorithm, minimization
 @cindex minimization, BFGS algorithm
 This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS)
@@ -419,6 +423,11 @@ to the second derivatives of the function @math{f} using the difference
 between successive gradient vectors.  By combining the first and second
 derivatives the algorithm is able to take Newton-type steps towards the
 function minimum, assuming quadratic behavior in that region.
+
+The @code{bfgs2} version of this minimizer uses a faithful
+implementation of the line minimization scheme described in
+@cite{Practical Methods of Optimization}, Algorithms 2.6.2 and 2.6.4.
+
 @end deffn
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_steepest_descent
@@ -706,8 +715,17 @@ contracts around the minimum.
 @node Multimin References and Further Reading
 @section References and Further Reading
 
+The conjugate gradient and BFGS methods are described in detail in the
+following book,
+
+@itemize @asis
+@item R. Fletcher,
+@cite{Practical Methods of Optimization (Second Edition)} Wiley
+(1987), ISBN 0471915475.
+@end itemize
+
 A brief description of multidimensional minimization algorithms and
-further references can be found in the following book,
+more recent references can be found in,
 
 @itemize @asis
 @item C.W. Ueberhuber,

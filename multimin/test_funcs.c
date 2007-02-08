@@ -44,7 +44,7 @@ double rosenbrock_f (const gsl_vector * x, void *params)
   double v = gsl_vector_get(x,1);
   double a = u - 1;
   double b = u * u - v;
-
+  fcount++;
   return a * a + 10 * b * b;
 }
 
@@ -53,7 +53,7 @@ void rosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df)
   double u = gsl_vector_get(x,0);
   double v = gsl_vector_get(x,1);
   double b = u * u - v;
-
+  gcount++;
   gsl_vector_set(df,0,2 * (u - 1) + 40 * u * b);
   gsl_vector_set(df,1,-20 * b);  
 }
@@ -65,7 +65,7 @@ void rosenbrock_fdf (const gsl_vector * x, void *params, double * f,
   double v = gsl_vector_get(x,1);
   double a = u - 1;
   double b = u * u - v;
-
+  gcount++;
   *f = a * a + 10 * b * b;
   gsl_vector_set(df,0,2 * (u - 1) + 40 * u * b);
   gsl_vector_set(df,1,-20 * b);  
@@ -93,7 +93,7 @@ double roth_f (const gsl_vector * x, void *params)
   double v = gsl_vector_get(x,1);
   double a = -13.0 + u + ((5.0 - v)*v - 2.0)*v;
   double b = -29.0 + u + ((v + 1.0)*v - 14.0)*v;
-
+  fcount++;
   return a * a + b * b;
 }
 
@@ -105,7 +105,7 @@ void roth_df (const gsl_vector * x, void *params, gsl_vector * df)
   double b = -29.0 + u + ((v + 1.0)*v - 14.0)*v;
   double c = -2 + v * (10 - 3 * v);
   double d = -14 + v * (2 + 3 * v);
-
+  gcount++;
   gsl_vector_set(df,0,2 * a + 2 * b);
   gsl_vector_set(df,1,2 * a * c + 2 * b * d);
 }
@@ -145,7 +145,7 @@ double wood_f (const gsl_vector * x, void *params)
 
   double t1 = u1 * u1 - u2;
   double t2 = u3 * u3 - u4;
-
+  fcount++;
   return 100 * t1 * t1 + (1 - u1) * (1 - u1)
     + 90 * t2 * t2 + (1 - u3) * (1 - u3)
     + 10.1 * ( (1 - u2) * (1 - u2) + (1 - u4) * (1 - u4) )
@@ -161,7 +161,7 @@ void wood_df (const gsl_vector * x, void *params, gsl_vector * df)
 
   double t1 = u1 * u1 - u2;
   double t2 = u3 * u3 - u4;
-
+  gcount++;
   gsl_vector_set(df,0, 400 * u1 * t1 - 2 * (1 - u1) );
   gsl_vector_set(df,1, -200 * t1 - 20.2 * (1 - u2) - 19.8 * (1 - u4) );
   gsl_vector_set(df,2, 360 * u3 * t2 - 2 * (1 - u3) );

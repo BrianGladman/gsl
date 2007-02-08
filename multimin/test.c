@@ -38,7 +38,7 @@ test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt);
 int
 main (void)
 {
-  const gsl_multimin_fdfminimizer_type *fdfminimizers[5];
+  const gsl_multimin_fdfminimizer_type *fdfminimizers[6];
   const gsl_multimin_fdfminimizer_type ** T;
 
   gsl_ieee_env_setup ();
@@ -47,7 +47,8 @@ main (void)
   fdfminimizers[1] = gsl_multimin_fdfminimizer_conjugate_pr;
   fdfminimizers[2] = gsl_multimin_fdfminimizer_conjugate_fr;
   fdfminimizers[3] = gsl_multimin_fdfminimizer_vector_bfgs;
-  fdfminimizers[4] = 0;
+  fdfminimizers[4] = gsl_multimin_fdfminimizer_vector_bfgs2;
+  fdfminimizers[5] = 0;
 
   T = fdfminimizers;
 
@@ -89,6 +90,7 @@ test_fdf(const char * desc,
   gsl_vector *x = gsl_vector_alloc (f->n);
 
   gsl_multimin_fdfminimizer *s;
+  fcount = 0; gcount = 0;
 
   (*initpt) (x);
 
@@ -123,8 +125,8 @@ test_fdf(const char * desc,
 
   status |= (fabs(s->f) > 1e-5);
 
-  gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
-           gsl_multimin_fdfminimizer_name(s),desc, iter, s->f);
+  gsl_test(status, "%s, on %s: %i iters (fn+g=%d+%d), f(x)=%g",
+           gsl_multimin_fdfminimizer_name(s),desc, iter, fcount, gcount, s->f);
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);
@@ -147,6 +149,7 @@ test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
 
   gsl_multimin_fminimizer *s;
 
+  fcount = 0; gcount = 0;
   (*initpt) (x);
 
   for (i = 0; i < f->n; i++) 
@@ -180,8 +183,8 @@ test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
 
   status |= (fabs(s->fval) > 1e-5);
 
-  gsl_test(status, "%s, on %s: %i iterations, f(x)=%g",
-           gsl_multimin_fminimizer_name(s),desc, iter, s->fval);
+  gsl_test(status, "%s, on %s: %d iter (fn=%d), f(x)=%g",
+           gsl_multimin_fminimizer_name(s),desc, iter, fcount, s->fval);
 
   gsl_multimin_fminimizer_free(s);
   gsl_vector_free(x);

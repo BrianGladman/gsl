@@ -216,6 +216,7 @@ GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_fr;
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs;
+GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_vector_bfgs2;
 GSL_VAR const gsl_multimin_fminimizer_type *gsl_multimin_fminimizer_nmsimplex;
 
 

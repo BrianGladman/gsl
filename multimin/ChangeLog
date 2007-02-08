@@ -1,3 +1,12 @@
+2007-02-08  Brian Gough  <bjg@network-theory.co.uk>
+
+	* linear_wrapper.c: convert multidimensional function to
+	one-dimensional for line minimisation
+
+	* linear_minimize.c: one-dimensional minimisation from Fletcher
+
+	* vector_bfgs2.c: added Fletcher's implementation
+
 2006-02-18  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vector_bfgs.c (vector_bfgs_iterate): avoid division by zero if
