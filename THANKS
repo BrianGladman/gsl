@@ -396,3 +396,6 @@ power distribution and gsl_multifit_linear_est
 * Daniel Falster <dfalster@bio.mq.edu.au> bug report for fdist_Pinv
 
 * Giancarlo Marra <giancarlo.marra@bancaditalia.it> bug report for M_PI_4
+
+* Alan Irwin <irwin@beluga.phys.uvic.ca> for sample implementation of
+improved BFGS algorithm.

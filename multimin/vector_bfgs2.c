@@ -22,6 +22,9 @@
    from R.Fletcher, "Practical Method's of Optimization", Second
    Edition, ISBN 0471915475.  Algorithms 2.6.2 and 2.6.4. */
 
+/* Thanks to Alan Irwin irwin@beluga.phys.uvic.ca. for suggesting this
+   algorithm and providing sample fortran benchmarks */
+
 #include <config.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_blas.h>

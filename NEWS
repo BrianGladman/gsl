@@ -1,3 +1,9 @@
+** Added a new BFGS minimisation method gsl_multimin_fdfminimizer_vector_bfgs2
+based on the algorithm given by R.Fletcher in "Practical Methods of
+Optimisation" (Second edition).  This requires substantially fewer
+function and gradient evaluations, and supercedes the existing BFGS
+minimiser.
+
 ** The beta functions gsl_sf_beta_e(a,b) and gsl_sf_lnbeta_e(a,b) now
 handle negative arguments a,b.  Added new function gsl_sf_lnbeta_sgn_e
 for computing magnitude and sign of negative beta values, analagous to

@@ -417,16 +417,22 @@ is well approximated by a quadratic hypersurface.
 @deffnx {Minimizer} gsl_multimin_fdfminimizer_vector_bfgs
 @cindex BFGS algorithm, minimization
 @cindex minimization, BFGS algorithm
-This is the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS)
-algorithm.  It is a quasi-Newton method which builds up an approximation
+These methods use the vector Broyden-Fletcher-Goldfarb-Shanno (BFGS)
+algorithm.  This is a quasi-Newton method which builds up an approximation
 to the second derivatives of the function @math{f} using the difference
 between successive gradient vectors.  By combining the first and second
 derivatives the algorithm is able to take Newton-type steps towards the
 function minimum, assuming quadratic behavior in that region.
 
-The @code{bfgs2} version of this minimizer uses a faithful
-implementation of the line minimization scheme described in
-@cite{Practical Methods of Optimization}, Algorithms 2.6.2 and 2.6.4.
+The @code{bfgs2} version of this minimizer is the most efficient
+version available, and is a faithful implementation of the line
+minimization scheme described in Fletcher's @cite{Practical Methods of
+Optimization}, Algorithms 2.6.2 and 2.6.4.  It supercedes the original
+@code{bfgs} routine and requires substantially fewer function and
+gradient evaluations.  The user-supplied tolerance @var{tol}
+corresponds to the parameter @math{\sigma} used by Fletcher.  A value
+of 0.1 is recommended for typical use (larger values correspond to
+less accurate line searches).
 
 @end deffn
 
