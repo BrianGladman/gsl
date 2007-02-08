@@ -241,6 +241,8 @@ These functions copy the elements of the vector @var{x} into the vector
 @deftypefunx int gsl_blas_caxpy (const gsl_complex_float @var{alpha}, const gsl_vector_complex_float * @var{x}, gsl_vector_complex_float * @var{y})
 @deftypefunx int gsl_blas_zaxpy (const gsl_complex @var{alpha}, const gsl_vector_complex * @var{x}, gsl_vector_complex * @var{y})
 @cindex AXPY, Level-1 BLAS
+@cindex DAXPY, Level-1 BLAS
+@cindex SAXPY, Level-1 BLAS
 These functions compute the sum @math{y = \alpha x + y} for the vectors
 @var{x} and @var{y}.
 @end deftypefun
