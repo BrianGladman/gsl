@@ -121,15 +121,18 @@ interpolate (double a, double fa, double fpa,
   return alpha;
 }
 
+/* recommended values from Fletcher are 
+   rho = 0.01, sigma = 0.1, tau1 = 9, tau2 = 0.05, tau3 = 0.5 */
 
 int
-minimize (gsl_function_fdf * fn, double alpha1, int order, double *alpha_new)
+minimize (gsl_function_fdf * fn, double rho, double sigma, 
+          double tau1, double tau2, double tau3,
+          int order, double alpha1, double *alpha_new)
 {
   double f0, fp0, falpha, falpha_prev, fpalpha, fpalpha_prev, delta,
     alpha_next;
   double alpha = alpha1, alpha_prev = 0.0;
   double a, b, fa, fb, fpa, fpb;
-  double rho = 0.01, sigma = 0.1, tau1 = 9, tau2 = 0.05, tau3 = 0.5;
   const size_t bracket_iters = 100, section_iters = 100;
   size_t i = 0;
 

@@ -33,7 +33,6 @@ typedef struct
 {
   int iter;
   double step;
-  double tol;
   double g0norm;
   double pnorm;
   double delta_f;
@@ -48,6 +47,13 @@ typedef struct
   gsl_vector *g_alpha;
   /* wrapper function */
   wrapper_t wrap;
+  /* minimization parameters */
+  double rho;
+  double sigma;
+  double tau1;
+  double tau2;
+  double tau3;
+  int order;
 }
 vector_bfgs2_state_t;
 
@@ -116,7 +122,6 @@ vector_bfgs2_set (void *vstate, gsl_multimin_function_fdf * fdf,
 
   state->iter = 0;
   state->step = step_size;
-  state->tol = tol;
   state->delta_f = 0;
 
   GSL_MULTIMIN_FN_EVAL_F_DF (fdf, x, f, gradient);
@@ -137,6 +142,15 @@ vector_bfgs2_set (void *vstate, gsl_multimin_function_fdf * fdf,
   prepare_wrapper (&state->wrap, fdf,
                    state->x0, *f, state->g0,
                    state->p, state->x_alpha, state->g_alpha);
+
+  /* Prepare 1d minimisation parameters */
+
+  state->rho = 0.01;
+  state->sigma = tol;
+  state->tau1 = 9;
+  state->tau2 = 0.05;
+  state->tau3 = 0.5;
+  state->order = 3;  /* use cubic interpolation where possible */
 
   return GSL_SUCCESS;
 }
@@ -199,7 +213,9 @@ vector_bfgs2_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
 
   /* line minimisation, with cubic interpolation (order = 3) */
 
-  status = minimize (&state->wrap.fdf_linear, alpha1, 3, &alpha);
+  status = minimize (&state->wrap.fdf_linear, state->rho, state->sigma, 
+                     state->tau1, state->tau2, state->tau3, state->order,
+                     alpha1,  &alpha);
 
   if (status != GSL_SUCCESS)
     {
