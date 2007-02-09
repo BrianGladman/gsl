@@ -111,7 +111,29 @@ vector_bfgs2_alloc (void *vstate, size_t n)
     }
 
   state->x_alpha = gsl_vector_calloc (n);
+
+  if (state->x_alpha == 0)
+    {
+      gsl_vector_free (state->dg0);
+      gsl_vector_free (state->dx0);
+      gsl_vector_free (state->g0);
+      gsl_vector_free (state->x0);
+      gsl_vector_free (state->p);
+      GSL_ERROR ("failed to allocate space for g0", GSL_ENOMEM);
+    }
+
   state->g_alpha = gsl_vector_calloc (n);
+
+  if (state->g_alpha == 0)
+    {
+      gsl_vector_free (state->x_alpha);
+      gsl_vector_free (state->dg0);
+      gsl_vector_free (state->dx0);
+      gsl_vector_free (state->g0);
+      gsl_vector_free (state->x0);
+      gsl_vector_free (state->p);
+      GSL_ERROR ("failed to allocate space for g0", GSL_ENOMEM);
+    }
 
   return GSL_SUCCESS;
 }
@@ -163,6 +185,8 @@ vector_bfgs2_free (void *vstate)
 {
   vector_bfgs2_state_t *state = (vector_bfgs2_state_t *) vstate;
 
+  gsl_vector_free (state->x_alpha);
+  gsl_vector_free (state->g_alpha);
   gsl_vector_free (state->dg0);
   gsl_vector_free (state->dx0);
   gsl_vector_free (state->g0);
