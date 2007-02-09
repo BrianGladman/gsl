@@ -1,3 +1,8 @@
+** Fixed the elliptic integrals F,E,P,D so that they have the correct
+behavior for phi > pi/2 and phi < 0.  The angular argument is now
+valid for all phi.  Also added the complete elliptic integral
+gsl_sf_ellint_Pcomp.
+
 ** Added a new BFGS minimisation method gsl_multimin_fdfminimizer_vector_bfgs2
 based on the algorithm given by R.Fletcher in "Practical Methods of
 Optimisation" (Second edition).  This requires substantially fewer

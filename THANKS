@@ -399,3 +399,6 @@ power distribution and gsl_multifit_linear_est
 
 * Alan Irwin <irwin@beluga.phys.uvic.ca> for sample implementation of
 improved BFGS algorithm.
+
+* Lionel Barnett <lionelb.nospam@googlemail.com> for pointing out an
+error in the elliptic integrals

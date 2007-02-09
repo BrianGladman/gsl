@@ -304,15 +304,32 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
 int
 gsl_sf_ellint_F_e(double phi, double k, gsl_mode_t mode, gsl_sf_result * result)
 {
-  double sin_phi  = sin(phi);
-  double sin2_phi = sin_phi*sin_phi;
-  double x = 1.0 - sin2_phi;
-  double y = 1.0 - k*k*sin2_phi;
-  gsl_sf_result rf;
-  int status = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
-  result->val = sin_phi * rf.val;
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(sin_phi*rf.err);
-  return status;
+  /* Angular reduction to -pi/2 < phi < pi/2 (we should really use an
+     exact reduction but this will have to do for now) BJG */
+
+  double nc = floor(phi/M_PI + 0.5);
+  double phi_red = phi - nc * M_PI;
+  phi = phi_red;
+  
+  {
+    double sin_phi  = sin(phi);
+    double sin2_phi = sin_phi*sin_phi;
+    double x = 1.0 - sin2_phi;
+    double y = 1.0 - k*k*sin2_phi;
+    gsl_sf_result rf;
+    int status = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
+    result->val = sin_phi * rf.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(sin_phi*rf.err);
+    if (nc == 0) {
+      return status;
+    } else {
+      gsl_sf_result rk;  /* add extra terms from periodicity */
+      const int rkstatus = gsl_sf_ellint_Kcomp_e(k, mode, &rk);  
+      result->val += 2*nc*rk.val;
+      result->err += 2*fabs(nc)*rk.err;
+      return GSL_ERROR_SELECT_2(status, rkstatus);
+    }
+  }
 }
 
 
@@ -320,25 +337,47 @@ gsl_sf_ellint_F_e(double phi, double k, gsl_mode_t mode, gsl_sf_result * result)
 int
 gsl_sf_ellint_E_e(double phi, double k, gsl_mode_t mode, gsl_sf_result * result)
 {
-  const double sin_phi  = sin(phi);
-  const double sin2_phi = sin_phi  * sin_phi;
-  const double x = 1.0 - sin2_phi;
-  const double y = 1.0 - k*k*sin2_phi;
-  if(x < GSL_DBL_EPSILON) {
-    return gsl_sf_ellint_Ecomp_e(k, mode, result);
-  }
-  else {
-    gsl_sf_result rf;
-    gsl_sf_result rd;
-    const double sin3_phi = sin2_phi * sin_phi;
-    const int rfstatus = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
-    const int rdstatus = gsl_sf_ellint_RD_e(x, y, 1.0, mode, &rd);
-    result->val  = sin_phi * rf.val - k*k/3.0 * sin3_phi * rd.val;
-    result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
-    result->err += fabs(sin_phi*rf.err);
-    result->err += k*k/3.0 * GSL_DBL_EPSILON * fabs(sin3_phi * rd.val);
-    result->err += k*k/3.0 * fabs(sin3_phi*rd.err);
-    return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+  /* Angular reduction to -pi/2 < phi < pi/2 (we should really use an
+     exact reduction but this will have to do for now) BJG */
+
+  double nc = floor(phi/M_PI + 0.5);
+  double phi_red = phi - nc * M_PI;
+  phi = phi_red;
+
+  {
+    const double sin_phi  = sin(phi);
+    const double sin2_phi = sin_phi  * sin_phi;
+    const double x = 1.0 - sin2_phi;
+    const double y = 1.0 - k*k*sin2_phi;
+
+    if(x < GSL_DBL_EPSILON) {
+      gsl_sf_result re;
+      const int status = gsl_sf_ellint_Ecomp_e(k, mode, &re);  
+      /* could use A&S 17.4.14 to improve the value below */
+      result->val = 2*nc*re.val + GSL_SIGN(sin_phi) * re.val;
+      result->err = 2*fabs(nc)*re.err + re.err;
+      return status;
+    }
+    else {
+      gsl_sf_result rf, rd;
+      const double sin3_phi = sin2_phi * sin_phi;
+      const int rfstatus = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
+      const int rdstatus = gsl_sf_ellint_RD_e(x, y, 1.0, mode, &rd);
+      result->val  = sin_phi * rf.val - k*k/3.0 * sin3_phi * rd.val;
+      result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
+      result->err += fabs(sin_phi*rf.err);
+      result->err += k*k/3.0 * GSL_DBL_EPSILON * fabs(sin3_phi * rd.val);
+      result->err += k*k/3.0 * fabs(sin3_phi*rd.err);
+      if (nc == 0) {
+        return GSL_ERROR_SELECT_2(rfstatus, rdstatus);
+      } else {
+        gsl_sf_result re;  /* add extra terms from periodicity */
+        const int restatus = gsl_sf_ellint_Ecomp_e(k, mode, &re);  
+        result->val += 2*nc*re.val;
+        result->err += 2*fabs(nc)*re.err;
+        return GSL_ERROR_SELECT_3(rfstatus, rdstatus, restatus);
+      }
+    }
   }
 }
 
@@ -347,19 +386,38 @@ gsl_sf_ellint_E_e(double phi, double k, gsl_mode_t mode, gsl_sf_result * result)
 int
 gsl_sf_ellint_P_e(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result)
 {
-  const double sin_phi  = sin(phi);
-  const double sin2_phi = sin_phi  * sin_phi;
-  const double sin3_phi = sin2_phi * sin_phi;
-  const double x = 1.0 - sin2_phi;
-  const double y = 1.0 - k*k*sin2_phi;
-  gsl_sf_result rf;
-  gsl_sf_result rj;
-  const int rfstatus = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
-  const int rjstatus = gsl_sf_ellint_RJ_e(x, y, 1.0, 1.0 + n*sin2_phi, mode, &rj);
-  result->val  = sin_phi * rf.val - n/3.0*sin3_phi * rj.val;
-  result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
-  result->err += n/3.0 * fabs(sin3_phi*rj.err);
-  return GSL_ERROR_SELECT_2(rfstatus, rjstatus);
+  /* Angular reduction to -pi/2 < phi < pi/2 (we should really use an
+     exact reduction but this will have to do for now) BJG */
+
+  double nc = floor(phi/M_PI + 0.5);
+  double phi_red = phi - nc * M_PI;
+  phi = phi_red;
+
+  /* FIXME: need to handle the case of small x, as for E,F */
+
+  {
+    const double sin_phi  = sin(phi);
+    const double sin2_phi = sin_phi  * sin_phi;
+    const double sin3_phi = sin2_phi * sin_phi;
+    const double x = 1.0 - sin2_phi;
+    const double y = 1.0 - k*k*sin2_phi;
+    gsl_sf_result rf;
+    gsl_sf_result rj;
+    const int rfstatus = gsl_sf_ellint_RF_e(x, y, 1.0, mode, &rf);
+    const int rjstatus = gsl_sf_ellint_RJ_e(x, y, 1.0, 1.0 + n*sin2_phi, mode, &rj);
+    result->val  = sin_phi * rf.val - n/3.0*sin3_phi * rj.val;
+    result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
+    result->err += n/3.0 * fabs(sin3_phi*rj.err);
+    if (nc == 0) {
+      return GSL_ERROR_SELECT_2(rfstatus, rjstatus);
+    } else {
+      gsl_sf_result rp;  /* add extra terms from periodicity */
+      const int rpstatus = gsl_sf_ellint_Pcomp_e(k, n, mode, &rp);  
+      result->val += 2*nc*rp.val;
+      result->err += 2*fabs(nc)*rp.err;
+      return GSL_ERROR_SELECT_3(rfstatus, rjstatus, rpstatus);
+    }
+  }
 }
 
 
@@ -367,16 +425,49 @@ gsl_sf_ellint_P_e(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result
 int
 gsl_sf_ellint_D_e(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result * result)
 {
-  const double sin_phi  = sin(phi);
-  const double sin2_phi = sin_phi  * sin_phi;
-  const double sin3_phi = sin2_phi * sin_phi;
-  const double x = 1.0 - sin2_phi;
-  const double y = 1.0 - k*k*sin2_phi;
-  gsl_sf_result rd;
-  const int status = gsl_sf_ellint_RD_e(x, y, 1.0, mode, &rd);
-  result->val = sin3_phi/3.0 * rd.val;
-  result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(sin3_phi/3.0 * rd.err);
-  return status;
+  /* Angular reduction to -pi/2 < phi < pi/2 (we should really use an
+     exact reduction but this will have to do for now) BJG */
+
+  double nc = floor(phi/M_PI + 0.5);
+  double phi_red = phi - nc * M_PI;
+  phi = phi_red;
+
+  /* FIXME: need to handle the case of small x, as for E,F */
+  {
+    const double sin_phi  = sin(phi);
+    const double sin2_phi = sin_phi  * sin_phi;
+    const double sin3_phi = sin2_phi * sin_phi;
+    const double x = 1.0 - sin2_phi;
+    const double y = 1.0 - k*k*sin2_phi;
+    gsl_sf_result rd;
+    const int status = gsl_sf_ellint_RD_e(x, y, 1.0, mode, &rd);
+    result->val = sin3_phi/3.0 * rd.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(sin3_phi/3.0 * rd.err);
+    if (nc == 0) {
+      return status;
+    } else {
+      gsl_sf_result rd;  /* add extra terms from periodicity */
+      const int rdstatus = gsl_sf_ellint_Dcomp_e(k, mode, &rd);  
+      result->val += 2*nc*rd.val;
+      result->err += 2*fabs(nc)*rd.err;
+      return GSL_ERROR_SELECT_2(status, rdstatus);
+    }
+  }
+}
+
+int
+gsl_sf_ellint_Dcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
+{
+  if(k*k >= 1.0) {
+    DOMAIN_ERROR(result);
+  } else {
+    const double y = 1.0 - k*k;  /* FIXME: still need to handle k~=~1 */
+    gsl_sf_result rd;
+    const int status = gsl_sf_ellint_RD_e(0.0, y, 1.0, mode, &rd);
+    result->val = (1.0/3.0) * rd.val;
+    result->err = GSL_DBL_EPSILON * fabs(result->val) + fabs(1.0/3.0 * rd.err);
+    return status;
+  }
 }
 
 
@@ -447,6 +538,27 @@ gsl_sf_ellint_Ecomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
   }
 }
 
+/* [Carlson, Numer. Math. 33 (1979) 1, (4.6)] */
+int
+gsl_sf_ellint_Pcomp_e(double k, double n, gsl_mode_t mode, gsl_sf_result * result)
+{
+  if(k*k >= 1.0 || n >= 1.0) {
+    DOMAIN_ERROR(result);
+  }
+  /* FIXME: need to handle k ~=~ 1  cancellations */
+  else {
+    gsl_sf_result rf;
+    gsl_sf_result rj;
+    const double y = 1.0 - k*k;
+    const int rfstatus = gsl_sf_ellint_RF_e(0.0, y, 1.0, mode, &rf);
+    const int rjstatus = gsl_sf_ellint_RJ_e(0.0, y, 1.0, 1.0 + n, mode, &rj);
+    result->val = rf.val - (n/3.0) * rj.val;
+    result->err = rf.err + fabs(n/3.0) * rj.err;
+    return GSL_ERROR_SELECT_2(rfstatus, rjstatus);
+  }
+}
+
+
 
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
@@ -460,6 +572,16 @@ double gsl_sf_ellint_Kcomp(double k, gsl_mode_t mode)
 double gsl_sf_ellint_Ecomp(double k, gsl_mode_t mode)
 {
   EVAL_RESULT(gsl_sf_ellint_Ecomp_e(k, mode, &result));
+}
+
+double gsl_sf_ellint_Pcomp(double k, double n, gsl_mode_t mode)
+{
+  EVAL_RESULT(gsl_sf_ellint_Pcomp_e(k, n, mode, &result));
+}
+
+double gsl_sf_ellint_Dcomp(double k, gsl_mode_t mode)
+{
+  EVAL_RESULT(gsl_sf_ellint_Dcomp_e(k, mode, &result));
 }
 
 double gsl_sf_ellint_F(double phi, double k, gsl_mode_t mode)

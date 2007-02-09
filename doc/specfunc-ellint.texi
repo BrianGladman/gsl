@@ -46,7 +46,7 @@ The complete Legendre forms are denoted by @math{K(k) = F(\pi/2, k)} and
 The notation used here is based on Carlson, @cite{Numerische
 Mathematik} 33 (1979) 1 and differs slightly from that used by
 Abramowitz & Stegun, where the functions are given in terms of the
-parameter @math{m = k^2}.
+parameter @math{m = k^2} and @math{n} is replaced by @math{-n}.
 
 @node Definition of Carlson Forms
 @subsection Definition of Carlson Forms
@@ -87,6 +87,8 @@ RJ(x,y,z,p) = 3/2 \int_0^\infty dt
 @deftypefunx int gsl_sf_ellint_Kcomp_e (double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These routines compute the complete elliptic integral @math{K(k)} to
 the accuracy specified by the mode variable @var{mode}.  
+Note that Abramowitz & Stegun define this function in terms of the
+parameter @math{m = k^2}.
 @comment Exceptional Return Values:  GSL_EDOM
 @end deftypefun
 
@@ -94,11 +96,20 @@ the accuracy specified by the mode variable @var{mode}.
 @deftypefunx int gsl_sf_ellint_Ecomp_e (double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These routines compute the complete elliptic integral @math{E(k)} to the
 accuracy specified by the mode variable @var{mode}.
+Note that Abramowitz & Stegun define this function in terms of the
+parameter @math{m = k^2}.
 @comment Exceptional Return Values:  GSL_EDOM
 @end deftypefun
 
-Note that Abramowitz & Stegun define these functions in terms of the
-parameter @math{m = k^2}.
+@deftypefun double gsl_sf_ellint_Pcomp (double @var{k}, double @var{n}, gsl_mode_t @var{mode})
+@deftypefunx int gsl_sf_ellint_Pcomp_e (double @var{k}, double @var{n},  gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
+These routines compute the complete elliptic integral @math{\Pi(k,n)} to the
+accuracy specified by the mode variable @var{mode}.
+Note that Abramowitz & Stegun define this function in terms of the
+parameters @math{m = k^2} and @math{\sin^2(\alpha) = k^2}, with the
+change of sign @math{n \to -n}.
+@comment Exceptional Return Values:  GSL_EDOM
+@end deftypefun
 
 @node Legendre Form of Incomplete Elliptic Integrals
 @subsection Legendre Form of Incomplete Elliptic Integrals
@@ -107,6 +118,8 @@ parameter @math{m = k^2}.
 @deftypefunx int gsl_sf_ellint_F_e (double @var{phi}, double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These routines compute the incomplete elliptic integral @math{F(\phi,k)}
 to the accuracy specified by the mode variable @var{mode}.
+Note that Abramowitz & Stegun define this function in terms of the
+parameter @math{m = k^2}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
@@ -114,6 +127,8 @@ to the accuracy specified by the mode variable @var{mode}.
 @deftypefunx int gsl_sf_ellint_E_e (double @var{phi}, double @var{k}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These routines compute the incomplete elliptic integral @math{E(\phi,k)}
 to the accuracy specified by the mode variable @var{mode}.
+Note that Abramowitz & Stegun define this function in terms of the
+parameter @math{m = k^2}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
@@ -121,11 +136,11 @@ to the accuracy specified by the mode variable @var{mode}.
 @deftypefunx int gsl_sf_ellint_P_e (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})
 These routines compute the incomplete elliptic integral @math{\Pi(\phi,k,n)}
 to the accuracy specified by the mode variable @var{mode}.
+Note that Abramowitz & Stegun define this function in terms of the
+parameters @math{m = k^2} and @math{\sin^2(\alpha) = k^2}, with the
+change of sign @math{n \to -n}.
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
-
-Note that Abramowitz & Stegun define these functions in terms of the
-parameters @math{m = k^2} and @math{\sin^2(\alpha) = k^2}.
 
 @deftypefun double gsl_sf_ellint_D (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode})
 @deftypefunx int gsl_sf_ellint_D_e (double @var{phi}, double @var{k}, double @var{n}, gsl_mode_t @var{mode}, gsl_sf_result * @var{result})

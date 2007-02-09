@@ -1,3 +1,12 @@
+2007-02-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ellint.c (gsl_sf_ellint_F_e): do argument reduction for phi>pi/2
+	(gsl_sf_ellint_E_e): do argument reduction for phi>pi/2
+	(gsl_sf_ellint_P_e): do argument reduction for phi>pi/2
+	(gsl_sf_ellint_D_e): do argument reduction for phi>pi/2
+	(gsl_sf_ellint_Dcomp_e): added complete D integral
+	(gsl_sf_ellint_Pcomp_e): added complete P integral
+
 2007-01-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* beta.c (gsl_sf_lnbeta_sgn_e): added to support calculations with

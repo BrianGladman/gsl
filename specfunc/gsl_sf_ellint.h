@@ -51,6 +51,12 @@ double gsl_sf_ellint_Kcomp(double k, gsl_mode_t mode);
 int gsl_sf_ellint_Ecomp_e(double k, gsl_mode_t mode, gsl_sf_result * result);
 double gsl_sf_ellint_Ecomp(double k, gsl_mode_t mode);
 
+int gsl_sf_ellint_Pcomp_e(double k, double n, gsl_mode_t mode, gsl_sf_result * result);
+double gsl_sf_ellint_Pcomp(double k, double n, gsl_mode_t mode);
+
+int gsl_sf_ellint_Dcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result);
+double gsl_sf_ellint_Dcomp(double k, gsl_mode_t mode);
+
 
 /* Legendre form of incomplete elliptic integrals
  *
