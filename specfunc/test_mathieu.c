@@ -208,6 +208,6 @@ int test_mathieu(void)
   gsl_test(sa, "gsl_sf_mathieu_se_array");
   s += sa;
 
-  free(work);
+  gsl_sf_mathieu_free(work);
   return s;
 }
