@@ -1,3 +1,9 @@
+2007-02-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mathieu_charv.c (figi): ensure that e[ii] is set when
+	e2[ii]==0.0 and there is no error condition, as per the original
+	eispack routine
+
 2007-02-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ellint.c (gsl_sf_ellint_F_e): do argument reduction for phi>pi/2

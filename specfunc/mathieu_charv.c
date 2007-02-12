@@ -650,7 +650,6 @@ static int figi(int nn, double *tt, double *dd, double *ee,
 {
   int ii;
 
-
   for (ii=0; ii<nn; ii++)
   {
       if (ii != 0)
@@ -663,20 +662,15 @@ static int figi(int nn, double *tt, double *dd, double *ee,
                  elements is negative */
               return (nn + ii);
           }
-          else if (e2[ii] > 0.0)
-          {
-              ee[ii] = sqrt(e2[ii]);
-              dd[ii] = tt[3*ii+1];
-              continue;
-          }
 
-          if (tt[3*ii] != 0.0 || tt[3*(ii-1)+2] != 0.0)
+          if (e2[ii] == 0.0 && (tt[3*ii] != 0.0 || tt[3*(ii-1)+2] != 0.0))
           {
               /* set error -- product of some pair of off-diagonal
                  elements is zero with one member non-zero */
               return (-1*(3*nn + ii));
           }
 
+          ee[ii] = sqrt(e2[ii]);
       }
 
       dd[ii] = tt[3*ii+1];
@@ -718,9 +712,15 @@ int gsl_sf_mathieu_a_array(double qq, gsl_sf_mathieu_workspace *work)
   
   status = figi((signed int)even_order, tt, dd, ee, e2);
 
+  if (status) 
+    {
+      GSL_ERROR("Internal error in tridiagonal Mathieu matrix", GSL_EFAILED);
+    }
+
   /* Fill the period \pi matrix. */
   for (ii=0; ii<even_order*even_order; ii++)
       zz[ii] = 0.0;
+
   zz[0] = dd[0];
   zz[1] = ee[1];
   for (ii=1; ii<even_order-1; ii++)
