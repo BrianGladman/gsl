@@ -37,31 +37,33 @@
 
 __BEGIN_DECLS
 
-
-#define NUM_MATHIEU_COEFF 100
+#define GSL_SF_MATHIEU_COEFF 100
 
 typedef struct 
 {
-    size_t size;
-    size_t even_order;
-    size_t odd_order;
-    int extra_values;
-    double *char_value;
-    double *dd;
-    double *ee;
-    double *tt;
-    double *e2;
-    double *zz;
-    gsl_vector *eval;
-    gsl_matrix *evec;
-    gsl_eigen_symmv_workspace *wmat;
+  size_t size;
+  size_t even_order;
+  size_t odd_order;
+  int extra_values;
+  double qa;   /* allow for caching of results: not implemented yet */
+  double qb;   /* allow for caching of results: not implemented yet */
+  double *aa;
+  double *bb;
+  double *dd;
+  double *ee;
+  double *tt;
+  double *e2;
+  double *zz;
+  gsl_vector *eval;
+  gsl_matrix *evec;
+  gsl_eigen_symmv_workspace *wmat;
 } gsl_sf_mathieu_workspace;
 
 
 /* Compute an array of characteristic (eigen) values from the recurrence
    matrices for the Mathieu equations. */
-int gsl_sf_mathieu_a_array(double qq, gsl_sf_mathieu_workspace *work);
-int gsl_sf_mathieu_b_array(double qq, gsl_sf_mathieu_workspace *work);
+int gsl_sf_mathieu_a_array(int order_min, int order_max, double qq, gsl_sf_mathieu_workspace *work, double result_array[]);
+int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq,  gsl_sf_mathieu_workspace *work, double result_array[]);
 
 /* Compute the characteristic value for a Mathieu function of order n and
    type ntype. */

@@ -30,8 +30,8 @@ int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
                       gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
-  double coeff[NUM_MATHIEU_COEFF], fc;
+  double maxerr = 1e-14, amax, pi = M_PI, fn, factor;
+  double coeff[GSL_SF_MATHIEU_COEFF], fc;
   double j1c, z2c, j1pc, z2pc;
   double u1, u2;
   gsl_sf_result aa;
@@ -73,7 +73,7 @@ int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
 
   if (even_odd == 0)
   {
-      for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+      for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
       {
           amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
@@ -97,7 +97,7 @@ int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
   }
   else
   {
-      for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+      for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
       {
           amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
@@ -136,8 +136,8 @@ int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
                       gsl_sf_result *result)
 {
   int even_odd, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn, factor;
-  double coeff[NUM_MATHIEU_COEFF], fc;
+  double maxerr = 1e-14, amax, pi = M_PI, fn, factor;
+  double coeff[GSL_SF_MATHIEU_COEFF], fc;
   double j1c, z2c, j1mc, z2mc, j1pc, z2pc;
   double u1, u2;
   gsl_sf_result aa;
@@ -179,7 +179,7 @@ int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
 
   if (even_odd == 0)
   {
-      for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+      for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
       {
           amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
@@ -206,7 +206,7 @@ int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
   }
   else
   {
-      for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+      for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
       {
           amax = GSL_MAX(amax, fabs(coeff[kk]));
           if (fabs(coeff[kk])/amax < maxerr)
@@ -247,11 +247,11 @@ int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
                             double result_array[])
 {
   int even_odd, order, ii, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
-  double coeff[NUM_MATHIEU_COEFF], fc;
+  double maxerr = 1e-14, amax, pi = M_PI, fn;
+  double coeff[GSL_SF_MATHIEU_COEFF], fc;
   double j1c, z2c, j1pc, z2pc;
   double u1, u2;
-  double *aa = work->char_value;
+  double *aa = work->aa;
 
 
   /* Initialize the result array to zeroes. */
@@ -275,7 +275,7 @@ int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
   u2 = sqrt(qq)*exp(zz);
   
   /* Compute all eigenvalues up to nmax. */
-  gsl_sf_mathieu_a_array(qq, work);
+  gsl_sf_mathieu_a_array(0, nmax, qq, work, aa);
   
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -292,7 +292,7 @@ int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
 
       if (even_odd == 0)
       {
-          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
           {
               amax = GSL_MAX(amax, fabs(coeff[kk]));
               if (fabs(coeff[kk])/amax < maxerr)
@@ -316,7 +316,7 @@ int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
       }
       else
       {
-          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
           {
               amax = GSL_MAX(amax, fabs(coeff[kk]));
               if (fabs(coeff[kk])/amax < maxerr)
@@ -353,11 +353,11 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
                             double result_array[])
 {
   int even_odd, order, ii, kk, mm, status;
-  double maxerr = 1e-14, amax, pi = acos(-1.0), fn;
-  double coeff[NUM_MATHIEU_COEFF], fc;
+  double maxerr = 1e-14, amax, pi = M_PI, fn;
+  double coeff[GSL_SF_MATHIEU_COEFF], fc;
   double j1c, z2c, j1mc, z2mc, j1pc, z2pc;
   double u1, u2;
-  double *aa = work->char_value;
+  double *bb = work->bb;
 
 
   /* Initialize the result array to zeroes. */
@@ -381,7 +381,7 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
   u2 = sqrt(qq)*exp(zz);
   
   /* Compute all eigenvalues up to nmax. */
-  gsl_sf_mathieu_b_array(qq, work);
+  gsl_sf_mathieu_b_array(0, nmax, qq, work, bb);
   
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -390,7 +390,7 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
           even_odd = 1;
   
       /* Compute the series coefficients. */
-      status = gsl_sf_mathieu_b_coeff(order, qq, aa[order], coeff);
+      status = gsl_sf_mathieu_b_coeff(order, qq, bb[order], coeff);
       if (status != GSL_SUCCESS)
       {
           return status;
@@ -398,7 +398,7 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
 
       if (even_odd == 0)
       {
-          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
           {
               amax = GSL_MAX(amax, fabs(coeff[kk]));
               if (fabs(coeff[kk])/amax < maxerr)
@@ -425,7 +425,7 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
       }
       else
       {
-          for (kk=0; kk<NUM_MATHIEU_COEFF; kk++)
+          for (kk=0; kk<GSL_SF_MATHIEU_COEFF; kk++)
           {
               amax = GSL_MAX(amax, fabs(coeff[kk]));
               if (fabs(coeff[kk])/amax < maxerr)

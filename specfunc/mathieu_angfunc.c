@@ -29,7 +29,7 @@
 int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], norm, fn, factor;
+  double coeff[GSL_SF_MATHIEU_COEFF], norm, fn, factor;
   gsl_sf_result aa;
 
 
@@ -79,7 +79,7 @@ int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
   {
       fn = 0.0;
       norm = coeff[0]*coeff[0];
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       {
           fn += coeff[ii]*cos(2.0*ii*zz);
           norm += coeff[ii]*coeff[ii];
@@ -88,7 +88,7 @@ int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
   else
   {
       fn = 0.0;
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       {
           fn += coeff[ii]*cos((2.0*ii + 1.0)*zz);
           norm += coeff[ii]*coeff[ii];
@@ -111,7 +111,7 @@ int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result)
 int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
 {
   int even_odd, ii, status;
-  double coeff[NUM_MATHIEU_COEFF], norm, fn, factor;
+  double coeff[GSL_SF_MATHIEU_COEFF], norm, fn, factor;
   gsl_sf_result aa;
 
 
@@ -164,7 +164,7 @@ int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
   if (even_odd == 0)
   {
       fn = 0.0;
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       {
           norm += coeff[ii]*coeff[ii];
           fn += coeff[ii]*sin(2.0*(ii + 1)*zz);
@@ -173,7 +173,7 @@ int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result)
   else
   {
       fn = 0.0;
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       {
           norm += coeff[ii]*coeff[ii];
           fn += coeff[ii]*sin((2.0*ii + 1)*zz);
@@ -197,7 +197,7 @@ int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
                             double result_array[])
 {
   int even_odd, order, ii, jj, status;
-  double coeff[NUM_MATHIEU_COEFF], *aa = work->char_value, norm;
+  double coeff[GSL_SF_MATHIEU_COEFF], *aa = work->aa, norm;
   
 
   /* Initialize the result array to zeroes. */
@@ -216,7 +216,7 @@ int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
   }
 
   /* Compute all of the eigenvalues up to nmax. */
-  gsl_sf_mathieu_a_array(qq, work);
+  gsl_sf_mathieu_a_array(0, nmax, qq, work, aa);
 
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -245,7 +245,7 @@ int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
       if (even_odd == 0)
       {
           norm = coeff[0]*coeff[0];
-          for (jj=0; jj<NUM_MATHIEU_COEFF; jj++)
+          for (jj=0; jj<GSL_SF_MATHIEU_COEFF; jj++)
           {
               result_array[ii] += coeff[jj]*cos(2.0*jj*zz);
               norm += coeff[jj]*coeff[jj];
@@ -253,7 +253,7 @@ int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
       }
       else
       {
-          for (jj=0; jj<NUM_MATHIEU_COEFF; jj++)
+          for (jj=0; jj<GSL_SF_MATHIEU_COEFF; jj++)
           {
               result_array[ii] += coeff[jj]*cos((2.0*jj + 1.0)*zz);
               norm += coeff[jj]*coeff[jj];
@@ -273,7 +273,7 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
                             double result_array[])
 {
   int even_odd, order, ii, jj, status;
-  double coeff[NUM_MATHIEU_COEFF], *aa = work->char_value, norm;
+  double coeff[GSL_SF_MATHIEU_COEFF], *bb = work->bb, norm;
   
 
   /* Initialize the result array to zeroes. */
@@ -292,7 +292,7 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
   }
 
   /* Compute all of the eigenvalues up to nmax. */
-  gsl_sf_mathieu_b_array(qq, work);
+  gsl_sf_mathieu_b_array(0, nmax, qq, work, bb);
 
   for (ii=0, order=nmin; order<=nmax; ii++, order++)
   {
@@ -311,7 +311,7 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
       }
   
       /* Compute the series coefficients. */
-      status = gsl_sf_mathieu_b_coeff(order, qq, aa[order], coeff);
+      status = gsl_sf_mathieu_b_coeff(order, qq, bb[order], coeff);
       if (status != GSL_SUCCESS)
       {
           return status;
@@ -319,7 +319,7 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
   
       if (even_odd == 0)
       {
-          for (jj=0; jj<NUM_MATHIEU_COEFF; jj++)
+          for (jj=0; jj<GSL_SF_MATHIEU_COEFF; jj++)
           {
               result_array[ii] += coeff[jj]*sin(2.0*(jj + 1)*zz);
               norm += coeff[jj]*coeff[jj];
@@ -327,7 +327,7 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
       }
       else
       {
-          for (jj=0; jj<NUM_MATHIEU_COEFF; jj++)
+          for (jj=0; jj<GSL_SF_MATHIEU_COEFF; jj++)
           {
               result_array[ii] += coeff[jj]*sin((2.0*jj + 1.0)*zz);
               norm += coeff[jj]*coeff[jj];

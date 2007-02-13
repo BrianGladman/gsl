@@ -43,17 +43,17 @@ static void backward_recurse_c(double aa, double qq, double xx, double *ff,
   {
       for (ii=0; ii<ni; ii++)
       {
-          nn = NUM_MATHIEU_COEFF - ii - 1;
+          nn = GSL_SF_MATHIEU_COEFF - ii - 1;
           ff[ni-ii-1] = -1.0/((4*nn*nn - aa)/qq + ff[ni-ii]);
       }
-      if (ni == NUM_MATHIEU_COEFF - 1)
+      if (ni == GSL_SF_MATHIEU_COEFF - 1)
           ff[0] *= 2.0;
   }  
   else
   {
       for (ii=0; ii<ni; ii++)
       {
-          nn = NUM_MATHIEU_COEFF - ii - 1;
+          nn = GSL_SF_MATHIEU_COEFF - ii - 1;
           ff[ni-ii-1] = -1.0/(((2*nn + 1)*(2*nn + 1) - aa)/qq + ff[ni-ii]);
       }
   }
@@ -76,7 +76,7 @@ static void backward_recurse_s(double aa, double qq, double xx, double *ff,
   {
       for (ii=0; ii<ni; ii++)
       {
-          nn = NUM_MATHIEU_COEFF - ii - 1;
+          nn = GSL_SF_MATHIEU_COEFF - ii - 1;
           ff[ni-ii-1] = -1.0/((4*(nn + 1)*(nn + 1) - aa)/qq + ff[ni-ii]);
       }
   }
@@ -84,7 +84,7 @@ static void backward_recurse_s(double aa, double qq, double xx, double *ff,
   {
       for (ii=0; ii<ni; ii++)
       {
-          nn = NUM_MATHIEU_COEFF - ii - 1;
+          nn = GSL_SF_MATHIEU_COEFF - ii - 1;
           ff[ni-ii-1] = -1.0/(((2*nn + 1)*(2*nn + 1) - aa)/qq + ff[ni-ii]);
       }
   }
@@ -97,7 +97,7 @@ int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
 {
   int ni, nn, ii, even_odd;
   double eps, g1, g2, x1, x2, e1, e2, de, xh, sum, ratio,
-         ff[NUM_MATHIEU_COEFF];
+         ff[GSL_SF_MATHIEU_COEFF];
 
 
   eps = 1e-14;
@@ -109,13 +109,13 @@ int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
 
   /* If the coefficient array is not large enough to hold all necessary
      coefficients, error out. */
-  if (order > NUM_MATHIEU_COEFF)
+  if (order > GSL_SF_MATHIEU_COEFF)
       return GSL_FAILURE;
   
   /* Handle the trivial case where q = 0. */
   if (qq == 0.0)
   {
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
           coeff[ii] = 0.0;
 
       coeff[order/2] = 1.0;
@@ -163,13 +163,13 @@ int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
       ratio = coeff[nn]/coeff[nn-1];
   }
   
-  ni = NUM_MATHIEU_COEFF - nn - 1;
+  ni = GSL_SF_MATHIEU_COEFF - nn - 1;
 
   /* Compute first two points to start root-finding. */
   if (even_odd == 0)
-      x1 = -qq/(4.0*NUM_MATHIEU_COEFF*NUM_MATHIEU_COEFF);
+      x1 = -qq/(4.0*GSL_SF_MATHIEU_COEFF*GSL_SF_MATHIEU_COEFF);
   else
-      x1 = -qq/((2.0*NUM_MATHIEU_COEFF + 1.0)*(2.0*NUM_MATHIEU_COEFF + 1.0));
+      x1 = -qq/((2.0*GSL_SF_MATHIEU_COEFF + 1.0)*(2.0*GSL_SF_MATHIEU_COEFF + 1.0));
   g1 = ratio;
   backward_recurse_c(aa, qq, x1, ff, &g1, even_odd, ni);
   x2 = g1;
@@ -199,7 +199,7 @@ int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
 
   /* Compute the rest of the coefficients. */
   sum += coeff[nn];
-  for (ii=nn+1; ii<NUM_MATHIEU_COEFF; ii++)
+  for (ii=nn+1; ii<GSL_SF_MATHIEU_COEFF; ii++)
   {
       coeff[ii] = ff[ii-nn-1]*coeff[ii-1];
       sum += coeff[ii];
@@ -208,13 +208,13 @@ int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[])
          to zero. */
       if (fabs(coeff[ii]) < 1e-20)
       {
-          for (; ii<NUM_MATHIEU_COEFF;)
+          for (; ii<GSL_SF_MATHIEU_COEFF;)
               coeff[ii++] = 0.0;
       }
   }
   
   /* Normalize the coefficients. */
-  for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+  for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       coeff[ii] /= sum;
 
   return GSL_SUCCESS;
@@ -225,7 +225,7 @@ int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
 {
   int ni, nn, ii, even_odd;
   double eps, g1, g2, x1, x2, e1, e2, de, xh, sum, ratio,
-         ff[NUM_MATHIEU_COEFF];
+         ff[GSL_SF_MATHIEU_COEFF];
 
 
   eps = 1e-10;
@@ -237,13 +237,13 @@ int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
 
   /* If the coefficient array is not large enough to hold all necessary
      coefficients, error out. */
-  if (order > NUM_MATHIEU_COEFF)
+  if (order > GSL_SF_MATHIEU_COEFF)
       return GSL_FAILURE;
   
   /* Handle the trivial case where q = 0. */
   if (qq == 0.0)
   {
-      for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+      for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
           coeff[ii] = 0.0;
 
       coeff[(order-1)/2] = 1.0;
@@ -289,13 +289,13 @@ int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
       ratio = coeff[nn]/coeff[nn-1];
   }
   
-  ni = NUM_MATHIEU_COEFF - nn - 1;
+  ni = GSL_SF_MATHIEU_COEFF - nn - 1;
 
   /* Compute first two points to start root-finding. */
   if (even_odd == 0)
-      x1 = -qq/(4.0*(NUM_MATHIEU_COEFF + 1.0)*(NUM_MATHIEU_COEFF + 1.0));
+      x1 = -qq/(4.0*(GSL_SF_MATHIEU_COEFF + 1.0)*(GSL_SF_MATHIEU_COEFF + 1.0));
   else
-      x1 = -qq/((2.0*NUM_MATHIEU_COEFF + 1.0)*(2.0*NUM_MATHIEU_COEFF + 1.0));
+      x1 = -qq/((2.0*GSL_SF_MATHIEU_COEFF + 1.0)*(2.0*GSL_SF_MATHIEU_COEFF + 1.0));
   g1 = ratio;
   backward_recurse_s(aa, qq, x1, ff, &g1, even_odd, ni);
   x2 = g1;
@@ -325,7 +325,7 @@ int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
 
   /* Compute the rest of the coefficients. */
   sum += 2*(nn + 1)*coeff[nn];
-  for (ii=nn+1; ii<NUM_MATHIEU_COEFF; ii++)
+  for (ii=nn+1; ii<GSL_SF_MATHIEU_COEFF; ii++)
   {
       coeff[ii] = ff[ii-nn-1]*coeff[ii-1];
       sum += 2*(ii + 1)*coeff[ii];
@@ -334,13 +334,13 @@ int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[])
          to zero. */
       if (fabs(coeff[ii]) < 1e-20)
       {
-          for (; ii<NUM_MATHIEU_COEFF;)
+          for (; ii<GSL_SF_MATHIEU_COEFF;)
               coeff[ii++] = 0.0;
       }
   }
   
   /* Normalize the coefficients. */
-  for (ii=0; ii<NUM_MATHIEU_COEFF; ii++)
+  for (ii=0; ii<GSL_SF_MATHIEU_COEFF; ii++)
       coeff[ii] /= sum;
 
   return GSL_SUCCESS;

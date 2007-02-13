@@ -58,20 +58,31 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
   workspace->extra_values = extra_values;
 
   /* Allocate space for the characteristic values. */
-  workspace->char_value = (double *)malloc((nn+1)*sizeof(double));
-  if (workspace->char_value == NULL)
+  workspace->aa = (double *)malloc((nn+1)*sizeof(double));
+  if (workspace->aa == NULL)
   {
       free(workspace);
-      GSL_ERROR_NULL("Error allocating memory for the characteristic values",
+      GSL_ERROR_NULL("Error allocating memory for characteristic a values",
                      GSL_ENOMEM);
   }
+
+  workspace->bb = (double *)malloc((nn+1)*sizeof(double));
+  if (workspace->bb == NULL)
+  {
+      free(workspace->aa);
+      free(workspace);
+      GSL_ERROR_NULL("Error allocating memory for characteristic b values",
+                     GSL_ENOMEM);
+  }
+
   /* Since even_order is always >= odd_order, dimension the arrays for
      even_order. */
   
   workspace->dd = (double *)malloc(even_order*sizeof(double));
   if (workspace->dd == NULL)
   {
-      free(workspace->char_value);
+      free(workspace->aa);
+      free(workspace->bb);
       free(workspace);
       GSL_ERROR_NULL("failed to allocate space for diagonal", GSL_ENOMEM);
   }
@@ -80,7 +91,8 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
   if (workspace->ee == NULL)
   {
       free(workspace->dd);
-      free(workspace->char_value);
+      free(workspace->aa);
+      free(workspace->bb);
       free(workspace);
       GSL_ERROR_NULL("failed to allocate space for diagonal", GSL_ENOMEM);
   }
@@ -90,7 +102,8 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
   {
       free(workspace->ee);
       free(workspace->dd);
-      free(workspace->char_value);
+      free(workspace->aa);
+      free(workspace->bb);
       free(workspace);
       GSL_ERROR_NULL("failed to allocate space for diagonal", GSL_ENOMEM);
   }
@@ -101,7 +114,8 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
       free(workspace->tt);
       free(workspace->ee);
       free(workspace->dd);
-      free(workspace->char_value);
+      free(workspace->aa);
+      free(workspace->bb);
       free(workspace);
       GSL_ERROR_NULL("failed to allocate space for diagonal", GSL_ENOMEM);
   }
@@ -113,14 +127,59 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
       free(workspace->tt);
       free(workspace->ee);
       free(workspace->dd);
-      free(workspace->char_value);
+      free(workspace->aa);
+      free(workspace->bb);
       free(workspace);
       GSL_ERROR_NULL("failed to allocate space for diagonal", GSL_ENOMEM);
   }
   
   workspace->eval = gsl_vector_alloc(even_order);
+
+  if (workspace->eval == NULL)
+    {
+      free(workspace->zz);
+      free(workspace->e2);
+      free(workspace->tt);
+      free(workspace->ee);
+      free(workspace->dd);
+      free(workspace->aa);
+      free(workspace->bb);
+      free(workspace);
+      GSL_ERROR_NULL("failed to allocate space for eval", GSL_ENOMEM);
+    }
+
   workspace->evec = gsl_matrix_alloc(even_order, even_order);
+
+  if (workspace->evec == NULL)
+    {
+      gsl_vector_free (workspace->eval);
+      free(workspace->zz);
+      free(workspace->e2);
+      free(workspace->tt);
+      free(workspace->ee);
+      free(workspace->dd);
+      free(workspace->aa);
+      free(workspace->bb);
+      free(workspace);
+      GSL_ERROR_NULL("failed to allocate space for evec", GSL_ENOMEM);
+    }
+
   workspace->wmat = gsl_eigen_symmv_alloc(even_order);
+
+  if (workspace->wmat == NULL)
+    {
+      gsl_matrix_free (workspace->evec);
+      gsl_vector_free (workspace->eval);
+      free(workspace->zz);
+      free(workspace->e2);
+      free(workspace->tt);
+      free(workspace->ee);
+      free(workspace->dd);
+      free(workspace->aa);
+      free(workspace->bb);
+      free(workspace);
+      GSL_ERROR_NULL("failed to allocate space for wmat", GSL_ENOMEM);
+    }
   
   return workspace;
 }
@@ -131,7 +190,8 @@ void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace)
   gsl_vector_free(workspace->eval);
   gsl_matrix_free(workspace->evec);
   gsl_eigen_symmv_free(workspace->wmat);
-  free(workspace->char_value);
+  free(workspace->aa);
+  free(workspace->bb);
   free(workspace->dd);
   free(workspace->ee);
   free(workspace->tt);
