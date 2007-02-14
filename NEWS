@@ -1,3 +1,5 @@
+* What is new in gsl-1.9:
+
 ** Fixed the elliptic integrals F,E,P,D so that they have the correct
 behavior for phi > pi/2 and phi < 0.  The angular argument is now
 valid for all phi.  Also added the complete elliptic integral
