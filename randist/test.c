@@ -545,7 +545,7 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
       if (p[i] != 0)
         {
           double s = d / sqrt (N * p[i]);
-          status_i = (s > 5) && (d > 1);
+          status_i = (s > 5) && (d > 2);
         }
       else
         {

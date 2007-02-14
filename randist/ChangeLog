@@ -1,3 +1,8 @@
+2007-02-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (testPDF): reduce the test sensitivity to avoid failures
+	caused by weaknesses in the underlying rng
+
 2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma.c (gsl_ran_gamma): the Marsaglia Tsang method is now the
