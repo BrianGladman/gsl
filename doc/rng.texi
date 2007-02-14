@@ -379,7 +379,9 @@ with other libraries and historical generators from the past.
 
 The following generators are recommended for use in simulation.  They
 have extremely long periods, low correlation and pass most statistical
-tests.
+tests.  For the most reliable source of uncorrelated numbers, the
+second-generation @sc{ranlux} generators have the strongest proof of
+randomness.
 
 @deffn {Generator} gsl_rng_mt19937
 @cindex MT19937 random number generator
@@ -425,7 +427,8 @@ values. They are still available through the alternative generators
 The generator @code{ranlxs0} is a second-generation version of the
 @sc{ranlux} algorithm of L@"uscher, which produces ``luxury random
 numbers''.  This generator provides single precision output (24 bits) at
-three luxury levels @code{ranlxs0}, @code{ranlxs1} and @code{ranlxs2}.
+three luxury levels @code{ranlxs0}, @code{ranlxs1} and @code{ranlxs2}, 
+in increasing order of strength.
 It uses double-precision floating point arithmetic internally and can be
 significantly faster than the integer version of @code{ranlux},
 particularly on 64-bit architectures.  The period of the generator is
@@ -442,7 +445,7 @@ as an additional safety margin.
 
 These generators produce double precision output (48 bits) from the
 @sc{ranlxs} generator.  The library provides two luxury levels
-@code{ranlxd1} and @code{ranlxd2}.
+@code{ranlxd1} and @code{ranlxd2}, in increasing order of strength.
 @end deffn
 
 
