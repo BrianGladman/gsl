@@ -396,7 +396,9 @@ equi-distributed in 623 dimensions.  It has passed the @sc{diehard}
 statistical tests.  It uses 624 words of state per generator and is
 comparable in speed to the other generators.  The original generator used
 a default seed of 4357 and choosing @var{s} equal to zero in
-@code{gsl_rng_set} reproduces this.
+@code{gsl_rng_set} reproduces this.  Later versions switched to 5489
+as the default seed, you can choose this explicitly via @code{gsl_rng_set} 
+instead if you require it.
 
 For more information see,
 @itemize @asis
