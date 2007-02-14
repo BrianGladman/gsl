@@ -118,7 +118,7 @@ wrap_fdf (double alpha, void *params, double *f, double *df)
   *df = w->df_alpha;
 }
 
-void
+static void
 prepare_wrapper (wrapper_t * w, gsl_multimin_function_fdf * fdf,
                  const gsl_vector * x, double f, const gsl_vector *g, 
                  const gsl_vector * p,

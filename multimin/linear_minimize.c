@@ -7,7 +7,7 @@
  * polynomial is q(x) = f0 + fp0 * z + (f1-f0-fp0) * z^2
  */
 
-double
+static double
 interp_quad (double f0, double fp0, double f1, double zl, double zh)
 {
   double fl = f0 + zl*(fp0 + zl*(f1 - f0 -fp0));
@@ -40,13 +40,13 @@ interp_quad (double f0, double fp0, double f1, double zl, double zh)
  * where eta=3*(f1-f0)-2*fp0-fp1, xi=fp0+fp1-2*(f1-f0). 
  */
 
-double
+static double
 cubic (double c0, double c1, double c2, double c3, double z)
 {
   return c0 + z * (c1 + z * (c2 + z * c3));
 }
 
-void
+static void
 check_extremum (double c0, double c1, double c2, double c3, double z,
                 double *zmin, double *fmin)
 {
@@ -61,7 +61,7 @@ check_extremum (double c0, double c1, double c2, double c3, double z,
     }
 }
 
-double
+static double
 interp_cubic (double f0, double fp0, double f1, double fp1, double zl, double zh)
 {
   double eta = 3 * (f1 - f0) - 2 * fp0 - fp1;
@@ -124,7 +124,7 @@ interpolate (double a, double fa, double fpa,
 /* recommended values from Fletcher are 
    rho = 0.01, sigma = 0.1, tau1 = 9, tau2 = 0.05, tau3 = 0.5 */
 
-int
+static int
 minimize (gsl_function_fdf * fn, double rho, double sigma, 
           double tau1, double tau2, double tau3,
           int order, double alpha1, double *alpha_new)

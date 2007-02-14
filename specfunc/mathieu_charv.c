@@ -29,7 +29,7 @@
 
 
 /* prototypes */
-double solve_cubic(double c2, double c1, double c0);
+static double solve_cubic(double c2, double c1, double c0);
 
 
 static double ceer(int order, double qq, double aa, int nterms)
@@ -173,7 +173,7 @@ static double asymptotic(int order, double qq)
 
 
 /* Solve the cubic x^3 + c2*x^2 + c1*x + c0 = 0 */
-double solve_cubic(double c2, double c1, double c0)
+static double solve_cubic(double c2, double c1, double c0)
 {
   double qq, rr, ww, ss, tt;
 
