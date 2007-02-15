@@ -19,6 +19,7 @@
 
 /* Author:  L. Johnson */
 
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>

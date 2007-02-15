@@ -209,7 +209,7 @@ vector_bfgs2_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
                       gsl_vector * gradient, gsl_vector * dx)
 {
   vector_bfgs2_state_t *state = (vector_bfgs2_state_t *) vstate;
-  double alpha, alpha1;
+  double alpha = 0.0, alpha1;
   gsl_vector *x0 = state->x0;
   gsl_vector *g0 = state->g0;
   gsl_vector *p = state->p;
