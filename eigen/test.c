@@ -243,7 +243,6 @@ test_eigen_complex_results (size_t N, const gsl_matrix_complex * m,
         }
     }
 
-  gsl_matrix_complex_free(A);
   gsl_vector_complex_free(x);
   gsl_vector_complex_free(y);
 }
@@ -403,7 +402,6 @@ test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
   gsl_matrix_complex_memcpy(A, m);
   gsl_eigen_hermv(A, eval, evec, w2);
   test_eigen_complex_results (N, m, eval, evec, desc, "unsorted");
-  gsl_matrix_free(Z);
 
   gsl_matrix_complex_memcpy(A, m);
   gsl_eigen_herm(A, eval2, w1);
