@@ -43,8 +43,8 @@
 #define is_odd(x) ((x) & 1)                       /* the units bit of x */
 #define mod_diff(x, y) (((x) - (y)) & (MM - 1))   /* (x - y) mod MM */
 
-static inline void ran_array (unsigned long int aa[], unsigned int n,
-                              unsigned long int ran_x[]);
+static inline void ran_array (long int aa[], unsigned int n,
+                              long int ran_x[]);
 static inline unsigned long int ran_get (void *vstate);
 static double ran_get_double (void *vstate);
 static void ran_set (void *state, unsigned long int s);
@@ -52,13 +52,13 @@ static void ran_set (void *state, unsigned long int s);
 typedef struct
 {
   unsigned int i;
-  unsigned long int aa[BUFLEN]; 
-  unsigned long int ran_x[KK];  /* the generator state */
+  long int aa[BUFLEN]; 
+  long int ran_x[KK];  /* the generator state */
 }
 ran_state_t;
 
 static inline void
-ran_array (unsigned long int aa[], unsigned int n, unsigned long int ran_x[])
+ran_array (long int aa[], unsigned int n, long int ran_x[])
 {
   unsigned int i;
   unsigned int j;
