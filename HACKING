@@ -127,7 +127,8 @@ for HAVE_INLINE use in installed headers.
 * Make a master gsl header file of cat gsl/*.h > tmp.c and try
 compiling it to test all possible conflicts
 
-* Check that the library passes "make check" with -O3 and -mfpmath=sse -msse2
+* Check that the library passes "make check" with -O3 and -mfpmath=sse -msse2, 
+also check with -funsigned-char (to simulate Power/ARM)
 
 ----------- Notes on making a release
 
