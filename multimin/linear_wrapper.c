@@ -150,7 +150,7 @@ prepare_wrapper (wrapper_t * w, gsl_multimin_function_fdf * fdf,
   w->df_alpha = slope(w);
   w->df_cache_key = 0.0;
 }
-  
+
 static void
 update_position (wrapper_t * w, double alpha, gsl_vector *x, double *f, gsl_vector *g)
 {

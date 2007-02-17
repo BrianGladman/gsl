@@ -363,7 +363,7 @@ FUNCTION (test, func) (void)
     TEST (status, "_isneg" DESC " on positive matrix") ;
   }
 
-#ifndef UNSIGNED
+#if (!defined(UNSIGNED) && !defined(BASE_CHAR))
   k = 0;
   for (i = 0; i < M; i++)
     {

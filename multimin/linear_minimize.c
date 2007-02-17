@@ -73,20 +73,22 @@ interp_cubic (double f0, double fp0, double f1, double fp1, double zl, double zh
   zmin = zl; fmin = cubic(c0, c1, c2, c3, zl);
   check_extremum (c0, c1, c2, c3, zh, &zmin, &fmin);
 
-  int n = gsl_poly_solve_quadratic (3 * c3, 2 * c2, c1, &z0, &z1);
-
-  if (n == 2)  /* found 2 roots */
-    {
-      if (z0 > zl && z0 < zh) 
-        check_extremum (c0, c1, c2, c3, z0, &zmin, &fmin);
-      if (z1 > zl && z1 < zh) 
-        check_extremum (c0, c1, c2, c3, z1, &zmin, &fmin);
-    }
-  else if (n == 1)  /* found 1 root */
-    {
-      if (z0 > zl && z0 < zh) 
-        check_extremum (c0, c1, c2, c3, z0, &zmin, &fmin);
-    }
+  {
+    int n = gsl_poly_solve_quadratic (3 * c3, 2 * c2, c1, &z0, &z1);
+    
+    if (n == 2)  /* found 2 roots */
+      {
+        if (z0 > zl && z0 < zh) 
+          check_extremum (c0, c1, c2, c3, z0, &zmin, &fmin);
+        if (z1 > zl && z1 < zh) 
+          check_extremum (c0, c1, c2, c3, z1, &zmin, &fmin);
+      }
+    else if (n == 1)  /* found 1 root */
+      {
+        if (z0 > zl && z0 < zh) 
+          check_extremum (c0, c1, c2, c3, z0, &zmin, &fmin);
+      }
+  }
 
   return zmin;
 }
@@ -199,15 +201,19 @@ minimize (gsl_function_fdf * fn, double rho, double sigma,
   while (i++ < section_iters)
     {
       delta = b - a;
-      double lower = a + tau2 * delta;
-      double upper = b - tau3 * delta;
       
-      alpha = interpolate (a, fa, fpa, b, fb, fpb, lower, upper, order);
+      {
+        double lower = a + tau2 * delta;
+        double upper = b - tau3 * delta;
+        
+        alpha = interpolate (a, fa, fpa, b, fb, fpb, lower, upper, order);
+      }
       
       falpha = GSL_FN_FDF_EVAL_F (fn, alpha);
       
       if ((a-alpha)*fpa <= GSL_DBL_EPSILON) {
         /* roundoff prevents progress */
+        return GSL_ENOPROG;
       };
 
       if (falpha > f0 + rho * alpha * fp0 || falpha >= fa)

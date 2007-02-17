@@ -247,7 +247,7 @@ FUNCTION (test, func) (size_t stride, size_t N)
   }
 
 
-#ifndef UNSIGNED
+#if (!defined(UNSIGNED) && !defined(BASE_CHAR))
   {
     int status = 0;
 

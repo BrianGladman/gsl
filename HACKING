@@ -129,6 +129,8 @@ compiling it to test all possible conflicts
 
 * Check that the library passes "make check" with -O3 and -mfpmath=sse -msse2, 
 also check with -funsigned-char (to simulate Power/ARM)
+and -std=c89 -ansi -pedantic, now that GCC using c99 by default 
+instead of c89.
 
 ----------- Notes on making a release
 
