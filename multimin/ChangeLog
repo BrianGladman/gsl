@@ -1,3 +1,7 @@
+2007-02-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* linear_minimize.c (minimize): return GSL_ENOPROG for roundoff
+
 2007-02-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* linear_minimize.c: made all functions static
