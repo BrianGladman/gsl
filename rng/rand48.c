@@ -20,6 +20,7 @@
 #include <config.h>
 #include <math.h>
 #include <stdlib.h>
+#include <gsl/gsl_sys.h>
 #include <gsl/gsl_rng.h>
 
 /* This is the Unix rand48() generator. The generator returns the
