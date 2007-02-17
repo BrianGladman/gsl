@@ -1,3 +1,9 @@
+2007-02-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* log.c (gsl_sf_log_e): removed HIDE_INLINE_STATIC
+
+	* exp.c (gsl_sf_exp_e): removed HIDE_INLINE_STATIC
+
 2007-02-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mathieu_charv.c: made solve_cubic static
