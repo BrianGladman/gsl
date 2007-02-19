@@ -28,6 +28,8 @@
 
 #include "test_funcs.h"
 
+unsigned int fcount, gcount;
+
 int
 test_fdf(const char * desc, gsl_multimin_function_fdf *f, 
          initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);

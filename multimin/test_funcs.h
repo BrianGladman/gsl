@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-unsigned int fcount, gcount;
+extern unsigned int fcount, gcount;
 
 typedef void (*initpt_function) (gsl_vector * x);
 
