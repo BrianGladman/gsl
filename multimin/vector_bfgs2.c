@@ -235,7 +235,7 @@ vector_bfgs2_iterate (void *vstate, gsl_multimin_function_fdf * fdf,
     }
   else
     {
-      alpha1 = state->step;
+      alpha1 = fabs(state->step);
     }
 
   /* line minimisation, with cubic interpolation (order = 3) */
