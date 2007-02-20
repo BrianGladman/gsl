@@ -214,12 +214,12 @@ manual to @email{bug-gsl@@gnu.org}.
 More information about GSL can be found at the project homepage,
 @uref{http://www.gnu.org/software/gsl/}.
 
-A Japanese translation of this manual is available from the GSL
-project homepage thanks to Daisuke Tominaga.
-
 Printed copies of this manual can be purchased from Network Theory Ltd
 at @uref{http://www.network-theory.co.uk/gsl/manual/}. The money
 raised from sales of the manual helps support the development of GSL.
+
+A Japanese translation of this manual is available from the GSL
+project homepage thanks to Daisuke Tominaga.
 
 @insertcopying
 @sp 1
