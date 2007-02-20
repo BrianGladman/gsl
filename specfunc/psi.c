@@ -787,8 +787,8 @@ int gsl_sf_psi_n_e(const int n, const double x, gsl_sf_result * result)
 
 int
 gsl_sf_complex_psi_e(
-  double x,
-  double y,
+  const double x,
+  const double y,
   gsl_sf_result * result_re,
   gsl_sf_result * result_im
   )
