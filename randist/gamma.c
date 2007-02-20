@@ -188,7 +188,7 @@ gsl_ran_gamma (const gsl_rng * r, const double a, const double b)
   if (a < 1)
     {
       double u = gsl_rng_uniform_pos (r);
-      return gsl_ran_gamma_mt (r, 1.0 + a, b) * pow (u, 1.0 / a);
+      return gsl_ran_gamma (r, 1.0 + a, b) * pow (u, 1.0 / a);
     }
 
   {

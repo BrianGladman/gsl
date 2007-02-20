@@ -1,3 +1,8 @@
+2007-02-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma.c (gsl_ran_gamma): avoid an unnecessary function call to
+	gsl_ran_gamma_mt, since that maps back to gsl_ran_gamma now
+
 2007-02-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (testPDF): reduce the test sensitivity to avoid failures
