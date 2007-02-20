@@ -755,7 +755,7 @@ int gsl_sf_mathieu_a_array(int order_min, int order_max, double qq, gsl_sf_mathi
       {
           if (ii == jj)
               zz[ii*odd_order+jj] = (2*ii + 1)*(2*ii + 1);
-          else if (abs((signed int)(ii - jj)) == 1)
+          else if (ii == jj + 1 || ii + 1 == jj)
               zz[ii*odd_order+jj] = qq;
       }
   zz[0] += qq;
@@ -801,7 +801,7 @@ int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq, gsl_sf_mathi
       {
           if (ii == jj)
               zz[ii*even_order+jj] = 4*(ii + 1)*(ii + 1);
-          else if (abs((signed int)(ii - jj)) == 1)
+          else if (ii == jj + 1 || ii + 1 == jj)
               zz[ii*even_order+jj] = qq;
       }
 
@@ -824,7 +824,7 @@ int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq, gsl_sf_mathi
       {
           if (ii == jj)
               zz[ii*odd_order+jj] = (2*ii + 1)*(2*ii + 1);
-          else if (abs((signed int)(ii - jj)) == 1)
+          else if (ii == jj + 1 || ii + 1 == jj)
               zz[ii*odd_order+jj] = qq;
       }
 
