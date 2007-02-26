@@ -371,8 +371,10 @@ sign of an eigenvector is arbitrary.
 
 The following program illustrates the use of the nonsymmetric
 eigensolver, by computing the eigenvalues and eigenvectors of
-the Vandermonde matrix @math{V(x;i,j) = x_i^{n - j}} with
-@math{x = (-1,-2,3,4)}.
+the Vandermonde matrix
+@c{$V(x;i,j) = x_i^{n - j}$}
+@math{V(x;i,j) = x_i^@{n - j@}}
+with @math{x = (-1,-2,3,4)}.
 
 @example
 @verbatiminclude examples/eigen_nonsymm.c
