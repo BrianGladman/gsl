@@ -24,8 +24,10 @@ broken up into some number of intervals, where the endpoints
 of each interval are called @dfn{breakpoints}. These breakpoints
 are then converted to @dfn{knots} by imposing various continuity
 and smoothness conditions at each interface. Given a nondecreasing
-knot vector @math{t = @{t_0, t_1, @dots{}, t_{n+k-1}@}}, the
-@math{n} basis splines of order @math{k} are defined by
+knot vector
+@c{$t = \{t_0, t_1, \dots, t_{n+k-1}\}$}
+@math{t = @{t_0, t_1, @dots{}, t_@{n+k-1@}@}},
+the @math{n} basis splines of order @math{k} are defined by
 @tex
 \beforedisplay
 $$
