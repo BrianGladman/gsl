@@ -27,6 +27,7 @@ The functions described in this chapter are declared in the header file
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
 * Hessenberg Decomposition of Real Matrices::
+* Hessenberg-Triangular Decomposition of Real Matrices::
 * Bidiagonalization::           
 * Householder Transformations::  
 * Householder solver for linear systems::  
@@ -239,6 +240,14 @@ This function applies the matrix @math{Q} encoded in the decomposition
 v} in @var{v}.  The matrix multiplication is carried out directly using
 the encoding of the Householder vectors without needing to form the full
 matrix @math{Q}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_QR_QTmat (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_matrix * @var{A})
+This function applies the matrix @math{Q^T} encoded in the decomposition
+(@var{QR},@var{tau}) to the matrix @var{A}, storing the result @math{Q^T
+A} in @var{A}.  The matrix multiplication is carried out directly using
+the encoding of the Householder vectors without needing to form the full
+matrix @math{Q^T}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_Rsolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -635,7 +644,7 @@ tridiagonal decomposition (@var{A}, @var{tau}) obtained from the
 @section Hessenberg Decomposition of Real Matrices
 @cindex hessenberg decomposition
 
-A general matrix @math{A} can be decomposed by orthogonal
+A general real matrix @math{A} can be decomposed by orthogonal
 similarity transformations into the form
 @tex
 \beforedisplay
@@ -689,6 +698,44 @@ Setting @var{V} to the identity matrix provides the same result as
 This function sets the lower triangular portion of @var{H}, below
 the subdiagonal, to zero. It is useful for clearing out the
 Householder vectors after calling @code{gsl_linalg_hessenberg}.
+@end deftypefun
+
+@node Hessenberg-Triangular Decomposition of Real Matrices
+@section Hessenberg-Triangular Decomposition of Real Matrices
+@cindex hessenberg triangular decomposition
+
+A general real matrix pair (@math{A}, @math{B}) can be decomposed by
+orthogonal similarity transformations into the form
+@tex
+\beforedisplay
+$$
+A = U H V^T
+$$
+$$
+B = U R V^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+A = U H V^T
+B = U R V^T
+@end example
+
+@end ifinfo
+where @math{U} and @math{V} are orthogonal, @math{H} is an upper
+Hessenberg matrix, and @math{R} is upper triangular. The
+Hessenberg-Triangular reduction is the first step in the generalized
+Schur decomposition for the generalized eigenvalue problem.
+
+@deftypefun int gsl_linalg_hesstri (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{work})
+This function computes the Hessenberg-Triangular decomposition of the
+matrix pencil (@var{A}, @var{B}). On output, @math{H} is stored in @var{A},
+and @math{R} is stored in @var{B}. Either @var{U} or @var{V} may be null,
+in which case it will not be computed. Otherwise the similarity
+transformations are stored in these matrices. Additional
+workspace of length @math{N} is needed in @var{work}.
 @end deftypefun
 
 @node Bidiagonalization
