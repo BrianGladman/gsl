@@ -124,6 +124,11 @@ void gsl_linalg_hessenberg_set_zero(gsl_matrix * H);
 int gsl_linalg_hessenberg_submatrix(gsl_matrix *M, gsl_matrix *A,
                                     size_t top, gsl_vector *tau);
 
+/* Hessenberg-Triangular reduction */
+
+int gsl_linalg_hesstri(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
+                       gsl_matrix * V, gsl_vector * work);
+
 /* Singular Value Decomposition
 
  * exceptions: 
@@ -262,6 +267,10 @@ int gsl_linalg_QR_QTvec (const gsl_matrix * QR,
 int gsl_linalg_QR_Qvec (const gsl_matrix * QR,
                         const gsl_vector * tau,
                         gsl_vector * v);
+
+int gsl_linalg_QR_QTmat (const gsl_matrix * QR,
+                         const gsl_vector * tau,
+                         gsl_matrix * A);
 
 int gsl_linalg_QR_unpack (const gsl_matrix * QR,
                           const gsl_vector * tau,

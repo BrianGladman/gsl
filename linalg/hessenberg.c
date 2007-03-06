@@ -279,8 +279,11 @@ part of H, but eigenvalue solvers need some scratch space with zeros.
 void
 gsl_linalg_hessenberg_set_zero(gsl_matrix * H)
 {
-  const int N = (int) H->size1;
-  int i, j;
+  const size_t N = H->size1;
+  size_t i, j;
+
+  if (N < 3)
+    return;
 
   for (j = 0; j < N - 2; ++j)
     {

@@ -398,6 +398,40 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
     }
 }
 
+/* Form the product Q^T A  from a QR factorized matrix */
+
+int
+gsl_linalg_QR_QTmat (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * A)
+{
+  const size_t M = QR->size1;
+  const size_t N = QR->size2;
+
+  if (tau->size != GSL_MIN (M, N))
+    {
+      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
+    }
+  else if (A->size1 != M)
+    {
+      GSL_ERROR ("matrix must have M rows", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      /* compute Q^T A */
+
+      for (i = 0; i < GSL_MIN (M, N); i++)
+        {
+          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector), i, M - i);
+          gsl_matrix_view m = gsl_matrix_submatrix(A, i, 0, M - i, A->size2);
+          double ti = gsl_vector_get (tau, i);
+          gsl_linalg_householder_hm (ti, &(h.vector), &(m.matrix));
+        }
+      return GSL_SUCCESS;
+    }
+}
+
 
 /*  Form the orthogonal matrix Q from the packed QR matrix */
 
