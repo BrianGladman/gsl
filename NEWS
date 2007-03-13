@@ -1,3 +1,5 @@
+** Added support for generalized eigensystems
+
 * What is new in gsl-1.9:
 
 ** Fixed the elliptic integrals F,E,P,D so that they have the correct

@@ -1,0 +1,2098 @@
+/* eigen/gen.c
+ * 
+ * Copyright (C) 2006, 2007 Patrick Alken
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+#include <assert.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include <config.h>
+#include <gsl/gsl_eigen.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_vector_complex.h>
+#include <gsl/gsl_matrix.h>
+
+/*
+ * This module computes the eigenvalues of a real generalized
+ * eigensystem A x = \lambda B x. Left and right Schur vectors
+ * are optionally computed as well.
+ * 
+ * Based on the algorithm from Moler and Stewart
+ * [1] C. Moler, G. Stewart, "An Algorithm for Generalized Matrix
+ *     Eigenvalue Problems", SIAM J. Numer. Anal., Vol 10, No 2, 1973.
+ *
+ * This algorithm is also described in the book
+ * [2] Golub & Van Loan, "Matrix Computations" (3rd ed), algorithm 7.7.3
+ */
+
+static void gen_schur_decomp(gsl_matrix *H, gsl_matrix *R,
+                             gsl_vector_complex *alpha, gsl_vector *beta,
+                             gsl_eigen_gen_workspace *w);
+static inline int gen_qzstep(gsl_matrix *H, gsl_matrix *R,
+                             gsl_eigen_gen_workspace *w);
+static inline void gen_qzstep_d(gsl_matrix *H, gsl_matrix *R,
+                                gsl_eigen_gen_workspace *w);
+static inline void gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R,
+                                      size_t q,
+                                      gsl_eigen_gen_workspace *w);
+static inline void gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R,
+                                  gsl_eigen_gen_workspace *w);
+static inline size_t gen_search_small_elements(gsl_matrix *H,
+                                               gsl_matrix *R,
+                                               int *flag,
+                                               gsl_eigen_gen_workspace *w);
+static int gen_schur_standardize1(gsl_matrix *A, gsl_matrix *B,
+                                  double *alphar, double *beta,
+                                  gsl_eigen_gen_workspace *w);
+static int gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B,
+                                  gsl_complex *alpha1,
+                                  gsl_complex *alpha2,
+                                  double *beta1, double *beta2,
+                                  gsl_eigen_gen_workspace *w);
+static int gen_eigval2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
+                       gsl_complex *alpha2, double *beta1, double *beta2,
+                       gsl_eigen_gen_workspace *w);
+static inline void gen_get_submatrix(gsl_matrix *A, gsl_matrix *B,
+                                     size_t *top);
+
+/*FIX**/
+inline static double normF (gsl_matrix * A);
+inline static void create_givens (const double a, const double b, double *c, double *s);
+
+/*
+gsl_eigen_gen_alloc()
+
+Allocate a workspace for solving the generalized eigenvalue problem.
+The size of this workspace is O(n)
+
+Inputs: n - size of matrices
+
+Return: pointer to workspace
+*/
+
+gsl_eigen_gen_workspace *
+gsl_eigen_gen_alloc(const size_t n)
+{
+  gsl_eigen_gen_workspace *w;
+
+  if (n == 0)
+    {
+      GSL_ERROR_NULL ("matrix dimension must be positive integer",
+                      GSL_EINVAL);
+    }
+
+  w = (gsl_eigen_gen_workspace *)
+      calloc (1, sizeof (gsl_eigen_gen_workspace));
+
+  if (w == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for workspace", GSL_ENOMEM);
+    }
+
+  w->size = n;
+  w->max_iterations = 30 * n;
+  w->n_evals = 0;
+  w->n_iter = 0;
+  w->needtop = 0;
+  w->atol = 0.0;
+  w->btol = 0.0;
+  w->ascale = 0.0;
+  w->bscale = 0.0;
+  w->H = NULL;
+  w->R = NULL;
+  w->compute_s = 0;
+  w->compute_t = 0;
+  w->Q = NULL;
+  w->Z = NULL;
+
+  w->work = gsl_vector_alloc(n);
+
+  if (w->work == 0)
+    {
+      gsl_eigen_gen_free(w);
+      GSL_ERROR_NULL ("failed to allocate space for additional workspace", GSL_ENOMEM);
+    }
+
+  return (w);
+} /* gsl_eigen_gen_alloc() */
+
+/*
+gsl_eigen_gen_free()
+  Free workspace w
+*/
+
+void
+gsl_eigen_gen_free (gsl_eigen_gen_workspace * w)
+{
+  if (!w)
+    return;
+
+  if (w->work)
+    gsl_vector_free(w->work);
+
+  free(w);
+} /* gsl_eigen_gen_free() */
+
+/*
+gsl_eigen_gen_params()
+  Set parameters which define how we solve the eigenvalue problem
+
+Inputs: compute_s - 1 if we want to compute S, 0 if not
+        compute_t - 1 if we want to compute T, 0 if not
+        balance   - 1 if we want to balance matrices, 0 if not
+        w         - gen workspace
+
+Return: none
+*/
+
+void
+gsl_eigen_gen_params (const int compute_s, const int compute_t,
+                      const int balance, gsl_eigen_gen_workspace *w)
+{
+  w->compute_s = compute_s;
+  w->compute_t = compute_t;
+} /* gsl_eigen_gen_params() */
+
+/*
+gsl_eigen_gen()
+
+Solve the generalized eigenvalue problem
+
+A x = \lambda B x
+
+for the eigenvalues \lambda.
+
+Inputs: A     - general real matrix
+        B     - general real matrix
+        alpha - where to store eigenvalue numerators
+        beta  - where to store eigenvalue denominators
+        w     - workspace
+
+Return: success or error
+*/
+
+int
+gsl_eigen_gen (gsl_matrix * A, gsl_matrix * B, gsl_vector_complex * alpha,
+               gsl_vector * beta, gsl_eigen_gen_workspace * w)
+{
+  const size_t N = A->size1;
+
+  /* check matrix and vector sizes */
+
+  if (N != A->size2)
+    {
+      GSL_ERROR ("matrix must be square to compute eigenvalues", GSL_ENOTSQR);
+    }
+  else if ((N != B->size1) || (N != B->size2))
+    {
+      GSL_ERROR ("B matrix dimensions must match A", GSL_EBADLEN);
+    }
+  else if (alpha->size != N || beta->size != N)
+    {
+      GSL_ERROR ("eigenvalue vector must match matrix size", GSL_EBADLEN);
+    }
+  else if (w->size != N)
+    {
+      GSL_ERROR ("matrix size does not match workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      double anorm, bnorm;
+
+      /* compute the Hessenberg-Triangular reduction of (A, B) */
+      gsl_linalg_hesstri(A, B, w->Q, w->Z, w->work);
+
+      /* save pointers to original matrices */
+      w->H = A;
+      w->R = B;
+
+      w->n_evals = 0;
+      w->n_iter = 0;
+
+      /* determine if we need to compute top indices in QZ step */
+      w->needtop = w->Q != 0 || w->Z != 0 || w->compute_t || w->compute_s;
+
+      /* compute matrix norms */
+      anorm = normF(A);
+      bnorm = normF(B);
+
+      /* compute tolerances and scaling factors */
+      w->atol = GSL_MAX(GSL_DBL_MIN, GSL_DBL_EPSILON * anorm);
+      w->btol = GSL_MAX(GSL_DBL_MIN, GSL_DBL_EPSILON * bnorm);
+      w->ascale = 1.0 / GSL_MAX(GSL_DBL_MIN, anorm);
+      w->bscale = 1.0 / GSL_MAX(GSL_DBL_MIN, bnorm);
+
+      /* compute the generalized Schur decomposition and eigenvalues */
+      gen_schur_decomp(A, B, alpha, beta, w);
+
+      if (w->n_evals != N)
+        return GSL_EMAXITER;
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_eigen_gen() */
+
+/*
+gsl_eigen_gen_QZ()
+
+Solve the generalized eigenvalue problem
+
+A x = \lambda B x
+
+for the eigenvalues \lambda. Optionally compute left and/or right
+Schur vectors Q and Z which satisfy:
+
+A = Q S Z^t
+B = Q T Z^t
+
+where (S, T) is the generalized Schur form of (A, B)
+
+Inputs: A     - general real matrix
+        B     - general real matrix
+        alpha - where to store eigenvalue numerators
+        beta  - where to store eigenvalue denominators
+        Q     - if non-null, where to store left Schur vectors
+        Z     - if non-null, where to store right Schur vectors
+        w     - workspace
+
+Return: success or error
+*/
+
+int
+gsl_eigen_gen_QZ (gsl_matrix * A, gsl_matrix * B,
+                  gsl_vector_complex * alpha, gsl_vector * beta,
+                  gsl_matrix * Q, gsl_matrix * Z,
+                  gsl_eigen_gen_workspace * w)
+{
+  if (Q && (A->size1 != Q->size1 || A->size1 != Q->size2))
+    {
+      GSL_ERROR("Q matrix has wrong dimensions", GSL_EBADLEN);
+    }
+  else if (Z && (A->size1 != Z->size1 || A->size1 != Z->size2))
+    {
+      GSL_ERROR("Z matrix has wrong dimensions", GSL_EBADLEN);
+    }
+  else
+    {
+      int s;
+
+      w->Q = Q;
+      w->Z = Z;
+
+      s = gsl_eigen_gen(A, B, alpha, beta, w);
+
+      w->Q = NULL;
+      w->Z = NULL;
+
+      return s;
+    }
+} /* gsl_eigen_gen_QZ() */
+
+/********************************************
+ *           INTERNAL ROUTINES              *
+ ********************************************/
+
+/*
+gen_schur_decomp()
+  Compute the generalized Schur decomposition of the matrix pencil
+(H, R) which is in Hessenberg-Triangular form
+
+Inputs: H     - upper hessenberg matrix
+        R     - upper triangular matrix
+        alpha - (output) where to store eigenvalue numerators
+        beta  - (output) where to store eigenvalue denominators
+        w     - workspace
+
+Return: none
+
+Notes: 1) w->n_evals is updated to keep track of how many eigenvalues
+          are found
+*/
+
+static void
+gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
+                 gsl_vector *beta, gsl_eigen_gen_workspace *w)
+{
+  size_t N;
+  gsl_matrix_view h, r;
+  gsl_matrix_view vh, vr;
+  size_t q;             /* index of small subdiagonal element */
+  gsl_complex z1, z2;   /* complex values */
+  double a, b;
+  int s;
+  int flag;
+
+  N = H->size1;
+
+  h = gsl_matrix_submatrix(H, 0, 0, N, N);
+  r = gsl_matrix_submatrix(R, 0, 0, N, N);
+
+  while ((N > 1) && w->n_iter < w->max_iterations)
+    {
+      ++(w->n_iter);
+
+      q = gen_search_small_elements(&h.matrix, &r.matrix, &flag, w);
+
+      if (flag == 0)
+        {
+          /* no small elements found - do a QZ sweep */
+          s = gen_qzstep(&h.matrix, &r.matrix, w);
+
+          if (s == GSL_CONTINUE)
+            {
+              /*
+               * (h, r) is a 2-by-2 block with complex eigenvalues -
+               * standardize and read off eigenvalues
+               */
+              s = gen_schur_standardize2(&h.matrix,
+                                         &r.matrix,
+                                         &z1,
+                                         &z2,
+                                         &a,
+                                         &b,
+                                         w);
+              if (s != GSL_SUCCESS)
+                {
+                  /* we should never get here */
+                  GSL_ERROR_VOID("gen_schur_standardize2 failed on complex block", GSL_FAILURE);
+                }
+
+              gsl_vector_complex_set(alpha, w->n_evals, z1);
+              gsl_vector_set(beta, w->n_evals, a);
+
+              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
+              gsl_vector_set(beta, w->n_evals + 1, b);
+
+              w->n_evals += 2;
+              w->n_iter = 0;
+
+              N = 0;
+            } /* if (s) */
+
+          continue;
+        } /* if (flag == 0) */
+      else if (flag == 2)
+        {
+          /*
+           * we found a small element on the diagonal of R - chase the
+           * zero to the bottom of the active block and then zero
+           * H(n, n - 1) to split off a 1-by-1 block
+           */
+
+          if (q != N - 1)
+            gen_tri_chase_zero(&h.matrix, &r.matrix, q, w);
+
+          /* now zero H(n, n - 1) */
+          gen_tri_zero_H(&h.matrix, &r.matrix, w);
+
+          /* continue so the next iteration detects the zero in H */
+          continue;
+        }
+
+      /*
+       * a small subdiagonal element of H was found - one or two
+       * eigenvalues have converged or the matrix has split into
+       * two smaller matrices
+       */
+
+      if (q == (N - 1))
+        {
+          /*
+           * the last subdiagonal element of the hessenberg matrix is 0 -
+           * H_{NN} / R_{NN} is a real eigenvalue - standardize so
+           * R_{NN} > 0
+           */
+
+          vh = gsl_matrix_submatrix(&h.matrix, q, q, 1, 1);
+          vr = gsl_matrix_submatrix(&r.matrix, q, q, 1, 1);
+          gen_schur_standardize1(&vh.matrix, &vr.matrix, &a, &b, w);
+
+          GSL_SET_COMPLEX(&z1, a, 0.0);
+          gsl_vector_complex_set(alpha, w->n_evals, z1);
+          gsl_vector_set(beta, w->n_evals, b);
+
+          w->n_evals += 1;
+          w->n_iter = 0;
+
+          --N;
+          h = gsl_matrix_submatrix(&h.matrix, 0, 0, N, N);
+          r = gsl_matrix_submatrix(&r.matrix, 0, 0, N, N);
+        }
+      else if (q == (N - 2))
+        {
+          /* bottom right 2-by-2 block may have converged */
+
+          vh = gsl_matrix_submatrix(&h.matrix, q, q, 2, 2);
+          vr = gsl_matrix_submatrix(&r.matrix, q, q, 2, 2);
+          s = gen_schur_standardize2(&vh.matrix,
+                                     &vr.matrix,
+                                     &z1,
+                                     &z2,
+                                     &a,
+                                     &b,
+                                     w);
+          if (s != GSL_SUCCESS)
+            {
+              /*
+               * this 2-by-2 block contains real eigenvalues that
+               * have not yet separated into 1-by-1 blocks -
+               * recursively call gen_schur_decomp() to finish off
+               * this block
+               */
+              gen_schur_decomp(&vh.matrix, &vr.matrix, alpha, beta, w);
+            }
+          else
+            {
+              /* we got 2 complex eigenvalues */
+
+              gsl_vector_complex_set(alpha, w->n_evals, z1);
+              gsl_vector_set(beta, w->n_evals, a);
+
+              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
+              gsl_vector_set(beta, w->n_evals + 1, b);
+
+              w->n_evals += 2;
+              w->n_iter = 0;
+            }
+
+          N -= 2;
+          h = gsl_matrix_submatrix(&h.matrix, 0, 0, N, N);
+          r = gsl_matrix_submatrix(&r.matrix, 0, 0, N, N);
+        }
+      else if (q == 1)
+        {
+          /* H_{11} / R_{11} is an eigenvalue */
+
+          vh = gsl_matrix_submatrix(&h.matrix, 0, 0, 1, 1);
+          vr = gsl_matrix_submatrix(&r.matrix, 0, 0, 1, 1);
+          gen_schur_standardize1(&vh.matrix, &vr.matrix, &a, &b, w);
+
+          GSL_SET_COMPLEX(&z1, a, 0.0);
+          gsl_vector_complex_set(alpha, w->n_evals, z1);
+          gsl_vector_set(beta, w->n_evals, b);
+
+          w->n_evals += 1;
+          w->n_iter = 0;
+
+          --N;
+          h = gsl_matrix_submatrix(&h.matrix, 1, 1, N, N);
+          r = gsl_matrix_submatrix(&r.matrix, 1, 1, N, N);
+        }
+      else if (q == 2)
+        {
+          /* upper left 2-by-2 block may have converged */
+
+          vh = gsl_matrix_submatrix(&h.matrix, 0, 0, 2, 2);
+          vr = gsl_matrix_submatrix(&r.matrix, 0, 0, 2, 2);
+          s = gen_schur_standardize2(&vh.matrix,
+                                     &vr.matrix,
+                                     &z1,
+                                     &z2,
+                                     &a,
+                                     &b,
+                                     w);
+          if (s != GSL_SUCCESS)
+            {
+              /*
+               * this 2-by-2 block contains real eigenvalues that
+               * have not yet separated into 1-by-1 blocks -
+               * recursively call gen_schur_decomp() to finish off
+               * this block
+               */
+              gen_schur_decomp(&vh.matrix, &vr.matrix, alpha, beta, w);
+            }
+          else
+            {
+              /* we got 2 complex eigenvalues */
+
+              gsl_vector_complex_set(alpha, w->n_evals, z1);
+              gsl_vector_set(beta, w->n_evals, a);
+
+              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
+              gsl_vector_set(beta, w->n_evals + 1, b);
+
+              w->n_evals += 2;
+              w->n_iter = 0;
+            }
+
+          N -= 2;
+          h = gsl_matrix_submatrix(&h.matrix, 2, 2, N, N);
+          r = gsl_matrix_submatrix(&r.matrix, 2, 2, N, N);
+        }
+      else
+        {
+          /*
+           * There is a zero element on the subdiagonal somewhere
+           * in the middle of the matrix - we can now operate
+           * separately on the two submatrices split by this
+           * element. q is the row index of the zero element.
+           */
+
+          /* operate on lower right (N - q)-by-(N - q) block first */
+          vh = gsl_matrix_submatrix(&h.matrix, q, q, N - q, N - q);
+          vr = gsl_matrix_submatrix(&r.matrix, q, q, N - q, N - q);
+          gen_schur_decomp(&vh.matrix, &vr.matrix, alpha, beta, w);
+
+          /* operate on upper left q-by-q block */
+          vh = gsl_matrix_submatrix(&h.matrix, 0, 0, q, q);
+          vr = gsl_matrix_submatrix(&r.matrix, 0, 0, q, q);
+          gen_schur_decomp(&vh.matrix, &vr.matrix, alpha, beta, w);
+
+          N = 0;
+        }
+    } /* while ((N > 1) && w->n_iter < w->max_iterations) */
+
+  /* handle special case of N = 1 */
+
+  if (N == 1)
+    {
+      gen_schur_standardize1(&h.matrix, &r.matrix, &a, &b, w);
+
+      GSL_SET_COMPLEX(&z1, a, 0.0);
+      gsl_vector_complex_set(alpha, w->n_evals, z1);
+      gsl_vector_set(beta, w->n_evals, b);
+
+      w->n_evals += 1;
+      w->n_iter = 0;
+    }
+} /* gen_schur_decomp() */
+
+/*
+gen_qzstep()
+  This routine determines what type of QZ step to perform on
+the generalized matrix pair (H, R). If the pair is 3-by-3 or bigger,
+we look at the bottom right 2-by-2 block. If this block has complex
+eigenvalues, we perform a Francis double shift QZ sweep. If it
+has real eigenvalues, we perform an implicit single shift QZ sweep.
+
+If the pair is 2-by-2 with real eigenvalues, we perform a single
+shift sweep. If it has complex eigenvalues, we return the value '1'
+to notify the calling function that a 2-by-2 block with complex
+eigenvalues has converged, so that it may then call
+gen_schur_standardize2(). In the real eigenvalue case, we want to
+continue doing QZ sweeps to break it up into two 1-by-1 blocks.
+
+See LAPACK routine DHGEQZ and [1] for more information.
+
+Inputs: H - upper Hessenberg matrix (at least 2-by-2)
+        R - upper triangular matrix (at least 2-by-2)
+        w - workspace
+
+Return: GSL_SUCCESS on normal completion
+        GSL_CONTINUE if we detect a 2-by-2 block with complex eigenvalues
+*/
+
+static inline int
+gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  double ABMM,
+         ABNN,
+         ANMBMM,
+         AMNBNN,
+         BMNBNN;
+  double t, r;
+  double w1, w2;          /* eigenvalues of lower 2-by-2 block */
+  double cs, sn;          /* givens rotation */
+  double temp,            /* temporary variables */
+         temp2;
+  size_t j;               /* looping */
+  gsl_vector_view xv, yv; /* temporary views */
+  size_t top;
+  size_t rows;
+
+  ABMM = gsl_matrix_get(H, N - 2, N - 2) /
+         gsl_matrix_get(R, N - 2, N - 2);
+  ABNN = gsl_matrix_get(H, N - 1, N - 1) /
+         gsl_matrix_get(R, N - 1, N - 1);
+  ANMBMM = gsl_matrix_get(H, N - 1, N - 2) /
+           gsl_matrix_get(R, N - 2, N - 2);
+  AMNBNN = gsl_matrix_get(H, N - 2, N - 1) /
+           gsl_matrix_get(R, N - 1, N - 1);
+  BMNBNN = gsl_matrix_get(R, N - 2, N - 1) /
+           gsl_matrix_get(R, N - 1, N - 1);
+
+  t = 0.5 * ((ANMBMM * BMNBNN) - ABMM - ABNN);
+  r = (t * t) + (AMNBNN * ANMBMM) - (ABMM * ABNN);
+
+  if (r < 0.0)
+    {
+      /* complex eigenvalues */
+
+      if (N == 2)
+        {
+          /*
+           * its a 2-by-2 block with complex eigenvalues - notify
+           * the calling function to deflate
+           */
+          return (GSL_CONTINUE);
+        }
+      else
+        {
+          /* do a francis double shift sweep */
+          gen_qzstep_d(H, R, w);
+        }
+
+      return GSL_SUCCESS;
+    }
+
+  r = sqrt(r);
+
+  /* compute eigenvalues of lower 2-by-2 block */
+  w1 = -t + r;
+  w2 = -t - r;
+
+  if (fabs(w2 - ABNN) < fabs(w1 - ABNN))
+    w1 = w2;
+
+  if (w->needtop)
+    {
+      /* get absolute index of this matrix relative to original matrix */
+      gen_get_submatrix(w->H, H, &top);
+    }
+
+  /* perform single shift QZ step */
+
+  temp = gsl_matrix_get(H, 0, 0) - w1 * gsl_matrix_get(R, 0, 0);
+  temp2 = gsl_matrix_get(H, 1, 0);
+
+  create_givens(temp, temp2, &cs, &sn);
+  sn = -sn;
+
+  for (j = 0; j < N - 1; ++j)
+    {
+      if (j > 0)
+        {
+          temp = gsl_matrix_get(H, j, j - 1);
+          temp2 = gsl_matrix_get(H, j + 1, j - 1);
+          create_givens(temp, temp2, &cs, &sn);
+          sn = -sn;
+
+          /* apply to column (j - 1) */
+          temp = cs * gsl_matrix_get(H, j, j - 1) +
+                 sn * gsl_matrix_get(H, j + 1, j - 1);
+          gsl_matrix_set(H, j, j - 1, temp);
+          gsl_matrix_set(H, j + 1, j - 1, 0.0);
+        }
+
+      /* apply G to H(j:j+1,:) and T(j:j+1,:) */
+
+      if (w->compute_s)
+        {
+          xv = gsl_matrix_row(w->H, top + j);
+          xv = gsl_vector_subvector(&xv.vector, top + j, w->size - top - j);
+          yv = gsl_matrix_row(w->H, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, top + j, w->size - top - j);
+        }
+      else
+        {
+          xv = gsl_matrix_row(H, j);
+          xv = gsl_vector_subvector(&xv.vector, j, N - j);
+          yv = gsl_matrix_row(H, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, j, N - j);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      if (w->compute_t)
+        {
+          xv = gsl_matrix_row(w->R, top + j);
+          xv = gsl_vector_subvector(&xv.vector, top + j, w->size - top - j);
+          yv = gsl_matrix_row(w->R, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, top + j, w->size - top - j);
+        }
+      else
+        {
+          xv = gsl_matrix_row(R, j);
+          xv = gsl_vector_subvector(&xv.vector, j, N - j);
+          yv = gsl_matrix_row(R, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, j, N - j);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      if (w->Q)
+        {
+          /* accumulate Q: Q -> QG */
+          xv = gsl_matrix_column(w->Q, top + j);
+          yv = gsl_matrix_column(w->Q, top + j + 1);
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+
+      temp = gsl_matrix_get(R, j + 1, j + 1);
+      temp2 = gsl_matrix_get(R, j + 1, j);
+      create_givens(temp, temp2, &cs, &sn);
+
+      rows = GSL_MIN(j + 3, N);
+
+      if (w->compute_s)
+        {
+          xv = gsl_matrix_column(w->H, top + j);
+          xv = gsl_vector_subvector(&xv.vector, 0, top + rows);
+          yv = gsl_matrix_column(w->H, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, top + rows);
+        }
+      else
+        {
+          xv = gsl_matrix_column(H, j);
+          xv = gsl_vector_subvector(&xv.vector, 0, rows);
+          yv = gsl_matrix_column(H, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, rows);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      rows = GSL_MIN(j + 2, N);
+
+      if (w->compute_t)
+        {
+          xv = gsl_matrix_column(w->R, top + j);
+          xv = gsl_vector_subvector(&xv.vector, 0, top + rows);
+          yv = gsl_matrix_column(w->R, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, top + rows);
+        }
+      else
+        {
+          xv = gsl_matrix_column(R, j);
+          xv = gsl_vector_subvector(&xv.vector, 0, rows);
+          yv = gsl_matrix_column(R, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, rows);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      if (w->Z)
+        {
+          /* accumulate Z: Z -> ZG */
+          xv = gsl_matrix_column(w->Z, top + j);
+          yv = gsl_matrix_column(w->Z, top + j + 1);
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+    } /* for (j = 0; j < N - 1; ++j) */
+
+  return GSL_SUCCESS;
+} /* gen_qzstep() */
+
+/*
+gen_qzstep_d()
+  Perform an implicit double shift QZ step.
+
+See Golub & Van Loan, "Matrix Computations" (3rd ed), algorithm 7.7.2
+
+Inputs: H - upper Hessenberg matrix (at least 3-by-3)
+        R - upper triangular matrix (at least 3-by-3)
+        w - workspace
+*/
+
+static inline void
+gen_qzstep_d(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  size_t j;               /* looping */
+  double dat[3];          /* householder vector */
+  double tau;             /* householder coefficient */
+  gsl_vector_view v2, v3; /* views into 'dat' */
+  gsl_matrix_view m;      /* temporary view */
+  double tmp;
+  size_t q, r;
+  size_t top;             /* location of H in original matrix */
+  double scale;
+  double AB11,            /* various matrix element ratios */
+         AB22,
+         ABNN,
+         ABMM,
+         AMNBNN,
+         ANMBMM,
+         A21B11,
+         A12B22,
+         A32B22,
+         B12B22,
+         BMNBNN;
+
+  v2 = gsl_vector_view_array(dat, 2);
+  v3 = gsl_vector_view_array(dat, 3);
+
+  if (w->needtop)
+    {
+      /* get absolute index of this matrix relative to original matrix */
+      gen_get_submatrix(w->H, H, &top);
+    }
+
+  if ((w->n_iter % 10) == 0)
+    {
+      /*
+       * we have gone 10 iterations without finding a new eigenvalue,
+       * use exceptional shifts - these values are from EISPACK qzit.f
+       */
+      dat[0] = 0.0;
+      dat[1] = 1.0;
+      dat[2] = 1.1605;
+    }
+  else
+    {
+      /* normal shifts */
+
+      /*
+       * Similar to the QR method, we take the shifts to be the two
+       * zeros of the problem
+       *
+       * det[H(n-1:n,n-1:n) - s*R(n-1:n,n-1:n)] = 0
+       *
+       * The initial householder vector elements are then given by
+       * Eq. 4.1 of [1], which are designed to reduce errors when
+       * off diagonal elements are small.
+       */
+
+      ABMM = (w->ascale * gsl_matrix_get(H, N - 2, N - 2)) /
+             (w->bscale * gsl_matrix_get(R, N - 2, N - 2));
+      ABNN = (w->ascale * gsl_matrix_get(H, N - 1, N - 1)) /
+             (w->bscale * gsl_matrix_get(R, N - 1, N - 1));
+      AB11 = (w->ascale * gsl_matrix_get(H, 0, 0)) /
+             (w->bscale * gsl_matrix_get(R, 0, 0));
+      AB22 = (w->ascale * gsl_matrix_get(H, 1, 1)) /
+             (w->bscale * gsl_matrix_get(R, 1, 1));
+      AMNBNN = (w->ascale * gsl_matrix_get(H, N - 2, N - 1)) /
+               (w->bscale * gsl_matrix_get(R, N - 1, N - 1));
+      ANMBMM = (w->ascale * gsl_matrix_get(H, N - 1, N - 2)) /
+               (w->bscale * gsl_matrix_get(R, N - 2, N - 2));
+      BMNBNN = gsl_matrix_get(R, N - 2, N - 1) /
+               gsl_matrix_get(R, N - 1, N - 1);
+      A21B11 = (w->ascale * gsl_matrix_get(H, 1, 0)) /
+               (w->bscale * gsl_matrix_get(R, 0, 0));
+      A12B22 = (w->ascale * gsl_matrix_get(H, 0, 1)) /
+               (w->bscale * gsl_matrix_get(R, 1, 1));
+      A32B22 = (w->ascale * gsl_matrix_get(H, 2, 1)) /
+               (w->bscale * gsl_matrix_get(R, 1, 1));
+      B12B22 = gsl_matrix_get(R, 0, 1) / gsl_matrix_get(R, 1, 1);
+
+      /*
+       * These are the Eqs (4.1) of [1], just multiplied by the factor
+       * (A_{21} / B_{11})
+       */
+      dat[0] = (ABMM - AB11) * (ABNN - AB11) - (AMNBNN * ANMBMM) +
+               (ANMBMM * BMNBNN * AB11) + (A12B22 - (AB11 * B12B22)) * A21B11;
+      dat[1] = ((AB22 - AB11) - (A21B11 * B12B22) - (ABMM - AB11) -
+                (ABNN - AB11) + (ANMBMM * BMNBNN)) * A21B11;
+      dat[2] = A32B22 * A21B11;
+    }
+
+  scale = fabs(dat[0]) + fabs(dat[1]) + fabs(dat[2]);
+  if (scale != 0.0)
+    {
+      dat[0] /= scale;
+      dat[1] /= scale;
+      dat[2] /= scale;
+    }
+
+  for (j = 0; j < N - 2; ++j)
+    {
+      r = GSL_MIN(j + 4, N);
+
+      /*
+       * Find householder Q so that
+       *
+       * Q [x y z]^t = [ * 0 0 ]^t
+       */
+
+      tau = gsl_linalg_householder_transform(&v3.vector);
+
+      if (tau != 0.0)
+        {
+          /*
+           * q is the initial column to start applying the householder
+           * transformation. The GSL_MAX() simply ensures we don't
+           * try to apply it to column (-1), since we are zeroing out
+           * column (j - 1) except for the first iteration which
+           * introduces the bulge.
+           */
+          q = (size_t) GSL_MAX(0, (int)j - 1);
+
+          /* H -> QH, R -> QR */
+
+          if (w->compute_s)
+            {
+              /*
+               * We are computing the Schur form S, so we need to
+               * transform the whole matrix H
+               */
+              m = gsl_matrix_submatrix(w->H,
+                                       top + j,
+                                       top + q,
+                                       3,
+                                       w->size - top - q);
+              gsl_linalg_householder_hm(tau, &v3.vector, &m.matrix);
+            }
+          else
+            {
+              /* just transform the active block */
+              m = gsl_matrix_submatrix(H, j, q, 3, N - q);
+              gsl_linalg_householder_hm(tau, &v3.vector, &m.matrix);
+            }
+
+          if (w->compute_t)
+            {
+              /*
+               * We are computing the Schur form T, so we need to
+               * transform the whole matrix R
+               */
+              m = gsl_matrix_submatrix(w->R,
+                                       top + j,
+                                       top + j,
+                                       3,
+                                       w->size - top - j);
+              gsl_linalg_householder_hm(tau, &v3.vector, &m.matrix);
+            }
+          else
+            {
+              /* just transform the active block */
+              m = gsl_matrix_submatrix(R, j, j, 3, N - j);
+              gsl_linalg_householder_hm(tau, &v3.vector, &m.matrix);
+            }
+
+          if (w->Q)
+            {
+              /* accumulate the transformation into Q */
+              m = gsl_matrix_submatrix(w->Q, 0, top + j, w->size, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+        } /* if (tau != 0.0) */
+
+      /*
+       * Find householder Z so that
+       * 
+       * [ r_{j+2,j} r_{j+2, j+1}, r_{j+2, j+2} ] Z = [ 0 0 * ]
+       *
+       * This isn't exactly what gsl_linalg_householder_transform
+       * does, so we need to rotate the input vector so it preserves
+       * the last element, and then rotate it back afterwards.
+       *
+       * So instead of transforming [x y z], we transform [z x y],
+       * and the resulting HH vector [1 v2 v3] -> [v2 v3 1] but
+       * then needs to be scaled to have the first element = 1, so
+       * it becomes [1 v3/v2 1/v2] (tau must also be scaled accordingly).
+       */
+
+      dat[0] = gsl_matrix_get(R, j + 2, j + 2);
+      dat[1] = gsl_matrix_get(R, j + 2, j);
+      dat[2] = gsl_matrix_get(R, j + 2, j + 1);
+      scale = fabs(dat[0]) + fabs(dat[1]) + fabs(dat[2]);
+      if (scale != 0.0)
+        {
+          dat[0] /= scale;
+          dat[1] /= scale;
+          dat[2] /= scale;
+        }
+
+      tau = gsl_linalg_householder_transform(&v3.vector);
+
+      if (tau != 0.0)
+        {
+          /* rotate back */
+          tmp = gsl_vector_get(&v3.vector, 1);
+          gsl_vector_set(&v3.vector, 1, gsl_vector_get(&v3.vector, 2)/tmp);
+          gsl_vector_set(&v3.vector, 2, 1.0 / tmp);
+          tau *= tmp * tmp;
+
+          /* H -> HZ, R -> RZ */
+
+          if (w->compute_s)
+            {
+              m = gsl_matrix_submatrix(w->H, 0, top + j, top + r, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+          else
+            {
+              m = gsl_matrix_submatrix(H, 0, j, r, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+
+          if (w->compute_t)
+            {
+              m = gsl_matrix_submatrix(w->R, 0, top + j, top + j + 3, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+          else
+            {
+              m = gsl_matrix_submatrix(R, 0, j, j + 3, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+
+          if (w->Z)
+            {
+              /* accumulate transformation into Z */
+              m = gsl_matrix_submatrix(w->Z, 0, top + j, w->size, 3);
+              gsl_linalg_householder_mh(tau, &v3.vector, &m.matrix);
+            }
+        } /* if (tau != 0.0) */
+
+      /*
+       * Find householder Z so that
+       * 
+       * [ r_{j+1,j} r_{j+1, j+1} ] Z = [ 0 * ]
+       */
+
+      dat[0] = gsl_matrix_get(R, j + 1, j + 1);
+      dat[1] = gsl_matrix_get(R, j + 1, j);
+      scale = fabs(dat[0]) + fabs(dat[1]);
+      if (scale != 0.0)
+        {
+          dat[0] /= scale;
+          dat[1] /= scale;
+        }
+
+      tau = gsl_linalg_householder_transform(&v2.vector);
+
+      if (tau != 0.0)
+        {
+          /* rotate back */
+          tmp = gsl_vector_get(&v2.vector, 1);
+          gsl_vector_set(&v2.vector, 1, 1.0 / tmp);
+          tau *= tmp * tmp;
+
+          /* H -> HZ, R -> RZ */
+
+          if (w->compute_s)
+            {
+              m = gsl_matrix_submatrix(w->H, 0, top + j, top + r, 2);
+              gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+            }
+          else
+            {
+              m = gsl_matrix_submatrix(H, 0, j, r, 2);
+              gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+            }
+
+          if (w->compute_t)
+            {
+              m = gsl_matrix_submatrix(w->R, 0, top + j, top + j + 3, 2);
+              gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+            }
+          else
+            {
+              m = gsl_matrix_submatrix(R, 0, j, j + 3, 2);
+              gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+            }
+
+          if (w->Z)
+            {
+              /* accumulate transformation into Z */
+              m = gsl_matrix_submatrix(w->Z, 0, top + j, w->size, 2);
+              gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+            }
+        } /* if (tau != 0.0) */
+
+      dat[0] = gsl_matrix_get(H, j + 1, j);
+      dat[1] = gsl_matrix_get(H, j + 2, j);
+      if (j < N - 3)
+        dat[2] = gsl_matrix_get(H, j + 3, j);
+
+      scale = fabs(dat[0]) + fabs(dat[1]) + fabs(dat[2]);
+      if (scale != 0.0)
+        {
+          dat[0] /= scale;
+          dat[1] /= scale;
+          dat[2] /= scale;
+        }
+    } /* for (j = 0; j < N - 2; ++j) */
+
+  /*
+   * Find Householder Q so that
+   *
+   * Q [ x y ]^t = [ * 0 ]^t
+   */
+
+  scale = fabs(dat[0]) + fabs(dat[1]);
+  if (scale != 0.0)
+    {
+      dat[0] /= scale;
+      dat[1] /= scale;
+    }
+
+  tau = gsl_linalg_householder_transform(&v2.vector);
+  
+  if (w->compute_s)
+    {
+      m = gsl_matrix_submatrix(w->H,
+                               top + N - 2,
+                               top + N - 3,
+                               2,
+                               w->size - top - N + 3);
+      gsl_linalg_householder_hm(tau, &v2.vector, &m.matrix);
+    }
+  else
+    {
+      m = gsl_matrix_submatrix(H, N - 2, N - 3, 2, 3);
+      gsl_linalg_householder_hm(tau, &v2.vector, &m.matrix);
+    }
+
+  if (w->compute_t)
+    {
+      m = gsl_matrix_submatrix(w->R,
+                               top + N - 2,
+                               top + N - 2,
+                               2,
+                               w->size - top - N + 2);
+      gsl_linalg_householder_hm(tau, &v2.vector, &m.matrix);
+    }
+  else
+    {
+      m = gsl_matrix_submatrix(R, N - 2, N - 2, 2, 2);
+      gsl_linalg_householder_hm(tau, &v2.vector, &m.matrix);
+    }
+
+  if (w->Q)
+    {
+      /* accumulate the transformation into Q */
+      m = gsl_matrix_submatrix(w->Q, 0, top + N - 2, w->size, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+
+  /*
+   * Find Householder Z so that
+   *
+   * [ b_{n,n-1} b_{nn} ] Z = [ 0 * ]
+   */
+
+  dat[0] = gsl_matrix_get(R, N - 1, N - 1);
+  dat[1] = gsl_matrix_get(R, N - 1, N - 2);
+  scale = fabs(dat[0]) + fabs(dat[1]);
+  if (scale != 0.0)
+    {
+      dat[0] /= scale;
+      dat[1] /= scale;
+    }
+
+  tau = gsl_linalg_householder_transform(&v2.vector);
+
+  /* rotate back */
+  tmp = gsl_vector_get(&v2.vector, 1);
+  gsl_vector_set(&v2.vector, 1, 1.0 / tmp);
+  tau *= tmp * tmp;
+
+  if (w->compute_s)
+    {
+      m = gsl_matrix_submatrix(w->H, 0, top + N - 2, top + N, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+  else
+    {
+      m = gsl_matrix_submatrix(H, 0, N - 2, N, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+
+  if (w->compute_t)
+    {
+      m = gsl_matrix_submatrix(w->R, 0, top + N - 2, top + N, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+  else
+    {
+      m = gsl_matrix_submatrix(R, 0, N - 2, N, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+
+  if (w->Z)
+    {
+      /* accumulate the transformation into Z */
+      m = gsl_matrix_submatrix(w->Z, 0, top + N - 2, w->size, 2);
+      gsl_linalg_householder_mh(tau, &v2.vector, &m.matrix);
+    }
+} /* gen_qzstep_d() */
+
+/*
+gen_tri_chase_zero()
+  This routine is called when an element on the diagonal of R
+has become negligible. Chase the zero to the bottom of the active
+block so we can split off a 1-by-1 block.
+*/
+
+static inline void
+gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
+                   gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  size_t j, top;
+  double cs, sn;
+  gsl_vector_view xv, yv;
+
+  if (w->needtop)
+    gen_get_submatrix(w->H, H, &top);
+
+  for (j = q; j < N - 1; ++j)
+    {
+      create_givens(gsl_matrix_get(R, j, j + 1),
+                    gsl_matrix_get(R, j + 1, j + 1),
+                    &cs,
+                    &sn);
+      sn = -sn;
+
+      if (w->compute_t)
+        {
+          xv = gsl_matrix_row(w->R, top + j);
+          xv = gsl_vector_subvector(&xv.vector, top + j + 1, w->size - top - j - 1);
+          yv = gsl_matrix_row(w->R, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, top + j + 1, w->size - top - j - 1);
+        }
+      else
+        {
+          xv = gsl_matrix_row(R, j);
+          xv = gsl_vector_subvector(&xv.vector, j + 1, N - j - 1);
+          yv = gsl_matrix_row(R, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, j + 1, N - j - 1);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+      gsl_matrix_set(R, j + 1, j + 1, 0.0);
+
+      if (w->compute_s)
+        {
+          xv = gsl_matrix_row(w->H, top + j);
+          xv = gsl_vector_subvector(&xv.vector, top + j - 1, w->size - top - j + 1);
+          yv = gsl_matrix_row(w->H, top + j + 1);
+          yv = gsl_vector_subvector(&yv.vector, top + j - 1, w->size - top - j + 1);
+        }
+      else
+        {
+          xv = gsl_matrix_row(H, j);
+          xv = gsl_vector_subvector(&xv.vector, j - 1, N - j + 1);
+          yv = gsl_matrix_row(H, j + 1);
+          yv = gsl_vector_subvector(&yv.vector, j - 1, N - j + 1);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      if (w->Q)
+        {
+          /* accumulate Q */
+          xv = gsl_matrix_column(w->Q, top + j);
+          yv = gsl_matrix_column(w->Q, top + j + 1);
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+
+      create_givens(gsl_matrix_get(H, j + 1, j),
+                    gsl_matrix_get(H, j + 1, j - 1),
+                    &cs,
+                    &sn);
+      sn = -sn;
+
+      if (w->compute_s)
+        {
+          xv = gsl_matrix_column(w->H, top + j);
+          xv = gsl_vector_subvector(&xv.vector, 0, top + j + 2);
+          yv = gsl_matrix_column(w->H, top + j - 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, top + j + 2);
+        }
+      else
+        {
+          xv = gsl_matrix_column(H, j);
+          xv = gsl_vector_subvector(&xv.vector, 0, j + 2);
+          yv = gsl_matrix_column(H, j - 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, j + 2);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+      gsl_matrix_set(H, j + 1, j - 1, 0.0);
+
+      if (w->compute_t)
+        {
+          xv = gsl_matrix_column(w->R, top + j);
+          xv = gsl_vector_subvector(&xv.vector, 0, top + j + 1);
+          yv = gsl_matrix_column(w->R, top + j - 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, top + j + 1);
+        }
+      else
+        {
+          xv = gsl_matrix_column(R, j);
+          xv = gsl_vector_subvector(&xv.vector, 0, j + 1);
+          yv = gsl_matrix_column(R, j - 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, j + 1);
+        }
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+      if (w->Z)
+        {
+          /* accumulate Z */
+          xv = gsl_matrix_column(w->Z, top + j);
+          yv = gsl_matrix_column(w->Z, top + j - 1);
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+    }
+} /* gen_tri_chase_zero() */
+
+/*
+gen_tri_zero_H()
+  Companion function to get_tri_chase_zero(). After the zero on
+the diagonal of R has been chased to the bottom, we zero the element
+H(n, n - 1) in order to split off a 1-by-1 block.
+*/
+
+static inline void
+gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  size_t top;
+  double cs, sn;
+  gsl_vector_view xv, yv;
+
+  if (w->needtop)
+    gen_get_submatrix(w->H, H, &top);
+
+  create_givens(gsl_matrix_get(H, N - 1, N - 1),
+                gsl_matrix_get(H, N - 1, N - 2),
+                &cs,
+                &sn);
+  sn = -sn;
+
+  if (w->compute_s)
+    {
+      xv = gsl_matrix_column(w->H, top + N - 1);
+      yv = gsl_matrix_column(w->H, top + N - 2);
+    }
+  else
+    {
+      xv = gsl_matrix_column(H, N - 1);
+      yv = gsl_matrix_column(H, N - 2);
+    }
+
+  gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+  gsl_matrix_set(H, N - 1, N - 2, 0.0);
+
+  if (w->compute_t)
+    {
+      xv = gsl_matrix_column(w->R, top + N - 1);
+      xv = gsl_vector_subvector(&xv.vector, 0, w->size - 1);
+      yv = gsl_matrix_column(w->R, top + N - 2);
+      yv = gsl_vector_subvector(&yv.vector, 0, w->size - 1);
+    }
+  else
+    {
+      xv = gsl_matrix_column(R, N - 1);
+      xv = gsl_vector_subvector(&xv.vector, 0, N - 1);
+      yv = gsl_matrix_column(R, N - 2);
+      yv = gsl_vector_subvector(&yv.vector, 0, N - 1);
+    }
+
+  gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+  if (w->Z)
+    {
+      /* accumulate Z */
+      xv = gsl_matrix_column(w->Z, top + N - 1);
+      yv = gsl_matrix_column(w->Z, top + N - 2);
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+    }
+} /* gen_tri_zero_H() */
+
+/*
+gen_search_small_elements()
+  This routine searches for small elements in the matrix pencil
+(H, R) to determine if any eigenvalues have converged.
+
+Tests:
+
+1. Test if the Hessenberg matrix has a small subdiagonal element:
+   H(i, i - 1) < tolerance
+
+2. Test if the Triangular matrix has a small diagonal element:
+   R(i, i) < tolerance
+
+Possible outcomes:
+
+(A) Neither test passed: in this case 'flag' is set to 0 and the
+    function returns 0
+
+(B) Test 1 passes and 2 does not: in this case 'flag' is set to 1
+    and we return the row index i such that H(i, i - 1) < tol
+
+(C) Test 2 passes and 1 does not: in this case 'flag' is set to 2
+    and we return the index i such that R(i, i) < tol
+
+(D) Tests 1 and 2 both pass: in this case 'flag' is set to 3 and
+    we return the index i such that H(i, i - 1) < tol and R(i, i) < tol
+
+Inputs: H    - upper Hessenberg matrix
+        R    - upper Triangular matrix
+        flag - (output) flag set on output (see above)
+        w    - workspace
+
+Return: see above
+*/
+
+static inline size_t
+gen_search_small_elements(gsl_matrix *H, gsl_matrix *R,
+                          int *flag, gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  size_t i;
+  int pass1 = 0;
+  int pass2 = 0;
+
+  for (i = N - 1; i > 0; --i)
+    {
+      if (fabs(gsl_matrix_get(H, i, i - 1)) <= w->atol)
+        {
+          gsl_matrix_set(H, i, i - 1, 0.0);
+          pass1 = 1;
+        }
+
+      if (fabs(gsl_matrix_get(R, i, i)) < w->btol)
+        {
+          gsl_matrix_set(R, i, i, 0.0);
+          pass2 = 1;
+        }
+
+      if (pass1 && !pass2)      /* case B */
+        {
+          *flag = 1;
+          return (i);
+        }
+      else if (!pass1 && pass2) /* case C */
+        {
+          *flag = 2;
+          return (i);
+        }
+      else if (pass1 && pass2)  /* case D */
+        {
+          *flag = 3;
+          return (i);
+        }
+    }
+
+  /* neither test passed: case A */
+
+  *flag = 0;
+  return (0);
+} /* gen_search_subdiag_small_elements() */
+
+/*
+gen_schur_standardize1()
+  This function is called when a 1-by-1 block has converged -
+convert the block to standard form and update the Schur forms and
+vectors if required. Standard form here means that the diagonal
+element of B is positive.
+
+Inputs: A      - 1-by-1 matrix in Schur form S
+        B      - 1-by-1 matrix in Schur form T
+        alphar - where to store real part of eigenvalue numerator
+        beta   - where to store eigenvalue denominator
+        w      - workspace
+
+Return: success
+*/
+
+static int
+gen_schur_standardize1(gsl_matrix *A, gsl_matrix *B, double *alphar,
+                       double *beta, gsl_eigen_gen_workspace *w)
+{
+  size_t i;
+  size_t top;
+
+  if (w->needtop)
+    gen_get_submatrix(w->H, A, &top);
+
+  /*
+   * it is a 1-by-1 block - the only requirement is that
+   * B_{00} is > 0, so if it isn't apply a -I transformation
+   */
+  if (gsl_matrix_get(B, 0, 0) < 0.0)
+    {
+      if (w->compute_t)
+        {
+          for (i = 0; i <= top; ++i)
+            gsl_matrix_set(w->R, i, top, -gsl_matrix_get(w->R, i, top));
+        }
+      else
+        gsl_matrix_set(B, 0, 0, -gsl_matrix_get(B, 0, 0));
+
+      if (w->compute_s)
+        {
+          for (i = 0; i <= top; ++i)
+            gsl_matrix_set(w->H, i, top, -gsl_matrix_get(w->H, i, top));
+        }
+      else
+        gsl_matrix_set(A, 0, 0, -gsl_matrix_get(A, 0, 0));
+
+      if (w->Z)
+        {
+          for (i = 0; i < w->size; ++i)
+            gsl_matrix_set(w->Z, i, top, -gsl_matrix_get(w->Z, i, top));
+        }
+    }
+
+  *alphar = gsl_matrix_get(A, 0, 0);
+  *beta = gsl_matrix_get(B, 0, 0);
+
+  return GSL_SUCCESS;
+} /* gen_schur_standardize1() */
+
+/*
+gen_schur_standardize2()
+  This function is called when a 2-by-2 generalized block has
+converged. Convert the block to standard form, which means B
+is rotated so that
+
+B = [ B11  0  ] with B11 non-negative
+    [  0  B22 ]
+
+If the resulting block (A, B) has complex eigenvalues, they are
+computed. Otherwise, the function will return GSL_CONTINUE to
+notify caller that we need to do more single shift sweeps to
+convert the 2-by-2 block into two 1-by-1 blocks.
+
+Inputs: A      - 2-by-2 submatrix of schur form S
+        B      - 2-by-2 submatrix of schur form T
+        alpha1 - (output) where to store eigenvalue 1 numerator
+        alpha2 - (output) where to store eigenvalue 2 numerator
+        beta1  - (output) where to store eigenvalue 1 denominator
+        beta2  - (output) where to store eigenvalue 2 denominator
+        w      - workspace
+
+Return: GSL_SUCCESS if block has complex eigenvalues (they are computed)
+        GSL_CONTINUE if block has real eigenvalues (they are not computed)
+*/
+
+static int
+gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
+                       gsl_complex *alpha2, double *beta1, double *beta2,
+                       gsl_eigen_gen_workspace *w)
+{
+  double datB[4],
+         datV[4],
+         datS[2],
+         work[2];
+  gsl_matrix_view uv = gsl_matrix_view_array(datB, 2, 2);
+  gsl_matrix_view vv = gsl_matrix_view_array(datV, 2, 2);
+  gsl_vector_view sv = gsl_vector_view_array(datS, 2);
+  gsl_vector_view wv = gsl_vector_view_array(work, 2);
+  double B11, B22;
+  size_t top;
+  double det;
+  double cr, sr, cl, sl;
+  gsl_vector_view xv, yv;
+
+  if (w->needtop)
+    gen_get_submatrix(w->H, A, &top);
+
+  /*
+   * Rotate B so that
+   *
+   * B = [ B11  0  ]
+   *     [  0  B22 ]
+   *
+   * with B11 non-negative
+   */
+
+  gsl_matrix_memcpy(&uv.matrix, B);
+  gsl_linalg_SV_decomp(&uv.matrix, &vv.matrix, &sv.vector, &wv.vector);
+
+  /*
+   * Right now, B = U S V^t, where S = diag(s)
+   *
+   * The SVD routine may have computed reflection matrices U and V,
+   * but it would be much nicer to have rotations since we won't have
+   * to use BLAS mat-mat multiplications to update our matrices,
+   * and can instead use drot. So convert them to rotations if
+   * necessary
+   */
+
+  det = gsl_matrix_get(&vv.matrix, 0, 0) * gsl_matrix_get(&vv.matrix, 1, 1) -
+        gsl_matrix_get(&vv.matrix, 0, 1) * gsl_matrix_get(&vv.matrix, 1, 0);
+  if (det < 0.0)
+    {
+      /* V is a reflection, convert it to a rotation by inserting
+       * F = [1 0; 0 -1] so that:
+       *
+       * B = U S [1  0] [1  0] V^t
+       *         [0 -1] [0 -1]
+       *
+       * so S -> S F and V -> V F where F is the reflection matrix
+       * We just need to invert S22 since the first column of V
+       * will remain unchanged and we can just read off the CS and SN
+       * parameters.
+       */
+      datS[1] = -datS[1];
+    }
+
+  cr = gsl_matrix_get(&vv.matrix, 0, 0);
+  sr = gsl_matrix_get(&vv.matrix, 1, 0);
+
+  /* same for U */
+  det = gsl_matrix_get(&uv.matrix, 0, 0) * gsl_matrix_get(&uv.matrix, 1, 1) -
+        gsl_matrix_get(&uv.matrix, 0, 1) * gsl_matrix_get(&uv.matrix, 1, 0);
+  if (det < 0.0)
+    datS[1] = -datS[1];
+
+  cl = gsl_matrix_get(&uv.matrix, 0, 0);
+  sl = gsl_matrix_get(&uv.matrix, 1, 0);
+
+  B11 = gsl_vector_get(&sv.vector, 0);
+  B22 = gsl_vector_get(&sv.vector, 1);
+
+  /* make sure B11 is positive */
+  if (B11 < 0.0)
+    {
+      B11 = -B11;
+      B22 = -B22;
+      cr = -cr;
+      sr = -sr;
+    }
+
+  /*
+   * At this point,
+   *
+   * [ S11  0  ] = [ CSL  SNL ] B [ CSR -SNR ]
+   * [  0  S22 ]   [-SNL  CSL ]   [ SNR  CSR ]
+   *
+   * apply rotations to H and rest of R
+   */
+
+  if (w->compute_s)
+    {
+      xv = gsl_matrix_row(w->H, top);
+      xv = gsl_vector_subvector(&xv.vector, top, w->size - top);
+      yv = gsl_matrix_row(w->H, top + 1);
+      yv = gsl_vector_subvector(&yv.vector, top, w->size - top);
+      gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
+
+      xv = gsl_matrix_column(w->H, top);
+      xv = gsl_vector_subvector(&xv.vector, 0, top + 2);
+      yv = gsl_matrix_column(w->H, top + 1);
+      yv = gsl_vector_subvector(&yv.vector, 0, top + 2);
+      gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
+    }
+  else
+    {
+      xv = gsl_matrix_row(A, 0);
+      yv = gsl_matrix_row(A, 1);
+      gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
+
+      xv = gsl_matrix_column(A, 0);
+      yv = gsl_matrix_column(A, 1);
+      gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
+    }
+
+  if (w->compute_t)
+    {
+      if (top != (w->size - 2))
+        {
+          xv = gsl_matrix_row(w->R, top);
+          xv = gsl_vector_subvector(&xv.vector, top + 2, w->size - top - 2);
+          yv = gsl_matrix_row(w->R, top + 1);
+          yv = gsl_vector_subvector(&yv.vector, top + 2, w->size - top - 2);
+
+          gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
+        }
+
+      if (top != 0)
+        {
+          xv = gsl_matrix_column(w->R, top);
+          xv = gsl_vector_subvector(&xv.vector, 0, top);
+          yv = gsl_matrix_column(w->R, top + 1);
+          yv = gsl_vector_subvector(&yv.vector, 0, top);
+          gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
+        }
+    }
+
+  if (w->Q)
+    {
+      xv = gsl_matrix_column(w->Q, top);
+      yv = gsl_matrix_column(w->Q, top + 1);
+      gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
+    }
+
+  if (w->Z)
+    {
+      xv = gsl_matrix_column(w->Z, top);
+      yv = gsl_matrix_column(w->Z, top + 1);
+      gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
+    }
+
+  gsl_matrix_set(B, 0, 0, B11);
+  gsl_matrix_set(B, 0, 1, 0.0);
+  gsl_matrix_set(B, 1, 0, 0.0);
+  gsl_matrix_set(B, 1, 1, B22);
+
+  /* if B22 is < 0, make it positive by negating its column */
+  if (B22 < 0.0)
+    {
+      size_t i;
+
+      if (w->compute_s)
+        {
+          for (i = 0; i < top + 2; ++i)
+            gsl_matrix_set(w->H, i, top + 1, -gsl_matrix_get(w->H, i, top + 1));
+        }
+      else
+        {
+          gsl_matrix_set(A, 0, 1, -gsl_matrix_get(A, 0, 1));
+          gsl_matrix_set(A, 1, 1, -gsl_matrix_get(A, 1, 1));
+        }
+
+      if (w->compute_t)
+        {
+          for (i = 0; i < top + 2; ++i)
+            gsl_matrix_set(w->R, i, top + 1, -gsl_matrix_get(w->R, i, top + 1));
+        }
+      else
+        {
+          gsl_matrix_set(B, 0, 1, -gsl_matrix_get(B, 0, 1));
+          gsl_matrix_set(B, 1, 1, -gsl_matrix_get(B, 1, 1));
+        }
+
+      if (w->Z)
+        {
+          xv = gsl_matrix_column(w->Z, top + 1);
+          gsl_vector_scale(&xv.vector, -1.0);
+        }
+    }
+
+  /*
+   * our block is now in standard form - determine if eigenvalues are
+   * real or complex
+   */
+  {
+    double AB11, AB22, A21B11, A12B22;
+    double t, r;
+
+    AB11 = gsl_matrix_get(A, 0, 0) / gsl_matrix_get(B, 0, 0);
+    AB22 = gsl_matrix_get(A, 1, 1) / gsl_matrix_get(B, 1, 1);
+    A21B11 = gsl_matrix_get(A, 1, 0) / gsl_matrix_get(B, 0, 0);
+    A12B22 = gsl_matrix_get(A, 0, 1) / gsl_matrix_get(B, 1, 1);
+
+    t = -0.5 * (AB11 + AB22);
+    r = (t * t) + (A12B22 * A21B11) - (AB11 * AB22);
+    if (r >= 0.0)
+      return GSL_CONTINUE; /* real eigenvalues */
+  }
+
+  /* compute complex eigenvalues */
+  gen_eigval2(A, B, alpha1, alpha2, beta1, beta2, w);
+
+  return GSL_SUCCESS;
+} /* gen_schur_standardize2() */
+
+/*
+gen_eigval2()
+  Compute the eigenvalues of a 2-by-2 generalized block which is
+in standard form. The 2-by-2 block must contain complex eigenvalues -
+this function will not handle real eigenvalues. 2-by-2 blocks
+with real eigenvalues need to be processed further to split them
+into 1-by-1 blocks.
+
+Inputs: A      - 2-by-2 matrix
+        B      - 2-by-2 diagonal matrix
+        alpha1 - where to store eigenvalue 1 numerator
+        alpha2 - where to store eigenvalue 2 numerator
+        beta1  - where to store eigenvalue 1 denominator
+        beta2  - where to store eigenvalue 2 denominator
+        w      - workspace
+
+Return: GSL_SUCCESS on success
+        GSL_FAILURE if (A,B) contain real eigenvalues
+*/
+
+static int
+gen_eigval2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
+            gsl_complex *alpha2, double *beta1, double *beta2,
+            gsl_eigen_gen_workspace *w)
+{
+  double anorm,
+         bnorm;
+  double a11,    /* matrix elements */
+         a12,
+         a21,
+         a22;
+  double b11,
+         b12,
+         b22;
+  double mu,     /* parameters in eigenvalue equations */
+         mu2,
+         s,
+         p,
+         r,
+         t,
+         t2;
+  double den1,
+         den2,
+         alphar1,
+         alphai1,
+         alphar2,
+         alphai2;
+  double tmp, tmp2;
+  double a1, a1i, a2, a2i;
+
+  anorm = fabs(gsl_matrix_get(A, 0, 0)) + fabs(gsl_matrix_get(A, 0, 1)) +
+          fabs(gsl_matrix_get(A, 1, 0)) + fabs(gsl_matrix_get(A, 1, 1));
+  bnorm = fabs(gsl_matrix_get(B, 0, 0)) + fabs(gsl_matrix_get(B, 0, 1)) +
+          fabs(gsl_matrix_get(B, 1, 0)) + fabs(gsl_matrix_get(B, 1, 1));
+
+  a11 = gsl_matrix_get(A, 0, 0) / anorm;
+  a12 = gsl_matrix_get(A, 0, 1) / anorm;
+  a21 = gsl_matrix_get(A, 1, 0) / anorm;
+  a22 = gsl_matrix_get(A, 1, 1) / anorm;
+
+  b11 = gsl_matrix_get(B, 0, 0) / bnorm;
+  b12 = gsl_matrix_get(B, 0, 1) / bnorm;
+  b22 = gsl_matrix_get(B, 1, 1) / bnorm;
+
+  /* now use Eqs (5.1) of [1] to determine if eigenvalues are complex */
+
+  mu = a11 / b11;
+  mu2 = a22 / b22;
+  s = a21 / (b11 * b22);
+
+  if (fabs(mu) > fabs(mu2))
+    {
+      mu = mu2;
+      t = (a11 - mu * b11) / b11;
+    }
+  else
+    t = (a22 - mu * b22) / b22;
+
+  p = 0.5 * (t - s * b12);
+  r = p * p + s * (a12 - mu * b12);
+
+  if (r < 0.0)
+    {
+      double a11r, a11i, a12r, a12i, a22r, a22i;
+      double cz, cq;
+      double szr, szi, sqr, sqi;
+      double ssr, ssi;
+      double tr, ti, dr, di;
+      double tr2, ti2, dr2, di2;
+
+      /* two complex roots */
+
+      mu += p;
+      mu2 = sqrt(-r);
+
+      a11r = a11 - mu * b11;
+      a11i = mu2 * b11;
+      a12r = a12 - mu * b12;
+      a12i = mu2 * b12;
+      a22r = a22 - mu * b22;
+      a22i = mu2 * b22;
+
+      if ((fabs(a11r) + fabs(a11i) + fabs(a12r) + fabs(a12i)) <
+          (fabs(a21) + fabs(a22r) + fabs(a22i)))
+        {
+          a1 = a22r;
+          a1i = a22i;
+          a2 = -a21;
+          a2i = 0.0;
+        }
+      else
+        {
+          a1 = a12r;
+          a1i = a12i;
+          a2 = -a11r;
+          a2i = -a11i;
+        }
+
+      /* choose complex z */
+      cz = sqrt(a1 * a1 + a1i * a1i);
+      if (cz == 0.0)
+        {
+          szr = 1.0;
+          szi = 0.0;
+        }
+      else
+        {
+          szr = (a1 * a2 + a1i * a2i) / cz;
+          szi = (a1 * a2i - a1i * a2) / cz;
+          tmp = sqrt(cz*cz + szr*szr + szi*szi);
+          cz /= tmp;
+          szr /= tmp;
+          szi /= tmp;
+        }
+
+      if (anorm < (fabs(mu) + mu2) * bnorm)
+        {
+          a1 = cz * a11 + szr * a12;
+          a1i = szi * a12;
+          a2 = cz * a21 + szr * a22;
+          a2i = szi * a22;
+        }
+      else
+        {
+          a1 = cz * b11 + szr * b12;
+          a1i = szi * b12;
+          a2 = szr * b22;
+          a2i = szi * b22;
+        }
+
+      /* choose complex q */
+
+      cq = sqrt(a1 * a1 + a1i * a1i);
+      if (cq == 0.0)
+        {
+          sqr = 1.0;
+          sqi = 0.0;
+        }
+      else
+        {
+          sqr = (a1 * a2 + a1i * a2i) / cq;
+          sqi = (a1 * a2i - a1i * a2) / cq;
+          tmp = sqrt(cq*cq + sqr*sqr + sqi*sqi);
+          cq /= tmp;
+          sqr /= tmp;
+          sqi /= tmp;
+        }
+
+      /*
+       * compute diagonal elements that would result if transformations
+       * were applied
+       */
+      ssr = sqr * szr + sqi * szi;
+      ssi = sqr * szi - sqi * szr;
+
+      tr = cq * cz * a11 + cq * szr * a12 + sqr * cz * a21 + ssr * a22;
+      ti = cq * szi * a12 - sqi * cz * a21 + ssi * a22;
+      dr = cq * cz * b11 + cq * szr * b12 + ssr * b22;
+      di = cq * szi * b12 + ssi * b22;
+
+      tr2 = ssr * a11 - sqr * cz * a12 - cq * szr * a21 + cq * cz * a22;
+      ti2 = -ssi * a11 - sqi * cz * a12 + cq * szi * a21;
+      dr2 = ssr * b11 - sqr * cz * b12 + cq * cz * b22;
+      di2 = -ssi * b11 - sqi * cz * b12;
+
+      t = ti * dr - tr * di;
+      t2 = ti2 * dr2 - tr2 * di2;
+      tmp = sqrt(dr * dr + di * di);
+      tmp2 = sqrt(dr2 * dr2 + di2 * di2);
+
+      den1 = bnorm * tmp;
+      alphar1 = anorm * (tr * dr + ti * di) / tmp;
+      alphai1 = anorm * t / tmp;
+
+      den2 = bnorm * tmp2;
+      alphar2 = anorm * (tr2 * dr2 + ti2 * di2) / tmp2;
+      alphai2 = anorm * t2 / tmp2;
+
+      if (t < 0.0)
+        {
+          *beta1 = den2;
+          GSL_SET_COMPLEX(alpha1, alphar2, alphai2);
+          *beta2 = den1;
+          GSL_SET_COMPLEX(alpha2, alphar1, alphai1);
+        }
+      else
+        {
+          *beta1 = den1;
+          GSL_SET_COMPLEX(alpha1, alphar1, alphai1);
+          *beta2 = den2;
+          GSL_SET_COMPLEX(alpha2, alphar2, alphai2);
+        }
+    }
+  else
+    {
+      /* eigenvalues are real - we should never get here */
+
+      return GSL_FAILURE;
+    }
+
+  return GSL_SUCCESS;
+} /* gen_eigval2() */
+
+/*
+gen_get_submatrix()
+  B is a submatrix of A. The goal of this function is to
+compute the indices in A of where the matrix B resides
+*/
+
+static inline void
+gen_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
+{
+  size_t diff;
+  double ratio;
+
+  diff = (size_t) (B->data - A->data);
+
+  ratio = (double)diff / ((double) (A->tda + 1));
+
+  *top = (size_t) floor(ratio);
+} /* gen_get_submatrix() */
+
+/* Frobenius norm */
+inline static double
+normF (gsl_matrix * A)
+{
+  size_t i, j, M = A->size1, N = A->size2;
+  double sum = 0.0, scale = 0.0, ssq = 1.0;
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          double Aij = gsl_matrix_get (A, i, j);
+
+          if (Aij != 0.0)
+            {
+              double ax = fabs (Aij);
+
+              if (scale < ax)
+                {
+                  ssq = 1.0 + ssq * (scale / ax) * (scale / ax);
+                  scale = ax;
+                }
+              else
+                {
+                  ssq += (ax / scale) * (ax / scale);
+                }
+            }
+
+        }
+    }
+
+  sum = scale * sqrt (ssq);
+
+  return sum;
+}
+
+/* Generate a Givens rotation (cos,sin) which takes v=(x,y) to (|v|,0) 
+
+   From Golub and Van Loan, "Matrix Computations", Section 5.1.8 */
+
+inline static void
+create_givens (const double a, const double b, double *c, double *s)
+{
+  if (b == 0)
+    {
+      *c = 1;
+      *s = 0;
+    }
+  else if (fabs (b) > fabs (a))
+    {
+      double t = -a / b;
+      double s1 = 1.0 / sqrt (1 + t * t);
+      *s = s1;
+      *c = s1 * t;
+    }
+  else
+    {
+      double t = -b / a;
+      double c1 = 1.0 / sqrt (1 + t * t);
+      *c = c1;
+      *s = c1 * t;
+    }
+}

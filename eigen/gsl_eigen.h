@@ -124,6 +124,44 @@ int gsl_eigen_nonsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
                           gsl_eigen_nonsymmv_workspace * w);
 
 typedef struct {
+  size_t size;            /* size of matrices */
+  gsl_vector *work;       /* scratch workspace */
+
+  size_t n_evals;         /* number of eigenvalues found */
+  size_t max_iterations;  /* maximum QZ iterations allowed */
+  size_t n_iter;          /* number of iterations since last eigenvalue found */
+
+  int needtop;            /* need to compute top index? */
+
+  double atol;            /* tolerance for splitting A matrix */
+  double btol;            /* tolerance for splitting B matrix */
+
+  double ascale;          /* scaling factor for shifts */
+  double bscale;          /* scaling factor for shifts */
+
+  gsl_matrix *H;          /* pointer to hessenberg matrix */
+  gsl_matrix *R;          /* pointer to upper triangular matrix */
+
+  int compute_s;          /* compute generalized Schur form S */
+  int compute_t;          /* compute generalized Schur form T */
+
+  gsl_matrix *Q;          /* pointer to left Schur vectors */
+  gsl_matrix *Z;          /* pointer to right Schur vectors */
+} gsl_eigen_gen_workspace;
+
+gsl_eigen_gen_workspace * gsl_eigen_gen_alloc (const size_t n);
+void gsl_eigen_gen_free (gsl_eigen_gen_workspace * w);
+void gsl_eigen_gen_params (const int compute_s, const int compute_t,
+                           const int balance, gsl_eigen_gen_workspace * w);
+int gsl_eigen_gen (gsl_matrix * A, gsl_matrix * B,
+                   gsl_vector_complex * alpha, gsl_vector * beta,
+                   gsl_eigen_gen_workspace * w);
+int gsl_eigen_gen_QZ (gsl_matrix * A, gsl_matrix * B,
+                      gsl_vector_complex * alpha, gsl_vector * beta,
+                      gsl_matrix * Q, gsl_matrix * Z,
+                      gsl_eigen_gen_workspace * w);
+
+typedef struct {
   size_t size;
   double * d;
   double * sd;

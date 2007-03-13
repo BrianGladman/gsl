@@ -39,9 +39,7 @@
  * routine used is DLANV2.
  */
 
-static inline void schur_standard_form(gsl_matrix *A, gsl_complex *eval1,
-                                       gsl_complex *eval2, double *cs,
-                                       double *sn);
+static inline void schur_standard_form(gsl_matrix *A, double *cs, double *sn);
 
 /*
 gsl_schur_standardize()
@@ -65,9 +63,31 @@ gsl_schur_standardize(gsl_matrix *T, size_t row, gsl_complex *eval1,
   const size_t N = T->size1;
   gsl_matrix_view m;
   double cs, sn;
+  double a, b, c, d;
 
   m = gsl_matrix_submatrix(T, row, row, 2, 2);
-  schur_standard_form(&m.matrix, eval1, eval2, &cs, &sn);
+  schur_standard_form(&m.matrix, &cs, &sn);
+
+  a = gsl_matrix_get(&m.matrix, 0, 0);
+  b = gsl_matrix_get(&m.matrix, 0, 1);
+  c = gsl_matrix_get(&m.matrix, 1, 0);
+  d = gsl_matrix_get(&m.matrix, 1, 1);
+
+  /* set eigenvalues */
+
+  GSL_SET_REAL(eval1, a);
+  GSL_SET_REAL(eval2, d);
+  if (c == 0.0)
+    {
+      GSL_SET_IMAG(eval1, 0.0);
+      GSL_SET_IMAG(eval2, 0.0);
+    }
+  else
+    {
+      double tmp = sqrt(fabs(b) * fabs(c));
+      GSL_SET_IMAG(eval1, tmp);
+      GSL_SET_IMAG(eval2, -tmp);
+    }
 
   if (update_t)
     {
@@ -197,17 +217,15 @@ where either:
    complex conjugate eigenvalues
 
 Inputs: A     - 2-by-2 matrix
-        eval1 - where to store eigenvalue 1
-        eval2 - where to store eigenvalue 2
         cs    - where to store cosine parameter of rotation matrix
         sn    - where to store sine parameter of rotation matrix
 
-Notes: based on LAPACK routine DLANV2
+Notes: 1) based on LAPACK routine DLANV2
+       2) On output, A is modified to contain the matrix in standard form
 */
 
 static inline void
-schur_standard_form(gsl_matrix *A, gsl_complex *eval1, gsl_complex *eval2,
-                    double *cs, double *sn)
+schur_standard_form(gsl_matrix *A, double *cs, double *sn)
 {
   double a, b, c, d; /* input matrix values */
   double tmp;
@@ -345,22 +363,6 @@ schur_standard_form(gsl_matrix *A, gsl_complex *eval1, gsl_complex *eval2,
                 }
             }
         }
-    }
-
-  /* set eigenvalues */
-
-  GSL_SET_REAL(eval1, a);
-  GSL_SET_REAL(eval2, d);
-  if (c == 0.0)
-    {
-      GSL_SET_IMAG(eval1, 0.0);
-      GSL_SET_IMAG(eval2, 0.0);
-    }
-  else
-    {
-      tmp = sqrt(fabs(b) * fabs(c));
-      GSL_SET_IMAG(eval1, tmp);
-      GSL_SET_IMAG(eval2, -tmp);
     }
 
   /* set new matrix elements */
