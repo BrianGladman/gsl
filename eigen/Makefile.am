@@ -3,10 +3,10 @@ noinst_LTLIBRARIES = libgsleigen.la
 check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_eigen.h
-libgsleigen_la_SOURCES =  jacobi.c symm.c symmv.c nonsymm.c nonsymmv.c herm.c hermv.c gen.c sort.c francis.c schur.c
+libgsleigen_la_SOURCES =  jacobi.c symm.c symmv.c nonsymm.c nonsymmv.c herm.c hermv.c gen.c sort.c francis.c
 INCLUDES= -I$(top_builddir)
 
-noinst_HEADERS =  qrstep.c schur.h
+noinst_HEADERS =  qrstep.c schur.c
 
 TESTS = $(check_PROGRAMS)
 

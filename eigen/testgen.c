@@ -119,9 +119,6 @@ void qzit_(int *nm, int *n, double *a, double *b, double *eps1,
  * Global variables
  */
 unsigned long count = 0;
-double shiftx = 0.0;
-double shifty = 0.0;
-double shiftz = 0.0;
 
 /*
  * Prototypes
@@ -892,7 +889,7 @@ main(int argc, char *argv[])
 
           case '?':
           default:
-            printf("usage: %s [-i] [-b] [-z] [-n size] [-l lower-bound] [-u upper-bound] [-c num]\n", argv[0]);
+            printf("usage: %s [-i] [-z] [-n size] [-l lower-bound] [-u upper-bound] [-c num]\n", argv[0]);
             exit(1);
             break;
         } /* switch (c) */

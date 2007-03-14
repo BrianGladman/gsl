@@ -28,8 +28,10 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_cblas.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_complex_math.h>
 
-#include "schur.h"
+#include "schur.c"
 
 /*
  * This module computes the eigenvalues of a real upper hessenberg
@@ -76,7 +78,7 @@ gsl_eigen_francis_alloc(void)
   gsl_eigen_francis_workspace *w;
 
   w = (gsl_eigen_francis_workspace *)
-      malloc (sizeof (gsl_eigen_francis_workspace));
+      calloc (1, sizeof (gsl_eigen_francis_workspace));
 
   if (w == 0)
     {
@@ -99,6 +101,7 @@ gsl_eigen_francis_alloc(void)
 
   if ((w->hv2 == 0) || (w->hv3 == 0))
     {
+      gsl_eigen_francis_free(w);
       GSL_ERROR_NULL ("failed to allocate space for householder vectors", GSL_ENOMEM);
     }
 
@@ -113,8 +116,14 @@ gsl_eigen_francis_free()
 void
 gsl_eigen_francis_free (gsl_eigen_francis_workspace *w)
 {
-  gsl_vector_free(w->hv2);
-  gsl_vector_free(w->hv3);
+  if (!w)
+    return;
+
+  if (w->hv2)
+    gsl_vector_free(w->hv2);
+
+  if (w->hv3)
+    gsl_vector_free(w->hv3);
 
   free(w);
 } /* gsl_eigen_francis_free() */
@@ -751,6 +760,8 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
                           gsl_complex *eval2,
                           gsl_eigen_francis_workspace *w)
 {
+  const size_t N = w->size;
+  double cs, sn;
   size_t top;
 
   /*
@@ -759,8 +770,134 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
    */
   francis_get_submatrix(w->H, A, &top);
 
-  /* convert A to standard form and store eigenvalues */
-  gsl_schur_standardize(w->H, top, eval1, eval2, w->compute_t, w->Z);
+  /* convert 2-by-2 block to standard form */
+  schur_standard_form(A, &cs, &sn);
+
+  /* set eigenvalues */
+
+  GSL_SET_REAL(eval1, gsl_matrix_get(A, 0, 0));
+  GSL_SET_REAL(eval2, gsl_matrix_get(A, 1, 1));
+  if (gsl_matrix_get(A, 1, 0) == 0.0)
+    {
+      GSL_SET_IMAG(eval1, 0.0);
+      GSL_SET_IMAG(eval2, 0.0);
+    }
+  else
+    {
+      double tmp = sqrt(fabs(gsl_matrix_get(A, 0, 1)) *
+                        fabs(gsl_matrix_get(A, 1, 0)));
+      GSL_SET_IMAG(eval1, tmp);
+      GSL_SET_IMAG(eval2, -tmp);
+    }
+
+  if (w->compute_t)
+    {
+      gsl_vector_view xv, yv, v;
+
+      /*
+       * The above call to schur_standard_form transformed a 2-by-2 block
+       * of T into upper triangular form via the transformation
+       *
+       * U = [ CS -SN ]
+       *     [ SN  CS ]
+       *
+       * The original matrix T was
+       *
+       * T = [ T_{11} | T_{12} | T_{13} ]
+       *     [   0*   |   A    | T_{23} ]
+       *     [   0    |   0*   | T_{33} ]
+       *
+       * where 0* indicates all zeros except for possibly
+       * one subdiagonal element next to A.
+       *
+       * After schur_standard_form, T looks like this:
+       *
+       * T = [ T_{11} | T_{12}  | T_{13} ]
+       *     [   0*   | U^t A U | T_{23} ]
+       *     [   0    |    0*   | T_{33} ]
+       *
+       * since only the 2-by-2 block of A was changed. However,
+       * in order to be able to back transform T at the end,
+       * we need to apply the U transformation to the rest
+       * of the matrix T since there is no way to apply a
+       * similarity transformation to T and change only the
+       * middle 2-by-2 block. In other words, let
+       *
+       * M = [ I 0 0 ]
+       *     [ 0 U 0 ]
+       *     [ 0 0 I ]
+       *
+       * and compute
+       *
+       * M^t T M = [ T_{11} | T_{12} U |   T_{13}   ]
+       *           [ U^t 0* | U^t A U  | U^t T_{23} ]
+       *           [   0    |   0* U   |   T_{33}   ]
+       *
+       * So basically we need to apply the transformation U
+       * to the i x 2 matrix T_{12} and the 2 x (n - i + 2)
+       * matrix T_{23}, where i is the index of the top of A
+       * in T.
+       *
+       * The BLAS routine drot() is suited for this.
+       */
+
+      if (top < (N - 2))
+        {
+          /* transform the 2 rows of T_{23} */
+
+          v = gsl_matrix_row(w->H, top);
+          xv = gsl_vector_subvector(&v.vector,
+                                    top + 2,
+                                    N - top - 2);
+
+          v = gsl_matrix_row(w->H, top + 1);
+          yv = gsl_vector_subvector(&v.vector,
+                                    top + 2,
+                                    N - top - 2);
+
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+
+      if (top > 0)
+        {
+          /* transform the 2 columns of T_{12} */
+
+          v = gsl_matrix_column(w->H, top);
+          xv = gsl_vector_subvector(&v.vector,
+                                    0,
+                                    top);
+
+          v = gsl_matrix_column(w->H, top + 1);
+          yv = gsl_vector_subvector(&v.vector,
+                                    0,
+                                    top);
+
+          gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+        }
+    } /* if (w->compute_t) */
+
+  if (w->Z)
+    {
+      gsl_vector_view xv, yv;
+
+      /*
+       * Accumulate the transformation in Z. Here, Z -> Z * M
+       *
+       * So:
+       *
+       * Z -> [ Z_{11} | Z_{12} U | Z_{13} ]
+       *      [ Z_{21} | Z_{22} U | Z_{23} ]
+       *      [ Z_{31} | Z_{32} U | Z_{33} ]
+       *
+       * So we just need to apply drot() to the 2 columns
+       * starting at index 'top'
+       */
+
+      xv = gsl_matrix_column(w->Z, top);
+      yv = gsl_matrix_column(w->Z, top + 1);
+
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+    } /* if (w->Z) */
 } /* francis_schur_standardize() */
 
 /*

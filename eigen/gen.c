@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -68,8 +67,7 @@ static int gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B,
                                   double *beta1, double *beta2,
                                   gsl_eigen_gen_workspace *w);
 static int gen_eigval2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
-                       gsl_complex *alpha2, double *beta1, double *beta2,
-                       gsl_eigen_gen_workspace *w);
+                       gsl_complex *alpha2, double *beta1, double *beta2);
 static inline void gen_get_submatrix(gsl_matrix *A, gsl_matrix *B,
                                      size_t *top);
 
@@ -1786,7 +1784,7 @@ gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
   }
 
   /* compute complex eigenvalues */
-  gen_eigval2(A, B, alpha1, alpha2, beta1, beta2, w);
+  gen_eigval2(A, B, alpha1, alpha2, beta1, beta2);
 
   return GSL_SUCCESS;
 } /* gen_schur_standardize2() */
@@ -1805,7 +1803,6 @@ Inputs: A      - 2-by-2 matrix
         alpha2 - where to store eigenvalue 2 numerator
         beta1  - where to store eigenvalue 1 denominator
         beta2  - where to store eigenvalue 2 denominator
-        w      - workspace
 
 Return: GSL_SUCCESS on success
         GSL_FAILURE if (A,B) contain real eigenvalues
@@ -1813,8 +1810,7 @@ Return: GSL_SUCCESS on success
 
 static int
 gen_eigval2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
-            gsl_complex *alpha2, double *beta1, double *beta2,
-            gsl_eigen_gen_workspace *w)
+            gsl_complex *alpha2, double *beta1, double *beta2)
 {
   double anorm,
          bnorm;

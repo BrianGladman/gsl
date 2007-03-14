@@ -82,7 +82,7 @@ gsl_eigen_nonsymmv_alloc(const size_t n)
     }
 
   w = (gsl_eigen_nonsymmv_workspace *)
-      malloc (sizeof (gsl_eigen_nonsymmv_workspace));
+      calloc (1, sizeof (gsl_eigen_nonsymmv_workspace));
 
   if (w == 0)
     {
@@ -95,6 +95,7 @@ gsl_eigen_nonsymmv_alloc(const size_t n)
 
   if (w->nonsymm_workspace_p == 0)
     {
+      gsl_eigen_nonsymmv_free(w);
       GSL_ERROR_NULL ("failed to allocate space for nonsymm workspace", GSL_ENOMEM);
     }
 
@@ -109,6 +110,7 @@ gsl_eigen_nonsymmv_alloc(const size_t n)
   w->work3 = gsl_vector_alloc(n);
   if (w->work == 0 || w->work2 == 0 || w->work3 == 0)
     {
+      gsl_eigen_nonsymmv_free(w);
       GSL_ERROR_NULL ("failed to allocate space for nonsymmv additional workspace", GSL_ENOMEM);
     }
 
@@ -123,10 +125,20 @@ gsl_eigen_nonsymmv_free()
 void
 gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w)
 {
-  gsl_eigen_nonsymm_free(w->nonsymm_workspace_p);
-  gsl_vector_free(w->work);
-  gsl_vector_free(w->work2);
-  gsl_vector_free(w->work3);
+  if (!w)
+    return;
+
+  if (w->nonsymm_workspace_p)
+    gsl_eigen_nonsymm_free(w->nonsymm_workspace_p);
+
+  if (w->work)
+    gsl_vector_free(w->work);
+
+  if (w->work2)
+    gsl_vector_free(w->work2);
+
+  if (w->work3)
+    gsl_vector_free(w->work3);
 
   free(w);
 } /* gsl_eigen_nonsymmv_free() */

@@ -62,7 +62,7 @@ gsl_eigen_nonsymm_alloc(const size_t n)
     }
 
   w = (gsl_eigen_nonsymm_workspace *)
-      malloc (sizeof (gsl_eigen_nonsymm_workspace));
+      calloc (1, sizeof (gsl_eigen_nonsymm_workspace));
 
   if (w == 0)
     {
@@ -77,6 +77,7 @@ gsl_eigen_nonsymm_alloc(const size_t n)
 
   if (w->diag == 0)
     {
+      gsl_eigen_nonsymm_free(w);
       GSL_ERROR_NULL ("failed to allocate space for balancing vector", GSL_ENOMEM);
     }
 
@@ -84,6 +85,7 @@ gsl_eigen_nonsymm_alloc(const size_t n)
 
   if (w->tau == 0)
     {
+      gsl_eigen_nonsymm_free(w);
       GSL_ERROR_NULL ("failed to allocate space for hessenberg coefficients", GSL_ENOMEM);
     }
 
@@ -91,6 +93,7 @@ gsl_eigen_nonsymm_alloc(const size_t n)
 
   if (w->francis_workspace_p == 0)
     {
+      gsl_eigen_nonsymm_free(w);
       GSL_ERROR_NULL ("failed to allocate space for francis workspace", GSL_ENOMEM);
     }
 
@@ -105,11 +108,17 @@ gsl_eigen_nonsymm_free()
 void
 gsl_eigen_nonsymm_free (gsl_eigen_nonsymm_workspace * w)
 {
-  gsl_vector_free(w->tau);
+  if (!w)
+    return;
 
-  gsl_vector_free(w->diag);
+  if (w->tau)
+    gsl_vector_free(w->tau);
 
-  gsl_eigen_francis_free(w->francis_workspace_p);
+  if (w->diag)
+    gsl_vector_free(w->diag);
+
+  if (w->francis_workspace_p)
+    gsl_eigen_francis_free(w->francis_workspace_p);
 
   free(w);
 } /* gsl_eigen_nonsymm_free() */
