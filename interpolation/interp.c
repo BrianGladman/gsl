@@ -68,11 +68,21 @@ gsl_interp_alloc (const gsl_interp_type * T, size_t size)
 int
 gsl_interp_init (gsl_interp * interp, const double x_array[], const double y_array[], size_t size)
 {
+  size_t i;
+
   if (size != interp->size)
     {
       GSL_ERROR ("data must match size of interpolation object", GSL_EINVAL);
     }
-  
+
+  for (i = 1; i < size; i++) 
+    {
+      if (!(x_array[i-1] < x_array[i])) 
+        {
+          GSL_ERROR ("x values must be monotonically increasing", GSL_EINVAL);
+        }
+    }
+
   interp->xmin = x_array[0];
   interp->xmax = x_array[size - 1];
 

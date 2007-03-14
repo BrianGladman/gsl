@@ -49,7 +49,8 @@ data (@var{xa},@var{ya}) where @var{xa} and @var{ya} are arrays of size
 @var{size}.  The interpolation object (@code{gsl_interp}) does not save
 the data arrays @var{xa} and @var{ya} and only stores the static state
 computed from the data.  The @var{xa} data array is always assumed to be
-strictly ordered; the behavior for other arrangements is not defined.
+strictly ordered, with increasing @math{x} values; 
+the behavior for other arrangements is not defined.
 @end deftypefun
 
 @deftypefun void gsl_interp_free (gsl_interp * @var{interp})

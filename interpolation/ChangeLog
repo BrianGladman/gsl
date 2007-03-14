@@ -1,3 +1,8 @@
+2007-03-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* interp.c (gsl_interp_init): added check for monotonically
+	increasing x
+
 2005-12-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cspline.c (cspline_init_periodic): fix invalid memory access of
