@@ -36,7 +36,7 @@
  */
 
 /*
-gsl_linalg_hesstri()
+gsl_linalg_hesstri_decomp()
   Perform a reduction to generalized upper Hessenberg form.
 Given A and B, this function overwrites A with an upper Hessenberg
 matrix H = U^T A V and B with an upper triangular matrix R = U^T B V
@@ -54,8 +54,8 @@ Return: success or error
 */
 
 int
-gsl_linalg_hesstri(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
-                   gsl_matrix * V, gsl_vector * work)
+gsl_linalg_hesstri_decomp(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
+                          gsl_matrix * V, gsl_vector * work)
 {
   const size_t N = A->size1;
 
@@ -176,4 +176,4 @@ gsl_linalg_hesstri(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
 
       return GSL_SUCCESS;
     }
-} /* gsl_linalg_hesstri() */
+} /* gsl_linalg_hesstri_decomp() */

@@ -666,7 +666,7 @@ Hessenberg reduction is the first step in the Schur decomposition
 for the nonsymmetric eigenvalue problem, but has applications in
 other areas as well.
 
-@deftypefun int gsl_linalg_hessenberg (gsl_matrix * @var{A}, gsl_vector * @var{tau})
+@deftypefun int gsl_linalg_hessenberg_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau})
 This function computes the Hessenberg decomposition of the matrix
 @var{A} by applying the similarity transformation @math{H = U^T A U}.
 On output, @math{H} is stored in the upper portion of @var{A}. The
@@ -694,7 +694,7 @@ Setting @var{V} to the identity matrix provides the same result as
 @var{V} must have @var{N} columns but may have any number of rows.
 @end deftypefun
 
-@deftypefun void gsl_linalg_hessenberg_set_zero (gsl_matrix * @var{H})
+@deftypefun int gsl_linalg_hessenberg_set_zero (gsl_matrix * @var{H})
 This function sets the lower triangular portion of @var{H}, below
 the subdiagonal, to zero. It is useful for clearing out the
 Householder vectors after calling @code{gsl_linalg_hessenberg}.
@@ -729,7 +729,7 @@ Hessenberg matrix, and @math{R} is upper triangular. The
 Hessenberg-Triangular reduction is the first step in the generalized
 Schur decomposition for the generalized eigenvalue problem.
 
-@deftypefun int gsl_linalg_hesstri (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_hesstri_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{work})
 This function computes the Hessenberg-Triangular decomposition of the
 matrix pencil (@var{A}, @var{B}). On output, @math{H} is stored in @var{A},
 and @math{R} is stored in @var{B}. If @var{U} and @var{V} are provided

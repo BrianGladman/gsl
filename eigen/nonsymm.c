@@ -196,7 +196,7 @@ gsl_eigen_nonsymm (gsl_matrix * A, gsl_vector_complex * eval,
         }
 
       /* compute the Hessenberg reduction of A */
-      gsl_linalg_hessenberg(A, w->tau);
+      gsl_linalg_hessenberg_decomp(A, w->tau);
 
       if (w->Z)
         {

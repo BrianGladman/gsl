@@ -23,7 +23,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
-gsl_linalg_hessenberg()
+gsl_linalg_hessenberg_decomp()
   Compute the Householder reduction to Hessenberg form of a
 square N-by-N matrix A.
 
@@ -64,7 +64,7 @@ column i of A beneath the subdiagonal.
 */
 
 int
-gsl_linalg_hessenberg(gsl_matrix *A, gsl_vector *tau)
+gsl_linalg_hessenberg_decomp(gsl_matrix *A, gsl_vector *tau)
 {
   const size_t N = A->size1;
 
@@ -129,7 +129,7 @@ gsl_linalg_hessenberg(gsl_matrix *A, gsl_vector *tau)
 
       return GSL_SUCCESS;
     }
-} /* gsl_linalg_hessenberg() */
+} /* gsl_linalg_hessenberg_decomp() */
 
 /*
 gsl_linalg_hessenberg_unpack()
@@ -276,14 +276,14 @@ This is useful when Householder vectors may be stored in the lower
 part of H, but eigenvalue solvers need some scratch space with zeros.
 */
 
-void
+int
 gsl_linalg_hessenberg_set_zero(gsl_matrix * H)
 {
   const size_t N = H->size1;
   size_t i, j;
 
   if (N < 3)
-    return;
+    return GSL_SUCCESS;
 
   for (j = 0; j < N - 2; ++j)
     {
@@ -292,6 +292,8 @@ gsl_linalg_hessenberg_set_zero(gsl_matrix * H)
           gsl_matrix_set(H, i, j, 0.0);
         }
     }
+
+  return GSL_SUCCESS;
 } /* gsl_linalg_hessenberg_set_zero() */
 
 /*

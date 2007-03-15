@@ -216,7 +216,7 @@ gsl_eigen_gen (gsl_matrix * A, gsl_matrix * B, gsl_vector_complex * alpha,
       double anorm, bnorm;
 
       /* compute the Hessenberg-Triangular reduction of (A, B) */
-      gsl_linalg_hesstri(A, B, w->Q, w->Z, w->work);
+      gsl_linalg_hesstri_decomp(A, B, w->Q, w->Z, w->work);
 
       /* save pointers to original matrices */
       w->H = A;
