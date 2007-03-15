@@ -317,25 +317,6 @@ francis_schur_decomp(gsl_matrix * H, gsl_vector_complex * eval,
               lambda2;
 
   N = H->size1;
-
-  if (N == 1)
-    {
-      GSL_SET_COMPLEX(&lambda1, gsl_matrix_get(H, 0, 0), 0.0);
-      gsl_vector_complex_set(eval, w->n_evals, lambda1);
-      w->n_evals += 1;
-      w->n_iter = 0;
-      return;
-    }
-  else if (N == 2)
-    {
-      francis_schur_standardize(H, &lambda1, &lambda2, w);
-      gsl_vector_complex_set(eval, w->n_evals, lambda1);
-      gsl_vector_complex_set(eval, w->n_evals + 1, lambda2);
-      w->n_evals += 2;
-      w->n_iter = 0;
-      return;
-    }
-
   m = gsl_matrix_submatrix(H, 0, 0, N, N);
 
   while ((N > 2) && ((w->n_iter)++ < w->max_iterations))
@@ -443,6 +424,8 @@ francis_schur_decomp(gsl_matrix * H, gsl_vector_complex * eval,
           N = 0;
         }
     }
+
+  /* handle special cases of N = 1 or 2 */
 
   if (N == 1)
     {
