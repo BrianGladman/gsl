@@ -45,6 +45,7 @@ double gsl_stats_uchar_kurtosis (const unsigned char data[], const size_t stride
 double gsl_stats_uchar_lag1_autocorrelation (const unsigned char data[], const size_t stride, const size_t n);
 
 double gsl_stats_uchar_covariance (const unsigned char data1[], const size_t stride1,const unsigned char data2[], const size_t stride2, const size_t n);
+double gsl_stats_uchar_correlation (const unsigned char data1[], const size_t stride1,const unsigned char data2[], const size_t stride2, const size_t n);
 
 double gsl_stats_uchar_variance_m (const unsigned char data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_uchar_sd_m (const unsigned char data[], const size_t stride, const size_t n, const double mean);

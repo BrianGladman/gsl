@@ -45,6 +45,7 @@ double gsl_stats_ulong_kurtosis (const unsigned long data[], const size_t stride
 double gsl_stats_ulong_lag1_autocorrelation (const unsigned long data[], const size_t stride, const size_t n);
 
 double gsl_stats_ulong_covariance (const unsigned long data1[], const size_t stride1,const unsigned long data2[], const size_t stride2, const size_t n);
+double gsl_stats_ulong_correlation (const unsigned long data1[], const size_t stride1,const unsigned long data2[], const size_t stride2, const size_t n);
 
 double gsl_stats_ulong_variance_m (const unsigned long data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_ulong_sd_m (const unsigned long data[], const size_t stride, const size_t n, const double mean);
