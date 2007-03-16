@@ -63,13 +63,9 @@ typedef struct {
   size_t n_iter;         /* number of iterations since last eigenvalue found */
   size_t n_evals;        /* number of eigenvalues found so far */
 
-  gsl_vector *hv2;       /* temporary 2-by-1 householder vector */
-  gsl_vector *hv3;       /* temporary 3-by-1 householder vector */
-
   int compute_t;         /* compute Schur form T = Z^t A Z */
 
   gsl_matrix *H;         /* pointer to Hessenberg matrix */
-
   gsl_matrix *Z;         /* pointer to Schur vector matrix */
 } gsl_eigen_francis_workspace;
 

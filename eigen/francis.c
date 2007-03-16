@@ -96,15 +96,6 @@ gsl_eigen_francis_alloc(void)
   w->Z = NULL;
   w->H = NULL;
 
-  w->hv2 = gsl_vector_alloc(2);
-  w->hv3 = gsl_vector_alloc(3);
-
-  if ((w->hv2 == 0) || (w->hv3 == 0))
-    {
-      gsl_eigen_francis_free(w);
-      GSL_ERROR_NULL ("failed to allocate space for householder vectors", GSL_ENOMEM);
-    }
-
   return (w);
 } /* gsl_eigen_francis_alloc() */
 
@@ -118,12 +109,6 @@ gsl_eigen_francis_free (gsl_eigen_francis_workspace *w)
 {
   if (!w)
     return;
-
-  if (w->hv2)
-    gsl_vector_free(w->hv2);
-
-  if (w->hv3)
-    gsl_vector_free(w->hv3);
 
   free(w);
 } /* gsl_eigen_francis_free() */
@@ -467,11 +452,12 @@ static inline int
 francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
 {
   const size_t N = H->size1;
-  double x, y, z;  /* householder vector elements */
-  double scale;    /* scale factor to avoid overflow */
   size_t i;        /* looping */
   gsl_matrix_view m;
   double tau_i;    /* householder coefficient */
+  double dat[3];   /* householder vector */
+  double scale;    /* scale factor to avoid overflow */
+  gsl_vector_view v2, v3;
   size_t q, r;
   size_t top;      /* location of H in original matrix */
   double s,
@@ -481,6 +467,9 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
          h_cross,  /* H(n,n-1) * H(n-1,n) */
          h_tmp1,
          h_tmp2;
+
+  v2 = gsl_vector_view_array(dat, 2);
+  v3 = gsl_vector_view_array(dat, 3);
 
   if ((w->n_iter == 10) || (w->n_iter == 20))
     {
@@ -542,18 +531,19 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
    * are small
    */
 
-  x = (h_tmp1*h_tmp2 - h_cross) / gsl_matrix_get(H, 1, 0) +
-      gsl_matrix_get(H, 0, 1);
-  y = gsl_matrix_get(H, 1, 1) - gsl_matrix_get(H, 0, 0) - h_tmp1 - h_tmp2;
-  z = gsl_matrix_get(H, 2, 1);
+  dat[0] = (h_tmp1*h_tmp2 - h_cross) / gsl_matrix_get(H, 1, 0) +
+           gsl_matrix_get(H, 0, 1);
+  dat[1] = gsl_matrix_get(H, 1, 1) - gsl_matrix_get(H, 0, 0) - h_tmp1 -
+           h_tmp2;
+  dat[2] = gsl_matrix_get(H, 2, 1);
 
-  scale = fabs(x) + fabs(y) + fabs(z);
+  scale = fabs(dat[0]) + fabs(dat[1]) + fabs(dat[2]);
   if (scale != 0.0)
     {
       /* scale to prevent overflow or underflow */
-      x /= scale;
-      y /= scale;
-      z /= scale;
+      dat[0] /= scale;
+      dat[1] /= scale;
+      dat[2] /= scale;
     }
 
   if (w->Z || w->compute_t)
@@ -567,10 +557,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
 
   for (i = 0; i < N - 2; ++i)
     {
-      gsl_vector_set(w->hv3, 0, x);
-      gsl_vector_set(w->hv3, 1, y);
-      gsl_vector_set(w->hv3, 2, z);
-      tau_i = gsl_linalg_householder_transform(w->hv3);
+      tau_i = gsl_linalg_householder_transform(&v3.vector);
 
       if (tau_i != 0.0)
         {
@@ -597,7 +584,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
                                        top + q,
                                        3,
                                        w->size - top - q);
-              gsl_linalg_householder_hm(tau_i, w->hv3, &m.matrix);
+              gsl_linalg_householder_hm(tau_i, &v3.vector, &m.matrix);
 
               /* apply right householder matrix (I - tau_i v v') to H */
               m = gsl_matrix_submatrix(w->H,
@@ -605,7 +592,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
                                        top + i,
                                        top + r + 1,
                                        3);
-              gsl_linalg_householder_mh(tau_i, w->hv3, &m.matrix);
+              gsl_linalg_householder_mh(tau_i, &v3.vector, &m.matrix);
             }
           else
             {
@@ -616,41 +603,47 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
 
               /* apply left householder matrix (I - tau_i v v') to H */
               m = gsl_matrix_submatrix(H, i, q, 3, N - q);
-              gsl_linalg_householder_hm(tau_i, w->hv3, &m.matrix);
+              gsl_linalg_householder_hm(tau_i, &v3.vector, &m.matrix);
 
               /* apply right householder matrix (I - tau_i v v') to H */
               m = gsl_matrix_submatrix(H, 0, i, r + 1, 3);
-              gsl_linalg_householder_mh(tau_i, w->hv3, &m.matrix);
+              gsl_linalg_householder_mh(tau_i, &v3.vector, &m.matrix);
             }
 
           if (w->Z)
             {
               /* accumulate the similarity transformation into Z */
               m = gsl_matrix_submatrix(w->Z, 0, top + i, w->size, 3);
-              gsl_linalg_householder_mh(tau_i, w->hv3, &m.matrix);
+              gsl_linalg_householder_mh(tau_i, &v3.vector, &m.matrix);
             }
         } /* if (tau_i != 0.0) */
 
-      x = gsl_matrix_get(H, i + 1, i);
-      y = gsl_matrix_get(H, i + 2, i);
+      dat[0] = gsl_matrix_get(H, i + 1, i);
+      dat[1] = gsl_matrix_get(H, i + 2, i);
       if (i < (N - 3))
         {
-          z = gsl_matrix_get(H, i + 3, i);
+          dat[2] = gsl_matrix_get(H, i + 3, i);
         }
 
-      scale = fabs(x) + fabs(y) + fabs(z);
+      scale = fabs(dat[0]) + fabs(dat[1]) + fabs(dat[2]);
       if (scale != 0.0)
         {
           /* scale to prevent overflow or underflow */
-          x /= scale;
-          y /= scale;
-          z /= scale;
+          dat[0] /= scale;
+          dat[1] /= scale;
+          dat[2] /= scale;
         }
     } /* for (i = 0; i < N - 2; ++i) */
 
-  gsl_vector_set(w->hv2, 0, x);
-  gsl_vector_set(w->hv2, 1, y);
-  tau_i = gsl_linalg_householder_transform(w->hv2);
+  scale = fabs(dat[0]) + fabs(dat[1]);
+  if (scale != 0.0)
+    {
+      /* scale to prevent overflow or underflow */
+      dat[0] /= scale;
+      dat[1] /= scale;
+    }
+
+  tau_i = gsl_linalg_householder_transform(&v2.vector);
 
   if (w->compute_t)
     {
@@ -659,29 +652,29 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
                                top + N - 3,
                                2,
                                w->size - top - N + 3);
-      gsl_linalg_householder_hm(tau_i, w->hv2, &m.matrix);
+      gsl_linalg_householder_hm(tau_i, &v2.vector, &m.matrix);
 
       m = gsl_matrix_submatrix(w->H,
                                0,
                                top + N - 2,
                                top + N,
                                2);
-      gsl_linalg_householder_mh(tau_i, w->hv2, &m.matrix);
+      gsl_linalg_householder_mh(tau_i, &v2.vector, &m.matrix);
     }
   else
     {
       m = gsl_matrix_submatrix(H, N - 2, N - 3, 2, 3);
-      gsl_linalg_householder_hm(tau_i, w->hv2, &m.matrix);
+      gsl_linalg_householder_hm(tau_i, &v2.vector, &m.matrix);
 
       m = gsl_matrix_submatrix(H, 0, N - 2, N, 2);
-      gsl_linalg_householder_mh(tau_i, w->hv2, &m.matrix);
+      gsl_linalg_householder_mh(tau_i, &v2.vector, &m.matrix);
     }
 
   if (w->Z)
     {
       /* accumulate transformation into Z */
       m = gsl_matrix_submatrix(w->Z, 0, top + N - 2, w->size, 2);
-      gsl_linalg_householder_mh(tau_i, w->hv2, &m.matrix);
+      gsl_linalg_householder_mh(tau_i, &v2.vector, &m.matrix);
     }
 
   return GSL_SUCCESS;

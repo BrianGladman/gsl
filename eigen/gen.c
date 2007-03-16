@@ -582,7 +582,7 @@ eigenvalues, we perform a Francis double shift QZ sweep. If it
 has real eigenvalues, we perform an implicit single shift QZ sweep.
 
 If the pair is 2-by-2 with real eigenvalues, we perform a single
-shift sweep. If it has complex eigenvalues, we return the value '1'
+shift sweep. If it has complex eigenvalues, we return GSL_CONTINUE
 to notify the calling function that a 2-by-2 block with complex
 eigenvalues has converged, so that it may then call
 gen_schur_standardize2(). In the real eigenvalue case, we want to
@@ -1505,15 +1505,15 @@ gen_schur_standardize1(gsl_matrix *A, gsl_matrix *B, double *alphar,
   size_t i;
   size_t top;
 
-  if (w->needtop)
-    gen_get_submatrix(w->H, A, &top);
-
   /*
    * it is a 1-by-1 block - the only requirement is that
    * B_{00} is > 0, so if it isn't apply a -I transformation
    */
   if (gsl_matrix_get(B, 0, 0) < 0.0)
     {
+      if (w->needtop)
+        gen_get_submatrix(w->H, A, &top);
+
       if (w->compute_t)
         {
           for (i = 0; i <= top; ++i)
