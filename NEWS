@@ -1,3 +1,6 @@
+** Added function gsl_stats_correlation to compute Pearson correlation
+   of two datasets
+
 ** Added support for generalized eigensystems
 
 * What is new in gsl-1.9:
