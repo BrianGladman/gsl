@@ -164,6 +164,11 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
     gsl_test_rel (c, expected, rel, NAME(gsl_stats) "_covariance");
   }
 
+  {
+    double r = FUNCTION(gsl_stats,correlation) (groupa, stridea, groupb, strideb, nb);
+    double expected = -0.112322712666074171;
+    gsl_test_rel (r, expected, rel, NAME(gsl_stats) "_correlation");
+  }
 
   {
     double pv = FUNCTION(gsl_stats,pvariance) (groupa, stridea, na, groupb, strideb, nb);
