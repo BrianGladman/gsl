@@ -36,7 +36,7 @@ defined in @file{gsl_complex_math.h}.
 @section Complex numbers
 @cindex representations of complex numbers
 @cindex polar form of complex numbers
-@tpindex gsl_complex
+@tindex gsl_complex
 
 Complex numbers are represented using the type @code{gsl_complex}. The
 internal representation of this type may vary across platforms and
