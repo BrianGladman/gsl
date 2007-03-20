@@ -198,4 +198,38 @@ derive the equation for the optimal stepsize "h_opt" in function
 "gsl_deriv_central.c"; however, I am trying to look for a derivation
 for the expression of "dy".
 ----------------------------------------------------------------------
-Last assigned bug number = 57
+BUG#58 - laguerre polynomial alpha=0
+
+From: Ed Smith-Rowland <3dw4rd@verizon.net>
+To: gsl-discuss@sources.redhat.com
+Subject: Possible small bug in Laguerre polynomial.
+Date: Sun, 11 Mar 2007 14:05:24 -0400
+
+I have been evaluating Laguerre polynomials for large n and alpha = 0 
+for largish n on several platforms including i686-cygwin, x86_64-linux, 
+powerpc-apple-darwin7.9.0 an it seems that I get bad results on all of them.
+
+I am comparing with Mathematica.  (I know, non-free and otherwise 
+annoying.)  They use high-precision arithmetic and I tend to trust their 
+results.
+
+I believe the error comes from switching to a hypergeometric expression 
+rather than sticking with recursion at alpha=0.
+I have found that staying with recursion works just fine at alpha = 0 
+for n = 50 or 100.
+
+The special function testsuite is clean on all platforms when I make the 
+one-character change.
+
+Change line 288 of laguerre.c
+from:
+  else if(a > 0.0 || (x > 0.0 && a < -n-1)) {
+to:
+  else if(a >= 0.0 || (x > 0.0 && a < -n-1)) {
+
+
+Ed Smith-Rowland
+
+
+----------------------------------------------------------------------
+Last assigned bug number = 58
