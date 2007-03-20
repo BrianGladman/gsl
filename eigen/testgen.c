@@ -59,13 +59,6 @@ typedef struct
   gsl_matrix *Z;
   int N;
 
-  /* EISPACK */
-  gsl_vector *work;
-  double eps1;
-  int ierr;
-  int matz;
-
-  /* LAPACK */
   char jobvsl;
   char jobvsr;
   char sort;
@@ -79,16 +72,8 @@ typedef struct
   int ldvsr;
   int lwork;
   int info;
-  int *bwork;
+  double *work;
   
-  /* dhgeqz */
-  char job;
-  char compq;
-  char compz;
-  int ilo;
-  int ihi;
-  double *qzwork;
-
   gsl_vector_complex *evals;
   gsl_vector_complex *alpha;
   size_t n_evals;
@@ -103,17 +88,6 @@ void dgges_(char *jobvsl, char *jobvsr, char *sort, int *selctg, int *n,
             double *alphar, double *alphai, double *beta, double *vsl,
             int *ldvsl, double *vsr, int *ldvsr, double *work, int *lwork,
             int *bwork, int *info);
-void dhgeqz_(char *job, char *compq, char *compz, int *n, int *ilo, int *ihi,
-             double *h, int *ldh, double *t, int *ldt, double *alphar,
-             double *alphai, double *beta, double *q, int *ldq, double *z,
-             int *ldz, double *work, int *lwork, int *info);
-void myqz_(char *job, char *compq, char *compz, int *n, int *ilo, int *ihi,
-           double *h, int *ldh, double *t, int *ldt, double *alphar,
-           double *alphai, double *beta, double *q, int *ldq, double *z,
-           int *ldz, double *work, int *lwork, int *info);
-
-void qzit_(int *nm, int *n, double *a, double *b, double *eps1,
-           int *matz, double *z, int *ierr);
 
 /*
  * Global variables
@@ -221,6 +195,7 @@ lapack_workspace *
 lapack_alloc(const size_t n)
 {
   lapack_workspace *w;
+  double work[1];
 
   w = (lapack_workspace *) calloc(1, sizeof(lapack_workspace));
 
@@ -237,48 +212,36 @@ lapack_alloc(const size_t n)
   w->N = (int) n;
   w->n_evals = 0;
 
-  /* eispack */
-  w->work = gsl_vector_alloc(n);
-  w->eps1 = 0.0;
-  w->ierr = 0;
-  w->matz = 0;
-
-  /* lapack - dhgeqz */
-  w->job = 'E';
-  w->compq = 'N';
-  w->compz = 'N';
-  w->ilo = 1;
-  w->ihi = w->N;
-  w->qzwork = malloc(w->N * sizeof(double));
+  w->jobvsl = 'N';
+  w->jobvsr = 'N';
+  w->sort = 'N';
+  w->info = 0;
 
   w->lwork = -1;
-  dhgeqz_(&w->job,
-          &w->compq,
-          &w->compz,
-          &w->N,
-          &w->ilo,
-          &w->ihi,
-          (double *) 0,
-          &w->A->tda,
-          (double *) 0,
-          &w->A->tda,
-          (double *) 0,
-          (double *) 0,
-          (double *) 0,
-          (double *) 0,
-          &w->A->tda,
-          (double *) 0,
-          &w->A->tda,
-          w->qzwork,
-          &w->lwork,
-          &w->info);
-  w->lwork = (int) w->qzwork[0];
+  dgges_(&w->jobvsl,
+         &w->jobvsr,
+         &w->sort,
+         (int *) 0,
+         &w->N,
+         w->A->data,
+         &w->A->tda,
+         w->B->data,
+         &w->B->tda,
+         &w->sdim,
+         w->alphar,
+         w->alphai,
+         w->beta->data,
+         w->Q->data,
+         &w->Q->tda,
+         w->Z->data,
+         &w->Z->tda,
+         work,
+         &w->lwork,
+         (int *) 0,
+         &w->info);
 
-  if (w->lwork != w->N)
-    {
-      free(w->qzwork);
-      w->qzwork = malloc(w->lwork * sizeof(double));
-    }
+  w->lwork = (int) work[0];
+  w->work = malloc(w->lwork * sizeof(double));
 
   return (w);
 } /* lapack_alloc() */
@@ -302,7 +265,7 @@ lapack_free(lapack_workspace *w)
     gsl_matrix_free(w->Z);
 
   if (w->work)
-    gsl_vector_free(w->work);
+    free(w->work);
 
   if (w->alphar)
     free(w->alphar);
@@ -319,73 +282,35 @@ lapack_free(lapack_workspace *w)
   if (w->evals)
     gsl_vector_complex_free(w->evals);
 
-  if (w->qzwork)
-    free(w->qzwork);
-
   free(w);
 } /* lapack_free() */
 
 int
 lapack_proc(lapack_workspace *w)
 {
-  gsl_matrix_transpose(w->A);
-  gsl_matrix_transpose(w->B);
-  gsl_linalg_hesstri(w->A, w->B, w->Q, w->Z, w->work);
-  gsl_matrix_transpose(w->A);
-  gsl_matrix_transpose(w->B);
-  gsl_matrix_transpose(w->Q);
-  gsl_matrix_transpose(w->Z);
-
-#if 0
-
-  qzit_((int *) &w->A->tda,
-        (int *) &(w->N),
-        w->A->data,
-        w->B->data,
-        (double *) &w->eps1,
-        (int *) &w->matz,
-        (double *) 0,
-        &w->ierr);
-
-  if (w->ierr != 0)
-    {
-      w->n_evals = w->ierr;
-      return GSL_EMAXITER;
-    }
-  else
-    {
-      w->n_evals = w->N;
-      return GSL_SUCCESS;
-    }
-
-#else
-
-  w->compq = 'V';
-  w->compz = 'V';
-  dhgeqz_(&w->job,
-          &w->compq,
-          &w->compz,
-          &w->N,
-          &w->ilo,
-          &w->ihi,
-          w->A->data,
-          &w->A->tda,
-          w->B->data,
-          &w->B->tda,
-          w->alphar,
-          w->alphai,
-          w->beta->data,
-          w->Q->data,
-          &w->Q->tda,
-          w->Z->data,
-          &w->Z->tda,
-          w->qzwork,
-          &w->lwork,
-          &w->info);
+  dgges_(&w->jobvsl,
+         &w->jobvsr,
+         &w->sort,
+         (int *) 0,
+         &w->N,
+         w->A->data,
+         &w->A->tda,
+         w->B->data,
+         &w->B->tda,
+         &w->sdim,
+         w->alphar,
+         w->alphai,
+         w->beta->data,
+         w->Q->data,
+         &w->Q->tda,
+         w->Z->data,
+         &w->Z->tda,
+         w->work,
+         &w->lwork,
+         (int *) 0,
+         &w->info);
 
   return (w->info);
-
-#endif
 } /* lapack_proc() */
 
 /**********************************************
@@ -798,7 +723,7 @@ print_vector(gsl_vector_complex *eval, const char *str)
       printf("%.18e %.18e;\n", GSL_REAL(z), GSL_IMAG(z));
     }
 
-  printf("\n]\n");
+  printf("]\n");
 } /* print_vector() */
 
 int
@@ -852,7 +777,7 @@ main(int argc, char *argv[])
   gsl_ieee_env_setup();
   gsl_rng_env_setup();
 
-  N = 4;
+  N = 30;
   lower = -10;
   upper = 10;
   incremental = 0;
@@ -944,7 +869,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 299062)
+      /*if (count != 83135)
         continue;*/
 
       /* make copies of matrices */
