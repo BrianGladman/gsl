@@ -1246,7 +1246,7 @@ int gsl_sf_lngamma_sgn_e(double x, gsl_sf_result * result_lg, double * sgn)
     result_lg->val = 0.0;
     result_lg->err = 0.0;
     *sgn = 0.0;
-    GSL_ERROR ("error", GSL_EROUND);
+    GSL_ERROR ("x too large to extract fraction part", GSL_EROUND);
   }
 }
 
