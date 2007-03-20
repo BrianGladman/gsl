@@ -73,6 +73,16 @@ mailing list available at,
 
   http://sources.redhat.com/ml/gsl-discuss/
 
+---------- useful scripts
+
+There are some useful perl scripts in the scripts/ directory:
+
+  mkheaders.pl -- updates header files for different types from 
+                  the "float" version
+
+  mkdefuns.pl  -- creates a texinfo fragment from the function 
+                  prototypes in a header file
+
 ---------- some special targets
 
 To check for ansi compliance define a bash alias "makestrict",
