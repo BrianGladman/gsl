@@ -15,7 +15,7 @@ while (<>) {
     s/\s+\)/\)/g;
     s/(\w)\(/$1 \(/g;
     next if !/\(/ ;
-    s/(\w+)(,|\))/\@var{$1}$2/g;
+    s/(\w+)(\[|,|\))/\@var{$1}$2/g;
     s/\@var\{\*/*\@var\{/g ;
     print "\@deftypefun $_\n";
     print "\@end deftypefun\n\n" ;
