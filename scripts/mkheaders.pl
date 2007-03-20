@@ -1,9 +1,16 @@
 #!/usr/bin/perl
 
+# This script generates header files automatically
+# from the "float" version of the header
+# e.g mkheaders.pl gsl_statistics
+# generates double, int, etc from gsl_statistics_float.h
+
 $dir = $ARGV[0];
 $f = "${dir}_float.h" ;
 $x = "float" ;
 #$suff = ".new";
+
+die "can't find $f" if ! -e $f;
 
 open(FILE,"<$f") ; @lines = <FILE> ; close(FILE) ;
 
