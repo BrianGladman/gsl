@@ -682,7 +682,7 @@ and the Householder coefficients are stored in the vector @var{tau}.
 This function constructs the orthogonal matrix @math{U} from the
 information stored in the Hessenberg matrix @var{H} along with the
 vector @var{tau}. @var{H} and @var{tau} are outputs from
-@code{gsl_linalg_hessenberg}.
+@code{gsl_linalg_hessenberg_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_hessenberg_unpack_accum (gsl_matrix * @var{H}, gsl_vector * @var{tau}, gsl_matrix * @var{V})
@@ -697,7 +697,7 @@ Setting @var{V} to the identity matrix provides the same result as
 @deftypefun int gsl_linalg_hessenberg_set_zero (gsl_matrix * @var{H})
 This function sets the lower triangular portion of @var{H}, below
 the subdiagonal, to zero. It is useful for clearing out the
-Householder vectors after calling @code{gsl_linalg_hessenberg}.
+Householder vectors after calling @code{gsl_linalg_hessenberg_decomp}.
 @end deftypefun
 
 @node Hessenberg-Triangular Decomposition of Real Matrices
