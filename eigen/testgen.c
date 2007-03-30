@@ -224,17 +224,17 @@ lapack_alloc(const size_t n)
          (int *) 0,
          &w->N,
          w->A->data,
-         &w->A->tda,
+         (int *) &w->A->tda,
          w->B->data,
-         &w->B->tda,
+         (int *) &w->B->tda,
          &w->sdim,
          w->alphar,
          w->alphai,
          w->beta->data,
          w->Q->data,
-         &w->Q->tda,
+         (int *) &w->Q->tda,
          w->Z->data,
-         &w->Z->tda,
+         (int *) &w->Z->tda,
          work,
          &w->lwork,
          (int *) 0,
@@ -294,17 +294,17 @@ lapack_proc(lapack_workspace *w)
          (int *) 0,
          &w->N,
          w->A->data,
-         &w->A->tda,
+         (int *) &w->A->tda,
          w->B->data,
-         &w->B->tda,
+         (int *) &w->B->tda,
          &w->sdim,
          w->alphar,
          w->alphai,
          w->beta->data,
          w->Q->data,
-         &w->Q->tda,
+         (int *) &w->Q->tda,
          w->Z->data,
-         &w->Z->tda,
+         (int *) &w->Z->tda,
          w->work,
          &w->lwork,
          (int *) 0,
@@ -740,6 +740,11 @@ compare(const void *a, const void *b)
   int r1 = cmp(y[0], x[0]);
   int r2 = cmp(y[1], x[1]);
 
+  if (!gsl_finite(x[0]))
+    return 1;
+  if (!gsl_finite(y[0]))
+    return -1;
+
   if (fabs(x[0] - y[0]) < 1.0e-8)
     {
       /* real parts are very close to each other */
@@ -869,7 +874,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 83135)
+      /*if (count != 59539)
         continue;*/
 
       /* make copies of matrices */
@@ -911,15 +916,26 @@ main(int argc, char *argv[])
           gsl_complex alpha, z;
 
           beta = gsl_vector_get(gen_workspace_p->beta, i);
-          alpha = gsl_vector_complex_get(gen_workspace_p->alpha, i);
-          z = gsl_complex_div_real(alpha, beta);
+          if (beta == 0.0)
+            GSL_SET_COMPLEX(&z, GSL_POSINF, GSL_POSINF);
+          else
+            {
+              alpha = gsl_vector_complex_get(gen_workspace_p->alpha, i);
+              z = gsl_complex_div_real(alpha, beta);
+            }
+
           gsl_vector_complex_set(gen_workspace_p->evals, i, z);
 
           beta = gsl_vector_get(lapack_workspace_p->beta, i);
           GSL_SET_COMPLEX(&alpha,
                           lapack_workspace_p->alphar[i],
                           lapack_workspace_p->alphai[i]);
-          z = gsl_complex_div_real(alpha, beta);
+
+          if (beta == 0.0)
+            GSL_SET_COMPLEX(&z, GSL_POSINF, GSL_POSINF);
+          else
+            z = gsl_complex_div_real(alpha, beta);
+
           gsl_vector_complex_set(lapack_workspace_p->evals, i, z);
           gsl_vector_complex_set(lapack_workspace_p->alpha, i, alpha);
         }

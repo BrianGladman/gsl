@@ -1,6 +1,6 @@
 /* eigen/gsl_eigen.h
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2006, 2007 Gerard Jungman, Brian Gough, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,6 +126,7 @@ typedef struct {
   size_t n_evals;         /* number of eigenvalues found */
   size_t max_iterations;  /* maximum QZ iterations allowed */
   size_t n_iter;          /* number of iterations since last eigenvalue found */
+  double eshift;          /* exceptional shift counter */
 
   int needtop;            /* need to compute top index? */
 
