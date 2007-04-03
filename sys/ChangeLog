@@ -1,3 +1,13 @@
+2007-04-03  Brian Gough  <bjg@r51e.network-theory.co.uk>
+
+	* infnan.c (gsl_isinf): now return -1 for -Inf instead of +1
+
+	* test.c (main): add test for -inf
+
+	* infnan.c (gsl_finite): always use finite where available
+	(gsl_isnan): always use isnan where available
+	(gsl_isinf): always use isinf where available
+
 2005-11-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c: added tests for constants

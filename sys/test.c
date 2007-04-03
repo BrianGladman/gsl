@@ -341,7 +341,11 @@ main (void)
     s = gsl_isinf (inf);
     gsl_test_int (s, 1, "gsl_isinf(inf)");
 
-    s = gsl_isinf (-inf);
+    /* isinf(3): In glibc 2.01 and earlier, isinf() returns a
+       non-zero value (actually: 1) if x is an infinity (positive or
+       negative).  (This is all that C99 requires.) */
+
+    s = gsl_isinf (-inf);  
     gsl_test_int (s, -1, "gsl_isinf(-inf)");
 
     s = gsl_isinf (nan);
@@ -357,6 +361,9 @@ main (void)
     s = gsl_isnan (inf);
     gsl_test_int (s, 0, "gsl_isnan(inf)");
 
+    s = gsl_isnan (-inf);
+    gsl_test_int (s, 0, "gsl_isnan(-inf)");
+
     s = gsl_isnan (nan);
     gsl_test_int (s, 1, "gsl_isnan(nan)");
 
@@ -369,6 +376,9 @@ main (void)
 
     s = gsl_finite (inf);
     gsl_test_int (s, 0, "gsl_finite(inf)");
+
+    s = gsl_finite (-inf);
+    gsl_test_int (s, 0, "gsl_finite(-inf)");
 
     s = gsl_finite (nan);
     gsl_test_int (s, 0, "gsl_finite(nan)");

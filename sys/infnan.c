@@ -75,6 +75,36 @@ gsl_finite (const double x)
 {
   return _finite(x);
 }
+#else
+
+# if HAVE_DECL_FINITE
+int
+gsl_finite (const double x)
+{
+  return finite(x);
+}
+# elif HAVE_DECL_ISFINITE
+int
+gsl_finite (const double x)
+{
+  return isfinite(x);
+}
+# elif HAVE_IEEE_COMPARISONS
+int
+gsl_finite (const double x)
+{
+  const double y = x - x;
+  int status = (y == y);
+  return status;
+}
+# endif
+
+# if HAVE_DECL_ISNAN
+int
+gsl_isnan (const double x)
+{
+  return isnan(x);
+}
 #elif HAVE_IEEE_COMPARISONS
 int
 gsl_isnan (const double x)
@@ -82,7 +112,31 @@ gsl_isnan (const double x)
   int status = (x != x);
   return status;
 }
+# endif
 
+# if HAVE_DECL_ISINF
+int
+gsl_isinf (const double x)
+{
+    return isinf(x);
+}
+# else
+
+int
+gsl_isinf (const double x)
+{
+  if (! gsl_finite(x) && ! gsl_isnan(x)) 
+    {
+      return (x > 0 ? +1 : -1); 
+    } 
+  else 
+    {
+      return 0;
+    }
+}
+
+#  if 1
+/* Direct implementation */
 int
 gsl_isinf (const double x)
 {
@@ -96,52 +150,7 @@ gsl_isinf (const double x)
   else
     return 0;
 }
-
-int
-gsl_finite (const double x)
-{
-  const double y = x - x;
-  int status = (y == y);
-  return status;
-}
-#else
-
-#if HAVE_DECL_ISNAN
-int
-gsl_isnan (const double x)
-{
-  return isnan(x);
-}
-#endif
-
-#if HAVE_DECL_ISINF
-int
-gsl_isinf (const double x)
-{
-    return isinf(x);
-}
-#else
-int
-gsl_isinf (const double x)
-{
-    return (! gsl_finite(x)) && (! gsl_isnan(x));
-}
-#endif
-
-
-#if HAVE_DECL_FINITE
-int
-gsl_finite (const double x)
-{
-  return finite(x);
-}
-#elif HAVE_DECL_ISFINITE
-int
-gsl_finite (const double x)
-{
-  return isfinite(x);
-}
-#endif
-
+#  endif
+# endif
 #endif
 

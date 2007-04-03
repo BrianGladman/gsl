@@ -1,3 +1,10 @@
+** The functions gsl_{isnan,isinf,finite} will now always use the
+system versions of isnan, isinf and finite if they are available.
+Previously the portable GSL implementations were used whenever the
+platform supported IEEE comparisons.  The portable gsl_isinf function
+now returns -1 instead of +1 for -Inf, in line with recent versions of
+the GNU C Library.
+
 ** Added function gsl_stats_correlation to compute Pearson correlation
    of two datasets
 
