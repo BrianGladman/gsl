@@ -225,7 +225,7 @@ desired, it is stored in the upper portion of @var{A} on output.
 Otherwise, on output, the diagonal of @var{A} will contain the
 @math{1}-by-@math{1} real eigenvalues and @math{2}-by-@math{2}
 complex conjugate eigenvalue systems, and the rest of @var{A} is
-destroyed. In rare cases, this function will fail to find all
+destroyed. In rare cases, this function may fail to find all
 eigenvalues. If this happens, an error code is returned
 and the number of converged eigenvalues is stored in @code{w->n_evals}.
 The converged eigenvalues are stored in the beginning of @var{eval}.
@@ -268,7 +268,7 @@ the Schur vectors into @var{Z}.
 @section Real Generalized Nonsymmetric Eigensystems
 @cindex generalized eigensystems
 
-Given two square N-by-N matrices (@math{A}, @math{B}), the generalized
+Given two square matrices (@math{A}, @math{B}), the generalized
 nonsymmetric eigenvalue problem is to find eigenvalues @math{\lambda} and
 eigenvectors @math{x} such that
 @tex
@@ -354,11 +354,17 @@ problem is solved in subsequent calls to @code{gsl_eigen_gen}.
 
 If @var{compute_s} is set to 1, the full Schur form @math{S} will be
 computed by @code{gsl_eigen_gen}. If it is set to 0,
-@math{S} will not be computed (this is the default setting).
+@math{S} will not be computed (this is the default setting). @math{S}
+is a quasi upper triangular matrix with 1-by-1 and 2-by-2 blocks
+on its diagonal. 1-by-1 blocks correspond to real eigenvalues, and
+2-by-2 blocks correspond to complex eigenvalues.
 
 If @var{compute_t} is set to 1, the full Schur form @math{T} will be
 computed by @code{gsl_eigen_gen}. If it is set to 0,
-@math{T} will not be computed (this is the default setting).
+@math{T} will not be computed (this is the default setting). @math{T}
+is an upper triangular matrix with positive elements on its diagonal.
+Any 2-by-2 blocks in @math{S} will correspond to a 2-by-2 diagonal
+block in @math{T}.
 
 The @var{balance} parameter is currently ignored, since generalized
 balancing is not yet implemented.
@@ -377,7 +383,7 @@ to be non-negative.
 
 If @math{S} is desired, it is stored in @var{A} on output. If @math{T}
 is desired, it is stored in @var{B} on output. In rare cases, this
-function will fail to find all eigenvalues. If this occurs, an error
+function may fail to find all eigenvalues. If this occurs, an error
 code is returned and the number of converged eigenvalues is stored
 in @code{w->n_evals}. The converged eigenvalues are stored in the
 beginning of the (@var{alpha}, @var{beta}) vectors.
