@@ -362,7 +362,7 @@ on its diagonal. 1-by-1 blocks correspond to real eigenvalues, and
 If @var{compute_t} is set to 1, the full Schur form @math{T} will be
 computed by @code{gsl_eigen_gen}. If it is set to 0,
 @math{T} will not be computed (this is the default setting). @math{T}
-is an upper triangular matrix with positive elements on its diagonal.
+is an upper triangular matrix with non-negative elements on its diagonal.
 Any 2-by-2 blocks in @math{S} will correspond to a 2-by-2 diagonal
 block in @math{T}.
 
