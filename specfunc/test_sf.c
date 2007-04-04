@@ -1735,6 +1735,13 @@ int test_laguerre(void)
   TEST_SF(s, gsl_sf_laguerre_n_e, (100, -50.0,  10.0, &r), 4.504712811317745591e-21,  TEST_SQRT_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (100, -50.0, -10.0, &r), 1.475165520610679937e-11,  TEST_TOL1, GSL_SUCCESS);
 
+  /* test cases for Ed Smith-Rowland */
+
+  TEST_SF(s, gsl_sf_laguerre_n_e, (100, 0.0, 0.5, &r), 0.18682260367692278801, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (100, 0.0, 10.5, &r), 9.1796907354050059874, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (100, 0.0, -10.5, &r), 5.6329215744170606488e24, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (100, 0.0, 100.5, &r), -3.9844782875811907525e20, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (100, 0.0, 150, &r), -1.4463204337261709595e31, TEST_TOL2, GSL_SUCCESS);
 
   return s;
 }
