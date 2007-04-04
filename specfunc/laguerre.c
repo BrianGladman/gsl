@@ -285,7 +285,7 @@ int gsl_sf_laguerre_n_e(const int n, const double a, const double x,
   else if(n > 1.0e+07 && x > 0.0 && a > -1.0 && x < 2.0*(a+1.0)+4.0*n) {
     return laguerre_large_n(n, a, x, result);
   }
-  else if(a > 0.0 || (x > 0.0 && a < -n-1)) {
+  else if(a >= 0.0 || (x > 0.0 && a < -n-1)) {
     gsl_sf_result lg2;
     int stat_lg2 = gsl_sf_laguerre_2_e(a, x, &lg2);
     double Lkm1 = 1.0 + a - x;

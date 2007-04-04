@@ -402,3 +402,6 @@ improved BFGS algorithm.
 
 * Lionel Barnett <lionelb.nospam@googlemail.com> for pointing out an
 error in the elliptic integrals
+
+* Ed Smith-Rowland <3dw4rd@verizon.net> patch for laguerre polynomials
+

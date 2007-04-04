@@ -1,3 +1,6 @@
+** Improved the accuracy of the generalised laguerre polynomials for
+large n when alpha=0.
+
 ** The functions gsl_{isnan,isinf,finite} will now always use the
 system versions of isnan, isinf and finite if they are available.
 Previously the portable GSL implementations were used whenever the
