@@ -1055,7 +1055,7 @@ line-oriented tools.
 @deftypefun int gsl_histogram2d_fscanf (FILE * @var{stream}, gsl_histogram2d * @var{h})
 This function reads formatted data from the stream @var{stream} into the
 histogram @var{h}.  The data is assumed to be in the five-column format
-used by @code{gsl_histogram_fprintf}.  The histogram @var{h} must be
+used by @code{gsl_histogram2d_fprintf}.  The histogram @var{h} must be
 preallocated with the correct lengths since the function uses the sizes
 of @var{h} to determine how many numbers to read.  The function returns 0
 for success and @code{GSL_EFAILED} if there was a problem reading from
