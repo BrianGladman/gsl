@@ -29,6 +29,9 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
 
+#include "subrowcol.c"
+#include "schur.c"
+
 /*
  * This module computes the eigenvalues of a real generalized
  * eigensystem A x = \lambda B x. Left and right Schur vectors
@@ -66,9 +69,6 @@ static int gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B,
                                   gsl_complex *alpha2,
                                   double *beta1, double *beta2,
                                   gsl_eigen_gen_workspace *w);
-static int gen_eigval2(gsl_matrix *A, gsl_matrix *B, double *wr1,
-                       double *wr2, double *wi, double *scale1,
-                       double *scale2);
 static int gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B,
                                  gsl_complex *alpha1,
                                  gsl_complex *alpha2, double *beta1,
@@ -103,8 +103,7 @@ gsl_eigen_gen_alloc(const size_t n)
                       GSL_EINVAL);
     }
 
-  w = (gsl_eigen_gen_workspace *)
-      calloc (1, sizeof (gsl_eigen_gen_workspace));
+  w = calloc (1, sizeof (gsl_eigen_gen_workspace));
 
   if (w == 0)
     {
@@ -147,9 +146,6 @@ gsl_eigen_gen_free()
 void
 gsl_eigen_gen_free (gsl_eigen_gen_workspace * w)
 {
-  if (!w)
-    return;
-
   if (w->work)
     gsl_vector_free(w->work);
 
@@ -351,10 +347,8 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
   h = gsl_matrix_submatrix(H, 0, 0, N, N);
   r = gsl_matrix_submatrix(R, 0, 0, N, N);
 
-  while ((N > 1) && w->n_iter < w->max_iterations)
+  while ((N > 1) && (w->n_iter)++ < w->max_iterations)
     {
-      ++(w->n_iter);
-
       q = gen_search_small_elements(&h.matrix, &r.matrix, &flag, w);
 
       if (flag == 0)
@@ -574,7 +568,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
 
           N = 0;
         }
-    } /* while ((N > 1) && w->n_iter < w->max_iterations) */
+    } /* while ((N > 1) && (w->n_iter)++ < w->max_iterations) */
 
   /* handle special case of N = 1 */
 
@@ -663,7 +657,13 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
       vh = gsl_matrix_submatrix(H, N - 2, N - 2, 2, 2);
       vr = gsl_matrix_submatrix(R, N - 2, N - 2, 2, 2);
-      gen_eigval2(&vh.matrix, &vr.matrix, &wr1, &wr2, &wi, &scale1, &scale2);
+      schur_gen_eigvals(&vh.matrix,
+                        &vr.matrix,
+                        &wr1,
+                        &wr2,
+                        &wi,
+                        &scale1,
+                        &scale2);
 
       if (wi != 0.0)
         {
@@ -734,34 +734,26 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
       if (w->compute_s)
         {
-          xv = gsl_matrix_row(w->H, top + j);
-          xv = gsl_vector_subvector(&xv.vector, top + j, w->size - top - j);
-          yv = gsl_matrix_row(w->H, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, top + j, w->size - top - j);
+          xv = gsl_matrix_subrow(w->H, top + j, top + j, w->size - top - j);
+          yv = gsl_matrix_subrow(w->H, top + j + 1, top + j, w->size - top - j);
         }
       else
         {
-          xv = gsl_matrix_row(H, j);
-          xv = gsl_vector_subvector(&xv.vector, j, N - j);
-          yv = gsl_matrix_row(H, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, j, N - j);
+          xv = gsl_matrix_subrow(H, j, j, N - j);
+          yv = gsl_matrix_subrow(H, j + 1, j, N - j);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
 
       if (w->compute_t)
         {
-          xv = gsl_matrix_row(w->R, top + j);
-          xv = gsl_vector_subvector(&xv.vector, top + j, w->size - top - j);
-          yv = gsl_matrix_row(w->R, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, top + j, w->size - top - j);
+          xv = gsl_matrix_subrow(w->R, top + j, top + j, w->size - top - j);
+          yv = gsl_matrix_subrow(w->R, top + j + 1, top + j, w->size - top - j);
         }
       else
         {
-          xv = gsl_matrix_row(R, j);
-          xv = gsl_vector_subvector(&xv.vector, j, N - j);
-          yv = gsl_matrix_row(R, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, j, N - j);
+          xv = gsl_matrix_subrow(R, j, j, N - j);
+          yv = gsl_matrix_subrow(R, j + 1, j, N - j);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -782,17 +774,13 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
       if (w->compute_s)
         {
-          xv = gsl_matrix_column(w->H, top + j);
-          xv = gsl_vector_subvector(&xv.vector, 0, top + rows);
-          yv = gsl_matrix_column(w->H, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, top + rows);
+          xv = gsl_matrix_subcolumn(w->H, top + j, 0, top + rows);
+          yv = gsl_matrix_subcolumn(w->H, top + j + 1, 0, top + rows);
         }
       else
         {
-          xv = gsl_matrix_column(H, j);
-          xv = gsl_vector_subvector(&xv.vector, 0, rows);
-          yv = gsl_matrix_column(H, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, rows);
+          xv = gsl_matrix_subcolumn(H, j, 0, rows);
+          yv = gsl_matrix_subcolumn(H, j + 1, 0, rows);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -801,17 +789,13 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
       if (w->compute_t)
         {
-          xv = gsl_matrix_column(w->R, top + j);
-          xv = gsl_vector_subvector(&xv.vector, 0, top + rows);
-          yv = gsl_matrix_column(w->R, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, top + rows);
+          xv = gsl_matrix_subcolumn(w->R, top + j, 0, top + rows);
+          yv = gsl_matrix_subcolumn(w->R, top + j + 1, 0, top + rows);
         }
       else
         {
-          xv = gsl_matrix_column(R, j);
-          xv = gsl_vector_subvector(&xv.vector, 0, rows);
-          yv = gsl_matrix_column(R, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, rows);
+          xv = gsl_matrix_subcolumn(R, j, 0, rows);
+          yv = gsl_matrix_subcolumn(R, j + 1, 0, rows);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1268,17 +1252,13 @@ gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
 
       if (w->compute_t)
         {
-          xv = gsl_matrix_row(w->R, top + j);
-          xv = gsl_vector_subvector(&xv.vector, top + j + 1, w->size - top - j - 1);
-          yv = gsl_matrix_row(w->R, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, top + j + 1, w->size - top - j - 1);
+          xv = gsl_matrix_subrow(w->R, top + j, top + j + 1, w->size - top - j - 1);
+          yv = gsl_matrix_subrow(w->R, top + j + 1, top + j + 1, w->size - top - j - 1);
         }
       else
         {
-          xv = gsl_matrix_row(R, j);
-          xv = gsl_vector_subvector(&xv.vector, j + 1, N - j - 1);
-          yv = gsl_matrix_row(R, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, j + 1, N - j - 1);
+          xv = gsl_matrix_subrow(R, j, j + 1, N - j - 1);
+          yv = gsl_matrix_subrow(R, j + 1, j + 1, N - j - 1);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1286,17 +1266,13 @@ gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
 
       if (w->compute_s)
         {
-          xv = gsl_matrix_row(w->H, top + j);
-          xv = gsl_vector_subvector(&xv.vector, top + j - 1, w->size - top - j + 1);
-          yv = gsl_matrix_row(w->H, top + j + 1);
-          yv = gsl_vector_subvector(&yv.vector, top + j - 1, w->size - top - j + 1);
+          xv = gsl_matrix_subrow(w->H, top + j, top + j - 1, w->size - top - j + 1);
+          yv = gsl_matrix_subrow(w->H, top + j + 1, top + j - 1, w->size - top - j + 1);
         }
       else
         {
-          xv = gsl_matrix_row(H, j);
-          xv = gsl_vector_subvector(&xv.vector, j - 1, N - j + 1);
-          yv = gsl_matrix_row(H, j + 1);
-          yv = gsl_vector_subvector(&yv.vector, j - 1, N - j + 1);
+          xv = gsl_matrix_subrow(H, j, j - 1, N - j + 1);
+          yv = gsl_matrix_subrow(H, j + 1, j - 1, N - j + 1);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1317,17 +1293,13 @@ gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
 
       if (w->compute_s)
         {
-          xv = gsl_matrix_column(w->H, top + j);
-          xv = gsl_vector_subvector(&xv.vector, 0, top + j + 2);
-          yv = gsl_matrix_column(w->H, top + j - 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, top + j + 2);
+          xv = gsl_matrix_subcolumn(w->H, top + j, 0, top + j + 2);
+          yv = gsl_matrix_subcolumn(w->H, top + j - 1, 0, top + j + 2);
         }
       else
         {
-          xv = gsl_matrix_column(H, j);
-          xv = gsl_vector_subvector(&xv.vector, 0, j + 2);
-          yv = gsl_matrix_column(H, j - 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, j + 2);
+          xv = gsl_matrix_subcolumn(H, j, 0, j + 2);
+          yv = gsl_matrix_subcolumn(H, j - 1, 0, j + 2);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1335,17 +1307,13 @@ gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
 
       if (w->compute_t)
         {
-          xv = gsl_matrix_column(w->R, top + j);
-          xv = gsl_vector_subvector(&xv.vector, 0, top + j + 1);
-          yv = gsl_matrix_column(w->R, top + j - 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, top + j + 1);
+          xv = gsl_matrix_subcolumn(w->R, top + j, 0, top + j + 1);
+          yv = gsl_matrix_subcolumn(w->R, top + j - 1, 0, top + j + 1);
         }
       else
         {
-          xv = gsl_matrix_column(R, j);
-          xv = gsl_vector_subvector(&xv.vector, 0, j + 1);
-          yv = gsl_matrix_column(R, j - 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, j + 1);
+          xv = gsl_matrix_subcolumn(R, j, 0, j + 1);
+          yv = gsl_matrix_subcolumn(R, j - 1, 0, j + 1);
         }
 
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1401,17 +1369,13 @@ gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
   if (w->compute_t)
     {
-      xv = gsl_matrix_column(w->R, top + N - 1);
-      xv = gsl_vector_subvector(&xv.vector, 0, w->size - 1);
-      yv = gsl_matrix_column(w->R, top + N - 2);
-      yv = gsl_vector_subvector(&yv.vector, 0, w->size - 1);
+      xv = gsl_matrix_subcolumn(w->R, top + N - 1, 0, w->size - 1);
+      yv = gsl_matrix_subcolumn(w->R, top + N - 2, 0, w->size - 1);
     }
   else
     {
-      xv = gsl_matrix_column(R, N - 1);
-      xv = gsl_vector_subvector(&xv.vector, 0, N - 1);
-      yv = gsl_matrix_column(R, N - 2);
-      yv = gsl_vector_subvector(&yv.vector, 0, N - 1);
+      xv = gsl_matrix_subcolumn(R, N - 1, 0, N - 1);
+      yv = gsl_matrix_subcolumn(R, N - 2, 0, N - 1);
     }
 
   gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
@@ -1573,7 +1537,7 @@ gen_schur_standardize2()
 converged. Convert the block to standard form, which means B
 is rotated so that
 
-B = [ B11  0  ] with B11 non-negative
+B = [ B11  0  ] with B11, B22 non-negative
     [  0  B22 ]
 
 If the resulting block (A, B) has complex eigenvalues, they are
@@ -1691,16 +1655,12 @@ gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
 
   if (w->compute_s)
     {
-      xv = gsl_matrix_row(w->H, top);
-      xv = gsl_vector_subvector(&xv.vector, top, w->size - top);
-      yv = gsl_matrix_row(w->H, top + 1);
-      yv = gsl_vector_subvector(&yv.vector, top, w->size - top);
+      xv = gsl_matrix_subrow(w->H, top, top, w->size - top);
+      yv = gsl_matrix_subrow(w->H, top + 1, top, w->size - top);
       gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
 
-      xv = gsl_matrix_column(w->H, top);
-      xv = gsl_vector_subvector(&xv.vector, 0, top + 2);
-      yv = gsl_matrix_column(w->H, top + 1);
-      yv = gsl_vector_subvector(&yv.vector, 0, top + 2);
+      xv = gsl_matrix_subcolumn(w->H, top, 0, top + 2);
+      yv = gsl_matrix_subcolumn(w->H, top + 1, 0, top + 2);
       gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
     }
   else
@@ -1718,20 +1678,15 @@ gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
     {
       if (top != (w->size - 2))
         {
-          xv = gsl_matrix_row(w->R, top);
-          xv = gsl_vector_subvector(&xv.vector, top + 2, w->size - top - 2);
-          yv = gsl_matrix_row(w->R, top + 1);
-          yv = gsl_vector_subvector(&yv.vector, top + 2, w->size - top - 2);
-
+          xv = gsl_matrix_subrow(w->R, top, top + 2, w->size - top - 2);
+          yv = gsl_matrix_subrow(w->R, top + 1, top + 2, w->size - top - 2);
           gsl_blas_drot(&xv.vector, &yv.vector, cl, sl);
         }
 
       if (top != 0)
         {
-          xv = gsl_matrix_column(w->R, top);
-          xv = gsl_vector_subvector(&xv.vector, 0, top);
-          yv = gsl_matrix_column(w->R, top + 1);
-          yv = gsl_vector_subvector(&yv.vector, 0, top);
+          xv = gsl_matrix_subcolumn(w->R, top, 0, top);
+          yv = gsl_matrix_subcolumn(w->R, top + 1, 0, top);
           gsl_blas_drot(&xv.vector, &yv.vector, cr, sr);
         }
     }
@@ -1797,254 +1752,6 @@ gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
 } /* gen_schur_standardize2() */
 
 /*
-gen_eigval2()
-  Compute the eigenvalues of a 2-by-2 generalized block.
-
-Inputs: A      - 2-by-2 matrix
-        B      - 2-by-2 upper triangular matrix
-        wr1    - (output) see notes
-        wr2    - (output) see notes
-        wi     - (output) see notes
-        scale1 - (output) see notes
-        scale2 - (output) see notes
-
-Return: success
-
-Notes:
-
-1)
-
-If the block contains real eigenvalues, then wi is set to 0,
-and wr1, wr2, scale1, and scale2 are set such that:
-
-eval1 = wr1 * scale1
-eval2 = wr2 * scale2
-
-If the block contains complex eigenvalues, then wr1, wr2, scale1,
-scale2, and wi are set such that:
-
-wr1 = wr2 = scale1 * Re(eval)
-wi = scale1 * Im(eval)
-
-wi is always non-negative
-
-2) This routine is based on LAPACK DLAG2
-*/
-
-static int
-gen_eigval2(gsl_matrix *A, gsl_matrix *B, double *wr1, double *wr2,
-            double *wi, double *scale1, double *scale2)
-{
-  const double safemin = GSL_DBL_MIN * 1.0e2;
-  const double safemax = 1.0 / safemin;
-  const double rtmin = sqrt(safemin);
-  const double rtmax = 1.0 / rtmin;
-  double anorm, bnorm;
-  double ascale, bscale, bsize;
-  double s1, s2;
-  double A11, A12, A21, A22;
-  double B11, B12, B22;
-  double binv11, binv22;
-  double bmin;
-  double as11, as12, as22, abi22;
-  double pp, qq, shift, ss, discr, r;
-
-  /* scale A */
-  anorm = GSL_MAX(GSL_MAX(fabs(gsl_matrix_get(A, 0, 0)) +
-                          fabs(gsl_matrix_get(A, 1, 0)),
-                          fabs(gsl_matrix_get(A, 0, 1)) +
-                          fabs(gsl_matrix_get(A, 1, 1))),
-                  safemin);
-  ascale = 1.0 / anorm;
-  A11 = ascale * gsl_matrix_get(A, 0, 0);
-  A12 = ascale * gsl_matrix_get(A, 0, 1);
-  A21 = ascale * gsl_matrix_get(A, 1, 0);
-  A22 = ascale * gsl_matrix_get(A, 1, 1);
-
-  /* perturb B if necessary to ensure non-singularity */
-  B11 = gsl_matrix_get(B, 0, 0);
-  B12 = gsl_matrix_get(B, 0, 1);
-  B22 = gsl_matrix_get(B, 1, 1);
-  bmin = rtmin * GSL_MAX(fabs(B11),
-                         GSL_MAX(fabs(B12), GSL_MAX(fabs(B22), rtmin)));
-  if (fabs(B11) < bmin)
-    B11 = GSL_SIGN(B11) * bmin;
-  if (fabs(B22) < bmin)
-    B22 = GSL_SIGN(B22) * bmin;
-
-  /* scale B */
-  bnorm = GSL_MAX(fabs(B11), GSL_MAX(fabs(B12) + fabs(B22), safemin));
-  bsize = GSL_MAX(fabs(B11), fabs(B22));
-  bscale = 1.0 / bsize;
-  B11 *= bscale;
-  B12 *= bscale;
-  B22 *= bscale;
-
-  /* compute larger eigenvalue */
-
-  binv11 = 1.0 / B11;
-  binv22 = 1.0 / B22;
-  s1 = A11 * binv11;
-  s2 = A22 * binv22;
-  if (fabs(s1) <= fabs(s2))
-    {
-      as12 = A12 - s1 * B12;
-      as22 = A22 - s1 * B22;
-      ss = A21 * (binv11 * binv22);
-      abi22 = as22 * binv22 - ss * B12;
-      pp = 0.5 * abi22;
-      shift = s1;
-    }
-  else
-    {
-      as12 = A12 - s2 * B12;
-      as11 = A11 - s2 * B11;
-      ss = A21 * (binv11 * binv22);
-      abi22 = -ss * B12;
-      pp = 0.5 * (as11 * binv11 + abi22);
-      shift = s2;
-    }
-
-  qq = ss * as12;
-  if (fabs(pp * rtmin) >= 1.0)
-    {
-      discr = (rtmin * pp) * (rtmin * pp) + qq * safemin;
-      r = sqrt(fabs(discr)) * rtmax;
-    }
-  else if (pp * pp + fabs(qq) <= safemin)
-    {
-      discr = (rtmax * pp) * (rtmax * pp) + qq * safemax;
-      r = sqrt(fabs(discr)) * rtmin;
-    }
-  else
-    {
-      discr = pp * pp + qq;
-      r = sqrt(fabs(discr));
-    }
-
-  if (discr >= 0.0 || r == 0.0)
-    {
-      double sum = pp + GSL_SIGN(pp) * r;
-      double diff = pp - GSL_SIGN(pp) * r;
-      double wbig = shift + sum;
-      double wsmall = shift + diff;
-
-      /* compute smaller eigenvalue */
-
-      if (0.5 * fabs(wbig) > GSL_MAX(fabs(wsmall), safemin))
-        {
-          double wdet = (A11*A22 - A12*A21) * (binv11 * binv22);
-          wsmall = wdet / wbig;
-        }
-
-      /* choose (real) eigenvalue closest to 2,2 element of AB^{-1} for wr1 */
-      if (pp > abi22)
-        {
-          *wr1 = GSL_MIN(wbig, wsmall);
-          *wr2 = GSL_MAX(wbig, wsmall);
-        }
-      else
-        {
-          *wr1 = GSL_MAX(wbig, wsmall);
-          *wr2 = GSL_MIN(wbig, wsmall);
-        }
-      *wi = 0.0;
-    }
-  else
-    {
-      /* complex eigenvalues */
-      *wr1 = shift + pp;
-      *wr2 = *wr1;
-      *wi = r;
-    }
-
-  /* compute scaling */
-  {
-    const double fuzzy1 = 1.0 + 1.0e-5;
-    double c1, c2, c3, c4, c5;
-    double wabs, wsize, wscale;
-
-    c1 = bsize * (safemin * GSL_MAX(1.0, ascale));
-    c2 = safemin * GSL_MAX(1.0, bnorm);
-    c3 = bsize * safemin;
-    if (ascale <= 1.0 && bsize <= 1.0)
-      c4 = GSL_MIN(1.0, (ascale / safemin) * bsize);
-    else
-      c4 = 1.0;
-
-    if (ascale <= 1.0 || bsize <= 1.0)
-      c5 = GSL_MIN(1.0, ascale * bsize);
-    else
-      c5 = 1.0;
-
-    /* scale first eigenvalue */
-    wabs = fabs(*wr1) + fabs(*wi);
-    wsize = GSL_MAX(safemin,
-              GSL_MAX(c1,
-                GSL_MAX(fuzzy1 * (wabs*c2 + c3),
-                  GSL_MIN(c4, 0.5 * GSL_MAX(wabs, c5)))));
-    if (wsize != 1.0)
-      {
-        wscale = 1.0 / wsize;
-        if (wsize > 1.0)
-          {
-            *scale1 = (GSL_MAX(ascale, bsize) * wscale) *
-                      GSL_MIN(ascale, bsize);
-          }
-        else
-          {
-            *scale1 = (GSL_MIN(ascale, bsize) * wscale) *
-                      GSL_MAX(ascale, bsize);
-          }
-
-        *wr1 *= wscale;
-        if (*wi != 0.0)
-          {
-            *wi *= wscale;
-            *wr2 = *wr1;
-            *scale2 = *scale1;
-          }
-      }
-    else
-      {
-        *scale1 = ascale * bsize;
-        *scale2 = *scale1;
-      }
-
-    /* scale second eigenvalue if real */
-    if (*wi == 0.0)
-      {
-        wsize = GSL_MAX(safemin,
-                  GSL_MAX(c1,
-                    GSL_MAX(fuzzy1 * (fabs(*wr2) * c2 + c3),
-                      GSL_MIN(c4, 0.5 * GSL_MAX(fabs(*wr2), c5)))));
-        if (wsize != 1.0)
-          {
-            wscale = 1.0 / wsize;
-            if (wsize > 1.0)
-              {
-                *scale2 = (GSL_MAX(ascale, bsize) * wscale) *
-                          GSL_MIN(ascale, bsize);
-              }
-            else
-              {
-                *scale2 = (GSL_MIN(ascale, bsize) * wscale) *
-                          GSL_MAX(ascale, bsize);
-              }
-
-            *wr2 *= wscale;
-          }
-        else
-          {
-            *scale2 = ascale * bsize;
-          }
-      }
-  }
-
-  return GSL_SUCCESS;
-} /* gen_eigval2() */
-
-/*
 gen_compute_eigenvals()
   Compute the complex eigenvalues of a 2-by-2 block
 
@@ -2074,7 +1781,7 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
    * onto the real line - so check for this before computing them
    */
 
-  gen_eigval2(A, B, &wr1, &wr2, &wi, &scale1, &scale2);
+  schur_gen_eigvals(A, B, &wr1, &wr2, &wi, &scale1, &scale2);
   if (wi == 0.0)
     return GSL_CONTINUE; /* real eigenvalues - continue QZ iteration */
 

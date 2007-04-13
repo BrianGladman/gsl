@@ -1,6 +1,6 @@
 /* eigen/francis.c
  * 
- * Copyright (C) 2006 Patrick Alken
+ * Copyright (C) 2006, 2007 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 
+#include "subrowcol.c"
 #include "schur.c"
 
 /*
@@ -821,16 +822,8 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
         {
           /* transform the 2 rows of T_{23} */
 
-          v = gsl_matrix_row(w->H, top);
-          xv = gsl_vector_subvector(&v.vector,
-                                    top + 2,
-                                    N - top - 2);
-
-          v = gsl_matrix_row(w->H, top + 1);
-          yv = gsl_vector_subvector(&v.vector,
-                                    top + 2,
-                                    N - top - 2);
-
+          xv = gsl_matrix_subrow(w->H, top, top + 2, N - top - 2);
+          yv = gsl_matrix_subrow(w->H, top + 1, top + 2, N - top - 2);
           gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
         }
 
@@ -838,16 +831,8 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
         {
           /* transform the 2 columns of T_{12} */
 
-          v = gsl_matrix_column(w->H, top);
-          xv = gsl_vector_subvector(&v.vector,
-                                    0,
-                                    top);
-
-          v = gsl_matrix_column(w->H, top + 1);
-          yv = gsl_vector_subvector(&v.vector,
-                                    0,
-                                    top);
-
+          xv = gsl_matrix_subcolumn(w->H, top, 0, top);
+          yv = gsl_matrix_subcolumn(w->H, top + 1, 0, top);
           gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
         }
     } /* if (w->compute_t) */

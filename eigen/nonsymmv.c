@@ -27,9 +27,12 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_cblas.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
+
+#include "subrowcol.c"
 
 /*
  * This module computes the eigenvalues and eigenvectors of a real
@@ -483,11 +486,8 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
 
                       /* update right hand side */
 
-                      v1 = gsl_matrix_column(T, lu);
-                      v1 = gsl_vector_subvector(&v1.vector, 0, lu);
-
+                      v1 = gsl_matrix_subcolumn(T, lu, 0, lu);
                       v2 = gsl_vector_subvector(w->work, 0, lu);
-
                       gsl_blas_daxpy(-x, &v1.vector, &v2.vector);
                     } /* if (l > 0) */
                 } /* if (!complex_pair) */
@@ -550,13 +550,11 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                     {
                       gsl_vector_view v1, v2;
 
-                      v1 = gsl_matrix_column(T, lu - 1);
-                      v1 = gsl_vector_subvector(&v1.vector, 0, lu - 1);
+                      v1 = gsl_matrix_subcolumn(T, lu - 1, 0, lu - 1);
                       v2 = gsl_vector_subvector(w->work, 0, lu - 1);
                       gsl_blas_daxpy(-x11, &v1.vector, &v2.vector);
 
-                      v1 = gsl_matrix_column(T, lu);
-                      v1 = gsl_vector_subvector(&v1.vector, 0, lu - 1);
+                      v1 = gsl_matrix_subcolumn(T, lu, 0, lu - 1);
                       gsl_blas_daxpy(-x21, &v1.vector, &v2.vector);
                     }
 
@@ -740,8 +738,7 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                     {
                       gsl_vector_view v1, v2;
 
-                      v1 = gsl_matrix_column(T, lu);
-                      v1 = gsl_vector_subvector(&v1.vector, 0, lu);
+                      v1 = gsl_matrix_subcolumn(T, lu, 0, lu);
                       v2 = gsl_vector_subvector(w->work, 0, lu);
                       gsl_blas_daxpy(-GSL_REAL(x), &v1.vector, &v2.vector);
 
@@ -814,10 +811,8 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                     {
                       gsl_vector_view v1, v2, v3, v4;
 
-                      v1 = gsl_matrix_column(T, lu - 1);
-                      v1 = gsl_vector_subvector(&v1.vector, 0, lu - 1);
-                      v4 = gsl_matrix_column(T, lu);
-                      v4 = gsl_vector_subvector(&v4.vector, 0, lu - 1);
+                      v1 = gsl_matrix_subcolumn(T, lu - 1, 0, lu - 1);
+                      v4 = gsl_matrix_subcolumn(T, lu, 0, lu - 1);
                       v2 = gsl_vector_subvector(w->work, 0, lu - 1);
                       v3 = gsl_vector_subvector(w->work2, 0, lu - 1);
 
