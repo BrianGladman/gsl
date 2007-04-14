@@ -232,4 +232,50 @@ Ed Smith-Rowland
 
 
 ----------------------------------------------------------------------
-Last assigned bug number = 58
+BUG#59 - complex pow(0,0) should be 1
+
+From: John D Lamb <J.D.Lamb@btinternet.com>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] buglet in complex/math.c
+Date: Fri, 06 Apr 2007 19:26:12 +0100
+
+I spotted this skimming through the code for gsl_complex_pow: it will
+return 0^0 = 0 instead of 0^0 = 1 and so is inconsistent with
+mathematical conventions and with pow() from the standard library.
+
+It starts:
+
+gsl_complex
+gsl_complex_pow (gsl_complex a, gsl_complex b)
+{                               /* z=a^b */
+  gsl_complex z;
+
+  if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0.0)
+    {
+      GSL_SET_COMPLEX (&z, 0.0, 0.0);
+    }
+
+...
+
+  return z;
+}
+
+I think it should have
+
+  if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0.0)
+    {
+      if (GSL_REAL (b) == 0 && GSL_IMAG (b) == 0.0)
+        {
+          GSL_SET_COMPLEX (&z, 1.0, 0.0);
+        }
+      else
+        {
+          GSL_SET_COMPLEX (&z, 0.0, 0.0);
+        }
+    }
+
+...
+
+----------------------------------------------------------------------
+
+Last assigned bug number = 59
