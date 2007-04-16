@@ -162,6 +162,14 @@ This function computes the value of
 alternative to the BSD math function @code{hypot(x,y)}.
 @end deftypefun
 
+@deftypefun double gsl_hypot3 (const double @var{x}, const double @var{y}, const double @var{z})
+@cindex euclidean distance function, hypot
+@cindex length, computed accurately using hypot
+This function computes the value of
+@c{$\sqrt{x^2 + y^2 + z^2}$}
+@math{\sqrt@{x^2 + y^2 + z^2@}} in a way that avoids overflow.
+@end deftypefun
+
 @deftypefun double gsl_acosh (const double @var{x})
 @cindex acosh
 @cindex hyperbolic cosine, inverse

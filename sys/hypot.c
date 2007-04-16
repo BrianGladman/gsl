@@ -1,6 +1,6 @@
 /* sys/hypot.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include <math.h>
 
 double gsl_hypot (const double x, const double y);
+double gsl_hypot3 (const double x, const double y, const double z);
 
 double gsl_hypot (const double x, const double y)
 {
@@ -45,4 +46,25 @@ double gsl_hypot (const double x, const double y)
     double u = min / max ;
     return max * sqrt (1 + u * u) ;
   }
+}
+
+double
+gsl_hypot3(const double x, const double y, const double z)
+{
+  double xabs = fabs(x);
+  double yabs = fabs(y);
+  double zabs = fabs(z);
+  double w = GSL_MAX(xabs, GSL_MAX(yabs, zabs));
+
+  if (w == 0.0)
+    {
+      return (0.0);
+    }
+  else
+    {
+      double r = w * sqrt((xabs / w) * (xabs / w) +
+                          (yabs / w) * (yabs / w) +
+                          (zabs / w) * (zabs / w));
+      return r;
+    }
 }

@@ -161,7 +161,7 @@ To request the use of your own error handler you need to call the
 function @code{gsl_set_error_handler} which is also declared in
 @file{gsl_errno.h},
 
-@deftypefun {gsl_error_handler_t *} gsl_set_error_handler ({gsl_error_handler_t *} @var{new_handler})
+@deftypefun {gsl_error_handler_t *} gsl_set_error_handler (gsl_error_handler_t * @var{new_handler})
 
 This function sets a new error handler, @var{new_handler}, for the GSL
 library routines.  The previous handler is returned (so that you can

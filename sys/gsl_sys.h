@@ -35,6 +35,7 @@ __BEGIN_DECLS
 double gsl_log1p (const double x);
 double gsl_expm1 (const double x);
 double gsl_hypot (const double x, const double y);
+double gsl_hypot3 (const double x, const double y, const double z);
 double gsl_acosh (const double x);
 double gsl_asinh (const double x);
 double gsl_atanh (const double x);
