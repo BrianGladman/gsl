@@ -1905,6 +1905,9 @@ gen_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
 
   diff = (size_t) (B->data - A->data);
 
+  /* B is on the diagonal of A, so measure distance in units of
+     tda+1 */
+
   ratio = (double)diff / ((double) (A->tda + 1));
 
   *top = (size_t) floor(ratio);
