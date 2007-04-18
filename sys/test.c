@@ -129,15 +129,15 @@ main (void)
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-38, 1e-38, 1e-38)");
 
   y = gsl_hypot3 (1e-10, 1e-10, -1.0);
-  y_expected = 1.000000000000000000010;
+  y_expected = 1.000000000000000000099;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-10, 1e-10, -1)");
 
   y = gsl_hypot3 (1e-10, -1.0, 1e-10);
-  y_expected = 1.000000000000000000010;
+  y_expected = 1.000000000000000000099;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-10, -1, 1e-10)");
 
   y = gsl_hypot3 (-1.0, 1e-10, 1e-10);
-  y_expected = 1.000000000000000000010;
+  y_expected = 1.000000000000000000099;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(-1, 1e-10, 1e-10)");
 
   y = gsl_hypot3 (1e307, 1e301, 1e301);
