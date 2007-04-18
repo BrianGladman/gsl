@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <math.h>
+#include <gsl/gsl_math.h>
 
 double gsl_hypot (const double x, const double y);
 double gsl_hypot3 (const double x, const double y, const double z);

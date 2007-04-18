@@ -114,6 +114,43 @@ main (void)
   y_expected = 1.414213562373095048801688e307;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot(1e307, 1e307)");
 
+  /* Test for gsl_hypot3 */
+
+  y = gsl_hypot3 (0.0, 0.0, 0.0);
+  y_expected = 0.0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(0.0, 0.0, 0.0)");
+
+  y = gsl_hypot3 (1e-10, 1e-10, 1e-10);
+  y_expected = 1.732050807568877293527446e-10;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-10, 1e-10, 1e-10)");
+
+  y = gsl_hypot3 (1e-38, 1e-38, 1e-38);
+  y_expected = 1.732050807568877293527446e-38;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-38, 1e-38, 1e-38)");
+
+  y = gsl_hypot3 (1e-10, 1e-10, -1.0);
+  y_expected = 1.000000000000000000010;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-10, 1e-10, -1)");
+
+  y = gsl_hypot3 (1e-10, -1.0, 1e-10);
+  y_expected = 1.000000000000000000010;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e-10, -1, 1e-10)");
+
+  y = gsl_hypot3 (-1.0, 1e-10, 1e-10);
+  y_expected = 1.000000000000000000010;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(-1, 1e-10, 1e-10)");
+
+  y = gsl_hypot3 (1e307, 1e301, 1e301);
+  y_expected = 1.0000000000009999999999995e307;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e307, 1e301, 1e301)");
+
+  y = gsl_hypot3 (1e307, 1e307, 1e307);
+  y_expected = 1.732050807568877293527446e307;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e307, 1e307, 1e307)");
+
+  y = gsl_hypot3 (1e307, 1e-307, 1e-307);
+  y_expected = 1.0e307;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_hypot3(1e307, 1e-307, 1e-307)");
 
   /* Test for acosh */
 
