@@ -58,9 +58,7 @@ static inline void francis_schur_standardize(gsl_matrix *A,
                                              gsl_complex *eval1,
                                              gsl_complex *eval2,
                                              gsl_eigen_francis_workspace *w);
-static inline void francis_get_submatrix(gsl_matrix *A, gsl_matrix *B,
-                                         size_t *top);
-
+static inline size_t francis_get_submatrix(gsl_matrix *A, gsl_matrix *B);
 
 /*
 gsl_eigen_francis_alloc()
@@ -460,7 +458,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
   double scale;    /* scale factor to avoid overflow */
   gsl_vector_view v2, v3;
   size_t q, r;
-  size_t top;      /* location of H in original matrix */
+  size_t top = 0;  /* location of H in original matrix */
   double s,
          disc;
   double h_nn,     /* H(n,n) */
@@ -553,7 +551,7 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
        * get absolute indices of this (sub)matrix relative to the
        * original Hessenberg matrix
        */
-      francis_get_submatrix(w->H, H, &top);
+      top = francis_get_submatrix(w->H, H);
     }
 
   for (i = 0; i < N - 2; ++i)
@@ -745,7 +743,7 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
    * figure out where the submatrix A resides in the
    * original matrix H
    */
-  francis_get_submatrix(w->H, A, &top);
+  top = francis_get_submatrix(w->H, A);
 
   /* convert 2-by-2 block to standard form */
   schur_standard_form(A, &cs, &sn);
@@ -769,7 +767,7 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
 
   if (w->compute_t)
     {
-      gsl_vector_view xv, yv, v;
+      gsl_vector_view xv, yv;
 
       /*
        * The above call to schur_standard_form transformed a 2-by-2 block
@@ -867,15 +865,18 @@ francis_get_submatrix()
 compute the indices in A of where the matrix B resides
 */
 
-static inline void
-francis_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
+static inline size_t
+francis_get_submatrix(gsl_matrix *A, gsl_matrix *B)
 {
   size_t diff;
   double ratio;
+  size_t top;
 
   diff = (size_t) (B->data - A->data);
 
   ratio = (double)diff / ((double) (A->tda + 1));
 
-  *top = (size_t) floor(ratio);
+  top = (size_t) floor(ratio);
+
+  return top;
 } /* francis_get_submatrix() */

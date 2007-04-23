@@ -121,6 +121,28 @@ int gsl_eigen_nonsymmv_Z (gsl_matrix * A, gsl_vector_complex * eval,
 
 typedef struct {
   size_t size;            /* size of matrices */
+  gsl_eigen_symm_workspace *symm_workspace_p;
+} gsl_eigen_gensymm_workspace;
+
+gsl_eigen_gensymm_workspace * gsl_eigen_gensymm_alloc (const size_t n);
+void gsl_eigen_gensymm_free (gsl_eigen_gensymm_workspace * w);
+int gsl_eigen_gensymm (gsl_matrix * A, gsl_matrix * B,
+                       gsl_vector * eval, gsl_eigen_gensymm_workspace * w);
+int gsl_eigen_gensymm_standardize (gsl_matrix * A, const gsl_matrix * B);
+
+typedef struct {
+  size_t size;            /* size of matrices */
+  gsl_eigen_symmv_workspace *symmv_workspace_p;
+} gsl_eigen_gensymmv_workspace;
+
+gsl_eigen_gensymmv_workspace * gsl_eigen_gensymmv_alloc (const size_t n);
+void gsl_eigen_gensymmv_free (gsl_eigen_gensymmv_workspace * w);
+int gsl_eigen_gensymmv (gsl_matrix * A, gsl_matrix * B,
+                        gsl_vector * eval, gsl_matrix * evec,
+                        gsl_eigen_gensymmv_workspace * w);
+
+typedef struct {
+  size_t size;            /* size of matrices */
   gsl_vector *work;       /* scratch workspace */
 
   size_t n_evals;         /* number of eigenvalues found */
@@ -157,6 +179,34 @@ int gsl_eigen_gen_QZ (gsl_matrix * A, gsl_matrix * B,
                       gsl_vector_complex * alpha, gsl_vector * beta,
                       gsl_matrix * Q, gsl_matrix * Z,
                       gsl_eigen_gen_workspace * w);
+
+typedef struct {
+  size_t size;            /* size of matrices */
+
+  gsl_vector *work1;      /* 1-norm of columns of A */
+  gsl_vector *work2;      /* 1-norm of columns of B */
+  gsl_vector *work3;      /* real part of eigenvector */
+  gsl_vector *work4;      /* imag part of eigenvector */
+  gsl_vector *work5;      /* real part of back-transformed eigenvector */
+  gsl_vector *work6;      /* imag part of back-transformed eigenvector */
+
+  gsl_matrix *Q;          /* pointer to left Schur vectors */
+  gsl_matrix *Z;          /* pointer to right Schur vectors */
+
+  gsl_eigen_gen_workspace *gen_workspace_p;
+} gsl_eigen_genv_workspace;
+
+gsl_eigen_genv_workspace * gsl_eigen_genv_alloc (const size_t n);
+void gsl_eigen_genv_free (gsl_eigen_genv_workspace * w);
+int gsl_eigen_genv (gsl_matrix * A, gsl_matrix * B,
+                    gsl_vector_complex * alpha, gsl_vector * beta,
+                    gsl_matrix_complex * evec,
+                    gsl_eigen_genv_workspace * w);
+int gsl_eigen_genv_QZ (gsl_matrix * A, gsl_matrix * B,
+                       gsl_vector_complex * alpha, gsl_vector * beta,
+                       gsl_matrix_complex * evec,
+                       gsl_matrix * Q, gsl_matrix * Z,
+                       gsl_eigen_genv_workspace * w);
 
 typedef struct {
   size_t size;
@@ -211,6 +261,9 @@ int gsl_eigen_hermv_sort(gsl_vector * eval, gsl_matrix_complex * evec,
 int gsl_eigen_nonsymmv_sort(gsl_vector_complex * eval,
                             gsl_matrix_complex * evec,
                             gsl_eigen_sort_t sort_type);
+
+int gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec, 
+                             gsl_eigen_sort_t sort_type);
 
 
 /* The following functions are obsolete: */

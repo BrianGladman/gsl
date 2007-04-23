@@ -2,7 +2,7 @@
  * testgen.c
  * Patrick Alken
  *
- * Compile: gcc -g -O2 -Wall -o testgen testgen.c -lm -lgsl -lcblas -latlas
+ * Compile: gcc -g -O2 -Wall -o testgen testgen.c -lm -lgsl -llapack -lf77blas -lcblas -latlas -lg2c
  *
  * Usage: testgen [options]
  *
@@ -30,7 +30,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
-#include <gsl/gsl_test.h>
 
 typedef struct
 {
@@ -40,13 +39,6 @@ typedef struct
   gsl_vector_complex *alpha;
   gsl_vector *beta;
   gsl_vector_complex *evals;
-
-  gsl_eigen_genv_workspace *genv_p;
-  gsl_matrix *Av;
-  gsl_matrix *Bv;
-  gsl_vector_complex *alphav;
-  gsl_vector *betav;
-  gsl_matrix_complex *evec;
 
   gsl_matrix *Q;
   gsl_matrix *Z;
@@ -58,6 +50,44 @@ typedef struct
 gen_workspace *gen_alloc(size_t n, int compute_schur);
 void gen_free(gen_workspace *w);
 int gen_proc(gen_workspace *w);
+
+typedef struct
+{
+  gsl_matrix *A;
+  gsl_matrix *B;
+  gsl_matrix *Q;
+  gsl_matrix *Z;
+  int N;
+
+  char jobvsl;
+  char jobvsr;
+  char sort;
+  int selctg;
+  int lda;
+  int ldb;
+  int sdim;
+  double *alphar;
+  double *alphai;
+  gsl_vector *beta;
+  int ldvsr;
+  int lwork;
+  int info;
+  double *work;
+  
+  gsl_vector_complex *evals;
+  gsl_vector_complex *alpha;
+  size_t n_evals;
+} lapack_workspace;
+
+lapack_workspace *lapack_alloc(const size_t n);
+void lapack_free(lapack_workspace *w);
+int lapack_proc(lapack_workspace *w);
+
+void dgges_(char *jobvsl, char *jobvsr, char *sort, int *selctg, int *n,
+            double *a, int *lda, double *b, int *ldb, int *sdim,
+            double *alphar, double *alphai, double *beta, double *vsl,
+            int *ldvsl, double *vsr, int *ldvsr, double *work, int *lwork,
+            int *bwork, int *info);
 
 /*
  * Global variables
@@ -89,10 +119,6 @@ void print_vector(gsl_vector_complex *eval, const char *str);
 int cmp(double a, double b);
 int compare(const void *a, const void *b);
 void sort_complex_vector(gsl_vector_complex *v);
-int test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
-                      const gsl_vector_complex *alpha,
-                      const gsl_vector *beta,
-                      const gsl_matrix_complex *evec);
 
 gen_workspace *
 gen_alloc(size_t n, int compute_schur)
@@ -102,18 +128,12 @@ gen_alloc(size_t n, int compute_schur)
   w = (gen_workspace *) calloc(1, sizeof(gen_workspace));
 
   w->gen_p = gsl_eigen_gen_alloc(n);
-  w->genv_p = gsl_eigen_genv_alloc(n);
 
   w->A = gsl_matrix_alloc(n, n);
   w->B = gsl_matrix_alloc(n, n);
   w->alpha = gsl_vector_complex_alloc(n);
   w->beta = gsl_vector_alloc(n);
   w->evals = gsl_vector_complex_alloc(n);
-  w->Av = gsl_matrix_alloc(n, n);
-  w->Bv = gsl_matrix_alloc(n, n);
-  w->alphav = gsl_vector_complex_alloc(n);
-  w->betav = gsl_vector_alloc(n);
-  w->evec = gsl_matrix_complex_alloc(n, n);
   w->compute_schur = compute_schur;
 
   if (compute_schur)
@@ -135,9 +155,6 @@ gen_free(gen_workspace *w)
   if (w->gen_p)
     gsl_eigen_gen_free(w->gen_p);
 
-  if (w->genv_p)
-    gsl_eigen_genv_free(w->genv_p);
-
   if (w->A)
     gsl_matrix_free(w->A);
 
@@ -153,21 +170,6 @@ gen_free(gen_workspace *w)
   if (w->evals)
     gsl_vector_complex_free(w->evals);
 
-  if (w->Av)
-    gsl_matrix_free(w->Av);
-
-  if (w->Bv)
-    gsl_matrix_free(w->Bv);
-
-  if (w->alphav)
-    gsl_vector_complex_free(w->alphav);
-
-  if (w->betav)
-    gsl_vector_free(w->betav);
-
-  if (w->evec)
-    gsl_matrix_complex_free(w->evec);
-
   if (w->Q)
     gsl_matrix_free(w->Q);
 
@@ -180,21 +182,136 @@ gen_free(gen_workspace *w)
 int
 gen_proc(gen_workspace *w)
 {
-  int s1, s2, s;
+  int s;
 
-  s1 = gsl_eigen_gen_QZ(w->A, w->B, w->alpha, w->beta, w->Q, w->Z, w->gen_p);
-  s2 = gsl_eigen_genv(w->Av, w->Bv, w->alphav, w->betav, w->evec, w->genv_p);
+  s = gsl_eigen_gen_QZ(w->A, w->B, w->alpha, w->beta, w->Q, w->Z, w->gen_p);
 
   w->n_evals = w->gen_p->n_evals;
 
-  s = 0;
-  if (s1)
-    s = s1;
-  else if (s2)
-    s = s2;
-
   return s;
 } /* gen_proc() */
+
+lapack_workspace *
+lapack_alloc(const size_t n)
+{
+  lapack_workspace *w;
+  double work[1];
+
+  w = (lapack_workspace *) calloc(1, sizeof(lapack_workspace));
+
+  w->A = gsl_matrix_alloc(n, n);
+  w->B = gsl_matrix_alloc(n, n);
+  w->Q = gsl_matrix_alloc(n, n);
+  w->Z = gsl_matrix_alloc(n, n);
+  w->alphar = malloc(n * sizeof(double));
+  w->alphai = malloc(n * sizeof(double));
+  w->beta = gsl_vector_alloc(n);
+  w->alpha = gsl_vector_complex_alloc(n);
+  w->evals = gsl_vector_complex_alloc(n);
+
+  w->N = (int) n;
+  w->n_evals = 0;
+
+  w->jobvsl = 'N';
+  w->jobvsr = 'N';
+  w->sort = 'N';
+  w->info = 0;
+
+  w->lwork = -1;
+  dgges_(&w->jobvsl,
+         &w->jobvsr,
+         &w->sort,
+         (int *) 0,
+         &w->N,
+         w->A->data,
+         (int *) &w->A->tda,
+         w->B->data,
+         (int *) &w->B->tda,
+         &w->sdim,
+         w->alphar,
+         w->alphai,
+         w->beta->data,
+         w->Q->data,
+         (int *) &w->Q->tda,
+         w->Z->data,
+         (int *) &w->Z->tda,
+         work,
+         &w->lwork,
+         (int *) 0,
+         &w->info);
+
+  w->lwork = (int) work[0];
+  w->work = malloc(w->lwork * sizeof(double));
+
+  return (w);
+} /* lapack_alloc() */
+
+void
+lapack_free(lapack_workspace *w)
+{
+  if (!w)
+    return;
+
+  if (w->A)
+    gsl_matrix_free(w->A);
+
+  if (w->B)
+    gsl_matrix_free(w->B);
+
+  if (w->Q)
+    gsl_matrix_free(w->Q);
+
+  if (w->Z)
+    gsl_matrix_free(w->Z);
+
+  if (w->work)
+    free(w->work);
+
+  if (w->alphar)
+    free(w->alphar);
+
+  if (w->alphai)
+    free(w->alphai);
+
+  if (w->beta)
+    gsl_vector_free(w->beta);
+
+  if (w->alpha)
+    gsl_vector_complex_free(w->alpha);
+
+  if (w->evals)
+    gsl_vector_complex_free(w->evals);
+
+  free(w);
+} /* lapack_free() */
+
+int
+lapack_proc(lapack_workspace *w)
+{
+  dgges_(&w->jobvsl,
+         &w->jobvsr,
+         &w->sort,
+         (int *) 0,
+         &w->N,
+         w->A->data,
+         (int *) &w->A->tda,
+         w->B->data,
+         (int *) &w->B->tda,
+         &w->sdim,
+         w->alphar,
+         w->alphai,
+         w->beta->data,
+         w->Q->data,
+         (int *) &w->Q->tda,
+         w->Z->data,
+         (int *) &w->Z->tda,
+         w->work,
+         &w->lwork,
+         (int *) 0,
+         &w->info);
+
+  return (w->info);
+} /* lapack_proc() */
 
 /**********************************************
  * General routines
@@ -603,7 +720,7 @@ print_vector(gsl_vector_complex *eval, const char *str)
   for (i = 0; i < N; ++i)
     {
       z = gsl_vector_complex_get(eval, i);
-      printf("%.18e + %.18ei;\n", GSL_REAL(z), GSL_IMAG(z));
+      printf("%.18e %.18e;\n", GSL_REAL(z), GSL_IMAG(z));
     }
 
   printf("]\n");
@@ -646,115 +763,10 @@ sort_complex_vector(gsl_vector_complex *v)
 } /* sort_complex_vector() */
 
 int
-test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
-                  const gsl_vector_complex *alpha, const gsl_vector *beta,
-                  const gsl_matrix_complex *evec)
-{
-  const size_t N = A->size1;
-  size_t i, j;
-  int k, s;
-  gsl_matrix_complex *ma, *mb;
-  gsl_vector_complex *x, *y;
-  gsl_complex z_one, z_zero;
-
-  ma = gsl_matrix_complex_alloc(N, N);
-  mb = gsl_matrix_complex_alloc(N, N);
-  y = gsl_vector_complex_alloc(N);
-  x = gsl_vector_complex_alloc(N);
-
-  /* ma <- A, mb <- B */
-  for (i = 0; i < N; ++i)
-    {
-      for (j = 0; j < N; ++j)
-        {
-          gsl_complex z;
-
-          GSL_SET_COMPLEX(&z, gsl_matrix_get(A, i, j), 0.0);
-          gsl_matrix_complex_set(ma, i, j, z);
-
-          GSL_SET_COMPLEX(&z, gsl_matrix_get(B, i, j), 0.0);
-          gsl_matrix_complex_set(mb, i, j, z);
-        }
-    }
-
-  GSL_SET_COMPLEX(&z_one, 1.0, 0.0);
-  GSL_SET_COMPLEX(&z_zero, 0.0, 0.0);
-
-  s = 0;
-
-  /* check eigenvalues */
-  for (i = 0; i < N; ++i)
-    {
-      gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
-      gsl_complex ai = gsl_vector_complex_get(alpha, i);
-      double bi = gsl_vector_get(beta, i);
-
-      /* compute x = alpha * B * v */
-      gsl_blas_zgemv(CblasNoTrans, z_one, mb, &vi.vector, z_zero, x);
-      gsl_blas_zscal(ai, x);
-
-      /* compute y = beta * A v */
-      gsl_blas_zgemv(CblasNoTrans, z_one, ma, &vi.vector, z_zero, y);
-      gsl_blas_zdscal(bi, y);
-
-      k = 0;
-
-      /* now test if y = x */
-      for (j = 0; j < N; ++j)
-        {
-          gsl_complex z;
-          double lhs_r, lhs_i;
-          double rhs_r, rhs_i;
-
-          z = gsl_vector_complex_get(y, j);
-          lhs_r = GSL_REAL(z);
-          lhs_i = GSL_IMAG(z);
-
-          z = gsl_vector_complex_get(x, j);
-          rhs_r = GSL_REAL(z);
-          rhs_i = GSL_IMAG(z);
-
-          if (fabs(lhs_r - rhs_r) > 1e8 * GSL_DBL_EPSILON)
-            ++k;
-          if (fabs(lhs_i - rhs_i) > 1e8 * GSL_DBL_EPSILON)
-            ++k;
-        }
-
-      if (k)
-        {
-          s++;
-
-          printf("==== CASE %lu ===========================\n\n", count);
-
-          print_matrix(A, "A");
-          print_matrix(B, "B");
-
-          printf("alpha = %f + %fi\n", GSL_REAL(ai), GSL_IMAG(ai));
-          printf("beta = %f\n", bi);
-          printf("alpha/beta = %f + %fi\n", GSL_REAL(ai)/bi, GSL_IMAG(ai)/bi);
-
-          print_vector(&vi.vector, "v");
-
-          print_vector(y, "beta*A*v");
-
-          print_vector(x, "alpha*B*v");
-
-          printf("=========================================\n\n");
-        }
-    }
-
-  gsl_matrix_complex_free(ma);
-  gsl_matrix_complex_free(mb);
-  gsl_vector_complex_free(y);
-  gsl_vector_complex_free(x);
-
-  return s;
-} /* test_eigenvectors() */
-
-int
 main(int argc, char *argv[])
 {
   gen_workspace *gen_workspace_p;
+  lapack_workspace *lapack_workspace_p;
   size_t N;
   int c;
   int lower;
@@ -816,6 +828,7 @@ main(int argc, char *argv[])
   A = gsl_matrix_alloc(N, N);
   B = gsl_matrix_alloc(N, N);
   gen_workspace_p = gen_alloc(N, compute_schur);
+  lapack_workspace_p = lapack_alloc(N);
 
   r = gsl_rng_alloc(gsl_rng_default);
 
@@ -861,14 +874,23 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 3)
+      /*if (count != 59539)
         continue;*/
 
       /* make copies of matrices */
       gsl_matrix_memcpy(gen_workspace_p->A, A);
       gsl_matrix_memcpy(gen_workspace_p->B, B);
-      gsl_matrix_memcpy(gen_workspace_p->Av, A);
-      gsl_matrix_memcpy(gen_workspace_p->Bv, B);
+      gsl_matrix_transpose_memcpy(lapack_workspace_p->A, A);
+      gsl_matrix_transpose_memcpy(lapack_workspace_p->B, B);
+
+      /* compute eigenvalues with LAPACK */
+      s = lapack_proc(lapack_workspace_p);
+
+      if (s != GSL_SUCCESS)
+        {
+          printf("LAPACK failed, case %lu\n", count);
+          exit(1);
+        }
 
       /* compute eigenvalues with GSL */
       s = gen_proc(gen_workspace_p);
@@ -882,6 +904,8 @@ main(int argc, char *argv[])
           print_matrix(B, "B");
           print_matrix(gen_workspace_p->A, "Af");
           print_matrix(gen_workspace_p->B, "Bf");
+          print_matrix(lapack_workspace_p->A, "Ae");
+          print_matrix(lapack_workspace_p->B, "Be");
           exit(1);
         }
 
@@ -901,16 +925,43 @@ main(int argc, char *argv[])
             }
 
           gsl_vector_complex_set(gen_workspace_p->evals, i, z);
+
+          beta = gsl_vector_get(lapack_workspace_p->beta, i);
+          GSL_SET_COMPLEX(&alpha,
+                          lapack_workspace_p->alphar[i],
+                          lapack_workspace_p->alphai[i]);
+
+          if (beta == 0.0)
+            GSL_SET_COMPLEX(&z, GSL_POSINF, GSL_POSINF);
+          else
+            z = gsl_complex_div_real(alpha, beta);
+
+          gsl_vector_complex_set(lapack_workspace_p->evals, i, z);
+          gsl_vector_complex_set(lapack_workspace_p->alpha, i, alpha);
         }
 
-      test_eigenvectors(A,
-                        B,
-                        gen_workspace_p->alphav,
-                        gen_workspace_p->betav,
-                        gen_workspace_p->evec);
-
 #if 0
+      gsl_sort_vector(gen_workspace_p->beta);
+      gsl_sort_vector(lapack_workspace_p->beta);
+      sort_complex_vector(gen_workspace_p->alpha);
+      sort_complex_vector(lapack_workspace_p->alpha);
+
+      s = test_alpha(gen_workspace_p->alpha,
+                     lapack_workspace_p->alpha,
+                     A,
+                     B,
+                     "gen",
+                     "lapack");
+      s = test_beta(gen_workspace_p->beta,
+                    lapack_workspace_p->beta,
+                    A,
+                    B,
+                    "gen",
+                    "lapack");
+#endif
+#if 1
       sort_complex_vector(gen_workspace_p->evals);
+      sort_complex_vector(lapack_workspace_p->evals);
 
       s = test_evals(gen_workspace_p->evals,
                      lapack_workspace_p->evals,
@@ -936,7 +987,10 @@ main(int argc, char *argv[])
   gsl_matrix_free(A);
   gsl_matrix_free(B);
   gen_free(gen_workspace_p);
-  gsl_rng_free(r);
+  lapack_free(lapack_workspace_p);
+
+  if (r)
+    gsl_rng_free(r);
 
   return 0;
 } /* main() */

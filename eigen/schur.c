@@ -17,25 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_complex_math.h>
+
 /*
  * This module contains some routines related to manipulating the
  * Schur form of a matrix which are needed by the eigenvalue solvers
  *
  * This file contains routines based on original code from LAPACK
- * which is distributed under the modified BSD license. The LAPACK
- * routine used is DLANV2.
+ * which is distributed under the modified BSD license.
  */
 
-static inline void schur_standard_form(gsl_matrix *A, double *cs,
-                                       double *sn);
+static void schur_standard_form(gsl_matrix *A, double *cs, double *sn);
 static int schur_gen_eigvals(gsl_matrix *A, gsl_matrix *B, double *wr1,
                              double *wr2, double *wi, double *scale1,
                              double *scale2);
-static inline void schur_solve_equation(double ca, gsl_matrix *A, double z,
-                                        double d1, double d2,
-                                        gsl_vector *b, gsl_vector *x,
-                                        double *s, double *xnorm,
-                                        double smin);
+static void schur_solve_equation(double ca, gsl_matrix *A, double z,
+                                 double d1, double d2,
+                                 gsl_vector *b, gsl_vector *x,
+                                 double *s, double *xnorm, double smin);
+static void schur_solve_equation_z(double ca, gsl_matrix *A, gsl_complex *z,
+                                   double d1, double d2,
+                                   gsl_vector_complex *b,
+                                   gsl_vector_complex *x, double *s,
+                                   double *xnorm, double smin);
 
 #define GSL_SCHUR_SMLNUM (2.0 * GSL_DBL_MIN)
 #define GSL_SCHUR_BIGNUM ((1.0 - GSL_DBL_EPSILON) / GSL_SCHUR_SMLNUM)
@@ -65,7 +70,7 @@ Notes: 1) based on LAPACK routine DLANV2
        2) On output, A is modified to contain the matrix in standard form
 */
 
-static inline void
+static void
 schur_standard_form(gsl_matrix *A, double *cs, double *sn)
 {
   double a, b, c, d; /* input matrix values */
@@ -495,7 +500,7 @@ Notes: 1) A and b are not changed on output
        2) Based on lapack routine DLALN2
 */
 
-static inline void
+static void
 schur_solve_equation(double ca, gsl_matrix *A, double z, double d1,
                      double d2, gsl_vector *b, gsl_vector *x, double *s,
                      double *xnorm, double smin)
@@ -669,7 +674,6 @@ schur_solve_equation(double ca, gsl_matrix *A, double z, double d1,
   *s = scale;
 } /* schur_solve_equation() */
 
-#if 0
 /*
 schur_solve_equation_z()
 
@@ -677,21 +681,25 @@ schur_solve_equation_z()
 when computing eigenvectors corresponding to complex eigenvalues.
 The equation that is solved is:
 
-(A - z*I)*x = s*b
+(ca*A - z*D)*x = s*b
 
 where
 
 A is n-by-n with n = 1 or 2
+D is a n-by-n diagonal matrix
 b and x are n-by-1 complex vectors
 s is a scaling factor set by this function to prevent overflow in x
 
-Inputs: A     - square matrix (n-by-n)
+Inputs: ca    - coefficient multiplying A
+        A     - square matrix (n-by-n)
         z     - complex scalar (eigenvalue)
+        d1    - (1,1) element in diagonal matrix D
+        d2    - (2,2) element in diagonal matrix D
         b     - right hand side vector
         x     - (output) where to store solution
         s     - (output) scale factor
         xnorm - (output) infinity norm of X
-        smin  - lower bound on singular values of A - if A - z*I
+        smin  - lower bound on singular values of A - if ca*A - z*D
                 is less than this value, we'll use smin*I instead.
                 This value should be a safe distance above underflow.
 
@@ -699,10 +707,11 @@ Notes: 1) A and b are not changed on output
        2) Based on lapack routine DLALN2
 */
 
-static inline void
-schur_solve_equation_z(gsl_matrix *A, gsl_complex *z,
-                       gsl_vector_complex *b, gsl_vector_complex *x,
-                       double *s, double *xnorm, double smin)
+static void
+schur_solve_equation_z(double ca, gsl_matrix *A, gsl_complex *z,
+                       double d1, double d2, gsl_vector_complex *b,
+                       gsl_vector_complex *x, double *s, double *xnorm,
+                       double smin)
 {
   size_t N = A->size1;
   double scale = 1.0;
@@ -715,16 +724,11 @@ schur_solve_equation_z(gsl_matrix *A, gsl_complex *z,
              cnorm; /* |c| */
       gsl_complex bval, c, xval, tmp;
 
-      /*
-       * we have a 1-by-1 (complex) scalar system to solve:
-       *
-       * (a - z)*x = b
-       * (z is complex, a is real)
-       */
+      /* we have a 1-by-1 (complex) scalar system to solve */
 
-      /* c = a - z */
-      cr = gsl_matrix_get(A, 0, 0) - GSL_REAL(*z);
-      ci = -GSL_IMAG(*z);
+      /* c = ca*a - z*d1 */
+      cr = ca * gsl_matrix_get(A, 0, 0) - GSL_REAL(*z) * d1;
+      ci = -GSL_IMAG(*z) * d1;
       cnorm = fabs(cr) + fabs(ci);
 
       if (cnorm < smin)
@@ -781,8 +785,8 @@ schur_solve_equation_z(gsl_matrix *A, gsl_complex *z,
       /*
        * complex 2-by-2 system:
        *
-       * [ A11 - z   A12   ] [ X1 ] = [ B1 ]
-       * [   A21   A22 - z ] [ X2 ]   [ B2 ]
+       * ( ca * [ A11 A12 ] - z * [ D1 0 ] ) [ X1 ] = [ B1 ]
+       * (      [ A21 A22 ]       [ 0  D2] ) [ X2 ]   [ B2 ]
        *
        * (z complex)
        *
@@ -793,19 +797,19 @@ schur_solve_equation_z(gsl_matrix *A, gsl_complex *z,
       crv = (double *) cr;
 
       /*
-       * compute the real part of C = A - z*I - use column ordering
+       * compute the real part of C = ca*A - z*D - use column ordering
        * here since porting from lapack
        */
-      cr[0][0] = gsl_matrix_get(A, 0, 0) - GSL_REAL(*z);
-      cr[1][1] = gsl_matrix_get(A, 1, 1) - GSL_REAL(*z);
-      cr[0][1] = gsl_matrix_get(A, 1, 0);
-      cr[1][0] = gsl_matrix_get(A, 0, 1);
+      cr[0][0] = ca*gsl_matrix_get(A, 0, 0) - GSL_REAL(*z)*d1;
+      cr[1][1] = ca*gsl_matrix_get(A, 1, 1) - GSL_REAL(*z)*d2;
+      cr[0][1] = ca*gsl_matrix_get(A, 1, 0);
+      cr[1][0] = ca*gsl_matrix_get(A, 0, 1);
 
       /* compute the imaginary part */
-      ci[0][0] = -GSL_IMAG(*z);
+      ci[0][0] = -GSL_IMAG(*z) * d1;
       ci[0][1] = 0.0;
       ci[1][0] = 0.0;
-      ci[1][1] = -GSL_IMAG(*z);
+      ci[1][1] = -GSL_IMAG(*z) * d2;
 
       cmax = 0.0;
       icmax = 0;
@@ -966,4 +970,3 @@ schur_solve_equation_z(gsl_matrix *A, gsl_complex *z,
 
   *s = scale;
 } /* schur_solve_equation_z() */
-#endif /* 0 */

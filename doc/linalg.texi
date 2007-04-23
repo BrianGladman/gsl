@@ -731,7 +731,7 @@ Schur decomposition for the generalized eigenvalue problem.
 
 @deftypefun int gsl_linalg_hesstri_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{work})
 This function computes the Hessenberg-Triangular decomposition of the
-matrix pencil (@var{A}, @var{B}). On output, @math{H} is stored in @var{A},
+matrix pair (@var{A}, @var{B}). On output, @math{H} is stored in @var{A},
 and @math{R} is stored in @var{B}. If @var{U} and @var{V} are provided
 (they may be null), the similarity transformations are stored in them.
 Additional workspace of length @math{N} is needed in @var{work}.

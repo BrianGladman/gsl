@@ -1,10 +1,12 @@
 @cindex eigenvalues and eigenvectors
 This chapter describes functions for computing eigenvalues and
 eigenvectors of matrices.  There are routines for real symmetric,
-real nonsymmetric, and complex hermitian matrices. Eigenvalues can
-be computed with or without eigenvectors. The hermitian matrix algorithms
-used are symmetric bidiagonalization followed by QR reduction. The
-nonsymmetric algorithm is the Francis QR double-shift.
+real nonsymmetric, complex hermitian, generalized symmetric-definite,
+and generalized nonsymmetric eigensystems. Eigenvalues can be computed
+with or without eigenvectors. The hermitian matrix algorithms used are
+symmetric bidiagonalization followed by QR reduction. The nonsymmetric
+algorithm is the Francis QR double-shift. The generalized nonsymmetric
+algorithm is the QZ method due to Moler and Stewart.
 
 @cindex LAPACK, recommended for linear algebra
 These routines are intended for ``small'' systems where simple algorithms are
@@ -20,6 +22,7 @@ The functions described in this chapter are declared in the header file
 * Real Symmetric Matrices::     
 * Complex Hermitian Matrices::  
 * Real Nonsymmetric Matrices::
+* Real Generalized Symmetric-Definite Eigensystems::
 * Real Generalized Nonsymmetric Eigensystems::
 * Sorting Eigenvalues and Eigenvectors::  
 * Eigenvalue and Eigenvector Examples::  
@@ -264,6 +267,88 @@ This function is identical to @code{gsl_eigen_nonsymmv} except it also saves
 the Schur vectors into @var{Z}.
 @end deftypefun
 
+@node Real Generalized Symmetric-Definite Eigensystems
+@section Real Generalized Symmetric-Definite Eigensystems
+@cindex generalized symmetric eigensystems
+
+The real generalized symmetric-definite eigenvalue problem is to find
+eigenvalues @math{\lambda} and eigenvectors @math{x} such that
+@tex
+\beforedisplay
+$$
+A x = \lambda B x
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A x = \lambda B x
+@end example
+@end ifinfo
+where @math{A} and @math{B} are symmetric matrices, and @math{B} is
+positive-definite. This problem reduces to the standard symmetric
+eigenvalue problem by applying the Cholesky decomposition to @math{B}:
+@tex
+\beforedisplay
+$$
+\eqalign{
+A x & = \lambda B x \cr
+A x & = \lambda L L^t x \cr
+\left( L^{-1} A L^{-t} \right) L^t x & = \lambda L^t x
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+                      A x = \lambda B x
+                      A x = \lambda L L^t x
+( L^@{-1@} A L^@{-t@} ) L^t x = \lambda L^t x
+@end example
+@end ifinfo
+Therefore, the problem becomes @math{C y = \lambda y} where
+@c{$C = L^{-1} A L^{-t}$}
+@math{C = L^@{-1@} A L^@{-t@}}
+is symmetric, and @math{y = L^t x}. The standard
+symmetric eigensolver can be applied to the matrix @math{C}.
+The resulting eigenvectors are backtransformed to find the
+vectors of the original problem. The eigenvalues and eigenvectors
+of the generalized symmetric-definite eigenproblem are always real.
+
+@deftypefun {gsl_eigen_gensymm_workspace *} gsl_eigen_gensymm_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues of
+@var{n}-by-@var{n} real generalized symmetric-definite eigensystems. The
+size of the workspace is @math{O(2n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_gensymm_free (gsl_eigen_gensymm_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_gensymm (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector * @var{eval}, gsl_eigen_gensymm_workspace * @var{w})
+This function computes the eigenvalues of the real generalized
+symmetric-definite matrix pencil (@var{A}, @var{B}), and stores them 
+in @var{eval}, using the method outlined above. On output, @var{B}
+contains its Cholesky decomposition and @var{A} is destroyed.
+@end deftypefun
+
+@deftypefun {gsl_eigen_gensymmv_workspace *} gsl_eigen_gensymmv_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues and
+eigenvectors of @var{n}-by-@var{n} real generalized symmetric-definite
+eigensystems. The size of the workspace is @math{O(4n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_gensymmv_free (gsl_eigen_gensymmv_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_gensymmv (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_gensymmv_workspace * @var{w})
+This function computes the eigenvalues and eigenvectors of the real
+generalized symmetric-definite matrix pencil (@var{A}, @var{B}), and
+stores them in @var{eval} and @var{evec} respectively. On output,
+@var{B} contains its Cholesky decomposition and @var{A} is destroyed.
+@end deftypefun
+
 @node Real Generalized Nonsymmetric Eigensystems
 @section Real Generalized Nonsymmetric Eigensystems
 @cindex generalized eigensystems
@@ -300,9 +385,22 @@ $$
 Note that these two problems are equivalent (with @math{\lambda = 1/\mu})
 if neither @math{\lambda} nor @math{\mu} is zero. If say, @math{\lambda}
 is zero, then it is still a well defined eigenproblem, but its alternate
-problem involving @math{\mu} is not. For this reason, the eigensolver
-routines below will return two values @math{\alpha} and @math{\beta} and
-leave it to the user to perform the divisions
+problem involving @math{\mu} is not. Therefore, to allow for zero
+(and infinite) eigenvalues, the problem which is actually solved is
+@tex
+\beforedisplay
+$$
+\beta A y = \alpha B y
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\beta A y = \alpha B y
+@end example
+@end ifinfo
+The eigensolver routines below will return two values @math{\alpha}
+and @math{\beta} and leave it to the user to perform the divisions
 @math{\lambda = \alpha / \beta} and @math{\mu = \beta / \alpha}.
 
 If the determinant of the matrix pencil @math{A - \lambda B} is zero
@@ -314,7 +412,7 @@ routines below are intended for regular matrix pencils and could yield
 unpredictable results when applied to singular pencils.
 
 The solution of the real generalized nonsymmetric eigensystem problem for a
-matrix pencil @math{(A, B)} involves computing the generalized Schur
+matrix pair @math{(A, B)} involves computing the generalized Schur
 decomposition
 @tex
 \beforedisplay
@@ -382,15 +480,46 @@ problem @math{\mu A y = B y}. The elements of @var{beta} are normalized
 to be non-negative.
 
 If @math{S} is desired, it is stored in @var{A} on output. If @math{T}
-is desired, it is stored in @var{B} on output. In rare cases, this
-function may fail to find all eigenvalues. If this occurs, an error
-code is returned and the number of converged eigenvalues is stored
-in @code{w->n_evals}. The converged eigenvalues are stored in the
-beginning of the (@var{alpha}, @var{beta}) vectors.
+is desired, it is stored in @var{B} on output. The ordering of
+eigenvalues in (@var{alpha}, @var{beta}) follows the ordering
+of the diagonal blocks in the Schur forms @math{S} and @math{T}. In rare
+cases, this function may fail to find all eigenvalues. If this occurs, an
+error code is returned.
 @end deftypefun
 
 @deftypefun int gsl_eigen_gen_QZ (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix * @var{Q}, gsl_matrix * @var{Z}, gsl_eigen_gen_workspace * @var{w})
 This function is identical to @code{gsl_eigen_gen} except it also
+computes the left and right Schur vectors and stores them into @var{Q}
+and @var{Z} respectively.
+@end deftypefun
+
+@deftypefun {gsl_eigen_genv_workspace *} gsl_eigen_genv_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues and
+eigenvectors of @var{n}-by-@var{n} real generalized nonsymmetric
+eigensystems. The size of the workspace is @math{O(7n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_genv_free (gsl_eigen_genv_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_genv (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix_complex * @var{evec}, gsl_eigen_genv_workspace * @var{w})
+This function computes eigenvalues and right eigenvectors of the
+@var{n}-by-@var{n} real generalized nonsymmetric matrix pencil
+(@var{A}, @var{B}). The eigenvalues are stored in (@var{alpha}, @var{beta})
+and the eigenvectors are stored in @var{evec}. It first calls
+@code{gsl_eigen_gen} to compute the eigenvalues, Schur forms, and
+Schur vectors. Then it finds eigenvectors of the Schur forms and
+backtransforms them using the Schur vectors. The Schur vectors are
+destroyed in the process, but can be saved by using
+@code{gsl_eigen_genv_QZ}. The computed eigenvectors are normalized
+to have Euclidean norm 1. On output, (@var{A}, @var{B}) contains
+the generalized Schur form (@math{S}, @math{T}). If @code{gsl_eigen_gen}
+fails, no eigenvectors are computed, and an error code is returned.
+@end deftypefun
+
+@deftypefun int gsl_eigen_genv_QZ (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix_complex * @var{evec}, gsl_matrix * @var{Q}, gsl_matrix * @var{Z}, gsl_eigen_genv_workspace * @var{w})
+This function is identical to @code{gsl_eigen_genv} except it also
 computes the left and right Schur vectors and stores them into @var{Q}
 and @var{Z} respectively.
 @end deftypefun
@@ -432,6 +561,13 @@ columns of the matrix @var{evec} into ascending or descending order
 according to the value of the parameter @var{sort_type} as shown above.
 Only @code{GSL_EIGEN_SORT_ABS_ASC} and @code{GSL_EIGEN_SORT_ABS_DESC} are
 supported due to the eigenvalues being complex.
+@end deftypefun
+
+@deftypefun int gsl_eigen_gensymmv_sort (gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+This function simultaneously sorts the eigenvalues stored in the vector
+@var{eval} and the corresponding real eigenvectors stored in the columns
+of the matrix @var{evec} into ascending or descending order according to
+the value of the parameter @var{sort_type} as shown above.
 @end deftypefun
 
 

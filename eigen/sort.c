@@ -233,3 +233,14 @@ gsl_eigen_nonsymmv_sort (gsl_vector_complex * eval,
       return GSL_SUCCESS;
     }
 }
+
+int
+gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec, 
+                         gsl_eigen_sort_t sort_type)
+{
+  int s;
+
+  s = gsl_eigen_symmv_sort(eval, evec, sort_type);
+
+  return s;
+}

@@ -73,13 +73,24 @@ static int gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B,
                                  gsl_complex *alpha1,
                                  gsl_complex *alpha2, double *beta1,
                                  double *beta2);
-static inline void gen_get_submatrix(gsl_matrix *A, gsl_matrix *B,
-                                     size_t *top);
+static void gen_store_eigval1(const gsl_matrix *H, const double a,
+                              const double b, gsl_vector_complex *alpha,
+                              gsl_vector *beta,
+                              gsl_eigen_gen_workspace *w);
+static void gen_store_eigval2(const gsl_matrix *H,
+                              const gsl_complex *alpha1,
+                              const double beta1,
+                              const gsl_complex *alpha2,
+                              const double beta2,
+                              gsl_vector_complex *alpha,
+                              gsl_vector *beta,
+                              gsl_eigen_gen_workspace *w);
+static inline size_t gen_get_submatrix(const gsl_matrix *A,
+                                       const gsl_matrix *B);
 
 /*FIX**/
 inline static double normF (gsl_matrix * A);
 inline static void create_givens (const double a, const double b, double *c, double *s);
-static double gen_hypot3(double x, double y, double z);
 
 /*
 gsl_eigen_gen_alloc()
@@ -380,16 +391,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
                   continue;
                 }
 
-              gsl_vector_complex_set(alpha, w->n_evals, z1);
-              gsl_vector_set(beta, w->n_evals, a);
-
-              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
-              gsl_vector_set(beta, w->n_evals + 1, b);
-
-              w->n_evals += 2;
-              w->n_iter = 0;
-              w->eshift = 0.0;
-
+              gen_store_eigval2(&h.matrix, &z1, a, &z2, b, alpha, beta, w);
               N = 0;
             } /* if (s) */
 
@@ -431,13 +433,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
           vr = gsl_matrix_submatrix(&r.matrix, q, q, 1, 1);
           gen_schur_standardize1(&vh.matrix, &vr.matrix, &a, &b, w);
 
-          GSL_SET_COMPLEX(&z1, a, 0.0);
-          gsl_vector_complex_set(alpha, w->n_evals, z1);
-          gsl_vector_set(beta, w->n_evals, b);
-
-          w->n_evals += 1;
-          w->n_iter = 0;
-          w->eshift = 0.0;
+          gen_store_eigval1(&vh.matrix, a, b, alpha, beta, w);
 
           --N;
           h = gsl_matrix_submatrix(&h.matrix, 0, 0, N, N);
@@ -470,15 +466,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
             {
               /* we got 2 complex eigenvalues */
 
-              gsl_vector_complex_set(alpha, w->n_evals, z1);
-              gsl_vector_set(beta, w->n_evals, a);
-
-              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
-              gsl_vector_set(beta, w->n_evals + 1, b);
-
-              w->n_evals += 2;
-              w->n_iter = 0;
-              w->eshift = 0.0;
+              gen_store_eigval2(&vh.matrix, &z1, a, &z2, b, alpha, beta, w);
             }
 
           N -= 2;
@@ -493,13 +481,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
           vr = gsl_matrix_submatrix(&r.matrix, 0, 0, 1, 1);
           gen_schur_standardize1(&vh.matrix, &vr.matrix, &a, &b, w);
 
-          GSL_SET_COMPLEX(&z1, a, 0.0);
-          gsl_vector_complex_set(alpha, w->n_evals, z1);
-          gsl_vector_set(beta, w->n_evals, b);
-
-          w->n_evals += 1;
-          w->n_iter = 0;
-          w->eshift = 0.0;
+          gen_store_eigval1(&vh.matrix, a, b, alpha, beta, w);
 
           --N;
           h = gsl_matrix_submatrix(&h.matrix, 1, 1, N, N);
@@ -531,16 +513,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
           else
             {
               /* we got 2 complex eigenvalues */
-
-              gsl_vector_complex_set(alpha, w->n_evals, z1);
-              gsl_vector_set(beta, w->n_evals, a);
-
-              gsl_vector_complex_set(alpha, w->n_evals + 1, z2);
-              gsl_vector_set(beta, w->n_evals + 1, b);
-
-              w->n_evals += 2;
-              w->n_iter = 0;
-              w->eshift = 0.0;
+              gen_store_eigval2(&vh.matrix, &z1, a, &z2, b, alpha, beta, w);
             }
 
           N -= 2;
@@ -575,14 +548,7 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
   if (N == 1)
     {
       gen_schur_standardize1(&h.matrix, &r.matrix, &a, &b, w);
-
-      GSL_SET_COMPLEX(&z1, a, 0.0);
-      gsl_vector_complex_set(alpha, w->n_evals, z1);
-      gsl_vector_set(beta, w->n_evals, b);
-
-      w->n_evals += 1;
-      w->n_iter = 0;
-      w->eshift = 0.0;
+      gen_store_eigval1(&h.matrix, a, b, alpha, beta, w);
     }
 } /* gen_schur_decomp() */
 
@@ -705,7 +671,7 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
   if (w->needtop)
     {
       /* get absolute index of this matrix relative to original matrix */
-      gen_get_submatrix(w->H, H, &top);
+      top = gen_get_submatrix(w->H, H);
     }
 
   temp = scale1*gsl_matrix_get(H, 0, 0) - wr1*gsl_matrix_get(R, 0, 0);
@@ -854,7 +820,7 @@ gen_qzstep_d(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
   if (w->needtop)
     {
       /* get absolute index of this matrix relative to original matrix */
-      gen_get_submatrix(w->H, H, &top);
+      top = gen_get_submatrix(w->H, H);
     }
 
   /*
@@ -1240,7 +1206,7 @@ gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R, size_t q,
   gsl_vector_view xv, yv;
 
   if (w->needtop)
-    gen_get_submatrix(w->H, H, &top);
+    top = gen_get_submatrix(w->H, H);
 
   for (j = q; j < N - 1; ++j)
     {
@@ -1344,7 +1310,7 @@ gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
   gsl_vector_view xv, yv;
 
   if (w->needtop)
-    gen_get_submatrix(w->H, H, &top);
+    top = gen_get_submatrix(w->H, H);
 
   create_givens(gsl_matrix_get(H, N - 1, N - 1),
                 gsl_matrix_get(H, N - 1, N - 2),
@@ -1500,7 +1466,7 @@ gen_schur_standardize1(gsl_matrix *A, gsl_matrix *B, double *alphar,
   if (gsl_matrix_get(B, 0, 0) < 0.0)
     {
       if (w->needtop)
-        gen_get_submatrix(w->H, A, &top);
+        top = gen_get_submatrix(w->H, A);
 
       if (w->compute_t)
         {
@@ -1578,7 +1544,7 @@ gen_schur_standardize2(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
   int s;
 
   if (w->needtop)
-    gen_get_submatrix(w->H, A, &top);
+    top = gen_get_submatrix(w->H, A);
 
   /*
    * Rotate B so that
@@ -1807,7 +1773,7 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
   if (fabs(c11r) + fabs(c11i) + fabs(c12) >
       fabs(c21) + fabs(c22r) + fabs(c22i))
     {
-      t1 = gen_hypot3(c12, c11r, c11i);
+      t1 = gsl_hypot3(c12, c11r, c11i);
       cz = c12 / t1;
       szr = -c11r / t1;
       szi = -c11i / t1;
@@ -1863,7 +1829,7 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
         }
     }
 
-  t1 = gen_hypot3(cq, sqr, sqi);
+  t1 = gsl_hypot3(cq, sqr, sqi);
   cq /= t1;
   sqr /= t1;
   sqi /= t1;
@@ -1892,16 +1858,70 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
 } /* gen_compute_eigenvals() */
 
 /*
+gen_store_eigval1()
+  Store eigenvalue of a 1-by-1 block into the alpha and beta
+output vectors. This routine ensures that eigenvalues are stored
+in the same order as they appear in the Schur form and updates
+various internal workspace quantities.
+*/
+
+static void
+gen_store_eigval1(const gsl_matrix *H, const double a, const double b,
+                  gsl_vector_complex *alpha,
+                  gsl_vector *beta, gsl_eigen_gen_workspace *w)
+{
+  size_t top = gen_get_submatrix(w->H, H);
+  gsl_complex z;
+
+  GSL_SET_COMPLEX(&z, a, 0.0);
+
+  gsl_vector_complex_set(alpha, top, z);
+  gsl_vector_set(beta, top, b);
+
+  w->n_evals += 1;
+  w->n_iter = 0;
+  w->eshift = 0.0;
+} /* gen_store_eigval1() */
+
+/*
+gen_store_eigval2()
+  Store eigenvalues of a 2-by-2 block into the alpha and beta
+output vectors. This routine ensures that eigenvalues are stored
+in the same order as they appear in the Schur form and updates
+various internal workspace quantities.
+*/
+
+static void
+gen_store_eigval2(const gsl_matrix *H, const gsl_complex *alpha1,
+                  const double beta1, const gsl_complex *alpha2,
+                  const double beta2, gsl_vector_complex *alpha,
+                  gsl_vector *beta, gsl_eigen_gen_workspace *w)
+{
+  size_t top = gen_get_submatrix(w->H, H);
+
+  gsl_vector_complex_set(alpha, top, *alpha1);
+  gsl_vector_set(beta, top, beta1);
+
+  gsl_vector_complex_set(alpha, top + 1, *alpha2);
+  gsl_vector_set(beta, top + 1, beta2);
+
+  w->n_evals += 2;
+  w->n_iter = 0;
+  w->eshift = 0.0;
+} /* gen_store_eigval2() */
+
+/*
 gen_get_submatrix()
   B is a submatrix of A. The goal of this function is to
 compute the indices in A of where the matrix B resides
 */
 
-static inline void
-gen_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
+static inline size_t
+gen_get_submatrix(const gsl_matrix *A, const gsl_matrix *B)
 {
   size_t diff;
   double ratio;
+  size_t top;
 
   diff = (size_t) (B->data - A->data);
 
@@ -1910,7 +1930,9 @@ gen_get_submatrix(gsl_matrix *A, gsl_matrix *B, size_t *top)
 
   ratio = (double)diff / ((double) (A->tda + 1));
 
-  *top = (size_t) floor(ratio);
+  top = (size_t) floor(ratio);
+
+  return top;
 } /* gen_get_submatrix() */
 
 /* Frobenius norm */
@@ -1975,27 +1997,4 @@ create_givens (const double a, const double b, double *c, double *s)
       *c = c1;
       *s = c1 * t;
     }
-}
-
-static double
-gen_hypot3(double x, double y, double z)
-{
-  double xabs = fabs(x);
-  double yabs = fabs(y);
-  double zabs = fabs(z);
-  double w = GSL_MAX(xabs, GSL_MAX(yabs, zabs));
-  double r;
-
-  if (w == 0.0)
-    {
-      r = xabs + yabs + zabs;
-    }
-  else
-    {
-      r = w * sqrt((xabs/w)*(xabs/w) +
-                   (yabs/w)*(yabs/w) +
-                   (zabs/w)*(zabs/w));
-    }
-
-  return r;
 }
