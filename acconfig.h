@@ -107,11 +107,7 @@
 #endif
 
 #if !HAVE_DECL_FINITE
-#if HAVE_DECL_ISFINITE
-#define finite isfinite
-#else
 #define finite gsl_finite
-#endif
 #endif
 
 #if !HAVE_DECL_ISNAN

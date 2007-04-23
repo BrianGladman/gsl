@@ -1,3 +1,8 @@
+2007-04-23  Brian Gough  <bjg@network-theory.co.uk>
+
+	* acconfig.h (finite): don't redefine finite in terms of isfinite,
+	which causes problems with system headers, use gsl_finite instead.
+
 2007-04-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: use an actual floating point number instead of an

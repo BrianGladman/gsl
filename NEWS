@@ -1,5 +1,9 @@
 * What will be new in gsl-1.10:
 
+** The configure script no longer redefines finite() to isfinite() as
+a workaround for missing finite(), as this caused problems on Solaris.
+If finite() is not present gsl_finite() will be used instead.
+
 ** Added support in gsl_ieee_set_mode for controlling SSE exceptions
 and rounding through the MXCSR control word on x86 processors.
 
