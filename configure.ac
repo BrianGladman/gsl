@@ -157,10 +157,10 @@ AC_CACHE_CHECK([for long double stdio], ac_cv_func_printf_longdouble,
 #include <stdio.h>
 int main (void) 
 { 
-const char * s = "5678"; long double x = 1.234 ; 
+const char * s = "5678.25"; long double x = 1.234 ; 
 fprintf(stderr,"%Lg\n",x) ; 
 sscanf(s, "%Lg", &x);
-if (x == 5678) {exit (0);} else {exit(1); };
+if (x == 5678.25) {exit (0);} else {exit(1); };
 }]])],[ac_cv_func_printf_longdouble="yes"],[ac_cv_func_printf_longdouble="no"],[ac_cv_func_printf_longdouble="no"])])
 
 if test "$ac_cv_func_printf_longdouble" != no; then

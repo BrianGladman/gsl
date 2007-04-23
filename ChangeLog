@@ -1,3 +1,8 @@
+2007-04-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: use an actual floating point number instead of an
+	integer for testing long double I/O.
+
 2007-01-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_math.h (M_PI_4): corrected typo in higher digits of M_PI_4
