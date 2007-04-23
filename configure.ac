@@ -273,6 +273,20 @@ if test "$ac_cv_c_ieee_interface" = "gnux86" ; then
     ])
 fi
 
+if test "$ac_cv_c_ieee_interface" = "gnux86" ; then
+    AC_CACHE_CHECK([for SSE extensions], ac_cv_c_fpu_sse,
+    [ac_cv_c_fpu_sse=no
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+#include <stdlib.h>
+#define _FPU_SETMXCSR(cw_sse) asm volatile ("ldmxcsr %0" : : "m" (*&cw_sse))
+]], [[ unsigned int mode = 0x1f80 ; _FPU_SETMXCSR(mode); exit(0); ]])],[ac_cv_c_fpu_sse="yes"])
+    ])
+    if test $ac_cv_c_fpu_sse = yes; then
+        AC_DEFINE([HAVE_FPU_X86_SSE], 1,
+                  [Define if x86 processor has sse extensions.])
+   fi
+fi
+
 ac_tr_ieee_interface=HAVE_`echo $ac_cv_c_ieee_interface | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`_IEEE_INTERFACE
 AC_DEFINE_UNQUOTED($ac_tr_ieee_interface,1,[IEEE Interface Type])
 

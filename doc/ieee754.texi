@@ -285,7 +285,7 @@ that the results of the program will be affected.
 
 If the requested modes are not supported by the platform being used then
 the function calls the error handler and returns an error code of
-@code{GSL_EUNSUP}.
+@code{GSL_EUNSUP}.  
 
 When options are specified using this method, the resulting mode is
 based on a default setting of the highest available precision (double
@@ -311,6 +311,13 @@ GSL_IEEE_MODE="double-precision,"\
 This choice ignores any errors relating to small numbers (either
 denormalized, or underflowing to zero) but traps overflows, division by
 zero and invalid operations.
+
+Note that on the x86 series of processors this function sets both the
+original x87 mode and the newer @sc{mxcsr} mode, which controls SSE
+floating-point operations.  The SSE floating-point units do not have a
+precision-control bit, and always work in double-precision.  The
+single-precision and extended-precision keywords have no effect in
+this case.
 @end deftypefun
 
 @noindent
@@ -371,12 +378,13 @@ The result is about
 below the correct value, an order of magnitude worse than the result
 obtained in the @code{round-to-nearest} mode.
 
-If we change to rounding mode to @code{round-up} then the series no
-longer converges (the reason is that when we add each term to the sum
-the final result is always rounded up.  This is guaranteed to increase the sum
-by at least one tick on each iteration).  To avoid this problem we would
-need to use a safer converge criterion, such as @code{while (fabs(sum -
-oldsum) > epsilon)}, with a suitably chosen value of epsilon.
+If we change to rounding mode to @code{round-up} then the final result
+is higher than the correct value (when we add each term to the sum the
+final result is always rounded up, which increases the sum by at least
+one tick until the added term underflows to zero).  To avoid this
+problem we would need to use a safer converge criterion, such as
+@code{while (fabs(sum - oldsum) > epsilon)}, with a suitably chosen
+value of epsilon.
 
 Finally we can see the effect of computing the sum using
 single-precision rounding, in the default @code{round-to-nearest}

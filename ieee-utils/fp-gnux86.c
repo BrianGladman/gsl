@@ -95,5 +95,17 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 
   _FPU_SETCW(mode) ;
 
+#if HAVE_FPU_X86_SSE
+#define _FPU_SETMXCSR(cw_sse) asm volatile ("ldmxcsr %0" : : "m" (*&cw_sse))
+  {
+    unsigned int mode_sse = 0;
+
+    mode_sse |= (mode & 0x3f)<<7;  /* exception masks */
+    mode_sse |= (mode & 0xc00)<<3;    /* rounding control */
+    
+    _FPU_SETMXCSR(mode_sse);
+  }
+#endif
+
   return GSL_SUCCESS ;
 }

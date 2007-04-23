@@ -1,3 +1,8 @@
+* What will be new in gsl-1.10:
+
+** Added support in gsl_ieee_set_mode for controlling SSE exceptions
+and rounding through the MXCSR control word on x86 processors.
+
 ** Improved the accuracy of the generalised laguerre polynomials for
 large n when alpha=0.
 
