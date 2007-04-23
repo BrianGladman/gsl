@@ -159,6 +159,9 @@ variable
 
   $ TESTS_ENVIRONMENT="valgrind --tool=memcheck" make check
 
+Note that this only works if configure was run with --disable-shared,
+because otherwise the shared library libtool scripts themselves are
+run under valgrind giving misleading results.
 
 * Make html docs using texi2html in cvs, 
 
