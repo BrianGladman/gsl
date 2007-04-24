@@ -714,9 +714,9 @@ test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
           rhs_r = GSL_REAL(z);
           rhs_i = GSL_IMAG(z);
 
-          if (fabs(lhs_r - rhs_r) > 1e8 * GSL_DBL_EPSILON)
+          if (fabs(lhs_r - rhs_r) > 1e9 * GSL_DBL_EPSILON)
             ++k;
-          if (fabs(lhs_i - rhs_i) > 1e8 * GSL_DBL_EPSILON)
+          if (fabs(lhs_i - rhs_i) > 1e9 * GSL_DBL_EPSILON)
             ++k;
         }
 
@@ -861,7 +861,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 3)
+      /*if (count != 10331)
         continue;*/
 
       /* make copies of matrices */

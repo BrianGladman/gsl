@@ -265,6 +265,10 @@ int gsl_eigen_nonsymmv_sort(gsl_vector_complex * eval,
 int gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec, 
                              gsl_eigen_sort_t sort_type);
 
+int gsl_eigen_genv_sort (gsl_vector_complex * alpha, gsl_vector * beta,
+                         gsl_matrix_complex * evec,
+                         gsl_eigen_sort_t sort_type);
+
 
 /* The following functions are obsolete: */
 

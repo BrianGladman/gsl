@@ -570,6 +570,15 @@ of the matrix @var{evec} into ascending or descending order according to
 the value of the parameter @var{sort_type} as shown above.
 @end deftypefun
 
+@deftypefun int gsl_eigen_genv_sort (gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix_complex * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+This function simultaneously sorts the eigenvalues stored in the vectors
+(@var{alpha}, @var{beta}) and the corresponding complex eigenvectors
+stored in the columns of the matrix @var{evec} into ascending or
+descending order according to the value of the parameter @var{sort_type}
+as shown above. Only @code{GSL_EIGEN_SORT_ABS_ASC} and
+@code{GSL_EIGEN_SORT_ABS_DESC} are supported due to the eigenvalues being
+complex.
+@end deftypefun
 
 @comment @deftypefun int gsl_eigen_jacobi (gsl_matrix * @var{matrix}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, unsigned int @var{max_rot}, unsigned int * @var{nrot})
 @comment This function finds the eigenvectors and eigenvalues of a real symmetric

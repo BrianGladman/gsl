@@ -244,3 +244,91 @@ gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec,
 
   return s;
 }
+
+int
+gsl_eigen_genv_sort (gsl_vector_complex * alpha, gsl_vector * beta,
+                     gsl_matrix_complex * evec, gsl_eigen_sort_t sort_type)
+{
+  if (evec->size1 != evec->size2)
+    {
+      GSL_ERROR ("eigenvector matrix must be square", GSL_ENOTSQR);
+    }
+  else if (alpha->size != evec->size1 || beta->size != evec->size1)
+    {
+      GSL_ERROR ("eigenvalues must match eigenvector matrix", GSL_EBADLEN);
+    }
+  else
+    {
+      const size_t N = alpha->size;
+      size_t i;
+
+      for (i = 0; i < N - 1; i++)
+        {
+          size_t j;
+          size_t k = i;
+
+          gsl_complex ak = gsl_vector_complex_get (alpha, i);
+          double bk = gsl_vector_get(beta, i);
+          gsl_complex ek;
+
+          if (bk < GSL_DBL_EPSILON)
+            {
+              GSL_SET_COMPLEX(&ek,
+                              GSL_SIGN(GSL_REAL(ak)) ? GSL_POSINF : GSL_NEGINF,
+                              GSL_SIGN(GSL_IMAG(ak)) ? GSL_POSINF : GSL_NEGINF);
+            }
+          else
+            ek = gsl_complex_div_real(ak, bk);
+
+          /* search for something to swap */
+          for (j = i + 1; j < N; j++)
+            {
+              int test;
+              const gsl_complex aj = gsl_vector_complex_get (alpha, j);
+              double bj = gsl_vector_get(beta, j);
+              gsl_complex ej;
+
+              if (bj < GSL_DBL_EPSILON)
+                {
+                  GSL_SET_COMPLEX(&ej,
+                                  GSL_SIGN(GSL_REAL(aj)) ? GSL_POSINF : GSL_NEGINF,
+                                  GSL_SIGN(GSL_IMAG(aj)) ? GSL_POSINF : GSL_NEGINF);
+                }
+              else
+                ej = gsl_complex_div_real(aj, bj);
+
+              switch (sort_type)
+                {       
+                case GSL_EIGEN_SORT_ABS_ASC:
+                  test = (gsl_complex_abs (ej) < gsl_complex_abs (ek));
+                  break;
+                case GSL_EIGEN_SORT_ABS_DESC:
+                  test = (gsl_complex_abs (ej) > gsl_complex_abs (ek));
+                  break;
+                case GSL_EIGEN_SORT_VAL_ASC:
+                case GSL_EIGEN_SORT_VAL_DESC:
+                default:
+                  GSL_ERROR ("invalid sort type", GSL_EINVAL);
+                }
+
+              if (test)
+                {
+                  k = j;
+                  ek = ej;
+                }
+            }
+
+          if (k != i)
+            {
+              /* swap eigenvalues */
+              gsl_vector_complex_swap_elements (alpha, i, k);
+              gsl_vector_swap_elements (beta, i, k);
+
+              /* swap eigenvectors */
+              gsl_matrix_complex_swap_columns (evec, i, k);
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
+}
