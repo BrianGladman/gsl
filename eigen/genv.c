@@ -36,6 +36,9 @@
  * This module computes the eigenvalues and eigenvectors of a
  * real generalized eigensystem A x = \lambda B x. Left and right
  * Schur vectors are optionally computed as well.
+ *
+ * This file contains routines based on original code from LAPACK
+ * which is distributed under the modified BSD license.
  */
 
 static void genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T,

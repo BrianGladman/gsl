@@ -43,6 +43,9 @@
  *
  * This algorithm is also described in the book
  * [2] Golub & Van Loan, "Matrix Computations" (3rd ed), algorithm 7.7.3
+ *
+ * This file contains routines based on original code from LAPACK
+ * which is distributed under the modified BSD license.
  */
 
 static void gen_schur_decomp(gsl_matrix *H, gsl_matrix *R,
