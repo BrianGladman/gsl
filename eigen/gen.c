@@ -52,6 +52,8 @@ static inline int gen_qzstep(gsl_matrix *H, gsl_matrix *R,
                              gsl_eigen_gen_workspace *w);
 static inline void gen_qzstep_d(gsl_matrix *H, gsl_matrix *R,
                                 gsl_eigen_gen_workspace *w);
+static void gen_tri_split_top(gsl_matrix *H, gsl_matrix *R,
+                              gsl_eigen_gen_workspace *w);
 static inline void gen_tri_chase_zero(gsl_matrix *H, gsl_matrix *R,
                                       size_t q,
                                       gsl_eigen_gen_workspace *w);
@@ -399,17 +401,28 @@ gen_schur_decomp(gsl_matrix *H, gsl_matrix *R, gsl_vector_complex *alpha,
         } /* if (flag == 0) */
       else if (flag == 2)
         {
-          /*
-           * we found a small element on the diagonal of R - chase the
-           * zero to the bottom of the active block and then zero
-           * H(n, n - 1) to split off a 1-by-1 block
-           */
+          if (q == 0)
+            {
+              /*
+               * the leading element of R is zero, split off a block
+               * at the top
+               */
+              gen_tri_split_top(&h.matrix, &r.matrix, w);
+            }
+          else
+            {
+              /*
+               * we found a small element on the diagonal of R - chase the
+               * zero to the bottom of the active block and then zero
+               * H(n, n - 1) to split off a 1-by-1 block
+               */
 
-          if (q != N - 1)
-            gen_tri_chase_zero(&h.matrix, &r.matrix, q, w);
+              if (q != N - 1)
+                gen_tri_chase_zero(&h.matrix, &r.matrix, q, w);
 
-          /* now zero H(n, n - 1) */
-          gen_tri_zero_H(&h.matrix, &r.matrix, w);
+              /* now zero H(n, n - 1) */
+              gen_tri_zero_H(&h.matrix, &r.matrix, w);
+            }
 
           /* continue so the next iteration detects the zero in H */
           continue;
@@ -1190,10 +1203,79 @@ gen_qzstep_d(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 } /* gen_qzstep_d() */
 
 /*
+gen_tri_split_top()
+  This routine is called when the leading element on the diagonal of R
+has become negligible. Split off a 1-by-1 block at the top.
+
+Inputs: H - upper hessenberg matrix
+        R - upper triangular matrix
+        w - workspace
+*/
+
+static void
+gen_tri_split_top(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
+{
+  const size_t N = H->size1;
+  size_t j, top;
+  double cs, sn;
+  gsl_vector_view xv, yv;
+
+  if (w->needtop)
+    top = gen_get_submatrix(w->H, H);
+
+  j = 0;
+
+  create_givens(gsl_matrix_get(H, j, j),
+                gsl_matrix_get(H, j + 1, j),
+                &cs,
+                &sn);
+  sn = -sn;
+
+  if (w->compute_s)
+    {
+      xv = gsl_matrix_subrow(w->H, top + j, top, w->size - top);
+      yv = gsl_matrix_subrow(w->H, top + j + 1, top, w->size - top);
+    }
+  else
+    {
+      xv = gsl_matrix_row(H, j);
+      yv = gsl_matrix_row(H, j + 1);
+    }
+
+  gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+  gsl_matrix_set(H, j + 1, j, 0.0);
+
+  if (w->compute_t)
+    {
+      xv = gsl_matrix_subrow(w->R, top + j, top + 1, w->size - top - 1);
+      yv = gsl_matrix_subrow(w->R, top + j + 1, top + 1, w->size - top - 1);
+    }
+  else
+    {
+      xv = gsl_matrix_subrow(R, j, 1, N - 1);
+      yv = gsl_matrix_subrow(R, j + 1, 1, N - 1);
+    }
+
+  gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+
+  if (w->Q)
+    {
+      xv = gsl_matrix_column(w->Q, j);
+      yv = gsl_matrix_column(w->Q, j + 1);
+      gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
+    }
+} /* gen_tri_split_top() */
+
+/*
 gen_tri_chase_zero()
   This routine is called when an element on the diagonal of R
 has become negligible. Chase the zero to the bottom of the active
 block so we can split off a 1-by-1 block.
+
+Inputs: H - upper hessenberg matrix
+        R - upper triangular matrix
+        q - index such that R(q,q) = 0 (q must be > 0)
+        w - workspace
 */
 
 static inline void
@@ -1320,8 +1402,8 @@ gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
   if (w->compute_s)
     {
-      xv = gsl_matrix_column(w->H, top + N - 1);
-      yv = gsl_matrix_column(w->H, top + N - 2);
+      xv = gsl_matrix_subcolumn(w->H, top + N - 1, 0, top + N);
+      yv = gsl_matrix_subcolumn(w->H, top + N - 2, 0, top + N);
     }
   else
     {
@@ -1335,8 +1417,8 @@ gen_tri_zero_H(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
   if (w->compute_t)
     {
-      xv = gsl_matrix_subcolumn(w->R, top + N - 1, 0, w->size - 1);
-      yv = gsl_matrix_subcolumn(w->R, top + N - 2, 0, w->size - 1);
+      xv = gsl_matrix_subcolumn(w->R, top + N - 1, 0, top + N - 1);
+      yv = gsl_matrix_subcolumn(w->R, top + N - 2, 0, top + N - 1);
     }
   else
     {
@@ -1395,13 +1477,16 @@ gen_search_small_elements(gsl_matrix *H, gsl_matrix *R,
                           int *flag, gsl_eigen_gen_workspace *w)
 {
   const size_t N = H->size1;
+  int k;
   size_t i;
   int pass1 = 0;
   int pass2 = 0;
 
-  for (i = N - 1; i > 0; --i)
+  for (k = (int) N - 1; k >= 0; --k)
     {
-      if (fabs(gsl_matrix_get(H, i, i - 1)) <= w->atol)
+      i = (size_t) k;
+
+      if (i != 0 && fabs(gsl_matrix_get(H, i, i - 1)) <= w->atol)
         {
           gsl_matrix_set(H, i, i - 1, 0.0);
           pass1 = 1;
