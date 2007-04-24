@@ -1,6 +1,6 @@
 /* eigen/test.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2006, 2007 Gerard Jungman, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_sort.h>
 
 gsl_matrix *
 create_hilbert_matrix(int size)
@@ -166,7 +168,7 @@ test_eigenvalues (size_t N, const gsl_vector *eval, const gsl_vector * eval2,
     {
       double ei = gsl_vector_get (eval, i);
       double e2i = gsl_vector_get (eval2, i);
-      gsl_test_rel(ei, e2i, 10*N*GSL_DBL_EPSILON, 
+      gsl_test_rel(ei, e2i, 100*N*GSL_DBL_EPSILON, 
                    "%s, direct eigenvalue(%d), %s",
                    desc, i, desc2);
     }
@@ -251,6 +253,151 @@ test_eigen_complex_results (size_t N, const gsl_matrix_complex * m,
   gsl_vector_complex_free(x);
   gsl_vector_complex_free(y);
 }
+
+void
+test_eigen_symm(const char * desc, const gsl_matrix * m)
+{
+  size_t N = m->size1;
+
+  gsl_matrix * A = gsl_matrix_alloc(N, N);
+  gsl_matrix * evec = gsl_matrix_alloc(N, N);
+  gsl_vector * eval = gsl_vector_alloc(N);
+  gsl_vector * eval2 = gsl_vector_alloc(N);
+
+  gsl_eigen_symm_workspace * w1 = gsl_eigen_symm_alloc (N);
+  gsl_eigen_symmv_workspace * w2 = gsl_eigen_symmv_alloc (N);
+
+  gsl_matrix_memcpy(A, m);
+  gsl_eigen_symmv(A, eval, evec, w2);
+  test_eigen_results (N, m, eval, evec, desc, "unsorted");
+
+  gsl_matrix_memcpy(A, m);
+  gsl_eigen_symm(A, eval2, w1);
+  test_eigenvalues (N, eval, eval2, desc, "unsorted");
+
+  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_VAL_ASC);
+  test_eigen_results (N, m, eval, evec, desc, "val/asc");
+
+  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
+  test_eigen_results (N, m, eval, evec, desc, "val/desc");
+
+  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
+  test_eigen_results (N, m, eval, evec, desc, "abs/asc");
+
+  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
+  test_eigen_results (N, m, eval, evec, desc, "abs/desc");
+
+  gsl_eigen_symm_free (w1);
+  gsl_eigen_symmv_free (w2);
+
+  gsl_matrix_free(A);
+  gsl_matrix_free(evec);
+  gsl_vector_free(eval);
+  gsl_vector_free(eval2);
+}
+
+
+void
+test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
+{
+  size_t N = m->size1;
+
+  gsl_matrix_complex * A = gsl_matrix_complex_alloc(N, N);
+  gsl_matrix_complex * evec = gsl_matrix_complex_alloc(N, N);
+  gsl_vector * eval = gsl_vector_alloc(N);
+  gsl_vector * eval2 = gsl_vector_alloc(N);
+
+  gsl_eigen_herm_workspace * w1 = gsl_eigen_herm_alloc (N);
+  gsl_eigen_hermv_workspace * w2 = gsl_eigen_hermv_alloc (N);
+
+  gsl_matrix_complex_memcpy(A, m);
+  gsl_eigen_hermv(A, eval, evec, w2);
+  test_eigen_complex_results (N, m, eval, evec, desc, "unsorted");
+
+  gsl_matrix_complex_memcpy(A, m);
+  gsl_eigen_herm(A, eval2, w1);
+  test_eigenvalues (N, eval, eval2, desc, "unsorted");
+
+  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_VAL_ASC);
+  test_eigen_complex_results (N, m, eval, evec, desc, "val/asc");
+
+  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
+  test_eigen_complex_results (N, m, eval, evec, desc, "val/desc");
+
+  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
+  test_eigen_complex_results (N, m, eval, evec, desc, "abs/asc");
+
+  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
+  test_eigen_complex_results (N, m, eval, evec, desc, "abs/desc");
+
+  gsl_eigen_herm_free (w1);
+  gsl_eigen_hermv_free (w2);
+
+  gsl_matrix_complex_free(A);
+  gsl_matrix_complex_free(evec);
+  gsl_vector_free(eval);
+  gsl_vector_free(eval2);
+}
+
+void
+test_eigen_jacobi(const char * desc, const gsl_matrix * m)
+{
+  size_t N = m->size1;
+  unsigned int nrot;
+
+  gsl_matrix * A = gsl_matrix_alloc(N, N);
+  gsl_matrix * evec = gsl_matrix_alloc(N, N);
+  gsl_vector * eval = gsl_vector_alloc(N);
+
+  gsl_matrix_memcpy(A, m);
+  gsl_eigen_jacobi(A, eval, evec, 1000, &nrot);
+  gsl_eigen_symmv_sort(eval, evec, GSL_EIGEN_SORT_VAL_ASC);
+
+  test_eigen_results (N, m, eval, evec, desc, "");
+
+  gsl_matrix_free(A);
+  gsl_matrix_free(evec);
+  gsl_vector_free(eval);
+}
+
+
+int test_invert_jacobi(void)
+{
+  int s = 0;
+  int i, j;
+  gsl_matrix * hminv = gsl_matrix_alloc(10, 10);
+  gsl_matrix * id    = gsl_matrix_alloc(10, 10);
+
+  /* 10x10 Hilbert matrix */
+  gsl_matrix * hm = create_hilbert_matrix(10);
+  gsl_eigen_invert_jacobi(hm, hminv, 1000);
+
+  /* gsl_linalg_matmult(hm, hminv, id); */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, hm, hminv, 0.0, id);
+
+  for(i=0; i<10; i++) {
+    for(j=0; j<10; j++) {
+      double delta_ij = ( i == j ? 1.0 : 0.0 );
+      double id_ij    = gsl_matrix_get(id, i, j);
+      
+      int rs = ( fabs(id_ij - delta_ij) > 5.0e-3 );
+      s += rs;
+      gsl_test_abs(id_ij, delta_ij, 5e-3, "invert hilbert(10) %d,%d", i,j);
+    }
+  }
+
+  gsl_test (s, "gsl_eigen_jacobi_invert hilbert(10)");
+
+  gsl_matrix_free(hm);
+  gsl_matrix_free(hminv);
+  gsl_matrix_free(id);
+
+  return s;
+}
+
+/******************************************
+ * nonsymm test code                      *
+ ******************************************/
 
 void
 test_eigen_nonsymm_results (const gsl_matrix * m, 
@@ -352,91 +499,6 @@ test_eigen_nonsymm_Z(const gsl_matrix * m, gsl_matrix * Z,
 }
 
 void
-test_eigen_symm(const char * desc, const gsl_matrix * m)
-{
-  size_t N = m->size1;
-
-  gsl_matrix * A = gsl_matrix_alloc(N, N);
-  gsl_matrix * evec = gsl_matrix_alloc(N, N);
-  gsl_vector * eval = gsl_vector_alloc(N);
-  gsl_vector * eval2 = gsl_vector_alloc(N);
-
-  gsl_eigen_symm_workspace * w1 = gsl_eigen_symm_alloc (N);
-  gsl_eigen_symmv_workspace * w2 = gsl_eigen_symmv_alloc (N);
-
-  gsl_matrix_memcpy(A, m);
-  gsl_eigen_symmv(A, eval, evec, w2);
-  test_eigen_results (N, m, eval, evec, desc, "unsorted");
-
-  gsl_matrix_memcpy(A, m);
-  gsl_eigen_symm(A, eval2, w1);
-  test_eigenvalues (N, eval, eval2, desc, "unsorted");
-
-  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_VAL_ASC);
-  test_eigen_results (N, m, eval, evec, desc, "val/asc");
-
-  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
-  test_eigen_results (N, m, eval, evec, desc, "val/desc");
-
-  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigen_results (N, m, eval, evec, desc, "abs/asc");
-
-  gsl_eigen_symmv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
-  test_eigen_results (N, m, eval, evec, desc, "abs/desc");
-
-  gsl_eigen_symm_free (w1);
-  gsl_eigen_symmv_free (w2);
-
-  gsl_matrix_free(A);
-  gsl_matrix_free(evec);
-  gsl_vector_free(eval);
-  gsl_vector_free(eval2);
-}
-
-
-void
-test_eigen_herm(const char * desc, const gsl_matrix_complex * m)
-{
-  size_t N = m->size1;
-
-  gsl_matrix_complex * A = gsl_matrix_complex_alloc(N, N);
-  gsl_matrix_complex * evec = gsl_matrix_complex_alloc(N, N);
-  gsl_vector * eval = gsl_vector_alloc(N);
-  gsl_vector * eval2 = gsl_vector_alloc(N);
-
-  gsl_eigen_herm_workspace * w1 = gsl_eigen_herm_alloc (N);
-  gsl_eigen_hermv_workspace * w2 = gsl_eigen_hermv_alloc (N);
-
-  gsl_matrix_complex_memcpy(A, m);
-  gsl_eigen_hermv(A, eval, evec, w2);
-  test_eigen_complex_results (N, m, eval, evec, desc, "unsorted");
-
-  gsl_matrix_complex_memcpy(A, m);
-  gsl_eigen_herm(A, eval2, w1);
-  test_eigenvalues (N, eval, eval2, desc, "unsorted");
-
-  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_VAL_ASC);
-  test_eigen_complex_results (N, m, eval, evec, desc, "val/asc");
-
-  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_VAL_DESC);
-  test_eigen_complex_results (N, m, eval, evec, desc, "val/desc");
-
-  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigen_complex_results (N, m, eval, evec, desc, "abs/asc");
-
-  gsl_eigen_hermv_sort (eval, evec, GSL_EIGEN_SORT_ABS_DESC);
-  test_eigen_complex_results (N, m, eval, evec, desc, "abs/desc");
-
-  gsl_eigen_herm_free (w1);
-  gsl_eigen_hermv_free (w2);
-
-  gsl_matrix_complex_free(A);
-  gsl_matrix_complex_free(evec);
-  gsl_vector_free(eval);
-  gsl_vector_free(eval2);
-}
-
-void
 test_eigen_nonsymm_matrix(const gsl_matrix * m, size_t count,
                           const char * desc,
                           gsl_eigen_nonsymmv_workspace *w)
@@ -523,63 +585,174 @@ test_eigen_nonsymm(void)
 
     gsl_eigen_nonsymmv_free(w);
   }
+} /* test_eigen_nonsymm() */
+
+/******************************************
+ * gensymm test code                      *
+ ******************************************/
+
+void
+create_random_sym_matrix(gsl_matrix *m, gsl_rng *r, int lower, int upper)
+{
+  size_t i, j;
+
+  for (i = 0; i < m->size1; ++i)
+    {
+      for (j = i; j < m->size2; ++j)
+      {
+        double x = gsl_rng_uniform(r) * (upper - lower) + lower;
+        gsl_matrix_set(m, i, j, x);
+        gsl_matrix_set(m, j, i, x);
+      }
+    }
+} /* create_random_sym_matrix() */
+
+/* with r \in (0,1) if m_{ij} = r^{|i - j|} then m is positive definite */
+void
+create_random_posdef_matrix(gsl_matrix *m, gsl_rng *r)
+{
+  size_t i, j;
+  double x = gsl_rng_uniform(r);
+
+  for (i = 0; i < m->size1; ++i)
+    {
+      for (j = i; j < m->size2; ++j)
+      {
+        double a = pow(x, (double) (j - i));
+
+        gsl_matrix_set(m, i, j, a);
+        gsl_matrix_set(m, j, i, a);
+      }
+    }
+} /* create_random_posdef_matrix() */
+
+void
+test_eigen_gensymm_results (const gsl_matrix * A, 
+                            const gsl_matrix * B,
+                            const gsl_vector * eval, 
+                            const gsl_matrix * evec, 
+                            size_t count,
+                            const char * desc,
+                            const char * desc2)
+{
+  size_t i,j;
+  size_t N = A->size1;
+
+  gsl_vector * x = gsl_vector_alloc(N);
+  gsl_vector * y = gsl_vector_alloc(N);
+  gsl_vector * z = gsl_vector_alloc(N);
+
+  /* check A v = lambda B v */
+  for (i = 0; i < N; i++)
+    {
+      double ei = gsl_vector_get (eval, i);
+      gsl_vector_const_view vi = gsl_matrix_const_column(evec, i);
+      double norm = gsl_blas_dnrm2(&vi.vector);
+
+      /* check that eigenvector is normalized */
+      gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
+                   "gensymm(%u,%u), %s, normalized(%d), %s", N, count,
+                   i, desc, desc2);
+
+      gsl_vector_memcpy(z, &vi.vector);
+
+      /* compute y = A z */
+      gsl_blas_dgemv (CblasNoTrans, 1.0, A, z, 0.0, y);
+
+      /* compute x = B z */
+      gsl_blas_dgemv (CblasNoTrans, 1.0, B, z, 0.0, x);
+
+      /* compute x = lambda B z */
+      gsl_blas_dscal(ei, x);
+
+      /* now test if y = x */
+      for (j = 0; j < N; j++)
+        {
+          double xj = gsl_vector_get (x, j);
+          double yj = gsl_vector_get (y, j);
+
+          gsl_test_rel(yj, xj, 1e9 * GSL_DBL_EPSILON, 
+                       "gensymm(%u,%u), %s, eigenvalue(%d,%d), real, %s", N, count, desc, i, j, desc2);
+        }
+    }
+
+  gsl_vector_free(x);
+  gsl_vector_free(y);
+  gsl_vector_free(z);
 }
 
 void
-test_eigen_jacobi(const char * desc, const gsl_matrix * m)
+test_eigen_gensymm(void)
 {
-  size_t N = m->size1;
-  unsigned int nrot;
+  size_t N_max = 50;
+  size_t n, i;
+  gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+  int s;
 
-  gsl_matrix * A = gsl_matrix_alloc(N, N);
-  gsl_matrix * evec = gsl_matrix_alloc(N, N);
-  gsl_vector * eval = gsl_vector_alloc(N);
+  for (n = 1; n <= N_max; ++n)
+    {
+      gsl_matrix * A = gsl_matrix_alloc(n, n);
+      gsl_matrix * B = gsl_matrix_alloc(n, n);
+      gsl_matrix * ma = gsl_matrix_alloc(n, n);
+      gsl_matrix * mb = gsl_matrix_alloc(n, n);
+      gsl_vector * eval = gsl_vector_alloc(n);
+      gsl_vector * evalv = gsl_vector_alloc(n);
+      gsl_vector * x = gsl_vector_alloc(n);
+      gsl_vector * y = gsl_vector_alloc(n);
+      gsl_matrix * evec = gsl_matrix_alloc(n, n);
+      gsl_eigen_gensymm_workspace * w = gsl_eigen_gensymm_alloc(n);
+      gsl_eigen_gensymmv_workspace * wv = gsl_eigen_gensymmv_alloc(n);
 
-  gsl_matrix_memcpy(A, m);
-  gsl_eigen_jacobi(A, eval, evec, 1000, &nrot);
-  gsl_eigen_symmv_sort(eval, evec, GSL_EIGEN_SORT_VAL_ASC);
+      for (i = 0; i < 10; ++i)
+        {
+          create_random_sym_matrix(A, r, -10, 10);
+          create_random_posdef_matrix(B, r);
 
-  test_eigen_results (N, m, eval, evec, desc, "");
+          gsl_matrix_memcpy(ma, A);
+          gsl_matrix_memcpy(mb, B);
 
-  gsl_matrix_free(A);
-  gsl_matrix_free(evec);
-  gsl_vector_free(eval);
-}
+          gsl_eigen_gensymmv(ma, mb, evalv, evec, wv);
+          test_eigen_gensymm_results(A, B, evalv, evec, i, "random", "unsorted");
 
+          gsl_matrix_memcpy(ma, A);
+          gsl_matrix_memcpy(mb, B);
 
-int test_invert_jacobi(void)
-{
-  int s = 0;
-  int i, j;
-  gsl_matrix * hminv = gsl_matrix_alloc(10, 10);
-  gsl_matrix * id    = gsl_matrix_alloc(10, 10);
+          gsl_eigen_gensymm(ma, mb, eval, w);
 
-  /* 10x10 Hilbert matrix */
-  gsl_matrix * hm = create_hilbert_matrix(10);
-  gsl_eigen_invert_jacobi(hm, hminv, 1000);
+          /* eval and evalv have to be sorted? not sure why */
+          gsl_vector_memcpy(x, eval);
+          gsl_vector_memcpy(y, evalv);
+          gsl_sort_vector(x);
+          gsl_sort_vector(y);
+          test_eigenvalues(n, y, x, "random", "unsorted");
 
-  /* gsl_linalg_matmult(hm, hminv, id); */
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, hm, hminv, 0.0, id);
+          gsl_eigen_gensymmv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_ASC);
+          test_eigen_gensymm_results(A, B, evalv, evec, i, "random", "val/asc");
 
-  for(i=0; i<10; i++) {
-    for(j=0; j<10; j++) {
-      double delta_ij = ( i == j ? 1.0 : 0.0 );
-      double id_ij    = gsl_matrix_get(id, i, j);
-      
-      int rs = ( fabs(id_ij - delta_ij) > 5.0e-3 );
-      s += rs;
-      gsl_test_abs(id_ij, delta_ij, 5e-3, "invert hilbert(10) %d,%d", i,j);
+          gsl_eigen_gensymmv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_DESC);
+          test_eigen_gensymm_results(A, B, evalv, evec, i, "random", "val/desc");
+
+          gsl_eigen_gensymmv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_ASC);
+          test_eigen_gensymm_results(A, B, evalv, evec, i, "random", "abs/asc");
+          gsl_eigen_gensymmv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_DESC);
+          test_eigen_gensymm_results(A, B, evalv, evec, i, "random", "abs/desc");
+        }
+
+      gsl_matrix_free(A);
+      gsl_matrix_free(B);
+      gsl_matrix_free(ma);
+      gsl_matrix_free(mb);
+      gsl_vector_free(eval);
+      gsl_vector_free(evalv);
+      gsl_vector_free(x);
+      gsl_vector_free(y);
+      gsl_matrix_free(evec);
+      gsl_eigen_gensymm_free(w);
+      gsl_eigen_gensymmv_free(wv);
     }
-  }
 
-  gsl_test (s, "gsl_eigen_jacobi_invert hilbert(10)");
-
-  gsl_matrix_free(hm);
-  gsl_matrix_free(hminv);
-  gsl_matrix_free(id);
-
-  return s;
-}
+  gsl_rng_free(r);
+} /* test_eigen_gensymm() */
 
 int main()
 {
@@ -641,6 +814,7 @@ int main()
   }
 
   test_eigen_nonsymm();
+  test_eigen_gensymm();
 
 #if 0 /* Deprecated functions */
   {
