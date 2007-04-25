@@ -1263,8 +1263,8 @@ gen_tri_split_top(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
   if (w->Q)
     {
-      xv = gsl_matrix_column(w->Q, j);
-      yv = gsl_matrix_column(w->Q, j + 1);
+      xv = gsl_matrix_column(w->Q, top + j);
+      yv = gsl_matrix_column(w->Q, top + j + 1);
       gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
     }
 } /* gen_tri_split_top() */
