@@ -10,8 +10,6 @@ reproducible, and that all relevant information is supplied)
 
 * Modified Ei(x) function (see specfunc/TODO)
 
-* Eigensystems for non-symmetric matrices
-
 * Quasi-random number distributions 
 
 * ODE algorithms from RKSUITE

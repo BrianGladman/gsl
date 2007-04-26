@@ -518,7 +518,7 @@ Improved the implementation of the ODE solvers.
 Implementation of the Mathieu functions.
 
 @item Patrick Alken
-Implementation of non-symmetric eigensystems and B-splines.
+Implementation of non-symmetric and generalized eigensystems and B-splines.
 
 @end table
 

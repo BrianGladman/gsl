@@ -23,4 +23,4 @@ Tuomo Keskitalo (tuomo.keskitalo@iki.fi) - multidimensional minimization
 Ivo Alxneit (ivo.alxneit@psi.ch) - multidimensional minimization, wavelet 
   transforms
 Jason H. Stover (jason@sakla.net) - cumulative distribution functions
-Patrick Alken <patrick.alken@colorado.edu> - unsymmetric eigensystems, B-splines
+Patrick Alken <patrick.alken@colorado.edu> - nonsymmetric and generalized eigensystems, B-splines
