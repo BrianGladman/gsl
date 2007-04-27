@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** Improved the convergence test in the Lambert functions to take
+account of finite precision and avoid possible failure to converge.
+
 ** The configure script no longer redefines finite() to isfinite() as
 a workaround for missing finite(), as this caused problems on Solaris.
 If finite() is not present gsl_finite() will be used instead.

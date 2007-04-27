@@ -59,7 +59,7 @@ halley_iteration(
 
     w -= t;
 
-    tol = GSL_DBL_EPSILON * GSL_MAX_DBL(fabs(w), 1.0/(fabs(p)*e));
+    tol = 10 * GSL_DBL_EPSILON * GSL_MAX_DBL(fabs(w), 1.0/(fabs(p)*e));
 
     if(fabs(t) < tol)
     {
