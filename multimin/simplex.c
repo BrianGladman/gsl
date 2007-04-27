@@ -61,11 +61,6 @@ nmsimplex_move_corner (const double coeff, const nmsimplex_state_t * state,
   size_t i, j;
   double newval, mp;
 
-  if (x1->size1 < 2)
-    {
-      GSL_ERROR ("simplex cannot have less than two corners!", GSL_EFAILED);
-    }
-
   for (j = 0; j < x1->size2; j++)
     {
       mp = 0.0;
@@ -103,6 +98,8 @@ nmsimplex_contract_by_best (nmsimplex_state_t * state, size_t best,
   size_t i, j;
   double newval;
 
+  int status = GSL_SUCCESS;
+
   for (i = 0; i < x1->size1; i++)
     {
       if (i != best)
@@ -119,10 +116,19 @@ nmsimplex_contract_by_best (nmsimplex_state_t * state, size_t best,
           gsl_matrix_get_row (xc, x1, i);
           newval = GSL_MULTIMIN_FN_EVAL (f, xc);
           gsl_vector_set (y1, i, newval);
+
+	  /* notify caller that we found at least one bad function value.
+	     we finish the contraction (and do not abort) to allow the user
+	     to handle the situation */
+
+          if(!gsl_finite(newval))
+	    {
+	      status = GSL_EBADFUNC;
+	    }
         }
     }
 
-  return GSL_SUCCESS;
+  return status;
 }
 
 static int
@@ -184,6 +190,11 @@ nmsimplex_alloc (void *vstate, size_t n)
 {
   nmsimplex_state_t *state = (nmsimplex_state_t *) vstate;
 
+  if (n == 0)
+    {
+      GSL_ERROR("invalid number of parameters specified", GSL_EINVAL);
+    }
+
   state->x1 = gsl_matrix_alloc (n + 1, n);
 
   if (state->x1 == NULL)
@@ -195,6 +206,7 @@ nmsimplex_alloc (void *vstate, size_t n)
 
   if (state->y1 == NULL)
     {
+      gsl_matrix_free(state->x1);
       GSL_ERROR ("failed to allocate space for y", GSL_ENOMEM);
     }
 
@@ -202,6 +214,8 @@ nmsimplex_alloc (void *vstate, size_t n)
 
   if (state->ws1 == NULL)
     {
+      gsl_matrix_free(state->x1);
+      gsl_vector_free(state->y1);
       GSL_ERROR ("failed to allocate space for ws1", GSL_ENOMEM);
     }
 
@@ -209,6 +223,9 @@ nmsimplex_alloc (void *vstate, size_t n)
 
   if (state->ws2 == NULL)
     {
+      gsl_matrix_free(state->x1);
+      gsl_vector_free(state->y1);
+      gsl_vector_free(state->ws1);
       GSL_ERROR ("failed to allocate space for ws2", GSL_ENOMEM);
     }
 
@@ -228,9 +245,25 @@ nmsimplex_set (void *vstate, gsl_multimin_function * f,
 
   gsl_vector *xtemp = state->ws1;
 
+  if (xtemp->size != x->size)
+    {
+      GSL_ERROR("incompatible size of x", GSL_EINVAL);
+    }
+
+  if (xtemp->size != step_size->size)
+    {
+      GSL_ERROR("incompatible size of step_size", GSL_EINVAL);
+    }
+
   /* first point is the original x0 */
 
   val = GSL_MULTIMIN_FN_EVAL (f, x);
+  
+  if (!gsl_finite(val))
+    {
+      GSL_ERROR("non-finite function value encountered", GSL_EBADFUNC);
+    }
+
   gsl_matrix_set_row (state->x1, 0, x);
   gsl_vector_set (state->y1, 0, val);
 
@@ -248,6 +281,12 @@ nmsimplex_set (void *vstate, gsl_multimin_function * f,
       val = gsl_vector_get (xtemp, i) + gsl_vector_get (step_size, i);
       gsl_vector_set (xtemp, i, val);
       val = GSL_MULTIMIN_FN_EVAL (f, xtemp);
+  
+      if (!gsl_finite(val))
+        {
+          GSL_ERROR("non-finite function value encountered", GSL_EBADFUNC);
+        }
+
       gsl_matrix_set_row (state->x1, i + 1, xtemp);
       gsl_vector_set (state->y1, i + 1, val);
     }
@@ -294,6 +333,12 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
   int status;
   double val, val2;
 
+
+  if (xc->size != x->size)
+    {
+      GSL_ERROR("incompatible size of x", GSL_EINVAL);
+    }
+
   /* get index of highest, second highest and lowest point */
 
   dhi = ds_hi = dlo = gsl_vector_get (y1, 0);
@@ -324,14 +369,14 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
 
   val = nmsimplex_move_corner (-1.0, state, hi, xc, f);
 
-  if (val < gsl_vector_get (y1, lo))
+  if (gsl_finite(val) && val < gsl_vector_get (y1, lo))
     {
 
       /* reflected point becomes lowest point, try expansion */
 
       val2 = nmsimplex_move_corner (-2.0, state, hi, xc2, f);
 
-      if (val2 < gsl_vector_get (y1, lo))
+      if (gsl_finite(val2) && val2 < gsl_vector_get (y1, lo))
         {
           gsl_matrix_set_row (x1, hi, xc2);
           gsl_vector_set (y1, hi, val2);
@@ -343,11 +388,13 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
         }
     }
 
-  /* reflection does not improve things enough */
+  /* reflection does not improve things enough
+     or
+     we got a non-finite (illegal) function value */
 
-  else if (val > gsl_vector_get (y1, s_hi))
+  else if (!gsl_finite(val) || val > gsl_vector_get (y1, s_hi))
     {
-      if (val <= gsl_vector_get (y1, hi))
+      if (gsl_finite(val) && val <= gsl_vector_get (y1, hi))
         {
 
           /* if trial point is better than highest point, replace 
@@ -361,7 +408,7 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
 
       val2 = nmsimplex_move_corner (0.5, state, hi, xc2, f);
 
-      if (val2 <= gsl_vector_get (y1, hi))
+      if (gsl_finite(val2) && val2 <= gsl_vector_get (y1, hi))
         {
           gsl_matrix_set_row (state->x1, hi, xc2);
           gsl_vector_set (y1, hi, val2);
@@ -373,7 +420,7 @@ nmsimplex_iterate (void *vstate, gsl_multimin_function * f,
           /* contract the whole simplex in respect to the best point */
 
           status = nmsimplex_contract_by_best (state, lo, xc, f);
-          if (status != 0)
+          if (status != GSL_SUCCESS)
             {
               GSL_ERROR ("nmsimplex_contract_by_best failed", GSL_EFAILED);
             }
