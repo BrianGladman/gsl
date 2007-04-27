@@ -1761,6 +1761,11 @@ int test_lambert(void)
   TEST_SF(s, gsl_sf_lambert_W0_e, (1.0e+12, &r), 24.43500440493491313826305,  TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lambert_W0_e, (1.0e+308, &r), 702.641362034106812081125,  TEST_TOL0, GSL_SUCCESS);
 
+  /* Test case from Katrin Wolff <katrin_wolff@gmx.de> fails under
+     double-precision */
+
+  TEST_SF(s, gsl_sf_lambert_W0_e, (1.6849341956993852953416990, &r), 0.775706963944252869680440,  TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E - GSL_DBL_EPSILON, &r), -1.0,  TEST_TOL0, GSL_EDOM);
   TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 1.0/(1024.0*1024.0*1024.0), &r), -0.999928845560308370714970, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_lambert_W0_e, (-1.0/M_E + 1.0/(1024.0*1024.0), &r), -0.997724730359774141620354, TEST_TOL0, GSL_SUCCESS);
