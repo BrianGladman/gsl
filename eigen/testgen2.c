@@ -874,8 +874,8 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 59539)
-        continue;*/
+      if (count != 579606)
+        continue;
 
       /* make copies of matrices */
       gsl_matrix_memcpy(gen_workspace_p->A, A);
@@ -891,6 +891,15 @@ main(int argc, char *argv[])
           printf("LAPACK failed, case %lu\n", count);
           exit(1);
         }
+
+#if 0
+      print_matrix(A, "A");
+      print_matrix(B, "B");
+      gsl_matrix_transpose(lapack_workspace_p->A);
+      gsl_matrix_transpose(lapack_workspace_p->B);
+      print_matrix(lapack_workspace_p->A, "S_lapack");
+      print_matrix(lapack_workspace_p->B, "T_lapack");
+#endif
 
       /* compute eigenvalues with GSL */
       s = gen_proc(gen_workspace_p);
@@ -908,6 +917,11 @@ main(int argc, char *argv[])
           print_matrix(lapack_workspace_p->B, "Be");
           exit(1);
         }
+
+#if 0
+      print_matrix(gen_workspace_p->A, "S_gsl");
+      print_matrix(gen_workspace_p->B, "T_gsl");
+#endif
 
       /* compute alpha / beta vectors */
       for (i = 0; i < N; ++i)

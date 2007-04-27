@@ -31,6 +31,7 @@
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_errno.h>
 
 typedef struct
 {
@@ -714,9 +715,9 @@ test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
           rhs_r = GSL_REAL(z);
           rhs_i = GSL_IMAG(z);
 
-          if (fabs(lhs_r - rhs_r) > 1e9 * GSL_DBL_EPSILON)
+          if (fabs(lhs_r - rhs_r) > 1e10 * GSL_DBL_EPSILON)
             ++k;
-          if (fabs(lhs_i - rhs_i) > 1e9 * GSL_DBL_EPSILON)
+          if (fabs(lhs_i - rhs_i) > 1e10 * GSL_DBL_EPSILON)
             ++k;
         }
 
@@ -729,9 +730,9 @@ test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
           print_matrix(A, "A");
           print_matrix(B, "B");
 
-          printf("alpha = %f + %fi\n", GSL_REAL(ai), GSL_IMAG(ai));
-          printf("beta = %f\n", bi);
-          printf("alpha/beta = %f + %fi\n", GSL_REAL(ai)/bi, GSL_IMAG(ai)/bi);
+          printf("alpha = %.10e + %.10ei\n", GSL_REAL(ai), GSL_IMAG(ai));
+          printf("beta = %.10e\n", bi);
+          printf("alpha/beta = %.10e + %.10ei\n", GSL_REAL(ai)/bi, GSL_IMAG(ai)/bi);
 
           print_vector(&vi.vector, "v");
 
@@ -769,6 +770,7 @@ main(int argc, char *argv[])
 
   gsl_ieee_env_setup();
   gsl_rng_env_setup();
+  /*gsl_set_error_handler_off();*/
 
   N = 30;
   lower = -10;
@@ -861,7 +863,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 10331)
+      /*if (count != 53)
         continue;*/
 
       /* make copies of matrices */
@@ -880,9 +882,9 @@ main(int argc, char *argv[])
                  gen_workspace_p->n_evals);
           print_matrix(A, "A");
           print_matrix(B, "B");
-          print_matrix(gen_workspace_p->A, "Af");
-          print_matrix(gen_workspace_p->B, "Bf");
-          exit(1);
+          print_matrix(gen_workspace_p->Av, "S");
+          print_matrix(gen_workspace_p->Bv, "T");
+          continue;
         }
 
       /* compute alpha / beta vectors */

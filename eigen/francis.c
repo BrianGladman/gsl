@@ -32,7 +32,6 @@
 #include <gsl/gsl_complex_math.h>
 
 #include "subrowcol.c"
-#include "schur.c"
 
 /*
  * This module computes the eigenvalues of a real upper hessenberg
@@ -59,6 +58,7 @@ static inline void francis_schur_standardize(gsl_matrix *A,
                                              gsl_complex *eval2,
                                              gsl_eigen_francis_workspace *w);
 static inline size_t francis_get_submatrix(gsl_matrix *A, gsl_matrix *B);
+static void francis_standard_form(gsl_matrix *A, double *cs, double *sn);
 
 /*
 gsl_eigen_francis_alloc()
@@ -746,7 +746,7 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
   top = francis_get_submatrix(w->H, A);
 
   /* convert 2-by-2 block to standard form */
-  schur_standard_form(A, &cs, &sn);
+  francis_standard_form(A, &cs, &sn);
 
   /* set eigenvalues */
 
@@ -770,7 +770,7 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
       gsl_vector_view xv, yv;
 
       /*
-       * The above call to schur_standard_form transformed a 2-by-2 block
+       * The above call to francis_standard_form transformed a 2-by-2 block
        * of T into upper triangular form via the transformation
        *
        * U = [ CS -SN ]
@@ -785,7 +785,7 @@ francis_schur_standardize(gsl_matrix *A, gsl_complex *eval1,
        * where 0* indicates all zeros except for possibly
        * one subdiagonal element next to A.
        *
-       * After schur_standard_form, T looks like this:
+       * After francis_standard_form, T looks like this:
        *
        * T = [ T_{11} | T_{12}  | T_{13} ]
        *     [   0*   | U^t A U | T_{23} ]
@@ -880,3 +880,173 @@ francis_get_submatrix(gsl_matrix *A, gsl_matrix *B)
 
   return top;
 } /* francis_get_submatrix() */
+
+/*
+francis_standard_form()
+  Compute the Schur factorization of a real 2-by-2 matrix in
+standard form:
+
+[ A B ] = [ CS -SN ] [ T11 T12 ] [ CS SN ]
+[ C D ]   [ SN  CS ] [ T21 T22 ] [-SN CS ]
+
+where either:
+1) T21 = 0 so that T11 and T22 are real eigenvalues of the matrix, or
+2) T11 = T22 and T21*T12 < 0, so that T11 +/- sqrt(|T21*T12|) are
+   complex conjugate eigenvalues
+
+Inputs: A  - 2-by-2 matrix
+        cs - where to store cosine parameter of rotation matrix
+        sn - where to store sine parameter of rotation matrix
+
+Notes: 1) based on LAPACK routine DLANV2
+       2) On output, A is modified to contain the matrix in standard form
+*/
+
+static void
+francis_standard_form(gsl_matrix *A, double *cs, double *sn)
+{
+  double a, b, c, d; /* input matrix values */
+  double tmp;
+  double p, z;
+  double bcmax, bcmis, scale;
+  double tau, sigma;
+  double cs1, sn1;
+  double aa, bb, cc, dd;
+  double sab, sac;
+
+  a = gsl_matrix_get(A, 0, 0);
+  b = gsl_matrix_get(A, 0, 1);
+  c = gsl_matrix_get(A, 1, 0);
+  d = gsl_matrix_get(A, 1, 1);
+
+  if (c == 0.0)
+    {
+      /*
+       * matrix is already upper triangular - set rotation matrix
+       * to the identity
+       */
+      *cs = 1.0;
+      *sn = 0.0;
+    }
+  else if (b == 0.0)
+    {
+      /* swap rows and columns to make it upper triangular */
+
+      *cs = 0.0;
+      *sn = 1.0;
+
+      tmp = d;
+      d = a;
+      a = tmp;
+      b = -c;
+      c = 0.0;
+    }
+  else if (((a - d) == 0.0) && (GSL_SIGN(b) != GSL_SIGN(c)))
+    {
+      /* the matrix has complex eigenvalues with a == d */
+      *cs = 1.0;
+      *sn = 0.0;
+    }
+  else
+    {
+      tmp = a - d;
+      p = 0.5 * tmp;
+      bcmax = GSL_MAX(fabs(b), fabs(c));
+      bcmis = GSL_MIN(fabs(b), fabs(c)) * GSL_SIGN(b) * GSL_SIGN(c);
+      scale = GSL_MAX(fabs(p), bcmax);
+      z = (p / scale) * p + (bcmax / scale) * bcmis;
+
+      if (z >= 4.0 * GSL_DBL_EPSILON)
+        {
+          /* real eigenvalues, compute a and d */
+
+          z = p + GSL_SIGN(p) * fabs(sqrt(scale) * sqrt(z));
+          a = d + z;
+          d -= (bcmax / z) * bcmis;
+
+          /* compute b and the rotation matrix */
+
+          tau = gsl_hypot(c, z);
+          *cs = z / tau;
+          *sn = c / tau;
+          b -= c;
+          c = 0.0;
+        }
+      else
+        {
+          /*
+           * complex eigenvalues, or real (almost) equal eigenvalues -
+           * make diagonal elements equal
+           */
+
+          sigma = b + c;
+          tau = gsl_hypot(sigma, tmp);
+          *cs = sqrt(0.5 * (1.0 + fabs(sigma) / tau));
+          *sn = -(p / (tau * (*cs))) * GSL_SIGN(sigma);
+
+          /*
+           * Compute [ AA BB ] = [ A B ] [ CS -SN ]
+           *         [ CC DD ]   [ C D ] [ SN  CS ]
+           */
+          aa = a * (*cs) + b * (*sn);
+          bb = -a * (*sn) + b * (*cs);
+          cc = c * (*cs) + d * (*sn);
+          dd = -c * (*sn) + d * (*cs);
+
+          /*
+           * Compute [ A B ] = [ CS SN ] [ AA BB ]
+           *         [ C D ]   [-SN CS ] [ CC DD ]
+           */
+          a = aa * (*cs) + cc * (*sn);
+          b = bb * (*cs) + dd * (*sn);
+          c = -aa * (*sn) + cc * (*cs);
+          d = -bb * (*sn) + dd * (*cs);
+
+          tmp = 0.5 * (a + d);
+          a = d = tmp;
+
+          if (c != 0.0)
+            {
+              if (b != 0.0)
+                {
+                  if (GSL_SIGN(b) == GSL_SIGN(c))
+                    {
+                      /*
+                       * real eigenvalues: reduce to upper triangular
+                       * form
+                       */
+                      sab = sqrt(fabs(b));
+                      sac = sqrt(fabs(c));
+                      p = GSL_SIGN(c) * fabs(sab * sac);
+                      tau = 1.0 / sqrt(fabs(b + c));
+                      a = tmp + p;
+                      d = tmp - p;
+                      b -= c;
+                      c = 0.0;
+
+                      cs1 = sab * tau;
+                      sn1 = sac * tau;
+                      tmp = (*cs) * cs1 - (*sn) * sn1;
+                      *sn = (*cs) * sn1 + (*sn) * cs1;
+                      *cs = tmp;
+                    }
+                }
+              else
+                {
+                  b = -c;
+                  c = 0.0;
+                  tmp = *cs;
+                  *cs = -(*sn);
+                  *sn = tmp;
+                }
+            }
+        }
+    }
+
+  /* set new matrix elements */
+
+  gsl_matrix_set(A, 0, 0, a);
+  gsl_matrix_set(A, 0, 1, b);
+  gsl_matrix_set(A, 1, 0, c);
+  gsl_matrix_set(A, 1, 1, d);
+} /* francis_standard_form() */

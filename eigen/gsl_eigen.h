@@ -269,6 +269,23 @@ int gsl_eigen_genv_sort (gsl_vector_complex * alpha, gsl_vector * beta,
                          gsl_matrix_complex * evec,
                          gsl_eigen_sort_t sort_type);
 
+/* Prototypes for the schur module */
+
+int gsl_schur_gen_eigvals(const gsl_matrix *A, const gsl_matrix *B,
+                          double *wr1, double *wr2, double *wi,
+                          double *scale1, double *scale2);
+
+int gsl_schur_solve_equation(double ca, const gsl_matrix *A, double z,
+                             double d1, double d2, const gsl_vector *b,
+                             gsl_vector *x, double *s, double *xnorm,
+                             double smin);
+
+int gsl_schur_solve_equation_z(double ca, const gsl_matrix *A,
+                               gsl_complex *z, double d1, double d2,
+                               const gsl_vector_complex *b,
+                               gsl_vector_complex *x, double *s,
+                               double *xnorm, double smin);
+
 
 /* The following functions are obsolete: */
 

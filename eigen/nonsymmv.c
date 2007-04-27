@@ -32,7 +32,6 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
 
-#include "schur.c"
 #include "subrowcol.c"
 
 /*
@@ -443,16 +442,16 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                  gsl_vector_get(w->work, lu));
                   xv = gsl_vector_view_array(dat_X, 1);
 
-                  schur_solve_equation(1.0,
-                                       &Tv.matrix,
-                                       lambda_re,
-                                       1.0,
-                                       1.0,
-                                       &bv.vector,
-                                       &xv.vector,
-                                       &scale,
-                                       &xnorm,
-                                       smin);
+                  gsl_schur_solve_equation(1.0,
+                                           &Tv.matrix,
+                                           lambda_re,
+                                           1.0,
+                                           1.0,
+                                           &bv.vector,
+                                           &xv.vector,
+                                           &scale,
+                                           &xnorm,
+                                           smin);
 
                   /* scale x to avoid overflow */
                   x = gsl_vector_get(&xv.vector, 0);
@@ -502,16 +501,16 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                  gsl_vector_get(w->work, lu));
                   xv = gsl_vector_view_array(dat_X, 2);
 
-                  schur_solve_equation(1.0,
-                                       &Tv.matrix,
-                                       lambda_re,
-                                       1.0,
-                                       1.0,
-                                       &bv.vector,
-                                       &xv.vector,
-                                       &scale,
-                                       &xnorm,
-                                       smin);
+                  gsl_schur_solve_equation(1.0,
+                                           &Tv.matrix,
+                                           lambda_re,
+                                           1.0,
+                                           1.0,
+                                           &bv.vector,
+                                           &xv.vector,
+                                           &scale,
+                                           &xnorm,
+                                           smin);
 
                   /* scale X(1,1) and X(2,1) to avoid overflow */
                   x11 = gsl_vector_get(&xv.vector, 0);
@@ -699,16 +698,16 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                                   gsl_vector_get(w->work2, lu));
                   gsl_vector_complex_set(&bv.vector, 0, bval);
 
-                  schur_solve_equation_z(1.0,
-                                         &Tv.matrix,
-                                         &lambda,
-                                         1.0,
-                                         1.0,
-                                         &bv.vector,
-                                         &xv.vector,
-                                         &scale,
-                                         &xnorm,
-                                         smin);
+                  gsl_schur_solve_equation_z(1.0,
+                                             &Tv.matrix,
+                                             &lambda,
+                                             1.0,
+                                             1.0,
+                                             &bv.vector,
+                                             &xv.vector,
+                                             &scale,
+                                             &xnorm,
+                                             smin);
 
                   if (xnorm > 1.0)
                     {
@@ -768,16 +767,16 @@ nonsymmv_get_right_eigenvectors(gsl_matrix *T, gsl_matrix *Z,
                   gsl_vector_complex_set(&bv.vector, 0, b1);
                   gsl_vector_complex_set(&bv.vector, 1, b2);
 
-                  schur_solve_equation_z(1.0,
-                                         &Tv.matrix,
-                                         &lambda,
-                                         1.0,
-                                         1.0,
-                                         &bv.vector,
-                                         &xv.vector,
-                                         &scale,
-                                         &xnorm,
-                                         smin);
+                  gsl_schur_solve_equation_z(1.0,
+                                             &Tv.matrix,
+                                             &lambda,
+                                             1.0,
+                                             1.0,
+                                             &bv.vector,
+                                             &xv.vector,
+                                             &scale,
+                                             &xnorm,
+                                             smin);
 
                   x1 = gsl_vector_complex_get(&xv.vector, 0);
                   x2 = gsl_vector_complex_get(&xv.vector, 1);

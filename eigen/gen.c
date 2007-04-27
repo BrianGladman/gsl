@@ -30,7 +30,6 @@
 #include <gsl/gsl_matrix.h>
 
 #include "subrowcol.c"
-#include "schur.c"
 
 /*
  * This module computes the eigenvalues of a real generalized
@@ -639,13 +638,13 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
 
       vh = gsl_matrix_submatrix(H, N - 2, N - 2, 2, 2);
       vr = gsl_matrix_submatrix(R, N - 2, N - 2, 2, 2);
-      schur_gen_eigvals(&vh.matrix,
-                        &vr.matrix,
-                        &wr1,
-                        &wr2,
-                        &wi,
-                        &scale1,
-                        &scale2);
+      gsl_schur_gen_eigvals(&vh.matrix,
+                            &vr.matrix,
+                            &wr1,
+                            &wr2,
+                            &wi,
+                            &scale1,
+                            &scale2);
 
       if (wi != 0.0)
         {
@@ -1835,7 +1834,7 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
    * onto the real line - so check for this before computing them
    */
 
-  schur_gen_eigvals(A, B, &wr1, &wr2, &wi, &scale1, &scale2);
+  gsl_schur_gen_eigvals(A, B, &wr1, &wr2, &wi, &scale1, &scale2);
   if (wi == 0.0)
     return GSL_CONTINUE; /* real eigenvalues - continue QZ iteration */
 

@@ -30,8 +30,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
 
-#include "schur.c"
-
 /*
  * This module computes the eigenvalues and eigenvectors of a
  * real generalized eigensystem A x = \lambda B x. Left and right
@@ -41,12 +39,11 @@
  * which is distributed under the modified BSD license.
  */
 
-static void genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T,
-                                        gsl_matrix *Z,
-                                        gsl_vector_complex *alpha,
-                                        gsl_vector *beta,
-                                        gsl_matrix_complex *evec,
-                                        gsl_eigen_genv_workspace *w);
+static int genv_get_right_eigenvectors(const gsl_matrix *S,
+                                       const gsl_matrix *T,
+                                       gsl_matrix *Z,
+                                       gsl_matrix_complex *evec,
+                                       gsl_eigen_genv_workspace *w);
 
 /*
 gsl_eigen_genv_alloc()
@@ -218,7 +215,7 @@ gsl_eigen_genv (gsl_matrix * A, gsl_matrix * B, gsl_vector_complex * alpha,
       if (s == GSL_SUCCESS)
         {
           /* compute eigenvectors */
-          genv_get_right_eigenvectors(A, B, &Z, alpha, beta, evec, w);
+          s = genv_get_right_eigenvectors(A, B, &Z, evec, w);
         }
 
       return s;
@@ -296,19 +293,19 @@ eigenvectors of the original system.
 Inputs: S     - upper quasi-triangular Schur form of A
         T     - upper triangular Schur form of B
         Z     - right Schur vectors
-        alpha - (output) where to store eigenvalue numerators
-        beta  - (output) where to store eigenvalue denominators
         evec  - (output) where to store eigenvectors
         w     - workspace
 
-Return: none
+Return: success or error
 
 Notes: 1) based on LAPACK routine DTGEVC
+       2) eigenvectors are stored in the order that their
+          eigenvalues appear in the Schur form
 */
 
-static void
-genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
-                            gsl_vector_complex *alpha, gsl_vector *beta,
+static int
+genv_get_right_eigenvectors(const gsl_matrix *S, const gsl_matrix *T,
+                            gsl_matrix *Z,
                             gsl_matrix_complex *evec,
                             gsl_eigen_genv_workspace *w)
 {
@@ -332,7 +329,6 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
   gsl_complex z_zero, z_one;
   double bdiag[2] = { 0.0, 0.0 };
   double sum[4];
-  gsl_matrix_view sv;
   int il2by2;
   size_t jr, jc, ja;
   double xscale;
@@ -492,23 +488,23 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
         }
       else
         {
-          gsl_matrix_view vs, vt;
+          gsl_matrix_const_view vs =
+            gsl_matrix_const_submatrix(S, je - 1, je - 1, 2, 2);
+          gsl_matrix_const_view vt =
+            gsl_matrix_const_submatrix(T, je - 1, je - 1, 2, 2);
 
           /* complex eigenvalue */
 
-          vs = gsl_matrix_submatrix(S, je - 1, je - 1, 2, 2);
-          vt = gsl_matrix_submatrix(T, je - 1, je - 1, 2, 2);
-          schur_gen_eigvals(&vs.matrix,
-                            &vt.matrix,
-                            &bcoefr,
-                            &temp2,
-                            &bcoefi,
-                            &acoef,
-                            &temp);
+          gsl_schur_gen_eigvals(&vs.matrix,
+                                &vt.matrix,
+                                &bcoefr,
+                                &temp2,
+                                &bcoefi,
+                                &acoef,
+                                &temp);
           if (bcoefi == 0.0)
             {
-              GSL_ERROR_VOID("schur_gen_eigvals failed on complex block", GSL_FAILURE);
-              return;
+              GSL_ERROR("gsl_schur_gen_eigvals failed on complex block", GSL_FAILURE);
             }
 
           /* scale to avoid over/underflow */
@@ -623,10 +619,11 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
           else
             na = 1;
 
-          sv = gsl_matrix_submatrix(S, j, j, na, na);
 
           if (nw == 1)
             {
+              gsl_matrix_const_view sv =
+                gsl_matrix_const_submatrix(S, j, j, na, na);
               gsl_vector_view xv, bv;
 
               bv = gsl_vector_subvector(w->work3, j, na);
@@ -637,22 +634,26 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
                */
               xv = gsl_vector_view_array_with_stride(sum, 2, na);
 
-              schur_solve_equation(acoef,
-                                   &sv.matrix,
-                                   bcoefr,
-                                   bdiag[0],
-                                   bdiag[1],
-                                   &bv.vector,
-                                   &xv.vector,
-                                   &scale,
-                                   &temp,
-                                   dmin);
+              gsl_schur_solve_equation(acoef,
+                                       &sv.matrix,
+                                       bcoefr,
+                                       bdiag[0],
+                                       bdiag[1],
+                                       &bv.vector,
+                                       &xv.vector,
+                                       &scale,
+                                       &temp,
+                                       dmin);
             }
           else
             {
               double bdat[4];
-              gsl_vector_complex_view xv = gsl_vector_complex_view_array(sum, na);
-              gsl_vector_complex_view bv = gsl_vector_complex_view_array(bdat, na);
+              gsl_matrix_const_view sv =
+                gsl_matrix_const_submatrix(S, j, j, na, na);
+              gsl_vector_complex_view xv =
+                gsl_vector_complex_view_array(sum, na);
+              gsl_vector_complex_view bv =
+                gsl_vector_complex_view_array(bdat, na);
               gsl_complex z;
 
               bdat[0] = gsl_vector_get(w->work3, j);
@@ -665,16 +666,16 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
 
               GSL_SET_COMPLEX(&z, bcoefr, bcoefi);
 
-              schur_solve_equation_z(acoef,
-                                     &sv.matrix,
-                                     &z,
-                                     bdiag[0],
-                                     bdiag[1],
-                                     &bv.vector,
-                                     &xv.vector,
-                                     &scale,
-                                     &temp,
-                                     dmin);
+              gsl_schur_solve_equation_z(acoef,
+                                         &sv.matrix,
+                                         &z,
+                                         bdiag[0],
+                                         bdiag[1],
+                                         &bv.vector,
+                                         &xv.vector,
+                                         &scale,
+                                         &temp,
+                                         dmin);
             }
 
           if (scale < 1.0)
@@ -867,4 +868,6 @@ genv_get_right_eigenvectors(gsl_matrix *S, gsl_matrix *T, gsl_matrix *Z,
             }
         }
     } /* for (k = 0; k < N; ++k) */
+
+  return GSL_SUCCESS;
 } /* genv_get_right_eigenvectors() */
