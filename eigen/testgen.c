@@ -392,131 +392,6 @@ test_evals(gsl_vector_complex *obs, gsl_vector_complex *expected,
     return k;
 } /* test_evals() */
 
-int
-test_alpha(gsl_vector_complex *obs, gsl_vector_complex *expected,
-           gsl_matrix *A, gsl_matrix *B, const char *obsname,
-           const char *expname)
-{
-  size_t N = expected->size;
-  size_t i, k;
-  double max, max_abserr, max_relerr;
-
-  max = 0.0;
-  max_abserr = 0.0;
-  max_relerr = 0.0;
-  k = 0;
-
-  for (i = 0; i < N; ++i)
-    {
-      gsl_complex z = gsl_vector_complex_get(expected, i);
-      max = GSL_MAX_DBL(max, gsl_complex_abs(z));
-    }
-
-  for (i = 0; i < N; ++i)
-    {
-      gsl_complex z_obs = gsl_vector_complex_get(obs, i);
-      gsl_complex z_exp = gsl_vector_complex_get(expected, i);
-
-      double x_obs = GSL_REAL(z_obs);
-      double y_obs = fabs(GSL_IMAG(z_obs));
-      double x_exp = GSL_REAL(z_exp);
-      double y_exp = fabs(GSL_IMAG(z_exp));
-
-      double abserr_x = fabs(x_obs - x_exp);
-      double abserr_y = fabs(y_obs - y_exp);
-      double noise = max * GSL_DBL_EPSILON * N * N;
-
-      max_abserr = GSL_MAX_DBL(max_abserr, abserr_x + abserr_y);
-
-      if (abserr_x < noise && abserr_y < noise)
-        continue;
-
-      if (abserr_x > 1.0e-6 || abserr_y > 1.0e-6)
-        ++k;
-    }
-
-    if (k)
-      {
-        printf("==== CASE %lu ===========================\n\n", count);
-
-        print_matrix(A, "A");
-        print_matrix(B, "B");
-
-        printf("=== alpha - %s ===\n", expname);
-        print_vector(expected, expname);
-
-        printf("=== alpha - %s ===\n", obsname);
-        print_vector(obs, obsname);
-
-        printf("max abserr = %g  max relerr = %g\n", max_abserr, max_relerr);
-
-        printf("=========================================\n\n");
-      }
-
-    return k;
-} /* test_alpha() */
-
-int
-test_beta(gsl_vector *obs, gsl_vector *expected,
-          gsl_matrix *A, gsl_matrix *B, const char *obsname,
-          const char *expname)
-{
-  size_t N = expected->size;
-  size_t i, k;
-  double max, max_abserr, max_relerr;
-
-  max = 0.0;
-  max_abserr = 0.0;
-  max_relerr = 0.0;
-  k = 0;
-
-  for (i = 0; i < N; ++i)
-    {
-      double z = gsl_vector_get(expected, i);
-      max = GSL_MAX_DBL(max, fabs(z));
-    }
-
-  for (i = 0; i < N; ++i)
-    {
-      double v_obs = gsl_vector_get(obs, i);
-      double v_exp = gsl_vector_get(expected, i);
-      double abserr = fabs(v_obs - v_exp);
-      double noise = max * GSL_DBL_EPSILON * N * N;
-
-      max_abserr = GSL_MAX_DBL(max_abserr, abserr);
-
-      if (abserr < noise)
-        continue;
-
-      if (abserr > 1.0e-6)
-        ++k;
-    }
-
-    if (k)
-      {
-        printf("==== CASE %lu ===========================\n\n", count);
-
-        print_matrix(A, "A");
-        print_matrix(B, "B");
-
-        printf("=== beta - %s ===\n", expname);
-        printf("%s = [\n", expname);
-        gsl_vector_fprintf(stdout, expected, "%.12e");
-        printf("]\n");
-
-        printf("=== beta - %s ===\n", obsname);
-        printf("%s = [\n", obsname);
-        gsl_vector_fprintf(stdout, obs, "%.12e");
-        printf("]\n");
-
-        printf("max abserr = %g  max relerr = %g\n", max_abserr, max_relerr);
-
-        printf("=========================================\n\n");
-      }
-
-    return k;
-} /* test_beta() */
-
 /* test if A = Q S Z^t */
 void
 test_schur(gsl_matrix *A, gsl_matrix *S, gsl_matrix *Q, gsl_matrix *Z)
@@ -877,6 +752,7 @@ main(int argc, char *argv[])
 
       if (s != GSL_SUCCESS)
         {
+#if 0
           printf("=========== CASE %lu ============\n", count);
           printf("Failed to converge: found %u eigenvalues\n",
                  gen_workspace_p->n_evals);
@@ -884,6 +760,7 @@ main(int argc, char *argv[])
           print_matrix(B, "B");
           print_matrix(gen_workspace_p->Av, "S");
           print_matrix(gen_workspace_p->Bv, "T");
+#endif
           continue;
         }
 

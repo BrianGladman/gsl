@@ -1,6 +1,6 @@
-/* eigen/eigen_sort.c
+/* eigen/sort.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2006, 2007 Gerard Jungman, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,11 +173,11 @@ gsl_eigen_nonsymmv_sort (gsl_vector_complex * eval,
                          gsl_matrix_complex * evec, 
                          gsl_eigen_sort_t sort_type)
 {
-  if (evec->size1 != evec->size2)
+  if (evec && (evec->size1 != evec->size2))
     {
       GSL_ERROR ("eigenvector matrix must be square", GSL_ENOTSQR);
     }
-  else if (eval->size != evec->size1)
+  else if (evec && (eval->size != evec->size1))
     {
       GSL_ERROR ("eigenvalues must match eigenvector matrix", GSL_EBADLEN);
     }
@@ -226,7 +226,8 @@ gsl_eigen_nonsymmv_sort (gsl_vector_complex * eval,
               gsl_vector_complex_swap_elements (eval, i, k);
 
               /* swap eigenvectors */
-              gsl_matrix_complex_swap_columns (evec, i, k);
+              if (evec)
+                gsl_matrix_complex_swap_columns (evec, i, k);
             }
         }
 
