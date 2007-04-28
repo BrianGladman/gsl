@@ -390,13 +390,13 @@ problem involving @math{\mu} is not. Therefore, to allow for zero
 @tex
 \beforedisplay
 $$
-\beta A y = \alpha B y
+\beta A x = \alpha B x
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\beta A y = \alpha B y
+\beta A x = \alpha B x
 @end example
 @end ifinfo
 The eigensolver routines below will return two values @math{\alpha}
