@@ -44,6 +44,8 @@ static int genv_get_right_eigenvectors(const gsl_matrix *S,
                                        gsl_matrix *Z,
                                        gsl_matrix_complex *evec,
                                        gsl_eigen_genv_workspace *w);
+static void genv_normalize_eigenvectors(gsl_vector_complex *alpha,
+                                        gsl_matrix_complex *evec);
 
 /*
 gsl_eigen_genv_alloc()
@@ -216,6 +218,9 @@ gsl_eigen_genv (gsl_matrix * A, gsl_matrix * B, gsl_vector_complex * alpha,
         {
           /* compute eigenvectors */
           s = genv_get_right_eigenvectors(A, B, &Z, evec, w);
+
+          if (s == GSL_SUCCESS)
+            genv_normalize_eigenvectors(alpha, evec);
         }
 
       return s;
@@ -871,3 +876,48 @@ genv_get_right_eigenvectors(const gsl_matrix *S, const gsl_matrix *T,
 
   return GSL_SUCCESS;
 } /* genv_get_right_eigenvectors() */
+
+/*
+genv_normalize_eigenvectors()
+  Normalize eigenvectors so that their Euclidean norm is 1
+
+Inputs: alpha - eigenvalue numerators
+        evec  - eigenvectors
+*/
+
+static void
+genv_normalize_eigenvectors(gsl_vector_complex *alpha,
+                            gsl_matrix_complex *evec)
+{
+  const size_t N = evec->size1;
+  size_t i;     /* looping */
+  gsl_complex ai;
+  gsl_vector_complex_view vi;
+  gsl_vector_view re, im;
+  double scale; /* scaling factor */
+
+  for (i = 0; i < N; ++i)
+    {
+      ai = gsl_vector_complex_get(alpha, i);
+      vi = gsl_matrix_complex_column(evec, i);
+
+      re = gsl_vector_complex_real(&vi.vector);
+
+      if (GSL_IMAG(ai) == 0.0)
+        {
+          scale = 1.0 / gsl_blas_dnrm2(&re.vector);
+          gsl_blas_dscal(scale, &re.vector);
+        }
+      else if (GSL_IMAG(ai) > 0.0)
+        {
+          im = gsl_vector_complex_imag(&vi.vector);
+
+          scale = 1.0 / gsl_hypot(gsl_blas_dnrm2(&re.vector),
+                                  gsl_blas_dnrm2(&im.vector));
+          gsl_blas_zdscal(scale, &vi.vector);
+
+          vi = gsl_matrix_complex_column(evec, i + 1);
+          gsl_blas_zdscal(scale, &vi.vector);
+        }
+    }
+} /* genv_normalize_eigenvectors() */

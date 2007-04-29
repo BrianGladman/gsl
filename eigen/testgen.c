@@ -564,6 +564,11 @@ test_eigenvectors(const gsl_matrix *A, const gsl_matrix *B,
       gsl_vector_complex_const_view vi = gsl_matrix_complex_const_column(evec, i);
       gsl_complex ai = gsl_vector_complex_get(alpha, i);
       double bi = gsl_vector_get(beta, i);
+      double norm = gsl_blas_dznrm2(&vi.vector);
+
+      /* check that eigenvector is normalized */
+      gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON, "case %u, normalized",
+                   count);
 
       /* compute x = alpha * B * v */
       gsl_blas_zgemv(CblasNoTrans, z_one, mb, &vi.vector, z_zero, x);
@@ -752,7 +757,6 @@ main(int argc, char *argv[])
 
       if (s != GSL_SUCCESS)
         {
-#if 0
           printf("=========== CASE %lu ============\n", count);
           printf("Failed to converge: found %u eigenvalues\n",
                  gen_workspace_p->n_evals);
@@ -760,7 +764,6 @@ main(int argc, char *argv[])
           print_matrix(B, "B");
           print_matrix(gen_workspace_p->Av, "S");
           print_matrix(gen_workspace_p->Bv, "T");
-#endif
           continue;
         }
 
