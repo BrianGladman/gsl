@@ -470,13 +470,12 @@ francis_qrstep(gsl_matrix * H, gsl_eigen_francis_workspace * w)
   v2 = gsl_vector_view_array(dat, 2);
   v3 = gsl_vector_view_array(dat, 3);
 
-  if ((w->n_iter == 10) || (w->n_iter == 20))
+  if ((w->n_iter % 10) == 0)
     {
       /*
-       * exceptional shifts: we have gone 10 or 20 iterations
+       * exceptional shifts: we have gone 10 iterations
        * without finding a new eigenvalue, try a new choice of shifts.
-       * See Numerical Recipes in C, eq 11.6.27 and LAPACK routine
-       * DLAHQR
+       * See LAPACK routine DLAHQR
        */
       s = fabs(gsl_matrix_get(H, N - 1, N - 2)) +
           fabs(gsl_matrix_get(H, N - 2, N - 3));

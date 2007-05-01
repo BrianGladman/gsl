@@ -874,8 +874,8 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      if (count != 579606)
-        continue;
+      /*if (count != 89120)
+        continue;*/
 
       /* make copies of matrices */
       gsl_matrix_memcpy(gen_workspace_p->A, A);

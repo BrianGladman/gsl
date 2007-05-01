@@ -1861,9 +1861,18 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
       fabs(c21) + fabs(c22r) + fabs(c22i))
     {
       t1 = gsl_hypot3(c12, c11r, c11i);
-      cz = c12 / t1;
-      szr = -c11r / t1;
-      szi = -c11i / t1;
+      if (t1 != 0.0)
+        {
+          cz = c12 / t1;
+          szr = -c11r / t1;
+          szi = -c11i / t1;
+        }
+      else
+        {
+          cz = 0.0;
+          szr = 1.0;
+          szi = 0.0;
+        }
     }
   else
     {
@@ -1891,8 +1900,17 @@ gen_compute_eigenvals(gsl_matrix *A, gsl_matrix *B, gsl_complex *alpha1,
   if (scale1*an > wabs*bn)
     {
       cq = cz * B11;
-      sqr = szr * B22;
-      sqi = -szi * B22;
+      if (cq <= GSL_DBL_MIN)
+        {
+          cq = 0.0;
+          sqr = 1.0;
+          sqi = 0.0;
+        }
+      else
+        {
+          sqr = szr * B22;
+          sqi = -szi * B22;
+        }
     }
   else
     {

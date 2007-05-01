@@ -345,7 +345,8 @@ This function frees the memory associated with the workspace @var{w}.
 @deftypefun int gsl_eigen_gensymmv (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_gensymmv_workspace * @var{w})
 This function computes the eigenvalues and eigenvectors of the real
 generalized symmetric-definite matrix pencil (@var{A}, @var{B}), and
-stores them in @var{eval} and @var{evec} respectively. On output,
+stores them in @var{eval} and @var{evec} respectively. The computed
+eigenvectors are normalized to have Euclidean norm 1. On output,
 @var{B} contains its Cholesky decomposition and @var{A} is destroyed.
 @end deftypefun
 

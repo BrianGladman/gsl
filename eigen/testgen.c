@@ -743,7 +743,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 53)
+      /*if (count != 89120)
         continue;*/
 
       /* make copies of matrices */
@@ -757,6 +757,7 @@ main(int argc, char *argv[])
 
       if (s != GSL_SUCCESS)
         {
+#if 0
           printf("=========== CASE %lu ============\n", count);
           printf("Failed to converge: found %u eigenvalues\n",
                  gen_workspace_p->n_evals);
@@ -764,6 +765,7 @@ main(int argc, char *argv[])
           print_matrix(B, "B");
           print_matrix(gen_workspace_p->Av, "S");
           print_matrix(gen_workspace_p->Bv, "T");
+#endif
           continue;
         }
 
@@ -790,17 +792,6 @@ main(int argc, char *argv[])
                         gen_workspace_p->alphav,
                         gen_workspace_p->betav,
                         gen_workspace_p->evec);
-
-#if 0
-      sort_complex_vector(gen_workspace_p->evals);
-
-      s = test_evals(gen_workspace_p->evals,
-                     lapack_workspace_p->evals,
-                     A,
-                     B,
-                     "gen",
-                     "lapack");
-#endif
 
       if (compute_schur)
         {
