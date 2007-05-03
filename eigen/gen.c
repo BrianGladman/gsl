@@ -622,8 +622,8 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
           fabs(gsl_matrix_get(R, N - 2, N - 2)))
         {
           w->eshift += GEN_ESHIFT_COEFF *
-                       (gsl_matrix_get(H, N - 1, N - 2) /
-                        gsl_matrix_get(R, N - 2, N - 2));
+                       (w->ascale * gsl_matrix_get(H, N - 1, N - 2)) /
+                       (w->bscale * gsl_matrix_get(R, N - 2, N - 2));
         }
       else
         w->eshift += 1.0 / (GSL_DBL_MIN * w->max_iterations);
