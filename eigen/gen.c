@@ -47,6 +47,8 @@
  * which is distributed under the modified BSD license.
  */
 
+#define GEN_ESHIFT_COEFF     (0.736)
+
 static void gen_schur_decomp(gsl_matrix *H, gsl_matrix *R,
                              gsl_vector_complex *alpha, gsl_vector *beta,
                              gsl_eigen_gen_workspace *w);
@@ -612,16 +614,16 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
       /*
        * Exceptional shift - we have gone 10 iterations without finding
        * a new eigenvalue, do a single shift sweep with an
-       * exceptional shift - this shift value is taken from lapack
-       * DHGEQZ
+       * exceptional shift
        */
 
       if ((GSL_DBL_MIN * w->max_iterations) *
-          fabs(gsl_matrix_get(H, N - 2, N - 1)) <
+          fabs(gsl_matrix_get(H, N - 1, N - 2)) <
           fabs(gsl_matrix_get(R, N - 2, N - 2)))
         {
-          w->eshift += gsl_matrix_get(H, N - 2, N - 1) /
-                       gsl_matrix_get(R, N - 2, N - 2);
+          w->eshift += GEN_ESHIFT_COEFF *
+                       (gsl_matrix_get(H, N - 1, N - 2) /
+                        gsl_matrix_get(R, N - 2, N - 2));
         }
       else
         w->eshift += 1.0 / (GSL_DBL_MIN * w->max_iterations);

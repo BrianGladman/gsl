@@ -142,7 +142,7 @@ test_eigen_schur(const gsl_matrix * A, const gsl_matrix * S,
           double x = gsl_matrix_get(T1, i, j);
           double y = gsl_matrix_get(T2, i, j);
 
-          gsl_test_rel(x, y, 1.0e8 * GSL_DBL_EPSILON,
+          gsl_test_abs(x, y, 1.0e8 * GSL_DBL_EPSILON,
                        "%s(N=%u,cnt=%u), %s, schur(%d,%d)", desc, N, count, desc2, i, j);
         }
     }
@@ -618,7 +618,7 @@ test_eigen_nonsymm_matrix(const gsl_matrix * m, size_t count,
 void
 test_eigen_nonsymm(void)
 {
-  size_t N_max = 50;
+  size_t N_max = 20;
   size_t n, i;
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
 
@@ -962,7 +962,7 @@ test_eigen_gen_pencil(const gsl_matrix * A, const gsl_matrix * B,
   else
     gsl_eigen_genv(w->A, w->B, w->alphav, w->betav, w->evec, w->genv_p);
 
-  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, "random", "unsorted");
+  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, desc, "unsorted");
 
   gsl_matrix_memcpy(w->A, A);
   gsl_matrix_memcpy(w->B, B);
@@ -1000,12 +1000,12 @@ test_eigen_gen_pencil(const gsl_matrix * A, const gsl_matrix * B,
   /* sort eval and evalv and test them */
   gsl_eigen_nonsymmv_sort(w->eval, NULL, GSL_EIGEN_SORT_ABS_ASC);
   gsl_eigen_nonsymmv_sort(w->evalv, NULL, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigenvalues_complex(w->evalv, w->eval, "gen", "random");
+  test_eigenvalues_complex(w->evalv, w->eval, "gen", desc);
 
   gsl_eigen_genv_sort(w->alphav, w->betav, w->evec, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, "random", "abs/asc");
+  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, desc, "abs/asc");
   gsl_eigen_genv_sort(w->alphav, w->betav, w->evec, GSL_EIGEN_SORT_ABS_DESC);
-  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, "random", "abs/desc");
+  test_eigen_gen_results(A, B, w->alphav, w->betav, w->evec, count, desc, "abs/desc");
 } /* test_eigen_gen_pencil() */
 
 void
@@ -1037,6 +1037,24 @@ test_eigen_gen(void)
     }
 
   gsl_rng_free(r);
+
+  /* this system will test the exceptional shift code */
+  {
+    double datA[] = { 1, 1, 0,
+                      0, 0, -1,
+                      1, 0, 0 };
+    double datB[] = { -1, 0, -1,
+                      0, -1, 0,
+                      0, 0, -1 };
+    gsl_matrix_view va = gsl_matrix_view_array (datA, 3, 3);
+    gsl_matrix_view vb = gsl_matrix_view_array (datB, 3, 3);
+    test_eigen_gen_workspace * w = test_eigen_gen_alloc(3);
+    
+    test_eigen_gen_pencil(&va.matrix, &vb.matrix, 0, "integer", 0, w);
+    test_eigen_gen_pencil(&va.matrix, &vb.matrix, 0, "integer", 1, w);
+
+    test_eigen_gen_free(w);
+  }
 } /* test_eigen_gen() */
 
 int

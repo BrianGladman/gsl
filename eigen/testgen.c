@@ -74,8 +74,8 @@ void make_random_integer_matrix(gsl_matrix *m, gsl_rng *r, int lower,
                                 int upper);
 void make_start_matrix(gsl_matrix *m, int lower);
 int inc_matrix (gsl_matrix *m, int lower, int upper);
-void output_matrix(gsl_matrix *m);
-void print_matrix(gsl_matrix *m, const char *str);
+void output_matrix(const gsl_matrix *m);
+void print_matrix(const gsl_matrix *m, const char *str);
 int test_evals(gsl_vector_complex *obs, gsl_vector_complex *expected,
                gsl_matrix *A, gsl_matrix *B,
                const char *obsname, const char *expname);
@@ -86,7 +86,7 @@ int test_beta(gsl_vector *obs, gsl_vector *expected,
               gsl_matrix *A, gsl_matrix *B, const char *obsname,
               const char *expname);
 void test_schur(gsl_matrix *A, gsl_matrix *S, gsl_matrix *Q, gsl_matrix *Z);
-void print_vector(gsl_vector_complex *eval, const char *str);
+void print_vector(const gsl_vector_complex *eval, const char *str);
 int cmp(double a, double b);
 int compare(const void *a, const void *b);
 void sort_complex_vector(gsl_vector_complex *v);
@@ -265,7 +265,7 @@ inc_matrix (gsl_matrix *m, int lower, int upper)
 } /* inc_matrix() */
 
 void
-output_matrix(gsl_matrix *m)
+output_matrix(const gsl_matrix *m)
 {
   size_t i, j;
   size_t N = m->size1;
@@ -284,13 +284,12 @@ output_matrix(gsl_matrix *m)
 }
 
 void
-print_matrix(gsl_matrix *m, const char *str)
+print_matrix(const gsl_matrix *m, const char *str)
 
 {
   size_t i, j;
   size_t N = m->size1;
   size_t M = m->size2;
-  gsl_matrix_view v;
   size_t rows, cols;
   size_t r, c;
   char buf[100];
@@ -310,8 +309,6 @@ print_matrix(gsl_matrix *m, const char *str)
       r = GSL_MIN(rows, N - i);
       c = GSL_MIN(cols, N - j);
 
-      v = gsl_matrix_submatrix(m, i, j, r, c);
-
       sprintf(buf, "%s(%u:%u,%u:%u)",
               str,
               i + 1,
@@ -321,7 +318,10 @@ print_matrix(gsl_matrix *m, const char *str)
 
       printf("%s = [\n", buf);
 
-      output_matrix(&v.matrix);
+      {
+        gsl_matrix_const_view v = gsl_matrix_const_submatrix(m, i, j, r, c);
+        output_matrix(&v.matrix);
+      }
 
       printf("]\n");
     }
@@ -468,7 +468,7 @@ test_schur(gsl_matrix *A, gsl_matrix *S, gsl_matrix *Q, gsl_matrix *Z)
 } /* test_schur() */
 
 void
-print_vector(gsl_vector_complex *eval, const char *str)
+print_vector(const gsl_vector_complex *eval, const char *str)
 {
   size_t N = eval->size;
   size_t i;
@@ -743,7 +743,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 89120)
+      /*if (count != 7128281)
         continue;*/
 
       /* make copies of matrices */
@@ -757,7 +757,6 @@ main(int argc, char *argv[])
 
       if (s != GSL_SUCCESS)
         {
-#if 0
           printf("=========== CASE %lu ============\n", count);
           printf("Failed to converge: found %u eigenvalues\n",
                  gen_workspace_p->n_evals);
@@ -765,24 +764,28 @@ main(int argc, char *argv[])
           print_matrix(B, "B");
           print_matrix(gen_workspace_p->Av, "S");
           print_matrix(gen_workspace_p->Bv, "T");
-#endif
           continue;
         }
 
       /* compute alpha / beta vectors */
       for (i = 0; i < N; ++i)
         {
-          double beta;
-          gsl_complex alpha, z;
+          double beta = gsl_vector_get(gen_workspace_p->beta, i);
+          gsl_complex alpha =
+            gsl_vector_complex_get(gen_workspace_p->alpha, i);
+          gsl_complex z;
 
-          beta = gsl_vector_get(gen_workspace_p->beta, i);
+          if (!finite(beta) || !finite(GSL_REAL(alpha)) ||
+              !finite(GSL_IMAG(alpha)))
+            {
+              printf("nan/inf in element %u of (alpha,beta): alphar = %g, alphai = %g, beta = %g\n",
+                     i, GSL_REAL(alpha), GSL_IMAG(alpha), beta);
+            }
+
           if (beta == 0.0)
             GSL_SET_COMPLEX(&z, GSL_POSINF, GSL_POSINF);
           else
-            {
-              alpha = gsl_vector_complex_get(gen_workspace_p->alpha, i);
-              z = gsl_complex_div_real(alpha, beta);
-            }
+            z = gsl_complex_div_real(alpha, beta);
 
           gsl_vector_complex_set(gen_workspace_p->evals, i, z);
         }

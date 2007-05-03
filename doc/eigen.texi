@@ -256,7 +256,7 @@ This function computes eigenvalues and right eigenvectors of the
 Schur vectors. Then it finds eigenvectors of @math{T} and backtransforms
 them using the Schur vectors. The Schur vectors are destroyed in the
 process, but can be saved by using @code{gsl_eigen_nonsymmv_Z}. The
-computed eigenvectors are normalized to have Euclidean norm 1. On
+computed eigenvectors are normalized to have unit magnitude. On
 output, the upper portion of @var{A} contains the Schur form
 @math{T}. If @code{gsl_eigen_nonsymm} fails, no eigenvectors are
 computed, and an error code is returned.
@@ -346,7 +346,7 @@ This function frees the memory associated with the workspace @var{w}.
 This function computes the eigenvalues and eigenvectors of the real
 generalized symmetric-definite matrix pencil (@var{A}, @var{B}), and
 stores them in @var{eval} and @var{evec} respectively. The computed
-eigenvectors are normalized to have Euclidean norm 1. On output,
+eigenvectors are normalized to have unit magnitude. On output,
 @var{B} contains its Cholesky decomposition and @var{A} is destroyed.
 @end deftypefun
 
@@ -514,7 +514,7 @@ Schur vectors. Then it finds eigenvectors of the Schur forms and
 backtransforms them using the Schur vectors. The Schur vectors are
 destroyed in the process, but can be saved by using
 @code{gsl_eigen_genv_QZ}. The computed eigenvectors are normalized
-to have Euclidean norm 1. On output, (@var{A}, @var{B}) contains
+to have unit magnitude. On output, (@var{A}, @var{B}) contains
 the generalized Schur form (@math{S}, @math{T}). If @code{gsl_eigen_gen}
 fails, no eigenvectors are computed, and an error code is returned.
 @end deftypefun
