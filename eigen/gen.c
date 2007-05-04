@@ -47,7 +47,7 @@
  * which is distributed under the modified BSD license.
  */
 
-#define GEN_ESHIFT_COEFF     (0.736)
+#define GEN_ESHIFT_COEFF     (1.736)
 
 static void gen_schur_decomp(gsl_matrix *H, gsl_matrix *R,
                              gsl_vector_complex *alpha, gsl_vector *beta,
@@ -618,15 +618,24 @@ gen_qzstep(gsl_matrix *H, gsl_matrix *R, gsl_eigen_gen_workspace *w)
        */
 
       if ((GSL_DBL_MIN * w->max_iterations) *
-          fabs(gsl_matrix_get(H, N - 1, N - 2)) <
+          fabs(gsl_matrix_get(H, N - 2, N - 1)) <
           fabs(gsl_matrix_get(R, N - 2, N - 2)))
         {
-          w->eshift += GEN_ESHIFT_COEFF *
-                       (w->ascale * gsl_matrix_get(H, N - 1, N - 2)) /
-                       (w->bscale * gsl_matrix_get(R, N - 2, N - 2));
+          w->eshift += gsl_matrix_get(H, N - 2, N - 1) /
+                       gsl_matrix_get(R, N - 2, N - 2);
         }
       else
         w->eshift += 1.0 / (GSL_DBL_MIN * w->max_iterations);
+
+      if ((w->eshift < GSL_DBL_EPSILON) &&
+          (GSL_DBL_MIN * w->max_iterations) *
+          fabs(gsl_matrix_get(H, N - 1, N - 2)) <
+          fabs(gsl_matrix_get(R, N - 2, N - 2)))
+        {
+          w->eshift = GEN_ESHIFT_COEFF *
+                      (w->ascale * gsl_matrix_get(H, N - 1, N - 2)) /
+                      (w->bscale * gsl_matrix_get(R, N - 2, N - 2));
+        }
 
       scale1 = 1.0;
       wr1 = w->eshift;
