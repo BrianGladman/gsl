@@ -32,8 +32,6 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
 
-#include "subrowcol.c"
-
 /*
  * This module computes the eigenvalues and eigenvectors of a real
  * nonsymmetric matrix.
@@ -119,9 +117,6 @@ gsl_eigen_nonsymmv_free()
 void
 gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w)
 {
-  if (!w)
-    return;
-
   if (w->nonsymm_workspace_p)
     gsl_eigen_nonsymm_free(w->nonsymm_workspace_p);
 

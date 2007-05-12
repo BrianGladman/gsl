@@ -116,6 +116,14 @@ gsl_matrix_char_subdiagonal (gsl_matrix_char * m, const size_t k);
 _gsl_vector_char_view 
 gsl_matrix_char_superdiagonal (gsl_matrix_char * m, const size_t k);
 
+_gsl_vector_char_view
+gsl_matrix_char_subrow (gsl_matrix_char * m, const size_t i,
+                         const size_t offset, const size_t n);
+
+_gsl_vector_char_view
+gsl_matrix_char_subcolumn (gsl_matrix_char * m, const size_t j,
+                            const size_t offset, const size_t n);
+
 _gsl_matrix_char_view
 gsl_matrix_char_view_array (char * base,
                              const size_t n1, 
@@ -163,6 +171,14 @@ gsl_matrix_char_const_subdiagonal (const gsl_matrix_char * m,
 _gsl_vector_char_const_view 
 gsl_matrix_char_const_superdiagonal (const gsl_matrix_char * m, 
                                       const size_t k);
+
+_gsl_vector_char_const_view
+gsl_matrix_char_const_subrow (const gsl_matrix_char * m, const size_t i,
+                               const size_t offset, const size_t n);
+
+_gsl_vector_char_const_view
+gsl_matrix_char_const_subcolumn (const gsl_matrix_char * m, const size_t j,
+                                  const size_t offset, const size_t n);
 
 _gsl_matrix_char_const_view
 gsl_matrix_char_const_view_array (const char * base,

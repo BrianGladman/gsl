@@ -27,8 +27,6 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
-#include "subrowcol.c"
-
 /*
  * This module computes the eigenvalues of a real generalized
  * symmetric-definite eigensystem A x = \lambda B x, where A and

@@ -31,8 +31,6 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 
-#include "subrowcol.c"
-
 /*
  * This module computes the eigenvalues of a real upper hessenberg
  * matrix, using the classical double shift Francis QR algorithm.
@@ -106,9 +104,6 @@ gsl_eigen_francis_free()
 void
 gsl_eigen_francis_free (gsl_eigen_francis_workspace *w)
 {
-  if (!w)
-    return;
-
   free(w);
 } /* gsl_eigen_francis_free() */
 

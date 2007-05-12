@@ -58,6 +58,33 @@ void gsl_eigen_symmv_free (gsl_eigen_symmv_workspace * w);
 int gsl_eigen_symmv (gsl_matrix * A, gsl_vector * eval, gsl_matrix * evec, gsl_eigen_symmv_workspace * w);
 
 typedef struct {
+  size_t size;
+  double * d;
+  double * sd;
+  double * tau;
+} gsl_eigen_herm_workspace;
+
+gsl_eigen_herm_workspace * gsl_eigen_herm_alloc (const size_t n);
+void gsl_eigen_herm_free (gsl_eigen_herm_workspace * w);
+int gsl_eigen_herm (gsl_matrix_complex * A, gsl_vector * eval,
+                         gsl_eigen_herm_workspace * w);
+
+typedef struct {
+  size_t size;
+  double * d;
+  double * sd;
+  double * tau;
+  double * gc;
+  double * gs;
+} gsl_eigen_hermv_workspace;
+
+gsl_eigen_hermv_workspace * gsl_eigen_hermv_alloc (const size_t n);
+void gsl_eigen_hermv_free (gsl_eigen_hermv_workspace * w);
+int gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval, 
+                           gsl_matrix_complex * evec,
+                           gsl_eigen_hermv_workspace * w);
+
+typedef struct {
   size_t size;           /* matrix size */
   size_t max_iterations; /* max iterations since last eigenvalue found */
   size_t n_iter;         /* number of iterations since last eigenvalue found */
@@ -143,6 +170,29 @@ int gsl_eigen_gensymmv (gsl_matrix * A, gsl_matrix * B,
 
 typedef struct {
   size_t size;            /* size of matrices */
+  gsl_eigen_herm_workspace *herm_workspace_p;
+} gsl_eigen_genherm_workspace;
+
+gsl_eigen_genherm_workspace * gsl_eigen_genherm_alloc (const size_t n);
+void gsl_eigen_genherm_free (gsl_eigen_genherm_workspace * w);
+int gsl_eigen_genherm (gsl_matrix_complex * A, gsl_matrix_complex * B,
+                       gsl_vector * eval, gsl_eigen_genherm_workspace * w);
+int gsl_eigen_genherm_standardize (gsl_matrix_complex * A,
+                                   const gsl_matrix_complex * B);
+
+typedef struct {
+  size_t size;            /* size of matrices */
+  gsl_eigen_hermv_workspace *hermv_workspace_p;
+} gsl_eigen_genhermv_workspace;
+
+gsl_eigen_genhermv_workspace * gsl_eigen_genhermv_alloc (const size_t n);
+void gsl_eigen_genhermv_free (gsl_eigen_genhermv_workspace * w);
+int gsl_eigen_genhermv (gsl_matrix_complex * A, gsl_matrix_complex * B,
+                        gsl_vector * eval, gsl_matrix_complex * evec,
+                        gsl_eigen_genhermv_workspace * w);
+
+typedef struct {
+  size_t size;            /* size of matrices */
   gsl_vector *work;       /* scratch workspace */
 
   size_t n_evals;         /* number of eigenvalues found */
@@ -208,33 +258,6 @@ int gsl_eigen_genv_QZ (gsl_matrix * A, gsl_matrix * B,
                        gsl_matrix * Q, gsl_matrix * Z,
                        gsl_eigen_genv_workspace * w);
 
-typedef struct {
-  size_t size;
-  double * d;
-  double * sd;
-  double * tau;
-} gsl_eigen_herm_workspace;
-
-gsl_eigen_herm_workspace * gsl_eigen_herm_alloc (const size_t n);
-void gsl_eigen_herm_free (gsl_eigen_herm_workspace * w);
-int gsl_eigen_herm (gsl_matrix_complex * A, gsl_vector * eval,
-                         gsl_eigen_herm_workspace * w);
-
-typedef struct {
-  size_t size;
-  double * d;
-  double * sd;
-  double * tau;
-  double * gc;
-  double * gs;
-} gsl_eigen_hermv_workspace;
-
-gsl_eigen_hermv_workspace * gsl_eigen_hermv_alloc (const size_t n);
-void gsl_eigen_hermv_free (gsl_eigen_hermv_workspace * w);
-int gsl_eigen_hermv (gsl_matrix_complex * A, gsl_vector * eval, 
-                           gsl_matrix_complex * evec,
-                           gsl_eigen_hermv_workspace * w);
-
 
 
 typedef enum {
@@ -263,6 +286,9 @@ int gsl_eigen_nonsymmv_sort(gsl_vector_complex * eval,
                             gsl_eigen_sort_t sort_type);
 
 int gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec, 
+                             gsl_eigen_sort_t sort_type);
+
+int gsl_eigen_genhermv_sort (gsl_vector * eval, gsl_matrix_complex * evec, 
                              gsl_eigen_sort_t sort_type);
 
 int gsl_eigen_genv_sort (gsl_vector_complex * alpha, gsl_vector * beta,

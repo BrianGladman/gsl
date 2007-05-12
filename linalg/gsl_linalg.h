@@ -109,6 +109,10 @@ int gsl_linalg_complex_householder_hm (gsl_complex tau,
                                        const gsl_vector_complex * v, 
                                        gsl_matrix_complex * A);
 
+int gsl_linalg_complex_householder_mh (gsl_complex tau,
+                                       const gsl_vector_complex * v,
+                                       gsl_matrix_complex * A);
+
 int gsl_linalg_complex_householder_hv (gsl_complex tau, 
                                        const gsl_vector_complex * v, 
                                        gsl_vector_complex * w);
@@ -430,6 +434,9 @@ int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
  */
 int gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D);
 
+/* Complex Cholesky Decomposition */
+
+int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * A);
 
 /* Symmetric to symmetric tridiagonal decomposition */
 

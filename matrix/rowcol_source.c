@@ -132,3 +132,68 @@ FUNCTION (gsl_matrix, superdiagonal) (QUALIFIED_TYPE(gsl_matrix) * m,
   }
 }
 
+QUALIFIED_VIEW(_gsl_vector,view)
+FUNCTION (gsl_matrix, subrow) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t i, const size_t offset, const size_t n)
+{
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
+  
+  if (i >= m->size1)
+    {
+      GSL_ERROR_VAL ("row index is out of range", GSL_EINVAL, view);
+    }
+  else if (n == 0)
+    {
+      GSL_ERROR_VAL ("vector length n must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (offset + n > m->size1)
+    {
+      GSL_ERROR_VAL ("dimension n overflows matrix", GSL_EINVAL, view);
+    }
+  
+  {
+    TYPE(gsl_vector) v = NULL_VECTOR;
+    
+    v.data = m->data + MULTIPLICITY * (i * m->tda + offset);
+    v.size = n;
+    v.stride = 1;
+    v.block = m->block;
+    v.owner = 0;
+    
+    view.vector = v;
+    return view;
+  }
+}
+
+QUALIFIED_VIEW(_gsl_vector,view)
+FUNCTION (gsl_matrix, subcolumn) (QUALIFIED_TYPE(gsl_matrix) * m, const size_t j, const size_t offset, const size_t n)
+{
+  QUALIFIED_VIEW(_gsl_vector,view) view = NULL_VECTOR_VIEW;
+  
+  if (j >= m->size2)
+    {
+      GSL_ERROR_VAL ("column index is out of range", GSL_EINVAL, view);
+    }
+  else if (n == 0)
+    {
+      GSL_ERROR_VAL ("vector length n must be positive integer",
+                     GSL_EINVAL, view);
+    }
+  else if (offset + n > m->size2)
+    {
+      GSL_ERROR_VAL ("dimension n overflows matrix", GSL_EINVAL, view);
+    }
+
+  {
+    TYPE(gsl_vector) v = NULL_VECTOR;
+    
+    v.data = m->data + MULTIPLICITY * (offset * m->tda + j);
+    v.size = n;
+    v.stride = m->tda;
+    v.block = m->block;
+    v.owner = 0;
+
+    view.vector = v;
+    return view;
+  }
+}

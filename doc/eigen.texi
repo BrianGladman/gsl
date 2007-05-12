@@ -23,6 +23,7 @@ The functions described in this chapter are declared in the header file
 * Complex Hermitian Matrices::  
 * Real Nonsymmetric Matrices::
 * Real Generalized Symmetric-Definite Eigensystems::
+* Complex Generalized Hermitian-Definite Eigensystems::
 * Real Generalized Nonsymmetric Eigensystems::
 * Sorting Eigenvalues and Eigenvectors::  
 * Eigenvalue and Eigenvector Examples::  
@@ -327,7 +328,7 @@ This function frees the memory associated with the workspace @var{w}.
 
 @deftypefun int gsl_eigen_gensymm (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector * @var{eval}, gsl_eigen_gensymm_workspace * @var{w})
 This function computes the eigenvalues of the real generalized
-symmetric-definite matrix pencil (@var{A}, @var{B}), and stores them 
+symmetric-definite matrix pair (@var{A}, @var{B}), and stores them 
 in @var{eval}, using the method outlined above. On output, @var{B}
 contains its Cholesky decomposition and @var{A} is destroyed.
 @end deftypefun
@@ -344,7 +345,73 @@ This function frees the memory associated with the workspace @var{w}.
 
 @deftypefun int gsl_eigen_gensymmv (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_gensymmv_workspace * @var{w})
 This function computes the eigenvalues and eigenvectors of the real
-generalized symmetric-definite matrix pencil (@var{A}, @var{B}), and
+generalized symmetric-definite matrix pair (@var{A}, @var{B}), and
+stores them in @var{eval} and @var{evec} respectively. The computed
+eigenvectors are normalized to have unit magnitude. On output,
+@var{B} contains its Cholesky decomposition and @var{A} is destroyed.
+@end deftypefun
+
+@node Complex Generalized Hermitian-Definite Eigensystems
+@section Complex Generalized Hermitian-Definite Eigensystems
+@cindex generalized hermitian definite eigensystems
+
+The complex generalized hermitian-definite eigenvalue problem is to find
+eigenvalues @math{\lambda} and eigenvectors @math{x} such that
+@tex
+\beforedisplay
+$$
+A x = \lambda B x
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+A x = \lambda B x
+@end example
+@end ifinfo
+where @math{A} and @math{B} are hermitian matrices, and @math{B} is
+positive-definite. Similarly to the real case, this can be reduced
+to @math{C y = \lambda y} where
+@c{$C = L^{-1} A L^{-\dagger}$}
+@math{C = L^@{-1@} A L^@{-H@}}
+is hermitian, and
+@c{$y = L^{\dagger} x$}
+@math{y = L^H x}. The standard
+hermitian eigensolver can be applied to the matrix @math{C}.
+The resulting eigenvectors are backtransformed to find the
+vectors of the original problem. The eigenvalues
+of the generalized hermitian-definite eigenproblem are always real.
+
+@deftypefun {gsl_eigen_genherm_workspace *} gsl_eigen_genherm_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues of
+@var{n}-by-@var{n} complex generalized hermitian-definite eigensystems. The
+size of the workspace is @math{O(3n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_genherm_free (gsl_eigen_genherm_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_genherm (gsl_matrix_complex * @var{A}, gsl_matrix_complex * @var{B}, gsl_vector * @var{eval}, gsl_eigen_genherm_workspace * @var{w})
+This function computes the eigenvalues of the complex generalized
+hermitian-definite matrix pair (@var{A}, @var{B}), and stores them 
+in @var{eval}, using the method outlined above. On output, @var{B}
+contains its Cholesky decomposition and @var{A} is destroyed.
+@end deftypefun
+
+@deftypefun {gsl_eigen_genhermv_workspace *} gsl_eigen_genhermv_alloc (const size_t @var{n})
+This function allocates a workspace for computing eigenvalues and
+eigenvectors of @var{n}-by-@var{n} complex generalized hermitian-definite
+eigensystems. The size of the workspace is @math{O(5n)}.
+@end deftypefun
+
+@deftypefun void gsl_eigen_genhermv_free (gsl_eigen_genhermv_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_eigen_genhermv (gsl_matrix_complex * @var{A}, gsl_matrix_complex * @var{B}, gsl_vector * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_genhermv_workspace * @var{w})
+This function computes the eigenvalues and eigenvectors of the complex
+generalized hermitian-definite matrix pair (@var{A}, @var{B}), and
 stores them in @var{eval} and @var{evec} respectively. The computed
 eigenvectors are normalized to have unit magnitude. On output,
 @var{B} contains its Cholesky decomposition and @var{A} is destroyed.
@@ -471,7 +538,7 @@ balancing is not yet implemented.
 
 @deftypefun int gsl_eigen_gen (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_eigen_gen_workspace * @var{w})
 This function computes the eigenvalues of the real generalized nonsymmetric
-matrix pencil (@var{A}, @var{B}), and stores them as pairs in
+matrix pair (@var{A}, @var{B}), and stores them as pairs in
 (@var{alpha}, @var{beta}), where @var{alpha} is complex and @var{beta} is
 real. If @math{\beta_i} is non-zero, then
 @math{\lambda = \alpha_i / \beta_i} is an eigenvalue. Likewise,
@@ -506,7 +573,7 @@ This function frees the memory associated with the workspace @var{w}.
 
 @deftypefun int gsl_eigen_genv (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix_complex * @var{evec}, gsl_eigen_genv_workspace * @var{w})
 This function computes eigenvalues and right eigenvectors of the
-@var{n}-by-@var{n} real generalized nonsymmetric matrix pencil
+@var{n}-by-@var{n} real generalized nonsymmetric matrix pair
 (@var{A}, @var{B}). The eigenvalues are stored in (@var{alpha}, @var{beta})
 and the eigenvectors are stored in @var{evec}. It first calls
 @code{gsl_eigen_gen} to compute the eigenvalues, Schur forms, and
@@ -567,6 +634,13 @@ supported due to the eigenvalues being complex.
 @deftypefun int gsl_eigen_gensymmv_sort (gsl_vector * @var{eval}, gsl_matrix * @var{evec}, gsl_eigen_sort_t @var{sort_type})
 This function simultaneously sorts the eigenvalues stored in the vector
 @var{eval} and the corresponding real eigenvectors stored in the columns
+of the matrix @var{evec} into ascending or descending order according to
+the value of the parameter @var{sort_type} as shown above.
+@end deftypefun
+
+@deftypefun int gsl_eigen_genhermv_sort (gsl_vector * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_sort_t @var{sort_type})
+This function simultaneously sorts the eigenvalues stored in the vector
+@var{eval} and the corresponding complex eigenvectors stored in the columns
 of the matrix @var{evec} into ascending or descending order according to
 the value of the parameter @var{sort_type} as shown above.
 @end deftypefun

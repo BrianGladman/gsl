@@ -114,6 +114,16 @@ gsl_matrix_complex_subdiagonal (gsl_matrix_complex * m, const size_t k);
 _gsl_vector_complex_view 
 gsl_matrix_complex_superdiagonal (gsl_matrix_complex * m, const size_t k);
 
+_gsl_vector_complex_view
+gsl_matrix_complex_subrow (gsl_matrix_complex * m,
+                                 const size_t i, const size_t offset,
+                                 const size_t n);
+
+_gsl_vector_complex_view
+gsl_matrix_complex_subcolumn (gsl_matrix_complex * m,
+                                    const size_t j, const size_t offset,
+                                    const size_t n);
+
 _gsl_matrix_complex_view
 gsl_matrix_complex_view_array (double * base,
                              const size_t n1, 
@@ -160,6 +170,16 @@ gsl_matrix_complex_const_subdiagonal (const gsl_matrix_complex * m,
 _gsl_vector_complex_const_view 
 gsl_matrix_complex_const_superdiagonal (const gsl_matrix_complex * m, 
                                       const size_t k);
+
+_gsl_vector_complex_const_view
+gsl_matrix_complex_const_subrow (const gsl_matrix_complex * m,
+                                       const size_t i, const size_t offset,
+                                       const size_t n);
+
+_gsl_vector_complex_const_view
+gsl_matrix_complex_const_subcolumn (const gsl_matrix_complex * m,
+                                          const size_t j, const size_t offset,
+                                          const size_t n);
 
 _gsl_matrix_complex_const_view
 gsl_matrix_complex_const_view_array (const double * base,

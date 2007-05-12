@@ -168,6 +168,59 @@ gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v
 }
 
 int
+gsl_linalg_complex_householder_mh (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
+{
+  /* applies a householder transformation v,tau to matrix m on the right */
+
+  size_t i, j;
+
+  if (GSL_REAL(tau) == 0.0 && GSL_IMAG(tau) == 0.0)
+    {
+      return GSL_SUCCESS;
+    }
+
+  /* A -> A - A*tau*v*v^h */
+
+  for (i = 0; i < A->size1; i++)
+    {
+      gsl_complex tauwi;
+      gsl_complex Ai0 = gsl_matrix_complex_get (A, i, 0);
+      gsl_complex wi = Ai0;
+
+      /* compute w = A v */
+      for (j = 1; j < A->size2; j++)  /* note, computed for v(0) = 1 above */
+        {
+          gsl_complex Aij = gsl_matrix_complex_get(A, i, j);
+          gsl_complex vj = gsl_vector_complex_get(v, j);
+          gsl_complex Av = gsl_complex_mul (Aij, vj);
+          wi = gsl_complex_add (wi, Av);
+        }
+
+      tauwi = gsl_complex_mul (tau, wi);
+
+      /* A = A - w v^H */
+      
+      {
+        gsl_complex Atw = gsl_complex_sub (Ai0, tauwi);
+        /* store Ai0 - tau  * wi */
+        gsl_matrix_complex_set (A, i, 0, Atw);
+      }
+      
+      for (j = 1; j < A->size2; j++)
+        {
+          gsl_complex vj = gsl_vector_complex_get (v, j);
+          gsl_complex tauwv = gsl_complex_mul(gsl_complex_conjugate(vj), tauwi);
+          gsl_complex Aij = gsl_matrix_complex_get (A, i, j);
+          gsl_complex Atwv = gsl_complex_sub (Aij, tauwv);
+          /* store Aij - tau * wi * conj(vj) */
+          gsl_matrix_complex_set (A, i, j, Atwv);
+        }
+    }
+      
+  return GSL_SUCCESS;
+}
+
+int
 gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex *  w)
 {
   const size_t N = v->size;

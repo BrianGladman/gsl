@@ -116,6 +116,14 @@ gsl_matrix_uint_subdiagonal (gsl_matrix_uint * m, const size_t k);
 _gsl_vector_uint_view 
 gsl_matrix_uint_superdiagonal (gsl_matrix_uint * m, const size_t k);
 
+_gsl_vector_uint_view
+gsl_matrix_uint_subrow (gsl_matrix_uint * m, const size_t i,
+                         const size_t offset, const size_t n);
+
+_gsl_vector_uint_view
+gsl_matrix_uint_subcolumn (gsl_matrix_uint * m, const size_t j,
+                            const size_t offset, const size_t n);
+
 _gsl_matrix_uint_view
 gsl_matrix_uint_view_array (unsigned int * base,
                              const size_t n1, 
@@ -163,6 +171,14 @@ gsl_matrix_uint_const_subdiagonal (const gsl_matrix_uint * m,
 _gsl_vector_uint_const_view 
 gsl_matrix_uint_const_superdiagonal (const gsl_matrix_uint * m, 
                                       const size_t k);
+
+_gsl_vector_uint_const_view
+gsl_matrix_uint_const_subrow (const gsl_matrix_uint * m, const size_t i,
+                               const size_t offset, const size_t n);
+
+_gsl_vector_uint_const_view
+gsl_matrix_uint_const_subcolumn (const gsl_matrix_uint * m, const size_t j,
+                                  const size_t offset, const size_t n);
 
 _gsl_matrix_uint_const_view
 gsl_matrix_uint_const_view_array (const unsigned int * base,

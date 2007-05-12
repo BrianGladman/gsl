@@ -130,9 +130,6 @@ gen_alloc(size_t n, int compute_schur)
 void
 gen_free(gen_workspace *w)
 {
-  if (!w)
-    return;
-
   if (w->gen_p)
     gsl_eigen_gen_free(w->gen_p);
 
@@ -743,7 +740,7 @@ main(int argc, char *argv[])
           make_random_integer_matrix(B, r, lower, upper);
         }
 
-      /*if (count != 7128281)
+      /*if (count != 23441872)
         continue;*/
 
       /* make copies of matrices */

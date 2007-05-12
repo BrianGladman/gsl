@@ -516,8 +516,12 @@ the linear system @math{A x = b} into a pair of triangular systems
 back-substitution.
 
 @deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
-This function factorizes the positive-definite symmetric square matrix
-@var{A} into the Cholesky decomposition @math{A = L L^T}. On input
+@deftypefunx int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * @var{A})
+These functions factorize the positive-definite square matrix
+@var{A} into the Cholesky decomposition @math{A = L L^T} (or
+@c{$A = L L^{\dagger}$}
+@math{A = L L^H}
+for the complex case). On input
 only the diagonal and lower-triangular part of the matrix @var{A} are
 needed.  On output the diagonal and lower triangular part of the input
 matrix @var{A} contain the matrix @math{L}. The upper triangular part

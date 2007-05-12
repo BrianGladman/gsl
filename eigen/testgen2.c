@@ -149,9 +149,6 @@ gen_alloc(size_t n, int compute_schur)
 void
 gen_free(gen_workspace *w)
 {
-  if (!w)
-    return;
-
   if (w->gen_p)
     gsl_eigen_gen_free(w->gen_p);
 
@@ -249,9 +246,6 @@ lapack_alloc(const size_t n)
 void
 lapack_free(lapack_workspace *w)
 {
-  if (!w)
-    return;
-
   if (w->A)
     gsl_matrix_free(w->A);
 

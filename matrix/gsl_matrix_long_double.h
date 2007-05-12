@@ -116,6 +116,14 @@ gsl_matrix_long_double_subdiagonal (gsl_matrix_long_double * m, const size_t k);
 _gsl_vector_long_double_view 
 gsl_matrix_long_double_superdiagonal (gsl_matrix_long_double * m, const size_t k);
 
+_gsl_vector_long_double_view
+gsl_matrix_long_double_subrow (gsl_matrix_long_double * m, const size_t i,
+                         const size_t offset, const size_t n);
+
+_gsl_vector_long_double_view
+gsl_matrix_long_double_subcolumn (gsl_matrix_long_double * m, const size_t j,
+                            const size_t offset, const size_t n);
+
 _gsl_matrix_long_double_view
 gsl_matrix_long_double_view_array (long double * base,
                              const size_t n1, 
@@ -163,6 +171,14 @@ gsl_matrix_long_double_const_subdiagonal (const gsl_matrix_long_double * m,
 _gsl_vector_long_double_const_view 
 gsl_matrix_long_double_const_superdiagonal (const gsl_matrix_long_double * m, 
                                       const size_t k);
+
+_gsl_vector_long_double_const_view
+gsl_matrix_long_double_const_subrow (const gsl_matrix_long_double * m, const size_t i,
+                               const size_t offset, const size_t n);
+
+_gsl_vector_long_double_const_view
+gsl_matrix_long_double_const_subcolumn (const gsl_matrix_long_double * m, const size_t j,
+                                  const size_t offset, const size_t n);
 
 _gsl_matrix_long_double_const_view
 gsl_matrix_long_double_const_view_array (const long double * base,

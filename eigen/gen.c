@@ -29,8 +29,6 @@
 #include <gsl/gsl_vector_complex.h>
 #include <gsl/gsl_matrix.h>
 
-#include "subrowcol.c"
-
 /*
  * This module computes the eigenvalues of a real generalized
  * eigensystem A x = \lambda B x. Left and right Schur vectors

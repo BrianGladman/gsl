@@ -33,6 +33,9 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_sort.h>
+#include <gsl/gsl_sort_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
 
 /******************************************
  * common test code                       *
@@ -97,6 +100,45 @@ create_random_posdef_matrix(gsl_matrix *m, gsl_rng *r)
       }
     }
 } /* create_random_posdef_matrix() */
+
+void
+create_random_complex_posdef_matrix(gsl_matrix_complex *m, gsl_rng *r,
+                                    gsl_vector_complex *work)
+{
+  const size_t N = m->size1;
+  size_t i, j;
+  double x, y;
+  gsl_complex z;
+  gsl_complex tau;
+
+  GSL_SET_IMAG(&z, 0.0);
+
+  /* make a positive diagonal matrix */
+  gsl_matrix_complex_set_zero(m);
+  for (i = 0; i < N; ++i)
+    {
+      x = gsl_rng_uniform(r);
+      GSL_SET_REAL(&z, x);
+      gsl_matrix_complex_set(m, i, i, z);
+    }
+
+  /* now generate random householder reflections and form P D P^H */
+  for (i = 0; i < N; ++i)
+    {
+      /* form complex vector */
+      for (j = 0; j < N; ++j)
+        {
+          x = 2.0 * gsl_rng_uniform(r) - 1.0;
+          y = 2.0 * gsl_rng_uniform(r) - 1.0;
+          GSL_SET_COMPLEX(&z, x, y);
+          gsl_vector_complex_set(work, j, z);
+        }
+
+      tau = gsl_linalg_complex_householder_transform(work);
+      gsl_linalg_complex_householder_hm(tau, work, m);
+      gsl_linalg_complex_householder_mh(gsl_complex_conjugate(tau), work, m);
+    }
+} /* create_random_complex_posdef_matrix() */
 
 void
 create_random_nonsymm_matrix(gsl_matrix *m, gsl_rng *r, int lower,
@@ -310,7 +352,6 @@ test_eigen_symm(void)
   size_t N_max = 20;
   size_t n, i;
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-  int s;
 
   for (n = 1; n <= N_max; ++n)
     {
@@ -472,7 +513,6 @@ test_eigen_herm(void)
   size_t N_max = 20;
   size_t n, i;
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-  int s;
 
   for (n = 1; n <= N_max; ++n)
     {
@@ -731,7 +771,6 @@ test_eigen_gensymm(void)
   size_t N_max = 20;
   size_t n, i;
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-  int s;
 
   for (n = 1; n <= N_max; ++n)
     {
@@ -797,6 +836,138 @@ test_eigen_gensymm(void)
 
   gsl_rng_free(r);
 } /* test_eigen_gensymm() */
+
+/******************************************
+ * genherm test code                      *
+ ******************************************/
+
+void
+test_eigen_genherm_results (const gsl_matrix_complex * A, 
+                            const gsl_matrix_complex * B,
+                            const gsl_vector * eval, 
+                            const gsl_matrix_complex * evec, 
+                            size_t count,
+                            const char * desc,
+                            const char * desc2)
+{
+  const size_t N = A->size1;
+  size_t i, j;
+
+  gsl_vector_complex * x = gsl_vector_complex_alloc(N);
+  gsl_vector_complex * y = gsl_vector_complex_alloc(N);
+
+  /* check A v = lambda B v */
+  for (i = 0; i < N; i++)
+    {
+      double ei = gsl_vector_get (eval, i);
+      gsl_vector_complex_const_view vi =
+        gsl_matrix_complex_const_column(evec, i);
+      double norm = gsl_blas_dznrm2(&vi.vector);
+
+      /* check that eigenvector is normalized */
+      gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
+                   "genherm(N=%u,cnt=%u), %s, normalized(%d), %s", N, count,
+                   i, desc, desc2);
+
+      /* compute y = A z */
+      gsl_blas_zgemv (CblasNoTrans, GSL_COMPLEX_ONE, A, &vi.vector, GSL_COMPLEX_ZERO, y);
+
+      /* compute x = B z */
+      gsl_blas_zgemv (CblasNoTrans, GSL_COMPLEX_ONE, B, &vi.vector, GSL_COMPLEX_ZERO, x);
+
+      /* compute x = lambda B z */
+      gsl_blas_zdscal(ei, x);
+
+      /* now test if y = x */
+      for (j = 0; j < N; j++)
+        {
+          gsl_complex xj = gsl_vector_complex_get (x, j);
+          gsl_complex yj = gsl_vector_complex_get (y, j);
+
+          gsl_test_rel(GSL_REAL(yj), GSL_REAL(xj), 1e9 * GSL_DBL_EPSILON, 
+                       "genherm(N=%u,cnt=%u), %s, eigenvalue(%d,%d), real, %s", N, count, desc, i, j, desc2);
+          gsl_test_abs(GSL_IMAG(yj), GSL_IMAG(xj), 1e9 * GSL_DBL_EPSILON, 
+                       "genherm(N=%u,cnt=%u), %s, eigenvalue(%d,%d), imag, %s", N, count, desc, i, j, desc2);
+        }
+    }
+
+  gsl_vector_complex_free(x);
+  gsl_vector_complex_free(y);
+}
+
+void
+test_eigen_genherm(void)
+{
+  size_t N_max = 20;
+  size_t n, i;
+  gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+
+  for (n = 1; n <= N_max; ++n)
+    {
+      gsl_matrix_complex * A = gsl_matrix_complex_alloc(n, n);
+      gsl_matrix_complex * B = gsl_matrix_complex_alloc(n, n);
+      gsl_matrix_complex * ma = gsl_matrix_complex_alloc(n, n);
+      gsl_matrix_complex * mb = gsl_matrix_complex_alloc(n, n);
+      gsl_vector * eval = gsl_vector_alloc(n);
+      gsl_vector * evalv = gsl_vector_alloc(n);
+      gsl_vector * x = gsl_vector_alloc(n);
+      gsl_vector * y = gsl_vector_alloc(n);
+      gsl_vector_complex * work = gsl_vector_complex_alloc(n);
+      gsl_matrix_complex * evec = gsl_matrix_complex_alloc(n, n);
+      gsl_eigen_genherm_workspace * w = gsl_eigen_genherm_alloc(n);
+      gsl_eigen_genhermv_workspace * wv = gsl_eigen_genhermv_alloc(n);
+
+      for (i = 0; i < 5; ++i)
+        {
+          create_random_herm_matrix(A, r, -10, 10);
+          create_random_complex_posdef_matrix(B, r, work);
+
+          gsl_matrix_complex_memcpy(ma, A);
+          gsl_matrix_complex_memcpy(mb, B);
+
+          gsl_eigen_genhermv(ma, mb, evalv, evec, wv);
+          test_eigen_genherm_results(A, B, evalv, evec, i, "random", "unsorted");
+
+          gsl_matrix_complex_memcpy(ma, A);
+          gsl_matrix_complex_memcpy(mb, B);
+
+          gsl_eigen_genherm(ma, mb, eval, w);
+
+          /* eval and evalv have to be sorted? not sure why */
+          gsl_vector_memcpy(x, eval);
+          gsl_vector_memcpy(y, evalv);
+          gsl_sort_vector(x);
+          gsl_sort_vector(y);
+          test_eigenvalues_real(y, x, "genherm, random", "unsorted");
+
+          gsl_eigen_genhermv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_ASC);
+          test_eigen_genherm_results(A, B, evalv, evec, i, "random", "val/asc");
+
+          gsl_eigen_genhermv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_DESC);
+          test_eigen_genherm_results(A, B, evalv, evec, i, "random", "val/desc");
+
+          gsl_eigen_genhermv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_ASC);
+          test_eigen_genherm_results(A, B, evalv, evec, i, "random", "abs/asc");
+          gsl_eigen_genhermv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_DESC);
+          test_eigen_genherm_results(A, B, evalv, evec, i, "random", "abs/desc");
+        }
+
+      gsl_matrix_complex_free(A);
+      gsl_matrix_complex_free(B);
+      gsl_matrix_complex_free(ma);
+      gsl_matrix_complex_free(mb);
+      gsl_vector_free(eval);
+      gsl_vector_free(evalv);
+      gsl_vector_free(x);
+      gsl_vector_free(y);
+      gsl_vector_complex_free(work);
+      gsl_matrix_complex_free(evec);
+      gsl_eigen_genherm_free(w);
+      gsl_eigen_genhermv_free(wv);
+    }
+
+  gsl_rng_free(r);
+} /* test_eigen_genherm() */
 
 /******************************************
  * gen test code                          *
@@ -1014,7 +1185,6 @@ test_eigen_gen(void)
   size_t N_max = 20;
   size_t n, i;
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-  int s;
 
   for (n = 1; n <= N_max; ++n)
     {
@@ -1067,6 +1237,7 @@ main()
   test_eigen_herm();
   test_eigen_nonsymm();
   test_eigen_gensymm();
+  test_eigen_genherm();
   test_eigen_gen();
 
   exit (gsl_test_summary());

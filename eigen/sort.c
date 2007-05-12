@@ -247,6 +247,17 @@ gsl_eigen_gensymmv_sort (gsl_vector * eval, gsl_matrix * evec,
 }
 
 int
+gsl_eigen_genhermv_sort (gsl_vector * eval, gsl_matrix_complex * evec, 
+                         gsl_eigen_sort_t sort_type)
+{
+  int s;
+
+  s = gsl_eigen_hermv_sort(eval, evec, sort_type);
+
+  return s;
+}
+
+int
 gsl_eigen_genv_sort (gsl_vector_complex * alpha, gsl_vector * beta,
                      gsl_matrix_complex * evec, gsl_eigen_sort_t sort_type)
 {

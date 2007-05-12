@@ -123,9 +123,6 @@ void
 nonsymm_free(nonsymm_workspace *w)
 
 {
-  if (!w)
-    return;
-
   if (w->nonsymm_p)
     gsl_eigen_nonsymm_free(w->nonsymm_p);
 

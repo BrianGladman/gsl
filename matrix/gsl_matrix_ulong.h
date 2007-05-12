@@ -116,6 +116,14 @@ gsl_matrix_ulong_subdiagonal (gsl_matrix_ulong * m, const size_t k);
 _gsl_vector_ulong_view 
 gsl_matrix_ulong_superdiagonal (gsl_matrix_ulong * m, const size_t k);
 
+_gsl_vector_ulong_view
+gsl_matrix_ulong_subrow (gsl_matrix_ulong * m, const size_t i,
+                         const size_t offset, const size_t n);
+
+_gsl_vector_ulong_view
+gsl_matrix_ulong_subcolumn (gsl_matrix_ulong * m, const size_t j,
+                            const size_t offset, const size_t n);
+
 _gsl_matrix_ulong_view
 gsl_matrix_ulong_view_array (unsigned long * base,
                              const size_t n1, 
@@ -163,6 +171,14 @@ gsl_matrix_ulong_const_subdiagonal (const gsl_matrix_ulong * m,
 _gsl_vector_ulong_const_view 
 gsl_matrix_ulong_const_superdiagonal (const gsl_matrix_ulong * m, 
                                       const size_t k);
+
+_gsl_vector_ulong_const_view
+gsl_matrix_ulong_const_subrow (const gsl_matrix_ulong * m, const size_t i,
+                               const size_t offset, const size_t n);
+
+_gsl_vector_ulong_const_view
+gsl_matrix_ulong_const_subcolumn (const gsl_matrix_ulong * m, const size_t j,
+                                  const size_t offset, const size_t n);
 
 _gsl_matrix_ulong_const_view
 gsl_matrix_ulong_const_view_array (const unsigned long * base,

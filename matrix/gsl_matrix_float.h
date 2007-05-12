@@ -116,6 +116,14 @@ gsl_matrix_float_subdiagonal (gsl_matrix_float * m, const size_t k);
 _gsl_vector_float_view 
 gsl_matrix_float_superdiagonal (gsl_matrix_float * m, const size_t k);
 
+_gsl_vector_float_view
+gsl_matrix_float_subrow (gsl_matrix_float * m, const size_t i,
+                         const size_t offset, const size_t n);
+
+_gsl_vector_float_view
+gsl_matrix_float_subcolumn (gsl_matrix_float * m, const size_t j,
+                            const size_t offset, const size_t n);
+
 _gsl_matrix_float_view
 gsl_matrix_float_view_array (float * base,
                              const size_t n1, 
@@ -163,6 +171,14 @@ gsl_matrix_float_const_subdiagonal (const gsl_matrix_float * m,
 _gsl_vector_float_const_view 
 gsl_matrix_float_const_superdiagonal (const gsl_matrix_float * m, 
                                       const size_t k);
+
+_gsl_vector_float_const_view
+gsl_matrix_float_const_subrow (const gsl_matrix_float * m, const size_t i,
+                               const size_t offset, const size_t n);
+
+_gsl_vector_float_const_view
+gsl_matrix_float_const_subcolumn (const gsl_matrix_float * m, const size_t j,
+                                  const size_t offset, const size_t n);
 
 _gsl_matrix_float_const_view
 gsl_matrix_float_const_view_array (const float * base,
