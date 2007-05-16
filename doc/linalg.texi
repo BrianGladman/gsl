@@ -832,6 +832,7 @@ rank-1 structure of the Householder matrix to create and apply
 Householder transformations efficiently.
 
 @deftypefun double gsl_linalg_householder_transform (gsl_vector * @var{v})
+@deftypefunx gsl_complex gsl_linalg_complex_householder_transform (gsl_vector_complex * @var{v})
 This function prepares a Householder transformation @math{P = I - \tau v
 v^T} which can be used to zero all the elements of the input vector except
 the first.  On output the transformation is stored in the vector @var{v}
@@ -839,18 +840,21 @@ and the scalar @math{\tau} is returned.
 @end deftypefun
 
 @deftypefun int gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
+@deftypefunx int gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
 This function applies the Householder matrix @math{P} defined by the
 scalar @var{tau} and the vector @var{v} to the left-hand side of the
 matrix @var{A}. On output the result @math{P A} is stored in @var{A}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
+@deftypefunx int gsl_linalg_complex_householder_mh (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
 This function applies the Householder matrix @math{P} defined by the
 scalar @var{tau} and the vector @var{v} to the right-hand side of the
 matrix @var{A}. On output the result @math{A P} is stored in @var{A}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
+@deftypefunx int gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex * w)
 This function applies the Householder transformation @math{P} defined by
 the scalar @var{tau} and the vector @var{v} to the vector @var{w}.  On
 output the result @math{P w} is stored in @var{w}.

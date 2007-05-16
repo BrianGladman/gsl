@@ -1,12 +1,13 @@
 @cindex eigenvalues and eigenvectors
 This chapter describes functions for computing eigenvalues and
 eigenvectors of matrices.  There are routines for real symmetric,
-real nonsymmetric, complex hermitian, generalized symmetric-definite,
-and generalized nonsymmetric eigensystems. Eigenvalues can be computed
-with or without eigenvectors. The hermitian matrix algorithms used are
-symmetric bidiagonalization followed by QR reduction. The nonsymmetric
-algorithm is the Francis QR double-shift. The generalized nonsymmetric
-algorithm is the QZ method due to Moler and Stewart.
+real nonsymmetric, complex hermitian, real generalized symmetric-definite,
+complex generalized hermitian-definite, and real generalized nonsymmetric
+eigensystems. Eigenvalues can be computed with or without eigenvectors.
+The hermitian matrix algorithms used are symmetric bidiagonalization
+followed by QR reduction. The nonsymmetric algorithm is the Francis QR
+double-shift.  The generalized nonsymmetric algorithm is the QZ method due
+to Moler and Stewart.
 
 @cindex LAPACK, recommended for linear algebra
 These routines are intended for ``small'' systems where simple algorithms are

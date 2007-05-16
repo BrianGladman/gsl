@@ -3179,6 +3179,82 @@ int test_cholesky_decomp_unit(void)
   return s;
 }
 
+int
+test_choleskyc_decomp_dim(const gsl_matrix_complex * m, double eps)
+{
+  int s = 0;
+  unsigned long i,j, M = m->size1, N = m->size2;
+
+  gsl_matrix_complex * v  = gsl_matrix_complex_alloc(M,N);
+  gsl_matrix_complex * a  = gsl_matrix_complex_alloc(M,N);
+  gsl_matrix_complex * l  = gsl_matrix_complex_alloc(M,N);
+  gsl_matrix_complex * lh  = gsl_matrix_complex_alloc(N,N);
+
+  gsl_matrix_complex_memcpy(v, m);
+  gsl_matrix_complex_set_zero(l);
+  gsl_matrix_complex_set_zero(lh);
+
+  s += gsl_linalg_complex_cholesky_decomp(v);
+
+  /* Compute L L^H */
+  
+  for (i = 0; i < N ; i++)
+    {
+      for (j = 0; j <= i; j++)
+        {
+          gsl_complex vij = gsl_matrix_complex_get(v, i, j);
+          gsl_matrix_complex_set (l, i, j, vij);
+          gsl_matrix_complex_set (lh, j, i, gsl_complex_conjugate(vij));
+        }
+    }
+            
+  /* compute a = l lh */
+  gsl_blas_zgemm (CblasNoTrans,
+                  CblasNoTrans,
+                  GSL_COMPLEX_ONE,
+                  l,
+                  lh,
+                  GSL_COMPLEX_ZERO,
+                  a);
+
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
+      gsl_complex aij = gsl_matrix_complex_get(a, i, j);
+      gsl_complex mij = gsl_matrix_complex_get(m, i, j);
+      int foo_r = check(GSL_REAL(aij), GSL_REAL(mij), eps);
+      int foo_i = check(GSL_IMAG(aij), GSL_IMAG(mij), eps);
+      if(foo_r || foo_i) {
+        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, GSL_REAL(aij), GSL_REAL(mij));
+        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, GSL_IMAG(aij), GSL_IMAG(mij));
+      }
+      s += foo_r + foo_i;
+    }
+  }
+
+  gsl_matrix_complex_free(v);
+  gsl_matrix_complex_free(a);
+  gsl_matrix_complex_free(l);
+  gsl_matrix_complex_free(lh);
+
+  return s;
+}
+
+int
+test_choleskyc_decomp(void)
+{
+  int f;
+  int s = 0;
+  double dat3[] = { 59.75,0,       49.25,172.25, 66.75,-162.75,
+                    49.25,-172.25, 555.5,0,      -429,-333.5,
+                    66.75,162.75,  -429,333.5,   536.5,0 };
+  gsl_matrix_complex_view p3 = gsl_matrix_complex_view_array(dat3, 3, 3);
+
+  f = test_choleskyc_decomp_dim(&p3.matrix, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  complex_cholesky_decomp complex(3)");
+  s += f;
+
+  return s;
+}
 
 int
 test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -3747,6 +3823,7 @@ int main(void)
   gsl_test(test_cholesky_decomp(),       "Cholesky Decomposition");
   gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
   gsl_test(test_cholesky_solve(),        "Cholesky Solve");
+  gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Solve");
   gsl_test(test_HH_solve(),              "Householder solve");
   gsl_test(test_TDS_solve(),             "Tridiagonal symmetric solve");
   gsl_test(test_TDS_cyc_solve(),         "Tridiagonal symmetric cyclic solve");

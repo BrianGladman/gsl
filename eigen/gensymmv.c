@@ -157,7 +157,7 @@ gsl_eigen_gensymmv (gsl_matrix * A, gsl_matrix * B, gsl_vector * eval,
       if (s != GSL_SUCCESS)
         return s;
 
-      /* backtransform eigenvectors: evec -> L^t evec */
+      /* backtransform eigenvectors: evec -> L^{-T} evec */
       gsl_blas_dtrsm(CblasLeft,
                      CblasLower,
                      CblasTrans,
