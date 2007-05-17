@@ -387,7 +387,7 @@ $$
 @ifinfo
 
 @example
-\int_@{+\infty@}^@{b@} dx f(x) = 
+\int_@{-\infty@}^@{b@} dx f(x) = 
      \int_0^1 dt f(b - (1-t)/t)/t^2
 @end example
 
