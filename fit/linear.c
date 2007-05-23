@@ -196,11 +196,11 @@ gsl_fit_wlinear (const double *x, const size_t xstride,
 int
 gsl_fit_linear_est (const double x,
                     const double c0, const double c1,
-                    const double c00, const double c01, const double c11,
+                    const double cov00, const double cov01, const double cov11,
                     double *y, double *y_err)
 {
   *y = c0 + c1 * x;
-  *y_err = sqrt (c00 + x * (2 * c01 + c11 * x));
+  *y_err = sqrt (cov00 + x * (2 * cov01 + cov11 * x));
   return GSL_SUCCESS;
 }
 
@@ -337,10 +337,10 @@ gsl_fit_wmul (const double *x, const size_t xstride,
 
 int
 gsl_fit_mul_est (const double x, 
-                 const double c1, const double c11, 
+                 const double c1, const double cov11, 
                  double *y, double *y_err)
 {
   *y = c1 * x;
-  *y_err = sqrt (c11) * fabs (x);
+  *y_err = sqrt (cov11) * fabs (x);
   return GSL_SUCCESS;
 }

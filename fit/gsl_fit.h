@@ -54,7 +54,7 @@ int gsl_fit_wlinear (const double * x, const size_t xstride,
 int
 gsl_fit_linear_est (const double x, 
                     const double c0, const double c1, 
-                    const double c00, const double c01, const double c11,
+                    const double cov00, const double cov01, const double cov11,
                     double *y, double *y_err);
 
 
@@ -77,7 +77,7 @@ int gsl_fit_wmul (const double * x, const size_t xstride,
 int
 gsl_fit_mul_est (const double x, 
                  const double c1, 
-                 const double c11,
+                 const double cov11,
                  double *y, double *y_err);
 
 __END_DECLS
