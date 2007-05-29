@@ -1,5 +1,7 @@
 * What will be new in gsl-1.10:
 
+** Extended Cholesky routines to complex matrices
+
 ** Improved the convergence test in the Lambert functions to take
 account of finite precision and avoid possible failure to converge.
 
@@ -21,7 +23,7 @@ now returns -1 instead of +1 for -Inf, in line with recent versions of
 the GNU C Library.
 
 ** Added function gsl_stats_correlation to compute Pearson correlation
-   of two datasets
+of two datasets
 
 ** Added support for generalized eigensystems
 

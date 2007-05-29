@@ -532,15 +532,19 @@ error code @code{GSL_EDOM}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} using the Cholesky
+@deftypefunx int gsl_linalg_complex_cholesky_solve (const gsl_matrix_complex * @var{cholesky}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x})
+These functions solve the system @math{A x = b} using the Cholesky
 decomposition of @math{A} into the matrix @var{cholesky} given by
-@code{gsl_linalg_cholesky_decomp}.
+@code{gsl_linalg_cholesky_decomp} or
+@code{gsl_linalg_complex_cholesky_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_svx (const gsl_matrix * @var{cholesky}, gsl_vector * @var{x})
-This function solves the system @math{A x = b} in-place using the
+@deftypefunx int gsl_linalg_complex_cholesky_svx (const gsl_matrix_complex * @var{cholesky}, gsl_vector_complex * @var{x})
+These functions solve the system @math{A x = b} in-place using the
 Cholesky decomposition of @math{A} into the matrix @var{cholesky} given
-by @code{gsl_linalg_cholesky_decomp}. On input @var{x} should contain
+by @code{gsl_linalg_cholesky_decomp} or
+@code{gsl_linalg_complex_cholesky_decomp}. On input @var{x} should contain
 the right-hand side @math{b}, which is replaced by the solution on
 output.
 @end deftypefun

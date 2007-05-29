@@ -117,6 +117,75 @@ gsl_linalg_complex_cholesky_decomp(gsl_matrix_complex *A)
     }
 } /* gsl_linalg_complex_cholesky_decomp() */
 
+/*
+gsl_linalg_complex_cholesky_solve()
+  Solve A x = b where A is in cholesky form
+*/
+
+int
+gsl_linalg_complex_cholesky_solve (const gsl_matrix_complex * cholesky,
+                                   const gsl_vector_complex * b,
+                                   gsl_vector_complex * x)
+{
+  if (cholesky->size1 != cholesky->size2)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (cholesky->size1 != b->size)
+    {
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (cholesky->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_vector_complex_memcpy (x, b);
+
+      /* solve for y using forward-substitution, L y = b */
+
+      gsl_blas_ztrsv (CblasLower, CblasNoTrans, CblasNonUnit, cholesky, x);
+
+      /* perform back-substitution, L^H x = y */
+
+      gsl_blas_ztrsv (CblasLower, CblasConjTrans, CblasNonUnit, cholesky, x);
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_linalg_complex_cholesky_solve() */
+
+/*
+gsl_linalg_complex_cholesky_svx()
+  Solve A x = b in place where A is in cholesky form
+*/
+
+int
+gsl_linalg_complex_cholesky_svx (const gsl_matrix_complex * cholesky,
+                                 gsl_vector_complex * x)
+{
+  if (cholesky->size1 != cholesky->size2)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (cholesky->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      /* solve for y using forward-substitution, L y = b */
+
+      gsl_blas_ztrsv (CblasLower, CblasNoTrans, CblasNonUnit, cholesky, x);
+
+      /* perform back-substitution, L^H x = y */
+
+      gsl_blas_ztrsv (CblasLower, CblasConjTrans, CblasNonUnit, cholesky, x);
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_linalg_complex_cholesky_svx() */
+
 /********************************************
  *           INTERNAL ROUTINES              *
  ********************************************/

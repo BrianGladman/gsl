@@ -3180,6 +3180,73 @@ int test_cholesky_decomp_unit(void)
 }
 
 int
+test_choleskyc_solve_dim(const gsl_matrix_complex * m, const gsl_vector_complex * actual, double eps)
+{
+  int s = 0;
+  unsigned long i, dim = m->size1;
+  gsl_complex z;
+
+  GSL_SET_IMAG(&z, 0.0);
+
+  gsl_vector_complex * rhs = gsl_vector_complex_alloc(dim);
+  gsl_matrix_complex * u  = gsl_matrix_complex_alloc(dim,dim);
+  gsl_vector_complex * x = gsl_vector_complex_calloc(dim);
+  gsl_matrix_complex_memcpy(u,m);
+  for(i=0; i<dim; i++)
+    {
+      GSL_SET_REAL(&z, i + 1.0);
+      gsl_vector_complex_set(rhs, i, z);
+    }
+  s += gsl_linalg_complex_cholesky_decomp(u);
+  s += gsl_linalg_complex_cholesky_solve(u, rhs, x);
+  for(i=0; i<dim; i++) {
+    gsl_complex y = gsl_vector_complex_get(x, i);
+    gsl_complex a = gsl_vector_complex_get(actual, i);
+    int foo = check(GSL_REAL(y), GSL_REAL(a), eps);
+    int foo2 = check(GSL_IMAG(y), GSL_IMAG(a), eps);
+    if(foo || foo2) {
+      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, GSL_REAL(y), GSL_REAL(a));
+      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, GSL_IMAG(y), GSL_IMAG(a));
+    }
+    s += foo + foo2;
+  }
+  gsl_vector_complex_free(x);
+  gsl_matrix_complex_free(u);
+  gsl_vector_complex_free(rhs);
+
+  return s;
+} /* test_choleskyc_solve_dim() */
+
+int
+test_choleskyc_solve(void)
+{
+  double data7[] = { 66,0, 0,64, 126,63, 124,-62, 61,-61, 60,60, 0,-59,
+                     0,-64, 65,0, 62,-124, -61,-122, -60,-60, 59,-59, -58,0,
+                     126,-63, 62,124, 308,0, 180,-240, 59,-177, 174,58, -57,-114,
+                     124,62, -61,122, 180,240, 299,0, 174,-58, 57,171, 56,-112,
+                     61,61, -60,60, 59,177, 174,58, 119,0, 0,112, 55,-55,
+                     60,-60, 59,59, 174,-58, 57,-171, 0,-112, 116,0, -54,-54,
+                     0,59, -58,0, -57,114, 56,112, 55,55, -54,54, 60,0 };
+  double data7_sol[] = { -0.524944196428570,0.209123883928571,
+                         1.052873883928572,0.712444196428571,
+                         0.117568824404762,0.443191964285714,
+                         0.412862723214286,-0.356696428571429,
+                         0.815931919642858,-0.265820312500000,
+                         0.777929687500000,0.119484747023810,
+                         1.058733258928571,-0.132087053571429 };
+  gsl_matrix_complex_view cp7 = gsl_matrix_complex_view_array(data7, 7, 7);
+  gsl_vector_complex_view cp7_sol = gsl_vector_complex_view_array(data7_sol, 7);
+  int f;
+  int s = 0;
+
+  f = test_choleskyc_solve_dim(&cp7.matrix, &cp7_sol.vector, 1024.0 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  complex_cholesky_solve complex(7)");
+  s += f;
+
+  return s;
+} /* test_choleskyc_solve() */
+
+int
 test_choleskyc_decomp_dim(const gsl_matrix_complex * m, double eps)
 {
   int s = 0;
@@ -3823,7 +3890,8 @@ int main(void)
   gsl_test(test_cholesky_decomp(),       "Cholesky Decomposition");
   gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
   gsl_test(test_cholesky_solve(),        "Cholesky Solve");
-  gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Solve");
+  gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Decomposition");
+  gsl_test(test_choleskyc_solve(),       "Complex Cholesky Solve");
   gsl_test(test_HH_solve(),              "Householder solve");
   gsl_test(test_TDS_solve(),             "Tridiagonal symmetric solve");
   gsl_test(test_TDS_cyc_solve(),         "Tridiagonal symmetric cyclic solve");
