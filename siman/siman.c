@@ -28,10 +28,22 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_siman.h>
 
-static inline 
-double safe_exp (double x) /* avoid underflow errors for large uphill steps */
-{ 
+static inline double
+boltzmann(double E, double new_E, double T, gsl_siman_params_t *params)
+{
+  double x = -(new_E - E) / (params->k * T);
+  /* avoid underflow errors for large uphill steps */
   return (x < GSL_LOG_DBL_MIN) ? 0.0 : exp(x);
+}
+
+static inline void
+copy_state(void *src, void *dst, size_t size, gsl_siman_copy_t copyfunc)
+{
+  if (copyfunc) {
+    copyfunc(src, dst);
+  } else {
+    memcpy(dst, src, size);
+  }
 }
       
 /* implementation of a basic simulated annealing algorithm */
@@ -49,8 +61,8 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 {
   void *x, *new_x, *best_x;
   double E, new_E, best_E;
-  int i, done;
-  double T;
+  int i;
+  double T, T_factor;
   int n_evals = 1, n_iter = 0, n_accepts, n_rejects, n_eless;
 
   /* this function requires that either the dynamic functions (copy,
@@ -77,23 +89,21 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   best_E = E;
 
   T = params.t_initial;
-  done = 0;
+  T_factor = 1.0 / params.mu_t;
 
   if (print_position) {
     printf ("#-iter  #-evals   temperature     position   energy\n");
   }
 
-  while (!done) {
+  while (1) {
 
     n_accepts = 0;
     n_rejects = 0;
     n_eless = 0;
+
     for (i = 0; i < params.iters_fixed_T; ++i) {
-      if (copyfunc) {
-        copyfunc(x, new_x);
-      } else {
-        memcpy (new_x, x, element_size);
-      }
+
+      copy_state(x, new_x, element_size, copyfunc);
 
       take_step (r, new_x, params.step_size);
       new_E = Ef (new_x);
@@ -109,25 +119,25 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
 
       ++n_evals;                /* keep track of Ef() evaluations */
       /* now take the crucial step: see if the new point is accepted
-         or not, as determined by the boltzman probability */
+         or not, as determined by the boltzmann probability */
       if (new_E < E) {
+
+	if (new_E < best_E) {
+	  copy_state(new_x, best_x, element_size, copyfunc);
+	  best_E = new_E;
+	}
+
         /* yay! take a step */
-        if (copyfunc) {
-          copyfunc(new_x, x);
-        } else {
-          memcpy (x, new_x, element_size);
-        }
+	copy_state(new_x, x, element_size, copyfunc);
         E = new_E;
         ++n_eless;
-      } else if (gsl_rng_uniform(r) < safe_exp (-(new_E - E)/(params.k * T)) ) {
+
+      } else if (gsl_rng_uniform(r) < boltzmann(E, new_E, T, &params)) {
         /* yay! take a step */
-        if (copyfunc) {
-          copyfunc(new_x, x);
-        } else {
-          memcpy(x, new_x, element_size);
-        }
+	copy_state(new_x, x, element_size, copyfunc);
         E = new_E;
         ++n_accepts;
+
       } else {
         ++n_rejects;
       }
@@ -140,25 +150,21 @@ gsl_siman_solve (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
       /*           100*n_rejects/n_steps); */
       printf ("%5d   %7d  %12g", n_iter, n_evals, T);
       print_position (x);
-      printf ("  %12g\n", E);
+      printf ("  %12g  %12g\n", E, best_E);
     }
 
     /* apply the cooling schedule to the temperature */
     /* FIXME: I should also introduce a cooling schedule for the iters */
-    T /= params.mu_t;
+    T *= T_factor;
     ++n_iter;
     if (T < params.t_min) {
-      done = 1;
+      break;
     }
   }
 
   /* at the end, copy the result onto the initial point, so we pass it
      back to the caller */
-  if (copyfunc) {
-    copyfunc(best_x, x0_p);
-  } else {
-    memcpy (x0_p, best_x, element_size);
-  }
+  copy_state(best_x, x0_p, element_size, copyfunc);
 
   if (copyfunc) {
     destructor(x);
@@ -185,8 +191,8 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   void *x, *new_x;
   double *energies, *probs, *sum_probs;
   double Ex;                    /* energy of the chosen point */
-  double T;                     /* the temperature */
-  int i, done;
+  double T, T_factor;           /* the temperature and a step multiplier */
+  int i;
   double u;                     /* throw the die to choose a new "x" */
   int n_iter;
 
@@ -202,12 +208,12 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
   sum_probs = (double *) malloc (params.n_tries * sizeof (double));
 
   T = params.t_initial;
-/*    memcpy (x, x0_p, element_size); */
+  T_factor = 1.0 / params.mu_t;
+
   memcpy (x, x0_p, element_size);
-  done = 0;
 
   n_iter = 0;
-  while (!done)
+  while (1)
     {
       Ex = Ef (x);
       for (i = 0; i < params.n_tries - 1; ++i)
@@ -217,12 +223,12 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
           memcpy ((char *)new_x + i * element_size, x, element_size);
           take_step (r, (char *)new_x + i * element_size, params.step_size);
           energies[i] = Ef ((char *)new_x + i * element_size);
-          probs[i] = safe_exp (-(energies[i] - Ex) / (params.k * T));
+          probs[i] = boltzmann(Ex, energies[i], T, &params);
         }
       /* now add in the old value of "x", so it is a contendor */
       memcpy ((char *)new_x + (params.n_tries - 1) * element_size, x, element_size);
       energies[params.n_tries - 1] = Ex;
-      probs[params.n_tries - 1] = safe_exp (-(energies[i] - Ex) / (params.k * T));
+      probs[params.n_tries - 1] = boltzmann(Ex, energies[i], T, &params);
 
       /* now throw biased die to see which new_x[i] we choose */
       sum_probs[0] = probs[0];
@@ -235,7 +241,7 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
         {
           if (u < sum_probs[i])
             {
-              memcpy (x, (char *)new_x + i * element_size, element_size);
+              memcpy (x, (char *) new_x + i * element_size, element_size);
               break;
             }
         }
@@ -245,11 +251,11 @@ gsl_siman_solve_many (const gsl_rng * r, void *x0_p, gsl_siman_Efunc_t Ef,
           print_position (x);
           printf ("\t%12g\t%12g\n", distance (x, x0_p), Ex);
         }
-      T /= params.mu_t;
+      T *= T_factor;
       ++n_iter;
       if (T < params.t_min)
-        {
-          done = 1;
+	{
+	  break;
         }
     }
 

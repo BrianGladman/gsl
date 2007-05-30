@@ -1,3 +1,8 @@
+2007-05-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* siman.c (boltzmann): moved safe_exp into boltzmann
+	(copy_state): put all copying into one function
+
 2006-03-08  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (square): removed inline since it causes problems with

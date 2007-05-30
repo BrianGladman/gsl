@@ -406,3 +406,5 @@ error in the elliptic integrals
 * Ed Smith-Rowland <3dw4rd@verizon.net> patch for laguerre polynomials
 
 * Katrin Wolff <katrin_wolff@gmx.de> bug report for Lambert W function
+
+* "Heikki Orsila <heikki.orsila@iki.fi>" cleaning up siman code
