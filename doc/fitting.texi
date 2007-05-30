@@ -129,15 +129,13 @@ The standard deviations of the best-fit parameters are given by the
 square root of the corresponding diagonal elements of
 the covariance matrix, @c{$\sigma_{c_a} = \sqrt{C_{aa}}$}
 @math{\sigma_@{c_a@} = \sqrt@{C_@{aa@}@}}.
-The correlation coefficient of the parameters @math{c_a} and @math{c_b}
+The correlation coefficient of the fit parameters @math{c_a} and @math{c_b}
 is given by @c{$\rho_{ab} = C_{ab} / \sqrt{C_{aa} C_{bb}}$}
 @math{\rho_@{ab@} = C_@{ab@} / \sqrt@{C_@{aa@} C_@{bb@}@}}.
 
 @node   Linear regression
 @section Linear regression
 @cindex linear regression
-@cindex correlation coefficient, rho
-@cindex rho, correlation coefficient
 
 The functions described in this section can be used to perform
 least-squares fits to a straight line model, @math{Y(c,x) = c_0 + c_1 x}.
@@ -153,8 +151,7 @@ parameters (@var{c0}, @var{c1}) is estimated from the scatter of the
 points around the best-fit line and returned via the parameters
 (@var{cov00}, @var{cov01}, @var{cov11}).   
 The sum of squares of the residuals from the best-fit line is returned
-in @var{sumsq}.  The correlation coefficient of the fit is @c{$\rho = @var{cov01} / \sqrt{@var{cov00} * @var{cov01}}$}
-@math{\rho = @var{cov01} / \sqrt@{@var{cov00} * @var{cov11}@}}.
+in @var{sumsq}.  Note: the correlation coefficient of the data can be computed using @code{gsl_stats_correlation} (@pxref{Correlation}), it does not depend on the fit.
 @end deftypefun
 
 @deftypefun int gsl_fit_wlinear (const double * @var{x}, const size_t @var{xstride}, const double * @var{w}, const size_t @var{wstride}, const double * @var{y}, const size_t @var{ystride}, size_t @var{n}, double * @var{c0}, double * @var{c1}, double * @var{cov00}, double * @var{cov01}, double * @var{cov11}, double * @var{chisq})
