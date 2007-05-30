@@ -1,5 +1,7 @@
 * What will be new in gsl-1.10:
 
+** Added functions gsl_matrix_subrow and gsl_matrix_subcolumn
+
 ** Extended Cholesky routines to complex matrices
 
 ** Improved the convergence test in the Lambert functions to take

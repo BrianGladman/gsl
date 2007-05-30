@@ -1299,6 +1299,30 @@ The function @code{gsl_vector_const_column} is equivalent to
 @code{const}.
 @end deftypefun
 
+@deftypefun gsl_vector_view gsl_matrix_subrow (gsl_matrix * @var{m}, size_t @var{i}, size_t @var{offset}, size_t @var{n})
+@deftypefunx {gsl_vector_const_view} gsl_matrix_const_subrow (const gsl_matrix * @var{m}, size_t @var{i}, size_t @var{offset}, size_t @var{n})
+These functions return a vector view of the @var{i}-th row of the matrix
+@var{m} beginning at @var{offset} elements past the first column and
+containing @var{n} elements. The @code{data} pointer of the new vector
+is set to null if @var{i}, @var{offset}, or @var{n} are out of range.
+
+The function @code{gsl_vector_const_subrow} is equivalent to
+@code{gsl_matrix_subrow} but can be used for matrices which are declared
+@code{const}.
+@end deftypefun
+
+@deftypefun gsl_vector_view gsl_matrix_subcolumn (gsl_matrix * @var{m}, size_t @var{j}, size_t @var{offset}, size_t @var{n})
+@deftypefunx {gsl_vector_const_view} gsl_matrix_const_subcolumn (const gsl_matrix * @var{m}, size_t @var{j}, size_t @var{offset}, size_t @var{n})
+These functions return a vector view of the @var{j}-th column of the matrix
+@var{m} beginning at @var{offset} elements past the first row and
+containing @var{n} elements. The @code{data} pointer of the new vector
+is set to null if @var{j}, @var{offset}, or @var{n} are out of range.
+
+The function @code{gsl_vector_const_subcolumn} is equivalent to
+@code{gsl_matrix_subcolumn} but can be used for matrices which are declared
+@code{const}.
+@end deftypefun
+
 @cindex matrix diagonal
 @cindex diagonal, of a matrix
 @deftypefun gsl_vector_view gsl_matrix_diagonal (gsl_matrix * @var{m})
