@@ -122,17 +122,13 @@ gsl_linalg_hesstri_decomp(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
               sn = -sn;
 
               /* compute G^t A(i-1:i, j:n) */
-              xv = gsl_matrix_row(A, i - 1);
-              xv = gsl_vector_subvector(&xv.vector, j, N - j);
-              yv = gsl_matrix_row(A, i);
-              yv = gsl_vector_subvector(&yv.vector, j, N - j);
+              xv = gsl_matrix_subrow(A, i - 1, j, N - j);
+              yv = gsl_matrix_subrow(A, i, j, N - j);
               gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
 
               /* compute G^t B(i-1:i, i-1:n) */
-              xv = gsl_matrix_row(B, i - 1);
-              xv = gsl_vector_subvector(&xv.vector, i - 1, N - i + 1);
-              yv = gsl_matrix_row(B, i);
-              yv = gsl_vector_subvector(&yv.vector, i - 1, N - i + 1);
+              xv = gsl_matrix_subrow(B, i - 1, i - 1, N - i + 1);
+              yv = gsl_matrix_subrow(B, i, i - 1, N - i + 1);
               gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
 
               if (U)
@@ -153,10 +149,8 @@ gsl_linalg_hesstri_decomp(gsl_matrix * A, gsl_matrix * B, gsl_matrix * U,
               sn = -sn;
 
               /* compute B(1:i, i-1:i) G */
-              xv = gsl_matrix_column(B, i - 1);
-              xv = gsl_vector_subvector(&xv.vector, 0, i + 1);
-              yv = gsl_matrix_column(B, i);
-              yv = gsl_vector_subvector(&yv.vector, 0, i + 1);
+              xv = gsl_matrix_subcolumn(B, i - 1, 0, i + 1);
+              yv = gsl_matrix_subcolumn(B, i, 0, i + 1);
               gsl_blas_drot(&xv.vector, &yv.vector, cs, sn);
 
               /* apply to A(1:n, i-1:i) */

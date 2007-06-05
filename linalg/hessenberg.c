@@ -97,8 +97,7 @@ gsl_linalg_hessenberg_decomp(gsl_matrix *A, gsl_vector *tau)
            * of 'tau' that we haven't stored coefficients in yet
            */
 
-          c = gsl_matrix_column(A, i);
-          c = gsl_vector_subvector(&c.vector, i + 1, N - (i + 1));
+          c = gsl_matrix_subcolumn(A, i, i + 1, N - i - 1);
 
           hv = gsl_vector_subvector(tau, i + 1, N - (i + 1));
           gsl_vector_memcpy(&hv.vector, &c.vector);
@@ -384,8 +383,7 @@ gsl_linalg_hessenberg_submatrix(gsl_matrix *M, gsl_matrix *A, size_t top,
            * of 'tau' that we haven't stored coefficients in yet
            */
 
-          c = gsl_matrix_column(A, i);
-          c = gsl_vector_subvector(&c.vector, i + 1, N - (i + 1));
+          c = gsl_matrix_subcolumn(A, i, i + 1, N - i - 1);
 
           hv = gsl_vector_subvector(tau, i + 1, N - (i + 1));
           gsl_vector_memcpy(&hv.vector, &c.vector);
