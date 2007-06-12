@@ -88,6 +88,25 @@ gsl_roots_fsolver_brent)
 
 * PyGSL -- python bindings for GSL, see http://pygsl.sf.net/
 
+
+* From Goose
+        ASCII import
+        Categorical Sets
+        Kernel Density Estimation
+        Shampine Polynomial Regression
+        Bootstrapping, Jacknife
+        Descriptive: Range, Trimmed Mean, Winsorized Mean, Moments
+                Harmonic mean, RMS, Durbin-Watson, AR1 independence
+                Autocorr, Autocorr_z, Cramer vos Mises, Anderson-Darling
+                Spearman-rho, Kendall-tau, EDF_D_both EDF_D_plus,
+                EDF_D_minus, EDF_D, EDF_kuiper_V, pooled mean
+                pooled var, 
+        Tests: kolmogorov_smirnov
+        Moving average, Exponential moving average
+        wilcoxon_statistic, wilcoxon_noties_cdf, wilcoxon_general_cdf
+        Cochran Q test, KruskalWallis, McNemar, spearman_Rocc
+        
+
 Wishlist or vague ideas
 =======================
 
@@ -157,3 +176,4 @@ of size_t for vectors and matrices, or at least vectors and matrices
 of size_t in addition to long, int, etc.
 
 * Fix up the workspace_alloc functions so they have consistent names
+
