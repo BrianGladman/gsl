@@ -21,6 +21,12 @@ libgsl_la_LIBADD = $(SUBLIBS)
 libgsl_la_LDFLAGS = -version-info $(GSL_LT_VERSION)
 noinst_HEADERS = templates_on.h templates_off.h
 
+MINGW32_HOST = @MINGW32_HOST@
+if MINGW32_HOST
+libgsl_la_LIBADD += cblas/libgslcblas.la
+libgsl_la_LDFLAGS += -no-undefined
+endif
+
 m4datadir = $(datadir)/aclocal
 m4data_DATA = gsl.m4
 

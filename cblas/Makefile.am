@@ -1,6 +1,11 @@
 lib_LTLIBRARIES = libgslcblas.la
 libgslcblas_la_LDFLAGS = -version-info $(GSL_LT_CBLAS_VERSION)
 
+MINGW32_HOST = @MINGW32_HOST@
+if MINGW32_HOST
+libgslcblas_la_LDFLAGS += -no-undefined
+endif
+
 pkginclude_HEADERS = gsl_cblas.h
 
 INCLUDES= -I$(top_srcdir)

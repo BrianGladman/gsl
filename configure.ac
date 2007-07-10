@@ -89,6 +89,14 @@ AC_CHECK_HEADERS(ieeefp.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
+case "$host_os" in
+     *mingw*)
+	MINGW=true
+	;;
+esac
+
+AM_CONDITIONAL(MINGW32_HOST, test "$MINGW" = "true")
+
 dnl Checks for library functions.
 
 dnl AC_FUNC_ALLOCA
