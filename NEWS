@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** Improved the function gsl_log1p to prevent possible loss of
+accuracy caused by optimisations.
+
 ** License updated to GNU GPL version 3.
 
 ** Added functions gsl_matrix_subrow and gsl_matrix_subcolumn

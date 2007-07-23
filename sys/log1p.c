@@ -24,7 +24,8 @@ double gsl_log1p (const double x);
 
 double gsl_log1p (const double x)
 {
-  volatile double y;
+  volatile double y, z;
   y = 1 + x;
-  return log(y) - ((y-1)-x)/y ;  /* cancels errors with IEEE arithmetic */
+  z = y - 1;
+  return log(y) - (z-x)/y ;  /* cancels errors with IEEE arithmetic */
 }

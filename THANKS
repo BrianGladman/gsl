@@ -408,3 +408,5 @@ error in the elliptic integrals
 * Katrin Wolff <katrin_wolff@gmx.de> bug report for Lambert W function
 
 * "Heikki Orsila <heikki.orsila@iki.fi>" cleaning up siman code
+
+* Eugene Loh <Eugene.Loh@Sun.COM> bug report for gsl_log1p
