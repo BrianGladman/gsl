@@ -262,7 +262,33 @@ lmpar (gsl_matrix * r, const gsl_permutation * perm, const gsl_vector * qtf,
       return GSL_SUCCESS;
     }
 
+#ifdef DEBUG
+  printf ("r = ");
+  gsl_matrix_fprintf (stdout, r, "%g");
+  printf ("\n");
+
+  printf ("newton = ");
+  gsl_vector_fprintf (stdout, newton, "%g");
+  printf ("\n");
+
+  printf ("dxnorm = %g\n", dxnorm);
+#endif
+
+
   compute_newton_bound (r, newton, dxnorm, perm, diag, w);
+
+#ifdef DEBUG
+  printf("perm = "); gsl_permutation_fprintf(stdout, perm, "%d");
+
+  printf ("diag = ");
+  gsl_vector_fprintf (stdout, diag, "%g");
+  printf ("\n");
+
+  printf ("w = ");
+  gsl_vector_fprintf (stdout, w, "%g");
+  printf ("\n");
+#endif
+
 
   {
     double wnorm = enorm (w);

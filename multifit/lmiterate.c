@@ -93,11 +93,18 @@ lm_iteration:
 
 #ifdef DEBUG
   printf("lmiterate: fnorm = %g fnorm1 = %g  actred = %g\n", state->fnorm, fnorm1, actred);
+  printf("r = "); gsl_matrix_fprintf(stdout, r, "%g");
+  printf("perm = "); gsl_permutation_fprintf(stdout, perm, "%d");
+  printf("dx = "); gsl_vector_fprintf(stdout, dx, "%g");
 #endif
 
   /* Compute rptdx = R P^T dx, noting that |J dx| = |R P^T dx| */
 
   compute_rptdx (r, perm, dx, rptdx);
+
+#ifdef DEBUG
+  printf("rptdx = "); gsl_vector_fprintf(stdout, rptdx, "%g");
+#endif
 
   fnorm1p = enorm (rptdx);
 
