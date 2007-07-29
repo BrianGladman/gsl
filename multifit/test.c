@@ -149,7 +149,7 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
 {
   const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
-
+  
   const size_t n = f->n;
   const size_t p = f->p;
 
@@ -204,6 +204,60 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
     }
 
     gsl_matrix_free (covar);
+  }
+
+  /* Check that there is no hidden state, restarting should 
+     produce identical results. */
+
+  {
+    int status0, status1;
+    size_t i;
+    gsl_multifit_fdfsolver *t = gsl_multifit_fdfsolver_alloc (T, n, p);
+    gsl_multifit_fdfsolver_set (t, f, &x.vector);
+
+    /* do a few extra iterations to stir things up */
+
+    gsl_multifit_fdfsolver_set (s, f, &x.vector);
+
+    for (i = 0; i < 3; i++) 
+      {
+        gsl_multifit_fdfsolver_iterate (s);
+      }
+
+    gsl_multifit_fdfsolver_set (s, f, &x.vector);
+
+    do
+      {
+        status0 = gsl_multifit_fdfsolver_iterate (s);
+        status1 = gsl_multifit_fdfsolver_iterate (t);
+
+        gsl_test_int(status0, status1, "%s, lmsder status after set iter=%u", name, iter);
+        
+        for (i = 0; i < p; i++) {
+          double sxi = gsl_vector_get(s->x,i);
+          double txi = gsl_vector_get(t->x,i);
+#ifdef DEBUG
+          printf("%d %g %g\n", i, sxi, txi);
+#endif
+          gsl_test_rel(sxi, txi, 1e-15, "%s, lmsder after set, %u/%u", name, iter, i);
+        }
+        
+#ifdef DEBUG
+        printf("iter = %d  status = %d  |f| = %.18e x = \n", 
+               iter, status, gsl_blas_dnrm2 (s->f));
+        
+        gsl_vector_fprintf(stdout, s->x, "%.8e");
+#endif       
+        status0 = gsl_multifit_test_delta (s->dx, s->x, 0.0, 1e-7);
+        status1 = gsl_multifit_test_delta (t->dx, s->x, 0.0, 1e-7);
+        
+        gsl_test_int(status0, status1, "%s, lmsder test delta status after set iter=%u", name, iter);
+
+        iter++;
+      }
+    while (status1 == GSL_CONTINUE && iter < 1000);
+
+    gsl_multifit_fdfsolver_free (t);
   }
 
   gsl_multifit_fdfsolver_free (s);
