@@ -40,5 +40,18 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   gsl_matrix_memcpy (r, J);
   gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
 
+  gsl_vector_set_zero (state->rptdx);
+  gsl_vector_set_zero (state->w);
+
+  /* Zero the trial vector, as in the alloc function */
+
+  gsl_vector_set_zero (state->f_trial);
+
+#ifdef DEBUG
+  printf("r = "); gsl_matrix_fprintf(stdout, r, "%g");
+  printf("perm = "); gsl_permutation_fprintf(stdout, perm, "%d");
+  printf("tau = "); gsl_vector_fprintf(stdout, tau, "%g");
+#endif
+
   return GSL_SUCCESS;
 }

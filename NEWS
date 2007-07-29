@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** Fixed a bug in the set function for multifit lmder solver so that
+previous values are cleared correctly.
+
 ** Improved the function gsl_log1p to prevent possible loss of
 accuracy caused by optimisations.
 
