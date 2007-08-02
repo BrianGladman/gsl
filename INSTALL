@@ -274,7 +274,9 @@ run).  This problem is fixed in more recent versions of GCC.
 Hints for Microsoft Windows
 ===========================
 
-GSL should compile cleanly with GCC under Cygwin on Microsoft Windows.
+GSL should compile with GCC under Cygwin on Microsoft Windows.  
+There is a gsl package in the standard Cygwin distribution which
+contains any patches needed.
 
 With Mingw/MSYS some floating point issues have been reported which
 cause failures in the monte/ test directory.
