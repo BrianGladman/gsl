@@ -77,17 +77,17 @@ gsl_finite (const double x)
 }
 #else
 
-# if HAVE_DECL_FINITE
-int
-gsl_finite (const double x)
-{
-  return finite(x);
-}
-# elif HAVE_DECL_ISFINITE
+# if HAVE_DECL_ISFINITE
 int
 gsl_finite (const double x)
 {
   return isfinite(x);
+}
+# elif HAVE_DECL_FINITE
+int
+gsl_finite (const double x)
+{
+  return finite(x);
 }
 # elif HAVE_IEEE_COMPARISONS
 int
@@ -135,22 +135,6 @@ gsl_isinf (const double x)
     }
 }
 
-#  if 1
-/* Direct implementation */
-int
-gsl_isinf (const double x)
-{
-  double y = x - x;
-  int s = (y != y);
-
-  if (s && x > 0)
-    return +1;
-  else if (s && x < 0)
-    return -1;
-  else
-    return 0;
-}
-#  endif
 # endif
 #endif
 
