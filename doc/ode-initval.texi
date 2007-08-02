@@ -493,10 +493,10 @@ accuracy of @c{$10^{-6}$}
 @end iftex
 
 @noindent
-To obtain the values at regular intervals, rather than the variable
-spacings chosen by the control function, the main loop can be modified
-to advance the solution from one point to the next.  For example, the
-following main loop prints the solution at the fixed points @math{t = 0,
+To obtain the values at user-specified positions, rather than those
+chosen automatically by the control function, the main loop can be modified
+to advance the solution from one chosen point to the next.  For example, the
+following main loop prints the solution at the points @math{t_i = 0,
 1, 2, \dots, 100},
 
 @example
@@ -517,6 +517,10 @@ following main loop prints the solution at the fixed points @math{t = 0,
 @end example
 
 @noindent
+Note that arbitrary values of @math{t_i} can be used for each stage of
+the integration.  The equally spaced points in this example are just
+used as an illustration.
+
 It is also possible to work with a non-adaptive integrator, using only
 the stepping function itself.  The following program uses the @code{rk4}
 fourth-order Runge-Kutta stepping function with a fixed stepsize of
