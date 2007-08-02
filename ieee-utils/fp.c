@@ -30,10 +30,19 @@
 #include "fp-netbsd.c"
 #elif HAVE_OPENBSD_IEEE_INTERFACE
 #include "fp-openbsd.c"
+/* Try to handle universal binaries */
 #elif HAVE_DARWIN_IEEE_INTERFACE
-#include "fp-darwin.c"
+# if defined(__i386__)
+#  include "fp-darwin86.c"
+#else
+#  include "fp-darwin.c"
+# endif
 #elif HAVE_DARWIN86_IEEE_INTERFACE
-#include "fp-darwin86.c"
+# if defined(__ppc__)
+#  include "fp-darwin.c"
+# else
+#  include "fp-darwin86.c"
+#endif
 #elif HAVE_DECL_FEENABLEEXCEPT || HAVE_DECL_FESETTRAPENABLE
 #include "fp-gnuc99.c"
 #else
