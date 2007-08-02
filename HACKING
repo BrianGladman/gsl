@@ -102,6 +102,11 @@ with
 
 then that's a good test for portability.
 
+Also do a compilation in c99 mode
+
+     ./configure CC=c99
+     make
+
 ---------- warning about picking up old header files
 
 When compiling the library it's important to use the local copies of
