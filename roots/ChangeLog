@@ -1,3 +1,14 @@
+2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* newton.c (newton_iterate): use gsl_finite instead of finite
+
+	* roots.h (SAFE_FUNC_CALL): use gsl_finite instead of finite
+
+	* secant.c (secant_iterate): use gsl_finite instead of finite
+
+	* steffenson.c (steffenson_iterate): use gsl_finite instead of
+	finite
+
 2007-01-04  Brian Gough  <bjg@network-theory.co.uk>
 
 	* convergence.c (gsl_root_test_delta): added termination

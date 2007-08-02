@@ -105,7 +105,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
   state->f = f_new ;
   state->df = df_new ;
 
-  if (!finite (f_new))
+  if (!gsl_finite (f_new))
     {
       GSL_ERROR ("function value is not finite", GSL_EBADFUNC);
     }
@@ -126,7 +126,7 @@ steffenson_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
         *root = x_1 - u * u / v ;  /* accelerated value */
     }
 
-  if (!finite (df_new))
+  if (!gsl_finite (df_new))
     {
       GSL_ERROR ("derivative value is not finite", GSL_EBADFUNC);
     }

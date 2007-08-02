@@ -1,3 +1,7 @@
+2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: check ieeefp.h for isfinite
+
 2007-04-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* acconfig.h (finite): don't redefine finite in terms of isfinite,

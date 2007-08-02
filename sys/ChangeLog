@@ -1,3 +1,8 @@
+2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* infnan.c (gsl_finite): use isfinite (c99) in preference to
+	finite
+
 2007-07-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* log1p.c (gsl_log1p): added another volatile to prevent unwanted

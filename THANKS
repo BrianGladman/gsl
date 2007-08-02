@@ -410,3 +410,6 @@ error in the elliptic integrals
 * "Heikki Orsila <heikki.orsila@iki.fi>" cleaning up siman code
 
 * Eugene Loh <Eugene.Loh@Sun.COM> bug report for gsl_log1p
+
+* Richard Smith <Richard.Smith@Sun.COM> bug report and suggestions for
+correct use of isfinite

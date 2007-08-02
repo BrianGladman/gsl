@@ -20,6 +20,6 @@
 #define SAFE_FUNC_CALL(f, x, yp) \
 do { \
   *yp = GSL_FN_EVAL(f,x); \
-  if (!finite(*yp)) \
+  if (!gsl_finite(*yp)) \
     GSL_ERROR("computed function value is infinite or NaN", GSL_EBADFUNC); \
 } while (0)

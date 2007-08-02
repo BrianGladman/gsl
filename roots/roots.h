@@ -28,7 +28,7 @@
 #define SAFE_FUNC_CALL(f, x, yp) \
 do { \
   *yp = GSL_FN_EVAL(f,x); \
-  if (!finite(*yp)) \
+  if (!gsl_finite(*yp)) \
     GSL_ERROR("function value is not finite", GSL_EBADFUNC); \
 } while (0)
 

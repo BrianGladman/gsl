@@ -106,6 +106,10 @@
 #define isinf gsl_isinf
 #endif
 
+#if !HAVE_DECL_ISFINITE
+#define isfinite gsl_finite
+#endif
+
 #if !HAVE_DECL_FINITE
 #define finite gsl_finite
 #endif

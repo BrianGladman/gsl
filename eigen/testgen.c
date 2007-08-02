@@ -772,8 +772,8 @@ main(int argc, char *argv[])
             gsl_vector_complex_get(gen_workspace_p->alpha, i);
           gsl_complex z;
 
-          if (!finite(beta) || !finite(GSL_REAL(alpha)) ||
-              !finite(GSL_IMAG(alpha)))
+          if (!gsl_finite(beta) || !gsl_finite(GSL_REAL(alpha)) ||
+              !gsl_finite(GSL_IMAG(alpha)))
             {
               printf("nan/inf in element %u of (alpha,beta): alphar = %g, alphai = %g, beta = %g\n",
                      i, GSL_REAL(alpha), GSL_IMAG(alpha), beta);
