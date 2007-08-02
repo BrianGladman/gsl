@@ -165,9 +165,11 @@ binary format on the same architecture.
 @deftypefun int gsl_combination_fprintf (FILE * @var{stream}, const gsl_combination * @var{c}, const char * @var{format})
 This function writes the elements of the combination @var{c}
 line-by-line to the stream @var{stream} using the format specifier
-@var{format}, which should be suitable for a type of @var{size_t}.  On a
-GNU system the type modifier @code{Z} represents @code{size_t}, so
-@code{"%Zu\n"} is a suitable format.  The function returns
+@var{format}, which should be suitable for a type of @var{size_t}.  
+In ISO C99 the type modifier @code{z} represents @code{size_t}, so
+@code{"%zu\n"} is a suitable format.@footnote{In versions of the 
+GNU C library prior to the ISO C99 standard, 
+the type modifier @code{Z} was used instead.}  The function returns
 @code{GSL_EFAILED} if there was a problem writing to the file.
 @end deftypefun
 
