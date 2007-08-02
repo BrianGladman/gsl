@@ -194,6 +194,16 @@ FUNCTION (my, check) (TYPE (gsl_vector) * data, TYPE (gsl_vector) * orig)
     {
       if (FUNCTION (gsl_vector, get) (data, i) != FUNCTION (gsl_vector, get) (orig, i))
         {
+#if DUMP_ERROR
+          size_t j;
+          for (j = 0 ; j < data->size; j++) {
+            printf("%u: " OUT_FORMAT " " OUT_FORMAT " %c\n", j,
+                   FUNCTION (gsl_vector, get) (data, j),
+                   FUNCTION (gsl_vector, get) (orig, j),
+                   (i == j) ? '*' : ' ');
+          }
+#endif
+
           return GSL_FAILURE;
         }
     }
