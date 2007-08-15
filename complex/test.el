@@ -48,7 +48,7 @@
   (if (= x 0)
       x
     (let ((y (/ x (expt 2.0 (+ 1 (logb (abs x)))))))
-      (concat (if (>= y 0) "+" "-") (mantissa (abs y)) "e" (+ 1 (logb (abs x)))))))
+      (concat (if (>= y 0) "+" "-") (mantissa (abs y)) "e" (format "%d" (+ 1 (logb (abs x))))))))
 
 (defun mantissa (x)
   (let ((y "2#0."))
@@ -129,6 +129,8 @@
       )))
 
 
+
+
 (defun evaltestreal (function arg)
   (let* ((x arg)
          (z (format "(%s)" (binary x)))
@@ -153,6 +155,31 @@
       )))
 
 
+(defun evaltestzz (function arg1 arg2)
+  (let* ((x (nth 0 arg1))
+         (y (nth 1 arg1))
+         (x2 (nth 0 arg2))
+         (y2 (nth 1 arg2))
+         (z (format "(%s,%s)" (binary x) (binary y)))
+         (z2 (format "(%s,%s)" (binary x2) (binary y2)))
+         (v (concat "0.0 + clean(" function "(" z "," z2  "),60)"))
+         (result (calc-eval v)))
+
+    (message "%s (%g %g, %g %g) = %s" function x y x2 y2 result)
+    (if (string-match "clean(\\(.*\\))" result)
+        (setq result (replace-match "\\1" nil nil result)))
+    (if (string-match "clean(\\(.*\\), *[0-9]*)" result)
+        (setq result (replace-match "\\1" nil nil result)))
+    (if (string-match "(\\(.*\\),\\(.*\\))" result)
+        (setq result (replace-match "\\1,\\2" nil nil result)))
+    (if (string-match "^\\([^,]*\\)$" result)
+        (setq result (replace-match "\\1, 0.0" nil nil result)))
+    (if (not (or (string-match "(" result) ;; skip any unsimplified results
+                 (string-match "inf" result)))  
+        (princ (format "  {FN (%s), ARG(%.20e,%.20e), ARG(%.20e,%.20e), RES(%s)},\n" function x y x2 y2 result))
+      )))
+
+
 ;;(evaltest "sin" "10" "0")
 
 ;; loop over all possible combinations of a,b,c
@@ -169,7 +196,21 @@
       )
     )
   )
-  
+
+(defun testzz (a b c)
+  (let ((b1 b))
+    (while b1
+      (progn
+        (let* ((z (car b1)) (c1 c))
+          (while c1
+            (progn 
+              (let* ((zp (car c1)))
+                (evaltestzz a z zp))
+              (setq c1 (cdr c1)))))
+          (setq b1 (cdr b1))))))
+ 
+;;(testzz "xx" '((0 1) (2 3)) '((4 5) (6 7)))
+
 ;;
 
 (setq pi 3.14159265358979323846264338328);
@@ -205,6 +246,10 @@
                  (+ (log pi) delta)
                  (- (sqrt pi) delta)
                  (- (log pi) delta)))
+
+
+(setq z2finite (combine (append eps simple) (append zero eps simple)))
+(setq z2 (combine (append zero eps simple) (append zero eps simple)))
 
 (setq z0 (combine (append zero eps simple inf)
                   (append zero eps simple inf)))
@@ -283,7 +328,14 @@
 )
 
 
+(defun test4 ()
+  (testzz "pow" 
+          (list '(1 0) '(0 1) '(-1 0) '(0 -1) '(0.5 0.1) '(0.5 -0.1))
+          (list '(0 0)  '(1 0) '(0 1) '(-1 0) '(0 -1) '(0.5 0.1) '(0.5 -0.1)))
+)
+
 ;;(test1)
 ;;(test-all)
 ;;(test3)
 
+;;(evaltestzz "pow" (list flteps flteps) (list -2.0 0.0))
