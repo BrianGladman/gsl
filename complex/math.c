@@ -354,7 +354,22 @@ gsl_complex_pow (gsl_complex a, gsl_complex b)
 
   if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0.0)
     {
-      GSL_SET_COMPLEX (&z, 0.0, 0.0);
+      if (GSL_REAL (b) == 0 && GSL_IMAG (b) == 0.0)
+        {
+          GSL_SET_COMPLEX (&z, 1.0, 0.0);
+        }
+      else 
+        {
+          GSL_SET_COMPLEX (&z, 0.0, 0.0);
+        }
+    }
+  else if (GSL_REAL (b) == 1.0 && GSL_IMAG (b) == 0.0) 
+    {
+      return a;
+    }
+  else if (GSL_REAL (b) == -1.0 && GSL_IMAG (b) == 0.0) 
+    {
+      return gsl_complex_inverse (a);
     }
   else
     {

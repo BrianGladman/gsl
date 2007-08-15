@@ -1,3 +1,8 @@
+2007-08-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* math.c (gsl_complex_pow): handle (0,0)^(0,0) (x,y)^(1,0)
+	and (x,y)^(-1,0) as special cases
+
 2003-01-25  Brian Gough  <brian.gough@network-theory.co.uk>
 
 	* math.c (gsl_complex_arccsc_real): fixed bug for incorrect sign

@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** gsl_complex_pow now returns 0^0=1 (instead of zero) to match the usual
+pow function, and handles z^(1,0) and z^(-1,0) as special cases.
+
 ** Fixed a bug in the set function for multifit lmder solver so that
 previous values are cleared correctly.
 
