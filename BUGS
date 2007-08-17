@@ -258,18 +258,6 @@ int main(int argc, char *argv[])
 }
 
 ----------------------------------------------------------------------
-BUG#61 -- infinite loop in balance/svd for SSE2 math
-
-From: "Marco Lombardi" <marco.lombardi@gmail.com>
-To: bug-gsl@gnu.org
-Subject: Re: [Bug-gsl] Possible bug in gsl_multifit_wlinear_svd
-
-Test problem supplied
-http://lists.gnu.org/archive/html/bug-gsl/2007-08/msg00002.html
-
-Must be compiled with -sse2 -mfpmath=sse to reproduce.
-
-----------------------------------------------------------------------
 BUG#62 - bug in gsl_ran_dirichlet
 
 confirmed, it gives nan from 0/0 for small parameters a[i]

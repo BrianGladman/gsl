@@ -1,3 +1,8 @@
+2007-08-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp): bail out if number of iterations
+	exceeds 100*N
+
 2007-08-16  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): add some svd tests with small values that will

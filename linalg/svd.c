@@ -50,7 +50,7 @@ int
 gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S, 
                       gsl_vector * work)
 {
-  size_t a, b, i, j;
+  size_t a, b, i, j, iter;
 
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -113,7 +113,8 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
     /* Progressively reduce the matrix until it is diagonal */
     
     b = N - 1;
-    
+    iter = 0;
+
     while (b > 0)
       {
         double fbm1 = gsl_vector_get (&f.vector, b - 1);
@@ -140,6 +141,14 @@ gsl_linalg_SV_decomp (gsl_matrix * A, gsl_matrix * V, gsl_vector * S,
             
             a--;
           }
+
+        iter++;
+        
+        if (iter > 100 * N) 
+          {
+            GSL_ERROR("SVD decomposition failed to converge", GSL_EMAXITER);
+          }
+
         
         {
           const size_t n_block = b - a + 1;

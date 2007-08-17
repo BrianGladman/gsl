@@ -54,7 +54,31 @@ static void
 create_schur (double d0, double f0, double d1, double * c, double * s)
 {
   double apq = 2.0 * d0 * f0;
-  
+
+  if (d0 == 0 || f0 == 0)
+    {
+      *c = 1.0;
+      *s = 0.0;
+      return;
+    }
+
+  /* Check if we need to rescale to avoid underflow/overflow */
+  if (fabs(d0) < GSL_SQRT_DBL_MIN || fabs(d0) > GSL_SQRT_DBL_MAX
+      || fabs(f0) < GSL_SQRT_DBL_MIN || fabs(f0) > GSL_SQRT_DBL_MAX
+      || fabs(d1) < GSL_SQRT_DBL_MIN || fabs(d1) > GSL_SQRT_DBL_MAX)
+    {
+      double scale;
+      int d0_exp, f0_exp;
+      frexp(d0, &d0_exp);
+      frexp(f0, &f0_exp);
+      /* Bring |d0*f0| into the range GSL_DBL_MIN to GSL_DBL_MAX */
+      scale = ldexp(1.0, -(d0_exp + f0_exp)/4);
+      d0 *= scale;
+      f0 *= scale;
+      d1 *= scale;
+      apq = 2.0 * d0 * f0;
+    }
+
   if (apq != 0.0)
     {
       double t;
@@ -147,9 +171,9 @@ svd2 (gsl_vector * d, gsl_vector * f, gsl_matrix * U, gsl_matrix * V)
   else
     {
       /* Make columns orthogonal, A = [d0, f0; 0, d1] * G */
-      
+
       create_schur (d0, f0, d1, &c, &s);
-      
+
       /* compute B <= B G */
       
       a11 = c * d0 - s * f0;

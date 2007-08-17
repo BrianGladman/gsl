@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** The SVD routines now avoid underflow in the Schur decomposition for
+matrices with extremely small values <O(1e-150).
+
 ** gsl_complex_pow now returns 0^0=1 (instead of zero) to match the usual
 pow function, and handles z^(1,0) and z^(-1,0) as special cases.
 

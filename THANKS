@@ -413,3 +413,6 @@ error in the elliptic integrals
 
 * Richard Smith <Richard.Smith@Sun.COM> bug report and suggestions for
 correct use of isfinite
+
+* Marco Lombardi <marco.lombardi@gmail.com> bug report for svd
+
