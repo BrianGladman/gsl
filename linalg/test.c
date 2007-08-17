@@ -272,6 +272,7 @@ gsl_matrix_complex * c7;
 
 gsl_matrix * inf5; double inf5_data[] = {1.0, 0.0, -3.0, 0.0, -5.0};
 gsl_matrix * nan5;
+gsl_matrix * dblmin3, * dblmin5;
 
 double m53_lssolution[] = {52.5992295702070, -337.7263113752073, 
                            351.8823436427604};
@@ -2336,6 +2337,14 @@ int test_SV_decomp(void)
   gsl_test(f, "  SV_decomp nan5");
   s += f;
 
+  f = test_SV_decomp_dim(dblmin3, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp dblmin3");
+  s += f;
+
+  f = test_SV_decomp_dim(dblmin5, 1024 * GSL_DBL_EPSILON);
+  gsl_test(f, "  SV_decomp dblmin5");
+  s += f;
+
 
   {
     double i1, i2, i3, i4;
@@ -3856,6 +3865,11 @@ int main(void)
   nan5 = create_diagonal_matrix (inf5_data, 5);
   gsl_matrix_set(nan5, 3, 3, GSL_NAN);
 
+  dblmin3 = create_general_matrix (3, 3);
+  gsl_matrix_scale(dblmin3, GSL_DBL_MIN);
+
+  dblmin5 = create_general_matrix (5, 5);
+  gsl_matrix_scale(dblmin5, GSL_DBL_MIN);
 
   /* Matmult now obsolete */
 #ifdef MATMULT

@@ -1,3 +1,8 @@
+2007-08-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): add some svd tests with small values that will
+	cause underflow in intermediate steps of SVD iteration
+
 2006-08-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* balancemat.c: balance a general matrix D^-1 A D for rows and
