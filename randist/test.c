@@ -26,6 +26,7 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
+#include <gsl/gsl_integration.h>
 
 #define N 100000
 
@@ -72,6 +73,8 @@ double test_chisq (void);
 double test_chisq_pdf (double x);
 double test_dirichlet (void);
 double test_dirichlet_pdf (double x);
+double test_dirichlet_small (void);
+double test_dirichlet_small_pdf (double x);
 void test_dirichlet_moments (void);
 double test_discrete1 (void);
 double test_discrete1_pdf (unsigned int n);
@@ -278,6 +281,7 @@ main (void)
   testPDF (FUNC2 (cauchy));
   testPDF (FUNC2 (chisq));
   testPDF (FUNC2 (dirichlet));
+  testPDF (FUNC2 (dirichlet_small));
   testPDF (FUNC2 (erlang));
   testPDF (FUNC2 (exponential));
 
@@ -489,7 +493,7 @@ testMoments (double (*f) (void), const char *name,
     }
 
   expected = p * N;
-  sigma = fabs (count - expected) / sqrt (expected);
+  sigma = (expected > 0) ? fabs (count - expected) / sqrt (expected) : fabs(count - expected);
 
   status = (sigma > 3);
 
@@ -499,26 +503,82 @@ testMoments (double (*f) (void), const char *name,
 
 #define BINS 100
 
+typedef double pdf_func(double);
+
+double 
+wrapper_function (double x, void *params)
+{
+  pdf_func * pdf = (pdf_func *)params;
+  return pdf(x);
+}
+
+double
+integrate (pdf_func * pdf, double a, double b)
+{
+  double result, abserr;
+  size_t n = 1000;
+  gsl_function f;  
+  f.function = &wrapper_function;
+  f.params = pdf;
+  gsl_integration_workspace * w = gsl_integration_workspace_alloc (n);
+  gsl_integration_qags (&f, a, b, 1e-16, 1e-4, n, w, &result, &abserr);
+  return result;
+}
+
+
 void
 testPDF (double (*f) (void), double (*pdf) (double), const char *name)
 {
-  double count[BINS], p[BINS];
+  double count[BINS], edge[BINS], p[BINS];
   double a = -5.0, b = +5.0;
   double dx = (b - a) / BINS;
+  double bin;
+  double total = 0, mean;
   int i, j, status = 0, status_i = 0;
 
   for (i = 0; i < BINS; i++)
-    count[i] = 0;
+    {
+      count[i] = 0;
+      edge[i] = 0;
+    }
 
   for (i = 0; i < N; i++)
     {
       double r = f ();
+      
+      total += r;
+
       if (r < b && r > a)
         {
-          j = (int) ((r - a) / dx);
-          count[j]++;
+          double u = (r - a) / dx;
+          double f = modf(u, &bin);
+          j = (int)bin;
+
+          if (f == 0)
+            edge[j]++;
+          else 
+            count[j]++;
         }
     }
+
+  /* Sort out where the hits on the edges should go */
+
+  for (i = 0; i < BINS; i++)
+    {
+      /* If the bin above is empty, its lower edge hits belong in the
+         lower bin */
+
+      if (i + 1 < BINS && count[i+1] == 0) {
+        count[i] += edge[i+1];
+        edge[i+1] = 0;
+      }
+
+      count[i] += edge[i];
+    }
+
+  mean = (total / N);
+
+  gsl_test (!gsl_finite(mean), "%s, finite mean, observed %g", name, mean);
 
   for (i = 0; i < BINS; i++)
     {
@@ -526,16 +586,11 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
          x+dx using Simpson's rule */
 
       double x = a + i * dx;
-#define STEPS 100
-      double sum = 0;
 
       if (fabs (x) < 1e-10)     /* hit the origin exactly */
         x = 0.0;
 
-      for (j = 1; j < STEPS; j++)
-        sum += pdf (x + j * dx / STEPS);
-
-      p[i] = 0.5 * (pdf (x) + 2 * sum + pdf (x + dx - 1e-7)) * dx / STEPS;
+      p[i]  = integrate (pdf, x, x+dx);
     }
 
   for (i = 0; i < BINS; i++)
@@ -883,6 +938,35 @@ test_dirichlet_pdf (double x)
 {
   size_t K = 2;
   double alpha[2] = { 2.5, 5.0 };
+  double theta[2];
+
+  if (x <= 0.0 || x >= 1.0)
+    return 0.0;                 /* Out of range */
+
+  theta[0] = x;
+  theta[1] = 1.0 - x;
+
+  return gsl_ran_dirichlet_pdf (K, alpha, theta);
+}
+
+
+double
+test_dirichlet_small (void)
+{
+  size_t K = 2;
+  double alpha[2] = { 2.5e-3, 5.0e-3};
+  double theta[2] = { 0.0, 0.0 };
+
+  gsl_ran_dirichlet (r_global, K, alpha, theta);
+
+  return theta[0];
+}
+
+double
+test_dirichlet_small_pdf (double x)
+{
+  size_t K = 2;
+  double alpha[2] = { 2.5e-3, 5.0e-3 };
   double theta[2];
 
   if (x <= 0.0 || x >= 1.0)

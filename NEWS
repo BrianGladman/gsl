@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** gsl_ran_dirichlet now handles smaller values of alpha[] without
+   underflow, avoiding a NaN in the returned value.
+
 ** The SVD routines now avoid underflow in the Schur decomposition for
 matrices with extremely small values <O(1e-150).
 

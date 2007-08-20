@@ -42,16 +42,70 @@
    Gavin E. Crooks <gec@compbio.berkeley.edu> (2002)
 */
 
+static void ran_dirichlet_small (const gsl_rng * r, const size_t K, const double alpha[], double theta[]);
+
 void
 gsl_ran_dirichlet (const gsl_rng * r, const size_t K,
                    const double alpha[], double theta[])
 {
   size_t i;
-  double norm = 0.0;
+  double norm = 0.0, umax = 0;
 
   for (i = 0; i < K; i++)
     {
       theta[i] = gsl_ran_gamma (r, alpha[i], 1.0);
+    }
+  
+  for (i = 0; i < K; i++)
+    {
+      norm += theta[i];
+    }
+
+  if (norm < GSL_SQRT_DBL_MIN)  /* Handle underflow */
+    {
+      ran_dirichlet_small (r, K, alpha, theta);
+      return;
+    }
+
+  for (i = 0; i < K; i++)
+    {
+      theta[i] /= norm;
+    }
+}
+
+
+/* When the values of alpha[] are small, scale the variates to avoid
+   underflow so that the result is not 0/0.  Note that the Dirichlet
+   distribution is defined by a ratio of gamma functions so we can
+   take out an arbitrary factor to keep the values in the range of
+   double precision. */
+
+static void 
+ran_dirichlet_small (const gsl_rng * r, const size_t K,
+                     const double alpha[], double theta[])
+{
+  size_t i;
+  double norm = 0.0, umax = 0;
+
+  for (i = 0; i < K; i++)
+    {
+      double u = log(gsl_rng_uniform_pos (r)) / alpha[i];
+      
+      theta[i] = u;
+
+      if (u > umax || i == 0) {
+        umax = u;
+      }
+    }
+  
+  for (i = 0; i < K; i++)
+    {
+      theta[i] = exp(theta[i] - umax);
+    }
+  
+  for (i = 0; i < K; i++)
+    {
+      theta[i] = theta[i] * gsl_ran_gamma (r, alpha[i] + 1.0, 1.0);
     }
 
   for (i = 0; i < K; i++)
@@ -64,6 +118,9 @@ gsl_ran_dirichlet (const gsl_rng * r, const size_t K,
       theta[i] /= norm;
     }
 }
+
+
+
 
 
 double

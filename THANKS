@@ -416,3 +416,5 @@ correct use of isfinite
 
 * Marco Lombardi <marco.lombardi@gmail.com> bug report for svd
 
+* I J Wilson <i.j.wilson@newcastle.ac.uk> bug report for dirichlet
+function

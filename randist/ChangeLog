@@ -1,3 +1,12 @@
+2007-08-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (integrate): perform the integration of the pdf with the
+	gsl_integration functions for accuracy (needed for dirichlet
+	distribution)
+
+	* dirichlet.c (ran_dirichlet_small): handle underflow for small
+	alpha[] values
+
 2007-02-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma.c (gsl_ran_gamma): avoid an unnecessary function call to
