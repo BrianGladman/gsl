@@ -1128,6 +1128,8 @@ void test_betainv (void) {
   TEST (gsl_cdf_beta_Qinv, ( 3.11356165874561958e-3, 1.2, 1.3), 0.99, TEST_TOL6);
   TEST (gsl_cdf_beta_Qinv, ( 1.56207166932365759e-4, 1.2, 1.3), 0.999, TEST_TOL6);
   TEST (gsl_cdf_beta_Qinv, ( 0.0, 1.2, 1.3), 1.0, TEST_TOL6);
+
+  TEST (gsl_cdf_beta_Pinv, ( 0.025, 2133.0, 7868.0),  0.20530562929915865457928654, TEST_TOL6);
 }
 
 void test_gammainv (void) {
