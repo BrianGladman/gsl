@@ -223,48 +223,11 @@ a pointer to the parameters of the function.
 @end deftp
 
 @noindent
-The following example function defines a simple paraboloid with two
-parameters,
+The following example function defines a simple two-dimensional
+paraboloid with five parameters,
 
 @example
-/* Paraboloid centered on (dp[0],dp[1]) */
-
-double
-my_f (const gsl_vector *v, void *params)
-@{
-  double x, y;
-  double *dp = (double *)params;
-  
-  x = gsl_vector_get(v, 0);
-  y = gsl_vector_get(v, 1);
- 
-  return 10.0 * (x - dp[0]) * (x - dp[0]) +
-           20.0 * (y - dp[1]) * (y - dp[1]) + 30.0; 
-@}
-
-/* The gradient of f, df = (df/dx, df/dy). */
-void 
-my_df (const gsl_vector *v, void *params, 
-       gsl_vector *df)
-@{
-  double x, y;
-  double *dp = (double *)params;
-  
-  x = gsl_vector_get(v, 0);
-  y = gsl_vector_get(v, 1);
- 
-  gsl_vector_set(df, 0, 20.0 * (x - dp[0]));
-  gsl_vector_set(df, 1, 40.0 * (y - dp[1]));
-@}
-
-/* Compute both f and df together. */
-void 
-my_fdf (const gsl_vector *x, void *params, 
-        double *f, gsl_vector *df) 
-@{
-  *f = my_f(x, params); 
-  my_df(x, params, df);
-@}
+@verbatiminclude examples/multiminfn.c
 @end example
 
 @noindent
@@ -273,12 +236,14 @@ The function can be initialized using the following code,
 @example
 gsl_multimin_function_fdf my_func;
 
-double p[2] = @{ 1.0, 2.0 @}; /* center at (1,2) */
+/* Paraboloid center at (1,2), scale factors (10, 20), 
+   minimum value 30 */
+double p[5] = @{ 1.0, 2.0, 10.0, 20.0, 30.0 @}; 
 
+my_func.n = 2;  /* number of function components */
 my_func.f = &my_f;
 my_func.df = &my_df;
 my_func.fdf = &my_fdf;
-my_func.n = 2;
 my_func.params = (void *)p;
 @end example
 
@@ -509,63 +474,7 @@ non-zero. The main program is given below, it requires the example
 function given earlier in this chapter.
 
 @smallexample
-int
-main (void)
-@{
-  size_t iter = 0;
-  int status;
-
-  const gsl_multimin_fdfminimizer_type *T;
-  gsl_multimin_fdfminimizer *s;
-
-  /* Position of the minimum (1,2). */
-  double par[2] = @{ 1.0, 2.0 @};
-
-  gsl_vector *x;
-  gsl_multimin_function_fdf my_func;
-
-  my_func.f = &my_f;
-  my_func.df = &my_df;
-  my_func.fdf = &my_fdf;
-  my_func.n = 2;
-  my_func.params = &par;
-
-  /* Starting point, x = (5,7) */
-  x = gsl_vector_alloc (2);
-  gsl_vector_set (x, 0, 5.0);
-  gsl_vector_set (x, 1, 7.0);
-
-  T = gsl_multimin_fdfminimizer_conjugate_fr;
-  s = gsl_multimin_fdfminimizer_alloc (T, 2);
-
-  gsl_multimin_fdfminimizer_set (s, &my_func, x, 0.01, 1e-4);
-
-  do
-    @{
-      iter++;
-      status = gsl_multimin_fdfminimizer_iterate (s);
-
-      if (status)
-        break;
-
-      status = gsl_multimin_test_gradient (s->gradient, 1e-3);
-
-      if (status == GSL_SUCCESS)
-        printf ("Minimum found at:\n");
-
-      printf ("%5d %.5f %.5f %10.5f\n", iter,
-              gsl_vector_get (s->x, 0), 
-              gsl_vector_get (s->x, 1), 
-              s->f);
-
-    @}
-  while (status == GSL_CONTINUE && iter < 100);
-
-  gsl_multimin_fdfminimizer_free (s);
-  gsl_vector_free (x);
-
-  return 0;
-@}
+@verbatiminclude examples/multimin.c
 @end smallexample  
 
 @noindent
@@ -575,21 +484,7 @@ terminates when the norm of the gradient has been reduced below
 0.001. The output of the program is shown below,
 
 @example
-         x       y         f
-    1 4.99629 6.99072  687.84780
-    2 4.98886 6.97215  683.55456
-    3 4.97400 6.93501  675.01278
-    4 4.94429 6.86073  658.10798
-    5 4.88487 6.71217  625.01340
-    6 4.76602 6.41506  561.68440
-    7 4.52833 5.82083  446.46694
-    8 4.05295 4.63238  261.79422
-    9 3.10219 2.25548   75.49762
-   10 2.85185 1.62963   67.03704
-   11 2.19088 1.76182   45.31640
-   12 0.86892 2.02622   30.18555
-Minimum found at:
-   13 1.00000 2.00000   30.00000
+@verbatiminclude examples/multimin.out
 @end example
 
 @noindent
@@ -611,73 +506,7 @@ Here is another example using the Nelder-Mead Simplex algorithm to
 minimize the same example object function, as above.
 
 @smallexample
-int 
-main(void)
-@{
-  size_t np = 2;
-  double par[2] = @{1.0, 2.0@};
-
-  const gsl_multimin_fminimizer_type *T = 
-    gsl_multimin_fminimizer_nmsimplex;
-  gsl_multimin_fminimizer *s = NULL;
-  gsl_vector *ss, *x;
-  gsl_multimin_function minex_func;
-
-  size_t iter = 0, i;
-  int status;
-  double size;
-
-  /* Initial vertex size vector */
-  ss = gsl_vector_alloc (np);
-
-  /* Set all step sizes to 1 */
-  gsl_vector_set_all (ss, 1.0);
-
-  /* Starting point */
-  x = gsl_vector_alloc (np);
-
-  gsl_vector_set (x, 0, 5.0);
-  gsl_vector_set (x, 1, 7.0);
-
-  /* Initialize method and iterate */
-  minex_func.f = &my_f;
-  minex_func.n = np;
-  minex_func.params = (void *)&par;
-
-  s = gsl_multimin_fminimizer_alloc (T, np);
-  gsl_multimin_fminimizer_set (s, &minex_func, x, ss);
-
-  do
-    @{
-      iter++;
-      status = gsl_multimin_fminimizer_iterate(s);
-      
-      if (status) 
-        break;
-
-      size = gsl_multimin_fminimizer_size (s);
-      status = gsl_multimin_test_size (size, 1e-2);
-
-      if (status == GSL_SUCCESS)
-        @{
-          printf ("converged to minimum at\n");
-        @}
-
-      printf ("%5d ", iter);
-      for (i = 0; i < np; i++)
-        @{
-          printf ("%10.3e ", gsl_vector_get (s->x, i));
-        @}
-      printf ("f() = %7.3f size = %.3f\n", s->fval, size);
-    @}
-  while (status == GSL_CONTINUE && iter < 100);
-  
-  gsl_vector_free(x);
-  gsl_vector_free(ss);
-  gsl_multimin_fminimizer_free (s);
-
-  return status;
-@}
+@verbatiminclude examples/nmsimplex.c
 @end smallexample
 
 @noindent
@@ -685,32 +514,7 @@ The minimum search stops when the Simplex size drops to 0.01. The output is
 shown below.
 
 @example
-    1  6.500e+00  5.000e+00 f() = 512.500 size = 1.082
-    2  5.250e+00  4.000e+00 f() = 290.625 size = 1.372
-    3  5.250e+00  4.000e+00 f() = 290.625 size = 1.372
-    4  5.500e+00  1.000e+00 f() = 252.500 size = 1.372
-    5  2.625e+00  3.500e+00 f() = 101.406 size = 1.823
-    6  3.469e+00  1.375e+00 f() = 98.760  size = 1.526
-    7  1.820e+00  3.156e+00 f() = 63.467  size = 1.105
-    8  1.820e+00  3.156e+00 f() = 63.467  size = 1.105
-    9  1.016e+00  2.812e+00 f() = 43.206  size = 1.105
-   10  2.041e+00  2.008e+00 f() = 40.838  size = 0.645
-   11  1.236e+00  1.664e+00 f() = 32.816  size = 0.645
-   12  1.236e+00  1.664e+00 f() = 32.816  size = 0.447
-   13  5.225e-01  1.980e+00 f() = 32.288  size = 0.447
-   14  1.103e+00  2.073e+00 f() = 30.214  size = 0.345
-   15  1.103e+00  2.073e+00 f() = 30.214  size = 0.264
-   16  1.103e+00  2.073e+00 f() = 30.214  size = 0.160
-   17  9.864e-01  1.934e+00 f() = 30.090  size = 0.132
-   18  9.190e-01  1.987e+00 f() = 30.069  size = 0.092
-   19  1.028e+00  2.017e+00 f() = 30.013  size = 0.056
-   20  1.028e+00  2.017e+00 f() = 30.013  size = 0.046
-   21  1.028e+00  2.017e+00 f() = 30.013  size = 0.033
-   22  9.874e-01  1.985e+00 f() = 30.006  size = 0.028
-   23  9.846e-01  1.995e+00 f() = 30.003  size = 0.023
-   24  1.007e+00  2.003e+00 f() = 30.001  size = 0.012
-converged to minimum at                  
-   25  1.007e+00  2.003e+00 f() = 30.001  size = 0.010
+@verbatiminclude examples/nmsimplex.out
 @end example
 
 @noindent
