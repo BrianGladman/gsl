@@ -343,5 +343,9 @@ approximately equal and the function returns 0. Otherwise if @math{x <
 y}, the function returns @math{-1}, or if @math{x > y}, the function returns
 @math{+1}.
 
+Note that @math{x} and @math{y} are compared to relative accuracy, so
+this function is not suitable for testing whether a value is
+approximately zero. 
+
 The implementation is based on the package @code{fcmp} by T.C. Belding.
 @end deftypefun
