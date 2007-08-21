@@ -528,7 +528,10 @@ matrix @var{A} contain the matrix @math{L}. The upper triangular part
 of the input matrix contains @math{L^T}, the diagonal terms being
 identical for both @math{L} and @math{L^T}.  If the matrix is not
 positive-definite then the decomposition will fail, returning the
-error code @code{GSL_EDOM}.
+error code @code{GSL_EDOM}.  
+
+When testing whether a matrix is positive-definite, disable the error
+handler first to avoid triggering an error.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})

@@ -239,6 +239,7 @@ void gsl_matrix_float_minmax_index (const gsl_matrix_float * m, size_t * imin, s
 int gsl_matrix_float_isnull (const gsl_matrix_float * m);
 int gsl_matrix_float_ispos (const gsl_matrix_float * m);
 int gsl_matrix_float_isneg (const gsl_matrix_float * m);
+int gsl_matrix_float_isnonneg (const gsl_matrix_float * m);
 
 int gsl_matrix_float_add (gsl_matrix_float * a, const gsl_matrix_float * b);
 int gsl_matrix_float_sub (gsl_matrix_float * a, const gsl_matrix_float * b);

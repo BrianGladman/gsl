@@ -1,5 +1,7 @@
 * What will be new in gsl-1.10:
 
+** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
+
 ** gsl_ran_dirichlet now handles smaller values of alpha[] without
    underflow, avoiding a NaN in the returned value.
 

@@ -741,10 +741,10 @@ indices are returned.
 @deftypefun int gsl_vector_isnull (const gsl_vector * @var{v})
 @deftypefunx int gsl_vector_ispos (const gsl_vector * @var{v})
 @deftypefunx int gsl_vector_isneg (const gsl_vector * @var{v})
-These functions return 1 if all the elements of the vector @var{v}
-are zero, strictly positive, or strictly negative respectively, and 0
-otherwise.  To test for a non-negative vector, use the expression
-@code{!gsl_vector_isneg(v)}.
+@deftypefunx int gsl_vector_isnonneg (const gsl_vector * @var{v})
+These functions return 1 if all the elements of the vector @var{v} are
+zero, strictly positive, strictly negative, or non-negative
+respectively, and 0 otherwise.
 @end deftypefun
 
 @node Example programs for vectors
@@ -1540,11 +1540,12 @@ row-major order.
 @deftypefun int gsl_matrix_isnull (const gsl_matrix * @var{m})
 @deftypefunx int gsl_matrix_ispos (const gsl_matrix * @var{m})
 @deftypefunx int gsl_matrix_isneg (const gsl_matrix * @var{m})
+@deftypefunx int gsl_matrix_isnonneg (const gsl_matrix * @var{m})
 These functions return 1 if all the elements of the matrix @var{m} are
-zero, strictly positive, or strictly negative respectively, and 0
-otherwise. To test for a non-negative matrix, use the expression
-@code{!gsl_matrix_isneg(m)}.  To test whether a matrix is
-positive-definite, use the Cholesky decomposition (@pxref{Cholesky Decomposition}).
+zero, strictly positive, strictly negative, or non-negative
+respectively, and 0 otherwise. To test whether a matrix is
+positive-definite, use the Cholesky decomposition (@pxref{Cholesky
+Decomposition}).
 @end deftypefun
 
 @node Example programs for matrices

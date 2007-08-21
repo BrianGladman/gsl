@@ -163,6 +163,7 @@ int gsl_vector_int_add_constant (gsl_vector_int * a, const double x);
 int gsl_vector_int_isnull (const gsl_vector_int * v);
 int gsl_vector_int_ispos (const gsl_vector_int * v);
 int gsl_vector_int_isneg (const gsl_vector_int * v);
+int gsl_vector_int_isnonneg (const gsl_vector_int * v);
 
 #ifdef HAVE_INLINE
 

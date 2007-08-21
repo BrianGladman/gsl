@@ -163,6 +163,7 @@ int gsl_vector_long_double_add_constant (gsl_vector_long_double * a, const doubl
 int gsl_vector_long_double_isnull (const gsl_vector_long_double * v);
 int gsl_vector_long_double_ispos (const gsl_vector_long_double * v);
 int gsl_vector_long_double_isneg (const gsl_vector_long_double * v);
+int gsl_vector_long_double_isnonneg (const gsl_vector_long_double * v);
 
 #ifdef HAVE_INLINE
 

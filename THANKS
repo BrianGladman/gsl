@@ -418,3 +418,6 @@ correct use of isfinite
 
 * I J Wilson <i.j.wilson@newcastle.ac.uk> bug report for dirichlet
 function
+
+* Justin Lenzo <j-lenzo@northwestern.edu> bug reports for
+vector/matrix tests.
