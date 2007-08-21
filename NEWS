@@ -1,5 +1,9 @@
 * What will be new in gsl-1.10:
 
+** Fixed gsl_cdf_beta_Pinv(P,a,b) for large values of a,b, previously
+   spurious values could be returned when the iteration did not
+   converge.
+
 ** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
 
 ** gsl_ran_dirichlet now handles smaller values of alpha[] without

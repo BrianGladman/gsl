@@ -421,3 +421,6 @@ function
 
 * Justin Lenzo <j-lenzo@northwestern.edu> bug reports for
 vector/matrix tests.
+
+* Sebastian Queiﬂer <sebastian@queisser-net.de> bug report for
+gsl_cdf_beta_Pinv

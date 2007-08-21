@@ -45,6 +45,28 @@
 
 #include "error.h"
 
+static double 
+bisect (double x, double P, double a, double b)
+{
+  double x0 = 0, x1 = 1, Px;
+
+  while (fabs(x1 - x0) > 0.01) {
+    Px = gsl_cdf_beta_P (x, a, b);
+    if (fabs(Px - P) < 0.01) {
+      /* return as soon as approximation is good enough, including on
+         the first iteration */
+      return x;  
+    } else if (Px < P) {
+      x0 = x;
+    } else if (Px > P) {
+      x1 = x;
+    }
+    x = 0.5 * (x0 + x1);
+  }
+  return x;
+}  
+
+
 double
 gsl_cdf_beta_Pinv (const double P, const double a, const double b)
 {
@@ -107,6 +129,9 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
       x = mean;
     }
 
+  /* Do bisection to get closer */
+  x = bisect (x, P, a, b);
+
   {
     double lambda, dP, phi;
     unsigned int n = 0;
@@ -151,7 +176,6 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
 
   end:
     return x;
-
   }
 }
 

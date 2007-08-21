@@ -1,3 +1,8 @@
+2007-08-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* betainv.c (gsl_cdf_beta_Pinv): added bisection method to improve
+	initial approximations
+
 2007-01-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* betainv.c (gsl_cdf_beta_Pinv): avoid generating a NaN for lx > 0

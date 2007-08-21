@@ -231,31 +231,4 @@ to:
 Ed Smith-Rowland
 
 ----------------------------------------------------------------------
-BUG#60 -- accuracy problem with gsl_cdf_beta_Pinv
-
-From: Sebastian Queiﬂer <sebastian@queisser-net.de>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] gsl_cdf_beta_Pinv gives wrong result
-Date: Sun, 10 Jun 2007 20:07:22 +0200
-
-I'm using the GSL library version 1.9 (Debian package libgsl0-1.9-3).
-It seems to me that gsl_cdf_beta_Pinv yields strange results:
-
-gsl_cdf_beta_Pinv(0.025, 2133, 10000 - 2133 + 1)
-result: 0.172583 (the correct result should be 0.2053056)
-
-#include <gsl/gsl_cdf.h>
-#include <iostream>
-
-using namespace std;
-
-int main(int argc, char *argv[])
-{
-    int x = 2133;
-    int n = 10000;
-    cout << gsl_cdf_beta_Pinv(0.025, x, n - x + 1) << endl;
-    return 0;
-}
-
-----------------------------------------------------------------------
 Last assigned bug number = 62
