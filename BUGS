@@ -183,19 +183,4 @@ implemented.
 DONE for beta function, still needed for incomplete beta function.
 
 ----------------------------------------------------------------------
-BUG#57 - incorrect rounding error in deriv functions?
-
-Needs a factor of 1/h^2 ?
-
-From: Rene Girard <rg_linux1@yahoo.ca>
-To: help-gsl@gnu.org
-Subject: [Help-gsl] Origin of 2nd round-off term "dy" in function	central_deriv.c
-
-double dy = GSL_MAX(fabs(r3),fabs(r5))* fabs(x)*GSL_DBL_EPSILON
-
-I understand the rest of the function very well and I am able to
-derive the equation for the optimal stepsize "h_opt" in function
-"gsl_deriv_central.c"; however, I am trying to look for a derivation
-for the expression of "dy".
-----------------------------------------------------------------------
 Last assigned bug number = 62

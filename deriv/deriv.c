@@ -46,7 +46,9 @@ central_deriv (const gsl_function * f, double x, double h,
   double e3 = (fabs (fp1) + fabs (fm1)) * GSL_DBL_EPSILON;
   double e5 = 2.0 * (fabs (fph) + fabs (fmh)) * GSL_DBL_EPSILON + e3;
 
-  double dy = GSL_MAX (fabs (r3), fabs (r5)) * fabs (x) * GSL_DBL_EPSILON;
+  /* The next term is due to finite precision in x+h = O (eps * x) */
+
+  double dy = GSL_MAX (fabs (r3 / h), fabs (r5 / h)) *(fabs (x) / h) * GSL_DBL_EPSILON;
 
   /* The truncation error in the r5 approximation itself is O(h^4).
      However, for safety, we estimate the error from r5-r3, which is
@@ -118,7 +120,9 @@ forward_deriv (const gsl_function * f, double x, double h,
 
   double e4 = 2 * 20.67 * (fabs (f4) + fabs (f3) + fabs (f2) + fabs (f1)) * GSL_DBL_EPSILON;
 
-  double dy = GSL_MAX (fabs (r2), fabs (r4)) * fabs (x) * GSL_DBL_EPSILON;
+  /* The next term is due to finite precision in x+h = O (eps * x) */
+
+  double dy = GSL_MAX (fabs (r2 / h), fabs (r4 / h)) * fabs (x / h) * GSL_DBL_EPSILON;
 
   /* The truncation error in the r4 approximation itself is O(h^3).
      However, for safety, we estimate the error from r4-r2, which is

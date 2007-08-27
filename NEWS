@@ -1,5 +1,9 @@
 * What will be new in gsl-1.10:
 
+** Fixed the round-off error estimate in gsl_deriv_{central,backwards,
+   forward} to correctly account for numerical error in the step-size
+   h.
+
 ** Fixed gsl_cdf_beta_Pinv, gsl_cdf_gamma_Pinv, gsl_cdf_beta_Pinv to
    avoid returning spurious values for large parameters when the
    iteration did not converge.  If the iteration cannot converge,
