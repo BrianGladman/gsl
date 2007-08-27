@@ -1,21 +1,24 @@
 * What will be new in gsl-1.10:
 
+** The function gsl_multiroot_fdjacobian now returns the error code
+GSL_ESING if any of the columns of the computed jacobian matrix are
+zero.  This may occur if the step size of the derivative is too small.
+
 ** Extended the function gsl_sf_beta_inc(a,b,x) to handle cases where
-   a<0 or b<0.
+a<0 or b<0.
 
 ** Fixed the round-off error estimate in gsl_deriv_{central,backwards,
-   forward} to correctly account for numerical error in the step-size
-   h.
+forward} to correctly account for numerical error in the step-size h.
 
 ** Fixed gsl_cdf_beta_Pinv, gsl_cdf_gamma_Pinv, gsl_cdf_beta_Pinv to
-   avoid returning spurious values for large parameters when the
-   iteration did not converge.  If the iteration cannot converge,
-   GSL_NAN is returned.
+avoid returning spurious values for large parameters when the
+iteration did not converge.  If the iteration cannot converge, GSL_NAN
+is returned.
 
 ** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
 
 ** gsl_ran_dirichlet now handles smaller values of alpha[] without
-   underflow, avoiding a NaN in the returned value.
+underflow, avoiding a NaN in the returned value.
 
 ** The SVD routines now avoid underflow in the Schur decomposition for
 matrices with extremely small values <O(1e-150).

@@ -1,3 +1,9 @@
+2007-08-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fdjac.c (gsl_multiroot_fdjacobian): detect null columns (dx too
+	small)
+	(gsl_multiroot_fdjacobian): avoid memory leak for x1,f1
+
 2007-01-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fsolver.c (gsl_multiroot_fsolver_set): made vector argument x

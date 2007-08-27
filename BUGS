@@ -103,33 +103,6 @@ $ ./a.out
 9.999999999999985567e-01
 
 
-----------------------------------------------------------------------
-BUG#49 - fdjacobian step size causes problems
-
-From: eknecronzontas <eknecronzontas@yahoo.com>
-To: help-gsl@gnu.org
-Subject: [Help-gsl] Bug (or not?) in multiroots/fdjacobian.c
-Date: Thu, 8 Jun 2006 13:38:49 -0700 (PDT)
-
-Since I can't quite decide if this is a bug, I'll post
-it here first...
-
-The stepsize for finite-differencing in
-gsl-1.8/multiroots/fdjacobian.c is specified by the
-lines
-
-> double xj = gsl_vector_get (x, j);
-> double dx = epsrel * fabs (xj);
-
-This is, of course mathematically correct.
-Nevertheless, the behavior is less than ideal if one
-of the elements of the vector 'x' is sufficiently
-small. This occurs often if one component of the root
-happens to be zero. If this occurs, then 'dx' can be
-so small that one of the columns of the Jacobian is
-identically zero. This immediately leads to NAN's
-which are not easy to trace.
-
 ---------------------------------------------------------------------
 BUG#50 - gsl_linalg_solve_symm_tridiag requires positive definite matrix
 
