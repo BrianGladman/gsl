@@ -896,6 +896,13 @@ matrix @var{A} is destroyed by the Householder transformations.
 @section Tridiagonal Systems
 @cindex tridiagonal systems
 
+The functions described in this section efficiently solve symmetric,
+non-symmetric and cyclic tridiagonal systems with minimal storage.
+Note that the current implementations of these functions use a variant
+of Cholesky decomposition, so the tridiagonal matrix must be positive
+definite.  For non-positive definite matrices, the functions return
+the error code @code{GSL_ESING}.
+
 @deftypefun int gsl_linalg_solve_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{f}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the general @math{N}-by-@math{N} system @math{A x =
 b} where @var{A} is tridiagonal (@c{$N\geq 2$}
@@ -922,6 +929,7 @@ A = ( d_0 e_0  0   0  )
     (  0   0  f_2 d_3 )
 @end example
 @end ifinfo
+@noindent
 @end deftypefun
 
 @deftypefun int gsl_linalg_solve_symm_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -949,8 +957,6 @@ A = ( d_0 e_0  0   0  )
     (  0   0  e_2 d_3 )
 @end example
 @end ifinfo
-The current implementation uses a variant of Cholesky decomposition
-which can cause division by zero if the matrix is not positive definite.
 @end deftypefun
 
 @deftypefun int gsl_linalg_solve_cyc_tridiag (const gsl_vector * @var{diag}, const gsl_vector * @var{e}, const gsl_vector * @var{f}, const gsl_vector * @var{b}, gsl_vector * @var{x})

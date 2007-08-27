@@ -43,7 +43,7 @@ solve_tridiag(
   double x[], size_t x_stride,
   size_t N)
 {
-  int status;
+  int status = GSL_SUCCESS;
   double *gamma = (double *) malloc (N * sizeof (double));
   double *alpha = (double *) malloc (N * sizeof (double));
   double *c = (double *) malloc (N * sizeof (double));
@@ -51,7 +51,7 @@ solve_tridiag(
 
   if (gamma == 0 || alpha == 0 || c == 0 || z == 0)
     {
-      status = GSL_ENOMEM;
+      GSL_ERROR("failed to allocate working space", GSL_ENOMEM);
     }
   else
     {
@@ -65,10 +65,17 @@ solve_tridiag(
       alpha[0] = diag[0];
       gamma[0] = offdiag[0] / alpha[0];
 
+      if (alpha[0] == 0) {
+        status = GSL_EZERODIV;
+      }
+
       for (i = 1; i < N - 1; i++)
         {
           alpha[i] = diag[d_stride * i] - offdiag[o_stride*(i - 1)] * gamma[i - 1];
           gamma[i] = offdiag[o_stride * i] / alpha[i];
+          if (alpha[i] == 0) {
+            status = GSL_EZERODIV;
+          }
         }
 
       if (N > 1) 
@@ -96,8 +103,6 @@ solve_tridiag(
               x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)];
             }
         }
-
-      status = GSL_SUCCESS;
     }
 
   if (z != 0)
@@ -108,6 +113,10 @@ solve_tridiag(
     free (alpha);
   if (gamma != 0)
     free (gamma);
+
+  if (status == GSL_EZERODIV) {
+    GSL_ERROR ("matrix must be positive definite", status);
+  }
 
   return status;
 }
@@ -129,13 +138,13 @@ solve_tridiag_nonsym(
   double x[], size_t x_stride,
   size_t N)
 {
-  int status;
+  int status = GSL_SUCCESS;
   double *alpha = (double *) malloc (N * sizeof (double));
   double *z = (double *) malloc (N * sizeof (double));
 
   if (alpha == 0 || z == 0)
     {
-      status = GSL_ENOMEM;
+      GSL_ERROR("failed to allocate working space", GSL_ENOMEM);
     }
   else
     {
@@ -148,16 +157,18 @@ solve_tridiag_nonsym(
        */
       alpha[0] = diag[0];
       z[0] = rhs[0];
+      
+      if (alpha[0] == 0) {
+        status = GSL_EZERODIV;
+      }
 
       for (i = 1; i < N; i++)
         {
           const double t = belowdiag[b_stride*(i - 1)]/alpha[i-1];
           alpha[i] = diag[d_stride*i] - t*abovediag[a_stride*(i - 1)];
           z[i] = rhs[r_stride*i] - t*z[i-1];
-          /* FIXME!!! */
           if (alpha[i] == 0) {
             status = GSL_EZERODIV;
-            goto solve_tridiag_nonsym_END;
           }
         }
 
@@ -170,15 +181,16 @@ solve_tridiag_nonsym(
               x[x_stride * i] = (z[i] - abovediag[a_stride*i] * x[x_stride * (i + 1)])/alpha[i];
             }
         }
-
-      status = GSL_SUCCESS;
     }
 
-solve_tridiag_nonsym_END:
   if (z != 0)
     free (z);
   if (alpha != 0)
     free (alpha);
+
+  if (status == GSL_EZERODIV) {
+    GSL_ERROR ("matrix must be positive definite", status);
+  }
 
   return status;
 }
@@ -202,7 +214,7 @@ solve_cyc_tridiag(
   double x[], size_t x_stride,
   size_t N)
 {
-  int status;
+  int status = GSL_SUCCESS;
   double * delta = (double *) malloc (N * sizeof (double));
   double * gamma = (double *) malloc (N * sizeof (double));
   double * alpha = (double *) malloc (N * sizeof (double));
@@ -211,7 +223,7 @@ solve_cyc_tridiag(
 
   if (delta == 0 || gamma == 0 || alpha == 0 || c == 0 || z == 0)
     {
-      status = GSL_ENOMEM;
+      GSL_ERROR("failed to allocate working space", GSL_ENOMEM);
     }
   else
     {
@@ -230,11 +242,18 @@ solve_cyc_tridiag(
       gamma[0] = offdiag[0] / alpha[0];
       delta[0] = offdiag[o_stride * (N-1)] / alpha[0];
 
+      if (alpha[0] == 0) {
+        status = GSL_EZERODIV;
+      }
+
       for (i = 1; i < N - 2; i++)
         {
           alpha[i] = diag[d_stride * i] - offdiag[o_stride * (i-1)] * gamma[i - 1];
           gamma[i] = offdiag[o_stride * i] / alpha[i];
           delta[i] = -delta[i - 1] * offdiag[o_stride * (i-1)] / alpha[i];
+          if (alpha[i] == 0) {
+            status = GSL_EZERODIV;
+          }
         }
 
       for (i = 0; i < N - 2; i++)
@@ -275,8 +294,6 @@ solve_cyc_tridiag(
               x[x_stride * i] = c[i] - gamma[i] * x[x_stride * (i + 1)] - delta[i] * x[x_stride * (N - 1)];
             }
         }
-
-      status = GSL_SUCCESS;
     }
 
   if (z != 0)
@@ -289,6 +306,10 @@ solve_cyc_tridiag(
     free (gamma);
   if (delta != 0)
     free (delta);
+
+  if (status == GSL_EZERODIV) {
+    GSL_ERROR ("matrix must be positive definite", status);
+  }
 
   return status;
 }
@@ -312,19 +333,20 @@ int solve_cyc_tridiag_nonsym(
   double x[], size_t x_stride,
   size_t N)
 {
-  int status;
+  int status = GSL_SUCCESS;
   double *alpha = (double *) malloc (N * sizeof (double));
   double *zb = (double *) malloc (N * sizeof (double));
   double *zu = (double *) malloc (N * sizeof (double));
   double *w = (double *) malloc (N * sizeof (double));
-  double beta;
 
   if (alpha == 0 || zb == 0 || zu == 0 || w == 0)
     {
-      status = GSL_ENOMEM;
+      GSL_ERROR("failed to allocate working space", GSL_ENOMEM);
     }
   else
     {
+      double beta;
+
       /* Bidiagonalization (eliminating belowdiag)
          & rhs update
          diag' = alpha
@@ -342,6 +364,9 @@ int solve_cyc_tridiag_nonsym(
       zu[0] = beta;
       alpha[0] = diag[0] - beta;
 
+      if (alpha[0] == 0) {
+        status = GSL_EZERODIV;
+      }
 
       { 
         size_t i;
@@ -354,7 +379,6 @@ int solve_cyc_tridiag_nonsym(
           /* FIXME!!! */
           if (alpha[i] == 0) {
             status = GSL_EZERODIV;
-            goto solve_cyc_tridiag_nonsym_END;
           }
         }
       }
@@ -370,10 +394,8 @@ int solve_cyc_tridiag_nonsym(
         /* FIXME!!! */
         if (alpha[i] == 0) {
           status = GSL_EZERODIV;
-          goto solve_cyc_tridiag_nonsym_END;
         }
       }
-
 
       /* backsubstitution */
       {
@@ -394,7 +416,6 @@ int solve_cyc_tridiag_nonsym(
         /* FIXME!!! */
         if (vw + 1 == 0) {
           status = GSL_EZERODIV;
-          goto solve_cyc_tridiag_nonsym_END;
         }
 
         {
@@ -403,11 +424,8 @@ int solve_cyc_tridiag_nonsym(
             x[i] -= vx/(1 + vw)*w[i];
         }
       }
-
-      status = GSL_SUCCESS;
     }
 
-solve_cyc_tridiag_nonsym_END:
   if (zb != 0)
     free (zb);
   if (zu != 0)
@@ -416,6 +434,10 @@ solve_cyc_tridiag_nonsym_END:
     free (w);
   if (alpha != 0)
     free (alpha);
+
+  if (status == GSL_EZERODIV) {
+    GSL_ERROR ("matrix must be positive definite", status);
+  }
 
   return status;
 }
@@ -446,6 +468,7 @@ gsl_linalg_solve_symm_tridiag(
                            rhs->data, rhs->stride,
                            solution->data, solution->stride,
                            diag->size);
+
     }
 }
 

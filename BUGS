@@ -143,6 +143,8 @@ $ ./a.out
 -0.60009
  1.39219
 
+AUG 2007: We now return an error code for this case.  To return a solution
+we would need to do a permutation, see slatec/dgtsl.f
 
 ----------------------------------------------------------------------
 Last assigned bug number = 62
