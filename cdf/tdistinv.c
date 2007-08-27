@@ -130,11 +130,15 @@ gsl_cdf_tdist_Pinv (const double P, const double nu)
       if (fabs (step) > 1e-10 * fabs (x))
         goto start;
     }
+    
+  end:
+    if (fabs(dP) > GSL_SQRT_DBL_EPSILON * P)
+      {
+        GSL_ERROR_VAL("inverse failed to converge", GSL_EFAILED, GSL_NAN);
+      }
+    
+    return x;
   }
-
-end:
-
-  return x;
 }
 
 double

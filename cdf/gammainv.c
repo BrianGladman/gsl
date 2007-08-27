@@ -99,10 +99,14 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
         goto start;
     }
 
+  end:
+    if (fabs(dP) > GSL_SQRT_DBL_EPSILON * P)
+      {
+        GSL_ERROR_VAL("inverse failed to converge", GSL_EFAILED, GSL_NAN);
+      }
+    
+    return b * x;
   }
-
-end:
-  return b * x;
 }
 
 double

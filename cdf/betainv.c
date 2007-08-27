@@ -46,13 +46,13 @@
 #include "error.h"
 
 static double 
-bisect (double x, double P, double a, double b)
+bisect (double x, double P, double a, double b, double xtol, double Ptol)
 {
   double x0 = 0, x1 = 1, Px;
 
-  while (fabs(x1 - x0) > 0.01) {
+  while (fabs(x1 - x0) > xtol) {
     Px = gsl_cdf_beta_P (x, a, b);
-    if (fabs(Px - P) < 0.01) {
+    if (fabs(Px - P) < Ptol) {
       /* return as soon as approximation is good enough, including on
          the first iteration */
       return x;  
@@ -130,7 +130,7 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
     }
 
   /* Do bisection to get closer */
-  x = bisect (x, P, a, b);
+  x = bisect (x, P, a, b, 0.01, 0.01);
 
   {
     double lambda, dP, phi;
@@ -175,6 +175,12 @@ gsl_cdf_beta_Pinv (const double P, const double a, const double b)
     }
 
   end:
+
+    if (fabs(dP) > GSL_SQRT_DBL_EPSILON * P)
+      {
+        GSL_ERROR_VAL("inverse failed to converge", GSL_EFAILED, GSL_NAN);
+      }
+
     return x;
   }
 }

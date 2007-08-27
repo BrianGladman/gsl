@@ -1,8 +1,9 @@
 * What will be new in gsl-1.10:
 
-** Fixed gsl_cdf_beta_Pinv(P,a,b) for large values of a,b, previously
-   spurious values could be returned when the iteration did not
-   converge.
+** Fixed gsl_cdf_beta_Pinv, gsl_cdf_gamma_Pinv, gsl_cdf_beta_Pinv to
+   avoid returning spurious values for large parameters when the
+   iteration did not converge.  If the iteration cannot converge,
+   GSL_NAN is returned.
 
 ** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
 
