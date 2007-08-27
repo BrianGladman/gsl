@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** Extended the function gsl_sf_beta_inc(a,b,x) to handle cases where
+   a<0 or b<0.
+
 ** Fixed the round-off error estimate in gsl_deriv_{central,backwards,
    forward} to correctly account for numerical error in the step-size
    h.

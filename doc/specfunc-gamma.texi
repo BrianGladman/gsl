@@ -304,8 +304,11 @@ being negative integers.
 These routines compute the normalized incomplete Beta function
 @math{I_x(a,b)=B_x(a,b)/B(a,b)} where @c{$B_x(a,b) = \int_0^x t^{a-1} (1-t)^{b-1} dt$}
 @math{B_x(a,b) = \int_0^x t^@{a-1@} (1-t)^@{b-1@} dt}
-for @math{a > 0}, @math{b > 0}, and @c{$0 \le x \le 1$}
-@math{0 <= x <= 1}. 
+for @c{$0 \le x \le 1$}
+@math{0 <= x <= 1}.   For @math{a > 0}, @math{b > 0} the value is computed using
+a continued fraction expansion.  For all other values it is computed using 
+the relation @c{$I_x(a,b,x) = (1/a) x^a {}_2F_1(a,1-b,a+1,x)/B(a,b)$}
+@math{I_x(a,b,x) = (1/a) x^a 2F1(a,1-b,a+1,x)/B(a,b)}.
 @end deftypefun
 
 

@@ -29,6 +29,12 @@
 #include "error.h"
 #include "check.h"
 
+static double
+isnegint (const double x) 
+{
+  return (x < 0) && (x == floor(x));
+}
+
 static
 int
 beta_cont_frac(
@@ -103,10 +109,13 @@ gsl_sf_beta_inc_e(
   gsl_sf_result * result
   )
 {
-  if(a <= 0.0 || b <= 0.0 || x < 0.0 || x > 1.0) {
+  if(x < 0.0 || x > 1.0) {
     DOMAIN_ERROR(result);
-  }
-  else if(x == 0.0) {
+  } else if (isnegint(a) || isnegint(b)) {
+    DOMAIN_ERROR(result);
+  } else if (isnegint(a+b)) { 
+    DOMAIN_ERROR(result);
+  } else if(x == 0.0) {
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;
@@ -115,8 +124,21 @@ gsl_sf_beta_inc_e(
     result->val = 1.0;
     result->err = 0.0;
     return GSL_SUCCESS;
-  }
-  else {
+  } else if (a <= 0 || b <= 0) {
+    gsl_sf_result f, beta;
+    int stat;
+    const int stat_f = gsl_sf_hyperg_2F1_e(a, 1-b, a+1, x, &f);
+    const int stat_beta = gsl_sf_beta_e(a, b, &beta);
+    double prefactor = (pow(x, a) / a);
+    result->val = prefactor * f.val / beta.val;
+    result->err = fabs(prefactor) * f.err/ fabs(beta.val) + fabs(result->val/beta.val) * beta.err;
+
+    stat = GSL_ERROR_SELECT_2(stat_f, stat_beta);
+    if(stat == GSL_SUCCESS) {
+      CHECK_UNDERFLOW(result);
+    }
+    return stat;
+  } else {
     gsl_sf_result ln_beta;
     gsl_sf_result ln_x;
     gsl_sf_result ln_1mx;
