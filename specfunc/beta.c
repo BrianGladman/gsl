@@ -107,7 +107,7 @@ gsl_sf_lnbeta_sgn_e(const double x, const double y, gsl_sf_result * result, doub
     *sgn = sgx * sgy * sgxy;
     result->val  = lgx.val + lgy.val - lgxy.val;
     result->err  = lgx.err + lgy.err + lgxy.err;
-    result->err += GSL_DBL_EPSILON * (fabs(lgx.val) + fabs(lgy.val) + fabs(lgxy.val));
+    result->err += 2.0 * GSL_DBL_EPSILON * (fabs(lgx.val) + fabs(lgy.val) + fabs(lgxy.val));
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_ERROR_SELECT_3(stat_gx, stat_gy, stat_gxy);
   }

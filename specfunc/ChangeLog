@@ -1,3 +1,11 @@
+2007-08-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* psi.c (psi_complex_rhp): accumulate error, to allow for
+	cancellation effects
+
+	* beta.c (gsl_sf_lnbeta_sgn_e): added missing factor of 2 for
+	error.
+
 2007-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* beta_inc.c (gsl_sf_beta_inc_e): handle cases where a<=0 or b<=0
