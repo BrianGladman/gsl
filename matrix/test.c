@@ -19,7 +19,7 @@
 
 #include <config.h>
 
-#if (!GSL_RANGE_CHECK) && HAVE_INLINE
+#if (!GSL_RANGE_CHECK) && defined(HAVE_INLINE)
 #undef GSL_RANGE_CHECK
 #define GSL_RANGE_CHECK 1
 #endif
