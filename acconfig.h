@@ -1,25 +1,13 @@
 @BOTTOM@
 
-/* Defined if this is an official release */
-#undef RELEASED
-
-/* Define if you have inline */
-#undef HAVE_INLINE
-
 /* Define if you need to hide the static definitions of inline functions */
 #undef HIDE_INLINE_STATIC
-
-/* Defined if you have ansi EXIT_SUCCESS and EXIT_FAILURE in stdlib.h */
-#undef HAVE_EXIT_SUCCESS_AND_FAILURE
 
 /* Use 0 and 1 for EXIT_SUCCESS and EXIT_FAILURE if we don't have them */
 #if !HAVE_EXIT_SUCCESS_AND_FAILURE
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 #endif
-
-/* Define this if printf can handle %Lf for long double */
-#undef HAVE_PRINTF_LONGDOUBLE
 
 /* Define one of these if you have a known IEEE arithmetic interface */
 #undef HAVE_GNUSPARC_IEEE_INTERFACE
@@ -40,12 +28,6 @@
 #undef HAVE_DARWIN_IEEE_INTERFACE
 #undef HAVE_DARWIN86_IEEE_INTERFACE
 
-/* Define this if IEEE comparisons work correctly (e.g. NaN != NaN) */
-#undef HAVE_IEEE_COMPARISONS
-
-/* Define this if IEEE denormalized numbers are available */
-#undef HAVE_IEEE_DENORMALS
-
 /* Define a rounding function which moves extended precision values
    out of registers and rounds them to double-precision. This should
    be used *sparingly*, in places where it is necessary to keep
@@ -59,8 +41,6 @@
    It carries a penalty even when the program is running in double
    precision mode unless you compile a separate version of the
    library with HAVE_EXTENDED_PRECISION_REGISTERS turned off. */
-
-#undef HAVE_EXTENDED_PRECISION_REGISTERS
 
 #if HAVE_EXTENDED_PRECISION_REGISTERS
 #define GSL_COERCE_DBL(x) (gsl_coerce_double(x))
@@ -104,10 +84,6 @@
 
 #if !HAVE_DECL_ISINF
 #define isinf gsl_isinf
-#endif
-
-#if !HAVE_DECL_ISFINITE
-#define isfinite gsl_finite
 #endif
 
 #if !HAVE_DECL_FINITE
