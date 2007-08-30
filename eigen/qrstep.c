@@ -1,7 +1,7 @@
 /* remove off-diagonal elements which are neglegible compared with the
    neighboring diagonal elements */
 
-inline static void
+static void
 chop_small_elements (const size_t N, const double d[], double sd[])
 {
   double d_i = d[0];
@@ -60,13 +60,17 @@ trailing_eigenvalue (const size_t n, const double d[], const double sd[])
 
   double mu;
 
-  if (dt >= 0)
+  if (dt > 0)
     {
-      mu = tb - (tab * tab) / (dt + hypot (dt, tab));
+      mu = tb - tab * (tab / (dt + hypot (dt, tab)));
+    }
+  else if (dt == 0) 
+    {
+      mu = tb - fabs(tab);
     }
   else
     {
-      mu = tb + (tab * tab) / ((-dt) + hypot (dt, tab));
+      mu = tb + tab * (tab / ((-dt) + hypot (dt, tab)));
     }
 
   return mu;

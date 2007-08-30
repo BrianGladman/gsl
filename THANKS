@@ -424,3 +424,6 @@ vector/matrix tests.
 
 * Sebastian Queiﬂer <sebastian@queisser-net.de> bug report for
 gsl_cdf_beta_Pinv
+
+* Andries Brouwer <Andries.Brouwer@cwi.nl> bug report for
+underflow in symmetric eigenvalues

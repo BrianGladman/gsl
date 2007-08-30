@@ -1,3 +1,10 @@
+2007-08-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_eigen_symm): added new test case for underflow
+
+	* qrstep.c (trailing_eigenvalue): handle underflow for small tab,
+	also handle dt==0 directly.
+
 2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* testgen.c (main): use gsl_finite instead of finite

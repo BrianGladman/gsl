@@ -245,11 +245,17 @@ test_eigen_symm_results (const gsl_matrix * A,
 {
   const size_t N = A->size1;
   size_t i, j;
+  double emax = 0;
 
   gsl_vector * x = gsl_vector_alloc(N);
   gsl_vector * y = gsl_vector_alloc(N);
 
   /* check eigenvalues */
+  for (i = 0; i < N; i++) 
+    {
+      double ei = gsl_vector_get (eval, i);
+      if (fabs(ei) > emax) emax = fabs(ei);
+    }
 
   for (i = 0; i < N; i++)
     {
@@ -262,7 +268,7 @@ test_eigen_symm_results (const gsl_matrix * A,
         {
           double xj = gsl_vector_get (x, j);
           double yj = gsl_vector_get (y, j);
-          gsl_test_rel(yj, ei * xj,  1e8 * GSL_DBL_EPSILON, 
+          gsl_test_abs(yj, ei * xj,  emax * 1e8 * GSL_DBL_EPSILON, 
                        "%s, eigenvalue(%d,%d), %s", desc, i, j, desc2);
         }
     }
@@ -311,7 +317,7 @@ test_eigen_symm_matrix(const gsl_matrix * m, size_t count,
   gsl_matrix_memcpy(A, m);
 
   gsl_eigen_symmv(A, evalv, evec, wv);
-  test_eigen_symm_results(m, evalv, evec, count, "random", "unsorted");
+  test_eigen_symm_results(m, evalv, evec, count, desc, "unsorted");
 
   gsl_matrix_memcpy(A, m);
 
@@ -322,19 +328,19 @@ test_eigen_symm_matrix(const gsl_matrix * m, size_t count,
   gsl_vector_memcpy(y, evalv);
   gsl_sort_vector(x);
   gsl_sort_vector(y);
-  test_eigenvalues_real(y, x, "symm, random", "unsorted");
+  test_eigenvalues_real(y, x, desc, "unsorted");
 
   gsl_eigen_symmv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_ASC);
-  test_eigen_symm_results(m, evalv, evec, count, "random", "val/asc");
+  test_eigen_symm_results(m, evalv, evec, count, desc, "val/asc");
 
   gsl_eigen_symmv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_DESC);
-  test_eigen_symm_results(m, evalv, evec, count, "random", "val/desc");
+  test_eigen_symm_results(m, evalv, evec, count, desc, "val/desc");
 
   gsl_eigen_symmv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigen_symm_results(m, evalv, evec, count, "random", "abs/asc");
+  test_eigen_symm_results(m, evalv, evec, count, desc, "abs/asc");
 
   gsl_eigen_symmv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_DESC);
-  test_eigen_symm_results(m, evalv, evec, count, "random", "abs/desc");
+  test_eigen_symm_results(m, evalv, evec, count, desc, "abs/desc");
 
   gsl_matrix_free(A);
   gsl_vector_free(eval);
@@ -360,7 +366,7 @@ test_eigen_symm(void)
       for (i = 0; i < 5; ++i)
         {
           create_random_symm_matrix(A, r, -10, 10);
-          test_eigen_symm_matrix(A, i, "random");
+          test_eigen_symm_matrix(A, i, "symm random");
         }
 
       gsl_matrix_free(A);
@@ -385,6 +391,43 @@ test_eigen_symm(void)
     m = gsl_matrix_view_array (dat2, 4, 4);
     test_eigen_symm_matrix(&m.matrix, 0, "symm(4) diag");
   }
+
+  { 
+    double dat[27*27] = {
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,
+	0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,
+	0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    };
+        
+    gsl_matrix_view m;
+    m = gsl_matrix_view_array (dat, 27, 27);
+    test_eigen_symm_matrix(&m.matrix, 0, "symm(27)");
+  };
+
 } /* test_eigen_symm() */
 
 /******************************************
@@ -472,7 +515,7 @@ test_eigen_herm_matrix(const gsl_matrix_complex * m, size_t count,
   gsl_matrix_complex_memcpy(A, m);
 
   gsl_eigen_hermv(A, evalv, evec, wv);
-  test_eigen_herm_results(m, evalv, evec, count, "random", "unsorted");
+  test_eigen_herm_results(m, evalv, evec, count, desc, "unsorted");
 
   gsl_matrix_complex_memcpy(A, m);
 
@@ -483,19 +526,19 @@ test_eigen_herm_matrix(const gsl_matrix_complex * m, size_t count,
   gsl_vector_memcpy(y, evalv);
   gsl_sort_vector(x);
   gsl_sort_vector(y);
-  test_eigenvalues_real(y, x, "herm, random", "unsorted");
+  test_eigenvalues_real(y, x, desc, "unsorted");
 
   gsl_eigen_hermv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_ASC);
-  test_eigen_herm_results(m, evalv, evec, count, "random", "val/asc");
+  test_eigen_herm_results(m, evalv, evec, count, desc, "val/asc");
 
   gsl_eigen_hermv_sort(evalv, evec, GSL_EIGEN_SORT_VAL_DESC);
-  test_eigen_herm_results(m, evalv, evec, count, "random", "val/desc");
+  test_eigen_herm_results(m, evalv, evec, count, desc, "val/desc");
 
   gsl_eigen_hermv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_ASC);
-  test_eigen_herm_results(m, evalv, evec, count, "random", "abs/asc");
+  test_eigen_herm_results(m, evalv, evec, count, desc, "abs/asc");
 
   gsl_eigen_hermv_sort(evalv, evec, GSL_EIGEN_SORT_ABS_DESC);
-  test_eigen_herm_results(m, evalv, evec, count, "random", "abs/desc");
+  test_eigen_herm_results(m, evalv, evec, count, desc, "abs/desc");
 
   gsl_matrix_complex_free(A);
   gsl_vector_free(eval);
@@ -521,7 +564,7 @@ test_eigen_herm(void)
       for (i = 0; i < 5; ++i)
         {
           create_random_herm_matrix(A, r, -10, 10);
-          test_eigen_herm_matrix(A, i, "random");
+          test_eigen_herm_matrix(A, i, "herm random");
         }
 
       gsl_matrix_complex_free(A);
@@ -586,7 +629,7 @@ test_eigen_nonsymm_results (const gsl_matrix * m,
 
       /* check that eigenvector is normalized */
       gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
-                   "nonsymm(N=%u,cnt=%u), %s, normalized(%d), %s", N, count, i, desc, desc2);
+                   "nonsymm(N=%u,cnt=%u), %s, normalized(%d), %s", N, count, desc, i, desc2);
 
       gsl_vector_complex_memcpy(x, &vi.vector);
 
@@ -736,7 +779,7 @@ test_eigen_gensymm_results (const gsl_matrix * A,
       /* check that eigenvector is normalized */
       gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
                    "gensymm(N=%u,cnt=%u), %s, normalized(%d), %s", N, count,
-                   i, desc, desc2);
+                   desc, i, desc2);
 
       gsl_vector_memcpy(z, &vi.vector);
 
@@ -867,7 +910,7 @@ test_eigen_genherm_results (const gsl_matrix_complex * A,
       /* check that eigenvector is normalized */
       gsl_test_rel(norm, 1.0, N * GSL_DBL_EPSILON,
                    "genherm(N=%u,cnt=%u), %s, normalized(%d), %s", N, count,
-                   i, desc, desc2);
+                   desc, i, desc2);
 
       /* compute y = A z */
       gsl_blas_zgemv (CblasNoTrans, GSL_COMPLEX_ONE, A, &vi.vector, GSL_COMPLEX_ZERO, y);

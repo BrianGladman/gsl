@@ -1,5 +1,7 @@
 * What will be new in gsl-1.10:
 
+** Improved handling of underflow in gsl_eigen_symm.
+
 ** The function gsl_multiroot_fdjacobian now returns the error code
 GSL_ESING if any of the columns of the computed jacobian matrix are
 zero.  This may occur if the step size of the derivative is too small.
