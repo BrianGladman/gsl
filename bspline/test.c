@@ -66,7 +66,6 @@ test_bspline (gsl_bspline_workspace * bw)
 int
 main (int argc, char **argv)
 {
-  int status = 0;
   size_t order, breakpoints, i;
 
   gsl_ieee_env_setup ();
