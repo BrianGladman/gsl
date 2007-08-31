@@ -407,6 +407,8 @@ gsl_sf_ellint_P_e(double phi, double k, double n, gsl_mode_t mode, gsl_sf_result
     const int rjstatus = gsl_sf_ellint_RJ_e(x, y, 1.0, 1.0 + n*sin2_phi, mode, &rj);
     result->val  = sin_phi * rf.val - n/3.0*sin3_phi * rj.val;
     result->err  = GSL_DBL_EPSILON * fabs(sin_phi * rf.val);
+    result->err += fabs(sin_phi * rf.err);
+    result->err += n/3.0 * GSL_DBL_EPSILON * fabs(sin3_phi*rj.val);
     result->err += n/3.0 * fabs(sin3_phi*rj.err);
     if (nc == 0) {
       return GSL_ERROR_SELECT_2(rfstatus, rjstatus);
