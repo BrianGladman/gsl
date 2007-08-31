@@ -1700,8 +1700,8 @@ int test_laguerre(void)
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e5, 2.5, 2.5, &r),   -0.41491680394598644969113795e5, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e5+1, 2.5, 2.5, &r), -0.41629446949552321027514888e5, TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e6+1, 2.5, 2.5, &r), -0.48017961545391273151977118e6, TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (5e6+1, 2.5, 2.5, &r), -0.15174037401611122446089494e7, TEST_TOL4, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_laguerre_n_e, (8e6+1, 2.5, 2.5, &r),  0.63251509472091810994286362e6, TEST_TOL6, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (5e6+1, 2.5, 2.5, &r), -0.15174037401611122446089494e7, TEST_TOL6, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_laguerre_n_e, (8e6+1, 2.5, 2.5, &r),  0.63251509472091810994286362e6, TEST_SNGL, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e7+1, 2.5, 2.5, &r),  0.15299484685632983178033887e7, TEST_SNGL, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e8+1, 2.5, 2.5, &r),  0.23645341644922756725290777e8, TEST_SNGL, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_laguerre_n_e, (1e9+1, 2.5, 2.5, &r), -0.17731002248958790286185878e8, 100*TEST_SNGL, GSL_SUCCESS);
@@ -2207,7 +2207,7 @@ int test_trig(void)
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e12), 5.625560548042800009446, TEST_SNGL);
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e9), 5.7057898836782013075, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e12), 0.6576247591367864674792517289, TEST_SNGL);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (-1e12), 0.6576247591367864674792517289, 100*TEST_SNGL);
 
 #ifdef EXTENDED
   TEST_SF_THETA(s, gsl_sf_angle_restrict_pos_e, (1e15), 2.1096981170701125979, TEST_TOL1);
@@ -2221,7 +2221,7 @@ int test_trig(void)
   TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (1e12, &r), 5.625560548042800009446, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e9, &r), 5.7057898836782013075, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_pos_err_e, (-1e12, &r), 0.6576247591367864674792517289, 100*TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
   TEST_SF (s, gsl_sf_angle_restrict_pos_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
@@ -2240,10 +2240,10 @@ int test_trig(void)
 
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e9), 0.5773954235013851694, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e12), -0.6576247591367864674792517289, TEST_SNGL);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e12), -0.6576247591367864674792517289, 100*TEST_SNGL);
 
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e9), -0.5773954235013851694, TEST_TOL1);
-  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e12), 0.6576247591367864674792517289, TEST_SNGL);
+  TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (-1e12), 0.6576247591367864674792517289, 100*TEST_SNGL);
 
 #ifdef EXTENDED
   TEST_SF_THETA(s, gsl_sf_angle_restrict_symm_e, (1e15), 2.1096981170701125979, TEST_TOL1);
@@ -2255,10 +2255,10 @@ int test_trig(void)
 
 
   TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e9, &r), 0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e12, &r), -0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (1e12, &r), -0.6576247591367864674792517289, 100*TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e9, &r), -0.5773954235013851694, TEST_TOL1, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e12, &r), 0.6576247591367864674792517289, TEST_SNGL, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_angle_restrict_symm_err_e, (-1e12, &r), 0.6576247591367864674792517289, 100*TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);
   TEST_SF (s, gsl_sf_angle_restrict_symm_err_e, (-1e15, &r), GSL_NAN, TEST_TOL1, GSL_ELOSS);

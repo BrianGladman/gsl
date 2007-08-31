@@ -282,7 +282,7 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.1, 1000000.5, 1001000.5, &r), -5.30066488697455e-04, TEST_TOL3, GSL_SUCCESS);
 
-  TEST_SF(s, gsl_sf_hyperg_1F1_e, (1.5, 1000000.5, 0.8e6 + 0.5, &r), 11.18001288977894650469927615, TEST_TOL3, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (1.5, 1000000.5, 0.8e6 + 0.5, &r), 11.18001288977894650469927615, TEST_TOL4, GSL_SUCCESS);
 
   /* U for integer parameters */
 
