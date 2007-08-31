@@ -49,7 +49,7 @@ gsl_ran_dirichlet (const gsl_rng * r, const size_t K,
                    const double alpha[], double theta[])
 {
   size_t i;
-  double norm = 0.0, umax = 0;
+  double norm = 0.0;
 
   for (i = 0; i < K; i++)
     {

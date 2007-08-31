@@ -26,7 +26,6 @@
 #define NVAL 100
 
 static double c[NVAL];
-static double s[NVAL];
 
 int test_mathieu(void)
 {
