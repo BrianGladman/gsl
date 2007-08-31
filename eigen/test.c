@@ -207,12 +207,21 @@ test_eigenvalues_real (const gsl_vector *eval, const gsl_vector * eval2,
   const size_t N = eval->size;
   size_t i;
 
+  double emax = 0;
+
+  /* check eigenvalues */
+  for (i = 0; i < N; i++) 
+    {
+      double ei = gsl_vector_get (eval, i);
+      if (fabs(ei) > emax) emax = fabs(ei);
+    }
+
   for (i = 0; i < N; i++)
     {
       double ei = gsl_vector_get (eval, i);
       double e2i = gsl_vector_get (eval2, i);
       e2i = chop_subnormals(e2i);
-      gsl_test_rel(ei, e2i, 1.0e8*GSL_DBL_EPSILON, 
+      gsl_test_abs(ei, e2i, emax * 1e8 * GSL_DBL_EPSILON, 
                    "%s, direct eigenvalue(%d), %s",
                    desc, i, desc2);
     }
