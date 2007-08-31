@@ -1,4 +1,6 @@
 
+* dlae2.f  has better handling of 2x2 eigenvalues than our qrstep.c
+
 * Document Jacobi eigen function, in particular that it only works for
 symmetric matrices.
 
