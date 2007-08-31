@@ -2,6 +2,10 @@
 
 	* Makefile.am (test_SOURCES): added missing file results2.h
 
+2007-08-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* Makefile.am (test_SOURCES): added missing file results2.h
+
 2007-08-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* math.c (gsl_complex_pow): handle (0,0)^(0,0) (x,y)^(1,0)
