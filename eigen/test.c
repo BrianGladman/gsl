@@ -41,6 +41,13 @@
  * common test code                       *
  ******************************************/
 
+double 
+chop_subnormals (double x) 
+{
+  /* Chop any subnormal values */
+  return fabs(x) < GSL_DBL_MIN ? 0 : x;
+}
+
 void
 create_random_symm_matrix(gsl_matrix *m, gsl_rng *r, int lower, int upper)
 {
@@ -204,6 +211,7 @@ test_eigenvalues_real (const gsl_vector *eval, const gsl_vector * eval2,
     {
       double ei = gsl_vector_get (eval, i);
       double e2i = gsl_vector_get (eval2, i);
+      e2i = chop_subnormals(e2i);
       gsl_test_rel(ei, e2i, 1.0e8*GSL_DBL_EPSILON, 
                    "%s, direct eigenvalue(%d), %s",
                    desc, i, desc2);
@@ -268,7 +276,8 @@ test_eigen_symm_results (const gsl_matrix * A,
         {
           double xj = gsl_vector_get (x, j);
           double yj = gsl_vector_get (y, j);
-          gsl_test_abs(yj, ei * xj,  emax * 1e8 * GSL_DBL_EPSILON, 
+	  double eixj = chop_subnormals(ei * xj);
+          gsl_test_abs(yj, eixj,  emax * 1e8 * GSL_DBL_EPSILON, 
                        "%s, eigenvalue(%d,%d), %s", desc, i, j, desc2);
         }
     }
