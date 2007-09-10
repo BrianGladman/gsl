@@ -9,13 +9,6 @@ followed by QR reduction. The nonsymmetric algorithm is the Francis QR
 double-shift.  The generalized nonsymmetric algorithm is the QZ method due
 to Moler and Stewart.
 
-@cindex LAPACK, recommended for linear algebra
-These routines are intended for ``small'' systems where simple algorithms are
-acceptable.  Anyone interested in finding eigenvalues and eigenvectors of
-large matrices will want to use the sophisticated routines found in
-@sc{lapack}. The Fortran version of @sc{lapack} is recommended as the
-standard package for large-scale linear algebra.
-
 The functions described in this chapter are declared in the header file
 @file{gsl_eigen.h}.
 
@@ -818,7 +811,9 @@ Problems," SIAM J. Numer. Anal., Vol 10, No 2, 1973.
 @end itemize
 
 @noindent
-The @sc{lapack} library is described in,
+@cindex LAPACK
+Eigensystem routines for very large matrices can be found in the
+Fortran library @sc{lapack}. The @sc{lapack} library is described in,
 
 @itemize @asis
 @item

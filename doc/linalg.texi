@@ -7,12 +7,7 @@ This chapter describes functions for solving linear systems.  The
 library provides linear algebra operations which operate directly on
 the @code{gsl_vector} and @code{gsl_matrix} objects.  These routines
 use the standard algorithms from Golub & Van Loan's @cite{Matrix
-Computations}.
-
-@cindex LAPACK, recommended for linear algebra
-When dealing with very large systems the routines found in @sc{lapack}
-should be considered.  These support specialized data representations
-and other optimizations.
+Computations} with Level-1 and Level-2 BLAS calls for efficiency.
 
 The functions described in this chapter are declared in the header file
 @file{gsl_linalg.h}.
