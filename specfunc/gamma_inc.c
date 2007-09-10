@@ -429,12 +429,13 @@ gamma_inc_CF(double a, double x, gsl_sf_result * result)
 {
   gsl_sf_result F;
   gsl_sf_result pre;
+  const double am1lgx = (a-1.0)*log(x);
   const int stat_F = gamma_inc_F_CF(a, x, &F);
-  const int stat_E = gsl_sf_exp_e((a-1.0)*log(x) - x, &pre);
+  const int stat_E = gsl_sf_exp_err_e(am1lgx - x, GSL_DBL_EPSILON*fabs(am1lgx), &pre);
 
   result->val = F.val * pre.val;
   result->err = fabs(F.err * pre.val) + fabs(F.val * pre.err);
-  result->err += (2.0 + fabs(a)) * GSL_DBL_EPSILON * fabs(result->val);
+  result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
 
   return GSL_ERROR_SELECT_2(stat_F, stat_E);
 }
