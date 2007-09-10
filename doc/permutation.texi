@@ -92,7 +92,7 @@ permutations.
 @deftypefun size_t gsl_permutation_get (const gsl_permutation * @var{p}, const size_t @var{i})
 This function returns the value of the @var{i}-th element of the
 permutation @var{p}.  If @var{i} lies outside the allowed range of 0 to
-@math{@var{n}-1} then the error handler is invoked and 0 is returned.
+@math{@var{n}-1} then the error handler is invoked and 0 is returned.  @inlinefn{}
 @end deftypefun
 
 @deftypefun int gsl_permutation_swap (gsl_permutation * @var{p}, const size_t @var{i}, const size_t @var{j})

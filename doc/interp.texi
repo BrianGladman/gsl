@@ -144,7 +144,7 @@ immediately.
 @deftypefun size_t gsl_interp_bsearch (const double @var{x_array}[], double @var{x}, size_t @var{index_lo}, size_t @var{index_hi})
 This function returns the index @math{i} of the array @var{x_array} such
 that @code{x_array[i] <= x < x_array[i+1]}.  The index is searched for
-in the range [@var{index_lo},@var{index_hi}].
+in the range [@var{index_lo},@var{index_hi}].  @inlinefn{}
 @end deftypefun
 
 @deftypefun {gsl_interp_accel *} gsl_interp_accel_alloc (void)
@@ -159,7 +159,7 @@ This function performs a lookup action on the data array @var{x_array}
 of size @var{size}, using the given accelerator @var{a}.  This is how
 lookups are performed during evaluation of an interpolation.  The
 function returns an index @math{i} such that @code{x_array[i] <= x <
-x_array[i+1]}.
+x_array[i+1]}.  @inlinefn{}
 @end deftypefun
 
 @deftypefun void gsl_interp_accel_free (gsl_interp_accel* @var{acc})

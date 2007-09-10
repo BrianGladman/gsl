@@ -26,7 +26,7 @@ file @code{gsl_poly.h}.
 This function evaluates the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
 @math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}} using
-Horner's method for stability.  The function is inlined when possible.
+Horner's method for stability.  @inlinefn{}
 @end deftypefun
 
 @node Divided Difference Representation of Polynomials
@@ -49,7 +49,7 @@ divided-differences of (@var{xa},@var{ya}) are stored in the array
 @deftypefun double gsl_poly_dd_eval (const double @var{dd}[], const double @var{xa}[], const size_t @var{size}, const double @var{x})
 This function evaluates the polynomial stored in divided-difference form
 in the arrays @var{dd} and @var{xa} of length @var{size} at the point
-@var{x}.
+@var{x}.  @inlinefn{}
 @end deftypefun
 
 @deftypefun int gsl_poly_dd_taylor (double @var{c}[], double @var{xp}, const double @var{dd}[], const double @var{xa}[], size_t @var{size}, double @var{w}[])

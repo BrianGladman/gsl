@@ -139,8 +139,8 @@ This function frees all the memory associated with the generator
 @section Sampling from a random number generator
 
 The following functions return uniformly distributed random numbers,
-either as integers or double precision floating point numbers.  To obtain
-non-uniform distributions @pxref{Random Number Distributions}.
+either as integers or double precision floating point numbers.  @inlinefns{}
+To obtain non-uniform distributions @pxref{Random Number Distributions}.  
 
 @deftypefun {unsigned long int} gsl_rng_get (const gsl_rng * @var{r})
 This function returns a random integer from the generator @var{r}.  The

@@ -237,9 +237,10 @@ available as @code{gsl_sf_pow_int_e}.
 @deftypefunx double gsl_pow_8 (const double @var{x})
 @deftypefunx double gsl_pow_9 (const double @var{x})
 These functions can be used to compute small integer powers @math{x^2},
-@math{x^3}, etc. efficiently. The functions will be inlined when
-possible so that use of these functions should be as efficient as
-explicitly writing the corresponding product expression.
+@math{x^3}, etc. efficiently. The functions will be inlined when 
+@code{HAVE_INLINE} is defined, so that use of these functions 
+should be as efficient as explicitly writing the corresponding 
+product expression.
 @end deftypefun
 
 @example

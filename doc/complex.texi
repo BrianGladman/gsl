@@ -61,7 +61,7 @@ be mapped correctly onto packed complex arrays.
 
 @deftypefun gsl_complex gsl_complex_rect (double @var{x}, double @var{y})
 This function uses the rectangular cartesian components
-(@var{x},@var{y}) to return the complex number @math{z = x + i y}.
+(@var{x},@var{y}) to return the complex number @math{z = x + i y}.  @inlinefn{}
 @end deftypefun
 
 @deftypefun gsl_complex gsl_complex_polar (double @var{r}, double @var{theta})
