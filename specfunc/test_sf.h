@@ -39,7 +39,7 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
 
 
 #ifndef TEST_FACTOR
-#if RELEASED
+#ifdef RELEASED
 #define TEST_FACTOR 100.0  
 #else
 #define TEST_FACTOR 1.0
@@ -47,7 +47,7 @@ int test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val,
 #endif
 
 #ifndef TEST_SIGMA
-#if RELEASED
+#ifdef RELEASED
 #define TEST_SIGMA 1.5  
 #else
 #define TEST_SIGMA 1.0
