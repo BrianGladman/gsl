@@ -141,7 +141,7 @@ If you get the error,
 you can try building the library with a larger linker
 table-of-contents by setting LDFLAGS before compilation,
 
-   LDFLAGS="-Wl,-bbigtoc" ./configure
+   ./configure LDFLAGS="-Wl,-bbigtoc" 
 
 On older versions of AIX (e.g. 4.2) the size of the command-line is
 limited to 24kb, which causes linking to fail (due to the large number
@@ -194,7 +194,7 @@ The default mode of the HP-UX C compiler does not use ANSI C.
 To compile GSL you need to select ANSI C mode with the following
 configuration option:
 
-      CFLAGS="-Ae"  ./configure
+      ./configure CFLAGS="-Ae"  
 
 To switch on optimization use CFLAGS="-Ae -O".
 
@@ -209,7 +209,7 @@ sys/ will fail without this option.  The older deprecated option
 The 32 bit IRIX compiler gives warnings about "long double" not being
 supported. These can be ignored or turned off with,
 
-   CFLAGS="-woff 728" ./configure
+   ./configure CFLAGS="-woff 728" 
 
 or 
 
@@ -225,7 +225,7 @@ parameter with the systune(1m) command.
 
 For 64-bit compilation use the following options,
 
-  CC=cc CFLAGS="-64" LDFLAGS="-64" ./configure
+  ./configure CC=cc CFLAGS="-64" LDFLAGS="-64" 
 
 or for gcc
 
