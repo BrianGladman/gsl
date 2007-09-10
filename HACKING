@@ -148,7 +148,7 @@ and -std=c89 -ansi -pedantic, now that GCC using c99 by default
 instead of c89.
 
 * Make sure the library passes "make check" with export
-GSL_TESTS_VERBOSE=1 (it is possible to get segfaults in the verbose
+GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose
 test output functions if they are called with the wrong format string,
 and these don't show up otherwise).
 
