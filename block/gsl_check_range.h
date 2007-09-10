@@ -1,6 +1,6 @@
 /* vector/gsl_check_range.h
  * 
- * Copyright (C) 2003, 2004 Brian Gough
+ * Copyright (C) 2003, 2004, 2007 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

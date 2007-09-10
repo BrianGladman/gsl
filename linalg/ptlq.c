@@ -1,6 +1,6 @@
 /* linalg/ptlq.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough
  * Copyright (C) 2004 Joerg Wensch, modifications for LQ. 
  * 
  * This program is free software; you can redistribute it and/or modify

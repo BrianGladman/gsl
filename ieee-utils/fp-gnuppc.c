@@ -1,6 +1,6 @@
 /* ieee-utils/fp-gnuppc.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Brian Gough, John Fisher
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Brian Gough, John Fisher
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

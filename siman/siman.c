@@ -1,5 +1,6 @@
 /* siman/siman.c
  * 
+ * Copyright (C) 2007 Brian Gough
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Mark Galassi
  * 
  * This program is free software; you can redistribute it and/or modify

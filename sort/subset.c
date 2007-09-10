@@ -1,6 +1,6 @@
 /* sort/subset.c  
  *
- * Copyright (C) 2001 Brian Gough
+ * Copyright (C) 2001, 2007 Brian Gough
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

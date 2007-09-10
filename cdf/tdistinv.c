@@ -1,5 +1,6 @@
 /* cdf/tdistinv.c
  *
+ * Copyright (C) 2007 Brian Gough
  * Copyright (C) 2002 Jason H. Stover.
  *
  * This program is free software; you can redistribute it and/or modify

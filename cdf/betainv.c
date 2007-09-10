@@ -1,7 +1,7 @@
 /* cdf/betainv.c
  *
  * Copyright (C) 2004 Free Software Foundation, Inc.
- * Copyright (C) 2006 Brian Gough
+ * Copyright (C) 2006, 2007 Brian Gough
  * Written by Jason H. Stover.
  * Modified for GSL by Brian Gough
  *

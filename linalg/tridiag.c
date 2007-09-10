@@ -1,7 +1,6 @@
 /* linalg/tridiag.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002, 2004 Gerard Jungman,
- * Brian Gough, David Necas
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2002, 2004, 2007 Gerard Jungman, Brian Gough, David Necas
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

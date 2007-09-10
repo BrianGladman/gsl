@@ -1,6 +1,6 @@
 /* randist/gauss.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2006 James Theiler, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2006, 2007 James Theiler, Brian Gough
  * Copyright (C) 2006 Charles Karney
  * 
  * This program is free software; you can redistribute it and/or modify
