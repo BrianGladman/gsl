@@ -47,7 +47,8 @@ double gsl_poly_eval(const double c[], const int len, const double x);
 
 #ifdef HAVE_INLINE
 extern inline
-double gsl_poly_eval(const double c[], const int len, const double x)
+double 
+gsl_poly_eval(const double c[], const int len, const double x)
 {
   int i;
   double ans = c[len-1];
@@ -67,7 +68,8 @@ gsl_poly_dd_eval (const double dd[], const double xa[], const size_t size, const
 
 #ifdef HAVE_INLINE
 extern inline
-double gsl_poly_dd_eval(const double dd[], const double xa[], const size_t size, const double x)
+double 
+gsl_poly_dd_eval(const double dd[], const double xa[], const size_t size, const double x)
 {
   size_t i;
   double y = dd[size - 1];
