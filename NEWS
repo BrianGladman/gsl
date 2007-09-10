@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** Added the new function gsl_sf_expint(n,x) for computing the n-th
+order exponential integral.
+
 ** The autoconf macro AM_PATH_GSL has been renamed to AX_PATH_GSL, to
 avoid conflicts with the autoconf namespace.
 

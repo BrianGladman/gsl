@@ -55,6 +55,15 @@ int     gsl_sf_expint_E2_e(const double x, gsl_sf_result * result);
 double  gsl_sf_expint_E2(const double x);
 
 
+/* E_n(x) := Re[ Integrate[ Exp[-xt]/t^n, {t,1,Infinity}] ]
+ *
+ * x != 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_expint_En_e(const int n, const double x, gsl_sf_result * result);
+double  gsl_sf_expint_En(const int n, const double x);
+
+
 /* E_1_scaled(x) := exp(x) E_1(x)
  *
  * x != 0.0
@@ -71,6 +80,14 @@ double  gsl_sf_expint_E1_scaled(const double x);
  */
 int     gsl_sf_expint_E2_scaled_e(const double x, gsl_sf_result * result);
 double  gsl_sf_expint_E2_scaled(const double x);
+
+/* E_n_scaled(x) := exp(x) E_n(x)
+ *
+ * x != 0.0
+ * exceptions: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+ */
+int     gsl_sf_expint_En_scaled_e(const int n, const double x, gsl_sf_result * result);
+double  gsl_sf_expint_En_scaled(const int n, const double x);
 
 
 /* Ei(x) := - PV Integrate[ Exp[-t]/t, {t,-x,Infinity}]

@@ -1,5 +1,8 @@
 2007-09-10  Brian Gough  <bjg@network-theory.co.uk>
 
+	* expint.c (gsl_sf_expint_En_e): added for support En(x)
+	(gsl_sf_expint_En_scaled_e): added for support En(x) scaled
+
 	* gamma_inc.c (gamma_inc_CF): include finite precision of log term
 
 2007-08-30  Brian Gough  <bjg@network-theory.co.uk>

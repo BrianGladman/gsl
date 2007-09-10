@@ -62,6 +62,29 @@ E_2(x) := \Re \int_1^\infty dt \exp(-xt)/t^2.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
+@deftypefun double gsl_sf_expint_En (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_expint_En_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
+These routines compute the exponential integral @math{E_n(x)} of order @math{n}, 
+@tex
+\beforedisplay
+$$
+E_n(x) := \Re \int_1^\infty dt \exp(-xt)/t^n.
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+E_n(x) := \Re \int_1^\infty dt \exp(-xt)/t^n.
+@end example
+
+@end ifinfo
+@noindent
+@comment Domain: x != 0.0
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
+@end deftypefun
+
+
 @node Ei(x)
 @subsection Ei(x)
 
