@@ -1,3 +1,7 @@
+2007-09-01  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl.m4: changed default name to AX_PATH_GSL
+
 2007-08-22  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: started moving definitions out of

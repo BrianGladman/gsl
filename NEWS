@@ -1,5 +1,8 @@
 * What will be new in gsl-1.10:
 
+** The autoconf macro AM_PATH_GSL has been renamed to AX_PATH_GSL, to
+avoid conflicts with the autoconf namespace.
+
 ** Improved handling of underflow in gsl_eigen_symm.
 
 ** The function gsl_multiroot_fdjacobian now returns the error code

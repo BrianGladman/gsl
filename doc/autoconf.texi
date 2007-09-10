@@ -9,9 +9,9 @@ commands should be placed in the @file{configure.ac} file to perform
 these tests,
 
 @example
-AC_CHECK_LIB(m,main)
-AC_CHECK_LIB(gslcblas,main)
-AC_CHECK_LIB(gsl,main)
+AC_CHECK_LIB([m],[cos])
+AC_CHECK_LIB([gslcblas],[cblas_dgemm])
+AC_CHECK_LIB([gsl],[gsl_blas_dgemm])
 @end example
 
 @noindent
@@ -20,9 +20,9 @@ It is important to check for @code{libm} and @code{libgslcblas} before
 are found the output during the configure stage looks like this,
 
 @example
-checking for main in -lm... yes
-checking for main in -lgslcblas... yes
-checking for main in -lgsl... yes
+checking for cos in -lm... yes
+checking for cblas_dgemm in -lgslcblas... yes
+checking for gsl_blas_dgemm in -lgsl... yes
 @end example
 
 @noindent
@@ -38,7 +38,7 @@ following line to your @file{configure.in} file instead of the tests
 above:
 
 @example
-AM_PATH_GSL(GSL_VERSION,
+AX_PATH_GSL(GSL_VERSION,
            [action-if-found],
            [action-if-not-found])
 @end example
@@ -64,7 +64,7 @@ libfoo_la_LDFLAGS = -lfoo $(GSL_LIBS) -lgslcblas
 @end example
 
 @noindent
-Note that the macro @code{AM_PATH_GSL} needs to use the C compiler so it
+Note that the macro @code{AX_PATH_GSL} needs to use the C compiler so it
 should appear in the @file{configure.in} file before the macro
 @code{AC_LANG_CPLUSPLUS} for programs that use C++.
 
