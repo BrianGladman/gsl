@@ -1,7 +1,23 @@
 * What will be new in gsl-1.10:
 
+** License updated to GNU GPL version 3.
+
+** Added support for generalized eigensystems
+
+** Added function gsl_stats_correlation to compute Pearson correlation
+of two datasets
+
 ** Added the new function gsl_sf_expint(n,x) for computing the n-th
 order exponential integral.
+
+** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
+
+** Added functions gsl_matrix_subrow and gsl_matrix_subcolumn
+
+** Extended Cholesky routines to complex matrices
+
+** Added support in gsl_ieee_set_mode for controlling SSE exceptions
+and rounding through the MXCSR control word on x86 processors.
 
 ** The autoconf macro AM_PATH_GSL has been renamed to AX_PATH_GSL, to
 avoid conflicts with the autoconf namespace.
@@ -23,8 +39,6 @@ avoid returning spurious values for large parameters when the
 iteration did not converge.  If the iteration cannot converge, GSL_NAN
 is returned.
 
-** Added functions gsl_vector_isnonneg and gsl_matrix_isnonneg.
-
 ** gsl_ran_dirichlet now handles smaller values of alpha[] without
 underflow, avoiding a NaN in the returned value.
 
@@ -40,21 +54,12 @@ previous values are cleared correctly.
 ** Improved the function gsl_log1p to prevent possible loss of
 accuracy caused by optimisations.
 
-** License updated to GNU GPL version 3.
-
-** Added functions gsl_matrix_subrow and gsl_matrix_subcolumn
-
-** Extended Cholesky routines to complex matrices
-
 ** Improved the convergence test in the Lambert functions to take
 account of finite precision and avoid possible failure to converge.
 
 ** The configure script no longer redefines finite() to isfinite() as
 a workaround for missing finite(), as this caused problems on Solaris.
 If finite() is not present gsl_finite() will be used instead.
-
-** Added support in gsl_ieee_set_mode for controlling SSE exceptions
-and rounding through the MXCSR control word on x86 processors.
 
 ** Improved the accuracy of the generalised laguerre polynomials for
 large n when alpha=0.
@@ -65,11 +70,6 @@ Previously the portable GSL implementations were used whenever the
 platform supported IEEE comparisons.  The portable gsl_isinf function
 now returns -1 instead of +1 for -Inf, in line with recent versions of
 the GNU C Library.
-
-** Added function gsl_stats_correlation to compute Pearson correlation
-of two datasets
-
-** Added support for generalized eigensystems
 
 * What is new in gsl-1.9:
 
