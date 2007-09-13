@@ -1,3 +1,8 @@
+2007-09-13  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ellint.c (gsl_sf_ellint_Pcomp_e): remove test for n <1, no
+	restriction needed
+
 2007-09-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* expint.c (gsl_sf_expint_En_e): added for support En(x)

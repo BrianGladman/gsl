@@ -540,11 +540,11 @@ gsl_sf_ellint_Ecomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
   }
 }
 
-/* [Carlson, Numer. Math. 33 (1979) 1, (4.6)] */
+/* [Carlson, Numer. Math. 33 (1979) 1, (4.3) phi=pi/2] */
 int
 gsl_sf_ellint_Pcomp_e(double k, double n, gsl_mode_t mode, gsl_sf_result * result)
 {
-  if(k*k >= 1.0 || n >= 1.0) {
+  if(k*k >= 1.0) {
     DOMAIN_ERROR(result);
   }
   /* FIXME: need to handle k ~=~ 1  cancellations */
