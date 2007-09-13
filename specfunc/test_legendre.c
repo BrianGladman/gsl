@@ -245,7 +245,10 @@ int test_legendre(void)
 
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (200, 1, -0.5, &r), 0.3302975570099492931418227583, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (140,135,1,&r), 0.0, TEST_TOL2, GSL_SUCCESS);
+
+#ifdef EXTENDED
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (140,135,0.99998689456491752,&r), -6.54265253269093276310395668335e-305, TEST_TOL6, GSL_SUCCESS);
+#endif
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array(100, 5, 0.5, L);
