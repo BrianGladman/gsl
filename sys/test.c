@@ -383,7 +383,7 @@ main (void)
        negative).  (This is all that C99 requires.) */
 
     s = gsl_isinf (-inf);  
-    gsl_test_int (s, -1, "gsl_isinf(-inf)");
+    gsl_test (s == 0, "gsl_isinf(-inf) is non-zero");
 
     s = gsl_isinf (nan);
     gsl_test_int (s, 0, "gsl_isinf(nan)");
