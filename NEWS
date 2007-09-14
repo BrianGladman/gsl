@@ -71,7 +71,7 @@ platform supported IEEE comparisons.  The portable gsl_isinf function
 now returns -1 instead of +1 for -Inf, in line with recent versions of
 the GNU C Library.
 
-* What is new in gsl-1.9:
+* What was new in gsl-1.9:
 
 ** Fixed the elliptic integrals F,E,P,D so that they have the correct
 behavior for phi > pi/2 and phi < 0.  The angular argument is now
