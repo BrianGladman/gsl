@@ -1,3 +1,8 @@
+2007-09-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c: add a margin of safety on tests for released versions,
+	as in special functions
+
 2007-08-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* Makefile.am (test_SOURCES): added missing file results2.h

@@ -99,11 +99,20 @@ struct freal listreal[] =
   {"", 0, 0, 0, 0}
 };
 
+#ifndef TEST_FACTOR
+#ifdef RELEASED
+#define TEST_FACTOR 100.0  
+#else
+#define TEST_FACTOR 1.0
+#endif
+#endif
 
 int
 main (void)
 {
   size_t i = 0;
+  const double tol = TEST_FACTOR * 10 * GSL_DBL_EPSILON;
+  const double tolf = TEST_FACTOR * 10 * GSL_FLT_EPSILON;
 
   gsl_ieee_env_setup();
 
@@ -114,9 +123,8 @@ main (void)
       double t = 2.0 * M_PI * i / 5 ;
       double x = r * cos(t), y = r * sin(t) ;
       gsl_complex z = gsl_complex_polar (r, t) ;
-      gsl_test_rel (GSL_REAL(z), x, 10 * GSL_DBL_EPSILON, "gsl_complex_polar real part at (r=%g,t=%g)", r, t);
-      
-      gsl_test_rel (GSL_IMAG(z), y, 10 * GSL_DBL_EPSILON, "gsl_complex_polar imag part at (r=%g,t=%g)", r, t);
+      gsl_test_rel (GSL_REAL(z), x, tol, "gsl_complex_polar real part at (r=%g,t=%g)", r, t);
+      gsl_test_rel (GSL_IMAG(z), y, tol, "gsl_complex_polar imag part at (r=%g,t=%g)", r, t);
     }
     
     i = 0;
@@ -126,7 +134,7 @@ main (void)
       struct f t = list[i];
       gsl_complex z = gsl_complex_rect (t.x, t.y);
       double f = (t.f) (z);
-      gsl_test_rel (f, t.fx, 10 * GSL_DBL_EPSILON, "%s at (%g,%g)", t.name, t.x, t.y);
+      gsl_test_rel (f, t.fx, tol, "%s at (%g,%g)", t.name, t.x, t.y);
       i++;
     }
 
@@ -148,8 +156,8 @@ main (void)
       printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
 #endif
 
-      gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,%g)", t.name, t.x, t.y);
-      gsl_test_rel (fy, t.fy, 10 * GSL_DBL_EPSILON, "%s imag part at (%g,%g)", t.name, t.x, t.y);
+      gsl_test_rel (fx, t.fx, tol, "%s real part at (%g,%g)", t.name, t.x, t.y);
+      gsl_test_rel (fy, t.fy, tol, "%s imag part at (%g,%g)", t.name, t.x, t.y);
       i++;
     }
 
@@ -174,8 +182,8 @@ main (void)
       printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
 #endif
 
-      gsl_test_rel (fx, t.fx, 10 * GSL_FLT_EPSILON, "%s real part at (%g,%g;%g,%g)", t.name, t.x1, t.y1, t.x2, t.y2);
-      gsl_test_rel (fy, t.fy, 10 * GSL_FLT_EPSILON, "%s imag part at (%g,%g;%g,%g)", t.name, t.x1, t.y1, t.x2, t.y2);
+      gsl_test_rel (fx, t.fx, tolf, "%s real part at (%g,%g;%g,%g)", t.name, t.x1, t.y1, t.x2, t.y2);
+      gsl_test_rel (fy, t.fy, tolf, "%s imag part at (%g,%g;%g,%g)", t.name, t.x1, t.y1, t.x2, t.y2);
       i++;
     }
 
@@ -196,8 +204,8 @@ main (void)
       printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
 #endif
 
-      gsl_test_rel (fx, t.fx, 10 * GSL_DBL_EPSILON, "%s real part at (%g,0)", t.name, t.x);
-      gsl_test_rel (fy, t.fy, 10 * GSL_DBL_EPSILON, "%s imag part at (%g,0)", t.name, t.x);
+      gsl_test_rel (fx, t.fx, tol, "%s real part at (%g,0)", t.name, t.x);
+      gsl_test_rel (fy, t.fy, tol, "%s imag part at (%g,0)", t.name, t.x);
       i++;
     }
 
