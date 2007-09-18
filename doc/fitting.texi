@@ -347,7 +347,7 @@ This function uses the best-fit multilinear regression coefficients
 at the point @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_residuals (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_vector * @var{r})
+@deftypefun int gsl_multifit_linear_residuals (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{c}, gsl_vector * @var{r})
 This function computes the vector of residuals @math{r = y - X c} for
 the observations @var{y}, coefficients @var{c} and matrix of predictor
 variables @var{X}.
