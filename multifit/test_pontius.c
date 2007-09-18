@@ -26,6 +26,7 @@ test_pontius ()
     gsl_matrix * X = gsl_matrix_alloc (pontius_n, pontius_p);
     gsl_vector_view y = gsl_vector_view_array (pontius_y, pontius_n);
     gsl_vector * c = gsl_vector_alloc (pontius_p);
+    gsl_vector * r = gsl_vector_alloc (pontius_n);
     gsl_matrix * cov = gsl_matrix_alloc (pontius_p, pontius_p);
     gsl_vector_view diag;
 
@@ -63,7 +64,12 @@ test_pontius ()
 
     gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_multilinear chisq") ;
 
+    gsl_multifit_linear_residuals(X, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_multilinear residuals") ;
+
     gsl_vector_free(c);
+    gsl_vector_free(r);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
     gsl_multifit_linear_free (work);
@@ -78,6 +84,7 @@ test_pontius ()
     gsl_vector_view y = gsl_vector_view_array (pontius_y, pontius_n);
     gsl_vector * w = gsl_vector_alloc (pontius_n);
     gsl_vector * c = gsl_vector_alloc (pontius_p);
+    gsl_vector * r = gsl_vector_alloc (pontius_n);
     gsl_matrix * cov = gsl_matrix_alloc (pontius_p, pontius_p);
 
     double chisq;
@@ -120,10 +127,15 @@ test_pontius ()
           }
       }
 
-    gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_multilinear chisq") ;
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_wmultilinear chisq") ;
+
+    gsl_multifit_linear_residuals(X, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "pontius gsl_fit_wmultilinear residuals") ;
 
     gsl_vector_free(w);
     gsl_vector_free(c);
+    gsl_vector_free(r);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
     gsl_multifit_linear_free (work);

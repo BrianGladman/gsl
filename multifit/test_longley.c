@@ -34,6 +34,7 @@ test_longley ()
     gsl_matrix_view X = gsl_matrix_view_array (longley_x, longley_n, longley_p);
     gsl_vector_view y = gsl_vector_view_array (longley_y, longley_n);
     gsl_vector * c = gsl_vector_alloc (longley_p);
+    gsl_vector * r = gsl_vector_alloc (longley_n);
     gsl_matrix * cov = gsl_matrix_alloc (longley_p, longley_p);
     gsl_vector_view diag;
 
@@ -79,7 +80,12 @@ test_longley ()
 
     gsl_test_rel (chisq, expected_chisq, 1e-10, "longley gsl_fit_multilinear chisq") ;
 
+    gsl_multifit_linear_residuals(&X.matrix, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "longley gsl_fit_multilinear residuals") ;
+
     gsl_vector_free(c);
+    gsl_vector_free(r);
     gsl_matrix_free(cov);
     gsl_multifit_linear_free (work);
   }
@@ -93,6 +99,7 @@ test_longley ()
     gsl_vector_view y = gsl_vector_view_array (longley_y, longley_n);
     gsl_vector * w = gsl_vector_alloc (longley_n);
     gsl_vector * c = gsl_vector_alloc (longley_p);
+    gsl_vector * r = gsl_vector_alloc (longley_n);
     gsl_matrix * cov = gsl_matrix_alloc (longley_p, longley_p);
 
     double chisq;
@@ -158,8 +165,13 @@ test_longley ()
 
     gsl_test_rel (chisq, expected_chisq, 1e-10, "longley gsl_fit_wmultilinear chisq") ;
 
+    gsl_multifit_linear_residuals(&X.matrix, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-10, "longley gsl_fit_wmultilinear residuals") ;
+
     gsl_vector_free(w);
     gsl_vector_free(c);
+    gsl_vector_free(r);
     gsl_matrix_free(cov);
     gsl_multifit_linear_free (work);
   }

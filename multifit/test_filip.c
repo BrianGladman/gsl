@@ -43,6 +43,7 @@ test_filip ()
     gsl_vector_view y = gsl_vector_view_array (filip_y, filip_n);
     gsl_vector * c = gsl_vector_alloc (filip_p);
     gsl_matrix * cov = gsl_matrix_alloc (filip_p, filip_p);
+    gsl_vector * r = gsl_vector_alloc(filip_n);
     gsl_vector_view diag;
 
     double chisq;
@@ -111,9 +112,14 @@ test_filip ()
 
     gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_multilinear chisq") ;
 
+    gsl_multifit_linear_residuals(X, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_multilinear residuals") ;
+
     gsl_vector_free(c);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
+    gsl_vector_free(r);
     gsl_multifit_linear_free (work);
   }
 
@@ -125,6 +131,7 @@ test_filip ()
     gsl_vector_view y = gsl_vector_view_array (filip_y, filip_n);
     gsl_vector * w = gsl_vector_alloc (filip_n);
     gsl_vector * c = gsl_vector_alloc (filip_p);
+    gsl_vector * r = gsl_vector_alloc (filip_n);
     gsl_matrix * cov = gsl_matrix_alloc (filip_p, filip_p);
 
     double chisq;
@@ -191,10 +198,15 @@ test_filip ()
           }
       }
 
-    gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_multilinear chisq") ;
+    gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_wmultilinear chisq") ;
+
+    gsl_multifit_linear_residuals(X, &y.vector, c, r);
+    gsl_blas_ddot(r, r, &chisq);
+    gsl_test_rel (chisq, expected_chisq, 1e-7, "filip gsl_fit_wmultilinear residuals") ;
 
     gsl_vector_free(w);
     gsl_vector_free(c);
+    gsl_vector_free(r);
     gsl_matrix_free(cov);
     gsl_matrix_free(X);
     gsl_multifit_linear_free (work);

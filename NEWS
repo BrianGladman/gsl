@@ -1,4 +1,7 @@
-* What is new in gsl-1.10:
+** Added function gsl_multifit_linear_residuals for computing the
+residuals of the fit
+
+* What was new in gsl-1.10:
 
 ** License updated to GNU GPL version 3.
 

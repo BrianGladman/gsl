@@ -100,6 +100,9 @@ gsl_multifit_linear_est (const gsl_vector * x,
                          const gsl_vector * c,
                          const gsl_matrix * cov, double *y, double *y_err);
 
+int
+gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
+                               const gsl_vector *c, gsl_vector *r);
 
 __END_DECLS
 

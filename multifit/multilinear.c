@@ -430,3 +430,53 @@ gsl_multifit_linear_est (const gsl_vector * x,
       return GSL_SUCCESS;
     }
 }
+
+/*
+gsl_multifit_linear_residuals()
+  Compute vector of residuals from fit
+
+Inputs: X - design matrix
+        y - rhs vector
+        c - fit coefficients
+        r - (output) where to store residuals
+*/
+
+int
+gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
+                               const gsl_vector *c, gsl_vector *r)
+{
+  if (X->size1 != y->size)
+    {
+      GSL_ERROR
+        ("number of observations in y does not match rows of matrix X",
+         GSL_EBADLEN);
+    }
+  else if (X->size2 != c->size)
+    {
+      GSL_ERROR ("number of parameters c does not match columns of matrix X",
+                 GSL_EBADLEN);
+    }
+  else if (y->size != r->size)
+    {
+      GSL_ERROR ("number of observations in y does not match number of residuals",
+                 GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      for (i = 0; i < y->size; ++i)
+        {
+          double yi = gsl_vector_get(y, i);
+          gsl_vector_const_view row = gsl_matrix_const_row(X, i);
+          double y_est, ri;
+
+          gsl_blas_ddot(&row.vector, c, &y_est);
+          ri = yi - y_est;
+
+          gsl_vector_set(r, i, ri);
+        }
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_multifit_linear_residuals() */
