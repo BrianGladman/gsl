@@ -1,3 +1,8 @@
+2007-09-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* multinomial.c (gsl_ran_multinomial_lnpdf):  Handle case where
+	n[k]==0 and p[k]==0 
+
 2007-08-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (integrate): perform the integration of the pdf with the

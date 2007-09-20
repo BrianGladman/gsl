@@ -109,12 +109,12 @@ gsl_ran_multinomial_lnpdf (const size_t K,
 
   for (k = 0; k < K; k++)
     {
-      log_pdf -= gsl_sf_lnfact (n[k]);
-    }
+      /* Handle case where n[k]==0 and p[k]==0 */
 
-  for (k = 0; k < K; k++)
-    {
-      log_pdf += log (p[k] / norm) * n[k];
+      if (n[k] > 0) 
+        {
+          log_pdf += log (p[k] / norm) * n[k] - gsl_sf_lnfact (n[k]);
+        }
     }
 
   return log_pdf;

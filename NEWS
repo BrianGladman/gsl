@@ -1,3 +1,6 @@
+** Corrected gsl_ran_multinomial_lnpdf and gsl_ran_multinomial_pdf to
+handle the degenerate case where n_k=0 and p_k=0.
+
 ** Added function gsl_multifit_linear_residuals for computing the
 residuals of the fit
 

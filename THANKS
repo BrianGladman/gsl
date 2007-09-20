@@ -427,3 +427,6 @@ gsl_cdf_beta_Pinv
 
 * Andries Brouwer <Andries.Brouwer@cwi.nl> bug report for
 underflow in symmetric eigenvalues
+
+* Mingxi Wu <mwu@cise.ufl.edu> bug report for multinomial pdf
+
