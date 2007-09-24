@@ -108,6 +108,15 @@ This generator uses the Sobol sequence described in Antonov, Saleev,
 40 dimensions.
 @end deffn
 
+@deffn {Generator} gsl_qrng_halton
+@deffnx {Generator} gsl_qrng_reverse_halton
+These generators use the Halton and reverse Halton sequences described
+in J.H. Halton, @cite{Numerische Mathematik} 2, 84-90 (1960) and
+B. Vandewoestyne and R. Cools @cite{Computational and Applied
+Mathematics} 189, 1&2, 341-361 (2006).  They are valid up to 1229
+dimensions.
+@end deffn
+
 @node Quasi-random number generator examples
 @section Examples
 

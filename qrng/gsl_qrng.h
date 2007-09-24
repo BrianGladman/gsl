@@ -1,4 +1,4 @@
-/* Author: G. Jungman
+/* Author: G. Jungman + modifications from O. Teytaud
  */
 #ifndef __GSL_QRNG_H__
 #define __GSL_QRNG_H__
@@ -52,6 +52,8 @@ gsl_qrng;
  */
 GSL_VAR const gsl_qrng_type * gsl_qrng_niederreiter_2;
 GSL_VAR const gsl_qrng_type * gsl_qrng_sobol;
+GSL_VAR const gsl_qrng_type * gsl_qrng_halton;
+GSL_VAR const gsl_qrng_type * gsl_qrng_reversehalton;
 
 
 /* Allocate and initialize a generator
