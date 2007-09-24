@@ -280,7 +280,7 @@ function where an error might be reported,
 
   gsl_set_error_handler_off();
 
-  status = gsl_fft_complex_radix2_forward (data, n);
+  status = gsl_fft_complex_radix2_forward (data, stride, n);
 
   if (status) @{
     if (status == GSL_EINVAL) @{
