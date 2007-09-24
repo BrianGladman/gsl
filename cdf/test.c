@@ -704,7 +704,7 @@ void test_tdist (void) {
 
   /* Tests for F distribution */
 
-  /* p(x, nu1, nu2) := betaI(1 / (1 + nu2 / nu1 * x), nu1 / 2, nu2 / 2) */
+  /* p(x, nu1, nu2) := betaI(1 / (1 + (nu2 / nu1) / x), nu1 / 2, nu2 / 2) */
 
 void test_fdist (void) {
   TEST (gsl_cdf_fdist_P, (0.0, 1.2, 1.3), 0.0, 0.0);
@@ -737,6 +737,8 @@ void test_fdist (void) {
   TEST (gsl_cdf_fdist_Q, (1000.0, 1.2, 1.3), 7.98794830588361109e-3, TEST_TOL6);
   TEST (gsl_cdf_fdist_Q, (10000.0, 1.2, 1.3), 1.7891371911574145e-3, TEST_TOL6);
 
+
+  TEST (gsl_cdf_fdist_P, (3.479082213465832574, 1, 4040712), 0.93785072763723411967, TEST_TOL6);
 
   TEST (gsl_cdf_fdist_P, (0.0, 500.0, 1.3), 0.0, 0.0);
   TEST (gsl_cdf_fdist_P, (1e-100, 500.0, 1.3), 0.0, 0.0);

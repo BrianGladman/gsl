@@ -147,4 +147,37 @@ AUG 2007: We now return an error code for this case.  To return a solution
 we would need to do a permutation, see slatec/dgtsl.f
 
 ----------------------------------------------------------------------
-Last assigned bug number = 62
+BUG#63 - gsl_cdf_fdist_P() nan return value
+
+Added test case
+    TEST (gsl_cdf_fdist_P, (3.479082213465832574, 1, 4040712), 0.93785072763723411967, TEST_TOL6);
+
+From: "Daniel Neilson" <ddneilson@gmail.com>
+To: bug-gsl@gnu.org
+Subject: [Bug-gsl] gsl_cdf_fdist_P() nan return value
+Date: Thu, 20 Sep 2007 17:05:23 -0600
+
+Hi there,
+ I just spent the entire day tracking down the source of a nan in some code
+of mine, and tracked it back to gsl_cdf_fdist_P(x, nu1, nu2). When called
+with:
+
+ double x = 0x1.bd5290e3772c6p+1 (printf("%a", x) format to get the full
+binary representation as hex)
+ int nu1 = 1
+ int nu2 = 4040712
+
+this function returns nan. Furthermore, for Y \in {100,10000} calling:
+
+gsl_cdf_fdist_P( (double)((unsigned int)x * Y + 0.5) / Y, nu1, nu2)
+
+also returns nan.
+
+ However, for Y \in {1000, 100000} it returns a proper non-nan value.
+
+ This is all with the version of GSL in the Fedora 7 packages gsl-1.8-3.fc7&
+gsl-devel-1.8-3.fc7.
+
+
+----------------------------------------------------------------------
+Last assigned bug number = 63
