@@ -34,15 +34,16 @@ computing the value of the Bessel function @math{J_0(x)} for @math{x=5},
 
 @noindent
 The output is shown below, and should be correct to double-precision
-accuracy,
+accuracy,@footnote{The last few digits may vary slightly depending on
+the compiler and platform used---this is normal.}
 
 @example
 @verbatiminclude examples/intro.out
 @end example
 
 @noindent
-The steps needed to compile this program are described in the following
-sections.
+The steps needed to compile this program are described
+in the following sections.
 
 @node Compiling and Linking
 @section Compiling and Linking
