@@ -39,6 +39,9 @@ double gsl_stats_uchar_variance (const unsigned char data[], const size_t stride
 double gsl_stats_uchar_sd (const unsigned char data[], const size_t stride, const size_t n);
 double gsl_stats_uchar_variance_with_fixed_mean (const unsigned char data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_uchar_sd_with_fixed_mean (const unsigned char data[], const size_t stride, const size_t n, const double mean);
+double gsl_stats_uchar_ss (const unsigned char data[], const size_t stride, const size_t n);
+double gsl_stats_uchar_ss_m (const unsigned char data[], const size_t stride, const size_t n, const double mean);
+
 double gsl_stats_uchar_absdev (const unsigned char data[], const size_t stride, const size_t n);
 double gsl_stats_uchar_skew (const unsigned char data[], const size_t stride, const size_t n);
 double gsl_stats_uchar_kurtosis (const unsigned char data[], const size_t stride, const size_t n);

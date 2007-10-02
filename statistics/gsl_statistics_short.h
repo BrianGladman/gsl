@@ -39,6 +39,9 @@ double gsl_stats_short_variance (const short data[], const size_t stride, const 
 double gsl_stats_short_sd (const short data[], const size_t stride, const size_t n);
 double gsl_stats_short_variance_with_fixed_mean (const short data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_short_sd_with_fixed_mean (const short data[], const size_t stride, const size_t n, const double mean);
+double gsl_stats_short_ss (const short data[], const size_t stride, const size_t n);
+double gsl_stats_short_ss_m (const short data[], const size_t stride, const size_t n, const double mean);
+
 double gsl_stats_short_absdev (const short data[], const size_t stride, const size_t n);
 double gsl_stats_short_skew (const short data[], const size_t stride, const size_t n);
 double gsl_stats_short_kurtosis (const short data[], const size_t stride, const size_t n);

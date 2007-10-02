@@ -39,6 +39,9 @@ double gsl_stats_uint_variance (const unsigned int data[], const size_t stride, 
 double gsl_stats_uint_sd (const unsigned int data[], const size_t stride, const size_t n);
 double gsl_stats_uint_variance_with_fixed_mean (const unsigned int data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_uint_sd_with_fixed_mean (const unsigned int data[], const size_t stride, const size_t n, const double mean);
+double gsl_stats_uint_ss (const unsigned int data[], const size_t stride, const size_t n);
+double gsl_stats_uint_ss_m (const unsigned int data[], const size_t stride, const size_t n, const double mean);
+
 double gsl_stats_uint_absdev (const unsigned int data[], const size_t stride, const size_t n);
 double gsl_stats_uint_skew (const unsigned int data[], const size_t stride, const size_t n);
 double gsl_stats_uint_kurtosis (const unsigned int data[], const size_t stride, const size_t n);

@@ -1,3 +1,8 @@
+2007-10-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* variance_source.c: added functions for sum of squares and
+	weighted sum of squares
+
 2006-01-07  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_float_source.c: additional tests for NaNs
