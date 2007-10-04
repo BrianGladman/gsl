@@ -20,6 +20,8 @@ real @math{x}.  It is defined by the integral representation
 Note that @math{\Im(Li_2(x)) = 0} for @c{$x \le 1$} 
 @math{x <= 1}, and @math{-\pi\log(x)} for @math{x > 1}.
 
+Note that Abramowitz & Stegun refer to the Spence integral
+@math{S(x)=Li_2(1-x)} as the dilogarithm rather than @math{Li_2(x)}.
 @end deftypefun
 
 @node Complex Argument
