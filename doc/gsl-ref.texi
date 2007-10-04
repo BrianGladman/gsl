@@ -510,7 +510,8 @@ Implementation of the random number generators in Knuth's
 Wrote the routines for generating combinations.
 
 @item Nicolas Darnis
-Wrote the initial routines for canonical permutations.
+Wrote the cyclic functions and the initial functions for canonical 
+permutations.
 
 @item Jason H. Stover
 @comment (jason@sakla.net) 
