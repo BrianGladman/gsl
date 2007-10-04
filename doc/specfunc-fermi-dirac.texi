@@ -26,6 +26,9 @@ $$
 F_j(x)   := (1/\Gamma(j+1)) \int_0^\infty dt (t^j / (\exp(t-x) + 1))
 @end example
 @end ifinfo
+@noindent
+Note that the Fermi-Dirac integral is sometimes defined without the
+normalisation factor in other texts.
 
 @deftypefun double gsl_sf_fermi_dirac_m1 (double @var{x})
 @deftypefunx int gsl_sf_fermi_dirac_m1_e (double @var{x}, gsl_sf_result * @var{result})
