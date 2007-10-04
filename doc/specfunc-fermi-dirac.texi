@@ -23,7 +23,7 @@ $$
 @ifinfo
 
 @example
-F_j(x)   := (1/r\Gamma(j+1)) \int_0^\infty dt (t^j / (\exp(t-x) + 1))
+F_j(x)   := (1/\Gamma(j+1)) \int_0^\infty dt (t^j / (\exp(t-x) + 1))
 @end example
 @end ifinfo
 
