@@ -43,11 +43,11 @@ FUNCTION(compute,variance) (const BASE data[], const size_t stride, const size_t
 }
 
 static double
-FUNCTION(compute,ss) (const BASE data[], const size_t stride, const size_t n, const double mean)
+FUNCTION(compute,tss) (const BASE data[], const size_t stride, const size_t n, const double mean)
 {
   /* takes a dataset and finds the sum of squares about the mean */
 
-  long double ss = 0 ;
+  long double tss = 0 ;
 
   size_t i;
 
@@ -55,10 +55,10 @@ FUNCTION(compute,ss) (const BASE data[], const size_t stride, const size_t n, co
   for (i = 0; i < n; i++)
     {
       const long double delta = (data[i * stride] - mean);
-      ss += delta * delta;
+      tss += delta * delta;
     }
 
-  return ss ;
+  return tss ;
 }
 
 
@@ -113,16 +113,16 @@ FUNCTION(gsl_stats,sd) (const BASE data[], const size_t stride, const size_t n)
 
 
 double 
-FUNCTION(gsl_stats,ss_m) (const BASE data[], const size_t stride, const size_t n, const double mean)
+FUNCTION(gsl_stats,tss_m) (const BASE data[], const size_t stride, const size_t n, const double mean)
 {
-  const double ss = FUNCTION(compute,ss) (data, stride, n, mean);
+  const double tss = FUNCTION(compute,tss) (data, stride, n, mean);
   
-  return ss;
+  return tss;
 }
 
 double 
-FUNCTION(gsl_stats,ss) (const BASE data[], const size_t stride, const size_t n)
+FUNCTION(gsl_stats,tss) (const BASE data[], const size_t stride, const size_t n)
 {
   const double mean = FUNCTION(gsl_stats,mean) (data, stride, n);
-  return FUNCTION(gsl_stats,ss_m)(data, stride, n, mean);
+  return FUNCTION(gsl_stats,tss_m)(data, stride, n, mean);
 }

@@ -39,8 +39,8 @@ double gsl_stats_float_variance (const float data[], const size_t stride, const 
 double gsl_stats_float_sd (const float data[], const size_t stride, const size_t n);
 double gsl_stats_float_variance_with_fixed_mean (const float data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_float_sd_with_fixed_mean (const float data[], const size_t stride, const size_t n, const double mean);
-double gsl_stats_float_ss (const float data[], const size_t stride, const size_t n);
-double gsl_stats_float_ss_m (const float data[], const size_t stride, const size_t n, const double mean);
+double gsl_stats_float_tss (const float data[], const size_t stride, const size_t n);
+double gsl_stats_float_tss_m (const float data[], const size_t stride, const size_t n, const double mean);
 
 double gsl_stats_float_absdev (const float data[], const size_t stride, const size_t n);
 double gsl_stats_float_skew (const float data[], const size_t stride, const size_t n);

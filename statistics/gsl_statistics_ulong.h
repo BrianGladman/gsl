@@ -39,8 +39,8 @@ double gsl_stats_ulong_variance (const unsigned long data[], const size_t stride
 double gsl_stats_ulong_sd (const unsigned long data[], const size_t stride, const size_t n);
 double gsl_stats_ulong_variance_with_fixed_mean (const unsigned long data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_ulong_sd_with_fixed_mean (const unsigned long data[], const size_t stride, const size_t n, const double mean);
-double gsl_stats_ulong_ss (const unsigned long data[], const size_t stride, const size_t n);
-double gsl_stats_ulong_ss_m (const unsigned long data[], const size_t stride, const size_t n, const double mean);
+double gsl_stats_ulong_tss (const unsigned long data[], const size_t stride, const size_t n);
+double gsl_stats_ulong_tss_m (const unsigned long data[], const size_t stride, const size_t n, const double mean);
 
 double gsl_stats_ulong_absdev (const unsigned long data[], const size_t stride, const size_t n);
 double gsl_stats_ulong_skew (const unsigned long data[], const size_t stride, const size_t n);
