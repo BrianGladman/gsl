@@ -121,6 +121,28 @@ These functions return the square root of the corresponding variance
 functions above.
 @end deftypefun
 
+@deftypefun double gsl_stats_tss (const double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx double gsl_stats_tss_m (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
+These functions return the total sum of squares (TSS) of @var{data} about
+the mean.  For @code{gsl_stats_ss_m} the user-supplied value of
+@var{mean} is used, and for @code{gsl_stats_ss} it is computed using
+@code{gsl_stats_mean}.
+
+@tex
+\beforedisplay
+$$
+{\rm TSS} = \sum (x_i - mean)^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+TSS =  \sum (x_i - mean)^2
+@end example
+@end ifinfo
+@end deftypefun
+
 @deftypefun double gsl_stats_variance_with_fixed_mean (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 This function computes an unbiased estimate of the variance of
 @var{data} when the population mean @var{mean} of the underlying
