@@ -124,8 +124,8 @@ functions above.
 @deftypefun double gsl_stats_tss (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 @deftypefunx double gsl_stats_tss_m (const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{mean})
 These functions return the total sum of squares (TSS) of @var{data} about
-the mean.  For @code{gsl_stats_ss_m} the user-supplied value of
-@var{mean} is used, and for @code{gsl_stats_ss} it is computed using
+the mean.  For @code{gsl_stats_tss_m} the user-supplied value of
+@var{mean} is used, and for @code{gsl_stats_tss} it is computed using
 @code{gsl_stats_mean}.
 
 @tex
@@ -516,6 +516,28 @@ $$
 The standard deviation is defined as the square root of the variance.
 This function returns the square root of the corresponding variance
 function above.
+@end deftypefun
+
+@deftypefun double gsl_stats_wss (const double @var{w}[], const size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
+@deftypefunx double gsl_stats_wss_m (const double @var{w}[], const size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, double @var{wmean})
+These functions return the weighted total sum of squares (TSS) of
+@var{data} about the weighted mean.  For @code{gsl_stats_wss_m} the
+user-supplied value of @var{wmean} is used, and for @code{gsl_stats_wss}
+it is computed using @code{gsl_stats_wmean}.
+
+@tex
+\beforedisplay
+$$
+{\rm TSS} = \sum w_i (x_i - wmean)^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+TSS =  \sum w_i (x_i - wmean)^2
+@end example
+@end ifinfo
 @end deftypefun
 
 @deftypefun double gsl_stats_wabsdev (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
