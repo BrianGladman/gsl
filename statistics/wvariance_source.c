@@ -21,7 +21,7 @@ static double
 FUNCTION(compute,wvariance) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean);
 
 static double 
-FUNCTION(compute,wss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean);
+FUNCTION(compute,wtss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean);
 
 
 static double
@@ -53,11 +53,11 @@ FUNCTION(compute,wvariance) (const BASE w[], const size_t wstride, const BASE da
 }
 
 static double
-FUNCTION(compute,wss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
+FUNCTION(compute,wtss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
 {
   /* takes a dataset and finds the weighted sum of squares about wmean*/
 
-  long double wss = 0 ;
+  long double wtss = 0 ;
   size_t i;
 
   /* find the sum of the squares */
@@ -67,11 +67,11 @@ FUNCTION(compute,wss) (const BASE w[], const size_t wstride, const BASE data[], 
 
       if (wi > 0) {
         const long double delta = (data[i * stride] - wmean);
-        wss += wi * delta * delta;
+        wtss += wi * delta * delta;
       }
     }
 
-  return wss ;
+  return wtss ;
 }
 
 
@@ -154,17 +154,17 @@ FUNCTION(gsl_stats,wvariance) (const BASE w[], const size_t wstride, const BASE 
 }
 
 double 
-FUNCTION(gsl_stats,wss_m) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
+FUNCTION(gsl_stats,wtss_m) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n, const double wmean)
 {
-  const double wss = FUNCTION(compute,wss) (w, wstride, data, stride, n, wmean);
-  return wss;
+  const double wtss = FUNCTION(compute,wtss) (w, wstride, data, stride, n, wmean);
+  return wtss;
 }
 
 double 
-FUNCTION(gsl_stats,wss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n)
+FUNCTION(gsl_stats,wtss) (const BASE w[], const size_t wstride, const BASE data[], const size_t stride, const size_t n)
 {
   const double wmean = FUNCTION(gsl_stats,wmean) (w, wstride, data, stride, n);
-  return FUNCTION(gsl_stats,wss_m)(w, wstride, data, stride, n, wmean);
+  return FUNCTION(gsl_stats,wtss_m)(w, wstride, data, stride, n, wmean);
 }
 
 

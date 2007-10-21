@@ -66,8 +66,8 @@ double gsl_stats_long_double_wvariance (const long double w[], const size_t wstr
 double gsl_stats_long_double_wsd (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
 double gsl_stats_long_double_wvariance_with_fixed_mean (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n, const double mean);
 double gsl_stats_long_double_wsd_with_fixed_mean (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n, const double mean);
-double gsl_stats_long_double_wss (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
-double gsl_stats_long_double_wss_m (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n, const double wmean);
+double gsl_stats_long_double_wtss (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
+double gsl_stats_long_double_wtss_m (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n, const double wmean);
 double gsl_stats_long_double_wabsdev (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
 double gsl_stats_long_double_wskew (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
 double gsl_stats_long_double_wkurtosis (const long double w[], const size_t wstride, const long double data[], const size_t stride, const size_t n);
