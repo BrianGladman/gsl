@@ -308,7 +308,10 @@ These functions compute the best-fit parameters @var{c} of the model
 variables @var{X}.  The variance-covariance matrix of the model
 parameters @var{cov} is estimated from the scatter of the observations
 about the best-fit.  The sum of squares of the residuals from the
-best-fit, @math{\chi^2}, is returned in @var{chisq}. 
+best-fit, @math{\chi^2}, is returned in @var{chisq}. If the coefficient
+of determination is desired, it can be computed from the expression
+@math{R^2 = 1 - \chi^2 / TSS}, where the total sum of squares (TSS) of
+the observations @var{y} may be computed from @code{gsl_stats_tss}.
 
 The best-fit is found by singular value decomposition of the matrix
 @var{X} using the preallocated workspace provided in @var{work}. The
@@ -328,7 +331,11 @@ model @math{y = X c} for the observations @var{y} with weights @var{w}
 and the matrix of predictor variables @var{X}.  The covariance matrix of
 the model parameters @var{cov} is computed with the given weights.  The
 weighted sum of squares of the residuals from the best-fit,
-@math{\chi^2}, is returned in @var{chisq}.
+@math{\chi^2}, is returned in @var{chisq}. If the coefficient
+of determination is desired, it can be computed from the expression
+@math{R^2 = 1 - \chi^2 / WTSS}, where the weighted total sum of squares
+(WTSS) of the observations @var{y} may be computed from
+@code{gsl_stats_wtss}.
 
 The best-fit is found by singular value decomposition of the matrix
 @var{X} using the preallocated workspace provided in @var{work}. Any
