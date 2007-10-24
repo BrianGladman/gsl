@@ -94,9 +94,19 @@ $$
 
 @end ifinfo
 @noindent
+In short, the routines return the first approximation 
+which has an absolute error smaller than @c{$\hbox{\it epsabs}$}
+@math{epsabs} or a relative error smaller than @c{$\hbox{\it epsrel}$}
+@math{epsrel}.   
+
+Note that this is an @i{either-or} constraint, 
+not simultaneous.  To compute to a specified absolute error, set @c{$\hbox{\it epsrel}$}
+@math{epsrel} to zero.  To compute to a specified relative error,
+set @c{$\hbox{\it epsabs}$}
+@math{epsabs} to zero.  
 The routines will fail to converge if the error bounds are too
-stringent, but always return the best approximation obtained up to that
-stage.
+stringent, but always return the best approximation obtained up to
+that stage.
 
 The algorithms in @sc{quadpack} use a naming convention based on the
 following letters,
