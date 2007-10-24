@@ -1148,6 +1148,10 @@ void test_gammainv (void) {
   TEST (gsl_cdf_gamma_Pinv, (9.99999997938846378e-1, 1.0, 1.0), 20.0, 100 * TEST_TOL6);
   TEST (gsl_cdf_gamma_Pinv, (1.0, 1.0, 1.0), GSL_POSINF, 0.0);
 
+  /* Test case from Benjamin Redelings <benjamin_redelings@ncsu.edu> */
+  /* fails on x86_64,  FIXME test value is from octave -- get high precision value */
+  TEST (gsl_cdf_gamma_Pinv, (0.1, 11.887411491530846,1.0), 7.73788447848618e+00, TEST_TOL1);
+
   TEST (gsl_cdf_gamma_Qinv, (0.0, 1.0, 1.0), GSL_POSINF, 0.0);
   TEST (gsl_cdf_gamma_Qinv, (2.06115362243855783e-9, 1.0, 1.0), 20.0, TEST_TOL6);
   TEST (gsl_cdf_gamma_Qinv, (4.53999297624848515e-5, 1.0, 1.0), 10.0, TEST_TOL6);
