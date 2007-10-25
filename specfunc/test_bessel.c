@@ -178,6 +178,11 @@ int test_bessel(void)
   /* Bug report by Mario Santos, value computed from AS 10.1.8 */
   TEST_SF(s,  gsl_sf_bessel_jl_e, (100, 1000.0, &r), -0.00025326311230945818285, TEST_TOL4, GSL_SUCCESS);
 
+  /* Bug reported by Koichi Takahashi <ktakahashi@molsci.org>,
+     computed from Pari besseljh(n,x) and AS 10.1.1 */
+
+  TEST_SF(s,  gsl_sf_bessel_jl_e, (30, 3878.62, &r), -0.00023285567034330878410434732790, TEST_TOL4, GSL_SUCCESS);
+
 
   TEST_SF(s,  gsl_sf_bessel_y0_e, (0.001, &r), -999.99950000004166670, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_y0_e, (  1.0, &r), -0.5403023058681397174, TEST_TOL0, GSL_SUCCESS);

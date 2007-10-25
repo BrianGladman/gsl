@@ -1,3 +1,8 @@
+2007-10-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bessel.c (gsl_sf_bessel_J_CF1): handle underflow by rescaling in
+	recurrence
+
 2007-09-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ellint.c (gsl_sf_ellint_Pcomp_e): remove test for n <1, no

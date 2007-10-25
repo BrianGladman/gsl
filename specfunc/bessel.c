@@ -487,6 +487,7 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
                     double * ratio, double * sgn)
 {
   const double RECUR_BIG = GSL_SQRT_DBL_MAX;
+  const double RECUR_SMALL = GSL_SQRT_DBL_MIN;
   const int maxiter = 10000;
   int n = 1;
   double Anm2 = 1.0;
@@ -520,6 +521,13 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
       Bnm1 /= RECUR_BIG;
       Anm2 /= RECUR_BIG;
       Bnm2 /= RECUR_BIG;
+    } else if(fabs(An) < RECUR_SMALL || fabs(Bn) < RECUR_SMALL) {
+      An /= RECUR_SMALL;
+      Bn /= RECUR_SMALL;
+      Anm1 /= RECUR_SMALL;
+      Bnm1 /= RECUR_SMALL;
+      Anm2 /= RECUR_SMALL;
+      Bnm2 /= RECUR_SMALL;
     }
 
     old_fn = fn;
