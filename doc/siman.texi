@@ -109,7 +109,7 @@ If the function pointer @var{print_position} is not null, a debugging
 log will be printed to @code{stdout} with the following columns:
 
 @example
-number_of_iterations temperature x x-(*x0_p) Ef(x)
+#-iter  #-evals  temperature  position  energy  best_energy
 @end example
 
 and the output of the function @var{print_position} itself.  If
@@ -320,16 +320,16 @@ The optimal route turns out to be:
 @smallexample
 # final coordinates of cities (longitude and latitude)
 ###final_city_coord: -105.95 35.68 Santa Fe
-###final_city_coord: -106.28 35.89 Los Alamos
-###final_city_coord: -106.62 35.12 Albuquerque
-###final_city_coord: -107.84 35.15 Grants
-###final_city_coord: -107.87 37.29 Durango
-###final_city_coord: -108.58 37.35 Cortez
-###final_city_coord: -108.74 35.52 Gallup
-###final_city_coord: -112.07 33.54 Phoenix
-###final_city_coord: -106.76 32.34 Las Cruces
-###final_city_coord: -96.77 32.79 Dallas
 ###final_city_coord: -103.2 34.41 Clovis
+###final_city_coord: -96.77 32.79 Dallas
+###final_city_coord: -106.76 32.34 Las Cruces
+###final_city_coord: -112.07 33.54 Phoenix
+###final_city_coord: -108.74 35.52 Gallup
+###final_city_coord: -108.58 37.35 Cortez
+###final_city_coord: -107.87 37.29 Durango
+###final_city_coord: -107.84 35.15 Grants
+###final_city_coord: -106.62 35.12 Albuquerque
+###final_city_coord: -106.28 35.89 Los Alamos
 ###final_city_coord: -105.92 35.77 Tesuque
 ###final_city_coord: -105.95 35.68 Santa Fe
 @end smallexample
