@@ -540,6 +540,9 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
     if(fabs(del - 1.0) < 2.0*GSL_DBL_EPSILON) break;
   }
 
+  /* FIXME: we should return an error term here as well, because the
+     error from this recurrence affects the overall error estimate. */
+
   *ratio = fn;
   *sgn   = s;
 
