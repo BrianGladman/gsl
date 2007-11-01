@@ -520,7 +520,6 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
       Anm1 /= RECUR_BIG;
       Bnm1 /= RECUR_BIG;
       Anm2 /= RECUR_BIG;
-      Bnm2 /= RECUR_BIG;
     } else if(fabs(An) < RECUR_SMALL || fabs(Bn) < RECUR_SMALL) {
       An /= RECUR_SMALL;
       Bn /= RECUR_SMALL;
@@ -539,6 +538,9 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
 
     if(fabs(del - 1.0) < 2.0*GSL_DBL_EPSILON) break;
   }
+
+  /* FIXME: we should return an error term here as well, because the
+     error from this recurrence affects the overall error estimate. */
 
   /* FIXME: we should return an error term here as well, because the
      error from this recurrence affects the overall error estimate. */
