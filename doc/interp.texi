@@ -270,7 +270,7 @@ $ graph -T ps < interp.dat > interp.ps
 
 @noindent
 The result shows a smooth interpolation of the original points.  The
-interpolation method can changed simply by varying the first argument of
+interpolation method can be changed simply by varying the first argument of
 @code{gsl_spline_alloc}.
 
 The next program demonstrates a periodic cubic spline with 4 data
