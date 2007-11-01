@@ -128,6 +128,10 @@ int gsl_linalg_hessenberg_set_zero(gsl_matrix * H);
 int gsl_linalg_hessenberg_submatrix(gsl_matrix *M, gsl_matrix *A,
                                     size_t top, gsl_vector *tau);
 
+/* To support gsl-1.9 interface: DEPRECATED */
+int gsl_linalg_hessenberg(gsl_matrix *A, gsl_vector *tau);
+
+
 /* Hessenberg-Triangular reduction */
 
 int gsl_linalg_hesstri_decomp(gsl_matrix * A, gsl_matrix * B,
