@@ -4,6 +4,8 @@
 
 ** Bugs
 
+*** TODO fix overflow problem for k<kk in vector/matrix tests
+
 *** TODO fix handling of finite/isfinite for c99 / solaris - check that everything builds in c99 mode
 
 *** TODO libtool problem on hp-ux [[wl:%news#A8C3A03210F2964EB20B995F47E0751D27A5E1@FRMUR-MX001.fr.infrasha.st.space.corp][Email from Benoit: Bug-gsl gsl-1.9 : error in c]]
@@ -26,6 +28,10 @@
 *** TODO describe how to use frozen parameters in fitting
 
 *** TODO wikipedia plagiarism of GSL vegas description
+
+*** TODO handle negative incx in blas scalar functions
+
+*** TODO LMDER can use fewer parameters in workspace
 
 * Notes
 
