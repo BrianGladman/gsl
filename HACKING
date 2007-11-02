@@ -145,6 +145,10 @@ and these don't show up otherwise).
 
 * Edit the version number in configure.ac. 
 
+* Adjust the libtool version numbers according to the procedure in the
+  Libtool manual (Updating library version information).  Use 'nm' to
+  check what functions have been added and removed.
+
 * Update the NEWS file.
 
 * Regenerate everything. make dist, unpack somewhere and then
