@@ -434,7 +434,7 @@ gsl_linalg_hessenberg_submatrix(gsl_matrix *M, gsl_matrix *A, size_t top,
 
 /* To support gsl-1.9 interface: DEPRECATED */
 int
-gsl_linalg_hessenberg_decomp(gsl_matrix *A, gsl_vector *tau) 
+gsl_linalg_hessenberg(gsl_matrix *A, gsl_vector *tau) 
 {
   return gsl_linalg_hessenberg_decomp(A, tau);
 }
