@@ -5,12 +5,13 @@
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_statistics.h>
 
 /* number of data points to fit */
 #define N        200
 
 /* number of fit coefficients */
-#define NCOEFFS  8
+#define NCOEFFS  12
 
 /* nbreak = ncoeffs + 2 - k = ncoeffs - 2 since k = 4 */
 #define NBREAK   (NCOEFFS - 2)
@@ -31,6 +32,8 @@ main (void)
   gsl_matrix *X, *cov;
   gsl_multifit_linear_workspace *mw;
   double chisq;
+  double Rsq;
+  double dof;
 
   gsl_rng_env_setup();
   r = gsl_rng_alloc(gsl_rng_default);
@@ -52,16 +55,16 @@ main (void)
   for (i = 0; i < n; ++i)
     {
       double sigma;
-      double xi = (15.0/(N-1)) * i;
+      double xi = (15.0 / (N - 1)) * i;
       double yi = cos(xi) * exp(-0.1 * xi);
 
-      sigma = 0.1;
+      sigma = 0.1 * yi;
       dy = gsl_ran_gaussian(r, sigma);
       yi += dy;
 
       gsl_vector_set(x, i, xi);
       gsl_vector_set(y, i, yi);
-      gsl_vector_set(w, i, 1.0 / (sigma*sigma));
+      gsl_vector_set(w, i, 1.0 / (sigma * sigma));
 
       printf("%f %f\n", xi, yi);
     }
@@ -87,6 +90,11 @@ main (void)
 
   /* do the fit */
   gsl_multifit_wlinear(X, w, y, c, cov, &chisq, mw);
+
+  dof = n - ncoeffs;
+  Rsq = 1.0 - chisq / gsl_stats_wtss(w->data, 1, y->data, 1, y->size);
+
+  fprintf(stderr, "chisq/dof = %e, Rsq = %f\n", chisq / dof, Rsq);
 
   /* output the smoothed curve */
   {
