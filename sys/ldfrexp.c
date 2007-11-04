@@ -24,8 +24,10 @@
 double
 gsl_ldexp (const double x, const int e)
 {
-  double p2 = pow (2.0, (double)e);
-  return x * p2;
+  int ex;
+  double y = 2 * gsl_frexp(x, &ex);
+  double p2 = pow (2.0, (double)e + (double)ex - 1);
+  return y * p2;
 }
 
 double
@@ -36,19 +38,35 @@ gsl_frexp (const double x, int *e)
       *e = 0;
       return 0.0;
     }
+  else if (!finite(x)) 
+    {
+      *e = 0;
+      return x;
+    }
+  else if (fabs(x) >= 0.5 && fabs(x) < 1)   /* Handle the common case */
+    {
+      *e = 0;  
+      return x;
+    }
   else
     {
       double ex = ceil (log (fabs (x)) / M_LN2);
       int ei = (int) ex;
-      double f = gsl_ldexp (x, -ei);
+      double f;
 
-      while (fabs (f) >= 1.0)
+      /* Prevent underflow and overflow of 2**(-ei) */
+      if (ei < DBL_MIN_EXP) ei = DBL_MIN_EXP;
+      if (ei > -DBL_MIN_EXP) ei = -DBL_MIN_EXP;
+
+      f = x * pow(2.0, -ei);
+
+      while (finite(f) && fabs (f) >= 1.0)
         {
           ei++;
           f /= 2.0;
         }
       
-      while (fabs (f) < 0.5)
+      while (fabs(f) > 0 && fabs (f) < 0.5)
         {
           ei--;
           f *= 2.0;

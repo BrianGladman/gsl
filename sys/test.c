@@ -304,7 +304,41 @@ main (void)
   y_expected = 0.0;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_ldexp(0.0,2)");
 
+  y = gsl_ldexp (9.999999999999998890e-01, 1024);
+  y_expected = GSL_DBL_MAX;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_ldexp DBL_MAX");
+
+  y = gsl_ldexp (1e308, -2000);
+  y_expected = 8.7098098162172166755761e-295;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_ldexp(1e308,-2000)");
+
+  y = gsl_ldexp (GSL_DBL_MIN, 2000);
+  y_expected = 2.554675596204441378334779940e294;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_ldexp(DBL_MIN,2000)");
+
+  /* Test subnormals */
+
+  {
+    int i = 0;
+    double x = GSL_DBL_MIN;
+    y_expected = 2.554675596204441378334779940e294;
+    
+    while ((x /= 2) > 0)
+      {
+        i++ ;
+        y = gsl_ldexp (x, 2000 + i);
+        gsl_test_rel (y, y_expected, 1e-15, "gsl_ldexp(DBL_MIN/2**%d,%d)",i,2000+i);
+      }
+  }
+
+
   /* Test for frexp */
+
+  y = gsl_frexp (0.0, &e);
+  y_expected = 0;
+  e_expected = 0;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(0) fraction");
+  gsl_test_int (e, e_expected, "gsl_frexp(0) exponent");
 
   y = gsl_frexp (M_PI, &e);
   y_expected = M_PI_4;
@@ -329,6 +363,49 @@ main (void)
   e_expected = -2;
   gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(0.25-eps) fraction");
   gsl_test_int (e, e_expected, "gsl_frexp(0.25-eps) exponent");
+
+  y = gsl_frexp (GSL_DBL_MAX, &e);
+  y_expected = 9.999999999999998890e-01;
+  e_expected = 1024;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(DBL_MAX) fraction");
+  gsl_test_int (e, e_expected, "gsl_frexp(DBL_MAX) exponent");
+
+  y = gsl_frexp (-GSL_DBL_MAX, &e);
+  y_expected = -9.999999999999998890e-01;
+  e_expected = 1024;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(-DBL_MAX) fraction");
+  gsl_test_int (e, e_expected, "gsl_frexp(-DBL_MAX) exponent");
+
+  y = gsl_frexp (GSL_DBL_MIN, &e);
+  y_expected = 0.5;
+  e_expected = -1021;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(DBL_MIN) fraction");
+  gsl_test_int (e, e_expected, "gsl_frexp(DBL_MIN) exponent");
+
+  y = gsl_frexp (-GSL_DBL_MIN, &e);
+  y_expected = -0.5;
+  e_expected = -1021;
+  gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(-DBL_MIN) fraction");
+  gsl_test_int (e, e_expected, "gsl_frexp(-DBL_MIN) exponent");
+
+  /* Test subnormals */
+
+  {
+    int i = 0;
+    double x = GSL_DBL_MIN;
+    y_expected = 0.5;
+    e_expected = -1021;
+    
+    while ((x /= 2) > 0)
+      {
+        e_expected--;
+        i++ ;
+        
+        y = gsl_frexp (x, &e);
+        gsl_test_rel (y, y_expected, 1e-15, "gsl_frexp(DBL_MIN/2**%d) fraction",i);
+        gsl_test_int (e, e_expected, "gsl_frexp(DBL_MIN/2**%d) exponent", i);
+      }
+  }
 
 
   /* Test for approximate floating point comparison */
