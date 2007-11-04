@@ -1,6 +1,7 @@
 /* sys/ldfrexp.c
  * 
  * Copyright (C) 2002, Gert Van den Eynde
+ * Copyright (C) 2007, Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +26,21 @@ double
 gsl_ldexp (const double x, const int e)
 {
   int ex;
-  double y = 2 * gsl_frexp(x, &ex);
-  double p2 = pow (2.0, (double)e + (double)ex - 1);
+  double y = gsl_frexp (x, &ex);
+  double e2 = e + ex;
+
+  if (e2 >= DBL_MAX_EXP)
+    {
+      y *= pow (2.0, e2 - DBL_MAX_EXP + 1);
+      e2 = DBL_MAX_EXP - 1;
+    }
+  else if (e2 <= DBL_MIN_EXP)
+    {
+      y *= pow (2.0, e2 - DBL_MIN_EXP - 1);
+      e2 = DBL_MIN_EXP + 1;
+    }
+
+  double p2 = pow (2.0, e2);
   return y * p2;
 }
 
@@ -38,14 +52,14 @@ gsl_frexp (const double x, int *e)
       *e = 0;
       return 0.0;
     }
-  else if (!finite(x)) 
+  else if (!finite (x))
     {
       *e = 0;
       return x;
     }
-  else if (fabs(x) >= 0.5 && fabs(x) < 1)   /* Handle the common case */
+  else if (fabs (x) >= 0.5 && fabs (x) < 1)     /* Handle the common case */
     {
-      *e = 0;  
+      *e = 0;
       return x;
     }
   else
@@ -55,18 +69,28 @@ gsl_frexp (const double x, int *e)
       double f;
 
       /* Prevent underflow and overflow of 2**(-ei) */
-      if (ei < DBL_MIN_EXP) ei = DBL_MIN_EXP;
-      if (ei > -DBL_MIN_EXP) ei = -DBL_MIN_EXP;
+      if (ei < DBL_MIN_EXP)
+        ei = DBL_MIN_EXP;
 
-      f = x * pow(2.0, -ei);
+      if (ei > -DBL_MIN_EXP)
+        ei = -DBL_MIN_EXP;
 
-      while (finite(f) && fabs (f) >= 1.0)
+      f = x * pow (2.0, -ei);
+
+      if (!finite (f))
+        {
+          /* This should not happen */
+          *e = 0;
+          return f;
+        }
+
+      while (fabs (f) >= 1.0)
         {
           ei++;
           f /= 2.0;
         }
-      
-      while (fabs(f) > 0 && fabs (f) < 0.5)
+
+      while (fabs (f) > 0 && fabs (f) < 0.5)
         {
           ei--;
           f *= 2.0;

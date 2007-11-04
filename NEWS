@@ -1,3 +1,6 @@
+** Improved functions gsl_ldexp and gsl_frexp to handle the full range
+of double precision numbers in all cases.
+
 ** Added new quasi random generators gsl_qrng_halton and
 gsl_qrng_reversehalton which support dimensions up to 1229.
 
