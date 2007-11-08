@@ -3193,12 +3193,10 @@ test_choleskyc_solve_dim(const gsl_matrix_complex * m, const gsl_vector_complex 
   int s = 0;
   unsigned long i, dim = m->size1;
   gsl_complex z;
-
-  GSL_SET_IMAG(&z, 0.0);
-
   gsl_vector_complex * rhs = gsl_vector_complex_alloc(dim);
   gsl_matrix_complex * u  = gsl_matrix_complex_alloc(dim,dim);
   gsl_vector_complex * x = gsl_vector_complex_calloc(dim);
+  GSL_SET_IMAG(&z, 0.0);
   gsl_matrix_complex_memcpy(u,m);
   for(i=0; i<dim; i++)
     {
