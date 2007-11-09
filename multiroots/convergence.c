@@ -41,7 +41,7 @@ gsl_multiroot_test_delta (const gsl_vector * dx, const gsl_vector * x,
       double dxi = gsl_vector_get(dx,i);
       double tolerance = epsabs + epsrel * fabs(xi)  ;
 
-      if (fabs(dxi) < tolerance)
+      if (fabs(dxi) < tolerance || dxi == 0)
         {
           ok = 1;
         }

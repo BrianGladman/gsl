@@ -1,3 +1,7 @@
+2007-11-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* convergence.c (gsl_multiroot_test_delta): accept dxi = 0
+
 2007-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fdjac.c (gsl_multiroot_fdjacobian): detect null columns (dx too

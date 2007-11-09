@@ -1,3 +1,6 @@
+** The convergence condition for gsl_multiroots_test_delta now accepts
+dxi == 0.
+
 ** Improved functions gsl_ldexp and gsl_frexp to handle the full range
 of double precision numbers in all cases.
 
