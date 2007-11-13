@@ -114,7 +114,7 @@ This function returns a pointer to the array of elements in the
 permutation @var{p}.
 @end deftypefun
 
-@deftypefun int gsl_permutation_valid (gsl_permutation * @var{p})
+@deftypefun int gsl_permutation_valid (const gsl_permutation * @var{p})
 @cindex checking permutation for validity
 @cindex testing permutation for validity
 This function checks that the permutation @var{p} is valid.  The @var{n}

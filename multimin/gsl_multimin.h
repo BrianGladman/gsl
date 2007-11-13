@@ -201,16 +201,16 @@ int
 gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
 
 gsl_vector * 
-gsl_multimin_fdfminimizer_x (gsl_multimin_fdfminimizer * s);
+gsl_multimin_fdfminimizer_x (const gsl_multimin_fdfminimizer * s);
 
 gsl_vector * 
-gsl_multimin_fdfminimizer_dx (gsl_multimin_fdfminimizer * s);
+gsl_multimin_fdfminimizer_dx (const gsl_multimin_fdfminimizer * s);
 
 gsl_vector * 
-gsl_multimin_fdfminimizer_gradient (gsl_multimin_fdfminimizer * s);
+gsl_multimin_fdfminimizer_gradient (const gsl_multimin_fdfminimizer * s);
 
 double 
-gsl_multimin_fdfminimizer_minimum (gsl_multimin_fdfminimizer * s);
+gsl_multimin_fdfminimizer_minimum (const gsl_multimin_fdfminimizer * s);
 
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_conjugate_pr;

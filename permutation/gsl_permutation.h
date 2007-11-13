@@ -62,7 +62,7 @@ size_t * gsl_permutation_data (const gsl_permutation * p);
 size_t gsl_permutation_get (const gsl_permutation * p, const size_t i);
 int gsl_permutation_swap (gsl_permutation * p, const size_t i, const size_t j);
 
-int gsl_permutation_valid (gsl_permutation * p);
+int gsl_permutation_valid (const gsl_permutation * p);
 void gsl_permutation_reverse (gsl_permutation * p);
 int gsl_permutation_inverse (gsl_permutation * inv, const gsl_permutation * p);
 int gsl_permutation_next (gsl_permutation * p);
