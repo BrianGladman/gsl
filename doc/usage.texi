@@ -250,20 +250,26 @@ stricter autoconf test can be used, see @ref{Autoconf Macros}.
 @node Long double
 @section Long double
 @cindex long double
-The extended numerical type @code{long double} is part of the ANSI C
-standard and should be available in every modern compiler.  However, the
-precision of @code{long double} is platform dependent, and this should
-be considered when using it.  The IEEE standard only specifies the
-minimum precision of extended precision numbers, while the precision of
+In general, the algorithms in the library are written for double
+precision only.  The @code{long double} type is not supported for
+actual computation.
+
+One reason for this choice is that the precision of @code{long double}
+is platform dependent.  The IEEE standard only specifies the minimum
+precision of extended precision numbers, while the precision of
 @code{double} is the same on all platforms.
 
-In some system libraries the @code{stdio.h} formatted input/output
-functions @code{printf} and @code{scanf} are not implemented correctly
-for @code{long double}.  Undefined or incorrect results are avoided by
-testing these functions during the @code{configure} stage of library
-compilation and eliminating certain GSL functions which depend on them
-if necessary.  The corresponding line in the @code{configure} output
-looks like this,
+However, it is sometimes necessary to interact with external data in
+long-double format, so the vector and matrix datatypes include
+long-double versions.
+
+It should be noted that in some system libraries the @code{stdio.h}
+formatted input/output functions @code{printf} and @code{scanf} are
+not implemented correctly for @code{long double}.  Undefined or
+incorrect results are avoided by testing these functions during the
+@code{configure} stage of library compilation and eliminating certain
+GSL functions which depend on them if necessary.  The corresponding
+line in the @code{configure} output looks like this,
 
 @example
 checking whether printf works with long double... no
