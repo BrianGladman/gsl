@@ -430,6 +430,7 @@ header file, or any other specific type, use its individual filename.
 @node Compatibility with C++
 @section Compatibility with C++
 @cindex C++, compatibility
+@cindex exceptions, C++
 The library header files automatically define functions to have
 @code{extern "C"} linkage when included in C++ programs.  This allows
 the functions to be called directly from C++.
