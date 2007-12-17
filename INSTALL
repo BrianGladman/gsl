@@ -91,14 +91,21 @@ the build process to complete successfully.
 
 If you get any problems try this first.
 
-2) With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
+2) If you want to pass C++ functions with exceptions to GSL, the
+library needs to be compiled with the GCC option -fexceptions
+
+    ./confugire CFLAGS="-fexceptions ..."
+
+to allow C++ exceptions to be handled.
+
+3) With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
 due to a compiler optimization bug which causes errors in the
 manipulation of complex numbers.  
 
 This is fixed in more recent versions of gcc.  Do not use the library
 if you encounter this problem---install a newer version of gcc.
 
-3) Attempts to run 'strip' on the static library libgsl.a will probably
+4) Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
 strip, and probably affects others too). The libgsl.a ar archive made
 by libtool contains files with the same filenames from different
@@ -110,7 +117,7 @@ make install-strip does not work, due to a minor problem with autoconf
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
 
-4) The configure script can fail with a segmentation fault on bash-2.01
+5) The configure script can fail with a segmentation fault on bash-2.01
 
     $ ./configure
     Segmentation fault
