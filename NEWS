@@ -1,3 +1,5 @@
+** Added functions for evaluating complex polynomials
+
 ** The convergence condition for gsl_multiroots_test_delta now accepts
 dxi == 0.
 

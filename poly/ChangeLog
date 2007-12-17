@@ -1,3 +1,7 @@
+2007-12-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* eval.c: added functions for complex polynomials
+
 2005-07-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): added tests for linear case

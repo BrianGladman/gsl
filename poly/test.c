@@ -31,6 +31,8 @@ main (void)
 
   gsl_ieee_env_setup ();
 
+  /* Polynomial evaluation */
+
   {
     double x, y;
     double c[3] = { 1.0, 0.5, 0.3 };
@@ -48,6 +50,60 @@ main (void)
     gsl_test_rel (y, 1.0, eps,
                   "gsl_poly_eval({1,-1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 1.0)");
 
+  }
+
+  {
+    gsl_complex x, y;
+    double c[1] = {0.3};
+    GSL_SET_REAL (&x, 0.75);
+    GSL_SET_IMAG (&x, 1.2);
+    y = gsl_poly_complex_eval (c, 1, x);
+
+    gsl_test_rel (GSL_REAL (y), 0.3, eps, "y.real, gsl_poly_complex_eval ({0.3}, 0.75 + 1.2i)");
+    gsl_test_rel (GSL_IMAG (y), 0.0, eps, "y.imag, gsl_poly_complex_eval ({0.3}, 0.75 + 1.2i)");
+  }
+
+  {
+    gsl_complex x, y;
+    double c[4] = {2.1, -1.34, 0.76, 0.45};
+    GSL_SET_REAL (&x, 0.49);
+    GSL_SET_IMAG (&x, 0.95);
+    y = gsl_poly_complex_eval (c, 4, x);
+
+    gsl_test_rel (GSL_REAL (y), 0.3959143, eps, "y.real, gsl_poly_complex_eval ({2.1, -1.34, 0.76, 0.45}, 0.49 + 0.95i)");
+    gsl_test_rel (GSL_IMAG (y), -0.6433305, eps, "y.imag, gsl_poly_complex_eval ({2.1, -1.34, 0.76, 0.45}, 0.49 + 0.95i)");
+  }
+
+  {
+    gsl_complex x, y;
+    gsl_complex c[1];
+    GSL_SET_REAL (&c[0], 0.674);
+    GSL_SET_IMAG (&c[0], -1.423);
+    GSL_SET_REAL (&x, -1.44);
+    GSL_SET_IMAG (&x, 9.55);
+    y = gsl_complex_poly_complex_eval (c, 1, x);
+
+    gsl_test_rel (GSL_REAL (y), 0.674, eps, "y.real, gsl_complex_poly_complex_eval ({0.674 - 1.423i}, -1.44 + 9.55i)");
+    gsl_test_rel (GSL_IMAG (y), -1.423, eps, "y.imag, gsl_complex_poly_complex_eval ({0.674 - 1.423i}, -1.44 + 9.55i)");
+  }
+
+  {
+    gsl_complex x, y;
+    gsl_complex c[4];
+    GSL_SET_REAL (&c[0], -2.31);
+    GSL_SET_IMAG (&c[0], 0.44);
+    GSL_SET_REAL (&c[1], 4.21);
+    GSL_SET_IMAG (&c[1], -3.19);
+    GSL_SET_REAL (&c[2], 0.93);
+    GSL_SET_IMAG (&c[2], 1.04);
+    GSL_SET_REAL (&c[3], -0.42);
+    GSL_SET_IMAG (&c[3], 0.68);
+    GSL_SET_REAL (&x, 0.49);
+    GSL_SET_IMAG (&x, 0.95);
+    y = gsl_complex_poly_complex_eval (c, 4, x);
+
+    gsl_test_rel (GSL_REAL (y), 1.82462012, eps, "y.real, gsl_complex_poly_complex_eval ({-2.31 + 0.44i, 4.21 - 3.19i, 0.93 + 1.04i, -0.42 + 0.68i}, 0.49 + 0.95i)");
+    gsl_test_rel (GSL_IMAG (y), 2.30389412, eps, "y.imag, gsl_complex_poly_complex_eval ({-2.31 + 0.44i, 4.21 - 3.19i, 0.93 + 1.04i, -0.42 + 0.68i}, 0.49 + 0.95i)");
   }
 
   /* Quadratic */

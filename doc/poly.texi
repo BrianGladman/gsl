@@ -22,11 +22,21 @@ file @code{gsl_poly.h}.
 @cindex polynomial evaluation
 @cindex evaluation of polynomials
 
-@deftypefun double gsl_poly_eval (const double @var{c}[], const int @var{len}, const double @var{x})
-This function evaluates the polynomial 
+The functions described here evaluate the polynomial 
 @c{$c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^{len-1}$}
 @math{c[0] + c[1] x + c[2] x^2 + \dots + c[len-1] x^@{len-1@}} using
-Horner's method for stability.  @inlinefn{}
+Horner's method for stability. @inlinefns{}
+
+@deftypefun double gsl_poly_eval (const double @var{c}[], const int @var{len}, const double @var{x})
+This function evaluates a polynomial with real coefficients for the real variable @var{x}.
+@end deftypefun
+
+@deftypefun gsl_complex gsl_poly_complex_eval (const double @var{c}[], const int @var{len}, const gsl_complex @var{z})
+This function evaluates a polynomial with real coefficients for the complex variable @var{z}.
+@end deftypefun
+
+@deftypefun gsl_complex gsl_complex_poly_complex_eval (const gsl_complex @var{c}[], const int @var{len}, const gsl_complex @var{z})
+This function evaluates a polynomial with complex coefficients for the complex variable @var{z}.
 @end deftypefun
 
 @node Divided Difference Representation of Polynomials

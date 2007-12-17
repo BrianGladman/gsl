@@ -432,3 +432,5 @@ underflow in symmetric eigenvalues
 
 * Chris Mihelich <umbricola@gmail.com> bug reports and suggestions for
 gsl_ldexp and gsl_frexp
+
+* Frank Reininghaus <frank78ac@googlemail.com> complex polynomial evaluation
