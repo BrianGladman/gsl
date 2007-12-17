@@ -124,7 +124,7 @@ An inline version of this function is used when @code{HAVE_INLINE} is defined.
 @end macro
 
 @macro inlinefns
-Inline versions of these function are used when @code{HAVE_INLINE} is defined.
+Inline versions of these functions are used when @code{HAVE_INLINE} is defined.
 @end macro
 
 @include version-ref.texi
