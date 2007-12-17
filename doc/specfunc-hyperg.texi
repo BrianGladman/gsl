@@ -61,8 +61,8 @@ result with extended range.
 @deftypefun double gsl_sf_hyperg_2F1 (double @var{a}, double @var{b}, double @var{c}, double @var{x})
 @deftypefunx int gsl_sf_hyperg_2F1_e (double @var{a}, double @var{b}, double @var{c}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the Gauss hypergeometric function 
-@c{${}_2F_1(a,b,c,x)$}
-@math{2F1(a,b,c,x)} for @math{|x| < 1}.  
+@c{${}_2F_1(a,b,c,x) = F(a,b,c,x)$}
+@math{2F1(a,b,c,x) = F(a,b,c,x)} for @math{|x| < 1}.  
 
 If the arguments @math{(a,b,c,x)} are too close to a singularity then
 the function can return the error code @code{GSL_EMAXITER} when the
