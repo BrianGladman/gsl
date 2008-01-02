@@ -885,7 +885,7 @@ The functions for allocating and accessing matrices are defined in
 
 The functions for allocating memory to a matrix follow the style of
 @code{malloc} and @code{free}.  They also perform their own error
-checking.  If there is insufficient memory available to allocate a vector
+checking.  If there is insufficient memory available to allocate a matrix
 then the functions call the GSL error handler (with an error number of
 @code{GSL_ENOMEM}) in addition to returning a null pointer.  Thus if you
 use the library error handler to abort your program then it isn't
