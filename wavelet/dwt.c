@@ -79,13 +79,19 @@ dwt_step (const gsl_wavelet * w, double *a, size_t stride, size_t n,
     {
       for (ii = 0, i = 0; i < n; i += 2, ii++)
         {
+          double h = 0, g = 0;
+
           ni = i + nmod;
+          
           for (k = 0; k < w->nc; k++)
             {
               jf = n1 & (ni + k);
-              work->scratch[ii] += w->h1[k] * ELEMENT (a, stride, jf);
-              work->scratch[ii + nh] += w->g1[k] * ELEMENT (a, stride, jf);
+              h += w->h1[k] * ELEMENT (a, stride, jf);
+              g += w->g1[k] * ELEMENT (a, stride, jf);
             }
+
+          work->scratch[ii] += h;
+          work->scratch[ii + nh] += g;
         }
     }
   else

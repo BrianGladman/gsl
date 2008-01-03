@@ -434,3 +434,5 @@ underflow in symmetric eigenvalues
 gsl_ldexp and gsl_frexp
 
 * Frank Reininghaus <frank78ac@googlemail.com> complex polynomial evaluation
+
+* Jason Coy <funkdart@gmail.com> optimisation for dwt.c
