@@ -969,6 +969,141 @@ test_evolve_stiff5 (const gsl_odeiv_step_type * T, double h, double err)
                       "stiff[0,5]");
 }
 
+/* Test cases from Frank Reininghaus <frank78ac@googlemail.com> */
+
+int rhs_stepfn (double t, const double * y, double * dydt, void * params) {
+  if (t >= 1.0)
+    dydt [0] = 1;
+  else
+    dydt [0] = 0;
+
+  return 0;
+}
+
+void test_stepfn (void) {
+  /* infinite loop for epsabs = 1e-18, but not for 1e-17 */
+  double epsabs = 1e-18;
+  double epsrel = 1e-6;
+
+  const gsl_odeiv_step_type * T = gsl_odeiv_step_rk2;
+  gsl_odeiv_step * s = gsl_odeiv_step_alloc (T, 1);
+  gsl_odeiv_control * c = gsl_odeiv_control_y_new (epsabs, epsrel);
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc (1);
+  gsl_odeiv_system sys = {rhs_stepfn, 0, 1, 0};
+     
+  double t = 0.0;
+  double h = 1e-6;
+  double y = 0.0;
+  int i = 0;
+  int status;
+
+  while (t < 2.0 && i < 1000000) {
+     status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 2, &h, &y);
+    if (status != GSL_SUCCESS)
+      break;
+
+    i++;
+  }
+  gsl_test(t < 2.0, "evolve through step function (stepfn)");
+       
+  gsl_odeiv_evolve_free (e);
+  gsl_odeiv_control_free (c);
+  gsl_odeiv_step_free (s);
+}
+
+int rhs_stepfn2 (double t, const double * y, double * dydt, void * params) {
+  if (t >= 0.0)
+    dydt [0] = 1e300;
+  else
+    dydt [0] = 0;
+
+  return 0;
+}
+
+void test_stepfn2 (void) {
+  /* infinite loop for epsabs = 1e-25, but not for 1e-24 */
+  double epsabs = 1e-25;
+  double epsrel = 1e-6;
+
+  const gsl_odeiv_step_type * T = gsl_odeiv_step_rk2;
+  gsl_odeiv_step * s = gsl_odeiv_step_alloc (T, 1);
+  gsl_odeiv_control * c = gsl_odeiv_control_y_new (epsabs, epsrel);
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc (1);
+  gsl_odeiv_system sys = {rhs_stepfn2, 0, 1, 0};
+     
+  double t = -1.0;
+  double h = 1e-6;
+  double y = 0.0;
+
+  int i = 0;
+  int status;
+
+  while (t < 1.0 && i < 10000) {
+    status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 1.0, &h, &y);
+    if (status != GSL_SUCCESS)
+      break;
+
+    i++;
+  }
+
+  gsl_test(t < 1.0, "evolve through huge step function (stepfn2/rk2)");
+     
+  gsl_odeiv_evolve_free (e);
+  gsl_odeiv_control_free (c);
+  gsl_odeiv_step_free (s);
+}
+
+int rhs_stepfn3 (double t, const double * y, double * dydt, void * params) {
+
+  static int calls = 0;
+
+  if (t >= 0.0)
+    dydt [0] = 1e300;
+  else
+    dydt [0] = 0;
+
+  calls++;
+
+  return (calls < 10000) ? 0 : -1;
+}
+
+
+void test_stepfn3 (void) {
+  /* infinite loop for epsabs = 1e-26, but not for 1e-25 */
+  double epsabs = 1e-26;
+  double epsrel = 1e-6;
+
+  const gsl_odeiv_step_type * T = gsl_odeiv_step_rkf45;
+  gsl_odeiv_step * s = gsl_odeiv_step_alloc (T, 1);
+  gsl_odeiv_control * c = gsl_odeiv_control_y_new (epsabs, epsrel);
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc (1);
+  gsl_odeiv_system sys = {rhs_stepfn3, 0, 1, 0};
+     
+  double t = -1.0;
+  double h = 1e-6;
+  double y = 0.0;
+
+  int i = 0;
+  int status;
+     
+  while (t < 1.0 && i < 10000) {
+    status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 1.0, &h, &y);
+    if (status != GSL_SUCCESS)
+      break;
+
+    i++;
+  }
+
+  gsl_test(t < 1.0, "evolve through huge step function (stepfn3/rkf45)");
+     
+  gsl_odeiv_evolve_free (e);
+  gsl_odeiv_control_free (c);
+  gsl_odeiv_step_free (s);
+}
+
+
+
+
 
 int
 main (void)
@@ -1025,6 +1160,10 @@ main (void)
 
   test_compare_vanderpol();
   test_compare_oregonator();
+  
+  test_stepfn();
+  test_stepfn2();
+  test_stepfn3();
 
   exit (gsl_test_summary ());
 }
