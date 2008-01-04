@@ -512,16 +512,14 @@ back-substitution.
 
 @deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
 @deftypefunx int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * @var{A})
-These functions factorize the positive-definite square matrix
+These functions factorize the symmetric, positive-definite square matrix
 @var{A} into the Cholesky decomposition @math{A = L L^T} (or
 @c{$A = L L^{\dagger}$}
 @math{A = L L^H}
-for the complex case). On input
-only the diagonal and lower-triangular part of the matrix @var{A} are
-needed.  On output the diagonal and lower triangular part of the input
-matrix @var{A} contain the matrix @math{L}. The upper triangular part
-of the input matrix contains @math{L^T}, the diagonal terms being
-identical for both @math{L} and @math{L^T}.  If the matrix is not
+for the complex case). On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are used (the upper triangular part is ignored).  On output the diagonal and lower triangular part of the input
+matrix @var{A} contain the matrix @math{L}, while the upper triangular part
+of the input matrix is overwritten with @math{L^T} (the diagonal terms being
+identical for both @math{L} and @math{L^T}).  If the matrix is not
 positive-definite then the decomposition will fail, returning the
 error code @code{GSL_EDOM}.  
 
