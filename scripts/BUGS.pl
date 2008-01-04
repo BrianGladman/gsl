@@ -4,11 +4,12 @@ use XML::Parser;
 # Get the bug database from Savannah.gnu.org as BUGS.xml
 # Then run
 #
-#    perl BUGS.pl | cat -s > BUGS
+#    perl scripts/BUGS.pl | perl -p -e 's/^[ \t]+$//' | cat -s > BUGS
 #
 # to generate the BUGS file
+binmode STDOUT, ":utf8";
 
-my $p = XML::Parser->new(Style => 'Stream', Pkg => 'MySubs');
+my $p = XML::Parser->new(Style => 'Stream', Pkg => 'MySubs', ProtocolEncoding => 'UTF-8');
 my $t = $p->parsefile('BUGS.xml');
 
 print "-" x 72, "\n";
@@ -55,10 +56,14 @@ print "-" x 72, "\n";
     sub Format {
         print "-" x 72, "\n";
 
-        @keys = ('item_id', 'open_closed', 'status', 'category', 'summary');
-        for $k (@keys) {
-             printf("%s: %s\n", uc($k), $item->{$k});
-        }
+        $status = $item->{'status'};
+
+        $item->{'status'} = $item->{'open_closed'} . 
+               ($status eq 'None' ? "" : "/$status");
+
+        printf("BUG-ID:   %-8s\nSTATUS:   %-16s\nCATEGORY: %s\n", 
+               $item->{'item_id'}, $item->{'status'}, $item->{'category'});
+        printf("SUMMARY:  %s\n", $item->{'summary'});
         print "\n";
 
 

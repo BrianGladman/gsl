@@ -1,9 +1,8 @@
 ------------------------------------------------------------------------
-ITEM_ID: 21819
-OPEN_CLOSED: Open
-STATUS: Confirmed
+BUG-ID:   21819   
+STATUS:   Open/Confirmed  
 CATEGORY: Runtime error
-SUMMARY: gsl_sf_bessel_J_CF1() crash for large arguments
+SUMMARY:  gsl_sf_bessel_J_CF1() crash for large arguments
 
 Reply-To: Koichi Takahashi <ktakahashi@molsci.org>
 From: Koichi Takahashi <ktakahashi.molsci@gmail.com>
@@ -84,11 +83,10 @@ Maybe we should do both.  Or there can be a better method.
 koichi
 
 ------------------------------------------------------------------------
-ITEM_ID: 21820
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21820   
+STATUS:   Open            
 CATEGORY: Runtime error
-SUMMARY: gausszig.c does not work with ranlux
+SUMMARY:  gausszig.c does not work with ranlux
 
 From: "Gareth Haslip" <mail@haslip.co.uk>
 To: <bug-gsl@gnu.org>
@@ -98,37 +96,24 @@ Date: Wed, 21 Nov 2007 21:33:54 -0000
 I am using the windows port of gsl 1.10 (from david geldreich) in visual
 studio.
 
- 
-
 The above file on line 176 says:
-
- 
 
 gsl_rng_uniform_int (r, 16777216);
 
- 
-
 However, gsl_rnd_ranlux has a max draw of 16777215 which leads to a crash...
-
- 
 
 This didn't happen in the previous release of gsl - I haven't checked if
 this is a windows only port issue, but thought its worth mentioning.
 
- 
-
 Regards,
-
- 
 
 Gareth
 
 ------------------------------------------------------------------------
-ITEM_ID: 21826
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21826   
+STATUS:   Open            
 CATEGORY: Build
-SUMMARY: libtool problem on hp-ux
+SUMMARY:  libtool problem on hp-ux
 
 From: "Benoit, Gerard" <GERARD.BENOIT@astrium.eads.net>
 To: bug-gsl@gnu.org
@@ -136,7 +121,7 @@ Subject: [Bug-gsl] gsl-1.9 : error in compilation scripts
 Date: Fri, 13 Jul 2007 12:28:35 +0200
 
 Hello,
- 
+
 I wish to report a bug in the compilation scripts:
 GSL version 1.9  downloaded from ftp.gnu.org
 computer HP 9000/785 under HP-UX  B.11.00 A 
@@ -144,7 +129,7 @@ config.guess -> hppa2.0w-hp-hpux11.00
 compiler  : cc -> /opt/ansic/bin/cc   HP C  HP92453-01 A.11.01.20
 compilation options : -Ae
 linker  : ld -> /bin/ld
- 
+
 fatal error during the build of the shared libraries( first for cblas/libgslcblas.sl )
 command executed : $archive_cmds 
 gsl-1.9/libtool ( line 214 ) : archive_cmds="\$CC -b \${wl}+h \${wl}\$soname \${wl}+b \${wl}\$install_libdir -o \$lib \$libobjs \$deplibs \$compiler_flags"
@@ -153,20 +138,19 @@ coming from gsl-1.9/aclocal.m4 ( line 6541 ) :
 
 the compiler cc don't recognize the "-b" option ( it is a linker option ) and throw it : the linker looks for a main module and don't find it
 with the correct form ${wl}-b to pass the option to the linker, cc add a start-up module ( like /usr/ccs/lib/crt0.o or /opt/langtools/lib/crt0.o ) which is useless for a shared library and has not be compiled with a PIC option ( +z or +Z ) and the linker stops.
- 
+
 In the preceding version 1.6 ( I have never downloaded version 1.7 and 1.8 ) the command was :
 gsl-1.6/libtool ( line 187 ) : archive_cmds="\$LD -b +h \$soname +b \$install_libdir -o \$lib \$libobjs \$deplibs \$linker_flags"
 from
 gsl-1.6/aclocal.m4 ( line 2441 ) :    *) archive_cmds='$LD -b +h $soname +b $install_libdir -o $lib $libobjs $deplibs $linker_flags' ;;
 
 This command works fine
- 
+
 so, look for a way to return to the LD command in gsl-1.9/aclocal.m4 ( line 6541 ) :
-   
+
 Best regards
- 
+
 Gérard BENOIT
- 
 
 Ce courriel (incluant ses éventuelles pièces jointes) peut contenir des informations confidentielles et/ou protégées ou dont la diffusion est restreinte. Si vous avez reçu ce courriel par erreur, vous ne devez ni le copier, ni l'utiliser, ni en divulguer le contenu à quiconque. Merci d’en avertir immédiatement l’expéditeur et d’effacer ce courriel de votre système. Astrium décline toute responsabilité en cas de corruption par virus, d’altération ou de falsification de ce courriel lors de sa transmission par voie électronique.
 
@@ -179,11 +163,10 @@ Bug-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/bug-gsl
 
 ------------------------------------------------------------------------
-ITEM_ID: 21827
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21827   
+STATUS:   Open            
 CATEGORY: Runtime error
-SUMMARY: bspline error at the last breakpoint 
+SUMMARY:  bspline error at the last breakpoint 
 
 From: "Christophe Cloquet" <christophe.cloquet@ulb.ac.be>
 To: <bug-gsl@gnu.org>
@@ -191,17 +174,17 @@ Subject: [Bug-gsl] GSL - bspline
 Date: Thu, 26 Apr 2007 14:26:06 +0200
 
 Hi, 
- 
+
 I found a small bug in the GSL bspline module.
- 
+
 When triying to evaluate the bsplines at the last breakpoint tmax, I get 0
 everywhere, what's not normal.
- 
+
 Fortunately, when evaluating at tmax-epsilon, where epsilon is a small
 value, I can recover the expected value.
- 
+
 Best regards,
- 
+
 Christophe
 _______________________________________________
 Bug-gsl mailing list
@@ -211,11 +194,10 @@ http://lists.gnu.org/mailman/listinfo/bug-gsl
 -
 
 ------------------------------------------------------------------------
-ITEM_ID: 21828
-OPEN_CLOSED: Open
-STATUS: Confirmed
+BUG-ID:   21828   
+STATUS:   Open/Confirmed  
 CATEGORY: Performance
-SUMMARY: suboptimal performance of gsl_fdfsolver_lmsder
+SUMMARY:  suboptimal performance of gsl_fdfsolver_lmsder
 
 From: "Alexander Usov" <a.s.usov@gmail.com>
 To: help-gsl@gnu.org
@@ -284,11 +266,10 @@ Help-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/help-gsl
 
 ------------------------------------------------------------------------
-ITEM_ID: 21830
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21830   
+STATUS:   Open            
 CATEGORY: None
-SUMMARY: provide function to retrieve size of chebyshev data
+SUMMARY:  provide function to retrieve size of chebyshev data
 
 Reply-To: help-gsl@gnu.org
 From: Brian Gough <bjg@network-theory.co.uk>
@@ -329,23 +310,22 @@ Help-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/help-gsl
 
 ------------------------------------------------------------------------
-ITEM_ID: 21831
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21831   
+STATUS:   Open            
 CATEGORY: Accuracy problem
-SUMMARY: Lev� random number generator for alpha < 1
+SUMMARY:  Levý random number generator for alpha < 1
 
 From: rafael@fis.unb.br
 To: bug-gsl@gnu.org
-Subject: [Bug-gsl] Lev� random number generator
+Subject: [Bug-gsl] Levý random number generator
 Date: Mon, 26 Mar 2007 19:48:01 -0300
 
-The Lev� skew random number generator (gsl_ran_levy_skew) does not  
-procuce a Lev� random number when beta=0 (symmetric case), and the  
+The Levý skew random number generator (gsl_ran_levy_skew) does not  
+procuce a Levý random number when beta=0 (symmetric case), and the  
 gsl_ran_levy function does not work as stated in the docs. I made some  
 histograms from 10^6 samples to check the accuracy of the algorithms,  
 by comparison agaisnt the numerical integration of the equation of  
-Lev�'s PDF. For the gsl_ran_levy function there is a good precison for  
+Levý's PDF. For the gsl_ran_levy function there is a good precison for  
 alpha [1,2], for alpha (0.3,1) you must sum a series of random numbers  
 to get the same precision (tipicaly 100 or more gsl_ran_levy numbers).  
 For alpha<=0.3 the algorithm does not work properly, even worse, the  
@@ -538,11 +518,10 @@ http://lists.gnu.org/mailman/listinfo/bug-gsl
 -
 
 ------------------------------------------------------------------------
-ITEM_ID: 21832
-OPEN_CLOSED: Open
-STATUS: Fixed
+BUG-ID:   21832   
+STATUS:   Open/Fixed      
 CATEGORY: None
-SUMMARY: gsl infnan.c configure/build bug on solaris
+SUMMARY:  gsl infnan.c configure/build bug on solaris
 
 From: Richard Smith <Richard.Smith@Sun.COM>
 To: bug-gsl@gnu.org
@@ -620,11 +599,10 @@ Bug-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/bug-gsl
 
 ------------------------------------------------------------------------
-ITEM_ID: 21833
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21833   
+STATUS:   Open            
 CATEGORY: Performance
-SUMMARY: suboptimal performance of gsl permutation?
+SUMMARY:  suboptimal performance of gsl permutation?
 
 From: "djamel anonymous" <djam8193ah@hotmail.com>
 To: bjg@network-theory.co.uk
@@ -650,15 +628,14 @@ allocation.
 best regards.
 
 _________________________________________________________________
-MSN Hotmail sur i-mode� : envoyez et recevez des e-mails depuis votre 
-t�l�phone portable ! http://www.msn.fr/hotmailimode/
+MSN Hotmail sur i-mode : envoyez et recevez des e-mails depuis votre 
+téléphone portable ! http://www.msn.fr/hotmailimode/
 
 ------------------------------------------------------------------------
-ITEM_ID: 21834
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21834   
+STATUS:   Open            
 CATEGORY: Build
-SUMMARY: integer overflow with gcc 4.3 on solaris
+SUMMARY:  integer overflow with gcc 4.3 on solaris
 
 From: Richard Guenther <rguenther@suse.de>
 To: bjg@network-theory.co.uk
@@ -705,11 +682,10 @@ Novell / SUSE Labs
 SUSE LINUX Products GmbH - Nuernberg - AG Nuernberg - HRB 16746 - GF: Markus Rex
 
 ------------------------------------------------------------------------
-ITEM_ID: 21835
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21835   
+STATUS:   Open            
 CATEGORY: Accuracy problem
-SUMMARY: gsl_sf_hyperg_2F1 problematic arguments
+SUMMARY:  gsl_sf_hyperg_2F1 problematic arguments
 
 BUG#1 -- gsl_sf_hyperg_2F1_e fails for some arguments 
 
@@ -784,11 +760,10 @@ Olaf Wucknitz
 Joint Institute for VLBI in Europe                wucknitz@jive.nl
 
 ------------------------------------------------------------------------
-ITEM_ID: 21836
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21836   
+STATUS:   Open            
 CATEGORY: Accuracy problem
-SUMMARY: gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
+SUMMARY:  gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
 
 BUG#44 -- gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
 
@@ -818,11 +793,10 @@ $ ./a.out
 9.999999999999985567e-01
 
 ------------------------------------------------------------------------
-ITEM_ID: 21837
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21837   
+STATUS:   Open            
 CATEGORY: Runtime error
-SUMMARY: gsl_linalg_solve_symm_tridiag requires positive definite matrix
+SUMMARY:  gsl_linalg_solve_symm_tridiag requires positive definite matrix
 
 A zero on the diagonal will cause NaNs even though a reasonable
 solution could be computed in principle. 
@@ -865,11 +839,10 @@ AUG 2007: We now return an error code for this case.  To return a solution
 we would need to do a permutation, see slatec/dgtsl.f
 
 ------------------------------------------------------------------------
-ITEM_ID: 21838
-OPEN_CLOSED: Open
-STATUS: None
+BUG-ID:   21838   
+STATUS:   Open            
 CATEGORY: Runtime error
-SUMMARY: gsl_cdf_fdist_P() nan return value
+SUMMARY:  gsl_cdf_fdist_P() nan return value
 
 Added test case
     TEST (gsl_cdf_fdist_P, (3.479082213465832574, 1, 4040712), 0.93785072763723411967, TEST_TOL6);
