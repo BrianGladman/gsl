@@ -199,6 +199,7 @@ try_step:
   if (con != NULL)
     {
       /* Check error and attempt to adjust the step. */
+
       double h_old = h0;
 
       const int hadjust_status 
@@ -206,9 +207,14 @@ try_step:
 
       if (hadjust_status == GSL_ODEIV_HADJ_DEC)
         {
-          /* Check that the reported decrease is valid and measurable */
+          /* Check that the reported status is correct (i.e. an actual
+             decrease in h0 occured) and the suggested h0 will change
+             the time by at least 1 ulp */
 
-          if (fabs(h0) < fabs(h_old) && (*t) != GSL_COERCE_DBL((*t) + h0)) 
+          double t_curr = GSL_COERCE_DBL(*t);
+          double t_next = GSL_COERCE_DBL((*t) + h0);
+
+          if (fabs(h0) < fabs(h_old) && t_next != t_curr) 
             {
               /* Step was decreased. Undo step, and try again with new h0. */
               DBL_MEMCPY (y, e->y0, dydt->dimension);
