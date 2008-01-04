@@ -998,13 +998,18 @@ void test_stepfn (void) {
   int status;
 
   while (t < 2.0 && i < 1000000) {
-     status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 2, &h, &y);
+    status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 2, &h, &y);
+#ifdef DEBUG
+    printf("i=%d status=%d t=%g h=%g y=%g\n", i, status, t, h, y);
+#endif
     if (status != GSL_SUCCESS)
       break;
-
+    
     i++;
   }
-  gsl_test(t < 2.0, "evolve through step function (stepfn)");
+
+  gsl_test_abs(t, 2.0, 1e-16, "evolve step function, t (stepfn/rk2)");
+  gsl_test_rel(y, 1.0, epsrel, "evolve step function, y (stepfn/rk2)");
        
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);
@@ -1040,13 +1045,17 @@ void test_stepfn2 (void) {
 
   while (t < 1.0 && i < 10000) {
     status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 1.0, &h, &y);
+#ifdef DEBUG
+    printf("i=%d status=%d t=%g h=%g y=%g\n", i, status, t, h, y);
+#endif
     if (status != GSL_SUCCESS)
       break;
 
     i++;
   }
 
-  gsl_test(t < 1.0, "evolve through huge step function (stepfn2/rk2)");
+  gsl_test_abs(t, 1.0, 1e-16, "evolve big step function, t (stepfn2/rk2)");
+  gsl_test_rel(y, 1e300, epsrel, "evolve big step function, y (stepfn2/rk2)");
      
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);
@@ -1064,7 +1073,7 @@ int rhs_stepfn3 (double t, const double * y, double * dydt, void * params) {
 
   calls++;
 
-  return (calls < 10000) ? 0 : -1;
+  return (calls < 100000) ? 0 : -999;
 }
 
 
@@ -1085,16 +1094,20 @@ void test_stepfn3 (void) {
 
   int i = 0;
   int status;
-     
+
   while (t < 1.0 && i < 10000) {
     status = gsl_odeiv_evolve_apply (e, c, s, &sys, &t, 1.0, &h, &y);
+#ifdef DEBUG
+    printf("i=%d status=%d t=%g h=%g y=%g\n", i, status, t, h, y);
+#endif
     if (status != GSL_SUCCESS)
       break;
 
     i++;
   }
 
-  gsl_test(t < 1.0, "evolve through huge step function (stepfn3/rkf45)");
+  gsl_test_abs(t, 1.0, 1e-16, "evolve big step function, t (stepfn3/rkf45)");
+  gsl_test_rel(y, 1e300, epsrel, "evolve big step function, y (stepfn3/rkf45)");
      
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);
