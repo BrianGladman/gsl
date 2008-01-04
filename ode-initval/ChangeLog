@@ -1,3 +1,9 @@
+2008-01-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* evolve.c (gsl_odeiv_evolve_apply): handle the case where
+	GSL_ODEIV_HADJ_DEC does not represent a real decrease (e.g. where
+	x+h = x due to finite precision)
+
 2006-07-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* evolve.c (gsl_odeiv_evolve_apply): notify user of step-size

@@ -425,6 +425,31 @@ This function frees all the memory associated with the evolution function
 @var{e}.
 @end deftypefun
 
+@cindex discontinuities, in ODE systems
+Where a system has discontinuous changes in the derivatives at known
+times it is advisable to evolve the system between each discontinuity
+in sequence.  For example, if a step-change in an external driving
+force occurs at times @math{t_a, t_b, t_c, \dots} then evolving over
+the ranges @math{(t_0,t_a)}, @math{(t_a,t_b)}, @dots{},
+@math{(t_c,t_1)} is more efficient than using the single range
+@math{(t_0,t_1)}.  
+
+Evolving the system directly through a discontinuity with a strict
+tolerance may result in extremely small steps being taken at the edge
+of the discontinuity (e.g. down to the limit of machine precision).
+In this case it may be necessary to impose a minimum step size
+@code{hmin} suitable for the problem:
+
+@example
+while (t < t1)
+@{
+   gsl_odeiv_evolve_apply (e, c, s, &sys, &t, t1, &h, y);
+   if (h < hmin) @{ h = hmin; @} ;
+@}
+@end example
+The value of @var{h} returned by @code{gsl_odeiv_evolve_apply} is
+always a suggested value and can be modified whenever needed.
+
 @node ODE Example programs
 @section Examples
 @cindex Van der Pol oscillator, example

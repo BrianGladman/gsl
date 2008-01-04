@@ -199,15 +199,26 @@ try_step:
   if (con != NULL)
     {
       /* Check error and attempt to adjust the step. */
+      double h_old = h0;
+
       const int hadjust_status 
         = gsl_odeiv_control_hadjust (con, step, y, e->yerr, e->dydt_out, &h0);
 
       if (hadjust_status == GSL_ODEIV_HADJ_DEC)
         {
-          /* Step was decreased. Undo and go back to try again. */
-          DBL_MEMCPY (y, e->y0, dydt->dimension);
-          e->failed_steps++;
-          goto try_step;
+          /* Check that the reported decrease is valid and measurable */
+
+          if (fabs(h0) < fabs(h_old) && (*t) != GSL_COERCE_DBL((*t) + h0)) 
+            {
+              /* Step was decreased. Undo step, and try again with new h0. */
+              DBL_MEMCPY (y, e->y0, dydt->dimension);
+              e->failed_steps++;
+              goto try_step;
+            }
+          else
+            {
+              h0 = h_old; /* keep current step size */
+            }
         }
     }
 
