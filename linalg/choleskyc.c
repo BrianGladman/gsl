@@ -58,7 +58,7 @@ gsl_linalg_complex_cholesky_decomp(gsl_matrix_complex *A)
     }
   else
     {
-      size_t j;
+      size_t i, j;
       gsl_complex z;
       double ajj;
 
@@ -110,6 +110,16 @@ gsl_linalg_complex_cholesky_decomp(gsl_matrix_complex *A)
                 }
 
               gsl_blas_zdscal(1.0 / ajj, &av.vector);
+            }
+        }
+
+      /* Now store L^H in upper triangle */
+      for (i = 1; i < N; ++i)
+        {
+          for (j = 0; j < i; ++j)
+            {
+              z = gsl_matrix_complex_get(A, i, j);
+              gsl_matrix_complex_set(A, j, i, gsl_complex_conjugate(z));
             }
         }
 
