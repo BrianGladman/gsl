@@ -1,6 +1,6 @@
 /* bspline/bspline.c
  * 
- * Copyright (C) 2006 Patrick Alken
+ * Copyright (C) 2006, 2007, 2008 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,9 +140,6 @@ Return: none
 void
 gsl_bspline_free(gsl_bspline_workspace *w)
 {
-  if (!w)
-    return;
-
   if (w->knots)
     gsl_vector_free(w->knots);
 
@@ -405,6 +402,12 @@ bspline_eval_all(const double x, gsl_vector *B, size_t *idx,
             }
         }
 
+      if (gsl_vector_get(w->knots, i) == gsl_vector_get(w->knots, i + 1))
+        {
+          GSL_ERROR("knot(i) = knot(i+1) will result in division by zero",
+                    GSL_EINVAL);
+        }
+
       *idx = i;
 
       gsl_vector_set(B, 0, 1.0);
@@ -454,11 +457,12 @@ Return: i (index in w->knots corresponding to left limit of interval)
 
 Notes: The error conditions are reported as follows:
 
-Condition             Return value        Flag
----------             ------------        ----
-x < t_0                    0               -1
-t_i <= x < t_{i+1}         i                0
-t_{n+k-1} <= x           l+k-1             +1
+Condition                        Return value        Flag
+---------                        ------------        ----
+x < t_0                               0               -1
+t_i <= x < t_{i+1}                    i                0
+t_i < x = t_{i+1} = t_{n+k-1}         i                0
+t_{n+k-1} < x                       l+k-1             +1
 */
 
 static inline size_t
@@ -485,6 +489,10 @@ bspline_find_interval(const double x, int *flag,
         }
 
       if (ti <= x && x < tip1)
+        break;
+
+      if (ti < x && x == tip1 &&
+          tip1 == gsl_vector_get(w->knots, w->k + w->l - 1))
         break;
     }
 
