@@ -113,10 +113,16 @@ specified @var{nbreak} parameter. The knots are stored in
 This function evaluates all B-spline basis functions at the position
 @var{x} and stores them in @var{B}, so that the @math{i}th element
 of @var{B} is @math{B_i(x)}. @var{B} must be of length
-@math{n = nbreak + k - 2}. This value is also stored in @code{w->n}.
+@math{n = nbreak + k - 2}. This value may also be obtained by calling
+@code{gsl_bspline_ncoeffs}.
 It is far more efficient to compute all of the basis functions at
 once than to compute them individually, due to the nature of the
 defining recurrence relation.
+@end deftypefun
+
+@deftypefun size_t gsl_bspline_ncoeffs (gsl_bspline_workspace * @var{w})
+This function returns the number of B-spline coefficients given by
+@math{n = nbreak + k - 2}.
 @end deftypefun
 
 @node Example programs for B-splines
@@ -125,7 +131,7 @@ defining recurrence relation.
 
 The following program computes a linear least squares fit to data using
 cubic B-spline basis functions with uniform breakpoints. The data is
-generated from the curve @math{y(x) = \cos{(x)} \exp{(-0.1 x)}} on
+generated from the curve @math{y(x) = \cos{(x)} \exp{(-x/10)}} on
 @math{[0, 15]} with gaussian noise added.
 
 @example
