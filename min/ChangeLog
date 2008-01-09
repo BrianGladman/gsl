@@ -1,3 +1,7 @@
+2008-01-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* brent.c (brent_iterate): remove spurious early return
+
 2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* min.h (SAFE_FUNC_CALL): use gsl_finite instead of finite

@@ -111,8 +111,8 @@ test_f (const gsl_min_fminimizer_type * T,
       b = gsl_min_fminimizer_x_upper(s);
 
 #ifdef DEBUG
-      printf("%.12f %.18f %.12f %.18f %.12f %.18f\n", 
-             a, GSL_FN_EVAL(f, a), m, GSL_FN_EVAL(f, m), b, GSL_FN_EVAL(f, b));
+      printf("%.12f %.18f %.12f %.18f %.12f %.18f status=%d\n", 
+             a, GSL_FN_EVAL(f, a), m, GSL_FN_EVAL(f, m), b, GSL_FN_EVAL(f, b), status);
 #endif
 
       if (a > b)

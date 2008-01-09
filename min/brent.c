@@ -185,13 +185,11 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
         {
           *x_lower = u;
           *f_lower = f_u;
-          return GSL_SUCCESS;
         }
       else
         {
           *x_upper = u;
           *f_upper = f_u;
-          return GSL_SUCCESS;
         }
 
       if (f_u <= f_w || w == z)
@@ -210,7 +208,7 @@ brent_iterate (void *vstate, gsl_function * f, double *x_minimum, double * f_min
         }
     }
 
-  return GSL_FAILURE;
+  return GSL_SUCCESS;
 }
 
 

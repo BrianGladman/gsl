@@ -1,3 +1,5 @@
+** Fixed a bug in the brent minimiser which prevented optimal convergence.
+
 ** Added functions for evaluating complex polynomials
 
 ** The convergence condition for gsl_multiroots_test_delta now accepts
