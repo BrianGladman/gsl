@@ -459,6 +459,12 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, 0.5, 2.0, -1.0+1.0/65536.0, &r), 0.762762124908845424449, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, 0.5, 2.0, -1.0+1.0/1048576.0, &r), 0.762759911089064738044, TEST_TOL0, GSL_SUCCESS);
 
+  /* added special handling with x == 1.0 , Richard J. Mathar, 2008-01-09 */
+
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, 0.5, 3.0, 1.0, &r), 1.6976527263135502482014268 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, -4.2, 3.0, 1.0, &r), .15583601560025710649555254 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (-7.4, 0.7, -1.5, 1.0, &r), -.34478866959246584996859 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (0.1, -2.7, -1.5, 1.0, &r), 1.059766766063610122925 , TEST_TOL0, GSL_SUCCESS);
 
   /* 2F1 conj */
 
@@ -469,14 +475,13 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_e, (8, 8, 5, -0.5, &r), 0.00023301916814505902809, TEST_TOL3, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_e, (25, 25, 1, -0.5, &r), 5.1696944096e-06, TEST_SQRT_TOL0, GSL_SUCCESS);
 
-  /* FIXME: the "true" values here may not be so good */
-  /*
-  TEST_SF(s, gsl_sf_hyperg_2F0_e, (0.01, 1.0, -0.02, &r), 0.999803886708565   , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F0_e, (0.1,  0.5, -0.02, &r), 0.999015947934831   , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F0_e, (1,   1, -0.02, &r), 0.980755496569062    , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F0_e, (8,   8, -0.02, &r), 0.3299059284994299   , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F0_e, (50, 50, -0.02, &r), 2.688995263773233e-13, TEST_TOL0, GSL_SUCCESS);
-  */
+  /* updated correct values, testing enabled, Richard J. Mathar, 2008-01-09 */
+
+  TEST_SF(s, gsl_sf_hyperg_2F0_e, (0.01, 1.0, -0.02, &r), .99980388665511730901180717   , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F0_e, (0.1,  0.5, -0.02, &r), .99901595171179281891589794   , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F0_e, (1,   1, -0.02, &r), .98075549650574351826538049000    , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F0_e, (8,   8, -0.02, &r), .32990592849626965538692141   , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F0_e, (50, 50, -0.02, &r), .2688995263772964415245902e-12 , TEST_TOL0, GSL_SUCCESS);
 
 
   /* 2F1 renorm */

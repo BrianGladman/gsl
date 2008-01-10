@@ -1,3 +1,6 @@
+** The hypergeometric function gsl_sf_hyperg_2F1 now handles the case
+   where x==1.
+
 ** Fixed a bug in the brent minimiser which prevented optimal convergence.
 
 ** Added functions for evaluating complex polynomials

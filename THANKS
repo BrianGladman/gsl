@@ -350,7 +350,8 @@ for Brent minimisation algorithm.
 * Stewart V. Wright <swright+gsl@physics.adelaide.edu.au> patch for missing 
 spline functions
 
-* Richard Mathar <mathar@strw.leidenuniv.nl> additional Debye functions n=5,6
+* Richard Mathar <mathar@strw.leidenuniv.nl> additional Debye
+functions n=5,6, handle case x==1 in 2F1.
 
 * Stefan Jahn <stefan@gruft.de>  bug fix for periodic cubic splines with n=3
 

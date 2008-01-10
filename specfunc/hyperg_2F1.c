@@ -636,6 +636,32 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
   result->val = 0.0;
   result->err = 0.0;
 
+   /* Handle x == 1.0 RJM */
+
+  if (fabs (x - 1.0) < locEPS && (c - a - b) > 0 && c != 0 && !c_neg_integer) {
+    gsl_sf_result lngamc, lngamcab, lngamca, lngamcb;
+    double lngamc_sgn, lngamca_sgn, lngamcb_sgn;
+    int status;
+    int stat1 = gsl_sf_lngamma_sgn_e (c, &lngamc, &lngamc_sgn);
+    int stat2 = gsl_sf_lngamma_e (c - a - b, &lngamcab);
+    int stat3 = gsl_sf_lngamma_sgn_e (c - a, &lngamca, &lngamca_sgn);
+    int stat4 = gsl_sf_lngamma_sgn_e (c - b, &lngamcb, &lngamcb_sgn);
+    
+    if (stat1 != GSL_SUCCESS || stat2 != GSL_SUCCESS
+        || stat3 != GSL_SUCCESS || stat3 != GSL_SUCCESS)
+      {
+        DOMAIN_ERROR (result);
+      }
+    
+    status =
+      gsl_sf_exp_err_e (lngamc.val + lngamcab.val - lngamca.val - lngamcb.val,
+                        lngamc.err + lngamcab.err + lngamca.err + lngamcb.err,
+                        result);
+    
+    result->val *= lngamc_sgn / (lngamca_sgn * lngamcb_sgn);
+      return status;
+  }
+  
   if(x < -1.0 || 1.0 <= x) {
     DOMAIN_ERROR(result);
   }

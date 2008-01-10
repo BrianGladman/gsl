@@ -1,3 +1,7 @@
+2008-01-10  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): handle case of x==1
+
 2007-10-25  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel.c (gsl_sf_bessel_J_CF1): handle underflow by rescaling in
