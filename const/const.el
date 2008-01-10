@@ -10,7 +10,7 @@
 
 (calc-eval "")
 (load-library "calc/calc-units.el")
-(calc-extensions)
+;;(calc-extensions)
 
 (add-to-list 'load-path (expand-file-name "."))
 (require 'calc-units-update)
@@ -41,7 +41,7 @@
 
 (setq  gsl-constants
        '(("c"             "SPEED_OF_LIGHT")
-         ("Grav"          "GRAVITATIONAL_CONSTANT")
+         ("G"             "GRAVITATIONAL_CONSTANT")
          ("h"             "PLANCKS_CONSTANT_H")
          ("hbar"          "PLANCKS_CONSTANT_HBAR")
 
@@ -53,7 +53,7 @@
 
          ("ev"            "ELECTRON_VOLT")
          ("me"            "MASS_ELECTRON")
-         ("mu"            "MASS_MUON")
+         ("mmu"           "MASS_MUON")
          ("mp"            "MASS_PROTON")
          ("mn"            "MASS_NEUTRON")
 
@@ -81,9 +81,9 @@
 
          ("mil"           "MIL")
          ("point"         "POINT")
-         ("tpt"           "TEXPOINT")
+         ("texpt"         "TEXPOINT")
 
-         ("u"             "MICRON")
+         ("mu"            "MICRON")
          ("Ang"           "ANGSTROM")
 
          ("hect"          "HECTARE")
@@ -127,7 +127,7 @@
          
          ("bar"           "BAR")
          ("atm"           "STD_ATMOSPHERE")
-         ("torr"          "TORR")
+         ("Torr"          "TORR")
          ("mHg"           "METER_OF_MERCURY")
          ("inHg"          "INCH_OF_MERCURY")
          ("inH2O"         "INCH_OF_WATER")
@@ -138,7 +138,7 @@
          
          ("Fdy"           "FARADAY")
          ("e"             "ELECTRON_CHARGE")
-         ("G"             "GAUSS")
+         ("Gs"            "GAUSS")
 
          ("sb"            "STILB")
          ("lm"            "LUMEN")

@@ -1,3 +1,5 @@
+** Updated some constants to the CODATA 2006 values.
+
 ** The hypergeometric function gsl_sf_hyperg_2F1 now handles the case
    where x==1.
 
