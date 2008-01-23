@@ -157,14 +157,12 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * @var{s}, gsl_multiroot_function * @var{f}, gsl_vector * @var{x})
-This function sets, or resets, an existing solver @var{s} to use the
-function @var{f} and the initial guess @var{x}.
-@end deftypefun
-
-@deftypefun int gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * @var{s}, gsl_multiroot_function_fdf * @var{fdf}, gsl_vector * @var{x})
-This function sets, or resets, an existing solver @var{s} to use the
-function and derivative @var{fdf} and the initial guess @var{x}.
+@deftypefun int gsl_multiroot_fsolver_set (gsl_multiroot_fsolver * @var{s}, gsl_multiroot_function * @var{f}, const gsl_vector * @var{x})
+@deftypefunx int gsl_multiroot_fdfsolver_set (gsl_multiroot_fdfsolver * @var{s}, gsl_multiroot_function_fdf * @var{fdf}, const gsl_vector * @var{x})
+These functions set, or reset, an existing solver @var{s} to use the
+function @var{f} or function and derivative @var{fdf}, and the initial
+guess @var{x}.  Note that the initial position is copied from @var{x}, this
+argument is not modified by subsequent iterations.
 @end deftypefun
 
 @deftypefun void gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * @var{s})
@@ -375,24 +373,25 @@ continuing.
 @end table
 @end deftypefun
 
-The solver maintains a current best estimate of the root at all times.
-This information can be accessed with the following auxiliary functions,
+The solver maintains a current best estimate of the root @code{s->x}
+and its function value @code{s->f} at all times.  This information can
+be accessed with the following auxiliary functions,
 
 @deftypefun {gsl_vector *} gsl_multiroot_fsolver_root (const gsl_multiroot_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_root (const gsl_multiroot_fdfsolver * @var{s})
-These functions return the current estimate of the root for the solver @var{s}.
+These functions return the current estimate of the root for the solver @var{s}, given by @code{s->x}.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_multiroot_fsolver_f (const gsl_multiroot_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_f (const gsl_multiroot_fdfsolver * @var{s})
 These functions return the function value @math{f(x)} at the current
-estimate of the root for the solver @var{s}.
+estimate of the root for the solver @var{s}, given by @code{s->f}.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_multiroot_fsolver_dx (const gsl_multiroot_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multiroot_fdfsolver_dx (const gsl_multiroot_fdfsolver * @var{s})
 These functions return the last step @math{dx} taken by the solver
-@var{s}.
+@var{s}, given by @code{s->dx}.
 @end deftypefun
 
 @node Search Stopping Parameters for the multidimensional solver
