@@ -1,3 +1,8 @@
+2008-01-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_evolve_negative_h): test evolution with negative
+	steps as well as positive
+
 2008-01-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* evolve.c (gsl_odeiv_evolve_apply): handle the case where

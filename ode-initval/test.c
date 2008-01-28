@@ -977,7 +977,7 @@ int rhs_stepfn (double t, const double * y, double * dydt, void * params) {
   else
     dydt [0] = 0;
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 void test_stepfn (void) {
@@ -1022,7 +1022,7 @@ int rhs_stepfn2 (double t, const double * y, double * dydt, void * params) {
   else
     dydt [0] = 0;
 
-  return 0;
+  return GSL_SUCCESS;
 }
 
 void test_stepfn2 (void) {
@@ -1073,7 +1073,7 @@ int rhs_stepfn3 (double t, const double * y, double * dydt, void * params) {
 
   calls++;
 
-  return (calls < 100000) ? 0 : -999;
+  return (calls < 100000) ? GSL_SUCCESS : -999;
 }
 
 
@@ -1114,9 +1114,57 @@ void test_stepfn3 (void) {
   gsl_odeiv_step_free (s);
 }
 
+int rhs_cos (double t, const double * y, double * dydt, void * params) {
+  dydt [0] = cos (t);
+  return GSL_SUCCESS;
+}
 
+int jac_cos (double t, const double y[], double *dfdy, double dfdt[],
+             void *params)
+{
+  dfdy[0] = 0.0;
+  dfdt[0] = -sin(t);
 
+  return GSL_SUCCESS;
+}
 
+/* Test evolution in negative direction */
+
+void
+test_evolve_negative_h (const gsl_odeiv_step_type * T, double h, double err)
+{ 
+  /* Tolerance factor in testing errors */
+  const double factor = 10;
+
+  gsl_odeiv_step * step = gsl_odeiv_step_alloc (T, 1);
+  gsl_odeiv_control * c = gsl_odeiv_control_standard_new (err, err, 1.0, 0.0);
+  gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc (1);
+  gsl_odeiv_system sys = {rhs_cos, jac_cos, 1, 0};
+
+  double t = 0;
+  double t1 = -4.0;
+
+  double y = 0.0;
+  double yfin = sin (t1);
+
+  /* Make initial h negative */
+  h = -fabs(h);
+
+  while (t > t1) {
+    int status = gsl_odeiv_evolve_apply (e, c, step, &sys, &t, t1, &h, &y);
+    
+    if (status != GSL_SUCCESS) 
+      {
+	gsl_test(status, "%s evolve_apply returned %d for negative h",
+		 gsl_odeiv_step_name (step), status);
+	break;
+      }
+  }
+
+  gsl_test_abs (y, yfin, factor * e->count * err,
+		"evolution with negative h (using %s)", 
+                gsl_odeiv_step_name (step));
+}
 
 int
 main (void)
@@ -1169,6 +1217,7 @@ main (void)
       test_evolve_xsin (p[i].type, p[i].h, 1e-8);
       test_evolve_stiff1 (p[i].type, p[i].h, 1e-7);
       test_evolve_stiff5 (p[i].type, p[i].h, 1e-7);
+      test_evolve_negative_h (p[i].type, p[i].h, 1e-7);
     }
 
   test_compare_vanderpol();
@@ -1177,6 +1226,6 @@ main (void)
   test_stepfn();
   test_stepfn2();
   test_stepfn3();
-
+ 
   exit (gsl_test_summary ());
 }
