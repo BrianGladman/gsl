@@ -1164,6 +1164,10 @@ test_evolve_negative_h (const gsl_odeiv_step_type * T, double h, double err)
   gsl_test_abs (y, yfin, factor * e->count * err,
 		"evolution with negative h (using %s)", 
                 gsl_odeiv_step_name (step));
+
+  gsl_odeiv_evolve_free (e);
+  gsl_odeiv_control_free (c);
+  gsl_odeiv_step_free (step);
 }
 
 int
