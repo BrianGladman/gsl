@@ -119,7 +119,7 @@ printf ("step method is '%s'\n",
 @end example
 
 @noindent
-would print something like @code{step method is 'rk4'}.
+would print something like @code{step method is 'rkf45'}.
 @end deftypefun
 
 @deftypefun {unsigned int} gsl_odeiv_step_order (const gsl_odeiv_step * @var{s})
@@ -162,7 +162,9 @@ Embedded Runge-Kutta (2, 3) method.
 
 @deffn {Step Type} gsl_odeiv_step_rk4
 @cindex RK4, Runge-Kutta method
-4th order (classical) Runge-Kutta.
+4th order (classical) Runge-Kutta.  The error estimate is obtained by
+halving the step-size.  For more efficient estimate of the error, use the
+Runge-Kutta-Fehlberg method described below.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv_step_rkf45
