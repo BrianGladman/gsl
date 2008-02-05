@@ -142,8 +142,8 @@ and with the Back-Cover Text being (a) (see below).  A copy of the
 license is included in the section entitled ``GNU Free Documentation
 License''.
 
-(a) The Back-Cover Text is: ``You have freedom to copy and modify this
-GNU Manual, like GNU software.''
+(a) The Back-Cover Text is: ``You have the freedom to copy and modify this
+GNU Manual.''
 @end copying
 
 @titlepage
