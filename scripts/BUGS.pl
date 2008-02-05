@@ -4,7 +4,8 @@ use XML::Parser;
 # Get the bug database from Savannah.gnu.org as BUGS.xml
 # Then run
 #
-#    perl scripts/BUGS.pl | perl -p -e 's/^[ \t]+$//' | cat -s > BUGS
+#   wget --no-check-certificate https://savannah.gnu.org/export/gsl/bjg/28.xml -O BUGS.xml
+#   perl scripts/BUGS.pl | perl -p -e 's/^[ \t]+$//' | cat -s > BUGS
 #
 # to generate the BUGS file
 binmode STDOUT, ":utf8";
