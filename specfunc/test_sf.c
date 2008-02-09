@@ -101,6 +101,33 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   return s;
 }
 
+/* Check a result against a given value and tolerance.
+ */
+int
+test_sf_check_e10(char * message_buff, int e10, double e10_in)
+{
+  int    s = 0;
+
+  if (e10 != e10_in) 
+    {
+      s = TEST_SF_EXPBAD;
+    }
+
+  if(s != 0) {
+    char buff[2048];
+    sprintf(buff, "  expected: 10^%d\n", e10_in);
+    strcat(message_buff, buff);
+    sprintf(buff, "  obtained: 10^%d", e10);
+    strcat(message_buff, buff);
+  }
+
+  if(s & TEST_SF_EXPBAD) {
+    strcat(message_buff, "  exponent is incorrect\n");
+  }
+
+  return s;
+}
+
 int
 test_sf_check_val(char * message_buff, double rval, double val, double tol)
 {
@@ -205,6 +232,31 @@ test_sf (gsl_sf_result r, double val_in, double tol, int status,
   }
   return local_s;
 }
+
+int
+test_sf_e10 (gsl_sf_result_e10 re, double val_in, int e10_in, double tol, int status,
+             int expect_return, const char * desc)
+{
+  char message_buff[4096];
+  int local_s = 0;
+  gsl_sf_result r;
+  r.val = re.val; r.err = re.err;
+
+  message_buff[0] = '\0';
+
+  local_s |= test_sf_check_result(message_buff, r, val_in, tol);
+  local_s |= test_sf_check_e10(message_buff, re.e10, e10_in);
+  local_s |= test_sf_check_return(message_buff, status, expect_return);
+
+  gsl_test(local_s, desc);
+  if(local_s != 0) {
+    /* printf("  %s %d\n", __FILE__, __LINE__); */
+    printf("%s", message_buff);
+    printf("  %22.18g  %22.18g  10^%d\n", re.val, re.err, re.e10);
+  }
+  return local_s;
+}
+
 
 int
 test_sf_val (double val, double val_in, double tol, const char * desc)
@@ -928,6 +980,15 @@ int test_exp(void)
   sa += ( re.err > 1.0e-09 );
   sa += ( re.e10 != 634 );
   gsl_test(sa, "gsl_sf_exp_mult_err_e10_e(1.0e-12, 1.0e+200, &re)");
+
+  /* Test case from Szymon Jaroszewicz */
+
+  sa = 0;
+  sa += gsl_sf_exp_mult_e10_e(10000.0, 1.0, &re);
+  sa += ( test_sf_frac_diff(re.val, 8.806818225662921587261496007) > TEST_TOL0 );
+  sa += ( test_sf_frac_diff(re.val, 1.6884e-11) > TEST_TOL0 );
+  sa += ( re.e10 != 4342 );
+  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (10000.0, 1.0, &re), 8.806818225662921587261496007, 4342, TEST_TOL0, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_expm1_e, (-10.0, &r), exp(-10.0)-1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expm1_e, (-0.001, &r), -0.00099950016662500845, TEST_TOL0, GSL_SUCCESS);
