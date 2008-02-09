@@ -159,7 +159,8 @@ void
 FUNCTION (my, initialize) (TYPE (gsl_vector) * v)
 {
   size_t i;
-  ATOMIC k = 0, kk;
+  ATOMIC k = 0;
+  volatile ATOMIC kk;
 
   /* Must be sorted initially */
 
@@ -167,8 +168,8 @@ FUNCTION (my, initialize) (TYPE (gsl_vector) * v)
     {
       kk = k;
       k++;
-      if (k < kk)               /* prevent overflow */
-        k = kk;
+      /* Prevent overflow */
+      if (k < kk) k = kk;
       FUNCTION (gsl_vector, set) (v, i, k);
     }
 }

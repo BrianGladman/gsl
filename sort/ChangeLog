@@ -1,3 +1,7 @@
+2008-02-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_source.c: prevent signed overflow in tests
+
 2005-08-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test_source.c: free index memory as well
