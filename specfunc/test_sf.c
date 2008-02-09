@@ -55,7 +55,7 @@ int
 test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double tol)
 {
   int    s = 0;
-  double f = 0;
+  double f = 0, d = 0;
 
   if (gsl_isnan(r.val) || gsl_isnan(val)) 
     {
@@ -68,10 +68,14 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   else
     {
       f = test_sf_frac_diff(val, r.val);
+      d = fabs(val - r.val);
 
-      if(fabs(val - r.val) > 2.0 * TEST_SIGMA * r.err) s |= TEST_SF_INCONS;
+      if(d > 2.0 * TEST_SIGMA * r.err) s |= TEST_SF_INCONS;
       if(r.err < 0.0)                                  s |= TEST_SF_ERRNEG;
       if(gsl_isinf(r.err))                             s |= TEST_SF_ERRBAD;
+#if TEST_EXCESSIVE_ERROR
+      if(d > 0 && r.err > 1e4 * fabs(val)*tol)         s |= TEST_SF_ERRBIG;
+#endif
       if(f > TEST_FACTOR * tol)                        s |= TEST_SF_TOLBAD;
     }
 
@@ -82,6 +86,8 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
     sprintf(buff, "  obtained: %20.16g +/- %.16g (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
     strcat(message_buff, buff);
     sprintf(buff, "  fracdiff: %20.16g\n", f);
+    strcat(message_buff, buff);
+    sprintf(buff, " tolerance: %20.16g\n", tol);
     strcat(message_buff, buff);
   }
 
@@ -94,6 +100,9 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
   if(s & TEST_SF_ERRBAD) {
     strcat(message_buff, "  reported error is bad\n");
   }
+  if(s & TEST_SF_ERRBIG) {
+    strcat(message_buff, "  reported error is much too big\n");
+  }
   if(s & TEST_SF_TOLBAD) {
     strcat(message_buff, "  value not within tolerance of expected value\n");
   }
@@ -104,7 +113,7 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
 /* Check a result against a given value and tolerance.
  */
 int
-test_sf_check_e10(char * message_buff, int e10, double e10_in)
+test_sf_check_e10(char * message_buff, int e10, int e10_in)
 {
   int    s = 0;
 
@@ -115,9 +124,9 @@ test_sf_check_e10(char * message_buff, int e10, double e10_in)
 
   if(s != 0) {
     char buff[2048];
-    sprintf(buff, "  expected: 10^%d\n", e10_in);
+    sprintf(buff, "  expected exponent: 10^%d\n", e10_in);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: 10^%d", e10);
+    sprintf(buff, "  obtained exponent: 10^%d", e10);
     strcat(message_buff, buff);
   }
 
@@ -951,7 +960,7 @@ int test_exp(void)
   TEST_SF(s, gsl_sf_exp_mult_e, (x, exp(-x)*exp(M_LN2), &r),  2.0, TEST_TOL4, GSL_SUCCESS );
 
   TEST_SF(s, gsl_sf_exp_mult_err_e, (-10.0, TEST_SQRT_TOL0, 2.0, TEST_SQRT_TOL0, &r), 2.0*exp(-10.0), TEST_SQRT_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_exp_mult_err_e, (x, TEST_SQRT_TOL0*x, exp(-x)*exp(M_LN2), TEST_SQRT_TOL0*x, &r),  2.0, TEST_SQRT_TOL0, GSL_SUCCESS );
+  TEST_SF(s, gsl_sf_exp_mult_err_e, (x, TEST_SQRT_TOL0*x, exp(-x)*exp(M_LN2), TEST_SQRT_TOL0*exp(-x)*exp(M_LN2), &r),  2.0, TEST_SQRT_TOL0, GSL_SUCCESS );
 
   sa = 0;
   sa += gsl_sf_exp_mult_e10_e(1.0, 1.0, &re);
@@ -959,20 +968,23 @@ int test_exp(void)
   sa += ( re.err > TEST_TOL2 );
   sa += ( re.e10 != 0 );
   gsl_test(sa, "gsl_sf_exp_mult_e10_e(1.0, 1.0, &re)");
+  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (1.0, 1.0, &re), M_E, 0, TEST_TOL0, GSL_SUCCESS);
 
   sa = 0;
   sa += gsl_sf_exp_mult_e10_e(1000.0, 1.0e+200, &re);
-  sa += ( test_sf_frac_diff(re.val, 1.9700711140165661 ) > TEST_TOL3 );
-  sa += ( re.err > 1.0e-12 );
+  sa += ( test_sf_frac_diff(re.val, 1.970071114017046993888879352) > TEST_TOL3 );
+  sa += ( re.err > 1.0e-11 );
   sa += ( re.e10 != 634 );
   gsl_test(sa, "gsl_sf_exp_mult_e10_e(1000.0, 1.0e+200, &re)");
+  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (1000.0, 1.0e+200, &re), 1.970071114017046993888879352, 634, TEST_TOL3, GSL_SUCCESS);
 
   sa = 0;
   sa += gsl_sf_exp_mult_err_e10_e(1.0, TEST_TOL0, 1.0, TEST_TOL0, &re);
   sa += ( test_sf_frac_diff(re.val, M_E ) > TEST_TOL0 );
   sa += ( re.err > TEST_TOL2 );
   sa += ( re.e10 != 0 );
-  gsl_test(sa, "gsl_sf_exp_mult_e10_e(1.0, TEST_TOL0, 1.0, TEST_TOL0, &re)");
+  gsl_test(sa, "gsl_sf_exp_mult_err_e10_e(1.0, TEST_TOL0, 1.0, TEST_TOL0, &re)");
+  TEST_SF_E10(s,  gsl_sf_exp_mult_err_e10_e, (1.0, TEST_TOL0, 1.0, TEST_TOL0, &re), M_E, 0, TEST_TOL0, GSL_SUCCESS);
 
   sa = 0;
   sa += gsl_sf_exp_mult_err_e10_e(1000.0, 1.0e-12, 1.0e+200, 1.0e+190, &re);
@@ -980,15 +992,16 @@ int test_exp(void)
   sa += ( re.err > 1.0e-09 );
   sa += ( re.e10 != 634 );
   gsl_test(sa, "gsl_sf_exp_mult_err_e10_e(1.0e-12, 1.0e+200, &re)");
+  TEST_SF_E10(s,  gsl_sf_exp_mult_err_e10_e, (1000.0, 1.0e-12, 1.0e+200, 1.0e+190, &re), 1.9700711140165661,634, TEST_TOL3, GSL_SUCCESS);
 
-  /* Test case from Szymon Jaroszewicz */
+  /* Test cases from Szymon Jaroszewicz */
 
-  sa = 0;
-  sa += gsl_sf_exp_mult_e10_e(10000.0, 1.0, &re);
-  sa += ( test_sf_frac_diff(re.val, 8.806818225662921587261496007) > TEST_TOL0 );
-  sa += ( test_sf_frac_diff(re.val, 1.6884e-11) > TEST_TOL0 );
-  sa += ( re.e10 != 4342 );
-  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (10000.0, 1.0, &re), 8.806818225662921587261496007, 4342, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (10000.0, 1.0, &re), 8.806818225662921587261496007, 4342, TEST_TOL5, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_mult_e10_e, (100.0, 1.0, &re), 2.688117141816135448412625551e43, 0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_e10_e, (100.0, &re), 2.688117141816135448412625551e43, 0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_e10_e, (1000.0, &re), 1.970071114017046993888879352, 434, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_e10_e, (-100.0, &re), 3.720075976020835962959695803e-44, 0, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF_E10(s,  gsl_sf_exp_e10_e, (-1000.0, &re), 5.075958897549456765291809479, -435, TEST_TOL1, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_expm1_e, (-10.0, &r), exp(-10.0)-1.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_expm1_e, (-0.001, &r), -0.00099950016662500845, TEST_TOL0, GSL_SUCCESS);

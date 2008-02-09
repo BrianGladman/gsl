@@ -128,7 +128,7 @@ int gsl_sf_exp_e10_e(const double x, gsl_sf_result_e10 * result)
     UNDERFLOW_ERROR_E10(result);
   }
   else {
-    const int N = (int) floor(x/M_LN10);
+    const int N = (x > GSL_LOG_DBL_MAX || x < GSL_LOG_DBL_MIN) ? (int) floor(x/M_LN10) : 0;
     result->val = exp(x-N*M_LN10);
     result->err = 2.0 * (fabs(x)+1.0) * GSL_DBL_EPSILON * fabs(result->val);
     result->e10 = N;
@@ -213,7 +213,7 @@ int gsl_sf_exp_mult_e10_e(const double x, const double y, gsl_sf_result_e10 * re
       const double sy  = GSL_SIGN(y);
       const int    N   = (int) floor(l10_val);
       const double arg_val = (l10_val - N) * M_LN10;
-      const double arg_err = 2.0 * GSL_DBL_EPSILON * fabs(ly);
+      const double arg_err = 2.0 * GSL_DBL_EPSILON * (fabs(x) + fabs(ly) + M_LN10*fabs(N));
 
       result->val  = sy * exp(arg_val);
       result->err  = arg_err * fabs(result->val);

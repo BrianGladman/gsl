@@ -1,3 +1,9 @@
+2008-02-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* exp.c (gsl_sf_exp_e10_e): only use exponent e10 when standard
+	exp() is out of range
+	(gsl_sf_exp_mult_e10_e): add full set of error terms
+
 2008-01-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): handle case of x==1
