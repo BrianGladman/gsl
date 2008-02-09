@@ -170,10 +170,30 @@ gsl_ran_gaussian_ziggurat (const gsl_rng * r, const double sigma)
   int sign;
   double x, y;
 
+  const unsigned long int range = r->type->max - r->type->min;
+  const unsigned long int offset = r->type->min;
+
   while (1)
     {
-      i = gsl_rng_uniform_int (r, 256); /*  choose the step */
-      j = gsl_rng_uniform_int (r, 16777216);  /* sample from 2^24 */
+      if (range >= 0xFFFFFFFF)
+        {
+          unsigned long int k = gsl_rng_get(r) - offset;
+          i = (k & 0xFF);
+          j = (k >> 8) & 0xFFFFFF;
+        }
+      else if (range >= 0x00FFFFFF)
+        {
+          unsigned long int k1 = gsl_rng_get(r) - offset;
+          unsigned long int k2 = gsl_rng_get(r) - offset;
+          i = (k1 & 0xFF);
+          j = (k2 & 0x00FFFFFF);
+        }
+      else
+        {
+          i = gsl_rng_uniform_int (r, 256); /*  choose the step */
+          j = gsl_rng_uniform_int (r, 16777216);  /* sample from 2^24 */
+        }
+
       sign = (i & 0x80) ? +1 : -1;
       i &= 0x7f;
 
