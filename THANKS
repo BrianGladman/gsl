@@ -123,7 +123,8 @@ routines
 * Stefan Koch <s.koch@seh-zuelpich.de> for useful bug reports and
 fixes for the special functions
 
-*  Szymon Jaroszewicz <sj@cs.umb.edu> for the combinations modules
+* Szymon Jaroszewicz <sj@cs.umb.edu> for the combinations modules and
+  bug reports
 
 * Theis Peter Hansen <tph@com.dtu.dk> fixed unchecked status values in
 multiroots

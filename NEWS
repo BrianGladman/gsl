@@ -1,3 +1,6 @@
+** Added missing error terms in gsl_sf_exp_mult_e10_e to prevent
+   the error being underestimated.  
+
 ** Updated some constants to the CODATA 2006 values.
 
 ** The hypergeometric function gsl_sf_hyperg_2F1 now handles the case
