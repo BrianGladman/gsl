@@ -210,6 +210,45 @@ test_hypergeometric_cdf_Q (unsigned int k)
   return gsl_cdf_hypergeometric_Q (k, 7, 19, 13);
 }
 
+struct range
+test_hypergeometric2_range (void)
+{
+  struct range r = {0, 13250474};
+  return r;
+}
+
+struct range
+test_hypergeometric2a_range (void)
+{
+  struct range r = {3500, 3600};
+  return r;
+}
+
+struct range
+test_hypergeometric2b_range (void)
+{
+  struct range r = {13247474, 13250474};
+  return r;
+}
+
+double
+test_hypergeometric2_pdf (unsigned int k)
+{
+  return gsl_ran_hypergeometric_pdf (k, 76200, 13174274, 678090);
+}
+
+double
+test_hypergeometric2_cdf_P (unsigned int k)
+{
+  return gsl_cdf_hypergeometric_P (k, 76200, 13174274, 678090);
+}
+
+double
+test_hypergeometric2_cdf_Q (unsigned int k)
+{
+  return gsl_cdf_hypergeometric_Q (k, 76200, 13174274, 678090);
+}
+
 #ifdef LOGARITHMIC
 struct range
 test_logarithmic_range (void)
@@ -308,6 +347,12 @@ test_discrete_cdf_PQ (double (*cdf_P)(unsigned int),
       double Qi = cdf_Q(i);
       sum = Pi + Qi;
       gsl_test_rel (sum, 1.0, tol, desc, i);
+      {
+        int s1 = (Pi<0 || Pi>1);     
+        int s2 = (Qi<0 || Qi>1);     
+        gsl_test(s1, "Pi in range [0,1] (%.18e)", Pi);
+        gsl_test(s2, "Qi in range [0,1] (%.18e)", Qi);
+      }
     }
 
 }
@@ -329,10 +374,23 @@ main (void)
   TEST_DISCRETE(negative_binomial);
   TEST_DISCRETE(pascal);
   TEST_DISCRETE(hypergeometric);
-
+#ifdef HYPERGEOMETRIC2
+  TEST_DISCRETE(hypergeometric2);
+#endif
 #ifdef LOGARITHMIC
   TEST_DISCRETE(logarithmic);
 #endif
+
+  test_discrete_cdf_PQ(&test_hypergeometric2_cdf_P, 
+                       &test_hypergeometric2_cdf_Q, 
+                       &test_hypergeometric2a_range, 
+                       "test gsl_cdf_hypergeometric_P+Q (k=%d)") ; 
+
+  test_discrete_cdf_PQ(&test_hypergeometric2_cdf_P, 
+                       &test_hypergeometric2_cdf_Q, 
+                       &test_hypergeometric2b_range, 
+                       "test gsl_cdf_hypergeometric_P+Q (k=%d)") ; 
+
 
   /* exit (gsl_test_summary ()); */
 
