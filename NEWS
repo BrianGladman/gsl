@@ -1,3 +1,6 @@
+** Fixed overflow bug in gsl_cdf_hypergeometric_{P,Q} for large
+   arguments.
+
 ** gsl_ran_gaussian_ziggurat now handles generators with different ranges
 explicitly, to minimise the number of function calls required.
 

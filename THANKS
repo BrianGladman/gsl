@@ -441,3 +441,7 @@ evaluation and ode improvements
 * Jason Coy <funkdart@gmail.com> optimisation for dwt.c
 
 * Richard Guenther <rguenther@suse.de> bug reports
+
+* Stijn van Dongen <svd@sanger.ac.uk> bug fix for overflow in
+  gsl_cdf_hypergeometric_{P,Q}
+

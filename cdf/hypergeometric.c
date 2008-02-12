@@ -128,7 +128,7 @@ gsl_cdf_hypergeometric_P (const unsigned int k,
     }
   else
     {
-      double midpoint = (int) (t * n1 / (n1 + n2));
+      double midpoint = ((double)t * n1) / ((double)n1 + (double)n2);
 
       if (k >= midpoint)
         {
@@ -167,7 +167,7 @@ gsl_cdf_hypergeometric_Q (const unsigned int k,
     }
   else
     {
-      double midpoint = (int) (t * n1 / (n1 + n2));
+      double midpoint = ((double)t * n1) / ((double)n1 + (double)n2);
 
       if (k < midpoint)
         {

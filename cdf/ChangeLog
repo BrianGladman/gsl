@@ -1,3 +1,9 @@
+2008-02-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hypergeometric.c (gsl_cdf_hypergeometric_P): compute midpoint in
+	double precision to avoid overflow
+	(gsl_cdf_hypergeometric_Q): ditto
+
 2007-08-22  Brian Gough  <bjg@network-theory.co.uk>
 
 	* betainv.c (gsl_cdf_beta_Pinv): added an error check for
