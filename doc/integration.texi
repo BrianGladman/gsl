@@ -192,7 +192,7 @@ the overall convergence behavior of the integration.
 @cindex QNG quadrature algorithm
 
 The QNG algorithm is a non-adaptive procedure which uses fixed
-Gauss-Kronrod abscissae to sample the integrand at a maximum of 87
+Gauss-Kronrod-Patterson abscissae to sample the integrand at a maximum of 87
 points.  It is provided for fast integration of smooth functions.
 
 @deftypefun int gsl_integration_qng (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, double * @var{result}, double * @var{abserr}, size_t * @var{neval})

@@ -53,9 +53,9 @@ main (void)
         printf ("Converged:\n");
 
       printf ("%5d [%.7f, %.7f] "
-              "%.7f %.7f %+.7f %.7f\n",
+              "%.7f %+.7f %.7f\n",
               iter, a, b,
-              m, m_expected, m - m_expected, b - a);
+              m, m - m_expected, b - a);
     }
   while (status == GSL_CONTINUE && iter < max_iter);
 
