@@ -60,12 +60,6 @@ beta_cont_frac (const double a, const double b, const double x,
       delta_frac = den_term * num_term;
       cf *= delta_frac;
 
-      if (fabs (delta_frac - 1.0) < 2.0 * GSL_DBL_EPSILON)
-        break;
-
-      if (cf * fabs (delta_frac - 1.0) < epsabs)
-        break;
-
       coeff = -(a + k) * (a + b + k) * x / ((a + 2 * k) * (a + 2 * k + 1.0));
 
       /* second step */
