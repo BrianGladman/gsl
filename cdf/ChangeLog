@@ -1,3 +1,8 @@
+2008-02-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* beta_inc.c (beta_cont_frac): add check for convergence on first
+	step
+
 2008-02-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hypergeometric.c (gsl_cdf_hypergeometric_P): compute midpoint in
