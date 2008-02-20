@@ -20,6 +20,8 @@
 /* Author:  G. Jungman */
 /* Modified for cdfs by Brian Gough, June 2003 */
 
+#include <gsl/gsl_sf_gamma.h>
+
 static double
 beta_cont_frac (const double a, const double b, const double x,
                 const double epsabs)
@@ -100,6 +102,8 @@ beta_cont_frac (const double a, const double b, const double x,
    absolute error when A*beta_inc is added to Y. (e.g. if Y >>
    A*beta_inc then the accuracy of beta_inc can be reduced) */
 
+
+
 static double
 beta_inc_AXPY (const double A, const double Y,
                const double a, const double b, const double x)
@@ -111,6 +115,18 @@ beta_inc_AXPY (const double A, const double Y,
   else if (x == 1.0)
     {
       return A * 1 + Y;
+    }
+  else if (a > 1e5 && b < 10 && x > a / (a + b))
+    {
+      /* Handle asymptotic regime, large a, small b, x > peak [AS 26.5.17] */
+      double N = a + (b - 1.0) / 2.0;
+      return A * gsl_sf_gamma_inc_Q (b, -N * log (x)) + Y;
+    }
+  else if (b > 1e5 && a < 10 && x < b / (a + b))
+    {
+      /* Handle asymptotic regime, small a, large b, x < peak [AS 26.5.17] */
+      double N = b + (a - 1.0) / 2.0;
+      return A * gsl_sf_gamma_inc_P (a, -N * log1p (-x)) + Y;
     }
   else
     {
