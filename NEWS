@@ -1,3 +1,6 @@
+** Improved the handling of large arguments in cumulative distribution
+   functions using the incomplete beta function, such as gsl_cdf_fdist_P.
+
 ** Fixed overflow bug in gsl_cdf_hypergeometric_{P,Q} for large
    arguments.
 
