@@ -17,3 +17,9 @@
                               unsigned int n2, unsigned int t);
     gsl_cdf_hypergeometric_Q (unsigned int k, unsigned int n1,
                               unsigned int n2, unsigned int t);
+
+* Unify the beta_inc function with the special functions, put all the
+  functionaity in gsl_sf_beta_inc, providing a new function for the
+  AXPY part if necessary (can we do everything with gsl_sf_beta_inc
+  and gsl_sf_beta_inc_1mx keeping in mind that we cannot do 1-x
+  because of cancellation for small x)
