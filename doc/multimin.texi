@@ -180,6 +180,8 @@ parameters and the corresponding gradient vector of derivatives,
 this function should return the result
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}.
+If the function cannot be computed, an error value of @code{GSL_NAN}
+should be returned.
 
 @item void (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{g})
 this function should store the @var{n}-dimensional gradient
@@ -212,6 +214,8 @@ parameters,
 this function should return the result
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)} for argument @var{x} and parameters @var{params}.
+If the function cannot be computed, an error value of @code{GSL_NAN}
+should be returned.
 
 @item size_t n
 the dimension of the system, i.e. the number of components of the
