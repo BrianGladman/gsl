@@ -228,7 +228,7 @@ gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
       double pre   = GSL_SQRT_DBL_EPSILON / jell;
       result->val  = j0_result.val * pre;
       result->err  = j0_result.err * fabs(pre);
-      result->err += 2.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_j0, stat_CF1);
     }
     else {
@@ -237,7 +237,7 @@ gsl_sf_bessel_jl_e(const int l, const double x, gsl_sf_result * result)
       double pre   = GSL_SQRT_DBL_EPSILON / jellp1;
       result->val  = j1_result.val * pre;
       result->err  = j1_result.err * fabs(pre);
-      result->err += 2.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (0.5*l + 1.0) * fabs(result->val);
       return GSL_ERROR_SELECT_2(stat_j1, stat_CF1);
     }
   }
