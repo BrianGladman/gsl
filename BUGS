@@ -83,33 +83,6 @@ Maybe we should do both.  Or there can be a better method.
 koichi
 
 ------------------------------------------------------------------------
-BUG-ID:   21820   
-STATUS:   Open            
-CATEGORY: Runtime error
-SUMMARY:  gausszig.c does not work with ranlux
-
-From: "Gareth Haslip" <mail@haslip.co.uk>
-To: <bug-gsl@gnu.org>
-Subject: [Bug-gsl] Gausszig.c
-Date: Wed, 21 Nov 2007 21:33:54 -0000
-
-I am using the windows port of gsl 1.10 (from david geldreich) in visual
-studio.
-
-The above file on line 176 says:
-
-gsl_rng_uniform_int (r, 16777216);
-
-However, gsl_rnd_ranlux has a max draw of 16777215 which leads to a crash...
-
-This didn't happen in the previous release of gsl - I haven't checked if
-this is a windows only port issue, but thought its worth mentioning.
-
-Regards,
-
-Gareth
-
-------------------------------------------------------------------------
 BUG-ID:   21826   
 STATUS:   Open            
 CATEGORY: Build
@@ -161,37 +134,6 @@ _______________________________________________
 Bug-gsl mailing list
 Bug-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/bug-gsl
-
-------------------------------------------------------------------------
-BUG-ID:   21827   
-STATUS:   Open            
-CATEGORY: Runtime error
-SUMMARY:  bspline error at the last breakpoint 
-
-From: "Christophe Cloquet" <christophe.cloquet@ulb.ac.be>
-To: <bug-gsl@gnu.org>
-Subject: [Bug-gsl] GSL - bspline
-Date: Thu, 26 Apr 2007 14:26:06 +0200
-
-Hi, 
-
-I found a small bug in the GSL bspline module.
-
-When triying to evaluate the bsplines at the last breakpoint tmax, I get 0
-everywhere, what's not normal.
-
-Fortunately, when evaluating at tmax-epsilon, where epsilon is a small
-value, I can recover the expected value.
-
-Best regards,
-
-Christophe
-_______________________________________________
-Bug-gsl mailing list
-Bug-gsl@gnu.org
-http://lists.gnu.org/mailman/listinfo/bug-gsl
-
--
 
 ------------------------------------------------------------------------
 BUG-ID:   21828   
@@ -267,7 +209,7 @@ http://lists.gnu.org/mailman/listinfo/help-gsl
 
 ------------------------------------------------------------------------
 BUG-ID:   21830   
-STATUS:   Open            
+STATUS:   Open/Confirmed  
 CATEGORY: None
 SUMMARY:  provide function to retrieve size of chebyshev data
 
@@ -308,6 +250,8 @@ _______________________________________________
 Help-gsl mailing list
 Help-gsl@gnu.org
 http://lists.gnu.org/mailman/listinfo/help-gsl
+
+None
 
 ------------------------------------------------------------------------
 BUG-ID:   21831   
@@ -631,55 +575,7 @@ _________________________________________________________________
 MSN Hotmail sur i-mode : envoyez et recevez des e-mails depuis votre 
 téléphone portable ! http://www.msn.fr/hotmailimode/
 
-------------------------------------------------------------------------
-BUG-ID:   21834   
-STATUS:   Open            
-CATEGORY: Build
-SUMMARY:  integer overflow with gcc 4.3 on solaris
-
-From: Richard Guenther <rguenther@suse.de>
-To: bjg@network-theory.co.uk
-Cc: bug-gsl@gnu.org
-Subject: Re: Bug-gsl GSL on Solaris problems
-Date: Tue, 30 Oct 2007 14:02:14 +0100 (CET)
-
-This also occurs on linux with GCC 4.3 and the problem is likely that
-the overflow check in
-
-void
-FUNCTION (my, initialize) (TYPE (gsl_vector) * v)
-{
-  size_t i;
-  ATOMIC k = 0, kk;
-
-  /* Must be sorted initially */
-
-  for (i = 0; i < v->size; i++)
-    {
-      kk = k;
-      k++;
-      if (k < kk)               /* prevent overflow */
-        k = kk;
-      FUNCTION (gsl_vector, set) (v, i, k);
-    }
-}
-
-is broken for signed integral values.  As the ISO C standard defines
-signed integer overflow as invoking undefined behavior, the post-the-fact
-check is optimized away by compilers.  That this triggers only the signed
-char case is probably due to the sizes not causing overflow on other
-singed integral tests.
-
-Unfortunately due to the type generic way you cannot do tricks like using
-unsigned arithmetic here, but making k volatile should prevent the
-optimization from happening.
-
-Richard.
-
--- 
-Richard Guenther <rguenther@suse.de>
-Novell / SUSE Labs
-SUSE LINUX Products GmbH - Nuernberg - AG Nuernberg - HRB 16746 - GF: Markus Rex
+3 - Normal
 
 ------------------------------------------------------------------------
 BUG-ID:   21835   
@@ -761,7 +657,7 @@ Joint Institute for VLBI in Europe                wucknitz@jive.nl
 
 ------------------------------------------------------------------------
 BUG-ID:   21836   
-STATUS:   Open            
+STATUS:   Open/Confirmed  
 CATEGORY: Accuracy problem
 SUMMARY:  gamma_inc_P and gamma_inc_Q only satisfy P+Q=1 within errors
 
@@ -792,9 +688,11 @@ $ ./a.out
 8.432584375889111417e-02
 9.999999999999985567e-01
 
+3 - NormalNone
+
 ------------------------------------------------------------------------
 BUG-ID:   21837   
-STATUS:   Open            
+STATUS:   Open/Confirmed  
 CATEGORY: Runtime error
 SUMMARY:  gsl_linalg_solve_symm_tridiag requires positive definite matrix
 
@@ -838,39 +736,42 @@ $ ./a.out
 AUG 2007: We now return an error code for this case.  To return a solution
 we would need to do a permutation, see slatec/dgtsl.f
 
+3 - NormalNone
+
 ------------------------------------------------------------------------
-BUG-ID:   21838   
-STATUS:   Open            
-CATEGORY: Runtime error
-SUMMARY:  gsl_cdf_fdist_P() nan return value
+BUG-ID:   22478   
+STATUS:   Open/Confirmed  
+CATEGORY: None
+SUMMARY:  Missing functions for complex vectors
 
-Added test case
-    TEST (gsl_cdf_fdist_P, (3.479082213465832574, 1, 4040712), 0.93785072763723411967, TEST_TOL6);
+From: Federico Zenith <federico.zenith@member.fsf.org>
+To: help-gsl@gnu.org
+Subject: [Help-gsl] Missing functions for complex vectors
+Date: Mon, 03 Mar 2008 13:50:43 +0100
 
-From: "Daniel Neilson" <ddneilson@gmail.com>
-To: bug-gsl@gnu.org
-Subject: [Bug-gsl] gsl_cdf_fdist_P() nan return value
-Date: Thu, 20 Sep 2007 17:05:23 -0600
+Hi,
+I am working on a C++ GSL wrapper (yes, there are not enough of them
+already around :-), and I have been working on vectors last week; while
+writing the wrapper, I noticed a couple of oddities I'd like to point
+out before reporting them as a bug (I am using the GSL version 1.10):
 
-Hi there,
- I just spent the entire day tracking down the source of a nan in some code
-of mine, and tracked it back to gsl_cdf_fdist_P(x, nu1, nu2). When called
-with:
+1) complex vectors have defined all properties mentioned on this page:
+http://www.gnu.org/software/gsl/manual/html_node/Vector-properties.html
+except isnonneg(). I am not sure what's the meaning of ispos() or
+isneg() for a vector of complex numbers, I suppose it means "both real
+AND imaginary part are positive", but this should be documented;
+furthermore, I do not understand why, if ispos() and isneg() could be
+defined, why could not isnonneg() be as well.
 
- double x = 0x1.bd5290e3772c6p+1 (printf("%a", x) format to get the full
-binary representation as hex)
- int nu1 = 1
- int nu2 = 4040712
+2) Vector operations, defined on this page:
+http://www.gnu.org/software/gsl/manual/html_node/Vector-operations.html
+are not defined for complex types. As far as I can guess, all these
+operations would still make sense for complex numbers. What is really
+odd is, the same operations are defined for complex matrices.
 
-this function returns nan. Furthermore, for Y \in {100,10000} calling:
+Did I miss something?
 
-gsl_cdf_fdist_P( (double)((unsigned int)x * Y + 0.5) / Y, nu1, nu2)
-
-also returns nan.
-
- However, for Y \in {1000, 100000} it returns a proper non-nan value.
-
- This is all with the version of GSL in the Fedora 7 packages gsl-1.8-3.fc7&
-gsl-devel-1.8-3.fc7.
+Cheers,
+-Federico
 
 ------------------------------------------------------------------------
