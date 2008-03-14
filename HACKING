@@ -11,30 +11,33 @@ Once you have this stuff, you can get the repository and start
 working from your own machine.  To do the initial checkout of the
 repository try (bash syntax):
 
-# PEOPLE WITH CVS WRITE ACCESS:
+GSL development is hosted at http://savannah.gnu.org/projects/gsl
 
-export CVS_RSH=ssh
-cvs -d sourceware.org:/cvs/gsl checkout gsl
+# ANONYMOUS CHECKOUT
 
-[from now on you can just do "cvs update" in the gsl directory]
+With CVS:
 
-# ANONYMOUS CVS USERS
-
-cvs -d :pserver:anoncvs@sourceware.org:/cvs/gsl login
-     (password is ``anoncvs'')
-cvs -d :pserver:anoncvs@sourceware.org:/cvs/gsl checkout gsl
-cd gsl ; ./autogen.sh   (to create auto-generated files)
-./configure --enable-maintainer-mode
+  cvs -d :pserver:anonymous@pserver.git.sv.gnu.org:/gsl.git checkout -d gsl HEAD
 
 [from now on you can just do "cvs update" in the gsl directory]
+
+With GIT:
+
+  git clone git://git.savannah.gnu.org/gsl.git
+
+[from now on you can just do "git pull" in the gsl directory]
+
+# PEOPLE WITH SAVANNAH SSH WRITE ACCESS:
+
+  git clone ssh://git.sv.gnu.org/srv/git/gsl.git
 
 # PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
 point your web browser to
-  http://sourceware.org/cgi-bin/cvsweb.cgi/gsl?cvsroot=gsl
+  http://git.savannah.gnu.org/gitweb/?p=gsl.git
 
 # PEOPLE WHO JUST WANT A WORKING VERSION
 grab the latest bundled release at
-  ftp://sourceware.org/pub/gsl/
+  ftp://ftp.gnu.org/pub/gnu/gsl/
 
 Please send a message to gsl-discuss@sourceware.org if any of
 these steps don't work.
@@ -57,9 +60,10 @@ that your mailer does not break these lines.  If in doubt, send the
 patch as a mime attachment or uuencoded file.
 
 Before submitting a patch you may want to search the mailing list
-archive for related information. There is a search facility for the
+archives for related information. There is a search facility for the
 mailing list available at,
 
+  http://lists.gnu.org/archive/html/bug-gsl/
   http://sourceware.org/ml/gsl-discuss/
 
 ---------- useful scripts
@@ -91,7 +95,10 @@ with
 
 then that's a good test for portability.
 
-Also do a compilation in c99 mode
+Also do a compilation in c89 and c99 mode explicitly
+
+     ./configure CC=c89
+     make
 
      ./configure CC=c99
      make
@@ -120,7 +127,9 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 ----------- Pre-release checks
 
 * Make all internal functions static, and have all exported functions
-& variables prefixed with gsl_ or GSL_. Useful command for checking this: nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+& variables prefixed with gsl_ or GSL_. Useful command for checking this: 
+
+ nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.  
@@ -226,44 +235,19 @@ available to avoid too many messages)
 
 4) Literature search (this is discussed in the Design document).
 
-5) If you have good internet access register an for account on
-http://savannah.gnu.org/ and upload your SSH public key so that you
-can be given access to the development cvs repository.  Send your
-savannah username to Brian Gough to get onto the list of developers.
-
-Then make a per-project private branch against the current release for your
-work.   For example, for a project called 'myproject' as an
-extension to gsl-1.2 use:
-
-  cvs rtag -r release-1-2 -b myproject gsl
-  cvs checkout -r myproject
-
-You can then use cvs add to add new files, etc.  
-
-Always remember to use '-r myproject' on any checkouts so that you
-don't work on the main branch, only on your own private branch!
-
-To verify your patch you should make a new temporary directory and do,
-
-  cvs checkout -r myproject
-  cd gsl ; ./configure ; make distcheck
-
-6) Post on gsl-discuss@sourceware.org periodically to keep us
+5) Post on gsl-discuss@sourceware.org periodically to keep us
 updated of your progress.  Make patches available somewhere for people
 to try out.  Code goes into GSL when it is stable and well-tested, and
 has documentation.
 
 ----------------------------------------------------------------------
 
-Savannah CVS Information
+Savannah Information
 ========================
 
-Developer CVS Access via SSH.
+Developer Access via SSH.
 
-Savannah is used for experimental projects, the main repository is
-sourceware.org (as described above).
-
-Only project developers can access the CVS tree via this method. SSH2
+Only project developers can access the GIT tree via this method. SSH2
 must be installed on your client machine.  Put the following 
 in your ~/.ssh/config file:
 
@@ -271,17 +255,15 @@ in your ~/.ssh/config file:
      Protocol 2
      ForwardX11 no
 
-Substitute developername with the proper value.  Your savannah
-password is useless for cvs.  You have to register a CVS/SSH Shared
-key in the Account Maintenance page for the machine from which you run
-cvs.
+In the example below substitute 'USER' with your account username.
+Your savannah web password is not used for GIT --- you have to
+register a CVS/SSH Shared key in the Account Maintenance page.
 
 Source tree:
 
-  export CVS_RSH=ssh
-  cvs -z3 -ddevelopername@subversions.gnu.org:/cvsroot/gsl/ co gsl
+  git clone ssh://USER@git.sv.gnu.org/srv/git/project.git
 
 HTML tree:
 
   export CVS_RSH=ssh
-  cvs -z3 -ddevelopername@subversions.gnu.org:/webcvs co software/gsl
+  cvs -z3 -d:ext:USER@cvs.savannah.gnu.org:/web/gsl co gsl
