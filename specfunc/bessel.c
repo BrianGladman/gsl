@@ -542,9 +542,6 @@ gsl_sf_bessel_J_CF1(const double nu, const double x,
   /* FIXME: we should return an error term here as well, because the
      error from this recurrence affects the overall error estimate. */
 
-  /* FIXME: we should return an error term here as well, because the
-     error from this recurrence affects the overall error estimate. */
-
   *ratio = fn;
   *sgn   = s;
 
