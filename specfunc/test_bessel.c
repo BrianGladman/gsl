@@ -182,7 +182,9 @@ int test_bessel(void)
      computed from Pari besseljh(n,x) and AS 10.1.1 */
 
   TEST_SF(s,  gsl_sf_bessel_jl_e, (30, 3878.62, &r), -0.00023285567034330878410434732790, TEST_TOL4, GSL_SUCCESS);
-
+  TEST_SF(s,  gsl_sf_bessel_jl_e, (49, 9912.63, &r), 5.2043354544842669214485107019E-5 , TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_bessel_jl_e, (49, 9950.35, &r), 5.0077368819565969286578715503E-5 , TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_bessel_jl_e, (52, 9930.51, &r), -7.4838588266727718650124475651E-6 , TEST_TOL4, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_bessel_y0_e, (0.001, &r), -999.99950000004166670, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_y0_e, (  1.0, &r), -0.5403023058681397174, TEST_TOL0, GSL_SUCCESS);
