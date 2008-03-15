@@ -81,13 +81,13 @@ test_sf_check_result(char * message_buff, gsl_sf_result r, double val, double to
 
   if(s != 0) {
     char buff[2048];
-    sprintf(buff, "  expected: %20.16g\n", val);
+    sprintf(buff, "  expected: %20.16e\n", val);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: %20.16g +/- %.16g (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    sprintf(buff, "  obtained: %20.16e +/- %.16e (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
     strcat(message_buff, buff);
-    sprintf(buff, "  fracdiff: %20.16g\n", f);
+    sprintf(buff, "  fracdiff: %20.16e\n", f);
     strcat(message_buff, buff);
-    sprintf(buff, " tolerance: %20.16g\n", tol);
+    sprintf(buff, " tolerance: %20.16e\n", tol);
     strcat(message_buff, buff);
   }
 
@@ -147,11 +147,11 @@ test_sf_check_val(char * message_buff, double rval, double val, double tol)
 
   if(s != 0) {
     char buff[2048];
-    sprintf(buff, "  expected: %20.16g\n", val);
+    sprintf(buff, "  expected: %20.16e\n", val);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: %20.16g\n", rval);
+    sprintf(buff, "  obtained: %20.16e\n", rval);
     strcat(message_buff, buff);
-    sprintf(buff, "  fracdiff: %20.16g\n", f);
+    sprintf(buff, "  fracdiff: %20.16e\n", f);
     strcat(message_buff, buff);
   }
 
@@ -179,11 +179,11 @@ test_sf_check_result_relax(char * message_buff, gsl_sf_result r, double val, dou
 
   if(s != 0) {
     char buff[2048];
-    sprintf(buff, "  expected: %20.16g\n", val);
+    sprintf(buff, "  expected: %20.16e\n", val);
     strcat(message_buff, buff);
-    sprintf(buff, "  obtained: %20.16g +/- %.16g  (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
+    sprintf(buff, "  obtained: %20.16e +/- %.16e  (rel=%g)\n", r.val, r.err, r.err/(fabs(r.val) + r.err));
     strcat(message_buff, buff);
-    sprintf(buff, "  fracdiff: %20.16g\n", f);
+    sprintf(buff, "  fracdiff: %20.16e\n", f);
     strcat(message_buff, buff);
   }
 
@@ -237,7 +237,7 @@ test_sf (gsl_sf_result r, double val_in, double tol, int status,
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g  %22.18g\n", r.val, r.err);
+    printf("  %22.18e  %22.18e\n", r.val, r.err);
   }
   return local_s;
 }
@@ -261,7 +261,7 @@ test_sf_e10 (gsl_sf_result_e10 re, double val_in, int e10_in, double tol, int st
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g  %22.18g  10^%d\n", re.val, re.err, re.e10);
+    printf("  %22.18e  %22.18e  10^%d\n", re.val, re.err, re.e10);
   }
   return local_s;
 }
@@ -281,7 +281,7 @@ test_sf_val (double val, double val_in, double tol, const char * desc)
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g\n", val);
+    printf("  %22.18e\n", val);
   }
   return local_s;
 }
@@ -303,7 +303,7 @@ test_sf_rlx (gsl_sf_result r, double val_in, double tol, int status,
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g  %22.18g\n", r.val, r.err);
+    printf("  %22.18e  %22.18e\n", r.val, r.err);
   }
   return local_s;
 }
@@ -327,8 +327,8 @@ test_sf_2 (gsl_sf_result r1, double val1, double tol1,
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g  %22.18g\n", r1.val, r1.err);
-    printf("  %22.18g  %22.18g\n", r2.val, r2.err);
+    printf("  %22.18e  %22.18e\n", r1.val, r1.err);
+    printf("  %22.18e  %22.18e\n", r2.val, r2.err);
   }
   return local_s;
 }
@@ -353,7 +353,7 @@ test_sf_sgn (gsl_sf_result r, double sgn, double val_in, double tol, double expe
   if(local_s != 0) {
     /* printf("  %s %d\n", __FILE__, __LINE__); */
     printf("%s", message_buff);
-    printf("  %22.18g  %22.18g\n", r.val, r.err);
+    printf("  %22.18e  %22.18e\n", r.val, r.err);
   }
   return local_s;
 }
