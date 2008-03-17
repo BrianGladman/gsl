@@ -49,8 +49,9 @@ main (int argc, char *argv[])
       printf (
 "Usage: gsl-randist seed n DIST param1 param2 ...\n"
 "Generates n samples from the distribution DIST with parameters param1,\n"
-"param2, etc. Valid distributions are,\n"
-"\n"
+"param2, etc. Valid distributions are,\n\n");
+
+      printf(
 "  beta\n"
 "  binomial\n"
 "  bivariate-gaussian\n"
