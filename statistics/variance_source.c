@@ -21,7 +21,7 @@ static double
 FUNCTION(compute,variance) (const BASE data[], const size_t stride, const size_t n, const double mean);
 
 static double 
-FUNCTION(compute,ss) (const BASE data[], const size_t stride, const size_t n, const double mean);
+FUNCTION(compute,tss) (const BASE data[], const size_t stride, const size_t n, const double mean);
 
 static double
 FUNCTION(compute,variance) (const BASE data[], const size_t stride, const size_t n, const double mean)
