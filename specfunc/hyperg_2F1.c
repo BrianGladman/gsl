@@ -648,7 +648,7 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
     int stat4 = gsl_sf_lngamma_sgn_e (c - b, &lngamcb, &lngamcb_sgn);
     
     if (stat1 != GSL_SUCCESS || stat2 != GSL_SUCCESS
-        || stat3 != GSL_SUCCESS || stat3 != GSL_SUCCESS)
+        || stat3 != GSL_SUCCESS || stat4 != GSL_SUCCESS)
       {
         DOMAIN_ERROR (result);
       }

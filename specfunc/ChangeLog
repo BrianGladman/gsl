@@ -1,3 +1,8 @@
+2008-03-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): replace duplicate error
+	check on stat3 by stat4
+
 2008-03-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bessel.c (gsl_sf_bessel_Jnu_asympx_e): use full asymptotic
