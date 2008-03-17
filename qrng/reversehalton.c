@@ -193,7 +193,6 @@ static int
 reversehalton_init (void *state, unsigned int dimension)
 {
   reversehalton_state_t *h_state = (reversehalton_state_t *) state;
-  unsigned int i;
 
   h_state->sequence_count = 0;
 

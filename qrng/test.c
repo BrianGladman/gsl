@@ -55,7 +55,7 @@ void test_halton(void)
 {
 	int status = 0;
 	double v[1229];
-	unsigned int i,j;
+	unsigned int i;
 
 	/* test in dimension 1229 */
 
@@ -120,7 +120,6 @@ void test_reversehalton(void)
 {
 	int status = 0;
 	double v[3];
-	unsigned int i;
 
 	/* test in dimension 2 */
 	gsl_qrng * g = gsl_qrng_alloc(gsl_qrng_reversehalton, 2);

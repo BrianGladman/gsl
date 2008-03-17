@@ -1,3 +1,9 @@
+2008-03-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* reversehalton.c (reversehalton_init): removed unused variable i
+
+	* halton.c (halton_init): removed unused variable i
+
 2006-04-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qrng.c gsl_qrng.h: use q instead of r in all prototypes

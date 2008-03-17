@@ -191,7 +191,6 @@ static int
 halton_init (void *state, unsigned int dimension)
 {
   halton_state_t *h_state = (halton_state_t *) state;
-  unsigned int i;
 
   h_state->sequence_count = 0;
 
