@@ -27,7 +27,7 @@ gsl_ldexp (const double x, const int e)
 {
   int ex;
   double y = gsl_frexp (x, &ex);
-  double e2 = e + ex;
+  double e2 = e + ex, p2;
 
   if (e2 >= DBL_MAX_EXP)
     {
@@ -40,7 +40,7 @@ gsl_ldexp (const double x, const int e)
       e2 = DBL_MIN_EXP + 1;
     }
 
-  double p2 = pow (2.0, e2);
+  p2 = pow (2.0, e2);
   return y * p2;
 }
 

@@ -245,13 +245,15 @@ gsl_sf_bessel_Jnu_asympx_e(const double nu, const double x, gsl_sf_result * resu
     }
   while (k < 1000);
 
-  double pre = sqrt(2.0/(M_PI*x));
-  double c   = cos(chi);
-  double s   = sin(chi);
-
-  result->val  = pre * (c*P - s*Q);
-  result->err  = pre * GSL_DBL_EPSILON * (fabs(c*P) + fabs(s*Q) + fabs(t)) * (1 + fabs(x));
-  /* NB: final term accounts for phase error with large x */
+  {
+    double pre = sqrt(2.0/(M_PI*x));
+    double c   = cos(chi);
+    double s   = sin(chi);
+    
+    result->val  = pre * (c*P - s*Q);
+    result->err  = pre * GSL_DBL_EPSILON * (fabs(c*P) + fabs(s*Q) + fabs(t)) * (1 + fabs(x));
+    /* NB: final term accounts for phase error with large x */
+  }
 
   return GSL_SUCCESS;
 }

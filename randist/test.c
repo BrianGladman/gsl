@@ -520,7 +520,7 @@ integrate (pdf_func * pdf, double a, double b)
   gsl_function f;  
   gsl_integration_workspace * w = gsl_integration_workspace_alloc (n);
   f.function = &wrapper_function;
-  f.params = pdf;
+  f.params = (void *)pdf;
   gsl_integration_qags (&f, a, b, 1e-16, 1e-4, n, w, &result, &abserr);
   gsl_integration_workspace_free (w);
   return result;
