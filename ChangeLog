@@ -1,3 +1,8 @@
+2008-03-17  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: remove hack to disable search for Fortran, Java,
+	C++ required with earlier versions of autoconf
+
 2007-09-01  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl.m4: changed default name to AX_PATH_GSL

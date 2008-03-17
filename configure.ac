@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.10])
+AC_INIT([gsl],[1.10.90])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -48,11 +48,6 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-
-dnl Disable unnecessary libtool tests for c++,fortran,java
-define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
-define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
-define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
 dnl Check compiler features
