@@ -1,3 +1,9 @@
+2008-03-18  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): use volatile to avoid extended precision in loop
+
+	* ldfrexp.c (gsl_ldexp): added a test for x==0
+
 2007-11-04  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ldfrexp.c (gsl_ldexp): handle full range of double precision

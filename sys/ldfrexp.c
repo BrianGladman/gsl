@@ -26,22 +26,30 @@ double
 gsl_ldexp (const double x, const int e)
 {
   int ex;
-  double y = gsl_frexp (x, &ex);
-  double e2 = e + ex, p2;
-
-  if (e2 >= DBL_MAX_EXP)
+  
+  if (x == 0.0)
     {
-      y *= pow (2.0, e2 - DBL_MAX_EXP + 1);
-      e2 = DBL_MAX_EXP - 1;
-    }
-  else if (e2 <= DBL_MIN_EXP)
-    {
-      y *= pow (2.0, e2 - DBL_MIN_EXP - 1);
-      e2 = DBL_MIN_EXP + 1;
+      return x;
     }
 
-  p2 = pow (2.0, e2);
-  return y * p2;
+  {
+    double y = gsl_frexp (x, &ex);
+    double e2 = e + ex, p2;
+    
+    if (e2 >= DBL_MAX_EXP)
+      {
+	y *= pow (2.0, e2 - DBL_MAX_EXP + 1);
+	e2 = DBL_MAX_EXP - 1;
+      }
+    else if (e2 <= DBL_MIN_EXP)
+      {
+	y *= pow (2.0, e2 - DBL_MIN_EXP - 1);
+	e2 = DBL_MIN_EXP + 1;
+      }
+    
+    p2 = pow (2.0, e2);
+    return y * p2;
+  }
 }
 
 double

@@ -320,7 +320,7 @@ main (void)
 
   {
     int i = 0;
-    double x = GSL_DBL_MIN;
+    volatile double x = GSL_DBL_MIN;
     y_expected = 2.554675596204441378334779940e294;
     
     while ((x /= 2) > 0)
@@ -392,7 +392,7 @@ main (void)
 
   {
     int i = 0;
-    double x = GSL_DBL_MIN;
+    volatile double x = GSL_DBL_MIN;
     y_expected = 0.5;
     e_expected = -1021;
     
