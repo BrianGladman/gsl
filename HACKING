@@ -31,7 +31,17 @@ With GIT:
 
   git clone ssh://git.sv.gnu.org/srv/git/gsl.git
 
-# PEOPLE WHO JUST WANT TO BROWSE THE CVS REPOSITORY
+  # editing and committing
+  <edit file1>
+  git add file2
+  git rm file3
+  git diff  # see changes
+  git commit -m 'commit message' file1 file2 file3
+  
+  # push to repository
+  git push
+
+# PEOPLE WHO JUST WANT TO BROWSE THE REPOSITORY
 point your web browser to
   http://git.savannah.gnu.org/gitweb/?p=gsl.git
 
