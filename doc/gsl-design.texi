@@ -293,7 +293,7 @@ the future (@pxref{Legal issues}).
 @end itemize
 
 Post announcements of your package releases to
-@email{gsl-discuss@@sources.redhat.com} so that information about them
+@email{gsl-discuss@@sourceware.org} so that information about them
 can be added to the GSL webpages.
 
 For security, sign your package with GPG (@code{gpg --detach-sign

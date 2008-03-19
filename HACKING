@@ -49,8 +49,8 @@ point your web browser to
 grab the latest bundled release at
   ftp://ftp.gnu.org/pub/gnu/gsl/
 
-Please send a message to gsl-discuss@sourceware.org if any of
-these steps don't work.
+Please send a message to help-gsl@gnu.org if any of these steps don't
+work.
 
 ---------- submitting patches
 
@@ -189,9 +189,9 @@ run under valgrind giving misleading results.
 
     cd doc ; mkdir html ; cd html
     ../texi2html -verbose -split_chapter -expandinfo ~/gsl/doc/gsl-ref.texi
-    cvs -d sourceware.org:/cvs/gsl  import -m 'this is release 0.123' htdocs/ref texi2html release-0-123
+    ###cvs -d sourceware.org:/cvs/gsl  import -m 'this is release 0.123' htdocs/ref texi2html release-0-123
     cd .. ; tar cvfz gsl-ref-html.tar.gz
-    scp -v gsl-ref-html.tar.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
+    ###scp -v gsl-ref-html.tar.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
 
 * Make complete GNU docs using Gendocs.sh
 
@@ -206,7 +206,7 @@ run under valgrind giving misleading results.
 of ghostscript for compatibility.
 
    make dvi; dvips gsl-ref.dvi ; gzip -v -9 gsl-ref.ps
-   scp -v gsl-ref.ps.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
+   ####  scp -v gsl-ref.ps.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
 
 * Tag with "cvs tag release-X-Y" for version X.Y
 
@@ -229,7 +229,7 @@ na.digest@na-net.ornl.gov or freshmeat.net
 Notes for Volunteers
 ====================
 
-1) Study the GSL Design Document at http://sourceware.org/gsl/
+1) Study the GSL Design Document at http://www.gnu.org/software/gsl/
 It contains the project coding standards and other useful information.
 
 2) Make sure you are allowed to release code under the GPL. It may be
