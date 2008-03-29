@@ -44,7 +44,7 @@ Routines are available for the following areas,
 @item @tab Root-Finding               @tab Discrete Hankel Transforms 
 @item @tab Least-Squares Fitting      @tab Minimization               
 @item @tab IEEE Floating-Point        @tab Physical Constants         
-@item @tab Wavelets
+@item @tab Basis Splines              @tab Wavelets
 @end multitable
 @iftex
 @sp 1
