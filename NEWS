@@ -1,16 +1,23 @@
+* What is new in gsl-1.11:
+
+** Fixed underflow in ODE adaptive step size controller that could
+   cause step size to decrease to zero (bug #21933).
+
 ** Improved the handling of the asymptotic regime in gsl_sf_bessel_jl.
 
 ** Improved the handling of large arguments in cumulative distribution
    functions using the incomplete beta function, such as gsl_cdf_fdist_P.
 
 ** Fixed overflow bug in gsl_cdf_hypergeometric_{P,Q} for large
-   arguments.
+   arguments (bug #22293).
 
-** gsl_ran_gaussian_ziggurat now handles generators with different ranges
-explicitly, to minimise the number of function calls required.
+** gsl_ran_gaussian_ziggurat now handles generators with different
+   ranges explicitly, to minimise the number of function calls
+   required (bug #21820).  Also fixes bug #22446 (rng limit in
+   gsl_ran_chisq()).
 
 ** Added missing error terms in gsl_sf_exp_mult_e10_e to prevent
-   the error being underestimated.  
+   the error being underestimated (bug #22041).  
 
 ** Updated some constants to the CODATA 2006 values.
 
@@ -22,16 +29,16 @@ explicitly, to minimise the number of function calls required.
 ** Added functions for evaluating complex polynomials
 
 ** The convergence condition for gsl_multiroots_test_delta now accepts
-dxi == 0.
+   dxi == 0.
 
 ** Improved functions gsl_ldexp and gsl_frexp to handle the full range
-of double precision numbers in all cases.
+   of double precision numbers in all cases.
 
 ** Added new quasi random generators gsl_qrng_halton and
-gsl_qrng_reversehalton which support dimensions up to 1229.
+   gsl_qrng_reversehalton which support dimensions up to 1229.
 
 ** Added function gsl_multifit_linear_residuals for computing the
-residuals of the fit
+   residuals of the fit
 
 * What was new in gsl-1.10:
 
