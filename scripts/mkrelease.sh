@@ -40,7 +40,7 @@ for f in  $NEWTAR $PATCH ; do
     FILES="$FILES $f $f.sig $f.directive.asc"
 done
 
-read "Ready to upload? $FILES"
+read -p "Ready to upload? $FILES"
 
 for n in $FILES; do
  echo curl -T -v $n ftp://ftp-upload.gnu.org/incoming/ftp/
