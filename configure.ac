@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.10.90])
+AC_INIT([gsl],[1.11])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -20,11 +20,41 @@ dnl gsl-1.5    libgsl 6:0:6  libgslcblas 0:0:0
 dnl gsl-1.6    libgsl 7:0:7  libgslcblas 0:0:0
 dnl gsl-1.7    libgsl 8:0:8  libgslcblas 0:0:0
 dnl gsl-1.8    libgsl 9:0:9  libgslcblas 0:0:0
-dnl gsl-1.9    libgsl 10:0:10  libgslcblas 0:0:0
+dnl gsl-1.9    libgsl 10:0:10 libgslcblas 0:0:0 
+dnl gsl-1.10   libgsl 10:0:10 (*) libgslcblas 0:0:0 
+dnl gsl-1.11   libgsl 12:0:12  libgslcblas 0:0:0 
+dnl 
+dnl (*) There was an error on this release.  Firstly, the versioning
+dnl numbers were not updated.  Secondly, 2 functions were removed, but
+dnl the age not reset--this should have been 11:0:0.  However these
+dnl functions were not documented and are regarded as internal, so we
+dnl will assume 11:0:11.
+dnl
+dnl How to update library version number
+dnl ====================================
+dnl 
+dnl C: increment if the interface has additions, changes, removals.
+dnl
+dnl R: increment any time the source changes; set to 0 if you
+dnl incremented CURRENT
+dnl
+dnl A: increment if any interfaces have been added; set to 0 if any
+dnl interfaces have been removed. removal has precedence over adding,
+dnl so set to 0 if both happened.
 
-GSL_LT_VERSION="10:0:10"
+dnl
+GSL_CURRENT=12
+GSL_REVISION=0
+GSL_AGE=12
+dnl
+CBLAS_CURRENT=0
+CBLAS_REVISION=0
+CBLAS_AGE=0
+
+GSL_LT_VERSION="${GSL_CURRENT}:${GSL_REVISION}:${GSL_AGE}"
 AC_SUBST(GSL_LT_VERSION)
-GSL_LT_CBLAS_VERSION="0:0:0"
+
+GSL_LT_CBLAS_VERSION="${CBLAS_CURRENT}:${CBLAS_REVISION}:${CBLAS_AGE}"
 AC_SUBST(GSL_LT_CBLAS_VERSION)
 
 case "$VERSION" in
@@ -376,6 +406,113 @@ int main (void)
 if test "$ac_cv_c_ieee_denormals" != no ; then
   AC_DEFINE(HAVE_IEEE_DENORMALS,1,[Define this if IEEE denormalized numbers are available])
 fi
+
+AH_TEMPLATE([HIDE_INLINE_STATIC],[Define if you need to hide the static definitions of inline functions])
+
+AH_BOTTOM([/* Use 0 and 1 for EXIT_SUCCESS and EXIT_FAILURE if we don't have them */
+#if !HAVE_EXIT_SUCCESS_AND_FAILURE
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
+#endif])
+
+AH_BOTTOM([/* Define one of these if you have a known IEEE arithmetic interface */
+#undef HAVE_GNUSPARC_IEEE_INTERFACE
+#undef HAVE_GNUM68K_IEEE_INTERFACE
+#undef HAVE_GNUPPC_IEEE_INTERFACE
+#undef HAVE_GNUX86_IEEE_INTERFACE
+#undef HAVE_SUNOS4_IEEE_INTERFACE
+#undef HAVE_SOLARIS_IEEE_INTERFACE
+#undef HAVE_HPUX11_IEEE_INTERFACE
+#undef HAVE_HPUX_IEEE_INTERFACE
+#undef HAVE_TRU64_IEEE_INTERFACE
+#undef HAVE_IRIX_IEEE_INTERFACE
+#undef HAVE_AIX_IEEE_INTERFACE
+#undef HAVE_FREEBSD_IEEE_INTERFACE
+#undef HAVE_OS2EMX_IEEE_INTERFACE
+#undef HAVE_NETBSD_IEEE_INTERFACE
+#undef HAVE_OPENBSD_IEEE_INTERFACE
+#undef HAVE_DARWIN_IEEE_INTERFACE
+#undef HAVE_DARWIN86_IEEE_INTERFACE])
+
+AH_BOTTOM([/* Define a rounding function which moves extended precision values
+   out of registers and rounds them to double-precision. This should
+   be used *sparingly*, in places where it is necessary to keep
+   double-precision rounding for critical expressions while running in
+   extended precision. For example, the following code should ensure
+   exact equality, even when extended precision registers are in use,
+
+      double q = GSL_COERCE_DBL(3.0/7.0) ;
+      if (q == GSL_COERCE_DBL(3.0/7.0)) { ... } ;
+
+   It carries a penalty even when the program is running in double
+   precision mode unless you compile a separate version of the
+   library with HAVE_EXTENDED_PRECISION_REGISTERS turned off. */
+
+#if HAVE_EXTENDED_PRECISION_REGISTERS
+#define GSL_COERCE_DBL(x) (gsl_coerce_double(x))
+#else
+#define GSL_COERCE_DBL(x) (x)
+#endif])
+
+AH_BOTTOM([/* Substitute gsl functions for missing system functions */
+
+#if !HAVE_DECL_HYPOT
+#define hypot gsl_hypot
+#endif
+
+#if !HAVE_DECL_LOG1P
+#define log1p gsl_log1p
+#endif
+
+#if !HAVE_DECL_EXPM1
+#define expm1 gsl_expm1
+#endif
+
+#if !HAVE_DECL_ACOSH
+#define acosh gsl_acosh
+#endif
+
+#if !HAVE_DECL_ASINH
+#define asinh gsl_asinh
+#endif
+
+#if !HAVE_DECL_ATANH
+#define atanh gsl_atanh
+#endif
+
+#if !HAVE_DECL_LDEXP
+#define ldexp gsl_ldexp
+#endif
+
+#if !HAVE_DECL_FREXP
+#define frexp gsl_frexp
+#endif
+
+#if !HAVE_DECL_ISINF
+#define isinf gsl_isinf
+#endif
+
+#if !HAVE_DECL_FINITE
+#define finite gsl_finite
+#endif
+
+#if !HAVE_DECL_ISNAN
+#define isnan gsl_isnan
+#endif])
+
+AH_BOTTOM([#ifdef __GNUC__
+#define DISCARD_POINTER(p) do { ; } while(p ? 0 : 0);
+#else
+#define DISCARD_POINTER(p) /* ignoring discarded pointer */
+#endif])
+
+AH_BOTTOM([#if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
+#define GSL_RANGE_CHECK 0  /* turn off range checking by default internally */
+#endif])
+
+AH_VERBATIM([GSL_DISABLE_DEPRECATED],
+[/* Disable deprecated functions and enums while building */
+#define GSL_DISABLE_DEPRECATED 1])
 
 dnl
 AC_CONFIG_FILES([gsl-config gsl.pc gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile bspline/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile sort/Makefile complex/Makefile diff/Makefile deriv/Makefile cheb/Makefile cdf/Makefile wavelet/Makefile Makefile])

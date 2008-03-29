@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Disable deprecated functions and enums while building */
+#define GSL_DISABLE_DEPRECATED 1
+
 /* Define to 1 if you have the declaration of `acosh', and to 0 if you don't.
    */
 #undef HAVE_DECL_ACOSH
@@ -134,6 +137,13 @@
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
 
+/* Define if you need to hide the static definitions of inline functions */
+#undef HIDE_INLINE_STATIC
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
 /* Name of package */
 #undef PACKAGE
 
@@ -172,15 +182,12 @@
 #undef inline
 #endif
 
-/* Define to `unsigned' if <sys/types.h> does not define. */
+/* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
 
 /* Define to empty if the keyword `volatile' does not work. Warning: valid
    code using `volatile' can become incorrect without. Disable with care. */
 #undef volatile
-
-/* Define if you need to hide the static definitions of inline functions */
-#undef HIDE_INLINE_STATIC
 
 /* Use 0 and 1 for EXIT_SUCCESS and EXIT_FAILURE if we don't have them */
 #if !HAVE_EXIT_SUCCESS_AND_FAILURE
@@ -282,6 +289,3 @@
 #if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
 #define GSL_RANGE_CHECK 0  /* turn off range checking by default internally */
 #endif
-
-/* Disable deprecated functions and enums while building */
-#define GSL_DISABLE_DEPRECATED 1
