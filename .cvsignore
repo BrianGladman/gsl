@@ -1,3 +1,4 @@
+*~
 *.gz
 *.la
 *.lo
@@ -33,3 +34,6 @@ stamp-h
 stamp-h.in
 stamp-h1
 typescript.make
+test.txt
+test.dat
+a.out
