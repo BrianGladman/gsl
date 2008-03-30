@@ -1,5 +1,11 @@
 * What is new in gsl-1.11:
 
+** The GSL repository and bug database are now hosted at Savannah
+   http://savannah.gnu.org/projects/gsl/
+
+** Upgraded to latest libtool, autoconf and automake (libtool-2.2,
+   autoconf-2.61, automake-1.10.1)
+
 ** Fixed underflow in ODE adaptive step size controller that could
    cause step size to decrease to zero (bug #21933).
 
