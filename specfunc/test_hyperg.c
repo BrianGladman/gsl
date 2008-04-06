@@ -424,6 +424,9 @@ int test_hyperg(void)
   TEST_SF(s, gsl_sf_hyperg_U_e, (-50.5, 100.1, 70, &r),  3.249026971618851e+84, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (-50.5, 100.1, 100, &r),  1.003401902126641e+85, TEST_TOL1, GSL_SUCCESS);
 
+  /* Bug report from Stefan Gerlach */
+
+  TEST_SF(s, gsl_sf_hyperg_U_e, (-2.0, 4.0, 1.0, &r),  11.0, TEST_TOL0, GSL_SUCCESS);
 
   /* 2F1 */
 
