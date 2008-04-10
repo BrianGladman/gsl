@@ -29,8 +29,6 @@
 
 #include <gsl/gsl_linalg.h>
 
-#define REAL double
-
 #include "givens.c"
 #include "apply_givens.c"
 

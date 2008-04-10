@@ -1,3 +1,7 @@
+2008-04-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* qr.c lq.c: removed unused definition of REAL
+
 2007-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c: use GSL_ERROR for failed allocation, signal
