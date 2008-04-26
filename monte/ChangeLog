@@ -1,5 +1,7 @@
 2008-04-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test.c: added a test for warm-start vegas, as well as cold-start
+
 	* miser.c (gsl_monte_miser_integrate): catch zero weights to avoid
 	division by zero
 
