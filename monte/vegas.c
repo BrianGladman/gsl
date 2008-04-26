@@ -217,8 +217,8 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
   for (it = 0; it < state->iterations; it++)
     {
       double intgrl = 0.0, intgrl_sq = 0.0;
-      double sig = 0.0;
-      double wgt;
+      double tss = 0.0;
+      double wgt, var, sig;
       size_t calls_per_box = state->calls_per_box;
       double jacbin = state->jac;
       double *x = state->x;
@@ -231,18 +231,19 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       
       do
         {
-          double m = 0, q = 0;
+          volatile double m = 0, q = 0;
           double f_sq_sum = 0.0;
 
           for (k = 0; k < calls_per_box; k++)
             {
-              double fval, bin_vol;
+              volatile double fval;
+              double bin_vol;
 
               random_point (x, bin, &bin_vol, state->box, xl, xu, state, r);
 
               fval = jacbin * bin_vol * GSL_MONTE_FN_EVAL (f, x);
 
-              /* recurrence for mean and variance */
+              /* recurrence for mean and variance (sum of squares) */
 
               {
                 double d = fval - m;
@@ -259,9 +260,9 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
           intgrl += m * calls_per_box;
 
-          f_sq_sum = q * calls_per_box ;
+          f_sq_sum = q * calls_per_box;
 
-          sig += f_sq_sum ;
+          tss += f_sq_sum;
 
           if (state->mode == GSL_VEGAS_MODE_STRATIFIED)
             {
@@ -272,11 +273,11 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
       /* Compute final results for this iteration   */
 
-      sig = sig / (calls_per_box - 1.0)  ;
+      var = tss / (calls_per_box - 1.0)  ;
 
-      if (sig > 0) 
+      if (var > 0) 
         {
-          wgt = 1.0 / sig;
+          wgt = 1.0 / var;
         }
       else if (state->sum_wgts > 0) 
         {
@@ -289,8 +290,10 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
         
      intgrl_sq = intgrl * intgrl;
 
+     sig = sqrt (var);
+
      state->result = intgrl;
-     state->sigma  = sqrt(sig);
+     state->sigma  = sig;
 
      if (wgt > 0.0)
        {
@@ -318,7 +321,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       if (state->verbose >= 0)
         {
           print_res (state,
-                     state->it_num, intgrl, sqrt (sig), cum_int, cum_sig,
+                     state->it_num, intgrl, sig, cum_int, cum_sig,
                      state->chisq);
           if (it + 1 == state->iterations && state->verbose > 0)
             {
