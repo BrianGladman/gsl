@@ -61,10 +61,10 @@ hybridj_state_t;
 static int hybridj_alloc (void *vstate, size_t n);
 static int hybridj_set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 static int hybridsj_set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-static int set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale);
+static int hybridj_set_impl (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale);
 static int hybridj_iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
 static void hybridj_free (void *vstate);
-static int iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale);
+static int hybridj_iterate_impl (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale);
 
 static int
 hybridj_alloc (void *vstate, size_t n)
@@ -311,19 +311,19 @@ hybridj_alloc (void *vstate, size_t n)
 static int
 hybridj_set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  int status = set (vstate, fdf, x, f, J, dx, 0);
+  int status = hybridj_set_impl (vstate, fdf, x, f, J, dx, 0);
   return status ;
 }
 
 static int
 hybridsj_set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  int status = set (vstate, fdf, x, f, J, dx, 1);
+  int status = hybridj_set_impl (vstate, fdf, x, f, J, dx, 1);
   return status ;
 }
 
 static int
-set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
+hybridj_set_impl (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
 {
   hybridj_state_t *state = (hybridj_state_t *) vstate;
 
@@ -365,19 +365,19 @@ set (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector 
 static int
 hybridj_iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  int status = iterate (vstate, fdf, x, f, J, dx, 0);
+  int status = hybridj_iterate_impl (vstate, fdf, x, f, J, dx, 0);
   return status;
 }
 
 static int
 hybridsj_iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx)
 {
-  int status = iterate (vstate, fdf, x, f, J, dx, 1);
+  int status = hybridj_iterate_impl (vstate, fdf, x, f, J, dx, 1);
   return status;
 }
 
 static int
-iterate (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
+hybridj_iterate_impl (void *vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
 {
   hybridj_state_t *state = (hybridj_state_t *) vstate;
 

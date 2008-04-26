@@ -64,12 +64,12 @@ static int hybrid_set (void *vstate, gsl_multiroot_function * func,
                        gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static int hybrids_set (void *vstate, gsl_multiroot_function * func,
                         gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-static int set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+static int hybrid_set_impl (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
                 gsl_vector * f, gsl_vector * dx, int scale);
 static int hybrid_iterate (void *vstate, gsl_multiroot_function * func,
                            gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static void hybrid_free (void *vstate);
-static int iterate (void *vstate, gsl_multiroot_function * func,
+static int hybrid_iterate_impl (void *vstate, gsl_multiroot_function * func,
                     gsl_vector * x, gsl_vector * f, gsl_vector * dx,
                     int scale);
 
@@ -343,7 +343,7 @@ static int
 hybrid_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
             gsl_vector * f, gsl_vector * dx)
 {
-  int status = set (vstate, func, x, f, dx, 0);
+  int status = hybrid_set_impl (vstate, func, x, f, dx, 0);
   return status;
 }
 
@@ -351,12 +351,12 @@ static int
 hybrids_set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
              gsl_vector * f, gsl_vector * dx)
 {
-  int status = set (vstate, func, x, f, dx, 1);
+  int status = hybrid_set_impl (vstate, func, x, f, dx, 1);
   return status;
 }
 
 static int
-set (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
+hybrid_set_impl (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
      gsl_vector * f, gsl_vector * dx, int scale)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
@@ -421,7 +421,7 @@ static int
 hybrid_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
                 gsl_vector * f, gsl_vector * dx)
 {
-  int status = iterate (vstate, func, x, f, dx, 0);
+  int status = hybrid_iterate_impl (vstate, func, x, f, dx, 0);
   return status;
 }
 
@@ -429,13 +429,14 @@ static int
 hybrids_iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
                  gsl_vector * f, gsl_vector * dx)
 {
-  int status = iterate (vstate, func, x, f, dx, 1);
+  int status = hybrid_iterate_impl (vstate, func, x, f, dx, 1);
   return status;
 }
 
 static int
-iterate (void *vstate, gsl_multiroot_function * func, gsl_vector * x,
-         gsl_vector * f, gsl_vector * dx, int scale)
+hybrid_iterate_impl (void *vstate, gsl_multiroot_function * func, 
+                     gsl_vector * x,
+                     gsl_vector * f, gsl_vector * dx, int scale)
 {
   hybrid_state_t *state = (hybrid_state_t *) vstate;
 
