@@ -1,4 +1,7 @@
-* What is new in gsl-1.11:
+** Fixed a potential division by zero in gsl_monte_miser when the
+   left/right weight factors decrease below 1.
+
+* What was new in gsl-1.11:
 
 ** The GSL repository and bug database are now hosted at Savannah
    http://savannah.gnu.org/projects/gsl/

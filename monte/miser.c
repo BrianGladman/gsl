@@ -193,6 +193,12 @@ gsl_monte_miser_integrate (gsl_monte_function * f,
                 i_bisect = i;
                 weight_l = pow (sigma_l[i], beta);
                 weight_r = pow (sigma_r[i], beta);
+
+                if (weight_l == 0 && weight_r == 0)
+                  {
+                    weight_l = 1;
+                    weight_r = 1;
+                  }
               }
           }
         else

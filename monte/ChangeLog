@@ -1,5 +1,8 @@
 2008-04-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* miser.c (gsl_monte_miser_integrate): catch zero weights to avoid
+	division by zero
+
 	* test.c (main): added test for step-type function
 
 2004-06-02  Brian Gough  <bjg@network-theory.co.uk>
