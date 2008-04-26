@@ -1,7 +1,7 @@
 for (I = problems ; I->f != 0; I++) 
 {
   size_t i;
-  double sum = 0, mean, sumd2 = 0, sd, res, err; 
+  double res, err; 
   
   gsl_rng * r;
 
@@ -34,36 +34,34 @@ for (I = problems ; I->f != 0; I++)
       MONTE_FREE (s);
     }
 
- for (i = 0; i < TRIALS; i++)
-   {
-     sum += result[i];
-   }
+  
+  /* Check the results for consistency as an ensemble */
 
- mean = sum / TRIALS ;
+  { 
+    double mean = 0, sumd2 = 0, sd;
 
- for (i = 0; i < TRIALS; i++) 
-   {
-     sumd2 += pow(result[i] - mean, 2.0);
-   }
+    /* We need to compute the mean exactly when all terms are equal,
+       to get an exact zero for the standard deviation (this is a
+       common case when integrating a constant). */
 
- sd = sqrt(sumd2 / (TRIALS-1.0)) ;
- 
- if (sd < TRIALS * GSL_DBL_EPSILON * fabs (mean))
-   {
-     sd = 0;
-   }
+    for (i = 0; i < TRIALS; i++)
+      {
+        mean += (result[i] - mean) / (i + 1.0);
+      }
 
- for (i = 0; i < TRIALS; i++)
-   {
-     if (sd == 0 && fabs(error[i]) < GSL_DBL_EPSILON * fabs(result[i]))
-       {
-         error[i] = 0.0;
-       }
-
-     gsl_test_factor (error[i], sd, 5.0,
-                      NAME ", %s, abserr[%d] vs sd", I->description, i);
-   }
-
+    for (i = 0; i < TRIALS; i++) 
+      {
+        sumd2 += pow(result[i] - mean, 2.0);
+      }
+    
+    sd = sqrt(sumd2 / (TRIALS-1.0)) ;
+    
+    for (i = 0; i < TRIALS; i++)
+      {
+        gsl_test_factor (error[i], sd, 5.0,
+                         NAME ", %s, abserr[%d] vs sd", I->description, i);
+      }
+  }
 
   gsl_rng_free (r);
 }

@@ -1,5 +1,7 @@
 2008-04-26  Brian Gough  <bjg@network-theory.co.uk>
 
+	* test_main.c: compute the ensemble mean more accurately for the tests
+
 	* test.c: added a test for warm-start vegas, as well as cold-start
 
 	* miser.c (gsl_monte_miser_integrate): catch zero weights to avoid
