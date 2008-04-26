@@ -34,6 +34,7 @@
 #include <gsl/gsl_monte_vegas.h>
 
 #define CONSTANT
+#define STEP
 #define PRODUCT
 #define GAUSSIAN
 #define DBLGAUSSIAN
@@ -49,6 +50,7 @@ double xu2[11] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
 double xu3[2]  = { GSL_DBL_MAX, GSL_DBL_MAX };
 
 double fconst (double x[], size_t d, void *params);
+double fstep (double x[], size_t d, void *params);
 double f0 (double x[], size_t d, void *params);
 double f1 (double x[], size_t d, void *params);
 double f2 (double x[], size_t d, void *params);
@@ -116,6 +118,7 @@ main (void)
   double c = (1.0 + sqrt (10.0)) / 9.0;
 
   gsl_monte_function Fc = make_function(&fconst, 0, 0);
+  gsl_monte_function Fs = make_function(&fstep, 0, 0);
   gsl_monte_function F0 = make_function(&f0, 0, &a);
   gsl_monte_function F1 = make_function(&f1, 0, &a);
   gsl_monte_function F2 = make_function(&f2, 0, &a);
@@ -147,6 +150,20 @@ main (void)
     add(problems,&n, &Fc, xl, xu,  8, 1000, 1.0, 0.0, "constant, 8d");
     add(problems,&n, &Fc, xl, xu,  9, 1000, 1.0, 0.0, "constant, 9d");
     add(problems,&n, &Fc, xl, xu, 10, 1000, 1.0, 0.0, "constant, 10d");
+#endif
+
+#ifdef STEP
+    /* variance(Fs) = 0.4/sqrt(1000) */
+    add(problems,&n, &Fs, xl, xu,  1, 100000, 0.8, 1.264e-3, "step, 1d");
+    add(problems,&n, &Fs, xl, xu,  2, 100000, 0.8, 1.264e-3, "step, 2d");
+    add(problems,&n, &Fs, xl, xu,  3, 100000, 0.8, 1.264e-3, "step, 3d");
+    add(problems,&n, &Fs, xl, xu,  4, 100000, 0.8, 1.264e-3, "step, 4d");
+    add(problems,&n, &Fs, xl, xu,  5, 100000, 0.8, 1.264e-3, "step, 5d");
+    add(problems,&n, &Fs, xl, xu,  6, 100000, 0.8, 1.264e-3, "step, 6d");
+    add(problems,&n, &Fs, xl, xu,  7, 100000, 0.8, 1.264e-3, "step, 7d");
+    add(problems,&n, &Fs, xl, xu,  8, 100000, 0.8, 1.264e-3, "step, 8d");
+    add(problems,&n, &Fs, xl, xu,  9, 100000, 0.8, 1.264e-3, "step, 9d");
+    add(problems,&n, &Fs, xl, xu, 10, 100000, 0.8, 1.264e-3, "step, 10d");
 #endif
 
 #ifdef PRODUCT
@@ -291,6 +308,14 @@ double
 fconst (double x[], size_t num_dim, void *params)
 {
   return 1;
+}
+
+
+/* Step-type (pulse) function */
+double
+fstep (double x[], size_t num_dim, void *params)
+{
+  return (x[0] > 0.1 && x[0] < 0.9) ? 1 : 0;
 }
 
 /* Simple product function */
