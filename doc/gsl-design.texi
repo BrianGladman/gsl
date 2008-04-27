@@ -1117,17 +1117,31 @@ for (i = N - 1; i >= 0; i--) @{ ... @} /* DOESN'T WORK */
 use something like
 
 @example
-for (i = N; i > 0 && i--;) @{ ... @}
+for (i = N; i-- > 0;) @{ ... @}
 @end example
 
 @noindent
-to avoid problems with wrap-around at @code{i=0}.  
+to avoid problems with wrap-around at @code{i=0}.  Note that the
+post-decrement ensures that the loop variable is tested before it
+reaches zero.  Beware that @code{i} will wraparound on exit from the
+loop.
 
 If you really want to avoid confusion use a separate variable to invert
 the loop order,
 @example
 for (i = 0; i < N; i++) @{ j = N - i; ... @}
 @end example
+
+Note (BJG). Originally, I suggested using
+
+@example
+for (i = N; i > 0 && i--;) @{ ... @}
+@end example
+
+which makes the test for @code{i>0} explicit and leaves @code{i=0} on
+exit from the loop.  However, it is slower as there is an additional
+branch which prevents unrolling.  Thanks to J. Seward for pointing
+this out.
 
 @node Arrays vs Pointers, Pointers, size_t, Design
 @section Arrays vs Pointers
