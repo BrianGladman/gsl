@@ -4,6 +4,8 @@
 ** Fixed a potential division by zero in gsl_monte_miser when the
    left/right weight factors decrease below 1.
 
+** Fixed incorrect dimensions check in gsl_matrix_sub{row,column}
+
 * What was new in gsl-1.11:
 
 ** The GSL repository and bug database are now hosted at Savannah
