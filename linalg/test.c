@@ -3942,5 +3942,8 @@ int main(void)
   gsl_matrix_free (inf5);
   gsl_matrix_free (nan5);
 
+  gsl_matrix_free (dblmin3);
+  gsl_matrix_free (dblmin5);
+
   exit (gsl_test_summary());
 }
