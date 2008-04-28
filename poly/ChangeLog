@@ -1,3 +1,7 @@
+2008-04-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* dd.c (gsl_poly_dd_taylor): use new descending loop convention
+
 2007-12-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* eval.c: added functions for complex polynomials

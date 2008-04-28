@@ -157,7 +157,7 @@ gsl_linalg_symmtd_unpack (const gsl_matrix * A,
 
       gsl_matrix_set_identity (Q);
 
-      for (i = N - 2; i > 0 && i--;)
+      for (i = N - 2; i-- > 0;)
         {
           gsl_vector_const_view c = gsl_matrix_const_column (A, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector, i + 1, N - (i+1));

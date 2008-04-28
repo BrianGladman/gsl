@@ -160,7 +160,7 @@ gsl_linalg_HH_svx (gsl_matrix * A, gsl_vector * x)
 
       /* Perform back-substitution. */
 
-      for (i = N; i > 0 && i--;)
+      for (i = N; i-- > 0;)
         {
           REAL xi = gsl_vector_get (x, i);
           REAL sum = 0.0;

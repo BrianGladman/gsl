@@ -383,7 +383,7 @@ gsl_linalg_LQ_vecQ (const gsl_matrix * LQ, const gsl_vector * tau, gsl_vector * 
 
       /* compute v Q^T  */
       
-      for (i =  GSL_MIN (M, N); i > 0 && i--;) 
+      for (i =  GSL_MIN (M, N); i-- > 0;) 
         {
           gsl_vector_const_view c = gsl_matrix_const_row (LQ, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&(c.vector),
@@ -425,7 +425,7 @@ gsl_linalg_LQ_unpack (const gsl_matrix * LQ, const gsl_vector * tau, gsl_matrix 
 
       gsl_matrix_set_identity (Q);
 
-      for (i = GSL_MIN (M, N); i > 0 && i--;)
+      for (i = GSL_MIN (M, N); i-- > 0;)
         {
           gsl_vector_const_view c = gsl_matrix_const_row (LQ, i);
           gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector,
@@ -495,7 +495,7 @@ gsl_linalg_LQ_update (gsl_matrix * Q, gsl_matrix * L,
          simultaneously applied to L,  H = J_1^T ... J^T_(n-1) L
          so that H is upper Hessenberg.  (12.5.2) */
       
-      for (k = M - 1; k > 0; k--)
+      for (k = M - 1; k > 0; k--)  /* loop from k = M-1 to 1 */
         {
           double c, s;
           double wk = gsl_vector_get (w, k);

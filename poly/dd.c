@@ -82,7 +82,7 @@ gsl_poly_dd_taylor (double c[], double xp,
 
   c[0] = dd[0];
 
-  for (i = size - 1; i > 0 && i--;)
+  for (i = size - 1; i-- > 0;)
     {
       w[i] = -w[i + 1] * (xa[size - 2 - i] - xp);
 

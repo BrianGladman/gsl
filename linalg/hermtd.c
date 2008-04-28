@@ -161,7 +161,7 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
 
       gsl_matrix_complex_set_identity (Q);
 
-      for (i = N - 1; i > 0 && i--;)
+      for (i = N - 1; i-- > 0;)
         {
           gsl_complex ti = gsl_vector_complex_get (tau, i);
 

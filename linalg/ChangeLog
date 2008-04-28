@@ -1,3 +1,28 @@
+2008-04-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bidiag.c (gsl_linalg_bidiag_unpack, gsl_linalg_bidiag_unpack2):
+	use new descending loop convention
+
+	* hermtd.c (gsl_linalg_hermtd_unpack): use new descending loop
+	convention
+
+	* hh.c (gsl_linalg_HH_svx): use new descending loop convention
+
+	* lq.c (gsl_linalg_LQ_vecQ, gsl_linalg_LQ_unpack): use new
+	descending loop convention
+
+	* qr.c (gsl_linalg_QR_Qvec, gsl_linalg_QR_unpack): use new
+	descending loop convention
+
+	* svd.c (gsl_linalg_SV_decomp_mod): use new descending loop
+	convention
+
+	* svdstep.c (chase_out_trailing_zero): use new descending loop
+	convention
+
+	* symmtd.c (gsl_linalg_symmtd_unpack): use new descending loop
+	convention
+
 2008-04-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qr.c lq.c: removed unused definition of REAL

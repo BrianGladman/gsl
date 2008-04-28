@@ -323,7 +323,7 @@ gsl_linalg_SV_decomp_mod (gsl_matrix * A,
 
   /* Convert A into an orthogonal matrix L */
 
-  for (j = N; j > 0 && j--;)
+  for (j = N; j-- > 0;)
     {
       /* Householder column transformation to accumulate L */
       double tj = gsl_vector_get (S, j);

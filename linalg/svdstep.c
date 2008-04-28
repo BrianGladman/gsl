@@ -323,7 +323,7 @@ chase_out_trailing_zero (gsl_vector * d, gsl_vector * f, gsl_matrix * V)
   x = gsl_vector_get (d, n - 2);
   y = gsl_vector_get (f, n - 2);
 
-  for (k = n - 1; k > 0 && k--;)
+  for (k = n - 1; k-- > 0;)
     {
       create_givens (x, y, &c, &s);
 
