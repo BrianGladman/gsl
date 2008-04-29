@@ -1242,6 +1242,9 @@ void test_chisqinv (void) {
   TEST (gsl_cdf_chisq_Pinv, (9.99999999999998341e-1, 13.0), 100.0, 0.01);
   TEST (gsl_cdf_chisq_Pinv, (1e0, 13.0), GSL_POSINF, 0.0);
 
+  TEST (gsl_cdf_chisq_Pinv, (1.93238145206123590e-01, 1.5), 0.211980092931799521729407, TEST_TOL6);
+  TEST (gsl_cdf_chisq_Pinv, (4.83e-8, 19.19), 1.632280186860266704532868343, TEST_TOL6);
+
   TEST (gsl_cdf_chisq_Qinv, (0.0, 13.0), GSL_POSINF, TEST_TOL6);
   TEST (gsl_cdf_chisq_Qinv, (1.65902608070858809e-15, 13.0), 100.0, TEST_TOL6);
   TEST (gsl_cdf_chisq_Qinv, (9.52102560780915127e-2, 13.0), 20.0, TEST_TOL6);
