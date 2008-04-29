@@ -42,7 +42,13 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
 
   /* Consider, small, large and intermediate cases separately.  The
      boundaries at 0.05 and 0.95 have not been optimised, but seem ok
-     for an initial approximation. */
+     for an initial approximation.
+
+     BJG: These approximations aren't really valid, the relevant
+     criterion is P*gamma(a+1) < 1. Need to rework these routines and
+     use a single bisection style solver for all the inverse
+     functions.
+  */
 
   if (P < 0.05)
     {
@@ -57,7 +63,7 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
   else
     {
       double xg = gsl_cdf_ugaussian_Pinv (P);
-      double x0 = (xg < -sqrt (a)) ? a : sqrt (a) * xg + a;
+      double x0 = (xg < -0.5*sqrt (a)) ? a : sqrt (a) * xg + a;
       x = x0;
     }
 
@@ -85,7 +91,7 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
       double step1 = -((a - 1) / x - 1) * lambda * lambda / 4.0;
 
       double step = step0;
-      if (fabs (step1) < fabs (step0))
+      if (fabs (step1) < 0.5 * fabs (step0))
         step += step1;
 
       if (x + step > 0)
@@ -140,7 +146,7 @@ gsl_cdf_gamma_Qinv (const double Q, const double a, const double b)
   else
     {
       double xg = gsl_cdf_ugaussian_Qinv (Q);
-      double x0 = (xg < -sqrt (a)) ? a : sqrt (a) * xg + a;
+      double x0 = (xg < -0.5*sqrt (a)) ? a : sqrt (a) * xg + a;
       x = x0;
     }
 
@@ -168,7 +174,7 @@ gsl_cdf_gamma_Qinv (const double Q, const double a, const double b)
       double step1 = -((a - 1) / x - 1) * lambda * lambda / 4.0;
 
       double step = step0;
-      if (fabs (step1) < fabs (step0))
+      if (fabs (step1) < 0.5 * fabs (step0))
         step += step1;
 
       if (x + step > 0)

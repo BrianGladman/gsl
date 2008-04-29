@@ -1,3 +1,7 @@
+** Fixed a problem with convergence for inverse gamma and chisq
+   distribitions, gsl_cdf_gamma_{P,Q}inv and gsl_cdf_chisq_{P,Q}inv
+   (bug #23101).
+
 ** Improved the handling of constant regions in Vegas by eliminating
    spurious excess precision when computing box variances.
 
