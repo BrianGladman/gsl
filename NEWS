@@ -1,3 +1,7 @@
+** Fixed a bug the simplex algorithm which caused the second highest
+   point to be incorrectly equal to the first when the first value was
+   the highest, which could cause suboptimal convergence (bug #23192).
+
 ** Fixed a problem with convergence for inverse gamma and chisq
    distribitions, gsl_cdf_gamma_{P,Q}inv and gsl_cdf_chisq_{P,Q}inv
    (bug #23101).

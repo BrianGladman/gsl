@@ -446,3 +446,5 @@ evaluation and ode improvements
   gsl_cdf_hypergeometric_{P,Q}
 
 *  Claude Dion <claude.dion@tp.umu.se> documentation bug reports
+
+* Michael Kuklik <mkuklik@gmail.com> bug report for simplex

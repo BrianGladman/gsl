@@ -1,3 +1,8 @@
+2008-05-06  Brian Gough  <bjg@network-theory.co.uk>
+
+	* simplex.c (nmsimplex_iterate): fix search for second highest
+	point
+
 2007-07-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* history.c: removed (unused file)
