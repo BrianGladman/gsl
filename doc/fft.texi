@@ -619,7 +619,7 @@ parts which are zero are not stored.
 
 The following table shows the correspondence between the output
 @var{data} and the equivalent results obtained by considering the input
-data as a complex sequence with zero imaginary part,
+data as a complex sequence with zero imaginary part (assuming @var{stride=1}),
 
 @example
 complex[0].real    =    data[0] 
@@ -641,8 +641,8 @@ complex[N-1].imag  =   -data[N-1]
 @end example
 @noindent
 Note that the output data can be converted into the full complex
-sequence using the function @code{gsl_fft_halfcomplex_unpack}
-described in the next section.
+sequence using the function @code{gsl_fft_halfcomplex_radix2_unpack}
+described below.
 
 @end deftypefun
 The radix-2 FFT functions for halfcomplex data are declared in the
@@ -656,10 +656,44 @@ length @var{n} and stride @var{stride} on the half-complex sequence
 @var{data} stored according the output scheme used by
 @code{gsl_fft_real_radix2}.  The result is a real array stored in natural
 order.
-
 @end deftypefun
 
+@deftypefun int gsl_fft_halfcomplex_radix2_unpack (const double @var{halfcomplex_coefficient}[], gsl_complex_packed_array @var{complex_coefficient}, size_t @var{stride}, size_t @var{n})
+This function converts @var{halfcomplex_coefficient}, an array of
+half-complex coefficients as returned by @code{gsl_fft_real_radix2_transform}, into an ordinary complex array, @var{complex_coefficient}.  It fills in the
+complex array using the symmetry 
+@c{$z_k = z_{N-k}^*$}
+@math{z_k = z_@{N-k@}^*}
+to reconstruct the redundant elements.  The algorithm for the conversion
+is,
 
+@example  
+complex_coefficient[0].real 
+  = halfcomplex_coefficient[0];
+complex_coefficient[0].imag 
+  = 0.0;
+
+for (i = 1; i < n - i; i++)
+  @{
+    double hc_real 
+      = halfcomplex_coefficient[i*stride];
+    double hc_imag 
+      = halfcomplex_coefficient[(n-i)*stride];
+    complex_coefficient[i*stride].real = hc_real;
+    complex_coefficient[i*stride].imag = hc_imag;
+    complex_coefficient[(n - i)*stride].real = hc_real;
+    complex_coefficient[(n - i)*stride].imag = -hc_imag;
+  @}
+
+if (i == n - i)
+  @{
+    complex_coefficient[i*stride].real 
+      = halfcomplex_coefficient[(n - 1)*stride];
+    complex_coefficient[i*stride].imag 
+      = 0.0;
+  @}
+@end example
+@end deftypefun
 
 @node Mixed-radix FFT routines for real data
 @section Mixed-radix FFT routines for real data
@@ -812,9 +846,9 @@ algorithm for the conversion is simply,
 @example
 for (i = 0; i < n; i++)
   @{
-    complex_coefficient[i].real 
-      = real_coefficient[i];
-    complex_coefficient[i].imag 
+    complex_coefficient[i*stride].real 
+      = real_coefficient[i*stride];
+    complex_coefficient[i*stride].imag 
       = 0.0;
   @}
 @end example
@@ -840,20 +874,20 @@ complex_coefficient[0].imag
 for (i = 1; i < n - i; i++)
   @{
     double hc_real 
-      = halfcomplex_coefficient[2 * i - 1];
+      = halfcomplex_coefficient[(2 * i - 1)*stride];
     double hc_imag 
-      = halfcomplex_coefficient[2 * i];
-    complex_coefficient[i].real = hc_real;
-    complex_coefficient[i].imag = hc_imag;
-    complex_coefficient[n - i].real = hc_real;
-    complex_coefficient[n - i].imag = -hc_imag;
+      = halfcomplex_coefficient[(2 * i)*stride];
+    complex_coefficient[i*stride].real = hc_real;
+    complex_coefficient[i*stride].imag = hc_imag;
+    complex_coefficient[(n - i)*stride].real = hc_real;
+    complex_coefficient[(n - i)*stride].imag = -hc_imag;
   @}
 
 if (i == n - i)
   @{
-    complex_coefficient[i].real 
-      = halfcomplex_coefficient[n - 1];
-    complex_coefficient[i].imag 
+    complex_coefficient[i*stride].real 
+      = halfcomplex_coefficient[(n - 1)*stride];
+    complex_coefficient[i*stride].imag 
       = 0.0;
   @}
 @end example
