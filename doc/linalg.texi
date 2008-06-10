@@ -86,13 +86,13 @@ Algorithm 3.4.1).
 @deftypefunx int gsl_linalg_complex_LU_solve (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x})
 These functions solve the square system @math{A x = b} using the @math{LU}
 decomposition of @math{A} into (@var{LU}, @var{p}) given by
-@code{gsl_linalg_LU_decomp} or @code{gsl_linalg_complex_LU_decomp}.
+@code{gsl_linalg_LU_decomp} or @code{gsl_linalg_complex_LU_decomp} as input.
 @end deftypefun
 
 @deftypefun int gsl_linalg_LU_svx (const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 @deftypefunx int gsl_linalg_complex_LU_svx (const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, gsl_vector_complex * @var{x})
 These functions solve the square system @math{A x = b} in-place using the
-@math{LU} decomposition of @math{A} into (@var{LU},@var{p}). On input
+precomputed @math{LU} decomposition of @math{A} into (@var{LU},@var{p}). On input
 @var{x} should contain the right-hand side @math{b}, which is replaced
 by the solution on output.
 @end deftypefun
@@ -103,7 +103,7 @@ by the solution on output.
 @deftypefun int gsl_linalg_LU_refine (const gsl_matrix * @var{A}, const gsl_matrix * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
 @deftypefunx int gsl_linalg_complex_LU_refine (const gsl_matrix_complex * @var{A}, const gsl_matrix_complex * @var{LU}, const gsl_permutation * @var{p}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x}, gsl_vector_complex * @var{residual})
 These functions apply an iterative improvement to @var{x}, the solution
-of @math{A x = b}, using the @math{LU} decomposition of @math{A} into
+of @math{A x = b}, from the precomputed @math{LU} decomposition of @math{A} into
 (@var{LU},@var{p}). The initial residual @math{r = A x - b} is also
 computed and stored in @var{residual}.
 @end deftypefun
@@ -199,15 +199,17 @@ The algorithm used to perform the decomposition is Householder QR (Golub
 
 @deftypefun int gsl_linalg_QR_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the square system @math{A x = b} using the @math{QR}
-decomposition of @math{A} into (@var{QR}, @var{tau}) given by
-@code{gsl_linalg_QR_decomp}. The least-squares solution for rectangular systems can
-be found using @code{gsl_linalg_QR_lssolve}.
+decomposition of @math{A} held in (@var{QR}, @var{tau}) which must 
+have been computed previously with @code{gsl_linalg_QR_decomp}. 
+The least-squares solution for 
+rectangular systems can be found using @code{gsl_linalg_QR_lssolve}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QR_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{x})
-This function solves the square system @math{A x = b} in-place using the
-@math{QR} decomposition of @math{A} into (@var{QR},@var{tau}) given by
-@code{gsl_linalg_QR_decomp}. On input @var{x} should contain the
+This function solves the square system @math{A x = b} in-place using
+the @math{QR} decomposition of @math{A} held in (@var{QR},@var{tau})
+which must have been computed previously by
+@code{gsl_linalg_QR_decomp}.  On input @var{x} should contain the
 right-hand side @math{b}, which is replaced by the solution on output.
 @end deftypefun
 
@@ -215,7 +217,8 @@ right-hand side @math{b}, which is replaced by the solution on output.
 This function finds the least squares solution to the overdetermined
 system @math{A x = b} where the matrix @var{A} has more rows than
 columns.  The least squares solution minimizes the Euclidean norm of the
-residual, @math{||Ax - b||}.The routine uses the @math{QR} decomposition
+residual, @math{||Ax - b||}.The routine requires as input 
+the @math{QR} decomposition
 of @math{A} into (@var{QR}, @var{tau}) given by
 @code{gsl_linalg_QR_decomp}.  The solution is returned in @var{x}.  The
 residual is computed as a by-product and stored in @var{residual}.
@@ -350,13 +353,13 @@ output in the separate matrices @var{q} and @var{r}.
 
 @deftypefun int gsl_linalg_QRPT_solve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the square system @math{A x = b} using the @math{QRP^T}
-decomposition of @math{A} into (@var{QR}, @var{tau}, @var{p}) given by
-@code{gsl_linalg_QRPT_decomp}.
+decomposition of @math{A} held in (@var{QR}, @var{tau}, @var{p}) which must 
+have been computed previously by @code{gsl_linalg_QRPT_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_QRPT_svx (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
 This function solves the square system @math{A x = b} in-place using the
-@math{QRP^T} decomposition of @math{A} into
+@math{QRP^T} decomposition of @math{A} held in
 (@var{QR},@var{tau},@var{p}). On input @var{x} should contain the
 right-hand side @math{b}, which is replaced by the solution on output.
 @end deftypefun
@@ -466,8 +469,8 @@ details).
 
 @deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} using the singular value
-decomposition (@var{U}, @var{S}, @var{V}) of @math{A} given by
-@code{gsl_linalg_SV_decomp}.
+decomposition (@var{U}, @var{S}, @var{V}) held in @math{A} which must 
+have been computed previously by @code{gsl_linalg_SV_decomp}.
 
 Only non-zero singular values are used in computing the solution. The
 parts of the solution corresponding to singular values of zero are
@@ -530,19 +533,20 @@ handler first to avoid triggering an error.
 @deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 @deftypefunx int gsl_linalg_complex_cholesky_solve (const gsl_matrix_complex * @var{cholesky}, const gsl_vector_complex * @var{b}, gsl_vector_complex * @var{x})
 These functions solve the system @math{A x = b} using the Cholesky
-decomposition of @math{A} into the matrix @var{cholesky} given by
-@code{gsl_linalg_cholesky_decomp} or
+decomposition of @math{A} held in the matrix @var{cholesky} which must
+have been previously computed by @code{gsl_linalg_cholesky_decomp} or
 @code{gsl_linalg_complex_cholesky_decomp}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_svx (const gsl_matrix * @var{cholesky}, gsl_vector * @var{x})
 @deftypefunx int gsl_linalg_complex_cholesky_svx (const gsl_matrix_complex * @var{cholesky}, gsl_vector_complex * @var{x})
 These functions solve the system @math{A x = b} in-place using the
-Cholesky decomposition of @math{A} into the matrix @var{cholesky} given
-by @code{gsl_linalg_cholesky_decomp} or
-@code{gsl_linalg_complex_cholesky_decomp}. On input @var{x} should contain
-the right-hand side @math{b}, which is replaced by the solution on
-output.
+Cholesky decomposition of @math{A} held in the matrix @var{cholesky}
+which must have been previously computed by by
+@code{gsl_linalg_cholesky_decomp} or
+@code{gsl_linalg_complex_cholesky_decomp}. On input @var{x} should
+contain the right-hand side @math{b}, which is replaced by the
+solution on output.
 @end deftypefun
 
 @node Tridiagonal Decomposition of Real Symmetric Matrices
@@ -780,7 +784,7 @@ be one element shorter.
 @end deftypefun
 
 @deftypefun int gsl_linalg_bidiag_unpack (const gsl_matrix * @var{A}, const gsl_vector * @var{tau_U}, gsl_matrix * @var{U}, const gsl_vector * @var{tau_V}, gsl_matrix * @var{V}, gsl_vector * @var{diag}, gsl_vector * @var{superdiag})
-This function unpacks the bidiagonal decomposition of @var{A} given by
+This function unpacks the bidiagonal decomposition of @var{A} produced by
 @code{gsl_linalg_bidiag_decomp}, (@var{A}, @var{tau_U}, @var{tau_V})
 into the separate orthogonal matrices @var{U}, @var{V} and the diagonal
 vector @var{diag} and superdiagonal @var{superdiag}.  Note that @var{U}
@@ -789,7 +793,7 @@ is stored as a compact @math{M}-by-@math{N} orthogonal matrix satisfying
 @end deftypefun
 
 @deftypefun int gsl_linalg_bidiag_unpack2 (gsl_matrix * @var{A}, gsl_vector * @var{tau_U}, gsl_vector * @var{tau_V}, gsl_matrix * @var{V})
-This function unpacks the bidiagonal decomposition of @var{A} given by
+This function unpacks the bidiagonal decomposition of @var{A} produced by
 @code{gsl_linalg_bidiag_decomp}, (@var{A}, @var{tau_U}, @var{tau_V})
 into the separate orthogonal matrices @var{U}, @var{V} and the diagonal
 vector @var{diag} and superdiagonal @var{superdiag}.  The matrix @var{U}
@@ -798,7 +802,7 @@ is stored in-place in @var{A}.
 
 @deftypefun int gsl_linalg_bidiag_unpack_B (const gsl_matrix * @var{A}, gsl_vector * @var{diag}, gsl_vector * @var{superdiag})
 This function unpacks the diagonal and superdiagonal of the bidiagonal
-decomposition of @var{A} given by @code{gsl_linalg_bidiag_decomp}, into
+decomposition of @var{A} from @code{gsl_linalg_bidiag_decomp}, into
 the diagonal vector @var{diag} and superdiagonal vector @var{superdiag}.
 @end deftypefun
 
