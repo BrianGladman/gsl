@@ -274,10 +274,14 @@ integer type.
 @node Maximum and Minimum functions
 @section Maximum and Minimum functions
 
+Note that the following macros perform multiple evaluations of their
+arguments, so they should not be used with arguments that have side
+effects (such as a call to a random number generator).
+
 @defmac GSL_MAX (a, b)
 @cindex maximum of two numbers
-This macro returns the maximum of @var{a} and @var{b}. It is defined as 
-@code{((a) > (b) ? (a):(b))}.
+This macro returns the maximum of @var{a} and @var{b}. It is defined
+as @code{((a) > (b) ? (a):(b))}.  
 @end defmac
 
 @defmac GSL_MIN (a, b)
