@@ -507,7 +507,7 @@ test_eigen_herm_results (const gsl_matrix_complex * A,
             = gsl_matrix_complex_const_column(evec, j);
           gsl_complex vivj;
           gsl_blas_zdotc (&vi.vector, &vj.vector, &vivj);
-          gsl_test_abs (gsl_complex_abs(vivj), 0.0, N * GSL_DBL_EPSILON, 
+          gsl_test_abs (gsl_complex_abs(vivj), 0.0, 10.0 * N * GSL_DBL_EPSILON, 
                         "%s, orthogonal(%d,%d), %s", desc, i, j, desc2);
         }
     }
