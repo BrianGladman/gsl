@@ -346,7 +346,7 @@ exact copy of the generator @var{r}.
 @section Reading and writing random number generator state
 
 The library provides functions for reading and writing the random
-number state to a file as binary data or formatted text.
+number state to a file as binary data.
 
 @deftypefun int gsl_rng_fwrite (FILE * @var{stream}, const gsl_rng * @var{r})
 This function writes the random number state of the random number
