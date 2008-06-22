@@ -39,9 +39,8 @@ int gsl_cheb_calc_deriv(gsl_cheb_series * deriv, const gsl_cheb_series * f)
   deriv->a = f->a;
   deriv->b = f->b;
 
-#ifdef ERR
-  deriv->err = n * n * f->c[n-1];   /* error in derivative is n^2 c_n */ 
-#endif
+  /* error in derivative is n^2 c_n */ 
+  /* deriv->err = n * n * f->c[n-1];*/   
 
   /* FIXME:  should probably set deriv->f[] as well */
   
