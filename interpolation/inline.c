@@ -21,27 +21,10 @@
  */
 #include <config.h>
 #include <stdlib.h>
+
+/* Compile all the inline functions */
+
+#define COMPILE_INLINE_STATIC
+#include "build.h"
 #include <gsl/gsl_interp.h>
 
-#ifndef HIDE_INLINE_STATIC
-size_t
-gsl_interp_bsearch (
-  const double x_array[], double x,
-  size_t index_lo,
-  size_t index_hi
-  )
-{
-  size_t ilo = index_lo;
-  size_t ihi = index_hi;
-  while (ihi > ilo + 1)
-    {
-      size_t i = (ihi + ilo) / 2;
-      if (x_array[i] > x)
-        ihi = i;
-      else
-        ilo = i;
-    }
-
-  return ilo;
-}
-#endif
