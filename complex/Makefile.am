@@ -2,10 +2,9 @@ noinst_LTLIBRARIES = libgslcomplex.la
 
 pkginclude_HEADERS = gsl_complex.h gsl_complex_math.h
 
-#INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 INCLUDES = -I$(top_srcdir)
 
-libgslcomplex_la_SOURCES = math.c
+libgslcomplex_la_SOURCES = math.c inline.c
 
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test

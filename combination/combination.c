@@ -40,23 +40,6 @@ gsl_combination_data (const gsl_combination * c)
   return c->data ;
 }
 
-#ifndef HIDE_INLINE_STATIC
-size_t
-gsl_combination_get (const gsl_combination * c, const size_t i)
-{
-  if (gsl_check_range)
-    {
-      if (i >= c->k)            /* size_t is unsigned, can't be negative */
-        {
-          GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
-        }
-    }
-
-  return c->data[i];
-}
-#endif
-
-
 int
 gsl_combination_valid (gsl_combination * c)
 {

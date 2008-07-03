@@ -20,7 +20,8 @@
 #include <config.h>
 #include <gsl/gsl_errno.h>
 
-#define COMPILE_INLINE_STATIC
-#include <gsl/gsl_build.h>
-#include <gsl/gsl_permutation.h>
+/* Compile all the inline functions */
 
+#define COMPILE_INLINE_STATIC
+#include "build.h"
+#include <gsl/gsl_permutation.h>

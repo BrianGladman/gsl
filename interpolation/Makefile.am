@@ -4,11 +4,9 @@ check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_interp.h gsl_spline.h
 
-libgslinterpolation_la_SOURCES = accel.c akima.c bsearch.c cspline.c interp.c linear.c integ_eval.h spline.c poly.c
+libgslinterpolation_la_SOURCES = accel.c akima.c cspline.c interp.c linear.c integ_eval.h spline.c poly.c inline.c
 
-noinst_HEADERS = bsearch.h
-
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 TESTS = $(check_PROGRAMS)
 

@@ -1,3 +1,14 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* gsl_combination.h: added gsl_inline.h, use INLINE_DECL and
+	GSL_RANGE_COND for gsl_combination_get
+
+	* combination.c: moved gsl_combination_get to inline.c
+
+	* inline.c: separate file for inline function object code
+
+	* Makefile.am (INCLUDES): use top_srcdir only, remove top_builddir
+
 2003-07-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init.c (gsl_combination_alloc): set c->data to NULL when k=0

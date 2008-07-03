@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -93,12 +94,10 @@ void * gsl_qrng_state (const gsl_qrng * q);
 
 
 /* Retrieve next vector in sequence. */
-int gsl_qrng_get (const gsl_qrng * q, double x[]);
-
+INLINE_DECL int gsl_qrng_get (const gsl_qrng * q, double x[]);
 
 #ifdef HAVE_INLINE
-extern inline int gsl_qrng_get (const gsl_qrng * q, double x[]);
-extern inline int gsl_qrng_get (const gsl_qrng * q, double x[])
+INLINE_FUN int gsl_qrng_get (const gsl_qrng * q, double x[])
 {
   return (q->type->get) (q->state, q->dimension, x);
 }

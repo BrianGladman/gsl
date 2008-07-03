@@ -21,6 +21,7 @@
 
 #ifndef __GSL_MODE_H__
 #define __GSL_MODE_H__
+#include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -67,9 +68,9 @@ typedef unsigned int gsl_mode_t;
 #define GSL_PREC_APPROX  2
 
 #ifdef HAVE_INLINE
-extern inline unsigned int GSL_MODE_PREC(gsl_mode_t mt);
+INLINE_FUN unsigned int GSL_MODE_PREC(gsl_mode_t mt);
 
-extern inline unsigned int
+INLINE_FUN unsigned int
 GSL_MODE_PREC(gsl_mode_t mt)
 { return  (mt & (unsigned int)7); }
 #else  /* HAVE_INLINE */

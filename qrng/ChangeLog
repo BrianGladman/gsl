@@ -1,3 +1,13 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* qrng.c: moved gsl_qrng_get to inline.c
+
+	* gsl_qrng.h (gsl_qrng_get): new inline declaration
+
+	* inline.c: handle inline functions separately
+
+	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir
+
 2008-03-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* reversehalton.c (reversehalton_init): removed unused variable i

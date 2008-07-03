@@ -22,9 +22,12 @@
 #define HAVE_INLINE
 #endif     
 
+/* Compile range checking code for inline functions used in the library */
 #undef GSL_RANGE_CHECK
 #define GSL_RANGE_CHECK 1
 
+/* Use the global variable gsl_check_range to enable/disable range checking at
+   runtime */
 #undef GSL_RANGE_COND
 #define GSL_RANGE_COND(x) (gsl_check_range && (x))
 

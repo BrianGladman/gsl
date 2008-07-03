@@ -226,12 +226,20 @@ have the prefix @code{gsl_}, while exported macros have the prefix
 
 @cindex inline functions
 @cindex HAVE_INLINE
+@cindex GSL_C99_INLINE
+@cindex C99, inline keyword
+@cindex @code{extern inline}
 The @code{inline} keyword is not part of the original ANSI C standard
-(C89) and the library does not export any inline function definitions by
-default. However, the library provides optional inline versions of
-performance-critical functions by conditional compilation.  The inline
-versions of these functions can be included by defining the macro
-@code{HAVE_INLINE} when compiling an application,
+(C89) so the library does not export any inline function definitions
+by default.  Inline functions were introduced officially in the newer
+C99 standard but most C89 compilers have also included @code{inline} as
+an extension for a long time.
+
+To allow the use of inline functions, the library provides optional
+inline versions of performance-critical routines by conditional
+compilation in the exported header files.  The inline versions of these
+functions can be included by defining the macro @code{HAVE_INLINE}
+when compiling an application,
 
 @example
 $ gcc -Wall -c -DHAVE_INLINE example.c
@@ -242,10 +250,17 @@ If you use @code{autoconf} this macro can be defined automatically.  If
 you do not define the macro @code{HAVE_INLINE} then the slower
 non-inlined versions of the functions will be used instead.
 
-Note that the actual usage of the inline keyword is @code{extern
-inline}, which eliminates unnecessary function definitions in @sc{gcc}.
-If the form @code{extern inline} causes problems with other compilers a
-stricter autoconf test can be used, see @ref{Autoconf Macros}.
+By default, the actual form of the inline keyword is @code{extern
+inline}, which is a @code{gcc} extension that eliminates unnecessary
+function definitions.  If the form @code{extern inline} causes
+problems with other compilers a stricter autoconf test can be used,
+see @ref{Autoconf Macros}.
+
+When compiling with @code{gcc} in C99 mode (@code{gcc -std=c99}) the
+header files automatically switch to C99-compatible inline function
+declarations instead of @code{extern inline}.  With other C99
+compilers, define the macro @code{GSL_C99_INLINE} to use these
+declarations.
 
 @node Long double
 @section Long double

@@ -18,18 +18,12 @@
  */
 #include <config.h>
 #include <math.h>
-#include <gsl/gsl_pow_int.h>
 
-#ifndef HIDE_INLINE_STATIC
-double gsl_pow_2(const double x) { return x*x;   }
-double gsl_pow_3(const double x) { return x*x*x; }
-double gsl_pow_4(const double x) { double x2 = x*x;   return x2*x2;    }
-double gsl_pow_5(const double x) { double x2 = x*x;   return x2*x2*x;  }
-double gsl_pow_6(const double x) { double x2 = x*x;   return x2*x2*x2; }
-double gsl_pow_7(const double x) { double x3 = x*x*x; return x3*x3*x;  }
-double gsl_pow_8(const double x) { double x2 = x*x;   double x4 = x2*x2; return x4*x4; }
-double gsl_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
-#endif
+/* Compile all the inline functions */
+
+#define COMPILE_INLINE_STATIC
+#include "build.h"
+#include <gsl/gsl_pow_int.h>
 
 double gsl_pow_int(double x, int n)
 {

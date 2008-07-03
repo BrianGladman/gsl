@@ -1,3 +1,13 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* permutation.c: move gsl_permutation_get to inline.c
+
+	* gsl_permutation.h: use new inline declarations
+
+	* inline.c: handle inline functions separately
+
+	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir
+
 2003-02-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* canonical.c (gsl_permutation_canonical_to_linear): fixed bug

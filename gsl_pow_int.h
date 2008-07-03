@@ -19,6 +19,7 @@
 
 #ifndef __GSL_POW_INT_H__
 #define __GSL_POW_INT_H__
+#include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -32,33 +33,24 @@
 
 __BEGIN_DECLS
 
-#ifdef HAVE_INLINE
-extern inline double gsl_pow_2(const double x);
-extern inline double gsl_pow_3(const double x);
-extern inline double gsl_pow_4(const double x);
-extern inline double gsl_pow_5(const double x);
-extern inline double gsl_pow_6(const double x);
-extern inline double gsl_pow_7(const double x);
-extern inline double gsl_pow_8(const double x);
-extern inline double gsl_pow_9(const double x);
+INLINE_DECL double gsl_pow_2(const double x);
+INLINE_DECL double gsl_pow_3(const double x);
+INLINE_DECL double gsl_pow_4(const double x);
+INLINE_DECL double gsl_pow_5(const double x);
+INLINE_DECL double gsl_pow_6(const double x);
+INLINE_DECL double gsl_pow_7(const double x);
+INLINE_DECL double gsl_pow_8(const double x);
+INLINE_DECL double gsl_pow_9(const double x);
 
-extern inline double gsl_pow_2(const double x) { return x*x;   }
-extern inline double gsl_pow_3(const double x) { return x*x*x; }
-extern inline double gsl_pow_4(const double x) { double x2 = x*x;   return x2*x2;    }
-extern inline double gsl_pow_5(const double x) { double x2 = x*x;   return x2*x2*x;  }
-extern inline double gsl_pow_6(const double x) { double x2 = x*x;   return x2*x2*x2; }
-extern inline double gsl_pow_7(const double x) { double x3 = x*x*x; return x3*x3*x;  }
-extern inline double gsl_pow_8(const double x) { double x2 = x*x;   double x4 = x2*x2; return x4*x4; }
-extern inline double gsl_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
-#else
-double gsl_pow_2(const double x);
-double gsl_pow_3(const double x);
-double gsl_pow_4(const double x);
-double gsl_pow_5(const double x);
-double gsl_pow_6(const double x);
-double gsl_pow_7(const double x);
-double gsl_pow_8(const double x);
-double gsl_pow_9(const double x);
+#ifdef HAVE_INLINE
+INLINE_FUN double gsl_pow_2(const double x) { return x*x;   }
+INLINE_FUN double gsl_pow_3(const double x) { return x*x*x; }
+INLINE_FUN double gsl_pow_4(const double x) { double x2 = x*x;   return x2*x2;    }
+INLINE_FUN double gsl_pow_5(const double x) { double x2 = x*x;   return x2*x2*x;  }
+INLINE_FUN double gsl_pow_6(const double x) { double x2 = x*x;   return x2*x2*x2; }
+INLINE_FUN double gsl_pow_7(const double x) { double x3 = x*x*x; return x3*x3*x;  }
+INLINE_FUN double gsl_pow_8(const double x) { double x2 = x*x;   double x4 = x2*x2; return x4*x4; }
+INLINE_FUN double gsl_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
 #endif
 
 double gsl_pow_int(double x, int n);

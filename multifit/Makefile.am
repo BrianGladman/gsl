@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslmultifit.la
 
 pkginclude_HEADERS = gsl_multifit.h gsl_multifit_nlin.h
 
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 libgslmultifit_la_SOURCES = multilinear.c work.c lmder.c fsolver.c fdfsolver.c convergence.c gradient.c covar.c
 

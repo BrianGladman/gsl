@@ -1,4 +1,4 @@
-/* interpolation/inline.c
+/* poly/inline.c
  * 
  * Copyright (C) 2008 Brian Gough
  * 
@@ -20,7 +20,9 @@
 #include <config.h>
 #include <gsl/gsl_errno.h>
 
+/* Compile all the inline functions */
+
 #define COMPILE_INLINE_STATIC
-#include <gsl/gsl_build.h>
+#include "build.h"
 #include <gsl/gsl_poly.h>
 

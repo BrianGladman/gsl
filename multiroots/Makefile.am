@@ -6,7 +6,7 @@ pkginclude_HEADERS = gsl_multiroots.h
 
 noinst_HEADERS = enorm.c dogleg.c
 
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 libgslmultiroots_la_SOURCES = fdjac.c fsolver.c fdfsolver.c convergence.c  newton.c gnewton.c dnewton.c broyden.c hybrid.c hybridj.c
 

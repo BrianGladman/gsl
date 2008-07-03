@@ -19,6 +19,7 @@
 
 #ifndef __GSL_COMPLEX_MATH_H__
 #define __GSL_COMPLEX_MATH_H__
+#include <gsl/gsl_inline.h>
 #include <gsl/gsl_complex.h>
 
 #undef __BEGIN_DECLS
@@ -35,11 +36,12 @@ __BEGIN_DECLS
 
 /* Complex numbers */
 
-gsl_complex gsl_complex_rect (double x, double y);  /* r= real+i*imag */
 gsl_complex gsl_complex_polar (double r, double theta); /* r= r e^(i theta) */
 
+INLINE_DECL gsl_complex gsl_complex_rect (double x, double y);  /* r= real+i*imag */
+
 #ifdef HAVE_INLINE
-extern inline gsl_complex
+INLINE_FUN gsl_complex
 gsl_complex_rect (double x, double y)
 {                               /* return z = x + i y */
   gsl_complex z;

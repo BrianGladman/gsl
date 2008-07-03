@@ -22,6 +22,7 @@
 #ifndef __GSL_INTERP_H__
 #define __GSL_INTERP_H__
 #include <stdlib.h>
+#include <gsl/gsl_inline.h>
 #include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
@@ -80,9 +81,6 @@ GSL_VAR const gsl_interp_type * gsl_interp_akima_periodic;
 
 gsl_interp_accel *
 gsl_interp_accel_alloc(void);
-
-size_t
-gsl_interp_accel_find(gsl_interp_accel * a, const double x_array[], size_t size, double x);
 
 int
 gsl_interp_accel_reset (gsl_interp_accel * a);
@@ -148,15 +146,35 @@ gsl_interp_eval_integ(const gsl_interp * obj,
 void
 gsl_interp_free(gsl_interp * interp);
 
-size_t gsl_interp_bsearch(const double x_array[], double x,
-                          size_t index_lo, size_t index_hi);
-
-#ifdef HAVE_INLINE
-extern inline size_t
+INLINE_DECL size_t
 gsl_interp_bsearch(const double x_array[], double x,
                    size_t index_lo, size_t index_hi);
 
-extern inline size_t
+#ifdef HAVE_INLINE
+
+/* Perform a binary search of an array of values.
+ * 
+ * The parameters index_lo and index_hi provide an initial bracket,
+ * and it is assumed that index_lo < index_hi. The resulting index
+ * is guaranteed to be strictly less than index_hi and greater than
+ * or equal to index_lo, so that the implicit bracket [index, index+1]
+ * always corresponds to a region within the implicit value range of
+ * the value array.
+ *
+ * Note that this means the relationship of 'x' to x_array[index]
+ * and x_array[index+1] depends on the result region, i.e. the
+ * behaviour at the boundaries may not correspond to what you
+ * expect. We have the following complete specification of the
+ * behaviour.
+ * Suppose the input is x_array[] = { x0, x1, ..., xN }
+ *    if ( x == x0 )           then  index == 0
+ *    if ( x > x0 && x <= x1 ) then  index == 0, and sim. for other interior pts
+ *    if ( x == xN )           then  index == N-1
+ *    if ( x > xN )            then  index == N-1
+ *    if ( x < x0 )            then  index == 0 
+ */
+
+INLINE_FUN size_t
 gsl_interp_bsearch(const double x_array[], double x,
                    size_t index_lo, size_t index_hi)
 {
@@ -174,8 +192,11 @@ gsl_interp_bsearch(const double x_array[], double x,
 }
 #endif
 
+INLINE_DECL size_t 
+gsl_interp_accel_find(gsl_interp_accel * a, const double x_array[], size_t size, double x);
+
 #ifdef HAVE_INLINE
-extern inline size_t
+INLINE_FUN size_t
 gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, double x)
 {
   size_t x_index = a->cache;

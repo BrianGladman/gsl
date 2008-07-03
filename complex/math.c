@@ -51,16 +51,6 @@
  * Complex numbers
  **********************************************************************/
 
-#ifndef HIDE_INLINE_STATIC
-gsl_complex
-gsl_complex_rect (double x, double y)
-{                               /* return z = x + i y */
-  gsl_complex z;
-  GSL_SET_COMPLEX (&z, x, y);
-  return z;
-}
-#endif
-
 gsl_complex
 gsl_complex_polar (double r, double theta)
 {                               /* return z = r exp(i theta) */

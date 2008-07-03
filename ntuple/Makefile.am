@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslntuple.la
 
 pkginclude_HEADERS = gsl_ntuple.h
 
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 libgslntuple_la_SOURCES = ntuple.c
 

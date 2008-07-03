@@ -1,3 +1,11 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* prec.c: compile inline functions from header here
+
+	* pow_int.c: compile inline functions from header here
+
+	* minmax.c: compile inline functions from header here
+
 2008-03-18  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (main): use volatile to avoid extended precision in loop

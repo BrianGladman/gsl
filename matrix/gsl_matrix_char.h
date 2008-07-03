@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_inline.h>
 #include <gsl/gsl_check_range.h>
 #include <gsl/gsl_vector_char.h>
 
@@ -204,12 +205,6 @@ gsl_matrix_char_const_view_vector_with_tda (const gsl_vector_char * v,
 
 /* Operations */
 
-char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
-void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x);
-
-char * gsl_matrix_char_ptr(gsl_matrix_char * m, const size_t i, const size_t j);
-const char * gsl_matrix_char_const_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
-
 void gsl_matrix_char_set_zero (gsl_matrix_char * m);
 void gsl_matrix_char_set_identity (gsl_matrix_char * m);
 void gsl_matrix_char_set_all (gsl_matrix_char * m, char x);
@@ -256,73 +251,91 @@ int gsl_matrix_char_get_row(gsl_vector_char * v, const gsl_matrix_char * m, cons
 int gsl_matrix_char_get_col(gsl_vector_char * v, const gsl_matrix_char * m, const size_t j);
 int gsl_matrix_char_set_row(gsl_matrix_char * m, const size_t i, const gsl_vector_char * v);
 int gsl_matrix_char_set_col(gsl_matrix_char * m, const size_t j, const gsl_vector_char * v);
+/***********************************************************************/
 
 /* inline functions if you are using GCC */
 
+INLINE_DECL char   gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j);
+INLINE_DECL void    gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x);
+INLINE_DECL char * gsl_matrix_char_ptr(gsl_matrix_char * m, const size_t i, const size_t j);
+INLINE_DECL const char * gsl_matrix_char_const_ptr(const gsl_matrix_char * m, const size_t i, const size_t j);
+
 #ifdef HAVE_INLINE
-extern inline 
+INLINE_FUN 
 char
 gsl_matrix_char_get(const gsl_matrix_char * m, const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_VAL("first index out of range", GSL_EINVAL, 0) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_VAL("second index out of range", GSL_EINVAL, 0) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_VAL("first index out of range", GSL_EINVAL, 0) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_VAL("second index out of range", GSL_EINVAL, 0) ;
+        }
     }
 #endif
   return m->data[i * m->tda + j] ;
 } 
 
-extern inline 
+INLINE_FUN 
 void
 gsl_matrix_char_set(gsl_matrix_char * m, const size_t i, const size_t j, const char x)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   m->data[i * m->tda + j] = x ;
 }
 
-extern inline 
+INLINE_FUN 
 char *
 gsl_matrix_char_ptr(gsl_matrix_char * m, const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   return (char *) (m->data + (i * m->tda + j)) ;
 } 
 
-extern inline 
+INLINE_FUN 
 const char *
 gsl_matrix_char_const_ptr(const gsl_matrix_char * m, const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   return (const char *) (m->data + (i * m->tda + j)) ;

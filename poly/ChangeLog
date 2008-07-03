@@ -1,3 +1,13 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* gsl_poly.h: use new inline declarations
+
+	* inline.c: handle inline functions in separate file
+
+	* dd.c: move gsl_poly_dd_eval to inline.c
+
+	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir
+
 2008-04-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* dd.c (gsl_poly_dd_taylor): use new descending loop convention

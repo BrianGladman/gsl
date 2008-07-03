@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_inline.h>
 #include <gsl/gsl_check_range.h>
 #include <gsl/gsl_block_long_double.h>
 
@@ -122,12 +123,6 @@ gsl_vector_long_double_const_subvector_with_stride (const gsl_vector_long_double
 
 /* Operations */
 
-long double gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i);
-void gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x);
-
-long double *gsl_vector_long_double_ptr (gsl_vector_long_double * v, const size_t i);
-const long double *gsl_vector_long_double_const_ptr (const gsl_vector_long_double * v, const size_t i);
-
 void gsl_vector_long_double_set_zero (gsl_vector_long_double * v);
 void gsl_vector_long_double_set_all (gsl_vector_long_double * v, long double x);
 int gsl_vector_long_double_set_basis (gsl_vector_long_double * v, size_t i);
@@ -165,14 +160,19 @@ int gsl_vector_long_double_ispos (const gsl_vector_long_double * v);
 int gsl_vector_long_double_isneg (const gsl_vector_long_double * v);
 int gsl_vector_long_double_isnonneg (const gsl_vector_long_double * v);
 
+INLINE_DECL long double gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i);
+INLINE_DECL void gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x);
+INLINE_DECL long double * gsl_vector_long_double_ptr (gsl_vector_long_double * v, const size_t i);
+INLINE_DECL const long double * gsl_vector_long_double_const_ptr (const gsl_vector_long_double * v, const size_t i);
+
 #ifdef HAVE_INLINE
 
-extern inline
+INLINE_FUN
 long double
 gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
     }
@@ -180,12 +180,12 @@ gsl_vector_long_double_get (const gsl_vector_long_double * v, const size_t i)
   return v->data[i * v->stride];
 }
 
-extern inline
+INLINE_FUN
 void
 gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long double x)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
     }
@@ -193,12 +193,12 @@ gsl_vector_long_double_set (gsl_vector_long_double * v, const size_t i, long dou
   v->data[i * v->stride] = x;
 }
 
-extern inline
+INLINE_FUN
 long double *
 gsl_vector_long_double_ptr (gsl_vector_long_double * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
     }
@@ -206,20 +206,18 @@ gsl_vector_long_double_ptr (gsl_vector_long_double * v, const size_t i)
   return (long double *) (v->data + i * v->stride);
 }
 
-extern inline
+INLINE_FUN
 const long double *
 gsl_vector_long_double_const_ptr (const gsl_vector_long_double * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
     }
 #endif
   return (const long double *) (v->data + i * v->stride);
 }
-
-
 #endif /* HAVE_INLINE */
 
 __END_DECLS

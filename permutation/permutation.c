@@ -33,22 +33,6 @@ gsl_permutation_data (const gsl_permutation * p)
   return p->data ;
 }
 
-#ifndef HIDE_INLINE_STATIC
-size_t
-gsl_permutation_get (const gsl_permutation * p, const size_t i)
-{
-  if (gsl_check_range)
-    {
-      if (i >= p->size)         /* size_t is unsigned, can't be negative */
-        {
-          GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
-        }
-    }
-
-  return p->data[i];
-}
-#endif
-
 int
 gsl_permutation_swap (gsl_permutation * p, const size_t i, const size_t j)
 {

@@ -1,3 +1,19 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* Makefile.am: added gsl_inline.h and build.h
+
+	* gsl_mode.h gsl_pow_int.h: use new inline declarations
+
+	* gsl_minmax.h: new header file for minmax functions, use new
+	inline declarations
+
+	* gsl_math.h: moved minmax functions to separate header file
+
+	* configure.ac: test for C99 inline as well
+
+	* build.h gsl_inline.h: added new header to handle GNU-style and
+	C99 inlines
+
 2008-03-17  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: remove hack to disable search for Fortran, Java,

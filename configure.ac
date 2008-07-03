@@ -96,7 +96,7 @@ AC_SUBST(GSL_LIBS)
 dnl Check for "extern inline", using a modified version of the test
 dnl for AC_C_INLINE from acspecific.mt
 dnl
-AC_CACHE_CHECK([for extern inline], ac_cv_c_extern_inline,
+AC_CACHE_CHECK([for GNU-style extern inline], ac_cv_c_extern_inline,
 [ac_cv_c_extern_inline=no
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern $ac_cv_c_inline double foo(double x);
 extern $ac_cv_c_inline double foo(double x) { return x + 1.0 ; } ;
@@ -105,6 +105,19 @@ double foo (double x) { return x + 1.0 ; };]], [[  foo(1.0)  ]])],[ac_cv_c_exter
 
 if test "$ac_cv_c_extern_inline" != no ; then
    AC_DEFINE(HAVE_INLINE,[],[Define if you have inline])
+else
+   AC_CACHE_CHECK([for C99-style inline], ac_cv_c_c99inline,
+   [ac_cv_c_c99inline=no
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef __GNUC_STDC_INLINE__
+   inline double foo(double x);
+   inline double foo(double x) { return x + 1.0 ; };
+   #endif]], 
+   [[  foo(1.0)  ]])],[ac_cv_c_c99inline="yes"],[])
+   ])
+
+   if test "$ac_cv_c_c99inline" != no ; then
+      AC_DEFINE(HAVE_INLINE,[],[Define if you have inline])
+   fi
 fi
 
 dnl Checks for header files.

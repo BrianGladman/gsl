@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/* Compile all the inline functions */
+
 #define COMPILE_INLINE_STATIC
-#include <gsl/gsl_build.h>
+#include "build.h"
 #include <gsl/gsl_combination.h>

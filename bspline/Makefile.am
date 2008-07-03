@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslbspline.la
 
 pkginclude_HEADERS = gsl_bspline.h
 
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 libgslbspline_la_SOURCES = bspline.c
 

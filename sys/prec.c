@@ -21,7 +21,13 @@
 
 #include <config.h>
 #include <gsl/gsl_machine.h>
+
+/* Compile all the inline functions */
+
+#define COMPILE_INLINE_STATIC
+#include "build.h"
 #include <gsl/gsl_precision.h>
+#include <gsl/gsl_mode.h>
 
 const double gsl_prec_eps[_GSL_PREC_T_NUM] = {
   GSL_DBL_EPSILON,
@@ -59,17 +65,3 @@ const double gsl_prec_root6_eps[_GSL_PREC_T_NUM] = {
   GSL_ROOT6_SFLT_EPSILON
 };
 
-typedef unsigned int gsl_mode_t;
-
-#ifndef HIDE_INLINE_STATIC
-/* We need this somewhere, in case the inline is ignored.
- */
-
-unsigned int GSL_MODE_PREC(gsl_mode_t mt);
-
-unsigned int
-GSL_MODE_PREC(gsl_mode_t mt)
-{ 
-  return  (mt & (unsigned int)7); 
-}
-#endif

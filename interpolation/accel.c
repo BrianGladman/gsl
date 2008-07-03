@@ -50,31 +50,6 @@ gsl_interp_accel_reset (gsl_interp_accel * a)
   return GSL_SUCCESS;
 }
 
-#ifndef HIDE_INLINE_STATIC
-size_t
-gsl_interp_accel_find (gsl_interp_accel * a, const double xa[], size_t len, double x)
-{
-  size_t x_index = a->cache;
-
-  if (x < xa[x_index])
-    {
-      a->miss_count++;
-      a->cache = gsl_interp_bsearch (xa, x, 0, x_index);
-    }
-  else if (x > xa[x_index + 1])
-    {
-      a->miss_count++;
-      a->cache = gsl_interp_bsearch (xa, x, x_index, len - 1);
-    }
-  else
-    {
-      a->hit_count++;
-    }
-
-  return a->cache;
-}
-#endif
-
 void
 gsl_interp_accel_free (gsl_interp_accel * a)
 {

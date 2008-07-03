@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_inline.h>
 #include <gsl/gsl_check_range.h>
 #include <gsl/gsl_block_uchar.h>
 
@@ -122,12 +123,6 @@ gsl_vector_uchar_const_subvector_with_stride (const gsl_vector_uchar *v,
 
 /* Operations */
 
-unsigned char gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i);
-void gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x);
-
-unsigned char *gsl_vector_uchar_ptr (gsl_vector_uchar * v, const size_t i);
-const unsigned char *gsl_vector_uchar_const_ptr (const gsl_vector_uchar * v, const size_t i);
-
 void gsl_vector_uchar_set_zero (gsl_vector_uchar * v);
 void gsl_vector_uchar_set_all (gsl_vector_uchar * v, unsigned char x);
 int gsl_vector_uchar_set_basis (gsl_vector_uchar * v, size_t i);
@@ -165,14 +160,19 @@ int gsl_vector_uchar_ispos (const gsl_vector_uchar * v);
 int gsl_vector_uchar_isneg (const gsl_vector_uchar * v);
 int gsl_vector_uchar_isnonneg (const gsl_vector_uchar * v);
 
+INLINE_DECL unsigned char gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i);
+INLINE_DECL void gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x);
+INLINE_DECL unsigned char * gsl_vector_uchar_ptr (gsl_vector_uchar * v, const size_t i);
+INLINE_DECL const unsigned char * gsl_vector_uchar_const_ptr (const gsl_vector_uchar * v, const size_t i);
+
 #ifdef HAVE_INLINE
 
-extern inline
+INLINE_FUN
 unsigned char
 gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_VAL ("index out of range", GSL_EINVAL, 0);
     }
@@ -180,12 +180,12 @@ gsl_vector_uchar_get (const gsl_vector_uchar * v, const size_t i)
   return v->data[i * v->stride];
 }
 
-extern inline
+INLINE_FUN
 void
 gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
     }
@@ -193,12 +193,12 @@ gsl_vector_uchar_set (gsl_vector_uchar * v, const size_t i, unsigned char x)
   v->data[i * v->stride] = x;
 }
 
-extern inline
+INLINE_FUN
 unsigned char *
 gsl_vector_uchar_ptr (gsl_vector_uchar * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
     }
@@ -206,20 +206,18 @@ gsl_vector_uchar_ptr (gsl_vector_uchar * v, const size_t i)
   return (unsigned char *) (v->data + i * v->stride);
 }
 
-extern inline
+INLINE_FUN
 const unsigned char *
 gsl_vector_uchar_const_ptr (const gsl_vector_uchar * v, const size_t i)
 {
 #if GSL_RANGE_CHECK
-  if (i >= v->size)
+  if (GSL_RANGE_COND(i >= v->size))
     {
       GSL_ERROR_NULL ("index out of range", GSL_EINVAL);
     }
 #endif
   return (const unsigned char *) (v->data + i * v->stride);
 }
-
-
 #endif /* HAVE_INLINE */
 
 __END_DECLS

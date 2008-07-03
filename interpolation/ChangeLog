@@ -1,3 +1,13 @@
+2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
+
+	* gsl_interp.h: added inline declarations
+
+	* accel.c: moved gsl_interp_accel_find to inline.c
+
+        * bsearch.h bsearch.c: removed, moved to inline.c
+	
+	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir
+
 2007-03-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* interp.c (gsl_interp_init): added check for monotonically

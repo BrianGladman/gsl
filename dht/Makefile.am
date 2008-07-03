@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgsldht.la
 
 pkginclude_HEADERS = gsl_dht.h
 
-INCLUDES= -I$(top_builddir)
+INCLUDES = -I$(top_srcdir)
 
 TESTS = $(check_PROGRAMS)
 

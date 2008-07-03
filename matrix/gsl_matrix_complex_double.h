@@ -205,12 +205,6 @@ gsl_matrix_complex_const_view_vector_with_tda (const gsl_vector_complex * v,
 
 /* Operations */
 
-gsl_complex gsl_matrix_complex_get(const gsl_matrix_complex * m, const size_t i, const size_t j);
-void gsl_matrix_complex_set(gsl_matrix_complex * m, const size_t i, const size_t j, const gsl_complex x);
-
-gsl_complex * gsl_matrix_complex_ptr(gsl_matrix_complex * m, const size_t i, const size_t j);
-const gsl_complex * gsl_matrix_complex_const_ptr(const gsl_matrix_complex * m, const size_t i, const size_t j);
-
 void gsl_matrix_complex_set_zero (gsl_matrix_complex * m);
 void gsl_matrix_complex_set_identity (gsl_matrix_complex * m);
 void gsl_matrix_complex_set_all (gsl_matrix_complex * m, gsl_complex x);
@@ -249,78 +243,99 @@ int gsl_matrix_complex_get_row(gsl_vector_complex * v, const gsl_matrix_complex 
 int gsl_matrix_complex_get_col(gsl_vector_complex * v, const gsl_matrix_complex * m, const size_t j);
 int gsl_matrix_complex_set_row(gsl_matrix_complex * m, const size_t i, const gsl_vector_complex * v);
 int gsl_matrix_complex_set_col(gsl_matrix_complex * m, const size_t j, const gsl_vector_complex * v);
+/***********************************************************************/
+
+/* inline functions if you are using GCC */
+
+INLINE_DECL gsl_complex gsl_matrix_complex_get(const gsl_matrix_complex * m, const size_t i, const size_t j);
+INLINE_DECL void gsl_matrix_complex_set(gsl_matrix_complex * m, const size_t i, const size_t j, const gsl_complex x);
+
+INLINE_DECL gsl_complex * gsl_matrix_complex_ptr(gsl_matrix_complex * m, const size_t i, const size_t j);
+INLINE_DECL const gsl_complex * gsl_matrix_complex_const_ptr(const gsl_matrix_complex * m, const size_t i, const size_t j);
 
 #ifdef HAVE_INLINE
 
-extern inline 
+INLINE_FUN 
 gsl_complex
 gsl_matrix_complex_get(const gsl_matrix_complex * m, 
                      const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  gsl_complex zero = {{0,0}};
+  if (GSL_RANGE_COND(1)) 
+    {
+      gsl_complex zero = {{0,0}};
 
-  if (i >= m->size1)
-    {
-      GSL_ERROR_VAL("first index out of range", GSL_EINVAL, zero) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_VAL("second index out of range", GSL_EINVAL, zero) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_VAL("first index out of range", GSL_EINVAL, zero) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_VAL("second index out of range", GSL_EINVAL, zero) ;
+        }
     }
 #endif
   return *(gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
 } 
 
-extern inline 
+INLINE_FUN 
 void
 gsl_matrix_complex_set(gsl_matrix_complex * m, 
                      const size_t i, const size_t j, const gsl_complex x)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   *(gsl_complex *)(m->data + 2*(i * m->tda + j)) = x ;
 }
 
-extern inline 
+INLINE_FUN 
 gsl_complex *
 gsl_matrix_complex_ptr(gsl_matrix_complex * m, 
                              const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   return (gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
 } 
 
-extern inline 
+INLINE_FUN 
 const gsl_complex *
 gsl_matrix_complex_const_ptr(const gsl_matrix_complex * m, 
                                    const size_t i, const size_t j)
 {
 #if GSL_RANGE_CHECK
-  if (i >= m->size1)
+  if (GSL_RANGE_COND(1)) 
     {
-      GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
-    }
-  else if (j >= m->size2)
-    {
-      GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+      if (i >= m->size1)
+        {
+          GSL_ERROR_NULL("first index out of range", GSL_EINVAL) ;
+        }
+      else if (j >= m->size2)
+        {
+          GSL_ERROR_NULL("second index out of range", GSL_EINVAL) ;
+        }
     }
 #endif
   return (const gsl_complex *)(m->data + 2*(i * m->tda + j)) ;
