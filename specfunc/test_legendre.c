@@ -490,7 +490,7 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_H3d_e, (5, 1.0e+08, 1.0e-08, &r),   0.00009256115861125841299, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_H3d_e, (5, 1.0e+08, 100.0, &r),    -6.496143209092860765e-52 , 128.0*TEST_SQRT_TOL0, GSL_SUCCESS);
 
-#if 0
+#if FIXME
   sa = 0;
   gsl_sf_legendre_H3d_array(100, 1.0, 3.0, L);
   TEST_SF_VAL(sa, L[0], +0.0, gsl_sf_legendre_H3d(0, 1.0, 3.0), 1.0e-12);
