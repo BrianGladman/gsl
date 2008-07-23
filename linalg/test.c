@@ -92,6 +92,8 @@ int test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double 
 int test_cholesky_solve(void);
 int test_cholesky_decomp_dim(const gsl_matrix * m, double eps);
 int test_cholesky_decomp(void);
+int test_cholesky_invert_dim(const gsl_matrix * m, double eps);
+int test_cholesky_invert(void);
 int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_HH_solve(void);
 int test_TDS_solve_dim(unsigned long dim, double d, double od, const double * actual, double eps);
@@ -3080,6 +3082,73 @@ int test_cholesky_decomp(void)
   return s;
 }
 
+int
+test_cholesky_invert_dim(const gsl_matrix * m, double eps)
+{
+  int s = 0;
+  unsigned long i, j, N = m->size1;
+
+  gsl_matrix * v  = gsl_matrix_alloc(N, N);
+  gsl_matrix * c  = gsl_matrix_alloc(N, N);
+
+  gsl_matrix_memcpy(v,m);
+
+  s += gsl_linalg_cholesky_decomp(v);
+  s += gsl_linalg_cholesky_invert(v);
+
+  gsl_blas_dsymm(CblasLeft, CblasUpper, 1.0, m, v, 0.0, c);
+
+  /* c should be the identity matrix */
+
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          int foo;
+          double cij = gsl_matrix_get(c, i, j);
+          double expected;
+
+          if (i == j)
+            expected = 1.0;
+          else
+            expected = 0.0;
+
+          foo = check(cij, expected, eps);
+
+          if (foo)
+            printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", N, N, i,j, cij, expected);
+
+          s += foo;
+        }
+    }
+
+  gsl_matrix_free(v);
+  gsl_matrix_free(c);
+
+  return s;
+}
+
+int
+test_cholesky_invert(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_cholesky_invert_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_invert hilbert(2)");
+  s += f;
+
+  f = test_cholesky_invert_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_invert hilbert(3)");
+  s += f;
+
+  f = test_cholesky_invert_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_invert hilbert(4)");
+  s += f;
+
+  return s;
+}
+
 
 int
 test_cholesky_decomp_unit_dim(const gsl_matrix * m, double eps)
@@ -3901,6 +3970,7 @@ int main(void)
   gsl_test(test_cholesky_decomp(),       "Cholesky Decomposition");
   gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
   gsl_test(test_cholesky_solve(),        "Cholesky Solve");
+  gsl_test(test_cholesky_invert(),       "Cholesky Inverse");
   gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Decomposition");
   gsl_test(test_choleskyc_solve(),       "Complex Cholesky Solve");
   gsl_test(test_HH_solve(),              "Householder solve");
