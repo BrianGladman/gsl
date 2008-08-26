@@ -549,6 +549,13 @@ contain the right-hand side @math{b}, which is replaced by the
 solution on output.
 @end deftypefun
 
+@deftypefun int gsl_linalg_cholesky_invert (gsl_matrix * @var{cholesky})
+This function computes the inverse of the matrix @var{cholesky} which
+must have been previously computed by @code{gsl_linalg_cholesky_decomp}.
+The inverse of the original matrix @math{A} is stored in @var{cholesky}
+on output.
+@end deftypefun
+
 @node Tridiagonal Decomposition of Real Symmetric Matrices
 @section Tridiagonal Decomposition of Real Symmetric Matrices
 @cindex  tridiagonal decomposition

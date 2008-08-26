@@ -2,6 +2,8 @@
    Corrected definition of the update formula in the manual for
    both gsl_linalg_QR_update and gsl_linalg_QRPT_update.
 
+** Added routine gsl_linalg_cholesky_invert
+
 ** Fixed a bug the simplex algorithm which caused the second highest
    point to be incorrectly equal to the first when the first value was
    the highest, which could cause suboptimal convergence (bug #23192).
