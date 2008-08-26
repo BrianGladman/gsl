@@ -1,3 +1,6 @@
+** Corrected a bug in the series calculation of gsl_sf_ellint_Kcomp
+   for k close to 1.
+
 ** Extended gsl_linalg_QRPT_update to handle rectangular matrices.
    Corrected definition of the update formula in the manual for
    both gsl_linalg_QR_update and gsl_linalg_QRPT_update.

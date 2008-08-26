@@ -1,3 +1,8 @@
+2008-08-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ellint.c (gsl_sf_ellint_Kcomp_e): corrected taylor expansion for
+	k close to 1.
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir

@@ -486,9 +486,9 @@ gsl_sf_ellint_Kcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
     const double a[] = { 1.38629436112, 0.09666344259, 0.03590092383 };
     const double b[] = { 0.5, 0.12498593597, 0.06880248576 };
     const double ta = a[0] + y*(a[1] + y*a[2]);
-    const double tb = -log(y) * (b[0] * y*(b[1] + y*b[2]));
+    const double tb = -log(y) * (b[0] + y*(b[1] + y*b[2]));
     result->val = ta + tb;
-    result->err = 2.0 * GSL_DBL_EPSILON * result->val;
+    result->err = 2.0 * GSL_DBL_EPSILON * (fabs(result->val) + fabs(k/y));
     return GSL_SUCCESS;
   }
   else {
