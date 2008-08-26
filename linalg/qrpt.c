@@ -423,19 +423,24 @@ gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
                         const gsl_permutation * p,
                         gsl_vector * w, const gsl_vector * v)
 {
-  if (Q->size1 != Q->size2 || R->size1 != R->size2)
+  const size_t M = R->size1;
+  const size_t N = R->size2;
+
+  if (Q->size1 != M || Q->size2 != M)
     {
-      return GSL_ENOTSQR;
+      GSL_ERROR ("Q matrix must be M x M if R is M x N", GSL_ENOTSQR);
     }
-  else if (R->size1 != Q->size2 || v->size != Q->size2 || w->size != Q->size2)
+  else if (w->size != M)
     {
-      return GSL_EBADLEN;
+      GSL_ERROR ("w must be length M if R is M x N", GSL_EBADLEN);
+    }
+  else if (v->size != N)
+    {
+      GSL_ERROR ("v must be length N if R is M x N", GSL_EBADLEN);
     }
   else
     {
       size_t j, k;
-      const size_t M = Q->size1;
-      const size_t N = Q->size2;
       double w0;
 
       /* Apply Given's rotations to reduce w to (|w|, 0, 0, ... , 0) 
@@ -445,7 +450,7 @@ gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
          simultaneously applied to R,  H = J_1^T ... J^T_(n-1) R
          so that H is upper Hessenberg.  (12.5.2) */
 
-      for (k = N - 1; k > 0; k--)
+      for (k = M - 1; k > 0; k--)
         {
           double c, s;
           double wk = gsl_vector_get (w, k);
@@ -471,7 +476,7 @@ gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
       /* Apply Givens transformations R' = G_(n-1)^T ... G_1^T H  
          Equation 12.5.4 */
 
-      for (k = 1; k < N; k++)
+     for (k = 1; k < GSL_MIN(M,N+1); k++)
         {
           double c, s;
           double diag = gsl_matrix_get (R, k - 1, k - 1);
@@ -479,6 +484,8 @@ gsl_linalg_QRPT_update (gsl_matrix * Q, gsl_matrix * R,
 
           create_givens (diag, offdiag, &c, &s);
           apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
+
+          gsl_matrix_set (R, k, k - 1, 0.0);    /* exact zero of G^T */
         }
 
       return GSL_SUCCESS;
