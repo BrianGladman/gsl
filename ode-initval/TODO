@@ -9,7 +9,7 @@ it should have its own workspace which is a wrapper around the
 existing workspaces
 
 * Implement other stepping methods from well-known packages such as
-RKSUITE, etc
+RKSUITE, VODE, DASSL, etc
 
 * Roundoff error needs to be taken into account to prevent the
 step-size being made arbitrarily small
