@@ -400,7 +400,7 @@ int solve_cyc_tridiag_nonsym(
       {
         size_t i, j;
         w[N-1] = zu[N-1]/alpha[N-1];
-        x[N-1] = zb[N-1]/alpha[N-1];
+        x[x_stride*(N-1)] = zb[N-1]/alpha[N-1];
         for (i = N - 2, j = 0; j <= N - 2; j++, i--)
           {
             w[i] = (zu[i] - abovediag[a_stride*i] * w[i+1])/alpha[i];
@@ -420,7 +420,7 @@ int solve_cyc_tridiag_nonsym(
         {
           size_t i;
           for (i = 0; i < N; i++)
-            x[i] -= vx/(1 + vw)*w[i];
+            x[i*x_stride] -= vx/(1 + vw)*w[i];
         }
       }
     }

@@ -1,3 +1,8 @@
+2008-08-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* tridiag.c (solve_cyc_tridiag_nonsym): use x_stride when storing
+	in x[] (fixes bug #24162)
+
 2008-08-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_QRPT_update_dim): added tests for

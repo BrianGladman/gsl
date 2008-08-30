@@ -448,3 +448,6 @@ evaluation and ode improvements
 *  Claude Dion <claude.dion@tp.umu.se> documentation bug reports
 
 * Michael Kuklik <mkuklik@gmail.com> bug report for simplex
+
+* Paul Accisano, bug report and fix for cyclic solver
+

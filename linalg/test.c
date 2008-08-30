@@ -127,6 +127,28 @@ check (double x, double actual, double eps)
     }
 }
 
+
+gsl_vector * 
+vector_alloc (size_t n)
+{
+  size_t p[5] = {3, 5, 7, 11, 13};
+  static size_t k = 0;
+
+  size_t stride = p[k];
+  k = (k + 1) % 5;
+
+  gsl_block * b = gsl_block_alloc (n * stride);
+  gsl_vector * v = gsl_vector_alloc_from_block (b, 0, n, stride);
+  v->owner = 1;
+  return v;
+}
+
+void
+vector_free (gsl_vector * v)
+{
+  gsl_vector_free (v);
+}
+
 gsl_matrix *
 create_hilbert_matrix(unsigned long size)
 {
@@ -3630,10 +3652,10 @@ test_TDS_solve_dim(unsigned long dim, double d, double od, const double * actual
   int s = 0;
   unsigned long i;
 
-  gsl_vector * offdiag = gsl_vector_alloc(dim-1);
-  gsl_vector * diag = gsl_vector_alloc(dim);
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * offdiag = vector_alloc(dim-1);
+  gsl_vector * diag = vector_alloc(dim);
+  gsl_vector * rhs = vector_alloc(dim);
+  gsl_vector * x = vector_alloc(dim);
 
   for(i=0; i<dim; i++) {
     gsl_vector_set(diag, i, d);
@@ -3655,10 +3677,10 @@ test_TDS_solve_dim(unsigned long dim, double d, double od, const double * actual
     s += foo;
   }
 
-  gsl_vector_free(x);
-  gsl_vector_free(rhs);
-  gsl_vector_free(diag);
-  gsl_vector_free(offdiag);
+  vector_free(x);
+  vector_free(rhs);
+  vector_free(diag);
+  vector_free(offdiag);
 
   return s;
 }
@@ -3668,7 +3690,7 @@ int test_TDS_solve(void)
 {
   int f;
   int s = 0;
-
+  
   {
     double actual[] =  {0.0, 2.0};
     f = test_TDS_solve_dim(2, 1.0, 0.5, actual, 8.0 * GSL_DBL_EPSILON);
@@ -3694,16 +3716,17 @@ int test_TDS_solve(void)
 }
 
 int
-test_TDS_cyc_solve_one(const unsigned long dim, const double * d, const double * od,
-                      const double * r, const double * actual, double eps)
+test_TDS_cyc_solve_one(const unsigned long dim,
+                       const double * d, const double * od,
+                       const double * r, const double * actual, double eps)
 {
   int s = 0;
   unsigned long i;
 
-  gsl_vector * offdiag = gsl_vector_alloc(dim);
-  gsl_vector * diag = gsl_vector_alloc(dim);
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * offdiag = vector_alloc(dim);
+  gsl_vector * diag = vector_alloc(dim);
+  gsl_vector * rhs = vector_alloc(dim);
+  gsl_vector * x = vector_alloc(dim);
 
   for(i=0; i<dim; i++) {
     gsl_vector_set(diag, i, d[i]);
@@ -3723,10 +3746,10 @@ test_TDS_cyc_solve_one(const unsigned long dim, const double * d, const double *
     s += foo;
   }
 
-  gsl_vector_free(x);
-  gsl_vector_free(rhs);
-  gsl_vector_free(diag);
-  gsl_vector_free(offdiag);
+  vector_free(x);
+  vector_free(rhs);
+  vector_free(diag);
+  vector_free(offdiag);
 
   return s;
 }
@@ -3797,11 +3820,11 @@ test_TDN_solve_dim(unsigned long dim, double d, double a, double b, const double
   int s = 0;
   unsigned long i;
 
-  gsl_vector * abovediag = gsl_vector_alloc(dim-1);
-  gsl_vector * belowdiag = gsl_vector_alloc(dim-1);
-  gsl_vector * diag = gsl_vector_alloc(dim);
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * abovediag = vector_alloc(dim-1);
+  gsl_vector * belowdiag = vector_alloc(dim-1);
+  gsl_vector * diag = vector_alloc(dim);
+  gsl_vector * rhs = vector_alloc(dim);
+  gsl_vector * x = vector_alloc(dim);
 
   for(i=0; i<dim; i++) {
     gsl_vector_set(diag, i, d);
@@ -3824,11 +3847,11 @@ test_TDN_solve_dim(unsigned long dim, double d, double a, double b, const double
     s += foo;
   }
 
-  gsl_vector_free(x);
-  gsl_vector_free(rhs);
-  gsl_vector_free(diag);
-  gsl_vector_free(abovediag);
-  gsl_vector_free(belowdiag);
+  vector_free(x);
+  vector_free(rhs);
+  vector_free(diag);
+  vector_free(abovediag);
+  vector_free(belowdiag);
 
   return s;
 }
@@ -3850,6 +3873,7 @@ int test_TDN_solve(void)
   actual[0] =  0.75;
   actual[1] =  0.75;
   actual[2] =  2.625;
+
   f = test_TDN_solve_dim(3, 1.0, 1.0/3.0, 1.0/2.0, actual, 2.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_TDN dim=2 B");
   s += f;
@@ -3872,11 +3896,11 @@ test_TDN_cyc_solve_dim(unsigned long dim, double d, double a, double b, const do
   int s = 0;
   unsigned long i;
 
-  gsl_vector * abovediag = gsl_vector_alloc(dim);
-  gsl_vector * belowdiag = gsl_vector_alloc(dim);
-  gsl_vector * diag = gsl_vector_alloc(dim);
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_vector * x = gsl_vector_alloc(dim);
+  gsl_vector * abovediag = vector_alloc(dim);
+  gsl_vector * belowdiag = vector_alloc(dim);
+  gsl_vector * diag = vector_alloc(dim);
+  gsl_vector * rhs = vector_alloc(dim);
+  gsl_vector * x = vector_alloc(dim);
 
   for(i=0; i<dim; i++) {
     gsl_vector_set(diag, i, d);
@@ -3899,11 +3923,11 @@ test_TDN_cyc_solve_dim(unsigned long dim, double d, double a, double b, const do
     s += foo;
   }
 
-  gsl_vector_free(x);
-  gsl_vector_free(rhs);
-  gsl_vector_free(diag);
-  gsl_vector_free(abovediag);
-  gsl_vector_free(belowdiag);
+  vector_free(x);
+  vector_free(rhs);
+  vector_free(diag);
+  vector_free(abovediag);
+  vector_free(belowdiag);
 
   return s;
 }
@@ -3927,6 +3951,7 @@ int test_TDN_cyc_solve(void)
   actual[2] =  29.0/22.0;
   actual[3] = -9.0/22.0;
   actual[4] =  43.0/22.0;
+
   f = test_TDN_cyc_solve_dim(5, 3.0, 2.0, 1.0, actual, 66.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  solve_TDN_cyc dim=5");
   s += f;

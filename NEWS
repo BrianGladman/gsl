@@ -1,5 +1,9 @@
+** Fixed gsl_linalg_solve_cyc_tridiag so that its output respects the
+   solution vector's stride. Previously the x_stride value was ignored
+   causing the output to be incorrect for non-unit stride. [bug #24162]
+
 ** Corrected a bug in the series calculation of gsl_sf_ellint_Kcomp
-   for k close to 1.
+   for k close to 1. [bug #24146]
 
 ** Extended gsl_linalg_QRPT_update to handle rectangular matrices.
    Corrected definition of the update formula in the manual for
@@ -9,11 +13,11 @@
 
 ** Fixed a bug the simplex algorithm which caused the second highest
    point to be incorrectly equal to the first when the first value was
-   the highest, which could cause suboptimal convergence (bug #23192).
+   the highest, which could cause suboptimal convergence. [bug #23192]
 
 ** Fixed a problem with convergence for inverse gamma and chisq
-   distribitions, gsl_cdf_gamma_{P,Q}inv and gsl_cdf_chisq_{P,Q}inv
-   (bug #23101).
+   distribitions, gsl_cdf_gamma_{P,Q}inv and gsl_cdf_chisq_{P,Q}inv.
+   [bug #23101]
 
 ** Improved the handling of constant regions in Vegas by eliminating
    spurious excess precision when computing box variances.
