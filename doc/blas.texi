@@ -110,6 +110,10 @@ Thus, for example, the name @sc{sgemm} stands for ``single-precision
 general matrix-matrix multiply'' and @sc{zgemm} stands for
 ``double-precision complex matrix-matrix multiply''.
 
+Note that the vector and matrix arguments to BLAS functions must not
+be aliased, as the results are undefined when the underlying arrays
+overlap (@pxref{Aliasing of arrays}). 
+
 @menu
 * GSL BLAS Interface::          
 * BLAS Examples::               
