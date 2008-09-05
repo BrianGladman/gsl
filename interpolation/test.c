@@ -74,6 +74,40 @@ test_bsearch(void)
   status += s;
   gsl_test (s, "out of bounds bsearch -");
 
+  /* Test the accelerator */
+
+  {
+    size_t i, j, k1 = 0, k2 = 0;
+    int t = 0;
+    double x = 0;
+    double r[16] = { -0.2, 0.0, 0.1, 0.7, 
+                     1.0, 1.3, 1.9, 
+                     2.0, 2.2, 2.7,
+                     3.0, 3.1, 3.6,
+                     4.0, 4.1, 4.9 };
+
+    gsl_interp_accel *a = gsl_interp_accel_alloc ();
+    
+    /* Run through all the pairs of points */
+
+    while (k1 < 16 && k2 < 16) {
+      
+      x = r[t ? k1 : k2];
+      t = !t;
+      
+      if (t == 0) { 
+        k1 = (k1 + 1) % 16; 
+        if (k1 == 0) k2++;
+      };
+
+      i = gsl_interp_accel_find(a, x_array, 5, x);
+      j = gsl_interp_bsearch(x_array, x, 0, 4);
+      gsl_test(i != j, "(%u,%u) accelerated lookup vs bsearch (x = %g)", i, j, x);
+    }
+
+    gsl_interp_accel_free(a);
+  }
+
   return status;
 }
 
