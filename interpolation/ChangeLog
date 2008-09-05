@@ -1,3 +1,8 @@
+2008-09-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_interp.h (gsl_interp_accel_find): corrected condition for
+	x>=xa.
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* gsl_interp.h: added inline declarations

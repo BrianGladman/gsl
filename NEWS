@@ -1,3 +1,7 @@
+** Fixed a bug in gsl_interp_accel_find() where values lying on the
+   upper boundary between interpolation points could return the index
+   from the lower side. [bug #24211]
+
 ** Fixed gsl_linalg_solve_cyc_tridiag so that its output respects the
    solution vector's stride. Previously the x_stride value was ignored
    causing the output to be incorrect for non-unit stride. [bug #24162]

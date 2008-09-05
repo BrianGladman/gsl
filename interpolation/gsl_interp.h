@@ -205,7 +205,7 @@ gsl_interp_accel_find(gsl_interp_accel * a, const double xa[], size_t len, doubl
     a->miss_count++;
     a->cache = gsl_interp_bsearch(xa, x, 0, x_index);
   }
-  else if(x > xa[x_index + 1]) {
+  else if(x >= xa[x_index + 1]) {
     a->miss_count++;
     a->cache = gsl_interp_bsearch(xa, x, x_index, len-1);
   }

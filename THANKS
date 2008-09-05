@@ -451,3 +451,5 @@ evaluation and ode improvements
 
 * Paul Accisano, bug report and fix for cyclic solver
 
+* Thomas Weber <thomas.weber.mail@gmail.com> bug and patch for interp
+  accelerator
