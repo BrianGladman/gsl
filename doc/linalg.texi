@@ -420,7 +420,7 @@ The singular values
 @math{\sigma_i = S_@{ii@}} are all non-negative and are
 generally chosen to form a non-increasing sequence 
 @c{$\sigma_1 \ge \sigma_2 \ge ... \ge \sigma_N \ge 0$}
-@math{\sigma_1 >= \sigma_2 >= ... >= \sigma_N >= 0}.
+@math{\sigma_1 >= \sigma_2 >= ... >= \sigma_N >= 0}.  
 
 The singular value decomposition of a matrix has many practical uses.
 The condition number of the matrix is given by the ratio of the largest
@@ -437,6 +437,13 @@ the columns of @math{V} corresponding to the zero singular values.
 Similarly, the range of @math{A} is given by columns of @math{U}
 corresponding to the non-zero singular values.
 
+Note that the routines here compute the ``thin'' version of the SVD
+with @math{U} as @math{M}-by-@math{N} orthogonal matrix. This allows
+in-place computation and is the most commonly-used form in practice.
+Mathematically, the ``full'' SVD is defined with @math{U} as an
+@math{M}-by-@math{M} orthogonal matrix and @math{S} as an
+@math{M}-by-@math{N} diagonal matrix (with additional rows of zeros).
+
 @deftypefun int gsl_linalg_SV_decomp (gsl_matrix * @var{A}, gsl_matrix * @var{V}, gsl_vector * @var{S}, gsl_vector * @var{work})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
 the singular value decomposition @math{A = U S V^T} for @c{$M \ge N$}
@@ -449,7 +456,7 @@ form. To form the product @math{U S V^T} it is necessary to take the
 transpose of @var{V}.  A workspace of length @var{N} is required in
 @var{work}.
 
-This routine uses the Golub-Reinsch SVD algorithm.
+This routine uses the Golub-Reinsch SVD algorithm.  
 @end deftypefun
 
 @deftypefun int gsl_linalg_SV_decomp_mod (gsl_matrix * @var{A}, gsl_matrix * @var{X}, gsl_matrix * @var{V}, gsl_vector * @var{S}, gsl_vector * @var{work})
