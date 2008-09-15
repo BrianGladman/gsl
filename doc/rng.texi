@@ -131,7 +131,12 @@ instead.  For example, the original Fortran source code for the
 @code{gsl_rng_ranlux}.  
 
 When using multiple seeds with the same generator, choose seed values
-greater than zero to avoid collisions with the default setting.
+greater than zero to avoid collisions with the default setting.  
+
+Note that the most generators only accept 32-bit seeds, with higher
+values being reduced modulo @c{$2^{32}$} 
+@math{2^32}.  For generators
+with smaller ranges the maximum seed value will typically be lower.
 @end deftypefun
 
 @deftypefun void gsl_rng_free (gsl_rng * @var{r})
