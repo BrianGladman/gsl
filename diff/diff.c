@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+
+#undef GSL_DISABLE_DEPRECATED
 #include <gsl/gsl_diff.h>
 
 int

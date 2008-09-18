@@ -33,6 +33,7 @@
 
 __BEGIN_DECLS
 
+#ifndef GSL_DISABLE_DEPRECATED
 int gsl_diff_central (const gsl_function *f,
                       double x,
                       double *result, double *abserr);
@@ -44,6 +45,7 @@ int gsl_diff_backward (const gsl_function *f,
 int gsl_diff_forward (const gsl_function *f,
                       double x,
                       double *result, double *abserr);
+#endif
 
 __END_DECLS
 

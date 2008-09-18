@@ -22,10 +22,12 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_diff.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
+
+#undef GSL_DISABLE_DEPRECATED
+#include <gsl/gsl_diff.h>
 
 double
 f1 (double x, void *params)
