@@ -1,3 +1,5 @@
+** Cross compilation should now work for x86 hosts.
+
 ** Fixed a bug in gsl_interp_accel_find() where values lying on the
    upper boundary between interpolation points could return the index
    from the lower side. [bug #24211]

@@ -1,3 +1,8 @@
+2008-09-26  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: handle test for SSE in cross-compilation (fall
+	back to checking if the ldmxcsr instruction compiles)
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* Makefile.am: added gsl_inline.h and build.h

@@ -324,8 +324,13 @@ if test "$ac_cv_c_ieee_interface" = "gnux86" ; then
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <stdlib.h>
 #define _FPU_SETMXCSR(cw_sse) asm volatile ("ldmxcsr %0" : : "m" (*&cw_sse))
-]], [[ unsigned int mode = 0x1f80 ; _FPU_SETMXCSR(mode); exit(0); ]])],[ac_cv_c_fpu_sse="yes"])
-    ])
+]], [[ unsigned int mode = 0x1f80 ; _FPU_SETMXCSR(mode); exit(0); ]])],[ac_cv_c_fpu_sse="yes"],[ac_cv_c_fpu_sse="no"],[
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <stdlib.h>
+#define _FPU_SETMXCSR(cw_sse) asm volatile ("ldmxcsr %0" : : "m" (*&cw_sse))
+]], [[ unsigned int mode = 0x1f80 ; _FPU_SETMXCSR(mode); exit(0); ]])],[ac_cv_c_fpu_sse="yes"],[ac_cv_c_fpu_sse="no"])
+])])
+
     if test $ac_cv_c_fpu_sse = yes; then
         AC_DEFINE([HAVE_FPU_X86_SSE], 1,
                   [Define if x86 processor has sse extensions.])
