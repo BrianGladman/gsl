@@ -167,6 +167,14 @@ int gsl_vector_complex_float_swap_elements (gsl_vector_complex_float * v, const 
 int gsl_vector_complex_float_isnull (const gsl_vector_complex_float * v);
 int gsl_vector_complex_float_ispos (const gsl_vector_complex_float * v);
 int gsl_vector_complex_float_isneg (const gsl_vector_complex_float * v);
+int gsl_vector_complex_float_isnonneg (const gsl_vector_complex_float * v);
+
+int gsl_vector_complex_float_add (gsl_vector_complex_float * a, const gsl_vector_complex_float * b);
+int gsl_vector_complex_float_sub (gsl_vector_complex_float * a, const gsl_vector_complex_float * b);
+int gsl_vector_complex_float_mul (gsl_vector_complex_float * a, const gsl_vector_complex_float * b);
+int gsl_vector_complex_float_div (gsl_vector_complex_float * a, const gsl_vector_complex_float * b);
+int gsl_vector_complex_float_scale (gsl_vector_complex_float * a, const gsl_complex_float x);
+int gsl_vector_complex_float_add_constant (gsl_vector_complex_float * a, const gsl_complex_float x);
 
 INLINE_DECL gsl_complex_float gsl_vector_complex_float_get (const gsl_vector_complex_float * v, const size_t i);
 INLINE_DECL void gsl_vector_complex_float_set (gsl_vector_complex_float * v, const size_t i, gsl_complex_float z);

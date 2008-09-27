@@ -227,6 +227,7 @@ int gsl_matrix_complex_float_transpose_memcpy (gsl_matrix_complex_float * dest, 
 int gsl_matrix_complex_float_isnull (const gsl_matrix_complex_float * m);
 int gsl_matrix_complex_float_ispos (const gsl_matrix_complex_float * m);
 int gsl_matrix_complex_float_isneg (const gsl_matrix_complex_float * m);
+int gsl_matrix_complex_float_isnonneg (const gsl_matrix_complex_float * m);
 
 int gsl_matrix_complex_float_add (gsl_matrix_complex_float * a, const gsl_matrix_complex_float * b);
 int gsl_matrix_complex_float_sub (gsl_matrix_complex_float * a, const gsl_matrix_complex_float * b);

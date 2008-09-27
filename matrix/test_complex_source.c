@@ -590,6 +590,112 @@ FUNCTION (test, arith) (void)
     gsl_test (status, NAME (gsl_matrix) "_div_elements division");
   }
 
+  {
+    BASE s;
+    GSL_SET_COMPLEX(&s, 2.0, 3.0);
+
+    FUNCTION (gsl_matrix, memcpy) (m, a);
+    FUNCTION (gsl_matrix, scale) (m, s);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            ATOMIC real = (ATOMIC) (-(ATOMIC)k - 30);
+            ATOMIC imag = (ATOMIC) (5 * (ATOMIC)k + 20);
+            BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
+            if (GSL_REAL (z) != real || GSL_IMAG (z) != imag)
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_scale");
+  }
+
+  {
+    BASE s;
+    GSL_SET_COMPLEX(&s, 2.0, 3.0);
+
+    FUNCTION (gsl_matrix, memcpy) (m, a);
+    FUNCTION (gsl_matrix, add_constant) (m, s);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            ATOMIC real = (ATOMIC) ((ATOMIC)k + 2);
+            ATOMIC imag = (ATOMIC) ((ATOMIC)k + 10 + 3);
+            BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
+            if (GSL_REAL (z) != real || GSL_IMAG (z) != imag)
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_add_constant");
+  }
+
+  {
+    BASE s;
+    GSL_SET_COMPLEX(&s, 2.0, 3.0);
+
+    FUNCTION (gsl_matrix, memcpy) (m, a);
+    FUNCTION (gsl_matrix, add_diagonal) (m, s);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            ATOMIC real = (ATOMIC) ((ATOMIC)k + ((i==j) ? 2 : 0));
+            ATOMIC imag = (ATOMIC) ((ATOMIC)k + 10 +((i==j) ? 3 : 0));
+            BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
+            if (GSL_REAL (z) != real || GSL_IMAG (z) != imag)
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_add_diagonal");
+  }
+
+  {
+    FUNCTION (gsl_matrix, swap) (a, b);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            BASE x = FUNCTION (gsl_matrix, get) (a, i, j);
+            BASE y = FUNCTION (gsl_matrix, get) (b, i, j);
+            if (GSL_REAL (x) != (ATOMIC) (k + 5) || GSL_IMAG (x) != (ATOMIC) (k + 20) ||
+                GSL_REAL (y) != (ATOMIC) (k) || GSL_IMAG (y) != (ATOMIC) (k + 10))
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_swap");
+  }
+
+
+
   FUNCTION (gsl_matrix, free) (a);
   FUNCTION (gsl_matrix, free) (b);
   FUNCTION (gsl_matrix, free) (m);

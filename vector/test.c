@@ -38,13 +38,11 @@ int status = 0;
 #define DESC ""
 #endif
 
-
 #define BASE_GSL_COMPLEX_LONG
 #include "templates_on.h"
 #include "test_complex_source.c"
 #include "templates_off.h"
 #undef  BASE_GSL_COMPLEX_LONG
-
 
 #define BASE_GSL_COMPLEX
 #include "templates_on.h"
@@ -167,6 +165,9 @@ main (void)
               test_short_ops (stride, ostride, N);
               test_uchar_ops (stride, ostride, N);
               test_char_ops (stride, ostride, N);
+              test_complex_ops (stride, ostride, N);
+              test_complex_float_ops (stride, ostride, N);
+              test_complex_long_double_ops (stride, ostride, N);
             }              
 
           test_text (stride, N);

@@ -664,8 +664,6 @@ This function reverses the order of the elements of the vector @var{v}.
 @node Vector operations
 @subsection Vector operations
 
-The following operations are only defined for real vectors.
-
 @deftypefun int gsl_vector_add (gsl_vector * @var{a}, const gsl_vector * @var{b})
 This function adds the elements of vector @var{b} to the elements of
 vector @var{a}, @math{a'_i = a_i + b_i}. The two vectors must have the
@@ -703,6 +701,8 @@ vector @var{a}, @math{a'_i = a_i + x}.
 @node Finding maximum and minimum elements of vectors
 @subsection Finding maximum and minimum elements of vectors
 
+The following operations are only defined for real vectors.
+
 @deftypefun double gsl_vector_max (const gsl_vector * @var{v})
 This function returns the maximum value in the vector @var{v}.
 @end deftypefun
@@ -737,6 +737,10 @@ indices are returned.
 
 @node Vector properties
 @subsection Vector properties
+
+The following functions are defined for real and complex vectors.  For
+complex vectors both the real and imaginary parts must satisfy the
+conditions.
 
 @deftypefun int gsl_vector_isnull (const gsl_vector * @var{v})
 @deftypefunx int gsl_vector_ispos (const gsl_vector * @var{v})
@@ -1536,6 +1540,10 @@ row-major order.
 
 @node Matrix properties
 @subsection Matrix properties
+
+The following functions are defined for real and complex matrices.
+For complex matrices both the real and imaginary parts must satisfy
+the conditions.
 
 @deftypefun int gsl_matrix_isnull (const gsl_matrix * @var{m})
 @deftypefunx int gsl_matrix_ispos (const gsl_matrix * @var{m})

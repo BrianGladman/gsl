@@ -267,6 +267,60 @@ FUNCTION (test, func) (size_t stride, size_t N)
     TEST (status, "_setbasis" DESC " over range") ;
   }
 
+  {
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        BASE x = ZERO;
+        GSL_REAL (x) = (ATOMIC)i;
+        GSL_IMAG (x) = (ATOMIC)(i + 1234);
+        FUNCTION (gsl_vector, set) (v, i, x);
+      }
+
+    {
+      BASE x = ZERO;
+      GSL_REAL(x) = 2.0;
+      GSL_IMAG(x) = 3.0;
+      FUNCTION (gsl_vector, scale) (v, x);
+    }
+
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        ATOMIC real = -(ATOMIC)i-(ATOMIC)3702;
+        ATOMIC imag = 5*(ATOMIC)i+(ATOMIC)2468;
+        if (GSL_REAL(r) != real || GSL_IMAG(r) != imag)
+          status = 1;
+      };
+
+    TEST (status, "_scale" DESC " by 2") ;
+  }
+
+  {
+    int status = 0;
+
+    {
+      BASE x = ZERO;
+      GSL_REAL(x) = 7.0;
+      GSL_IMAG(x) = 13.0;
+      FUNCTION (gsl_vector, add_constant) (v, x);
+    }
+
+
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        ATOMIC real = -(ATOMIC)i-(ATOMIC)3695;
+        ATOMIC imag = 5*(ATOMIC)i+(ATOMIC)2481;
+
+        if (GSL_REAL(r) != real || GSL_IMAG(r) != imag)
+          status = 1;
+      };
+
+    TEST (status, "_add_constant" DESC) ;
+  }
+
   for (i = 0; i < N; i++)
     {
       BASE x = ZERO;
@@ -425,6 +479,144 @@ FUNCTION (test, func) (size_t stride, size_t N)
 
 
   FUNCTION (gsl_vector, free) (v0);      /* free whatever is in v */
+}
+
+void
+FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
+{
+  size_t i;
+  TYPE (gsl_vector) * a = FUNCTION (create, vector) (stride1, N);
+  TYPE (gsl_vector) * b = FUNCTION (create, vector) (stride2, N);
+  TYPE (gsl_vector) * v = FUNCTION (create, vector) (stride1, N);
+  
+  for (i = 0; i < N; i++)
+    {
+      BASE z, z1;
+      GSL_REAL (z) = (ATOMIC) 3+i;
+      GSL_IMAG (z) = (ATOMIC) (3+i + 10);
+      GSL_REAL (z1) = (ATOMIC) (3 + 2*i + 5);
+      GSL_IMAG (z1) = (ATOMIC) (3 + 2*i + 20);
+
+      FUNCTION (gsl_vector, set) (a, i, z);
+      FUNCTION (gsl_vector, set) (b, i, z1);
+    }
+  
+  FUNCTION(gsl_vector, memcpy) (v, a);
+  FUNCTION(gsl_vector, add) (v, b);
+  
+  {
+    int status = 0;
+    
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        if (GSL_REAL(r) != (ATOMIC) (3*i+11) 
+            || GSL_IMAG(r) != (ATOMIC) (3*i+36))
+          status = 1;
+      }
+    TEST2 (status, "_add vector addition");
+  }
+
+  {
+    int status = 0;
+    
+    FUNCTION(gsl_vector, swap) (a, b);
+
+    for (i = 0; i < N; i++)
+      {
+        BASE z, z1;
+
+        BASE x = FUNCTION (gsl_vector, get) (a, i);
+        BASE y = FUNCTION (gsl_vector, get) (b, i);
+          
+        GSL_REAL (z) = (ATOMIC) 3+i;
+        GSL_IMAG (z) = (ATOMIC) (3+i + 10);
+        GSL_REAL (z1) = (ATOMIC) (3 + 2*i + 5);
+        GSL_IMAG (z1) = (ATOMIC) (3 + 2*i + 20);
+
+        status |= !GSL_COMPLEX_EQ(z,y);
+        status |= !GSL_COMPLEX_EQ(z1,x);
+      }
+
+    FUNCTION(gsl_vector, swap) (a, b);
+
+    for (i = 0; i < N; i++)
+      {
+        BASE z, z1;
+
+        BASE x = FUNCTION (gsl_vector, get) (a, i);
+        BASE y = FUNCTION (gsl_vector, get) (b, i);
+          
+        GSL_REAL (z) = (ATOMIC) 3+i;
+        GSL_IMAG (z) = (ATOMIC) (3+i + 10);
+        GSL_REAL (z1) = (ATOMIC) (3 + 2*i + 5);
+        GSL_IMAG (z1) = (ATOMIC) (3 + 2*i + 20);
+
+        status |= !GSL_COMPLEX_EQ(z,x);
+        status |= !GSL_COMPLEX_EQ(z1,y);
+      }
+
+    TEST2 (status, "_swap exchange vectors");
+  }
+  
+  FUNCTION(gsl_vector, memcpy) (v, a);
+  FUNCTION(gsl_vector, sub) (v, b);
+  
+  {
+    int status = 0;
+    
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        if (GSL_REAL(r) != (-(ATOMIC)i-(ATOMIC)5) || GSL_IMAG(r) != (-(ATOMIC)i-(ATOMIC)10))
+          status = 1;
+      }
+
+    TEST2 (status, "_sub vector subtraction");
+  }
+  
+  FUNCTION(gsl_vector, memcpy) (v, a);
+  FUNCTION(gsl_vector, mul) (v, b);
+  
+  {
+    int status = 0;
+    
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        ATOMIC real = (-35*(ATOMIC)i-275);
+        ATOMIC imag = (173+((ATOMIC)i)*(63+4*(ATOMIC)i));
+        if (fabs(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
+            fabs(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+          status = 1;
+      }
+
+    TEST2 (status, "_mul multiplication");
+  }
+  
+  FUNCTION(gsl_vector, memcpy) (v, a);
+  FUNCTION(gsl_vector, div) (v, b);
+  
+  {
+    int status = 0;
+    
+    for (i = 0; i < N; i++)
+      {
+        BASE r = FUNCTION(gsl_vector,get) (v,i);
+        ATOMIC denom = 593 + ((ATOMIC)i)*(124+((ATOMIC)i)*8);
+        ATOMIC real = (323+((ATOMIC)i)*(63+4*((ATOMIC)i))) / denom;
+        ATOMIC imag = (35 +((ATOMIC)i)*5) / denom;
+        if (fabs(GSL_REAL(r) - real) > 100 * BASE_EPSILON)
+          status = 1;
+        if (fabs(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+          status = 1;
+      }
+    TEST2 (status, "_div division");
+  }
+
+  FUNCTION(gsl_vector, free) (a);
+  FUNCTION(gsl_vector, free) (b);
+  FUNCTION(gsl_vector, free) (v);
 }
 
 void 

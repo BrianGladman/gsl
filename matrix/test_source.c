@@ -506,10 +506,88 @@ FUNCTION (test, func) (void)
     }
 
 
+    FUNCTION(gsl_matrix, memcpy) (m, a);
+    FUNCTION(gsl_matrix, scale) (m, 2.0);
+
+    {
+      int status = 0;
+
+      for (i = 0; i < M; i++)
+        {
+          for (j = 0; j < N; j++)
+            {
+              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+              if (r !=  (ATOMIC)(2*x))
+                status = 1;
+            }
+        }
+      gsl_test (status, NAME (gsl_matrix) "_scale");
+    }
+
+    FUNCTION(gsl_matrix, memcpy) (m, a);
+    FUNCTION(gsl_matrix, add_constant) (m, 3.0);
+
+    {
+      int status = 0;
+
+      for (i = 0; i < M; i++)
+        {
+          for (j = 0; j < N; j++)
+            {
+              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+              BASE y = x + 3.0;
+              if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
+                status = 1;
+            }
+        }
+      gsl_test (status, NAME (gsl_matrix) "_add_constant");
+    }
+
+    FUNCTION(gsl_matrix, memcpy) (m, a);
+    FUNCTION(gsl_matrix, add_diagonal) (m, 5.0);
+
+    {
+      int status = 0;
+
+      for (i = 0; i < M; i++)
+        {
+          for (j = 0; j < N; j++)
+            {
+              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+              BASE y = (i == j) ? (x + 5.0) : x;
+              if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
+                status = 1;
+            }
+        }
+      gsl_test (status, NAME (gsl_matrix) "_add_diagonal");
+    }
+
+
+    FUNCTION(gsl_matrix, swap) (a, b);
+
+    {
+      int status = 0;
+
+      for (i = 0; i < M; i++)
+        {
+          for (j = 0; j < N; j++)
+            {
+              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+              if (y != (BASE)(3 + i +  5 * j) || x != (BASE)(3 + 2 * i + 4 * j))
+                status = 1;
+            }
+        }
+      gsl_test (status, NAME (gsl_matrix) "_swap");
+    }
+      
+
     FUNCTION(gsl_matrix, free) (a);
     FUNCTION(gsl_matrix, free) (b);
   }
-
 
  FUNCTION (gsl_matrix, free) (m);
  FUNCTION (gsl_vector, free) (v);

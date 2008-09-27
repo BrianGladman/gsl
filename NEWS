@@ -1,3 +1,7 @@
+** Added missing functions gsl_vector_complex_{isnonneg,add,sub,mul,
+   div,scale,add_constant} and gsl_matrix_complex_float_isnonneg [bug
+   #22478]
+
 ** Cross compilation should now work for x86 hosts.
 
 ** Fixed a bug in gsl_interp_accel_find() where values lying on the

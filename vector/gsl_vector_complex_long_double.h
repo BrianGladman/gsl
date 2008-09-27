@@ -167,6 +167,14 @@ int gsl_vector_complex_long_double_swap_elements (gsl_vector_complex_long_double
 int gsl_vector_complex_long_double_isnull (const gsl_vector_complex_long_double * v);
 int gsl_vector_complex_long_double_ispos (const gsl_vector_complex_long_double * v);
 int gsl_vector_complex_long_double_isneg (const gsl_vector_complex_long_double * v);
+int gsl_vector_complex_long_double_isnonneg (const gsl_vector_complex_long_double * v);
+
+int gsl_vector_complex_long_double_add (gsl_vector_complex_long_double * a, const gsl_vector_complex_long_double * b);
+int gsl_vector_complex_long_double_sub (gsl_vector_complex_long_double * a, const gsl_vector_complex_long_double * b);
+int gsl_vector_complex_long_double_mul (gsl_vector_complex_long_double * a, const gsl_vector_complex_long_double * b);
+int gsl_vector_complex_long_double_div (gsl_vector_complex_long_double * a, const gsl_vector_complex_long_double * b);
+int gsl_vector_complex_long_double_scale (gsl_vector_complex_long_double * a, const gsl_complex_long_double x);
+int gsl_vector_complex_long_double_add_constant (gsl_vector_complex_long_double * a, const gsl_complex_long_double x);
 
 INLINE_DECL gsl_complex_long_double gsl_vector_complex_long_double_get (const gsl_vector_complex_long_double * v, const size_t i);
 INLINE_DECL void gsl_vector_complex_long_double_set (gsl_vector_complex_long_double * v, const size_t i, gsl_complex_long_double z);

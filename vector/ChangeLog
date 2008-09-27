@@ -1,3 +1,8 @@
+2008-09-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_vector_complex_double.h: added missing functions isnonneg,
+	add, sub, mul, div, scale, add_constant
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* gsl_vector.h: use new inline declarations in all header files
