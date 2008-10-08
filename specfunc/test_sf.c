@@ -537,7 +537,7 @@ int test_ellint(void)
   TEST_SF(s,  gsl_sf_ellint_Kcomp_e, (0.010, mode, &r), 1.5708355989121522360, TEST_TOL0, GSL_SUCCESS);
 
   /* Bug report from Thies Heidecke */
-  TEST_SF(s,  gsl_sf_ellint_Kcomp_e, ( 0.99999999906867742538, mode, &r), 11.4369284843320018031, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_ellint_Kcomp_e, ( 0.99999999906867742538, mode, &r), 11.4369284843320018031, TEST_SNGL, GSL_SUCCESS);
 
   TEST_SF(s,  gsl_sf_ellint_Ecomp_e, (0.99, mode, &r), 1.0284758090288040010, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_ellint_Ecomp_e, (0.50, mode, &r), 1.4674622093394271555, TEST_TOL0, GSL_SUCCESS);
