@@ -467,8 +467,8 @@ int test_hyperg(void)
   /* added special handling with x == 1.0 , Richard J. Mathar, 2008-01-09 */
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, 0.5, 3.0, 1.0, &r), 1.6976527263135502482014268 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, -4.2, 3.0, 1.0, &r), .15583601560025710649555254 , TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_hyperg_2F1_e, (-7.4, 0.7, -1.5, 1.0, &r), -.34478866959246584996859 , TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (1.5, -4.2, 3.0, 1.0, &r), .15583601560025710649555254 , TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (-7.4, 0.7, -1.5, 1.0, &r), -.34478866959246584996859 , TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (0.1, -2.7, -1.5, 1.0, &r), 1.059766766063610122925 , TEST_TOL0, GSL_SUCCESS);
 
   /* 2F1 conj */
