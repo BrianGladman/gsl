@@ -1,3 +1,8 @@
+2008-10-08  Brian Gough  <bjg@network-theory.co.uk>
+
+	* infnan.c (gsl_isinf): handle the case where isinf(-inf) 
+	returns	+1
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* prec.c: compile inline functions from header here

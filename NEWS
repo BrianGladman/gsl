@@ -1,3 +1,7 @@
+** Fixed a bug where the gsl_isinf function would return +1 for -Inf
+   on systems where isinf(-Inf) returns the non-standard value +1.
+   [bug #24489]
+
 ** Added missing functions gsl_vector_complex_{isnonneg,add,sub,mul,
    div,scale,add_constant} and gsl_matrix_complex_float_isnonneg [bug
    #22478]

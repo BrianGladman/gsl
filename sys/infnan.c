@@ -118,7 +118,18 @@ gsl_isnan (const double x)
 int
 gsl_isinf (const double x)
 {
-    return isinf(x);
+  /* isinf(3): In glibc 2.01 and earlier, isinf() returns a
+     non-zero value (actually: 1) if x is an infinity (positive or
+     negative).  (This is all that C99 requires.) */
+
+  if (isinf(x)) 
+    {
+      return (x > 0) ? 1 : -1;
+    } 
+  else 
+    {
+      return 0;
+    }
 }
 # else
 

@@ -118,7 +118,14 @@ This function returns 1 if @var{x} is not-a-number.
 
 @deftypefun int gsl_isinf (const double @var{x})
 This function returns @math{+1} if @var{x} is positive infinity,
-@math{-1} if @var{x} is negative infinity and 0 otherwise.
+@math{-1} if @var{x} is negative infinity and 0
+otherwise.@footnote{Note that the C99 standard only requires the
+system @code{isinf} function to return a non-zero value, without the
+sign of the infinity.  The implementation in some earlier versions of
+GSL used the system @code{isinf} function and may have this behavior
+on some platforms.  Therefore, it is advisable to test the sign of
+@var{x} separately, if needed, rather than relying the sign of the
+return value from @code{gsl_isinf()}.}
 @end deftypefun
 
 @deftypefun int gsl_finite (const double @var{x})

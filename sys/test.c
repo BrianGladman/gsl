@@ -455,12 +455,8 @@ main (void)
     s = gsl_isinf (inf);
     gsl_test_int (s, 1, "gsl_isinf(inf)");
 
-    /* isinf(3): In glibc 2.01 and earlier, isinf() returns a
-       non-zero value (actually: 1) if x is an infinity (positive or
-       negative).  (This is all that C99 requires.) */
-
     s = gsl_isinf (-inf);  
-    gsl_test (s == 0, "gsl_isinf(-inf) is non-zero");
+    gsl_test_int (s, -1, "gsl_isinf(-inf)");
 
     s = gsl_isinf (nan);
     gsl_test_int (s, 0, "gsl_isinf(nan)");
