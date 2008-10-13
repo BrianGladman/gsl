@@ -429,6 +429,7 @@ int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
 int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
                              gsl_vector * x);
 
+int gsl_linalg_cholesky_invert(gsl_matrix * cholesky);
 
 /* Cholesky decomposition with unit-diagonal triangular parts.
  *   A = L D L^T, where diag(L) = (1,1,...,1).
