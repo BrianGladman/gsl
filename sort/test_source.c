@@ -43,9 +43,9 @@ TYPE (test_sort_vector) (size_t N, size_t stride)
   TYPE (gsl_vector) * data = FUNCTION (gsl_vector, alloc_from_block) (b2, 0, N, stride);
   TYPE (gsl_vector) * data2 = FUNCTION (gsl_vector, alloc_from_block) (b3, 0, N, stride);
 
-  BASE * small = malloc(k * sizeof(BASE));
-  BASE * large = malloc(k * sizeof(BASE));
-  size_t * index = malloc(k * sizeof(size_t));
+  BASE * small = (BASE *)malloc(k * sizeof(BASE));
+  BASE * large = (BASE *)malloc(k * sizeof(BASE));
+  size_t * index = (size_t *)malloc(k * sizeof(size_t));
 
   gsl_permutation *p = gsl_permutation_alloc (N);
 

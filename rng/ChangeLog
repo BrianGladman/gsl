@@ -1,3 +1,7 @@
+2008-10-13  Brian Gough  <bjg@network-theory.co.uk>
+
+	* file.c: added (char *) to allow compilation with C++ compiler
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* rng.c: moved inline functions to inline.c

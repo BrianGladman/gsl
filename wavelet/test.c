@@ -105,7 +105,7 @@ test_1d (size_t N, size_t stride, const gsl_wavelet_type * T, size_t member)
   gsl_wavelet *w;
 
   size_t i;
-  double *data = malloc (N * stride * sizeof (double));
+  double *data = (double *)malloc (N * stride * sizeof (double));
 
   for (i = 0; i < N * stride; i++)
     data[i] = 12345.0 + i;
@@ -184,11 +184,11 @@ test_2d (size_t N, size_t tda, const gsl_wavelet_type * T, size_t member, int ty
   size_t i;
   size_t j;
 
-  double *data = malloc (N * tda * sizeof (double));
+  double *data = (double *)malloc (N * tda * sizeof (double));
 
-  const char * typename;
+  const char * name;
 
-  typename = (type == 1) ? "standard" : "nonstd" ;
+  name = (type == 1) ? "standard" : "nonstd" ;
 
   for (i = 0; i < N * tda; i++)
     data[i] = 12345.0 + i;
@@ -243,7 +243,7 @@ test_2d (size_t N, size_t tda, const gsl_wavelet_type * T, size_t member, int ty
 
     gsl_test (fabs (x2 - x1) > N * 1e-15,
               "%s(%d)-2d %s, n = %d, tda = %d, maxerr = %g",
-              gsl_wavelet_name (w), member, typename, N, tda, fabs (x2 - x1));
+              gsl_wavelet_name (w), member, name, N, tda, fabs (x2 - x1));
   }
 
   if (tda > N)
@@ -259,7 +259,7 @@ test_2d (size_t N, size_t tda, const gsl_wavelet_type * T, size_t member, int ty
         }
 
       gsl_test (status, "%s(%d)-2d %s other data untouched, n = %d, tda = %d",
-                gsl_wavelet_name (w), member, typename, N, tda);
+                gsl_wavelet_name (w), member, name, N, tda);
     }
   
   free (data);

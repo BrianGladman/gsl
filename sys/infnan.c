@@ -24,10 +24,7 @@
 #include <ieeefp.h>
 #endif
 
-double gsl_nan (void);
-double gsl_posinf (void);
-double gsl_neginf (void);
-double gsl_fdiv (const double x, const double y);
+#include <gsl/gsl_sys.h>
 
 double gsl_nan (void)
 {

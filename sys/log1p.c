@@ -19,8 +19,7 @@
 
 #include <config.h>
 #include <math.h>
-
-double gsl_log1p (const double x);
+#include <gsl/gsl_sys.h>
 
 double gsl_log1p (const double x)
 {

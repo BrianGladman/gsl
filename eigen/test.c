@@ -1058,7 +1058,7 @@ test_eigen_gen_alloc(const size_t n)
 {
   test_eigen_gen_workspace *w;
 
-  w = calloc(1, sizeof(test_eigen_gen_workspace));
+  w = (test_eigen_gen_workspace *) calloc(1, sizeof(test_eigen_gen_workspace));
 
   w->A = gsl_matrix_alloc(n, n);
   w->B = gsl_matrix_alloc(n, n);
