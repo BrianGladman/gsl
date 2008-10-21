@@ -533,8 +533,8 @@ gsl_linalg_SV_decomp_jacobi (gsl_matrix * A, gsl_matrix * Q, gsl_vector * S)
                   abserr_a = gsl_vector_get(S,j);
                   abserr_b = gsl_vector_get(S,k);
 
-                  sorted = (gsl_coerce_double(a) >= gsl_coerce_double(b));
-                  orthog = (fabs (p) <= tolerance * gsl_coerce_double(a * b));
+                  sorted = (GSL_COERCE_DBL(a) >= GSL_COERCE_DBL(b));
+                  orthog = (fabs (p) <= tolerance * GSL_COERCE_DBL(a * b));
                   noisya = (a < abserr_a);
                   noisyb = (b < abserr_b);
 

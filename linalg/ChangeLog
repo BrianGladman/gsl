@@ -1,3 +1,8 @@
+2008-10-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* svd.c (gsl_linalg_SV_decomp_jacobi): change use of
+	gsl_coerce_double to macro so it is not called unnecessarily
+
 2008-08-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* tridiag.c (solve_cyc_tridiag_nonsym): use x_stride when storing
