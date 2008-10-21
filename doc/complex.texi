@@ -21,7 +21,7 @@ while the corresponding complex functions and arithmetic operations are
 defined in @file{gsl_complex_math.h}.
 
 @menu
-* Complex numbers::             
+* Representation of complex numbers::  
 * Properties of complex numbers::  
 * Complex arithmetic operators::  
 * Elementary Complex Functions::  
@@ -32,8 +32,8 @@ defined in @file{gsl_complex_math.h}.
 * Complex Number References and Further Reading::  
 @end menu
 
-@node Complex numbers
-@section Complex numbers
+@node Representation of complex numbers
+@section Representation of complex numbers
 @cindex representations of complex numbers
 @cindex polar form of complex numbers
 @tindex gsl_complex
