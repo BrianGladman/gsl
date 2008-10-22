@@ -256,8 +256,8 @@ programs:
 @example
 gcc -ansi -pedantic -Werror -Wall -W 
   -Wmissing-prototypes -Wstrict-prototypes 
-  -Wtraditional -Wconversion -Wshadow
-  -Wpointer-arith -Wcast-qual -Wcast-align 
+  -Wconversion -Wshadow -Wpointer-arith 
+  -Wcast-qual -Wcast-align 
   -Wwrite-strings -Wnested-externs 
   -fshort-enums -fno-common -Dinline= -g -O2
 @end example
