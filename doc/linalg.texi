@@ -1182,7 +1182,12 @@ the following papers,
 @item
 J.C. Nash, ``A one-sided transformation method for the singular value
 decomposition and algebraic eigenproblem'', @cite{Computer Journal},
-Volume 18, Number 1 (1973), p 74--76
+Volume 18, Number 1 (1975), p 74--76
+
+@item
+J.C. Nash and S. Shlien ``Simple algorithms for the partial singular
+value decomposition'', @cite{Computer Journal}, Volume 30 (1987), p
+268--275.
 
 @item
 James Demmel, Kresimir Veselic, ``Jacobi's Method is more accurate than
