@@ -95,7 +95,21 @@ int gsl_cheb_init(gsl_cheb_series * cs, const gsl_function *func,
   return GSL_SUCCESS;
 }
 
+size_t
+gsl_cheb_order (const gsl_cheb_series * cs)
+{
+  return cs->order;
+}
 
+size_t
+gsl_cheb_size (const gsl_cheb_series * cs)
+{
+  return (cs->order + 1);
+}
 
-
+double *
+gsl_cheb_coeffs (const gsl_cheb_series * cs)
+{
+  return cs->c;
+}
 

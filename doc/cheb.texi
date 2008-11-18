@@ -18,9 +18,10 @@ The functions described in this chapter are declared in the header file
 @menu
 * Chebyshev Definitions::       
 * Creation and Calculation of Chebyshev Series::  
+* Auxiliary Functions for Chebyshev Series::  
 * Chebyshev Series Evaluation::  
 * Derivatives and Integrals::   
-* Chebyshev Approximation examples::  
+* Chebyshev Approximation Examples::  
 * Chebyshev Approximation References and Further Reading::  
 @end menu
 
@@ -78,6 +79,22 @@ This function computes the Chebyshev approximation @var{cs} for the
 function @var{f} over the range @math{(a,b)} to the previously specified
 order.  The computation of the Chebyshev approximation is an
 @math{O(n^2)} process, and requires @math{n} function evaluations.
+@end deftypefun
+
+@node Auxiliary Functions for Chebyshev Series
+@section Auxiliary Functions
+The following functions provide information about an existing
+Chebyshev series.
+
+@deftypefun size_t gsl_cheb_order (const gsl_cheb_series * @var{cs})
+This function returns the order of Chebyshev series @var{cs}.
+@end deftypefun
+
+@deftypefun size_t gsl_cheb_size (const gsl_cheb_series * @var{cs})
+@deftypefunx {double *} gsl_cheb_coeffs (const gsl_cheb_series * @var{cs})
+These functions return the size of the Chebyshev coefficient array
+@code{c[]} and a pointer to its location in memory for the Chebyshev
+series @var{cs}.
 @end deftypefun
 
 @node Chebyshev Series Evaluation
@@ -140,7 +157,7 @@ order.  The lower limit of the integration is taken to be the left hand
 end of the range @var{a}.
 @end deftypefun
 
-@node Chebyshev Approximation examples
+@node Chebyshev Approximation Examples
 @section Examples
 
 The following example program computes Chebyshev approximations to a

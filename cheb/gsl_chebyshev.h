@@ -82,6 +82,10 @@ void gsl_cheb_free(gsl_cheb_series * cs);
 int gsl_cheb_init(gsl_cheb_series * cs, const gsl_function * func,
                   const double a, const double b);
 
+/* Return the order, size of coefficient array and coefficient array ptr */
+size_t gsl_cheb_order (const gsl_cheb_series * cs);
+size_t gsl_cheb_size (const gsl_cheb_series * cs);
+double *gsl_cheb_coeffs (const gsl_cheb_series * cs);
 
 /* Evaluate a Chebyshev series at a given point.
  * No errors can occur for a struct obtained from gsl_cheb_new().

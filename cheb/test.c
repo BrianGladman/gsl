@@ -75,6 +75,16 @@ main(void)
 
   gsl_cheb_init(cs, &F_T0, -1.0, 1.0);
 
+  {
+    size_t expected = 40;
+    size_t order = gsl_cheb_order (cs);
+    size_t size = gsl_cheb_size (cs);
+    double * p = gsl_cheb_coeffs (cs);
+    gsl_test(order != expected, "gsl_cheb_order");
+    gsl_test(size != expected + 1, "gsl_cheb_size");
+    gsl_test(p != cs->c, "gsl_cheb_coeffs");
+  }
+
   for (i = 0; i<cs->order; i++)
     {
       double c_exp = (i == 0) ? 2.0 : 0.0;
