@@ -71,6 +71,8 @@
 #define NEW_COORD(s,i) ((s)->xin[(i)])
 #define VALUE(s,i,j) ((s)->d[(i)*(s)->dim + (j)])
 
+#define USE_ORIGINAL_CHISQ_FORMULA 0
+
 /* predeclare functions */
 
 typedef int coord;
@@ -149,6 +151,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
       state->chi_sum = 0;
       state->it_num = 1;
       state->samples = 0;
+      state->chisq = 0;
     }
 
   if (state->stage <= 2)
@@ -211,8 +214,6 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
   cum_int = 0.0;
   cum_sig = 0.0;
-
-  state->chisq = 0.0;
 
   for (it = 0; it < state->iterations; it++)
     {
@@ -297,6 +298,11 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
 
      if (wgt > 0.0)
        {
+         double sum_wgts = state->sum_wgts;
+         double wtd_int_sum = state->wtd_int_sum;
+         double m = (sum_wgts > 0) ? (wtd_int_sum / sum_wgts) : 0;
+         double q = intgrl - m;
+
          state->samples++ ;
          state->sum_wgts += wgt;
          state->wtd_int_sum += intgrl * wgt;
@@ -305,11 +311,26 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
          cum_int = state->wtd_int_sum / state->sum_wgts;
          cum_sig = sqrt (1 / state->sum_wgts);
 
+#if USE_ORIGINAL_CHISQ_FORMULA
+/* This is the chisq formula from the original Lepage paper.  It
+   computes the variance from <x^2> - <x>^2 and can suffer from
+   catastrophic cancellations, e.g. returning negative chisq. */
          if (state->samples > 1)
            {
              state->chisq = (state->chi_sum - state->wtd_int_sum * cum_int) /
                (state->samples - 1.0);
            }
+#else
+/* The new formula below computes exactly the same quantity as above
+   but using a stable recurrence */
+         if (state->samples == 1) {
+           state->chisq = 0;
+         } else {
+           state->chisq *= (state->samples - 2.0);
+           state->chisq += (wgt / (1 + (wgt / sum_wgts))) * q * q;
+           state->chisq /= (state->samples - 1.0);
+         }
+#endif
        }
      else
        {

@@ -1,5 +1,9 @@
 2008-11-20  Brian Gough  <bjg@network-theory.co.uk>
 
+	* vegas.c (gsl_monte_vegas_integrate): improve the chisq
+	calculation to avoid cancellation errors in the original
+	formula (fixes bug #24510)
+
 	* test.c (MONTE_ERROR_TEST): added test cases for negative chisq
 	in vegas
 

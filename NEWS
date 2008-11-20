@@ -1,3 +1,8 @@
+** Improved the original chi-squared formula in gsl_monte_vegas to
+   avoid catastrophic cancellation [bug #24510].  The previous formula
+   could return incorrect or negative values for relative errors <
+   1e-8, which could occur when integrating very smooth functions.
+
 ** Added new auxiliary functions gsl_cheb_order, gsl_cheb_size,
    gsl_cheb_coeffs for Chebyshev series [bug #21830]
 
