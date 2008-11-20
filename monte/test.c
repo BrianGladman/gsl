@@ -289,7 +289,7 @@ main (void)
 #define MONTE_INTEGRATE(f,xl,xu,dim,calls,r,s,res,err) { gsl_monte_vegas_integrate(f,xl,xu,dim,calls,r,s,res,err) ;  }
 #define MONTE_FREE gsl_monte_vegas_free
 #define MONTE_SPEEDUP 3
-#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * (expected == 0 ? 1.0/(I->calls/MONTE_SPEEDUP) : expected), NAME ", %s, abserr[%d] (obs %g vs exp %g)", I->description, i, err, expected)
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * (expected == 0 ? 1.0/(I->calls/MONTE_SPEEDUP) : expected), NAME ", %s, abserr[%d] (obs %g vs exp %g)", I->description, i, err, expected) ; gsl_test(s->chisq < 0, NAME " returns valid chisq (%g)", s->chisq)
 #include "test_main.c"
 #undef NAME
 #undef MONTE_STATE
@@ -308,7 +308,7 @@ main (void)
 #define MONTE_INTEGRATE(f,xl,xu,dim,calls,r,s,res,err) { gsl_monte_vegas_integrate(f,xl,xu,dim,calls,r,s,res,err) ; gsl_monte_vegas_integrate(f,xl,xu,dim,calls,r,s,res,err); }
 #define MONTE_FREE gsl_monte_vegas_free
 #define MONTE_SPEEDUP 3
-#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * (expected == 0 ? 1.0/(I->calls/MONTE_SPEEDUP) : expected), NAME ", %s, abserr[%d] (obs %g vs exp %g)", I->description, i, err, expected)
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 3.0 * (expected == 0 ? 1.0/(I->calls/MONTE_SPEEDUP) : expected), NAME ", %s, abserr[%d] (obs %g vs exp %g)", I->description, i, err, expected); gsl_test(s->chisq < 0, NAME " returns valid chisq (%g)", s->chisq)
 #include "test_main.c"
 #undef NAME
 #undef MONTE_STATE

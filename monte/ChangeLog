@@ -1,3 +1,8 @@
+2008-11-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (MONTE_ERROR_TEST): added test cases for negative chisq
+	in vegas
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir
