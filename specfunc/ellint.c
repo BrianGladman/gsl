@@ -481,7 +481,7 @@ gsl_sf_ellint_Kcomp_e(double k, gsl_mode_t mode, gsl_sf_result * result)
     DOMAIN_ERROR(result);
   }
   else if(k*k >= 1.0 - GSL_SQRT_DBL_EPSILON) {
-    /* [Abramowitz+Stegun, 17.3.33] */
+    /* [Abramowitz+Stegun, 17.3.34] */
     const double y = 1.0 - k*k;
     const double a[] = { 1.38629436112, 0.09666344259, 0.03590092383 };
     const double b[] = { 0.5, 0.12498593597, 0.06880248576 };
