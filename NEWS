@@ -1,3 +1,5 @@
+** Added gsl_bspline_eval_deriv to compute bspline derivatives
+
 ** Added a faster simplex mininimser gsl_multimin_fminimizer_nmsimplex2
    which is O(N) instead of O(N^2) [bug #24418]
 
