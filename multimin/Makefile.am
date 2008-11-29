@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multimin.h
 
 INCLUDES = -I$(top_srcdir)
 
-libgslmultimin_la_SOURCES = fdfminimizer.c steepest_descent.c conjugate_fr.c conjugate_pr.c convergence.c diff.c vector_bfgs.c vector_bfgs2.c fminimizer.c simplex.c
+libgslmultimin_la_SOURCES = fdfminimizer.c steepest_descent.c conjugate_fr.c conjugate_pr.c convergence.c diff.c vector_bfgs.c vector_bfgs2.c fminimizer.c simplex.c simplex2.c
 
 noinst_HEADERS = directional_minimize.c linear_minimize.c linear_wrapper.c
 

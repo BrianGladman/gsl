@@ -15,14 +15,15 @@ The header file @file{gsl_multimin.h} contains prototypes for the
 minimization functions and related declarations.  
 
 @menu
-* Multimin Overview::       
-* Multimin Caveats::        
+* Multimin Overview::           
+* Multimin Caveats::            
 * Initializing the Multidimensional Minimizer::  
 * Providing a function to minimize::  
-* Multimin Iteration::      
+* Multimin Iteration::          
 * Multimin Stopping Criteria::  
-* Multimin Algorithms::     
-* Multimin Examples::       
+* Multimin Algorithms with Derivatives::  
+* Multimin Algorithms without Derivatives::  
+* Multimin Examples::           
 * Multimin References and Further Reading::  
 @end menu
 
@@ -60,11 +61,13 @@ updated with local information from the function and its derivatives,
 and the whole process repeated until the true @math{n}-dimensional
 minimum is found.
 
-The Nelder-Mead Simplex algorithm applies a different strategy.  It
+Algorithms which do not require the gradient of the function use
+different strategies.  For example, the Nelder-Mead Simplex algorithm
 maintains @math{n+1} trial parameter vectors as the vertices of a
-@math{n}-dimensional simplex.  In each iteration step it tries to
-improve the worst vertex by a simple geometrical transformation until
-the size of the simplex falls below a given tolerance.
+@math{n}-dimensional simplex.  On each iteration it tries to improve
+the worst vertex of the simplex by geometrical transformations.  The
+iterations are continued until the overall size of the simplex has
+decreased sufficiently.
 
 Both types of algorithms use a standard framework. The user provides a
 high-level driver for the algorithms, and the library provides the
@@ -342,13 +345,13 @@ The test returns @code{GSL_SUCCESS} if the size is smaller than tolerance,
 otherwise @code{GSL_CONTINUE} is returned.
 @end deftypefun
 
-@node Multimin Algorithms
-@section Algorithms
+@node Multimin Algorithms with Derivatives
+@section Algorithms with Derivatives
 
 There are several minimization methods available. The best choice of
-algorithm depends on the problem.  All of the algorithms use the value
-of the function and its gradient at each evaluation point, except for
-the Simplex algorithm which uses function values only.
+algorithm depends on the problem.  The algorithms described in this
+section use the value of the function and its gradient at each
+evaluation point.
 
 @deffn {Minimizer} gsl_multimin_fdfminimizer_conjugate_fr
 @cindex Fletcher-Reeves conjugate gradient algorithm, minimization
@@ -417,11 +420,18 @@ for most applications is 0.1.  The steepest descent method is
 inefficient and is included only for demonstration purposes.
 @end deffn
 
-@deffn {Minimizer} gsl_multimin_fminimizer_nmsimplex
+@node Multimin Algorithms without Derivatives
+@section Algorithms without Derivatives
+
+The algorithms described in this section use only the value of the function
+at each evaluation point.
+
+@deffn {Minimizer} gsl_multimin_fminimizer_nmsimplex2
+@deffnx {Minimizer} gsl_multimin_fminimizer_nmsimplex
 @cindex Nelder-Mead simplex algorithm for minimization
 @cindex simplex algorithm, minimization
 @cindex minimization, simplex algorithm
-This is the Simplex algorithm of Nelder and Mead. It constructs 
+These methods use the Simplex algorithm of Nelder and Mead. They construct
 @math{n} vectors @math{p_i} from the
 starting vector @var{x} and the vector @var{step_size} as follows:
 @tex
@@ -461,11 +471,17 @@ After each iteration, the best vertex is returned.  Note, that due to
 the nature of the algorithm not every step improves the current
 best parameter vector.  Usually several iterations are required.
 
-The routine calculates the minimizer specific characteristic size as the
+The minimizer-specific characteristic size is calculated as the
 average distance from the geometrical center of the simplex to all its
-vertices.  This size can be used as a stopping criteria, as the simplex
-contracts itself near the minimum. The size is returned by the function
-@code{gsl_multimin_fminimizer_size}.
+vertices.  This size can be used as a stopping criteria, as the
+simplex contracts itself near the minimum. The size is returned by the
+function @code{gsl_multimin_fminimizer_size}.
+
+The @code{nmsimplex2} version of this minimiser is a new @math{O(N)}
+implementation of the earlier @math{O(N^2)} @code{nmsimplex}
+minimiser.  It calculates the size of simplex as the @sc{rms} distance
+of each vertex from the center rather than the mean distance, which
+has the advantage of allowing a linear update.
 @end deffn
 
 @node Multimin Examples

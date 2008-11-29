@@ -35,46 +35,66 @@ test_fdf(const char * desc, gsl_multimin_function_fdf *f,
          initpt_function initpt, const gsl_multimin_fdfminimizer_type *T);
 
 int
-test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt);
+test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt,
+       const gsl_multimin_fminimizer_type *T);
 
 int
 main (void)
 {
-  const gsl_multimin_fdfminimizer_type *fdfminimizers[6];
-  const gsl_multimin_fdfminimizer_type ** T;
-
   gsl_ieee_env_setup ();
 
-  fdfminimizers[0] = gsl_multimin_fdfminimizer_steepest_descent;
-  fdfminimizers[1] = gsl_multimin_fdfminimizer_conjugate_pr;
-  fdfminimizers[2] = gsl_multimin_fdfminimizer_conjugate_fr;
-  fdfminimizers[3] = gsl_multimin_fdfminimizer_vector_bfgs;
-  fdfminimizers[4] = gsl_multimin_fdfminimizer_vector_bfgs2;
-  fdfminimizers[5] = 0;
+  {
+    const gsl_multimin_fdfminimizer_type *fdfminimizers[6];
+    const gsl_multimin_fdfminimizer_type ** T;
 
-  T = fdfminimizers;
+    fdfminimizers[0] = gsl_multimin_fdfminimizer_steepest_descent;
+    fdfminimizers[1] = gsl_multimin_fdfminimizer_conjugate_pr;
+    fdfminimizers[2] = gsl_multimin_fdfminimizer_conjugate_fr;
+    fdfminimizers[3] = gsl_multimin_fdfminimizer_vector_bfgs;
+    fdfminimizers[4] = gsl_multimin_fdfminimizer_vector_bfgs2;
+    fdfminimizers[5] = 0;
+    
+    T = fdfminimizers;
+    
+    while (*T != 0) 
+      {
+        test_fdf("Roth", &roth, roth_initpt,*T);
+        test_fdf("Wood", &wood, wood_initpt,*T);
+        test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T);
+        T++;
+      }
+    
+    T = fdfminimizers;
+    
+    while (*T != 0) 
+      {
+        test_fdf("NRoth", &Nroth, roth_initpt,*T);
+        test_fdf("NWood", &Nwood, wood_initpt,*T);
+        test_fdf("NRosenbrock", &Nrosenbrock, rosenbrock_initpt,*T);
+        T++;
+      }
+  }
 
-  while (*T != 0) 
-    {
-      test_fdf("Roth", &roth, roth_initpt,*T);
-      test_fdf("Wood", &wood, wood_initpt,*T);
-      test_fdf("Rosenbrock", &rosenbrock, rosenbrock_initpt,*T);
-      T++;
-    }
 
-  test_f("Roth", &roth_fmin, roth_initpt);
-  test_f("Wood", &wood_fmin, wood_initpt);
-  test_f("Rosenbrock", &rosenbrock_fmin, rosenbrock_initpt);
+  {
+    const gsl_multimin_fminimizer_type *fminimizers[3];
+    const gsl_multimin_fminimizer_type ** T;
 
-  T = fdfminimizers;
+    fminimizers[0] = gsl_multimin_fminimizer_nmsimplex;
+    fminimizers[1] = gsl_multimin_fminimizer_nmsimplex2;
+    fminimizers[2] = 0;
+    
+    T = fminimizers;
+    
+    while (*T != 0) 
+      {
+        test_f("Roth", &roth_fmin, roth_initpt,*T);
+        test_f("Wood", &wood_fmin, wood_initpt,*T);
+        test_f("Rosenbrock", &rosenbrock_fmin, rosenbrock_initpt,*T);
+        T++;
+      }
+  }
 
-  while (*T != 0) 
-    {
-      test_fdf("NRoth", &Nroth, roth_initpt,*T);
-      test_fdf("NWood", &Nwood, wood_initpt,*T);
-      test_fdf("NRosenbrock", &Nrosenbrock, rosenbrock_initpt,*T);
-      T++;
-    }
 
   exit (gsl_test_summary());
 }
@@ -137,13 +157,11 @@ test_fdf(const char * desc,
 }
 
 int
-test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt)
+test_f(const char * desc, gsl_multimin_function *f, initpt_function initpt,
+       const gsl_multimin_fminimizer_type *T)
 {
-  /* currently this function tests only nmsimplex */
-
   int status;
   size_t i, iter = 0;
-  const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex;
 
   gsl_vector *x = gsl_vector_alloc (f->n);
 

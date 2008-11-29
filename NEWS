@@ -1,3 +1,6 @@
+** Added a faster simplex mininimser gsl_multimin_fminimizer_nmsimplex2
+   which is O(N) instead of O(N^2) [bug #24418]
+
 ** Improved the original chi-squared formula in gsl_monte_vegas to
    avoid catastrophic cancellation [bug #24510].  The previous formula
    could return incorrect or negative values for relative errors <

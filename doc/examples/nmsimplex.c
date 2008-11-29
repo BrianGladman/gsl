@@ -4,7 +4,7 @@ main(void)
   double par[5] = {1.0, 2.0, 10.0, 20.0, 30.0};
 
   const gsl_multimin_fminimizer_type *T = 
-    gsl_multimin_fminimizer_nmsimplex;
+    gsl_multimin_fminimizer_nmsimplex2;
   gsl_multimin_fminimizer *s = NULL;
   gsl_vector *ss, *x;
   gsl_multimin_function minex_func;
@@ -46,7 +46,7 @@ main(void)
           printf ("converged to minimum at\n");
         }
 
-      printf ("%5d %10.3e %10.3ef f() = %7.3f size = %.3f\n", 
+      printf ("%5d %10.3e %10.3e f() = %7.3f size = %.3f\n", 
               iter,
               gsl_vector_get (s->x, 0), 
               gsl_vector_get (s->x, 1), 
