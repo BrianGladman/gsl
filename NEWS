@@ -1,3 +1,6 @@
+** Fixed gsl_ran_gamma_knuth to handle the case of a >= UINT_MAX [bug
+   #24897]
+
 ** Added a faster simplex mininimser gsl_multimin_fminimizer_nmsimplex2
    which is O(N) instead of O(N^2) [bug #24418]
 

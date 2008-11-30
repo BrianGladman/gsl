@@ -110,6 +110,8 @@ double test_gamma_int (void);
 double test_gamma_int_pdf (double x);
 double test_gamma_large (void);
 double test_gamma_large_pdf (double x);
+double test_gamma_vlarge (void);
+double test_gamma_vlarge_pdf (double x);
 double test_gamma_small (void);
 double test_gamma_small_pdf (double x);
 double test_gamma_mt (void);
@@ -122,6 +124,8 @@ double test_gamma_mt_large (void);
 double test_gamma_mt_large_pdf (double x);
 double test_gamma_mt_small (void);
 double test_gamma_mt_small_pdf (double x);
+double test_gamma_knuth_vlarge (void);
+double test_gamma_knuth_vlarge_pdf (double x);
 double test_gaussian (void);
 double test_gaussian_pdf (double x);
 double test_gaussian_ratio_method (void);
@@ -298,6 +302,8 @@ main (void)
   testPDF (FUNC2 (gamma1));
   testPDF (FUNC2 (gamma_int));
   testPDF (FUNC2 (gamma_large));
+  testPDF (FUNC2 (gamma_vlarge));
+  testPDF (FUNC2 (gamma_knuth_vlarge));
   testPDF (FUNC2 (gamma_small));
   testPDF (FUNC2 (gamma_mt));
   testPDF (FUNC2 (gamma_mt1));
@@ -546,7 +552,6 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
   for (i = 0; i < N; i++)
     {
       double r = f ();
-      
       total += r;
 
       if (r < b && r > a)
@@ -1307,6 +1312,24 @@ test_gamma_small_pdf (double x)
   return gsl_ran_gamma_pdf (x, 0.92, 2.17);
 }
 
+double
+test_gamma_vlarge (void)
+{
+  /* Scale the distribution to get it into the range [-5,5] */
+  double c = 2.71828181565;
+  double b = 6.32899304917e-10;
+  double d = 1e4;
+  return (gsl_ran_gamma (r_global, 4294967296.0, b) - c) * d;
+}
+
+double
+test_gamma_vlarge_pdf (double x)
+{
+  double c = 2.71828181565;
+  double b = 6.32899304917e-10;
+  double d = 1e4;
+  return gsl_ran_gamma_pdf ((x / d) + c, 4294967296.0, b) / d;
+}
 
 double
 test_gamma_mt (void)
@@ -1371,6 +1394,25 @@ test_gamma_mt_small_pdf (double x)
   return gsl_ran_gamma_pdf (x, 0.92, 2.17);
 }
 
+
+double
+test_gamma_knuth_vlarge (void)
+{
+  /* Scale the distribution to get it into the range [-5,5] */
+  double c = 2.71828181565;
+  double b = 6.32899304917e-10;
+  double d = 1e4;
+  return (gsl_ran_gamma_knuth (r_global, 4294967296.0, b) - c) * d;
+}
+
+double
+test_gamma_knuth_vlarge_pdf (double x)
+{
+  double c = 2.71828181565;
+  double b = 6.32899304917e-10;
+  double d = 1e4;
+  return gsl_ran_gamma_pdf ((x / d) + c, 4294967296.0, b) / d;
+}
 
 double
 test_gaussian (void)
