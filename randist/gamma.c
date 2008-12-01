@@ -43,7 +43,11 @@ gsl_ran_gamma_knuth (const gsl_rng * r, const double a, const double b)
   /* assume a > 0 */
   unsigned int na = floor (a);
 
-  if (a == na)
+  if(a >= UINT_MAX) 
+    {
+      return b * (gamma_large (r, floor (a)) + gamma_frac (r, a - floor (a)));
+    }
+  else if (a == na)
     {
       return b * gsl_ran_gamma_int (r, na);
     }

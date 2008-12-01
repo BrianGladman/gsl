@@ -455,3 +455,5 @@ evaluation and ode improvements
   accelerator
 
 * Lori A. Pritchett-Sheats bug report for vegas chisq.
+
+* Frank Wang <frank.wang@validusre.bm> bug report for gsl_ran_gamma_knuth.

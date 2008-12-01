@@ -1,3 +1,6 @@
+** Fixed gsl_ran_gamma_knuth to handle the case of a >= UINT_MAX [bug
+   #24897]
+
 ** Added gsl_bspline_eval_deriv to compute bspline derivatives
    (Rhys Ulerich)
 
