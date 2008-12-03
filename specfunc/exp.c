@@ -32,7 +32,7 @@
  */
 static
 int
-exprel_n_CF(const int N, const double x, gsl_sf_result * result)
+exprel_n_CF(const double N, const double x, gsl_sf_result * result)
 {
   const double RECUR_BIG = GSL_SQRT_DBL_MAX;
   const int maxiter = 5000;
@@ -93,7 +93,7 @@ exprel_n_CF(const int N, const double x, gsl_sf_result * result)
   }
 
   result->val = fn;
-  result->err = 2.0*(n+1.0)*GSL_DBL_EPSILON*fabs(fn);
+  result->err = 4.0*(n+1.0)*GSL_DBL_EPSILON*fabs(fn);
 
   if(n == maxiter)
     GSL_ERROR ("error", GSL_EMAXITER);
@@ -412,6 +412,12 @@ int gsl_sf_exprel_2_e(double x, gsl_sf_result * result)
   }
 }
 
+
+int
+gsl_sf_exprel_n_CF_e(const double N, const double x, gsl_sf_result * result)
+{
+  return exprel_n_CF(N, x, result);
+}
 
 int
 gsl_sf_exprel_n_e(const int N, const double x, gsl_sf_result * result)

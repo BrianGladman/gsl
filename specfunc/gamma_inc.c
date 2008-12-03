@@ -77,26 +77,45 @@ static
 int
 gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
 {
-  const int nmax = 5000;
+  const int nmax = 10000;
 
   gsl_sf_result D;
   int stat_D = gamma_inc_D(a, x, &D);
 
   double sum  = 1.0;
   double term = 1.0;
+  double remainder;
   int n;
+
+  /* Approximating the terms of the series using Stirling's
+     approximation gives t_n = (x/a)^n * exp(-n(n+1)/(2a)), so the
+     convergence condition is n^2 / (2a) + (1-(x/a) + (1/2a)) n >>
+     -log(GSL_DBL_EPS) if we want t_n < O(1e-16) t_0. The condition
+     below detects cases where the minimum value of n is > 5000 */
+
+  if (x > 0.995 * a && a > 1e5) { /* Difficult case: try continued fraction */
+    gsl_sf_result cf_res;
+    int status =  gsl_sf_exprel_n_CF_e(a, x, &cf_res);
+    result->val = D.val * cf_res.val;
+    result->err = fabs(D.val * cf_res.err) + fabs(D.err * cf_res.val);
+    return status;
+  }
+
+  /* Normal case: sum the series */
   for(n=1; n<nmax; n++) {
     term *= x/(a+n);
     sum  += term;
-    if(fabs(term/sum) < GSL_DBL_EPSILON) break;
+    /*  Estimate remainder of series ~ t_(n+1)/(1-x/(a+n+1)) */
+    remainder = (x/(a+n+1.0)) * term / (1.0 - x/(a + n + 2.0));
+    if(fabs(remainder/sum) < GSL_DBL_EPSILON) break;
   }
 
-  result->val  = D.val * sum;
-  result->err  = D.err * fabs(sum);
+  result->val  = D.val * (sum + remainder);
+  result->err  = D.err * fabs(sum) + fabs(D.val * remainder);
   result->err += (1.0 + n) * GSL_DBL_EPSILON * fabs(result->val);
 
-  if(n == nmax)
-    GSL_ERROR ("error", GSL_EMAXITER);
+  if(n == nmax && fabs(remainder/sum) > GSL_SQRT_DBL_EPSILON)
+    GSL_ERROR ("gamma_inc_P_series failed to converge", GSL_EMAXITER);
   else
     return stat_D;
 }

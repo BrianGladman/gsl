@@ -1,3 +1,15 @@
+2008-12-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* exp.c (exprel_n_CF): changed N to double, to allow non-integer
+	usage for gamma_inc, double error factor to allow for two
+	parameters in recurrence.
+	(gsl_sf_exprel_n_CF_e): exported function to allow calls to
+	exprel_n_CF
+
+	* gamma_inc.c (gamma_inc_P_series): improved convergence condition
+	using estimate of the remainder of the series, added continued
+	fraction as a fallback, increased nmax to 10000
+
 2008-08-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ellint.c (gsl_sf_ellint_Kcomp_e): corrected taylor expansion for

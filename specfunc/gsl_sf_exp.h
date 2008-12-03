@@ -102,6 +102,8 @@ double gsl_sf_exprel_2(const double x);
 int gsl_sf_exprel_n_e(const int n, const double x, gsl_sf_result * result);
 double gsl_sf_exprel_n(const int n, const double x);
 
+int gsl_sf_exprel_n_CF_e(const double n, const double x, gsl_sf_result * result);
+
 
 /* Exponentiate a quantity with an associated error.
  */
