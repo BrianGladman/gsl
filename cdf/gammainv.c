@@ -101,7 +101,7 @@ gsl_cdf_gamma_Pinv (const double P, const double a, const double b)
           x /= 2.0;
         }
 
-      if (fabs (step0) > 1e-10 * x)
+      if (fabs (step0) > 1e-10 * x || fabs(step0 * phi) > 1e-10 * P)
         goto start;
     }
 

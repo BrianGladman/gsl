@@ -1,3 +1,10 @@
+2008-12-03  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gammainv.c (gsl_cdf_gamma_Pinv): keep iterating if P is still
+	changing (fix for bug 24704)
+
+	* test.c (test_chisqinv): added test cases for bug 24704
+
 2008-07-03  Brian Gough  <bjg@hp2.network-theory.co.uk>
 
 	* Makefile.am (INCLUDES): use top_srcdir instead of top_builddir

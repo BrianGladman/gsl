@@ -1,3 +1,7 @@
+** Improved the convergence of gsl_sf_gamma_inc_P for x/a ~=~ 1 and
+   large x,a.  Fixes problems with large arguments in cdf functions
+   such as gsl_cdf_chisq_Pinv(x,nu) [bug 24704].
+
 ** Fixed gsl_ran_gamma_knuth to handle the case of a >= UINT_MAX [bug
    #24897]
 
