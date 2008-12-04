@@ -87,11 +87,6 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
   gsl_sf_result D;
   int stat_D = gamma_inc_D(a, x, &D);
 
-  double sum  = 1.0;
-  double term = 1.0;
-  double remainder;
-  int n;
-
   /* Approximating the terms of the series using Stirling's
      approximation gives t_n = (x/a)^n * exp(-n(n+1)/(2a)), so the
      convergence condition is n^2 / (2a) + (1-(x/a) + (1/2a)) n >>
@@ -106,23 +101,52 @@ gamma_inc_P_series(const double a, const double x, gsl_sf_result * result)
     return status;
   }
 
-  /* Normal case: sum the series */
-  for(n=1; n<nmax; n++) {
-    term *= x/(a+n);
-    sum  += term;
-    /*  Estimate remainder of series ~ t_(n+1)/(1-x/(a+n+1)) */
-    remainder = (x/(a+n+1.0)) * term / (1.0 - x/(a + n + 2.0));
-    if(fabs(remainder/sum) < GSL_DBL_EPSILON) break;
+  /* Series would require excessive number of terms */
+
+  if (x > (a + nmax)) {
+    GSL_ERROR ("gamma_inc_P_series x>>a exceeds range", GSL_EMAXITER);
   }
 
-  result->val  = D.val * (sum + remainder);
-  result->err  = D.err * fabs(sum) + fabs(D.val * remainder);
-  result->err += (1.0 + n) * GSL_DBL_EPSILON * fabs(result->val);
+  /* Normal case: sum the series */
 
-  if(n == nmax && fabs(remainder/sum) > GSL_SQRT_DBL_EPSILON)
-    GSL_ERROR ("gamma_inc_P_series failed to converge", GSL_EMAXITER);
-  else
-    return stat_D;
+  {
+    double sum  = 1.0;
+    double term = 1.0;
+    double remainder;
+    int n;
+
+    /* Handle lower part of the series where t_n is increasing, |x| > a+n */
+
+    int nlow = (x > a) ? (x - a): 0;
+
+    for(n=1; n < nlow; n++) {
+      term *= x/(a+n);
+      sum  += term;
+    }
+
+    /* Handle upper part of the series where t_n is decreasing, |x| < a+n */
+
+    for (/* n = previous n */ ; n<nmax; n++)  {
+      term *= x/(a+n);
+      sum  += term;
+      if(fabs(term/sum) < GSL_DBL_EPSILON) break;
+    }
+
+    /*  Estimate remainder of series ~ t_(n+1)/(1-x/(a+n+1)) */
+    {
+      double tnp1 = (x/(a+n)) * term;
+      remainder =  tnp1 / (1.0 - x/(a + n + 1.0));
+    }
+
+    result->val  = D.val * sum;
+    result->err  = D.err * fabs(sum) + fabs(D.val * remainder);
+    result->err += (1.0 + n) * GSL_DBL_EPSILON * fabs(result->val);
+
+    if(n == nmax && fabs(remainder/sum) > GSL_SQRT_DBL_EPSILON)
+      GSL_ERROR ("gamma_inc_P_series failed to converge", GSL_EMAXITER);
+    else
+      return stat_D;
+  }
 }
 
 
