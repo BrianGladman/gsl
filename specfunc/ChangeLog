@@ -1,3 +1,8 @@
+2008-12-04  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gamma_inc.c (gamma_inc_D): propagate cancellation error
+	in (x-a)/x for x close to a
+
 2008-12-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* exp.c (exprel_n_CF): changed N to double, to allow non-integer

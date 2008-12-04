@@ -59,11 +59,16 @@ gamma_inc_D(const double a, const double x, gsl_sf_result * result)
     } else {
       double mu = (x-a)/a;
       gsl_sf_log_1plusx_mx_e(mu, &ln_term);  /* log(1+mu) - mu */
+      /* Propagate cancellation error from x-a, since the absolute
+         error of mu=x-a is DBL_EPSILON */
+      ln_term.err += GSL_DBL_EPSILON * fabs(mu);
     };
     gsl_sf_gammastar_e(a, &gstar);
     term1 = exp(a*ln_term.val)/sqrt(2.0*M_PI*a);
     result->val  = term1/gstar.val;
     result->err  = 2.0 * GSL_DBL_EPSILON * (fabs(a*ln_term.val) + 1.0) * fabs(result->val);
+    /* Include propagated error from log term */
+    result->err += fabs(a) * ln_term.err * fabs(result->val);
     result->err += gstar.err/fabs(gstar.val) * fabs(result->val);
     return GSL_SUCCESS;
   }
