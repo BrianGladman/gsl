@@ -40,6 +40,24 @@ papers for other developers.
 
 * Cumulative Distribution functions for discrete random distributions
 
+
+Changes for Release 2.0
+
+Break binary compatibility, but keep source compatibility.
+
+* Add a 'void *' to all workspaces, to allow for future changes.
+
+* Disable deprecated functions
+
+* Fix up the workspace_alloc functions so they have consistent names
+  (add functions where needed, don't remove)
+
+* Standardize function names, in particular VERB vs NOUN (e.g. _invert
+vs _inverse). Also adopt a convection for functions which can operate
+in place vs use of workspace (e.g linalg_solve functions).
+
+
+
 Other tasks:
 
 * Remove use of long double internally, e.g. as an accumulator in
@@ -74,9 +92,6 @@ different error code.
 the outermost layer which may have been missed. Everything should be
 of the form #define foo(x) (....) so there is no possibility of bad
 parsing.  Need a perl script to check this!
-
-* Clean up the ordering of lines in the Makefile.am's so that they are
-all consistent. At the moment the lines are in any order.
 
 * Eliminate use of volatile where it has been used to force rounding
 (integration/). It is better to write the code to avoid dependence on
@@ -139,10 +154,6 @@ warning.  What happened? (Does it now work with gcc-3.0?)
 * Go through the matrix and vector functions systematically and decide
 what should be provided outside of BLAS.
 
-* Standardize function names, in particular VERB vs NOUN (e.g. _invert
-vs _inverse). Also adopt a convection for functions which can operate
-in place vs use of workspace (e.g linalg_solve functions).
-
 * Change from gsl-ref.texi to gsl.texi since it is the main file?
 Also, put under dir section "Math" (which seems to be the appropriate
 one for Debian, as Octave, Gnuplot etc are in that)
@@ -175,5 +186,5 @@ evaluate C and Fortran expressions could be useful.
 of size_t for vectors and matrices, or at least vectors and matrices
 of size_t in addition to long, int, etc.
 
-* Fix up the workspace_alloc functions so they have consistent names
+
 
