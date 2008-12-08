@@ -905,6 +905,11 @@ memory allocation.  All memory should be allocated and freed through
 separate functions and passed around as a "workspace" argument.  This
 allows memory allocation to be factored out of tight loops.
 
+To avoid confusion over ownership, workspaces should not own each
+other or contain other workspaces.  For clarity and ease of use in
+different contexts, they should be allocated from integer arguments
+rather than derived from other structs.
+
 @node Memory layout, Linear Algebra Levels, Memory allocation and ownership, Design
 @section Memory layout
 
@@ -1144,6 +1149,11 @@ which makes the test for @code{i>0} explicit and leaves @code{i=0} on
 exit from the loop.  However, it is slower as there is an additional
 branch which prevents unrolling.  Thanks to J. Seward for pointing
 this out.
+
+Note: As a matter of style, please use post-increment (@code{i++}) and
+post-decrement (@code{i--}) operators by default and only use
+pre-increment (@code{++i}) and pre-decrement (@code{--i}) operators
+where specifically needed.
 
 @node Arrays vs Pointers, Pointers, size_t, Design
 @section Arrays vs Pointers
