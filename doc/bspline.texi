@@ -78,6 +78,8 @@ be readily obtained from a least-squares fit.
 @section Initializing the B-splines solver
 @cindex basis splines, initializing
 
+Using B-splines requires a gsl_bspline_workspace:
+
 @deftypefun {gsl_bspline_workspace *} gsl_bspline_alloc (const size_t @var{k}, const size_t @var{nbreak})
 This function allocates a workspace for computing B-splines of order
 @var{k}. The number of breakpoints is given by @var{nbreak}. This
@@ -88,6 +90,20 @@ are specified by @math{k = 4}. The size of the workspace is
 
 @deftypefun void gsl_bspline_free (gsl_bspline_workspace * @var{w})
 This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+Evaluation of B-spline basis function derivatives additionally requires
+a @code{gsl_bspline_deriv_workspace}:
+
+@deftypefun {gsl_bspline_deriv_workspace *} gsl_bspline_deriv_alloc (const size_t @var{k})
+This function allocates a workspace for computing the derivatives of a
+B-spline basis function of order @var{k}.  The size of the workspace
+is @math{O(2k^2)}.
+@end deftypefun
+
+@deftypefun void gsl_bspline_deriv_free (gsl_bspline_deriv_workspace * @var{w})
+This function frees the memory associated with the derivative
+workspace @var{w}.
 @end deftypefun
 
 @node Constructing the knots vector
@@ -140,7 +156,7 @@ This function returns the number of B-spline coefficients given by
 @section Evaluation of B-spline derivatives
 @cindex basis splines, derivatives
 
-@deftypefun int gsl_bspline_eval_deriv (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, gsl_bspline_workspace * @var{w})
+@deftypefun int gsl_bspline_deriv_eval (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, gsl_bspline_workspace * @var{w}, gsl_bspline_deriv_workspace * @var{dw})
 This function evaluates all B-spline basis function derivatives of orders
 @math{0} through @math{nderiv} (inclusive) at the position @var{x}
 and stores them in @var{dB}.  The @math{(i,j)}th element of @var{dB}
@@ -153,7 +169,7 @@ at once than to compute them individually, due to the nature of the
 defining recurrence relation.
 @end deftypefun
 
-@deftypefun int gsl_bspline_eval_deriv_nonzero (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, size_t * @var{istart}, size_t * @var{iend}, gsl_bspline_workspace * @var{w})
+@deftypefun int gsl_bspline_deriv_eval_nonzero (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, size_t * @var{istart}, size_t * @var{iend}, gsl_bspline_workspace * @var{w}, gsl_bspline_deriv_workspace * @var{dw})
 This function evaluates all potentially nonzero B-spline basis function
 derivatives of orders @math{0} through @math{nderiv} (inclusive) at
 the position @var{x} and stores them in @var{dB}.  The @math{(i,j)}th
@@ -205,4 +221,5 @@ ISBN 0-387-90356-9.
 
 @noindent
 A large collection of B-spline routines is available in the
-@sc{pppack} library available at @uref{http://www.netlib.org/pppack}.
+@sc{pppack} library available at @uref{http://www.netlib.org/pppack},
+which is also part of @sc{slatec}.

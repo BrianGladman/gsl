@@ -6,6 +6,8 @@ INCLUDES = -I$(top_srcdir)
 
 libgslbspline_la_SOURCES = bspline.c
 
+noinst_HEADERS =  bspline.h
+
 check_PROGRAMS = test
 
 TESTS = $(check_PROGRAMS)

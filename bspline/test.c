@@ -26,7 +26,7 @@
 #include <gsl/gsl_nan.h>
 
 void
-test_bspline(gsl_bspline_workspace * bw)
+test_bspline(gsl_bspline_workspace * bw, gsl_bspline_deriv_workspace * dbw)
 {
   gsl_vector *B;
   gsl_matrix *dB;
@@ -68,7 +68,7 @@ test_bspline(gsl_bspline_workspace * bw)
     {
       double xi = a + (b - a) * (i / (n - 1.0));
       gsl_bspline_eval(xi, B, bw);
-      gsl_bspline_eval_deriv(xi, 0, dB, bw);
+      gsl_bspline_deriv_eval(xi, 0, dB, bw, dbw);
 
       for (j = 0; j < ncoeffs; j++)
         {
@@ -100,8 +100,10 @@ main(int argc, char **argv)
         {
           double a = -1.23 * order, b = 45.6 * order;
           gsl_bspline_workspace *bw = gsl_bspline_alloc(order, breakpoints);
+          gsl_bspline_deriv_workspace *dbw = gsl_bspline_deriv_alloc(order);
           gsl_bspline_knots_uniform(a, b, bw);
-          test_bspline(bw);
+          test_bspline(bw, dbw);
+          gsl_bspline_deriv_free(dbw);
           gsl_bspline_free(bw);
         }
     }
@@ -113,6 +115,7 @@ main(int argc, char **argv)
         {
           double a = -1.23 * order, b = 45.6 * order;
           gsl_bspline_workspace *bw = gsl_bspline_alloc(order, breakpoints);
+          gsl_bspline_deriv_workspace *dbw = gsl_bspline_deriv_alloc(order);
           gsl_vector *k = gsl_vector_alloc(breakpoints);
           for (i = 0; i < breakpoints; i++)
             {
@@ -122,8 +125,9 @@ main(int argc, char **argv)
               gsl_vector_set(k, i, x);
             };
           gsl_bspline_knots(k, bw);
-          test_bspline(bw);
+          test_bspline(bw, dbw);
           gsl_vector_free(k);
+          gsl_bspline_deriv_free(dbw);
           gsl_bspline_free(bw);
         }
     }
@@ -143,6 +147,7 @@ main(int argc, char **argv)
     };
 
     gsl_bspline_workspace *bw = gsl_bspline_alloc(2, 3);
+    gsl_bspline_deriv_workspace *dbw = gsl_bspline_deriv_alloc(2);
     gsl_matrix *dB = gsl_matrix_alloc(gsl_bspline_ncoeffs(bw),
                                       gsl_bspline_order(bw) + 1);
 
@@ -158,7 +163,7 @@ main(int argc, char **argv)
         /* Initialize dB with poison to ensure we overwrite it */
         gsl_matrix_set_all(dB, GSL_NAN);
 
-        gsl_bspline_eval_deriv(xloc[i], gsl_bspline_order(bw), dB, bw);
+        gsl_bspline_deriv_eval(xloc[i], gsl_bspline_order(bw), dB, bw, dbw);
         for (j = 0; j < gsl_bspline_ncoeffs(bw) ; ++j)
           {
             /* check basis function 1st deriv */
@@ -178,6 +183,7 @@ main(int argc, char **argv)
       }
 
     gsl_matrix_free(dB);
+    gsl_bspline_deriv_free(dbw);
     gsl_bspline_free(bw);
     gsl_vector_free(breakpts);
   }
@@ -213,6 +219,7 @@ main(int argc, char **argv)
     };
 
     gsl_bspline_workspace *bw = gsl_bspline_alloc(3, 5);
+    gsl_bspline_deriv_workspace *dbw = gsl_bspline_deriv_alloc(3);
 
     gsl_matrix *dB = gsl_matrix_alloc(gsl_bspline_ncoeffs(bw),
                                       gsl_bspline_order(bw) + 1);
@@ -229,7 +236,7 @@ main(int argc, char **argv)
       {
         /* Initialize dB with poison to ensure we overwrite it */
         gsl_matrix_set_all(dB, GSL_NAN);
-        gsl_bspline_eval_deriv(xloc[i], gsl_bspline_order(bw), dB, bw);
+        gsl_bspline_deriv_eval(xloc[i], gsl_bspline_order(bw), dB, bw, dbw);
 
         /* check basis function evaluation */
         for (j = 0; j < gsl_bspline_ncoeffs(bw); ++j)
@@ -255,6 +262,7 @@ main(int argc, char **argv)
       }
 
     gsl_matrix_free(dB);
+    gsl_bspline_deriv_free(dbw);
     gsl_bspline_free(bw);
     gsl_vector_free(breakpts);
   }
