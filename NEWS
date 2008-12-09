@@ -1,3 +1,8 @@
+* What is new in gsl-1.12:
+
+** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6,
+   autoconf-2.63, automake-1.10.2)
+
 ** Improved the convergence of gsl_sf_gamma_inc_P for x/a ~=~ 1 and
    large x,a.  Fixes problems with large arguments in cdf functions
    such as gsl_cdf_chisq_Pinv(x,nu) [bug 24704].

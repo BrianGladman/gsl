@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[1.11+])
+AC_INIT([gsl],[1.11.90])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu no-dependencies])
@@ -23,6 +23,7 @@ dnl gsl-1.8    libgsl 9:0:9  libgslcblas 0:0:0
 dnl gsl-1.9    libgsl 10:0:10 libgslcblas 0:0:0 
 dnl gsl-1.10   libgsl 10:0:10 (*) libgslcblas 0:0:0 
 dnl gsl-1.11   libgsl 12:0:12  libgslcblas 0:0:0 
+dnl gsl-1.12   libgsl 13:0:13  libgslcblas 0:0:0 
 dnl 
 dnl (*) There was an error on this release.  Firstly, the versioning
 dnl numbers were not updated.  Secondly, 2 functions were removed, but
@@ -43,9 +44,9 @@ dnl interfaces have been removed. removal has precedence over adding,
 dnl so set to 0 if both happened.
 
 dnl
-GSL_CURRENT=12
+GSL_CURRENT=13
 GSL_REVISION=0
-GSL_AGE=12
+GSL_AGE=13
 dnl
 CBLAS_CURRENT=0
 CBLAS_REVISION=0
