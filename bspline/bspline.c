@@ -127,7 +127,7 @@ gsl_bspline_deriv_alloc()
   Allocate space for a bspline derivative workspace. The size of the
 workspace is O(2k^2)
 
-Inputs: bspline - gsl_bspline_workspace of the associated bspline
+Inputs: k      - spline order (cubic = 4)
 
 Return: pointer to workspace
 */
@@ -208,7 +208,6 @@ gsl_bspline_breakpoint (size_t i, gsl_bspline_workspace * w)
 /*
 gsl_bspline_free()
   Free a gsl_bspline_workspace.
-Any associated gsl_bspline_deriv_workspace should be freed beforehand.
 
 Inputs: w - workspace to free
 
@@ -228,9 +227,8 @@ gsl_bspline_free (gsl_bspline_workspace * w)
 /*
 gsl_bspline_deriv_free()
   Free a gsl_bspline_deriv_workspace.
-The associated gsl_bspline_workspace should be freed afterwards.
 
-Inputs: w - workspace to free
+Inputs: dw - workspace to free
 
 Return: none
 */
