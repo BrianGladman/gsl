@@ -1,3 +1,8 @@
+2008-12-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bspline.c (gsl_bspline_deriv_alloc): add size to derivative
+	struct
+
 2008-12-08  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_bspline.h: preserve binary compatibility in workspaces

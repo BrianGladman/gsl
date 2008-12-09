@@ -54,6 +54,7 @@ typedef struct
 
 typedef struct
 {
+    size_t k; /* spline order */
     gsl_matrix *A; /* work matrix */
     gsl_matrix *dB; /* temporary derivative results */
 } gsl_bspline_deriv_workspace;

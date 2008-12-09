@@ -172,6 +172,8 @@ gsl_bspline_deriv_alloc (const size_t k)
 	     GSL_ENOMEM);
 	}
 
+      dw->k = k;
+
       return dw;
     }
 }				/* gsl_bspline_deriv_alloc() */
@@ -489,6 +491,10 @@ gsl_bspline_deriv_eval (const double x, const size_t nderiv, gsl_matrix * dB,
 	("dB matrix second dimension must be at least length nderiv+1",
 	 GSL_EBADLEN);
     }
+  else if (dw->k < w->k) 
+    {
+      GSL_ERROR ("derivative workspace is too small", GSL_EBADLEN);
+    }
   else
     {
       size_t i;			/* looping */
@@ -578,6 +584,10 @@ gsl_bspline_deriv_eval_nonzero (const double x, const size_t nderiv,
       GSL_ERROR
 	("dB matrix second dimension must be at least length nderiv+1",
 	 GSL_EBADLEN);
+    }
+  else if (dw->k < w->k) 
+    {
+      GSL_ERROR ("derivative workspace is too small", GSL_EBADLEN);
     }
   else
     {
