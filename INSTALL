@@ -98,12 +98,18 @@ library needs to be compiled with the GCC option -fexceptions
 
 to allow C++ exceptions to be handled.
 
-3) With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
+3) With gcc-4.3.2 the tests in the poly/ directory fail due to a
+compiler optimization bug which is fixed in later versions of GCC
+(http://gcc.gnu.org/bugzilla/show_bug.cgi?id=38478).
+
+FAIL: y.real, gsl_complex_poly_complex_eval ({-2.31 + 0.44i, 4.21 - 3.19i, 0.93 + 1.04i, -0.42 + 0.68i}, 0.49 + 0.95i) (-1.68450788000000018 observed vs 1.82462012000000007 expected) [9]
+FAIL: y.imag, gsl_complex_poly_complex_eval ({-2.31 + 0.44i, 4.21 - 3.19i, 0.93 + 1.04i, -0.42 + 0.68i}, 0.49 + 0.95i) (-0.30943988 observed vs 2.30389411999999982 expected) [10]
+
+With gcc-2.95/2.96 the tests fail in the eigen/ directory.  This is
 due to a compiler optimization bug which causes errors in the
 manipulation of complex numbers.  
 
-This is fixed in more recent versions of gcc.  Do not use the library
-if you encounter this problem---install a newer version of gcc.
+If you encounter these problems, install a different version of gcc.
 
 4) Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
