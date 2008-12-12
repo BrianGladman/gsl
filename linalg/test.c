@@ -137,10 +137,12 @@ vector_alloc (size_t n)
   size_t stride = p[k];
   k = (k + 1) % 5;
 
-  gsl_block * b = gsl_block_alloc (n * stride);
-  gsl_vector * v = gsl_vector_alloc_from_block (b, 0, n, stride);
-  v->owner = 1;
-  return v;
+  {
+    gsl_block * b = gsl_block_alloc (n * stride);
+    gsl_vector * v = gsl_vector_alloc_from_block (b, 0, n, stride);
+    v->owner = 1;
+    return v;
+  }
 }
 
 void
