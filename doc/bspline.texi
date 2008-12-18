@@ -2,8 +2,13 @@
 @cindex splines, basis
 
 This chapter describes functions for the computation of smoothing
-basis splines (B-splines). The header file @file{gsl_bspline.h}
-contains prototypes for the bspline functions and related declarations.
+basis splines (B-splines). A smoothing spline differs from an
+interpolating spline in that the resulting curve is not required to
+pass through each datapoint.  @xref{Interpolation}, for information
+about interpolating splines.
+
+The header file @file{gsl_bspline.h} contains the prototypes for the
+bspline functions and related declarations.
 
 @menu
 * Overview of B-splines::
@@ -36,8 +41,8 @@ B_{i,1}(x) = \left\{\matrix{1, & t_i \le x < t_{i+1}\cr
                             0, & else}\right.
 $$
 $$
-B_{i,k}(x) = \left[(x - t_i)/(t_{i+k-1} - t_i)\right] B_{i,k-1}(x) +
-             \left[(t_{i+k} - x)/(t_{i+k} - t_{i+1})\right] B_{i+1,k-1}(x)
+B_{i,k}(x) = {(x - t_i) \over (t_{i+k-1} - t_i)} B_{i,k-1}(x) +
+             {(t_{i+k} - x) \over (t_{i+k} - t_{i+1})} B_{i+1,k-1}(x)
 $$
 \afterdisplay
 @end tex
@@ -46,10 +51,12 @@ $$
 @example
 B_(i,1)(x) = (1, t_i <= x < t_(i+1)
              (0, else
-B_(i,k)(x) = [(x - t_i)/(t_(i+k-1) - t_i)] B_(i,k-1)(x) + [(t_(i+k) - x)/(t_(i+k) - t_(i+1))] B_(i+1,k-1)(x)
+B_(i,k)(x) = [(x - t_i)/(t_(i+k-1) - t_i)] B_(i,k-1)(x) 
+              + [(t_(i+k) - x)/(t_(i+k) - t_(i+1))] B_(i+1,k-1)(x)
 @end example
 
 @end ifinfo
+@noindent
 for @math{i = 0, @dots{}, n-1}. The common case of cubic B-splines
 is given by @math{k = 4}. The above recurrence relation can be
 evaluated in a numerically stable way by the de Boor algorithm.
@@ -71,14 +78,18 @@ f(x) = \sum_i c_i B_(i,k)(x)
 @end example
 
 @end ifinfo
-given enough @math{(x_j, f(x_j))} data pairs. The @math{c_i} can
-be readily obtained from a least-squares fit.
+@noindent
+given enough @math{(x_j, f(x_j))} data pairs. The coefficients
+@math{c_i} can be readily obtained from a least-squares fit.
 
 @node Initializing the B-splines solver
 @section Initializing the B-splines solver
 @cindex basis splines, initializing
 
-Using B-splines requires a gsl_bspline_workspace:
+The computation of B-spline functions requires a preallocated
+workspace of type @code{gsl_bspline_workspace}. If B-spline
+derivatives are also required, an additional
+@code{gsl_bspline_deriv_workspace} is needed.
 
 @deftypefun {gsl_bspline_workspace *} gsl_bspline_alloc (const size_t @var{k}, const size_t @var{nbreak})
 This function allocates a workspace for computing B-splines of order
@@ -91,9 +102,6 @@ are specified by @math{k = 4}. The size of the workspace is
 @deftypefun void gsl_bspline_free (gsl_bspline_workspace * @var{w})
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
-
-Evaluation of B-spline basis function derivatives additionally requires
-a @code{gsl_bspline_deriv_workspace}:
 
 @deftypefun {gsl_bspline_deriv_workspace *} gsl_bspline_deriv_alloc (const size_t @var{k})
 This function allocates a workspace for computing the derivatives of a
@@ -128,23 +136,28 @@ specified @var{nbreak} parameter. The knots are stored in
 
 @deftypefun int gsl_bspline_eval (const double @var{x}, gsl_vector * @var{B}, gsl_bspline_workspace * @var{w})
 This function evaluates all B-spline basis functions at the position
-@var{x} and stores them in @var{B}, so that the @math{i}th element
-of @var{B} is @math{B_i(x)}. @var{B} must be of length
-@math{n = nbreak + k - 2}. This value may also be obtained by calling
+@var{x} and stores them in the vector @var{B}, so that the @math{i}-th element
+is @math{B_i(x)}. The vector @var{B} must be of length
+@math{n = nbreak + k - 2}.  This value may also be obtained by calling
 @code{gsl_bspline_ncoeffs}.
-It is far more efficient to compute all of the basis functions at
-once than to compute them individually, due to the nature of the
-defining recurrence relation.
+Computing all the basis functions at once is more efficient than
+computing them individually, due to the nature of the defining
+recurrence relation.
 @end deftypefun
 
 @deftypefun int gsl_bspline_eval_nonzero (const double @var{x}, gsl_vector * @var{Bk}, size_t * @var{istart}, size_t * @var{iend}, gsl_bspline_workspace * @var{w})
 This function evaluates all potentially nonzero B-spline basis
-functions at the position @var{x} and stores them in @var{Bk}, so
-that the @math{i}th element of @var{Bk} is @math{B_(istart+i)(x)}.
-The last element of @var{Bk} is @math{B_(iend)(x)}.  @var{Bk} must be
-of length @math{k}.  Only returning nonzero basis functions allows users
-to more cheaply perform tasks requiring linear combinations of the basis
-functions, e.g.  when evaluating an interpolated function.
+functions at the position @var{x} and stores them in the vector @var{Bk}, so
+that the @math{i}-th element is @c{$B_{(istart+i)}(x)$}
+@math{B_(istart+i)(x)}.
+The last element of @var{Bk} is @c{$B_{iend}(x)$}
+@math{B_(iend)(x)}.  The vector @var{Bk} must be
+of length @math{k}.  By returning only the nonzero basis functions,
+this function 
+allows quantities involving linear combinations of the @math{B_i(x)}
+to be computed without unnecessary terms
+(such linear combinations occur, for example, 
+when evaluating an interpolated function).
 @end deftypefun
 
 @deftypefun size_t gsl_bspline_ncoeffs (gsl_bspline_workspace * @var{w})
@@ -159,27 +172,30 @@ This function returns the number of B-spline coefficients given by
 @deftypefun int gsl_bspline_deriv_eval (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, gsl_bspline_workspace * @var{w}, gsl_bspline_deriv_workspace * @var{dw})
 This function evaluates all B-spline basis function derivatives of orders
 @math{0} through @math{nderiv} (inclusive) at the position @var{x}
-and stores them in @var{dB}.  The @math{(i,j)}th element of @var{dB}
-is @math{d^j/dx^j B_i(x)}.  @var{dB} must be of size @math{n = nbreak +
-k - 2} by @math{nderiv + 1}.  The value @math{n} may also be obtained
+and stores them in the matrix @var{dB}.  The @math{(i,j)}-th element of @var{dB}
+is @math{d^jB_i(x)/dx^j}.  The matrix @var{dB} must be 
+of size @math{n = nbreak + k - 2} by @math{nderiv + 1}.  
+The value @math{n} may also be obtained
 by calling @code{gsl_bspline_ncoeffs}.  Note that function evaluations
-are included as the @math{0}th order derivatives in @var{dB}.
-It is far more efficient to compute all of the basis functions derivatives
-at once than to compute them individually, due to the nature of the
-defining recurrence relation.
+are included as the zeroth order derivatives in @var{dB}.
+Computing all the basis function derivatives at once is more efficient
+than computing them individually, due to the nature of the defining
+recurrence relation.
 @end deftypefun
 
 @deftypefun int gsl_bspline_deriv_eval_nonzero (const double @var{x}, const size_t @var{nderiv}, gsl_matrix * @var{dB}, size_t * @var{istart}, size_t * @var{iend}, gsl_bspline_workspace * @var{w}, gsl_bspline_deriv_workspace * @var{dw})
 This function evaluates all potentially nonzero B-spline basis function
 derivatives of orders @math{0} through @math{nderiv} (inclusive) at
-the position @var{x} and stores them in @var{dB}.  The @math{(i,j)}th
-element of @var{dB} is @math{d^j/dx^j B_(istart+i)(x)}.  The last row
-of @var{dB} contains @math{d^j/dx^j B_(iend)(x)}.  @var{dB} must be
+the position @var{x} and stores them in the matrix @var{dB}.  The 
+@math{(i,j)}-th element of @var{dB} is @c{$d^jB_{(istart+i)}(x)/dx^j$}
+@math{d^j/dx^j B_(istart+i)(x)}.  The last row
+of @var{dB} contains @c{$d^jB_{iend}(x)/dx^j$}
+@math{d^j/dx^j B_(iend)(x)}.  The matrix @var{dB} must be
 of size @math{k} by at least @math{nderiv + 1}.  Note that function
-evaluations are included as the @math{0}th order derivatives in @var{dB}.
-Only returning nonzero basis functions allows users to more cheaply
-perform tasks requiring linear combinations of the basis functions, e.g.
-when evaluating an interpolated function.
+evaluations are included as the zeroth order derivatives in @var{dB}.
+By returning only the nonzero basis functions, this function allows
+quantities involving linear combinations of the @math{B_i(x)} and
+their derivatives to be computed without unnecessary terms.
 @end deftypefun
 
 @node Example programs for B-splines
@@ -189,7 +205,7 @@ when evaluating an interpolated function.
 The following program computes a linear least squares fit to data using
 cubic B-spline basis functions with uniform breakpoints. The data is
 generated from the curve @math{y(x) = \cos{(x)} \exp{(-x/10)}} on
-@math{[0, 15]} with gaussian noise added.
+the interval @math{[0, 15]} with gaussian noise added.
 
 @example
 @verbatiminclude examples/bspline.c
