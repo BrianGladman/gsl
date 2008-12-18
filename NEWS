@@ -1,4 +1,4 @@
-* What is new in gsl-1.12:
+* What was new in gsl-1.12:
 
 ** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6,
    autoconf-2.63, automake-1.10.2)
