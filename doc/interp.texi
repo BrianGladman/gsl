@@ -9,6 +9,10 @@ Interpolations can be defined for both normal and periodic boundary
 conditions.  Additional functions are available for computing
 derivatives and integrals of interpolating functions.
 
+These interpolation methods produce curves that pass through each
+datapoint.  To interpolate noisy data with a smoothing curve see
+@ref{Basis Splines}.
+
 The functions described in this section are declared in the header files
 @file{gsl_interp.h} and @file{gsl_spline.h}.
 
