@@ -43,6 +43,7 @@ The interpolation function for a given dataset is stored in a
 @code{gsl_interp} object.  These are created by the following functions.
 
 @deftypefun {gsl_interp *} gsl_interp_alloc (const gsl_interp_type * @var{T}, size_t @var{size})
+@tpindex gsl_interp
 This function returns a pointer to a newly allocated interpolation
 object of type @var{T} for @var{size} data-points.
 @end deftypefun
@@ -63,7 +64,7 @@ This function frees the interpolation object @var{interp}.
 
 @node Interpolation Types
 @section Interpolation Types
-
+@tpindex gsl_interp_type
 The interpolation library provides five interpolation types:
 
 @deffn {Interpolation Type} gsl_interp_linear
@@ -152,6 +153,7 @@ in the range [@var{index_lo},@var{index_hi}].  @inlinefn{}
 @end deftypefun
 
 @deftypefun {gsl_interp_accel *} gsl_interp_accel_alloc (void)
+@tpindex gsl_interp_accel
 This function returns a pointer to an accelerator object, which is a
 kind of iterator for interpolation lookups.  It tracks the state of
 lookups, thus allowing for application of various acceleration
@@ -216,6 +218,7 @@ and @var{ya} as arguments on each evaluation. These functions are
 defined in the header file @file{gsl_spline.h}.
 
 @deftypefun {gsl_spline *} gsl_spline_alloc (const gsl_interp_type * @var{T}, size_t @var{size})
+@tpindex gsl_spline
 @end deftypefun
 
 @deftypefun int gsl_spline_init (gsl_spline * @var{spline}, const double @var{xa}[], const double @var{ya}[], size_t @var{size})

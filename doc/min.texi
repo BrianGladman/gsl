@@ -131,6 +131,8 @@ function values, rather than the location of the minimum itself.
 @section Initializing the Minimizer
 
 @deftypefun {gsl_min_fminimizer *} gsl_min_fminimizer_alloc (const gsl_min_fminimizer_type * @var{T})
+@tpindex gsl_min_fminimizer
+@tpindex gsl_min_fminimizer_type
 This function returns a pointer to a newly allocated instance of a
 minimizer of type @var{T}.  For example, the following code
 creates an instance of a golden section minimizer,

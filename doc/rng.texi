@@ -83,6 +83,7 @@ possibly with some indices thrown in.  To use the random number
 generators, you do not need to know the details of what comprises the
 state, and besides that varies from algorithm to algorithm.
 
+@tpindex gsl_rng_type
 The random number generator library uses two special structs,
 @code{gsl_rng_type} which holds static information about each type of
 generator and @code{gsl_rng} which describes an instance of a generator
@@ -95,6 +96,7 @@ The functions described in this section are declared in the header file
 @section Random number generator initialization
 
 @deftypefun {gsl_rng *} gsl_rng_alloc (const gsl_rng_type * @var{T})
+@tpindex gsl_rng
 This function returns a pointer to a newly-created
 instance of a random number generator of type @var{T}.
 For example, the following code creates an instance of the Tausworthe

@@ -223,6 +223,7 @@ which handles the memory for the subinterval ranges, results and error
 estimates.
 
 @deftypefun {gsl_integration_workspace *} gsl_integration_workspace_alloc (size_t @var{n}) 
+@tpindex gsl_integration_workspace
 This function allocates a workspace sufficient to hold @var{n} double
 precision intervals, their integration results and error estimates.
 @end deftypefun
@@ -455,7 +456,7 @@ work efficiently the algorithm requires a precomputed table of
 Chebyshev moments.
 
 @deftypefun {gsl_integration_qaws_table *} gsl_integration_qaws_table_alloc (double @var{alpha}, double @var{beta}, int @var{mu}, int @var{nu})
-
+@tpindex gsl_integration_qaws_table
 This function allocates space for a @code{gsl_integration_qaws_table}
 struct describing a singular weight function
 @math{W(x)} with the parameters @math{(\alpha, \beta, \mu, \nu)},
@@ -564,7 +565,7 @@ work efficiently the algorithm requires a table of Chebyshev moments
 which must be pre-computed with calls to the functions below.
 
 @deftypefun {gsl_integration_qawo_table *} gsl_integration_qawo_table_alloc (double @var{omega}, double @var{L}, enum gsl_integration_qawo_enum @var{sine}, size_t @var{n})
-
+@tpindex gsl_integration_qawo_table
 This function allocates space for a @code{gsl_integration_qawo_table}
 struct and its associated workspace describing a sine or cosine weight
 function @math{W(x)} with the parameters @math{(\omega, L)},

@@ -91,6 +91,8 @@ return @code{GSL_SUCCESS}.
 @section The gsl_sf_result struct
 @cindex gsl_sf_result
 @cindex gsl_sf_result_e10
+@tpindex gsl_sf_result
+@tpindex gsl_sf_result_e10
 
 The error handling form of the special functions always calculate an
 error estimate along with the value of the result.  Therefore,

@@ -98,6 +98,7 @@ of the Dirichlet problem for the Bessel differential equation.
 @section Functions
 
 @deftypefun {gsl_dht *} gsl_dht_alloc (size_t @var{size})
+@tpindex gsl_dht
 This function allocates a Discrete Hankel transform object of size
 @var{size}.
 @end deftypefun

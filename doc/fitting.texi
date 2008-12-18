@@ -293,6 +293,7 @@ additional working space for intermediate results, such as the singular
 value decomposition of the matrix @math{X}.
 
 @deftypefun {gsl_multifit_linear_workspace *} gsl_multifit_linear_alloc (size_t @var{n}, size_t @var{p})
+@tpindex gsl_multifit_linear_workspace
 This function allocates a workspace for fitting a model to @var{n}
 observations using @var{p} parameters.
 @end deftypefun

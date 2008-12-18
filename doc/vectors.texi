@@ -55,7 +55,7 @@ Corresponding types exist for the @code{gsl_vector} and
 
 @node Blocks
 @section Blocks
-
+@tpindex gsl_block
 For consistency all memory is allocated through a @code{gsl_block}
 structure.  The structure contains two components, the size of an area of
 memory and a pointer to the memory.  The @code{gsl_block} structure looks
@@ -190,6 +190,7 @@ slice of a block.  Different vectors can be created which point to the
 same block.  A vector slice is a set of equally-spaced elements of an
 area of memory.
 
+@tpindex gsl_vector
 The @code{gsl_vector} structure contains five components, the
 @dfn{size}, the @dfn{stride}, a pointer to the memory where the elements
 are stored, @var{data}, a pointer to the block owned by the vector,
@@ -391,6 +392,8 @@ subvector of another vector can be described with a view, or two views
 can be made which provide access to the even and odd elements of a
 vector.
 
+@tpindex gsl_vector_view
+@tpindex gsl_vector_const_view
 A vector view is a temporary object, stored on the stack, which can be
 used to operate on a subset of vector elements.  Vector views can be
 defined for both constant and non-constant vectors, using separate types
@@ -809,6 +812,7 @@ Matrices are defined by a @code{gsl_matrix} structure which describes a
 generalized slice of a block.  Like a vector it represents a set of
 elements in an area of memory, but uses two indices instead of one.
 
+@tpindex gsl_matrix
 The @code{gsl_matrix} structure contains six components, the two
 dimensions of the matrix, a physical dimension, a pointer to the memory
 where the elements of the matrix are stored, @var{data}, a pointer to
@@ -1032,6 +1036,8 @@ numbers to read.  The function returns 0 for success and
 
 @node Matrix views
 @subsection Matrix views
+@tpindex gsl_matrix_view
+@tpindex gsl_matrix_const_view
 
 A matrix view is a temporary object, stored on the stack, which can be
 used to operate on a subset of matrix elements.  Matrix views can be
