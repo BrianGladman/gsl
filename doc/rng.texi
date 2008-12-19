@@ -110,6 +110,9 @@ If there is insufficient memory to create the generator then the
 function returns a null pointer and the error handler is invoked with an
 error code of @code{GSL_ENOMEM}.
 
+@vrindex gsl_rng_default_seed
+@vrindex GSL_RNG_SEED
+@cindex @code{GSL_RNG_SEED}
 The generator is automatically initialized with the default seed,
 @code{gsl_rng_default_seed}.  This is zero by default but can be changed
 either directly or by using the environment variable @code{GSL_RNG_SEED}
@@ -279,6 +282,10 @@ the function @code{gsl_rng_env_setup}.  This makes it easy try out
 different generators and seeds without having to recompile your program.
 
 @deftypefun {const gsl_rng_type *} gsl_rng_env_setup (void)
+@vrindex GSL_RNG_TYPE
+@vrindex GSL_RNG_SEED
+@vrindex gsl_rng_default
+@vrindex gsl_rng_default_seed
 This function reads the environment variables @code{GSL_RNG_TYPE} and
 @code{GSL_RNG_SEED} and uses their values to set the corresponding
 library variables @code{gsl_rng_default} and
