@@ -41,7 +41,8 @@ main (void)
         printf ("eigenvector = \n");
         for (j = 0; j < 4; ++j)
           {
-            gsl_complex z = gsl_vector_complex_get(&evec_i.vector, j);
+            gsl_complex z = 
+              gsl_vector_complex_get(&evec_i.vector, j);
             printf("%g + %gi\n", GSL_REAL(z), GSL_IMAG(z));
           }
       }

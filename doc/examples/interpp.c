@@ -9,8 +9,8 @@ main (void)
 {
   int N = 4;
   double x[4] = {0.00, 0.10,  0.27,  0.30};
-  double y[4] = {0.15, 0.70, -0.10,  0.15}; /* Note: first = last 
-                                               for periodic data */
+  double y[4] = {0.15, 0.70, -0.10,  0.15}; 
+             /* Note: y[0] == y[3] for periodic data */
 
   gsl_interp_accel *acc = gsl_interp_accel_alloc ();
   const gsl_interp_type *t = gsl_interp_cspline_periodic; 

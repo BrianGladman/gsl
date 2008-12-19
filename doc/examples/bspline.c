@@ -31,9 +31,7 @@ main (void)
   gsl_vector *x, *y;
   gsl_matrix *X, *cov;
   gsl_multifit_linear_workspace *mw;
-  double chisq;
-  double Rsq;
-  double dof;
+  double chisq, Rsq, dof, tss;
 
   gsl_rng_env_setup();
   r = gsl_rng_alloc(gsl_rng_default);
@@ -92,9 +90,11 @@ main (void)
   gsl_multifit_wlinear(X, w, y, c, cov, &chisq, mw);
 
   dof = n - ncoeffs;
-  Rsq = 1.0 - chisq / gsl_stats_wtss(w->data, 1, y->data, 1, y->size);
+  tss = gsl_stats_wtss(w->data, 1, y->data, 1, y->size);
+  Rsq = 1.0 - chisq / tss;
 
-  fprintf(stderr, "chisq/dof = %e, Rsq = %f\n", chisq / dof, Rsq);
+  fprintf(stderr, "chisq/dof = %e, Rsq = %f\n", 
+                   chisq / dof, Rsq);
 
   /* output the smoothed curve */
   {
