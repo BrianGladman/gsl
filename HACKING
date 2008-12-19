@@ -217,9 +217,10 @@ of ghostscript for compatibility.
 * Update webpages, including the link to the NEWS file
 
 * Announce on the mailing lists info-gsl@gnu.org,
-gsl-announce@sourceware.org, info-gnu@gnu.org.  It is best to
-announce on the smaller lists first before announcing on
-info-gnu@gnu.org.
+gsl-announce@sourceware.org, info-gnu@gnu.org.  It is best to announce
+on the smaller lists first before announcing on info-gnu@gnu.org to
+catch any errors. Remember to check the version number is updated in
+all announcements!
 
 * Later you can post an announcement on the na-digest list
 na.digest@na-net.ornl.gov or freshmeat.net
