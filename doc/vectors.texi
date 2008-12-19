@@ -281,18 +281,21 @@ valid vector object (a null pointer is not allowed).
 @cindex Fortran range checking, equivalent in gcc
 
 Unlike @sc{fortran} compilers, C compilers do not usually provide
-support for range checking of vectors and matrices.  Range checking is
-available in the GNU C Compiler bounds-checking extension, but it is not
-part of the default installation of GCC.  The functions
-@code{gsl_vector_get} and @code{gsl_vector_set} can perform portable
-range checking for you and report an error if you attempt to access
-elements outside the allowed range.
+support for range checking of vectors and matrices.@footnote{Range
+checking is available in the GNU C Compiler bounds-checking extension,
+but it is not part of the default installation of GCC. Memory accesses
+can also be checked with Valgrind or the @code{gcc -fmudflap}
+memory protection option.}  The functions @code{gsl_vector_get} and
+@code{gsl_vector_set} can perform portable range checking for you and
+report an error if you attempt to access elements outside the allowed
+range.
 
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
 eliminate function-call overhead.  You must compile your program with
 the macro @code{HAVE_INLINE} defined to use these functions.  
 
+@vrindex GSL_RANGE_CHECK_OFF
 If necessary you can turn off range checking completely without
 modifying any source files by recompiling your program with the
 preprocessor definition @code{GSL_RANGE_CHECK_OFF}.  Provided your
@@ -302,6 +305,23 @@ checking is to replace calls to @code{gsl_vector_get(v,i)} by
 @code{v->data[i*v->stride]=x}.  Thus there should be no performance
 penalty for using the range checking functions when range checking is
 turned off.
+
+@vrindex GSL_C99_INLINE
+If you use a C99 compiler which requires inline functions in header
+files to be declared @code{inline} instead of @code{extern inline},
+define the macro @code{GSL_C99_INLINE} (@pxref{Inline functions}).
+With GCC this is selected automatically when compiling in C99 mode
+(@code{-std=c99}).
+
+@vrindex gsl_check_range
+If inline functions are not used, calls to the functions
+@code{gsl_vector_get} and @code{gsl_vector_set} will link to the
+compiled versions of these functions in the library itself.  The range
+checking in these functions is controlled by the global integer
+variable @code{gsl_check_range}.  It is enabled by default---to
+disable it, set @code{gsl_check_range} to zero.  Due to function-call
+overhead, there is less benefit in disabling range checking here than
+for inline functions.
 
 @deftypefun double gsl_vector_get (const gsl_vector * @var{v}, size_t @var{i})
 This function returns the @var{i}-th element of a vector @var{v}.  If
