@@ -1,3 +1,4 @@
+@cindex Legendre polynomials
 @cindex Legendre functions
 @cindex spherical harmonics
 @cindex conical functions

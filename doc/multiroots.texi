@@ -101,6 +101,7 @@ programming the derivatives is intractable or because computation of the
 the algorithms provided by the library are divided into two classes according
 to whether the derivatives are available or not.
 
+@cindex Jacobian matrix, root finding
 The state for solvers with an analytic Jacobian matrix is held in a
 @code{gsl_multiroot_fdfsolver} struct.  The updating procedure requires
 both the function and its derivatives to be supplied by the user.

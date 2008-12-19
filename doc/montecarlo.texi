@@ -1,5 +1,6 @@
 @cindex Monte Carlo integration
 @cindex stratified sampling in monte carlo integration
+@cindex multidimensional integration
 This chapter describes routines for multidimensional Monte Carlo
 integration.  These include the traditional Monte Carlo method and
 adaptive algorithms such as @sc{vegas} and @sc{miser} which use

@@ -225,6 +225,8 @@ median).
 
 @node Higher moments (skewness and kurtosis)
 @section Higher moments (skewness and kurtosis)
+@cindex skewness
+@cindex kurtosis
 
 @deftypefun double gsl_stats_skew (const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the skewness of @var{data}, a dataset of length

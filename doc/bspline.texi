@@ -118,7 +118,7 @@ workspace @var{w}.
 
 @node Constructing the knots vector
 @section Constructing the knots vector
-@cindex knots
+@cindex knots, basis splines
 
 @deftypefun int gsl_bspline_knots (const gsl_vector * @var{breakpts}, gsl_bspline_workspace * @var{w})
 This function computes the knots associated with the given breakpoints

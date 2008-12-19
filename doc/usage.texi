@@ -223,8 +223,8 @@ have the prefix @code{gsl_}, while exported macros have the prefix
 
 @node Inline functions
 @section Inline functions
-@vrindex HAVE_INLINE
-@vrindex GSL_C99_INLINE
+@vrindex @code{HAVE_INLINE}
+@vrindex @code{GSL_C99_INLINE}
 @cindex inline functions
 @cindex HAVE_INLINE
 @cindex GSL_C99_INLINE

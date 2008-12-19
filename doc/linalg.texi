@@ -467,6 +467,7 @@ algorithm, which is faster for @c{$M \gg N$}
 @end deftypefun
 
 @deftypefun int gsl_linalg_SV_decomp_jacobi (gsl_matrix * @var{A}, gsl_matrix * @var{V}, gsl_vector * @var{S})
+@cindex Jacobi orthogonalization
 This function computes the SVD of the @math{M}-by-@math{N} matrix @var{A}
 using one-sided Jacobi orthogonalization for @c{$M \ge N$} 
 @math{M >= N}.  The Jacobi method can compute singular values to higher

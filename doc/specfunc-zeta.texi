@@ -13,6 +13,7 @@ header file @file{gsl_sf_zeta.h}.
 
 @node Riemann Zeta Function
 @subsection Riemann Zeta Function
+@cindex Riemann Zeta Function
 
 The Riemann zeta function is defined by the infinite sum 
 @c{$\zeta(s) = \sum_{k=1}^\infty k^{-s}$}
@@ -63,6 +64,7 @@ These routines compute @math{\zeta(s) - 1} for arbitrary @var{s},
 
 @node Hurwitz Zeta Function
 @subsection Hurwitz Zeta Function
+@cindex Hurwitz Zeta Function
 
 The Hurwitz zeta function is defined by
 @c{$\zeta(s,q) = \sum_0^\infty (k+q)^{-s}$}
@@ -79,6 +81,7 @@ These routines compute the Hurwitz zeta function @math{\zeta(s,q)} for
 
 @node Eta Function
 @subsection Eta Function
+@cindex Eta Function
 
 The eta function is defined by
 @c{$\eta(s) = (1-2^{1-s}) \zeta(s)$}

@@ -122,6 +122,7 @@ could also print out the values of other variables such as
 
 @node Examining floating point registers
 @section Examining floating point registers
+@cindex floating point registers
 
 The contents of floating point registers can be examined using the
 command @code{info float} (on supported platforms).
@@ -156,6 +157,8 @@ $1 = 0.02859464454261210347719
 
 @node Handling floating point exceptions
 @section Handling floating point exceptions
+@cindex exceptions, floating point
+@cindex floating point exceptions
 
 It is possible to stop the program whenever a @code{SIGFPE} floating
 point exception occurs.  This can be useful for finding the cause of an

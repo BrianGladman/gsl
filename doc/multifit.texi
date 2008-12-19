@@ -99,6 +99,7 @@ since the non-linear least-squares algorithms are described
 geometrically (i.e. finding the minimum of a surface).  The
 independent variable of any data to be fitted is denoted by @math{t}.
 
+@cindex Jacobian matrix, fitting
 With the definition above the Jacobian is 
 @c{$J_{ij} = (1 / \sigma_i) \partial Y_i / \partial x_j$}
 @math{J_@{ij@} =(1 / \sigma_i)  d Y_i / d x_j}, where @math{Y_i = Y(x,t_i)}.  

@@ -295,7 +295,7 @@ defined in @file{gsl_vector.h} and declared @code{extern inline} to
 eliminate function-call overhead.  You must compile your program with
 the macro @code{HAVE_INLINE} defined to use these functions.  
 
-@vrindex GSL_RANGE_CHECK_OFF
+@vrindex @code{GSL_RANGE_CHECK_OFF}
 If necessary you can turn off range checking completely without
 modifying any source files by recompiling your program with the
 preprocessor definition @code{GSL_RANGE_CHECK_OFF}.  Provided your
@@ -306,7 +306,7 @@ checking is to replace calls to @code{gsl_vector_get(v,i)} by
 penalty for using the range checking functions when range checking is
 turned off.
 
-@vrindex GSL_C99_INLINE
+@vrindex @code{GSL_C99_INLINE}
 If you use a C99 compiler which requires inline functions in header
 files to be declared @code{inline} instead of @code{extern inline},
 define the macro @code{GSL_C99_INLINE} (@pxref{Inline functions}).
@@ -827,6 +827,7 @@ elements of @code{v}, written using the format specifier
 @cindex physical dimension, matrices
 @cindex trailing dimension, matrices
 @cindex leading dimension, matrices
+@cindex ordering, matrix elements
 
 Matrices are defined by a @code{gsl_matrix} structure which describes a
 generalized slice of a block.  Like a vector it represents a set of

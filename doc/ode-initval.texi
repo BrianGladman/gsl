@@ -60,6 +60,7 @@ was completed successfully. Any other return value indicates
 an error.
 
 @item  int (* jacobian) (double t, const double y[], double * dfdy, double dfdt[], void * params);
+@cindex Jacobian matrix, ODEs
 This function should store the vector of derivative elements 
 @c{$\partial f_i(t,y,params) / \partial t$}
 @math{df_i(t,y,params)/dt} in the array @var{dfdt} and the 
