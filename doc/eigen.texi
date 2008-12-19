@@ -176,7 +176,7 @@ problem is solved in subsequent calls to @code{gsl_eigen_nonsymm}.
 If @var{compute_t} is set to 1, the full Schur form @math{T} will be
 computed by @code{gsl_eigen_nonsymm}. If it is set to 0,
 @math{T} will not be computed (this is the default setting). Computing
-the full Schur form @math{T} requires approximately 1.5-2 times the
+the full Schur form @math{T} requires approximately 1.5--2 times the
 number of flops.
 
 If @var{balance} is set to 1, a balancing transformation is applied
