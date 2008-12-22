@@ -62,7 +62,7 @@ This routine computes the sign of the gamma function and the logarithm of
 its magnitude, subject to @math{x} not being a negative integer or zero.  The
 function is computed using the real Lanczos method.  The value of the
 gamma function can be reconstructed using the relation @math{\Gamma(x) =
-sgn * \exp(resultlg)}.
+sgn * \exp(result\_lg)}.
 @comment exceptions: GSL_EDOM, GSL_EROUND
 @end deftypefun
 
