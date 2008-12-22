@@ -30,7 +30,7 @@ sampling of the region may not uncover all the important features
 of the function, resulting in an underestimate of the error.
 
 The functions are defined in separate header files for each routine,
-@code{gsl_monte_plain.h}, @file{gsl_monte_miser.h} and
+@file{gsl_monte_plain.h}, @file{gsl_monte_miser.h} and
 @file{gsl_monte_vegas.h}.
 
 @menu

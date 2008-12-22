@@ -5,7 +5,7 @@ There are routines for finding real and complex roots of quadratic and
 cubic equations using analytic methods.  An iterative polynomial solver
 is also available for finding the roots of general polynomials with real
 coefficients (of any order).  The functions are declared in the header
-file @code{gsl_poly.h}.
+file @file{gsl_poly.h}.
 
 @menu
 * Polynomial Evaluation::       
