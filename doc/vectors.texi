@@ -293,7 +293,8 @@ range.
 The functions for accessing the elements of a vector or matrix are
 defined in @file{gsl_vector.h} and declared @code{extern inline} to
 eliminate function-call overhead.  You must compile your program with
-the macro @code{HAVE_INLINE} defined to use these functions.  
+the preprocessor macro @code{HAVE_INLINE} defined to use these
+functions.
 
 @vrindex @code{GSL_RANGE_CHECK_OFF}
 If necessary you can turn off range checking completely without
