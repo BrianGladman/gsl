@@ -35,7 +35,7 @@ display_results (char *title, double result, double error)
   printf ("result = % .6f\n", result);
   printf ("sigma  = % .6f\n", error);
   printf ("exact  = % .6f\n", exact);
-  printf ("error  = % .6f = %.1g sigma\n", result - exact,
+  printf ("error  = % .6f = %.2g sigma\n", result - exact,
           fabs (result - exact) / error);
 }
 
