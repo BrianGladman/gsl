@@ -56,7 +56,7 @@ Break binary compatibility, but keep source compatibility.
 vs _inverse). Also adopt a convection for functions which can operate
 in place vs use of workspace (e.g linalg_solve functions).
 
-
+* gsl_sf_ellint_D  - remove useless argument n?
 
 Other tasks:
 
