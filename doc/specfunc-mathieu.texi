@@ -29,7 +29,7 @@ only for the discrete sequence of  characteristic values @math{a=a_r(q)}
 (even-periodic) and @math{a=b_r(q)} (odd-periodic).
 
 The radial Mathieu functions @c{$Mc^{(j)}_{r}(z,q)$}
-@math{Mc^@{(j)@}_@{r@}(z,q)}, @c{$Ms^{(j)}_@{r@}(z,q)$}
+@math{Mc^@{(j)@}_@{r@}(z,q)}, @c{$Ms^{(j)}_{r}(z,q)$}
 @math{Ms^@{(j)@}_@{r@}(z,q)} are the solutions of the second equation,
 which is referred to as Mathieu's modified equation.  The
 radial Mathieu functions of the first, second, third and fourth kind
