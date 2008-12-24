@@ -183,6 +183,10 @@ Theoretical Astrophysics Group, Los Alamos National Laboratory
 @comment @email{jungman@@lanl.gov}
 @sp 1
 
+@author Patrick Alken
+Department of Physics, University of Colorado at Boulder
+@sp 1
+
 @author Michael Booth
 Department of Physics and Astronomy, The Johns Hopkins University
 @comment @email{booth@@planck.pha.jhu.edu} or @email{booth@@debian.org}
