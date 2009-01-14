@@ -369,8 +369,10 @@ static double approx_s(int order, double qq)
 
 int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
 {
-  int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
+  int even_odd, nterms = 50, ii, counter = 0, maxcount = 1000;
+  int dir = 0;  /* step direction for new search */
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
+  double aa_approx;  /* current approximation for solution */
 
 
   even_odd = 0;
@@ -399,10 +401,10 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
   }
   
   /* Compute an initial approximation for the characteristic value. */
-  aa = approx_c(order, qq);
+  aa_approx = approx_c(order, qq);
 
   /* Save the original approximation for later comparison. */
-  aa_orig = aa;
+  aa_orig = aa = aa_approx;
   
   /* Loop as long as the final value is not near the approximate value
      (with a max limit to avoid potential infinite loop). */
@@ -437,7 +439,7 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
               result->err = GSL_DBL_EPSILON;
               break;
           }
-          if (ii > 20)
+          if (ii > 40)
           {
               result->err = dela;
               break;
@@ -448,7 +450,8 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
 
       /* If the solution found is not near the original approximation,
          tweak the approximate value, and try again. */
-      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
+      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)) ||
+          (order > 10 && fabs(aa - aa_orig) > 1.5*order))
       {
           counter++;
           if (counter == maxcount)
@@ -457,10 +460,20 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
               break;
           }
           if (aa > aa_orig)
-              aa = aa_orig - da*counter;
+          {
+              if (dir == 1)
+                  da /= 2;
+              dir = -1;
+          }
           else
-              aa = aa_orig + da*counter;
-
+          {
+              if (dir == -1)
+                  da /= 2;
+              dir = 1;
+          }
+          aa_approx += dir*da*counter;
+          aa = aa_approx;
+          
           continue;
       }
       else
@@ -482,8 +495,10 @@ int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result)
 
 int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
 {
-  int even_odd, nterms = 50, ii, counter = 0, maxcount = 200;
+  int even_odd, nterms = 50, ii, counter = 0, maxcount = 1000;
+  int dir = 0;  /* step direction for new search */
   double a1, a2, fa, fa1, dela, aa_orig, da = 0.025, aa;
+  double aa_approx;  /* current approximation for solution */
 
 
   even_odd = 0;
@@ -518,10 +533,10 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
   }
   
   /* Compute an initial approximation for the characteristic value. */
-  aa = approx_s(order, qq);
+  aa_approx = approx_s(order, qq);
   
   /* Save the original approximation for later comparison. */
-  aa_orig = aa;
+  aa_orig = aa = aa_approx;
   
   /* Loop as long as the final value is not near the approximate value
      (with a max limit to avoid potential infinite loop). */
@@ -556,7 +571,7 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
               result->err = GSL_DBL_EPSILON;
               break;
           }
-          if (ii > 20)
+          if (ii > 40)
           {
               result->err = dela;
               break;
@@ -567,7 +582,8 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
       
       /* If the solution found is not near the original approximation,
          tweak the approximate value, and try again. */
-      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)))
+      if (fabs(aa - aa_orig) > (3 + 0.01*order*fabs(aa_orig)) ||
+          (order > 10 && fabs(aa - aa_orig) > 1.5*order))
       {
           counter++;
           if (counter == maxcount)
@@ -576,9 +592,19 @@ int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result)
               break;
           }
           if (aa > aa_orig)
-              aa = aa_orig - da*counter;
+          {
+              if (dir == 1)
+                  da /= 2;
+              dir = -1;
+          }
           else
-              aa = aa_orig + da*counter;
+          {
+              if (dir == -1)
+                  da /= 2;
+              dir = 1;
+          }
+          aa_approx += dir*da*counter;
+          aa = aa_approx;
           
           continue;
       }

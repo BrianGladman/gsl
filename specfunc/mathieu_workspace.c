@@ -36,6 +36,7 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
   /* Compute the maximum number of extra terms required for 10^-18 root
      accuracy for a given value of q (contributed by Brian Gladman). */
   extra_values = (int)(2.1*pow(fabs(qq), 0.37)) + 9;
+  extra_values += 20;  /* additional fudge */
   
   if (nn + 1 == 0)
   {

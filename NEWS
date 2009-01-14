@@ -1,3 +1,9 @@
+* What is new in gsl-1.12+:
+
+** Increased the number of terms in gsl_sf_mathieu_a and
+   gsl_sf_mathieu_b to improve convergence in difficult regions [bug
+   #25075]
+
 * What was new in gsl-1.12:
 
 ** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6,

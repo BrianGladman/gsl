@@ -1,3 +1,11 @@
+2009-01-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mathieu_workspace.c (gsl_sf_mathieu_alloc): increase number of
+	terms
+
+	* mathieu_charv.c (gsl_sf_mathieu_a): increase number of terms
+	(gsl_sf_mathieu_b): increase number of terms
+
 2008-12-04  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gamma_inc.c (gamma_inc_D): propagate cancellation error
