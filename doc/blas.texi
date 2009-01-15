@@ -22,13 +22,13 @@ available through the low-level @sc{cblas} interface.
 
 The interface for the @code{gsl_cblas} layer is specified in the file
 @file{gsl_cblas.h}.  This interface corresponds to the @sc{blas} Technical
-Forum's draft standard for the C interface to legacy @sc{blas}
+Forum's standard for the C interface to legacy @sc{blas}
 implementations. Users who have access to other conforming @sc{cblas}
 implementations can use these in place of the version provided by the
 library.  Note that users who have only a Fortran @sc{blas} library can
 use a @sc{cblas} conformant wrapper to convert it into a @sc{cblas}
 library.  A reference @sc{cblas} wrapper for legacy Fortran
-implementations exists as part of the draft @sc{cblas} standard and can
+implementations exists as part of the @sc{cblas} standard and can
 be obtained from Netlib.  The complete set of @sc{cblas} functions is
 listed in an appendix (@pxref{GSL CBLAS Library}).
 
@@ -651,7 +651,7 @@ $ ./a.out
 @section References and Further Reading
 
 Information on the @sc{blas} standards, including both the legacy and
-draft interface standards, is available online from the @sc{blas}
+updated interface standards, is available online from the @sc{blas}
 Homepage and @sc{blas} Technical Forum web-site.
 
 @itemize @asis
