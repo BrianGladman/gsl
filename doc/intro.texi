@@ -163,7 +163,7 @@ Public License}).
 @cindex bug-gsl mailing list
 @cindex mailing list, bug-gsl
 A list of known bugs can be found in the @file{BUGS} file included in
-the GSL distribution.  Details of compilation problems can be found in
+the GSL distribution or online in the GSL bug tracker.@footnote{@url{http://savannah.gnu.org/bugs/?group=gsl}}  Details of compilation problems can be found in
 the @file{INSTALL} file.
 
 If you find a bug which is not listed in these files, please report it to

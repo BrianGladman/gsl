@@ -170,6 +170,8 @@ and these don't show up otherwise).
 
 * Update the NEWS file.
 
+* Update the BUGS file using scripts/BUGS.pl
+
 * Regenerate everything. make dist, unpack somewhere and then
 configure, make, make check.  Try running make check under ulimit -v
 65536 to be sure that excessive memory is not required to do the

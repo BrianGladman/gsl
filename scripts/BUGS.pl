@@ -4,14 +4,24 @@ use XML::Parser;
 # Get the bug database from Savannah.gnu.org as BUGS.xml
 # Then run
 #
-#   wget --no-check-certificate https://savannah.gnu.org/export/gsl/bjg/28.xml -O BUGS.xml
+#   wget --no-check-certificate https://savannah.gnu.org/export/gsl/bjg/28.xml -O BUGS.savannah.xml
+#   recode latin1..utf8 < BUGS.savannah.xml  > BUGS.xml
 #   perl scripts/BUGS.pl | perl -p -e 's/^[ \t]+$//' | cat -s > BUGS
 #
 # to generate the BUGS file
 binmode STDOUT, ":utf8";
 
+my $date = scalar(localtime);
+print <<"EOF";
+The GSL Bugs Database is at http://savannah.gnu.org/bugs/?group=gsl
+
+This file was generated from it at $date
+
+EOF
+
 my $p = XML::Parser->new(Style => 'Stream', Pkg => 'MySubs', ProtocolEncoding => 'UTF-8');
 my $t = $p->parsefile('BUGS.xml');
+
 
 print "-" x 72, "\n";
 
