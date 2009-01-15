@@ -133,7 +133,10 @@ $ gcc example.o -lgsl -lcblas -latlas -lm
 @end example
 
 @noindent
-For more information see @ref{BLAS Support}.
+If the @sc{atlas} library is installed in a non-standard directory use
+the @code{-L} option to add it to the search path, as described above.  
+
+For more information about @sc{blas} functions see @ref{BLAS Support}.
 
 @comment  The program @code{gsl-config} provides information on the local version
 @comment  of the library.  For example, the following command shows that the
