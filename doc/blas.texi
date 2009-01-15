@@ -660,7 +660,7 @@ Homepage and @sc{blas} Technical Forum web-site.
 @uref{http://www.netlib.org/blas/}
 @item
 @cite{BLAS Technical Forum} @*
-@uref{http://www.netlib.org/cgi-bin/checkout/blast/blast.pl}
+@uref{http://www.netlib.org/blas/blast-forum/}
 @end itemize
 
 @noindent
