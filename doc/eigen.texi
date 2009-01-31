@@ -82,6 +82,9 @@ to unit magnitude.
 @node Complex Hermitian Matrices
 @section Complex Hermitian Matrices
 
+For hermitian matrices, the library uses the complex form of
+the symmetric bidiagonalization and QR reduction method.
+
 @cindex hermitian matrix, complex, eigensystem
 @cindex complex hermitian matrix, eigensystem
 @deftypefun {gsl_eigen_herm_workspace *} gsl_eigen_herm_alloc (const size_t @var{n})
@@ -155,8 +158,8 @@ where @math{Z} is an orthogonal matrix of Schur vectors and @math{T},
 the Schur form, is quasi upper triangular with diagonal
 @math{1}-by-@math{1} blocks which are real eigenvalues of @math{A}, and
 diagonal @math{2}-by-@math{2} blocks whose eigenvalues are complex
-conjugate eigenvalues of @math{A}. The algorithm used is the double
-shift Francis method.
+conjugate eigenvalues of @math{A}. The algorithm used is the double-shift 
+Francis method.
 
 @deftypefun {gsl_eigen_nonsymm_workspace *} gsl_eigen_nonsymm_alloc (const size_t @var{n})
 @tpindex gsl_eigen_nonsymm_workspace
@@ -240,7 +243,7 @@ The converged eigenvalues are stored in the beginning of @var{eval}.
 @end deftypefun
 
 @deftypefun int gsl_eigen_nonsymm_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix * @var{Z}, gsl_eigen_nonsymm_workspace * @var{w})
-This function is identical to @code{gsl_eigen_nonsymm} except it also
+This function is identical to @code{gsl_eigen_nonsymm} except that it also
 computes the Schur vectors and stores them into @var{Z}.
 @end deftypefun
 
@@ -269,7 +272,7 @@ computed, and an error code is returned.
 @end deftypefun
 
 @deftypefun int gsl_eigen_nonsymmv_Z (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_matrix * @var{Z}, gsl_eigen_nonsymmv_workspace * @var{w})
-This function is identical to @code{gsl_eigen_nonsymmv} except it also saves
+This function is identical to @code{gsl_eigen_nonsymmv} except that it also saves
 the Schur vectors into @var{Z}.
 @end deftypefun
 
@@ -566,7 +569,7 @@ error code is returned.
 @end deftypefun
 
 @deftypefun int gsl_eigen_gen_QZ (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix * @var{Q}, gsl_matrix * @var{Z}, gsl_eigen_gen_workspace * @var{w})
-This function is identical to @code{gsl_eigen_gen} except it also
+This function is identical to @code{gsl_eigen_gen} except that it also
 computes the left and right Schur vectors and stores them into @var{Q}
 and @var{Z} respectively.
 @end deftypefun
@@ -598,7 +601,7 @@ fails, no eigenvectors are computed, and an error code is returned.
 @end deftypefun
 
 @deftypefun int gsl_eigen_genv_QZ (gsl_matrix * @var{A}, gsl_matrix * @var{B}, gsl_vector_complex * @var{alpha}, gsl_vector * @var{beta}, gsl_matrix_complex * @var{evec}, gsl_matrix * @var{Q}, gsl_matrix * @var{Z}, gsl_eigen_genv_workspace * @var{w})
-This function is identical to @code{gsl_eigen_genv} except it also
+This function is identical to @code{gsl_eigen_genv} except that it also
 computes the left and right Schur vectors and stores them into @var{Q}
 and @var{Z} respectively.
 @end deftypefun
@@ -795,9 +798,9 @@ v =
 
 @end example
 Note that the eigenvectors corresponding to the eigenvalue
-@math{5.54555 + 3.08545i} are slightly different. This is because
-they differ by the multiplicative constant
-@math{0.9999984 + 0.0017674i} which has magnitude 1.
+@math{5.54555 + 3.08545i} differ by the multiplicative constant
+@math{0.9999984 + 0.0017674i} which is an arbitrary phase factor 
+of magnitude 1.
 
 @node Eigenvalue and Eigenvector References
 @section References and Further Reading
@@ -817,8 +820,8 @@ can be found in this paper,
 
 @itemize @asis
 @item
-C. Moler, G. Stewart, "An Algorithm for Generalized Matrix Eigenvalue
-Problems," SIAM J. Numer. Anal., Vol 10, No 2, 1973.
+C. Moler, G. Stewart, ``An Algorithm for Generalized Matrix Eigenvalue
+Problems'', SIAM J. Numer. Anal., Vol 10, No 2, 1973.
 @end itemize
 
 @noindent

@@ -454,7 +454,7 @@ $$
 This function returns the estimated variance of the dataset @var{data}
 with stride @var{stride} and length @var{n}, using the set of weights
 @var{w} with stride @var{wstride} and length @var{n}.  The estimated
-variance of a weighted dataset is defined as,
+variance of a weighted dataset is calculated as,
 @tex
 \beforedisplay
 $$
@@ -494,7 +494,7 @@ function @code{gsl_stats_wvariance_m} above.
 @end deftypefun
 
 @deftypefun double gsl_stats_wvariance_with_fixed_mean (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n}, const double @var{mean})
-This function computes an unbiased estimate of the variance of weighted
+This function computes an unbiased estimate of the variance of the weighted
 dataset @var{data} when the population mean @var{mean} of the underlying
 distribution is known @emph{a priori}.  In this case the estimator for
 the variance replaces the sample mean @math{\Hat\mu} by the known

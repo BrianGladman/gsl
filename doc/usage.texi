@@ -167,14 +167,16 @@ file or directory
 @end example
 
 @noindent
-To avoid this error, define the shell variable @code{LD_LIBRARY_PATH} to
-include the directory where the library is installed.
+To avoid this error, either modify the system dynamic linker
+configuration@footnote{@file{/etc/ld.so.conf} on GNU/Linux systems.} or
+define the shell variable @code{LD_LIBRARY_PATH} to include the
+directory where the library is installed.
 
 For example, in the Bourne shell (@code{/bin/sh} or @code{/bin/bash}),
 the library search path can be set with the following commands:
 
 @example
-$ LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH 
+$ LD_LIBRARY_PATH=/usr/local/lib
 $ export LD_LIBRARY_PATH
 $ ./example
 @end example
@@ -184,14 +186,14 @@ In the C-shell (@code{/bin/csh} or @code{/bin/tcsh}) the equivalent
 command is,
 
 @example
-% setenv LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
+% setenv LD_LIBRARY_PATH /usr/local/lib
 @end example
 
 @noindent
 The standard prompt for the C-shell in the example above is the percent
 character @samp{%}, and should not be typed as part of the command.
 
-To save retyping these commands each session they should be placed in an
+To save retyping these commands each session they can be placed in an
 individual or system-wide login file.
 
 To compile a statically linked version of the program, use the

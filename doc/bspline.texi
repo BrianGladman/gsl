@@ -201,7 +201,7 @@ their derivatives to be computed without unnecessary terms.
 @end deftypefun
 
 @node Example programs for B-splines
-@section Example programs for B-splines
+@section Examples
 @cindex basis splines, examples
 
 The following program computes a linear least squares fit to data using

@@ -293,10 +293,6 @@ integers.
 @item -Wmissing-prototypes -Wstrict-prototypes 
 Warn if there are any missing or inconsistent prototypes.  Without
 prototypes it is harder to detect problems with incorrect arguments. 
-@item -Wtraditional 
-This warns about certain constructs that behave differently in
-traditional and ANSI C. Whether the traditional or ANSI interpretation
-is used might be unpredictable on other compilers. 
 @item -Wconversion 
 The main use of this option is to warn about conversions from signed to
 unsigned integers.  For example, @code{unsigned int x = -1}.  If you need

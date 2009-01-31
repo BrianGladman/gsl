@@ -74,30 +74,30 @@ the error codes use the same base name as the corresponding error code
 in the C library.  Here are some of the most common error codes,
 
 @cindex error codes
-@deftypefn {Macro} int GSL_EDOM
+@deftypevr {Macro} int GSL_EDOM
 Domain error; used by mathematical functions when an argument value does
 not fall into the domain over which the function is defined (like
 EDOM in the C library)
-@end deftypefn
+@end deftypevr
 
-@deftypefn {Macro} int GSL_ERANGE
+@deftypevr {Macro} int GSL_ERANGE
 Range error; used by mathematical functions when the result value is not
 representable because of overflow or underflow (like ERANGE in the C
 library)
-@end deftypefn
+@end deftypevr
 
-@deftypefn {Macro} int GSL_ENOMEM
+@deftypevr {Macro} int GSL_ENOMEM
 No memory available.  The system cannot allocate more virtual memory
 because its capacity is full (like ENOMEM in the C library).  This error
 is reported when a GSL routine encounters problems when trying to
 allocate memory with @code{malloc}.
-@end deftypefn
+@end deftypevr
 
-@deftypefn {Macro} int GSL_EINVAL
+@deftypevr {Macro} int GSL_EINVAL
 Invalid argument.  This is used to indicate various kinds of problems
 with passing the wrong argument to a library function (like EINVAL in the C
 library). 
-@end deftypefn
+@end deftypevr
 
 The error codes can be converted into an error message using the
 function @code{gsl_strerror}.

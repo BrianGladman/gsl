@@ -800,7 +800,7 @@ numerically.
 @section Examples
 
 The integrator @code{QAGS} will handle a large class of definite
-integrals.  For example, consider the following integral, which has a
+integrals.  For example, consider the following integral, which has an
 algebraic-logarithmic singularity at the origin,
 @tex
 \beforedisplay

@@ -430,12 +430,15 @@ the change in the position vector falls below machine precision
 @item GSL_ETOLG
 the norm of the gradient, relative to the norm of the function, falls
 below machine precision
+
+@item GSL_CONTINUE
+the routine has made 10 or more attempts to find a suitable trial step
+without success (but subsequent calls can be made to continue the search).
 @end table
 
 @noindent
 These error codes indicate that further iterations will be unlikely to
-change the solution from its current value.
-
+change the solution from its current value.  
 @end deffn
 
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmder

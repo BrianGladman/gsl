@@ -366,7 +366,7 @@ control them.
 A guess is simply an @math{x} value which is iterated until it is within
 the desired precision of a root.  It takes the form of a @code{double}.
 
-Search bounds are the endpoints of a interval which is iterated until
+Search bounds are the endpoints of an interval which is iterated until
 the length of the interval is smaller than the requested precision.  The
 interval is defined by two values, the lower limit and the upper limit.
 Whether the endpoints are intended to be included in the interval or not
