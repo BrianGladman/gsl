@@ -235,12 +235,12 @@ plot mu=1.0, a=1, p1(x) title "$c=1, \\alpha=1.0$", \
 	mu=1.0, a=2, p2(x) title "$c=1, \\alpha=2.0$"
 
 set xrange [-5:5]
-set yrange [0:0.09]
+set yrange [0:0.35]
 set ytics 0.05
 set output "rand-levyskew.tex"
 set title "Levy Skew Distribution"
-logp(x)= 1.0990e+01+x*(-3.3388e-01+x*(-4.2372e-01+x*(2.1749e-01+x*(-4.4910e-02 + x*(4.1801e-03 - 1.4456e-04*x)))))
-p1(x)=exp(logp(x))/1000000
+logp(x)= -1.34229+x*(-0.354314+x*(-0.322538+x*(0.205603+x*(-0.0518879+x*(0.00569502+x*-0.000224843)))))
+p1(x)=exp(logp(x))
 plot mu=1.0, a=1, p1(x) title "$c=1, \\alpha=1.0, \\beta=1.0$"
 
 
