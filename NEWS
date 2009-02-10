@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** Modified gsl_monte_vegas to work around pow() function inaccuracies
+   on MinGW [bug #25413].
+
 ** Increased the number of terms in gsl_sf_mathieu_a and
    gsl_sf_mathieu_b to improve convergence in difficult regions [bug
    #25075]

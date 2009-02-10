@@ -1,3 +1,8 @@
+2009-02-10  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vegas.c (gsl_monte_vegas_integrate): use gsl_pow_int to compute
+	tot_boxes, avoids potentially inaccurate pow functions (MinGW).
+
 2008-11-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vegas.c (gsl_monte_vegas_integrate): improve the chisq

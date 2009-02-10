@@ -179,7 +179,7 @@ gsl_monte_vegas_integrate (gsl_monte_function * f,
         }
 
       {
-        double tot_boxes = pow ((double) boxes, (double) dim);
+        double tot_boxes = gsl_pow_int ((double) boxes, dim);
         state->calls_per_box = GSL_MAX (calls / tot_boxes, 2);
         calls = state->calls_per_box * tot_boxes;
       }
