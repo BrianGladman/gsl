@@ -45,8 +45,8 @@ These functions evaluate the Legendre polynomial @c{$P_l(x)$}
 @deftypefun int gsl_sf_legendre_Pl_array (int @var{lmax}, double @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_Pl_deriv_array (int @var{lmax}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
 
-These functions compute an array of Legendre polynomials
-@math{P_l(x)}, and optionally their derivatives @math{dP_l(x)/dx}, 
+These functions compute arrays of Legendre polynomials
+@math{P_l(x)} and derivatives @math{dP_l(x)/dx}, 
 for @math{l = 0, \dots, lmax}, 
 @c{$|x| \le 1$}
 @math{|x| <= 1}
@@ -108,8 +108,8 @@ These routines compute the associated Legendre polynomial
 
 @deftypefun int gsl_sf_legendre_Plm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_Plm_deriv_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-These functions compute an array of Legendre polynomials
-@math{P_l^m(x)}, and optionally their derivatives @math{dP_l^m(x)/dx},
+These functions compute arrays of Legendre polynomials
+@math{P_l^m(x)} and derivatives @math{dP_l^m(x)/dx},
 for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
 @math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
@@ -133,10 +133,10 @@ that occur for the standard normalization of @math{P_l^m(x)}.
 
 @deftypefun int gsl_sf_legendre_sphPlm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_sphPlm_deriv_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-These functions compute an array of normalized associated Legendre functions
+These functions compute arrays of normalized associated Legendre functions
 @c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
 @math{$\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)$},
-and optionally their derivatives,
+and derivatives,
 for @c{$m \ge 0$}
 @math{m >= 0}, @c{$l = |m|, \dots, lmax$}
 @math{l = |m|, ..., lmax}, @c{$|x| \le 1$}
