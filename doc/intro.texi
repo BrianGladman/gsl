@@ -214,8 +214,8 @@ manual, and to contact the developers of the library.
 
 If you would like to refer to the GNU Scientific Library in a journal
 article, the recommended way is to cite this reference manual,
-e.g. @cite{M. Galassi et al, GNU Scientific Library Reference Manual (2nd
-Ed.), ISBN 0954161734}.
+e.g. @cite{M. Galassi et al, GNU Scientific Library Reference Manual (3rd
+Ed.), ISBN 0954612078}.
 
 If you want to give a url, use ``@uref{http://www.gnu.org/software/gsl/}''.
 
