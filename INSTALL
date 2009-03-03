@@ -91,14 +91,22 @@ the build process to complete successfully.
 
 If you get any problems try this first.
 
-2) If you want to pass C++ functions with exceptions to GSL, the
+2) If your compiler uses the C99-style inline keyword, use
+
+    ./configure CFLAGS="-DGSL_C99_INLINE -g -O2"
+
+to avoid problems with duplicate function definitions.  For gcc this
+is handled automatically.  See the file gsl_inline.h for the
+preprocessor definitions that are used.
+
+3) If you want to pass C++ functions with exceptions to GSL, the
 library needs to be compiled with the GCC option -fexceptions
 
     ./confugire CFLAGS="-fexceptions ..."
 
 to allow C++ exceptions to be handled.
 
-3) With gcc-4.3.2 the tests in the poly/ directory fail due to a
+4) With gcc-4.3.2 the tests in the poly/ directory fail due to a
 compiler optimization bug which is fixed in later versions of GCC
 (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=38478).
 
@@ -111,7 +119,7 @@ manipulation of complex numbers.
 
 If you encounter these problems, install a different version of gcc.
 
-4) Attempts to run 'strip' on the static library libgsl.a will probably
+5) Attempts to run 'strip' on the static library libgsl.a will probably
 produce a broken library (it is known to happen with GNU binutils
 strip, and probably affects others too). The libgsl.a ar archive made
 by libtool contains files with the same filenames from different
@@ -123,7 +131,7 @@ make install-strip does not work, due to a minor problem with autoconf
 which is fixed in the 2.5 development version of autoconf.  In the
 meantime compile without -g instead if you need to reduce the file size.
 
-5) The configure script can fail with a segmentation fault on bash-2.01
+6) The configure script can fail with a segmentation fault on bash-2.01
 
     $ ./configure
     Segmentation fault
@@ -346,6 +354,9 @@ or the Sun linker and assembler.
 There may be some warnings about "end of loop code not reached". These
 can be ignored -- they come from the do { ... ; return ; } while(0)
 statement in the GSL_ERROR macro.
+
+If you get errors such as symbol `gsl_complex_rect' is	multiply-defined
+you will need to use ./configure CFLAGS="-DGSL_C99_INLINE -g -O2"
 
                     ------------------------------
 
