@@ -1,3 +1,5 @@
+* Support M<N for SVD
+
 * Provide support for the following special systems: 
 
    Vandermonde, Toeplitz, ...
