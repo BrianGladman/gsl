@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** Using make install prefix=DIR now puts correct paths in package
+   config files gsl-config and gsl.pc
+
 ** Modified gsl_monte_vegas to work around pow() function inaccuracies
    on MinGW [bug #25413].
 

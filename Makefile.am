@@ -13,6 +13,8 @@ bin_SCRIPTS = gsl-config
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= gsl.pc
 
+CLEANFILES = gsl.pc gsl-config
+
 EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS SUPPORT gsl.spec.in gsl.m4 test_gsl_histogram.sh
 
 lib_LTLIBRARIES = libgsl.la
@@ -46,3 +48,24 @@ TESTS = test_gsl_histogram.sh
 #dummy_LDADD = $(SUBLIBS)
 #main_SOURCES = version.c env.c
 #main_LDADD = libgsl.la
+
+edit = $(SED) \
+	-e 's|@prefix[@]|$(prefix)|g' \
+	-e 's|@exec_prefix[@]|$(exec_prefix)|g' \
+	-e 's|@libdir[@]|$(libdir)|g' \
+	-e 's|@includedir[@]|$(includedir)|g' \
+	-e 's|@GSL_CFLAGS[@]|$(GSL_CFLAGS)|g' \
+	-e 's|@GSL_LIBS[@]|$(GSL_LIBS)|g' \
+	-e 's|@LIBS[@]|$(LIBS)|g' \
+	-e 's|@VERSION[@]|$(VERSION)|g'
+
+gsl-config gsl.pc: Makefile 
+	@rm -f $@ $@.tmp
+	@$(edit) '$(srcdir)/$@.in' >>$@.tmp
+	@chmod a-w $@.tmp
+	@mv $@.tmp $@
+	@echo creating $@
+
+gsl-config: $(srcdir)/gsl-config.in
+gsl.pc: $(srcdir)/gsl.pc.in
+

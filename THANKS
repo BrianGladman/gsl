@@ -457,3 +457,5 @@ evaluation and ode improvements
 * Lori A. Pritchett-Sheats bug report for vegas chisq.
 
 * Frank Wang <frank.wang@validusre.bm> bug report for gsl_ran_gamma_knuth.
+
+* Peter Johansson <trojkan@gmail.com> fix for make install prefix=PREFIX
