@@ -128,12 +128,21 @@ gsl_odeiv_system rhs_func_sin = {
 
 /*  Sine/cosine with random failures */
 
+static int rhs_xsin_reset = 0;
+static int jac_xsin_reset = 0;
+
 int
 rhs_xsin (double t, const double y[], double f[], void *params)
 {
-  static int n = 0;
+  static int n = 0, m = 0;
+  
+  if (rhs_xsin_reset) { rhs_xsin_reset = 0; n = 0; m = 1;}
+  n++;
 
-  n++; 
+  if (n >= m) { 
+    m = n * 1.3;
+    return GSL_EFAILED; 
+  } ;
 
   if (n > 40 && n < 65) {
     f[0] = GSL_NAN;
@@ -152,6 +161,8 @@ jac_xsin (double t, const double y[], double *dfdy, double dfdt[],
          void *params)
 {
   static int n = 0;
+
+  if (jac_xsin_reset) { jac_xsin_reset = 0; n = 0; }
 
   n++; 
 
@@ -585,15 +596,34 @@ test_evolve_system (const gsl_odeiv_step_type * T,
 
   gsl_odeiv_evolve *e = gsl_odeiv_evolve_alloc (sys->dimension);
 
+  double * y_orig = malloc (sys->dimension * sizeof(double));
+
   while (t < t1)
     {
-      int s = gsl_odeiv_evolve_apply (e, c, step, sys, &t, t1, &h, y);
+      double t_orig = t;
+      int s;
+      memcpy (y_orig, y, sys->dimension * sizeof(double));
+      s= gsl_odeiv_evolve_apply (e, c, step, sys, &t, t1, &h, y);
 
-      if (s != GSL_SUCCESS && sys != &rhs_func_xsin) 
+      if (s != GSL_SUCCESS)
 	{
-	  gsl_test(s, "%s evolve_apply returned %d",
-		   gsl_odeiv_step_name (step), s);
-	  break;
+          /* check that t and y are unchanged */
+          gsl_test_abs(t, t_orig, 0.0, "%s, t must be restored on failure",
+                       gsl_odeiv_step_name (step));
+
+          for (i = 0; i < sys->dimension; i++)
+            {
+              gsl_test_abs (y[i], y_orig[i], 0.0, 
+                            "%s, y must be restored on failure",
+                            gsl_odeiv_step_name (step), desc, i);
+            }
+          
+          if (sys != &rhs_func_xsin) {
+            /* apart from xsin, other functions should not return errors */
+            gsl_test(s, "%s evolve_apply returned %d",
+                     gsl_odeiv_step_name (step), s);
+            break;
+          }
 	}
 
       if (steps > 100000)
@@ -618,6 +648,7 @@ test_evolve_system (const gsl_odeiv_step_type * T,
 		    gsl_odeiv_step_name (step), desc, i);
     }
 
+  free (y_orig);
   gsl_odeiv_evolve_free (e);
   gsl_odeiv_control_free (c);
   gsl_odeiv_step_free (step);
@@ -921,13 +952,14 @@ test_evolve_xsin (const gsl_odeiv_step_type * T, double h, double err)
 {
   double y[2];
   double yfin[2];
-
   y[0] = 1.0;
   y[1] = 0.0;
   yfin[0] = cos (2.0);
   yfin[1] = sin (2.0);
+  rhs_xsin_reset = 1;
+  jac_xsin_reset = 1;
   test_evolve_system (T, &rhs_func_xsin, 0.0, 2.0, h, y, yfin, err,
-		      "sine[0,2] w/errors");
+                      "sine[0,2] w/errors");
 }
 
 
@@ -1219,6 +1251,7 @@ main (void)
       test_evolve_exp (p[i].type, p[i].h, 1e-6);
       test_evolve_sin (p[i].type, p[i].h, 1e-8);
       test_evolve_xsin (p[i].type, p[i].h, 1e-8);
+      test_evolve_xsin (p[i].type, 0.1, 1e-8); /* test with large step size */
       test_evolve_stiff1 (p[i].type, p[i].h, 1e-7);
       test_evolve_stiff5 (p[i].type, p[i].h, 1e-7);
       test_evolve_negative_h (p[i].type, p[i].h, 1e-7);
