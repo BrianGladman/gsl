@@ -1,3 +1,8 @@
+2009-04-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gear2.c (gear2_apply): save initial values of y for possible
+	failures
+
 2009-04-20  Brian Gough  <bjg@network-theory.co.uk>
 
 	* evolve.c (gsl_odeiv_evolve_apply): restore original t value when

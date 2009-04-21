@@ -222,7 +222,11 @@ gear2_apply (void *vstate,
       int s;
       size_t i;
 
+      /* initialization */
       DBL_MEMCPY (y0, y, dim);
+
+      /* Save initial values for possible failures */
+      DBL_MEMCPY (y0_orig, y, dim);
 
       /* iterative solution */
 
