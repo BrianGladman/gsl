@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** gsl_odeiv_evolve_apply now restores the correct value of t on step
+   failures [bug #26255].
+
 ** Using make install prefix=DIR now puts correct paths in package
    config files gsl-config and gsl.pc
 

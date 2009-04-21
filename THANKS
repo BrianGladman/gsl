@@ -459,3 +459,5 @@ evaluation and ode improvements
 * Frank Wang <frank.wang@validusre.bm> bug report for gsl_ran_gamma_knuth.
 
 * Peter Johansson <trojkan@gmail.com> fix for make install prefix=PREFIX
+
+* Taneli Kalvas <taneli.kalvas@jyu.fi> bug report for odes

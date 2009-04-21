@@ -181,6 +181,7 @@ try_step:
   if (step_status != GSL_SUCCESS) 
     {
       *h = h0;  /* notify user of step-size which caused the failure */
+      *t = t0;  /* restore original t value */
       return step_status;
     }
 
