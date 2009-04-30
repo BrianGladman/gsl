@@ -1,3 +1,7 @@
+2009-04-30  Brian Gough  <bjg@network-theory.co.uk>
+
+	* blas.c (gsl_blas_drotm): fix incorrect length check
+
 2005-04-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* blas.c (gsl_blas_ssyrk): test conformance against size correctly
