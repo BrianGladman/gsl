@@ -13,13 +13,21 @@ The library provides a low-level layer which corresponds directly to the
 C-language @sc{blas} standard, referred to here as ``@sc{cblas}'', and a
 higher-level interface for operations on GSL vectors and matrices.
 Users who are interested in simple operations on GSL vector and matrix
-objects should use the high-level layer, which is declared in the file
-@file{gsl_blas.h}.  This should satisfy the needs of most users.  Note
-that GSL matrices are implemented using dense-storage so the interface
-only includes the corresponding dense-storage @sc{blas} functions.  The full
-@sc{blas} functionality for band-format and packed-format matrices is
-available through the low-level @sc{cblas} interface.
+objects should use the high-level layer described
+in this chapter.  The functions are declared in the file
+@file{gsl_blas.h} and should satisfy the needs of most users.  
 
+Note that GSL matrices are implemented using dense-storage so the
+interface only includes the corresponding dense-storage @sc{blas}
+functions.  The full @sc{blas} functionality for band-format and
+packed-format matrices is available through the low-level @sc{cblas}
+interface.  Similarly, GSL vectors are restricted to positive strides,
+whereas the the low-level @sc{cblas} interface supports negative
+strides as specified in the @sc{blas} standard.@footnote{In the low-level
+@sc{cblas} interface, a negative stride accesses the vector elements
+in reverse order, i.e. the @math{i}-th element is given by
+@math{(N-i)*|incx|} for @math{incx < 0}.}
+ 
 The interface for the @code{gsl_cblas} layer is specified in the file
 @file{gsl_cblas.h}.  This interface corresponds to the @sc{blas} Technical
 Forum's standard for the C interface to legacy @sc{blas}
