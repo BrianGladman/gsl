@@ -127,7 +127,7 @@ An inline version of this function is used when @code{HAVE_INLINE} is defined.
 Inline versions of these functions are used when @code{HAVE_INLINE} is defined.
 @end macro
 
-@include version-ref.texi
+@include version.texi
 @set GSL @i{GNU Scientific Library}
 
 @copying
