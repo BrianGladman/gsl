@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** Modified gsl_poly_complex_solve_cubic and gsl_poly_solve_cubic to
+   avoid returning NaNs in cases where excess precision causes a
+   change in the number of roots.
+
 ** Fixed gsl_odeiv_step_gear2 to restore y on step failure
 
 ** gsl_odeiv_evolve_apply now restores the correct value of t on step

@@ -85,12 +85,12 @@ gsl_poly_complex_solve_cubic (double a, double b, double c,
         }
       return 3;
     }
-  else if (CR2 < CQ3)  /* equivalent to R2 < Q3 */
+  else if (R2 < Q3)
     {
-      double sqrtQ = sqrt (Q);
-      double sqrtQ3 = sqrtQ * sqrtQ * sqrtQ;
-      double theta = acos (R / sqrtQ3);
-      double norm = -2 * sqrtQ;
+      double sgnR = (R >= 0 ? 1 : -1);
+      double ratio = sgnR * sqrt (R2 / Q3);
+      double theta = acos (ratio);
+      double norm = -2 * sqrt (Q);
       double r0 = norm * cos (theta / 3) - a / 3;
       double r1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
       double r2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
