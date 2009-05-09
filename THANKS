@@ -461,3 +461,5 @@ evaluation and ode improvements
 * Peter Johansson <trojkan@gmail.com> fix for make install prefix=PREFIX
 
 * Taneli Kalvas <taneli.kalvas@jyu.fi> bug report for odes
+
+* Marco Maggi <mrc.mgg@gmail.com> bug fix for gsl_blas_drotm

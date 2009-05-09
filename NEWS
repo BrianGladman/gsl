@@ -4,6 +4,8 @@
    avoid returning NaNs in cases where excess precision causes a
    change in the number of roots.
 
+** Fixed incorrect length check in gsl_blas_drotm
+
 ** Fixed gsl_odeiv_step_gear2 to restore y on step failure
 
 ** gsl_odeiv_evolve_apply now restores the correct value of t on step
