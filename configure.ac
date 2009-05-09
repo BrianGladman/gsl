@@ -94,30 +94,35 @@ GSL_LIBS="-L$libdir -lgsl"
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
+if test "$ac_cv_c_inline" != no ; then 
 dnl Check for "extern inline", using a modified version of the test
 dnl for AC_C_INLINE from acspecific.mt
 dnl
-AC_CACHE_CHECK([for GNU-style extern inline], ac_cv_c_extern_inline,
-[ac_cv_c_extern_inline=no
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern $ac_cv_c_inline double foo(double x);
-extern $ac_cv_c_inline double foo(double x) { return x + 1.0 ; } ;
-double foo (double x) { return x + 1.0 ; };]], [[  foo(1.0)  ]])],[ac_cv_c_extern_inline="yes"],[])
-])
-
-if test "$ac_cv_c_extern_inline" != no ; then
-   AC_DEFINE(HAVE_INLINE,[],[Define if you have inline])
-else
-   AC_CACHE_CHECK([for C99-style inline], ac_cv_c_c99inline,
-   [ac_cv_c_c99inline=no
-   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef __GNUC_STDC_INLINE__
-   inline double foo(double x);
-   inline double foo(double x) { return x + 1.0 ; };
-   #endif]], 
-   [[  foo(1.0)  ]])],[ac_cv_c_c99inline="yes"],[])
+   AC_CACHE_CHECK([for GNU-style extern inline], ac_cv_c_extern_inline,
+   [ac_cv_c_extern_inline=no
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern $ac_cv_c_inline double foo(double x);
+   extern $ac_cv_c_inline double foo(double x) { return x + 1.0 ; } ;
+   double foo (double x) { return x + 1.0 ; };]], [[  foo(1.0)  ]])],[ac_cv_c_extern_inline="yes"],[])
    ])
 
-   if test "$ac_cv_c_c99inline" != no ; then
-      AC_DEFINE(HAVE_INLINE,[],[Define if you have inline])
+   if test "$ac_cv_c_extern_inline" != no ; then
+      AC_DEFINE(HAVE_INLINE,[1],[Define if you have inline])
+   else
+      AC_CACHE_CHECK([for C99-style inline], ac_cv_c_c99inline,
+      [ac_cv_c_c99inline=no
+      dnl next line is a necessary condition
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern inline void* foo() { foo(); return &foo ; };]], 
+      [[  return foo() != 0 ]])],[ac_cv_c_c99inline="yes"],[])
+      dnl but not sufficient, extern must work but inline on its own should not
+      if test "$ac_cv_c_c99inline" != no ; then
+            AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[inline void* foo() { foo(); return &foo ; };]], 
+            [[  return foo() != 0 ]])],[],ac_cv_c_c99inline="no")
+      fi
+      ])
+      if test "$ac_cv_c_c99inline" != no ; then
+         AC_DEFINE(HAVE_INLINE,[1],[Define if you have inline])
+         AC_DEFINE(HAVE_C99_INLINE,[1],[Define if you have inline with C99 behavior])
+      fi
    fi
 fi
 

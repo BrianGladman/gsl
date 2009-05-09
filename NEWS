@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** The C99 inline keyword is now supported, in addition to the
+   previously supported GNU-style inline.
+
 ** Modified gsl_poly_complex_solve_cubic and gsl_poly_solve_cubic to
    avoid returning NaNs in cases where excess precision causes a
    change in the number of roots.
