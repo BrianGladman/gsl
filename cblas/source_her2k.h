@@ -1,4 +1,4 @@
-/* blas/source_her2k_c.h
+/* blas/source_her2k.h
  * 
  * Copyright (C) 2001, 2007 Brian Gough
  * 

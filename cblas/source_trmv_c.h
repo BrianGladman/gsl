@@ -1,4 +1,4 @@
-/* blas/source_tbmv_c.h
+/* blas/source_trmv_c.h
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
