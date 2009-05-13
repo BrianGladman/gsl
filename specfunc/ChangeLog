@@ -1,3 +1,9 @@
+2009-05-13  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): fix condition on a and b
+	when c is a negative integer (either a or b must cause
+	cancellation of the series)
+
 2009-01-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mathieu_workspace.c (gsl_sf_mathieu_alloc): increase number of

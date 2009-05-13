@@ -667,8 +667,12 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
   }
 
   if(c_neg_integer) {
-    if(! (a_neg_integer && a > c + 0.1)) DOMAIN_ERROR(result);
-    if(! (b_neg_integer && b > c + 0.1)) DOMAIN_ERROR(result);
+    /* If c is a negative integer, then either a or b must be a
+       negative integer of smaller magnitude than c to ensure
+       cancellation of the series. */
+    if(! (a_neg_integer && a > c + 0.1) && ! (b_neg_integer && b > c + 0.1)) {
+      DOMAIN_ERROR(result);
+    }
   }
 
   if(fabs(c-b) < locEPS || fabs(c-a) < locEPS) {
