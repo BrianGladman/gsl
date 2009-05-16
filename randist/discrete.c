@@ -174,22 +174,21 @@ new_stack(size_t N) {
     return s;
 }
 
-static void
+static int
 push_stack(gsl_stack_t *s, size_t v)
 {
     if ((s->i) >= (s->N)) {
-        fprintf(stderr,"Cannot push stack!\n");
-        abort();                /* FIXME: fatal!! */
+      return -1; /* stack overflow (shouldn't happen) */
     }
     (s->v)[s->i] = v;
     s->i += 1;
+    return 0;
 }
 
 static size_t pop_stack(gsl_stack_t *s)
 {
     if ((s->i) == 0) {
-        fprintf(stderr,"Cannot pop stack!\n");
-        abort();               /* FIXME: fatal!! */
+      GSL_ERROR ("internal error - stack exhausted", GSL_ESANITY);
     }
     s->i -= 1;
     return ((s->v)[s->i]);
@@ -260,20 +259,28 @@ gsl_ran_discrete_preproc(size_t Kevents, const double *ProbArray)
     /* Now create the Bigs and the Smalls */
     mean = 1.0/Kevents;
     nSmalls=nBigs=0;
-    for (k=0; k<Kevents; ++k) {
-        if (E[k] < mean) ++nSmalls;
-        else             ++nBigs;
-    }
-    Bigs   = new_stack(nBigs);
-    Smalls = new_stack(nSmalls);
-    for (k=0; k<Kevents; ++k) {
-        if (E[k] < mean) {
-            push_stack(Smalls,k);
+    {
+      /* Temporarily use which[k] = g->A[k] to indicate small or large */
+      size_t * const which = g->A;
+
+      for (k=0; k<Kevents; ++k) {
+        if (E[k] < mean) { 
+          ++nSmalls; which[k] = 0;
+        } else { 
+          ++nBigs; which[k] = 1; 
         }
-        else {
-            push_stack(Bigs,k);
-        }
+      }
+
+      Bigs   = new_stack(nBigs);
+      Smalls = new_stack(nSmalls);
+      for (k=0; k<Kevents; ++k) {
+        gsl_stack_t * Dest = which[k] ? Bigs : Smalls;
+        int status = push_stack(Dest,k);
+        if (status)
+          GSL_ERROR_VAL ("failed to build stacks", GSL_EFAILED, 0);
+      }
     }
+
     /* Now work through the smalls */
     while (size_stack(Smalls) > 0) {
         s = pop_stack(Smalls);

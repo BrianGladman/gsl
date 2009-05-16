@@ -1,3 +1,12 @@
+2009-05-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* discrete.c (push_stack): replace abort() with an error return
+	value
+	(pop_stack): replace abort() with GSL_ERROR
+	(gsl_ran_discrete_preproc): use g->A as a temporary array to store
+	the results of the test E[k]<mean to avoid discrepancies due to
+	excess precision
+
 2008-11-30  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_gamma_vlarge): added test for a >= UINT_MAX.

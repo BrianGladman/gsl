@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** Improved the implementation of gsl_ran_discrete_preproc to avoid
+   internal errors due to inconsistencies from excess precision on
+   some platforms.
+
 ** Corrected gsl_sf_hyperg_2F1(a,b,c,x) to not give a domain error in
    the case where c is a negative integer and the series terminates
    with a finite result.
