@@ -769,10 +769,13 @@ roots.
 @cindex Steffenson's method for finding roots
 @cindex root finding, Steffenson's method
 
-The @dfn{Steffenson Method} provides the fastest convergence of all the
-routines.  It combines the basic Newton algorithm with an Aitken
-``delta-squared'' acceleration.  If the Newton iterates are @math{x_i}
-then the acceleration procedure generates a new sequence @math{R_i},
+The @dfn{Steffenson Method}@footnote{J.F. Steffensen (1873--1961). The
+spelling used in the name of the function is slightly incorrect, but
+has been preserved to avoid incompatibility.} provides the fastest
+convergence of all the routines.  It combines the basic Newton
+algorithm with an Aitken ``delta-squared'' acceleration.  If the
+Newton iterates are @math{x_i} then the acceleration procedure
+generates a new sequence @math{R_i},
 @tex
 \beforedisplay
 $$
