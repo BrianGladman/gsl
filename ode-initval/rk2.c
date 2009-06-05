@@ -76,7 +76,7 @@ rk2_alloc (size_t dim)
       free (state->k2);
       free (state->k1);
       free (state);
-      GSL_ERROR_NULL ("failed to allocate space for k2", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for k3", GSL_ENOMEM);
     }
 
   state->ytmp = (double *) malloc (dim * sizeof (double));
@@ -87,7 +87,7 @@ rk2_alloc (size_t dim)
       free (state->k2);
       free (state->k1);
       free (state);
-      GSL_ERROR_NULL ("failed to allocate space for k2", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
     }
 
   return state;
