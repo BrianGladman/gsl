@@ -326,8 +326,9 @@ to compute the special functions,
 @cindex MISCFUN
 @itemize @asis
 @item
-MISCFUN: A software package to compute uncommon special functions.
-@cite{ACM Trans.@: Math.@: Soft.}, vol.@: 22, 1996, 288--301
+Allan J. MacLeod, MISCFUN: A software package to compute uncommon
+special functions.  @cite{ACM Trans.@: Math.@: Soft.}, vol.@: 22,
+1996, 288--301
 
 @item
 G.N. Watson, A Treatise on the Theory of Bessel Functions,
@@ -339,6 +340,10 @@ Nova Science Publishers, ISBN 1-56072-052-2
 
 @item
 B.C. Carlson, Special Functions of Applied Mathematics (1977)
+
+@item
+N. M. Temme, Special Functions: An Introduction to the Classical
+Functions of Mathematical Physics (1996), ISBN 978-0471113133.
 
 @item
 W.J. Thompson, Atlas for Computing Mathematical Functions, John Wiley & Sons,

@@ -573,7 +573,7 @@ The simplex algorithm is described in the following paper,
 @itemize @asis
 @item J.A. Nelder and R. Mead,
 @cite{A simplex method for function minimization}, Computer Journal
-vol.@: 7 (1965), 308--315.
+vol.@: 7 (1965), 308--313.
 @end itemize
 
 @noindent

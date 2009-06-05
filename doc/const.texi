@@ -138,7 +138,7 @@ The electromagnetic fine structure constant @math{\alpha}.
 
 @item GSL_CONST_MKSA_RYDBERG
 The Rydberg constant, @math{Ry}, in units of energy.  This is related to
-the Rydberg inverse wavelength @math{R} by @math{Ry = h c R}.
+the Rydberg inverse wavelength @math{R_\infty} by @math{Ry = h c R_\infty}.
 
 @item GSL_CONST_MKSA_BOHR_RADIUS
 The Bohr radius, @math{a_0}.

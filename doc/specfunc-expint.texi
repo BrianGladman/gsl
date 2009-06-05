@@ -90,11 +90,12 @@ E_n(x) := \Re \int_1^\infty dt \exp(-xt)/t^n.
 
 @deftypefun double gsl_sf_expint_Ei (double @var{x})
 @deftypefunx int gsl_sf_expint_Ei_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the exponential integral @math{Ei(x)},
+These routines compute the exponential integral @c{$\hbox{Ei}(x)$}
+@math{Ei(x)},
 @tex
 \beforedisplay
 $$
-Ei(x) := - PV\left(\int_{-x}^\infty dt \exp(-t)/t\right)
+\hbox{Ei}(x) := - PV\left(\int_{-x}^\infty dt \exp(-t)/t\right)
 $$
 \afterdisplay
 @end tex
@@ -120,14 +121,17 @@ where @math{PV} denotes the principal value of the integral.
 
 @deftypefun double gsl_sf_Shi (double @var{x})
 @deftypefunx int gsl_sf_Shi_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the integral @math{Shi(x) = \int_0^x dt \sinh(t)/t}.
+These routines compute the integral @c{$\hbox{Shi}(x) = \int_0^x dt \sinh(t)/t$}
+@math{Shi(x) = \int_0^x dt \sinh(t)/t}.
 @comment Exceptional Return Values: GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
 
 @deftypefun double gsl_sf_Chi (double @var{x})
 @deftypefunx int gsl_sf_Chi_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the integral @math{ Chi(x) := \Re[ \gamma_E + \log(x) + \int_0^x dt (\cosh[t]-1)/t] }, where @math{\gamma_E} is the Euler constant (available as the macro @code{M_EULER}).
+These routines compute the integral @c{$\hbox{Chi}(x) := \Re[ \gamma_E + \log(x) + \int_0^x dt (\cosh(t)-1)/t]$}
+@math{ Chi(x) := \Re[ \gamma_E + \log(x) + \int_0^x dt (\cosh(t)-1)/t] }, 
+where @math{\gamma_E} is the Euler constant (available as the macro @code{M_EULER}).
 @comment Domain: x != 0.0
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
@@ -138,7 +142,7 @@ These routines compute the integral @math{ Chi(x) := \Re[ \gamma_E + \log(x) + \
 
 @deftypefun double gsl_sf_expint_3 (double @var{x})
 @deftypefunx int gsl_sf_expint_3_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the third-order exponential integral 
+These routines compute the third-order exponential integral @c{${\rm Ei}_3(x) = \int_0^xdt \exp(-t^3)$}
 @math{Ei_3(x) = \int_0^xdt \exp(-t^3)} for @c{$x \ge 0$}
 @math{x >= 0}.
 @comment Exceptional Return Values: GSL_EDOM
@@ -151,7 +155,7 @@ These routines compute the third-order exponential integral
 @cindex Ci(x)
 @deftypefun double gsl_sf_Si (const double @var{x})
 @deftypefunx int gsl_sf_Si_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Sine integral
+These routines compute the Sine integral @c{$\hbox{Si}(x) = \int_0^x dt \sin(t)/t$}
 @math{Si(x) = \int_0^x dt \sin(t)/t}.
 @comment Exceptional Return Values: none
 @end deftypefun
@@ -159,8 +163,8 @@ These routines compute the Sine integral
  
 @deftypefun double gsl_sf_Ci (const double @var{x})
 @deftypefunx int gsl_sf_Ci_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Cosine integral @math{Ci(x) = -\int_x^\infty dt
-\cos(t)/t} for @math{x > 0}.  
+These routines compute the Cosine integral @c{$\hbox{Ci}(x) = -\int_x^\infty dt \cos(t)/t$}
+@math{Ci(x) = -\int_x^\infty dt \cos(t)/t} for @math{x > 0}.  
 @comment Domain: x > 0.0
 @comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
@@ -171,7 +175,8 @@ These routines compute the Cosine integral @math{Ci(x) = -\int_x^\infty dt
 @cindex arctangent integral
 @deftypefun double gsl_sf_atanint (double @var{x})
 @deftypefunx int gsl_sf_atanint_e (double @var{x}, gsl_sf_result * @var{result})
-These routines compute the Arctangent integral, which is defined as @math{AtanInt(x) = \int_0^x dt \arctan(t)/t}.
+These routines compute the Arctangent integral, which is defined as @c{$\hbox{AtanInt}(x) = \int_0^x dt \arctan(t)/t$}
+@math{AtanInt(x) = \int_0^x dt \arctan(t)/t}.
 @comment Domain: 
 @comment Exceptional Return Values: 
 @end deftypefun

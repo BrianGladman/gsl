@@ -145,12 +145,12 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fsolver_set (gsl_multifit_fsolver * @var{s}, gsl_multifit_function * @var{f}, gsl_vector * @var{x})
+@deftypefun int gsl_multifit_fsolver_set (gsl_multifit_fsolver * @var{s}, gsl_multifit_function * @var{f}, const gsl_vector * @var{x})
 This function initializes, or reinitializes, an existing solver @var{s}
 to use the function @var{f} and the initial guess @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{x})
+@deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x})
 This function initializes, or reinitializes, an existing solver @var{s}
 to use the function and derivative @var{fdf} and the initial guess
 @var{x}.

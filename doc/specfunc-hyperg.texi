@@ -77,7 +77,6 @@ These routines compute the Gauss hypergeometric function
 @c{${}_2F_1(a_R + i a_I, aR - i aI, c, x)$}
 @math{2F1(a_R + i a_I, a_R - i a_I, c, x)} with complex parameters 
 for @math{|x| < 1}.
-exceptions:
 @end deftypefun
 
 @deftypefun double gsl_sf_hyperg_2F1_renorm (double @var{a}, double @var{b}, double @var{c}, double @var{x})

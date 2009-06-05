@@ -294,7 +294,7 @@ The functions described in this section are declared in the header file
 @deftypefunx {int} gsl_wavelet2d_transform_inverse (const gsl_wavelet * @var{w}, double * @var{data}, size_t @var{tda}, size_t @var{size1}, size_t @var{size2}, gsl_wavelet_workspace * @var{work})
 
 These functions compute two-dimensional in-place forward and inverse
-discrete wavelet transforms in standard and non-standard forms on the
+discrete wavelet transforms in standard form on the
 array @var{data} stored in row-major form with dimensions @var{size1}
 and @var{size2} and physical row length @var{tda}.  The dimensions must
 be equal (square matrix) and are restricted to powers of two.  For the

@@ -105,13 +105,13 @@ This function allocates a Discrete Hankel transform object of size
 
 @deftypefun int gsl_dht_init (gsl_dht * @var{t}, double @var{nu}, double @var{xmax})
 This function initializes the transform @var{t} for the given values of
-@var{nu} and @var{x}.
+@var{nu} and @var{xmax}.
 @end deftypefun
 
 @deftypefun {gsl_dht *} gsl_dht_new (size_t @var{size}, double @var{nu}, double @var{xmax})
 This function allocates a Discrete Hankel transform object of size
 @var{size} and initializes it for the given values of @var{nu} and
-@var{x}.
+@var{xmax}.
 @end deftypefun
 
 @deftypefun void gsl_dht_free (gsl_dht * @var{t})

@@ -170,7 +170,7 @@ array @var{data} of size @var{n} with stride @var{stride}.
 This function applies the permutation @var{p} to the elements of the
 vector @var{v}, considered as a row-vector acted on by a permutation
 matrix from the right, @math{v' = v P}.  The @math{j}-th column of the
-permutation matrix @math{P} is given by the @math{p_j}-th column of the
+permutation matrix @math{P} is given by the @math{@var{p}_j}-th column of the
 identity matrix. The permutation @var{p} and the vector @var{v} must
 have the same length.
 @end deftypefun
@@ -181,14 +181,16 @@ elements of the vector @var{v}, considered as a row-vector acted on by
 an inverse permutation matrix from the right, @math{v' = v P^T}.  Note
 that for permutation matrices the inverse is the same as the transpose.
 The @math{j}-th column of the permutation matrix @math{P} is given by
-the @math{p_j}-th column of the identity matrix. The permutation @var{p}
+the @math{@var{p}_j}-th column of the identity matrix. The permutation @var{p}
 and the vector @var{v} must have the same length.
 @end deftypefun
 
 @deftypefun int gsl_permutation_mul (gsl_permutation * @var{p}, const gsl_permutation * @var{pa}, const gsl_permutation * @var{pb})
 This function combines the two permutations @var{pa} and @var{pb} into a
-single permutation @var{p}, where @math{p = pa . pb}. The permutation
-@var{p} is equivalent to applying @math{pb} first and then @var{pa}.
+single permutation @var{p}, where @c{$@var{p} = @var{pa} \ast @var{pb}$}
+@math{@var{p} = @var{pa} * @var{pb}}. 
+The permutation @var{p} is equivalent to applying @var{pb} first and
+then @var{pa}.
 @end deftypefun
 
 @node Reading and writing permutations

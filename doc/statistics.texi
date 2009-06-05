@@ -22,7 +22,9 @@ floating-point and integer types.  The versions for double precision
 floating-point data have the prefix @code{gsl_stats} and are declared in
 the header file @file{gsl_statistics_double.h}.  The versions for integer
 data have the prefix @code{gsl_stats_int} and are declared in the header
-file @file{gsl_statistics_int.h}. 
+file @file{gsl_statistics_int.h}.   All the functions operate on C 
+arrays with a @var{stride} parameter specifying the spacing between 
+elements.  
 
 @menu
 * Mean and standard deviation and variance::  
@@ -127,7 +129,6 @@ These functions return the total sum of squares (TSS) of @var{data} about
 the mean.  For @code{gsl_stats_tss_m} the user-supplied value of
 @var{mean} is used, and for @code{gsl_stats_tss} it is computed using
 @code{gsl_stats_mean}.
-
 @tex
 \beforedisplay
 $$
@@ -526,7 +527,6 @@ These functions return the weighted total sum of squares (TSS) of
 @var{data} about the weighted mean.  For @code{gsl_stats_wtss_m} the
 user-supplied value of @var{wmean} is used, and for @code{gsl_stats_wtss}
 it is computed using @code{gsl_stats_wmean}.
-
 @tex
 \beforedisplay
 $$
@@ -570,14 +570,14 @@ This function computes the weighted skewness of the dataset @var{data}.
 @tex
 \beforedisplay
 $$
-skew = {{\sum w_i ((x_i - xbar)/\sigma)^3} \over {\sum w_i}}
+skew = {{\sum w_i ((x_i - {\Hat x})/{\Hat \sigma})^3} \over {\sum w_i}}
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-skew = (\sum w_i ((x_i - xbar)/\sigma)^3) / (\sum w_i)
+skew = (\sum w_i ((x_i - \Hat x)/\Hat \sigma)^3) / (\sum w_i)
 @end example
 @end ifinfo
 @end deftypefun
@@ -590,18 +590,17 @@ deviation, @var{wmean} and @var{wsd}.
 
 @deftypefun double gsl_stats_wkurtosis (const double @var{w}[], size_t @var{wstride}, const double @var{data}[], size_t @var{stride}, size_t @var{n})
 This function computes the weighted kurtosis of the dataset @var{data}.
-
 @tex
 \beforedisplay
 $$
-kurtosis = {{\sum w_i ((x_i - xbar)/sigma)^4} \over {\sum w_i}} - 3
+kurtosis = {{\sum w_i ((x_i - {\Hat x})/{\Hat \sigma})^4} \over {\sum w_i}} - 3
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-kurtosis = ((\sum w_i ((x_i - xbar)/sigma)^4) / (\sum w_i)) - 3
+kurtosis = ((\sum w_i ((x_i - \Hat x)/\Hat \sigma)^4) / (\sum w_i)) - 3
 @end example
 @end ifinfo
 @end deftypefun

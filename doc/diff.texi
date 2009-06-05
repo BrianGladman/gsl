@@ -53,7 +53,7 @@ from the difference between the 4-point rule and the corresponding
 2-point rule @math{x+h/2}, @math{x+h}. 
 @end deftypefun
 
-@deftypefun int gsl_deriv_backward (const gsl_function * @var{f}, double @var{x},  double @var{h}, double * @var{result}, double * @var{abserr})
+@deftypefun int gsl_deriv_backward (const gsl_function * @var{f}, double @var{x}, double @var{h}, double * @var{result}, double * @var{abserr})
 This function computes the numerical derivative of the function @var{f}
 at the point @var{x} using an adaptive backward difference algorithm
 with a step-size of @var{h}. The function is evaluated only at points

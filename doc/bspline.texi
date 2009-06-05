@@ -125,7 +125,7 @@ This function computes the knots associated with the given breakpoints
 and stores them internally in @code{w->knots}.
 @end deftypefun
 
-@deftypefun int gsl_bspline_knots_uniform (const double a, const double b, gsl_bspline_workspace * @var{w})
+@deftypefun int gsl_bspline_knots_uniform (const double @var{a}, const double @var{b}, gsl_bspline_workspace * @var{w})
 This function assumes uniformly spaced breakpoints on @math{[a,b]}
 and constructs the corresponding knot vector using the previously
 specified @var{nbreak} parameter. The knots are stored in

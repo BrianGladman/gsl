@@ -65,7 +65,7 @@ This function frees the interpolation object @var{interp}.
 @node Interpolation Types
 @section Interpolation Types
 @tpindex gsl_interp_type
-The interpolation library provides five interpolation types:
+The interpolation library provides six interpolation types:
 
 @deffn {Interpolation Type} gsl_interp_linear
 @cindex linear interpolation
@@ -166,6 +166,12 @@ of size @var{size}, using the given accelerator @var{a}.  This is how
 lookups are performed during evaluation of an interpolation.  The
 function returns an index @math{i} such that @code{x_array[i] <= x <
 x_array[i+1]}.  @inlinefn{}
+@end deftypefun
+
+@deftypefun int gsl_interp_accel_reset (gsl_interp_accel * @var{acc});
+This function reinitializes the accelerator object @var{acc}.  It
+should be used when the cached information is no longer
+applicable---for example, when switching to a new dataset.
 @end deftypefun
 
 @deftypefun void gsl_interp_accel_free (gsl_interp_accel* @var{acc})

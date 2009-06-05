@@ -1,5 +1,7 @@
-The  functions described in this section are declared
-in the header file @file{gsl_sf_gamma.h}.
+This following routines compute the gamma and beta functions in their
+full and incomplete forms, as well as various kinds of factorials.
+The functions described in this section are declared in the header
+file @file{gsl_sf_gamma.h}.
 
 @menu
 * Gamma Functions::             
@@ -32,9 +34,7 @@ $$
 @noindent
 It is related to the factorial function by @math{\Gamma(n)=(n-1)!}
 for positive integer @math{n}.  Further information on the Gamma function
-can be found in Abramowitz & Stegun, Chapter 6.  The functions
-described in this section are declared in the header file
-@file{gsl_sf_gamma.h}.
+can be found in Abramowitz & Stegun, Chapter 6.  
 
 @deftypefun double gsl_sf_gamma (double @var{x})
 @deftypefunx int gsl_sf_gamma_e (double @var{x}, gsl_sf_result * @var{result})

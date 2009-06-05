@@ -475,10 +475,10 @@ relative accuracy than Golub-Reinsch algorithms (see references for
 details).
 @end deftypefun
 
-@deftypefun int gsl_linalg_SV_solve (gsl_matrix * @var{U}, gsl_matrix * @var{V}, gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+@deftypefun int gsl_linalg_SV_solve (const gsl_matrix * @var{U}, const gsl_matrix * @var{V}, const gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the system @math{A x = b} using the singular value
-decomposition (@var{U}, @var{S}, @var{V}) held in @math{A} which must 
-have been computed previously by @code{gsl_linalg_SV_decomp}.
+decomposition (@var{U}, @var{S}, @var{V}) of @math{A} which must 
+have been computed previously with @code{gsl_linalg_SV_decomp}.
 
 Only non-zero singular values are used in computing the solution. The
 parts of the solution corresponding to singular values of zero are
@@ -643,13 +643,13 @@ tridiagonal decomposition @math{U T U^T}.  On output the real parts of
 the diagonal and subdiagonal part of the input matrix @var{A} contain
 the tridiagonal matrix @math{T}.  The remaining lower triangular part of
 the input matrix contains the Householder vectors which, together with
-the Householder coefficients @var{tau}, encode the orthogonal matrix
-@math{Q}. This storage scheme is the same as used by @sc{lapack}.  The
+the Householder coefficients @var{tau}, encode the unitary matrix
+@math{U}. This storage scheme is the same as used by @sc{lapack}.  The
 upper triangular part of @var{A} and imaginary parts of the diagonal are
 not referenced.
 @end deftypefun
 
-@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{Q}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
+@deftypefun int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * @var{A}, const gsl_vector_complex * @var{tau}, gsl_matrix_complex * @var{U}, gsl_vector * @var{diag}, gsl_vector * @var{subdiag})
 This function unpacks the encoded tridiagonal decomposition (@var{A},
 @var{tau}) obtained from @code{gsl_linalg_hermtd_decomp} into the
 unitary matrix @var{U}, the real vector of diagonal elements @var{diag} and
@@ -858,22 +858,22 @@ the first.  On output the transformation is stored in the vector @var{v}
 and the scalar @math{\tau} is returned.
 @end deftypefun
 
-@deftypefun int gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
-@deftypefunx int gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
+@deftypefun int gsl_linalg_householder_hm (double @var{tau}, const gsl_vector * @var{v}, gsl_matrix * @var{A})
+@deftypefunx int gsl_linalg_complex_householder_hm (gsl_complex @var{tau}, const gsl_vector_complex * @var{v}, gsl_matrix_complex * @var{A})
 This function applies the Householder matrix @math{P} defined by the
 scalar @var{tau} and the vector @var{v} to the left-hand side of the
 matrix @var{A}. On output the result @math{P A} is stored in @var{A}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
-@deftypefunx int gsl_linalg_complex_householder_mh (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
+@deftypefun int gsl_linalg_householder_mh (double @var{tau}, const gsl_vector * @var{v}, gsl_matrix * @var{A})
+@deftypefunx int gsl_linalg_complex_householder_mh (gsl_complex @var{tau}, const gsl_vector_complex * @var{v}, gsl_matrix_complex * @var{A})
 This function applies the Householder matrix @math{P} defined by the
 scalar @var{tau} and the vector @var{v} to the right-hand side of the
 matrix @var{A}. On output the result @math{A P} is stored in @var{A}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
-@deftypefunx int gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex * w)
+@deftypefun int gsl_linalg_householder_hv (double @var{tau}, const gsl_vector * @var{v}, gsl_vector * @var{w})
+@deftypefunx int gsl_linalg_complex_householder_hv (gsl_complex @var{tau}, const gsl_vector_complex * @var{v}, gsl_vector_complex * @var{w})
 This function applies the Householder transformation @math{P} defined by
 the scalar @var{tau} and the vector @var{v} to the vector @var{w}.  On
 output the result @math{P w} is stored in @var{w}.

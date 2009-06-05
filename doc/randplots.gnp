@@ -365,10 +365,12 @@ set ytics 1
 set size 0.8,1.143
 set size square
 set output "random-walk.tex"
-set title "Random walk"
+set title "Random walks"
 set xzeroaxis
 set yzeroaxis
 set nokey
+set noxlabel
+set noylabel
 plot "rand-walk.dat" using 1:2 with linesp
 
 

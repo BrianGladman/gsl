@@ -79,8 +79,8 @@ order, @math{Y_1(x)}, for @math{x>0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun double gsl_sf_bessel_Yn (int @var{n},double @var{x})
-@deftypefunx int gsl_sf_bessel_Yn_e (int @var{n},double @var{x}, gsl_sf_result * @var{result})
+@deftypefun double gsl_sf_bessel_Yn (int @var{n}, double @var{x})
+@deftypefunx int gsl_sf_bessel_Yn_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the irregular cylindrical Bessel function of 
 order @var{n}, @math{Y_n(x)}, for @math{x>0}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW, GSL_EUNDRFLW
@@ -300,7 +300,7 @@ efficiency, and therefore may differ slightly from the exact values.
 @comment Exceptional Return Values: GSL_EDOM, GSL_EUNDRFLW
 @end deftypefun
 
-@deftypefun int gsl_sf_bessel_jl_steed_array (int @var{lmax}, double @var{x}, double * @var{jl_x_array})
+@deftypefun int gsl_sf_bessel_jl_steed_array (int @var{lmax}, double @var{x}, double * @var{result_array})
 This routine uses Steed's method to compute the values of the regular
 spherical Bessel functions @math{j_l(x)} for @math{l} from 0 to
 @var{lmax} inclusive for @c{$lmax \geq 0$}

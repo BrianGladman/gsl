@@ -71,9 +71,9 @@ function
 @end deftypefun
 
 @cindex hazard function, normal distribution
-@cindex Mill's ratio, inverse
+@cindex Mills' ratio, inverse
 The @dfn{hazard function} for the normal distribution, 
-also known as the inverse Mill's ratio, is defined as,
+also known as the inverse Mills' ratio, is defined as,
 @tex
 \beforedisplay
 $$

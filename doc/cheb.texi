@@ -113,7 +113,7 @@ in the series.
 
 @deftypefun double gsl_cheb_eval_n (const gsl_cheb_series * @var{cs}, size_t @var{order}, double @var{x})
 This function evaluates the Chebyshev series @var{cs} at a given point
-@var{n}, to (at most) the given order @var{order}.
+@var{x}, to (at most) the given order @var{order}.
 @end deftypefun
 
 @deftypefun int gsl_cheb_eval_n_err (const gsl_cheb_series * @var{cs}, const size_t @var{order}, const double @var{x}, double * @var{result}, double * @var{abserr})

@@ -272,7 +272,7 @@ respect to @var{x},
 @c{$f'(x,\hbox{\it params})$}
 @math{f'(x,params)}, for argument @var{x} and parameters @var{params}
 
-@item void (* fdf) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{d}f)
+@item void (* fdf) (double @var{x}, void * @var{params}, double * @var{f}, double * @var{df})
 this function should set the values of the function @var{f} to 
 @c{$f(x,\hbox{\it params})$}
 @math{f(x,params)}

@@ -206,7 +206,7 @@ This allows an existing workspace to be reused for different
 integrations.
 @end deftypefun
 
-@deftypefun int gsl_monte_plain_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_plain_state * @var{s}, double * @var{result}, double * @var{abserr})
+@deftypefun int gsl_monte_plain_integrate (gsl_monte_function * @var{f}, const double @var{xl}[], const double @var{xu}[], size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_plain_state * @var{s}, double * @var{result}, double * @var{abserr})
 This routines uses the plain Monte Carlo algorithm to integrate the
 function @var{f} over the @var{dim}-dimensional hypercubic region
 defined by the lower and upper limits in the arrays @var{xl} and
@@ -307,7 +307,7 @@ This allows an existing workspace to be reused for different
 integrations.
 @end deftypefun
 
-@deftypefun int gsl_monte_miser_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_miser_state * @var{s}, double * @var{result}, double * @var{abserr})
+@deftypefun int gsl_monte_miser_integrate (gsl_monte_function * @var{f}, const double @var{xl}[], const double @var{xu}[], size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_miser_state * @var{s}, double * @var{result}, double * @var{abserr})
 This routines uses the @sc{miser} Monte Carlo algorithm to integrate the
 function @var{f} over the @var{dim}-dimensional hypercubic region
 defined by the lower and upper limits in the arrays @var{xl} and
@@ -478,7 +478,7 @@ This allows an existing workspace to be reused for different
 integrations.
 @end deftypefun
 
-@deftypefun int gsl_monte_vegas_integrate (gsl_monte_function * @var{f}, double * @var{xl}, double * @var{xu}, size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_vegas_state * @var{s}, double * @var{result}, double * @var{abserr})
+@deftypefun int gsl_monte_vegas_integrate (gsl_monte_function * @var{f}, double @var{xl}[], double @var{xu}[], size_t @var{dim}, size_t @var{calls}, gsl_rng * @var{r}, gsl_monte_vegas_state * @var{s}, double * @var{result}, double * @var{abserr})
 This routines uses the @sc{vegas} Monte Carlo algorithm to integrate the
 function @var{f} over the @var{dim}-dimensional hypercubic region
 defined by the lower and upper limits in the arrays @var{xl} and

@@ -59,7 +59,7 @@ the real and imaginary parts in @var{szr}, @var{szi}.
 @deftypefun int gsl_sf_complex_cos_e (double @var{zr}, double @var{zi}, gsl_sf_result * @var{czr}, gsl_sf_result * @var{czi})
 @cindex complex cosine function, special functions
 This function computes the complex cosine, @math{\cos(z_r + i z_i)} storing
-the real and imaginary parts in @var{szr}, @var{szi}.
+the real and imaginary parts in @var{czr}, @var{czi}.
 @comment Exceptional Return Values: GSL_EOVRFLW
 @end deftypefun
 
@@ -67,7 +67,7 @@ the real and imaginary parts in @var{szr}, @var{szi}.
 @cindex complex log sine function, special functions
 This function computes the logarithm of the complex sine,
 @math{\log(\sin(z_r + i z_i))} storing the real and imaginary parts in
-@var{szr}, @var{szi}.
+@var{lszr}, @var{lszi}.
 @comment Exceptional Return Values: GSL_EDOM, GSL_ELOSS
 @end deftypefun
 

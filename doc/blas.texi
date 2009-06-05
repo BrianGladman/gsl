@@ -166,14 +166,14 @@ These functions compute the scalar product @math{x^T y} for the vectors
 @deftypefun int gsl_blas_cdotu (const gsl_vector_complex_float * @var{x}, const gsl_vector_complex_float * @var{y}, gsl_complex_float * @var{dotu})
 @deftypefunx int gsl_blas_zdotu (const gsl_vector_complex * @var{x}, const gsl_vector_complex * @var{y}, gsl_complex * @var{dotu})
 These functions compute the complex scalar product @math{x^T y} for the
-vectors @var{x} and @var{y}, returning the result in @var{result}
+vectors @var{x} and @var{y}, returning the result in @var{dotu}
 @end deftypefun
 
 @deftypefun int gsl_blas_cdotc (const gsl_vector_complex_float * @var{x}, const gsl_vector_complex_float * @var{y}, gsl_complex_float * @var{dotc})
 @deftypefunx int gsl_blas_zdotc (const gsl_vector_complex * @var{x}, const gsl_vector_complex * @var{y}, gsl_complex * @var{dotc})
 These functions compute the complex conjugate scalar product @math{x^H
 y} for the vectors @var{x} and @var{y}, returning the result in
-@var{result}
+@var{dotc}
 @end deftypefun
 
 @deftypefun float gsl_blas_snrm2 (const gsl_vector_float * @var{x})

@@ -76,7 +76,7 @@ algorithm is based on the expansion @math{2(\exp(x)-1-x)/x^2 =
 @deftypefunx int gsl_sf_exprel_n_e (int @var{n}, double @var{x}, gsl_sf_result * @var{result})
 These routines compute the @math{N}-relative exponential, which is the
 @var{n}-th generalization of the functions @code{gsl_sf_exprel} and
-@code{gsl_sf_exprel2}.  The @math{N}-relative exponential is given by,
+@code{gsl_sf_exprel_2}.  The @math{N}-relative exponential is given by,
 @tex
 \beforedisplay
 $$
