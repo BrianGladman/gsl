@@ -472,7 +472,7 @@ int gsl_linalg_hermtd_decomp (gsl_matrix_complex * A,
 
 int gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A, 
                               const gsl_vector_complex * tau,
-                              gsl_matrix_complex * Q, 
+                              gsl_matrix_complex * U, 
                               gsl_vector * diag, 
                               gsl_vector * sudiag);
 

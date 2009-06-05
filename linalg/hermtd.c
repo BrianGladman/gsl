@@ -30,13 +30,13 @@
  * U is stored as a packed set of Householder transformations in the
  * lower triangular part of the input matrix below the first subdiagonal.
  *
- * The full matrix for Q can be obtained as the product
+ * The full matrix for U can be obtained as the product
  *
- *       Q = Q_N ... Q_2 Q_1
+ *       U = U_N ... U_2 U_1
  *
  * where 
  *
- *       Q_i = (I - tau_i * v_i * v_i')
+ *       U_i = (I - tau_i * v_i * v_i')
  *
  * and where v_i is a Householder vector
  *
@@ -122,12 +122,12 @@ gsl_linalg_hermtd_decomp (gsl_matrix_complex * A, gsl_vector_complex * tau)
 }  
 
 
-/*  Form the orthogonal matrix Q from the packed QR matrix */
+/*  Form the orthogonal matrix U from the packed QR matrix */
 
 int
 gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A, 
                           const gsl_vector_complex * tau,
-                          gsl_matrix_complex * Q, 
+                          gsl_matrix_complex * U, 
                           gsl_vector * diag, 
                           gsl_vector * sdiag)
 {
@@ -139,9 +139,9 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
     {
       GSL_ERROR ("size of tau must be (matrix size - 1)", GSL_EBADLEN);
     }
-  else if (Q->size1 != A->size1 || Q->size2 != A->size1)
+  else if (U->size1 != A->size1 || U->size2 != A->size1)
     {
-      GSL_ERROR ("size of Q must match size of A", GSL_EBADLEN);
+      GSL_ERROR ("size of U must match size of A", GSL_EBADLEN);
     }
   else if (diag->size != A->size1)
     {
@@ -157,9 +157,9 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
 
       size_t i;
 
-      /* Initialize Q to the identity */
+      /* Initialize U to the identity */
 
-      gsl_matrix_complex_set_identity (Q);
+      gsl_matrix_complex_set_identity (U);
 
       for (i = N - 1; i-- > 0;)
         {
@@ -171,7 +171,7 @@ gsl_linalg_hermtd_unpack (const gsl_matrix_complex * A,
             gsl_vector_complex_const_subvector (&c.vector, i + 1, N - (i+1));
 
           gsl_matrix_complex_view m = 
-            gsl_matrix_complex_submatrix (Q, i + 1, i + 1, N-(i+1), N-(i+1));
+            gsl_matrix_complex_submatrix (U, i + 1, i + 1, N-(i+1), N-(i+1));
 
           gsl_linalg_complex_householder_hm (ti, &h.vector, &m.matrix);
         }
