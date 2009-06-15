@@ -21,6 +21,7 @@
 #include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_bspline.h>
+#include <gsl/gsl_statistics.h>
 
 /*
  * This module contains routines related to calculating B-splines.
@@ -205,6 +206,29 @@ gsl_bspline_breakpoint (size_t i, gsl_bspline_workspace * w)
 {
   size_t j = i + w->k - 1;
   return gsl_vector_get (w->knots, j);
+}
+
+/* Return the number of Greville abscissae for this basis */
+size_t
+gsl_bspline_greville_nabscissae(gsl_bspline_workspace *w)
+{
+  return w->knots->size - w->km1;
+}
+
+/* Return the location of the i-th Greville abscissa */
+double
+gsl_bspline_greville_abscissa(size_t i, gsl_bspline_workspace *w)
+{
+#if GSL_RANGE_CHECK
+  if (GSL_RANGE_COND(i >= gsl_bspline_greville_nabscissae(w)))
+    {
+      GSL_ERROR_VAL ("Greville abscissa index out of range", GSL_EINVAL, 0);
+    }
+#endif
+  const size_t stride = w->knots->stride;
+  const double * data = w->knots->data + i*stride;
+
+  return gsl_stats_mean(data, stride, w->k);
 }
 
 /*
