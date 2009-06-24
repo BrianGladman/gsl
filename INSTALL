@@ -41,7 +41,8 @@ with the command,
 
 to allow any errors to be examined in detail.  By default, only test
 failures are shown.  To see the complete output, set the environment
-variable GSL_TEST_VERBOSE=1.
+variable GSL_TEST_VERBOSE=1.  Use "make -k check" to continue running
+the remaining tests in the event of failures.
 
 If you run the tests and get some failures, please see the notes on
 platform specific problems below.  If you find failures that are not
