@@ -19,15 +19,13 @@
 
 {
   INDEX i;
-  INDEX ix;
+  INDEX ix = 0;
   const BASE alpha_real = CONST_REAL0(alpha);
   const BASE alpha_imag = CONST_IMAG0(alpha);
 
   if (incX <= 0) {
     return;
   }
-
-  ix = OFFSET(N, incX);
 
   for (i = 0; i < N; i++) {
     const BASE x_real = REAL(X, ix);

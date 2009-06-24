@@ -19,13 +19,11 @@
 
 {
   INDEX i;
-  INDEX ix;
+  INDEX ix = 0;
 
   if (incX <= 0) {
     return;
   }
-
-  ix = OFFSET(N, incX);
 
   for (i = 0; i < N; i++) {
     REAL(X, ix) *= alpha;
