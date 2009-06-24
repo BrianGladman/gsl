@@ -19,8 +19,9 @@
  */
 
 /* vector_bfgs2.c -- Fletcher's implementation of the BFGS method,
-   from R.Fletcher, "Practical Method's of Optimization", Second
-   Edition, ISBN 0471915475.  Algorithms 2.6.2 and 2.6.4. */
+   using the line minimisation algorithm from from R.Fletcher,
+   "Practical Methods of Optimization", Second Edition, ISBN
+   0471915475.  Algorithms 2.6.2 and 2.6.4. */
 
 /* Thanks to Alan Irwin irwin@beluga.phys.uvic.ca. for suggesting this
    algorithm and providing sample fortran benchmarks */
