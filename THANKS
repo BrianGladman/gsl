@@ -463,3 +463,5 @@ evaluation and ode improvements
 * Taneli Kalvas <taneli.kalvas@jyu.fi> bug report for odes
 
 * Marco Maggi <mrc.mgg@gmail.com> bug fix for gsl_blas_drotm
+
+* Mateus Araújo Santos - bug fix for LM set

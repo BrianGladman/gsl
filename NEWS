@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** The multifit LMDER hybrid solvers now check the return code of the
+   user-supplied function in the gsl_multifit_fdfsolver_set method.
+
 ** Improved the implementation of gsl_ran_discrete_preproc to avoid
    internal errors due to inconsistencies from excess precision on
    some platforms.

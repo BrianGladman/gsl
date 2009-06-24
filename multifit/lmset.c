@@ -11,7 +11,13 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   int signum;
 
-  GSL_MULTIFIT_FN_EVAL_F_DF (fdf, x, f, J);
+  /* Evaluate function at x */
+  /* return immediately if evaluation raised error */
+  {
+    int status = GSL_MULTIFIT_FN_EVAL_F_DF (fdf, x, f, J);
+    if (status)
+      return status;
+  }
 
   state->par = 0;
   state->iter = 1;
