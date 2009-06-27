@@ -15,10 +15,10 @@ main (void)
   gsl_multimin_function_fdf my_func;
 
   my_func.n = 2;
-  my_func.f = &my_f;
-  my_func.df = &my_df;
-  my_func.fdf = &my_fdf;
-  my_func.params = &par;
+  my_func.f = my_f;
+  my_func.df = my_df;
+  my_func.fdf = my_fdf;
+  my_func.params = par;
 
   /* Starting point, x = (5,7) */
   x = gsl_vector_alloc (2);

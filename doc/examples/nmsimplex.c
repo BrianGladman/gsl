@@ -24,8 +24,8 @@ main(void)
 
   /* Initialize method and iterate */
   minex_func.n = 2;
-  minex_func.f = &my_f;
-  minex_func.params = (void *)&par;
+  minex_func.f = my_f;
+  minex_func.params = par;
 
   s = gsl_multimin_fminimizer_alloc (T, 2);
   gsl_multimin_fminimizer_set (s, &minex_func, x, ss);
