@@ -31,6 +31,7 @@
 #include <gsl/gsl_linalg.h>
 
 #define REAL double
+static int singular (const gsl_matrix * LU);
 
 /* Factorise a general N x N matrix A into,
  *
@@ -141,17 +142,23 @@ gsl_linalg_LU_solve (const gsl_matrix * LU, const gsl_permutation * p, const gsl
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
+    }
   else
     {
+      int status;
+
       /* Copy x <- b */
 
       gsl_vector_memcpy (x, b);
 
       /* Solve for x */
 
-      gsl_linalg_LU_svx (LU, p, x);
+      status = gsl_linalg_LU_svx (LU, p, x);
 
-      return GSL_SUCCESS;
+      return status;
     }
 }
 
@@ -170,6 +177,10 @@ gsl_linalg_LU_svx (const gsl_matrix * LU, const gsl_permutation * p, gsl_vector 
   else if (LU->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match solution/rhs size", GSL_EBADLEN);
+    }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
     }
   else
     {
@@ -217,8 +228,14 @@ gsl_linalg_LU_refine (const gsl_matrix * A, const gsl_matrix * LU, const gsl_per
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
+    }
   else
     {
+      int status;
+
       /* Compute residual, residual = (A * x  - b) */
 
       gsl_vector_memcpy (residual, b);
@@ -226,10 +243,10 @@ gsl_linalg_LU_refine (const gsl_matrix * A, const gsl_matrix * LU, const gsl_per
 
       /* Find correction, delta = - (A^-1) * residual, and apply it */
 
-      gsl_linalg_LU_svx (LU, p, residual);
+      status = gsl_linalg_LU_svx (LU, p, residual);
       gsl_blas_daxpy (-1.0, residual, x);
 
-      return GSL_SUCCESS;
+      return status;
     }
 }
 
@@ -239,6 +256,11 @@ gsl_linalg_LU_invert (const gsl_matrix * LU, const gsl_permutation * p, gsl_matr
   size_t i, n = LU->size1;
 
   int status = GSL_SUCCESS;
+
+  if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
+    }
 
   gsl_matrix_set_identity (inverse);
 
@@ -285,7 +307,6 @@ gsl_linalg_LU_lndet (gsl_matrix * LU)
   return lndet;
 }
 
-
 int
 gsl_linalg_LU_sgndet (gsl_matrix * LU, int signum)
 {
@@ -310,3 +331,18 @@ gsl_linalg_LU_sgndet (gsl_matrix * LU, int signum)
 
   return s;
 }
+
+static int
+singular (const gsl_matrix * LU)
+{
+  size_t i, n = LU->size1;
+
+  for (i = 0; i < n; i++)
+    {
+      double u = gsl_matrix_get (LU, i, i);
+      if (u == 0) return 1;
+    }
+ 
+ return 0;
+}
+
