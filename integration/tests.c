@@ -218,3 +218,33 @@ double myfn2 (double x, void * params) {
   double alpha = *(double *) params ;
   return exp(alpha*x) ;
 }
+
+
+/* f_monomial = constant * x^degree */
+double f_monomial(double x, void * params)
+{
+  struct monomial_params * p = (struct monomial_params *) params;
+
+  return p->constant * gsl_pow_int(x, p->degree);
+}
+
+/* integ(f_monomial,x,a b)=constant*(b^(degree+1)-a^(degree+1))/(degree+1) */
+double integ_f_monomial(double a, double b, struct monomial_params * p)
+{
+  const int degreep1 = p->degree + 1;
+  const double bnp1 = gsl_pow_int(b, degreep1);
+  const double anp1 = gsl_pow_int(a, degreep1);
+  return (p->constant / degreep1)*(bnp1 - anp1);
+}
+
+/* f(x) = sin(x) */
+double f_sin(double x, void * params)
+{
+    return sin(x);
+}
+
+/* integ(f_sin,x,a,b) */
+double integ_f_sin(double a, double b)
+{
+    return -cos(b) + cos(a);
+}

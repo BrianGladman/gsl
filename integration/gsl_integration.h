@@ -247,6 +247,32 @@ int gsl_integration_qawf (gsl_function * f,
                           gsl_integration_qawo_table * wf,
                           double *result, double *abserr);
 
+/* Workspace for fixed-order Gauss-Legendre integration */
+
+typedef struct
+  {
+    size_t n;         /* number of points */
+    double *x;        /* Gauss abscissae/points */
+    double *w;        /* Gauss weights for each abscissae */
+    int precomputed;  /* high precision abscissae/weights precomputed? */
+  }
+gsl_integration_glfixed_table;
+
+
+gsl_integration_glfixed_table *
+  gsl_integration_glfixed_table_alloc (size_t n);
+
+void
+  gsl_integration_glfixed_table_free (gsl_integration_glfixed_table * t);
+
+/* Routine for fixed-order Gauss-Legendre integration */
+
+double
+  gsl_integration_glfixed (const gsl_function *f,
+                           double a,
+                           double b,
+                           const gsl_integration_glfixed_table * t);
+
 __END_DECLS
 
 #endif /* __GSL_INTEGRATION_H__ */

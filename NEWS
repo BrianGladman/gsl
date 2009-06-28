@@ -1,3 +1,9 @@
+* What is new in gsl-1.12+:
+
+** Added gsl_integrate_glfixed routines for performing fixed order
+   Gauss-Legendre integration 
+   (Pavel Holoborodko, Konstantin Holoborodko, Rhys Ulerich)
+
 * What is new in gsl-1.12:
 
 ** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6,
