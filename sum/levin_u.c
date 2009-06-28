@@ -38,7 +38,14 @@ gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
                         gsl_sum_levin_u_workspace * w,
                         double *sum_accel, double *abserr)
 {
-  if (array_size == 0)
+  /* Ignore any trailing zeros in the array */
+  size_t size = array_size;
+
+  while (size > 0 && array[size - 1] == 0) {
+    size--;
+  }
+
+  if (size == 0)
     {
       *sum_accel = 0.0;
       *abserr = 0.0;
@@ -46,7 +53,7 @@ gsl_sum_levin_u_minmax (const double *array, const size_t array_size,
       w->terms_used = 0;
       return GSL_SUCCESS;
     }
-  else if (array_size == 1)
+  else if (size == 1)
     {
       *sum_accel = array[0];
       *abserr = 0.0;

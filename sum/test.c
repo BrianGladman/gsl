@@ -194,6 +194,22 @@ main (void)
     check_full (t, result, "eta(1/2)");
   }
 
+  {
+    double t[N];
+    int n;
+
+    double result = 1.23;
+
+    for (n = 0; n < N; n++)
+      {
+        t[n] = (n == 0) ? 1.23 : 0.0;
+      }
+    
+    check_trunc (t, result, "1.23 + 0 + 0 + 0...");
+    check_full (t, result, "1.23 + 0 + 0 + 0...");
+  }
+
+
   exit (gsl_test_summary ());
 }
 
@@ -223,7 +239,7 @@ check_full (double * t, double expected, const char * desc)
   gsl_sum_levin_u_accel (t, N, w, &sum_accel, &err_est);
   gsl_test_rel (sum_accel, expected, 1e-8, "full result, %s", desc);
   
-  sd_est = -log10 (err_est/fabs(sum_accel));
+  sd_est = -log10 (err_est/fabs(sum_accel) + GSL_DBL_EPSILON);
   sd_actual = -log10 (DBL_EPSILON + fabs ((sum_accel - expected)/expected));
 
   /* Allow one digit of slop */
