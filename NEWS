@@ -5,8 +5,8 @@
    c_n*x^n with x=0.
 
 ** The functions gsl_linalg_LU_solve, gsl_linalg_LU_svx,
-   gsl_linalg_LU_refine and gsl_linalg_LU_invert, now return an error
-   for singular matrice.
+   gsl_linalg_LU_refine, gsl_linalg_LU_invert and their complex
+   equivalents now return an error for singular matrices.
 
 ** The multifit LMDER hybrid solvers now check the return code of the
    user-supplied function in the gsl_multifit_fdfsolver_set method.

@@ -31,6 +31,8 @@
 
 #include <gsl/gsl_linalg.h>
 
+static int singular (const gsl_matrix_complex * LU);
+
 /* Factorise a general N x N complex matrix A into,
  *
  *   P A = L U
@@ -149,17 +151,23 @@ gsl_linalg_complex_LU_solve (const gsl_matrix_complex * LU, const gsl_permutatio
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
+    }
   else
     {
+      int status;
+
       /* Copy x <- b */
 
       gsl_vector_complex_memcpy (x, b);
 
       /* Solve for x */
 
-      gsl_linalg_complex_LU_svx (LU, p, x);
+      status = gsl_linalg_complex_LU_svx (LU, p, x);
 
-      return GSL_SUCCESS;
+      return status;
     }
 }
 
@@ -178,6 +186,10 @@ gsl_linalg_complex_LU_svx (const gsl_matrix_complex * LU, const gsl_permutation 
   else if (LU->size1 != x->size)
     {
       GSL_ERROR ("matrix size must match solution/rhs size", GSL_EBADLEN);
+    }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
     }
   else
     {
@@ -225,8 +237,14 @@ gsl_linalg_complex_LU_refine (const gsl_matrix_complex * A, const gsl_matrix_com
     {
       GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
     }
+  else if (singular (LU)) 
+    {
+      GSL_ERROR ("matrix is singular", GSL_EDOM);
+    }
   else
     {
+      int status;
+
       /* Compute residual, residual = (A * x  - b) */
 
       gsl_vector_complex_memcpy (residual, b);
@@ -239,14 +257,14 @@ gsl_linalg_complex_LU_refine (const gsl_matrix_complex * A, const gsl_matrix_com
 
       /* Find correction, delta = - (A^-1) * residual, and apply it */
 
-      gsl_linalg_complex_LU_svx (LU, p, residual);
+      status = gsl_linalg_complex_LU_svx (LU, p, residual);
 
       {
         gsl_complex negone= GSL_COMPLEX_NEGONE;
         gsl_blas_zaxpy (negone, residual, x);
       }
 
-      return GSL_SUCCESS;
+      return status;
     }
 }
 
@@ -331,4 +349,18 @@ gsl_linalg_complex_LU_sgndet (gsl_matrix_complex * LU, int signum)
     }
 
   return phase;
+}
+
+static int
+singular (const gsl_matrix_complex * LU)
+{
+  size_t i, n = LU->size1;
+
+  for (i = 0; i < n; i++)
+    {
+      gsl_complex u = gsl_matrix_complex_get (LU, i, i);
+      if (GSL_REAL(u) == 0 && GSL_IMAG(u) == 0) return 1;
+    }
+ 
+ return 0;
 }

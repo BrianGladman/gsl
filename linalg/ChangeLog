@@ -1,3 +1,9 @@
+2009-07-04  Brian Gough  <bjg@network-theory.co.uk>
+
+	* luc.c (gsl_linalg_complex_LU_solve, gsl_linalg_complex_LU_svx,
+	gsl_linalg_complex_LU_refine, singular): added check
+	for singular matrix
+
 2009-06-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* lu.c (gsl_linalg_LU_solve, gsl_linalg_LU_svx,
