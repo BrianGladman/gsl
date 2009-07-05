@@ -68,7 +68,6 @@ size_t gsl_bspline_ncoeffs(gsl_bspline_workspace * w);
 size_t gsl_bspline_order(gsl_bspline_workspace * w);
 size_t gsl_bspline_nbreak(gsl_bspline_workspace * w);
 double gsl_bspline_breakpoint(size_t i, gsl_bspline_workspace * w);
-size_t gsl_bspline_greville_nabscissae(gsl_bspline_workspace *w);
 double gsl_bspline_greville_abscissa(size_t i, gsl_bspline_workspace *w);
 
 int
