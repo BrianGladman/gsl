@@ -113,7 +113,7 @@ installed in its default location.
 @subsection Linking with an alternative BLAS library
 
 The following command line shows how you would link the same application
-with an alternative @sc{cblas} library called @file{libcblas},
+with an alternative @sc{cblas} library @file{libcblas.a},
 
 @example
 $ gcc example.o -lgsl -lcblas -lm
