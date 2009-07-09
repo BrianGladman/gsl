@@ -508,6 +508,7 @@ gsl_monte_vegas_init (gsl_monte_vegas_state * state)
 void
 gsl_monte_vegas_free (gsl_monte_vegas_state * s)
 {
+  RETURN_IF_NULL (s);
   free (s->x);
   free (s->delx);
   free (s->d);

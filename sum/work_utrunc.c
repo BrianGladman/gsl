@@ -60,6 +60,7 @@ gsl_sum_levin_utrunc_alloc (size_t n)
 void
 gsl_sum_levin_utrunc_free (gsl_sum_levin_utrunc_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->dsum);
   free (w->q_den);
   free (w->q_num);

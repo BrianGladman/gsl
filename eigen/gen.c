@@ -161,6 +161,8 @@ gsl_eigen_gen_free()
 void
 gsl_eigen_gen_free (gsl_eigen_gen_workspace * w)
 {
+  RETURN_IF_NULL (w);
+
   if (w->work)
     gsl_vector_free(w->work);
 

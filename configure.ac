@@ -534,6 +534,9 @@ AH_BOTTOM([#if defined(GSL_RANGE_CHECK_OFF) || !defined(GSL_RANGE_CHECK)
 #define GSL_RANGE_CHECK 0  /* turn off range checking by default internally */
 #endif])
 
+AH_BOTTOM([#define RETURN_IF_NULL(x) if (!x) { return ; }
+])
+
 AH_VERBATIM([GSL_DISABLE_DEPRECATED],
 [/* Disable deprecated functions and enums while building */
 #define GSL_DISABLE_DEPRECATED 1])

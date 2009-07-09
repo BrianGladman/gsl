@@ -121,6 +121,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
 void
 gsl_multifit_linear_free (gsl_multifit_linear_workspace * work)
 {
+  RETURN_IF_NULL (work);
   gsl_matrix_free (work->A);
   gsl_matrix_free (work->Q);
   gsl_matrix_free (work->QSI);

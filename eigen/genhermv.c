@@ -86,6 +86,8 @@ gsl_eigen_genhermv_free()
 void
 gsl_eigen_genhermv_free (gsl_eigen_genhermv_workspace * w)
 {
+  RETURN_IF_NULL (w);
+
   if (w->hermv_workspace_p)
     gsl_eigen_hermv_free(w->hermv_workspace_p);
 

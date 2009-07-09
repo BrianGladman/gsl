@@ -96,6 +96,7 @@ gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * s,
 void
 gsl_multimin_fminimizer_free (gsl_multimin_fminimizer * s)
 {
+  RETURN_IF_NULL (s);
   (s->type->free) (s->state);
   free (s->state);
   gsl_vector_free (s->x);

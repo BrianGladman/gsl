@@ -136,6 +136,7 @@ gsl_histogram_calloc (size_t n)
 void
 gsl_histogram_free (gsl_histogram * h)
 {
+  RETURN_IF_NULL (h);
   free (h->range);
   free (h->bin);
   free (h);

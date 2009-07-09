@@ -121,6 +121,7 @@ gsl_combination_init_last (gsl_combination * c)
 void
 gsl_combination_free (gsl_combination * c)
 {
+  RETURN_IF_NULL (c);
   if (c->k > 0) free (c->data);
   free (c);
 }

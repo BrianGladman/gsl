@@ -98,6 +98,7 @@ gsl_spline_min_size(const gsl_spline * spline)
 void
 gsl_spline_free (gsl_spline * spline)
 {
+  RETURN_IF_NULL (spline);
   gsl_interp_free (spline->interp);
   free (spline->x);
   free (spline->y);

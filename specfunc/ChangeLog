@@ -1,3 +1,8 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* mathieu_workspace.c (gsl_sf_mathieu_free): handle NULL argument
+	in free
+
 2009-05-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): fix condition on a and b

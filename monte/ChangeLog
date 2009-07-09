@@ -1,3 +1,11 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vegas.c (gsl_monte_vegas_free): handle NULL argument in free
+
+	* plain.c (gsl_monte_plain_free): handle NULL argument in free
+
+	* miser.c (gsl_monte_miser_free): handle NULL argument in free
+
 2009-02-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vegas.c (gsl_monte_vegas_integrate): use gsl_pow_int to compute

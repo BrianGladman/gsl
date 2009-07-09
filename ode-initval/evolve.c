@@ -98,6 +98,7 @@ gsl_odeiv_evolve_reset (gsl_odeiv_evolve * e)
 void
 gsl_odeiv_evolve_free (gsl_odeiv_evolve * e)
 {
+  RETURN_IF_NULL (e);
   free (e->dydt_out);
   free (e->dydt_in);
   free (e->yerr);

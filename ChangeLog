@@ -1,3 +1,8 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* configure.ac: added RETURN_IF_NULL macro to handle null argument
+	in free() type functions.
+	
 2009-05-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: improve tests for C99 inline, and don't test when

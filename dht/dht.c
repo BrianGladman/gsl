@@ -179,6 +179,7 @@ double gsl_dht_k_sample(const gsl_dht * t, int n)
 
 void gsl_dht_free(gsl_dht * t)
 {
+  RETURN_IF_NULL (t);
   free(t->J2);
   free(t->Jjj);
   free(t->j);

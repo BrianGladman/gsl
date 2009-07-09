@@ -109,6 +109,7 @@ gsl_integration_qaws_table_set (gsl_integration_qaws_table * t,
 void
 gsl_integration_qaws_table_free (gsl_integration_qaws_table * t)
 {
+  RETURN_IF_NULL (t);
   free (t);
 }
 

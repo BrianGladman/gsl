@@ -93,6 +93,7 @@ gsl_permutation_init (gsl_permutation * p)
 void
 gsl_permutation_free (gsl_permutation * p)
 {
+  RETURN_IF_NULL (p);
   free (p->data);
   free (p);
 }

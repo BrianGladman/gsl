@@ -120,6 +120,7 @@ gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
 void
 gsl_multimin_fdfminimizer_free (gsl_multimin_fdfminimizer * s)
 {
+  RETURN_IF_NULL (s);
   (s->type->free) (s->state);
   free (s->state);
   gsl_vector_free (s->dx);

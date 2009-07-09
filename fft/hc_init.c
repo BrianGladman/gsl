@@ -117,7 +117,7 @@ FUNCTION(gsl_fft_halfcomplex_wavetable,alloc) (size_t n)
 void
 FUNCTION(gsl_fft_halfcomplex_wavetable,free) (TYPE(gsl_fft_halfcomplex_wavetable) * wavetable)
 {
-
+  RETURN_IF_NULL (wavetable);
   /* release trigonometric lookup tables */
 
   free (wavetable->trig);

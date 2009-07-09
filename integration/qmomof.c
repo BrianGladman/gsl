@@ -144,6 +144,7 @@ gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
 void
 gsl_integration_qawo_table_free (gsl_integration_qawo_table * t)
 {
+  RETURN_IF_NULL (t);
   free (t->chebmo);
   free (t);
 }

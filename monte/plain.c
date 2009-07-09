@@ -146,6 +146,7 @@ gsl_monte_plain_init (gsl_monte_plain_state * s)
 void
 gsl_monte_plain_free (gsl_monte_plain_state * s)
 {
+  RETURN_IF_NULL (s);
   free (s->x);
   free (s);
 }

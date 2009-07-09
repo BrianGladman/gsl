@@ -53,5 +53,6 @@ gsl_interp_accel_reset (gsl_interp_accel * a)
 void
 gsl_interp_accel_free (gsl_interp_accel * a)
 {
+  RETURN_IF_NULL (a);
   free (a);
 }

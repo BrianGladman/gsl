@@ -147,6 +147,7 @@ gsl_histogram_pdf_init (gsl_histogram_pdf * p, const gsl_histogram * h)
 void
 gsl_histogram_pdf_free (gsl_histogram_pdf * p)
 {
+  RETURN_IF_NULL (p);
   free (p->range);
   free (p->sum);
   free (p);

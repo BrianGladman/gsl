@@ -1,3 +1,7 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* discrete.c (gsl_ran_discrete_free): handle NULL argument in free
+
 2009-05-16  Brian Gough  <bjg@network-theory.co.uk>
 
 	* discrete.c (push_stack): replace abort() with an error return

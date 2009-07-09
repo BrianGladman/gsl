@@ -108,6 +108,8 @@ gsl_eigen_nonsymm_free()
 void
 gsl_eigen_nonsymm_free (gsl_eigen_nonsymm_workspace * w)
 {
+  RETURN_IF_NULL (w);
+
   if (w->tau)
     gsl_vector_free(w->tau);
 

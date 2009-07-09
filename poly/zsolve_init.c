@@ -64,6 +64,7 @@ gsl_poly_complex_workspace_alloc (size_t n)
 void 
 gsl_poly_complex_workspace_free (gsl_poly_complex_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free(w->matrix) ;
   free(w);
 }

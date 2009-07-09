@@ -1,3 +1,11 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* fminimizer.c (gsl_multimin_fminimizer_free): handle NULL
+	argument in free
+
+	* fdfminimizer.c (gsl_multimin_fdfminimizer_free): handle NULL
+	argument in free
+
 2008-11-29  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (test_f): extended fminimizer test to allow type to be

@@ -87,6 +87,7 @@ gsl_eigen_symmv_alloc (const size_t n)
 void
 gsl_eigen_symmv_free (gsl_eigen_symmv_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free(w->gs);
   free(w->gc);
   free(w->sd);

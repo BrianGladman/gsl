@@ -189,6 +189,7 @@ gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
 
 void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace)
 {
+  RETURN_IF_NULL (workspace);
   gsl_vector_free(workspace->eval);
   gsl_matrix_free(workspace->evec);
   gsl_eigen_symmv_free(workspace->wmat);

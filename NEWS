@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** All functions for freeing allocated memory now accept a NULL
+   pointer, following the standard C convention for free(). [bug
+   #25319]
+
 ** The function gsl_sum_levin_u_accel now handles the special case
    c_0 + 0 + 0 + 0 + .... that occurs when summing power series
    c_n*x^n with x=0.

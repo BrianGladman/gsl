@@ -549,6 +549,7 @@ gsl_monte_miser_init (gsl_monte_miser_state * s)
 void
 gsl_monte_miser_free (gsl_monte_miser_state * s)
 {
+  RETURN_IF_NULL (s);
   free (s->hits_r);
   free (s->hits_l);
   free (s->fsum2_r);

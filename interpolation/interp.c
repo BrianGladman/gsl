@@ -108,6 +108,8 @@ gsl_interp_min_size(const gsl_interp * interp)
 void
 gsl_interp_free (gsl_interp * interp)
 {
+  RETURN_IF_NULL (interp);
+
   if (interp->type->free)
     interp->type->free (interp->state);
   free (interp);

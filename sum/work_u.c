@@ -85,6 +85,7 @@ gsl_sum_levin_u_alloc (size_t n)
 void
 gsl_sum_levin_u_free (gsl_sum_levin_u_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->dsum);
   free (w->dq_den);
   free (w->dq_num);

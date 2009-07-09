@@ -84,6 +84,8 @@ gsl_eigen_gensymmv_free()
 void
 gsl_eigen_gensymmv_free (gsl_eigen_gensymmv_workspace * w)
 {
+  RETURN_IF_NULL (w);
+
   if (w->symmv_workspace_p)
     gsl_eigen_symmv_free(w->symmv_workspace_p);
 

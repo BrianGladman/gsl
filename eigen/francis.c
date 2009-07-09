@@ -104,6 +104,7 @@ gsl_eigen_francis_free()
 void
 gsl_eigen_francis_free (gsl_eigen_francis_workspace *w)
 {
+  RETURN_IF_NULL (w);
   free(w);
 } /* gsl_eigen_francis_free() */
 

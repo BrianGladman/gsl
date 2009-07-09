@@ -149,7 +149,7 @@ FUNCTION(gsl_fft_complex_workspace,alloc) (size_t n)
 void
 FUNCTION(gsl_fft_complex_wavetable,free) (TYPE(gsl_fft_complex_wavetable) * wavetable)
 {
-
+  RETURN_IF_NULL (wavetable);
   /* release trigonometric lookup tables */
 
   free (wavetable->trig);
@@ -161,6 +161,7 @@ FUNCTION(gsl_fft_complex_wavetable,free) (TYPE(gsl_fft_complex_wavetable) * wave
 void
 FUNCTION(gsl_fft_complex_workspace,free) (TYPE(gsl_fft_complex_workspace) * workspace)
 {
+  RETURN_IF_NULL (workspace);
   /* release scratch space */
 
   free (workspace->scratch);

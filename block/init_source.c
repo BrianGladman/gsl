@@ -74,6 +74,7 @@ FUNCTION (gsl_block, calloc) (const size_t n)
 void
 FUNCTION (gsl_block, free) (TYPE (gsl_block) * b)
 {
+  RETURN_IF_NULL (b);
   free (b->data);
   free (b);
 }

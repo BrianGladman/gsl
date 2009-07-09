@@ -115,6 +115,8 @@ gsl_eigen_genv_free()
 void
 gsl_eigen_genv_free(gsl_eigen_genv_workspace *w)
 {
+  RETURN_IF_NULL (w);
+
   if (w->gen_workspace_p)
     gsl_eigen_gen_free(w->gen_workspace_p);
 

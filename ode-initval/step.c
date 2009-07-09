@@ -84,6 +84,7 @@ gsl_odeiv_step_reset(gsl_odeiv_step * s)
 void
 gsl_odeiv_step_free(gsl_odeiv_step * s)
 {
+  RETURN_IF_NULL (s);
   s->type->free(s->state);
   free(s);
 }

@@ -148,6 +148,7 @@ gsl_rng_print_state (const gsl_rng * r)
 void
 gsl_rng_free (gsl_rng * r)
 {
+  RETURN_IF_NULL (r);
   free (r->state);
   free (r);
 }

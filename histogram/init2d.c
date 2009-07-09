@@ -217,6 +217,7 @@ gsl_histogram2d_calloc (const size_t nx, const size_t ny)
 void
 gsl_histogram2d_free (gsl_histogram2d * h)
 {
+  RETURN_IF_NULL (h);
   free (h->xrange);
   free (h->yrange);
   free (h->bin);

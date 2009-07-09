@@ -1,3 +1,10 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* work_utrunc.c (gsl_sum_levin_utrunc_free): handle NULL argument
+	in free
+
+	* work_u.c (gsl_sum_levin_u_free): handle NULL argument in free
+
 2009-06-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* test.c (check_full): allow for case where err_est is zero.

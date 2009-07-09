@@ -109,6 +109,7 @@ gsl_eigen_hermv_alloc (const size_t n)
 void
 gsl_eigen_hermv_free (gsl_eigen_hermv_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->gs);
   free (w->gc);
   free (w->tau);

@@ -378,6 +378,7 @@ gsl_ran_discrete(const gsl_rng *r, const gsl_ran_discrete_t *g)
 
 void gsl_ran_discrete_free(gsl_ran_discrete_t *g)
 {
+    RETURN_IF_NULL (g);
     free((char *)(g->A));
     free((char *)(g->F));
     free((char *)g);

@@ -77,6 +77,7 @@ gsl_root_fsolver_iterate (gsl_root_fsolver * s)
 void
 gsl_root_fsolver_free (gsl_root_fsolver * s)
 {
+  RETURN_IF_NULL (s);
   free (s->state);
   free (s);
 }

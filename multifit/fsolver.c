@@ -135,6 +135,7 @@ gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * s)
 void
 gsl_multifit_fsolver_free (gsl_multifit_fsolver * s)
 {
+  RETURN_IF_NULL (s);
   (s->type->free) (s->state);
   free (s->state);
   gsl_vector_free (s->dx);

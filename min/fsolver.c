@@ -145,6 +145,7 @@ gsl_min_fminimizer_iterate (gsl_min_fminimizer * s)
 void
 gsl_min_fminimizer_free (gsl_min_fminimizer * s)
 {
+  RETURN_IF_NULL (s);
   free (s->state);
   free (s);
 }

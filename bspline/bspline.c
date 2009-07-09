@@ -244,6 +244,7 @@ Return: none
 void
 gsl_bspline_free (gsl_bspline_workspace * w)
 {
+  RETURN_IF_NULL (w);
   gsl_vector_free (w->knots);
   gsl_vector_free (w->deltal);
   gsl_vector_free (w->deltar);
@@ -263,6 +264,7 @@ Return: none
 void
 gsl_bspline_deriv_free (gsl_bspline_deriv_workspace * dw)
 {
+  RETURN_IF_NULL (dw);
   gsl_matrix_free (dw->A);
   gsl_matrix_free (dw->dB);
   free (dw);

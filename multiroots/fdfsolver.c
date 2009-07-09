@@ -142,6 +142,7 @@ gsl_multiroot_fdfsolver_iterate (gsl_multiroot_fdfsolver * s)
 void
 gsl_multiroot_fdfsolver_free (gsl_multiroot_fdfsolver * s)
 {
+  RETURN_IF_NULL (s);
   (s->type->free) (s->state);
   free (s->state);
   gsl_vector_free (s->dx);

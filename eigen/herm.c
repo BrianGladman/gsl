@@ -79,6 +79,7 @@ gsl_eigen_herm_alloc (const size_t n)
 void
 gsl_eigen_herm_free (gsl_eigen_herm_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->tau);
   free (w->sd);
   free (w->d);

@@ -130,6 +130,7 @@ gsl_multiroot_fsolver_iterate (gsl_multiroot_fsolver * s)
 void
 gsl_multiroot_fsolver_free (gsl_multiroot_fsolver * s)
 {
+  RETURN_IF_NULL (s);
   (s->type->free) (s->state);
   free (s->state);
   gsl_vector_free (s->dx);

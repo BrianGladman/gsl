@@ -112,8 +112,7 @@ gsl_qrng_state (const gsl_qrng * q)
 void
 gsl_qrng_free (gsl_qrng * q)
 {
-  if(q != 0) {
-    if(q->state != 0) free (q->state);
-    free (q);
-  }
+  RETURN_IF_NULL (q);
+  if(q->state != 0) free (q->state);
+  free (q);
 }

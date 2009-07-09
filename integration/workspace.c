@@ -128,6 +128,7 @@ gsl_integration_workspace_alloc (const size_t n)
 void
 gsl_integration_workspace_free (gsl_integration_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->level) ;
   free (w->order) ;
   free (w->elist) ;

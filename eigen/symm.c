@@ -75,6 +75,7 @@ gsl_eigen_symm_alloc (const size_t n)
 void
 gsl_eigen_symm_free (gsl_eigen_symm_workspace * w)
 {
+  RETURN_IF_NULL (w);
   free (w->sd);
   free (w->d);
   free (w);

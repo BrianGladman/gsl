@@ -1,3 +1,11 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* step.c (gsl_odeiv_step_free): handle NULL argument in free
+
+	* evolve.c (gsl_odeiv_evolve_free): handle NULL argument in free
+
+	* control.c (gsl_odeiv_control_free): handle NULL argument in free
+
 2009-04-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gear2.c (gear2_apply): save initial values of y for possible

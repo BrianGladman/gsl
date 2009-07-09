@@ -1,3 +1,11 @@
+2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* spline.c (gsl_spline_free): handle NULL argument in free
+
+	* interp.c (gsl_interp_free): handle NULL argument in free
+
+	* accel.c (gsl_interp_accel_free): handle NULL argument in free
+
 2008-09-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_interp.h (gsl_interp_accel_find): corrected condition for

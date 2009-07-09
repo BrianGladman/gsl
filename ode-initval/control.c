@@ -62,6 +62,7 @@ gsl_odeiv_control_init(gsl_odeiv_control * c,
 void
 gsl_odeiv_control_free(gsl_odeiv_control * c)
 {
+  RETURN_IF_NULL (c);
   c->type->free(c->state);
   free(c);
 }

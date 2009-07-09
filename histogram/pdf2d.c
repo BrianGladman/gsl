@@ -179,6 +179,7 @@ gsl_histogram2d_pdf_init (gsl_histogram2d_pdf * p, const gsl_histogram2d * h)
 void
 gsl_histogram2d_pdf_free (gsl_histogram2d_pdf * p)
 {
+  RETURN_IF_NULL (p);
   free (p->xrange);
   free (p->yrange);
   free (p->sum);
