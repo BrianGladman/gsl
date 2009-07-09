@@ -6,18 +6,19 @@
 
 ** The function gsl_sum_levin_u_accel now handles the special case
    c_0 + 0 + 0 + 0 + .... that occurs when summing power series
-   c_n*x^n with x=0.
+   c_n*x^n with x=0. [bug #26807]
 
 ** The functions gsl_linalg_LU_solve, gsl_linalg_LU_svx,
    gsl_linalg_LU_refine, gsl_linalg_LU_invert and their complex
    equivalents now return an error for singular matrices.
 
 ** The multifit LMDER hybrid solvers now check the return code of the
-   user-supplied function in the gsl_multifit_fdfsolver_set method.
+   user-supplied function in the gsl_multifit_fdfsolver_set
+   method. [bug #26871]
 
 ** Improved the implementation of gsl_ran_discrete_preproc to avoid
    internal errors due to inconsistencies from excess precision on
-   some platforms.
+   some platforms. [bug #26502]
 
 ** Corrected gsl_sf_hyperg_2F1(a,b,c,x) to not give a domain error in
    the case where c is a negative integer and the series terminates
@@ -28,9 +29,9 @@
 
 ** Modified gsl_poly_complex_solve_cubic and gsl_poly_solve_cubic to
    avoid returning NaNs in cases where excess precision causes a
-   change in the number of roots.
+   change in the number of roots. 
 
-** Fixed incorrect length check in gsl_blas_drotm
+** Fixed incorrect length check in gsl_blas_drotm. [bug #26503]
 
 ** Fixed gsl_odeiv_step_gear2 to restore y on step failure
 
