@@ -11,7 +11,7 @@
 @end ifset
 @c %**end of header
 
-@dircategory Scientific software
+@dircategory Software libraries
 @direntry
 * gsl-ref: (gsl-ref).                   GNU Scientific Library -- Reference
 @end direntry
