@@ -31,9 +31,9 @@
 double
 gsl_ran_exponential (const gsl_rng * r, const double mu)
 {
-  double u = gsl_rng_uniform_pos (r);
+  double u = gsl_rng_uniform (r);
 
-  return -mu * log (u);
+  return -mu * log1p (-u);
 }
 
 double

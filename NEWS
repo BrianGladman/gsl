@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** The function gsl_ran_exponential now includes zero in its output
+   range. [bug #25039]
+
 ** All functions for freeing allocated memory now accept a NULL
    pointer, following the standard C convention for free(). [bug
    #25319]
