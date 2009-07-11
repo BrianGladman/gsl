@@ -1283,6 +1283,39 @@ hyperg_U_bge1(const double a, const double b, const double x,
   }
 }
 
+/* Handle U(a,b,x) using AMS 13.1.3 when x = 0.  This requires b<1 to
+   avoid a singularity from the term z^(1-b) 
+
+   U(a,b,z=0) = (pi/sin(pi*b)) * 1/(gamma(1+a-b)*gamma(b))
+
+   There are a lot of special limiting cases here
+
+   b = 0, positive integer, negative integer
+   1+a-b = 0, negative integer
+
+   I haven't implemented these yet - BJG
+*/
+
+static int
+hyperg_U_origin (const double a, const double b, gsl_sf_result_e10 * result)
+{
+  gsl_sf_result r1, r2;
+  int stat_1 = gsl_sf_gammainv_e(1+a-b,&r1);
+  int stat_2 = gsl_sf_gammainv_e(b,&r2);
+  double factor = M_PI / sin(M_PI*b);
+
+  result->val = factor * r1.val * r2.val;
+  result->err = fabs(factor) * (r1.err + r2.err);
+  result->e10 = 0;
+  
+  return GSL_ERROR_SELECT_2(stat_1, stat_2);
+}  
+
+static int
+hyperg_U_int_origin (const int a, const int b, gsl_sf_result_e10 * result)
+{
+  return hyperg_U_origin (a, b, result);
+}  
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
@@ -1293,8 +1326,11 @@ gsl_sf_hyperg_U_int_e10_e(const int a, const int b, const double x,
 {
   /* CHECK_POINTER(result) */
 
-  if(x <= 0.0) {
+  if(x <= 0.0 || (x == 0.0 && b >= 1)) {
     DOMAIN_ERROR_E10(result);
+  }
+  else if (x == 0.0) {
+    return hyperg_U_int_origin (a, b, result);
   }
   else {
     if(b >= 1) {
@@ -1333,7 +1369,7 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
 
   /* CHECK_POINTER(result) */
 
-  if(x <= 0.0) {
+  if(x < 0.0 || (x == 0.0 && b >= 1)) {
     DOMAIN_ERROR_E10(result);
   }
   else if(a == 0.0) {
@@ -1341,6 +1377,8 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
     result->err = 0.0;
     result->e10 = 0;
     return GSL_SUCCESS;
+  } else if (x == 0.0) {
+    return hyperg_U_origin (a, b, result);
   }
   else if(a_integer && b_integer) {
     return gsl_sf_hyperg_U_int_e10_e(rinta, rintb, x, result);
