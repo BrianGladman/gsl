@@ -365,6 +365,12 @@ step.  The full details of Brent's method include some additional checks
 to improve convergence.
 @end deffn
 
+@deffn {Minimizer} gsl_min_fminimizer_quad_golden
+@cindex safeguarded step-length algorithm
+This is a variant of Brent's algorithm which uses the safeguarded
+step-length algorithm of Gill and Murray.
+@end deffn
+
 @comment ============================================================
 
 @node Minimization Examples

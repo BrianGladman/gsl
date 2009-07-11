@@ -52,7 +52,8 @@ main (void)
 
   fminimizer[0] = gsl_min_fminimizer_goldensection;
   fminimizer[1] = gsl_min_fminimizer_brent;
-  fminimizer[2] = 0;
+  fminimizer[2] = gsl_min_fminimizer_quad_golden;
+  fminimizer[3] = 0;
 
   F_cos = create_function (f_cos) ;
   F_func1 = create_function (func1) ;
