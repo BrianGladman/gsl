@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** Added a new Nelder-Mead minimiser gsl_multimin_fminimizer_nmsimplex2rand
+   which uses a randomly oriented simplex rather than one fixed on
+   the coordinate axes [bug #25077]
+
 ** The texinfo file now uses the dircategory "Software libraries" from
    the Free Software Directory, as recommended in the Texinfo manual.
 

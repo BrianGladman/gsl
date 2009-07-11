@@ -487,6 +487,16 @@ of each vertex from the center rather than the mean distance, which
 has the advantage of allowing a linear update.
 @end deffn
 
+@deffn {Minimizer} gsl_multimin_fminimizer_nmsimplex2rand
+This method is a variant of @code{nmsimplex2} which initialises the
+simplex around the starting point @var{x} using a randomly-oriented
+set of basis vectors instead of the fixed coordinate axes. The
+final dimensions of the simplex are scaled along the coordinate axes by the
+vector @var{step_size}.  The randomisation uses a simple deterministic
+generator so that repeated calls to @code{gsl_multimin_fminimizer_set} for
+a given solver object will vary the orientation in a well-defined way.
+@end deffn
+
 @node Multimin Examples
 @section Examples
 

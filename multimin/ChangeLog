@@ -1,3 +1,8 @@
+2009-07-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* simplex2.c (nmsimplex_set_rand): provide alternative
+	initialisation which randomizes the initial simplex
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fminimizer.c (gsl_multimin_fminimizer_free): handle NULL
