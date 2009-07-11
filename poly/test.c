@@ -557,6 +557,21 @@ main (void)
       }
   }
 
+   {
+     double c[6] = { +1.0, -2.0, +3.0, -4.0, +5.0, -6.0 };
+     double dc[6];
+     double x;
+     x = -0.5;
+     gsl_poly_eval_derivs(c, 6, x, dc, 6);
+
+     gsl_test_rel (dc[0], c[0] + c[1]*x + c[2]*x*x + c[3]*x*x*x + c[4]*x*x*x*x + c[5]*x*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6}, 3.75)");
+     gsl_test_rel (dc[1], c[1] + 2.0*c[2]*x + 3.0*c[3]*x*x + 4.0*c[4]*x*x*x + 5.0*c[5]*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 1, -12.375)");
+     gsl_test_rel (dc[2], 2.0*c[2] + 3.0*2.0*c[3]*x + 4.0*3.0*c[4]*x*x + 5.0*4.0*c[5]*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 2, +48.0)");
+     gsl_test_rel (dc[3], 3.0*2.0*c[3] + 4.0*3.0*2.0*c[4]*x + 5.0*4.0*3.0*c[5]*x*x , eps,"gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 3, -174.0)");
+     gsl_test_rel (dc[4], 4.0*3.0*2.0*c[4] + 5.0*4.0*3.0*2.0*c[5]*x, eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 4, +480.0)");
+     gsl_test_rel (dc[5], 5.0*4.0*3.0*2.0*c[5] , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 5, -720.0)");
+   }
+
 
   /* now summarize the results */
 

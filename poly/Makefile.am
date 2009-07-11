@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_poly.h
 
 INCLUDES = -I$(top_srcdir)
 
-libgslpoly_la_SOURCES = dd.c eval.c solve_quadratic.c solve_cubic.c zsolve_quadratic.c zsolve_cubic.c zsolve.c zsolve_init.c
+libgslpoly_la_SOURCES = dd.c eval.c solve_quadratic.c solve_cubic.c zsolve_quadratic.c zsolve_cubic.c zsolve.c zsolve_init.c deriv.c
 
 noinst_HEADERS = balance.c companion.c qr.c
 

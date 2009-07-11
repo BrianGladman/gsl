@@ -53,6 +53,8 @@ INLINE_DECL gsl_complex gsl_poly_complex_eval (const double c [], const int len,
 /* complex polynomial, complex x */
 INLINE_DECL gsl_complex gsl_complex_poly_complex_eval (const gsl_complex c [], const int len, const gsl_complex z);
 
+int gsl_poly_eval_derivs(const double c[], const size_t lenc, const double x, double res[], const size_t lenres);
+
 #ifdef HAVE_INLINE
 INLINE_FUN
 double 

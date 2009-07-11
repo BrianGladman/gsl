@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** Added a new function gsl_poly_eval_derivs to evaluate a polynomial
+   and its derivatives simultaneously.
+
 ** Added a new univariate minimisation algorithm
    gsl_min_fminimizer_quad_golden which is a variant of Brent's
    algorithm with safeguarded step-length adjustment.
