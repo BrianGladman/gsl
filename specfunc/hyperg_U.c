@@ -716,7 +716,7 @@ hyperg_U_int_bge1(const int a, const int b, const double x,
                                               result);
     return GSL_ERROR_SELECT_2(stat_e, stat_asymp);
   }
-  else if(SERIES_EVAL_OK(a,b,x)) {
+  else if(SERIES_EVAL_OK(a,b,x) && 1 + a - b > 0) {
     gsl_sf_result ser;
     const int stat_ser = hyperg_U_series(a, b, x, &ser);
     result->val = ser.val;

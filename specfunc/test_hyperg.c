@@ -426,9 +426,7 @@ int test_hyperg(void)
 
   /* Bug report from Stefan Gerlach */
 
-#ifdef FIXME
   TEST_SF(s, gsl_sf_hyperg_U_e, (-2.0, 4.0, 1.0, &r),  11.0, TEST_TOL0, GSL_SUCCESS);
-#endif
 
   TEST_SF(s, gsl_sf_hyperg_U_e, (-2.0, 0.5, 3.14, &r),  1.1896, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_U_e, (-2.0, 0.5, 1.13, &r),  -1.3631, TEST_TOL2, GSL_SUCCESS);
