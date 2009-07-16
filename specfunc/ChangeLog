@@ -1,5 +1,10 @@
 2009-07-16  Brian Gough  <bjg@network-theory.co.uk>
 
+	* poch.c (gsl_sf_lnpoch_sgn_e): handle negative and zero values of
+	a, e.g. where gamma(a) and/or gamma(a+x) is infinite
+	(gsl_sf_poch_e): handle the case where lnpoch_sgn returns
+	GSL_NEGINF when the Pochhammer ratio is zero.
+
 	* test_gamma.c (test_gamma): added tests for poch(a,x) with
 	negative arguments
 

@@ -300,11 +300,7 @@ int
 gsl_sf_lnpoch_sgn_e(const double a, const double x,
                        gsl_sf_result * result, double * sgn)
 {
-  if(a == 0.0 || a+x == 0.0) {
-    *sgn = 0.0;
-    DOMAIN_ERROR(result);
-  }
-  else if(x == 0.0) {
+  if(x == 0.0) {
     *sgn = 1.0;
     result->val = 0.0;
     result->err = 0.0;
@@ -314,7 +310,35 @@ gsl_sf_lnpoch_sgn_e(const double a, const double x,
     *sgn = 1.0;
     return lnpoch_pos(a, x, result);
   }
-  else if(a < 0.0 && a+x < 0.0) {
+  else if (a <= 0 && a == floor(a)) {
+    /* Special cases for infinite denominator Gamma(a) */
+    if (a + x < 0  && x == floor(x)) {
+      /* Handle the case where both a and a+x are negative integers. */
+      gsl_sf_result result_pos;
+      /* Use the reflection formula AMS6.1.17
+         poch(-a,-x) = (-1)^x (a/(a+x)) 1/poch(a,x) */
+      int stat = lnpoch_pos (-a, -x, &result_pos);
+      double f = log (a / (a + x));
+      double s = (fmod(x, 2) == 0) ? 1 : -1;
+      result->val = f - result_pos.val;
+      result->err = result_pos.err + 2.0 * GSL_DBL_EPSILON * f;
+      *sgn = s;
+      return stat;
+    } else if (a + x == 0) {
+      /* Handle a+x = 0 i.e. Gamma(0)/Gamma(a) */
+      /* poch (-a,a) == (-1)^a Gamma(a+1) */
+      int stat = gsl_sf_lngamma_sgn_e (-a + 1, result, sgn);
+      double s = (fmod(-a, 2) == 0) ? 1 : -1;
+      *sgn *= s;
+      return stat;
+    } else {
+      /* Handle finite numerator, Gamma(a+x) for a+x != 0 or neg int */
+      result->val = GSL_NEGINF;
+      result->err = 0.0;
+      *sgn = 1;
+      return GSL_SUCCESS;
+    }
+  } else if(a < 0.0 && a+x < 0.0) {
     /* Reduce to positive case using reflection.
      */
     double sin_1 = sin(M_PI * (1.0 - a));
@@ -373,15 +397,20 @@ gsl_sf_poch_e(const double a, const double x, gsl_sf_result * result)
     result->val = 1.0;
     result->err = 0.0;
     return GSL_SUCCESS;
-  }
-  else {
+  } else {
     gsl_sf_result lnpoch;
     double sgn;
     int stat_lnpoch = gsl_sf_lnpoch_sgn_e(a, x, &lnpoch, &sgn);
-    int stat_exp    = gsl_sf_exp_err_e(lnpoch.val, lnpoch.err, result);
-    result->val *= sgn;
-    result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
+    if (lnpoch.val == GSL_NEGINF) {
+      result->val = 0;
+      result->err = 0;
+      return stat_lnpoch;
+    } else {
+      int stat_exp    = gsl_sf_exp_err_e(lnpoch.val, lnpoch.err, result);
+      result->val *= sgn;
+      result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
+      return GSL_ERROR_SELECT_2(stat_exp, stat_lnpoch);
+    }
   }
 }
 

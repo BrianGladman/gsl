@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** The Pochhammer functions gsl_sf_poch(a,x) and gsl_sf_lnpoch(a,x) now
+   handle the special cases where a and a+x are zero or negative
+   integers.
+
 ** The confluent hypergeometric function gsl_sf_hyperg_U (a,b,x) now
    handles some cases where x=0. The case where 1+a-b is a negative
    integer no longer returns an error [bug #22859].

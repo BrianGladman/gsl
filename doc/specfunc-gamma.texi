@@ -199,19 +199,17 @@ These routines compute the Taylor coefficient @math{x^n / n!} for
 @cindex Pochhammer symbol
 @cindex Apell symbol, see Pochammer symbol
 These routines compute the Pochhammer symbol @math{(a)_x = \Gamma(a +
-x)/\Gamma(a)}, subject to @math{a} and @math{a+x} not being negative
-integers or zero. The Pochhammer symbol is also known as the Apell symbol and
-sometimes written as @math{(a,x)}.
+x)/\Gamma(a)}.  The Pochhammer symbol is also known as the Apell symbol and
+sometimes written as @math{(a,x)}.  When @math{a} and @math{a+x} 
+are negative integers or zero, the limiting value of the ratio is returned. 
 @comment exceptions:  GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
-
 
 @deftypefun double gsl_sf_lnpoch (double @var{a}, double @var{x})
 @deftypefunx int gsl_sf_lnpoch_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 @cindex logarithm of Pochhammer symbol
 These routines compute the logarithm of the Pochhammer symbol,
-@math{\log((a)_x) = \log(\Gamma(a + x)/\Gamma(a))} for @math{a > 0},
-@math{a+x > 0}.
+@math{\log((a)_x) = \log(\Gamma(a + x)/\Gamma(a))}.
 @comment exceptions:  GSL_EDOM
 @end deftypefun
 
@@ -220,8 +218,7 @@ These routines compute the sign of the Pochhammer symbol and the
 logarithm of its magnitude.  The computed parameters are @math{result =
 \log(|(a)_x|)} with a corresponding error term,  
 and @math{sgn = \sgn((a)_x)} where @math{(a)_x =
-\Gamma(a + x)/\Gamma(a)}, subject to @math{a}, @math{a+x} not being
-negative integers or zero.
+\Gamma(a + x)/\Gamma(a)}.
 @comment exceptions:  GSL_EDOM
 @end deftypefun
 
