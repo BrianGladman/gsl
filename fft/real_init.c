@@ -173,7 +173,7 @@ FUNCTION(gsl_fft_real_wavetable,free) (TYPE(gsl_fft_real_wavetable) * wavetable)
 void
 FUNCTION(gsl_fft_real_workspace,free) (TYPE(gsl_fft_real_workspace) * workspace)
 {
-  RETURN_IF_NULL (scratch);
+  RETURN_IF_NULL (workspace);
   /* release scratch space */
 
   free (workspace->scratch);
