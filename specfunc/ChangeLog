@@ -1,3 +1,8 @@
+2009-07-16  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test_gamma.c (test_gamma): added tests for poch(a,x) with
+	negative arguments
+
 2009-07-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_U.c (hyperg_U_int_bge1): avoid using the series when

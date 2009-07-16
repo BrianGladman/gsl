@@ -184,6 +184,32 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_pochrel_e, (-5.5,-1.0/256.0, &r), 1.7678268037726177453, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_pochrel_e, (-5.5,-11.0, &r), 0.09090909090939652475, TEST_TOL0, GSL_SUCCESS);
 
+  /* Add tests for special cases with negative arguments */
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, -4.0, &r), 1.0/17160.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, -3.0, &r), -1.0/1320.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, -3.5, &r), 0, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, 4.0, &r), 3024.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, 3.0, &r), -504.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, 3.5, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
+
+  TEST_SF(s,  gsl_sf_poch_e, (-9.0, 0.0, &r), 1.0, TEST_TOL0, GSL_SUCCESS);
+
+
+  TEST_SF(s,  gsl_sf_poch_e, (-8.0, -4.0, &r), 1.0/11880.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-8.0, -3.0, &r), -1.0/990.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-8.0, +4.0, &r), 1680.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-8.0, +3.0, &r), -336.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-3.0, +4.0, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
+
+  /* FIXME: we should be able to get an exact answer for poch(-a,a) if
+     gsl_sf_lngamma functions were fixed to handle integer arguments
+     exactly as a special case */
+  TEST_SF(s,  gsl_sf_poch_e, (-3.0, +3.0, &r), -6.0, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s,  gsl_sf_poch_e, (-4.0, +4.0, &r), 24.0, TEST_TOL2, GSL_SUCCESS);
+
+  TEST_SF(s,  gsl_sf_poch_e, (-3.0, +100.0, &r), 0.0, TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (1e-100, 0.001, &r), 1.0, TEST_TOL0, GSL_SUCCESS) ;
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (0.001, 0.001, &r), 0.9936876467088602902, TEST_TOL0, GSL_SUCCESS) ;
   TEST_SF(s, gsl_sf_gamma_inc_P_e, (0.001, 1.0, &r), 0.9997803916424144436, TEST_TOL0, GSL_SUCCESS);
