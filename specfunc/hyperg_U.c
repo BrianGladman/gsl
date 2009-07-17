@@ -38,7 +38,6 @@
 
 #define ASYMP_EVAL_OK(a,b,x) (GSL_MAX_DBL(fabs(a),1.0)*GSL_MAX_DBL(fabs(1.0+a-b),1.0) < 0.99*fabs(x))
 
-
 /* Log[U(a,2a,x)]
  * [Abramowitz+stegun, 13.6.21]
  * Assumes x > 0, a > 1/2.
@@ -342,47 +341,14 @@ hyperg_U_finite_sum(int N, double a, double b, double x, double xeps,
 }
 
 
-/* Based on SLATEC DCHU() [W. Fullerton]
- * Assumes x > 0.
- * This is just a series summation method, and
- * it is not good for large a.
- *
- * I patched up the window for 1+a-b near zero. [GJ]
+/* Evaluate infinite sum which appears below.
  */
 static
 int
-hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * result)
+hyperg_U_infinite_sum_stable(int N, double a, double bint, double b, double beps, double x, double xeps, gsl_sf_result sum,
+                             gsl_sf_result * result)
 {
   const double EPS      = 2.0 * GSL_DBL_EPSILON;  /* EPS = D1MACH(3) */
-  const double SQRT_EPS = M_SQRT2 * GSL_SQRT_DBL_EPSILON;
-
-  if(fabs(1.0 + a - b) < SQRT_EPS) {
-    /* Original Comment: ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X
-     */
-    /* We can however do the following:
-     * U(a,b,x) = U(a,a+1,x) when 1+a-b=0
-     * and U(a,a+1,x) = x^(-a).
-     */
-    double lnr = -a * log(x);
-    int stat_e =  gsl_sf_exp_e(lnr, result);
-    result->err += 2.0 * SQRT_EPS * fabs(result->val);
-    return stat_e;
-  }
-  else {
-    double aintb = ( b < 0.0 ? ceil(b-0.5) : floor(b+0.5) );
-    double beps  = b - aintb;
-    int N = aintb;
-    
-    double lnx  = log(x);
-    double xeps = exp(-beps*lnx);
-
-    /* Evaluate finite sum.
-     */
-    gsl_sf_result sum;
-    int stat_sum = hyperg_U_finite_sum(N, a, b, x, xeps, &sum);
-
-
-    /* Evaluate infinite sum. */
 
     int istrt = ( N < 1 ? 1-N : 0 );
     double xi = istrt;
@@ -402,9 +368,9 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
     gsl_sf_result gamrni;
     int stat_pochai = gsl_sf_poch_e(a, xi, &pochai);
     int stat_gamri1 = gsl_sf_gammainv_e(xi + 1.0, &gamri1);
-    int stat_gamrni = gsl_sf_gammainv_e(aintb + xi, &gamrni);
+    int stat_gamrni = gsl_sf_gammainv_e(bint + xi, &gamrni);
     int stat_gam123 = GSL_ERROR_SELECT_3(stat_gamr, stat_gamri1, stat_gamrni);
-    int stat_gamall = GSL_ERROR_SELECT_4(stat_sum, stat_gam123, stat_pochai, stat_powx);
+    int stat_gamall = GSL_ERROR_SELECT_3(stat_gam123, stat_pochai, stat_powx);
 
     gsl_sf_result pochaxibeps;
     gsl_sf_result gamrxi1beps;
@@ -420,7 +386,205 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
                    + fabs(pochaxibeps.val * gamrni.val * gamrxi1beps.val) * factor_err
                    + 2.0 * GSL_DBL_EPSILON * fabs(b0_val);
 
-    if(fabs(xeps-1.0) < 0.5) {
+      /*
+       C  X**(-BEPS) IS VERY DIFFERENT FROM 1.0, SO THE
+       C  STRAIGHTFORWARD FORMULATION IS STABLE.
+       */
+      int i;
+      double dchu_val;
+      double dchu_err;
+      double t_val;
+      double t_err;
+      gsl_sf_result dgamrbxi;
+      int stat_dgamrbxi = gsl_sf_gammainv_e(b+xi, &dgamrbxi);
+      double a0_val = factor_val * pochai.val * dgamrbxi.val * gamri1.val / beps;
+      double a0_err =  fabs(factor_val * pochai.val * dgamrbxi.val / beps) * gamri1.err
+                     + fabs(factor_val * pochai.val * gamri1.val / beps) * dgamrbxi.err
+                     + fabs(factor_val * dgamrbxi.val * gamri1.val / beps) * pochai.err
+                     + fabs(pochai.val * dgamrbxi.val * gamri1.val / beps) * factor_err
+                     + 2.0 * GSL_DBL_EPSILON * fabs(a0_val);
+      stat_all = GSL_ERROR_SELECT_2(stat_all, stat_dgamrbxi);
+
+      b0_val = xeps * b0_val / beps;
+      b0_err = fabs(xeps / beps) * b0_err + 4.0 * GSL_DBL_EPSILON * fabs(b0_val);
+      dchu_val = sum.val + a0_val - b0_val;
+      dchu_err = sum.err + a0_err + b0_err
+        + 2.0 * GSL_DBL_EPSILON * (fabs(sum.val) + fabs(a0_val) + fabs(b0_val));
+
+      for(i=1; i<2000; i++) {
+        double xi = istrt + i;
+        double xi1 = istrt + i - 1;
+        double a0_multiplier = (a+xi1)*x/((b+xi1)*xi);
+        double b0_multiplier = (a+xi1-beps)*x/((bint+xi1)*(xi-beps));
+        a0_val *= a0_multiplier;
+        a0_err += fabs(a0_multiplier) * a0_err;
+        b0_val *= b0_multiplier;
+        b0_err += fabs(b0_multiplier) * b0_err;
+        t_val = a0_val - b0_val;
+        t_err = a0_err + b0_err;
+        dchu_val += t_val;
+        dchu_err += t_err;
+        if(fabs(t_val) < EPS*fabs(dchu_val)) break;
+      }
+
+      result->val  = dchu_val;
+      result->err  = 2.0 * dchu_err;
+      result->err += 2.0 * fabs(t_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+2.0) * fabs(dchu_val);
+      result->err *= 2.0; /* FIXME: fudge factor */
+
+      if(i >= 2000) {
+        GSL_ERROR ("error", GSL_EMAXITER);
+      }
+      else {
+        return stat_all;
+      }
+}
+
+static
+int
+hyperg_U_infinite_sum_simple(int N, double a, double bint, double b, double beps, double x, double xeps, gsl_sf_result sum,
+                             gsl_sf_result * result)
+{
+  const double EPS      = 2.0 * GSL_DBL_EPSILON;  /* EPS = D1MACH(3) */
+
+    int istrt = ( N < 1 ? 1-N : 0 );
+    double xi = istrt;
+
+    gsl_sf_result powx;
+    int stat_powx = gsl_sf_pow_int_e(x, istrt, &powx);
+    double sarg   = beps*M_PI;
+    double sfact  = ( sarg != 0.0 ? sarg/sin(sarg) : 1.0 );
+    double factor_val = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * powx.val;
+    double factor_err = fabs(powx.err) + 2.0 * GSL_DBL_EPSILON * fabs(factor_val);
+
+    gsl_sf_result pochai;
+    gsl_sf_result gamri1;
+    gsl_sf_result gamrni;
+    int stat_pochai = gsl_sf_poch_e(a, xi, &pochai);
+    int stat_gamri1 = gsl_sf_gammainv_e(xi + 1.0, &gamri1);
+    int stat_gamrni = gsl_sf_gammainv_e(bint + xi, &gamrni);
+    int stat_gam123 = GSL_ERROR_SELECT_2(stat_gamri1, stat_gamrni);
+    int stat_gamall = GSL_ERROR_SELECT_3(stat_gam123, stat_pochai, stat_powx);
+
+    gsl_sf_result pochaxibeps;
+    gsl_sf_result gamrxi1beps;
+    int stat_pochaxibeps = gsl_sf_poch_e(a, xi-beps, &pochaxibeps);
+    int stat_gamrxi1beps = gsl_sf_gammainv_e(xi + 1.0 - beps, &gamrxi1beps);
+
+    int stat_all = GSL_ERROR_SELECT_3(stat_gamall, stat_pochaxibeps, stat_gamrxi1beps);
+
+    double X =  sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * powx.val * gsl_sf_poch(1 + a - b, xi - 1 + b - beps) * gsl_sf_gammainv(a);
+
+    double b0_val = X * gamrni.val * gamrxi1beps.val;
+    double b0_err =  fabs(factor_val * pochaxibeps.val * gamrni.val) * gamrxi1beps.err
+                   + fabs(factor_val * pochaxibeps.val * gamrxi1beps.val) * gamrni.err
+                   + fabs(factor_val * gamrni.val * gamrxi1beps.val) * pochaxibeps.err
+                   + fabs(pochaxibeps.val * gamrni.val * gamrxi1beps.val) * factor_err
+                   + 2.0 * GSL_DBL_EPSILON * fabs(b0_val);
+
+      /*
+       C  X**(-BEPS) IS VERY DIFFERENT FROM 1.0, SO THE
+       C  STRAIGHTFORWARD FORMULATION IS STABLE.
+       */
+      int i;
+      double dchu_val;
+      double dchu_err;
+      double t_val;
+      double t_err;
+      gsl_sf_result gamr;
+      gsl_sf_result dgamrbxi;
+      int stat_gamr = gsl_sf_gammainv_e(1.0+a-b, &gamr);
+      int stat_dgamrbxi = gsl_sf_gammainv_e(b+xi, &dgamrbxi);
+      double a0_val = factor_val * gamr.val * pochai.val * dgamrbxi.val * gamri1.val / beps;
+      double a0_err =  fabs(factor_val * pochai.val * dgamrbxi.val * gamri1.val / beps) * gamr.err
+                     + fabs(factor_val * gamr.val * dgamrbxi.val * gamri1.val / beps) * pochai.err
+                     + fabs(factor_val * gamr.val * pochai.val * gamri1.val / beps) * dgamrbxi.err
+                     + fabs(factor_val * gamr.val * pochai.val * dgamrbxi.val / beps) * gamri1.err
+                     + fabs(pochai.val * gamr.val * dgamrbxi.val * gamri1.val / beps) * factor_err
+                     + 2.0 * GSL_DBL_EPSILON * fabs(a0_val);
+      stat_all = GSL_ERROR_SELECT_3(stat_all, stat_gamr, stat_dgamrbxi);
+
+      b0_val = xeps * b0_val / beps;
+      b0_err = fabs(xeps / beps) * b0_err + 4.0 * GSL_DBL_EPSILON * fabs(b0_val);
+      dchu_val = sum.val + a0_val - b0_val;
+      dchu_err = sum.err + a0_err + b0_err
+        + 2.0 * GSL_DBL_EPSILON * (fabs(sum.val) + fabs(a0_val) + fabs(b0_val));
+      for(i=1; i<2000; i++) {
+        double xi = istrt + i;
+        double xi1 = istrt + i - 1;
+        double a0_multiplier = (a+xi1)*x/((b+xi1)*xi);
+        double b0_multiplier = (a+xi1-beps)*x/((bint+xi1)*(xi-beps));
+        a0_val *= a0_multiplier;
+        a0_err += fabs(a0_multiplier) * a0_err;
+        b0_val *= b0_multiplier;
+        b0_err += fabs(b0_multiplier) * b0_err;
+        t_val = a0_val - b0_val;
+        t_err = a0_err + b0_err;
+        dchu_val += t_val;
+        dchu_err += t_err;
+        if(!finite(t_val) || fabs(t_val) < EPS*fabs(dchu_val)) break;
+      }
+
+      result->val  = dchu_val;
+      result->err  = 2.0 * dchu_err;
+      result->err += 2.0 * fabs(t_val);
+      result->err += 4.0 * GSL_DBL_EPSILON * (i+2.0) * fabs(dchu_val);
+      result->err *= 2.0; /* FIXME: fudge factor */
+
+      if(i >= 2000) {
+        GSL_ERROR ("error", GSL_EMAXITER);
+      }
+      else {
+        return stat_all;
+      }
+}
+
+
+static
+int
+hyperg_U_infinite_sum_improved(int N, double a, double bint, double b, double beps, double x, double xeps, gsl_sf_result sum,
+                               gsl_sf_result * result)
+{
+  const double EPS      = 2.0 * GSL_DBL_EPSILON;  /* EPS = D1MACH(3) */
+  const double lnx = log(x);
+
+    int istrt = ( N < 1 ? 1-N : 0 );
+    double xi = istrt;
+
+    gsl_sf_result gamr;
+    gsl_sf_result powx;
+    int stat_gamr = gsl_sf_gammainv_e(1.0+a-b, &gamr);
+    int stat_powx = gsl_sf_pow_int_e(x, istrt, &powx);
+    double sarg   = beps*M_PI;
+    double sfact  = ( sarg != 0.0 ? sarg/sin(sarg) : 1.0 );
+    double factor_val = sfact * ( GSL_IS_ODD(N) ? -1.0 : 1.0 ) * gamr.val * powx.val;
+    double factor_err = fabs(gamr.val) * powx.err + fabs(powx.val) * gamr.err
+                      + 2.0 * GSL_DBL_EPSILON * fabs(factor_val);
+
+    gsl_sf_result pochai;
+    gsl_sf_result gamri1;
+    gsl_sf_result gamrni;
+    int stat_pochai = gsl_sf_poch_e(a, xi, &pochai);
+    int stat_gamri1 = gsl_sf_gammainv_e(xi + 1.0, &gamri1);
+    int stat_gamrni = gsl_sf_gammainv_e(bint + xi, &gamrni);
+    int stat_gam123 = GSL_ERROR_SELECT_3(stat_gamr, stat_gamri1, stat_gamrni);
+    int stat_gamall = GSL_ERROR_SELECT_3(stat_gam123, stat_pochai, stat_powx);
+
+    gsl_sf_result pochaxibeps;
+    gsl_sf_result gamrxi1beps;
+    int stat_pochaxibeps = gsl_sf_poch_e(a, xi-beps, &pochaxibeps);
+    int stat_gamrxi1beps = gsl_sf_gammainv_e(xi + 1.0 - beps, &gamrxi1beps);
+
+    int stat_all = GSL_ERROR_SELECT_3(stat_gamall, stat_pochaxibeps, stat_gamrxi1beps);
+
+    double b0_val = factor_val * pochaxibeps.val * gamrni.val * gamrxi1beps.val;
+    double b0_err =  fabs(factor_val * pochaxibeps.val * gamrni.val) * gamrxi1beps.err
+                   + fabs(factor_val * pochaxibeps.val * gamrxi1beps.val) * gamrni.err
+                   + fabs(factor_val * gamrni.val * gamrxi1beps.val) * pochaxibeps.err
+                   + fabs(pochaxibeps.val * gamrni.val * gamrxi1beps.val) * factor_err
+                   + 2.0 * GSL_DBL_EPSILON * fabs(b0_val);
+
       /*
        C  X**(-BEPS) IS CLOSE TO 1.0D0, SO WE MUST BE
        C  CAREFUL IN EVALUATING THE DIFFERENCES.
@@ -501,64 +665,61 @@ hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * 
       else {
         return stat_all;
       }
+}
+
+/* Based on SLATEC DCHU() [W. Fullerton]
+ * Assumes x > 0.
+ * This is just a series summation method, and
+ * it is not good for large a.
+ *
+ * I patched up the window for 1+a-b near zero. [GJ]
+ */
+static
+int
+hyperg_U_series(const double a, const double b, const double x, gsl_sf_result * result)
+{
+  const double SQRT_EPS = M_SQRT2 * GSL_SQRT_DBL_EPSILON;
+
+  if(fabs(1.0 + a - b) < SQRT_EPS) {
+    /* Original Comment: ALGORITHM IS BAD WHEN 1+A-B IS NEAR ZERO FOR SMALL X
+     */
+    /* We can however do the following:
+     * U(a,b,x) = U(a,a+1,x) when 1+a-b=0
+     * and U(a,a+1,x) = x^(-a).
+     */
+    double lnr = -a * log(x);
+    int stat_e =  gsl_sf_exp_e(lnr, result);
+    result->err += 2.0 * SQRT_EPS * fabs(result->val);
+    return stat_e;
+  }
+  else {
+    double bint = ( b < 0.0 ? ceil(b-0.5) : floor(b+0.5) );
+    double beps  = b - bint;
+    int N = bint;
+    
+    double lnx  = log(x);
+    double xeps = exp(-beps*lnx);
+
+    /* Evaluate finite sum.
+     */
+    gsl_sf_result sum;
+    int stat_sum = hyperg_U_finite_sum(N, a, b, x, xeps, &sum);
+    int stat_inf;
+
+    /* Evaluate infinite sum. */
+    if(fabs(xeps-1.0) > 0.5 ) {
+      stat_inf = hyperg_U_infinite_sum_stable(N, a, bint, b, beps, x, xeps, sum, result);
+    } else if (1+a-b < 0 && 1+a-b==floor(1+a-b) && beps != 0) {
+      stat_inf = hyperg_U_infinite_sum_simple(N, a, bint, b, beps, x, xeps, sum, result);
+    } else {
+      stat_inf = hyperg_U_infinite_sum_improved(N, a, bint, b, beps, x, xeps, sum, result);
     }
-    else {
-      /*
-       C  X**(-BEPS) IS VERY DIFFERENT FROM 1.0, SO THE
-       C  STRAIGHTFORWARD FORMULATION IS STABLE.
-       */
-      int i;
-      double dchu_val;
-      double dchu_err;
-      double t_val;
-      double t_err;
-      gsl_sf_result dgamrbxi;
-      int stat_dgamrbxi = gsl_sf_gammainv_e(b+xi, &dgamrbxi);
-      double a0_val = factor_val * pochai.val * dgamrbxi.val * gamri1.val / beps;
-      double a0_err =  fabs(factor_val * pochai.val * dgamrbxi.val / beps) * gamri1.err
-                     + fabs(factor_val * pochai.val * gamri1.val / beps) * dgamrbxi.err
-                     + fabs(factor_val * dgamrbxi.val * gamri1.val / beps) * pochai.err
-                     + fabs(pochai.val * dgamrbxi.val * gamri1.val / beps) * factor_err
-                     + 2.0 * GSL_DBL_EPSILON * fabs(a0_val);
-      stat_all = GSL_ERROR_SELECT_2(stat_all, stat_dgamrbxi);
 
-      b0_val = xeps * b0_val / beps;
-      b0_err = fabs(xeps / beps) * b0_err + 4.0 * GSL_DBL_EPSILON * fabs(b0_val);
-      dchu_val = sum.val + a0_val - b0_val;
-      dchu_err = sum.err + a0_err + b0_err
-        + 2.0 * GSL_DBL_EPSILON * (fabs(sum.val) + fabs(a0_val) + fabs(b0_val));
+    return GSL_ERROR_SELECT_2(stat_sum, stat_inf);
 
-      for(i=1; i<2000; i++) {
-        double xi = istrt + i;
-        double xi1 = istrt + i - 1;
-        double a0_multiplier = (a+xi1)*x/((b+xi1)*xi);
-        double b0_multiplier = (a+xi1-beps)*x/((aintb+xi1)*(xi-beps));
-        a0_val *= a0_multiplier;
-        a0_err += fabs(a0_multiplier) * a0_err;
-        b0_val *= b0_multiplier;
-        b0_err += fabs(b0_multiplier) * b0_err;
-        t_val = a0_val - b0_val;
-        t_err = a0_err + b0_err;
-        dchu_val += t_val;
-        dchu_err += t_err;
-        if(fabs(t_val) < EPS*fabs(dchu_val)) break;
-      }
-
-      result->val  = dchu_val;
-      result->err  = 2.0 * dchu_err;
-      result->err += 2.0 * fabs(t_val);
-      result->err += 4.0 * GSL_DBL_EPSILON * (i+2.0) * fabs(dchu_val);
-      result->err *= 2.0; /* FIXME: fudge factor */
-
-      if(i >= 2000) {
-        GSL_ERROR ("error", GSL_EMAXITER);
-      }
-      else {
-        return stat_all;
-      }
-    }
   }
 }
+
 
 
 /* Assumes b > 0 and x > 0.
