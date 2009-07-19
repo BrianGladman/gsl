@@ -1519,8 +1519,8 @@ p(\theta_1, ..., \theta_K) d\theta_1 ... d\theta_K =
 @noindent
 for @c{$\theta_i \ge 0$} 
 @math{theta_i >= 0}
-and @c{$\alpha_i \ge 0$} 
-@math{alpha_i >= 0}.  The delta function ensures that @math{\sum \theta_i = 1}.
+and @c{$\alpha_i > 0$} 
+@math{alpha_i > 0}.  The delta function ensures that @math{\sum \theta_i = 1}.
 The normalization factor @math{Z} is
 @tex
 \beforedisplay
