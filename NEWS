@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** The cumulative distribution functions gsl_cdf_gumbel1_{P,Q} should
+   now handle a larger range of parameters without underflow and
+   overflow.
+
 ** The header file gsl_const_cgs.h now emits a warning that it is
    deprecated, applications should use gsl_const_cgsm.h instead.
 

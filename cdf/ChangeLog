@@ -1,3 +1,8 @@
+2009-07-19  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gumbel1.c (gsl_cdf_gumbel1_Q): use a single argument ax-log(b)
+	to get better control over underflow/overflow
+
 2008-12-03  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gammainv.c (gsl_cdf_gamma_Pinv): keep iterating if P is still

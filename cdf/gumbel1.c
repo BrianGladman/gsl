@@ -25,24 +25,25 @@
 double
 gsl_cdf_gumbel1_P (const double x, const double a, const double b)
 {
-  double P = pow(exp (-b), exp (-a * x));
+  double u = a * x - log (b);
+  double P = exp (-exp (-u));
   return P;
 }
 
 double
 gsl_cdf_gumbel1_Q (const double x, const double a, const double b)
 {
-  double u = exp (-a * x);
+  double u = a * x - log (b);
   double Q;
-  double P = pow(exp (-b), u);
-  
+  double P = exp (-exp (-u));
+
   if (P < 0.5)
     {
       Q = 1 - P;
     }
   else
     {
-      Q = -expm1 (-b * u);
+      Q = -expm1 (-exp (-u));
     }
 
   return Q;
