@@ -221,6 +221,7 @@
 )
 
 (defun run-cgs ()
+  (princ "#warning gsl_const_cgs.h is deprecated, please use gsl_const_cgsm.h instead\n")
   (display "GSL_CONST_CGS" cgs gsl-constants)
 )
 

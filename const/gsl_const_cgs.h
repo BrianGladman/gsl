@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#warning gsl_const_cgs.h is deprecated, please use gsl_const_cgsm.h instead
 #ifndef __GSL_CONST_CGS__
 #define __GSL_CONST_CGS__
 

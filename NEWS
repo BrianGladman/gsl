@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** The header file gsl_const_cgs.h now emits a warning that it is
+   deprecated, applications should use gsl_const_cgsm.h instead.
+
 ** The Pochhammer functions gsl_sf_poch(a,x) and gsl_sf_lnpoch(a,x) now
    handle the special cases where a and a+x are zero or negative
    integers.
