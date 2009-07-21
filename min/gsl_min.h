@@ -92,6 +92,7 @@ gsl_min_test_interval (double x_lower, double x_upper, double epsabs, double eps
 GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_goldensection;
 GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_brent;
 GSL_VAR const gsl_min_fminimizer_type  * gsl_min_fminimizer_quad_golden;
+
 typedef
 int (*gsl_min_bracketing_function)(gsl_function *f,
                                    double *x_minimum,double * f_minimum,
