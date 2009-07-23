@@ -1,5 +1,8 @@
 * What is new in gsl-1.12+:
 
+** Added the function gsl_bspline_greville_abscissa to compute
+   Greville abscissae for B-splines.
+
 ** The cumulative distribution functions gsl_cdf_gumbel1_{P,Q} should
    now handle a larger range of parameters without underflow and
    overflow.
