@@ -1,3 +1,16 @@
+2009-07-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* vegas.c (gsl_monte_vegas_params_get)
+	(gsl_monte_vegas_params_set): added get/set functions for params
+	(gsl_monte_vegas_chisq): added chisq accessor
+
+	* gsl_monte_vegas.h: added separate params struct
+
+	* miser.c (gsl_monte_miser_params_set)
+	(gsl_monte_miser_params_get): added get/set functions for params
+
+	* gsl_monte_miser.h: added separate params struct
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* vegas.c (gsl_monte_vegas_free): handle NULL argument in free

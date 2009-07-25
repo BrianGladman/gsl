@@ -15,7 +15,10 @@ for (I = problems ; I->f != 0; I++)
   for (i = 0; i < TRIALS ; i++)
     {
       MONTE_STATE *s = MONTE_ALLOC (I->dim);
-      
+#ifdef MONTE_PARAMS
+      MONTE_PARAMS params;
+#endif
+
       I->f->dim = I->dim;
       
       MONTE_INTEGRATE (I->f, I->xl, I->xu, 

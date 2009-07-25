@@ -22,6 +22,7 @@
 #ifndef __GSL_MONTE_VEGAS_H__
 #define __GSL_MONTE_VEGAS_H__
 
+#include <stdlib.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_monte.h>
 
@@ -98,6 +99,21 @@ gsl_monte_vegas_state* gsl_monte_vegas_alloc(size_t dim);
 int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 
 void gsl_monte_vegas_free (gsl_monte_vegas_state* state);
+
+double gsl_monte_vegas_chisq (const gsl_monte_vegas_state* state);
+
+typedef struct {
+  double alpha;
+  size_t iterations;
+  int stage;
+  int mode;
+  int verbose;
+  FILE * ostream;
+} gsl_monte_vegas_params;
+
+void gsl_monte_vegas_params_get(const gsl_monte_vegas_state* state, gsl_monte_vegas_params* params);
+
+void gsl_monte_vegas_params_set(gsl_monte_vegas_state* state, const gsl_monte_vegas_params* params);
 
 __END_DECLS
 

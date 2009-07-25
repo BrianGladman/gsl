@@ -77,6 +77,17 @@ int gsl_monte_miser_init(gsl_monte_miser_state* state);
 
 void gsl_monte_miser_free(gsl_monte_miser_state* state);
 
+typedef struct {
+  double estimate_frac;
+  size_t min_calls;
+  size_t min_calls_per_bisection;
+  double alpha;
+  double dither;
+} gsl_monte_miser_params;
+
+void gsl_monte_miser_params_get(const gsl_monte_miser_state* state, gsl_monte_miser_params* params);
+
+void gsl_monte_miser_params_set(gsl_monte_miser_state* state, const gsl_monte_miser_params* params);
 
 __END_DECLS
 

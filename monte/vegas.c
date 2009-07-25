@@ -520,6 +520,32 @@ gsl_monte_vegas_free (gsl_monte_vegas_state * s)
   free (s);
 }
 
+double
+gsl_monte_vegas_chisq (const gsl_monte_vegas_state* s)
+{
+  return s->chisq;
+}
+
+void gsl_monte_vegas_params_get(const gsl_monte_vegas_state* s, gsl_monte_vegas_params* p)
+{
+  p->alpha = s->alpha;
+  p->iterations = s->iterations;
+  p->stage = s->stage;
+  p->mode = s->mode;
+  p->verbose = s->verbose;
+  p->ostream = s->ostream;
+}
+
+void gsl_monte_vegas_params_set(gsl_monte_vegas_state* s, const gsl_monte_vegas_params* p)
+{
+  s->alpha = p->alpha;
+  s->iterations = p->iterations;
+  s->stage = p->stage;
+  s->mode = p->mode;
+  s->verbose = p->verbose;
+  s->ostream = p->ostream;
+}
+
 static void
 init_box_coord (gsl_monte_vegas_state * s, coord box[])
 {
