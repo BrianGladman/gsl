@@ -101,6 +101,7 @@ int gsl_monte_vegas_init(gsl_monte_vegas_state* state);
 void gsl_monte_vegas_free (gsl_monte_vegas_state* state);
 
 double gsl_monte_vegas_chisq (const gsl_monte_vegas_state* state);
+void gsl_monte_vegas_runval (const gsl_monte_vegas_state* state, double * result, double * sigma);
 
 typedef struct {
   double alpha;

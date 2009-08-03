@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** Added new functions to set MISER and VEGAS Monte Carlo integration
+   parameters, and to examine VEGAS chi-squared value and intermediate
+   results.
+
 ** Added the function gsl_bspline_greville_abscissa to compute
    Greville abscissae for B-splines.
 

@@ -568,7 +568,7 @@ gsl_monte_miser_free (gsl_monte_miser_state * s)
 }
 
 void
-gsl_monte_miser_params_get(const gsl_monte_miser_state* s, gsl_monte_miser_params* p)
+gsl_monte_miser_params_get (const gsl_monte_miser_state * s, gsl_monte_miser_params * p)
 {
   p->estimate_frac = s->estimate_frac;
   p->min_calls = s->min_calls;
@@ -578,7 +578,7 @@ gsl_monte_miser_params_get(const gsl_monte_miser_state* s, gsl_monte_miser_param
 }
 
 void
-gsl_monte_miser_params_set(gsl_monte_miser_state* s, const gsl_monte_miser_params* p)
+gsl_monte_miser_params_set (gsl_monte_miser_state * s, const gsl_monte_miser_params * p)
 {
   s->estimate_frac = p->estimate_frac;
   s->min_calls = p->min_calls;
@@ -586,7 +586,6 @@ gsl_monte_miser_params_set(gsl_monte_miser_state* s, const gsl_monte_miser_param
   s->alpha = p->alpha;
   s->dither = p->dither;  
 }
-
 
 static int
 estimate_corrmc (gsl_monte_function * f,

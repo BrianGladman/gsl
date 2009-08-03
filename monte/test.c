@@ -302,6 +302,26 @@ main (void)
 #undef MONTE_SPEEDUP
 #endif
 
+#ifdef MISER
+#define NAME "miser(params)"
+#define MONTE_STATE gsl_monte_miser_state
+#define MONTE_ALLOC gsl_monte_miser_alloc
+#define MONTE_PARAMS gsl_monte_miser_params
+#define MONTE_INTEGRATE(f,xl,xu,dim,calls,r,s,res,err) { gsl_monte_miser_params_get(s, &params) ; params.alpha = 1.5 ; gsl_monte_miser_params_set(s, &params) ; gsl_monte_miser_integrate(f,xl,xu,dim,calls,r,s,res,err); }
+#define MONTE_FREE gsl_monte_miser_free
+#define MONTE_SPEEDUP 2
+#define MONTE_ERROR_TEST(err,expected) gsl_test(err > 5.0 * expected, NAME ", %s, abserr[%d] (obs %g vs plain %g)", I->description, i, err, expected)
+#include "test_main.c"
+#undef NAME
+#undef MONTE_STATE
+#undef MONTE_ALLOC
+#undef MONTE_PARAMS
+#undef MONTE_INTEGRATE
+#undef MONTE_FREE
+#undef MONTE_ERROR_TEST
+#undef MONTE_SPEEDUP
+#endif
+
 #ifdef VEGAS
 #define NAME "vegas"
 #define MONTE_STATE gsl_monte_vegas_state

@@ -91,9 +91,9 @@ main (void)
         gsl_monte_vegas_integrate (&G, xl, xu, 3, calls/5, r, s,
                                    &res, &err);
         printf ("result = % .6f sigma = % .6f "
-                "chisq/dof = %.1f\n", res, err, s->chisq);
+                "chisq/dof = %.1f\n", res, err, gsl_monte_vegas_chisq (s));
       }
-    while (fabs (s->chisq - 1.0) > 0.5);
+    while (fabs (gsl_monte_vegas_chisq (s) - 1.0) > 0.5);
 
     display_results ("vegas final", res, err);
 

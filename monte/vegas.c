@@ -521,12 +521,20 @@ gsl_monte_vegas_free (gsl_monte_vegas_state * s)
 }
 
 double
-gsl_monte_vegas_chisq (const gsl_monte_vegas_state* s)
+gsl_monte_vegas_chisq (const gsl_monte_vegas_state * s)
 {
   return s->chisq;
 }
 
-void gsl_monte_vegas_params_get(const gsl_monte_vegas_state* s, gsl_monte_vegas_params* p)
+void
+gsl_monte_vegas_runval (const gsl_monte_vegas_state * s, double * result, double * sigma)
+{
+  *result = s->result;
+  *sigma = s->sigma;
+}
+
+void 
+gsl_monte_vegas_params_get (const gsl_monte_vegas_state * s, gsl_monte_vegas_params * p)
 {
   p->alpha = s->alpha;
   p->iterations = s->iterations;
@@ -536,7 +544,8 @@ void gsl_monte_vegas_params_get(const gsl_monte_vegas_state* s, gsl_monte_vegas_
   p->ostream = s->ostream;
 }
 
-void gsl_monte_vegas_params_set(gsl_monte_vegas_state* s, const gsl_monte_vegas_params* p)
+void 
+gsl_monte_vegas_params_set (gsl_monte_vegas_state * s, const gsl_monte_vegas_params * p)
 {
   s->alpha = p->alpha;
   s->iterations = p->iterations;
