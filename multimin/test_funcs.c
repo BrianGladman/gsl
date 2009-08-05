@@ -175,7 +175,6 @@ void wood_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df)
   *f=wood_f(x,params);
 }
 
-
 gsl_multimin_function_fdf Nrosenbrock =
 {&rosenbrock_f,
  &Nrosenbrock_df,
@@ -242,3 +241,38 @@ void Nwood_fdf (const gsl_vector * x, void *params, double * f,
   *f = wood_f (x, params);
   Nwood_df (x, params, df);
 }
+
+
+gsl_multimin_function spring_fmin = { &spring_f,
+  3, 0
+};
+
+void
+spring_initpt (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 1.0);
+  gsl_vector_set (x, 1, 0.0);
+  gsl_vector_set (x, 2, 7.0 * M_PI);
+}
+
+double
+spring_f (const gsl_vector * x, void *params)
+{
+  double x0 = gsl_vector_get (x, 0);
+  double x1 = gsl_vector_get (x, 1);
+  double x2 = gsl_vector_get (x, 2);
+
+  double theta = atan2 (x1, x0);
+  double r = sqrt (x0 * x0 + x1 * x1);
+  double z = x2;
+  while (z > M_PI)
+    z -= 2.0 * M_PI;
+  while (z < -M_PI)
+    z += 2.0 * M_PI;
+  double tmz = theta - z;
+  double rm1 = r - 1.0;
+  double ret = 0.1 * (expm1 (tmz * tmz + rm1 * rm1) + fabs (x2 / 10.0));
+  return ret;
+}
+
+

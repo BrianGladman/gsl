@@ -54,3 +54,6 @@ extern gsl_multimin_function_fdf Nwood;
 void Nwood_df (const gsl_vector * x, void *params, gsl_vector * df);
 void Nwood_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
 
+extern gsl_multimin_function spring_fmin;
+void spring_initpt (gsl_vector * x);
+double spring_f (const gsl_vector *x, void *params);

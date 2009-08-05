@@ -92,6 +92,7 @@ main (void)
         test_f("Roth", &roth_fmin, roth_initpt,*T);
         test_f("Wood", &wood_fmin, wood_initpt,*T);
         test_f("Rosenbrock", &rosenbrock_fmin, rosenbrock_initpt,*T);
+        test_f("Spring", &spring_fmin, spring_initpt,*T);
         T++;
       }
   }
