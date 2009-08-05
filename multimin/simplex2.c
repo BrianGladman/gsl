@@ -571,7 +571,7 @@ const gsl_multimin_fminimizer_type
   * gsl_multimin_fminimizer_nmsimplex2 = &nmsimplex_type;
 
 
-inline double
+static inline double
 ran_unif (unsigned long *seed)
 {
   unsigned long s = *seed;
