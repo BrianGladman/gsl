@@ -584,7 +584,6 @@ nmsimplex_set_rand (void *vstate, gsl_multimin_function * f,
 		    const gsl_vector * x,
 		    double *size, const gsl_vector * step_size)
 {
-  int status;
   size_t i, j;
   double val;
 
