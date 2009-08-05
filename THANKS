@@ -469,3 +469,5 @@ evaluation and ode improvements
 * James Howse - quad_golden minimisation algorithm
 
 * Marc JOURDAIN - polynomial derivatives function
+
+* Andrew Steiner - for bug reports

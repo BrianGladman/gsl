@@ -57,6 +57,11 @@ typedef struct
 }
 nmsimplex_state_t;
 
+static int
+compute_center (const nmsimplex_state_t * state, gsl_vector * center);
+static double
+compute_size (nmsimplex_state_t * state, const gsl_vector * center);
+
 static double
 try_corner_move (const double coeff,
 		 const nmsimplex_state_t * state,
@@ -172,6 +177,10 @@ contract_by_best (nmsimplex_state_t * state, size_t best,
 	    }
 	}
     }
+
+  /* We need to update the centre and size as well */
+  compute_center (state, state->center);
+  compute_size (state, state->center);
 
   return status;
 }

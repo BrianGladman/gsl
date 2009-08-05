@@ -1,5 +1,9 @@
 * What is new in gsl-1.12+:
 
+** Fixed a bug in gsl_multimin_fminimizer_nmsimplex2 where the center
+   and size of the simplex were not updated on contract-by-best steps,
+   causing failures in convergence. [bug #27180]
+
 ** Added new functions to set MISER and VEGAS Monte Carlo integration
    parameters, and to examine VEGAS chi-squared value and intermediate
    results.

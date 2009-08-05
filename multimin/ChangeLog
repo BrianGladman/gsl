@@ -1,5 +1,8 @@
 2009-08-05  Brian Gough  <bjg@network-theory.co.uk>
 
+	* simplex2.c (contract_by_best):  update the size and
+	center to avoid old values being used
+
 	* test.c (main): added a testcase for the spring function
 
 2009-07-11  Brian Gough  <bjg@network-theory.co.uk>
