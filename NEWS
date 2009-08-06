@@ -1,4 +1,4 @@
-* What is new in gsl-1.12+:
+* What is new in gsl-1.13:
 
 ** Fixed a bug in gsl_multimin_fminimizer_nmsimplex2 where the center
    and size of the simplex were not updated on contract-by-best steps,
