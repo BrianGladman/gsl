@@ -112,9 +112,11 @@ typedef struct {
   FILE * ostream;
 } gsl_monte_vegas_params;
 
-void gsl_monte_vegas_params_get(const gsl_monte_vegas_state* state, gsl_monte_vegas_params* params);
+void gsl_monte_vegas_params_get (const gsl_monte_vegas_state * state,
+				 gsl_monte_vegas_params * params);
 
-void gsl_monte_vegas_params_set(gsl_monte_vegas_state* state, const gsl_monte_vegas_params* params);
+void gsl_monte_vegas_params_set (gsl_monte_vegas_state * state,
+				 const gsl_monte_vegas_params * params);
 
 __END_DECLS
 
