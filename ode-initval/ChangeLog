@@ -1,3 +1,8 @@
+2009-08-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* rk4.c (rk4_alloc): fix order of free statements to avoid memory
+	leak
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* step.c (gsl_odeiv_step_free): handle NULL argument in free

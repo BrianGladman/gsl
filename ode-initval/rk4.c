@@ -69,8 +69,8 @@ rk4_alloc (size_t dim)
 
   if (state->k1 == 0)
     {
-      free (state);
       free (state->k);
+      free (state);
       GSL_ERROR_NULL ("failed to allocate space for k1", GSL_ENOMEM);
     }
 

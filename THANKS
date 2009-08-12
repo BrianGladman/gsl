@@ -471,3 +471,5 @@ evaluation and ode improvements
 * Marc JOURDAIN - polynomial derivatives function
 
 * Andrew Steiner - for bug reports
+
+* Ettl Martin - bug report, rk4 memory
