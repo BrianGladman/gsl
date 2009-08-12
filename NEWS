@@ -1,7 +1,7 @@
 * What is new in gsl-1.13:
 
-** Fixed the rk4 allocator to avoid an invalid free() call under an
-   out of memory condition. [bug #27194]
+** Fixed the rk4 and bspline allocators to avoid invalid free()
+   calls under out of memory conditions. [bug #27194, #27236]
 
 ** Fixed a bug in gsl_multimin_fminimizer_nmsimplex2 where the center
    and size of the simplex were not updated on contract-by-best steps,

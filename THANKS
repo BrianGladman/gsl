@@ -473,3 +473,5 @@ evaluation and ode improvements
 * Andrew Steiner - for bug reports
 
 * Ettl Martin - bug report, rk4 memory
+
+* Yevgeniy Naumovich - bspline allocators fix

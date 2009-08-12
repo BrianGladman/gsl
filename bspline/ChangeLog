@@ -1,3 +1,10 @@
+2009-08-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* bspline.c (gsl_bspline_alloc): correct free to gsl_vector_free
+	for components allocated with gsl_vector_alloc
+	(gsl_bspline_deriv_alloc): correct free to gsl_matrix_free
+	for components allocated with gsl_matrix_alloc
+
 2009-07-21  Brian Gough  <bjg@network-theory.co.uk>
 
 	* bspline.c (gsl_bspline_greville_abscissa): added function for

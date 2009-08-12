@@ -90,7 +90,7 @@ gsl_bspline_alloc (const size_t k, const size_t nbreak)
       w->deltal = gsl_vector_alloc (k);
       if (w->deltal == 0)
 	{
-	  free (w->knots);
+	  gsl_vector_free (w->knots);
 	  free (w);
 	  GSL_ERROR_NULL ("failed to allocate space for deltal vector",
 			  GSL_ENOMEM);
@@ -99,8 +99,8 @@ gsl_bspline_alloc (const size_t k, const size_t nbreak)
       w->deltar = gsl_vector_alloc (k);
       if (w->deltar == 0)
 	{
-	  free (w->deltal);
-	  free (w->knots);
+	  gsl_vector_free (w->deltal);
+	  gsl_vector_free (w->knots);
 	  free (w);
 	  GSL_ERROR_NULL ("failed to allocate space for deltar vector",
 			  GSL_ENOMEM);
@@ -110,9 +110,9 @@ gsl_bspline_alloc (const size_t k, const size_t nbreak)
       w->B = gsl_vector_alloc (k);
       if (w->B == 0)
 	{
-	  free (w->deltar);;
-	  free (w->deltal);
-	  free (w->knots);
+	  gsl_vector_free (w->deltar);;
+	  gsl_vector_free (w->deltal);
+	  gsl_vector_free (w->knots);
 	  free (w);
 	  GSL_ERROR_NULL
 	    ("failed to allocate space for temporary spline vector",
@@ -166,7 +166,7 @@ gsl_bspline_deriv_alloc (const size_t k)
       dw->dB = gsl_matrix_alloc (k, k + 1);
       if (dw->dB == 0)
 	{
-	  free (dw->A);
+	  gsl_matrix_free (dw->A);
 	  free (dw);
 	  GSL_ERROR_NULL
 	    ("failed to allocate space for temporary derivative matrix",
