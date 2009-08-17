@@ -3808,7 +3808,7 @@ int test_TDS_cyc_solve(void)
 
     /*  f = test_TDS_cyc_solve_one(dim, diag, offdiag, rhs, actual, 7.0 * GSL_DBL_EPSILON);
         FIXME: bad accuracy */
-    f = test_TDS_cyc_solve_one(dim, diag, offdiag, rhs, actual, 35.0 * GSL_DBL_EPSILON);
+    f = test_TDS_cyc_solve_one(dim, diag, offdiag, rhs, actual, 40.0 * GSL_DBL_EPSILON);
     gsl_test(f, "  solve_TDS_cyc dim=%lu B", dim);
     s += f;
   }
