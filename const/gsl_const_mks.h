@@ -36,10 +36,6 @@
 #define GSL_CONST_MKS_MASS_NEUTRON (1.67492716e-27) /* kg */
 #define GSL_CONST_MKS_RYDBERG (2.17987196968e-18) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_BOLTZMANN (1.3806504e-23) /* kg m^2 / K s^2 */
-#define GSL_CONST_MKS_BOHR_MAGNETON (9.27400899e-24) /* A m^2 */
-#define GSL_CONST_MKS_NUCLEAR_MAGNETON (5.05078317e-27) /* A m^2 */
-#define GSL_CONST_MKS_ELECTRON_MAGNETIC_MOMENT (9.28476362e-24) /* A m^2 */
-#define GSL_CONST_MKS_PROTON_MAGNETIC_MOMENT (1.410606633e-26) /* A m^2 */
 #define GSL_CONST_MKS_MOLAR_GAS (8.314472e0) /* kg m^2 / K mol s^2 */
 #define GSL_CONST_MKS_STANDARD_GAS_VOLUME (2.2710981e-2) /* m^3 / mol */
 #define GSL_CONST_MKS_MINUTE (6e1) /* s */
@@ -98,9 +94,6 @@
 #define GSL_CONST_MKS_PSI (6.89475729317e3) /* kg / m s^2 */
 #define GSL_CONST_MKS_POISE (1e-1) /* kg m^-1 s^-1 */
 #define GSL_CONST_MKS_STOKES (1e-4) /* m^2 / s */
-#define GSL_CONST_MKS_FARADAY (9.64853429775e4) /* A s / mol */
-#define GSL_CONST_MKS_ELECTRON_CHARGE (1.602176487e-19) /* A s */
-#define GSL_CONST_MKS_GAUSS (1e-4) /* kg / A s^2 */
 #define GSL_CONST_MKS_STILB (1e4) /* cd / m^2 */
 #define GSL_CONST_MKS_LUMEN (1e0) /* cd sr */
 #define GSL_CONST_MKS_LUX (1e0) /* cd sr / m^2 */
@@ -119,8 +112,15 @@
 #define GSL_CONST_MKS_ERG (1e-7) /* kg m^2 / s^2 */
 #define GSL_CONST_MKS_STEFAN_BOLTZMANN_CONSTANT (5.67040047374e-8) /* kg / K^4 s^3 */
 #define GSL_CONST_MKS_THOMSON_CROSS_SECTION (6.65245893699e-29) /* m^2 */
+#define GSL_CONST_MKS_BOHR_MAGNETON (9.27400899e-24) /* A m^2 */
+#define GSL_CONST_MKS_NUCLEAR_MAGNETON (5.05078317e-27) /* A m^2 */
+#define GSL_CONST_MKS_ELECTRON_MAGNETIC_MOMENT (9.28476362e-24) /* A m^2 */
+#define GSL_CONST_MKS_PROTON_MAGNETIC_MOMENT (1.410606633e-26) /* A m^2 */
+#define GSL_CONST_MKS_FARADAY (9.64853429775e4) /* A s / mol */
+#define GSL_CONST_MKS_ELECTRON_CHARGE (1.602176487e-19) /* A s */
 #define GSL_CONST_MKS_VACUUM_PERMITTIVITY (8.854187817e-12) /* A^2 s^4 / kg m^3 */
 #define GSL_CONST_MKS_VACUUM_PERMEABILITY (1.25663706144e-6) /* kg m / A^2 s^2 */
 #define GSL_CONST_MKS_DEBYE (3.33564095198e-30) /* A s^2 / m^2 */
+#define GSL_CONST_MKS_GAUSS (1e-4) /* kg / A s^2 */
 
 #endif /* __GSL_CONST_MKS__ */

@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#warning gsl_const_cgs.h is deprecated, please use gsl_const_cgsm.h instead
 #ifndef __GSL_CONST_CGS__
 #define __GSL_CONST_CGS__
 
@@ -37,10 +36,6 @@
 #define GSL_CONST_CGS_MASS_NEUTRON (1.67492716e-24) /* g */
 #define GSL_CONST_CGS_RYDBERG (2.17987196968e-11) /* g cm^2 / s^2 */
 #define GSL_CONST_CGS_BOLTZMANN (1.3806504e-16) /* g cm^2 / K s^2 */
-#define GSL_CONST_CGS_BOHR_MAGNETON (9.27400899e-20) /* A cm^2 */
-#define GSL_CONST_CGS_NUCLEAR_MAGNETON (5.05078317e-23) /* A cm^2 */
-#define GSL_CONST_CGS_ELECTRON_MAGNETIC_MOMENT (9.28476362e-20) /* A cm^2 */
-#define GSL_CONST_CGS_PROTON_MAGNETIC_MOMENT (1.410606633e-22) /* A cm^2 */
 #define GSL_CONST_CGS_MOLAR_GAS (8.314472e7) /* g cm^2 / K mol s^2 */
 #define GSL_CONST_CGS_STANDARD_GAS_VOLUME (2.2710981e4) /* cm^3 / mol */
 #define GSL_CONST_CGS_MINUTE (6e1) /* s */
@@ -99,9 +94,6 @@
 #define GSL_CONST_CGS_PSI (6.89475729317e4) /* g / cm s^2 */
 #define GSL_CONST_CGS_POISE (1e0) /* g / cm s */
 #define GSL_CONST_CGS_STOKES (1e0) /* cm^2 / s */
-#define GSL_CONST_CGS_FARADAY (9.64853429775e4) /* A s / mol */
-#define GSL_CONST_CGS_ELECTRON_CHARGE (1.602176487e-19) /* A s */
-#define GSL_CONST_CGS_GAUSS (1e-1) /* g / A s^2 */
 #define GSL_CONST_CGS_STILB (1e0) /* cd / cm^2 */
 #define GSL_CONST_CGS_LUMEN (1e0) /* cd sr */
 #define GSL_CONST_CGS_LUX (1e-4) /* cd sr / cm^2 */

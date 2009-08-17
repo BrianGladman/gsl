@@ -59,11 +59,6 @@
 
          ("Ryd"           "RYDBERG")
          ("k"             "BOLTZMANN")
-         ("muB"           "BOHR_MAGNETON")
-         ("muN"           "NUCLEAR_MAGNETON")
-         ("mue"           "ELECTRON_MAGNETIC_MOMENT")
-         ("mup"           "PROTON_MAGNETIC_MOMENT")
-
          ("R0"            "MOLAR_GAS")
          ("V0"            "STANDARD_GAS_VOLUME")
 
@@ -136,10 +131,6 @@
          ("P"             "POISE")
          ("St"            "STOKES")
          
-         ("Fdy"           "FARADAY")
-         ("e"             "ELECTRON_CHARGE")
-         ("Gs"            "GAUSS")
-
          ("sb"            "STILB")
          ("lm"            "LUMEN")
          ("lx"            "LUX")
@@ -166,11 +157,19 @@
          )
        )
 
-(setq gsl-electrical-constants 
+(setq gsl-em-constants 
+      '(("muB"           "BOHR_MAGNETON")
+        ("muN"           "NUCLEAR_MAGNETON")
+        ("mue"           "ELECTRON_MAGNETIC_MOMENT")
+        ("mup"           "PROTON_MAGNETIC_MOMENT")
+        ("Fdy"           "FARADAY")
+        ("e"             "ELECTRON_CHARGE")))
+
+(setq gsl-special-em-constants 
       '(("8.854187817e-12 F/m" "VACUUM_PERMITTIVITY")
         ("mu0"           "VACUUM_PERMEABILITY")
-        ("(1e-21/c) C/m"  "DEBYE")))
-
+        ("(1e-21/c) C/m" "DEBYE")
+        ("Gs"            "GAUSS")))
 
 ;;; work around bug in calc 2.02f
 (defun math-extract-units (expr)
@@ -212,21 +211,20 @@
   (princ (format "\n#endif /* __%s__ */\n" prefix))
 )
 
-(defun run-cgsm ()
-  (display "GSL_CONST_CGSM" cgsm gsl-constants)
-)
-
-(defun run-mksa ()
-  (display "GSL_CONST_MKSA" mksa (append gsl-constants gsl-electrical-constants))
-)
-
 (defun run-cgs ()
-  (princ "#warning gsl_const_cgs.h is deprecated, please use gsl_const_cgsm.h instead\n")
   (display "GSL_CONST_CGS" cgs gsl-constants)
 )
 
+(defun run-cgsm ()
+  (display "GSL_CONST_CGSM" cgsm (append gsl-constants gsl-em-constants))
+)
+
 (defun run-mks ()
-  (display "GSL_CONST_MKS" mks (append gsl-constants gsl-electrical-constants))
+  (display "GSL_CONST_MKS" mks (append gsl-constants gsl-em-constants gsl-special-em-constants))
+)
+
+(defun run-mksa ()
+  (display "GSL_CONST_MKSA" mksa (append gsl-constants gsl-em-constants gsl-special-em-constants))
 )
 
 
