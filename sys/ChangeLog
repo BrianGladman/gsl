@@ -1,3 +1,8 @@
+2009-08-21  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (main): move x/=2 outside test of while loops because it
+	is (possibly) not volatile.
+
 2008-10-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* log1p.c: use gsl_sys.h header file
