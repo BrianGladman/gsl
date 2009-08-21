@@ -15,7 +15,7 @@ pkgconfig_DATA= gsl.pc
 
 CLEANFILES = gsl.pc gsl-config
 
-EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS SUPPORT gsl.spec.in gsl.m4 test_gsl_histogram.sh
+EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS gsl.spec.in gsl.m4 test_gsl_histogram.sh
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
