@@ -1753,7 +1753,7 @@ int main (void)
         gsl_test_rel(w->rlist[i],r[i],1e-14,"qawc(f459) rlist") ;
 
     for (i = 0; i < 6 ; i++) 
-        gsl_test_rel(w->elist[i],e[i],1e-5,"qawc(f459) elist") ;
+        gsl_test_rel(w->elist[i],e[i],1e-4,"qawc(f459) elist") ;
 
     for (i = 0; i < 6 ; i++) 
         gsl_test_int((int)w->order[i],order[i]-1,"qawc(f459) order");
