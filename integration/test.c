@@ -1993,7 +1993,7 @@ int main (void)
         gsl_test_rel(w->rlist[i],r[i],1e-14,"qawo(f456) rlist") ;
 
     for (i = 0; i < 9 ; i++) 
-        gsl_test_rel(w->elist[i],e[i],1e-3,"qawo(f456) elist") ;
+        gsl_test_rel(w->elist[i],e[i],1e-2,"qawo(f456) elist") ;
 
     for (i = 0; i < 9 ; i++) 
         gsl_test_int((int)w->order[i],order[i]-1,"qawo(f456) order");
