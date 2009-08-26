@@ -1,6 +1,7 @@
 /* monte/test.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Michael Booth
+ * Copyright (C) 2009 Michael Booth
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

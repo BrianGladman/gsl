@@ -1,6 +1,6 @@
 /* bspline/test.c
  *
- * Copyright (C) 2006, 2007 Brian Gough
+ * Copyright (C) 2006, 2007, 2009 Brian Gough
  * Copyright (C) 2008 Rhys Ulerich
  *
  * This program is free software; you can redistribute it and/or modify

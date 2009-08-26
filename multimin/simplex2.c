@@ -1,6 +1,6 @@
 /* multimin/simplex2.c
  * 
- * Copyright (C) 2007, 2008 Brian Gough
+ * Copyright (C) 2007, 2008, 2009 Brian Gough
  * Copyright (C) 2002 Tuomo Keskitalo, Ivo Alxneit
  * 
  * This program is free software; you can redistribute it and/or modify

@@ -1,6 +1,6 @@
 /* ode-initval/test_odeiv.c
  * 
- * Copyright (C) 2004 Tuomo Keskitalo
+ * Copyright (C) 2004, 2009 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

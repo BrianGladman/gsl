@@ -1,6 +1,6 @@
 /* multimin/fminimizer.c
  * 
- * Copyright (C) 2002 Tuomo Keskitalo, Ivo Alxneit
+ * Copyright (C) 2002, 2009 Tuomo Keskitalo, Ivo Alxneit
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

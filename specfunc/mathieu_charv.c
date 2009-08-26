@@ -1,6 +1,6 @@
 /* specfunc/mathieu_charv.c
  * 
- * Copyright (C) 2002 Lowell Johnson
+ * Copyright (C) 2002, 2009 Lowell Johnson
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

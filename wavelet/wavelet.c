@@ -1,6 +1,6 @@
 /* wavelet/wavelet.c
  * 
- * Copyright (C) 2004 Ivo Alxneit
+ * Copyright (C) 2004, 2009 Ivo Alxneit
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,6 +1,7 @@
 /* monte/gsl_monte_miser.h
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Michael Booth
+ * Copyright (C) 2009 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
