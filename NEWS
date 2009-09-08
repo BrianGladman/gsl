@@ -1,5 +1,8 @@
 * What is new in gsl-1.13:
 
+** Upgraded to latest autoconf and automake (autoconf-2.64,
+   automake-1.11)
+
 ** Fixed the rk4 and bspline allocators to avoid invalid free()
    calls under out of memory conditions. [bug #27194, #27236]
 
@@ -18,8 +21,17 @@
    now handle a larger range of parameters without underflow and
    overflow.
 
-** The header file gsl_const_cgs.h now emits a warning that it is
-   deprecated, applications should use gsl_const_cgsm.h instead.
+** The header file gsl_const_cgs.h no longer defines values for
+   electromagnetic units.  Applications should use gsl_const_cgsm.h
+   instead to obtain the values in the CGS-Magnetic system.  The
+   previous values for these units given in gsl_const_cgs.h were
+   ill-defined as the type of CGS electromagnetic system was
+   unspecified (the values were a mixture of CGS units with the Ampere
+   of the MSKA system).  The affected constants are
+   GSL_CONST_CGS_BOHR_MAGNETON, GSL_CONST_CGS_ELECTRON_CHARGE,
+   GSL_CONST_CGS_ELECTRON_MAGNETIC_MOMENT, GSL_CONST_CGS_FARADAY,
+   GSL_CONST_CGS_GAUSS, GSL_CONST_CGS_NUCLEAR_MAGNETON,
+   GSL_CONST_CGS_PROTON_MAGNETIC_MOMENT, and GSL_CONST_CGS_ROENTGEN.
 
 ** The Pochhammer functions gsl_sf_poch(a,x) and gsl_sf_lnpoch(a,x) now
    handle the special cases where a and a+x are zero or negative
