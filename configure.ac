@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT([gsl],[1.13])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
-AM_INIT_AUTOMAKE([gnu no-dependencies])
+AM_INIT_AUTOMAKE([gnu])
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
