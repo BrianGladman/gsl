@@ -1,4 +1,8 @@
-* What is new in gsl-1.13:
+** Added functions gsl_multifit_linear_usvd and
+   gsl_multifit_wlinear_usvd for multilinear fitting without
+   column-scaling of the fit matrix.
+
+* What was new in gsl-1.13:
 
 ** Upgraded to latest autoconf and automake (autoconf-2.64,
    automake-1.11)
