@@ -1,3 +1,7 @@
+** Improved gsl_eigen_symmv and gsl_eigen_symm to avoid a potential
+   infinite loop when the tridiagonalised matrix contains very small
+   values. [bug #28096]
+
 ** Added functions gsl_multifit_linear_usvd and
    gsl_multifit_wlinear_usvd for multilinear fitting without
    column-scaling of the fit matrix.
