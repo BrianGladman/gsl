@@ -80,8 +80,9 @@ gsl_histogram_sigma (const gsl_histogram * h)
   long double wmean = 0;
   long double W = 0;
 
-  /* FIXME: should use a single pass formula here, as given in
-     N.J.Higham 'Accuracy and Stability of Numerical Methods', p.12 */
+  /* Use a two-pass algorithm for stability.  Could also use a single
+     pass formula, as given in N.J.Higham 'Accuracy and Stability of
+     Numerical Methods', p.12 */
 
   /* Compute the mean */
 
