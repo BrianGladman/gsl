@@ -1,3 +1,6 @@
+** Added macros GSL_MAJOR_VERSION and GSL_MINOR_VERSION in
+   <gsl/gsl_version.h>
+
 ** Improved gsl_eigen_symmv and gsl_eigen_symm to avoid a potential
    infinite loop when the tridiagonalised matrix contains very small
    values. [bug #28096]

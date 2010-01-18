@@ -67,6 +67,15 @@ case "$VERSION" in
         ;;
 esac
 
+dnl Split VERSION into GSL_VERSION_MAJOR and GSL_VERSION_MINOR
+dnl Follows AX_SPLIT_VERSION macro from AC-Archive
+dnl Rhys Ulerich <rhys.ulerich@gmail.com>
+AC_PROG_SED
+GSL_MAJOR_VERSION=`echo "$VERSION" | $SED 's/\([[^.]][[^.]]*\).*/\1/'`
+GSL_MINOR_VERSION=`echo "$VERSION" | $SED 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
+AC_SUBST(GSL_MAJOR_VERSION)
+AC_SUBST(GSL_MINOR_VERSION)
+
 dnl things required by automake
 dnl AC_ARG_PROGRAM
 AC_PROG_MAKE_SET
