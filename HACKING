@@ -160,6 +160,11 @@ GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose
 test output functions if they are called with the wrong format string,
 and these don't show up otherwise).
 
+* Do make distcheck with /usr/bin/install and install-sh
+
+make distcheck
+make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of install-sh
+
 ----------- Notes on making a release
 
 * Edit the version number in configure.ac. 
