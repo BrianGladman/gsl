@@ -896,7 +896,7 @@ gsl_sf_conicalP_1_e(const double lambda, const double x, gsl_sf_result * result)
         result->val  = pre * (E.val - c2 * K.val);
         result->err  = pre * (E.err + fabs(c2) * K.err);
         result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-        return stat_K;
+        return GSL_ERROR_SELECT_2(stat_K, stat_E);
       }
     }
     else {
@@ -917,7 +917,7 @@ gsl_sf_conicalP_1_e(const double lambda, const double x, gsl_sf_result * result)
         result->val  = pre * (E.val - K.val);
         result->err  = pre * (E.err + K.err);
         result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-        return stat_K;
+        return GSL_ERROR_SELECT_2(stat_K, stat_E);
       }
     }
   }
