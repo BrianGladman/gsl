@@ -1355,11 +1355,6 @@ based on the @sc{ranlux} algorithm.
  238 k ints/sec,    215 k doubles/sec, cmrg
  247 k ints/sec,    198 k doubles/sec, ranlux389
  141 k ints/sec,    140 k doubles/sec, ranlxd2
-
-1852 k ints/sec,    935 k doubles/sec, ran3
- 813 k ints/sec,    575 k doubles/sec, ran0
- 787 k ints/sec,    476 k doubles/sec, ran1
- 379 k ints/sec,    292 k doubles/sec, ran2
 @end example
 
 @node Random Number Generator Examples
