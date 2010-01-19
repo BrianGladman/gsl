@@ -14,7 +14,7 @@ examples_out = examples/blas.out examples/block.out examples/cblas.out examples/
 
 noinst_DATA = $(examples_src) $(examples_out) $(figures)
 
-EXTRA_DIST = $(man_MANS) $(noinst_DATA) gsl-design.texi fftalgorithms.tex fftalgorithms.bib algorithm.sty algorithmic.sty calc.sty
+EXTRA_DIST = $(man_MANS) $(noinst_DATA) gsl-design.texi fftalgorithms.tex fftalgorithms.bib algorithm.sty algorithmic.sty calc.sty statnotes.tex
 
 # pdf disabled, use postscript and ps2pdf
 .PHONY: pdf

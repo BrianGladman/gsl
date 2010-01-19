@@ -8,7 +8,8 @@
 
 \section{Weighted mean and variance}
 We have $N$ samples $x_i$ drawn from a gaussian distribution
-$G(\mu,\sigma)$.  Each sample has a weight $w_i$ which represents the
+$G(\mu,\sigma)$ (or any distribution with finite first and second
+moments).  Each sample has a weight $w_i$ which represents the
 relative value we place on it.  Given the estimate of the mean
 %
 \begin{eqnarray}
@@ -40,8 +41,8 @@ V &=& {1\over W} \sum_i w_i (x_i - \bar{x})^2 \\
 We find the expectation value $\expectation{V}$ using the Gaussian
 formulas $\expectation{x_i} = \mu$, $\expectation{x_i x_j} = \mu^2 +
 \delta_{ij} \sigma^2$.  We assume that any random contribution
-represented by the weights themselves can be neglected in comparison
-to $\sigma$.
+dependent on the weights themselves is zero or can be
+neglected in comparison to $\sigma$.
 
 %
 \begin{eqnarray}
