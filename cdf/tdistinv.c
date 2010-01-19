@@ -65,8 +65,7 @@ gsl_cdf_tdist_Pinv (const double P, const double nu)
     }
   else if (nu == 2.0)
     {
-      double a = 2 * P - 1;
-      x = a / sqrt (2 * (1 - a * a));
+      x = (2 * P - 1) / sqrt (2 * P * (1 - P));
       return x;
     }
 
@@ -165,8 +164,7 @@ gsl_cdf_tdist_Qinv (const double Q, const double nu)
     }
   else if (nu == 2.0)
     {
-      double a = 2 * (1 - Q) - 1;
-      x = a / sqrt (2 * (1 - a * a));
+      x = (1 - 2 * Q) / sqrt (2 * Q * (1 - Q));
       return x;
     }
 
