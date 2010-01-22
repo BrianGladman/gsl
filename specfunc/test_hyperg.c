@@ -285,6 +285,10 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (1.5, 1000000.5, 0.8e6 + 0.5, &r), 11.18001288977894650469927615, TEST_TOL4, GSL_SUCCESS);
 
+  /* Bug report Lorenzo Moneta <Lorenzo.Moneta@cern.ch> */
+
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, -100., &r), 456.44010011787485545, TEST_TOL4, GSL_SUCCESS);
+  
   /* U for integer parameters */
 
   TEST_SF(s, gsl_sf_hyperg_U_int_e, (1, 1, 0.0001, &r),  8.634088070212725330, TEST_TOL0, GSL_SUCCESS);
