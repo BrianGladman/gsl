@@ -1,3 +1,6 @@
+** Improved the range of gsl_sf_hyperg1F1(a,b,x) when a<0,b>0. [bug
+   #28718]
+
 ** Added macros GSL_MAJOR_VERSION and GSL_MINOR_VERSION in
    <gsl/gsl_version.h>
 

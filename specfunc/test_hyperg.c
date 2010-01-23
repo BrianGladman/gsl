@@ -288,6 +288,10 @@ int test_hyperg(void)
   /* Bug report Lorenzo Moneta <Lorenzo.Moneta@cern.ch> */
 
   TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, -100., &r), 456.44010011787485545, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, 99., &r), 4.13360436014643309757065e36, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, 100., &r), 1.0893724312430935129254e37, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, 709., &r),  8.7396804160264899999692120e298, TEST_TOL4, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_1F1_e, (-1.5, 1.5, 710., &r),  2.36563187217417898169834615e299, TEST_TOL4, GSL_SUCCESS);
   
   /* U for integer parameters */
 

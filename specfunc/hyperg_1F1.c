@@ -1943,7 +1943,7 @@ gsl_sf_hyperg_1F1_e(const double a, const double b, const double x,
                                             result);
       return GSL_ERROR_SELECT_2(stat_e, stat_K);
     }
-    else if(a < 0.0 && fabs(x) < 100.0) {
+    else if(a < 0.0 && fabs(x) < 2*GSL_LOG_DBL_MAX) {
       /* Use Kummer to reduce it to the generic positive case.
        * Note that b > a, strictly, since we already trapped b = a.
        * Also b-(b-a)=a, and a is not a negative integer here,
