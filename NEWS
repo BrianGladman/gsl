@@ -1,4 +1,10 @@
-* What is new in gsl-1.13:
+** Added missing dereference in GSL_VECTOR_COMPLEX when not using
+   GSL_RANGE_CHECK
+
+* What was new in gsl-1.13:
+
+** Upgraded to latest autoconf and automake (autoconf-2.64,
+   automake-1.11)
 
 ** Fixed the rk4 and bspline allocators to avoid invalid free()
    calls under out of memory conditions. [bug #27194, #27236]
