@@ -104,6 +104,16 @@ qrstep (const size_t n, double d[], double sd[], double gc[], double gs[])
 
   double mu = trailing_eigenvalue (n, d, sd);
 
+  /* If mu is large relative to d_0 and sd_0 then the Givens rotation
+     will have no effect, leading to an infinite loop.  
+
+     We set mu to zero in this case, which at least diagonalises the
+     submatrix [d_0, sd_0 ; sd_0, d_0] and allows further progress. */
+
+  if (GSL_DBL_EPSILON * fabs(mu) > (fabs(d[0]) + fabs(sd[0]))) { 
+    mu = 0;
+  }
+
   x = d[0] - mu;
   z = sd[0];
 

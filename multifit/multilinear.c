@@ -31,29 +31,16 @@
  *
  */
 
-int
-gsl_multifit_linear (const gsl_matrix * X,
+static int
+multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
+                     double tol,
+                     int balance,
+                     size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
-                     double *chisq, gsl_multifit_linear_workspace * work)
-{
-  size_t rank;
-  int status  = gsl_multifit_linear_svd (X, y, GSL_DBL_EPSILON, &rank, c,
-                                         cov, chisq, work);
-  return status;
-}
-
-/* Handle the general case of the SVD with tolerance and rank */
-
-int
-gsl_multifit_linear_svd (const gsl_matrix * X,
-                         const gsl_vector * y,
-                         double tol,
-                         size_t * rank,
-                         gsl_vector * c,
-                         gsl_matrix * cov,
-                         double *chisq, gsl_multifit_linear_workspace * work)
+                     double *chisq, 
+                     gsl_multifit_linear_workspace * work)
 {
   if (X->size1 != y->size)
     {
@@ -104,9 +91,16 @@ gsl_multifit_linear_svd (const gsl_matrix * X,
 
       gsl_matrix_memcpy (A, X);
 
-      /* Balance the columns of the matrix A */
+      /* Balance the columns of the matrix A if requested */
 
-      gsl_linalg_balance_columns (A, D);
+      if (balance) 
+        {
+          gsl_linalg_balance_columns (A, D);
+        }
+      else
+        {
+          gsl_vector_set_all (D, 1.0);
+        }
 
       /* Decompose A into U S Q^T */
 
@@ -195,29 +189,58 @@ gsl_multifit_linear_svd (const gsl_matrix * X,
 }
 
 int
-gsl_multifit_wlinear (const gsl_matrix * X,
-                      const gsl_vector * w,
-                      const gsl_vector * y,
-                      gsl_vector * c,
-                      gsl_matrix * cov,
-                      double *chisq, gsl_multifit_linear_workspace * work)
+gsl_multifit_linear (const gsl_matrix * X,
+                     const gsl_vector * y,
+                     gsl_vector * c,
+                     gsl_matrix * cov,
+                     double *chisq, gsl_multifit_linear_workspace * work)
 {
   size_t rank;
-  int status  = gsl_multifit_wlinear_svd (X, w, y, GSL_DBL_EPSILON, &rank, c,
-                                          cov, chisq, work);
+  int status  = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, &rank, c,
+                                     cov, chisq, work);
   return status;
 }
 
+/* Handle the general case of the SVD with tolerance and rank */
 
 int
-gsl_multifit_wlinear_svd (const gsl_matrix * X,
-                          const gsl_vector * w,
+gsl_multifit_linear_svd (const gsl_matrix * X,
+                         const gsl_vector * y,
+                         double tol,
+                         size_t * rank,
+                         gsl_vector * c,
+                         gsl_matrix * cov,
+                         double *chisq, gsl_multifit_linear_workspace * work)
+{
+  int status = multifit_linear_svd (X, y, tol, 1, rank, c, cov, chisq, work);
+  return status;
+}
+
+int
+gsl_multifit_linear_usvd (const gsl_matrix * X,
                           const gsl_vector * y,
                           double tol,
                           size_t * rank,
                           gsl_vector * c,
                           gsl_matrix * cov,
                           double *chisq, gsl_multifit_linear_workspace * work)
+{
+  int status = multifit_linear_svd (X, y, tol, 0, rank, c, cov, chisq, work);
+  return status;
+}
+
+/* General weighted case */ 
+
+static int
+multifit_wlinear_svd (const gsl_matrix * X,
+                      const gsl_vector * w,
+                      const gsl_vector * y,
+                      double tol,
+                      int balance,
+                      size_t * rank,
+                      gsl_vector * c,
+                      gsl_matrix * cov,
+                      double *chisq, gsl_multifit_linear_workspace * work)
 {
   if (X->size1 != y->size)
     {
@@ -283,9 +306,16 @@ gsl_multifit_wlinear_svd (const gsl_matrix * X,
           }
         }
 
-      /* Balance the columns of the matrix A */
+      /* Balance the columns of the matrix A if requested */
 
-      gsl_linalg_balance_columns (A, D);
+      if (balance) 
+        {
+          gsl_linalg_balance_columns (A, D);
+        }
+      else
+        {
+          gsl_vector_set_all (D, 1.0);
+        }
 
       /* Decompose A into U S Q^T */
 
@@ -383,6 +413,54 @@ gsl_multifit_wlinear_svd (const gsl_matrix * X,
     }
 }
 
+
+int
+gsl_multifit_wlinear (const gsl_matrix * X,
+                      const gsl_vector * w,
+                      const gsl_vector * y,
+                      gsl_vector * c,
+                      gsl_matrix * cov,
+                      double *chisq, gsl_multifit_linear_workspace * work)
+{
+  size_t rank;
+  int status  = multifit_wlinear_svd (X, w, y, GSL_DBL_EPSILON, 1,  &rank, c,
+                                      cov, chisq, work);
+  return status;
+}
+
+int
+gsl_multifit_wlinear_svd (const gsl_matrix * X,
+                          const gsl_vector * w,
+                          const gsl_vector * y,
+                          double tol,
+                          size_t * rank,
+                          gsl_vector * c,
+                          gsl_matrix * cov,
+                          double *chisq, gsl_multifit_linear_workspace * work)
+{
+  int status  = multifit_wlinear_svd (X, w, y, tol, 1, rank, c,
+                                      cov, chisq, work);
+  return status;
+
+}
+
+int
+gsl_multifit_wlinear_usvd (const gsl_matrix * X,
+                           const gsl_vector * w,
+                           const gsl_vector * y,
+                           double tol,
+                           size_t * rank,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double *chisq, gsl_multifit_linear_workspace * work)
+{
+  int status  = multifit_wlinear_svd (X, w, y, tol, 0, rank, c,
+                                      cov, chisq, work);
+  return status;
+
+}
+
+/* Estimation of values for given x */
 
 int
 gsl_multifit_linear_est (const gsl_vector * x,

@@ -1359,7 +1359,7 @@ The function @code{gsl_vector_const_subcolumn} is equivalent to
 @cindex diagonal, of a matrix
 @deftypefun gsl_vector_view gsl_matrix_diagonal (gsl_matrix * @var{m})
 @deftypefunx {gsl_vector_const_view} gsl_matrix_const_diagonal (const gsl_matrix * @var{m})
-These functions returns a vector view of the diagonal of the matrix
+These functions return a vector view of the diagonal of the matrix
 @var{m}. The matrix @var{m} is not required to be square. For a
 rectangular matrix the length of the diagonal is the same as the smaller
 dimension of the matrix.

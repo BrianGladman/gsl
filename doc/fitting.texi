@@ -303,48 +303,47 @@ This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_linear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-These functions compute the best-fit parameters @var{c} of the model
-@math{y = X c} for the observations @var{y} and the matrix of predictor
-variables @var{X}.  The variance-covariance matrix of the model
-parameters @var{cov} is estimated from the scatter of the observations
-about the best-fit.  The sum of squares of the residuals from the
-best-fit, @math{\chi^2}, is returned in @var{chisq}. If the coefficient
-of determination is desired, it can be computed from the expression
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of
+predictor variables @var{X}, using the preallocated workspace provided
+in @var{work}.  The variance-covariance matrix of the model parameters
+@var{cov} is estimated from the scatter of the observations about the
+best-fit.  The sum of squares of the residuals from the best-fit,
+@math{\chi^2}, is returned in @var{chisq}. If the coefficient of
+determination is desired, it can be computed from the expression
 @math{R^2 = 1 - \chi^2 / TSS}, where the total sum of squares (TSS) of
 the observations @var{y} may be computed from @code{gsl_stats_tss}.
 
 The best-fit is found by singular value decomposition of the matrix
-@var{X} using the preallocated workspace provided in @var{work}. The
-modified Golub-Reinsch SVD algorithm is used, with column scaling to
-improve the accuracy of the singular values. Any components which have
-zero singular value (to machine precision) are discarded from the fit.
-In the second form of the function the components are discarded if the
-ratio of singular values @math{s_i/s_0} falls below the user-specified
-tolerance @var{tol}, and the effective rank is returned in @var{rank}.
+@var{X} using the modified Golub-Reinsch SVD algorithm, with column
+scaling to improve the accuracy of the singular values. Any components
+which have zero singular value (to machine precision) are discarded
+from the fit.
 @end deftypefun
 
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_wlinear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-
 This function computes the best-fit parameters @var{c} of the weighted
 model @math{y = X c} for the observations @var{y} with weights @var{w}
-and the matrix of predictor variables @var{X}.  The covariance matrix of
-the model parameters @var{cov} is computed with the given weights.  The
-weighted sum of squares of the residuals from the best-fit,
-@math{\chi^2}, is returned in @var{chisq}. If the coefficient
-of determination is desired, it can be computed from the expression
-@math{R^2 = 1 - \chi^2 / WTSS}, where the weighted total sum of squares
-(WTSS) of the observations @var{y} may be computed from
-@code{gsl_stats_wtss}.
+and the matrix of predictor variables @var{X}, using the preallocated
+workspace provided in @var{work}.  The covariance matrix of the model
+parameters @var{cov} is computed with the given weights.  The weighted
+sum of squares of the residuals from the best-fit, @math{\chi^2}, is
+returned in @var{chisq}. If the coefficient of determination is
+desired, it can be computed from the expression @math{R^2 = 1 - \chi^2
+/ WTSS}, where the weighted total sum of squares (WTSS) of the
+observations @var{y} may be computed from @code{gsl_stats_wtss}.
+@end deftypefun
 
-The best-fit is found by singular value decomposition of the matrix
-@var{X} using the preallocated workspace provided in @var{work}. Any
-components which have zero singular value (to machine precision) are
-discarded from the fit.  In the second form of the function the
-components are discarded if the ratio of singular values @math{s_i/s_0}
-falls below the user-specified tolerance @var{tol}, and the effective
-rank is returned in @var{rank}.
+@deftypefun int gsl_multifit_linear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_wlinear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+In these functions components of the fit are discarded if the ratio of
+singular values @math{s_i/s_0} falls below the user-specified
+tolerance @var{tol}, and the effective rank is returned in @var{rank}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_usvd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_wlinear_usvd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+These functions compute the fit using an SVD without column scaling.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_est (const gsl_vector * @var{x}, const gsl_vector * @var{c}, const gsl_matrix * @var{cov}, double * @var{y}, double * @var{y_err})

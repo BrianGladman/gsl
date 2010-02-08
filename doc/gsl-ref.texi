@@ -248,6 +248,7 @@ project homepage thanks to Daisuke Tominaga.
 * Vectors and Matrices::        
 * Permutations::                
 * Combinations::                
+* Multisets::
 * Sorting::                     
 * BLAS Support::                
 * Linear Algebra::              
@@ -329,11 +330,15 @@ project homepage thanks to Daisuke Tominaga.
 @chapter Permutations
 @include permutation.texi
 
-@node   Combinations, Sorting, Permutations, Top
+@node   Combinations, Multisets, Permutations, Top
 @chapter Combinations
 @include combination.texi
 
-@node  Sorting, BLAS Support, Combinations, Top
+@node   Multisets, Sorting, Combinations, Top
+@chapter Multisets
+@include multiset.texi
+
+@node  Sorting, BLAS Support, Multisets, Top
 @chapter Sorting
 @include sort.texi
 

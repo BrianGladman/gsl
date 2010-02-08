@@ -1,6 +1,20 @@
 ** Added missing dereference in GSL_VECTOR_COMPLEX when not using
    GSL_RANGE_CHECK
 
+** Improved the range of gsl_sf_hyperg1F1(a,b,x) when a<0,b>0. [bug
+   #28718]
+
+** Added macros GSL_MAJOR_VERSION and GSL_MINOR_VERSION in
+   <gsl/gsl_version.h>
+
+** Improved gsl_eigen_symmv and gsl_eigen_symm to avoid a potential
+   infinite loop when the tridiagonalised matrix contains very small
+   values. [bug #28096]
+
+** Added functions gsl_multifit_linear_usvd and
+   gsl_multifit_wlinear_usvd for multilinear fitting without
+   column-scaling of the fit matrix.
+
 * What was new in gsl-1.13:
 
 ** Upgraded to latest autoconf and automake (autoconf-2.64,
@@ -24,8 +38,17 @@
    now handle a larger range of parameters without underflow and
    overflow.
 
-** The header file gsl_const_cgs.h now emits a warning that it is
-   deprecated, applications should use gsl_const_cgsm.h instead.
+** The header file gsl_const_cgs.h no longer defines values for
+   electromagnetic units.  Applications should use gsl_const_cgsm.h
+   instead to obtain the values in the CGS-Magnetic system.  The
+   previous values for these units given in gsl_const_cgs.h were
+   ill-defined as the type of CGS electromagnetic system was
+   unspecified (the values were a mixture of CGS units with the Ampere
+   of the MSKA system).  The affected constants are
+   GSL_CONST_CGS_BOHR_MAGNETON, GSL_CONST_CGS_ELECTRON_CHARGE,
+   GSL_CONST_CGS_ELECTRON_MAGNETIC_MOMENT, GSL_CONST_CGS_FARADAY,
+   GSL_CONST_CGS_GAUSS, GSL_CONST_CGS_NUCLEAR_MAGNETON,
+   GSL_CONST_CGS_PROTON_MAGNETIC_MOMENT, and GSL_CONST_CGS_ROENTGEN.
 
 ** The Pochhammer functions gsl_sf_poch(a,x) and gsl_sf_lnpoch(a,x) now
    handle the special cases where a and a+x are zero or negative

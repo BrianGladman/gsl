@@ -1,3 +1,8 @@
+2010-01-18  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_version.h.in, configure.ac: added GSL_MAJOR_VERSION and
+	GSL_MINOR_VERSION macros
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: added RETURN_IF_NULL macro to handle null argument
