@@ -1,3 +1,8 @@
+2009-11-14  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_vector_complex.h (GSL_VECTOR_COMPLEX): added missing
+	dereference
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* init_source.c (FUNCTION): handle NULL argument in free

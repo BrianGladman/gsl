@@ -133,7 +133,7 @@ The following wavelet types are implemented:
 @deffnx {Wavelet} gsl_wavelet_daubechies_centered
 @cindex Daubechies wavelets
 @cindex maximal phase, Daubechies wavelets
-The is the Daubechies wavelet family of maximum phase with @math{k/2}
+This is the Daubechies wavelet family of maximum phase with @math{k/2}
 vanishing moments.  The implemented wavelets are 
 @c{$k=4, 6, \dots, 20$}
 @math{k=4, 6, @dots{}, 20}, with @var{k} even.
@@ -185,7 +185,7 @@ To perform a one-dimensional transform on @var{n} elements, a workspace
 of size @var{n} must be provided.  For two-dimensional transforms of
 @var{n}-by-@var{n} matrices it is sufficient to allocate a workspace of
 size @var{n}, since the transform operates on individual rows and
-columns.
+columns. A null pointer is returned if insufficient memory is available.
 @end deftypefun
 
 @deftypefun {void} gsl_wavelet_workspace_free (gsl_wavelet_workspace * @var{work})

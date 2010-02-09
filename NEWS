@@ -1,3 +1,6 @@
+** Added missing dereference in GSL_VECTOR_COMPLEX when not using
+   GSL_RANGE_CHECK [bug #28017]
+
 ** Improved the range of gsl_sf_hyperg1F1(a,b,x) when a<0,b>0. [bug
    #28718]
 
