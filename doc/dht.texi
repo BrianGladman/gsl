@@ -20,9 +20,11 @@ zeroes of a Bessel function of fixed order; compare this to the case of
 the discrete Fourier transform, where samples are taken at points
 related to the zeroes of the sine or cosine function.
 
-Specifically, let @math{f(t)} be a function on the unit interval.
-Then the finite @math{\nu}-Hankel transform of @math{f(t)} is defined
-to be the set of numbers @math{g_m} given by,
+Specifically, let @math{f(t)} be a function on the unit interval and 
+@c{$j_{\nu,m}$}
+@math{j_(\nu,m)} the @math{m}-th zero of the Bessel function
+@math{J_\nu(x)}.  Then the finite @math{\nu}-Hankel transform of
+@math{f(t)} is defined to be the set of numbers @math{g_m} given by,
 @tex
 \beforedisplay
 $$
@@ -41,13 +43,13 @@ so that,
 @tex
 \beforedisplay
 $$
-f(t) = \sum_{m=1}^\infty {{2 J_\nu(j_{\nu,m}x)}\over{J_{\nu+1}(j_{\nu,m})^2}} g_m.
+f(t) = \sum_{m=1}^\infty {{2 J_\nu(j_{\nu,m}t)}\over{J_{\nu+1}(j_{\nu,m})^2}} g_m.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-f(t) = \sum_@{m=1@}^\infty (2 J_\nu(j_(\nu,m)x) / J_(\nu+1)(j_(\nu,m))^2) g_m.
+f(t) = \sum_@{m=1@}^\infty (2 J_\nu(j_(\nu,m)t) / J_(\nu+1)(j_(\nu,m))^2) g_m.
 @end example
 
 @end ifinfo
@@ -121,7 +123,11 @@ This function frees the transform @var{t}.
 @deftypefun int gsl_dht_apply (const gsl_dht * @var{t}, double * @var{f_in}, double * @var{f_out})
 This function applies the transform @var{t} to the array @var{f_in}
 whose size is equal to the size of the transform.  The result is stored
-in the array @var{f_out} which must be of the same length.
+in the array @var{f_out} which must be of the same length.   
+
+Applying this function to its output gives the original data
+multiplied by @c{$(1/j_{\nu,M})^2$}
+@math{(1/j_(\nu,M))^2}, up to numerical errors.
 @end deftypefun
 
 @deftypefun double gsl_dht_x_sample (const gsl_dht * @var{t}, int @var{n})
