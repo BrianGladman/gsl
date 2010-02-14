@@ -849,7 +849,7 @@ algorithms, program listings, test programs and examples.  It also
 includes useful advice on numerical integration and many references to
 the numerical integration literature used in developing @sc{quadpack}.
 
-@itemize @asis
+@itemize @w{}
 @item
 R. Piessens, E. de Doncker-Kapenga, C.W. Uberhuber, D.K. Kahaner.
 @cite{@sc{quadpack} A subroutine package for automatic integration}

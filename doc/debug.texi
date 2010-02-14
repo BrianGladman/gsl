@@ -365,7 +365,7 @@ command to remove them later if necessary.
 The following books are essential reading for anyone writing and
 debugging numerical programs with @sc{gcc} and @sc{gdb}.
 
-@itemize @asis
+@itemize @w{}
 @item
 R.M. Stallman, @cite{Using and Porting GNU CC}, Free Software
 Foundation, ISBN 1882114388
@@ -379,7 +379,7 @@ Source-Level Debugger}, Free Software Foundation, ISBN 1882114779
 For a tutorial introduction to the GNU C Compiler and related programs,
 see 
 
-@itemize @asis
+@itemize @w{}
 @item
 B.J. Gough, @cite{An Introduction to GCC}, Network Theory Ltd, ISBN
 0954161793

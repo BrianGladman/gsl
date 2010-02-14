@@ -371,7 +371,7 @@ Original (upper) and wavelet-compressed (lower) ECG signals, using the
 The mathematical background to wavelet transforms is covered in the
 original lectures by Daubechies,
 
-@itemize @asis
+@itemize @w{}
 @item
 Ingrid Daubechies.
 Ten Lectures on Wavelets.
@@ -383,7 +383,7 @@ SIAM, ISBN 0898712742.
 An easy to read introduction to the subject with an emphasis on the
 application of the wavelet transform in various branches of science is,
 
-@itemize @asis
+@itemize @w{}
 @item
 Paul S. Addison. @cite{The Illustrated Wavelet Transform Handbook}.
 Institute of Physics Publishing (2002), ISBN 0750306920.
@@ -393,7 +393,7 @@ Institute of Physics Publishing (2002), ISBN 0750306920.
 For extensive coverage of signal analysis by wavelets, wavelet packets
 and local cosine bases see,
 
-@itemize @asis
+@itemize @w{}
 @item
 S. G. Mallat.  @cite{A wavelet tour of signal processing} (Second
 edition). Academic Press (1999), ISBN 012466606X.
@@ -403,14 +403,14 @@ edition). Academic Press (1999), ISBN 012466606X.
 The concept of multiresolution analysis underlying the wavelet transform
 is described in,
 
-@itemize @asis
+@itemize @w{}
 @item
 S. G. Mallat.
 Multiresolution Approximations and Wavelet Orthonormal Bases of L@math{^2}(R).
 @cite{Transactions of the American Mathematical Society}, 315(1), 1989, 69--87.
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 S. G. Mallat.
 A Theory for Multiresolution Signal Decomposition---The Wavelet Representation.
@@ -422,14 +422,14 @@ A Theory for Multiresolution Signal Decomposition---The Wavelet Representation.
 The coefficients for the individual wavelet families implemented by the
 library can be found in the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 I. Daubechies.
 Orthonormal Bases of Compactly Supported Wavelets.
 @cite{Communications on Pure and Applied Mathematics}, 41 (1988) 909--996.
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 A. Cohen, I. Daubechies, and J.-C. Feauveau.
 Biorthogonal Bases of Compactly Supported Wavelets.
@@ -442,7 +442,7 @@ The PhysioNet archive of physiological datasets can be found online at
 @uref{http://www.physionet.org/} and is described in the following
 paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 Goldberger et al.  
 PhysioBank, PhysioToolkit, and PhysioNet: Components

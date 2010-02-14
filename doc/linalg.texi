@@ -1144,7 +1144,7 @@ accordance with the equation @math{A x = b}.
 Further information on the algorithms described in this section can be
 found in the following book,
 
-@itemize @asis
+@itemize @w{}
 @item
 G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
@@ -1153,7 +1153,7 @@ Johns Hopkins University Press, ISBN 0-8018-5414-8.
 @noindent
 The @sc{lapack} library is described in the following manual,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{LAPACK Users' Guide} (Third Edition, 1999), Published by SIAM,
 ISBN 0-89871-447-8.
@@ -1168,7 +1168,7 @@ with an online copy of the users guide.
 @noindent
 The Modified Golub-Reinsch algorithm is described in the following paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 T.F. Chan, ``An Improved Algorithm for Computing the Singular Value
 Decomposition'', @cite{ACM Transactions on Mathematical Software}, 8
@@ -1179,7 +1179,7 @@ Decomposition'', @cite{ACM Transactions on Mathematical Software}, 8
 The Jacobi algorithm for singular value decomposition is described in
 the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 J.C. Nash, ``A one-sided transformation method for the singular value
 decomposition and algebraic eigenproblem'', @cite{Computer Journal},

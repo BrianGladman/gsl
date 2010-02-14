@@ -496,7 +496,7 @@ A summary of formulas and techniques for least squares fitting can be
 found in the ``Statistics'' chapter of the Annual Review of Particle
 Physics prepared by the Particle Data Group,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{Review of Particle Properties},
 R.M. Barnett et al., Physical Review D54, 1 (1996)

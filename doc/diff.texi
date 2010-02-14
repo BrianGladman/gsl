@@ -94,7 +94,7 @@ $ ./a.out
 
 The algorithms used by these functions are described in the following sources:
 
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
 Section 25.3.4, and Table 25.5 (Coefficients for Differentiation).

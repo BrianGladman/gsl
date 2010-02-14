@@ -1056,7 +1056,7 @@ downhill path to the solution more reliably.
 The original version of the Hybrid method is described in the following
 articles by Powell,
 
-@itemize @asis
+@itemize @w{}
 @item
 M.J.D. Powell, ``A Hybrid Method for Nonlinear Equations'' (Chap 6, p
 87--114) and ``A Fortran Subroutine for Solving systems of Nonlinear
@@ -1069,7 +1069,7 @@ Breach, 1970.
 The following papers are also relevant to the algorithms described in
 this section,
 
-@itemize @asis
+@itemize @w{}
 @item
 J.J. Mor@'e, M.Y. Cosnard, ``Numerical Solution of Nonlinear Equations'',
 @cite{ACM Transactions on Mathematical Software}, Vol 5, No 1, (1979), p 64--85

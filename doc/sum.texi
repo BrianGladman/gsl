@@ -161,7 +161,7 @@ sum does in 13 terms.
 
 The algorithms used by these functions are described in the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 T. Fessler, W.F. Ford, D.A. Smith,
 @sc{hurry}: An acceleration algorithm for scalar sequences and series
@@ -172,7 +172,7 @@ and Algorithm 602 9(3):355--357, 1983.
 @noindent
 The theory of the @math{u}-transform was presented by Levin,
 
-@itemize @asis
+@itemize @w{}
 @item
 D. Levin,
 Development of Non-Linear Transformations for Improving Convergence of
@@ -181,7 +181,7 @@ Sequences, @cite{Intern.@: J.@: Computer Math.} B3:371--388, 1973.
 
 @noindent
 A review paper on the Levin Transform is available online,
-@itemize @asis
+@itemize @w{}
 @item
 Herbert H. H. Homeier, Scalar Levin-Type Sequence Transformations,
 @uref{http://arxiv.org/abs/math/0005209}.

@@ -575,7 +575,7 @@ values into @var{dydt_in}.
 Many of the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions},
 Section 25.5.
@@ -585,7 +585,7 @@ Section 25.5.
 The implicit Bulirsch-Stoer algorithm @code{bsimp} is described in the
 following paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 G. Bader and P. Deuflhard, ``A Semi-Implicit Mid-Point Rule for Stiff
 Systems of Ordinary Differential Equations.'', Numer.@: Math.@: 41, 373--398,

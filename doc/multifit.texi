@@ -634,7 +634,7 @@ be outside the range of validity for gaussian errors.
 
 The @sc{minpack} algorithm is described in the following article,
 
-@itemize @asis
+@itemize @w{}
 @item
 J.J. Mor@'e, @cite{The Levenberg-Marquardt Algorithm: Implementation and
 Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
@@ -644,7 +644,7 @@ Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
 The following paper is also relevant to the algorithms described in this
 section,
 
-@itemize @asis
+@itemize @w{}
 @item 
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained
 Optimization Software'', ACM Transactions on Mathematical Software, Vol

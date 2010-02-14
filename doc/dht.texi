@@ -148,12 +148,12 @@ This function returns the value of the @var{n}-th sample point in ``k-space'',
 
 The algorithms used by these functions are described in the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 H. Fisk Johnson, Comp.@: Phys.@: Comm.@: 43, 181 (1987).
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 D. Lemoine, J. Chem.@: Phys.@: 101, 3936 (1994).
 @end itemize

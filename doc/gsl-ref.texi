@@ -45,19 +45,13 @@
 % Because makeinfo.c exists, we can't just define new commands.
 % So instead, we take over little-used existing commands.
 %
-% Redefine @cite{text} to act like $text$ in regular TeX.
-% Info will typeset this same as @samp{text}.
-\gdef\goodtex{\tex \let\rm\goodrm \let\t\ttfont \turnoffactive}
+\gdef\goodtex{\tex \let\rm\goodrm \let\t\ttfont \mathactive}
 \gdef\goodrm{\fam0\tenrm}
 \gdef\math{\goodtex$\mathxxx}
 \gdef\mathxxx#1{#1$\endgroup}
+%
 \global\let\oldxrefX=\xrefX
 \gdef\xrefX[#1]{\begingroup\let\math=\dfn\oldxrefX[#1]\endgroup}
-%
-% Redefine @i{text} to be equivalent to @cite{text}, i.e., to use math mode.
-% This looks the same in TeX but omits the surrounding ` ' in Info.
-%\global\let\i=\cite
-%\global\let\math=\cite
 %
 % Redefine @c{tex-stuff} \n @whatever{info-stuff}.
 \gdef\c{\futurelet\next\mycxxx}

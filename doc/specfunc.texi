@@ -315,7 +315,7 @@ $ ./a.out
 
 The library follows the conventions of @cite{Abramowitz & Stegun} where
 possible,
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
 @end itemize
@@ -324,7 +324,7 @@ Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions}
 The following papers contain information on the algorithms used 
 to compute the special functions,
 @cindex MISCFUN
-@itemize @asis
+@itemize @w{}
 @item
 Allan J. MacLeod, MISCFUN: A software package to compute uncommon
 special functions.  @cite{ACM Trans.@: Math.@: Soft.}, vol.@: 22,

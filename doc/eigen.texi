@@ -808,7 +808,7 @@ of magnitude 1.
 Further information on the algorithms described in this section can be
 found in the following book,
 
-@itemize @asis
+@itemize @w{}
 @item
 G. H. Golub, C. F. Van Loan, @cite{Matrix Computations} (3rd Ed, 1996),
 Johns Hopkins University Press, ISBN 0-8018-5414-8.
@@ -818,7 +818,7 @@ Johns Hopkins University Press, ISBN 0-8018-5414-8.
 Further information on the generalized eigensystems QZ algorithm
 can be found in this paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 C. Moler, G. Stewart, ``An Algorithm for Generalized Matrix Eigenvalue
 Problems'', SIAM J. Numer. Anal., Vol 10, No 2, 1973.
@@ -829,7 +829,7 @@ Problems'', SIAM J. Numer. Anal., Vol 10, No 2, 1973.
 Eigensystem routines for very large matrices can be found in the
 Fortran library @sc{lapack}. The @sc{lapack} library is described in,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{LAPACK Users' Guide} (Third Edition, 1999), Published by SIAM,
 ISBN 0-89871-447-8.

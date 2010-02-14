@@ -922,7 +922,7 @@ changing @code{gsl_root_fdfsolver_newton} to
 For information on the Brent-Dekker algorithm see the following two
 papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 R. P. Brent, ``An algorithm with guaranteed convergence for finding a
 zero of a function'', @cite{Computer Journal}, 14 (1971) 422--425

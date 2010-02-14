@@ -364,7 +364,7 @@ identity) and replace @code{gsl_permutation_next} with
 The subject of permutations is covered extensively in Knuth's
 @cite{Sorting and Searching},
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
 Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
@@ -373,7 +373,7 @@ Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
 @noindent
 For the definition of the @dfn{canonical form} see,
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Fundamental
 Algorithms} (Vol 1, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.

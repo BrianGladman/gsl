@@ -399,7 +399,7 @@ $ ./a.out
 Further information on Brent's algorithm is available in the following
 book,
 
-@itemize @asis
+@itemize @w{}
 @item
 Richard Brent, @cite{Algorithms for minimization without derivatives},
 Prentice-Hall (1973), republished by Dover in paperback (2002), ISBN

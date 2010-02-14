@@ -2231,7 +2231,7 @@ consult the book @cite{Non-Uniform Random Variate Generation} by Luc
 Devroye.  It covers every imaginable distribution and provides hundreds
 of algorithms.
 
-@itemize @asis
+@itemize @w{}
 @item
 Luc Devroye, @cite{Non-Uniform Random Variate Generation},
 Springer-Verlag, ISBN 0-387-96305-7.  Available online at
@@ -2242,7 +2242,7 @@ Springer-Verlag, ISBN 0-387-96305-7.  Available online at
 The subject of random variate generation is also reviewed by Knuth, who
 describes algorithms for all the major distributions.
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
@@ -2253,7 +2253,7 @@ The Particle Data Group provides a short review of techniques for
 generating distributions of random numbers in the ``Monte Carlo''
 section of its Annual Review of Particle Physics.
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{Review of Particle Properties}
 R.M. Barnett et al., Physical Review D54, 1 (1996)
@@ -2270,13 +2270,13 @@ can be found in @cite{Statistical Computing} by W.J. Kennedy and
 J.E. Gentle. Another general reference is @cite{Elements of Statistical
 Computing} by R.A. Thisted.
 
-@itemize @asis
+@itemize @w{}
 @item
 William E. Kennedy and James E. Gentle, @cite{Statistical Computing} (1980),
 Marcel Dekker, ISBN 0-8247-6898-1.
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 Ronald A. Thisted, @cite{Elements of Statistical Computing} (1988), 
 Chapman & Hall, ISBN 0-412-01371-1.
@@ -2286,13 +2286,13 @@ Chapman & Hall, ISBN 0-412-01371-1.
 The cumulative distribution functions for the Gaussian distribution
 are based on the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{Rational Chebyshev Approximations Using Linear Equations},
 W.J. Cody, W. Fraser, J.F. Hart. Numerische Mathematik 12, 242--251 (1968).
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{Rational Chebyshev Approximations for the Error Function},
 W.J. Cody. Mathematics of Computation 23, n107, 631--637 (July 1969).

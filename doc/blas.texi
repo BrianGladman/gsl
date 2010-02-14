@@ -662,7 +662,7 @@ Information on the @sc{blas} standards, including both the legacy and
 updated interface standards, is available online from the @sc{blas}
 Homepage and @sc{blas} Technical Forum web-site.
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{BLAS Homepage} @*
 @uref{http://www.netlib.org/blas/}
@@ -675,7 +675,7 @@ Homepage and @sc{blas} Technical Forum web-site.
 The following papers contain the specifications for Level 1, Level 2 and
 Level 3 @sc{blas}.
 
-@itemize @asis
+@itemize @w{}
 @item
 C. Lawson, R. Hanson, D. Kincaid, F. Krogh, ``Basic Linear Algebra
 Subprograms for Fortran Usage'', @cite{ACM Transactions on Mathematical

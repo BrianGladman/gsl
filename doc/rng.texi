@@ -421,7 +421,7 @@ as the default seed, you can choose this explicitly via @code{gsl_rng_set}
 instead if you require it.
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 Makoto Matsumoto and Takuji Nishimura, ``Mersenne Twister: A
 623-dimensionally equidistributed uniform pseudorandom number
@@ -488,7 +488,7 @@ gives the highest level of randomness, with all 24 bits decorrelated.
 Both types of generator use 24 words of state per generator.
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 M. L@"uscher, ``A portable high-quality random number generator for
 lattice field theory calculations'', @cite{Computer Physics
@@ -565,7 +565,7 @@ which is approximately
 @math{10^56}).  It uses
 6 words of state per generator.  For more information see,
 
-@itemize @asis
+@itemize @w{}
 @item
 P. L'Ecuyer, ``Combined Multiple Recursive Random Number
 Generators'', @cite{Operations Research}, 44, 5 (1996), 816--822.
@@ -604,7 +604,7 @@ The period of this generator is about
 @math{10^46}.  It uses 5 words
 of state per generator.  More information can be found in the following
 paper,
-@itemize @asis
+@itemize @w{}
 @item
 P. L'Ecuyer, F. Blouin, and R. Coutre, ``A search for good multiple
 recursive random number generators'', @cite{ACM Transactions on Modeling and
@@ -669,7 +669,7 @@ The period of this generator is @c{$2^{88}$}
 @math{10^26}).  It uses 3 words of state per generator.  For more
 information see,
 
-@itemize @asis
+@itemize @w{}
 @item
 P. L'Ecuyer, ``Maximally Equidistributed Combined Tausworthe
 Generators'', @cite{Mathematics of Computation}, 65, 213 (1996), 203--213.
@@ -680,7 +680,7 @@ The generator @code{gsl_rng_taus2} uses the same algorithm as
 @code{gsl_rng_taus} but with an improved seeding procedure described in
 the paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 P. L'Ecuyer, ``Tables of Maximally Equidistributed Combined LFSR
 Generators'', @cite{Mathematics of Computation}, 68, 225 (1999), 261--269
@@ -739,7 +739,7 @@ value.  (We are grateful to Heiko Bauke for clarifying for us these
 properties of GFSR random number generators.)
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 Robert M. Ziff, ``Four-tap shift-register-sequence random-number 
 generators'', @cite{Computers in Physics}, 12(4), Jul/Aug
@@ -980,7 +980,7 @@ where
 uses 250 words of state per generator.
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 S. Kirkpatrick and E. Stoll, ``A very fast shift-register sequence random
 number generator'', @cite{Journal of Computational Physics}, 40, 517--526
@@ -999,7 +999,7 @@ right.  It has a period of
 per generator.
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 Makoto Matsumoto and Yoshiharu Kurita, ``Twisted GFSR Generators
 II'', @cite{ACM Transactions on Modelling and Computer Simulation},
@@ -1131,7 +1131,7 @@ MATLAB (the RAND function).  It is also sometimes known by the acronym
 ``GGL'' (I'm not sure what that stands for).
 
 For more information see,
-@itemize @asis
+@itemize @w{}
 @item
 Park and Miller, ``Random Number Generators: Good ones are hard to find'',
 @cite{Communications of the ACM}, October 1988, Volume 31, No 10, pages
@@ -1175,7 +1175,7 @@ u_n  = t - floor(t)
 
 The original source code is available from NETLIB.  For more information
 see,
-@itemize @asis
+@itemize @w{}
 @item
 W. Petersen, ``Lagged Fibonacci Random Number Generators for the NEC
 SX-3'', @cite{International Journal of High Speed Computing} (1994).
@@ -1394,7 +1394,7 @@ $ GSL_RNG_SEED=123 GSL_RNG_TYPE=mrg ./a.out
 The subject of random number generation and testing is reviewed
 extensively in Knuth's @cite{Seminumerical Algorithms}.
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Seminumerical
 Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
@@ -1404,7 +1404,7 @@ Algorithms} (Vol 2, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896842.
 Further information is available in the review paper written by Pierre
 L'Ecuyer,
 
-@itemize @asis
+@itemize @w{}
 P. L'Ecuyer, ``Random Number Generation'', Chapter 4 of the
 Handbook on Simulation, Jerry Banks Ed., Wiley, 1998, 93--137.
 
@@ -1416,7 +1416,7 @@ in the file @file{handsim.ps}.
 The source code for the @sc{diehard} random number generator tests is also
 available online,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{DIEHARD source code} G. Marsaglia,
 @item
@@ -1427,7 +1427,7 @@ available online,
 A comprehensive set of random number generator tests is available from
 @sc{nist},
 
-@itemize @asis
+@itemize @w{}
 @item
 NIST Special Publication 800-22, ``A Statistical Test Suite for the
 Validation of Random Number Generators and Pseudo Random Number

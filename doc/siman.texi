@@ -364,7 +364,7 @@ Flying Salesman Problem.
 
 Further information is available in the following book,
 
-@itemize @asis
+@itemize @w{}
 @item
 @cite{Modern Heuristic Techniques for Combinatorial Problems}, Colin R. Reeves
 (ed.), McGraw-Hill, 1995 (ISBN 0-07-709239-2).

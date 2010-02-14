@@ -298,7 +298,7 @@ $ ./a.out
 The subject of sorting is covered extensively in Knuth's
 @cite{Sorting and Searching},
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald E. Knuth, @cite{The Art of Computer Programming: Sorting and
 Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
@@ -307,7 +307,7 @@ Searching} (Vol 3, 3rd Ed, 1997), Addison-Wesley, ISBN 0201896850.
 @noindent
 The Heapsort algorithm is described in the following book,
 
-@itemize @asis
+@itemize @w{}
 @item Robert Sedgewick, @cite{Algorithms in C}, Addison-Wesley, 
 ISBN 0201514257.
 @end itemize

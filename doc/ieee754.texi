@@ -245,7 +245,7 @@ commas, like this,
 @noindent
 where @var{keyword} is one of the following mode-names,
 
-@itemize @asis
+@itemize @w{}
 @item 
 @code{single-precision}
 @item 
@@ -415,7 +415,7 @@ subsequent results are rounded to the same value.
 
 The reference for the IEEE standard is,
 
-@itemize @asis
+@itemize @w{}
 @item
 ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic.
 @end itemize
@@ -424,7 +424,7 @@ ANSI/IEEE Std 754-1985, IEEE Standard for Binary Floating-Point Arithmetic.
 A more pedagogical introduction to the standard can be found in the
 following paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 David Goldberg: What Every Computer Scientist Should Know About
 Floating-Point Arithmetic. @cite{ACM Computing Surveys}, Vol.@: 23, No.@: 1
@@ -442,7 +442,7 @@ Vol.@: 24, No.@: 3 (September 1992), page 319.
 A detailed textbook on IEEE arithmetic and its practical use is
 available from SIAM Press,
 
-@itemize @asis
+@itemize @w{}
 @item
 Michael L. Overton, @cite{Numerical Computing with IEEE Floating Point Arithmetic},
 SIAM Press, ISBN 0898715717.

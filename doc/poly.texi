@@ -296,7 +296,7 @@ which agrees with the analytic result, @math{z_n = \exp(2 \pi n i/5)}.
 The balanced-QR method and its error analysis are described in the
 following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 R.S. Martin, G. Peters and J.H. Wilkinson, ``The QR Algorithm for Real
 Hessenberg Matrices'', @cite{Numerische Mathematik}, 14 (1970), 219--231.
@@ -315,7 +315,7 @@ eigenvalues'', @cite{Mathematics of Computation}, Vol.@: 64, No.@: 210
 @noindent
 The formulas for divided differences are given in Abramowitz and Stegun,
 
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
 Sections 25.1.4 and 25.2.26.

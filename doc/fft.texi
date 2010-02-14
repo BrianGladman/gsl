@@ -932,7 +932,7 @@ A good starting point for learning more about the FFT is the review
 article @cite{Fast Fourier Transforms: A Tutorial Review and A State of
 the Art} by Duhamel and Vetterli,
 
-@itemize @asis
+@itemize @w{}
 @item
 P. Duhamel and M. Vetterli.
 Fast fourier transforms: A tutorial review and a state of the art.
@@ -952,7 +952,7 @@ There are several introductory books on the FFT with example programs,
 such as @cite{The Fast Fourier Transform} by Brigham and @cite{DFT/FFT
 and Convolution Algorithms} by Burrus and Parks,
 
-@itemize @asis 
+@itemize @w{} 
 @item
 E. Oran Brigham.
 @cite{The Fast Fourier Transform}.
@@ -969,7 +969,7 @@ Both these introductory books cover the radix-2 FFT in some detail.
 The mixed-radix algorithm at the heart of the @sc{fftpack} routines is
 reviewed in Clive Temperton's paper,
 
-@itemize @asis 
+@itemize @w{} 
 @item
 Clive Temperton.
 Self-sorting mixed-radix fast fourier transforms.
@@ -980,7 +980,7 @@ Self-sorting mixed-radix fast fourier transforms.
 The derivation of FFTs for real-valued data is explained in the
 following two articles,
 
-@itemize @asis
+@itemize @w{}
 @item
 Henrik V. Sorenson, Douglas L. Jones, Michael T. Heideman, and C. Sidney
 Burrus.
@@ -1000,7 +1000,7 @@ FFT programs in @cite{Programs for Digital Signal Processing}.  It is a
 useful reference for implementations of many different FFT
 algorithms,
 
-@itemize @asis 
+@itemize @w{} 
 @item
 Digital Signal Processing Committee and IEEE Acoustics, Speech, and Signal
 Processing Committee, editors.
@@ -1011,7 +1011,7 @@ IEEE Press, 1979.
 @comment  There is also an annotated bibliography of papers on the FFT and related
 @comment  topics by Burrus,
 
-@comment  @itemize @asis 
+@comment  @itemize @w{} 
 @comment  @item C. S. Burrus.  Notes on the FFT.
 @comment  @end itemize
 @comment  @noindent
@@ -1023,7 +1023,7 @@ by Frigo and Johnson.  The FFTW library is self-optimizing---it
 automatically tunes itself for each hardware platform in order to
 achieve maximum performance.  It is available under the GNU GPL.
 
-@itemize @asis
+@itemize @w{}
 @item
 FFTW Website, @uref{http://www.fftw.org/}
 @end itemize
@@ -1031,7 +1031,7 @@ FFTW Website, @uref{http://www.fftw.org/}
 @noindent
 The source code for @sc{fftpack} is available from Netlib,
 
-@itemize @asis
+@itemize @w{}
 @item
 FFTPACK, @uref{http://www.netlib.org/fftpack/}
 @end itemize

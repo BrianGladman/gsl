@@ -457,7 +457,7 @@ number @var{z}, @math{\arccoth(z) = \arctanh(1/z)}.
 The implementations of the elementary and trigonometric functions are
 based on the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 T. E. Hull, Thomas F. Fairgrieve, Ping Tak Peter Tang,
 ``Implementing Complex Elementary Functions Using Exception
@@ -475,7 +475,7 @@ handling'', @cite{ACM Transactions on Mathematical Software}, Volume 23
 The general formulas and details of branch cuts can be found in the
 following books,
 
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz and Stegun, @cite{Handbook of Mathematical Functions},
 ``Circular Functions in Terms of Real and Imaginary Parts'', Formulas

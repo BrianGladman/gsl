@@ -529,7 +529,7 @@ is obviously "No" then do not try to include it in GSL. [BJG]
 
 It will be useful to read the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item 
 Kiem-Phong Vo, ``The Discipline and Method Architecture for Reusable
 Libraries'', Software - Practice & Experience, v.30, pp.107-128, 2000.
@@ -544,7 +544,7 @@ technical report Kiem-Phong Vo, "An Architecture for Reusable Libraries"
 There are associated papers on Vmalloc, SFIO, and CDT which are also
 relevant to the design of portable C libraries.
 
-@itemize @asis
+@itemize @w{}
 @item
 Kiem-Phong Vo, ``Vmalloc: A General and Efficient Memory
 Allocator''. Software Practice & Experience, 26:1--18, 1996.
@@ -602,7 +602,7 @@ read up on the subject and determine the state-of-the-art.  Find the
 latest review papers.  A search of the following journals should be
 undertaken.
 
-@itemize @asis
+@itemize @w{}
 @item ACM Transactions on Mathematical Software
 @item Numerische Mathematik
 @item Journal of Computation and Applied Mathematics

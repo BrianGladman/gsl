@@ -1668,7 +1668,7 @@ The block, vector and matrix objects in GSL follow the @code{valarray}
 model of C++.  A description of this model can be found in the following
 reference,
 
-@itemize @asis
+@itemize @w{}
 @item
 B. Stroustrup,
 @cite{The C++ Programming Language} (3rd Ed), 

@@ -211,7 +211,7 @@ lexicographically.
 @noindent
 Further information on combinations can be found in,
 
-@itemize @asis
+@itemize @w{}
 @item
 Donald L. Kreher, Douglas R. Stinson, @cite{Combinatorial Algorithms:
 Generation, Enumeration and Search}, 1998, CRC Press LLC, ISBN

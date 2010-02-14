@@ -743,7 +743,7 @@ algorithms.
 The @sc{miser} algorithm is described in the following article by Press
 and Farrar,
 
-@itemize @asis
+@itemize @w{}
 @item
 W.H. Press, G.R. Farrar, @cite{Recursive Stratified Sampling for
 Multidimensional Monte Carlo Integration},
@@ -753,7 +753,7 @@ Computers in Physics, v4 (1990), pp190--195.
 @noindent
 The @sc{vegas} algorithm is described in the following papers,
 
-@itemize @asis
+@itemize @w{}
 @item
 G.P. Lepage,
 @cite{A New Algorithm for Adaptive Multidimensional Integration},

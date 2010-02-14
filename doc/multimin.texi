@@ -566,7 +566,7 @@ contracts around the minimum.
 The conjugate gradient and BFGS methods are described in detail in the
 following book,
 
-@itemize @asis
+@itemize @w{}
 @item R. Fletcher,
 @cite{Practical Methods of Optimization (Second Edition)} Wiley
 (1987), ISBN 0471915475.
@@ -575,7 +575,7 @@ following book,
 A brief description of multidimensional minimization algorithms and
 more recent references can be found in,
 
-@itemize @asis
+@itemize @w{}
 @item C.W. Ueberhuber,
 @cite{Numerical Computation (Volume 2)}, Chapter 14, Section 4.4
 ``Minimization Methods'', p.@: 325--335, Springer (1997), ISBN
@@ -585,7 +585,7 @@ more recent references can be found in,
 @noindent
 The simplex algorithm is described in the following paper, 
 
-@itemize @asis
+@itemize @w{}
 @item J.A. Nelder and R. Mead,
 @cite{A simplex method for function minimization}, Computer Journal
 vol.@: 7 (1965), 308--313.
