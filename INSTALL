@@ -61,6 +61,11 @@ configure.  Consult the "Further Information" section below for
 instructions on installing the library in another location or changing
 other default compilation options.
 
+When building from source, GNU packages are compiled with debugging
+symbols enabled by default (CFLAGS="-g -O2").  It's part of the
+philosophy that anyone should be able to examine any program on the
+system.
+
                     ------------------------------
 
 Platform Specific Compilation Notes
