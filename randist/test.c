@@ -100,6 +100,8 @@ double test_exppow2b (void);
 double test_exppow2b_pdf (double x);
 double test_fdist (void);
 double test_fdist_pdf (double x);
+double test_fdist_large (void);
+double test_fdist_large_pdf (double x);
 double test_flat (void);
 double test_flat_pdf (double x);
 double test_gamma (void);
@@ -297,6 +299,7 @@ main (void)
   testPDF (FUNC2 (exppow2b));
 
   testPDF (FUNC2 (fdist));
+  testPDF (FUNC2 (fdist_large));
   testPDF (FUNC2 (flat));
   testPDF (FUNC2 (gamma));
   testPDF (FUNC2 (gamma1));
@@ -511,11 +514,21 @@ testMoments (double (*f) (void), const char *name,
 
 typedef double pdf_func(double);
 
+/* Keep track of invalid values during integration */
+static int pdf_errors = 0;
+static double pdf_errval = 0.0;
+
 double 
 wrapper_function (double x, void *params)
 {
   pdf_func * pdf = (pdf_func *)params;
-  return pdf(x);
+  double P = pdf(x);
+  if (!gsl_finite(P)) {  
+    pdf_errors++;
+    pdf_errval = P;
+    P = 0; /* skip invalid value now, but return pdf_errval at the end */
+  }
+  return P;
 }
 
 double
@@ -527,8 +540,10 @@ integrate (pdf_func * pdf, double a, double b)
   gsl_integration_workspace * w = gsl_integration_workspace_alloc (n);
   f.function = &wrapper_function;
   f.params = (void *)pdf;
+  pdf_errors = 0;
   gsl_integration_qags (&f, a, b, 1e-16, 1e-4, n, w, &result, &abserr);
   gsl_integration_workspace_free (w);
+  if (pdf_errors) return pdf_errval;
   return result;
 }
 
@@ -603,7 +618,11 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
     {
       double x = a + i * dx;
       double d = fabs (count[i] - N * p[i]);
-      if (p[i] != 0)
+      if (!gsl_finite(p[i])) 
+        {
+          status_i = 1;
+        }
+      else if (p[i] != 0)
         {
           double s = d / sqrt (N * p[i]);
           status_i = (s > 5) && (d > 2);
@@ -1236,6 +1255,20 @@ double
 test_fdist_pdf (double x)
 {
   return gsl_ran_fdist_pdf (x, 3.0, 4.0);
+}
+
+/* Test case for bug #28500: overflow in gsl_ran_fdist_pdf */
+
+double
+test_fdist_large (void)
+{
+  return gsl_ran_fdist (r_global, 8.0, 249.0);
+}
+
+double
+test_fdist_large_pdf (double x)
+{
+  return gsl_ran_fdist_pdf (x, 8.0, 249.0);
 }
 
 double

@@ -1,3 +1,7 @@
+** The F-distribution gsl_ran_fdist_pdf now avoids unnecessary
+   underflow and overflow and handles cases where n > 248. [bug
+   #28500]
+
 ** The SVD routines now use a scaled version of the implicit QR method
    and compute the shift more reliably for values at the limit of
    double precision, avoiding potential NaNs. [bug #28767]
