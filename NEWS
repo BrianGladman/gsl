@@ -1,3 +1,7 @@
+** The SVD routines now use a scaled version of the implicit QR method
+   and compute the shift more reliably for values at the limit of
+   double precision, avoiding potential NaNs. [bug #28767]
+
 ** A compile time error is emitted if the configuration stage prevents
    the functions gsl_isnan and gsl_finite from being defined.
 

@@ -55,8 +55,21 @@ gsl_linalg_householder_transform (gsl_vector * v)
       beta = - (alpha >= 0.0 ? +1.0 : -1.0) * hypot(alpha, xnorm) ;
       tau = (beta - alpha) / beta ;
       
-      gsl_blas_dscal (1.0 / (alpha - beta), &x.vector);
-      gsl_vector_set (v, 0, beta) ;
+      {
+        double s = (alpha - beta);
+        
+        if (fabs(s) > GSL_DBL_MIN) 
+          {
+            gsl_blas_dscal (1.0 / s, &x.vector);
+            gsl_vector_set (v, 0, beta) ;
+          }
+        else
+          {
+            gsl_blas_dscal (GSL_DBL_EPSILON / s, &x.vector);
+            gsl_blas_dscal (1.0 / GSL_DBL_EPSILON, &x.vector);
+            gsl_vector_set (v, 0, beta) ;
+          }
+      }
       
       return tau;
     }
