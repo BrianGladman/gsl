@@ -225,5 +225,5 @@ lm_iteration:
       goto lm_iteration;
     }
 
-  return GSL_CONTINUE;
+  return GSL_ENOPROG;
 }

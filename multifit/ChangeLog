@@ -1,3 +1,9 @@
+2010-02-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* lmiterate.c (iterate): changed GSL_CONTINUE to GSL_ENOPROG for
+	the case where the routine has made 10 or more attempts to find a
+	suitable trial step without success.
+
 2009-11-25  Brian Gough  <bjg@network-theory.co.uk>
 
 	* multilinear.c (gsl_multifit_linear_usvd)
