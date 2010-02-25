@@ -1,3 +1,6 @@
+** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6b,
+   autoconf-2.65, automake-1.11.1)
+
 ** In the LMDER multi-dimensional fitting routines, the return code
    GSL_ENOPROG is now used instead of GSL_CONTINUE for the case where
    10 or more attempts to find a suitable trial step have been made
