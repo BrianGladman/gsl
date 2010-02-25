@@ -1,3 +1,7 @@
+** The confluent hypergeometric function gsl_sf_hyperg_U (a,b,x) has
+   been extended to support x < 0 for cases not involving
+   singularities in 1F1(a,b,x). [bug #27859]
+
 ** The F-distribution gsl_ran_fdist_pdf now avoids unnecessary
    underflow and overflow and handles cases where n > 248. [bug
    #28500]

@@ -1479,6 +1479,142 @@ hyperg_U_int_origin (const int a, const int b, gsl_sf_result_e10 * result)
   return hyperg_U_origin (a, b, result);
 }  
 
+/* Calculate U(a,b,x) for x < 0
+
+   Abramowitz and Stegun formula 13.1.3 
+
+     U(a,b,x) = (gamma(1-b)/gamma(1+a-b)) M(a,b,x) 
+                 - z^(1-b) (gamma(1-b)/gamma(a)) M(1+a-b,2-b,x)
+
+   can be transformed into
+
+     U(a,b,x) = poch(1+a-b,-a) M(a,b,x) 
+                 + z^(1-b) poch(a,-(1+a-b)) M(1+a-b,2-b,x)
+
+   using the reflection formula 6.1.17 and the definition of
+   Poch(a,b)=gamma(a+b)/gamma(a).  Our poch function already handles
+   the special cases of ratios of gamma functions with negative
+   integer argument.  
+
+   Note that U(a,b,x) is complex in general for x<0 due to the term
+   x^(1-b), but is real when
+
+   1) b is an integer
+
+   4) a is zero or a negative integer so x^(1-b)/gamma(a) is zero.
+
+   For integer b U(a,b,x) is defined as the limit beta->b U(a,beta,x).
+   This makes the situation slightly more complicated.
+
+*/
+
+static int
+hyperg_U_negx (const double a, const double b, const double x, gsl_sf_result_e10 * result)
+{
+  gsl_sf_result r1, r2;
+  int stat_1, stat_2, status;
+  int a_int = (a == floor(a));
+  int b_int = (b == floor(b));
+
+  double T1 = 0, T1_err = 0, T2 = 0, T2_err = 0;
+
+  /* Compute the first term poch(1+a-b) M(a,b,x) */
+
+  if (b_int && b <= 0 && !(a_int && a <= 0 && a >= b))
+    {
+      /* Need to handle first term as 
+
+         lim_{beta->b} poch(1+a-beta,-a) M(a,beta,x) 
+
+         due to pole in M(a,b,x) for b == 0 or -ve integer 
+
+         We skip this case when a is zero or a negative integer and
+         a>=b because the hypergeometric series terminates before any
+         singular terms
+      */
+
+      /* FIXME: TO BE IMPLEMENTED ! */
+      result->val = GSL_NAN; result->err = GSL_NAN;
+      GSL_ERROR("limit case integer b <= 0 unimplemented", GSL_EUNIMPL);
+    }
+  else 
+    {
+      stat_1 = gsl_sf_poch_e(1+a-b,-a,&r1);
+      status = stat_1;
+
+      if (r1.val != 0.0) 
+        {
+          gsl_sf_result Mr1;
+          int stat_Mr1 = gsl_sf_hyperg_1F1_e (a, b, x, &Mr1);
+          status = GSL_ERROR_SELECT_2(status, stat_Mr1);
+          
+          T1 = Mr1.val * r1.val;
+          T1_err = 2.0 * GSL_DBL_EPSILON * fabs(T1) 
+            + fabs(Mr1.err * r1.val) + fabs(Mr1.val * r1.err) ;
+        } 
+    }
+
+
+  /* Compute the second term z^(1-b) poch(a,-(1+a-b)) M(1+a-b,2-b,x) */
+
+  if (b_int && b >= 2 && !(a_int && a <= (b - 2)))
+    {
+      /* Need to handle second term as a limit due to pole in
+         M(1+a-b,2-b,x).
+
+         We skip this case when a is integer and a <= b-2 because the
+         hypergeometric series terminates before any singular terms 
+      */
+
+      /* FIXME: TO BE IMPLEMENTED ! */
+      result->val = GSL_NAN; result->err = GSL_NAN;
+      GSL_ERROR("limit case integer b >= 2 unimplemented", GSL_EUNIMPL);
+    }
+  else 
+    {
+      if (a_int && a <= 0 && (b  >= 1))
+        {
+          r2.val = 0;
+          r2.err = 0;
+        } 
+      else 
+        {
+          stat_2 = gsl_sf_poch_e(a,-(1+a-b),&r2);
+          status = GSL_ERROR_SELECT_2(status, stat_2);
+        }
+
+      if (r2.val != 0.0)
+        {
+          gsl_sf_result Mr2;
+          int stat_Mr2 = gsl_sf_hyperg_1F1_e (1+a-b, 2-b, x, &Mr2);
+          T2 =  Mr2.val * r2.val;
+          T2_err = 2.0 * GSL_DBL_EPSILON * fabs(T2)
+            + fabs(Mr2.err * r2.val) + fabs(Mr2.val * r2.err);
+          status = GSL_ERROR_SELECT_2(status, stat_Mr2);
+          
+          if (T2 != 0.0) 
+            {
+              double x1mb = pow(x, 1-b);
+              T2 = x1mb * T2;
+              T2_err = fabs(x1mb) * T2_err;
+            }
+        }
+    }
+
+  result->val = (T1 + T2);
+  result->err = 2.0 * GSL_DBL_EPSILON * fabs(result->val) + (T1_err + T2_err);
+  result->e10 = 0;
+  
+  return status;
+}
+
+static int
+hyperg_U_int_negx (const int a, const int b, const double x, gsl_sf_result_e10 * result)
+{
+  return hyperg_U_negx (a, b, x, result);
+}  
+
+
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
 
@@ -1488,11 +1624,13 @@ gsl_sf_hyperg_U_int_e10_e(const int a, const int b, const double x,
 {
   /* CHECK_POINTER(result) */
 
-  if(x <= 0.0 || (x == 0.0 && b >= 1)) {
+  if(x == 0.0 && b >= 1) {
     DOMAIN_ERROR_E10(result);
   }
   else if (x == 0.0) {
     return hyperg_U_int_origin (a, b, result);
+  } else if (x < 0.0) {
+    return hyperg_U_int_negx (a, b, x, result);
   }
   else {
     if(b >= 1) {
@@ -1531,7 +1669,7 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
 
   /* CHECK_POINTER(result) */
 
-  if(x < 0.0 || (x == 0.0 && b >= 1)) {
+  if(x == 0.0 && b >= 1) {
     DOMAIN_ERROR_E10(result);
   }
   else if(a == 0.0) {
@@ -1541,6 +1679,8 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
     return GSL_SUCCESS;
   } else if (x == 0.0) {
     return hyperg_U_origin (a, b, result);
+  } else if (x < 0.0) {
+    return hyperg_U_negx (a, b, x, result);
   }
   else if(a_integer && b_integer) {
     return gsl_sf_hyperg_U_int_e10_e(rinta, rintb, x, result);

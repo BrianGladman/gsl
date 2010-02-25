@@ -1,3 +1,7 @@
+2010-02-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_U.c (hyperg_U_negx): handle the case where x<0
+
 2010-01-23  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_1F1.c (gsl_sf_hyperg_1F1_e): use Kummer transformation
