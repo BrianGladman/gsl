@@ -556,7 +556,21 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
   double dx = (b - a) / BINS;
   double bin;
   double total = 0, mean;
-  int i, j, status = 0, status_i = 0;
+  int i, j, status = 0, status_i = 0, attempts = 0;
+  long int n0 = 0, n = N;
+
+  for (i = 0; i < BINS; i++)
+    {
+      /* Compute the integral of p(x) from x to x+dx */
+
+      double x = a + i * dx;
+
+      if (fabs (x) < 1e-10)     /* hit the origin exactly */
+        x = 0.0;
+
+      p[i]  = integrate (pdf, x, x+dx);
+    }
+
 
   for (i = 0; i < BINS; i++)
     {
@@ -564,7 +578,10 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
       edge[i] = 0;
     }
 
-  for (i = 0; i < N; i++)
+ trial:
+  attempts++;
+
+  for (i = n0; i < n; i++)
     {
       double r = f ();
       total += r;
@@ -595,46 +612,48 @@ testPDF (double (*f) (void), double (*pdf) (double), const char *name)
       }
 
       count[i] += edge[i];
+      edge[i] = 0;
     }
 
-  mean = (total / N);
+  mean = (total / n);
 
-  gsl_test (!gsl_finite(mean), "%s, finite mean, observed %g", name, mean);
-
-  for (i = 0; i < BINS; i++)
-    {
-      /* Compute an approximation to the integral of p(x) from x to
-         x+dx using Simpson's rule */
-
-      double x = a + i * dx;
-
-      if (fabs (x) < 1e-10)     /* hit the origin exactly */
-        x = 0.0;
-
-      p[i]  = integrate (pdf, x, x+dx);
-    }
+  status = !gsl_finite(mean);
+  if (status) {
+    gsl_test (status, "%s, finite mean, observed %g", name, mean);
+    return;
+  }
 
   for (i = 0; i < BINS; i++)
     {
       double x = a + i * dx;
-      double d = fabs (count[i] - N * p[i]);
+      double d = fabs (count[i] - n * p[i]);
       if (!gsl_finite(p[i])) 
         {
           status_i = 1;
         }
       else if (p[i] != 0)
         {
-          double s = d / sqrt (N * p[i]);
+          double s = d / sqrt (n * p[i]);
           status_i = (s > 5) && (d > 2);
         }
       else
         {
           status_i = (count[i] != 0);
         }
+      
+      /* Extend the sample if there is an outlier on the first attempt
+         to avoid spurious failures when running large numbers of tests. */
+      if (status_i && attempts < 50) 
+        { 
+          n0 = n; 
+          n = 2.0*n;
+          goto trial;
+        }
+
       status |= status_i;
       if (status_i)
         gsl_test (status_i, "%s [%g,%g) (%g/%d=%g observed vs %g expected)",
-                  name, x, x + dx, count[i], N, count[i] / N, p[i]);
+                  name, x, x + dx, count[i], n, count[i] / n, p[i]);
     }
 
   if (status == 0)
