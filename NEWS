@@ -1,5 +1,6 @@
 ** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6b,
-   autoconf-2.65, automake-1.11.1)
+   autoconf-2.65, automake-1.11.1).  Fixes security hole in 'make
+   dist' (see Automake CVE-2009-4029).
 
 ** In the LMDER multi-dimensional fitting routines, the return code
    GSL_ENOPROG is now used instead of GSL_CONTINUE for the case where
