@@ -1,6 +1,6 @@
 /* multifit/gsl_multifit.h
  * 
- * Copyright (C) 2000, 2007 Brian Gough
+ * Copyright (C) 2000, 2007, 2010 Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
