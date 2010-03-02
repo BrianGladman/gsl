@@ -1,3 +1,5 @@
+* Merge improvements from SVD qrstep to eigen - these should be
+  combined somehow as we only need one version of them.
 
 * dlae2.f  has better handling of 2x2 eigenvalues than our qrstep.c
 
