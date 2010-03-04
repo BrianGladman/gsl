@@ -2101,18 +2101,18 @@ int main (void)
 
     params.degree   = 2;
     params.constant = 1.0;
-    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, GSL_DBL_EPSILON,
+    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, 8*GSL_DBL_EPSILON,
         "f_monomial sanity check 1");
 
     params.degree   = 1;
     params.constant = 2.0;
-    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, GSL_DBL_EPSILON,
+    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, 8*GSL_DBL_EPSILON,
         "f_monomial sanity check 2");
 
     params.degree   = 2;
     params.constant = 2.0;
     gsl_test_abs(integ_f_monomial(1.0, 2.0, &params),
-        (2.0/3.0)*(2.0*2.0*2.0 - 1.0*1.0*1.0), GSL_DBL_EPSILON,
+        (2.0/3.0)*(2.0*2.0*2.0 - 1.0*1.0*1.0), 8*GSL_DBL_EPSILON,
         "integ_f_monomial sanity check");
   }
 
@@ -2192,7 +2192,7 @@ int main (void)
           }
         else if (tbl->precomputed)
           {
-            gsl_test_abs(result[n], expected, n/5 * GSL_DBL_EPSILON,
+            gsl_test_abs(result[n], expected, 2.0 * n * GSL_DBL_EPSILON,
                 "glfixed %d-point: very low absolute error for high precision coefficients",
                 n);
           }
