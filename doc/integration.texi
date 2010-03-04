@@ -12,7 +12,9 @@ logarithmic singularities, computation of Cauchy principal values and
 oscillatory integrals.  The library reimplements the algorithms used in
 @sc{quadpack}, a numerical integration package written by Piessens,
 Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for @sc{quadpack} is
-available on Netlib.
+available on Netlib.  Also included are non-adaptive, fixed-order
+Gauss-Legendre integration routines with high precision coefficients
+by Pavel Holoborodko.
 
 The functions described in this chapter are declared in the header file
 @file{gsl_integration.h}.
@@ -28,6 +30,7 @@ The functions described in this chapter are declared in the header file
 * QAWS adaptive integration for singular functions::  
 * QAWO adaptive integration for oscillatory functions::  
 * QAWF adaptive integration for Fourier integrals::  
+* Fixed order Gauss-Legendre integration::
 * Numerical integration error codes::  
 * Numerical integration examples::  
 * Numerical integration References and Further Reading::  
@@ -774,6 +777,36 @@ The subintervals and their results are stored in the memory provided by
 The integration over each subinterval uses the memory provided by
 @var{cycle_workspace} as workspace for the QAWO algorithm.
 
+@end deftypefun
+
+@node Fixed order Gauss-Legendre integration
+@section Gauss-Legendre integration
+
+The fixed-order Gauss-Legendre integration routines are provided for fast
+integration of smooth functions with known polynomial order.  The
+@math{n}-point Gauss-Legendre rule is exact for polynomials of order
+@math{2*n-1} or less.  For example, these rules are useful when integrating
+basis functions to form mass matrices for the Galerkin method.  Unlike other
+numerical integration routines within the library, these routines do not accept
+absolute or relative error bounds.
+
+@deftypefun {gsl_integration_glfixed_table *} gsl_integration_glfixed_table_alloc (size_t @var{n})
+@tpindex gsl_integration_glfixed_table
+This function determines the Gauss-Legendre abscissae and weights necessary for
+an @math{n}-point fixed order integration scheme.  If possible, high precision
+precomputed coefficients are used.  If precomputed weights are not available,
+lower precision coefficients are computed on the fly.
+@end deftypefun
+
+@deftypefun double gsl_integration_glfixed (const gsl_function * @var{f}, double @var{a}, double @var{b}, {gsl_integration_glfixed_table *} @var{t})
+This function applies the Gauss-Legendre integration rule
+contained in table @var{t} and returns the result.
+@end deftypefun
+
+
+@deftypefun void gsl_integration_glfixed_table_alloc (gsl_integration_glfixed_table * @var{t})
+@tpindex gsl_integration_glfixed_table
+This function frees the memory associated with the table @var{t}.
 @end deftypefun
 
 @node Numerical integration error codes

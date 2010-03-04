@@ -10,6 +10,10 @@
    can be used to iterate over the indices of a k-th order symmetric
    tensor in n-space. (Rhys Ulerich)
 
+** Added gsl_integrate_glfixed routines for performing fixed order
+   Gauss-Legendre integration 
+   (Pavel Holoborodko, Konstantin Holoborodko, Rhys Ulerich)
+
 ** In the LMDER multi-dimensional fitting routines, the return code
    GSL_ENOPROG is now used instead of GSL_CONTINUE for the case where
    10 or more attempts to find a suitable trial step have been made

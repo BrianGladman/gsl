@@ -47,3 +47,13 @@ double f459 (double x, void * params);
 
 double myfn1 (double x, void * params);
 double myfn2 (double x, void * params);
+
+struct monomial_params {
+    int degree;
+    double constant;
+} ;
+double f_monomial(double x, void * params);
+double integ_f_monomial(double a, double b, struct monomial_params * p);
+
+double f_sin(double x, void * params);
+double integ_f_sin(double a, double b);

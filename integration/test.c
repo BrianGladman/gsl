@@ -73,6 +73,7 @@ gsl_function make_counter (gsl_function * f, struct counter_params * p)
 void my_error_handler (const char *reason, const char *file,
                        int line, int err);
 
+
 int main (void)
 {
   gsl_ieee_env_setup ();
@@ -2093,6 +2094,119 @@ int main (void)
 
   }
 
+  /* Sanity check monomial test function for fixed Gauss-Legendre rules */
+  {
+    struct monomial_params params;
+    gsl_function f = { f_monomial, &params };
+
+    params.degree   = 2;
+    params.constant = 1.0;
+    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, 8*GSL_DBL_EPSILON,
+        "f_monomial sanity check 1");
+
+    params.degree   = 1;
+    params.constant = 2.0;
+    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), 4.0, 8*GSL_DBL_EPSILON,
+        "f_monomial sanity check 2");
+
+    params.degree   = 2;
+    params.constant = 2.0;
+    gsl_test_abs(integ_f_monomial(1.0, 2.0, &params),
+        (2.0/3.0)*(2.0*2.0*2.0 - 1.0*1.0*1.0), 8*GSL_DBL_EPSILON,
+        "integ_f_monomial sanity check");
+  }
+
+  /* Test the fixed-order Gauss-Legendre rules with a monomial. */
+  {
+    int n;
+    struct monomial_params params;
+    const gsl_function f = { f_monomial, &params };
+    const double a   = 0.0, b = 1.2;
+    params.constant = 1.0;
+
+    for (n = 1; n < 1025; ++n)
+      {
+        double expected, result;
+
+        gsl_integration_glfixed_table * tbl =
+          gsl_integration_glfixed_table_alloc(n);
+
+        params.degree = 2*n-1; /* n point rule exact for 2n-1 degree poly */
+        expected      = integ_f_monomial(a, b, &params);
+        result        = gsl_integration_glfixed(&f, a, b, tbl);
+
+        if (tbl->precomputed)
+          {
+            gsl_test_rel(result, expected, 1.0e-12,
+                "glfixed %d-point: Integrating (%g*x^%d) over [%g,%g]",
+                n, params.constant, params.degree, a, b);
+          }
+        else
+          {
+            gsl_test_rel(result, expected, 1.0e-7,
+                "glfixed %d-point: Integrating (%g*x^%d) over [%g,%g]",
+                n, params.constant, params.degree, a, b);
+          }
+
+        gsl_integration_glfixed_table_free(tbl);
+      }
+  }
+
+  /* Sanity check sin(x) test function for fixed Gauss-Legendre rules */
+  {
+    gsl_function f = { f_sin, NULL };
+
+    gsl_test_abs(GSL_FN_EVAL(&f, 2.0), sin(2.0), 0.0, "f_sin sanity check 1");
+    gsl_test_abs(GSL_FN_EVAL(&f, 7.0), sin(7.0), 0.0, "f_sin sanity check 2");
+    gsl_test_abs(integ_f_sin(0.0, M_PI), 2.0, GSL_DBL_EPSILON,
+        "integ_f_sin sanity check");
+  }
+
+  /* Test the fixed-order Gauss-Legendre rules against sin(x) on [0, pi] */
+  {
+    const int n_max = 1024;
+    const gsl_function f = { f_sin, NULL };
+    const double a = 0.0, b = M_PI;
+    const double expected = integ_f_sin(a, b);
+    double result[n_max+1], abserr[n_max+1];
+    int n;
+
+    for (n = 1; n <= n_max; ++n)
+      {
+        gsl_integration_glfixed_table * const tbl =
+          gsl_integration_glfixed_table_alloc(n);
+
+        result[n] = gsl_integration_glfixed(&f, a, b, tbl);
+        abserr[n] = fabs(expected - result[n]);
+
+        if (n == 1)
+          {
+            gsl_test_abs(result[n], GSL_FN_EVAL(&f,(b+a)/2)*(b-a), 0.0,
+                "glfixed %d-point: behavior for n == 1", n);
+          }
+        else if (n < 9)
+          {
+            gsl_test(! (abserr[n] < abserr[n-1]),
+                "glfixed %d-point: observed drop in absolute error versus %d-points",
+                n, n-1);
+          }
+        else if (tbl->precomputed)
+          {
+            gsl_test_abs(result[n], expected, 2.0 * n * GSL_DBL_EPSILON,
+                "glfixed %d-point: very low absolute error for high precision coefficients",
+                n);
+          }
+        else
+          {
+            gsl_test_abs(result[n], expected, 1.0e6 * GSL_DBL_EPSILON,
+                "glfixed %d-point: acceptable absolute error for on-the-fly coefficients",
+                n);
+          }
+
+        gsl_integration_glfixed_table_free(tbl);
+      }
+  }
+
   exit (gsl_test_summary());
 } 
 
@@ -2101,5 +2215,3 @@ my_error_handler (const char *reason, const char *file, int line, int err)
 {
   if (0) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }
-
-
