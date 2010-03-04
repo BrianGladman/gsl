@@ -1,6 +1,14 @@
+* What is new in gsl-1.14:
+
 ** Upgraded to latest libtool, autoconf and automake (libtool-2.2.6b,
    autoconf-2.65, automake-1.11.1).  Fixes security hole in 'make
    dist' (see Automake CVE-2009-4029).
+
+** Added support for "multisets", which are similar to permutations
+   and combinations.  A multiset is an array of k integers in the
+   range 0 to n-1 where each value may occur more than once. Multisets
+   can be used to iterate over the indices of a k-th order symmetric
+   tensor in n-space. (Rhys Ulerich)
 
 ** In the LMDER multi-dimensional fitting routines, the return code
    GSL_ENOPROG is now used instead of GSL_CONTINUE for the case where
