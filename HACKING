@@ -8,24 +8,19 @@ The GSL hacker needs some stuff that the end users don't:
    Texinfo  >= 4.0
 
 Once you have this stuff, you can get the repository and start
-working from your own machine.  To do the initial checkout of the
-repository try (bash syntax):
+working from your own machine.  
 
 GSL development is hosted at http://savannah.gnu.org/projects/gsl
 
 # ANONYMOUS CHECKOUT
 
-With CVS:
-
-  cvs -d :pserver:anonymous@pserver.git.sv.gnu.org:/gsl.git checkout -d gsl HEAD
-
-[from now on you can just do "cvs update" in the gsl directory]
-
-With GIT:
+To do the initial checkout of the repository try:
 
   git clone git://git.savannah.gnu.org/gsl.git
 
 [from now on you can just do "git pull" in the gsl directory]
+
+To generate the initial build scripts, run autoreconf -i -v or ./autogen.sh
 
 # PEOPLE WITH SAVANNAH SSH WRITE ACCESS:
 
@@ -152,7 +147,7 @@ compiling it to test all possible conflicts
 
 * Check that the library passes "make check" with -O3 and -mfpmath=sse -msse2, 
 also check with -funsigned-char (to simulate Power/ARM)
-and -std=c89 -ansi -pedantic, now that GCC using c99 by default 
+and -std=c89 -ansi -pedantic, now that GCC uses c99 by default 
 instead of c89.
 
 * Make sure the library passes "make check" with export
