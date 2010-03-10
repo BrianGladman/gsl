@@ -16,6 +16,6 @@ test_SOURCES = test.c
 
 test_LDADD = libgslmultiset.la ../vector/libgslvector.la  ../block/libgslblock.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
 
-noinst_PROGRAMS = demo
-demo_SOURCES = demo.c
-demo_LDADD = libgslmultiset.la ../vector/libgslvector.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
+#noinst_PROGRAMS = demo
+#demo_SOURCES = demo.c
+#demo_LDADD = libgslmultiset.la ../vector/libgslvector.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
