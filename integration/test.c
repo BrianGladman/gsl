@@ -2097,7 +2097,10 @@ int main (void)
   /* Sanity check monomial test function for fixed Gauss-Legendre rules */
   {
     struct monomial_params params;
-    gsl_function f = { f_monomial, &params };
+    gsl_function f;
+    
+    f.function = &f_monomial;
+    f.params = &params;
 
     params.degree   = 2;
     params.constant = 1.0;
@@ -2120,8 +2123,12 @@ int main (void)
   {
     int n;
     struct monomial_params params;
-    const gsl_function f = { f_monomial, &params };
+    gsl_function f;
     const double a   = 0.0, b = 1.2;
+
+    f.function = &f_monomial;
+    f.params = &params;
+
     params.constant = 1.0;
 
     for (n = 1; n < 1025; ++n)
@@ -2168,7 +2175,7 @@ int main (void)
     const gsl_function f = { f_sin, NULL };
     const double a = 0.0, b = M_PI;
     const double expected = integ_f_sin(a, b);
-    double result[n_max+1], abserr[n_max+1];
+    double result, abserr, prev_abserr = 0.0;
     int n;
 
     for (n = 1; n <= n_max; ++n)
@@ -2176,33 +2183,34 @@ int main (void)
         gsl_integration_glfixed_table * const tbl =
           gsl_integration_glfixed_table_alloc(n);
 
-        result[n] = gsl_integration_glfixed(&f, a, b, tbl);
-        abserr[n] = fabs(expected - result[n]);
+        result = gsl_integration_glfixed(&f, a, b, tbl);
+        abserr = fabs(expected - result);
 
         if (n == 1)
           {
-            gsl_test_abs(result[n], GSL_FN_EVAL(&f,(b+a)/2)*(b-a), 0.0,
+            gsl_test_abs(result, GSL_FN_EVAL(&f,(b+a)/2)*(b-a), 0.0,
                 "glfixed %d-point: behavior for n == 1", n);
           }
         else if (n < 9)
           {
-            gsl_test(! (abserr[n] < abserr[n-1]),
+            gsl_test(! (abserr < prev_abserr),
                 "glfixed %d-point: observed drop in absolute error versus %d-points",
                 n, n-1);
           }
         else if (tbl->precomputed)
           {
-            gsl_test_abs(result[n], expected, 2.0 * n * GSL_DBL_EPSILON,
+            gsl_test_abs(result, expected, 2.0 * n * GSL_DBL_EPSILON,
                 "glfixed %d-point: very low absolute error for high precision coefficients",
                 n);
           }
         else
           {
-            gsl_test_abs(result[n], expected, 1.0e6 * GSL_DBL_EPSILON,
+            gsl_test_abs(result, expected, 1.0e6 * GSL_DBL_EPSILON,
                 "glfixed %d-point: acceptable absolute error for on-the-fly coefficients",
                 n);
           }
 
+        prev_abserr = abserr;
         gsl_integration_glfixed_table_free(tbl);
       }
   }
