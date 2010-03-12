@@ -45,6 +45,71 @@ double f_sin (double x, void * p) {
   return sin(x);
 }
 
+double f_DP (double x, void * p) {
+  p = 0;
+  return 2.0;
+}
+
+double f_P (double x, void * p) {
+  p = 0;
+  return 2.0*x + 3.0;
+}
+
+double f_IP1 (double x, void * p) {
+  p = 0;
+  return 30*(x+5.0)/10.0;  /* first order approximation to integral over -5,5 */
+}
+
+
+double f_IP2 (double x, void * p) {
+  p = 0;
+  return x*x + 3*x - 10.0;
+}
+
+
+void 
+test_dim (const size_t n, const double a, const double b,
+          gsl_function * F, gsl_function * DF, gsl_function *IF)
+{
+  double tol = 100.0 * GSL_DBL_EPSILON;
+  double ftol = 20.0;
+  double x; 
+  size_t i;
+
+  gsl_cheb_series * cs = gsl_cheb_alloc(n);
+  gsl_cheb_series * csd = gsl_cheb_alloc(n);
+  gsl_cheb_series * csi = gsl_cheb_alloc(n);
+
+  gsl_cheb_init(cs, F, a, b);
+  
+  for(x=a; x<b; x += (b-a)/100.0) {
+    double r = gsl_cheb_eval(cs, x);
+    gsl_test_abs(r, GSL_FN_EVAL(F, x), tol, "gsl_cheb_eval, F(%.3g)", x);
+  }
+
+  /* Test derivative */
+
+  gsl_cheb_calc_deriv(csd, cs);
+
+  for(x=a; x<b; x += (b-a)/100.0) {
+    double r = gsl_cheb_eval(csd, x);
+    gsl_test_abs(r, GSL_FN_EVAL(DF, x), tol, "gsl_cheb_eval, deriv F(%.3g)", x);
+  }
+ 
+  /* Test integral */
+
+  gsl_cheb_calc_integ(csi, cs);
+
+  for(x=a; x<b; x += (b-a)/100.0) {
+    double r = gsl_cheb_eval(csi, x);
+    gsl_test_abs(r, GSL_FN_EVAL(IF, x), tol, "gsl_cheb_eval, integ F(%.3g)", x);
+  }
+
+  gsl_cheb_free(csi);
+  gsl_cheb_free(csd);
+  gsl_cheb_free(cs);
+}
+
 int 
 main(void)
 {
@@ -57,7 +122,7 @@ main(void)
   gsl_cheb_series * csd = gsl_cheb_alloc(40);
   gsl_cheb_series * csi = gsl_cheb_alloc(40);
 
-  gsl_function F_sin, F_T0, F_T1, F_T2;
+  gsl_function F_sin, F_T0, F_T1, F_T2, F_DP, F_P, F_IP1, F_IP2;
 
   F_sin.function = f_sin;
   F_sin.params = 0;
@@ -70,6 +135,18 @@ main(void)
 
   F_T2.function = f_T2;
   F_T2.params = 0;
+
+  F_P.function = f_P;
+  F_P.params = 0;
+
+  F_DP.function = f_DP;
+  F_DP.params = 0;
+
+  F_IP1.function = f_IP1;
+  F_IP1.params = 0;
+
+  F_IP2.function = f_IP2;
+  F_IP2.params = 0;
 
   gsl_ieee_env_setup();
 
@@ -213,6 +290,10 @@ main(void)
   gsl_cheb_free(csi);
   gsl_cheb_free(csd);
   gsl_cheb_free(cs);
+  
+  /* Test low order cases */
+  test_dim (2, -5.0, 5.0, &F_P, &F_DP, &F_IP2);
+  test_dim (1, -5.0, 5.0, &F_P, &F_DP, &F_IP1);
 
   exit (gsl_test_summary());
 }

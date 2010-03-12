@@ -49,10 +49,8 @@ int gsl_cheb_calc_deriv(gsl_cheb_series * deriv, const gsl_cheb_series * f)
   if(n > 1) {
     deriv->c[n-2] = 2.0 *(n-1.0) * f->c[n-1];
 
-    for(i = n-3; i>0; i--) 
-      deriv->c[i] = deriv->c[i+2] + 2.0 *(i+1.0) * f->c[i+1];
-
-    deriv->c[0] = deriv->c[2] + 2.0 * f->c[1];
+    for(i = n; i>=3; i--) 
+      deriv->c[i-3] = deriv->c[i-1] + 2.0 *(i-2.0) * f->c[i-2];
 
     for(i = 0  ; i<n ; i++) 
       deriv->c[i] *= con;
