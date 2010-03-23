@@ -1,3 +1,7 @@
+** Added function gsl_eigen_nonsymmv_params to control the balancing
+   transformation for eigenvector calculations. Balancing is now
+   turned off by default for gsl_eigen_nonsymmv.
+
 ** Avoid segfault in Chebyshev series derivatives gsl_cheb_calc_deriv
    for n=1. [bug #29139]
 

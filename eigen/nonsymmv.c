@@ -95,7 +95,7 @@ gsl_eigen_nonsymmv_alloc(const size_t n)
    * set parameters to compute the full Schur form T and balance
    * the matrices
    */
-  gsl_eigen_nonsymm_params(1, 1, w->nonsymm_workspace_p);
+  gsl_eigen_nonsymm_params(1, 0, w->nonsymm_workspace_p);
 
   w->work = gsl_vector_alloc(n);
   w->work2 = gsl_vector_alloc(n);
@@ -133,6 +133,22 @@ gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w)
 
   free(w);
 } /* gsl_eigen_nonsymmv_free() */
+
+/*
+gsl_eigen_nonsymmv_params()
+  Set some parameters which define how we solve the eigenvalue
+problem.
+
+Inputs: balance   - 1 if we want to balance the matrix, 0 if not
+        w         - nonsymmv workspace
+*/
+
+void
+gsl_eigen_nonsymmv_params (const int balance,
+                           gsl_eigen_nonsymmv_workspace *w)
+{
+  gsl_eigen_nonsymm_params(1, balance, w->nonsymm_workspace_p);
+} /* gsl_eigen_nonsymm_params() */
 
 /*
 gsl_eigen_nonsymmv()

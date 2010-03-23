@@ -200,6 +200,39 @@ test_eigen_schur(const gsl_matrix * A, const gsl_matrix * S,
   gsl_matrix_free (T2);
 } /* test_eigen_schur() */
 
+/* test if A is orthogonal */
+int
+test_eigen_orthog(gsl_matrix *A, size_t count, const char *desc,
+                  const char *desc2)
+{
+  size_t N = A->size1;
+  gsl_matrix *M = gsl_matrix_alloc(A->size1, A->size2);
+  size_t i, j;
+
+  gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, A, A, 0.0, M);
+
+  for (i = 0; i < A->size1; ++i)
+    {
+      for (j = 0; j < A->size2; ++j)
+        {
+          double val;
+          double mij = gsl_matrix_get(M, i, j);
+
+          if (i == j)
+            val = 1.0;
+          else
+            val = 0.0;
+
+          gsl_test_abs(mij, val, 1.0e8 * GSL_DBL_EPSILON,
+                       "%s(N=%u,cnt=%u), %s, orthog(%d,%d)", desc, N, count, desc2, i, j);
+        }
+    }
+
+  gsl_matrix_free(M);
+
+  return 1;
+} /* test_eigen_orthog() */
+
 void
 test_eigenvalues_real (const gsl_vector *eval, const gsl_vector * eval2, 
                        const char * desc, const char * desc2)
@@ -710,6 +743,10 @@ test_eigen_nonsymm_matrix(const gsl_matrix * m, size_t count,
   gsl_linalg_hessenberg_set_zero(A);
   test_eigen_schur(m, A, Z, Z, count, "nonsymm", desc);
 
+  /* test if Z is an orthogonal matrix */
+  if (w->nonsymm_workspace_p->do_balance == 0)
+    test_eigen_orthog(Z, count, "nonsymm", desc);
+
   gsl_matrix_free(A);
   gsl_matrix_free(Z);
   gsl_matrix_complex_free(evec);
@@ -732,10 +769,10 @@ test_eigen_nonsymm(void)
         {
           create_random_nonsymm_matrix(m, r, -10, 10);
 
-          gsl_eigen_nonsymm_params(1, 0, w->nonsymm_workspace_p);
+          gsl_eigen_nonsymmv_params(0, w);
           test_eigen_nonsymm_matrix(m, i, "random, unbalanced", w);
 
-          gsl_eigen_nonsymm_params(1, 1, w->nonsymm_workspace_p);
+          gsl_eigen_nonsymmv_params(1, w);
           test_eigen_nonsymm_matrix(m, i, "random, balanced", w);
         }
 

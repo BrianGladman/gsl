@@ -258,6 +258,15 @@ size of the workspace is @math{O(5n)}.
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
+@deftypefun void gsl_eigen_nonsymmv_params (const int @var{balance}, gsl_eigen_nonsymm_workspace * @var{w})
+This function sets parameters which determine how the eigenvalue
+problem is solved in subsequent calls to @code{gsl_eigen_nonsymmv}.
+If @var{balance} is set to 1, a balancing transformation is applied
+to the matrix. See @code{gsl_eigen_nonsymm_params} for more information.
+Balancing is turned off by default since it does not preserve the
+orthogonality of the Schur vectors.
+@end deftypefun
+
 @deftypefun int gsl_eigen_nonsymmv (gsl_matrix * @var{A}, gsl_vector_complex * @var{eval}, gsl_matrix_complex * @var{evec}, gsl_eigen_nonsymmv_workspace * @var{w})
 This function computes eigenvalues and right eigenvectors of the
 @var{n}-by-@var{n} real nonsymmetric matrix @var{A}. It first calls
