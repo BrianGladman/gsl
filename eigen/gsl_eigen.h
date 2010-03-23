@@ -139,6 +139,8 @@ typedef struct {
 
 gsl_eigen_nonsymmv_workspace * gsl_eigen_nonsymmv_alloc (const size_t n);
 void gsl_eigen_nonsymmv_free (gsl_eigen_nonsymmv_workspace * w);
+void gsl_eigen_nonsymmv_params (const int balance,
+                                gsl_eigen_nonsymmv_workspace *w);
 int gsl_eigen_nonsymmv (gsl_matrix * A, gsl_vector_complex * eval,
                         gsl_matrix_complex * evec,
                         gsl_eigen_nonsymmv_workspace * w);
