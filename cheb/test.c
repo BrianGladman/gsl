@@ -72,9 +72,7 @@ test_dim (const size_t n, const double a, const double b,
           gsl_function * F, gsl_function * DF, gsl_function *IF)
 {
   double tol = 100.0 * GSL_DBL_EPSILON;
-  double ftol = 20.0;
   double x; 
-  size_t i;
 
   gsl_cheb_series * cs = gsl_cheb_alloc(n);
   gsl_cheb_series * csd = gsl_cheb_alloc(n);
