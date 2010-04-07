@@ -32,9 +32,6 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_ieee_utils.h>
 
-#define M 53
-#define N 107
-
 int status = 0;
 
 #ifndef DESC
@@ -133,77 +130,100 @@ main (void)
 {
   gsl_ieee_env_setup ();
 
-  test_func ();
-  test_float_func ();
-  test_long_double_func ();
-  test_ulong_func ();
-  test_long_func ();
-  test_uint_func ();
-  test_int_func ();
-  test_ushort_func ();
-  test_short_func ();
-  test_uchar_func ();
-  test_char_func ();
-  test_complex_func ();
-  test_complex_float_func ();
-  test_complex_long_double_func ();
+  size_t M = 53;
+  size_t N = 107;
 
-  test_text ();
-  test_float_text ();
+  test_func (M, N);
+  test_float_func (M, N);
+  test_long_double_func (M, N);
+  test_ulong_func (M, N);
+  test_long_func (M, N);
+  test_uint_func (M, N);
+  test_int_func (M, N);
+  test_ushort_func (M, N);
+  test_short_func (M, N);
+  test_uchar_func (M, N);
+  test_char_func (M, N);
+  test_complex_func (M, N);
+  test_complex_float_func (M, N);
+  test_complex_long_double_func (M, N);
+
+  test_ops (M, N);
+  test_float_ops (M, N);
+  test_long_double_ops (M, N);
+  test_ulong_ops (M, N);
+  test_long_ops (M, N);
+  test_uint_ops (M, N);
+  test_int_ops (M, N);
+  test_ushort_ops (M, N);
+  test_short_ops (M, N);
+  test_uchar_ops (M, N);
+  test_char_ops (M, N);
+
+  /* Must use smaller dimensions to prevent approximation of floats in
+     float_mul_elements test*/
+  
+  {
+    const size_t P = 8;
+    const size_t Q = 12;
+
+    test_complex_ops (P, Q);
+    test_complex_float_ops (P, Q);
+    test_complex_long_double_ops (P, Q);
+  }
+
+  test_text (M, N);
+  test_float_text (M, N);
 #if HAVE_PRINTF_LONGDOUBLE
-  test_long_double_text ();
+  test_long_double_text (M, N);
 #endif
-  test_ulong_text ();
-  test_long_text ();
-  test_uint_text ();
-  test_int_text ();
-  test_ushort_text ();
-  test_short_text ();
-  test_uchar_text ();
-  test_char_text ();
-  test_complex_text ();
-  test_complex_float_text ();
+  test_ulong_text (M, N);
+  test_long_text (M, N);
+  test_uint_text (M, N);
+  test_int_text (M, N);
+  test_ushort_text (M, N);
+  test_short_text (M, N);
+  test_uchar_text (M, N);
+  test_char_text (M, N);
+  test_complex_text (M, N);
+  test_complex_float_text (M, N);
 #if HAVE_PRINTF_LONGDOUBLE
-  test_complex_long_double_text ();
+  test_complex_long_double_text (M, N);
 #endif
 
-  test_binary ();
-  test_float_binary ();
-  test_long_double_binary ();
-  test_ulong_binary ();
-  test_long_binary ();
-  test_uint_binary ();
-  test_int_binary ();
-  test_ushort_binary ();
-  test_short_binary ();
-  test_uchar_binary ();
-  test_char_binary ();
-  test_complex_binary ();
-  test_complex_float_binary ();
-  test_complex_long_double_binary ();
+  test_binary (M, N);
+  test_float_binary (M, N);
+  test_long_double_binary (M, N);
+  test_ulong_binary (M, N);
+  test_long_binary (M, N);
+  test_uint_binary (M, N);
+  test_int_binary (M, N);
+  test_ushort_binary (M, N);
+  test_short_binary (M, N);
+  test_uchar_binary (M, N);
+  test_char_binary (M, N);
+  test_complex_binary (M, N);
+  test_complex_float_binary (M, N);
+  test_complex_long_double_binary (M, N);
 
 #if GSL_RANGE_CHECK
   gsl_set_error_handler (&my_error_handler);
 
-  test_trap ();
-  test_float_trap ();
-  test_long_double_trap ();
-  test_ulong_trap ();
-  test_long_trap ();
-  test_uint_trap ();
-  test_int_trap ();
-  test_ushort_trap ();
-  test_short_trap ();
-  test_uchar_trap ();
-  test_char_trap ();
-  test_complex_trap ();
-  test_complex_float_trap ();
-  test_complex_long_double_trap ();
+  test_trap (M, N);
+  test_float_trap (M, N);
+  test_long_double_trap (M, N);
+  test_ulong_trap (M, N);
+  test_long_trap (M, N);
+  test_uint_trap (M, N);
+  test_int_trap (M, N);
+  test_ushort_trap (M, N);
+  test_short_trap (M, N);
+  test_uchar_trap (M, N);
+  test_char_trap (M, N);
+  test_complex_trap (M, N);
+  test_complex_float_trap (M, N);
+  test_complex_long_double_trap (M, N);
 #endif
-
-  test_complex_arith ();
-  test_complex_float_arith ();
-  test_complex_long_double_arith ();
 
   exit (gsl_test_summary ());
 }
