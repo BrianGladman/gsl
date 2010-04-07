@@ -267,9 +267,12 @@ be substituted at runtime without modifications to the code.
 
 @deftypefun int gsl_multimin_fdfminimizer_iterate (gsl_multimin_fdfminimizer * @var{s})
 @deftypefunx int gsl_multimin_fminimizer_iterate (gsl_multimin_fminimizer * @var{s})
-These functions perform a single iteration of the minimizer @var{s}.  If
-the iteration encounters an unexpected problem then an error code will
-be returned.
+These functions perform a single iteration of the minimizer @var{s}.
+If the iteration encounters an unexpected problem then an error code
+will be returned.  The error code @code{GSL_ENOPROG} signifies that
+the minimizer is unable to improve on its current estimate, either due
+to numerical difficulty or because a genuine local mimimum has been
+reached.
 @end deftypefun
 
 @noindent

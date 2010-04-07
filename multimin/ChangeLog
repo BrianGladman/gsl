@@ -1,3 +1,17 @@
+2010-04-07  Brian Gough  <bjg@network-theory.co.uk>
+
+	* test.c (test_fdf): handle case of GSL_ENOPROG from early returns
+
+	* test_funcs.c (simpleabs_f): new test function with non-zero
+	first derivatives around minimum
+
+	* steepest_descent.c (steepest_descent_iterate): return early if
+	trial point does not move within machine precision
+
+	* directional_minimize.c (intermediate_point): return early with
+	step=0 if trial point does not move from initial point within
+	machine precision
+
 2009-08-05  Brian Gough  <bjg@network-theory.co.uk>
 
 	* simplex2.c (contract_by_best):  update the size and

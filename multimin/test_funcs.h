@@ -21,9 +21,18 @@ extern unsigned int fcount, gcount;
 
 typedef void (*initpt_function) (gsl_vector * x);
 
+extern gsl_multimin_function_fdf simpleabs;
+extern gsl_multimin_function simpleabs_fmin;
+void simpleabs_initpt (gsl_vector * x);
+void simpleabs_initpt1 (gsl_vector * x);
+double simpleabs_f (const gsl_vector * x, void *params);
+void simpleabs_df (const gsl_vector * x, void *params, gsl_vector * df);
+void simpleabs_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);
+
 extern gsl_multimin_function_fdf rosenbrock;
 extern gsl_multimin_function rosenbrock_fmin;
 void rosenbrock_initpt (gsl_vector * x);
+void rosenbrock_initpt1 (gsl_vector * x);
 double rosenbrock_f (const gsl_vector * x, void *params);
 void rosenbrock_df (const gsl_vector * x, void *params, gsl_vector * df);
 void rosenbrock_fdf (const gsl_vector * x, void *params, double * f, gsl_vector * df);

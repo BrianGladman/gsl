@@ -24,6 +24,60 @@
 
 #include "test_funcs.h"
 
+gsl_multimin_function_fdf simpleabs =
+{&simpleabs_f,
+ &simpleabs_df,
+ &simpleabs_fdf,
+ 2, 0};
+
+gsl_multimin_function simpleabs_fmin =
+{&simpleabs_f,
+ 2, 0};
+
+void simpleabs_initpt (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 1.0);
+  gsl_vector_set (x, 1, 2.0);
+}
+
+void simpleabs_initpt1 (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 1.0);
+  gsl_vector_set (x, 1, 1.0);
+}
+
+double simpleabs_f (const gsl_vector * x, void *params)
+{
+  double u = gsl_vector_get(x,0);
+  double v = gsl_vector_get(x,1);
+  double a = u - 1;
+  double b = v - 2;
+  fcount++;
+  return fabs(a) + fabs(b);
+}
+
+void simpleabs_df (const gsl_vector * x, void *params, gsl_vector * df)
+{
+  double u = gsl_vector_get(x,0);
+  double v = gsl_vector_get(x,1);
+  gcount++;
+  gsl_vector_set(df,0, GSL_SIGN(u-1));
+  gsl_vector_set(df,1, GSL_SIGN(v-2));  
+}
+
+void simpleabs_fdf (const gsl_vector * x, void *params, double * f,
+                     gsl_vector * df) 
+{
+  double u = gsl_vector_get(x,0);
+  double v = gsl_vector_get(x,1);
+  double a = u - 1;
+  double b = v - 2;
+  gcount++;
+  *f = fabs(a) + fabs(b);
+  gsl_vector_set(df,0, GSL_SIGN(u-1));
+  gsl_vector_set(df,1, GSL_SIGN(v-2));  
+}
+
 gsl_multimin_function_fdf rosenbrock =
 {&rosenbrock_f,
  &rosenbrock_df,
@@ -37,6 +91,12 @@ gsl_multimin_function rosenbrock_fmin =
 void rosenbrock_initpt (gsl_vector * x)
 {
   gsl_vector_set (x, 0, -1.2);
+  gsl_vector_set (x, 1, 1.0);
+}
+
+void rosenbrock_initpt1 (gsl_vector * x)
+{
+  gsl_vector_set (x, 0, 1.0);
   gsl_vector_set (x, 1, 1.0);
 }
 
