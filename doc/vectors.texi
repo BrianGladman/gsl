@@ -690,36 +690,42 @@ This function reverses the order of the elements of the vector @var{v}.
 
 @deftypefun int gsl_vector_add (gsl_vector * @var{a}, const gsl_vector * @var{b})
 This function adds the elements of vector @var{b} to the elements of
-vector @var{a}, @math{a'_i = a_i + b_i}. The two vectors must have the
-same length.
+vector @var{a}.  The result @math{a_i \leftarrow a_i + b_i} is stored
+in @var{a} and @var{b} remains unchanged.  The two vectors must have
+the same length.
 @end deftypefun
 
 @deftypefun int gsl_vector_sub (gsl_vector * @var{a}, const gsl_vector * @var{b})
 This function subtracts the elements of vector @var{b} from the elements of
-vector @var{a}, @math{a'_i = a_i - b_i}. The two vectors must have the
+vector @var{a}.  The result @math{a_i \leftarrow a_i - b_i} is stored
+in @var{a} and @var{b} remains unchanged.  The two vectors must have the
 same length.
 @end deftypefun
 
 @deftypefun int gsl_vector_mul (gsl_vector * @var{a}, const gsl_vector * @var{b})
-This function multiplies the elements of vector @var{a} by the elements of
-vector @var{b}, @math{a'_i = a_i * b_i}. The two vectors must have the
-same length.
+This function multiplies the elements of vector @var{a} by the
+elements of vector @var{b}.  The result @math{a_i \leftarrow a_i *
+b_i} is stored in @var{a} and @var{b} remains unchanged. The two
+vectors must have the same length.
 @end deftypefun
 
 @deftypefun int gsl_vector_div (gsl_vector * @var{a}, const gsl_vector * @var{b})
-This function divides the elements of vector @var{a} by the elements of
-vector @var{b}, @math{a'_i = a_i / b_i}. The two vectors must have the
-same length.
+This function divides the elements of vector @var{a} by the elements
+of vector @var{b}.  The result @math{a_i \leftarrow a_i / b_i} is
+stored in @var{a} and @var{b} remains unchanged. The two vectors must
+have the same length.
 @end deftypefun
 
 @deftypefun int gsl_vector_scale (gsl_vector * @var{a}, const double @var{x})
-This function multiplies the elements of vector @var{a} by the constant
-factor @var{x}, @math{a'_i = x a_i}.
+This function multiplies the elements of vector @var{a} by the
+constant factor @var{x}.  The result @math{a_i \leftarrow x a_i} is
+stored in @var{a}.
 @end deftypefun
 
 @deftypefun int gsl_vector_add_constant (gsl_vector * @var{a}, const double @var{x})
 This function adds the constant value @var{x} to the elements of the
-vector @var{a}, @math{a'_i = a_i + x}.
+vector @var{a}.  The result @math{a_i \leftarrow a_i + x} is stored in
+@var{a}.
 @end deftypefun
 
 @node Finding maximum and minimum elements of vectors
@@ -1494,36 +1500,42 @@ The following operations are defined for real and complex matrices.
 
 @deftypefun int gsl_matrix_add (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
 This function adds the elements of matrix @var{b} to the elements of
-matrix @var{a}, @math{a'(i,j) = a(i,j) + b(i,j)}. The two matrices must have the
-same dimensions.
+matrix @var{a}.  The result @math{a(i,j) \leftarrow a(i,j) + b(i,j)}
+is stored in @var{a} and @var{b} remains unchanged. The two matrices
+must have the same dimensions.
 @end deftypefun
 
 @deftypefun int gsl_matrix_sub (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
-This function subtracts the elements of matrix @var{b} from the elements of
-matrix @var{a}, @math{a'(i,j) = a(i,j) - b(i,j)}. The two matrices must have the
-same dimensions.
+This function subtracts the elements of matrix @var{b} from the
+elements of matrix @var{a}.  The result @math{a(i,j) \leftarrow a(i,j)
+- b(i,j)} is stored in @var{a} and @var{b} remains unchanged. The two
+matrices must have the same dimensions.
 @end deftypefun
 
 @deftypefun int gsl_matrix_mul_elements (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
-This function multiplies the elements of matrix @var{a} by the elements of
-matrix @var{b}, @math{a'(i,j) = a(i,j) * b(i,j)}. The two matrices must have the
-same dimensions.
+This function multiplies the elements of matrix @var{a} by the
+elements of matrix @var{b}.  The result @math{a(i,j) \leftarrow a(i,j)
+* b(i,j)} is stored in @var{a} and @var{b} remains unchanged.  The two
+matrices must have the same dimensions.
 @end deftypefun
 
 @deftypefun int gsl_matrix_div_elements (gsl_matrix * @var{a}, const gsl_matrix * @var{b})
-This function divides the elements of matrix @var{a} by the elements of
-matrix @var{b}, @math{a'(i,j) = a(i,j) / b(i,j)}. The two matrices must have the
-same dimensions.
+This function divides the elements of matrix @var{a} by the elements
+of matrix @var{b}.  The result @math{a(i,j) \leftarrow a(i,j) /
+b(i,j)} is stored in @var{a} and @var{b} remains unchanged. The two
+matrices must have the same dimensions.
 @end deftypefun
 
 @deftypefun int gsl_matrix_scale (gsl_matrix * @var{a}, const double @var{x})
-This function multiplies the elements of matrix @var{a} by the constant
-factor @var{x}, @math{a'(i,j) = x a(i,j)}.
+This function multiplies the elements of matrix @var{a} by the
+constant factor @var{x}.  The result @math{a(i,j) \leftarrow x a(i,j)}
+is stored in @var{a}.
 @end deftypefun
 
 @deftypefun int gsl_matrix_add_constant (gsl_matrix * @var{a}, const double @var{x})
 This function adds the constant value @var{x} to the elements of the
-matrix @var{a}, @math{a'(i,j) = a(i,j) + x}.
+matrix @var{a}.  The result @math{a(i,j) \leftarrow a(i,j) + x} is
+stored in @var{a}.
 @end deftypefun
 
 @node  Finding maximum and minimum elements of matrices
