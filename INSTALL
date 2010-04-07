@@ -90,10 +90,10 @@ Hints for any platform
 
 1) If there are problems building the library try using
 
-        ./configure --disable-shared
+        ./configure --disable-shared --disable-dependency-tracking
 
-This will turn off the compilation of shared libraries and may allow
-the build process to complete successfully.  
+This will turn off the compilation of shared libraries and dependency
+tracking and may allow the build process to complete successfully.
 
 If you get any problems try this first.
 
@@ -278,7 +278,7 @@ unpack the distribution.
 There are problems with dynamic linker, so the library should be
 compiled with,
 
-  ./configure --disable-shared
+  ./configure --disable-shared --disable-dependency-tracking
 
 It has been reported that shared libraries can be built if MacOS X
 specific versions of libtool, automake and autoconf from
