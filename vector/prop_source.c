@@ -1,6 +1,6 @@
 /* vector/prop_source.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007, 2010 Gerard Jungman, Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+
+
+int
+FUNCTION (gsl_vector, equal) (const TYPE (gsl_vector) * u, const TYPE (gsl_vector) * v)
+{
+  const size_t n = v->size;
+  const size_t stride_u = u->stride ;
+  const size_t stride_v = v->stride ;
+
+  size_t j;
+
+  if (u->size != v->size)
+    {
+      GSL_ERROR_VAL ("vectors must have same length", GSL_EBADLEN, 0);
+    }
+
+  for (j = 0; j < n; j++)
+    {
+      size_t k;
+      
+      for (k = 0; k < MULTIPLICITY; k++) 
+        {
+          if (u->data[MULTIPLICITY * stride_u * j + k] != v->data[MULTIPLICITY * stride_v * j + k])
+            {
+              return 0;
+            }
+        }
+    }
+
+  return 1;
+}
+
+
 
 int
 FUNCTION (gsl_vector, isnull) (const TYPE (gsl_vector) * v)

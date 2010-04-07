@@ -1,6 +1,6 @@
 /* vector/test_complex_source.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007, 2010 Gerard Jungman, Brian Gough
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -501,7 +501,18 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
       FUNCTION (gsl_vector, set) (b, i, z1);
     }
   
+  {
+    int status = (FUNCTION(gsl_vector,equal) (a,b) != 0);
+    TEST2 (status, "_equal vectors unequal");
+  }
+
   FUNCTION(gsl_vector, memcpy) (v, a);
+
+  {
+    int status = (FUNCTION(gsl_vector,equal) (a,v) != 1);
+    TEST2 (status, "_equal vectors equal");
+  }
+
   FUNCTION(gsl_vector, add) (v, b);
   
   {

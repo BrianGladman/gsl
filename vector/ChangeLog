@@ -1,3 +1,8 @@
+2010-03-12  Brian Gough  <bjg@network-theory.co.uk>
+
+	* prop_source.c (FUNCTION): added a function to test if two
+	vectors are equal
+
 2009-11-14  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_vector_complex.h (GSL_VECTOR_COMPLEX): added missing
