@@ -1,3 +1,9 @@
+2010-04-10  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* utils/memcpy.c (memcpy): Use the standand method signature.
+
+	* utils/memmove.c (memmove): Likewise.
+
 2010-01-18  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_version.h.in, configure.ac: added GSL_MAJOR_VERSION and
@@ -7,7 +13,7 @@
 
 	* configure.ac: added RETURN_IF_NULL macro to handle null argument
 	in free() type functions.
-	
+
 2009-05-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* configure.ac: improve tests for C99 inline, and don't test when

@@ -7,12 +7,14 @@
 #include <config.h>
 #endif
 
-void
-memmove (dest, source, length)
-     char *dest;
-     const char *source;
+void *
+memmove (destaddr, sourceaddr, length)
+     void *destaddr;
+     const void *sourceaddr;
      unsigned length;
 {
+  char *dest = destaddr;
+  const char *source = sourceaddr;
   if (source < dest)
     /* Moving from low mem to hi mem; start at end.  */
     for (source += length, dest += length; length; --length)
@@ -21,4 +23,6 @@ memmove (dest, source, length)
     /* Moving from hi mem to low mem; start at beginning.  */
     for (; length; --length)
       *dest++ = *source++;
+
+  return destaddr;
 }

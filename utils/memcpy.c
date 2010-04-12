@@ -6,15 +6,15 @@
 #include <config.h>
 #endif
 
-char *
+void *
 memcpy (destaddr, srcaddr, len)
-     char *destaddr;
-     const char *srcaddr;
-     int len;
+     void *destaddr;
+     const void *srcaddr;
+     unsigned int len;
 {
-  char *dest = destaddr;
-
+  char *dest = (char *) destaddr;
+  const char *src = srcaddr;
   while (len-- > 0)
-    *destaddr++ = *srcaddr++;
-  return dest;
+    *dest++ = *src++;
+  return destaddr;
 }
