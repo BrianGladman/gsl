@@ -17,15 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-void FUNCTION (test, func) (void);
-void FUNCTION (test, trap) (void);
-void FUNCTION (test, text) (void);
-void FUNCTION (test, binary) (void);
+void FUNCTION (test, func) (const size_t M, const size_t N);
+void FUNCTION (test, ops) (const size_t M, const size_t N);
+void FUNCTION (test, trap) (const size_t M, const size_t N);
+void FUNCTION (test, text) (const size_t M, const size_t N);
+void FUNCTION (test, binary) (const size_t M, const size_t N);
 
 #define TEST(expr,desc) gsl_test((expr), NAME(gsl_matrix) desc " M=%d, N=%d", M, N)
 
 void
-FUNCTION (test, func) (void)
+FUNCTION (test, func) (const size_t M, const size_t N)
 {
   TYPE (gsl_vector) * v;
   size_t i, j;
@@ -407,195 +408,213 @@ FUNCTION (test, func) (void)
   }
 #endif
 
+  FUNCTION (gsl_matrix, free) (m);
+  FUNCTION (gsl_vector, free) (v);
+}
+
+
+void
+FUNCTION (test, ops) (const size_t M, const size_t N)
+{
+  size_t i, j;
+  size_t k = 0;
+  
+  TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, calloc) (M, N);
+  TYPE (gsl_matrix) * b = FUNCTION (gsl_matrix, calloc) (M, N);
+  TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          FUNCTION (gsl_matrix, set) (a, i, j, (BASE)(3 + i +  5 * j));
+          FUNCTION (gsl_matrix, set) (b, i, j, (BASE)(3 + 2 * i + 4 * j));
+        }
+    }
+  
   {
-    TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, calloc) (M, N);
-    TYPE (gsl_matrix) * b = FUNCTION (gsl_matrix, calloc) (M, N);
+    int status = (FUNCTION(gsl_matrix,equal) (a,b) != 0);
+    gsl_test (status, NAME (gsl_matrix) "_equal matrix unequal");
+  }
+  
+  FUNCTION (gsl_matrix, memcpy) (m, a);
+  
+  {
+    int status = (FUNCTION(gsl_matrix,equal) (a,m) != 1);
+    gsl_test (status, NAME (gsl_matrix) "_equal matrix equal");
+    }
+  
+  FUNCTION (gsl_matrix, add) (m, b);
+    
+  {
+    int status = 0;
     
     for (i = 0; i < M; i++)
       {
         for (j = 0; j < N; j++)
           {
-            FUNCTION (gsl_matrix, set) (a, i, j, (BASE)(3 + i +  5 * j));
-            FUNCTION (gsl_matrix, set) (b, i, j, (BASE)(3 + 2 * i + 4 * j));
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+            BASE z = x + y;
+            if (r != z)
+              status = 1;
           }
       }
+    gsl_test (status, NAME (gsl_matrix) "_add matrix addition");
+  }
+  
+  
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, sub) (m, b);
+  
+  {
+    int status = 0;
     
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, add) (m, b);
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+            BASE z = x - y;
+            if (r != z)
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_sub matrix subtraction");
+  }
+  
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, mul_elements) (m, b);
+  
+  {
+    int status = 0;
     
-    {
-      int status = 0;
-      
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
-              BASE z = x + y;
-              if (r != z)
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_add matrix addition");
-    }
-
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, sub) (m, b);
-    
-    {
-      int status = 0;
-      
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
-              BASE z = x - y;
-              if (r != z)
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_sub matrix subtraction");
-    }
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, mul_elements) (m, b);
-    
-    {
-      int status = 0;
-      
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
-              BASE z = x * y;
-              if (r != z)
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_mul_elements multiplication");
-    }
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, div_elements) (m, b);
-    
-    {
-      int status = 0;
-      
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
-              BASE z = x / y;
-              if (fabs(r - z) > 2 * GSL_FLT_EPSILON * fabs(z))
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_div_elements division");
-    }
-
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, scale) (m, 2.0);
-
-    {
-      int status = 0;
-
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              if (r !=  (ATOMIC)(2*x))
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_scale");
-    }
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, add_constant) (m, 3.0);
-
-    {
-      int status = 0;
-
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = x + 3.0;
-              if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_add_constant");
-    }
-
-    FUNCTION(gsl_matrix, memcpy) (m, a);
-    FUNCTION(gsl_matrix, add_diagonal) (m, 5.0);
-
-    {
-      int status = 0;
-
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = (i == j) ? (x + 5.0) : x;
-              if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_add_diagonal");
-    }
-
-
-    FUNCTION(gsl_matrix, swap) (a, b);
-
-    {
-      int status = 0;
-
-      for (i = 0; i < M; i++)
-        {
-          for (j = 0; j < N; j++)
-            {
-              BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-              BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
-              if (y != (BASE)(3 + i +  5 * j) || x != (BASE)(3 + 2 * i + 4 * j))
-                status = 1;
-            }
-        }
-      gsl_test (status, NAME (gsl_matrix) "_swap");
-    }
-      
-
-    FUNCTION(gsl_matrix, free) (a);
-    FUNCTION(gsl_matrix, free) (b);
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+            BASE z = x * y;
+            if (r != z)
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_mul_elements multiplication");
   }
 
- FUNCTION (gsl_matrix, free) (m);
- FUNCTION (gsl_vector, free) (v);
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, div_elements) (m, b);
+    
+  {
+    int status = 0;
+      
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+            BASE z = x / y;
+            if (fabs(r - z) > 2 * GSL_FLT_EPSILON * fabs(z))
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_div_elements division");
+  }
+
+
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, scale) (m, 2.0);
+
+  {
+    int status = 0;
+
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            if (r !=  (ATOMIC)(2*x))
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_scale");
+  }
+
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, add_constant) (m, 3.0);
+
+  {
+    int status = 0;
+
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = x + 3.0;
+            if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_add_constant");
+  }
+
+  FUNCTION(gsl_matrix, memcpy) (m, a);
+  FUNCTION(gsl_matrix, add_diagonal) (m, 5.0);
+
+  {
+    int status = 0;
+
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = (i == j) ? (x + 5.0) : x;
+            if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_add_diagonal");
+  }
+
+
+  FUNCTION(gsl_matrix, swap) (a, b);
+
+  {
+    int status = 0;
+
+    for (i = 0; i < M; i++)
+      {
+        for (j = 0; j < N; j++)
+          {
+            BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
+            BASE y = FUNCTION(gsl_matrix,get) (b,i,j);
+            if (y != (BASE)(3 + i +  5 * j) || x != (BASE)(3 + 2 * i + 4 * j))
+              status = 1;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_swap");
+  }
+      
+
+  FUNCTION(gsl_matrix, free) (a);
+  FUNCTION(gsl_matrix, free) (b);
 }
 
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 void
-FUNCTION (test, text) (void)
+FUNCTION (test, text) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 
@@ -646,7 +665,7 @@ FUNCTION (test, text) (void)
 #endif
 
 void
-FUNCTION (test, binary) (void)
+FUNCTION (test, binary) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, calloc) (M, N);
 
@@ -696,7 +715,7 @@ FUNCTION (test, binary) (void)
 }
 
 void
-FUNCTION (test, trap) (void)
+FUNCTION (test, trap) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 

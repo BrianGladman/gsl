@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-void FUNCTION (test, func) (void);
-void FUNCTION (test, trap) (void);
-void FUNCTION (test, text) (void);
-void FUNCTION (test, binary) (void);
-void FUNCTION (test, arith) (void);
+void FUNCTION (test, func) (const size_t M, const size_t N);
+void FUNCTION (test, ops) (const size_t P, const size_t Q);
+void FUNCTION (test, trap) (const size_t M, const size_t N);
+void FUNCTION (test, text) (const size_t M, const size_t N);
+void FUNCTION (test, binary) (const size_t M, const size_t N);
 
 #define TEST(expr,desc) gsl_test((expr), NAME(gsl_matrix) desc " M=%d, N=%d", M, N)
 
 void
-FUNCTION (test, func) (void)
+FUNCTION (test, func) (const size_t M, const size_t N)
 {
 
   size_t i, j;
@@ -241,7 +241,7 @@ FUNCTION (test, func) (void)
 
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)
 void
-FUNCTION (test, text) (void)
+FUNCTION (test, text) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 
@@ -297,7 +297,7 @@ FUNCTION (test, text) (void)
 #endif
 
 void
-FUNCTION (test, binary) (void)
+FUNCTION (test, binary) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (M, N);
 
@@ -352,7 +352,7 @@ FUNCTION (test, binary) (void)
 }
 
 void
-FUNCTION (test, trap) (void)
+FUNCTION (test, trap) (const size_t M, const size_t N)
 {
   TYPE (gsl_matrix) * mc = FUNCTION (gsl_matrix, alloc) (M, N);
   size_t i = 0, j = 0;
@@ -445,13 +445,8 @@ FUNCTION (test, trap) (void)
 
 
 void
-FUNCTION (test, arith) (void)
+FUNCTION (test, ops) (const size_t P, const size_t Q)
 {
-
-#define P 8
-#define Q 12
-/* Must use smaller dimensions to prevent approximation of floats in float_mul_elements test*/
-
   TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, alloc) (P, Q);
   TYPE (gsl_matrix) * b = FUNCTION (gsl_matrix, alloc) (P, Q);
   TYPE (gsl_matrix) * m = FUNCTION (gsl_matrix, alloc) (P, Q);
@@ -477,7 +472,17 @@ FUNCTION (test, arith) (void)
     }
 
   {
+    {
+      int status = (FUNCTION(gsl_matrix,equal) (a,b) != 0);
+      gsl_test (status, NAME (gsl_matrix) "_equal matrix unequal");
+    }
+    
     FUNCTION (gsl_matrix, memcpy) (m, a);
+
+    {
+      int status = (FUNCTION(gsl_matrix,equal) (a,m) != 1);
+      gsl_test (status, NAME (gsl_matrix) "_equal matrix equal");
+    }
 
     FUNCTION (gsl_matrix, add) (m, b);
 

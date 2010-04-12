@@ -18,6 +18,42 @@
  */
 
 int
+FUNCTION (gsl_matrix, equal) (const TYPE (gsl_matrix) * a, const TYPE (gsl_matrix) * b)
+{
+  const size_t M = a->size1;
+  const size_t N = a->size2;
+
+  if (b->size1 != M || b->size2 != N)
+    {
+      GSL_ERROR_VAL ("matrices must have same dimensions", GSL_EBADLEN, 0);
+    }
+  else 
+    {
+      const size_t tda_a = a->tda;
+      const size_t tda_b = b->tda;
+
+      size_t i, j, k;
+
+      for (i = 0; i < M; i++)
+        {
+          for (j = 0; j < N; j++)
+            {
+              for (k = 0; k < MULTIPLICITY; k++) 
+                {
+                  if (a->data[(i * tda_a + j) * MULTIPLICITY + k] 
+                      != b->data[(i * tda_b + j) * MULTIPLICITY + k])
+                    {
+                      return 0;
+                    }
+                }
+            }
+        }
+    }
+  return 1;
+}
+
+
+int
 FUNCTION (gsl_matrix, isnull) (const TYPE (gsl_matrix) * m)
 {
   const size_t size1 = m->size1;

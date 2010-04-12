@@ -48,6 +48,18 @@ trial:
 
   take_step (x, p, stepb, lambda, x1, dx);
 
+  if (gsl_vector_equal (x, x1)) 
+    {
+      /* Take fast exit if trial point does not move from initial point */
+#ifdef DEBUG
+      printf ("fast exit x == x1 for stepb = %g\n", stepb);
+#endif
+      *step = 0;
+      *f = fa;
+      GSL_MULTIMIN_FN_EVAL_DF(fdf, x1, gradient);
+      return ; 
+    }
+
   fb = GSL_MULTIMIN_FN_EVAL_F (fdf, x1);
 
 #ifdef DEBUG

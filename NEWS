@@ -1,3 +1,11 @@
+** The gsl_multimin_fdfsolver multidimensional minimisers now return
+   GSL_ENOPROG immediately if the generated trial point does not
+   differ from the initial point (to machine precision), avoiding
+   unnecessary further iterations.
+
+** Added the functions gsl_vector_equal(x,y) and gsl_matrix_equal(x,y)
+   for testing equality of two vectors or matrices.
+
 ** Added function gsl_eigen_nonsymmv_params to control the balancing
    transformation for eigenvector calculations. Balancing is now
    turned off by default for gsl_eigen_nonsymmv.

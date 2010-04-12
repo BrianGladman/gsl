@@ -781,6 +781,12 @@ zero, strictly positive, strictly negative, or non-negative
 respectively, and 0 otherwise.
 @end deftypefun
 
+@deftypefun int gsl_vector_equal (const gsl_vector * @var{u}, const gsl_vector * @var{v})
+This function returns 1 if the vectors @var{u} and @var{v} are equal
+(by comparison of element values) and 0 otherwise.
+@end deftypefun
+
+
 @node Example programs for vectors
 @subsection Example programs for vectors
 
@@ -1595,6 +1601,12 @@ respectively, and 0 otherwise. To test whether a matrix is
 positive-definite, use the Cholesky decomposition (@pxref{Cholesky
 Decomposition}).
 @end deftypefun
+
+@deftypefun int gsl_matrix_equal (const gsl_matrix * @var{a}, const gsl_matrix * @var{b})
+This function returns 1 if the matrices @var{a} and @var{b} are equal
+(by comparison of element values) and 0 otherwise.
+@end deftypefun
+
 
 @node Example programs for matrices
 @subsection Example programs for matrices

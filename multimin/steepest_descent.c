@@ -129,6 +129,11 @@ trial:
   gsl_vector_memcpy (x1, x);
   gsl_blas_daxpy (1.0, dx, x1);
 
+  if (gsl_vector_equal (x, x1)) 
+    {
+      return GSL_ENOPROG;
+    }
+
   /* evaluate function and gradient at new point x1 */
 
   GSL_MULTIMIN_FN_EVAL_F_DF (fdf, x1, &f1, g1);
