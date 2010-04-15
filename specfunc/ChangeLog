@@ -1,3 +1,7 @@
+2010-04-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* atanint.c (gsl_sf_atanint_e): added missing term 1/ax for large x
+
 2010-02-25  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_U.c (hyperg_U_negx): handle the case where x<0

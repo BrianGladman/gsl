@@ -1,3 +1,6 @@
+** Improved the result of gsl_sf_atanint_e for large arguments by
+   adding the first order 1/x correction term. [bug #29562]
+
 ** The gsl_multimin_fdfsolver multidimensional minimisers now return
    GSL_ENOPROG immediately if the generated trial point does not
    differ from the initial point (to machine precision), avoiding

@@ -99,7 +99,7 @@ gsl_sf_atanint_e(const double x, gsl_sf_result * result)
     return GSL_SUCCESS;
   }
   else {
-    result->val = sgn * 0.5*M_PI*log(ax);
+    result->val = sgn * (0.5*M_PI*log(ax) + 1.0 / ax);
     result->err = 2.0 * fabs(result->val * GSL_DBL_EPSILON);
     return GSL_SUCCESS;
   }

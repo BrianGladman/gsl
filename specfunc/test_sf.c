@@ -1293,6 +1293,9 @@ int test_expint(void)
   TEST_SF(s,  gsl_sf_atanint_e, (300.0, &r), 8.96281388924518959990, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_atanint_e, (1.0e+5, &r), 18.084471031038661920, TEST_TOL0, GSL_SUCCESS);
 
+  /* Bug report from Wolfgang Ehrhardt <Wolfgang.Ehrhardt@munich.netsurf.de> */
+  TEST_SF(s,  gsl_sf_atanint_e, (1.0e+9, &r), 32.552029856869591656, TEST_TOL0, GSL_SUCCESS);
+
   return s;
 }
 
