@@ -1,3 +1,7 @@
+2010-04-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cquad.c (gsl_integration_cquad): added CQUAD algorithm
+
 2010-03-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* glfixed.c (gauss_legendre_tbl): made this function static

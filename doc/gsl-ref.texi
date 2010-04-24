@@ -532,6 +532,17 @@ Implementation of the Mathieu functions.
 @item Patrick Alken
 Implementation of non-symmetric and generalized eigensystems and B-splines.
 
+@item Rhys Ulerich 
+Wrote the multiset routines.
+
+@item Pavel Holoborodko 
+Wrote the fixed order Gauss-Legendre quadrature routines.
+
+@item Pedro Gonnet
+Wrote the @sc{cquad} integration routines.
+
+
+
 @end table
 
 Thanks to Nigel Lowry for help in proofreading the manual.

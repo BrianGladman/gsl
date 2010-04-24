@@ -2215,6 +2215,47 @@ int main (void)
       }
   }
 
+  {
+    typedef double (*fptr) ( double , void * );
+    
+    const static fptr funs[25] = { &cqf1 , &cqf2 , &cqf3 , &cqf4 , &cqf5 , &cqf6 , &cqf7 , 
+                                   &cqf8 , &cqf9 , &cqf10 , &cqf11 , &cqf12 , &cqf13 , &cqf14 , &cqf15 , &cqf16 , &cqf17 ,
+                                   &cqf18 , &cqf19 , &cqf20 , &cqf21 , &cqf22 , &cqf23 , &cqf24 , &cqf25 };
+    
+    const static double ranges[50] = { 0, 1 , 0, 1 , 0, 1 , -1, 1 , -1, 1 , 0, 1 , 0, 1 , 0, 1 , 0, 1 , 
+                                       0, 1 , 0, 1 , 0, 1 , 0, 1 , 0, 10 , 0, 10 , 0, 10 , 0, 1 , 0, M_PI ,
+                                       0, 1 , -1, 1 , 0, 1 , 0, 1 , 0, 1 , 0, 3 , 0, 5 };
+    const static double f_exact[25] = { 1.7182818284590452354 , 0.7 , 2.0/3 , 0.4794282266888016674 , 
+                                        1.5822329637296729331 , 0.4 , 2 , 0.86697298733991103757 , 
+                                        1.1547005383792515290 , 0.69314718055994530942 , 0.3798854930417224753 , 
+                                        0.77750463411224827640 , 0.49898680869304550249 , 
+                                        0.5 , 1 , 0.13263071079267703209e+08 , 0.49898680869304550249 , 
+                                        0.83867634269442961454 , -1 , 1.5643964440690497731 , 
+                                        0.16349494301863722618 , -0.63466518254339257343 , 
+                                        0.013492485649467772692 , 17.664383539246514971 , 7.5 };
+    
+    double result, abserr;
+    size_t neval;
+    int fid;
+        
+    /* Loop over the functions... */
+    for ( fid = 0 ; fid < 25 ; fid++ ) {
+      gsl_integration_cquad_workspace *ws = gsl_integration_cquad_workspace_alloc ( 200 );
+      gsl_function f = make_function(funs[fid], NULL);
+      double exact = f_exact[fid];
+
+      /* Call our quadrature routine. */
+      int status = gsl_integration_cquad (&f, ranges[2*fid] , ranges[2*fid+1] , 0.0 , 1.0e-12 , ws , &result , &abserr , &neval);
+      
+      gsl_test_rel (result, exact, 1e-12, "cquad f%d", fid);
+      gsl_test (fabs(result - exact) > 5.0 * abserr, "cquad f%d error (%g actual vs %g estimated)", fid, fabs(result-exact), abserr);
+      gsl_test_int (status, GSL_SUCCESS, "cquad return code");
+
+      gsl_integration_cquad_workspace_free(ws);
+    }
+  }        
+
+
   exit (gsl_test_summary());
 } 
 

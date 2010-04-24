@@ -1,3 +1,7 @@
+** Added new gsl_integrate_cquad routines for robust integration of
+   difficult functions using the doubly-adaptive CQUAD algorithm
+   (Pedro Gonnet).
+
 ** Improved the result of gsl_sf_atanint_e for large arguments by
    adding the first order 1/x correction term. [bug #29562]
 

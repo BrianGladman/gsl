@@ -273,6 +273,41 @@ double
                            double b,
                            const gsl_integration_glfixed_table * t);
 
+
+/* Cquad integration - Pedro Gonnet */
+
+/* Data of a single interval */
+typedef struct
+{
+  double a, b;
+  double c[64];
+  double fx[33];
+  double igral, err;
+  int depth, rdepth, ndiv;
+} gsl_integration_cquad_ival;
+
+
+/* The workspace is just a collection of intervals */
+typedef struct
+{
+  size_t size;
+  gsl_integration_cquad_ival *ivals;
+  size_t *heap;
+} gsl_integration_cquad_workspace;
+
+gsl_integration_cquad_workspace *
+gsl_integration_cquad_workspace_alloc (const size_t n);
+
+void
+gsl_integration_cquad_workspace_free (gsl_integration_cquad_workspace * w);
+
+int
+gsl_integration_cquad (const gsl_function * f, double a, double b,
+		       double epsabs, double epsrel,
+		       gsl_integration_cquad_workspace * ws,
+		       double *result, double *abserr, size_t * nevals);
+
+
 __END_DECLS
 
 #endif /* __GSL_INTEGRATION_H__ */
