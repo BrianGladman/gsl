@@ -68,6 +68,16 @@ struct freal
   double fy;
 };
 
+struct fzreal
+{
+  char *name;
+  gsl_complex (*f) (gsl_complex z, double a);
+  double x;
+  double y;
+  double a;
+  double fx;
+  double fy;
+};
 
 #define FN(x) "gsl_complex_" #x, gsl_complex_ ## x
 #define ARG(x,y) x, y
@@ -98,6 +108,14 @@ struct freal listreal[] =
 #include "results_real.h"
   {"", 0, 0, 0, 0}
 };
+
+
+struct fzreal listzreal[] =
+{
+#include "results_zreal.h"
+  {"", 0, 0, 0, 0}
+};
+
 
 #ifndef TEST_FACTOR
 #ifdef RELEASED
@@ -198,6 +216,31 @@ main (void)
 
 #ifdef DEBUG
       printf("x = "); gsl_ieee_fprintf_double (stdout, &t.x); printf("\n");
+      printf("fx = "); gsl_ieee_fprintf_double (stdout, &fx); printf("\n");
+      printf("ex = "); gsl_ieee_fprintf_double (stdout, &t.fx); printf("\n");
+      printf("fy = "); gsl_ieee_fprintf_double (stdout, &fy); printf("\n");
+      printf("ey = "); gsl_ieee_fprintf_double (stdout, &t.fy); printf("\n");
+#endif
+
+      gsl_test_rel (fx, t.fx, tol, "%s real part at (%g,0)", t.name, t.x);
+      gsl_test_rel (fy, t.fy, tol, "%s imag part at (%g,0)", t.name, t.x);
+      i++;
+    }
+
+
+  i = 0;
+
+  while (listzreal[i].f)
+    {
+      struct fzreal t = listzreal[i];
+      gsl_complex z = gsl_complex_rect (t.x, t.y);
+      gsl_complex fz = (t.f) (z, t.a);
+      double fx = GSL_REAL (fz), fy = GSL_IMAG (fz);
+
+#ifdef DEBUG
+      printf("x = "); gsl_ieee_fprintf_double (stdout, &t.x); printf("\n");
+      printf("y = "); gsl_ieee_fprintf_double (stdout, &t.y); printf("\n");
+      printf("a = "); gsl_ieee_fprintf_double (stdout, &t.a); printf("\n");
       printf("fx = "); gsl_ieee_fprintf_double (stdout, &fx); printf("\n");
       printf("ex = "); gsl_ieee_fprintf_double (stdout, &t.fx); printf("\n");
       printf("fy = "); gsl_ieee_fprintf_double (stdout, &fy); printf("\n");
