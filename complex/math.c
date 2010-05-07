@@ -384,7 +384,14 @@ gsl_complex_pow_real (gsl_complex a, double b)
 
   if (GSL_REAL (a) == 0 && GSL_IMAG (a) == 0)
     {
-      GSL_SET_COMPLEX (&z, 0, 0);
+      if (b == 0)
+        {
+          GSL_SET_COMPLEX (&z, 1, 0);
+        }
+      else
+        {
+          GSL_SET_COMPLEX (&z, 0, 0);
+        }
     }
   else
     {
