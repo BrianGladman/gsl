@@ -223,7 +223,8 @@ gsl_integration_glfixed_table *
                   GSL_ENOMEM);
         }
 
-      retval = malloc(sizeof(gsl_integration_glfixed_table));
+      retval = (gsl_integration_glfixed_table *)
+               malloc(sizeof(gsl_integration_glfixed_table));
       if (retval == 0)
         {
           free(x);
