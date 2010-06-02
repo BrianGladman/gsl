@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: GSL
 Description: GNU Scientific Library
 Version: @VERSION@
-Libs: @GSL_LIBS@ -lgslcblas @LIBS@
+Libs: @GSL_LIBS@ -lgslcblas @GSL_LIBM@ @LIBS@
 Cflags: @GSL_CFLAGS@

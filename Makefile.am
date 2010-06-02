@@ -55,6 +55,7 @@ edit = $(SED) \
 	-e 's|@libdir[@]|$(libdir)|g' \
 	-e 's|@includedir[@]|$(includedir)|g' \
 	-e 's|@GSL_CFLAGS[@]|$(GSL_CFLAGS)|g' \
+	-e 's|@GSL_LIBM[@]|$(GSL_LIBM)|g' \
 	-e 's|@GSL_LIBS[@]|$(GSL_LIBS)|g' \
 	-e 's|@LIBS[@]|$(LIBS)|g' \
 	-e 's|@VERSION[@]|$(VERSION)|g'

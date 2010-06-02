@@ -101,9 +101,13 @@ AC_C_CHAR_UNSIGNED
 
 GSL_CFLAGS="-I$includedir"
 GSL_LIBS="-L$libdir -lgsl"
+dnl macro from libtool - can be replaced with LT_LIB_M when we require libtool 2
+AC_CHECK_LIBM
+GSL_LIBM=$LIBM
 
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
+AC_SUBST(GSL_LIBM)
 
 if test "$ac_cv_c_inline" != no ; then 
 dnl Check for "extern inline", using a modified version of the test

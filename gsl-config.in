@@ -63,11 +63,11 @@ while test $# -gt 0; do
 
     --libs)
         : ${GSL_CBLAS_LIB=-lgslcblas}
-       	echo @GSL_LIBS@ $GSL_CBLAS_LIB -lm
+	echo @GSL_LIBS@ $GSL_CBLAS_LIB @GSL_LIBM@
        	;;
 
     --libs-without-cblas)
-       	echo @GSL_LIBS@ -lm
+	echo @GSL_LIBS@ @GSL_LIBM@
        	;;
     *)
 	usage
