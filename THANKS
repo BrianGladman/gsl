@@ -475,3 +475,5 @@ evaluation and ode improvements
 * Ettl Martin - bug report, rk4 memory
 
 * Yevgeniy Naumovich - bspline allocators fix
+
+* Huan Wu - gsl_linalg_complex_cholesky_invert
