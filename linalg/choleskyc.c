@@ -1,6 +1,7 @@
 /* linalg/choleskyc.c
  * 
  * Copyright (C) 2007 Patrick Alken
+ * Copyright (C) 2010 Huan Wu (gsl_linalg_complex_cholesky_invert)
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,6 +196,106 @@ gsl_linalg_complex_cholesky_svx (const gsl_matrix_complex * cholesky,
       return GSL_SUCCESS;
     }
 } /* gsl_linalg_complex_cholesky_svx() */
+
+
+/******************************************************************************
+
+gsl_linalg_complex_cholesky_invert()
+  Compute the inverse of an Hermitian positive definite matrix in
+  Cholesky form.
+
+Inputs: LLT - matrix in cholesky form on input
+              A^{-1} = L^{-H} L^{-1} on output
+
+Return: success or error
+******************************************************************************/
+
+int
+gsl_linalg_complex_cholesky_invert(gsl_matrix_complex * LLT)
+{
+  if (LLT->size1 != LLT->size2)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else
+    {
+      size_t N = LLT->size1;
+      size_t i, j;
+      gsl_vector_complex_view v1;
+
+      /* invert the lower triangle of LLT */
+      for (i = 0; i < N; ++i)
+        {
+          double ajj;
+          gsl_complex z;
+
+          j = N - i - 1;
+
+          ajj = 1.0 / GSL_REAL(gsl_matrix_complex_get(LLT, j, j));
+          GSL_SET_COMPLEX(&z, ajj, 0.0);
+          gsl_matrix_complex_set(LLT, j, j, z);
+          ajj = -GSL_REAL(gsl_matrix_complex_get(LLT, j, j));
+
+          if (j < N - 1)
+            {
+              gsl_matrix_complex_view m;
+              
+              m = gsl_matrix_complex_submatrix(LLT, j + 1, j + 1,
+                                       N - j - 1, N - j - 1);
+              v1 = gsl_matrix_complex_subcolumn(LLT, j, j + 1, N - j - 1);
+
+              gsl_blas_ztrmv(CblasLower, CblasNoTrans, CblasNonUnit,
+                             &m.matrix, &v1.vector);
+
+              gsl_blas_zdscal(ajj, &v1.vector);
+            }
+        } /* for (i = 0; i < N; ++i) */
+
+      /*
+       * The lower triangle of LLT now contains L^{-1}. Now compute
+       * A^{-1} = L^{-H} L^{-1}
+       *
+       * The (ij) element of A^{-1} is column i of conj(L^{-1}) dotted into
+       * column j of L^{-1}
+       */
+
+      for (i = 0; i < N; ++i)
+        {
+          gsl_complex sum;
+          for (j = i + 1; j < N; ++j)
+            {
+              gsl_vector_complex_view v2;
+              v1 = gsl_matrix_complex_subcolumn(LLT, i, j, N - j);
+              v2 = gsl_matrix_complex_subcolumn(LLT, j, j, N - j);
+
+              /* compute Ainv[i,j] = sum_k{conj(Linv[k,i]) * Linv[k,j]} */
+              gsl_blas_zdotc(&v1.vector, &v2.vector, &sum);
+
+              /* store in upper triangle */
+              gsl_matrix_complex_set(LLT, i, j, sum);
+            }
+
+          /* now compute the diagonal element */
+          v1 = gsl_matrix_complex_subcolumn(LLT, i, i, N - i);
+          gsl_blas_zdotc(&v1.vector, &v1.vector, &sum);
+          gsl_matrix_complex_set(LLT, i, i, sum);
+        }
+
+      /* copy the Hermitian upper triangle to the lower triangle */
+
+      for (j = 1; j < N; j++)
+        {
+          for (i = 0; i < j; i++)
+            {
+              gsl_complex z = gsl_matrix_complex_get(LLT, i, j);
+              gsl_matrix_complex_set(LLT, j, i, gsl_complex_conjugate(z));
+            }
+        } 
+
+      return GSL_SUCCESS;
+    }
+} /* gsl_linalg_complex_cholesky_invert() */
+
 
 /********************************************
  *           INTERNAL ROUTINES              *

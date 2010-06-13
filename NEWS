@@ -1,3 +1,6 @@
+** Added new routine gsl_linalg_complex_cholesky_invert to handle the
+   matrix inversion for complex Cholesky decompositions (Huan Wu).
+
 ** Added new gsl_integrate_cquad routines for robust integration of
    difficult functions using the doubly-adaptive CQUAD algorithm
    (Pedro Gonnet).
