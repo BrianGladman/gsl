@@ -56,7 +56,14 @@ gsl_ran_beta_pdf (const double x, const double a, const double b)
       
       if (x == 0.0 || x == 1.0) 
         {
-          p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+	  if (a > 1.0 && b > 1.0)
+	    {
+	      p = 0.0;
+	    }
+	  else
+	    {
+	      p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+	    }
         }
       else
         {
