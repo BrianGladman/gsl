@@ -21,7 +21,7 @@
 \section{Introduction}
 
 Fast Fourier Transforms (FFTs) are efficient algorithms for
-calculating the discrete fourier transform (DFT),
+calculating the discrete Fourier transform (DFT),
 %
 \begin{eqnarray}
 h_a &=& \mathrm{DFT}(g_b) \\
@@ -29,9 +29,9 @@ h_a &=& \mathrm{DFT}(g_b) \\
     &=& \sum_{b=0}^{N-1} g_b W_N^{ab} \qquad W_N= \exp(-2\pi i/N)
 \end{eqnarray}
 %
-The DFT usually arises as an approximation to the continuous fourier
+The DFT usually arises as an approximation to the continuous Fourier
 transform when functions are sampled at discrete intervals in space or
-time. The naive evaluation of the discrete fourier transform is a
+time. The naive evaluation of the discrete Fourier transform is a
 matrix-vector multiplication ${\mathbf W}\vec{g}$, and would take
 $O(N^2)$ operations for $N$ data-points. The general principle of the
 Fast Fourier Transform algorithms is to use a divide-and-conquer
@@ -334,7 +334,7 @@ consider the decimation-in-time algorithm.
 
 \subsection{Radix-2 Decimation-in-Time (DIT)}
 %
-To derive the the decimation-in-time algorithm we start by separating
+To derive the decimation-in-time algorithm we start by separating
 out the most significant bit of the index $b$,
 %
 \begin{equation}
@@ -504,7 +504,7 @@ others. It is this property which allows an in-place calculation.
 So for an in-place pass our storage has to be arranged so that the two
 outputs $g_1(a_0,\dots)$ overwrite the two input terms
 $g([b_{n-1},\dots])$. Note that the order of $a$ is reversed from the
-natural order of $b$. i.e. the least significant bit of $a$
+natural order of $b$, i.e.@: the least significant bit of $a$
 replaces the most significant bit of $b$. This is inconvenient
 because $a$ occurs in its natural order in all the exponentials,
 $W^{ab}$. We could keep track of both $a$ and its bit-reverse,
@@ -1362,7 +1362,7 @@ we note that the Kronecker product has the property of performing
 $p_{i-1}$ independent multiplications of $PD$ on $q_{i-1}$ different
 subsets of $t$. The index $\mu$ of $t(\lambda,\mu)$ which runs from 0
 to $m$ will include $q_i$ copies of each $PD$ operation because
-$m=p_{i-1}q$. i.e. we can split the index $\mu$ further into $\mu = a
+$m=p_{i-1}q$, i.e.@: we can split the index $\mu$ further into $\mu = a
 p_{i-1} + b$, where $a = 0 \dots q-1$ and $b=0 \dots p_{i-1}$,
 %
 \begin{eqnarray}
@@ -1571,7 +1571,7 @@ sub-transform modules given in the next section. The twiddle factors
 $\omega^a_{q_{i-1}}$ are taken out of the {\tt trig} array.
 
 To compute the inverse transform we go back to the definition of the
-fourier transform and note that the inverse matrix is just the complex
+Fourier transform and note that the inverse matrix is just the complex
 conjugate of the forward matrix (with a factor of $1/N$),
 %
 \begin{equation}
@@ -1784,7 +1784,7 @@ For any remaining general factors we use Singleton's efficient method
 for computing a DFT~\cite{singleton}. Although it is an $O(N^2)$
 algorithm it does reduce the number of multiplications by a factor of
 4 compared with a naive evaluation of the DFT. If we look at the
-general stucture of a DFT matrix, shown schematically below,
+general structure of a DFT matrix, shown schematically below,
 %
 \begin{equation}
 \left(
@@ -2490,7 +2490,7 @@ into account the radix-2 storage scheme,
 \subsection{Mixed-Radix FFTs for real data}
 %
 As discussed earlier the radix-2 decimation-in-time algorithm had the
-special property that its intermediate passes are interleaved fourier
+special property that its intermediate passes are interleaved Fourier
 transforms of the original data, and this generalizes to the
 mixed-radix algorithm. The complex mixed-radix algorithm that we
 derived earlier was a decimation-in-frequency algorithm, but we can
@@ -2580,7 +2580,7 @@ can be written as,
 v^{(i)} = (W_{p_i} \otimes I_{q_i}) z
 \end{equation}
 %
-Each intermediate stage will be a set of $q_i$ interleaved fourier
+Each intermediate stage will be a set of $q_i$ interleaved Fourier
 transforms, each of length $p_i$. We can prove this result by
 induction. First we assume that the result is true for $v^{(i-1)}$,
 %
@@ -2634,7 +2634,7 @@ which is the desired result. The case $i=1$ can be verified
 explicitly, and induction then shows that the result is true for all
 $i$.  As discussed for the radix-2 algorithm this result is important
 because if the initial data $z$ is real then each intermediate pass is
-a set of interleaved fourier transforms of $z$, having half-complex
+a set of interleaved Fourier transforms of $z$, having half-complex
 symmetries (appropriately applied in the subspaces of the Kronecker
 product). Consequently only $N$ real numbers are needed to store the
 intermediate and final results.

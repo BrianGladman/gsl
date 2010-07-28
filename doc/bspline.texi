@@ -227,7 +227,7 @@ basis.  Here, @math{i = 0}, ..., @code{gsl_bspline_ncoeffs(w)}.
 The following program computes a linear least squares fit to data using
 cubic B-spline basis functions with uniform breakpoints. The data is
 generated from the curve @math{y(x) = \cos{(x)} \exp{(-x/10)}} on
-the interval @math{[0, 15]} with gaussian noise added.
+the interval @math{[0, 15]} with Gaussian noise added.
 
 @example
 @verbatiminclude examples/bspline.c

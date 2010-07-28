@@ -477,3 +477,5 @@ evaluation and ode improvements
 * Yevgeniy Naumovich - bspline allocators fix
 
 * Huan Wu - gsl_linalg_complex_cholesky_invert
+
+* Ralf Wildenhues - numerous proofreading corrections

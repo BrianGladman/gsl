@@ -276,7 +276,7 @@ The ``standard'' transform performs a complete discrete wavelet
 transform on the rows of the matrix, followed by a separate complete
 discrete wavelet transform on the columns of the resulting
 row-transformed matrix.  This procedure uses the same ordering as a
-two-dimensional fourier transform.
+two-dimensional Fourier transform.
 
 The ``non-standard'' transform is performed in interleaved passes on the
 rows and columns of the matrix for each level of the transform.  The

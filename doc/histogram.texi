@@ -760,7 +760,7 @@ the functions below before the histogram is ready for use.
 @comment @deftypefun {gsl_histogram2d *} gsl_histogram2d_calloc_range (size_t @var{nx}, size_t @var{ny}, double * @var{xrange}, double * @var{yrange})
 @comment This function allocates a histogram of size @var{nx}-by-@var{ny} using
 @comment the @math{nx+1} and @math{ny+1} bin ranges specified by the arrays
-@comment @var{xrange} and @var{xyrange}.
+@comment @var{xrange} and @var{yrange}.
 @comment @end deftypefun
 
 @deftypefun int gsl_histogram2d_set_ranges (gsl_histogram2d * @var{h},  const double @var{xrange}[], size_t @var{xsize}, const double @var{yrange}[], size_t @var{ysize})

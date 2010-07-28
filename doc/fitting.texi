@@ -50,7 +50,7 @@ The @math{p} parameters of the model are @c{$c = \{c_0, c_1, \dots\}$}
 weight factors @math{w_i} are given by @math{w_i = 1/\sigma_i^2},
 where @math{\sigma_i} is the experimental error on the data-point
 @math{y_i}.  The errors are assumed to be
-gaussian and uncorrelated. 
+Gaussian and uncorrelated. 
 For unweighted data the chi-squared sum is computed without any weight factors. 
 
 The fitting routines return the best-fit parameters @math{c} and their
@@ -60,7 +60,7 @@ errors on the data, @math{\sigma_i}, and is defined
 @cindex covariance matrix, linear fits
 as @c{$C_{ab} = \langle \delta c_a \delta c_b \rangle$}
 @math{C_@{ab@} = <\delta c_a \delta c_b>} where @c{$\langle \, \rangle$}
-@math{< >} denotes an average over the gaussian error distributions of the underlying datapoints.
+@math{< >} denotes an average over the Gaussian error distributions of the underlying datapoints.
 
 The covariance matrix is calculated by error propagation from the data
 errors @math{\sigma_i}.  The change in a fitted parameter @math{\delta

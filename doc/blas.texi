@@ -22,7 +22,7 @@ interface only includes the corresponding dense-storage @sc{blas}
 functions.  The full @sc{blas} functionality for band-format and
 packed-format matrices is available through the low-level @sc{cblas}
 interface.  Similarly, GSL vectors are restricted to positive strides,
-whereas the the low-level @sc{cblas} interface supports negative
+whereas the low-level @sc{cblas} interface supports negative
 strides as specified in the @sc{blas} standard.@footnote{In the low-level
 @sc{cblas} interface, a negative stride accesses the vector elements
 in reverse order, i.e. the @math{i}-th element is given by

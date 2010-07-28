@@ -60,7 +60,7 @@ imaginary parts, @code{dat[0]} and @code{dat[1]}, allowing the struct to
 be mapped correctly onto packed complex arrays.
 
 @deftypefun gsl_complex gsl_complex_rect (double @var{x}, double @var{y})
-This function uses the rectangular cartesian components
+This function uses the rectangular Cartesian components
 (@var{x},@var{y}) to return the complex number @math{z = x + i y}.  @inlinefn{}
 @end deftypefun
 
@@ -77,7 +77,7 @@ These macros return the real and imaginary parts of the complex number
 @end defmac
 
 @defmac GSL_SET_COMPLEX (@var{zp}, @var{x}, @var{y})
-This macro uses the cartesian components (@var{x},@var{y}) to set the
+This macro uses the Cartesian components (@var{x},@var{y}) to set the
 real and imaginary parts of the complex number pointed to by @var{zp}.
 For example,
 

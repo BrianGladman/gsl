@@ -405,7 +405,7 @@ function minimum, assuming quadratic behavior in that region.
 The @code{bfgs2} version of this minimizer is the most efficient
 version available, and is a faithful implementation of the line
 minimization scheme described in Fletcher's @cite{Practical Methods of
-Optimization}, Algorithms 2.6.2 and 2.6.4.  It supercedes the original
+Optimization}, Algorithms 2.6.2 and 2.6.4.  It supersedes the original
 @code{bfgs} routine and requires substantially fewer function and
 gradient evaluations.  The user-supplied tolerance @var{tol}
 corresponds to the parameter @math{\sigma} used by Fletcher.  A value

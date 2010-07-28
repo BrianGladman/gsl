@@ -667,7 +667,7 @@ tridiagonal decomposition (@var{A}, @var{tau}) obtained from the
 
 @node Hessenberg Decomposition of Real Matrices
 @section Hessenberg Decomposition of Real Matrices
-@cindex hessenberg decomposition
+@cindex Hessenberg decomposition
 
 A general real matrix @math{A} can be decomposed by orthogonal
 similarity transformations into the form
@@ -727,7 +727,7 @@ Householder vectors after calling @code{gsl_linalg_hessenberg_decomp}.
 
 @node Hessenberg-Triangular Decomposition of Real Matrices
 @section Hessenberg-Triangular Decomposition of Real Matrices
-@cindex hessenberg triangular decomposition
+@cindex Hessenberg triangular decomposition
 
 A general real matrix pair (@math{A}, @math{B}) can be decomposed by
 orthogonal similarity transformations into the form
@@ -1193,7 +1193,7 @@ value decomposition'', @cite{Computer Journal}, Volume 30 (1987), p
 268--275.
 
 @item
-James Demmel, Kresimir Veselic, ``Jacobi's Method is more accurate than
+James Demmel, Kre@v{s}imir Veseli@'c, ``Jacobi's Method is more accurate than
 QR'', @cite{Lapack Working Note 15} (LAWN-15), October 1989. Available
 from netlib, @uref{http://www.netlib.org/lapack/} in the @code{lawns} or
 @code{lawnspdf} directories.

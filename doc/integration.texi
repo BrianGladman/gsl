@@ -11,7 +11,7 @@ infinite and semi-infinite ranges, singular integrals, including
 logarithmic singularities, computation of Cauchy principal values and
 oscillatory integrals.  The library reimplements the algorithms used in
 @sc{quadpack}, a numerical integration package written by Piessens,
-Doncker-Kapenga, Uberhuber and Kahaner.  Fortran code for @sc{quadpack} is
+de Doncker-Kapenga, Ueberhuber and Kahaner.  Fortran code for @sc{quadpack} is
 available on Netlib.  Also included are non-adaptive, fixed-order
 Gauss-Legendre integration routines with high precision coefficients
 by Pavel Holoborodko.
@@ -696,7 +696,7 @@ I = \int_a^@{+\infty@} dx f(x) cos(omega x)
 The parameter @math{\omega} and choice of @math{\sin} or @math{\cos} is
 taken from the table @var{wf} (the length @var{L} can take any value,
 since it is overridden by this function to a value appropriate for the
-fourier integration).  The integral is computed using the QAWO algorithm
+Fourier integration).  The integral is computed using the QAWO algorithm
 over each of the subintervals,
 @tex
 \beforedisplay
@@ -944,7 +944,7 @@ the numerical integration literature used in developing @sc{quadpack}.
 
 @itemize @w{}
 @item
-R. Piessens, E. de Doncker-Kapenga, C.W. Uberhuber, D.K. Kahaner.
+R. Piessens, E. de Doncker-Kapenga, C.W. Ueberhuber, D.K. Kahaner.
 @cite{@sc{quadpack} A subroutine package for automatic integration}
 Springer Verlag, 1983.
 @end itemize

@@ -482,7 +482,7 @@ p(x) dx = @{1 \over 2 a \Gamma(1+1/b)@} \exp(-|x/a|^b) dx
 @noindent
 for @c{$x \ge 0$}
 @math{x >= 0}.  For @math{b = 1} this reduces to the Laplace
-distribution.  For @math{b = 2} it has the same form as a gaussian
+distribution.  For @math{b = 2} it has the same form as a Gaussian
 distribution, but with @c{$a = \sqrt{2} \sigma$}
 @math{a = \sqrt@{2@} \sigma}.
 @end deftypefun
@@ -694,7 +694,7 @@ above.
 @cindex Levy distribution
 This function returns a random variate from the Levy symmetric stable
 distribution with scale @var{c} and exponent @var{alpha}.  The symmetric
-stable probability distribution is defined by a fourier transform,
+stable probability distribution is defined by a Fourier transform,
 @tex
 \beforedisplay
 $$
@@ -737,7 +737,7 @@ This function returns a random variate from the Levy skew stable
 distribution with scale @var{c}, exponent @var{alpha} and skewness
 parameter @var{beta}.  The skewness parameter must lie in the range
 @math{[-1,1]}.  The Levy skew stable probability distribution is defined
-by a fourier transform,
+by a Fourier transform,
 @tex
 \beforedisplay
 $$
@@ -944,7 +944,7 @@ distribution with parameters @var{zeta} and @var{sigma}.
 @node The Chi-squared Distribution
 @section The Chi-squared Distribution
 The chi-squared distribution arises in statistics.  If @math{Y_i} are
-@math{n} independent gaussian random variates with unit variance then the
+@math{n} independent Gaussian random variates with unit variance then the
 sum-of-squares,
 @tex
 \beforedisplay
@@ -1344,8 +1344,8 @@ This function returns a random direction vector
 such that 
 @c{$|v|^2 = x_1^2 + x_2^2 + \cdots + x_n^2 = 1$}
 @math{|v|^2 = x_1^2 + x_2^2 + ... + x_n^2 = 1}.  The method
-uses the fact that a multivariate gaussian distribution is spherically
-symmetric.  Each component is generated to have a gaussian distribution,
+uses the fact that a multivariate Gaussian distribution is spherically
+symmetric.  Each component is generated to have a Gaussian distribution,
 and then the components are normalized.  The method is described by
 Knuth, v2, 3rd ed, p135--136, and attributed to G. W. Brown, Modern
 Mathematics for the Engineer (1956).

@@ -386,7 +386,7 @@ sense to prioritize and write code for the most important areas first.
 @c reliable and accurate (but not necessarily fast or efficient) estimation
 @c of values for special functions, explicitly using Taylor series, asymptotic 
 @c expansions, continued fraction expansions, etc.  As well as these routines,
-@c fast approximations will also be provided, primarily based on Chebyschev
+@c fast approximations will also be provided, primarily based on Chebyshev
 @c polynomials and ratios of polynomials.  In this vision, the approximations
 @c will be the "standard" routines for the users, and the exact (so-called)
 @c routines will be used for verification of the approximations.  It may also
@@ -413,7 +413,7 @@ sense to prioritize and write code for the most important areas first.
 
 @c @item Direct integration
 
-@c @item Monte carlo methods
+@c @item Monte Carlo methods
 
 @c @item Simulated annealing
 
@@ -459,12 +459,12 @@ perform operations on different objects so that the group is
 "closed". In mathematics objects can be combined and operated on in an
 infinite number of ways.  For example, I can take the derivative of a
 scalar field with respect to a vector and the derivative of a vector
-field wrt a scalar (along a path).
+field wrt.@: a scalar (along a path).
 
 There is a definite tendency to unconsciously try to reproduce all these
 possibilities in a numerical library, by adding new features one by
 one. After all, it is always easy enough to support just one more
-feature.... so why not?
+feature @dots{} so why not?
 
 Looking at the big picture, no-one would start out by saying "I want to
 be able to represent every possible mathematical object and operation
@@ -660,7 +660,7 @@ undergraduate studies).  For example, references concerning algorithms
 should be to Knuth, references concerning statistics should be to
 Kendall & Stuart, references concerning special functions should be to
 Abramowitz & Stegun (Handbook of Mathematical Functions AMS-55), etc.
-Whereever possible refer to Abramowitz & Stegun rather than other
+Wherever possible refer to Abramowitz & Stegun rather than other
 reference books because it is a public domain work, so it is
 inexpensive and freely redistributable.
 
@@ -711,16 +711,16 @@ inside the @code{@@math} command because these conflict between TeX
 and Texinfo.  This is a problem if you want to write something like
 @code{\sqrt@{x+y@}}.  
 
-To work around it you can preceed the math command with a special
+To work around it you can precede the math command with a special
 macro @code{@@c} which contains the explicit TeX commands you want to
 use (no restrictions), and put an ASCII approximation into the
 @code{@@math} command (you can write @code{@@@{} and
 @code{@@@}} there for the left and right braces).  The explicit TeX
-commands are used in the TeX ouput and the argument of @code{@@math}
+commands are used in the TeX output and the argument of @code{@@math}
 in the plain info output.  
 
 Note that the @code{@@c@{@}} macro must go at the end of the
-preceeding line, because everything else after it is ignored---as far
+preceding line, because everything else after it is ignored---as far
 as texinfo is concerned it's actually a 'comment'. The comment
 command @@c has been modified to capture a TeX expression which is
 output by the next @@math command. For ordinary comments use the @@comment
@@ -763,7 +763,7 @@ All installed libraries should have a name like libgslhistogram.a
 Any installed executables (utility programs etc) should have the prefix
 @code{gsl-} (with a hyphen, not an underscore).
 
-All function names, variables, etc should be in lower case.  Macros and
+All function names, variables, etc.@: should be in lower case.  Macros and
 preprocessor variables should be in upper case.
 
 Some common conventions in variable and function names:
@@ -816,12 +816,12 @@ complicated for the library.
 Note: it is possible to define an abstract base class easily in C, using
 function pointers.  See the rng directory for an example. 
 
-When reimplementing public domain fortran code, please try to introduce
+When reimplementing public domain Fortran code, please try to introduce
 the appropriate object concepts as structs, rather than translating the
 code literally in terms of arrays.  The structs can be useful just
 within the file, you don't need to export them to the user.
 
-For example, if a fortran program repeatedly uses a subroutine like,
+For example, if a Fortran program repeatedly uses a subroutine like,
 
 @example
 SUBROUTINE  RESIZE (X, K, ND, K1)
@@ -954,10 +954,10 @@ for efficiency.
 @section Error estimates
 
 In the special functions error bounds are given as twice the expected
-``gaussian'' error.  i.e. 2-sigma, so the result is inside the error
+``Gaussian'' error, i.e.@: 2-sigma, so the result is inside the error
 98% of the time.  People expect the true value to be within +/- the
 quoted error (this wouldn't be the case 32% of the time for 1 sigma).
-Obviously the errors are not gaussian but a factor of two works well
+Obviously the errors are not Gaussian but a factor of two works well
 in practice.
 
 @node Exceptions and Error handling, Persistence, Error estimates, Design
@@ -1293,7 +1293,7 @@ in order to allow the user to determine whether the residual is
 significant or not.
 
 The only place where it is acceptable to use constants like
-@code{GSL_DBL_EPSILON} is in function approximations, (e.g. taylor
+@code{GSL_DBL_EPSILON} is in function approximations, (e.g.@: Taylor
 series, asymptotic expansions, etc).  In these cases it is not an
 arbitrary constant, but an inherent part of the algorithm.
 
@@ -1406,7 +1406,7 @@ accepted by an employer.  For example,
 @smallexample
 Yoyodyne, Inc., hereby disclaims all copyright interest in the software
 `GNU Scientific Library - Legendre Functions' (routines for computing
-legendre functions numerically in C) written by James Hacker.
+Legendre functions numerically in C) written by James Hacker.
 
 <signature of Ty Coon>, 1 April 1989
 Ty Coon, President of Vice
@@ -1572,7 +1572,7 @@ SIAM 1999,  ISBN 0898714478.
  ISBN 0521483913.
 
 @item
-@cite{Higher Transcendental Functions satisfying nonhomogenous linear differential equations} by A W Babister,
+@cite{Higher Transcendental Functions satisfying nonhomogeneous linear differential equations} by A W Babister,
  ISBN 1114401773.
 
 @end itemize

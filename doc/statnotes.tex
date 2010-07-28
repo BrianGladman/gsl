@@ -7,7 +7,7 @@
 \maketitle
 
 \section{Weighted mean and variance}
-We have $N$ samples $x_i$ drawn from a gaussian distribution
+We have $N$ samples $x_i$ drawn from a Gaussian distribution
 $G(\mu,\sigma)$ (or any distribution with finite first and second
 moments).  Each sample has a weight $w_i$ which represents the
 relative value we place on it.  Given the estimate of the mean
@@ -86,7 +86,7 @@ approximation.
 If we assume that the ``experimental errors'' arising from the weights
 contribute, the underlying variance $\sigma^2$ is overestimated by
 this formula (e.g. consider the case $\sigma = 0$---all the variation
-will come from the gaussian fluctuations represented by the
+will come from the Gaussian fluctuations represented by the
 $w_i$). The appropriate expectation in this case is $\expectation{x_i
   x_j} = \mu^2 + \delta_{ij} (\sigma^2 + 1/w_i)$
 \end{document}

@@ -1,5 +1,5 @@
 @cindex Monte Carlo integration
-@cindex stratified sampling in monte carlo integration
+@cindex stratified sampling in Monte Carlo integration
 @cindex multidimensional integration
 This chapter describes routines for multidimensional Monte Carlo
 integration.  These include the traditional Monte Carlo method and
@@ -143,7 +143,7 @@ The function @math{f(x)} can be evaluated using the following macro,
 
 @node PLAIN Monte Carlo
 @section PLAIN Monte Carlo
-@cindex plain monte carlo
+@cindex plain Monte Carlo
 The plain Monte Carlo algorithm samples points randomly from the
 integration region to estimate the integral and its error.  Using this
 algorithm the estimate of the integral @math{E(f; N)} for @math{N}
@@ -410,7 +410,7 @@ so no variation is introduced. If needed, a typical value of
 
 @node VEGAS
 @section VEGAS
-@cindex VEGAS monte carlo integration
+@cindex VEGAS Monte Carlo integration
 @cindex importance sampling, VEGAS
 
 The @sc{vegas} algorithm of Lepage is based on importance sampling.  It
@@ -600,7 +600,7 @@ default value is 5 iterations.
 @deftypevar int stage
 Setting this determines the @dfn{stage} of the calculation.  Normally,
 @code{stage = 0} which begins with a new uniform grid and empty weighted
-average.  Calling vegas with @code{stage = 1} retains the grid from the
+average.  Calling @sc{vegas} with @code{stage = 1} retains the grid from the
 previous run but discards the weighted average, so that one can ``tune''
 the grid using a relatively small number of points and then do a large
 run with @code{stage = 1} on the optimized grid.  Setting @code{stage =
