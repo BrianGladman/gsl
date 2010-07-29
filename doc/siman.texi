@@ -220,7 +220,7 @@ application with little change and should make things easier.
 @node Trivial example
 @subsection Trivial example
 
-The first example, in one dimensional cartesian space, sets up an energy
+The first example, in one dimensional Cartesian space, sets up an energy
 function which is a damped sine wave; this has many local minima, but
 only one global minimum, somewhere between 1.0 and 1.5.  The initial
 guess given is 15.5, which is several local minima away from the global

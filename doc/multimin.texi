@@ -271,7 +271,7 @@ These functions perform a single iteration of the minimizer @var{s}.
 If the iteration encounters an unexpected problem then an error code
 will be returned.  The error code @code{GSL_ENOPROG} signifies that
 the minimizer is unable to improve on its current estimate, either due
-to numerical difficulty or because a genuine local mimimum has been
+to numerical difficulty or because a genuine local minimum has been
 reached.
 @end deftypefun
 

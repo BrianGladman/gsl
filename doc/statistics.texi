@@ -89,7 +89,7 @@ $$
 where @math{x_i} are the elements of the dataset @var{data}.  Note that
 the normalization factor of @math{1/(N-1)} results from the derivation
 of @math{\Hat\sigma^2} as an unbiased estimator of the population
-variance @math{\sigma^2}.  For samples drawn from a gaussian distribution
+variance @math{\sigma^2}.  For samples drawn from a Gaussian distribution
 the variance of @math{\Hat\sigma^2} itself is @math{2 \sigma^4 / N}.
 
 This function computes the mean via a call to @code{gsl_stats_mean}.  If
@@ -300,7 +300,7 @@ kurtosis = ((1/N) \sum ((x_i - \Hat\mu)/\Hat\sigma)^4)  - 3
 @end ifinfo
 @noindent
 The kurtosis measures how sharply peaked a distribution is, relative to
-its width.  The kurtosis is normalized to zero for a gaussian
+its width.  The kurtosis is normalized to zero for a Gaussian
 distribution.
 @end deftypefun
 

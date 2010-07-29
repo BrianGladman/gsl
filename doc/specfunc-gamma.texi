@@ -132,7 +132,7 @@ related to the Gamma function by @math{n! = \Gamma(n+1)}.
 The maximum value of @math{n} such that @math{n!} is not
 considered an overflow is given by the macro @code{GSL_SF_FACT_NMAX}
 and is 170.
-@comment exceptions: GSL_EDOM, GSL_OVRFLW
+@comment exceptions: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
 @deftypefun double gsl_sf_doublefact (unsigned int @var{n})
@@ -142,7 +142,7 @@ These routines compute the double factorial @math{n!! = n(n-2)(n-4) \dots}.
 The maximum value of @math{n} such that @math{n!!} is not
 considered an overflow is given by the macro @code{GSL_SF_DOUBLEFACT_NMAX}
 and is 297.
-@comment exceptions: GSL_EDOM, GSL_OVRFLW
+@comment exceptions: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
 @deftypefun double gsl_sf_lnfact (unsigned int @var{n})
@@ -197,7 +197,7 @@ These routines compute the Taylor coefficient @math{x^n / n!} for
 @deftypefun double gsl_sf_poch (double @var{a}, double @var{x})
 @deftypefunx int gsl_sf_poch_e (double @var{a}, double @var{x}, gsl_sf_result * @var{result})
 @cindex Pochhammer symbol
-@cindex Apell symbol, see Pochammer symbol
+@cindex Apell symbol, see Pochhammer symbol
 These routines compute the Pochhammer symbol @math{(a)_x = \Gamma(a +
 x)/\Gamma(a)}.  The Pochhammer symbol is also known as the Apell symbol and
 sometimes written as @math{(a,x)}.  When @math{a} and @math{a+x} 
