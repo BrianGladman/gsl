@@ -1,3 +1,10 @@
+2010-08-06  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ode-initval2: added Tuomo Keskitalo's new ode branch with a
+	gsl_odeiv2 prefix which is intended to be the new default.  Will
+	retain gsl_odeiv for binary compatibility but old interface will
+	be deprecated.
+
 2010-05-25  Peter Johansson  <trojkan@gmail.com>
 
 	* configure.ac: added variable GSL_LIBM from macro AC_CHECK_LIBM

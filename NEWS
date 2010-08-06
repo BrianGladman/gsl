@@ -1,3 +1,9 @@
+** Added Tuomo Keskitalo's new ode branch ode-initval2 with a
+   gsl_odeiv2 prefix which is intended to be the new default for
+   differential equations.  The existing gsl_odeiv routines will be
+   retained for binary compatibility but their interface will be
+   deprecated.
+
 ** Added new routine gsl_linalg_complex_cholesky_invert to handle the
    matrix inversion for complex Cholesky decompositions (Huan Wu).
 
