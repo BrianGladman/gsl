@@ -61,6 +61,12 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_Jn_e, (0, 20000, &r), 0.00556597490495494615709982972, TEST_TOL4, GSL_SUCCESS);
 #endif
 
+  /*  Testcase demonstrating long calculation time:
+      Time spent in gsl_sf_bessel_J_CF1 for large x<1000 and n<5
+      grows in proportion to x 
+      Jonny Taylor <j.m.taylor@durham.ac.uk>  */
+  TEST_SF(s, gsl_sf_bessel_Jn_e, (45, 900.0, &r),     0.02562434700634278108,    TEST_TOL0, GSL_SUCCESS);
+
   TEST_SF(s, gsl_sf_bessel_Y0_e, (0.1, &r),         -1.5342386513503668441,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Y0_e, (2, &r),            0.5103756726497451196,    TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_Y0_e, (256.0, &r),       -0.03381290171792454909 ,  TEST_TOL0, GSL_SUCCESS);
