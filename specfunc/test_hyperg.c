@@ -628,7 +628,7 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (0, -2, -4, 0.5, &r), 1.0 , TEST_TOL2, GSL_SUCCESS);
 
-  /* Andrew Benson <abenson@caltech.edu>
+  /* Andrew Benson <abenson@caltech.edu> bug #24812
      in Pari:
      poch(a,x) = { gamma(a+x)/gamma(a) }
      t(a,b,c,x,k) = { (poch(a,k)*poch(b,k)/poch(c,k)) * (x^k)/(k!) }
@@ -636,6 +636,11 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (-10.34, 2.05, 3.05, 0.1725, &r), 0.310473552213130010351006093079548, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (-9.99999999999, 2.05, 3.05, 0.1725, &r),0.32141934630197487540298837643890, TEST_TOL2, GSL_SUCCESS);
+
+  /* Didier Pinchon also bug #24812 */
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (11, -1, 11.0/2.0, 0.125 , &r), 0.75, TEST_TOL2, GSL_SUCCESS);
+
+
 
   /* 2F1 conj */
 
