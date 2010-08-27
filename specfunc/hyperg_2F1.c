@@ -734,17 +734,17 @@ gsl_sf_hyperg_2F1_e(double a, double b, const double c,
       return hyperg_2F1_luke(a, b, c, x, result);
     }
 
-    if(GSL_MAX_DBL(fabs(a),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
+    if(GSL_MAX_DBL(fabs(ap),1.0)*fabs(bp)*fabs(x) < 2.0*fabs(c)) {
       /* If c is large enough or x is small enough,
        * we can attempt the series anyway.
        */
       return hyperg_2F1_series(a, b, c, x, result);
     }
 
-    if(fabs(bp*bp*x*x) < 0.001*fabs(bp) && fabs(a) < 10.0) {
+    if(fabs(bp*bp*x*x) < 0.001*fabs(bp) && fabs(ap) < 10.0) {
       /* The famous but nearly worthless "large b" asymptotic.
        */
-      int stat = gsl_sf_hyperg_1F1_e(a, c, bp*x, result);
+      int stat = gsl_sf_hyperg_1F1_e(ap, c, bp*x, result);
       result->err = 0.001 * fabs(result->val);
       return stat;
     }

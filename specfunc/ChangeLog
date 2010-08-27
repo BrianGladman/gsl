@@ -1,3 +1,8 @@
+2010-08-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): use ap and bp consistently
+	in large c and large b cases, previously mixed a,b and ap,bp.
+
 2010-04-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* atanint.c (gsl_sf_atanint_e): added missing term 1/ax for large x
