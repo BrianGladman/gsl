@@ -628,6 +628,15 @@ int test_hyperg(void)
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (0, -2, -4, 0.5, &r), 1.0 , TEST_TOL2, GSL_SUCCESS);
 
+  /* Andrew Benson <abenson@caltech.edu>
+     in Pari:
+     poch(a,x) = { gamma(a+x)/gamma(a) }
+     t(a,b,c,x,k) = { (poch(a,k)*poch(b,k)/poch(c,k)) * (x^k)/(k!) }
+     suminf(k=0,t(-10.34, 2.05, 3.05, 0.1725,k))  */
+
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (-10.34, 2.05, 3.05, 0.1725, &r), 0.310473552213130010351006093079548, TEST_TOL2, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (-9.99999999999, 2.05, 3.05, 0.1725, &r),0.32141934630197487540298837643890, TEST_TOL2, GSL_SUCCESS);
+
   /* 2F1 conj */
 
   TEST_SF(s, gsl_sf_hyperg_2F1_conj_e, (1, 1, 1, 0.5, &r), 3.352857095662929028, TEST_TOL0, GSL_SUCCESS);
