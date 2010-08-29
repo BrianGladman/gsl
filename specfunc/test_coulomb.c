@@ -408,18 +408,17 @@ int test_coulomb(void)
   gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(3.25, 0.0, lam_F=1, lam_G=0)");
   status += s;
 
-  /* compute F_1(eta=0,x), F'_1 and G_0(eta=0,x), G'_0 for
+  /* compute F_37(eta=0,x), F'_37 and G_36(eta=0,x), G'_36 for
      x=1.2693881947287221e-07 */
 
-  /* c(L,n) = { 2^L * exp(-Pi*n/2) * abs(gamma(L+1+I*n)) / gamma(2*L+2)}
-     cofac(L,n,r) = { I * exp(-I*r)*r^(-L)/(gamma(2*L+2)*c(L,n)) }
-     FplusIG(L,n,r) = { cofac(L,n,r) * intnum(t=0,[[1],1],exp(-t)*t^(L-I*n)*(t+2*I*r)^(L+I*n)) } 
+  /* For eta=0 expanding A&S 4.3.1 gives
 
-     FPplusIGP(L,n,r) = { -(L/r+I)*FplusIG(L,n,r) + cofac(L,n,r)*2*I*(L+I*n)*intnum(t=0,[[1],1],exp(-t)*t^(L-I*n)*(t+2*I*r)^(L+I*n-1)) }
+     FplusIG(L,r)={I*exp(-I*r)*sum(k=0,L,((L+k)!/(k!*(L-k)!))*(I^(L-k))*(2*r)^(-k))
+     
+     or alternatively F+iG can be expressed in terms of bessel functions
 
-     or set default(seriesprecision,2) and use FplusIG(L,n,r+x) to get derivatives in r
-
-*/
+     FplusIG(L,r)=sqrt(Pi*x/2)*besselh1(L+1/2,x))
+  */
 
   lam_F = 37.0;
   eta = 0.0;
@@ -428,10 +427,10 @@ int test_coulomb(void)
   gsl_sf_coulomb_wave_FG_e(eta, x, lam_F, k_G, &F, &Fp, &G, &Gp, &Fe, &Ge);
   s = 0;
   message_buff[0] = 0;
-  s += test_sf_check_result(message_buff,  F,  -2.020327525317343313380459069e299, TEST_TOL3);
-  s += test_sf_check_result(message_buff, Fp, 5.729672862364037942289798904e307, TEST_TOL3);
-  s += test_sf_check_result(message_buff,  G, 4.397355593129492554472984282e299, TEST_TOL3);
-  s += test_sf_check_result(message_buff, Gp,  - 1.247095270068213211088454516e308, TEST_TOL3);
+  s += test_sf_check_result(message_buff,  F, 6.5890724278623412974127e-318 , TEST_TOL3);
+  s += test_sf_check_result(message_buff, Fp, 1.97248369961623986509839591990e-309, TEST_TOL3);
+  s += test_sf_check_result(message_buff,  G, 4.46663541714903607940730e299, TEST_TOL3);
+  s += test_sf_check_result(message_buff, Gp, -1.26674311046140805594543e308 , TEST_TOL3);
   printf("%s", message_buff);
   gsl_test(s, "  gsl_sf_coulomb_wave_FG_e(1.2693881947287221e-07, 0.0, lam_F=37, lam_G=36)");
   status += s;
