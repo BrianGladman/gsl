@@ -479,3 +479,5 @@ evaluation and ode improvements
 * Huan Wu - gsl_linalg_complex_cholesky_invert
 
 * Ralf Wildenhues - numerous proofreading corrections
+
+* Thomas Tanner <tanner@gmx.de> - bug report for gsl_sf_beta_inc

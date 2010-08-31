@@ -184,7 +184,13 @@ gsl_sf_beta_inc_e(
       result->err  = fabs(prefactor.err * cf.val)/b;
       result->err += fabs(prefactor.val * cf.err)/b;
       result->err += 2.0 * GSL_DBL_EPSILON * (1.0 + fabs(term));
-      stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
+      /* since the prefactor term is subtracted from 1 we need to
+         ignore underflow */
+      if (stat_exp != GSL_EUNDRFLW) {
+        stat = GSL_ERROR_SELECT_2(stat_exp, stat_cf);
+      } else {
+        stat = stat_cf;
+      };
       if(stat == GSL_SUCCESS) {
         CHECK_UNDERFLOW(result);
       }

@@ -1,3 +1,8 @@
+2010-08-31  Brian Gough  <bjg@network-theory.co.uk>
+
+	* beta_inc.c (gsl_sf_beta_inc_e): ignore underflow error when term
+	is subtracted from 1
+
 2010-08-27  Brian Gough  <bjg@network-theory.co.uk>
 
 	* hyperg_2F1.c (gsl_sf_hyperg_2F1_e): use ap and bp consistently

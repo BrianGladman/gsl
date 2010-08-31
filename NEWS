@@ -1,3 +1,6 @@
+** Avoid spurious underflow return code in gsl_sf_beta_inc_e when
+   intermediate underflow does not affect the result. [bug #30933]
+
 ** Fixed gsl_sf_hyperg_2F1(a,b,c,x) to avoid returning NaN for
    arguments |a|>10. [bug #24812]
 
