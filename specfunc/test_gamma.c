@@ -384,6 +384,10 @@ int test_gamma(void)
   TEST_SF(s,  gsl_sf_beta_inc_e, (-0.1, -0.2, 0.3, &r), 0.7469186777964287252, TEST_TOL2, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_beta_inc_e, (-0.2, -0.1, 0.3, &r), 0.3995299653262016818, TEST_TOL2, GSL_SUCCESS);
 
+  /* Bug report from Thomas Tanner <tanner@gmx.de> */
+
+  TEST_SF(s,  gsl_sf_beta_inc_e, (0.5, 101.5, 0.999457, &r), 1.0, TEST_TOL2, GSL_SUCCESS);
+
 
   return s;
 }
