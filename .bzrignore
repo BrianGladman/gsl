@@ -41,3 +41,15 @@ doc/*.tp
 aclocal.m4
 doc/mdate-sh
 config.h.in
+block/test.dat
+block/test.txt
+histogram/test.dat
+histogram/test.txt
+matrix/test.dat
+matrix/test.txt
+matrix/test_static
+ntuple/test.dat
+rng/test.dat
+vector/test.dat
+vector/test.txt
+vector/test_static
