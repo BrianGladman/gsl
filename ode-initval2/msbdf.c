@@ -1,6 +1,6 @@
-/* ode-initval/msbdf.c
+/* ode-initval2/msbdf.c
  * 
- * Copyright (C) 2009 Tuomo Keskitalo
+ * Copyright (C) 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
    Nonlinear and Differential/Algebraic Equation Solvers, ACM
    Trans. Math. Software 31 (2005), pp. 363-396.
 
-   Note: The algorithms have been adapted for GSL ode-initval
+   Note: The algorithms have been adapted for GSL ode-initval2
    framework.
 */
 
@@ -87,7 +87,7 @@ typedef struct
   gsl_vector *relcor;           /* relative y values for correction */
   gsl_vector *svec;             /* saved abscor & work area */
   gsl_vector *tempvec;          /* work area */
-  gsl_odeiv2_control *control;   /* pointer to error control object */
+  const gsl_odeiv2_driver *driver;      /* pointer to gsl_odeiv2_driver object */
   gsl_matrix *dfdy;             /* Jacobian */
   double *dfdt;                 /* storage for time derivative of f */
   gsl_matrix *M;                /* Newton iteration matrix */
@@ -229,7 +229,8 @@ msbdf_alloc (size_t dim)
       free (state->zbackup);
       free (state->z);
       free (state);
-      GSL_ERROR_NULL ("failed to allocate space for ordprevbackup", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for ordprevbackup",
+                      GSL_ENOMEM);
     }
 
   state->errlev = (double *) malloc (dim * sizeof (double));
@@ -449,7 +450,7 @@ msbdf_alloc (size_t dim)
 
   msbdf_reset ((void *) state, dim);
 
-  state->control = NULL;
+  state->driver = NULL;
 
   return state;
 }
@@ -466,7 +467,7 @@ msbdf_failurehandler (void *vstate, const size_t dim, const double t)
 
   const size_t ord = state->ord;
 
-  if (ord > 1 && (ord - state->ordprev[0] == 0) && 
+  if (ord > 1 && (ord - state->ordprev[0] == 0) &&
       ord == state->failord && t == state->failt)
     {
       state->ord--;
@@ -801,13 +802,13 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
 #ifdef DEBUG
       {
-	size_t di;
-	printf ("-- abscor: ");
-	for (di = 0; di < dim; di++)
-	  {
-	    printf ("%.5e ", gsl_vector_get (abscor, di));
-	  }
-	printf ("\n");
+        size_t di;
+        printf ("-- abscor: ");
+        for (di = 0; di < dim; di++)
+          {
+            printf ("%.5e ", gsl_vector_get (abscor, di));
+          }
+        printf ("\n");
       }
 #endif
 
@@ -830,7 +831,7 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
 #ifdef DEBUG
       printf
         ("-- newt iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
-         (int)mi, errcoeff, stepnorm, convrate, convtest);
+         (int) mi, errcoeff, stepnorm, convrate, convtest);
 #endif
       if (convtest <= 1.0)
         {
@@ -871,7 +872,7 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
     }
 
 #ifdef DEBUG
-  printf ("-- Newton iteration exit at mi=%d\n", (int)mi);
+  printf ("-- Newton iteration exit at mi=%d\n", (int) mi);
 #endif
 
   /* Handle convergence failure */
@@ -991,44 +992,44 @@ msbdf_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 }
 
 static int
-msbdf_check_no_order_decrease(size_t const ordprev[])
+msbdf_check_no_order_decrease (size_t const ordprev[])
 {
   /* Checks if order has not been decreased according to order history
      array. Used in stability enhancement.
    */
-  
+
   size_t i;
 
   for (i = 0; i < MSBDF_MAX_ORD - 1; i++)
     {
       if (ordprev[i + 1] > ordprev[i])
-	{
-	  return 0;
-	}
+        {
+          return 0;
+        }
     }
-  
+
   return 1;
 }
 
 static int
-msbdf_check_step_size_decrease(double const hprev[])
+msbdf_check_step_size_decrease (double const hprev[])
 {
   /* Checks if step size has decreased markedly according to
      step size history array. Used in stability enhancement.
    */
 
   size_t i;
-  double max = fabs(hprev[0]);
-  const double min = fabs(hprev[0]);
+  double max = fabs (hprev[0]);
+  const double min = fabs (hprev[0]);
 
   for (i = 1; i < MSBDF_MAX_ORD; i++)
     {
-      const double h = fabs(hprev[i]);
+      const double h = fabs (hprev[i]);
 
       if (h > min && h > max)
-	{
-	  max = h;
-	}
+        {
+          max = h;
+        }
     }
 
   const double decrease_limit = 0.5;
@@ -1097,47 +1098,47 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
   if (state->ni > 0 && (t == state->tprev || t == state->failt))
     {
       if (state->ni == 1)
-	{
-	  /* No step has been accepted yet, reset method */
+        {
+          /* No step has been accepted yet, reset method */
 
-	  msbdf_reset (vstate, dim);
+          msbdf_reset (vstate, dim);
 #ifdef DEBUG
-	  printf ("-- first step was REJECTED, msbdf_reset called\n");
+          printf ("-- first step was REJECTED, msbdf_reset called\n");
 #endif
-	}
+        }
       else
-	{
-	  /* A succesful step has been saved, restore previous state. */
+        {
+          /* A succesful step has been saved, restore previous state. */
 
-	  /* If previous step suggests order increase, but the step was
-	     rejected, then do not increase order.
-	   */
-	  
-	  if (ord > ordprev[0])
-	    {
-	      state->ord = ordprev[0];
-	      ord = state->ord;
-	    }
-	  
-	  /* Restore previous state */
+          /* If previous step suggests order increase, but the step was
+             rejected, then do not increase order.
+           */
 
-	  DBL_MEMCPY (z, zbackup, (MSBDF_MAX_ORD + 1) * dim);
-	  DBL_MEMCPY (hprev, hprevbackup, MSBDF_MAX_ORD);
-	  
-	  size_t i;
-	  
-	  for (i = 0; i < MSBDF_MAX_ORD; i++)
-	    {
-	      ordprev[i] = ordprevbackup[i];
-	    }
-	  
-	  state->ordwait = state->ordwaitbackup;
-	  state->gammaprev = state->gammaprevbackup;
+          if (ord > ordprev[0])
+            {
+              state->ord = ordprev[0];
+              ord = state->ord;
+            }
+
+          /* Restore previous state */
+
+          DBL_MEMCPY (z, zbackup, (MSBDF_MAX_ORD + 1) * dim);
+          DBL_MEMCPY (hprev, hprevbackup, MSBDF_MAX_ORD);
+
+          size_t i;
+
+          for (i = 0; i < MSBDF_MAX_ORD; i++)
+            {
+              ordprev[i] = ordprevbackup[i];
+            }
+
+          state->ordwait = state->ordwaitbackup;
+          state->gammaprev = state->gammaprevbackup;
 
 #ifdef DEBUG
-	  printf ("-- previous step was REJECTED, state restored\n");
+          printf ("-- previous step was REJECTED, state restored\n");
 #endif
-	}
+        }
 
       /* If step is repeatedly rejected, then reset method */
 
@@ -1146,14 +1147,14 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
       const size_t max_failcount = 3;
 
       if (state->failcount > max_failcount && state->ni > 1)
-	{
-	  msbdf_reset (vstate, dim);
-	  ord = state->ord;
+        {
+          msbdf_reset (vstate, dim);
+          ord = state->ord;
 
 #ifdef DEBUG
-	  printf ("-- max_failcount reached, msbdf_reset called\n");
+          printf ("-- max_failcount reached, msbdf_reset called\n");
 #endif
-	}
+        }
     }
   else
     {
@@ -1165,9 +1166,9 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
       size_t i;
 
       for (i = 0; i < MSBDF_MAX_ORD; i++)
-	{
-	  ordprevbackup[i] = ordprev[i];
-	}
+        {
+          ordprevbackup[i] = ordprev[i];
+        }
 
       state->ordwaitbackup = state->ordwait;
       state->gammaprevbackup = state->gammaprev;
@@ -1176,32 +1177,32 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
 #ifdef DEBUG
       if (state->ni > 0)
-	{
-	  printf ("-- previous step was ACCEPTED, state saved\n");
-	}
+        {
+          printf ("-- previous step was ACCEPTED, state saved\n");
+        }
 #endif
     }
 
 #ifdef DEBUG
-  printf ("-- ord=%d, ni=%ld, ordwait=%d\n", (int)ord, state->ni,
-	  (int)state->ordwait);
+  printf ("-- ord=%d, ni=%ld, ordwait=%d\n", (int) ord, state->ni,
+          (int) state->ordwait);
 
   size_t di;
   printf ("-- ordprev: ");
 
   for (di = 0; di < MSBDF_MAX_ORD; di++)
     {
-      printf ("%d ", (int)ordprev[di]);
+      printf ("%d ", (int) ordprev[di]);
     }
 
   printf ("\n");
 #endif
 
-  /* Get desired error levels via gsl_odeiv2_control object, which is a
-     requirement for this stepper.  
+  /* Get desired error levels via gsl_odeiv2_control object through driver
+     object, which is a requirement for this stepper.
    */
 
-  if (state->control == NULL)
+  if (state->driver == NULL)
     {
       return GSL_EFAULT;
     }
@@ -1213,13 +1214,13 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
         {
           if (dydt_in != NULL)
             {
-              gsl_odeiv2_control_errlevel (state->control, y[i],
-                                          dydt_in[i], h, i, &errlev[i]);
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           dydt_in[i], h, i, &errlev[i]);
             }
           else
             {
-              gsl_odeiv2_control_errlevel (state->control, y[i],
-                                          0.0, h, i, &errlev[i]);
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           0.0, h, i, &errlev[i]);
             }
         }
     }
@@ -1277,26 +1278,26 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
 #ifdef DEBUG
   printf ("-- check_no_order_decrease %d, check_step_size_decrease %d\n",
-	  msbdf_check_no_order_decrease(ordprev),
-	  msbdf_check_step_size_decrease(hprev));
+          msbdf_check_no_order_decrease (ordprev),
+          msbdf_check_step_size_decrease (hprev));
 #endif
-  
-  if (ord > 1 && 
+
+  if (ord > 1 &&
       ord - ordprev[0] == 0 &&
-      msbdf_check_no_order_decrease(ordprev) && 
-      msbdf_check_step_size_decrease(hprev))
+      msbdf_check_no_order_decrease (ordprev) &&
+      msbdf_check_step_size_decrease (hprev))
     {
       state->ord--;
       state->ordwait = ord + 2;
       ord = state->ord;
-      
+
 #ifdef DEBUG
-      printf ("-- stability enhancement decreased order to %d\n", (int)ord);
+      printf ("-- stability enhancement decreased order to %d\n", (int) ord);
 #endif
     }
-  
+
   /* Sanity check */
-  
+
   const int deltaord = ord - ordprev[0];
 
   if (deltaord > 1 || deltaord < -1)
@@ -1607,12 +1608,12 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
     for (i = MSBDF_MAX_ORD - 1; i > 0; i--)
       {
         hprev[i] = hprev[i - 1];
-	ordprev[i] = ordprev[i - 1];
+        ordprev[i] = ordprev[i - 1];
       }
-    
+
     hprev[0] = h;
     ordprev[0] = ord;
-    
+
 #ifdef DEBUG
     {
       size_t di;
@@ -1629,24 +1630,24 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
     state->ordwait--;
     state->ni++;
     state->gammaprev = gamma;
-    
+
     state->nJ++;
     state->nM++;
 
 #ifdef DEBUG
-    printf ("-- nJ=%d, nM=%d\n", (int)state->nJ, (int)state->nM);
+    printf ("-- nJ=%d, nM=%d\n", (int) state->nJ, (int) state->nM);
 #endif
   }
-  
+
   return GSL_SUCCESS;
 }
 
 static int
-msbdf_set_control (void *vstate, gsl_odeiv2_control * c)
+msbdf_set_driver (void *vstate, const gsl_odeiv2_driver * d)
 {
   msbdf_state_t *state = (msbdf_state_t *) vstate;
 
-  state->control = c;
+  state->driver = d;
 
   return GSL_SUCCESS;
 }
@@ -1727,7 +1728,7 @@ static const gsl_odeiv2_step_type msbdf_type = {
   1,                            /* gives exact dydt_out? */
   &msbdf_alloc,
   &msbdf_apply,
-  &msbdf_set_control,
+  &msbdf_set_driver,
   &msbdf_reset,
   &msbdf_order,
   &msbdf_free

@@ -1,4 +1,4 @@
-/* ode-initval/bsimp.c
+/* ode-initval2/bsimp.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
  * 
@@ -86,7 +86,7 @@ compute_weights (const double y[], double w[], size_t dim)
   size_t i;
   for (i = 0; i < dim; i++)
     {
-      double u = fabs(y[i]);
+      double u = fabs (y[i]);
       w[i] = (u > 0.0) ? u : 1.0;
     }
 }
@@ -202,8 +202,7 @@ bsimp_step_local (void *vstate,
                   const double yp[],
                   const double dfdt[],
                   const gsl_matrix * dfdy,
-                  double y_out[], 
-                  const gsl_odeiv2_system * sys)
+                  double y_out[], const gsl_odeiv2_system * sys)
 {
   bsimp_state_t *state = (bsimp_state_t *) vstate;
 
@@ -261,7 +260,8 @@ bsimp_step_local (void *vstate,
       y_temp[i] = h * (yp[i] + h * dfdt[i]);
     }
 
-  gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec.vector, &delta_temp_vec.vector);
+  gsl_linalg_LU_solve (a_mat, p_vec, &y_temp_vec.vector,
+                       &delta_temp_vec.vector);
 
   sum = 0.0;
 
@@ -270,12 +270,12 @@ bsimp_step_local (void *vstate,
       const double di = delta_temp[i];
       delta[i] = di;
       y_temp[i] = y[i] + di;
-      sum += fabs(di) / w[i];
+      sum += fabs (di) / w[i];
     }
 
-  if (sum > max_sum) 
+  if (sum > max_sum)
     {
-      return GSL_EFAILED ;
+      return GSL_EFAILED;
     }
 
   /* Intermediate steps. */
@@ -294,7 +294,8 @@ bsimp_step_local (void *vstate,
           rhs_temp[i] = h * y_out[i] - delta[i];
         }
 
-      gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
+      gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector,
+                           &delta_temp_vec.vector);
 
       sum = 0.0;
 
@@ -302,12 +303,12 @@ bsimp_step_local (void *vstate,
         {
           delta[i] += 2.0 * delta_temp[i];
           y_temp[i] += delta[i];
-          sum += fabs(delta[i]) / w[i];
+          sum += fabs (delta[i]) / w[i];
         }
 
-      if (sum > max_sum) 
+      if (sum > max_sum)
         {
-          return GSL_EFAILED ;
+          return GSL_EFAILED;
         }
 
       t += h;
@@ -328,19 +329,20 @@ bsimp_step_local (void *vstate,
       rhs_temp[i] = h * y_out[i] - delta[i];
     }
 
-  gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector, &delta_temp_vec.vector);
+  gsl_linalg_LU_solve (a_mat, p_vec, &rhs_temp_vec.vector,
+                       &delta_temp_vec.vector);
 
   sum = 0.0;
 
   for (i = 0; i < dim; i++)
     {
       y_out[i] = y_temp[i] + delta_temp[i];
-      sum += fabs(delta_temp[i]) / w[i];
+      sum += fabs (delta_temp[i]) / w[i];
     }
 
-  if (sum > max_sum) 
+  if (sum > max_sum)
     {
-      return GSL_EFAILED ;
+      return GSL_EFAILED;
     }
 
   return GSL_SUCCESS;
@@ -364,16 +366,16 @@ bsimp_alloc (size_t dim)
   state->extrap_work = (double *) malloc (dim * sizeof (double));
   state->dfdt = (double *) malloc (dim * sizeof (double));
   state->y_temp = (double *) malloc (dim * sizeof (double));
-  state->delta_temp = (double *) malloc (dim * sizeof(double));
-  state->weight = (double *) malloc (dim * sizeof(double));
+  state->delta_temp = (double *) malloc (dim * sizeof (double));
+  state->weight = (double *) malloc (dim * sizeof (double));
 
   state->dfdy = gsl_matrix_alloc (dim, dim);
 
-  state->rhs_temp = (double *) malloc (dim * sizeof(double));
+  state->rhs_temp = (double *) malloc (dim * sizeof (double));
   state->delta = (double *) malloc (dim * sizeof (double));
 
   {
-    size_t k_choice = bsimp_deuf_kchoice (GSL_SQRT_DBL_EPSILON, dim); /*FIXME: choice of epsilon? */
+    size_t k_choice = bsimp_deuf_kchoice (GSL_SQRT_DBL_EPSILON, dim);   /*FIXME: choice of epsilon? */
     state->k_choice = k_choice;
     state->k_current = k_choice;
     state->order = 2 * k_choice;
@@ -395,8 +397,7 @@ bsimp_apply (void *vstate,
              double y[],
              double yerr[],
              const double dydt_in[],
-             double dydt_out[], 
-             const gsl_odeiv2_system * sys)
+             double dydt_out[], const gsl_odeiv2_system * sys)
 {
   bsimp_state_t *state = (bsimp_state_t *) vstate;
 
@@ -424,7 +425,7 @@ bsimp_apply (void *vstate,
   /* Save inputs */
   DBL_MEMCPY (y_save, y, dim);
   DBL_MEMCPY (yerr_save, yerr, dim);
-  
+
   /* Evaluate the derivative. */
   if (dydt_in != NULL)
     {
@@ -435,15 +436,15 @@ bsimp_apply (void *vstate,
       int s = GSL_ODEIV_FN_EVAL (sys, t_local, y, yp);
 
       if (s != GSL_SUCCESS)
-	{
+        {
           return s;
-	}
+        }
     }
 
   /* Evaluate the Jacobian for the system. */
   {
     int s = GSL_ODEIV_JA_EVAL (sys, t_local, y, dfdy->data, dfdt);
-  
+
     if (s != GSL_SUCCESS)
       {
         return s;
@@ -464,14 +465,14 @@ bsimp_apply (void *vstate,
                                      dim, t_local, h, N,
                                      y_extrap_save, yp,
                                      dfdt, dfdy,
-                                     y_extrap_sequence, 
+                                     y_extrap_sequence,
                                      sys);
 
       if (status == GSL_EFAILED)
         {
           /* If the local step fails, set the error to infinity in
              order to force a reduction in the step size */
-	  
+
           for (i = 0; i < dim; i++)
             {
               yerr[i] = GSL_POSINF;
@@ -479,15 +480,16 @@ bsimp_apply (void *vstate,
 
           break;
         }
-      
+
       else if (status != GSL_SUCCESS)
-	{
-	  return status;
-	}
-      
+        {
+          return status;
+        }
+
       x[k] = x_k;
 
-      poly_extrap (d, x, k, x_k, y_extrap_sequence, y, yerr, extrap_work, dim);
+      poly_extrap (d, x, k, x_k, y_extrap_sequence, y, yerr, extrap_work,
+                   dim);
     }
 
   /* Evaluate dydt_out[]. */
@@ -528,7 +530,7 @@ bsimp_reset (void *vstate, size_t dim)
 
 
 static void
-bsimp_free (void * vstate)
+bsimp_free (void *vstate)
 {
   bsimp_state_t *state = (bsimp_state_t *) vstate;
 
@@ -554,13 +556,13 @@ bsimp_free (void * vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type bsimp_type = { 
+static const gsl_odeiv2_step_type bsimp_type = {
   "bsimp",                      /* name */
   1,                            /* can use dydt_in */
   1,                            /* gives exact dydt_out */
   &bsimp_alloc,
   &bsimp_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &bsimp_reset,
   &bsimp_order,
   &bsimp_free

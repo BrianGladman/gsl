@@ -7,7 +7,9 @@ equation (ODE) initial value problems.  The library provides a variety
 of low-level methods, such as Runge-Kutta and Bulirsch-Stoer routines,
 and higher-level components for adaptive step-size control. The
 components can be combined by the user to achieve the desired
-solution, with full access to any intermediate steps.
+solution, with full access to any intermediate steps. A driver object
+can be used as a high level wrapper for easy use of low level
+functions.
 
 These functions are declared in the header file @file{gsl_odeiv2.h}.
 This is a new interface in version 1.15 and uses the prefix
@@ -106,7 +108,10 @@ step-size @math{h} and estimate the resulting local error.
 @tpindex gsl_odeiv2_step
 @tpindex gsl_odeiv2_step_type
 This function returns a pointer to a newly allocated instance of a
-stepping function of type @var{T} for a system of @var{dim} dimensions.
+stepping function of type @var{T} for a system of @var{dim}
+dimensions. Please note that if you use a stepper method that
+requires access to a driver object, it is advisable to use a driver
+allocation method, which automatically allocates a stepper, too.
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_step_reset (gsl_odeiv2_step * @var{s})
@@ -138,12 +143,14 @@ This function returns the order of the stepping function on the previous
 step.  This order can vary if the stepping function itself is adaptive.
 @end deftypefun
 
-@deftypefun int gsl_odeiv2_step_set_control (gsl_odeiv2_step * @var{s}, gsl_odeiv2_control * @var{c})
-This function can be called after allocation of stepper @var{s} and
-control object @var{c} to allow the stepper to obtain desired error
-level via the control object. This is a requirement for some steppers.
+@deftypefun int gsl_odeiv2_step_set_driver (gsl_odeiv2_step * @var{s}, const gsl_odeiv2_driver * @var{d})
+This function sets a pointer of the driver object @var{d} for stepper
+@var{s}, to allow the stepper to access control (and evolve) object
+through the driver object. This is a requirement for some steppers, to
+get the desired error level for internal iteration of
+stepper. Allocation of a driver object calls this function
+automatically.
 @end deftypefun
-
 
 @deftypefun int gsl_odeiv2_step_apply (gsl_odeiv2_step * @var{s}, double @var{t}, double @var{h}, double @var{y}[], double @var{yerr}[], const double @var{dydt_in}[], double @var{dydt_out}[], const gsl_odeiv2_system * @var{sys})
 This function applies the stepping function @var{s} to the system of
@@ -168,8 +175,8 @@ may be due to a singularity in the system or too large step-size
 @var{h}. In that case the step should be attempted again with a
 smaller step-size, e.g. @math{@var{h}/2}.
 
-If the control object is not appropriately set via
-@code{gsl_odeiv2_step_set_control} for those steppers that need it, the
+If the driver object is not appropriately set via
+@code{gsl_odeiv2_step_set_driver} for those steppers that need it, the
 stepping function returns @code{GSL_EFAULT}.
 @end deftypefun
 
@@ -185,7 +192,7 @@ Explicit embedded Runge-Kutta (2, 3) method.
 @cindex RK4, Runge-Kutta method
 Explicit 4th order (classical) Runge-Kutta. Error estimation is
 carried out by the step doubling method. For more efficient estimate
-of the error, use the explicit methods described below.
+of the error, use the embedded methods described below.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv2_step_rkf45
@@ -207,27 +214,26 @@ Explicit embedded Runge-Kutta Cash-Karp (4, 5) method.
 Explicit embedded Runge-Kutta Prince-Dormand (8, 9) method.
 @end deffn
 
-@deffn {Step Type} gsl_odeiv2_step_impeuler 
+@deffn {Step Type} gsl_odeiv2_step_rk1imp 
 @cindex Implicit Euler method
 Implicit Gaussian first order Runge-Kutta. Also known as implicit
 Euler or backward Euler method. Error estimation is carried out by the
-step doubling method. This algorithm requires the Jacobian and the
-setting of the control object via @code{gsl_odeiv2_step_set_control}.
+step doubling method. This algorithm requires the Jacobian and 
+access to the driver object via @code{gsl_odeiv2_step_set_driver}.
 @end deffn
 
-@deffn {Step Type} gsl_odeiv2_step_imprk2  
+@deffn {Step Type} gsl_odeiv2_step_rk2imp  
 @cindex Implicit Runge-Kutta method
 Implicit Gaussian second order Runge-Kutta. Also known as implicit
 mid-point rule. Error estimation is carried out by the step doubling
-method. This stepper requires the Jacobian and the setting of the
-control object via @code{gsl_odeiv2_step_set_control}.
+method. This stepper requires the Jacobian and access to the driver
+object via @code{gsl_odeiv2_step_set_driver}.
 @end deffn
 
-@deffn {Step Type} gsl_odeiv2_step_imprk4  
+@deffn {Step Type} gsl_odeiv2_step_rk4imp  
 Implicit Gaussian 4th order Runge-Kutta. Error estimation is carried
 out by the step doubling method. This algorithm requires the Jacobian
-and the setting of the control object via
-@code{gsl_odeiv2_step_set_control}.
+and access to the driver object via @code{gsl_odeiv2_step_set_driver}.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv2_step_bsimp   
@@ -248,8 +254,8 @@ A variable-coefficient linear multistep Adams method in Nordsieck
 form. This stepper uses explicit Adams-Bashforth (predictor) and
 implicit Adams-Moulton (corrector) methods in @math{P(EC)^m}
 functional iteration mode. Method order varies dynamically between 1
-and 12. This stepper requires the setting of the control object via
-@code{gsl_odeiv2_step_set_control}.
+and 12. This stepper requires the access to the driver object via
+@code{gsl_odeiv2_step_set_driver}.
 @end deffn
 
 @deffn {Step Type} gsl_odeiv2_step_msbdf
@@ -260,8 +266,8 @@ BDF formula as predictor and implicit BDF formula as corrector. A
 modified Newton iteration method is used to solve the system of
 non-linear equations. Method order varies dynamically between 1 and
 5. The method is generally suitable for stiff problems. This stepper
-requires the Jacobian and the setting of the control object via
-@code{gsl_odeiv2_step_set_control}.
+requires the Jacobian and the access to the driver object via
+@code{gsl_odeiv2_step_set_driver}.
 @end deffn
 
 @node Adaptive Step-size Control
@@ -411,9 +417,9 @@ This function adjusts the step-size @var{h} using the control function
 The stepping function @var{step} is also needed to determine the order
 of the method.  If the error in the y-values @var{yerr} is found to be
 too large then the step-size @var{h} is reduced and the function returns
-@code{GSL_ODEIV_HADJ_DEC}.  If the error is sufficiently small then
-@var{h} may be increased and @code{GSL_ODEIV_HADJ_INC} is returned.  The
-function returns @code{GSL_ODEIV_HADJ_NIL} if the step-size is
+@code{GSL_ODEIV2_HADJ_DEC}.  If the error is sufficiently small then
+@var{h} may be increased and @code{GSL_ODEIV2_HADJ_INC} is returned.  The
+function returns @code{GSL_ODEIV2_HADJ_NIL} if the step-size is
 unchanged.  The goal of the function is to estimate the largest
 step-size which satisfies the user-specified accuracy requirements for
 the current point.
@@ -495,53 +501,47 @@ If a system has discontinuous changes in the derivatives at known
 points it is advisable to evolve the system between each discontinuity
 in sequence.  For example, if a step-change in an external driving
 force occurs at times @math{t_a, t_b} and @math{t_c} then evolution
-should be made over the ranges @math{(t_0,t_a)}, @math{(t_a,t_b)},
-@math{(t_b,t_c)}, and @math{(t_c,t_1)} separately and not directly 
-over the range @math{(t_0,t_1)}.
+should be carried out over the ranges @math{(t_0,t_a)},
+@math{(t_a,t_b)}, @math{(t_b,t_c)}, and @math{(t_c,t_1)} separately
+and not directly over the range @math{(t_0,t_1)}.
 
 @node Driver
 @section Driver
 
-The driver level is a high level wrapper that combines the evolution,
+The driver object is a high level wrapper that combines the evolution,
 control and stepper objects for easy use.
 
 @deftypefun {gsl_odeiv2_driver *} gsl_odeiv2_driver_alloc_y_new (const gsl_odeiv2_system * @var{sys}, const gsl_odeiv2_step_type * @var{T}, const double @var{hstart}, const double @var{epsabs}, const double @var{epsrel})
-This function returns a pointer to a newly allocated instance of a
-driver object, with ODE system @var{sys} and stepper type
-@var{T}. @var{hstart} defines the initial step size. @var{epsabs} and
-@var{epsrel} are the absolute and relative error tolerances for all
-components, respectively.
+@deftypefunx {gsl_odeiv2_driver *} gsl_odeiv2_driver_alloc_yp_new (const gsl_odeiv2_system * @var{sys}, const gsl_odeiv2_step_type * @var{T}, const double @var{hstart}, const double @var{epsabs}, const double @var{epsrel})
+@deftypefunx {gsl_odeiv2_driver *} gsl_odeiv2_driver_alloc_standard_new (const gsl_odeiv2_system * @var{sys}, const gsl_odeiv2_step_type * @var{T}, const double @var{hstart}, const double @var{epsabs}, const double @var{epsrel}, const double @var{a_y}, const double @var{a_dydt})
+@deftypefunx {gsl_odeiv2_driver *} gsl_odeiv2_driver_alloc_scaled_new (const gsl_odeiv2_system * @var{sys}, const gsl_odeiv2_step_type * @var{T}, const double @var{hstart}, const double @var{epsabs}, const double @var{epsrel}, const double @var{a_y}, const double @var{a_dydt}, const double @var{scale_abs}[])
+These functions return a pointer to a newly allocated instance of a
+driver object. The functions automatically allocate and initialise the
+evolve, control and stepper objects for ODE system @var{sys} using
+stepper type @var{T}. The initial step size is given in
+@var{hstart}. The rest of the arguments follow the syntax and
+semantics of the control functions with same name
+(@code{gsl_odeiv2_control_*_new}).
 @end deftypefun
 
-@deftypefun {gsl_odeiv2_driver *} gsl_odeiv2_driver_alloc_scaled_new (const gsl_odeiv2_system * @var{sys}, const gsl_odeiv2_step_type * @var{T}, const double @var{hstart}, const double @var{epsabs}, const double @var{epsrel}, const double @var{a_y}, const double @var{a_dydt}, const double @var{scale_abs}[])
-This function is otherwise similar to @code{gsl_odeiv2_driver_alloc_y_new}, but it allows definition of the desired error level @math{D_i} similarly to @code{gsl_odeiv2_control_scaled_new} with formula
-@tex
-\beforedisplay
-$$
-D_i = \epsilon_{abs} s_i + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
-$$
-\afterdisplay
-@end tex
-@end deftypefun
-
-@deftypefun {int} gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * D, const double hmin)
+@deftypefun {int} gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
 The function sets a minimum for allowed step size @var{hmin} for
-driver @var{D}. Default value is 0.
+driver @var{d}. Default value is 0.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * D, const double hmax)
+@deftypefun {int} gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax)
 The function sets a maximum for allowed step size @var{hmax} for
-driver @var{D}. Default value is @var{GSL_DBL_MAX}.
+driver @var{d}. Default value is @var{GSL_DBL_MAX}.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * D, const size_t hmin)
-The function sets a maximum for allowed number of steps @var{nmin} for
-driver @var{D}. Default value of 0 sets no limit for steps.
+@deftypefun {int} gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * d, const unsigned long int nmax)
+The function sets a maximum for allowed number of steps @var{nmax} for
+driver @var{d}. Default value of 0 sets no limit for steps.
 @end deftypefun
 
 
-@deftypefun {int} gsl_odeiv2_driver_apply (gsl_odeiv2_driver * @var{D}, double * @var{t}, const double @var{t1}, double @var{y}[])
-This function evolves the driver system @var{D} from @var{t} to
+@deftypefun {int} gsl_odeiv2_driver_apply (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{t1}, double @var{y}[])
+This function evolves the driver system @var{d} from @var{t} to
 @var{t1}. Initially vector @var{y} should contain the values of
 dependent variables at point @var{t}. If the function is unable to
 complete the calculation, an error code from
@@ -553,11 +553,11 @@ step size drops below a minimum value set with
 @var{GSL_ENOPROG}.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_reset (gsl_odeiv2_driver * D)
+@deftypefun {int} gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d)
 This function resets the evolution and stepper objects.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_free (gsl_odeiv2_driver * D)
+@deftypefun {int} gsl_odeiv2_driver_free (gsl_odeiv2_driver * d)
 This function frees the driver object, and the related evolution,
 stepper and control objects.
 @end deftypefun
@@ -679,7 +679,7 @@ Springer, Berlin, 1996.
 Many of the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 
-@itemize @w{}
+@itemize @asis
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions},
 Section 25.5.
@@ -689,9 +689,32 @@ Section 25.5.
 The implicit Bulirsch-Stoer algorithm @code{bsimp} is described in the
 following paper,
 
-@itemize @w{}
+@itemize @asis
 @item
 G. Bader and P. Deuflhard, ``A Semi-Implicit Mid-Point Rule for Stiff
 Systems of Ordinary Differential Equations.'', Numer.@: Math.@: 41, 373--398,
 1983.
 @end itemize
+
+@noindent
+The Adams and BDF multistep methods @code{msadams} and @code{msbdf}
+are based on the following articles,
+
+@itemize @asis
+@item
+G. D. Byrne and A. C. Hindmarsh, ``A Polyalgorithm for the
+Numerical Solution of Ordinary Differential Equations.'',
+ACM Trans. Math. Software, 1, 71--96, 1975.
+
+@item
+P. N. Brown, G. D. Byrne and A. C. Hindmarsh, ``VODE: A
+Variable-coefficient ODE Solver.'', SIAM J. Sci. Stat. Comput. 10,
+1038--1051, 1989.
+
+@item
+A. C. Hindmarsh, P. N. Brown, K. E. Grant, S. L. Lee, R. Serban,
+D. E. Shumaker and C. S. Woodward, ``SUNDIALS: Suite of
+Nonlinear and Differential/Algebraic Equation Solvers.'', ACM
+Trans. Math. Software 31, 363--396, 2005.
+@end itemize
+

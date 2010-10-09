@@ -71,7 +71,7 @@ rk2_alloc (size_t dim)
     }
 
   state->k3 = (double *) malloc (dim * sizeof (double));
-  
+
   if (state->k3 == 0)
     {
       free (state->k2);
@@ -103,8 +103,7 @@ rk2_apply (void *vstate,
            double y[],
            double yerr[],
            const double dydt_in[],
-           double dydt_out[], 
-           const gsl_odeiv2_system * sys)
+           double dydt_out[], const gsl_odeiv2_system * sys)
 {
   rk2_state_t *state = (rk2_state_t *) vstate;
 
@@ -127,9 +126,9 @@ rk2_apply (void *vstate,
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
 
       if (s != GSL_SUCCESS)
-	{
-	  return s;
-	}
+        {
+          return s;
+        }
     }
 
   /* k2 step */
@@ -145,14 +144,14 @@ rk2_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
   /* k3 step */
   /* for 3rd order estimates, is used for error estimation
      k3 = f(t + h, y - k1 + 2*k2) */
- 
+
   for (i = 0; i < dim; i++)
     {
       ytmp[i] = y[i] + h * (-k1[i] + 2.0 * k2[i]);
@@ -163,36 +162,36 @@ rk2_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
   /* final sum */
-  
+
   for (i = 0; i < dim; i++)
     {
       /* Save original values if derivative evaluation below fails */
       ytmp[i] = y[i];
 
       {
-	const double ksum3 = (k1[i] + 4.0 * k2[i] + k3[i]) / 6.0;
-	y[i] += h * ksum3;
+        const double ksum3 = (k1[i] + 4.0 * k2[i] + k3[i]) / 6.0;
+        y[i] += h * ksum3;
       }
     }
-  
+
   /* Derivatives at output */
 
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      
+
       if (s != GSL_SUCCESS)
-	{
-	  /* Restore original values */
-	  DBL_MEMCPY (y, ytmp, dim);
-	  
-	  return s;
-	}
+        {
+          /* Restore original values */
+          DBL_MEMCPY (y, ytmp, dim);
+
+          return s;
+        }
     }
 
   /* Error estimation */
@@ -202,7 +201,7 @@ rk2_apply (void *vstate,
       const double ksum3 = (k1[i] + 4.0 * k2[i] + k3[i]) / 6.0;
       yerr[i] = h * (k2[i] - ksum3);
     }
-  
+
   return GSL_SUCCESS;
 }
 
@@ -223,7 +222,7 @@ static unsigned int
 rk2_order (void *vstate)
 {
   rk2_state_t *state = (rk2_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
+  state = 0;                    /* prevent warnings about unused parameters */
   return 2;
 }
 
@@ -238,12 +237,12 @@ rk2_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type rk2_type = { "rk2",    /* name */
-  1,                           /* can use dydt_in */
-  1,                           /* gives exact dydt_out */
+static const gsl_odeiv2_step_type rk2_type = { "rk2",   /* name */
+  1,                            /* can use dydt_in */
+  1,                            /* gives exact dydt_out */
   &rk2_alloc,
   &rk2_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &rk2_reset,
   &rk2_order,
   &rk2_free

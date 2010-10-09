@@ -1,6 +1,6 @@
-/* ode-initval/rk4imp.c
+/* ode-initval2/rk4imp.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* Runge-Kutta 4, Gaussian implicit */
+/* Based on rk4imp.c by Gerard Jungman */
 
-/* Author:  G. Jungman
-*/
+/* Gaussian implicit 4th order Runge-Kutta method. Error estimation
+   is carried out by the step doubling method.
+ */
 
-/* Error estimation by step doubling, see eg. Ascher, U.M., Petzold,
-   L.R., Computer methods for ordinary differential and
-   differential-algebraic equations, SIAM, Philadelphia, 1998.
-   Method coefficients can also be found in it.
+/* References: 
+
+   Ascher, U.M., Petzold, L.R., Computer methods for ordinary
+   differential and differential-algebraic equations, SIAM, 
+   Philadelphia, 1998. ISBN 0898714125, 9780898714128
 */
 
 #include <config.h>
@@ -36,17 +38,26 @@
 #include <gsl/gsl_odeiv2.h>
 
 #include "odeiv_util.h"
-#include "step_utils.c"
+#include "rksubs.c"
+#include "modnewton1.c"
+
+/* Stage of method */
+#define RK4IMP_STAGE 2
 
 typedef struct
 {
-  double *k1nu;
-  double *k2nu;
-  double *ytmp1;
-  double *ytmp2;
-  double *y0;
-  double *y0_orig;
-  double *y_onestep;
+  gsl_matrix *A;                /* Runge-Kutta coefficients */
+  double *y_onestep;            /* Result with one step */
+  double *y_twostep;            /* Result with two half steps */
+  double *ytmp;                 /* Temporary work space */
+  double *y_save;               /* Backup space */
+  double *YZ;                   /* Runge-Kutta points */
+  double *fYZ;                  /* Derivatives at YZ */
+  gsl_matrix *dfdy;             /* Jacobian matrix */
+  double *dfdt;                 /* time derivative of f */
+  modnewton1_state_t *esol;     /* nonlinear equation solver */
+  double *errlev;               /* desired error level of y */
+  const gsl_odeiv2_driver *driver;      /* pointer to driver object */
 }
 rk4imp_state_t;
 
@@ -61,277 +72,405 @@ rk4imp_alloc (size_t dim)
                       GSL_ENOMEM);
     }
 
-  state->k1nu = (double *) malloc (dim * sizeof (double));
+  state->A = gsl_matrix_alloc (RK4IMP_STAGE, RK4IMP_STAGE);
 
-  if (state->k1nu == 0)
+  if (state->A == 0)
     {
       free (state);
-      GSL_ERROR_NULL ("failed to allocate space for k1nu", GSL_ENOMEM);
-    }
-
-  state->k2nu = (double *) malloc (dim * sizeof (double));
-
-  if (state->k2nu == 0)
-    {
-      free (state->k1nu);
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate space for k2nu", GSL_ENOMEM);
-    }
-
-  state->ytmp1 = (double *) malloc (dim * sizeof (double));
-
-  if (state->ytmp1 == 0)
-    {
-      free (state->k2nu);
-      free (state->k1nu);
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate space for ytmp1", GSL_ENOMEM);
-    }
-
-  state->ytmp2 = (double *) malloc (dim * sizeof (double));
-
-  if (state->ytmp2 == 0)
-    {
-      free (state->ytmp1);
-      free (state->k2nu);
-      free (state->k1nu);
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate space for ytmp2", GSL_ENOMEM);
-    }
-
-  state->y0 = (double *) malloc (dim * sizeof (double));
-
-  if (state->y0 == 0)
-    {
-      free (state->ytmp2);
-      free (state->ytmp1);
-      free (state->k2nu);
-      free (state->k1nu);
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate space for y0", GSL_ENOMEM);
-    }
-
-  state->y0_orig = (double *) malloc (dim * sizeof (double));
-
-  if (state->y0_orig == 0)
-    {
-      free (state->y0);
-      free (state->ytmp2);
-      free (state->ytmp1);
-      free (state->k2nu);
-      free (state->k1nu);
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate space for y0_orig", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
     }
 
   state->y_onestep = (double *) malloc (dim * sizeof (double));
 
   if (state->y_onestep == 0)
     {
-      free (state->y0_orig);
-      free (state->y0);
-      free (state->ytmp2);
-      free (state->ytmp1);
-      free (state->k2nu);
-      free (state->k1nu);
+      gsl_matrix_free (state->A);
       free (state);
       GSL_ERROR_NULL ("failed to allocate space for y_onestep", GSL_ENOMEM);
     }
+
+  state->y_twostep = (double *) malloc (dim * sizeof (double));
+
+  if (state->y_twostep == 0)
+    {
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y_onestep", GSL_ENOMEM);
+    }
+
+  state->ytmp = (double *) malloc (dim * sizeof (double));
+
+  if (state->ytmp == 0)
+    {
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for ytmp", GSL_ENOMEM);
+    }
+
+  state->y_save = (double *) malloc (dim * sizeof (double));
+
+  if (state->y_save == 0)
+    {
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for y_save", GSL_ENOMEM);
+    }
+
+  state->YZ = (double *) malloc (dim * RK4IMP_STAGE * sizeof (double));
+
+  if (state->YZ == 0)
+    {
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for YZ", GSL_ENOMEM);
+    }
+
+  state->fYZ = (double *) malloc (dim * RK4IMP_STAGE * sizeof (double));
+
+  if (state->fYZ == 0)
+    {
+      free (state->YZ);
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for fYZ", GSL_ENOMEM);
+    }
+
+  state->dfdt = (double *) malloc (dim * sizeof (double));
+
+  if (state->dfdt == 0)
+    {
+      free (state->fYZ);
+      free (state->YZ);
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for dfdt", GSL_ENOMEM);
+    }
+
+  state->dfdy = gsl_matrix_alloc (dim, dim);
+
+  if (state->dfdy == 0)
+    {
+      free (state->dfdt);
+      free (state->fYZ);
+      free (state->YZ);
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for dfdy", GSL_ENOMEM);
+    }
+
+  state->esol = modnewton1_alloc (dim, RK4IMP_STAGE);
+
+  if (state->esol == 0)
+    {
+      gsl_matrix_free (state->dfdy);
+      free (state->dfdt);
+      free (state->fYZ);
+      free (state->YZ);
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for esol", GSL_ENOMEM);
+    }
+
+  state->errlev = (double *) malloc (dim * sizeof (double));
+
+  if (state->errlev == 0)
+    {
+      modnewton1_free (state->esol);
+      gsl_matrix_free (state->dfdy);
+      free (state->dfdt);
+      free (state->fYZ);
+      free (state->YZ);
+      free (state->y_save);
+      free (state->ytmp);
+      free (state->y_twostep);
+      free (state->y_onestep);
+      gsl_matrix_free (state->A);
+      free (state);
+      GSL_ERROR_NULL ("failed to allocate space for errlev", GSL_ENOMEM);
+    }
+
+  state->driver = NULL;
 
   return state;
 }
 
 static int
-rk4imp_step (double *y, rk4imp_state_t *state, 
-	     const double h, const double t, 
-	     const size_t dim, const gsl_odeiv2_system *sys)
+rk4imp_apply (void *vstate, size_t dim, double t, double h,
+              double y[], double yerr[],
+              const double dydt_in[], double dydt_out[],
+              const gsl_odeiv2_system * sys)
 {
-  /* Makes a Runge-Kutta 4th order implicit advance with step size h.
-     y0 is initial values of variables y. 
+  /* Makes a Gaussian implicit 4th order Runge-Kutta with step size h
+     and estimates the local error of the step.
+   */
 
-     The implicit matrix equations to solve are:
+  rk4imp_state_t *state = (rk4imp_state_t *) vstate;
 
-     Y1 = y0 + h * a11 * f(t + h * c1, Y1) + h * a12 * f(t + h * c2, Y2) 
-     Y2 = y0 + h * a21 * f(t + h * c1, Y1) + h * a22 * f(t + h * c2, Y2) 
+  /* Runge-Kutta coefficients */
 
-     y = y0 + h * b1 * f(t + h * c1, Y1) + h * b2 * f(t + h * c2, Y2)
+  gsl_matrix *A = state->A;
+  gsl_matrix_set (A, 0, 0, 1.0 / 4);
+  gsl_matrix_set (A, 0, 1, (3 - 2 * sqrt (3)) / 12);
+  gsl_matrix_set (A, 1, 0, (3 + 2 * sqrt (3)) / 12);
+  gsl_matrix_set (A, 1, 1, 1.0 / 4);
 
-     with constant coefficients a, b and c. For this method
-     they are: b=[0.5 0.5] c=[(3-sqrt(3))/6 (3+sqrt(3))/6]
-     a11=1/4, a12=(3-2*sqrt(3))/12, a21=(3+2*sqrt(3))/12 and a22=1/4
-  */
+  const double b[] = { 0.5, 0.5 };
+  const double c[] = { (3 - sqrt (3)) / 6, (3 + sqrt (3)) / 6 };
 
-  const double ir3 = 1.0 / M_SQRT3;
-  const int iter_steps = 3;
-  int nu;
-  size_t i;
+  double *const y_onestep = state->y_onestep;
+  double *const y_twostep = state->y_twostep;
+  double *const ytmp = state->ytmp;
+  double *const y_save = state->y_save;
+  double *const YZ = state->YZ; /* Runge-Kutta points */
+  double *const fYZ = state->fYZ;
+  gsl_matrix *const dfdy = state->dfdy;
+  double *const dfdt = state->dfdt;
+  double *const errlev = state->errlev;
 
-  double *const k1nu = state->k1nu;
-  double *const k2nu = state->k2nu;
-  double *const ytmp1 = state->ytmp1;
-  double *const ytmp2 = state->ytmp2;
+  const modnewton1_state_t *esol = state->esol;
 
-  /* iterative solution of Y1 and Y2.
-
-     Note: This method does not check for convergence of the
-     iterative solution! 
-  */
-
-  for (nu = 0; nu < iter_steps; nu++)
+  if (esol == NULL)
     {
-      for (i = 0; i < dim; i++)
-        {
-          ytmp1[i] =
-            y[i] + h * (0.25 * k1nu[i] + 0.5 * (0.5 - ir3) * k2nu[i]);
-          ytmp2[i] =
-            y[i] + h * (0.25 * k2nu[i] + 0.5 * (0.5 + ir3) * k1nu[i]);
-        }
-      {
-        int s =
-	  GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 - ir3), ytmp1, k1nu);
-	
-	if (s != GSL_SUCCESS)
-	  {
-	    return s;
-	  }    
-      }
-      {
-        int s =
-	  GSL_ODEIV_FN_EVAL (sys, t + 0.5 * h * (1.0 + ir3), ytmp2, k2nu);
-	
-	if (s != GSL_SUCCESS)
-	  {
-	    return s;
-	  }    
-      }
+      GSL_ERROR ("no non-linear equation solver speficied", GSL_EINVAL);
     }
 
-  /* assignment */
-  
-  for (i = 0; i < dim; i++)
+  /* Get desired error levels via gsl_odeiv2_control object through driver
+     object, which is a requirement for this stepper.
+   */
+
+  if (state->driver == NULL)
     {
-      const double d_i = 0.5 * (k1nu[i] + k2nu[i]);
-      y[i] += h * d_i;
+      return GSL_EFAULT;
+    }
+  else
+    {
+      size_t i;
+
+      for (i = 0; i < dim; i++)
+        {
+          if (dydt_in != NULL)
+            {
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           dydt_in[i], h, i, &errlev[i]);
+            }
+          else
+            {
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           0.0, h, i, &errlev[i]);
+            }
+        }
+    }
+
+  /* Evaluate Jacobian for modnewton1 */
+
+  {
+    int s = GSL_ODEIV_JA_EVAL (sys, t, y, dfdy->data, dfdt);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  /* Calculate a single step with size h */
+
+  {
+    int s = modnewton1_init ((void *) esol, A, h, dfdy, sys);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  {
+    int s = modnewton1_solve ((void *) esol, A, c, t, h, y,
+                              sys, YZ, errlev);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  {
+    size_t j;
+
+    for (j = 0; j < RK4IMP_STAGE; j++)
+      {
+        int s =
+          GSL_ODEIV_FN_EVAL (sys, t + c[j] * h, &YZ[j * dim], &fYZ[j * dim]);
+
+        if (s != GSL_SUCCESS)
+          {
+            return s;
+          }
+      }
+  }
+
+  {
+    int s = rksubs (y_onestep, h, y, fYZ, b, RK4IMP_STAGE, dim);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  /* Error estimation by step doubling */
+
+  {
+    int s = modnewton1_init ((void *) esol, A, h / 2.0, dfdy, sys);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  /* 1st half step */
+
+  {
+    int s = modnewton1_solve ((void *) esol, A, c, t, h / 2.0, y,
+                              sys, YZ, errlev);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  {
+    size_t j;
+
+    for (j = 0; j < RK4IMP_STAGE; j++)
+      {
+        int s = GSL_ODEIV_FN_EVAL (sys, t + c[j] * h / 2.0, &YZ[j * dim],
+                                   &fYZ[j * dim]);
+        if (s != GSL_SUCCESS)
+          {
+            return s;
+          }
+      }
+  }
+
+  {
+    int s = rksubs (ytmp, h / 2.0, y, fYZ, b, RK4IMP_STAGE, dim);
+
+    if (s != GSL_SUCCESS)
+      return s;
+  }
+
+  /* Save original y values in case of error */
+
+  DBL_MEMCPY (y_save, y, dim);
+
+  /* 2nd half step */
+
+  {
+    int s = modnewton1_solve ((void *) esol, A, c, t + h / 2.0, h / 2.0,
+                              ytmp, sys, YZ, errlev);
+
+    if (s != GSL_SUCCESS)
+      {
+        return s;
+      }
+  }
+
+  {
+    size_t j;
+
+    for (j = 0; j < RK4IMP_STAGE; j++)
+      {
+        int s =
+          GSL_ODEIV_FN_EVAL (sys, t + h / 2.0 + c[j] * h / 2.0, &YZ[j * dim],
+                             &fYZ[j * dim]);
+        if (s != GSL_SUCCESS)
+          {
+            return s;
+          }
+      }
+  }
+
+  {
+    int s = rksubs (y_twostep, h / 2.0, ytmp, fYZ, b, RK4IMP_STAGE, dim);
+
+    if (s != GSL_SUCCESS)
+      {
+        DBL_MEMCPY (y, y_save, dim);
+        return s;
+      }
+  }
+
+  /* Note: rk4imp returns y using the results from two half steps
+     instead of the single step since the results are freely
+     available and more precise.
+   */
+
+  DBL_MEMCPY (y, y_twostep, dim);
+
+  /* Error estimation */
+
+  {
+    size_t i;
+    for (i = 0; i < dim; i++)
+      {
+        yerr[i] = ODEIV_ERR_SAFETY * 0.5 *
+          fabs (y_twostep[i] - y_onestep[i]) / 15.0;
+      }
+  }
+
+  /* Derivatives at output */
+
+  if (dydt_out != NULL)
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+
+      if (s != GSL_SUCCESS)
+        {
+          /* Restore original values */
+          DBL_MEMCPY (y, y_save, dim);
+
+          return s;
+        }
     }
 
   return GSL_SUCCESS;
 }
 
 static int
-rk4imp_apply (void *vstate,
-              size_t dim,
-              double t,
-              double h,
-              double y[],
-              double yerr[],
-              const double dydt_in[],
-              double dydt_out[], 
-              const gsl_odeiv2_system * sys)
+rk4imp_set_driver (void *vstate, const gsl_odeiv2_driver * d)
 {
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
 
-  size_t i;
+  state->driver = d;
 
-  double *y0 = state->y0;
-  double *y0_orig = state->y0_orig;
-  double *y_onestep = state->y_onestep;
-  double *k1nu = state->k1nu;
-  double *k2nu = state->k2nu;
-
-  /* Initialization step */
-  DBL_MEMCPY (y0, y, dim);
-
-  /* Save initial values in case of failure */
-  DBL_MEMCPY (y0_orig, y, dim);
-
-  if (dydt_in != 0)
-    {
-      DBL_MEMCPY (k1nu, dydt_in, dim);
-    }
-  else
-    {
-      int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1nu);
-
-      if (s != GSL_SUCCESS)
-        {
-          return s;
-        }
-    }
-
-  DBL_MEMCPY (k2nu, k1nu, dim);
-
-  /* First traverse h with one step (save to y_onestep) */
-
-  DBL_MEMCPY (y_onestep, y, dim);
-
-  {
-    int s = rk4imp_step (y_onestep, state, h, t, dim, sys);
-
-    if (s != GSL_SUCCESS) 
-      {
-	return s;
-      }
-  }
-  
- /* Then with two steps with half step length (save to y) */ 
-  
-  {
-    int s = rk4imp_step (y, state, h/2.0, t, dim, sys);
-
-    if (s != GSL_SUCCESS) 
-      {
-	/* Restore original y vector */
-	DBL_MEMCPY (y, y0_orig, dim);
-	return s;
-      }
-  }
-
-  DBL_MEMCPY (y0, y, dim);
-
-  {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + h/2.0, y, k1nu);
-
-    if (s != GSL_SUCCESS)
-      {
-	/* Restore original y vector */
-	DBL_MEMCPY (y, y0_orig, dim);
-	return s;
-      }
-  }
-
-  DBL_MEMCPY (k2nu, k1nu, dim);
-  
-  {
-    int s = rk4imp_step (y, state, h/2.0, t + h/2.0, dim, sys);
-
-    if (s != GSL_SUCCESS) 
-      {
-	/* Restore original y vector */
-	DBL_MEMCPY (y, y0_orig, dim);
-	return s;
-      }
-  }
-  
-  /* Derivatives at output */
-  
-  if (dydt_out != NULL) 
-    {
-      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      
-      if (s != GSL_SUCCESS) {
-	/* Restore original y vector */
-	DBL_MEMCPY (y, y0_orig, dim);
-	return s;
-      } 
-    }
-    
-  /* Error estimation */
-
-  for (i = 0; i < dim; i++) 
-    {
-      yerr[i] = ODEIV_ERR_SAFETY * 0.5 * (y[i] - y_onestep[i]) / 15.0;
-    }
-  
   return GSL_SUCCESS;
 }
 
@@ -341,12 +480,11 @@ rk4imp_reset (void *vstate, size_t dim)
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
 
   DBL_ZERO_MEMSET (state->y_onestep, dim);
-  DBL_ZERO_MEMSET (state->y0_orig, dim);
-  DBL_ZERO_MEMSET (state->y0, dim);
-  DBL_ZERO_MEMSET (state->k1nu, dim);
-  DBL_ZERO_MEMSET (state->k2nu, dim);
-  DBL_ZERO_MEMSET (state->ytmp1, dim);
-  DBL_ZERO_MEMSET (state->ytmp2, dim);
+  DBL_ZERO_MEMSET (state->y_twostep, dim);
+  DBL_ZERO_MEMSET (state->ytmp, dim);
+  DBL_ZERO_MEMSET (state->y_save, dim);
+  DBL_ZERO_MEMSET (state->YZ, dim * RK4IMP_STAGE);
+  DBL_ZERO_MEMSET (state->fYZ, dim * RK4IMP_STAGE);
 
   return GSL_SUCCESS;
 }
@@ -355,7 +493,7 @@ static unsigned int
 rk4imp_order (void *vstate)
 {
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
+  state = 0;                    /* prevent warnings about unused parameters */
   return 4;
 }
 
@@ -364,22 +502,27 @@ rk4imp_free (void *vstate)
 {
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
 
+  free (state->errlev);
+  modnewton1_free (state->esol);
+  gsl_matrix_free (state->dfdy);
+  free (state->dfdt);
+  free (state->fYZ);
+  free (state->YZ);
+  free (state->y_save);
+  free (state->ytmp);
+  free (state->y_twostep);
   free (state->y_onestep);
-  free (state->y0_orig);
-  free (state->y0);
-  free (state->k1nu);
-  free (state->k2nu);
-  free (state->ytmp1);
-  free (state->ytmp2);
+  gsl_matrix_free (state->A);
   free (state);
 }
 
-static const gsl_odeiv2_step_type rk4imp_type = { "rk4imp",      /* name */
-  1,                             /* can use dydt_in? */
-  1,                             /* gives exact dydt_out? */
+static const gsl_odeiv2_step_type rk4imp_type = {
+  "rk4imp",                     /* name */
+  1,                            /* can use dydt_in? */
+  1,                            /* gives exact dydt_out? */
   &rk4imp_alloc,
   &rk4imp_apply,
-  &stepper_set_control_null,
+  &rk4imp_set_driver,
   &rk4imp_reset,
   &rk4imp_order,
   &rk4imp_free

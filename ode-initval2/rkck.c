@@ -1,4 +1,4 @@
-/* ode-initval/rkck.c
+/* ode-initval2/rkck.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
@@ -35,13 +35,17 @@
 
 /* Cash-Karp constants */
 static const double ah[] = { 1.0 / 5.0, 0.3, 3.0 / 5.0, 1.0, 7.0 / 8.0 };
+
 static const double b21 = 1.0 / 5.0;
 static const double b3[] = { 3.0 / 40.0, 9.0 / 40.0 };
 static const double b4[] = { 0.3, -0.9, 1.2 };
 static const double b5[] = { -11.0 / 54.0, 2.5, -70.0 / 27.0, 35.0 / 27.0 };
+
 static const double b6[] =
   { 1631.0 / 55296.0, 175.0 / 512.0, 575.0 / 13824.0, 44275.0 / 110592.0,
-    253.0 / 4096.0 };
+  253.0 / 4096.0
+};
+
 static const double c1 = 37.0 / 378.0;
 static const double c3 = 250.0 / 621.0;
 static const double c4 = 125.0 / 594.0;
@@ -211,11 +215,11 @@ rkck_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
-      
+
       if (s != GSL_SUCCESS)
-	{
-	  return s;
-	}
+        {
+          return s;
+        }
     }
 
   for (i = 0; i < dim; i++)
@@ -224,10 +228,10 @@ rkck_apply (void *vstate,
   /* k2 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[0] * h, ytmp, k2);
-      
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -237,10 +241,10 @@ rkck_apply (void *vstate,
   /* k3 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[1] * h, ytmp, k3);
-      
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -250,10 +254,10 @@ rkck_apply (void *vstate,
   /* k4 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[2] * h, ytmp, k4);
-    
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -265,10 +269,10 @@ rkck_apply (void *vstate,
   /* k5 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[3] * h, ytmp, k5);
-      
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -280,10 +284,10 @@ rkck_apply (void *vstate,
   /* k6 step and final sum */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[4] * h, ytmp, k6);
-      
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -300,17 +304,17 @@ rkck_apply (void *vstate,
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
 
       if (s != GSL_SUCCESS)
-	{
-	  /* Restore initial values */
-	  DBL_MEMCPY (y, y0, dim);
-	  return s;
-	}
+        {
+          /* Restore initial values */
+          DBL_MEMCPY (y, y0, dim);
+          return s;
+        }
     }
 
   /* difference between 4th and 5th order */
   for (i = 0; i < dim; i++)
     {
-      yerr[i] = h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i] 
+      yerr[i] = h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i]
                      + ec[5] * k5[i] + ec[6] * k6[i]);
     }
 
@@ -339,8 +343,8 @@ static unsigned int
 rkck_order (void *vstate)
 {
   rkck_state_t *state = (rkck_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
-  return 5; /* FIXME: should this be 4? */
+  state = 0;                    /* prevent warnings about unused parameters */
+  return 5;                     /* FIXME: should this be 4? */
 }
 
 static void
@@ -359,12 +363,12 @@ rkck_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type rkck_type = { "rkck",  /* name */
+static const gsl_odeiv2_step_type rkck_type = { "rkck", /* name */
   1,                            /* can use dydt_in */
   1,                            /* gives exact dydt_out */
   &rkck_alloc,
   &rkck_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &rkck_reset,
   &rkck_order,
   &rkck_free

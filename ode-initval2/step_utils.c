@@ -1,4 +1,4 @@
-/* ode-initval/msadams.c
+/* ode-initval2/step_utils.c
  * 
  * Copyright (C) 2009 Tuomo Keskitalo
  * 
@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static int 
-stepper_set_control_null (void * vstate, gsl_odeiv2_control * c)
+static int
+stepper_set_driver_null (void *vstate, const gsl_odeiv2_driver * d)
 {
-  /* Dummy control setting function for those steppers that do not
-     need a desired error level estimate */
+  /* Dummy set function for those steppers that do not
+     need pointer to driver object. */
 
   return GSL_SUCCESS;
 }

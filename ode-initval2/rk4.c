@@ -112,21 +112,21 @@ rk4_alloc (size_t dim)
 }
 
 static int
-rk4_step (double *y, const rk4_state_t *state,
-	  const double h, const double t, const size_t dim,
-	  const gsl_odeiv2_system *sys)
+rk4_step (double *y, const rk4_state_t * state,
+          const double h, const double t, const size_t dim,
+          const gsl_odeiv2_system * sys)
 {
   /* Makes a Runge-Kutta 4th order advance with step size h. */
-  
+
   /* initial values of variables y. */
   const double *y0 = state->y0;
-  
+
   /* work space */
   double *ytmp = state->ytmp;
 
   /* Runge-Kutta coefficients. Contains values of coefficient k1
      in the beginning 
-  */
+   */
   double *k = state->k;
 
   size_t i;
@@ -145,7 +145,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -161,7 +161,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -177,7 +177,7 @@ rk4_step (double *y, const rk4_state_t *state,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -198,8 +198,7 @@ rk4_apply (void *vstate,
            double y[],
            double yerr[],
            const double dydt_in[],
-           double dydt_out[], 
-           const gsl_odeiv2_system * sys)
+           double dydt_out[], const gsl_odeiv2_system * sys)
 {
   rk4_state_t *state = (rk4_state_t *) vstate;
 
@@ -221,15 +220,15 @@ rk4_apply (void *vstate,
       int s = GSL_ODEIV_FN_EVAL (sys, t, y0, k);
 
       if (s != GSL_SUCCESS)
-	{
-	  return s;
-	}
+        {
+          return s;
+        }
     }
 
   /* Error estimation is done by step doubling procedure */
 
-  /* Save first point derivatives*/
-  
+  /* Save first point derivatives */
+
   DBL_MEMCPY (k1, k, dim);
 
   /* First traverse h with one step (save to y_onestep) */
@@ -239,39 +238,39 @@ rk4_apply (void *vstate,
   {
     int s = rk4_step (y_onestep, state, h, t, dim, sys);
 
-    if (s != GSL_SUCCESS) 
+    if (s != GSL_SUCCESS)
       {
         return s;
       }
   }
 
-  /* Then with two steps with half step length (save to y) */ 
+  /* Then with two steps with half step length (save to y) */
 
   DBL_MEMCPY (k, k1, dim);
 
   {
-    int s = rk4_step (y, state, h/2.0, t, dim, sys);
+    int s = rk4_step (y, state, h / 2.0, t, dim, sys);
 
     if (s != GSL_SUCCESS)
       {
-	/* Restore original values */
-	DBL_MEMCPY (y, y0, dim);
-	return s;
-    }
+        /* Restore original values */
+        DBL_MEMCPY (y, y0, dim);
+        return s;
+      }
   }
 
   /* Update before second step */
   {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + h/2.0, y, k);
+    int s = GSL_ODEIV_FN_EVAL (sys, t + h / 2.0, y, k);
 
     if (s != GSL_SUCCESS)
       {
-	/* Restore original values */
-	DBL_MEMCPY (y, y0, dim);
-	return s;
+        /* Restore original values */
+        DBL_MEMCPY (y, y0, dim);
+        return s;
       }
   }
-  
+
   /* Save original y0 to k1 for possible failures */
   DBL_MEMCPY (k1, y0, dim);
 
@@ -279,29 +278,30 @@ rk4_apply (void *vstate,
   DBL_MEMCPY (y0, y, dim);
 
   {
-    int s = rk4_step (y, state, h/2.0, t + h/2.0, dim, sys);
+    int s = rk4_step (y, state, h / 2.0, t + h / 2.0, dim, sys);
 
     if (s != GSL_SUCCESS)
       {
-	/* Restore original values */
-	DBL_MEMCPY (y, k1, dim);
-	return s;
+        /* Restore original values */
+        DBL_MEMCPY (y, k1, dim);
+        return s;
       }
   }
 
   /* Derivatives at output */
 
-  if (dydt_out != NULL) {
-    int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
+  if (dydt_out != NULL)
+    {
+      int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
 
-    if (s != GSL_SUCCESS)
-      {
-	/* Restore original values */
-	DBL_MEMCPY (y, k1, dim);
-	return s;
-      }
-  }
-  
+      if (s != GSL_SUCCESS)
+        {
+          /* Restore original values */
+          DBL_MEMCPY (y, k1, dim);
+          return s;
+        }
+    }
+
   /* Error estimation */
 
   for (i = 0; i < dim; i++)
@@ -330,7 +330,7 @@ static unsigned int
 rk4_order (void *vstate)
 {
   rk4_state_t *state = (rk4_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
+  state = 0;                    /* prevent warnings about unused parameters */
   return 4;
 }
 
@@ -346,12 +346,12 @@ rk4_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type rk4_type = { "rk4",    /* name */
+static const gsl_odeiv2_step_type rk4_type = { "rk4",   /* name */
   1,                            /* can use dydt_in */
   1,                            /* gives exact dydt_out */
   &rk4_alloc,
   &rk4_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &rk4_reset,
   &rk4_order,
   &rk4_free

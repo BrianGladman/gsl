@@ -1,15 +1,5 @@
-* Add a higher level interface which accepts a 
-
-start point, 
-end point, 
-result array (size N,  y0, y1, y2 ... ,y(N-1))
-desired relative and absolute errors epsrel and epsabs
-
-it should have its own workspace which is a wrapper around the
-existing workspaces
-
 * Implement other stepping methods from well-known packages such as
-RKSUITE, VODE, DASSL, etc
+RKSUITE, DASSL, etc
 
 * The entry below has been downgraded from a bug.  We use the
 coefficients given in the original paper by Prince and Dormand, and it

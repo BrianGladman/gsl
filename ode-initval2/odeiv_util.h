@@ -15,4 +15,3 @@
  */
 
 #define ODEIV_ERR_SAFETY 8.0
-
