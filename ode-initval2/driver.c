@@ -79,22 +79,18 @@ driver_alloc (const gsl_odeiv2_system * sys, const double hstart,
       GSL_ERROR_NULL ("failed to allocate evolve object", GSL_ENOMEM);
     }
 
-  if (hstart < 0.0)
+  if (hstart >= 0.0 || hstart < 0.0)
     {
       state->h = hstart;
-      state->hmax = -1.0 * GSL_DBL_MAX;
-    }
-  else if (hstart > 0.0)
-    {
-      state->h = hstart;
-      state->hmax = GSL_DBL_MAX;
     }
   else
     {
       GSL_ERROR_NULL ("invalid hstart", GSL_EINVAL);
     }
 
+  state->h = hstart;
   state->hmin = 0.0;
+  state->hmax = GSL_DBL_MAX;
   state->nmax = 0;
   state->n = 0;
   state->c = NULL;
@@ -105,17 +101,17 @@ driver_alloc (const gsl_odeiv2_system * sys, const double hstart,
 int
 gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
 {
-  /* Sets minimum allowed step size (hmin) for driver */
+  /* Sets minimum allowed step size fabs(hmin) for driver. It is
+     required that hmin <= fabs(h) <= hmax. */
 
-  if ((d->h < 0.0 && hmin > 0.0) || (d->h > 0.0 && hmin < 0.0))
+  if ((fabs (hmin) > fabs (d->h)) || (fabs (hmin) > d->hmax))
     {
-      GSL_ERROR_NULL ("min step direction must match step direction",
-                      GSL_EINVAL);
+      GSL_ERROR_NULL ("hmin <= fabs(h) <= hmax required", GSL_EINVAL);
     }
 
   if (hmin >= 0.0 || hmin < 0.0)
     {
-      d->hmin = hmin;
+      d->hmin = fabs (hmin);
     }
   else
     {
@@ -128,17 +124,17 @@ gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
 int
 gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax)
 {
-  /* Sets maximum allowed step size (hmax) for driver */
+  /* Sets maximum allowed step size fabs(hmax) for driver. It is
+     required that hmin <= fabs(h) <= hmax. */
 
-  if ((d->h < 0.0 && hmax > 0.0) || (d->h > 0.0 && hmax < 0.0))
+  if ((fabs (hmax) < fabs (d->h)) || (fabs (hmax) < d->hmin))
     {
-      GSL_ERROR_NULL ("max step direction must match step direction",
-                      GSL_EINVAL);
+      GSL_ERROR_NULL ("hmin <= fabs(h) <= hmax required", GSL_EINVAL);
     }
 
   if (hmax > 0.0 || hmax < 0.0)
     {
-      d->hmax = hmax;
+      d->hmax = fabs (hmax);
     }
   else
     {
@@ -340,14 +336,35 @@ gsl_odeiv2_driver_apply (gsl_odeiv2_driver * d, double *t,
      successful step.
    */
 
-  int s;
-
+  int sign = 0;
   d->n = 0;
 
-  while (*t < t1)
+  /* Determine integration direction sign */
+
+  if (d->h > 0.0)
     {
-      s =
-        gsl_odeiv2_evolve_apply (d->e, d->c, d->s, d->sys, t, t1, &(d->h), y);
+      sign = 1;
+    }
+  else
+    {
+      sign = -1;
+    }
+
+  /* Check that t, t1 and step direction are sensible */
+
+  if (sign * (t1 - *t) < 0.0)
+    {
+      GSL_ERROR_NULL
+        ("integration limits and/or step direction not consistent",
+         GSL_EINVAL);
+    }
+
+  /* Evolution loop */
+
+  while (sign * (t1 - *t) > 0.0)
+    {
+      int s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, d->sys,
+                                       t, t1, &(d->h), y);
 
       if (s != GSL_SUCCESS)
         {
@@ -363,16 +380,49 @@ gsl_odeiv2_driver_apply (gsl_odeiv2_driver * d, double *t,
 
       /* Set step size if maximum size is exceeded */
 
-      if (fabs (d->h) > fabs (d->hmax))
+      if (fabs (d->h) > d->hmax)
         {
-          d->h = d->hmax;
+          d->h = sign * d->hmax;
         }
 
       /* Check for too small step size */
 
-      if (fabs (d->h) < fabs (d->hmin))
+      if (fabs (d->h) < d->hmin)
         {
           return GSL_ENOPROG;
+        }
+
+      d->n++;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * d, double *t,
+                                    const double h, const unsigned long int n,
+                                    double y[])
+{
+  /* Alternative driver function that evolves the system from t using
+   * n steps of size h. In the beginning vector y contains the values
+   * of dependent variables at t. This function returns values at t =
+   * t + n * h in y. In case of an unrecoverable error, y and t
+   * contains the values after the last successful step.
+   */
+
+  d->n = 0;
+  unsigned long int i;
+
+  /* Evolution loop */
+
+  for (i = 0; i < n; i++)
+    {
+      int s = gsl_odeiv2_evolve_apply_fixed_step (d->e, d->c, d->s, d->sys,
+                                                  t, h, y);
+
+      if (s != GSL_SUCCESS)
+        {
+          return s;
         }
 
       d->n++;

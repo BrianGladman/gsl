@@ -249,6 +249,12 @@ int gsl_odeiv2_evolve_apply (gsl_odeiv2_evolve * e, gsl_odeiv2_control * con,
                              gsl_odeiv2_step * step,
                              const gsl_odeiv2_system * dydt, double *t,
                              double t1, double *h, double y[]);
+int gsl_odeiv2_evolve_apply_fixed_step (gsl_odeiv2_evolve * e,
+                                        gsl_odeiv2_control * con,
+                                        gsl_odeiv2_step * step,
+                                        const gsl_odeiv2_system * dydt,
+                                        double *t, const double h0,
+                                        double y[]);
 int gsl_odeiv2_evolve_reset (gsl_odeiv2_evolve * e);
 void gsl_odeiv2_evolve_free (gsl_odeiv2_evolve * e);
 int gsl_odeiv2_evolve_set_driver (gsl_odeiv2_evolve * e,
@@ -309,13 +315,17 @@ gsl_odeiv2_driver *gsl_odeiv2_driver_alloc_standard_new (const
                                                          const double epsrel,
                                                          const double a_y,
                                                          const double a_dydt);
-int gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * D, const double hmin);
-int gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * D, const double hmax);
-int gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * D,
+int gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin);
+int gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax);
+int gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * d,
                                 const unsigned long int nmax);
-int gsl_odeiv2_driver_apply (gsl_odeiv2_driver * D, double *t,
+int gsl_odeiv2_driver_apply (gsl_odeiv2_driver * d, double *t,
                              const double t1, double y[]);
-int gsl_odeiv2_driver_reset (gsl_odeiv2_driver * D);
+int gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * d, double *t,
+                                        const double h,
+                                        const unsigned long int n,
+                                        double y[]);
+int gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d);
 void gsl_odeiv2_driver_free (gsl_odeiv2_driver * state);
 
 __END_DECLS

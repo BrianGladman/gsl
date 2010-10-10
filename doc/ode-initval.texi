@@ -291,14 +291,14 @@ the desired error level @math{D_i} for each component,
 @tex
 \beforedisplay
 $$
-D_i = \epsilon_{abs} + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
+D_i = \epsilon_{abs} + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y\prime_i|)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-D_i = eps_abs + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
+D_i = eps_abs + eps_rel * (a_y |y_i| + a_dydt h |y\prime_i|)
 @end example
 
 @end ifinfo
@@ -376,14 +376,14 @@ The formula for @math{D_i} for this control object is,
 @tex
 \beforedisplay
 $$
-D_i = \epsilon_{abs} s_i + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y'_i|)
+D_i = \epsilon_{abs} s_i + \epsilon_{rel} * (a_{y} |y_i| + a_{dydt} h |y\prime_i|)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-D_i = eps_abs * s_i + eps_rel * (a_y |y_i| + a_dydt h |y'_i|)
+D_i = eps_abs * s_i + eps_rel * (a_y |y_i| + a_dydt h |y\prime_i|)
 @end example
 
 @end ifinfo
@@ -485,6 +485,14 @@ not to be exceeded by the time-step. On the final time-step the value
 of @var{t} will be set to @var{t1} exactly.
 @end deftypefun
 
+@deftypefun int gsl_odeiv2_evolve_apply_fixed_step (gsl_odeiv2_evolve * @var{e}, gsl_odeiv2_control * @var{con}, gsl_odeiv2_step * @var{step}, const gsl_odeiv2_system * @var{sys}, double * @var{t}, const double @var{h}, double @var{y}[])
+This function is otherwise similar to @code{gsl_odeiv2_evolve_apply},
+but it only advances the ODE-system by a specified step size
+@var{h}. If the local error estimated by the stepping function exceeds
+the desired error level, the step is not taken and the function
+returns @code{GSL_FAILURE}.
+@end deftypefun
+
 @deftypefun int gsl_odeiv2_evolve_reset (gsl_odeiv2_evolve * @var{e})
 This function resets the evolution function @var{e}.  It should be used
 whenever the next use of @var{e} will not be a continuation of a
@@ -539,7 +547,6 @@ The function sets a maximum for allowed number of steps @var{nmax} for
 driver @var{d}. Default value of 0 sets no limit for steps.
 @end deftypefun
 
-
 @deftypefun {int} gsl_odeiv2_driver_apply (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{t1}, double @var{y}[])
 This function evolves the driver system @var{d} from @var{t} to
 @var{t1}. Initially vector @var{y} should contain the values of
@@ -551,6 +558,14 @@ steps is reached, a value of @var{GSL_EMAXITER} is returned. If the
 step size drops below a minimum value set with
 @code{gsl_odeiv2_driver_set_hmin}, the function returns with
 @var{GSL_ENOPROG}.
+@end deftypefun
+
+@deftypefun {int} gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{h}, const unsigned long int @var{n}, double @var{y}[])
+This function evolves the driver system @var{d} from @var{t} with
+@var{n} steps of size @var{h}. If the function is unable to complete
+the calculation, an error code from
+@code{gsl_odeiv2_evolve_apply_fixed_step} is returned, and @var{t} and
+@var{y} contain the values from last successful step.
 @end deftypefun
 
 @deftypefun {int} gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d)
@@ -570,14 +585,14 @@ oscillator equation,
 @tex
 \beforedisplay
 $$
-x''(t) + \mu x'(t) (x(t)^2 - 1) + x(t) = 0
+x\prime\prime(t) + \mu x\prime(t) (x(t)^2 - 1) + x(t) = 0
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-x''(t) + \mu x'(t) (x(t)^2 - 1) + x(t) = 0
+x\prime\prime(t) + \mu x\prime(t) (x(t)^2 - 1) + x(t) = 0
 @end example
 
 @end ifinfo
@@ -589,8 +604,8 @@ variable for the velocity, @math{y = x'(t)},
 \beforedisplay
 $$
 \eqalign{
-x' &= y\cr
-y' &= -x + \mu y (1-x^2)
+x\prime &= y\cr
+y\prime &= -x + \mu y (1-x^2)
 }
 $$
 \afterdisplay
@@ -598,15 +613,15 @@ $$
 @ifinfo
 
 @example
-x' = y
-y' = -x + \mu y (1-x^2)
+x\prime = y
+y\prime = -x + \mu y (1-x^2)
 @end example
 
 @end ifinfo
 @noindent
 The program begins by defining functions for these derivatives and
 their Jacobian. The main function uses driver level functions to solve
-the problem. The program evolves the solution from @math{(y, y') = (1,
+the problem. The program evolves the solution from @math{(y, y\prime) = (1,
 0)} at @math{t=0} to @math{t=100}.  The step-size @math{h} is
 automatically adjusted by the controller to maintain an absolute
 accuracy of @c{$10^{-6}$} 
@@ -656,20 +671,20 @@ copying their values into @var{dydt_in}.
 @node ODE References and Further Reading
 @section References and Further Reading
 
-@itemize @asis
+@itemize @w{}
 @item
 Ascher, U.M., Petzold, L.R., @cite{Computer Methods for Ordinary
 Differential and Differential-Algebraic Equations}, SIAM, 
 Philadelphia, 1998.
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 Hairer, E., Norsett, S. P., Wanner, G., @cite{Solving Ordinary Differential 
 Equations I: Nonstiff Problems}, Springer, Berlin, 1993.
 @end itemize
 
-@itemize @asis
+@itemize @w{}
 @item
 Hairer, E., Wanner, G., @cite{Solving Ordinary Differential 
 Equations II: Stiff and Differential-Algebraic Problems},
@@ -679,7 +694,7 @@ Springer, Berlin, 1996.
 Many of the basic Runge-Kutta formulas can be found in the Handbook of
 Mathematical Functions,
 
-@itemize @asis
+@itemize @w{}
 @item
 Abramowitz & Stegun (eds.), @cite{Handbook of Mathematical Functions},
 Section 25.5.
@@ -689,7 +704,7 @@ Section 25.5.
 The implicit Bulirsch-Stoer algorithm @code{bsimp} is described in the
 following paper,
 
-@itemize @asis
+@itemize @w{}
 @item
 G. Bader and P. Deuflhard, ``A Semi-Implicit Mid-Point Rule for Stiff
 Systems of Ordinary Differential Equations.'', Numer.@: Math.@: 41, 373--398,
@@ -700,7 +715,7 @@ Systems of Ordinary Differential Equations.'', Numer.@: Math.@: 41, 373--398,
 The Adams and BDF multistep methods @code{msadams} and @code{msbdf}
 are based on the following articles,
 
-@itemize @asis
+@itemize @w{}
 @item
 G. D. Byrne and A. C. Hindmarsh, ``A Polyalgorithm for the
 Numerical Solution of Ordinary Differential Equations.'',

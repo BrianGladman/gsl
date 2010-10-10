@@ -1,3 +1,25 @@
+2010-10-10  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- driver.c: Corrected error in driver_evolve_apply, integration
+  to negative direction should work now.
+
+- Added evolve_apply_fixed_step and driver_apply_fixed_step for
+  users who want to use a constant step size to evolve the system.
+
+- test.c: added test cases for driver (negative evolution,
+  apply_fixed_step).
+
+- gsl_odeiv2.h: cleaning and add apply_fixed_step functions.
+
+- doc/ode-initval.texi: Replaced derivative apostrophe with \prime
+  (because my new system fails to make ps otherwise). Added
+  new documentation about apply_fixed_step functions.
+
+2010-10-09  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- ode-initval2 bzr development branch now at savannah:
+  http://bzr.savannah.gnu.org/r/gsl/ode-initval2/
+
 2010-01-02  Tuomo Keskitalo  <tkeskita@pulmunen>
 
 - Changes from ode-initval2-0.9 to ode-initval2-1.0: 

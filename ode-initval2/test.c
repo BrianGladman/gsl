@@ -1972,17 +1972,17 @@ test_driver (void)
   const double tol = 1e-8;
   const double hmax = 1e-2;
 
-  gsl_odeiv2_driver *D =
+  gsl_odeiv2_driver *d =
     gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
                                    1e-3, tol, tol);
-  gsl_odeiv2_driver_set_hmax (D, hmax);
+  gsl_odeiv2_driver_set_hmax (d, hmax);
 
   double y[] = { 1.0, 0.0 };
   double t = 0.0;
   const double t1 = 8.25;
   const size_t minsteps = ceil (t1 / hmax);
 
-  int s = gsl_odeiv2_driver_apply (D, &t, t1, y);
+  int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
 
   if (s != GSL_SUCCESS)
     {
@@ -1991,58 +1991,58 @@ test_driver (void)
 
   /* Test that result is correct */
 
-  gsl_test_rel (y[0], cos (t1), D->n * tol, "test_driver y0 ");
-  gsl_test_rel (y[1], sin (t1), D->n * tol, "test_driver y1 ");
+  gsl_test_rel (y[0], cos (t1), d->n * tol, "test_driver y0 ");
+  gsl_test_rel (y[1], sin (t1), d->n * tol, "test_driver y1 ");
 
   /* Test that maximum step length is obeyed */
 
-  if (D->n < minsteps)
+  if (d->n < minsteps)
     {
-      gsl_test (1, "test_driver steps %d < minsteps %d \n", D->n, minsteps);
+      gsl_test (1, "test_driver steps %d < minsteps %d \n", d->n, minsteps);
     }
   else
     {
       gsl_test (0, "test_driver max step length test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
 
   /* Test that maximum number of steps is obeyed */
 
   const size_t maxsteps = 20;
 
-  D = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
                                      1e-3, tol, tol);
-  gsl_odeiv2_driver_set_hmax (D, hmax);
-  gsl_odeiv2_driver_set_nmax (D, maxsteps);
+  gsl_odeiv2_driver_set_hmax (d, hmax);
+  gsl_odeiv2_driver_set_nmax (d, maxsteps);
 
   const double t2 = 100;
 
-  s = gsl_odeiv2_driver_apply (D, &t, t2, y);
+  s = gsl_odeiv2_driver_apply (d, &t, t2, y);
 
-  if (D->n != maxsteps + 1)
+  if (d->n != maxsteps + 1)
     {
-      gsl_test (1, "test_driver steps %d, expected %d", D->n, maxsteps + 1);
+      gsl_test (1, "test_driver steps %d, expected %d", d->n, maxsteps + 1);
     }
   else
     {
       gsl_test (0, "test_driver max steps test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
 
   /* Test that minimum step length is obeyed */
 
   const double hmin = 1e-10;
 
-  D = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
                                      1e-3, tol, tol);
 
-  gsl_odeiv2_driver_set_hmin (D, hmin);
+  gsl_odeiv2_driver_set_hmin (d, hmin);
   y[0] = 0.0;
   t = 0.0;
 
-  s = gsl_odeiv2_driver_apply (D, &t, t2, y);
+  s = gsl_odeiv2_driver_apply (d, &t, t2, y);
 
   if (s != GSL_ENOPROG)
     {
@@ -2053,7 +2053,72 @@ test_driver (void)
       gsl_test (0, "test_driver min step test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
+
+  /* Test negative integration direction */
+
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
+                                     -1e-3, tol, tol);
+
+  y[0] = 1.0;
+  y[1] = 0.0;
+  t = 2.5;
+  const double t3 = -2.5;
+
+  gsl_odeiv2_driver_set_nmax (d, 1000);
+  s = gsl_odeiv2_driver_apply (d, &t, t3, y);
+
+  {
+    const double tol = 1e-6;
+    const double test = fabs (t - t3);
+    const double val = fabs (sin (-5.0) - y[1]);
+
+    if (test > GSL_DBL_EPSILON)
+      {
+        gsl_test (1,
+                  "test_driver negative dir diff %e, expected less than %e",
+                  test, GSL_DBL_EPSILON);
+      }
+    else if (val > tol)
+      {
+        gsl_test (1, "test_driver negative dir val %e, expected less than %e",
+                  val, tol);
+      }
+    else
+      {
+        gsl_test (s, "test_driver negative direction test");
+      }
+  }
+
+  /* Test driver_apply_fixed_step */
+
+  const size_t nfsteps = 100;
+  s = gsl_odeiv2_driver_apply_fixed_step (d, &t, 0.025, nfsteps, y);
+
+  {
+    const double tol = 1e-6;
+    const double val = fabs (sin (-2.5) - y[1]);
+
+    if (fabs (t) > nfsteps * GSL_DBL_EPSILON)
+      {
+        gsl_test (1,
+                  "test_driver apply_fixed_step diff %e, expected less than %e",
+                  fabs (t), nfsteps * GSL_DBL_EPSILON);
+      }
+    else if (val > tol)
+      {
+        gsl_test (1,
+                  "test_driver apply_fixed_step val %e, expected less than %e",
+                  val, tol);
+      }
+    else
+      {
+        gsl_test (s, "test_driver apply_fixed_step test");
+      }
+  }
+
+  gsl_odeiv2_driver_free (d);
+
 }
 
 void
