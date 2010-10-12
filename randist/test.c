@@ -53,6 +53,8 @@ double test_binomial_large (void);
 double test_binomial_large_pdf (unsigned int n);
 double test_binomial_huge (void);
 double test_binomial_huge_pdf (unsigned int n);
+double test_binomial_max (void);
+double test_binomial_max_pdf (unsigned int n);
 double test_binomial0 (void);
 double test_binomial0_pdf (unsigned int n);
 double test_binomial1 (void);
@@ -372,6 +374,7 @@ main (void)
   testDiscretePDF (FUNC2 (binomial_large_knuth));
   testDiscretePDF (FUNC2 (binomial_huge));
   testDiscretePDF (FUNC2 (binomial_huge_knuth));
+  testDiscretePDF (FUNC2 (binomial_max));
   testDiscretePDF (FUNC2 (geometric));
   testDiscretePDF (FUNC2 (geometric1));
   testDiscretePDF (FUNC2 (hypergeometric1));
@@ -827,6 +830,18 @@ double
 test_binomial_huge_knuth_pdf (unsigned int n)
 {
   return gsl_ran_binomial_pdf (n, 0.3, 5500);
+}
+
+double
+test_binomial_max (void)
+{
+  return gsl_ran_binomial (r_global, 1e-8, 1<<31);
+}
+
+double
+test_binomial_max_pdf (unsigned int n)
+{
+  return gsl_ran_binomial_pdf (n, 1e-8, 1<<31);
 }
 
 double

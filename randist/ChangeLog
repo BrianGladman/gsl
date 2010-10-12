@@ -1,3 +1,8 @@
+2010-10-12  Brian Gough  <bjg@gnu.org>
+
+	* test.c (test_binomial_max): added a test case for n larger than
+	maxint
+
 2010-07-21  Brian Gough  <bjg@gnu.org>
 
 	* beta.c (gsl_ran_beta_pdf): avoid overflow for x==0 || x==1 and
