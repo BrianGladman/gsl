@@ -286,9 +286,21 @@ main (void)
       {
         y = gsl_pow_int (-3.14, n);
         y_expected = pow (-3.14, n);
-        gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_n(-3.14,%d)", n);
+        gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_int(-3.14,%d)", n);
       }
   }
+
+
+  {
+    unsigned int n;
+    for (n = 0; n < 10; n++)
+      {
+        y = gsl_pow_uint (-3.14, n);
+        y_expected = pow (-3.14, n);
+        gsl_test_rel (y, y_expected, 1e-15, "gsl_pow_uint(-3.14,%d)", n);
+      }
+  }
+
 
   /* Test for ldexp */
 

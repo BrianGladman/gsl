@@ -1,3 +1,6 @@
+** Added a function gsl_pow_uint(x,n) to compute x^n for unsigned
+   exponents (needed when n exceeds the range of signed integers).
+
 ** Avoid spurious underflow return code in gsl_sf_beta_inc_e when
    intermediate underflow does not affect the result. [bug #30933]
 

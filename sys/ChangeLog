@@ -1,3 +1,8 @@
+2010-10-12  Brian Gough  <bjg@gnu.org>
+
+	* pow_int.c (gsl_pow_uint): added function gsl_pow_uint(x,n) for
+	unsigned n (larger range)
+
 2010-02-15  Brian Gough  <bjg@network-theory.co.uk>
 
 	* infnan.c: use #error if gsl_isnan or gsl_finite cannot be defined
