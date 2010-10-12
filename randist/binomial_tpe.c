@@ -117,7 +117,7 @@ gsl_ran_binomial (const gsl_rng * rng, double p, unsigned int n)
 
   if (np < SMALL_MEAN)
     {
-      double f0 = gsl_pow_int (q, n);   /* f(x), starting with x=0 */
+      double f0 = gsl_pow_uint (q, n);   /* f(x), starting with x=0 */
 
       while (1)
         {
