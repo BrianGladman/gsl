@@ -1,3 +1,8 @@
+2010-10-12  Brian Gough  <bjg@gnu.org>
+
+	* added error checking to selected cblas functions (José Luis
+	García Pallero)
+
 2009-06-24  Brian Gough  <bjg@network-theory.co.uk>
 
 	* source_scal_c.h source_scal_r.h: remove needless use of OFFSET
