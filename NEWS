@@ -1,3 +1,6 @@
+** Fixed gsl_pow_int(x,n) to avoid an infinite loop when n=INT_MIN due
+   to wrapping of signed integers.
+
 ** Added a function gsl_pow_uint(x,n) to compute x^n for unsigned
    exponents (needed when n exceeds the range of signed integers).
 

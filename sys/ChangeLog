@@ -2,6 +2,7 @@
 
 	* pow_int.c (gsl_pow_uint): added function gsl_pow_uint(x,n) for
 	unsigned n (larger range)
+	(gsl_pow_int): handle case where n=MIN_INT correctly
 
 2010-02-15  Brian Gough  <bjg@network-theory.co.uk>
 

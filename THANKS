@@ -481,3 +481,5 @@ evaluation and ode improvements
 * Ralf Wildenhues - numerous proofreading corrections
 
 * Thomas Tanner <tanner@gmx.de> - bug report for gsl_sf_beta_inc
+
+* Sam Mason <sam@samason.me.uk> - bug fix for gsl_pow_int
