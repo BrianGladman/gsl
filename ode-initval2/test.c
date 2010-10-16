@@ -359,6 +359,55 @@ gsl_odeiv2_system rhs_func_broken = {
   0
 };
 
+/* Immediate user break (at t > 1.5) test sine system */
+
+int
+rhs_sin_ub (double t, const double y[], double f[], void *params)
+{
+  extern int nfe;
+  nfe += 1;
+
+  f[0] = -y[1];
+  f[1] = y[0];
+
+  if (t > 1.5)
+    {
+      return GSL_EBADFUNC;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+jac_sin_ub (double t, const double y[], double *dfdy, double dfdt[],
+            void *params)
+{
+  extern int nje;
+  nje += 1;
+
+  dfdy[0] = 0.0;
+  dfdy[1] = -1.0;
+  dfdy[2] = 1.0;
+  dfdy[3] = 0.0;
+
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+
+  if (t > 1.5)
+    {
+      return GSL_EBADFUNC;
+    }
+
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv2_system rhs_func_sin_ub = {
+  rhs_sin_ub,
+  jac_sin_ub,
+  2,
+  0
+};
+
 /* Badly scaled random function */
 
 int
@@ -1508,6 +1557,27 @@ test_stepsize_fail (const gsl_odeiv2_step_type * T, double h)
 }
 
 void
+test_user_break (const gsl_odeiv2_step_type * T, double h)
+{
+  /* Tests for user signaled immediate break */
+
+  const double tol = 1e-8;
+
+  gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin_ub, T,
+                                                        h, tol, tol);
+
+  double y[] = { 1.0, 0.0 };
+  double t = 0.0;
+  const double t1 = 8.25;
+
+  int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
+
+  gsl_test ((s - GSL_EBADFUNC), "test_user_break returned %d", s);
+
+  gsl_odeiv2_driver_free (d);
+}
+
+void
 test_stepfn (const gsl_odeiv2_step_type * T)
 {
   /* Test evolve on a small derivative change at t=0 */
@@ -2394,6 +2464,7 @@ main (void)
       test_evolve_negative_h (p[i].type, p[i].h, 1e-7);
       test_broken (p[i].type, p[i].h, 1e-8);
       test_stepsize_fail (p[i].type, p[i].h);
+      test_user_break (p[i].type, p[i].h);
     }
 
   /* Derivative test for explicit steppers */

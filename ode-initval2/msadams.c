@@ -88,7 +88,8 @@ typedef struct
   size_t ordwaitbackup;         /* backup of ordwait */
   size_t failord;               /* order of convergence failure */
   double failt;                 /* t point of convergence failure */
-  double ordp1coeffprev;        /* saved order coefficient */
+  double ordm1coeff;            /* saved order-1 coefficiet */
+  double ordp1coeffprev;        /* saved order+1 coefficient */
   size_t failcount;             /* counter for rejected steps */
 }
 msadams_state_t;
@@ -436,21 +437,21 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
       {
         size_t di;
 
-        printf ("-- l: ");
+        printf ("-- calccoeffs l: ");
         for (di = 0; di < ord + 1; di++)
           {
             printf ("%.5e ", l[di]);
           }
         printf ("\n");
 
-        printf ("-- pc: ");
+        printf ("-- calccoeffs pc: ");
         for (di = 0; di < ord; di++)
           {
             printf ("%.5e ", pc[di]);
           }
         printf ("\n");
 
-        printf ("-- st1=%.5e, st2=%.5e\n", st1, st2);
+        printf ("-- calccoeffs st1=%.5e, st2=%.5e\n", st1, st2);
       }
 #endif
 
@@ -485,6 +486,13 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
         }
     }
 
+#ifdef DEBUG
+  printf ("-- calccoeffs ordm1coeff=%.5e ", *ordm1coeff);
+  printf ("ordp1coeff=%.5e ", *ordp1coeff);
+  printf ("ordp2coeff=%.5e ", *ordp2coeff);
+  printf ("errcoeff=%.5e\n", *errcoeff);
+#endif
+
   return GSL_SUCCESS;
 }
 
@@ -510,6 +518,11 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, ytmp);
+
+    if (s == GSL_EBADFUNC)
+      {
+        return s;
+      }
 
     if (s != GSL_SUCCESS)
       {
@@ -603,6 +616,11 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp2, ytmp);
+
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
 
         if (s != GSL_SUCCESS)
           {
@@ -707,8 +725,8 @@ msadams_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
 #ifdef DEBUG
   printf
-    ("-- order change evaluation: ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
-     ordest, ordm1est, ordp1est);
+    ("-- eval_order ord=%d, ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
+     (int) *ord, ordest, ordm1est, ordp1est);
 #endif
 
   /* Choose order that maximises step size and increases step
@@ -719,18 +737,18 @@ msadams_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
   if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order DECREASED\n");
-#endif
       *ord -= 1;
+#ifdef DEBUG
+      printf ("-- eval_order order DECREASED to %d\n", (int) *ord);
+#endif
     }
 
   else if (ordp1est > ordest && ordp1est > ordm1est && ordp1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order INCREASED\n");
-#endif
       *ord += 1;
+#ifdef DEBUG
+      printf ("-- eval_order order INCREASED to %d\n", (int) *ord);
+#endif
     }
 
   *ordwait = *ord + 2;
@@ -773,7 +791,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   {
     size_t di;
 
-    printf ("msadams_apply: t=%.5e, h=%.5e, y:", t, h);
+    printf ("msadams_apply: t=%.5e, ord=%d, h=%.5e, y:", t, (int) ord, h);
 
     for (di = 0; di < dim; di++)
       {
@@ -1097,6 +1115,11 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, dydt_out);
 
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
+
         if (s != GSL_SUCCESS)
           {
             msadams_failurehandler (vstate, dim, t);
@@ -1154,6 +1177,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
       size_t i;
 
       state->ordp1coeffprev = ordp1coeff;
+      state->ordm1coeff = ordm1coeff;
 
       for (i = 0; i < dim; i++)
         {
@@ -1166,7 +1190,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   if (state->ordwait == 0)
     {
       msadams_eval_order (abscor, tempvec, svec, errcoeff, dim, errlev,
-                          ordm1coeff, ordp1coeff,
+                          state->ordm1coeff, ordp1coeff,
                           state->ordp1coeffprev, ordp2coeff,
                           hprev, h, z, &(state->ord), &(state->ordwait));
     }

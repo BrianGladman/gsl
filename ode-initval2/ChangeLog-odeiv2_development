@@ -1,3 +1,12 @@
+2010-10-16  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- Modified evolve and driver so that when user function returns
+  GSL_EBADFUNC, then ode-initval2 functions return immediately
+  with that same return value.
+
+- Corrected bug in msadams for saving ordm1coeff to state. 
+  Thanks to Andrew Benson for pointing out this bug!
+
 2010-10-10  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
 
 - driver.c: Corrected error in driver_evolve_apply, integration

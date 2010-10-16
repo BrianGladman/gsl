@@ -175,9 +175,9 @@ try_step:
                                dydt);
     }
 
-  /* Return if stepper indicates a pointer failure */
+  /* Return if stepper indicates a pointer or user function failure */
 
-  if (step_status == GSL_EFAULT)
+  if (step_status == GSL_EFAULT || step_status == GSL_EBADFUNC)
     {
       return step_status;
     }

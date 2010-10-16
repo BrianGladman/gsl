@@ -633,6 +633,11 @@ msbdf_update (void *vstate, const size_t dim, gsl_matrix * dfdy, double *dfdt,
 #endif
       int s = GSL_ODEIV_JA_EVAL (sys, t, y, dfdy->data, dfdt);
 
+      if (s == GSL_EBADFUNC)
+        {
+          return s;
+        }
+
       if (s != GSL_SUCCESS)
         {
           msbdf_failurehandler (vstate, dim, t);
@@ -713,6 +718,11 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, ytmp);
+
+    if (s == GSL_EBADFUNC)
+      {
+        return s;
+      }
 
     if (s != GSL_SUCCESS)
       {
@@ -856,6 +866,11 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp2, ytmp);
+
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
 
         if (s != GSL_SUCCESS)
           {
@@ -1516,6 +1531,11 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
     if (dydt_out != NULL)
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, dydt_out);
+
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
 
         if (s != GSL_SUCCESS)
           {

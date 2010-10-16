@@ -63,31 +63,40 @@ This function should store the vector elements
 @c{$f_i(t,y,\hbox{\it params})$}
 @math{f_i(t,y,params)} in the array @var{dydt},
 for arguments (@var{t},@var{y}) and parameters @var{params}.
-The function should return @code{GSL_SUCCESS} if the calculation 
-was completed successfully. Any other return value indicates
-an error. Use return values distinct from standard GSL error codes 
-to distinguish your function as the source of the error.
+
+The function should return @code{GSL_SUCCESS} if the calculation was
+completed successfully. Any other return value indicates an error. A
+special return value @code{GSL_EBADFUNC} causes @code{ode-initval2}
+routines to immediately stop and return. The user must call an
+appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
+@code{gsl_odeiv2_step_reset}) before continuing. Use return values
+distinct from standard GSL error codes to distinguish your function as
+the source of the error.
 
 @item  int (* jacobian) (double t, const double y[], double * dfdy, double dfdt[], void * params);
 @cindex Jacobian matrix, ODEs
-This function should store the vector of derivative elements 
-@c{$\partial f_i(t,y,params) / \partial t$}
-@math{df_i(t,y,params)/dt} in the array @var{dfdt} and the 
-Jacobian matrix @c{$J_{ij}$}
-@math{J_@{ij@}} in the array
-@var{dfdy}, regarded as a row-ordered matrix @code{J(i,j) = dfdy[i * dimension + j]}
-where @code{dimension} is the dimension of the system.
-The function should return @code{GSL_SUCCESS} if the calculation 
-was completed successfully.  Any other return value indicates
-an error. Use return values distinct from standard GSL error codes 
-to distinguish your function as the source of the error.
+This function should store the vector of derivative elements
+@c{$\partial f_i(t,y,params) / \partial t$} @math{df_i(t,y,params)/dt}
+in the array @var{dfdt} and the Jacobian matrix @c{$J_{ij}$}
+@math{J_@{ij@}} in the array @var{dfdy}, regarded as a row-ordered
+matrix @code{J(i,j) = dfdy[i * dimension + j]} where @code{dimension}
+is the dimension of the system. 
 
-Some of the simpler algorithms do not make use of the Jacobian
-matrix, so it is not always strictly necessary to provide it (the
-@code{jacobian} element of the struct can be replaced by a null pointer
-for those algorithms).  However, it is useful to provide the Jacobian to allow
-the solver algorithms to be interchanged---the best algorithms make use
-of the Jacobian.
+The function should return @code{GSL_SUCCESS} if the calculation was
+completed successfully. Any other return value indicates an error. A
+special return value @code{GSL_EBADFUNC} causes @code{ode-initval2}
+routines to immediately stop and return. The user must call an
+appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
+@code{gsl_odeiv2_step_reset}) before continuing. Use return values
+distinct from standard GSL error codes to distinguish your function as
+the source of the error.
+
+Some of the simpler algorithms do not make use of the Jacobian matrix,
+so it is not always strictly necessary to provide it (the
+@code{jacobian} element of the struct can be replaced by a null
+pointer for those algorithms).  However, it is useful to provide the
+Jacobian to allow the solver algorithms to be interchanged---the best
+algorithms make use of the Jacobian.
 
 @item size_t dimension;
 This is the dimension of the system of equations.
@@ -177,7 +186,12 @@ smaller step-size, e.g. @math{@var{h}/2}.
 
 If the driver object is not appropriately set via
 @code{gsl_odeiv2_step_set_driver} for those steppers that need it, the
-stepping function returns @code{GSL_EFAULT}.
+stepping function returns @code{GSL_EFAULT}. If the user-supplied
+functions defined in the system @var{sys} returns @code{GSL_EBADFUNC},
+the function returns immediately with the same return code. In this
+case the user must call @code{gsl_odeiv2_step_reset} before calling
+it again.
+
 @end deftypefun
 
 The following algorithms are available,
@@ -469,15 +483,20 @@ is continued until an acceptable step-size is found. An estimate of
 the local error for the step can be obtained from the components of
 the array @code{@var{e}->yerr[]}.
 
-If the user-supplied functions defined in the system @var{sys} or the
-stepping function @var{step} returns a status other than
-@code{GSL_SUCCESS}, the step is retried with a decreased step-size. If
-the step-size decreases below machine precision, a status of
-@code{GSL_FAILURE} is returned if the user functions returned
-@code{GSL_SUCCESS}. Otherwise the value returned by user function is
-returned. If no acceptable step can be made, @var{t} and @var{y} will
-be restored to their pre-step values and @var{h} contains the final
-attempted step-size.
+If the user-supplied functions defined in the system @var{sys} returns
+@code{GSL_EBADFUNC}, the function returns immediately with the same
+return code. In this case the user must call
+@code{gsl_odeiv2_evolve_reset} before calling it again.
+
+Otherwise, if the user-supplied functions defined in the system
+@var{sys} or the stepping function @var{step} return a status other
+than @code{GSL_SUCCESS}, the step is retried with a decreased
+step-size. If the step-size decreases below machine precision, a
+status of @code{GSL_FAILURE} is returned if the user functions
+returned @code{GSL_SUCCESS}. Otherwise the value returned by user
+function is returned. If no acceptable step can be made, @var{t} and
+@var{y} will be restored to their pre-step values and @var{h} contains
+the final attempted step-size.
 
 If the step is successful the function returns a suggested step-size
 for the next step in @var{h}. The maximum time @var{t1} is guaranteed
@@ -553,11 +572,15 @@ This function evolves the driver system @var{d} from @var{t} to
 dependent variables at point @var{t}. If the function is unable to
 complete the calculation, an error code from
 @code{gsl_odeiv2_evolve_apply} is returned, and @var{t} and @var{y}
-contain the values from last successful step. In case maximum number of
-steps is reached, a value of @var{GSL_EMAXITER} is returned. If the
-step size drops below a minimum value set with
-@code{gsl_odeiv2_driver_set_hmin}, the function returns with
-@var{GSL_ENOPROG}.
+contain the values from last successful step. 
+
+In case maximum number of steps is reached, a value of
+@var{GSL_EMAXITER} is returned. If the step size drops below a minimum
+value set with @code{gsl_odeiv2_driver_set_hmin}, the function returns
+with @var{GSL_ENOPROG}. If the user-supplied functions defined in the
+system @var{sys} returns @code{GSL_EBADFUNC}, the function returns
+immediately with the same return code. In this case the user must call
+@code{gsl_odeiv2_driver_reset} before calling it again.
 @end deftypefun
 
 @deftypefun {int} gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{h}, const unsigned long int @var{n}, double @var{y}[])
