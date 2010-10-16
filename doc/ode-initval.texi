@@ -66,7 +66,7 @@ for arguments (@var{t},@var{y}) and parameters @var{params}.
 
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
-special return value @code{GSL_EBADFUNC} causes @code{ode-initval2}
+special return value @code{GSL_EBADFUNC} causes @code{odeiv2}
 routines to immediately stop and return. The user must call an
 appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
 @code{gsl_odeiv2_step_reset}) before continuing. Use return values
@@ -82,21 +82,19 @@ in the array @var{dfdt} and the Jacobian matrix @c{$J_{ij}$}
 matrix @code{J(i,j) = dfdy[i * dimension + j]} where @code{dimension}
 is the dimension of the system. 
 
+Not all of the stepper algorithms of @code{odeiv2} make use of the
+Jacobian matrix, so it may not be necessary to provide this function
+(the @code{jacobian} element of the struct can be replaced by a null
+pointer for those algorithms).
+
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
-special return value @code{GSL_EBADFUNC} causes @code{ode-initval2}
+special return value @code{GSL_EBADFUNC} causes @code{odeiv2}
 routines to immediately stop and return. The user must call an
 appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
 @code{gsl_odeiv2_step_reset}) before continuing. Use return values
 distinct from standard GSL error codes to distinguish your function as
 the source of the error.
-
-Some of the simpler algorithms do not make use of the Jacobian matrix,
-so it is not always strictly necessary to provide it (the
-@code{jacobian} element of the struct can be replaced by a null
-pointer for those algorithms).  However, it is useful to provide the
-Jacobian to allow the solver algorithms to be interchanged---the best
-algorithms make use of the Jacobian.
 
 @item size_t dimension;
 This is the dimension of the system of equations.
@@ -149,7 +147,7 @@ would print something like @code{step method is 'rkf45'}.
 
 @deftypefun {unsigned int} gsl_odeiv2_step_order (const gsl_odeiv2_step * @var{s})
 This function returns the order of the stepping function on the previous
-step.  This order can vary if the stepping function itself is adaptive.
+step. The order can vary if the stepping function itself is adaptive.
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_step_set_driver (gsl_odeiv2_step * @var{s}, const gsl_odeiv2_driver * @var{d})
@@ -431,9 +429,9 @@ This function adjusts the step-size @var{h} using the control function
 The stepping function @var{step} is also needed to determine the order
 of the method.  If the error in the y-values @var{yerr} is found to be
 too large then the step-size @var{h} is reduced and the function returns
-@code{GSL_ODEIV2_HADJ_DEC}.  If the error is sufficiently small then
-@var{h} may be increased and @code{GSL_ODEIV2_HADJ_INC} is returned.  The
-function returns @code{GSL_ODEIV2_HADJ_NIL} if the step-size is
+@code{GSL_ODEIV_HADJ_DEC}.  If the error is sufficiently small then
+@var{h} may be increased and @code{GSL_ODEIV_HADJ_INC} is returned.  The
+function returns @code{GSL_ODEIV_HADJ_NIL} if the step-size is
 unchanged.  The goal of the function is to estimate the largest
 step-size which satisfies the user-specified accuracy requirements for
 the current point.
@@ -454,6 +452,11 @@ would print something like @code{control method is 'standard'}
 
 @deftypefun int gsl_odeiv2_control_errlevel (gsl_odeiv2_control * @var{c}, const double @var{y}, const double @var{dydt}, const double @var{h}, const size_t @var{ind}, double * @var{errlev})
 This function calculates the desired error level of the @var{ind}th component to @var{errlev}. It requires the value (@var{y}) and value of the derivative (@var{dydt}) of the component, and the current step size @var{h}.
+@end deftypefun
+
+@deftypefun int gsl_odeiv2_control_set_driver (gsl_odeiv2_control * @var{c}, const gsl_odeiv2_driver * @var{d})
+This function sets a pointer of the driver object @var{d} for control
+object @var{c}.
 @end deftypefun
 
 @node Evolution
@@ -486,6 +489,7 @@ the array @code{@var{e}->yerr[]}.
 If the user-supplied functions defined in the system @var{sys} returns
 @code{GSL_EBADFUNC}, the function returns immediately with the same
 return code. In this case the user must call
+@code{gsl_odeiv2_step_reset} and
 @code{gsl_odeiv2_evolve_reset} before calling it again.
 
 Otherwise, if the user-supplied functions defined in the system
@@ -505,11 +509,13 @@ of @var{t} will be set to @var{t1} exactly.
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_evolve_apply_fixed_step (gsl_odeiv2_evolve * @var{e}, gsl_odeiv2_control * @var{con}, gsl_odeiv2_step * @var{step}, const gsl_odeiv2_system * @var{sys}, double * @var{t}, const double @var{h}, double @var{y}[])
-This function is otherwise similar to @code{gsl_odeiv2_evolve_apply},
-but it only advances the ODE-system by a specified step size
-@var{h}. If the local error estimated by the stepping function exceeds
-the desired error level, the step is not taken and the function
-returns @code{GSL_FAILURE}.
+This function advances the ODE-system (@var{e}, @var{sys}, @var{con})
+from time @var{t} and position @var{y} using the stepping function
+@var{step} by a specified step size @var{h}. If the local error
+estimated by the stepping function exceeds the desired error level,
+the step is not taken and the function returns
+@code{GSL_FAILURE}. Otherwise the value returned by user function is
+returned.
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_evolve_reset (gsl_odeiv2_evolve * @var{e})
@@ -523,9 +529,15 @@ This function frees all the memory associated with the evolution function
 @var{e}.
 @end deftypefun
 
+@deftypefun int gsl_odeiv2_evolve_set_driver (gsl_odeiv2_evolve * @var{e}, const gsl_odeiv2_driver * @var{d})
+This function sets a pointer of the driver object @var{d} for evolve
+object @var{e}.
+@end deftypefun
+
+
 @cindex discontinuities, in ODE systems
 If a system has discontinuous changes in the derivatives at known
-points it is advisable to evolve the system between each discontinuity
+points, it is advisable to evolve the system between each discontinuity
 in sequence.  For example, if a step-change in an external driving
 force occurs at times @math{t_a, t_b} and @math{t_c} then evolution
 should be carried out over the ranges @math{(t_0,t_a)},
@@ -558,7 +570,7 @@ driver @var{d}. Default value is 0.
 
 @deftypefun {int} gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax)
 The function sets a maximum for allowed step size @var{hmax} for
-driver @var{d}. Default value is @var{GSL_DBL_MAX}.
+driver @var{d}. Default value is @code{GSL_DBL_MAX}.
 @end deftypefun
 
 @deftypefun {int} gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * d, const unsigned long int nmax)
@@ -574,13 +586,13 @@ complete the calculation, an error code from
 @code{gsl_odeiv2_evolve_apply} is returned, and @var{t} and @var{y}
 contain the values from last successful step. 
 
-In case maximum number of steps is reached, a value of
-@var{GSL_EMAXITER} is returned. If the step size drops below a minimum
-value set with @code{gsl_odeiv2_driver_set_hmin}, the function returns
-with @var{GSL_ENOPROG}. If the user-supplied functions defined in the
-system @var{sys} returns @code{GSL_EBADFUNC}, the function returns
-immediately with the same return code. In this case the user must call
-@code{gsl_odeiv2_driver_reset} before calling it again.
+If maximum number of steps is reached, a value of @code{GSL_EMAXITER}
+is returned. If the step size drops below minimum value, the function
+returns with @code{GSL_ENOPROG}. If the user-supplied functions
+defined in the system @var{sys} returns @code{GSL_EBADFUNC}, the
+function returns immediately with the same return code. In this case
+the user must call @code{gsl_odeiv2_driver_reset} before calling it
+again.
 @end deftypefun
 
 @deftypefun {int} gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{h}, const unsigned long int @var{n}, double @var{y}[])
@@ -680,12 +692,12 @@ a pointer to a struct.
 
 @noindent
 It is also possible to work with a non-adaptive integrator, using only
-the stepping function itself.  The following program uses the
-@code{rk4} fourth-order Runge-Kutta stepping function with a fixed
-stepsize of 0.01. The derivatives must be initialized for the starting
-point @math{t=0} before the first step is taken.  Subsequent steps use
-the output derivatives @var{dydt_out} as inputs to the next step by
-copying their values into @var{dydt_in}.
+the stepping function itself,
+@code{gsl_odeiv2_driver_apply_fixed_step} or
+@code{gsl_odeiv2_evolve_apply_fixed_step}. The following program uses
+the driver level function, with fourth-order
+Runge-Kutta stepping function with a fixed stepsize of
+0.001.
 
 @example
 @verbatiminclude examples/odefixed.c
