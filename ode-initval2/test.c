@@ -2410,6 +2410,13 @@ test_evolve_temp (const gsl_odeiv2_step_type * T, double h, double err)
 int
 main (void)
 {
+
+  /* Benchmark routine to compare stepper performance */
+  //benchmark_precision(); return 0;
+
+  /* Test single problem, for debugging purposes */
+  //test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0;
+
   struct ptype
   {
     const gsl_odeiv2_step_type *type;
@@ -2492,7 +2499,7 @@ main (void)
     }
 
   /* Special tests */
-
+  
   test_nonstiff_problems ();
 
   test_stiff_problems ();
@@ -2500,12 +2507,6 @@ main (void)
   test_extreme_problems ();
 
   test_driver ();
-
-  /* Optional benchmark routine to compare stepper performance */
-  //benchmark_precision();
-
-  /* Test single problem, for debugging purposes */
-  //test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8);
-
+  
   exit (gsl_test_summary ());
 }
