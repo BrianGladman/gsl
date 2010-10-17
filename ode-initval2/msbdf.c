@@ -554,7 +554,7 @@ msbdf_calccoeffs (const size_t ord, const size_t ordwait,
       {
         size_t di;
 
-        printf ("-- l: ");
+        printf ("-- calccoeffs l: ");
         for (di = 0; di < ord + 1; di++)
           {
             printf ("%.5e ", l[di]);
@@ -598,6 +598,13 @@ msbdf_calccoeffs (const size_t ord, const size_t ordwait,
     }
 
   *gamma = h / l[1];
+
+#ifdef DEBUG
+  printf ("-- calccoeffs ordm1coeff=%.5e ", *ordm1coeff);
+  printf ("ordp1coeff=%.5e ", *ordp1coeff);
+  printf ("ordp2coeff=%.5e ", *ordp2coeff);
+  printf ("errcoeff=%.5e\n", *errcoeff);
+#endif
 
   return GSL_SUCCESS;
 }
@@ -975,8 +982,8 @@ msbdf_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
 #ifdef DEBUG
   printf
-    ("-- order change evaluation: ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
-     ordest, ordm1est, ordp1est);
+    ("-- eval_order ord=%d, ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
+     (int) *ord, ordest, ordm1est, ordp1est);
 #endif
 
   /* Choose order that maximises step size and increases step
@@ -987,18 +994,18 @@ msbdf_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
   if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order DECREASED\n");
-#endif
       *ord -= 1;
+#ifdef DEBUG
+      printf ("-- eval_order order DECREASED to %d\n", (int) *ord);
+#endif
     }
 
   else if (ordp1est > ordest && ordp1est > ordm1est && ordp1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order INCREASED\n");
-#endif
       *ord += 1;
+#ifdef DEBUG
+      printf ("-- eval_order order INCREASED to %d\n", (int) *ord);
+#endif
     }
 
   *ordwait = *ord + 2;
@@ -1094,7 +1101,7 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
   {
     size_t di;
 
-    printf ("msbdf_apply: t=%.5e, h=%.5e, y:", t, h);
+    printf ("msbdf_apply: t=%.5e, ord=%d, h=%.5e, y:", t, (int) ord, h);
 
     for (di = 0; di < dim; di++)
       {
