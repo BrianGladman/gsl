@@ -381,8 +381,9 @@ see
 
 @itemize @w{}
 @item
-B.J. Gough, @cite{An Introduction to GCC}, Network Theory Ltd, ISBN
-0954161793
+B.J. Gough, @url{http://www.network-theory.co.uk/gcc/intro/,@cite{An
+Introduction to GCC},@cite{An Introduction to GCC}}, Network Theory
+Ltd, ISBN 0954161793
 @end itemize
 
 

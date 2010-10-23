@@ -107,7 +107,14 @@ $ gcc -L/usr/local/lib example.o -lgsl -lgslcblas -lm
 @noindent
 The default library path for @code{gcc} searches @file{/usr/local/lib}
 automatically so the @code{-L} option can be omitted when GSL is
-installed in its default location.
+installed in its default location.  
+
+The option @code{-lm} links with the system math library. On some
+systems it is not needed.@footnote{It is not needed on MacOS X.}
+
+For a tutorial introduction to the GNU C Compiler and related programs,
+see @url{http://www.network-theory.co.uk/gcc/intro/,@cite{An Introduction
+to GCC},@cite{An Introduction to GCC}} (ISBN 0954161793).@footnote{@url{http://www.network-theory.co.uk/gcc/intro/}}
 
 @node Linking with an alternative BLAS library
 @subsection Linking with an alternative BLAS library

@@ -864,7 +864,7 @@ contained in table @var{t} and returns the result.
 @end deftypefun
 
 
-@deftypefun void gsl_integration_glfixed_table_alloc (gsl_integration_glfixed_table * @var{t})
+@deftypefun void gsl_integration_glfixed_table_free (gsl_integration_glfixed_table * @var{t})
 @tpindex gsl_integration_glfixed_table
 This function frees the memory associated with the table @var{t}.
 @end deftypefun
