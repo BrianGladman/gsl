@@ -483,3 +483,5 @@ evaluation and ode improvements
 * Thomas Tanner <tanner@gmx.de> - bug report for gsl_sf_beta_inc
 
 * Sam Mason <sam@samason.me.uk> - bug fix for gsl_pow_int
+
+* José Luis García Pallero <jgpallero@gmail.com> - error checking for GSL cblas
