@@ -771,7 +771,7 @@ hyperg_U_small_a_bgt0(const double a, const double b, const double x,
 {
   if(a == 0.0) {
     result->val = 1.0;
-    result->err = 1.0;
+    result->err = 0.0;
     *ln_multiplier = 0.0;
     return GSL_SUCCESS;
   }

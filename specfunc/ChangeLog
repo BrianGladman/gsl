@@ -1,3 +1,8 @@
+2010-10-29  Brian Gough  <bjg@gnu.org>
+
+	* hyperg_U.c (hyperg_U_small_a_bgt0): corrected result->err for
+	case where a==0.0
+
 2010-08-31  Brian Gough  <bjg@network-theory.co.uk>
 
 	* beta_inc.c (gsl_sf_beta_inc_e): ignore underflow error when term
