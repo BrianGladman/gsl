@@ -201,6 +201,7 @@ AC_CHECK_DECLS(asinh,,,[#include <math.h>])
 AC_CHECK_DECLS(atanh,,,[#include <math.h>])
 AC_CHECK_DECLS(ldexp,,,[#include <math.h>])
 AC_CHECK_DECLS(frexp,,,[#include <math.h>])
+AC_CHECK_DECLS([fprnd_t],[],[],[[#include <float.h>]]) 
 AC_CHECK_DECLS(isinf,,,[#include <math.h>])
 AC_CHECK_DECLS(isfinite,,,[#include <math.h>])
 AC_CHECK_DECLS(finite,,,[#include <math.h>

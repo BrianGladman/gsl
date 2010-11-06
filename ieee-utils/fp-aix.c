@@ -23,6 +23,41 @@
 #include <gsl/gsl_ieee_utils.h>
 #include <gsl/gsl_errno.h>
 
+/* GCC uses a common float.h for all platforms, and ignores all vendor
+specific code in float.h. That causes problems with fprnd_t,
+FP_RND_RZ, FP_RND_RN and FP_RND_RP on AIX.
+
+Personally I consider that a bug, and was advised by a GCC developer
+to report this as a bug, which I did.
+
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=46155
+
+However, there is not universal agreement whether this is a gcc bug, so 
+the issue needs to be worked around on AIX.  
+
+David Kirkby, 26th October 2010. */
+
+#if !HAVE_DECL_FPRND_T          
+typedef unsigned short fprnd_t; 
+#endif                          
+
+#ifndef FP_RND_RZ   
+#define FP_RND_RZ       0
+#endif 
+
+#ifndef FP_RND_RN
+#define FP_RND_RN       1
+#endif
+
+
+#ifndef FP_RND_RP
+#define FP_RND_RP       2
+#endif
+
+#ifndef FP_RND_RM
+#define FP_RND_RM       3
+#endif
+
 int
 gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 {
