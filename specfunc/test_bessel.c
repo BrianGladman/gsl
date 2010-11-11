@@ -347,6 +347,10 @@ int test_bessel(void)
   TEST_SF(s, gsl_sf_bessel_lnKnu_e, (1000.0, 1.0e-100, &r), 236856.183755993135, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_bessel_lnKnu_e, (10000.0, 1.0e-100, &r), 2.39161558914890695e+06, TEST_TOL0, GSL_SUCCESS);
 
+  /* [bug #31528] gsl_sf_bessel_lnKnu overflows for large nu */
+
+  TEST_SF(s, gsl_sf_bessel_lnKnu_e, (180.0, 2.2, &r), 735.1994170369583930752590258, TEST_TOL0, GSL_SUCCESS);
+
   sa = 0;
   gsl_sf_bessel_Jn_array(3, 38, 1.0, J);
   sa += ( test_sf_frac_diff(J[0],  0.0195633539826684059190  ) > TEST_TOL1);
