@@ -1,5 +1,9 @@
 2010-11-11  Brian Gough  <bjg@gnu.org>
 
+	* ellint.c (gsl_sf_ellint_RC_e, gsl_sf_ellint_RD_e)
+	(gsl_sf_ellint_RF_e, gsl_sf_ellint_RJ_e): introduce a limit of
+	10000 iterations to avoid infinite loops
+
 	* bessel_Knu.c (gsl_sf_bessel_Knu_scaled_e10_e): alternative
 	version of Knu_scaled function to allow greater range for
 	gsl_sf_bessel_lnKnu_e.

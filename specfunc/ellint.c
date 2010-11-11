@@ -78,6 +78,7 @@ gsl_sf_ellint_RC_e(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
+  const int nmax = 10000;
 
   if(x < 0.0 || y < 0.0 || x + y < lolim) {
     DOMAIN_ERROR(result);
@@ -88,6 +89,7 @@ gsl_sf_ellint_RC_e(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
     double xn = x;
     double yn = y;
     double mu, sn, lamda, s;
+    int n = 0;
     while(1) {
       mu = (xn + yn + yn) / 3.0;
       sn = (yn + mu) / mu - 2.0;
@@ -95,6 +97,10 @@ gsl_sf_ellint_RC_e(double x, double y, gsl_mode_t mode, gsl_sf_result * result)
       lamda = 2.0 * sqrt(xn) * sqrt(yn) + yn;
       xn = (xn + lamda) * 0.25;
       yn = (yn + lamda) * 0.25;
+      n++;
+      if(n==nmax) {
+        MAXITER_ERROR (result);
+      }
     }
     s = sn * sn * (0.3 + sn * (c1 + sn * (0.375 + sn * c2)));
     result->val = (1.0 + s) / sqrt(mu);
@@ -115,6 +121,7 @@ gsl_sf_ellint_RD_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
   const double prec   = gsl_prec_eps[goal];
   const double lolim = 2.0/pow(GSL_DBL_MAX, 2.0/3.0);
   const double uplim = pow(0.1*errtol/GSL_DBL_MIN, 2.0/3.0);
+  const nmax = 10000;
 
   if(GSL_MIN(x,y) < 0.0 || GSL_MIN(x+y,z) < lolim) {
     DOMAIN_ERROR(result);
@@ -131,6 +138,7 @@ gsl_sf_ellint_RD_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
     double power4 = 1.0;
     double ea, eb, ec, ed, ef, s1, s2;
     double mu, xndev, yndev, zndev;
+    int n = 0;
     while(1) {
       double xnroot, ynroot, znroot, lamda;
       double epslon;
@@ -149,6 +157,10 @@ gsl_sf_ellint_RD_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
       xn = (xn + lamda) * 0.25;
       yn = (yn + lamda) * 0.25;
       zn = (zn + lamda) * 0.25;
+      n++;
+      if(n==nmax) {
+        MAXITER_ERROR (result);
+      }
     }
     ea = xndev * yndev;
     eb = zndev * zndev;
@@ -175,6 +187,7 @@ gsl_sf_ellint_RF_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
   const gsl_prec_t goal = GSL_MODE_PREC(mode);
   const double errtol = ( goal == GSL_PREC_DOUBLE ? 0.001 : 0.03 );
   const double prec   = gsl_prec_eps[goal];
+  const int nmax = 10000;
 
   if(x < 0.0 || y < 0.0 || z < 0.0) {
     DOMAIN_ERROR(result);
@@ -190,6 +203,7 @@ gsl_sf_ellint_RF_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
     double yn = y;
     double zn = z;
     double mu, xndev, yndev, zndev, e2, e3, s;
+    int n = 0;
     while(1) {
       double epslon, lamda;
       double xnroot, ynroot, znroot;
@@ -206,6 +220,10 @@ gsl_sf_ellint_RF_e(double x, double y, double z, gsl_mode_t mode, gsl_sf_result 
       xn = (xn + lamda) * 0.25;
       yn = (yn + lamda) * 0.25;
       zn = (zn + lamda) * 0.25;
+      n++;
+      if(n==nmax) {
+        MAXITER_ERROR (result);
+      }
     }
     e2 = xndev * yndev - zndev * zndev;
     e3 = xndev * yndev * zndev;
@@ -228,6 +246,7 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
   const double prec   = gsl_prec_eps[goal];
   const double lolim =       pow(5.0 * GSL_DBL_MIN, 1.0/3.0);
   const double uplim = 0.3 * pow(0.2 * GSL_DBL_MAX, 1.0/3.0);
+  const int nmax = 10000;
 
   if(x < 0.0 || y < 0.0 || z < 0.0) {
     DOMAIN_ERROR(result);
@@ -248,6 +267,7 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
     double power4 = 1.0;
     double mu, xndev, yndev, zndev, pndev;
     double ea, eb, ec, e2, e3, s1, s2, s3;
+    int n = 0;
     while(1) {
       double xnroot, ynroot, znroot;
       double lamda, alfa, beta;
@@ -280,6 +300,10 @@ gsl_sf_ellint_RJ_e(double x, double y, double z, double p, gsl_mode_t mode, gsl_
       yn = (yn + lamda) * 0.25;
       zn = (zn + lamda) * 0.25;
       pn = (pn + lamda) * 0.25;
+      n++;
+      if(n==nmax) {
+        MAXITER_ERROR (result);
+      }
     }
     
     ea = xndev * (yndev + zndev) + yndev * zndev;
