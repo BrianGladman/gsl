@@ -349,8 +349,8 @@ int test_bessel(void)
 
   /* [bug #31528] gsl_sf_bessel_lnKnu overflows for large nu */
 
-  TEST_SF(s, gsl_sf_bessel_lnKnu_e, (180.0, 2.2, &r), 735.1994170369583930752590258, TEST_TOL0, GSL_SUCCESS);
-  TEST_SF(s, gsl_sf_bessel_lnKnu_e, (3500.5, 1500.0, &r), 1731.220077116482710070986699, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_lnKnu_e, (180.0, 2.2, &r), 735.1994170369583930752590258, TEST_TOL1, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_bessel_lnKnu_e, (3500.5, 1500.0, &r), 1731.220077116482710070986699, TEST_TOL1, GSL_SUCCESS);
 
   sa = 0;
   gsl_sf_bessel_Jn_array(3, 38, 1.0, J);
