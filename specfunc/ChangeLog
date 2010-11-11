@@ -1,3 +1,9 @@
+2010-11-11  Brian Gough  <bjg@gnu.org>
+
+	* bessel_Knu.c (gsl_sf_bessel_Knu_scaled_e10_e): alternative
+	version of Knu_scaled function to allow greater range for
+	gsl_sf_bessel_lnKnu_e.
+
 2010-10-29  Brian Gough  <bjg@gnu.org>
 
 	* hyperg_U.c (hyperg_U_small_a_bgt0): corrected result->err for

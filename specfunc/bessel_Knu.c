@@ -42,11 +42,27 @@ gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * resu
     DOMAIN_ERROR(result);
   }
   else {
+    gsl_sf_result_e10 result_e10;
+    int status = gsl_sf_bessel_Knu_scaled_e10_e(nu, x, &result_e10);
+    int status2 = gsl_sf_result_smash_e(&result_e10, result);
+    return GSL_ERROR_SELECT_2(status, status2);
+  }
+}
+
+int
+gsl_sf_bessel_Knu_scaled_e10_e(const double nu, const double x, gsl_sf_result_e10 * result)
+{
+  /* CHECK_POINTER(result) */
+
+  if(x <= 0.0 || nu < 0.0) {
+    DOMAIN_ERROR_E10(result);
+  }
+  else {
     int N = (int)(nu + 0.5);
     double mu = nu - N;      /* -1/2 <= mu <= 1/2 */
     double K_mu, K_mup1, Kp_mu;
     double K_nu, K_nup1, K_num1;
-    int n;
+    int n, e10 = 0;
 
     if(x < 2.0) {
       gsl_sf_bessel_K_scaled_temme(mu, x, &K_mu, &K_mup1, &Kp_mu);
@@ -62,11 +78,20 @@ gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * resu
     for(n=0; n<N; n++) {
       K_num1 = K_nu;
       K_nu   = K_nup1;
+      /* rescale the recurrence to avoid overflow */
+      if (fabs(K_nu) > GSL_SQRT_DBL_MAX) {
+        double p = floor(log(fabs(K_nu))/M_LN10);
+        double factor = pow(10.0, p);
+        K_num1 /= factor;
+        K_nu /= factor;
+        e10 += p;
+      };
       K_nup1 = 2.0*(mu+n+1)/x * K_nu + K_num1;
     }
 
     result->val = K_nu;
     result->err = 2.0 * GSL_DBL_EPSILON * (N + 4.0) * fabs(result->val);
+    result->e10 = e10;
     return GSL_SUCCESS;
   }
 }
@@ -134,12 +159,12 @@ gsl_sf_bessel_lnKnu_e(const double nu, const double x, gsl_sf_result * result)
      * Evaluate as usual. Note the possible drop-through
      * in the above code!
      */
-    gsl_sf_result K_scaled;
-    gsl_sf_bessel_Knu_scaled_e(nu, x, &K_scaled);
-    result->val  = -x + log(fabs(K_scaled.val));
+    gsl_sf_result_e10 K_scaled;
+    int status = gsl_sf_bessel_Knu_scaled_e10_e(nu, x, &K_scaled);
+    result->val  = -x + log(fabs(K_scaled.val)) + K_scaled.e10 * M_LN10;
     result->err  = GSL_DBL_EPSILON * fabs(x) + fabs(K_scaled.err/K_scaled.val);
     result->err += GSL_DBL_EPSILON * fabs(result->val);
-    return GSL_SUCCESS;
+    return status;
   }
 }
 

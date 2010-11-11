@@ -496,6 +496,7 @@ double gsl_sf_bessel_Inu(double nu, double x);
 int gsl_sf_bessel_Knu_scaled_e(const double nu, const double x, gsl_sf_result * result);
 double gsl_sf_bessel_Knu_scaled(const double nu, const double x);
 
+int gsl_sf_bessel_Knu_scaled_e10_e(const double nu, const double x, gsl_sf_result_e10 * result);
 
 /* Modified cylindrical Bessel functions
  *
