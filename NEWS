@@ -1,3 +1,6 @@
+** Extended the range of gsl_sf_bessel_lnKnu_e by rescaling
+   intermediate results to avoid internal overflows [bug #31528].
+
 ** Fixed gsl_pow_int(x,n) to avoid an infinite loop when n=INT_MIN due
    to wrapping of signed integers.
 
