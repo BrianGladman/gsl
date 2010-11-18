@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: specfunc
+
 * Complex hypergeometric function  1F1
 
 * Could probably return immediately for exact zeros in 3j,6j,9j

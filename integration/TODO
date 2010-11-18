@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: integration
+
 * BUG#14 -- qagil
 
 The extrapolation used in qags gives negative results when integrating

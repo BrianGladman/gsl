@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: matrix
+
 * Tests for subrowcol
 
 * Pretty print function

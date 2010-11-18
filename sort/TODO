@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: sort
+
 * Routines for selecting the k largest or smallest values could use
 heapsort for speed O(N log k) rather than insertion O(N k).
 

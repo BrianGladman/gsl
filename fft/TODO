@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: fft
+
 * Sine and Cosine Transforms from FFTPACK. 
 
 * A simple multidimensional fft.

@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: monte
+
 * Add Lattice Method and Quasi-random Method to monte carlo integration
 
 * Fix the "No-points in left/right half space" error in miser. Random

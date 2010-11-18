@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: poly
+
 * Estimate error on general poly roots using Newton method? Allow for
 multiple roots and higher derivatives
 

@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: eigen
+
 * Merge improvements from SVD qrstep to eigen - these should be
   combined somehow as we only need one version of them.
 

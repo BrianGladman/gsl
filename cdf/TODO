@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: cdf
+
 * discrete inverse distributions - easy apart from hypergeometric(?)
 
 * look for integer overflow in the discrete functions - this could be

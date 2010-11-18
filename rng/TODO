@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: rng
+
 * gfsr: for consistency (Charles A. Wemple).  Make this change in 2.0
 
  127a142

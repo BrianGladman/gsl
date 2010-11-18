@@ -1,3 +1,6 @@
+# -*- org -*-
+#+CATEGORY: interpolation
+
 1. need to add a test for the akima splines
 
 2. [DOCUMENTATION] From: Conrad Curry <cwcurry@orca.st.usm.edu>
