@@ -1,3 +1,8 @@
+2010-11-20  Brian Gough  <bjg@gnu.org>
+
+	* chisq.c (gsl_ran_chisq_pdf): handle x=0 as special case
+	(x=0, nu=2 is also special)
+
 2010-10-12  Brian Gough  <bjg@gnu.org>
 
 	* test.c (test_binomial_max): added a test case for n larger than

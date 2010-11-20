@@ -1,3 +1,6 @@
+** Fixed gsl_ran_chisq_pdf(x,nu) to return correct result of 1/2
+   instead of 0 when x=0 and nu=2, and +inf when x=0 and nu<2.
+
 ** Extended the range of gsl_sf_bessel_lnKnu_e by rescaling
    intermediate results to avoid internal overflows [bug #31528].
 

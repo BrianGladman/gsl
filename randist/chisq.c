@@ -39,16 +39,23 @@ gsl_ran_chisq (const gsl_rng * r, const double nu)
 double
 gsl_ran_chisq_pdf (const double x, const double nu)
 {
-  if (x <= 0)
+  if (x < 0)
     {
       return 0 ;
     }
   else
     {
-      double p;
-      double lngamma = gsl_sf_lngamma (nu / 2);
-      
-      p = exp ((nu / 2 - 1) * log (x/2) - x/2 - lngamma) / 2;
-      return p;
+      if(nu == 2.0)
+        {
+          return exp(-x/2.0) / 2.0;
+        }
+      else
+        {
+          double p;
+          double lngamma = gsl_sf_lngamma (nu / 2);
+
+          p = exp ((nu / 2 - 1) * log (x/2) - x/2 - lngamma) / 2;
+          return p;
+        }
     }
 }

@@ -73,6 +73,8 @@ double test_cauchy (void);
 double test_cauchy_pdf (double x);
 double test_chisq (void);
 double test_chisq_pdf (double x);
+double test_chisqnu2 (void);
+double test_chisqnu2_pdf (double x);
 double test_dirichlet (void);
 double test_dirichlet_pdf (double x);
 double test_dirichlet_small (void);
@@ -288,6 +290,7 @@ main (void)
   testPDF (FUNC2 (beta));
   testPDF (FUNC2 (cauchy));
   testPDF (FUNC2 (chisq));
+  testPDF (FUNC2 (chisqnu2));
   testPDF (FUNC2 (dirichlet));
   testPDF (FUNC2 (dirichlet_small));
   testPDF (FUNC2 (erlang));
@@ -867,6 +870,19 @@ test_chisq_pdf (double x)
 {
   return gsl_ran_chisq_pdf (x, 13.0);
 }
+
+double
+test_chisqnu2 (void)
+{
+  return gsl_ran_chisq (r_global, 2.0);
+}
+
+double
+test_chisqnu2_pdf (double x)
+{
+  return gsl_ran_chisq_pdf (x, 2.0);
+}
+
 
 double
 test_dir2d (void)

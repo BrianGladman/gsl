@@ -485,3 +485,5 @@ evaluation and ode improvements
 * Sam Mason <sam@samason.me.uk> - bug fix for gsl_pow_int
 
 * José Luis García Pallero <jgpallero@gmail.com> - error checking for GSL cblas
+
+* Teemu Ikonen <tpikonen@gmail.com> patch for gsl_ran_chisq_pdf
