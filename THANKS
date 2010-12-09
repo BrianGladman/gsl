@@ -487,3 +487,6 @@ evaluation and ode improvements
 * José Luis García Pallero <jgpallero@gmail.com> - error checking for GSL cblas
 
 * Teemu Ikonen <tpikonen@gmail.com> patch for gsl_ran_chisq_pdf
+
+* Evgeny Kurbatov <EvgenyKurbatov@yandex.ru> - patch for error
+  handling in interpolation routines

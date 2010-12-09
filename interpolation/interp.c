@@ -122,14 +122,9 @@ gsl_interp_eval_e (const gsl_interp * interp,
                    const double xa[], const double ya[], double x,
                    gsl_interp_accel * a, double *y)
 {
-  if (x < interp->xmin)
+  if (x < interp->xmin || x > interp->xmax)
     {
-      *y = ya[0];
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *y = ya[interp->size - 1];
+      *y = GSL_NAN;
       return GSL_EDOM;
     }
 
@@ -142,7 +137,14 @@ gsl_interp_eval (const gsl_interp * interp,
                  gsl_interp_accel * a)
 {
   double y;
-  int status = interp->type->eval (interp->state, xa, ya, interp->size, x, a, &y);
+  int status;
+
+  if (x < interp->xmin || x > interp->xmax)
+    {
+      GSL_ERROR_VAL("interpolation error", GSL_EDOM, GSL_NAN);
+    }
+
+  status = interp->type->eval (interp->state, xa, ya, interp->size, x, a, &y);
 
   DISCARD_STATUS(status);
 
@@ -156,14 +158,9 @@ gsl_interp_eval_deriv_e (const gsl_interp * interp,
                          gsl_interp_accel * a,
                          double *dydx)
 {
-  if (x < interp->xmin)
+  if (x < interp->xmin || x > interp->xmax)
     {
-      *dydx = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *dydx = 0.0;
+      *dydx = GSL_NAN;
       return GSL_EDOM;
     }
 
@@ -176,7 +173,14 @@ gsl_interp_eval_deriv (const gsl_interp * interp,
                        gsl_interp_accel * a)
 {
   double dydx;
-  int status = interp->type->eval_deriv (interp->state, xa, ya, interp->size, x, a, &dydx);
+  int status;
+
+  if (x < interp->xmin || x > interp->xmax)
+    {
+      GSL_ERROR_VAL("interpolation error", GSL_EDOM, GSL_NAN);
+    }
+
+  status = interp->type->eval_deriv (interp->state, xa, ya, interp->size, x, a, &dydx);
 
   DISCARD_STATUS(status);
 
@@ -190,14 +194,9 @@ gsl_interp_eval_deriv2_e (const gsl_interp * interp,
                           gsl_interp_accel * a,
                           double * d2)
 {
-  if (x < interp->xmin)
+  if (x < interp->xmin || x > interp->xmax)
     {
-      *d2 = 0.0;
-      return GSL_EDOM;
-    }
-  else if (x > interp->xmax)
-    {
-      *d2 = 0.0;
+      *d2 = GSL_NAN;
       return GSL_EDOM;
     }
 
@@ -210,7 +209,14 @@ gsl_interp_eval_deriv2 (const gsl_interp * interp,
                         gsl_interp_accel * a)
 {
   double d2;
-  int status = interp->type->eval_deriv2 (interp->state, xa, ya, interp->size, x, a, &d2);
+  int status;
+
+  if (x < interp->xmin || x > interp->xmax)
+    {
+      GSL_ERROR_VAL("interpolation error", GSL_EDOM, GSL_NAN);
+    }
+
+  status = interp->type->eval_deriv2 (interp->state, xa, ya, interp->size, x, a, &d2);
 
   DISCARD_STATUS(status);
 
@@ -227,7 +233,7 @@ gsl_interp_eval_integ_e (const gsl_interp * interp,
 {
   if (a > b || a < interp->xmin || b > interp->xmax)
     {
-      *result = 0.0;
+      *result = GSL_NAN;
       return GSL_EDOM;
     }
   else if(a == b)
@@ -247,7 +253,18 @@ gsl_interp_eval_integ (const gsl_interp * interp,
                        gsl_interp_accel * acc)
 {
   double result;
-  int status = interp->type->eval_integ (interp->state, xa, ya, interp->size, acc, a, b, &result);
+  int status;
+
+  if (a > b || a < interp->xmin || b > interp->xmax)
+    {
+      GSL_ERROR_VAL("interpolation error", GSL_EDOM, GSL_NAN);
+    }
+  else if(a == b)
+    {
+      return 0.0;
+    }
+
+  status = interp->type->eval_integ (interp->state, xa, ya, interp->size, acc, a, b, &result);
 
   DISCARD_STATUS(status);
 

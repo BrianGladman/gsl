@@ -350,7 +350,7 @@ akima_eval_integ (const void * vstate,
     }
     else {
       *result = 0.0;
-      return GSL_FAILURE;
+      return GSL_EINVAL;
     }
   }
   

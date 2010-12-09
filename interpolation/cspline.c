@@ -334,7 +334,7 @@ cspline_eval_deriv (const void * vstate,
   else
     {
       *dydx = 0.0;
-      return GSL_FAILURE;
+      return GSL_EINVAL;
     }
 }
 
@@ -380,7 +380,7 @@ cspline_eval_deriv2 (const void * vstate,
   else
     {
       *y_pp = 0.0;
-      return GSL_FAILURE;
+      return GSL_EINVAL;
     }
 }
 
@@ -435,7 +435,7 @@ cspline_eval_integ (const void * vstate,
     }
     else {
       *result = 0.0;
-      return GSL_FAILURE;
+      return GSL_EINVAL;
     }
   }
   

@@ -1,3 +1,18 @@
+2010-12-09  Brian Gough  <bjg@network-theory.co.uk>
+
+	* cspline.c (cspline_eval, cspline_eval_deriv)
+	(cspline_eval_deriv2, cspline_eval_integ): return GSL_EINVAL for
+	out of range values instead of GSL_FAILURE
+
+	* akima.c (akima_eval_integ): return GSL_EINVAL for out of range
+	values instead of GSL_FAILURE
+
+	* interp.c (gsl_interp_eval_e, gsl_interp_eval)
+	(gsl_interp_eval_deriv_e, gsl_interp_eval_deriv)
+	(gsl_interp_eval_deriv2_e, gsl_interp_eval_deriv2)
+	(gsl_interp_eval_integ_e, gsl_interp_eval_integ): return NaN when
+	x is out of range
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* spline.c (gsl_spline_free): handle NULL argument in free
