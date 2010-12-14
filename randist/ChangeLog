@@ -1,3 +1,8 @@
+2010-12-14  Brian Gough  <bjg@gnu.org>
+
+	* gamma.c (gamma_frac): avoid potential division by zero, handle
+	a=0 as a special case
+
 2010-11-20  Brian Gough  <bjg@gnu.org>
 
 	* chisq.c (gsl_ran_chisq_pdf): handle x=0 as special case
