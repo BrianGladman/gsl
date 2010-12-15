@@ -120,6 +120,11 @@ gamma_frac (const gsl_rng * r, const double a)
      on page 551.  */
 
   double p, q, x, u, v;
+
+  if (a == 0) {
+    return 0;
+  }
+
   p = M_E / (a + M_E);
   do
     {
