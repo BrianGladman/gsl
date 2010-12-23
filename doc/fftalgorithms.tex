@@ -2324,7 +2324,7 @@ blocks,
   \ENDFOR
 
   \FOR{$b = 0 \dots q_i - 1$}
-        \STATE{$g(b p_{i} - p_{i-1}/2) \Leftarrow -g(b p_{i} - p_{i-1}/2)$}
+        \STATE{$g(b p_{i} + p_{i} - p_{i-1}/2) \Leftarrow -g(b p_{i} + p_{i} - p_{i-1}/2)$}
   \ENDFOR
 
 \ENDFOR
