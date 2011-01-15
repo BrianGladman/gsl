@@ -105,6 +105,12 @@ gsl_interp_min_size(const gsl_interp * interp)
   return interp->type->min_size;
 }
 
+unsigned int
+gsl_interp_type_min_size(const gsl_interp_type * T)
+{
+  return T->min_size;
+}
+
 void
 gsl_interp_free (gsl_interp * interp)
 {
