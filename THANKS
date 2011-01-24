@@ -490,3 +490,6 @@ evaluation and ode improvements
 
 * Evgeny Kurbatov <EvgenyKurbatov@yandex.ru> - patch for error
   handling in interpolation routines
+
+* Michel Kern <Michel.Kern@inria.fr> - fix for singular Jacobian in
+  Newton solver

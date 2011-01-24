@@ -1,3 +1,6 @@
+** The newton multiroot solvers now return an error when a singular
+   jacobian is detected.
+
 ** Added a new function gsl_interp_type_min_size to return the size of
    an interpolation type.
 
