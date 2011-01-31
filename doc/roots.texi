@@ -225,7 +225,7 @@ f(x) = a x^2 + b x + c
 @noindent
 with @math{a = 3}, @math{b = 2}, @math{c = 1}.  The following code
 defines a @code{gsl_function} @code{F} which you could pass to a root
-finder:
+finder as a function pointer:
 
 @example
 struct my_f_params @{ double a; double b; double c; @};
@@ -249,12 +249,8 @@ F.params = &params;
 @end example
 
 @noindent
-The function @math{f(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_EVAL(F,x) 
-    (*((F)->function))(x,(F)->params)
-@end example
+The function @math{f(x)} can be evaluated using the macro
+@code{GSL_FN_EVAL(&F,x)} defined in @file{gsl_math.h}.
 
 @deftp {Data Type} gsl_function_fdf
 This data type defines a general function with parameters and its first
@@ -325,34 +321,14 @@ FDF.params = 0;
 @end example
 
 @noindent
-The function @math{f(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_F(FDF,x) 
-     (*((FDF)->f))(x,(FDF)->params)
-@end example
-
-@noindent
-The derivative @math{f'(x)} can be evaluated using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_DF(FDF,x) 
-     (*((FDF)->df))(x,(FDF)->params)
-@end example
-
-@noindent
-and both the function @math{y = f(x)} and its derivative @math{dy = f'(x)}
-can be evaluated at the same time using the following macro,
-
-@example
-#define GSL_FN_FDF_EVAL_F_DF(FDF,x,y,dy) 
-     (*((FDF)->fdf))(x,(FDF)->params,(y),(dy))
-@end example
-
-@noindent
-The macro stores @math{f(x)} in its @var{y} argument and @math{f'(x)} in
-its @var{dy} argument---both of these should be pointers to
-@code{double}.
+The function @math{f(x)} can be evaluated using the macro
+@code{GSL_FN_FDF_EVAL_F(&FDF,x)} and the derivative @math{f'(x)} can
+be evaluated using the macro @code{GSL_FN_FDF_EVAL_DF(&FDF,x)}.  Both
+the function @math{y = f(x)} and its derivative @math{dy = f'(x)} can
+be evaluated at the same time using the macro
+@code{GSL_FN_FDF_EVAL_F_DF(&FDF,x,y,dy)}.  The macro stores
+@math{f(x)} in its @var{y} argument and @math{f'(x)} in its @var{dy}
+argument---both of these should be pointers to @code{double}.
 
 @node Search Bounds and Guesses
 @section Search Bounds and Guesses
