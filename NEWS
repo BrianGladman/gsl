@@ -1,3 +1,7 @@
+** It is now possible to choose an alternative cblas library via
+   pkg-config using the GSL_CBLAS_LIB environment variable or
+   the pkg-config --define-variable option.
+
 ** The newton multiroot solvers now return an error when a singular
    jacobian is detected.
 

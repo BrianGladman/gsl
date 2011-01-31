@@ -1,3 +1,8 @@
+2011-01-31  Peter Johansson  <trojkan@gmail.com>
+
+	* gsl.pc.in (GSL_CBLAS_LIB): allow user to choose cblas via
+	pkg-config
+
 2010-05-25  Peter Johansson  <trojkan@gmail.com>
 
 	* configure.ac: added variable GSL_LIBM from macro AC_CHECK_LIBM
