@@ -2215,6 +2215,126 @@ int main (void)
       }
   }
 
+  /* Test some fixed-order Gauss-Legendre rule points and weights on [-1, 1] */
+  /* This verifies the (point, weight) retrieval API behaves sanely */
+  {
+    const double eps = GSL_DBL_EPSILON;
+    gsl_integration_glfixed_table *tbl;
+    int n, i;
+    double xi, wi;
+
+    // Analytical results for points and weights on [-1, 1]
+    // Pulled from http://en.wikipedia.org/wiki/Gaussian_quadrature
+    // Sorted in increasing order of Gauss points
+    const double e1[1][2] = {
+      {0, 2 }
+    };
+    const double e2[2][2] = {
+      {-1/sqrt(3), 1},
+      { 1/sqrt(3), 1}
+    };
+    const double e3[3][2] = {
+      {-sqrt(15)/5, 5./9},
+      {          0, 8./9},
+      { sqrt(15)/5, 5./9}
+    };
+    const double e4[4][2] = {
+      {-sqrt((3+2*sqrt(6./5))/7), (18-sqrt(30))/36},
+      {-sqrt((3-2*sqrt(6./5))/7), (18+sqrt(30))/36},
+      { sqrt((3-2*sqrt(6./5))/7), (18+sqrt(30))/36},
+      { sqrt((3+2*sqrt(6./5))/7), (18-sqrt(30))/36}
+    };
+    const double e5[5][2] = {
+      {-sqrt((5+2*sqrt(10./7)))/3, (322-13*sqrt(70))/900},
+      {-sqrt((5-2*sqrt(10./7)))/3, (322+13*sqrt(70))/900},
+      {                         0, 128./225             },
+      { sqrt((5-2*sqrt(10./7)))/3, (322+13*sqrt(70))/900},
+      { sqrt((5+2*sqrt(10./7)))/3, (322-13*sqrt(70))/900}
+    };
+
+    n = 1;
+    tbl = gsl_integration_glfixed_table_alloc(n);
+    for (i = 0; i < n; ++i)
+      {
+        gsl_integration_glfixed_point(-1, 1, i, &xi, &wi, tbl);
+        gsl_test_abs(xi, e1[i][0], eps, "glfixed %d-point lookup: x(%d)", n, i);
+        gsl_test_abs(wi, e1[i][1], eps, "glfixed %d-point lookup: w(%d)", n, i);
+      }
+    gsl_integration_glfixed_table_free(tbl);
+
+    n = 2;
+    tbl = gsl_integration_glfixed_table_alloc(n);
+    for (i = 0; i < n; ++i)
+      {
+        gsl_integration_glfixed_point(-1, 1, i, &xi, &wi, tbl);
+        gsl_test_abs(xi, e2[i][0], eps, "glfixed %d-point lookup: x(%d)", n, i);
+        gsl_test_abs(wi, e2[i][1], eps, "glfixed %d-point lookup: w(%d)", n, i);
+      }
+    gsl_integration_glfixed_table_free(tbl);
+
+    n = 3;
+    tbl = gsl_integration_glfixed_table_alloc(n);
+    for (i = 0; i < n; ++i)
+      {
+        gsl_integration_glfixed_point(-1, 1, i, &xi, &wi, tbl);
+        gsl_test_abs(xi, e3[i][0], eps, "glfixed %d-point lookup: x(%d)", n, i);
+        gsl_test_abs(wi, e3[i][1], eps, "glfixed %d-point lookup: w(%d)", n, i);
+      }
+    gsl_integration_glfixed_table_free(tbl);
+
+    n = 4;
+    tbl = gsl_integration_glfixed_table_alloc(n);
+    for (i = 0; i < n; ++i)
+      {
+        gsl_integration_glfixed_point(-1, 1, i, &xi, &wi, tbl);
+        gsl_test_abs(xi, e4[i][0], eps, "glfixed %d-point lookup: x(%d)", n, i);
+        gsl_test_abs(wi, e4[i][1], eps, "glfixed %d-point lookup: w(%d)", n, i);
+      }
+    gsl_integration_glfixed_table_free(tbl);
+
+    n = 5;
+    tbl = gsl_integration_glfixed_table_alloc(n);
+    for (i = 0; i < n; ++i)
+      {
+        gsl_integration_glfixed_point(-1, 1, i, &xi, &wi, tbl);
+        gsl_test_abs(xi, e5[i][0], eps, "glfixed %d-point lookup: x(%d)", n, i);
+        gsl_test_abs(wi, e5[i][1], eps, "glfixed %d-point lookup: w(%d)", n, i);
+      }
+    gsl_integration_glfixed_table_free(tbl);
+  }
+
+  /* Test some fixed-order Gauss-Legendre rule points and weights on [-2, 3] */
+  /* This verifies the (point, weight) retrieval API is okay on non-[-1,1] */
+  {
+    gsl_integration_glfixed_table *tbl;
+    double result, x, w;
+    int i;
+
+    /* Odd n = 3, f(x) = x**5 + x**4 + x**3 + x**2 + x**1 + 1 */
+    result = 0;
+    tbl = gsl_integration_glfixed_table_alloc(3);
+    for (i = 0; i < 3; ++i)
+      {
+        gsl_integration_glfixed_point(-2, 3, i, &x, &w, tbl);
+        result += w * (1 + x*(1 + x*(1 + x*(1 + x*(1 + x)))));
+      }
+    gsl_test_rel(result, 805./4, 1e-8,
+        "glfixed %d-point xi,wi eval", 3);
+    gsl_integration_glfixed_table_free(tbl);
+
+    /* Even n = 4, f(x) = x**7 + x**6 + x**5 + x**4 + x**3 + x**2 + x**1 + 1 */
+    result = 0;
+    tbl = gsl_integration_glfixed_table_alloc(4);
+    for (i = 0; i < 4; ++i)
+      {
+        gsl_integration_glfixed_point(-2, 3, i, &x, &w, tbl);
+        result += w * (1 + x*(1 + x*(1 + x*(1 + x*(1 + x*(1 + x*(1 + x)))))));
+      }
+    gsl_test_rel(result, 73925./56, 1e-8,
+        "glfixed %d-point xi,wi eval", 4);
+    gsl_integration_glfixed_table_free(tbl);
+  }
+
   {
     typedef double (*fptr) ( double , void * );
     

@@ -273,6 +273,16 @@ double
                            double b,
                            const gsl_integration_glfixed_table * t);
 
+/* Routine to retrieve the i-th Gauss-Legendre point and weight from t */
+
+int
+  gsl_integration_glfixed_point (double a,
+                                 double b,
+                                 size_t i,
+                                 double *xi,
+                                 double *wi,
+                                 const gsl_integration_glfixed_table * t);
+
 
 /* Cquad integration - Pedro Gonnet */
 
