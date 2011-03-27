@@ -1,3 +1,7 @@
+** The jacobi method gsl_eigen_jacobi now uses the norm of the
+   off-diagonal elements for its convergence criterion, as in
+   algorithm 8.4.3 of Golub and van Loan.
+
 ** It is now possible to choose an alternative cblas library via
    pkg-config using the GSL_CBLAS_LIB environment variable or
    the pkg-config --define-variable option.

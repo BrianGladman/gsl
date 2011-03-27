@@ -493,3 +493,5 @@ evaluation and ode improvements
 
 * Michel Kern <Michel.Kern@inria.fr> - fix for singular Jacobian in
   Newton solver
+
+* Nikolay Simakov <nsimakov@andrew.cmu.edu> - bug report for gsl_eigen_jacobi

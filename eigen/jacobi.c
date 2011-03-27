@@ -108,6 +108,10 @@ norm (gsl_matrix * A)
       for (j = 0; j < N; j++)
         {
           double Aij = gsl_matrix_get (A, i, j);
+          
+          /* compute norm of off-diagonal elements as per algorithm
+             8.4.3 and definition at start of section 8.4.1 */
+          if (i == j) continue;  
 
           if (Aij != 0.0)
             {
