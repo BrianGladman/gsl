@@ -6,6 +6,10 @@
    pkg-config using the GSL_CBLAS_LIB environment variable or
    the pkg-config --define-variable option.
 
+** Added a new function gsl_integration_glfixed_point to return
+   ordered Gauss-Legendre points and weights contained within a
+   gsl_integration_glfixed_table [bug #32237].
+
 ** The newton multiroot solvers now return an error when a singular
    jacobian is detected.
 
