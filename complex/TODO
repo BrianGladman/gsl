@@ -15,5 +15,7 @@ O. A. Chervonenkis, and A. R. Yanpol'skii, Handbook for computing
 elementary functions, International Series of Monographs in Pure and
 Applied Mathematics, vol. 76, Pergamon Press, Oxford, 1965.
 
-
+* Comparing the Complex Arithmetic routines in Section 5.5 of Numerical Recipes 
+gsl_complex_div() uses simple complex division while 5.5.5 has a more
+sophisticated one that avoids underflow/overflow.
 
