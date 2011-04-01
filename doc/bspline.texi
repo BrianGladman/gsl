@@ -217,7 +217,7 @@ to return interval midpoints in the degenerate @math{k=1} case.
 
 @deftypefun double gsl_bspline_greville_abscissa (size_t @var{i}, gsl_bspline_workspace *@var{w});
 Returns the location of the @math{i}-th Greville abscissa for the given spline
-basis.  Here, @math{i = 0}, ..., @code{gsl_bspline_ncoeffs(w)}.
+basis.  Here, @math{i = 0}, ..., @code{gsl_bspline_ncoeffs(w) - 1}.
 @end deftypefun
 
 @node Example programs for B-splines
