@@ -16,29 +16,25 @@ GSL development is hosted at http://savannah.gnu.org/projects/gsl
 
 To do the initial checkout of the repository try:
 
-  git clone git://git.savannah.gnu.org/gsl.git
+   bzr branch bzr://bzr.sv.gnu.org/
 
-[from now on you can just do "git pull" in the gsl directory]
+[from now on you can just do "bzr pull" in the gsl directory]
 
 To generate the initial build scripts, run autoreconf -i -v or ./autogen.sh
 
 # PEOPLE WITH SAVANNAH SSH WRITE ACCESS:
 
-  git clone ssh://git.sv.gnu.org/srv/git/gsl.git
+  bzr branch bzr+ssh://bzr.savannah.gnu.org/gsl/trunk/
 
   # editing and committing
   <edit file1>
-  git add file2
-  git rm file3
-  git diff  # see changes
-  git commit -m 'commit message' file1 file2 file3
+  bzr add file2
+  bzr rm file3
+  bzr diff  # see changes
+  bzr commit -m 'commit message' file1 file2 file3
   
   # push to repository
-  git push
-
-# PEOPLE WHO JUST WANT TO BROWSE THE REPOSITORY
-point your web browser to
-  http://git.savannah.gnu.org/gitweb/?p=gsl.git
+  bzr push
 
 # PEOPLE WHO JUST WANT A WORKING VERSION
 grab the latest bundled release at
@@ -49,13 +45,10 @@ work.
 
 ---------- submitting patches
 
-The best way to send us a patch is to compile from an anonymous CVS
-checkout and to use a nice cvs diff option, like 
+The best way to send us a patch is to compile from an anonymous bzr
+checkout and to use a nice diff option, like 
 
-  cvs diff -u
-
-There is a script fixpatch.pl in gsl/scripts which will make the
-resulting output suitable for piping to 'patch'.
+  bzr diff -p1
 
 Note: Please test your patch before sending it, by applying it to a
 clean set of files and running 'make'.
@@ -69,7 +62,6 @@ archives for related information. There is a search facility for the
 mailing list available at,
 
   http://lists.gnu.org/archive/html/bug-gsl/
-  http://sourceware.org/ml/gsl-discuss/
 
 ---------- useful scripts
 
@@ -260,7 +252,7 @@ Savannah Information
 
 Developer Access via SSH.
 
-Only project developers can access the GIT tree via this method. SSH2
+Only project developers can access the Bzr tree via this method. SSH2
 must be installed on your client machine.  Put the following 
 in your ~/.ssh/config file:
 
@@ -269,12 +261,12 @@ in your ~/.ssh/config file:
      ForwardX11 no
 
 In the example below substitute 'USER' with your account username.
-Your savannah web password is not used for GIT --- you have to
-register a CVS/SSH Shared key in the Account Maintenance page.
+Your savannah web password is not used for Bzr --- you have to
+register an SSH Shared key in the Account Maintenance page.
 
 Source tree:
 
-  git clone ssh://USER@git.sv.gnu.org/srv/git/project.git
+  bzr checkout bzr+ssh://USER@bzr.savannah.gnu.org/gsl/trunk/
 
 HTML tree:
 
