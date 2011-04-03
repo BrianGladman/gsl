@@ -15,7 +15,7 @@ pkgconfig_DATA= gsl.pc
 
 CLEANFILES = gsl.pc gsl-config
 
-EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS gsl.spec.in gsl.m4 test_gsl_histogram.sh
+EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS gsl.spec.in gsl.m4 test_gsl_histogram.sh pkgconfig.test
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
@@ -40,8 +40,8 @@ gsl_randist_LDADD = libgsl.la cblas/libgslcblas.la
 gsl_histogram_SOURCES = gsl-histogram.c
 gsl_histogram_LDADD = libgsl.la cblas/libgslcblas.la
 
-check_SCRIPTS = test_gsl_histogram.sh
-TESTS = test_gsl_histogram.sh pkg-config.test
+check_SCRIPTS = test_gsl_histogram.sh pkgconfig.test
+TESTS = test_gsl_histogram.sh pkgconfig.test
 
 #bin_PROGRAMS = main dummy
 #dummy_SOURCES = version.c
