@@ -495,3 +495,5 @@ evaluation and ode improvements
   Newton solver
 
 * Nikolay Simakov <nsimakov@andrew.cmu.edu> - bug report for gsl_eigen_jacobi
+
+* Jim Ward - numerous bug reports and useful suggestions
