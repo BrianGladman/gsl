@@ -813,7 +813,7 @@ is sufficient.
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
-@deftypefun int gsl_integration_cquad (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, gsl_integration_cquad_workspace * @var{workspace},  double * @var{result}, double * @var{abserr}, double * @var{nevals})
+@deftypefun int gsl_integration_cquad (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, gsl_integration_cquad_workspace * @var{workspace},  double * @var{result}, double * @var{abserr}, size_t * @var{nevals})
 This function computes the integral of @math{f} over @math{(a,b)}
 within the desired absolute and relative error limits, @var{epsabs}
 and @var{epsrel} using the @sc{cquad} algorithm.  The function returns
