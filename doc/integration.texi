@@ -963,7 +963,7 @@ The @sc{cquad} integration algorithm is described in the following paper:
 @item
 P. Gonnet, ``Increasing the Reliability of Adaptive Quadrature Using
 Explicit Interpolants'', @cite{ACM Transactions on Mathematical
-Software}, Volume FIXME (2010), FIXME.
+Software}, Volume 37 (2010), Issue 3, Article 26.
 @end itemize
 
 
