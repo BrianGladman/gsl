@@ -47,7 +47,7 @@ gsl_poly_solve_quadratic (double a, double b, double c,
     {
       if (b == 0)
         {
-          double r = fabs (0.5 * sqrt (disc) / a);
+          double r = sqrt (-c / a);
           *x0 = -r;
           *x1 =  r;
         }
