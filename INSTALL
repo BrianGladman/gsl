@@ -173,7 +173,10 @@ If you get errors like
           found. The new symbol cannot be associated with a csect and
           is being ignored.
 
-try compiling with CFLAGS="-g0"
+this is due to problems with some versions of the IBM assembler.  Try
+compiling with CFLAGS="-g0" as a workaround.  For details and other
+solutions see https://www-304.ibm.com/support/docview.wss?uid=isg1IZ98134 and
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=46072
 
 If you get the error,
 
@@ -196,17 +199,6 @@ On more recent versions of AIX (e.g >= 5.1) use
 
 to increase the allowed number of arguments. NNN is the amount of
 space measured in 4k blocks (default 6, maximum 1024)
-
-If compiling with GCC the following error
-
-  fp-aix.c: In function `gsl_ieee_set_mode':
-  fp-aix.c:30: error: `fprnd_t' undeclared (first use in this function)
-
-can occur if /usr/includes/float.h is not used, and instead the
-float.h of the installed gcc is picked up instead -- it may be missing
-the necessary structs.  To work around it copy the missing parts
-(between #ifdef _ALL_SOURCE and its #endif) from /usr/includes/float.h
-into a new header file and #include that in fp-aix.c
 
 Hints for Compaq/DEC Alpha
 ==========================
