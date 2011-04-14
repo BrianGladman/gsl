@@ -3,6 +3,10 @@
 	* gsl_nan.h (GSL_NEGZERO): define negative zero as explicitly
 	floating point, same for positive zero.
 
+2011-04-01  Rhys Ulerich  <rhys.ulerich@gmail.com>
+
+	* doc/bspline.texi: Correct valid index range for Greville abscissae
+
 2011-01-31  Peter Johansson  <trojkan@gmail.com>
 
 	* gsl.pc.in (GSL_CBLAS_LIB): allow user to choose cblas via
