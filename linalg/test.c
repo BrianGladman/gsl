@@ -1552,7 +1552,7 @@ int test_QRPT_update(void)
   gsl_test(f, "  QRPT_update m(3,5)");
   s += f;
 
-  f = test_QRPT_update_dim(m53, 2 * 512.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_update_dim(m53, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_update m(5,3)");
   s += f;
 
