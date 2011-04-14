@@ -318,6 +318,53 @@ double
   return A*s;
 }
 
+/* Routine to retrieve the i-th Gauss-Legendre point and weight from t.
+   Useful when the caller wishes to access the information stored in
+   the high-precision gsl_integration_glfixed_table struct.  Points
+   are indexed and presented in increasing order to the caller.
+*/
+int
+  gsl_integration_glfixed_point (double a,
+                                 double b,
+                                 size_t i,
+                                 double *xi,
+                                 double *wi,
+                                 const gsl_integration_glfixed_table * t)
+{
+  const double A = (b - a) / 2;  /* Length of [a,b] */
+  const double B = (a + b) / 2;  /* Midpoint of [a,b] */
+
+  if (i >= t->n)
+    {
+      GSL_ERROR ("i must be less than t->n", GSL_EINVAL);
+    }
+
+  /* See comments above gsl_integration_glfixed for struct's x, w layout. */
+  /* Simply unpack that layout into a sorted set of points, weights. */
+  if (GSL_IS_ODD(t->n))
+    {
+      const int k = ((int) i) - ((int) t->n) / 2;
+      const int s = k < 0 ? -1 : 1;
+
+      *xi = B + s*A*t->x[s*k];
+      *wi =       A*t->w[s*k];
+    }
+  else if (/* GSL_IS_EVEN(t->n) && */ i < t->n / 2)
+    {
+      i = (t->n / 2) - 1 - i;
+      *xi = B - A*t->x[i];
+      *wi =     A*t->w[i];
+    }
+  else /* GSL_IS_EVEN(t->n) && i >= n / 2 */
+    {
+      i  -= t->n / 2;
+      *xi = B + A*t->x[i];
+      *wi =     A*t->w[i];
+    }
+
+  return GSL_SUCCESS;
+}
+
 /* Computing of abscissas and weights for Gauss-Legendre quadrature for any(reasonable) order n
  [in] n   - order of quadrature
  [in] eps - required precision (must be eps>=macheps(double), usually eps = 1e-10 is ok)

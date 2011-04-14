@@ -1,3 +1,8 @@
+2011-03-27  Brian Gough  <bjg@network-theory.co.uk>
+
+	* jacobi.c (norm): compute norm of off-diagonal elements only as
+	per algorithm 8.4.3 in Golub and van Loan
+
 2009-11-26  Brian Gough  <bjg@network-theory.co.uk>
 
 	* qrstep.c (qrstep): handle the case where |mu| >> |d0| + |sd0| to

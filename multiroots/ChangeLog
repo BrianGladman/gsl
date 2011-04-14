@@ -1,3 +1,9 @@
+2011-01-24  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gnewton.c (gnewton_iterate): check for singular jacobian
+
+	* newton.c (newton_iterate): check for singular jacobian
+
 2009-07-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* fsolver.c (gsl_multiroot_fsolver_free): handle NULL argument in

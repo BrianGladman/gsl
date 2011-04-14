@@ -106,7 +106,12 @@ newton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x,
 
   gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
 
-  gsl_linalg_LU_solve (state->lu, state->permutation, f, dx);
+  {
+    int status = gsl_linalg_LU_solve (state->lu, state->permutation, f, dx);
+
+    if (status)
+      return status;
+  }   
       
   for (i = 0; i < n; i++)
     {

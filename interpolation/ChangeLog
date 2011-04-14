@@ -1,3 +1,8 @@
+2011-01-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* interp.c (gsl_interp_type_min_size): added function to get
+	min_size from type instead of interp object
+
 2010-12-09  Brian Gough  <bjg@network-theory.co.uk>
 
 	* cspline.c (cspline_eval, cspline_eval_deriv)

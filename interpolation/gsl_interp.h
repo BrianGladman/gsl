@@ -96,6 +96,7 @@ gsl_interp_init(gsl_interp * obj, const double xa[], const double ya[], size_t s
 
 const char * gsl_interp_name(const gsl_interp * interp);
 unsigned int gsl_interp_min_size(const gsl_interp * interp);
+unsigned int gsl_interp_type_min_size(const gsl_interp_type * T);
 
 
 int

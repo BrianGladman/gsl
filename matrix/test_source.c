@@ -610,6 +610,7 @@ FUNCTION (test, ops) (const size_t M, const size_t N)
 
   FUNCTION(gsl_matrix, free) (a);
   FUNCTION(gsl_matrix, free) (b);
+  FUNCTION(gsl_matrix, free) (m);
 }
 
 #if !(USES_LONGDOUBLE && !HAVE_PRINTF_LONGDOUBLE)

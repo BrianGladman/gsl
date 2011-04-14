@@ -132,10 +132,13 @@ interp uses 'cspline' interpolation.
 @end deftypefun
 
 @deftypefun {unsigned int} gsl_interp_min_size (const gsl_interp * @var{interp})
-This function returns the minimum number of points required by the
-interpolation type of @var{interp}.  For example, Akima spline interpolation
-requires a minimum of 5 points.
+@deftypefunx {unsigned int} gsl_interp_type_min_size (const gsl_interp_type * @var{T})
+These functions return the minimum number of points required by the
+interpolation object @var{interp} or interpolation type @var{T}.  For
+example, Akima spline interpolation requires a minimum of 5 points.
 @end deftypefun
+
+
 
 @node Index Look-up and Acceleration
 @section Index Look-up and Acceleration

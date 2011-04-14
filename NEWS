@@ -1,3 +1,21 @@
+** The jacobi method gsl_eigen_jacobi now uses the norm of the
+   off-diagonal elements for its convergence criterion, as in
+   algorithm 8.4.3 of Golub and van Loan.
+
+** It is now possible to choose an alternative cblas library via
+   pkg-config using the GSL_CBLAS_LIB environment variable or
+   the pkg-config --define-variable option.
+
+** Added a new function gsl_integration_glfixed_point to return
+   ordered Gauss-Legendre points and weights contained within a
+   gsl_integration_glfixed_table [bug #32237].
+
+** The newton multiroot solvers now return an error when a singular
+   jacobian is detected.
+
+** Added a new function gsl_interp_type_min_size to return the size of
+   an interpolation type.
+
 ** The interpolation functions now return NaN and when x is out of range,
    instead of extrapolating.
 

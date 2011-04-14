@@ -490,3 +490,10 @@ evaluation and ode improvements
 
 * Evgeny Kurbatov <EvgenyKurbatov@yandex.ru> - patch for error
   handling in interpolation routines
+
+* Michel Kern <Michel.Kern@inria.fr> - fix for singular Jacobian in
+  Newton solver
+
+* Nikolay Simakov <nsimakov@andrew.cmu.edu> - bug report for gsl_eigen_jacobi
+
+* Jim Ward - numerous bug reports and useful suggestions

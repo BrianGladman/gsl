@@ -604,7 +604,8 @@ J dx = - f(x)
 
 @end ifinfo
 @noindent
-using LU decomposition.
+using LU decomposition.  If the Jacobian matrix is singular, an error
+code of @code{GSL_EDOM} is returned.
 @end deffn
 
 @comment ============================================================

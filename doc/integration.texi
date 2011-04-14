@@ -813,7 +813,7 @@ is sufficient.
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
-@deftypefun int gsl_integration_cquad (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, gsl_integration_cquad_workspace * @var{workspace},  double * @var{result}, double * @var{abserr}, double * @var{nevals})
+@deftypefun int gsl_integration_cquad (const gsl_function * @var{f}, double @var{a}, double @var{b}, double @var{epsabs}, double @var{epsrel}, gsl_integration_cquad_workspace * @var{workspace},  double * @var{result}, double * @var{abserr}, size_t * @var{nevals})
 This function computes the integral of @math{f} over @math{(a,b)}
 within the desired absolute and relative error limits, @var{epsabs}
 and @var{epsrel} using the @sc{cquad} algorithm.  The function returns
@@ -858,13 +858,20 @@ precomputed coefficients are used.  If precomputed weights are not available,
 lower precision coefficients are computed on the fly.
 @end deftypefun
 
-@deftypefun double gsl_integration_glfixed (const gsl_function * @var{f}, double @var{a}, double @var{b}, {gsl_integration_glfixed_table *} @var{t})
+@deftypefun double gsl_integration_glfixed ({const gsl_function *} @var{f}, double @var{a}, double @var{b}, {const gsl_integration_glfixed_table *} @var{t})
 This function applies the Gauss-Legendre integration rule
 contained in table @var{t} and returns the result.
 @end deftypefun
 
+@deftypefun int gsl_integration_glfixed_point (double @var{a}, double @var{b}, size_t @var{i}, {double *} @var{xi}, {double *} @var{wi}, {const gsl_integration_glfixed_table *} @var{t})
+For @var{i} in @math{[0, @dots{}, t->n - 1]}, this function obtains the
+@var{i}-th Gauss-Legendre point @var{xi} and weight @var{wi} on the interval
+[@var{a},@var{b}].  The points and weights are ordered by increasing point
+value.  A function @math{f} may be integrated on [@var{a},@var{b}] by summing
+@math{wi * f(xi)} over @var{i}.
+@end deftypefun
 
-@deftypefun void gsl_integration_glfixed_table_free (gsl_integration_glfixed_table * @var{t})
+@deftypefun void gsl_integration_glfixed_table_free ({gsl_integration_glfixed_table *} @var{t})
 @tpindex gsl_integration_glfixed_table
 This function frees the memory associated with the table @var{t}.
 @end deftypefun
@@ -956,7 +963,7 @@ The @sc{cquad} integration algorithm is described in the following paper:
 @item
 P. Gonnet, ``Increasing the Reliability of Adaptive Quadrature Using
 Explicit Interpolants'', @cite{ACM Transactions on Mathematical
-Software}, Volume FIXME (2010), FIXME.
+Software}, Volume 37 (2010), Issue 3, Article 26.
 @end itemize
 
 

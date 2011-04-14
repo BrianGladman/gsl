@@ -140,7 +140,11 @@ gnewton_iterate (void * vstate, gsl_multiroot_function_fdf * fdf, gsl_vector * x
 
   gsl_linalg_LU_decomp (state->lu, state->permutation, &signum);
 
-  gsl_linalg_LU_solve (state->lu, state->permutation, f, state->d);
+  {
+    int status = gsl_linalg_LU_solve (state->lu, state->permutation, f, state->d);
+    if (status)
+      return status;
+  }
 
   t = 1;
 

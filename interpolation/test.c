@@ -150,6 +150,10 @@ test_interp (
   gsl_interp_accel *a = gsl_interp_accel_alloc ();
   gsl_interp *interp = gsl_interp_alloc (T, data_table->n);
 
+  unsigned int min_size = gsl_interp_type_min_size(T);
+
+  gsl_test_int (min_size, T->min_size, "gsl_interp_type_min_size on %s", gsl_interp_name(interp));
+
   gsl_interp_init (interp, data_table->x, data_table->y, data_table->n);
 
   for (i = 0; i < test_table->n; i++)
