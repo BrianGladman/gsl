@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_odeiv.h>
+#include <gsl/gsl_odeiv2.h>
 
 int
 func (double t, const double y[], double f[],
@@ -33,38 +33,30 @@ jac (double t, const double y[], double *dfdy,
 int
 main (void)
 {
-  const gsl_odeiv_step_type * T 
-    = gsl_odeiv_step_rk8pd;
-
-  gsl_odeiv_step * s 
-    = gsl_odeiv_step_alloc (T, 2);
-  gsl_odeiv_control * c 
-    = gsl_odeiv_control_y_new (1e-6, 0.0);
-  gsl_odeiv_evolve * e 
-    = gsl_odeiv_evolve_alloc (2);
-
   double mu = 10;
-  gsl_odeiv_system sys = {func, jac, 2, &mu};
+  gsl_odeiv2_system sys = {func, jac, 2, &mu};
 
+  gsl_odeiv2_driver * D = 
+    gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
+				  1e-6, 1e-6, 0.0);
+  int i;
   double t = 0.0, t1 = 100.0;
-  double h = 1e-6;
   double y[2] = { 1.0, 0.0 };
 
-  while (t < t1)
+  for (i = 1; i <= 100; i++)
     {
-      int status = gsl_odeiv_evolve_apply (e, c, s,
-                                           &sys, 
-                                           &t, t1,
-                                           &h, y);
+      double ti = i * t1 / 100.0;
+      int status = gsl_odeiv2_driver_apply (D, &t, ti, y);
 
       if (status != GSL_SUCCESS)
-          break;
+	{
+	  printf ("error, return value=%d\n", status);
+	  break;
+	}
 
       printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     }
 
-  gsl_odeiv_evolve_free (e);
-  gsl_odeiv_control_free (c);
-  gsl_odeiv_step_free (s);
+  gsl_odeiv2_driver_free (D);
   return 0;
 }

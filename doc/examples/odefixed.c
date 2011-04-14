@@ -1,14 +1,14 @@
 int
 main (void)
 {
-  const gsl_odeiv_step_type * T 
-    = gsl_odeiv_step_rk4;
+  const gsl_odeiv2_step_type * T 
+    = gsl_odeiv2_step_rk4;
 
-  gsl_odeiv_step * s 
-    = gsl_odeiv_step_alloc (T, 2);
+  gsl_odeiv2_step * s 
+    = gsl_odeiv2_step_alloc (T, 2);
 
   double mu = 10;
-  gsl_odeiv_system sys = {func, jac, 2, &mu};
+  gsl_odeiv2_system sys = {func, jac, 2, &mu};
 
   double t = 0.0, t1 = 100.0;
   double h = 1e-2;
@@ -20,7 +20,7 @@ main (void)
 
   while (t < t1)
     {
-      int status = gsl_odeiv_step_apply (s, t, h, 
+      int status = gsl_odeiv2_step_apply (s, t, h, 
                                          y, y_err, 
                                          dydt_in, 
                                          dydt_out, 
@@ -37,6 +37,6 @@ main (void)
       printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     }
 
-  gsl_odeiv_step_free (s);
+  gsl_odeiv2_step_free (s);
   return 0;
 }
