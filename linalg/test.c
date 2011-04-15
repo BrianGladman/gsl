@@ -3728,20 +3728,26 @@ test_choleskyc_invert(void)
       3.308, 2.936,    -5.009, 2.665,    3.396, -6.276,    107.128, 0.000 
   }; 
 
-  gsl_matrix_complex_view rv2 = gsl_matrix_complex_view_array(dat2, 2, 2);
-  f = test_choleskyc_invert_dim(&rv2.matrix, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  choleskyc_invert 2x2 Hermitian");
-  s += f;
+  {
+    gsl_matrix_complex_view rv2 = gsl_matrix_complex_view_array(dat2, 2, 2);
+    f = test_choleskyc_invert_dim(&rv2.matrix, 2 * 8.0 * GSL_DBL_EPSILON);
+    gsl_test(f, "  choleskyc_invert 2x2 Hermitian");
+    s += f;
+  }
 
-  gsl_matrix_complex_view rv3 = gsl_matrix_complex_view_array(dat3, 3, 3);
-  f = test_choleskyc_invert_dim(&rv3.matrix, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  choleskyc_invert 3x3 Hermitian");
-  s += f;
+  { 
+    gsl_matrix_complex_view rv3 = gsl_matrix_complex_view_array(dat3, 3, 3);
+    f = test_choleskyc_invert_dim(&rv3.matrix, 2 * 1024.0 * GSL_DBL_EPSILON);
+    gsl_test(f, "  choleskyc_invert 3x3 Hermitian");
+    s += f;
+  }
 
-  gsl_matrix_complex_view rv4 = gsl_matrix_complex_view_array(dat4, 4, 4);
-  f = test_choleskyc_invert_dim(&rv4.matrix, 2 * 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  choleskyc_invert 4x4 Hermitian");
-  s += f;
+  {
+    gsl_matrix_complex_view rv4 = gsl_matrix_complex_view_array(dat4, 4, 4);
+    f = test_choleskyc_invert_dim(&rv4.matrix, 2 * 64.0 * GSL_DBL_EPSILON);
+    gsl_test(f, "  choleskyc_invert 4x4 Hermitian");
+    s += f;
+  }
 
   return s;
 }

@@ -2223,9 +2223,9 @@ int main (void)
     int n, i;
     double xi, wi;
 
-    // Analytical results for points and weights on [-1, 1]
-    // Pulled from http://en.wikipedia.org/wiki/Gaussian_quadrature
-    // Sorted in increasing order of Gauss points
+    /* Analytical results for points and weights on [-1, 1]
+       Pulled from http://en.wikipedia.org/wiki/Gaussian_quadrature
+       Sorted in increasing order of Gauss points */
     const double e1[1][2] = {
       {0, 2 }
     };

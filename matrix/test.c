@@ -128,10 +128,10 @@ void my_error_handler (const char *reason, const char *file,
 int
 main (void)
 {
-  gsl_ieee_env_setup ();
-
   size_t M = 53;
   size_t N = 107;
+
+  gsl_ieee_env_setup ();
 
   test_func (M, N);
   test_float_func (M, N);
