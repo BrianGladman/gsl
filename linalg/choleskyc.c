@@ -231,10 +231,18 @@ gsl_linalg_complex_cholesky_invert(gsl_matrix_complex * LLT)
 
           j = N - i - 1;
 
-          ajj = 1.0 / GSL_REAL(gsl_matrix_complex_get(LLT, j, j));
+          { 
+            gsl_complex z0 = gsl_matrix_complex_get(LLT, j, j);
+            ajj = 1.0 / GSL_REAL(z0); 
+          }
+
           GSL_SET_COMPLEX(&z, ajj, 0.0);
           gsl_matrix_complex_set(LLT, j, j, z);
-          ajj = -GSL_REAL(gsl_matrix_complex_get(LLT, j, j));
+
+          {
+            gsl_complex z1 = gsl_matrix_complex_get(LLT, j, j);
+            ajj = -GSL_REAL(z1);
+          }
 
           if (j < N - 1)
             {
