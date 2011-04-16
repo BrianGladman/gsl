@@ -20,10 +20,7 @@
 {
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_SD_GER(pos,order,M,N,alpha,X,incX,Y,incY,A,lda);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SD_GER,order,M,N,alpha,X,incX,Y,incY,A,lda);
 
   if (order == CblasRowMajor) {
     INDEX ix = OFFSET(M, incX);

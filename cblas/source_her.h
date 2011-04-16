@@ -21,10 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_HER(pos,order,Uplo,N,alpha,X,incX,A,lda);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_HER,order,Uplo,N,alpha,X,incX,A,lda);
 
   if (alpha == 0.0)
     return;

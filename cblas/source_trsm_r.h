@@ -24,10 +24,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   int side, uplo, trans;
 
-  int pos=0;
-  CBLAS_ERROR_TRSM(pos,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(TRSM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
 
   if (Order == CblasRowMajor) {
     n1 = M;

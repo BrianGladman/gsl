@@ -20,10 +20,7 @@
 {
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_SD_SYR(pos,order,Uplo,N,alpha,X,incX,A,lda);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SD_SYR,order,Uplo,N,alpha,X,incX,A,lda);
 
   if (N == 0)
     return;

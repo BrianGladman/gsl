@@ -23,10 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_TBMV(pos,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(TBMV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
 
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {

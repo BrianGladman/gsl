@@ -21,10 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  int pos=0;
-  CBLAS_ERROR_HERK(pos,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(HERK,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
 
   if (beta == 1.0 && (alpha == 0.0 || K == 0))
     return;

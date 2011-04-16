@@ -22,10 +22,7 @@
   INDEX n1, n2;
   int uplo, side;
 
-  int pos=0;
-  CBLAS_ERROR_SYMM(pos,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SYMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

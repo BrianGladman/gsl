@@ -22,10 +22,7 @@
   INDEX n1, n2;
   int uplo, side;
 
-  int pos=0;
-  CBLAS_ERROR_SYMM(pos,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SYMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

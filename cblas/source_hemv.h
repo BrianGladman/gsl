@@ -21,10 +21,7 @@
   const int conj = (order == CblasColMajor) ? -1 : 1;
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_HEMV(pos,order,Uplo,N,alpha,A,lda,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_HEMV,order,Uplo,N,alpha,A,lda,X,incX,beta,Y,incY);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

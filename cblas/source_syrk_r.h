@@ -21,10 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  int pos=0;
-  CBLAS_ERROR_SYRK(pos,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SYRK,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

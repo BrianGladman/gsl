@@ -20,10 +20,7 @@
 {
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_SD_SPR2(pos,order,Uplo,N,alpha,X,incX,Y,incY,A);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SD_SPR2,order,Uplo,N,alpha,X,incX,Y,incY,A);
 
   if (N == 0)
     return;

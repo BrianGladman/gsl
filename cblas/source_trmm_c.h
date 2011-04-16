@@ -25,10 +25,7 @@
   const int conj = (TransA == CblasConjTrans) ? -1 : 1;
   int side, uplo, trans;
 
-  int pos=0;
-  CBLAS_ERROR_TRMM(pos,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(TRMM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

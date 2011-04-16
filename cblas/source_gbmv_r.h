@@ -23,10 +23,7 @@
 
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  int pos=0;
-  CBLAS_ERROR_GBMV(pos,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(GBMV,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (M == 0 || N == 0)
     return;

@@ -19,19 +19,10 @@
 
 #ifndef __ERROR_CBLAS_H__
 #define __ERROR_CBLAS_H__
-#include <gsl/gsl_math.h>
 
-#undef __BEGIN_DECLS
-#undef __END_DECLS
-#ifdef __cplusplus
-#define __BEGIN_DECLS extern "C" {
-#define __END_DECLS }
-#else
-#define __BEGIN_DECLS           /* empty */
-#define __END_DECLS             /* empty */
-#endif
-
-__BEGIN_DECLS
+#define CHECK_ARGS(FUNCTION,...) do { int pos = 0 ; \
+    CBLAS_ERROR_##FUNCTION(pos,__VA_ARGS__) ; \
+    if (pos) cblas_xerbla(pos,__FILE__,""); } while (0)
 
 /* check if CBLAS_ORDER is correct */
 #define CHECK_ORDER(pos,posIfError,order) \
@@ -67,7 +58,5 @@ if((dim)<0) \
 #define CHECK_STRIDE(pos,posIfError,stride) \
 if((stride)==0) \
     pos = posIfError;
-
-__END_DECLS
 
 #endif /* __ERROR_CBLAS_H__ */

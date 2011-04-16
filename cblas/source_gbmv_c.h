@@ -27,10 +27,7 @@
   const BASE beta_real = CONST_REAL0(beta);
   const BASE beta_imag = CONST_IMAG0(beta);
 
-  int pos=0;
-  CBLAS_ERROR_GBMV(pos,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(GBMV,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (M == 0 || N == 0)
     return;

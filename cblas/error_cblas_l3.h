@@ -22,18 +22,6 @@
 #include <gsl/gsl_math.h>
 #include "error_cblas.h"
 
-#undef __BEGIN_DECLS
-#undef __END_DECLS
-#ifdef __cplusplus
-#define __BEGIN_DECLS extern "C" {
-#define __END_DECLS }
-#else
-#define __BEGIN_DECLS           /* empty */
-#define __END_DECLS             /* empty */
-#endif
-
-__BEGIN_DECLS
-
 /*
  * =============================================================================
  * Prototypes for level 3 BLAS
@@ -254,7 +242,5 @@ CBLAS_ERROR_SYRK(pos,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc)
 /* cblas_xher2k() */
 #define CBLAS_ERROR_HER2K(pos,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc) \
 CBLAS_ERROR_SYR2K(pos,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc)
-
-__END_DECLS
 
 #endif /* __ERROR_CBLAS_L3_H__ */

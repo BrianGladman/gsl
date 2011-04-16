@@ -20,10 +20,7 @@
 {
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_SD_SPMV(pos,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SD_SPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

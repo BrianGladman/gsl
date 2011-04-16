@@ -21,10 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  int pos=0;
-  CBLAS_ERROR_SYR2K(pos,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(SYR2K,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

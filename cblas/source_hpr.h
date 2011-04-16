@@ -21,10 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_HPR(pos,order,Uplo,N,alpha,X,incX,A);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_HPR,order,Uplo,N,alpha,X,incX,A);
 
   if (alpha == 0.0)
     return;

@@ -21,19 +21,6 @@
 #define __ERROR_CBLAS_L2_H__
 #include <gsl/gsl_math.h>
 #include "error_cblas.h"
-
-#undef __BEGIN_DECLS
-#undef __END_DECLS
-#ifdef __cplusplus
-#define __BEGIN_DECLS extern "C" {
-#define __END_DECLS }
-#else
-#define __BEGIN_DECLS           /* empty */
-#define __END_DECLS             /* empty */
-#endif
-
-__BEGIN_DECLS
-
 /*
  * =============================================================================
  * Prototypes for level 2 BLAS
@@ -58,7 +45,7 @@ if((order)==CblasRowMajor) { \
     if((lda)<GSL_MAX(1,M)) { \
         pos = 7; \
     } \
-} \
+};                       \
 CHECK_STRIDE(pos,9,incX); \
 CHECK_STRIDE(pos,12,incY);
 
@@ -72,7 +59,7 @@ CHECK_DIM(pos,5,KL); \
 CHECK_DIM(pos,6,KU); \
 if((lda)<GSL_MAX(1,(KL+KU+1))) { \
     pos = 9; \
-} \
+};                        \
 CHECK_STRIDE(pos,11,incX); \
 CHECK_STRIDE(pos,14,incY);
 
@@ -97,7 +84,7 @@ CHECK_DIM(pos,5,N); \
 CHECK_DIM(pos,6,K); \
 if((lda)<GSL_MAX(1,(K+1))) { \
     pos = 8; \
-} \
+}; \
 CHECK_STRIDE(pos,10,incX);
 
 /* cblas_xtpmv() */
@@ -132,7 +119,7 @@ CHECK_UPLO(pos,2,Uplo); \
 CHECK_DIM(pos,3,N); \
 if((lda)<GSL_MAX(1,N)) { \
     pos = 6; \
-} \
+};                       \
 CHECK_STRIDE(pos,8,incX); \
 CHECK_STRIDE(pos,11,incY);
 
@@ -144,7 +131,7 @@ CHECK_DIM(pos,3,N); \
 CHECK_DIM(pos,4,K); \
 if((lda)<GSL_MAX(1,K+1)) { \
     pos = 7; \
-} \
+};                       \
 CHECK_STRIDE(pos,9,incX); \
 CHECK_STRIDE(pos,12,incY);
 
@@ -171,7 +158,7 @@ if((order)==CblasRowMajor) { \
     if((lda)<GSL_MAX(1,M)) { \
         pos = 10; \
     } \
-}
+};
 
 /* cblas_xsyr() */
 #define CBLAS_ERROR_SD_SYR(pos,order,Uplo,N,alpha,X,incX,A,lda) \
@@ -181,7 +168,7 @@ CHECK_DIM(pos,3,N); \
 CHECK_STRIDE(pos,6,incX); \
 if((lda)<GSL_MAX(1,N)) { \
     pos = 8; \
-}
+};
 
 /* cblas_xspr() */
 #define CBLAS_ERROR_SD_SPR(pos,order,Uplo,N,alpha,X,incX,Ap) \
@@ -199,7 +186,7 @@ CHECK_STRIDE(pos,6,incX); \
 CHECK_STRIDE(pos,8,incY); \
 if((lda)<GSL_MAX(1,N)) { \
     pos = 10; \
-}
+};
 
 /* cblas_xspr2() */
 #define CBLAS_ERROR_SD_SPR2(pos,order,Uplo,N,alpha,X,incX,Y,incY,A) \
@@ -248,7 +235,5 @@ CBLAS_ERROR_SD_SYR2(pos,order,Uplo,N,alpha,X,incX,Y,incY,A,lda)
 /* cblas_xhpr2() */
 #define CBLAS_ERROR_CZ_HPR2(pos,order,Uplo,N,alpha,X,incX,Y,incY,Ap) \
 CBLAS_ERROR_SD_SPR2(pos,order,Uplo,N,alpha,X,incX,Y,incY,Ap)
-
-__END_DECLS
 
 #endif /* __ERROR_CBLAS_L2_H__ */

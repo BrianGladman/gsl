@@ -22,10 +22,7 @@
 
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_HBMV(pos,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_HBMV,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

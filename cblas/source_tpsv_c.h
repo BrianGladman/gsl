@@ -23,10 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_TPSV(pos,order,Uplo,TransA,Diag,N,Ap,X,incX);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(TPSV,order,Uplo,TransA,Diag,N,Ap,X,incX);
 
   if (N == 0)
     return;

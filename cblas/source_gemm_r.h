@@ -24,10 +24,7 @@
   int TransF, TransG;
   const BASE *F, *G;
 
-  int pos=0;
-  CBLAS_ERROR_GEMM(pos,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(GEMM,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

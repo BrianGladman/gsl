@@ -21,10 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_HPMV(pos,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_HPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

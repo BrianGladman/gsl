@@ -20,10 +20,7 @@
 {
   INDEX i, j;
 
-  int pos=0;
-  CBLAS_ERROR_CZ_GERU(pos,order,M,N,alpha,X,incX,Y,incY,A,lda);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(CZ_GERU,order,M,N,alpha,X,incX,Y,incY,A,lda);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

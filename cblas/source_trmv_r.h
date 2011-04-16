@@ -23,10 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  int pos=0;
-  CBLAS_ERROR_TRMV(pos,order,Uplo,TransA,Diag,N,A,lda,X,incX);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
+  CHECK_ARGS(TRMV,order,Uplo,TransA,Diag,N,A,lda,X,incX);
 
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {
