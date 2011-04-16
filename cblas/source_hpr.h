@@ -18,13 +18,13 @@
  */
 
 {
+  INDEX i, j;
+  const int conj = (order == CblasColMajor) ? -1 : 1;
+
   int pos=0;
   CBLAS_ERROR_CZ_HPR(pos,order,Uplo,N,alpha,X,incX,A);
   if(pos)
     cblas_xerbla(pos,__FILE__,"");
-
-  const int conj = (order == CblasColMajor) ? -1 : 1;
-  INDEX i, j;
 
   if (alpha == 0.0)
     return;

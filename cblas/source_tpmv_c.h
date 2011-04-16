@@ -19,15 +19,14 @@
 
 {
   INDEX i, j;
+  const int conj = (TransA == CblasConjTrans) ? -1 : 1;
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+  const int nonunit = (Diag == CblasNonUnit);
 
   int pos=0;
   CBLAS_ERROR_TPMV(pos,order,Uplo,TransA,Diag,N,Ap,X,incX)
   if(pos)
     cblas_xerbla(pos,__FILE__,"");
-
-  const int conj = (TransA == CblasConjTrans) ? -1 : 1;
-  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
-  const int nonunit = (Diag == CblasNonUnit);
 
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {

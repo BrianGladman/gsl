@@ -20,13 +20,13 @@
 {
   INDEX i, j;
 
+  const int nonunit = (Diag == CblasNonUnit);
+  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
+
   int pos=0;
   CBLAS_ERROR_TBMV(pos,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
   if(pos)
     cblas_xerbla(pos,__FILE__,"");
-
-  const int nonunit = (Diag == CblasNonUnit);
-  const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
   if (N == 0)
     return;

@@ -18,15 +18,15 @@
  */
 
 {
-  int pos=0;
-  CBLAS_ERROR_TPSV(pos,order,Uplo,TransA,Diag,N,Ap,X,incX);
-  if(pos)
-    cblas_xerbla(pos,__FILE__,"");
-
   const int conj = (TransA == CblasConjTrans) ? -1 : 1;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
   const int nonunit = (Diag == CblasNonUnit);
   INDEX i, j;
+
+  int pos=0;
+  CBLAS_ERROR_TPSV(pos,order,Uplo,TransA,Diag,N,Ap,X,incX);
+  if(pos)
+    cblas_xerbla(pos,__FILE__,"");
 
   if (N == 0)
     return;
