@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_SPR,order,Uplo,N,alpha,X,incX,Ap);
+  CHECK_ARGS7(SD_SPR,order,Uplo,N,alpha,X,incX,Ap);
 
   if (N == 0)
     return;

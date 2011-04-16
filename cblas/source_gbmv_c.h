@@ -27,7 +27,7 @@
   const BASE beta_real = CONST_REAL0(beta);
   const BASE beta_imag = CONST_IMAG0(beta);
 
-  CHECK_ARGS(GBMV,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
+  CHECK_ARGS14(GBMV,order,TransA,M,N,KL,KU,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (M == 0 || N == 0)
     return;

@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_SYR,order,Uplo,N,alpha,X,incX,A,lda);
+  CHECK_ARGS8(SD_SYR,order,Uplo,N,alpha,X,incX,A,lda);
 
   if (N == 0)
     return;

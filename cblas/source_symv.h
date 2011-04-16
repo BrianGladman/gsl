@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_SYMV,order,Uplo,N,alpha,A,lda,X,incX,beta,Y,incY);
+  CHECK_ARGS11(SD_SYMV,order,Uplo,N,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

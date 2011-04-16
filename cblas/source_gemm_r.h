@@ -24,7 +24,7 @@
   int TransF, TransG;
   const BASE *F, *G;
 
-  CHECK_ARGS(GEMM,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS14(GEMM,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

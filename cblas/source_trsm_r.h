@@ -24,7 +24,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   int side, uplo, trans;
 
-  CHECK_ARGS(TRSM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
+  CHECK_ARGS12(TRSM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
 
   if (Order == CblasRowMajor) {
     n1 = M;

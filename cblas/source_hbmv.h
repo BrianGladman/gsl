@@ -22,7 +22,7 @@
 
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  CHECK_ARGS(CZ_HBMV,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
+  CHECK_ARGS12(CZ_HBMV,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

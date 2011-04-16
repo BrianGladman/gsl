@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_SBMV,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
+  CHECK_ARGS12(SD_SBMV,order,Uplo,N,K,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (N == 0)
     return;

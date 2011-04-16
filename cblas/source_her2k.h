@@ -21,7 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  CHECK_ARGS(HER2K,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS13(HER2K,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

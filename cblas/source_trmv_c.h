@@ -24,7 +24,7 @@
 
   INDEX i, j;
 
-  CHECK_ARGS(TRMV,order,Uplo,TransA,Diag,N,A,lda,X,incX);
+  CHECK_ARGS9(TRMV,order,Uplo,TransA,Diag,N,A,lda,X,incX);
 
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {

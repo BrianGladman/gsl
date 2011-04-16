@@ -22,7 +22,7 @@
   INDEX n1, n2;
   int uplo, side;
 
-  CHECK_ARGS(HEMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS13(HEMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

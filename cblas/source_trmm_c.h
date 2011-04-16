@@ -25,7 +25,7 @@
   const int conj = (TransA == CblasConjTrans) ? -1 : 1;
   int side, uplo, trans;
 
-  CHECK_ARGS(TRMM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
+  CHECK_ARGS12(TRMM,Order,Side,Uplo,TransA,Diag,M,N,alpha,A,lda,B,ldb);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

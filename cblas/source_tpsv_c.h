@@ -23,7 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   INDEX i, j;
 
-  CHECK_ARGS(TPSV,order,Uplo,TransA,Diag,N,Ap,X,incX);
+  CHECK_ARGS8(TPSV,order,Uplo,TransA,Diag,N,Ap,X,incX);
 
   if (N == 0)
     return;

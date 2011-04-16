@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_SPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
+  CHECK_ARGS10(SD_SPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

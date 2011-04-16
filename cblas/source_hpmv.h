@@ -21,7 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  CHECK_ARGS(CZ_HPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
+  CHECK_ARGS10(CZ_HPMV,order,Uplo,N,alpha,Ap,X,incX,beta,Y,incY);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

@@ -21,7 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  CHECK_ARGS(HERK,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
+  CHECK_ARGS11(HERK,Order,Uplo,Trans,N,K,alpha,A,lda,beta,C,ldc);
 
   if (beta == 1.0 && (alpha == 0.0 || K == 0))
     return;

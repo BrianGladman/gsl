@@ -21,7 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  CHECK_ARGS(CZ_HER,order,Uplo,N,alpha,X,incX,A,lda);
+  CHECK_ARGS8(CZ_HER,order,Uplo,N,alpha,X,incX,A,lda);
 
   if (alpha == 0.0)
     return;

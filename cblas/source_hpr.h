@@ -21,7 +21,7 @@
   INDEX i, j;
   const int conj = (order == CblasColMajor) ? -1 : 1;
 
-  CHECK_ARGS(CZ_HPR,order,Uplo,N,alpha,X,incX,A);
+  CHECK_ARGS7(CZ_HPR,order,Uplo,N,alpha,X,incX,A);
 
   if (alpha == 0.0)
     return;

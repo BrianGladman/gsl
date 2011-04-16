@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(SD_GER,order,M,N,alpha,X,incX,Y,incY,A,lda);
+  CHECK_ARGS10(SD_GER,order,M,N,alpha,X,incX,Y,incY,A,lda);
 
   if (order == CblasRowMajor) {
     INDEX ix = OFFSET(M, incX);

@@ -24,7 +24,7 @@
   int conjF, conjG, TransF, TransG;
   const BASE *F, *G;
 
-  CHECK_ARGS(GEMM,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS14(GEMM,Order,TransA,TransB,M,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

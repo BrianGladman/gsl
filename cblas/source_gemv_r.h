@@ -23,7 +23,7 @@
 
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  CHECK_ARGS(GEMV,order,TransA,M,N,alpha,A,lda,X,incX,beta,Y,incY);
+  CHECK_ARGS12(GEMV,order,TransA,M,N,alpha,A,lda,X,incX,beta,Y,incY);
 
   if (M == 0 || N == 0)
     return;

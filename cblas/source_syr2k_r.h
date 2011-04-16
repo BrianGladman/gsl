@@ -21,7 +21,7 @@
   INDEX i, j, k;
   int uplo, trans;
 
-  CHECK_ARGS(SYR2K,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS13(SYR2K,Order,Uplo,Trans,N,K,alpha,A,lda,B,ldb,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

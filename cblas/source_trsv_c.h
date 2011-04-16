@@ -24,7 +24,7 @@
   INDEX i, j;
   INDEX ix, jx;
 
-  CHECK_ARGS(TRSV,order,Uplo,TransA,Diag,N,A,lda,X,incX);
+  CHECK_ARGS9(TRSV,order,Uplo,TransA,Diag,N,A,lda,X,incX);
 
   if (N == 0)
     return;

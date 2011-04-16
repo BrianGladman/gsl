@@ -23,7 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   INDEX i, j;
 
-  CHECK_ARGS(TBMV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
+  CHECK_ARGS10(TBMV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
 
   if ((order == CblasRowMajor && Trans == CblasNoTrans && Uplo == CblasUpper)
       || (order == CblasColMajor && Trans == CblasTrans && Uplo == CblasLower)) {

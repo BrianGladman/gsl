@@ -20,7 +20,7 @@
 {
   INDEX i, j;
 
-  CHECK_ARGS(CZ_GERU,order,M,N,alpha,X,incX,Y,incY,A,lda);
+  CHECK_ARGS10(CZ_GERU,order,M,N,alpha,X,incX,Y,incY,A,lda);
 
   {
     const BASE alpha_real = CONST_REAL0(alpha);

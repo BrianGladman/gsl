@@ -22,7 +22,7 @@
   INDEX i, j;
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  CHECK_ARGS(TBSV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
+  CHECK_ARGS10(TBSV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
 
   if (N == 0)
     return;

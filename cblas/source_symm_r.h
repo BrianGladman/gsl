@@ -22,7 +22,7 @@
   INDEX n1, n2;
   int uplo, side;
 
-  CHECK_ARGS(SYMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
+  CHECK_ARGS13(SYMM,Order,Side,Uplo,M,N,alpha,A,lda,B,ldb,beta,C,ldc);
 
   if (alpha == 0.0 && beta == 1.0)
     return;

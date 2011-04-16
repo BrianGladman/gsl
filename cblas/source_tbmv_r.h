@@ -23,7 +23,7 @@
   const int nonunit = (Diag == CblasNonUnit);
   const int Trans = (TransA != CblasConjTrans) ? TransA : CblasTrans;
 
-  CHECK_ARGS (TBMV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
+  CHECK_ARGS10 (TBMV,order,Uplo,TransA,Diag,N,K,A,lda,X,incX);
 
   if (N == 0)
     return;
