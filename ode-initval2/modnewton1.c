@@ -1,6 +1,6 @@
-/* ode-initval/modnewton1.c
+/* ode-initval2/modnewton1.c
  * 
- * Copyright (C) 2008 Tuomo Keskitalo
+ * Copyright (C) 2008, 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ typedef struct
 
   /* difference vector for kth Newton iteration */
   gsl_vector *dYk;
-  
+
   /* scaled dYk with desired error level */
   gsl_vector *dScal;
 
@@ -167,8 +167,8 @@ modnewton1_alloc (size_t dim, size_t stage)
 
 static int
 modnewton1_init (void *vstate, const gsl_matrix * A,
-                 const double h, const gsl_matrix * dfdy, 
-		 const gsl_odeiv2_system * sys)
+                 const double h, const gsl_matrix * dfdy,
+                 const gsl_odeiv2_system * sys)
 {
   /* Initializes the method by forming the iteration matrix IhAJ
      and generating its LU-decomposition
@@ -224,8 +224,8 @@ modnewton1_init (void *vstate, const gsl_matrix * A,
 static int
 modnewton1_solve (void *vstate, const gsl_matrix * A,
                   const double c[], const double t, const double h,
-                  const double y0[], const gsl_odeiv2_system * sys, double YZ[],
-		  const double errlev[])
+                  const double y0[], const gsl_odeiv2_system * sys,
+                  double YZ[], const double errlev[])
 {
   /* Solves the non-linear equation system resulting from implicit
      Runge-Kutta methods by a modified Newton iteration. The
@@ -284,8 +284,8 @@ modnewton1_solve (void *vstate, const gsl_matrix * A,
     /* Maximum number of Newton iterations. */
     const size_t max_iter = 7;
 
-    double dScal_norm = 0.0;      /* Newton iteration step length */
-    double dScal_norm_prev = 0.0; /* Previous dScal_norm */
+    double dScal_norm = 0.0;    /* Newton iteration step length */
+    double dScal_norm_prev = 0.0;       /* Previous dScal_norm */
 
     while (status == GSL_CONTINUE && iter < max_iter)
       {
@@ -348,13 +348,13 @@ modnewton1_solve (void *vstate, const gsl_matrix * A,
           /* transformation of theta_k */
           double eeta_k = 0.0;
 
-	  for (j = 0; j < stage; j++)
-	    for (m = 0; m < dim; m++)
-	      {
-		gsl_vector_set (dScal, j * dim + m,
-				gsl_vector_get (dYk, j * dim + m) 
-				/ errlev[m]);
-	      }
+          for (j = 0; j < stage; j++)
+            for (m = 0; m < dim; m++)
+              {
+                gsl_vector_set (dScal, j * dim + m,
+                                gsl_vector_get (dYk, j * dim + m)
+                                / errlev[m]);
+              }
 
           dScal_norm_prev = dScal_norm;
           dScal_norm = gsl_blas_dnrm2 (dScal);

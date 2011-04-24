@@ -1,42 +1,30 @@
 int
 main (void)
 {
-  const gsl_odeiv2_step_type * T 
-    = gsl_odeiv2_step_rk4;
-
-  gsl_odeiv2_step * s 
-    = gsl_odeiv2_step_alloc (T, 2);
-
   double mu = 10;
-  gsl_odeiv2_system sys = {func, jac, 2, &mu};
+  gsl_odeiv2_system sys = { func, jac, 2, &mu };
 
-  double t = 0.0, t1 = 100.0;
-  double h = 1e-2;
-  double y[2] = { 1.0, 0.0 }, y_err[2];
-  double dydt_in[2], dydt_out[2];
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk4,
+                                   1e-3, 1e-8, 1e-8);
 
-  /* initialise dydt_in from system parameters */
-  GSL_ODEIV_FN_EVAL(&sys, t, y, dydt_in);
+  double t = 0.0;
+  double y[2] = { 1.0, 0.0 };
+  int i, s;
 
-  while (t < t1)
+  for (i = 0; i < 100; i++)
     {
-      int status = gsl_odeiv2_step_apply (s, t, h, 
-                                         y, y_err, 
-                                         dydt_in, 
-                                         dydt_out, 
-                                         &sys);
+      s = gsl_odeiv2_driver_apply_fixed_step (d, &t, 1e-3, 1000, y);
 
-      if (status != GSL_SUCCESS)
+      if (s != GSL_SUCCESS)
+        {
+          printf ("error: driver returned %d\n", s);
           break;
-
-      dydt_in[0] = dydt_out[0];
-      dydt_in[1] = dydt_out[1];
-
-      t += h;
+        }
 
       printf ("%.5e %.5e %.5e\n", t, y[0], y[1]);
     }
 
-  gsl_odeiv2_step_free (s);
-  return 0;
+  gsl_odeiv2_driver_free (d);
+  return s;
 }

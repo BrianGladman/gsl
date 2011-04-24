@@ -1,4 +1,4 @@
-/* ode-initval/rkf45.c
+/* ode-initval2/rkf45.c
  * 
  * Copyright (C) 2001, 2004, 2007 Brian Gough
  * 
@@ -35,17 +35,23 @@
 
 /* Runge-Kutta-Fehlberg coefficients. Zero elements left out */
 
-static const double ah[] = { 1.0/4.0, 3.0/8.0, 12.0/13.0, 1.0, 1.0/2.0 };
-static const double b3[] = { 3.0/32.0, 9.0/32.0 };
-static const double b4[] = { 1932.0/2197.0, -7200.0/2197.0, 7296.0/2197.0};
-static const double b5[] = { 8341.0/4104.0, -32832.0/4104.0, 29440.0/4104.0, -845.0/4104.0};
-static const double b6[] = { -6080.0/20520.0, 41040.0/20520.0, -28352.0/20520.0, 9295.0/20520.0, -5643.0/20520.0};
+static const double ah[] =
+  { 1.0 / 4.0, 3.0 / 8.0, 12.0 / 13.0, 1.0, 1.0 / 2.0 };
+static const double b3[] = { 3.0 / 32.0, 9.0 / 32.0 };
+static const double b4[] =
+  { 1932.0 / 2197.0, -7200.0 / 2197.0, 7296.0 / 2197.0 };
+static const double b5[] =
+  { 8341.0 / 4104.0, -32832.0 / 4104.0, 29440.0 / 4104.0, -845.0 / 4104.0 };
+static const double b6[] =
+  { -6080.0 / 20520.0, 41040.0 / 20520.0, -28352.0 / 20520.0,
+  9295.0 / 20520.0, -5643.0 / 20520.0
+};
 
-static const double c1 = 902880.0/7618050.0;
-static const double c3 = 3953664.0/7618050.0;
-static const double c4 = 3855735.0/7618050.0;
-static const double c5 = -1371249.0/7618050.0;
-static const double c6 = 277020.0/7618050.0;
+static const double c1 = 902880.0 / 7618050.0;
+static const double c3 = 3953664.0 / 7618050.0;
+static const double c4 = 3855735.0 / 7618050.0;
+static const double c5 = -1371249.0 / 7618050.0;
+static const double c6 = 277020.0 / 7618050.0;
 
 /* These are the differences of fifth and fourth order coefficients
    for error estimation */
@@ -180,13 +186,13 @@ rkf45_alloc (size_t dim)
 
 static int
 rkf45_apply (void *vstate,
-            size_t dim,
-            double t,
-            double h,
-            double y[],
-            double yerr[],
-            const double dydt_in[],
-            double dydt_out[], const gsl_odeiv2_system * sys)
+             size_t dim,
+             double t,
+             double h,
+             double y[],
+             double yerr[],
+             const double dydt_in[],
+             double dydt_out[], const gsl_odeiv2_system * sys)
 {
   rkf45_state_t *state = (rkf45_state_t *) vstate;
 
@@ -211,15 +217,15 @@ rkf45_apply (void *vstate,
   else
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
-      
+
       if (s != GSL_SUCCESS)
-	{
-	  return s;
-	}
+        {
+          return s;
+        }
     }
-  
+
   for (i = 0; i < dim; i++)
-    ytmp[i] = y[i] +  ah[0] * h * k1[i];
+    ytmp[i] = y[i] + ah[0] * h * k1[i];
 
   /* k2 step */
   {
@@ -227,23 +233,23 @@ rkf45_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
-  
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b3[0] * k1[i] + b3[1] * k2[i]);
 
   /* k3 step */
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + ah[1] * h, ytmp, k3);
-    
+
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
-  
+
   for (i = 0; i < dim; i++)
     ytmp[i] = y[i] + h * (b4[0] * k1[i] + b4[1] * k2[i] + b4[2] * k3[i]);
 
@@ -253,10 +259,10 @@ rkf45_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
-  
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b5[0] * k1[i] + b5[1] * k2[i] + b5[2] * k3[i] +
@@ -268,10 +274,10 @@ rkf45_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
-  
+
   for (i = 0; i < dim; i++)
     ytmp[i] =
       y[i] + h * (b6[0] * k1[i] + b6[1] * k2[i] + b6[2] * k3[i] +
@@ -283,13 +289,14 @@ rkf45_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
-  
+
   for (i = 0; i < dim; i++)
     {
-      const double d_i = c1 * k1[i] + c3 * k3[i] + c4 * k4[i] + c5 * k5[i] + c6 * k6[i];
+      const double d_i =
+        c1 * k1[i] + c3 * k3[i] + c4 * k4[i] + c5 * k5[i] + c6 * k6[i];
       y[i] += h * d_i;
     }
 
@@ -298,23 +305,23 @@ rkf45_apply (void *vstate,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      
-      if (s != GSL_SUCCESS)
-	{
-	  /* Restore initial values */
-	  DBL_MEMCPY (y, y0, dim);
 
-	  return s;
-	}
+      if (s != GSL_SUCCESS)
+        {
+          /* Restore initial values */
+          DBL_MEMCPY (y, y0, dim);
+
+          return s;
+        }
     }
-  
+
   /* difference between 4th and 5th order */
   for (i = 0; i < dim; i++)
     {
-      yerr[i] = h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i] 
+      yerr[i] = h * (ec[1] * k1[i] + ec[3] * k3[i] + ec[4] * k4[i]
                      + ec[5] * k5[i] + ec[6] * k6[i]);
     }
-     
+
   return GSL_SUCCESS;
 }
 
@@ -340,7 +347,7 @@ static unsigned int
 rkf45_order (void *vstate)
 {
   rkf45_state_t *state = (rkf45_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
+  state = 0;                    /* prevent warnings about unused parameters */
   return 5;
 }
 
@@ -360,12 +367,12 @@ rkf45_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type rkf45_type = { "rkf45",        /* name */
+static const gsl_odeiv2_step_type rkf45_type = { "rkf45",       /* name */
   1,                            /* can use dydt_in */
   0,                            /* gives exact dydt_out */
   &rkf45_alloc,
   &rkf45_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &rkf45_reset,
   &rkf45_order,
   &rkf45_free

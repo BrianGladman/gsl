@@ -1,4 +1,4 @@
-/* ode-initval/cscal.c
+/* ode-initval2/cscal.c
  * 
  * Copyright (C) 2002, 2007 Brian Gough
  * 
@@ -24,6 +24,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_odeiv2.h>
+#include "control_utils.c"
 
 typedef struct
 {
@@ -31,19 +32,19 @@ typedef struct
   double eps_rel;
   double a_y;
   double a_dydt;
-  double * scale_abs;
+  double *scale_abs;
 }
 sc_control_state_t;
 
 static void *
 sc_control_alloc (void)
 {
-  sc_control_state_t * s = 
-    (sc_control_state_t *) malloc (sizeof(sc_control_state_t));
-  
+  sc_control_state_t *s =
+    (sc_control_state_t *) malloc (sizeof (sc_control_state_t));
+
   if (s == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for sc_control_state", 
+      GSL_ERROR_NULL ("failed to allocate space for sc_control_state",
                       GSL_ENOMEM);
     }
 
@@ -51,11 +52,11 @@ sc_control_alloc (void)
 }
 
 static int
-sc_control_init (void * vstate, 
-                  double eps_abs, double eps_rel, double a_y, double a_dydt)
+sc_control_init (void *vstate,
+                 double eps_abs, double eps_rel, double a_y, double a_dydt)
 {
-  sc_control_state_t * s = (sc_control_state_t *) vstate;
-  
+  sc_control_state_t *s = (sc_control_state_t *) vstate;
+
   if (eps_abs < 0)
     {
       GSL_ERROR ("eps_abs is negative", GSL_EINVAL);
@@ -72,7 +73,7 @@ sc_control_init (void * vstate,
     {
       GSL_ERROR ("a_dydt is negative", GSL_EINVAL);
     }
-  
+
   s->eps_rel = eps_rel;
   s->eps_abs = eps_abs;
   s->a_y = a_y;
@@ -82,15 +83,17 @@ sc_control_init (void * vstate,
 }
 
 static int
-sc_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h)
+sc_control_hadjust (void *vstate, size_t dim, unsigned int ord,
+                    const double y[], const double yerr[], const double yp[],
+                    double *h)
 {
   sc_control_state_t *state = (sc_control_state_t *) vstate;
 
   const double eps_abs = state->eps_abs;
   const double eps_rel = state->eps_rel;
-  const double a_y     = state->a_y;
-  const double a_dydt  = state->a_dydt;
-  const double * scale_abs = state->scale_abs;
+  const double a_y = state->a_y;
+  const double a_dydt = state->a_dydt;
+  const double *scale_abs = state->scale_abs;
 
   const double S = 0.9;
   const double h_old = *h;
@@ -98,92 +101,102 @@ sc_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[]
   double rmax = DBL_MIN;
   size_t i;
 
-  for(i=0; i<dim; i++) {
-    const double D0 = 
-      eps_rel * (a_y * fabs(y[i]) + a_dydt * fabs(h_old * yp[i])) 
-      + eps_abs * scale_abs[i];
-    const double r  = fabs(yerr[i]) / fabs(D0);
-    rmax = GSL_MAX_DBL(r, rmax);
-  }
+  for (i = 0; i < dim; i++)
+    {
+      const double D0 =
+        eps_rel * (a_y * fabs (y[i]) + a_dydt * fabs (h_old * yp[i]))
+        + eps_abs * scale_abs[i];
+      const double r = fabs (yerr[i]) / fabs (D0);
+      rmax = GSL_MAX_DBL (r, rmax);
+    }
 
-  if(rmax > 1.1) {
-    /* decrease step, no more than factor of 5, but a fraction S more
-       than scaling suggests (for better accuracy) */
-    double r =  S / pow(rmax, 1.0/ord);
-    
-    if (r < 0.2)
-      r = 0.2;
+  if (rmax > 1.1)
+    {
+      /* decrease step, no more than factor of 5, but a fraction S more
+         than scaling suggests (for better accuracy) */
+      double r = S / pow (rmax, 1.0 / ord);
 
-    *h = r * h_old;
+      if (r < 0.2)
+        r = 0.2;
 
-    return GSL_ODEIV_HADJ_DEC;
-  }
-  else if(rmax < 0.5) {
-    /* increase step, no more than factor of 5 */
-    double r = S / pow(rmax, 1.0/(ord+1.0));
+      *h = r * h_old;
 
-    if (r > 5.0)
-      r = 5.0;
+      return GSL_ODEIV_HADJ_DEC;
+    }
+  else if (rmax < 0.5)
+    {
+      /* increase step, no more than factor of 5 */
+      double r = S / pow (rmax, 1.0 / (ord + 1.0));
 
-    if (r < 1.0)  /* don't allow any decrease caused by S<1 */
-      r = 1.0;
-        
-    *h = r * h_old;
+      if (r > 5.0)
+        r = 5.0;
 
-    return GSL_ODEIV_HADJ_INC;
-  }
-  else {
-    /* no change */
-    return GSL_ODEIV_HADJ_NIL;
-  }
+      if (r < 1.0)              /* don't allow any decrease caused by S<1 */
+        r = 1.0;
+
+      *h = r * h_old;
+
+      return GSL_ODEIV_HADJ_INC;
+    }
+  else
+    {
+      /* no change */
+      return GSL_ODEIV_HADJ_NIL;
+    }
 }
 
 static int
-sc_control_errlevel (void * vstate, const double y, const double dydt, const double h, const size_t ind, double * errlev)
+sc_control_errlevel (void *vstate, const double y, const double dydt,
+                     const double h, const size_t ind, double *errlev)
 {
   sc_control_state_t *state = (sc_control_state_t *) vstate;
 
   const double eps_abs = state->eps_abs;
   const double eps_rel = state->eps_rel;
-  const double a_y     = state->a_y;
-  const double a_dydt  = state->a_dydt;
-  const double * scale_abs = state->scale_abs;
+  const double a_y = state->a_y;
+  const double a_dydt = state->a_dydt;
+  const double *scale_abs = state->scale_abs;
 
-  *errlev = eps_rel * (a_y * fabs(y) + a_dydt * fabs(h * dydt)) 
+  *errlev = eps_rel * (a_y * fabs (y) + a_dydt * fabs (h * dydt))
     + eps_abs * scale_abs[ind];
+
+  if (*errlev <= 0.0)
+    {
+      GSL_ERROR_NULL ("errlev <= zero", GSL_ESANITY);
+    }
 
   return GSL_SUCCESS;
 }
 
 
 static void
-sc_control_free (void * vstate)
+sc_control_free (void *vstate)
 {
   sc_control_state_t *state = (sc_control_state_t *) vstate;
   free (state->scale_abs);
   free (state);
 }
 
-static const gsl_odeiv2_control_type sc_control_type =
-{"scaled",                      /* name */
- &sc_control_alloc,
- &sc_control_init,
- &sc_control_hadjust,
- &sc_control_errlevel,
- &sc_control_free};
+static const gsl_odeiv2_control_type sc_control_type = { "scaled",      /* name */
+  &sc_control_alloc,
+  &sc_control_init,
+  &sc_control_hadjust,
+  &sc_control_errlevel,
+  &control_set_driver_null,
+  &sc_control_free
+};
 
 const gsl_odeiv2_control_type *gsl_odeiv2_control_scaled = &sc_control_type;
 
 
 gsl_odeiv2_control *
-gsl_odeiv2_control_scaled_new(double eps_abs, double eps_rel,
-                             double a_y, double a_dydt,
-                             const double scale_abs[],
-                             size_t dim)
+gsl_odeiv2_control_scaled_new (double eps_abs, double eps_rel,
+                               double a_y, double a_dydt,
+                               const double scale_abs[], size_t dim)
 {
-  gsl_odeiv2_control * c = 
+  gsl_odeiv2_control *c =
     gsl_odeiv2_control_alloc (gsl_odeiv2_control_scaled);
-  
+
   int status = gsl_odeiv2_control_init (c, eps_abs, eps_rel, a_y, a_dydt);
 
   if (status != GSL_SUCCESS)
@@ -193,19 +206,18 @@ gsl_odeiv2_control_scaled_new(double eps_abs, double eps_rel,
     }
 
   {
-    sc_control_state_t * s = (sc_control_state_t *) c->state;
-    
-    s->scale_abs = (double *)malloc(dim * sizeof(double));
-    
+    sc_control_state_t *s = (sc_control_state_t *) c->state;
+
+    s->scale_abs = (double *) malloc (dim * sizeof (double));
+
     if (s->scale_abs == 0)
       {
         free (s);
-        GSL_ERROR_NULL ("failed to allocate space for scale_abs", 
-                        GSL_ENOMEM);
+        GSL_ERROR_NULL ("failed to allocate space for scale_abs", GSL_ENOMEM);
       }
 
-    memcpy(s->scale_abs, scale_abs, dim * sizeof(double));
+    memcpy (s->scale_abs, scale_abs, dim * sizeof (double));
   }
-  
+
   return c;
 }

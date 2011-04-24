@@ -1,6 +1,6 @@
 /* ode-initval/test.c
  * 
- * Copyright (C) 2004, 2009 Tuomo Keskitalo
+ * Copyright (C) 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,12 @@
 #include "odeiv_util.h"
 
 /* Maximum number of ODE equations */
-#define MAXEQ 4
+#define MAXEQ 15
 
 /* Maximum number of ODE solvers */
 #define MAXNS 20
 
+/* Debug mode setting */
 //#define DEBUG 1
 
 /* Track number of function and jacobian evaluations in tests
@@ -358,6 +359,55 @@ gsl_odeiv2_system rhs_func_broken = {
   0
 };
 
+/* Immediate user break (at t > 1.5) test sine system */
+
+int
+rhs_sin_ub (double t, const double y[], double f[], void *params)
+{
+  extern int nfe;
+  nfe += 1;
+
+  f[0] = -y[1];
+  f[1] = y[0];
+
+  if (t > 1.5)
+    {
+      return GSL_EBADFUNC;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+jac_sin_ub (double t, const double y[], double *dfdy, double dfdt[],
+            void *params)
+{
+  extern int nje;
+  nje += 1;
+
+  dfdy[0] = 0.0;
+  dfdy[1] = -1.0;
+  dfdy[2] = 1.0;
+  dfdy[3] = 0.0;
+
+  dfdt[0] = 0.0;
+  dfdt[1] = 0.0;
+
+  if (t > 1.5)
+    {
+      return GSL_EBADFUNC;
+    }
+
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv2_system rhs_func_sin_ub = {
+  rhs_sin_ub,
+  jac_sin_ub,
+  2,
+  0
+};
+
 /* Badly scaled random function */
 
 int
@@ -438,7 +488,6 @@ gsl_odeiv2_system rhs_func_stepfn2 = {
 };
 
 /* Volterra-Lotka predator-prey model
-
    f0 = (a - b * y1) * y0     y0(0) = 2.725
    f1 = (-c + d * y0) * y1    y1(0) = 1.0
  */
@@ -489,7 +538,7 @@ gsl_odeiv2_system rhs_func_vl = {
   0
 };
 
-/* van Der Pol oscillator:
+/* van Der Pol oscillator
    f0 = y1                           y0(0) = 1.0
    f1 = -y0 + mu * y1 * (1 - y0^2)   y1(0) = 0.0
 */
@@ -816,6 +865,182 @@ gsl_odeiv2_system rhs_func_brusselator = {
   0
 };
 
+/* Ring Modulator, stiff ODE of dimension 15. 
+
+   Reference: Walter M. Lioen, Jacques J.B. de Swart, Test Set for
+   Initial Value Problem Solvers, Release 2.1 September 1999,
+   http://ftp.cwi.nl/IVPtestset/software.htm
+ */
+
+#define NRINGMOD 15
+
+int
+rhs_ringmod (double t, const double y[], double f[], void *params)
+{
+  extern int nfe;
+  nfe += 1;
+
+  const double c = 1.6e-8;
+  const double cs = 2e-12;
+  const double cp = 1e-8;
+  const double r = 25e3;
+  const double rp = 50e0;
+  const double lh = 4.45e0;
+  const double ls1 = 2e-3;
+  const double ls2 = 5e-4;
+  const double ls3 = 5e-4;
+  const double rg1 = 36.3;
+  const double rg2 = 17.3;
+  const double rg3 = 17.3;
+  const double ri = 5e1;
+  const double rc = 6e2;
+  const double gamma = 40.67286402e-9;
+  const double delta = 17.7493332;
+  const double pi = 3.141592653589793238462643383;
+
+  const double uin1 = 0.5 * sin (2e3 * pi * t);
+  const double uin2 = 2 * sin (2e4 * pi * t);
+  const double ud1 = +y[2] - y[4] - y[6] - uin2;
+  const double ud2 = -y[3] + y[5] - y[6] - uin2;
+  const double ud3 = +y[3] + y[4] + y[6] + uin2;
+  const double ud4 = -y[2] - y[5] + y[6] + uin2;
+
+  const double qud1 = gamma * (exp (delta * ud1) - 1.0);
+  const double qud2 = gamma * (exp (delta * ud2) - 1.0);
+  const double qud3 = gamma * (exp (delta * ud3) - 1.0);
+  const double qud4 = gamma * (exp (delta * ud4) - 1.0);
+
+  f[0] = (y[7] - 0.5 * y[9] + 0.5 * y[10] + y[13] - y[0] / r) / c;
+  f[1] = (y[8] - 0.5 * y[11] + 0.5 * y[12] + y[14] - y[1] / r) / c;
+  f[2] = (y[9] - qud1 + qud4) / cs;
+  f[3] = (-y[10] + qud2 - qud3) / cs;
+  f[4] = (y[11] + qud1 - qud3) / cs;
+  f[5] = (-y[12] - qud2 + qud4) / cs;
+  f[6] = (-y[6] / rp + qud1 + qud2 - qud3 - qud4) / cp;
+  f[7] = -y[0] / lh;
+  f[8] = -y[1] / lh;
+  f[9] = (0.5 * y[0] - y[2] - rg2 * y[9]) / ls2;
+  f[10] = (-0.5 * y[0] + y[3] - rg3 * y[10]) / ls3;
+  f[11] = (0.5 * y[1] - y[4] - rg2 * y[11]) / ls2;
+  f[12] = (-0.5 * y[1] + y[5] - rg3 * y[12]) / ls3;
+  f[13] = (-y[0] + uin1 - (ri + rg1) * y[13]) / ls1;
+  f[14] = (-y[1] - (rc + rg1) * y[14]) / ls1;
+
+  return GSL_SUCCESS;
+}
+
+int
+jac_ringmod (double t, const double y[], double *dfdy, double dfdt[],
+             void *params)
+{
+  extern int nje;
+  nje += 1;
+
+  const double c = 1.6e-8;
+  const double cs = 2e-12;
+  const double cp = 1e-8;
+  const double r = 25e3;
+  const double rp = 50e0;
+  const double lh = 4.45e0;
+  const double ls1 = 2e-3;
+  const double ls2 = 5e-4;
+  const double ls3 = 5e-4;
+  const double rg1 = 36.3;
+  const double rg2 = 17.3;
+  const double rg3 = 17.3;
+  const double ri = 5e1;
+  const double rc = 6e2;
+  const double gamma = 40.67286402e-9;
+  const double delta = 17.7493332;
+  const double pi = 3.141592653589793238462643383;
+
+  size_t i;
+
+  for (i = 0; i < NRINGMOD * NRINGMOD; i++)
+    {
+      dfdy[i] = 0.0;
+    }
+
+  const double uin2 = 2 * sin (2e4 * pi * t);
+  const double ud1 = +y[2] - y[4] - y[6] - uin2;
+  const double ud2 = -y[3] + y[5] - y[6] - uin2;
+  const double ud3 = +y[3] + y[4] + y[6] + uin2;
+  const double ud4 = -y[2] - y[5] + y[6] + uin2;
+  const double qpud1 = gamma * delta * exp (delta * ud1);
+  const double qpud2 = gamma * delta * exp (delta * ud2);
+  const double qpud3 = gamma * delta * exp (delta * ud3);
+  const double qpud4 = gamma * delta * exp (delta * ud4);
+
+  dfdy[0 * NRINGMOD + 0] = -1 / (c * r);
+  dfdy[0 * NRINGMOD + 7] = 1 / c;
+  dfdy[0 * NRINGMOD + 9] = -0.5 / c;
+  dfdy[0 * NRINGMOD + 10] = -dfdy[0 * NRINGMOD + 9];
+  dfdy[0 * NRINGMOD + 13] = dfdy[0 * NRINGMOD + 7];
+  dfdy[1 * NRINGMOD + 1] = dfdy[0 * NRINGMOD + 0];
+  dfdy[1 * NRINGMOD + 8] = dfdy[0 * NRINGMOD + 7];
+  dfdy[1 * NRINGMOD + 11] = dfdy[0 * NRINGMOD + 9];
+  dfdy[1 * NRINGMOD + 12] = dfdy[0 * NRINGMOD + 10];
+  dfdy[1 * NRINGMOD + 14] = dfdy[0 * NRINGMOD + 13];
+  dfdy[2 * NRINGMOD + 2] = (-qpud1 - qpud4) / cs;
+  dfdy[2 * NRINGMOD + 4] = qpud1 / cs;
+  dfdy[2 * NRINGMOD + 5] = -qpud4 / cs;
+  dfdy[2 * NRINGMOD + 6] = (qpud1 + qpud4) / cs;
+  dfdy[2 * NRINGMOD + 9] = 1 / cs;
+  dfdy[3 * NRINGMOD + 3] = (-qpud2 - qpud3) / cs;
+  dfdy[3 * NRINGMOD + 4] = -qpud3 / cs;
+  dfdy[3 * NRINGMOD + 5] = qpud2 / cs;
+  dfdy[3 * NRINGMOD + 6] = (-qpud2 - qpud3) / cs;
+  dfdy[3 * NRINGMOD + 10] = -1 / cs;
+  dfdy[4 * NRINGMOD + 2] = qpud1 / cs;
+  dfdy[4 * NRINGMOD + 3] = -qpud3 / cs;
+  dfdy[4 * NRINGMOD + 4] = (-qpud1 - qpud3) / cs;
+  dfdy[4 * NRINGMOD + 6] = (-qpud1 - qpud3) / cs;
+  dfdy[4 * NRINGMOD + 11] = 1 / cs;
+  dfdy[5 * NRINGMOD + 2] = -qpud4 / cs;
+  dfdy[5 * NRINGMOD + 3] = qpud2 / cs;
+  dfdy[5 * NRINGMOD + 5] = (-qpud2 - qpud4) / cs;
+  dfdy[5 * NRINGMOD + 6] = (qpud2 + qpud4) / cs;
+  dfdy[5 * NRINGMOD + 12] = -1 / cs;
+  dfdy[6 * NRINGMOD + 2] = (qpud1 + qpud4) / cp;
+  dfdy[6 * NRINGMOD + 3] = (-qpud2 - qpud3) / cp;
+  dfdy[6 * NRINGMOD + 4] = (-qpud1 - qpud3) / cp;
+  dfdy[6 * NRINGMOD + 5] = (qpud2 + qpud4) / cp;
+  dfdy[6 * NRINGMOD + 6] = (-qpud1 - qpud2 - qpud3 - qpud4 - 1 / rp) / cp;
+  dfdy[7 * NRINGMOD + 0] = -1 / lh;
+  dfdy[8 * NRINGMOD + 1] = dfdy[7 * NRINGMOD + 0];
+  dfdy[9 * NRINGMOD + 0] = 0.5 / ls2;
+  dfdy[9 * NRINGMOD + 2] = -1 / ls2;
+  dfdy[9 * NRINGMOD + 9] = -rg2 / ls2;
+  dfdy[10 * NRINGMOD + 0] = -0.5 / ls3;
+  dfdy[10 * NRINGMOD + 3] = 1 / ls3;
+  dfdy[10 * NRINGMOD + 10] = -rg3 / ls3;
+  dfdy[11 * NRINGMOD + 1] = dfdy[9 * NRINGMOD + 0];
+  dfdy[11 * NRINGMOD + 4] = dfdy[9 * NRINGMOD + 2];
+  dfdy[11 * NRINGMOD + 11] = dfdy[9 * NRINGMOD + 9];
+  dfdy[12 * NRINGMOD + 1] = dfdy[10 * NRINGMOD + 0];
+  dfdy[12 * NRINGMOD + 5] = dfdy[10 * NRINGMOD + 3];
+  dfdy[12 * NRINGMOD + 12] = dfdy[10 * NRINGMOD + 10];
+  dfdy[13 * NRINGMOD + 0] = -1 / ls1;
+  dfdy[13 * NRINGMOD + 13] = -(ri + rg1) / ls1;
+  dfdy[14 * NRINGMOD + 1] = dfdy[13 * NRINGMOD + 0];
+  dfdy[14 * NRINGMOD + 14] = -(rc + rg1) / ls1;
+
+  for (i = 0; i < NRINGMOD; i++)
+    {
+      dfdt[i] = 0.0;
+    }
+
+  return GSL_SUCCESS;
+}
+
+gsl_odeiv2_system rhs_func_ringmod = {
+  rhs_ringmod,
+  jac_ringmod,
+  NRINGMOD,
+  NULL
+};
+
+
 /**********************************************************/
 /* Functions for carrying out tests                       */
 /**********************************************************/
@@ -832,20 +1057,23 @@ test_odeiv_stepper (const gsl_odeiv2_step_type * T,
 
   double y[MAXEQ] = { 0.0 };
   double yerr[MAXEQ] = { 0.0 };
+  double scale_abs[MAXEQ];
   size_t ne = sys->dimension;
   size_t i;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, ne);
+  for (i = 0; i < MAXEQ; i++)
+    {
+      scale_abs[i] = 1.0;
+    }
 
-  gsl_odeiv2_control *c =
-    gsl_odeiv2_control_standard_new (relerr, relerr, 1.0, 0.0);
-
-  gsl_odeiv2_step_set_control (step, c);
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_scaled_new (sys, T, h, relerr, relerr,
+                                        1.0, 0.0, scale_abs);
 
   DBL_MEMCPY (y, ystart, MAXEQ);
 
   {
-    int s = gsl_odeiv2_step_apply (step, t, h, y, yerr, 0, 0, sys);
+    int s = gsl_odeiv2_step_apply (d->s, t, h, y, yerr, 0, 0, sys);
     if (s != GSL_SUCCESS)
       {
         gsl_test (s, "test_odeiv_stepper: %s step_apply returned %d", desc,
@@ -856,11 +1084,10 @@ test_odeiv_stepper (const gsl_odeiv2_step_type * T,
   for (i = 0; i < ne; i++)
     {
       gsl_test_rel (y[i], yfin[i], relerr,
-                    "%s %s step(%d)", gsl_odeiv2_step_name (step), desc, i);
+                    "%s %s step(%d)", gsl_odeiv2_step_name (d->s), desc, i);
     }
 
-  gsl_odeiv2_step_free (step);
-  gsl_odeiv2_control_free (c);
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -917,7 +1144,6 @@ test_stepper (const gsl_odeiv2_step_type * T)
   yfin[1] = sin (1.2 + h);
   test_odeiv_stepper (T, &rhs_func_sin, h, 1.2, "cosine-sine",
                       y, yfin, err_target);
-
 }
 
 void
@@ -944,47 +1170,43 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
   /* Tolerance factor in testing errors */
   const double factor = 10;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, sys->dimension);
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_standard_new (sys, T, h, err_target, err_target,
+                                          1.0, 0.0);
 
-  gsl_odeiv2_control *c =
-    gsl_odeiv2_control_standard_new (err_target, err_target, 1.0, 0.0);
+  double *y_orig = (double *) malloc (sys->dimension * sizeof (double));
 
-  gsl_odeiv2_step_set_control (step, c);
-
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (sys->dimension);
-
-  double *y_orig = malloc (sys->dimension * sizeof (double));
-  int s;
+  int s = 0;
 
   while (t < t1)
     {
       double t_orig = t;
       memcpy (y_orig, y, sys->dimension * sizeof (double));
-      s = gsl_odeiv2_evolve_apply (e, c, step, sys, &t, t1, &h, y);
+      s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, sys, &t, t1, &h, y);
 
 #ifdef DEBUG
       printf (" %.5e %.5e %.5e %d\n", t, y[0], y[1],
-              gsl_odeiv2_step_order (step));
+              gsl_odeiv2_step_order (d->s));
 #endif
 
       if (s != GSL_SUCCESS)
         {
           /* check that t and y are unchanged */
           gsl_test_abs (t, t_orig, 0.0, "%s, t must be restored on failure",
-                        gsl_odeiv2_step_name (step));
+                        gsl_odeiv2_step_name (d->s));
 
           for (i = 0; i < sys->dimension; i++)
             {
               gsl_test_abs (y[i], y_orig[i], 0.0,
                             "%s, y must be restored on failure",
-                            gsl_odeiv2_step_name (step), desc, i);
+                            gsl_odeiv2_step_name (d->s), desc, i);
             }
 
           if (sys != &rhs_func_xsin)
             {
               /* apart from xsin, other functions should not return errors */
               gsl_test (s, "%s evolve_apply returned %d",
-                        gsl_odeiv2_step_name (step), s);
+                        gsl_odeiv2_step_name (d->s), s);
               break;
             }
         }
@@ -993,7 +1215,7 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
         {
           gsl_test (GSL_EFAILED,
                     "%s evolve_apply reached maxiter",
-                    gsl_odeiv2_step_name (step));
+                    gsl_odeiv2_step_name (d->s));
           break;
         }
 
@@ -1001,7 +1223,7 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
     }
 
   gsl_test (s, "%s %s [%g,%g], %d steps (nfe %d, nje %d) completed",
-            gsl_odeiv2_step_name (step), desc, t0, t1, steps, nfe, nje);
+            gsl_odeiv2_step_name (d->s), desc, t0, t1, steps, nfe, nje);
 
   /* err_target is target error of one step. Test if stepper has made
      larger error than (tolerance factor times) the number of steps
@@ -1010,14 +1232,12 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
 
   for (i = 0; i < sys->dimension; i++)
     {
-      gsl_test_abs (y[i], yfin[i], factor * e->count * err_target,
-                    "%s %s evolve(%d)", gsl_odeiv2_step_name (step), desc, i);
+      gsl_test_abs (y[i], yfin[i], factor * d->e->count * err_target,
+                    "%s %s evolve(%d)", gsl_odeiv2_step_name (d->s), desc, i);
     }
 
   free (y_orig);
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (step);
+  gsl_odeiv2_driver_free (d);
 }
 
 int
@@ -1041,28 +1261,23 @@ sys_driver (const gsl_odeiv2_step_type * T,
   double t = t0;
   double h = hstart;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, sys->dimension);
-
-  gsl_odeiv2_control *c =
-    gsl_odeiv2_control_standard_new (epsabs, epsrel, 1.0, 0.0);
-
-  gsl_odeiv2_step_set_control (step, c);
-
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (sys->dimension);
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_standard_new (sys, T, h, epsabs, epsrel,
+                                          1.0, 0.0);
 
   while (t < t1)
     {
-      s = gsl_odeiv2_evolve_apply (e, c, step, sys, &t, t1, &h, y);
+      s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, sys, &t, t1, &h, y);
 
 #ifdef DEBUG
       printf ("%.5e %.5e %.5e %d\n", t, y[0], y[1],
-              gsl_odeiv2_step_order (step));
+              gsl_odeiv2_step_order (d->s));
 #endif
 
       if (s != GSL_SUCCESS)
         {
           gsl_test (s, "sys_driver: %s evolve_apply returned %d",
-                    gsl_odeiv2_step_name (step), s);
+                    gsl_odeiv2_step_name (d->s), s);
           break;
         }
 
@@ -1070,7 +1285,7 @@ sys_driver (const gsl_odeiv2_step_type * T,
         {
           gsl_test (GSL_EMAXITER,
                     "sys_driver: %s evolve_apply reached maxiter at t=%g",
-                    gsl_odeiv2_step_name (step), t);
+                    gsl_odeiv2_step_name (d->s), t);
           s = GSL_EMAXITER;
           break;
         }
@@ -1079,11 +1294,9 @@ sys_driver (const gsl_odeiv2_step_type * T,
     }
 
   gsl_test (s, "%s %s [%g,%g], %d steps (nfe %d, nje %d) completed",
-            gsl_odeiv2_step_name (step), desc, t0, t1, steps, nfe, nje);
+            gsl_odeiv2_step_name (d->s), desc, t0, t1, steps, nfe, nje);
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (step);
+  gsl_odeiv2_driver_free (d);
 
   return s;
 }
@@ -1200,11 +1413,7 @@ test_evolve_negative_h (const gsl_odeiv2_step_type * T, double h, double err)
   /* Tolerance factor in testing errors */
   const double factor = 10;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, 1);
-  gsl_odeiv2_control *c = gsl_odeiv2_control_standard_new (err, err, 1.0, 0.0);
-  gsl_odeiv2_step_set_control (step, c);
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (1);
-  gsl_odeiv2_system sys = rhs_func_cos;
+  const gsl_odeiv2_system sys = rhs_func_cos;
 
   double t = 0;
   double t1 = -4.0;
@@ -1215,24 +1424,26 @@ test_evolve_negative_h (const gsl_odeiv2_step_type * T, double h, double err)
   /* Make initial h negative */
   h = -fabs (h);
 
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_standard_new (&sys, T, h, err, err, 1.0, 0.0);
+
   while (t > t1)
     {
-      int status = gsl_odeiv2_evolve_apply (e, c, step, &sys, &t, t1, &h, &y);
+      int status = gsl_odeiv2_evolve_apply (d->e, d->c, d->s,
+                                            &sys, &t, t1, &h, &y);
 
       if (status != GSL_SUCCESS)
         {
           gsl_test (status, "%s evolve_apply returned %d for negative h",
-                    gsl_odeiv2_step_name (step), status);
+                    gsl_odeiv2_step_name (d->s), status);
           break;
         }
     }
 
-  gsl_test_abs (y, yfin, factor * e->count * err,
-                "%s evolution with negative h", gsl_odeiv2_step_name (step));
+  gsl_test_abs (y, yfin, factor * d->e->count * err,
+                "%s evolution with negative h", gsl_odeiv2_step_name (d->s));
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (step);
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -1246,11 +1457,9 @@ test_broken (const gsl_odeiv2_step_type * T, double h, double err)
   /* Tolerance factor in testing errors */
   const double factor = 10;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, 1);
-  gsl_odeiv2_control *c = gsl_odeiv2_control_y_new (err, err);
-  gsl_odeiv2_step_set_control (step, c);
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (1);
-  gsl_odeiv2_system sys = rhs_func_broken;
+  const gsl_odeiv2_system sys = rhs_func_broken;
+
+  gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new (&sys, T, h, err, err);
 
   double t = 0;
   double t1 = 100.0;
@@ -1261,7 +1470,8 @@ test_broken (const gsl_odeiv2_step_type * T, double h, double err)
   int status;
   while (t < t1)
     {
-      status = gsl_odeiv2_evolve_apply (e, c, step, &sys, &t, t1, &h, &y);
+      status =
+        gsl_odeiv2_evolve_apply (d->e, d->c, d->s, &sys, &t, t1, &h, &y);
 
       if (status != GSL_SUCCESS)
         {
@@ -1271,27 +1481,26 @@ test_broken (const gsl_odeiv2_step_type * T, double h, double err)
 
   gsl_test_abs (h + final_max_h, final_max_h, factor * final_max_h,
                 "%s test_broken: step size at break point",
-                gsl_odeiv2_step_name (step));
+                gsl_odeiv2_step_name (d->s));
 
   gsl_test_abs (t, 10.0, factor * err,
-                "%s test_broken: point of break", gsl_odeiv2_step_name (step));
+                "%s test_broken: point of break",
+                gsl_odeiv2_step_name (d->s));
 
   /* GSL_FAILURE results from stepper failure, 123 from user function */
 
   if (status != GSL_FAILURE && status != 123)
     {
       gsl_test (status, "%s test_broken: evolve return value %d",
-                gsl_odeiv2_step_name (step), status);
+                gsl_odeiv2_step_name (d->s), status);
     }
   else
     {
       gsl_test (GSL_SUCCESS, "%s test_broken: evolve return value %d",
-                gsl_odeiv2_step_name (step), status);
+                gsl_odeiv2_step_name (d->s), status);
     }
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (step);
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -1311,22 +1520,20 @@ test_stepsize_fail (const gsl_odeiv2_step_type * T, double h)
   const double factor = 10;
 
   const double final_max_h = GSL_DBL_EPSILON;
+  const gsl_odeiv2_system sys = rhs_func_br;
 
-  gsl_odeiv2_step *step = gsl_odeiv2_step_alloc (T, 1);
-  gsl_odeiv2_control *c = gsl_odeiv2_control_y_new (epsabs, epsrel);
-  gsl_odeiv2_step_set_control (step, c);
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (1);
-  gsl_odeiv2_system sys = rhs_func_br;
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_y_new (&sys, T, h, epsabs, epsrel);
 
   double t = 1.0;
   double t1 = 1e5;
-
   double y = 0.0;
-
   int status;
+
   while (t < t1)
     {
-      status = gsl_odeiv2_evolve_apply (e, c, step, &sys, &t, t1, &h, &y);
+      status =
+        gsl_odeiv2_evolve_apply (d->e, d->c, d->s, &sys, &t, t1, &h, &y);
 
       if (status != GSL_SUCCESS)
         {
@@ -1336,19 +1543,38 @@ test_stepsize_fail (const gsl_odeiv2_step_type * T, double h)
 
   gsl_test_abs (h + final_max_h, final_max_h, factor * final_max_h,
                 "%s test_stepsize_fail: step size at break point",
-                gsl_odeiv2_step_name (step));
+                gsl_odeiv2_step_name (d->s));
 
   gsl_test_abs (t, 1.0, 1e-6,
                 "%s test_stepsize_fail: point of break",
-                gsl_odeiv2_step_name (step));
+                gsl_odeiv2_step_name (d->s));
 
   gsl_test_int (status, GSL_FAILURE,
                 "%s test_stepsize_fail: evolve return value",
-                gsl_odeiv2_step_name (step));
+                gsl_odeiv2_step_name (d->s));
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (step);
+  gsl_odeiv2_driver_free (d);
+}
+
+void
+test_user_break (const gsl_odeiv2_step_type * T, double h)
+{
+  /* Tests for user signaled immediate break */
+
+  const double tol = 1e-8;
+
+  gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin_ub, T,
+                                                        h, tol, tol);
+
+  double y[] = { 1.0, 0.0 };
+  double t = 0.0;
+  const double t1 = 8.25;
+
+  int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
+
+  gsl_test ((s - GSL_EBADFUNC), "test_user_break returned %d", s);
+
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -1359,21 +1585,21 @@ test_stepfn (const gsl_odeiv2_step_type * T)
   double epsabs = 1e-16;
   double epsrel = 1e-6;
 
-  gsl_odeiv2_step *s = gsl_odeiv2_step_alloc (T, 1);
-  gsl_odeiv2_control *c = gsl_odeiv2_control_y_new (epsabs, epsrel);
-  gsl_odeiv2_step_set_control (s, c);
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (1);
-  gsl_odeiv2_system sys = rhs_func_stepfn;
+  const gsl_odeiv2_system sys = rhs_func_stepfn;
 
   double t = 0.0;
   double h = 1e-6;
   double y = 0.0;
   int i = 0;
-  int status;
+  int status = 0;
+
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_y_new (&sys, T, h, epsabs, epsrel);
 
   while (t < 2 && i < 1000000)
     {
-      status = gsl_odeiv2_evolve_apply (e, c, s, &sys, &t, 2, &h, &y);
+      status =
+        gsl_odeiv2_evolve_apply (d->e, d->c, d->s, &sys, &t, 2, &h, &y);
 #ifdef DEBUG
       printf ("i=%d status=%d t=%g h=%g y=%g\n", i, status, t, h, y);
 #endif
@@ -1385,17 +1611,15 @@ test_stepfn (const gsl_odeiv2_step_type * T)
     }
 
   gsl_test (status, "evolve step function, return value (stepfn/%s): %d",
-            gsl_odeiv2_step_name (s), status);
+            gsl_odeiv2_step_name (d->s), status);
 
   gsl_test_abs (t, 2, 1e-16, "evolve step function, t (stepfn/%s)",
-                gsl_odeiv2_step_name (s));
+                gsl_odeiv2_step_name (d->s));
 
   gsl_test_rel (y, 1, epsrel, "evolve step function, y (stepfn/%s)",
-                gsl_odeiv2_step_name (s));
+                gsl_odeiv2_step_name (d->s));
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (s);
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -1406,11 +1630,7 @@ test_stepfn2 (const gsl_odeiv2_step_type * T)
   double epsabs = 1e-16;
   double epsrel = 1e-6;
 
-  gsl_odeiv2_step *s = gsl_odeiv2_step_alloc (T, 1);
-  gsl_odeiv2_control *c = gsl_odeiv2_control_y_new (epsabs, epsrel);
-  gsl_odeiv2_step_set_control (s, c);
-  gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc (1);
-  gsl_odeiv2_system sys = rhs_func_stepfn2;
+  const gsl_odeiv2_system sys = rhs_func_stepfn2;
 
   double t = -1.0;
   double h = 1e-6;
@@ -1420,9 +1640,13 @@ test_stepfn2 (const gsl_odeiv2_step_type * T)
   int status;
   const int maxiter = 100000;
 
+  gsl_odeiv2_driver *d =
+    gsl_odeiv2_driver_alloc_yp_new (&sys, T, h, epsabs, epsrel);
+
   while (t < 1.0 && i < maxiter)
     {
-      status = gsl_odeiv2_evolve_apply (e, c, s, &sys, &t, 1.0, &h, &y);
+      status =
+        gsl_odeiv2_evolve_apply (d->e, d->c, d->s, &sys, &t, 1.0, &h, &y);
 #ifdef DEBUG
       printf ("i=%d status=%d t=%g h=%g y=%g\n", i, status, t, h, y);
 #endif
@@ -1434,16 +1658,14 @@ test_stepfn2 (const gsl_odeiv2_step_type * T)
 
   if (i >= maxiter)
     printf ("FAIL: evolve big step function, (stepfn2/%s) reached maxiter\n",
-            gsl_odeiv2_step_name (s));
+            gsl_odeiv2_step_name (d->s));
 
   gsl_test_abs (t, 1.0, 1e-16, "evolve big step function, t (stepfn2/%s)",
-                gsl_odeiv2_step_name (s));
+                gsl_odeiv2_step_name (d->s));
   gsl_test_rel (y, 1e300, epsrel, "evolve big step function, y (stepfn2/%s)",
-                gsl_odeiv2_step_name (s));
+                gsl_odeiv2_step_name (d->s));
 
-  gsl_odeiv2_evolve_free (e);
-  gsl_odeiv2_control_free (c);
-  gsl_odeiv2_step_free (s);
+  gsl_odeiv2_driver_free (d);
 }
 
 void
@@ -1495,29 +1717,19 @@ test_nonstiff_problems (void)
   err_target[3] = 1e-6;
   steppers[4] = gsl_odeiv2_step_rk8pd;
   err_target[4] = 1e-6;
-  steppers[5] = gsl_odeiv2_step_rk2imp;
-  err_target[5] = 1e-5;
-  steppers[6] = gsl_odeiv2_step_rk2simp;
+  steppers[5] = gsl_odeiv2_step_rk1imp;
+  err_target[5] = 1e-3;
+  steppers[6] = gsl_odeiv2_step_rk2imp;
   err_target[6] = 1e-5;
   steppers[7] = gsl_odeiv2_step_rk4imp;
   err_target[7] = 1e-6;
   steppers[8] = gsl_odeiv2_step_bsimp;
   err_target[8] = 1e-6;
-  steppers[9] = gsl_odeiv2_step_gear1;
-  err_target[9] = 1e-3;
-  steppers[10] = gsl_odeiv2_step_gear2;
-  err_target[10] = 1e-6;
-  steppers[11] = gsl_odeiv2_step_imprk4;
-  err_target[11] = 1e-6;
-  steppers[12] = gsl_odeiv2_step_imprk2;
-  err_target[12] = 1e-5;
-  steppers[13] = gsl_odeiv2_step_impeuler;
-  err_target[13] = 1e-3;
-  steppers[14] = gsl_odeiv2_step_msadams;
-  err_target[14] = 1e-5;
-  steppers[15] = gsl_odeiv2_step_msbdf;
-  err_target[15] = 1e-5;
-  steppers[16] = 0;
+  steppers[9] = gsl_odeiv2_step_msadams;
+  err_target[9] = 1e-5;
+  steppers[10] = gsl_odeiv2_step_msbdf;
+  err_target[10] = 1e-5;
+  steppers[11] = 0;
 
   /* Loop over problems */
 
@@ -1623,17 +1835,15 @@ test_stiff_problems (void)
 
   steppers[0] = gsl_odeiv2_step_bsimp;
   err_target[0] = 1e-6;
-  steppers[1] = gsl_odeiv2_step_rk2simp;
-  err_target[1] = 5e-5;
-  steppers[2] = gsl_odeiv2_step_imprk4;
+  steppers[1] = gsl_odeiv2_step_rk1imp;
+  err_target[1] = 5e-3;
+  steppers[2] = gsl_odeiv2_step_rk2imp;
   err_target[2] = 5e-5;
-  steppers[3] = gsl_odeiv2_step_imprk2;
+  steppers[3] = gsl_odeiv2_step_rk4imp;
   err_target[3] = 5e-5;
-  steppers[4] = gsl_odeiv2_step_impeuler;
-  err_target[4] = 5e-3;
-  steppers[5] = gsl_odeiv2_step_msbdf;
-  err_target[5] = 1e-4;
-  steppers[6] = 0;
+  steppers[4] = gsl_odeiv2_step_msbdf;
+  err_target[4] = 1e-4;
+  steppers[5] = 0;
 
   /* Loop over problems */
 
@@ -1721,20 +1931,25 @@ test_extreme_problems (void)
   size_t i, k, p;
 
   /* Number of problems to test */
-#define CONST_EXTREME_NPROB 2
+#define CONST_EXTREME_NPROB 3
 
   /* Problems, their names and number of equations */
-  const gsl_odeiv2_system *prob[] = { &rhs_func_e5, &rhs_func_robertson };
-  const char *probname[] = { "e5_bigt", "robertson_bigt" };
-  const size_t sd[] = { 4, 3 };
+  const gsl_odeiv2_system *prob[] =
+    { &rhs_func_e5, &rhs_func_robertson, &rhs_func_ringmod };
+  const char *probname[] = { "e5_bigt", "robertson_bigt", "ringmod" };
+  const size_t sd[] = { 4, 3, NRINGMOD };
 
   /* Integration interval for problems */
   const double start[CONST_EXTREME_NPROB] = { 0.0 };
-  const double end[CONST_EXTREME_NPROB] = { 1e11, 1e11 };
+  const double end[CONST_EXTREME_NPROB] = { 1e11, 1e11, 1e-3 };
 
-  const double epsabs = 1e1 * GSL_DBL_MIN;
-  const double epsrel = 1e-12;
-  const double initstepsize = 1e-5;
+  const double epsabs[CONST_EXTREME_NPROB] =
+    { 1e1 * GSL_DBL_MIN, 1e1 * GSL_DBL_MIN, 1e-7 };
+  const double epsrel[CONST_EXTREME_NPROB] = { 1e-12, 1e-12, 1e-7 };
+  const double initstepsize[CONST_EXTREME_NPROB] = { 1e-5, 1e-5, 1e-10 };
+
+  /* Problem specific tolerance modification coefficients */
+  const double pec[CONST_EXTREME_NPROB] = { 1.0, 1.0, 1e1 };
 
   /* Steppers */
 
@@ -1770,9 +1985,18 @@ test_extreme_problems (void)
               y[i * sd[p] + 1] = 0.0;
               y[i * sd[p] + 2] = 0.0;
               break;
+            case 2:
+              {
+                size_t j;
+                for (j = 0; j < NRINGMOD; j++)
+                  {
+                    y[i * sd[p] + j] = 0.0;
+                  }
+              }
+              break;
             default:
               gsl_test (GSL_EFAILED,
-                        "test_stiff_problems: initialization error\n");
+                        "test_extreme_problems: initialization error\n");
               return;
             }
         }
@@ -1782,13 +2006,15 @@ test_extreme_problems (void)
       for (i = 0; steppers[i] != 0; i++)
         {
           int s = sys_driver (steppers[i], prob[p], start[p], end[p],
-                              initstepsize, &y[sd[p] * i],
-                              epsabs, epsrel, probname[p]);
+                              initstepsize[p], &y[sd[p] * i],
+                              epsabs[p], epsrel[p], probname[p]);
 
           if (s != GSL_SUCCESS)
             {
-              gsl_test (s, "test_stiff_problems %s %s",
-                        steppers[i]->name, probname[p]);
+              printf ("start=%.5e, initstepsize=%.5e\n", start[p],
+                      initstepsize[p]);
+              gsl_test (s, "test_extreme_problems %s %s", steppers[i]->name,
+                        probname[p]);
             }
         }
 
@@ -1800,7 +2026,7 @@ test_extreme_problems (void)
             const double val1 = y[k];
             const double val2 = y[sd[p] * i + k];
             gsl_test_rel (val1, val2,
-                          (GSL_MAX (err_target[0], err_target[i])),
+                          (pec[p] * GSL_MAX (err_target[0], err_target[i])),
                           "%s/%s %s [%d]",
                           steppers[0]->name, steppers[i]->name,
                           probname[p], k);
@@ -1816,17 +2042,17 @@ test_driver (void)
   const double tol = 1e-8;
   const double hmax = 1e-2;
 
-  gsl_odeiv2_driver *D =
+  gsl_odeiv2_driver *d =
     gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
-                                  1e-3, tol, tol);
-  gsl_odeiv2_driver_set_hmax (D, hmax);
+                                   1e-3, tol, tol);
+  gsl_odeiv2_driver_set_hmax (d, hmax);
 
   double y[] = { 1.0, 0.0 };
   double t = 0.0;
   const double t1 = 8.25;
   const size_t minsteps = ceil (t1 / hmax);
 
-  int s = gsl_odeiv2_driver_apply (D, &t, t1, y);
+  int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
 
   if (s != GSL_SUCCESS)
     {
@@ -1835,58 +2061,58 @@ test_driver (void)
 
   /* Test that result is correct */
 
-  gsl_test_rel (y[0], cos (t1), D->n * tol, "test_driver y0 ");
-  gsl_test_rel (y[1], sin (t1), D->n * tol, "test_driver y1 ");
+  gsl_test_rel (y[0], cos (t1), d->n * tol, "test_driver y0 ");
+  gsl_test_rel (y[1], sin (t1), d->n * tol, "test_driver y1 ");
 
   /* Test that maximum step length is obeyed */
 
-  if (D->n < minsteps)
+  if (d->n < minsteps)
     {
-      gsl_test (1, "test_driver steps %d < minsteps %d \n", D->n, minsteps);
+      gsl_test (1, "test_driver steps %d < minsteps %d \n", d->n, minsteps);
     }
   else
     {
       gsl_test (0, "test_driver max step length test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
 
   /* Test that maximum number of steps is obeyed */
 
   const size_t maxsteps = 20;
 
-  D = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
-                                    1e-3, tol, tol);
-  gsl_odeiv2_driver_set_hmax (D, hmax);
-  gsl_odeiv2_driver_set_nmax (D, maxsteps);
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
+                                     1e-3, tol, tol);
+  gsl_odeiv2_driver_set_hmax (d, hmax);
+  gsl_odeiv2_driver_set_nmax (d, maxsteps);
 
   const double t2 = 100;
 
-  s = gsl_odeiv2_driver_apply (D, &t, t2, y);
+  s = gsl_odeiv2_driver_apply (d, &t, t2, y);
 
-  if (D->n != maxsteps + 1)
+  if (d->n != maxsteps + 1)
     {
-      gsl_test (1, "test_driver steps %d, expected %d", D->n, maxsteps + 1);
+      gsl_test (1, "test_driver steps %d, expected %d", d->n, maxsteps + 1);
     }
   else
     {
       gsl_test (0, "test_driver max steps test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
 
   /* Test that minimum step length is obeyed */
 
   const double hmin = 1e-10;
 
-  D = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
-                                    1e-3, tol, tol);
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
+                                     1e-3, tol, tol);
 
-  gsl_odeiv2_driver_set_hmin (D, hmin);
+  gsl_odeiv2_driver_set_hmin (d, hmin);
   y[0] = 0.0;
   t = 0.0;
 
-  s = gsl_odeiv2_driver_apply (D, &t, t2, y);
+  s = gsl_odeiv2_driver_apply (d, &t, t2, y);
 
   if (s != GSL_ENOPROG)
     {
@@ -1897,7 +2123,72 @@ test_driver (void)
       gsl_test (0, "test_driver min step test");
     }
 
-  gsl_odeiv2_driver_free (D);
+  gsl_odeiv2_driver_free (d);
+
+  /* Test negative integration direction */
+
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
+                                     -1e-3, tol, tol);
+
+  y[0] = 1.0;
+  y[1] = 0.0;
+  t = 2.5;
+  const double t3 = -2.5;
+
+  gsl_odeiv2_driver_set_nmax (d, 1000);
+  s = gsl_odeiv2_driver_apply (d, &t, t3, y);
+
+  {
+    const double tol = 1e-6;
+    const double test = fabs (t - t3);
+    const double val = fabs (sin (-5.0) - y[1]);
+
+    if (test > GSL_DBL_EPSILON)
+      {
+        gsl_test (1,
+                  "test_driver negative dir diff %e, expected less than %e",
+                  test, GSL_DBL_EPSILON);
+      }
+    else if (val > tol)
+      {
+        gsl_test (1, "test_driver negative dir val %e, expected less than %e",
+                  val, tol);
+      }
+    else
+      {
+        gsl_test (s, "test_driver negative direction test");
+      }
+  }
+
+  /* Test driver_apply_fixed_step */
+
+  const size_t nfsteps = 100;
+  s = gsl_odeiv2_driver_apply_fixed_step (d, &t, 0.025, nfsteps, y);
+
+  {
+    const double tol = 1e-6;
+    const double val = fabs (sin (-2.5) - y[1]);
+
+    if (fabs (t) > nfsteps * GSL_DBL_EPSILON)
+      {
+        gsl_test (1,
+                  "test_driver apply_fixed_step diff %e, expected less than %e",
+                  fabs (t), nfsteps * GSL_DBL_EPSILON);
+      }
+    else if (val > tol)
+      {
+        gsl_test (1,
+                  "test_driver apply_fixed_step val %e, expected less than %e",
+                  val, tol);
+      }
+    else
+      {
+        gsl_test (s, "test_driver apply_fixed_step test");
+      }
+  }
+
+  gsl_odeiv2_driver_free (d);
+
 }
 
 void
@@ -1958,29 +2249,19 @@ benchmark_precision (void)
   err_target[3] = 1e-6;
   steppers[4] = gsl_odeiv2_step_rk8pd;
   err_target[4] = 1e-6;
-  steppers[5] = gsl_odeiv2_step_rk2imp;
-  err_target[5] = 1e-5;
-  steppers[6] = gsl_odeiv2_step_rk2simp;
+  steppers[5] = gsl_odeiv2_step_rk1imp;
+  err_target[5] = 1e-3;
+  steppers[6] = gsl_odeiv2_step_rk2imp;
   err_target[6] = 1e-5;
   steppers[7] = gsl_odeiv2_step_rk4imp;
   err_target[7] = 1e-6;
   steppers[8] = gsl_odeiv2_step_bsimp;
   err_target[8] = 1e-6;
-  steppers[9] = gsl_odeiv2_step_gear1;
-  err_target[9] = 1e-3;
-  steppers[10] = gsl_odeiv2_step_gear2;
-  err_target[10] = 1e-6;
-  steppers[11] = gsl_odeiv2_step_imprk4;
-  err_target[11] = 1e-6;
-  steppers[12] = gsl_odeiv2_step_imprk2;
-  err_target[12] = 1e-5;
-  steppers[13] = gsl_odeiv2_step_impeuler;
-  err_target[13] = 1e-3;
-  steppers[14] = gsl_odeiv2_step_msadams;
-  err_target[14] = 1e-5;
-  steppers[15] = gsl_odeiv2_step_msbdf;
-  err_target[15] = 1e-5;
-  steppers[16] = 0;
+  steppers[9] = gsl_odeiv2_step_msadams;
+  err_target[9] = 1e-5;
+  steppers[10] = gsl_odeiv2_step_msbdf;
+  err_target[10] = 1e-5;
+  steppers[11] = 0;
 
   /* Loop over problems */
 
@@ -2119,9 +2400,8 @@ test_evolve_temp (const gsl_odeiv2_step_type * T, double h, double err)
   yfin[0] = 0;
   yfin[1] = 0;
   yfin[2] = 0;
-  test_evolve_system (T, &rhs_func_exp, 0.0, 8.4, h, y, yfin, err, "temp");
+  test_evolve_system (T, &rhs_func_stiff, 0.0, 1.0, h, y, yfin, err, "temp");
 }
-
 
 /**********************************************************/
 /* Main function                                          */
@@ -2130,6 +2410,13 @@ test_evolve_temp (const gsl_odeiv2_step_type * T, double h, double err)
 int
 main (void)
 {
+
+  /* Benchmark routine to compare stepper performance */
+  //benchmark_precision(); return 0;
+
+  /* Test single problem, for debugging purposes */
+  //test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0;
+
   struct ptype
   {
     const gsl_odeiv2_step_type *type;
@@ -2147,33 +2434,25 @@ main (void)
   p[3].h = 1.0e-3;
   p[4].type = gsl_odeiv2_step_rk8pd;
   p[4].h = 1.0e-3;
-  p[5].type = gsl_odeiv2_step_rk2imp;
+  p[5].type = gsl_odeiv2_step_rk1imp;
   p[5].h = 1.0e-3;
-  p[6].type = gsl_odeiv2_step_rk2simp;
+  p[6].type = gsl_odeiv2_step_rk2imp;
   p[6].h = 1.0e-3;
   p[7].type = gsl_odeiv2_step_rk4imp;
   p[7].h = 1.0e-3;
   p[8].type = gsl_odeiv2_step_bsimp;
   p[8].h = 1.0e-3;
-  p[9].type = gsl_odeiv2_step_gear1;
+  p[9].type = gsl_odeiv2_step_msadams;
   p[9].h = 1.0e-3;
-  p[10].type = gsl_odeiv2_step_gear2;
+  p[10].type = gsl_odeiv2_step_msbdf;
   p[10].h = 1.0e-3;
-  p[11].type = gsl_odeiv2_step_imprk4;
-  p[11].h = 1.0e-3;
-  p[12].type = gsl_odeiv2_step_imprk2;
-  p[12].h = 1.0e-3;
-  p[13].type = gsl_odeiv2_step_impeuler;
-  p[13].h = 1.0e-3;
-  p[14].type = gsl_odeiv2_step_msadams;
-  p[14].h = 1.0e-3;
-  p[15].type = gsl_odeiv2_step_msbdf;
-  p[15].h = 1.0e-3;
-  p[16].type = 0;
+  p[11].type = 0;
 
   gsl_ieee_env_setup ();
 
   int i;
+
+  /* Basic tests for all steppers */
 
   for (i = 0; p[i].type != 0; i++)
     {
@@ -2186,13 +2465,16 @@ main (void)
       test_evolve_exp (p[i].type, p[i].h, 1e-5);
       test_evolve_sin (p[i].type, p[i].h, 1e-8);
       test_evolve_xsin (p[i].type, p[i].h, 1e-8);
-      test_evolve_xsin (p[i].type, 0.1, 1e-8);  /* test with large step size */
+      test_evolve_xsin (p[i].type, 0.1, 1e-8);
       test_evolve_stiff1 (p[i].type, p[i].h, 1e-7);
       test_evolve_stiff5 (p[i].type, p[i].h, 1e-7);
       test_evolve_negative_h (p[i].type, p[i].h, 1e-7);
       test_broken (p[i].type, p[i].h, 1e-8);
       test_stepsize_fail (p[i].type, p[i].h);
+      test_user_break (p[i].type, p[i].h);
     }
+
+  /* Derivative test for explicit steppers */
 
   struct ptype explicit_stepper[MAXNS];
 
@@ -2216,6 +2498,8 @@ main (void)
       test_stepfn2 (explicit_stepper[i].type);
     }
 
+  /* Special tests */
+  
   test_nonstiff_problems ();
 
   test_stiff_problems ();
@@ -2223,12 +2507,6 @@ main (void)
   test_extreme_problems ();
 
   test_driver ();
-
-  /* Optional benchmark routine to compare stepper performance */
-  //benchmark_precision();
-
-  /* Test single problem */
-  //test_evolve_temp (gsl_odeiv2_step_msadams, 1e-0, 1e-8);
-
+  
   exit (gsl_test_summary ());
 }

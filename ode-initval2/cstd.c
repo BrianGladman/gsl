@@ -1,4 +1,4 @@
-/* ode-initval/cstd.c
+/* ode-initval2/cstd.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
@@ -23,6 +23,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_odeiv2.h>
+#include "control_utils.c"
 
 typedef struct
 {
@@ -36,12 +37,12 @@ std_control_state_t;
 static void *
 std_control_alloc (void)
 {
-  std_control_state_t * s = 
-    (std_control_state_t *) malloc (sizeof(std_control_state_t));
-  
+  std_control_state_t *s =
+    (std_control_state_t *) malloc (sizeof (std_control_state_t));
+
   if (s == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for std_control_state", 
+      GSL_ERROR_NULL ("failed to allocate space for std_control_state",
                       GSL_ENOMEM);
     }
 
@@ -49,11 +50,11 @@ std_control_alloc (void)
 }
 
 static int
-std_control_init (void * vstate, 
+std_control_init (void *vstate,
                   double eps_abs, double eps_rel, double a_y, double a_dydt)
 {
-  std_control_state_t * s = (std_control_state_t *) vstate;
-  
+  std_control_state_t *s = (std_control_state_t *) vstate;
+
   if (eps_abs < 0)
     {
       GSL_ERROR ("eps_abs is negative", GSL_EINVAL);
@@ -70,7 +71,7 @@ std_control_init (void * vstate,
     {
       GSL_ERROR ("a_dydt is negative", GSL_EINVAL);
     }
-  
+
   s->eps_rel = eps_rel;
   s->eps_abs = eps_abs;
   s->a_y = a_y;
@@ -80,14 +81,16 @@ std_control_init (void * vstate,
 }
 
 static int
-std_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[], const double yerr[], const double yp[], double * h)
+std_control_hadjust (void *vstate, size_t dim, unsigned int ord,
+                     const double y[], const double yerr[], const double yp[],
+                     double *h)
 {
   std_control_state_t *state = (std_control_state_t *) vstate;
 
   const double eps_abs = state->eps_abs;
   const double eps_rel = state->eps_rel;
-  const double a_y     = state->a_y;
-  const double a_dydt  = state->a_dydt;
+  const double a_y = state->a_y;
+  const double a_dydt = state->a_dydt;
 
   const double S = 0.9;
   const double h_old = *h;
@@ -95,86 +98,99 @@ std_control_hadjust(void * vstate, size_t dim, unsigned int ord, const double y[
   double rmax = DBL_MIN;
   size_t i;
 
-  for(i=0; i<dim; i++) {
-    const double D0 = 
-      eps_rel * (a_y * fabs(y[i]) + a_dydt * fabs(h_old * yp[i])) + eps_abs;
-    const double r  = fabs(yerr[i]) / fabs(D0);
-    rmax = GSL_MAX_DBL(r, rmax);
-  }
+  for (i = 0; i < dim; i++)
+    {
+      const double D0 =
+        eps_rel * (a_y * fabs (y[i]) + a_dydt * fabs (h_old * yp[i])) +
+        eps_abs;
+      const double r = fabs (yerr[i]) / fabs (D0);
+      rmax = GSL_MAX_DBL (r, rmax);
+    }
 
-  if(rmax > 1.1) {
-    /* decrease step, no more than factor of 5, but a fraction S more
-       than scaling suggests (for better accuracy) */
-    double r =  S / pow(rmax, 1.0/ord);
-    
-    if (r < 0.2)
-      r = 0.2;
+  if (rmax > 1.1)
+    {
+      /* decrease step, no more than factor of 5, but a fraction S more
+         than scaling suggests (for better accuracy) */
+      double r = S / pow (rmax, 1.0 / ord);
 
-    *h = r * h_old;
+      if (r < 0.2)
+        r = 0.2;
 
-    return GSL_ODEIV_HADJ_DEC;
-  }
-  else if(rmax < 0.5) {
-    /* increase step, no more than factor of 5 */
-    double r = S / pow(rmax, 1.0/(ord+1.0));
+      *h = r * h_old;
 
-    if (r > 5.0)
-      r = 5.0;
+      return GSL_ODEIV_HADJ_DEC;
+    }
+  else if (rmax < 0.5)
+    {
+      /* increase step, no more than factor of 5 */
+      double r = S / pow (rmax, 1.0 / (ord + 1.0));
 
-    if (r < 1.0)  /* don't allow any decrease caused by S<1 */
-      r = 1.0;
-        
-    *h = r * h_old;
+      if (r > 5.0)
+        r = 5.0;
 
-    return GSL_ODEIV_HADJ_INC;
-  }
-  else {
-    /* no change */
-    return GSL_ODEIV_HADJ_NIL;
-  }
+      if (r < 1.0)              /* don't allow any decrease caused by S<1 */
+        r = 1.0;
+
+      *h = r * h_old;
+
+      return GSL_ODEIV_HADJ_INC;
+    }
+  else
+    {
+      /* no change */
+      return GSL_ODEIV_HADJ_NIL;
+    }
 }
 
 static int
-std_control_errlevel (void * vstate, const double y, const double dydt, const double h, const size_t ind, double * errlev)
+std_control_errlevel (void *vstate, const double y, const double dydt,
+                      const double h, const size_t ind, double *errlev)
 {
   std_control_state_t *state = (std_control_state_t *) vstate;
 
   const double eps_abs = state->eps_abs;
   const double eps_rel = state->eps_rel;
-  const double a_y     = state->a_y;
-  const double a_dydt  = state->a_dydt;
+  const double a_y = state->a_y;
+  const double a_dydt = state->a_dydt;
 
-  *errlev = eps_rel * (a_y * fabs(y) + a_dydt * fabs(h * dydt)) + eps_abs;
+  *errlev = eps_rel * (a_y * fabs (y) + a_dydt * fabs (h * dydt)) + eps_abs;
+
+  if (*errlev <= 0.0)
+    {
+      GSL_ERROR_NULL ("errlev <= zero", GSL_ESANITY);
+    }
 
   return GSL_SUCCESS;
 }
 
 
 static void
-std_control_free (void * vstate)
+std_control_free (void *vstate)
 {
   std_control_state_t *state = (std_control_state_t *) vstate;
   free (state);
 }
 
-static const gsl_odeiv2_control_type std_control_type =
-{"standard",                    /* name */
- &std_control_alloc,
- &std_control_init,
- &std_control_hadjust,
- &std_control_errlevel,
- &std_control_free};
+static const gsl_odeiv2_control_type std_control_type = { "standard",   /* name */
+  &std_control_alloc,
+  &std_control_init,
+  &std_control_hadjust,
+  &std_control_errlevel,
+  &control_set_driver_null,
+  &std_control_free
+};
 
-const gsl_odeiv2_control_type *gsl_odeiv2_control_standard = &std_control_type;
+const gsl_odeiv2_control_type *gsl_odeiv2_control_standard =
+  &std_control_type;
 
 
 gsl_odeiv2_control *
-gsl_odeiv2_control_standard_new(double eps_abs, double eps_rel,
-                               double a_y, double a_dydt)
+gsl_odeiv2_control_standard_new (double eps_abs, double eps_rel,
+                                 double a_y, double a_dydt)
 {
-  gsl_odeiv2_control * c = 
+  gsl_odeiv2_control *c =
     gsl_odeiv2_control_alloc (gsl_odeiv2_control_standard);
-  
+
   int status = gsl_odeiv2_control_init (c, eps_abs, eps_rel, a_y, a_dydt);
 
   if (status != GSL_SUCCESS)
@@ -182,19 +198,19 @@ gsl_odeiv2_control_standard_new(double eps_abs, double eps_rel,
       gsl_odeiv2_control_free (c);
       GSL_ERROR_NULL ("error trying to initialize control", status);
     }
-  
+
   return c;
 }
 
 gsl_odeiv2_control *
-gsl_odeiv2_control_y_new(double eps_abs, double eps_rel)
+gsl_odeiv2_control_y_new (double eps_abs, double eps_rel)
 {
-  return gsl_odeiv2_control_standard_new(eps_abs, eps_rel, 1.0, 0.0);
+  return gsl_odeiv2_control_standard_new (eps_abs, eps_rel, 1.0, 0.0);
 }
 
 
 gsl_odeiv2_control *
-gsl_odeiv2_control_yp_new(double eps_abs, double eps_rel)
+gsl_odeiv2_control_yp_new (double eps_abs, double eps_rel)
 {
-  return gsl_odeiv2_control_standard_new(eps_abs, eps_rel, 0.0, 1.0);
+  return gsl_odeiv2_control_standard_new (eps_abs, eps_rel, 0.0, 1.0);
 }

@@ -1,6 +1,6 @@
-/* ode-initval/driver.c
+/* ode-initval2/driver.c
  * 
- * Copyright (C) 2009 Tuomo Keskitalo
+ * Copyright (C) 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* Driver routine for gsl_odeiv2. This is a wrapper for low level GSL
+/* Driver routine for odeiv2. This is a wrapper for low level GSL
    functions that allows a simple interface to step, control and
    evolve layers.
  */
@@ -29,7 +29,7 @@
 #include <gsl/gsl_machine.h>
 
 static gsl_odeiv2_driver *
-driver_alloc (gsl_odeiv2_system * sys, const double hstart,
+driver_alloc (const gsl_odeiv2_system * sys, const double hstart,
               const gsl_odeiv2_step_type * T)
 {
   /* Allocates and initializes an ODE driver system. Step and evolve
@@ -55,8 +55,9 @@ driver_alloc (gsl_odeiv2_system * sys, const double hstart,
 
   if (dim == 0)
     {
-      GSL_ERROR_NULL ("gsl_odeiv2_system dimension must be a positive integer",
-                      GSL_EINVAL);
+      GSL_ERROR_NULL
+        ("gsl_odeiv2_system dimension must be a positive integer",
+         GSL_EINVAL);
     }
 
   state->sys = sys;
@@ -78,22 +79,18 @@ driver_alloc (gsl_odeiv2_system * sys, const double hstart,
       GSL_ERROR_NULL ("failed to allocate evolve object", GSL_ENOMEM);
     }
 
-  if (hstart < 0.0)
+  if (hstart >= 0.0 || hstart < 0.0)
     {
       state->h = hstart;
-      state->hmax = -1.0 * GSL_DBL_MAX;
-    }
-  else if (hstart > 0.0)
-    {
-      state->h = hstart;
-      state->hmax = GSL_DBL_MAX;
     }
   else
     {
       GSL_ERROR_NULL ("invalid hstart", GSL_EINVAL);
     }
 
+  state->h = hstart;
   state->hmin = 0.0;
+  state->hmax = GSL_DBL_MAX;
   state->nmax = 0;
   state->n = 0;
   state->c = NULL;
@@ -102,19 +99,19 @@ driver_alloc (gsl_odeiv2_system * sys, const double hstart,
 }
 
 int
-gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * D, const double hmin)
+gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
 {
-  /* Sets minimum allowed step size (hmin) for driver */
+  /* Sets minimum allowed step size fabs(hmin) for driver. It is
+     required that hmin <= fabs(h) <= hmax. */
 
-  if ((D->h < 0.0 && hmin > 0.0) || (D->h > 0.0 && hmin < 0.0))
+  if ((fabs (hmin) > fabs (d->h)) || (fabs (hmin) > d->hmax))
     {
-      GSL_ERROR_NULL ("min step direction must match step direction",
-                      GSL_EINVAL);
+      GSL_ERROR_NULL ("hmin <= fabs(h) <= hmax required", GSL_EINVAL);
     }
 
   if (hmin >= 0.0 || hmin < 0.0)
     {
-      D->hmin = hmin;
+      d->hmin = fabs (hmin);
     }
   else
     {
@@ -125,19 +122,19 @@ gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * D, const double hmin)
 }
 
 int
-gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * D, const double hmax)
+gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax)
 {
-  /* Sets maximum allowed step size (hmax) for driver */
+  /* Sets maximum allowed step size fabs(hmax) for driver. It is
+     required that hmin <= fabs(h) <= hmax. */
 
-  if ((D->h < 0.0 && hmax > 0.0) || (D->h > 0.0 && hmax < 0.0))
+  if ((fabs (hmax) < fabs (d->h)) || (fabs (hmax) < d->hmin))
     {
-      GSL_ERROR_NULL ("max step direction must match step direction",
-                      GSL_EINVAL);
+      GSL_ERROR_NULL ("hmin <= fabs(h) <= hmax required", GSL_EINVAL);
     }
 
   if (hmax > 0.0 || hmax < 0.0)
     {
-      D->hmax = hmax;
+      d->hmax = fabs (hmax);
     }
   else
     {
@@ -148,21 +145,21 @@ gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * D, const double hmax)
 }
 
 int
-gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * D, const size_t nmax)
+gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * d,
+                            const unsigned long int nmax)
 {
   /* Sets maximum number of allowed steps (nmax) for driver */
 
-  D->nmax = nmax;
+  d->nmax = nmax;
 
   return GSL_SUCCESS;
 }
 
-
 gsl_odeiv2_driver *
-gsl_odeiv2_driver_alloc_y_new (gsl_odeiv2_system * sys,
-                              const gsl_odeiv2_step_type * T,
-                              const double hstart,
-                              const double epsabs, const double epsrel)
+gsl_odeiv2_driver_alloc_y_new (const gsl_odeiv2_system * sys,
+                               const gsl_odeiv2_step_type * T,
+                               const double hstart,
+                               const double epsabs, const double epsrel)
 {
   /* Initializes an ODE driver system with control object of type y_new. */
 
@@ -189,18 +186,107 @@ gsl_odeiv2_driver_alloc_y_new (gsl_odeiv2_system * sys,
       GSL_ERROR_NULL ("epsabs and epsrel must be positive", GSL_EINVAL);
     }
 
-  gsl_odeiv2_step_set_control (state->s, state->c);
+  /* Distribute pointer to driver object */
+
+  gsl_odeiv2_step_set_driver (state->s, state);
+  gsl_odeiv2_evolve_set_driver (state->e, state);
+  gsl_odeiv2_control_set_driver (state->c, state);
 
   return state;
 }
 
 gsl_odeiv2_driver *
-gsl_odeiv2_driver_alloc_scaled_new (gsl_odeiv2_system * sys,
-                                   const gsl_odeiv2_step_type * T,
-                                   const double hstart,
-                                   const double epsabs, const double epsrel,
-                                   const double a_y, const double a_dydt,
-                                   const double scale_abs[])
+gsl_odeiv2_driver_alloc_yp_new (const gsl_odeiv2_system * sys,
+                                const gsl_odeiv2_step_type * T,
+                                const double hstart,
+                                const double epsabs, const double epsrel)
+{
+  /* Initializes an ODE driver system with control object of type yp_new. */
+
+  gsl_odeiv2_driver *state = driver_alloc (sys, hstart, T);
+
+  if (state == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate driver object", GSL_ENOMEM);
+    }
+
+  if (epsabs >= 0.0 && epsrel >= 0.0)
+    {
+      state->c = gsl_odeiv2_control_yp_new (epsabs, epsrel);
+
+      if (state->c == NULL)
+        {
+          gsl_odeiv2_driver_free (state);
+          GSL_ERROR_NULL ("failed to allocate control object", GSL_ENOMEM);
+        }
+    }
+  else
+    {
+      gsl_odeiv2_driver_free (state);
+      GSL_ERROR_NULL ("epsabs and epsrel must be positive", GSL_EINVAL);
+    }
+
+  /* Distribute pointer to driver object */
+
+  gsl_odeiv2_step_set_driver (state->s, state);
+  gsl_odeiv2_evolve_set_driver (state->e, state);
+  gsl_odeiv2_control_set_driver (state->c, state);
+
+  return state;
+}
+
+gsl_odeiv2_driver *
+gsl_odeiv2_driver_alloc_standard_new (const gsl_odeiv2_system * sys,
+                                      const gsl_odeiv2_step_type * T,
+                                      const double hstart,
+                                      const double epsabs,
+                                      const double epsrel, const double a_y,
+                                      const double a_dydt)
+{
+  /* Initializes an ODE driver system with control object of type
+     standard_new. 
+   */
+
+  gsl_odeiv2_driver *state = driver_alloc (sys, hstart, T);
+
+  if (state == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate driver object", GSL_ENOMEM);
+    }
+
+  if (epsabs >= 0.0 && epsrel >= 0.0)
+    {
+      state->c =
+        gsl_odeiv2_control_standard_new (epsabs, epsrel, a_y, a_dydt);
+
+      if (state->c == NULL)
+        {
+          gsl_odeiv2_driver_free (state);
+          GSL_ERROR_NULL ("failed to allocate control object", GSL_ENOMEM);
+        }
+    }
+  else
+    {
+      gsl_odeiv2_driver_free (state);
+      GSL_ERROR_NULL ("epsabs and epsrel must be positive", GSL_EINVAL);
+    }
+
+  /* Distribute pointer to driver object */
+
+  gsl_odeiv2_step_set_driver (state->s, state);
+  gsl_odeiv2_evolve_set_driver (state->e, state);
+  gsl_odeiv2_control_set_driver (state->c, state);
+
+  return state;
+}
+
+gsl_odeiv2_driver *
+gsl_odeiv2_driver_alloc_scaled_new (const gsl_odeiv2_system * sys,
+                                    const gsl_odeiv2_step_type * T,
+                                    const double hstart,
+                                    const double epsabs, const double epsrel,
+                                    const double a_y, const double a_dydt,
+                                    const double scale_abs[])
 {
   /* Initializes an ODE driver system with control object of type
      scaled_new. 
@@ -216,7 +302,7 @@ gsl_odeiv2_driver_alloc_scaled_new (gsl_odeiv2_system * sys,
   if (epsabs >= 0.0 && epsrel >= 0.0)
     {
       state->c = gsl_odeiv2_control_scaled_new (epsabs, epsrel, a_y, a_dydt,
-                                               scale_abs, sys->dimension);
+                                                scale_abs, sys->dimension);
 
       if (state->c == NULL)
         {
@@ -230,14 +316,18 @@ gsl_odeiv2_driver_alloc_scaled_new (gsl_odeiv2_system * sys,
       GSL_ERROR_NULL ("epsabs and epsrel must be positive", GSL_EINVAL);
     }
 
-  gsl_odeiv2_step_set_control (state->s, state->c);
+  /* Distribute pointer to driver object */
+
+  gsl_odeiv2_step_set_driver (state->s, state);
+  gsl_odeiv2_evolve_set_driver (state->e, state);
+  gsl_odeiv2_control_set_driver (state->c, state);
 
   return state;
 }
 
 int
-gsl_odeiv2_driver_apply (gsl_odeiv2_driver * D, double *t,
-                        const double t1, double y[])
+gsl_odeiv2_driver_apply (gsl_odeiv2_driver * d, double *t,
+                         const double t1, double y[])
 {
   /* Main driver function that evolves the system from t to t1. In
      beginning vector y contains the values of dependent variables at
@@ -246,14 +336,35 @@ gsl_odeiv2_driver_apply (gsl_odeiv2_driver * D, double *t,
      successful step.
    */
 
-  int s;
+  int sign = 0;
+  d->n = 0;
 
-  D->n = 0;
+  /* Determine integration direction sign */
 
-  while (*t < t1)
+  if (d->h > 0.0)
     {
-      s =
-        gsl_odeiv2_evolve_apply (D->e, D->c, D->s, D->sys, t, t1, &(D->h), y);
+      sign = 1;
+    }
+  else
+    {
+      sign = -1;
+    }
+
+  /* Check that t, t1 and step direction are sensible */
+
+  if (sign * (t1 - *t) < 0.0)
+    {
+      GSL_ERROR_NULL
+        ("integration limits and/or step direction not consistent",
+         GSL_EINVAL);
+    }
+
+  /* Evolution loop */
+
+  while (sign * (t1 - *t) > 0.0)
+    {
+      int s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, d->sys,
+                                       t, t1, &(d->h), y);
 
       if (s != GSL_SUCCESS)
         {
@@ -262,38 +373,71 @@ gsl_odeiv2_driver_apply (gsl_odeiv2_driver * D, double *t,
 
       /* Check for maximum allowed steps */
 
-      if ((D->nmax > 0) && (D->n > D->nmax))
+      if ((d->nmax > 0) && (d->n > d->nmax))
         {
           return GSL_EMAXITER;
         }
 
       /* Set step size if maximum size is exceeded */
 
-      if (fabs (D->h) > fabs (D->hmax))
+      if (fabs (d->h) > d->hmax)
         {
-          D->h = D->hmax;
+          d->h = sign * d->hmax;
         }
 
       /* Check for too small step size */
 
-      if (fabs (D->h) < fabs (D->hmin))
+      if (fabs (d->h) < d->hmin)
         {
           return GSL_ENOPROG;
         }
 
-      D->n++;
+      d->n++;
     }
 
   return GSL_SUCCESS;
 }
 
 int
-gsl_odeiv2_driver_reset (gsl_odeiv2_driver * D)
+gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * d, double *t,
+                                    const double h, const unsigned long int n,
+                                    double y[])
+{
+  /* Alternative driver function that evolves the system from t using
+   * n steps of size h. In the beginning vector y contains the values
+   * of dependent variables at t. This function returns values at t =
+   * t + n * h in y. In case of an unrecoverable error, y and t
+   * contains the values after the last successful step.
+   */
+
+  d->n = 0;
+  unsigned long int i;
+
+  /* Evolution loop */
+
+  for (i = 0; i < n; i++)
+    {
+      int s = gsl_odeiv2_evolve_apply_fixed_step (d->e, d->c, d->s, d->sys,
+                                                  t, h, y);
+
+      if (s != GSL_SUCCESS)
+        {
+          return s;
+        }
+
+      d->n++;
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d)
 {
   /* Reset the driver. Resets evolve and step objects. */
 
   {
-    int s = gsl_odeiv2_evolve_reset (D->e);
+    int s = gsl_odeiv2_evolve_reset (d->e);
 
     if (s != GSL_SUCCESS)
       {
@@ -302,7 +446,7 @@ gsl_odeiv2_driver_reset (gsl_odeiv2_driver * D)
   }
 
   {
-    int s = gsl_odeiv2_step_reset (D->s);
+    int s = gsl_odeiv2_step_reset (d->s);
 
     if (s != GSL_SUCCESS)
       {

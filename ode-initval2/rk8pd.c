@@ -1,4 +1,4 @@
-/* ode-initval/rk8pd.c
+/* ode-initval2/rk8pd.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
  * 
@@ -86,6 +86,7 @@ static const double b3[] = { 1.0 / 48.0, 1.0 / 16.0 };
 static const double b4[] = { 1.0 / 32.0, 0.0, 3.0 / 32.0 };
 static const double b5[] = { 5.0 / 16.0, 0.0, -75.0 / 64.0, 75.0 / 64.0 };
 static const double b6[] = { 3.0 / 80.0, 0.0, 0.0, 3.0 / 16.0, 3.0 / 20.0 };
+
 static const double b7[] = {
   29443841.0 / 614563906.0,
   0.0,
@@ -94,6 +95,7 @@ static const double b7[] = {
   -28693883.0 / 1125000000.0,
   23124283.0 / 1800000000.0
 };
+
 static const double b8[] = {
   16016141.0 / 946692911.0,
   0.0,
@@ -103,6 +105,7 @@ static const double b8[] = {
   545815736.0 / 2771057229.0,
   -180193667.0 / 1043307555.0
 };
+
 static const double b9[] = {
   39632708.0 / 573591083.0,
   0.0,
@@ -113,6 +116,7 @@ static const double b9[] = {
   790204164.0 / 839813087.0,
   800635310.0 / 3783071287.0
 };
+
 static const double b10[] = {
   246121993.0 / 1340847787.0,
   0.0,
@@ -124,6 +128,7 @@ static const double b10[] = {
   393006217.0 / 1396673457.0,
   123872331.0 / 1001029789.0
 };
+
 static const double b11[] = {
   -1028468189.0 / 846180014.0,
   0.0,
@@ -136,6 +141,7 @@ static const double b11[] = {
   -45442868181.0 / 3398467696.0,
   3065993473.0 / 597172653.0
 };
+
 static const double b12[] = {
   185892177.0 / 718116043.0,
   0.0,
@@ -149,6 +155,7 @@ static const double b12[] = {
   3962137247.0 / 1805957418.0,
   65686358.0 / 487910083.0
 };
+
 static const double b13[] = {
   403863854.0 / 491063109.0,
   0.0,
@@ -264,9 +271,9 @@ rk8pd_apply (void *vstate,
       int s = GSL_ODEIV_FN_EVAL (sys, t, y, k1);
 
       if (s != GSL_SUCCESS)
-	{
-	  return s;
-	}
+        {
+          return s;
+        }
     }
 
   for (i = 0; i < dim; i++)
@@ -278,7 +285,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -291,7 +298,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -304,7 +311,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -317,7 +324,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -330,7 +337,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -345,7 +352,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -360,7 +367,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -375,7 +382,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -391,7 +398,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -407,7 +414,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -423,7 +430,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -440,7 +447,7 @@ rk8pd_apply (void *vstate,
 
     if (s != GSL_SUCCESS)
       {
-	return s;
+        return s;
       }
   }
 
@@ -459,13 +466,13 @@ rk8pd_apply (void *vstate,
   if (dydt_out != NULL)
     {
       int s = GSL_ODEIV_FN_EVAL (sys, t + h, y, dydt_out);
-      
+
       if (s != GSL_SUCCESS)
-	{
-	  /* Restore initial values */
-	  DBL_MEMCPY (y, y0, dim);
-	  return s;
-	}
+        {
+          /* Restore initial values */
+          DBL_MEMCPY (y, y0, dim);
+          return s;
+        }
     }
 
   /* error estimate */
@@ -506,7 +513,7 @@ static unsigned int
 rk8pd_order (void *vstate)
 {
   rk8pd_state_t *state = (rk8pd_state_t *) vstate;
-  state = 0; /* prevent warnings about unused parameters */
+  state = 0;                    /* prevent warnings about unused parameters */
   return 8;
 }
 
@@ -525,12 +532,12 @@ rk8pd_free (void *vstate)
   free (state);
 }
 
-static const gsl_odeiv2_step_type rk8pd_type = { "rk8pd",        /* name */
+static const gsl_odeiv2_step_type rk8pd_type = { "rk8pd",       /* name */
   1,                            /* can use dydt_in */
   1,                            /* gives exact dydt_out */
   &rk8pd_alloc,
   &rk8pd_apply,
-  &stepper_set_control_null,
+  &stepper_set_driver_null,
   &rk8pd_reset,
   &rk8pd_order,
   &rk8pd_free

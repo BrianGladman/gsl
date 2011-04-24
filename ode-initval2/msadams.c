@@ -1,6 +1,6 @@
-/* ode-initval/msadams.c
+/* ode-initval2/msadams.c
  * 
- * Copyright (C) 2009 Tuomo Keskitalo
+ * Copyright (C) 2009, 2010 Tuomo Keskitalo
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
    Nonlinear and Differential/Algebraic Equation Solvers, ACM
    Trans. Math. Software 31 (2005), pp. 363-396.
 
-   Note: The algorithms have been adapted for GSL ode-initval
+   Note: The algorithms have been adapted for GSL ode-initval2
    framework.
 */
 
@@ -77,7 +77,7 @@ typedef struct
   gsl_vector *relcor;           /* relative y values for correction */
   gsl_vector *svec;             /* saved abscor & work area */
   gsl_vector *tempvec;          /* work area */
-  gsl_odeiv2_control *control;   /* pointer to error control object */
+  const gsl_odeiv2_driver *driver;      /* pointer to gsl_odeiv2_driver object */
 
   long int ni;                  /* stepper call counter */
   size_t ord;                   /* current order of method */
@@ -88,7 +88,8 @@ typedef struct
   size_t ordwaitbackup;         /* backup of ordwait */
   size_t failord;               /* order of convergence failure */
   double failt;                 /* t point of convergence failure */
-  double ordp1coeffprev;        /* saved order coefficient */
+  double ordm1coeff;            /* saved order-1 coefficiet */
+  double ordp1coeffprev;        /* saved order+1 coefficient */
   size_t failcount;             /* counter for rejected steps */
 }
 msadams_state_t;
@@ -294,7 +295,7 @@ msadams_alloc (size_t dim)
 
   msadams_reset ((void *) state, dim);
 
-  state->control = NULL;
+  state->driver = NULL;
 
   return state;
 }
@@ -436,21 +437,21 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
       {
         size_t di;
 
-        printf ("-- l: ");
+        printf ("-- calccoeffs l: ");
         for (di = 0; di < ord + 1; di++)
           {
             printf ("%.5e ", l[di]);
           }
         printf ("\n");
 
-        printf ("-- pc: ");
+        printf ("-- calccoeffs pc: ");
         for (di = 0; di < ord; di++)
           {
             printf ("%.5e ", pc[di]);
           }
         printf ("\n");
 
-        printf ("-- st1=%.5e, st2=%.5e\n", st1, st2);
+        printf ("-- calccoeffs st1=%.5e, st2=%.5e\n", st1, st2);
       }
 #endif
 
@@ -485,6 +486,13 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
         }
     }
 
+#ifdef DEBUG
+  printf ("-- calccoeffs ordm1coeff=%.5e ", *ordm1coeff);
+  printf ("ordp1coeff=%.5e ", *ordp1coeff);
+  printf ("ordp2coeff=%.5e ", *ordp2coeff);
+  printf ("errcoeff=%.5e\n", *errcoeff);
+#endif
+
   return GSL_SUCCESS;
 }
 
@@ -510,6 +518,11 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
   {
     int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, ytmp);
+
+    if (s == GSL_EBADFUNC)
+      {
+        return s;
+      }
 
     if (s != GSL_SUCCESS)
       {
@@ -565,8 +578,7 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
       if (mi > 0)
         {
-          convrate = GSL_MAX_DBL (safety * convrate, 
-				  stepnorm / stepnormprev);
+          convrate = GSL_MAX_DBL (safety * convrate, stepnorm / stepnormprev);
         }
       else
         {
@@ -579,7 +591,7 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
 #ifdef DEBUG
       printf
         ("-- func iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
-         (int)mi, errcoeff, stepnorm, convrate, convtest);
+         (int) mi, errcoeff, stepnorm, convrate, convtest);
 #endif
       if (convtest <= 1.0)
         {
@@ -605,6 +617,11 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, ytmp2, ytmp);
 
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
+
         if (s != GSL_SUCCESS)
           {
             msadams_failurehandler (vstate, dim, t);
@@ -620,7 +637,7 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
     }
 
 #ifdef DEBUG
-  printf ("-- functional iteration exit at mi=%d\n", (int)mi);
+  printf ("-- functional iteration exit at mi=%d\n", (int) mi);
 #endif
 
   /* Handle convergence failure */
@@ -708,8 +725,8 @@ msadams_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
 #ifdef DEBUG
   printf
-    ("-- order change evaluation: ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
-     ordest, ordm1est, ordp1est);
+    ("-- eval_order ord=%d, ordest=%.5e, ordm1est=%.5e, ordp1est=%.5e\n",
+     (int) *ord, ordest, ordm1est, ordp1est);
 #endif
 
   /* Choose order that maximises step size and increases step
@@ -720,18 +737,18 @@ msadams_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
 
   if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order DECREASED\n");
-#endif
       *ord -= 1;
+#ifdef DEBUG
+      printf ("-- eval_order order DECREASED to %d\n", (int) *ord);
+#endif
     }
 
   else if (ordp1est > ordest && ordp1est > ordm1est && ordp1est > min_incr)
     {
-#ifdef DEBUG
-      printf ("-- order INCREASED\n");
-#endif
       *ord += 1;
+#ifdef DEBUG
+      printf ("-- eval_order order INCREASED to %d\n", (int) *ord);
+#endif
     }
 
   *ordwait = *ord + 2;
@@ -774,7 +791,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   {
     size_t di;
 
-    printf ("msadams_apply: t=%.5e, h=%.5e, y:", t, h);
+    printf ("msadams_apply: t=%.5e, ord=%d, h=%.5e, y:", t, (int) ord, h);
 
     for (di = 0; di < dim; di++)
       {
@@ -793,39 +810,39 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   if (state->ni > 0 && (t == state->tprev || t == state->failt))
     {
       if (state->ni == 1)
-	{
-	  /* No step has been accepted yet, reset method */
-	  
-	  msadams_reset (vstate, dim);
+        {
+          /* No step has been accepted yet, reset method */
+
+          msadams_reset (vstate, dim);
 #ifdef DEBUG
-	  printf ("-- first step was REJECTED, msadams_reset called\n");
+          printf ("-- first step was REJECTED, msadams_reset called\n");
 #endif
-	}
+        }
       else
-	{
-	  /* A succesful step has been saved, restore previous state. */
-	  
-	  /* If previous step suggests order increase, but the step was
-	     rejected, then do not increase order.
-	   */
-	  
-	  if (ord > state->ordprev)
-	    {
-	      state->ord = state->ordprev;
-	      ord = state->ord;
-	    }
-	  
-	  /* Restore previous state */
+        {
+          /* A succesful step has been saved, restore previous state. */
 
-	  DBL_MEMCPY (z, zbackup, (MSADAMS_MAX_ORD + 1) * dim);
-	  DBL_MEMCPY (hprev, hprevbackup, MSADAMS_MAX_ORD);
-	  state->ordprev = state->ordprevbackup;
-	  state->ordwait = state->ordwaitbackup;
+          /* If previous step suggests order increase, but the step was
+             rejected, then do not increase order.
+           */
+
+          if (ord > state->ordprev)
+            {
+              state->ord = state->ordprev;
+              ord = state->ord;
+            }
+
+          /* Restore previous state */
+
+          DBL_MEMCPY (z, zbackup, (MSADAMS_MAX_ORD + 1) * dim);
+          DBL_MEMCPY (hprev, hprevbackup, MSADAMS_MAX_ORD);
+          state->ordprev = state->ordprevbackup;
+          state->ordwait = state->ordwaitbackup;
 
 #ifdef DEBUG
-	  printf ("-- previous step was REJECTED, state restored\n");
+          printf ("-- previous step was REJECTED, state restored\n");
 #endif
-	}
+        }
 
       /* If step is repeatedly rejected, then reset method */
 
@@ -834,14 +851,14 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
       const size_t max_failcount = 3;
 
       if (state->failcount > max_failcount && state->ni > 1)
-	{
-	  msadams_reset (vstate, dim);
-	  ord = state->ord;
+        {
+          msadams_reset (vstate, dim);
+          ord = state->ord;
 
 #ifdef DEBUG
-	  printf ("-- max_failcount reached, msadams_reset called\n");
+          printf ("-- max_failcount reached, msadams_reset called\n");
 #endif
-	}
+        }
     }
   else
     {
@@ -856,23 +873,23 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
 
 #ifdef DEBUG
       if (state->ni > 0)
-	{
-	  printf ("-- previous step was ACCEPTED, state saved\n");
-	}
+        {
+          printf ("-- previous step was ACCEPTED, state saved\n");
+        }
 #endif
     }
 
 #ifdef DEBUG
-  printf ("-- ord=%d, ni=%ld, ordwait=%d\n", (int)ord, state->ni, 
-	  (int)state->ordwait);
-  printf ("-- ordprev: %d\n", (int)state->ordprev);
+  printf ("-- ord=%d, ni=%ld, ordwait=%d\n", (int) ord, state->ni,
+          (int) state->ordwait);
+  printf ("-- ordprev: %d\n", (int) state->ordprev);
 #endif
 
-  /* Get desired error levels via gsl_odeiv2_control object, which is a
-     requirement for this stepper.  
+  /* Get desired error levels via gsl_odeiv2_control object through driver
+     object, which is a requirement for this stepper.
    */
 
-  if (state->control == NULL)
+  if (state->driver == NULL)
     {
       return GSL_EFAULT;
     }
@@ -882,16 +899,16 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
 
       for (i = 0; i < dim; i++)
         {
-	  if (dydt_in != NULL)
-	    {
-	      gsl_odeiv2_control_errlevel (state->control, y[i], 
-					  dydt_in[i], h, i, &errlev[i]);
-	    }
-	  else
-	    {
-	      gsl_odeiv2_control_errlevel (state->control, y[i], 
-					  0.0, h, i, &errlev[i]);
-	    }
+          if (dydt_in != NULL)
+            {
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           dydt_in[i], h, i, &errlev[i]);
+            }
+          else
+            {
+              gsl_odeiv2_control_errlevel (state->driver->c, y[i],
+                                           0.0, h, i, &errlev[i]);
+            }
         }
     }
 
@@ -939,7 +956,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
     }
 
   /* Sanity check  */
-  
+
   const int deltaord = ord - state->ordprev;
 
   if (deltaord > 1 || deltaord < -1)
@@ -1098,6 +1115,11 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
       {
         int s = GSL_ODEIV_FN_EVAL (sys, t + h, z, dydt_out);
 
+        if (s == GSL_EBADFUNC)
+          {
+            return s;
+          }
+
         if (s != GSL_SUCCESS)
           {
             msadams_failurehandler (vstate, dim, t);
@@ -1155,6 +1177,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
       size_t i;
 
       state->ordp1coeffprev = ordp1coeff;
+      state->ordm1coeff = ordm1coeff;
 
       for (i = 0; i < dim; i++)
         {
@@ -1167,7 +1190,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   if (state->ordwait == 0)
     {
       msadams_eval_order (abscor, tempvec, svec, errcoeff, dim, errlev,
-                          ordm1coeff, ordp1coeff,
+                          state->ordm1coeff, ordp1coeff,
                           state->ordp1coeffprev, ordp2coeff,
                           hprev, h, z, &(state->ord), &(state->ordwait));
     }
@@ -1205,11 +1228,11 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
 }
 
 static int
-msadams_set_control (void *vstate, gsl_odeiv2_control * c)
+msadams_set_driver (void *vstate, const gsl_odeiv2_driver * d)
 {
   msadams_state_t *state = (msadams_state_t *) vstate;
 
-  state->control = c;
+  state->driver = d;
 
   return GSL_SUCCESS;
 }
@@ -1274,7 +1297,7 @@ static const gsl_odeiv2_step_type msadams_type = {
   1,                            /* gives exact dydt_out? */
   &msadams_alloc,
   &msadams_apply,
-  &msadams_set_control,
+  &msadams_set_driver,
   &msadams_reset,
   &msadams_order,
   &msadams_free

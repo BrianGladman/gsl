@@ -26,25 +26,25 @@
 #include <gsl/gsl_odeiv2.h>
 
 gsl_odeiv2_control *
-gsl_odeiv2_control_alloc(const gsl_odeiv2_control_type * T)
+gsl_odeiv2_control_alloc (const gsl_odeiv2_control_type * T)
 {
-  gsl_odeiv2_control * c = 
-    (gsl_odeiv2_control *) malloc(sizeof(gsl_odeiv2_control));
+  gsl_odeiv2_control *c =
+    (gsl_odeiv2_control *) malloc (sizeof (gsl_odeiv2_control));
 
-  if(c == 0) 
+  if (c == 0)
     {
-      GSL_ERROR_NULL ("failed to allocate space for control struct", 
+      GSL_ERROR_NULL ("failed to allocate space for control struct",
                       GSL_ENOMEM);
     };
 
   c->type = T;
-  c->state = c->type->alloc();
+  c->state = c->type->alloc ();
 
   if (c->state == 0)
     {
-      free (c);         /* exception in constructor, avoid memory leak */
+      free (c);                 /* exception in constructor, avoid memory leak */
 
-      GSL_ERROR_NULL ("failed to allocate space for control state", 
+      GSL_ERROR_NULL ("failed to allocate space for control state",
                       GSL_ENOMEM);
     };
 
@@ -52,37 +52,56 @@ gsl_odeiv2_control_alloc(const gsl_odeiv2_control_type * T)
 }
 
 int
-gsl_odeiv2_control_init(gsl_odeiv2_control * c, 
-                       double eps_abs, double eps_rel, 
-                       double a_y, double a_dydt)
+gsl_odeiv2_control_init (gsl_odeiv2_control * c,
+                         double eps_abs, double eps_rel,
+                         double a_y, double a_dydt)
 {
   return c->type->init (c->state, eps_abs, eps_rel, a_y, a_dydt);
 }
 
 void
-gsl_odeiv2_control_free(gsl_odeiv2_control * c)
+gsl_odeiv2_control_free (gsl_odeiv2_control * c)
 {
   RETURN_IF_NULL (c);
-  c->type->free(c->state);
-  free(c);
+  c->type->free (c->state);
+  free (c);
 }
 
 const char *
-gsl_odeiv2_control_name(const gsl_odeiv2_control * c)
+gsl_odeiv2_control_name (const gsl_odeiv2_control * c)
 {
   return c->type->name;
 }
 
 int
-gsl_odeiv2_control_hadjust (gsl_odeiv2_control * c, gsl_odeiv2_step * s, const double y[], const double yerr[], const double dydt[], double * h)
+gsl_odeiv2_control_hadjust (gsl_odeiv2_control * c, gsl_odeiv2_step * s,
+                            const double y[], const double yerr[],
+                            const double dydt[], double *h)
 {
-  return c->type->hadjust(c->state, s->dimension, s->type->order(s->state),
-                          y, yerr, dydt, h);
+  return c->type->hadjust (c->state, s->dimension, s->type->order (s->state),
+                           y, yerr, dydt, h);
 }
 
 int
-gsl_odeiv2_control_errlevel (gsl_odeiv2_control * c, const double y, const double dydt, const double h, const size_t ind, double * errlev)
+gsl_odeiv2_control_errlevel (gsl_odeiv2_control * c, const double y,
+                             const double dydt, const double h,
+                             const size_t ind, double *errlev)
 {
-  return c->type->errlevel(c->state, y, dydt, h, ind, errlev);
+  return c->type->errlevel (c->state, y, dydt, h, ind, errlev);
 }
 
+int
+gsl_odeiv2_control_set_driver (gsl_odeiv2_control * c,
+                               const gsl_odeiv2_driver * d)
+{
+  if (d != NULL)
+    {
+      c->type->set_driver (c->state, d);
+    }
+  else
+    {
+      GSL_ERROR_NULL ("driver pointer is null", GSL_EFAULT);
+    }
+
+  return GSL_SUCCESS;
+}

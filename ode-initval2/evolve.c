@@ -82,6 +82,7 @@ gsl_odeiv2_evolve_alloc (size_t dim)
   e->count = 0;
   e->failed_steps = 0;
   e->last_step = 0.0;
+  e->driver = NULL;
 
   return e;
 }
@@ -112,16 +113,16 @@ gsl_odeiv2_evolve_free (gsl_odeiv2_evolve * e)
  */
 int
 gsl_odeiv2_evolve_apply (gsl_odeiv2_evolve * e,
-                        gsl_odeiv2_control * con,
-                        gsl_odeiv2_step * step,
-                        const gsl_odeiv2_system * dydt,
-                        double *t, double t1, double *h, double y[])
+                         gsl_odeiv2_control * con,
+                         gsl_odeiv2_step * step,
+                         const gsl_odeiv2_system * dydt,
+                         double *t, double t1, double *h, double y[])
 {
   const double t0 = *t;
   double h0 = *h;
   int step_status;
   int final_step = 0;
-  double dt = t1 - t0;  /* remaining time, possibly less than h */
+  double dt = t1 - t0;          /* remaining time, possibly less than h */
 
   if (e->dimension != step->dimension)
     {
@@ -143,14 +144,14 @@ gsl_odeiv2_evolve_apply (gsl_odeiv2_evolve * e,
     {
       int status = GSL_ODEIV_FN_EVAL (dydt, t0, y, e->dydt_in);
 
-      if (status) 
+      if (status)
         {
           return status;
         }
     }
 
 try_step:
-    
+
   if ((dt >= 0.0 && h0 > dt) || (dt < 0.0 && h0 < dt))
     {
       h0 = dt;
@@ -165,53 +166,53 @@ try_step:
     {
       step_status =
         gsl_odeiv2_step_apply (step, t0, h0, y, e->yerr, e->dydt_in,
-                              e->dydt_out, dydt);
+                               e->dydt_out, dydt);
     }
   else
     {
       step_status =
         gsl_odeiv2_step_apply (step, t0, h0, y, e->yerr, NULL, e->dydt_out,
-                              dydt);
+                               dydt);
     }
 
-  /* Return if stepper indicates a pointer failure */
+  /* Return if stepper indicates a pointer or user function failure */
 
-  if (step_status == GSL_EFAULT)
+  if (step_status == GSL_EFAULT || step_status == GSL_EBADFUNC)
     {
       return step_status;
     }
 
   /* Check for stepper internal failure */
 
-  if (step_status != GSL_SUCCESS) 
+  if (step_status != GSL_SUCCESS)
     {
       /* Stepper was unable to calculate step. Try decreasing step size. */
-	
+
       double h_old = h0;
 
       h0 *= 0.5;
 
       /* Check that an actual decrease in h0 occured and the
-	 suggested h0 will change the time by at least 1 ulp */
-      
-      double t_curr = GSL_COERCE_DBL(*t);
-      double t_next = GSL_COERCE_DBL((*t) + h0);
-      
-      if (fabs(h0) < fabs(h_old) && t_next != t_curr) 
-	{
+         suggested h0 will change the time by at least 1 ulp */
 
-	  /* Step was decreased. Undo step, and try again with new h0. */
-	  
-	  DBL_MEMCPY (y, e->y0, dydt->dimension);
-	  e->failed_steps++;
-	  goto try_step;
-	}
-      else 
-	{
-	  *h = h0; /* notify user of step-size which caused the failure */
-	  *t = t0; /* restore original t value */
-	  return step_status;
-	}
+      double t_curr = GSL_COERCE_DBL (*t);
+      double t_next = GSL_COERCE_DBL ((*t) + h0);
+
+      if (fabs (h0) < fabs (h_old) && t_next != t_curr)
+        {
+
+          /* Step was decreased. Undo step, and try again with new h0. */
+
+          DBL_MEMCPY (y, e->y0, dydt->dimension);
+          e->failed_steps++;
+          goto try_step;
+        }
+      else
+        {
+          *h = h0;              /* notify user of step-size which caused the failure */
+          *t = t0;              /* restore original t value */
+          return step_status;
+        }
     }
 
   e->count++;
@@ -232,8 +233,9 @@ try_step:
 
       double h_old = h0;
 
-      const int hadjust_status 
-        = gsl_odeiv2_control_hadjust (con, step, y, e->yerr, e->dydt_out, &h0);
+      const int hadjust_status
+        =
+        gsl_odeiv2_control_hadjust (con, step, y, e->yerr, e->dydt_out, &h0);
 
       if (hadjust_status == GSL_ODEIV_HADJ_DEC)
         {
@@ -241,10 +243,10 @@ try_step:
              decrease in h0 occured) and the suggested h0 will change
              the time by at least 1 ulp */
 
-          double t_curr = GSL_COERCE_DBL(*t);
-          double t_next = GSL_COERCE_DBL((*t) + h0);
+          double t_curr = GSL_COERCE_DBL (*t);
+          double t_next = GSL_COERCE_DBL ((*t) + h0);
 
-          if (fabs(h0) < fabs(h_old) && t_next != t_curr) 
+          if (fabs (h0) < fabs (h_old) && t_next != t_curr)
             {
               /* Step was decreased. Undo step, and try again with new h0. */
 
@@ -254,18 +256,124 @@ try_step:
             }
           else
             {
-	      /* Can not obtain required error tolerance, and can not
-	         decrease step-size any further, so give up and return
-	         GSL_FAILURE.
-	       */
+              /* Can not obtain required error tolerance, and can not
+                 decrease step-size any further, so give up and return
+                 GSL_FAILURE.
+               */
 
-	      *h = h0; /* notify user of step-size which caused the failure */
-	      return GSL_FAILURE;
+              *h = h0;          /* notify user of step-size which caused the failure */
+              return GSL_FAILURE;
             }
         }
     }
 
-  *h = h0;  /* suggest step size for next time-step */
+  /* Suggest step size for next time-step. Change of step size is not
+     suggested in the final step, because that step can be very
+     small compared to previous step, to reach t1. 
+   */
+
+  if (final_step == 0)
+    {
+      *h = h0;
+    }
 
   return step_status;
+}
+
+/* Evolves the system using the user specified constant step size h.
+ */
+
+int
+gsl_odeiv2_evolve_apply_fixed_step (gsl_odeiv2_evolve * e,
+                                    gsl_odeiv2_control * con,
+                                    gsl_odeiv2_step * step,
+                                    const gsl_odeiv2_system * dydt,
+                                    double *t, const double h, double y[])
+{
+  const double t0 = *t;
+  int step_status;
+
+  if (e->dimension != step->dimension)
+    {
+      GSL_ERROR ("step dimension must match evolution size", GSL_EINVAL);
+    }
+
+  /* Save y in case of failure in a step */
+
+  DBL_MEMCPY (e->y0, y, e->dimension);
+
+  /* Calculate initial dydt once if the method can benefit. */
+
+  if (step->type->can_use_dydt_in)
+    {
+      int status = GSL_ODEIV_FN_EVAL (dydt, t0, y, e->dydt_in);
+
+      if (status)
+        {
+          return status;
+        }
+    }
+
+  if (step->type->can_use_dydt_in)
+    {
+      step_status =
+        gsl_odeiv2_step_apply (step, t0, h, y, e->yerr, e->dydt_in,
+                               e->dydt_out, dydt);
+    }
+  else
+    {
+      step_status =
+        gsl_odeiv2_step_apply (step, t0, h, y, e->yerr, NULL, e->dydt_out,
+                               dydt);
+    }
+
+  /* Return the stepper return value in case of an error */
+
+  if (step_status != GSL_SUCCESS)
+    {
+      return step_status;
+    }
+
+  if (con != NULL)
+    {
+      /* Calculate error level. Fail if error level exceeds desired
+         error level. */
+
+      double htemp = h;
+
+      const int hadjust_status
+        = gsl_odeiv2_control_hadjust (con, step, y, e->yerr,
+                                      e->dydt_out, &htemp);
+
+      if (hadjust_status == GSL_ODEIV_HADJ_DEC)
+        {
+          DBL_MEMCPY (y, e->y0, dydt->dimension);
+          e->failed_steps++;
+          return GSL_FAILURE;
+        }
+    }
+
+  /* Step is accepted, update status */
+
+  e->count++;
+  e->last_step = h;
+  *t = t0 + h;
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_odeiv2_evolve_set_driver (gsl_odeiv2_evolve * e,
+                              const gsl_odeiv2_driver * d)
+{
+  if (d != NULL)
+    {
+      e->driver = d;
+    }
+  else
+    {
+      GSL_ERROR_NULL ("driver pointer is null", GSL_EFAULT);
+    }
+
+  return GSL_SUCCESS;
 }

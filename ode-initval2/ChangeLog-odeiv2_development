@@ -1,3 +1,78 @@
+2010-10-16  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- Modified evolve and driver so that when user function returns
+  GSL_EBADFUNC, then ode-initval2 functions return immediately
+  with that same return value.
+
+- Corrected bug in msadams for saving ordm1coeff to state. 
+  Thanks to Andrew Benson for pointing out this bug!
+
+2010-10-10  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- driver.c: Corrected error in driver_evolve_apply, integration
+  to negative direction should work now.
+
+- Added evolve_apply_fixed_step and driver_apply_fixed_step for
+  users who want to use a constant step size to evolve the system.
+
+- test.c: added test cases for driver (negative evolution,
+  apply_fixed_step).
+
+- gsl_odeiv2.h: cleaning and add apply_fixed_step functions.
+
+- doc/ode-initval.texi: Replaced derivative apostrophe with \prime
+  (because my new system fails to make ps otherwise). Added
+  new documentation about apply_fixed_step functions.
+
+2010-10-09  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
+
+- ode-initval2 bzr development branch now at savannah:
+  http://bzr.savannah.gnu.org/r/gsl/ode-initval2/
+
+2010-01-02  Tuomo Keskitalo  <tkeskita@pulmunen>
+
+- Changes from ode-initval2-0.9 to ode-initval2-1.0: 
+
+- Removed set_control member from step object and added a
+  set_driver member to evolve, control and step objects, so that the
+  driver object and consequently evolve, control and step objects are
+  all accessible from another. Currently only some steppers utilize
+  this. They access the control_errlevel function via state->driver->c
+  instead of state->control. This modification to the framework
+  enables implementation of more efficient ODE solvers, which utilize
+  communication among evolve, control and stepper objects. This also
+  means that some steppers now require a driver object, and it is best
+  to use those stepper methods through driver object functions.
+
+- cstd.c and cscal.c: Added a sanity check for errlev <= 0
+
+- run indent -gnu -nut for *.c *.h
+
+- driver.c: added function odeiv2_driver_alloc_standard_new and
+  odeiv2_driver_alloc_yp_new			    
+
+- driver.c: changed n and nmax in driver struct to unsigned long int
+	
+- modified documentation accordingly with small nomenclature changes
+  and made year updates to source files
+
+2009-11-01  Tuomo Keskitalo  <tkeskita@pulmunen>
+
+- Merged with master and modified source to be published as a 
+package for gsl-1.13.
+
+2009-05-09  Tuomo Keskitalo  <tkeskita@pulmunen>
+
+- Agreed with Brian Gough that the modification I've made cannot be
+incorporated to GSL until a major version number change, due to
+changes in API.
+
+- Replated rk2imp with imprk2 and rk4imp with imprk4. Also renamed
+impeuler to rk1imp for consistency.
+
+- Deleted steppers that are deprecated considering new major release:
+gear1, gear2, and rk2simp. Modified test.c accordingly.
+
 2009-05-01  Tuomo Keskitalo  <tkeskita@pulmunen>
 
 - Merged with master (evolve.c and test.c needed some manual work).
