@@ -39,9 +39,6 @@
 /* Maximum number of ODE solvers */
 #define MAXNS 20
 
-/* Debug mode setting */
-//#define DEBUG 1
-
 /* Track number of function and jacobian evaluations in tests
    with global variables 
  */
@@ -2412,10 +2409,10 @@ main (void)
 {
 
   /* Benchmark routine to compare stepper performance */
-  //benchmark_precision(); return 0;
+  /* benchmark_precision(); return 0;*/
 
   /* Test single problem, for debugging purposes */
-  //test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0;
+  /* test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0; */
 
   struct ptype
   {

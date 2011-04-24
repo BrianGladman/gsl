@@ -63,8 +63,6 @@
 /* Steps until iteration matrix M evaluation is forced */
 #define MSBDF_M_WAIT 20
 
-//#define DEBUG 1
-
 typedef struct
 {
   /* Nordsieck history matrix. Includes concatenated

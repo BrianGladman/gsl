@@ -54,8 +54,6 @@
 /* Maximum order of Adams methods */
 #define MSADAMS_MAX_ORD 12
 
-//#define DEBUG 1
-
 typedef struct
 {
   /* Nordsieck history matrix. Includes concatenated
