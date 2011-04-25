@@ -1,3 +1,7 @@
+2011-04-25  Brian Gough  <bjg@network-theory.co.uk>
+
+	* This module is now superseded by ode-initval2
+
 2009-08-12  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rk4.c (rk4_alloc): fix order of free statements to avoid memory
