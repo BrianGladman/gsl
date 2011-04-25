@@ -169,14 +169,14 @@ variance of the mean,
 @tex
 \beforedisplay
 $$
-\sigma^2 (E; N) = {V \over N } \sum_i^N (f(x_i) - \langle f \rangle)^2.
+\sigma^2 (E; N) = {V^2 \over N^2 } \sum_i^N (f(x_i) - \langle f \rangle)^2.
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-\sigma^2 (E; N) = (V / N) \sum_i^N (f(x_i) -  <f>)^2.
+\sigma^2 (E; N) = (V^2 / N^2) \sum_i^N (f(x_i) -  <f>)^2.
 @end example
 
 @end ifinfo
