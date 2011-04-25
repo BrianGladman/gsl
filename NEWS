@@ -1,62 +1,27 @@
-** The jacobi method gsl_eigen_jacobi now uses the norm of the
-   off-diagonal elements for its convergence criterion, as in
-   algorithm 8.4.3 of Golub and van Loan.
-
-** It is now possible to choose an alternative cblas library via
-   pkg-config using the GSL_CBLAS_LIB environment variable or
-   the pkg-config --define-variable option.
-
-** Added a new function gsl_integration_glfixed_point to return
-   ordered Gauss-Legendre points and weights contained within a
-   gsl_integration_glfixed_table [bug #32237].
-
-** The newton multiroot solvers now return an error when a singular
-   jacobian is detected.
-
-** Added a new function gsl_interp_type_min_size to return the size of
-   an interpolation type.
-
-** The interpolation functions now return NaN and when x is out of range,
-   instead of extrapolating.
-
-** Fixed gsl_ran_chisq_pdf(x,nu) to return correct result of 1/2
-   instead of 0 when x=0 and nu=2, and +inf when x=0 and nu<2.
-
-** Extended the range of gsl_sf_bessel_lnKnu_e by rescaling
-   intermediate results to avoid internal overflows [bug #31528].
-
-** Fixed gsl_pow_int(x,n) to avoid an infinite loop when n=INT_MIN due
-   to wrapping of signed integers.
-
-** Added a function gsl_pow_uint(x,n) to compute x^n for unsigned
-   exponents (needed when n exceeds the range of signed integers).
-
-** Avoid spurious underflow return code in gsl_sf_beta_inc_e when
-   intermediate underflow does not affect the result. [bug #30933]
-
-** Fixed gsl_sf_hyperg_2F1(a,b,c,x) to avoid returning NaN for
-   arguments |a|>10. [bug #24812]
+* What is new in gsl-1.15:
 
 ** Added Tuomo Keskitalo's new ode branch ode-initval2 with a
-   gsl_odeiv2 prefix which is intended to be the new default for
-   differential equations.  The existing gsl_odeiv routines will be
-   retained for binary compatibility but their interface will be
-   deprecated.
-
-** Added new routine gsl_linalg_complex_cholesky_invert to handle the
-   matrix inversion for complex Cholesky decompositions (Huan Wu).
+   gsl_odeiv2 prefix. This provides proper support for implicit
+   solvers.  It is intended to be the new default for differential
+   equations.  The existing gsl_odeiv routines will be retained for
+   binary compatibility but their interface will be deprecated.
 
 ** Added new gsl_integrate_cquad routines for robust integration of
    difficult functions using the doubly-adaptive CQUAD algorithm
    (Pedro Gonnet).
 
-** Improved the result of gsl_sf_atanint_e for large arguments by
-   adding the first order 1/x correction term. [bug #29562]
+** Added a new function gsl_integration_glfixed_point to return
+   ordered Gauss-Legendre points and weights contained within a
+   gsl_integration_glfixed_table [bug #32237].
 
-** The gsl_multimin_fdfsolver multidimensional minimisers now return
-   GSL_ENOPROG immediately if the generated trial point does not
-   differ from the initial point (to machine precision), avoiding
-   unnecessary further iterations.
+** Added a new function gsl_interp_type_min_size to return the size of
+   an interpolation type.
+
+** Added a function gsl_pow_uint(x,n) to compute x^n for unsigned
+   exponents (needed when n exceeds the range of signed integers).
+
+** Added new routine gsl_linalg_complex_cholesky_invert to handle the
+   matrix inversion for complex Cholesky decompositions (Huan Wu).
 
 ** Added the functions gsl_vector_equal(x,y) and gsl_matrix_equal(x,y)
    for testing equality of two vectors or matrices.
@@ -64,6 +29,43 @@
 ** Added function gsl_eigen_nonsymmv_params to control the balancing
    transformation for eigenvector calculations. Balancing is now
    turned off by default for gsl_eigen_nonsymmv.
+
+** It is now possible to choose an alternative cblas library via
+   pkg-config using the GSL_CBLAS_LIB environment variable or
+   the pkg-config --define-variable option.
+
+** The jacobi method gsl_eigen_jacobi now uses the norm of the
+   off-diagonal elements for its convergence criterion, as in
+   algorithm 8.4.3 of Golub and van Loan.
+
+** The newton multiroot solvers now return an error when a singular
+   jacobian is detected.
+
+** The interpolation functions now return NaN and when x is out of range,
+   instead of extrapolating.
+
+** The gsl_multimin_fdfsolver multidimensional minimisers now return
+   GSL_ENOPROG immediately if the generated trial point does not
+   differ from the initial point (to machine precision), avoiding
+   unnecessary further iterations.
+
+** Extended the range of gsl_sf_bessel_lnKnu_e by rescaling
+   intermediate results to avoid internal overflows [bug #31528].
+
+** Improved the result of gsl_sf_atanint_e for large arguments by
+   adding the first order 1/x correction term. [bug #29562]
+
+** Fixed gsl_ran_chisq_pdf(x,nu) to return correct result of 1/2
+   instead of 0 when x=0 and nu=2, and +inf when x=0 and nu<2.
+
+** Fixed gsl_pow_int(x,n) to avoid an infinite loop when n=INT_MIN due
+   to wrapping of signed integers.
+
+** Fixed gsl_sf_hyperg_2F1(a,b,c,x) to avoid returning NaN for
+   arguments |a|>10. [bug #24812]
+
+** Avoid spurious underflow return code in gsl_sf_beta_inc_e when
+   intermediate underflow does not affect the result. [bug #30933]
 
 ** Avoid segfault in Chebyshev series derivatives gsl_cheb_calc_deriv
    for n=1. [bug #29139]
