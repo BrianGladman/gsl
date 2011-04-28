@@ -10,6 +10,8 @@
    difficult functions using the doubly-adaptive CQUAD algorithm
    (Pedro Gonnet).
 
+** Added error checking to CBLAS functions (José Luis García Pallero)
+
 ** Added a new function gsl_integration_glfixed_point to return
    ordered Gauss-Legendre points and weights contained within a
    gsl_integration_glfixed_table [bug #32237].
