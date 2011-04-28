@@ -1,3 +1,8 @@
+2011-04-28  Brian Gough  <bjg@network-theory.co.uk>
+
+	* ranlxs.c (ranlxs_set_lux): enforce maximum seed of
+	2^31-1 (0x7FFFFFFF) for ranlxs
+
 2010-01-07  Brian Gough  <bjg@network-theory.co.uk>
 
 	* ran3.c (ran3_set): added a check for negative j

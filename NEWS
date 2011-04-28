@@ -55,6 +55,10 @@
 ** Improved the result of gsl_sf_atanint_e for large arguments by
    adding the first order 1/x correction term. [bug #29562]
 
+** Fixed the gsl_rng_ranlxs generators to enforce a maximum seed value
+   of 2^31-1.  Larger seed values caused out of range values to be
+   returned.
+
 ** Fixed gsl_ran_chisq_pdf(x,nu) to return correct result of 1/2
    instead of 0 when x=0 and nu=2, and +inf when x=0 and nu<2.
 

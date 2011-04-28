@@ -217,7 +217,7 @@ ranlxs_set_lux (void *vstate, unsigned long int s, unsigned int luxury)
 
   seed = s;
 
-  i = seed & 0xFFFFFFFFUL;
+  i = seed & 0x7FFFFFFFUL;  /* Allowed seeds for ranlxs are 0 .. 2^31-1 */
 
   for (k = 0; k < 31; ++k)
     {

@@ -446,7 +446,7 @@ The generator @code{ranlxs0} is a second-generation version of the
 @sc{ranlux} algorithm of L@"uscher, which produces ``luxury random
 numbers''.  This generator provides single precision output (24 bits) at
 three luxury levels @code{ranlxs0}, @code{ranlxs1} and @code{ranlxs2}, 
-in increasing order of strength.
+in increasing order of strength.  
 It uses double-precision floating point arithmetic internally and can be
 significantly faster than the integer version of @code{ranlux},
 particularly on 64-bit architectures.  The period of the generator is
@@ -455,6 +455,10 @@ about @c{$10^{171}$}
 can provide truly decorrelated numbers at a known level of randomness.
 The higher luxury levels provide increased decorrelation between samples
 as an additional safety margin.
+
+Note that the range of allowed seeds for this generator is @c{$[0,2^{31}-1]$}
+@math{[0,2^31-1]}. Higher seed values are wrapped modulo @c{$2^{31}$}
+@math{2^31}.
 @end deffn
 
 @deffn {Generator} gsl_rng_ranlxd1
