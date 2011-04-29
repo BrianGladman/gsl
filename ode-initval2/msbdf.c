@@ -507,19 +507,22 @@ msbdf_calccoeffs (const size_t ord, const size_t ordwait,
       *errcoeff = 0.5;
       *ordp1coeff = 2.0;
 
-      const double hsum = h + hprev[0];
-
-      const double a5 = -1.5;
-      const double a6 = -1.0 - h / hsum;
-      const double c2 = 2.0 / (1.0 - a6 + a5);
-
-      *ordp2coeff = fabs (c2 * (h / hsum) * 3.0 * a5);
+      {
+        const double hsum = h + hprev[0];
+        
+        const double a5 = -1.5;
+        const double a6 = -1.0 - h / hsum;
+        const double c2 = 2.0 / (1.0 - a6 + a5);
+        
+        *ordp2coeff = fabs (c2 * (h / hsum) * 3.0 * a5);
+      }
     }
   else
     {
       size_t i, j;
       double hsum = h;
       double coeff1 = -1.0;
+      double x;
 
       /* Calculate the actual polynomial coefficients (l) */
 
@@ -541,17 +544,17 @@ msbdf_calccoeffs (const size_t ord, const size_t ordwait,
 
       coeff1 += -1.0 / ord;
 
-      const double x = -l[1] - coeff1;
+      x = -l[1] - coeff1;
 
       for (i = ord; i > 0; i--)
         {
           l[i] += l[i - 1] * x;
         }
-
+      
 #ifdef DEBUG
       {
         size_t di;
-
+        
         printf ("-- calccoeffs l: ");
         for (di = 0; di < ord + 1; di++)
           {
@@ -563,36 +566,40 @@ msbdf_calccoeffs (const size_t ord, const size_t ordwait,
 
       hsum += hprev[ord - 2];
 
-      const double coeff2 = -l[1] - h / hsum;
-      const double a1 = 1.0 - coeff2 + coeff1;
-      const double a2 = 1.0 + ord * a1;
+      {
+        const double coeff2 = -l[1] - h / hsum;
+        const double a1 = 1.0 - coeff2 + coeff1;
+        const double a2 = 1.0 + ord * a1;
 
-      /* Calculate error coefficient */
+        /* Calculate error coefficient */
 
-      *errcoeff = fabs (a1 / (coeff1 * a2));
+        *errcoeff = fabs (a1 / (coeff1 * a2));
 
-      /* Calculate auxiliary coefficients used in evaluation of change
-         of order
-       */
+        /* Calculate auxiliary coefficients used in evaluation of change
+           of order
+        */
 
-      if (ordwait < 2)
-        {
-          const double a3 = coeff1 + 1.0 / ord;
-          const double a4 = coeff2 + h / hsum;
-          const double c1 = a3 / (1.0 - a4 + a3);
+        if (ordwait < 2)
+          {
+            const double a3 = coeff1 + 1.0 / ord;
+            const double a4 = coeff2 + h / hsum;
+            const double c1 = a3 / (1.0 - a4 + a3);
 
-          *ordm1coeff = fabs (c1 / (x / l[ord]));
+            *ordm1coeff = fabs (c1 / (x / l[ord]));
 
-          *ordp1coeff = fabs (a2 / (l[ord] * (h / hsum) / x));
+            *ordp1coeff = fabs (a2 / (l[ord] * (h / hsum) / x));
 
-          hsum += hprev[ord - 1];
+            hsum += hprev[ord - 1];
 
-          const double a5 = coeff1 - 1.0 / (ord + 1.0);
-          const double a6 = coeff2 - h / hsum;
-          const double c2 = a2 / (1.0 - a6 + a5);
+            {
+              const double a5 = coeff1 - 1.0 / (ord + 1.0);
+              const double a6 = coeff2 - h / hsum;
+              const double c2 = a2 / (1.0 - a6 + a5);
 
-          *ordp2coeff = fabs (c2 * (h / hsum) * (ord + 2) * a5);
-        }
+              *ordp2coeff = fabs (c2 * (h / hsum) * (ord + 2) * a5);
+            }
+          }
+      }
     }
 
   *gamma = h / l[1];
@@ -679,13 +686,15 @@ msbdf_update (void *vstate, const size_t dim, gsl_matrix * dfdy, double *dfdt,
           gsl_matrix_set (M, i, i, gsl_matrix_get (M, i, i) + 1.0);
         }
 
-      int signum;
-      int s = gsl_linalg_LU_decomp (M, p, &signum);
-
-      if (s != GSL_SUCCESS)
-        {
-          return GSL_FAILURE;
-        }
+      {
+        int signum;
+        int s = gsl_linalg_LU_decomp (M, p, &signum);
+        
+        if (s != GSL_SUCCESS)
+          {
+            return GSL_FAILURE;
+          }
+      }
 
       /* Reset counter */
 
@@ -777,17 +786,19 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
 
       /* Solve system of equations */
 
-      int s = gsl_linalg_LU_solve (M, p, rhs, relcor);
-
-      if (s != GSL_SUCCESS)
-        {
-          msbdf_failurehandler (vstate, dim, t);
-
+      {
+        int s = gsl_linalg_LU_solve (M, p, rhs, relcor);
+        
+        if (s != GSL_SUCCESS)
+          {
+            msbdf_failurehandler (vstate, dim, t);
+            
 #ifdef DEBUG
-          printf ("-- FAIL at LU_solve\n");
+            printf ("-- FAIL at LU_solve\n");
 #endif
-          return GSL_FAILURE;
-        }
+            return GSL_FAILURE;
+          }
+      }
 
 #ifdef DEBUG
       {
@@ -840,32 +851,36 @@ msbdf_corrector (void *vstate, const gsl_odeiv2_system * sys,
           convrate = 1.0;
         }
 
-      const double convtest =
-        GSL_MIN_DBL (convrate, 1.0) * stepnorm * errcoeff / safety2;
+      {
+        const double convtest =
+          GSL_MIN_DBL (convrate, 1.0) * stepnorm * errcoeff / safety2;
 
 #ifdef DEBUG
-      printf
-        ("-- newt iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
-         (int) mi, errcoeff, stepnorm, convrate, convtest);
+        printf
+          ("-- newt iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
+           (int) mi, errcoeff, stepnorm, convrate, convtest);
 #endif
-      if (convtest <= 1.0)
-        {
-          break;
-        }
+        if (convtest <= 1.0)
+          {
+            break;
+          }
+      }
 
       /* Check for divergence during iteration */
 
-      const double div_const = 2.0;
+      {
+        const double div_const = 2.0;
 
-      if (mi > 1 && stepnorm > div_const * stepnormprev)
-        {
-          msbdf_failurehandler (vstate, dim, t);
+        if (mi > 1 && stepnorm > div_const * stepnormprev)
+          {
+            msbdf_failurehandler (vstate, dim, t);
 
 #ifdef DEBUG
-          printf ("-- FAIL, diverging Newton iteration\n");
+            printf ("-- FAIL, diverging Newton iteration\n");
 #endif
-          return GSL_FAILURE;
-        }
+            return GSL_FAILURE;
+          }
+      }
 
       /* Evaluate at new y */
 
@@ -934,6 +949,7 @@ msbdf_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
   const double safety = 1e-6;
   const double bias = 6.0;
   const double bias2 = 10.0;
+  const double min_incr = 1.5;
 
   /* Relative step length estimate for current order */
 
@@ -988,8 +1004,6 @@ msbdf_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
      size markedly compared to current step 
    */
 
-  const double min_incr = 1.5;
-
   if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
     {
       *ord -= 1;
@@ -1041,6 +1055,7 @@ msbdf_check_step_size_decrease (double const hprev[])
   size_t i;
   double max = fabs (hprev[0]);
   const double min = fabs (hprev[0]);
+  const double decrease_limit = 0.5;
 
   for (i = 1; i < MSBDF_MAX_ORD; i++)
     {
@@ -1051,8 +1066,6 @@ msbdf_check_step_size_decrease (double const hprev[])
           max = h;
         }
     }
-
-  const double decrease_limit = 0.5;
 
   if (min / max < decrease_limit)
     {
@@ -1094,6 +1107,8 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
   double errcoeff = 0.0;        /* error coefficient */
   double gamma = 0.0;           /* gamma coefficient */
 
+  const size_t max_failcount = 3;
+  size_t i;
 
 #ifdef DEBUG
   {
@@ -1145,8 +1160,6 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
           DBL_MEMCPY (z, zbackup, (MSBDF_MAX_ORD + 1) * dim);
           DBL_MEMCPY (hprev, hprevbackup, MSBDF_MAX_ORD);
 
-          size_t i;
-
           for (i = 0; i < MSBDF_MAX_ORD; i++)
             {
               ordprev[i] = ordprevbackup[i];
@@ -1164,8 +1177,6 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
       state->failcount++;
 
-      const size_t max_failcount = 3;
-
       if (state->failcount > max_failcount && state->ni > 1)
         {
           msbdf_reset (vstate, dim);
@@ -1182,8 +1193,6 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
       DBL_MEMCPY (zbackup, z, (MSBDF_MAX_ORD + 1) * dim);
       DBL_MEMCPY (hprevbackup, hprev, MSBDF_MAX_ORD);
-
-      size_t i;
 
       for (i = 0; i < MSBDF_MAX_ORD; i++)
         {
@@ -1318,7 +1327,8 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
   /* Sanity check */
 
-  const int deltaord = ord - ordprev[0];
+  { 
+    const int deltaord = ord - ordprev[0];
 
   if (deltaord > 1 || deltaord < -1)
     {
@@ -1367,13 +1377,14 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
 
           /* Scale Nordsieck matrix */
 
-          const double c = (-coeff1 - coeff2) / hrelprod;
+          {
+            const double c = (-coeff1 - coeff2) / hrelprod;
 
-          for (i = 0; i < dim; i++)
-            {
-              z[ord * dim + i] = c * gsl_vector_get (abscor, i);
-            }
-
+            for (i = 0; i < dim; i++)
+              {
+                z[ord * dim + i] = c * gsl_vector_get (abscor, i);
+              }
+          }
           for (i = 2; i < ord; i++)
             for (j = 0; j < dim; j++)
               {
@@ -1619,48 +1630,49 @@ msbdf_apply (void *vstate, size_t dim, double t, double h,
   /* Undo scaling of abscor for possible order increase on next step */
   {
     size_t i;
-
+    
     for (i = 0; i < dim; i++)
       {
         gsl_vector_set (abscor, i, gsl_vector_get (abscor, i) * errlev[i]);
       }
   }
-
+  
   /* Save information about current step in state and update counters */
   {
     size_t i;
-
+    
     for (i = MSBDF_MAX_ORD - 1; i > 0; i--)
       {
         hprev[i] = hprev[i - 1];
         ordprev[i] = ordprev[i - 1];
       }
-
-    hprev[0] = h;
-    ordprev[0] = ord;
-
+  }
+  
+  hprev[0] = h;
+  ordprev[0] = ord;
+  
 #ifdef DEBUG
-    {
-      size_t di;
-      printf ("-- hprev: ");
-      for (di = 0; di < MSBDF_MAX_ORD; di++)
-        {
-          printf ("%.5e ", hprev[di]);
-        }
-      printf ("\n");
-    }
+  {
+    size_t di;
+    printf ("-- hprev: ");
+    for (di = 0; di < MSBDF_MAX_ORD; di++)
+      {
+        printf ("%.5e ", hprev[di]);
+      }
+    printf ("\n");
+  }
 #endif
-
-    state->tprev = t;
-    state->ordwait--;
-    state->ni++;
-    state->gammaprev = gamma;
-
-    state->nJ++;
-    state->nM++;
-
+  
+  state->tprev = t;
+  state->ordwait--;
+  state->ni++;
+  state->gammaprev = gamma;
+  
+  state->nJ++;
+  state->nM++;
+  
 #ifdef DEBUG
-    printf ("-- nJ=%d, nM=%d\n", (int) state->nJ, (int) state->nM);
+  printf ("-- nJ=%d, nM=%d\n", (int) state->nJ, (int) state->nM);
 #endif
   }
 
@@ -1681,6 +1693,7 @@ static int
 msbdf_reset (void *vstate, size_t dim)
 {
   msbdf_state_t *state = (msbdf_state_t *) vstate;
+  size_t i;
 
   state->ni = 0;
   state->ord = 1;
@@ -1698,7 +1711,6 @@ msbdf_reset (void *vstate, size_t dim)
   DBL_ZERO_MEMSET (state->z, (MSBDF_MAX_ORD + 1) * dim);
   DBL_ZERO_MEMSET (state->zbackup, (MSBDF_MAX_ORD + 1) * dim);
 
-  size_t i;
   for (i = 0; i < MSBDF_MAX_ORD; i++)
     {
       state->ordprev[i] = 1;

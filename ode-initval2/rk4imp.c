@@ -232,17 +232,6 @@ rk4imp_apply (void *vstate, size_t dim, double t, double h,
 
   rk4imp_state_t *state = (rk4imp_state_t *) vstate;
 
-  /* Runge-Kutta coefficients */
-
-  gsl_matrix *A = state->A;
-  gsl_matrix_set (A, 0, 0, 1.0 / 4);
-  gsl_matrix_set (A, 0, 1, (3 - 2 * sqrt (3)) / 12);
-  gsl_matrix_set (A, 1, 0, (3 + 2 * sqrt (3)) / 12);
-  gsl_matrix_set (A, 1, 1, 1.0 / 4);
-
-  const double b[] = { 0.5, 0.5 };
-  const double c[] = { (3 - sqrt (3)) / 6, (3 + sqrt (3)) / 6 };
-
   double *const y_onestep = state->y_onestep;
   double *const y_twostep = state->y_twostep;
   double *const ytmp = state->ytmp;
@@ -254,6 +243,18 @@ rk4imp_apply (void *vstate, size_t dim, double t, double h,
   double *const errlev = state->errlev;
 
   const modnewton1_state_t *esol = state->esol;
+
+  /* Runge-Kutta coefficients */
+
+  gsl_matrix *A = state->A;
+
+  const double b[] = { 0.5, 0.5 };
+  const double c[] = { (3 - sqrt (3)) / 6, (3 + sqrt (3)) / 6 };
+
+  gsl_matrix_set (A, 0, 0, 1.0 / 4);
+  gsl_matrix_set (A, 0, 1, (3 - 2 * sqrt (3)) / 12);
+  gsl_matrix_set (A, 1, 0, (3 + 2 * sqrt (3)) / 12);
+  gsl_matrix_set (A, 1, 1, 1.0 / 4);
 
   if (esol == NULL)
     {

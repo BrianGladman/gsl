@@ -226,13 +226,6 @@ rk1imp_apply (void *vstate, size_t dim, double t, double h,
 
   rk1imp_state_t *state = (rk1imp_state_t *) vstate;
 
-  /* Runge-Kutta coefficients */
-
-  gsl_matrix *A = state->A;
-  gsl_matrix_set (A, 0, 0, 1.0);
-  const double b[] = { 1.0 };
-  const double c[] = { 1.0 };
-
   double *const y_onestep = state->y_onestep;
   double *const y_twostep = state->y_twostep;
   double *const ytmp = state->ytmp;
@@ -244,6 +237,13 @@ rk1imp_apply (void *vstate, size_t dim, double t, double h,
   double *const errlev = state->errlev;
 
   const modnewton1_state_t *esol = state->esol;
+
+  /* Runge-Kutta coefficients */
+
+  gsl_matrix *A = state->A;
+  const double b[] = { 1.0 };
+  const double c[] = { 1.0 };
+  gsl_matrix_set (A, 0, 0, 1.0);
 
   if (esol == NULL)
     {

@@ -375,9 +375,9 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
 
           if (i == ord - 1 && ordwait == 1)
             {
-              *ordm1coeff = 0.0;
-
               int s = 1;
+
+              *ordm1coeff = 0.0;
 
               for (j = 0; j < ord - 1; j++)
                 {
@@ -463,6 +463,8 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
 
       if (ordwait < 2)
         {
+          int s = 1;
+
           *ordp1coeff = hsum / (h * l[ord]);
 
           *ordp2coeff = 0.0;
@@ -471,8 +473,6 @@ msadams_calccoeffs (const size_t ord, const size_t ordwait,
             {
               pc[i] += pc[i - 1] * (h / hsum);
             }
-
-          int s = 1;
 
           for (i = 0; i < ord + 1; i++)
             {
@@ -583,32 +583,35 @@ msadams_corrector (void *vstate, const gsl_odeiv2_system * sys,
           convrate = 1.0;
         }
 
-      const double convtest =
-        GSL_MIN_DBL (convrate, 1.0) * stepnorm * errcoeff / safety2;
+      {
+        const double convtest =
+          GSL_MIN_DBL (convrate, 1.0) * stepnorm * errcoeff / safety2;
 
 #ifdef DEBUG
-      printf
-        ("-- func iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
-         (int) mi, errcoeff, stepnorm, convrate, convtest);
+        printf
+          ("-- func iter loop %d, errcoeff=%.5e, stepnorm =%.5e, convrate = %.5e, convtest = %.5e\n",
+           (int) mi, errcoeff, stepnorm, convrate, convtest);
 #endif
-      if (convtest <= 1.0)
-        {
-          break;
-        }
+        if (convtest <= 1.0)
+          {
+            break;
+          }
+      }
 
       /* Check for divergence during iteration */
-
-      const double div_const = 2.0;
-
-      if (mi > 1 && stepnorm > div_const * stepnormprev)
-        {
-          msadams_failurehandler (vstate, dim, t);
-
+      {
+        const double div_const = 2.0;
+        
+        if (mi > 1 && stepnorm > div_const * stepnormprev)
+          {
+            msadams_failurehandler (vstate, dim, t);
+            
 #ifdef DEBUG
-          printf ("-- FAIL, diverging functional iteration\n");
+            printf ("-- FAIL, diverging functional iteration\n");
 #endif
-          return GSL_FAILURE;
-        }
+            return GSL_FAILURE;
+          }
+      }
 
       /* Evaluate at new y */
 
@@ -731,25 +734,28 @@ msadams_eval_order (gsl_vector * abscor, gsl_vector * tempvec,
      size markedly compared to current step 
    */
 
-  const double min_incr = 1.5;
+  {
+    const double min_incr = 1.5;
 
-  if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
-    {
-      *ord -= 1;
+    if (ordm1est > ordest && ordm1est > ordp1est && ordm1est > min_incr)
+      {
+        *ord -= 1;
 #ifdef DEBUG
-      printf ("-- eval_order order DECREASED to %d\n", (int) *ord);
+        printf ("-- eval_order order DECREASED to %d\n", (int) *ord);
 #endif
-    }
-
-  else if (ordp1est > ordest && ordp1est > ordm1est && ordp1est > min_incr)
-    {
-      *ord += 1;
+      }
+    
+    else if (ordp1est > ordest && ordp1est > ordm1est && ordp1est > min_incr)
+      {
+        *ord += 1;
 #ifdef DEBUG
-      printf ("-- eval_order order INCREASED to %d\n", (int) *ord);
+        printf ("-- eval_order order INCREASED to %d\n", (int) *ord);
 #endif
-    }
+      }
+  }
 
   *ordwait = *ord + 2;
+
 
   return GSL_SUCCESS;
 }
@@ -784,6 +790,8 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
   double ordp1coeff = 0.0;
   double ordp2coeff = 0.0;
   double errcoeff = 0.0;        /* error coefficient */
+
+  int deltaord;
 
 #ifdef DEBUG
   {
@@ -846,17 +854,19 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
 
       state->failcount++;
 
-      const size_t max_failcount = 3;
-
-      if (state->failcount > max_failcount && state->ni > 1)
-        {
-          msadams_reset (vstate, dim);
-          ord = state->ord;
-
+      {
+        const size_t max_failcount = 3;
+        
+        if (state->failcount > max_failcount && state->ni > 1)
+          {
+            msadams_reset (vstate, dim);
+            ord = state->ord;
+            
 #ifdef DEBUG
-          printf ("-- max_failcount reached, msadams_reset called\n");
+            printf ("-- max_failcount reached, msadams_reset called\n");
 #endif
-        }
+          }
+      }
     }
   else
     {
@@ -955,7 +965,7 @@ msadams_apply (void *vstate, size_t dim, double t, double h,
 
   /* Sanity check  */
 
-  const int deltaord = ord - state->ordprev;
+  deltaord = ord - state->ordprev;
 
   if (deltaord > 1 || deltaord < -1)
     {

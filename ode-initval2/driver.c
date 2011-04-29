@@ -51,26 +51,28 @@ driver_alloc (const gsl_odeiv2_system * sys, const double hstart,
       GSL_ERROR_NULL ("gsl_odeiv2_system must be defined", GSL_EINVAL);
     }
 
-  const size_t dim = sys->dimension;
+  {
+    const size_t dim = sys->dimension;
 
-  if (dim == 0)
-    {
-      GSL_ERROR_NULL
-        ("gsl_odeiv2_system dimension must be a positive integer",
-         GSL_EINVAL);
-    }
+    if (dim == 0)
+      {
+        GSL_ERROR_NULL
+          ("gsl_odeiv2_system dimension must be a positive integer",
+           GSL_EINVAL);
+      }
 
-  state->sys = sys;
+    state->sys = sys;
 
-  state->s = gsl_odeiv2_step_alloc (T, dim);
+    state->s = gsl_odeiv2_step_alloc (T, dim);
 
-  if (state->s == NULL)
-    {
-      free (state);
-      GSL_ERROR_NULL ("failed to allocate step object", GSL_ENOMEM);
-    }
+    if (state->s == NULL)
+      {
+        free (state);
+        GSL_ERROR_NULL ("failed to allocate step object", GSL_ENOMEM);
+      }
 
-  state->e = gsl_odeiv2_evolve_alloc (dim);
+    state->e = gsl_odeiv2_evolve_alloc (dim);
+  }
 
   if (state->e == NULL)
     {
@@ -410,8 +412,8 @@ gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * d, double *t,
    * contains the values after the last successful step.
    */
 
-  d->n = 0;
   unsigned long int i;
+  d->n = 0;
 
   /* Evolution loop */
 

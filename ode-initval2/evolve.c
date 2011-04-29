@@ -195,24 +195,26 @@ try_step:
       /* Check that an actual decrease in h0 occured and the
          suggested h0 will change the time by at least 1 ulp */
 
-      double t_curr = GSL_COERCE_DBL (*t);
-      double t_next = GSL_COERCE_DBL ((*t) + h0);
+      {
+        double t_curr = GSL_COERCE_DBL (*t);
+        double t_next = GSL_COERCE_DBL ((*t) + h0);
 
-      if (fabs (h0) < fabs (h_old) && t_next != t_curr)
-        {
-
-          /* Step was decreased. Undo step, and try again with new h0. */
-
-          DBL_MEMCPY (y, e->y0, dydt->dimension);
-          e->failed_steps++;
-          goto try_step;
-        }
-      else
-        {
-          *h = h0;              /* notify user of step-size which caused the failure */
-          *t = t0;              /* restore original t value */
-          return step_status;
-        }
+        if (fabs (h0) < fabs (h_old) && t_next != t_curr)
+          {
+            
+            /* Step was decreased. Undo step, and try again with new h0. */
+            
+            DBL_MEMCPY (y, e->y0, dydt->dimension);
+            e->failed_steps++;
+            goto try_step;
+          }
+        else
+          {
+            *h = h0;              /* notify user of step-size which caused the failure */
+            *t = t0;              /* restore original t value */
+            return step_status;
+          }
+      }
     }
 
   e->count++;

@@ -160,10 +160,10 @@ static int jac_xsin_reset = 0;
 int
 rhs_xsin (double t, const double y[], double f[], void *params)
 {
+  static int n = 0, m = 0;
   extern int nfe;
   nfe += 1;
-
-  static int n = 0, m = 0;
+  
   if (rhs_xsin_reset)
     {
       rhs_xsin_reset = 0;
@@ -195,10 +195,10 @@ int
 jac_xsin (double t, const double y[], double *dfdy, double dfdt[],
           void *params)
 {
+  static int n = 0;
   extern int nje;
   nje += 1;
 
-  static int n = 0;
   if (jac_xsin_reset)
     {
       jac_xsin_reset = 0;
@@ -492,13 +492,13 @@ gsl_odeiv2_system rhs_func_stepfn2 = {
 int
 rhs_vl (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double a = -1.0;
   const double b = -1.0;
   const double c = -2.0;
   const double d = -1.0;
+
+  extern int nfe;
+  nfe += 1;
 
   f[0] = (a - b * y[1]) * y[0];
   f[1] = (-c + d * y[0]) * y[1];
@@ -509,13 +509,13 @@ rhs_vl (double t, const double y[], double f[], void *params)
 int
 jac_vl (double t, const double y[], double *dfdy, double dfdt[], void *params)
 {
-  extern int nje;
-  nje += 1;
-
   const double a = -1.0;
   const double b = -1.0;
   const double c = -2.0;
   const double d = -1.0;
+
+  extern int nje;
+  nje += 1;
 
   dfdy[0] = a - b * y[1];
   dfdy[1] = -b * y[0];
@@ -543,10 +543,10 @@ gsl_odeiv2_system rhs_func_vl = {
 int
 rhs_vanderpol (double t, const double y[], double f[], void *params)
 {
+  const double mu = 10.0;
+
   extern int nfe;
   nfe += 1;
-
-  const double mu = 10.0;
 
   f[0] = y[1];
   f[1] = -y[0] + mu * y[1] * (1.0 - y[0] * y[0]);
@@ -558,10 +558,10 @@ int
 jac_vanderpol (double t, const double y[], double *dfdy, double dfdt[],
                void *params)
 {
+  const double mu = 10.0;
+
   extern int nje;
   nje += 1;
-
-  const double mu = 10.0;
 
   dfdy[0] = 0.0;
   dfdy[1] = 1.0;
@@ -624,12 +624,12 @@ gsl_odeiv2_system rhs_func_stifftrig = {
 int
 rhs_oregonator (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double c1 = 77.27;
   const double c2 = 8.375e-6;
   const double c3 = 0.161;
+
+  extern int nfe;
+  nfe += 1;
 
   f[0] = c1 * (y[1] + y[0] * (1 - c2 * y[0] - y[1]));
   f[1] = 1 / c1 * (y[2] - y[1] * (1 + y[0]));
@@ -642,12 +642,12 @@ int
 jac_oregonator (double t, const double y[], double *dfdy, double dfdt[],
                 void *params)
 {
-  extern int nje;
-  nje += 1;
-
   const double c1 = 77.27;
   const double c2 = 8.375e-6;
   const double c3 = 0.161;
+
+  extern int nje;
+  nje += 1;
 
   dfdy[0] = c1 * (1 - 2 * c2 * y[0] - y[1]);
   dfdy[1] = c1 * (1 - y[0]);
@@ -688,13 +688,13 @@ gsl_odeiv2_system rhs_func_oregonator = {
 int
 rhs_e5 (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double a = 7.89e-10;
   const double b = 1.1e7;
   const double c = 1.13e3;
   const double m = 1.0e6;
+
+  extern int nfe;
+  nfe += 1;
 
   f[0] = -a * y[0] - b * y[0] * y[2];
   f[1] = a * y[0] - m * c * y[1] * y[2];
@@ -707,13 +707,13 @@ rhs_e5 (double t, const double y[], double f[], void *params)
 int
 jac_e5 (double t, const double y[], double *dfdy, double dfdt[], void *params)
 {
-  extern int nje;
-  nje += 1;
-
   const double a = 7.89e-10;
   const double b = 1.1e7;
   const double c = 1.13e3;
   const double m = 1.0e6;
+
+  extern int nje;
+  nje += 1;
 
   dfdy[0] = -a - b * y[2];
   dfdy[1] = 0.0;
@@ -762,12 +762,12 @@ gsl_odeiv2_system rhs_func_e5 = {
 int
 rhs_robertson (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double a = 0.04;
   const double b = 1.0e4;
   const double c = 3.0e7;
+
+  extern int nfe;
+  nfe += 1;
 
   f[0] = -a * y[0] + b * y[1] * y[2];
   f[2] = c * y[1] * y[1];
@@ -780,12 +780,12 @@ int
 jac_robertson (double t, const double y[], double *dfdy, double dfdt[],
                void *params)
 {
-  extern int nje;
-  nje += 1;
-
   const double a = 0.04;
   const double b = 1.0e4;
   const double c = 3.0e7;
+
+  extern int nje;
+  nje += 1;
 
   dfdy[0] = -a;
   dfdy[1] = b * y[2];
@@ -822,11 +822,11 @@ gsl_odeiv2_system rhs_func_robertson = {
 int
 rhs_brusselator (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double a = 1.0;
   const double b = 3.0;
+
+  extern int nfe;
+  nfe += 1;
 
   f[0] = a + y[0] * y[0] * y[1] - (b + 1.0) * y[0];
   f[1] = b * y[0] - y[0] * y[0] * y[1];
@@ -838,10 +838,10 @@ int
 jac_brusselator (double t, const double y[], double *dfdy, double dfdt[],
                  void *params)
 {
+  const double b = 3.0;
+
   extern int nje;
   nje += 1;
-
-  const double b = 3.0;
 
   dfdy[0] = 2 * y[0] * y[1] - (b + 1.0);
   dfdy[1] = y[0] * y[0];
@@ -874,9 +874,6 @@ gsl_odeiv2_system rhs_func_brusselator = {
 int
 rhs_ringmod (double t, const double y[], double f[], void *params)
 {
-  extern int nfe;
-  nfe += 1;
-
   const double c = 1.6e-8;
   const double cs = 2e-12;
   const double cp = 1e-8;
@@ -907,6 +904,9 @@ rhs_ringmod (double t, const double y[], double f[], void *params)
   const double qud3 = gamma * (exp (delta * ud3) - 1.0);
   const double qud4 = gamma * (exp (delta * ud4) - 1.0);
 
+  extern int nfe;
+  nfe += 1;
+
   f[0] = (y[7] - 0.5 * y[9] + 0.5 * y[10] + y[13] - y[0] / r) / c;
   f[1] = (y[8] - 0.5 * y[11] + 0.5 * y[12] + y[14] - y[1] / r) / c;
   f[2] = (y[9] - qud1 + qud4) / cs;
@@ -930,9 +930,6 @@ int
 jac_ringmod (double t, const double y[], double *dfdy, double dfdt[],
              void *params)
 {
-  extern int nje;
-  nje += 1;
-
   const double c = 1.6e-8;
   const double cs = 2e-12;
   const double cp = 1e-8;
@@ -951,13 +948,6 @@ jac_ringmod (double t, const double y[], double *dfdy, double dfdt[],
   const double delta = 17.7493332;
   const double pi = 3.141592653589793238462643383;
 
-  size_t i;
-
-  for (i = 0; i < NRINGMOD * NRINGMOD; i++)
-    {
-      dfdy[i] = 0.0;
-    }
-
   const double uin2 = 2 * sin (2e4 * pi * t);
   const double ud1 = +y[2] - y[4] - y[6] - uin2;
   const double ud2 = -y[3] + y[5] - y[6] - uin2;
@@ -967,6 +957,18 @@ jac_ringmod (double t, const double y[], double *dfdy, double dfdt[],
   const double qpud2 = gamma * delta * exp (delta * ud2);
   const double qpud3 = gamma * delta * exp (delta * ud3);
   const double qpud4 = gamma * delta * exp (delta * ud4);
+
+  extern int nje;
+  size_t i;
+
+  nje += 1;
+
+  for (i = 0; i < NRINGMOD * NRINGMOD; i++)
+    {
+      dfdy[i] = 0.0;
+    }
+
+
 
   dfdy[0 * NRINGMOD + 0] = -1 / (c * r);
   dfdy[0 * NRINGMOD + 7] = 1 / c;
@@ -1057,15 +1059,15 @@ test_odeiv_stepper (const gsl_odeiv2_step_type * T,
   double scale_abs[MAXEQ];
   size_t ne = sys->dimension;
   size_t i;
+  gsl_odeiv2_driver *d;
 
   for (i = 0; i < MAXEQ; i++)
     {
       scale_abs[i] = 1.0;
     }
 
-  gsl_odeiv2_driver *d =
-    gsl_odeiv2_driver_alloc_scaled_new (sys, T, h, relerr, relerr,
-                                        1.0, 0.0, scale_abs);
+  d = gsl_odeiv2_driver_alloc_scaled_new (sys, T, h, relerr, relerr,
+                                          1.0, 0.0, scale_abs);
 
   DBL_MEMCPY (y, ystart, MAXEQ);
 
@@ -1154,10 +1156,6 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
      error estimation from the stepper.
    */
 
-  extern int nfe, nje;
-  nfe = 0;
-  nje = 0;
-
   int steps = 0;
   size_t i;
 
@@ -1174,6 +1172,10 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
   double *y_orig = (double *) malloc (sys->dimension * sizeof (double));
 
   int s = 0;
+
+  extern int nfe, nje;
+  nfe = 0;
+  nje = 0;
 
   while (t < t1)
     {
@@ -1248,10 +1250,6 @@ sys_driver (const gsl_odeiv2_step_type * T,
      absolute and relative error tolerances.
    */
 
-  extern int nfe, nje;
-  nfe = 0;
-  nje = 0;
-
   int s = 0;
   int steps = 0;
 
@@ -1261,7 +1259,11 @@ sys_driver (const gsl_odeiv2_step_type * T,
   gsl_odeiv2_driver *d =
     gsl_odeiv2_driver_alloc_standard_new (sys, T, h, epsabs, epsrel,
                                           1.0, 0.0);
-
+  
+  extern int nfe, nje;
+  nfe = 0;
+  nje = 0;
+  
   while (t < t1)
     {
       s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, sys, &t, t1, &h, y);
@@ -1417,12 +1419,11 @@ test_evolve_negative_h (const gsl_odeiv2_step_type * T, double h, double err)
 
   double y = 0.0;
   double yfin = sin (t1);
+  gsl_odeiv2_driver *d;
 
   /* Make initial h negative */
   h = -fabs (h);
-
-  gsl_odeiv2_driver *d =
-    gsl_odeiv2_driver_alloc_standard_new (&sys, T, h, err, err, 1.0, 0.0);
+  d = gsl_odeiv2_driver_alloc_standard_new (&sys, T, h, err, err, 1.0, 0.0);
 
   while (t > t1)
     {
@@ -2035,21 +2036,26 @@ void
 test_driver (void)
 {
   /* Tests for gsl_odeiv2_driver object */
-
+  int s;
   const double tol = 1e-8;
   const double hmax = 1e-2;
 
+  double y[] = { 1.0, 0.0 };
+  double t = 0.0;
+  const double t1 = 8.25;
+  const double t2 = 100;
+  const double t3 = -2.5;
+  const size_t minsteps = ceil (t1 / hmax);
+  const size_t maxsteps = 20;
+  const double hmin = 1e-10;
+  const size_t nfsteps = 100;
+  
   gsl_odeiv2_driver *d =
     gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
                                    1e-3, tol, tol);
   gsl_odeiv2_driver_set_hmax (d, hmax);
 
-  double y[] = { 1.0, 0.0 };
-  double t = 0.0;
-  const double t1 = 8.25;
-  const size_t minsteps = ceil (t1 / hmax);
-
-  int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
+  s = gsl_odeiv2_driver_apply (d, &t, t1, y);
 
   if (s != GSL_SUCCESS)
     {
@@ -2076,14 +2082,10 @@ test_driver (void)
 
   /* Test that maximum number of steps is obeyed */
 
-  const size_t maxsteps = 20;
-
   d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
                                      1e-3, tol, tol);
   gsl_odeiv2_driver_set_hmax (d, hmax);
   gsl_odeiv2_driver_set_nmax (d, maxsteps);
-
-  const double t2 = 100;
 
   s = gsl_odeiv2_driver_apply (d, &t, t2, y);
 
@@ -2099,8 +2101,6 @@ test_driver (void)
   gsl_odeiv2_driver_free (d);
 
   /* Test that minimum step length is obeyed */
-
-  const double hmin = 1e-10;
 
   d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
                                      1e-3, tol, tol);
@@ -2130,7 +2130,6 @@ test_driver (void)
   y[0] = 1.0;
   y[1] = 0.0;
   t = 2.5;
-  const double t3 = -2.5;
 
   gsl_odeiv2_driver_set_nmax (d, 1000);
   s = gsl_odeiv2_driver_apply (d, &t, t3, y);
@@ -2159,7 +2158,6 @@ test_driver (void)
 
   /* Test driver_apply_fixed_step */
 
-  const size_t nfsteps = 100;
   s = gsl_odeiv2_driver_apply_fixed_step (d, &t, 0.025, nfsteps, y);
 
   {
@@ -2413,6 +2411,7 @@ main (void)
 
   /* Test single problem, for debugging purposes */
   /* test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0; */
+  int i;
 
   struct ptype
   {
@@ -2420,6 +2419,8 @@ main (void)
     double h;
   }
   p[MAXNS];
+
+  struct ptype explicit_stepper[MAXNS];
 
   p[0].type = gsl_odeiv2_step_rk4;
   p[0].h = 1.0e-3;
@@ -2447,8 +2448,6 @@ main (void)
 
   gsl_ieee_env_setup ();
 
-  int i;
-
   /* Basic tests for all steppers */
 
   for (i = 0; p[i].type != 0; i++)
@@ -2472,8 +2471,6 @@ main (void)
     }
 
   /* Derivative test for explicit steppers */
-
-  struct ptype explicit_stepper[MAXNS];
 
   explicit_stepper[0].type = gsl_odeiv2_step_rk4;
   explicit_stepper[0].h = 1.0e-3;
