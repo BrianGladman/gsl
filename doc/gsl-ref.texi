@@ -524,7 +524,8 @@ Wrote the major cumulative distribution functions.
 Wrote the routines for wavelet transforms.
 
 @item Tuomo Keskitalo
-Improved the implementation of the ODE solvers.
+Improved the implementation of the ODE solvers and wrote the
+ode-initval2 routines.
 
 @item Lowell Johnson
 Implementation of the Mathieu functions.

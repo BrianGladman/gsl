@@ -20,7 +20,8 @@ Dan, Ho-Jin (hjdan@sys713.kaist.ac.kr) - divided differences interpolation
 Szymon Jaroszewicz (sj@cs.umb.edu) - combinations
 Nicolas Darnis (ndarnis@cvf.fr) - cyclic functions and the initial functions for
  canonical permutations.
-Tuomo Keskitalo (tuomo.keskitalo@iki.fi) - multidimensional minimization
+Tuomo Keskitalo (tuomo.keskitalo@iki.fi) - multidimensional minimization and 
+ ode-initval2 routines for ordinary differential equations
 Ivo Alxneit (ivo.alxneit@psi.ch) - multidimensional minimization, wavelet 
   transforms
 Jason H. Stover (jason@sakla.net) - cumulative distribution functions
