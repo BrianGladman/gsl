@@ -235,7 +235,7 @@ gsl_integration_cquad (const gsl_function * f, double a, double b,
     {
       iv->fx[i] = GSL_FN_EVAL (f, m + xi[i] * h);
       neval++;
-      if (!isfinite (iv->fx[i]))
+      if (!finite (iv->fx[i]))
 	{
 	  nans[nnans++] = i;
 	  iv->fx[i] = 0.0;
@@ -319,7 +319,7 @@ gsl_integration_cquad (const gsl_function * f, double a, double b,
 	  nnans = 0;
 	  for (i = 0; i <= 32; i += skip[d])
 	    {
-	      if (!isfinite (iv->fx[i]))
+	      if (!finite (iv->fx[i]))
 		{
 		  nans[nnans++] = i;
 		  iv->fx[i] = 0.0;
@@ -444,7 +444,7 @@ gsl_integration_cquad (const gsl_function * f, double a, double b,
 	  nnans = 0;
 	  for (i = 0; i <= 32; i += skip[0])
 	    {
-	      if (!isfinite (ivl->fx[i]))
+	      if (!finite (ivl->fx[i]))
 		{
 		  nans[nnans++] = i;
 		  ivl->fx[i] = 0.0;
@@ -510,7 +510,7 @@ gsl_integration_cquad (const gsl_function * f, double a, double b,
 	  nnans = 0;
 	  for (i = 0; i <= 32; i += skip[0])
 	    {
-	      if (!isfinite (ivr->fx[i]))
+	      if (!finite (ivr->fx[i]))
 		{
 		  nans[nnans++] = i;
 		  ivr->fx[i] = 0.0;
