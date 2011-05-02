@@ -66,7 +66,7 @@ for arguments (@var{t},@var{y}) and parameters @var{params}.
 
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
-special return value @code{GSL_EBADFUNC} causes @code{odeiv2}
+special return value @code{GSL_EBADFUNC} causes @code{gsl_odeiv2}
 routines to immediately stop and return. The user must call an
 appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
 @code{gsl_odeiv2_step_reset}) before continuing. Use return values
@@ -82,14 +82,14 @@ in the array @var{dfdt} and the Jacobian matrix @c{$J_{ij}$}
 matrix @code{J(i,j) = dfdy[i * dimension + j]} where @code{dimension}
 is the dimension of the system. 
 
-Not all of the stepper algorithms of @code{odeiv2} make use of the
+Not all of the stepper algorithms of @code{gsl_odeiv2} make use of the
 Jacobian matrix, so it may not be necessary to provide this function
 (the @code{jacobian} element of the struct can be replaced by a null
 pointer for those algorithms).
 
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
-special return value @code{GSL_EBADFUNC} causes @code{odeiv2}
+special return value @code{GSL_EBADFUNC} causes @code{gsl_odeiv2}
 routines to immediately stop and return. The user must call an
 appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
 @code{gsl_odeiv2_step_reset}) before continuing. Use return values
@@ -188,7 +188,7 @@ stepping function returns @code{GSL_EFAULT}. If the user-supplied
 functions defined in the system @var{sys} returns @code{GSL_EBADFUNC},
 the function returns immediately with the same return code. In this
 case the user must call @code{gsl_odeiv2_step_reset} before calling
-it again.
+this function again.
 
 @end deftypefun
 
@@ -490,7 +490,7 @@ If the user-supplied functions defined in the system @var{sys} returns
 @code{GSL_EBADFUNC}, the function returns immediately with the same
 return code. In this case the user must call
 @code{gsl_odeiv2_step_reset} and
-@code{gsl_odeiv2_evolve_reset} before calling it again.
+@code{gsl_odeiv2_evolve_reset} before calling this function again.
 
 Otherwise, if the user-supplied functions defined in the system
 @var{sys} or the stepping function @var{step} return a status other
@@ -591,8 +591,8 @@ is returned. If the step size drops below minimum value, the function
 returns with @code{GSL_ENOPROG}. If the user-supplied functions
 defined in the system @var{sys} returns @code{GSL_EBADFUNC}, the
 function returns immediately with the same return code. In this case
-the user must call @code{gsl_odeiv2_driver_reset} before calling it
-again.
+the user must call @code{gsl_odeiv2_driver_reset} before calling this
+function again.
 @end deftypefun
 
 @deftypefun {int} gsl_odeiv2_driver_apply_fixed_step (gsl_odeiv2_driver * @var{d}, double * @var{t}, const double @var{h}, const unsigned long int @var{n}, double @var{y}[])
