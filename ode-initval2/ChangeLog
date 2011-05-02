@@ -1,3 +1,7 @@
+2011-05-02  Brian Gough  <bjg@network-theory.co.uk>
+
+	* gsl_odeiv2.h: fix header guard to __GSL_ODEIV2_H__
+
 2011-05-01  Tuomo Keskitalo  <Tuomo.Keskitalo@iki.fi>
 
 	* Replaced ChangeLog with contents of ode-initval2 development log

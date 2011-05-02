@@ -20,8 +20,8 @@
 /* Author:  G. Jungman */
 /* Modified by Tuomo Keskitalo */
 
-#ifndef __GSL_ODEIV_H__
-#define __GSL_ODEIV_H__
+#ifndef __GSL_ODEIV2_H__
+#define __GSL_ODEIV2_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -329,4 +329,4 @@ int gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d);
 void gsl_odeiv2_driver_free (gsl_odeiv2_driver * state);
 
 __END_DECLS
-#endif /* __GSL_ODEIV_H__ */
+#endif /* __GSL_ODEIV2_H__ */
