@@ -48,7 +48,7 @@ gsl_ran_negative_binomial_pdf (const unsigned int k, const double p, double n)
   double a = gsl_sf_lngamma (n) ;
   double b = gsl_sf_lngamma (k + 1.0) ;
 
-  P = exp(f-a-b) * pow (p, n) * pow (1 - p, (double)k);
-  
+  P = exp(f - a - b + n * log(p) + k * log1p(-p));
+
   return P;
 }

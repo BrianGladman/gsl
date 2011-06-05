@@ -1,3 +1,8 @@
+2011-06-05  Brian Gough  <bjg@network-theory.co.uk>
+
+	* nbinomial.c (gsl_ran_negative_binomial_pdf): avoid overflow in
+	exp
+
 2010-12-14  Brian Gough  <bjg@gnu.org>
 
 	* gamma.c (gamma_frac): avoid potential division by zero, handle

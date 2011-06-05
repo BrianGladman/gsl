@@ -497,3 +497,5 @@ evaluation and ode improvements
 * Nikolay Simakov <nsimakov@andrew.cmu.edu> - bug report for gsl_eigen_jacobi
 
 * Jim Ward - numerous bug reports and useful suggestions
+
+* Josh Neil & Curt Hash - patch for negative binomial

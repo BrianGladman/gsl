@@ -1,4 +1,9 @@
-* What is new in gsl-1.15:
+* What is new in gsl-1.16:
+
+** Improved gsl_ran_negative_binomial_pdf to avoid underflow/overflow
+   for large arguments.
+
+* What was new in gsl-1.15:
 
 ** Added Tuomo Keskitalo's new ode branch ode-initval2 with a
    gsl_odeiv2 prefix. This provides proper support for implicit
