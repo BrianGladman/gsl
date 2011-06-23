@@ -212,15 +212,15 @@ gsl_bspline_breakpoint (size_t i, gsl_bspline_workspace * w)
 double
 gsl_bspline_greville_abscissa(size_t i, gsl_bspline_workspace *w)
 {
+  const size_t stride = w->knots->stride;
+  size_t km1 = w->km1;
+  double * data = w->knots->data + (i+1)*stride;
 #if GSL_RANGE_CHECK
   if (GSL_RANGE_COND(i >= gsl_bspline_ncoeffs(w)))
     {
       GSL_ERROR_VAL ("Greville abscissa index out of range", GSL_EINVAL, 0);
     }
 #endif
-  const size_t stride = w->knots->stride;
-  size_t km1 = w->km1;
-  double * data = w->knots->data + (i+1)*stride;
 
   if (km1 == 0)
     {
