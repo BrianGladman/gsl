@@ -1,3 +1,8 @@
+2011-07-15  Brian Gough  <bjg@network-theory.co.uk>
+
+	* trig.c (gsl_sf_lncosh_e): handle x symmetrically for middle
+	region
+
 2010-11-11  Brian Gough  <bjg@gnu.org>
 
 	* ellint.c (gsl_sf_ellint_RC_e, gsl_sf_ellint_RD_e)

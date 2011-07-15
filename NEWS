@@ -1,5 +1,7 @@
 * What is new in gsl-1.16:
 
+** Fixed overflow in gsl_sf_lncosh for large negative x (x<-354).
+
 ** Improved gsl_ran_negative_binomial_pdf to avoid underflow/overflow
    for large arguments.
 

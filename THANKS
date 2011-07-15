@@ -499,3 +499,5 @@ evaluation and ode improvements
 * Jim Ward - numerous bug reports and useful suggestions
 
 * Josh Neil & Curt Hash - patch for negative binomial
+
+* Maximilian Treiber <maximilian.treiber@physik.lmu.de> - bug report for gsl_sf_lncosh
