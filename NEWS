@@ -1,5 +1,8 @@
 * What is new in gsl-1.16:
 
+** Fixed gsl_sf_mathieu_se_array to return zero when the order is zero
+   [bug #33679].
+
 ** Fixed overflow in gsl_sf_lncosh for large negative x (x<-354).
 
 ** Improved gsl_ran_negative_binomial_pdf to avoid underflow/overflow
