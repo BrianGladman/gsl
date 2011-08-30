@@ -129,15 +129,9 @@ Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 200
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
-any later version published by the Free Software Foundation; with the
-Invariant Sections being ``GNU General Public License'' and ``Free Software
-Needs Free Documentation'', the Front-Cover text being ``A GNU Manual'',
-and with the Back-Cover Text being (a) (see below).  A copy of the
-license is included in the section entitled ``GNU Free Documentation
-License''.
-
-(a) The Back-Cover Text is: ``You have the freedom to copy and modify this
-GNU Manual.''
+any later version published by the Free Software Foundation; with no
+Invariant Sections and no cover texts.  A copy of the license is
+included in the section entitled ``GNU Free Documentation License''.
 @end copying
 
 @titlepage
@@ -242,7 +236,7 @@ project homepage thanks to Daisuke Tominaga.
 * Vectors and Matrices::        
 * Permutations::                
 * Combinations::                
-* Multisets::
+* Multisets::                   
 * Sorting::                     
 * BLAS Support::                
 * Linear Algebra::              
@@ -270,14 +264,13 @@ project homepage thanks to Daisuke Tominaga.
 * Multidimensional Minimization::  
 * Least-Squares Fitting::       
 * Nonlinear Least-Squares Fitting::  
-* Basis Splines::
+* Basis Splines::               
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
 * Contributors to GSL::         
 * Autoconf Macros::             
 * GSL CBLAS Library::           
-* Free Software Needs Free Documentation::  
 * GNU General Public License::  
 * GNU Free Documentation License::  
 * Function Index::              
@@ -598,7 +591,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @appendix Autoconf Macros
 @include autoconf.texi
 
-@node GSL CBLAS Library, Free Software Needs Free Documentation, Autoconf Macros, Top
+@node GSL CBLAS Library, GNU General Public License, Autoconf Macros, Top
 @appendix GSL CBLAS Library
 @include cblas.texi
 
@@ -606,11 +599,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @comment @unnumbered Copyright
 @comment @include science.texi
 
-@node  Free Software Needs Free Documentation, GNU General Public License, GSL CBLAS Library, Top
-@unnumbered Free Software Needs Free Documentation
-@include freemanuals.texi
+@comment @node  Free Software Needs Free Documentation, GNU General Public License, GSL CBLAS Library, Top
+@comment @unnumbered Free Software Needs Free Documentation
+@comment @include freemanuals.texi
 
-@node  GNU General Public License, GNU Free Documentation License, Free Software Needs Free Documentation, Top
+@node  GNU General Public License, GNU Free Documentation License, GSL CBLAS Library, Top
 @unnumbered GNU General Public License
 @include gpl.texi
 
