@@ -292,6 +292,10 @@ To avoid warnings about long-double, use the flag
 
 in addition to the normal compilation options.
 
+If you get make check failures for the eigen/ subdirectory with OS X
+10.7 (Lion) try using CC=gcc-4.2 since the llvm compiler has bugs that
+make the tests fail.
+
 The GCC 3.3 compiler shipped by Apple contains a bug which causes the
 wavelet tests to fail on "data untouched" tests at optimisation level
 -O2.  You may be able work around this by compiling with CFLAGS="-O1
