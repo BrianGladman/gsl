@@ -644,7 +644,9 @@ int test_hyperg(void)
   /* Didier Pinchon also bug #24812 */
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (11, -1, 11.0/2.0, 0.125 , &r), 0.75, TEST_TOL2, GSL_SUCCESS);
 
+  /* Test case from Hatef Monajemi <monajemi@stanford.edu> */
 
+  TEST_SF(s, gsl_sf_hyperg_2F1_e, (3.5, -0.5, 5.0, 0.9, &r), 0.5923981284370653465208973272, TEST_TOL2, GSL_SUCCESS);
 
   /* 2F1 conj */
 
