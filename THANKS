@@ -501,3 +501,5 @@ evaluation and ode improvements
 * Josh Neil & Curt Hash - patch for negative binomial
 
 * Maximilian Treiber <maximilian.treiber@physik.lmu.de> - bug report for gsl_sf_lncosh
+
+* Martin Landriau <landriau@mpe.mpg.de> bug report for 3j coupling

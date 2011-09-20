@@ -80,7 +80,9 @@ static
 int
 triangle_selection_fails(int two_ja, int two_jb, int two_jc)
 {
-  return ((two_jb < abs(two_ja - two_jc)) || (two_jb > two_ja + two_jc));
+  return ((two_jb < abs(two_ja - two_jc)) || (two_jb > two_ja + two_jc))
+    || ((two_jc < abs(two_jb - two_ja)) || (two_jc > two_jb + two_ja))
+    || ((two_ja < abs(two_jc - two_jb)) || (two_ja > two_jc + two_jb));
 }
 
 
@@ -117,6 +119,13 @@ gsl_sf_coupling_3j_e (int two_ja, int two_jb, int two_jc,
   else if (   triangle_selection_fails(two_ja, two_jb, two_jc)
            || m_selection_fails(two_ja, two_jb, two_jc, two_ma, two_mb, two_mc)
      ) {
+    result->val = 0.0;
+    result->err = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if ( two_ma == 0 && two_mb == 0 && two_mc == 0
+            && ((two_ja + two_jb + two_jc) % 4 == 2) ) {
+    /* Special case for (ja jb jc; 0 0 0) = 0 when ja+jb+jc=odd */
     result->val = 0.0;
     result->err = 0.0;
     return GSL_SUCCESS;

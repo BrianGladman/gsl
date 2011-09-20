@@ -1,3 +1,10 @@
+2011-09-20  Brian Gough  <bjg@network-theory.co.uk>
+
+	* coupling.c (triangle_selection_fails): extend triangle selection
+	to handle all permutations
+	(gsl_sf_coupling_3j_e): special case for (ja jb jc; 0 0 0) = 0
+	when ja+jb+jc=odd
+
 2011-08-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* mathieu_radfunc.c (gsl_sf_mathieu_Mc): set odd functions to zero

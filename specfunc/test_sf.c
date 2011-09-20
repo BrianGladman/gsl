@@ -405,6 +405,12 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_3j_e, (1, 4, 2, 1, -1, 0, &r), 0, 0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_3j_e, (4, 1, 2, 1, -1, 0, &r), 0, 0, GSL_SUCCESS);
 
+  /* Test m1=m2=m3=0 with j1+j2+j3=odd*/
+
+  TEST_SF(s, gsl_sf_coupling_3j_e, (2*13, 2*13, 2*13, 0, 0, 0, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (2*2, 2*17, 2*18, 0, 0, 0, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_3j_e, (2*203, 2*203, 2*203, 0, 0, 0, &r), 0, 0, GSL_SUCCESS);
+
   /* Test 6j */
 
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 4, 2, 2, 2, &r),  1.0/6.0, TEST_TOL0, GSL_SUCCESS);
