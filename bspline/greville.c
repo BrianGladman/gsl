@@ -54,50 +54,47 @@ int
 gsl_bspline_knots_greville(const gsl_vector *abscissae,
                            gsl_bspline_workspace *w)
 {
-  int s = GSL_SUCCESS;
+  double * storage;
+  gsl_matrix_view A;
+  gsl_vector_view tau, b, x, r;
+  int s;
   size_t i, j;
 
   /* Constants derived from the B-spline workspace and abscissae details */
   const size_t km2    = w->k - 2;
-  const size_t nbreak = abscissae->size - km2;
   const size_t M      = abscissae->size - 2;
-  const size_t N      = nbreak - 2;
+  const size_t N      = w->nbreak - 2;
   const double invkm1 = 1.0 / w->km1;
 
-  /* Working storage and logical views of portions of that storage */
-  double *storage = NULL;
-  gsl_matrix_view A;
-  gsl_vector_view tau, b, x, r, brk;
-
-  /* Check incoming arguments and workspace satisfy algorithmic assumptions */
+  /* Check incoming arguments satisfy mandatory algorithmic assumptions */
   if (w->k < 2)
-    {
-      GSL_ERROR ("w->k must be at least 2", GSL_EINVAL);
-    }
+    GSL_ERROR ("w->k must be at least 2", GSL_EINVAL);
   else if (abscissae->size < 2)
-    {
-      GSL_ERROR ("abscissae->size must be at least 2", GSL_EINVAL);
-    }
-  else if (nbreak != w->nbreak)
-    {
-      GSL_ERROR ("w->nbreak must equal abscissae->size - k + 2", GSL_EINVAL);
-    }
+    GSL_ERROR ("abscissae->size must be at least 2", GSL_EINVAL);
+  else if (w->nbreak != abscissae->size - w->k + 2)
+    GSL_ERROR ("w->nbreak must equal abscissae->size - w->k + 2", GSL_EINVAL);
 
   /* Allocate working storage and divide it into multiple, zero-filled views */
-  storage = (double *) calloc (M*N + 2*N + 2*M, sizeof(double));
+  storage = (double *) calloc (M*N + 2*N + 2*M, sizeof (double));
   if (storage == 0)
-    {
-      GSL_ERROR ("failed to allocate working storage", GSL_ENOMEM);
-    }
+    GSL_ERROR ("failed to allocate working storage", GSL_ENOMEM);
   A   = gsl_matrix_view_array (storage, M, N);
   tau = gsl_vector_view_array (storage + M*N,             N);
   b   = gsl_vector_view_array (storage + M*N + N,         M);
   x   = gsl_vector_view_array (storage + M*N + N + M,     N);
   r   = gsl_vector_view_array (storage + M*N + N + M + N, M);
-  brk = gsl_vector_view_array (storage + M*N + N + M - 1, nbreak); /* Alias! */
 
-  /* Build matrix taking interior breakpoints to interior Greville abscissae */
-  /* Only interior needed as first/last breakpoint is first/last abscissae */
+  /* Build matrix taking interior breakpoints to interior Greville abscissae.
+   * For example, when w->k = 4 and w->nbreak = 7 the matrix is
+   *   [   1,      0,      0,      0,      0;
+   *     2/3,    1/3,      0,      0,      0;
+   *     1/3,    1/3,    1/3,      0,      0;
+   *       0,    1/3,    1/3,    1/3,      0;
+   *       0,      0,    1/3,    1/3,    1/3;
+   *       0,      0,      0,    1/3,    2/3;
+   *       0,      0,      0,      0,      1  ]
+   * but only center formed as first/last breakpoint is known.
+   */
   for (j = 0; j < N; ++j)
     for (i = 0; i <= km2; ++i)
       gsl_matrix_set (&A.matrix, i+j, j, invkm1);
@@ -107,8 +104,6 @@ gsl_bspline_knots_greville(const gsl_vector *abscissae,
     gsl_vector_set (&b.vector, i, gsl_vector_get (abscissae, i+1));
 
   /* First/last collocation point fixes first/last breakpoint.  Constrain. */
-  /* First constraint column omitted from A was 1, 1 - invkm1, ..., invkm1. */
-  /* Last constraint column omitted from A is invmk1, 2*invkm1, ..., 1. */
   for (i = 0; i < km2; ++i)
     {
       double * const v = gsl_vector_ptr (&b.vector, i);
@@ -130,14 +125,16 @@ gsl_bspline_knots_greville(const gsl_vector *abscissae,
       return s;
     }
 
-  /* Wrap the least squares solution "x" with first/last breakpoint as "brk" */
-  gsl_vector_set(&brk.vector, 0,
-                 gsl_vector_get(abscissae, 0));
-  gsl_vector_set(&brk.vector, nbreak - 1,
-                 gsl_vector_get(abscissae, abscissae->size - 1));
+  /* "Expand" interior solution x and add known first and last breakpoints. */
+  x = gsl_vector_view_array_with_stride (
+      gsl_vector_ptr (&x.vector, 0) - x.vector.stride,
+      x.vector.stride, x.vector.size + 2);
+  gsl_vector_set (&x.vector, 0, gsl_vector_get (abscissae, 0));
+  gsl_vector_set (&x.vector, x.vector.size - 1,
+                  gsl_vector_get (abscissae, abscissae->size - 1));
 
-  /* Finally, initialize a knot vector based on the breakpoints solution */
-  s = gsl_bspline_knots(&brk.vector, w);
-  free(storage);
+  /* Finally, initialize workspace knots using the now-known breakpoints */
+  s = gsl_bspline_knots (&x.vector, w);
+  free (storage);
   return s;
 }
