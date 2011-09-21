@@ -52,7 +52,8 @@ gsl_bspline_greville_abscissa (size_t i, gsl_bspline_workspace *w)
 
 int
 gsl_bspline_knots_greville (const gsl_vector *abscissae,
-                            gsl_bspline_workspace *w)
+                            gsl_bspline_workspace *w,
+                            double *abserr)
 {
   int s;
 
@@ -146,6 +147,17 @@ gsl_bspline_knots_greville (const gsl_vector *abscissae,
       /* Finally, initialize workspace knots using the now-known breakpoints */
       s = gsl_bspline_knots (&x.vector, w);
       free (storage);
+    }
+
+  /* Sum absolute errors in the resulting vs requested interior abscissae */
+  /* Provided as a fit quality metric which may be monitored by callers */
+  if (!s && abserr)
+    {
+      size_t i;
+      *abserr = 0;
+      for (i = 1; i < abscissae->size - 1; ++i)
+        *abserr += fabs (   gsl_bspline_greville_abscissa (i, w)
+                          - gsl_vector_get (abscissae, i) );
     }
 
   return s;

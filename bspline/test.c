@@ -1,7 +1,7 @@
 /* bspline/test.c
  *
  * Copyright (C) 2006, 2007, 2009 Brian Gough
- * Copyright (C) 2008 Rhys Ulerich
+ * Copyright (C) 2008, 2011 Rhys Ulerich
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -395,16 +395,19 @@ main(int argc, char **argv)
     const size_t nbreak           = sizeof(bpoint_data)/sizeof(bpoint_data[0]);
 
     /* Compute knots from Greville abscissae */
+    double abserr;
     gsl_vector_const_view abscissae
         = gsl_vector_const_view_array(abscissae_data, nabscissae);
     gsl_bspline_workspace *w = gsl_bspline_alloc(k, nbreak);
-    gsl_bspline_knots_greville(&abscissae.vector, w);
+    gsl_bspline_knots_greville(&abscissae.vector, w, &abserr);
 
     for (i = 0; i < nbreak; ++i)
       {
         gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON*10,
-            "b-spline k=%d knot_greville breakpoint #%d", k, i);
+            "b-spline k=%d knots_greville breakpoint #%d", k, i);
       }
+    gsl_test_abs(abserr, 0.0, GSL_DBL_EPSILON*15,
+        "b-spline k=%d nbreak=%d knots_greville abserr", k, nbreak);
 
     gsl_bspline_free(w);
   }
@@ -425,16 +428,19 @@ main(int argc, char **argv)
     const size_t nbreak           = sizeof(bpoint_data)/sizeof(bpoint_data[0]);
 
     /* Compute knots from Greville abscissae */
+    double abserr;
     gsl_vector_const_view abscissae
         = gsl_vector_const_view_array(abscissae_data, nabscissae);
     gsl_bspline_workspace *w = gsl_bspline_alloc(k, nbreak);
-    gsl_bspline_knots_greville(&abscissae.vector, w);
+    gsl_bspline_knots_greville(&abscissae.vector, w, &abserr);
 
     for (i = 0; i < nbreak; ++i)
       {
         gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON*50,
-            "b-spline k=%d knot_greville breakpoint #%d", k, i);
+            "b-spline k=%d knots_greville breakpoint #%d", k, i);
       }
+    gsl_test_abs(abserr, 0.0, GSL_DBL_EPSILON*15,
+        "b-spline k=%d nbreak=%d knots_greville abserr", k, nbreak);
 
     gsl_bspline_free(w);
   }
@@ -454,16 +460,19 @@ main(int argc, char **argv)
     const size_t nbreak           = sizeof(bpoint_data)/sizeof(bpoint_data[0]);
 
     /* Compute knots from Greville abscissae */
+    double abserr;
     gsl_vector_const_view abscissae
         = gsl_vector_const_view_array(abscissae_data, nabscissae);
     gsl_bspline_workspace *w = gsl_bspline_alloc(k, nbreak);
-    gsl_bspline_knots_greville(&abscissae.vector, w);
+    gsl_bspline_knots_greville(&abscissae.vector, w, &abserr);
 
     for (i = 0; i < nbreak; ++i)
       {
         gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON,
-            "b-spline k=%d knot_greville breakpoint #%d", k, i);
+            "b-spline k=%d knots_greville breakpoint #%d", k, i);
       }
+    gsl_test_abs(abserr, 0.0, GSL_DBL_EPSILON,
+        "b-spline k=%d nbreak=%d knots_greville abserr", k, nbreak);
 
     gsl_bspline_free(w);
   }
@@ -474,24 +483,41 @@ main(int argc, char **argv)
 
     /* Test parameters */
     const size_t k = 4;
-    const double abscissae_data[] = { 1.0, 3.0, 5.0, 7.0 };
-    const size_t nabscissae       = sizeof(abscissae_data)/sizeof(abscissae_data[0]);
+    double abscissae_data[] = { 1.0, 3.0, 5.0, 7.0 };
+    const size_t nabscissae = sizeof(abscissae_data)/sizeof(abscissae_data[0]);
 
     /* Expected results */
-    const double bpoint_data[]    = { 1.0, 7.0 };
-    const size_t nbreak           = sizeof(bpoint_data)/sizeof(bpoint_data[0]);
+    const double bpoint_data[] = { 1.0, 7.0 };
+    const size_t nbreak        = sizeof(bpoint_data)/sizeof(bpoint_data[0]);
 
-    /* Compute knots from Greville abscissae */
-    gsl_vector_const_view abscissae
-        = gsl_vector_const_view_array(abscissae_data, nabscissae);
+    /* Compute knots from Greville abscissae where abscissae are recoverable */
+    double abserr;
+    gsl_vector_view abscissae
+        = gsl_vector_view_array(abscissae_data, nabscissae);
     gsl_bspline_workspace *w = gsl_bspline_alloc(k, nbreak);
-    gsl_bspline_knots_greville(&abscissae.vector, w);
+    gsl_bspline_knots_greville(&abscissae.vector, w, &abserr);
 
+    /* Check recovery of breakpoints and abscissae */
     for (i = 0; i < nbreak; ++i)
       {
         gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON,
-            "b-spline k=%d knot_greville breakpoint #%d", k, i);
+            "b-spline k=%d knots_greville breakpoint #%d", k, i);
       }
+    gsl_test_abs(abserr, 0.0, GSL_DBL_EPSILON,
+        "b-spline k=%d nbreak=%d knots_greville abserr", k, nbreak);
+
+    /* Modify interior abscissae so they cannot be recovered with nbreak = 2 */
+    /* Then recompute breakpoints and check that abserr is as expected */
+    abscissae_data[1] -= 1;
+    abscissae_data[2] += 1;
+    gsl_bspline_knots_greville(&abscissae.vector, w, &abserr);
+    for (i = 0; i < nbreak; ++i)
+      {
+        gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON,
+            "b-spline k=%d knots_greville breakpoint #%d", k, i);
+      }
+    gsl_test_abs(abserr, /* deliberate error */ 2.0, GSL_DBL_EPSILON,
+        "b-spline k=%d nbreak=%d knots_greville abserr large", k, nbreak);
 
     gsl_bspline_free(w);
   }

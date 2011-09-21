@@ -78,7 +78,8 @@ int gsl_bspline_knots_uniform(const double a, const double b,
 
 int
 gsl_bspline_knots_greville(const gsl_vector *abscissae,
-                           gsl_bspline_workspace *w);
+                           gsl_bspline_workspace *w,
+                           double *abserr);
 
 int
 gsl_bspline_eval(const double x, gsl_vector *B, 
