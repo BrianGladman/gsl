@@ -1,6 +1,8 @@
 # -*- org -*-
 #+CATEGORY: bspline
 
+Document gsl_bspline_knots_greville(...) functionalty added post-1.15.
+
 Add functions:
 
 gsl_bspline_smooth to fit smoothing splines to data more efficiently
