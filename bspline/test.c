@@ -403,7 +403,7 @@ main(int argc, char **argv)
 
     for (i = 0; i < nbreak; ++i)
       {
-        gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON*10,
+        gsl_test_abs(gsl_bspline_breakpoint(i,w), bpoint_data[i], GSL_DBL_EPSILON*50,
             "b-spline k=%d knots_greville breakpoint #%d", k, i);
       }
     gsl_test_abs(abserr, 0.0, GSL_DBL_EPSILON*15,

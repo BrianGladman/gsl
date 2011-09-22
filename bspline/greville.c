@@ -55,6 +55,8 @@ gsl_bspline_knots_greville (const gsl_vector *abscissae,
                             gsl_bspline_workspace *w,
                             double *abserr)
 {
+  /* Limited function: see https://savannah.gnu.org/bugs/index.php?34361 */
+
   int s;
 
   /* Check incoming arguments satisfy mandatory algorithmic assumptions */

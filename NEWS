@@ -13,11 +13,6 @@
 
 ** Multisets now allow k strictly greater than n.
 
-** Added gsl_bspline_knots_greville to allow initializing a B-spline
-   workspace so that it best approximates a target set of Greville
-   abscissae.  The function facilitates projecting data from fixed
-   collocation points onto a B-spline basis.
-
 * What was new in gsl-1.15:
 
 ** Added Tuomo Keskitalo's new ode branch ode-initval2 with a
