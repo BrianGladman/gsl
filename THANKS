@@ -503,3 +503,5 @@ evaluation and ode improvements
 * Maximilian Treiber <maximilian.treiber@physik.lmu.de> - bug report for gsl_sf_lncosh
 
 * Martin Landriau <landriau@mpe.mpg.de> bug report for 3j coupling
+
+* Grigory I. Rubtsov <grisha@ms2.inr.ac.ru> - extend range of 3j

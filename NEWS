@@ -1,7 +1,7 @@
 * What is new in gsl-1.16:
 
-** gsl_sf_coupling_3j now handles the special case (ja jb jc; 0 0 0)=0
-   when ja+jb+jc is odd
+** Extended gsl_sf_coupling_3j to allow larger range and to handle
+   the special case (ja jb jc; 0 0 0)=0 when ja+jb+jc is odd
 
 ** Fixed gsl_sf_mathieu_se_array to return zero when the order is zero
    [bug #33679].
