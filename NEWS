@@ -13,6 +13,9 @@
 
 ** Multisets now allow k strictly greater than n.
 
+** Fixed gsl_matrix_complex_fwrite/fread failure for noncontiguous
+   matrices (Matthias Sitte).
+
 * What was new in gsl-1.15:
 
 ** Added Tuomo Keskitalo's new ode branch ode-initval2 with a
