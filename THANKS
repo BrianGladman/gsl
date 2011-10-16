@@ -505,3 +505,6 @@ evaluation and ode improvements
 * Martin Landriau <landriau@mpe.mpg.de> bug report for 3j coupling
 
 * Grigory I. Rubtsov <grisha@ms2.inr.ac.ru> - extend range of 3j
+
+* Matthias Sitte <matthias.sitte@gmail.com> - bug report and patch for
+  failing complex matrix IO routines

@@ -1,5 +1,11 @@
 2011-10-16  Rhys Ulerich  <rhys.ulerich@gmail.com>
 
+	* file_source.c: applied patch provided by Matthias Sitte
+	<matthias.sitte@gmail.com> which repairs failing binary_noncontiguous
+	tests for complex-valued matrices
+
+2011-10-16  Rhys Ulerich  <rhys.ulerich@gmail.com>
+
 	* test_source.c:         added binary_noncontiguous test template
 	* test_complex_source.c: added binary_noncontiguous test template
 	* test.c:                now running binary_noncontiguous
