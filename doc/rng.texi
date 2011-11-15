@@ -1130,9 +1130,9 @@ generator is about
 @c{$2^{31}$}
 @math{2^31}.
 
-This generator is used in the IMSL Library (subroutine RNUN) and in
-MATLAB (the RAND function).  It is also sometimes known by the acronym
-``GGL'' (I'm not sure what that stands for).
+This generator was used in the IMSL Library (subroutine RNUN) and in
+MATLAB (the RAND function) in the past.  It is also sometimes known by
+the acronym ``GGL'' (I'm not sure what that stands for).
 
 For more information see,
 @itemize @w{}
