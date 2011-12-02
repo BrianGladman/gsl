@@ -1,3 +1,9 @@
+2011-12-01  Rhys Ulerich <rhys.ulerich@gmail.com>
+
+	* doc/integration.texi: Clarify that integration workspaces may be
+	reused multiple times following discussion on gsl-help mailing
+	list.  Documentation ambiguity raised by Denes Molnar.
+
 2011-04-13  Brian Gough  <bjg@network-theory.co.uk>
 
 	* gsl_nan.h (GSL_NEGZERO): define negative zero as explicitly
