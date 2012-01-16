@@ -1,3 +1,10 @@
+2012-01-14  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* evolve.c: Modified initial derivative evaluation in evolve_apply
+	to reuse previously calculated values. This saves calls to the
+	user function. Thanks for Illes Farkas for pointing out redundant
+	function calls!
+
 2011-06-28  Brian Gough  <bjg@network-theory.co.uk>
 
 	* rk4imp.c (rk4imp_apply): use M_SQRT3 instead of sqrt(3) in array
