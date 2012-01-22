@@ -1,3 +1,8 @@
+2012-01-21  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* rkf45.c: Bug correction: Set gives_exact_dydt_out to 1 in
+	rkf45_type
+
 2012-01-14  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* evolve.c: Modified initial derivative evaluation in evolve_apply
