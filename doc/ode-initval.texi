@@ -563,17 +563,17 @@ semantics of the control functions with same name
 (@code{gsl_odeiv2_control_*_new}).
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
+@deftypefun {int} gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * @var{d}, const double @var{hmin})
 The function sets a minimum for allowed step size @var{hmin} for
 driver @var{d}. Default value is 0.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * d, const double hmax)
+@deftypefun {int} gsl_odeiv2_driver_set_hmax (gsl_odeiv2_driver * @var{d}, const double @var{hmax})
 The function sets a maximum for allowed step size @var{hmax} for
 driver @var{d}. Default value is @code{GSL_DBL_MAX}.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * d, const unsigned long int nmax)
+@deftypefun {int} gsl_odeiv2_driver_set_nmax (gsl_odeiv2_driver * @var{d}, const unsigned long int @var{nmax})
 The function sets a maximum for allowed number of steps @var{nmax} for
 driver @var{d}. Default value of 0 sets no limit for steps.
 @end deftypefun
@@ -603,11 +603,17 @@ the calculation, an error code from
 @var{y} contain the values from last successful step.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_reset (gsl_odeiv2_driver * d)
+@deftypefun {int} gsl_odeiv2_driver_reset (gsl_odeiv2_driver * @var{d})
 This function resets the evolution and stepper objects.
 @end deftypefun
 
-@deftypefun {int} gsl_odeiv2_driver_free (gsl_odeiv2_driver * d)
+@deftypefun {int} gsl_odeiv2_driver_reset_hstart (gsl_odeiv2_driver * @var{d}, const double @var{hstart})
+The routine resets the evolution and stepper objects and sets new
+initial step size to @var{hstart}. This function can be used e.g. to
+change the direction of integration.
+@end deftypefun
+
+@deftypefun {int} gsl_odeiv2_driver_free (gsl_odeiv2_driver * @var{d})
 This function frees the driver object, and the related evolution,
 stepper and control objects.
 @end deftypefun

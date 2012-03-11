@@ -1,3 +1,12 @@
+2012-03-10  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* driver.c: Added function gsl_odeiv2_driver_reset_hstart to
+	allow resetting step size, possibly change its sign, too.
+	Check for non-zero hstart in initializations.
+
+	* test.c: Modified test_driver to carry out tests with all
+	steppers. Small printout changes.
+
 2012-01-21  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* rkf45.c: Bug correction: Set gives_exact_dydt_out to 1 in

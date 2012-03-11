@@ -163,7 +163,7 @@ rhs_xsin (double t, const double y[], double f[], void *params)
   static int n = 0, m = 0;
   extern int nfe;
   nfe += 1;
-  
+
   if (rhs_xsin_reset)
     {
       rhs_xsin_reset = 0;
@@ -1073,6 +1073,7 @@ test_odeiv_stepper (const gsl_odeiv2_step_type * T,
 
   {
     int s = gsl_odeiv2_step_apply (d->s, t, h, y, yerr, 0, 0, sys);
+
     if (s != GSL_SUCCESS)
       {
         gsl_test (s, "test_odeiv_stepper: %s step_apply returned %d", desc,
@@ -1191,13 +1192,13 @@ test_evolve_system (const gsl_odeiv2_step_type * T,
       if (s != GSL_SUCCESS)
         {
           /* check that t and y are unchanged */
-          gsl_test_abs (t, t_orig, 0.0, "%s, t must be restored on failure",
+          gsl_test_abs (t, t_orig, 0.0, "%s t must be restored on failure",
                         gsl_odeiv2_step_name (d->s));
 
           for (i = 0; i < sys->dimension; i++)
             {
               gsl_test_abs (y[i], y_orig[i], 0.0,
-                            "%s, y must be restored on failure",
+                            "%s y must be restored on failure",
                             gsl_odeiv2_step_name (d->s), desc, i);
             }
 
@@ -1259,11 +1260,11 @@ sys_driver (const gsl_odeiv2_step_type * T,
   gsl_odeiv2_driver *d =
     gsl_odeiv2_driver_alloc_standard_new (sys, T, h, epsabs, epsrel,
                                           1.0, 0.0);
-  
+
   extern int nfe, nje;
   nfe = 0;
   nje = 0;
-  
+
   while (t < t1)
     {
       s = gsl_odeiv2_evolve_apply (d->e, d->c, d->s, sys, &t, t1, &h, y);
@@ -1570,7 +1571,8 @@ test_user_break (const gsl_odeiv2_step_type * T, double h)
 
   int s = gsl_odeiv2_driver_apply (d, &t, t1, y);
 
-  gsl_test ((s - GSL_EBADFUNC), "test_user_break returned %d", s);
+  gsl_test ((s - GSL_EBADFUNC), "%s test_user_break returned %d",
+            gsl_odeiv2_step_name (d->s), s);
 
   gsl_odeiv2_driver_free (d);
 }
@@ -2033,57 +2035,78 @@ test_extreme_problems (void)
 }
 
 void
-test_driver (void)
+test_driver (const gsl_odeiv2_step_type * T)
 {
   /* Tests for gsl_odeiv2_driver object */
+
   int s;
   const double tol = 1e-8;
   const double hmax = 1e-2;
 
   double y[] = { 1.0, 0.0 };
   double t = 0.0;
+  const double tinit = 0.0;
   const double t1 = 8.25;
   const double t2 = 100;
   const double t3 = -2.5;
   const size_t minsteps = ceil (t1 / hmax);
   const size_t maxsteps = 20;
   const double hmin = 1e-10;
-  const size_t nfsteps = 100;
-  
-  gsl_odeiv2_driver *d =
-    gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
-                                   1e-3, tol, tol);
+
+  gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, T,
+                                                        1e-3, tol, tol);
   gsl_odeiv2_driver_set_hmax (d, hmax);
 
   s = gsl_odeiv2_driver_apply (d, &t, t1, y);
 
   if (s != GSL_SUCCESS)
     {
-      gsl_test (s, "test_driver apply returned %d", s);
+      gsl_test (s, "%s test_driver apply returned %d",
+                gsl_odeiv2_step_name (d->s), s);
     }
 
   /* Test that result is correct */
 
-  gsl_test_rel (y[0], cos (t1), d->n * tol, "test_driver y0 ");
-  gsl_test_rel (y[1], sin (t1), d->n * tol, "test_driver y1 ");
+  gsl_test_rel (y[0], cos (t1), d->n * tol, "%s test_driver y0",
+                gsl_odeiv2_step_name (d->s));
+  gsl_test_rel (y[1], sin (t1), d->n * tol, "%s test_driver y1",
+                gsl_odeiv2_step_name (d->s));
 
   /* Test that maximum step length is obeyed */
 
   if (d->n < minsteps)
     {
-      gsl_test (1, "test_driver steps %d < minsteps %d \n", d->n, minsteps);
+      gsl_test (1, "%s test_driver steps %d < minsteps %d \n",
+                gsl_odeiv2_step_name (d->s), d->n, minsteps);
     }
   else
     {
-      gsl_test (0, "test_driver max step length test");
+      gsl_test (0, "%s test_driver max step length test",
+                gsl_odeiv2_step_name (d->s));
     }
+
+  /* Test changing integration direction from forward to backward */
+
+  gsl_odeiv2_driver_reset_hstart (d, -1e-3);
+
+  s = gsl_odeiv2_driver_apply (d, &t, tinit, y);
+
+  if (s != GSL_SUCCESS)
+    {
+      gsl_test (s, "%s test_driver apply returned %d",
+                gsl_odeiv2_step_name (d->s), s);
+    }
+
+  gsl_test_rel (y[0], cos (tinit), d->n * tol,
+                "%s test_driver y0", gsl_odeiv2_step_name (d->s));
+  gsl_test_rel (y[1], sin (tinit), d->n * tol,
+                "%s test_driver y1", gsl_odeiv2_step_name (d->s));
 
   gsl_odeiv2_driver_free (d);
 
   /* Test that maximum number of steps is obeyed */
 
-  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
-                                     1e-3, tol, tol);
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, T, 1e-3, tol, tol);
   gsl_odeiv2_driver_set_hmax (d, hmax);
   gsl_odeiv2_driver_set_nmax (d, maxsteps);
 
@@ -2091,19 +2114,20 @@ test_driver (void)
 
   if (d->n != maxsteps + 1)
     {
-      gsl_test (1, "test_driver steps %d, expected %d", d->n, maxsteps + 1);
+      gsl_test (1, "%s test_driver steps %d, expected %d",
+                gsl_odeiv2_step_name (d->s), d->n, maxsteps + 1);
     }
   else
     {
-      gsl_test (0, "test_driver max steps test");
+      gsl_test (0, "%s test_driver max steps test",
+                gsl_odeiv2_step_name (d->s));
     }
 
   gsl_odeiv2_driver_free (d);
 
   /* Test that minimum step length is obeyed */
 
-  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, gsl_odeiv2_step_rk8pd,
-                                     1e-3, tol, tol);
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_broken, T, 1e-3, tol, tol);
 
   gsl_odeiv2_driver_set_hmin (d, hmin);
   y[0] = 0.0;
@@ -2113,77 +2137,89 @@ test_driver (void)
 
   if (s != GSL_ENOPROG)
     {
-      gsl_test (1, "test_driver min step test returned %d", s);
+      gsl_test (1, "%s test_driver min step test returned %d",
+                gsl_odeiv2_step_name (d->s), s);
     }
   else
     {
-      gsl_test (0, "test_driver min step test");
+      gsl_test (0, "%s test_driver min step test",
+                gsl_odeiv2_step_name (d->s));
     }
 
   gsl_odeiv2_driver_free (d);
 
   /* Test negative integration direction */
 
-  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, gsl_odeiv2_step_rkf45,
-                                     -1e-3, tol, tol);
+  d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, T, -1e-3, tol, tol);
 
   y[0] = 1.0;
   y[1] = 0.0;
   t = 2.5;
 
-  gsl_odeiv2_driver_set_nmax (d, 1000);
   s = gsl_odeiv2_driver_apply (d, &t, t3, y);
 
   {
-    const double tol = 1e-6;
+    const double tol = 1e-3;
     const double test = fabs (t - t3);
     const double val = fabs (sin (-5.0) - y[1]);
 
     if (test > GSL_DBL_EPSILON)
       {
         gsl_test (1,
-                  "test_driver negative dir diff %e, expected less than %e",
-                  test, GSL_DBL_EPSILON);
+                  "%s test_driver negative dir diff %e, expected less than %e",
+                  gsl_odeiv2_step_name (d->s), test, GSL_DBL_EPSILON);
       }
     else if (val > tol)
       {
-        gsl_test (1, "test_driver negative dir val %e, expected less than %e",
-                  val, tol);
+        gsl_test (1,
+                  "%s test_driver negative dir val %e, expected less than %e",
+                  gsl_odeiv2_step_name (d->s), val, tol);
       }
     else
       {
-        gsl_test (s, "test_driver negative direction test");
+        gsl_test (s, "%s test_driver negative direction test",
+                  gsl_odeiv2_step_name (d->s));
       }
   }
 
   /* Test driver_apply_fixed_step */
 
-  s = gsl_odeiv2_driver_apply_fixed_step (d, &t, 0.025, nfsteps, y);
+  gsl_odeiv2_driver_reset_hstart (d, 1e-3);
+  const unsigned long int nfsteps = 100000;
+  const double hfixed = 0.000025;
+  s = gsl_odeiv2_driver_apply_fixed_step (d, &t, hfixed, nfsteps, y);
+
+  if (s != GSL_SUCCESS)
+    {
+      gsl_test (s, "%s test_driver apply_fixed_step returned %d",
+                gsl_odeiv2_step_name (d->s), s);
+    }
 
   {
-    const double tol = 1e-6;
+    const double tol = 1e-3;
     const double val = fabs (sin (-2.5) - y[1]);
 
     if (fabs (t) > nfsteps * GSL_DBL_EPSILON)
       {
         gsl_test (1,
-                  "test_driver apply_fixed_step diff %e, expected less than %e",
-                  fabs (t), nfsteps * GSL_DBL_EPSILON);
+                  "%s test_driver apply_fixed_step t %e, expected less than %e",
+                  gsl_odeiv2_step_name (d->s), fabs (t),
+                  nfsteps * GSL_DBL_EPSILON);
       }
     else if (val > tol)
       {
         gsl_test (1,
-                  "test_driver apply_fixed_step val %e, expected less than %e",
-                  val, tol);
+                  "%s test_driver apply_fixed_step val %e, expected less than %e",
+                  gsl_odeiv2_step_name (d->s), val, tol);
       }
     else
       {
-        gsl_test (s, "test_driver apply_fixed_step test");
+        gsl_test (s, "%s test_driver apply_fixed_step test",
+                  gsl_odeiv2_step_name (d->s));
       }
   }
 
   gsl_odeiv2_driver_free (d);
-
 }
 
 void
@@ -2407,7 +2443,7 @@ main (void)
 {
 
   /* Benchmark routine to compare stepper performance */
-  /* benchmark_precision(); return 0;*/
+  /* benchmark_precision(); return 0; */
 
   /* Test single problem, for debugging purposes */
   /* test_evolve_temp (gsl_odeiv2_step_msadams, 1e-3, 1e-8); return 0; */
@@ -2453,10 +2489,6 @@ main (void)
   for (i = 0; p[i].type != 0; i++)
     {
       test_stepper (p[i].type);
-    }
-
-  for (i = 0; p[i].type != 0; i++)
-    {
       test_evolve_linear (p[i].type, p[i].h, 1e-10);
       test_evolve_exp (p[i].type, p[i].h, 1e-5);
       test_evolve_sin (p[i].type, p[i].h, 1e-8);
@@ -2468,6 +2500,7 @@ main (void)
       test_broken (p[i].type, p[i].h, 1e-8);
       test_stepsize_fail (p[i].type, p[i].h);
       test_user_break (p[i].type, p[i].h);
+      test_driver (p[i].type);
     }
 
   /* Derivative test for explicit steppers */
@@ -2493,14 +2526,12 @@ main (void)
     }
 
   /* Special tests */
-  
+
   test_nonstiff_problems ();
 
   test_stiff_problems ();
 
   test_extreme_problems ();
 
-  test_driver ();
-  
   exit (gsl_test_summary ());
 }
