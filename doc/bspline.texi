@@ -270,6 +270,7 @@ Further information on the algorithms described in this section can be
 found in the following book,
 
 @itemize @w{}
+@item
 C. de Boor, @cite{A Practical Guide to Splines} (1978), Springer-Verlag,
 ISBN 0-387-90356-9.
 @end itemize
@@ -278,6 +279,7 @@ Further information of Greville abscissae and B-spline collocation
 can be found in the following paper,
 
 @itemize @w{}
+@item
 Richard W. Johnson, Higher order B-spline collocation at the Greville
 abscissae.  @cite{Applied Numerical Mathematics}. vol.@: 52, 2005, 63--75.
 @end itemize
