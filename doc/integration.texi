@@ -807,7 +807,7 @@ This function allocates a workspace sufficient to hold the data for
 @var{n} intervals. The number @var{n} is not the maximum number of
 intervals that will be evaluated. If the workspace is full, intervals
 with smaller error estimates will be discarded. A minimum of 3
-intervals is required and or most functions, a workspace of size 100
+intervals is required and for most functions, a workspace of size 100
 is sufficient.
 @end deftypefun
 
