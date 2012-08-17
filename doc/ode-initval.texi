@@ -451,7 +451,7 @@ would print something like @code{control method is 'standard'}
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_control_errlevel (gsl_odeiv2_control * @var{c}, const double @var{y}, const double @var{dydt}, const double @var{h}, const size_t @var{ind}, double * @var{errlev})
-This function calculates the desired error level of the @var{ind}th component to @var{errlev}. It requires the value (@var{y}) and value of the derivative (@var{dydt}) of the component, and the current step size @var{h}.
+This function calculates the desired error level of the @var{ind}-th component to @var{errlev}. It requires the value (@var{y}) and value of the derivative (@var{dydt}) of the component, and the current step size @var{h}.
 @end deftypefun
 
 @deftypefun int gsl_odeiv2_control_set_driver (gsl_odeiv2_control * @var{c}, const gsl_odeiv2_driver * @var{d})
