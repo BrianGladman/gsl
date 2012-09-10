@@ -2053,6 +2053,9 @@ test_driver (const gsl_odeiv2_step_type * T)
   const size_t maxsteps = 20;
   const double hmin = 1e-10;
 
+  const unsigned long int nfsteps = 100000;
+  const double hfixed = 0.000025;
+
   gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new (&rhs_func_sin, T,
                                                         1e-3, tol, tol);
   gsl_odeiv2_driver_set_hmax (d, hmax);
@@ -2185,8 +2188,6 @@ test_driver (const gsl_odeiv2_step_type * T)
   /* Test driver_apply_fixed_step */
 
   gsl_odeiv2_driver_reset_hstart (d, 1e-3);
-  const unsigned long int nfsteps = 100000;
-  const double hfixed = 0.000025;
   s = gsl_odeiv2_driver_apply_fixed_step (d, &t, hfixed, nfsteps, y);
 
   if (s != GSL_SUCCESS)

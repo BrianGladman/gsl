@@ -1,3 +1,8 @@
+2012-09-10  Rhys Ulerich  <rhys.ulerich@gmail.com>
+
+	* test.c: Correct two out-of-order declarations.
+	Thanks to Brian Gladman for spotting the problem.
+
 2012-03-10  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* driver.c: Added function gsl_odeiv2_driver_reset_hstart to
