@@ -1,3 +1,9 @@
+2011-10-10  Rhys Ulerich  <rhys.ulerich@gmail.com>
+
+	* hyperg_U.c (gsl_sf_hyperg_U_int_e,gsl_sf_hyperg_U_e):
+	Always initialize the gsl_sf_result_e10 instances.
+	Thanks to Victor Zverovich for the bug report and patch.
+
 2011-10-10  Brian Gough  <bjg@network-theory.co.uk>
 
 	* coupling.c (gsl_sf_coupling_3j_e): compute 3j factors using logs
