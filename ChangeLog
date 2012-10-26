@@ -1,3 +1,9 @@
+2012-10-25  Rhys Ulerich <rhys.ulerich@gmail.com>
+
+	* templates_on.h: undef complex for MSVC
+	Thank you to Victor Zverovich <victor.zverovich@gmail.com>
+	for reporting the problem and providing the patch
+
 2012-06-04  Rhys Ulerich <rhys.ulerich@gmail.com>
 
 	* cdf/beta.c: Update FSF address
