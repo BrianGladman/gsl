@@ -45,6 +45,8 @@ main (void)
   print_all_combinations(5, 5);
   print_all_combinations(1, 1);
   print_all_combinations(3, 1);
+
+  return 0;
 }
 
 void
@@ -58,7 +60,6 @@ print_all_combinations (size_t n, size_t k)
       gsl_combination_fprintf (stdout, c, " %u");
       printf("\n");
     }
-  while (gsl_combination_next(c) == GSL_SUCCESS);
   while (gsl_combination_next(c) == GSL_SUCCESS);
   do
     {
