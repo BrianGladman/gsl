@@ -1940,16 +1940,14 @@ test_extreme_problems (void)
   const size_t sd[] = { 4, 3, NRINGMOD };
 
   /* Integration interval for problems */
+  
   const double start[CONST_EXTREME_NPROB] = { 0.0 };
-  const double end[CONST_EXTREME_NPROB] = { 1e11, 1e11, 1e-3 };
+  const double end[CONST_EXTREME_NPROB] = { 1e11, 1e11, 1e-5 };
 
   const double epsabs[CONST_EXTREME_NPROB] =
-    { 1e1 * GSL_DBL_MIN, 1e1 * GSL_DBL_MIN, 1e-7 };
-  const double epsrel[CONST_EXTREME_NPROB] = { 1e-12, 1e-12, 1e-7 };
+    { 1e1 * GSL_DBL_MIN, 1e1 * GSL_DBL_MIN, 1e-12 };
+  const double epsrel[CONST_EXTREME_NPROB] = { 1e-12, 1e-12, 1e-12 };
   const double initstepsize[CONST_EXTREME_NPROB] = { 1e-5, 1e-5, 1e-10 };
-
-  /* Problem specific tolerance modification coefficients */
-  const double pec[CONST_EXTREME_NPROB] = { 1.0, 1.0, 1e1 };
 
   /* Steppers */
 
@@ -2026,7 +2024,7 @@ test_extreme_problems (void)
             const double val1 = y[k];
             const double val2 = y[sd[p] * i + k];
             gsl_test_rel (val1, val2,
-                          (pec[p] * GSL_MAX (err_target[0], err_target[i])),
+                          (GSL_MAX (err_target[0], err_target[i])),
                           "%s/%s %s [%d]",
                           steppers[0]->name, steppers[i]->name,
                           probname[p], k);
