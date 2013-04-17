@@ -8,3 +8,14 @@ The following would also be nice additions to the multifit function suite
 2. Allow fit variable weighting (not observation weighting).
 3. Allow for principal factor computations.
 
+The following features should be added to the nonlinear least squares routines:
+
+1. Derivative-free calculations in case Jacobian is unavailable or too expensive to
+compute; in this case, Jacobian should be computed by finite differences of the
+function itself, similar to the 'lmdif' routine from MINPACK.
+
+2. More information reporting to the user (see levmar code for examples) such as:
+   - number of function evaluations
+   - number of Jacobian evaluations
+
+3. Support for constraints
