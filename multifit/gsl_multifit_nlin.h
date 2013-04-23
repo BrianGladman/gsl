@@ -161,6 +161,11 @@ int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x,
 
 int gsl_multifit_test_gradient (const gsl_vector * g, double epsabs);
 
+int gsl_multifit_fdfsolver_dif_df(const gsl_vector *x, gsl_multifit_function_fdf *fdf,
+                                  const gsl_vector *f, gsl_matrix *J);
+int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fdf *fdf,
+                                   gsl_vector *f, gsl_matrix *J);
+
 /* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
