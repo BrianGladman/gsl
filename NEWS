@@ -1,5 +1,8 @@
 * What is new in gsl-1.16:
 
+** Added support for approximating the Jacobian of nonlinear least
+   squares fits using forward finite differences
+
 ** Extended gsl_sf_coupling_3j to allow larger range and to handle
    the special case (ja jb jc; 0 0 0)=0 when ja+jb+jc is odd
 

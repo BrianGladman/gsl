@@ -221,14 +221,20 @@ this function should store the @var{n}-by-@var{p} matrix result
 @c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j$}
 @math{J_ij = d f_i(x,params) / d x_j} in @var{J} for argument @var{x} 
 and arbitrary parameters @var{params}, returning an appropriate error code if the
-function cannot be computed.
+function cannot be computed. If an analytic Jacobian is unavailable, or too expensive
+to compute, this function pointer may be set to NULL, in which
+case the Jacobian will be internally computed using finite difference approximations
+of the function @var{f}.
 
 @item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
 This function should set the values of the @var{f} and @var{J} as above,
 for arguments @var{x} and arbitrary parameters @var{params}.  This function
 provides an optimization of the separate functions for @math{f(x)} and
 @math{J(x)}---it is always faster to compute the function and its
-derivative at the same time.
+derivative at the same time. If an analytic Jacobian is unavailable, or too expensive
+to compute, this function pointer may be set to NULL, in which
+case the Jacobian will be internally computed using finite difference approximations
+of the function @var{f}.
 
 @item size_t n
 the number of functions, i.e. the number of components of the
