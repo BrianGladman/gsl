@@ -18,6 +18,7 @@ multidimensional nonlinear fitting functions and related declarations.
 * Overview of Nonlinear Least-Squares Fitting::  
 * Initializing the Nonlinear Least-Squares Solver::  
 * Providing the Function to be Minimized::  
+* Finite Difference Jacobian::  
 * Iteration of the Minimization Algorithm::  
 * Search Stopping Parameters for Minimization Algorithms::  
 * Minimization Algorithms using Derivatives::  
@@ -253,6 +254,37 @@ Note that when fitting a non-linear model against experimental data,
 the data is passed to the functions above using the
 @var{params} argument and the trial best-fit parameters through the
 @var{x} argument.
+
+@node Finite Difference Jacobian
+@section Finite Difference Jacobian
+
+For the algorithms which require a Jacobian matrix of derivatives of
+the fit functions, there are times when an analytic Jacobian may be
+unavailable or too expensive to compute. Therefore GSL supports
+approximating the Jacobian numerically using finite differences of the fit
+functions. This is typically done by setting the relevant function pointers
+of the @code{gsl_multifit_function_fdf} data type to NULL, however the
+following functions allow the user to access the approximate Jacobian
+directly if needed.
+
+@deftypefun int gsl_multifit_fdfsolver_dif_df (const gsl_vector * @var{x}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{f}, gsl_matrix * @var{J})
+This function takes as input the current position @var{x} with the function
+values computed at the current position @var{f}, along with @var{fdf}
+which specifies the fit function and parameters and approximates the
+@var{n}-by-@var{p} Jacobian @var{J} using forward finite differences:
+@c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j \approx (f_i(x^{*}, \hbox{\it params}) - f_i(x, \hbox{\it params})) / \Delta x_j$}
+@math{J_ij = d f_i(x,params) / d x_j = (f_i(x^*,params) - f_i(x,params)) / d x_j}.
+where @math{x^*} has the @math{j}th element perturbed by @math{\Delta x_j}
+and @math{\Delta x_j = \epsilon |x_j|}, where @math{\epsilon} is the
+square root of the machine precision @code{GSL_DBL_EPSILON}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_fdfsolver_dif_fdf (const gsl_vector * @var{x}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{f}, gsl_matrix * @var{J})
+This function computes the vector of function values @var{f} and
+the approximate Jacobian @var{J} at the position vector @var{x} using
+the system described in @var{fdf}. See @code{gsl_multifit_fdfsolver_dif_df}
+for a description of how the Jacobian is computed.
+@end deftypefun
 
 @node Iteration of the Minimization Algorithm
 @section Iteration
