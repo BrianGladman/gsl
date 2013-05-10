@@ -477,7 +477,7 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
 gsl_linalg_SV_leverage()
   Compute statistical leverage values of a matrix:
 
-h = diag(X^T (X^T X)^{-1} X)
+h = diag(A (A^T A)^{-1} A^T)
 
 Inputs: U - U matrix in SVD decomposition
         h - (output) vector of leverages
