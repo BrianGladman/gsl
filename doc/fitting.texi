@@ -21,6 +21,7 @@ are declared in the header file @file{gsl_fit.h}.
 * Linear fitting without a constant term::
 * Multi-parameter fitting::
 * Robust linear regression::
+* Troubleshooting::
 * Fitting Examples::            
 * Fitting References and Further Reading::  
 @end menu
@@ -459,7 +460,7 @@ $$
 @ifinfo
 
 @example
-|c_i^{(k)} - c_i^{(k-1)}| \le \epsilon \times \hbox{max}(|c_i^{(k)}|, |c_i^{(k-1)}|)
+|c_i^(k) - c_i^(k-1)| \le \epsilon \times max(|c_i^(k)|, |c_i^(k-1)|)
 @end example
 
 @end ifinfo
@@ -597,7 +598,7 @@ $$
 @ifinfo
 
 @example
-w(e) = \exp{(-e^2)}
+w(e) = \exp(-e^2)
 @end example
 
 @end ifinfo
@@ -632,6 +633,14 @@ are computed internally and are available by calling the function
 @code{gsl_multifit_robust_statistics}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_robust_est (const gsl_vector * @var{x}, const gsl_vector * @var{c}, const gsl_matrix * @var{cov}, double * @var{y}, double * @var{y_err})
+This function uses the best-fit robust regression coefficients
+@var{c} and their covariance matrix
+@var{cov} to compute the fitted function value
+@var{y} and its standard deviation @var{y_err} for the model @math{y = x.c} 
+at the point @var{x}.
+@end deftypefun
+
 @deftypefun gsl_multifit_robust_stats gsl_multifit_robust_statistics (const gsl_multifit_robust_workspace * @var{w})
 This function returns a structure containing relevant statistics from a robust regression. The function
 @code{gsl_multifit_robust} must be called first to perform the regression and calculate these statistics.
@@ -658,11 +667,35 @@ in a reasonable way.
 
 @item size_t @code{numit} Upon successful convergence, this contains the number of iterations performed
 
-@item {gsl_vector *} @code{weights} This contains the final weight vector of length @var{n}
+@item gsl_vector * @code{weights} This contains the final weight vector of length @var{n}
 
-@item {gsl_vector *} @code{r} This contains the final residual vector of length @var{n}, @math{r = y - X c}
+@item gsl_vector * @code{r} This contains the final residual vector of length @var{n}, @math{r = y - X c}
 @end itemize
 @end deftypefun
+
+@node Troubleshooting
+@section Troubleshooting
+@cindex least squares troubleshooting
+
+When using models based on polynomials, care should be taken when constructing the design matrix
+@math{X}. If the @math{x} values are large, then the matrix @math{X} could be ill-conditioned
+since its columns are powers of @math{x}, leading to unstable least-squares solutions.
+In this case it can often help to center and scale the @math{x} values using the mean and standard deviation:
+@tex
+\beforedisplay
+$$
+x' = {x - \mu(x) \over \sigma(x)}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x' = (x - mu)/sigma
+@end example
+
+@end ifinfo
+and then construct the @math{X} matrix using the transformed values @math{x'}.
 
 @node Fitting Examples
 @section Examples

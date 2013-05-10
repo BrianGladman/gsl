@@ -90,8 +90,8 @@ main (int argc, char **argv)
       gsl_vector_view v = gsl_matrix_row(X, i);
       double y_ols, y_rob, y_err;
 
-      gsl_multifit_linear_est(&v.vector, c, cov, &y_rob, &y_err);
-      gsl_multifit_linear_est(&v.vector, c_ols, cov, &y_ols, &y_err);
+      gsl_multifit_robust_est(&v.vector, c, cov, &y_rob, &y_err);
+      gsl_multifit_robust_est(&v.vector, c_ols, cov, &y_ols, &y_err);
 
       printf("%g %g %g %g\n", xi, yi, y_rob, y_ols);
     }

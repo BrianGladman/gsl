@@ -192,6 +192,8 @@ gsl_multifit_robust_stats gsl_multifit_robust_statistics(const gsl_multifit_robu
 int gsl_multifit_robust(const gsl_matrix * X, const gsl_vector * y,
                         gsl_vector * c, gsl_matrix *cov,
                         gsl_multifit_robust_workspace *w);
+int gsl_multifit_robust_est(const gsl_vector * x, const gsl_vector * c,
+                            const gsl_matrix * cov, double *y, double *y_err);
 
 __END_DECLS
 

@@ -15,6 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * This module contains routines related to robust linear least squares. The
+ * algorithm used closely follows the publications:
+ *
+ * [1] DuMouchel, W. and F. O'Brien (1989), "Integrating a robust
+ * option into a multiple regression computing environment,"
+ * Computer Science and Statistics:  Proceedings of the 21st
+ * Symposium on the Interface, American Statistical Association
+ *
+ * [2] Street, J.O., R.J. Carroll, and D. Ruppert (1988), "A note on
+ * computing robust regression estimates via iteratively
+ * reweighted least squares," The American Statistician, v. 42, 
+ * pp. 152-154.
  */
 
 #include <stdio.h>
@@ -29,6 +42,7 @@
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
 
 static int robust_test_convergence(const gsl_vector *c_prev, const gsl_vector *c,
                                    const double tol);
@@ -37,43 +51,6 @@ static double robust_robsigma(const gsl_vector *r, const double s,
                               const double tune, gsl_multifit_robust_workspace *w);
 static double robust_sigma(const double s_ols, const double s_rob,
                            gsl_multifit_robust_workspace *w);
-
-/*
-gsl_linalg_SV_leverage()
-  Compute statistical leverage values of a matrix
-
-Inputs: U - U matrix in SVD decomposition
-        h - (output) vector of leverages
-
-Return: success or error
-*/
-
-int
-gsl_linalg_SV_leverage(const gsl_matrix *U, gsl_vector *h)
-{
-  const size_t M = U->size1;
-
-  if (M != h->size)
-    {
-      GSL_ERROR ("first dimension of matrix U must match size of vector h",
-                 GSL_EBADLEN);
-    }
-  else
-    {
-      size_t i;
-
-      for (i = 0; i < M; ++i)
-        {
-          gsl_vector_const_view v = gsl_matrix_const_row(U, i);
-          double hi;
-          
-          gsl_blas_ddot(&v.vector, &v.vector, &hi);
-          gsl_vector_set(h, i, hi);
-        }
-
-      return GSL_SUCCESS;
-    }
-} /* gsl_linalg_SV_leverage() */
 
 /*
 gsl_multifit_robust_alloc
@@ -408,6 +385,16 @@ gsl_multifit_robust(const gsl_matrix * X,
       return s;
     }
 } /* gsl_multifit_robust() */
+
+/* Estimation of values for given x */
+int
+gsl_multifit_robust_est(const gsl_vector * x, const gsl_vector * c,
+                        const gsl_matrix * cov, double *y, double *y_err)
+{
+  int s = gsl_multifit_linear_est(x, c, cov, y, y_err);
+
+  return s;
+}
 
 /*
 robust_test_convergence()
