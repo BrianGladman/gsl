@@ -25,6 +25,14 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit.h>
 
+/* default tuning constants */
+#define TUNING_BISQUARE       (4.685)
+#define TUNING_CAUCHY         (2.385)
+#define TUNING_FAIR           (1.4)
+#define TUNING_HUBER          (1.345)
+#define TUNING_OLS            (1.0)
+#define TUNING_WELSCH         (2.985)
+
 static int
 bisquare(const gsl_vector *r, gsl_vector *w)
 {
@@ -63,14 +71,11 @@ bisquare_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 } /* bisquare_dpsi() */
 
-/* default tuning parameter for bisquare */
-static double bisquare_tuning(void) { return 4.685; }
-
 static const gsl_multifit_robust_type bisquare_type = {
   "bisquare",
   &bisquare,
   &bisquare_dpsi,
-  &bisquare_tuning
+  TUNING_BISQUARE
 };
 
 static int
@@ -106,14 +111,11 @@ cauchy_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 } /* cauchy_dpsi() */
 
-/* default tuning parameter for cauchy */
-static double cauchy_tuning(void) { return 2.385; }
-
 static const gsl_multifit_robust_type cauchy_type = {
   "cauchy",
   &cauchy,
   &cauchy_dpsi,
-  &cauchy_tuning
+  TUNING_CAUCHY
 };
 
 static int
@@ -148,14 +150,11 @@ fair_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 } /* fair_dpsi() */
 
-/* default tuning parameter for fair */
-static double fair_tuning(void) { return 1.4; }
-
 static const gsl_multifit_robust_type fair_type = {
   "fair",
   &fair,
   &fair_dpsi,
-  &fair_tuning
+  TUNING_FAIR
 };
 
 static int
@@ -196,14 +195,11 @@ huber_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 } /* huber_dpsi() */
 
-/* default tuning parameter for huber */
-static double huber_tuning(void) { return 1.345; }
-
 static const gsl_multifit_robust_type huber_type = {
   "huber",
   &huber,
   &huber_dpsi,
-  &huber_tuning
+  TUNING_HUBER
 };
 
 static int
@@ -222,13 +218,11 @@ ols_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 }
 
-static double ols_tuning(void) { return 1.0; }
-
 static const gsl_multifit_robust_type ols_type = {
   "ols",
   &ols,
   &ols_dpsi,
-  &ols_tuning
+  TUNING_OLS
 };
 
 static int
@@ -263,13 +257,11 @@ welsch_dpsi(const gsl_vector *r, gsl_vector *dpsi)
   return GSL_SUCCESS;
 } /* welsch_dpsi() */
 
-static double welsch_tuning(void) { return 2.985; }
-
 static const gsl_multifit_robust_type welsch_type = {
   "welsch",
   &welsch,
   &welsch_dpsi,
-  &welsch_tuning
+  TUNING_WELSCH
 };
 
 const gsl_multifit_robust_type *gsl_multifit_robust_bisquare = &bisquare_type;

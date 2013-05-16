@@ -51,6 +51,8 @@ static double robust_robsigma(const gsl_vector *r, const double s,
                               const double tune, gsl_multifit_robust_workspace *w);
 static double robust_sigma(const double s_ols, const double s_rob,
                            gsl_multifit_robust_workspace *w);
+static int robust_covariance(const double sigma, gsl_matrix *cov,
+                             gsl_multifit_robust_workspace *w);
 
 /*
 gsl_multifit_robust_alloc
@@ -85,7 +87,7 @@ gsl_multifit_robust_alloc(const gsl_multifit_robust_type *T,
   w->p = p;
   w->type = T;
   w->maxiter = 100; /* maximum iterations */
-  w->tune = w->type->tuning_default();
+  w->tune = w->type->tuning_default;
 
   w->multifit_p = gsl_multifit_linear_alloc(n, p);
   if (w->multifit_p == 0)
@@ -104,15 +106,13 @@ gsl_multifit_robust_alloc(const gsl_multifit_robust_type *T,
   w->weights = gsl_vector_alloc(n);
   if (w->weights == 0)
     {
-      GSL_ERROR_VAL("failed to allocate space for weights",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("failed to allocate space for weights", GSL_ENOMEM, 0);
     }
 
   w->c_prev = gsl_vector_alloc(p);
   if (w->c_prev == 0)
     {
-      GSL_ERROR_VAL("failed to allocate space for c_prev",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("failed to allocate space for c_prev", GSL_ENOMEM, 0);
     }
 
   w->resfac = gsl_vector_alloc(n);
@@ -125,22 +125,31 @@ gsl_multifit_robust_alloc(const gsl_multifit_robust_type *T,
   w->psi = gsl_vector_alloc(n);
   if (w->psi == 0)
     {
-      GSL_ERROR_VAL("failed to allocate space for psi",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("failed to allocate space for psi", GSL_ENOMEM, 0);
     }
 
   w->dpsi = gsl_vector_alloc(n);
   if (w->dpsi == 0)
     {
-      GSL_ERROR_VAL("failed to allocate space for dpsi",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("failed to allocate space for dpsi", GSL_ENOMEM, 0);
+    }
+
+  w->QSI = gsl_matrix_alloc(p, p);
+  if (w->QSI == 0)
+    {
+      GSL_ERROR_VAL("failed to allocate space for QSI", GSL_ENOMEM, 0);
+    }
+
+  w->D = gsl_vector_alloc(p);
+  if (w->D == 0)
+    {
+      GSL_ERROR_VAL("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
   w->workn = gsl_vector_alloc(n);
   if (w->workn == 0)
     {
-      GSL_ERROR_VAL("failed to allocate space for workn",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_VAL("failed to allocate space for workn", GSL_ENOMEM, 0);
     }
 
   w->stats.sigma_ols = 0.0;
@@ -186,6 +195,12 @@ gsl_multifit_robust_free(gsl_multifit_robust_workspace *w)
 
   if (w->dpsi)
     gsl_vector_free(w->dpsi);
+
+  if (w->QSI)
+    gsl_matrix_free(w->QSI);
+
+  if (w->D)
+    gsl_vector_free(w->D);
 
   if (w->workn)
     gsl_vector_free(w->workn);
@@ -286,6 +301,10 @@ gsl_multifit_robust(const gsl_matrix * X,
       if (s)
         return s;
 
+      /* save Q S^{-1} of original matrix */
+      gsl_matrix_memcpy(w->QSI, w->multifit_p->QSI);
+      gsl_vector_memcpy(w->D, w->multifit_p->D);
+
       /* compute statistical leverage of each data point */
       s = gsl_linalg_SV_leverage(w->multifit_p->A, w->resfac);
       if (s)
@@ -376,6 +395,11 @@ gsl_multifit_robust(const gsl_matrix * X,
         w->stats.sse = ss_err;
       }
 
+      /* calculate covariance matrix = sigma^2 (X^T X)^{-1} */
+      s = robust_covariance(w->stats.sigma, cov, w);
+      if (s)
+        return s;
+
       /* raise an error if not converged */
       if (numit > w->maxiter)
         {
@@ -395,6 +419,10 @@ gsl_multifit_robust_est(const gsl_vector * x, const gsl_vector * c,
 
   return s;
 }
+
+/***********************************
+ * INTERNAL ROUTINES               *
+ ***********************************/
 
 /*
 robust_test_convergence()
@@ -545,3 +573,48 @@ robust_sigma(const double s_ols, const double s_rob,
 
   return sigma;
 } /* robust_sigma() */
+
+/*
+robust_covariance()
+  Calculate final covariance matrix, defined as:
+
+  sigma * (X^T X)^{-1}
+
+Inputs: sigma - residual standard deviation
+        cov   - (output) covariance matrix
+        w     - workspace
+*/
+
+static int
+robust_covariance(const double sigma, gsl_matrix *cov,
+                  gsl_multifit_robust_workspace *w)
+{
+  int s = 0;
+  const size_t p = w->p;
+  const double s2 = sigma * sigma;
+  size_t i, j;
+  gsl_matrix *QSI = w->QSI;
+  gsl_vector *D = w->D;
+
+  /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
+
+  for (i = 0; i < p; i++)
+    {
+      gsl_vector_view row_i = gsl_matrix_row (QSI, i);
+      double d_i = gsl_vector_get (D, i);
+
+      for (j = i; j < p; j++)
+        {
+          gsl_vector_view row_j = gsl_matrix_row (QSI, j);
+          double d_j = gsl_vector_get (D, j);
+          double s;
+
+          gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+
+          gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
+          gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+        }
+    }
+
+  return s;
+} /* robust_covariance() */

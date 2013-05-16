@@ -129,10 +129,10 @@ gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
 
 typedef struct
 {
-  const char * name;
+  const char * name;     /* method name */
   int (*wfun)(const gsl_vector *r, gsl_vector *w);
   int (*psi_deriv)(const gsl_vector *r, gsl_vector *dpsi);
-  double (*tuning_default)(void);
+  double tuning_default; /* default tuning constant */
 } gsl_multifit_robust_type;
 
 typedef struct
@@ -167,6 +167,9 @@ typedef struct
 
   gsl_vector *psi;     /* psi(r) */
   gsl_vector *dpsi;    /* psi'(r) */
+
+  gsl_matrix *QSI;     /* Q S^{-1} of original matrix X */
+  gsl_vector *D;       /* balancing parameters of original matrix X */
 
   gsl_vector *workn;   /* workspace of length n */
 

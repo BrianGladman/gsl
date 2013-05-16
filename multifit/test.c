@@ -62,6 +62,7 @@ main (void)
 
   gsl_ieee_env_setup();
 
+  /* test linear regression */
   test_longley();
   test_filip();
   test_pontius();
