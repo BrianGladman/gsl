@@ -308,9 +308,10 @@ This function frees the memory associated with the workspace @var{w}.
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, using the preallocated workspace provided
-in @var{work}.  The variance-covariance matrix of the model parameters
-@var{cov} is estimated from the scatter of the observations about the
-best-fit.  The sum of squares of the residuals from the best-fit,
+in @var{work}.  The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+the standard deviation of the fit residuals.
+The sum of squares of the residuals from the best-fit,
 @math{\chi^2}, is returned in @var{chisq}. If the coefficient of
 determination is desired, it can be computed from the expression
 @math{R^2 = 1 - \chi^2 / TSS}, where the total sum of squares (TSS) of
@@ -327,8 +328,8 @@ from the fit.
 This function computes the best-fit parameters @var{c} of the weighted
 model @math{y = X c} for the observations @var{y} with weights @var{w}
 and the matrix of predictor variables @var{X}, using the preallocated
-workspace provided in @var{work}.  The covariance matrix of the model
-parameters @var{cov} is computed with the given weights.  The weighted
+workspace provided in @var{work}.  The @math{p}-by-@math{p} covariance matrix of the model
+parameters @var{cov} is computed as @math{(X^T W X)^{-1}}. The weighted
 sum of squares of the residuals from the best-fit, @math{\chi^2}, is
 returned in @var{chisq}. If the coefficient of determination is
 desired, it can be computed from the expression @math{R^2 = 1 - \chi^2
@@ -625,10 +626,11 @@ This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, attemping to reduce the influence
 of outliers using the algorithm outlined above.
-The variance-covariance matrix of the model parameters
-@var{cov} is estimated from the scatter of the observations about the
-best-fit. Special care must be taken when estimating the standard deviation
-of the residuals and other statistics such as @math{R^2}, and so these
+The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is estimated as @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+an approximation of the residual standard deviation using the theory of robust
+regression. Special care must be taken when estimating @math{\sigma} and
+other statistics such as @math{R^2}, and so these
 are computed internally and are available by calling the function
 @code{gsl_multifit_robust_statistics}.
 @end deftypefun
