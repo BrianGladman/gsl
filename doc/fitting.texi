@@ -436,15 +436,16 @@ on the residuals @math{e_i}, which depend on the coefficients @math{c}, which de
 on the weights. Therefore, an iterative solution is used, called Iteratively Reweighted
 Least Squares (IRLS).
 @enumerate
-@item Compute initial estimates of the coefficients @math{c^{(0)}} using OLS and
-@math{\sigma^{(0)}}, the standard deviation of the residuals.
+@item Compute initial estimates of the coefficients @math{c^{(0)}} using ordinary least squares
 
-@item For iteration @math{k}, form the residuals @math{e_i^{(k-1)} = (y_i - X_i c^{(k-1)})/(t \sigma^{(k-1)} \sqrt{1 - h_i})},
+@item For iteration @math{k}, form the residuals @math{e_i^{(k)} = (y_i - X_i c^{(k-1)})/(t \sigma^{(k)} \sqrt{1 - h_i})},
 where @math{t} is a tuning constant depending on the choice of @math{\psi}, and @math{h_i} are the
 statistical leverages (diagonal elements of the matrix @math{X (X^T X)^{-1} X^T}). Including @math{t}
 and @math{h_i} in the residual calculation has been shown to improve the convergence of the method.
+The residual standard deviation is approximated as @math{\sigma^{(k)} = MAD / 0.6745}, where MAD is the
+Median-Absolute-Deviation of the @math{n-p} largest residuals from the previous iteration.
 
-@item Compute new weights @math{w_i^{(k)} = \psi(e_i^{(k-1)})/e_i^{(k-1)}}.
+@item Compute new weights @math{w_i^{(k)} = \psi(e_i^{(k)})/e_i^{(k)}}.
 
 @item Compute new coefficients @math{c^{(k)}} by solving the weighted least squares problem with
 weights @math{w_i^{(k)}}.

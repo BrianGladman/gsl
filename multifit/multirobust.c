@@ -559,6 +559,21 @@ robust_robsigma(const gsl_vector *r, const double s,
   return sigma;
 } /* robust_robsigma() */
 
+/*
+robust_sigma()
+  Compute final estimate of residual standard deviation, using
+the OLS and robust sigma estimates.
+
+This equation is taken from DuMouchel and O'Brien, sec 4.1:
+\hat{\sigma_R}
+
+Inputs: s_ols - OLS sigma
+        s_rob - robust sigma
+        w     - workspace
+
+Return: final estimate of sigma
+*/
+
 static double
 robust_sigma(const double s_ols, const double s_rob,
              gsl_multifit_robust_workspace *w)
@@ -567,6 +582,7 @@ robust_sigma(const double s_ols, const double s_rob,
   const size_t p = w->p;
   const size_t n = w->n;
 
+  /* see DuMouchel and O'Brien, sec 4.1 */
   sigma = GSL_MAX(s_rob,
                   sqrt((s_ols*s_ols*p*p + s_rob*s_rob*n) /
                        (p*p + n)));
