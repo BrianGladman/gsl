@@ -520,7 +520,7 @@ main (void)
   }
 
 
-#if 0 /*XXX*/
+#if 0 /* XXX - bug #39055 */
   {
     /* 15-th order polynomial y = (x + 1) * (x^10 + x^9 + 2 * x^7 + 4 * x^2 + 
        4 * x + 8) * (x - 1)^2 * (x - 2)^2
