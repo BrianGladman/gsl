@@ -564,7 +564,6 @@ main (void)
   }
 
 
-
   {
     int i;
 
@@ -603,20 +602,55 @@ main (void)
       }
   }
 
-   {
-     double c[6] = { +1.0, -2.0, +3.0, -4.0, +5.0, -6.0 };
-     double dc[6];
-     double x;
-     x = -0.5;
-     gsl_poly_eval_derivs(c, 6, x, dc, 6);
+  {
+    size_t i;
+    double xa[3] = { 1.3, 1.6, 1.9 };
+    double ya[3] = { 0.6200860, 0.4554022, 0.2818186 };
+    double dya[3] = { -0.5220232, -0.5698959, -0.5811571 };
 
-     gsl_test_rel (dc[0], c[0] + c[1]*x + c[2]*x*x + c[3]*x*x*x + c[4]*x*x*x*x + c[5]*x*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6}, 3.75)");
-     gsl_test_rel (dc[1], c[1] + 2.0*c[2]*x + 3.0*c[3]*x*x + 4.0*c[4]*x*x*x + 5.0*c[5]*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 1, -12.375)");
-     gsl_test_rel (dc[2], 2.0*c[2] + 3.0*2.0*c[3]*x + 4.0*3.0*c[4]*x*x + 5.0*4.0*c[5]*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 2, +48.0)");
-     gsl_test_rel (dc[3], 3.0*2.0*c[3] + 4.0*3.0*2.0*c[4]*x + 5.0*4.0*3.0*c[5]*x*x , eps,"gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 3, -174.0)");
-     gsl_test_rel (dc[4], 4.0*3.0*2.0*c[4] + 5.0*4.0*3.0*2.0*c[5]*x, eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 4, +480.0)");
-     gsl_test_rel (dc[5], 5.0*4.0*3.0*2.0*c[5] , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 5, -720.0)");
-   }
+    double dd_expected[6] = {  6.200860000000e-01,
+                              -5.220232000000e-01,
+                              -8.974266666667e-02,
+                               6.636555555556e-02,
+                               2.666666666662e-03,
+                              -2.774691357989e-03 };
+
+    double dd[6], za[6], coeff[6], work[6];
+
+    gsl_poly_dd_hermite_init(dd, za, xa, ya, dya, 3);
+
+    for (i = 0; i < 6; i++)
+      {
+        gsl_test_rel (dd[i], dd_expected[i], 1e-10, "hermite divided difference dd[%d]", i);
+      }
+
+    for (i = 0; i < 3; i++)
+      {
+        double y = gsl_poly_dd_eval(dd, za, 6, xa[i]);
+        gsl_test_rel (y, ya[i], 1e-10, "hermite divided difference y[%d]", i);
+      }
+
+    for (i = 0; i < 3; i++)
+      {
+        gsl_poly_dd_taylor(coeff, xa[i], dd, za, 6, work);
+        gsl_test_rel (coeff[1], dya[i], 1e-10, "hermite divided difference dy/dx[%d]", i);
+      }
+  }
+
+  {
+    double c[6] = { +1.0, -2.0, +3.0, -4.0, +5.0, -6.0 };
+    double dc[6];
+    double x;
+    x = -0.5;
+    gsl_poly_eval_derivs(c, 6, x, dc, 6);
+
+    gsl_test_rel (dc[0], c[0] + c[1]*x + c[2]*x*x + c[3]*x*x*x + c[4]*x*x*x*x + c[5]*x*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6}, 3.75)");
+    gsl_test_rel (dc[1], c[1] + 2.0*c[2]*x + 3.0*c[3]*x*x + 4.0*c[4]*x*x*x + 5.0*c[5]*x*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 1, -12.375)");
+    gsl_test_rel (dc[2], 2.0*c[2] + 3.0*2.0*c[3]*x + 4.0*3.0*c[4]*x*x + 5.0*4.0*c[5]*x*x*x , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 2, +48.0)");
+    gsl_test_rel (dc[3], 3.0*2.0*c[3] + 4.0*3.0*2.0*c[4]*x + 5.0*4.0*3.0*c[5]*x*x , eps,"gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 3, -174.0)");
+    gsl_test_rel (dc[4], 4.0*3.0*2.0*c[4] + 5.0*4.0*3.0*2.0*c[5]*x, eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 4, +480.0)");
+    gsl_test_rel (dc[5], 5.0*4.0*3.0*2.0*c[5] , eps, "gsl_poly_eval_dp({+1, -2, +3, -4, +5, -6} deriv 5, -720.0)");
+  }
 
 
   /* now summarize the results */

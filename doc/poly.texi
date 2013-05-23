@@ -134,7 +134,9 @@ dataset @math{z = \{x_0,x_0,x_1,x_1,...\}}, which is stored in the array
 @var{za} of length 2*@var{size} on output. On output the
 divided-differences of the Hermite representation are stored in the array
 @var{dd}, also of length 2*@var{size}. Using the notation above,
-@math{dd[k] = [z_0,z_1,...,z_k]}.
+@math{dd[k] = [z_0,z_1,...,z_k]}. The resulting Hermite polynomial
+can be evaluated by calling @code{gsl_poly_dd_eval} and using
+@var{za} for the input argument @var{xa}.
 @end deftypefun
 
 @node  Quadratic Equations
