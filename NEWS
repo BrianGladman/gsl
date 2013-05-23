@@ -1,5 +1,7 @@
 * What is new in gsl-1.16:
 
+** added function gsl_poly_dd_hermite_init for Hermite interpolation
+
 ** Added support for robust linear least squares
 
 ** Added function gsl_linalg_SV_leverage for computing statistical
