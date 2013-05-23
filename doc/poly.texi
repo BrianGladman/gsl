@@ -71,7 +71,7 @@ $$
 @ifinfo
 
 @example
-P_n(x) = f(x_0) + \sum_{k=1}^n [x_0,x_1,...,x_k] (x-x_0)(x-x_1)...(x-x_{k-1})
+P_n(x) = f(x_0) + \sum_(k=1)^n [x_0,x_1,...,x_k] (x-x_0)(x-x_1)...(x-x_(k-1))
 @end example
 
 @end ifinfo
@@ -90,7 +90,7 @@ $$
 @ifinfo
 
 @example
-H_{2n+1}(x) = f(z_0) + \sum_{k=1}^{2n+1} [z_0,z_1,...,z_k] (x-z_0)(x-z_1)...(x-z_{k-1})
+H_(2n+1)(x) = f(z_0) + \sum_(k=1)^(2n+1) [z_0,z_1,...,z_k] (x-z_0)(x-z_1)...(x-z_(k-1))
 @end example
 
 @end ifinfo
