@@ -179,6 +179,7 @@ typedef struct
 } gsl_multifit_robust_workspace;
 
 /* available types */
+GSL_VAR const gsl_multifit_robust_type * gsl_multifit_robust_default;
 GSL_VAR const gsl_multifit_robust_type * gsl_multifit_robust_bisquare;
 GSL_VAR const gsl_multifit_robust_type * gsl_multifit_robust_cauchy;
 GSL_VAR const gsl_multifit_robust_type * gsl_multifit_robust_fair;

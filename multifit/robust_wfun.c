@@ -264,6 +264,7 @@ static const gsl_multifit_robust_type welsch_type = {
   TUNING_WELSCH
 };
 
+const gsl_multifit_robust_type *gsl_multifit_robust_default = &bisquare_type;
 const gsl_multifit_robust_type *gsl_multifit_robust_bisquare = &bisquare_type;
 const gsl_multifit_robust_type *gsl_multifit_robust_cauchy = &cauchy_type;
 const gsl_multifit_robust_type *gsl_multifit_robust_fair = &fair_type;

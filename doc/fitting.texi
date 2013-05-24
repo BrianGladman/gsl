@@ -479,6 +479,11 @@ having very little or no effect on the fitted model.
 This function allocates a workspace for fitting a model to @var{n}
 observations using @var{p} parameters. The type @var{T} specifies the
 function @math{\psi} and can be selected from the following choices.
+@deffn {Robust type} gsl_multifit_robust_default
+This specifies the @code{gsl_multifit_robust_bisquare} type (see below) and is a good
+general purpose choice for robust regression.
+@end deffn
+
 @deffn {Robust type} gsl_multifit_robust_bisquare
 This is Tukey's biweight (bisquare) function and is a good general purpose choice for
 robust regression. The weight function is given by
@@ -698,6 +703,7 @@ x' = (x - mu)/sigma
 @end example
 
 @end ifinfo
+@noindent
 and then construct the @math{X} matrix using the transformed values @math{x'}.
 
 @node Fitting Examples
