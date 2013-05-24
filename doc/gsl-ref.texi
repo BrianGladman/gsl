@@ -172,7 +172,7 @@ Theoretical Astrophysics Group, Los Alamos National Laboratory
 @sp 1
 
 @author Patrick Alken
-Department of Physics, University of Colorado at Boulder
+University of Colorado at Boulder
 @sp 1
 
 @author Michael Booth
@@ -524,7 +524,8 @@ ode-initval2 routines.
 Implementation of the Mathieu functions.
 
 @item Patrick Alken
-Implementation of non-symmetric and generalized eigensystems and B-splines.
+Implementation of nonsymmetric and generalized eigensystems, B-splines,
+and robust linear regression.
 
 @item Rhys Ulerich 
 Wrote the multiset routines.
