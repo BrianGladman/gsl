@@ -1,1 +1,7 @@
-.cvsignore
+*.la
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+gsl_*.h

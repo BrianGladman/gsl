@@ -1,1 +1,9 @@
-.cvsignore
+*.la
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+siman_test
+siman_tsp
+test
