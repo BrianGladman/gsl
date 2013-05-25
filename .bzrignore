@@ -11,6 +11,7 @@ doc/*.info
 gsl/*.h
 doc/version.texi
 doc/*.cp
+doc/gendocs*
 stamp-vti
 stamp-h1
 doc/*.fn
@@ -20,6 +21,10 @@ doc/*.pg
 doc/*.toc
 doc/*.tmp
 doc/*.vr
+doc/gsl-ref*ps
+doc/gsl-ref.dvi
+doc/gsl-ref.fns
+doc/gsl-ref.vrs
 */test
 siman/siman_tsp
 configure

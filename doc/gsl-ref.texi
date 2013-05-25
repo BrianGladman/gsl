@@ -184,6 +184,10 @@ Department of Physics and Astronomy, The Johns Hopkins University
 University of Paris-Dauphine
 @comment @email{rossi@@ufrmd.dauphine.fr}
 @sp 1
+
+@author Rhys Ulerich
+@comment @email{rhys.ulerich@gmail.com}
+@sp 1
 @page
 @vskip 0pt plus 1filll
 @insertcopying
