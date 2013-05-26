@@ -17,15 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  *
- *
  * This module contains routines for approximating the Jacobian with finite
  * differences for nonlinear least-squares fitting.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
+#include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_multifit_nlin.h>
 #include <gsl/gsl_vector.h>

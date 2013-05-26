@@ -30,10 +30,7 @@
  * pp. 152-154.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
+#include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_vector.h>
