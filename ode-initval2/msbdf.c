@@ -1779,6 +1779,7 @@ msbdf_free (void *vstate)
   gsl_vector_free (state->svec);
   gsl_vector_free (state->relcor);
   gsl_vector_free (state->abscor);
+  gsl_vector_free (state->abscorscaled);
   free (state->errlev);
   free (state->ordprevbackup);
   free (state->ordprev);
