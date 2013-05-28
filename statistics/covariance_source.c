@@ -134,3 +134,36 @@ FUNCTION(gsl_stats,correlation) (const BASE data1[], const size_t stride1,
 
   return r;
 }
+
+double
+FUNCTION(gsl_stats,spearman) (const BASE data1[], const size_t stride1,
+                              const BASE data2[], const size_t stride2,
+                              const size_t n,
+                              double work[])
+{
+  size_t i;
+  gsl_vector_view ranks1 = gsl_vector_view_array(&work[0], n);
+  gsl_vector_view ranks2 = gsl_vector_view_array(&work[n], n);
+  double r;
+
+  for (i = 0; i < n; ++i)
+    {
+      gsl_vector_set(&ranks1.vector, i, data1[i * stride1]);
+      gsl_vector_set(&ranks2.vector, i, data2[i * stride2]);
+    }
+
+  /* sort data1 and update data2 at same time; compute rank of data1 */
+  gsl_sort_vector2(&ranks1.vector, &ranks2.vector);
+  compute_rank(&ranks1.vector);
+
+  /* now sort data2, updating ranks1 appropriately; compute rank of data2 */
+  gsl_sort_vector2(&ranks2.vector, &ranks1.vector);
+  compute_rank(&ranks2.vector);
+
+  /* compute correlation of rank vectors in double precision */
+  r = gsl_stats_correlation(ranks1.vector.data, ranks1.vector.stride,
+                            ranks2.vector.data, ranks2.vector.stride,
+                            n);
+
+  return r;
+}
