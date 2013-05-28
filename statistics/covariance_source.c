@@ -135,11 +135,24 @@ FUNCTION(gsl_stats,correlation) (const BASE data1[], const size_t stride1,
   return r;
 }
 
+/*
+gsl_stats_spearman()
+  Compute Spearman rank correlation coefficient
+
+Inputs: data1   - data1 vector
+        stride1 - stride of data1
+        data2   - data2 vector
+        stride2 - stride of data2
+        n       - number of elements in data1 and data2
+        work    - additional workspace of size 2*n
+
+Return: Spearman rank correlation coefficient
+*/
+
 double
 FUNCTION(gsl_stats,spearman) (const BASE data1[], const size_t stride1,
                               const BASE data2[], const size_t stride2,
-                              const size_t n,
-                              double work[])
+                              const size_t n, double work[])
 {
   size_t i;
   gsl_vector_view ranks1 = gsl_vector_view_array(&work[0], n);
