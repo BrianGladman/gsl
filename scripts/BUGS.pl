@@ -5,7 +5,9 @@ use XML::Parser;
 # Then run
 #
 #   wget --no-check-certificate https://savannah.gnu.org/export/gsl/bjg/28.xml -O BUGS.savannah.xml
-#   recode latin1..utf8 < BUGS.savannah.xml  > BUGS.xml
+#   recode latin1:
+#     a) utf8 < BUGS.savannah.xml  > BUGS.xml
+#     b) iconv -t utf-8 BUGS.savannah.xml > BUGS.xml
 #   perl scripts/BUGS.pl | perl -p -e 's/^[ \t]+$//' | cat -s > BUGS
 #
 # to generate the BUGS file

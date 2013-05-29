@@ -1,6 +1,7 @@
 * What is new in gsl-1.16:
 
-** added function gsl_stats_spearman to compute Spearman rank correlation
+** added functions gsl_stats_spearman and gsl_sort_vector2 to compute
+   Spearman rank correlation
 
 ** added function gsl_poly_dd_hermite_init for Hermite interpolation
 
