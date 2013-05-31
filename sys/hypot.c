@@ -30,7 +30,7 @@ double gsl_hypot (const double x, const double y)
   /* Follow the optional behavior of the ISO C standard and return
      +Inf when any of the argument is +-Inf, even if the other is NaN.
      http://pubs.opengroup.org/onlinepubs/009695399/functions/hypot.html */
-  if (isinf(x) || isinf(y)) 
+  if (gsl_isinf(x) || gsl_isinf(y)) 
     {
       return GSL_POSINF;
     }
