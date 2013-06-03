@@ -1,5 +1,8 @@
 * What is new in gsl-1.16:
 
+** converted gsl_multifit_linear_residuals to use dgemv to improve
+   efficiency (bug #39153)
+
 ** added functions gsl_stats_spearman and gsl_sort_vector2 to compute
    Spearman rank correlation
 
