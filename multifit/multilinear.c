@@ -22,6 +22,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
 
 /* Fit
@@ -542,19 +544,9 @@ gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
     }
   else
     {
-      size_t i;
-
-      for (i = 0; i < y->size; ++i)
-        {
-          double yi = gsl_vector_get(y, i);
-          gsl_vector_const_view row = gsl_matrix_const_row(X, i);
-          double y_est, ri;
-
-          gsl_blas_ddot(&row.vector, c, &y_est);
-          ri = yi - y_est;
-
-          gsl_vector_set(r, i, ri);
-        }
+      /* r = y - X c */
+      gsl_vector_memcpy(r, y);
+      gsl_blas_dgemv(CblasNoTrans, -1.0, X, c, 1.0, r);
 
       return GSL_SUCCESS;
     }
