@@ -436,8 +436,7 @@ generic_rng_test (const gsl_rng_type * T)
 {
   gsl_rng *r = gsl_rng_alloc (T);
   const char *name = gsl_rng_name (r);
-  unsigned long int kmax = 0, kmin = 1000, i;
-  int j;
+  unsigned long int kmax = 0, kmin = 1000;
   double sigma = 0;
   const unsigned long int ran_max = gsl_rng_max (r);
   const unsigned long int ran_min = gsl_rng_min (r);
@@ -621,32 +620,10 @@ rng_bin_test (gsl_rng * r, double *sigma)
   return status;
 }
 
-void
-rng_seed_test (const gsl_rng_type * T)
-{
-  gsl_rng *r = gsl_rng_alloc (T);
-  const char *name = gsl_rng_name (r);
-  unsigned long int i;
-  int j;
-  int status;
-  double sigma = 0;
-
-  for (i = 0xFFFFFFFFUL ; i > 0; i >>= 1) {
-    for (j = 1; j >= -1 ; j--) {
-      unsigned long int seed = i + j;
-      if (j > 0 && seed < i) continue;
-      gsl_rng_set (r, seed);
-      status = rng_sanity_test (r);
-      if (status) 
-        gsl_test (status, "%s, sanity tests for seed = %#lx", name, seed);
-    }
-  }
-}
-
 int
 rng_sanity_test (gsl_rng * r)
 {
-  double sum = 0, sigma, min = 1.0, max = 0.0;
+  double sum = 0, sigma;
   int i, status = 0;
 
   for (i = 0; i < N2; ++i)
@@ -674,4 +651,25 @@ rng_sanity_test (gsl_rng * r)
   }
 
   return status;
+}
+
+void
+rng_seed_test (const gsl_rng_type * T)
+{
+  gsl_rng *r = gsl_rng_alloc (T);
+  const char *name = gsl_rng_name (r);
+  unsigned long int i;
+  int j;
+  int status;
+
+  for (i = 0xFFFFFFFFUL ; i > 0; i >>= 1) {
+    for (j = 1; j >= -1 ; j--) {
+      unsigned long int seed = i + j;
+      if (j > 0 && seed < i) continue;
+      gsl_rng_set (r, seed);
+      status = rng_sanity_test (r);
+      if (status) 
+        gsl_test (status, "%s, sanity tests for seed = %#lx", name, seed);
+    }
+  }
 }
