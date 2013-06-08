@@ -1,3 +1,8 @@
+2013-06-08  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* driver.c: Removed redundant if clause. Thanks to
+	David Binderman for the report!
+	
 2013-01-27  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* msbdf.c: Corrected bug which enabled order to be changed 

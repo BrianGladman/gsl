@@ -111,14 +111,7 @@ gsl_odeiv2_driver_set_hmin (gsl_odeiv2_driver * d, const double hmin)
       GSL_ERROR_NULL ("hmin <= fabs(h) <= hmax required", GSL_EINVAL);
     }
 
-  if (hmin >= 0.0 || hmin < 0.0)
-    {
-      d->hmin = fabs (hmin);
-    }
-  else
-    {
-      GSL_ERROR_NULL ("invalid hmin", GSL_EINVAL);
-    }
+  d->hmin = fabs (hmin);
 
   return GSL_SUCCESS;
 }
