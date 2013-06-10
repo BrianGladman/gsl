@@ -793,7 +793,7 @@ program.  It outputs a set of points with gaussian errors from the curve
 The data can be prepared by running the resulting executable program,
 
 @example
-$ ./generate > exp.dat
+$ GSL_RNG_TYPE=mt19937_1999 ./generate > exp.dat
 $ more exp.dat
 0.1 0.97935 0.110517
 0.2 1.3359 0.12214
