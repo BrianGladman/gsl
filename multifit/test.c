@@ -233,6 +233,20 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
     gsl_matrix_free (covar);
   }
 
+  /* check higher level driver routine */
+  {
+    size_t i;
+
+    gsl_multifit_fdfsolver_set (s, f, &x.vector);
+    gsl_multifit_fdfsolver_driver (s, 1000, 0.0, 1.0e-7);
+
+    for (i = 0 ; i < p; i++)
+      {
+        gsl_test_rel (gsl_vector_get (s->x, i), x_final[i], epsrel, 
+                      "%s, lmsder, x%u", name, i);
+      }
+  }
+
   /* Check that there is no hidden state, restarting should 
      produce identical results. */
 

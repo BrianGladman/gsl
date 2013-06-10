@@ -1,5 +1,7 @@
 * What is new in gsl-1.16:
 
+** added higher level wrapper routine gsl_multifit_fdfsolver_driver
+
 ** converted gsl_multifit_linear_residuals to use dgemv to improve
    efficiency (bug #39153)
 

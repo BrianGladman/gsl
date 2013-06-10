@@ -21,6 +21,7 @@ multidimensional nonlinear fitting functions and related declarations.
 * Finite Difference Jacobian::  
 * Iteration of the Minimization Algorithm::  
 * Search Stopping Parameters for Minimization Algorithms::  
+* High Level Driver::
 * Minimization Algorithms using Derivatives::  
 * Minimization Algorithms without Derivatives::  
 * Computing the covariance matrix of best fit parameters::  
@@ -410,6 +411,20 @@ enough.
 This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
 ||F(x)||^2} from the Jacobian matrix @math{J} and the function values
 @var{f}, using the formula @math{g = J^T f}.
+@end deftypefun
+
+@node High Level Driver
+@section High Level Driver
+
+These routines provide a high level wrapper that combine the iteration
+and convergence testing for easy use.
+
+@deftypefun int gsl_multifit_fsolver_driver (gsl_multifit_fsolver * @var{s}, const size_t @var{maxiter}, const double @var{epsabs}, const double @var{epsrel})
+@deftypefunx int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * @var{s}, const size_t @var{maxiter}, const double @var{epsabs}, const double @var{epsrel})
+These functions iterate the solver @var{s} for a maximum of @var{maxiter}
+iterations. After each iteration, the system is tested for convergence
+using @code{gsl_multifit_test_delta} with the error tolerances @var{epsabs}
+and @var{epsrel}.
 @end deftypefun
 
 @node Minimization Algorithms using Derivatives
