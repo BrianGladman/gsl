@@ -1,5 +1,9 @@
 * What is new in gsl-1.16:
 
+** fixed triangle selection bug in gsl_sf_coupling_6j_e and
+   gsl_sf_coupling_9j_e (bugs #39466 and #29606) (Håkan Johansson and
+   Alexey Illarionov)
+
 ** added higher level wrapper routine gsl_multifit_fdfsolver_driver
 
 ** converted gsl_multifit_linear_residuals to use dgemv to improve
