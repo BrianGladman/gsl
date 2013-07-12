@@ -81,9 +81,11 @@ static
 int
 triangle_selection_fails(int two_ja, int two_jb, int two_jc)
 {
-  return ((two_jb < abs(two_ja - two_jc)) || (two_jb > two_ja + two_jc))
-    || ((two_jc < abs(two_jb - two_ja)) || (two_jc > two_jb + two_ja))
-    || ((two_ja < abs(two_jc - two_jb)) || (two_ja > two_jc + two_jb));
+  /*
+   * enough to check the triangle condition for one spin vs. the other two
+   */
+  return ( (two_jb < abs(two_ja - two_jc)) || (two_jb > two_ja + two_jc) ||
+           GSL_IS_ODD(two_ja + two_jb + two_jc) );
 }
 
 

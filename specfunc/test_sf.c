@@ -424,6 +424,8 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_6j_e, (4, 4, 4, 2, 2, 2, &r),  sqrt(7.0/3.0)/10.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_6j_e, (6, 6, 6, 4, 4, 4, &r), -sqrt(3.0/5.0)/14.0, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_6j_e, (6, 6, 6, 4, 4, 2, &r), -sqrt(3.0/5.0)/7.0, TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (1, 0, 1, 0, 1, 0, &r), -sqrt(1.0/2.0), TEST_TOL0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (1, 0, 1, 1, 0, 1, &r), -1.0/2.0, TEST_TOL0, GSL_SUCCESS);
 
   /* Test 6j error checking */
 
@@ -442,6 +444,13 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 2, 7, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_6j_e, (2, 7, 4, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_6j_e, (7, 2, 4, 2, 2, 2, &r), 0, 0, GSL_SUCCESS);
+
+  /* Test 6j half-integer/integer coupling conditions */
+
+  TEST_SF(s, gsl_sf_coupling_6j_e, (0, 2, 2, 44, 43, 43, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (1, 1, 1, 0, 1, 1, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (1, 1, 1, 1, 0, 1, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_6j_e, (1, 1, 1, 1, 1, 0, &r), 0, 0, GSL_SUCCESS);
 
   /* Test 9j */
 
@@ -469,6 +478,12 @@ int test_coupling(void)
   TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 10, 1, 2, &r), 0, 0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 10, 2, &r), 0, 0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_coupling_9j_e, (4, 2, 4, 3, 3, 2, 1, 1, 10, &r), 0, 0, GSL_SUCCESS);
+
+  /* Test 9j half-integer/integer coupling conditions */
+
+  TEST_SF(s, gsl_sf_coupling_9j_e, (1, 1, 1, 1, 1, 1, 0, 0, 0, &r), 0, 0, GSL_SUCCESS);
+  TEST_SF(s, gsl_sf_coupling_9j_e, (1, 1, 0, 1, 1, 0, 1, 1, 0, &r), 0, 0, GSL_SUCCESS);
+
   return s;
 }
 
