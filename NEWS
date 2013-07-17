@@ -1,5 +1,14 @@
 * What is new in gsl-1.16:
 
+** fixed error in gsl_rng_fwrite where uninitialized padding
+   bytes were being written (bug #39104)
+
+** fixed error in gsl_block_alloc where padding bytes were not
+   properly initialized (bugs #39101,#39102,#39103)
+
+** fixed error in ntuple/test.c where padding bytes were not
+   properly initialized (bug #39105)
+
 ** fixed triangle selection bug in gsl_sf_coupling_6j_e and
    gsl_sf_coupling_9j_e (bugs #39466 and #29606) (Håkan Johansson and
    Alexey Illarionov)
