@@ -126,7 +126,7 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 * Make all internal functions static, and have all exported functions
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: 
 
- nm -A -g -P */*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+ nm -A -g -P .libs/*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.  
