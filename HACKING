@@ -204,7 +204,14 @@ of ghostscript for compatibility.
 
 * Tag with "cvs tag release-X-Y" for version X.Y
 
-* Upload to ftp-upload.gnu.org with GPG signatures
+* Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
+  /incoming/ftp for official releases
+  /incoming/alpha for test releases
+
+  3 files to upload:
+  * gsl-X.XX.tar.gz
+  * gsl-X.XX.tar.gz.sig (generate with gpg -b gsl-X.XX.tar.gz)
+  * gsl-X.XX.tar.gz.directive.asc (generate with gpg --clearsign gsl-X.XX.tar.gz.directive)
 
 * Submit updated entry to GNU Free Software Directory.
 
