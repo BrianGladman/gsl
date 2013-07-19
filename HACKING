@@ -154,7 +154,12 @@ make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of
 
 ----------- Notes on making a release
 
-* Edit the version number in configure.ac. 
+* Edit the version numbers in configure.ac:
+  AC_INIT     (remove the + for a release and add it back after the release)
+  dnl gsl-X.Y (follow the comments in this section)
+  GSL_CURRENT
+  GSL_REVISION
+  GSL_AGE
 
 * Adjust the libtool version numbers according to the procedure in the
   Libtool manual (Updating library version information).  Use 'nm' to
@@ -179,43 +184,20 @@ Note that this only works if configure was run with --disable-shared,
 because otherwise the shared library libtool scripts themselves are
 run under valgrind giving misleading results.
 
-* Make html docs using texi2html in cvs, 
-
-    cd doc ; mkdir html ; cd html
-    ../texi2html -verbose -split_chapter -expandinfo ~/gsl/doc/gsl-ref.texi
-    ###cvs -d sourceware.org:/cvs/gsl  import -m 'this is release 0.123' htdocs/ref texi2html release-0-123
-    cd .. ; tar cvfz gsl-ref-html.tar.gz
-    ###scp -v gsl-ref-html.tar.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
-
-* Make complete GNU docs using Gendocs.sh
-
-    $ cd doc
-    $ gendocs.sh gsl-ref "GNU Scientific Library -- Reference"
-    $ cd manual
-    # NOTE DON'T TRY TO IMPORT - it doesn't work as .GZ files tend to be ignored
-    # JUST COPY THE FILES INTO A CHECKED OUT AREA AND CVS ADD/REMOVE AND COMMIT THEM
-    $ ############### cvs -d savannah.gnu.org:/webcvs/gsl import -m 'this is release 0.123' gsl/manual gendocs release-0-123  ############
-
-* Make postscript file in the usual way.  Test with different versions
-of ghostscript for compatibility.
-
-   make dvi; dvips gsl-ref.dvi ; gzip -v -9 gsl-ref.ps
-   ####  scp -v gsl-ref.ps.gz sourceware.org:/sourceware/ftp/anonftp/pub/gsl
-
-* Tag with "cvs tag release-X-Y" for version X.Y
+* Tag release with: bzr tag release-X-Y
 
 * Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
   /incoming/ftp for official releases
   /incoming/alpha for test releases
 
   3 files to upload:
-  * gsl-X.XX.tar.gz
-  * gsl-X.XX.tar.gz.sig (generate with gpg -b gsl-X.XX.tar.gz)
-  * gsl-X.XX.tar.gz.directive.asc (generate with gpg --clearsign gsl-X.XX.tar.gz.directive)
+  * gsl-X.Y.tar.gz
+  * gsl-X.Y.tar.gz.sig           (generate with gpg -b gsl-X.Y.tar.gz)
+  * gsl-X.Y.tar.gz.directive.asc (generate with gpg --clearsign gsl-X.Y.tar.gz.directive)
 
 * Submit updated entry to GNU Free Software Directory.
 
-* Update webpages, including the link to the NEWS file
+* Update webpages, including the link to the NEWS file (see below)
 
 * Announce on the mailing lists info-gsl@gnu.org,
 gsl-announce@sourceware.org, info-gnu@gnu.org.  It is best to announce
@@ -225,6 +207,36 @@ all announcements!
 
 * Later you can post an announcement on the na-digest list
 na.digest@na-net.ornl.gov or freshmeat.net
+
+----------- Notes on updating documentation
+
+* edit doc/gsl-ref.texi and make sure copyright years are current
+
+* Make html docs using texi2html, 
+
+    cd doc ; mkdir html ; cd html
+    ../texi2html -verbose -split_chapter -expandinfo ../gsl-ref.texi
+
+* Make complete GNU docs using Gendocs.sh
+
+    $ cd doc
+    $ wget "http://savannah.gnu.org/cgi-bin/viewcvs/~checkout~/texinfo/texinfo/util/gendocs.sh"
+    $ wget "http://savannah.gnu.org/cgi-bin/viewcvs/~checkout~/texinfo/texinfo/util/gendocs_template"
+    $ sh gendocs.sh gsl-ref "GNU Scientific Library -- Reference"
+
+    # PDF might fail in above step due to eps files, execute these commands for PDF/PS generation
+    $ make ps ; ps2pdf gsl-ref.ps gsl-ref.pdf
+    $ gzip gsl-ref.ps
+    $ cp gsl-ref.ps.gz gsl-ref.pdf manual/
+
+    # Edit manual/index.html and manually add entry for gsl-ref.ps.gz and update size info for gsl-ref.pdf
+
+    # NOTE DON'T TRY TO IMPORT - it doesn't work as .GZ files tend to be ignored
+    # JUST COPY THE FILES INTO A CHECKED OUT AREA AND CVS ADD/REMOVE AND COMMIT THEM
+
+    # Edit the checked out gsl.html and update version numbers
+
+* Tag with "cvs tag release-X-Y" for version X.Y
 
 ----------------------------------------------------------------------
 
