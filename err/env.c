@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 
-#define STR_EQ (x,y) (strcmp((x),(y)) == 0)
+#define STR_EQ(x,y) (strcmp((x),(y)) == 0)
 
 void
 gsl_err_env_setup (void)
@@ -38,7 +38,7 @@ gsl_err_env_setup (void)
   
   if (STR_EQ(p, "abort"))
     {
-      gsl_err_set_handler (NULL);
+      gsl_set_error_handler (NULL);
       printf("abort") ;
     }
 
