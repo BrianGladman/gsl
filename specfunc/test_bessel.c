@@ -198,6 +198,10 @@ int test_bessel(void)
   TEST_SF(s,  gsl_sf_bessel_jl_e, (49, 9950.35, &r), 5.0077368819565969286578715503E-5 , TEST_TOL4, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_jl_e, (52, 9930.51, &r), -7.4838588266727718650124475651E-6 , TEST_TOL4, GSL_SUCCESS);
 
+  /* bug report #37209 */
+  TEST_SF(s,  gsl_sf_bessel_jl_e, (364, 36.62, &r), 1.118907148986954E-318, TEST_TOL0, GSL_SUCCESS);
+  /*TEST_SF(s,  gsl_sf_bessel_jl_e, (149, 1.0, &r), 2.6599182755508469E-307, TEST_TOL0, GSL_SUCCESS);*/
+
   TEST_SF(s,  gsl_sf_bessel_y0_e, (0.001, &r), -999.99950000004166670, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_y0_e, (  1.0, &r), -0.5403023058681397174, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s,  gsl_sf_bessel_y0_e, ( 10.0, &r), 0.08390715290764524523, TEST_TOL0, GSL_SUCCESS);
