@@ -92,7 +92,7 @@ secant_iterate (void * vstate, gsl_function_fdf * fdf, double * root)
   x_new = x - (f / df);
 
   f_new = GSL_FN_FDF_EVAL_F(fdf, x_new) ;
-  df_new = df * (1 - f_new / f);
+  df_new = df * ((f - f_new) / f);
 
   *root = x_new ;
 
