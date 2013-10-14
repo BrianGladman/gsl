@@ -1,4 +1,9 @@
-* What is new in gsl-1.16:
+* What is new in gsl-1.17:
+
+** added function gsl_multifit_robust_weights to allow user to
+   access the various weighting functions
+
+* What was new in gsl-1.16:
 
 ** fixed error in gsl_rng_fwrite where uninitialized padding
    bytes were being written (bug #39104)

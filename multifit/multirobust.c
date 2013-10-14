@@ -224,6 +224,22 @@ gsl_multifit_robust_statistics(const gsl_multifit_robust_workspace *w)
   return w->stats;
 }
 
+int
+gsl_multifit_robust_weights(const gsl_vector *r, gsl_vector *wts,
+                            const gsl_multifit_robust_workspace *w)
+{
+  if (r->size != wts->size)
+    {
+      GSL_ERROR("residual vector does not match weight vector size", GSL_EBADLEN);
+    }
+  else
+    {
+      int s = w->type->wfun(r, wts);
+
+      return s;
+    }
+} /* gsl_multifit_robust_weights() */
+
 /*
 gsl_multifit_robust()
   Perform robust iteratively reweighted linear least squares

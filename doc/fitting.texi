@@ -627,6 +627,14 @@ Decreasing the tuning constant increases the downweight assigned to large residu
 the tuning constant decreases the downweight assigned to large residuals.
 @end deftypefun
 
+@deftypefun int gsl_multifit_robust_weights (const gsl_vector * @var{r}, gsl_vector * @var{wts}, const gsl_multifit_robust_workspace * @var{w})
+This function assigns weights to the vector @var{wts} using the residual vector @var{r} and
+previously specified weighting function. The output weights are given by @math{wts_i = w(r_i)},
+where the weighting functions @math{w(r_i)} are detailed in @code{gsl_multifit_robust_alloc}. This
+function is useful if the user wishes to implement their own robust regression rather than using
+the supplied @code{gsl_multifit_robust} routine below.
+@end deftypefun
+
 @deftypefun int gsl_multifit_robust (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, gsl_multifit_robust_workspace * @var{w})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
