@@ -224,17 +224,48 @@ gsl_multifit_robust_statistics(const gsl_multifit_robust_workspace *w)
   return w->stats;
 }
 
+/*
+gsl_multifit_robust_weights()
+  Compute iterative weights for given residuals
+
+Inputs: r   - residuals
+        wts - (output) where to store weights
+              w_i = r_i / (sigma_mad * tune)
+        w   - workspace
+
+Return: success/error
+
+Notes:
+1) Sizes of r and wts must be equal
+2) Size of r/wts may be less than or equal to w->n, to allow
+for computing weights of a subset of data
+*/
+
 int
 gsl_multifit_robust_weights(const gsl_vector *r, gsl_vector *wts,
-                            const gsl_multifit_robust_workspace *w)
+                            gsl_multifit_robust_workspace *w)
 {
   if (r->size != wts->size)
     {
       GSL_ERROR("residual vector does not match weight vector size", GSL_EBADLEN);
     }
+  else if (r->size > w->n)
+    {
+      GSL_ERROR("residual vector size larger than workspace", GSL_EBADLEN);
+    }
   else
     {
-      int s = w->type->wfun(r, wts);
+      int s;
+      double sigma;
+
+      sigma = robust_madsigma(r, w);
+
+      /* scale residuals by sigma and tuning factor */
+      gsl_vector_memcpy(wts, r);
+      gsl_vector_scale(wts, 1.0 / (sigma * w->tune));
+
+      /* compute weights in-place */
+      s = w->type->wfun(wts, wts);
 
       return s;
     }
@@ -489,26 +520,29 @@ Inputs: r - vector of residuals
 static double
 robust_madsigma(const gsl_vector *r, gsl_multifit_robust_workspace *w)
 {
-  gsl_vector_view v;
-  double sigma;
   size_t n = r->size;
   const size_t p = w->p;
+  double sigma;
   size_t i;
+
+  /* allow for the possibility that r->size < w->n */
+  gsl_vector_view v1 = gsl_vector_subvector(w->workn, 0, n);
+  gsl_vector_view v2;
 
   /* copy |r| into workn */
   for (i = 0; i < n; ++i)
     {
-      gsl_vector_set(w->workn, i, fabs(gsl_vector_get(r, i)));
+      gsl_vector_set(&v1.vector, i, fabs(gsl_vector_get(r, i)));
     }
 
-  gsl_sort_vector(w->workn);
+  gsl_sort_vector(&v1.vector);
 
   /*
    * ignore the smallest p residuals when computing the median
    * (see Street et al 1988)
    */
-  v = gsl_vector_subvector(w->workn, p - 1, n - p + 1);
-  sigma = gsl_stats_median_from_sorted_data(v.vector.data, v.vector.stride, v.vector.size) / 0.6745;
+  v2 = gsl_vector_subvector(&v1.vector, p - 1, n - p + 1);
+  sigma = gsl_stats_median_from_sorted_data(v2.vector.data, v2.vector.stride, v2.vector.size) / 0.6745;
 
   return sigma;
 } /* robust_madsigma() */

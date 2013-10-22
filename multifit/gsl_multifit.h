@@ -194,7 +194,7 @@ int gsl_multifit_robust_tune(const double tune, gsl_multifit_robust_workspace *w
 const char *gsl_multifit_robust_name(const gsl_multifit_robust_workspace *w);
 gsl_multifit_robust_stats gsl_multifit_robust_statistics(const gsl_multifit_robust_workspace *w);
 int gsl_multifit_robust_weights(const gsl_vector *r, gsl_vector *wts,
-                                const gsl_multifit_robust_workspace *w);
+                                gsl_multifit_robust_workspace *w);
 int gsl_multifit_robust(const gsl_matrix * X, const gsl_vector * y,
                         gsl_vector * c, gsl_matrix *cov,
                         gsl_multifit_robust_workspace *w);
