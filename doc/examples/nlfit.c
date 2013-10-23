@@ -37,8 +37,8 @@ main (void)
   r = gsl_rng_alloc (type);
 
   f.f = &expb_f;
-  f.df = &expb_df;
-  f.fdf = &expb_fdf;
+  f.df = &expb_df;   /* set to NULL for finite-difference Jacobian */
+  f.fdf = &expb_fdf; /* set to NULL for finite-difference Jacobian */
   f.n = n;
   f.p = p;
   f.params = &d;
