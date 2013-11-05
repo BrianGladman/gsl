@@ -1,7 +1,8 @@
-*.la
-*.lo
 .deps
+gsl_*.h
+*.h
+*.la
 .libs
+*.lo
 Makefile
 Makefile.in
-gsl_*.h
