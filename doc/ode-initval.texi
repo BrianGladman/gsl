@@ -67,9 +67,11 @@ for arguments (@var{t},@var{y}) and parameters @var{params}.
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
 special return value @code{GSL_EBADFUNC} causes @code{gsl_odeiv2}
-routines to immediately stop and return. The user must call an
-appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
-@code{gsl_odeiv2_step_reset}) before continuing. Use return values
+routines to immediately stop and return. If @code{function} 
+is modified (for example contents of @var{params}), the user must call an
+appropriate reset function (@code{gsl_odeiv2_driver_reset}, 
+@code{gsl_odeiv2_evolve_reset} or @code{gsl_odeiv2_step_reset}) 
+before continuing. Use return values
 distinct from standard GSL error codes to distinguish your function as
 the source of the error.
 
@@ -90,9 +92,11 @@ pointer for those algorithms).
 The function should return @code{GSL_SUCCESS} if the calculation was
 completed successfully. Any other return value indicates an error. A
 special return value @code{GSL_EBADFUNC} causes @code{gsl_odeiv2}
-routines to immediately stop and return. The user must call an
-appropriate reset function (e.g. @code{gsl_odeiv2_driver_reset} or
-@code{gsl_odeiv2_step_reset}) before continuing. Use return values
+routines to immediately stop and return. If @code{jacobian} 
+is modified (for example contents of @var{params}), the user must call an
+appropriate reset function (@code{gsl_odeiv2_driver_reset}, 
+@code{gsl_odeiv2_evolve_reset} or @code{gsl_odeiv2_step_reset}) 
+before continuing. Use return values
 distinct from standard GSL error codes to distinguish your function as
 the source of the error.
 
