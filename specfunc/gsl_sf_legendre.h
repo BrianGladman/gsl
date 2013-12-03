@@ -309,6 +309,36 @@ double gsl_sf_legendre_H3d(const int l, const double lambda, const double eta);
  */
 int gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double eta, double * result_array);
 
+/* associated legendre P_{lm} routines */
+int gsl_sf_legendre_array_schmidt(const size_t lmax, const double x,
+                                  double result_array[]);
+int gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
+                                    const double csphase,
+                                    double result_array[]);
+int gsl_sf_legendre_deriv_array_schmidt(const size_t lmax, const double x,
+                                        double result_array[],
+                                        double result_deriv_array[]);
+int gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
+                                              const double csphase,
+                                              double result_array[],
+                                              double result_deriv_array[]);
+int gsl_sf_legendre_deriv2_array_schmidt(const size_t lmax, const double x,
+                                         double result_array[],
+                                         double result_deriv_array[],
+                                         double result_deriv2_array[]);
+int gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
+                                               const double csphase,
+                                               double result_array[],
+                                               double result_deriv_array[],
+                                               double result_deriv2_array[]);
+int gsl_sf_legendre_array_spharm(const size_t lmax, const double x,
+                                 double result_array[]);
+int gsl_sf_legendre_array_spharm_e(const size_t lmax, const double x,
+                                   const double csphase,
+                                   double result_array[]);
+size_t gsl_sf_legendre_array_n(const size_t lmax);
+size_t gsl_sf_legendre_array_index(const size_t l, const size_t m);
+size_t gsl_sf_legendre_nlm(const size_t lmax);
 
 __END_DECLS
 
