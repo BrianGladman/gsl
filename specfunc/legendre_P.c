@@ -39,69 +39,14 @@
  *     Chapter 8, 1972.
  */
 
-static int gsl_Plm_array_none(const size_t lmax, const double x,
-                              double result_array[], alf_workspace *w);
-static int gsl_Plm_deriv_array_none(const size_t lmax, const double x,
-                                    double result_array[],
-                                    double result_deriv_array[],
-                                    alf_workspace *w);
+static void legendre_sqrts(const size_t lmax, double *array);
 
-/*
-alf_alloc()
-  Allocate an ALF workspace
-
-Inputs: lmax - maximum degree to be computed
-
-Return: pointer to workspace
-*/
-
-alf_workspace *
-alf_alloc(const size_t lmax)
+/* number of P_{lm} functions for a given lmax */
+size_t
+gsl_sf_legendre_nlm(const size_t lmax)
 {
-  alf_workspace *w;
-  int l;
-
-  w = calloc(1, sizeof(alf_workspace));
-  if (!w)
-    {
-      printf("error allocating workspace\n");
-      return 0;
-    }
-
-  w->sqrts = malloc(sizeof(double) * (2 * lmax + 2));
-  if (w->sqrts == 0)
-    {
-      printf("error allocating sqrts\n");
-      alf_free(w);
-      return 0;
-    }
-
-  w->lmax = lmax;
-  w->csphase = 0.0;
-
-  /*
-   * precompute square roots of integers that are used several times
-   * sqrts[i] = sqrt(i)
-   */
-  for (l = 0; l <= 2 * w->lmax + 1; ++l)
-    w->sqrts[l] = sqrt((double) l);
-
-  return w;
-} /* alf_alloc() */
-
-/*
-alf_free()
-  Free an ALF workspace
-*/
-
-void
-alf_free(alf_workspace *w)
-{
-  if (w->sqrts)
-    free(w->sqrts);
-
-  free(w);
-} /* alf_free() */
+  return ((lmax + 1) * (lmax + 2) / 2);
+}
 
 /*
 gsl_sf_legendre_array_n()
@@ -112,7 +57,10 @@ for a given lmax
 size_t
 gsl_sf_legendre_array_n(const size_t lmax)
 {
-  return (size_t) ((lmax + 1) * (lmax + 2) / 2);
+  size_t nlm = gsl_sf_legendre_nlm(lmax);
+  size_t nsqrt = 2 * lmax + 2; /* extra room to precompute sqrt factors */
+
+  return (nlm + nsqrt);
 } /* gsl_sf_legendre_array_n() */
 
 /*
@@ -134,14 +82,13 @@ gsl_sf_legendre_array_schmidt()
 Inputs: lmax         - maximum degree
         x            - input argument in [-1,1]
         result_array - (output) where to store S_{lm}(x)
-        w            - workspace
 */
 
 int
 gsl_sf_legendre_array_schmidt(const size_t lmax, const double x,
-                              double result_array[], alf_workspace *w)
+                              double result_array[])
 {
-  int s = gsl_sf_legendre_array_schmidt_e(lmax, x, 1.0, result_array, w);
+  int s = gsl_sf_legendre_array_schmidt_e(lmax, x, 1.0, result_array);
 
   return s;
 } /* gsl_sf_legendre_array_schmidt() */
@@ -155,13 +102,12 @@ Inputs: lmax               - maximum degree
         x                  - input argument
         result_array       - (output) where to store S_{lm}(x)
         result_deriv_array - (output) where to store d/dx S_{lm}(x)
-        w                  - workspace
 */
 
 int
 gsl_sf_legendre_deriv_array_schmidt(const size_t lmax, const double x,
                                     double result_array[],
-                                    double result_deriv_array[], alf_workspace *w)
+                                    double result_deriv_array[])
 {
   int s;
   const double u = sqrt((1.0 - x) * (1.0 + x));
@@ -171,7 +117,7 @@ gsl_sf_legendre_deriv_array_schmidt(const size_t lmax, const double x,
 
   /* compute d/dtheta S_{lm}(x) */
   s = gsl_sf_legendre_deriv_alt_array_schmidt_e(lmax, x, 1.0, result_array,
-                                                result_deriv_array, w);
+                                                result_deriv_array);
 
   /* scale derivative array by u to recover P'(x) from d/dtheta P(x) */
   for (i = 0; i < n; ++i)
@@ -190,15 +136,13 @@ Inputs: lmax                - maximum degree
         result_array        - (output) where to store S_{lm}(x)
         result_deriv_array  - (output) where to store d/dx S_{lm}(x)
         result_deriv2_array - (output) where to store d^2/dx^2 S_{lm}(x)
-        w                   - workspace
 */
 
 int
 gsl_sf_legendre_deriv2_array_schmidt(const size_t lmax, const double x,
                                      double result_array[],
                                      double result_deriv_array[],
-                                     double result_deriv2_array[],
-                                     alf_workspace *w)
+                                     double result_deriv2_array[])
 {
   int s;
   const double u = sqrt((1.0 - x) * (1.0 + x));
@@ -210,7 +154,7 @@ gsl_sf_legendre_deriv2_array_schmidt(const size_t lmax, const double x,
   /* compute d/dtheta S_{lm}(x) and d^2/dtheta^2 S_{lm}(x) */
   s = gsl_sf_legendre_deriv2_alt_array_schmidt_e(lmax, x, 1.0, result_array,
                                                  result_deriv_array,
-                                                 result_deriv2_array, w);
+                                                 result_deriv2_array);
   if (s)
     return s;
 
@@ -227,27 +171,39 @@ gsl_sf_legendre_deriv2_array_schmidt(const size_t lmax, const double x,
   return s;
 } /* gsl_sf_legendre_deriv2_array_schmidt() */
 
+int
+gsl_sf_legendre_array_spharm(const size_t lmax, const double x,
+                             double result_array[])
+{
+  int s = gsl_sf_legendre_array_spharm_e(lmax, x, -1.0, result_array);
+
+  return s;
+}
+
 /*
-gsl_sf_legendre_array_spharm()
+gsl_sf_legendre_array_spharm_e()
   Compute spherical harmonic normalized ALFs
 
 Inputs: lmax         - maximum degree
         x            - input argument in [-1,1]
+        csphase      - include Condon-Shortley phase?
         result_array - (output) where to store Y_{lm}(x)
-        w            - workspace
 */
 
 int
-gsl_sf_legendre_array_spharm(const size_t lmax, const double x,
-                             double result_array[], alf_workspace *w)
+gsl_sf_legendre_array_spharm_e(const size_t lmax, const double x,
+                               const double csphase,
+                               double result_array[])
 {
   int s;
   const double fac1 = 1.0 / sqrt(4.0 * M_PI);
   const double fac2 = 1.0 / sqrt(8.0 * M_PI);
   size_t l, m;
   size_t twoellp1; /* 2l + 1 */
+  size_t nlm = gsl_sf_legendre_nlm(lmax);
+  double *sqrts = &(result_array[nlm]);
   
-  s = gsl_sf_legendre_array_schmidt_e(lmax, x, -1.0, result_array, w);
+  s = gsl_sf_legendre_array_schmidt_e(lmax, x, csphase, result_array);
   if (s)
     return s;
 
@@ -258,21 +214,22 @@ gsl_sf_legendre_array_spharm(const size_t lmax, const double x,
        * handle m = 0 case separately since S_{lm} have a
        * different normalization for m = 0 while Y_{lm} do not
        */
-      result_array[gsl_sf_legendre_array_index(l, 0)] *= w->sqrts[twoellp1] * fac1;
+      result_array[gsl_sf_legendre_array_index(l, 0)] *= sqrts[twoellp1] * fac1;
 
       for (m = 1; m <= l; ++m)
-        result_array[gsl_sf_legendre_array_index(l, m)] *= w->sqrts[twoellp1] * fac2;
+        result_array[gsl_sf_legendre_array_index(l, m)] *= sqrts[twoellp1] * fac2;
 
       twoellp1 += 2;
     }
 
   return s;
-} /* gsl_sf_legendre_array_spharm() */
+} /* gsl_sf_legendre_array_spharm_e() */
 
 /*********************************************************
  *                 INTERNAL ROUTINES                     *
  *********************************************************/
 
+#if 0
 /*
 gsl_Plm_array_none()
   This routine computes unnormalized associated Legendre polynomials
@@ -280,7 +237,7 @@ gsl_Plm_array_none()
 
 static int
 gsl_Plm_array_none(const size_t lmax, const double x,
-                   double result_array[], alf_workspace *w)
+                   double result_array[])
 {
   const double u = sqrt((1.0 - x) * (1.0 + x)); /* sin(theta) */
   size_t l, m;
@@ -474,6 +431,7 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
 
   return 0;
 } /* gsl_Plm_deriv_array_none() */
+#endif
 
 /*
 gsl_sf_legendre_array_schmidt_e()
@@ -484,13 +442,16 @@ Inputs: lmax         - maximum order
         x            - legendre argument in [-1,1]
         csphase      - -1.0 to include CS phase (-1)^m, 1.0 to not include
         result_array - (output) where to store P_{lm}(x) values
-        w            - workspace
+
+Notes:
+1) The end of the array result_array is used to store square root factors
+needed in the recurrence; the front of the array stores the final
+S_{lm} values
 */
 
 int
 gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
-                                const double csphase, double result_array[],
-                                alf_workspace *w)
+                                const double csphase, double result_array[])
 {
   if (x > 1.0 || x < -1.0)
     {
@@ -511,6 +472,11 @@ gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
       double rescalem;
       double pm1, /* S(l-1,m) */
              pm2; /* S(l-2,m) */
+      size_t nlm = gsl_sf_legendre_nlm(lmax);
+      double *sqrts = &(result_array[nlm]);
+
+      /* precompute square root factors for recurrence */
+      legendre_sqrts(lmax, sqrts);
 
       /* initial values S(0,0) and S(1,0) */
 
@@ -563,14 +529,14 @@ gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
           /* compute: S(m,m) = u * sqrt((2m - 1) / (2m)) S(m-1,m-1) = u^m * pi_m */
 
           idxmm += m + 1; /* idx(m,m) = idx(m-1,m-1) + m + 1 */
-          pmm *= csphase * w->sqrts[2 * m - 1] / w->sqrts[2 * m]; /* S(m,m) * eps / u^m */
+          pmm *= csphase * sqrts[2 * m - 1] / sqrts[2 * m]; /* S(m,m) * eps / u^m */
           result_array[idxmm] = pmm * rescalem;
           pm2 = pmm;
 
           /* compute: S(m+1,m) = sqrt(2 * m + 1) * x * S(m,m) */
 
           k = idxmm + m + 1; /* idx(m+1,m) = idx(m,m) + m + 1 */
-          pm1 = x * w->sqrts[2 * m + 1] * pm2;
+          pm1 = x * sqrts[2 * m + 1] * pm2;
           result_array[k] = pm1 * rescalem;
 
           /* compute S(l,m) for l=m+2...lmax */
@@ -578,9 +544,9 @@ gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
             {
               k += l; /* idx(l,m) = idx(l-1,m) + l */
               plm =
-                (2*l - 1) / w->sqrts[l + m] / w->sqrts[l - m] * x * pm1 -
-                w->sqrts[l - m - 1] * w->sqrts[l + m - 1] /
-                w->sqrts[l + m] / w->sqrts[l - m] * pm2;
+                (2*l - 1) / sqrts[l + m] / sqrts[l - m] * x * pm1 -
+                sqrts[l - m - 1] * sqrts[l + m - 1] /
+                sqrts[l + m] / sqrts[l - m] * pm2;
               result_array[k] = plm * rescalem;
               pm2 = pm1;
               pm1 = plm;
@@ -591,7 +557,7 @@ gsl_sf_legendre_array_schmidt_e(const size_t lmax, const double x,
 
       rescalem *= u;
       idxmm += m + 1; /* idx(lmax,lmax) */
-      pmm *= csphase * w->sqrts[2 * lmax - 1] / w->sqrts[2 * lmax];
+      pmm *= csphase * sqrts[2 * lmax - 1] / sqrts[2 * lmax];
       result_array[idxmm] = pmm * rescalem;
 
       return GSL_SUCCESS;
@@ -613,14 +579,12 @@ Inputs: lmax               - maximum order
         csphase            - -1.0 to include CS phase (-1)^m, 1.0 to not include
         result_array       - (output) where to store P_{lm}(x) values
         result_deriv_array - (output) where to store d/dtheta P_{lm}(x) values
-        w                  - workspace
 */
 
 int
 gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
                                           const double csphase, double result_array[],
-                                          double result_deriv_array[],
-                                          alf_workspace *w)
+                                          double result_deriv_array[])
 {
   if (x > 1.0 || x < -1.0)
     {
@@ -647,9 +611,13 @@ gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
       double rescalem;
       double pm1, /* S(l-1,m) */
              pm2; /* S(l-2,m) */
+      size_t nlm = gsl_sf_legendre_nlm(lmax);
+      double *sqrts = &(result_array[nlm]);
+
+      /* precompute square root factors for recurrence */
+      legendre_sqrts(lmax, sqrts);
 
       /* initial values S(0,0) and S(1,0) */
-
       pm2 = 1.0; /* S(0,0) */
       pm1 = x;   /* S(1,0) */
 
@@ -706,7 +674,7 @@ gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
            */
 
           idxmm += m + 1; /* idx(m,m) = idx(m-1,m-1) + m + 1 */
-          pmm *= csphase * w->sqrts[2 * m - 1] / w->sqrts[2 * m]; /* S(m,m) * eps / u^m */
+          pmm *= csphase * sqrts[2 * m - 1] / sqrts[2 * m]; /* S(m,m) * eps / u^m */
           result_array[idxmm] = pmm * rescalem;
           result_deriv_array[idxmm] = m * xbyu * result_array[idxmm];
           pm2 = pmm;
@@ -718,24 +686,24 @@ gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
            */
 
           k = idxmm + m + 1; /* idx(m+1,m) = idx(m,m) + m + 1 */
-          pm1 = x * w->sqrts[2 * m + 1] * pm2;
+          pm1 = x * sqrts[2 * m + 1] * pm2;
           result_array[k] = pm1 * rescalem;
           result_deriv_array[k] =
             uinv * ((m + 1.0) * x * result_array[k] -
-                    w->sqrts[2 * m + 1] * result_array[idxmm]);
+                    sqrts[2 * m + 1] * result_array[idxmm]);
 
           /* compute S(l,m) for l=m+2...lmax */
           for (l = m + 2; l <= lmax; ++l)
             {
               k += l; /* idx(l,m) = idx(l-1,m) + l */
               plm =
-                (2*l - 1) / w->sqrts[l + m] / w->sqrts[l - m] * x * pm1 -
-                w->sqrts[l - m - 1] * w->sqrts[l + m - 1] /
-                w->sqrts[l + m] / w->sqrts[l - m] * pm2;
+                (2*l - 1) / sqrts[l + m] / sqrts[l - m] * x * pm1 -
+                sqrts[l - m - 1] * sqrts[l + m - 1] /
+                sqrts[l + m] / sqrts[l - m] * pm2;
               result_array[k] = plm * rescalem;
               result_deriv_array[k] =
                 uinv * (l * x * result_array[k] -
-                        w->sqrts[l + m] * w->sqrts[l - m] * result_array[k - l]);
+                        sqrts[l + m] * sqrts[l - m] * result_array[k - l]);
               pm2 = pm1;
               pm1 = plm;
             }
@@ -745,7 +713,7 @@ gsl_sf_legendre_deriv_alt_array_schmidt_e(const size_t lmax, const double x,
 
       rescalem *= u;
       idxmm += m + 1; /* idx(lmax,lmax) */
-      pmm *= csphase * w->sqrts[2 * lmax - 1] / w->sqrts[2 * lmax];
+      pmm *= csphase * sqrts[2 * lmax - 1] / sqrts[2 * lmax];
       result_array[idxmm] = pmm * rescalem;
       result_deriv_array[idxmm] = lmax * xbyu * result_array[idxmm];
 
@@ -764,15 +732,13 @@ Inputs: lmax                - maximum order
         result_array        - (output) where to store P_{lm}(x) values
         result_deriv_array  - (output) where to store d/dtheta P_{lm}(x) values
         result_deriv2_array - (output) where to store d^2/dtheta^2 P_{lm}(x) values
-        w                   - workspace
 */
 
 int
 gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
                                           const double csphase, double result_array[],
                                           double result_deriv_array[],
-                                          double result_deriv2_array[],
-                                          alf_workspace *w)
+                                          double result_deriv2_array[])
 {
   if (x > 1.0 || x < -1.0)
     {
@@ -800,9 +766,13 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
       double rescalem;
       double pm1, /* S(l-1,m) */
              pm2; /* S(l-2,m) */
+      size_t nlm = gsl_sf_legendre_nlm(lmax);
+      double *sqrts = &(result_array[nlm]);
+
+      /* precompute square root factors for recurrence */
+      legendre_sqrts(lmax, sqrts);
 
       /* initial values S(0,0) and S(1,0) */
-
       pm2 = 1.0; /* S(0,0) */
       pm1 = x;   /* S(1,0) */
 
@@ -863,7 +833,7 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
            */
 
           idxmm += m + 1; /* idx(m,m) = idx(m-1,m-1) + m + 1 */
-          pmm *= csphase * w->sqrts[2 * m - 1] / w->sqrts[2 * m]; /* S(m,m) * eps / u^m */
+          pmm *= csphase * sqrts[2 * m - 1] / sqrts[2 * m]; /* S(m,m) * eps / u^m */
           result_array[idxmm] = pmm * rescalem;
           result_deriv_array[idxmm] = m * xbyu * result_array[idxmm];
           result_deriv2_array[idxmm] =
@@ -878,11 +848,11 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
            */
 
           k = idxmm + m + 1; /* idx(m+1,m) = idx(m,m) + m + 1 */
-          pm1 = x * w->sqrts[2 * m + 1] * pm2;
+          pm1 = x * sqrts[2 * m + 1] * pm2;
           result_array[k] = pm1 * rescalem;
           result_deriv_array[k] =
             uinv * ((m + 1.0) * x * result_array[k] -
-                    w->sqrts[2 * m + 1] * result_array[idxmm]);
+                    sqrts[2 * m + 1] * result_array[idxmm]);
           result_deriv2_array[k] =
             (m * m * uinv2 - (m + 1.0) * (m + 2.0)) * result_array[k] -
             xbyu * result_deriv_array[k];
@@ -892,13 +862,13 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
             {
               k += l; /* idx(l,m) = idx(l-1,m) + l */
               plm =
-                (2*l - 1) / w->sqrts[l + m] / w->sqrts[l - m] * x * pm1 -
-                w->sqrts[l - m - 1] * w->sqrts[l + m - 1] /
-                w->sqrts[l + m] / w->sqrts[l - m] * pm2;
+                (2*l - 1) / sqrts[l + m] / sqrts[l - m] * x * pm1 -
+                sqrts[l - m - 1] * sqrts[l + m - 1] /
+                sqrts[l + m] / sqrts[l - m] * pm2;
               result_array[k] = plm * rescalem;
               result_deriv_array[k] =
                 uinv * (l * x * result_array[k] -
-                        w->sqrts[l + m] * w->sqrts[l - m] * result_array[k - l]);
+                        sqrts[l + m] * sqrts[l - m] * result_array[k - l]);
               result_deriv2_array[k] =
                 (m * m * uinv2 - l * (l + 1.0)) * result_array[k] -
                 xbyu * result_deriv_array[k];
@@ -911,7 +881,7 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
 
       rescalem *= u;
       idxmm += m + 1; /* idx(lmax,lmax) */
-      pmm *= csphase * w->sqrts[2 * lmax - 1] / w->sqrts[2 * lmax];
+      pmm *= csphase * sqrts[2 * lmax - 1] / sqrts[2 * lmax];
       result_array[idxmm] = pmm * rescalem;
       result_deriv_array[idxmm] = lmax * xbyu * result_array[idxmm];
       result_deriv2_array[idxmm] =
@@ -921,3 +891,17 @@ gsl_sf_legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
       return GSL_SUCCESS;
     }
 } /* gsl_sf_legendre_deriv2_alt_array_schmidt_e() */
+
+/*
+legendre_sqrts()
+  Precompute square root factors needed for Legendre recurrence.
+On output, array[i] = sqrt(i)
+*/
+
+static void
+legendre_sqrts(const size_t lmax, double *array)
+{
+  size_t l;
+  for (l = 0; l <= 2 * lmax + 1; ++l)
+    array[l] = sqrt((double) l);
+}
