@@ -879,12 +879,12 @@ int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq, gsl_sf_mathi
 
 #include "eval.h"                                                          
 
-GSL_FUN double gsl_sf_mathieu_a(int order, double qq)
+double gsl_sf_mathieu_a(int order, double qq)
 {
 	EVAL_RESULT(gsl_sf_mathieu_a_e(order, qq, &result));
 }
 
-GSL_FUN double gsl_sf_mathieu_b(int order, double qq)
+double gsl_sf_mathieu_b(int order, double qq)
 {
 	EVAL_RESULT(gsl_sf_mathieu_b_e(order, qq, &result));
 }
