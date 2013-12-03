@@ -161,14 +161,22 @@ if desired.
 The normalized associated Legendre routines below use a recurrence
 relation which is stable up to a degree and order of about 2700.
 Beyond this, the computed functions could suffer from underflow
-leading to incorrect results.
+leading to incorrect results. Routines are provided to compute
+first and second derivatives
+@math{dP_l^m(x)/dx} and @math{d^2 P_l^m(x)/dx^2} as well as their alternate
+versions @math{d P_l^m(\cos{\theta})/d\theta} and
+@math{d^2 P_l^m(\cos{\theta})/d\theta^2}. While there is a simple
+scaling relationship between the two forms, the derivatives
+involving @math{\theta} are heavily used in spherical harmonic
+expansions and so these routines are also provided.
 
 @deftypefun int gsl_sf_legendre_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 These functions calculate all normalized associated Legendre
-functions up to degree @var{lmax} for
+functions @math{P_l^m(x)} for @math{0 \le l \le lmax} and
+@math{0 \le m \le l} for
 @c{$|x| \le 1$}
 @math{|x| <= 1}.
 The @code{_schmidt} functions calculate the Schmidt semi-normalized
@@ -183,9 +191,46 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} functions. This factor is included by default.
 @end deftypefun
 
+@deftypefun int gsl_sf_legendre_deriv_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+These functions calculate all normalized associated Legendre
+functions and their first derivatives up to degree @var{lmax} for
+@c{$|x| \le 1$}
+@math{|x| <= 1}.
+The normalized @math{P_l^m(x)} values and their derivatives
+@math{dP_l^m(x)/dx} are stored in @var{result_array} and
+@var{result_deriv_array} respectively.
+To include or exclude
+the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
+@var{csphase} to either @math{-1} or @math{1} respectively in the
+@code{_e} functions. This factor is included by default.
+@end deftypefun
+
+@deftypefun int gsl_sf_legendre_deriv_alt_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_alt_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_alt_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_alt_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+These functions calculate all normalized associated Legendre
+functions and their (alternate) first derivatives up to degree @var{lmax} for
+@c{$|x| \le 1$}
+@math{|x| <= 1}.
+The normalized @math{P_l^m(x)} values and their derivatives
+@math{dP_l^m(\cos{\theta})/d\theta} are stored in @var{result_array} and
+@var{result_deriv_array} respectively.
+To include or exclude
+the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
+@var{csphase} to either @math{-1} or @math{1} respectively in the
+@code{_e} functions. This factor is included by default.
+@end deftypefun
+
 @deftypefun size_t gsl_sf_legendre_array_n (const size_t @var{lmax})
 This function returns the minimum array size for maximum degree @var{lmax}
 needed for the array versions of the associated Legendre functions.
+Size is calculated as the total number of @math{P_l^m(x)} functions,
+plus extra space for precomputing multiplicative factors used in the
+recurrence relations.
 @end deftypefun
 
 @deftypefun size_t gsl_sf_legendre_array_index (const size_t @var{l}, const size_t @var{m})
