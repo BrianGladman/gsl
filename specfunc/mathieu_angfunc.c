@@ -354,12 +354,12 @@ int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
 
 #include "eval.h"                                                           
 
-GSL_FUN double gsl_sf_mathieu_ce(int order, double qq, double zz)
+double gsl_sf_mathieu_ce(int order, double qq, double zz)
 {
 	EVAL_RESULT(gsl_sf_mathieu_ce_e(order, qq, zz, &result));
 }
 
-GSL_FUN double gsl_sf_mathieu_se(int order, double qq, double zz)
+double gsl_sf_mathieu_se(int order, double qq, double zz)
 {
 	EVAL_RESULT(gsl_sf_mathieu_se_e(order, qq, zz, &result));
 }

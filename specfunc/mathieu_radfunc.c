@@ -478,12 +478,12 @@ int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
 
 #include "eval.h"                                                           
 
-GSL_FUN double gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz)
+double gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz)
 {
 	EVAL_RESULT(gsl_sf_mathieu_Mc_e(kind, order, qq, zz, &result));
 }
 
-GSL_FUN double gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz)
+double gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz)
 {
 	EVAL_RESULT(gsl_sf_mathieu_Ms_e(kind, order, qq, zz, &result));
 }

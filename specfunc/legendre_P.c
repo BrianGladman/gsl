@@ -1,4 +1,4 @@
-/* legendreP.c
+/* legendre_P.c
  * 
  * Copyright (C) 2009-2013 Patrick Alken
  * 
@@ -18,11 +18,10 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_sf_legendre.h>
-
-#include "alf.h"
 
 /*
  * The routines in this module compute associated Legendre functions
@@ -77,14 +76,6 @@ alf_alloc(const size_t lmax)
       return 0;
     }
 
-  w->alpha = malloc(sizeof(double) * (lmax + 1));
-  if (w->alpha == 0)
-    {
-      printf("error allocating alpha\n");
-      alf_free(w);
-      return 0;
-    }
-
   w->lmax = lmax;
   w->csphase = 0.0;
 
@@ -94,8 +85,6 @@ alf_alloc(const size_t lmax)
    */
   for (l = 0; l <= 2 * w->lmax + 1; ++l)
     w->sqrts[l] = sqrt((double) l);
-
-  alf_params(ALF_CSPHASE_DEFAULT, ALF_CNORM_DEFAULT, ALF_NORM_DEFAULT, w);
 
   return w;
 } /* alf_alloc() */
@@ -111,81 +100,29 @@ alf_free(alf_workspace *w)
   if (w->sqrts)
     free(w->sqrts);
 
-  if (w->alpha)
-    free(w->alpha);
-
   free(w);
 } /* alf_free() */
 
 /*
-alf_params()
-  Define various parameters for the computation of associated
-Legendre polynomials.
-
-Inputs:
-  csphase - 1 to apply the Condon-Shortley phase of (-1)^m
-            0 to omit this phase
-  cnorm   - 1 to use complex normalization
-            0 to use real normalization
-  norm    - type of normalization to use for ALFs (ALF_NORM_xxx)
-  w       - workspace
-*/
-
-int
-alf_params(const int csphase, const int cnorm, const alf_norm_t norm,
-           alf_workspace *w)
-{
-  int l;
-
-  if (csphase)
-    w->csphase = -1.0;
-  else
-    w->csphase = 1.0;
-
-  w->cnorm = cnorm;
-  w->norm = norm;
-
-  if (norm == ALF_NORM_SPHARM)
-    {
-      /* Y(l,m) = sqrt((2*l + 1) / (4 pi)) S(l,m) */
-      for (l = 0; l <= w->lmax; ++l)
-        w->alpha[l] = w->sqrts[2 * l + 1] / sqrt(4.0 * M_PI);
-    }
-  else if (norm == ALF_NORM_SCHMIDT)
-    {
-      for (l = 0; l <= w->lmax; ++l)
-        w->alpha[l] = 1.0;
-    }
-  else if (norm == ALF_NORM_ORTHO)
-    {
-      /* N(l,m) = sqrt((2*l + 1) / 2) S(l,m) */
-      for (l = 0; l <= w->lmax; ++l)
-        w->alpha[l] = w->sqrts[2 * l + 1] / sqrt(2.0);
-    }
-
-  return 0;
-} /* alf_params() */
-
-/*
-alf_array_size()
+gsl_sf_legendre_array_n()
   This routine returns the minimum result_array[] size needed
 for a given lmax
 */
 
 size_t
-alf_array_size(const size_t lmax)
+gsl_sf_legendre_array_n(const size_t lmax)
 {
   return (size_t) ((lmax + 1) * (lmax + 2) / 2);
-} /* alf_array_size() */
+} /* gsl_sf_legendre_array_n() */
 
 /*
-alf_array_index()
+gsl_sf_legendre_array_index()
 This routine computes the index into a result_array[] corresponding
 to a given (l,m)
 */
 
 size_t
-alf_array_index(const size_t l, const size_t m)
+gsl_sf_legendre_array_index(const size_t l, const size_t m)
 {
   return (l * (l + 1) / 2 + m);
 } /* alf_index() */
@@ -229,7 +166,7 @@ gsl_sf_legendre_deriv_array_schmidt(const size_t lmax, const double x,
   int s;
   const double u = sqrt((1.0 - x) * (1.0 + x));
   const double uinv = 1.0 / u;
-  const size_t n = alf_array_size(lmax);
+  const size_t n = gsl_sf_legendre_array_n(lmax);
   size_t i;
 
   /* compute d/dtheta S_{lm}(x) */
@@ -267,7 +204,7 @@ gsl_sf_legendre_deriv2_array_schmidt(const size_t lmax, const double x,
   const double u = sqrt((1.0 - x) * (1.0 + x));
   const double uinv = 1.0 / u;
   const double uinv2 = uinv * uinv;
-  const size_t n = alf_array_size(lmax);
+  const size_t n = gsl_sf_legendre_array_n(lmax);
   size_t i;
 
   /* compute d/dtheta S_{lm}(x) and d^2/dtheta^2 S_{lm}(x) */
@@ -321,10 +258,10 @@ gsl_sf_legendre_array_spharm(const size_t lmax, const double x,
        * handle m = 0 case separately since S_{lm} have a
        * different normalization for m = 0 while Y_{lm} do not
        */
-      result_array[alf_array_index(l, 0)] *= w->sqrts[twoellp1] * fac1;
+      result_array[gsl_sf_legendre_array_index(l, 0)] *= w->sqrts[twoellp1] * fac1;
 
       for (m = 1; m <= l; ++m)
-        result_array[alf_array_index(l, m)] *= w->sqrts[twoellp1] * fac2;
+        result_array[gsl_sf_legendre_array_index(l, m)] *= w->sqrts[twoellp1] * fac2;
 
       twoellp1 += 2;
     }

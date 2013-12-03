@@ -24,6 +24,311 @@
 #include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
+#define TEST_NORM_SCHMIDT         0
+#define TEST_NORM_SPHARM          1
+#define TEST_NORM_ORTHO           2
+
+/*
+test_legendre_sum()
+  This routine computes the sum:
+
+  [P(l,0)(x)]^2 + 2 * Sum_{m=1}^l [P(l,m)(x)]^2
+
+for complex normalization (cnorm = 1) and
+
+  Sum_{m=0}^l [P(l,m)(x)]^2
+
+for real normalization (cnorm = 0).
+
+These sums should equate to (2*l + 1)/2 in the case of the fully
+normalized ALFs.
+*/
+
+double
+test_legendre_sum(const size_t l, double *p, int cnorm)
+{
+  double sum = 0.0;
+  size_t idx;
+  size_t m;
+
+  for (m = 1; m <= l; ++m)
+    {
+      idx = gsl_sf_legendre_array_index(l, m);
+      sum += p[idx] * p[idx];
+    }
+
+  idx = gsl_sf_legendre_array_index(l, 0);
+
+  if (cnorm)
+    {
+      sum *= 2.0;
+      sum += p[idx] * p[idx];
+    }
+  else
+    sum += p[idx] * p[idx];
+
+  return sum;
+} /* test_legendre_sum() */
+
+/*
+test_legendre_sum_deriv()
+  This routine computes the sum:
+
+  P(l,0)(x) * dP(l,0)/dx + 2 * Sum_{m=1}^l P(l,m)(x) * dP(l,m)/dx
+
+for complex normalization (cnorm = 1) and the sum:
+
+  Sum_{m=0}^l P(l,m)(x) * dP(l,m)/dx
+
+which should equal 0 in the case of all normalized ALFs.
+*/
+
+double
+test_legendre_sum_deriv(const int l, double *p, double *dp, int cnorm)
+{
+  double sum = 0.0;
+  size_t idx;
+  int m;
+
+  for (m = 1; m <= l; ++m)
+    {
+      idx = gsl_sf_legendre_array_index(l, m);
+      sum += p[idx] * dp[idx];
+    }
+
+  idx = gsl_sf_legendre_array_index(l, 0);
+
+  if (cnorm)
+    {
+      sum *= 2.0;
+      sum += p[idx] * dp[idx];
+    }
+  else
+    sum += p[idx] * dp[idx];
+
+  return sum;
+} /* test_legendre_sum_deriv() */
+
+/*
+test_legendre_sum_deriv2()
+  This routine computes the sum:
+
+  P(l,0)(x) * dP(l,0)/dx + 2 * Sum_{m=1}^l P(l,m)(x) * dP(l,m)/dx
+
+for complex normalization (cnorm = 1) and the sum:
+
+  Sum_{m=0}^l P(l,m)(x) * dP(l,m)/dx
+
+which should equal 0 in the case of all normalized ALFs.
+*/
+
+double
+test_legendre_sum_deriv2(const int l, double *p, double *dp, double *d2p, int cnorm)
+{
+  double sum = 0.0;
+  size_t idx;
+  int m;
+
+  for (m = 1; m <= l; ++m)
+    {
+      idx = gsl_sf_legendre_array_index(l, m);
+      sum += dp[idx] * dp[idx] + p[idx] * d2p[idx];
+    }
+
+  idx = gsl_sf_legendre_array_index(l, 0);
+
+  if (cnorm)
+    {
+      sum *= 2.0;
+      sum += dp[idx] * dp[idx] + p[idx] * d2p[idx];
+    }
+  else
+    sum += dp[idx] * dp[idx] + p[idx] * d2p[idx];
+
+  return sum;
+} /* test_legendre_sum_deriv2() */
+
+static void
+test_value(const size_t lmax, const size_t l, const size_t m,
+           const double *p, const double expected, const double tol,
+           const char *desc, const char *desc2)
+{
+  size_t idx = gsl_sf_legendre_array_index(l, m);
+  double value;
+
+  if (l > lmax)
+    return;
+
+  value = p[idx];
+
+  gsl_test_rel(value, expected, tol, "%s %s lmax=%zu l=%zu m=%zu", desc, desc2, lmax, l, m);
+} /* test_value() */
+
+static double
+test_rhs_schmidt(const size_t l)
+{
+  return (1.0);
+}
+
+static int
+test_legendre_norm(alf_workspace *w, const int norm_type,
+                   const double csphase, const char *desc)
+{
+  int s = 0;
+  const size_t lmax = w->lmax;
+  const size_t n = gsl_sf_legendre_array_n(lmax);
+  size_t l;
+  double x, dx;
+  double *p, *p2, *dp, *d2p;
+  size_t dim;
+  double (*rhs_func)(const size_t l);
+  size_t i;
+
+  dim = gsl_sf_legendre_array_n(lmax);
+  p = malloc(sizeof(double) * dim);
+  p2 = malloc(sizeof(double) * dim);
+  dp = malloc(sizeof(double) * dim);
+  d2p = malloc(sizeof(double) * dim);
+
+  if (norm_type == TEST_NORM_SCHMIDT)
+    rhs_func = &test_rhs_schmidt;
+  else
+    {
+      fprintf(stderr, "test_legendre_norm: invalid norm_type\n");
+      return -1;
+    }
+
+  /* test specific values */
+  x = 0.5;
+  gsl_sf_legendre_array_schmidt(lmax, x, p, w);
+  test_value(lmax, 0, 0, p, 1.000000000000000, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 1, 0, p, 0.500000000000000, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 1, 1, p, 0.866025403784439, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 2, 0, p, -0.125000000000000, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 2, 1, p, 0.750000000000000, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 2, 2, p, 0.649519052838329, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 3, 0, p, -0.437500000000000, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 3, 2, p, 0.726184377413891, 1.0e-10, desc, "x=0.5");
+  test_value(lmax, 3, 3, p, 0.513489897661093, 1.0e-10, desc, "x=0.5");
+
+  x = 0.15;
+  gsl_sf_legendre_deriv_array_schmidt(lmax, x, p, dp, w);
+  test_value(lmax, 0, 0, dp, 0.000000000000000, 1.0e-10, desc, "deriv x=0.15");
+  test_value(lmax, 1, 0, dp, 1.000000000000000, 1.0e-10, desc, "deriv x=0.15");
+  test_value(lmax, 1, 1, dp, -0.151716521227252, 1.0e-10, desc, "deriv x=0.15");
+  test_value(lmax, 2, 1, dp, 1.67303727048739, 1.0e-10, desc, "deriv x=0.15");
+
+  x = 0.23;
+  gsl_sf_legendre_deriv2_array_schmidt(lmax, x, p, dp, d2p, w);
+  test_value(lmax, 0, 0, d2p, 0.000000000000000, 1.0e-10, desc, "deriv2 x=0.23");
+  test_value(lmax, 1, 0, d2p, 0.000000000000000, 1.0e-10, desc, "deriv2 x=0.23");
+  test_value(lmax, 1, 1, d2p, -1.08494130865644, 1.0e-10, desc, "deriv2 x=0.23");
+  test_value(lmax, 2, 0, d2p, 3.000000000000000, 1.0e-10, desc, "deriv2 x=0.23");
+  test_value(lmax, 2, 1, d2p, -1.25090188696335, 1.0e-10, desc, "deriv2 x=0.23");
+
+  /* test array routines */
+  dx = 0.05;
+  for (x = -1.0; x <= 1.0; x += dx)
+    {
+      if (norm_type == TEST_NORM_SCHMIDT)
+        {
+          s += gsl_sf_legendre_array_schmidt_e(lmax, x, csphase, p, w);
+        }
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          double sum = test_legendre_sum(l, p, 0);
+          double rhs = (*rhs_func)(l);
+
+          gsl_test_rel(sum, rhs, 1.0e-10,
+                       "%s l=%zu, x=%f, sum=%.12e", desc, l, x, sum);
+        }
+    }
+
+  /* test deriv array routines */
+  for (x = -1.0 + dx; x < 1.0; x += dx)
+    {
+      if (norm_type == TEST_NORM_SCHMIDT)
+        {
+          s += gsl_sf_legendre_array_schmidt(lmax, x, p2, w);
+          s += gsl_sf_legendre_deriv_array_schmidt(lmax, x, p, dp, w);
+        }
+
+      /* check p = p2 */
+      for (i = 0; i < n; ++i)
+        {
+          if (fabs(p2[i]) < GSL_DBL_MIN)
+            continue;
+
+          gsl_test_rel(p[i], p2[i], 1.0e-10, "%s deriv i=%zu", desc, i);
+        }
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          double sum = test_legendre_sum_deriv(l, p, dp, 0);
+
+          gsl_test_abs(sum, 0.0, 1.0e-10,
+                       "%s deriv l=%zu, x=%f, sum=%.12e", desc, l, x, sum);
+        }
+    }
+
+  /* test deriv2 array routines */
+  for (x = -1.0 + dx; x < 1.0; x += dx)
+    {
+      if (norm_type == TEST_NORM_SCHMIDT)
+        {
+          s += gsl_sf_legendre_array_schmidt(lmax, x, p2, w);
+          s += gsl_sf_legendre_deriv2_array_schmidt(lmax, x, p, dp, d2p, w);
+        }
+
+      /* check p = p2 */
+      for (i = 0; i < n; ++i)
+        {
+          if (fabs(p2[i]) < GSL_DBL_MIN)
+            continue;
+
+          gsl_test_rel(p[i], p2[i], 1.0e-10, "%s deriv2 i=%zu", desc, i);
+        }
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          double sum = test_legendre_sum_deriv(l, p, dp, 0);
+          double sum2 = test_legendre_sum_deriv2(l, p, dp, d2p, 0);
+
+          gsl_test_abs(sum, 0.0, 1.0e-10,
+                       "%s deriv2 l=%zu, x=%f, sum=%.12e", desc, l, x, sum);
+          gsl_test_abs(sum2, 0.0, 1.0e-6,
+                       "%s deriv2 l=%zu, x=%f, sum=%.12e", desc, l, x, sum2);
+
+          if (lmax == 99 && l == lmax)
+            printf("%f %.12e %.12e\n", x, fabs(sum), fabs(sum2));
+        }
+    }
+
+    if (lmax == 99)
+      exit(1);
+
+  free(p);
+  free(p2);
+
+  return s;
+} /* test_legendre_norm() */
+
+static int
+test_legendre_all(const size_t lmax)
+{
+  int s = 0;
+  alf_workspace *alf_p = alf_alloc(lmax);
+
+  fprintf(stderr, "testing schmidt (lmax=%zu)...", lmax);
+  s += test_legendre_norm(alf_p, TEST_NORM_SCHMIDT, 1.0, "schmidt csphase=1");
+  s += test_legendre_norm(alf_p, TEST_NORM_SCHMIDT, -1.0, "schmidt csphase=-1");
+  fprintf(stderr, "done (s = %d)\n", s);
+
+  alf_free(alf_p);
+
+  return s;
+} /* test_legendre_all() */
 
 int test_legendre(void)
 {
@@ -547,6 +852,16 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_Ql_e, (1000, -0.5, &r), -0.030105074974005303500, TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Ql_e, (1000,  0.5, &r), 0.030105074974005303500,  TEST_TOL1, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Ql_e, (1000,  1.1, &r), 1.0757258447825356443e-194, TEST_TOL3, GSL_SUCCESS);
+
+  /* test associated legendre functions */
+  {
+    size_t l;
+
+    for (l = 0; l <= 10; ++l)
+      test_legendre_all(l);
+
+    test_legendre_all(2700);
+  }
 
   return s;
 }
