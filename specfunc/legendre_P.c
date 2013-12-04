@@ -90,7 +90,7 @@ gsl_sf_legendre_array_index(const size_t l, const size_t m)
 } /* alf_index() */
 
 /*
-gsl_sf_legendre_array_norm()
+gsl_sf_legendre_array()
   Compute normalized ALFs
 
 Inputs: norm         - normalization type
@@ -100,16 +100,16 @@ Inputs: norm         - normalization type
 */
 
 int
-gsl_sf_legendre_array_norm(const gsl_sf_legendre_t norm, const size_t lmax,
-                           const double x, double result_array[])
+gsl_sf_legendre_array(const gsl_sf_legendre_t norm, const size_t lmax,
+                      const double x, double result_array[])
 {
-  int s = gsl_sf_legendre_array_norm_e(norm, lmax, x, 1.0, result_array);
+  int s = gsl_sf_legendre_array_e(norm, lmax, x, 1.0, result_array);
 
   return s;
-} /* gsl_sf_legendre_array_norm() */
+} /* gsl_sf_legendre_array() */
 
 /*
-gsl_sf_legendre_deriv_array_norm()
+gsl_sf_legendre_deriv_array()
   Compute normalized ALFs and first derivatives
 
 Inputs: norm               - normalization type
@@ -120,19 +120,19 @@ Inputs: norm               - normalization type
 */
 
 int
-gsl_sf_legendre_deriv_array_norm(const gsl_sf_legendre_t norm,
-                                 const size_t lmax, const double x,
-                                 double result_array[],
-                                 double result_deriv_array[])
+gsl_sf_legendre_deriv_array(const gsl_sf_legendre_t norm,
+                            const size_t lmax, const double x,
+                            double result_array[],
+                            double result_deriv_array[])
 {
-  int s = gsl_sf_legendre_deriv_array_norm_e(norm, lmax, x, 1.0,
+  int s = gsl_sf_legendre_deriv_array_e(norm, lmax, x, 1.0,
                                              result_array,
                                              result_deriv_array);
   return s;
-} /* gsl_sf_legendre_deriv_array_norm() */
+} /* gsl_sf_legendre_deriv_array() */
 
 /*
-gsl_sf_legendre_deriv2_array_norm()
+gsl_sf_legendre_deriv2_array()
   Compute normalized ALFs and first derivatives
 
 Inputs: norm                - normalization type
@@ -144,21 +144,21 @@ Inputs: norm                - normalization type
 */
 
 int
-gsl_sf_legendre_deriv2_array_norm(const gsl_sf_legendre_t norm,
-                                  const size_t lmax, const double x,
-                                  double result_array[],
-                                  double result_deriv_array[],
-                                  double result_deriv2_array[])
+gsl_sf_legendre_deriv2_array(const gsl_sf_legendre_t norm,
+                             const size_t lmax, const double x,
+                             double result_array[],
+                             double result_deriv_array[],
+                             double result_deriv2_array[])
 {
-  int s = gsl_sf_legendre_deriv2_array_norm_e(norm, lmax, x, 1.0,
+  int s = gsl_sf_legendre_deriv2_array_e(norm, lmax, x, 1.0,
                                               result_array,
                                               result_deriv_array,
                                               result_deriv2_array);
   return s;
-} /* gsl_sf_legendre_deriv2_array_norm() */
+} /* gsl_sf_legendre_deriv2_array() */
 
 /*
-gsl_sf_legendre_array_norm_e()
+gsl_sf_legendre_array_e()
   Compute normalized ALFs
 
 Inputs: norm         - normalization type
@@ -169,7 +169,7 @@ Inputs: norm         - normalization type
 */
 
 int
-gsl_sf_legendre_array_norm_e(const gsl_sf_legendre_t norm,
+gsl_sf_legendre_array_e(const gsl_sf_legendre_t norm,
                              const size_t lmax, const double x,
                              const double csphase, double result_array[])
 {
@@ -179,6 +179,7 @@ gsl_sf_legendre_array_norm_e(const gsl_sf_legendre_t norm,
   if (s)
     return s;
 
+  /* apply scaling for requested normalization */
   if (norm == GSL_SF_LEGENDRE_SCHMIDT)
     return s;
   else if (norm == GSL_SF_LEGENDRE_SPHARM)
@@ -206,10 +207,10 @@ gsl_sf_legendre_array_norm_e(const gsl_sf_legendre_t norm,
     }
 
   return s;
-} /* gsl_sf_legendre_array_norm_e() */
+} /* gsl_sf_legendre_array_e() */
 
 /*
-gsl_sf_legendre_deriv_array_norm_e()
+gsl_sf_legendre_deriv_array_e()
   Compute Schmidt semi-normalized ALFs and their first derivatives
 S_{nm}(x) and S'_{nm}(x)
 
@@ -222,7 +223,7 @@ Inputs: norm               - normalization
 */
 
 int
-gsl_sf_legendre_deriv_array_norm_e(const gsl_sf_legendre_t norm,
+gsl_sf_legendre_deriv_array_e(const gsl_sf_legendre_t norm,
                                    const size_t lmax, const double x,
                                    const double csphase,
                                    double result_array[],
@@ -242,11 +243,46 @@ gsl_sf_legendre_deriv_array_norm_e(const gsl_sf_legendre_t norm,
   for (i = 0; i < n; ++i)
     result_deriv_array[i] *= -uinv;
 
+  /* apply scaling for requested normalization */
+  if (norm == GSL_SF_LEGENDRE_SCHMIDT)
+    return s;
+  else if (norm == GSL_SF_LEGENDRE_SPHARM)
+    {
+      const double fac1 = 1.0 / sqrt(4.0 * M_PI);
+      const double fac2 = 1.0 / sqrt(8.0 * M_PI);
+      size_t l, m;
+      size_t twoellp1 = 1; /* 2l + 1 */
+      size_t nlm = gsl_sf_legendre_nlm(lmax);
+      double *sqrts = &(result_array[nlm]);
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          /*
+           * handle m = 0 case separately since S_{lm} have a
+           * different normalization for m = 0 while Y_{lm} do not
+           */
+          result_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+          result_deriv_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+
+          for (m = 1; m <= l; ++m)
+            {
+              result_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+              result_deriv_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+            }
+
+          twoellp1 += 2;
+        }
+    }
+
   return s;
-} /* gsl_sf_legendre_deriv_array_norm_e() */
+} /* gsl_sf_legendre_deriv_array_e() */
 
 /*
-gsl_sf_legendre_deriv2_array_norm_e()
+gsl_sf_legendre_deriv2_array_e()
   Compute Schmidt semi-normalized ALFs and their first derivatives
 S_{nm}(x) and S'_{nm}(x)
 
@@ -260,12 +296,12 @@ Inputs: norm                - normalization
 */
 
 int
-gsl_sf_legendre_deriv2_array_norm_e(const gsl_sf_legendre_t norm,
-                                    const size_t lmax, const double x,
-                                    const double csphase,
-                                    double result_array[],
-                                    double result_deriv_array[],
-                                    double result_deriv2_array[])
+gsl_sf_legendre_deriv2_array_e(const gsl_sf_legendre_t norm,
+                               const size_t lmax, const double x,
+                               const double csphase,
+                               double result_array[],
+                               double result_deriv_array[],
+                               double result_deriv2_array[])
 {
   int s;
   const double u = sqrt((1.0 - x) * (1.0 + x));
@@ -290,8 +326,47 @@ gsl_sf_legendre_deriv2_array_norm_e(const gsl_sf_legendre_t norm,
       result_deriv2_array[i] = (d2p - x * uinv * dp) * uinv2;
     }
 
+  /* apply scaling for requested normalization */
+  if (norm == GSL_SF_LEGENDRE_SCHMIDT)
+    return s;
+  else if (norm == GSL_SF_LEGENDRE_SPHARM)
+    {
+      const double fac1 = 1.0 / sqrt(4.0 * M_PI);
+      const double fac2 = 1.0 / sqrt(8.0 * M_PI);
+      size_t l, m;
+      size_t twoellp1 = 1; /* 2l + 1 */
+      size_t nlm = gsl_sf_legendre_nlm(lmax);
+      double *sqrts = &(result_array[nlm]);
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          /*
+           * handle m = 0 case separately since S_{lm} have a
+           * different normalization for m = 0 while Y_{lm} do not
+           */
+          result_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+          result_deriv_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+          result_deriv2_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+
+          for (m = 1; m <= l; ++m)
+            {
+              result_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+              result_deriv_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+              result_deriv2_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+            }
+
+          twoellp1 += 2;
+        }
+    }
+
   return s;
-} /* gsl_sf_legendre_deriv2_array_norm_e() */
+} /* gsl_sf_legendre_deriv2_array_e() */
 
 /*********************************************************
  *                 INTERNAL ROUTINES                     *

@@ -317,33 +317,33 @@ typedef enum
   GSL_SF_LEGENDRE_SPHARM
 } gsl_sf_legendre_t;
 
-int gsl_sf_legendre_array_norm(const gsl_sf_legendre_t norm,
-                               const size_t lmax, const double x,
-                               double result_array[]);
-int gsl_sf_legendre_array_norm_e(const gsl_sf_legendre_t norm,
+int gsl_sf_legendre_array(const gsl_sf_legendre_t norm,
+                          const size_t lmax, const double x,
+                          double result_array[]);
+int gsl_sf_legendre_array_e(const gsl_sf_legendre_t norm,
+                            const size_t lmax, const double x,
+                            const double csphase,
+                            double result_array[]);
+int gsl_sf_legendre_deriv_array(const gsl_sf_legendre_t norm,
+                                const size_t lmax, const double x,
+                                double result_array[],
+                                double result_deriv_array[]);
+int gsl_sf_legendre_deriv_array_e(const gsl_sf_legendre_t norm,
+                                  const size_t lmax, const double x,
+                                  const double csphase,
+                                  double result_array[],
+                                  double result_deriv_array[]);
+int gsl_sf_legendre_deriv2_array(const gsl_sf_legendre_t norm,
                                  const size_t lmax, const double x,
-                                 const double csphase,
-                                 double result_array[]);
-int gsl_sf_legendre_deriv_array_norm(const gsl_sf_legendre_t norm,
-                                     const size_t lmax, const double x,
-                                     double result_array[],
-                                     double result_deriv_array[]);
-int gsl_sf_legendre_deriv_array_norm_e(const gsl_sf_legendre_t norm,
-                                       const size_t lmax, const double x,
-                                       const double csphase,
-                                       double result_array[],
-                                       double result_deriv_array[]);
-int gsl_sf_legendre_deriv2_array_norm(const gsl_sf_legendre_t norm,
-                                      const size_t lmax, const double x,
-                                      double result_array[],
-                                      double result_deriv_array[],
-                                      double result_deriv2_array[]);
-int gsl_sf_legendre_deriv2_array_norm_e(const gsl_sf_legendre_t norm,
-                                        const size_t lmax, const double x,
-                                        const double csphase,
-                                        double result_array[],
-                                        double result_deriv_array[],
-                                        double result_deriv2_array[]);
+                                 double result_array[],
+                                 double result_deriv_array[],
+                                 double result_deriv2_array[]);
+int gsl_sf_legendre_deriv2_array_e(const gsl_sf_legendre_t norm,
+                                   const size_t lmax, const double x,
+                                   const double csphase,
+                                   double result_array[],
+                                   double result_deriv_array[],
+                                   double result_deriv2_array[]);
 size_t gsl_sf_legendre_array_n(const size_t lmax);
 size_t gsl_sf_legendre_array_index(const size_t l, const size_t m);
 size_t gsl_sf_legendre_nlm(const size_t lmax);

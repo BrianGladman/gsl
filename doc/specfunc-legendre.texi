@@ -170,18 +170,14 @@ scaling relationship between the two forms, the derivatives
 involving @math{\theta} are heavily used in spherical harmonic
 expansions and so these routines are also provided.
 
-@deftypefun int gsl_sf_legendre_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
-@deftypefunx int gsl_sf_legendre_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
-@deftypefunx int gsl_sf_legendre_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[])
-@deftypefunx int gsl_sf_legendre_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
+@deftypefun int gsl_sf_legendre_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
+@deftypefunx int gsl_sf_legendre_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 These functions calculate all normalized associated Legendre
 functions @math{P_l^m(x)} for @math{0 \le l \le lmax} and
 @math{0 \le m \le l} for
 @c{$|x| \le 1$}
 @math{|x| <= 1}.
-The @code{_schmidt} functions calculate the Schmidt semi-normalized
-ALFs @math{S_l^m(x)}. The @code{_spharm} functions calculate the
-spherical harmonic ALFs @math{Y_l^m(x)}.
+The @var{norm} parameter specifies which ALFs are computed.
 The normalized @math{P_l^m(x)} values are stored in @var{result_array}, whose
 minimum size can be obtained from calling @code{gsl_sf_legendre_array_n}.
 The array index of @math{P_l^m(x)} is obtained from calling
@@ -191,15 +187,14 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} functions. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefun int gsl_sf_legendre_deriv_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
 These functions calculate all normalized associated Legendre
 functions and their first derivatives up to degree @var{lmax} for
 @c{$|x| \le 1$}
 @math{|x| <= 1}.
-The normalized @math{P_l^m(x)} values and their derivatives
+The parameter @var{norm} specifies the normalization used. The
+normalized @math{P_l^m(x)} values and their derivatives
 @math{dP_l^m(x)/dx} are stored in @var{result_array} and
 @var{result_deriv_array} respectively.
 To include or exclude
@@ -208,10 +203,8 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} functions. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv_alt_array_schmidt (const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_alt_array_schmidt_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_alt_array_spharm (const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
-@deftypefunx int gsl_sf_legendre_deriv_alt_array_spharm_e (const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefun int gsl_sf_legendre_deriv_alt_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefunx int gsl_sf_legendre_deriv_alt_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
 These functions calculate all normalized associated Legendre
 functions and their (alternate) first derivatives up to degree @var{lmax} for
 @c{$|x| \le 1$}
