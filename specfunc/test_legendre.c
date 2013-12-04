@@ -165,6 +165,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   double *p, *p2, *dp, *d2p;
   size_t dim;
   size_t i;
+  const gsl_sf_legendre_t norm = GSL_SF_LEGENDRE_SCHMIDT;
 
   dim = gsl_sf_legendre_array_n(lmax);
   p = malloc(sizeof(double) * dim);
@@ -174,7 +175,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
 
   /* test specific values */
   x = 0.5;
-  gsl_sf_legendre_array_schmidt(lmax, x, p);
+  gsl_sf_legendre_array_norm(norm, lmax, x, p);
   test_value(lmax, 0, 0, p, 1.000000000000000, 1.0e-10, desc, "x=0.5");
   test_value(lmax, 1, 0, p, 0.500000000000000, 1.0e-10, desc, "x=0.5");
   test_value(lmax, 1, 1, p, 0.866025403784439, 1.0e-10, desc, "x=0.5");
@@ -186,14 +187,14 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   test_value(lmax, 3, 3, p, 0.513489897661093, 1.0e-10, desc, "x=0.5");
 
   x = 0.15;
-  gsl_sf_legendre_deriv_array_schmidt(lmax, x, p, dp);
+  gsl_sf_legendre_deriv_array_norm(norm, lmax, x, p, dp);
   test_value(lmax, 0, 0, dp, 0.000000000000000, 1.0e-10, desc, "deriv x=0.15");
   test_value(lmax, 1, 0, dp, 1.000000000000000, 1.0e-10, desc, "deriv x=0.15");
   test_value(lmax, 1, 1, dp, -0.151716521227252, 1.0e-10, desc, "deriv x=0.15");
   test_value(lmax, 2, 1, dp, 1.67303727048739, 1.0e-10, desc, "deriv x=0.15");
 
   x = 0.23;
-  gsl_sf_legendre_deriv2_array_schmidt(lmax, x, p, dp, d2p);
+  gsl_sf_legendre_deriv2_array_norm(norm, lmax, x, p, dp, d2p);
   test_value(lmax, 0, 0, d2p, 0.000000000000000, 1.0e-10, desc, "deriv2 x=0.23");
   test_value(lmax, 1, 0, d2p, 0.000000000000000, 1.0e-10, desc, "deriv2 x=0.23");
   test_value(lmax, 1, 1, d2p, -1.08494130865644, 1.0e-10, desc, "deriv2 x=0.23");
@@ -204,7 +205,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   dx = 0.1;
   for (x = -1.0; x <= 1.0; x += dx)
     {
-      s += gsl_sf_legendre_array_schmidt_e(lmax, x, csphase, p);
+      s += gsl_sf_legendre_array_norm_e(norm, lmax, x, csphase, p);
 
       for (l = 0; l <= lmax; ++l)
         {
@@ -219,8 +220,8 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   /* test deriv array routines */
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
     {
-      s += gsl_sf_legendre_array_schmidt(lmax, x, p2);
-      s += gsl_sf_legendre_deriv_array_schmidt(lmax, x, p, dp);
+      s += gsl_sf_legendre_array_norm(norm, lmax, x, p2);
+      s += gsl_sf_legendre_deriv_array_norm(norm, lmax, x, p, dp);
 
       /* check p = p2 */
       for (i = 0; i < n; ++i)
@@ -243,8 +244,8 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   /* test deriv2 array routines */
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
     {
-      s += gsl_sf_legendre_array_schmidt(lmax, x, p2);
-      s += gsl_sf_legendre_deriv2_array_schmidt(lmax, x, p, dp, d2p);
+      s += gsl_sf_legendre_array_norm(norm, lmax, x, p2);
+      s += gsl_sf_legendre_deriv2_array_norm(norm, lmax, x, p, dp, d2p);
 
       /* check p = p2 */
       for (i = 0; i < n; ++i)
@@ -295,8 +296,8 @@ test_legendre_spharm(const size_t lmax, const double csphase, const char *desc)
   dx = 0.1;
   for (x = -1.0; x <= 1.0; x += dx)
     {
-      s += gsl_sf_legendre_array_schmidt_e(lmax, x, csphase, p_schmidt);
-      s += gsl_sf_legendre_array_spharm_e(lmax, x, csphase, p);
+      s += gsl_sf_legendre_array_norm_e(GSL_SF_LEGENDRE_SCHMIDT, lmax, x, csphase, p_schmidt);
+      s += gsl_sf_legendre_array_norm_e(GSL_SF_LEGENDRE_SPHARM, lmax, x, csphase, p);
 
       test_legendre_compare(lmax, p_schmidt, p, &test_factor_spharm, desc);
     }
