@@ -32,7 +32,7 @@ test_legendre_sum()
   Sum_{m=0}^l [P(l,m)(x)]^2
 
 This sum should equate to 1.0 for Schmidt semi-normalized
-ALFs.
+ALFs for all l.
 */
 
 double
@@ -127,6 +127,18 @@ test_factor_spharm(const size_t l, const size_t m)
   else
     return (factor / sqrt(2.0));
 } /* test_factor_spharm() */
+
+/* N_{lm} = factor * S_{lm} */
+double
+test_factor_full(const size_t l, const size_t m)
+{
+  double factor = sqrt(l + 0.5);
+
+  if (m == 0)
+    return factor;
+  else
+    return (factor / sqrt(2.0));
+} /* test_factor_full() */
 
 /* test that p = factor * p_expected */
 int
@@ -276,14 +288,17 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   return s;
 } /* test_legendre_schmidt() */
 
+/* test other normalizations (other than schmidt) */
 static int
-test_legendre_spharm(const size_t lmax, const double csphase, const char *desc)
+test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
+                   const double csphase, const char *desc)
 {
   int s = 0;
   double x, dx;
   double *p_schmidt, *dp_schmidt, *d2p_schmidt;
   double *p, *dp, *d2p;
   size_t dim;
+  double (*factor)(const size_t l, const size_t m);
 
   dim = gsl_sf_legendre_array_n(lmax);
   p = malloc(sizeof(double) * dim);
@@ -293,14 +308,39 @@ test_legendre_spharm(const size_t lmax, const double csphase, const char *desc)
   dp_schmidt = malloc(sizeof(double) * dim);
   d2p_schmidt = malloc(sizeof(double) * dim);
 
+  if (norm_type == GSL_SF_LEGENDRE_SPHARM)
+    factor = &test_factor_spharm;
+  else if (norm_type == GSL_SF_LEGENDRE_FULL)
+    {
+      factor = &test_factor_full;
+
+      /* test specific values (computed from GNU octave) */
+      x = 0.45;
+      s += gsl_sf_legendre_array(norm_type, lmax, x, p);
+      test_value(lmax, 0, 0, p, 0.707106781186548, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 1, 0, p, 0.551135192126215, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 1, 1, p, 0.773385414912901, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 2, 0, p, -0.310298495404022, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 2, 1, p, 0.778204062248457, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 2, 2, p, 0.772176054650104, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 3, 0, p, -0.83661120632398589, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 3, 1, p, 0.00904294765791280, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 3, 2, p, 0.91934361403343767, 1.0e-10, desc, "x=0.45");
+      test_value(lmax, 3, 3, p, 0.74482641545541073, 1.0e-10, desc, "x=0.45");
+    }
+
+  /*
+   * test the scale factors between the Schmidts and these
+   * normalized functions
+   */
+
   dx = 0.1;
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,
              csphase, p_schmidt);
-      s += gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SPHARM, lmax, x,
-             csphase, p);
-      test_legendre_compare(lmax, p_schmidt, p, &test_factor_spharm, desc, "p");
+      s += gsl_sf_legendre_array_e(norm_type, lmax, x, csphase, p);
+      test_legendre_compare(lmax, p_schmidt, p, factor, desc, "p");
     }
 
   /* test derivatives */
@@ -308,18 +348,17 @@ test_legendre_spharm(const size_t lmax, const double csphase, const char *desc)
     {
       s += gsl_sf_legendre_deriv_array_e(GSL_SF_LEGENDRE_SCHMIDT,
              lmax, x, csphase, p_schmidt, dp_schmidt);
-      s += gsl_sf_legendre_deriv_array_e(GSL_SF_LEGENDRE_SPHARM,
-             lmax, x, csphase, p, dp);
-      test_legendre_compare(lmax, p_schmidt, p, &test_factor_spharm, desc, "deriv p");
-      test_legendre_compare(lmax, dp_schmidt, dp, &test_factor_spharm, desc, "deriv dp");
+      s += gsl_sf_legendre_deriv_array_e(norm_type, lmax, x, csphase, p, dp);
+      test_legendre_compare(lmax, p_schmidt, p, factor, desc, "deriv p");
+      test_legendre_compare(lmax, dp_schmidt, dp, factor, desc, "deriv dp");
 
       s += gsl_sf_legendre_deriv2_array_e(GSL_SF_LEGENDRE_SCHMIDT,
              lmax, x, csphase, p_schmidt, dp_schmidt, d2p_schmidt);
-      s += gsl_sf_legendre_deriv2_array_e(GSL_SF_LEGENDRE_SPHARM,
-             lmax, x, csphase, p, dp, d2p);
-      test_legendre_compare(lmax, p_schmidt, p, &test_factor_spharm, desc, "deriv2 p");
-      test_legendre_compare(lmax, dp_schmidt, dp, &test_factor_spharm, desc, "deriv2 dp");
-      test_legendre_compare(lmax, d2p_schmidt, d2p, &test_factor_spharm, desc, "deriv2 d2p");
+      s += gsl_sf_legendre_deriv2_array_e(norm_type, lmax, x, csphase,
+             p, dp, d2p);
+      test_legendre_compare(lmax, p_schmidt, p, factor, desc, "deriv2 p");
+      test_legendre_compare(lmax, dp_schmidt, dp, factor, desc, "deriv2 dp");
+      test_legendre_compare(lmax, d2p_schmidt, d2p, factor, desc, "deriv2 d2p");
     }
 
   free(p);
@@ -330,7 +369,7 @@ test_legendre_spharm(const size_t lmax, const double csphase, const char *desc)
   free(d2p_schmidt);
 
   return s;
-} /* test_legendre_spharm() */
+} /* test_legendre_norm() */
 
 static int
 test_legendre_all(const size_t lmax)
@@ -343,8 +382,17 @@ test_legendre_all(const size_t lmax)
   fprintf(stderr, "done (s = %d)\n", s);
 
   fprintf(stderr, "testing spharm (lmax=%zu)...", lmax);
-  s += test_legendre_spharm(lmax, 1.0, "spharm csphase=1");
-  s += test_legendre_spharm(lmax, -1.0, "spharm csphase=-1");
+  s += test_legendre_norm(GSL_SF_LEGENDRE_SPHARM, lmax, 1.0,
+                          "spharm csphase=1");
+  s += test_legendre_norm(GSL_SF_LEGENDRE_SPHARM, lmax, -1.0,
+                          "spharm csphase=-1");
+  fprintf(stderr, "done (s = %d)\n", s);
+
+  fprintf(stderr, "testing full (lmax=%zu)...", lmax);
+  s += test_legendre_norm(GSL_SF_LEGENDRE_FULL, lmax, 1.0,
+                          "full csphase=1");
+  s += test_legendre_norm(GSL_SF_LEGENDRE_FULL, lmax, -1.0,
+                          "full csphase=-1");
   fprintf(stderr, "done (s = %d)\n", s);
 
   return s;
