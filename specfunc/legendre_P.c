@@ -53,6 +53,14 @@ static int legendre_deriv2_alt_array_schmidt_e(const size_t lmax,
                                                double result_array[],
                                                double result_deriv_array[],
                                                double result_deriv2_array[]);
+static int legendre_array_none_e(const size_t lmax, const double x,
+                                 const double csphase,
+                                 double result_array[]);
+static int legendre_deriv_alt_array_none_e(const size_t lmax,
+                                           const double x,
+                                           const double csphase,
+                                           double result_array[],
+                                           double result_deriv_array[]);
 static int legendre_deriv_array_e(const gsl_sf_legendre_t norm,
                                   const size_t lmax, const double x,
                                   const double csphase,
@@ -195,7 +203,7 @@ gsl_sf_legendre_deriv2_array(const gsl_sf_legendre_t norm,
 
 /*
 gsl_sf_legendre_array_e()
-  Compute normalized ALFs
+  Compute ALFs
 
 Inputs: norm         - normalization type
         lmax         - maximum degree
@@ -206,55 +214,64 @@ Inputs: norm         - normalization type
 
 int
 gsl_sf_legendre_array_e(const gsl_sf_legendre_t norm,
-                             const size_t lmax, const double x,
-                             const double csphase, double result_array[])
+                        const size_t lmax, const double x,
+                        const double csphase, double result_array[])
 {
   int s;
   double fac1, fac2; /* normalization factors */
   
-  s = legendre_array_schmidt_e(lmax, x, csphase, result_array);
-  if (s)
-    return s;
-
-  /* apply scaling for requested normalization */
-  if (norm == GSL_SF_LEGENDRE_SCHMIDT)
-    return s;
-  else if (norm == GSL_SF_LEGENDRE_SPHARM)
+  if (norm == GSL_SF_LEGENDRE_NONE)
     {
-      fac1 = 1.0 / sqrt(4.0 * M_PI);
-      fac2 = 1.0 / sqrt(8.0 * M_PI);
+      /* unnormalized P_{lm} */
+      s = legendre_array_none_e(lmax, x, csphase, result_array);
+      return s;
     }
-  else if (norm == GSL_SF_LEGENDRE_FULL)
+  else
     {
-      fac1 = 1.0 / sqrt(2.0);
-      fac2 = 1.0 / sqrt(4.0);
+      size_t l, m, nlm;
+      size_t twoellp1 = 1; /* 2l + 1 */
+      double *sqrts;
+
+      s = legendre_array_schmidt_e(lmax, x, csphase, result_array);
+      if (s)
+        return s;
+
+      /* apply scaling for requested normalization */
+      if (norm == GSL_SF_LEGENDRE_SCHMIDT)
+        return s;
+      else if (norm == GSL_SF_LEGENDRE_SPHARM)
+        {
+          fac1 = 1.0 / sqrt(4.0 * M_PI);
+          fac2 = 1.0 / sqrt(8.0 * M_PI);
+        }
+      else if (norm == GSL_SF_LEGENDRE_FULL)
+        {
+          fac1 = 1.0 / sqrt(2.0);
+          fac2 = 1.0 / sqrt(4.0);
+        }
+
+      /*
+       * common code for different normalizations
+       * P_{l0} = fac1 * sqrt(2l + 1) * S_{l0}
+       * P_{lm} = fac2 * sqrt(2l + 1) * S_{lm}, m > 0
+       */
+      nlm = gsl_sf_legendre_nlm(lmax);
+      sqrts = &(result_array[nlm]);
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          result_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+
+          for (m = 1; m <= l; ++m)
+            {
+              result_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+            }
+
+          twoellp1 += 2;
+        }
     }
-
-  /*
-   * common code for different normalizations
-   * P_{l0} = fac1 * sqrt(2l + 1) * S_{l0}
-   * P_{lm} = fac2 * sqrt(2l + 1) * S_{lm}, m > 0
-   */
-  {
-    size_t l, m;
-    size_t twoellp1 = 1; /* 2l + 1 */
-    size_t nlm = gsl_sf_legendre_nlm(lmax);
-    double *sqrts = &(result_array[nlm]);
-
-    for (l = 0; l <= lmax; ++l)
-      {
-        result_array[gsl_sf_legendre_array_index(l, 0)] *=
-          sqrts[twoellp1] * fac1;
-
-        for (m = 1; m <= l; ++m)
-          {
-            result_array[gsl_sf_legendre_array_index(l, m)] *=
-              sqrts[twoellp1] * fac2;
-          }
-
-        twoellp1 += 2;
-      }
-  }
 
   return s;
 } /* gsl_sf_legendre_array_e() */
@@ -833,15 +850,14 @@ legendre_deriv2_alt_array_schmidt_e(const size_t lmax, const double x,
     }
 } /* legendre_deriv2_alt_array_schmidt_e() */
 
-#if 0
 /*
-gsl_Plm_array_none()
+legendre_array_none_e()
   This routine computes unnormalized associated Legendre polynomials
 */
 
 static int
-gsl_Plm_array_none(const size_t lmax, const double x,
-                   double result_array[])
+legendre_array_none_e(const size_t lmax, const double x,
+                      const double csphase, double result_array[])
 {
   const double u = sqrt((1.0 - x) * (1.0 + x)); /* sin(theta) */
   size_t l, m;
@@ -893,7 +909,7 @@ gsl_Plm_array_none(const size_t lmax, const double x,
        */
       kstart += m + 1;
       twomm1 += 2.0;
-      pmm *= w->csphase * u * twomm1;
+      pmm *= csphase * u * twomm1;
       result_array[kstart] = pmm;
       pm2 = pmm;
 
@@ -924,25 +940,26 @@ gsl_Plm_array_none(const size_t lmax, const double x,
 
   kstart += m + 1;
   twomm1 += 2.0;
-  pmm *= w->csphase * u * twomm1;
+  pmm *= csphase * u * twomm1;
   result_array[kstart] = pmm;
 
   return 0;
-} /* gsl_Plm_array_none() */
+} /* legendre_array_none_e() */
 
 /*
-gsl_Plm_deriv_array_none()
+legendre_deriv_alt_array_none_e()
   This routine computes unnormalized associated Legendre polynomials
 and their first derivatives.
 */
 
 static int
-gsl_Plm_deriv_array_none(const size_t lmax, const double x,
-                         double result_array[],
-                         double result_deriv_array[], alf_workspace *w)
+legendre_deriv_alt_array_none_e(const size_t lmax, const double x,
+                                const double csphase,
+                                double result_array[],
+                                double result_deriv_array[])
 {
   const double u = sqrt((1.0 - x) * (1.0 + x)); /* sin(theta) */
-  const double u_sq = u * u;
+  const double uinv = 1.0 / u;
   size_t l, m;
   size_t k, kstart;
   double plm, pmm;
@@ -972,7 +989,7 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
       k += l;
       plm = ((2*l - 1) * x * pm1 - (l - 1) * pm2) / (double) l;
       result_array[k] = plm;
-      result_deriv_array[k] = l * (pm1 - x * plm) / u_sq;
+      result_deriv_array[k] = -(double)l * (pm1 - x * plm) * uinv;
       pm2 = pm1;
       pm1 = plm;
     }
@@ -991,13 +1008,13 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
        *
        * P(m,m) = u * (2m - 1) P(m-1,m-1)
        * and
-       * dP(m,m)/dx = -m * x * P(m,m) / u^2
+       * dP(m,m)/dtheta = m * x * P(m,m) / u
        */
       kstart += m + 1;
       twomm1 += 2.0;
-      pmm *= w->csphase * u * twomm1;
+      pmm *= csphase * u * twomm1;
       result_array[kstart] = pmm;
-      result_deriv_array[kstart] = - m * x * pmm / u_sq;
+      result_deriv_array[kstart] = m * x * pmm * uinv;
       pm2 = pmm;
 
       /*
@@ -1005,12 +1022,12 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
        *
        * P(m+1,m) = (2 * m + 1) * x * P(m,m)
        * and
-       * dP(m+1,m)/dx = [(2*m + 1) * P(m,m) - (m+1) * x * P(m+1,m)]/u^2
+       * dP(m+1,m)/dt = -[(2*m + 1) * P(m,m) - (m+1) * x * P(m+1,m)]/u
        */
       k = kstart + m + 1;
       pm1 = x * pmm * (2*m + 1);
       result_array[k] = pm1;
-      result_deriv_array[k] = ((2*m + 1) * pmm - (m + 1) * x * pm1) / u_sq;
+      result_deriv_array[k] = -uinv * ((2*m + 1) * pmm - (m + 1) * x * pm1);
 
       /* compute P(l,m) */
       for (l = m + 2; l <= lmax; ++l)
@@ -1019,7 +1036,7 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
           plm = ((2*l - 1) * x * pm1 - (l + m - 1) * pm2) /
                 (double) (l - m);
           result_array[k] = plm;
-          result_deriv_array[k] = ((l + m) * pm1 - l * x * plm) / u_sq;
+          result_deriv_array[k] = -uinv * ((l + m) * pm1 - l * x * plm);
           pm2 = pm1;
           pm1 = plm;
         }
@@ -1029,13 +1046,12 @@ gsl_Plm_deriv_array_none(const size_t lmax, const double x,
 
   kstart += m + 1;
   twomm1 += 2.0;
-  pmm *= w->csphase * u * twomm1;
+  pmm *= csphase * u * twomm1;
   result_array[kstart] = pmm;
-  result_deriv_array[kstart] = - lmax * x * pmm / u_sq;
+  result_deriv_array[kstart] = lmax * x * pmm * uinv;
 
   return 0;
-} /* gsl_Plm_deriv_array_none() */
-#endif
+} /* legendre_deriv_alt_array_none_e() */
 
 /*
 legendre_deriv_array_e()
@@ -1065,60 +1081,80 @@ legendre_deriv_array_e(const gsl_sf_legendre_t norm,
   size_t i;
   double fac1, fac2; /* normalization factors */
 
-  /* compute d/dtheta S_{lm}(x) */
-  s = legendre_deriv_alt_array_schmidt_e(lmax, x, csphase,
-                                         result_array, result_deriv_array);
-
-  if (!alt)
+  if (norm == GSL_SF_LEGENDRE_NONE)
     {
-      /* scale derivative array by u to recover P'(x) from d/dtheta P(x) */
-      for (i = 0; i < n; ++i)
-        result_deriv_array[i] *= -uinv;
-    }
+      /* compute d/dtheta P_{lm}(x) */
+      s = legendre_deriv_alt_array_none_e(lmax, x, csphase,
+                                          result_array,
+                                          result_deriv_array);
 
-  /* apply scaling for requested normalization */
-  if (norm == GSL_SF_LEGENDRE_SCHMIDT)
-    return s;
-  else if (norm == GSL_SF_LEGENDRE_SPHARM)
+      if (!alt)
+        {
+          /* scale derivative array by u to recover P'(x) from d/dtheta P(x) */
+          for (i = 0; i < n; ++i)
+            result_deriv_array[i] *= -uinv;
+        }
+
+      return s;
+    }
+  else
     {
-      fac1 = 1.0 / sqrt(4.0 * M_PI);
-      fac2 = 1.0 / sqrt(8.0 * M_PI);
+      size_t l, m, nlm;
+      size_t twoellp1 = 1; /* 2l + 1 */
+      double *sqrts;
+
+      /* compute d/dtheta S_{lm}(x) */
+      s = legendre_deriv_alt_array_schmidt_e(lmax, x, csphase,
+                                             result_array,
+                                             result_deriv_array);
+
+      if (!alt)
+        {
+          /* scale derivative array by u to recover P'(x) from d/dtheta P(x) */
+          for (i = 0; i < n; ++i)
+            result_deriv_array[i] *= -uinv;
+        }
+
+      /* apply scaling for requested normalization */
+      if (norm == GSL_SF_LEGENDRE_SCHMIDT)
+        return s;
+      else if (norm == GSL_SF_LEGENDRE_SPHARM)
+        {
+          fac1 = 1.0 / sqrt(4.0 * M_PI);
+          fac2 = 1.0 / sqrt(8.0 * M_PI);
+        }
+      else if (norm == GSL_SF_LEGENDRE_FULL)
+        {
+          fac1 = 1.0 / sqrt(2.0);
+          fac2 = 1.0 / sqrt(4.0);
+        }
+
+      /*
+       * common code for different normalizations
+       * P_{l0} = fac1 * sqrt(2l + 1) * S_{l0}
+       * P_{lm} = fac2 * sqrt(2l + 1) * S_{lm}, m > 0
+       */
+      nlm = gsl_sf_legendre_nlm(lmax);
+      sqrts = &(result_array[nlm]);
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          result_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+          result_deriv_array[gsl_sf_legendre_array_index(l, 0)] *=
+            sqrts[twoellp1] * fac1;
+
+          for (m = 1; m <= l; ++m)
+            {
+              result_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+              result_deriv_array[gsl_sf_legendre_array_index(l, m)] *=
+                sqrts[twoellp1] * fac2;
+            }
+
+          twoellp1 += 2;
+        }
     }
-  else if (norm == GSL_SF_LEGENDRE_FULL)
-    {
-      fac1 = 1.0 / sqrt(2.0);
-      fac2 = 1.0 / sqrt(4.0);
-    }
-
-  /*
-   * common code for different normalizations
-   * P_{l0} = fac1 * sqrt(2l + 1) * S_{l0}
-   * P_{lm} = fac2 * sqrt(2l + 1) * S_{lm}, m > 0
-   */
-  {
-    size_t l, m;
-    size_t twoellp1 = 1; /* 2l + 1 */
-    size_t nlm = gsl_sf_legendre_nlm(lmax);
-    double *sqrts = &(result_array[nlm]);
-
-    for (l = 0; l <= lmax; ++l)
-      {
-        result_array[gsl_sf_legendre_array_index(l, 0)] *=
-          sqrts[twoellp1] * fac1;
-        result_deriv_array[gsl_sf_legendre_array_index(l, 0)] *=
-          sqrts[twoellp1] * fac1;
-
-        for (m = 1; m <= l; ++m)
-          {
-            result_array[gsl_sf_legendre_array_index(l, m)] *=
-              sqrts[twoellp1] * fac2;
-            result_deriv_array[gsl_sf_legendre_array_index(l, m)] *=
-              sqrts[twoellp1] * fac2;
-          }
-
-        twoellp1 += 2;
-      }
-  }
 
   return s;
 } /* legendre_deriv_array_e() */

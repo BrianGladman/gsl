@@ -201,23 +201,27 @@ expansions and so these routines are also provided.
 In the functions below, a parameter of type @code{gsl_sf_legendre_t}
 specifies the type of normalization to use. The possible values are
 @table @code
+@item GSL_SF_LEGENDRE_NONE
+This specifies the computation of the unnormalized associated
+Legendre functions @math{P_l^m(x)}.
+
 @item GSL_SF_LEGENDRE_SCHMIDT
 This specifies the computation of the Schmidt semi-normalized associated
-Legendre functions.
+Legendre functions @math{S_l^m(x)}.
 
 @item GSL_SF_LEGENDRE_SPHARM
 This specifies the computation of the spherical harmonic associated
-Legendre functions.
+Legendre functions @math{Y_l^m(x)}.
 
 @item GSL_SF_LEGENDRE_FULL
 This specifies the computation of the fully normalized associated
-Legendre functions.
+Legendre functions @math{N_l^m(x)}.
 @end table
 
 @deftypefun int gsl_sf_legendre_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 These functions calculate all normalized associated Legendre
-functions @math{P_l^m(x)} for @math{0 \le l \le lmax} and
+functions for @math{0 \le l \le lmax} and
 @math{0 \le m \le l} for
 @c{$|x| \le 1$}
 @math{|x| <= 1}.

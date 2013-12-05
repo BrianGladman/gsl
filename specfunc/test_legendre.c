@@ -198,6 +198,12 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   test_value(lmax, 3, 2, p, 0.726184377413891, 1.0e-10, desc, "x=0.5");
   test_value(lmax, 3, 3, p, 0.513489897661093, 1.0e-10, desc, "x=0.5");
 
+  x = 0.1;
+  gsl_sf_legendre_array(norm, lmax, x, p);
+  test_value(lmax, 2700, 500, p, -7.421910573369699e-3, 1.0e-10, desc, "x=0.1");
+  test_value(lmax, 2700, 2500, p, 2.717612388452281e-2, 1.0e-10, desc, "x=0.1");
+  test_value(lmax, 2700, 2700, p, 1.887509917445211e-7, 1.0e-10, desc, "x=0.1");
+
   x = 0.15;
   gsl_sf_legendre_deriv_array(norm, lmax, x, p, dp);
   test_value(lmax, 0, 0, dp, 0.000000000000000, 1.0e-10, desc, "deriv x=0.15");
@@ -371,6 +377,89 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
   return s;
 } /* test_legendre_norm() */
 
+/*
+test_legendre_unnorm()
+  This routine tests the unnormalized ALFs using the relation
+
+S(l,m)(x) = a(l,m) * P(l,m)(x)
+
+where
+
+a(l,0) = 1
+a(l,1) = -sqrt(2)/sqrt(l * (l+1))
+a(l,m+1) = a(l,m) / sqrt((l+m+1) * (l-m)), m > 1
+
+and
+
+S(l,m) are the Schmidt semi-normalized ALFs
+*/
+
+int
+test_legendre_unnorm(const size_t lmax_orig, const char *desc)
+{
+  int s = 0;
+  const int lmax = GSL_MIN(lmax_orig, 150);
+  size_t l, m;
+  double x, dx;
+  double *p, *dp, *p2;
+  double *p_schmidt, *dp_schmidt;
+  size_t dim;
+
+  dim = gsl_sf_legendre_array_n(lmax);
+  p = malloc(sizeof(double) * dim);
+  dp = malloc(sizeof(double) * dim);
+  p2 = malloc(sizeof(double) * dim);
+  p_schmidt = malloc(sizeof(double) * dim);
+  dp_schmidt = malloc(sizeof(double) * dim);
+
+  dx = 0.07;
+
+  for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
+    {
+      gsl_sf_legendre_deriv_array(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,
+                                  p_schmidt, dp_schmidt);
+      gsl_sf_legendre_deriv_array(GSL_SF_LEGENDRE_NONE, lmax, x, p, dp);
+
+      for (l = 0; l <= lmax; ++l)
+        {
+          double a_lm = sqrt(2.0 / (double)l / (l + 1.0));
+
+          for (m = 1; m <= l; ++m)
+            {
+              size_t idx = gsl_sf_legendre_array_index(l, m);
+
+              gsl_test_rel(a_lm * p[idx], p_schmidt[idx], 1.0e-10,
+                           "unnorm l=%zu, m=%zu, x=%f", l, m, x);
+              gsl_test_abs(a_lm * dp[idx], dp_schmidt[idx], 1.0e-10,
+                           "unnorm deriv l=%zu, m=%zu, x=%f", l, m, x);
+
+              a_lm /= sqrt((double) (l + m + 1)) * sqrt((double) (l - m));
+            }
+        }
+
+      gsl_sf_legendre_array(GSL_SF_LEGENDRE_NONE, lmax, x, p2);
+      /* test if p = p2 */
+      for (l = 0; l <= lmax; ++l)
+        {
+          for (m = 0; m <= l; ++m)
+            {
+              size_t idx = gsl_sf_legendre_array_index(l, m);
+              gsl_test_rel(p2[idx], p[idx], 1.0e-10,
+                           "%s compare l=%zu, m=%zu, x=%f",
+                           desc, l, m, x);
+            }
+        }
+    }
+
+  free(p);
+  free(p2);
+  free(dp);
+  free(p_schmidt);
+  free(dp_schmidt);
+
+  return s;
+} /* test_legendre_unnorm() */
+
 static int
 test_legendre_all(const size_t lmax)
 {
@@ -393,6 +482,10 @@ test_legendre_all(const size_t lmax)
                           "full csphase=1");
   s += test_legendre_norm(GSL_SF_LEGENDRE_FULL, lmax, -1.0,
                           "full csphase=-1");
+  fprintf(stderr, "done (s = %d)\n", s);
+
+  fprintf(stderr, "testing unnorm (lmax=%zu)...", lmax);
+  s += test_legendre_unnorm(lmax, "unnorm csphase=1");
   fprintf(stderr, "done (s = %d)\n", s);
 
   return s;
@@ -928,6 +1021,7 @@ int test_legendre(void)
     for (l = 0; l <= 10; ++l)
       test_legendre_all(l);
 
+    test_legendre_all(150);
     test_legendre_all(2700);
   }
 

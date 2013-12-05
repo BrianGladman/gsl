@@ -315,7 +315,8 @@ typedef enum
 {
   GSL_SF_LEGENDRE_SCHMIDT,
   GSL_SF_LEGENDRE_SPHARM,
-  GSL_SF_LEGENDRE_FULL
+  GSL_SF_LEGENDRE_FULL,
+  GSL_SF_LEGENDRE_NONE
 } gsl_sf_legendre_t;
 
 int gsl_sf_legendre_array(const gsl_sf_legendre_t norm,
