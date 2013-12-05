@@ -314,7 +314,8 @@ int gsl_sf_legendre_H3d_array(const int lmax, const double lambda, const double 
 typedef enum
 {
   GSL_SF_LEGENDRE_SCHMIDT,
-  GSL_SF_LEGENDRE_SPHARM
+  GSL_SF_LEGENDRE_SPHARM,
+  GSL_SF_LEGENDRE_FULL
 } gsl_sf_legendre_t;
 
 int gsl_sf_legendre_array(const gsl_sf_legendre_t norm,
@@ -333,6 +334,15 @@ int gsl_sf_legendre_deriv_array_e(const gsl_sf_legendre_t norm,
                                   const double csphase,
                                   double result_array[],
                                   double result_deriv_array[]);
+int gsl_sf_legendre_deriv_alt_array(const gsl_sf_legendre_t norm,
+                                    const size_t lmax, const double x,
+                                    double result_array[],
+                                    double result_deriv_array[]);
+int gsl_sf_legendre_deriv_alt_array_e(const gsl_sf_legendre_t norm,
+                                      const size_t lmax, const double x,
+                                      const double csphase,
+                                      double result_array[],
+                                      double result_deriv_array[]);
 int gsl_sf_legendre_deriv2_array(const gsl_sf_legendre_t norm,
                                  const size_t lmax, const double x,
                                  double result_array[],
