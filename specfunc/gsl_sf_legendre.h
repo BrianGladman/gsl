@@ -355,6 +355,17 @@ int gsl_sf_legendre_deriv2_array_e(const gsl_sf_legendre_t norm,
                                    double result_array[],
                                    double result_deriv_array[],
                                    double result_deriv2_array[]);
+int gsl_sf_legendre_deriv2_alt_array(const gsl_sf_legendre_t norm,
+                                     const size_t lmax, const double x,
+                                     double result_array[],
+                                     double result_deriv_array[],
+                                     double result_deriv2_array[]);
+int gsl_sf_legendre_deriv2_alt_array_e(const gsl_sf_legendre_t norm,
+                                       const size_t lmax, const double x,
+                                       const double csphase,
+                                       double result_array[],
+                                       double result_deriv_array[],
+                                       double result_deriv2_array[]);
 size_t gsl_sf_legendre_array_n(const size_t lmax);
 size_t gsl_sf_legendre_array_index(const size_t l, const size_t m);
 size_t gsl_sf_legendre_nlm(const size_t lmax);
