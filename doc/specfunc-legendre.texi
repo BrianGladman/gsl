@@ -97,8 +97,8 @@ $$
 @ifinfo
 
 @example
-(1 - x^2) {d^2 \over dx^2} P_l^m(x) - 2x {d \over dx} P_l^m(x) +
-\left( l(l+1) - {m^2 \over 1 - x^2} \right) P_l^m(x) = 0
+(1 - x^2) d^2 P_l^m(x) / dx^2 P_l^m(x) - 2x d/dx P_l^m(x) +
+( l(l+1) - m^2 / (1 - x^2) ) P_l^m(x) = 0
 @end example
 
 @end ifinfo
@@ -181,7 +181,7 @@ $$
 @end tex 
 @ifinfo
 @example
-\int_{-1}^1 ( N_l^m(x) )^2 dx = 1
+\int_(-1)^1 ( N_l^m(x) )^2 dx = 1
 @end example
 @end ifinfo
 
