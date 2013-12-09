@@ -25,6 +25,20 @@
 #include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
+static double
+test_legendre_dx(const size_t l)
+{
+  const double dx_max = 0.4;
+  double dx;
+
+  if (l < 1000)
+    dx = exp((double)l / 1000.0) / exp(2.0);
+  else
+    dx = dx_max;
+
+  return dx;
+} /* test_legendre_dx() */
+
 /*
 test_legendre_sum()
   This routine computes the sum:
@@ -35,7 +49,7 @@ This sum should equate to 1.0 for Schmidt semi-normalized
 ALFs for all l.
 */
 
-double
+static double
 test_legendre_sum(const size_t l, double *p)
 {
   double sum = 0.0;
@@ -60,7 +74,7 @@ test_legendre_sum_deriv()
 which should equal 0 in the case of Schmidt normalized ALFs.
 */
 
-double
+static double
 test_legendre_sum_deriv(const int l, double *p, double *dp)
 {
   double sum = 0.0;
@@ -85,7 +99,7 @@ test_legendre_sum_deriv2()
 which should equal 0 in the case of Schmidt normalized ALFs.
 */
 
-double
+static double
 test_legendre_sum_deriv2(const int l, double *p, double *dp, double *d2p)
 {
   double sum = 0.0;
@@ -117,7 +131,7 @@ test_value(const size_t lmax, const size_t l, const size_t m,
 } /* test_value() */
 
 /* Y_{lm} = factor * S_{lm} */
-double
+static double
 test_factor_spharm(const size_t l, const size_t m)
 {
   double factor = sqrt( (2.0 * l + 1.0) / 4.0 / M_PI);
@@ -129,7 +143,7 @@ test_factor_spharm(const size_t l, const size_t m)
 } /* test_factor_spharm() */
 
 /* N_{lm} = factor * S_{lm} */
-double
+static double
 test_factor_full(const size_t l, const size_t m)
 {
   double factor = sqrt(l + 0.5);
@@ -141,7 +155,7 @@ test_factor_full(const size_t l, const size_t m)
 } /* test_factor_full() */
 
 /* test that p = factor * p_expected */
-int
+static int
 test_legendre_compare(const size_t lmax, const double *p_expected,
                       const double *p,
                       double (*factor)(const size_t l, const size_t m),
@@ -220,7 +234,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   test_value(lmax, 2, 1, d2p, -1.25090188696335, 1.0e-10, desc, "deriv2 x=0.23");
 
   /* test array routines */
-  dx = 0.3;
+  dx = test_legendre_dx(lmax);
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(norm, lmax, x, csphase, p);
@@ -340,7 +354,7 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
    * normalized functions
    */
 
-  dx = 0.3;
+  dx = test_legendre_dx(lmax);
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,
@@ -394,7 +408,7 @@ and
 S(l,m) are the Schmidt semi-normalized ALFs
 */
 
-int
+static int
 test_legendre_unnorm(const size_t lmax_orig, const char *desc)
 {
   int s = 0;
@@ -412,7 +426,7 @@ test_legendre_unnorm(const size_t lmax_orig, const char *desc)
   p_schmidt = malloc(sizeof(double) * dim);
   dp_schmidt = malloc(sizeof(double) * dim);
 
-  dx = 0.07;
+  dx = test_legendre_dx(lmax);
 
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
     {
@@ -428,7 +442,7 @@ test_legendre_unnorm(const size_t lmax_orig, const char *desc)
             {
               size_t idx = gsl_sf_legendre_array_index(l, m);
 
-              gsl_test_rel(a_lm * p[idx], p_schmidt[idx], 1.0e-10,
+              gsl_test_rel(a_lm * p[idx], p_schmidt[idx], 1.0e-9,
                            "unnorm l=%zu, m=%zu, x=%f", l, m, x);
               gsl_test_abs(a_lm * dp[idx], dp_schmidt[idx], 1.0e-10,
                            "unnorm deriv l=%zu, m=%zu, x=%f", l, m, x);
