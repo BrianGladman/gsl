@@ -41,35 +41,25 @@
 
 static void legendre_sqrts(const size_t lmax, double *array);
 
-#define LEGENDRE_ARRAY
-#include "legendre_on.h"
+#define LEGENDRE
 #include "legendre_source.c"
-#include "legendre_off.h"
-#undef LEGENDRE_ARRAY
+#undef LEGENDRE
 
-#define LEGENDRE_DERIV_ARRAY
-#include "legendre_on.h"
+#define LEGENDRE_DERIV
 #include "legendre_source.c"
-#include "legendre_off.h"
-#undef LEGENDRE_DERIV_ARRAY
+#undef LEGENDRE_DERIV
 
-#define LEGENDRE_DERIV_ALT_ARRAY
-#include "legendre_on.h"
+#define LEGENDRE_DERIV_ALT
 #include "legendre_source.c"
-#include "legendre_off.h"
-#undef LEGENDRE_DERIV_ALT_ARRAY
+#undef LEGENDRE_DERIV_ALT
 
-#define LEGENDRE_DERIV2_ARRAY
-#include "legendre_on.h"
+#define LEGENDRE_DERIV2
 #include "legendre_source.c"
-#include "legendre_off.h"
-#undef LEGENDRE_DERIV2_ARRAY
+#undef LEGENDRE_DERIV2
 
-#define LEGENDRE_DERIV2_ALT_ARRAY
-#include "legendre_on.h"
+#define LEGENDRE_DERIV2_ALT
 #include "legendre_source.c"
-#include "legendre_off.h"
-#undef LEGENDRE_DERIV2_ALT_ARRAY
+#undef LEGENDRE_DERIV2_ALT
 
 /* number of P_{lm} functions for a given lmax */
 size_t

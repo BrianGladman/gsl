@@ -220,7 +220,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   test_value(lmax, 2, 1, d2p, -1.25090188696335, 1.0e-10, desc, "deriv2 x=0.23");
 
   /* test array routines */
-  dx = 0.1;
+  dx = 0.3;
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(norm, lmax, x, csphase, p);
@@ -340,7 +340,7 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
    * normalized functions
    */
 
-  dx = 0.1;
+  dx = 0.3;
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,

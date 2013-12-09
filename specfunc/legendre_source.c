@@ -17,10 +17,58 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/* define various macros for functions below */
+
+#define CONCAT2x(a,b)   a ## _ ## b 
+#define CONCAT3x(a,b,c) a ## _ ## b ## _ ## c
+
+#if defined(LEGENDRE)
+#define FUNCTION(dir,name) CONCAT2x(dir,name)
+#define OUTPUT result_array
+#define OUTPUT_ARG double result_array[]
+
+#elif defined(LEGENDRE_DERIV)
+#define FUNCTION(dir,name) CONCAT3x(dir,deriv,name)
+#define OUTPUT result_array, result_deriv_array
+#define OUTPUT_ARG double result_array[], double result_deriv_array[]
+
+#elif defined(LEGENDRE_DERIV_ALT)
+#define FUNCTION(dir,name) CONCAT3x(dir,deriv_alt,name)
+#define OUTPUT result_array, result_deriv_array
+#define OUTPUT_ARG double result_array[], double result_deriv_array[]
+#define LEGENDRE_DERIV
+
+#elif defined(LEGENDRE_DERIV2)
+#define FUNCTION(dir,name) CONCAT3x(dir,deriv2,name)
+#define OUTPUT result_array, result_deriv_array, result_deriv2_array
+#define OUTPUT_ARG double result_array[], double result_deriv_array[], double result_deriv2_array[]
+#define LEGENDRE_DERIV
+
+#elif defined(LEGENDRE_DERIV2_ALT)
+#define FUNCTION(dir,name) CONCAT3x(dir,deriv2_alt,name)
+#define OUTPUT result_array, result_deriv_array, result_deriv2_array
+#define OUTPUT_ARG double result_array[], double result_deriv_array[], double result_deriv2_array[]
+#define LEGENDRE_DERIV
+#define LEGENDRE_DERIV2
+#define LEGENDRE_DERIV_ALT
+
+#endif
+
 static int FUNCTION (legendre, array_schmidt_e)
 (const size_t lmax, const double x, const double csphase, OUTPUT_ARG);
 static int FUNCTION(legendre, array_none_e)
 (const size_t lmax, const double x, const double csphase, OUTPUT_ARG);
+
+/*
+gsl_sf_legendre_array()
+
+Inputs: norm                - normlization type
+        lmax                - maximum degree
+        x                   - input argument
+        result_array        - (output) normalized P_{lm}
+        result_deriv_array  - (output) normalized P'_{lm}
+        result_deriv2_array - (output) normalized P''_{lm}
+*/
 
 int
 FUNCTION (gsl_sf_legendre, array)
@@ -30,6 +78,18 @@ FUNCTION (gsl_sf_legendre, array)
   int s = FUNCTION (gsl_sf_legendre, array_e)(norm, lmax, x, 1.0, OUTPUT);
   return s;
 }
+
+/*
+gsl_sf_legendre_array_e()
+
+Inputs: norm                - normlization type
+        lmax                - maximum degree
+        x                   - input argument
+        csphase             - Condon-Shortley phase
+        result_array        - (output) normalized P_{lm}
+        result_deriv_array  - (output) normalized P'_{lm}
+        result_deriv2_array - (output) normalized P''_{lm}
+*/
 
 int
 FUNCTION (gsl_sf_legendre, array_e)
@@ -462,3 +522,12 @@ FUNCTION(legendre, array_none_e)
 
   return 0;
 } /* legendre_array_none_e() */
+
+#undef FUNCTION
+#undef CONCAT2x
+#undef CONCAT3x
+#undef OUTPUT
+#undef OUTPUT_ARG
+#undef LEGENDRE_DERIV
+#undef LEGENDRE_DERIV2
+#undef LEGENDRE_DERIV_ALT
