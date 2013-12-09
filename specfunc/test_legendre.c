@@ -185,10 +185,10 @@ static int
 test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
 {
   int s = 0;
-  const size_t n = gsl_sf_legendre_array_n(lmax);
+  const size_t nlm = gsl_sf_legendre_nlm(lmax);
   size_t l;
   double x, dx;
-  double *p, *p2, *dp, *d2p;
+  double *p, *p2, *dp, *d2p, *p_alt, *dp_alt;
   size_t dim;
   size_t i;
   const gsl_sf_legendre_t norm = GSL_SF_LEGENDRE_SCHMIDT;
@@ -198,6 +198,8 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   p2 = malloc(sizeof(double) * dim);
   dp = malloc(sizeof(double) * dim);
   d2p = malloc(sizeof(double) * dim);
+  p_alt = malloc(sizeof(double) * dim);
+  dp_alt = malloc(sizeof(double) * dim);
 
   /* test specific values */
   x = 0.5;
@@ -252,16 +254,25 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   /* test deriv array routines */
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
     {
+      double u = sqrt((1.0 - x) * (1.0 + x));
+      double uinv = 1.0 / u;
+
       s += gsl_sf_legendre_array(norm, lmax, x, p2);
       s += gsl_sf_legendre_deriv_array(norm, lmax, x, p, dp);
+      s += gsl_sf_legendre_deriv_alt_array(norm, lmax, x, p_alt, dp_alt);
 
-      /* check p = p2 */
-      for (i = 0; i < n; ++i)
+      for (i = 0; i < nlm; ++i)
         {
           if (fabs(p2[i]) < GSL_DBL_MIN)
             continue;
 
+          /* check p = p_alt = p2 */
           gsl_test_rel(p[i], p2[i], 1.0e-10, "%s deriv i=%zu", desc, i);
+          gsl_test_rel(p_alt[i], p2[i], 1.0e-10, "%s deriv_alt i=%zu", desc, i);
+
+          /* check dp = -1/u*dp_alt */
+          gsl_test_rel(-uinv * dp_alt[i], dp[i], 1.0e-10,
+                       "%s deriv_alt x=%f i=%zu", desc, x, i);
         }
 
       for (l = 0; l <= lmax; ++l)
@@ -280,7 +291,7 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
       s += gsl_sf_legendre_deriv2_array(norm, lmax, x, p, dp, d2p);
 
       /* check p = p2 */
-      for (i = 0; i < n; ++i)
+      for (i = 0; i < nlm; ++i)
         {
           if (fabs(p2[i]) < GSL_DBL_MIN)
             continue;
@@ -304,6 +315,8 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
   free(p2);
   free(dp);
   free(d2p);
+  free(p_alt);
+  free(dp_alt);
 
   return s;
 } /* test_legendre_schmidt() */
