@@ -99,7 +99,7 @@ FUNCTION (gsl_sf_legendre, array_e)
   int s;
 #if !defined(LEGENDRE_DERIV_ALT)
   size_t i;
-  const size_t n = gsl_sf_legendre_array_n(lmax);
+  const size_t nlm = gsl_sf_legendre_nlm(lmax);
 #if defined(LEGENDRE_DERIV) || defined(LEGENDRE_DERIV2)
   const double u = sqrt((1.0 - x) * (1.0 + x));
   const double uinv = 1.0 / u;
@@ -123,7 +123,7 @@ FUNCTION (gsl_sf_legendre, array_e)
 
 #if !defined(LEGENDRE_DERIV_ALT)
   /* scale derivative arrays to recover P'(x) and P''(x) */
-  for (i = 0; i < n; ++i)
+  for (i = 0; i < nlm; ++i)
     {
 #if defined(LEGENDRE_DERIV2)
       double dp = result_deriv_array[i];
