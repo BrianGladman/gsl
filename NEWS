@@ -1,7 +1,13 @@
 * What is new in gsl-2.0:
 
 ** merged ALF extension into GSL for associated Legendre functions;
-   api has changed
+   api has changed; consequently the functions:
+     gsl_sf_legendre_Plm_array
+     gsl_sf_legendre_Plm_deriv_array
+     gsl_sf_legendre_sphPlm_array
+     gsl_sf_legendre_sphPlm_deriv_array
+     gsl_sf_legendre_array_size
+   are now deprecated and will be removed in a future release.
 
 ** added function gsl_multifit_robust_weights to allow user to
    access the various weighting functions

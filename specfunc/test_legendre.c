@@ -629,6 +629,7 @@ int test_legendre(void)
   TEST_SF(s, gsl_sf_legendre_Plm_e, (100, 5, 0.5, &r), 6.617107444248382171e+08, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_Plm_e, (100, 5, 0.999, &r), -1.9831610803806212189e+09, TEST_TOL2, GSL_SUCCESS);
 
+#ifndef GSL_DISABLE_DEPRECATED
 
   sa = 0;
   gsl_sf_legendre_Plm_deriv_array(100, 2, -1.0 + 1.0/1125899906842624.0, L, DL);
@@ -711,6 +712,8 @@ int test_legendre(void)
   gsl_test(sa, "gsl_sf_legendre_Plm_deriv_array(100, 5, 0.999)");
   s += sa;
 
+#endif /* !GSL_DISABLE_DEPRECATED */
+
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (10, 0, -0.5, &r), -0.24332702369300133776, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (10, 0, 0.5, &r), -0.24332702369300133776, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (10, 0, 0.999, &r), 1.2225754122797385990, TEST_TOL1, GSL_SUCCESS);
@@ -742,6 +745,8 @@ int test_legendre(void)
 #ifdef EXTENDED
   TEST_SF(s, gsl_sf_legendre_sphPlm_e, (140,135,0.99998689456491752,&r), -6.54265253269093276310395668335e-305, TEST_TOL6, GSL_SUCCESS);
 #endif
+
+#ifndef GSL_DISABLE_DEPRECATED
 
   sa = 0;
   gsl_sf_legendre_sphPlm_array(100, 5, 0.5, L);
@@ -829,6 +834,8 @@ int test_legendre(void)
   TEST_SF_VAL(sa, DL[95], +0.0,  3.9890549466071349506e-15, TEST_TOL3);
   gsl_test(sa, "gsl_sf_legendre_sphPlm_deriv_array(100, 5, -1.0 + 2^(-50))");
   s += sa;
+
+#endif /* !GSL_DISABLE_DEPRECATED */
 
   TEST_SF(s, gsl_sf_conicalP_half_e, (0.0, -0.5, &r),   0.8573827581049917129, TEST_TOL0, GSL_SUCCESS);
   TEST_SF(s, gsl_sf_conicalP_half_e, (0.0,  0.5, &r),   0.8573827581049917129, TEST_TOL0, GSL_SUCCESS);
