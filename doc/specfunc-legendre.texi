@@ -106,14 +106,14 @@ where the degree @math{l} and order @math{m} satisfy @math{0 \le l} and
 @math{0 \le m \le l}.
 The functions @math{P_l^m(x)} grow combinatorially with
 @math{l} and can overflow for @math{l} larger than about 150.
-Alternatively, one may calculate normalized associated Legendre functions
-(ALFs).
-There are a number of different normalization conventions, and these
+Alternatively, one may calculate normalized associated Legendre
+polynomials. There are a number of different normalization conventions,
+and these
 functions can be stably computed up to degree and order 2700. The
 following normalizations are provided:
 @table @code
 @item Schmidt semi-normalization
-Schmidt semi-normalized associated Legendre functions are often
+Schmidt semi-normalized associated Legendre polynomials are often
 used in the magnetics community and are defined as
 @tex
 \beforedisplay
@@ -136,7 +136,7 @@ factor and can be excluded if desired by setting the parameter
 @code{csphase = 1} in the functions below.
 
 @item Spherical Harmonic Normalization
-The associated Legendre functions suitable for calculating spherical
+The associated Legendre polynomials suitable for calculating spherical
 harmonics are defined as
 @tex
 \beforedisplay
@@ -154,7 +154,7 @@ where again the phase factor @math{(-1)^m} can be included or excluded
 if desired.
 
 @item Full Normalization
-The fully normalized associated Legendre functions are defined as
+The fully normalized associated Legendre polynomials are defined as
 @tex
 \beforedisplay
 $$
@@ -199,29 +199,29 @@ specifies the type of normalization to use. The possible values are
 @table @code
 @item GSL_SF_LEGENDRE_NONE
 This specifies the computation of the unnormalized associated
-Legendre functions @math{P_l^m(x)}.
+Legendre polynomials @math{P_l^m(x)}.
 
 @item GSL_SF_LEGENDRE_SCHMIDT
 This specifies the computation of the Schmidt semi-normalized associated
-Legendre functions @math{S_l^m(x)}.
+Legendre polynomials @math{S_l^m(x)}.
 
 @item GSL_SF_LEGENDRE_SPHARM
 This specifies the computation of the spherical harmonic associated
-Legendre functions @math{Y_l^m(x)}.
+Legendre polynomials @math{Y_l^m(x)}.
 
 @item GSL_SF_LEGENDRE_FULL
 This specifies the computation of the fully normalized associated
-Legendre functions @math{N_l^m(x)}.
+Legendre polynomials @math{N_l^m(x)}.
 @end table
 
 @deftypefun int gsl_sf_legendre_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 These functions calculate all normalized associated Legendre
-functions for @math{0 \le l \le lmax} and
+polynomials for @math{0 \le l \le lmax} and
 @math{0 \le m \le l} for
 @c{$|x| \le 1$}
 @math{|x| <= 1}.
-The @var{norm} parameter specifies which ALFs are computed.
+The @var{norm} parameter specifies which normalization is used.
 The normalized @math{P_l^m(x)} values are stored in @var{result_array}, whose
 minimum size can be obtained from calling @code{gsl_sf_legendre_array_n}.
 The array index of @math{P_l^m(x)} is obtained from calling
