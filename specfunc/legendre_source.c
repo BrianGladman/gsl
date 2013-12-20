@@ -444,11 +444,14 @@ FUNCTION(legendre, array_none_e)
 #if defined(LEGENDRE_DERIV)
       const double uinv = 1.0 / u;
 #endif
+#if defined(LEGENDRE_DERIV2)
+      const double uinv2 = 1.0 / u / u;
+#endif
 #if defined(LEGENDRE_DERIV) || defined(LEGENDRE_DERIV2)
       const double xbyu = x * uinv; /* x / u */
 #endif
       size_t l, m;
-      size_t k, kstart;
+      size_t k, idxmm;
       double plm, pmm;
       double pm1,    /* P(l-1,m) */
              pm2;    /* P(l-2,m) */
@@ -472,7 +475,7 @@ FUNCTION(legendre, array_none_e)
 
       result_array[1] = pm1;
 #if defined(LEGENDRE_DERIV)
-      result_deriv_array[1] = 1.0;
+      result_deriv_array[1] = -u;
 #endif
 #if defined(LEGENDRE_DERIV2)
       result_deriv2_array[1] = -x;
@@ -489,6 +492,10 @@ FUNCTION(legendre, array_none_e)
 #if defined(LEGENDRE_DERIV)
           result_deriv_array[k] = -(double)l * (pm1 - x * plm) * uinv;
 #endif
+#if defined(LEGENDRE_DERIV2)
+          result_deriv2_array[k] = -(double) l * (l + 1.0) * plm -
+                                   xbyu * result_deriv_array[k];
+#endif
           pm2 = pm1;
           pm1 = plm;
         }
@@ -498,7 +505,7 @@ FUNCTION(legendre, array_none_e)
       pmm = 1.0;
       twomm1 = -1.0; /* 2 * m - 1 */
 
-      kstart = 0;
+      idxmm = 0; /* tracks idx(m,m), initialize to idx(0,0) */
 
       for (m = 1; m <= lmax - 1; ++m)
         {
@@ -509,12 +516,17 @@ FUNCTION(legendre, array_none_e)
            * and
            * dP(m,m)/dtheta = m * x * P(m,m) / u
            */
-          kstart += m + 1;
+          idxmm += m + 1;
           twomm1 += 2.0;
           pmm *= csphase * u * twomm1;
-          result_array[kstart] = pmm;
+          result_array[idxmm] = pmm;
 #if defined(LEGENDRE_DERIV)
-          result_deriv_array[kstart] = m * xbyu * pmm;
+          result_deriv_array[idxmm] = m * xbyu * pmm;
+#endif
+#if defined(LEGENDRE_DERIV2)
+          result_deriv2_array[idxmm] =
+            m * (uinv2 * m - (m + 1.0)) * result_array[idxmm] -
+            xbyu * result_deriv_array[idxmm];
 #endif
           pm2 = pmm;
 
@@ -525,11 +537,16 @@ FUNCTION(legendre, array_none_e)
            * and
            * dP(m+1,m)/dt = -[(2*m + 1) * P(m,m) - (m+1) * x * P(m+1,m)]/u
            */
-          k = kstart + m + 1;
+          k = idxmm + m + 1;
           pm1 = x * pmm * (2*m + 1);
           result_array[k] = pm1;
 #if defined(LEGENDRE_DERIV)
           result_deriv_array[k] = -uinv * ((2*m + 1) * pmm - (m + 1) * x * pm1);
+#endif
+#if defined(LEGENDRE_DERIV2)
+          result_deriv2_array[k] =
+            (m * m * uinv2 - (m + 1.0) * (m + 2.0)) * result_array[k] -
+            xbyu * result_deriv_array[k];
 #endif
 
           /* compute P(l,m) */
@@ -542,6 +559,11 @@ FUNCTION(legendre, array_none_e)
 #if defined(LEGENDRE_DERIV)
               result_deriv_array[k] = -uinv * ((l + m) * pm1 - l * x * plm);
 #endif
+#if defined(LEGENDRE_DERIV2)
+              result_deriv2_array[k] =
+                (m * m * uinv2 - l * (l + 1.0)) * result_array[k] -
+                xbyu * result_deriv_array[k];
+#endif
               pm2 = pm1;
               pm1 = plm;
             }
@@ -549,12 +571,17 @@ FUNCTION(legendre, array_none_e)
 
       /* compute P(lmax,lmax) */
 
-      kstart += m + 1;
+      idxmm += m + 1;
       twomm1 += 2.0;
       pmm *= csphase * u * twomm1;
-      result_array[kstart] = pmm;
+      result_array[idxmm] = pmm;
 #if defined(LEGENDRE_DERIV)
-      result_deriv_array[kstart] = lmax * x * pmm * uinv;
+      result_deriv_array[idxmm] = lmax * x * pmm * uinv;
+#endif
+#if defined(LEGENDRE_DERIV2)
+      result_deriv2_array[idxmm] =
+        lmax * (uinv2 * lmax - (lmax + 1.0)) * result_array[idxmm] -
+        xbyu * result_deriv_array[idxmm];
 #endif
 
       return GSL_SUCCESS;

@@ -425,41 +425,45 @@ static int
 test_legendre_unnorm(const size_t lmax_orig, const char *desc)
 {
   int s = 0;
-  const int lmax = GSL_MIN(lmax_orig, 150);
+  const int lmax = GSL_MIN(lmax_orig, 140);
   size_t l, m;
   double x, dx;
-  double *p, *dp, *p2;
-  double *p_schmidt, *dp_schmidt;
+  double *p, *dp, *d2p, *p2;
+  double *p_schmidt, *dp_schmidt, *d2p_schmidt;
   size_t dim;
 
   dim = gsl_sf_legendre_array_n(lmax);
   p = malloc(sizeof(double) * dim);
   dp = malloc(sizeof(double) * dim);
+  d2p = malloc(sizeof(double) * dim);
   p2 = malloc(sizeof(double) * dim);
   p_schmidt = malloc(sizeof(double) * dim);
   dp_schmidt = malloc(sizeof(double) * dim);
+  d2p_schmidt = malloc(sizeof(double) * dim);
 
   dx = test_legendre_dx(lmax);
 
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
     {
-      gsl_sf_legendre_deriv_array(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,
-                                  p_schmidt, dp_schmidt);
-      gsl_sf_legendre_deriv_array(GSL_SF_LEGENDRE_NONE, lmax, x, p, dp);
+      gsl_sf_legendre_deriv2_array(GSL_SF_LEGENDRE_SCHMIDT, lmax, x,
+                                   p_schmidt, dp_schmidt, d2p_schmidt);
+      gsl_sf_legendre_deriv2_array(GSL_SF_LEGENDRE_NONE, lmax, x, p, dp, d2p);
 
       for (l = 0; l <= lmax; ++l)
         {
           double a_lm = sqrt(2.0 / (double)l / (l + 1.0));
           size_t idx;
 
-          /* test P(l,0) = S(l,0) */
+          /* test S(l,0) = P(l,0) */
           idx = gsl_sf_legendre_array_index(l, 0);
-
-          gsl_test_rel(p[idx], p_schmidt[idx], 1.0e-9,
+          gsl_test_rel(p[idx], p_schmidt[idx], 1.0e-10,
                        "unnorm l=%zu, m=0, x=%f", l, x);
-          gsl_test_rel(dp[idx], dp_schmidt[idx], 1.0e-9,
+          gsl_test_rel(dp[idx], dp_schmidt[idx], 1.0e-10,
                        "unnorm deriv l=%zu, m=0, x=%f", l, x);
+          gsl_test_rel(d2p[idx], d2p_schmidt[idx], 1.0e-10,
+                       "unnorm deriv2 l=%zu, m=0, x=%f", l, x);
 
+          /* test S(l,m) = a_{lm} * P(l,m) for m > 0 */
           for (m = 1; m <= l; ++m)
             {
               idx = gsl_sf_legendre_array_index(l, m);
@@ -468,8 +472,11 @@ test_legendre_unnorm(const size_t lmax_orig, const char *desc)
                            "unnorm l=%zu, m=%zu, x=%f", l, m, x);
               gsl_test_abs(a_lm * dp[idx], dp_schmidt[idx], 1.0e-10,
                            "unnorm deriv l=%zu, m=%zu, x=%f", l, m, x);
+              gsl_test_abs(a_lm * d2p[idx], d2p_schmidt[idx], 1.0e-10,
+                           "unnorm deriv2 l=%zu, m=%zu, x=%f", l, m, x);
 
-              a_lm /= sqrt((double) (l + m + 1)) * sqrt((double) (l - m));
+              a_lm /= sqrt((double) (l + m + 1)) *
+                      sqrt((double) (l - m));
             }
         }
 
@@ -490,8 +497,10 @@ test_legendre_unnorm(const size_t lmax_orig, const char *desc)
   free(p);
   free(p2);
   free(dp);
+  free(d2p);
   free(p_schmidt);
   free(dp_schmidt);
+  free(d2p_schmidt);
 
   return s;
 } /* test_legendre_unnorm() */
@@ -1064,7 +1073,7 @@ int test_legendre(void)
     for (l = 0; l <= 10; ++l)
       test_legendre_all(l);
 
-    test_legendre_all(150);
+    test_legendre_all(140);
     test_legendre_all(2700);
   }
 
