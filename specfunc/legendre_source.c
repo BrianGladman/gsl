@@ -206,8 +206,10 @@ Inputs: lmax                - maximum order
         csphase             - -1.0 to include CS phase (-1)^m,
                                1.0 to not include
         result_array        - (output) where to store P_{lm}(x) values
-        result_deriv_array  - (output) where to store d/dtheta P_{lm}(x) values
-        result_deriv2_array - (output) where to store d^2/dtheta^2 P_{lm}(x) values
+        result_deriv_array  - (output) where to store
+                              d/dtheta P_{lm}(x) values
+        result_deriv2_array - (output) where to store
+                              d^2/dtheta^2 P_{lm}(x) values
 */
 
 static int
@@ -406,121 +408,157 @@ FUNCTION(legendre, array_schmidt_e)
 legendre_array_none_e()
   This routine computes unnormalized associated Legendre polynomials
 and their derivatives.
+
+Inputs: lmax                - maximum order
+        x                   - legendre argument in [-1,1]
+        csphase             - -1.0 to include CS phase (-1)^m,
+                               1.0 to not include
+        result_array        - (output) where to store P_{lm}(x) values
+        result_deriv_array  - (output) where to store
+                              d/dtheta P_{lm}(x) values
+        result_deriv2_array - (output) where to store
+                              d^2/dtheta^2 P_{lm}(x) values
 */
 
 static int
 FUNCTION(legendre, array_none_e)
 (const size_t lmax, const double x, const double csphase, OUTPUT_ARG)
 {
-  const double u = sqrt((1.0 - x) * (1.0 + x)); /* sin(theta) */
-#if defined(LEGENDRE_DERIV)
-  const double uinv = 1.0 / u;
-#endif
-  size_t l, m;
-  size_t k, kstart;
-  double plm, pmm;
-  double pm1,    /* P(l-1,m) */
-         pm2;    /* P(l-2,m) */
-  double twomm1; /* 2*m - 1 */
-
-  /* initial values P(0,0) and P(1,0) */
-
-  pm2 = 1.0; /* P(0,0) */
-  pm1 = x;   /* P(1,0) */
-
-  result_array[0] = pm2;
-#if defined(LEGENDRE_DERIV)
-  result_deriv_array[0] = 0.0;
-#endif
-
-  if (lmax == 0)
-    return 0;
-
-  result_array[1] = pm1;
-#if defined(LEGENDRE_DERIV)
-  result_deriv_array[1] = 1.0;
-#endif
-
-  /* Compute P(l,0) */
-
-  k = 1;
-  for (l = 2; l <= lmax; ++l)
+  if (x > 1.0 || x < -1.0)
     {
-      k += l;
-      plm = ((2*l - 1) * x * pm1 - (l - 1) * pm2) / (double) l;
-      result_array[k] = plm;
-#if defined(LEGENDRE_DERIV)
-      result_deriv_array[k] = -(double)l * (pm1 - x * plm) * uinv;
-#endif
-      pm2 = pm1;
-      pm1 = plm;
+      GSL_ERROR("x is outside [-1,1]", GSL_EDOM);
     }
-
-  /* Compute P(m,m), P(m+1,m) and P(l,m) */
-
-  pmm = 1.0;
-  twomm1 = -1.0; /* 2 * m - 1 */
-
-  kstart = 0;
-
-  for (m = 1; m <= lmax - 1; ++m)
+#if defined(LEGENDRE_DERIV) || defined(LEGENDRE_DERIV2)
+  else if (fabs(x) == 1.0)
     {
-      /*
-       * compute
-       *
-       * P(m,m) = u * (2m - 1) P(m-1,m-1)
-       * and
-       * dP(m,m)/dtheta = m * x * P(m,m) / u
-       */
+      GSL_ERROR("x cannot equal 1 or -1 for derivative computation", GSL_EDOM);
+    }
+#endif
+  else if (csphase != 1.0 && csphase != -1.0)
+    {
+      GSL_ERROR("csphase has invalid value", GSL_EDOM);
+    }
+  else
+    {
+      const double u = sqrt((1.0 - x) * (1.0 + x)); /* sin(theta) */
+#if defined(LEGENDRE_DERIV)
+      const double uinv = 1.0 / u;
+#endif
+#if defined(LEGENDRE_DERIV) || defined(LEGENDRE_DERIV2)
+      const double xbyu = x * uinv; /* x / u */
+#endif
+      size_t l, m;
+      size_t k, kstart;
+      double plm, pmm;
+      double pm1,    /* P(l-1,m) */
+             pm2;    /* P(l-2,m) */
+      double twomm1; /* 2*m - 1 */
+
+      /* initial values P(0,0) and P(1,0) */
+
+      pm2 = 1.0; /* P(0,0) */
+      pm1 = x;   /* P(1,0) */
+
+      result_array[0] = pm2;
+#if defined(LEGENDRE_DERIV)
+      result_deriv_array[0] = 0.0;
+#endif
+#if defined(LEGENDRE_DERIV2)
+      result_deriv2_array[0] = 0.0;
+#endif
+
+      if (lmax == 0)
+        return 0;
+
+      result_array[1] = pm1;
+#if defined(LEGENDRE_DERIV)
+      result_deriv_array[1] = 1.0;
+#endif
+#if defined(LEGENDRE_DERIV2)
+      result_deriv2_array[1] = -x;
+#endif
+
+      /* Compute P(l,0) */
+
+      k = 1;
+      for (l = 2; l <= lmax; ++l)
+        {
+          k += l;
+          plm = ((2*l - 1) * x * pm1 - (l - 1) * pm2) / (double) l;
+          result_array[k] = plm;
+#if defined(LEGENDRE_DERIV)
+          result_deriv_array[k] = -(double)l * (pm1 - x * plm) * uinv;
+#endif
+          pm2 = pm1;
+          pm1 = plm;
+        }
+
+      /* Compute P(m,m), P(m+1,m) and P(l,m) */
+
+      pmm = 1.0;
+      twomm1 = -1.0; /* 2 * m - 1 */
+
+      kstart = 0;
+
+      for (m = 1; m <= lmax - 1; ++m)
+        {
+          /*
+           * compute
+           *
+           * P(m,m) = u * (2m - 1) P(m-1,m-1)
+           * and
+           * dP(m,m)/dtheta = m * x * P(m,m) / u
+           */
+          kstart += m + 1;
+          twomm1 += 2.0;
+          pmm *= csphase * u * twomm1;
+          result_array[kstart] = pmm;
+#if defined(LEGENDRE_DERIV)
+          result_deriv_array[kstart] = m * xbyu * pmm;
+#endif
+          pm2 = pmm;
+
+          /*
+           * compute
+           *
+           * P(m+1,m) = (2 * m + 1) * x * P(m,m)
+           * and
+           * dP(m+1,m)/dt = -[(2*m + 1) * P(m,m) - (m+1) * x * P(m+1,m)]/u
+           */
+          k = kstart + m + 1;
+          pm1 = x * pmm * (2*m + 1);
+          result_array[k] = pm1;
+#if defined(LEGENDRE_DERIV)
+          result_deriv_array[k] = -uinv * ((2*m + 1) * pmm - (m + 1) * x * pm1);
+#endif
+
+          /* compute P(l,m) */
+          for (l = m + 2; l <= lmax; ++l)
+            {
+              k += l;
+              plm = ((2*l - 1) * x * pm1 - (l + m - 1) * pm2) /
+                    (double) (l - m);
+              result_array[k] = plm;
+#if defined(LEGENDRE_DERIV)
+              result_deriv_array[k] = -uinv * ((l + m) * pm1 - l * x * plm);
+#endif
+              pm2 = pm1;
+              pm1 = plm;
+            }
+        } /* for (m = 1; m <= lmax - 1; ++m) */
+
+      /* compute P(lmax,lmax) */
+
       kstart += m + 1;
       twomm1 += 2.0;
       pmm *= csphase * u * twomm1;
       result_array[kstart] = pmm;
 #if defined(LEGENDRE_DERIV)
-      result_deriv_array[kstart] = m * x * pmm * uinv;
-#endif
-      pm2 = pmm;
-
-      /*
-       * compute
-       *
-       * P(m+1,m) = (2 * m + 1) * x * P(m,m)
-       * and
-       * dP(m+1,m)/dt = -[(2*m + 1) * P(m,m) - (m+1) * x * P(m+1,m)]/u
-       */
-      k = kstart + m + 1;
-      pm1 = x * pmm * (2*m + 1);
-      result_array[k] = pm1;
-#if defined(LEGENDRE_DERIV)
-      result_deriv_array[k] = -uinv * ((2*m + 1) * pmm - (m + 1) * x * pm1);
+      result_deriv_array[kstart] = lmax * x * pmm * uinv;
 #endif
 
-      /* compute P(l,m) */
-      for (l = m + 2; l <= lmax; ++l)
-        {
-          k += l;
-          plm = ((2*l - 1) * x * pm1 - (l + m - 1) * pm2) /
-                (double) (l - m);
-          result_array[k] = plm;
-#if defined(LEGENDRE_DERIV)
-          result_deriv_array[k] = -uinv * ((l + m) * pm1 - l * x * plm);
-#endif
-          pm2 = pm1;
-          pm1 = plm;
-        }
-    } /* for (m = 1; m <= lmax - 1; ++m) */
-
-  /* compute P(lmax,lmax) */
-
-  kstart += m + 1;
-  twomm1 += 2.0;
-  pmm *= csphase * u * twomm1;
-  result_array[kstart] = pmm;
-#if defined(LEGENDRE_DERIV)
-  result_deriv_array[kstart] = lmax * x * pmm * uinv;
-#endif
-
-  return 0;
+      return GSL_SUCCESS;
+    }
 } /* legendre_array_none_e() */
 
 #undef FUNCTION

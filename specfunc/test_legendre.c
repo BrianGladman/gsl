@@ -450,10 +450,19 @@ test_legendre_unnorm(const size_t lmax_orig, const char *desc)
       for (l = 0; l <= lmax; ++l)
         {
           double a_lm = sqrt(2.0 / (double)l / (l + 1.0));
+          size_t idx;
+
+          /* test P(l,0) = S(l,0) */
+          idx = gsl_sf_legendre_array_index(l, 0);
+
+          gsl_test_rel(p[idx], p_schmidt[idx], 1.0e-9,
+                       "unnorm l=%zu, m=0, x=%f", l, x);
+          gsl_test_rel(dp[idx], dp_schmidt[idx], 1.0e-9,
+                       "unnorm deriv l=%zu, m=0, x=%f", l, x);
 
           for (m = 1; m <= l; ++m)
             {
-              size_t idx = gsl_sf_legendre_array_index(l, m);
+              idx = gsl_sf_legendre_array_index(l, m);
 
               gsl_test_rel(a_lm * p[idx], p_schmidt[idx], 1.0e-9,
                            "unnorm l=%zu, m=%zu, x=%f", l, m, x);
