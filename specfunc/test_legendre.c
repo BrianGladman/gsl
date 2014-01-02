@@ -1069,7 +1069,8 @@ int test_legendre(void)
       test_legendre_all(l);
 
     test_legendre_all(140);
-    test_legendre_all(2700);
+    test_legendre_all(1000);
+    /*test_legendre_all(2700);*/
   }
 
   return s;
