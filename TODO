@@ -56,8 +56,6 @@ Break binary compatibility, but keep source compatibility.
 vs _inverse). Also adopt a convection for functions which can operate
 in place vs use of workspace (e.g linalg_solve functions).
 
-** gsl_sf_ellint_D  - remove useless argument n?
-
 ** gsl_roots doesn't store function value, so testing the residual requires function to be recomputed
 Generally all the iterative routines should follow a consistent approach
 to outputting everything that is necessary for the next iteration 
