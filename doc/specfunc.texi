@@ -353,6 +353,12 @@ New York (1997).
 Y.Y. Luke, Algorithms for the Computation of Mathematical Functions, Academic
 Press, New York (1977).
 
+@item
+S. A. Holmes and W. E. Featherstone, A unified approach to the Clenshaw
+summation and the recursive computation of very high degree and order
+normalised associated Legendre functions, Journal of Geodesy, 76,
+pg. 279-299, 2002.
+
 @comment @item
 @comment Fermi-Dirac functions of orders @math{-1/2}, @math{1/2}, @math{3/2}, and
 @comment @math{5/2}.  @cite{ACM Trans. Math. Soft.}, vol. 24, 1998, 1-12.

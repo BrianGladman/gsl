@@ -1,7 +1,7 @@
-*.la
-*.lo
 .deps
+*.la
 .libs
+*.lo
 Makefile
 Makefile.in
 siman_test

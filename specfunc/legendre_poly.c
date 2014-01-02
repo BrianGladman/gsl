@@ -290,6 +290,7 @@ gsl_sf_legendre_Pl_deriv_array(const int lmax, const double x, double * result_a
   }
 }
 
+#ifndef GSL_DISABLE_DEPRECATED
 
 int
 gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result)
@@ -498,7 +499,6 @@ gsl_sf_legendre_Plm_deriv_array(
   }
 }
 
-
 int
 gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * result)
 {
@@ -591,7 +591,6 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
     }
   }
 }
-
 
 int
 gsl_sf_legendre_sphPlm_array(const int lmax, int m, const double x, double * result_array)
@@ -743,6 +742,8 @@ gsl_sf_legendre_array_size(const int lmax, const int m)
   return lmax-m+1;
 }
 
+#endif /* !GSL_DISABLE_DEPRECATED */
+
 /*-*-*-*-*-*-*-*-*-* Functions w/ Natural Prototypes *-*-*-*-*-*-*-*-*-*-*/
 
 #include "eval.h"
@@ -767,6 +768,8 @@ double gsl_sf_legendre_Pl(const int l, const double x)
   EVAL_RESULT(gsl_sf_legendre_Pl_e(l, x, &result));
 }
 
+#ifndef GSL_DISABLE_DEPRECATED
+
 double gsl_sf_legendre_Plm(const int l, const int m, const double x)
 {
   EVAL_RESULT(gsl_sf_legendre_Plm_e(l, m, x, &result));
@@ -777,3 +780,4 @@ double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
   EVAL_RESULT(gsl_sf_legendre_sphPlm_e(l, m, x, &result));
 }
 
+#endif /* !GSL_DISABLE_DEPRECATED */
