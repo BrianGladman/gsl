@@ -227,6 +227,24 @@ gsl_bspline_deriv_alloc (const size_t k)
     }
 }				/* gsl_bspline_deriv_alloc() */
 
+/*
+gsl_bspline_deriv_free()
+  Free a gsl_bspline_deriv_workspace.
+
+Inputs: dw - workspace to free
+
+Return: none
+*/
+
+void
+gsl_bspline_deriv_free (gsl_bspline_deriv_workspace * dw)
+{
+  RETURN_IF_NULL (dw);
+  gsl_matrix_free (dw->A);
+  gsl_matrix_free (dw->dB);
+  free (dw);
+}				/* gsl_bspline_deriv_free() */
+
 #endif /* !GSL_DISABLE_DEPRECATED */
 
 /* Return number of coefficients */
