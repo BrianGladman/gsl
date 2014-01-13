@@ -285,7 +285,7 @@ matrices @var{A} and @var{B} must be in compressed format.
 @cindex sparse matrices, examples
 
 This example program demonstrates the sparse matrix routines on the solution
-of a simple 1D Laplace equation on @math{[0,1]}:
+of a simple 1D Poisson equation on @math{[0,1]}:
 @tex
 \beforedisplay
 $$
@@ -360,11 +360,11 @@ The program output is shown in the following plot.
 
 @page
 @iftex
-@center @image{sparse_laplace,6in}
+@center @image{sparse_poisson,6in}
 @end iftex
 
 @example
-@verbatiminclude examples/laplace.c
+@verbatiminclude examples/poisson.c
 @end example
 
 @node Sparse References and Further Reading
