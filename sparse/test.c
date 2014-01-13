@@ -30,8 +30,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_blas.h>
-
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 /*
 create_random_sparse()

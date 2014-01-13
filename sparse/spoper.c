@@ -24,8 +24,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
-
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 int
 gsl_spmatrix_scale(gsl_spmatrix *m, const double x)

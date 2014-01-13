@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 /*
 gsl_spmatrix_equal()

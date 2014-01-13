@@ -23,8 +23,7 @@
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 double
 gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)

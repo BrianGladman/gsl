@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 gsl_spmatrix *
 gsl_spmatrix_memcpy(const gsl_spmatrix *src)

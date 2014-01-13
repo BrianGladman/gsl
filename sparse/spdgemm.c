@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 /*
 gsl_spblas_dgemm()

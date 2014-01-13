@@ -23,8 +23,7 @@
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
-
-#include "gsl_spmatrix.h"
+#include <gsl/gsl_sparse.h>
 
 /*
 gsl_spmatrix_alloc()
