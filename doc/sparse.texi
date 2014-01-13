@@ -1,0 +1,366 @@
+@cindex sparse matrices
+@cindex matrices, sparse
+
+This chapter describes functions for the construction and
+manipulation of sparse matrices, matrices which are populated
+primarily with zeros and contain only a few non-zero elements.
+Sparse matrices often appear in the solution of partial
+differential equations. It is beneficial to use specialized
+data structures and algorithms for storing and working with
+sparse matrices, since dense matrix algorithms and structures
+can be very slow and use huge amounts of memory when applied
+to sparse matrices.
+
+@noindent
+The header file @file{gsl_sparse.h} contains the prototypes for the
+sparse functions and related declarations.
+
+@menu
+* Introduction::
+* Sparse matrix allocation::
+* Accessing sparse matrix elements::
+* Initializing sparse matrix elements::
+* Copying sparse matrices::
+* Sparse matrix operations::
+* Sparse matrix properties::
+* Finding maximum and minimum elements of sparse matrices::
+* Sparse matrix compressed format::
+* Conversion between sparse and dense matrices::
+* Sparse BLAS operations::
+* Examples::
+* References and Further Reading::
+@end menu
+
+@node Introduction, Sparse matrix allocation, Top, Top
+@section Introduction
+
+These routines provide support for constructing and manipulating
+sparse matrices in GSL, using an API similar to the @code{gsl_matrix}
+machinery. The basic structure is called @code{gsl_spmatrix}. There are
+two supported storage formats for sparse matrices: the triplet and
+compressed column storage (CCS) formats. The triplet format stores
+triplets @math{(i,j,x)} for each non-zero element of the matrix. This
+notation means that the @math{(i,j)} element of the matrix @math{A}
+is @math{A_{ij} = x}. Compressed column storage stores each column of
+non-zero values in the sparse matrix in a continuous memory block, keeping
+pointers to the beginning of each column in that memory block, and storing
+the row indices of each non-zero element. The triplet format is ideal
+for adding elements to the sparse matrix structure while it is being
+constructed, while the compressed column storage is better suited for
+matrix-matrix multiplication or linear solvers.
+
+GSL does not provide a linear sparse matrix solver for @math{A x = b},
+since this is a highly complex problem and many advanced software packages
+already exist to efficiently solve it. The routines in this section provide
+a simple interface to construct a sparse matrix and convert it to a compressed
+format, where it can easily be passed to external linear sparse matrix
+solvers.
+
+@tpindex gsl_spmatrix
+@noindent
+The @code{gsl_spmatrix} structure is defined as
+
+@example
+typedef struct
+@{
+  size_t size1;
+  size_t size2;
+  size_t *i;
+  double *data;
+  size_t *p;
+  size_t nzmax;
+  size_t nz;
+  size_t *work;
+  size_t flags;
+@} gsl_spmatrix;
+@end example
+
+@noindent
+This defines a @var{size1}-by-@var{size2} sparse matrix. The number of non-zero
+elements currently in the matrix is given by @var{nz}. For the triplet
+representation, @var{i}, @var{p}, and @var{data} are arrays of size @var{nz}
+which contain the row indices, column indices, and element value, respectively.
+So if @math{data[k] = x}, then @math{x = A(i[k], p[k])}.
+For compressed column storage, @var{i} and @var{data} are arrays of size
+@var{nz} containing the row indices and element values, similar to the triplet
+case. @var{p} is an array of size @math{size2 + 1} where @math{p[j]} points
+to the index in @var{data} of the start of column @var{j}. Thus, if
+@math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{p[j] <= k < p[j+1]}.
+
+@noindent
+@var{work} is additional workspace needed for various operations like
+converting from triplet to compressed column storage. @var{flags} indicates
+the type of storage format being used (triplet or compressed column).
+
+@node Sparse matrix allocation, Accessing sparse matrix elements, Introduction, Top
+@section Sparse matrix allocation
+
+The functions for allocating memory for a sparse matrix follow the style of
+@code{malloc} and @code{free}. They also perform their own error checking. If
+there is insufficient memory available to allocate a matrix then the functions
+call the GSL error handler with an error code of @code{GSL_ENOMEM} in addition
+to returning a null pointer.
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_alloc (const size_t @var{n1}, const size_t @var{n2})
+This function allocates a sparse matrix of size @var{n1}-by-@var{n2} and
+initializes it to all zeros. If the size of the matrix is not known at allocation
+time, both @var{n1} and @var{n2} may be set to 1, and they will automatically
+grow as elements are added to the matrix. This function sets the
+matrix to the triplet representation, which is the easiest for adding
+and accessing matrix elements. This function tries to make a reasonable guess
+for the number of non-zero elements (@var{nzmax}) which will be added to the matrix by
+assuming a sparse density of @math{10\%}. The function
+@code{gsl_spmatrix_alloc_nzmax} can be used if this number is known more
+accurately. The workspace is of size @math{O(nzmax)}.
+@end deftypefun
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_alloc_nzmax (const size_t @var{n1}, const size_t @var{n2}, const size_t @var{nzmax}, const size_t @var{flags})
+This function allocates a sparse matrix of size @var{n1}-by-@var{n2} and
+initializes it to all zeros. If the size of the matrix is not known at allocation
+time, both @var{n1} and @var{n2} may be set to 1, and they will automatically
+grow as elements are added to the matrix. The parameter @var{nzmax} specifies
+the maximum number of non-zero elements which will be added to the matrix.
+It does not need to be precisely known in advance, since storage space will 
+automatically grow using @code{gsl_spmatrix_realloc} if @var{nzmax} is not
+large enough. Accurate knowledge of this parameter reduces the number of
+reallocation calls required. The parameter @var{flags} specifies the storage
+format of the sparse matrix. Possible values are
+@table @code
+@item GSL_SPMATRIX_TRIPLET
+This flag specifies triplet storage.
+
+@item GSL_SPMATRIX_COMPCOL
+This flag specifies compressed column storage.
+@end table
+The allocated @code{gsl_spmatrix} structure is of size @math{O(nzmax)}.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_realloc (const size_t @var{nzmax}, gsl_spmatrix * @var{m})
+This function reallocates the storage space for @var{m} to accomodate
+@var{nzmax} non-zero elements. It is typically called internally by
+@code{gsl_spmatrix_set} if the user wants to add more elements to the
+sparse matrix than the previously specified @var{nzmax}.
+@end deftypefun
+
+@deftypefun void gsl_spmatrix_free (gsl_spmatrix * @var{m})
+This function frees the memory associated with the sparse matrix @var{m}.
+@end deftypefun
+
+@node Accessing sparse matrix elements, Initializing sparse matrix elements, Sparse matrix allocation, Top
+@section Accessing sparse matrix elements
+
+@deftypefun double gsl_spmatrix_get (const gsl_spmatrix * @var{m}, const size_t @var{i}, const size_t @var{j})
+This function returns element (@var{i},@var{j}) of the matrix @var{m}.
+The matrix may be in triplet or compressed format.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_set (gsl_spmatrix * @var{m}, const size_t @var{i}, const size_t @var{j}, const double @var{x})
+This function sets element (@var{i},@var{j}) of the matrix @var{m} to
+the value @var{x}. The matrix must be in triplet representation.
+@end deftypefun
+
+@node Initializing sparse matrix elements, Copying sparse matrices, Accessing sparse matrix elements, Top
+@section Initializing sparse matrix elements
+
+Since the sparse matrix format only stores the non-zero elements, it is automatically
+initialized to zero upon allocation. The function @code{gsl_spmatrix_set_zero} may
+be used to re-initialize a matrix to zero after elements have been added to it.
+
+@deftypefun int gsl_spmatrix_set_zero (gsl_spmatrix * @var{m})
+This function sets (or resets) all the elements of the matrix @var{m} to zero.
+@end deftypefun
+
+@node Copying sparse matrices, Sparse matrix operations, Initializing sparse matrix elements, Top
+@section Copying sparse matrices
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_memcpy (const gsl_spmatrix * @var{src})
+This function makes a copy of the sparse matrix @var{src} and returns a pointer
+to a newly allocated copy, which must be freed by the caller when no longer
+needed. The matrix @var{src} may be in either triplet or compressed format.
+@end deftypefun
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_transpose_memcpy (const gsl_spmatrix * @var{src})
+This function computes the transpose of @var{src} and stores it in a newly
+allocated matrix which is returned by the function. This matrix should be
+freed by the caller using @code{gsl_spmatrix_free} when no longer needed.
+The matrix @var{src} may be in either triplet or compressed format.
+@end deftypefun
+
+@node Sparse matrix operations, Sparse matrix properties, Copying sparse matrices, Top
+@section Sparse matrix operations
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_add (const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
+This function adds the two matrices @math{a + b} and stores the result in
+a newly allocated matrix which is returned. The result should be freed with
+@code{gsl_spmatrix_free} when no longer needed. The two matrices must have the same
+dimensions.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_scale (gsl_spmatrix * @var{m}, const double @var{x})
+This function scales all elements of the matrix @var{m} by the constant
+factor @var{x}. The result @math{m(i,j) \leftarrow x m(i,j)} is stored in @var{m}.
+@end deftypefun
+
+@node Sparse matrix properties, Finding maximum and minimum elements of sparse matrices, Sparse matrix operations, Top
+@section Sparse matrix properties
+
+@deftypefun size_t gsl_spmatrix_nnz (const gsl_spmatrix * @var{m})
+This function returns the number of non-zero elements in @var{m}.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_equal (const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
+This function returns 1 if the matrices @var{a} and @var{b} are equal (by comparison of
+element values) and 0 otherwise. The matrices @var{a} and @var{b} must be either
+both triplet format or both compressed format for comparison.
+@end deftypefun
+
+@node Finding maximum and minimum elements of sparse matrices, Sparse matrix compressed format, Sparse matrix properties, Top
+@section Finding maximum and minimum elements of sparse matrices
+
+@deftypefun int gsl_spmatrix_minmax (const gsl_spmatrix * @var{m}, double * @var{min_out}, double * @var{max_out})
+This function returns the minimum and maximum elements of the matrix @var{m},
+storing them in @var{min_out} and @var{max_out}.
+@end deftypefun
+
+@node Sparse matrix compressed format, Conversion between sparse and dense matrices, Finding maximum and minimum elements of sparse matrices, Top
+@section Sparse matrix compressed format
+
+GSL supports the compressed column format, in which the non-zero elements in each
+column are stored contiguously in memory.
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_compress (const gsl_spmatrix * @var{T})
+This function creates a sparse matrix in compressed column format
+from the input sparse matrix @var{T} which must be in triplet format.
+A pointer to a newly allocated matrix is returned. The calling function
+should free the newly allocated matrix when it is no longer needed.
+@end deftypefun
+
+@node Conversion between sparse and dense matrices, Sparse BLAS operations, Sparse matrix compressed format, Top
+@section Conversion between sparse and dense matrices
+
+The @code{gsl_spmatrix} structure can be converted into the dense @code{gsl_matrix}
+format and vice versa with the following routines.
+
+@deftypefun int gsl_spmatrix_d2sp (gsl_spmatrix * @var{S}, const gsl_matrix * @var{A})
+This function converts the dense matrix @var{A} into sparse triplet format
+and stores the result in @var{S}.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_sp2d (gsl_matrix * @var{A}, const gsl_spmatrix * @var{S})
+This function converts the sparse matrix @var{S} into a dense matrix and
+stores the result in @var{A}. @var{S} must be in triplet format.
+@end deftypefun
+
+@node Sparse BLAS operations, Examples, Conversion between sparse and dense matrices, Top
+@section Sparse BLAS operations
+
+GSL supports a limited number of BLAS operations for sparse matrices.
+
+@deftypefun int gsl_spblas_dgemv (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_vector * @var{x}, const double @var{beta}, gsl_vector * @var{y})
+This function computes the matrix-vector product and sum
+@math{y \leftarrow \alpha A x + \beta y}, where @var{A} is sparse and the vectors @var{x}
+and @var{y} are dense. The matrix @var{A} may be in triplet or compressed format.
+@end deftypefun
+
+@deftypefun {gsl_spmatrix *} gsl_spblas_dgemm (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_spmatrix * @var{B})
+This function computes the sparse matrix-matrix product
+@math{C = \alpha A B}. A pointer to the newly allocated matrix @var{C} is returned
+and should be freed using @code{gsl_spmatrix_free} when no longer needed. The
+matrices @var{A} and @var{B} must be in compressed format.
+@end deftypefun
+
+@node Examples, References and Further Reading, Sparse BLAS operations, Top
+@section Examples
+
+This example program demonstrates the sparse matrix routines on the solution
+of a simple 1D Laplace equation on @math{[0,1]}:
+@tex
+\beforedisplay
+$$
+{d^2 u(x) \over dx^2} = f(x) = -\pi^2 \sin{(\pi x)}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+u''(x) = f(x) = -\pi^2 \sin(\pi x)
+@end example
+@end ifinfo
+with boundary conditions @math{u(0) = u(1) = 0}. The analytic solution of
+this simple problem is @math{u(x) = \sin{\pi x}}. We will solve this
+problem by finite differencing the left hand side to give
+@tex
+\beforedisplay
+$$
+{1 \over h^2} \left( u_{i+1} - 2 u_i + u_{i-1} \right) = f_i
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+1/h^2 ( u_(i+1) - 2 u_i + u_(i-1) ) = f_i
+@end example
+@end ifinfo
+Defining a grid of @math{N} points, @math{h = 1/(N-1)}. In the finite
+difference equation above, @math{u_0 = u_{N-1} = 0} are known from
+the boundary conditions, so we will only put the equations for
+@math{i = 1 ... N-2} into the matrix system. The resulting matrix
+equation is
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+-2 & 1 & 0 & 0 & 0 & \ldots \cr
+1 & -2 & 1 & 0 & 0 & \ldots \cr
+0 & 1 & -2 & 1 & 0 & \ldots \cr
+\vdots & \vdots & \ddots & \ddots & \ddots & \ldots \cr
+0 & \ldots & \ldots & 1 & -2 & 1 \cr
+0 & \ldots & \ldots & \ldots & 1 & -2 \cr
+}
+\right)
+\left(
+\matrix{
+u_1 \cr
+u_2 \cr
+u_3 \cr
+\vdots \cr
+u_{N-3} \cr
+u_{N-2} \cr
+}
+\right) =
+\left(
+\matrix{
+f_1 \cr
+f_2 \cr
+f_3 \cr
+\vdots \cr
+f_{N-3} \cr
+f_{N-2} \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+An example program which constructs this system using the @code{gsl_spmatrix}
+framework is given below. The system is solved using the dense GSL LU solver.
+The program output is shown in the following plot.
+
+@page
+@iftex
+@center @image{sparse_laplace,6in}
+@end iftex
+
+@example
+@verbatiminclude examples/laplace.c
+@end example
+
+@node References and Further Reading
+@section References and Further Reading
+
+The algorithms used by these functions are described in the
+following sources:
+
+T. A. Davis, Direct Methods for Sparse Linear Systems, SIAM, 2006.
+
+CSparse software library, https://www.cise.ufl.edu/research/sparse/CSparse/
