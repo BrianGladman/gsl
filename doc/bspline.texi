@@ -18,7 +18,7 @@ bspline functions and related declarations.
 * Evaluation of B-spline basis function derivatives::
 * Working with the Greville abscissae::
 * Example programs for B-splines::
-* References and Further Reading::
+* B-Spline References and Further Reading::
 @end menu
 
 @node Overview of B-splines
@@ -249,8 +249,8 @@ $ graph -T ps -X x -Y y -x 0 15 -y -1 1.3 < bspline.dat > bspline.ps
 @center @image{bspline,3.4in}
 @end iftex
 
-@node References and Further Reading
-@section References and Further Reading
+@node B-Spline References and Further Reading
+@section B-Spline References and Further Reading
 
 Further information on the algorithms described in this section can be
 found in the following book,

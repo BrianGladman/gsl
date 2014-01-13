@@ -268,7 +268,8 @@ project homepage thanks to Daisuke Tominaga.
 * Multidimensional Minimization::  
 * Least-Squares Fitting::       
 * Nonlinear Least-Squares Fitting::  
-* Basis Splines::               
+* Basis Splines::
+* Sparse Matrices::
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
