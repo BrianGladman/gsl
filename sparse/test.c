@@ -326,18 +326,19 @@ test_dgemv(const double alpha, const double beta, const gsl_rng *r)
 } /* test_dgemv() */
 
 void
-test_dgemm(const double alpha, const size_t M, const size_t N, const gsl_rng *r)
+test_dgemm(const double alpha, const size_t M, const size_t N,
+           const gsl_rng *r)
 {
   const size_t max = GSL_MAX(M, N);
   size_t i, j, k;
-  gsl_matrix *A_gsl = gsl_matrix_alloc(M, max);
-  gsl_matrix *B_gsl = gsl_matrix_alloc(max, N);
-  gsl_matrix *C_gsl = gsl_matrix_alloc(M, N);
+  gsl_matrix *A_dense = gsl_matrix_alloc(M, max);
+  gsl_matrix *B_dense = gsl_matrix_alloc(max, N);
+  gsl_matrix *C_dense = gsl_matrix_alloc(M, N);
 
   for (k = 1; k <= max; ++k)
     {
-      gsl_matrix_view Ag = gsl_matrix_submatrix(A_gsl, 0, 0, M, k);
-      gsl_matrix_view Bg = gsl_matrix_submatrix(B_gsl, 0, 0, k, N);
+      gsl_matrix_view Ad = gsl_matrix_submatrix(A_dense, 0, 0, M, k);
+      gsl_matrix_view Bd = gsl_matrix_submatrix(B_dense, 0, 0, k, N);
       gsl_spmatrix *TA = create_random_sparse(M, k, 0.2, r);
       gsl_spmatrix *TB = create_random_sparse(k, N, 0.2, r);
       gsl_spmatrix *A = gsl_spmatrix_compress(TA);
@@ -345,18 +346,18 @@ test_dgemm(const double alpha, const size_t M, const size_t N, const gsl_rng *r)
       gsl_spmatrix *C = gsl_spblas_dgemm(alpha, A, B);
 
       /* make dense matrices and use standard dgemm to multiply them */
-      gsl_spmatrix_sp2d(&Ag.matrix, TA);
-      gsl_spmatrix_sp2d(&Bg.matrix, TB);
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, alpha, &Ag.matrix, &Bg.matrix,
-                     0.0, C_gsl);
+      gsl_spmatrix_sp2d(&Ad.matrix, TA);
+      gsl_spmatrix_sp2d(&Bd.matrix, TB);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, alpha, &Ad.matrix,
+                     &Bd.matrix, 0.0, C_dense);
 
-      /* compare C and C_gsl */
-      for (i = 0; i < M; ++i)\
+      /* compare C and C_dense */
+      for (i = 0; i < M; ++i)
         {
           for (j = 0; j < N; ++j)
             {
               double Cij = gsl_spmatrix_get(C, i, j);
-              double Dij = gsl_matrix_get(C_gsl, i, j);
+              double Dij = gsl_matrix_get(C_dense, i, j);
 
               gsl_test_rel(Cij, Dij, 1.0e-12, "test_dgemm: _dgemm");
             }
@@ -369,9 +370,9 @@ test_dgemm(const double alpha, const size_t M, const size_t N, const gsl_rng *r)
       gsl_spmatrix_free(C);
     }
 
-  gsl_matrix_free(A_gsl);
-  gsl_matrix_free(B_gsl);
-  gsl_matrix_free(C_gsl);
+  gsl_matrix_free(A_dense);
+  gsl_matrix_free(B_dense);
+  gsl_matrix_free(C_dense);
 } /* test_dgemm() */
 
 int
