@@ -17,10 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <stdio.h>
+#include <config.h>
 #include <stdlib.h>
 #include <math.h>
-#include <assert.h>
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
@@ -64,9 +63,6 @@ create_random_sparse(const size_t M, const size_t N, const double density,
       size_t i = gsl_rng_uniform(r) * M;
       size_t j = gsl_rng_uniform(r) * N;
       double x;
-
-      assert(i < M);
-      assert(j < N);
 
       /* check if this position is already filled */
       if (gsl_spmatrix_get(m, i, j) != 0.0)
