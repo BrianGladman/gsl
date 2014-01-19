@@ -20,4 +20,64 @@
 #include <config.h>
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_sparse.h>
+
+gsl_splinalg_gmres_workspace *
+gsl_splinalg_gmres_alloc(const size_t n)
+{
+  gsl_splinalg_gmres_workspace *w;
+
+  w = calloc(1, sizeof(gsl_splinalg_gmres_workspace));
+  if (!w)
+    {
+      GSL_ERROR_NULL("failed to allocate gmres workspace", GSL_ENOMEM);
+    }
+
+  return w;
+} /* gsl_splinalg_gmres_alloc() */
+
+void
+gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w)
+{
+  free(w);
+} /* gsl_splinalg_gmres_free() */
+
+int
+gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
+                         gsl_vector *x,
+                         gsl_splinalg_gmres_workspace *w)
+{
+  int s;
+
+  /* initial guess x = 0 */
+  gsl_vector_set_zero(x);
+
+  s = gsl_splinalg_gmres_solve_x(A, b, x, w);
+
+  return s;
+} /* gsl_splinalg_gmres_solve() */
+
+int
+gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
+                           gsl_vector *x,
+                           gsl_splinalg_gmres_workspace *w)
+{
+  const size_t N = A->size1;
+
+  if (N != A->size2)
+    {
+      GSL_ERROR("matrix must be square", GSL_ENOTSQR);
+    }
+  else if (N != b->size)
+    {
+      GSL_ERROR("matrix does not match right hand side", GSL_EBADLEN);
+    }
+  else if
+  else
+    {
+      return GSL_SUCCESS;
+    }
+} /* gsl_splinalg_gmres_solve() */

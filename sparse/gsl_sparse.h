@@ -85,6 +85,10 @@ typedef struct
 #define GSLSP_ISTRIPLET(m)        ((m)->flags & GSL_SPMATRIX_TRIPLET)
 #define GSLSP_ISCCS(m)            ((m)->flags & GSL_SPMATRIX_CCS)
 
+typedef struct
+{
+} gsl_splinalg_gmres_workspace;
+
 /*
  * Prototypes
  */
@@ -132,6 +136,16 @@ gsl_spmatrix *gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
 size_t gsl_spblas_scatter(const gsl_spmatrix *A, const size_t j, const double alpha,
                           size_t *w, double *x, const size_t mark, gsl_spmatrix *C,
                           size_t nz);
+
+/* spgmres.c */
+gsl_splinalg_gmres_workspace *gsl_splinalg_gmres_alloc(const size_t n);
+void gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w);
+int gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
+                             gsl_vector *x,
+                             gsl_splinalg_gmres_workspace *w);
+int gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A,
+                               const gsl_vector *b, gsl_vector *x,
+                               gsl_splinalg_gmres_workspace *w);
 
 __END_DECLS
 
