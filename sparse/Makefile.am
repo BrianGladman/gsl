@@ -4,7 +4,7 @@ check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_sparse.h
 
-libgslsparse_la_SOURCES = spcompress.c spcopy.c spdgemm.c spdgemv.c spgetset.c spmatrix.c spoper.c spprop.c spswap.c
+libgslsparse_la_SOURCES = spcompress.c spcopy.c spdgemm.c spdgemv.c spgetset.c spmatrix.c spoper.c spprop.c spswap.c spgmres.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
