@@ -23,9 +23,74 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_sparse.h>
+
+static double
+my_householder(gsl_vector *v)
+{
+  const size_t n = v->size;
+
+  if (n == 1)
+    {
+      return 0.0;
+    }
+  else
+    {
+      gsl_vector_view x = gsl_vector_subvector(v, 1, n - 1);
+      double xnorm = gsl_blas_dnrm2(&x.vector); /* sqrt(sigma) */
+      double x0 = gsl_vector_get(v, 0);
+      double beta;
+
+      gsl_vector_set(v, 0, 1.0);
+
+      if (xnorm == 0.0)
+        {
+          if (x0 >= 0.0)
+            beta = 0.0;
+          else
+            beta = -2.0;
+        }
+      else
+        {
+          double mu = hypot(x0, xnorm);
+          double sigma = xnorm * xnorm;
+          double v0;
+
+          if (x0 <= 0.0)
+            v0 = x0 - mu;
+          else
+            v0 = -sigma / (x0 + mu);
+
+          beta = 2.0 * v0 * v0 / (sigma + v0*v0);
+          gsl_vector_scale(&x.vector, 1.0 / v0);
+        }
+
+      return beta;
+    }
+} /* my_householder() */
+
+int
+my_hv(const gsl_vector *v, gsl_vector *w)
+{
+  const size_t N = v->size;
+  if (N != w->size)
+    {
+      GSL_ERROR("vector sizes do not match", GSL_EBADLEN);
+    }
+  else
+    {
+      double d;
+
+      /* compute v'w */
+      gsl_blas_ddot(v, w, &d);
+
+      /* compute w = w - 2*(v'w)*v */
+      gsl_blas_daxpy(-2.0 * d, v, w);
+    }
+} /* my_hv() */
 
 gsl_splinalg_gmres_workspace *
 gsl_splinalg_gmres_alloc(const size_t n)
@@ -38,9 +103,9 @@ gsl_splinalg_gmres_alloc(const size_t n)
       GSL_ERROR_NULL("failed to allocate gmres workspace", GSL_ENOMEM);
     }
 
+  w->max_iter = GSL_MIN(n, 10);
   w->n = n;
-  w->m = GSL_MIN(n, 10);
-  w->max_iter = 100;
+  w->m = w->max_iter;
 
   w->r = gsl_vector_alloc(n);
   if (!w->r)
@@ -139,12 +204,90 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
     {
       const size_t M = w->m;
       size_t iter;          /* iteration number */
-      size_t i, j;          /* looping */
+      size_t i, j, k;       /* looping */
+      gsl_vector *r = w->r; /* residual b - A*x */
       double beta;          /* || r_0 || = || b - A*x_0 || */
       gsl_vector_view v1 = gsl_matrix_column(w->V, 0); /* v_1 */
       gsl_matrix *H = w->H; /* Hessenberg matrix */
       double h;             /* element of H */
+      gsl_vector *v = gsl_vector_alloc(N);
+      gsl_vector *vtmp = gsl_vector_alloc(N);
 
+      /* Step 1: compute r = b - A*x_0 */
+      gsl_vector_memcpy(r, b);
+      gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+
+      /* Step 2 */
+      for (j = 0; j < M + 1; ++j)
+        {
+          double tau = 2.0;
+          gsl_vector_view z = gsl_vector_subvector(r, j, N - j);
+          gsl_vector_view h = gsl_matrix_column(H, j);
+          gsl_vector *wj = gsl_vector_alloc(N - j);
+          gsl_vector_view hjm1;
+
+          /* Steps 3-5 */
+          gsl_vector_memcpy(wj, &z.vector);
+#if 1
+          tau = gsl_linalg_householder_transform(wj);
+          gsl_vector_fprintf(stdout, wj, "%.12e");
+          fprintf(stderr, "tau = %.12e\n", tau);
+          exit(1);
+#else
+          tau = my_householder(wj);
+          gsl_vector_fprintf(stdout, wj, "%.12e");
+          fprintf(stderr, "tau = %.12e\n", tau);
+          exit(1);
+#endif
+
+          /* Step 6: h_{j-1} = P_j z; beta = e_1^T h_0 */
+#if 0
+          gsl_linalg_householder_hv(tau, wj, &z.vector);
+#else
+          my_hv(wj, &z.vector);
+#endif
+          /*gsl_vector_fprintf(stdout, &z.vector, "%.12e");
+          exit(1);*/
+          if (j == 0)
+            beta = gsl_vector_get(&z.vector, 0);
+
+          /* Step 7: form v = P_1*P_2*...*P_j*e_j */
+
+          /* Step 7a: P_j*e_j = e_j - tau*(w_j)_j*w */
+          {
+            double wjj = gsl_vector_get(wj, 0);
+            gsl_vector_view a = gsl_vector_subvector(v, j, N - j);
+            gsl_vector_set_zero(v);
+            gsl_vector_memcpy(&a.vector, wj);
+            gsl_vector_scale(&a.vector, -tau*wjj);
+            gsl_vector_set(&a.vector, 0,
+              gsl_vector_get(&a.vector, 0) + 1.0);
+
+            /*gsl_vector_fprintf(stdout, v, "%.12e");
+            exit(1);*/
+          }
+
+          /* Step 8a: compute A*v */
+          gsl_vector_memcpy(vtmp, v);
+          gsl_spblas_dgemv(1.0, A, vtmp, 0.0, v);
+          /*gsl_vector_fprintf(stdout, v, "%.12e");
+          exit(1);*/
+
+          /* Step 8b: compute P_j*P_{j-1}*...*P_1*A*v */
+          for (k = 0; k <= j; ++k)
+            {
+              /*gsl_vector_view wk;*/
+              my_hv(wj, v);
+            }
+          gsl_vector_fprintf(stdout, v, "%.12e");
+          exit(1);
+
+          gsl_vector_free(wj);
+
+          exit(1);
+        }
+
+#if 0
       for (iter = 0; iter < w->max_iter; ++iter)
         {
           /* Step 1: r = b - A*x, beta = ||r||, v1 = r / ||r|| */
@@ -187,6 +330,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
               gsl_vector_scale(&wj.vector, 1.0 / h);
             }
         }
+#endif
 
       return GSL_SUCCESS;
     }
