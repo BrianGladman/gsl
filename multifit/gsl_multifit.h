@@ -50,7 +50,7 @@ typedef struct
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
-  gsl_vector * GTG;    /* regularization vector G^T G = diag(GTG) */
+  gsl_matrix * X_ridge; /* transformed input matrix for ridge regression */
 } 
 gsl_multifit_linear_workspace;
 
@@ -98,7 +98,7 @@ gsl_multifit_linear_ridge (const double gamma_sq,
                            gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
                             const gsl_matrix * X,
                             const gsl_vector * y,
                             gsl_vector * c,

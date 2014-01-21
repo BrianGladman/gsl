@@ -32,22 +32,22 @@
  *
  * where X is an M x N matrix of M observations for N variables.
  *
- * The solution includes a possible Tikhonov regularization:
+ * The solution includes a possible standard form Tikhonov regularization:
  *
- * c = (X^T X + G^T G)^{-1} X^T y
+ * c = (X^T X + gamma^2 I)^{-1} X^T y
  *
- * where G is the Tikhonov diagonal matrix (see GTG below).
+ * where gamma^2 is the Tikhonov regularization parameter.
  *
- * Inputs: X       - least squares matrix
- *         y       - right hand side vector
- *         tol     - singular value tolerance
- *         balance - 1 to perform column balancing
- *         GTG     - Tikhonov regularization matrix G^T G = diag(GTG)
- *         rank    - (output) effective rank
- *         c       - (output) model coefficient vector
- *         cov     - (output) covariance matrix
- *         chisq   - (output) residual chi^2
- *         work    - workspace
+ * Inputs: X        - least squares matrix
+ *         y        - right hand side vector
+ *         tol      - singular value tolerance
+ *         balance  - 1 to perform column balancing
+ *         gamma_sq - Tikhonov regularization parameter gamma^2
+ *         rank     - (output) effective rank
+ *         c        - (output) model coefficient vector
+ *         cov      - (output) covariance matrix
+ *         chisq    - (output) residual chi^2
+ *         work     - workspace
  */
 
 static int
@@ -55,7 +55,7 @@ multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
                      double tol,
                      int balance,
-                     const gsl_vector * GTG,
+                     const double gamma_sq,
                      size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
@@ -157,9 +157,7 @@ multifit_linear_svd (const gsl_matrix * X,
               }
             else
               {
-                double gammaj_sq = gsl_vector_get (GTG, j);
-
-                alpha = sj / (sj * sj + gammaj_sq);
+                alpha = sj / (sj * sj + gamma_sq);
                 p_eff++;
               }
 
@@ -195,9 +193,8 @@ multifit_linear_svd (const gsl_matrix * X,
         /* compute || \Gamma c ||^2 contribution to chi^2 */
         for (i = 0; i < p; ++i)
           {
-            double gammai_sq = gsl_vector_get(GTG, i);
             double ci = gsl_vector_get(c, i);
-            ridge += gammai_sq * ci * ci;
+            ridge += gamma_sq * ci * ci;
           }
 
         s2 = r2 / (n - p_eff);   /* p_eff == rank */
@@ -239,8 +236,7 @@ gsl_multifit_linear (const gsl_matrix * X,
   size_t rank;
   int status;
 
-  gsl_vector_set_zero(work->GTG);
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, work->GTG,
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, 0.0,
                                 &rank, c, cov, chisq, work);
   return status;
 }
@@ -258,8 +254,7 @@ gsl_multifit_linear_svd (const gsl_matrix * X,
 {
   int status;
   
-  gsl_vector_set_zero(work->GTG);
-  status = multifit_linear_svd (X, y, tol, 1, work->GTG, rank, c, cov,
+  status = multifit_linear_svd (X, y, tol, 1, 0.0, rank, c, cov,
                                 chisq, work);
   return status;
 }
@@ -275,8 +270,7 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
 {
   int status;
 
-  gsl_vector_set_zero(work->GTG);
-  status = multifit_linear_svd (X, y, tol, 0, work->GTG, rank, c, cov,
+  status = multifit_linear_svd (X, y, tol, 0, 0.0, rank, c, cov,
                                 chisq, work);
   return status;
 }
@@ -293,14 +287,34 @@ gsl_multifit_linear_ridge (const double gamma_sq,
   size_t rank;
   int status;
 
-  gsl_vector_set_all(work->GTG, gamma_sq);
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, work->GTG,
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, gamma_sq,
                                 &rank, c, cov, chisq, work);
   return status;
 } /* gsl_multifit_linear_ridge() */
 
+/*
+gsl_multifit_linear_ridge2()
+  Perform ridge regression with matrix \Gamma = diag(g1,g2,...,gp).
+This is equivalent to "standard" Tikhonov regression with the change
+of variables:
+
+X~ = X * G^{-1}
+c~ = G * c
+
+and performing standard Tikhonov regularization on the system
+X~ c~ = y with \gamma^2 = 1
+
+Inputs: gamma - vector representing diag(gamma_1,gamma_2,...,gamma_p)
+        X     - least squares matrix
+        y     - right hand side vector
+        c     - (output) coefficients
+        cov   - covariance matrix
+        chisq - residual
+        work  - workspace
+*/
+
 int
-gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
                             const gsl_matrix * X,
                             const gsl_vector * y,
                             gsl_vector * c,
@@ -308,12 +322,51 @@ gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
                             double *chisq,
                             gsl_multifit_linear_workspace * work)
 {
-  size_t rank;
-  int status;
+  const size_t p = X->size2;
 
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, GTG,
-                                &rank, c, cov, chisq, work);
-  return status;
+  if (p != gamma->size || gamma->size != c->size)
+    {
+      GSL_ERROR("gamma vector has incorrect length", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t rank;
+      int status;
+      size_t j;
+
+      /* construct X~ = X * G^{-1} matrix */
+      for (j = 0; j < p; ++j)
+        {
+          gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
+          gsl_vector_view Xtj = gsl_matrix_column(work->X_ridge, j);
+          double gammaj = gsl_vector_get(gamma, j);
+
+          if (gammaj == 0.0)
+            {
+              GSL_ERROR("gamma matrix is singular", GSL_EDOM);
+            }
+
+          gsl_vector_memcpy(&Xtj.vector, &Xj.vector);
+          gsl_vector_scale(&Xtj.vector, 1.0 / gammaj);
+        }
+
+      status = multifit_linear_svd (work->X_ridge, y, GSL_DBL_EPSILON, 1,
+                                    1.0, &rank, c, cov, chisq, work);
+
+      if (status == GSL_SUCCESS)
+        {
+          /* compute true solution vector c = G^{-1} c~ */
+          for (j = 0; j < p; ++j)
+            {
+              double ctj = gsl_vector_get(c, j);
+              double gammaj = gsl_vector_get(gamma, j);
+
+              gsl_vector_set(c, j, ctj / gammaj);
+            }
+        }
+
+      return status;
+    }
 } /* gsl_multifit_linear_ridge2() */
 
 /* General weighted case */ 

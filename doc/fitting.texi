@@ -418,9 +418,29 @@ which reduces to the ordinary least squares solution when @math{\Gamma = 0}.
 The routines below support two formats for the @math{\Gamma} matrix.
 The first is @math{\Gamma = \gamma I} leading to
 @math{c = \left( X^T X + \gamma^2 I \right)^{-1} X^T y} which damps
-all solution coefficients equally. The second is
+all solution coefficients equally, and is known as the Tikhonov
+"standard form". The second is
 @math{\Gamma = diag(\gamma_1,\gamma_2,...,\gamma_p)} which allows
-the user to selectively damp each coefficient differently.
+the user to selectively damp each coefficient differently. For this more
+general case, the problem can be converted into standard form through
+the transformation
+@tex
+\beforedisplay
+$$
+\eqalign{
+\tilde{X} &= X \Gamma^{-1} \cr
+\tilde{c} &= \Gamma c
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X~ = X \Gamma^-1
+c~ = \Gamma c
+@end example
+@end ifinfo
+provided @math{\Gamma^{-1}} exists.
 
 @deftypefun int gsl_multifit_linear_ridge (const double @var{gamma_sq}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
@@ -442,14 +462,18 @@ which have zero singular value (to machine precision) are discarded
 from the fit.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{GTG}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
-@math{\Gamma^T \Gamma = diag(\gamma_1^2,\gamma_2^2,...,\gamma_p^2)}
-where @math{\gamma_i^2} is provided in @var{GTG(i - 1)}.
+@math{\Gamma = diag(\gamma_1,\gamma_2,...,\gamma_p)}
+where @math{\gamma_i} is provided in @var{gamma(i - 1)}. The
+problem is converted to standard form as discussed above, solved
+and backtransformed to recover the desired coefficients. Therefore,
+the matrix @math{\Gamma^{-1}} must exist and so none of the
+@math{\gamma_i} may be zero.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
