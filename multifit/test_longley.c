@@ -68,6 +68,7 @@ test_longley ()
   gsl_vector * c = gsl_vector_alloc (longley_p);
   gsl_vector * r = gsl_vector_alloc (longley_n);
   gsl_matrix * cov = gsl_matrix_alloc (longley_p, longley_p);
+  gsl_vector * GTG = gsl_vector_calloc(longley_p);
 
   double chisq, chisq_res;
 
@@ -111,6 +112,25 @@ test_longley ()
                        &diag.vector, &exp_sd.vector,
                        1.0, 1.0, 1.0);
 
+  /* test ridge regression */
+
+  gsl_multifit_linear_ridge (0.0, &X.matrix, &y.vector, c, cov, &chisq, work);
+  gsl_multifit_linear_residuals(&X.matrix, &y.vector, c, r);
+  gsl_blas_ddot(r, r, &chisq_res);
+
+  test_longley_results("longley gsl_multifit_linear_ridge",
+                       c, &exp_c.vector,
+                       &diag.vector, &exp_sd.vector,
+                       chisq, chisq_res, expected_chisq);
+
+  gsl_multifit_linear_ridge2 (GTG, &X.matrix, &y.vector, c, cov, &chisq, work);
+  gsl_multifit_linear_residuals(&X.matrix, &y.vector, c, r);
+  gsl_blas_ddot(r, r, &chisq_res);
+
+  test_longley_results("longley gsl_multifit_linear_ridge2",
+                       c, &exp_c.vector,
+                       &diag.vector, &exp_sd.vector,
+                       chisq, chisq_res, expected_chisq);
 
   /* test weighted least squares */
   {
@@ -172,6 +192,7 @@ test_longley ()
   gsl_vector_free(c);
   gsl_vector_free(r);
   gsl_matrix_free(cov);
+  gsl_vector_free(GTG);
   gsl_multifit_linear_free (work);
   gsl_multifit_robust_free (work_rob);
 } /* test_longley() */

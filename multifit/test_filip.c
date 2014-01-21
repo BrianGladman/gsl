@@ -77,6 +77,7 @@ test_filip ()
   gsl_vector * c = gsl_vector_alloc (filip_p);
   gsl_matrix * cov = gsl_matrix_alloc (filip_p, filip_p);
   gsl_vector * r = gsl_vector_alloc(filip_n);
+  gsl_vector * GTG = gsl_vector_calloc(filip_p);
 
   double chisq, chisq_res;
 
@@ -136,6 +137,26 @@ test_filip ()
                      &diag.vector, &exp_sd.vector,
                      1.0, 1.0, 1.0);
 
+  /* test ridge regression */
+
+  gsl_multifit_linear_ridge (0.0, X, &y.vector, c, cov, &chisq, work);
+  gsl_multifit_linear_residuals(X, &y.vector, c, r);
+  gsl_blas_ddot(r, r, &chisq_res);
+
+  test_filip_results("filip gsl_multifit_linear_ridge",
+                     c, &exp_c.vector,
+                     &diag.vector, &exp_sd.vector,
+                     chisq, chisq_res, expected_chisq);
+
+  gsl_multifit_linear_ridge2 (GTG, X, &y.vector, c, cov, &chisq, work);
+  gsl_multifit_linear_residuals(X, &y.vector, c, r);
+  gsl_blas_ddot(r, r, &chisq_res);
+
+  test_filip_results("filip gsl_multifit_linear_ridge2",
+                     c, &exp_c.vector,
+                     &diag.vector, &exp_sd.vector,
+                     chisq, chisq_res, expected_chisq);
+
   /* test weighted least squares */
   {
     gsl_vector * w = gsl_vector_alloc (filip_n);
@@ -181,6 +202,7 @@ test_filip ()
   gsl_matrix_free(cov);
   gsl_matrix_free(X);
   gsl_vector_free(r);
+  gsl_vector_free(GTG);
   gsl_multifit_linear_free (work);
   gsl_multifit_robust_free (work_rob);
 }
