@@ -208,10 +208,14 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       gsl_vector *r = w->r; /* residual b - A*x */
       double beta;          /* || r_0 || = || b - A*x_0 || */
       gsl_vector_view v1 = gsl_matrix_column(w->V, 0); /* v_1 */
-      gsl_matrix *H = w->H; /* Hessenberg matrix */
+      gsl_matrix *H;        /* Hessenberg matrix */
       double h;             /* element of H */
       gsl_vector *v = gsl_vector_alloc(N);
       gsl_vector *vtmp = gsl_vector_alloc(N);
+      gsl_vector *tau = gsl_vector_alloc(M);
+
+      H = gsl_matrix_alloc(N, M);
+      gsl_matrix_set_zero(H);
 
       /* Step 1: compute r = b - A*x_0 */
       gsl_vector_memcpy(r, b);
@@ -220,46 +224,53 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       /* Step 2 */
       for (j = 0; j < M + 1; ++j)
         {
-          double tau = 2.0;
+          double tau_j;
           gsl_vector_view z = gsl_vector_subvector(r, j, N - j);
-          gsl_vector_view h = gsl_matrix_column(H, j);
-          gsl_vector *wj = gsl_vector_alloc(N - j);
-          gsl_vector_view hjm1;
 
-          /* Steps 3-5 */
-          gsl_vector_memcpy(wj, &z.vector);
-#if 1
-          tau = gsl_linalg_householder_transform(wj);
-          gsl_vector_fprintf(stdout, wj, "%.12e");
-          fprintf(stderr, "tau = %.12e\n", tau);
-          exit(1);
-#else
-          tau = my_householder(wj);
-          gsl_vector_fprintf(stdout, wj, "%.12e");
-          fprintf(stderr, "tau = %.12e\n", tau);
-          exit(1);
-#endif
+          /* hessenberg column = H(0:n-j,j) */
+          gsl_vector_view hj = gsl_matrix_subcolumn(H, j, 0, N - j);
 
-          /* Step 6: h_{j-1} = P_j z; beta = e_1^T h_0 */
+          /* householder vector = H(j:n-1,j) */
+          gsl_vector_view wj = gsl_matrix_subcolumn(H, j, j, N - j);
+
+          double normz;
+
+          /* Steps 3-5: compute wj to zero out z[j:n-1] */
+          gsl_vector_memcpy(&wj.vector, &z.vector);
+          tau_j = gsl_linalg_householder_transform(&wj.vector);
+
+          /* save ||z|| and set householder position to 1 */
+          normz = gsl_vector_get(&wj.vector, 0);
+          gsl_vector_set(&wj.vector, 0, 1.0);
+
+          /* store tau_j */
+          gsl_vector_set(tau, j, tau_j);
+
+          /*
+           * Step 6: h_{j-1} = P_j z = ||z|| e_j
+           * h_{j-1}[j] is already filled in with ||z|| from
+           * the gsl_linalg_householder_transform call above
+           */
+
 #if 0
-          gsl_linalg_householder_hv(tau, wj, &z.vector);
-#else
-          my_hv(wj, &z.vector);
+          {
+            gsl_vector_view h = gsl_matrix_column(H, j);
+            gsl_vector_fprintf(stdout, &h.vector, "%.12e");
+            exit(1);
+          }
 #endif
-          /*gsl_vector_fprintf(stdout, &z.vector, "%.12e");
-          exit(1);*/
+
           if (j == 0)
             beta = gsl_vector_get(&z.vector, 0);
 
           /* Step 7: form v = P_1*P_2*...*P_j*e_j */
 
-          /* Step 7a: P_j*e_j = e_j - tau*(w_j)_j*w */
+          /* Step 7a: P_j*e_j = e_j - tau_j(w_j)_j*w = e_j - tau_j*w */
           {
-            double wjj = gsl_vector_get(wj, 0);
             gsl_vector_view a = gsl_vector_subvector(v, j, N - j);
             gsl_vector_set_zero(v);
-            gsl_vector_memcpy(&a.vector, wj);
-            gsl_vector_scale(&a.vector, -tau*wjj);
+            gsl_vector_memcpy(&a.vector, &wj.vector);
+            gsl_vector_scale(&a.vector, -tau_j);
             gsl_vector_set(&a.vector, 0,
               gsl_vector_get(&a.vector, 0) + 1.0);
 
@@ -276,14 +287,11 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           /* Step 8b: compute P_j*P_{j-1}*...*P_1*A*v */
           for (k = 0; k <= j; ++k)
             {
-              /*gsl_vector_view wk;*/
-              my_hv(wj, v);
+              double tau_k = gsl_vector_get(tau, k);
+              gsl_vector_view wk = gsl_matrix_subcolumn(H, k, k, N - k);
+              gsl_linalg_householder_hv(tau_k, &wk.vector, v);
             }
           gsl_vector_fprintf(stdout, v, "%.12e");
-          exit(1);
-
-          gsl_vector_free(wj);
-
           exit(1);
         }
 

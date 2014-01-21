@@ -36,7 +36,10 @@ Inputs: v - on input, x vector
 
 Notes:
 1) on output, v is normalized so that v[0] = 1. The 1 is
-not actually stored; instead v[0] = -sign(x[0])*||x||.
+not actually stored; instead v[0] = -sign(x[0])*||x|| so
+that:
+
+P x = v[0] * e_1
 
 Therefore external routines should take care when applying
 the projection matrix P to vectors, taking into account
