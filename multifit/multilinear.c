@@ -28,10 +28,26 @@
 
 /* Fit
  *
- *  y = X c
+ * y = X c
  *
- *  where X is an M x N matrix of M observations for N variables.
+ * where X is an M x N matrix of M observations for N variables.
  *
+ * The solution includes a possible Tikhonov regularization:
+ *
+ * c = (X^T X + G^T G)^{-1} X^T y
+ *
+ * where G is the Tikhonov diagonal matrix (see GTG below).
+ *
+ * Inputs: X       - least squares matrix
+ *         y       - right hand side vector
+ *         tol     - singular value tolerance
+ *         balance - 1 to perform column balancing
+ *         GTG     - Tikhonov regularization matrix G^T G = diag(GTG)
+ *         rank    - (output) effective rank
+ *         c       - (output) model coefficient vector
+ *         cov     - (output) covariance matrix
+ *         chisq   - (output) residual chi^2
+ *         work    - workspace
  */
 
 static int
@@ -39,10 +55,11 @@ multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
                      double tol,
                      int balance,
+                     const gsl_vector * GTG,
                      size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
-                     double *chisq, 
+                     double *chisq,
                      gsl_multifit_linear_workspace * work)
 {
   if (X->size1 != y->size)
@@ -109,29 +126,42 @@ multifit_linear_svd (const gsl_matrix * X,
 
       gsl_linalg_SV_decomp_mod (A, QSI, Q, S, xt);
 
-      /* Solve y = A c for c */
+      /*
+       * Solve y = A c for c
+       * c = Q diag(s_i / (s_i^2 + gamma_i^2)) U^T y
+       */
 
+      /* compute xt = U^T y */
       gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
 
-      /* Scale the matrix Q,  Q' = Q S^-1 */
+      /* Scale the matrix Q,
+       * QSI = Q (S^2 + L)^{-1} S
+       * For standard least squares, L = 0 and QSI = Q S^{-1}
+       */
 
       gsl_matrix_memcpy (QSI, Q);
 
       {
-        double alpha0 = gsl_vector_get (S, 0);
+        double s0 = gsl_vector_get (S, 0);
         p_eff = 0;
 
         for (j = 0; j < p; j++)
           {
             gsl_vector_view column = gsl_matrix_column (QSI, j);
-            double alpha = gsl_vector_get (S, j);
+            double sj = gsl_vector_get (S, j);
+            double alpha;
 
-            if (alpha <= tol * alpha0) {
-              alpha = 0.0;
-            } else {
-              alpha = 1.0 / alpha;
-              p_eff++;
-            }
+            if (sj <= tol * s0)
+              {
+                alpha = 0.0;
+              }
+            else
+              {
+                double gammaj_sq = gsl_vector_get (GTG, j);
+
+                alpha = sj / (sj * sj + gammaj_sq);
+                p_eff++;
+              }
 
             gsl_vector_scale (&column.vector, alpha);
           }
@@ -150,7 +180,7 @@ multifit_linear_svd (const gsl_matrix * X,
       /* Compute chisq, from residual r = y - X c */
 
       {
-        double s2 = 0, r2 = 0;
+        double s2 = 0, r2 = 0, ridge = 0.0;
 
         for (i = 0; i < n; i++)
           {
@@ -162,9 +192,17 @@ multifit_linear_svd (const gsl_matrix * X,
             r2 += ri * ri;
           }
 
+        /* compute || \Gamma c ||^2 contribution to chi^2 */
+        for (i = 0; i < p; ++i)
+          {
+            double gammai_sq = gsl_vector_get(GTG, i);
+            double ci = gsl_vector_get(c, i);
+            ridge += gammai_sq * ci * ci;
+          }
+
         s2 = r2 / (n - p_eff);   /* p_eff == rank */
 
-        *chisq = r2;
+        *chisq = r2 + ridge;
 
         /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
 
@@ -199,8 +237,11 @@ gsl_multifit_linear (const gsl_matrix * X,
                      double *chisq, gsl_multifit_linear_workspace * work)
 {
   size_t rank;
-  int status  = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, &rank, c,
-                                     cov, chisq, work);
+  int status;
+
+  gsl_vector_set_zero(work->GTG);
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, work->GTG,
+                                &rank, c, cov, chisq, work);
   return status;
 }
 
@@ -215,7 +256,11 @@ gsl_multifit_linear_svd (const gsl_matrix * X,
                          gsl_matrix * cov,
                          double *chisq, gsl_multifit_linear_workspace * work)
 {
-  int status = multifit_linear_svd (X, y, tol, 1, rank, c, cov, chisq, work);
+  int status;
+  
+  gsl_vector_set_zero(work->GTG);
+  status = multifit_linear_svd (X, y, tol, 1, work->GTG, rank, c, cov,
+                                chisq, work);
   return status;
 }
 
@@ -228,9 +273,48 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_matrix * cov,
                           double *chisq, gsl_multifit_linear_workspace * work)
 {
-  int status = multifit_linear_svd (X, y, tol, 0, rank, c, cov, chisq, work);
+  int status;
+
+  gsl_vector_set_zero(work->GTG);
+  status = multifit_linear_svd (X, y, tol, 0, work->GTG, rank, c, cov,
+                                chisq, work);
   return status;
 }
+
+int
+gsl_multifit_linear_ridge (const double gamma_sq,
+                           const gsl_matrix * X,
+                           const gsl_vector * y,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double *chisq,
+                           gsl_multifit_linear_workspace * work)
+{
+  size_t rank;
+  int status;
+
+  gsl_vector_set_all(work->GTG, gamma_sq);
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, work->GTG,
+                                &rank, c, cov, chisq, work);
+  return status;
+} /* gsl_multifit_linear_ridge() */
+
+int
+gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+                            const gsl_matrix * X,
+                            const gsl_vector * y,
+                            gsl_vector * c,
+                            gsl_matrix * cov,
+                            double *chisq,
+                            gsl_multifit_linear_workspace * work)
+{
+  size_t rank;
+  int status;
+
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, GTG,
+                                &rank, c, cov, chisq, work);
+  return status;
+} /* gsl_multifit_linear_ridge2() */
 
 /* General weighted case */ 
 

@@ -20,6 +20,7 @@ are declared in the header file @file{gsl_fit.h}.
 * Linear regression::           
 * Linear fitting without a constant term::
 * Multi-parameter fitting::
+* Ridge (Tikhonov) regression::
 * Robust linear regression::
 * Troubleshooting::
 * Fitting Examples::            
@@ -361,6 +362,105 @@ at the point @var{x}.
 This function computes the vector of residuals @math{r = y - X c} for
 the observations @var{y}, coefficients @var{c} and matrix of predictor
 variables @var{X}.
+@end deftypefun
+
+@node Ridge (Tikhonov) regression
+@section Ridge (Tikhonov) regression
+@cindex ridge regression, Tikhonov regression
+
+Ordinary least squares models seek a solution vector @math{c} which
+minimizes the residual
+@tex
+\beforedisplay
+$$
+\chi^2 = || Xc - y ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || Xc - y ||^2
+@end example
+@end ifinfo
+In cases where the least squares matrix @math{X} is ill-conditioned,
+small perturbations of the matrix could lead to widely different
+solution vectors @math{c}. In these cases it is often advantageous
+to include a regularization term in the least squares minimization
+@tex
+\beforedisplay
+$$
+\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2
+@end example
+@end ifinfo
+for a suitably chosen matrix @math{\Gamma}. In many cases,
+@math{\Gamma} is chosen as a multiple of the identity matrix, giving
+preference to solution vectors @math{c} with smaller norms.
+Including this regularization term leads to the explicit solution
+@tex
+\beforedisplay
+$$
+c = \left( X^T X + \Gamma^T \Gamma \right)^{-1} X^T y
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+c = ( X^T X + \Gamma^T \Gamma )^-1 X^T y
+@end example
+@end ifinfo
+which reduces to the ordinary least squares solution when @math{\Gamma = 0}.
+The routines below support two formats for the @math{\Gamma} matrix.
+The first is @math{\Gamma = \gamma I} leading to
+@math{c = \left( X^T X + \gamma^2 I \right)^{-1} X^T y} which damps
+all solution coefficients equally. The second is
+@math{\Gamma = diag(\gamma_1,\gamma_2,...,\gamma_p)} which allows
+the user to selectively damp each coefficient differently.
+
+@deftypefun int gsl_multifit_linear_ridge (const double @var{gamma_sq}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of
+predictor variables @var{X}, using the preallocated workspace provided
+in @var{work}. The Tikhonov matrix appearing in the least squares
+solution is @math{\Gamma^T \Gamma = \gamma^2 I} where @math{\gamma^2}
+is provided in @var{gamma_sq}.
+The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+the standard deviation of the fit residuals.
+The residual @math{\chi^2 = || Xc - y ||^2 + \gamma^2 || c ||^2}
+is returned in @var{chisq}.
+
+The best-fit is found by singular value decomposition of the matrix
+@var{X} using the modified Golub-Reinsch SVD algorithm, with column
+scaling to improve the accuracy of the singular values. Any components
+which have zero singular value (to machine precision) are discarded
+from the fit.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{GTG}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of
+predictor variables @var{X}, using the preallocated workspace provided
+in @var{work}. The Tikhonov matrix appearing in the least squares
+solution is
+@math{\Gamma^T \Gamma = diag(\gamma_1^2,\gamma_2^2,...,\gamma_p^2)}
+where @math{\gamma_i^2} is provided in @var{GTG(i - 1)}.
+The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+the standard deviation of the fit residuals.
+The residual @math{\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2}
+is returned in @var{chisq}.
+
+The best-fit is found by singular value decomposition of the matrix
+@var{X} using the modified Golub-Reinsch SVD algorithm, with column
+scaling to improve the accuracy of the singular values. Any components
+which have zero singular value (to machine precision) are discarded
+from the fit.
 @end deftypefun
 
 @node Robust linear regression

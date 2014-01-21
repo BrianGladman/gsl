@@ -41,8 +41,8 @@ __BEGIN_DECLS
 
 typedef struct 
 {
-  size_t n; /* number of observations */
-  size_t p; /* number of parameters */
+  size_t n;            /* number of observations */
+  size_t p;            /* number of parameters */
   gsl_matrix * A;
   gsl_matrix * Q;
   gsl_matrix * QSI;
@@ -50,6 +50,7 @@ typedef struct
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
+  gsl_vector * GTG;    /* regularization vector G^T G = diag(GTG) */
 } 
 gsl_multifit_linear_workspace;
 
@@ -57,7 +58,7 @@ gsl_multifit_linear_workspace *
 gsl_multifit_linear_alloc (size_t n, size_t p);
 
 void
-gsl_multifit_linear_free (gsl_multifit_linear_workspace * work);
+gsl_multifit_linear_free (gsl_multifit_linear_workspace * w);
 
 int
 gsl_multifit_linear (const gsl_matrix * X,
@@ -86,6 +87,24 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_matrix * cov,
                           double *chisq, 
                           gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_ridge (const double gamma_sq,
+                           const gsl_matrix * X,
+                           const gsl_vector * y,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double *chisq,
+                           gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+                            const gsl_matrix * X,
+                            const gsl_vector * y,
+                            gsl_vector * c,
+                            gsl_matrix * cov,
+                            double *chisq,
+                            gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,
