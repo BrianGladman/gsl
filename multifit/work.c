@@ -93,12 +93,12 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
-  w->lambda = gsl_vector_calloc (p);
+  w->GTG = gsl_vector_calloc (p);
 
-  if (w->lambda == 0)
+  if (w->GTG == 0)
     {
       gsl_multifit_linear_free(w);
-      GSL_ERROR_VAL ("failed to allocate space for lambda", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for GTG", GSL_ENOMEM, 0);
     }
 
   return w;
@@ -130,8 +130,8 @@ gsl_multifit_linear_free (gsl_multifit_linear_workspace * w)
   if (w->D)
     gsl_vector_free (w->D);
 
-  if (w->lambda)
-    gsl_vector_free (w->lambda);
+  if (w->GTG)
+    gsl_vector_free (w->GTG);
 
   free (w);
 }

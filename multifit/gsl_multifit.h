@@ -50,7 +50,7 @@ typedef struct
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
-  gsl_vector * lambda; /* regularization vector */
+  gsl_vector * GTG;    /* regularization vector G^T G = diag(GTG) */
 } 
 gsl_multifit_linear_workspace;
 
@@ -89,13 +89,13 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_regularize (const double lambda,
-                                const gsl_matrix * X,
-                                const gsl_vector * y,
-                                gsl_vector * c,
-                                gsl_matrix * cov,
-                                double *chisq,
-                                gsl_multifit_linear_workspace * work);
+gsl_multifit_linear_ridge (const double gamma_sq,
+                           const gsl_matrix * X,
+                           const gsl_vector * y,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double *chisq,
+                           gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,
