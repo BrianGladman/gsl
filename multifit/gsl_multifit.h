@@ -98,6 +98,15 @@ gsl_multifit_linear_ridge (const double gamma_sq,
                            gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+                            const gsl_matrix * X,
+                            const gsl_vector * y,
+                            gsl_vector * c,
+                            gsl_matrix * cov,
+                            double *chisq,
+                            gsl_multifit_linear_workspace * work);
+
+int
 gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
                       const gsl_vector * y,

@@ -411,7 +411,7 @@ $$
 @end tex
 @ifinfo
 @example
-c = ( X^T X + \Gamma^T \Gamma )^{-1} X^T y
+c = ( X^T X + \Gamma^T \Gamma )^-1 X^T y
 @end example
 @end ifinfo
 which reduces to the ordinary least squares solution when @math{\Gamma = 0}.
@@ -433,6 +433,27 @@ The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
 The residual @math{\chi^2 = || Xc - y ||^2 + \gamma^2 || c ||^2}
+is returned in @var{chisq}.
+
+The best-fit is found by singular value decomposition of the matrix
+@var{X} using the modified Golub-Reinsch SVD algorithm, with column
+scaling to improve the accuracy of the singular values. Any components
+which have zero singular value (to machine precision) are discarded
+from the fit.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{GTG}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of
+predictor variables @var{X}, using the preallocated workspace provided
+in @var{work}. The Tikhonov matrix appearing in the least squares
+solution is
+@math{\Gamma^T \Gamma = diag(\gamma_1^2,\gamma_2^2,...,\gamma_p^2)}
+where @math{\gamma_i^2} is provided in @var{GTG(i - 1)}.
+The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+the standard deviation of the fit residuals.
+The residual @math{\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2}
 is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix

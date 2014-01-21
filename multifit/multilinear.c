@@ -299,6 +299,23 @@ gsl_multifit_linear_ridge (const double gamma_sq,
   return status;
 } /* gsl_multifit_linear_ridge() */
 
+int
+gsl_multifit_linear_ridge2 (const gsl_vector * GTG,
+                            const gsl_matrix * X,
+                            const gsl_vector * y,
+                            gsl_vector * c,
+                            gsl_matrix * cov,
+                            double *chisq,
+                            gsl_multifit_linear_workspace * work)
+{
+  size_t rank;
+  int status;
+
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, GTG,
+                                &rank, c, cov, chisq, work);
+  return status;
+} /* gsl_multifit_linear_ridge2() */
+
 /* General weighted case */ 
 
 static int
