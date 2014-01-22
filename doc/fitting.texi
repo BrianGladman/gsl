@@ -456,10 +456,8 @@ The residual @math{\chi^2 = || Xc - y ||^2 + \gamma^2 || c ||^2}
 is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix
-@var{X} using the modified Golub-Reinsch SVD algorithm, with column
-scaling to improve the accuracy of the singular values. Any components
-which have zero singular value (to machine precision) are discarded
-from the fit.
+@var{X}. Any components which have zero singular value (to machine
+precision) are discarded from the fit.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
@@ -481,10 +479,8 @@ The residual @math{\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2}
 is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix
-@var{X} using the modified Golub-Reinsch SVD algorithm, with column
-scaling to improve the accuracy of the singular values. Any components
-which have zero singular value (to machine precision) are discarded
-from the fit.
+@var{X}. Any components which have zero singular value (to machine
+precision) are discarded from the fit.
 @end deftypefun
 
 @node Robust linear regression
