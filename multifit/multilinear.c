@@ -137,6 +137,7 @@ multifit_linear_svd (const gsl_matrix * X,
 
       /* Scale the matrix Q,
        * QSI = Q (S^2 + gamma^2 I)^{-1} S
+       *     = Q diag(s_i / (s_i^2 + gamma^2))
        * For standard least squares, gamma = 0 and QSI = Q S^{-1}
        */
 
