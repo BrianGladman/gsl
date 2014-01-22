@@ -42,7 +42,7 @@
  *         y        - right hand side vector
  *         tol      - singular value tolerance
  *         balance  - 1 to perform column balancing
- *         gamma_sq - Tikhonov regularization parameter gamma^2
+ *         gamma    - Tikhonov regularization parameter gamma
  *         rank     - (output) effective rank
  *         c        - (output) model coefficient vector
  *         cov      - (output) covariance matrix
@@ -55,7 +55,7 @@ multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
                      double tol,
                      int balance,
-                     const double gamma_sq,
+                     const double gamma,
                      size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
@@ -97,6 +97,7 @@ multifit_linear_svd (const gsl_matrix * X,
     {
       const size_t n = X->size1;
       const size_t p = X->size2;
+      const double gamma_sq = gamma * gamma;
 
       size_t i, j, p_eff;
 
@@ -135,8 +136,8 @@ multifit_linear_svd (const gsl_matrix * X,
       gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
 
       /* Scale the matrix Q,
-       * QSI = Q (S^2 + L)^{-1} S
-       * For standard least squares, L = 0 and QSI = Q S^{-1}
+       * QSI = Q (S^2 + gamma^2 I)^{-1} S
+       * For standard least squares, gamma = 0 and QSI = Q S^{-1}
        */
 
       gsl_matrix_memcpy (QSI, Q);
@@ -276,7 +277,7 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
 }
 
 int
-gsl_multifit_linear_ridge (const double gamma_sq,
+gsl_multifit_linear_ridge (const double gamma,
                            const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,
@@ -288,7 +289,7 @@ gsl_multifit_linear_ridge (const double gamma_sq,
   int status;
 
   /* do not balance since it cannot be applied to the Tikhonov term */
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, gamma_sq,
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, gamma,
                                 &rank, c, cov, chisq, work);
 
   return status;
@@ -304,7 +305,7 @@ X~ = X * G^{-1}
 c~ = G * c
 
 and performing standard Tikhonov regularization on the system
-X~ c~ = y with \gamma^2 = 1
+X~ c~ = y with \gamma = 1
 
 Inputs: gamma - vector representing diag(gamma_1,gamma_2,...,gamma_p)
         X     - least squares matrix
@@ -352,7 +353,10 @@ gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
           gsl_vector_scale(&Xtj.vector, 1.0 / gammaj);
         }
 
-      /* do not balance since it cannot be applied to the Tikhonov term */
+      /*
+       * do not balance since it cannot be applied to the Tikhonov term;
+       * gamma = 1 in the transformed system
+       */
       status = multifit_linear_svd (work->X_ridge, y, GSL_DBL_EPSILON, 0,
                                     1.0, &rank, c, cov, chisq, work);
 

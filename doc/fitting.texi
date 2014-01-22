@@ -442,13 +442,14 @@ c~ = \Gamma c
 @end ifinfo
 provided @math{\Gamma^{-1}} exists.
 
-@deftypefun int gsl_multifit_linear_ridge (const double @var{gamma_sq}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge (const double @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
-solution is @math{\Gamma^T \Gamma = \gamma^2 I} where @math{\gamma^2}
-is provided in @var{gamma_sq}.
+solution is @math{\Gamma = \gamma I} where @math{\gamma}
+is provided in @var{gamma}, so that @math{\gamma^2} is added to
+the diagonal elements of @math{X^T X}.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.

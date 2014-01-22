@@ -89,7 +89,7 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge (const double gamma_sq,
+gsl_multifit_linear_ridge (const double gamma,
                            const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,

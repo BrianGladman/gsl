@@ -371,7 +371,7 @@ test_ridge(void)
       {
         double g = pow(10.0, -(double) i);
 
-        gsl_multifit_linear_ridge(g*g, X, &yv.vector, c1, cov,
+        gsl_multifit_linear_ridge(g, X, &yv.vector, c1, cov,
                                   &chisq, w);
 
         gsl_vector_set_all(gamma, g);
