@@ -50,7 +50,6 @@ typedef struct
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
-  gsl_matrix * X_ridge; /* transformed input matrix for ridge regression */
 } 
 gsl_multifit_linear_workspace;
 
@@ -89,7 +88,7 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge (const double gamma,
+gsl_multifit_linear_ridge (const double lambda,
                            const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,
@@ -98,7 +97,7 @@ gsl_multifit_linear_ridge (const double gamma,
                            gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
+gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
                             const gsl_matrix * X,
                             const gsl_vector * y,
                             gsl_vector * c,

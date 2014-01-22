@@ -389,38 +389,38 @@ to include a regularization term in the least squares minimization
 @tex
 \beforedisplay
 $$
-\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2
+\chi^2 = || Xc - y ||^2 + || L c ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2
+\chi^2 = || Xc - y ||^2 + || L c ||^2
 @end example
 @end ifinfo
-for a suitably chosen matrix @math{\Gamma}. In many cases,
-@math{\Gamma} is chosen as a multiple of the identity matrix, giving
+for a suitably chosen matrix @math{L}. In many cases,
+@math{L} is chosen as a multiple of the identity matrix, giving
 preference to solution vectors @math{c} with smaller norms.
 Including this regularization term leads to the explicit solution
 @tex
 \beforedisplay
 $$
-c = \left( X^T X + \Gamma^T \Gamma \right)^{-1} X^T y
+c = \left( X^T X + L^T L \right)^{-1} X^T y
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-c = ( X^T X + \Gamma^T \Gamma )^-1 X^T y
+c = ( X^T X + L^T L )^-1 X^T y
 @end example
 @end ifinfo
-which reduces to the ordinary least squares solution when @math{\Gamma = 0}.
-The routines below support two formats for the @math{\Gamma} matrix.
-The first is @math{\Gamma = \gamma I} leading to
-@math{c = \left( X^T X + \gamma^2 I \right)^{-1} X^T y} which damps
+which reduces to the ordinary least squares solution when @math{L = 0}.
+The routines below support two formats for the @math{L} matrix.
+The first is @math{L = \lambda I} leading to
+@math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
 "standard form". The second is
-@math{\Gamma = diag(\gamma_1,\gamma_2,...,\gamma_p)} which allows
+@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)} which allows
 the user to selectively damp each coefficient differently. For this more
 general case, the problem can be converted into standard form through
 the transformation
@@ -428,37 +428,37 @@ the transformation
 \beforedisplay
 $$
 \eqalign{
-\tilde{X} &= X \Gamma^{-1} \cr
-\tilde{c} &= \Gamma c
+\tilde{X} &= X L^{-1} \cr
+\tilde{c} &= L c
 }
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-X~ = X \Gamma^-1
-c~ = \Gamma c
+X~ = X L^-1
+c~ = L c
 @end example
 @end ifinfo
-provided @math{\Gamma^{-1}} exists. For applications which require
-a more complicated matrix @math{\Gamma}, the user can apply the
-above transformation themselves if @math{\Gamma} is square and
+provided @math{L^{-1}} exists. For applications which require
+a more complicated matrix @math{L}, the user can apply the
+above transformation themselves if @math{L} is square and
 invertible and use @code{gsl_multifit_linear_ridge}. If
-@math{\Gamma} is not square or not invertible, other techniques
+@math{L} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
-@deftypefun int gsl_multifit_linear_ridge (const double @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge (const double @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
-solution is @math{\Gamma = \gamma I} where @math{\gamma}
-is provided in @var{gamma}, so that @math{\gamma^2} is added to
+solution is @math{L = \lambda I} where @math{\lambda}
+is provided in @var{lambda}, so that @math{\lambda^2} is added to
 the diagonal elements of @math{X^T X}.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
-The residual @math{\chi^2 = || Xc - y ||^2 + \gamma^2 || c ||^2}
+The residual @math{\chi^2 = || Xc - y ||^2 + \lambda^2 || c ||^2}
 is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix
@@ -466,22 +466,22 @@ The best-fit is found by singular value decomposition of the matrix
 precision) are discarded from the fit.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
-@math{\Gamma = diag(\gamma_1,\gamma_2,...,\gamma_p)}
-where @math{\gamma_i} is provided in @var{gamma(i - 1)}. The
+@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)}
+where @math{\lambda_i} is provided in @var{lambda(i - 1)}. The
 problem is converted to standard form as discussed above, solved
 and backtransformed to recover the desired coefficients. Therefore,
-the matrix @math{\Gamma^{-1}} must exist and so none of the
-@math{\gamma_i} may be zero.
+the matrix @math{L^{-1}} must exist and so none of the
+@math{\lambda_i} may be zero.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
-The residual @math{\chi^2 = || Xc - y ||^2 + || \Gamma c ||^2}
+The residual @math{\chi^2 = || Xc - y ||^2 + || L c ||^2}
 is returned in @var{chisq}.
 
 The best-fit is found by singular value decomposition of the matrix

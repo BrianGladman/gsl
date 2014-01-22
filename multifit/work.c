@@ -93,14 +93,6 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
-  w->X_ridge = gsl_matrix_alloc (n, p);
-
-  if (w->X_ridge == 0)
-    {
-      gsl_multifit_linear_free(w);
-      GSL_ERROR_VAL ("failed to allocate space for X_ridge", GSL_ENOMEM, 0);
-    }
-
   return w;
 }
 
@@ -129,9 +121,6 @@ gsl_multifit_linear_free (gsl_multifit_linear_workspace * w)
 
   if (w->D)
     gsl_vector_free (w->D);
-
-  if (w->X_ridge)
-    gsl_matrix_free (w->X_ridge);
 
   free (w);
 }

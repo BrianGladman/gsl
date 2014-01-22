@@ -34,15 +34,17 @@
  *
  * The solution includes a possible standard form Tikhonov regularization:
  *
- * c = (X^T X + gamma^2 I)^{-1} X^T y
+ * c = (X^T X + lambda^2 I)^{-1} X^T y
  *
- * where gamma^2 is the Tikhonov regularization parameter.
+ * where lambda^2 is the Tikhonov regularization parameter.
  *
  * Inputs: X        - least squares matrix
+ *                    X may point to work->A in the case of ridge
+ *                    regression
  *         y        - right hand side vector
  *         tol      - singular value tolerance
  *         balance  - 1 to perform column balancing
- *         gamma    - Tikhonov regularization parameter gamma
+ *         lambda   - Tikhonov regularization parameter lambda
  *         rank     - (output) effective rank
  *         c        - (output) model coefficient vector
  *         cov      - (output) covariance matrix
@@ -55,7 +57,7 @@ multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
                      double tol,
                      int balance,
-                     const double gamma,
+                     const double lambda,
                      size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
@@ -97,7 +99,7 @@ multifit_linear_svd (const gsl_matrix * X,
     {
       const size_t n = X->size1;
       const size_t p = X->size2;
-      const double gamma_sq = gamma * gamma;
+      const double lambda_sq = lambda * lambda;
 
       size_t i, j, p_eff;
 
@@ -110,7 +112,8 @@ multifit_linear_svd (const gsl_matrix * X,
 
       /* Copy X to workspace,  A <= X */
 
-      gsl_matrix_memcpy (A, X);
+      if (X != A)
+        gsl_matrix_memcpy (A, X);
 
       /* Balance the columns of the matrix A if requested */
 
@@ -129,16 +132,16 @@ multifit_linear_svd (const gsl_matrix * X,
 
       /*
        * Solve y = A c for c
-       * c = Q diag(s_i / (s_i^2 + gamma_i^2)) U^T y
+       * c = Q diag(s_i / (s_i^2 + lambda_i^2)) U^T y
        */
 
       /* compute xt = U^T y */
       gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
 
       /* Scale the matrix Q,
-       * QSI = Q (S^2 + gamma^2 I)^{-1} S
-       *     = Q diag(s_i / (s_i^2 + gamma^2))
-       * For standard least squares, gamma = 0 and QSI = Q S^{-1}
+       * QSI = Q (S^2 + lambda^2 I)^{-1} S
+       *     = Q diag(s_i / (s_i^2 + lambda^2))
+       * For standard least squares, lambda = 0 and QSI = Q S^{-1}
        */
 
       gsl_matrix_memcpy (QSI, Q);
@@ -159,7 +162,7 @@ multifit_linear_svd (const gsl_matrix * X,
               }
             else
               {
-                alpha = sj / (sj * sj + gamma_sq);
+                alpha = sj / (sj * sj + lambda_sq);
                 p_eff++;
               }
 
@@ -192,11 +195,11 @@ multifit_linear_svd (const gsl_matrix * X,
             r2 += ri * ri;
           }
 
-        /* compute || \Gamma c ||^2 contribution to chi^2 */
+        /* compute || L c ||^2 contribution to chi^2 */
         for (i = 0; i < p; ++i)
           {
             double ci = gsl_vector_get(c, i);
-            ridge += gamma_sq * ci * ci;
+            ridge += lambda_sq * ci * ci;
           }
 
         s2 = r2 / (n - p_eff);   /* p_eff == rank */
@@ -278,7 +281,7 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
 }
 
 int
-gsl_multifit_linear_ridge (const double gamma,
+gsl_multifit_linear_ridge (const double lambda,
                            const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,
@@ -290,7 +293,7 @@ gsl_multifit_linear_ridge (const double gamma,
   int status;
 
   /* do not balance since it cannot be applied to the Tikhonov term */
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, gamma,
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, lambda,
                                 &rank, c, cov, chisq, work);
 
   return status;
@@ -298,27 +301,27 @@ gsl_multifit_linear_ridge (const double gamma,
 
 /*
 gsl_multifit_linear_ridge2()
-  Perform ridge regression with matrix \Gamma = diag(g1,g2,...,gp).
+  Perform ridge regression with matrix L = diag(lambda_1,lambda_2,...,lambda_p).
 This is equivalent to "standard" Tikhonov regression with the change
 of variables:
 
-X~ = X * G^{-1}
-c~ = G * c
+X~ = X * L^{-1}
+c~ = L * c
 
 and performing standard Tikhonov regularization on the system
-X~ c~ = y with \gamma = 1
+X~ c~ = y with \lambda = 1
 
-Inputs: gamma - vector representing diag(gamma_1,gamma_2,...,gamma_p)
-        X     - least squares matrix
-        y     - right hand side vector
-        c     - (output) coefficients
-        cov   - covariance matrix
-        chisq - residual
-        work  - workspace
+Inputs: lambda - vector representing diag(lambda_1,lambda_2,...,lambda_p)
+        X      - least squares matrix
+        y      - right hand side vector
+        c      - (output) coefficients
+        cov    - covariance matrix
+        chisq  - residual
+        work   - workspace
 */
 
 int
-gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
+gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
                             const gsl_matrix * X,
                             const gsl_vector * y,
                             gsl_vector * c,
@@ -328,9 +331,9 @@ gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
 {
   const size_t p = X->size2;
 
-  if (p != gamma->size || gamma->size != c->size)
+  if (p != lambda->size || lambda->size != c->size)
     {
-      GSL_ERROR("gamma vector has incorrect length", GSL_EBADLEN);
+      GSL_ERROR("lambda vector has incorrect length", GSL_EBADLEN);
     }
   else
     {
@@ -338,33 +341,33 @@ gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
       int status;
       size_t j;
 
-      /* construct X~ = X * G^{-1} matrix */
+      /* construct X~ = X * L^{-1} matrix using work->A */
       for (j = 0; j < p; ++j)
         {
           gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
-          gsl_vector_view Xtj = gsl_matrix_column(work->X_ridge, j);
-          double gammaj = gsl_vector_get(gamma, j);
+          gsl_vector_view Aj = gsl_matrix_column(work->A, j);
+          double lambdaj = gsl_vector_get(lambda, j);
 
-          if (gammaj == 0.0)
+          if (lambdaj == 0.0)
             {
-              GSL_ERROR("gamma matrix is singular", GSL_EDOM);
+              GSL_ERROR("lambda matrix is singular", GSL_EDOM);
             }
 
-          gsl_vector_memcpy(&Xtj.vector, &Xj.vector);
-          gsl_vector_scale(&Xtj.vector, 1.0 / gammaj);
+          gsl_vector_memcpy(&Aj.vector, &Xj.vector);
+          gsl_vector_scale(&Aj.vector, 1.0 / lambdaj);
         }
 
       /*
        * do not balance since it cannot be applied to the Tikhonov term;
-       * gamma = 1 in the transformed system
+       * lambda = 1 in the transformed system
        */
-      status = multifit_linear_svd (work->X_ridge, y, GSL_DBL_EPSILON, 0,
+      status = multifit_linear_svd (work->A, y, GSL_DBL_EPSILON, 0,
                                     1.0, &rank, c, cov, chisq, work);
 
       if (status == GSL_SUCCESS)
         {
-          /* compute true solution vector c = G^{-1} c~ */
-          gsl_vector_div(c, gamma);
+          /* compute true solution vector c = L^{-1} c~ */
+          gsl_vector_div(c, lambda);
         }
 
       return status;

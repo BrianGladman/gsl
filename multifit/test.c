@@ -350,11 +350,11 @@ test_ridge(void)
     gsl_vector *c0 = gsl_vector_alloc(p);
     gsl_vector *c1 = gsl_vector_alloc(p);
     gsl_vector *c2 = gsl_vector_alloc(p);
-    gsl_vector *gamma = gsl_vector_calloc(p);
+    gsl_vector *lambda_vec = gsl_vector_calloc(p);
     gsl_matrix *cov = gsl_matrix_alloc(p, p);
     double chisq;
 
-    /* test that ridge equals OLS solution for gamma = 0 */
+    /* test that ridge equals OLS solution for lambda = 0 */
     gsl_multifit_linear(X, &yv.vector, c0, cov, &chisq, w);
     gsl_multifit_linear_ridge(0.0, X, &yv.vector, c1, cov, &chisq, w);
 
@@ -364,18 +364,18 @@ test_ridge(void)
         double c0j = gsl_vector_get(c0, j);
         double c1j = gsl_vector_get(c1, j);
 
-        gsl_test_rel(c1j, c0j, 1.0e-10, "test_ridge: gamma = 0, c0/c1");
+        gsl_test_rel(c1j, c0j, 1.0e-10, "test_ridge: lambda = 0, c0/c1");
       }
 
     for (i = 0; i < 7; ++i)
       {
-        double g = pow(10.0, -(double) i);
+        double lambda = pow(10.0, -(double) i);
 
-        gsl_multifit_linear_ridge(g, X, &yv.vector, c1, cov,
+        gsl_multifit_linear_ridge(lambda, X, &yv.vector, c1, cov,
                                   &chisq, w);
 
-        gsl_vector_set_all(gamma, g);
-        gsl_multifit_linear_ridge2(gamma, X, &yv.vector, c2, cov,
+        gsl_vector_set_all(lambda_vec, lambda);
+        gsl_multifit_linear_ridge2(lambda_vec, X, &yv.vector, c2, cov,
                                    &chisq, w);
 
         /* test c1 = c2 */
@@ -384,7 +384,8 @@ test_ridge(void)
             double c1j = gsl_vector_get(c1, j);
             double c2j = gsl_vector_get(c2, j);
 
-            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: gamma = %.1e", g);
+            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: lambda = %.1e",
+                         lambda);
           }
       }
 
@@ -392,7 +393,7 @@ test_ridge(void)
     gsl_vector_free(c0);
     gsl_vector_free(c1);
     gsl_vector_free(c2);
-    gsl_vector_free(gamma);
+    gsl_vector_free(lambda_vec);
     gsl_matrix_free(cov);
   }
 
