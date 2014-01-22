@@ -74,6 +74,8 @@ statements, and while its supposed to be based on MINPACK, I've found
 numerous examples where GSL fails to converge when MINPACK succeeds, so 
 something was not implemented correctly.
 
+** import 2D interpolation code; 3d or nd linear interpolation?
+
 * Other tasks
 
 ** Remove use of long double internally, e.g. as an accumulator in
