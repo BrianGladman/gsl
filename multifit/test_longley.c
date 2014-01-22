@@ -111,17 +111,6 @@ test_longley ()
                        &diag.vector, &exp_sd.vector,
                        1.0, 1.0, 1.0);
 
-  /* test ridge regression */
-
-  gsl_multifit_linear_ridge (0.0, &X.matrix, &y.vector, c, cov, &chisq, work);
-  gsl_multifit_linear_residuals(&X.matrix, &y.vector, c, r);
-  gsl_blas_ddot(r, r, &chisq_res);
-
-  test_longley_results("longley gsl_multifit_linear_ridge",
-                       c, &exp_c.vector,
-                       &diag.vector, &exp_sd.vector,
-                       chisq, chisq_res, expected_chisq);
-
   /* test weighted least squares */
   {
     size_t i, j;

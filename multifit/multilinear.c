@@ -287,8 +287,10 @@ gsl_multifit_linear_ridge (const double gamma_sq,
   size_t rank;
   int status;
 
-  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, gamma_sq,
+  /* do not balance since it cannot be applied to the Tikhonov term */
+  status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, gamma_sq,
                                 &rank, c, cov, chisq, work);
+
   return status;
 } /* gsl_multifit_linear_ridge() */
 
@@ -350,19 +352,14 @@ gsl_multifit_linear_ridge2 (const gsl_vector * gamma,
           gsl_vector_scale(&Xtj.vector, 1.0 / gammaj);
         }
 
-      status = multifit_linear_svd (work->X_ridge, y, GSL_DBL_EPSILON, 1,
+      /* do not balance since it cannot be applied to the Tikhonov term */
+      status = multifit_linear_svd (work->X_ridge, y, GSL_DBL_EPSILON, 0,
                                     1.0, &rank, c, cov, chisq, work);
 
       if (status == GSL_SUCCESS)
         {
           /* compute true solution vector c = G^{-1} c~ */
-          for (j = 0; j < p; ++j)
-            {
-              double ctj = gsl_vector_get(c, j);
-              double gammaj = gsl_vector_get(gamma, j);
-
-              gsl_vector_set(c, j, ctj / gammaj);
-            }
+          gsl_vector_div(c, gamma);
         }
 
       return status;

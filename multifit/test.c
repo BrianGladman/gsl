@@ -28,6 +28,7 @@
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multifit_nlin.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_rng.h>
 
 #include <gsl/gsl_ieee_utils.h>
 
@@ -51,6 +52,8 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
           double x0[], double x[], double sumsq,
           double sigma[], double epsrel, double epsrel_sigma);
 
+void test_ridge(void);
+
 int
 main (void)
 {
@@ -67,6 +70,7 @@ main (void)
   test_filip();
   test_pontius();
   test_estimator();
+  test_ridge();
 
   {
     f = make_fdf (&brown_f, &brown_df, &brown_fdf, brown_N, brown_P, 0);
@@ -302,4 +306,98 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
   }
 
   gsl_multifit_fdfsolver_free (s);
+}
+
+void
+test_ridge(void)
+{
+  const size_t n = 100;
+  const size_t p = 10;
+  const double xmin = -1.0;
+  const double xmax = 1.0;
+  const double dx = (xmax - xmin) / (n - 1.0);
+  gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+  double *x = malloc(n * sizeof(double));
+  double *y = malloc(n * sizeof(double));
+  gsl_matrix *X = gsl_matrix_alloc(n, p);
+  size_t i, j;
+
+  /* construct artificial data */
+  for (i = 0; i < n; ++i)
+    {
+      double ei = 0.2 * gsl_rng_uniform(r);
+
+      x[i] = xmin + dx * i;
+      y[i] = 1.0 / (1.0 + 25.0*x[i]*x[i]) + ei;
+    }
+
+  /* construct least squares matrix with polynomial model */
+  for (i = 0; i < n; ++i)
+    {
+      double Xij = 1.0;
+
+      for (j = 0; j < p; ++j)
+        {
+          gsl_matrix_set(X, i, j, Xij);
+          Xij *= x[i];
+        }
+    }
+
+  /* least squares fits */
+  {
+    gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
+    gsl_vector_view yv = gsl_vector_view_array(y, n);
+    gsl_vector *c0 = gsl_vector_alloc(p);
+    gsl_vector *c1 = gsl_vector_alloc(p);
+    gsl_vector *c2 = gsl_vector_alloc(p);
+    gsl_vector *gamma = gsl_vector_calloc(p);
+    gsl_matrix *cov = gsl_matrix_alloc(p, p);
+    double chisq;
+
+    /* test that ridge equals OLS solution for gamma = 0 */
+    gsl_multifit_linear(X, &yv.vector, c0, cov, &chisq, w);
+    gsl_multifit_linear_ridge(0.0, X, &yv.vector, c1, cov, &chisq, w);
+
+    /* test c0 = c1 */
+    for (j = 0; j < p; ++j)
+      {
+        double c0j = gsl_vector_get(c0, j);
+        double c1j = gsl_vector_get(c1, j);
+
+        gsl_test_rel(c1j, c0j, 1.0e-10, "test_ridge: gamma = 0, c0/c1");
+      }
+
+    for (i = 0; i < 7; ++i)
+      {
+        double g = pow(10.0, -(double) i);
+
+        gsl_multifit_linear_ridge(g*g, X, &yv.vector, c1, cov,
+                                  &chisq, w);
+
+        gsl_vector_set_all(gamma, g);
+        gsl_multifit_linear_ridge2(gamma, X, &yv.vector, c2, cov,
+                                   &chisq, w);
+
+        /* test c1 = c2 */
+        for (j = 0; j < p; ++j)
+          {
+            double c1j = gsl_vector_get(c1, j);
+            double c2j = gsl_vector_get(c2, j);
+
+            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: gamma = %.1e", g);
+          }
+      }
+
+    gsl_multifit_linear_free(w);
+    gsl_vector_free(c0);
+    gsl_vector_free(c1);
+    gsl_vector_free(c2);
+    gsl_vector_free(gamma);
+    gsl_matrix_free(cov);
+  }
+
+  gsl_rng_free(r);
+  free(x);
+  free(y);
+  gsl_matrix_free(X);
 }
