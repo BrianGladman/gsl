@@ -16,4 +16,4 @@ The following features should be added to the nonlinear least squares routines:
 
 2. Support for constraints
 
-3. robust fitting
+3. robust nonlinear least squares and robust ridge regression
