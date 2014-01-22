@@ -440,7 +440,12 @@ X~ = X \Gamma^-1
 c~ = \Gamma c
 @end example
 @end ifinfo
-provided @math{\Gamma^{-1}} exists.
+provided @math{\Gamma^{-1}} exists. For applications which require
+a more complicated matrix @math{\Gamma}, the user can apply the
+above transformation themselves if @math{\Gamma} is square and
+invertible and use @code{gsl_multifit_linear_ridge}. If
+@math{\Gamma} is not square or not invertible, other techniques
+must be used (see Hansen 1998, chapter 2.3).
 
 @deftypefun int gsl_multifit_linear_ridge (const double @var{gamma}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
@@ -1009,6 +1014,16 @@ Statistical Reference Datasets. The datasets and their documentation are
 available from NIST at the following website,
 
 @center @uref{http://www.nist.gov/itl/div898/strd/index.html}.
+
+@noindent
+More information on performing ridge regression with non-square or
+non-invertible regularizing matrices can be found in
+
+@itemize @w{}
+@item Hansen, P. C. (1998), Rank-Deficient and Discrete Ill-Posed Problems:
+Numerical Aspects of Linear Inversion. SIAM Monogr. on Mathematical
+Modeling and Computation, Society for Industrial and Applied Mathematics
+@end itemize
 
 @noindent
 The GSL implementation of robust linear regression closely follows the publications
