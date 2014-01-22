@@ -55,8 +55,8 @@
 static int
 multifit_linear_svd (const gsl_matrix * X,
                      const gsl_vector * y,
-                     double tol,
-                     int balance,
+                     const double tol,
+                     const int balance,
                      const double lambda,
                      size_t * rank,
                      gsl_vector * c,
@@ -334,6 +334,12 @@ gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
   if (p != lambda->size || lambda->size != c->size)
     {
       GSL_ERROR("lambda vector has incorrect length", GSL_EBADLEN);
+    }
+  else if (X->size1 != work->n || X->size2 != work->p)
+    {
+      GSL_ERROR
+        ("size of workspace does not match size of observation matrix",
+         GSL_EBADLEN);
     }
   else
     {
