@@ -366,7 +366,11 @@ variables @var{X}.
 
 @node Ridge (Tikhonov) regression
 @section Ridge (Tikhonov) regression
-@cindex ridge regression, Tikhonov regression
+@cindex ridge regression
+@cindex Tikhonov regression
+@cindex regression, ridge
+@cindex regression, Tikhonov
+@cindex least squares, regularized
 
 Ordinary least squares models seek a solution vector @math{c} which
 minimizes the residual
@@ -492,6 +496,8 @@ precision) are discarded from the fit.
 @node Robust linear regression
 @section Robust linear regression
 @cindex robust regression
+@cindex regression, robust
+@cindex least squares, robust
 
 Ordinary least squares (OLS) models are often heavily influenced by the presence of outliers.
 Outliers are data points which do not follow the general trend of the other observations,
