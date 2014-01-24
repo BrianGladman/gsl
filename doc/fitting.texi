@@ -424,7 +424,7 @@ The first is @math{L = \lambda I} leading to
 @math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
 "standard form". The second is
-@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)} which allows
+@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})} which allows
 the user to selectively damp each coefficient differently. For this more
 general case, the problem can be converted into standard form through
 the transformation
@@ -476,8 +476,8 @@ This function computes the best-fit parameters @var{c} of the model
 predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
-@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)}
-where @math{\lambda_i} is provided in @var{lambda(i - 1)}. The
+@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})}
+where @math{\lambda_i} is provided in @var{lambda(i)}. The
 problem is converted to standard form as discussed above, solved
 and backtransformed to recover the desired coefficients. Therefore,
 the matrix @math{L^{-1}} must exist and so none of the
