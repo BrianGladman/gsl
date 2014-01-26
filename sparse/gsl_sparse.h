@@ -151,7 +151,8 @@ int gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
                              gsl_vector *x,
                              gsl_splinalg_gmres_workspace *w);
 int gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A,
-                               const gsl_vector *b, gsl_vector *x,
+                               const gsl_vector *b, const double tol,
+                               gsl_vector *x,
                                gsl_splinalg_gmres_workspace *w);
 
 __END_DECLS
