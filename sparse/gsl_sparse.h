@@ -96,8 +96,6 @@ typedef struct
 
   double *c;       /* Givens rotations */
   double *s;
-
-  size_t max_iter; /* maximum number of iterations */
 } gsl_splinalg_gmres_workspace;
 
 /*

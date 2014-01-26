@@ -45,7 +45,6 @@ gsl_splinalg_gmres_alloc(const size_t n)
 
   w->m = GSL_MIN(n, 10);
   w->n = n;
-  w->max_iter = w->m;
 
   w->r = gsl_vector_alloc(n);
   if (!w->r)
@@ -168,7 +167,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
     }
   else
     {
-      const size_t maxit = w->max_iter;
+      const size_t maxit = w->m;
       const double normb = gsl_blas_dnrm2(b); /* ||b|| */
       const double reltol = tol * normb;      /* tol*||b|| */
       size_t m, k;
@@ -319,8 +318,8 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       /* x <- x + r */
       gsl_vector_add(x, r);
 
-      /*gsl_vector_fprintf(stdout, x, "%.12e");
-      exit(1);*/
+      gsl_vector_fprintf(stdout, x, "%.12e");
+      exit(1);
 
       return GSL_SUCCESS;
     }
