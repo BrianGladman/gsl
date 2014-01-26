@@ -477,7 +477,7 @@ predictor variables @var{X}, using the preallocated workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
 @math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})}
-where @math{\lambda_i} is provided in @var{lambda(i)}. The
+where @math{\lambda_i} is provided in @var{lambda}[i]. The
 problem is converted to standard form as discussed above, solved
 and backtransformed to recover the desired coefficients. Therefore,
 the matrix @math{L^{-1}} must exist and so none of the
