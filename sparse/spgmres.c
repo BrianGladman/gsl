@@ -20,6 +20,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -27,6 +28,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_sparse.h>
+#include <gsl/gsl_multifit.h>
 
 static double
 my_householder(gsl_vector *v)
@@ -90,7 +92,34 @@ my_hv(const gsl_vector *v, gsl_vector *w)
       /* compute w = w - 2*(v'w)*v */
       gsl_blas_daxpy(-2.0 * d, v, w);
     }
+
+  return 0;
 } /* my_hv() */
+
+static int
+solve_ls(const double beta, gsl_matrix *Hm, gsl_vector *ym)
+{
+  const size_t p = Hm->size2;
+  const size_t n = Hm->size1;
+  gsl_vector *rhs = gsl_vector_calloc(n);
+  gsl_multifit_linear_workspace *work = gsl_multifit_linear_alloc(n,p);
+  gsl_matrix *cov = gsl_matrix_alloc(p, p);
+  double chisq;
+
+  assert(p == ym->size);
+
+  gsl_vector_set(rhs, 0, beta);
+
+  gsl_linalg_hessenberg_set_zero(Hm);
+
+  gsl_multifit_linear(Hm, rhs, ym, cov, &chisq, work);
+
+  gsl_vector_free(rhs);
+  gsl_multifit_linear_free(work);
+  gsl_matrix_free(cov);
+
+  return 0;
+} /* solve_ls() */
 
 gsl_splinalg_gmres_workspace *
 gsl_splinalg_gmres_alloc(const size_t n)
@@ -172,7 +201,7 @@ Inputs: A - sparse square matrix
         w - workspace
 
 Notes:
-1) Based on algorithm 6.9 of
+1) Based on algorithm 6.10 of
 
 Saad, Iterative methods for sparse linear systems (2nd edition), SIAM
 */
@@ -205,46 +234,60 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       const size_t M = w->m;
       size_t iter;          /* iteration number */
       size_t i, j, k;       /* looping */
-      gsl_vector *r = w->r; /* residual b - A*x */
       double beta;          /* || r_0 || = || b - A*x_0 || */
-      gsl_vector_view v1 = gsl_matrix_column(w->V, 0); /* v_1 */
-      gsl_matrix *H;        /* Hessenberg matrix */
-      double h;             /* element of H */
+      gsl_matrix *H;        /* Hessenberg matrix [h_1 h_2 ... h_m] */
       gsl_vector *v = gsl_vector_alloc(N);
-      gsl_vector *vtmp = gsl_vector_alloc(N);
       gsl_vector *tau = gsl_vector_alloc(M);
+      gsl_vector *ym = gsl_vector_alloc(M); /* y_m */
+      gsl_matrix_view Hm;   /* Hbar_m = [h_1 h_2 ... h_m] */
 
-      H = gsl_matrix_alloc(N, M);
-      gsl_matrix_set_zero(H);
+      gsl_vector *z = gsl_vector_alloc(N);
 
-      /* Step 1: compute r = b - A*x_0 */
-      gsl_vector_memcpy(r, b);
-      gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+      /* [h0 h1 ... hm] */
+      gsl_matrix *H2 = gsl_matrix_calloc(N, M + 1);
+
+      /*
+       * The Hessenberg matrix will have the following structure:
+       *
+       * H = [ h_0 h_1 h_2 ... h_m     ]
+       *     [ w_1 w_2 w_3 ... w_{m+1} ]
+       *
+       * where h_j are the hessenberg vectors of length j + 1 and
+       * w_{j+1} are the householder vectors of length n - j - 1.
+       * In fact, w_{j+1} has length n - j since w_{j+1}[0] = 1,
+       * but this 1 is not stored.
+       */
+      H = gsl_matrix_calloc(N, M + 1);
+
+      Hm = gsl_matrix_submatrix(H, 0, 1, M + 1, M);
+
+      /* Step 1: compute z = b - A*x_0 */
+      gsl_vector_memcpy(z, b);
+      gsl_spblas_dgemv(-1.0, A, x, 1.0, z);
 
       /* Step 2 */
       for (j = 0; j < M + 1; ++j)
         {
-          double tau_j;
-          gsl_vector_view z = gsl_vector_subvector(r, j, N - j);
+          double tau_jp1;
 
-          /* hessenberg column = H(0:n-j,j) */
-          gsl_vector_view hj = gsl_matrix_subcolumn(H, j, 0, N - j);
+          /* hessenberg vector h_j */
+          gsl_vector_view Hj = gsl_matrix_column(H, j);
 
-          /* householder vector = H(j:n-1,j) */
-          gsl_vector_view wj = gsl_matrix_subcolumn(H, j, j, N - j);
+          /* householder vector w_{j+1} = H(j:n-1,j) */
+          gsl_vector_view wjp1 = gsl_matrix_subcolumn(H, j, j, N - j);
 
-          double normz;
+          /*
+           * Steps 3-5: compute w_{j+1} to zero out z[j:n-1]
+           * First, copy the entire z into H(:,j) so that
+           * z[0:j-1] will be stored in the right place in h_j.
+           * The householder transform will work on elements
+           * z[j:n-1].
+           */
+          gsl_vector_memcpy(&Hj.vector, z);
+          tau_jp1 = gsl_linalg_householder_transform(&wjp1.vector);
 
-          /* Steps 3-5: compute wj to zero out z[j:n-1] */
-          gsl_vector_memcpy(&wj.vector, &z.vector);
-          tau_j = gsl_linalg_householder_transform(&wj.vector);
-
-          /* save ||z|| and set householder position to 1 */
-          normz = gsl_vector_get(&wj.vector, 0);
-          gsl_vector_set(&wj.vector, 0, 1.0);
-
-          /* store tau_j */
-          gsl_vector_set(tau, j, tau_j);
+          /* store tau_jp1 */
+          gsl_vector_set(tau, j, tau_jp1);
 
           /*
            * Step 6: h_{j-1} = P_j z = ||z|| e_j
@@ -254,46 +297,71 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
 
 #if 0
           {
-            gsl_vector_view h = gsl_matrix_column(H, j);
-            gsl_vector_fprintf(stdout, &h.vector, "%.12e");
+            gsl_vector_view hj2 = gsl_matrix_column(H2, j);
+            gsl_vector_memcpy(&hj2.vector, &zv.vector);
+            gsl_linalg_householder_hv(tau_jp1, &wjp1.vector, &hj2.vector);
+
+            /*gsl_vector_fprintf(stdout, &hj2.vector, "%.12e");
+            exit(1);*/
+
+            for (i = 0; i < hj2.vector.size; ++i)
+              {
+                printf("%.12e %.12e %.12e %.12e\n",
+                       gsl_vector_get(&zv.vector, i),
+                       gsl_vector_get(&hj2.vector, i),
+                       gsl_vector_get(&Hj.vector, i),
+                       gsl_vector_get(&wjp1.vector, i));
+              }
             exit(1);
           }
 #endif
 
+          /* beta = h_0(0) */
           if (j == 0)
-            beta = gsl_vector_get(&z.vector, 0);
+            beta = gsl_vector_get(&Hj.vector, 0);
 
-          /* Step 7: form v = P_1*P_2*...*P_j*e_j */
+          /* Step 7: form v = P_1*P_2*...*P_{j+1}*e_{j+1} */
 
-          /* Step 7a: P_j*e_j = e_j - tau_j(w_j)_j*w = e_j - tau_j*w */
+          /*
+           * Step 7a:
+           * P_{j+1}*e_{j+1} = e_{j+1} - tau_{j+1} w_{j+1}
+           */
           {
             gsl_vector_view a = gsl_vector_subvector(v, j, N - j);
             gsl_vector_set_zero(v);
-            gsl_vector_memcpy(&a.vector, &wj.vector);
-            gsl_vector_scale(&a.vector, -tau_j);
-            gsl_vector_set(&a.vector, 0,
-              gsl_vector_get(&a.vector, 0) + 1.0);
+
+            /* copy w_{j+1} into v and scale by -tau */
+            gsl_vector_memcpy(&a.vector, &wjp1.vector);
+            gsl_vector_scale(&a.vector, -tau_jp1);
+
+            /*
+             * add in e_{j+1} which sets v[j] = 1 - tau
+             * since w_{j+1}[j] = 1
+             */
+            gsl_vector_set(&a.vector, 0, 1.0 - tau_jp1);
 
             /*gsl_vector_fprintf(stdout, v, "%.12e");
             exit(1);*/
           }
 
-          /* Step 8a: compute A*v */
-          gsl_vector_memcpy(vtmp, v);
-          gsl_spblas_dgemv(1.0, A, vtmp, 0.0, v);
-          /*gsl_vector_fprintf(stdout, v, "%.12e");
+          /* Step 8a: compute z = A*v */
+          gsl_spblas_dgemv(1.0, A, v, 0.0, z);
+          /*gsl_vector_fprintf(stdout, z, "%.12e");
           exit(1);*/
 
-          /* Step 8b: compute P_j*P_{j-1}*...*P_1*A*v */
+          /* Step 8b: compute z = P_j*P_{j-1}*...*P_1*A*v */
           for (k = 0; k <= j; ++k)
             {
               double tau_k = gsl_vector_get(tau, k);
               gsl_vector_view wk = gsl_matrix_subcolumn(H, k, k, N - k);
-              gsl_linalg_householder_hv(tau_k, &wk.vector, v);
+              gsl_linalg_householder_hv(tau_k, &wk.vector, z);
             }
-          gsl_vector_fprintf(stdout, v, "%.12e");
-          exit(1);
+          /*gsl_vector_fprintf(stdout, z, "%.12e");
+          exit(1);*/
         }
+
+      /* Step 11: solve least squares problem */
+      solve_ls(beta, &Hm.matrix, ym);
 
 #if 0
       for (iter = 0; iter < w->max_iter; ++iter)
