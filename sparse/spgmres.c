@@ -30,71 +30,8 @@
 #include <gsl/gsl_sparse.h>
 #include <gsl/gsl_multifit.h>
 
-static double
-my_householder(gsl_vector *v)
-{
-  const size_t n = v->size;
-
-  if (n == 1)
-    {
-      return 0.0;
-    }
-  else
-    {
-      gsl_vector_view x = gsl_vector_subvector(v, 1, n - 1);
-      double xnorm = gsl_blas_dnrm2(&x.vector); /* sqrt(sigma) */
-      double x0 = gsl_vector_get(v, 0);
-      double beta;
-
-      gsl_vector_set(v, 0, 1.0);
-
-      if (xnorm == 0.0)
-        {
-          if (x0 >= 0.0)
-            beta = 0.0;
-          else
-            beta = -2.0;
-        }
-      else
-        {
-          double mu = hypot(x0, xnorm);
-          double sigma = xnorm * xnorm;
-          double v0;
-
-          if (x0 <= 0.0)
-            v0 = x0 - mu;
-          else
-            v0 = -sigma / (x0 + mu);
-
-          beta = 2.0 * v0 * v0 / (sigma + v0*v0);
-          gsl_vector_scale(&x.vector, 1.0 / v0);
-        }
-
-      return beta;
-    }
-} /* my_householder() */
-
-int
-my_hv(const gsl_vector *v, gsl_vector *w)
-{
-  const size_t N = v->size;
-  if (N != w->size)
-    {
-      GSL_ERROR("vector sizes do not match", GSL_EBADLEN);
-    }
-  else
-    {
-      double d;
-
-      /* compute v'w */
-      gsl_blas_ddot(v, w, &d);
-
-      /* compute w = w - 2*(v'w)*v */
-      gsl_blas_daxpy(-2.0 * d, v, w);
-    }
-
-  return 0;
-} /* my_hv() */
+#include "../linalg/givens.c"
+#include "../linalg/apply_givens.c"
 
 static int
 solve_ls(const double beta, gsl_matrix *Hm, gsl_vector *ym)
@@ -235,16 +172,19 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
     {
       const size_t M = w->m;
       const size_t maxit = M;
+      const double normb = gsl_blas_dnrm2(b); /* ||b|| */
+      const double reltol = tol * normb;      /* tol*||b|| */
       size_t m;
-      const double normb = gsl_blas_dnrm2(b); /* || b || */
-      size_t iter;          /* iteration number */
-      size_t i, j, k;       /* looping */
       double beta;          /* || r_0 || = || b - A*x_0 || */
       double tau;           /* householder scalar */
       gsl_matrix *H;        /* Hessenberg matrix [h_1 h_2 ... h_m] */
-      gsl_vector *tauv = gsl_vector_alloc(M);
+      gsl_vector *tauv = gsl_vector_alloc(maxit + 1);
       gsl_vector *ym = gsl_vector_alloc(M); /* y_m */
+      gsl_vector *w = gsl_vector_calloc(maxit + 1); /* w */
       gsl_matrix_view Hm;   /* Hbar_m = [h_1 h_2 ... h_m] */
+
+      double *cc = malloc(maxit * sizeof(double));
+      double *ss = malloc(maxit * sizeof(double));
 
       gsl_vector *z = gsl_vector_alloc(N);
 
@@ -252,11 +192,11 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
        * The Hessenberg matrix will have the following structure:
        *
        * H = [ h_0 h_1 h_2 ... h_m     ]
-       *     [ w_1 w_2 w_3 ... w_{m+1} ]
+       *     [ u_1 u_2 u_3 ... u_{m+1} ]
        *
        * where h_j are the hessenberg vectors of length j + 1 and
-       * w_{j+1} are the householder vectors of length n - j - 1.
-       * In fact, w_{j+1} has length n - j since w_{j+1}[0] = 1,
+       * u_{j+1} are the householder vectors of length n - j - 1.
+       * In fact, u_{j+1} has length n - j since u_{j+1}[0] = 1,
        * but this 1 is not stored.
        */
       H = gsl_matrix_calloc(N, M + 1);
@@ -277,14 +217,21 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
 
         /* store tau_1 */
         gsl_vector_set(tauv, 0, tau);
+
+        /* initialize w */
+        gsl_vector_set(w, 0, gsl_vector_get(&h0.vector, 0));
       }
 
       for (m = 1; m <= maxit; ++m)
         {
           size_t j = m - 1; /* C indexing */
+          size_t k;
+          double c, s;
 
           /* v_m */
           gsl_vector_view vm = gsl_matrix_column(H, m);
+
+          /* v_m(m:end) */
           gsl_vector_view vv = gsl_vector_subvector(&vm.vector, j, N - j);
 
           /* householder vector u_m for projection P_m */
@@ -300,6 +247,17 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           gsl_vector_scale(&vv.vector, -tau);
           gsl_vector_set(&vv.vector, 0, 1.0 - tau);
 
+          /* Step 2a: v_m <- P_1 P_2 ... P_{m-1} v_m */
+          for (k = j; k > 0 && k--; )
+            {
+              gsl_vector_view uk =
+                gsl_matrix_subcolumn(H, k, k, N - k);
+              gsl_vector_view vk =
+                gsl_vector_subvector(&vm.vector, k, N - k);
+              tau = gsl_vector_get(tauv, k);
+              gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
+            }
+
           /* Step 2a: v_m <- A*v_m */
           gsl_spblas_dgemv(1.0, A, &vm.vector, 0.0, z);
           gsl_vector_memcpy(&vm.vector, z);
@@ -307,18 +265,42 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           /* Step 2a: v_m <- P_m ... P_1 v_m */
           for (k = 0; k <= j; ++k)
             {
-              gsl_vector_view wk = gsl_matrix_subcolumn(H, k, k, N - k);
+              gsl_vector_view uk = gsl_matrix_subcolumn(H, k, k, N - k);
+              gsl_vector_view vk = gsl_vector_subvector(&vm.vector, k, N - k);
               tau = gsl_vector_get(tauv, k);
-              gsl_linalg_householder_hv(tau, &wk.vector, &vm.vector);
+              gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
             }
 
           /* Steps 2c,2d: find P_{m+1} and set v_m <- P_{m+1} v_m */
           tau = gsl_linalg_householder_transform(&ump1.vector);
           gsl_vector_set(tauv, j + 1, tau);
 
-          fprintf(stderr, "tau = %.12e\n", tau);
-          gsl_vector_fprintf(stdout, &vm.vector, "%.12e");
-          exit(1);
+          /* Step 2e: v_m <- J_{m-1} ... J_1 v_m */
+          for (k = 0; k < j; ++k)
+            apply_givens_vec(&vm.vector, k, k + 1, cc[k], ss[k]);
+
+          /* Step 2g: find givens rotation J_m for v_m(m:m+1) */
+          create_givens(gsl_vector_get(&vm.vector, j),
+                        gsl_vector_get(&vm.vector, j + 1),
+                        &c, &s);
+
+          /* store givens rotation for later use */
+          cc[j] = c;
+          ss[j] = s;
+
+          /* Step 2h: v_m <- J_m v_m */
+          apply_givens_vec(&vm.vector, j, j + 1, c, s);
+
+          /* Step 2h: w <- J_m w */
+          apply_givens_vec(w, j, j + 1, c, s);
+
+          /*
+           * Step 2i: R_m = [ R_{m-1}, v_m ] - already taken care
+           * of due to our memory storage scheme
+           */
+
+          /*gsl_vector_fprintf(stdout, &vm.vector, "%.12e");
+          exit(1);*/
         }
 
 #if 0
