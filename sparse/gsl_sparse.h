@@ -90,8 +90,12 @@ typedef struct
   size_t n;        /* size of linear system */
   size_t m;        /* dimension of Krylov subspace K_m */
   gsl_vector *r;   /* residual vector r = b - A*x */
-  gsl_matrix *V;   /* V_m matrix n-by-(m+1) */
-  gsl_matrix *H;   /* H_m matrix (m+1)-by-m */
+  gsl_matrix *H;   /* Hessenberg matrix n-by-(m+1) */
+  gsl_vector *tau; /* householder scalars */
+  gsl_vector *y;   /* least squares rhs and solution vector */
+
+  double *c;       /* Givens rotations */
+  double *s;
 
   size_t max_iter; /* maximum number of iterations */
 } gsl_splinalg_gmres_workspace;
