@@ -214,7 +214,7 @@ This specifies the computation of the fully normalized associated
 Legendre polynomials @math{N_l^m(x)}.
 @end table
 
-@deftypefun int gsl_sf_legendre_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[])
+@deftypefun int gsl_sf_legendre_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, double @var{result_array}[])
 @deftypefunx int gsl_sf_legendre_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[])
 These functions calculate all normalized associated Legendre
 polynomials for @math{0 \le l \le lmax} and
@@ -231,7 +231,7 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} function. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefun int gsl_sf_legendre_deriv_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
 @deftypefunx int gsl_sf_legendre_deriv_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
 These functions calculate all normalized associated Legendre
 functions and their first derivatives up to degree @var{lmax} for
@@ -247,7 +247,7 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} function. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv_alt_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
+@deftypefun int gsl_sf_legendre_deriv_alt_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[])
 @deftypefunx int gsl_sf_legendre_deriv_alt_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[])
 These functions calculate all normalized associated Legendre
 functions and their (alternate) first derivatives up to degree @var{lmax} for
@@ -262,7 +262,7 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} function. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv2_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
+@deftypefun int gsl_sf_legendre_deriv2_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
 @deftypefunx int gsl_sf_legendre_deriv2_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
 These functions calculate all normalized associated Legendre
 functions and their first and second derivatives up to degree @var{lmax} for
@@ -279,7 +279,7 @@ the Condon-Shortley phase factor of @math{(-1)^m}, set the parameter
 @code{_e} function. This factor is included by default.
 @end deftypefun
 
-@deftypefun int gsl_sf_legendre_deriv2_alt_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, {const double} @var{x}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
+@deftypefun int gsl_sf_legendre_deriv2_alt_array (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
 @deftypefunx int gsl_sf_legendre_deriv2_alt_array_e (const gsl_sf_legendre_t @var{norm}, const size_t @var{lmax}, const double @var{x}, const double @var{csphase}, double @var{result_array}[], double @var{result_deriv_array}[], double @var{result_deriv2_array}[])
 These functions calculate all normalized associated Legendre
 functions and their (alternate) first and second derivatives up to degree
