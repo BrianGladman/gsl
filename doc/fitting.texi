@@ -420,14 +420,12 @@ c = ( X^T X + L^T L )^-1 X^T y
 @end ifinfo
 which reduces to the ordinary least squares solution when @math{L = 0}.
 The routines below support two formats for the @math{L} matrix.
-The first is @math{L = \lambda I} leading to
+The first is @math{L = \lambda I} giving a solution
 @math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
-"standard form". The second is
-@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})} which allows
-the user to selectively damp each coefficient differently. For this more
-general case, the problem can be converted into standard form through
-the transformation
+"standard form". For any square invertible matrix @math{L}, the
+general problem can be converted to standard form through the
+transformation
 @tex
 \beforedisplay
 $$
@@ -444,10 +442,18 @@ X~ = X L^-1
 c~ = L c
 @end example
 @end ifinfo
-provided @math{L^{-1}} exists. For applications which require
+leading to @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + I \right)^{-1} \tilde{X}^T y} which is in standard form with @math{\lambda^2 = 1}.
+The second regularization matrix input supported by GSL has the form
+@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})} which allows
+the user to selectively damp each coefficient differently. For
+this matrix, GSL performs the above transformation and then
+backtransforms the least squares solution to recover the original
+vector @math{c}.
+For applications which require
 a more complicated matrix @math{L}, the user can apply the
 above transformation themselves if @math{L} is square and
-invertible and use @code{gsl_multifit_linear_ridge}. If
+invertible and use @code{gsl_multifit_linear_ridge}, setting
+the input @math{\lambda = 1}. If
 @math{L} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
