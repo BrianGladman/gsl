@@ -407,6 +407,38 @@ test_ridge(void)
             gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: c2 lambda = %.1e", lambda);
             gsl_test_rel(c3j, c1j, 1.0e-9, "test_ridge: c3 lambda = %.1e", lambda);
           }
+
+        /* now test a simple nontrivial L = diag(0.1,0.2,...) */
+
+        /* XTX = X^T X */
+        gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
+
+        /* construct diag(L) and X^T X + L^T L */
+        for (i = 0; i < p; ++i)
+          {
+            double val = (i + 1.0) / 10.0;
+            double Xii = gsl_matrix_get(XTX, i, i);
+
+            gsl_vector_set(lambda_vec, i, val);
+            gsl_matrix_set(XTX, i, i, Xii + val*val);
+          }
+
+        /* solve XTX c = XTy with LU decomp */
+        gsl_linalg_LU_decomp(XTX, perm, &signum);
+        gsl_linalg_LU_solve(XTX, perm, XTy, c1);
+
+        /* solve with ridge routine */
+        gsl_multifit_linear_ridge2(lambda_vec, X, &yv.vector, c2, cov,
+                                   &chisq, w);
+
+        /* test c1 = c2 */
+        for (i = 0; i < p; ++i)
+          {
+            double c1i = gsl_vector_get(c1, i);
+            double c2i = gsl_vector_get(c2, i);
+
+            gsl_test_rel(c2i, c1i, 1.0e-12, "test_ridge: general L");
+          }
       }
 
     gsl_multifit_linear_free(w);
