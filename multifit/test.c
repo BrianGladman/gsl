@@ -29,6 +29,8 @@
 #include <gsl/gsl_multifit_nlin.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_permutation.h>
 
 #include <gsl/gsl_ieee_utils.h>
 
@@ -350,9 +352,18 @@ test_ridge(void)
     gsl_vector *c0 = gsl_vector_alloc(p);
     gsl_vector *c1 = gsl_vector_alloc(p);
     gsl_vector *c2 = gsl_vector_alloc(p);
+    gsl_vector *c3 = gsl_vector_alloc(p);
     gsl_vector *lambda_vec = gsl_vector_calloc(p);
     gsl_matrix *cov = gsl_matrix_alloc(p, p);
+    gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 I */
+    gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
+    gsl_vector_view xtx_diag = gsl_matrix_diagonal(XTX);
+    gsl_permutation *perm = gsl_permutation_alloc(p);
+    int signum;
     double chisq;
+
+    /* construct XTy = X^T y */
+    gsl_blas_dgemv(CblasTrans, 1.0, X, &yv.vector, 0.0, XTy);
 
     /* test that ridge equals OLS solution for lambda = 0 */
     gsl_multifit_linear(X, &yv.vector, c0, cov, &chisq, w);
@@ -378,14 +389,23 @@ test_ridge(void)
         gsl_multifit_linear_ridge2(lambda_vec, X, &yv.vector, c2, cov,
                                    &chisq, w);
 
-        /* test c1 = c2 */
+        /* construct XTX = X^T X + lamda^2 I */
+        gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
+        gsl_vector_add_constant(&xtx_diag.vector, lambda*lambda);
+
+        /* solve XTX c = XTy with LU decomp */
+        gsl_linalg_LU_decomp(XTX, perm, &signum);
+        gsl_linalg_LU_solve(XTX, perm, XTy, c3);
+
+        /* test c1 = c2 = c3 */
         for (j = 0; j < p; ++j)
           {
             double c1j = gsl_vector_get(c1, j);
             double c2j = gsl_vector_get(c2, j);
+            double c3j = gsl_vector_get(c3, j);
 
-            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: lambda = %.1e",
-                         lambda);
+            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: c2 lambda = %.1e", lambda);
+            gsl_test_rel(c3j, c1j, 1.0e-9, "test_ridge: c3 lambda = %.1e", lambda);
           }
       }
 
@@ -393,8 +413,12 @@ test_ridge(void)
     gsl_vector_free(c0);
     gsl_vector_free(c1);
     gsl_vector_free(c2);
+    gsl_vector_free(c3);
     gsl_vector_free(lambda_vec);
     gsl_matrix_free(cov);
+    gsl_matrix_free(XTX);
+    gsl_vector_free(XTy);
+    gsl_permutation_free(perm);
   }
 
   gsl_rng_free(r);
