@@ -418,7 +418,6 @@ void
 FUNCTION (test, ops) (const size_t M, const size_t N)
 {
   size_t i, j;
-  size_t k = 0;
   
   TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, calloc) (M, N);
   TYPE (gsl_matrix) * b = FUNCTION (gsl_matrix, calloc) (M, N);

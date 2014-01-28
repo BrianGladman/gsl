@@ -417,10 +417,9 @@ test_ridge(void)
         for (i = 0; i < p; ++i)
           {
             double val = (i + 1.0) / 10.0;
-            double Xii = gsl_matrix_get(XTX, i, i);
 
             gsl_vector_set(lambda_vec, i, val);
-            gsl_matrix_set(XTX, i, i, Xii + val*val);
+            *gsl_matrix_ptr(XTX, i, i) += val * val;
           }
 
         /* solve XTX c = XTy with LU decomp */
