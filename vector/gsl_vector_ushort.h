@@ -165,6 +165,7 @@ int gsl_vector_ushort_isnonneg (const gsl_vector_ushort * v);
 
 INLINE_DECL unsigned short gsl_vector_ushort_get (const gsl_vector_ushort * v, const size_t i);
 INLINE_DECL void gsl_vector_ushort_set (gsl_vector_ushort * v, const size_t i, unsigned short x);
+INLINE_DECL void gsl_vector_ushort_inc (gsl_vector_ushort * v, const size_t i, const unsigned short x);
 INLINE_DECL unsigned short * gsl_vector_ushort_ptr (gsl_vector_ushort * v, const size_t i);
 INLINE_DECL const unsigned short * gsl_vector_ushort_const_ptr (const gsl_vector_ushort * v, const size_t i);
 
@@ -194,6 +195,19 @@ gsl_vector_ushort_set (gsl_vector_ushort * v, const size_t i, unsigned short x)
     }
 #endif
   v->data[i * v->stride] = x;
+}
+
+INLINE_FUN
+void
+gsl_vector_ushort_inc (gsl_vector_ushort * v, const size_t i, const unsigned short x)
+{
+#if GSL_RANGE_CHECK
+  if (GSL_RANGE_COND(i >= v->size))
+    {
+      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
+    }
+#endif
+  v->data[i * v->stride] += x;
 }
 
 INLINE_FUN

@@ -165,6 +165,7 @@ int gsl_vector_float_isnonneg (const gsl_vector_float * v);
 
 INLINE_DECL float gsl_vector_float_get (const gsl_vector_float * v, const size_t i);
 INLINE_DECL void gsl_vector_float_set (gsl_vector_float * v, const size_t i, float x);
+INLINE_DECL void gsl_vector_float_inc (gsl_vector_float * v, const size_t i, const float x);
 INLINE_DECL float * gsl_vector_float_ptr (gsl_vector_float * v, const size_t i);
 INLINE_DECL const float * gsl_vector_float_const_ptr (const gsl_vector_float * v, const size_t i);
 
@@ -194,6 +195,19 @@ gsl_vector_float_set (gsl_vector_float * v, const size_t i, float x)
     }
 #endif
   v->data[i * v->stride] = x;
+}
+
+INLINE_FUN
+void
+gsl_vector_float_inc (gsl_vector_float * v, const size_t i, const float x)
+{
+#if GSL_RANGE_CHECK
+  if (GSL_RANGE_COND(i >= v->size))
+    {
+      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
+    }
+#endif
+  v->data[i * v->stride] += x;
 }
 
 INLINE_FUN
