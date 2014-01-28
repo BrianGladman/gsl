@@ -12,8 +12,8 @@ can be very slow and use huge amounts of memory when applied
 to sparse matrices.
 
 @noindent
-The header file @file{gsl_sparse.h} contains the prototypes for the
-sparse functions and related declarations.
+The header file @file{gsl_spmatrix.h} contains the prototypes for the
+sparse matrix functions and related declarations.
 
 @menu
 * Overview of Sparse Matrices::
@@ -26,7 +26,6 @@ sparse functions and related declarations.
 * Finding maximum and minimum elements of sparse matrices::
 * Sparse matrix compressed format::
 * Conversion between sparse and dense matrices::
-* Sparse BLAS operations::
 * Examples::
 * Sparse References and Further Reading::
 @end menu
@@ -259,25 +258,6 @@ and stores the result in @var{S}.
 @deftypefun int gsl_spmatrix_sp2d (gsl_matrix * @var{A}, const gsl_spmatrix * @var{S})
 This function converts the sparse matrix @var{S} into a dense matrix and
 stores the result in @var{A}. @var{S} must be in triplet format.
-@end deftypefun
-
-@node Sparse BLAS operations
-@section Sparse BLAS operations
-@cindex sparse matrices, BLAS operations
-
-GSL supports a limited number of BLAS operations for sparse matrices.
-
-@deftypefun int gsl_spblas_dgemv (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_vector * @var{x}, const double @var{beta}, gsl_vector * @var{y})
-This function computes the matrix-vector product and sum
-@math{y \leftarrow \alpha A x + \beta y}, where @var{A} is sparse and the vectors @var{x}
-and @var{y} are dense. The matrix @var{A} may be in triplet or compressed format.
-@end deftypefun
-
-@deftypefun {gsl_spmatrix *} gsl_spblas_dgemm (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_spmatrix * @var{B})
-This function computes the sparse matrix-matrix product
-@math{C = \alpha A B}. A pointer to the newly allocated matrix @var{C} is returned
-and should be freed using @code{gsl_spmatrix_free} when no longer needed. The
-matrices @var{A} and @var{B} must be in compressed format.
 @end deftypefun
 
 @node Examples

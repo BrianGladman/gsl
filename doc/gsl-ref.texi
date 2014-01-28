@@ -442,11 +442,15 @@ project homepage thanks to Daisuke Tominaga.
 @chapter Basis Splines
 @include bspline.texi
 
-@node Sparse Matrices, Physical Constants, Basis Splines, Top
+@node Sparse Matrices, Sparse BLAS Support, Basis Splines, Top
 @chapter Sparse Matrices
-@include sparse.texi
+@include spmatrix.texi
 
-@node Physical Constants, IEEE floating-point arithmetic, Sparse Matrices, Top
+@node Sparse BLAS Support, Physical Constants, Sparse Matrices, Top
+@chapter Sparse BLAS Support
+@include spblas.texi
+
+@node Physical Constants, IEEE floating-point arithmetic, Sparse BLAS Support, Top
 @chapter Physical Constants
 @include const.texi
 
