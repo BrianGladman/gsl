@@ -270,6 +270,7 @@ project homepage thanks to Daisuke Tominaga.
 * Nonlinear Least-Squares Fitting::  
 * Basis Splines::
 * Sparse Matrices::
+* Sparse BLAS Support::
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  

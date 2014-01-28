@@ -12,7 +12,7 @@ sparse BLAS functions and related declarations.
 
 @menu
 * Sparse BLAS operations::
-* Sparse References and Further Reading::
+* Sparse BLAS References and Further Reading::
 @end menu
 
 @node Sparse BLAS operations
@@ -32,8 +32,8 @@ and should be freed using @code{gsl_spmatrix_free} when no longer needed. The
 matrices @var{A} and @var{B} must be in compressed format.
 @end deftypefun
 
-@node Sparse References and Further Reading
-@section Sparse References and Further Reading
+@node Sparse BLAS References and Further Reading
+@section Sparse BLAS References and Further Reading
 @cindex sparse matrices, references
 
 The algorithms used by these functions are described in the
