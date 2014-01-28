@@ -259,7 +259,6 @@ int gsl_matrix_long_set_col(gsl_matrix_long * m, const size_t j, const gsl_vecto
 
 INLINE_DECL long   gsl_matrix_long_get(const gsl_matrix_long * m, const size_t i, const size_t j);
 INLINE_DECL void    gsl_matrix_long_set(gsl_matrix_long * m, const size_t i, const size_t j, const long x);
-INLINE_DECL void    gsl_matrix_long_inc(gsl_matrix_long * m, const size_t i, const size_t j, const long x);
 INLINE_DECL long * gsl_matrix_long_ptr(gsl_matrix_long * m, const size_t i, const size_t j);
 INLINE_DECL const long * gsl_matrix_long_const_ptr(const gsl_matrix_long * m, const size_t i, const size_t j);
 
@@ -302,26 +301,6 @@ gsl_matrix_long_set(gsl_matrix_long * m, const size_t i, const size_t j, const l
     }
 #endif
   m->data[i * m->tda + j] = x ;
-}
-
-INLINE_FUN 
-void
-gsl_matrix_long_inc(gsl_matrix_long * m, const size_t i, const size_t j, const long x)
-{
-#if GSL_RANGE_CHECK
-  if (GSL_RANGE_COND(1)) 
-    {
-      if (i >= m->size1)
-        {
-          GSL_ERROR_VOID("first index out of range", GSL_EINVAL) ;
-        }
-      else if (j >= m->size2)
-        {
-          GSL_ERROR_VOID("second index out of range", GSL_EINVAL) ;
-        }
-    }
-#endif
-  m->data[i * m->tda + j] += x ;
 }
 
 INLINE_FUN 

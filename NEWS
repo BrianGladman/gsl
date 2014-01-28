@@ -1,8 +1,5 @@
 * What is new in gsl-2.0:
 
-** added functions gsl_vector_inc and gsl_matrix_inc to increment
-   a single element of a vector or matrix
-
 ** added ridge (Tikhonov) regularization to least squares module
 
 ** removed unused argument 'n' from gsl_sf_ellint_D

@@ -165,7 +165,6 @@ int gsl_vector_ulong_isnonneg (const gsl_vector_ulong * v);
 
 INLINE_DECL unsigned long gsl_vector_ulong_get (const gsl_vector_ulong * v, const size_t i);
 INLINE_DECL void gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x);
-INLINE_DECL void gsl_vector_ulong_inc (gsl_vector_ulong * v, const size_t i, const unsigned long x);
 INLINE_DECL unsigned long * gsl_vector_ulong_ptr (gsl_vector_ulong * v, const size_t i);
 INLINE_DECL const unsigned long * gsl_vector_ulong_const_ptr (const gsl_vector_ulong * v, const size_t i);
 
@@ -195,19 +194,6 @@ gsl_vector_ulong_set (gsl_vector_ulong * v, const size_t i, unsigned long x)
     }
 #endif
   v->data[i * v->stride] = x;
-}
-
-INLINE_FUN
-void
-gsl_vector_ulong_inc (gsl_vector_ulong * v, const size_t i, const unsigned long x)
-{
-#if GSL_RANGE_CHECK
-  if (GSL_RANGE_COND(i >= v->size))
-    {
-      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
-    }
-#endif
-  v->data[i * v->stride] += x;
 }
 
 INLINE_FUN

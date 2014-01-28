@@ -130,30 +130,6 @@ FUNCTION (test, func) (size_t stride, size_t N)
 
     TEST (status, "_get" DESC " reads from array");
   }
-
-#if (!defined(UNSIGNED) && !defined(BASE_CHAR))
-  {
-    int status = 0;
-    TYPE (gsl_vector) * u = FUNCTION (gsl_vector, alloc) (N);
-
-    FUNCTION (gsl_vector, memcpy) (u, v);
-
-    for (i = 0; i < N; i++)
-      {
-        ATOMIC xi = (ATOMIC) 1;
-
-        FUNCTION (gsl_vector, inc) (u, i, xi);
-
-        if (FUNCTION (gsl_vector, get) (u, i) !=
-            FUNCTION (gsl_vector, get) (v, i) + xi)
-          status = 1;
-      }
-
-    TEST (status, "_inc" DESC " increments array");
-
-    FUNCTION (gsl_vector, free) (u);
-  }
-#endif
   
   {
     int status = 0;

@@ -80,34 +80,6 @@ FUNCTION (test, func) (const size_t M, const size_t N)
     gsl_test (status, NAME (gsl_matrix) "_get reads from array");
   }
 
-#if (!defined(UNSIGNED) && !defined(BASE_CHAR))
-  {
-    int status = 0;
-    TYPE (gsl_matrix) * m2 = FUNCTION (gsl_matrix, alloc) (M, N);
-
-    FUNCTION (gsl_matrix, memcpy) (m2, m);
-
-    k = 0;
-    for (i = 0; i < M; i++)
-      {
-        for (j = 0; j < N; ++j)
-          {
-            BASE xij = (BASE) ++k;
-
-            FUNCTION (gsl_matrix, inc) (m2, i, j, xij);
-
-            if (FUNCTION (gsl_matrix, get) (m2, i, j) !=
-                FUNCTION (gsl_matrix, get) (m, i, j) + xij)
-              status = 1;
-          }
-      }
-
-    TEST (status, "_inc" DESC " increments array");
-
-    FUNCTION (gsl_matrix, free) (m2);
-  }
-#endif
-
 
   FUNCTION (gsl_matrix, free) (m);      /* free whatever is in m */
 
@@ -446,6 +418,7 @@ void
 FUNCTION (test, ops) (const size_t M, const size_t N)
 {
   size_t i, j;
+  size_t k = 0;
   
   TYPE (gsl_matrix) * a = FUNCTION (gsl_matrix, calloc) (M, N);
   TYPE (gsl_matrix) * b = FUNCTION (gsl_matrix, calloc) (M, N);

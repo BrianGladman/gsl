@@ -165,7 +165,6 @@ int gsl_vector_long_isnonneg (const gsl_vector_long * v);
 
 INLINE_DECL long gsl_vector_long_get (const gsl_vector_long * v, const size_t i);
 INLINE_DECL void gsl_vector_long_set (gsl_vector_long * v, const size_t i, long x);
-INLINE_DECL void gsl_vector_long_inc (gsl_vector_long * v, const size_t i, const long x);
 INLINE_DECL long * gsl_vector_long_ptr (gsl_vector_long * v, const size_t i);
 INLINE_DECL const long * gsl_vector_long_const_ptr (const gsl_vector_long * v, const size_t i);
 
@@ -195,19 +194,6 @@ gsl_vector_long_set (gsl_vector_long * v, const size_t i, long x)
     }
 #endif
   v->data[i * v->stride] = x;
-}
-
-INLINE_FUN
-void
-gsl_vector_long_inc (gsl_vector_long * v, const size_t i, const long x)
-{
-#if GSL_RANGE_CHECK
-  if (GSL_RANGE_COND(i >= v->size))
-    {
-      GSL_ERROR_VOID ("index out of range", GSL_EINVAL);
-    }
-#endif
-  v->data[i * v->stride] += x;
 }
 
 INLINE_FUN
