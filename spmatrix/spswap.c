@@ -24,7 +24,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
-#include <gsl/gsl_sparse.h>
+#include <gsl/gsl_spmatrix.h>
 
 gsl_spmatrix *
 gsl_spmatrix_transpose_memcpy(const gsl_spmatrix *src)

@@ -24,7 +24,8 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_errno.h>
-#include <gsl/gsl_sparse.h>
+#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_spblas.h>
 
 /*
 gsl_spblas_dgemv()

@@ -20,7 +20,7 @@
 #include <config.h>
 #include <stdlib.h>
 
-#include <gsl/gsl_sparse.h>
+#include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_errno.h>
 
 /*

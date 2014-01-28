@@ -1,4 +1,4 @@
-/* gsl_sparse.h
+/* gsl_spmatrix.h
  * 
  * Copyright (C) 2012-2014 Patrick Alken
  * 
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GSL_SPARSE_H__
-#define __GSL_SPARSE_H__
+#ifndef __GSL_SPMATRIX_H__
+#define __GSL_SPMATRIX_H__
 
 #include <stdlib.h>
 
@@ -85,19 +85,6 @@ typedef struct
 #define GSLSP_ISTRIPLET(m)        ((m)->flags & GSL_SPMATRIX_TRIPLET)
 #define GSLSP_ISCCS(m)            ((m)->flags & GSL_SPMATRIX_CCS)
 
-typedef struct
-{
-  size_t n;        /* size of linear system */
-  size_t m;        /* dimension of Krylov subspace K_m */
-  gsl_vector *r;   /* residual vector r = b - A*x */
-  gsl_matrix *H;   /* Hessenberg matrix n-by-(m+1) */
-  gsl_vector *tau; /* householder scalars */
-  gsl_vector *y;   /* least squares rhs and solution vector */
-
-  double *c;       /* Givens rotations */
-  double *s;
-} gsl_splinalg_gmres_workspace;
-
 /*
  * Prototypes
  */
@@ -137,26 +124,6 @@ int gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b);
 /* spswap.c */
 gsl_spmatrix *gsl_spmatrix_transpose_memcpy(const gsl_spmatrix *src);
 
-/* spblas */
-int gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
-                     const gsl_vector *x, const double beta, gsl_vector *y);
-gsl_spmatrix *gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
-                               const gsl_spmatrix *B);
-size_t gsl_spblas_scatter(const gsl_spmatrix *A, const size_t j, const double alpha,
-                          size_t *w, double *x, const size_t mark, gsl_spmatrix *C,
-                          size_t nz);
-
-/* spgmres.c */
-gsl_splinalg_gmres_workspace *gsl_splinalg_gmres_alloc(const size_t n);
-void gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w);
-int gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
-                             gsl_vector *x,
-                             gsl_splinalg_gmres_workspace *w);
-int gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A,
-                               const gsl_vector *b, const double tol,
-                               gsl_vector *x,
-                               gsl_splinalg_gmres_workspace *w);
-
 __END_DECLS
 
-#endif /* __GSL_SPARSE_H__ */
+#endif /* __GSL_SPMATRIX_H__ */

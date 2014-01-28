@@ -27,7 +27,9 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
-#include <gsl/gsl_sparse.h>
+#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_spblas.h>
+#include <gsl/gsl_splinalg.h>
 
 #include "../linalg/givens.c"
 #include "../linalg/apply_givens.c"

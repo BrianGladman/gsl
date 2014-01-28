@@ -29,7 +29,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_blas.h>
-#include <gsl/gsl_sparse.h>
+#include <gsl/gsl_spmatrix.h>
 
 /*
 create_random_sparse()
@@ -260,117 +260,6 @@ test_ops(const size_t M, const size_t N, const gsl_rng *r)
   }
 } /* test_ops() */
 
-void
-test_dgemv(const double alpha, const double beta, const gsl_rng *r)
-{
-  size_t N_max = 45;
-  gsl_matrix *A = gsl_matrix_alloc(N_max, N_max);
-  gsl_vector *x = gsl_vector_alloc(N_max);
-  gsl_vector *y0 = gsl_vector_alloc(N_max);
-  gsl_vector *y1 = gsl_vector_alloc(N_max);
-  gsl_vector *y2 = gsl_vector_alloc(N_max);
-  size_t N, M;
-
-  for (M = 1; M <= N_max; ++M)
-    {
-      gsl_vector_view y = gsl_vector_subvector(y0, 0, M);
-      gsl_vector_view y_gsl = gsl_vector_subvector(y1, 0, M);
-      gsl_vector_view y_sp = gsl_vector_subvector(y2, 0, M);
-
-      for (N = 1; N <= N_max; ++N)
-        {
-          gsl_matrix_view Av = gsl_matrix_submatrix(A, 0, 0, M, N);
-          gsl_vector_view xv = gsl_vector_subvector(x, 0, N);
-          gsl_spmatrix *mt = create_random_sparse(M, N, 0.2, r);
-          gsl_spmatrix *mc;
-
-          /* create random dense vectors */
-          create_random_vector(&xv.vector, r);
-          create_random_vector(&y.vector, r);
-
-          gsl_vector_memcpy(&y_gsl.vector, &y.vector);
-          gsl_vector_memcpy(&y_sp.vector, &y.vector);
-
-          /* copy mt into A */
-          gsl_spmatrix_sp2d(&Av.matrix, mt);
-
-          /* compute y = alpha*A*x + beta*y0 with gsl */
-          gsl_blas_dgemv(CblasNoTrans, alpha, &Av.matrix, &xv.vector, beta, &y_gsl.vector);
-
-          /* compute y = alpha*A*x + beta*y0 with spblas/triplet */
-          gsl_spblas_dgemv(alpha, mt, &xv.vector, beta, &y_sp.vector);
-          test_vectors(&y_sp.vector, &y_gsl.vector, 1.0e-10,
-                       "test_dgemv: triplet format");
-
-          /* compute y = alpha*A*x + beta*y0 with spblas/compcol */
-          mc = gsl_spmatrix_compress(mt);
-          gsl_vector_memcpy(&y_sp.vector, &y.vector);
-          gsl_spblas_dgemv(alpha, mc, &xv.vector, beta, &y_sp.vector);
-          test_vectors(&y_sp.vector, &y_gsl.vector, 1.0e-10,
-                       "test_dgemv: compressed column format");
-
-          gsl_spmatrix_free(mc);
-          gsl_spmatrix_free(mt);
-        }
-    }
-
-  gsl_matrix_free(A);
-  gsl_vector_free(x);
-  gsl_vector_free(y0);
-  gsl_vector_free(y1);
-  gsl_vector_free(y2);
-} /* test_dgemv() */
-
-void
-test_dgemm(const double alpha, const size_t M, const size_t N,
-           const gsl_rng *r)
-{
-  const size_t max = GSL_MAX(M, N);
-  size_t i, j, k;
-  gsl_matrix *A_dense = gsl_matrix_alloc(M, max);
-  gsl_matrix *B_dense = gsl_matrix_alloc(max, N);
-  gsl_matrix *C_dense = gsl_matrix_alloc(M, N);
-
-  for (k = 1; k <= max; ++k)
-    {
-      gsl_matrix_view Ad = gsl_matrix_submatrix(A_dense, 0, 0, M, k);
-      gsl_matrix_view Bd = gsl_matrix_submatrix(B_dense, 0, 0, k, N);
-      gsl_spmatrix *TA = create_random_sparse(M, k, 0.2, r);
-      gsl_spmatrix *TB = create_random_sparse(k, N, 0.2, r);
-      gsl_spmatrix *A = gsl_spmatrix_compress(TA);
-      gsl_spmatrix *B = gsl_spmatrix_compress(TB);
-      gsl_spmatrix *C = gsl_spblas_dgemm(alpha, A, B);
-
-      /* make dense matrices and use standard dgemm to multiply them */
-      gsl_spmatrix_sp2d(&Ad.matrix, TA);
-      gsl_spmatrix_sp2d(&Bd.matrix, TB);
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, alpha, &Ad.matrix,
-                     &Bd.matrix, 0.0, C_dense);
-
-      /* compare C and C_dense */
-      for (i = 0; i < M; ++i)
-        {
-          for (j = 0; j < N; ++j)
-            {
-              double Cij = gsl_spmatrix_get(C, i, j);
-              double Dij = gsl_matrix_get(C_dense, i, j);
-
-              gsl_test_rel(Cij, Dij, 1.0e-12, "test_dgemm: _dgemm");
-            }
-        }
-
-      gsl_spmatrix_free(TA);
-      gsl_spmatrix_free(TB);
-      gsl_spmatrix_free(A);
-      gsl_spmatrix_free(B);
-      gsl_spmatrix_free(C);
-    }
-
-  gsl_matrix_free(A_dense);
-  gsl_matrix_free(B_dense);
-  gsl_matrix_free(C_dense);
-} /* test_dgemm() */
-
 int
 main()
 {
@@ -390,15 +279,6 @@ main()
   test_ops(50, 20, r);
   test_ops(20, 50, r);
   test_ops(76, 43, r);
-
-  test_dgemv(1.0, 0.0, r);
-  test_dgemv(2.4, -0.5, r);
-  test_dgemv(0.1, 10.0, r);
-
-  test_dgemm(1.0, 10, 10, r);
-  test_dgemm(2.3, 20, 15, r);
-  test_dgemm(1.8, 12, 30, r);
-  test_dgemm(0.4, 45, 35, r);
 
   gsl_rng_free(r);
 

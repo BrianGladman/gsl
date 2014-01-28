@@ -609,7 +609,9 @@ rng/Makefile           \
 roots/Makefile         \
 siman/Makefile         \
 sort/Makefile          \
-sparse/Makefile        \
+spblas/Makefile        \
+splinalg/Makefile      \
+spmatrix/Makefile      \
 specfunc/Makefile      \
 statistics/Makefile    \
 sum/Makefile           \
