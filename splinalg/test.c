@@ -110,7 +110,11 @@ test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
   return s;
 } /* test_vectors() */
 
-/* solve u''(x) = -pi^2 sin(pi*x), u(x) = sin(pi*x) */
+/*
+test_toeplitz()
+  Solve u''(x) = -pi^2 sin(pi*x), u(x) = sin(pi*x)
+  epsrel is the relative error threshold with the exact solution
+*/
 static void
 test_toeplitz(const size_t N, const double epsrel)
 {
@@ -119,10 +123,10 @@ test_toeplitz(const size_t N, const double epsrel)
   const double tol = 1.0e-9;
   gsl_spmatrix *T = gsl_spmatrix_alloc(n ,n); /* triplet format */
   gsl_vector *f = gsl_vector_alloc(n);        /* right hand side vector */
-  gsl_vector *u = gsl_vector_alloc(n);        /* solution vector */
+  gsl_vector *u = gsl_vector_calloc(n);       /* solution vector, u0 = 0 */
   gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(n);
   size_t i;
-  int s;
+  int status;
 
   /* construct the sparse matrix for the finite difference equation */
 
@@ -154,8 +158,8 @@ test_toeplitz(const size_t N, const double epsrel)
     }
 
   /* solve the system */
-  s = gsl_splinalg_gmres_solve_x(T, f, tol, u, w);
-  gsl_test(s, "toeplitz status s=%d N=%zu", s, N);
+  status = gsl_splinalg_gmres_solve_x(T, f, tol, u, w);
+  gsl_test(status, "toeplitz status s=%d N=%zu", status, N);
 
   /* check solution against analytic */
   for (i = 0; i < n; ++i)
@@ -178,8 +182,8 @@ test_toeplitz(const size_t N, const double epsrel)
     normr = gsl_blas_dnrm2(r);
     normf = gsl_blas_dnrm2(f);
 
-    s = (normr <= tol*normf) != 1;
-    gsl_test(s, "toeplitz residual N=%zu normr=%.12e normf=%.12e",
+    status = (normr <= tol*normf) != 1;
+    gsl_test(status, "toeplitz residual N=%zu normr=%.12e normf=%.12e",
              N, normr, normf);
 
     gsl_vector_free(r);
@@ -191,6 +195,38 @@ test_toeplitz(const size_t N, const double epsrel)
   gsl_vector_free(u);
 } /* test_toeplitz() */
 
+static void
+test_random(const size_t N, const gsl_rng *r)
+{
+  const double tol = 1.0e-8;
+  int status;
+  gsl_spmatrix *A = create_random_sparse(N, N, 0.3, r);
+  gsl_vector *b = gsl_vector_alloc(N);
+  gsl_vector *x = gsl_vector_calloc(N);
+  gsl_vector *res = gsl_vector_alloc(N);
+  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(N);
+
+  create_random_vector(b, r);
+
+  do
+    {
+      status = gsl_splinalg_gmres_solve_x(A, b, tol, x, w);
+      printf("%.12e\n", w->normr);
+    }
+  while (status == GSL_CONTINUE);
+  gsl_test(status, "random status s=%d N=%zu", status, N);
+
+  /* compute r = ||b - A*x|| */
+  gsl_vector_memcpy(res, b);
+  gsl_spblas_dgemv(-1.0, A, x, 1.0, res);
+
+  gsl_spmatrix_free(A);
+  gsl_vector_free(b);
+  gsl_vector_free(x);
+  gsl_vector_free(res);
+  gsl_splinalg_gmres_free(w);
+} /* test_random() */
+
 int
 main()
 {
@@ -200,6 +236,8 @@ main()
   test_toeplitz(543, 1.0e-5);
   test_toeplitz(1000, 1.0e-6);
   test_toeplitz(5000, 1.0e-7);
+
+  test_random(100, r);
 
   gsl_rng_free(r);
 

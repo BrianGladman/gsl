@@ -51,13 +51,24 @@ gsl_splinalg_gmres_alloc(const size_t n)
 {
   gsl_splinalg_gmres_workspace *w;
 
+  if (n == 0)
+    {
+      GSL_ERROR_NULL("matrix dimension n must be a positive integer",
+                     GSL_EINVAL);
+    }
+
   w = calloc(1, sizeof(gsl_splinalg_gmres_workspace));
   if (!w)
     {
       GSL_ERROR_NULL("failed to allocate gmres workspace", GSL_ENOMEM);
     }
 
+  /*XXX*/
+#if 0
   w->m = GSL_MIN(n, 10);
+#else
+  w->m = n;
+#endif
   w->n = n;
 
   w->r = gsl_vector_alloc(n);
@@ -161,8 +172,10 @@ most recent solution vector and calling this function more times
 with the input x could result in convergence (ie: restarted GMRES)
 
 Notes:
-Based on algorithm 2.2 of (Walker, 1998 [1]) and algorithm 6.10 of
+1) Based on algorithm 2.2 of (Walker, 1998 [1]) and algorithm 6.10 of
 (Saad, 2003 [2])
+
+2) On output, work->normr contains ||b - A*x||
 */
 
 int
@@ -317,7 +330,6 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                * method has converged, break out of loop to compute
                * update to solution vector x
                */
-              fprintf(stderr, "CONVERGED: %.12e\n", normr);
               break;
             }
         }
@@ -373,8 +385,8 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       else
         status = GSL_CONTINUE; /* not yet converged */
 
-      fprintf(stderr, "new res = %.12e\n", normr);
-      fprintf(stderr, "rel res = %.12e\n", normr / normb);
+      /* store residual norm */
+      work->normr = normr;
 
       return status;
     }

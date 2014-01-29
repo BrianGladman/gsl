@@ -90,7 +90,7 @@ create_random_vector(gsl_vector *v, const gsl_rng *r)
     }
 } /* create_random_vector() */
 
-int
+static int
 test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
              const char *str)
 {
@@ -109,7 +109,7 @@ test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
   return s;
 } /* test_vectors() */
 
-void
+static void
 test_dgemv(const double alpha, const double beta, const gsl_rng *r)
 {
   size_t N_max = 45;
@@ -170,7 +170,7 @@ test_dgemv(const double alpha, const double beta, const gsl_rng *r)
   gsl_vector_free(y2);
 } /* test_dgemv() */
 
-void
+static void
 test_dgemm(const double alpha, const size_t M, const size_t N,
            const gsl_rng *r)
 {

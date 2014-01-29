@@ -48,6 +48,8 @@ typedef struct
 
   double *c;       /* Givens rotations */
   double *s;
+
+  double normr;    /* residual norm ||r|| */
 } gsl_splinalg_gmres_workspace;
 
 /*

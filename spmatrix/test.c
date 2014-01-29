@@ -89,7 +89,7 @@ create_random_vector(gsl_vector *v, const gsl_rng *r)
     }
 } /* create_random_vector() */
 
-int
+static int
 test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
              const char *str)
 {
