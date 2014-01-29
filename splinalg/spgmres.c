@@ -34,6 +34,18 @@
 #include "../linalg/givens.c"
 #include "../linalg/apply_givens.c"
 
+/*
+ * The code in this module is based on the Householder GMRES
+ * algorithm described in
+ *
+ * [1] H. F. Walker, Implementation of the GMRES method using
+ *     Householder transformations, SIAM J. Sci. Stat. Comput.
+ *     9(1), 1988.
+ *
+ * [2] Y. Saad, Iterative methods for sparse linear systems,
+ *     2nd edition, SIAM, 2003.
+ */
+
 gsl_splinalg_gmres_workspace *
 gsl_splinalg_gmres_alloc(const size_t n)
 {
@@ -131,23 +143,32 @@ gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
 gsl_splinalg_gmres_solve_x()
   Solve A*x = b using GMRES algorithm
 
-Inputs: A   - sparse square matrix
-        b   - right hand side vector
-        tol - stopping tolerance
-        x   - (input/output) on input, initial estimate x_0;
-              on output, solution vector
-        w   - workspace
+Inputs: A    - sparse square matrix
+        b    - right hand side vector
+        tol  - stopping tolerance (see below)
+        x    - (input/output) on input, initial estimate x_0;
+               on output, solution vector
+        work - workspace
+
+Return:
+GSL_SUCCESS if converged to solution (solution stored in x). In
+this case the following will be true:
+
+||b - A*x|| <= tol * ||b||
+
+GSL_CONTINUE if not yet converged; in this case x contains the
+most recent solution vector and calling this function more times
+with the input x could result in convergence (ie: restarted GMRES)
 
 Notes:
-1) Based on algorithm 6.10 of
-
-Saad, Iterative methods for sparse linear systems (2nd edition), SIAM
+Based on algorithm 2.2 of (Walker, 1998 [1]) and algorithm 6.10 of
+(Saad, 2003 [2])
 */
 
 int
 gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                            const double tol, gsl_vector *x,
-                           gsl_splinalg_gmres_workspace *w)
+                           gsl_splinalg_gmres_workspace *work)
 {
   const size_t N = A->size1;
 
@@ -163,21 +184,25 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
     {
       GSL_ERROR("matrix does not match solution vector", GSL_EBADLEN);
     }
-  else if (N != w->n)
+  else if (N != work->n)
     {
       GSL_ERROR("matrix does not match workspace", GSL_EBADLEN);
     }
   else
     {
-      const size_t maxit = w->m;
+      int status = GSL_SUCCESS;
+      const size_t maxit = work->m;
       const double normb = gsl_blas_dnrm2(b); /* ||b|| */
       const double reltol = tol * normb;      /* tol*||b|| */
+      double normr;                           /* ||r|| */
       size_t m, k;
       double tau;                             /* householder scalar */
-      gsl_matrix *H = w->H;                   /* Hessenberg matrix */
-      gsl_vector *r = w->r;                   /* residual vector */
+      gsl_matrix *H = work->H;                /* Hessenberg matrix */
+      gsl_vector *r = work->r;                /* residual vector */
+      gsl_vector *w = work->y;                /* least squares RHS */
       gsl_matrix_view Rm;                     /* R_m = H(1:m,2:m+1) */
       gsl_vector_view ym;                     /* y(1:m) */
+      gsl_vector_view h0 = gsl_matrix_column(H, 0);
 
       /*
        * The Hessenberg matrix will have the following structure:
@@ -198,25 +223,20 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
 
       /* Step 1b */
-      {
-        /* hessenberg vector h_0 */
-        gsl_vector_view h0 = gsl_matrix_column(H, 0);
+      gsl_vector_memcpy(&h0.vector, r);
+      tau = gsl_linalg_householder_transform(&h0.vector);
 
-        gsl_vector_memcpy(&h0.vector, r);
-        tau = gsl_linalg_householder_transform(&h0.vector);
+      /* store tau_1 */
+      gsl_vector_set(work->tau, 0, tau);
 
-        /* store tau_1 */
-        gsl_vector_set(w->tau, 0, tau);
-
-        /* initialize w (stored in w->y) */
-        gsl_vector_set_zero(w->y);
-        gsl_vector_set(w->y, 0, gsl_vector_get(&h0.vector, 0));
-      }
+      /* initialize w (stored in work->y) */
+      gsl_vector_set_zero(w);
+      gsl_vector_set(w, 0, gsl_vector_get(&h0.vector, 0));
 
       for (m = 1; m <= maxit; ++m)
         {
           size_t j = m - 1; /* C indexing */
-          double c, s;
+          double c, s;      /* Givens rotation */
 
           /* v_m */
           gsl_vector_view vm = gsl_matrix_column(H, m);
@@ -233,7 +253,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           /* Step 2a: form v_m = P_m e_m = e_m - tau_m w_m */
           gsl_vector_set_zero(&vm.vector);
           gsl_vector_memcpy(&vv.vector, &um.vector);
-          tau = gsl_vector_get(w->tau, j); /* tau_m */
+          tau = gsl_vector_get(work->tau, j); /* tau_m */
           gsl_vector_scale(&vv.vector, -tau);
           gsl_vector_set(&vv.vector, 0, 1.0 - tau);
 
@@ -244,7 +264,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                 gsl_matrix_subcolumn(H, k, k, N - k);
               gsl_vector_view vk =
                 gsl_vector_subvector(&vm.vector, k, N - k);
-              tau = gsl_vector_get(w->tau, k);
+              tau = gsl_vector_get(work->tau, k);
               gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
             }
 
@@ -257,17 +277,17 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
             {
               gsl_vector_view uk = gsl_matrix_subcolumn(H, k, k, N - k);
               gsl_vector_view vk = gsl_vector_subvector(&vm.vector, k, N - k);
-              tau = gsl_vector_get(w->tau, k);
+              tau = gsl_vector_get(work->tau, k);
               gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
             }
 
           /* Steps 2c,2d: find P_{m+1} and set v_m <- P_{m+1} v_m */
           tau = gsl_linalg_householder_transform(&ump1.vector);
-          gsl_vector_set(w->tau, j + 1, tau);
+          gsl_vector_set(work->tau, j + 1, tau);
 
           /* Step 2e: v_m <- J_{m-1} ... J_1 v_m */
           for (k = 0; k < j; ++k)
-            apply_givens_vec(&vm.vector, k, k + 1, w->c[k], w->s[k]);
+            apply_givens_vec(&vm.vector, k, k + 1, work->c[k], work->s[k]);
 
           /* Step 2g: find givens rotation J_m for v_m(m:m+1) */
           create_givens(gsl_vector_get(&vm.vector, j),
@@ -275,32 +295,55 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                         &c, &s);
 
           /* store givens rotation for later use */
-          w->c[j] = c;
-          w->s[j] = s;
+          work->c[j] = c;
+          work->s[j] = s;
 
           /* Step 2h: v_m <- J_m v_m */
           apply_givens_vec(&vm.vector, j, j + 1, c, s);
 
           /* Step 2h: w <- J_m w */
-          apply_givens_vec(w->y, j, j + 1, c, s);
+          apply_givens_vec(w, j, j + 1, c, s);
 
           /*
            * Step 2i: R_m = [ R_{m-1}, v_m ] - already taken care
            * of due to our memory storage scheme
            */
+
+          /* Step 2j: check residual w_{m+1} for convergence */
+          normr = fabs(gsl_vector_get(w, j + 1));
+          if (normr <= reltol)
+            {
+              /*
+               * method has converged, break out of loop to compute
+               * update to solution vector x
+               */
+              fprintf(stderr, "CONVERGED: %.12e\n", normr);
+              break;
+            }
         }
 
-      /* Step 3a: solve triangular system R_m y_m = w */
-      m--;
+      /*
+       * At this point, we have either converged to a solution or
+       * completed all maxit iterations. In either case, compute
+       * an update to the solution vector x and test again for
+       * convergence.
+       */
+
+      /* rewind m if we exceeded maxit iterations */
+      if (m > maxit)
+        m--;
+
+      /* Step 3a: solve triangular system R_m y_m = w, in place */
       Rm = gsl_matrix_submatrix(H, 0, 1, m, m);
-      ym = gsl_vector_subvector(w->y, 0, m);
+      ym = gsl_vector_subvector(w, 0, m);
       gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit,
                      &Rm.matrix, &ym.vector);
 
       /*
        * Step 3b: update solution vector x; the loop below
        * uses a different but equivalent formulation from
-       * Saad, algorithm 6.10, step 14
+       * Saad, algorithm 6.10, step 14; store Krylov projection
+       * V_m y_m in 'r'
        */
       gsl_vector_set_zero(r);
       for (k = m; k > 0 && k--; )
@@ -313,16 +356,26 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           gsl_vector_set(r, k, gsl_vector_get(r, k) + ymk);
 
           /* r <- P_k r */
-          tau = gsl_vector_get(w->tau, k);
+          tau = gsl_vector_get(work->tau, k);
           gsl_linalg_householder_hv(tau, &uk.vector, &rk.vector);
         }
 
-      /* x <- x + r */
+      /* x <- x + V_m y_m */
       gsl_vector_add(x, r);
 
-      gsl_vector_fprintf(stdout, x, "%.12e");
-      exit(1);
+      /* compute new residual r = b - A*x */
+      gsl_vector_memcpy(r, b);
+      gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+      normr = gsl_blas_dnrm2(r);
 
-      return GSL_SUCCESS;
+      if (normr <= reltol)
+        status = GSL_SUCCESS;  /* converged */
+      else
+        status = GSL_CONTINUE; /* not yet converged */
+
+      fprintf(stderr, "new res = %.12e\n", normr);
+      fprintf(stderr, "rel res = %.12e\n", normr / normb);
+
+      return status;
     }
-} /* gsl_splinalg_gmres_solve() */
+} /* gsl_splinalg_gmres_solve_x() */

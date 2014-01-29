@@ -223,7 +223,7 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
   }
 } /* test_memcpy() */
 
-void
+static void
 test_ops(const size_t M, const size_t N, const gsl_rng *r)
 {
   size_t i, j;

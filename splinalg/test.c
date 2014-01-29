@@ -31,6 +31,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_spblas.h>
+#include <gsl/gsl_splinalg.h>
 
 /*
 create_random_sparse()
@@ -109,10 +110,96 @@ test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
   return s;
 } /* test_vectors() */
 
+/* solve u''(x) = -pi^2 sin(pi*x), u(x) = sin(pi*x) */
+static void
+test_toeplitz(const size_t N, const double epsrel)
+{
+  const size_t n = N - 2;                     /* subtract 2 to exclude boundaries */
+  const double h = 1.0 / (N - 1.0);           /* grid spacing */
+  const double tol = 1.0e-9;
+  gsl_spmatrix *T = gsl_spmatrix_alloc(n ,n); /* triplet format */
+  gsl_vector *f = gsl_vector_alloc(n);        /* right hand side vector */
+  gsl_vector *u = gsl_vector_alloc(n);        /* solution vector */
+  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(n);
+  size_t i;
+  int s;
+
+  /* construct the sparse matrix for the finite difference equation */
+
+  /* first row of matrix */
+  gsl_spmatrix_set(T, 0, 0, -2.0);
+  gsl_spmatrix_set(T, 0, 1, 1.0);
+
+  /* loop over interior grid points */
+  for (i = 1; i < n - 1; ++i)
+    {
+      gsl_spmatrix_set(T, i, i + 1, 1.0);
+      gsl_spmatrix_set(T, i, i, -2.0);
+      gsl_spmatrix_set(T, i, i - 1, 1.0);
+    }
+
+  /* last row of matrix */
+  gsl_spmatrix_set(T, n - 1, n - 1, -2.0);
+  gsl_spmatrix_set(T, n - 1, n - 2, 1.0);
+
+  /* scale by h^2 */
+  gsl_spmatrix_scale(T, 1.0 / (h * h));
+
+  /* construct right hand side vector */
+  for (i = 0; i < n; ++i)
+    {
+      double xi = (i + 1) * h;
+      double fi = -M_PI * M_PI * sin(M_PI * xi);
+      gsl_vector_set(f, i, fi);
+    }
+
+  /* solve the system */
+  s = gsl_splinalg_gmres_solve_x(T, f, tol, u, w);
+  gsl_test(s, "toeplitz status s=%d N=%zu", s, N);
+
+  /* check solution against analytic */
+  for (i = 0; i < n; ++i)
+    {
+      double xi = (i + 1) * h;
+      double u_gsl = gsl_vector_get(u, i);
+      double u_exact = sin(M_PI * xi);
+
+      gsl_test_rel(u_gsl, u_exact, epsrel, "toeplitz N=%zu i=%zu", N, i);
+    }
+
+  /* check that the residual satisfies ||r|| <= tol*||f|| */
+  {
+    gsl_vector *r = gsl_vector_alloc(n);
+    double normr, normf;
+
+    gsl_vector_memcpy(r, f);
+    gsl_spblas_dgemv(-1.0, T, u, 1.0, r);
+
+    normr = gsl_blas_dnrm2(r);
+    normf = gsl_blas_dnrm2(f);
+
+    s = (normr <= tol*normf) != 1;
+    gsl_test(s, "toeplitz residual N=%zu normr=%.12e normf=%.12e",
+             N, normr, normf);
+
+    gsl_vector_free(r);
+  }
+
+  gsl_splinalg_gmres_free(w);
+  gsl_spmatrix_free(T);
+  gsl_vector_free(f);
+  gsl_vector_free(u);
+} /* test_toeplitz() */
+
 int
 main()
 {
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+
+  test_toeplitz(7, 1.0e-1);
+  test_toeplitz(543, 1.0e-5);
+  test_toeplitz(1000, 1.0e-6);
+  test_toeplitz(5000, 1.0e-7);
 
   gsl_rng_free(r);
 
