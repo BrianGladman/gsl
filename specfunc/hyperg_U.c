@@ -524,7 +524,7 @@ hyperg_U_infinite_sum_simple(int N, double a, double bint, double b, double beps
         t_err = a0_err + b0_err;
         dchu_val += t_val;
         dchu_err += t_err;
-        if(!finite(t_val) || fabs(t_val) < EPS*fabs(dchu_val)) break;
+        if(!gsl_finite(t_val) || fabs(t_val) < EPS*fabs(dchu_val)) break;
       }
 
       result->val  = dchu_val;
