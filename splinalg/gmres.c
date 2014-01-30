@@ -1,4 +1,4 @@
-/* spgmres.c
+/* gmres.c
  * 
  * Copyright (C) 2014 Patrick Alken
  * 
@@ -18,9 +18,6 @@
  */
 
 #include <config.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -46,8 +43,27 @@
  *     2nd edition, SIAM, 2003.
  */
 
+typedef struct
+{
+  size_t n;        /* size of linear system */
+  size_t m;        /* dimension of Krylov subspace K_m */
+  gsl_vector *r;   /* residual vector r = b - A*x */
+  gsl_matrix *H;   /* Hessenberg matrix n-by-(m+1) */
+  gsl_vector *tau; /* householder scalars */
+  gsl_vector *y;   /* least squares rhs and solution vector */
+
+  double *c;       /* Givens rotations */
+  double *s;
+
+  double normr;    /* residual norm ||r|| */
+} gmres_state_t;
+
+static void gmres_free(void *vstate);
+static int gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
+                         const double tol, gsl_vector *x, void *vstate);
+
 /*
-gsl_splinalg_gmres_alloc()
+gmres_alloc()
   Allocate a GMRES workspace for solving an n-by-n system A x = b
 
 Inputs: n        - size of system
@@ -58,10 +74,12 @@ Inputs: n        - size of system
 Return: pointer to workspace
 */
 
-gsl_splinalg_gmres_workspace *
-gsl_splinalg_gmres_alloc(const size_t n, const size_t krylov_m)
+static void *
+gmres_alloc(const size_t n, void *params)
 {
-  gsl_splinalg_gmres_workspace *w;
+  gmres_state_t *state;
+  gsl_splinalg_itersolve_gmres_params *gmres_params =
+    (gsl_splinalg_itersolve_gmres_params *) params;
 
   if (n == 0)
     {
@@ -69,101 +87,89 @@ gsl_splinalg_gmres_alloc(const size_t n, const size_t krylov_m)
                      GSL_EINVAL);
     }
 
-  w = calloc(1, sizeof(gsl_splinalg_gmres_workspace));
-  if (!w)
+  state = calloc(1, sizeof(gmres_state_t));
+  if (!state)
     {
-      GSL_ERROR_NULL("failed to allocate gmres workspace", GSL_ENOMEM);
+      GSL_ERROR_NULL("failed to allocate gmres state", GSL_ENOMEM);
     }
 
-  w->n = n;
+  state->n = n;
 
   /* compute size of Krylov subspace */
-  if (krylov_m == 0)
-    w->m = GSL_MIN(n, 10);
+  if (gmres_params == NULL)
+    state->m = GSL_MIN(n, 10);
   else
-    w->m = krylov_m;
+    state->m = gmres_params->krylov_m;
 
-  w->r = gsl_vector_alloc(n);
-  if (!w->r)
+  state->r = gsl_vector_alloc(n);
+  if (!state->r)
     {
-      gsl_splinalg_gmres_free(w);
+      gmres_free(state);
       GSL_ERROR_NULL("failed to allocate r vector", GSL_ENOMEM);
     }
 
-  w->H = gsl_matrix_alloc(n, w->m + 1);
-  if (!w->H)
+  state->H = gsl_matrix_alloc(n, state->m + 1);
+  if (!state->H)
     {
-      gsl_splinalg_gmres_free(w);
+      gmres_free(state);
       GSL_ERROR_NULL("failed to allocate H matrix", GSL_ENOMEM);
     }
 
-  w->tau = gsl_vector_alloc(w->m + 1);
-  if (!w->tau)
+  state->tau = gsl_vector_alloc(state->m + 1);
+  if (!state->tau)
     {
-      gsl_splinalg_gmres_free(w);
+      gmres_free(state);
       GSL_ERROR_NULL("failed to allocate tau vector", GSL_ENOMEM);
     }
 
-  w->y = gsl_vector_alloc(w->m + 1);
-  if (!w->y)
+  state->y = gsl_vector_alloc(state->m + 1);
+  if (!state->y)
     {
-      gsl_splinalg_gmres_free(w);
+      gmres_free(state);
       GSL_ERROR_NULL("failed to allocate y vector", GSL_ENOMEM);
     }
 
-  w->c = malloc(w->m * sizeof(double));
-  w->s = malloc(w->m * sizeof(double));
-  if (!w->c || !w->s)
+  state->c = malloc(state->m * sizeof(double));
+  state->s = malloc(state->m * sizeof(double));
+  if (!state->c || !state->s)
     {
-      gsl_splinalg_gmres_free(w);
+      gmres_free(state);
       GSL_ERROR_NULL("failed to allocate Givens vectors", GSL_ENOMEM);
     }
 
-  return w;
-} /* gsl_splinalg_gmres_alloc() */
+  state->normr = 0.0;
 
-void
-gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w)
+  return state;
+} /* gmres_alloc() */
+
+static void
+gmres_free(void *vstate)
 {
-  if (w->r)
-    gsl_vector_free(w->r);
+  gmres_state_t *state = (gmres_state_t *) vstate;
 
-  if (w->H)
-    gsl_matrix_free(w->H);
+  if (state->r)
+    gsl_vector_free(state->r);
 
-  if (w->tau)
-    gsl_vector_free(w->tau);
+  if (state->H)
+    gsl_matrix_free(state->H);
 
-  if (w->y)
-    gsl_vector_free(w->y);
+  if (state->tau)
+    gsl_vector_free(state->tau);
 
-  if (w->c)
-    free(w->c);
+  if (state->y)
+    gsl_vector_free(state->y);
 
-  if (w->s)
-    free(w->s);
+  if (state->c)
+    free(state->c);
 
-  free(w);
-} /* gsl_splinalg_gmres_free() */
+  if (state->s)
+    free(state->s);
 
-int
-gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
-                         gsl_vector *x,
-                         gsl_splinalg_gmres_workspace *w)
-{
-  int s;
-  const double tol = 1.0e-6;
-
-  /* initial guess x = 0 */
-  gsl_vector_set_zero(x);
-
-  s = gsl_splinalg_gmres_solve_x(A, b, tol, x, w);
-
-  return s;
-} /* gsl_splinalg_gmres_solve() */
+  free(state);
+} /* gmres_free() */
 
 /*
-gsl_splinalg_gmres_solve_x()
+gmres_iterate()
   Solve A*x = b using GMRES algorithm
 
 Inputs: A    - sparse square matrix
@@ -190,12 +196,13 @@ Notes:
 2) On output, work->normr contains ||b - A*x||
 */
 
-int
-gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
-                           const double tol, gsl_vector *x,
-                           gsl_splinalg_gmres_workspace *work)
+static int
+gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
+              const double tol, gsl_vector *x,
+              void *vstate)
 {
   const size_t N = A->size1;
+  gmres_state_t *state = (gmres_state_t *) vstate;
 
   if (N != A->size2)
     {
@@ -209,22 +216,22 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
     {
       GSL_ERROR("matrix does not match solution vector", GSL_EBADLEN);
     }
-  else if (N != work->n)
+  else if (N != state->n)
     {
       GSL_ERROR("matrix does not match workspace", GSL_EBADLEN);
     }
   else
     {
       int status = GSL_SUCCESS;
-      const size_t maxit = work->m;
+      const size_t maxit = state->m;
       const double normb = gsl_blas_dnrm2(b); /* ||b|| */
       const double reltol = tol * normb;      /* tol*||b|| */
       double normr;                           /* ||r|| */
       size_t m, k;
       double tau;                             /* householder scalar */
-      gsl_matrix *H = work->H;                /* Hessenberg matrix */
-      gsl_vector *r = work->r;                /* residual vector */
-      gsl_vector *w = work->y;                /* least squares RHS */
+      gsl_matrix *H = state->H;               /* Hessenberg matrix */
+      gsl_vector *r = state->r;               /* residual vector */
+      gsl_vector *w = state->y;               /* least squares RHS */
       gsl_matrix_view Rm;                     /* R_m = H(1:m,2:m+1) */
       gsl_vector_view ym;                     /* y(1:m) */
       gsl_vector_view h0 = gsl_matrix_column(H, 0);
@@ -252,9 +259,9 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
       tau = gsl_linalg_householder_transform(&h0.vector);
 
       /* store tau_1 */
-      gsl_vector_set(work->tau, 0, tau);
+      gsl_vector_set(state->tau, 0, tau);
 
-      /* initialize w (stored in work->y) */
+      /* initialize w (stored in state->y) */
       gsl_vector_set_zero(w);
       gsl_vector_set(w, 0, gsl_vector_get(&h0.vector, 0));
 
@@ -275,7 +282,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           /* Step 2a: form v_m = P_m e_m = e_m - tau_m w_m */
           gsl_vector_set_zero(&vm.vector);
           gsl_vector_memcpy(&vv.vector, &um.vector);
-          tau = gsl_vector_get(work->tau, j); /* tau_m */
+          tau = gsl_vector_get(state->tau, j); /* tau_m */
           gsl_vector_scale(&vv.vector, -tau);
           gsl_vector_set(&vv.vector, 0, 1.0 - tau);
 
@@ -286,7 +293,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                 gsl_matrix_subcolumn(H, k, k, N - k);
               gsl_vector_view vk =
                 gsl_vector_subvector(&vm.vector, k, N - k);
-              tau = gsl_vector_get(work->tau, k);
+              tau = gsl_vector_get(state->tau, k);
               gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
             }
 
@@ -299,7 +306,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
             {
               gsl_vector_view uk = gsl_matrix_subcolumn(H, k, k, N - k);
               gsl_vector_view vk = gsl_vector_subvector(&vm.vector, k, N - k);
-              tau = gsl_vector_get(work->tau, k);
+              tau = gsl_vector_get(state->tau, k);
               gsl_linalg_householder_hv(tau, &uk.vector, &vk.vector);
             }
 
@@ -310,12 +317,12 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
               gsl_vector_view ump1 = gsl_matrix_subcolumn(H, m, m, N - m);
 
               tau = gsl_linalg_householder_transform(&ump1.vector);
-              gsl_vector_set(work->tau, j + 1, tau);
+              gsl_vector_set(state->tau, j + 1, tau);
             }
 
           /* Step 2e: v_m <- J_{m-1} ... J_1 v_m */
           for (k = 0; k < j; ++k)
-            apply_givens_vec(&vm.vector, k, k + 1, work->c[k], work->s[k]);
+            apply_givens_vec(&vm.vector, k, k + 1, state->c[k], state->s[k]);
 
           if (m < N)
             {
@@ -325,8 +332,8 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
                             &c, &s);
 
               /* store givens rotation for later use */
-              work->c[j] = c;
-              work->s[j] = s;
+              state->c[j] = c;
+              state->s[j] = s;
 
               /* Step 2h: v_m <- J_m v_m */
               apply_givens_vec(&vm.vector, j, j + 1, c, s);
@@ -386,7 +393,7 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           gsl_vector_set(r, k, gsl_vector_get(r, k) + ymk);
 
           /* r <- P_k r */
-          tau = gsl_vector_get(work->tau, k);
+          tau = gsl_vector_get(state->tau, k);
           gsl_linalg_householder_hv(tau, &uk.vector, &rk.vector);
         }
 
@@ -404,8 +411,27 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
         status = GSL_CONTINUE; /* not yet converged */
 
       /* store residual norm */
-      work->normr = normr;
+      state->normr = normr;
 
       return status;
     }
-} /* gsl_splinalg_gmres_solve_x() */
+} /* gmres_iterate() */
+
+static double
+gmres_residual(void *vstate)
+{
+  gmres_state_t *state = (gmres_state_t *) vstate;
+  return state->normr;
+} /* gmres_residual() */
+
+static const gsl_splinalg_itersolve_type gmres_type =
+{
+  "gmres",
+  &gmres_alloc,
+  &gmres_iterate,
+  &gmres_residual,
+  &gmres_free
+};
+
+const gsl_splinalg_itersolve_type * gsl_splinalg_itersolve_gmres =
+  &gmres_type;

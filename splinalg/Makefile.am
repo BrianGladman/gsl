@@ -4,7 +4,7 @@ check_PROGRAMS = test
 
 pkginclude_HEADERS = gsl_splinalg.h
 
-libgslsplinalg_la_SOURCES = spgmres.c
+libgslsplinalg_la_SOURCES = itersolve.c gmres.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 

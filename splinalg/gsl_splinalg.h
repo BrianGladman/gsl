@@ -24,6 +24,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -37,35 +38,48 @@
 
 __BEGIN_DECLS
 
+/* iteration solver type */
 typedef struct
 {
-  size_t n;        /* size of linear system */
-  size_t m;        /* dimension of Krylov subspace K_m */
-  gsl_vector *r;   /* residual vector r = b - A*x */
-  gsl_matrix *H;   /* Hessenberg matrix n-by-(m+1) */
-  gsl_vector *tau; /* householder scalars */
-  gsl_vector *y;   /* least squares rhs and solution vector */
+  const char *name;
+  void * (*alloc) (const size_t n, void * params);
+  int (*iterate) (const gsl_spmatrix *A, const gsl_vector *b,
+                  const double tol, gsl_vector *x, void *);
+  double (*residual)(void *);
+  void (*free) (void *);
+} gsl_splinalg_itersolve_type;
 
-  double *c;       /* Givens rotations */
-  double *s;
+typedef struct
+{
+  const gsl_splinalg_itersolve_type * type;
+  double residual; /* current residual || b - A x || */
+  void * state;
+} gsl_splinalg_itersolve;
 
-  double normr;    /* residual norm ||r|| */
-} gsl_splinalg_gmres_workspace;
+typedef struct
+{
+  size_t krylov_m;
+} gsl_splinalg_itersolve_gmres_params;
+
+/* available types */
+GSL_VAR const gsl_splinalg_itersolve_type * gsl_splinalg_itersolve_gmres;
 
 /*
  * Prototypes
  */
-
-gsl_splinalg_gmres_workspace *gsl_splinalg_gmres_alloc(const size_t n,
-                                                       const size_t krylov_m);
-void gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w);
-int gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
-                             gsl_vector *x,
-                             gsl_splinalg_gmres_workspace *w);
-int gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A,
-                               const gsl_vector *b, const double tol,
-                               gsl_vector *x,
-                               gsl_splinalg_gmres_workspace *w);
+gsl_splinalg_itersolve *
+gsl_splinalg_itersolve_alloc(const gsl_splinalg_itersolve_type *T,
+                             const size_t n, void *params);
+void gsl_splinalg_itersolve_free(gsl_splinalg_itersolve *w);
+const char *gsl_splinalg_itersolve_name(gsl_splinalg_itersolve *w);
+int gsl_splinalg_itersolve_iterate(const gsl_spmatrix *A,
+                                   const gsl_vector *b,
+                                   const double tol, gsl_vector *x,
+                                   gsl_splinalg_itersolve *w);
+int gsl_splinalg_itersolve_solve(const gsl_spmatrix *A, const gsl_vector *b,
+                                 const size_t max_iter, gsl_vector *x,
+                                 gsl_splinalg_itersolve *w);
+double gsl_splinalg_itersolve_residual(gsl_splinalg_itersolve *w);
 
 __END_DECLS
 
