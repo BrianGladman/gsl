@@ -33,8 +33,6 @@
 #include <gsl/gsl_spblas.h>
 #include <gsl/gsl_splinalg.h>
 
-#include "oct.c"
-
 /*
 create_random_sparse()
   Create a random sparse matrix with approximately
@@ -120,7 +118,7 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
   gsl_spmatrix *B;
   gsl_vector *b = gsl_vector_alloc(n);        /* right hand side vector */
   gsl_vector *u = gsl_vector_calloc(n);       /* solution vector, u0 = 0 */
-  gsl_splinalg_itersolve *w = gsl_splinalg_itersolve_alloc(T, n, NULL);
+  gsl_splinalg_itersolve *w = gsl_splinalg_itersolve_alloc(T, n, 0);
   const char *desc = gsl_splinalg_itersolve_name(w);
   size_t i;
   int status;
@@ -218,9 +216,8 @@ test_random(const size_t N, const gsl_rng *r, const int compress)
   gsl_vector *x = gsl_vector_calloc(N);
 
   /* these random matrices require all N iterations to converge */
-  gsl_splinalg_itersolve_gmres_params params = { N };
+  gsl_splinalg_itersolve *w = gsl_splinalg_itersolve_alloc(T, N, N);
 
-  gsl_splinalg_itersolve *w = gsl_splinalg_itersolve_alloc(T, N, &params);
   const char *desc = gsl_splinalg_itersolve_name(w);
 
   create_random_vector(b, r);
@@ -232,17 +229,6 @@ test_random(const size_t N, const gsl_rng *r, const int compress)
 
   status = gsl_splinalg_itersolve_iterate(B, b, tol, x, w);
   gsl_test(status, "%s random status s=%d N=%zu", desc, status, N);
-
-  if (status)
-    {
-      gsl_matrix *A_dense = gsl_matrix_alloc(N, N);
-      printf("uh oh\n");
-      gsl_spmatrix_sp2d(A_dense, A);
-      print_octave(A_dense, "A");
-      printv_octave(b, "b");
-      fprintf(stderr, "normr = %.12e\n",
-              gsl_splinalg_itersolve_residual(w));
-    }
 
   /* check that the residual satisfies ||r|| <= tol*||b|| */
   {
@@ -277,7 +263,6 @@ main()
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
   size_t n;
 
-#if 0
   test_toeplitz(7, 1.0e-1, 0);
   test_toeplitz(7, 1.0e-1, 1);
 
@@ -289,13 +274,11 @@ main()
 
   test_toeplitz(5000, 1.0e-7, 0);
   test_toeplitz(5000, 1.0e-7, 1);
-#endif
 
-  for (n = 1; n <= 10000; ++n)
+  for (n = 1; n <= 100; ++n)
     {
-      /*test_random(n, r, 0);
-      test_random(n, r, 1);*/
-      test_toeplitz(5000, 1.0e-1, 1);
+      test_random(n, r, 0);
+      test_random(n, r, 1);
     }
 
   gsl_rng_free(r);

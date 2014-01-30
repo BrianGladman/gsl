@@ -54,6 +54,7 @@ direct sparse solvers.
 @menu
 * Sparse Iterative Solver Overview::
 * Sparse Iterative Solvers Types::
+* Iterating the Sparse Linear System::
 @end menu
 
 @node Sparse Iterative Solver Overview
@@ -92,7 +93,7 @@ $$
 @end tex
 @ifinfo
 @example
-K_m = span( r_0, A r_0, ..., A^{m-1} r_0)
+K_m = span( r_0, A r_0, ..., A^(m-1) r_0)
 @end example
 @end ifinfo
 and @math{r_0 = b - A x_0} is the residual vector of the initial guess
@@ -122,12 +123,18 @@ cases, preconditioning the linear system can help, but GSL does not
 currently provide any preconditioners.
 @end deffn
 
-@deftypefun {gsl_splinalg_itersolve *} gsl_splinalg_itersolve_alloc (const gsl_splinalg_itersolve_type * @var{T}, const size_t @var{n}, void * @var{params})
+@node Iterating the Sparse Linear System
+@subsection Iterating the Sparse Linear System
+
+The following functions are provided to allocate storage for the
+sparse linear solvers and iterate the system to a solution.
+
+@deftypefun {gsl_splinalg_itersolve *} gsl_splinalg_itersolve_alloc (const gsl_splinalg_itersolve_type * @var{T}, const size_t @var{n}, const size_t @var{m})
 This function allocates a workspace for the iterative solution of
 @var{n}-by-@var{n} sparse matrix systems. The iterative solver type
-is specified by @var{T}. The argument @var{params} specifies input
-parameters to the particular solver @var{T}. @var{params} may be
-set to NULL in which case reasonable default values are used.
+is specified by @var{T}. The argument @var{m} specifies the size
+of the solution candidate subspace @math{{\cal K}_m}. The dimension
+@var{m} may be set to 0 in which case a reasonable default value is used.
 @end deftypefun
 
 @deftypefun void gsl_splinalg_itersolve_free (gsl_splinalg_itersolve * @var{w})
@@ -163,6 +170,12 @@ the method has converged, the function returns @code{GSL_SUCCESS} and
 the final solution is provided in @var{x}. Otherwise, the function
 returns @code{GSL_CONTINUE} to signal that more iterations are
 required. Here, @math{|| \cdot ||} represents the Euclidean norm.
+@end deftypefun
+
+@deftypefun double gsl_splinalg_itersolve_normr (const gsl_splinalg_itersolve *@var{w})
+This function returns the current residual norm
+@math{||r|| = ||A x - b||}, which is updated after each call to
+@code{gsl_splinalg_itersolve_iterate}.
 @end deftypefun
 
 @node Sparse Linear Algebra Examples

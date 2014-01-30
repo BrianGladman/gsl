@@ -57,7 +57,7 @@ main()
     const size_t max_iter = 10; /* maximum iterations */
     const gsl_splinalg_itersolve_type *T = gsl_splinalg_itersolve_gmres;
     gsl_splinalg_itersolve *work =
-      gsl_splinalg_itersolve_alloc(T, n, NULL);
+      gsl_splinalg_itersolve_alloc(T, n, 0);
     size_t iter = 0;
     double residual;
     int status;
@@ -71,7 +71,7 @@ main()
         status = gsl_splinalg_itersolve_iterate(C, f, tol, u, work);
 
         /* print out residual norm ||A*u - f|| */
-        residual = gsl_splinalg_itersolve_residual(work);
+        residual = gsl_splinalg_itersolve_normr(work);
         fprintf(stderr, "iter %zu residual = %.12e\n", iter, residual);
 
         if (status == GSL_SUCCESS)

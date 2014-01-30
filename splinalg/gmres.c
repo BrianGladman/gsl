@@ -75,11 +75,9 @@ Return: pointer to workspace
 */
 
 static void *
-gmres_alloc(const size_t n, void *params)
+gmres_alloc(const size_t n, const size_t m)
 {
   gmres_state_t *state;
-  gsl_splinalg_itersolve_gmres_params *gmres_params =
-    (gsl_splinalg_itersolve_gmres_params *) params;
 
   if (n == 0)
     {
@@ -96,10 +94,10 @@ gmres_alloc(const size_t n, void *params)
   state->n = n;
 
   /* compute size of Krylov subspace */
-  if (gmres_params == NULL)
+  if (m == 0)
     state->m = GSL_MIN(n, 10);
   else
-    state->m = GSL_MIN(n, gmres_params->krylov_m);
+    state->m = GSL_MIN(n, m);
 
   state->r = gsl_vector_alloc(n);
   if (!state->r)
@@ -418,18 +416,18 @@ gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
 } /* gmres_iterate() */
 
 static double
-gmres_residual(void *vstate)
+gmres_normr(const void *vstate)
 {
-  gmres_state_t *state = (gmres_state_t *) vstate;
+  const gmres_state_t *state = (const gmres_state_t *) vstate;
   return state->normr;
-} /* gmres_residual() */
+} /* gmres_normr() */
 
 static const gsl_splinalg_itersolve_type gmres_type =
 {
   "gmres",
   &gmres_alloc,
   &gmres_iterate,
-  &gmres_residual,
+  &gmres_normr,
   &gmres_free
 };
 

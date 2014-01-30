@@ -28,7 +28,7 @@
 
 gsl_splinalg_itersolve *
 gsl_splinalg_itersolve_alloc(const gsl_splinalg_itersolve_type *T,
-                             const size_t n, void *params)
+                             const size_t n, const size_t m)
 {
   gsl_splinalg_itersolve *w;
 
@@ -40,9 +40,9 @@ gsl_splinalg_itersolve_alloc(const gsl_splinalg_itersolve_type *T,
     }
 
   w->type = T;
-  w->residual = 0.0;
+  w->normr = 0.0;
 
-  w->state = w->type->alloc(n, params);
+  w->state = w->type->alloc(n, m);
   if (w->state == NULL)
     {
       gsl_splinalg_itersolve_free(w);
@@ -78,34 +78,13 @@ gsl_splinalg_itersolve_iterate(const gsl_spmatrix *A, const gsl_vector *b,
   int status = w->type->iterate(A, b, tol, x, w->state);
 
   /* store current residual */
-  w->residual = w->type->residual(w->state);
+  w->normr = w->type->normr(w->state);
 
   return status;
 }
 
-int
-gsl_splinalg_itersolve_solve(const gsl_spmatrix *A, const gsl_vector *b,
-                             const size_t max_iter, gsl_vector *x,
-                             gsl_splinalg_itersolve *w)
-{
-  int status;
-  const double tol = 1.0e-6;
-  size_t iter = 0;
-
-  /* initial guess x = 0 */
-  gsl_vector_set_zero(x);
-
-  do
-    {
-      status = w->type->iterate(A, b, tol, x, w);
-    }
-  while (status == GSL_CONTINUE && ++iter < max_iter);
-
-  return status;
-} /* gsl_splinalg_itersolve_solve() */
-
 double
-gsl_splinalg_itersolve_residual(gsl_splinalg_itersolve *w)
+gsl_splinalg_itersolve_normr(const gsl_splinalg_itersolve *w)
 {
-  return w->type->residual(w->state);
+  return w->type->normr(w->state);
 }

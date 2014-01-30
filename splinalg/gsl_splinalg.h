@@ -42,24 +42,19 @@ __BEGIN_DECLS
 typedef struct
 {
   const char *name;
-  void * (*alloc) (const size_t n, void * params);
+  void * (*alloc) (const size_t n, const size_t m);
   int (*iterate) (const gsl_spmatrix *A, const gsl_vector *b,
                   const double tol, gsl_vector *x, void *);
-  double (*residual)(void *);
+  double (*normr)(const void *);
   void (*free) (void *);
 } gsl_splinalg_itersolve_type;
 
 typedef struct
 {
   const gsl_splinalg_itersolve_type * type;
-  double residual; /* current residual || b - A x || */
+  double normr; /* current residual norm || b - A x || */
   void * state;
 } gsl_splinalg_itersolve;
-
-typedef struct
-{
-  size_t krylov_m;
-} gsl_splinalg_itersolve_gmres_params;
 
 /* available types */
 GSL_VAR const gsl_splinalg_itersolve_type * gsl_splinalg_itersolve_gmres;
@@ -69,17 +64,14 @@ GSL_VAR const gsl_splinalg_itersolve_type * gsl_splinalg_itersolve_gmres;
  */
 gsl_splinalg_itersolve *
 gsl_splinalg_itersolve_alloc(const gsl_splinalg_itersolve_type *T,
-                             const size_t n, void *params);
+                             const size_t n, const size_t m);
 void gsl_splinalg_itersolve_free(gsl_splinalg_itersolve *w);
 const char *gsl_splinalg_itersolve_name(const gsl_splinalg_itersolve *w);
 int gsl_splinalg_itersolve_iterate(const gsl_spmatrix *A,
                                    const gsl_vector *b,
                                    const double tol, gsl_vector *x,
                                    gsl_splinalg_itersolve *w);
-int gsl_splinalg_itersolve_solve(const gsl_spmatrix *A, const gsl_vector *b,
-                                 const size_t max_iter, gsl_vector *x,
-                                 gsl_splinalg_itersolve *w);
-double gsl_splinalg_itersolve_residual(gsl_splinalg_itersolve *w);
+double gsl_splinalg_itersolve_normr(const gsl_splinalg_itersolve *w);
 
 __END_DECLS
 
