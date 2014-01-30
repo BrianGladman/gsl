@@ -236,7 +236,7 @@ storing them in @var{min_out} and @var{max_out}.
 GSL supports the compressed column format, in which the non-zero elements in each
 column are stored contiguously in memory.
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_compress (const gsl_spmatrix * @var{T})
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_compcol (const gsl_spmatrix * @var{T})
 This function creates a sparse matrix in compressed column format
 from the input sparse matrix @var{T} which must be in triplet format.
 A pointer to a newly allocated matrix is returned. The calling function

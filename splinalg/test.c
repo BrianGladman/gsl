@@ -153,7 +153,7 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
     }
 
   if (compress)
-    B = gsl_spmatrix_compress(A);
+    B = gsl_spmatrix_compcol(A);
   else
     B = A;
 
@@ -223,7 +223,7 @@ test_random(const size_t N, const gsl_rng *r, const int compress)
   create_random_vector(b, r);
 
   if (compress)
-    B = gsl_spmatrix_compress(A);
+    B = gsl_spmatrix_compcol(A);
   else
     B = A;
 

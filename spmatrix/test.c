@@ -78,37 +78,6 @@ create_random_sparse(const size_t M, const size_t N, const double density,
 } /* create_random_sparse() */
 
 static void
-create_random_vector(gsl_vector *v, const gsl_rng *r)
-{
-  size_t i;
-
-  for (i = 0; i < v->size; ++i)
-    {
-      double x = gsl_rng_uniform(r);
-      gsl_vector_set(v, i, x);
-    }
-} /* create_random_vector() */
-
-static int
-test_vectors(gsl_vector *observed, gsl_vector *expected, const double tol,
-             const char *str)
-{
-  int s = 0;
-  size_t N = observed->size;
-  size_t i;
-
-  for (i = 0; i < N; ++i)
-    {
-      double x_obs = gsl_vector_get(observed, i);
-      double x_exp = gsl_vector_get(expected, i);
-
-      gsl_test_rel(x_obs, x_exp, tol, "N=%zu i=%zu %s", N, i, str);
-    }
-
-  return s;
-} /* test_vectors() */
-
-static void
 test_getset(const size_t M, const size_t N, const gsl_rng *r)
 {
   int status;
@@ -143,7 +112,7 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
   /* test compressed version of gsl_spmatrix_get() */
   {
     gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);
-    gsl_spmatrix *C = gsl_spmatrix_compress(T);
+    gsl_spmatrix *C = gsl_spmatrix_compcol(T);
 
     status = 0;
     for (i = 0; i < M; ++i)
@@ -172,7 +141,7 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
 
   {
     gsl_spmatrix *at = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *ac = gsl_spmatrix_compress(at);
+    gsl_spmatrix *ac = gsl_spmatrix_compcol(at);
     gsl_spmatrix *bt, *bc;
   
     bt = gsl_spmatrix_memcpy(at);
@@ -195,7 +164,7 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
   {
     gsl_spmatrix *A = create_random_sparse(M, N, 0.3, r);
     gsl_spmatrix *AT = gsl_spmatrix_transpose_memcpy(A);
-    gsl_spmatrix *B = gsl_spmatrix_compress(A);
+    gsl_spmatrix *B = gsl_spmatrix_compcol(A);
     gsl_spmatrix *BT = gsl_spmatrix_transpose_memcpy(B);
     size_t i, j;
 
@@ -232,8 +201,8 @@ test_ops(const size_t M, const size_t N, const gsl_rng *r)
   {
     gsl_spmatrix *Ta = create_random_sparse(M, N, 0.2, r);
     gsl_spmatrix *Tb = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *a = gsl_spmatrix_compress(Ta);
-    gsl_spmatrix *b = gsl_spmatrix_compress(Tb);
+    gsl_spmatrix *a = gsl_spmatrix_compcol(Ta);
+    gsl_spmatrix *b = gsl_spmatrix_compcol(Tb);
     gsl_spmatrix *c = gsl_spmatrix_add(a, b);
 
     status = 0;

@@ -107,7 +107,7 @@ int gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
                      const double x);
 
 /* spcompress.c */
-gsl_spmatrix *gsl_spmatrix_compress(const gsl_spmatrix *T);
+gsl_spmatrix *gsl_spmatrix_compcol(const gsl_spmatrix *T);
 void gsl_spmatrix_cumsum(const size_t n, size_t *c);
 
 /* spoper.c */

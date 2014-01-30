@@ -152,7 +152,7 @@ test_dgemv(const double alpha, const double beta, const gsl_rng *r)
                        "test_dgemv: triplet format");
 
           /* compute y = alpha*A*x + beta*y0 with spblas/compcol */
-          mc = gsl_spmatrix_compress(mt);
+          mc = gsl_spmatrix_compcol(mt);
           gsl_vector_memcpy(&y_sp.vector, &y.vector);
           gsl_spblas_dgemv(alpha, mc, &xv.vector, beta, &y_sp.vector);
           test_vectors(&y_sp.vector, &y_gsl.vector, 1.0e-10,
@@ -186,8 +186,8 @@ test_dgemm(const double alpha, const size_t M, const size_t N,
       gsl_matrix_view Bd = gsl_matrix_submatrix(B_dense, 0, 0, k, N);
       gsl_spmatrix *TA = create_random_sparse(M, k, 0.2, r);
       gsl_spmatrix *TB = create_random_sparse(k, N, 0.2, r);
-      gsl_spmatrix *A = gsl_spmatrix_compress(TA);
-      gsl_spmatrix *B = gsl_spmatrix_compress(TB);
+      gsl_spmatrix *A = gsl_spmatrix_compcol(TA);
+      gsl_spmatrix *B = gsl_spmatrix_compcol(TB);
       gsl_spmatrix *C = gsl_spblas_dgemm(alpha, A, B);
 
       /* make dense matrices and use standard dgemm to multiply them */

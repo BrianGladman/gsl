@@ -25,7 +25,7 @@
 #include <gsl/gsl_spmatrix.h>
 
 /*
-gsl_spmatrix_compress()
+gsl_spmatrix_compcol()
   Create a sparse matrix in compressed column format
 
 Inputs: T - sparse matrix in triplet format
@@ -34,7 +34,7 @@ Return: pointer to new matrix (should be freed when finished with it)
 */
 
 gsl_spmatrix *
-gsl_spmatrix_compress(const gsl_spmatrix *T)
+gsl_spmatrix_compcol(const gsl_spmatrix *T)
 {
   const size_t *Tj; /* column indices of triplet matrix */
   size_t *Cp;       /* column pointers of compressed column matrix */
@@ -80,7 +80,7 @@ gsl_spmatrix_compress(const gsl_spmatrix *T)
   m->nz = T->nz;
 
   return m;
-} /* gsl_spmatrix_compress() */
+} /* gsl_spmatrix_compcol() */
 
 /*
 gsl_spmatrix_cumsum()
