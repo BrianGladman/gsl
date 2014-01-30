@@ -116,15 +116,16 @@ test_toeplitz()
   epsrel is the relative error threshold with the exact solution
 */
 static void
-test_toeplitz(const size_t N, const double epsrel)
+test_toeplitz(const size_t N, const double epsrel, const int compress)
 {
   const size_t n = N - 2;                     /* subtract 2 to exclude boundaries */
   const double h = 1.0 / (N - 1.0);           /* grid spacing */
   const double tol = 1.0e-9;
   gsl_spmatrix *T = gsl_spmatrix_alloc(n ,n); /* triplet format */
+  gsl_spmatrix *A;
   gsl_vector *f = gsl_vector_alloc(n);        /* right hand side vector */
   gsl_vector *u = gsl_vector_calloc(n);       /* solution vector, u0 = 0 */
-  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(n);
+  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(n, 0);
   size_t i;
   int status;
 
@@ -157,8 +158,13 @@ test_toeplitz(const size_t N, const double epsrel)
       gsl_vector_set(f, i, fi);
     }
 
+  if (compress)
+    A = gsl_spmatrix_compress(T);
+  else
+    A = T;
+
   /* solve the system */
-  status = gsl_splinalg_gmres_solve_x(T, f, tol, u, w);
+  status = gsl_splinalg_gmres_solve_x(A, f, tol, u, w);
   gsl_test(status, "toeplitz status s=%d N=%zu", status, N);
 
   /* check solution against analytic */
@@ -193,51 +199,70 @@ test_toeplitz(const size_t N, const double epsrel)
   gsl_spmatrix_free(T);
   gsl_vector_free(f);
   gsl_vector_free(u);
+
+  if (compress)
+    gsl_spmatrix_free(A);
 } /* test_toeplitz() */
 
 static void
-test_random(const size_t N, const gsl_rng *r)
+test_random(const size_t N, const gsl_rng *r, const int compress)
 {
   const double tol = 1.0e-8;
   int status;
-  gsl_spmatrix *A = create_random_sparse(N, N, 0.3, r);
+  gsl_spmatrix *T = create_random_sparse(N, N, 0.3, r);
+  gsl_spmatrix *A;
   gsl_vector *b = gsl_vector_alloc(N);
   gsl_vector *x = gsl_vector_calloc(N);
   gsl_vector *res = gsl_vector_alloc(N);
-  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(N);
+  gsl_splinalg_gmres_workspace *w = gsl_splinalg_gmres_alloc(N, N);
 
   create_random_vector(b, r);
 
-  do
-    {
-      status = gsl_splinalg_gmres_solve_x(A, b, tol, x, w);
-      printf("%.12e\n", w->normr);
-    }
-  while (status == GSL_CONTINUE);
+  if (compress)
+    A = gsl_spmatrix_compress(T);
+  else
+    A = T;
+
+  status = gsl_splinalg_gmres_solve_x(A, b, tol, x, w);
   gsl_test(status, "random status s=%d N=%zu", status, N);
 
   /* compute r = ||b - A*x|| */
   gsl_vector_memcpy(res, b);
   gsl_spblas_dgemv(-1.0, A, x, 1.0, res);
 
-  gsl_spmatrix_free(A);
+  gsl_spmatrix_free(T);
   gsl_vector_free(b);
   gsl_vector_free(x);
   gsl_vector_free(res);
   gsl_splinalg_gmres_free(w);
+
+  if (compress)
+    gsl_spmatrix_free(A);
 } /* test_random() */
 
 int
 main()
 {
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+  size_t n;
 
-  test_toeplitz(7, 1.0e-1);
-  test_toeplitz(543, 1.0e-5);
-  test_toeplitz(1000, 1.0e-6);
-  test_toeplitz(5000, 1.0e-7);
+  test_toeplitz(7, 1.0e-1, 0);
+  test_toeplitz(7, 1.0e-1, 1);
 
-  test_random(100, r);
+  test_toeplitz(543, 1.0e-5, 0);
+  test_toeplitz(543, 1.0e-5, 1);
+
+  test_toeplitz(1000, 1.0e-6, 0);
+  test_toeplitz(1000, 1.0e-6, 1);
+
+  test_toeplitz(5000, 1.0e-7, 0);
+  test_toeplitz(5000, 1.0e-7, 1);
+
+  for (n = 1; n <= 50; ++n)
+    {
+      test_random(100, r, 0);
+      test_random(100, r, 1);
+    }
 
   gsl_rng_free(r);
 

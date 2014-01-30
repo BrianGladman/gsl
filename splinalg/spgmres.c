@@ -46,8 +46,20 @@
  *     2nd edition, SIAM, 2003.
  */
 
+/*
+gsl_splinalg_gmres_alloc()
+  Allocate a GMRES workspace for solving an n-by-n system A x = b
+
+Inputs: n        - size of system
+        krylov_m - size of Krylov subspace (ie: number of inner iterations)
+                   if this parameter is 0, the value GSL_MIN(n,10) is
+                   used
+
+Return: pointer to workspace
+*/
+
 gsl_splinalg_gmres_workspace *
-gsl_splinalg_gmres_alloc(const size_t n)
+gsl_splinalg_gmres_alloc(const size_t n, const size_t krylov_m)
 {
   gsl_splinalg_gmres_workspace *w;
 
@@ -63,13 +75,13 @@ gsl_splinalg_gmres_alloc(const size_t n)
       GSL_ERROR_NULL("failed to allocate gmres workspace", GSL_ENOMEM);
     }
 
-  /*XXX*/
-#if 0
-  w->m = GSL_MIN(n, 10);
-#else
-  w->m = n;
-#endif
   w->n = n;
+
+  /* compute size of Krylov subspace */
+  if (krylov_m == 0)
+    w->m = GSL_MIN(n, 10);
+  else
+    w->m = krylov_m;
 
   w->r = gsl_vector_alloc(n);
   if (!w->r)
@@ -260,9 +272,6 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
           /* householder vector u_m for projection P_m */
           gsl_vector_view um = gsl_matrix_subcolumn(H, j, j, N - j);
 
-          /* householder vector u_{m+1} for projection P_{m+1} */
-          gsl_vector_view ump1 = gsl_matrix_subcolumn(H, m, m, N - m);
-
           /* Step 2a: form v_m = P_m e_m = e_m - tau_m w_m */
           gsl_vector_set_zero(&vm.vector);
           gsl_vector_memcpy(&vv.vector, &um.vector);
@@ -295,27 +304,36 @@ gsl_splinalg_gmres_solve_x(const gsl_spmatrix *A, const gsl_vector *b,
             }
 
           /* Steps 2c,2d: find P_{m+1} and set v_m <- P_{m+1} v_m */
-          tau = gsl_linalg_householder_transform(&ump1.vector);
-          gsl_vector_set(work->tau, j + 1, tau);
+          if (m < N)
+            {
+              /* householder vector u_{m+1} for projection P_{m+1} */
+              gsl_vector_view ump1 = gsl_matrix_subcolumn(H, m, m, N - m);
+
+              tau = gsl_linalg_householder_transform(&ump1.vector);
+              gsl_vector_set(work->tau, j + 1, tau);
+            }
 
           /* Step 2e: v_m <- J_{m-1} ... J_1 v_m */
           for (k = 0; k < j; ++k)
             apply_givens_vec(&vm.vector, k, k + 1, work->c[k], work->s[k]);
 
-          /* Step 2g: find givens rotation J_m for v_m(m:m+1) */
-          create_givens(gsl_vector_get(&vm.vector, j),
-                        gsl_vector_get(&vm.vector, j + 1),
-                        &c, &s);
+          if (m < N)
+            {
+              /* Step 2g: find givens rotation J_m for v_m(m:m+1) */
+              create_givens(gsl_vector_get(&vm.vector, j),
+                            gsl_vector_get(&vm.vector, j + 1),
+                            &c, &s);
 
-          /* store givens rotation for later use */
-          work->c[j] = c;
-          work->s[j] = s;
+              /* store givens rotation for later use */
+              work->c[j] = c;
+              work->s[j] = s;
 
-          /* Step 2h: v_m <- J_m v_m */
-          apply_givens_vec(&vm.vector, j, j + 1, c, s);
+              /* Step 2h: v_m <- J_m v_m */
+              apply_givens_vec(&vm.vector, j, j + 1, c, s);
 
-          /* Step 2h: w <- J_m w */
-          apply_givens_vec(w, j, j + 1, c, s);
+              /* Step 2h: w <- J_m w */
+              apply_givens_vec(w, j, j + 1, c, s);
+            }
 
           /*
            * Step 2i: R_m = [ R_{m-1}, v_m ] - already taken care

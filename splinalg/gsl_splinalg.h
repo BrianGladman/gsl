@@ -56,7 +56,8 @@ typedef struct
  * Prototypes
  */
 
-gsl_splinalg_gmres_workspace *gsl_splinalg_gmres_alloc(const size_t n);
+gsl_splinalg_gmres_workspace *gsl_splinalg_gmres_alloc(const size_t n,
+                                                       const size_t krylov_m);
 void gsl_splinalg_gmres_free(gsl_splinalg_gmres_workspace *w);
 int gsl_splinalg_gmres_solve(const gsl_spmatrix *A, const gsl_vector *b,
                              gsl_vector *x,
