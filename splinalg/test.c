@@ -114,6 +114,8 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
   const size_t n = N - 2;                     /* subtract 2 to exclude boundaries */
   const double h = 1.0 / (N - 1.0);           /* grid spacing */
   const double tol = 1.0e-9;
+  const size_t max_iter = 10;
+  size_t iter = 0;
   gsl_spmatrix *A = gsl_spmatrix_alloc(n ,n); /* triplet format */
   gsl_spmatrix *B;
   gsl_vector *b = gsl_vector_alloc(n);        /* right hand side vector */
@@ -158,7 +160,12 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
     B = A;
 
   /* solve the system */
-  status = gsl_splinalg_itersolve_iterate(B, b, tol, u, w);
+  do
+    {
+      status = gsl_splinalg_itersolve_iterate(B, b, tol, u, w);
+    }
+  while (status == GSL_CONTINUE && ++iter < max_iter);
+
   gsl_test(status, "%s toeplitz status s=%d N=%zu", desc, status, N);
 
   /* check solution against analytic */
@@ -209,7 +216,10 @@ test_random(const size_t N, const gsl_rng *r, const int compress)
   gsl_spmatrix *B;
   gsl_vector *b = gsl_vector_alloc(N);
   gsl_vector *x = gsl_vector_calloc(N);
+
+  /* these random matrices require all N iterations to converge */
   gsl_splinalg_itersolve_gmres_params params = { N };
+
   gsl_splinalg_itersolve *w = gsl_splinalg_itersolve_alloc(T, N, &params);
   const char *desc = gsl_splinalg_itersolve_name(w);
 
@@ -267,6 +277,7 @@ main()
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
   size_t n;
 
+#if 0
   test_toeplitz(7, 1.0e-1, 0);
   test_toeplitz(7, 1.0e-1, 1);
 
@@ -278,11 +289,13 @@ main()
 
   test_toeplitz(5000, 1.0e-7, 0);
   test_toeplitz(5000, 1.0e-7, 1);
+#endif
 
-  for (n = 1; n <= 100; ++n)
+  for (n = 1; n <= 10000; ++n)
     {
-      test_random(n, r, 0);
-      test_random(n, r, 1);
+      /*test_random(n, r, 0);
+      test_random(n, r, 1);*/
+      test_toeplitz(5000, 1.0e-1, 1);
     }
 
   gsl_rng_free(r);

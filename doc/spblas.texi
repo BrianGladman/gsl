@@ -33,12 +33,16 @@ matrices @var{A} and @var{B} must be in compressed format.
 @end deftypefun
 
 @node Sparse BLAS References and Further Reading
-@section Sparse BLAS References and Further Reading
+@section References and Further Reading
 @cindex sparse matrices, references
 
 The algorithms used by these functions are described in the
 following sources:
 
+@itemize @w{}
+@item
 T. A. Davis, Direct Methods for Sparse Linear Systems, SIAM, 2006.
 
-CSparse software library, https://www.cise.ufl.edu/research/sparse/CSparse/
+@item
+CSparse software library, @uref{https://www.cise.ufl.edu/research/sparse/CSparse}
+@end itemize

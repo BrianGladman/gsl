@@ -4,12 +4,8 @@
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_sparse.h>
-
-/* exact solution */
-double u_exact(const double x) { return sin(M_PI * x); }
+#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_splinalg.h>
 
 int
 main()
@@ -17,7 +13,7 @@ main()
   const size_t N = 100;                       /* number of grid points */
   const size_t n = N - 2;                     /* subtract 2 to exclude boundaries */
   const double h = 1.0 / (N - 1.0);           /* grid spacing */
-  gsl_spmatrix *T = gsl_spmatrix_alloc(n ,n); /* triplet format */
+  gsl_spmatrix *A = gsl_spmatrix_alloc(n ,n); /* triplet format */
   gsl_spmatrix *C;                            /* compressed format */
   gsl_vector *f = gsl_vector_alloc(n);        /* right hand side vector */
   gsl_vector *u = gsl_vector_alloc(n);        /* solution vector */
@@ -25,22 +21,24 @@ main()
 
   /* construct the sparse matrix for the finite difference equation */
 
-  /* loop over interior grid points */
-  for (i = 0; i < n; ++i)
+  /* construct first row */
+  gsl_spmatrix_set(A, 0, 0, -2.0);
+  gsl_spmatrix_set(A, 0, 1, 1.0);
+
+  /* construct rows [1:n-2] */
+  for (i = 1; i < n - 1; ++i)
     {
-      /* u_{i+1} term, ignore at the boundary */
-      if (i + 1 < n)
-        gsl_spmatrix_set(T, i, i + 1, 1.0);
-
-      gsl_spmatrix_set(T, i, i, -2.0);
-
-      /* u_{i-1} term, ignore at the boundary */
-      if (i > 0)
-        gsl_spmatrix_set(T, i, i - 1, 1.0);
+      gsl_spmatrix_set(A, i, i + 1, 1.0);
+      gsl_spmatrix_set(A, i, i, -2.0);
+      gsl_spmatrix_set(A, i, i - 1, 1.0);
     }
 
+  /* construct last row */
+  gsl_spmatrix_set(A, n - 1, n - 1, -2.0);
+  gsl_spmatrix_set(A, n - 1, n - 2, 1.0);
+
   /* scale by h^2 */
-  gsl_spmatrix_scale(T, 1.0 / (h * h));
+  gsl_spmatrix_scale(A, 1.0 / (h * h));
 
   /* construct right hand side vector */
   for (i = 0; i < n; ++i)
@@ -51,46 +49,50 @@ main()
     }
 
   /* convert to compressed column format */
-  C = gsl_spmatrix_compress(T);
+  C = gsl_spmatrix_compress(A);
 
-  /*
-   * At this point, C->i, C->p, C->data contain the
-   * row indices, column pointers, and matrix elements
-   * of the compressed column storage format. These 3
-   * arrays can be passed to external linear solvers.
-   *
-   * For illustration purposes, we will convert the
-   * sparse matrix to a dense gsl_matrix and complete
-   * the solution using a dense LU solver.
-   */
-
+  /* now solve the system with the GMRES iterative solver */
   {
-    gsl_matrix *A = gsl_matrix_alloc(n, n);
-    gsl_permutation *p = gsl_permutation_alloc(n);
-    int s;
+    const double tol = 1.0e-6;  /* solution relative tolerance */
+    const size_t max_iter = 10; /* maximum iterations */
+    const gsl_splinalg_itersolve_type *T = gsl_splinalg_itersolve_gmres;
+    gsl_splinalg_itersolve *work =
+      gsl_splinalg_itersolve_alloc(T, n, NULL);
+    size_t iter = 0;
+    double residual;
+    int status;
 
-    /* convert sparse to dense */
-    gsl_spmatrix_sp2d(A, T);
+    /* initial guess u = 0 */
+    gsl_vector_set_zero(u);
 
-    /* solve linear system A u = f */
-    gsl_linalg_LU_decomp(A, p, &s);
-    gsl_linalg_LU_solve(A, p, f, u);
+    /* solve the system A u = f */
+    do
+      {
+        status = gsl_splinalg_itersolve_iterate(C, f, tol, u, work);
+
+        /* print out residual norm ||A*u - f|| */
+        residual = gsl_splinalg_itersolve_residual(work);
+        fprintf(stderr, "iter %zu residual = %.12e\n", iter, residual);
+
+        if (status == GSL_SUCCESS)
+          fprintf(stderr, "Converged\n");
+      }
+    while (status == GSL_CONTINUE && ++iter < max_iter);
 
     /* output solution */
     for (i = 0; i < n; ++i)
       {
         double xi = (i + 1) * h;
-        double u_analytic = u_exact(xi);
+        double u_exact = sin(M_PI * xi);
         double u_gsl = gsl_vector_get(u, i);
 
-        printf("%f %.12e %.12e\n", xi, u_gsl, u_analytic);
+        printf("%f %.12e %.12e\n", xi, u_gsl, u_exact);
       }
 
-    gsl_matrix_free(A);
-    gsl_permutation_free(p);
+    gsl_splinalg_itersolve_free(work);
   }
 
-  gsl_spmatrix_free(T);
+  gsl_spmatrix_free(A);
   gsl_spmatrix_free(C);
   gsl_vector_free(f);
   gsl_vector_free(u);

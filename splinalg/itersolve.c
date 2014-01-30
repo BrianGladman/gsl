@@ -65,7 +65,7 @@ gsl_splinalg_itersolve_free(gsl_splinalg_itersolve *w)
 }
 
 const char *
-gsl_splinalg_itersolve_name(gsl_splinalg_itersolve *w)
+gsl_splinalg_itersolve_name(const gsl_splinalg_itersolve *w)
 {
   return w->type->name;
 }

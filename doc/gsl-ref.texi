@@ -271,6 +271,7 @@ project homepage thanks to Daisuke Tominaga.
 * Basis Splines::
 * Sparse Matrices::
 * Sparse BLAS Support::
+* Sparse Linear Algebra::
 * Physical Constants::          
 * IEEE floating-point arithmetic::  
 * Debugging Numerical Programs::  
@@ -447,11 +448,15 @@ project homepage thanks to Daisuke Tominaga.
 @chapter Sparse Matrices
 @include spmatrix.texi
 
-@node Sparse BLAS Support, Physical Constants, Sparse Matrices, Top
+@node Sparse BLAS Support, Sparse Linear Algebra, Sparse Matrices, Top
 @chapter Sparse BLAS Support
 @include spblas.texi
 
-@node Physical Constants, IEEE floating-point arithmetic, Sparse BLAS Support, Top
+@node Sparse Linear Algebra, Physical Constants, Sparse BLAS Support, Top
+@chapter Sparse Linear Algebra
+@include splinalg.texi
+
+@node Physical Constants, IEEE floating-point arithmetic, Sparse Linear Algebra, Top
 @chapter Physical Constants
 @include const.texi
 

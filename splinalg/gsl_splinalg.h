@@ -71,7 +71,7 @@ gsl_splinalg_itersolve *
 gsl_splinalg_itersolve_alloc(const gsl_splinalg_itersolve_type *T,
                              const size_t n, void *params);
 void gsl_splinalg_itersolve_free(gsl_splinalg_itersolve *w);
-const char *gsl_splinalg_itersolve_name(gsl_splinalg_itersolve *w);
+const char *gsl_splinalg_itersolve_name(const gsl_splinalg_itersolve *w);
 int gsl_splinalg_itersolve_iterate(const gsl_spmatrix *A,
                                    const gsl_vector *b,
                                    const double tol, gsl_vector *x,

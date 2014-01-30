@@ -99,7 +99,7 @@ gmres_alloc(const size_t n, void *params)
   if (gmres_params == NULL)
     state->m = GSL_MIN(n, 10);
   else
-    state->m = gmres_params->krylov_m;
+    state->m = GSL_MIN(n, gmres_params->krylov_m);
 
   state->r = gsl_vector_alloc(n);
   if (!state->r)

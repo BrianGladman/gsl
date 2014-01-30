@@ -26,8 +26,8 @@ sparse matrix functions and related declarations.
 * Finding maximum and minimum elements of sparse matrices::
 * Sparse matrix compressed format::
 * Conversion between sparse and dense matrices::
-* Examples::
-* Sparse References and Further Reading::
+* Sparse Matrix Examples::
+* Sparse Matrix References and Further Reading::
 @end menu
 
 @node Overview of Sparse Matrices
@@ -48,13 +48,6 @@ the row indices of each non-zero element. The triplet format is ideal
 for adding elements to the sparse matrix structure while it is being
 constructed, while the compressed column storage is better suited for
 matrix-matrix multiplication or linear solvers.
-
-GSL does not provide a linear sparse matrix solver for @math{A x = b},
-since this is a highly complex problem and many advanced software packages
-already exist to efficiently solve it. The routines in this section provide
-a simple interface to construct a sparse matrix and convert it to a compressed
-format, where it can easily be passed to external linear sparse matrix
-solvers.
 
 @tpindex gsl_spmatrix
 @noindent
@@ -91,6 +84,13 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 @var{work} is additional workspace needed for various operations like
 converting from triplet to compressed column storage. @var{flags} indicates
 the type of storage format being used (triplet or compressed column).
+
+@noindent
+The compressed storage format defined above makes it very simple
+to interface with sophisticated external linear solver libraries
+which accept compressed column storage input. The user can simply
+pass the arrays @var{i}, @var{p}, and @var{data} as the compressed
+column inputs to external libraries.
 
 @node Sparse matrix allocation
 @section Sparse matrix allocation
@@ -260,100 +260,21 @@ This function converts the sparse matrix @var{S} into a dense matrix and
 stores the result in @var{A}. @var{S} must be in triplet format.
 @end deftypefun
 
-@node Examples
+@node Sparse Matrix Examples
 @section Examples
 @cindex sparse matrices, examples
 
-This example program demonstrates the sparse matrix routines on the solution
-of a simple 1D Poisson equation on @math{[0,1]}:
-@tex
-\beforedisplay
-$$
-{d^2 u(x) \over dx^2} = f(x) = -\pi^2 \sin{(\pi x)}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-u''(x) = f(x) = -\pi^2 \sin(\pi x)
-@end example
-@end ifinfo
-with boundary conditions @math{u(0) = u(1) = 0}. The analytic solution of
-this simple problem is @math{u(x) = \sin{\pi x}}. We will solve this
-problem by finite differencing the left hand side to give
-@tex
-\beforedisplay
-$$
-{1 \over h^2} \left( u_{i+1} - 2 u_i + u_{i-1} \right) = f_i
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-1/h^2 ( u_(i+1) - 2 u_i + u_(i-1) ) = f_i
-@end example
-@end ifinfo
-Defining a grid of @math{N} points, @math{h = 1/(N-1)}. In the finite
-difference equation above, @math{u_0 = u_{N-1} = 0} are known from
-the boundary conditions, so we will only put the equations for
-@math{i = 1 ... N-2} into the matrix system. The resulting matrix
-equation is
-@tex
-\beforedisplay
-$$
-\left(
-\matrix{
--2 & 1 & 0 & 0 & 0 & \ldots \cr
-1 & -2 & 1 & 0 & 0 & \ldots \cr
-0 & 1 & -2 & 1 & 0 & \ldots \cr
-\vdots & \vdots & \ddots & \ddots & \ddots & \ldots \cr
-0 & \ldots & \ldots & 1 & -2 & 1 \cr
-0 & \ldots & \ldots & \ldots & 1 & -2 \cr
-}
-\right)
-\left(
-\matrix{
-u_1 \cr
-u_2 \cr
-u_3 \cr
-\vdots \cr
-u_{N-3} \cr
-u_{N-2} \cr
-}
-\right) =
-\left(
-\matrix{
-f_1 \cr
-f_2 \cr
-f_3 \cr
-\vdots \cr
-f_{N-3} \cr
-f_{N-2} \cr
-}
-\right)
-$$
-\afterdisplay
-@end tex
-An example program which constructs this system using the @code{gsl_spmatrix}
-framework is given below. The system is solved using the dense GSL LU solver.
-The program output is shown in the following plot.
-
-@page
-@iftex
-@center @image{sparse_poisson,6in}
-@end iftex
-
-@example
-@verbatiminclude examples/poisson.c
-@end example
-
-@node Sparse References and Further Reading
-@section Sparse References and Further Reading
+@node Sparse Matrix References and Further Reading
+@section References and Further Reading
 @cindex sparse matrices, references
 
 The algorithms used by these functions are described in the
 following sources:
 
+@itemize @w{}
+@item
 T. A. Davis, Direct Methods for Sparse Linear Systems, SIAM, 2006.
 
-CSparse software library, https://www.cise.ufl.edu/research/sparse/CSparse/
+@item
+CSparse software library, @uref{https://www.cise.ufl.edu/research/sparse/CSparse}
+@end itemize
