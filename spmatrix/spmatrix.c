@@ -181,7 +181,7 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
 
   m->i = (size_t *) ptr;
 
-  if (GSLSP_ISTRIPLET(m))
+  if (GSL_SPMATRIX_ISTRIPLET(m))
     {
       ptr = realloc(m->p, nzmax * sizeof(size_t));
       if (!ptr)

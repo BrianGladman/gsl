@@ -37,7 +37,7 @@ gsl_spmatrix_transpose_memcpy(const gsl_spmatrix *src)
   /* allocate space for transposed matrix */
   dest = gsl_spmatrix_alloc_nzmax(N, M, nz, src->flags);
 
-  if (GSLSP_ISTRIPLET(src))
+  if (GSL_SPMATRIX_ISTRIPLET(src))
     {
       size_t n;
 
@@ -48,7 +48,7 @@ gsl_spmatrix_transpose_memcpy(const gsl_spmatrix *src)
           dest->data[n] = src->data[n];
         }
     }
-  else if (GSLSP_ISCCS(src))
+  else if (GSL_SPMATRIX_ISCCS(src))
     {
       size_t *Ai = src->i;
       size_t *Ap = src->p;

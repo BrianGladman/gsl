@@ -50,7 +50,7 @@ gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b)
       if (nz != b->nz)
         return 0; /* different number of non-zero elements */
 
-      if (GSLSP_ISTRIPLET(a))
+      if (GSL_SPMATRIX_ISTRIPLET(a))
         {
           /*
            * triplet formats could be out of order but identical, so use
@@ -64,7 +64,7 @@ gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b)
                 return 0;
             }
         }
-      else if (GSLSP_ISCCS(a))
+      else if (GSL_SPMATRIX_ISCCS(a))
         {
           /*
            * for compressed column, both matrices should have everything

@@ -82,8 +82,8 @@ typedef struct
 #define GSL_SPMATRIX_TRIPLET      (1 << 0)
 #define GSL_SPMATRIX_CCS          (1 << 1)
 
-#define GSLSP_ISTRIPLET(m)        ((m)->flags & GSL_SPMATRIX_TRIPLET)
-#define GSLSP_ISCCS(m)            ((m)->flags & GSL_SPMATRIX_CCS)
+#define GSL_SPMATRIX_ISTRIPLET(m) ((m)->flags & GSL_SPMATRIX_TRIPLET)
+#define GSL_SPMATRIX_ISCCS(m)     ((m)->flags & GSL_SPMATRIX_CCS)
 
 /*
  * Prototypes

@@ -170,6 +170,8 @@ the method has converged, the function returns @code{GSL_SUCCESS} and
 the final solution is provided in @var{x}. Otherwise, the function
 returns @code{GSL_CONTINUE} to signal that more iterations are
 required. Here, @math{|| \cdot ||} represents the Euclidean norm.
+The input matrix @var{A} may be in triplet or compressed column
+format.
 @end deftypefun
 
 @deftypefun double gsl_splinalg_itersolve_normr (const gsl_splinalg_itersolve *@var{w})

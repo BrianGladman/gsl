@@ -41,7 +41,7 @@ gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)
       const size_t *mi = m->i;
       const size_t *mp = m->p;
 
-      if (GSLSP_ISTRIPLET(m))
+      if (GSL_SPMATRIX_ISTRIPLET(m))
         {
           size_t n;
           for (n = 0; n < m->nz; ++n)
@@ -50,7 +50,7 @@ gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)
                 return m->data[n];
             }
         }
-      else if (GSLSP_ISCCS(m))
+      else if (GSL_SPMATRIX_ISCCS(m))
         {
           size_t p;
 

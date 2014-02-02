@@ -34,7 +34,7 @@ gsl_spmatrix_memcpy(const gsl_spmatrix *src)
     return NULL;
 
   /* copy indices and data to dest */
-  if (GSLSP_ISTRIPLET(src))
+  if (GSL_SPMATRIX_ISTRIPLET(src))
     {
       for (n = 0; n < src->nz; ++n)
         {
@@ -43,7 +43,7 @@ gsl_spmatrix_memcpy(const gsl_spmatrix *src)
           dest->data[n] = src->data[n];
         }
     }
-  else if (GSLSP_ISCCS(src))
+  else if (GSL_SPMATRIX_ISCCS(src))
     {
       for (n = 0; n < src->nz; ++n)
         {
