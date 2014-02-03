@@ -264,6 +264,65 @@ stores the result in @var{A}. @var{S} must be in triplet format.
 @section Examples
 @cindex sparse matrices, examples
 
+The following example program builds a 5-by-4 sparse matrix
+and prints it in triplet and compressed column format. The
+matrix which is constructed is
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+0 & 0 & 3.1 & 4.6 \cr
+1 & 0 & 7.2 & 0 \cr
+0 & 0 & 0 & 0 \cr
+2.1 & 2.9 & 0 & 8.5 \cr
+4.1 & 0 & 0 & 0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+The output of the program is
+
+@example
+printing all matrix elements:
+A(0,0) = 0
+A(0,1) = 0
+A(0,2) = 3.1
+A(0,3) = 4.6
+A(1,0) = 1
+.
+.
+.
+A(4,0) = 4.1
+A(4,1) = 0
+A(4,2) = 0
+A(4,3) = 0
+matrix in triplet format (i,j,Aij):
+(0, 2, 3.1)
+(0, 3, 4.6)
+(1, 0, 1.0)
+(1, 2, 7.2)
+(3, 0, 2.1)
+(3, 1, 2.9)
+(3, 3, 8.5)
+(4, 0, 4.1)
+matrix in compressed column format:
+i = [ 1, 3, 4, 3, 0, 1, 0, 3, ]
+p = [ 0, 3, 4, 6, 8, ]
+d = [ 1, 2.1, 4.1, 2.9, 3.1, 7.2, 4.6, 8.5, ]
+@end example
+@noindent
+We see in the compressed column output, the data array stores
+each column contiguously, the array @math{i} stores
+the row index of the corresponding data element, and the
+array @math{p} stores the index of the start of each column in the
+data array.
+
+@example
+@verbatiminclude examples/spmatrix.c
+@end example
+
 @node Sparse Matrix References and Further Reading
 @section References and Further Reading
 @cindex sparse matrices, references

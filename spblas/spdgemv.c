@@ -30,7 +30,7 @@
 
 /*
 gsl_spblas_dgemv()
-  Multiply a sparse matrix and a vector:
+  Multiply a sparse matrix and a vector
 
 Inputs: alpha - scalar factor
         A     - sparse matrix
