@@ -19,10 +19,12 @@ sparse BLAS functions and related declarations.
 @section Sparse BLAS operations
 @cindex sparse matrices, BLAS operations
 
-@deftypefun int gsl_spblas_dgemv (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_vector * @var{x}, const double @var{beta}, gsl_vector * @var{y})
+@deftypefun int gsl_spblas_dgemv (const CBLAS_TRANSPOSE_t TransA, const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_vector * @var{x}, const double @var{beta}, gsl_vector * @var{y})
 This function computes the matrix-vector product and sum
-@math{y \leftarrow \alpha A x + \beta y}, where @var{A} is sparse and the vectors @var{x}
-and @var{y} are dense. The matrix @var{A} may be in triplet or compressed format.
+@math{y \leftarrow \alpha op(A) x + \beta y}, where
+@math{op(A) = A}, @math{A^T} for @var{TransA} = @code{CblasNoTrans},
+@code{CblasTrans}.
+The matrix @var{A} may be in triplet or compressed format.
 @end deftypefun
 
 @deftypefun {gsl_spmatrix *} gsl_spblas_dgemm (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_spmatrix * @var{B})

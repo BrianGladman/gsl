@@ -25,6 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_blas.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -42,8 +43,9 @@ __BEGIN_DECLS
  * Prototypes
  */
 
-int gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
-                     const gsl_vector *x, const double beta, gsl_vector *y);
+int gsl_spblas_dgemv(const CBLAS_TRANSPOSE_t TransA, const double alpha,
+                     const gsl_spmatrix *A, const gsl_vector *x,
+                     const double beta, gsl_vector *y);
 gsl_spmatrix *gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
                                const gsl_spmatrix *B);
 size_t gsl_spblas_scatter(const gsl_spmatrix *A, const size_t j,

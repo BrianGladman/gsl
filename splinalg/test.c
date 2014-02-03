@@ -183,7 +183,7 @@ test_poisson(const size_t N, const double epsrel, const int compress)
     double normr, normb;
 
     gsl_vector_memcpy(r, b);
-    gsl_spblas_dgemv(-1.0, A, u, 1.0, r);
+    gsl_spblas_dgemv(CblasNoTrans, -1.0, A, u, 1.0, r);
 
     normr = gsl_blas_dnrm2(r);
     normb = gsl_blas_dnrm2(b);
@@ -272,7 +272,7 @@ test_toeplitz(const size_t N, const double a, const double b,
     double normr, normb;
 
     gsl_vector_memcpy(r, rhs);
-    gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+    gsl_spblas_dgemv(CblasNoTrans, -1.0, A, x, 1.0, r);
 
     normr = gsl_blas_dnrm2(r);
     normb = gsl_blas_dnrm2(rhs);
@@ -322,7 +322,7 @@ test_random(const size_t N, const gsl_rng *r, const int compress)
     double normr, normb;
 
     gsl_vector_memcpy(res, b);
-    gsl_spblas_dgemv(-1.0, A, x, 1.0, res);
+    gsl_spblas_dgemv(CblasNoTrans, -1.0, A, x, 1.0, res);
 
     normr = gsl_blas_dnrm2(res);
     normb = gsl_blas_dnrm2(b);

@@ -26,10 +26,11 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_spblas.h>
+#include <gsl/gsl_blas.h>
 
 /*
 gsl_spblas_dgemv()
-  Multiply a sparse matrix and a vector
+  Multiply a sparse matrix and a vector:
 
 Inputs: alpha - scalar factor
         A     - sparse matrix
@@ -37,21 +38,24 @@ Inputs: alpha - scalar factor
         beta  - scalar factor
         y     - (input/output) dense vector
 
-Return: y = alpha*A*x + beta*y
+Return: y = alpha*op(A)*x + beta*y
 */
 
 int
-gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
-                 const gsl_vector *x, const double beta, gsl_vector *y)
+gsl_spblas_dgemv(const CBLAS_TRANSPOSE_t TransA, const double alpha,
+                 const gsl_spmatrix *A, const gsl_vector *x,
+                 const double beta, gsl_vector *y)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
 
-  if (N != x->size)
+  if ((TransA == CblasNoTrans && N != x->size) ||
+      (TransA == CblasTrans && M != x->size))
     {
       GSL_ERROR("invalid length of x vector", GSL_EBADLEN);
     }
-  else if (M != y->size)
+  else if ((TransA == CblasNoTrans && M != y->size) ||
+           (TransA == CblasTrans && N != y->size))
     {
       GSL_ERROR("invalid length of y vector", GSL_EBADLEN);
     }
@@ -59,9 +63,21 @@ gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
     {
       size_t j, p;
       size_t incX, incY;
+      size_t lenX, lenY;
       double *X, *Y;
       double *Ad;
       size_t *Ap, *Ai, *Aj;
+
+      if (TransA == CblasNoTrans)
+        {
+          lenX = N;
+          lenY = M;
+        }
+      else
+        {
+          lenX = M;
+          lenY = N;
+        }
 
       /* form y := beta*y */
 
@@ -71,7 +87,7 @@ gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
       if (beta == 0.0)
         {
           size_t jy = 0;
-          for (j = 0; j < M; ++j)
+          for (j = 0; j < lenY; ++j)
             {
               Y[jy] = 0.0;
               jy += incY;
@@ -80,7 +96,7 @@ gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
       else if (beta != 1.0)
         {
           size_t jy = 0;
-          for (j = 0; j < M; ++j)
+          for (j = 0; j < lenY; ++j)
             {
               Y[jy] *= beta;
               jy += incY;
@@ -99,18 +115,40 @@ gsl_spblas_dgemv(const double alpha, const gsl_spmatrix *A,
       if (GSL_SPMATRIX_ISCCS(A))
         {
           Ai = A->i;
-          for (j = 0; j < N; ++j)
+
+          if (TransA == CblasNoTrans)
             {
-              for (p = Ap[j]; p < Ap[j + 1]; ++p)
+              for (j = 0; j < lenX; ++j)
                 {
-                  Y[Ai[p] * incY] += alpha * Ad[p] * X[j * incX];
+                  for (p = Ap[j]; p < Ap[j + 1]; ++p)
+                    {
+                      Y[Ai[p] * incY] += alpha * Ad[p] * X[j * incX];
+                    }
+                }
+            }
+          else
+            {
+              for (j = 0; j < lenY; ++j)
+                {
+                  for (p = Ap[j]; p < Ap[j + 1]; ++p)
+                    {
+                      Y[j * incY] += alpha * Ad[p] * X[Ai[p] * incX];
+                    }
                 }
             }
         }
       else if (A->flags & GSL_SPMATRIX_TRIPLET)
         {
-          Ai = A->i;
-          Aj = A->p;
+          if (TransA == CblasNoTrans)
+            {
+              Ai = A->i;
+              Aj = A->p;
+            }
+          else
+            {
+              Ai = A->p;
+              Aj = A->i;
+            }
 
           for (p = 0; p < A->nz; ++p)
             {

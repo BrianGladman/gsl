@@ -66,8 +66,9 @@ sparse linear systems involve projecting an approximate solution for
 subspace @math{{\cal K}} as the subspace of approximations to the solution
 @var{x}, then @math{m} constraints must be imposed to determine
 the next approximation. These @math{m} constraints define another
-@math{m}-dimensional subspace denoted by @math{{\cal L}}. @math{m} is
-typically chosen as @math{m << n} to reduce the computational
+@math{m}-dimensional subspace denoted by @math{{\cal L}}. The
+subspace dimension @math{m} is typically chosen to be much smaller than
+@math{n} in order to reduce the computational
 effort needed to generate the next approximate solution vector.
 The many iterative algorithms which exist differ mainly
 in their choice of @math{{\cal K}} and @math{{\cal L}}.
@@ -184,8 +185,8 @@ This function returns the current residual norm
 @section Examples
 @cindex sparse linear algebra, examples
 
-This example program demonstrates the sparse matrix routines on the solution
-of a simple 1D Poisson equation on @math{[0,1]}:
+This example program demonstrates the sparse linear algebra routines on
+the solution of a simple 1D Poisson equation on @math{[0,1]}:
 @tex
 \beforedisplay
 $$

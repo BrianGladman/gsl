@@ -250,7 +250,7 @@ gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
 
       /* Step 1a: compute r = b - A*x_0 */
       gsl_vector_memcpy(r, b);
-      gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+      gsl_spblas_dgemv(CblasNoTrans, -1.0, A, x, 1.0, r);
 
       /* Step 1b */
       gsl_vector_memcpy(&h0.vector, r);
@@ -296,7 +296,7 @@ gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
             }
 
           /* Step 2a: v_m <- A*v_m */
-          gsl_spblas_dgemv(1.0, A, &vm.vector, 0.0, r);
+          gsl_spblas_dgemv(CblasNoTrans, 1.0, A, &vm.vector, 0.0, r);
           gsl_vector_memcpy(&vm.vector, r);
 
           /* Step 2a: v_m <- P_m ... P_1 v_m */
@@ -400,7 +400,7 @@ gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
 
       /* compute new residual r = b - A*x */
       gsl_vector_memcpy(r, b);
-      gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+      gsl_spblas_dgemv(CblasNoTrans, -1.0, A, x, 1.0, r);
       normr = gsl_blas_dnrm2(r);
 
       if (normr <= reltol)
