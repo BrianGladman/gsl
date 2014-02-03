@@ -233,7 +233,7 @@ test_toeplitz(const size_t N, const double a, const double b,
 
   A = gsl_spmatrix_alloc(N ,N);
   rhs = gsl_vector_alloc(N);
-  x = gsl_vector_alloc(N);
+  x = gsl_vector_calloc(N);
   w = gsl_splinalg_itersolve_alloc(T, N, 0);
   desc = gsl_splinalg_itersolve_name(w);
 
