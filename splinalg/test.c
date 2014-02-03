@@ -101,12 +101,12 @@ create_random_vector(gsl_vector *v, const gsl_rng *r)
 } /* create_random_vector() */
 
 /*
-test_toeplitz()
+test_poisson()
   Solve u''(x) = -pi^2 sin(pi*x), u(x) = sin(pi*x)
   epsrel is the relative error threshold with the exact solution
 */
 static void
-test_toeplitz(const size_t N, const double epsrel, const int compress)
+test_poisson(const size_t N, const double epsrel, const int compress)
 {
   const gsl_splinalg_itersolve_type *T = gsl_splinalg_itersolve_gmres;
   const size_t n = N - 2;                     /* subtract 2 to exclude boundaries */
@@ -164,7 +164,7 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
     }
   while (status == GSL_CONTINUE && ++iter < max_iter);
 
-  gsl_test(status, "%s toeplitz status s=%d N=%zu", desc, status, N);
+  gsl_test(status, "%s poisson status s=%d N=%zu", desc, status, N);
 
   /* check solution against analytic */
   for (i = 0; i < n; ++i)
@@ -173,7 +173,7 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
       double u_gsl = gsl_vector_get(u, i);
       double u_exact = sin(M_PI * xi);
 
-      gsl_test_rel(u_gsl, u_exact, epsrel, "%s toeplitz N=%zu i=%zu",
+      gsl_test_rel(u_gsl, u_exact, epsrel, "%s poisson N=%zu i=%zu",
                    desc, N, i);
     }
 
@@ -189,7 +189,7 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
     normb = gsl_blas_dnrm2(b);
 
     status = (normr <= tol*normb) != 1;
-    gsl_test(status, "%s toeplitz residual N=%zu normr=%.12e normb=%.12e",
+    gsl_test(status, "%s poisson residual N=%zu normr=%.12e normb=%.12e",
              desc, N, normr, normb);
 
     gsl_vector_free(r);
@@ -202,6 +202,92 @@ test_toeplitz(const size_t N, const double epsrel, const int compress)
 
   if (compress)
     gsl_spmatrix_free(B);
+} /* test_poisson() */
+
+/*
+test_toeplitz()
+  Test Toeplitz matrix T = A + B + C where:
+A = diag(a,-1)
+B = diag(b)
+C = diag(c,1)
+
+rhs = ones(n,1)
+*/
+
+static void
+test_toeplitz(const size_t N, const double a, const double b,
+              const double c)
+{
+  int status;
+  const double tol = 1.0e-10;
+  const size_t max_iter = 10;
+  const gsl_splinalg_itersolve_type *T = gsl_splinalg_itersolve_gmres;
+  const char *desc;
+  gsl_spmatrix *A;
+  gsl_vector *rhs, *x;
+  gsl_splinalg_itersolve *w;
+  size_t i, iter = 0;
+
+  if (N <= 1)
+    return;
+
+  A = gsl_spmatrix_alloc(N ,N);
+  rhs = gsl_vector_alloc(N);
+  x = gsl_vector_alloc(N);
+  w = gsl_splinalg_itersolve_alloc(T, N, 0);
+  desc = gsl_splinalg_itersolve_name(w);
+
+  /* first row */
+  gsl_spmatrix_set(A, 0, 0, b);
+  gsl_spmatrix_set(A, 0, 1, c);
+
+  /* interior rows */
+  for (i = 1; i < N - 1; ++i)
+    {
+      gsl_spmatrix_set(A, i, i - 1, a);
+      gsl_spmatrix_set(A, i, i, b);
+      gsl_spmatrix_set(A, i, i + 1, c);
+    }
+
+  /* last row */
+  gsl_spmatrix_set(A, N - 1, N - 2, a);
+  gsl_spmatrix_set(A, N - 1, N - 1, b);
+
+  /* set rhs vector */
+  gsl_vector_set_all(rhs, 1.0);
+
+  /* solve the system */
+  do
+    {
+      status = gsl_splinalg_itersolve_iterate(A, rhs, tol, x, w);
+    }
+  while (status == GSL_CONTINUE && ++iter < max_iter);
+
+  gsl_test(status, "%s toeplitz status s=%d N=%zu a=%f b=%f c=%f",
+           desc, status, N, a, b, c);
+
+  /* check that the residual satisfies ||r|| <= tol*||b|| */
+  {
+    gsl_vector *r = gsl_vector_alloc(N);
+    double normr, normb;
+
+    gsl_vector_memcpy(r, rhs);
+    gsl_spblas_dgemv(-1.0, A, x, 1.0, r);
+
+    normr = gsl_blas_dnrm2(r);
+    normb = gsl_blas_dnrm2(rhs);
+
+    status = (normr <= tol*normb) != 1;
+    gsl_test(status, "%s toeplitz residual N=%zu a=%f b=%f c=%f normr=%.12e normb=%.12e",
+             desc, N, a, b, c, normr, normb);
+
+    gsl_vector_free(r);
+  }
+
+  gsl_vector_free(x);
+  gsl_vector_free(rhs);
+  gsl_spmatrix_free(A);
+  gsl_splinalg_itersolve_free(w);
 } /* test_toeplitz() */
 
 static void
@@ -263,17 +349,22 @@ main()
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
   size_t n;
 
-  test_toeplitz(7, 1.0e-1, 0);
-  test_toeplitz(7, 1.0e-1, 1);
+  test_poisson(7, 1.0e-1, 0);
+  test_poisson(7, 1.0e-1, 1);
 
-  test_toeplitz(543, 1.0e-5, 0);
-  test_toeplitz(543, 1.0e-5, 1);
+  test_poisson(543, 1.0e-5, 0);
+  test_poisson(543, 1.0e-5, 1);
 
-  test_toeplitz(1000, 1.0e-6, 0);
-  test_toeplitz(1000, 1.0e-6, 1);
+  test_poisson(1000, 1.0e-6, 0);
+  test_poisson(1000, 1.0e-6, 1);
 
-  test_toeplitz(5000, 1.0e-7, 0);
-  test_toeplitz(5000, 1.0e-7, 1);
+  test_poisson(5000, 1.0e-7, 0);
+  test_poisson(5000, 1.0e-7, 1);
+
+  test_toeplitz(15, 0.01, 1.0, 0.01);
+  test_toeplitz(15, 1.0, 1.0, 0.01);
+  test_toeplitz(50, 1.0, 2.0, 0.01);
+  test_toeplitz(1000, 0.5, 1.0, 0.01);
 
   for (n = 1; n <= 100; ++n)
     {
