@@ -24,6 +24,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_linalg.h>
 #include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS

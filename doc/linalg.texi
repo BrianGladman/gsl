@@ -24,6 +24,7 @@ The functions described in this chapter are declared in the header file
 * Hessenberg Decomposition of Real Matrices::
 * Hessenberg-Triangular Decomposition of Real Matrices::
 * Bidiagonalization::           
+* Givens Rotations::  
 * Householder Transformations::  
 * Householder solver for linear systems::  
 * Tridiagonal Systems::         
@@ -829,6 +830,84 @@ is stored in-place in @var{A}.
 This function unpacks the diagonal and superdiagonal of the bidiagonal
 decomposition of @var{A} from @code{gsl_linalg_bidiag_decomp}, into
 the diagonal vector @var{diag} and superdiagonal vector @var{superdiag}.
+@end deftypefun
+
+@node Givens Rotations
+@section Givens Rotations
+@cindex Givens rotation
+
+A Givens rotation is a rotation in the plane acting on two elements
+of a given vector. It can be represented in matrix form as
+@tex
+\beforedisplay
+$$
+G(i,j,\theta) =
+\left(
+\matrix{
+1 & \ldots & 0 & \ldots & 0 & \ldots & 0 \cr
+\vdots & \ddots & \vdots &  & \vdots & & \vdots \cr
+0 & \ldots & \cos{\theta} & \ldots & -\sin{\theta} & \ldots & 0 \cr
+\vdots &  & \vdots & \ddots & \vdots & & \vdots \cr
+0 & \ldots & \sin{\theta} & \ldots & \cos{\theta} & \ldots & 0 \cr
+\vdots &  & \vdots &  & \vdots & \ddots & \vdots \cr
+0 & \ldots & 0 & \ldots & 0 & \ldots & 1 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+@end example
+@end ifinfo
+where the @math{\cos{\theta}} and @math{\sin{\theta}} appear at
+the intersection of the @math{i}th and @math{j}th rows and columns.
+When acting on a vector @math{x}, @math{G(i,j,\theta) x} performs
+a rotation of the @math{(i,j)} elements of @math{x}. Givens
+rotations are typically used to introduce zeros in
+vectors, such as during the QR decomposition of a matrix. In this
+case, it is typically desired to find @math{c} and @math{s} such that
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+c & -s \cr
+s & c
+}
+\right)
+\left(
+\matrix{
+a \cr
+b
+}
+\right) =
+\left(
+\matrix{
+r \cr
+0
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+@end example
+@end ifinfo
+with @math{r = \sqrt{a^2 + b^2}}.
+
+@deftypefun void gsl_linalg_givens (const double @var{a}, const double @var{b}, double * @var{c}, double * @var{s})
+This function computes @math{c = \cos{\theta}} and @math{s = \sin{\theta}}
+so that the Givens matrix @math{G(\theta)} acting on the
+vector @math{(a,b)} produces @math{(r, 0)}, with @math{r = \sqrt{a^2 + b^2}}.
+@end deftypefun
+
+@deftypefun void gsl_linalg_givens_gv (gsl_vector * @var{v}, const size_t @var{i}, const size_t @var{j}, const double @var{c}, const double @var{s})
+This function applies the Givens rotation defined by
+@math{c = \cos{\theta}} and @math{s = \sin{\theta}} to the @var{i}
+and @var{j} elements of @var{v}. On output,
+@math{(v(i),v(j)) \leftarrow G(\theta) (v(i),v(j))}.
 @end deftypefun
 
 @node Householder Transformations

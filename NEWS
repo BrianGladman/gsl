@@ -1,5 +1,11 @@
 * What is new in gsl-2.0:
 
+** added support for sparse matrices, including a GMRES
+   iterative linear solver
+
+** added routines gsl_linalg_givens and gsl_linalg_givens_gv
+   for Givens rotations
+
 ** added ridge (Tikhonov) regularization to least squares module
 
 ** removed unused argument 'n' from gsl_sf_ellint_D

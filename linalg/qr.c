@@ -22,14 +22,12 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gsl/gsl_linalg.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 
-#include <gsl/gsl_linalg.h>
-
-#include "givens.c"
 #include "apply_givens.c"
 
 /* Factorise a general M x N matrix A into
@@ -534,8 +532,8 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
           double wk = gsl_vector_get (w, k);
           double wkm1 = gsl_vector_get (w, k - 1);
 
-          create_givens (wkm1, wk, &c, &s);
-          apply_givens_vec (w, k - 1, k, c, s);
+          gsl_linalg_givens (wkm1, wk, &c, &s);
+          gsl_linalg_givens_gv (w, k - 1, k, c, s);
           apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
         }
 
@@ -559,7 +557,7 @@ gsl_linalg_QR_update (gsl_matrix * Q, gsl_matrix * R,
           double diag = gsl_matrix_get (R, k - 1, k - 1);
           double offdiag = gsl_matrix_get (R, k, k - 1);
 
-          create_givens (diag, offdiag, &c, &s);
+          gsl_linalg_givens (diag, offdiag, &c, &s);
           apply_givens_qr (M, N, Q, R, k - 1, k, c, s);
 
           gsl_matrix_set (R, k, k - 1, 0.0);    /* exact zero of G^T */

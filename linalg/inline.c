@@ -1,6 +1,6 @@
-/* linalg/givens.c
+/* linalg/inline.c
  * 
- * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough
+ * Copyright (C) 2014 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* Generate a Givens rotation (cos,sin) which takes v=(x,y) to (|v|,0) 
+#include <config.h>
+#include <gsl/gsl_mode.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
 
-   From Golub and Van Loan, "Matrix Computations", Section 5.1.8 */
+/* Compile all the inline functions */
 
-inline static void
-create_givens (const double a, const double b, double *c, double *s)
-{
-  if (b == 0)
-    {
-      *c = 1;
-      *s = 0;
-    }
-  else if (fabs (b) > fabs (a))
-    {
-      double t = -a / b;
-      double s1 = 1.0 / sqrt (1 + t * t);
-      *s = s1;
-      *c = s1 * t;
-    }
-  else
-    {
-      double t = -b / a;
-      double c1 = 1.0 / sqrt (1 + t * t);
-      *c = c1;
-      *s = c1 * t;
-    }
-}
+#define COMPILE_INLINE_STATIC
+#include "build.h"
+#include <gsl/gsl_linalg.h>
+

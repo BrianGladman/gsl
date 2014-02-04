@@ -28,9 +28,6 @@
 #include <gsl/gsl_spblas.h>
 #include <gsl/gsl_splinalg.h>
 
-#include "../linalg/givens.c"
-#include "../linalg/apply_givens.c"
-
 /*
  * The code in this module is based on the Householder GMRES
  * algorithm described in
@@ -320,24 +317,27 @@ gmres_iterate(const gsl_spmatrix *A, const gsl_vector *b,
 
           /* Step 2e: v_m <- J_{m-1} ... J_1 v_m */
           for (k = 0; k < j; ++k)
-            apply_givens_vec(&vm.vector, k, k + 1, state->c[k], state->s[k]);
+            {
+              gsl_linalg_givens_gv(&vm.vector, k, k + 1,
+                                   state->c[k], state->s[k]);
+            }
 
           if (m < N)
             {
               /* Step 2g: find givens rotation J_m for v_m(m:m+1) */
-              create_givens(gsl_vector_get(&vm.vector, j),
-                            gsl_vector_get(&vm.vector, j + 1),
-                            &c, &s);
+              gsl_linalg_givens(gsl_vector_get(&vm.vector, j),
+                                gsl_vector_get(&vm.vector, j + 1),
+                                &c, &s);
 
               /* store givens rotation for later use */
               state->c[j] = c;
               state->s[j] = s;
 
               /* Step 2h: v_m <- J_m v_m */
-              apply_givens_vec(&vm.vector, j, j + 1, c, s);
+              gsl_linalg_givens_gv(&vm.vector, j, j + 1, c, s);
 
               /* Step 2h: w <- J_m w */
-              apply_givens_vec(w, j, j + 1, c, s);
+              gsl_linalg_givens_gv(w, j, j + 1, c, s);
             }
 
           /*
