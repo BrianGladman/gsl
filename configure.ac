@@ -564,5 +564,62 @@ AH_VERBATIM([GSL_DISABLE_DEPRECATED],
 #define GSL_DISABLE_DEPRECATED 1])
 
 dnl
-AC_CONFIG_FILES([gsl_version.h gsl.spec gsl/Makefile test/Makefile err/Makefile sys/Makefile utils/Makefile const/Makefile min/Makefile multimin/Makefile ieee-utils/Makefile fft/Makefile specfunc/Makefile dht/Makefile fit/Makefile multifit/Makefile bspline/Makefile statistics/Makefile sum/Makefile roots/Makefile multiroots/Makefile ntuple/Makefile poly/Makefile qrng/Makefile rng/Makefile randist/Makefile siman/Makefile integration/Makefile interpolation/Makefile doc/Makefile block/Makefile vector/Makefile matrix/Makefile histogram/Makefile monte/Makefile ode-initval/Makefile ode-initval2/Makefile cblas/Makefile blas/Makefile linalg/Makefile eigen/Makefile permutation/Makefile combination/Makefile multiset/Makefile sort/Makefile complex/Makefile diff/Makefile deriv/Makefile cheb/Makefile cdf/Makefile wavelet/Makefile Makefile])
+AC_CONFIG_FILES([      \
+Makefile               \
+gsl_version.h          \
+gsl.spec               \
+blas/Makefile          \
+block/Makefile         \
+bspline/Makefile       \
+cblas/Makefile         \
+cdf/Makefile           \
+cheb/Makefile          \
+combination/Makefile   \
+complex/Makefile       \
+const/Makefile         \
+deriv/Makefile         \
+dht/Makefile           \
+diff/Makefile          \
+doc/Makefile           \
+eigen/Makefile         \
+err/Makefile           \
+fit/Makefile           \
+fft/Makefile           \
+gsl/Makefile           \
+histogram/Makefile     \
+ieee-utils/Makefile    \
+integration/Makefile   \
+interpolation/Makefile \
+linalg/Makefile        \
+matrix/Makefile        \
+min/Makefile           \
+monte/Makefile         \
+multifit/Makefile      \
+multimin/Makefile      \
+multiroots/Makefile    \
+multiset/Makefile      \
+ntuple/Makefile        \
+ode-initval/Makefile   \
+ode-initval2/Makefile  \
+permutation/Makefile   \
+poly/Makefile          \
+qrng/Makefile          \
+randist/Makefile       \
+rng/Makefile           \
+roots/Makefile         \
+siman/Makefile         \
+sort/Makefile          \
+spblas/Makefile        \
+splinalg/Makefile      \
+spmatrix/Makefile      \
+specfunc/Makefile      \
+statistics/Makefile    \
+sum/Makefile           \
+sys/Makefile           \
+test/Makefile          \
+utils/Makefile         \
+vector/Makefile        \
+wavelet/Makefile       \
+])
+
 AC_OUTPUT
