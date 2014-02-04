@@ -23,45 +23,63 @@
 #include <gsl/gsl_spmatrix.h>
 #include <gsl/gsl_errno.h>
 
-gsl_spmatrix *
-gsl_spmatrix_memcpy(const gsl_spmatrix *src)
+int
+gsl_spmatrix_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
 {
-  gsl_spmatrix *dest;
-  size_t n;
+  const size_t M = src->size1;
+  const size_t N = src->size2;
 
-  dest = gsl_spmatrix_alloc_nzmax(src->size1, src->size2, src->nz, src->flags);
-  if (!dest)
-    return NULL;
-
-  /* copy indices and data to dest */
-  if (GSL_SPMATRIX_ISTRIPLET(src))
+  if (M != dest->size1 || N != dest->size2)
     {
-      for (n = 0; n < src->nz; ++n)
-        {
-          dest->i[n] = src->i[n];
-          dest->p[n] = src->p[n];
-          dest->data[n] = src->data[n];
-        }
+      GSL_ERROR("matrix sizes are different", GSL_EBADLEN);
     }
-  else if (GSL_SPMATRIX_ISCCS(src))
+  else if (dest->sptype != src->sptype)
     {
-      for (n = 0; n < src->nz; ++n)
-        {
-          dest->i[n] = src->i[n];
-          dest->data[n] = src->data[n];
-        }
-
-      for (n = 0; n < src->size2 + 1; ++n)
-        {
-          dest->p[n] = src->p[n];
-        }
+      GSL_ERROR("cannot copy matrices of different storage formats",
+                GSL_EINVAL);
     }
   else
     {
-      GSL_ERROR_NULL("invalid matrix type for src", GSL_EINVAL);
+      int s = GSL_SUCCESS;
+      size_t n;
+
+      if (dest->nzmax < src->nz)
+        {
+          s = gsl_spmatrix_realloc(src->nz, dest);
+          if (s)
+            return s;
+        }
+
+      /* copy indices and data to dest */
+      if (GSL_SPMATRIX_ISTRIPLET(src))
+        {
+          for (n = 0; n < src->nz; ++n)
+            {
+              dest->i[n] = src->i[n];
+              dest->p[n] = src->p[n];
+              dest->data[n] = src->data[n];
+            }
+        }
+      else if (GSL_SPMATRIX_ISCCS(src))
+        {
+          for (n = 0; n < src->nz; ++n)
+            {
+              dest->i[n] = src->i[n];
+              dest->data[n] = src->data[n];
+            }
+
+          for (n = 0; n < src->size2 + 1; ++n)
+            {
+              dest->p[n] = src->p[n];
+            }
+        }
+      else
+        {
+          GSL_ERROR("invalid matrix type for src", GSL_EINVAL);
+        }
+
+      dest->nz = src->nz;
+
+      return s;
     }
-
-  dest->nz = src->nz;
-
-  return dest;
 } /* gsl_spmatrix_memcpy() */

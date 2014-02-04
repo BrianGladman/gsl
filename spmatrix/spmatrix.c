@@ -52,10 +52,10 @@ gsl_spmatrix_alloc(const size_t n1, const size_t n2)
 gsl_spmatrix_alloc_nzmax()
   Allocate a sparse matrix with given nzmax
 
-Inputs: n1    - number of rows
-        n2    - number of columns
-        nzmax - maximum number of matrix elements
-        flags - type of matrix (triplet, compressed column)
+Inputs: n1     - number of rows
+        n2     - number of columns
+        nzmax  - maximum number of matrix elements
+        sptype - type of matrix (triplet, compressed column)
 
 Notes: if (n1,n2) are not known at allocation time, they can each be
 set to 1, and they will be expanded as elements are added to the matrix
@@ -63,7 +63,7 @@ set to 1, and they will be expanded as elements are added to the matrix
 
 gsl_spmatrix *
 gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
-                         const size_t nzmax, const size_t flags)
+                         const size_t nzmax, const size_t sptype)
 {
   gsl_spmatrix *m;
 
@@ -89,7 +89,7 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
   m->size2 = n2;
   m->nz = 0;
   m->nzmax = GSL_MAX(nzmax, 1);
-  m->flags = flags;
+  m->sptype = sptype;
 
   m->i = malloc(m->nzmax * sizeof(size_t));
   if (!m->i)
@@ -99,7 +99,7 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
                     GSL_ENOMEM, 0);
     }
 
-  if (flags == GSL_SPMATRIX_TRIPLET)
+  if (sptype == GSL_SPMATRIX_TRIPLET)
     {
       m->p = malloc(m->nzmax * sizeof(size_t));
       if (!m->p)
@@ -109,7 +109,7 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
                         GSL_ENOMEM, 0);
         }
     }
-  else if (flags == GSL_SPMATRIX_CCS)
+  else if (sptype == GSL_SPMATRIX_CCS)
     {
       m->p = malloc((n2 + 1) * sizeof(size_t));
       m->work = malloc(GSL_MAX(n1, n2) * sizeof(size_t));

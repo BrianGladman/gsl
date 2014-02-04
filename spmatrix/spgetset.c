@@ -85,7 +85,7 @@ int
 gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
                  const double x)
 {
-  if (!(m->flags & GSL_SPMATRIX_TRIPLET))
+  if (!GSL_SPMATRIX_ISTRIPLET(m))
     {
       GSL_ERROR("matrix not in triplet representation", GSL_EINVAL);
     }

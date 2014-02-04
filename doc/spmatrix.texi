@@ -130,7 +130,7 @@ format of the sparse matrix. Possible values are
 @item GSL_SPMATRIX_TRIPLET
 This flag specifies triplet storage.
 
-@item GSL_SPMATRIX_COMPCOL
+@item GSL_SPMATRIX_CCS
 This flag specifies compressed column storage.
 @end table
 The allocated @code{gsl_spmatrix} structure is of size @math{O(nzmax)}.
@@ -177,17 +177,17 @@ This function sets (or resets) all the elements of the matrix @var{m} to zero.
 @section Copying sparse matrices
 @cindex sparse matrices, copying
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_memcpy (const gsl_spmatrix * @var{src})
-This function makes a copy of the sparse matrix @var{src} and returns a pointer
-to a newly allocated copy, which must be freed by the caller when no longer
-needed. The matrix @var{src} may be in either triplet or compressed format.
+@deftypefun int gsl_spmatrix_memcpy (gsl_spmatrix * @var{dest}, const gsl_spmatrix * @var{src})
+This function copies the elements of the sparse matrix @var{src} into
+@var{dest}. The two matrices must have the same size and be in the
+same storage format.
 @end deftypefun
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_transpose_memcpy (const gsl_spmatrix * @var{src})
-This function computes the transpose of @var{src} and stores it in a newly
-allocated matrix which is returned by the function. This matrix should be
-freed by the caller using @code{gsl_spmatrix_free} when no longer needed.
-The matrix @var{src} may be in either triplet or compressed format.
+@deftypefun int gsl_spmatrix_transpose_memcpy (gsl_spmatrix * @var{dest}, const gsl_spmatrix * @var{src})
+This function copies the transpose of the sparse matrix @var{src} into
+@var{dest}. The dimensions of @var{dest} must match the transpose of the
+matrix @var{src}. Also, both matrices must use the same sparse storage
+format.
 @end deftypefun
 
 @node Sparse matrix operations

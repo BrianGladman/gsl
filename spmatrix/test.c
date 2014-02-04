@@ -144,12 +144,14 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
     gsl_spmatrix *ac = gsl_spmatrix_compcol(at);
     gsl_spmatrix *bt, *bc;
   
-    bt = gsl_spmatrix_memcpy(at);
+    bt = gsl_spmatrix_alloc(M, N);
+    gsl_spmatrix_memcpy(bt, at);
 
     status = gsl_spmatrix_equal(at, bt) != 1;
     gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu triplet format", M, N);
 
-    bc = gsl_spmatrix_memcpy(ac);
+    bc = gsl_spmatrix_alloc_nzmax(M, N, ac->nzmax, GSL_SPMATRIX_CCS);
+    gsl_spmatrix_memcpy(bc, ac);
 
     status = gsl_spmatrix_equal(ac, bc) != 1;
     gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu compressed column format", M, N);
@@ -163,10 +165,13 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
   /* test transpose_memcpy */
   {
     gsl_spmatrix *A = create_random_sparse(M, N, 0.3, r);
-    gsl_spmatrix *AT = gsl_spmatrix_transpose_memcpy(A);
     gsl_spmatrix *B = gsl_spmatrix_compcol(A);
-    gsl_spmatrix *BT = gsl_spmatrix_transpose_memcpy(B);
+    gsl_spmatrix *AT = gsl_spmatrix_alloc(N, M);
+    gsl_spmatrix *BT = gsl_spmatrix_alloc_nzmax(N, M, 1, GSL_SPMATRIX_CCS);
     size_t i, j;
+
+    gsl_spmatrix_transpose_memcpy(AT, A);
+    gsl_spmatrix_transpose_memcpy(BT, B);
 
     status = 0;
     for (i = 0; i < M; ++i)

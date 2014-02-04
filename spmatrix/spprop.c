@@ -38,7 +38,7 @@ gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b)
     {
       GSL_ERROR_VAL("matrices must have same dimensions", GSL_EBADLEN, 0);
     }
-  else if (a->flags != b->flags)
+  else if (a->sptype != b->sptype)
     {
       GSL_ERROR_VAL("trying to compare different sparse matrix types", GSL_EINVAL, 0);
     }

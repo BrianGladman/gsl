@@ -90,7 +90,7 @@ gsl_spmatrix_add(const gsl_spmatrix *a, const gsl_spmatrix *b)
     {
       GSL_ERROR_NULL("matrices must have same dimensions", GSL_EBADLEN);
     }
-  else if (a->flags != b->flags)
+  else if (a->sptype != b->sptype)
     {
       GSL_ERROR_NULL("matrices must have same sparse storage format", GSL_EINVAL);
     }
@@ -108,7 +108,7 @@ gsl_spmatrix_add(const gsl_spmatrix *a, const gsl_spmatrix *b)
       size_t j, p;
       size_t nz = 0; /* number of non-zeros in c */
 
-      c = gsl_spmatrix_alloc_nzmax(M, N, a->nz + b->nz, a->flags);
+      c = gsl_spmatrix_alloc_nzmax(M, N, a->nz + b->nz, a->sptype);
       if (!c)
         {
           GSL_ERROR_NULL("failed to allocate space for c matrix", GSL_ENOMEM);

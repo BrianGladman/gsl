@@ -137,7 +137,7 @@ gsl_spblas_dgemv(const CBLAS_TRANSPOSE_t TransA, const double alpha,
                 }
             }
         }
-      else if (A->flags & GSL_SPMATRIX_TRIPLET)
+      else if (GSL_SPMATRIX_ISTRIPLET(A))
         {
           if (TransA == CblasNoTrans)
             {

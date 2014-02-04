@@ -76,14 +76,14 @@ typedef struct
 
   size_t *work; /* workspace of size MAX(size1,size2) used in various routines */
 
-  size_t flags;
+  size_t sptype;
 } gsl_spmatrix;
 
-#define GSL_SPMATRIX_TRIPLET      (1 << 0)
-#define GSL_SPMATRIX_CCS          (1 << 1)
+#define GSL_SPMATRIX_TRIPLET      (0)
+#define GSL_SPMATRIX_CCS          (1)
 
-#define GSL_SPMATRIX_ISTRIPLET(m) ((m)->flags & GSL_SPMATRIX_TRIPLET)
-#define GSL_SPMATRIX_ISCCS(m)     ((m)->flags & GSL_SPMATRIX_CCS)
+#define GSL_SPMATRIX_ISTRIPLET(m) ((m)->sptype == GSL_SPMATRIX_TRIPLET)
+#define GSL_SPMATRIX_ISCCS(m)     ((m)->sptype == GSL_SPMATRIX_CCS)
 
 /*
  * Prototypes
@@ -98,7 +98,7 @@ int gsl_spmatrix_set_zero(gsl_spmatrix *m);
 size_t gsl_spmatrix_nnz(const gsl_spmatrix *m);
 
 /* spcopy.c */
-gsl_spmatrix *gsl_spmatrix_memcpy(const gsl_spmatrix *src);
+int gsl_spmatrix_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
 
 /* spgetset.c */
 double gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i,
@@ -122,7 +122,7 @@ int gsl_spmatrix_sp2d(gsl_matrix *A, const gsl_spmatrix *S);
 int gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b);
 
 /* spswap.c */
-gsl_spmatrix *gsl_spmatrix_transpose_memcpy(const gsl_spmatrix *src);
+int gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
 
 __END_DECLS
 

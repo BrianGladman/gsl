@@ -62,7 +62,7 @@ gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A, const gsl_spmatrix *
 
       x = malloc(M * sizeof(double)); /* allocate workspace */
 
-      C = gsl_spmatrix_alloc_nzmax(M, N, A->nz + B->nz, A->flags);
+      C = gsl_spmatrix_alloc_nzmax(M, N, A->nz + B->nz, A->sptype);
       if (!C)
         {
           GSL_ERROR_NULL("error allocating matrix C", GSL_ENOMEM);
