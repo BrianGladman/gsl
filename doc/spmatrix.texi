@@ -64,7 +64,7 @@ typedef struct
   size_t nzmax;
   size_t nz;
   size_t *work;
-  size_t flags;
+  size_t sptype;
 @} gsl_spmatrix;
 @end example
 
@@ -82,7 +82,7 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 
 @noindent
 @var{work} is additional workspace needed for various operations like
-converting from triplet to compressed column storage. @var{flags} indicates
+converting from triplet to compressed column storage. @var{sptype} indicates
 the type of storage format being used (triplet or compressed column).
 
 @noindent
@@ -115,7 +115,7 @@ assuming a sparse density of @math{10\%}. The function
 accurately. The workspace is of size @math{O(nzmax)}.
 @end deftypefun
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_alloc_nzmax (const size_t @var{n1}, const size_t @var{n2}, const size_t @var{nzmax}, const size_t @var{flags})
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_alloc_nzmax (const size_t @var{n1}, const size_t @var{n2}, const size_t @var{nzmax}, const size_t @var{sptype})
 This function allocates a sparse matrix of size @var{n1}-by-@var{n2} and
 initializes it to all zeros. If the size of the matrix is not known at allocation
 time, both @var{n1} and @var{n2} may be set to 1, and they will automatically
@@ -124,8 +124,8 @@ the maximum number of non-zero elements which will be added to the matrix.
 It does not need to be precisely known in advance, since storage space will 
 automatically grow using @code{gsl_spmatrix_realloc} if @var{nzmax} is not
 large enough. Accurate knowledge of this parameter reduces the number of
-reallocation calls required. The parameter @var{flags} specifies the storage
-format of the sparse matrix. Possible values are
+reallocation calls required. The parameter @var{sptype} specifies the
+storage format of the sparse matrix. Possible values are
 @table @code
 @item GSL_SPMATRIX_TRIPLET
 This flag specifies triplet storage.

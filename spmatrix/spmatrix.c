@@ -39,8 +39,8 @@ set to 1, and they will be expanded as elements are added to the matrix
 gsl_spmatrix *
 gsl_spmatrix_alloc(const size_t n1, const size_t n2)
 {
-  const double sparsity = 0.1; /* estimate */
-  size_t nzmax = (size_t) round(n1 * n2 * sparsity);
+  const double density = 0.1; /* estimate */
+  size_t nzmax = (size_t) round(n1 * n2 * density);
 
   if (nzmax == 0)
     nzmax = 10;
