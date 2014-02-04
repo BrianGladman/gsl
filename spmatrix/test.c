@@ -203,12 +203,15 @@ test_ops(const size_t M, const size_t N, const gsl_rng *r)
   size_t i, j;
   int status;
 
+  /* test gsl_spmatrix_add */
   {
     gsl_spmatrix *Ta = create_random_sparse(M, N, 0.2, r);
     gsl_spmatrix *Tb = create_random_sparse(M, N, 0.2, r);
     gsl_spmatrix *a = gsl_spmatrix_compcol(Ta);
     gsl_spmatrix *b = gsl_spmatrix_compcol(Tb);
-    gsl_spmatrix *c = gsl_spmatrix_add(a, b);
+    gsl_spmatrix *c = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
+    
+    gsl_spmatrix_add(c, a, b);
 
     status = 0;
     for (i = 0; i < M; ++i)

@@ -182,6 +182,7 @@ test_dgemm(const double alpha, const size_t M, const size_t N,
   gsl_matrix *A_dense = gsl_matrix_alloc(M, max);
   gsl_matrix *B_dense = gsl_matrix_alloc(max, N);
   gsl_matrix *C_dense = gsl_matrix_alloc(M, N);
+  gsl_spmatrix *C = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
 
   for (k = 1; k <= max; ++k)
     {
@@ -191,7 +192,9 @@ test_dgemm(const double alpha, const size_t M, const size_t N,
       gsl_spmatrix *TB = create_random_sparse(k, N, 0.2, r);
       gsl_spmatrix *A = gsl_spmatrix_compcol(TA);
       gsl_spmatrix *B = gsl_spmatrix_compcol(TB);
-      gsl_spmatrix *C = gsl_spblas_dgemm(alpha, A, B);
+
+      gsl_spmatrix_set_zero(C);
+      gsl_spblas_dgemm(alpha, A, B, C);
 
       /* make dense matrices and use standard dgemm to multiply them */
       gsl_spmatrix_sp2d(&Ad.matrix, TA);
@@ -215,9 +218,9 @@ test_dgemm(const double alpha, const size_t M, const size_t N,
       gsl_spmatrix_free(TB);
       gsl_spmatrix_free(A);
       gsl_spmatrix_free(B);
-      gsl_spmatrix_free(C);
     }
 
+  gsl_spmatrix_free(C);
   gsl_matrix_free(A_dense);
   gsl_matrix_free(B_dense);
   gsl_matrix_free(C_dense);

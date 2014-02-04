@@ -194,11 +194,9 @@ format.
 @section Sparse matrix operations
 @cindex sparse matrices, operations
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_add (const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
-This function adds the two matrices @math{a + b} and stores the result in
-a newly allocated matrix which is returned. The result should be freed with
-@code{gsl_spmatrix_free} when no longer needed. The two matrices must have the same
-dimensions.
+@deftypefun int gsl_spmatrix_add (gsl_spmatrix * @var{c}, const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
+This function computes the sum @math{c = a + b}. The three matrices must
+have the same dimensions and be stored in compressed column format.
 @end deftypefun
 
 @deftypefun int gsl_spmatrix_scale (gsl_spmatrix * @var{m}, const double @var{x})

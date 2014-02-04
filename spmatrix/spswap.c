@@ -73,7 +73,7 @@ gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
           size_t *ATi = dest->i;
           size_t *ATp = dest->p;
           double *ATd = dest->data;
-          size_t *w = dest->work;
+          size_t *w = (size_t *) dest->work;
           size_t p, j;
 
           /* initialize to 0 */

@@ -73,45 +73,48 @@ gsl_spmatrix_minmax(const gsl_spmatrix *m, double *min_out, double *max_out)
 gsl_spmatrix_add()
   Add two sparse matrices
 
-Inputs: a - (input) sparse matrix
+Inputs: c - (output) a + b
+        a - (input) sparse matrix
         b - (input) sparse matrix
-        c - (output) a + b
 
 Return: success or error
 */
 
-gsl_spmatrix *
-gsl_spmatrix_add(const gsl_spmatrix *a, const gsl_spmatrix *b)
+int
+gsl_spmatrix_add(gsl_spmatrix *c, const gsl_spmatrix *a,
+                 const gsl_spmatrix *b)
 {
   const size_t M = a->size1;
   const size_t N = a->size2;
 
-  if (b->size1 != M || b->size2 != N)
+  if (b->size1 != M || b->size2 != N || c->size1 != M || c->size2 != N)
     {
-      GSL_ERROR_NULL("matrices must have same dimensions", GSL_EBADLEN);
+      GSL_ERROR("matrices must have same dimensions", GSL_EBADLEN);
     }
-  else if (a->sptype != b->sptype)
+  else if (a->sptype != b->sptype || a->sptype != c->sptype)
     {
-      GSL_ERROR_NULL("matrices must have same sparse storage format", GSL_EINVAL);
+      GSL_ERROR("matrices must have same sparse storage format",
+                GSL_EINVAL);
     }
   else if (GSL_SPMATRIX_ISTRIPLET(a))
     {
-      GSL_ERROR_NULL("triplet format not yet supported", GSL_EINVAL);
+      GSL_ERROR("triplet format not yet supported", GSL_EINVAL);
     }
   else
     {
-      gsl_spmatrix *c;
-      size_t *w = a->work;
-      double *x = malloc(M * sizeof(double));
+      int status = GSL_SUCCESS;
+      size_t *w = (size_t *) a->work;
+      double *x = (double *) b->work;
       size_t *Cp, *Ci;
       double *Cd;
       size_t j, p;
       size_t nz = 0; /* number of non-zeros in c */
 
-      c = gsl_spmatrix_alloc_nzmax(M, N, a->nz + b->nz, a->sptype);
-      if (!c)
+      if (c->nzmax < a->nz + b->nz)
         {
-          GSL_ERROR_NULL("failed to allocate space for c matrix", GSL_ENOMEM);
+          status = gsl_spmatrix_realloc(a->nz + b->nz, c);
+          if (status)
+            return status;
         }
 
       /* initialize w = 0 */
@@ -140,9 +143,7 @@ gsl_spmatrix_add(const gsl_spmatrix *a, const gsl_spmatrix *b)
       Cp[N] = nz;
       c->nz = nz;
 
-      free(x);
-
-      return c;
+      return status;
     }
 } /* gsl_spmatrix_add() */
 

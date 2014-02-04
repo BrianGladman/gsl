@@ -112,7 +112,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
   else if (sptype == GSL_SPMATRIX_CCS)
     {
       m->p = malloc((n2 + 1) * sizeof(size_t));
-      m->work = malloc(GSL_MAX(n1, n2) * sizeof(size_t));
+      m->work = malloc(GSL_MAX(n1, n2) *
+                       GSL_MAX(sizeof(size_t), sizeof(double)));
       if (!m->p || !m->work)
         {
           gsl_spmatrix_free(m);
@@ -208,13 +209,8 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
 int
 gsl_spmatrix_set_zero(gsl_spmatrix *m)
 {
-  int s = GSL_SUCCESS;
-
   m->nz = 0;
-  m->size1 = 1;
-  m->size2 = 1;
-
-  return s;
+  return GSL_SUCCESS;
 } /* gsl_spmatrix_set_zero() */
 
 size_t

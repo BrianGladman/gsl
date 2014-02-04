@@ -27,11 +27,9 @@ This function computes the matrix-vector product and sum
 The matrix @var{A} may be in triplet or compressed format.
 @end deftypefun
 
-@deftypefun {gsl_spmatrix *} gsl_spblas_dgemm (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_spmatrix * @var{B})
+@deftypefun int gsl_spblas_dgemm (const double @var{alpha}, const gsl_spmatrix * @var{A}, const gsl_spmatrix * @var{B}, gsl_spmatrix * @var{C})
 This function computes the sparse matrix-matrix product
-@math{C = \alpha A B}. A pointer to the newly allocated matrix @var{C} is returned
-and should be freed using @code{gsl_spmatrix_free} when no longer needed. The
-matrices @var{A} and @var{B} must be in compressed format.
+@math{C = \alpha A B}. The matrices must be in compressed format.
 @end deftypefun
 
 @node Sparse BLAS References and Further Reading

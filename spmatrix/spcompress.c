@@ -65,7 +65,7 @@ gsl_spmatrix_compcol(const gsl_spmatrix *T)
   gsl_spmatrix_cumsum(m->size2, Cp);
 
   /* make a copy of the column pointers */
-  w = m->work;
+  w = (size_t *) m->work;
   for (n = 0; n < m->size2; ++n)
     w[n] = Cp[n];
 

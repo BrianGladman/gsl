@@ -31,42 +31,52 @@ gsl_spblas_dgemm()
 Inputs: alpha - scalar factor
         A     - sparse matrix
         B     - sparse matrix
+        C     - (output) C = alpha * A * B
 
-Return: sparse matrix C = alpha*A*B
+Return: success or error
 
 Notes:
 1) based on CSparse routine cs_multiply
 */
 
-gsl_spmatrix *
-gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A, const gsl_spmatrix *B)
+int
+gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
+                 const gsl_spmatrix *B, gsl_spmatrix *C)
 {
-  if (A->size2 != B->size1)
+  if (A->size2 != B->size1 || A->size1 != C->size1 || B->size2 != C->size2)
     {
-      GSL_ERROR_NULL("matrices dimensions do not match", GSL_EBADLEN);
+      GSL_ERROR("matrix dimensions do not match", GSL_EBADLEN);
+    }
+  else if (A->sptype != B->sptype || A->sptype != C->sptype)
+    {
+      GSL_ERROR("matrix storage formats do not match", GSL_EINVAL);
+    }
+  else if (!GSL_SPMATRIX_ISCCS(A))
+    {
+      GSL_ERROR("compressed column format required", GSL_EINVAL);
     }
   else
     {
+      int status = GSL_SUCCESS;
       const size_t M = A->size1;
       const size_t N = B->size2;
       size_t *Bi = B->i;
       size_t *Bp = B->p;
       double *Bd = B->data;
-      size_t *w = A->work;
-      double *x;
-      gsl_spmatrix *C;
+      size_t *w = (size_t *) A->work; /* workspace of length M */
+      double *x = (double *) C->work; /* workspace of length M */
       size_t *Cp, *Ci;
       double *Cd;
       size_t j, p;
       size_t nz = 0;
 
-      x = malloc(M * sizeof(double)); /* allocate workspace */
-
+#if 0
       C = gsl_spmatrix_alloc_nzmax(M, N, A->nz + B->nz, A->sptype);
       if (!C)
         {
-          GSL_ERROR_NULL("error allocating matrix C", GSL_ENOMEM);
+          GSL_ERROR("error allocating matrix C", GSL_ENOMEM);
         }
+#endif
 
       /* initialize workspace to 0 */
       for (j = 0; j < M; ++j)
@@ -83,7 +93,7 @@ gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A, const gsl_spmatrix *
               int s = gsl_spmatrix_realloc(2 * C->nzmax + M, C);
               if (s)
                 {
-                  GSL_ERROR_NULL("unable to realloc matrix C", GSL_ENOMEM);
+                  GSL_ERROR("unable to realloc matrix C", GSL_ENOMEM);
                 }
 
               /* these pointers could have changed due to reallocation */
@@ -108,9 +118,7 @@ gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A, const gsl_spmatrix *
       /* scale by alpha */
       gsl_spmatrix_scale(C, alpha);
 
-      free(x);
-
-      return C;
+      return status;
     }
 } /* gsl_spblas_dgemm() */
 
