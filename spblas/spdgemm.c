@@ -70,13 +70,14 @@ gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
       size_t j, p;
       size_t nz = 0;
 
-#if 0
-      C = gsl_spmatrix_alloc_nzmax(M, N, A->nz + B->nz, A->sptype);
-      if (!C)
+      if (C->nzmax < A->nz + B->nz)
         {
-          GSL_ERROR("error allocating matrix C", GSL_ENOMEM);
+          status = gsl_spmatrix_realloc(A->nz + B->nz, C);
+          if (status)
+            {
+              GSL_ERROR("unable to realloc matrix C", status);
+            }
         }
-#endif
 
       /* initialize workspace to 0 */
       for (j = 0; j < M; ++j)
@@ -90,10 +91,10 @@ gsl_spblas_dgemm(const double alpha, const gsl_spmatrix *A,
         {
           if (nz + M > C->nzmax)
             {
-              int s = gsl_spmatrix_realloc(2 * C->nzmax + M, C);
-              if (s)
+              status = gsl_spmatrix_realloc(2 * C->nzmax + M, C);
+              if (status)
                 {
-                  GSL_ERROR("unable to realloc matrix C", GSL_ENOMEM);
+                  GSL_ERROR("unable to realloc matrix C", status);
                 }
 
               /* these pointers could have changed due to reallocation */
