@@ -92,7 +92,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_PROG_LIBTOOL
+LT_INIT
 
 dnl Check compiler features
 AC_TYPE_SIZE_T
@@ -104,7 +104,7 @@ AC_C_CHAR_UNSIGNED
 GSL_CFLAGS="-I$includedir"
 GSL_LIBS="-L$libdir -lgsl"
 dnl macro from libtool - can be replaced with LT_LIB_M when we require libtool 2
-AC_CHECK_LIBM
+LT_LIB_M
 GSL_LIBM=$LIBM
 
 AC_SUBST(GSL_CFLAGS)

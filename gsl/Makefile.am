@@ -12,6 +12,6 @@ remove-links:
 
 all: all-am header-links
 
-clean: clean-am remove-links
-distclean: distclean-am remove-links
+clean-local: clean-am remove-links
+distclean-local: distclean-am remove-links
 	-rm -f Makefile
