@@ -355,7 +355,7 @@ FUNCTION (test, binary) (const size_t M, const size_t N)
 void
 FUNCTION (test, binary_noncontiguous) (const size_t M, const size_t N)
 {
-  TYPE (gsl_matrix) * l = FUNCTION (gsl_matrix, alloc) (M+1, N+1);
+  TYPE (gsl_matrix) * l = FUNCTION (gsl_matrix, calloc) (M+1, N+1);
   VIEW (gsl_matrix, view) m = FUNCTION (gsl_matrix, submatrix) (l, 0, 0, M, N);
 
   size_t i, j;
