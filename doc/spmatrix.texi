@@ -179,7 +179,7 @@ This function sets (or resets) all the elements of the matrix @var{m} to zero.
 
 @deftypefun int gsl_spmatrix_memcpy (gsl_spmatrix * @var{dest}, const gsl_spmatrix * @var{src})
 This function copies the elements of the sparse matrix @var{src} into
-@var{dest}. The two matrices must have the same size and be in the
+@var{dest}. The two matrices must have the same dimensions and be in the
 same storage format.
 @end deftypefun
 
@@ -225,8 +225,9 @@ both triplet format or both compressed format for comparison.
 @cindex sparse matrices, min/max elements
 
 @deftypefun int gsl_spmatrix_minmax (const gsl_spmatrix * @var{m}, double * @var{min_out}, double * @var{max_out})
-This function returns the minimum and maximum elements of the matrix @var{m},
-storing them in @var{min_out} and @var{max_out}.
+This function returns the minimum and maximum elements of the matrix
+@var{m}, storing them in @var{min_out} and @var{max_out}, and searching
+only the non-zero values.
 @end deftypefun
 
 @node Sparse matrix compressed format

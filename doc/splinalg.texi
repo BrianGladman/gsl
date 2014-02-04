@@ -35,7 +35,7 @@ $$
 A x = b
 @end example
 @end ifinfo
-where @math{A} is an @math{n}-by-@math{n} non-singular sparse matrix,
+where @math{A} is a square @math{n}-by-@math{n} non-singular sparse matrix,
 @math{x} is an unknown @math{n}-by-@math{1} vector, and @math{b}
 is a given @math{n}-by-1 right hand side vector. There exist
 many methods for solving such sparse linear systems, which broadly
@@ -217,8 +217,8 @@ $$
 Defining a grid of @math{N} points, @math{h = 1/(N-1)}. In the finite
 difference equation above, @math{u_0 = u_{N-1} = 0} are known from
 the boundary conditions, so we will only put the equations for
-@math{i = 1 ... N-2} into the matrix system. The resulting matrix
-equation is
+@math{i = 1 ... N-2} into the matrix system. The resulting
+@math{(N-2) \times (N-2)} matrix equation is
 @tex
 \beforedisplay
 $$
