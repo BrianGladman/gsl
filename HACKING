@@ -165,6 +165,11 @@ make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of
   Libtool manual (Updating library version information).  Use 'nm' to
   check what functions have been added and removed.
 
+* run:
+  > autoreconf -W all
+  to check any obsolete directives in configure.ac, as well
+  as the Makefile.am's
+
 * Update the NEWS file.
 
 * Update the BUGS file using scripts/BUGS.pl
