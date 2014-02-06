@@ -384,4 +384,4 @@ static const gsl_multifit_fdfsolver_type lmsder_type =
 };
 
 const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmder = &lmder_type;
-const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmsder = &lmsder_type;
+const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmsder1 = &lmsder_type;

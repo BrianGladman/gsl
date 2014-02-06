@@ -113,6 +113,8 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
     }
 
   s->fdf = NULL;
+  
+  s->niter = 0;
 
   return s;
 }
@@ -141,7 +143,12 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
 int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s)
 {
-  return (s->type->iterate) (s->state, s->fdf, s->x, s->f, s->J, s->dx);
+  int status =
+    (s->type->iterate) (s->state, s->fdf, s->x, s->f, s->J, s->dx);
+
+  s->niter++;
+
+  return status;
 }
 
 int

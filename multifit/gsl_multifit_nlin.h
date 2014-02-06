@@ -137,6 +137,7 @@ typedef struct
     gsl_vector * f;
     gsl_matrix * J;
     gsl_vector * dx;
+    size_t niter;
     void *state;
   }
 gsl_multifit_fdfsolver;
@@ -178,6 +179,7 @@ int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fd
 /* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder1;
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
 
 
