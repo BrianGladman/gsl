@@ -27,6 +27,16 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 
+/*
+ * This module contains an implementation of the Levenberg-Marquardt
+ * algorithm for nonlinear optimization problems. This implementation
+ * closely follows the following works:
+ *
+ * [1] H. B. Nielsen, K. Madsen, Introduction to Optimization and
+ *     Data Fitting, Informatics and Mathematical Modeling,
+ *     Technical University of Denmark (DTU), 2010.
+ */
+
 typedef struct
 {
   gsl_matrix *A;         /* J^T J */
@@ -341,4 +351,4 @@ static const gsl_multifit_fdfsolver_type lm_type =
   &lm_free
 };
 
-const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmsder = &lm_type;
+const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmder = &lm_type;

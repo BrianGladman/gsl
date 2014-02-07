@@ -50,9 +50,9 @@ test_lmder (gsl_multifit_function_fdf * f, double x0[],
             double * X, double F[], double * cov);
 
 void
-test_fdf (const char * name, gsl_multifit_function_fdf * f, 
-          double x0[], double x[], double sumsq,
-          double sigma[], double epsrel, double epsrel_sigma);
+test_fdf (const char * name, const gsl_multifit_fdfsolver_type * T,
+          gsl_multifit_function_fdf * f, double x0[], double x[],
+          double sumsq, double sigma[], double epsrel, double epsrel_sigma);
 
 void test_ridge(void);
 
@@ -64,6 +64,12 @@ main (void)
   double epsrel_fd = 1.0e-2;
   double epsrel_sigma_fd = 1.0e-2;
   gsl_multifit_function_fdf f;
+  const gsl_multifit_fdfsolver_type *T_lmder =
+    gsl_multifit_fdfsolver_lmder;
+  const gsl_multifit_fdfsolver_type *T_lmsder =
+    gsl_multifit_fdfsolver_lmsder;
+  const gsl_multifit_fdfsolver_type *T_lmder1 =
+    gsl_multifit_fdfsolver_lmder1;
 
   gsl_ieee_env_setup();
 
@@ -81,33 +87,55 @@ main (void)
 
   {
     f = make_fdf (&enso_f, &enso_df, &enso_fdf, enso_N, enso_P, 0);
-    test_fdf("nist-ENSO", &f, enso_x0, enso_x, enso_sumsq, enso_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-ENSO", T_lmder, &f, enso_x0, enso_x, enso_sumsq,
+             enso_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-ENSO", T_lmsder, &f, enso_x0, enso_x, enso_sumsq,
+             enso_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-ENSO", T_lmder1, &f, enso_x0, enso_x, enso_sumsq,
+             enso_sigma, epsrel, epsrel_sigma);
 
+#if 0
     f = make_fdf (&enso_f, NULL, NULL, enso_N, enso_P, 0);
     test_fdf("nist-ENSO", &f, enso_x0, enso_x, enso_sumsq, enso_sigma, epsrel_fd, epsrel_sigma_fd);
+#endif
 
   }
 
   {
     f = make_fdf (&kirby2_f, &kirby2_df, &kirby2_fdf, kirby2_N, kirby2_P, 0);
-    test_fdf("nist-kirby2", &f, kirby2_x0, kirby2_x, kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-kirby2", T_lmder, &f, kirby2_x0, kirby2_x,
+             kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-kirby2", T_lmsder, &f, kirby2_x0, kirby2_x,
+             kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-kirby2", T_lmder1, &f, kirby2_x0, kirby2_x,
+             kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
 
+#if 0
     f = make_fdf (&kirby2_f, NULL, NULL, kirby2_N, kirby2_P, 0);
     test_fdf("nist-kirby2", &f, kirby2_x0, kirby2_x, kirby2_sumsq, kirby2_sigma, epsrel_fd, epsrel_sigma_fd);
+#endif
   }
 
   {
     f = make_fdf (&hahn1_f, &hahn1_df, &hahn1_fdf, hahn1_N, hahn1_P, 0);
-    test_fdf("nist-hahn1", &f, hahn1_x0, hahn1_x, hahn1_sumsq, hahn1_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-hahn1", T_lmder, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
+             hahn1_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-hahn1", T_lmsder, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
+             hahn1_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-hahn1", T_lmder1, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
+             hahn1_sigma, epsrel, epsrel_sigma);
 
+#if 0
     f = make_fdf (&hahn1_f, NULL, NULL, hahn1_N, hahn1_P, 0);
     test_fdf("nist-hahn1", &f, hahn1_x0, hahn1_x, hahn1_sumsq, hahn1_sigma, epsrel_fd, epsrel_sigma_fd);
+#endif
   }
 
 #ifdef JUNK
   {
     f = make_fdf (&nelson_f, &nelson_df, &nelson_fdf, nelson_N, nelson_P, 0);
-    test_fdf("nist-nelson", &f, nelson_x0, nelson_x, nelson_sumsq, nelson_sigma, epsrel, epsrel_sigma);
+    test_fdf("nist-nelson", T_lmsder, &f, nelson_x0, nelson_x,
+             nelson_sumsq, nelson_sigma, epsrel, epsrel_sigma);
   }
 #endif
 
@@ -175,12 +203,13 @@ test_lmder (gsl_multifit_function_fdf * f, double x0[],
 }
 
 void
-test_fdf (const char * name, gsl_multifit_function_fdf * f, 
+test_fdf (const char * name,
+          const gsl_multifit_fdfsolver_type * T,
+          gsl_multifit_function_fdf * f, 
           double x0[], double x_final[], 
           double f_sumsq, double sigma[], double epsrel,
           double epsrel_sigma)
 {
-  const gsl_multifit_fdfsolver_type *T;
   gsl_multifit_fdfsolver *s;
   
   const size_t n = f->n;
@@ -191,7 +220,6 @@ test_fdf (const char * name, gsl_multifit_function_fdf * f,
 
   gsl_vector_view x = gsl_vector_view_array (x0, p);
 
-  T = gsl_multifit_fdfsolver_lmsder;
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
   gsl_multifit_fdfsolver_set (s, f, &x.vector);
 
