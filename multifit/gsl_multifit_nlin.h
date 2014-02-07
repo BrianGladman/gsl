@@ -125,6 +125,7 @@ typedef struct
     int (*alloc) (void *state, size_t n, size_t p);
     int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
     int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+    int (*norms) (void *state, double *xnorm, double *dxnorm, double *gnorm, double *fnorm, double *dfnorm);
     void (*free) (void *state);
   }
 gsl_multifit_fdfsolver_type;
@@ -133,11 +134,11 @@ typedef struct
   {
     const gsl_multifit_fdfsolver_type * type;
     gsl_multifit_function_fdf * fdf ;
-    gsl_vector * x;
-    gsl_vector * f;
-    gsl_matrix * J;
-    gsl_vector * dx;
-    size_t niter;
+    gsl_vector * x;    /* parameter values x */
+    gsl_vector * f;    /* residual vector f(x) */
+    gsl_matrix * J;    /* Jacobian J(x) */
+    gsl_vector * dx;   /* step dx */
+    size_t niter;      /* number of iterations performed */
     void *state;
   }
 gsl_multifit_fdfsolver;
@@ -166,6 +167,8 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
 gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
 
+int gsl_multifit_test (const gsl_multifit_fdfsolver * s, const double xtol,
+                       const double gtol, const double ftol, int *info);
 int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
                              double epsabs, double epsrel);
 

@@ -370,6 +370,7 @@ static const gsl_multifit_fdfsolver_type lmder_type =
   &lmder_alloc,
   &lmder_set,
   &lmder_iterate,
+  NULL,
   &lmder_free
 };
 
@@ -380,6 +381,7 @@ static const gsl_multifit_fdfsolver_type lmsder_type =
   &lmder_alloc,
   &lmsder_set,
   &lmsder_iterate,
+  NULL,
   &lmder_free
 };
 

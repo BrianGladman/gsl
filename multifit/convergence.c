@@ -22,6 +22,61 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit_nlin.h>
 
+/*
+gsl_multifit_test()
+  Convergence tests for nonlinear minimization
+
+(1) ||dx|| <= xtol * ||x||
+(2) ||g||_inf <= gtol
+(3) ||f(x+dx) - f(x)|| <= ftol * max(||f(x)||, 1)
+
+Inputs: s - fdfsolver
+        xtol - tolerance for step size
+        gtol - tolerance for gradient vector
+        ftol - tolerance for residual vector
+        info - (output)
+          1 - stopped by small x step
+          2 - stopped by small gradient
+          3 - stopped by small residual vector change
+*/
+
+int
+gsl_multifit_test (const gsl_multifit_fdfsolver * s, const double xtol,
+                   const double gtol, const double ftol, int *info)
+{
+  int status;
+  double xnorm, dxnorm, gnorm, fnorm, dfnorm;
+
+  *info = 0;
+
+  status = (s->type->norms) (s->state, &xnorm, &dxnorm, &gnorm,
+                             &fnorm, &dfnorm);
+  if (status)
+    {
+      GSL_ERROR("error computing norms", status);
+    }
+
+  if (dxnorm <= xtol * xnorm)
+    {
+      *info = 1;
+      return GSL_SUCCESS;
+    }
+
+  if (gnorm <= gtol)
+    {
+      *info = 2;
+      return GSL_SUCCESS;
+    }
+
+  if (dfnorm <= ftol * GSL_MAX(fnorm, 1.0))
+    {
+      *info = 3;
+      return GSL_SUCCESS;
+    }
+
+  return GSL_CONTINUE;
+} /* gsl_multifit_test() */
+
 int
 gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
                          double epsabs, double epsrel)

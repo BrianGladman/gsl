@@ -31,17 +31,27 @@ typedef struct
 {
   gsl_matrix *A;         /* J^T J */
   gsl_matrix *A_copy;    /* copy of J^T J */
-  gsl_vector *g;         /* -J^T f */
+  gsl_vector *rhs;       /* rhs vector = -g = -J^T f */
   gsl_vector *x_trial;   /* trial parameter vector */
   gsl_vector *f_trial;   /* trial function vector */
   gsl_vector *qrwork;    /* QR workspace */
   long nu;               /* nu */
   double mu;             /* LM damping parameter mu */
+  double gnorm;          /* ||g||_inf = ||J^T f||_inf */
+  double xnorm;          /* ||x||_2 */
+  double dxnorm;         /* ||dx||_2 */
+  double fnorm;          /* ||f(x)||_2 */
+  double dfnorm;         /* ||f(x+dx) - f(x)||_2 */
+
   double tau;            /* initial scale factor for mu */
   double gtol;           /* gradient tolerance */
   double xtol;           /* parameter tolerance */
   double ftol;           /* residual tolerance */
 } lm_state_t;
+
+#include "lmmisc.c"
+
+#define LM_ONE_THIRD         (0.333333333333333)
 
 static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
@@ -51,17 +61,8 @@ static int lm_set(void *vstate, gsl_multifit_function_fdf *fdf,
 static int lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                       gsl_vector *dx);
-static int lm_calc_JTJ(const gsl_matrix *J, gsl_matrix *JTJ);
-static int lm_calc_JTf(const gsl_matrix *J, const gsl_vector *f,
-                       gsl_vector *JTf);
-static double lm_infnorm(const gsl_vector *v);
-static void lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
-                          gsl_vector * x_trial);
-static double lm_calc_dL(const double mu, const gsl_vector *dx,
-                         const gsl_vector *g);
-static double lm_calc_df_dot(const gsl_vector *f1, const gsl_vector *f2);
-
-#define LM_ONE_THIRD         (0.333333333333333)
+static int lm_norms(void *vstate, double *xnorm, double *dxnorm,
+                    double *gnorm, double *fnorm, double *dfnorm);
 
 static int
 lm_alloc (void *vstate, const size_t n, const size_t p)
@@ -75,10 +76,10 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
       GSL_ERROR ("failed to allocate space for A", GSL_ENOMEM);
     }
 
-  state->g = gsl_vector_alloc(p);
-  if (state->g == NULL)
+  state->rhs = gsl_vector_alloc(p);
+  if (state->rhs == NULL)
     {
-      GSL_ERROR ("failed to allocate space for g", GSL_ENOMEM);
+      GSL_ERROR ("failed to allocate space for rhs", GSL_ENOMEM);
     }
 
   state->qrwork = gsl_vector_alloc(p);
@@ -105,6 +106,10 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
       GSL_ERROR ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
+  state->gnorm = 0.0;
+  state->xnorm = 0.0;
+  state->dxnorm = 0.0;
+
   /* initialize convergence parameters */
   eps = pow(GSL_DBL_EPSILON, 0.9);
   state->xtol = eps;
@@ -124,8 +129,8 @@ lm_free(void *vstate)
   if (state->A)
     gsl_matrix_free(state->A);
 
-  if (state->g)
-    gsl_vector_free(state->g);
+  if (state->rhs)
+    gsl_vector_free(state->rhs);
 
   if (state->qrwork)
     gsl_vector_free(state->qrwork);
@@ -144,35 +149,10 @@ static int
 lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
        gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
 {
-  lm_state_t *state = (lm_state_t *) vstate;
-
-  /* set default parameters */
-  state->nu = 2;
-  state->mu = -1.0;
-
-  return GSL_SUCCESS;
-} /* lm_set() */
-
-static int
-lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
-           gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
-{
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
-  gsl_matrix *A = state->A;                      /* J^T J */
-  gsl_matrix *A_copy = state->A_copy;            /* copy of J^T J */
+  gsl_matrix *A = state->A;
   gsl_vector_view diag = gsl_matrix_diagonal(A); /* diag(J^T J) */
-  gsl_vector *g = state->g;                      /* -J^T f */
-  gsl_vector *qrwork = state->qrwork;            /* QR workspace */
-  gsl_vector *x_trial = state->x_trial;          /* trial parameters */
-  gsl_vector *f_trial = state->f_trial;          /* trial function */
-  double g_inf;                                  /* ||g||_inf */
-  double x_2;                                    /* ||x||_2 */
-  double dx_2;                                   /* ||dx||_2 */
-  double f_sq;                                   /* ||f||^2 */
-  double f_trial_sq;                             /* ||f_trial||^2 */
-  double dL;                                     /* L(0) - L(dx) */
-  double rho;
 
   /* evaluate function and Jacobian at x */
   status = GSL_MULTIFIT_FN_EVAL_F_DF(fdf, x, f, J);
@@ -184,101 +164,137 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
     return status;
 
-  /* compute g = -J^T f */
-  status = lm_calc_JTf(J, f, g);
+  /* compute rhs = -g = -J^T f */
+  status = gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
   if (status)
     return status;
 
-  /* compute ||f||^2 */
-  gsl_blas_ddot(f, f, &f_sq);
-
-  if (state->mu < 0.0)
-    {
-      /* first iteration, initialize mu */
-      state->mu = state->tau * gsl_vector_max(&diag.vector);
-    }
-
-  /* check ||J^T f||_inf <= gtol */
-  g_inf = lm_infnorm(g);
-  if (g_inf <= state->gtol)
-    {
-      fprintf(stderr, "GTOL FLAG\n");
-      return GSL_SUCCESS; /* converged */
-    }
+  /* compute ||g||_inf */
+  state->gnorm = lm_infnorm(state->rhs);
 
   /* compute ||x||_2 */
-  x_2 = gsl_blas_dnrm2(x);
+  state->xnorm = gsl_blas_dnrm2(x);
 
-  /* save J^T J in case we need multiple decomps of augmented matrix */
-  gsl_matrix_memcpy(A_copy, A);
+  /* set default parameters */
+  state->nu = 2;
 
-  /* inner loop starts here */
-  do
+  /* initialize mu */
+  state->mu = state->tau * gsl_vector_max(&diag.vector);
+
+  return GSL_SUCCESS;
+} /* lm_set() */
+
+/*
+lm_iterate()
+  This function performs 1 iteration of the LM algorithm 6.18
+from [1]. The algorithm is slightly modified to loop until we
+find an acceptable step dx, in order to guarantee that each
+function call contains a new input vector x.
+
+Notes:
+1) On input, the following must be initialized in state:
+A = J^T J
+rhs = -J^T f
+gnorm = ||g||_inf
+xnorm = ||x||_2
+mu
+nu
+
+2) On output, the following are guaranteed to be set with the
+current iterates:
+dx
+x = x_input + dx
+f = f(x + dx)
+J = J(x + dx)
+A = J^T J
+rhs = -J^T f
+gnorm = ||g||_inf
+xnorm = ||x||_2
+dxnorm = ||dx||_2
+fnorm = ||f(x)||_2
+dfnorm = ||f(x + dx) - f(x)||_2
+*/
+
+static int
+lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
+           gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
+{
+  int status;
+  lm_state_t *state = (lm_state_t *) vstate;
+  gsl_matrix *A = state->A;                 /* J^T J */
+  gsl_vector *rhs = state->rhs;             /* -g = -J^T f */
+  gsl_vector *x_trial = state->x_trial;     /* trial x + dx */
+  gsl_vector *f_trial = state->f_trial;     /* trial f(x + dx) */
+  double dF;                                /* F(x) - F(x + dx) */
+  double dL;                                /* L(0) - L(dx) */
+  int foundstep = 0;                        /* found step dx */
+
+  /* loop until we find an acceptable step dx */
+  while (!foundstep)
     {
-      /* augment normal equations with LM parameter: A -> A + mu*I */
-      gsl_vector_add_constant(&diag.vector, state->mu);
-
       /* solve (A + mu*I) dx = g */
-      status = gsl_linalg_QR_decomp(A, qrwork);
+      status = lm_calc_dx(state->mu, A, rhs, dx, state);
       if (status)
         return status;
-
-      status = gsl_linalg_QR_solve(A, qrwork, g, dx);
-      if (status)
-        return status;
-
-      /* compute ||dx||_2 and check for convergence */
-      dx_2 = gsl_blas_dnrm2(dx);
-      if (dx_2 <= state->xtol * x_2)
-        {
-          fprintf(stderr, "XTOL FLAG\n");
-          return GSL_SUCCESS; /* converged */
-        }
 
       /* compute x_trial = x + dx */
       lm_trial_step(x, dx, x_trial);
 
-      /* evaluate function at x + dx */
+      /* compute f(x + dx) */
       status = GSL_MULTIFIT_FN_EVAL_F (fdf, x_trial, f_trial);
       if (status)
        return status;
 
-      /* compute ||f_trial||^2 */
-      gsl_blas_ddot(f_trial, f_trial, &f_trial_sq);
+      /* compute dF = F(x) - F(x + dx) */
+      dF = lm_calc_dF(f, f_trial);
 
       /* compute dL = L(0) - L(dx) = dx^T (mu*dx - g) */
-      dL = lm_calc_dL(state->mu, dx, g);
+      dL = lm_calc_dL(state->mu, dx, rhs);
 
-      /* compute rho = (||f||^2 - ||f_trial||^2) / (L(0) - L(dx)) */
-      rho = (f_sq - f_trial_sq) / dL;
-      if (rho > 0.0)
+      if ((dL > 0.0) && (dF > 0.0))
         {
           /* reduction in error, step acceptable */
 
-          double tmp, df_sq;
-
-          /* compute || f(x+dx) - f(x) ||^2 */
-          df_sq = lm_calc_df_dot(f, f_trial);
-
-          /* update x = x_trial */
-          gsl_vector_memcpy(x, x_trial);
-
-          /* update f = f_trial */
-          gsl_vector_memcpy(f, f_trial);
-
-          if (df_sq <= state->ftol * GSL_MAX(GSL_MAX(f_sq, f_trial_sq), 1.0))
-            {
-              fprintf(stderr, "FTOL FLAG\n");
-              return GSL_SUCCESS; /* converged */
-            }
-
-          f_sq = f_trial_sq;
+          double tmp;
 
           /* update LM parameter mu */
-          tmp = 2.0 * rho - 1.0;
+          tmp = 2.0 * dF / dL - 1.0;
           tmp = 1.0 - tmp*tmp*tmp;
           state->mu *= GSL_MAX(LM_ONE_THIRD, tmp);
           state->nu = 2;
+
+          /* compute J <- J(x + dx) */
+          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+          if (status)
+            return status;
+
+          /* update A = J^T J */
+          status = lm_calc_JTJ(J, A);
+          if (status)
+            return status;
+
+          /* update rhs = -J^T f(x + dx) */
+          status = gsl_blas_dgemv(CblasTrans, -1.0, J, f_trial, 0.0,
+                                  state->rhs);
+          if (status)
+            return status;
+
+          /* update norms */
+          state->gnorm = lm_infnorm(state->rhs);
+          state->xnorm = gsl_blas_dnrm2(x); /* use previous x */
+          state->dxnorm = gsl_blas_dnrm2(dx);
+          state->fnorm = gsl_blas_dnrm2(f);
+
+          gsl_vector_sub(f, f_trial);
+          state->dfnorm = gsl_blas_dnrm2(f);
+
+          /* update x <- x + dx */
+          gsl_vector_memcpy(x, x_trial);
+
+          /* update f <- f(x + dx) */
+          gsl_vector_memcpy(f, f_trial);
+
+          foundstep = 1;
         }
       else
         {
@@ -293,90 +309,25 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
               GSL_ERROR("nu parameter has overflown", GSL_EOVRFLW);
             }
           state->nu = nu2;
-
-          /* restore J^T J for next inner loop iteration */
-          gsl_matrix_memcpy(A, A_copy);
         }
-    }
-  while (rho <= 0.0);
+    } /* while (!foundstep) */
 
-  /* not yet converged */
-  return GSL_CONTINUE;
+  return GSL_SUCCESS;
 } /* lm_iterate() */
 
-/* JTJ = J^T J */
 static int
-lm_calc_JTJ(const gsl_matrix *J, gsl_matrix *JTJ)
+lm_norms(void *vstate, double *xnorm, double *dxnorm, double *gnorm,
+         double *fnorm, double *dfnorm)
 {
-  int status;
-  status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, J, J, 0.0, JTJ);
-  return status;
-} /* lm_calc_JTJ() */
+  lm_state_t *state = (lm_state_t *) vstate;
 
-/* JTf = -J^T f (note minus sign) */
-static int
-lm_calc_JTf(const gsl_matrix *J, const gsl_vector *f, gsl_vector *JTf)
-{
-  int status;
-  status = gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, JTf);
-  return status;
-} /* lm_calc_JTf() */
+  *xnorm = state->xnorm;
+  *dxnorm = state->dxnorm;
+  *gnorm = state->gnorm;
+  *fnorm = state->fnorm;
+  *dfnorm = state->dfnorm;
 
-static double
-lm_infnorm(const gsl_vector *v)
-{
-  CBLAS_INDEX_t idx = gsl_blas_idamax(v);
-  return fabs(gsl_vector_get(v, idx));
-}
-
-static void
-lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
-              gsl_vector * x_trial)
-{
-  size_t i, N = x->size;
-
-  for (i = 0; i < N; i++)
-    {
-      double dxi = gsl_vector_get (dx, i);
-      double xi = gsl_vector_get (x, i);
-      gsl_vector_set (x_trial, i, xi + dxi);
-    }
-} /* lm_trial_step() */
-
-static double
-lm_calc_dL(const double mu, const gsl_vector *dx, const gsl_vector *g)
-{
-  const size_t N = dx->size;
-  size_t i;
-  double dL = 0.0;
-
-  for (i = 0; i < N; ++i)
-    {
-      double dxi = gsl_vector_get(dx, i);
-      double gi = gsl_vector_get(g, i);
-
-      dL += dxi * (mu * dxi + gi);
-    }
-
-  return dL;
-} /* lm_calc_dL() */
-
-/* compute || f1 - f2 ||^2 */
-static double
-lm_calc_df_dot(const gsl_vector *f1, const gsl_vector *f2)
-{
-  const size_t N = f1->size;
-  size_t i;
-  double sum = 0.0;
-
-  for (i = 0; i < N; ++i)
-    {
-      double f1i = gsl_vector_get(f1, i);
-      double f2i = gsl_vector_get(f2, i);
-      sum += (f2i - f1i) * (f2i - f1i);
-    }
-
-  return sum;
+  return GSL_SUCCESS;
 }
 
 static const gsl_multifit_fdfsolver_type lm_type =
@@ -386,6 +337,7 @@ static const gsl_multifit_fdfsolver_type lm_type =
   &lm_alloc,
   &lm_set,
   &lm_iterate,
+  &lm_norms,
   &lm_free
 };
 
