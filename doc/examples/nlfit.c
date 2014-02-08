@@ -15,7 +15,7 @@ void print_state (size_t iter, gsl_multifit_fdfsolver * s);
 int
 main (void)
 {
-  const gsl_multifit_fdfsolver_type *T;
+  const gsl_multifit_fdfsolver_type *T = gsl_multifit_fdfsolver_lmniel;
   gsl_multifit_fdfsolver *s;
   int status;
   unsigned int i, iter = 0;
@@ -54,7 +54,6 @@ main (void)
       printf ("data: %u %g %g\n", i, y[i], sigma[i]);
     };
 
-  T = gsl_multifit_fdfsolver_lmsder;
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
   gsl_multifit_fdfsolver_set (s, &f, &x.vector);
 
@@ -65,7 +64,7 @@ main (void)
       iter++;
       status = gsl_multifit_fdfsolver_iterate (s);
 
-      printf ("status = %s\n", gsl_strerror (status));
+      fprintf (stderr, "status = %s\n", gsl_strerror (status));
 
       print_state (iter, s);
 
@@ -87,14 +86,16 @@ main (void)
     double dof = n - p;
     double c = GSL_MAX_DBL(1, chi / sqrt(dof)); 
 
-    printf("chisq/dof = %g\n",  pow(chi, 2.0) / dof);
+    fprintf(stderr, "function evaluations: %zu\n", f.nevalf);
+    fprintf(stderr, "Jacobian evaluations: %zu\n", f.nevaldf);
+    fprintf(stderr, "chisq/dof = %g\n",  pow(chi, 2.0) / dof);
 
-    printf ("A      = %.5f +/- %.5f\n", FIT(0), c*ERR(0));
-    printf ("lambda = %.5f +/- %.5f\n", FIT(1), c*ERR(1));
-    printf ("b      = %.5f +/- %.5f\n", FIT(2), c*ERR(2));
+    fprintf (stderr, "A      = %.5f +/- %.5f\n", FIT(0), c*ERR(0));
+    fprintf (stderr, "lambda = %.5f +/- %.5f\n", FIT(1), c*ERR(1));
+    fprintf (stderr, "b      = %.5f +/- %.5f\n", FIT(2), c*ERR(2));
   }
 
-  printf ("status = %s\n", gsl_strerror (status));
+  fprintf (stderr, "status = %s\n", gsl_strerror (status));
 
   gsl_multifit_fdfsolver_free (s);
   gsl_matrix_free (covar);
@@ -105,7 +106,7 @@ main (void)
 void
 print_state (size_t iter, gsl_multifit_fdfsolver * s)
 {
-  printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
+  fprintf (stderr, "iter: %3zu x = % 15.8f % 15.8f % 15.8f "
           "|f(x)| = %g\n",
           iter,
           gsl_vector_get (s->x, 0), 

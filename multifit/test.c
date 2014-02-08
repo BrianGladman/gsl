@@ -68,8 +68,8 @@ main (void)
     gsl_multifit_fdfsolver_lmder;
   const gsl_multifit_fdfsolver_type *T_lmsder =
     gsl_multifit_fdfsolver_lmsder;
-  const gsl_multifit_fdfsolver_type *T_lmder1 =
-    gsl_multifit_fdfsolver_lmder1;
+  const gsl_multifit_fdfsolver_type *T_lmniel =
+    gsl_multifit_fdfsolver_lmniel;
 
   gsl_ieee_env_setup();
 
@@ -91,7 +91,7 @@ main (void)
              enso_sigma, epsrel, epsrel_sigma);
     test_fdf("nist-ENSO", T_lmsder, &f, enso_x0, enso_x, enso_sumsq,
              enso_sigma, epsrel, epsrel_sigma);
-    test_fdf("nist-ENSO", T_lmder1, &f, enso_x0, enso_x, enso_sumsq,
+    test_fdf("nist-ENSO", T_lmniel, &f, enso_x0, enso_x, enso_sumsq,
              enso_sigma, epsrel, epsrel_sigma);
 
 #if 0
@@ -107,7 +107,7 @@ main (void)
              kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
     test_fdf("nist-kirby2", T_lmsder, &f, kirby2_x0, kirby2_x,
              kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
-    test_fdf("nist-kirby2", T_lmder1, &f, kirby2_x0, kirby2_x,
+    test_fdf("nist-kirby2", T_lmniel, &f, kirby2_x0, kirby2_x,
              kirby2_sumsq, kirby2_sigma, epsrel, epsrel_sigma);
 
 #if 0
@@ -122,7 +122,7 @@ main (void)
              hahn1_sigma, epsrel, epsrel_sigma);
     test_fdf("nist-hahn1", T_lmsder, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
              hahn1_sigma, epsrel, epsrel_sigma);
-    test_fdf("nist-hahn1", T_lmder1, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
+    test_fdf("nist-hahn1", T_lmniel, &f, hahn1_x0, hahn1_x, hahn1_sumsq,
              hahn1_sigma, epsrel, epsrel_sigma);
 
 #if 0
@@ -155,7 +155,6 @@ test_lmder (gsl_multifit_function_fdf * f, double x0[],
   const size_t n = f->n;
   const size_t p = f->p;
 
-  int status;
   size_t iter = 0, i;
   
   gsl_vector_view x = gsl_vector_view_array (x0, p);
@@ -166,7 +165,7 @@ test_lmder (gsl_multifit_function_fdf * f, double x0[],
 
   do
     {
-      status = gsl_multifit_fdfsolver_iterate (s);
+      gsl_multifit_fdfsolver_iterate (s);
 
       for (i = 0 ; i < p; i++)
         {

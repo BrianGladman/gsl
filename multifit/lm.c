@@ -164,6 +164,10 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   gsl_matrix *A = state->A;
   gsl_vector_view diag = gsl_matrix_diagonal(A); /* diag(J^T J) */
 
+  /* count function and Jacobian evaluations */
+  fdf->nevalf = 0;
+  fdf->nevaldf = 0;
+
   /* evaluate function and Jacobian at x */
   status = GSL_MULTIFIT_FN_EVAL_F_DF(fdf, x, f, J);
   if (status)
@@ -261,6 +265,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
       /* compute dL = L(0) - L(dx) = dx^T (mu*dx - g) */
       dL = lm_calc_dL(state->mu, dx, rhs);
 
+      /* check that rho = dF/dL > 0 */
       if ((dL > 0.0) && (dF > 0.0))
         {
           /* reduction in error, step acceptable */
@@ -351,4 +356,4 @@ static const gsl_multifit_fdfsolver_type lm_type =
   &lm_free
 };
 
-const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmder = &lm_type;
+const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmniel = &lm_type;

@@ -25,6 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -107,16 +108,14 @@ struct gsl_multifit_function_fdf_struct
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
   int (* df) (const gsl_vector * x, void * params, gsl_matrix * df);
   int (* fdf) (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix *df);
-  size_t n;   /* number of functions */
-  size_t p;   /* number of independent variables */
+  size_t n;       /* number of functions */
+  size_t p;       /* number of independent variables */
+  size_t nevalf;  /* number of function evaluations */
+  size_t nevaldf; /* number of Jacobian evaluations */
   void * params;
 };
 
 typedef struct gsl_multifit_function_fdf_struct gsl_multifit_function_fdf ;
-
-#define GSL_MULTIFIT_FN_EVAL_F(F,x,y) ((*((F)->f))(x,(F)->params,(y)))
-#define GSL_MULTIFIT_FN_EVAL_DF(F,x,dy) ((*((F)->df))(x,(F)->params,(dy)))
-#define GSL_MULTIFIT_FN_EVAL_F_DF(F,x,y,dy) ((*((F)->fdf))(x,(F)->params,(y),(dy)))
 
 typedef struct
   {
@@ -181,10 +180,49 @@ int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fd
 
 /* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
-GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmniel;
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
-GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder1;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
 
+INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf,
+                                       const gsl_vector *x, gsl_vector *y);
+INLINE_DECL int GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf,
+                                        const gsl_vector *x, gsl_matrix *dy);
+INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+                                          gsl_vector *y, gsl_matrix *dy);
+
+#ifdef HAVE_INLINE
+
+INLINE_FUN
+int
+GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf, const gsl_vector *x, gsl_vector *y)
+{
+  int s = ((*((fdf)->f)) (x, fdf->params, y));
+  ++(fdf->nevalf);
+  return s;
+}
+
+INLINE_FUN
+int
+GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x, gsl_matrix *dy)
+{
+  int s = ((*((fdf)->df)) (x, fdf->params, dy));
+  ++(fdf->nevaldf);
+  return s;
+}
+
+INLINE_FUN
+int
+GSL_MULTIFIT_FN_EVAL_F_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+                          gsl_vector *y, gsl_matrix *dy)
+{
+  int s = ((*((fdf)->fdf)) (x, fdf->params, y, dy));
+  ++(fdf->nevalf);
+  ++(fdf->nevaldf);
+  return s;
+}
+
+#endif /* HAVE_INLINE */
 
 __END_DECLS
 

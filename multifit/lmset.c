@@ -11,6 +11,10 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   int signum;
 
+  /* start counting function and Jacobian evaluations */
+  fdf->nevalf = 0;
+  fdf->nevaldf = 0;
+
   /* Evaluate function at x */
   /* return immediately if evaluation raised error */
   {
