@@ -47,11 +47,6 @@ typedef struct
   gsl_vector *qrwork;    /* QR workspace */
   long nu;               /* nu */
   double mu;             /* LM damping parameter mu */
-  double gnorm;          /* ||g||_inf = ||J^T f||_inf */
-  double xnorm;          /* ||x||_2 */
-  double dxnorm;         /* ||dx||_2 */
-  double fnorm;          /* ||f(x)||_2 */
-  double dfnorm;         /* ||f(x+dx) - f(x)||_2 */
 
   double tau;            /* initial scale factor for mu */
   double gtol;           /* gradient tolerance */
@@ -71,8 +66,6 @@ static int lm_set(void *vstate, gsl_multifit_function_fdf *fdf,
 static int lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                       gsl_vector *dx);
-static int lm_norms(void *vstate, double *xnorm, double *dxnorm,
-                    double *gnorm, double *fnorm, double *dfnorm);
 
 static int
 lm_alloc (void *vstate, const size_t n, const size_t p)
@@ -115,10 +108,6 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
     {
       GSL_ERROR ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
-
-  state->gnorm = 0.0;
-  state->xnorm = 0.0;
-  state->dxnorm = 0.0;
 
   /* initialize convergence parameters */
   eps = pow(GSL_DBL_EPSILON, 0.9);
@@ -183,12 +172,6 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
     return status;
 
-  /* compute ||g||_inf */
-  state->gnorm = lm_infnorm(state->rhs);
-
-  /* compute ||x||_2 */
-  state->xnorm = gsl_blas_dnrm2(x);
-
   /* set default parameters */
   state->nu = 2;
 
@@ -209,8 +192,6 @@ Notes:
 1) On input, the following must be initialized in state:
 A = J^T J
 rhs = -J^T f
-gnorm = ||g||_inf
-xnorm = ||x||_2
 mu
 nu
 
@@ -222,11 +203,6 @@ f = f(x + dx)
 J = J(x + dx)
 A = J^T J
 rhs = -J^T f
-gnorm = ||g||_inf
-xnorm = ||x||_2
-dxnorm = ||dx||_2
-fnorm = ||f(x)||_2
-dfnorm = ||f(x + dx) - f(x)||_2
 */
 
 static int
@@ -294,15 +270,6 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
           if (status)
             return status;
 
-          /* update norms */
-          state->gnorm = lm_infnorm(state->rhs);
-          state->xnorm = gsl_blas_dnrm2(x); /* use previous x */
-          state->dxnorm = gsl_blas_dnrm2(dx);
-          state->fnorm = gsl_blas_dnrm2(f);
-
-          gsl_vector_sub(f, f_trial);
-          state->dfnorm = gsl_blas_dnrm2(f);
-
           /* update x <- x + dx */
           gsl_vector_memcpy(x, x_trial);
 
@@ -330,29 +297,13 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   return GSL_SUCCESS;
 } /* lm_iterate() */
 
-static int
-lm_norms(void *vstate, double *xnorm, double *dxnorm, double *gnorm,
-         double *fnorm, double *dfnorm)
-{
-  lm_state_t *state = (lm_state_t *) vstate;
-
-  *xnorm = state->xnorm;
-  *dxnorm = state->dxnorm;
-  *gnorm = state->gnorm;
-  *fnorm = state->fnorm;
-  *dfnorm = state->dfnorm;
-
-  return GSL_SUCCESS;
-}
-
 static const gsl_multifit_fdfsolver_type lm_type =
 {
-  "lmsder",
+  "lmniel",
   sizeof(lm_state_t),
   &lm_alloc,
   &lm_set,
   &lm_iterate,
-  &lm_norms,
   &lm_free
 };
 

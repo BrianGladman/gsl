@@ -21,9 +21,12 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit_nlin.h>
+#include <gsl/gsl_blas.h>
+
+static double infnorm(const gsl_vector *v);
 
 /*
-gsl_multifit_test()
+gsl_multifit_test_convergence()
   Convergence tests for nonlinear minimization
 
 (1) ||dx|| <= xtol * ||x||
@@ -41,20 +44,15 @@ Inputs: s - fdfsolver
 */
 
 int
-gsl_multifit_test (const gsl_multifit_fdfsolver * s, const double xtol,
-                   const double gtol, const double ftol, int *info)
+gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * s, const double xtol,
+                               const double gtol, const double ftol, int *info)
 {
-  int status;
-  double xnorm, dxnorm, gnorm, fnorm, dfnorm;
+  double xnorm, dxnorm, gnorm;
 
   *info = 0;
 
-  status = (s->type->norms) (s->state, &xnorm, &dxnorm, &gnorm,
-                             &fnorm, &dfnorm);
-  if (status)
-    {
-      GSL_ERROR("error computing norms", status);
-    }
+  xnorm = gsl_blas_dnrm2(s->x);
+  dxnorm = gsl_blas_dnrm2(s->dx);
 
   if (dxnorm <= xtol * xnorm)
     {
@@ -62,20 +60,25 @@ gsl_multifit_test (const gsl_multifit_fdfsolver * s, const double xtol,
       return GSL_SUCCESS;
     }
 
+  gsl_multifit_gradient(s->J, s->f, s->g);
+  gnorm = infnorm(s->g);
+
   if (gnorm <= gtol)
     {
       *info = 2;
       return GSL_SUCCESS;
     }
 
+#if 0
   if (dfnorm <= ftol * GSL_MAX(fnorm, 1.0))
     {
       *info = 3;
       return GSL_SUCCESS;
     }
+#endif
 
   return GSL_CONTINUE;
-} /* gsl_multifit_test() */
+} /* gsl_multifit_test_convergence() */
 
 int
 gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
@@ -141,4 +144,11 @@ gsl_multifit_test_gradient (const gsl_vector * g, double epsabs)
     }
   
   return GSL_CONTINUE ;
+}
+
+static double
+infnorm(const gsl_vector *v)
+{
+  CBLAS_INDEX_t idx = gsl_blas_idamax(v);
+  return fabs(gsl_vector_get(v, idx));
 }

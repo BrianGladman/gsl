@@ -17,36 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* These tests are based on the NIST Statistical Reference Datasets
-   See http://www.nist.gov/itl/div898/strd/index.html for more
-   information. */
+#include "test_longley.c"
+#include "test_filip.c"
+#include "test_pontius.c"
+#include "test_estimator.c"
+#include "test_ridge.c"
 
-#include <config.h>
-#include <stdlib.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_test.h>
-#include <gsl/gsl_multifit.h>
-#include <gsl/gsl_multifit_nlin.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_permutation.h>
+/* test linear regression */
 
-#include <gsl/gsl_ieee_utils.h>
-
-#include "test_linear.c"
-#include "test_nonlinear.c"
-
-int
-main (void)
+void
+test_linear(void)
 {
-  gsl_ieee_env_setup();
-
-  /* test linear regression */
-  test_linear();
-
-  /* test nonlinear regression */
-  test_nonlinear();
-
-  exit (gsl_test_summary ());
+  test_longley();
+  test_filip();
+  test_pontius();
+  test_estimator();
+  test_ridge();
 }

@@ -49,13 +49,6 @@ lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
   return status;
 } /* lm_calc_dx() */
 
-static double
-lm_infnorm(const gsl_vector *v)
-{
-  CBLAS_INDEX_t idx = gsl_blas_idamax(v);
-  return fabs(gsl_vector_get(v, idx));
-}
-
 static void
 lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
               gsl_vector * x_trial)

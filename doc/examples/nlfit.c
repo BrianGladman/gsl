@@ -17,7 +17,7 @@ main (void)
 {
   const gsl_multifit_fdfsolver_type *T = gsl_multifit_fdfsolver_lmniel;
   gsl_multifit_fdfsolver *s;
-  int status;
+  int status, info;
   unsigned int i, iter = 0;
   const size_t n = N;
   const size_t p = 3;
@@ -30,6 +30,9 @@ main (void)
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
   const gsl_rng_type * type;
   gsl_rng * r;
+
+  const double xtol = 1e-8;
+  const double gtol = 1e-8;
 
   gsl_rng_env_setup();
 
@@ -71,8 +74,7 @@ main (void)
       if (status)
         break;
 
-      status = gsl_multifit_test_delta (s->dx, s->x,
-                                        1e-4, 1e-4);
+      status = gsl_multifit_test_convergence(s, xtol, gtol, 0.0, &info);
     }
   while (status == GSL_CONTINUE && iter < 500);
 
@@ -86,8 +88,13 @@ main (void)
     double dof = n - p;
     double c = GSL_MAX_DBL(1, chi / sqrt(dof)); 
 
+    fprintf(stderr, "summary from method \"%s\"\n",
+            gsl_multifit_fdfsolver_name(s));
+    fprintf(stderr, "number of iterations: %zu\n", s->niter);
     fprintf(stderr, "function evaluations: %zu\n", f.nevalf);
     fprintf(stderr, "Jacobian evaluations: %zu\n", f.nevaldf);
+    fprintf(stderr, "reason for stopping: %s\n",
+            (info == 1) ? "small step size" : "small gradient");
     fprintf(stderr, "chisq/dof = %g\n",  pow(chi, 2.0) / dof);
 
     fprintf (stderr, "A      = %.5f +/- %.5f\n", FIT(0), c*ERR(0));
