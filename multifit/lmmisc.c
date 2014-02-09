@@ -1,4 +1,4 @@
-/* multifit/lm.c
+/* multifit/lmmisc.c
  * 
  * Copyright (C) 2014 Patrick Alken
  * 
@@ -40,11 +40,11 @@ lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
   /* augment normal equations with LM parameter: A -> A + mu*I */
   gsl_vector_add_constant(&diag.vector, mu);
 
-  status = gsl_linalg_QR_decomp(A_copy, state->qrwork);
+  status = gsl_linalg_QR_decomp(A_copy, state->work);
   if (status)
     return status;
 
-  status = gsl_linalg_QR_solve(A_copy, state->qrwork, rhs, dx);
+  status = gsl_linalg_QR_solve(A_copy, state->work, rhs, dx);
 
   return status;
 } /* lm_calc_dx() */
