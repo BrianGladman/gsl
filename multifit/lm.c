@@ -139,7 +139,7 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
-  const size_t p = J->size1;
+  const size_t p = J->size2;
   size_t i;
 
   /* initialize counters for function and Jacobian evaluations */
@@ -158,11 +158,10 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   state->mu = -1.0;
   for (i = 0; i < p; ++i)
     {
-      gsl_vector_view r = gsl_matrix_row(J, i);
       gsl_vector_view c = gsl_matrix_column(J, i);
       double result; /* (J^T J)_{ii} */
 
-      gsl_blas_ddot(&r.vector, &c.vector, &result);
+      gsl_blas_ddot(&c.vector, &c.vector, &result);
       state->mu = GSL_MAX(state->mu, result);
     }
 

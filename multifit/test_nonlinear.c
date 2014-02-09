@@ -17,6 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+typedef struct
+{
+  const char *name;
+  double *x0;       /* initial parameters (size p) */
+  double *x_sol;    /* solution parameters (size p) */
+  double *f_sumsq;  /* ||f(x_sol)||^2 */
+  double *epsrel;   /* relative tolerance for solution checking */
+  gsl_multifit_function_fdf *fdf;
+} test_fdf_problem;
+
 #include "test_brown.c"
 #include "test_enso.c"
 #include "test_kirby2.c"
@@ -24,12 +34,24 @@
 #include "test_nelson.c"
 #include "test_fn.c"
 
+#include "test_powell1.c"
+#include "test_powell2.c"
+#include "test_rosenbrock.c"
+
 static void test_lmder (gsl_multifit_function_fdf * f, double x0[], 
                         double * X, double F[], double * cov);
 static void test_fdf (const char * name, const gsl_multifit_fdfsolver_type * T,
                       gsl_multifit_function_fdf * f, double x0[], double x_final[], 
                       double f_sumsq, double sigma[], double epsrel,
                       double epsrel_sigma);
+static void test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *problem);
+
+static test_fdf_problem *test_fdf_problems[] = {
+  &rosenbrock_problem,
+  &powell1_problem,
+  &powell2_problem,
+  NULL
+};
 
 static void
 test_nonlinear(void)
@@ -45,6 +67,13 @@ test_nonlinear(void)
     gsl_multifit_fdfsolver_lmsder;
   const gsl_multifit_fdfsolver_type *T_lmniel =
     gsl_multifit_fdfsolver_lmniel;
+  size_t i;
+
+  for (i = 0; test_fdf_problems[i] != NULL; ++i)
+    {
+      test_fdf2(gsl_multifit_fdfsolver_lmniel, test_fdf_problems[i]);
+    }
+  exit(1);
 
   {
     f = make_fdf (&brown_f, &brown_df, &brown_fdf, brown_N, brown_P, 0);
@@ -300,4 +329,64 @@ test_fdf (const char * name,
   }
 
   gsl_multifit_fdfsolver_free (s);
+}
+
+static void
+test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *problem)
+{
+  gsl_multifit_function_fdf *fdf = problem->fdf;
+  const size_t n = fdf->n;
+  const size_t p = fdf->p;
+  const double epsrel = *(problem->epsrel);
+  const size_t max_iter = 500;
+  const double xtol = 1e-15;
+  const double gtol = 1e-15;
+  const double ftol = 0.0;
+  gsl_vector_view x0 = gsl_vector_view_array(problem->x0, p);
+  gsl_multifit_fdfsolver *s = gsl_multifit_fdfsolver_alloc (T, n, p);
+  const char *pname = problem->name;
+  const char *sname = gsl_multifit_fdfsolver_name(s);
+  size_t iter = 0;
+  int status, info;
+  size_t i;
+
+  gsl_multifit_fdfsolver_set(s, fdf, &x0.vector);
+
+  printf("working on %s\n", pname);
+
+  do
+    {
+      status = gsl_multifit_fdfsolver_iterate (s);
+      gsl_test(status, "%s/%s iterate status", sname, pname);
+
+      status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, &info);
+    }
+  while (status == GSL_CONTINUE && ++iter < max_iter);
+
+  gsl_test(status, "%s/%s did not converge", sname, pname);
+
+  printf("iter = %zu\n", iter);
+
+  /* check computed x = x_sol */
+  for (i = 0; i < p; ++i)
+    {
+      double xi = gsl_vector_get(s->x, i);
+      double xi_exact = problem->x_sol[i];
+
+      gsl_test_rel(xi, xi_exact, epsrel,
+                   "%s/%s solution i=%zu",
+                   sname, pname, i);
+    }
+
+  /* check computed/exact ||f||^2 */
+  {
+    double s2;
+    double s2_exact = *(problem->f_sumsq);
+
+    gsl_blas_ddot(s->f, s->f, &s2);
+    gsl_test_rel(s2, s2_exact, epsrel,
+                 "%s/%s sumsq", sname, pname);
+  }
+
+  gsl_multifit_fdfsolver_free(s);
 }

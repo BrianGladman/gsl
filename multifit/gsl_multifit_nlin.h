@@ -110,9 +110,9 @@ struct gsl_multifit_function_fdf_struct
   int (* fdf) (const gsl_vector * x, void * params, gsl_vector * f, gsl_matrix *df);
   size_t n;       /* number of functions */
   size_t p;       /* number of independent variables */
+  void * params;  /* user parameters */
   size_t nevalf;  /* number of function evaluations */
   size_t nevaldf; /* number of Jacobian evaluations */
-  void * params;
 };
 
 typedef struct gsl_multifit_function_fdf_struct gsl_multifit_function_fdf ;
