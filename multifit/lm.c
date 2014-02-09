@@ -139,6 +139,8 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
+  const size_t p = J->size1;
+  size_t i;
 
   /* initialize counters for function and Jacobian evaluations */
   fdf->nevalf = 0;
@@ -151,7 +153,20 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 
   /* set default parameters */
   state->nu = 2;
-  state->mu = -1.0; /* initialized later */
+
+  /* compute mu_0 = tau * max(diag(J^T J)) */
+  state->mu = -1.0;
+  for (i = 0; i < p; ++i)
+    {
+      gsl_vector_view r = gsl_matrix_row(J, i);
+      gsl_vector_view c = gsl_matrix_column(J, i);
+      double result; /* (J^T J)_{ii} */
+
+      gsl_blas_ddot(&r.vector, &c.vector, &result);
+      state->mu = GSL_MAX(state->mu, result);
+    }
+
+  state->mu *= state->tau;
 
   return GSL_SUCCESS;
 } /* lm_set() */
@@ -163,16 +178,18 @@ from [1]. The algorithm is slightly modified to loop until we
 find an acceptable step dx, in order to guarantee that each
 function call contains a new input vector x.
 
-Notes:
-1) On input, the following must be initialized in state:
-nu
+Args: vstate - lm workspace
+      fdf    - function and Jacobian pointers
+      x      - on input, current parameter vector
+               on output, new parameter vector x + dx
+      f      - on input, f(x)
+               on output, f(x + dx)
+      J      - on input, J(x)
+               on output, J(x + dx)
+      dx     - (output only) parameter step vector
 
-2) On output, the following are guaranteed to be set with the
-current iterates:
-dx
-x = x_input + dx
-f = f(x + dx)
-J = J(x + dx)
+Notes:
+1) On input, the following must be initialized in state: nu, mu
 */
 
 static int
@@ -198,13 +215,6 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   status = gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
   if (status)
     return status;
-
-  if (state->mu < 0.0)
-    {
-      /* initialize mu */
-      gsl_vector_view diag = gsl_matrix_diagonal(A);
-      state->mu = state->tau * gsl_vector_max(&diag.vector);
-    }
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
