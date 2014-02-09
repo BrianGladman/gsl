@@ -1,4 +1,4 @@
-/* multifit/test.c
+/* multifit/test_linear.c
  * 
  * Copyright (C) 2007, 2013 Brian Gough, Patrick Alken
  * 
