@@ -34,9 +34,11 @@ typedef struct
 #include "test_nelson.c"
 #include "test_fn.c"
 
+#include "test_lin1.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
 #include "test_rosenbrock.c"
+#include "test_roth.c"
 
 static void test_lmder (gsl_multifit_function_fdf * f, double x0[], 
                         double * X, double F[], double * cov);
@@ -46,7 +48,17 @@ static void test_fdf (const char * name, const gsl_multifit_fdfsolver_type * T,
                       double epsrel_sigma);
 static void test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *problem);
 
+/*
+ * Many of these test problems taken from
+ *
+ * H. B. Nielsen, UCTP test problems for unconstrained optimization,
+ * IMM Department of Mathematical Modeling, Tech. Report IMM-REP-2000-17,
+ * 2000.
+ */
+
 static test_fdf_problem *test_fdf_problems[] = {
+  &roth_problem,
+  &lin1_problem,
   &rosenbrock_problem,
   &powell1_problem,
   &powell2_problem,
@@ -72,6 +84,8 @@ test_nonlinear(void)
   for (i = 0; test_fdf_problems[i] != NULL; ++i)
     {
       test_fdf2(gsl_multifit_fdfsolver_lmniel, test_fdf_problems[i]);
+      test_fdf2(gsl_multifit_fdfsolver_lmsder, test_fdf_problems[i]);
+      test_fdf2(gsl_multifit_fdfsolver_lmder, test_fdf_problems[i]);
     }
   exit(1);
 
@@ -352,12 +366,13 @@ test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *problem)
 
   gsl_multifit_fdfsolver_set(s, fdf, &x0.vector);
 
-  printf("working on %s\n", pname);
+  printf("working on %s/%s\n", sname, pname);
 
   do
     {
       status = gsl_multifit_fdfsolver_iterate (s);
-      gsl_test(status, "%s/%s iterate status", sname, pname);
+      gsl_test(status, "%s/%s iterate status=%s", sname, pname,
+               gsl_strerror(status));
 
       status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, &info);
     }
