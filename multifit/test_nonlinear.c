@@ -34,6 +34,8 @@ typedef struct
 #include "test_nelson.c"
 #include "test_fn.c"
 
+#include "test_bard.c"
+#include "test_helical.c"
 #include "test_lin1.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
@@ -59,9 +61,11 @@ static void test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *p
 static test_fdf_problem *test_fdf_problems[] = {
   &lin1_problem,
   &rosenbrock_problem,
+  &helical_problem,
   &powell1_problem,
   &powell2_problem,
   &roth_problem,
+  &bard_problem,
   NULL
 };
 
