@@ -61,6 +61,7 @@ static test_fdf_problem roth_problem =
   roth_x0,
   roth_x,
   &roth_sumsq,
+  NULL,
   &roth_epsrel,
   &roth_func
 };

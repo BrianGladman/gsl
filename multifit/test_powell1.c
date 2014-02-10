@@ -85,6 +85,7 @@ static test_fdf_problem powell1_problem =
   powell1_x0,
   powell1_x,
   &powell1_sumsq,
+  NULL,
   &powell1_epsrel,
   &powell1_func
 };

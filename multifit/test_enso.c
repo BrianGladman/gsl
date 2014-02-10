@@ -1,9 +1,9 @@
-const size_t enso_N = 168;
-const size_t enso_P = 9;
+#define enso_N  168
+#define enso_P  9
 
-double enso_x0[9] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
+static double enso_x0[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
 
-double enso_x[9] = {
+static double enso_x[enso_P] = {
   1.0510749193E+01, 
   3.0762128085E+00,
   5.3280138227E-01,
@@ -15,9 +15,10 @@ double enso_x[9] = {
   1.4966870418E+00
 };
 
-double enso_sumsq = 7.8853978668E+02;
+static double enso_sumsq = 7.8853978668E+02;
+static double enso_epsrel = 1.0e-7;
 
-double enso_sigma[9] = {
+static double enso_sigma[enso_P] = {
  1.7488832467E-01,
  2.4310052139E-01,
  2.4354686618E-01,
@@ -29,7 +30,7 @@ double enso_sigma[9] = {
  2.5434468893E-01
 };
 
-double enso_F[168] = {
+static double enso_F[enso_N] = {
     12.90000, 
     11.30000, 
     10.60000, 
@@ -201,18 +202,18 @@ double enso_F[168] = {
 };
 
 
-int
+static int
 enso_f (const gsl_vector * x, void *params, gsl_vector * f)
 {
-  double b[9];
+  double b[enso_P];
   size_t i;
 
-  for (i = 0; i < 9; i++)
+  for (i = 0; i < enso_P; i++)
     {
       b[i] = gsl_vector_get(x, i);
     }
 
-  for (i = 0; i < 168; i++)
+  for (i = 0; i < enso_N; i++)
     {
       double t = (i + 1.0);
       double y;
@@ -230,18 +231,18 @@ enso_f (const gsl_vector * x, void *params, gsl_vector * f)
   return GSL_SUCCESS;
 }
 
-int
+static int
 enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
 {
-  double b[9];
+  double b[enso_P];
   size_t i;
 
-  for (i = 0; i < 9; i++)
+  for (i = 0; i < enso_P; i++)
     {
       b[i] = gsl_vector_get(x, i);
     }
 
-  for (i = 0; i < 168; i++)
+  for (i = 0; i < enso_N; i++)
     {
       double t = (i + 1.0);
 
@@ -263,7 +264,7 @@ enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-int
+static int
 enso_fdf (const gsl_vector * x, void *params,
            gsl_vector * f, gsl_matrix * df)
 {
@@ -273,7 +274,25 @@ enso_fdf (const gsl_vector * x, void *params,
   return GSL_SUCCESS;
 }
 
+static gsl_multifit_function_fdf enso_func =
+{
+  &enso_f,
+  &enso_df,
+  &enso_fdf,
+  enso_N,
+  enso_P,
+  NULL,
+  0,
+  0
+};
 
-
-
-
+static test_fdf_problem enso_problem =
+{
+  "nist-ENSO",
+  enso_x0,
+  enso_x,
+  &enso_sumsq,
+  enso_sigma,
+  &enso_epsrel,
+  &enso_func
+};

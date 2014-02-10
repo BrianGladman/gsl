@@ -77,6 +77,7 @@ static test_fdf_problem helical_problem =
   helical_x0,
   helical_x,
   &helical_sumsq,
+  NULL,
   &helical_epsrel,
   &helical_func
 };

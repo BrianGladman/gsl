@@ -78,6 +78,7 @@ static test_fdf_problem lin1_problem =
   lin1_x0,
   lin1_x,
   &lin1_sumsq,
+  NULL,
   &lin1_epsrel,
   &lin1_func
 };

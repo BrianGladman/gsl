@@ -61,6 +61,7 @@ static test_fdf_problem rosenbrock_problem =
   rosenbrock_x0,
   rosenbrock_x,
   &rosenbrock_sumsq,
+  NULL,
   &rosenbrock_epsrel,
   &rosenbrock_func
 };

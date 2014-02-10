@@ -85,6 +85,7 @@ static test_fdf_problem bard_problem =
   bard_x0,
   bard_x,
   &bard_sumsq,
+  NULL,
   &bard_epsrel,
   &bard_func
 };
