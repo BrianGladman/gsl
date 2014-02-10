@@ -57,11 +57,11 @@ static void test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *p
  */
 
 static test_fdf_problem *test_fdf_problems[] = {
-  &roth_problem,
   &lin1_problem,
   &rosenbrock_problem,
   &powell1_problem,
   &powell2_problem,
+  &roth_problem,
   NULL
 };
 
@@ -84,8 +84,10 @@ test_nonlinear(void)
   for (i = 0; test_fdf_problems[i] != NULL; ++i)
     {
       test_fdf2(gsl_multifit_fdfsolver_lmniel, test_fdf_problems[i]);
+#if 0
       test_fdf2(gsl_multifit_fdfsolver_lmsder, test_fdf_problems[i]);
       test_fdf2(gsl_multifit_fdfsolver_lmder, test_fdf_problems[i]);
+#endif
     }
   exit(1);
 
