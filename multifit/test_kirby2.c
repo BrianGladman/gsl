@@ -14,7 +14,7 @@ static double kirby2_x[kirby2_P] = {
 };
 
 static double kirby2_sumsq = 3.9050739624E+00;
-static double kirby2_epsrel = 1.0e-8;
+static double kirby2_epsrel = 1.0e-5;
 
 static double kirby2_sigma[kirby2_P] = {
   8.7989634338E-02,

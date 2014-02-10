@@ -16,7 +16,7 @@ static double hahn1_x[hahn1_P] = {
 };
 
 static double hahn1_sumsq = 1.5324382854E+00;
-static double hahn1_epsrel = 1.0e-8;
+static double hahn1_epsrel = 1.0e-5;
 
 static double hahn1_sigma[hahn1_P] = {
   1.7070154742E-01,

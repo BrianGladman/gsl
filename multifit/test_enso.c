@@ -16,7 +16,7 @@ static double enso_x[enso_P] = {
 };
 
 static double enso_sumsq = 7.8853978668E+02;
-static double enso_epsrel = 1.0e-7;
+static double enso_epsrel = 1.0e-3;
 
 static double enso_sigma[enso_P] = {
  1.7488832467E-01,

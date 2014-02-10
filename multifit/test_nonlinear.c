@@ -29,7 +29,6 @@ typedef struct
 } test_fdf_problem;
 
 #include "test_brown.c"
-#include "test_nelson.c"
 #include "test_fn.c"
 
 #include "test_bard.c"
@@ -45,11 +44,8 @@ typedef struct
 
 static void test_lmder (gsl_multifit_function_fdf * f, double x0[], 
                         double * X, double F[], double * cov);
-static void test_fdf (const char * name, const gsl_multifit_fdfsolver_type * T,
-                      gsl_multifit_function_fdf * f, double x0[], double x_final[], 
-                      double f_sumsq, double sigma[], double epsrel,
-                      double epsrel_sigma);
-static void test_fdf2(const gsl_multifit_fdfsolver_type * T, test_fdf_problem *problem);
+static void test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
+                     const double gtol, const double ftol, test_fdf_problem *problem);
 
 /*
  * These test problems are taken from
@@ -89,16 +85,16 @@ test_nonlinear(void)
 
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
-      test_fdf2(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-                test_fdf_nielsen[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               test_fdf_nielsen[i]);
     }
 
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
     {
-      test_fdf2(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-                test_fdf_nielsen[i]);
-      test_fdf2(gsl_multifit_fdfsolver_lmsder, test_fdf_nist[i]);
-      test_fdf2(gsl_multifit_fdfsolver_lmder, test_fdf_nist[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               test_fdf_nist[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
     }
 
   exit(1);
@@ -107,14 +103,6 @@ test_nonlinear(void)
     f = make_fdf (&brown_f, &brown_df, &brown_fdf, brown_N, brown_P, 0);
     test_lmder(&f, brown_x0, &brown_X[0][0], brown_F, &brown_cov[0][0]);
   }
-
-#ifdef JUNK
-  {
-    f = make_fdf (&nelson_f, &nelson_df, &nelson_fdf, nelson_N, nelson_P, 0);
-    test_fdf("nist-nelson", T_lmsder, &f, nelson_x0, nelson_x,
-             nelson_sumsq, nelson_sigma, epsrel, epsrel_sigma);
-  }
-#endif
 }
 
 static void
@@ -174,148 +162,8 @@ test_lmder (gsl_multifit_function_fdf * f, double x0[],
 }
 
 static void
-test_fdf (const char * name,
-          const gsl_multifit_fdfsolver_type * T,
-          gsl_multifit_function_fdf * f, 
-          double x0[], double x_final[], 
-          double f_sumsq, double sigma[], double epsrel,
-          double epsrel_sigma)
-{
-  gsl_multifit_fdfsolver *s;
-  
-  const size_t n = f->n;
-  const size_t p = f->p;
-
-  const double xtol = 1e-8;
-  const double gtol = 1e-8;
-
-  int status, info;
-  size_t iter = 0;
-
-  gsl_vector_view x = gsl_vector_view_array (x0, p);
-
-  s = gsl_multifit_fdfsolver_alloc (T, n, p);
-  gsl_multifit_fdfsolver_set (s, f, &x.vector);
-
-  do
-    {
-      status = gsl_multifit_fdfsolver_iterate (s);
-
-#ifdef DEBUG
-       printf("iter = %d  status = %d  |f| = %.18e x = \n", 
-         iter, status, gsl_blas_dnrm2 (s->f));
-         
-         gsl_vector_fprintf(stdout, s->x, "%.8e");
-#endif       
-      /*status = gsl_multifit_test_delta (s->dx, s->x, 0.0, 1e-7);*/
-      status = gsl_multifit_test_convergence(s, xtol, gtol, 0.0, &info);
-
-      iter++;
-    }
-  while (status == GSL_CONTINUE && iter < 1000);
-  
-  {
-    size_t i;
-    gsl_matrix * covar = gsl_matrix_alloc (p, p);
-    gsl_multifit_covar (s->J, 0.0, covar);
-
-    for (i = 0 ; i < p; i++)
-      {
-        gsl_test_rel (gsl_vector_get (s->x, i), x_final[i], epsrel, 
-                      "%s, lmsder, x%u", name, i);
-      }
-
-
-    {
-      double s2 = pow(gsl_blas_dnrm2 (s->f), 2.0);
-
-      gsl_test_rel (s2, f_sumsq, epsrel, "%s, lmsder, |f|^2", name);
-
-      for (i = 0; i < p; i++) 
-        {
-          double ei = sqrt(s2/(n-p))*sqrt(gsl_matrix_get(covar,i,i));
-          gsl_test_rel (ei, sigma[i], epsrel_sigma, 
-                        "%s, sigma(%d)", name, i) ;
-        }
-    }
-
-    gsl_matrix_free (covar);
-  }
-
-  /* check higher level driver routine */
-  {
-    size_t i;
-
-    gsl_multifit_fdfsolver_set (s, f, &x.vector);
-    gsl_multifit_fdfsolver_driver (s, 1000, 0.0, 1.0e-7);
-
-    for (i = 0 ; i < p; i++)
-      {
-        gsl_test_rel (gsl_vector_get (s->x, i), x_final[i], epsrel, 
-                      "%s, lmsder, x%u", name, i);
-      }
-  }
-
-  /* Check that there is no hidden state, restarting should 
-     produce identical results. */
-
-  {
-    int status0, status1;
-    size_t i;
-    gsl_multifit_fdfsolver *t = gsl_multifit_fdfsolver_alloc (T, n, p);
-    gsl_multifit_fdfsolver_set (t, f, &x.vector);
-
-    /* do a few extra iterations to stir things up */
-
-    gsl_multifit_fdfsolver_set (s, f, &x.vector);
-
-    for (i = 0; i < 3; i++) 
-      {
-        gsl_multifit_fdfsolver_iterate (s);
-      }
-
-    gsl_multifit_fdfsolver_set (s, f, &x.vector);
-
-    do
-      {
-        status0 = gsl_multifit_fdfsolver_iterate (s);
-        status1 = gsl_multifit_fdfsolver_iterate (t);
-
-        gsl_test_int(status0, status1, "%s, lmsder status after set iter=%u", name, iter);
-        
-        for (i = 0; i < p; i++) {
-          double sxi = gsl_vector_get(s->x,i);
-          double txi = gsl_vector_get(t->x,i);
-#ifdef DEBUG
-          printf("%d %g %g\n", i, sxi, txi);
-#endif
-          gsl_test_rel(sxi, txi, 1e-15, "%s, lmsder after set, %u/%u", name, iter, i);
-        }
-        
-#ifdef DEBUG
-        printf("iter = %d  status = %d  |f| = %.18e x = \n", 
-               iter, status, gsl_blas_dnrm2 (s->f));
-        
-        gsl_vector_fprintf(stdout, s->x, "%.8e");
-#endif       
-        status0 = gsl_multifit_test_delta (s->dx, s->x, 0.0, 1e-7);
-        status1 = gsl_multifit_test_delta (t->dx, s->x, 0.0, 1e-7);
-        
-        gsl_test_int(status0, status1, "%s, lmsder test delta status after set iter=%u", name, iter);
-
-        iter++;
-      }
-    while (status1 == GSL_CONTINUE && iter < 1000);
-
-    gsl_multifit_fdfsolver_free (t);
-  }
-
-  gsl_multifit_fdfsolver_free (s);
-}
-
-static void
-test_fdf2(const gsl_multifit_fdfsolver_type * T, const double xtol,
-          const double gtol, const double ftol, test_fdf_problem *problem)
+test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
+         const double gtol, const double ftol, test_fdf_problem *problem)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
