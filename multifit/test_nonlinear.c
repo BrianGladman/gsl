@@ -36,7 +36,9 @@ typedef struct
 #include "test_hahn1.c"
 #include "test_helical.c"
 #include "test_kirby2.c"
+#include "test_kowalik.c"
 #include "test_lin1.c"
+#include "test_meyer.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
 #include "test_rosenbrock.c"
@@ -62,6 +64,8 @@ static test_fdf_problem *test_fdf_nielsen[] = {
   &powell2_problem,
   &roth_problem,
   &bard_problem,
+  &kowalik_problem,
+  &meyer_problem,
 
   NULL
 };
@@ -83,12 +87,18 @@ test_nonlinear(void)
   gsl_multifit_function_fdf f;
   size_t i;
 
+  /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
                test_fdf_nielsen[i]);
     }
 
+  /*
+   * NIST tests - the tolerances for the lmsder/lmder routines must
+   * be set low or they produce errors like "not making progress
+   * toward solution"
+   */
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
     {
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
@@ -96,8 +106,6 @@ test_nonlinear(void)
       test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
       test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
     }
-
-  exit(1);
 
   {
     f = make_fdf (&brown_f, &brown_df, &brown_fdf, brown_N, brown_P, 0);
