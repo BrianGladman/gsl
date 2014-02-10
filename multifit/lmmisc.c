@@ -82,8 +82,6 @@ lm_calc_dx(const double mu, const gsl_matrix *J, const gsl_vector *f,
   gsl_vector *sdiag = state->sdiag;
   int signum;
 
-  gsl_vector_set_all(diag, 1.0);
-
   /* make a copy of matrix */
   gsl_matrix_memcpy(R, J);
 

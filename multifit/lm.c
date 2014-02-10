@@ -211,6 +211,8 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
     return status;
 
+  gsl_vector_set_all(state->diag, 1.0);
+
   /* set default parameters */
   state->nu = 2;
 
