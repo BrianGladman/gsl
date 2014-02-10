@@ -5,7 +5,6 @@ static double rosenbrock_x0[rosenbrock_P] = { -1.2, 1.0 };
 static double rosenbrock_x[rosenbrock_P] = { 1.0, 1.0 };
 
 static double rosenbrock_sumsq = 0.0;
-
 static double rosenbrock_epsrel = 1.0e-12;
 
 static int
