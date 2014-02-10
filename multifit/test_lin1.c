@@ -64,7 +64,7 @@ static gsl_multifit_function_fdf lin1_func =
 
 static test_fdf_problem lin1_problem =
 {
-  "lin1",
+  "linear_full",
   lin1_x0,
   lin1_x,
   &lin1_sumsq,

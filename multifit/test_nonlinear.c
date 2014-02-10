@@ -29,24 +29,33 @@ typedef struct
 } test_fdf_problem;
 
 #include "test_bard.c"
+#include "test_beale.c"
+#include "test_biggs.c"
 #include "test_box.c"
 #include "test_brown1.c"
 #include "test_brown2.c"
+#include "test_brown3.c"
 #include "test_enso.c"
 #include "test_exp1.c"
+#include "test_gaussian.c"
 #include "test_hahn1.c"
 #include "test_helical.c"
 #include "test_jennrich.c"
 #include "test_kirby2.c"
 #include "test_kowalik.c"
 #include "test_lin1.c"
+#include "test_lin2.c"
+#include "test_lin3.c"
 #include "test_meyer.c"
 #include "test_meyerscal.c"
 #include "test_osborne.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
+#include "test_powell3.c"
 #include "test_rosenbrock.c"
 #include "test_roth.c"
+#include "test_watson.c"
+#include "test_wood.c"
 
 static void test_fdf(const gsl_multifit_fdfsolver_type * T,
                      const double xtol, const double gtol,
@@ -61,14 +70,16 @@ static void test_fdf(const gsl_multifit_fdfsolver_type * T,
  */
 static test_fdf_problem *test_fdf_nielsen[] = {
   &lin1_problem,       /* 1 */
+  &lin2_problem,       /* 2 */
+  &lin3_problem,       /* 3 */
   &rosenbrock_problem, /* 4 */
   &helical_problem,    /* 5 */
   &powell1_problem,    /* 6 */
-  &powell2_problem,
   &roth_problem,       /* 7 */
   &bard_problem,       /* 8 */
   &kowalik_problem,    /* 9 */
   &meyer_problem,      /* 10 */
+  &watson_problem,     /* 11 */
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
   &brown1_problem,     /* 14 */
@@ -76,6 +87,26 @@ static test_fdf_problem *test_fdf_nielsen[] = {
   &osborne_problem,    /* 17 */
   &exp1_problem,       /* 18 */
   &meyerscal_problem,  /* 20 */
+
+  &powell2_problem,
+
+  NULL
+};
+
+/*
+ * These tests are from
+ *
+ * J. J. More, B. S. Garbow and K. E. Hillstrom, Testing
+ * Unconstrained Optimization Software, ACM Trans. Math. Soft.
+ * Vol 7, No 1, 1981.
+ */
+static test_fdf_problem *test_fdf_more[] = {
+  &powell3_problem,    /* 3 */
+  &brown3_problem,     /* 4 */
+  &beale_problem,      /* 5 */
+  &gaussian_problem,   /* 9 */
+  &wood_problem,       /* 14 */
+  &biggs_problem,      /* 18 */
 
   NULL
 };
@@ -96,11 +127,22 @@ test_nonlinear(void)
   const double ftol = 0.0;
   size_t i;
 
+#if 0
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
                test_fdf_nielsen[i]);
+    }
+#endif
+
+  /* More tests */
+  for (i = 0; test_fdf_more[i] != NULL; ++i)
+    {
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               test_fdf_more[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-12, 1e-12, 0.0, test_fdf_more[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-12, 1e-12, 0.0, test_fdf_more[i]);
     }
 
   /*
@@ -160,14 +202,17 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   printf("iter = %zu\n", iter);
 
   /* check computed x = x_sol */
-  for (i = 0; i < p; ++i)
+  if (problem->x_sol)
     {
-      double xi = gsl_vector_get(s->x, i);
-      double xi_exact = problem->x_sol[i];
+      for (i = 0; i < p; ++i)
+        {
+          double xi = gsl_vector_get(s->x, i);
+          double xi_exact = problem->x_sol[i];
 
-      gsl_test_rel(xi, xi_exact, epsrel,
-                   "%s/%s solution i=%zu",
-                   sname, pname, i);
+          gsl_test_rel(xi, xi_exact, epsrel,
+                       "%s/%s solution i=%zu",
+                       sname, pname, i);
+        }
     }
 
   {

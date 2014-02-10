@@ -6,7 +6,7 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 libgslmultifit_la_SOURCES = multilinear.c work.c lm.c lmder.c fsolver.c fdfsolver.c fdjac.c convergence.c gradient.c covar.c multirobust.c robust_wfun.c inline.c
 
-noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c test_brown.c test_enso.c test_filip.c test_hahn1.c test_kirby2.c test_longley.c test_nelson.c test_pontius.c test_estimator.c
+noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c test_brown1.c test_enso.c test_filip.c test_hahn1.c test_kirby2.c test_longley.c test_nelson.c test_pontius.c test_estimator.c
 
 check_PROGRAMS = test #demo
 
