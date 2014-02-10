@@ -33,12 +33,15 @@ typedef struct
 
 #include "test_bard.c"
 #include "test_enso.c"
+#include "test_exp1.c"
 #include "test_hahn1.c"
 #include "test_helical.c"
 #include "test_kirby2.c"
 #include "test_kowalik.c"
 #include "test_lin1.c"
 #include "test_meyer.c"
+#include "test_meyerscal.c"
+#include "test_osborne.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
 #include "test_rosenbrock.c"
@@ -66,6 +69,9 @@ static test_fdf_problem *test_fdf_nielsen[] = {
   &bard_problem,
   &kowalik_problem,
   &meyer_problem,
+  &osborne_problem,
+  &exp1_problem,
+  &meyerscal_problem,
 
   NULL
 };
