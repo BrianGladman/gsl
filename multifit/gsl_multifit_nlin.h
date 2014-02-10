@@ -188,8 +188,6 @@ INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf,
                                        const gsl_vector *x, gsl_vector *y);
 INLINE_DECL int GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf,
                                         const gsl_vector *x, gsl_matrix *dy);
-INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
-                                          gsl_vector *y, gsl_matrix *dy);
 
 #ifdef HAVE_INLINE
 
@@ -207,17 +205,6 @@ int
 GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x, gsl_matrix *dy)
 {
   int s = ((*((fdf)->df)) (x, fdf->params, dy));
-  ++(fdf->nevaldf);
-  return s;
-}
-
-INLINE_FUN
-int
-GSL_MULTIFIT_FN_EVAL_F_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
-                          gsl_vector *y, gsl_matrix *dy)
-{
-  int s = ((*((fdf)->fdf)) (x, fdf->params, y, dy));
-  ++(fdf->nevalf);
   ++(fdf->nevaldf);
   return s;
 }

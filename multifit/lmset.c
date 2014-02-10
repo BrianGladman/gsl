@@ -20,10 +20,14 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   {
     int status;
     
-    if (fdf->fdf)
-      status = GSL_MULTIFIT_FN_EVAL_F_DF (fdf, x, f, J);
+    status = GSL_MULTIFIT_FN_EVAL_F (fdf, x, f);
+    if (status)
+      return status;
+
+    if (fdf->df)
+      status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, J);
     else /* finite difference approximation */
-      status = gsl_multifit_fdfsolver_dif_fdf(x, fdf, f, J);
+      status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, J);
 
     if (status)
       return status;

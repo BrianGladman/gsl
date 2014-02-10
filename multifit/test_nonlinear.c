@@ -109,10 +109,16 @@ test_nonlinear(void)
    */
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
     {
-      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               test_fdf_nist[i]);
-      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
-      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, test_fdf_nist[i]);
+      test_fdf_problem *problem = test_fdf_nist[i];
+
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol, problem);
+      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, problem);
+      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, problem);
+
+      problem->fdf->df = NULL;
+      problem->fdf->fdf = NULL;
+      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, problem);
+      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, problem);
     }
 
   {

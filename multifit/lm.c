@@ -207,7 +207,11 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   fdf->nevaldf = 0;
 
   /* evaluate function and Jacobian at x */
-  status = GSL_MULTIFIT_FN_EVAL_F_DF(fdf, x, f, J);
+  status = GSL_MULTIFIT_FN_EVAL_F (fdf, x, f);
+  if (status)
+   return status;
+
+  status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, J);
   if (status)
     return status;
 
