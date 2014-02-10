@@ -57,21 +57,11 @@ powell1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-powell1_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  powell1_f (x, params, f);
-  powell1_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf powell1_func =
 {
   &powell1_f,
   &powell1_df,
-  &powell1_fdf,
+  NULL,
   powell1_N,
   powell1_P,
   NULL,

@@ -41,7 +41,6 @@ main (void)
 
   f.f = &expb_f;
   f.df = &expb_df;   /* set to NULL for finite-difference Jacobian */
-  f.fdf = &expb_fdf; /* set to NULL for finite-difference Jacobian */
   f.n = n;
   f.p = p;
   f.params = &d;

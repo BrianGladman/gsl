@@ -50,21 +50,11 @@ lin1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-lin1_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  lin1_f (x, params, f);
-  lin1_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf lin1_func =
 {
   &lin1_f,
   &lin1_df,
-  &lin1_fdf,
+  NULL,
   lin1_N,
   lin1_P,
   NULL,

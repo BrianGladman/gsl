@@ -62,21 +62,11 @@ kowalik_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-kowalik_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  kowalik_f (x, params, f);
-  kowalik_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf kowalik_func =
 {
   &kowalik_f,
   &kowalik_df,
-  &kowalik_fdf,
+  NULL,
   kowalik_N,
   kowalik_P,
   NULL,

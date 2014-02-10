@@ -57,21 +57,11 @@ bard_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-bard_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  bard_f (x, params, f);
-  bard_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf bard_func =
 {
   &bard_f,
   &bard_df,
-  &bard_fdf,
+  NULL,
   bard_N,
   bard_P,
   NULL,

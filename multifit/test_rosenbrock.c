@@ -33,21 +33,11 @@ rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-rosenbrock_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  rosenbrock_f (x, params, f);
-  rosenbrock_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf rosenbrock_func =
 {
   &rosenbrock_f,
   &rosenbrock_df,
-  &rosenbrock_fdf,
+  NULL,
   rosenbrock_N,
   rosenbrock_P,
   NULL,

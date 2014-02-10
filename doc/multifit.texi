@@ -228,16 +228,6 @@ to compute, this function pointer may be set to NULL, in which
 case the Jacobian will be internally computed using finite difference approximations
 of the function @var{f}.
 
-@item int (* fdf) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f}, gsl_matrix * @var{J})
-This function should set the values of the @var{f} and @var{J} as above,
-for arguments @var{x} and arbitrary parameters @var{params}.  This function
-provides an optimization of the separate functions for @math{f(x)} and
-@math{J(x)}---it is always faster to compute the function and its
-derivative at the same time. If an analytic Jacobian is unavailable, or too expensive
-to compute, this function pointer may be set to NULL, in which
-case the Jacobian will be internally computed using finite difference approximations
-of the function @var{f}.
-
 @item size_t n
 the number of functions, i.e. the number of components of the
 vector @var{f}.
@@ -355,6 +345,54 @@ The handling of these conditions is under user control.  The functions
 below allow the user to test the current estimate of the best-fit
 parameters in several standard ways.
 
+@deftypefun int gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * @var{s}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
+This function tests for convergence of the minimization method
+using the following criteria:
+
+@itemize @bullet
+@item
+Testing for a small step size relative to the current parameter vector
+@tex
+\beforedisplay
+$$
+||p|| \le xtol ||x||
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+||p|| <= xtol ||x||
+@end example
+@end ifinfo
+If this test succeeds, @var{info} is set to 1 and the function
+returns @code{GSL_SUCCESS}.
+
+@item
+Testing for a small gradient (@math{g = J^T f}) indicating a local
+function minimum:
+@tex
+\beforedisplay
+$$
+||g||_{\infty} \le gtol
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+||g||_inf <= gtol
+@end example
+@end ifinfo
+If this test succeeds, @var{info} is set to 2 and the function
+returns @code{GSL_SUCCESS}.
+
+@end itemize
+
+If none of the tests succeed, @var{info} is set to 0 and the
+function returns @code{GSL_CONTINUE}, indicating further iterations
+are required.
+
+@end deftypefun
+
 @deftypefun int gsl_multifit_test_delta (const gsl_vector * @var{dx}, const gsl_vector * @var{x}, double @var{epsabs}, double @var{epsrel})
 
 This function tests for the convergence of the sequence by comparing the
@@ -438,10 +476,42 @@ initial guess must be sufficiently close to the minimum for it to work.
 
 @comment ============================================================
 @cindex Levenberg-Marquardt algorithms
+
+@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmniel
+This is a robust and efficient implementation of the Levenberg-Marquardt
+algorithm, and supersedes the @code{lmsder} and @code{lmder} solvers
+below. This algorithm is based on a smoother updating of the
+Levenberg-Marquardt parameter from (Nielsen, 1999) than the
+classical method suggested by Marquardt. The smoother updating
+leads to better convergence properties for a wide class of problems.
+
+On each iteration, a step @math{p} is calculated which reduces
+the function residual so that @math{\Phi(x + p) < \Phi(x)}.
+The step @math{p} is calculated by solving the damped linear
+least squares system
+@tex
+\beforedisplay
+$$
+\left( J^T J + \mu I \right) p = -J^T f
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+(J^T J + \mu I) p = -J^T f
+@end example
+@end ifinfo
+where the damping term @math{\mu} is the Levenberg-Marquardt
+parameter.
+@end deffn
+
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmsder
 @cindex LMDER algorithm
 @cindex MINPACK, minimization algorithms
-This is a robust and efficient version of the Levenberg-Marquardt
+This solver is now deprecated and superseded by
+@code{gsl_multifit_fdfsolver_lmniel}.
+
+This is a version of the Levenberg-Marquardt
 algorithm as implemented in the scaled @sc{lmder} routine in
 @sc{minpack}.  Minpack was written by Jorge J. Mor@'e, Burton S. Garbow
 and Kenneth E. Hillstrom.
@@ -497,6 +567,9 @@ change the solution from its current value.
 @end deffn
 
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmder
+This solver is now deprecated and superseded by
+@code{gsl_multifit_fdfsolver_lmniel}.
+
 This is an unscaled version of the @sc{lmder} algorithm.  The elements of the
 diagonal scaling matrix @math{D} are set to 1.  This algorithm may be
 useful in circumstances where the scaled version of @sc{lmder} converges too

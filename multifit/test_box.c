@@ -47,21 +47,11 @@ box_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-box_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  box_f (x, params, f);
-  box_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf box_func =
 {
   &box_f,
   &box_df,
-  &box_fdf,
+  NULL,
   box_N,
   box_P,
   NULL,

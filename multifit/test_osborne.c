@@ -63,21 +63,11 @@ osborne_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-osborne_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  osborne_f (x, params, f);
-  osborne_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf osborne_func =
 {
   &osborne_f,
   &osborne_df,
-  &osborne_fdf,
+  NULL,
   osborne_N,
   osborne_P,
   NULL,

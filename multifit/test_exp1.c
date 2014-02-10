@@ -63,21 +63,11 @@ exp1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-exp1_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  exp1_f (x, params, f);
-  exp1_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf exp1_func =
 {
   &exp1_f,
   &exp1_df,
-  &exp1_fdf,
+  NULL,
   exp1_N,
   exp1_P,
   NULL,

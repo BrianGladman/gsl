@@ -122,7 +122,7 @@ test_nonlinear(void)
     }
 
   {
-    f = make_fdf (&brown_f, &brown_df, &brown_fdf, brown_N, brown_P, 0);
+    f = make_fdf (&brown_f, &brown_df, brown_N, brown_P, 0);
     test_lmder(&f, brown_x0, &brown_X[0][0], brown_F, &brown_cov[0][0]);
   }
 }

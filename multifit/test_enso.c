@@ -264,21 +264,11 @@ enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-static int
-enso_fdf (const gsl_vector * x, void *params,
-           gsl_vector * f, gsl_matrix * df)
-{
-  enso_f (x, params, f);
-  enso_df (x, params, df);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf enso_func =
 {
   &enso_f,
   &enso_df,
-  &enso_fdf,
+  NULL,
   enso_N,
   enso_P,
   NULL,

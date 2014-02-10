@@ -49,21 +49,11 @@ helical_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
-static int
-helical_fdf (const gsl_vector * x, void *params,
-                gsl_vector * f, gsl_matrix * J)
-{
-  helical_f (x, params, f);
-  helical_df (x, params, J);
-
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_function_fdf helical_func =
 {
   &helical_f,
   &helical_df,
-  &helical_fdf,
+  NULL,
   helical_N,
   helical_P,
   NULL,
