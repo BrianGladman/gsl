@@ -322,6 +322,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
       /* compute dL = L(0) - L(dx) = dx^T (mu*dx - g) */
       dL = lm_calc_dL(state->mu, diag, dx, rhs);
 
+#if 0
       {
         double nfnew = gsl_blas_dnrm2(f_trial);
         double nf = gsl_blas_dnrm2(f);
@@ -333,6 +334,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
         /*dF = dF2;
         dL = dL2;*/
       }
+#endif
 
       /* check that rho = dF/dL > 0 */
       if ((dL > 0.0) && (dF >= 0.0))
