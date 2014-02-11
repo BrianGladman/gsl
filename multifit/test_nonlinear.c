@@ -53,13 +53,16 @@ typedef struct
 #include "test_powell2.c"
 #include "test_powell3.c"
 #include "test_rosenbrock.c"
+#include "test_rosenbrocke.c"
 #include "test_roth.c"
 #include "test_watson.c"
 #include "test_wood.c"
 
 static void test_fdf(const gsl_multifit_fdfsolver_type * T,
                      const double xtol, const double gtol,
-                     const double ftol, test_fdf_problem *problem);
+                     const double ftol, const double x0_scale,
+                     test_fdf_problem *problem);
+static void test_scale_x0(gsl_vector *x0, const double scale);
 
 /*
  * These test problems are taken from
@@ -101,12 +104,13 @@ static test_fdf_problem *test_fdf_nielsen[] = {
  * Vol 7, No 1, 1981.
  */
 static test_fdf_problem *test_fdf_more[] = {
-  &powell3_problem,    /* 3 */
-  &brown3_problem,     /* 4 */
-  &beale_problem,      /* 5 */
-  &gaussian_problem,   /* 9 */
-  &wood_problem,       /* 14 */
-  &biggs_problem,      /* 18 */
+  &powell3_problem,      /* 3 */
+  &brown3_problem,       /* 4 */
+  &beale_problem,        /* 5 */
+  &gaussian_problem,     /* 9 */
+  &wood_problem,         /* 14 */
+  &biggs_problem,        /* 18 */
+  &rosenbrocke_problem,  /* 21 */
 
   NULL
 };
@@ -139,12 +143,13 @@ test_nonlinear(void)
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
+      double x0_scale = 2.0;
+
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               test_fdf_more[i]);
-      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-12, 1e-12, 0.0, test_fdf_more[i]);
-      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-12, 1e-12, 0.0, test_fdf_more[i]);
+               x0_scale, test_fdf_more[i]);
     }
 
+#if 0
   /*
    * NIST tests - the tolerances for the lmsder/lmder routines must
    * be set low or they produce errors like "not making progress
@@ -163,11 +168,30 @@ test_nonlinear(void)
       test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, problem);
       test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, problem);
     }
+#endif
 }
+
+/*
+test_fdf()
+  Test a nonlinear least squares problem
+
+Inputs: T        - solver to use
+        xtol     - tolerance in x
+        gtol     - tolerance in gradient
+        ftol     - tolerance in residual vector
+        x0_scale - to test robustness against starting points,
+                   the standard starting point in 'problem' is
+                   multiplied by this scale factor:
+                   x0 <- x0 * x0_scale
+                   If x0 = 0, then all components of x0 are set to
+                   x0_scale
+        problem  - contains the nonlinear problem and solution point
+*/
 
 static void
 test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
-         const double gtol, const double ftol, test_fdf_problem *problem)
+         const double gtol, const double ftol,
+         const double x0_scale, test_fdf_problem *problem)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
@@ -182,6 +206,9 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   size_t iter = 0;
   int status, info;
   size_t i;
+
+  /* scale starting point x0 */
+  test_scale_x0(&x0.vector, x0_scale);
 
   gsl_multifit_fdfsolver_set(s, fdf, &x0.vector);
 
@@ -243,3 +270,14 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   gsl_multifit_fdfsolver_free(s);
 }
+
+static void
+test_scale_x0(gsl_vector *x0, const double scale)
+{
+  double nx = gsl_blas_dnrm2(x0);
+
+  if (nx == 0.0)
+    gsl_vector_set_all(x0, scale);
+  else
+    gsl_vector_scale(x0, scale);
+} /* test_scale_x0() */
