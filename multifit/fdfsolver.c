@@ -165,6 +165,35 @@ gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
   return status;
 } /* gsl_multifit_fdfsolver_driver() */
 
+int
+gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
+                              const size_t maxiter,
+                              const double xtol,
+                              const double gtol,
+                              const double ftol,
+                              int *info)
+{
+  int status;
+  size_t iter = 0;
+
+  do
+    {
+      status = gsl_multifit_fdfsolver_iterate (s);
+      if (status)
+        return status;
+
+      /* test for convergence */
+      status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, info);
+    }
+  while (status == GSL_CONTINUE && ++iter < maxiter);
+
+  /* check if max iterations reached */
+  if (status != GSL_SUCCESS)
+    status = GSL_EMAXITER;
+
+  return status;
+} /* gsl_multifit_fdfsolver_driver() */
+
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s)
 {
