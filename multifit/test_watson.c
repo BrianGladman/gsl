@@ -7,7 +7,7 @@ static double watson_x[watson_P] = {
  1.260430087686035e+00, -1.513728922580576e+00,  9.929964323646112e-01 };
 
 static double watson_sumsq = 2.287670053552372e-03;
-static double watson_epsrel = 1.0e-9;
+static double watson_epsrel = 1.0e-7;
 
 static int
 watson_f (const gsl_vector * x, void *params, gsl_vector * f)

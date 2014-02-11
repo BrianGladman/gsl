@@ -5,8 +5,7 @@ static double roth_x0[roth_P] = { 0.5, -2.0 };
 static double roth_x[roth_P] = { 11.4127789869021, -0.896805253274477 };
 
 static double roth_sumsq = 48.9842536792400;
-
-static double roth_epsrel = 1.0e-9;
+static double roth_epsrel = 1.0e-8;
 
 static int
 roth_f (const gsl_vector * x, void *params, gsl_vector * f)

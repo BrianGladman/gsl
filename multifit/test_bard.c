@@ -5,8 +5,7 @@ static double bard_x0[bard_P] = { 1.0, 1.0, 1.0 };
 static double bard_x[bard_P] = { 8.241055975623580e-02, 1.133036092245175, 2.343695178435405 };
 
 static double bard_sumsq = 8.214877306578963e-03;
-
-static double bard_epsrel = 1.0e-9;
+static double bard_epsrel = 1.0e-8;
 
 static double bard_Y[bard_N] = {
 0.14, 0.18, 0.22, 0.25, 0.29, 0.32, 0.35, 0.39, 0.37,

@@ -180,12 +180,23 @@ gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
     {
       status = gsl_multifit_fdfsolver_iterate (s);
       if (status)
-        return status;
+        break;
 
       /* test for convergence */
       status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, info);
     }
   while (status == GSL_CONTINUE && ++iter < maxiter);
+
+  /*
+   * the following error codes mean that the solution has converged
+   * to within machine precision, so record the error code in info
+   * and return success
+   */
+  if (status == GSL_ETOLF || status == GSL_ETOLX || status == GSL_ETOLG)
+    {
+      *info = status;
+      status = GSL_SUCCESS;
+    }
 
   /* check if max iterations reached */
   if (status != GSL_SUCCESS)

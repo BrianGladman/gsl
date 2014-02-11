@@ -136,9 +136,13 @@ test_nonlinear(void)
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
-      double x0_scale = 1.0;
+      double x0_scale = 10.0;
 
+#if 0
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               x0_scale, test_fdf_nielsen[i]);
+#endif
+      test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                x0_scale, test_fdf_nielsen[i]);
     }
   exit(1);
@@ -208,35 +212,28 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   const size_t p = fdf->p;
   const double *sigma = problem->sigma;
   const double epsrel = *(problem->epsrel);
-  const size_t max_iter = 500;
-  gsl_vector_view x0 = gsl_vector_view_array(problem->x0, p);
+  const size_t max_iter = 1000;
+  gsl_vector *x0 = gsl_vector_alloc(p);
+  gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
   gsl_multifit_fdfsolver *s = gsl_multifit_fdfsolver_alloc (T, n, p);
   const char *pname = problem->name;
   const char *sname = gsl_multifit_fdfsolver_name(s);
-  size_t iter = 0;
   int status, info;
   size_t i;
 
   /* scale starting point x0 */
-  test_scale_x0(&x0.vector, x0_scale);
+  gsl_vector_memcpy(x0, &x0v.vector);
+  test_scale_x0(x0, x0_scale);
 
-  gsl_multifit_fdfsolver_set(s, fdf, &x0.vector);
+  gsl_multifit_fdfsolver_set(s, fdf, x0);
 
   printf("working on %s/%s\n", sname, pname);
 
-  do
-    {
-      status = gsl_multifit_fdfsolver_iterate (s);
-      gsl_test(status, "%s/%s iterate status=%s", sname, pname,
-               gsl_strerror(status));
+  status = gsl_multifit_fdfsolver_solve(s, max_iter, xtol, gtol, ftol, &info);
+  gsl_test(status, "%s/%s did not converge, status=%s",
+           sname, pname, gsl_strerror(status));
 
-      status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, &info);
-    }
-  while (status == GSL_CONTINUE && ++iter < max_iter);
-
-  gsl_test(status, "%s/%s did not converge", sname, pname);
-
-  printf("iter = %zu, info = %d\n", iter, info);
+  printf("iter = %zu, info = %d\n", s->niter, info);
 
   /* check computed x = x_sol */
   if (problem->x_sol)
@@ -279,6 +276,7 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   }
 
   gsl_multifit_fdfsolver_free(s);
+  gsl_vector_free(x0);
 }
 
 static void

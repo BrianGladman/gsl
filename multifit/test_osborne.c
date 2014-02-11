@@ -7,7 +7,7 @@ static double osborne_x[osborne_P] = { 3.754100521058740e-01, 1.935846912585852e
                                       2.212269966218532e-02 };
 
 static double osborne_sumsq = 5.464894697482687e-05;
-static double osborne_epsrel = 1.0e-9;
+static double osborne_epsrel = 1.0e-8;
 
 static double osborne_Y[osborne_N] = {
 0.844, 0.908, 0.932, 0.936, 0.925, 0.908, 0.881,

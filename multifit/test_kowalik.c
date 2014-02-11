@@ -6,7 +6,7 @@ static double kowalik_x[kowalik_P] = { 1.928069345723978e-01, 1.912823290344599e
                                        1.230565070690708e-01, 1.360623308065148e-01 };
 
 static double kowalik_sumsq = 3.075056038492370e-04;
-static double kowalik_epsrel = 1.0e-8;
+static double kowalik_epsrel = 1.0e-7;
 
 static double kowalik_Y[kowalik_N] = {
 0.1957, 0.1947, 0.1735, 0.1600, 0.0844, 0.0627,
