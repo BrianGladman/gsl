@@ -226,6 +226,9 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   /* set default parameters */
   state->nu = 2;
 
+#if SCALE
+  state->mu = state->tau;
+#else
   /* compute mu_0 = tau * max(diag(J^T J)) */
   state->mu = -1.0;
   for (i = 0; i < p; ++i)
@@ -238,6 +241,7 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
     }
 
   state->mu *= state->tau;
+#endif
 
   return GSL_SUCCESS;
 } /* lm_set() */
