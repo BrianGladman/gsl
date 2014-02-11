@@ -72,6 +72,7 @@ static void test_scale_x0(gsl_vector *x0, const double scale);
  * 2000.
  */
 static test_fdf_problem *test_fdf_nielsen[] = {
+  &meyer_problem,      /* 10 */
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -131,19 +132,22 @@ test_nonlinear(void)
   const double ftol = 0.0;
   size_t i;
 
-#if 0
+#if 1
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
+      double x0_scale = 1.0;
+
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               test_fdf_nielsen[i]);
+               x0_scale, test_fdf_nielsen[i]);
     }
+  exit(1);
 #endif
 
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
-      double x0_scale = 2.0;
+      double x0_scale = 1.0;
 
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
                x0_scale, test_fdf_more[i]);
@@ -226,7 +230,7 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   gsl_test(status, "%s/%s did not converge", sname, pname);
 
-  printf("iter = %zu\n", iter);
+  printf("iter = %zu, info = %d\n", iter, info);
 
   /* check computed x = x_sol */
   if (problem->x_sol)

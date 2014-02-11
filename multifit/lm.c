@@ -27,6 +27,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 
+#define SCALE 0
+
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation
@@ -215,7 +217,11 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
     return status;
 
+#if SCALE
+  gsl_vector_set_zero(state->diag);
+#else
   gsl_vector_set_all(state->diag, 1.0);
+#endif
 
   /* set default parameters */
   state->nu = 2;
@@ -267,6 +273,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   gsl_vector *rhs = state->rhs;             /* -g = -J^T f */
   gsl_vector *x_trial = state->x_trial;     /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;     /* trial f(x + dx) */
+  gsl_vector *diag = state->diag;           /* diag(D) */
   double dF;                                /* F(x) - F(x + dx) */
   double dL;                                /* L(0) - L(dx) */
   int foundstep = 0;                        /* found step dx */
@@ -280,6 +287,10 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   status = gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
   if (status)
     return status;
+
+#if SCALE
+  lm_update_diag(J, diag);
+#endif
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
@@ -305,7 +316,19 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
       dF = lm_calc_dF(f, f_trial);
 
       /* compute dL = L(0) - L(dx) = dx^T (mu*dx - g) */
-      dL = lm_calc_dL(state->mu, dx, rhs);
+      dL = lm_calc_dL(state->mu, diag, dx, rhs);
+
+      {
+        double nfnew = gsl_blas_dnrm2(f_trial);
+        double nf = gsl_blas_dnrm2(f);
+        double ratio = nfnew / nf;
+        double dF2 = 1.0 - ratio*ratio;
+        double dL2 = lm_calc_dLmore(state->mu, diag, J, dx, f);
+        /*printf("dF/dL   = %.12e\n", dF/dL);
+        printf("dF2/dL2 = %.12e\n", dF2/dL2);*/
+        /*dF = dF2;
+        dL = dL2;*/
+      }
 
       /* check that rho = dF/dL > 0 */
       if ((dL > 0.0) && (dF >= 0.0))

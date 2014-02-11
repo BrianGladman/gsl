@@ -141,26 +141,87 @@ lm_calc_dF(const gsl_vector *f, const gsl_vector *f_new)
 
 /*
 lm_calc_dL()
-  Compute dL = L(0) - L(dx) = 1/2 dx^T (mu*dx - g)
+  Compute dL = L(0) - L(dx) = 1/2 dx^T (mu * D^T D dx - g)
 Here, the mg input is -g
 */
 
 static double
-lm_calc_dL(const double mu, const gsl_vector *dx, const gsl_vector *mg)
+lm_calc_dL(const double mu, const gsl_vector *diag,
+           const gsl_vector *dx, const gsl_vector *mg)
 {
-  const size_t N = dx->size;
+  const size_t p = dx->size;
   size_t i;
   double dL = 0.0;
 
-  for (i = 0; i < N; ++i)
+  for (i = 0; i < p; ++i)
     {
       double dxi = gsl_vector_get(dx, i);
+      double di = gsl_vector_get(diag, i);
       double mgi = gsl_vector_get(mg, i); /* -g_i */
 
-      dL += dxi * (mu * dxi + mgi);
+      dL += dxi * (mu * di * di * dxi + mgi);
     }
 
   dL *= 0.5;
 
   return dL;
 } /* lm_calc_dL() */
+
+/*
+lm_calc_dLmore()
+  Compute dL = L(0) - L(dx) = 1/2 dx^T (mu * D^T D dx - g)
+Here, the mg input is -g
+*/
+
+static double
+lm_calc_dLmore(const double mu, const gsl_vector *diag,
+               const gsl_matrix *J, const gsl_vector *dx,
+               const gsl_vector *f)
+{
+  const size_t p = dx->size;
+  const size_t n = J->size1;
+  gsl_vector *work1 = gsl_vector_alloc(n);
+  gsl_vector *work2 = gsl_vector_alloc(p);
+  double nf = gsl_blas_dnrm2(f);
+  double nJp, nDp;
+  double ratio1, ratio2;
+  double dL = 0.0;
+
+  /* compute ||Jp|| */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, J, dx, 0.0, work1);
+  nJp = gsl_blas_dnrm2(work1);
+
+  /* compute ||Dp|| */
+  gsl_vector_memcpy(work2, dx);
+  gsl_vector_mul(work2, diag);
+  nDp = gsl_blas_dnrm2(work2);
+
+  ratio1 = nJp / nf;
+  ratio2 = nDp / nf;
+
+  dL = ratio1*ratio1 + 2*mu*ratio2*ratio2;
+
+  gsl_vector_free(work1);
+  gsl_vector_free(work2);
+
+  return dL;
+} /* lm_calc_dLmore() */
+
+static void
+lm_update_diag(const gsl_matrix *J, gsl_vector *diag)
+{
+  size_t j, p = diag->size;
+
+  for (j = 0; j < p; j++)
+    {
+      double *dj = gsl_vector_ptr (diag, j);
+      gsl_vector_const_view v = gsl_matrix_const_column(J, j);
+      double norm = gsl_blas_dnrm2(&v.vector);
+
+      if (norm == 0.0)
+        norm = 1.0;
+
+      if (norm > *dj)
+        *dj = norm;
+    }
+}
