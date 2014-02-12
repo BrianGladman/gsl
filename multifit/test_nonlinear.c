@@ -235,7 +235,7 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   gsl_multifit_fdfsolver_set(s, fdf, x0);
 
-  printf("testing %s/%s scale=%g\n", sname, pname, x0_scale);
+  printf("testing %s/%s scale=%g...", sname, pname, x0_scale);
 
   status = gsl_multifit_fdfsolver_driver(s, max_iter, xtol, gtol,
                                          ftol, &info);

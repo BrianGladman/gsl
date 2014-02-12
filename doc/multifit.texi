@@ -730,7 +730,7 @@ Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
 @end itemize
 
 @noindent
-The following paper is also relevant to the algorithms described in this
+The following papers are also relevant to the algorithms described in this
 section,
 
 @itemize @w{}
@@ -738,5 +738,10 @@ section,
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained
 Optimization Software'', ACM Transactions on Mathematical Software, Vol
 7, No 1 (1981), p 17--41.
+
+@item 
+H. B. Nielsen, ``UCTP Test Problems for Unconstrained Optimization'',
+IMM Department of Mathematical Modeling, Tech. Report IMM-REP-2000-17
+(2000).
 @end itemize
 
