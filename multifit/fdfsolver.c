@@ -142,36 +142,36 @@ gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s)
   return status;
 }
 
+/*
+gsl_multifit_fdfsolver_driver()
+  Iterate the nonlinear least squares solver until completion
+
+Inputs: s - fdfsolver
+        maxiter - maximum iterations to allow
+        xtol    - tolerance in step x
+        gtol    - tolerance in gradient
+        ftol    - tolerance in ||f||
+        info    - (output) info flag on why iteration terminated
+                  1 = stopped due to small step size ||dx|
+                  2 = stopped due to small gradient
+                  3 = stopped due to small change in f
+                  GSL_ETOLX = ||dx|| has converged to within machine
+                              precision (and xtol is too small)
+                  GSL_ETOLG = ||g||_inf is smaller than machine
+                              precision (gtol is too small)
+                  GSL_ETOLF = change in ||f|| is smaller than machine
+                              precision (ftol is too small)
+
+Return: GSL_SUCCESS if converged, GSL_MAXITER if maxiter exceeded without
+converging
+*/
 int
 gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
                                const size_t maxiter,
-                               const double epsabs,
-                               const double epsrel)
-{
-  int status;
-  size_t iter = 0;
-
-  do  
-    {   
-      status = gsl_multifit_fdfsolver_iterate (s);
-      if (status) 
-        break;
-
-      /* test for convergence */
-      status = gsl_multifit_test_delta (s->dx, s->x, epsabs, epsrel);
-    }   
-  while (status == GSL_CONTINUE && ++iter < maxiter);
-
-  return status;
-} /* gsl_multifit_fdfsolver_driver() */
-
-int
-gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
-                              const size_t maxiter,
-                              const double xtol,
-                              const double gtol,
-                              const double ftol,
-                              int *info)
+                               const double xtol,
+                               const double gtol,
+                               const double ftol,
+                               int *info)
 {
   int status;
   size_t iter = 0;
@@ -179,7 +179,12 @@ gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
   do
     {
       status = gsl_multifit_fdfsolver_iterate (s);
-      if (status)
+
+      /*
+       * if status is GSL_ENOPROG or GSL_SUCCESS, continue iterating,
+       * otherwise the method has converged with a GSL_ETOLx flag
+       */
+      if (status != GSL_SUCCESS && status != GSL_ENOPROG)
         break;
 
       /* test for convergence */
@@ -199,7 +204,7 @@ gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
     }
 
   /* check if max iterations reached */
-  if (status != GSL_SUCCESS)
+  if (iter >= maxiter && status != GSL_SUCCESS)
     status = GSL_EMAXITER;
 
   return status;

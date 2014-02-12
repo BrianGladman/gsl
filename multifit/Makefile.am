@@ -6,7 +6,51 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 libgslmultifit_la_SOURCES = multilinear.c work.c lm.c lmder.c fsolver.c fdfsolver.c fdjac.c convergence.c gradient.c covar.c multirobust.c robust_wfun.c inline.c
 
-noinst_HEADERS = lmutil.c lmpar.c lmset.c lmiterate.c qrsolv.c test_brown1.c test_enso.c test_filip.c test_hahn1.c test_kirby2.c test_longley.c test_nelson.c test_pontius.c test_estimator.c
+noinst_HEADERS =        \
+lmutil.c                \
+lmpar.c                 \
+lmset.c                 \
+lmiterate.c             \
+qrsolv.c                \
+test_bard.c             \
+test_beale.c            \
+test_biggs.c            \
+test_box.c              \
+test_brown1.c           \
+test_brown2.c           \
+test_brown3.c           \
+test_enso.c             \
+test_estimator.c        \
+test_exp1.c             \
+test_filip.c            \
+test_gaussian.c         \
+test_gulf.c             \
+test_hahn1.c            \
+test_helical.c          \
+test_jennrich.c         \
+test_kirby2.c           \
+test_kowalik.c          \
+test_lin1.c             \
+test_lin2.c             \
+test_lin3.c             \
+test_linear.c           \
+test_longley.c          \
+test_meyer.c            \
+test_meyerscal.c        \
+test_nelson.c           \
+test_nonlinear.c        \
+test_osborne.c          \
+test_pontius.c          \
+test_powell1.c          \
+test_powell2.c          \
+test_powell3.c          \
+test_powell.c           \
+test_ridge.c            \
+test_rosenbrock.c       \
+test_rosenbrocke.c      \
+test_roth.c             \
+test_watson.c           \
+test_wood.c
 
 check_PROGRAMS = test #demo
 

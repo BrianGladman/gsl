@@ -72,7 +72,6 @@ static void test_scale_x0(gsl_vector *x0, const double scale);
  * 2000.
  */
 static test_fdf_problem *test_fdf_nielsen[] = {
-  &meyer_problem,      /* 10 */
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -127,37 +126,29 @@ static test_fdf_problem *test_fdf_nist[] = {
 static void
 test_nonlinear(void)
 {
-  const double xtol = 1e-8;
+  const double xtol = 1e-15;
   const double gtol = 1e-15;
   const double ftol = 0.0;
   size_t i;
 
-#if 1
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
-      double x0_scale = 1.0;
+      double scale = 1.0;
 
-#if 0
-      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               x0_scale, test_fdf_nielsen[i]);
-#endif
       test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-               x0_scale, test_fdf_nielsen[i]);
+               scale, test_fdf_nielsen[i]);
     }
-  exit(1);
-#endif
 
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
-      double x0_scale = 1.0;
+      double scale = 1.0;
 
-      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               x0_scale, test_fdf_more[i]);
+      test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+               scale, test_fdf_more[i]);
     }
 
-#if 1
   /*
    * NIST tests - the tolerances for the lmsder/lmder routines must
    * be set low or they produce errors like "not making progress
@@ -182,7 +173,6 @@ test_nonlinear(void)
       test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, scale,
                problem);
     }
-#endif
 }
 
 /*
@@ -229,7 +219,8 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   printf("working on %s/%s\n", sname, pname);
 
-  status = gsl_multifit_fdfsolver_solve(s, max_iter, xtol, gtol, ftol, &info);
+  status = gsl_multifit_fdfsolver_driver(s, max_iter, xtol, gtol,
+                                         ftol, &info);
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 

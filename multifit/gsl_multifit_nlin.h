@@ -155,16 +155,12 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
 int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s);
 
-int
-gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
-                               const size_t maxiter,
-                               const double epsabs, const double epsrel);
-int gsl_multifit_fdfsolver_solve (gsl_multifit_fdfsolver * s,
-                                  const size_t maxiter,
-                                  const double xtol,
-                                  const double gtol,
-                                  const double ftol,
-                                  int *info);
+int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
+                                   const size_t maxiter,
+                                   const double xtol,
+                                   const double gtol,
+                                   const double ftol,
+                                   int *info);
 
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
