@@ -1,7 +1,7 @@
 #define biggs_N         6  /* >= p */
 #define biggs_P         6
 
-#define biggs_NTRIES    1
+#define biggs_NTRIES    2
 
 static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };
 static double biggs_epsrel = 1.0e-9;
@@ -11,18 +11,21 @@ biggs_checksol(const double x[], const double sumsq,
                const double epsrel, const char *sname,
                const char *pname)
 {
-  size_t i;
   const double sumsq_exact = 0.0;
   const double biggs_x[biggs_P] = { 1.0, 10.0, 1.0, 5.0, 4.0, 3.0 };
+  const double norm_exact = 12.3288280059380;
+  gsl_vector_const_view v = gsl_vector_const_view_array(biggs_x, biggs_P);
+  double norm = gsl_blas_dnrm2(&v.vector);
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
 
-  for (i = 0; i < biggs_P; ++i)
-    {
-      gsl_test_rel(x[i], biggs_x[i], epsrel, "%s/%s i=%zu",
-                   sname, pname, i);
-    }
+  /*
+   * the solution vector is not unique due to permutations, so test
+   * the norm instead of individual elements
+   */
+  gsl_test_rel(norm, norm_exact, epsrel, "%s/%s norm",
+               sname, pname);
 }
 
 static int
