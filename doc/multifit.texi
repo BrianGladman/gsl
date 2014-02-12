@@ -477,39 +477,9 @@ initial guess must be sufficiently close to the minimum for it to work.
 @comment ============================================================
 @cindex Levenberg-Marquardt algorithms
 
-@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmniel
-This is a robust and efficient implementation of the Levenberg-Marquardt
-algorithm, and supersedes the @code{lmsder} and @code{lmder} solvers
-below. This algorithm is based on a smoother updating of the
-Levenberg-Marquardt parameter from (Nielsen, 1999) than the
-classical method suggested by Marquardt. The smoother updating
-leads to better convergence properties for a wide class of problems.
-
-On each iteration, a step @math{p} is calculated which reduces
-the function residual so that @math{\Phi(x + p) < \Phi(x)}.
-The step @math{p} is calculated by solving the damped linear
-least squares system
-@tex
-\beforedisplay
-$$
-\left( J^T J + \mu I \right) p = -J^T f
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-(J^T J + \mu I) p = -J^T f
-@end example
-@end ifinfo
-where the damping term @math{\mu} is the Levenberg-Marquardt
-parameter.
-@end deffn
-
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmsder
 @cindex LMDER algorithm
 @cindex MINPACK, minimization algorithms
-This solver is now deprecated and superseded by
-@code{gsl_multifit_fdfsolver_lmniel}.
 
 This is a version of the Levenberg-Marquardt
 algorithm as implemented in the scaled @sc{lmder} routine in
@@ -567,8 +537,6 @@ change the solution from its current value.
 @end deffn
 
 @deffn {Derivative Solver} gsl_multifit_fdfsolver_lmder
-This solver is now deprecated and superseded by
-@code{gsl_multifit_fdfsolver_lmniel}.
 
 This is an unscaled version of the @sc{lmder} algorithm.  The elements of the
 diagonal scaling matrix @math{D} are set to 1.  This algorithm may be
@@ -716,19 +684,12 @@ both an absolute and relative change.  Here are the results of running
 the program:
 
 @smallexample
-iter: 0 x=1.00000000 0.00000000 0.00000000 |f(x)|=117.349
-status=success
-iter: 1 x=1.64659312 0.01814772 0.64659312 |f(x)|=76.4578
-status=success
-iter: 2 x=2.85876037 0.08092095 1.44796363 |f(x)|=37.6838
-status=success
-iter: 3 x=4.94899512 0.11942928 1.09457665 |f(x)|=9.58079
-status=success
-iter: 4 x=5.02175572 0.10287787 1.03388354 |f(x)|=5.63049
-status=success
-iter: 5 x=5.04520433 0.10405523 1.01941607 |f(x)|=5.44398
-status=success
-iter: 6 x=5.04535782 0.10404906 1.01924871 |f(x)|=5.44397
+summary from method 'lmsder'
+number of iterations: 8
+function evaluations: 11
+Jacobian evaluations: 9
+reason for stopping: small step size
+|f(x)| = 5.44397
 chisq/dof = 0.800996
 A      = 5.04536 +/- 0.06028
 lambda = 0.10405 +/- 0.00316

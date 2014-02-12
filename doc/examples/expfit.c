@@ -58,13 +58,3 @@ expb_df (const gsl_vector * x, void *data,
     }
   return GSL_SUCCESS;
 }
-
-int
-expb_fdf (const gsl_vector * x, void *data,
-          gsl_vector * f, gsl_matrix * J)
-{
-  expb_f (x, data, f);
-  expb_df (x, data, J);
-
-  return GSL_SUCCESS;
-}
