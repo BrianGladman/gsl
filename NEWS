@@ -1,5 +1,12 @@
 * What is new in gsl-2.0:
 
+** added extensive test suite to nonlinear least squares module,
+   resulting in a few minor bug fixes; the routine
+   gsl_multifit_fdfsolver_driver has been rewritten (with API change)
+   to handle the various error codes of the lmsder iterate
+   routine, resulting in a high level caller which is highly robust
+   for a wide class of problems
+
 ** added support for sparse matrices, including a GMRES
    iterative linear solver
 
