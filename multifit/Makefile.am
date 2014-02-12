@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multifit.h gsl_multifit_nlin.h
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-libgslmultifit_la_SOURCES = multilinear.c work.c lm.c lmder.c fsolver.c fdfsolver.c fdjac.c convergence.c gradient.c covar.c multirobust.c robust_wfun.c inline.c
+libgslmultifit_la_SOURCES = multilinear.c work.c lmder.c fsolver.c fdfsolver.c fdjac.c convergence.c gradient.c covar.c multirobust.c robust_wfun.c inline.c
 
 noinst_HEADERS =        \
 lmutil.c                \

@@ -585,7 +585,7 @@ static gsl_multifit_function_fdf hahn1_func =
 
 static test_fdf_problem hahn1_problem =
 {
-  "hahn1",
+  "nist-hahn1",
   hahn1_x0,
   hahn1_sigma,
   &hahn1_epsrel,
