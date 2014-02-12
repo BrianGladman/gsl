@@ -127,7 +127,7 @@ static test_fdf_problem *test_fdf_nist[] = {
 static void
 test_nonlinear(void)
 {
-  const double xtol = 1e-15;
+  const double xtol = 1e-8;
   const double gtol = 1e-15;
   const double ftol = 0.0;
   size_t i;
@@ -136,7 +136,7 @@ test_nonlinear(void)
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
-      double x0_scale = 10.0;
+      double x0_scale = 1.0;
 
 #if 0
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
